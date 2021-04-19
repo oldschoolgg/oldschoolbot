@@ -83,7 +83,7 @@ export default class extends BotCommand {
 		const quantityWealths = wealthInventorySize * quantity;
 
 		if (userBank.amount('Ring of wealth') < quantityWealths) {
-			return msg.send(`You don't have enough ${quantityWealths}x Ring of wealth.`);
+			return msg.send(`You don't have enough Rings of wealth, ${quantityWealths} required.`);
 		}
 
 		await addSubTaskToActivityTask<WealthChargingActivityTaskOptions>(this.client, {
