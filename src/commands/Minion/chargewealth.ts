@@ -48,7 +48,7 @@ export default class extends BotCommand {
 		const amountHas = userBank.amount('Ring of wealth');
 		if (amountHas < wealthInventorySize) {
 			return msg.send(
-				`You don't have enough Rings of wealth to recharge. Your minion does trips of ${wealthInventorySize}x glories.`
+				`You don't have enough Rings of wealth to recharge. Your minion does trips of ${wealthInventorySize}x rings of wealth.`
 			);
 		}
 
