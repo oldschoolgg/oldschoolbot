@@ -47,6 +47,17 @@ const chaoticCreatables: Createable[] = [
 			[itemID("Brawler's hook necklace")]: 1
 		},
 		requiredSkills: { dungeoneering: 99, crafting: 99 }
+	},
+	{
+		name: 'Gorajan bonecrusher',
+		inputItems: {
+			[itemID('Gorajan shards')]: 3,
+			[itemID('Gorajan bonecrusher (u)')]: 1
+		},
+		outputItems: {
+			[itemID('Gorajan bonecrusher')]: 1
+		},
+		requiredSkills: { crafting: 120 }
 	}
 ];
 

@@ -901,7 +901,7 @@ setCustomItem(40_021, 'Ranged master cape', 'Abyssal cape', {}, 10_000_000);
 setCustomItem(40_022, 'Dungeoneering master cape', 'Abyssal cape', {}, 10_000_000);
 setCustomItem(40_023, 'Dungeoneering cape', 'Fire cape', {}, 20_000);
 setCustomItem(40_024, 'Dungeoneering cape(t)', 'Fire cape', {}, 20_000);
-setCustomItem(40_025, 'Dungeoneering hood', 'Fire cape', {}, 20_000);
+setCustomItem(40_025, 'Dungeoneering hood', 'Rune full helm', {}, 20_000);
 
 setCustomItem(40_026, 'Scroll of life', 'Coal', {}, 1_000_000);
 setCustomItem(40_027, 'Herbicide', 'Coal', {}, 1_000_000);
@@ -932,6 +932,8 @@ setCustomItem(40_048, 'Gorajan archer top', 'Pernix body', {}, 55_000_000);
 setCustomItem(40_049, 'Gorajan archer legs', 'Pernix chaps', {}, 55_000_000);
 setCustomItem(40_050, 'Gorajan archer gloves', 'Pernix gloves', {}, 55_000_000);
 setCustomItem(40_051, 'Gorajan archer boots', 'Pernix boots', {}, 55_000_000);
+
+setCustomItem(40_052, 'Scroll of mystery', 'Coal', {}, 1_000_000);
 
 // Pets
 
@@ -1280,7 +1282,8 @@ setCustomItem(
 	20_000_000
 );
 setCustomItem(48_012, 'Gorajan shards', 'Coal', {}, 1_000_000);
-
+setCustomItem(48_013, 'Gorajan bonecrusher', 'Coal', {}, 20_000_000);
+setCustomItem(48_014, 'Gorajan bonecrusher (u)', 'Coal', {}, 20_000_000);
 /**
  * END DUNGEONEERING
  */

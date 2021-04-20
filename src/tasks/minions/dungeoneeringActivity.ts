@@ -3,6 +3,8 @@ import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { DungeoneeringOptions, maxFloorUserCanDo } from '../../commands/Minion/dung';
+import { Emoji } from '../../lib/constants';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -69,11 +71,11 @@ export default class extends Task {
 				xp *= 1.5;
 			}
 
-			const tokens = Math.floor(xp * 0.1);
+			const tokens = Math.floor((xp * 0.1) / 4);
 			const gorajanEquipped = numberOfGorajanOutfitsEquipped(u);
 			let bonusXP = 0;
 			if (gorajanEquipped > 0) {
-				bonusXP += Math.floor(xp * (gorajanEquipped / 8));
+				bonusXP += Math.floor(xp * (gorajanEquipped / 2));
 				xp += bonusXP;
 			}
 			await u.addXP(SkillsEnum.Dungeoneering, xp / 5, duration);
@@ -83,7 +85,14 @@ export default class extends Task {
 			);
 			let rawXPHr = (xp / (duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(xp / 1000) * 1000;
-			str += `${u} received: ${xp.toLocaleString()} XP (${toKMB(
+
+			const gotMysteryBox = u.bank().has('Scroll of mystery') && roll(5);
+			if (gotMysteryBox) {
+				await u.addItemsToBank({ [getRandomMysteryBox()]: 1 });
+			}
+			str += `${
+				gotMysteryBox ? Emoji.MysteryBox : ''
+			} ${u} received: ${xp.toLocaleString()} XP (${toKMB(
 				rawXPHr
 			)}/hr) and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens (${toKMB(
 				rawXPHr * 0.1
@@ -94,6 +103,10 @@ export default class extends Task {
 			if (floor >= 5 && roll(Math.floor(2000 / minutes))) {
 				str += ` **1x Gorajan shards**`;
 				await u.addItemsToBank(new Bank().add('Gorajan shards'), true);
+			}
+			if (floor === 7 && roll(Math.floor(20_000 / minutes))) {
+				str += ` **1x Gorajan bonecrusher (u)**`;
+				await u.addItemsToBank(new Bank().add('Gorajan bonecrusher (u)'), true);
 			}
 			str += '\n';
 		}
