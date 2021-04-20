@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
-import { hasMinRaidsRequirements } from '../../lib/data/cox';
+import { calculateUserGearPercents, hasMinRaidsRequirements } from '../../lib/data/cox';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { RaidsOptions } from '../../lib/types/minions';
@@ -89,6 +89,12 @@ export default class extends BotCommand {
 					)}) is now off to do a Chambers of Xeric raid - the total trip will take ${formatDuration(
 					duration
 			  )}.`;
+
+		str += '\n\nGearStats: ';
+		for (const u of users) {
+			const i = calculateUserGearPercents(u);
+			str += `${u.username}[Melee:${i.melee}%][Mage:${i.mage}%][Range:${i.range}%], `;
+		}
 
 		str += ` \n\n${debugStr}`;
 
