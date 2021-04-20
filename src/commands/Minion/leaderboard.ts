@@ -392,7 +392,8 @@ DESC LIMIT 500;`
 					let totalLevel = 0;
 					for (const skill of skillsVals) {
 						totalLevel += convertXPtoLVL(
-							Number(user[`skills.${skill.id}` as keyof SkillUser]) as any
+							Number(user[`skills.${skill.id}` as keyof SkillUser]) as any,
+							120
 						);
 					}
 					return {
