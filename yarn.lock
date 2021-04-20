@@ -637,17 +637,17 @@
   dependencies:
     twemoji-parser "^13.0.0"
 
-"@sapphire/time-utilities@^1.2.12":
-  version "1.2.12"
-  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.2.12.tgz#2672d820048dc8092b5b6a6477ab266e56b2bd3b"
-  integrity sha512-siM/UnHQWISl+Eh8qpi4kDkJcmKuXIxnxg/AgpBpgOjmtmlB6fZR88VU1Fg8e1gtt0vVBuBX2/Nhr6ih9gSCnA==
+"@sapphire/time-utilities@^1.2.13":
+  version "1.2.13"
+  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.2.13.tgz#beb0935a34d3b209b105602421fa4ec72294540c"
+  integrity sha512-f5H1vbg/OpaXbVzEF5WlcTKqo5QGr2pP8tPnrbkBcsLjzqmNlO9I5kwV5e9K3uC9OwoVqPL6hKc9HSoISZ6ICw==
   dependencies:
-    "@sapphire/utilities" "^1.4.7"
+    "@sapphire/utilities" "^1.4.8"
 
-"@sapphire/utilities@^1.4.7":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.4.7.tgz#4668b57918fe773502087e63025f5ec84f670059"
-  integrity sha512-9x7LwCuhJJ+oWPpbQqU7EKUHNwBnB0ew52qKv7Og2ruSqyKrrBRdNZYhXqiXeC2JTlHwhE9v+pcc1YTm0L4oAg==
+"@sapphire/utilities@^1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.4.8.tgz#f07e10db04ddb6cd79923644c267fe2dcb6c4f0b"
+  integrity sha512-bUfE0ufmq4gJQvzpZukCZz/9HAFGfF7AFU36yeI8rCizU8cr2rzXpMoewdii0ieiZilBUnTW0Q0uDBuIcyOHdw==
 
 "@sentry/apm@5.20.1":
   version "5.20.1"

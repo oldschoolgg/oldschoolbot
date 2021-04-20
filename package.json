@@ -14,7 +14,7 @@
 		"@kcp/tags": "^1.0.0",
 		"@octokit/graphql": "^4.6.1",
 		"@sapphire/discord-utilities": "^2.0.7",
-		"@sapphire/time-utilities": "^1.2.12",
+		"@sapphire/time-utilities": "^1.2.13",
 		"@sentry/node": "5.20.1",
 		"@sinclair/typebox": "^0.12.9",
 		"@types/table": "^6.0.0",
