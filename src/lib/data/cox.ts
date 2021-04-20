@@ -1,9 +1,10 @@
-import { calcWhatPercent } from 'e';
+import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { constructGearSetup, GearStats } from '../gear';
 import { sumOfSetupStats } from '../gear/functions/sumOfSetupStats';
+import { SkillsEnum } from '../skilling/types';
 import { Skills } from '../types';
 import { skillsMeetRequirements } from '../util';
 
@@ -16,14 +17,8 @@ export const bareMinStats: Skills = {
 	prayer: 70
 };
 
-export const bareMinSoloStats: Skills = {
-	...bareMinStats,
-	farming: 55,
-	herblore: 78
-};
-
-export function hasMinRaidsRequirements(user: KlasaUser, solo: boolean) {
-	return skillsMeetRequirements(user.rawSkills, solo ? bareMinSoloStats : bareMinStats);
+export function hasMinRaidsRequirements(user: KlasaUser) {
+	return skillsMeetRequirements(user.rawSkills, bareMinStats);
 }
 
 export function createTeam(users: KlasaUser[]): ChambersOfXericOptions['team'] {
@@ -96,17 +91,92 @@ export const maxMeleeGear = constructGearSetup({
 const maxMeleeSum = sumOfSetupStats(maxMeleeGear);
 
 export function calculateUserGearPercents(user: KlasaUser) {
+	const melee = calcSetupPercent(
+		maxMeleeSum,
+		sumOfSetupStats(user.getGear('melee')),
+		'melee_strength'
+	);
+	const range = calcSetupPercent(
+		maxRangeSum,
+		sumOfSetupStats(user.getGear('range')),
+		'ranged_strength'
+	);
+	const mage = calcSetupPercent(
+		maxMageSum,
+		sumOfSetupStats(user.getGear('mage')),
+		'magic_damage'
+	);
 	return {
-		melee: calcSetupPercent(
-			maxMeleeSum,
-			sumOfSetupStats(user.getGear('melee')),
-			'melee_strength'
-		),
-		range: calcSetupPercent(
-			maxRangeSum,
-			sumOfSetupStats(user.getGear('range')),
-			'ranged_strength'
-		),
-		mage: calcSetupPercent(maxMageSum, sumOfSetupStats(user.getGear('mage')), 'magic_damage')
+		melee,
+		range,
+		mage,
+		total: (melee + range + mage) / 3
 	};
+}
+
+export function checkCoxTeam(users: KlasaUser[]): string | null {
+	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
+	if (!hasHerbalist) {
+		return 'nobody with atleast level 78 Herblore';
+	}
+	const hasFarmer = users.some(u => u.skillLevel(SkillsEnum.Farming) >= 55);
+	if (!hasFarmer) {
+		return 'nobody with atleast level 55 Farming';
+	}
+	return null;
+}
+
+async function kcEffectiveness(u: KlasaUser, challengeMode: boolean) {
+	const kc = await u.getMinigameScore(challengeMode ? 'RaidsChallengeMode' : 'Raids');
+	const kcEffectiveness = Math.min(100, calcWhatPercent(kc, 400));
+	return Math.ceil(kcEffectiveness);
+}
+
+const speedReductionForGear = 15;
+const speedReductionForKC = 40;
+const totalSpeedReductios = speedReductionForGear + speedReductionForKC;
+const baseDuration = Time.Minute * 60;
+const maxTeamSizeSpeedBoost = 35;
+
+const { ceil } = Math;
+function calcPerc(perc: number, num: number) {
+	return ceil(calcPercentOfNum(ceil(perc), num));
+}
+
+export async function calcCoxDuration(
+	team: KlasaUser[],
+	challengeMode: boolean
+): Promise<{ messages: string[]; duration: number }> {
+	let duration = baseDuration;
+	const size = team.length;
+	let messages = [];
+
+	for (const u of team) {
+		let userPercentChange = 0;
+		// Reduce time for gear
+		const { total } = calculateUserGearPercents(u);
+		userPercentChange += ceil(calcPerc(total / size, speedReductionForGear));
+		// Reduce time for KC
+
+		const kcPercent = ceil(await kcEffectiveness(u, challengeMode));
+		console.log(
+			kcPercent,
+			ceil(kcPercent / size),
+			speedReductionForKC,
+			calcPerc(ceil(kcPercent / size), speedReductionForKC)
+		);
+		userPercentChange += ceil(calcPerc(ceil(kcPercent / size), speedReductionForKC));
+		// userPercentChange += ceil(
+		// 	calcPerc(userPercentChange / (totalSpeedReductios / 10), maxTeamSizeSpeedBoost)
+		// );
+		console.log({ userPercentChange });
+		duration = reduceNumByPercent(duration, ceil(userPercentChange));
+		messages.push(
+			`${userPercentChange.toFixed(1)}%/${(totalSpeedReductios / size).toFixed(2)}% from ${
+				u.username
+			}`
+		);
+	}
+
+	return { duration, messages };
 }

@@ -1,7 +1,13 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { table } from 'table';
 
-import { Activity, Emoji, Time } from '../../lib/constants';
-import { calculateUserGearPercents, hasMinRaidsRequirements } from '../../lib/data/cox';
+import { Activity, Emoji } from '../../lib/constants';
+import {
+	calcCoxDuration,
+	calculateUserGearPercents,
+	checkCoxTeam,
+	hasMinRaidsRequirements
+} from '../../lib/data/cox';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { RaidsOptions } from '../../lib/types/minions';
@@ -19,7 +25,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	checkReqs(users: KlasaUser[], solo: boolean) {
+	checkReqs(users: KlasaUser[]) {
 		// Check if every user has the requirements for this monster.
 		for (const user of users) {
 			if (!user.hasMinion) {
@@ -30,18 +36,37 @@ export default class extends BotCommand {
 				throw `${user.username} is busy right now and can't join!`;
 			}
 
-			if (!hasMinRaidsRequirements(user, solo)) {
+			if (!hasMinRaidsRequirements(user)) {
 				throw `${user.username} doesn't meet the minimum requirements to raid.`;
 			}
 		}
 	}
 
 	async run(msg: KlasaMessage, [type]: [string | undefined]) {
+		if (msg.flagArgs.simulate) {
+			const arr = Array(20).fill(msg.author);
+			const normalTable = table([
+				['Team Size', 'Duration - Normal', 'Duration - Challenge Mode'],
+				...(await Promise.all(
+					[1, 4, 12].map(async i => {
+						let ar = arr.slice(0, i);
+						return [
+							ar.length,
+							formatDuration((await calcCoxDuration(ar, false)).duration),
+							formatDuration((await calcCoxDuration(ar, true)).duration)
+						];
+					})
+				))
+			]);
+			return msg.channel.sendFile(Buffer.from(normalTable), `cox-sim.txt`);
+		}
+
 		if (!type || (type !== 'mass' && type !== 'solo')) {
 			return msg.send(`Specify your team setup for Chambers of Xeric, either solo or mass.`);
 		}
+		const isChallengeMode = Boolean(msg.flagArgs.cm);
 
-		this.checkReqs([msg.author], type === 'solo');
+		this.checkReqs([msg.author]);
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
@@ -62,8 +87,17 @@ export default class extends BotCommand {
 		};
 
 		const users = type === 'mass' ? await msg.makePartyAwaiter(partyOptions) : [msg.author];
+
+		const teamCheckFailure = checkCoxTeam(users);
+		if (teamCheckFailure) {
+			return msg.channel.send(
+				`Your mass failed to start because of this reason: ${teamCheckFailure}.`
+			);
+		}
+
+		const { duration, messages } = await calcCoxDuration(users, isChallengeMode);
+
 		let debugStr = '';
-		let duration = Time.Minute * 50;
 		const isSolo = users.length === 1;
 
 		await addSubTaskToActivityTask<RaidsOptions>(this.client, {
@@ -93,10 +127,13 @@ export default class extends BotCommand {
 		str += '\n\nGearStats: ';
 		for (const u of users) {
 			const i = calculateUserGearPercents(u);
-			str += `${u.username}[Melee:${i.melee}%][Mage:${i.mage}%][Range:${i.range}%], `;
+			str += `${u.username}[Melee:${i.melee.toFixed(2)}%][Mage:${i.mage.toFixed(
+				2
+			)}%][Range:${i.range.toFixed(2)}%][Total:${i.total.toFixed(2)}%] `;
 		}
 
 		str += ` \n\n${debugStr}`;
+		str += `\n${messages.join(', ')}`;
 
 		return msg.channel.send(str, {
 			split: true
