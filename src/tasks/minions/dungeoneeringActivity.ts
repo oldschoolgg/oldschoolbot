@@ -104,6 +104,10 @@ export default class extends Task {
 				str += ` **1x Gorajan shards**`;
 				await u.addItemsToBank(new Bank().add('Gorajan shards'), true);
 			}
+			if (floor === 7 && roll(Math.floor(20_000 / minutes))) {
+				str += ` **1x Gorajan bonecrusher (u)**`;
+				await u.addItemsToBank(new Bank().add('Gorajan bonecrusher (u)'), true);
+			}
 			str += '\n';
 		}
 
