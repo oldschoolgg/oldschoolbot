@@ -53,7 +53,6 @@ export default class extends Task {
 
 		let baseXp = ((Math.log(floor * 16 + 1) * quantity * 1) / (36 - floor * 5)) * 59_000;
 		baseXp *= 1.5;
-		baseXp *= floor / 2;
 		let str = `<:dungeoneering:828683755198873623> ${user}, your party finished ${quantity}x Floor ${floor} dungeons.\n\n`;
 		const minutes = duration / Time.Minute;
 
@@ -74,7 +73,7 @@ export default class extends Task {
 			const gorajanEquipped = numberOfGorajanOutfitsEquipped(u);
 			let bonusXP = 0;
 			if (gorajanEquipped > 0) {
-				bonusXP += Math.floor(xp * (gorajanEquipped / 8));
+				bonusXP += Math.floor(xp * (gorajanEquipped / 5));
 				xp += bonusXP;
 			}
 			await u.addXP(SkillsEnum.Dungeoneering, xp / 5, duration);
