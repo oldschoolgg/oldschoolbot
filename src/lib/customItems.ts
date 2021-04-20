@@ -933,6 +933,8 @@ setCustomItem(40_049, 'Gorajan archer legs', 'Pernix chaps', {}, 55_000_000);
 setCustomItem(40_050, 'Gorajan archer gloves', 'Pernix gloves', {}, 55_000_000);
 setCustomItem(40_051, 'Gorajan archer boots', 'Pernix boots', {}, 55_000_000);
 
+setCustomItem(40_052, 'Scroll of mystery', 'Coal', {}, 1_000_000);
+
 // Pets
 
 /**
