@@ -157,9 +157,6 @@ export default class extends Task {
 			}
 		}
 
-		const masterCapeEffect =
-			creature.id === 3251 && user.hasItemEquippedAnywhere(itemID('Hunter master cape'));
-
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
 		xpStr += await user.addXP(SkillsEnum.Hunter, xpReceived, duration);
 
@@ -170,9 +167,11 @@ export default class extends Task {
 		}x catches. ${xpStr}`;
 
 		if (user.usingPet('Sandy')) {
-			if (masterCapeEffect) {
-				str += `\nYou received **double** loot because of Sandy, and being a master hunter.`;
-				loot.multiply(2);
+			if (creature.id === 3251) {
+				if (user.hasItemEquippedAnywhere(itemID('Hunter master cape'))) {
+					str += `\nYou received **double** loot because of Sandy, and being a master hunter.`;
+					loot.multiply(2);
+				}
 			} else {
 				str += `\nYou received **triple** loot because of Sandy.`;
 				loot.multiply(3);
