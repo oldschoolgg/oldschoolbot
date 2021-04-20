@@ -14,11 +14,7 @@ export default class extends Inhibitor {
 		) {
 			return;
 		}
-		if (
-			msg.guild &&
-			msg.guild.id === '342983479501389826' &&
-			!command.restrictedChannels.includes(msg.channel.id)
-		) {
+		if (!command.restrictedChannels.includes(msg.channel.id)) {
 			throw `You cannot use this command outside of these channels: ${command.restrictedChannels
 				.map(c => `<#${c}>`)
 				.join(', ')}.`;
