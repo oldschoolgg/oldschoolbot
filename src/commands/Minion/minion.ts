@@ -6,7 +6,7 @@ import { Bank, Monsters, Util } from 'oldschooljs';
 
 import { Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -103,9 +103,11 @@ export default class MinionCommand extends BotCommand {
 						if (parseInt(monID) === MIMIC_MONSTER_ID) {
 							return `${Emoji.Casket} **Mimic:** ${monKC}`;
 						}
-						const mon = killableMonsters.find(m => m.id === parseInt(monID));
+						const mon = effectiveMonsters.find(m => m.id === parseInt(monID));
 						if (!mon) return `**${Monsters.get(parseInt(monID))?.name}:** ${monKC}`;
-						return `${mon!.emoji} **${mon!.name}**: ${monKC}`;
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore
+						return `${mon?.emoji} **${mon!.name}**: ${monKC}`;
 					})
 					.join('\n'),
 				true
