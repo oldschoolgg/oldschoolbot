@@ -450,7 +450,7 @@ DESC LIMIT 500;`
 
 						return `**${this.getUsername(
 							obj.id
-						)}:** ${skillXP.toLocaleString()} xp (${convertXPtoLVL(skillXP)})`;
+						)}:** ${skillXP.toLocaleString()} xp (${convertXPtoLVL(skillXP, 120)})`;
 					})
 					.join('\n')
 			),
