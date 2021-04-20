@@ -73,7 +73,7 @@ export default class extends Task {
 			const gorajanEquipped = numberOfGorajanOutfitsEquipped(u);
 			let bonusXP = 0;
 			if (gorajanEquipped > 0) {
-				bonusXP += Math.floor(xp * (gorajanEquipped / 5));
+				bonusXP += Math.floor(xp * (gorajanEquipped / 2));
 				xp += bonusXP;
 			}
 			await u.addXP(SkillsEnum.Dungeoneering, xp / 5, duration);
