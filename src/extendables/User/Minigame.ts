@@ -6,7 +6,6 @@ import { getMinigameEntity, incrementMinigameScore } from '../../lib/settings/se
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 
 export interface Minigame {
-	id: number;
 	name: string;
 	key: MinigameKey;
 	column: string;
@@ -21,70 +20,84 @@ export type MinigameKey = EntityFieldsNames<Omit<MinigameTable, 'userID' | 'id'>
 
 export const Minigames: Minigame[] = [
 	{
-		id: 20661,
 		name: 'Tithe farm',
 		key: 'TitheFarm',
 		column: 'tithe_farm'
 	},
 	{
-		id: 20693,
 		name: 'Wintertodt',
 		key: 'Wintertodt',
 		column: 'wintertodt'
 	},
 	{
-		id: 35236,
 		name: 'Hallowed Sepulchre',
 		key: 'Sepulchre',
 		column: 'sepulchre'
 	},
 	{
-		id: 9525,
 		name: 'Fishing Trawler',
 		key: 'FishingTrawler',
 		column: 'fishing_trawler'
 	},
 	{
-		id: 2007,
 		name: 'Barbarian Assault',
 		key: 'BarbarianAssault',
 		column: 'barb_assault'
 	},
 	{
-		id: 6001,
 		name: 'Pyramid Plunder',
 		key: 'PyramidPlunder',
 		column: 'pyramid_plunder'
 	},
 	{
-		id: 49592,
 		name: 'Brimhaven Agility Arena',
 		key: 'AgilityArena',
 		column: 'agility_arena'
 	},
 	{
-		id: 95284,
 		name: "Champions' Challenge",
 		key: 'ChampionsChallenge',
 		column: 'champions_challenge'
 	},
 	{
-		id: 20315,
 		name: 'Mahogany Homes',
 		key: 'MahoganyHomes',
 		column: 'mahogany_homes'
 	},
 	{
-		id: 6969,
 		name: 'Chambers of Xeric',
 		key: 'Raids',
 		column: 'raids'
 	},
 	{
-		id: 52362,
 		name: 'Gnome Restaurant',
 		key: 'GnomeRestaurant',
 		column: 'gnome_restaurant'
+	},
+	{
+		name: 'Soul Wars',
+		key: 'SoulWars',
+		column: 'soul_wars'
+	},
+	{
+		name: "Rogues' Den",
+		key: 'RoguesDenMaze',
+		column: 'rogues_den'
+	},
+	{
+		name: 'Gauntlet',
+		key: 'Gauntlet',
+		column: 'gauntlet'
+	},
+	{
+		name: 'Corrupted Gauntlet',
+		key: 'CorruptedGauntlet',
+		column: 'corrupted_gauntlet'
+	},
+	{
+		name: 'Castle Wars',
+		key: 'CastleWars',
+		column: 'castle_wars'
 	}
 ];
 

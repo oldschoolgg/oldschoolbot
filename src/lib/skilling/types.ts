@@ -21,7 +21,14 @@ export enum SkillsEnum {
 	Thieving = 'thieving',
 	Hunter = 'hunter',
 	Construction = 'construction',
-	Magic = 'magic'
+	Magic = 'magic',
+	Attack = 'attack',
+	Strength = 'strength',
+	Defence = 'defence',
+	Ranged = 'ranged',
+	Hitpoints = 'hitpoints',
+	Dungeoneering = 'dungeoneering',
+	Slayer = 'slayer'
 }
 
 export interface Ore {
@@ -66,6 +73,7 @@ export interface Fish {
 	bigFish?: number;
 	bigFishRate?: number;
 	clueScrollChance?: number;
+	aliases?: string[];
 }
 
 export interface Course {
@@ -120,6 +128,7 @@ export interface SmithedItem {
 	inputBars: ItemBank;
 	timeToUse: number;
 	outputMultiple: number;
+	requiresBlacksmith?: boolean;
 }
 
 export interface Craftable {
@@ -130,6 +139,7 @@ export interface Craftable {
 	inputItems: ItemBank;
 	tickRate: number;
 	crushChance?: number[];
+	bankChest?: boolean;
 }
 
 export interface Fletchable {

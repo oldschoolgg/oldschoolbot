@@ -14,6 +14,53 @@ interface Createable {
 	cantBeInCL?: boolean;
 }
 
+const chaoticCreatables: Createable[] = [
+	{
+		name: 'Arcane blast necklace',
+		inputItems: {
+			[itemID('Occult necklace')]: 1,
+			[itemID('Chaotic remnant')]: 1
+		},
+		outputItems: {
+			[itemID('Arcane blast necklace')]: 1
+		},
+		requiredSkills: { dungeoneering: 99, crafting: 99 }
+	},
+	{
+		name: 'Farsight snapshot necklace',
+		inputItems: {
+			[itemID('Necklace of anguish')]: 1,
+			[itemID('Chaotic remnant')]: 1
+		},
+		outputItems: {
+			[itemID('Farsight snapshot necklace')]: 1
+		},
+		requiredSkills: { dungeoneering: 99, crafting: 99 }
+	},
+	{
+		name: "Brawler's hook necklace",
+		inputItems: {
+			[itemID('Amulet of torture')]: 1,
+			[itemID('Chaotic remnant')]: 1
+		},
+		outputItems: {
+			[itemID("Brawler's hook necklace")]: 1
+		},
+		requiredSkills: { dungeoneering: 99, crafting: 99 }
+	},
+	{
+		name: 'Gorajan bonecrusher',
+		inputItems: {
+			[itemID('Gorajan shards')]: 3,
+			[itemID('Gorajan bonecrusher (u)')]: 1
+		},
+		outputItems: {
+			[itemID('Gorajan bonecrusher')]: 1
+		},
+		requiredSkills: { crafting: 120 }
+	}
+];
+
 const crystalTools: Createable[] = [
 	{
 		name: 'Crystal pickaxe',
@@ -393,7 +440,7 @@ const ornamentKits: Createable[] = [
 		name: 'Dragon chainbody (g)',
 		inputItems: resolveNameBank({
 			'Dragon chainbody': 1,
-			'Dragon legs/skirt ornament kit': 1
+			'Dragon chainbody ornament kit': 1
 		}),
 		outputItems: resolveNameBank({ 'Dragon chainbody (g)': 1 })
 	},
@@ -4172,7 +4219,8 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID(`Frozen key`)]: 1
 		}
-	}
+	},
+	...chaoticCreatables
 ];
 
 export default Createables;

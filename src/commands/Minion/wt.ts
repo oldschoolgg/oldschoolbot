@@ -76,7 +76,9 @@ export default class extends BotCommand {
 			);
 		}
 
-		const quantity = Math.floor(msg.author.maxTripLength / durationPerTodt);
+		const quantity = Math.floor(
+			msg.author.maxTripLength(Activity.Wintertodt) / durationPerTodt
+		);
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		for (const food of Eatables) {

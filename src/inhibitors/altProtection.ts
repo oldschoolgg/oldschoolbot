@@ -13,6 +13,8 @@ export default class extends Inhibitor {
 		if (getUsersPerkTier(msg.author) >= PerkTier.Four) return;
 
 		if (
+			msg.command?.name !== 'ironman' &&
+			!msg.author.isIronman &&
 			Date.now() - msg.author.createdTimestamp < Time.Month * 6 &&
 			!msg.author.settings.get(UserSettings.BitField).includes(BitField.BypassAgeRestriction)
 		) {

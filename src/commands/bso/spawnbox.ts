@@ -4,8 +4,9 @@ import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { cleanString } from 'oldschooljs/dist/util';
 
-import { Color, PerkTier } from '../../lib/constants';
+import { BitField, Color, PerkTier } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemID, roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
@@ -13,13 +14,21 @@ import getOSItem from '../../lib/util/getOSItem';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			perkTier: PerkTier.Four,
 			cooldown: 60 * 45,
 			oneAtTime: true
 		});
 	}
 
 	async run(msg: KlasaMessage) {
+		if (
+			msg.author.perkTier < PerkTier.Four &&
+			!msg.author.settings
+				.get(UserSettings.BitField)
+				.includes(BitField.HasPermanentEventBackgrounds)
+		) {
+			return msg.send(`You need to be a T3 patron or higher to use this command.`);
+		}
+
 		if (msg.author.id !== '157797566833098752' && msg.channel.id !== '732207379818479756') {
 			return msg.send(`You can only use this in the BSO channel.`);
 		}
@@ -40,7 +49,7 @@ export default class extends BotCommand {
 			const collected = await msg.channel.awaitMessages(
 				_msg =>
 					cleanString(_msg.content.toLowerCase()) ===
-					cleanString(randomItem.name.toLowerCase()),
+						cleanString(randomItem.name.toLowerCase()) && !_msg.author.isIronman,
 				{
 					max: 1,
 					time: 14_000,

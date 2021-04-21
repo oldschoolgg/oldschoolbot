@@ -7,9 +7,13 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skillcapes, { MasterSkillcapes } from '../../lib/skilling/skillcapes';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { cleanMentions, convertXPtoLVL, stringMatches, toTitleCase } from '../../lib/util';
-import countSkillsAtleast99 from '../../lib/util/countSkillsAtleast99';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import {
+	cleanMentions,
+	convertXPtoLVL,
+	countSkillsAtleast99,
+	stringMatches,
+	toTitleCase
+} from '../../lib/util';
 import { sendToChannelID } from '../../lib/util/webhook';
 
 const skillCapeCost = 99_000;
@@ -109,7 +113,7 @@ export default class extends BotCommand {
 				? { [capeObject.hood]: 1, [capeObject.trimmed]: 1 }
 				: { [capeObject.hood]: 1, [capeObject.untrimmed]: 1 };
 
-		const itemString = await createReadableItemListFromBank(this.client, itemsToPurchase);
+		const itemString = new Bank(itemsToPurchase).toString();
 
 		const sellMsg = await msg.channel.send(
 			`${

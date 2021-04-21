@@ -1,24 +1,19 @@
-import { percentChance, roll } from 'e';
+import { percentChance, roll, Time } from 'e';
 import { Task } from 'klasa';
-import { Misc } from 'oldschooljs';
+import { Bank, Misc } from 'oldschooljs';
 
-import { Emoji, Time } from '../../../lib/constants';
+import { Emoji, NIGHTMARE_ID } from '../../../lib/constants';
 import { getRandomMysteryBox } from '../../../lib/data/openables';
+import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
+import { setActivityLoot } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	addBanks,
-	multiplyBank,
-	noOp,
-	queuedMessageSend,
-	randomVariation
-} from '../../../lib/util';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
-import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
+import { addBanks, multiplyBank, noOp, randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
+import { sendToChannelID } from '../../../lib/util/webhook';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
 
 interface NightmareUser {
@@ -30,11 +25,12 @@ interface NightmareUser {
 const RawNightmare = Misc.Nightmare;
 
 export default class extends Task {
-	async run({ channelID, leader, users, quantity, duration }: NightmareActivityTaskOptions) {
+	async run({ id, channelID, leader, users, quantity, duration }: NightmareActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
 		const parsedUsers: NightmareUser[] = [];
+		const totalLoot = new Bank();
 
 		// For each user in the party, calculate their damage and death chance.
 		for (const id of users) {
@@ -88,6 +84,8 @@ export default class extends Task {
 				loot[getRandomMysteryBox()] = 1;
 			}
 
+			await addMonsterXP(user, NIGHTMARE_ID, Math.ceil(quantity / users.length), duration);
+			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) user.incrementMonsterScore(NightmareMonster.id, kcToAdd);
@@ -95,14 +93,11 @@ export default class extends Task {
 				isImportantItemForMonster(parseInt(itemID), NightmareMonster)
 			);
 
-			resultStr += `${
-				purple ? Emoji.Purple : ''
-			} **${user} received:** ||${await createReadableItemListFromBank(
-				this.client,
+			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(
 				loot
 			)}||\n`;
 
-			announceLoot(this.client, leaderUser, NightmareMonster, quantity, loot, {
+			announceLoot(this.client, leaderUser, NightmareMonster, loot, {
 				leader: leaderUser,
 				lootRecipient: user,
 				size: users.length
@@ -121,33 +116,33 @@ export default class extends Task {
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
 
-		if (users.length > 1) {
-			queuedMessageSend(this.client, channelID, resultStr);
-		} else {
-			const channel = this.client.channels.get(channelID);
-			if (!channelIsSendable(channel)) return;
+		setActivityLoot(id, totalLoot.bank);
 
-			if (!kcAmounts[leader]) {
-				channel.send(
-					`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Nightmare, they apologize and promise to try harder next time.`
+		if (users.length > 1) {
+			sendToChannelID(this.client, channelID, { content: resultStr });
+		} else if (!kcAmounts[leader]) {
+			sendToChannelID(this.client, channelID, {
+				content: `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Nightmare, they apologize and promise to try harder next time.`
+			});
+		} else {
+			const { image } = await this.client.tasks
+				.get('bankImage')!
+				.generateBankImage(
+					teamsLoot[leader],
+					`${quantity}x Nightmare`,
+					true,
+					{ showNewCL: 1 },
+					leaderUser
 				);
-			} else {
-				channel.sendBankImage({
-					bank: teamsLoot[leader],
-					content: `${leaderUser}, ${
-						leaderUser.minionName
-					} finished killing ${quantity} ${NightmareMonster.name}, you died ${
-						deaths[leader] ?? 0
-					} times. Your Nightmare KC is now ${
-						(leaderUser.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ??
-							0) + quantity
-					}.`,
-					title: `${quantity}x Nightmare`,
-					background: leaderUser.settings.get(UserSettings.BankBackground),
-					user: leaderUser,
-					flags: { showNewCL: 1 }
-				});
-			}
+			sendToChannelID(this.client, channelID, {
+				content: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
+					NightmareMonster.name
+				}, you died ${deaths[leader] ?? 0} times. Your Nightmare KC is now ${
+					(leaderUser.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ??
+						0) + quantity
+				}.`,
+				image: image!
+			});
 		}
 	}
 }

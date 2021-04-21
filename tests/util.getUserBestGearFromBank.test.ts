@@ -1,10 +1,10 @@
-import { resolveNameBank } from 'oldschooljs/dist/util';
+import { Bank } from 'oldschooljs';
 
 import { GearSetup, GearSetupTypes } from '../src/lib/gear/types';
 import getUserBestGearFromBank from '../src/lib/minions/functions/getUserBestGearFromBank';
 import itemID from '../src/lib/util/itemID';
 
-const userBank = resolveNameBank({
+const userBank = new Bank({
 	'Bandos chestplate': 4,
 	'Bandos tassets': 1,
 	'Helm of neitiznot': 2,
@@ -44,7 +44,13 @@ const userGear: GearSetup = {
 describe('getUserBestGearFromBank', () => {
 	test('autoequip melee attack slash', async () => {
 		expect(
-			getUserBestGearFromBank(userBank, userGear, GearSetupTypes.Melee, 'attack', 'slash')
+			getUserBestGearFromBank(
+				userBank.bank,
+				userGear,
+				GearSetupTypes.Melee,
+				'attack',
+				'slash'
+			)
 		).toStrictEqual({
 			gearToEquip: {
 				...nullGear,
@@ -57,20 +63,20 @@ describe('getUserBestGearFromBank', () => {
 				weapon: { item: itemID('Dragon scimitar'), quantity: 1 },
 				shield: { item: itemID('Dragonfire shield'), quantity: 1 }
 			},
-			toRemoveFromGear: resolveNameBank({
+			toRemoveFromGear: new Bank({
 				'Elder maul': 1,
 				'Dragon chainbody': 1,
 				'Amulet of strength': 1
-			}),
-			toRemoveFromBank: resolveNameBank({
+			}).bank,
+			toRemoveFromBank: new Bank({
 				'Dragon scimitar': 1,
 				'Bandos tassets': 1,
 				'Bandos chestplate': 1,
 				'Justiciar faceguard': 1,
 				'Amulet of glory': 1,
 				'Dragonfire shield': 1
-			}),
-			userFinalBank: resolveNameBank({
+			}).bank,
+			userFinalBank: new Bank({
 				'Bandos chestplate': 3,
 				'Dragon chainbody': 1,
 				'Helm of neitiznot': 2,
@@ -81,12 +87,18 @@ describe('getUserBestGearFromBank', () => {
 				'Ancestral robe bottom': 1,
 				'Amulet of strength': 1,
 				'Blade of saeldor': 0
-			})
+			}).bank
 		});
 	});
 	test('autoequip melee attack crush', async () => {
 		expect(
-			getUserBestGearFromBank(userBank, userGear, GearSetupTypes.Melee, 'attack', 'crush')
+			getUserBestGearFromBank(
+				userBank.bank,
+				userGear,
+				GearSetupTypes.Melee,
+				'attack',
+				'crush'
+			)
 		).toStrictEqual({
 			gearToEquip: {
 				...nullGear,
@@ -98,17 +110,17 @@ describe('getUserBestGearFromBank', () => {
 				legs: { item: itemID('Bandos tassets'), quantity: 1 },
 				'2h': { item: itemID('Elder maul'), quantity: 1 }
 			},
-			toRemoveFromGear: resolveNameBank({
+			toRemoveFromGear: new Bank({
 				'Dragon chainbody': 1,
 				'Amulet of strength': 1
-			}),
-			toRemoveFromBank: resolveNameBank({
+			}).bank,
+			toRemoveFromBank: new Bank({
 				'Bandos chestplate': 1,
 				'Bandos tassets': 1,
 				'Justiciar faceguard': 1,
 				'Amulet of glory': 1
-			}),
-			userFinalBank: resolveNameBank({
+			}).bank,
+			userFinalBank: new Bank({
 				'Bandos chestplate': 3,
 				'Helm of neitiznot': 2,
 				'Dragon scimitar': 1,
@@ -120,13 +132,13 @@ describe('getUserBestGearFromBank', () => {
 				'Dragonfire shield': 1,
 				'Amulet of strength': 1,
 				'Blade of saeldor': 0
-			})
+			}).bank
 		});
 	});
 	test('autoequip mage attack magic strength', async () => {
 		expect(
 			getUserBestGearFromBank(
-				userBank,
+				userBank.bank,
 				userGear,
 				GearSetupTypes.Mage,
 				'attack',
@@ -143,18 +155,18 @@ describe('getUserBestGearFromBank', () => {
 				legs: { item: itemID('Ancestral robe bottom'), quantity: 1 },
 				body: { item: itemID('Ancestral robe top'), quantity: 1 }
 			},
-			toRemoveFromGear: resolveNameBank({
+			toRemoveFromGear: new Bank({
 				'Dragon chainbody': 1,
 				'Amulet of strength': 1,
 				'Elder maul': 1
-			}),
-			toRemoveFromBank: resolveNameBank({
+			}).bank,
+			toRemoveFromBank: new Bank({
 				'Helm of neitiznot': 1,
 				'Ancestral robe top': 1,
 				'Ancestral robe bottom': 1,
 				'Occult necklace': 1
-			}),
-			userFinalBank: resolveNameBank({
+			}).bank,
+			userFinalBank: new Bank({
 				'Bandos chestplate': 4,
 				'Bandos tassets': 1,
 				'Helm of neitiznot': 1,
@@ -167,12 +179,12 @@ describe('getUserBestGearFromBank', () => {
 				'Dragonfire shield': 1,
 				'Amulet of glory': 1,
 				'Blade of saeldor': 0
-			})
+			}).bank
 		});
 	});
 	test('autoequip mage attack magic', async () => {
 		expect(
-			getUserBestGearFromBank(userBank, userGear, GearSetupTypes.Mage, 'attack', 'magic')
+			getUserBestGearFromBank(userBank.bank, userGear, GearSetupTypes.Mage, 'attack', 'magic')
 		).toStrictEqual({
 			gearToEquip: {
 				...nullGear,
@@ -183,18 +195,18 @@ describe('getUserBestGearFromBank', () => {
 				legs: { item: itemID('Ancestral robe bottom'), quantity: 1 },
 				body: { item: itemID('Ancestral robe top'), quantity: 1 }
 			},
-			toRemoveFromGear: resolveNameBank({
+			toRemoveFromGear: new Bank({
 				'Dragon chainbody': 1,
 				'Amulet of strength': 1,
 				'Elder maul': 1
-			}),
-			toRemoveFromBank: resolveNameBank({
+			}).bank,
+			toRemoveFromBank: new Bank({
 				'Helm of neitiznot': 1,
 				'Ancestral robe top': 1,
 				'Ancestral robe bottom': 1,
 				'3rd age amulet': 1
-			}),
-			userFinalBank: resolveNameBank({
+			}).bank,
+			userFinalBank: new Bank({
 				'Bandos chestplate': 4,
 				'Bandos tassets': 1,
 				'Helm of neitiznot': 1,
@@ -207,12 +219,18 @@ describe('getUserBestGearFromBank', () => {
 				'Dragonfire shield': 1,
 				'Amulet of glory': 1,
 				'Blade of saeldor': 0
-			})
+			}).bank
 		});
 	});
 	test('autoequip melee defence slash', async () => {
 		expect(
-			getUserBestGearFromBank(userBank, userGear, GearSetupTypes.Melee, 'defence', 'slash')
+			getUserBestGearFromBank(
+				userBank.bank,
+				userGear,
+				GearSetupTypes.Melee,
+				'defence',
+				'slash'
+			)
 		).toStrictEqual({
 			gearToEquip: {
 				...nullGear,
@@ -225,20 +243,20 @@ describe('getUserBestGearFromBank', () => {
 				weapon: { item: itemID('Dragon scimitar'), quantity: 1 },
 				shield: { item: itemID('Dragonfire shield'), quantity: 1 }
 			},
-			toRemoveFromGear: resolveNameBank({
+			toRemoveFromGear: new Bank({
 				'Dragon chainbody': 1,
 				'Amulet of strength': 1,
 				'Elder maul': 1
-			}),
-			toRemoveFromBank: resolveNameBank({
+			}).bank,
+			toRemoveFromBank: new Bank({
 				'Bandos chestplate': 1,
 				'Bandos tassets': 1,
 				'Justiciar faceguard': 1,
 				'Amulet of glory': 1,
 				'Dragonfire shield': 1,
 				'Dragon scimitar': 1
-			}),
-			userFinalBank: resolveNameBank({
+			}).bank,
+			userFinalBank: new Bank({
 				'Bandos chestplate': 3,
 				'Dragon chainbody': 1,
 				'Helm of neitiznot': 2,
@@ -249,7 +267,7 @@ describe('getUserBestGearFromBank', () => {
 				'Elder maul': 1,
 				'Amulet of strength': 1,
 				'Blade of saeldor': 0
-			})
+			}).bank
 		});
 	});
 });

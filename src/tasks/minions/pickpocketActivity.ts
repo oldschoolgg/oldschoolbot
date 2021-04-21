@@ -1,14 +1,14 @@
-import { percentChance } from 'e';
+import { percentChance, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Events, Time } from '../../lib/constants';
+import { Events } from '../../lib/constants';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, roll } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { roll, rollRogueOutfitDoubleLoot } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 import { multiplyBankNotClues } from '../../lib/util/mbnc';
 
 export function calcLootXPPickpocketing(
@@ -62,21 +62,38 @@ export default class extends Task {
 		} = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
-		const npc = Pickpocketables.find(_npc => _npc.id === monsterID);
-		if (!npc) {
-			this.client.wtf(new Error(`Missing pickpocket monster with ID ${monsterID}.`));
-			return;
-		}
+		const npc = Pickpocketables.find(_npc => _npc.id === monsterID)!;
+
 		const currentLevel = user.skillLevel(SkillsEnum.Thieving);
+		let rogueOutfitBoostActivated = false;
+
 		const loot = new Bank();
 		for (let i = 0; i < successfulQuantity; i++) {
-			loot.add(npc.table.roll());
+			const lootItems = npc.table.roll();
+
+			if (rollRogueOutfitDoubleLoot(user)) {
+				rogueOutfitBoostActivated = true;
+				lootItems.forEach(item => {
+					if (item.item === itemID('Rocky')) {
+						// no double pet drop
+						loot.add(item.item, item.quantity);
+					} else {
+						loot.add(item.item, item.quantity * 2);
+					}
+				});
+			} else {
+				loot.add(lootItems);
+			}
 		}
 
 		let boosts = [];
+		const bloodshardCount = loot.amount('Blood shard');
 		if (user.hasItemEquippedOrInBank(itemID("Thieves' armband"))) {
 			boosts.push(`3x loot for Thieves armband`);
 			loot.bank = multiplyBankNotClues(loot.bank, 3);
+			if (bloodshardCount) {
+				loot.bank[itemID('Blood shard')] = bloodshardCount;
+			}
 		}
 
 		const minutes = duration / Time.Minute;
@@ -87,28 +104,23 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank(loot.values(), true);
-		await user.addXP(SkillsEnum.Thieving, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Thieving);
-
-		const xpHr = `${((xpReceived / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
+		const xpRes = await user.addXP(SkillsEnum.Thieving, xpReceived);
 
 		let str = `${user}, ${user.minionName} finished pickpocketing a ${
 			npc.name
 		} ${successfulQuantity}x times, due to failures you missed out on ${
 			quantity - successfulQuantity
-		}x pickpockets, you also received ${xpReceived.toLocaleString()} XP (${xpHr}).`;
+		}x pickpockets. ${xpRes}`;
 
 		if (gotWil) {
 			str += `<:wilvus:787320791011164201> A raccoon saw you thieving and partners with you to help you steal more stuff!`;
 		}
 
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Thieving level is now ${newLevel}!`;
+		str += `\n\nYou received: ${loot}.`;
+
+		if (rogueOutfitBoostActivated) {
+			str += `\nYour rogue outfit allows you to take some extra loot.`;
 		}
-		str += `\n\nYou received: ${await createReadableItemListFromBank(
-			this.client,
-			loot.values()
-		)}.`;
 
 		if (loot.amount('Rocky') > 0) {
 			str += `\n\n**You have a funny feeling you're being followed...**`;
@@ -128,7 +140,8 @@ export default class extends Task {
 				return this.client.commands.get('pickpocket')!.run(res, [quantity, npc.name]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

@@ -150,5 +150,10 @@ export const Eatables: Eatable[] = [
 		name: 'Dark crab',
 		id: itemID('Dark crab'),
 		healAmount: 22
+	},
+	{
+		name: 'Rocktail',
+		id: itemID('Rocktail'),
+		healAmount: 26
 	}
 ];

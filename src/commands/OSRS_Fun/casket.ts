@@ -80,8 +80,8 @@ export default class extends BotCommand {
 
 		if (Object.keys(loot).length === 0) return msg.send(`${title} and got nothing :(`);
 
-		const image = await this.client.tasks.get('bankImage')!.generateBankImage(loot, title);
+		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(loot, title);
 
-		return msg.send(new MessageAttachment(image, 'osbot.png'));
+		return msg.send(new MessageAttachment(image!, 'osbot.png'));
 	}
 }

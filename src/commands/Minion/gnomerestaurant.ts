@@ -89,11 +89,17 @@ export default class extends BotCommand {
 			}
 		}
 
-		const quantity = Math.floor(msg.author.maxTripLength / deliveryLength);
+		const quantity = Math.floor(
+			msg.author.maxTripLength(Activity.GnomeRestaurant) / deliveryLength
+		);
 		const duration = randomVariation(deliveryLength * quantity, 5);
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) >= 66) {
 			itemsToRemove.add('Law rune', Math.max(1, Math.floor(randInt(1, quantity * 1.5) / 2)));
+		}
+
+		if (!msg.author.owns(itemsToRemove)) {
+			return msg.channel.send(`You don't own the required items: ${itemsToRemove}.`);
 		}
 
 		await msg.author.removeItemsFromBank(itemsToRemove.bank);

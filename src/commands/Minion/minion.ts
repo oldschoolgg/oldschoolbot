@@ -1,39 +1,18 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageEmbed } from 'discord.js';
-import { chunk, objectKeys, reduceNumByPercent, sleep } from 'e';
+import { chunk, sleep } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Monsters, Util } from 'oldschooljs';
-import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import { Bank, Monsters, Util } from 'oldschooljs';
 
-import { Activity, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
+import { Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
-import findMonster from '../../lib/minions/functions/findMonster';
-import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import { calcPOHBoosts } from '../../lib/poh';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	isWeekend,
-	itemID,
-	itemNameFromID,
-	randomItemFromArray,
-	randomVariation,
-	removeDuplicatesFromArray
-} from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { randomItemFromArray } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
-
-const invalidMonster = (prefix: string) =>
-	`That isn't a valid monster, the available monsters are: ${killableMonsters
-		.map(mon => mon.name)
-		.join(', ')}. For example, \`${prefix}minion kill 5 zulrah\``;
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -46,8 +25,6 @@ const patMessages = [
 
 const randomPatMessage = (minionName: string) =>
 	randomItemFromArray(patMessages).replace('{name}', minionName);
-
-const { floor } = Math;
 
 async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
 	try {
@@ -126,9 +103,11 @@ export default class MinionCommand extends BotCommand {
 						if (parseInt(monID) === MIMIC_MONSTER_ID) {
 							return `${Emoji.Casket} **Mimic:** ${monKC}`;
 						}
-						const mon = killableMonsters.find(m => m.id === parseInt(monID));
+						const mon = effectiveMonsters.find(m => m.id === parseInt(monID));
 						if (!mon) return `**${Monsters.get(parseInt(monID))?.name}:** ${monKC}`;
-						return `${mon!.emoji} **${mon!.name}**: ${monKC}`;
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore
+						return `${mon?.emoji} **${mon!.name}**: ${monKC}`;
 					})
 					.join('\n'),
 				true
@@ -172,11 +151,25 @@ export default class MinionCommand extends BotCommand {
 			cost = 0;
 		}
 
+		const starter = new Bank({
+			Shark: 300,
+			'Saradomin brew(4)': 20,
+			'Super restore(4)': 10,
+			'Anti-dragon shield': 1,
+			'Tiny lamp': 3,
+			'Small lamp': 1,
+			'Tradeable mystery box': 1,
+			'Dragon bones': 50,
+			Coins: 100_000,
+			'Clue scroll (beginner)': 5,
+			'Equippable mystery box': 1
+		});
+
 		if (cost === 0) {
 			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
-
+			await msg.author.addItemsToBank(starter, true);
 			return msg.channel.send(
-				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them, and check https://www.oldschool.gg/oldschoolbot for more information on them, and **make sure** to read the rules! Breaking the bot rules could result in you being banned or your account wiped - read them here: <https://www.oldschool.gg/oldschoolbot/rules>`
+				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them, and check https://www.oldschool.gg/oldschoolbot for more information on them, and **make sure** to read the rules! Breaking the bot rules could result in you being banned or your account wiped - read them here: <https://www.oldschool.gg/oldschoolbot/rules>\n\nYou received: ${starter}.`
 			);
 		}
 
@@ -218,9 +211,9 @@ export default class MinionCommand extends BotCommand {
 
 			await msg.author.settings.update(UserSettings.GP, balance - cost);
 			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
-
+			await msg.author.addItemsToBank(starter, true);
 			await response.edit(
-				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them.`
+				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them.\n\nYou received: **${starter}.**`
 			);
 		} catch (err) {
 			return msg.channel.send('Cancelled minion purchase.');
@@ -329,164 +322,6 @@ export default class MinionCommand extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		const boosts = [];
-		let messages: string[] = [];
-
-		if (typeof quantity === 'string') {
-			name = quantity;
-			quantity = null;
-		}
-
-		if (!name) throw invalidMonster(msg.cmdPrefix);
-
-		const monster =
-			name === 'random'
-				? randomItemFromArray(
-						killableMonsters.filter(mon => msg.author.hasMonsterRequirements(mon)[0])
-				  )
-				: findMonster(name);
-		if (!monster) throw invalidMonster(msg.cmdPrefix);
-
-		if (monster.id === 696969) {
-			throw `You would be foolish to try to face King Goldemar in a solo fight.`;
-		}
-
-		// Check requirements
-		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
-		if (!hasReqs) throw reason;
-
-		let [timeToFinish, percentReduced] = reducedTimeFromKC(
-			monster,
-			msg.author.getKC(monster.id)
-		);
-
-		timeToFinish /= 2;
-		boosts.push(`👻2x Boost`);
-
-		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
-
-		if (monster.pohBoosts) {
-			const [boostPercent, messages] = calcPOHBoosts(
-				await msg.author.getPOH(),
-				monster.pohBoosts
-			);
-			if (boostPercent > 0) {
-				timeToFinish = reduceNumByPercent(timeToFinish, boostPercent);
-				boosts.push(messages.join(' + '));
-			}
-		}
-
-		if (monster.itemInBankBoosts) {
-			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
-				if (!msg.author.hasItemEquippedOrInBank(parseInt(itemID))) continue;
-				timeToFinish *= (100 - boostAmount) / 100;
-				boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
-			}
-		}
-
-		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven warhammer'))) {
-			timeToFinish *= 0.6;
-			boosts.push(`40% boost for Dwarven warhammer`);
-		}
-
-		if (Monsters.get(monster.id)?.data.attributes.includes(MonsterAttribute.Dragon)) {
-			if (msg.author.hasItemEquippedAnywhere(itemID('Dragon hunter lance'))) {
-				timeToFinish *= 0.8;
-				boosts.push(`20% boost for Dragon hunter lance`);
-			}
-		}
-
-		const hasBlessing = msg.author.hasItemEquippedAnywhere(itemID('Dwarven blessing'));
-		if (hasBlessing) {
-			timeToFinish *= 0.8;
-			boosts.push(`20% for Dwarven blessing`);
-		}
-
-		// If no quantity provided, set it to the max.
-		if (!quantity) {
-			quantity = Math.max(1, floor(msg.author.maxTripLength / timeToFinish));
-		}
-
-		let duration = timeToFinish * quantity;
-		if (duration > msg.author.maxTripLength && quantity > 1) {
-			throw `${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount you can do for ${
-				monster.name
-			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
-		}
-		duration = randomVariation(duration, 10);
-
-		// If you have dwarven blessing, you need 1 prayer pot per 5 mins
-		const prayerPots = msg.author.bank().amount('Prayer potion(4)');
-		const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
-		const prayerPotsNeeded = Math.max(1, fiveMinIncrements);
-		if (hasBlessing) {
-			if (prayerPots < prayerPotsNeeded) {
-				return msg.send(
-					`You don't have enough Prayer potion(4)'s to power your Dwarven blessing.`
-				);
-			}
-		}
-
-		// Check food
-		let foodStr: undefined | string = undefined;
-		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
-			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
-			messages = messages.concat(foodMessages);
-
-			const [result] = await removeFoodFromUser({
-				client: this.client,
-				user: msg.author,
-				totalHealingNeeded: healAmountNeeded * quantity,
-				healPerAction: Math.ceil(healAmountNeeded / quantity),
-				activityName: monster.name,
-				attackStylesUsed: removeDuplicatesFromArray([
-					...objectKeys(monster.minimumGearRequirements ?? {}),
-					monster.attackStyleToUse
-				]),
-				learningPercentage: percentReduced
-			});
-
-			foodStr = result;
-		}
-
-		if (isWeekend()) {
-			boosts.push(`10% for Weekend`);
-			duration *= 0.9;
-		}
-
-		if (hasBlessing) {
-			await msg.author.removeItemFromBank(itemID('Prayer potion(4)'), prayerPotsNeeded);
-		}
-		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
-			monsterID: monster.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.MonsterKilling
-		});
-
-		let response = `${msg.author.minionName} is now killing ${quantity}x ${
-			monster.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
-		if (foodStr) {
-			response += ` Removed ${foodStr}.\n`;
-		}
-
-		if (hasBlessing) {
-			response += `\nRemoved ${prayerPotsNeeded}x Prayer potion(4) to power Dwarven blessing.`;
-		}
-
-		if (boosts.length > 0) {
-			response += `\n**Boosts:** ${boosts.join(', ')}.`;
-		}
-
-		if (messages.length > 0) {
-			response += `\n**Messages:** ${messages.join('\n')}.`;
-		}
-
-		return msg.send(response);
+		runCommand(msg, 'k', [quantity, name]);
 	}
 }

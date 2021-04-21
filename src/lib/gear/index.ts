@@ -5,21 +5,20 @@ import { DefenceGearStat, GearSetup, GearStat, OffenceGearStat, OtherGearStat } 
 export * from './types';
 export * from './util';
 
-// https://oldschool.runescape.wiki/w/Armour/Highest_bonuses
 export const maxDefenceStats: { [key in DefenceGearStat]: number } = {
-	[GearStat.DefenceCrush]: 505,
-	[GearStat.DefenceMagic]: 253,
-	[GearStat.DefenceRanged]: 542,
-	[GearStat.DefenceSlash]: 521,
-	[GearStat.DefenceStab]: 519
+	[GearStat.DefenceCrush]: 621,
+	[GearStat.DefenceMagic]: 461,
+	[GearStat.DefenceRanged]: 659,
+	[GearStat.DefenceSlash]: 621,
+	[GearStat.DefenceStab]: 622
 };
 
 export const maxOffenceStats: { [key in OffenceGearStat]: number } = {
-	[GearStat.AttackCrush]: 214,
-	[GearStat.AttackMagic]: 177,
-	[GearStat.AttackRanged]: 243,
-	[GearStat.AttackSlash]: 182,
-	[GearStat.AttackStab]: 177
+	[GearStat.AttackCrush]: 300,
+	[GearStat.AttackMagic]: 426,
+	[GearStat.AttackRanged]: 391,
+	[GearStat.AttackSlash]: 273,
+	[GearStat.AttackStab]: 274
 };
 
 export const maxOtherStats: { [key in OtherGearStat]: number } = {

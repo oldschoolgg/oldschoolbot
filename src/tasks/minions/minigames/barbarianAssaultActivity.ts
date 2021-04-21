@@ -3,8 +3,8 @@ import { KlasaUser, Task } from 'klasa';
 
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { BarbarianAssaultActivityTaskOptions } from '../../../lib/types/minions';
-import { calcPercentOfNum, calcWhatPercent, noOp, queuedMessageSend } from '../../../lib/util';
-import { skillsMeetRequirements } from '../../../lib/util/skillsMeetRequirements';
+import { calcPercentOfNum, calcWhatPercent, noOp, skillsMeetRequirements } from '../../../lib/util';
+import { sendToChannelID } from '../../../lib/util/webhook';
 
 function hasKandarinHardDiary(user: KlasaUser): boolean {
 	return skillsMeetRequirements(user.rawSkills, {
@@ -63,6 +63,12 @@ export default class extends Task {
 				pts *= 1.1;
 				resultStr += `${user.username} received 10% extra pts for kandarin hard diary. `;
 			}
+
+			if (user.usingPet('Flappy')) {
+				pts *= 2;
+				resultStr += `<:flappy:812280578195456002> Flappy helps ${user.username}, granting them 2x points.`;
+			}
+
 			let totalPoints = Math.floor(pts * quantity);
 
 			user.incrementMinigameScore('BarbarianAssault', quantity);
@@ -82,6 +88,6 @@ export default class extends Task {
 		)}
 ${resultStr}`;
 
-		queuedMessageSend(this.client, channelID, resultStr);
+		sendToChannelID(this.client, channelID, { content: resultStr });
 	}
 }

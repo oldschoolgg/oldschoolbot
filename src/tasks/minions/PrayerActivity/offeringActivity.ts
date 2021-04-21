@@ -71,7 +71,8 @@ export default class extends Task {
 				return this.client.commands.get('offer')!.run(res, [quantity, bone.name]);
 			},
 			undefined,
-			data
+			data,
+			null
 		);
 	}
 }

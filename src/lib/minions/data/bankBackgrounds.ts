@@ -1,4 +1,4 @@
-import { PerkTier } from '../../constants';
+import { BitField, PerkTier } from '../../constants';
 import { resolveNameBank } from '../../util';
 import { BankBackground } from '../types';
 
@@ -91,7 +91,8 @@ const backgroundImages: BankBackground[] = [
 			'Spectral sigil': 1,
 			'Arcane sigil': 1,
 			'Elysian sigil': 1,
-			'Pet dark core': 1
+			'Pet dark core': 1,
+			'Jar of spirits': 1
 		}),
 		itemCost: resolveNameBank({
 			'Spectral spirit shield': 1,
@@ -158,6 +159,13 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
+		id: 14,
+		name: 'CoX',
+		image: null,
+		available: true,
+		bitfield: BitField.HasPermanentEventBackgrounds
+	},
+	{
 		id: 15,
 		name: 'Homer (15)',
 		image: null,
@@ -177,7 +185,10 @@ const backgroundImages: BankBackground[] = [
 		id: 17,
 		name: 'Bop',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 2_147_483_647,
+		sacValueRequired: 2_147_483_647
 	},
 	{
 		id: 18,
@@ -210,14 +221,6 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
-		id: 24,
-		name: 'CoX Pixel Art (24)',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
-	},
-	{
 		id: 26,
 		name: 'Weeb (26)',
 		image: null,
@@ -241,7 +244,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 29,
-		name: "Subete's Background (29)",
+		name: "Sparcos's Background (29)",
 		image: null,
 		available: false
 	},
@@ -277,9 +280,11 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 34,
-		name: 'dark',
+		name: 'Dark',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
 		id: 35,
@@ -316,6 +321,269 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 10_000_000
+	},
+	{
+		id: 40,
+		name: 'Turbo CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 41,
+		name: 'Shady',
+		image: null,
+		available: false
+	},
+	{
+		id: 42,
+		name: 'Banana',
+		image: null,
+		available: false
+	},
+	{
+		id: 43,
+		name: 'ElyJosh',
+		image: null,
+		available: false
+	},
+	{
+		id: 44,
+		name: 'Duck',
+		image: null,
+		available: false
+	},
+	{
+		id: 45,
+		name: 'Birdie CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 46,
+		name: 'Jad (person)',
+		image: null,
+		available: false
+	},
+	{
+		id: 47,
+		name: 'Slav',
+		image: null,
+		available: false
+	},
+	{
+		id: 48,
+		name: 'Beans',
+		image: null,
+		available: false
+	},
+	{
+		id: 49,
+		name: 'Iron dev',
+		image: null,
+		available: false
+	},
+	{
+		id: 50,
+		name: 'Dragon sin',
+		image: null,
+		available: false
+	},
+	{
+		id: 51,
+		name: 'Primal predator',
+		image: null,
+		available: false
+	},
+	{
+		id: 52,
+		name: 'Cyrillax CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 53,
+		name: 'AvariceBruh CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 54,
+		name: 'Casej22 CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 55,
+		name: 'SammyHammy CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 56,
+		name: 'Lashiing CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 57,
+		name: 'AXZ4 CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 58,
+		name: 'Doom CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 59,
+		name: 'Osmosis CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 60,
+		name: 'AnimeLewds CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 61,
+		name: 'Felix CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 62,
+		name: 'PlayLazily CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 63,
+		name: 'Slippy CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 64,
+		name: 'BigPoppa CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 65,
+		name: 'ChildishMarvino CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 66,
+		name: 'Nicholas CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 67,
+		name: 'Wilderness',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		collectionLogItemsNeeded: resolveNameBank({
+			'Dragon pickaxe': 1,
+			'Dragon med helm': 1,
+			'Kbd heads': 1,
+			'Draconic visage': 1,
+			'Prince black dragon': 1,
+			'Dragon 2h sword': 1,
+			'Pet chaos elemental': 1,
+			'Malediction shard 1': 1,
+			'Odium shard 1': 1,
+			'Malediction shard 2': 1,
+			'Odium shard 2': 1,
+			Fedora: 1,
+			'Malediction shard 3': 1,
+			'Odium shard 3': 1,
+			"Scorpia's offspring": 1,
+			'Treasonous ring': 1,
+			'Venenatis spiderling': 1,
+			'Tyrannical ring': 1,
+			'Callisto cub': 1,
+			'Ring of the gods': 1,
+			"Vet'ion jr.": 1
+		}),
+		itemCost: resolveNameBank({
+			'Dragon pickaxe': 1,
+			'Dragon med helm': 1,
+			'Draconic visage': 1,
+			'Dragon 2h sword': 1,
+			'Odium ward ': 1,
+			'Malediction ward': 1,
+			'Treasonous ring': 1,
+			'Tyrannical ring': 1,
+			'Ring of the gods': 1
+		}),
+		gpCost: 100_000_000
+	},
+	{
+		id: 68,
+		name: 'Grand Exchange',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 2_147_483_647,
+		sacValueRequired: 2_147_483_647
+	},
+	{
+		id: 69,
+		name: 'Falador Park',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		collectionLogItemsNeeded: resolveNameBank({
+			Tangleroot: 1
+		}),
+		gpCost: 100_000_000,
+		skillsNeeded: {
+			farming: 99
+		}
+	},
+	{
+		id: 70,
+		name: 'Pride CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 71,
+		name: 'Owain CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 72,
+		name: 'Sleepy CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 73,
+		name: 'Lilbourne CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 74,
+		name: 'Aki CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 75,
+		name: 'Sunny CustomBG',
+		image: null,
+		available: false
 	}
 ];
 

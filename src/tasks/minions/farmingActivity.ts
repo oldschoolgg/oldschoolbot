@@ -1,10 +1,13 @@
+import { randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { production } from '../../config';
 import { Emoji, Events, Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
+import { setActivityLoot } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
@@ -12,10 +15,15 @@ import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, multiplyBank, rand, roll } from '../../lib/util';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import {
+	addItemToBank,
+	bankHasItem,
+	channelIsSendable,
+	multiplyBank,
+	rand,
+	roll
+} from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
@@ -30,7 +38,8 @@ export default class extends Task {
 		channelID,
 		planting,
 		duration,
-		currentDate
+		currentDate,
+		id
 	}: FarmingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentFarmingLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
@@ -148,15 +157,19 @@ export default class extends Task {
 				str += `\n${user.minionName}'s Farming level is now ${newLevel}!`;
 			}
 
-			if (Object.keys(loot).length > 0) {
-				str += `\n\nYou received: ${await createReadableItemListFromBank(
-					this.client,
-					loot
-				)}.`;
+			if (user.usingPet('Plopper')) {
+				loot = multiplyBank(loot, 4);
 			}
 
-			if (user.equippedPet() === itemID('Plopper')) {
-				loot = multiplyBank(loot, 4);
+			if (plant.name === `Mysterious tree`) {
+				let upper = randInt(quantity, quantity * 2);
+				for (let i = 0; i < upper; i++) {
+					loot = addItemToBank(loot, getRandomMysteryBox());
+				}
+			}
+
+			if (Object.keys(loot).length > 0) {
+				str += `\n\nYou received: ${new Bank(loot)}.`;
 			}
 
 			await this.client.settings.update(
@@ -166,11 +179,11 @@ export default class extends Task {
 				).bank
 			);
 			await user.addItemsToBank(loot, true);
-
+			setActivityLoot(id, loot);
 			const updatePatches: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
-				plantTime: currentDate + duration,
+				plantTime: currentDate + (production ? duration : 1),
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
 				lastPayment: payment ?? false
@@ -179,6 +192,10 @@ export default class extends Task {
 			await user.settings.update(getPatchType, updatePatches);
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
+
+			if (user.usingPet('Plopper')) {
+				str += `\nYou received 4x loot from Plopper`;
+			}
 
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
@@ -192,7 +209,7 @@ export default class extends Task {
 			if (!plant) return;
 
 			let quantityDead = 0;
-			if (user.equippedPet() !== itemID('Plopper')) {
+			if (!user.usingPet('Plopper')) {
 				for (let i = 0; i < patchType.lastQuantity; i++) {
 					for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
 						const deathRoll = Math.random();
@@ -422,7 +439,7 @@ export default class extends Task {
 				updatePatches = {
 					lastPlanted: plant.name,
 					patchPlanted: true,
-					plantTime: currentDate + duration,
+					plantTime: currentDate + (production ? duration : 1),
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
 					lastPayment: payment ? payment : false
@@ -451,12 +468,6 @@ export default class extends Task {
 				janeMessage = true;
 			}
 
-			if (Object.keys(loot).length > 0) {
-				infoStr.push(
-					`\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`
-				);
-			}
-
 			if (!planting) {
 				infoStr.push(
 					`\nThe patches have been cleared. They are ready to have new seeds planted.`
@@ -477,6 +488,21 @@ export default class extends Task {
 				loot = multiplyBank(loot, 4);
 			}
 
+			if (user.hasItemEquippedAnywhere(itemID('Farming master cape'))) {
+				loot = addItemToBank(loot, getRandomMysteryBox());
+			}
+
+			if (plantToHarvest.name === `Mysterious tree`) {
+				let upper = randInt(quantity, quantity * 2);
+				for (let i = 0; i < upper; i++) {
+					loot = addItemToBank(loot, getRandomMysteryBox());
+				}
+			}
+
+			if (Object.keys(loot).length > 0) {
+				infoStr.push(`\nYou received: ${new Bank(loot)}.`);
+			}
+
 			await this.client.settings.update(
 				ClientSettings.EconomyStats.FarmingLootBank,
 				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(
@@ -484,12 +510,14 @@ export default class extends Task {
 				).bank
 			);
 			await user.addItemsToBank(loot, true);
-
+			setActivityLoot(id, loot);
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
 			user.incrementMinionDailyDuration(duration);
-
+			if (user.usingPet('Plopper')) {
+				infoStr.push(`\nYou received 4x loot from Plopper`);
+			}
 			channel.send(infoStr.join('\n'));
 			if (janeMessage) {
 				return channel.send(

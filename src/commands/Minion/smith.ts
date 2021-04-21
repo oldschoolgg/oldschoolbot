@@ -1,6 +1,9 @@
+import { calcPercentOfNum } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { itemID } from 'oldschooljs/dist/util';
 
 import { Activity, Time } from '../../lib/constants';
+import { GearSetup, hasGearEquipped } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -10,12 +13,22 @@ import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
-	itemID,
 	itemNameFromID,
 	removeItemFromBank,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import resolveItems from '../../lib/util/resolveItems';
+
+export function hasBlackSmithEquipped(setup: GearSetup) {
+	return hasGearEquipped(setup, {
+		head: resolveItems(['Blacksmith helmet']),
+		body: resolveItems(['Blacksmith top']),
+		legs: resolveItems(['Blacksmith apron']),
+		feet: resolveItems(['Blacksmith boots']),
+		hands: resolveItems(['Blacksmith gloves'])
+	});
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -65,6 +78,13 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (
+			smithedItem.requiresBlacksmith &&
+			!hasBlackSmithEquipped(msg.author.getGear('skilling'))
+		) {
+			return msg.send(`You need the Blacksmith outfit to smith this item.`);
+		}
+
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
 			return msg.send(
 				`${msg.author.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`
@@ -79,9 +99,15 @@ export default class extends BotCommand {
 			timeToSmithSingleBar /= 4;
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
+
+		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			// If no quantity provided, set it to the max.
-			quantity = Math.floor(msg.author.maxTripLength / timeToSmithSingleBar);
+			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
+		}
+
+		if (smithedItem.name.includes('Gorajan')) {
+			quantity = 1;
 		}
 
 		await msg.author.settings.sync(true);
@@ -101,16 +127,17 @@ export default class extends BotCommand {
 		}
 
 		const duration = quantity * timeToSmithSingleBar;
-
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					smithedItem.name
-				}s you can smith is ${Math.floor(msg.author.maxTripLength / timeToSmithSingleBar)}.`
+				}s you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`
 			);
 		}
+
+		const hasScroll = await msg.author.hasItem(itemID('Scroll of efficiency'));
 
 		// Remove the bars from their bank.
 		let usedbars = 0;
@@ -122,8 +149,11 @@ export default class extends BotCommand {
 				);
 				return;
 			}
-			newBank = removeItemFromBank(newBank, parseInt(barID), qty * quantity);
-			usedbars = qty * quantity;
+			const numBars = hasScroll
+				? Math.ceil(calcPercentOfNum(85, qty * quantity))
+				: qty * quantity;
+			newBank = removeItemFromBank(newBank, parseInt(barID), numBars);
+			usedbars = numBars;
 		}
 
 		await addSubTaskToActivityTask<SmithingActivityTaskOptions>(this.client, {
@@ -136,14 +166,19 @@ export default class extends BotCommand {
 		});
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		return msg.send(
-			`${msg.author.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
-				smithedItem.name
-			}, using ${usedbars} bars, it'll take around ${formatDuration(duration)} to finish. ${
-				msg.author.equippedPet() === itemID('Takon')
-					? `\n\nTakon is Smithing for you, at incredible speeds and skill.`
-					: ''
-			}`
-		);
+		let str = `${msg.author.minionName} is now smithing ${
+			quantity * smithedItem.outputMultiple
+		}x ${smithedItem.name}, using ${usedbars} bars, it'll take around ${formatDuration(
+			duration
+		)} to finish.`;
+
+		if (msg.author.usingPet('Takon')) {
+			str += ` Takon is Smithing for you, at incredible speeds and skill.`;
+		}
+		if (hasScroll) {
+			str += ` Your Scroll of efficiency enables you to save 15% of the bars used.`;
+		}
+
+		return msg.send(str);
 	}
 }

@@ -119,6 +119,17 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (
+			creature.id === 3251 &&
+			(msg.author.skillLevel(SkillsEnum.Hunter) < 120 ||
+				msg.author.skillLevel(SkillsEnum.Agility) < 99 ||
+				msg.author.skillLevel(SkillsEnum.Fishing) < 99)
+		) {
+			return msg.send(
+				`You need level 120 Hunter, 99 Agility, 99 Fishing to hunt Sand Gecko's.`
+			);
+		}
+
 		if (msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0) < creature.level) {
 			return msg.send(
 				`${msg.author.minionName} needs ${creature.level} Hunter to hunt ${creature.name}.`
@@ -189,6 +200,12 @@ export default class extends BotCommand {
 			catchTime *= 0.95;
 		}
 
+		// Reduce time by 5% if user has graceful equipped
+		if (msg.author.hasItemEquippedAnywhere(itemID('Hunter master cape'))) {
+			boosts.push('2x boost for being a master hunter');
+			catchTime *= 0.5;
+		}
+
 		if (creature.wildy) {
 			const [bol, reason, score] = hasWildyHuntGearEquipped(msg.author.getGear('misc'));
 			wildyScore = score;
@@ -207,21 +224,23 @@ export default class extends BotCommand {
 			}
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Hunter);
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / ((catchTime * Time.Second) / traps));
+			quantity = Math.floor(maxTripLength / ((catchTime * Time.Second) / traps));
 		}
 
 		let duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					creature.name
 				} you can hunt is ${Math.floor(
-					msg.author.maxTripLength / ((catchTime * Time.Second) / traps)
+					maxTripLength / ((catchTime * Time.Second) / traps)
 				)}.`
 			);
 		}

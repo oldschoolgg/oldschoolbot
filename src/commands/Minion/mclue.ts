@@ -13,7 +13,7 @@ import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import resolveItems from '../../lib/util/resolveItems';
 
-function hasClueHunterEquipped(setup: GearSetup) {
+export function hasClueHunterEquipped(setup: GearSetup) {
 	return hasGearEquipped(setup, {
 		head: resolveItems(['Helm of raedwald']),
 		body: resolveItems(['Clue hunter garb']),
@@ -86,13 +86,15 @@ export default class extends BotCommand {
 
 		let duration = timeToFinish * quantity;
 
-		if (duration > msg.author.maxTripLength) {
+		const maxTripLength = msg.author.maxTripLength(Activity.ClueCompletion);
+
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount you can do for ${
 					clueTier.name
-				} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`
+				} is ${Math.floor(maxTripLength / timeToFinish)}.`
 			);
 		}
 

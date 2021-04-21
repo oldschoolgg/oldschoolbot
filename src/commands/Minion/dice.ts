@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Util } from 'oldschooljs';
+import { Bank, Util } from 'oldschooljs';
 
 import { Color, Emoji, Image } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -67,6 +67,17 @@ export default class extends BotCommand {
 			} else {
 				const losses = msg.author.settings.get(UserSettings.Stats.DiceLosses);
 				msg.author.settings.update(UserSettings.Stats.DiceLosses, losses + 1);
+			}
+
+			if (amount >= 100_000_000 && won && roll(30)) {
+				await msg.author.addItemsToBank(new Bank().add('Gamblers bag'), true);
+				return msg.send(
+					`${
+						msg.author.username
+					} rolled **${rolled}** on the percentile dice, and you won ${Util.toKMB(
+						amountToAdd - gp
+					)} GP.\n\nYou received a **Gamblers Bag**.`
+				);
 			}
 
 			embed.setDescription(

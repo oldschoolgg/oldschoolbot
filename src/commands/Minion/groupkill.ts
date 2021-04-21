@@ -3,16 +3,17 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Emoji } from '../../lib/constants';
 import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { findMonster } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
+import { KillableMonster } from '../../lib/minions/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
+import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
+import { findMonster } from '../../lib/util/findMonster';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

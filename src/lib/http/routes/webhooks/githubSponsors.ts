@@ -3,7 +3,7 @@ import { TextChannel } from 'discord.js';
 import { client } from '../../../..';
 import PatreonTask from '../../../../tasks/patreon';
 import { boxFrenzy } from '../../../boxFrenzy';
-import { Channel } from '../../../constants';
+import { Channel, PerkTier } from '../../../constants';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
 import { FastifyServer } from '../../types';
@@ -38,12 +38,24 @@ const githubSponsors = (server: FastifyServer) =>
 							tier
 						);
 					}
+
+					const isDoingReset = [PerkTier.Five, PerkTier.Six].includes(tier);
+					if (isDoingReset) {
+						await client.query(`
+UPDATE users
+SET "lastDailyTimestamp" = 0
+WHERE "lastDailyTimestamp" != 0;
+`);
+					}
 					for (const id of ['732207379818479756', '792691343284764693']) {
 						boxFrenzy(
 							client.channels.get(id) as TextChannel,
 							`🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
-${data.sender.login} became a Github sponsor, as a reward for everyone, here is a box frenzy, guess any of the items in the image for a mystery box.
+${
+	data.sender.login
+} became a Github sponsor, as a reward for everyone, here is a box frenzy, guess any of the items in the image for a mystery box.
+${isDoingReset ? 'Everyones daily cooldown has been reset.' : ''}
 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉`,
 							tier * 3
@@ -55,7 +67,7 @@ ${data.sender.login} became a Github sponsor, as a reward for everyone, here is 
 				case 'pending_tier_change': {
 					const from = parseStrToTier(data.changes!.tier.from.name);
 					const to = parseStrToTier(data.sponsorship.tier.name);
-					sendToChannelID(client, '357422607982919680', {
+					sendToChannelID(client, Channel.NewSponsors, {
 						content: `${data.sender.login}[${
 							data.sender.id
 						}] changed their sponsorship from Tier ${from - 1} to Tier ${to - 1}.`
@@ -74,7 +86,7 @@ ${data.sender.login} became a Github sponsor, as a reward for everyone, here is 
 						await (client.tasks.get('patreon') as PatreonTask)!.removePerks(user.id);
 					}
 
-					sendToChannelID(client, '357422607982919680', {
+					sendToChannelID(client, Channel.NewSponsors, {
 						content: `${data.sender.login}[${data.sender.id}] cancelled being a Tier ${
 							parseStrToTier(data.sponsorship.tier.name) - 1
 						} sponsor. ${

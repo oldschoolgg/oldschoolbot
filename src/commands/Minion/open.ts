@@ -1,3 +1,4 @@
+import { percentChance } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Misc, Openables as _Openables } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -8,11 +9,20 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, rand, roll, stringMatches } from '../../lib/util';
+import { addBanks, addItemToBank, rand, roll, stringMatches } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
+import resolveItems from '../../lib/util/resolveItems';
+import { hasClueHunterEquipped } from './mclue';
 
-const itemsToNotifyOf = [itemID('Dwarven blessing')];
+const itemsToNotifyOf = resolveItems([
+	'Dwarven blessing',
+	'First age tiara',
+	'First age amulet',
+	'First age cape',
+	'First age bracelet',
+	'First age ring'
+]);
 
 const Openables = _Openables.filter(i => i.name !== 'Mystery box');
 
@@ -77,12 +87,17 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(clueTier.id, quantity);
 
+		const hasCHEquipped = hasClueHunterEquipped(msg.author.getGear('skilling'));
+
 		let extraClueRolls = 0;
 		let loot: ItemBank = {};
 		for (let i = 0; i < quantity; i++) {
 			const roll = rand(1, 3);
 			extraClueRolls += roll - 1;
 			loot = addBanks([clueTier.table.open(roll), loot]);
+			if (clueTier.name === 'Master' && percentChance(hasCHEquipped ? 10 : 4)) {
+				loot = addItemToBank(loot, itemID('Clue scroll (grandmaster)'));
+			}
 		}
 
 		let mimicNumber = 0;
@@ -135,9 +150,13 @@ export default class extends BotCommand {
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${clueTier.name} caskets.`
 		);
 
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
 
 		msg.author.incrementClueScore(clueTier.id, quantity);
+
+		msg.author.incrementOpenableScore(clueTier.id, quantity);
+
 		if (mimicNumber > 0) {
 			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 		}
@@ -153,7 +172,8 @@ export default class extends BotCommand {
 			}`,
 			title: opened,
 			flags: { showNewCL: 1, wide: Object.keys(loot).length > 250 ? 1 : 0 },
-			user: msg.author
+			user: msg.author,
+			cl: previousCL
 		});
 	}
 
@@ -175,13 +195,16 @@ export default class extends BotCommand {
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${osjsOpenable.name}.`
 		);
 
+		msg.author.incrementOpenableScore(osjsOpenable.itemID, quantity);
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
 
 		return msg.channel.sendBankImage({
 			bank: loot,
 			title: `You opened ${quantity} ${osjsOpenable.name}`,
 			flags: { showNewCL: 1 },
-			user: msg.author
+			user: msg.author,
+			cl: previousCL
 		});
 	}
 
@@ -219,6 +242,7 @@ export default class extends BotCommand {
 				if (roll(10)) smokeyBonus++;
 			}
 		}
+
 		for (let i = 0; i < quantity + smokeyBonus; i++) {
 			if (typeof botOpenable.table === 'function') {
 				loot.add(botOpenable.table());
@@ -227,6 +251,21 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (loot.has("Lil' creator")) {
+			this.client.emit(
+				Events.ServerNotification,
+				`<:lil_creator:798221383951319111> **${msg.author.username}'s** minion, ${
+					msg.author.minionName
+				}, just received a Lil' creator! They've done ${await msg.author.getMinigameScore(
+					'SoulWars'
+				)} Soul wars games, and this is their ${formatOrdinal(
+					msg.author.getOpenableScore(botOpenable.itemID) + quantity
+				)} Spoils of war crate.`
+			);
+		}
+
+		msg.author.incrementOpenableScore(botOpenable.itemID, quantity);
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot.values(), true);
 
 		return msg.channel.sendBankImage({
@@ -234,7 +273,8 @@ export default class extends BotCommand {
 			title: `You opened ${quantity} ${botOpenable.name}`,
 			flags: { showNewCL: 1, wide: Object.keys(loot.values()).length > 250 ? 1 : 0 },
 			user: msg.author,
-			content: hasSmokey ? `You got ${smokeyBonus}x bonus rolls from Smokey.` : undefined
+			content: hasSmokey ? `You got ${smokeyBonus}x bonus rolls from Smokey.` : undefined,
+			cl: previousCL
 		});
 	}
 }

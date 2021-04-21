@@ -113,6 +113,42 @@ const Skillcapes: Skillcape[] = [
 		hood: itemID('Magic hood'),
 		untrimmed: itemID('Magic cape'),
 		trimmed: itemID('Magic cape(t)')
+	},
+	{
+		skill: SkillsEnum.Attack,
+		hood: itemID('Attack hood'),
+		untrimmed: itemID('Attack cape'),
+		trimmed: itemID('Attack cape(t)')
+	},
+	{
+		skill: SkillsEnum.Strength,
+		hood: itemID('Strength hood'),
+		untrimmed: itemID('Strength cape'),
+		trimmed: itemID('Strength cape(t)')
+	},
+	{
+		skill: SkillsEnum.Defence,
+		hood: itemID('Defence hood'),
+		untrimmed: itemID('Defence cape'),
+		trimmed: itemID('Defence cape(t)')
+	},
+	{
+		skill: SkillsEnum.Ranged,
+		hood: itemID('Ranging hood'),
+		untrimmed: itemID('Ranging cape'),
+		trimmed: itemID('Ranging cape(t)')
+	},
+	{
+		skill: SkillsEnum.Hitpoints,
+		hood: itemID('Hitpoints hood'),
+		untrimmed: itemID('Hitpoints cape'),
+		trimmed: itemID('Hitpoints cape(t)')
+	},
+	{
+		skill: SkillsEnum.Dungeoneering,
+		hood: itemID('Dungeoneering hood'),
+		untrimmed: itemID('Dungeoneering cape'),
+		trimmed: itemID('Dungeoneering cape(t)')
 	}
 ];
 
@@ -189,6 +225,30 @@ export const MasterSkillcapes: MasterSkillcape[] = [
 	{
 		skill: SkillsEnum.Magic,
 		item: getOSItem('Magic master cape')
+	},
+	{
+		skill: SkillsEnum.Hitpoints,
+		item: getOSItem('Hitpoints master cape')
+	},
+	{
+		skill: SkillsEnum.Ranged,
+		item: getOSItem('Ranged master cape')
+	},
+	{
+		skill: SkillsEnum.Attack,
+		item: getOSItem('Attack master cape')
+	},
+	{
+		skill: SkillsEnum.Strength,
+		item: getOSItem('Strength master cape')
+	},
+	{
+		skill: SkillsEnum.Defence,
+		item: getOSItem('Defence master cape')
+	},
+	{
+		skill: SkillsEnum.Dungeoneering,
+		item: getOSItem('Dungeoneering master cape')
 	}
 ];
 

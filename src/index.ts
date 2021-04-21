@@ -1,17 +1,19 @@
+import './lib/customItems';
+import './lib/data/itemAliases';
 import 'reflect-metadata';
 
 import * as Sentry from '@sentry/node';
 
-import { botToken, sentryDSN } from './config';
+import { botToken, SENTRY_DSN } from './config';
 import { clientOptions } from './lib/config/config';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 
-if (sentryDSN) {
+if (SENTRY_DSN) {
 	Sentry.init({
-		dsn: sentryDSN
+		dsn: SENTRY_DSN
 	});
 }
 
 export const client = new OldSchoolBotClient(clientOptions);
 
-client.init().then(client => client.login(botToken));
+client.login(botToken);

@@ -1,9 +1,11 @@
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import cleanItemName from './cleanItemName';
-
 const cache = new Map();
+
+function cleanItemName(itemName: string) {
+	return itemName.replace(/’/g, "'");
+}
 
 export default function getOSItem(itemName: string | number): Item {
 	if (cache.has(itemName)) {

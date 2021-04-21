@@ -42,6 +42,11 @@ export namespace UserSettings {
 	export const PatreonID = T<string | null>('patreon_id');
 	export const GithubID = T<number | null>('github_id');
 	export const CarpenterPoints = T<number>('carpenter_points');
+	export const ZealTokens = T<number>('zeal_tokens');
+	export const OpenableScores = T<O.Readonly<ItemBank>>('openable_scores');
+	export const HasSpawnedRMB = T<boolean>('spawned_rmb');
+	export const AttackStyle = T<readonly SkillsEnum[]>('attack_style');
+	export const DungeoneeringTokens = T<number>('dungeoneering_tokens');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');
@@ -90,6 +95,12 @@ export namespace UserSettings {
 		export const Hunter = T<number>(`skills.${SkillsEnum.Hunter}`);
 		export const Construction = T<number>(`skills.${SkillsEnum.Construction}`);
 		export const Magic = T<number>(`skills.${SkillsEnum.Magic}`);
+		export const Attack = T<number>(`skills.${SkillsEnum.Attack}`);
+		export const Strength = T<number>(`skills.${SkillsEnum.Strength}`);
+		export const Defence = T<number>(`skills.${SkillsEnum.Defence}`);
+		export const Ranged = T<number>(`skills.${SkillsEnum.Ranged}`);
+		export const Hitpoints = T<number>(`skills.${SkillsEnum.Hitpoints}`);
+		export const Dungeoneering = T<number>(`skills.${SkillsEnum.Dungeoneering}`);
 	}
 
 	export namespace Gear {

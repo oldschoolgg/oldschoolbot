@@ -133,9 +133,8 @@ export const courses: Course[] = [
 		aliases: ['peng', 'penguin agility course', 'penguin'],
 		level: 30,
 		xp: 540,
-		marksPer60: 0,
 		lapTime: 65.6,
-		petChance: 34_440
+		petChance: 9_979
 	}
 ];
 

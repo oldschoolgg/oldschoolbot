@@ -79,17 +79,21 @@ export default class extends Task {
 		}
 
 		const minionName = await getMinionName(userID);
-
-		let str = `<@${userID}>, ${minionName} finished completing ${quantity}x Gnome Restaurant deliveries. You received ${totalXP.toLocaleString()} Cooking XP and **${loot}**.`;
-
 		const user = await this.client.users.fetch(userID);
-		await user.addItemsToBank(loot.bank, true);
-		const currentLevel = user.skillLevel(SkillsEnum.Cooking);
-		await user.addXP(SkillsEnum.Cooking, totalXP);
-		const newLevel = user.skillLevel(SkillsEnum.Cooking);
-		if (currentLevel !== newLevel) {
-			str += `\n\n${minionName}'s Cooking level is now ${newLevel}!`;
+
+		if (user.usingPet('Flappy')) {
+			loot.multiply(2);
 		}
+
+		await user.addItemsToBank(loot.bank, true);
+		const xpRes = await user.addXP(SkillsEnum.Cooking, totalXP, duration);
+
+		let str = `<@${userID}>, ${minionName} finished completing ${quantity}x Gnome Restaurant deliveries.  You received **${loot}**. ${xpRes} ${
+			user.usingPet('Flappy')
+				? ` \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.`
+				: ''
+		}`;
+
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.GnomeRestaurantLootBank,
 			addBanks([
@@ -108,7 +112,8 @@ export default class extends Task {
 				return this.client.commands.get('gnomerestaurant')!.run(res, []);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

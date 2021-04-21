@@ -32,6 +32,11 @@ Client.defaultUserSchema
 	.add('patreon_id', 'string', { default: null })
 	.add('github_id', 'integer', { default: null })
 	.add('carpenter_points', 'integer', { default: 0 })
+	.add('zeal_tokens', 'integer', { default: 0 })
+	.add('openable_scores', 'any', { default: {} })
+	.add('spawned_rmb', 'boolean', { default: false })
+	.add('attack_style', 'string', { array: true, default: [] })
+	.add('dungeoneering_tokens', 'integer', { default: 0 })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')
@@ -76,6 +81,12 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Hunter, 'integer', { default: 0 })
 			.add(SkillsEnum.Construction, 'integer', { default: 0 })
 			.add(SkillsEnum.Magic, 'integer', { default: 0 })
+			.add(SkillsEnum.Ranged, 'integer', { default: 0 })
+			.add(SkillsEnum.Attack, 'integer', { default: 0 })
+			.add(SkillsEnum.Strength, 'integer', { default: 0 })
+			.add(SkillsEnum.Defence, 'integer', { default: 0 })
+			.add(SkillsEnum.Hitpoints, 'integer', { default: 1154 })
+			.add(SkillsEnum.Dungeoneering, 'integer', { default: 0 })
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder

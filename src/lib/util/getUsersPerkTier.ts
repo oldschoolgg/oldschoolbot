@@ -3,7 +3,7 @@ import { KlasaUser } from 'klasa';
 
 import { BitField, PerkTier, Roles } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
-import getSupportGuild from './getSupportGuild';
+import { getSupportGuild } from '../util';
 
 const tier3ElligibleBits = [BitField.IsPatronTier3, BitField.isContributor, BitField.isModerator];
 
@@ -31,11 +31,18 @@ export default function getUsersPerkTier(
 		return PerkTier.Four;
 	}
 
-	if (bitfield.includes(BitField.IsPatronTier2)) {
+	if (
+		bitfield.includes(BitField.IsPatronTier2) ||
+		bitfield.includes(BitField.HasPermanentTierOne)
+	) {
 		return PerkTier.Three;
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier1)) {
+		return PerkTier.Two;
+	}
+
+	if (bitfield.includes(BitField.HasPermanentTierOne)) {
 		return PerkTier.Two;
 	}
 

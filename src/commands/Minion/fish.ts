@@ -40,7 +40,10 @@ export default class extends BotCommand {
 		}
 
 		const fish = Fishing.Fishes.find(
-			fish => stringMatches(fish.name, name) || stringMatches(fish.name.split(' ')[0], name)
+			fish =>
+				stringMatches(fish.name, name) ||
+				stringMatches(fish.name.split(' ')[0], name) ||
+				(fish.aliases && fish.aliases.some(alias => stringMatches(alias, name)))
 		);
 
 		if (!fish) {
@@ -63,8 +66,12 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (fish.name === 'Barbarian fishing' && msg.author.skillLevel(SkillsEnum.Agility) < 15) {
-			return msg.send(`You need at least 15 Agility to catch those!`);
+		if (
+			fish.name === 'Barbarian fishing' &&
+			(msg.author.skillLevel(SkillsEnum.Agility) < 15 ||
+				msg.author.skillLevel(SkillsEnum.Strength) < 15)
+		) {
+			return msg.send(`You need at least 15 Agility and Strength to do Barbarian Fishing.`);
 		}
 
 		// If no quantity provided, set it to the max.
@@ -80,14 +87,37 @@ export default class extends BotCommand {
 			scaledTimePerFish /= 2;
 		}
 
-		let { maxTripLength } = msg.author;
-		if (msg.author.hasItemEquippedAnywhere(itemID('Fish sack'))) {
-			maxTripLength += Time.Minute * 9;
+		switch (fish.bait) {
+			case itemID('Fishing bait'):
+				if (msg.author.hasItemEquippedAnywhere(itemID('Pearl fishing rod'))) {
+					scaledTimePerFish *= 0.95;
+					boosts.push(`5% for Pearl fishing rod`);
+				}
+				break;
+			case itemID('Feather'):
+				if (
+					fish.name === 'Barbarian fishing' &&
+					msg.author.hasItemEquippedAnywhere(itemID('Pearl barbarian rod'))
+				) {
+					scaledTimePerFish *= 0.95;
+					boosts.push(`5% for Pearl barbarian rod`);
+				} else if (
+					msg.author.hasItemEquippedAnywhere(itemID('Pearl fly fishing rod')) &&
+					fish.name !== 'Barbarian fishing'
+				) {
+					scaledTimePerFish *= 0.95;
+					boosts.push(`5% for Pearl fly fishing rod`);
+				}
+				break;
+			default:
+				if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
+					scaledTimePerFish *= 0.95;
+					boosts.push(`5% for Crystal harpoon`);
+				}
+				break;
 		}
-		if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
-			scaledTimePerFish *= 0.95;
-			boosts.push(`5% for Crystal harpoon`);
-		}
+
+		const maxTripLength = msg.author.maxTripLength(Activity.Fishing);
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / scaledTimePerFish);
@@ -95,13 +125,13 @@ export default class extends BotCommand {
 
 		let duration = quantity * scaledTimePerFish;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					fish.name
-				} you can fish is ${Math.floor(msg.author.maxTripLength / scaledTimePerFish)}.`
+				} you can fish is ${Math.floor(maxTripLength / scaledTimePerFish)}.`
 			);
 		}
 

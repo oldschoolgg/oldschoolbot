@@ -8,10 +8,12 @@ import { GearSetup, GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..'
 import BankImageTask from '../../../tasks/bankImage';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { toTitleCase } from '../../util';
-import { canvasImageFromBuffer } from '../../util/canvasImageFromBuffer';
-import { drawItemQuantityText } from '../../util/drawItemQuantityText';
-import { drawTitleText } from '../../util/drawTitleText';
-import { fillTextXTimesInCtx } from '../../util/fillTextXTimesInCtx';
+import {
+	canvasImageFromBuffer,
+	drawItemQuantityText,
+	drawTitleText,
+	fillTextXTimesInCtx
+} from '../../util/canvasUtil';
 import { sumOfSetupStats } from './sumOfSetupStats';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
@@ -92,10 +94,9 @@ export async function generateGearImage(
 			(canvas.width - userBg.width) * 0.5,
 			(canvas.height - userBg.height) * 0.5
 		);
+		ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
+		bankTask?.drawBorder(canvas, false);
 	}
-
-	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
-	bankTask?.drawBorder(canvas, false);
 
 	ctx.font = '16px OSRSFontCompact';
 	// Draw preset title

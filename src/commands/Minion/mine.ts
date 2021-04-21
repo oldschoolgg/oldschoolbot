@@ -19,6 +19,11 @@ import resolveItems from '../../lib/util/resolveItems';
 
 const pickaxes = [
 	{
+		id: itemID('Dwarven pickaxe'),
+		reductionPercent: 50,
+		miningLvl: 99
+	},
+	{
 		id: itemID('3rd age pickaxe'),
 		reductionPercent: 13,
 		miningLvl: 61
@@ -125,12 +130,9 @@ export default class extends BotCommand {
 			msg.author.skillLevel(SkillsEnum.Mining)
 		);
 
-		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven pickaxe'))) {
-			timeToMine /= 2;
-		}
+		const boosts = [];
 
 		// For each pickaxe, if they have it, give them its' bonus and break.
-		const boosts = [];
 		for (const pickaxe of pickaxes) {
 			if (
 				msg.author.hasItemEquippedOrInBank(pickaxe.id) &&
@@ -161,19 +163,21 @@ export default class extends BotCommand {
 			}
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Mining);
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToMine);
+			quantity = Math.floor(maxTripLength / timeToMine);
 		}
 		const duration = quantity * timeToMine;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					ore.name
-				} you can mine is ${Math.floor(msg.author.maxTripLength / timeToMine)}.`
+				} you can mine is ${Math.floor(maxTripLength / timeToMine)}.`
 			);
 		}
 

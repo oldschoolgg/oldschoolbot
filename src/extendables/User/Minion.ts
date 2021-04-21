@@ -1,15 +1,35 @@
 import { User } from 'discord.js';
-import { randInt } from 'e';
+import {
+	calcPercentOfNum,
+	calcWhatPercent,
+	increaseNumByPercent,
+	notEmpty,
+	objectValues,
+	randInt,
+	uniqueArr
+} from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { Activity, Emoji, Events, MAX_QP, PerkTier, Time, ZALCANO_ID } from '../../lib/constants';
+import { DungeoneeringOptions } from '../../commands/Minion/dung';
+import {
+	Activity,
+	Emoji,
+	Events,
+	MAX_QP,
+	PerkTier,
+	skillEmoji,
+	Time,
+	ZALCANO_ID
+} from '../../lib/constants';
+import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
-import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
+import { AttackStyles } from '../../lib/minions/functions';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { MasterSkillcapes } from '../../lib/skilling/skillcapes';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Cooking from '../../lib/skilling/skills/cooking';
@@ -45,7 +65,9 @@ import {
 	FishingActivityTaskOptions,
 	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
+	GauntletOptions,
 	GloryChargingActivityTaskOptions,
+	GroupMonsterActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	MiningActivityTaskOptions,
@@ -57,23 +79,30 @@ import {
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
+	SoulWarsOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
 import {
 	addItemToBank,
+	convertLVLtoXP,
 	convertXPtoLVL,
 	formatDuration,
 	incrementMinionDailyDuration,
-	itemID,
 	itemNameFromID,
 	stringMatches,
+	toKMB,
 	toTitleCase,
 	Util
 } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import getActivityOfUser from '../../lib/util/getActivityOfUser';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import resolveItems from '../../lib/util/resolveItems';
+import {
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit
+} from '../../tasks/minions/dungeoneeringActivity';
 import {
 	NightmareActivityTaskOptions,
 	PlunderActivityTaskOptions,
@@ -81,37 +110,14 @@ import {
 } from './../../lib/types/minions';
 import { Minigames } from './Minigame';
 
-const bdayMsgs = [
-	'eating a banana',
-	'running around like a monkey',
-	'getting their rewards',
-	'returning the trapped monkeys to where they should be',
-	'catching a monkey on the west side of the Lumbridge swamp',
-	'catching a monkey north of the Lumbridge mill',
-	'catching a monkey outside the Lumbridge general store',
-	'catching a monkey in the Lumbridge church',
-	"catching a monkey in Bob's Axes",
-	'waiting for monkeys to be trapped in the cage',
-	'eating a banana',
-	'building monkey cages',
-	'cutting bamboo',
-	'eating monkey nuts',
-	'on their way to al kharid',
-	'their banana was stolen by a monkey',
-	'eating a banana',
-	'getting chased by monkeys',
-	'chasing a monkey around lumbridge',
-	'on the way to the event'
-] as const;
-
 const suffixes = new SimpleTable<string>()
 	.add('🎉', 200)
-	.add('🎆', 100)
-	.add('🙌', 100)
-	.add('🎇', 100)
-	.add('🥳', 100)
-	.add('🍻', 100)
-	.add('🎊', 100)
+	.add('🎆', 10)
+	.add('🙌', 10)
+	.add('🎇', 10)
+	.add('🥳', 10)
+	.add('🍻', 10)
+	.add('🎊', 10)
 	.add(Emoji.PeepoNoob, 1)
 	.add(Emoji.PeepoRanger, 1)
 	.add(Emoji.PeepoSlayer);
@@ -127,7 +133,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionStatus(this: User) {
-		const currentTask = getActivityOfUser(this.client, this.id);
+		const currentTask = this.client.getActivityOfUser(this.id);
 
 		if (!currentTask) {
 			return `${this.minionName} is currently doing nothing.
@@ -525,19 +531,41 @@ export default class extends Extendable {
 				return `${this.minionName} is currently doing Gnome Restaurant deliveries. ${formattedDuration}`;
 			}
 
-			case Activity.BirthdayEvent: {
-				const minsRemaining = Math.floor(durationRemaining / Time.Minute);
-				return `${
-					this.minionName
-				} is currently doing the Birthday Event, currently they are ${
-					bdayMsgs[minsRemaining] ?? 'eating a banana'
-				}. ${formattedDuration}`;
+			case Activity.SoulWars: {
+				const data = currentTask as SoulWarsOptions;
+				return `${this.minionName} is currently doing ${data.quantity}x games of Soul Wars. ${formattedDuration}`;
+			}
+
+			case Activity.RoguesDenMaze: {
+				return `${this.minionName} is currently attempting the Rogues' Den maze. ${formattedDuration}`;
+			}
+
+			case Activity.KalphiteKing: {
+				return `${this.minionName} is currently killing the Kalphite King. ${formattedDuration}`;
+			}
+
+			case Activity.Gauntlet: {
+				const data = currentTask as GauntletOptions;
+				return `${this.minionName} is currently doing ${data.quantity}x ${
+					data.corrupted ? 'Corrupted' : 'Normal'
+				} Gauntlet. ${formattedDuration}`;
+			}
+
+			case Activity.Dungeoneering: {
+				const data = currentTask as DungeoneeringOptions;
+				return `${this.minionName} is currently doing Dungeoneering with a team of ${
+					data.users.length
+				} minions, on the ${formatOrdinal(data.floor)} floor. ${formattedDuration}`;
 			}
 		}
 	}
 
 	getKC(this: KlasaUser, id: number) {
 		return this.settings.get(UserSettings.MonsterScores)[id] ?? 0;
+	}
+
+	getOpenableScore(this: KlasaUser, id: number) {
+		return this.settings.get(UserSettings.OpenableScores)[id] ?? 0;
 	}
 
 	public async getKCByName(this: KlasaUser, kcName: string) {
@@ -577,20 +605,51 @@ export default class extends Extendable {
 	}
 
 	// @ts-ignore 2784
-	public get maxTripLength(this: User) {
+	public maxTripLength(this: User, activity?: Activity) {
+		let max = Time.Minute * 30;
+
 		const perkTier = getUsersPerkTier(this);
-		const zakBonus = this.equippedPet() === itemID('Zak') ? 1.4 : 1;
+		if (perkTier === PerkTier.Two) max += Time.Minute * 3;
+		else if (perkTier === PerkTier.Three) max += Time.Minute * 6;
+		else if (perkTier >= PerkTier.Four) max += Time.Minute * 10;
 
-		if (perkTier === PerkTier.Two) return Time.Minute * 33 * zakBonus;
-		if (perkTier === PerkTier.Three) return Time.Minute * 36 * zakBonus;
-		if (perkTier >= PerkTier.Four) return Time.Minute * 40 * zakBonus;
+		switch (activity) {
+			case Activity.Nightmare:
+			case Activity.GroupMonsterKilling:
+			case Activity.MonsterKilling:
+			case Activity.Wintertodt:
+			case Activity.Zalcano:
+			case Activity.BarbarianAssault:
+			case Activity.AnimatedArmour:
+			case Activity.Sepulchre:
+			case Activity.Pickpocket:
+			case Activity.SoulWars:
+			case Activity.Cyclops: {
+				const hpLevel = this.skillLevel(SkillsEnum.Hitpoints);
+				const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
+				max += calcPercentOfNum(hpPercent, Time.Minute * 5);
+				break;
+			}
 
-		return Time.Minute * 30 * zakBonus;
+			default: {
+				break;
+			}
+		}
+
+		if (this.usingPet('Zak')) {
+			max *= 1.4;
+		}
+
+		if (this.hasItemEquippedAnywhere('Hitpoints master cape')) {
+			max *= 1.2;
+		}
+
+		return max;
 	}
 
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
-		const usersTask = getActivityOfUser(this.client, this.id);
+		const usersTask = this.client.getActivityOfUser(this.id);
 		return Boolean(usersTask);
 	}
 
@@ -633,8 +692,59 @@ export default class extends Extendable {
 			amount *= 5;
 		}
 
+		const rawGear = this.rawGear();
+		const allCapes = objectValues(rawGear)
+			.map(val => val.cape)
+			.filter(notEmpty)
+			.map(i => i.item);
+		const masterCape = multiplier
+			? MasterSkillcapes.find(cape => allCapes.includes(cape.item.id))
+			: undefined;
+		const isMatchingCape = masterCape?.skill === skillName;
+		if (masterCape) {
+			amount = increaseNumByPercent(amount, isMatchingCape ? 8 : 3);
+		}
+
+		let gorajanBoost = false;
+		const gorajanMeleeBoost =
+			multiplier &&
+			[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(skillName) &&
+			hasArrayOfItemsEquipped(gorajanWarriorOutfit, this.getGear('melee'));
+		const gorajanRangeBoost =
+			multiplier &&
+			skillName === SkillsEnum.Ranged &&
+			hasArrayOfItemsEquipped(gorajanArcherOutfit, this.getGear('range'));
+		const gorajanMageBoost =
+			multiplier &&
+			skillName === SkillsEnum.Magic &&
+			hasArrayOfItemsEquipped(gorajanOccultOutfit, this.getGear('mage'));
+		if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost) {
+			amount *= 2;
+			gorajanBoost = true;
+		}
+
+		let firstAgeEquipped = 0;
+		for (const item of resolveItems([
+			'First age tiara',
+			'First age amulet',
+			'First age cape',
+			'First age bracelet',
+			'First age ring'
+		])) {
+			if (this.hasItemEquippedAnywhere(item)) {
+				firstAgeEquipped += 1;
+			}
+		}
+		if (firstAgeEquipped > 0) {
+			if (firstAgeEquipped === 5) {
+				amount = increaseNumByPercent(amount, 6);
+			} else {
+				amount = increaseNumByPercent(amount, firstAgeEquipped);
+			}
+		}
+
 		const newXP = Math.min(5_000_000_000, currentXP + amount);
-		const newLevel = convertXPtoLVL(newXP);
+		const newLevel = convertXPtoLVL(newXP, 120);
 
 		// If they reached a XP milestone, send a server notification.
 		for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, 200_000_000]) {
@@ -651,44 +761,69 @@ export default class extends Extendable {
 			}
 		}
 
-		// If they just reached 99, send a server notification.
-		if (currentLevel < 99 && newLevel >= 99) {
-			const skillNameCased = toTitleCase(skillName);
-			const [usersWith] = await this.client.query<
-				{
-					count: string;
-				}[]
-			>(`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > 13034430;`);
-
-			let str = `${skill.emoji} **${this.username}'s** minion, ${
-				this.minionName
-			}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
-				parseInt(usersWith.count) + 1
-			)} to get 99 ${skillNameCased}.`;
-
-			if (this.isIronman) {
-				const [ironmenWith] = await this.client.query<
+		for (const num of [99, 120]) {
+			// If they just reached 99, send a server notification.
+			if (currentLevel < num && newLevel >= num) {
+				const skillNameCased = toTitleCase(skillName);
+				const [usersWith] = await this.client.query<
 					{
 						count: string;
 					}[]
 				>(
-					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${skillName}" > 13034430;`
+					`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > ${
+						convertLVLtoXP(num) - 1
+					};`
 				);
-				str += ` They are the ${formatOrdinal(
-					parseInt(ironmenWith.count) + 1
-				)} Ironman to get 99.`;
+
+				let str = `${skill.emoji} **${this.username}'s** minion, ${
+					this.minionName
+				}, just achieved level ${num} in ${skillNameCased}! They are the ${formatOrdinal(
+					parseInt(usersWith.count) + 1
+				)} to get ${num} ${skillNameCased}.`;
+
+				if (this.isIronman) {
+					const [ironmenWith] = await this.client.query<
+						{
+							count: string;
+						}[]
+					>(
+						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${skillName}" > ${
+							convertLVLtoXP(num) - 1
+						};`
+					);
+					str += ` They are the ${formatOrdinal(
+						parseInt(ironmenWith.count) + 1
+					)} Ironman to get ${num}.`;
+				}
+				this.client.emit(Events.ServerNotification, str);
 			}
-			this.client.emit(Events.ServerNotification, str);
 		}
 
 		await this.settings.update(`skills.${skillName}`, Math.floor(newXP));
 
-		let str = `You received ${amount.toLocaleString()} ${name} XP, you now have ${newXP.toLocaleString()} ${name} XP.`;
+		let str = `You received ${amount.toLocaleString()} ${skillEmoji[skillName]} XP`;
+		if (masterCape) {
+			if (isMatchingCape) {
+				str += ` You received 8% bonus XP for having a ${masterCape.item.name}.`;
+			} else {
+				str += ` You received 3% bonus XP for having a ${masterCape.item.name}.`;
+			}
+		}
+
+		if (gorajanBoost) {
+			str += ' 2x boost from Gorajan armor.';
+		}
+
+		if (firstAgeEquipped) {
+			str += ` You received ${
+				firstAgeEquipped === 5 ? 6 : firstAgeEquipped
+			}% bonus XP for First age outfit items.`;
+		}
+
 		if (duration) {
-			const xpHr = `(${Math.round(
-				(amount / (duration / Time.Minute)) * 60
-			).toLocaleString()} XP/Hr`;
-			str += ` ${xpHr})`;
+			let rawXPHr = (amount / (duration / Time.Minute)) * 60;
+			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
+			str += ` (${toKMB(rawXPHr)}/Hr)`;
 		}
 		if (currentLevel !== newLevel) {
 			str += `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
@@ -766,6 +901,16 @@ export default class extends Extendable {
 		);
 	}
 
+	public async incrementOpenableScore(this: User, openableID: number, amountToAdd = 1) {
+		await this.settings.sync(true);
+		const scores = this.settings.get(UserSettings.OpenableScores);
+
+		return this.settings.update(
+			UserSettings.OpenableScores,
+			addItemToBank(scores, openableID, amountToAdd)
+		);
+	}
+
 	public async incrementClueScore(this: User, clueID: number, amountToAdd = 1) {
 		await this.settings.sync(true);
 		const currentClueScores = this.settings.get(UserSettings.ClueScores);
@@ -788,5 +933,15 @@ export default class extends Extendable {
 			UserSettings.CreatureScores,
 			addItemToBank(currentCreatureScores, creatureID, amountToAdd)
 		);
+	}
+
+	public async setAttackStyle(this: User, newStyles: AttackStyles[]) {
+		await this.settings.update(UserSettings.AttackStyle, uniqueArr(newStyles), {
+			arrayAction: 'overwrite'
+		});
+	}
+
+	public getAttackStyles(this: User) {
+		return this.settings.get(UserSettings.AttackStyle);
 	}
 }

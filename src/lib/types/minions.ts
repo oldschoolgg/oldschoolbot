@@ -4,7 +4,6 @@ import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
 import { IPatchData } from '../minions/farming/types';
-import { GroupMonsterActivityTaskOptions } from '../minions/types';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
 export interface ActivityTaskOptions {
@@ -201,6 +200,12 @@ export interface NexActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface KalphiteKingActivityTaskOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	quantity: number;
+}
+
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 }
@@ -257,4 +262,24 @@ export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
 
 export interface GnomeRestaurantActivityTaskOptions extends MinigameActivityTaskOptions {
 	gloriesRemoved: number;
+}
+
+export interface SoulWarsOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	quantity: number;
+}
+
+export interface RoguesDenMazeTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+}
+
+export interface GauntletOptions extends ActivityTaskOptions {
+	corrupted: boolean;
+	quantity: number;
+}
+
+export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
+	leader: string;
+	users: string[];
 }

@@ -82,7 +82,7 @@ export default class extends Task {
 		}.`;
 
 		user.incrementMonsterScore(cyclopsID, quantity);
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				loot.bank,
@@ -101,8 +101,9 @@ export default class extends Task {
 				user.log(`continued cyclops`);
 				return this.client.commands.get('wg')!.run(res, [quantity, 'cyclops']);
 			},
-			image,
-			data
+			image!,
+			data,
+			loot.bank
 		);
 	}
 }

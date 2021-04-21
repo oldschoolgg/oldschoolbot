@@ -196,10 +196,20 @@ const fishes: Fish[] = [
 		xp: 130,
 		id: itemID('Leaping trout'),
 		name: 'Barbarian fishing',
+		aliases: ['bf'],
 		petChance: 426_954,
 		bait: itemID('Feather'),
 		timePerFish: 3,
 		clueScrollChance: 1_280_862
+	},
+	{
+		level: 120,
+		xp: 230,
+		id: itemID('Raw rocktail'),
+		name: 'Raw rocktail',
+		petChance: 129_434,
+		timePerFish: 7.7,
+		clueScrollChance: 25_434
 	}
 ];
 

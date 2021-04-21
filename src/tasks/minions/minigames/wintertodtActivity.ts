@@ -1,9 +1,7 @@
-import { MessageAttachment } from 'discord.js';
 import { randInt } from 'e';
 import { Task } from 'klasa';
 
 import { Emoji, Events, Time } from '../../../lib/constants';
-import { getRandomMysteryBox } from '../../../lib/data/openables';
 import { hasArrayOfItemsEquipped } from '../../../lib/gear';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
@@ -11,12 +9,21 @@ import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, bankHasItem, multiplyBank, noOp, rand, roll } from '../../../lib/util';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import {
+	addBanks,
+	bankHasItem,
+	channelIsSendable,
+	multiplyBank,
+	noOp,
+	rand,
+	roll
+} from '../../../lib/util';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ userID, channelID, quantity, duration }: WintertodtActivityTaskOptions) {
+	async run(data: WintertodtActivityTaskOptions) {
+		const { userID, channelID, quantity, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
@@ -34,14 +41,10 @@ export default class extends Task {
 				loot,
 				WintertodtCrate.open({
 					points,
-					itemsOwned: addBanks([user.allItemsOwned(), loot]),
+					itemsOwned: addBanks([user.allItemsOwned().bank, loot]),
 					skills: user.rawSkills
 				})
 			]);
-		}
-		if (duration > Time.Minute * 20 && roll(10)) {
-			loot = multiplyBank(loot, 4);
-			loot[getRandomMysteryBox()] = 1;
 		}
 
 		let gotToad = false;
@@ -113,10 +116,18 @@ export default class extends Task {
 		await user.addXP(SkillsEnum.Firemaking, fmXpToGive);
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
+		if (user.usingPet('Flappy')) {
+			loot = multiplyBank(loot, 2);
+		}
+
+		if (user.hasItemEquippedAnywhere(itemID('Firemaking master cape'))) {
+			loot = multiplyBank(loot, 2);
+		}
+
 		await user.addItemsToBank(loot, true);
 		user.incrementMinigameScore('Wintertodt', quantity);
 
-		const image = await this.client.tasks.get('bankImage')!.generateBankImage(
+		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
 			loot,
 			``,
 			true,
@@ -143,6 +154,19 @@ export default class extends Task {
 		if (gotToad) {
 			output += `\n\n<:wintertoad:749945071230779493> A Wintertoad sneakily hops into your bank!`;
 		}
-		return channel.send(output, new MessageAttachment(image));
+
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			output,
+			res => {
+				user.log(`continued trip of wintertodt`);
+				return this.client.commands.get('wintertodt')!.run(res, []);
+			},
+			image!,
+			data,
+			loot
+		);
 	}
 }

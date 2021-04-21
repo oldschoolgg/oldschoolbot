@@ -1,3 +1,4 @@
+import { randArrItem } from 'e';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
@@ -10,7 +11,8 @@ import { allKeyPieces, allNexItems } from '../nex';
 import BirthdayPresentTable from '../simulation/birthdayPresent';
 import CasketTable from '../simulation/casket';
 import CrystalChestTable from '../simulation/crystalChest';
-import { itemID, itemNameFromID, removeDuplicatesFromArray } from '../util';
+import { itemNameFromID, removeDuplicatesFromArray } from '../util';
+import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
 import { coxLog, customBossLog } from './collectionLog';
@@ -199,7 +201,8 @@ const PetsTable = new LootTable()
 	.add('Phoenix')
 	.add('Smolcano')
 	.add('Youngllef')
-	.add('Little nightmare');
+	.add('Little nightmare')
+	.add("Lil' creator");
 
 const PartyhatTable = new LootTable()
 	.oneIn(50, 'Black partyhat')
@@ -213,15 +216,58 @@ const PartyhatTable = new LootTable()
 
 const DwarvenCrateTable = new LootTable()
 	.add('Dwarven ore')
-	.add('Dwarven stout', 2)
+	.add('Dwarven stout', 2, 2)
 	.add('Dwarven lore', 2)
 	.add('Dwarven rock cake', 2)
-	.add('Dwarven helmet')
-	.add('Hammer')
+	.add('Dwarven helmet', 1, 3)
+	.add('Hammer', 1, 5)
 	.add('Steel pickaxe')
-	.add('Pickaxe handle')
-	.add('Beer')
-	.add('Kebab');
+	.add('Pickaxe handle', 1, 3)
+	.add('Beer', 1, 3)
+	.add('Kebab', 1, 3);
+
+export const SpoilsOfWarBaseTable = new LootTable()
+	.add('Pure essence', [4000, 6000], 6)
+	.add('Coins', [20_000, 30_000], 5)
+	.add('Raw lobster', [30, 60], 5)
+	.add('Raw swordfish', [30, 60], 5)
+	.add('Raw shark', [30, 60], 5)
+	.add('Blood rune', [150, 300], 5)
+	.add('Death rune', [150, 300], 5)
+	.add('Nature rune', [150, 300], 5)
+	.add('Adamant bolts', [200, 400], 5)
+	.add('Runite bolts', [100, 200], 5)
+	.add('Adamant arrow', [200, 400], 5)
+	.add('Rune arrow', [100, 200], 5)
+	.add('Coal', [150, 300], 5)
+	.add('Mithril ore', [80, 100], 5)
+	.add('Coins', [2000, 3000], 4)
+	.add('Uncut ruby', [15, 30], 4)
+	.add('Uncut diamond', [15, 30], 4)
+	.add('Soul rune', [150, 300], 2)
+	.add('Soul rune', [500, 600], 2)
+	.add('Rune full helm')
+	.add('Rune platebody')
+	.add('Rune platelegs')
+	.add('Runite ore', [4, 8])
+	.add('Tooth half of key')
+	.add('Loop half of key')
+	.add('Snapdragon seed')
+	.add('Ranarr seed')
+	.add(
+		new LootTable()
+			.add('Dragon med helm')
+			.add('Dragon scimitar')
+			.add('Dragon mace')
+			.add('Dragon dagger')
+			.add('Dragon longsword')
+			.add('Bones')
+			.add('Cabbage')
+	);
+
+export const SpoilsOfWarTable = new LootTable()
+	.tertiary(400, "Lil' creator")
+	.every(SpoilsOfWarBaseTable, 3);
 
 export const NestBoxes = new LootTable()
 	.add('Nest box (seeds)', 1, 12)
@@ -259,7 +305,13 @@ const baseTGBTable = new LootTable()
 	.add('Tchiki monkey nuts')
 	.add('Magic seed', [20, 50]);
 
-const testerGiftTable = new LootTable().every(baseTGBTable, [2, 4]);
+const testerGiftTable = new LootTable()
+	.every(baseTGBTable, [3, 7])
+	.every('Clue scroll (grandmaster)', [1, 3])
+	.every(LampTable, [1, 2])
+	.add('Rocktail', [30, 60])
+	.add('Tradeable mystery box', [1, 3])
+	.add(baseTGBTable);
 
 const Openables: Openable[] = [
 	{
@@ -345,12 +397,75 @@ const Openables: Openable[] = [
 			.add('Bolt of cloth', 15)
 			.add('Limestone brick', 9),
 		emoji: Emoji.Casket
+	},
+	{
+		name: 'Birthday pack',
+		itemID: itemID('Birthday pack'),
+		aliases: ['bp', 'birthday pack'],
+		table: new LootTable()
+			.add('Glass of bubbly')
+			.add('Party horn')
+			.add('Party popper')
+			.add('Party cake')
+			.add('Sparkler', [2, 10])
+			.add('Party music box')
+			.tertiary(20, 'Cake hat'),
+		emoji: Emoji.BirthdayPresent
+	},
+	{
+		name: 'Spoils of war',
+		itemID: itemID('Spoils of war'),
+		aliases: ['Spoils of war'],
+		table: SpoilsOfWarTable,
+		emoji: Emoji.Casket
+	},
+	{
+		name: 'Gamblers bag',
+		itemID: itemID('Gamblers bag'),
+		aliases: ['gamblers bag', 'gb'],
+		table: new LootTable()
+			.add('4 sided die', 1, 6)
+			.add('6 sided die', 1, 6)
+			.add('8 sided die', 1, 4)
+			.add('10 sided die', 1, 4)
+			.add('12 sided die', 1, 3)
+			.add('20 sided die', 1, 3)
+			.add('100 sided die')
+			.tertiary(100, 'Ring of luck'),
+		emoji: Emoji.BirthdayPresent
+	},
+	{
+		name: 'Royal mystery box',
+		itemID: itemID('Royal mystery box'),
+		aliases: ['royal mystery box', 'rmb'],
+		table: new LootTable().add('Diamond crown', 1, 2).add('Diamond sceptre', 1, 2).add('Corgi'),
+		emoji: Emoji.BirthdayPresent
+	},
+	{
+		name: 'Equippable mystery box',
+		itemID: itemID('Equippable mystery box'),
+		aliases: ['equippable mystery box', 'emb'],
+		table: randomEquippable,
+		emoji: Emoji.BirthdayPresent
+	},
+	{
+		name: 'Beach mystery box',
+		itemID: itemID('Beach mystery box'),
+		aliases: ['Beach mystery box', 'bmb'],
+		table: new LootTable()
+			.add('Snappy the Turtle')
+			.add('Beach ball')
+			.add('Water balloon')
+			.add('Ice cream')
+			.add('Crab hat'),
+		emoji: Emoji.BirthdayPresent
 	}
 ];
 
 export const MysteryBoxes = new LootTable()
 	.oneIn(40, itemNameFromID(3062)!)
 	.oneIn(150, itemNameFromID(3713)!)
+	.oneIn(30, 'Equippable mystery box')
 	.add(6199)
 	.add(19939);
 
@@ -422,11 +537,25 @@ export const umbTable = Items.filter(i => {
 	return !(i as Item).tradeable && !(i as Item).duplicate;
 }).map(i => i.id);
 
+export const embTable = Items.filter((i: Item) => {
+	if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
+		return false;
+	}
+	return !i.duplicate && Boolean(i.equipable_by_player) && Boolean(i.equipment?.slot);
+}).map(i => i.id);
+
+function randomEquippable(): number {
+	const res = randArrItem(embTable);
+	if (cantBeDropped.includes(res)) return randomEquippable();
+	if (res >= 40_000 && res <= 50_000) return randomEquippable();
+	return res;
+}
+
 function getRandomItem(tradeables: boolean): number {
 	const table = tradeables ? tmbTable : umbTable;
 	let result = table[Math.floor(Math.random() * table.length)];
 	if (cantBeDropped.includes(result)) return getRandomItem(tradeables);
-	if (result >= 40_000 && result <= 49_999) return getRandomItem(tradeables);
+	if (result >= 40_000 && result <= 50_000) return getRandomItem(tradeables);
 	return result;
 }
 

@@ -1,4 +1,4 @@
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -13,9 +13,33 @@ import {
 	itemID,
 	itemNameFromID,
 	removeItemFromBank,
+	skillsMeetRequirements,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+
+export function hasFallyHardDiary(user: KlasaUser): boolean {
+	return skillsMeetRequirements(user.rawSkills, {
+		woodcutting: 71,
+		agility: 59,
+		cooking: 53,
+		firemaking: 49,
+		fishing: 53,
+		magic: 37,
+		mining: 60,
+		smithing: 13,
+		thieving: 58,
+		construction: 16,
+		herblore: 52,
+		crafting: 40,
+		farming: 45,
+		prayer: 70,
+		runecraft: 56
+		// slayer: 72,
+		// strength: 37,
+		// defense: 50
+	});
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -77,9 +101,17 @@ export default class extends BotCommand {
 		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven greathammer'))) {
 			timeToCraftSingleItem /= 2;
 		}
+
+		const hasDiary = hasFallyHardDiary(msg.author);
+		if (Craft.bankChest && (hasDiary || msg.author.skillLevel(SkillsEnum.Crafting) >= 99)) {
+			timeToCraftSingleItem /= 3.25;
+		}
+
+		const maxTripLength = msg.author.maxTripLength(Activity.Crafting);
+
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToCraftSingleItem);
+			quantity = Math.floor(maxTripLength / timeToCraftSingleItem);
 			for (const [itemID, qty] of requiredItems) {
 				const id = parseInt(itemID);
 				if (id === 995) {
@@ -100,15 +132,13 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToCraftSingleItem;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					Craft.name
-				}s you can craft is ${Math.floor(
-					msg.author.maxTripLength / timeToCraftSingleItem
-				)}.`
+				}s you can craft is ${Math.floor(maxTripLength / timeToCraftSingleItem)}.`
 			);
 		}
 

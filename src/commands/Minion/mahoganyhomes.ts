@@ -190,7 +190,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
 			conLevel,
 			kc,
-			msg.author.maxTripLength,
+			msg.author.maxTripLength(Activity.MahoganyHomes),
 			hasSack
 		);
 

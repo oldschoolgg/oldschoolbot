@@ -26,7 +26,7 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage) {
 		const currentQP = msg.author.settings.get(UserSettings.QP);
-		if (currentQP >= MAX_QP) {
+		if (currentQP >= MAX_QP && !msg.author.isIronman) {
 			return msg.send(`You already have the maximum amount of Quest Points.`);
 		}
 

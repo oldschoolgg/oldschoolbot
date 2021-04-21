@@ -1,5 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { production } from '../../config';
 import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -70,7 +71,7 @@ export default class extends BotCommand {
 		/* Initiate a cooldown feature for each of the seed types.
 			Allows for a run of specific seed type to only be possible until the
 			previous run's plants have been fully grown.*/
-		if (planted && difference < planted.growthTime * Time.Minute) {
+		if (production && planted && difference < planted.growthTime * Time.Minute) {
 			throw `Please come back when your crops have finished growing in ${formatDuration(
 				lastPlantTime + planted.growthTime * Time.Minute - currentDate
 			)}!`;
@@ -117,9 +118,11 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (duration > msg.author.maxTripLength) {
+		const maxTripLength = msg.author.maxTripLength(Activity.Farming);
+
+		if (duration > maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
+				maxTripLength
 			)}, try a lower quantity.`;
 		}
 

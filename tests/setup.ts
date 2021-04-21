@@ -1,5 +1,2 @@
-import { initCustomItems } from '../src/lib/customItems';
-import { initItemAliases } from '../src/lib/data/itemAliases';
-
-initItemAliases();
-initCustomItems();
+import '../src/lib/data/itemAliases';
+import '../src/lib/customItems';

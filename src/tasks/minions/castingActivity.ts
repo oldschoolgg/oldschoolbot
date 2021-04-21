@@ -1,5 +1,6 @@
 import { Task } from 'klasa';
 
+// import craft from '../../commands/Minion/craft';
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CastingActivityTaskOptions } from '../../lib/types/minions';
@@ -11,13 +12,21 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 
-		const spell = Castables.find(i => i.id === spellID);
-		if (!spell) return;
+		const spell = Castables.find(i => i.id === spellID)!;
 
-		const currentLevel = user.skillLevel(SkillsEnum.Magic);
 		const xpReceived = quantity * spell.xp;
-		await user.addXP(SkillsEnum.Magic, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Magic);
+		const xpRes = await user.addXP(SkillsEnum.Magic, xpReceived, duration);
+
+		let craftXpReceived = 0;
+		let craftXpRes = ``;
+		if (spell.craftXp) {
+			craftXpReceived = spell.craftXp * quantity;
+
+			craftXpRes = await user.addXP(SkillsEnum.Crafting, craftXpReceived, duration);
+		}
+
+		// let craftXpRes = ``;
+		// const craftXpReceived = await user.addXP(SkillsEnum.Crafting, craftXpReceived, duration);
 
 		const loot = spell.output?.clone().multiply(quantity);
 		if (loot) {
@@ -26,11 +35,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${
 			spell.name
-		}, you received ${xpReceived.toLocaleString()} Magic XP and ${loot ?? 'no items'}.`;
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Magic level is now ${newLevel}!`;
-		}
+		}, you received ${loot ?? 'no items'}. ${xpRes} ${craftXpRes}`;
 
 		handleTripFinish(
 			this.client,
@@ -42,7 +47,8 @@ export default class extends Task {
 				return this.client.commands.get('cast')!.run(res, [quantity, spell.name]);
 			},
 			undefined,
-			data
+			data,
+			loot?.bank ?? null
 		);
 	}
 }

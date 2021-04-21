@@ -4,9 +4,7 @@ import { ArrayActions, CommandStore, KlasaMessage } from 'klasa';
 import { BitField, Channel } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { toTitleCase } from '../../lib/util';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import getSupportGuild from '../../lib/util/getSupportGuild';
+import { channelIsSendable, getSupportGuild, toTitleCase } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

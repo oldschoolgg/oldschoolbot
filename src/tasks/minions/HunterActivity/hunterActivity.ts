@@ -134,6 +134,7 @@ export default class extends Task {
 		let creatureTable = creature.table;
 		let magicSecStr = '';
 		let herbXP = 0;
+		let xpStr = '';
 		if (creature.id === HERBIBOAR_ID) {
 			creatureTable = generateHerbiTable(
 				user.skillLevel(SkillsEnum.Herblore),
@@ -145,7 +146,7 @@ export default class extends Task {
 			// TODO: Check wiki in future for herblore xp from herbiboar
 			if (currentHerbLevel >= 31) {
 				herbXP += quantity * rand(25, 75);
-				await user.addXP(SkillsEnum.Herblore, herbXP);
+				xpStr = await user.addXP(SkillsEnum.Herblore, herbXP, duration);
 			}
 		}
 		const loot = new Bank();
@@ -156,32 +157,33 @@ export default class extends Task {
 			}
 		}
 
+		const masterCapeEffect =
+			creature.id === 3251 && user.hasItemEquippedAnywhere(itemID('Hunter master cape'));
+
+		if (masterCapeEffect) {
+			loot.multiply(2);
+		}
+
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
-		await user.addItemsToBank(loot.values(), true);
-		await user.addXP(SkillsEnum.Hunter, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Hunter);
-		const newHerbLevel = user.skillLevel(SkillsEnum.Herblore);
-		const xpHr = `${Math.round(
-			(xpReceived / (duration / Time.Minute)) * 60
-		).toLocaleString()} XP/Hr`;
+		xpStr += await user.addXP(SkillsEnum.Hunter, xpReceived, duration);
 
 		let str = `${user}, ${user.minionName} finished hunting ${
 			creature.name
 		} ${quantity}x times, due to clever creatures you missed out on ${
 			quantity - successfulQuantity
-		}x catches, you also received ${xpReceived.toLocaleString()} XP (${xpHr}).`;
+		}x catches. ${xpStr}`;
 
-		if (herbXP > 0) {
-			str += `\nYou also received ${herbXP} Herblore XP from harvesting ${creature.name}!`;
+		if (user.usingPet('Sandy')) {
+			if (masterCapeEffect) {
+				str += `\nYou received **double** loot because of Sandy, and being a master hunter.`;
+				loot.multiply(2);
+			} else {
+				str += `\nYou received **triple** loot because of Sandy.`;
+				loot.multiply(3);
+			}
 		}
 
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Hunter level is now ${newLevel}!`;
-		}
-
-		if (newHerbLevel > currentHerbLevel) {
-			str += `\n\n${user.minionName}'s Herblore level is now ${newHerbLevel}!`;
-		}
+		await user.addItemsToBank(loot.values(), true);
 
 		str += `\n\nYou received: ${loot}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
 
@@ -215,7 +217,8 @@ export default class extends Task {
 				return this.client.commands.get('hunt')!.run(res, [quantity, creatureName]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

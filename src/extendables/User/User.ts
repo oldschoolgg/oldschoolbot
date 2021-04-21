@@ -11,8 +11,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { Skills } from '../../lib/types';
-import { itemNameFromID, toTitleCase } from '../../lib/util';
-import { formatItemReqs } from '../../lib/util/formatItemReqs';
+import { formatItemReqs, itemID, itemNameFromID, toTitleCase } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Extendable {
@@ -141,5 +140,9 @@ export default class extends Extendable {
 			throw new Error('Failed to find POH after creation.');
 		}
 		return created;
+	}
+
+	public usingPet(this: User, name: string) {
+		return this.equippedPet() === itemID(name);
 	}
 }

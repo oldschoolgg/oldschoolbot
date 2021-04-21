@@ -17,7 +17,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
-			usage: '<member:member> <price:int{1,100000000000}> (items:...TradeableBank)',
+			usage: '<member:member> [price:int{1,100000000000}] (items:...TradeableBank)',
 			usageDelim: ' ',
 			oneAtTime: true,
 			ironCantUse: true,
@@ -35,6 +35,10 @@ export default class extends BotCommand {
 		msg: KlasaMessage,
 		[buyerMember, price, [bankToSell, totalPrice]]: [GuildMember, number, [Bank, number]]
 	) {
+		if (!price) {
+			price = 1;
+		}
+
 		// Make sure blacklisted members can't be traded.
 		const isBlacklisted = this.client.settings
 			.get(ClientSettings.UserBlacklist)
@@ -47,7 +51,7 @@ export default class extends BotCommand {
 		if (buyerMember.user.isBusy) {
 			throw `That user is busy right now.`;
 		}
-		if (bankToSell.items().some(i => i[0].id >= 40_000 && i[0].id <= 49_999)) {
+		if (bankToSell.items().some(i => i[0].id >= 40_000 && i[0].id <= 45_000)) {
 			return msg.send(`You are trying to sell unsellable items.`);
 		}
 
@@ -122,7 +126,10 @@ export default class extends BotCommand {
 		}
 
 		try {
-			if (buyerMember.user.settings.get(UserSettings.GP) < price) {
+			if (
+				buyerMember.user.settings.get(UserSettings.GP) < price ||
+				!msg.author.bank().fits(bankToSell)
+			) {
 				return msg.send(`One of you lacks the required GP or items to make this trade.`);
 			}
 

@@ -6,15 +6,17 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { production } from '../../../config';
 import { Emoji } from '../../../lib/constants';
 import { roll } from '../../../lib/data/monsters/raids';
+import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { allNexItems, NexMonster } from '../../../lib/nex';
+import { setActivityLoot } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NexActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, noOp, queuedMessageSend, randomItemFromArray } from '../../../lib/util';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import { addBanks, channelIsSendable, noOp, randomItemFromArray } from '../../../lib/util';
 import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
+import { sendToChannelID } from '../../../lib/util/webhook';
 
 interface NexUser {
 	id: string;
@@ -23,7 +25,7 @@ interface NexUser {
 }
 
 export default class extends Task {
-	async run({ channelID, leader, users, quantity, duration }: NexActivityTaskOptions) {
+	async run({ id, channelID, leader, users, quantity, duration }: NexActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -62,7 +64,7 @@ export default class extends Task {
 
 			const loot = new Bank();
 			loot.add(NexMonster.table.kill(1));
-			if (roll(64 + users.length * 2)) {
+			if (roll(80 + users.length * 2)) {
 				loot.add(randomItemFromArray(allNexItems), 1);
 			}
 			const winner = teamTable.roll()?.item;
@@ -76,11 +78,14 @@ export default class extends Task {
 
 		const leaderUser = await this.client.users.fetch(leader);
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NexMonster.name}!\n\n`;
-
+		const totalLoot = new Bank();
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
-
+			if (kcAmounts[user.id]) {
+				await addMonsterXP(user, 46274, Math.ceil(quantity / users.length), duration);
+			}
+			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) user.incrementMonsterScore(NexMonster.id, kcToAdd);
@@ -93,7 +98,7 @@ export default class extends Task {
 				loot
 			)}||\n`;
 
-			announceLoot(this.client, leaderUser, NexMonster, quantity, loot, {
+			announceLoot(this.client, leaderUser, NexMonster, loot, {
 				leader: leaderUser,
 				lootRecipient: user,
 				size: users.length
@@ -112,21 +117,21 @@ export default class extends Task {
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
 
+		setActivityLoot(id, totalLoot.bank);
+
 		let debug = production
 			? ''
 			: `\`\`\`\n${JSON.stringify([parsedUsers, deaths], null, 4)}\n\`\`\``;
 
 		if (users.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
-				queuedMessageSend(
-					this.client,
-					channelID,
-					`${users
+				sendToChannelID(this.client, channelID, {
+					content: `${users
 						.map(id => `<@${id}>`)
 						.join(' ')} Your team all died, and failed to defeat Nex. ${debug}`
-				);
+				});
 			} else {
-				queuedMessageSend(this.client, channelID, resultStr + debug);
+				sendToChannelID(this.client, channelID, { content: resultStr + debug });
 			}
 		} else {
 			const channel = this.client.channels.get(channelID);

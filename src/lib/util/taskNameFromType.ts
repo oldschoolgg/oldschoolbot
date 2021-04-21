@@ -94,7 +94,17 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.GloryCharging;
 		case Activity.GnomeRestaurant:
 			return Tasks.GnomeRestaurant;
-		case Activity.BirthdayEvent:
-			return Tasks.BirthdayEvent;
+		case Activity.SoulWars:
+			return Tasks.SoulWars;
+		case Activity.RoguesDenMaze:
+			return Tasks.RoguesDenMaze;
+		case Activity.KalphiteKing:
+			return Tasks.KalphiteKing;
+		case Activity.Gauntlet:
+			return Tasks.Gauntlet;
+		case Activity.Dungeoneering:
+			return Tasks.Dungeoneering;
+		case Activity.CastleWars:
+			return Tasks.CastleWars;
 	}
 }

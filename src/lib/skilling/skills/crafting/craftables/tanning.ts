@@ -9,7 +9,8 @@ const Tanning: Craftable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: resolveNameBank({ Cowhide: 1, Coins: 1 }),
-		tickRate: 1
+		tickRate: 1,
+		bankChest: true
 	},
 	{
 		name: 'Hard leather',
@@ -17,7 +18,8 @@ const Tanning: Craftable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: resolveNameBank({ Cowhide: 1, Coins: 3 }),
-		tickRate: 1
+		tickRate: 1,
+		bankChest: true
 	},
 	{
 		name: 'Green dragon leather',
@@ -25,7 +27,8 @@ const Tanning: Craftable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: resolveNameBank({ 'Green dragonhide': 1, Coins: 20 }),
-		tickRate: 1
+		tickRate: 1,
+		bankChest: true
 	},
 	{
 		name: 'Blue dragon leather',
@@ -33,7 +36,8 @@ const Tanning: Craftable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: resolveNameBank({ 'Blue dragonhide': 1, Coins: 20 }),
-		tickRate: 1
+		tickRate: 1,
+		bankChest: true
 	},
 	{
 		name: 'Red dragon leather',
@@ -41,7 +45,8 @@ const Tanning: Craftable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: resolveNameBank({ 'Red dragonhide': 1, Coins: 20 }),
-		tickRate: 1
+		tickRate: 1,
+		bankChest: true
 	},
 	{
 		name: 'Black dragon leather',
@@ -49,7 +54,8 @@ const Tanning: Craftable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: resolveNameBank({ 'Black dragonhide': 1, Coins: 20 }),
-		tickRate: 1
+		tickRate: 1,
+		bankChest: true
 	}
 ];
 

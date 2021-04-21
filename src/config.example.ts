@@ -1,13 +1,7 @@
 import { KlasaClientOptions } from 'klasa';
 import os from 'os';
 
-import {
-	MongoDBConfig,
-	PatreonConfig,
-	ProviderConfig,
-	RedditAppConfig,
-	TwitterAppConfig
-} from './lib/types';
+import { PatreonConfig, ProviderConfig, RedditAppConfig, TwitterAppConfig } from './lib/types';
 
 export const botToken = '';
 export const providerConfig: ProviderConfig | null = {
@@ -18,12 +12,12 @@ export const staging = false;
 
 export const redditAppConfig: RedditAppConfig = null;
 export const twitterAppConfig: TwitterAppConfig = null;
-export const mongoDBConfig: MongoDBConfig = null;
 export const patreonConfig: PatreonConfig = null;
 export const customClientOptions: KlasaClientOptions = {
 	prefix: '-'
 };
-export const sentryDSN: string | null = null;
-export const httpPort = 1234;
-export const clientSecret = '';
-export const githubToken = '';
+export const SENTRY_DSN: string | null = null;
+export const HTTP_PORT = 1234;
+export const CLIENT_SECRET = '';
+export const CLIENT_ID = '';
+export const GITHUB_TOKEN = '';

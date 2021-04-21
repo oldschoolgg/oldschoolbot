@@ -2,7 +2,6 @@ import { Task } from 'klasa';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Events, Time } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/data/openables';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { addBanks, addItemToBank, itemID, multiplyBank, rand, roll } from '../../lib/util';
@@ -46,10 +45,6 @@ export default class extends Task {
 		} in your bank. You can open this casket using \`=open ${clueTier.name}\``;
 
 		let loot = { [clueTier.id]: quantity };
-		if (duration > Time.Minute * 20 && roll(10)) {
-			loot = multiplyBank(loot, 2);
-			loot[getRandomMysteryBox()] = 1;
-		}
 
 		if (user.equippedPet() === itemID('Zippy') && duration > Time.Minute * 5) {
 			let bonusLoot = {};
@@ -79,6 +74,6 @@ export default class extends Task {
 			`${user.username}[${user.id}] received ${quantity} ${clueTier.name} Clue Caskets.`
 		);
 
-		handleTripFinish(this.client, user, channelID, str, undefined, undefined, data);
+		handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, loot);
 	}
 }
