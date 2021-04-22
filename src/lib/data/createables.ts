@@ -367,7 +367,7 @@ const ornamentKits: Createable[] = [
 		name: 'Twisted ancestral hat',
 		inputItems: resolveNameBank({
 			'Ancestral hat': 1,
-			'Twisted ancestal colour kit': 1
+			'Twisted ancestral colour kit': 1
 		}),
 		outputItems: resolveNameBank({
 			'Twisted ancestral hat': 1
@@ -376,7 +376,7 @@ const ornamentKits: Createable[] = [
 	{
 		name: 'Revert twisted ancestral hat',
 		inputItems: resolveNameBank({
-			'Twisted acestral hat': 1
+			'Twisted ancestral hat': 1
 		}),
 		outputItems: resolveNameBank({
 			'Ancestral hat': 1,
@@ -388,7 +388,7 @@ const ornamentKits: Createable[] = [
 		name: 'Twisted ancestral robe top',
 		inputItems: resolveNameBank({
 			'Ancestral robe top': 1,
-			'Twisted ancestal colour kit': 1
+			'Twisted ancestral colour kit': 1
 		}),
 		outputItems: resolveNameBank({
 			'Twisted ancestral robe top': 1
@@ -397,7 +397,7 @@ const ornamentKits: Createable[] = [
 	{
 		name: 'Revert twisted ancestral robe top',
 		inputItems: resolveNameBank({
-			'Twisted acestral robe top': 1
+			'Twisted ancestral robe top': 1
 		}),
 		outputItems: resolveNameBank({
 			'Ancestral robe top': 1,
@@ -409,7 +409,7 @@ const ornamentKits: Createable[] = [
 		name: 'Twisted ancestral robe bottom',
 		inputItems: resolveNameBank({
 			'Ancestral robe bottom': 1,
-			'Twisted ancestal colour kit': 1
+			'Twisted ancestral colour kit': 1
 		}),
 		outputItems: resolveNameBank({
 			'Twisted ancestral robe bottom': 1
@@ -418,7 +418,7 @@ const ornamentKits: Createable[] = [
 	{
 		name: 'Revert twisted ancestral robe bottom',
 		inputItems: resolveNameBank({
-			'Twisted acestral robe bottom': 1
+			'Twisted ancestral robe bottom': 1
 		}),
 		outputItems: resolveNameBank({
 			'Ancestral robe bottom': 1,
@@ -563,17 +563,6 @@ const ornamentKits: Createable[] = [
 		})
 	},
 	{
-		name: 'Revert steam battlestaff',
-		inputItems: resolveNameBank({
-			'Steam battlestaff (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Steam battlestaff': 1,
-			'Steam staff upgrade kit': 1
-		}),
-		noCl: true
-	},
-	{
 		name: 'Lava battlestaff (or)',
 		inputItems: resolveNameBank({
 			'Lava battlestaff': 1,
@@ -582,17 +571,6 @@ const ornamentKits: Createable[] = [
 		outputItems: resolveNameBank({
 			'Lava battlestaff (or)': 1
 		})
-	},
-	{
-		name: 'Revert lava battlestaff',
-		inputItems: resolveNameBank({
-			'Lava battlestaff (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Lava battlestaff': 1,
-			'Lava staff upgrade kit': 1
-		}),
-		noCl: true
 	},
 	{
 		name: 'Volcanic abyssal whip',
