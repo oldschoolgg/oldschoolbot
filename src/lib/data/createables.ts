@@ -236,6 +236,405 @@ const ornamentKits: Createable[] = [
 			'Armadyl godsword ornament kit': 1
 		}),
 		noCl: true
+	},
+	{
+		name: 'Dark infinity hat',
+		inputItems: resolveNameBank({
+			'Infinity hat': 1,
+			'Dark infinity colour kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dark infinity hat': 1
+		})
+	},
+	{
+		name: 'Revert dark infinity hat',
+		inputItems: resolveNameBank({
+			'Dark infinity hat': 1
+		}),
+		outputItems: resolveNameBank({
+			'Infinity hat': 1,
+			'Dark infinity colour kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Dark infinity top',
+		inputItems: resolveNameBank({
+			'Infinity top': 1,
+			'Dark infinity colour kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dark infinity top': 1
+		})
+	},
+	{
+		name: 'Revert dark infinity top',
+		inputItems: resolveNameBank({
+			'Dark infinity top': 1
+		}),
+		outputItems: resolveNameBank({
+			'Infinity top': 1,
+			'Dark infinity colour kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Dark infinity bottoms',
+		inputItems: resolveNameBank({
+			'Infinity bottoms': 1,
+			'Dark infinity colour kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dark infinity bottoms': 1
+		})
+	},
+	{
+		name: 'Revert dark infinity bottoms',
+		inputItems: resolveNameBank({
+			'Dark infinity bottoms': 1
+		}),
+		outputItems: resolveNameBank({
+			'Infinity bottoms': 1,
+			'Dark infinity colour kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Light infinity hat',
+		inputItems: resolveNameBank({
+			'Infinity hat': 1,
+			'Light infinity colour kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Light infinity hat': 1
+		})
+	},
+	{
+		name: 'Revert light infinity hat',
+		inputItems: resolveNameBank({
+			'Light infinity hat': 1
+		}),
+		outputItems: resolveNameBank({
+			'Infinity hat': 1,
+			'Light infinity colour kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Light infinity top',
+		inputItems: resolveNameBank({
+			'Infinity top': 1,
+			'Light infinity colour kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Light infinity top': 1
+		})
+	},
+	{
+		name: 'Revert light infinity top',
+		inputItems: resolveNameBank({
+			'Light infinity top': 1
+		}),
+		outputItems: resolveNameBank({
+			'Infinity top': 1,
+			'Light infinity colour kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Light infinity bottoms',
+		inputItems: resolveNameBank({
+			'Infinity bottoms': 1,
+			'Light infinity colour kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Light infinity bottoms': 1
+		})
+	},
+	{
+		name: 'Revert light infinity bottoms',
+		inputItems: resolveNameBank({
+			'Light infinity bottoms': 1
+		}),
+		outputItems: resolveNameBank({
+			'Infinity bottoms': 1,
+			'Light infinity colour kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Twisted ancestral hat',
+		inputItems: resolveNameBank({
+			'Ancestral hat': 1,
+			'Twisted ancestal colour kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Twisted ancestral hat': 1
+		})
+	},
+	{
+		name: 'Revert twisted ancestral hat',
+		inputItems: resolveNameBank({
+			'Twisted acestral hat': 1
+		}),
+		outputItems: resolveNameBank({
+			'Ancestral hat': 1,
+			'Twisted ancestral colour kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Twisted ancestral robe top',
+		inputItems: resolveNameBank({
+			'Ancestral robe top': 1,
+			'Twisted ancestal colour kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Twisted ancestral robe top': 1
+		})
+	},
+	{
+		name: 'Revert twisted ancestral robe top',
+		inputItems: resolveNameBank({
+			'Twisted acestral robe top': 1
+		}),
+		outputItems: resolveNameBank({
+			'Ancestral robe top': 1,
+			'Twisted ancestral colour kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Twisted ancestral robe bottom',
+		inputItems: resolveNameBank({
+			'Ancestral robe bottom': 1,
+			'Twisted ancestal colour kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Twisted ancestral robe bottom': 1
+		})
+	},
+	{
+		name: 'Revert twisted ancestral robe bottom',
+		inputItems: resolveNameBank({
+			'Twisted acestral robe bottom': 1
+		}),
+		outputItems: resolveNameBank({
+			'Ancestral robe bottom': 1,
+			'Twisted ancestral colour kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Tzhaar-ket-om (t)',
+		inputItems: resolveNameBank({
+			'Tzhaar-ket-om': 1,
+			'Tzhaar-ket-om ornament kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Tzhaar-ket-om (t)': 1
+		})
+	},
+	{
+		name: 'Revert tzhaar-ket-om',
+		inputItems: resolveNameBank({
+			'Tzhaar-ket-om (t)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Tzhaar-ket-om': 1,
+			'Tzhaar-ket-om ornament kit': 1
+		}),
+		noCl: true
+	},
+		{
+		name: 'Berserker necklace (or)',
+		inputItems: resolveNameBank({
+			'Berserker necklace': 1,
+			'Berserker necklace ornament kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Berserker necklace (or)': 1
+		})
+	},
+	{
+		name: 'Revert berserker necklace',
+		inputItems: resolveNameBank({
+			'Berserker necklace (or)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Berserker necklace': 1,
+			'Berserker necklace ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Amulet of torture (or)',
+		inputItems: resolveNameBank({
+			'Amulet of torture': 1,
+			'Torture ornament kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Amulet of torture (or)': 1
+		})
+	},
+	{
+		name: 'Revert amulet of torture',
+		inputItems: resolveNameBank({
+			'Amulet of torture (or)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Amulet of torture': 1,
+			'Torture ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Tormented bracelet (or)',
+		inputItems: resolveNameBank({
+			'Tormented bracelet': 1,
+			'Tormented ornament kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Tormented bracelet (or)': 1
+		})
+	},
+	{
+		name: 'Revert tormented bracelet',
+		inputItems: resolveNameBank({
+			'Tormented bracelet (or)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Tormented bracelet': 1,
+			'Tormented ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Necklace of anguish (or)',
+		inputItems: resolveNameBank({
+			'Necklace of anguish': 1,
+			'Anguish ornament kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Necklace of anguish (or)': 1
+		})
+	},
+	{
+		name: 'Revert necklace of anguish',
+		inputItems: resolveNameBank({
+			'Necklace of anguish (or)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Necklace of anguish': 1,
+			'Anguish ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Occult necklace (or)',
+		inputItems: resolveNameBank({
+			'Occult necklace': 1,
+			'Occult ornament kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Occult necklace (or)': 1
+		})
+	},
+	{
+		name: 'Revert occult necklace',
+		inputItems: resolveNameBank({
+			'Occult necklace (or)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Occult necklace': 1,
+			'Occult ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Steam battlestaff (or)',
+		inputItems: resolveNameBank({
+			'Steam battlestaff': 1,
+			'Steam staff upgrade kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Steam battlestaff (or)': 1
+		})
+	},
+	{
+		name: 'Revert steam battlestaff',
+		inputItems: resolveNameBank({
+			'Steam battlestaff (or)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Steam battlestaff': 1,
+			'Steam staff upgrade kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Lava battlestaff (or)',
+		inputItems: resolveNameBank({
+			'Lava battlestaff': 1,
+			'Lava staff upgrade kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Lava battlestaff (or)': 1
+		})
+	},
+	{
+		name: 'Revert lava battlestaff',
+		inputItems: resolveNameBank({
+			'Lava battlestaff (or)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Lava battlestaff': 1,
+			'Lava staff upgrade kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Volcanic abyssal whip',
+		inputItems: resolveNameBank({
+			'Abyssal whip': 1,
+			'Volcanic whip mix': 1
+		}),
+		outputItems: resolveNameBank({
+			'Volcanic abyssal whip': 1
+		})
+	},
+	{
+		name: 'Revert volcanic abyssal whip',
+		inputItems: resolveNameBank({
+			'Volcanic abyssal whip': 1
+		}),
+		outputItems: resolveNameBank({
+			'Abyssal whip': 1,
+			'Volcanic whip mix': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Frozen abyssal whip',
+		inputItems: resolveNameBank({
+			'Abyssal whip': 1,
+			'Frozen whip mix': 1
+		}),
+		outputItems: resolveNameBank({
+			'Frozen abyssal whip': 1
+		})
+	},
+	{
+		name: 'Revert frozen abyssal whip',
+		inputItems: resolveNameBank({
+			'Frozen abyssal whip': 1
+		}),
+		outputItems: resolveNameBank({
+			'Abyssal whip': 1,
+			'Frozen whip mix': 1
+		}),
+		noCl: true
 	}
 ];
 
