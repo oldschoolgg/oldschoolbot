@@ -447,7 +447,7 @@ const ornamentKits: Createable[] = [
 		}),
 		noCl: true
 	},
-		{
+	{
 		name: 'Berserker necklace (or)',
 		inputItems: resolveNameBank({
 			'Berserker necklace': 1,
