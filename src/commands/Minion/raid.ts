@@ -4,9 +4,12 @@ import { table } from 'table';
 import { Activity, Emoji } from '../../lib/constants';
 import {
 	calcCoxDuration,
+	calcCoxInput,
 	calculateUserGearPercents,
 	checkCoxTeam,
-	hasMinRaidsRequirements
+	createTeam,
+	hasMinRaidsRequirements,
+	minimumCoxSuppliesNeeded
 } from '../../lib/data/cox';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
@@ -46,14 +49,26 @@ export default class extends BotCommand {
 		if (msg.flagArgs.simulate) {
 			const arr = Array(20).fill(msg.author);
 			const normalTable = table([
-				['Team Size', 'Duration - Normal', 'Duration - Challenge Mode'],
+				[
+					'Team Size',
+					'Duration - Normal',
+					'Points - Normal',
+					'Death Chance - Normal',
+					'Duration - Challenge Mode',
+					'Points - Challenge Mode',
+					'Death Chance - Normal'
+				],
 				...(await Promise.all(
-					[1, 4, 12].map(async i => {
+					[1, 2, 3, 4, 5, 6, 7, 8, 9, 20].map(async i => {
 						let ar = arr.slice(0, i);
 						return [
 							ar.length,
 							formatDuration((await calcCoxDuration(ar, false)).duration),
-							formatDuration((await calcCoxDuration(ar, true)).duration)
+							(await createTeam(ar, false))[0].personalPoints.toLocaleString(),
+							`${(await createTeam(ar, false))[0].deathChance}%`,
+							formatDuration((await calcCoxDuration(ar, true)).duration),
+							(await createTeam(ar, true))[0].personalPoints.toLocaleString(),
+							`${(await createTeam(ar, false))[0].deathChance}%`
 						];
 					})
 				))
@@ -64,6 +79,12 @@ export default class extends BotCommand {
 		if (!type || (type !== 'mass' && type !== 'solo')) {
 			return msg.send(`Specify your team setup for Chambers of Xeric, either solo or mass.`);
 		}
+
+		const userKC = await msg.author.getMinigameScore('Raids');
+		if (userKC < 10 && type === 'solo') {
+			return msg.channel.send(`You need atleast 10 KC before you can attempt a solo raid.`);
+		}
+
 		const isChallengeMode = Boolean(msg.flagArgs.cm);
 
 		this.checkReqs([msg.author]);
@@ -80,6 +101,21 @@ export default class extends BotCommand {
 				}
 				if (user.minionIsBusy) {
 					return [true, 'your minion is busy.'];
+				}
+
+				if (!user.owns(minimumCoxSuppliesNeeded)) {
+					return [
+						true,
+						`You don't have enough items, you need a minimum of this amount of items: ${minimumCoxSuppliesNeeded}.`
+					];
+				}
+
+				const { total } = calculateUserGearPercents(user);
+				if (total < 20) {
+					return [
+						true,
+						`Your gear is terrible! You do not stand a chance in the Chambers of Xeric`
+					];
 				}
 
 				return [false];
@@ -99,6 +135,13 @@ export default class extends BotCommand {
 
 		let debugStr = '';
 		const isSolo = users.length === 1;
+		await Promise.all(
+			users.map(async u => {
+				const supplies = await calcCoxInput(u, false);
+				await u.removeItemsFromBank(supplies);
+				debugStr += `\n${u.username} used ${supplies}`;
+			})
+		);
 
 		await addSubTaskToActivityTask<RaidsOptions>(this.client, {
 			userID: msg.author.id,

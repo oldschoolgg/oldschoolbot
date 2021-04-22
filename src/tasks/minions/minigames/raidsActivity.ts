@@ -3,36 +3,22 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
+import { Emoji } from '../../../lib/constants';
+import { coxLog } from '../../../lib/data/collectionLog';
 import { createTeam } from '../../../lib/data/cox';
 import { RaidsOptions } from '../../../lib/types/minions';
+import resolveItems from '../../../lib/util/resolveItems';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
-// const uniques = [
-// 	21034,
-// 	21079,
-// 	20997,
-// 	21003,
-// 	21043,
-// 	21012,
-// 	21018,
-// 	21021,
-// 	21024,
-// 	13652,
-// 	22386,
-// 	20851,
-// 	21000,
-// 	21015,
-// 	22388,
-// 	22390,
-// 	22392,
-// 	22394,
-// 	22396
-// ];
+const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic']);
+const purpleItems = Object.values(coxLog)
+	.flat(2)
+	.filter(i => !notPurple.includes(i));
 
 export default class extends Task {
 	async run({ channelID, users, challengeMode, duration, leader }: RaidsOptions) {
 		const allUsers = await Promise.all(users.map(async u => this.client.users.fetch(u)));
-		const team = createTeam(allUsers);
+		const team = await createTeam(allUsers, challengeMode);
 
 		const loot = ChambersOfXeric.complete({
 			challengeMode,
@@ -49,13 +35,15 @@ export default class extends Task {
 		for (let [userID, _userLoot] of Object.entries(loot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
-			const personalPoints = team.find(u => u.id === user.id)?.personalPoints;
-			user.incrementMinigameScore('Raids', 1);
-
+			const { personalPoints, died, deathChance } = team.find(u => u.id === user.id)!;
+			user.incrementMinigameScore(challengeMode ? 'RaidsChallengeMode' : 'Raids', 1);
 			const userLoot = new Bank(_userLoot);
-			resultMessage += `\n**${user}** received: ||${userLoot}|| (${personalPoints?.toLocaleString()} pts, ${
-				Math.round((personalPoints! / totalPoints) * 10000) / 100
-			}%`;
+			const isPurple = userLoot.items().some(([item]) => purpleItems.includes(item.id));
+			const str = isPurple ? `${Emoji.Purple} ||${userLoot}||` : userLoot.toString();
+
+			resultMessage += `\n${
+				died ? `${Emoji.Skull} ` : ''
+			} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts) DeathChance::${deathChance}%`;
 			await user.addItemsToBank(userLoot, true);
 		}
 
