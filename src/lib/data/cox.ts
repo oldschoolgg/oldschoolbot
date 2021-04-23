@@ -321,9 +321,9 @@ export async function calcCoxDuration(
 
 		totalReduction += userPercentChange / size;
 		messages.push(
-			`${userPercentChange.toFixed(1)}%/${(totalSpeedReductions / size).toFixed(2)}% from ${
-				u.username
-			}`
+			`${(userPercentChange / size).toFixed(1)}%/${(totalSpeedReductions / size).toFixed(
+				2
+			)}% from ${u.username}`
 		);
 	}
 	let duration = baseDuration;
