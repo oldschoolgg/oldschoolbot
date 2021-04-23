@@ -49,7 +49,7 @@ function kcPointsEffect(kc: number) {
 export async function createTeam(
 	users: KlasaUser[],
 	cm: boolean
-): Promise<Array<{ died: boolean; deathChance: number } & ChambersOfXericOptions['team'][0]>> {
+): Promise<Array<{ deaths: number; deathChance: number } & ChambersOfXericOptions['team'][0]>> {
 	let res = [];
 	for (const u of users) {
 		let points = 24_000;
@@ -84,11 +84,15 @@ export async function createTeam(
 		if (cm) deathChance *= 2;
 		deathChance += 1;
 
-		let died = false;
+		if (cm && kc > 20) {
+			points += 5000;
+		}
+
+		let deaths = 0;
 		for (let i = 0; i < randInt(1, 3); i++) {
 			if (percentChance(deathChance)) {
-				points = reduceNumByPercent(points, 40);
-				died = true;
+				points = reduceNumByPercent(points, randInt(36, 44));
+				++deaths;
 			}
 		}
 
@@ -100,7 +104,7 @@ export async function createTeam(
 			personalPoints: points,
 			canReceiveAncientTablet: bank.has('Ancient tablet'),
 			canReceiveDust: bank.has('Metamorphic dust'),
-			died,
+			deaths,
 			deathChance
 		});
 	}
@@ -120,7 +124,7 @@ function calcSetupPercent(
 		totalPercent += rawPercent / numKeys;
 	}
 	// Heavy penalize for having less than 50% in the main stat of this setup.
-	if (userStats[heavyPenalizeStat] < maxStats[heavyPenalizeStat]) {
+	if (userStats[heavyPenalizeStat] < maxStats[heavyPenalizeStat] / 2) {
 		totalPercent = Math.floor(Math.max(0, totalPercent / 2));
 	}
 	return totalPercent;
@@ -148,7 +152,7 @@ export const maxRangeGear = constructGearSetup({
 	hands: 'Barrows gloves',
 	legs: 'Armadyl chainskirt',
 	feet: 'Pegasian boots',
-	weapon: 'Twisted bow',
+	'2h': 'Twisted bow',
 	ring: 'Archers ring(i)',
 	ammo: 'Dragon arrow'
 });
@@ -157,12 +161,12 @@ const maxRangeSum = sumOfSetupStats(maxRangeGear);
 export const maxMeleeGear = constructGearSetup({
 	head: 'Neitiznot faceguard',
 	neck: 'Amulet of torture',
-	body: 'bandos chestplate',
+	body: 'Bandos chestplate',
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
 	legs: 'Bandos tassets',
 	feet: 'Primordial boots',
-	weapon: 'Scythe of vitur',
+	'2h': 'Scythe of vitur',
 	ring: 'Berserker ring(i)'
 });
 const maxMeleeSum = sumOfSetupStats(maxMeleeGear);
@@ -197,7 +201,7 @@ export const minimumCoxSuppliesNeeded = new Bank({
 	'Super restore(4)': 5
 });
 
-export function checkCoxTeam(users: KlasaUser[]): string | null {
+export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<string | null> {
 	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
 	if (!hasHerbalist) {
 		return 'nobody with atleast level 78 Herblore';
@@ -210,6 +214,26 @@ export function checkCoxTeam(users: KlasaUser[]): string | null {
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.username} doesn't have enough supplies`;
 	}
+
+	for (const user of users) {
+		const { total } = calculateUserGearPercents(user);
+		if (total < 20) {
+			return `Your gear is terrible! You do not stand a chance in the Chamber's of Xeric.`;
+		}
+		if (!hasMinRaidsRequirements(user)) {
+			return `${user.username} doesn't meet the stat requirements to do the Chamber's of Xeric.`;
+		}
+		if (cm) {
+			if (!user.owns('Twisted bow')) {
+				return `${user.username} doesn't own a Twisted bow, which is required for Challenge Mode.`;
+			}
+			const kc = await user.getMinigameScore('RaidsChallengeMode');
+			if (kc < 200) {
+				return `${user.username} doesn't have the 200 KC required for Challenge Mode.`;
+			}
+		}
+	}
+
 	return null;
 }
 
@@ -221,7 +245,7 @@ async function kcEffectiveness(u: KlasaUser, challengeMode: boolean) {
 
 const speedReductionForGear = 15;
 const speedReductionForKC = 40;
-const totalSpeedReductios = speedReductionForGear + speedReductionForKC;
+const totalSpeedReductions = speedReductionForGear + speedReductionForKC;
 const baseDuration = Time.Minute * 83;
 
 const { ceil } = Math;
@@ -297,7 +321,7 @@ export async function calcCoxDuration(
 
 		totalReduction += userPercentChange / size;
 		messages.push(
-			`${userPercentChange.toFixed(1)}%/${(totalSpeedReductios / size).toFixed(2)}% from ${
+			`${userPercentChange.toFixed(1)}%/${(totalSpeedReductions / size).toFixed(2)}% from ${
 				u.username
 			}`
 		);
@@ -322,9 +346,10 @@ export async function calcCoxInput(u: KlasaUser, solo: boolean) {
 		items.add('Stamina potion(4)', kc > 100 ? 1 : 2);
 	}
 
-	let brewsNeeded = 8 - Math.max(1, Math.ceil(kc / 100));
+	let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));
 	if (solo) brewsNeeded++;
-	const restoresNeeded = Math.floor(brewsNeeded / 3);
+	const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
+
 	items.add('Saradomin brew(4)', brewsNeeded);
 	items.add('Super restore(4)', restoresNeeded);
 	return items;

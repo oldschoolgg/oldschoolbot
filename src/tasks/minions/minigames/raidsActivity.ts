@@ -31,19 +31,29 @@ export default class extends Task {
 			totalPoints += member.personalPoints;
 		}
 
-		let resultMessage = `<@${leader}> Your raid has finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
+		let resultMessage = `<@${leader}> Your ${
+			challengeMode ? 'Challenge Mode Raid' : 'Raid'
+		} has finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
 		for (let [userID, _userLoot] of Object.entries(loot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
-			const { personalPoints, died, deathChance } = team.find(u => u.id === user.id)!;
-			user.incrementMinigameScore(challengeMode ? 'RaidsChallengeMode' : 'Raids', 1);
+			const { personalPoints, deaths, deathChance } = team.find(u => u.id === user.id)!;
+
+			if (challengeMode) {
+				user.incrementMinigameScore('RaidsChallengeMode', 1);
+				user.incrementMinigameScore('Raids', 1);
+			} else {
+				user.incrementMinigameScore('Raids', 1);
+			}
+
 			const userLoot = new Bank(_userLoot);
 			const isPurple = userLoot.items().some(([item]) => purpleItems.includes(item.id));
 			const str = isPurple ? `${Emoji.Purple} ||${userLoot}||` : userLoot.toString();
+			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 
-			resultMessage += `\n${
-				died ? `${Emoji.Skull} ` : ''
-			} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts) DeathChance::${deathChance}%`;
+			resultMessage += `\n${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts) DeathChance::${deathChance.toFixed(
+				2
+			)}%`;
 			await user.addItemsToBank(userLoot, true);
 		}
 

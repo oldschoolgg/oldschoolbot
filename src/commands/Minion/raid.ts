@@ -1,4 +1,4 @@
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { table } from 'table';
 
 import { Activity, Emoji } from '../../lib/constants';
@@ -8,7 +8,6 @@ import {
 	calculateUserGearPercents,
 	checkCoxTeam,
 	createTeam,
-	hasMinRaidsRequirements,
 	minimumCoxSuppliesNeeded
 } from '../../lib/data/cox';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -26,23 +25,6 @@ export default class extends BotCommand {
 			altProtection: true,
 			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES']
 		});
-	}
-
-	checkReqs(users: KlasaUser[]) {
-		// Check if every user has the requirements for this monster.
-		for (const user of users) {
-			if (!user.hasMinion) {
-				throw `${user.username} doesn't have a minion, so they can't join!`;
-			}
-
-			if (user.minionIsBusy) {
-				throw `${user.username} is busy right now and can't join!`;
-			}
-
-			if (!hasMinRaidsRequirements(user)) {
-				throw `${user.username} doesn't meet the minimum requirements to raid.`;
-			}
-		}
 	}
 
 	async run(msg: KlasaMessage, [type]: [string | undefined]) {
@@ -68,7 +50,7 @@ export default class extends BotCommand {
 							`${(await createTeam(ar, false))[0].deathChance}%`,
 							formatDuration((await calcCoxDuration(ar, true)).duration),
 							(await createTeam(ar, true))[0].personalPoints.toLocaleString(),
-							`${(await createTeam(ar, false))[0].deathChance}%`
+							`${(await createTeam(ar, true))[0].deathChance}%`
 						];
 					})
 				))
@@ -76,25 +58,45 @@ export default class extends BotCommand {
 			return msg.channel.sendFile(Buffer.from(normalTable), `cox-sim.txt`);
 		}
 
-		if (!type || (type !== 'mass' && type !== 'solo')) {
-			return msg.send(`Specify your team setup for Chambers of Xeric, either solo or mass.`);
+		if (!type) {
+			const [normal, cm] = await Promise.all([
+				msg.author.getMinigameScore('Raids'),
+				msg.author.getMinigameScore('RaidsChallengeMode')
+			]);
+			return msg.channel
+				.send(`<:Twisted_bow:403018312402862081> Chamber's of Xeric <:Olmlet:324127376873357316>
+**Normal:** ${normal} KC
+**Challenge Mode:** ${cm} KC`);
 		}
 
-		const userKC = await msg.author.getMinigameScore('Raids');
-		if (userKC < 10 && type === 'solo') {
-			return msg.channel.send(`You need atleast 10 KC before you can attempt a solo raid.`);
+		if (!type || (type !== 'mass' && type !== 'solo')) {
+			return msg.send(`Specify your team setup for Chamber's of Xeric, either solo or mass.`);
 		}
 
 		const isChallengeMode = Boolean(msg.flagArgs.cm);
 
-		this.checkReqs([msg.author]);
+		const userKC = await msg.author.getMinigameScore(
+			isChallengeMode ? 'RaidsChallengeMode' : 'Raids'
+		);
+		if (userKC < 50 && type === 'solo') {
+			return msg.channel.send(`You need atleast 50 KC before you can attempt a solo raid.`);
+		}
+
+		if (isChallengeMode) {
+			const normalKC = await msg.author.getMinigameScore('RaidsChallengeMode');
+			if (normalKC < 200) {
+				return msg.channel.send(
+					`You need atleast 200 completions of the Chamber's of Xeric before you can attempt Challenge Mode.`
+				);
+			}
+		}
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 2,
 			maxSize: 15,
 			ironmanAllowed: true,
-			message: `${msg.author.username} is hosting a Chambers of Xeric mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+			message: `${msg.author.username} is hosting a Chamber's of Xeric mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
@@ -114,7 +116,7 @@ export default class extends BotCommand {
 				if (total < 20) {
 					return [
 						true,
-						`Your gear is terrible! You do not stand a chance in the Chambers of Xeric`
+						`Your gear is terrible! You do not stand a chance in the Chamber's of Xeric`
 					];
 				}
 
@@ -124,7 +126,7 @@ export default class extends BotCommand {
 
 		const users = type === 'mass' ? await msg.makePartyAwaiter(partyOptions) : [msg.author];
 
-		const teamCheckFailure = checkCoxTeam(users);
+		const teamCheckFailure = await checkCoxTeam(users, isChallengeMode);
 		if (teamCheckFailure) {
 			return msg.channel.send(
 				`Your mass failed to start because of this reason: ${teamCheckFailure}.`
@@ -137,7 +139,7 @@ export default class extends BotCommand {
 		const isSolo = users.length === 1;
 		await Promise.all(
 			users.map(async u => {
-				const supplies = await calcCoxInput(u, false);
+				const supplies = await calcCoxInput(u, isSolo);
 				await u.removeItemsFromBank(supplies);
 				debugStr += `\n${u.username} used ${supplies}`;
 			})
@@ -150,20 +152,20 @@ export default class extends BotCommand {
 			type: Activity.Raids,
 			leader: msg.author.id,
 			users: users.map(u => u.id),
-			challengeMode: false
+			challengeMode: isChallengeMode
 		});
 
 		let str = isSolo
 			? `${
 					msg.author.minionName
-			  } is now doing a Chambers of Xeric raid. The total trip will take ${formatDuration(
+			  } is now doing a Chamber's of Xeric raid. The total trip will take ${formatDuration(
 					duration
 			  )}`
 			: `${partyOptions.leader.username}'s party (${users
 					.map(u => u.username)
 					.join(
 						', '
-					)}) is now off to do a Chambers of Xeric raid - the total trip will take ${formatDuration(
+					)}) is now off to do a Chamber's of Xeric raid - the total trip will take ${formatDuration(
 					duration
 			  )}.`;
 
@@ -172,7 +174,7 @@ export default class extends BotCommand {
 			const i = calculateUserGearPercents(u);
 			str += `${u.username}[Melee:${i.melee.toFixed(2)}%][Mage:${i.mage.toFixed(
 				2
-			)}%][Range:${i.range.toFixed(2)}%][Total:${i.total.toFixed(2)}%] `;
+			)}%][Range:${i.range.toFixed(2)}%][Total:${i.total.toFixed(2)}%]\n`;
 		}
 
 		str += ` \n\n${debugStr}`;
