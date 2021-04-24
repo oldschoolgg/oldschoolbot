@@ -58,7 +58,7 @@ export default class extends Task {
 			},
 			undefined,
 			data,
-			loot?.bank ?? null
+			loot.bank ?? null
 		);
 	}
 }
