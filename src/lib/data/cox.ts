@@ -160,14 +160,15 @@ export const maxRangeGear = constructGearSetup({
 const maxRangeSum = sumOfSetupStats(maxRangeGear);
 
 export const maxMeleeGear = constructGearSetup({
-	head: 'Helm of neitiznot	',
+	head: "Inquisitor's great helm",
 	neck: 'Amulet of fury',
-	body: 'Bandos chestplate',
+	body: "Inquisitor's hauberk",
 	cape: 'Fire cape',
 	hands: 'Barrows gloves',
-	legs: 'Bandos tassets',
-	feet: 'Primordial boots',
-	'2h': 'Scythe of vitur',
+	legs: "Inquisitor's plateskirt",
+	feet: 'Spiked manacles',
+	weapon: "Inquisitor's mace",
+	shield: 'Dragon defender',
 	ring: 'Berserker ring(i)'
 });
 const maxMeleeSum = sumOfSetupStats(maxMeleeGear);
