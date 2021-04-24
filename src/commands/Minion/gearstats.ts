@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { defaultGear } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import getOSItem from '../../lib/util/getOSItem';
 
@@ -29,9 +28,6 @@ export default class extends BotCommand {
 			}
 		}
 		const image = await generateGearImage(this.client, msg.author, gear, null, null);
-		return msg.send(
-			JSON.stringify(sumOfSetupStats(gear)),
-			new MessageAttachment(image, 'osbot.png')
-		);
+		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
 }
