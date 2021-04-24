@@ -69,7 +69,7 @@ export default class extends BotCommand {
 **Challenge Mode:** ${cm} KC`);
 		}
 
-		if (!type || (type !== 'mass' && type !== 'solo')) {
+		if (type !== 'mass' && type !== 'solo') {
 			return msg.send(`Specify your team setup for Chamber's of Xeric, either solo or mass.`);
 		}
 

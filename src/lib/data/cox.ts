@@ -38,8 +38,8 @@ function kcPointsEffect(kc: number) {
 	if (kc < 15) return -25;
 	if (kc < 25) return -10;
 	if (kc < 50) return -5;
-	if (kc > 100) return 10;
-	if (kc > 150) return 20;
+	if (kc < 100) return 10;
+	if (kc < 150) return 20;
 	if (kc < 200) return 25;
 	return 30;
 }
@@ -329,7 +329,7 @@ export async function calcCoxDuration(
 		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
 
 		// Reduce time for item boosts
-		itemBoosts.map(set => {
+		itemBoosts.forEach(set => {
 			for (const item of set) {
 				if (u.hasItemEquippedOrInBank(item.item.id)) {
 					userPercentChange += item.boost;
