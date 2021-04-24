@@ -160,10 +160,10 @@ export const maxRangeGear = constructGearSetup({
 const maxRangeSum = sumOfSetupStats(maxRangeGear);
 
 export const maxMeleeGear = constructGearSetup({
-	head: 'Neitiznot faceguard',
+	head: 'Helm of neitiznot	',
 	neck: 'Amulet of fury',
 	body: 'Bandos chestplate',
-	cape: 'Infernal cape',
+	cape: 'Fire cape',
 	hands: 'Barrows gloves',
 	legs: 'Bandos tassets',
 	feet: 'Primordial boots',
