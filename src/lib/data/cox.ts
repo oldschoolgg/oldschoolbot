@@ -222,7 +222,7 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 			return `${user.username} doesn't meet the stat requirements to do the Chamber's of Xeric.`;
 		}
 		if (cm) {
-			if (users.length === 1 && !user.owns('Twisted bow')) {
+			if (users.length === 1 && !user.hasItemEquippedOrInBank('Twisted bow')) {
 				return `${user.username} doesn't own a Twisted bow, which is required for solo Challenge Mode.`;
 			}
 			if (
