@@ -79,7 +79,10 @@ export async function createTeam(
 			deathChance += 5;
 		}
 
-		if (cm) deathChance *= 2;
+		if (cm) {
+			deathChance *= 2;
+			points = increaseNumByPercent(points, 25);
+		}
 		deathChance += 1;
 
 		if (cm && kc > 20) {
@@ -130,12 +133,12 @@ function calcSetupPercent(
 
 export const maxMageGear = constructGearSetup({
 	head: 'Ancestral hat',
-	neck: 'Occult necklace',
+	neck: 'Amulet of fury',
 	body: 'Ancestral robe top',
-	cape: 'Imbued saradomin cape',
-	hands: 'Tormented bracelet',
+	cape: 'Saradomin cape',
+	hands: 'Barrows gloves',
 	legs: 'Ancestral robe bottom',
-	feet: 'Eternal boots',
+	feet: 'Wizard boots',
 	weapon: 'Harmonised nightmare staff',
 	shield: 'Arcane spirit shield',
 	ring: 'Seers ring(i)'
@@ -144,7 +147,7 @@ const maxMageSum = sumOfSetupStats(maxMageGear);
 
 export const maxRangeGear = constructGearSetup({
 	head: 'Armadyl helmet',
-	neck: 'Necklace of anguish',
+	neck: 'Amulet of fury',
 	body: 'Armadyl chestplate',
 	cape: "Ava's assembler",
 	hands: 'Barrows gloves',
@@ -158,10 +161,10 @@ const maxRangeSum = sumOfSetupStats(maxRangeGear);
 
 export const maxMeleeGear = constructGearSetup({
 	head: 'Neitiznot faceguard',
-	neck: 'Amulet of torture',
+	neck: 'Amulet of fury',
 	body: 'Bandos chestplate',
 	cape: 'Infernal cape',
-	hands: 'Ferocious gloves',
+	hands: 'Barrows gloves',
 	legs: 'Bandos tassets',
 	feet: 'Primordial boots',
 	'2h': 'Scythe of vitur',
@@ -349,6 +352,12 @@ export async function calcCoxDuration(
 	duration -= duration * (teamSizeBoostPercent(size) / 100);
 	if (challengeMode) {
 		duration *= 2;
+	}
+	if (team.length === 1) {
+		const kc = await team[0].getMinigameScore(challengeMode ? 'RaidsChallengeMode' : 'Raids');
+		if (kc > 200) {
+			duration = reduceNumByPercent(duration, 10);
+		}
 	}
 	duration = randomVariation(duration, 5);
 	return { duration, reductions, totalReduction: totalSpeedReductions / size };

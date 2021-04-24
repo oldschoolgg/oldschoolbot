@@ -77,9 +77,9 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [name:...string]',
 			usageDelim: ' ',
-			description: 'Sends your minion to train Construction by building things.',
-			categoryFlags: ['minion', 'skilling'],
-			examples: ['+build crude wooden chair', '+build 20 mahogany table']
+			description: 'Sends your minion to collect items.',
+			categoryFlags: ['minion'],
+			examples: ['+collect snape grass']
 		});
 	}
 
