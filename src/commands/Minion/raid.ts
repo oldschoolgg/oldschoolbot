@@ -1,4 +1,4 @@
-import { calcWhatPercent } from 'e';
+import { calcWhatPercent, round } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
@@ -87,12 +87,19 @@ export default class extends BotCommand {
 			for (const item of uniques) {
 				totalUniques += cl.amount(item);
 			}
+			const totalPoints = msg.author.settings.get(UserSettings.TotalCoxPoints);
 			return msg.channel
 				.send(`<:Twisted_bow:403018312402862081> Chamber's of Xeric <:Olmlet:324127376873357316>
 **Normal:** ${normal} KC
 **Challenge Mode:** ${cm} KC
-**Total Points:** ${msg.author.settings.get(UserSettings.TotalCoxPoints)}
-**Total Uniques:** ${totalUniques}`);
+**Total Points:** ${totalPoints}
+**Total Uniques:** ${totalUniques} ${
+				totalUniques > 0
+					? `(1 unique per ${Math.floor(
+							totalPoints / totalUniques
+					  ).toLocaleString()} pts)`
+					: ''
+			}`);
 		}
 
 		if (type !== 'mass' && type !== 'solo') {
