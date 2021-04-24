@@ -43,6 +43,7 @@ export namespace UserSettings {
 	export const ZealTokens = T<number>('zeal_tokens');
 	export const OpenableScores = T<O.Readonly<ItemBank>>('openable_scores');
 	export const AttackStyle = T<readonly SkillsEnum[]>('attack_style');
+	export const TotalCoxPoints = T<number>('total_cox_points');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');

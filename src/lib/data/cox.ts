@@ -250,7 +250,7 @@ async function kcEffectiveness(u: KlasaUser, challengeMode: boolean) {
 
 const speedReductionForGear = 15;
 const speedReductionForKC = 40;
-const totalSpeedReductions = speedReductionForGear + speedReductionForKC;
+const totalSpeedReductions = speedReductionForGear + speedReductionForKC + 10 + 5;
 const baseDuration = Time.Minute * 83;
 
 const { ceil } = Math;
@@ -311,12 +311,13 @@ const itemBoosts = [
 export async function calcCoxDuration(
 	_team: KlasaUser[],
 	challengeMode: boolean
-): Promise<{ messages: string[]; duration: number }> {
+): Promise<{ reductions: Record<string, number>; duration: number; totalReduction: number }> {
 	const team = shuffleArr(_team).slice(0, 9);
 	const size = team.length;
-	let messages = [];
 
 	let totalReduction = 0;
+
+	let reductions: Record<string, number> = {};
 
 	for (const u of team) {
 		let userPercentChange = 0;
@@ -340,11 +341,7 @@ export async function calcCoxDuration(
 		});
 
 		totalReduction += userPercentChange / size;
-		messages.push(
-			`${(userPercentChange / size).toFixed(1)}%/${(totalSpeedReductions / size).toFixed(
-				2
-			)}% from ${u.username}`
-		);
+		reductions[u.id] = userPercentChange / size;
 	}
 	let duration = baseDuration;
 
@@ -354,7 +351,7 @@ export async function calcCoxDuration(
 		duration *= 2;
 	}
 	duration = randomVariation(duration, 5);
-	return { duration, messages };
+	return { duration, reductions, totalReduction: totalSpeedReductions / size };
 }
 
 export async function calcCoxInput(u: KlasaUser, solo: boolean) {

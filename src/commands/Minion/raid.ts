@@ -1,4 +1,6 @@
+import { calcWhatPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
 import { Activity, Emoji } from '../../lib/constants';
@@ -10,11 +12,28 @@ import {
 	createTeam,
 	minimumCoxSuppliesNeeded
 } from '../../lib/data/cox';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { RaidsOptions } from '../../lib/types/minions';
-import { formatDuration } from '../../lib/util';
+import { addBanks, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+
+const uniques = [
+	'Dexterous prayer scroll',
+	'Arcane prayer scroll',
+	'Twisted buckler',
+	'Dragon hunter crossbow',
+	"Dinh's bulwark",
+	'Ancestral hat',
+	'Ancestral robe top',
+	'Ancestral robe bottom',
+	'Dragon claws',
+	'Elder maul',
+	'Kodai insignia',
+	'Twisted bow'
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -63,10 +82,17 @@ export default class extends BotCommand {
 				msg.author.getMinigameScore('Raids'),
 				msg.author.getMinigameScore('RaidsChallengeMode')
 			]);
+			let totalUniques = 0;
+			const cl = new Bank(msg.author.collectionLog);
+			for (const item of uniques) {
+				totalUniques += cl.amount(item);
+			}
 			return msg.channel
 				.send(`<:Twisted_bow:403018312402862081> Chamber's of Xeric <:Olmlet:324127376873357316>
 **Normal:** ${normal} KC
-**Challenge Mode:** ${cm} KC`);
+**Challenge Mode:** ${cm} KC
+**Total Points:** ${msg.author.settings.get(UserSettings.TotalCoxPoints)}
+**Total Uniques:** ${totalUniques}`);
 		}
 
 		if (type !== 'mass' && type !== 'solo') {
@@ -129,20 +155,40 @@ export default class extends BotCommand {
 		const teamCheckFailure = await checkCoxTeam(users, isChallengeMode);
 		if (teamCheckFailure) {
 			return msg.channel.send(
-				`Your mass failed to start because of this reason: ${teamCheckFailure}.`
+				`Your mass failed to start because of this reason: ${teamCheckFailure}`
 			);
 		}
 
-		const { duration, messages } = await calcCoxDuration(users, isChallengeMode);
+		const { duration, totalReduction, reductions } = await calcCoxDuration(
+			users,
+			isChallengeMode
+		);
 
 		let debugStr = '';
 		const isSolo = users.length === 1;
+
+		const totalCost = new Bank();
+
 		await Promise.all(
 			users.map(async u => {
 				const supplies = await calcCoxInput(u, isSolo);
 				await u.removeItemsFromBank(supplies);
-				debugStr += `\n${u.username} used ${supplies}`;
+				totalCost.add(supplies);
+				const { total } = calculateUserGearPercents(u);
+				debugStr += `${u.username} (${Emoji.Gear}${total.toFixed(1)}% ${
+					Emoji.CombatSword
+				} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(
+					1
+				)}%) used ${supplies}\n`;
 			})
+		);
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.CoxCost,
+			addBanks([
+				this.client.settings.get(ClientSettings.EconomyStats.CoxCost),
+				totalCost.bank
+			])
 		);
 
 		await addSubTaskToActivityTask<RaidsOptions>(this.client, {
@@ -160,7 +206,7 @@ export default class extends BotCommand {
 					msg.author.minionName
 			  } is now doing a Chamber's of Xeric raid. The total trip will take ${formatDuration(
 					duration
-			  )}`
+			  )}.`
 			: `${partyOptions.leader.username}'s party (${users
 					.map(u => u.username)
 					.join(
@@ -169,16 +215,7 @@ export default class extends BotCommand {
 					duration
 			  )}.`;
 
-		str += '\n\nGearStats: ';
-		for (const u of users) {
-			const i = calculateUserGearPercents(u);
-			str += `${u.username}[Melee:${i.melee.toFixed(2)}%][Mage:${i.mage.toFixed(
-				2
-			)}%][Range:${i.range.toFixed(2)}%][Total:${i.total.toFixed(2)}%]\n`;
-		}
-
 		str += ` \n\n${debugStr}`;
-		str += `\n${messages.join(', ')}`;
 
 		return msg.channel.send(str, {
 			split: true

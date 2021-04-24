@@ -6,7 +6,10 @@ import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXer
 import { Emoji } from '../../../lib/constants';
 import { coxLog } from '../../../lib/data/collectionLog';
 import { createTeam } from '../../../lib/data/cox';
+import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
+import { addBanks } from '../../../lib/util';
 import resolveItems from '../../../lib/util/resolveItems';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
@@ -31,6 +34,8 @@ export default class extends Task {
 			totalPoints += member.personalPoints;
 		}
 
+		const totalLoot = new Bank();
+
 		let resultMessage = `<@${leader}> Your ${
 			challengeMode ? 'Challenge Mode Raid' : 'Raid'
 		} has finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
@@ -46,16 +51,31 @@ export default class extends Task {
 				user.incrementMinigameScore('Raids', 1);
 			}
 
+			user.settings.update(
+				UserSettings.TotalCoxPoints,
+				user.settings.get(UserSettings.TotalCoxPoints) + personalPoints
+			);
+
 			const userLoot = new Bank(_userLoot);
+			totalLoot.add(userLoot);
+
 			const isPurple = userLoot.items().some(([item]) => purpleItems.includes(item.id));
 			const str = isPurple ? `${Emoji.Purple} ||${userLoot}||` : userLoot.toString();
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 
-			resultMessage += `\n${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts) DeathChance::${deathChance.toFixed(
-				2
-			)}%`;
+			resultMessage += `\n${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${
+				Emoji.Skull
+			}${deathChance.toFixed(0)}%)`;
 			await user.addItemsToBank(userLoot, true);
 		}
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.CoxLoot,
+			addBanks([
+				this.client.settings.get(ClientSettings.EconomyStats.CoxLoot),
+				totalLoot.bank
+			])
+		);
 
 		sendToChannelID(this.client, channelID, { content: resultMessage });
 	}
