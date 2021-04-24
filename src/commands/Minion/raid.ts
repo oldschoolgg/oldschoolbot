@@ -1,4 +1,4 @@
-import { calcWhatPercent, round } from 'e';
+import { calcWhatPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
