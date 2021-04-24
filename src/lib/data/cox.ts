@@ -81,7 +81,6 @@ export async function createTeam(
 
 		if (cm) {
 			deathChance *= 2;
-			points = increaseNumByPercent(points, 25);
 		}
 		deathChance += 1;
 
@@ -282,10 +281,6 @@ function teamSizeBoostPercent(size: number) {
 		default:
 			return 35;
 	}
-}
-
-if (teamSizeBoostPercent(9) !== teamSizeBoostPercent(11)) {
-	throw new Error('WTFFFFFFFFFFFFFF');
 }
 
 const itemBoosts = [
