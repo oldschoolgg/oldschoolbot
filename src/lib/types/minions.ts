@@ -266,3 +266,8 @@ export interface RaidsOptions extends ActivityTaskOptions {
 	users: string[];
 	challengeMode: boolean;
 }
+
+export interface CollectingOptions extends ActivityTaskOptions {
+	collectableID: number;
+	quantity: number;
+}
