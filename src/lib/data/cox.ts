@@ -81,6 +81,7 @@ export async function createTeam(
 
 		if (cm) {
 			deathChance *= 2;
+			points = increaseNumByPercent(points, 40);
 		}
 		deathChance += 1;
 
@@ -348,12 +349,7 @@ export async function calcCoxDuration(
 	if (challengeMode) {
 		duration *= 2;
 	}
-	if (team.length === 1) {
-		const kc = await team[0].getMinigameScore(challengeMode ? 'RaidsChallengeMode' : 'Raids');
-		if (kc > 200) {
-			duration = reduceNumByPercent(duration, 10);
-		}
-	}
+
 	duration = randomVariation(duration, 5);
 	return { duration, reductions, totalReduction: totalSpeedReductions / size };
 }
