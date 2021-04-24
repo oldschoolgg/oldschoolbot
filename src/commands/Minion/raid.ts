@@ -78,7 +78,7 @@ export default class extends BotCommand {
 		const userKC = await msg.author.getMinigameScore(
 			isChallengeMode ? 'RaidsChallengeMode' : 'Raids'
 		);
-		if (userKC < 50 && type === 'solo') {
+		if (!isChallengeMode && userKC < 50 && type === 'solo') {
 			return msg.channel.send(`You need atleast 50 KC before you can attempt a solo raid.`);
 		}
 
