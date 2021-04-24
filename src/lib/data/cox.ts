@@ -44,8 +44,6 @@ function kcPointsEffect(kc: number) {
 	return 30;
 }
 
-// function getBaseDeathChance(kc: number, base) {}
-
 export async function createTeam(
 	users: KlasaUser[],
 	cm: boolean
@@ -96,7 +94,7 @@ export async function createTeam(
 			}
 		}
 
-		points = Math.floor(points);
+		points = Math.floor(randomVariation(points, 5));
 
 		const bank = u.bank();
 		res.push({
@@ -224,8 +222,14 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 			return `${user.username} doesn't meet the stat requirements to do the Chamber's of Xeric.`;
 		}
 		if (cm) {
-			if (!user.owns('Twisted bow')) {
-				return `${user.username} doesn't own a Twisted bow, which is required for Challenge Mode.`;
+			if (users.length === 1 && !user.owns('Twisted bow')) {
+				return `${user.username} doesn't own a Twisted bow, which is required for solo Challenge Mode.`;
+			}
+			if (
+				users.length > 1 &&
+				(!user.owns('Dragon hunter crossbow') || !user.owns('Twisted bow'))
+			) {
+				return `${user.username} doesn't own a Twisted bow or Dragon hunter crossbow, which is required for Challenge Mode.`;
 			}
 			const kc = await user.getMinigameScore('RaidsChallengeMode');
 			if (kc < 200) {
@@ -281,14 +285,26 @@ if (teamSizeBoostPercent(9) !== teamSizeBoostPercent(11)) {
 }
 
 const itemBoosts = [
-	{
-		item: getOSItem('Twisted bow'),
-		boost: 10
-	},
-	{
-		item: getOSItem('Dragon warhammer'),
-		boost: 5
-	}
+	[
+		{
+			item: getOSItem('Twisted bow'),
+			boost: 10
+		},
+		{
+			item: getOSItem('Dragon hunter crossbow'),
+			boost: 5
+		}
+	],
+	[
+		{
+			item: getOSItem('Dragon warhammer'),
+			boost: 5
+		},
+		{
+			item: getOSItem('Bandos godsword'),
+			boost: 2.5
+		}
+	]
 ];
 
 export async function calcCoxDuration(
@@ -313,11 +329,14 @@ export async function calcCoxDuration(
 		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
 
 		// Reduce time for item boosts
-		for (const item of itemBoosts) {
-			if (u.hasItemEquippedOrInBank(item.item.id)) {
-				userPercentChange += item.boost;
+		itemBoosts.map(set => {
+			for (const item of set) {
+				if (u.hasItemEquippedOrInBank(item.item.id)) {
+					userPercentChange += item.boost;
+					break;
+				}
 			}
-		}
+		});
 
 		totalReduction += userPercentChange / size;
 		messages.push(
