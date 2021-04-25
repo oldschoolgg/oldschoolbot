@@ -3,13 +3,14 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
-import { Emoji } from '../../../lib/constants';
+import { Emoji, Events } from '../../../lib/constants';
 import { coxLog } from '../../../lib/data/collectionLog';
 import { createTeam } from '../../../lib/data/cox';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
-import { addBanks } from '../../../lib/util';
+import { addBanks, filterBankFromArrayOfItems } from '../../../lib/util';
+import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import resolveItems from '../../../lib/util/resolveItems';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
@@ -39,17 +40,21 @@ export default class extends Task {
 		let resultMessage = `<@${leader}> Your ${
 			challengeMode ? 'Challenge Mode Raid' : 'Raid'
 		} has finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
+		await Promise.all(
+			allUsers.map(u => {
+				if (challengeMode) {
+					u.incrementMinigameScore('RaidsChallengeMode', 1);
+					u.incrementMinigameScore('Raids', 1);
+				} else {
+					u.incrementMinigameScore('Raids', 1);
+				}
+			})
+		);
+
 		for (let [userID, _userLoot] of Object.entries(loot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
 			const { personalPoints, deaths, deathChance } = team.find(u => u.id === user.id)!;
-
-			if (challengeMode) {
-				user.incrementMinigameScore('RaidsChallengeMode', 1);
-				user.incrementMinigameScore('Raids', 1);
-			} else {
-				user.incrementMinigameScore('Raids', 1);
-			}
 
 			user.settings.update(
 				UserSettings.TotalCoxPoints,
@@ -60,6 +65,17 @@ export default class extends Task {
 			totalLoot.add(userLoot);
 
 			const isPurple = userLoot.items().some(([item]) => purpleItems.includes(item.id));
+			if (isPurple) {
+				const itemsToAnnounce = filterBankFromArrayOfItems(purpleItems, _userLoot);
+				this.client.emit(
+					Events.ServerNotification,
+					`${Emoji.Purple} ${user.username} just received **${new Bank(
+						itemsToAnnounce
+					)}** on their ${formatOrdinal(
+						await user.getMinigameScore(challengeMode ? 'RaidsChallengeMode' : 'Raids')
+					)} raid.`
+				);
+			}
 			const str = isPurple ? `${Emoji.Purple} ||${userLoot}||` : userLoot.toString();
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 
