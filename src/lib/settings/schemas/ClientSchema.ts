@@ -15,6 +15,8 @@ Client.defaultClientSchema
 	.add('gnome_res_loot', 'any', { default: {} })
 	.add('rogues_den_cost', 'any', { default: {} })
 	.add('gauntlet_loot', 'any', { default: {} })
+	.add('cox_cost', 'any', { default: {} })
+	.add('cox_loot', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })

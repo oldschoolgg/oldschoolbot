@@ -100,5 +100,9 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.CastleWars;
 		case Activity.MageArena:
 			return Tasks.MageArena;
+		case Activity.Raids:
+			return Tasks.Raids;
+		case Activity.Collecting:
+			return Tasks.Collecting;
 	}
 }

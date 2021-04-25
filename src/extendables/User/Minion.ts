@@ -64,6 +64,7 @@ import {
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
+	RaidsOptions,
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
@@ -518,6 +519,17 @@ export default class extends Extendable {
 
 			case Activity.MageArena: {
 				return `${this.minionName} is currently doing the Mage Arena. ${formattedDuration}`;
+			}
+
+			case Activity.Raids: {
+				const data = currentTask as RaidsOptions;
+				return `${this.minionName} is currently doing the Chamber's of Xeric${
+					data.challengeMode ? ' in Challenge Mode' : ''
+				}, ${
+					data.users.length === 1
+						? 'as a solo'
+						: `with a team of ${data.users.length} minions.`
+				} ${formattedDuration}`;
 			}
 		}
 	}

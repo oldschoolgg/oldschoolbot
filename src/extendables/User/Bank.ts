@@ -14,6 +14,7 @@ import {
 	removeBankFromBank,
 	removeItemFromBank
 } from '../../lib/util';
+import itemID from '../../lib/util/itemID';
 
 export interface GetUserBankOptions {
 	withGP?: boolean;
@@ -217,7 +218,10 @@ export default class extends Extendable {
 		return typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
 	}
 
-	public owns(this: User, bank: ItemBank | Bank) {
+	public owns(this: User, bank: ItemBank | Bank | string) {
+		if (typeof bank === 'string') {
+			return Boolean(this.settings.get(UserSettings.Bank)[itemID(bank)]);
+		}
 		const itemBank = bank instanceof Bank ? { ...bank.bank } : bank;
 		return bankHasAllItemsFromBank(
 			{ ...this.settings.get(UserSettings.Bank), 995: this.settings.get(UserSettings.GP) },
