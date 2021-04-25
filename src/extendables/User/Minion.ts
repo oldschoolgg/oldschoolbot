@@ -69,6 +69,7 @@ import {
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SoulWarsOptions,
+	WealthChargingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
@@ -490,6 +491,11 @@ export default class extends Extendable {
 			case Activity.GloryCharging: {
 				const data = currentTask as GloryChargingActivityTaskOptions;
 				return `${this.minionName} is currently charging ${data.quantity}x inventories of glories at the Fountain of Rune. ${formattedDuration}`;
+			}
+
+			case Activity.WealthCharging: {
+				const data = currentTask as WealthChargingActivityTaskOptions;
+				return `${this.minionName} is currently charging ${data.quantity}x inventories of rings of wealth at the Fountain of Rune. ${formattedDuration}`;
 			}
 
 			case Activity.GnomeRestaurant: {

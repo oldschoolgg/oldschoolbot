@@ -32,6 +32,7 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.Enchanting:
 		case Activity.Casting:
 		case Activity.GloryCharging:
+		case Activity.WealthCharging:
 		case Activity.Collecting:
 			return ActivityGroup.Skilling;
 		case Activity.FightCaves:

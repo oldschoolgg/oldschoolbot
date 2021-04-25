@@ -17,6 +17,10 @@ export interface GloryChargingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface WealthChargingActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	courseID: string;
 	quantity: number;
