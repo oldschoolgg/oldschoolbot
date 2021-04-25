@@ -10,6 +10,7 @@ import {
 	calculateUserGearPercents,
 	checkCoxTeam,
 	createTeam,
+	hasMinRaidsRequirements,
 	minimumCoxSuppliesNeeded
 } from '../../lib/data/cox';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -138,6 +139,9 @@ export default class extends BotCommand {
 				}
 				if (user.minionIsBusy) {
 					return [true, 'your minion is busy.'];
+				}
+				if (!hasMinRaidsRequirements(user)) {
+					return [true, `You meet the stat requirements to do the Chamber's of Xeric.`];
 				}
 
 				if (!user.owns(minimumCoxSuppliesNeeded)) {
