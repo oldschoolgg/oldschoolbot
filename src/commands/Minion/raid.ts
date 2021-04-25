@@ -42,7 +42,9 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES']
+			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			description: 'Sends your minion to do the Chambers of Xeric.',
+			examples: ['+raid solo', '+raid mass']
 		});
 	}
 
