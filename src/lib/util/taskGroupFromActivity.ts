@@ -33,6 +33,7 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.Casting:
 		case Activity.GloryCharging:
 		case Activity.WealthCharging:
+		case Activity.Collecting:
 			return ActivityGroup.Skilling;
 		case Activity.FightCaves:
 		case Activity.Wintertodt:
@@ -52,8 +53,10 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.SoulWars:
 		case Activity.GnomeRestaurant:
 		case Activity.RoguesDenMaze:
-		case Activity.RabbitCatching:
 		case Activity.Gauntlet:
+		case Activity.CastleWars:
+		case Activity.MageArena:
+		case Activity.Raids:
 			return ActivityGroup.Minigame;
 		default: {
 			throw new Error(`Unrecognized activity: ${type}`);

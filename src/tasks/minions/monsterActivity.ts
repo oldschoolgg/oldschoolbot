@@ -1,4 +1,5 @@
 import { Task } from 'klasa';
+import { Bank, Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -13,27 +14,39 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinionDailyDuration(duration);
 		await user.incrementMonsterScore(monsterID, quantity);
-		const loot = monster.table.kill(quantity);
+		const loot = new Bank(monster.table.kill(quantity));
 
-		announceLoot(this.client, user, monster, quantity, loot);
-		const { previousCL } = await user.addItemsToBank(loot, true);
+		announceLoot(this.client, user, monster, loot.bank);
 
 		const xpRes = await addMonsterXP(user, monsterID, quantity, duration);
+
+		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
+			monster.name
+		} KC is now ${user.getKC(monsterID)}.\n${xpRes.join(', ')}.`;
+
+		if (
+			monster.id === Monsters.Unicorn.id &&
+			user.hasItemEquippedAnywhere('Iron dagger') &&
+			!user.hasItemEquippedOrInBank('Clue hunter cloak')
+		) {
+			loot.add('Clue hunter cloak');
+			loot.add('Clue hunter boots');
+
+			str += `\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.`;
+		}
+
+		const { previousCL } = await user.addItemsToBank(loot, true);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
-				loot,
+				loot.bank,
 				`Loot From ${quantity} ${monster.name}:`,
 				true,
 				{ showNewCL: 1 },
 				user,
 				previousCL
 			);
-
-		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
-			monster.name
-		} KC is now ${user.getKC(monsterID)}.\n${xpRes.join(', ')}.`;
 
 		handleTripFinish(
 			this.client,
@@ -46,7 +59,7 @@ export default class extends Task {
 			},
 			image!,
 			data,
-			loot
+			loot.bank
 		);
 	}
 }

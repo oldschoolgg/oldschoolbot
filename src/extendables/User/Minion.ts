@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, randArrItem, uniqueArr } from 'e';
+import { calcPercentOfNum, calcWhatPercent, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -59,10 +59,12 @@ import {
 	GroupMonsterActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
+	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
+	RaidsOptions,
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
@@ -509,26 +511,31 @@ export default class extends Extendable {
 				return `${this.minionName} is currently attempting the Rogues' Den maze. ${formattedDuration}`;
 			}
 
-			case Activity.RabbitCatching: {
-				let messages = [
-					'chasing a rabbit through the farm',
-					'having a rest',
-					'eating some carrots',
-					'holding a cute little rabbit',
-					'using the rabbits as a distraction to pickpocket the farmers'
-				];
-				return `${
-					this.minionName
-				} is doing the Easter Holiday Event! They're currently ${randArrItem(
-					messages
-				)}. ${formattedDuration}`;
-			}
-
 			case Activity.Gauntlet: {
 				const data = currentTask as GauntletOptions;
 				return `${this.minionName} is currently doing ${data.quantity}x ${
 					data.corrupted ? 'Corrupted' : 'Normal'
 				} Gauntlet. ${formattedDuration}`;
+			}
+
+			case Activity.CastleWars: {
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.quantity}x Castle Wars games. ${formattedDuration}`;
+			}
+
+			case Activity.MageArena: {
+				return `${this.minionName} is currently doing the Mage Arena. ${formattedDuration}`;
+			}
+
+			case Activity.Raids: {
+				const data = currentTask as RaidsOptions;
+				return `${this.minionName} is currently doing the Chamber's of Xeric${
+					data.challengeMode ? ' in Challenge Mode' : ''
+				}, ${
+					data.users.length === 1
+						? 'as a solo'
+						: `with a team of ${data.users.length} minions.`
+				} ${formattedDuration}`;
 			}
 		}
 	}

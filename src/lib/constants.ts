@@ -33,7 +33,8 @@ export const enum Roles {
 	// Status Roles
 	TopSkiller = '795266465329709076',
 	TopCollector = '795271210141351947',
-	TopSacrificer = '795933981715464192'
+	TopSacrificer = '795933981715464192',
+	TopMinigamer = '832798997033779220'
 }
 
 export const enum Emoji {
@@ -101,6 +102,7 @@ export const enum Emoji {
 	Attack = '<:attack:630911039969427467>',
 	Defence = '<:defence:630911040393052180>',
 	Ranged = '<:ranged:630911040258834473>',
+	Gear = '<:gear:835314891950129202>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -115,7 +117,10 @@ export const enum Emoji {
 	Crab = '<:crab:778418736432021505>',
 	Skiller = '<:skiller:802136963775463435>',
 	Incinerator = '<:incinerator:802136963674275882>',
-	CollectionLog = '<:collectionLog:802136964027121684>'
+	CollectionLog = '<:collectionLog:802136964027121684>',
+	Minigames = '<:minigameIcon:630400565070921761>',
+	Skull = '<:Skull:802136963926065165>',
+	CombatSword = '<:combat:802136963956080650>'
 }
 
 export const enum ReactionEmoji {
@@ -182,8 +187,11 @@ export const enum Tasks {
 	GnomeRestaurant = 'gnomeRestaurantActivity',
 	SoulWars = 'soulWarsActivity',
 	RoguesDenMaze = 'roguesDenMazeActivity',
-	RabbitCatching = 'rabbitCatchingActivity',
-	Gauntlet = 'gauntletActivity'
+	Gauntlet = 'gauntletActivity',
+	CastleWars = 'castleWarsActivity',
+	MageArena = 'mageArenaActivity',
+	Raids = 'raidsActivity',
+	Collecting = 'collectingActivity'
 }
 
 export enum Activity {
@@ -234,8 +242,11 @@ export enum Activity {
 	GnomeRestaurant = 'GnomeRestaurant',
 	SoulWars = 'SoulWars',
 	RoguesDenMaze = 'RoguesDenMaze',
-	RabbitCatching = 'RabbitCatching',
-	Gauntlet = 'Gauntlet'
+	Gauntlet = 'Gauntlet',
+	CastleWars = 'CastleWars',
+	MageArena = 'MageArena',
+	Raids = 'Raids',
+	Collecting = 'Collecting'
 }
 
 export enum ActivityGroup {
@@ -354,10 +365,11 @@ export const badges: { [key: number]: string } = {
 	7: Emoji.Trophy,
 	8: Emoji.Incinerator,
 	9: Emoji.Skiller,
-	10: Emoji.CollectionLog
+	10: Emoji.CollectionLog,
+	11: Emoji.MinigameIcon
 };
 
-export const MAX_QP = 279;
+export const MAX_QP = 280;
 
 export const MIMIC_MONSTER_ID = 23184;
 

@@ -10,7 +10,7 @@ import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements } from '../skilling/types';
-import { ArrayItemsResolved, ItemBank } from '../types';
+import { ArrayItemsResolved, ItemBank, Skills } from '../types';
 import { AttackStyles } from './functions';
 
 export interface BankBackground {
@@ -24,6 +24,8 @@ export interface BankBackground {
 	itemCost?: ItemBank;
 	repeatImage?: Image | null;
 	bitfield?: BitField;
+	sacValueRequired?: number;
+	skillsNeeded?: Skills;
 }
 
 export interface ClueMilestoneReward {
