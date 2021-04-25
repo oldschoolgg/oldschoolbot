@@ -87,10 +87,10 @@ const table = new LootTable()
 	)
 	.add(ClueTable, [1, 3])
 	.add(boxTable, [1, 3])
-	.add(DragonTable, [1, 4], 2)
-	.add(runeTable, [1, 4])
+	.add(DragonTable, [1, 6], 2)
+	.add(runeTable, [1, 5])
 	.add('Coins', [5_000_000, 25_000_000])
-	.add(AllBarrows, 2)
+	.add(AllBarrows, 3)
 	.add(PlankTable, 4)
 	.add(Supplies, 1, 5)
 	.add(CrystalChestTable, [5, 10], 2);
@@ -100,7 +100,7 @@ class GrandmasterClue extends Clue {
 		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
-			const numberOfRolls = randInt(2, 6);
+			const numberOfRolls = randInt(2, 7);
 
 			for (let i = 0; i < numberOfRolls; i++) {
 				loot.add(table.roll());
