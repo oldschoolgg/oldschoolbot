@@ -413,7 +413,32 @@ export const bosses: CollectionLogData = {
 	Sarachnis: resolveItems(['Giant egg sac(full)', 'Sarachnis cudgel', 'Jar of eyes', 'Sraracha']),
 	Nightmare: nightmareLog,
 	Zalcano: zalcanoLog,
-	Wintertodt: wintertodtLog
+	Wintertodt: wintertodtLog,
+	Cox1: resolveItems([
+		'Dexterous prayer scroll',
+		'Torn prayer scroll',
+		'Arcane prayer scroll',
+		'Twisted bow',
+		'Elder maul',
+		'Kodai insignia',
+		'Dragon hunter crossbow',
+		'Dragon claws',
+		'Ancestral hat',
+		'Ancestral robe top',
+		'Ancestral robe bottom',
+		'Twisted buckler'
+	]),
+	Cox2: resolveItems([
+		"Dinh's bulwark",
+		'Dark relic',
+		'Metamorphic dust',
+		'Olmlet',
+		"Xeric's guard",
+		"Xeric's warrior",
+		"Xeric's sentinel",
+		"Xeric's general",
+		"Xeric's champion"
+	])
 };
 
 export const pets: CollectionLogData = {
