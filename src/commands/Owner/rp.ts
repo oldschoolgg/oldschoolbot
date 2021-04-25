@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 
 import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { OldSchoolBotClient } from '../../lib/structures/OldSchoolBotClient';
@@ -54,7 +55,8 @@ export default class extends BotCommand {
 					`${Emoji.RottenPotato} Bypassed age restriction for ${input.username}.`
 				);
 			}
-			case 'check': {
+			case 'check':
+			case 'c': {
 				if (!input) return;
 				const bitfields = `${input.settings
 					.get(UserSettings.BitField)
@@ -77,12 +79,20 @@ export default class extends BotCommand {
 					.join(', ');
 
 				const userBadges = input.settings.get(UserSettings.Badges).map(i => badges[i]);
+				const isBlacklisted = this.client.settings
+					.get(ClientSettings.UserBlacklist)
+					.includes(input.id);
 				return msg.send(
 					`**${input.username}**
 **Bitfields:** ${bitfields}
 **Badges:** ${userBadges}
 **Current Task:** ${taskText}
 **Previous Tasks:** ${lastTasksStr}.
+**Blacklisted:** ${isBlacklisted ? 'Yes' : 'No'}
+**Patreon/Github:** ${input.settings.get(UserSettings.PatreonID) ?? 'None'}/${
+						input.settings.get(UserSettings.GithubID) ?? 'None'
+					}
+**Ironman:** ${input.isIronman ? 'Yes' : 'No'}
 `
 				);
 			}
