@@ -108,10 +108,6 @@ export default class extends BotCommand {
 			return msg.send(`Specify your team setup for Chamber's of Xeric, either solo or mass.`);
 		}
 
-		if (1 > 0) {
-			return msg.channel.send(`Nothing interesting happens.`);
-		}
-
 		const isChallengeMode = Boolean(msg.flagArgs.cm);
 
 		const userKC = await msg.author.getMinigameScore(
