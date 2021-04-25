@@ -260,3 +260,14 @@ export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOpti
 	leader: string;
 	users: string[];
 }
+
+export interface RaidsOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	challengeMode: boolean;
+}
+
+export interface CollectingOptions extends ActivityTaskOptions {
+	collectableID: number;
+	quantity: number;
+}

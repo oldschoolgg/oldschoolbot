@@ -223,7 +223,7 @@ declare module 'discord.js' {
 		getGear(gearType: GearSetupType): GearSetup;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
 		getAttackStyles(): AttackStyles[];
-		owns(bank: ItemBank | Bank): boolean;
+		owns(bank: ItemBank | Bank | string): boolean;
 		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.

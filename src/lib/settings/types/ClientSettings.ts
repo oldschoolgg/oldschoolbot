@@ -42,5 +42,8 @@ export namespace ClientSettings {
 
 		export const RoguesDenStaminas = T<O.Readonly<ItemBank>>('rogues_den_cost');
 		export const GauntletLoot = T<O.Readonly<ItemBank>>('gauntlet_loot');
+
+		export const CoxCost = T<O.Readonly<ItemBank>>('cox_cost');
+		export const CoxLoot = T<O.Readonly<ItemBank>>('cox_loot');
 	}
 }
