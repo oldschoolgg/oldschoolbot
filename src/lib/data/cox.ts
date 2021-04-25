@@ -362,11 +362,7 @@ export async function calcCoxDuration(
 export async function calcCoxInput(u: KlasaUser, solo: boolean) {
 	const items = new Bank();
 	const kc = await u.getMinigameScore('Raids');
-	if (solo) {
-		items.add('Stamina potion(4)', 3);
-	} else {
-		items.add('Stamina potion(4)', kc > 100 ? 1 : 2);
-	}
+	items.add('Stamina potion(4)', solo ? 2 : 1);
 
 	let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));
 	if (solo) brewsNeeded++;
