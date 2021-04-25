@@ -224,6 +224,11 @@ declare module 'discord.js' {
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
 		getAttackStyles(): AttackStyles[];
 		owns(bank: ItemBank | Bank | string): boolean;
+		completion(): {
+			percent: number;
+			notOwned: number[];
+			owned: number[];
+		};
 		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.

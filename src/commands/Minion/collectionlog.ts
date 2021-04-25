@@ -1,8 +1,7 @@
 import { MessageAttachment } from 'discord.js';
-import { calcWhatPercent, chunk, uniqueArr } from 'e';
+import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
-import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { collectionLogTypes } from '../../lib/data/collectionLog';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -11,18 +10,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID, stringMatches } from '../../lib/util';
 
 const slicedCollectionLogTypes = collectionLogTypes.slice(0, collectionLogTypes.length - 1);
-
-export function shuffleRandom<T>(input: number, arr: T[]): T[] {
-	const engine = MersenneTwister19937.seed(input);
-	return shuffle(engine, [...arr]);
-}
-
-const allCollectionLogItems = uniqueArr(
-	collectionLogTypes
-		.filter(i => !['Holiday', 'Diango', 'Overall', 'Capes'].includes(i.name))
-		.map(i => Object.values(i.items))
-		.flat(Infinity) as number[]
-);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -38,19 +25,9 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [inputType]: [string]) {
 		if (!inputType) {
-			const clItems = Object.keys(
-				msg.author.settings.get(UserSettings.CollectionLogBank)
-			).map(i => parseInt(i));
-			const clExclusive = clItems.filter(i => allCollectionLogItems.includes(i));
-			const notOwned = shuffleRandom(
-				Number(msg.author.id),
-				allCollectionLogItems.filter(i => !clItems.includes(i))
-			).slice(0, 10);
+			const { percent, notOwned } = msg.author.completion();
 			return msg.send(
-				`You have **${calcWhatPercent(
-					clExclusive.length,
-					allCollectionLogItems.length
-				).toFixed(2)}%** Collection Log Completion.
+				`You have **${percent.toFixed(2)}%** Collection Log Completion.
 				
 Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 			);
