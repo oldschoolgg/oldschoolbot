@@ -77,7 +77,7 @@ const table = new LootTable()
 	.tertiary(5_000, 'Deathtouched dart')
 	.tertiary(50, LampTable)
 	.tertiary(
-		250_000,
+		200_000,
 		new LootTable()
 			.add('First age tiara')
 			.add('First age amulet')
@@ -87,12 +87,12 @@ const table = new LootTable()
 	)
 	.add(ClueTable, [1, 3])
 	.add(boxTable, [1, 3])
-	.add(DragonTable, [1, 2], 2)
-	.add(runeTable)
-	.add('Coins', [5_000_000, 20_000_000])
+	.add(DragonTable, [1, 4], 2)
+	.add(runeTable, [1, 4])
+	.add('Coins', [5_000_000, 25_000_000])
 	.add(AllBarrows, 2)
-	.add(PlankTable, 2)
-	.add(Supplies, 1, 3)
+	.add(PlankTable, 4)
+	.add(Supplies, 1, 5)
 	.add(CrystalChestTable, [5, 10], 2);
 
 class GrandmasterClue extends Clue {
