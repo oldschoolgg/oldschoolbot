@@ -3,8 +3,9 @@ import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { collectables } from '../../commands/Minion/collect';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { CollectingOptions } from '../../lib/types/minions';
-import { skillsMeetRequirements } from '../../lib/util';
+import { addBanks, skillsMeetRequirements } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 function hasMoryHard(user: KlasaUser) {
@@ -44,6 +45,14 @@ export default class extends Task {
 		if (moryHardBoost) {
 			str += `\n\n**Boosts:** 2x for Morytania Hard diary`;
 		}
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.CollectingLoot,
+			addBanks([
+				this.client.settings.get(ClientSettings.EconomyStats.CollectingLoot),
+				loot.bank
+			])
+		);
 
 		handleTripFinish(
 			this.client,

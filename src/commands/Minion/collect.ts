@@ -5,10 +5,11 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Skills } from '../../lib/types';
 import { CollectingOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { addBanks, formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 
@@ -123,6 +124,14 @@ export default class extends BotCommand {
 			);
 		}
 		await msg.author.removeItemsFromBank(cost);
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.CollectingCost,
+			addBanks([
+				this.client.settings.get(ClientSettings.EconomyStats.CollectingCost),
+				cost.bank
+			])
+		);
 
 		await addSubTaskToActivityTask<CollectingOptions>(this.client, {
 			collectableID: collectable.item.id,
