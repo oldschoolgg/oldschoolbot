@@ -17,6 +17,8 @@ Client.defaultClientSchema
 	.add('gauntlet_loot', 'any', { default: {} })
 	.add('cox_cost', 'any', { default: {} })
 	.add('cox_loot', 'any', { default: {} })
+	.add('collecting_cost', 'any', { default: {} })
+	.add('collecting_loot', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })

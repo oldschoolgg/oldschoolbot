@@ -45,5 +45,8 @@ export namespace ClientSettings {
 
 		export const CoxCost = T<O.Readonly<ItemBank>>('cox_cost');
 		export const CoxLoot = T<O.Readonly<ItemBank>>('cox_loot');
+
+		export const CollectingCost = T<O.Readonly<ItemBank>>('collecting_cost');
+		export const CollectingLoot = T<O.Readonly<ItemBank>>('collecting_loot');
 	}
 }
