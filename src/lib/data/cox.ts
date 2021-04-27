@@ -74,7 +74,9 @@ export async function createTeam(
 		deathChance -= calcPercentOfNum(kcPercent, 10);
 
 		if (users.length > 1) {
-			points -= Math.min(6, Math.max(3, users.length)) * 1600;
+			points -=
+				Math.min(6, Math.max(3, users.length)) *
+				Math.min(1600, calcPercentOfNum(15, points));
 		} else {
 			deathChance += 5;
 		}
