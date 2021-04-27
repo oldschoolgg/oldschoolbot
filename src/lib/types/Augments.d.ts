@@ -145,7 +145,6 @@ declare module 'discord.js' {
 		addXP(skillName: SkillsEnum, amount: number, duration?: number): Promise<string>;
 		skillLevel(skillName: SkillsEnum): number;
 		totalLevel(returnXP = false): number;
-		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
 		toggleBusy(busy: boolean): void;
 		/**
 		 * Returns how many of an item a user owns, checking their bank and all equipped gear.

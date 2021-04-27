@@ -153,7 +153,6 @@ export default class extends BotCommand {
 			leader: msg.author.id,
 			users: users.map(u => u.id)
 		});
-		for (const user of users) user.incrementMinionDailyDuration(duration);
 
 		let killsPerHr = `${Math.round(
 			(quantity / (duration / Time.Minute)) * 60

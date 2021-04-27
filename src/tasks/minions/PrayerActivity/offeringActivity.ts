@@ -8,9 +8,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: OfferingActivityTaskOptions) {
-		const { boneID, quantity, userID, channelID, duration } = data;
+		const { boneID, quantity, userID, channelID } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 
 		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);
