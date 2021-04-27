@@ -1,4 +1,4 @@
-import { captureException, captureMessage } from '@sentry/minimal';
+import { captureMessage } from '@sentry/minimal';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
