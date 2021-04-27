@@ -10,7 +10,6 @@ export default class extends Task {
 	async run(data: FletchingActivityTaskOptions) {
 		let { fletchableName, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 
 		const fletchableItem = Fletching.Fletchables.find(
 			fletchable => fletchable.name === fletchableName

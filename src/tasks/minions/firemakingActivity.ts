@@ -8,9 +8,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: FiremakingActivityTaskOptions) {
-		const { burnableID, quantity, userID, channelID, duration } = data;
+		const { burnableID, quantity, userID, channelID } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 
 		const burnable = Firemaking.Burnables.find(Burn => Burn.inputLogs === burnableID)!;
 

@@ -9,7 +9,6 @@ export default class extends Task {
 	async run(data: EnchantingActivityTaskOptions) {
 		let { itemID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 
 		const enchantable = Enchantables.find(fletchable => fletchable.id === itemID)!;
 

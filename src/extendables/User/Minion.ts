@@ -77,7 +77,6 @@ import {
 	addItemToBank,
 	convertXPtoLVL,
 	formatDuration,
-	incrementMinionDailyDuration,
 	itemNameFromID,
 	stringMatches,
 	toKMB,
@@ -636,10 +635,6 @@ export default class extends Extendable {
 		return name
 			? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**`
 			: `${prefix} ${icon} Your minion`;
-	}
-
-	public async incrementMinionDailyDuration(this: User, duration: number) {
-		return incrementMinionDailyDuration(this.client as KlasaClient, this.id, duration);
 	}
 
 	public async addXP(
