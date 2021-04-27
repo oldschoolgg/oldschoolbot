@@ -1,3 +1,4 @@
+import { captureException, captureMessage } from '@sentry/minimal';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -100,6 +101,10 @@ export async function createTeam(
 		}
 
 		points = Math.floor(randomVariation(points, 5));
+		if (points < 1 || points > 50_000) {
+			captureMessage(`${u.username} had ${points} points in a team of ${users.length}.`);
+			points = 10_000;
+		}
 
 		const bank = u.bank();
 		res.push({
