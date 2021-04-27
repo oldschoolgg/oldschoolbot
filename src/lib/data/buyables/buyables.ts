@@ -484,6 +484,14 @@ const questBuyables: Buyable[] = [
 		}),
 		gpCost: 1_000_000,
 		qpRequired: 92
+	},
+	{
+		name: 'Climbing boots',
+		outputItems: resolveNameBank({
+			'Climbing boots': 1
+		}),
+		gpCost: 100_000,
+		qpRequired: 20
 	}
 ];
 
