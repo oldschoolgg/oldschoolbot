@@ -148,7 +148,8 @@ ORDER BY u.sacbanklength DESC LIMIT 1;`);
 			'mahogany_homes',
 			'gnome_restaurant',
 			'soul_wars',
-			'castle_wars'
+			'castle_wars',
+			'raids'
 		];
 		for (const game of minigames) {
 			const result = (await this.client.query(
