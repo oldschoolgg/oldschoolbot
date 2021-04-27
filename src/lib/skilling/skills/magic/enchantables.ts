@@ -83,7 +83,7 @@ const jewelery: Enchantable[] = [
 			.add('Fire rune', 20),
 		output: new Bank().add('Amulet of fury'),
 		xp: 97,
-		level: 82
+		level: 87
 	},
 	{
 		name: 'Onyx ring',
