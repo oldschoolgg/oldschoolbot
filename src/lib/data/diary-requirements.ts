@@ -1,7 +1,15 @@
 /* Assumes you cannot use spicy stews until Hard Diaries unless 30 crafting */
 /* Assumes you cannot use crystal saw until Hard Diaries */
 
-export const diaryRequirements = {
+import { SkillsEnum } from '../skilling/types';
+
+export const diaryRequirements: Record<
+	string,
+	Record<
+		SkillsEnum,
+		{ statReq: [number, number, number, number]; boost: [number, number, number, number] }
+	>
+> = {
 	Ardougne: {
 		attack: {
 			statReq: [0, 0, 0, 0],

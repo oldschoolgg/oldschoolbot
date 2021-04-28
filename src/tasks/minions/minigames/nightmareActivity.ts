@@ -11,7 +11,6 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { addBanks, noOp, randomVariation } from '../../../lib/util';
-import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
@@ -36,7 +35,6 @@ export default class extends Task {
 		for (const id of users) {
 			const user = await this.client.users.fetch(id).catch(noOp);
 			if (!user) continue;
-			user.incrementMinionDailyDuration(duration);
 			const [data] = getNightmareGearStats(user, users);
 			parsedUsers.push({ ...data, id: user.id });
 		}
@@ -83,14 +81,11 @@ export default class extends Task {
 				isImportantItemForMonster(parseInt(itemID), NightmareMonster)
 			);
 
-			resultStr += `${
-				purple ? Emoji.Purple : ''
-			} **${user} received:** ||${await createReadableItemListFromBank(
-				this.client,
+			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(
 				loot
 			)}||\n`;
 
-			announceLoot(this.client, leaderUser, NightmareMonster, quantity, loot, {
+			announceLoot(this.client, leaderUser, NightmareMonster, loot, {
 				leader: leaderUser,
 				lootRecipient: user,
 				size: users.length

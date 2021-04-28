@@ -43,6 +43,7 @@ export namespace UserSettings {
 	export const ZealTokens = T<number>('zeal_tokens');
 	export const OpenableScores = T<O.Readonly<ItemBank>>('openable_scores');
 	export const AttackStyle = T<readonly SkillsEnum[]>('attack_style');
+	export const TotalCoxPoints = T<number>('total_cox_points');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');
@@ -63,7 +64,6 @@ export namespace UserSettings {
 	export namespace Minion {
 		export const Name = T<string>('minion.name');
 		export const HasBought = T<boolean>('minion.hasBought');
-		export const DailyDuration = T<number>('minion.dailyDuration');
 		export const Ironman = T<boolean>('minion.ironman');
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');

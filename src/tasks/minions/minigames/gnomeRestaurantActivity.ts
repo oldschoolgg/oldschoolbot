@@ -6,7 +6,7 @@ import { getMinionName, incrementMinigameScore } from '../../../lib/settings/set
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, incrementMinionDailyDuration, roll } from '../../../lib/util';
+import { addBanks, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const tipTable = new LootTable()
@@ -62,7 +62,6 @@ export default class extends Task {
 	async run(data: GnomeRestaurantActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, gloriesRemoved } = data;
 
-		incrementMinionDailyDuration(this.client, userID, duration);
 		incrementMinigameScore(userID, 'GnomeRestaurant', quantity);
 
 		const loot = new Bank();

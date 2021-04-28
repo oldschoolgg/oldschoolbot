@@ -10,6 +10,7 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { randomItemFromArray } from '../../lib/util';
@@ -100,6 +101,17 @@ export default class MinionCommand extends BotCommand {
 			} catch (err) {
 				return msg.channel.send('Cancelled de-ironning.');
 			}
+		}
+
+		const existingGiveaways = await GiveawayTable.find({
+			userID: msg.author.id,
+			completed: false
+		});
+
+		if (existingGiveaways.length !== 0) {
+			return msg.channel.send(
+				`You can't become an ironman because you have active giveaways.`
+			);
 		}
 
 		await msg.send(

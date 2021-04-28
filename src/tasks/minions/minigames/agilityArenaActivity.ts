@@ -21,7 +21,6 @@ export default class extends Task {
 	async run(data: AgilityArenaActivityTaskOptions) {
 		const { channelID, duration, userID } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
 		// You get 1 ticket per minute at best without diary

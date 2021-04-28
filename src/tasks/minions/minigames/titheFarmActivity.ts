@@ -11,13 +11,12 @@ import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: TitheFarmActivityTaskOptions) {
-		const { userID, channelID, duration } = data;
+		const { userID, channelID } = data;
 		const baseHarvest = 85;
 		const lootStr: string[] = [];
 		const levelStr: string[] = [];
 
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 
 		const farmingLvl = user.skillLevel(SkillsEnum.Farming);
 		const titheFarmsCompleted = user.settings.get(UserSettings.Stats.TitheFarmsCompleted);

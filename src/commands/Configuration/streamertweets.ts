@@ -24,21 +24,23 @@ export default class extends BotCommand {
 			return msg.send(TWEETS_RATELIMITING);
 		}
 		if (msg.guild!.settings.get(GuildSettings.StreamerTweets) === msg.channel.id) {
-			return msg.sendLocale('STREAMER_TWEETS_ALREADY_ENABLED');
+			return msg.send(`Streamer Tweets are already enabled in this channel.`);
 		}
 		if (msg.guild!.settings.get(GuildSettings.StreamerTweets) !== null) {
 			await msg.guild!.settings.update(GuildSettings.StreamerTweets, msg.channel);
-			return msg.sendLocale('STREAMER_TWEETS_ENABLED_OTHER');
+			return msg.send(
+				`Streamer Tweets are already enabled in another channel, but I've switched them to use this channel.`
+			);
 		}
 		await msg.guild!.settings.update(GuildSettings.StreamerTweets, msg.channel);
-		return msg.sendLocale('STREAMER_TWEETS_ENABLED');
+		return msg.send(`Enabled Streamer Tweets in this channel.`);
 	}
 
 	async off(msg: KlasaMessage) {
 		if (msg.guild!.settings.get(GuildSettings.StreamerTweets) === null) {
-			return msg.sendLocale('STREAMER_TWEETS_ARENT_ENABLED');
+			return msg.send("Streamer Tweets aren't enabled, so you can't disable them.");
 		}
 		await msg.guild!.settings.reset(GuildSettings.StreamerTweets);
-		return msg.sendLocale('STREAMER_TWEETS_DISABLED');
+		return msg.send('Disabled Streamer Tweets in this channel.');
 	}
 }

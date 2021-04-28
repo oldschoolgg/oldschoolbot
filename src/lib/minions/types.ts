@@ -10,8 +10,7 @@ import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements } from '../skilling/types';
-import { ArrayItemsResolved, ItemBank } from '../types';
-import { MonsterActivityTaskOptions } from '../types/minions';
+import { ArrayItemsResolved, ItemBank, Skills } from '../types';
 import { AttackStyles } from './functions';
 
 export interface BankBackground {
@@ -25,6 +24,8 @@ export interface BankBackground {
 	itemCost?: ItemBank;
 	repeatImage?: Image | null;
 	bitfield?: BitField;
+	sacValueRequired?: number;
+	skillsNeeded?: Skills;
 }
 
 export interface ClueMilestoneReward {
@@ -91,9 +92,4 @@ export interface KillableMonster {
 	disallowedAttackStyles?: AttackStyles[];
 	customMonsterHP?: number;
 	combatXpMultiplier?: number;
-}
-
-export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
-	leader: string;
-	users: string[];
 }

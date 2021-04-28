@@ -9,14 +9,12 @@ import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
 		const { oreID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
@@ -95,10 +93,7 @@ export default class extends Task {
 		} else {
 			loot.add(ore.id, quantity);
 		}
-		str += `\n\nYou received: ${await createReadableItemListFromBank(
-			this.client,
-			loot.values()
-		)}.`;
+		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
