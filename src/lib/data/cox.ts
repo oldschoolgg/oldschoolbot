@@ -248,6 +248,9 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 				return `${user.username} doesn't have the 200 KC required for Challenge Mode.`;
 			}
 		}
+		if (user.minionIsBusy) {
+			return `${user.username}'s minion is already doing an activity and cannot join.`;
+		}
 	}
 
 	return null;

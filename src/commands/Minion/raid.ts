@@ -163,7 +163,10 @@ export default class extends BotCommand {
 			}
 		};
 
-		const users = type === 'mass' ? await msg.makePartyAwaiter(partyOptions) : [msg.author];
+		const users =
+			type === 'mass'
+				? (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy)
+				: [msg.author];
 
 		const teamCheckFailure = await checkCoxTeam(users, isChallengeMode);
 		if (teamCheckFailure) {
