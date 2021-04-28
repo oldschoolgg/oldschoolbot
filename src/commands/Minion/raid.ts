@@ -119,7 +119,7 @@ export default class extends BotCommand {
 		}
 
 		if (isChallengeMode) {
-			const normalKC = await msg.author.getMinigameScore('RaidsChallengeMode');
+			const normalKC = await msg.author.getMinigameScore('Raids');
 			if (normalKC < 200) {
 				return msg.channel.send(
 					`You need atleast 200 completions of the Chamber's of Xeric before you can attempt Challenge Mode.`

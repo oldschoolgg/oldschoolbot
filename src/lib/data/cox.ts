@@ -243,7 +243,7 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 			) {
 				return `${user.username} doesn't own a Twisted bow or Dragon hunter crossbow, which is required for Challenge Mode.`;
 			}
-			const kc = await user.getMinigameScore('RaidsChallengeMode');
+			const kc = await user.getMinigameScore('Raids');
 			if (kc < 200) {
 				return `${user.username} doesn't have the 200 KC required for Challenge Mode.`;
 			}
