@@ -1593,12 +1593,7 @@ export const wintertodt: CollectionLogData = {
 };
 
 export const coxLog: CollectionLogData = {
-	Misc: resolveItems([
-		'Dexterous prayer scroll',
-		'Torn prayer scroll',
-		'Arcane prayer scroll',
-		'Dark relic'
-	]),
+	Misc: resolveItems(['Dexterous prayer scroll', 'Torn prayer scroll', 'Arcane prayer scroll']),
 	Weapons: resolveItems([
 		'Twisted bow',
 		'Elder maul',
@@ -1613,10 +1608,9 @@ export const coxLog: CollectionLogData = {
 		'Twisted buckler',
 		"Dinh's bulwark"
 	]),
-	Others: resolveItems([
+	Others: resolveItems(['Olmlet', 'Dark relic']),
+	CM: resolveItems([
 		'Metamorphic dust',
-		'Olmlet',
-
 		"Xeric's guard",
 		"Xeric's warrior",
 		"Xeric's sentinel",
