@@ -23,7 +23,7 @@ function calcPoints() {
 }
 
 export default class extends Task {
-	async run({ channelID, leader, users, quantity, duration }: SoulWarsOptions) {
+	async run({ channelID, leader, users, quantity }: SoulWarsOptions) {
 		const leaderUser = await this.client.users.fetch(leader);
 		let str = `${leaderUser}, your party finished doing ${quantity}x games of Soul Wars.\n\n`;
 
@@ -41,7 +41,6 @@ export default class extends Task {
 				user.settings.get(UserSettings.ZealTokens) + points
 			);
 
-			user.incrementMinionDailyDuration(duration);
 			user.incrementMinigameScore('SoulWars', quantity);
 			str += `${user} received ${points}x Zeal Tokens.`;
 		}

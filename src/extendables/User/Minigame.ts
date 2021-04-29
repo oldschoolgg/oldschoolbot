@@ -78,6 +78,31 @@ export const Minigames: Minigame[] = [
 		name: "Rogues' Den",
 		key: 'RoguesDenMaze',
 		column: 'rogues_den'
+	},
+	{
+		name: 'Gauntlet',
+		key: 'Gauntlet',
+		column: 'gauntlet'
+	},
+	{
+		name: 'Corrupted Gauntlet',
+		key: 'CorruptedGauntlet',
+		column: 'corrupted_gauntlet'
+	},
+	{
+		name: 'Castle Wars',
+		key: 'CastleWars',
+		column: 'castle_wars'
+	},
+	{
+		name: "Chamber's of Xeric",
+		key: 'Raids',
+		column: 'raids'
+	},
+	{
+		name: "Chamber's of Xeric - Challenge Mode",
+		key: 'RaidsChallengeMode',
+		column: 'raids_challenge_mode'
 	}
 ];
 

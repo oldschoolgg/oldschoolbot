@@ -11,8 +11,7 @@ import {
 
 import { client } from '../..';
 import { Activity } from '../constants';
-import { GroupMonsterActivityTaskOptions } from '../minions/types';
-import { ActivityTaskOptions } from '../types/minions';
+import { ActivityTaskOptions, GroupMonsterActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
 

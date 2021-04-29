@@ -10,10 +10,10 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import findMonster, {
 	calcWhatPercent,
 	formatDuration,
+	formatItemBoosts,
 	formatItemReqs,
 	itemNameFromID
 } from '../../lib/util';
-import { formatItemBoosts } from '../../lib/util/formatItemBoosts';
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

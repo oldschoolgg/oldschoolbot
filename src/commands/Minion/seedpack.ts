@@ -8,7 +8,6 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { bankHasItem, rand, roll } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 const LowSeedPackTable = new LootTable()
 	.add('Potato seed', [8, 12], 2)
@@ -168,11 +167,6 @@ export default class extends BotCommand {
 		await msg.author.removeItemFromBank(itemID('Seed pack'), 1);
 		await msg.author.addItemsToBank(loot.bank, true);
 
-		return msg.send(
-			`You opened a seed pack and received: ${await createReadableItemListFromBank(
-				this.client,
-				loot.bank
-			)}.`
-		);
+		return msg.send(`You opened a seed pack and received: ${loot}.`);
 	}
 }

@@ -11,7 +11,6 @@ export default class extends Task {
 	async run(data: ZalcanoActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, performance, isMVP } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		user.incrementMonsterScore(ZALCANO_ID, quantity);
 
 		const loot = new Bank();

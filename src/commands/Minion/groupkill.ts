@@ -6,9 +6,10 @@ import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/d
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
+import { KillableMonster } from '../../lib/minions/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
+import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import findMonster, { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
@@ -152,7 +153,6 @@ export default class extends BotCommand {
 			leader: msg.author.id,
 			users: users.map(u => u.id)
 		});
-		for (const user of users) user.incrementMinionDailyDuration(duration);
 
 		let killsPerHr = `${Math.round(
 			(quantity / (duration / Time.Minute)) * 60

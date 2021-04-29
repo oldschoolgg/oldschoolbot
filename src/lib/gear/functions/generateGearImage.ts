@@ -8,8 +8,12 @@ import { GearSetup, GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..'
 import BankImageTask from '../../../tasks/bankImage';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { toTitleCase } from '../../util';
-import { canvasImageFromBuffer } from '../../util/canvasImageFromBuffer';
-import { drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
+import {
+	canvasImageFromBuffer,
+	drawItemQuantityText,
+	drawTitleText,
+	fillTextXTimesInCtx
+} from '../../util/canvasUtil';
 import { sumOfSetupStats } from './sumOfSetupStats';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');

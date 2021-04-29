@@ -1,4 +1,4 @@
-import { CanvasRenderingContext2D } from 'canvas';
+import { CanvasRenderingContext2D, Image } from 'canvas';
 
 import { formatItemStackQuantity, generateHexColorForCashStack } from '../util';
 
@@ -41,4 +41,14 @@ export function drawTitleText(ctx: CanvasRenderingContext2D, title: string, x: n
 
 	ctx.fillStyle = '#ff981f';
 	fillTextXTimesInCtx(ctx, title, x, y);
+}
+
+export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
+	return new Promise((resolve, reject) => {
+		const canvasImage = new Image();
+
+		canvasImage.onload = () => resolve(canvasImage);
+		canvasImage.onerror = () => reject(new Error('Failed to load image.'));
+		canvasImage.src = imageBuffer;
+	});
 }

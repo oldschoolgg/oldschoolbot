@@ -1,28 +1,27 @@
 import { KlasaClient, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Events } from '../../constants';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { ItemBank } from '../../types';
-import createReadableItemListFromBank from '../../util/createReadableItemListFromTuple';
-import filterBankFromArrayOfItems from '../../util/filterBankFromArrayOfItems';
+import { filterBankFromArrayOfItems } from '../../util';
 import { KillableMonster } from '../types';
 
 export default async function announceLoot(
 	client: KlasaClient,
 	user: KlasaUser,
 	monster: KillableMonster,
-	quantity: number,
 	loot: ItemBank,
 	team?: { leader: KlasaUser; lootRecipient: KlasaUser; size: number }
 ) {
 	if (!monster.notifyDrops) return;
-	const kc = (user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) + quantity;
+	const kc = user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
 	const itemsToAnnounce = filterBankFromArrayOfItems(
 		(monster.notifyDrops as number[]) ?? [],
 		loot
 	);
 	if (Object.keys(itemsToAnnounce).length > 0) {
-		const lootStr = await createReadableItemListFromBank(client, itemsToAnnounce);
+		const lootStr = new Bank(itemsToAnnounce).toString();
 
 		let notif = '';
 

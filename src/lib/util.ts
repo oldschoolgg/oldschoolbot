@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
 import { objectEntries, randInt, shuffleArr } from 'e';
-import { Gateway, KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
+import { KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
@@ -11,22 +11,21 @@ const emojiRegex = require('emoji-regex');
 
 import {
 	CENA_CHARS,
-	Channel as EChannel,
 	continuationChars,
 	Events,
 	PerkTier,
+	skillEmoji,
 	SupportServer,
 	Time
 } from './constants';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
 import killableMonsters from './minions/data/killableMonsters';
-import { GroupMonsterActivityTaskOptions, KillableMonster } from './minions/types';
-import { UserSettings } from './settings/types/UserSettings';
-import { ArrayItemsResolved, Skills } from './types';
+import { KillableMonster } from './minions/types';
+import { ArrayItemsResolved, ItemTuple, Skills } from './types';
+import { GroupMonsterActivityTaskOptions } from './types/minions';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
-import { sendToChannelID } from './util/webhook';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
@@ -361,33 +360,6 @@ export function randomVariation(value: number, percentage: number) {
 	return randFloat(lowerLimit, upperLimit);
 }
 
-export async function incrementMinionDailyDuration(
-	client: KlasaClient,
-	userID: string,
-	duration: number
-) {
-	const settings = await (client.gateways.get('users') as Gateway)!
-		.acquire({
-			id: userID
-		})
-		.sync(true);
-
-	const currentDuration = settings.get(UserSettings.Minion.DailyDuration);
-	const newDuration = currentDuration + duration;
-	if (newDuration > Time.Hour * 18) {
-		const user = await client.users.fetch(userID);
-		if (client.production) {
-			sendToChannelID(client, EChannel.ErrorLogs, {
-				content: `${user.sanitizedName} Minion has been active for ${formatDuration(
-					newDuration
-				)}.`
-			});
-		}
-	}
-
-	return settings.update(UserSettings.Minion.DailyDuration, newDuration);
-}
-
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
 	return 'users' in data;
 }
@@ -462,4 +434,55 @@ export function formatItemReqs(items: ArrayItemsResolved) {
 		}
 	}
 	return str.join(', ');
+}
+
+export function formatSkillRequirements(reqs: Record<string, number>) {
+	let arr = [];
+	for (const [name, num] of objectEntries(reqs)) {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		arr.push(` ${skillEmoji[name]} **${num}** ${toTitleCase(name)}`);
+	}
+	return arr.join(', ');
+}
+
+export function formatItemBoosts(items: ItemBank) {
+	const str = [];
+	for (const [itemID, boostAmount] of Object.entries(items)) {
+		str.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+	}
+	return str.join(', ');
+}
+
+export function filterItemTupleByQuery(query: string, items: ItemTuple[]) {
+	const filtered: ItemTuple[] = [];
+
+	for (const item of items) {
+		if (cleanString(Items.get(item[0])!.name).includes(cleanString(query))) {
+			filtered.push(item);
+		}
+	}
+
+	return filtered;
+}
+
+/**
+ * Given a list of items, and a bank, it will return a new bank with all items not
+ * in the filter removed from the bank.
+ * @param itemFilter The array of item IDs to use as the filter.
+ * @param bank The bank to filter items from.
+ */
+export function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank): ItemBank {
+	const returnBank: ItemBank = {};
+	const bankKeys = Object.keys(bank);
+
+	// If there are no items in the filter or bank, just return an empty bank.
+	if (itemFilter.length === 0 || bankKeys.length === 0) return returnBank;
+
+	// For every item in the filter, if its in the bank, add it to the return bank.
+	for (const itemID of itemFilter) {
+		if (bank[itemID]) returnBank[itemID] = bank[itemID];
+	}
+
+	return returnBank;
 }

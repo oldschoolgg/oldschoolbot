@@ -4,8 +4,11 @@ import fetch from 'node-fetch';
 
 import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { OldSchoolBotClient } from '../../lib/structures/OldSchoolBotClient';
+import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { formatDuration } from '../../lib/util';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
@@ -52,7 +55,8 @@ export default class extends BotCommand {
 					`${Emoji.RottenPotato} Bypassed age restriction for ${input.username}.`
 				);
 			}
-			case 'check': {
+			case 'check':
+			case 'c': {
 				if (!input) return;
 				const bitfields = `${input.settings
 					.get(UserSettings.BitField)
@@ -61,11 +65,34 @@ export default class extends BotCommand {
 					.map(i => i.name)
 					.join(', ')}`;
 
+				const task = this.client.minionActivityCache.get(input.id);
+				const taskText = task
+					? `${task.type} - ${formatDuration(task.finishDate - Date.now())} remaining`
+					: 'None';
+
+				const lastTasks = await ActivityTable.find({
+					where: { userID: msg.author.id },
+					take: 10
+				});
+				const lastTasksStr = lastTasks
+					.map(i => (i.completed ? i.type : `*${i.type}*`))
+					.join(', ');
+
 				const userBadges = input.settings.get(UserSettings.Badges).map(i => badges[i]);
+				const isBlacklisted = this.client.settings
+					.get(ClientSettings.UserBlacklist)
+					.includes(input.id);
 				return msg.send(
 					`**${input.username}**
 **Bitfields:** ${bitfields}
 **Badges:** ${userBadges}
+**Current Task:** ${taskText}
+**Previous Tasks:** ${lastTasksStr}.
+**Blacklisted:** ${isBlacklisted ? 'Yes' : 'No'}
+**Patreon/Github:** ${input.settings.get(UserSettings.PatreonID) ?? 'None'}/${
+						input.settings.get(UserSettings.GithubID) ?? 'None'
+					}
+**Ironman:** ${input.isIronman ? 'Yes' : 'No'}
 `
 				);
 			}
@@ -78,6 +105,15 @@ export default class extends BotCommand {
 				msg.channel.send('Running roles task...');
 				const result = await this.client.tasks.get('roles')?.run();
 				return msg.send(result);
+			}
+			case 'canceltask': {
+				if (!input) return;
+				await (this.client as OldSchoolBotClient).cancelTask(input.id);
+				this.client.oneCommandAtATimeCache.delete(input.id);
+				this.client.secondaryUserBusyCache.delete(input.id);
+				this.client.minionActivityCache.delete(input.id);
+
+				return msg.react(Emoji.Tick);
 			}
 			case 'setgh': {
 				if (!input) return;

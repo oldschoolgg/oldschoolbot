@@ -1,9 +1,10 @@
 import { User } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, randArrItem, uniqueArr } from 'e';
+import { calcPercentOfNum, calcWhatPercent, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import { collectables } from '../../commands/Minion/collect';
 import {
 	Activity,
 	Emoji,
@@ -18,7 +19,6 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
-import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
@@ -46,6 +46,7 @@ import {
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
+	CollectingOptions,
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
@@ -55,17 +56,22 @@ import {
 	FishingActivityTaskOptions,
 	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
+	GauntletOptions,
 	GloryChargingActivityTaskOptions,
+	GroupMonsterActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
+	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
+	RaidsOptions,
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SoulWarsOptions,
+	WealthChargingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
@@ -73,7 +79,6 @@ import {
 	addItemToBank,
 	convertXPtoLVL,
 	formatDuration,
-	incrementMinionDailyDuration,
 	itemNameFromID,
 	stringMatches,
 	toKMB,
@@ -489,6 +494,11 @@ export default class extends Extendable {
 				return `${this.minionName} is currently charging ${data.quantity}x inventories of glories at the Fountain of Rune. ${formattedDuration}`;
 			}
 
+			case Activity.WealthCharging: {
+				const data = currentTask as WealthChargingActivityTaskOptions;
+				return `${this.minionName} is currently charging ${data.quantity}x inventories of rings of wealth at the Fountain of Rune. ${formattedDuration}`;
+			}
+
 			case Activity.GnomeRestaurant: {
 				return `${this.minionName} is currently doing Gnome Restaurant deliveries. ${formattedDuration}`;
 			}
@@ -502,19 +512,39 @@ export default class extends Extendable {
 				return `${this.minionName} is currently attempting the Rogues' Den maze. ${formattedDuration}`;
 			}
 
-			case Activity.RabbitCatching: {
-				let messages = [
-					'chasing a rabbit through the farm',
-					'having a rest',
-					'eating some carrots',
-					'holding a cute little rabbit',
-					'using the rabbits as a distraction to pickpocket the farmers'
-				];
-				return `${
-					this.minionName
-				} is doing the Easter Holiday Event! They're currently ${randArrItem(
-					messages
-				)}. ${formattedDuration}`;
+			case Activity.Gauntlet: {
+				const data = currentTask as GauntletOptions;
+				return `${this.minionName} is currently doing ${data.quantity}x ${
+					data.corrupted ? 'Corrupted' : 'Normal'
+				} Gauntlet. ${formattedDuration}`;
+			}
+
+			case Activity.CastleWars: {
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.quantity}x Castle Wars games. ${formattedDuration}`;
+			}
+
+			case Activity.MageArena: {
+				return `${this.minionName} is currently doing the Mage Arena. ${formattedDuration}`;
+			}
+
+			case Activity.Raids: {
+				const data = currentTask as RaidsOptions;
+				return `${this.minionName} is currently doing the Chamber's of Xeric${
+					data.challengeMode ? ' in Challenge Mode' : ''
+				}, ${
+					data.users.length === 1
+						? 'as a solo'
+						: `with a team of ${data.users.length} minions.`
+				} ${formattedDuration}`;
+			}
+
+			case Activity.Collecting: {
+				const data = currentTask as CollectingOptions;
+				const collectable = collectables.find(c => c.item.id === data.collectableID)!;
+				return `${this.minionName} is currently collecting ${
+					data.quantity * collectable.quantity
+				}x ${collectable.item.name}. ${formattedDuration}`;
 			}
 		}
 	}
@@ -615,10 +645,6 @@ export default class extends Extendable {
 		return name
 			? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**`
 			: `${prefix} ${icon} Your minion`;
-	}
-
-	public async incrementMinionDailyDuration(this: User, duration: number) {
-		return incrementMinionDailyDuration(this.client as KlasaClient, this.id, duration);
 	}
 
 	public async addXP(

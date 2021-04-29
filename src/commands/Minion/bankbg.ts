@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { BitField, Events, Time } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -7,10 +8,12 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	addBanks,
 	bankHasAllItemsFromBank,
+	formatSkillRequirements,
 	removeBankFromBank,
-	stringMatches
+	skillsMeetRequirements,
+	stringMatches,
+	toKMB
 } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import BankImageTask from '../../tasks/bankImage';
 
@@ -45,6 +48,28 @@ export default class extends BotCommand {
 			return msg.send(`Your bank background is now **${selectedImage.name}**!`);
 		}
 
+		if (selectedImage.sacValueRequired) {
+			const sac = msg.author.settings.get(UserSettings.SacrificedValue);
+			if (sac < selectedImage.sacValueRequired) {
+				return msg.send(
+					`You have to have sacrificed atleast ${toKMB(
+						selectedImage.sacValueRequired
+					)} GP worth of items to use this background.`
+				);
+			}
+		}
+
+		if (selectedImage.skillsNeeded) {
+			const meets = skillsMeetRequirements(msg.author.rawSkills, selectedImage.skillsNeeded);
+			if (!meets) {
+				return msg.send(
+					`You don't meet the skill requirements to use this background, you need: ${formatSkillRequirements(
+						selectedImage.skillsNeeded
+					)}.`
+				);
+			}
+		}
+
 		if (!selectedImage.available) {
 			return msg.send(`This image is not currently available.`);
 		}
@@ -65,8 +90,7 @@ export default class extends BotCommand {
 			)
 		) {
 			return msg.send(
-				`You're not worthy to use this background. You need these items in your Collection Log: ${await createReadableItemListFromBank(
-					this.client,
+				`You're not worthy to use this background. You need these items in your Collection Log: ${new Bank(
 					selectedImage.collectionLogItemsNeeded
 				)}`
 			);
@@ -97,8 +121,7 @@ export default class extends BotCommand {
 				!bankHasAllItemsFromBank(userBank, selectedImage.itemCost)
 			) {
 				return msg.send(
-					`You don't have the required items to purchase this background. You need: ${await createReadableItemListFromBank(
-						this.client,
+					`You don't have the required items to purchase this background. You need: ${new Bank(
 						selectedImage.itemCost
 					)}.`
 				);
@@ -119,7 +142,7 @@ export default class extends BotCommand {
 
 			// If theres an item cost or GP cost, add it to the string to show users the cost.
 			if (selectedImage.itemCost) {
-				str += await createReadableItemListFromBank(this.client, selectedImage.itemCost);
+				str += new Bank(selectedImage.itemCost).toString();
 				if (selectedImage.gpCost) {
 					str += `, ${selectedImage.gpCost.toLocaleString()} GP.`;
 				}

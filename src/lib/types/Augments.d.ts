@@ -48,6 +48,7 @@ declare module 'klasa' {
 		submissionStream?: SubmissionStream;
 		fastifyServer: FastifyInstance;
 		minionTicker: NodeJS.Timeout;
+		giveawayTicker: NodeJS.Timeout;
 		analyticsInterval: NodeJS.Timeout;
 		minionActivityCache: Map<string, ActivityTable['taskData']>;
 	}
@@ -93,6 +94,7 @@ declare module 'klasa' {
 
 		makePartyAwaiter(options: MakePartyOptions): Promise<KlasaUser[]>;
 		removeAllReactions(): void;
+		confirm(this: KlasaMessage, str: string): Promise<void>;
 	}
 
 	interface SettingsFolder {
@@ -143,7 +145,6 @@ declare module 'discord.js' {
 		addXP(skillName: SkillsEnum, amount: number, duration?: number): Promise<string>;
 		skillLevel(skillName: SkillsEnum): number;
 		totalLevel(returnXP = false): number;
-		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
 		toggleBusy(busy: boolean): void;
 		/**
 		 * Returns how many of an item a user owns, checking their bank and all equipped gear.
@@ -221,7 +222,12 @@ declare module 'discord.js' {
 		getGear(gearType: GearSetupType): GearSetup;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
 		getAttackStyles(): AttackStyles[];
-		owns(bank: ItemBank | Bank): boolean;
+		owns(bank: ItemBank | Bank | string): boolean;
+		completion(): {
+			percent: number;
+			notOwned: number[];
+			owned: number[];
+		};
 		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.
