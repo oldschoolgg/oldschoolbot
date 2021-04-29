@@ -4,6 +4,7 @@ import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import { collectables } from '../../commands/Minion/collect';
 import {
 	Activity,
 	Emoji,
@@ -45,6 +46,7 @@ import {
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
+	CollectingOptions,
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
@@ -535,6 +537,14 @@ export default class extends Extendable {
 						? 'as a solo'
 						: `with a team of ${data.users.length} minions.`
 				} ${formattedDuration}`;
+			}
+
+			case Activity.Collecting: {
+				const data = currentTask as CollectingOptions;
+				const collectable = collectables.find(c => c.item.id === data.collectableID)!;
+				return `${this.minionName} is currently collecting ${
+					data.quantity * collectable.quantity
+				}x ${collectable.item.name}. ${formattedDuration}`;
 			}
 		}
 	}
