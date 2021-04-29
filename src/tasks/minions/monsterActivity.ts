@@ -9,6 +9,9 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
 import { allKeyPieces } from '../../lib/nex';
 import { setActivityLoot } from '../../lib/settings/settings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { bones } from '../../lib/skilling/skills/prayer';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { channelIsSendable, itemID, rand, roll } from '../../lib/util';
@@ -117,6 +120,18 @@ export default class extends Task {
 
 		if (abyssalBonus > 1) {
 			str += `\n\nOri has used the abyss to transmute you +25% bonus loot!`;
+		}
+
+		if (user.settings.get(UserSettings.Bank)[itemID('Gorajan bonecrusher')]) {
+			let totalXP = 0;
+			for (const bone of bones) {
+				const amount = loot.amount(bone.inputId);
+				if (amount > 0) {
+					totalXP += bone.xp * amount * 4;
+					loot.remove(bone.inputId, amount);
+				}
+			}
+			str += await user.addXP(SkillsEnum.Prayer, totalXP, duration);
 		}
 
 		const { previousCL } = await user.addItemsToBank(loot, true);

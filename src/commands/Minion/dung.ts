@@ -95,6 +95,10 @@ const dungBuyables = [
 		cost: 400_000
 	},
 	{
+		item: getOSItem('Scroll of mystery'),
+		cost: 500_000
+	},
+	{
 		item: getOSItem('Amulet of zealots'),
 		cost: 400_000
 	},

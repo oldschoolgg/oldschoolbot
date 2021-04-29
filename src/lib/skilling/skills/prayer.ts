@@ -2,7 +2,7 @@ import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
 import { Bone, SkillsEnum } from '../types';
 
-const bones: Bone[] = [
+export const bones: Bone[] = [
 	{
 		name: 'Bones',
 		level: 1,
