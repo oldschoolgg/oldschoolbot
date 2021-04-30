@@ -19,6 +19,7 @@ Client.defaultClientSchema
 	.add('cox_loot', 'any', { default: {} })
 	.add('collecting_cost', 'any', { default: {} })
 	.add('collecting_loot', 'any', { default: {} })
+	.add('mta_cost', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })

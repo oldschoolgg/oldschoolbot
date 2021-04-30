@@ -106,5 +106,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.Raids;
 		case Activity.Collecting:
 			return Tasks.Collecting;
+		case Activity.MageTrainingArena:
+			return Tasks.MageTrainingArena;
 	}
 }
