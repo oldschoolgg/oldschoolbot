@@ -12,7 +12,7 @@ import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { determineRunes } from '../../lib/util/determineRunes';
 import getOSItem from '../../lib/util/getOSItem';
-import { pizazzPointsPerHour } from '../../tasks/minions/minigames/magicTrainingArenaActivity';
+import { pizazzPointsPerHour } from '../../tasks/minions/minigames/mageTrainingArenaActivity';
 
 const RuneTable = new LootTable()
 	.every('Law rune', [11, 14])
@@ -103,7 +103,7 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 	async train(msg: KlasaMessage) {
 		const roomDuration = Time.Minute * 14;
 		const quantity = Math.floor(
-			msg.author.maxTripLength(Activity.MagicTrainingArena) / roomDuration
+			msg.author.maxTripLength(Activity.MageTrainingArena) / roomDuration
 		);
 		const duration = quantity * roomDuration;
 
@@ -124,7 +124,7 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
-			type: Activity.MagicTrainingArena,
+			type: Activity.MageTrainingArena,
 			quantity,
 			minigameID: 'MagicTrainingArena'
 		});

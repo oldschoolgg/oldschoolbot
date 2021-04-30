@@ -546,6 +546,10 @@ export default class extends Extendable {
 					data.quantity * collectable.quantity
 				}x ${collectable.item.name}. ${formattedDuration}`;
 			}
+
+			case Activity.MageTrainingArena: {
+				return `${this.minionName} is currently training at the Mage Training Arena. ${formattedDuration}`;
+			}
 		}
 	}
 
