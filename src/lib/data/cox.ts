@@ -145,7 +145,7 @@ export const maxMageGear = constructGearSetup({
 	cape: 'Saradomin cape',
 	hands: 'Barrows gloves',
 	legs: 'Ancestral robe bottom',
-	feet: 'Wizard boots',
+	feet: 'Eternal boots',
 	weapon: 'Harmonised nightmare staff',
 	shield: 'Arcane spirit shield',
 	ring: 'Seers ring(i)'
