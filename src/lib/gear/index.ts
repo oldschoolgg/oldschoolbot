@@ -15,7 +15,7 @@ export const maxDefenceStats: { [key in DefenceGearStat]: number } = {
 
 export const maxOffenceStats: { [key in OffenceGearStat]: number } = {
 	[GearStat.AttackCrush]: 300,
-	[GearStat.AttackMagic]: 426,
+	[GearStat.AttackMagic]: 436,
 	[GearStat.AttackRanged]: 391,
 	[GearStat.AttackSlash]: 273,
 	[GearStat.AttackStab]: 274
