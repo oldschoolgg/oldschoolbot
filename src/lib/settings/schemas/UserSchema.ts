@@ -14,7 +14,7 @@ Client.defaultUserSchema
 	.add('bitfield', 'integer', { array: true, default: [] })
 	.add('favoriteItems', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
-	.add('sacrificedValue', 'integer', { default: 0, maximum: 100_000_000_000, minimum: 0 })
+	.add('sacrificedValue', 'integer', { default: 0, minimum: 0 })
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('creatureScores', 'any', { default: {} })
