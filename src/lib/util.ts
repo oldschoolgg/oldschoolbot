@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
 import { objectEntries, randInt, shuffleArr } from 'e';
 import { KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
@@ -485,4 +486,14 @@ export function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank)
 	}
 
 	return returnBank;
+}
+
+export function updateBankSetting(
+	client: KlasaClient,
+	setting: string,
+	bankToAdd: Bank | ItemBank
+) {
+	const current = new Bank(client.settings.get(setting) as ItemBank);
+	const newBank = current.add(bankToAdd);
+	return client.settings.update(setting, newBank.bank);
 }

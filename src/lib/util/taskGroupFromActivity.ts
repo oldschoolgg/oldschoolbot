@@ -57,9 +57,11 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.CastleWars:
 		case Activity.MageArena:
 		case Activity.Raids:
+		case Activity.MagicTrainingArena:
 			return ActivityGroup.Minigame;
 		default: {
-			throw new Error(`Unrecognized activity: ${type}`);
+			console.error(`Unrecognized activity: ${type}`);
+			return ActivityGroup.Skilling;
 		}
 	}
 }

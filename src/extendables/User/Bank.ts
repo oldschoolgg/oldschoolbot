@@ -218,9 +218,11 @@ export default class extends Extendable {
 		return typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
 	}
 
-	public owns(this: User, bank: ItemBank | Bank | string) {
-		if (typeof bank === 'string') {
-			return Boolean(this.settings.get(UserSettings.Bank)[itemID(bank)]);
+	public owns(this: User, bank: ItemBank | Bank | string | number) {
+		if (typeof bank === 'string' || typeof bank === 'number') {
+			return Boolean(
+				this.settings.get(UserSettings.Bank)[typeof bank === 'number' ? bank : itemID(bank)]
+			);
 		}
 		const itemBank = bank instanceof Bank ? { ...bank.bank } : bank;
 		return bankHasAllItemsFromBank(

@@ -103,6 +103,11 @@ export const Minigames: Minigame[] = [
 		name: "Chamber's of Xeric - Challenge Mode",
 		key: 'RaidsChallengeMode',
 		column: 'raids_challenge_mode'
+	},
+	{
+		name: 'Magic Training Arena',
+		key: 'MagicTrainingArena',
+		column: 'magic_training_arena'
 	}
 ];
 

@@ -222,7 +222,7 @@ declare module 'discord.js' {
 		getGear(gearType: GearSetupType): GearSetup;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
 		getAttackStyles(): AttackStyles[];
-		owns(bank: ItemBank | Bank | string): boolean;
+		owns(bank: ItemBank | Bank | string | number): boolean;
 		completion(): {
 			percent: number;
 			notOwned: number[];
