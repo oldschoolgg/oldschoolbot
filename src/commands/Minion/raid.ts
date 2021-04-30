@@ -1077,7 +1077,6 @@ export default class extends BotCommand {
 		};
 
 		await addSubTaskToActivityTask(this.client, data);
-		for (const user of users) user.incrementMinionDailyDuration(duration);
 
 		gearSpeedBoosts.push(`${teamKCBoost}% for team KC`);
 

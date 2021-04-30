@@ -8,9 +8,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: SawmillActivityTaskOptions) {
-		const { userID, channelID, duration, plankID, plankQuantity } = data;
+		const { userID, channelID, plankID, plankQuantity } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		const plank = Planks.find(plank => plank.outputItem === plankID)!;
 
 		const loot = new Bank({

@@ -57,11 +57,10 @@ export default class extends Task {
 			successfulQuantity,
 			userID,
 			channelID,
-			duration,
-			xpReceived
+			xpReceived,
+			duration
 		} = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		const npc = Pickpocketables.find(_npc => _npc.id === monsterID)!;
 
 		const currentLevel = user.skillLevel(SkillsEnum.Thieving);

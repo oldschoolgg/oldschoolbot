@@ -90,11 +90,13 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		embed.setColor(5460819);
 	}
 
+	const { percent } = user.completion();
 	embed.addField(
 		`${skillEmoji.total} Overall`,
 		`**Level:** ${totalLevel}
 **XP:** ${xp.toLocaleString()}
-**QP** ${QP}`,
+**QP** ${QP}
+**CL Completion:** ${percent.toFixed(1)}%`,
 		true
 	);
 

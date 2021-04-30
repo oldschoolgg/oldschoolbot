@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { rogueOutfit } from '../../../lib/data/collectionLog';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { RoguesDenMazeTaskOptions } from '../../../lib/types/minions';
-import { incrementMinionDailyDuration } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -25,9 +24,8 @@ export default class extends Task {
 	}
 
 	async run(data: RoguesDenMazeTaskOptions) {
-		const { channelID, quantity, duration, userID } = data;
+		const { channelID, quantity, userID } = data;
 
-		incrementMinionDailyDuration(this.client, userID, duration);
 		incrementMinigameScore(userID, 'RoguesDenMaze', quantity);
 
 		const loot = new Bank();

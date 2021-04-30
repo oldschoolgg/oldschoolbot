@@ -7,6 +7,7 @@ import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { makeKillTable } from '../../../util/setCustomMonster';
 import { KillableMonster } from '../../types';
+import { NIGHTMARES_HP } from './../../../constants';
 import bosses from './bosses';
 import AbyssalDragon, { AbyssalDragonLootTable } from './custom/AbyssalDragon';
 import KingGoldemar, { KingGoldemarLootTable } from './custom/KingGoldemar';
@@ -46,7 +47,9 @@ const killableMonsters: KillableMonster[] = [
 				'Ornate rejuvenation pool': 10
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged]
+		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged],
+		customMonsterHP: 600,
+		combatXpMultiplier: 1.09
 	},
 	{
 		id: Monsters.DagannothPrime.id,
@@ -73,7 +76,8 @@ const killableMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		combatXpMultiplier: 1.3
 	},
 	{
 		id: Monsters.DagannothRex.id,
@@ -100,7 +104,8 @@ const killableMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		combatXpMultiplier: 1.3
 	},
 	{
 		id: Monsters.DagannothSupreme.id,
@@ -304,7 +309,8 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Zamorakian spear')]: 10
-		}
+		},
+		combatXpMultiplier: 1.025
 	},
 	{
 		id: Monsters.Ankou.id,
@@ -544,7 +550,8 @@ export const NightmareMonster: KillableMonster = {
 			[GearStat.DefenceSlash]: 150,
 			[GearStat.AttackCrush]: 80
 		}
-	}
+	},
+	customMonsterHP: NIGHTMARES_HP
 };
 
 export default killableMonsters;

@@ -3,14 +3,34 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Emoji } from '../../lib/constants';
+import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
+
+const gearSpawns = [
+	{
+		name: 'coxmage',
+		gear: maxMageGear,
+		setup: UserSettings.Gear.Mage
+	},
+	{
+		name: 'coxmelee',
+		gear: maxMeleeGear,
+		setup: UserSettings.Gear.Melee
+	},
+	{
+		name: 'coxrange',
+		gear: maxRangeGear,
+		setup: UserSettings.Gear.Range
+	}
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[qty:integer{1,1000000}] (item:...item)',
+			usage: '[qty:integer{1,1000000}] [item:...item]',
 			usageDelim: ' ',
 			oneAtTime: true
 		});
@@ -20,6 +40,19 @@ export default class extends BotCommand {
 		if (this.client.production && msg.author.id !== '157797566833098752') {
 			return;
 		}
+
+		for (const i of gearSpawns) {
+			if (msg.flagArgs[i.name]) {
+				try {
+					await msg.author.settings.update(i.setup, i.gear);
+					return msg.channel.send(`Equipped you a premade setup called ${i.name}.`);
+				} catch (err) {
+					console.error(err);
+				}
+			}
+		}
+
+		if (!itemArray) return;
 
 		if (msg.flagArgs.all) {
 			const items: ItemBank = {};

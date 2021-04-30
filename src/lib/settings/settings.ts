@@ -18,6 +18,16 @@ export async function getUserSettings(userID: string): Promise<Settings> {
 		.sync(true);
 }
 
+export async function getNewUser(id: string): Promise<NewUserTable> {
+	let value = await NewUserTable.findOne({ id });
+	if (!value) {
+		value = new NewUserTable();
+		value.id = id;
+		await value.save();
+	}
+	return value;
+}
+
 export async function syncNewUserUsername(id: string, username: string) {
 	let value = await NewUserTable.findOne({ id });
 	if (!value) {

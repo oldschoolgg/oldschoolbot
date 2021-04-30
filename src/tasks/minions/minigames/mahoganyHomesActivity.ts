@@ -12,7 +12,6 @@ export default class extends Task {
 	async run(data: MahoganyHomesActivityTaskOptions) {
 		let { channelID, quantity, xp, duration, userID, points } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore('MahoganyHomes', quantity);
 
 		let bonusXP = 0;

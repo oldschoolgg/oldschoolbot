@@ -33,7 +33,8 @@ export const enum Roles {
 	// Status Roles
 	TopSkiller = '795266465329709076',
 	TopCollector = '795271210141351947',
-	TopSacrificer = '795933981715464192'
+	TopSacrificer = '795933981715464192',
+	TopMinigamer = '832798997033779220'
 }
 
 export const enum Emoji {
@@ -102,6 +103,7 @@ export const enum Emoji {
 	Defence = '<:defence:630911040393052180>',
 	Ranged = '<:ranged:630911040258834473>',
 	Dungeoneering = '<:dungeoneering:828683755198873623>',
+	Gear = '<:gear:835314891950129202>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -116,7 +118,10 @@ export const enum Emoji {
 	Crab = '<:crab:778418736432021505>',
 	Skiller = '<:skiller:802136963775463435>',
 	Incinerator = '<:incinerator:802136963674275882>',
-	CollectionLog = '<:collectionLog:802136964027121684>'
+	CollectionLog = '<:collectionLog:802136964027121684>',
+	Minigames = '<:minigameIcon:630400565070921761>',
+	Skull = '<:Skull:802136963926065165>',
+	CombatSword = '<:combat:802136963956080650>'
 }
 
 export const enum ReactionEmoji {
@@ -173,6 +178,7 @@ export const enum Tasks {
 	Enchanting = 'enchantingActivity',
 	Casting = 'castingActivity',
 	GloryCharging = 'gloryChargingActivity',
+	WealthCharging = 'wealthChargingActivity',
 	TitheFarmActivity = 'titheFarmActivity',
 	BarbarianAssault = 'barbarianAssaultActivity',
 	AgilityArena = 'agilityArenaActivity',
@@ -187,7 +193,10 @@ export const enum Tasks {
 	KalphiteKing = 'kalphiteKingActivity',
 	Gauntlet = 'gauntletActivity',
 	Dungeoneering = 'dungeoneeringActivity',
-	CastleWars = 'castleWarsActivity'
+	CastleWars = 'castleWarsActivity',
+	MageArena = 'mageArenaActivity',
+	Collecting = 'collectingActivity',
+	MageTrainingArena = 'mageTrainingArenaActivity'
 }
 
 export enum Activity {
@@ -230,6 +239,7 @@ export enum Activity {
 	Enchanting = 'Enchanting',
 	Casting = 'Casting',
 	GloryCharging = 'GloryCharging',
+	WealthCharging = 'WealthCharging',
 	BarbarianAssault = 'BarbarianAssault',
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge',
@@ -242,7 +252,10 @@ export enum Activity {
 	KalphiteKing = 'KalphiteKing',
 	Gauntlet = 'Gauntlet',
 	Dungeoneering = 'Dungeoneering',
-	CastleWars = 'CastleWars'
+	CastleWars = 'CastleWars',
+	MageArena = 'MageArena',
+	Collecting = 'Collecting',
+	MageTrainingArena = 'MageTrainingArena'
 }
 
 export enum ActivityGroup {
@@ -365,7 +378,8 @@ export const badges: { [key: number]: string } = {
 	7: Emoji.Trophy,
 	8: Emoji.Incinerator,
 	9: Emoji.Skiller,
-	10: Emoji.CollectionLog
+	10: Emoji.CollectionLog,
+	11: Emoji.MinigameIcon
 };
 
 export const MIMIC_MONSTER_ID = 23184;

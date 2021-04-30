@@ -6,9 +6,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
-		const { channelID, duration, userID } = data;
+		const { channelID, userID } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore('ChampionsChallenge', 1);
 
 		const loot = new Bank({ "Champion's cape": 1 });
