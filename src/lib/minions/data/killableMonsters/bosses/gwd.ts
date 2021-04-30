@@ -28,7 +28,9 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43
 		},
 		uniques: [...resolveItems(['Rune sword']), ...bosses.Bandos, ...bosses.Shards],
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultAttackStyles: [SkillsEnum.Attack],
+		customMonsterHP: 656,
+		combatXpMultiplier: 1.126
 	},
 	{
 		id: Monsters.CommanderZilyana.id,
@@ -56,7 +58,9 @@ const killableBosses: KillableMonster[] = [
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Ranged]
+		defaultAttackStyles: [SkillsEnum.Ranged],
+		customMonsterHP: 723,
+		combatXpMultiplier: 1.132
 	},
 	{
 		id: Monsters.Kreearra.id,
@@ -83,7 +87,9 @@ const killableBosses: KillableMonster[] = [
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		defaultAttackStyles: [SkillsEnum.Ranged],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic]
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
+		customMonsterHP: 641,
+		combatXpMultiplier: 1.159
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -109,7 +115,9 @@ const killableBosses: KillableMonster[] = [
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultAttackStyles: [SkillsEnum.Attack],
+		customMonsterHP: 708,
+		combatXpMultiplier: 1.135
 	}
 ];
 

@@ -7,16 +7,15 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
 import { GauntletOptions } from '../../../lib/types/minions';
-import { addBanks, incrementMinionDailyDuration } from '../../../lib/util';
+import { addBanks } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: GauntletOptions) {
-		const { channelID, quantity, duration, userID, corrupted } = data;
+		const { channelID, quantity, userID, corrupted } = data;
 		const user = await this.client.users.fetch(userID);
 		const key: MinigameKey = corrupted ? 'CorruptedGauntlet' : 'Gauntlet';
 
-		incrementMinionDailyDuration(this.client, userID, duration);
 		const kc = await user.getMinigameScore(key);
 
 		let chanceOfDeath = corrupted ? 6 : 3;

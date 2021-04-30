@@ -25,7 +25,6 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		const currentHunterLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentCraftingLevel = user.skillLevel(SkillsEnum.Crafting);
-		user.incrementMinionDailyDuration(duration);
 		let hunterXP = 0;
 		let craftingXP = 0;
 		const loot = new Bank();

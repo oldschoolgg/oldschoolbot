@@ -47,7 +47,6 @@ export default class extends Task {
 		} = data;
 		const user = await this.client.users.fetch(userID);
 		const userBank = user.bank();
-		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentHerbLevel = user.skillLevel(SkillsEnum.Herblore);
 		let gotPked = false;

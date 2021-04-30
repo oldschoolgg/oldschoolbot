@@ -33,6 +33,8 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.Enchanting:
 		case Activity.Casting:
 		case Activity.GloryCharging:
+		case Activity.WealthCharging:
+		case Activity.Collecting:
 			return ActivityGroup.Skilling;
 		case Activity.FightCaves:
 		case Activity.Wintertodt:
@@ -57,9 +59,12 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.Gauntlet:
 		case Activity.Dungeoneering:
 		case Activity.CastleWars:
+		case Activity.MageArena:
+		case Activity.MageTrainingArena:
 			return ActivityGroup.Minigame;
 		default: {
-			return ActivityGroup.Minigame;
+			console.error(`Unrecognized activity: ${type}`);
+			return ActivityGroup.Skilling;
 		}
 	}
 }

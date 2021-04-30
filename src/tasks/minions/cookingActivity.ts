@@ -12,7 +12,6 @@ export default class extends Task {
 	async run(data: CookingActivityTaskOptions) {
 		const { cookableID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 
 		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID)!;
 

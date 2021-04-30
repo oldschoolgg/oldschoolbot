@@ -29,7 +29,6 @@ export default class extends Task {
 		const { clueID, userID, channelID, quantity, duration } = data;
 		const clueTier = clueTiers.find(mon => mon.id === clueID);
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 
 		const logInfo = `ClueID[${clueID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 

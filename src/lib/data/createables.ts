@@ -4203,6 +4203,16 @@ const Createables: Createable[] = [
 		},
 		requiredSkills: { magic: 60, runecraft: 60 }
 	},
+	{
+		name: 'Kodai wand',
+		inputItems: {
+			[itemID('Master wand')]: 1,
+			[itemID('Kodai insignia')]: 1
+		},
+		outputItems: {
+			[itemID('Kodai wand')]: 1
+		}
+	},
 	...crystalTools,
 	...brokenItems,
 	...lockedItems,

@@ -35,7 +35,8 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultAttackStyles: [SkillsEnum.Attack],
+		combatXpMultiplier: 1.075
 	},
 	{
 		id: Monsters.Vorkath.id,
@@ -119,7 +120,9 @@ const killableBosses: KillableMonster[] = [
 				'Ornate rejuvenation pool': 10
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Strength]
+		defaultAttackStyles: [SkillsEnum.Strength],
+		customMonsterHP: 510,
+		combatXpMultiplier: 1.0875
 	},
 	{
 		id: Monsters.CorporealBeast.id,
@@ -164,7 +167,8 @@ const killableBosses: KillableMonster[] = [
 			}
 		},
 		defaultAttackStyles: [SkillsEnum.Attack],
-		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged]
+		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
+		combatXpMultiplier: 1.55
 	},
 	{
 		id: Monsters.Cerberus.id,
@@ -190,7 +194,8 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		defaultAttackStyles: [SkillsEnum.Strength]
+		defaultAttackStyles: [SkillsEnum.Strength],
+		combatXpMultiplier: 1.15
 	}
 ];
 

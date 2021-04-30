@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import { table } from 'table';
 
+import { Minigames } from '../../extendables/User/Minigame';
 import { Time } from '../../lib/constants';
 import Buyables from '../../lib/data/buyables/buyables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -65,6 +66,18 @@ export default class extends BotCommand {
 			!skillsMeetRequirements(msg.author.rawSkills, buyable.skillsNeeded)
 		) {
 			return msg.send(`You don't have the required stats to buy this item.`);
+		}
+
+		if (buyable.minigameScoreReq) {
+			const [key, req] = buyable.minigameScoreReq;
+			const kc = await msg.author.getMinigameScore(key);
+			if (kc < req) {
+				return msg.channel.send(
+					`You need ${req} KC in ${
+						Minigames.find(i => i.key === key)!.name
+					} to buy this, you only have ${kc} KC.`
+				);
+			}
 		}
 
 		await msg.author.settings.sync(true);

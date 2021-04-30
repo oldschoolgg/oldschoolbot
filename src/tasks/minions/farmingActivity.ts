@@ -514,7 +514,6 @@ export default class extends Task {
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
-			user.incrementMinionDailyDuration(duration);
 			if (user.usingPet('Plopper')) {
 				infoStr.push(`\nYou received 4x loot from Plopper`);
 			}
