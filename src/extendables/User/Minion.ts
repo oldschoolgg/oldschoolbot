@@ -546,6 +546,10 @@ export default class extends Extendable {
 					data.quantity * collectable.quantity
 				}x ${collectable.item.name}. ${formattedDuration}`;
 			}
+
+			case Activity.MageTrainingArena: {
+				return `${this.minionName} is currently training at the Mage Training Arena. ${formattedDuration}`;
+			}
 		}
 	}
 
@@ -715,7 +719,7 @@ export default class extends Extendable {
 
 		await this.settings.update(`skills.${skillName}`, Math.floor(newXP));
 
-		let str = `You received ${amount.toLocaleString()} ${skillEmoji[skillName]} XP`;
+		let str = `You received ${Math.ceil(amount).toLocaleString()} ${skillEmoji[skillName]} XP`;
 		if (duration) {
 			let rawXPHr = (amount / (duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;

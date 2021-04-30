@@ -1592,6 +1592,21 @@ export const wintertodt: CollectionLogData = {
 	'': wintertodtLog
 };
 
+const infinityItems = resolveItems([
+	'Infinity hat',
+	'Infinity top',
+	'Infinity bottoms',
+	'Infinity boots',
+	'Infinity gloves',
+	"Mage's book"
+]);
+const wandItems = resolveItems(['Beginner wand', 'Apprentice wand', 'Teacher wand', 'Master wand']);
+
+export const MTALog: CollectionLogData = {
+	infinity: infinityItems,
+	wands: wandItems
+};
+
 export const coxLog: CollectionLogData = {
 	Misc: resolveItems(['Dexterous prayer scroll', 'Torn prayer scroll', 'Arcane prayer scroll']),
 	Weapons: resolveItems([
@@ -1918,6 +1933,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		items: castleWars
 	},
 	{
+		name: 'Mage Training Arena',
+		aliases: ['mta'],
+		items: MTALog
+	},
+	{
 		name: 'Minigames',
 		aliases: ['minigames', 'minigame'],
 		items: {
@@ -1960,7 +1980,8 @@ export const collectionLogTypes: CollectionLogType[] = [
 			whiteDecorative,
 			goldDecorative,
 			castleWarsGodItems,
-			castleWarsOther
+			castleWarsOther,
+			mta: [...wandItems, ...infinityItems]
 		}
 	}
 ];
