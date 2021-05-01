@@ -437,7 +437,8 @@ export const bosses: CollectionLogData = {
 		"Xeric's warrior",
 		"Xeric's sentinel",
 		"Xeric's general",
-		"Xeric's champion"
+		"Xeric's champion",
+		'Twisted ancestral colour kit'
 	])
 };
 
@@ -1625,6 +1626,7 @@ export const coxLog: CollectionLogData = {
 	]),
 	Others: resolveItems(['Olmlet', 'Dark relic']),
 	CM: resolveItems([
+		'Twisted ancestral colour kit',
 		'Metamorphic dust',
 		"Xeric's guard",
 		"Xeric's warrior",

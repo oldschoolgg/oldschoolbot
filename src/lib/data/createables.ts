@@ -14,6 +14,39 @@ interface Createable {
 	cantBeInCL?: boolean;
 }
 
+const twistedAncestral: Createable[] = [
+	{
+		name: 'Twisted ancestral hat',
+		inputItems: {
+			[itemID('Ancestral hat')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1
+		},
+		outputItems: {
+			[itemID('Crystal pickaxe')]: 1
+		}
+	},
+	{
+		name: 'Twisted ancestral robe top',
+		inputItems: {
+			[itemID('Ancestral robe top')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1
+		},
+		outputItems: {
+			[itemID('Crystal pickaxe')]: 1
+		}
+	},
+	{
+		name: 'Twisted ancestral robe bottom',
+		inputItems: {
+			[itemID('Ancestral robe bottom')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1
+		},
+		outputItems: {
+			[itemID('Twisted ancestral robe bottom')]: 1
+		}
+	}
+];
+
 const crystalTools: Createable[] = [
 	{
 		name: 'Crystal pickaxe',
@@ -1320,7 +1353,8 @@ const Createables: Createable[] = [
 	},
 	...crystalTools,
 	...ornamentKits,
-	...hunterClothing
+	...hunterClothing,
+	...twistedAncestral
 ];
 
 export default Createables;
