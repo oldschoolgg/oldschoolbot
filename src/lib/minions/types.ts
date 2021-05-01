@@ -90,4 +90,6 @@ export interface KillableMonster {
 	pohBoosts?: POHBoosts;
 	defaultAttackStyles?: AttackStyles[];
 	disallowedAttackStyles?: AttackStyles[];
+	customMonsterHP?: number;
+	combatXpMultiplier?: number;
 }

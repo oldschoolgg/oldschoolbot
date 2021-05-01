@@ -10,7 +10,6 @@ export default class extends Task {
 	async run(data: SmithingActivityTaskOptions) {
 		const { smithedBarID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 
 		const smithedItem = Smithing.SmithableItems.find(item => item.id === smithedBarID)!;
 

@@ -1,5 +1,6 @@
 import {
 	BaseEntity,
+	Check,
 	Column,
 	Entity,
 	JoinColumn,
@@ -11,6 +12,7 @@ import {
 import { MinigameTable } from './MinigameTable.entity';
 import { SlayerTaskTable } from './SlayerTaskTable.entity';
 
+@Check('pizazz_points > -1')
 @Entity('new_users')
 export class NewUserTable extends BaseEntity {
 	@PrimaryColumn('varchar', { length: 19, name: 'id' })
@@ -25,4 +27,7 @@ export class NewUserTable extends BaseEntity {
 
 	@OneToMany(() => SlayerTaskTable, task => task.user, { nullable: false })
 	slayerTasks!: SlayerTaskTable[];
+
+	@Column({ name: 'pizazz_points', type: 'int', nullable: false, default: 0 })
+	public PizazzPoints!: number;
 }

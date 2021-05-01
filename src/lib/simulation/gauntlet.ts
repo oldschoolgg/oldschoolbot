@@ -105,7 +105,7 @@ const CorruptedInnerTable = new LootTable()
 const CorruptedTable = new LootTable()
 	// Gauntlet cape is given manually in code
 	.every('Crystal shard', [5, 9])
-	.every(CorruptedInnerTable, 2)
+	.every(CorruptedInnerTable, 3)
 	.tertiary(20, 'Clue scroll (elite)')
 	.tertiary(50, 'Crystal weapon seed')
 	.tertiary(50, 'Crystal armour seed')

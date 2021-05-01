@@ -53,4 +53,13 @@ export class MinigameTable extends BaseEntity {
 
 	@Column({ name: 'castle_wars', type: 'int', nullable: false, default: 0 })
 	public CastleWars!: number;
+
+	@Column({ name: 'raids', type: 'int', nullable: false, default: 0 })
+	public Raids!: number;
+
+	@Column({ name: 'raids_challenge_mode', type: 'int', nullable: false, default: 0 })
+	public RaidsChallengeMode!: number;
+
+	@Column({ name: 'magic_training_arena', type: 'int', nullable: false, default: 0 })
+	public MagicTrainingArena!: number;
 }

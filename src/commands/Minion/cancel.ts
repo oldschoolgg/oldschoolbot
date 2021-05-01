@@ -4,7 +4,7 @@ import { Activity } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { OldSchoolBotClient } from '../../lib/structures/OldSchoolBotClient';
-import { NightmareActivityTaskOptions } from './../../lib/types/minions';
+import { NightmareActivityTaskOptions, RaidsOptions } from './../../lib/types/minions';
 
 const options = {
 	max: 1,
@@ -58,6 +58,15 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} is currently doing Soul Wars, and cant leave their team!`
 			);
+		}
+
+		if (currentTask.type === Activity.Raids) {
+			const data = currentTask as RaidsOptions;
+			if (data.users.length > 1) {
+				return msg.send(
+					`${msg.author.minionName} is currently doing the Chamber's of Xeric, they cannot leave their team!`
+				);
+			}
 		}
 
 		const cancelMsg = await msg.channel.send(

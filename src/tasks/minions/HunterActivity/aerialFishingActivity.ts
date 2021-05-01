@@ -14,7 +14,6 @@ export default class extends Task {
 	async run(data: AerialFishingActivityTaskOptions) {
 		let { quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
 

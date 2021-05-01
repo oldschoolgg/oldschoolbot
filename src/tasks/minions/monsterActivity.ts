@@ -12,7 +12,6 @@ export default class extends Task {
 		const { monsterID, userID, channelID, quantity, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		await user.incrementMonsterScore(monsterID, quantity);
 		const loot = new Bank(monster.table.kill(quantity));
 

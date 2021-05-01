@@ -4,6 +4,7 @@ import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import { collectables } from '../../commands/Minion/collect';
 import {
 	Activity,
 	Emoji,
@@ -45,6 +46,7 @@ import {
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
+	CollectingOptions,
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
@@ -64,10 +66,12 @@ import {
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
+	RaidsOptions,
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SoulWarsOptions,
+	WealthChargingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
@@ -75,7 +79,6 @@ import {
 	addItemToBank,
 	convertXPtoLVL,
 	formatDuration,
-	incrementMinionDailyDuration,
 	itemNameFromID,
 	stringMatches,
 	toKMB,
@@ -491,6 +494,11 @@ export default class extends Extendable {
 				return `${this.minionName} is currently charging ${data.quantity}x inventories of glories at the Fountain of Rune. ${formattedDuration}`;
 			}
 
+			case Activity.WealthCharging: {
+				const data = currentTask as WealthChargingActivityTaskOptions;
+				return `${this.minionName} is currently charging ${data.quantity}x inventories of rings of wealth at the Fountain of Rune. ${formattedDuration}`;
+			}
+
 			case Activity.GnomeRestaurant: {
 				return `${this.minionName} is currently doing Gnome Restaurant deliveries. ${formattedDuration}`;
 			}
@@ -518,6 +526,29 @@ export default class extends Extendable {
 
 			case Activity.MageArena: {
 				return `${this.minionName} is currently doing the Mage Arena. ${formattedDuration}`;
+			}
+
+			case Activity.Raids: {
+				const data = currentTask as RaidsOptions;
+				return `${this.minionName} is currently doing the Chamber's of Xeric${
+					data.challengeMode ? ' in Challenge Mode' : ''
+				}, ${
+					data.users.length === 1
+						? 'as a solo'
+						: `with a team of ${data.users.length} minions.`
+				} ${formattedDuration}`;
+			}
+
+			case Activity.Collecting: {
+				const data = currentTask as CollectingOptions;
+				const collectable = collectables.find(c => c.item.id === data.collectableID)!;
+				return `${this.minionName} is currently collecting ${
+					data.quantity * collectable.quantity
+				}x ${collectable.item.name}. ${formattedDuration}`;
+			}
+
+			case Activity.MageTrainingArena: {
+				return `${this.minionName} is currently training at the Mage Training Arena. ${formattedDuration}`;
 			}
 		}
 	}
@@ -620,10 +651,6 @@ export default class extends Extendable {
 			: `${prefix} ${icon} Your minion`;
 	}
 
-	public async incrementMinionDailyDuration(this: User, duration: number) {
-		return incrementMinionDailyDuration(this.client as KlasaClient, this.id, duration);
-	}
-
 	public async addXP(
 		this: User,
 		skillName: SkillsEnum,
@@ -692,7 +719,7 @@ export default class extends Extendable {
 
 		await this.settings.update(`skills.${skillName}`, Math.floor(newXP));
 
-		let str = `You received ${amount.toLocaleString()} ${skillEmoji[skillName]} XP`;
+		let str = `You received ${Math.ceil(amount).toLocaleString()} ${skillEmoji[skillName]} XP`;
 		if (duration) {
 			let rawXPHr = (amount / (duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;

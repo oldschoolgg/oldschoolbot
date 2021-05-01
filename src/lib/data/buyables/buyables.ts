@@ -1,3 +1,4 @@
+import { MinigameKey } from '../../../extendables/User/Minigame';
 import { MAX_QP } from '../../constants';
 import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
@@ -16,7 +17,41 @@ export interface Buyable {
 	aliases?: string[];
 	skillsNeeded?: Skills;
 	restockTime?: number;
+	minigameScoreReq?: [MinigameKey, number];
 }
+
+const cmCapes: Buyable[] = [
+	{
+		name: "Xeric's guard",
+		outputItems: resolveNameBank({ "Xeric's guard": 1 }),
+		gpCost: 100_000,
+		minigameScoreReq: ['RaidsChallengeMode', 100]
+	},
+	{
+		name: "Xeric's warrior",
+		outputItems: resolveNameBank({ "Xeric's warrior": 1 }),
+		gpCost: 500_000,
+		minigameScoreReq: ['RaidsChallengeMode', 500]
+	},
+	{
+		name: "Xeric's sentinel",
+		outputItems: resolveNameBank({ "Xeric's sentinel": 1 }),
+		gpCost: 1_000_000,
+		minigameScoreReq: ['RaidsChallengeMode', 1000]
+	},
+	{
+		name: "Xeric's general",
+		outputItems: resolveNameBank({ "Xeric's general": 1 }),
+		gpCost: 1_500_000,
+		minigameScoreReq: ['RaidsChallengeMode', 1500]
+	},
+	{
+		name: "Xeric's champion",
+		outputItems: resolveNameBank({ "Xeric's champion": 1 }),
+		gpCost: 2_000_000,
+		minigameScoreReq: ['RaidsChallengeMode', 2000]
+	}
+];
 
 const constructionBuyables: Buyable[] = [
 	{ name: 'Bolt of cloth', outputItems: resolveNameBank({ 'Bolt of cloth': 1 }), gpCost: 5000 },
@@ -484,6 +519,14 @@ const questBuyables: Buyable[] = [
 		}),
 		gpCost: 1_000_000,
 		qpRequired: 92
+	},
+	{
+		name: 'Climbing boots',
+		outputItems: resolveNameBank({
+			'Climbing boots': 1
+		}),
+		gpCost: 100_000,
+		qpRequired: 20
 	}
 ];
 
@@ -651,7 +694,8 @@ const Buyables: Buyable[] = [
 	...fremennikClothes,
 	...gnomeClothes,
 	...canifisClothes,
-	...castleWarsBuyables
+	...castleWarsBuyables,
+	...cmCapes
 ];
 
 export default Buyables;

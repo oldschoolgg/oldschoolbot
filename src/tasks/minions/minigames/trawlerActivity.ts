@@ -26,10 +26,9 @@ function hasEliteArdougneDiary(user: KlasaUser): boolean {
 
 export default class extends Task {
 	async run(data: FishingTrawlerActivityTaskOptions) {
-		const { channelID, quantity, duration, userID } = data;
+		const { channelID, quantity, userID } = data;
 		const user = await this.client.users.fetch(userID);
 
-		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore('FishingTrawler', quantity);
 
 		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);

@@ -457,8 +457,6 @@ export default class extends Task {
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
-			user.incrementMinionDailyDuration(duration);
-
 			channel.send(infoStr.join('\n'));
 			if (janeMessage) {
 				return channel.send(

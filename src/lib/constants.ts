@@ -102,6 +102,7 @@ export const enum Emoji {
 	Attack = '<:attack:630911039969427467>',
 	Defence = '<:defence:630911040393052180>',
 	Ranged = '<:ranged:630911040258834473>',
+	Gear = '<:gear:835314891950129202>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -117,7 +118,9 @@ export const enum Emoji {
 	Skiller = '<:skiller:802136963775463435>',
 	Incinerator = '<:incinerator:802136963674275882>',
 	CollectionLog = '<:collectionLog:802136964027121684>',
-	Minigames = '<:minigameIcon:630400565070921761>'
+	Minigames = '<:minigameIcon:630400565070921761>',
+	Skull = '<:Skull:802136963926065165>',
+	CombatSword = '<:combat:802136963956080650>'
 }
 
 export const enum ReactionEmoji {
@@ -173,6 +176,7 @@ export const enum Tasks {
 	Enchanting = 'enchantingActivity',
 	Casting = 'castingActivity',
 	GloryCharging = 'gloryChargingActivity',
+	WealthCharging = 'wealthChargingActivity',
 	TitheFarmActivity = 'titheFarmActivity',
 	BarbarianAssault = 'barbarianAssaultActivity',
 	AgilityArena = 'agilityArenaActivity',
@@ -185,7 +189,10 @@ export const enum Tasks {
 	RoguesDenMaze = 'roguesDenMazeActivity',
 	Gauntlet = 'gauntletActivity',
 	CastleWars = 'castleWarsActivity',
-	MageArena = 'mageArenaActivity'
+	MageArena = 'mageArenaActivity',
+	Raids = 'raidsActivity',
+	Collecting = 'collectingActivity',
+	MageTrainingArena = 'mageTrainingArenaActivity'
 }
 
 export enum Activity {
@@ -227,6 +234,7 @@ export enum Activity {
 	Enchanting = 'Enchanting',
 	Casting = 'Casting',
 	GloryCharging = 'GloryCharging',
+	WealthCharging = 'WealthCharging',
 	BarbarianAssault = 'BarbarianAssault',
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge',
@@ -237,7 +245,10 @@ export enum Activity {
 	RoguesDenMaze = 'RoguesDenMaze',
 	Gauntlet = 'Gauntlet',
 	CastleWars = 'CastleWars',
-	MageArena = 'MageArena'
+	MageArena = 'MageArena',
+	Raids = 'Raids',
+	Collecting = 'Collecting',
+	MageTrainingArena = 'MageTrainingArena'
 }
 
 export enum ActivityGroup {
@@ -360,7 +371,7 @@ export const badges: { [key: number]: string } = {
 	11: Emoji.MinigameIcon
 };
 
-export const MAX_QP = 279;
+export const MAX_QP = 280;
 
 export const MIMIC_MONSTER_ID = 23184;
 

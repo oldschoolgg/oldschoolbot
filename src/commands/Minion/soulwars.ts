@@ -99,7 +99,7 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage) {
+	async run(msg: KlasaMessage, [input]: [string]) {
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 1,
@@ -118,7 +118,10 @@ export default class extends BotCommand {
 			}
 		};
 
-		const users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
+		const users =
+			input === 'solo'
+				? [msg.author]
+				: (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
 		if (users.length === 0) {
 			return;
 		}

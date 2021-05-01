@@ -12,7 +12,6 @@ export default class extends Task {
 	async run(data: RunecraftActivityTaskOptions) {
 		const { runeID, essenceQuantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
 

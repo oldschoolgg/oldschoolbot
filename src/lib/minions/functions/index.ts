@@ -2,7 +2,6 @@ import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
-import { NIGHTMARES_HP } from '../../constants';
 import { SkillsEnum } from '../../skilling/types';
 import killableMonsters from '../data/killableMonsters';
 import { KillableMonster } from '../types';
@@ -46,11 +45,6 @@ export function resolveAttackStyles(
 	return [killableMon, osjsMon, attackStyles];
 }
 
-const miscHpMap: Record<number, number> = {
-	9415: NIGHTMARES_HP,
-	3127: 250
-};
-
 export async function addMonsterXP(
 	user: KlasaUser,
 	monsterID: number,
@@ -58,17 +52,33 @@ export async function addMonsterXP(
 	duration: number
 ) {
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, monsterID);
-	const hp = osjsMon?.data?.hitpoints || miscHpMap[monsterID] || 1;
-	const totalXP = hp * 4 * quantity;
+	const monster = killableMonsters.find(mon => mon.id === monsterID);
+	let hp = 1;
+	let xpMultiplier = 1;
+	if (monster && monster.customMonsterHP) {
+		hp = monster.customMonsterHP;
+	} else if (osjsMon?.data?.hitpoints) {
+		hp = osjsMon.data.hitpoints;
+	}
+	if (monster && monster.combatXpMultiplier) {
+		xpMultiplier = monster.combatXpMultiplier;
+	}
+	const totalXP = hp * 4 * quantity * xpMultiplier;
 	const xpPerSkill = totalXP / attackStyles.length;
 
 	let res: string[] = [];
 
 	for (const style of attackStyles) {
-		res.push(await user.addXP(style, xpPerSkill, duration));
+		res.push(await user.addXP(style, Math.floor(xpPerSkill), duration));
 	}
 
-	res.push(await user.addXP(SkillsEnum.Hitpoints, Math.floor(hp * quantity * 1.33), duration));
+	res.push(
+		await user.addXP(
+			SkillsEnum.Hitpoints,
+			Math.floor(hp * quantity * 1.33 * xpMultiplier),
+			duration
+		)
+	);
 
 	return res;
 }

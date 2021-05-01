@@ -413,7 +413,33 @@ export const bosses: CollectionLogData = {
 	Sarachnis: resolveItems(['Giant egg sac(full)', 'Sarachnis cudgel', 'Jar of eyes', 'Sraracha']),
 	Nightmare: nightmareLog,
 	Zalcano: zalcanoLog,
-	Wintertodt: wintertodtLog
+	Wintertodt: wintertodtLog,
+	Cox1: resolveItems([
+		'Dexterous prayer scroll',
+		'Torn prayer scroll',
+		'Arcane prayer scroll',
+		'Twisted bow',
+		'Elder maul',
+		'Kodai insignia',
+		'Dragon hunter crossbow',
+		'Dragon claws',
+		'Ancestral hat',
+		'Ancestral robe top',
+		'Ancestral robe bottom',
+		'Twisted buckler'
+	]),
+	Cox2: resolveItems([
+		"Dinh's bulwark",
+		'Dark relic',
+		'Metamorphic dust',
+		'Olmlet',
+		"Xeric's guard",
+		"Xeric's warrior",
+		"Xeric's sentinel",
+		"Xeric's general",
+		"Xeric's champion",
+		'Twisted ancestral colour kit'
+	])
 };
 
 export const pets: CollectionLogData = {
@@ -1567,13 +1593,23 @@ export const wintertodt: CollectionLogData = {
 	'': wintertodtLog
 };
 
+const infinityItems = resolveItems([
+	'Infinity hat',
+	'Infinity top',
+	'Infinity bottoms',
+	'Infinity boots',
+	'Infinity gloves',
+	"Mage's book"
+]);
+const wandItems = resolveItems(['Beginner wand', 'Apprentice wand', 'Teacher wand', 'Master wand']);
+
+export const MTALog: CollectionLogData = {
+	infinity: infinityItems,
+	wands: wandItems
+};
+
 export const coxLog: CollectionLogData = {
-	Misc: resolveItems([
-		'Dexterous prayer scroll',
-		'Torn prayer scroll',
-		'Arcane prayer scroll',
-		'Dark relic'
-	]),
+	Misc: resolveItems(['Dexterous prayer scroll', 'Torn prayer scroll', 'Arcane prayer scroll']),
 	Weapons: resolveItems([
 		'Twisted bow',
 		'Elder maul',
@@ -1588,10 +1624,10 @@ export const coxLog: CollectionLogData = {
 		'Twisted buckler',
 		"Dinh's bulwark"
 	]),
-	Others: resolveItems([
+	Others: resolveItems(['Olmlet', 'Dark relic']),
+	CM: resolveItems([
+		'Twisted ancestral colour kit',
 		'Metamorphic dust',
-		'Olmlet',
-
 		"Xeric's guard",
 		"Xeric's warrior",
 		"Xeric's sentinel",
@@ -1899,6 +1935,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		items: castleWars
 	},
 	{
+		name: 'Mage Training Arena',
+		aliases: ['mta'],
+		items: MTALog
+	},
+	{
 		name: 'Minigames',
 		aliases: ['minigames', 'minigame'],
 		items: {
@@ -1941,7 +1982,8 @@ export const collectionLogTypes: CollectionLogType[] = [
 			whiteDecorative,
 			goldDecorative,
 			castleWarsGodItems,
-			castleWarsOther
+			castleWarsOther,
+			mta: [...wandItems, ...infinityItems]
 		}
 	}
 ];
