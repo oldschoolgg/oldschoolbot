@@ -22,7 +22,7 @@ const twistedAncestral: Createable[] = [
 			[itemID('Twisted ancestral colour kit')]: 1
 		},
 		outputItems: {
-			[itemID('Crystal pickaxe')]: 1
+			[itemID('Twisted ancestral hat')]: 1
 		}
 	},
 	{
@@ -32,7 +32,7 @@ const twistedAncestral: Createable[] = [
 			[itemID('Twisted ancestral colour kit')]: 1
 		},
 		outputItems: {
-			[itemID('Crystal pickaxe')]: 1
+			[itemID('Twisted ancestral robe top')]: 1
 		}
 	},
 	{
@@ -1349,6 +1349,26 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Kodai wand')]: 1
+		}
+	},
+	{
+		name: 'Partyhat & specs',
+		inputItems: {
+			[itemID('Blue partyhat')]: 1,
+			[itemID('Sagacious spectacles')]: 1
+		},
+		outputItems: {
+			[itemID('Partyhat & specs')]: 1
+		}
+	},
+	{
+		name: 'Blue partyhat',
+		inputItems: {
+			[itemID('Partyhat & specs')]: 1
+		},
+		outputItems: {
+			[itemID('Blue partyhat')]: 1,
+			[itemID('Sagacious spectacles')]: 1
 		}
 	},
 	...crystalTools,
