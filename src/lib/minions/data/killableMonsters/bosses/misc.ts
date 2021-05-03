@@ -51,7 +51,8 @@ const killableBosses: KillableMonster[] = [
 		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
 		qpRequired: 205,
 		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
+			[itemID('Dragon warhammer')]: 10,
+			[itemID('Dragon hunter crossbow')]: 20
 		},
 		levelRequirements: {
 			prayer: 43
