@@ -2,9 +2,11 @@ import { Monsters } from 'oldschooljs';
 
 import { Time, ZALCANO_ID } from '../../../constants';
 import { GearSetupTypes, GearStat } from '../../../gear/types';
+import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
+import { NIGHTMARES_HP } from './../../../constants';
 import bosses from './bosses';
 import low from './low';
 
@@ -38,7 +40,10 @@ const killableMonsters: KillableMonster[] = [
 				'Fancy rejuvenation pool': 10,
 				'Ornate rejuvenation pool': 10
 			}
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged],
+		customMonsterHP: 600,
+		combatXpMultiplier: 1.09
 	},
 	{
 		id: Monsters.DagannothPrime.id,
@@ -66,7 +71,8 @@ const killableMonsters: KillableMonster[] = [
 		],
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		combatXpMultiplier: 1.3
 	},
 	{
 		id: Monsters.DagannothRex.id,
@@ -91,7 +97,8 @@ const killableMonsters: KillableMonster[] = [
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 5 }, { [itemID("Iban's staff")]: 5 }],
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		combatXpMultiplier: 1.3
 	},
 	{
 		id: Monsters.DagannothSupreme.id,
@@ -132,7 +139,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		qpRequired: 0
+		qpRequired: 0,
+		defaultAttackStyles: [SkillsEnum.Attack]
 	},
 	{
 		id: Monsters.Guard.id,
@@ -189,7 +197,8 @@ const killableMonsters: KillableMonster[] = [
 		itemInBankBoosts: [{ [itemID('Ring of the gods')]: 3 }],
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic]
 	},
 	{
 		id: Monsters.Lizardman.id,
@@ -290,7 +299,9 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 0,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID('Zamorakian spear')]: 10 }]
+		itemInBankBoosts: [{ [itemID('Zamorakian spear')]: 10 }],
+
+		combatXpMultiplier: 1.025
 	},
 	{
 		id: Monsters.Ankou.id,
@@ -398,7 +409,8 @@ export const NightmareMonster: KillableMonster = {
 			[GearStat.DefenceSlash]: 150,
 			[GearStat.AttackCrush]: 80
 		}
-	}
+	},
+	customMonsterHP: NIGHTMARES_HP
 };
 
 export default killableMonsters;
@@ -408,5 +420,6 @@ export const effectiveMonsters = [
 	NightmareMonster,
 	{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID },
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127 },
-	{ name: 'Mimic', aliases: ['mimic'], id: 23184 }
+	{ name: 'Mimic', aliases: ['mimic'], id: 23184 },
+	{ name: 'Hespori', aliases: ['hespori'], id: 8583 }
 ];

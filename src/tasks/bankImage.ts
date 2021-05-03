@@ -6,9 +6,9 @@ import { Util } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { Events } from '../lib/constants';
+import { bankImageCache, Events } from '../lib/constants';
 import { allCollectionLogItems } from '../lib/data/collectionLog';
-import { filterableTypes } from '../lib/data/filterables';
+import { filterableTypes, filterByCategory } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
 import { getUserSettings } from '../lib/settings/settings';
@@ -16,18 +16,17 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { ItemBank } from '../lib/types';
 import {
 	addArrayOfNumbers,
+	filterItemTupleByQuery,
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
 	itemNameFromID,
 	restoreCtx,
 	saveCtx,
+	sha256Hash,
 	stringMatches
 } from '../lib/util';
-import { canvasImageFromBuffer } from '../lib/util/canvasImageFromBuffer';
+import { canvasImageFromBuffer, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
-import { fillTextXTimesInCtx } from '../lib/util/fillTextXTimesInCtx';
-import filterByCategory from '../lib/util/filterByCategory';
-import filterItemTupleByQuery from '../lib/util/filterItemTupleByQuery';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -35,6 +34,20 @@ registerFont('./src/lib/resources/osrs-font-bold.ttf', { family: 'Regular' });
 
 const bankImageFile = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/1.jpg');
 const bankRepeaterFile = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/r1.jpg');
+
+const coxPurpleBg = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/14_purple.jpg');
+
+export type BankImageResult =
+	| {
+			cachedURL: null;
+			image: Buffer;
+			cacheKey: string;
+	  }
+	| {
+			cachedURL: string;
+			image: null;
+			cacheKey: string;
+	  };
 
 const CACHE_DIR = './icon_cache';
 const spacer = 12;
@@ -224,8 +237,9 @@ export default class BankImageTask extends Task {
 		title = '',
 		showValue = true,
 		flags: { [key: string]: string | number } = {},
-		user?: KlasaUser | string
-	): Promise<Buffer> {
+		user?: KlasaUser | string,
+		collectionLog?: ItemBank
+	): Promise<BankImageResult> {
 		const settings =
 			typeof user === 'undefined'
 				? null
@@ -235,7 +249,7 @@ export default class BankImageTask extends Task {
 
 		const bankBackgroundID =
 			settings?.get(UserSettings.BankBackground) ?? flags.background ?? 1;
-		const currentCL = settings?.get(UserSettings.CollectionLogBank);
+		const currentCL = collectionLog ?? settings?.get(UserSettings.CollectionLogBank);
 
 		let items = await createTupleOfItemsFromBank(this.client, itemLoot);
 
@@ -313,6 +327,46 @@ export default class BankImageTask extends Task {
 				) +
 					itemSize * 1.5
 			) - 2;
+
+		let bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID)!;
+
+		const isPurple: boolean =
+			bankBackgroundID === 14 &&
+			flags.showNewCL !== undefined &&
+			currentCL !== undefined &&
+			Object.keys(itemLoot).some(
+				i => !currentCL[i] && allCollectionLogItems.includes(parseInt(i))
+			);
+
+		if (isPurple) {
+			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
+		}
+
+		const cacheKey = [
+			title,
+			typeof user === 'string' ? user : user?.id ?? 'nouser',
+			showValue,
+			bankBackgroundID,
+			searchQuery,
+			items.length,
+			partial,
+			page,
+			isPurple,
+			totalValue,
+			canvasHeight,
+			Object.entries(flags).toString(),
+			sha256Hash(items.toString())
+		].join('-');
+
+		let cached = bankImageCache.get(cacheKey);
+		if (cached) {
+			return {
+				cachedURL: cached,
+				image: null,
+				cacheKey
+			};
+		}
+
 		const canvas = createCanvas(width, canvasHeight <= 331 ? 331 : canvasHeight);
 
 		const ctx = canvas.getContext('2d');
@@ -320,7 +374,7 @@ export default class BankImageTask extends Task {
 		ctx.imageSmoothingEnabled = false;
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		const bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID)!;
+
 		ctx.fillStyle = ctx.createPattern(bgImage.repeatImage ?? this.repeatingImage, 'repeat');
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(
@@ -445,10 +499,17 @@ export default class BankImageTask extends Task {
 				);
 			}
 		}
-		if (items.length > 5000) {
-			return canvas.toBuffer('image/jpeg', { quality: 0.75 });
-		}
-		return canvas.toBuffer('image/png');
+
+		const image =
+			items.length > 2000
+				? canvas.toBuffer('image/jpeg', { quality: 0.75 })
+				: canvas.toBuffer('image/png');
+
+		return {
+			image,
+			cacheKey,
+			cachedURL: null
+		};
 	}
 
 	async generateCollectionLogImage(

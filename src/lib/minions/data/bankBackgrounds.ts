@@ -1,4 +1,4 @@
-import { PerkTier } from '../../constants';
+import { BitField, PerkTier } from '../../constants';
 import { resolveNameBank } from '../../util';
 import { BankBackground } from '../types';
 
@@ -91,7 +91,8 @@ const backgroundImages: BankBackground[] = [
 			'Spectral sigil': 1,
 			'Arcane sigil': 1,
 			'Elysian sigil': 1,
-			'Pet dark core': 1
+			'Pet dark core': 1,
+			'Jar of spirits': 1
 		}),
 		itemCost: resolveNameBank({
 			'Spectral spirit shield': 1,
@@ -160,6 +161,85 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 10_000_000
+	},
+	{
+		id: 14,
+		name: 'CoX',
+		image: null,
+		available: true,
+		bitfield: BitField.HasPermanentEventBackgrounds
+	},
+	{
+		id: 15,
+		name: 'OSB',
+		image: null,
+		available: true,
+		bitfield: BitField.HasPermanentEventBackgrounds
+	},
+	{
+		id: 16,
+		name: 'Wilderness',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		collectionLogItemsNeeded: resolveNameBank({
+			'Dragon pickaxe': 1,
+			'Dragon med helm': 1,
+			'Kbd heads': 1,
+			'Draconic visage': 1,
+			'Prince black dragon': 1,
+			'Dragon 2h sword': 1,
+			'Pet chaos elemental': 1,
+			'Malediction shard 1': 1,
+			'Odium shard 1': 1,
+			'Malediction shard 2': 1,
+			'Odium shard 2': 1,
+			Fedora: 1,
+			'Malediction shard 3': 1,
+			'Odium shard 3': 1,
+			"Scorpia's offspring": 1,
+			'Treasonous ring': 1,
+			'Venenatis spiderling': 1,
+			'Tyrannical ring': 1,
+			'Callisto cub': 1,
+			'Ring of the gods': 1,
+			"Vet'ion jr.": 1
+		}),
+		itemCost: resolveNameBank({
+			'Dragon pickaxe': 1,
+			'Dragon med helm': 1,
+			'Draconic visage': 1,
+			'Dragon 2h sword': 1,
+			'Odium ward ': 1,
+			'Malediction ward': 1,
+			'Treasonous ring': 1,
+			'Tyrannical ring': 1,
+			'Ring of the gods': 1
+		}),
+		gpCost: 100_000_000
+	},
+	{
+		id: 17,
+		name: 'Grand Exchange',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 2_147_483_647,
+		sacValueRequired: 2_147_483_647
+	},
+	{
+		id: 18,
+		name: 'Falador Park',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		collectionLogItemsNeeded: resolveNameBank({
+			Tangleroot: 1
+		}),
+		gpCost: 100_000_000,
+		skillsNeeded: {
+			farming: 99
+		}
 	}
 ];
 

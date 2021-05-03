@@ -35,6 +35,6 @@ export default class extends BotCommand {
 				.setAuthor(message.author.username, message.author.displayAvatarURL());
 			return msg.send({ embed });
 		}
-		return msg.sendLocale('NO_QUOTE');
+		return msg.send('Could not find a quote.');
 	}
 }

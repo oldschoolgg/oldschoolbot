@@ -133,9 +133,13 @@ export default class extends BotCommand {
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${clueTier.name} caskets.`
 		);
 
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
 
 		msg.author.incrementClueScore(clueTier.id, quantity);
+
+		msg.author.incrementOpenableScore(clueTier.id, quantity);
+
 		if (mimicNumber > 0) {
 			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 		}
@@ -145,7 +149,8 @@ export default class extends BotCommand {
 			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.`,
 			title: opened,
 			flags: { showNewCL: 1 },
-			user: msg.author
+			user: msg.author,
+			cl: previousCL
 		});
 	}
 
@@ -167,13 +172,16 @@ export default class extends BotCommand {
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${osjsOpenable.name}.`
 		);
 
+		msg.author.incrementOpenableScore(osjsOpenable.itemID, quantity);
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
 
 		return msg.channel.sendBankImage({
 			bank: loot,
 			title: `You opened ${quantity} ${osjsOpenable.name}`,
 			flags: { showNewCL: 1 },
-			user: msg.author
+			user: msg.author,
+			cl: previousCL
 		});
 	}
 
@@ -204,17 +212,34 @@ export default class extends BotCommand {
 		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
 
 		const loot = new Bank();
+		const score = msg.author.getOpenableScore(itemID('Spoils of war'));
 		for (let i = 0; i < quantity; i++) {
-			loot.add(botOpenable.table.roll());
+			const rollLoot = botOpenable.table.roll();
+			if (rollLoot.some(i => i.item === itemID("Lil' creator"))) {
+				this.client.emit(
+					Events.ServerNotification,
+					`<:lil_creator:798221383951319111> **${msg.author.username}'s** minion, ${
+						msg.author.minionName
+					}, just received a Lil' creator! They've done ${await msg.author.getMinigameScore(
+						'SoulWars'
+					)} Soul wars games, and this is their ${formatOrdinal(
+						score + i
+					)} Spoils of war crate.`
+				);
+			}
+			loot.add(rollLoot);
 		}
 
+		msg.author.incrementOpenableScore(botOpenable.itemID, quantity);
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot.values(), true);
 
 		return msg.channel.sendBankImage({
 			bank: loot.values(),
 			title: `You opened ${quantity} ${botOpenable.name}`,
 			flags: { showNewCL: 1 },
-			user: msg.author
+			user: msg.author,
+			cl: previousCL
 		});
 	}
 }

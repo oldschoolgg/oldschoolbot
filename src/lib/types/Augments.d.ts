@@ -5,15 +5,14 @@ import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Db } from 'mongodb';
 import { Bank, Player } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { Limit } from 'p-limit';
 import PQueue from 'p-queue';
-import PgBoss from 'pg-boss';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
 
 import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
-import { BitField, PerkTier } from '../constants';
+import { BankImageResult } from '../../tasks/bankImage';
+import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
 import {
 	GearSetup,
 	GearSetupType,
@@ -26,17 +25,16 @@ import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
 import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
+import { AttackStyles } from '../util';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
 declare module 'klasa' {
 	interface KlasaClient {
-		public boss: PgBoss;
 		public orm: Connection;
 		public oneCommandAtATimeCache: Set<string>;
 		public secondaryUserBusyCache: Set<string>;
-		public queuePromise: Limit;
-		public syncItemPrice(itemID: number | string): number;
 		public fetchItemPrice(itemID: number | string): Promise<number>;
+		public cacheItemPrice(itemID: number): Promise<number>;
 		public query<T>(query: string, values?: string[]): Promise<T>;
 		public settings: Settings;
 		public production: boolean;
@@ -44,10 +42,15 @@ declare module 'klasa' {
 		public _badgeCache: Map<string, string>;
 		public _peakIntervalCache: Peak[];
 		public wtf(error: Error): void;
+		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 		osggDB?: Db;
 		commentStream?: CommentStream;
 		submissionStream?: SubmissionStream;
 		fastifyServer: FastifyInstance;
+		minionTicker: NodeJS.Timeout;
+		giveawayTicker: NodeJS.Timeout;
+		analyticsInterval: NodeJS.Timeout;
+		minionActivityCache: Map<string, ActivityTable['taskData']>;
 	}
 
 	interface Command {
@@ -66,8 +69,9 @@ declare module 'klasa' {
 			title?: string,
 			showValue?: boolean,
 			flags?: { [key: string]: string | number },
-			user?: KlasaUser | string
-		): Promise<Buffer>;
+			user?: KlasaUser | string,
+			cl?: ItemBank
+		): Promise<BankImageResult>;
 		generateCollectionLogImage(
 			collectionLog: ItemBank,
 			title: string = '',
@@ -90,6 +94,7 @@ declare module 'klasa' {
 
 		makePartyAwaiter(options: MakePartyOptions): Promise<KlasaUser[]>;
 		removeAllReactions(): void;
+		confirm(this: KlasaMessage, str: string): Promise<void>;
 	}
 
 	interface SettingsFolder {
@@ -101,13 +106,14 @@ declare module 'discord.js' {
 	interface Client {
 		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public query<T>(query: string): Promise<T>;
+		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {
 		addItemsToBank(
 			items: ItemBank | Bank,
 			collectionLog?: boolean
-		): Promise<SettingsUpdateResult>;
+		): Promise<{ previousCL: ItemBank }>;
 		removeItemsFromBank(
 			items: ItemBank | Bank,
 			collectionLog?: boolean
@@ -116,6 +122,11 @@ declare module 'discord.js' {
 		removeItemFromBank(itemID: number, numberToRemove?: number): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(
 			monsterID: number,
+			numberToAdd?: number
+		): Promise<SettingsUpdateResult>;
+
+		incrementOpenableScore(
+			openableID: number,
 			numberToAdd?: number
 		): Promise<SettingsUpdateResult>;
 
@@ -134,7 +145,6 @@ declare module 'discord.js' {
 		addXP(skillName: SkillsEnum, amount: number, duration?: number): Promise<string>;
 		skillLevel(skillName: SkillsEnum): number;
 		totalLevel(returnXP = false): number;
-		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
 		toggleBusy(busy: boolean): void;
 		/**
 		 * Returns how many of an item a user owns, checking their bank and all equipped gear.
@@ -145,7 +155,7 @@ declare module 'discord.js' {
 		 * Returns true if the user has this item equipped in any of their setups.
 		 * @param itemID The item ID.
 		 */
-		hasItemEquippedAnywhere(itemID: number): boolean;
+		hasItemEquippedAnywhere(item: number | string): boolean;
 		/**
 		 * Checks whether they have the given item in their bank OR equipped.
 		 * @param item
@@ -166,6 +176,10 @@ declare module 'discord.js' {
 		 * Returns the KC the user has for this monster.
 		 */
 		getKC(id: number): number;
+		/**
+		 * Returns how many times they've opened this openable.
+		 */
+		getOpenableScore(id: number): number;
 		/**
 		 * Returns a tuple where the first item is formatted KC entry name and second is the KC.
 		 * If the search doesn't return anything then returns [null, 0].
@@ -193,7 +207,7 @@ declare module 'discord.js' {
 		 */
 		equippedWeapon(setupType: GearSetupTypes): Item | null;
 		rawGear(): UserFullGearSetup;
-		allItemsOwned(): ItemBank;
+		allItemsOwned(): Bank;
 		setupStats(setup: GearSetupTypes): GearStats;
 		/**
 		 * Returns this users update promise queue.
@@ -206,6 +220,14 @@ declare module 'discord.js' {
 		bank(options?: GetUserBankOptions): Bank;
 		getPOH(): Promise<PoHTable>;
 		getGear(gearType: GearSetupType): GearSetup;
+		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
+		getAttackStyles(): AttackStyles[];
+		owns(bank: ItemBank | Bank | string | number): boolean;
+		completion(): {
+			percent: number;
+			notOwned: number[];
+			owned: number[];
+		};
 
 		/**
 		 * Get item boosts the user has available for the given `KillableMonster`.
@@ -228,7 +250,7 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
-		maxTripLength: number;
+		maxTripLength(activity?: OSBActivity): number;
 		rawSkills: Skills;
 	}
 
@@ -240,6 +262,7 @@ declare module 'discord.js' {
 			background?: number;
 			flags?: Record<string, string | number>;
 			user?: KlasaUser;
+			cl?: ItemBank;
 		}): Promise<KlasaMessage>;
 		__triviaQuestionsDone: any;
 	}

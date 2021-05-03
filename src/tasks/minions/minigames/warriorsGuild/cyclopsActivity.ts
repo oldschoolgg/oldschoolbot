@@ -47,10 +47,9 @@ const defenders = [
 
 export default class extends Task {
 	async run(data: CyclopsActivityTaskOptions) {
-		const { userID, channelID, quantity, duration } = data;
+		const { userID, channelID, quantity } = data;
 		const user = await this.client.users.fetch(userID);
 		const userBank = new Bank(user.settings.get(UserSettings.Bank));
-		user.incrementMinionDailyDuration(duration);
 
 		let loot = new Bank();
 
@@ -82,7 +81,7 @@ export default class extends Task {
 		}.`;
 
 		user.incrementMonsterScore(cyclopsID, quantity);
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				loot.bank,
@@ -101,8 +100,9 @@ export default class extends Task {
 				user.log(`continued cyclops`);
 				return this.client.commands.get('wg')!.run(res, [quantity, 'cyclops']);
 			},
-			image,
-			data
+			image!,
+			data,
+			loot.bank
 		);
 	}
 }

@@ -1,4 +1,5 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -7,9 +8,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: BuryingActivityTaskOptions) {
-		const { boneID, quantity, userID, channelID, duration } = data;
+		const { boneID, quantity, userID, channelID } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 
@@ -31,6 +31,19 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
 		}
 
+		if (
+			user.hasItemEquippedAnywhere('Iron dagger') &&
+			user.hasItemEquippedAnywhere('Bronze arrow') &&
+			user.hasItemEquippedAnywhere('Iron med helm') &&
+			!user.hasItemEquippedOrInBank('Clue hunter garb')
+		) {
+			await user.addItemsToBank(
+				new Bank({ 'Clue hunter garb': 1, 'Clue hunter trousers': 1 }),
+				true
+			);
+			str += `\n\nWhile digging a hole to bury bones in, you find a garb and pair of trousers.`;
+		}
+
 		handleTripFinish(
 			this.client,
 			user,
@@ -41,7 +54,8 @@ export default class extends Task {
 				return this.client.commands.get('bury')!.run(res, [quantity, bone.name]);
 			},
 			undefined,
-			data
+			data,
+			null
 		);
 	}
 }

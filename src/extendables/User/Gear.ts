@@ -1,12 +1,12 @@
 import { User } from 'discord.js';
 import { Extendable, ExtendableStore } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { itemID } from 'oldschooljs/dist/util';
 
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { defaultGear, itemInSlot, resolveGearTypeSetting } from '../../lib/gear';
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { GearSetup, GearSetupTypes, UserFullGearSetup } from '../../lib/gear/types';
-import { itemID } from '../../lib/util';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -28,10 +28,11 @@ export default class extends Extendable {
 		};
 	}
 
-	public hasItemEquippedAnywhere(this: User, itemID: number) {
+	public hasItemEquippedAnywhere(this: User, item: number | string) {
+		const id = typeof item === 'number' ? item : itemID(item);
 		const gear = this.rawGear();
 		const gearValues = Object.values(gear);
-		const similarItems = getSimilarItems(itemID);
+		const similarItems = getSimilarItems(id);
 
 		for (const setup of gearValues) {
 			const thisItemEquipped = Object.values(setup).find(

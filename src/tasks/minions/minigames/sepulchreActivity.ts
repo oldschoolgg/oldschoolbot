@@ -9,9 +9,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: SepulchreActivityTaskOptions) {
-		const { channelID, quantity, floors, duration, userID } = data;
+		const { channelID, quantity, floors, userID } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore('Sepulchre', quantity);
 
 		const completedFloors = sepulchreFloors.filter(fl => floors.includes(fl.number));
@@ -53,7 +52,7 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Agility level is now ${nextLevel}!`;
 		}
 
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				loot.bank,
@@ -72,8 +71,9 @@ export default class extends Task {
 				user.log(`continued trip of ${quantity}x sepulchre`);
 				return this.client.commands.get('sepulchre')!.run(res, []);
 			},
-			image,
-			data
+			image!,
+			data,
+			loot.bank
 		);
 	}
 }

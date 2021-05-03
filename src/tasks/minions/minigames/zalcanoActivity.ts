@@ -11,7 +11,6 @@ export default class extends Task {
 	async run(data: ZalcanoActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, performance, isMVP } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		user.incrementMonsterScore(ZALCANO_ID, quantity);
 
 		const loot = new Bank();
@@ -31,9 +30,9 @@ export default class extends Task {
 			miningXP += randInt(1100, 1400);
 		}
 
-		user.addXP(SkillsEnum.Mining, miningXP);
-		user.addXP(SkillsEnum.Smithing, smithingXP);
-		user.addXP(SkillsEnum.Runecraft, runecraftXP);
+		let xpRes = await user.addXP(SkillsEnum.Mining, miningXP, duration);
+		xpRes += await user.addXP(SkillsEnum.Smithing, smithingXP);
+		xpRes += await user.addXP(SkillsEnum.Runecraft, runecraftXP);
 
 		const kc = user.getKC(ZALCANO_ID);
 
@@ -49,9 +48,9 @@ export default class extends Task {
 			);
 		}
 
-		await user.addItemsToBank(loot.bank, true);
+		await user.addItemsToBank(loot, true);
 
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				loot.bank,
@@ -69,13 +68,14 @@ export default class extends Task {
 				user.minionName
 			} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${
 				kc + quantity
-			}. You received ${runecraftXP} Runecraft XP, ${miningXP} Mining XP, ${smithingXP} Smithing XP.`,
+			}. ${xpRes}`,
 			res => {
 				user.log(`continued zalcano`);
 				return this.client.commands.get('zalcano')!.run(res, []);
 			},
-			image,
-			data
+			image!,
+			data,
+			loot.bank
 		);
 	}
 }

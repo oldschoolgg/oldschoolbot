@@ -26,7 +26,7 @@ export default class extends BotCommand {
 		}
 		const data = `${entries
 			.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)
-			.join('\n')}\n**Hallowed Sepulchre:** ${sepulchreCount}`;
+			.join('\n')}\n**Hallowed Sepulchre:** ${await sepulchreCount}`;
 		return msg.send(data);
 	}
 }

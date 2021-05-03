@@ -4,9 +4,13 @@ import { Bank } from 'oldschooljs';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, anglerBoostPercent, calcPercentOfNum } from '../../../lib/util';
+import {
+	addBanks,
+	anglerBoostPercent,
+	calcPercentOfNum,
+	skillsMeetRequirements
+} from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { skillsMeetRequirements } from '../../../lib/util/skillsMeetRequirements';
 
 function hasEliteArdougneDiary(user: KlasaUser): boolean {
 	return skillsMeetRequirements(user.rawSkills, {
@@ -22,15 +26,14 @@ function hasEliteArdougneDiary(user: KlasaUser): boolean {
 
 export default class extends Task {
 	async run(data: FishingTrawlerActivityTaskOptions) {
-		const { channelID, quantity, duration, userID } = data;
+		const { channelID, quantity, userID } = data;
 		const user = await this.client.users.fetch(userID);
 
-		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore('FishingTrawler', quantity);
 
 		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
 
-		const allItemsOwned = user.allItemsOwned();
+		const allItemsOwned = user.allItemsOwned().bank;
 		const loot = new Bank();
 
 		let totalXP = 0;
@@ -64,7 +67,7 @@ export default class extends Task {
 		if (currentLevel !== newLevel) {
 			str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
 		}
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				loot.bank,
@@ -83,8 +86,9 @@ export default class extends Task {
 				user.log(`continued fishing trawler`);
 				return this.client.commands.get('fishingtrawler')!.run(res, []);
 			},
-			image,
-			data
+			image!,
+			data,
+			loot.bank
 		);
 	}
 }

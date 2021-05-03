@@ -14,7 +14,7 @@ Client.defaultUserSchema
 	.add('bitfield', 'integer', { array: true, default: [] })
 	.add('favoriteItems', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
-	.add('sacrificedValue', 'integer', { default: 0, maximum: 100_000_000_000, minimum: 0 })
+	.add('sacrificedValue', 'integer', { default: 0, minimum: 0 })
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('creatureScores', 'any', { default: {} })
@@ -29,11 +29,14 @@ Client.defaultUserSchema
 	.add('patreon_id', 'string', { default: null })
 	.add('github_id', 'integer', { default: null })
 	.add('carpenter_points', 'integer', { default: 0 })
+	.add('zeal_tokens', 'integer', { default: 0 })
+	.add('openable_scores', 'any', { default: {} })
+	.add('attack_style', 'string', { array: true, default: [] })
+	.add('total_cox_points', 'integer', { default: 0 })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')
 			.add('hasBought', 'boolean', { default: false })
-			.add('dailyDuration', 'integer', { default: 0 })
 			.add('ironman', 'boolean', { default: false })
 			.add('icon', 'string', { default: null })
 			.add('equippedPet', 'integer', { default: null })
@@ -73,6 +76,11 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Hunter, 'integer', { default: 0 })
 			.add(SkillsEnum.Construction, 'integer', { default: 0 })
 			.add(SkillsEnum.Magic, 'integer', { default: 0 })
+			.add(SkillsEnum.Ranged, 'integer', { default: 0 })
+			.add(SkillsEnum.Attack, 'integer', { default: 0 })
+			.add(SkillsEnum.Strength, 'integer', { default: 0 })
+			.add(SkillsEnum.Defence, 'integer', { default: 0 })
+			.add(SkillsEnum.Hitpoints, 'integer', { default: 1154 })
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder

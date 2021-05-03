@@ -4,6 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { Emoji, Events } from '../../lib/constants';
 import { PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
+import { setActivityLoot } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
@@ -11,10 +12,8 @@ import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, rand, roll } from '../../lib/util';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
+import { bankHasItem, channelIsSendable, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
@@ -29,7 +28,8 @@ export default class extends Task {
 		channelID,
 		planting,
 		duration,
-		currentDate
+		currentDate,
+		id
 	}: FarmingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
@@ -148,10 +148,7 @@ export default class extends Task {
 			}
 
 			if (Object.keys(loot).length > 0) {
-				str += `\n\nYou received: ${await createReadableItemListFromBank(
-					this.client,
-					loot
-				)}.`;
+				str += `\n\nYou received: ${new Bank(loot)}.`;
 			}
 
 			await this.client.settings.update(
@@ -161,7 +158,7 @@ export default class extends Task {
 				).bank
 			);
 			await user.addItemsToBank(loot, true);
-
+			setActivityLoot(id, loot);
 			const updatePatches: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
@@ -436,9 +433,7 @@ export default class extends Task {
 			}
 
 			if (Object.keys(loot).length > 0) {
-				infoStr.push(
-					`\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`
-				);
+				infoStr.push(`\nYou received: ${new Bank(loot)}.`);
 			}
 
 			if (!planting) {
@@ -458,11 +453,9 @@ export default class extends Task {
 				).bank
 			);
 			await user.addItemsToBank(loot, true);
-
+			setActivityLoot(id, loot);
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
-
-			user.incrementMinionDailyDuration(duration);
 
 			channel.send(infoStr.join('\n'));
 			if (janeMessage) {

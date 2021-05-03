@@ -33,7 +33,8 @@ export const enum Roles {
 	// Status Roles
 	TopSkiller = '795266465329709076',
 	TopCollector = '795271210141351947',
-	TopSacrificer = '795933981715464192'
+	TopSacrificer = '795933981715464192',
+	TopMinigamer = '832798997033779220'
 }
 
 export const enum Emoji {
@@ -96,6 +97,12 @@ export const enum Emoji {
 	SantaHat = '<:santaHat:785874868905181195>',
 	RottenPotato = '<:rottenPotato:791498767051915275>',
 	Magic = '<:magic:630911040334331917>',
+	Hitpoints = '<:hitpoints:630911040460292108>',
+	Strength = '<:strength:630911040481263617>',
+	Attack = '<:attack:630911039969427467>',
+	Defence = '<:defence:630911040393052180>',
+	Ranged = '<:ranged:630911040258834473>',
+	Gear = '<:gear:835314891950129202>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -110,7 +117,10 @@ export const enum Emoji {
 	Crab = '<:crab:778418736432021505>',
 	Skiller = '<:skiller:802136963775463435>',
 	Incinerator = '<:incinerator:802136963674275882>',
-	CollectionLog = '<:collectionLog:802136964027121684>'
+	CollectionLog = '<:collectionLog:802136964027121684>',
+	Minigames = '<:minigameIcon:630400565070921761>',
+	Skull = '<:Skull:802136963926065165>',
+	CombatSword = '<:combat:802136963956080650>'
 }
 
 export const enum ReactionEmoji {
@@ -166,6 +176,7 @@ export const enum Tasks {
 	Enchanting = 'enchantingActivity',
 	Casting = 'castingActivity',
 	GloryCharging = 'gloryChargingActivity',
+	WealthCharging = 'wealthChargingActivity',
 	TitheFarmActivity = 'titheFarmActivity',
 	BarbarianAssault = 'barbarianAssaultActivity',
 	AgilityArena = 'agilityArenaActivity',
@@ -174,10 +185,17 @@ export const enum Tasks {
 	AerialFishingActivity = 'aerialFishingActivity',
 	MahoganyHomes = 'mahoganyHomesActivity',
 	GnomeRestaurant = 'gnomeRestaurantActivity',
-	BirthdayEvent = 'birthdayEventActivity'
+	SoulWars = 'soulWarsActivity',
+	RoguesDenMaze = 'roguesDenMazeActivity',
+	Gauntlet = 'gauntletActivity',
+	CastleWars = 'castleWarsActivity',
+	MageArena = 'mageArenaActivity',
+	Raids = 'raidsActivity',
+	Collecting = 'collectingActivity',
+	MageTrainingArena = 'mageTrainingArenaActivity'
 }
 
-export const enum Activity {
+export enum Activity {
 	Agility = 'Agility',
 	Cooking = 'Cooking',
 	MonsterKilling = 'MonsterKilling',
@@ -216,13 +234,21 @@ export const enum Activity {
 	Enchanting = 'Enchanting',
 	Casting = 'Casting',
 	GloryCharging = 'GloryCharging',
+	WealthCharging = 'WealthCharging',
 	BarbarianAssault = 'BarbarianAssault',
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge',
 	AerialFishing = 'AerialFishing',
 	MahoganyHomes = 'MahoganyHomes',
 	GnomeRestaurant = 'GnomeRestaurant',
-	BirthdayEvent = 'BirthdayEvent'
+	SoulWars = 'SoulWars',
+	RoguesDenMaze = 'RoguesDenMaze',
+	Gauntlet = 'Gauntlet',
+	CastleWars = 'CastleWars',
+	MageArena = 'MageArena',
+	Raids = 'Raids',
+	Collecting = 'Collecting',
+	MageTrainingArena = 'MageTrainingArena'
 }
 
 export enum ActivityGroup {
@@ -299,7 +325,9 @@ export const enum BitField {
 	isModerator = 7,
 	isContributor = 8,
 	BypassAgeRestriction = 9,
-	HasHosidiusWallkit = 10
+	HasHosidiusWallkit = 10,
+	HasPermanentEventBackgrounds = 11,
+	HasPermanentTierOne = 12
 }
 
 interface BitFieldData {
@@ -315,7 +343,9 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.isModerator]: { name: 'Moderator' },
 	[BitField.isContributor]: { name: 'Contributor' },
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction' },
-	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' }
+	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' },
+	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
+	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' }
 } as const;
 
 export const enum PatronTierID {
@@ -337,10 +367,11 @@ export const badges: { [key: number]: string } = {
 	7: Emoji.Trophy,
 	8: Emoji.Incinerator,
 	9: Emoji.Skiller,
-	10: Emoji.CollectionLog
+	10: Emoji.CollectionLog,
+	11: Emoji.MinigameIcon
 };
 
-export const MAX_QP = 279;
+export const MAX_QP = 280;
 
 export const MIMIC_MONSTER_ID = 23184;
 
@@ -362,3 +393,36 @@ export const NIGHTMARE_ID = 9415;
  * Map<user_id, PromiseQueue>
  */
 export const userQueues: Map<string, PQueue> = new Map();
+
+export const syncPriceCache = new Map<number, number>();
+export const bankImageCache = new Map<string, string>();
+
+export const skillEmoji = {
+	runecraft: '<:runecraft:630911040435257364>',
+	firemaking: '<:firemaking:630911040175210518>',
+	thieving: '<:thieving:630910829352452123>',
+	mining: '<:mining:630911040128811010>',
+	ranged: '<:ranged:630911040258834473>',
+	construction: '<:construction:630911040493715476>',
+	smithing: '<:smithing:630911040452034590>',
+	herblore: '<:herblore:630911040535658496>',
+	attack: '<:attack:630911039969427467>',
+	strength: '<:strength:630911040481263617>',
+	defence: '<:defence:630911040393052180>',
+	fishing: '<:fishing:630911040091193356>',
+	hitpoints: '<:hitpoints:630911040460292108>',
+	total: '<:xp:630911040510623745>',
+	overall: '<:xp:630911040510623745>',
+	magic: '<:magic:630911040334331917>',
+	crafting: '<:crafting:630911040460161047>',
+	agility: '<:agility:630911040355565568>',
+	fletching: '<:fletching:630911040544309258>',
+	cooking: '<:cooking:630911040426868756>',
+	farming: '<:farming:630911040355565599>',
+	slayer: '<:slayer:630911040560824330>',
+	prayer: '<:prayer:630911040426868746>',
+	woodcutting: '<:woodcutting:630911040099450892>',
+	hunter: '<:hunter:630911040166559784>',
+	cml: '<:CrystalMathLabs:364657225249062912>',
+	clock: '<:ehpclock:352323705210142721>'
+};

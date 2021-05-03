@@ -4,6 +4,14 @@ import { Craftable } from '../../../types';
 
 const Misc: Craftable[] = [
 	{
+		name: 'Drift net',
+		id: itemID('Drift net'),
+		level: 26,
+		xp: 55,
+		inputItems: resolveNameBank({ 'Jute fibre': 2 }),
+		tickRate: 3
+	},
+	{
 		name: 'Snakeskin boots',
 		id: itemID('Snakeskin boots'),
 		level: 45,

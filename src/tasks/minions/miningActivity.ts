@@ -9,19 +9,14 @@ import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
 		const { oreID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
-		const currentLevel = user.skillLevel(SkillsEnum.Mining);
 
-		const ore = Mining.Ores.find(ore => ore.id === oreID);
-
-		if (!ore) return;
+		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
 		let xpReceived = quantity * ore.xp;
 		let bonusXP = 0;
@@ -46,17 +41,10 @@ export default class extends Task {
 				}
 			}
 		}
+		const currentLevel = user.skillLevel(SkillsEnum.Mining);
+		const xpRes = await user.addXP(SkillsEnum.Mining, xpReceived, duration);
 
-		await user.addXP(SkillsEnum.Mining, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Mining);
-
-		let str = `${user}, ${user.minionName} finished mining ${quantity} ${
-			ore.name
-		}, you also received ${xpReceived.toLocaleString()} XP.`;
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Mining level is now ${newLevel}!`;
-		}
+		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${xpRes}`;
 
 		const loot = new Bank();
 
@@ -72,10 +60,7 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		if (
-			ore.petChance &&
-			roll((ore.petChance - user.skillLevel(SkillsEnum.Mining) * 25) / quantity)
-		) {
+		if (ore.petChance && roll((ore.petChance - currentLevel * 25) / quantity)) {
 			loot.add('Rock golem');
 			str += `\nYou have a funny feeling you're being followed...`;
 			this.client.emit(
@@ -108,15 +93,12 @@ export default class extends Task {
 		} else {
 			loot.add(ore.id, quantity);
 		}
-		str += `\n\nYou received: ${await createReadableItemListFromBank(
-			this.client,
-			loot.values()
-		)}.`;
+		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		await user.addItemsToBank(loot.values(), true);
+		await user.addItemsToBank(loot, true);
 
 		handleTripFinish(
 			this.client,
@@ -128,7 +110,8 @@ export default class extends Task {
 				return this.client.commands.get('mine')!.run(res, [quantity, ore.name]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

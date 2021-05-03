@@ -103,9 +103,11 @@ export default class extends BotCommand {
 			cost = "decided to pay Wesley 50 gp for each item so they don't have to go";
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Herblore);
+
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timeToMixSingleItem);
+			quantity = Math.floor(maxTripLength / timeToMixSingleItem);
 			for (const [itemID, qty] of requiredItems) {
 				const id = parseInt(itemID);
 				if (id === 995) {
@@ -126,13 +128,13 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToMixSingleItem;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					mixableItem.name
-				}s you can make is ${Math.floor(msg.author.maxTripLength / timeToMixSingleItem)}.`
+				}s you can make is ${Math.floor(maxTripLength / timeToMixSingleItem)}.`
 			);
 		}
 

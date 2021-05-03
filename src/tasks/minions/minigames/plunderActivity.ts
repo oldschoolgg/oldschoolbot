@@ -8,9 +8,8 @@ import { PlunderActivityTaskOptions } from './../../../lib/types/minions';
 
 export default class extends Task {
 	async run(data: PlunderActivityTaskOptions) {
-		const { channelID, quantity, rooms, duration, userID } = data;
+		const { channelID, quantity, rooms, userID } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		user.incrementMinigameScore('PyramidPlunder', quantity);
 		const allRooms = plunderRooms.filter(room => rooms.includes(room.number));
 		const completedRooms = [
@@ -32,20 +31,12 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank(loot.bank, true);
-		const currentLevel = user.skillLevel(SkillsEnum.Thieving);
-		await user.addXP(SkillsEnum.Thieving, thievingXP);
-		const nextLevel = user.skillLevel(SkillsEnum.Thieving);
+		await user.addItemsToBank(loot, true);
+		const xpRes = await user.addXP(SkillsEnum.Thieving, thievingXP);
 
-		let str = `${user}, ${
-			user.minionName
-		} finished doing the Pyramid Plunder ${quantity}x times, you received ${thievingXP.toLocaleString()} Thieving XP. ${totalAmountUrns}x urns opened.`;
+		let str = `${user}, ${user.minionName} finished doing the Pyramid Plunder ${quantity}x times. ${totalAmountUrns}x urns opened. ${xpRes}`;
 
-		if (nextLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Thieving level is now ${nextLevel}!`;
-		}
-
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				loot.bank,
@@ -64,8 +55,9 @@ export default class extends Task {
 				user.log(`continued trip of ${quantity}x plunder`);
 				return this.client.commands.get('plunder')!.run(res, []);
 			},
-			image,
-			data
+			image!,
+			data,
+			loot.bank
 		);
 	}
 }

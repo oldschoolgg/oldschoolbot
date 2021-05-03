@@ -1,4 +1,3 @@
-import { MessageAttachment } from 'discord.js';
 import { randInt } from 'e';
 import { Task } from 'klasa';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -11,8 +10,8 @@ import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, bankHasItem, noOp } from '../../../lib/util';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import { addBanks, bankHasItem, channelIsSendable, noOp } from '../../../lib/util';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
 const PointsTable = new SimpleTable<number>()
@@ -39,9 +38,9 @@ const PointsTable = new SimpleTable<number>()
 	.add(850);
 
 export default class extends Task {
-	async run({ userID, channelID, quantity, duration }: WintertodtActivityTaskOptions) {
+	async run(data: WintertodtActivityTaskOptions) {
+		const { userID, channelID, quantity } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);
 
@@ -57,7 +56,7 @@ export default class extends Task {
 				loot,
 				WintertodtCrate.open({
 					points,
-					itemsOwned: addBanks([user.allItemsOwned(), loot]),
+					itemsOwned: addBanks([user.allItemsOwned().bank, loot]),
 					skills: user.rawSkills
 				})
 			]);
@@ -129,7 +128,7 @@ export default class extends Task {
 		await user.addItemsToBank(loot, true);
 		user.incrementMinigameScore('Wintertodt', quantity);
 
-		const image = await this.client.tasks.get('bankImage')!.generateBankImage(
+		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
 			loot,
 			``,
 			true,
@@ -141,9 +140,9 @@ export default class extends Task {
 
 		if (!channelIsSendable(channel)) return;
 
-		let output = `${user} ${
+		let output = `${user}, ${
 			user.minionName
-		} finished subdueing Wintertodt ${quantity}x times. You got ${fmXpToGive.toLocaleString()} Firemaking XP, ${wcXpToGive.toLocaleString()} Woodcutting XP and ${conXP.toLocaleString()} Construction XP, you cut ${numberOfRoots}x Bruma roots.`;
+		} finished subduing Wintertodt ${quantity}x times. You got ${fmXpToGive.toLocaleString()} Firemaking XP, ${wcXpToGive.toLocaleString()} Woodcutting XP and ${conXP.toLocaleString()} Construction XP, you cut ${numberOfRoots}x Bruma roots.`;
 
 		if (fmBonusXP > 0) {
 			output += `\n\n**Firemaking Bonus XP:** ${fmBonusXP.toLocaleString()}`;
@@ -153,6 +152,18 @@ export default class extends Task {
 			output += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
 		}
 
-		return channel.send(output, new MessageAttachment(image));
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			output,
+			res => {
+				user.log(`continued trip of wintertodt`);
+				return this.client.commands.get('wintertodt')!.run(res, []);
+			},
+			image!,
+			data,
+			loot
+		);
 	}
 }

@@ -106,7 +106,7 @@ export default class extends Task {
 
 		// Top Collectors
 		const topCollectors = [];
-		for (const clName of ['Pets', 'Skilling', 'Clue all', 'Boss']) {
+		for (const clName of ['Pets', 'Skilling', 'Clue all', 'Boss', 'Minigames']) {
 			const type = collectionLogTypes.find(t => t.name === clName)!;
 			const result = (await this.client.query(
 				`SELECT u.id, u."logBankLength", u."collectionLogBank" FROM (
@@ -139,6 +139,29 @@ ORDER BY u.sacbanklength DESC LIMIT 1;`);
 		topSacrificers.push(mostUniques[0].id);
 
 		result += await addRoles(g, topSacrificers, Roles.TopSacrificer, 8);
+
+		// Top minigamers
+		let topMinigamers = [];
+		const minigames = [
+			'barb_assault',
+			'agility_arena',
+			'mahogany_homes',
+			'gnome_restaurant',
+			'soul_wars',
+			'castle_wars',
+			'raids'
+		];
+		for (const game of minigames) {
+			const result = (await this.client.query(
+				`SELECT user_id 
+FROM minigames
+ORDER BY ${game} DESC
+LIMIT 1;`
+			)) as any[];
+			topMinigamers.push(result[0].user_id);
+		}
+
+		result += await addRoles(g, topMinigamers, Roles.TopMinigamer, 11);
 
 		return result;
 	}

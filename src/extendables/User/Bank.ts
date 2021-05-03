@@ -8,7 +8,13 @@ import SimilarItems from '../../lib/data/similarItems';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
-import { addBanks, addItemToBank, removeBankFromBank, removeItemFromBank } from '../../lib/util';
+import {
+	addBanks,
+	bankHasAllItemsFromBank,
+	removeBankFromBank,
+	removeItemFromBank
+} from '../../lib/util';
+import itemID from '../../lib/util/itemID';
 
 export interface GetUserBankOptions {
 	withGP?: boolean;
@@ -53,20 +59,20 @@ export default class extends Extendable {
 		return itemQty;
 	}
 
-	public allItemsOwned(this: User): ItemBank {
-		let totalBank = { ...this.settings.get(UserSettings.Bank) };
+	public allItemsOwned(this: User): Bank {
+		let totalBank = this.bank({ withGP: true });
 
 		for (const setup of Object.values(this.rawGear())) {
 			for (const equipped of Object.values(setup)) {
 				if (equipped?.item) {
-					totalBank = addItemToBank(totalBank, equipped.item, equipped.quantity);
+					totalBank.add(equipped.item, equipped.quantity);
 				}
 			}
 		}
 
 		const equippedPet = this.settings.get(UserSettings.Minion.EquippedPet);
 		if (equippedPet) {
-			totalBank = addItemToBank(totalBank, equippedPet, 1);
+			totalBank.add(equippedPet);
 		}
 
 		return totalBank;
@@ -93,10 +99,16 @@ export default class extends Extendable {
 		return this.queueFn(() => this.settings.update(UserSettings.GP, currentGP + amount));
 	}
 
-	public async addItemsToBank(this: User, inputItems: ItemBank | Bank, collectionLog = false) {
+	public async addItemsToBank(
+		this: User,
+		inputItems: ItemBank | Bank,
+		collectionLog = false
+	): Promise<{ previousCL: ItemBank }> {
 		const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
-
 		await this.settings.sync(true);
+
+		const previousCL = this.settings.get(UserSettings.CollectionLogBank);
+
 		for (const { scrollID } of clueTiers) {
 			// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
 			if (!_items[scrollID]) continue;
@@ -114,7 +126,9 @@ export default class extends Extendable {
 			..._items
 		};
 
-		if (collectionLog) this.addItemsToCollectionLog(items);
+		if (collectionLog) {
+			await this.addItemsToCollectionLog(items);
+		}
 
 		if (items[995]) {
 			await this.addGP(items[995]);
@@ -122,7 +136,7 @@ export default class extends Extendable {
 		}
 
 		this.log(`Had items added to bank - ${JSON.stringify(items)}`);
-		return this.queueFn(() =>
+		await this.queueFn(() =>
 			this.settings.update(
 				UserSettings.Bank,
 				addBanks([
@@ -133,6 +147,10 @@ export default class extends Extendable {
 				])
 			)
 		);
+
+		return {
+			previousCL
+		};
 	}
 
 	public async removeItemFromBank(this: User, itemID: number, amountToRemove = 1) {
@@ -158,7 +176,18 @@ export default class extends Extendable {
 
 	public async removeItemsFromBank(this: User, _itemBank: O.Readonly<ItemBank>) {
 		const itemBank = _itemBank instanceof Bank ? { ..._itemBank.bank } : _itemBank;
+
 		await this.settings.sync(true);
+
+		const currentBank = this.settings.get(UserSettings.Bank);
+		const GP = this.settings.get(UserSettings.GP);
+		if (!bankHasAllItemsFromBank({ ...currentBank, 995: GP }, itemBank)) {
+			throw new Error(
+				`Tried to remove ${new Bank(itemBank)} from ${
+					this.username
+				} but failed because they don't own all these items.`
+			);
+		}
 
 		const items = {
 			...itemBank
@@ -171,10 +200,7 @@ export default class extends Extendable {
 
 		this.log(`Had items removed from bank - ${JSON.stringify(items)}`);
 		return this.queueFn(() =>
-			this.settings.update(
-				UserSettings.Bank,
-				removeBankFromBank(this.settings.get(UserSettings.Bank), items)
-			)
+			this.settings.update(UserSettings.Bank, removeBankFromBank(currentBank, items))
 		);
 	}
 
@@ -190,5 +216,18 @@ export default class extends Extendable {
 
 		const bank = this.settings.get(UserSettings.Bank);
 		return typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
+	}
+
+	public owns(this: User, bank: ItemBank | Bank | string | number) {
+		if (typeof bank === 'string' || typeof bank === 'number') {
+			return Boolean(
+				this.settings.get(UserSettings.Bank)[typeof bank === 'number' ? bank : itemID(bank)]
+			);
+		}
+		const itemBank = bank instanceof Bank ? { ...bank.bank } : bank;
+		return bankHasAllItemsFromBank(
+			{ ...this.settings.get(UserSettings.Bank), 995: this.settings.get(UserSettings.GP) },
+			itemBank
+		);
 	}
 }

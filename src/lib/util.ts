@@ -1,6 +1,8 @@
-import { Client, Guild } from 'discord.js';
-import { randInt, shuffleArr } from 'e';
-import { Gateway, KlasaClient, KlasaUser, util } from 'klasa';
+import crypto from 'crypto';
+import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
+import { objectEntries, randInt, shuffleArr } from 'e';
+import { KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
@@ -8,16 +10,26 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
 
-import { CENA_CHARS, Channel, continuationChars, Events, PerkTier, Time } from './constants';
+import {
+	CENA_CHARS,
+	continuationChars,
+	Events,
+	PerkTier,
+	skillEmoji,
+	SupportServer,
+	Time
+} from './constants';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
-import { UserSettings } from './settings/types/UserSettings';
-import { channelIsSendable } from './util/channelIsSendable';
+import killableMonsters from './minions/data/killableMonsters';
+import { KillableMonster } from './minions/types';
+import { ArrayItemsResolved, ItemTuple, Skills } from './types';
+import { GroupMonsterActivityTaskOptions } from './types/minions';
 import itemID from './util/itemID';
+import resolveItems from './util/resolveItems';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
-export { v4 as uuid } from 'uuid';
 
 const zeroWidthSpace = '\u200b';
 
@@ -249,12 +261,6 @@ export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
 	return Promise.all(ids.map(id => client.users.fetch(id)));
 }
 
-export async function queuedMessageSend(client: KlasaClient, channelID: string, str: string) {
-	const channel = client.channels.get(channelID);
-	if (!channelIsSendable(channel)) return;
-	client.queuePromise(() => channel.send(str, { split: true }));
-}
-
 const rawEmojiRegex = emojiRegex();
 
 export function stripEmojis(str: string) {
@@ -301,6 +307,29 @@ export function anglerBoostPercent(user: KlasaUser) {
 	return round(boostPercent, 1);
 }
 
+const rogueOutfit = resolveItems([
+	'Rogue mask',
+	'Rogue top',
+	'Rogue trousers',
+	'Rogue gloves',
+	'Rogue boots'
+]);
+
+export function rogueOutfitPercentBonus(user: KlasaUser): number {
+	const skillingSetup = user.getGear('skilling');
+	let amountEquipped = 0;
+	for (const id of rogueOutfit) {
+		if (hasItemEquipped(id, skillingSetup)) {
+			amountEquipped++;
+		}
+	}
+	return amountEquipped * 20;
+}
+
+export function rollRogueOutfitDoubleLoot(user: KlasaUser): boolean {
+	return randInt(1, 100) <= rogueOutfitPercentBonus(user);
+}
+
 export function generateContinuationChar(user: KlasaUser) {
 	const baseChar =
 		user.perkTier > PerkTier.One
@@ -332,34 +361,151 @@ export function randomVariation(value: number, percentage: number) {
 	return randFloat(lowerLimit, upperLimit);
 }
 
-export async function incrementMinionDailyDuration(
-	client: KlasaClient,
-	userID: string,
-	duration: number
-) {
-	const settings = await (client.gateways.get('users') as Gateway)!
-		.acquire({
-			id: userID
-		})
-		.sync(true);
+export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
+	return 'users' in data;
+}
 
-	const currentDuration = settings.get(UserSettings.Minion.DailyDuration);
-	const newDuration = currentDuration + duration;
-	if (newDuration > Time.Hour * 18) {
-		const log = `[MOU] Minion has been active for ${formatDuration(newDuration)}.`;
-		const user = await client.users.fetch(userID);
-		user.log(log);
-		if (client.production) {
-			const channel = client.channels.get(Channel.ErrorLogs);
-			if (channelIsSendable(channel)) {
-				channel.send(`${user.sanitizedName} ${log}`);
-			}
+export function sha256Hash(x: string) {
+	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
+}
+
+export function countSkillsAtleast99(user: KlasaUser) {
+	const skills = (user.settings.get('skills') as SettingsFolder).toJSON() as Record<
+		string,
+		number
+	>;
+	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
+}
+
+export function getSupportGuild(client: Client) {
+	const guild = client.guilds.get(SupportServer);
+	if (!guild) throw `Can't find support guild.`;
+	return guild;
+}
+
+export function normal(mu = 0, sigma = 1, nsamples = 6) {
+	let run_total = 0;
+
+	for (let i = 0; i < nsamples; i++) {
+		run_total += Math.random();
+	}
+
+	return (sigma * (run_total - nsamples / 2)) / (nsamples / 2) + mu;
+}
+
+/**
+ * Checks if the bot can send a message to a channel object.
+ * @param channel The channel to check if the bot can send a message to.
+ */
+export function channelIsSendable(channel: Channel | undefined): channel is TextChannel {
+	if (
+		!channel ||
+		(!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) ||
+		!channel.postable
+	) {
+		return false;
+	}
+
+	return true;
+}
+
+export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
+	for (const [skillName, level] of objectEntries(requirements)) {
+		const xpHas = skills[skillName];
+		const levelHas = convertXPtoLVL(xpHas ?? 1);
+		if (levelHas < level!) return false;
+	}
+	return true;
+}
+
+export default function findMonster(str: string): KillableMonster | undefined {
+	const mon = killableMonsters.find(
+		mon => stringMatches(mon.name, str) || mon.aliases.some(alias => stringMatches(alias, str))
+	);
+	return mon;
+}
+
+export function formatItemReqs(items: ArrayItemsResolved) {
+	const str = [];
+	for (const item of items) {
+		if (Array.isArray(item)) {
+			str.push(item.map(itemNameFromID).join(' OR '));
+		} else {
+			str.push(itemNameFromID(item));
+		}
+	}
+	return str.join(', ');
+}
+
+export function formatSkillRequirements(reqs: Record<string, number>) {
+	let arr = [];
+	for (const [name, num] of objectEntries(reqs)) {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		arr.push(` ${skillEmoji[name]} **${num}** ${toTitleCase(name)}`);
+	}
+	return arr.join(', ');
+}
+
+export function formatItemBoosts(items: ItemBank[]) {
+	const str = [];
+	for (const itemSet of items) {
+		const itemEntries = Object.entries(itemSet);
+		const multiple = itemEntries.length > 1;
+		const bonusStr = [];
+
+		for (const [itemID, boostAmount] of itemEntries) {
+			bonusStr.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+		}
+
+		if (multiple) {
+			str.push(`(${bonusStr.join(' OR ')})`);
+		} else {
+			str.push(bonusStr.join(''));
+		}
+	}
+	return str.join(', ');
+}
+
+export function filterItemTupleByQuery(query: string, items: ItemTuple[]) {
+	const filtered: ItemTuple[] = [];
+
+	for (const item of items) {
+		if (cleanString(Items.get(item[0])!.name).includes(cleanString(query))) {
+			filtered.push(item);
 		}
 	}
 
-	return settings.update(UserSettings.Minion.DailyDuration, newDuration);
+	return filtered;
 }
 
-export function parseUsername(str: string) {
-	return str.slice(0, 32);
+/**
+ * Given a list of items, and a bank, it will return a new bank with all items not
+ * in the filter removed from the bank.
+ * @param itemFilter The array of item IDs to use as the filter.
+ * @param bank The bank to filter items from.
+ */
+export function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank): ItemBank {
+	const returnBank: ItemBank = {};
+	const bankKeys = Object.keys(bank);
+
+	// If there are no items in the filter or bank, just return an empty bank.
+	if (itemFilter.length === 0 || bankKeys.length === 0) return returnBank;
+
+	// For every item in the filter, if its in the bank, add it to the return bank.
+	for (const itemID of itemFilter) {
+		if (bank[itemID]) returnBank[itemID] = bank[itemID];
+	}
+
+	return returnBank;
+}
+
+export function updateBankSetting(
+	client: KlasaClient,
+	setting: string,
+	bankToAdd: Bank | ItemBank
+) {
+	const current = new Bank(client.settings.get(setting) as ItemBank);
+	const newBank = current.add(bankToAdd);
+	return client.settings.update(setting, newBank.bank);
 }

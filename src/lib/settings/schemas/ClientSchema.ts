@@ -4,7 +4,6 @@ Client.defaultClientSchema
 	.add('commandStats', 'any', { default: {} })
 	.add('totalCommandsUsed', 'integer', { default: 0 })
 	.add('prices', 'any', { default: {} })
-	.add('pollQuestions', 'any', { default: {} })
 	.add('sold_items_bank', 'any', { default: {} })
 	.add('herblore_cost_bank', 'any', { default: {} })
 	.add('construction_cost_bank', 'any', { default: {} })
@@ -14,6 +13,13 @@ Client.defaultClientSchema
 	.add('magic_cost_bank', 'any', { default: {} })
 	.add('gnome_res_cost', 'any', { default: {} })
 	.add('gnome_res_loot', 'any', { default: {} })
+	.add('rogues_den_cost', 'any', { default: {} })
+	.add('gauntlet_loot', 'any', { default: {} })
+	.add('cox_cost', 'any', { default: {} })
+	.add('cox_loot', 'any', { default: {} })
+	.add('collecting_cost', 'any', { default: {} })
+	.add('collecting_loot', 'any', { default: {} })
+	.add('mta_cost', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })

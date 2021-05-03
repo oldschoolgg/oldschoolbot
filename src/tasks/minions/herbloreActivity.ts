@@ -7,29 +7,20 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: HerbloreActivityTaskOptions) {
-		let { mixableID, quantity, zahur, userID, channelID } = data;
+		let { mixableID, quantity, zahur, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Herblore);
 
-		const mixableItem = Herblore.Mixables.find(mixable => mixable.id === mixableID);
-		if (!mixableItem) return;
+		const mixableItem = Herblore.Mixables.find(mixable => mixable.id === mixableID)!;
 
-		const xpReceived = zahur ? 0 : quantity * mixableItem.xp;
+		const xpReceived = zahur && mixableItem.zahur === true ? 0 : quantity * mixableItem.xp;
 
 		if (mixableItem.outputMultiple) {
 			quantity *= mixableItem.outputMultiple;
 		}
 
-		await user.addXP(SkillsEnum.Herblore, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Herblore);
+		const xpRes = await user.addXP(SkillsEnum.Herblore, xpReceived, duration);
 
-		let str = `${user}, ${user.minionName} finished making ${quantity} ${
-			mixableItem.name
-		}s, you also received ${xpReceived.toLocaleString()} XP. `;
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Herblore level is now ${newLevel}!`;
-		}
+		let str = `${user}, ${user.minionName} finished making ${quantity} ${mixableItem.name}s. ${xpRes}`;
 
 		const loot = {
 			[mixableItem.id]: quantity
@@ -47,7 +38,8 @@ export default class extends Task {
 				return this.client.commands.get('mix')!.run(res, [quantity, mixableItem.name]);
 			},
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }

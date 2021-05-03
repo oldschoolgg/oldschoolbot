@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 import { Time } from '../../../../constants';
 import { bosses } from '../../../../data/collectionLog';
 import { GearSetupTypes, GearStat } from '../../../../gear/types';
+import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
@@ -36,7 +37,9 @@ const killableBosses: KillableMonster[] = [
 		],
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Attack],
+		combatXpMultiplier: 1.075
 	},
 	{
 		id: Monsters.Vorkath.id,
@@ -51,14 +54,18 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
 		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
 		qpRequired: 205,
-		itemInBankBoosts: [
+		itemInBankBoosts: [ 
 			{
-				[itemID('Dragon warhammer')]: 10
+			[itemID('Dragon warhammer')]: 10
+			},
+			{
+			[itemID('Dragon hunter crossbow')]: 20
 			}
 		],
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Ranged]
 	},
 	{
 		id: Monsters.Zulrah.id,
@@ -102,7 +109,9 @@ const killableBosses: KillableMonster[] = [
 			[GearSetupTypes.Range]: {
 				[GearStat.AttackRanged]: 47
 			}
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Ranged, SkillsEnum.Magic],
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength]
 	},
 	{
 		id: Monsters.KalphiteQueen.id,
@@ -135,7 +144,10 @@ const killableBosses: KillableMonster[] = [
 				'Fancy rejuvenation pool': 10,
 				'Ornate rejuvenation pool': 10
 			}
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Strength],
+		customMonsterHP: 510,
+		combatXpMultiplier: 1.0875
 	},
 	{
 		id: Monsters.CorporealBeast.id,
@@ -152,7 +164,8 @@ const killableBosses: KillableMonster[] = [
 			'Spectral sigil',
 			'Arcane sigil',
 			'Elysian sigil',
-			'Pet dark core'
+			'Pet dark core',
+			'Jar of spirits'
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: [
@@ -171,7 +184,10 @@ const killableBosses: KillableMonster[] = [
 				'Fancy rejuvenation pool': 50,
 				'Ornate rejuvenation pool': 50
 			}
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Attack],
+		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
+		combatXpMultiplier: 1.55
 	},
 	{
 		id: Monsters.Cerberus.id,
@@ -186,7 +202,7 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate'],
 			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets'],
-			'Zamorakian spear'
+			['Zamorakian spear', 'Zamorakian hasta']
 		]),
 		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
 		qpRequired: 0,
@@ -197,7 +213,9 @@ const killableBosses: KillableMonster[] = [
 		],
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Strength],
+		combatXpMultiplier: 1.15
 	}
 ];
 

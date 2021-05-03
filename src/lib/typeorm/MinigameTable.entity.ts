@@ -1,10 +1,11 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('minigames')
 export class MinigameTable extends BaseEntity {
 	@PrimaryGeneratedColumn('increment')
 	public id!: string;
 
+	@Index()
 	@Column({ name: 'user_id', length: 19, type: 'varchar', nullable: false })
 	public userID!: string;
 
@@ -37,4 +38,28 @@ export class MinigameTable extends BaseEntity {
 
 	@Column({ name: 'gnome_restaurant', type: 'int', nullable: false, default: 0 })
 	public GnomeRestaurant!: number;
+
+	@Column({ name: 'soul_wars', type: 'int', nullable: false, default: 0 })
+	public SoulWars!: number;
+
+	@Column({ name: 'rogues_den', type: 'int', nullable: false, default: 0 })
+	public RoguesDenMaze!: number;
+
+	@Column({ name: 'gauntlet', type: 'int', nullable: false, default: 0 })
+	public Gauntlet!: number;
+
+	@Column({ name: 'corrupted_gauntlet', type: 'int', nullable: false, default: 0 })
+	public CorruptedGauntlet!: number;
+
+	@Column({ name: 'castle_wars', type: 'int', nullable: false, default: 0 })
+	public CastleWars!: number;
+
+	@Column({ name: 'raids', type: 'int', nullable: false, default: 0 })
+	public Raids!: number;
+
+	@Column({ name: 'raids_challenge_mode', type: 'int', nullable: false, default: 0 })
+	public RaidsChallengeMode!: number;
+
+	@Column({ name: 'magic_training_arena', type: 'int', nullable: false, default: 0 })
+	public MagicTrainingArena!: number;
 }
