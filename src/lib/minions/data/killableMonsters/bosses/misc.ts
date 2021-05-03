@@ -116,7 +116,8 @@ const killableBosses: KillableMonster[] = [
 		notifyDrops: resolveItems(['Jar of sand', 'Kalphite princess']),
 		qpRequired: 0,
 		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
+			[itemID('Dragon warhammer')]: 10,
+			[itemID('Elder maul')]: 5
 		},
 		levelRequirements: {
 			prayer: 43
