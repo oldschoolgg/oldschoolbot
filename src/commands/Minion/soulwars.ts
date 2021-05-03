@@ -45,6 +45,11 @@ const imbueables = [
 		tokens: 300
 	},
 	{
+		input: getOSItem('Ring of suffering (r)'),
+		output: getOSItem('Ring of suffering (ri)'),
+		tokens: 300
+	},
+	{
 		input: getOSItem('Berserker ring'),
 		output: getOSItem('Berserker ring (i)'),
 		tokens: 260
