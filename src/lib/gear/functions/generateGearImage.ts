@@ -4,15 +4,16 @@ import * as fs from 'fs';
 import { KlasaClient, KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { GearTypes } from '..';
+import { GearSetup, GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..';
 import BankImageTask from '../../../tasks/bankImage';
 import { UserSettings } from '../../settings/types/UserSettings';
-import { canvasImageFromBuffer } from '../../util/canvasImageFromBuffer';
-import { drawItemQuantityText } from '../../util/drawItemQuantityText';
-import { drawTitleText } from '../../util/drawTitleText';
-import { fillTextXTimesInCtx } from '../../util/fillTextXTimesInCtx';
-import { maxDefenceStats, maxOffenceStats } from '../data/maxGearStats';
-import readableGearTypeName from './readableGearTypeName';
+import { toTitleCase } from '../../util';
+import {
+	canvasImageFromBuffer,
+	drawItemQuantityText,
+	drawTitleText,
+	fillTextXTimesInCtx
+} from '../../util/canvasUtil';
 import { sumOfSetupStats } from './sumOfSetupStats';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
@@ -68,8 +69,8 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 export async function generateGearImage(
 	client: KlasaClient,
 	user: KlasaUser,
-	gearSetup: GearTypes.GearSetup,
-	gearType: GearTypes.GearSetupTypes | null,
+	gearSetup: GearSetup,
+	gearType: GearSetupTypes | null,
 	petID: number | null
 ) {
 	// Init the background images if they are not already
@@ -97,7 +98,7 @@ export async function generateGearImage(
 	ctx.font = '16px OSRSFontCompact';
 	// Draw preset title
 	if (gearType) {
-		drawTitleText(ctx, readableGearTypeName(gearType), Math.floor(176 / 2), 25);
+		drawTitleText(ctx, toTitleCase(gearType), Math.floor(176 / 2), 25);
 	}
 
 	// Draw stats

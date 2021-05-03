@@ -6,6 +6,7 @@ import { patreonConfig, production } from '../config';
 import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier, Time } from '../lib/constants';
 import { fetchSponsors, getUserFromGithubID } from '../lib/http/util';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
+import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Patron } from '../lib/types';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
@@ -80,11 +81,7 @@ export default class PatreonTask extends Task {
 	}
 
 	async validatePerks(userID: string, shouldHave: PerkTier): Promise<string | null> {
-		const settings = await (this.client.gateways.get('users') as Gateway)!
-			.acquire({
-				id: userID
-			})
-			.sync(true);
+		const settings = await getUserSettings(userID);
 		let perkTier: PerkTier | null = getUsersPerkTier(settings.get(UserSettings.BitField));
 		if (perkTier === 0 || perkTier === 1) perkTier = null;
 
@@ -150,16 +147,14 @@ export default class PatreonTask extends Task {
 		const userBitfield = settings.get(UserSettings.BitField);
 
 		try {
-			await settings.update(
-				UserSettings.BitField,
-				[
-					...userBitfield.filter(number => !tiers.map(t => t[1]).includes(number)),
-					bitFieldFromPerkTier(perkTier)
-				],
-				{
-					arrayAction: ArrayActions.Overwrite
-				}
-			);
+			let newField = [
+				...userBitfield.filter(number => !tiers.map(t => t[1]).includes(number)),
+				bitFieldFromPerkTier(perkTier)
+			];
+
+			await settings.update(UserSettings.BitField, newField, {
+				arrayAction: ArrayActions.Overwrite
+			});
 		} catch (_) {}
 	}
 
@@ -275,7 +270,6 @@ export default class PatreonTask extends Task {
 					`Giving T${i + 1} patron perks to ${username} PatreonID[${patron.patreonID}]`
 				);
 				await this.givePerks(patron.discordID, perkTierFromBitfield(bitField));
-				break;
 			}
 		}
 

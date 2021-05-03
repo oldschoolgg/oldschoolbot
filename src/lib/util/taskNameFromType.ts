@@ -88,5 +88,25 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.Casting;
 		case Activity.GloryCharging:
 			return Tasks.GloryCharging;
+		case Activity.WealthCharging:
+			return Tasks.WealthCharging;
+		case Activity.GnomeRestaurant:
+			return Tasks.GnomeRestaurant;
+		case Activity.SoulWars:
+			return Tasks.SoulWars;
+		case Activity.RoguesDenMaze:
+			return Tasks.RoguesDenMaze;
+		case Activity.Gauntlet:
+			return Tasks.Gauntlet;
+		case Activity.CastleWars:
+			return Tasks.CastleWars;
+		case Activity.MageArena:
+			return Tasks.MageArena;
+		case Activity.Raids:
+			return Tasks.Raids;
+		case Activity.Collecting:
+			return Tasks.Collecting;
+		case Activity.MageTrainingArena:
+			return Tasks.MageTrainingArena;
 	}
 }

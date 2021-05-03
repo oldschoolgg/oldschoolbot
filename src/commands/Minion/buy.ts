@@ -1,7 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
+import { table } from 'table';
 
+import { Minigames } from '../../extendables/User/Minigame';
 import { Time } from '../../lib/constants';
 import Buyables from '../../lib/data/buyables/buyables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -11,9 +13,9 @@ import {
 	bankHasAllItemsFromBank,
 	multiplyBank,
 	removeBankFromBank,
+	skillsMeetRequirements,
 	stringMatches
 } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -37,10 +39,14 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			return msg.send(
-				`I don't recognize that item, the items you can buy are: ${Buyables.map(
-					item => item.name
-				).join(', ')}.`
+			const normalTable = table([
+				['Name', 'GP Cost', 'Item Cost'],
+				...Buyables.map(i => [i.name, i.gpCost || 0, new Bank(i.itemCost).toString()])
+			]);
+			return msg.channel.sendFile(
+				Buffer.from(normalTable),
+				`Buyables.txt`,
+				`Here is a table of all buyable items.`
 			);
 		}
 
@@ -48,6 +54,25 @@ export default class extends BotCommand {
 			const QP = msg.author.settings.get(UserSettings.QP);
 			if (QP < buyable.qpRequired) {
 				return msg.send(`You need ${buyable.qpRequired} QP to purchase this item.`);
+			}
+		}
+
+		if (
+			buyable.skillsNeeded &&
+			!skillsMeetRequirements(msg.author.rawSkills, buyable.skillsNeeded)
+		) {
+			return msg.send(`You don't have the required stats to buy this item.`);
+		}
+
+		if (buyable.minigameScoreReq) {
+			const [key, req] = buyable.minigameScoreReq;
+			const kc = await msg.author.getMinigameScore(key);
+			if (kc < req) {
+				return msg.channel.send(
+					`You need ${req} KC in ${
+						Minigames.find(i => i.key === key)!.name
+					} to buy this, you only have ${kc} KC.`
+				);
 			}
 		}
 
@@ -59,8 +84,7 @@ export default class extends BotCommand {
 			!bankHasAllItemsFromBank(userBank, multiplyBank(buyable.itemCost, quantity))
 		) {
 			return msg.send(
-				`You don't have the required items to purchase this. You need: ${await createReadableItemListFromBank(
-					this.client,
+				`You don't have the required items to purchase this. You need: ${new Bank(
 					multiplyBank(buyable.itemCost, quantity)
 				)}.`
 			);
@@ -74,17 +98,14 @@ export default class extends BotCommand {
 		}
 
 		const outItems = multiplyBank(buyable.outputItems, quantity);
-		const itemString = await createReadableItemListFromBank(this.client, outItems);
+		const itemString = new Bank(outItems).toString();
 
 		// Start building a string to show to the user.
 		let str = `${msg.author}, say \`confirm\` to confirm that you want to buy **${itemString}** for: `;
 
 		// If theres an item cost or GP cost, add it to the string to show users the cost.
 		if (buyable.itemCost) {
-			str += await createReadableItemListFromBank(
-				this.client,
-				multiplyBank(buyable.itemCost, quantity)
-			);
+			str += new Bank(multiplyBank(buyable.itemCost, quantity)).toString();
 			if (buyable.gpCost) {
 				str += `, ${totalGPCost.toLocaleString()} GP.`;
 			}
@@ -142,6 +163,6 @@ export default class extends BotCommand {
 
 		await msg.author.addItemsToBank(outItems, true);
 
-		return msg.send(`You purchased ${quantity > 1 ? `${quantity}x` : ''} ${buyable.name}.`);
+		return msg.send(`You purchased ${quantity > 1 ? `${quantity}x` : '1x'} ${buyable.name}.`);
 	}
 }

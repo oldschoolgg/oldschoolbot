@@ -14,6 +14,39 @@ interface Createable {
 	cantBeInCL?: boolean;
 }
 
+const twistedAncestral: Createable[] = [
+	{
+		name: 'Twisted ancestral hat',
+		inputItems: {
+			[itemID('Ancestral hat')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1
+		},
+		outputItems: {
+			[itemID('Crystal pickaxe')]: 1
+		}
+	},
+	{
+		name: 'Twisted ancestral robe top',
+		inputItems: {
+			[itemID('Ancestral robe top')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1
+		},
+		outputItems: {
+			[itemID('Crystal pickaxe')]: 1
+		}
+	},
+	{
+		name: 'Twisted ancestral robe bottom',
+		inputItems: {
+			[itemID('Ancestral robe bottom')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1
+		},
+		outputItems: {
+			[itemID('Twisted ancestral robe bottom')]: 1
+		}
+	}
+];
+
 const crystalTools: Createable[] = [
 	{
 		name: 'Crystal pickaxe',
@@ -136,7 +169,7 @@ const ornamentKits: Createable[] = [
 		name: 'Dragon chainbody (g)',
 		inputItems: resolveNameBank({
 			'Dragon chainbody': 1,
-			'Dragon legs/skirt ornament kit': 1
+			'Dragon chainbody ornament kit': 1
 		}),
 		outputItems: resolveNameBank({ 'Dragon chainbody (g)': 1 })
 	},
@@ -1275,9 +1308,53 @@ const Createables: Createable[] = [
 			[itemID(`Toad's legs`)]: 1
 		}
 	},
+	{
+		name: 'Pegasian boots',
+		inputItems: {
+			[itemID('Pegasian crystal')]: 1,
+			[itemID('Ranger boots')]: 1
+		},
+		outputItems: {
+			[itemID('Pegasian boots')]: 1
+		},
+		requiredSkills: { magic: 60, runecraft: 60 }
+	},
+	{
+		name: 'Primordial boots',
+		inputItems: {
+			[itemID('Primordial crystal')]: 1,
+			[itemID('Dragon boots')]: 1
+		},
+		outputItems: {
+			[itemID('Primordial boots')]: 1
+		},
+		requiredSkills: { magic: 60, runecraft: 60 }
+	},
+	{
+		name: 'Eternal boots',
+		inputItems: {
+			[itemID('Eternal crystal')]: 1,
+			[itemID('Infinity boots')]: 1
+		},
+		outputItems: {
+			[itemID('Eternal boots')]: 1
+		},
+		requiredSkills: { magic: 60, runecraft: 60 }
+	},
+	{
+		name: 'Kodai wand',
+		inputItems: {
+			[itemID('Master wand')]: 1,
+			[itemID('Kodai insignia')]: 1
+		},
+		outputItems: {
+			[itemID('Kodai wand')]: 1
+		}
+	},
 	...crystalTools,
 	...ornamentKits,
-	...hunterClothing
+	...hunterClothing,
+	...twistedAncestral
 ];
 
 export default Createables;

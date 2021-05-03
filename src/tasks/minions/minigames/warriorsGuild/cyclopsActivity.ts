@@ -1,7 +1,6 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../../../lib/constants';
 import { UserSettings } from '../../../../lib/settings/types/UserSettings';
 import { CyclopsTable } from '../../../../lib/simulation/cyclops';
 import { CyclopsActivityTaskOptions } from '../../../../lib/types/minions';
@@ -48,12 +47,9 @@ const defenders = [
 
 export default class extends Task {
 	async run(data: CyclopsActivityTaskOptions) {
-		const { minigameID, userID, channelID, quantity, duration } = data;
+		const { userID, channelID, quantity } = data;
 		const user = await this.client.users.fetch(userID);
 		const userBank = new Bank(user.settings.get(UserSettings.Bank));
-		user.incrementMinionDailyDuration(duration);
-
-		const logInfo = `MonsterID[${minigameID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
 		let loot = new Bank();
 
@@ -78,11 +74,6 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot.bank, true);
 
-		this.client.emit(
-			Events.Log,
-			`${user.username}[${user.id}] received Minion Loot - ${logInfo}`
-		);
-
 		let str = `${user}, ${
 			user.minionName
 		} finished killing ${quantity} Cyclops. Your Cyclops KC is now ${
@@ -90,7 +81,7 @@ export default class extends Task {
 		}.`;
 
 		user.incrementMonsterScore(cyclopsID, quantity);
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				loot.bank,
@@ -109,8 +100,9 @@ export default class extends Task {
 				user.log(`continued cyclops`);
 				return this.client.commands.get('wg')!.run(res, [quantity, 'cyclops']);
 			},
-			image,
-			data
+			image!,
+			data,
+			loot.bank
 		);
 	}
 }

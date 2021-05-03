@@ -1,5 +1,6 @@
 import { Task } from 'klasa';
-import { resolveNameBank, toKMB } from 'oldschooljs/dist/util';
+import { Bank } from 'oldschooljs';
+import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
@@ -14,8 +15,8 @@ export default class extends Task {
 	async run(data: AlchingActivityTaskOptions) {
 		let { itemID, quantity, channelID, alchValue, userID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		await user.incrementMinionDailyDuration(duration);
-		await user.addGP(alchValue);
+		const loot = new Bank({ Coins: alchValue });
+
 		const item = getOSItem(itemID);
 
 		// If bryophyta's staff is equipped when starting the alch activity
@@ -31,28 +32,19 @@ export default class extends Task {
 					'Nature rune': savedRunes
 				});
 
-				await user.addItemsToBank(returnedRunes);
+				loot.add(returnedRunes);
 			}
 		}
+		await user.addItemsToBank(loot);
 
-		const currentLevel = user.skillLevel(SkillsEnum.Magic);
 		const xpReceived = quantity * 65;
-		await user.addXP(SkillsEnum.Magic, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Magic);
+		const xpRes = await user.addXP(SkillsEnum.Magic, xpReceived, duration);
 
 		const saved =
 			savedRunes > 0 ? `Your Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
 		let responses = [
-			`${user}, ${user.minionName} has finished alching ${quantity}x ${
-				item.name
-			}! ${alchValue.toLocaleString()}gp (${toKMB(
-				alchValue
-			)}) has been added to your bank. You received ${xpReceived} Magic XP. ${saved}`
+			`${user}, ${user.minionName} has finished alching ${quantity}x ${item.name}! ${loot} has been added to your bank. ${xpRes}. ${saved}`
 		].join('\n');
-
-		if (newLevel > currentLevel) {
-			responses += `\n\n${user.minionName}'s Magic level is now ${newLevel}!`;
-		}
 
 		handleTripFinish(
 			this.client,
@@ -64,7 +56,8 @@ export default class extends Task {
 				return this.client.commands.get('alch')!.run(res, [quantity, [item]]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

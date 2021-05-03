@@ -65,7 +65,7 @@ export default class extends BotCommand {
 
 		let { tripLength } = rune;
 		const boosts = [];
-		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			tripLength -= rune.tripLength * 0.1;
 			boosts.push(`10% for Graceful`);
 		}
@@ -92,8 +92,9 @@ export default class extends BotCommand {
 		if (inventorySize > 28) {
 			boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
 		}
+		const maxTripLength = msg.author.maxTripLength(Activity.Runecraft);
 
-		const maxCanDo = Math.floor(msg.author.maxTripLength / tripLength) * inventorySize;
+		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -109,10 +110,10 @@ export default class extends BotCommand {
 		const numberOfInventories = Math.max(Math.ceil(quantity / inventorySize), 1);
 		const duration = numberOfInventories * tripLength;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					rune.name
 				} you can craft is ${Math.floor(maxCanDo)}.`

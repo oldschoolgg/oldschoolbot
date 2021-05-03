@@ -1,15 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { addBanks, bankHasAllItemsFromBank, removeBankFromBank } from 'oldschooljs/dist/util';
 
 import { Time } from '../../lib/constants';
 import TokkulShopItem from '../../lib/data/buyables/tokkulBuyables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { ItemBank } from '../../lib/types';
 import { stringMatches } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import itemID from '../../lib/util/itemID';
 
 const { TzTokJad } = Monsters;
 
@@ -49,7 +46,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (shopInventory.requireFireCape && msg.author.getKC(TzTokJad) < 1) {
+		if (shopInventory.requireFireCape && msg.author.getKC(TzTokJad.id) < 1) {
 			return msg.send(
 				`You are not worthy JalYt. Before you can ${type} an ${shopInventory.name}, you need to have defeated the might TzTok-Jad!`
 			);
@@ -75,30 +72,24 @@ export default class extends BotCommand {
 			quantity = type === 'sell' ? userBank[shopInventory.inputItem] : 1;
 		}
 
-		let outItems: ItemBank = {};
-		let inItems: ItemBank = {};
-		let itemString: string = '';
-		let inItemString: string = '';
+		let outItems = new Bank();
+		let inItems = new Bank();
 		if (type === 'buy') {
-			outItems = { [itemID('Tokkul')]: quantity * shopInventory.tokkulCost! };
-			inItems = { [shopInventory.inputItem]: quantity };
-			itemString = await createReadableItemListFromBank(this.client, outItems);
-			inItemString = await createReadableItemListFromBank(this.client, inItems);
+			inItems.add({ Tokkul: quantity * shopInventory.tokkulCost! });
+			outItems.add({ [shopInventory.inputItem]: quantity });
 		} else {
-			outItems = { [shopInventory.inputItem]: quantity };
-			inItems = { [itemID('Tokkul')]: quantity * shopInventory.tokkulReturn };
-			itemString = await createReadableItemListFromBank(this.client, inItems);
-			inItemString = await createReadableItemListFromBank(this.client, outItems);
+			inItems.add({ [shopInventory.inputItem]: quantity });
+			outItems.add({ Tokkul: quantity * shopInventory.tokkulReturn });
 		}
 
-		if (!bankHasAllItemsFromBank(userBank, outItems)) {
+		if (!bankHasAllItemsFromBank(userBank, inItems.bank)) {
 			if (type === 'buy') {
 				return msg.send(
-					`I am sorry JalYt, but you don't have enough tokkul for that. You need **${itemString}** to buy **${inItemString}**.`
+					`I am sorry JalYt, but you don't have enough tokkul for that. You need **${inItems}** to buy **${outItems}**.`
 				);
 			}
 			return msg.send(
-				`I am sorry JalYt, but you don't have enough items for that. You need **${inItemString}** to sell for **${itemString}**.`
+				`I am sorry JalYt, but you don't have enough items for that. You need **${inItems}** to sell for **${outItems}**.`
 			);
 		}
 
@@ -106,7 +97,7 @@ export default class extends BotCommand {
 			const sellMsg = await msg.channel.send(
 				`${msg.author}, JalYt, say \`confirm\` to confirm that you want to ${
 					type === 'buy' ? 'buy' : 'sell'
-				} **${inItemString}** for **${itemString}**.`
+				} **${inItems}** for **${outItems}**.`
 			);
 
 			// Confirm the user wants to buy
@@ -123,18 +114,18 @@ export default class extends BotCommand {
 				);
 			} catch (err) {
 				return sellMsg.edit(
-					`Cancelling ${type === 'buy' ? 'purchase' : 'sale'} of **${inItemString}**.`
+					`Cancelling ${type === 'buy' ? 'purchase' : 'sale'} of **${outItems}**.`
 				);
 			}
 		}
 
 		await msg.author.settings.update(
 			UserSettings.Bank,
-			addBanks([inItems, removeBankFromBank(userBank, outItems)])
+			addBanks([outItems.bank, removeBankFromBank(userBank, inItems.bank)])
 		);
 
 		return msg.send(
-			`You ${type === 'buy' ? 'bought' : 'sold'} **${inItemString}** for **${itemString}**.`
+			`You ${type === 'buy' ? 'bought' : 'sold'} **${outItems}** for **${inItems}**.`
 		);
 	}
 }

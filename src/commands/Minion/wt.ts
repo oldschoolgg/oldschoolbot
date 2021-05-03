@@ -3,8 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Activity, Time } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { warmGear } from '../../lib/data/filterables';
-import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { hasItemEquipped } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -56,7 +55,7 @@ export default class extends BotCommand {
 		let warmGearAmount = 0;
 
 		for (const piece of warmGear) {
-			if (hasItemEquipped(piece, msg.author.settings.get(UserSettings.Gear.Skilling))) {
+			if (hasItemEquipped(piece, msg.author.getGear('skilling'))) {
 				warmGearAmount++;
 			}
 			if (warmGearAmount > 4) break;
@@ -74,7 +73,9 @@ export default class extends BotCommand {
 			);
 		}
 
-		const quantity = Math.floor(msg.author.maxTripLength / durationPerTodt);
+		const quantity = Math.floor(
+			msg.author.maxTripLength(Activity.Wintertodt) / durationPerTodt
+		);
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		for (const food of Eatables) {
@@ -109,7 +110,7 @@ export default class extends BotCommand {
 		const duration = durationPerTodt * quantity;
 
 		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>(this.client, {
-			minigameID: MinigameIDsEnum.Wintertodt,
+			minigameID: 'Wintertodt',
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

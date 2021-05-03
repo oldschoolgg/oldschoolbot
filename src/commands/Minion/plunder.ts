@@ -3,10 +3,8 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { plunderBoosts, plunderRooms } from '../../lib/minions/data/plunder';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, itemNameFromID } from '../../lib/util';
@@ -41,7 +39,7 @@ export default class extends BotCommand {
 
 		const boosts = [];
 
-		if (!hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (!hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			plunderTime *= 1.075;
 			boosts.push(`-7.5% time penalty for not having graceful equipped`);
 		}
@@ -49,8 +47,7 @@ export default class extends BotCommand {
 		// Every 1h becomes 1% faster to a cap of 10%
 		const percentFaster = Math.min(
 			Math.floor(
-				msg.author.getMinigameScore(MinigameIDsEnum.PyramidPlunder) /
-					(Time.Hour / plunderTime)
+				(await msg.author.getMinigameScore('PyramidPlunder')) / (Time.Hour / plunderTime)
 			),
 			10
 		);
@@ -65,7 +62,7 @@ export default class extends BotCommand {
 				plunderTime = reduceNumByPercent(plunderTime, percent);
 			}
 		}
-		const maxQuantity = Math.floor(msg.author.maxTripLength / plunderTime);
+		const maxQuantity = Math.floor(msg.author.maxTripLength(Activity.Plunder) / plunderTime);
 		const tripLength = maxQuantity * plunderTime;
 
 		await addSubTaskToActivityTask<PlunderActivityTaskOptions>(this.client, {
@@ -75,7 +72,7 @@ export default class extends BotCommand {
 			duration: tripLength,
 			type: Activity.Plunder,
 			channelID: msg.channel.id,
-			minigameID: MinigameIDsEnum.PyramidPlunder
+			minigameID: 'PyramidPlunder'
 		});
 
 		let str = `${

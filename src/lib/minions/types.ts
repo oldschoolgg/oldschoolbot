@@ -6,12 +6,12 @@ import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 
-import { PerkTier } from '../constants';
+import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements } from '../skilling/types';
-import { ArrayItemsResolved, ItemBank } from '../types';
-import { MonsterActivityTaskOptions } from '../types/minions';
+import { ArrayItemsResolved, ItemBank, Skills } from '../types';
+import { AttackStyles } from './functions';
 
 export interface BankBackground {
 	image: Image | null;
@@ -23,6 +23,9 @@ export interface BankBackground {
 	gpCost?: number;
 	itemCost?: ItemBank;
 	repeatImage?: Image | null;
+	bitfield?: BitField;
+	sacValueRequired?: number;
+	skillsNeeded?: Skills;
 }
 
 export interface ClueMilestoneReward {
@@ -85,14 +88,8 @@ export interface KillableMonster {
 	 * Boosts for POH objects.
 	 */
 	pohBoosts?: POHBoosts;
-}
-
-export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
-	leader: string;
-	users: string[];
-}
-
-export interface Minigame {
-	id: number;
-	name: string;
+	defaultAttackStyles?: AttackStyles[];
+	disallowedAttackStyles?: AttackStyles[];
+	customMonsterHP?: number;
+	combatXpMultiplier?: number;
 }

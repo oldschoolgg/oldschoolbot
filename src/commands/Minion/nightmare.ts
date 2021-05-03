@@ -1,10 +1,8 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
-import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
-import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
+import { hasArrayOfItemsEquipped, hasItemEquipped } from '../../lib/gear';
 import { GearSetupTypes } from '../../lib/gear/types';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -150,7 +148,7 @@ export default class extends BotCommand {
 			);
 
 			// Special inquisitor outfit damage boost
-			const meleeGear = user.settings.get(UserSettings.Gear.Melee);
+			const meleeGear = user.getGear('melee');
 			if (hasArrayOfItemsEquipped(inquisitorItems, meleeGear)) {
 				effectiveTime *= users.length === 1 ? 0.9 : 0.97;
 			} else {
@@ -189,7 +187,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		let [quantity, duration, perKillTime] = calcDurQty(
+		let [quantity, duration, perKillTime] = await calcDurQty(
 			users,
 			{ ...NightmareMonster, timeToFinish: effectiveTime },
 			undefined,
@@ -221,8 +219,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Nightmare,
 			leader: msg.author.id,
-			users: users.map(u => u.id),
-			minigameID: MinigameIDsEnum.Nightmare
+			users: users.map(u => u.id)
 		});
 
 		const str =

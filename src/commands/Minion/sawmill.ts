@@ -60,7 +60,7 @@ export default class extends BotCommand {
 		const boosts = [];
 		let timePerPlank = (Time.Second * 37) / 27;
 
-		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			timePerPlank *= 0.9;
 			boosts.push(`10% for Graceful`);
 		}
@@ -72,8 +72,10 @@ export default class extends BotCommand {
 			boosts.push(`10% for Woodcutting Guild unlocked`);
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Sawmill);
+
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / timePerPlank);
+			quantity = Math.floor(maxTripLength / timePerPlank);
 		}
 
 		const inputItemOwned = msg.author.numItemsInBankSync(plank.inputItem);
@@ -94,12 +96,12 @@ export default class extends BotCommand {
 
 		const duration = quantity * timePerPlank;
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of planks you can make is ${Math.floor(
-					msg.author.maxTripLength / timePerPlank
+					maxTripLength / timePerPlank
 				)}.`
 			);
 		}

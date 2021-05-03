@@ -1,11 +1,10 @@
 import { graphql } from '@octokit/graphql';
 import { createHmac } from 'crypto';
+import { onRequestHookHandler } from 'fastify';
+import * as jwt from 'jwt-simple';
 
 import { client } from '../..';
-
-export { v4 as uuidv } from 'uuid';
-
-import { clientSecret, githubToken } from '../../config';
+import { CLIENT_SECRET, GITHUB_TOKEN } from '../../config';
 import { PerkTier } from '../constants';
 
 export function rateLimit(max: number, timeWindow: string) {
@@ -21,7 +20,7 @@ export function verifyGithubSecret(body: string, signature?: string | string[]):
 	if (!signature) {
 		return false;
 	}
-	const hmac = createHmac('sha1', clientSecret);
+	const hmac = createHmac('sha1', CLIENT_SECRET);
 	hmac.update(body);
 	const calculated = `sha1=${hmac.digest('hex')}`;
 	return signature === calculated;
@@ -29,7 +28,7 @@ export function verifyGithubSecret(body: string, signature?: string | string[]):
 
 export const graphqlWithAuth = graphql.defaults({
 	headers: {
-		authorization: `token ${githubToken}`
+		authorization: `token ${GITHUB_TOKEN}`
 	}
 });
 
@@ -116,3 +115,26 @@ export async function getUserFromGithubID(githubID: string) {
 	if (result.length === 0) return null;
 	return client.users.fetch(result[0].id);
 }
+
+export function encryptJWT(payload: unknown, secret = CLIENT_SECRET) {
+	return jwt.encode(payload, secret, 'HS512');
+}
+
+export function decryptJWT(payload: string, secret = CLIENT_SECRET) {
+	return jwt.decode(payload, secret);
+}
+
+export const authenticate: onRequestHookHandler = async (request, reply) => {
+	const token = request.headers.authentication;
+
+	if (!token || Array.isArray(token)) {
+		throw reply.unauthorized('No authorization token.');
+	}
+
+	try {
+		const result = decryptJWT(token, CLIENT_SECRET);
+		request.auth = result;
+	} catch (_) {
+		throw reply.badRequest('Authentication failed.');
+	}
+};

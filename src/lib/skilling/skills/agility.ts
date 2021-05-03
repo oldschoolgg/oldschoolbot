@@ -1,7 +1,7 @@
 import { Emoji } from '../../constants';
 import { Course, SkillsEnum } from '../types';
 
-const courses: Course[] = [
+export const courses: Course[] = [
 	{
 		id: 1,
 		name: 'Gnome Stronghold Agility Course',
@@ -126,6 +126,15 @@ const courses: Course[] = [
 		marksPer60: 22,
 		lapTime: 45.6,
 		petChance: 34_440
+	},
+	{
+		id: 12,
+		name: 'Penguin Agility Course',
+		aliases: ['peng', 'penguin agility course', 'penguin'],
+		level: 30,
+		xp: 540,
+		lapTime: 65.6,
+		petChance: 9_979
 	}
 ];
 

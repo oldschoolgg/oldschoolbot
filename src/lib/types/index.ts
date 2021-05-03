@@ -19,24 +19,11 @@ export interface SettingsEntry {
 	pets?: number[];
 	lastDailyTimestamp?: number;
 	bitfield?: number[];
-	totalCommandsUsed?: number;
 	minion?: {
 		name?: string;
 		hasBought: boolean;
 		ironman: boolean;
 	};
-}
-
-export interface Pet {
-	id: number;
-	emoji: string;
-	chance: number;
-	name: string;
-	type: string;
-	altNames: string[];
-	bossKeys?: string[];
-	finish?(): number;
-	formatFinish(num: number): string;
 }
 
 export interface CachedItemPrice {
@@ -46,23 +33,6 @@ export interface CachedItemPrice {
 
 export interface ItemPriceCache {
 	[key: string]: CachedItemPrice;
-}
-
-export interface OSRSPoll {
-	title: string;
-	description: string;
-	questions: PollQuestion[];
-}
-
-export interface PollQuestion {
-	question: string;
-	votes: PollVotes;
-}
-
-export interface PollVotes {
-	Yes: string;
-	No: string;
-	'Skip question': string;
 }
 
 export interface JMod {
@@ -98,11 +68,6 @@ export type TwitterAppConfig = null | {
 	access_token: string;
 	access_token_key?: string;
 	access_token_secret: string;
-};
-
-export type MongoDBConfig = null | {
-	dbUrl: string;
-	dbName: string;
 };
 
 export type PatreonConfig = null | {

@@ -1,8 +1,7 @@
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { addBanks, removeItemFromBank } from 'oldschooljs/dist/util';
 
-import { GearTypes } from '../../gear';
-import { GearSetup, GearStat } from '../../gear/types';
+import { GearSetup, GearSetupTypes, GearStat } from '../../gear/types';
 import { ItemBank } from '../../types';
 import { removeBankFromBank } from '../../util';
 import getOSItem from '../../util/getOSItem';
@@ -17,7 +16,7 @@ function getItemScore(item: Item) {
 export default function getUserBestGearFromBank(
 	userBank: ItemBank,
 	userGear: GearSetup,
-	gearType: GearTypes.GearSetupTypes,
+	gearType: GearSetupTypes,
 	type: string,
 	style: string,
 	extra: string | null = null

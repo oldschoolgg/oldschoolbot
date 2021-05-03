@@ -7,9 +7,9 @@ import { collectionLogTypes } from '../../lib/data/collectionLog';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { stringMatches } from '../../lib/util';
+import { itemNameFromID, stringMatches } from '../../lib/util';
 
-const slicedCollectionLogTypes = collectionLogTypes.slice(1);
+const slicedCollectionLogTypes = collectionLogTypes.slice(0, collectionLogTypes.length - 1);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -23,7 +23,16 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [inputType = 'all']) {
+	async run(msg: KlasaMessage, [inputType]: [string]) {
+		if (!inputType) {
+			const { percent, notOwned } = msg.author.completion();
+			return msg.send(
+				`You have **${percent.toFixed(2)}%** Collection Log Completion.
+				
+Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
+			);
+		}
+
 		await msg.author.settings.sync(true);
 
 		const monster = killableMonsters.find(_type =>
@@ -47,6 +56,7 @@ export default class extends BotCommand {
 		) as number[];
 		const log = msg.author.settings.get(UserSettings.CollectionLogBank);
 		const num = items.filter(item => log[item] > 0).length;
+		const { name } = type || monster!;
 
 		const chunkedMonsterItems: Record<number, number[]> = {};
 		let i = 0;
@@ -61,13 +71,17 @@ export default class extends BotCommand {
 				.get('bankImage')!
 				.generateCollectionLogImage(
 					log,
-					`${msg.author.username}'s ${(type || monster!).name} Collection Log (${num}/${
-						items.length
-					})`,
+					`${msg.author.username}'s ${name} Collection Log (${num}/${items.length})`,
 					monster ? { ...monster, items: chunkedMonsterItems } : type
 				)
 		);
 
-		return msg.send(attachment);
+		const [kcName, kcAmount] = await msg.author.getKCByName(name);
+
+		if (!kcName) {
+			return msg.send(attachment);
+		}
+
+		return msg.send(`Your ${kcName} KC is: ${kcAmount}.`, attachment);
 	}
 }

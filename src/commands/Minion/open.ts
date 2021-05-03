@@ -9,8 +9,6 @@ import { ClueTier } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks, roll, stringMatches } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import filterBankFromArrayOfItems from '../../lib/util/filterBankFromArrayOfItems';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 
@@ -42,17 +40,13 @@ export default class extends BotCommand {
 	}
 
 	async showAvailable(msg: KlasaMessage) {
-		const available = filterBankFromArrayOfItems(
-			allOpenables,
-			msg.author.settings.get(UserSettings.Bank)
-		);
+		const available = msg.author.bank().filter(i => allOpenables.includes(i.id));
 
-		if (Object.keys(available).length === 0) {
+		if (available.length === 0) {
 			return `You have no openable items.`;
 		}
 
-		const itemsAvailable = await createReadableItemListFromBank(this.client, available);
-		return `You have ${itemsAvailable}.`;
+		return `You have ${available}.`;
 	}
 
 	async run(msg: KlasaMessage, [quantity = 1, name]: [number, string | undefined]) {
@@ -118,17 +112,15 @@ export default class extends BotCommand {
 
 		// Here we check if the loot has any ultra-rares (3rd age, gilded, bloodhound),
 		// and send a notification if they got one.
-		const keys = Object.keys(loot);
-		if (keys.some(key => itemsToNotifyOf.includes(parseInt(key)))) {
-			const lootStr = await createReadableItemListFromBank(this.client, loot);
-
+		const announcedLoot = new Bank(loot).filter(i => itemsToNotifyOf.includes(i.id));
+		if (announcedLoot.length > 0) {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${msg.author.username}'s** minion, ${
 					msg.author.minionName
 				}, just opened their ${formatOrdinal(nthCasket)} ${
 					clueTier.name
-				} casket and received **${lootStr}**!`
+				} casket and received **${announcedLoot}**!`
 			);
 		}
 
@@ -141,9 +133,13 @@ export default class extends BotCommand {
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${clueTier.name} caskets.`
 		);
 
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
 
 		msg.author.incrementClueScore(clueTier.id, quantity);
+
+		msg.author.incrementOpenableScore(clueTier.id, quantity);
+
 		if (mimicNumber > 0) {
 			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 		}
@@ -153,7 +149,8 @@ export default class extends BotCommand {
 			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.`,
 			title: opened,
 			flags: { showNewCL: 1 },
-			user: msg.author
+			user: msg.author,
+			cl: previousCL
 		});
 	}
 
@@ -175,13 +172,16 @@ export default class extends BotCommand {
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${osjsOpenable.name}.`
 		);
 
+		msg.author.incrementOpenableScore(osjsOpenable.itemID, quantity);
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
 
 		return msg.channel.sendBankImage({
 			bank: loot,
 			title: `You opened ${quantity} ${osjsOpenable.name}`,
 			flags: { showNewCL: 1 },
-			user: msg.author
+			user: msg.author,
+			cl: previousCL
 		});
 	}
 
@@ -212,17 +212,34 @@ export default class extends BotCommand {
 		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
 
 		const loot = new Bank();
+		const score = msg.author.getOpenableScore(itemID('Spoils of war'));
 		for (let i = 0; i < quantity; i++) {
-			loot.add(botOpenable.table.roll());
+			const rollLoot = botOpenable.table.roll();
+			if (rollLoot.some(i => i.item === itemID("Lil' creator"))) {
+				this.client.emit(
+					Events.ServerNotification,
+					`<:lil_creator:798221383951319111> **${msg.author.username}'s** minion, ${
+						msg.author.minionName
+					}, just received a Lil' creator! They've done ${await msg.author.getMinigameScore(
+						'SoulWars'
+					)} Soul wars games, and this is their ${formatOrdinal(
+						score + i
+					)} Spoils of war crate.`
+				);
+			}
+			loot.add(rollLoot);
 		}
 
+		msg.author.incrementOpenableScore(botOpenable.itemID, quantity);
+		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot.values(), true);
 
 		return msg.channel.sendBankImage({
 			bank: loot.values(),
 			title: `You opened ${quantity} ${botOpenable.name}`,
 			flags: { showNewCL: 1 },
-			user: msg.author
+			user: msg.author,
+			cl: previousCL
 		});
 	}
 }

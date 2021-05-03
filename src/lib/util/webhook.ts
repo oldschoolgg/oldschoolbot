@@ -1,9 +1,15 @@
-import { MessageEmbed, TextChannel, WebhookClient } from 'discord.js';
+import {
+	MessageAttachment,
+	MessageEmbed,
+	Permissions,
+	TextChannel,
+	WebhookClient
+} from 'discord.js';
 import { KlasaClient } from 'klasa';
 import PQueue from 'p-queue';
 
 import { WebhookTable } from '../typeorm/WebhookTable.entity';
-import { channelIsSendable } from './channelIsSendable';
+import { channelIsSendable } from '../util';
 
 const webhookCache: Map<string, WebhookClient> = new Map();
 
@@ -14,6 +20,10 @@ export async function resolveChannel(
 	const channel = client.channels.get(channelID);
 	if (!channelIsSendable(channel)) return undefined;
 
+	if (channel.type === 'dm') {
+		return channel;
+	}
+
 	const cached = webhookCache.get(channelID);
 	if (cached) return cached;
 
@@ -22,6 +32,10 @@ export async function resolveChannel(
 		client.emit('log', `Restoring webhook from DB.`);
 		webhookCache.set(db.channelID, new WebhookClient(db.webhookID, db.webhookToken));
 		return webhookCache.get(db.channelID);
+	}
+
+	if (!channel.permissionsFor(client.user!)?.has(Permissions.FLAGS.MANAGE_WEBHOOKS)) {
+		return channel;
 	}
 
 	try {
@@ -50,7 +64,7 @@ export async function sendToChannelID(
 	channelID: string,
 	data: {
 		content?: string;
-		image?: Buffer;
+		image?: Buffer | MessageAttachment;
 		embed?: MessageEmbed;
 	}
 ) {

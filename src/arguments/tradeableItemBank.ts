@@ -1,14 +1,15 @@
-import { objectEntries } from 'e';
+import { objectEntries, shuffleArr } from 'e';
 import { Argument, ArgumentStore, KlasaMessage, Possible } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../lib/constants';
 import { filterableTypes } from '../lib/data/filterables';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { bankHasAllItemsFromBank, shuffle, stringMatches } from '../lib/util';
+import { stringMatches } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
 import itemIsTradeable from '../lib/util/itemIsTradeable';
-import { ItemResult, parseStringBank } from '../lib/util/parseStringBank';
+import { parseStringBank } from '../lib/util/parseStringBank';
 
 export type TradeableItemBankArgumentType = [Bank, number, Bank];
 
@@ -19,7 +20,7 @@ export default class TradeableItemBankArgument extends Argument {
 
 	async run(arg: string, _: Possible, msg: KlasaMessage): Promise<TradeableItemBankArgumentType> {
 		await msg.author.settings.sync(true);
-		let items: ItemResult[] = parseStringBank(arg);
+		let items: [Item, number][] = parseStringBank(arg);
 
 		let bank = new Bank();
 
@@ -35,15 +36,12 @@ export default class TradeableItemBankArgument extends Argument {
 
 		// Adds every non-favorited item
 		if (msg.flagArgs.all) {
-			const entries = shuffle(objectEntries(userBank.bank));
+			const entries = shuffleArr(objectEntries(userBank.bank));
 			for (let i = 0; i < entries.length; i++) {
 				let [id, qty] = entries[i];
 				id = Number(id);
-				const item = {
-					item: getOSItem(id),
-					qty: qtyOverride ?? qty
-				};
-				if (!favorites.includes(id) && !items.some(i => i.item === item.item)) {
+				const item: [Item, number] = [getOSItem(id), qtyOverride ?? qty];
+				if (!favorites.includes(id) && !items.some(i => i[0] === item[0])) {
 					items.push(item);
 				}
 			}
@@ -56,9 +54,17 @@ export default class TradeableItemBankArgument extends Argument {
 			);
 			if (matching) {
 				for (const item of matching.items) {
-					items.push({ item: getOSItem(item), qty: qtyOverride ?? 0 });
+					items.push([getOSItem(item), qtyOverride ?? 0]);
 				}
 			}
+		}
+
+		const { search } = msg.flagArgs;
+		if (search) {
+			items = [
+				...items,
+				...userBank.items().filter(i => i[0].name.toLowerCase().includes(search))
+			];
 		}
 
 		if (items.length === 0) {
@@ -66,27 +72,25 @@ export default class TradeableItemBankArgument extends Argument {
 		}
 
 		let totalPrice = 0;
-		for (const item of items) {
-			const { id } = item.item;
+		for (const [item, _qty] of items) {
 			if (bank.length === 70) break;
-			const qty =
-				qtyOverride ?? (item.qty === 0 ? Math.max(1, userBank.amount(id)) : item.qty);
+			const qty = Math.max(
+				1,
+				qtyOverride ?? (_qty === 0 ? Math.max(1, userBank.amount(item.id)) : _qty)
+			);
 
-			if (itemIsTradeable(id) && userBank.amount(id) >= qty) {
-				bank.add(id, qty);
-				totalPrice += (await this.client.fetchItemPrice(id)) * qty;
+			if (itemIsTradeable(item.id) && userBank.amount(item.id) >= qty) {
+				bank.add(item.id, qty);
+				totalPrice += (await this.client.fetchItemPrice(item.id)) * qty;
 			} else {
-				invalidBank.add(id, item.qty);
+				invalidBank.add(item.id, qty);
 			}
 		}
 		const keys = Object.keys(bank.bank);
 		if (keys.length === 0) {
 			throw `You don't have enough of the items you provided, or none of them are tradeable.`;
 		}
-		if (!bankHasAllItemsFromBank(userBank.bank, bank.bank)) {
-			this.client.wtf(
-				new Error(`${msg.author.sanitizedName} doesn't have all items in target bank`)
-			);
+		if (!userBank.fits(bank)) {
 			throw "User bank doesn't have all items in the target bank";
 		}
 		return [bank, totalPrice, invalidBank];

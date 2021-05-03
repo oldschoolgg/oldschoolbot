@@ -1,5 +1,5 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
 import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
@@ -23,7 +23,6 @@ import {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import itemID from '../../lib/util/itemID';
 
 const { TzTokJad } = Monsters;
@@ -47,13 +46,13 @@ export default class extends BotCommand {
 		let debugStr = '';
 
 		// Reduce time based on KC
-		const jadKC = user.getKC(TzTokJad);
+		const jadKC = user.getKC(TzTokJad.id);
 		const percentIncreaseFromKC = Math.min(50, jadKC);
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromKC);
 		debugStr += `${percentIncreaseFromKC}% from KC`;
 
 		// Reduce time based on Gear
-		const usersRangeStats = sumOfSetupStats(user.settings.get(UserSettings.Gear.Range));
+		const usersRangeStats = sumOfSetupStats(user.getGear('range'));
 		const percentIncreaseFromRangeStats =
 			Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromRangeStats);
@@ -86,7 +85,7 @@ export default class extends BotCommand {
 	async checkGear(user: KlasaUser) {
 		const equippedWeapon = user.equippedWeapon(GearSetupTypes.Range);
 
-		const usersRangeStats = sumOfSetupStats(user.settings.get(UserSettings.Gear.Range));
+		const usersRangeStats = sumOfSetupStats(user.getGear('range'));
 
 		if (
 			!equippedWeapon ||
@@ -101,8 +100,7 @@ export default class extends BotCommand {
 		}
 
 		if (!bankHasAllItemsFromBank(user.settings.get(UserSettings.Bank), fightCavesSupplies)) {
-			throw `JalYt, you need supplies to have a chance in the caves...come back with ${await createReadableItemListFromBank(
-				this.client,
+			throw `JalYt, you need supplies to have a chance in the caves...come back with ${new Bank(
 				fightCavesSupplies
 			)}.`;
 		}
@@ -130,8 +128,8 @@ export default class extends BotCommand {
 		const preJadDeathChance = this.determineChanceOfDeathPreJad(msg.author);
 
 		const attempts = msg.author.settings.get(UserSettings.Stats.FightCavesAttempts);
-		const usersRangeStats = sumOfSetupStats(msg.author.settings.get(UserSettings.Gear.Range));
-		const jadKC = msg.author.getKC(TzTokJad);
+		const usersRangeStats = sumOfSetupStats(msg.author.getGear('range'));
+		const jadKC = msg.author.getKC(TzTokJad.id);
 
 		duration += (rand(1, 5) * duration) / 100;
 
@@ -143,7 +141,6 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>(this.client, {
-			minigameID: TzTokJad.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity: 1,
@@ -177,10 +174,7 @@ export default class extends BotCommand {
 **Jad KC:** ${jadKC}
 **Attempts:** ${attempts}
 
-**Removed from your bank:** ${await createReadableItemListFromBank(
-				this.client,
-				fightCavesSupplies
-			)}`,
+**Removed from your bank:** ${new Bank(fightCavesSupplies)}`,
 			await chatHeadImage({
 				content: `You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`,
 				head: 'mejJal'

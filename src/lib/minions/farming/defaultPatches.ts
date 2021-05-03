@@ -1,9 +1,9 @@
-import { PatchData } from './types';
+import { IPatchData } from './types';
 
 /**
  * The default patch information when farming is not yet trained.
  */
-const defaultPatches: PatchData = {
+const defaultPatches: IPatchData = {
 	lastPlanted: null,
 	patchPlanted: false,
 	plantTime: 0,

@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import defaultPatches from '../../lib/minions/farming/defaultPatches';
 import resolvePatchTypeSetting from '../../lib/minions/farming/functions/resolvePatchTypeSettings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -80,7 +81,7 @@ export default class extends BotCommand {
 
 		const getPatchType = resolvePatchTypeSetting(plants.seedType);
 		if (!getPatchType) return;
-		const patchType = msg.author.settings.get(getPatchType);
+		const patchType = msg.author.settings.get(getPatchType) ?? defaultPatches;
 
 		const timePerPatchTravel = Time.Second * plants.timePerPatchTravel;
 		const timePerPatchHarvest = Time.Second * plants.timePerHarvest;
@@ -163,12 +164,13 @@ export default class extends BotCommand {
 			throw 'There are no available patches to you. Check requirements for additional patches by with the command `+farm --plants`';
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Farming);
+
 		// If no quantity provided, set it to the max PATCHES available.
 		if (quantity === null) {
 			quantity = Math.min(
 				Math.floor(
-					msg.author.maxTripLength /
-						(timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)
+					maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)
 				),
 				numOfPatches
 			);
@@ -192,7 +194,7 @@ export default class extends BotCommand {
 		}
 
 		// Reduce time if user has graceful equipped
-		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			boostStr.push('10% time for Graceful');
 			duration *= 0.9;
 		}
@@ -202,13 +204,12 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				msg.author.maxTripLength
+				maxTripLength
 			)}, try a lower quantity. The highest amount of ${plants.name} you can plant is ${
 				(Math.floor(
-					msg.author.maxTripLength /
-						(timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)
+					maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)
 				),
 				numOfPatches)
 			}.`;

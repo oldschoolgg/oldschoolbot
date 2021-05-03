@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
+import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
@@ -27,7 +28,9 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 2,
 			[itemID('Berserker ring')]: 2
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Attack],
+		combatXpMultiplier: 1.225
 	},
 	{
 		id: Monsters.Vetion.id,
@@ -49,7 +52,10 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Dragon warhammer')]: 3
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Attack],
+		customMonsterHP: 1110,
+		combatXpMultiplier: 1.156
 	},
 	{
 		id: Monsters.Venenatis.id,
@@ -71,7 +77,9 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Barrows gloves')]: 3
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Attack],
+		combatXpMultiplier: 1.525
 	},
 	{
 		id: Monsters.ChaosElemental.id,
@@ -92,7 +100,9 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID('Archers ring')]: 3,
 			[itemID('Barrows gloves')]: 3
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Attack],
+		combatXpMultiplier: 1.075
 	},
 	{
 		id: Monsters.ChaosFanatic.id,
@@ -109,7 +119,9 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: {
 			[itemID("Karil's leathertop")]: 3,
 			[itemID("Karil's leatherskirt")]: 3
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Ranged],
+		combatXpMultiplier: 1.125
 	},
 	{
 		id: Monsters.CrazyArchaeologist.id,
@@ -124,7 +136,9 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Occult necklace')]: 10
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Magic],
+		combatXpMultiplier: 1.25
 	},
 	{
 		id: Monsters.KingBlackDragon.id,
@@ -152,11 +166,13 @@ const killableBosses: KillableMonster[] = [
 				"Karil's leatherskirt"
 			]
 		]),
-		notifyDrops: resolveItems(['Dragon pickaxe', 'Prince black dragon', 'Draconic visage']),
+		notifyDrops: resolveItems(['Prince black dragon', 'Draconic visage']),
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Armadyl crossbow')]: 10
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Ranged],
+		combatXpMultiplier: 1.075
 	},
 	{
 		id: Monsters.Scorpia.id,
@@ -172,7 +188,9 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: {
 			[itemID('Occult necklace')]: 10
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Magic],
+		combatXpMultiplier: 1.3
 	}
 ];
 

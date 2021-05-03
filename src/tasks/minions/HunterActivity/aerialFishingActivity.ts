@@ -1,9 +1,8 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Events, Time } from '../../../lib/constants';
-import hasArrayOfItemsEquipped from '../../../lib/gear/functions/hasArrayOfItemsEquipped';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { Activity, Events, Time } from '../../../lib/constants';
+import { hasArrayOfItemsEquipped } from '../../../lib/gear';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -15,7 +14,6 @@ export default class extends Task {
 	async run(data: AerialFishingActivityTaskOptions) {
 		let { quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
 
@@ -88,7 +86,7 @@ export default class extends Task {
 		if (
 			hasArrayOfItemsEquipped(
 				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
-				user.settings.get(UserSettings.Gear.Skilling)
+				user.getGear('skilling')
 			)
 		) {
 			const amountToAdd = Math.floor(fishXpReceived * (2.5 / 100));
@@ -161,23 +159,21 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(
-					`continued trip of ${
-						Math.floor(duration / Time.Minute) > user.maxTripLength
-							? Math.floor(user.maxTripLength / Time.Minute)
-							: Math.floor(duration / Time.Minute)
-					}x minutes Aerial fishing.`
-				);
+				user.log(`continued trip of Aerial fishing.`);
 				return this.client.commands
 					.get('aerialfish')!
 					.run(res, [
-						Math.floor(duration / Time.Minute) > user.maxTripLength
-							? Math.floor(user.maxTripLength / Time.Minute)
-							: Math.floor(duration / Time.Minute)
+						Math.floor(
+							Math.min(
+								user.maxTripLength(Activity.AerialFishing) / Time.Minute,
+								duration / Time.Minute
+							)
+						)
 					]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

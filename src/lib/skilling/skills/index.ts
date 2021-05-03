@@ -1,4 +1,5 @@
-import { Skill } from '../types';
+import { Emoji } from '../../constants';
+import { Skill, SkillsEnum } from '../types';
 import Agility from './agility';
 import Construction from './construction';
 import Cooking from './cooking';
@@ -34,7 +35,39 @@ export const Skills: Record<string, Skill> = {
 	Herblore,
 	Hunter,
 	Construction,
-	Magic
+	Magic,
+	Hitpoints: {
+		aliases: ['hitpoints', 'hp'],
+		id: SkillsEnum.Hitpoints,
+		emoji: Emoji.Hitpoints,
+		name: 'Hitpoints'
+	},
+	Attack: {
+		aliases: ['attack', 'atk'],
+		id: SkillsEnum.Attack,
+		emoji: Emoji.Attack,
+		name: 'Attack'
+	},
+	Strength: {
+		aliases: ['str', 'strength'],
+		id: SkillsEnum.Strength,
+		emoji: Emoji.Strength,
+		name: 'Strength'
+	},
+	Defence: {
+		aliases: ['def', 'defence'],
+		id: SkillsEnum.Defence,
+		emoji: Emoji.Defence,
+		name: 'Defence'
+	},
+	Ranged: {
+		aliases: ['range', 'ranged'],
+		id: SkillsEnum.Ranged,
+		emoji: Emoji.Ranged,
+		name: 'Ranged'
+	}
 };
+
+export const skillsValues = Object.values(Skills);
 
 export default Skills;

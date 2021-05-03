@@ -1,4 +1,5 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -10,13 +11,12 @@ import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: TitheFarmActivityTaskOptions) {
-		const { userID, channelID, duration } = data;
+		const { userID, channelID } = data;
 		const baseHarvest = 85;
 		const lootStr: string[] = [];
 		const levelStr: string[] = [];
 
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 
 		const farmingLvl = user.skillLevel(SkillsEnum.Farming);
 		const titheFarmsCompleted = user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
@@ -107,8 +107,10 @@ export default class extends Task {
 			levelStr.push(`\n\n${user.minionName}'s Farming level is now ${newFarmingLevel}!`);
 		}
 
+		const loot = new Bank();
+
 		if (roll((7_494_389 - user.skillLevel(SkillsEnum.Farming) * 25) / determineHarvest)) {
-			const loot = { [itemID('Tangleroot')]: 1 };
+			loot.add('Tangleroot');
 			lootStr.push('\n\n```diff');
 			lootStr.push(`\n- You have a funny feeling you're being followed...`);
 			lootStr.push('```');
@@ -136,7 +138,8 @@ export default class extends Task {
 				return this.client.commands.get('tithefarm')!.run(res, []);
 			},
 			undefined,
-			data
+			data,
+			loot.length > 0 ? loot.bank : null
 		);
 	}
 }

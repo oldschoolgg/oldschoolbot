@@ -1,11 +1,13 @@
-import { MessageAttachment } from 'discord.js';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { GearTypes } from '../../lib/gear';
+import { GearSetupTypes } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
+import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -19,11 +21,45 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [gearType]: [GearTypes.GearSetupTypes]) {
+	async run(msg: KlasaMessage, [gearType]: [GearSetupTypes]) {
+		const gear = msg.author.getGear(gearType);
+
+		if (msg.flagArgs.text) {
+			const textBank = [];
+
+			for (const gearItem of Object.values(gear)) {
+				if (!gearItem) continue;
+				textBank.push(
+					`${getOSItem(gearItem.item).name}: ${gearItem.quantity.toLocaleString()}`
+				);
+			}
+			if (textBank.length === 0) {
+				return msg.send(`No items found.`);
+			}
+
+			const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
+			const display = new UserRichDisplay();
+			display.setFooterPrefix(`Page `);
+
+			for (const page of chunk(textBank, 12)) {
+				display.addPage(
+					new MessageEmbed()
+						.setTitle(`${msg.author.username}'s ${gearType} gear`)
+						.setDescription(page.join('\n'))
+				);
+			}
+
+			await display.start(loadingMsg as KlasaMessage, msg.author.id, {
+				jump: false,
+				stop: false
+			});
+			return null;
+		}
+
 		const image = await generateGearImage(
 			this.client,
 			msg.author,
-			msg.author.settings.get(resolveGearTypeSetting(gearType)),
+			gear,
 			gearType,
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);

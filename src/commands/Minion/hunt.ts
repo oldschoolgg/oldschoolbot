@@ -184,18 +184,13 @@ export default class extends BotCommand {
 			boosts.push(`${percentReduced}% for being experienced hunting this creature`);
 
 		// Reduce time by 5% if user has graceful equipped
-		if (
-			!creature.wildy &&
-			hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))
-		) {
+		if (!creature.wildy && hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			boosts.push('5% boost for using Graceful');
 			catchTime *= 0.95;
 		}
 
 		if (creature.wildy) {
-			const [bol, reason, score] = hasWildyHuntGearEquipped(
-				msg.author.settings.get(UserSettings.Gear.Misc)
-			);
+			const [bol, reason, score] = hasWildyHuntGearEquipped(msg.author.getGear('misc'));
 			wildyScore = score;
 			if (!bol) {
 				return msg.send(
@@ -212,21 +207,23 @@ export default class extends BotCommand {
 			}
 		}
 
+		const maxTripLength = msg.author.maxTripLength(Activity.Hunter);
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = Math.floor(msg.author.maxTripLength / ((catchTime * Time.Second) / traps));
+			quantity = Math.floor(maxTripLength / ((catchTime * Time.Second) / traps));
 		}
 
 		let duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
 
-		if (duration > msg.author.maxTripLength) {
+		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					msg.author.maxTripLength
+					maxTripLength
 				)}, try a lower quantity. The highest amount of ${
 					creature.name
 				} you can hunt is ${Math.floor(
-					msg.author.maxTripLength / ((catchTime * Time.Second) / traps)
+					maxTripLength / ((catchTime * Time.Second) / traps)
 				)}.`
 			);
 		}

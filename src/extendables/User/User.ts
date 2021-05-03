@@ -4,15 +4,14 @@ import { Extendable, ExtendableStore, KlasaClient, SettingsFolder } from 'klasa'
 import PromiseQueue from 'p-queue';
 
 import { Events, PerkTier, userQueues } from '../../lib/constants';
-import readableStatName from '../../lib/gear/functions/readableStatName';
+import { readableStatName } from '../../lib/gear';
 import { gearSetupMeetsRequirement } from '../../lib/minions/functions/gearSetupMeetsRequirement';
 import { KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { Skills } from '../../lib/types';
-import { itemNameFromID, toTitleCase } from '../../lib/util';
-import { formatItemReqs } from '../../lib/util/formatItemReqs';
+import { formatItemReqs, itemNameFromID, toTitleCase } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Extendable {

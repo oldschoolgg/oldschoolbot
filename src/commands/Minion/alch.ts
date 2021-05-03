@@ -1,5 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Util } from 'oldschooljs';
+import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Activity, Time } from '../../lib/constants';
@@ -8,22 +8,9 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	addBanks,
-	bankHasAllItemsFromBank,
-	formatDuration,
-	removeBankFromBank,
-	resolveNameBank
-} from '../../lib/util';
+import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import resolveItems from '../../lib/util/resolveItems';
-
-const options = {
-	max: 1,
-	time: 10_000,
-	errors: ['time']
-};
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',
@@ -66,17 +53,15 @@ export default class extends BotCommand {
 
 		// 5 tick action
 		const timePerAlch = Time.Second * 3;
+		const maxTripLength = msg.author.maxTripLength(Activity.Alching);
 
-		const maxCasts = Math.min(
-			Math.floor(msg.author.maxTripLength / timePerAlch),
-			userBank[osItem.id]
-		);
+		const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank[osItem.id]);
 
 		if (!quantity) {
 			quantity = maxCasts;
 		}
 
-		if (quantity * timePerAlch > msg.author.maxTripLength) {
+		if (quantity * timePerAlch > maxTripLength) {
 			return msg.send(`The max number of alchs you can do is ${maxCasts}!`);
 		}
 
@@ -91,21 +76,14 @@ export default class extends BotCommand {
 		}
 
 		const alchValue = quantity * osItem.highalch;
-		const consumedItems = addBanks([
-			resolveNameBank({
-				...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
-				'Nature rune': quantity
-			}),
-			{ [osItem.id]: quantity }
-		]);
+		const consumedItems = new Bank({
+			...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
+			'Nature rune': quantity
+		});
+		consumedItems.add(osItem.id, quantity);
 
-		const consumedItemsString = await createReadableItemListFromBank(
-			this.client,
-			consumedItems
-		);
-
-		if (!bankHasAllItemsFromBank(userBank, consumedItems)) {
-			return msg.send(`You don't have the required items, you need ${consumedItemsString}`);
+		if (!msg.author.owns(consumedItems)) {
+			return msg.send(`You don't have the required items, you need ${consumedItems}`);
 		}
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
@@ -122,17 +100,18 @@ export default class extends BotCommand {
 					_msg =>
 						_msg.author.id === msg.author.id &&
 						_msg.content.toLowerCase() === 'confirm',
-					options
+					{
+						max: 1,
+						time: 10_000,
+						errors: ['time']
+					}
 				);
 			} catch (err) {
 				return alchMessage.edit(`Cancelling alch of ${quantity}x ${osItem.name}.`);
 			}
 		}
 
-		await msg.author.settings.update(
-			UserSettings.Bank,
-			removeBankFromBank(userBank, consumedItems)
-		);
+		await msg.author.removeItemsFromBank(consumedItems);
 
 		await addSubTaskToActivityTask<AlchingActivityTaskOptions>(this.client, {
 			itemID: osItem.id,

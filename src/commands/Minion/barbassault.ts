@@ -1,12 +1,11 @@
-import { randArrItem } from 'e';
+import { increaseNumByPercent, randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
 import { Activity, Emoji, Events, Time } from '../../lib/constants';
-import { maxOtherStats } from '../../lib/gear/data/maxGearStats';
+import { maxOtherStats } from '../../lib/gear';
 import { GearSetupTypes } from '../../lib/gear/types';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../lib/simulation/baGamble';
@@ -16,15 +15,14 @@ import { BarbarianAssaultActivityTaskOptions } from '../../lib/types/minions';
 import {
 	calcWhatPercent,
 	formatDuration,
+	randomVariation,
 	reduceNumByPercent,
 	round,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
-import { randomVariation } from '../../lib/util/randomVariation';
 
 const BarbBuyables = [
 	{
@@ -218,18 +216,17 @@ export default class extends BotCommand {
 			UserSettings.HighGambles,
 			msg.author.settings.get(UserSettings.HighGambles) + 1
 		);
-		const desc = await createReadableItemListFromBank(this.client, loot.bank);
 		return msg.send(
-			`You spent ${cost} Honour Points for a ${name} Gamble, and received... ${desc}.`
+			`You spent ${cost} Honour Points for a ${name} Gamble, and received... ${loot}.`
 		);
 	}
 
 	@minionNotBusy
 	@requiresMinion
-	async start(msg: KlasaMessage) {
+	async start(msg: KlasaMessage, [input]: [string]) {
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
-			minSize: 2,
+			minSize: 1,
 			maxSize: 4,
 			ironmanAllowed: true,
 			message: `${msg.author.username} has created a Barbarian Assault party! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave. There must be 2+ users in the party.`,
@@ -245,7 +242,7 @@ export default class extends BotCommand {
 			}
 		};
 
-		const users = await msg.makePartyAwaiter(partyOptions);
+		const users = input === 'solo' ? [msg.author] : await msg.makePartyAwaiter(partyOptions);
 
 		let totalLevel = 0;
 		for (const user of users) {
@@ -271,16 +268,21 @@ export default class extends BotCommand {
 		boosts.push(`${totalLevelPercent}% for team honour levels`);
 		waveTime = reduceNumByPercent(waveTime, totalLevelPercent);
 
+		if (users.length === 1) {
+			waveTime = increaseNumByPercent(waveTime, 10);
+			boosts.push(`10% slower for solo`);
+		}
+
 		// Up to 10%, at 200 kc, speed boost for team average kc
 		const averageKC =
 			addArrayOfNumbers(
-				users.map(u => u.getMinigameScore(MinigameIDsEnum.BarbarianAssault))
+				await Promise.all(users.map(u => u.getMinigameScore('BarbarianAssault')))
 			) / users.length;
 		const kcPercent = round(Math.min(100, calcWhatPercent(averageKC, 200)) / 5, 2);
 		boosts.push(`${kcPercent}% for average KC`);
 		waveTime = reduceNumByPercent(waveTime, kcPercent);
 
-		const quantity = Math.floor(msg.author.maxTripLength / waveTime);
+		const quantity = Math.floor(msg.author.maxTripLength(Activity.BarbarianAssault) / waveTime);
 		const duration = quantity * waveTime;
 
 		boosts.push(`Each wave takes ${formatDuration(waveTime)}`);
@@ -303,7 +305,7 @@ export default class extends BotCommand {
 			type: Activity.BarbarianAssault,
 			leader: msg.author.id,
 			users: users.map(u => u.id),
-			minigameID: MinigameIDsEnum.BarbarianAssault,
+			minigameID: 'BarbarianAssault',
 			totalLevel
 		});
 

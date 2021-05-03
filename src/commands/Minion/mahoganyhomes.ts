@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
 import { roll } from '../../lib/data/monsters/raids';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -185,13 +184,13 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		}
 
 		const conLevel = msg.author.skillLevel(SkillsEnum.Construction);
-		const kc = msg.author.getMinigameScore(MinigameIDsEnum.MahoganyHomes);
+		const kc = await msg.author.getMinigameScore('MahoganyHomes');
 
 		const hasSack = msg.author.hasItemEquippedOrInBank('Plank sack');
 		const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
 			conLevel,
 			kc,
-			msg.author.maxTripLength,
+			msg.author.maxTripLength(Activity.MahoganyHomes),
 			hasSack
 		);
 
@@ -211,7 +210,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			type: Activity.MahoganyHomes,
-			minigameID: MinigameIDsEnum.MahoganyHomes,
+			minigameID: 'MahoganyHomes',
 			quantity,
 			duration,
 			points,

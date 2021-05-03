@@ -2,7 +2,7 @@
 import { O } from 'ts-toolbelt';
 
 import { BitField } from '../../constants';
-import { GearTypes } from '../../gear';
+import { GearSetup } from '../../gear';
 import { PatchTypes } from '../../minions/farming';
 import defaultContracts from '../../minions/farming/defaultContracts';
 import { CompostTier, FarmingPatchTypes } from '../../minions/farming/types';
@@ -26,14 +26,12 @@ export namespace UserSettings {
 	export const MonsterScores = T<O.Readonly<ItemBank>>('monsterScores');
 	export const CreatureScores = T<O.Readonly<ItemBank>>('creatureScores');
 	export const ClueScores = T<O.Readonly<ItemBank>>('clueScores');
-	export const MinigameScores = T<O.Readonly<ItemBank>>('minigameScores');
 	export const LapsScores = T<O.Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const BitField = T<readonly BitField[]>('bitfield');
 	export const FavoriteItems = T<readonly number[]>('favoriteItems');
 	export const Badges = T<readonly number[]>('badges');
 	export const RSN = T<string>('RSN');
-	export const TotalCommandsUsed = T<number>('totalCommandsUsed');
 	export const SacrificedValue = T<number>('sacrificedValue');
 	export const SacrificedBank = T<O.Readonly<ItemBank>>('sacrificedBank');
 	export const HonourLevel = T<number>('honour_level');
@@ -42,6 +40,10 @@ export namespace UserSettings {
 	export const PatreonID = T<string | null>('patreon_id');
 	export const GithubID = T<number | null>('github_id');
 	export const CarpenterPoints = T<number>('carpenter_points');
+	export const ZealTokens = T<number>('zeal_tokens');
+	export const OpenableScores = T<O.Readonly<ItemBank>>('openable_scores');
+	export const AttackStyle = T<readonly SkillsEnum[]>('attack_style');
+	export const TotalCoxPoints = T<number>('total_cox_points');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');
@@ -62,7 +64,6 @@ export namespace UserSettings {
 	export namespace Minion {
 		export const Name = T<string>('minion.name');
 		export const HasBought = T<boolean>('minion.hasBought');
-		export const DailyDuration = T<number>('minion.dailyDuration');
 		export const Ironman = T<boolean>('minion.ironman');
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
@@ -90,14 +91,19 @@ export namespace UserSettings {
 		export const Hunter = T<number>(`skills.${SkillsEnum.Hunter}`);
 		export const Construction = T<number>(`skills.${SkillsEnum.Construction}`);
 		export const Magic = T<number>(`skills.${SkillsEnum.Magic}`);
+		export const Attack = T<number>(`skills.${SkillsEnum.Attack}`);
+		export const Strength = T<number>(`skills.${SkillsEnum.Strength}`);
+		export const Defence = T<number>(`skills.${SkillsEnum.Defence}`);
+		export const Ranged = T<number>(`skills.${SkillsEnum.Ranged}`);
+		export const Hitpoints = T<number>(`skills.${SkillsEnum.Hitpoints}`);
 	}
 
 	export namespace Gear {
-		export const Melee = T<GearTypes.GearSetup>(`gear.melee`);
-		export const Range = T<GearTypes.GearSetup>(`gear.range`);
-		export const Mage = T<GearTypes.GearSetup>(`gear.mage`);
-		export const Misc = T<GearTypes.GearSetup>(`gear.misc`);
-		export const Skilling = T<GearTypes.GearSetup>(`gear.skilling`);
+		export const Melee = T<GearSetup | null>(`gear.melee`);
+		export const Range = T<GearSetup | null>(`gear.range`);
+		export const Mage = T<GearSetup | null>(`gear.mage`);
+		export const Misc = T<GearSetup | null>(`gear.misc`);
+		export const Skilling = T<GearSetup | null>(`gear.skilling`);
 	}
 
 	export namespace FarmingPatches {

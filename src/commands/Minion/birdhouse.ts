@@ -187,7 +187,7 @@ export default class extends BotCommand {
 		let duration: number = timeBirdHouseRun;
 
 		// Reduce time if user has graceful equipped
-		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			boostStr.push('10% time for Graceful');
 			duration *= 0.9;
 		}
@@ -307,7 +307,7 @@ export default class extends BotCommand {
 		let duration: number = timeBirdHouseRun;
 
 		// Reduce time if user has graceful equipped
-		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			boostStr.push('10% time for Graceful');
 			duration *= 0.9;
 		}

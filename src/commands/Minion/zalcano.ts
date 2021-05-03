@@ -1,9 +1,8 @@
 import { calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, ZALCANO_ID } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -50,7 +49,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const kc = msg.author.getMinigameScore(MinigameIDsEnum.Zalcano);
+		const kc = msg.author.getKC(ZALCANO_ID);
 		const kcLearned = Math.min(100, calcWhatPercent(kc, 100));
 
 		const boosts = [];
@@ -64,7 +63,7 @@ export default class extends BotCommand {
 		baseTime = reduceNumByPercent(baseTime, skillPercentage / 40);
 		boosts.push(`${skillPercentage / 40}% boost for levels`);
 
-		if (!hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (!hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			baseTime *= 1.15;
 			boosts.push(`-15% time penalty for not having graceful equipped`);
 		}
@@ -74,7 +73,7 @@ export default class extends BotCommand {
 		else if (kc > 50) healAmountNeeded = 3 * 12;
 		else if (kc > 20) healAmountNeeded = 5 * 12;
 
-		const quantity = Math.floor(msg.author.maxTripLength / baseTime);
+		const quantity = Math.floor(msg.author.maxTripLength(Activity.Zalcano) / baseTime);
 		const duration = quantity * baseTime;
 
 		const [food] = await removeFoodFromUser({
@@ -92,7 +91,6 @@ export default class extends BotCommand {
 			quantity,
 			duration,
 			type: Activity.Zalcano,
-			minigameID: MinigameIDsEnum.Zalcano,
 			performance: this.calcPerformance(kcLearned, skillPercentage),
 			isMVP: percentChance(80)
 		});

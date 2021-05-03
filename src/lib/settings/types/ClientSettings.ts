@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
 
-import { ItemBank, ItemPriceCache, OSRSPoll } from '../../types';
+import { ItemBank, ItemPriceCache } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -13,7 +13,6 @@ export namespace ClientSettings {
 	export const TotalCommandsUsed = T<number>('totalCommandsUsed');
 	export const CommandStats = T<ItemBank>('commandStats');
 	export const Prices = T<ItemPriceCache>('prices');
-	export const PollQuestions = T<OSRSPoll>('pollQuestions');
 	export const GuildBlacklist = T<readonly string[]>('guildBlacklist');
 	export const UserBlacklist = T<readonly string[]>('userBlacklist');
 
@@ -37,5 +36,19 @@ export namespace ClientSettings {
 		export const FarmingLootBank = T<O.Readonly<ItemBank>>('farming_loot_bank');
 		export const BuyCostBank = T<O.Readonly<ItemBank>>('buy_cost_bank');
 		export const MagicCostBank = T<O.Readonly<ItemBank>>('magic_cost_bank');
+
+		export const GnomeRestaurantCostBank = T<O.Readonly<ItemBank>>('gnome_res_cost');
+		export const GnomeRestaurantLootBank = T<O.Readonly<ItemBank>>('gnome_res_loot');
+
+		export const RoguesDenStaminas = T<O.Readonly<ItemBank>>('rogues_den_cost');
+		export const GauntletLoot = T<O.Readonly<ItemBank>>('gauntlet_loot');
+
+		export const CoxCost = T<O.Readonly<ItemBank>>('cox_cost');
+		export const CoxLoot = T<O.Readonly<ItemBank>>('cox_loot');
+
+		export const CollectingCost = T<O.Readonly<ItemBank>>('collecting_cost');
+		export const CollectingLoot = T<O.Readonly<ItemBank>>('collecting_loot');
+
+		export const MTACostBank = T<O.Readonly<ItemBank>>('mta_cost');
 	}
 }

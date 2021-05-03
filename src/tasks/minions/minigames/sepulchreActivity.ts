@@ -1,7 +1,6 @@
 import { Task } from 'klasa';
 import { Bank, Openables } from 'oldschooljs';
 
-import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
@@ -10,10 +9,9 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: SepulchreActivityTaskOptions) {
-		const { channelID, quantity, floors, duration, userID } = data;
+		const { channelID, quantity, floors, userID } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
-		user.incrementMinigameScore(MinigameIDsEnum.Sepulchre, quantity);
+		user.incrementMinigameScore('Sepulchre', quantity);
 
 		const completedFloors = sepulchreFloors.filter(fl => floors.includes(fl.number));
 		const loot = new Bank();
@@ -54,7 +52,7 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Agility level is now ${nextLevel}!`;
 		}
 
-		const image = await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				loot.bank,
@@ -73,8 +71,9 @@ export default class extends Task {
 				user.log(`continued trip of ${quantity}x sepulchre`);
 				return this.client.commands.get('sepulchre')!.run(res, []);
 			},
-			image,
-			data
+			image!,
+			data,
+			loot.bank
 		);
 	}
 }

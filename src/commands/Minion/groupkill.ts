@@ -1,16 +1,16 @@
-import { objectKeys } from 'e';
+import { objectKeys, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Emoji } from '../../lib/constants';
 import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { findMonster } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
+import { KillableMonster } from '../../lib/minions/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
-import { formatDuration } from '../../lib/util';
+import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
+import findMonster, { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 
@@ -121,7 +121,11 @@ export default class extends BotCommand {
 
 		const users = await msg.makePartyAwaiter(partyOptions);
 
-		const [quantity, duration, perKillTime] = calcDurQty(users, monster, undefined);
+		const [quantity, duration, perKillTime, boostMsgs] = await calcDurQty(
+			users,
+			monster,
+			undefined
+		);
 
 		this.checkReqs(users, monster, quantity);
 
@@ -149,8 +153,14 @@ export default class extends BotCommand {
 			leader: msg.author.id,
 			users: users.map(u => u.id)
 		});
-		for (const user of users) user.incrementMinionDailyDuration(duration);
 
+		let killsPerHr = `${Math.round(
+			(quantity / (duration / Time.Minute)) * 60
+		).toLocaleString()} Kills/hr`;
+
+		if (boostMsgs.length > 0) {
+			killsPerHr += `\n\n${boostMsgs.join(', ')}.`;
+		}
 		return msg.channel.send(
 			`${partyOptions.leader.username}'s party (${users
 				.map(u => u.username)
@@ -158,7 +168,7 @@ export default class extends BotCommand {
 				monster.name
 			}. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
 				monster.timeToFinish
-			)}- the total trip will take ${formatDuration(duration)}`
+			)}- the total trip will take ${formatDuration(duration)}. ${killsPerHr}`
 		);
 	}
 }

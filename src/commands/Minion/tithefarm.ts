@@ -2,7 +2,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -39,7 +38,7 @@ export default class extends BotCommand {
 			: boostStr.push('');
 
 		// Reduce time if user has graceful equipped
-		if (hasGracefulEquipped(user.settings.get(UserSettings.Gear.Skilling))) {
+		if (hasGracefulEquipped(user.getGear('skilling'))) {
 			nonGracefulTimeAddition = 0;
 			boostStr.push('10% from graceful outfit');
 		}
@@ -66,7 +65,7 @@ export default class extends BotCommand {
 		const [duration, boostStr] = this.determineDuration(msg.author);
 
 		await addSubTaskToActivityTask<TitheFarmActivityTaskOptions>(this.client, {
-			minigameID: MinigameIDsEnum.TitheFarm,
+			minigameID: 'TitheFarm',
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity: 1,

@@ -1,54 +1,47 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { roll } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: RunecraftActivityTaskOptions) {
 		const { runeID, essenceQuantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
-		const currentLevel = user.skillLevel(SkillsEnum.Runecraft);
 
-		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID);
+		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
 
-		if (!rune) return;
 		const quantityPerEssence = calcMaxRCQuantity(rune, user);
 		const runeQuantity = essenceQuantity * quantityPerEssence;
 
 		const xpReceived = essenceQuantity * rune.xp;
 
-		await user.addXP(SkillsEnum.Runecraft, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Runecraft);
+		const xpRes = await user.addXP(SkillsEnum.Runecraft, xpReceived, duration);
 
-		let str = `${user}, ${user.minionName} finished crafting ${runeQuantity} ${
-			rune.name
-		}, you also received ${xpReceived.toLocaleString()} XP.`;
+		let str = `${user}, ${user.minionName} finished crafting ${runeQuantity} ${rune.name}. ${xpRes}`;
 
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Runecraft level is now ${newLevel}!`;
-		}
-
-		const loot = {
+		const loot = new Bank({
 			[rune.id]: runeQuantity
-		};
+		});
 
 		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
-			loot[itemID('Rift guardian')] = 1;
+			loot.add('Rift guardian');
 			str += `\nYou have a funny feeling you're being followed...`;
 			this.client.emit(
 				Events.ServerNotification,
-				`${Emoji.Runecraft} **${user.username}'s** minion, ${user.minionName}, just received a Rift guardian while crafting ${rune.name}s at level ${currentLevel} Runecrafting!`
+				`${Emoji.Runecraft} **${user.username}'s** minion, ${
+					user.minionName
+				}, just received a Rift guardian while crafting ${
+					rune.name
+				}s at level ${user.skillLevel(SkillsEnum.Runecraft)} Runecrafting!`
 			);
 		}
 
-		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
+		str += `\n\nYou received: ${loot}.`;
 
 		await user.addItemsToBank(loot, true);
 
@@ -62,7 +55,8 @@ export default class extends Task {
 				return this.client.commands.get('rc')!.run(res, [essenceQuantity, rune.name]);
 			},
 			undefined,
-			data
+			data,
+			loot.bank
 		);
 	}
 }

@@ -3,10 +3,8 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import { sepulchreBoosts, sepulchreFloors } from '../../lib/minions/data/sepulchre';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { SepulchreActivityTaskOptions } from '../../lib/types/minions';
 import { addArrayOfNumbers, formatDuration, itemNameFromID } from '../../lib/util';
@@ -35,7 +33,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (!hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
+		if (!hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			return msg.send(
 				`You need Graceful equipped in your Skilling setup to do the Hallowed Sepulchre.`
 			);
@@ -50,9 +48,7 @@ export default class extends BotCommand {
 
 		// Every 1h becomes 1% faster to a cap of 10%
 		const percentReduced = Math.min(
-			Math.floor(
-				msg.author.getMinigameScore(MinigameIDsEnum.Sepulchre) / (Time.Hour / lapLength)
-			),
+			Math.floor((await msg.author.getMinigameScore('Sepulchre')) / (Time.Hour / lapLength)),
 			10
 		);
 
@@ -66,7 +62,7 @@ export default class extends BotCommand {
 				lapLength = reduceNumByPercent(lapLength, percent);
 			}
 		}
-		const maxLaps = Math.floor(msg.author.maxTripLength / lapLength);
+		const maxLaps = Math.floor(msg.author.maxTripLength(Activity.Sepulchre) / lapLength);
 		const tripLength = maxLaps * lapLength;
 
 		await addSubTaskToActivityTask<SepulchreActivityTaskOptions>(this.client, {
@@ -76,7 +72,7 @@ export default class extends BotCommand {
 			duration: tripLength,
 			type: Activity.Sepulchre,
 			channelID: msg.channel.id,
-			minigameID: MinigameIDsEnum.Sepulchre
+			minigameID: 'Sepulchre'
 		});
 
 		let str = `${

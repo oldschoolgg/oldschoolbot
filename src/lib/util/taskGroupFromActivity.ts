@@ -32,6 +32,8 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.Enchanting:
 		case Activity.Casting:
 		case Activity.GloryCharging:
+		case Activity.WealthCharging:
+		case Activity.Collecting:
 			return ActivityGroup.Skilling;
 		case Activity.FightCaves:
 		case Activity.Wintertodt:
@@ -48,9 +50,18 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.ChampionsChallenge:
 		case Activity.MahoganyHomes:
 		case Activity.AerialFishing:
+		case Activity.SoulWars:
+		case Activity.GnomeRestaurant:
+		case Activity.RoguesDenMaze:
+		case Activity.Gauntlet:
+		case Activity.CastleWars:
+		case Activity.MageArena:
+		case Activity.Raids:
+		case Activity.MageTrainingArena:
 			return ActivityGroup.Minigame;
 		default: {
-			throw new Error(`Unrecognized activity: ${type}`);
+			console.error(`Unrecognized activity: ${type}`);
+			return ActivityGroup.Skilling;
 		}
 	}
 }

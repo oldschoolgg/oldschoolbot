@@ -1,6 +1,8 @@
-import { Client, Guild } from 'discord.js';
-import { randInt } from 'e';
-import { KlasaClient, KlasaUser, util } from 'klasa';
+import crypto from 'crypto';
+import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
+import { objectEntries, randInt, shuffleArr } from 'e';
+import { KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
@@ -8,16 +10,26 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
 
-import { CENA_CHARS, continuationChars, Events, PerkTier, Time } from './constants';
-import hasItemEquipped from './gear/functions/hasItemEquipped';
+import {
+	CENA_CHARS,
+	continuationChars,
+	Events,
+	PerkTier,
+	skillEmoji,
+	SupportServer,
+	Time
+} from './constants';
+import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
-import { UserSettings } from './settings/types/UserSettings';
-import { channelIsSendable } from './util/channelIsSendable';
+import killableMonsters from './minions/data/killableMonsters';
+import { KillableMonster } from './minions/types';
+import { ArrayItemsResolved, ItemTuple, Skills } from './types';
+import { GroupMonsterActivityTaskOptions } from './types/minions';
 import itemID from './util/itemID';
+import resolveItems from './util/resolveItems';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
-export { v4 as uuid } from 'uuid';
 
 const zeroWidthSpace = '\u200b';
 
@@ -69,14 +81,6 @@ export function formatItemStackQuantity(quantity: number) {
 
 export function randomItemFromArray<T>(array: T[]): T {
 	return array[Math.floor(Math.random() * array.length)];
-}
-
-export function chunkObject(obj: { [key: string]: any }, limit: number) {
-	const chunkedObjects = [];
-	for (const chunk of util.chunk(Object.entries(obj), limit)) {
-		chunkedObjects.push(Object.fromEntries(chunk));
-	}
-	return chunkedObjects;
 }
 
 export function toTitleCase(str: string) {
@@ -257,12 +261,6 @@ export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
 	return Promise.all(ids.map(id => client.users.fetch(id)));
 }
 
-export async function queuedMessageSend(client: KlasaClient, channelID: string, str: string) {
-	const channel = client.channels.get(channelID);
-	if (!channelIsSendable(channel)) return;
-	client.queuePromise(() => channel.send(str, { split: true }));
-}
-
 const rawEmojiRegex = emojiRegex();
 
 export function stripEmojis(str: string) {
@@ -294,7 +292,7 @@ export const anglerBoosts = [
 ];
 
 export function anglerBoostPercent(user: KlasaUser) {
-	const skillingSetup = user.settings.get(UserSettings.Gear.Skilling);
+	const skillingSetup = user.getGear('skilling');
 	let amountEquipped = 0;
 	let boostPercent = 0;
 	for (const [id, percent] of anglerBoosts) {
@@ -309,13 +307,27 @@ export function anglerBoostPercent(user: KlasaUser) {
 	return round(boostPercent, 1);
 }
 
-export function shuffle<T>(array: readonly T[]): T[] {
-	let copy = [...array];
-	for (let i = copy.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[copy[i], copy[j]] = [copy[j], copy[i]];
+const rogueOutfit = resolveItems([
+	'Rogue mask',
+	'Rogue top',
+	'Rogue trousers',
+	'Rogue gloves',
+	'Rogue boots'
+]);
+
+export function rogueOutfitPercentBonus(user: KlasaUser): number {
+	const skillingSetup = user.getGear('skilling');
+	let amountEquipped = 0;
+	for (const id of rogueOutfit) {
+		if (hasItemEquipped(id, skillingSetup)) {
+			amountEquipped++;
+		}
 	}
-	return copy;
+	return amountEquipped * 20;
+}
+
+export function rollRogueOutfitDoubleLoot(user: KlasaUser): boolean {
+	return randInt(1, 100) <= rogueOutfitPercentBonus(user);
 }
 
 export function generateContinuationChar(user: KlasaUser) {
@@ -323,14 +335,165 @@ export function generateContinuationChar(user: KlasaUser) {
 		user.perkTier > PerkTier.One
 			? 'y'
 			: Date.now() - user.createdTimestamp < Time.Month * 6
-			? shuffle(continuationChars).slice(0, randInt(1, 2)).join('')
+			? shuffleArr(continuationChars).slice(0, randInt(1, 2)).join('')
 			: randomItemFromArray(continuationChars);
 
-	return `${shuffle(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffle(CENA_CHARS)
+	return `${shuffleArr(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffleArr(
+		CENA_CHARS
+	)
 		.slice(0, randInt(1, 2))
 		.join('')}`;
 }
 
 export function isValidGearSetup(str: string): str is GearSetupTypes {
 	return ['melee', 'mage', 'range', 'skilling', 'misc'].includes(str);
+}
+
+/**
+ * Adds random variation to a number. For example, if you pass 10%, it can at most lower the value by 10%,
+ * or increase it by 10%, and everything in between.
+ * @param value The value to add variation too.
+ * @param percentage The max percentage to fluctuate the value by, in both negative/positive.
+ */
+export function randomVariation(value: number, percentage: number) {
+	const lowerLimit = value * (1 - percentage / 100);
+	const upperLimit = value * (1 + percentage / 100);
+	return randFloat(lowerLimit, upperLimit);
+}
+
+export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
+	return 'users' in data;
+}
+
+export function sha256Hash(x: string) {
+	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
+}
+
+export function countSkillsAtleast99(user: KlasaUser) {
+	const skills = (user.settings.get('skills') as SettingsFolder).toJSON() as Record<
+		string,
+		number
+	>;
+	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
+}
+
+export function getSupportGuild(client: Client) {
+	const guild = client.guilds.get(SupportServer);
+	if (!guild) throw `Can't find support guild.`;
+	return guild;
+}
+
+export function normal(mu = 0, sigma = 1, nsamples = 6) {
+	let run_total = 0;
+
+	for (let i = 0; i < nsamples; i++) {
+		run_total += Math.random();
+	}
+
+	return (sigma * (run_total - nsamples / 2)) / (nsamples / 2) + mu;
+}
+
+/**
+ * Checks if the bot can send a message to a channel object.
+ * @param channel The channel to check if the bot can send a message to.
+ */
+export function channelIsSendable(channel: Channel | undefined): channel is TextChannel {
+	if (
+		!channel ||
+		(!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) ||
+		!channel.postable
+	) {
+		return false;
+	}
+
+	return true;
+}
+
+export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
+	for (const [skillName, level] of objectEntries(requirements)) {
+		const xpHas = skills[skillName];
+		const levelHas = convertXPtoLVL(xpHas ?? 1);
+		if (levelHas < level!) return false;
+	}
+	return true;
+}
+
+export default function findMonster(str: string): KillableMonster | undefined {
+	const mon = killableMonsters.find(
+		mon => stringMatches(mon.name, str) || mon.aliases.some(alias => stringMatches(alias, str))
+	);
+	return mon;
+}
+
+export function formatItemReqs(items: ArrayItemsResolved) {
+	const str = [];
+	for (const item of items) {
+		if (Array.isArray(item)) {
+			str.push(item.map(itemNameFromID).join(' OR '));
+		} else {
+			str.push(itemNameFromID(item));
+		}
+	}
+	return str.join(', ');
+}
+
+export function formatSkillRequirements(reqs: Record<string, number>) {
+	let arr = [];
+	for (const [name, num] of objectEntries(reqs)) {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		arr.push(` ${skillEmoji[name]} **${num}** ${toTitleCase(name)}`);
+	}
+	return arr.join(', ');
+}
+
+export function formatItemBoosts(items: ItemBank) {
+	const str = [];
+	for (const [itemID, boostAmount] of Object.entries(items)) {
+		str.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+	}
+	return str.join(', ');
+}
+
+export function filterItemTupleByQuery(query: string, items: ItemTuple[]) {
+	const filtered: ItemTuple[] = [];
+
+	for (const item of items) {
+		if (cleanString(Items.get(item[0])!.name).includes(cleanString(query))) {
+			filtered.push(item);
+		}
+	}
+
+	return filtered;
+}
+
+/**
+ * Given a list of items, and a bank, it will return a new bank with all items not
+ * in the filter removed from the bank.
+ * @param itemFilter The array of item IDs to use as the filter.
+ * @param bank The bank to filter items from.
+ */
+export function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank): ItemBank {
+	const returnBank: ItemBank = {};
+	const bankKeys = Object.keys(bank);
+
+	// If there are no items in the filter or bank, just return an empty bank.
+	if (itemFilter.length === 0 || bankKeys.length === 0) return returnBank;
+
+	// For every item in the filter, if its in the bank, add it to the return bank.
+	for (const itemID of itemFilter) {
+		if (bank[itemID]) returnBank[itemID] = bank[itemID];
+	}
+
+	return returnBank;
+}
+
+export function updateBankSetting(
+	client: KlasaClient,
+	setting: string,
+	bankToAdd: Bank | ItemBank
+) {
+	const current = new Bank(client.settings.get(setting) as ItemBank);
+	const newBank = current.add(bankToAdd);
+	return client.settings.update(setting, newBank.bank);
 }

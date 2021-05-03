@@ -1,15 +1,19 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { Monsters } from 'oldschooljs';
+import { IsNull, Not } from 'typeorm';
 
-import { badges, Time } from '../../lib/constants';
+import { Minigames } from '../../extendables/User/Minigame';
+import { badges, Emoji, Time } from '../../lib/constants';
 import { collectionLogTypes } from '../../lib/data/collectionLog';
-import { Minigames } from '../../lib/minions/data/minigames';
+import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
+import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
+import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { ItemBank, SettingsEntry } from '../../lib/types';
 import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
 import { Workers } from '../../lib/workers';
@@ -105,7 +109,8 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures] [name:...string]',
+			usage:
+				'[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -124,6 +129,10 @@ export default class extends BotCommand {
 		});
 	}
 
+	async init() {
+		await this.cacheUsernames();
+	}
+
 	getUsername(userID: string) {
 		const username = this.usernameCache.map.get(userID);
 		if (!username) return '(Unknown)';
@@ -131,20 +140,26 @@ export default class extends BotCommand {
 	}
 
 	async cacheUsernames() {
-		const arrayOfUsers: { badges: number[]; id: string }[] = await this.query(
-			`SELECT "badges", "id" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0;`,
+		const allNewUsers = await NewUserTable.find({ username: Not(IsNull()) });
+		for (const user of allNewUsers) {
+			this.usernameCache.map.set(user.id, stripEmojis(user.username!));
+		}
+
+		const arrayOfUsers: { badges: number[]; id: string; ironman: boolean }[] = await this.query(
+			`SELECT "badges", "id", "minion.ironman" as "ironman" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0 OR "minion.ironman" = true;`,
 			false
 		);
 
-		for (const user of this.client.users.values()) {
-			this.usernameCache.map.set(user.id, user.username);
+		for (const user of arrayOfUsers) {
+			const rawName = this.usernameCache.map.get(user.id) ?? '(Unknown)';
+			const rawBadges = user.badges.map(num => badges[num]);
+			if (user.ironman) {
+				rawBadges.push(Emoji.Ironman);
+			}
+			this.usernameCache.map.set(user.id, `${rawBadges.join(' ')} ${rawName}`);
 		}
 
-		for (const user of arrayOfUsers) {
-			const rawName = this.client.users.get(user.id)?.username ?? '(Unknown)';
-			const rawBadges = user.badges.map(num => badges[num]).join(' ');
-			this.usernameCache.map.set(user.id, `${rawBadges} ${stripEmojis(rawName)}`);
-		}
+		batchSyncNewUserUsernames(this.client);
 	}
 
 	async run(msg: KlasaMessage) {
@@ -184,7 +199,12 @@ export default class extends BotCommand {
 	async sacrifice(msg: KlasaMessage) {
 		const list: { id: string; amount: number }[] = (
 			await this.query(
-				`SELECT "id", "sacrificedValue" FROM users WHERE "sacrificedValue" > 0 ORDER BY "sacrificedValue" DESC LIMIT 2000;`
+				`SELECT "id", "sacrificedValue"
+FROM users
+WHERE "sacrificedValue" > 0
+${msg.flagArgs.im ? 'AND "minion.ironman" = true' : ''}
+ORDER BY "sacrificedValue"
+DESC LIMIT 2000;`
 			)
 		).map((res: any) => ({ ...res, amount: parseInt(res.sacrificedValue) }));
 
@@ -275,28 +295,48 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 		);
 	}
 
-	async kc(msg: KlasaMessage, [name]: [string]) {
-		if (!name) {
+	async minigame(msg: KlasaMessage, [name = '']: [string]) {
+		const minigame = Minigames.find(m => stringMatches(m.name, name));
+		if (!minigame) {
 			return msg.send(
-				`Please specify which monster, for example \`${msg.cmdPrefix}leaderboard kc bandos\``
+				`That's not a valid minigame. Valid minigames are: ${Minigames.map(
+					m => m.name
+				).join(', ')}.`
 			);
 		}
 
+		const res: MinigameTable[] = await MinigameTable.getRepository()
+			.createQueryBuilder('user')
+			.orderBy(minigame.column, 'DESC')
+			.where(`${minigame.column} > 10`)
+			.limit(100)
+			.getMany();
+
+		this.doMenu(
+			msg,
+			util
+				.chunk(res, 10)
+				.map(subList =>
+					subList
+						.map(u => `**${this.getUsername(u.userID)}:** ${u[minigame.key]}`)
+						.join('\n')
+				),
+			`${minigame.name} Leaderboard`
+		);
+	}
+
+	async kc(msg: KlasaMessage, [name = '']: [string]) {
 		const monster = Monsters.find(
 			mon =>
 				stringMatches(mon.name, name) ||
 				mon.aliases.some(alias => stringMatches(alias, name))
 		);
-		const minigame = Minigames.find(game => stringMatches(game.name, name));
-
-		if (!monster && !minigame) {
-			return msg.send(`That's not a valid monster or minigame!`);
+		if (!monster) {
+			return msg.send(`That's not a valid monster!`);
 		}
 
-		let key: 'minigameScores' | 'monsterScores' = Boolean(minigame)
-			? 'minigameScores'
-			: 'monsterScores';
-		let entityID = (minigame?.id ?? monster?.id)!.toString();
+		let key = 'monsterScores' as const;
+		let entityID = monster.id;
 		let list = (
 			await this.query(
 				`SELECT id, "${key}" FROM users WHERE CAST ("${key}"->>'${entityID}' AS INTEGER) > 5;`
@@ -323,7 +363,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 						.map(user => `**${this.getUsername(user.id)}:** ${user[key][entityID]} KC`)
 						.join('\n')
 				),
-			`KC Leaderboard for ${(monster ?? minigame)!.name}`
+			`KC Leaderboard for ${monster.name}`
 		);
 	}
 
@@ -341,7 +381,11 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			res = await this.query(
 				`SELECT id,  ${skillsVals.map(s => `"skills.${s.id}"`)}, ${skillsVals
 					.map(s => `"skills.${s.id}"`)
-					.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 500;`
+					.join(' + ')} as totalxp
+FROM users
+${msg.flagArgs.im ? 'WHERE "minion.ironman" = true' : ''}
+ORDER BY totalxp
+DESC LIMIT 500;`
 			);
 			overallUsers = res
 				.map(user => {
@@ -429,9 +473,12 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 		const result = (await this.query(
 			`SELECT u.id, u."logBankLength", u."collectionLogBank" FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank" FROM users
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank" FROM users ${
+		msg.flagArgs.im ? 'WHERE "minion.ironman" = true' : ''
+  }
 ) u
-WHERE u."logBankLength" > 300 ORDER BY u."logBankLength" DESC;`
+WHERE u."logBankLength" > 300
+ORDER BY u."logBankLength" DESC;`
 		)) as CLUser[];
 		const users = await Workers.leaderboard({
 			type: 'cl',

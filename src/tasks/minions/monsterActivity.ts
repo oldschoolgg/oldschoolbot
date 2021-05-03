@@ -1,120 +1,64 @@
-import { MessageAttachment } from 'discord.js';
-import { KlasaMessage, Task } from 'klasa';
+import { Task } from 'klasa';
+import { Bank, Monsters } from 'oldschooljs';
 
-import MinionCommand from '../../commands/Minion/minion';
-import { continuationChars, Emoji, Events, PerkTier, Time } from '../../lib/constants';
-import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { randomItemFromArray } from '../../lib/util';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ monsterID, userID, channelID, quantity, duration }: MonsterActivityTaskOptions) {
+	async run(data: MonsterActivityTaskOptions) {
+		const { monsterID, userID, channelID, quantity, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
-		const perkTier = getUsersPerkTier(user);
-		user.incrementMinionDailyDuration(duration);
+		await user.incrementMonsterScore(monsterID, quantity);
+		const loot = new Bank(monster.table.kill(quantity));
 
-		const logInfo = `MonsterID[${monsterID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
+		announceLoot(this.client, user, monster, loot.bank);
 
-		const loot = monster.table.kill(quantity);
-
-		announceLoot(this.client, user, monster, quantity, loot);
-
-		await user.addItemsToBank(loot, true);
-
-		const image = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				loot,
-				`Loot From ${quantity} ${monster.name}:`,
-				true,
-				{ showNewCL: 1 },
-				user
-			);
-
-		this.client.emit(
-			Events.Log,
-			`${user.username}[${user.id}] received Minion Loot - ${logInfo}`
-		);
+		const xpRes = await addMonsterXP(user, monsterID, quantity, duration);
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
-		} KC is now ${
-			(user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) + quantity
-		}.`;
+		} KC is now ${user.getKC(monsterID)}.\n${xpRes.join(', ')}.`;
 
-		const clueTiersReceived = clueTiers.filter(tier => loot[tier.scrollID] > 0);
+		if (
+			monster.id === Monsters.Unicorn.id &&
+			user.hasItemEquippedAnywhere('Iron dagger') &&
+			!user.hasItemEquippedOrInBank('Clue hunter cloak')
+		) {
+			loot.add('Clue hunter cloak');
+			loot.add('Clue hunter boots');
 
-		if (clueTiersReceived.length > 0) {
-			str += `\n ${Emoji.Casket} You got clue scrolls in your loot (${clueTiersReceived
-				.map(tier => tier.name)
-				.join(', ')}).`;
-			if (perkTier > PerkTier.One) {
-				str += `\n\nSay \`c\` if you want to complete this ${clueTiersReceived[0].name} clue now.`;
-			} else {
-				str += `\n\nYou can get your minion to complete them using \`+minion clue easy/medium/etc\``;
-			}
+			str += `\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.`;
 		}
 
-		user.incrementMonsterScore(monsterID, quantity);
+		const { previousCL } = await user.addItemsToBank(loot, true);
 
-		const channel = this.client.channels.get(channelID);
-		if (!channelIsSendable(channel)) return;
+		const { image } = await this.client.tasks
+			.get('bankImage')!
+			.generateBankImage(
+				loot.bank,
+				`Loot From ${quantity} ${monster.name}:`,
+				true,
+				{ showNewCL: 1 },
+				user,
+				previousCL
+			);
 
-		const continuationChar =
-			perkTier > PerkTier.One ? 'y' : randomItemFromArray(continuationChars);
-
-		str += `\nSay \`${continuationChar}\` to repeat this trip.`;
-
-		this.client.queuePromise(() => {
-			channel.send(str, new MessageAttachment(image));
-			channel
-				.awaitMessages(
-					(msg: KlasaMessage) => {
-						if (msg.author !== user) return false;
-						return (
-							(perkTier > PerkTier.One && msg.content.toLowerCase() === 'c') ||
-							msg.content.toLowerCase() === continuationChar
-						);
-					},
-					{
-						time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
-						max: 1
-					}
-				)
-				.then(messages => {
-					const response = messages.first();
-
-					if (response) {
-						if (response.author.minionIsBusy) return;
-
-						if (
-							clueTiersReceived.length > 0 &&
-							perkTier > PerkTier.One &&
-							response.content.toLowerCase() === 'c'
-						) {
-							(this.client.commands.get(
-								'minion'
-							) as MinionCommand).clue(response as KlasaMessage, [
-								1,
-								clueTiersReceived[0].name
-							]);
-							return;
-						}
-
-						user.log(`continued trip of ${quantity}x ${monster.name}[${monster.id}]`);
-
-						this.client.commands
-							.get('minion')!
-							.kill(response as KlasaMessage, [quantity, monster.name])
-							.catch(err => channel.send(err));
-					}
-				});
-		});
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of killing ${monster.name}`);
+				return this.client.commands.get('k')!.run(res, [quantity, monster.name]);
+			},
+			image!,
+			data,
+			loot.bank
+		);
 	}
 }

@@ -6,18 +6,21 @@ import {
 } from '../../../commands/Minion/agilityarena';
 import { Time } from '../../../lib/constants';
 import { roll } from '../../../lib/data/monsters/raids';
-import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
-import { calcWhatPercent, formatDuration, itemID, reduceNumByPercent } from '../../../lib/util';
+import {
+	calcWhatPercent,
+	formatDuration,
+	itemID,
+	randomVariation,
+	reduceNumByPercent
+} from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { randomVariation } from '../../../lib/util/randomVariation';
 
 export default class extends Task {
 	async run(data: AgilityArenaActivityTaskOptions) {
 		const { channelID, duration, userID } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
 		// You get 1 ticket per minute at best without diary
@@ -37,7 +40,7 @@ export default class extends Task {
 		}
 		ticketsReceived += bonusTickets;
 
-		user.incrementMinigameScore(MinigameIDsEnum.AgilityArena, ticketsReceived);
+		user.incrementMinigameScore('AgilityArena', ticketsReceived);
 
 		await user.addXP(SkillsEnum.Agility, agilityXP);
 		const nextLevel = user.skillLevel(SkillsEnum.Agility);
@@ -76,7 +79,8 @@ export default class extends Task {
 				return this.client.commands.get('agilityarena')!.run(res, []);
 			},
 			undefined,
-			data
+			data,
+			null
 		);
 	}
 }

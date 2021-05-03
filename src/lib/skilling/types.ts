@@ -21,7 +21,13 @@ export enum SkillsEnum {
 	Thieving = 'thieving',
 	Hunter = 'hunter',
 	Construction = 'construction',
-	Magic = 'magic'
+	Magic = 'magic',
+	Attack = 'attack',
+	Strength = 'strength',
+	Defence = 'defence',
+	Ranged = 'ranged',
+	Hitpoints = 'hitpoints',
+	Slayer = 'slayer'
 }
 
 export interface Ore {
@@ -130,6 +136,7 @@ export interface Craftable {
 	inputItems: ItemBank;
 	tickRate: number;
 	crushChance?: number[];
+	bankChest?: boolean;
 }
 
 export interface Fletchable {
@@ -137,7 +144,7 @@ export interface Fletchable {
 	id: number;
 	level: number;
 	xp: number;
-	inputItems: ItemBank;
+	inputItems: Bank;
 	tickRate: number;
 	outputMultiple?: number;
 }
