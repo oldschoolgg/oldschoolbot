@@ -20,7 +20,7 @@ export default class extends BotCommand {
 			description: 'Sends your minion to do the Mage Arena 2',
 			examples: ['+magearena2'],
 			categoryFlags: ['minion', 'minigame'],
-			aliases: [ma2]
+			aliases: []
 		});
 	}
 
