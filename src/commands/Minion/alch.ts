@@ -4,11 +4,12 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration } from '../../lib/util';
+import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import resolveItems from '../../lib/util/resolveItems';
 
@@ -112,6 +113,11 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemsFromBank(consumedItems);
+		await updateBankSetting(
+			this.client,
+			ClientSettings.EconomyStats.MagicCostBank,
+			consumedItems
+		);
 
 		await addSubTaskToActivityTask<AlchingActivityTaskOptions>(this.client, {
 			itemID: osItem.id,
