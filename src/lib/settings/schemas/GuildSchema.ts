@@ -8,5 +8,4 @@ Client.defaultGuildSchema
 	.add('streamertweets', 'textchannel', { default: null })
 	.add('tweetchannel', 'textchannel', { default: null })
 	.add('levelUpMessages', 'textchannel', { default: null })
-	.add('staffOnlyChannels', 'textchannel', { array: true, default: [] })
-	.add('random_events_enabled', 'boolean', { default: false });
+	.add('staffOnlyChannels', 'textchannel', { array: true, default: [] });

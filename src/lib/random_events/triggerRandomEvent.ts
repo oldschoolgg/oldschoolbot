@@ -1,11 +1,10 @@
-import { Channel, GuildChannel, MessageEmbed, TextChannel } from 'discord.js';
+import { Channel, MessageEmbed, TextChannel } from 'discord.js';
 import { randArrItem, randInt, Time } from 'e';
 import fs from 'fs';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../constants';
-import { GuildSettings } from '../settings/types/GuildSettings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { hasBasicChannelPerms } from '../util/hasBasicChannelPerms';
 import { RandomEvent, RandomEvents } from '.';
@@ -42,14 +41,11 @@ async function finalizeEvent(event: RandomEvent, user: KlasaUser, ch: TextChanne
 }
 
 export async function triggerRandomEvent(ch: Channel, user: KlasaUser) {
-	if (!user.settings.get(UserSettings.BitField).includes(BitField.EnabledRandomEvents)) {
-		console.log(`${user.username} not getting event because not enabled for user`);
+	if (user.settings.get(UserSettings.BitField).includes(BitField.DisabledRandomEvents)) {
+		console.log(`${user.username} not getting event because disabled for user`);
 		return;
 	}
-	if (ch instanceof GuildChannel && !ch.guild.settings.get(GuildSettings.RandomEventsEnabled)) {
-		console.log(`${user.username} not getting event because not enabled for guild`);
-		return;
-	}
+
 	if (!hasBasicChannelPerms(ch)) {
 		console.log(`${user.username} not getting event because insufficient channel perms`);
 		return;

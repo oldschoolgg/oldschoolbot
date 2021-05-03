@@ -19,17 +19,14 @@ export default class extends Monitor {
 
 	async run(msg: KlasaMessage) {
 		if (!msg.guild) return;
-		if (!msg.author.settings.get(UserSettings.BitField).includes(BitField.EnabledRandomEvents))
+		if (msg.author.settings.get(UserSettings.BitField).includes(BitField.DisabledRandomEvents))
 			return;
 
 		if (msg.content.includes('--event')) {
 			return triggerRandomEvent(msg.channel, msg.author);
 		}
 		if (!roll(400)) return;
-		if (
-			!msg.guild.settings.get(GuildSettings.RandomEventsEnabled) ||
-			msg.guild.settings.get(GuildSettings.StaffOnlyChannels).includes(msg.channel.id)
-		) {
+		if (msg.guild.settings.get(GuildSettings.StaffOnlyChannels).includes(msg.channel.id)) {
 			try {
 				const dm = await msg.author.createDM();
 				triggerRandomEvent(dm, msg.author);
