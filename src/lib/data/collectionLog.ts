@@ -6,7 +6,7 @@ import {
 	lederhosenOutfit,
 	mimeOutfit,
 	zombieOutfit
-} from '../random_events';
+} from '../randomEvents';
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
 

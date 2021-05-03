@@ -1,7 +1,7 @@
 import { KlasaMessage, Monitor, MonitorStore } from 'klasa';
 
 import { BitField } from '../lib/constants';
-import { triggerRandomEvent } from '../lib/random_events/triggerRandomEvent';
+import { triggerRandomEvent } from '../lib/randomEvents';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { roll } from '../lib/util';
