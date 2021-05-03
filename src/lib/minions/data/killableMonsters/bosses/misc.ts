@@ -54,12 +54,12 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
 		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
 		qpRequired: 205,
-		itemInBankBoosts: [ 
+		itemInBankBoosts: [
 			{
-			[itemID('Dragon warhammer')]: 10
+				[itemID('Dragon warhammer')]: 10
 			},
 			{
-			[itemID('Dragon hunter crossbow')]: 20
+				[itemID('Dragon hunter crossbow')]: 20
 			}
 		],
 		levelRequirements: {

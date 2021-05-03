@@ -20,6 +20,7 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
+import KillableMonster from '../../lib/minions/type';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
@@ -845,6 +846,7 @@ export default class extends Extendable {
 	public getAttackStyles(this: User) {
 		return this.settings.get(UserSettings.AttackStyle);
 	}
+
 	public resolveAvailableItemBoosts(this: User, monster: KillableMonster) {
 		const boosts = new Bank();
 		if (monster.itemInBankBoosts) {
