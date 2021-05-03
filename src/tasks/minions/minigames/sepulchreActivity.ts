@@ -1,5 +1,6 @@
 import { Task } from 'klasa';
-import { Bank, Openables } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
+import { GrandHallowedCoffin } from 'oldschooljs/dist/simulation/misc/grandHallowedCoffin';
 
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -21,7 +22,7 @@ export default class extends Task {
 		for (let i = 0; i < quantity; i++) {
 			for (const floor of completedFloors) {
 				if (floor.number === 5) {
-					loot.add(Openables.GrandHallowedCoffin.open());
+					loot.add(GrandHallowedCoffin.roll());
 				}
 
 				const numCoffinsToOpen = 1;
