@@ -184,7 +184,7 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate'],
 			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets'],
-			'Zamorakian spear'
+			['Zamorakian spear','Zamorakian hasta']
 		]),
 		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
 		qpRequired: 0,

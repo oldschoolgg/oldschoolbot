@@ -534,7 +534,7 @@ export default class extends Extendable {
 					data.challengeMode ? ' in Challenge Mode' : ''
 				}, ${
 					data.users.length === 1
-						? 'as a solo'
+						? 'as a solo.'
 						: `with a team of ${data.users.length} minions.`
 				} ${formattedDuration}`;
 			}
