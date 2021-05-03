@@ -630,10 +630,10 @@
     eslint-plugin-simple-import-sort "^5.0.3"
     prettier "^2.1.2"
 
-"@sapphire/discord-utilities@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.1.0.tgz#4761b7840597c9759e2b76ef20200604cdc13ef7"
-  integrity sha512-BkJpWTylBA5IUefTRjgsQ9dSsbLfCBmWhVS92zZ6YAtNv1tV/uK0wdTM0GdUtz263LQBLQzk4W0DmwXoUx+klQ==
+"@sapphire/discord-utilities@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.1.1.tgz#c175c057a334a014b4b6e56a7f48368f28849255"
+  integrity sha512-DTKLLWfxDu79e44njb5su1Asd7zgrr366z0bz9Z5vPg+FRk+L1JP9scSPLJNbWZuvYhvtmj950j1PENE/bzmPQ==
   dependencies:
     twemoji-parser "^13.0.0"
 
