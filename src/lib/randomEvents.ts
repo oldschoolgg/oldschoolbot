@@ -186,7 +186,7 @@ export async function triggerRandomEvent(ch: Channel, user: KlasaUser) {
 	const prev = cache.get(user.id);
 
 	// Max 1 event per 30 mins per user
-	if (prev && Date.now() - prev < Time.Minute * 30) {
+	if (prev && Date.now() - prev < Time.Hour * 3) {
 		console.log(`${user.username} not getting event because of 30min limit`);
 		return;
 	}

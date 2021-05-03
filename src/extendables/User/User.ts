@@ -24,6 +24,11 @@ export default class extends Extendable {
 		return (this.settings.get('skills') as SettingsFolder).toJSON() as Skills;
 	}
 
+	// @ts-ignore 2784
+	public get bitfield(this: User) {
+		return this.settings.get(UserSettings.BitField);
+	}
+
 	public hasMonsterRequirements(this: User, monster: KillableMonster) {
 		if (monster.qpRequired && this.settings.get(UserSettings.QP) < monster.qpRequired) {
 			return [

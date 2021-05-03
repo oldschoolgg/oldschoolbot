@@ -1,13 +1,17 @@
+import { MessageEmbed } from 'discord.js';
 import { Message, MessageAttachment, MessageCollector } from 'discord.js';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import MinionCommand from '../../commands/Minion/minion';
-import { Emoji, PerkTier, Time } from '../constants';
+import { production } from '../../config';
+import { BitField, Emoji, PerkTier, Time } from '../constants';
 import clueTiers from '../minions/data/clueTiers';
+import { triggerRandomEvent } from '../randomEvents';
 import { setActivityLoot } from '../settings/settings';
+import { UserSettings } from '../settings/types/UserSettings';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, generateContinuationChar, stringMatches } from '../util';
+import { channelIsSendable, generateContinuationChar, roll, stringMatches } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
 
@@ -52,6 +56,16 @@ export async function handleTripFinish(
 			? attachment
 			: new MessageAttachment(attachment)
 		: undefined;
+
+	const channel = client.channels.get(channelID);
+
+	if (
+		channel &&
+		!user.bitfield.includes(BitField.DisabledRandomEvents) &&
+		roll(production ? 125 : 1)
+	) {
+		triggerRandomEvent(channel, user);
+	}
 	sendToChannelID(client, channelID, { content: message, image: attachable });
 	if (!onContinue) return;
 
@@ -62,7 +76,6 @@ export async function handleTripFinish(
 		collectors.delete(user.id);
 	}
 
-	const channel = client.channels.get(channelID);
 	if (!channelIsSendable(channel)) return;
 	const collector = new MessageCollector(
 		channel,

@@ -247,6 +247,7 @@ declare module 'discord.js' {
 		isIronman: boolean;
 		maxTripLength(activity?: OSBActivity): number;
 		rawSkills: Skills;
+		bitfield: readonly BitField[];
 	}
 
 	interface TextChannel {
