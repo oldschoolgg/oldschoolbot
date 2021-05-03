@@ -74,14 +74,17 @@ export default class extends BotCommand {
 				`They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any.`
 		);
 
-		try {
-			await msg.channel.awaitMessages(
-				_msg =>
-					_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-				options
-			);
-		} catch (err) {
-			return cancelMsg.edit(`Halting cancellation of minion task.`);
+		if (!msg.flagArgs.cf) {
+			try {
+				await msg.channel.awaitMessages(
+					_msg =>
+						_msg.author.id === msg.author.id &&
+						_msg.content.toLowerCase() === 'confirm',
+					options
+				);
+			} catch (err) {
+				return cancelMsg.edit(`Halting cancellation of minion task.`);
+			}
 		}
 
 		await (this.client as OldSchoolBotClient).cancelTask(msg.author.id);
