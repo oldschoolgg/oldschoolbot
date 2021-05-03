@@ -275,3 +275,8 @@ export interface CollectingOptions extends ActivityTaskOptions {
 	collectableID: number;
 	quantity: number;
 }
+
+export interface BlastfurnaceActivityTaskOptions extends ActivityTaskOptions {
+	barID: number;
+	quantity: number;
+}
