@@ -108,7 +108,6 @@ export default class extends BotCommand {
 				boosts.push(messages.join(' + '));
 			}
 		}
-		
 		for (const [itemID, boostAmount] of Object.entries(
 			msg.author.resolveAvailableItemBoosts(monster)
 		)) {
