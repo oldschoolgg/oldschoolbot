@@ -29,16 +29,6 @@ export default class extends BotCommand {
 		bank.add('Zamorakian spear');
 		bank.add('Dragon warhammer');
 		bank.add('Bandos godsword');
-		bank.add('copper ore',10000);
-		bank.add('tin ore',10000);
-		bank.add('silver ore',10000);
-		bank.add('iron ore',10000);
-		bank.add('coal',60000);
-		bank.add('gold ore',10000);
-		bank.add('mithril ore',10000);
-		bank.add('adamantite ore',10000);
-		bank.add('runite ore',10000);
-		bank.add('Goldsmith gauntlets');
 		const poh = await msg.author.getPOH();
 		poh.pool = 29241;
 		await poh.save();

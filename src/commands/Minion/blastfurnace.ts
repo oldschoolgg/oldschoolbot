@@ -1,4 +1,6 @@
+import { KlasaUser } from 'klasa';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
@@ -15,10 +17,21 @@ import {
 	itemID,
 	itemNameFromID,
 	removeItemFromBank,
+	skillsMeetRequirements,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
+export function hasSkillRequirements(user: KlasaUser): boolean {
+	return skillsMeetRequirements(user.rawSkills, {
+		crafting: 12,
+		firemaking: 16,
+		magic: 33,
+		mining: 50,
+		smithing: 20,
+		thieving: 13,
+	});
+}
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -46,6 +59,12 @@ export default class extends BotCommand {
 			bar =>
 				stringMatches(bar.name, barName) || stringMatches(bar.name.split(' ')[0], barName)
 		);
+		const hasSkills = hasSkillRequirements(msg.author);
+		if (!hasSkills) {
+			return msg.send(
+				`You do not have high enough stats to use the Blast Furnace, you need atleast crafting: 12, firemaking: 16, magic: 33, mining: 50, smithing: 20 ,and thieving: 13 `
+			);
+		}
 
 		if (!bar) {
 			return msg.send(
@@ -62,13 +81,14 @@ export default class extends BotCommand {
 		}
 
 		let timeToSmithSingleBar = bar.timeToUse + Time.Second / 10;
-
+		
+		//check if they have a coal bag
 		let coalbag = '';
-		if (msg.author.hasItemEquippedOrInBank(itemID('Coal bag')) &&
+		if (msg.author.hasItemEquippedOrInBank(itemID('Coal bag')) &&(
 			bar.id === itemID('Steel Bar') ||
 			bar.id === itemID('Mithril Bar') ||
 			bar.id === itemID('Adamantite Bar') ||
-			bar.id === itemID('Runite Bar')
+			bar.id === itemID('Runite Bar'))
 		) {
 			coalbag = `\n\n**Boosts:** 60% speed boost for coal bag.`;
 			timeToSmithSingleBar *= 0.62;
@@ -109,6 +129,17 @@ export default class extends BotCommand {
 			);
 		}
 
+		// cost to pay the foreman to use blast furance
+		const itemsToRemove = new Bank();
+		const coinstoremove = Math.floor(duration / 60)
+		const gp = msg.author.settings.get(UserSettings.GP);
+		if (gp < coinstoremove) {
+			return msg.send(`You need atleast ${coinstoremove} GP to work at the Blast Furnace.`);
+		}
+		
+		itemsToRemove.add('Coins', coinstoremove);
+		await msg.author.removeItemsFromBank(itemsToRemove.bank);
+
 		// Remove the ores from their bank.
 		let newBank: ItemBank = { ...userBank };
 		for (const [oreID, qty] of requiredOres) {
@@ -144,7 +175,7 @@ export default class extends BotCommand {
 				bar.name
 			}, it'll take around ${formatDuration(
 				duration
-			)} to finish.${goldGauntletMessage}${coalbag}${graceful}`
+			)} to finish. Costing ${coinstoremove} GP for your time in the Blast Furnace.${goldGauntletMessage}${coalbag}${graceful}`
 		);
 	}
 }

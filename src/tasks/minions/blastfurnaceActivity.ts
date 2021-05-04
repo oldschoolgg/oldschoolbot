@@ -37,7 +37,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${bar.name}[${bar.id}]`);
-				return this.client.commands.get('smelt')!.run(res, [quantity, bar.name]);
+				return this.client.commands.get('blastfurnace')!.run(res, [quantity, bar.name]);
 			},
 			undefined,
 			data,
