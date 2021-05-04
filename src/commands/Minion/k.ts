@@ -117,7 +117,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
+		const maxTripLength = Number(msg.author.maxTripLength(Activity.MonsterKilling))*1000;
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -158,6 +158,9 @@ export default class extends BotCommand {
 		}
 
 		duration = randomVariation(duration, 3);
+		//BOOST
+		boosts.push(`100% for Andre having big cock`);
+		duration *= 0.5
 
 		if (isWeekend()) {
 			boosts.push(`10% for Weekend`);

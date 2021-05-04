@@ -16,7 +16,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			oneAtTime: true,
-			cooldown: 180,
+			cooldown: 10,
 			examples: ['+cancel'],
 			description: 'Cancels your minions current task.',
 			categoryFlags: ['minion']

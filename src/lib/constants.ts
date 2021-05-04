@@ -57,12 +57,12 @@ export const enum Emoji {
 	PeepoRanger = '<:peepoRanger:663096705746731089>',
 	PeepoNoob = '<:peepoNoob:660712001500086282>',
 	XP = '<:xp:630911040510623745>',
-	GP = '<:RSGP:369349580040437770>',
+	GP = '<:RSGP:838858370831220787>',
 	ThumbsUp = '👍',
 	ThumbsDown = '👎',
 	Casket = '<:Casket:365003978678730772>',
-	Agility = '<:agility:630911040355565568>',
-	Cooking = '<:cooking:630911040426868756>',
+	Agility = '<:agility:838858371150905394>',
+	Cooking = '<:cooking:838858371020750858>',
 	Fishing = '<:fishing:630911040091193356>',
 	Mining = '<:mining:630911040128811010>',
 	Smithing = '<:smithing:630911040452034590>',
@@ -80,7 +80,7 @@ export const enum Emoji {
 	Firemaking = '<:firemaking:630911040175210518>',
 	Crafting = '<:crafting:630911040460161047>',
 	EasterEgg = '<:easterEgg:695473553314938920>',
-	Join = '<:join:705971600956194907>',
+	Join = '<:join:838858370479554640>',
 	TzRekJad = '<:Tzrekjad:324127379188613121>',
 	Phoenix = '<:Phoenix:324127378223792129>',
 	AnimatedFireCape = '<a:FireCape:394692985184583690>',
@@ -108,7 +108,7 @@ export const enum Emoji {
 	GreenGem = '<:greenGem:778418736495067166>',
 	PinkGem = '<:pinkGem:778418736276963349>',
 	OrangeGem = '<:orangeGem:778418736474095616>',
-	Minion = '<:minion:778418736180494347>',
+	Minion = '<:minion:838858371234922526>',
 	Spanner = '<:spanner:778418736621158410>',
 	DoubleSpanner = '<:doubleSpanner:778418736327688194>',
 	Hammer = '<:hammer:778418736595206184>',
@@ -124,9 +124,9 @@ export const enum Emoji {
 }
 
 export const enum ReactionEmoji {
-	Join = '705971600956194907',
-	Stop = '705972260950769669',
-	Start = '705973302719414329'
+	Join = '838858370479554640',
+	Stop = '838858370373910598',
+	Start = '838858370609053737'
 }
 
 export const enum Image {
@@ -137,7 +137,7 @@ export const enum Color {
 	Orange = 16098851
 }
 
-export const SupportServer = '342983479501389826';
+export const SupportServer = '490085946218250250';
 
 export const enum Tasks {
 	AgilityActivity = 'agilityActivity',
@@ -398,31 +398,31 @@ export const syncPriceCache = new Map<number, number>();
 export const bankImageCache = new Map<string, string>();
 
 export const skillEmoji = {
-	runecraft: '<:runecraft:630911040435257364>',
-	firemaking: '<:firemaking:630911040175210518>',
-	thieving: '<:thieving:630910829352452123>',
-	mining: '<:mining:630911040128811010>',
-	ranged: '<:ranged:630911040258834473>',
-	construction: '<:construction:630911040493715476>',
-	smithing: '<:smithing:630911040452034590>',
-	herblore: '<:herblore:630911040535658496>',
-	attack: '<:attack:630911039969427467>',
-	strength: '<:strength:630911040481263617>',
-	defence: '<:defence:630911040393052180>',
-	fishing: '<:fishing:630911040091193356>',
-	hitpoints: '<:hitpoints:630911040460292108>',
-	total: '<:xp:630911040510623745>',
-	overall: '<:xp:630911040510623745>',
-	magic: '<:magic:630911040334331917>',
-	crafting: '<:crafting:630911040460161047>',
-	agility: '<:agility:630911040355565568>',
-	fletching: '<:fletching:630911040544309258>',
-	cooking: '<:cooking:630911040426868756>',
-	farming: '<:farming:630911040355565599>',
-	slayer: '<:slayer:630911040560824330>',
-	prayer: '<:prayer:630911040426868746>',
-	woodcutting: '<:woodcutting:630911040099450892>',
-	hunter: '<:hunter:630911040166559784>',
+	runecraft: '<:runecraft:838858370999517225>',
+	firemaking: '<:firemaking:838858371016163419>',
+	thieving: '<:thieving:838858371263627274>',
+	mining: '<:mining:838858370903179315>',
+	ranged: '<:ranged:838858371259432981>',
+	construction: '<:construction:838858370945384479>',
+	smithing: '<:smithing:838858371033464882>',
+	herblore: '<:herblore:838858371108700171>',
+	attack: '<:attack:838854354638602321>',
+	strength: '<:strength:838858371233742908>',
+	defence: '<:defence:838854354756042822>',
+	fishing: '<:fishing:838858371108962384>',
+	hitpoints: '<:hitpoints:838858371196518482>',
+	total: '<:xp:838858370735145034>',
+	overall: '<:xp:838858370735145034>',
+	magic: '<:magic:838858371213426688>',
+	crafting: '<:crafting:838858371116433449>',
+	agility: '<:agility:838858371150905394>',
+	fletching: '<:fletching:838858370860449823>',
+	cooking: '<:cooking:838858371020750858>',
+	farming: '<:farming:838858370974220298>',
+	slayer: '<:slayer:838858371171090452>',
+	prayer: '<:prayer:838858370987458621>',
+	woodcutting: '<:woodcutting:838858370844721163>',
+	hunter: '<:hunter:838858370827288577>',
 	cml: '<:CrystalMathLabs:364657225249062912>',
 	clock: '<:ehpclock:352323705210142721>'
 };
