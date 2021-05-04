@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { warmGear } from '../../lib/data/filterables';
 import { hasItemEquipped } from '../../lib/gear';
@@ -107,7 +107,7 @@ export default class extends BotCommand {
 			break;
 		}
 
-		const duration = durationPerTodt * quantity;
+		const duration = durationPerTodt * quantity * xpBoost;
 
 		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>(this.client, {
 			minigameID: 'Wintertodt',

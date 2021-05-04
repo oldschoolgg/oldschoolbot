@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -77,7 +77,7 @@ export default class extends BotCommand {
 			return msg.send(`You don't have enough items. You need: ${inputCost}.`);
 		}
 
-		const duration = quantity * timeToCookSingleCookable;
+		const duration = quantity * timeToCookSingleCookable * xpBoost;
 
 		if (duration > maxTripLength) {
 			return msg.send(

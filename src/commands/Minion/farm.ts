@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import defaultPatches from '../../lib/minions/farming/defaultPatches';
@@ -183,14 +183,14 @@ export default class extends BotCommand {
 		let duration: number = 0;
 		if (patchType.patchPlanted) {
 			duration =
-				patchType.lastQuantity *
+				patchType.lastQuantity * xpBoost *
 				(timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest);
 			if (quantity > patchType.lastQuantity) {
 				duration +=
 					(quantity - patchType.lastQuantity) * (timePerPatchTravel + timePerPatchPlant);
 			}
 		} else {
-			duration = quantity * (timePerPatchTravel + timePerPatchPlant);
+			duration = quantity * (timePerPatchTravel + timePerPatchPlant) * xpBoost;
 		}
 
 		// Reduce time if user has graceful equipped

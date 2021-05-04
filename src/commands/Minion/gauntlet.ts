@@ -1,7 +1,7 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
+import { Activity, xpBoost } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GauntletOptions } from '../../lib/types/minions';
@@ -107,7 +107,7 @@ export default class extends BotCommand {
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / gauntletLength);
 		}
-		const duration = quantity * gauntletLength;
+		const duration = quantity * gauntletLength * xpBoost;
 
 		if (duration > maxTripLength) {
 			return msg.send(

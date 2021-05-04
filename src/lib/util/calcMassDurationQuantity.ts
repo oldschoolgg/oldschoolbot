@@ -1,6 +1,6 @@
 import { KlasaUser } from 'klasa';
 
-import { Activity } from '../constants';
+import { Activity, xpBoost } from '../constants';
 import { reducedTimeForGroup } from '../minions/functions';
 import { KillableMonster } from '../minions/types';
 
@@ -25,6 +25,6 @@ export default async function calcDurQty(
 	if (quantity > maxQty) {
 		throw `The max amount of ${monster.name} this party can kill per trip is ${maxQty}.`;
 	}
-	const duration = quantity * perKillTime - monster.respawnTime!;
+	const duration = quantity * perKillTime - monster.respawnTime! * xpBoost;
 	return [quantity, duration, perKillTime, messages];
 }

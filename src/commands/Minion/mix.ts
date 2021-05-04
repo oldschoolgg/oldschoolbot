@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -126,7 +126,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		const duration = quantity * timeToMixSingleItem;
+		const duration = quantity * timeToMixSingleItem * xpBoost;
 
 		if (duration > maxTripLength) {
 			return msg.send(

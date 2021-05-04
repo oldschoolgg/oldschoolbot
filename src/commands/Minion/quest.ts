@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, MAX_QP, Time } from '../../lib/constants';
+import { Activity, MAX_QP, Time, xpBoost } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -32,7 +32,7 @@ export default class extends BotCommand {
 
 		const boosts = [];
 
-		let duration = Time.Minute * 30;
+		let duration = Time.Minute * 30 * xpBoost;
 
 		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			duration *= 0.9;

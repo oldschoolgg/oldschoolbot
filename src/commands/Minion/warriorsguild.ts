@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -87,7 +87,7 @@ export default class extends BotCommand {
 				quantity = Math.floor(maxTripLength / armorSet.timeToFinish);
 			}
 
-			const duration = armorSet.timeToFinish * quantity;
+			const duration = armorSet.timeToFinish * quantity * xpBoost;
 
 			if (duration > maxTripLength) {
 				return msg.send(
@@ -131,7 +131,7 @@ export default class extends BotCommand {
 				);
 			}
 
-			const duration = Time.Second * 30 * quantity;
+			const duration = Time.Second * 30 * quantity * xpBoost;
 
 			if (duration > maxTripLength) {
 				return msg.send(

@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { table } from 'table';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -80,7 +80,7 @@ export default class extends BotCommand {
 			if (max < quantity && max !== 0) quantity = max;
 		}
 
-		const duration = quantity * timeToFletchSingleItem;
+		const duration = quantity * timeToFletchSingleItem * xpBoost;
 		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(

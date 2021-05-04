@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
-import { Activity, Emoji, Events, Time } from '../../lib/constants';
+import { Activity, Emoji, Events, Time, xpBoost } from '../../lib/constants';
 import { maxOtherStats } from '../../lib/gear';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -283,7 +283,7 @@ export default class extends BotCommand {
 		waveTime = reduceNumByPercent(waveTime, kcPercent);
 
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.BarbarianAssault) / waveTime);
-		const duration = quantity * waveTime;
+		const duration = quantity * waveTime * xpBoost;
 
 		boosts.push(`Each wave takes ${formatDuration(waveTime)}`);
 

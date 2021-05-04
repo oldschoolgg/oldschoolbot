@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -66,7 +66,7 @@ export default class extends BotCommand {
 			return msg.send(`The max number of alchs you can do is ${maxCasts}!`);
 		}
 
-		const duration = quantity * timePerAlch;
+		const duration = quantity * timePerAlch * xpBoost;
 		let fireRuneCost = quantity * 5;
 
 		for (const runeProvider of unlimitedFireRuneProviders) {

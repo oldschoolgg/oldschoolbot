@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
+import { Activity, xpBoost } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -163,7 +163,7 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToMine);
 		}
-		const duration = quantity * timeToMine;
+		const duration = quantity * timeToMine * xpBoost;
 
 		if (duration > maxTripLength) {
 			return msg.send(

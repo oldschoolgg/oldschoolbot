@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Prayer from '../../lib/skilling/skills/prayer';
@@ -72,7 +72,7 @@ export default class extends BotCommand {
 			return msg.send(`You dont have ${cost}.`);
 		}
 
-		const duration = quantity * timeToBuryABone;
+		const duration = quantity * timeToBuryABone * xpBoost;
 
 		if (duration > maxTripLength) {
 			return msg.send(

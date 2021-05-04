@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
@@ -114,7 +114,7 @@ export default class extends BotCommand {
 			quantity = Math.floor(maxTripLength / scaledTimePerFish);
 		}
 
-		let duration = quantity * scaledTimePerFish;
+		let duration = quantity * scaledTimePerFish * xpBoost;
 
 		if (duration > maxTripLength) {
 			return msg.send(

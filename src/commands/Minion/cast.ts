@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -76,8 +76,7 @@ export default class extends BotCommand {
 			if (max < quantity && max !== 0) quantity = max;
 		}
 
-		const duration = quantity * timeToEnchantTen;
-
+		const duration = quantity * timeToEnchantTen * xpBoost;
 		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(

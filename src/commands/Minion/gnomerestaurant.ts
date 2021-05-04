@@ -2,7 +2,7 @@ import { calcWhatPercent, randInt, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -92,7 +92,7 @@ export default class extends BotCommand {
 		const quantity = Math.floor(
 			msg.author.maxTripLength(Activity.GnomeRestaurant) / deliveryLength
 		);
-		const duration = randomVariation(deliveryLength * quantity, 5);
+		const duration = randomVariation(deliveryLength * quantity, 5) * xpBoost;
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) >= 66) {
 			itemsToRemove.add('Law rune', Math.max(1, Math.floor(randInt(1, quantity * 1.5) / 2)));

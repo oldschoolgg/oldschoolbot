@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost} from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -117,7 +117,7 @@ export default class extends BotCommand {
 
 		const randValue = randFloat(1.85, 2.15);
 		const quantity = tripLength / (randValue * Time.Second);
-		const duration = quantity * (randValue * Time.Second);
+		const duration = quantity * (randValue * Time.Second) * xpBoost;
 
 		await addSubTaskToActivityTask<AerialFishingActivityTaskOptions>(this.client, {
 			userID: msg.author.id,

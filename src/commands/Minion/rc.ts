@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
+import { Activity, xpBoost } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -108,7 +108,7 @@ export default class extends BotCommand {
 		}
 
 		const numberOfInventories = Math.max(Math.ceil(quantity / inventorySize), 1);
-		const duration = numberOfInventories * tripLength;
+		const duration = numberOfInventories * tripLength * xpBoost;
 
 		if (duration > maxTripLength) {
 			return msg.send(

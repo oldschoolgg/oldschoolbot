@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { WealthChargingActivityTaskOptions } from '../../lib/types/minions';
@@ -69,7 +69,7 @@ export default class extends BotCommand {
 			quantity = Math.floor(max);
 		}
 
-		const duration = quantity * invDuration;
+		const duration = quantity * invDuration * xpBoost;
 
 		if (duration > maxTripLength) {
 			return msg.send(

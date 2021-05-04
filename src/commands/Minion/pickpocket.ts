@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
+import { Activity, xpBoost } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -112,7 +112,7 @@ export default class extends BotCommand {
 			quantity = Math.floor(maxTripLength / timeToPickpocket);
 		}
 
-		const duration = quantity * timeToPickpocket;
+		const duration = quantity * timeToPickpocket * xpBoost;
 
 		if (duration > maxTripLength) {
 			return msg.send(

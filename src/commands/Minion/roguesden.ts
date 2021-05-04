@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util/bank';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -71,7 +71,7 @@ export default class extends BotCommand {
 			boosts.push(`-50% not enough Stamina potions`);
 		}
 
-		const duration = quantity * baseTime;
+		const duration = quantity * baseTime * xpBoost;
 
 		if (staminasToRemove.length > 0) {
 			await msg.author.removeItemsFromBank(staminasToRemove.bank);

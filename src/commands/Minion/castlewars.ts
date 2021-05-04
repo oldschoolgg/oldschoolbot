@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { getMinigameEntity } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -35,7 +35,7 @@ You have played ${kc.CastleWars} Castle Wars games.`);
 	async play(msg: KlasaMessage) {
 		const gameLength = Time.Minute * 18;
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.CastleWars) / gameLength);
-		const duration = quantity * gameLength;
+		const duration = quantity * gameLength * xpBoost;
 
 		await addSubTaskToActivityTask<MinigameActivityTaskOptions>(this.client, {
 			userID: msg.author.id,

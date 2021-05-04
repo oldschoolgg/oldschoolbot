@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import defaultPatches from '../../lib/minions/farming/defaultPatches';
@@ -104,7 +104,7 @@ export default class extends BotCommand {
 		const timePerPatchHarvest = Time.Second * planted.timePerHarvest;
 
 		// 1.5 mins per patch --> ex: 10 patches = 15 mins
-		let duration = patchType.lastQuantity * (timePerPatchTravel + timePerPatchHarvest);
+		let duration = patchType.lastQuantity * (timePerPatchTravel + timePerPatchHarvest) * xpBoost;
 
 		// Reduce time if user has graceful equipped
 		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {

@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji, Time } from '../../lib/constants';
+import { Activity, Emoji, Time, xpBoost } from '../../lib/constants';
 import { hasArrayOfItemsEquipped, hasItemEquipped } from '../../lib/gear';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -198,7 +198,7 @@ export default class extends BotCommand {
 		);
 		this.checkReqs(users, NightmareMonster, quantity);
 
-		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
+		duration = quantity * perKillTime - NightmareMonster.respawnTime! * xpBoost;
 
 		const totalCost = new Bank();
 		if (NightmareMonster.healAmountNeeded) {

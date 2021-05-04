@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -214,7 +214,7 @@ export default class extends BotCommand {
 			quantity = Math.floor(maxTripLength / ((catchTime * Time.Second) / traps));
 		}
 
-		let duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
+		let duration = Math.floor(((quantity * catchTime) / traps) * Time.Second) * xpBoost;
 
 		if (duration > maxTripLength) {
 			return msg.send(
@@ -235,7 +235,7 @@ export default class extends BotCommand {
 				if (userBank.amount(item.id) < qty * quantity) {
 					if (userBank.amount(item.id) > qty) {
 						quantity = Math.floor(userBank.amount(item.id) / qty);
-						duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
+						duration = Math.floor(((quantity * catchTime) / traps) * Time.Second) * xpBoost;
 					} else {
 						return msg.send(`You don't have enough ${item.name}s.`);
 					}

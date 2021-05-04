@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity, Time, xpBoost } from '../../lib/constants';
 import { GearSetupTypes } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -30,7 +30,7 @@ export default class extends BotCommand {
 		if (msg.author.skillLevel(SkillsEnum.Magic) < 60) {
 			return msg.channel.send(`You need level 60 Magic to do the Mage Arena.`);
 		}
-		const duration = randomVariation(Time.Minute * 10, 5);
+		const duration = randomVariation(Time.Minute * 10, 5) * xpBoost;
 
 		const itemsNeeded = new Bank({
 			'Blood rune': 100,

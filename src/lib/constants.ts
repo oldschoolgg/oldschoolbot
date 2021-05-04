@@ -1,6 +1,8 @@
 import PQueue from 'p-queue';
 import { join } from 'path';
 
+export const xpBoost = 0.5;
+
 export const enum Time {
 	Millisecond = 1,
 	Second = 1000,

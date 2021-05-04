@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Emoji, Time } from '../../lib/constants';
+import { Activity, Emoji, Time, xpBoost } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -133,7 +133,7 @@ export default class extends BotCommand {
 
 		const perDuration = randomVariation(Time.Minute * 7, 5);
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.SoulWars) / perDuration);
-		const duration = quantity * perDuration;
+		const duration = quantity * perDuration * xpBoost;
 
 		await addSubTaskToActivityTask<SoulWarsOptions>(this.client, {
 			userID: msg.author.id,
