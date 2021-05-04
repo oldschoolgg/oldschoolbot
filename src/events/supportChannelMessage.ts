@@ -35,7 +35,7 @@ export default class extends Event {
 			once: true,
 			event: 'klasaReady'
 		});
-		// this.enabled = this.client.production;
+		this.enabled = this.client.production;
 	}
 
 	async run() {
