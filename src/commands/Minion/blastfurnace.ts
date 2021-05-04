@@ -1,5 +1,4 @@
-import { KlasaUser } from 'klasa';
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
@@ -29,7 +28,7 @@ export function hasSkillRequirements(user: KlasaUser): boolean {
 		magic: 33,
 		mining: 50,
 		smithing: 20,
-		thieving: 13,
+		thieving: 13
 	});
 }
 export default class extends BotCommand {
@@ -39,7 +38,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [name:...string]',
-			aliases: ['bf','blastfurnace'],
+			aliases: ['bf', 'blastfurnace'],
 			usageDelim: ' ',
 			categoryFlags: ['minion', 'skilling'],
 			description: 'Sends your minion to smelt items, which is turning ores into bars.',
@@ -81,20 +80,21 @@ export default class extends BotCommand {
 		}
 
 		let timeToSmithSingleBar = bar.timeToUse + Time.Second / 10;
-		
-		//check if they have a coal bag
+
+		// check if they have a coal bag
 		let coalbag = '';
-		if (msg.author.hasItemEquippedOrInBank(itemID('Coal bag')) &&(
-			bar.id === itemID('Steel Bar') ||
-			bar.id === itemID('Mithril Bar') ||
-			bar.id === itemID('Adamantite Bar') ||
-			bar.id === itemID('Runite Bar'))
+		if (
+			msg.author.hasItemEquippedOrInBank(itemID('Coal bag')) &&
+			(bar.id === itemID('Steel Bar') ||
+				bar.id === itemID('Mithril Bar') ||
+				bar.id === itemID('Adamantite Bar') ||
+				bar.id === itemID('Runite Bar'))
 		) {
 			coalbag = `\n\n**Boosts:** 60% speed boost for coal bag.`;
 			timeToSmithSingleBar *= 0.62;
 		}
-        let graceful ='';
-        if (!hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		let graceful = '';
+		if (!hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			timeToSmithSingleBar *= 1.075;
 			graceful = `-7.5% time penalty for not having graceful equipped`;
 		}
@@ -131,12 +131,12 @@ export default class extends BotCommand {
 
 		// cost to pay the foreman to use blast furance
 		const itemsToRemove = new Bank();
-		const coinstoremove = Math.floor(duration / 60)
+		const coinstoremove = Math.floor(duration / 60);
 		const gp = msg.author.settings.get(UserSettings.GP);
 		if (gp < coinstoremove) {
 			return msg.send(`You need atleast ${coinstoremove} GP to work at the Blast Furnace.`);
 		}
-		
+
 		itemsToRemove.add('Coins', coinstoremove);
 		await msg.author.removeItemsFromBank(itemsToRemove.bank);
 

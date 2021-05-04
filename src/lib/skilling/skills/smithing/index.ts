@@ -1,8 +1,8 @@
 import { Emoji } from '../../../constants';
 import { SkillsEnum } from '../../types';
+import BlastableBars from './blastables';
 import Bars from './smeltables';
 import SmithableItems from './smithables';
-import BlastableBars from './blastables';
 
 const Smithing = {
 	aliases: ['smithing'],
