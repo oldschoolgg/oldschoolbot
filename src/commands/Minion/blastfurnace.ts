@@ -9,7 +9,7 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
-import { BlastfurnaceActivityTaskOptions } from '../../lib/types/minions';
+import { BlastFurnaceActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
 	formatDuration,
@@ -91,12 +91,12 @@ export default class extends BotCommand {
 				bar.id === itemID('Runite Bar'))
 		) {
 			coalbag = `\n\n**Boosts:** 60% speed boost for coal bag.`;
-			timeToSmithSingleBar *= 0.62;
+			timeToSmithSingleBar *= 0.625;
 		}
 		let graceful = '';
 		if (!hasGracefulEquipped(msg.author.getGear('skilling'))) {
 			timeToSmithSingleBar *= 1.075;
-			graceful = `-7.5% time penalty for not having graceful equipped`;
+			graceful = `\n-7.5% time penalty for not having graceful equipped.`;
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
@@ -131,7 +131,7 @@ export default class extends BotCommand {
 
 		// cost to pay the foreman to use blast furance
 		const itemsToRemove = new Bank();
-		const coinstoremove = Math.floor(duration / 60);
+		const coinstoremove = Math.floor(72000 * (duration / Time.Hour));
 		const gp = msg.author.settings.get(UserSettings.GP);
 		if (gp < coinstoremove) {
 			return msg.send(`You need atleast ${coinstoremove} GP to work at the Blast Furnace.`);
@@ -152,13 +152,13 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, parseInt(oreID), qty * quantity);
 		}
 
-		await addSubTaskToActivityTask<BlastfurnaceActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<BlastFurnaceActivityTaskOptions>(this.client, {
 			barID: bar.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Blastfurnace
+			type: Activity.BlastFurnace
 		});
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 

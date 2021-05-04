@@ -276,7 +276,7 @@ export interface CollectingOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-export interface BlastfurnaceActivityTaskOptions extends ActivityTaskOptions {
+export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
 	barID: number;
 	quantity: number;
 }

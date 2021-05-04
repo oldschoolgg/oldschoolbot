@@ -34,7 +34,7 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.GloryCharging:
 		case Activity.WealthCharging:
 		case Activity.Collecting:
-		case Activity.Blastfurnace:
+		case Activity.BlastFurnace:
 			return ActivityGroup.Skilling;
 		case Activity.FightCaves:
 		case Activity.Wintertodt:
