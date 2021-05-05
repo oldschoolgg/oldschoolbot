@@ -8,7 +8,6 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { BitField } from './constants';
 import { GuildSettings } from './settings/types/GuildSettings';
 import { UserSettings } from './settings/types/UserSettings';
-import { hasBasicChannelPerms } from './util/hasBasicChannelPerms';
 import resolveItems from './util/resolveItems';
 
 export interface RandomEvent {
