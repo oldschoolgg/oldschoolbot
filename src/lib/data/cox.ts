@@ -67,7 +67,7 @@ export async function createTeam(
 
 		const kc = await u.getMinigameScore(cm ? 'RaidsChallengeMode' : 'Raids');
 		const kcChange = kcPointsEffect(kc);
-		if (kcChange < 0) points = reduceNumByPercent(points, kcChange);
+		if (kcChange < 0) points = reduceNumByPercent(points, Math.abs(kcChange));
 		else points = increaseNumByPercent(points, kcChange);
 
 		const kcPercent = Math.min(100, calcWhatPercent(kc, 100));
@@ -101,7 +101,7 @@ export async function createTeam(
 		}
 
 		points = Math.floor(randomVariation(points, 5));
-		if (points < 1 || points > 50_000) {
+		if (points < 1 || points > 60_000) {
 			captureMessage(`${u.username} had ${points} points in a team of ${users.length}.`);
 			points = 10_000;
 		}
@@ -110,8 +110,8 @@ export async function createTeam(
 		res.push({
 			id: u.id,
 			personalPoints: points,
-			canReceiveAncientTablet: bank.has('Ancient tablet'),
-			canReceiveDust: bank.has('Metamorphic dust'),
+			canReceiveAncientTablet: !bank.has('Ancient tablet'),
+			canReceiveDust: true,
 			deaths,
 			deathChance
 		});
@@ -122,15 +122,32 @@ export async function createTeam(
 function calcSetupPercent(
 	maxStats: GearStats,
 	userStats: GearStats,
-	heavyPenalizeStat: keyof GearStats
+	heavyPenalizeStat: keyof GearStats,
+	ignoreStats: (keyof GearStats)[],
+	melee: boolean
 ) {
-	let numKeys = Object.values(maxStats).filter(i => i > 0).length;
+	let numKeys = 0;
 	let totalPercent = 0;
 	for (const [key, val] of Object.entries(maxStats) as [keyof GearStats, number][]) {
-		if (val <= 0) continue;
+		if (val <= 0 || ignoreStats.includes(key)) continue;
 		const rawPercent = Math.min(100, calcWhatPercent(userStats[key], val));
-		totalPercent += rawPercent / numKeys;
+		totalPercent += rawPercent;
+		numKeys++;
 	}
+	// For melee compare the highest melee attack stat of max setup with the highest melee attack stat of the user
+	if (melee) {
+		let maxMeleeStat = Math.max(
+			maxStats['attack_stab'],
+			Math.max(maxStats['attack_slash'], maxStats['attack_crush'])
+		);
+		let userMeleeStat = Math.max(
+			userStats['attack_stab'],
+			Math.max(userStats['attack_slash'], userStats['attack_crush'])
+		);
+		totalPercent += Math.min(100, calcWhatPercent(userMeleeStat, maxMeleeStat));
+		numKeys++;
+	}
+	totalPercent /= numKeys;
 	// Heavy penalize for having less than 50% in the main stat of this setup.
 	if (userStats[heavyPenalizeStat] < maxStats[heavyPenalizeStat] / 2) {
 		totalPercent = Math.floor(Math.max(0, totalPercent / 2));
@@ -184,17 +201,23 @@ export function calculateUserGearPercents(user: KlasaUser) {
 	const melee = calcSetupPercent(
 		maxMeleeSum,
 		sumOfSetupStats(user.getGear('melee')),
-		'melee_strength'
+		'melee_strength',
+		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged', 'attack_magic'],
+		true
 	);
 	const range = calcSetupPercent(
 		maxRangeSum,
 		sumOfSetupStats(user.getGear('range')),
-		'ranged_strength'
+		'ranged_strength',
+		['attack_stab', 'attack_slash', 'attack_crush', 'attack_magic'],
+		false
 	);
 	const mage = calcSetupPercent(
 		maxMageSum,
 		sumOfSetupStats(user.getGear('mage')),
-		'magic_damage'
+		'magic_damage',
+		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged'],
+		false
 	);
 	return {
 		melee,
@@ -260,7 +283,7 @@ async function kcEffectiveness(u: KlasaUser, challengeMode: boolean, isSolo: boo
 	const kc = await u.getMinigameScore(challengeMode ? 'RaidsChallengeMode' : 'Raids');
 	let cap = isSolo ? 250 : 400;
 	if (challengeMode) {
-		cap /= 2.5;
+		cap = isSolo ? 75 : 100;
 	}
 	const kcEffectiveness = Math.min(100, calcWhatPercent(kc, cap));
 	return kcEffectiveness;
@@ -270,6 +293,7 @@ const speedReductionForGear = 15;
 const speedReductionForKC = 40;
 const totalSpeedReductions = speedReductionForGear + speedReductionForKC + 10 + 5;
 const baseDuration = Time.Minute * 83;
+const baseCmDuration = Time.Minute * 110;
 
 const { ceil } = Math;
 function calcPerc(perc: number, num: number) {
@@ -318,6 +342,10 @@ const itemBoosts = [
 		{
 			item: getOSItem('Bandos godsword'),
 			boost: 2.5
+		},
+		{
+			item: getOSItem('Bandos godsword (or)'),
+			boost: 2.5
 		}
 	]
 ];
@@ -359,11 +387,14 @@ export async function calcCoxDuration(
 	}
 	let duration = baseDuration;
 
-	duration = reduceNumByPercent(duration, totalReduction);
-	duration -= duration * (teamSizeBoostPercent(size) / 100);
 	if (challengeMode) {
-		duration *= 2;
+		duration = baseCmDuration;
+		duration = reduceNumByPercent(duration, totalReduction / 1.3);
+	} else {
+		duration = reduceNumByPercent(duration, totalReduction);
 	}
+
+	duration -= duration * (teamSizeBoostPercent(size) / 100);
 
 	duration = randomVariation(duration, 5);
 	return { duration, reductions, totalReduction: totalSpeedReductions / size };
