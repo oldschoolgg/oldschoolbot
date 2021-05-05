@@ -1,4 +1,4 @@
-import { Message, MessageAttachment, MessageCollector } from 'discord.js';
+import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -61,7 +61,8 @@ export async function handleTripFinish(
 	if (
 		channel &&
 		!user.bitfield.includes(BitField.DisabledRandomEvents) &&
-		roll(production ? randomEventChance : 1)
+		roll(production ? randomEventChance : 1) &&
+		channel instanceof TextChannel
 	) {
 		triggerRandomEvent(channel, user);
 	}

@@ -1,4 +1,4 @@
-import { Channel, MessageEmbed, TextChannel } from 'discord.js';
+import { MessageEmbed, TextChannel } from 'discord.js';
 import { randArrItem, randInt, Time } from 'e';
 import fs from 'fs';
 import { KlasaUser } from 'klasa';
@@ -179,7 +179,7 @@ const options = {
 	errors: ['time']
 };
 
-export async function triggerRandomEvent(ch: Channel, user: KlasaUser) {
+export async function triggerRandomEvent(ch: TextChannel, user: KlasaUser) {
 	if (user.settings.get(UserSettings.BitField).includes(BitField.DisabledRandomEvents)) {
 		return;
 	}
