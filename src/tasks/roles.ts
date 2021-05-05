@@ -155,7 +155,8 @@ ORDER BY u.sacbanklength DESC LIMIT 1;`);
 			'gnome_restaurant',
 			'soul_wars',
 			'castle_wars',
-			'raids'
+			'raids',
+			'raids_challenge_mode'
 		];
 		for (const game of minigames) {
 			const result = (await this.client.query(
