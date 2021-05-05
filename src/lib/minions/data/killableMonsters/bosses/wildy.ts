@@ -172,7 +172,10 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 8,
 		notifyDrops: resolveItems(["Scorpia's offspring"]),
 		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
+		itemInBankBoosts: [
+			{ [itemID('Occult necklace')]: 10 },
+			{ [itemID('Harmonised nightmare staff')]: 10 }
+		],
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.3
 	}

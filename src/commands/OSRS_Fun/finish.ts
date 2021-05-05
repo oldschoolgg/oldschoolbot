@@ -961,7 +961,7 @@ ${lootMSG.join('\n')}`);
 							loot.push('JAR');
 							jarKC = kc;
 							lootMSG.push(
-								`**Pet Jar of Spirits:** ${jarKC.toLocaleString()} KC <:jarOfSpirits:838735098894614548>`
+								`**Jar of Spirits:** ${jarKC.toLocaleString()} KC <:jarOfSpirits:838735098894614548>`
 							);
 						} else {
 							duplicates.push('<:jarOfSpirits:838735098894614548>');

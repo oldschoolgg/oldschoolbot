@@ -133,6 +133,9 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Dragon warhammer')]: 10
+			},
+			{
+				[itemID('Elder maul')]: 5
 			}
 		],
 		levelRequirements: {
