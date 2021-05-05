@@ -181,10 +181,7 @@ const options = {
 };
 
 export async function triggerRandomEvent(ch: Channel, user: KlasaUser) {
-	if (
-		user.settings.get(UserSettings.BitField).includes(BitField.DisabledRandomEvents) ||
-		!hasBasicChannelPerms(ch)
-	) {
+	if (user.settings.get(UserSettings.BitField).includes(BitField.DisabledRandomEvents)) {
 		return;
 	}
 
