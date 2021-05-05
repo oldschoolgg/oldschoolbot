@@ -606,6 +606,13 @@ export default class extends Extendable {
 		else if (perkTier === PerkTier.Three) max += Time.Minute * 6;
 		else if (perkTier >= PerkTier.Four) max += Time.Minute * 10;
 
+		const sac = this.settings.get(UserSettings.SacrificedValue);
+		const sacPercent = Math.min(
+			100,
+			calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000)
+		);
+		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
+
 		if (!activity) return max;
 		switch (activity) {
 			case Activity.Nightmare:
