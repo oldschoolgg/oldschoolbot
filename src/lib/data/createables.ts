@@ -86,6 +86,18 @@ const crystalTools: Createable[] = [
 		},
 		requiredSkills: { smithing: 76, crafting: 76 },
 		QPRequired: 150
+	},
+	{
+		name: 'Blade of saeldor (c)',
+		inputItems: {
+			[itemID('Blade of saeldor (inactive)')]: 1,
+			[itemID('Crystal shard')]: 1000
+		},
+		outputItems: {
+			[itemID('Blade of saeldor (c)')]: 1
+		},
+		requiredSkills: { smithing: 82, crafting: 82 },
+		QPRequired: 150
 	}
 ];
 
