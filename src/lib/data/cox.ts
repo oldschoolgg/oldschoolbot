@@ -283,7 +283,7 @@ async function kcEffectiveness(u: KlasaUser, challengeMode: boolean, isSolo: boo
 	const kc = await u.getMinigameScore(challengeMode ? 'RaidsChallengeMode' : 'Raids');
 	let cap = isSolo ? 250 : 400;
 	if (challengeMode) {
-		cap /= 2.5;
+		cap = isSolo ? 75 : 100;
 	}
 	const kcEffectiveness = Math.min(100, calcWhatPercent(kc, cap));
 	return kcEffectiveness;
