@@ -601,6 +601,10 @@ export default class extends Extendable {
 	public maxTripLength(this: User, activity?: Activity) {
 		let max = Time.Minute * 30;
 
+		if (activity === Activity.Alching) {
+			return Time.Hour;
+		}
+
 		const perkTier = getUsersPerkTier(this);
 		if (perkTier === PerkTier.Two) max += Time.Minute * 3;
 		else if (perkTier === PerkTier.Three) max += Time.Minute * 6;
