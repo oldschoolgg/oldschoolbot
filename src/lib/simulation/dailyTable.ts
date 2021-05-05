@@ -28,7 +28,6 @@ const CommonTable = new LootTable()
 	.add('White toy horsey')
 	.add('Black toy horsey')
 	.add('Grey toy horsey')
-	.add('Mystery box')
 
 	// Boxing Gloves - they have the same names so need to use IDs.
 	.add(11705)
@@ -41,7 +40,8 @@ const DailyTable = new LootTable()
 
 	.add('Coins', [100_000, 500_000])
 	.add(UncommonTable)
-	.add(CommonTable, 1, 2);
+	.add(CommonTable, 1, 2)
+	.add('Mystery box', 1, 2);
 
 export default function dailyRoll(qty = 1, correct = false) {
 	const loot = new Bank();
