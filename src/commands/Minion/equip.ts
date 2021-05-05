@@ -7,7 +7,12 @@ import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { itemNameFromID, toTitleCase } from '../../lib/util';
+import {
+	formatSkillRequirements,
+	itemNameFromID,
+	skillsMeetRequirements,
+	toTitleCase
+} from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -77,6 +82,18 @@ export default class extends BotCommand {
 			return msg.send(
 				`You can't equip more than 1 of this item at once, as it isn't stackable!`
 			);
+		}
+
+		if (itemToEquip.equipment?.requirements) {
+			if (!skillsMeetRequirements(msg.author.rawSkills, itemToEquip.equipment.requirements)) {
+				return msg.send(
+					`You can't equip a ${
+						itemToEquip.name
+					} because you don't have the required stats: ${formatSkillRequirements(
+						itemToEquip.equipment.requirements
+					)}.`
+				);
+			}
 		}
 
 		/**
