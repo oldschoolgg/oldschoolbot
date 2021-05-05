@@ -1511,20 +1511,6 @@ export const capes: CollectionLogData = {
 		'Runecraft hood',
 		'Thieving hood'
 	]),
-	capes: resolveItems([
-		'Mining cape',
-		'Smithing cape',
-		'Woodcutting cape',
-		'Firemaking cape',
-		'Fishing cape',
-		'Agility cape',
-		'Cooking cape',
-		'Crafting cape',
-		'Prayer cape',
-		'Fletching cape',
-		'Runecraft cape',
-		'Thieving cape'
-	]),
 	'trimmed capes': resolveItems([
 		'Mining cape(t)',
 		'Smithing cape(t)',
@@ -1552,19 +1538,6 @@ export const capes: CollectionLogData = {
 		'Ranging hood',
 		'Quest point hood'
 	]),
-	capes2: resolveItems([
-		'Farming cape',
-		'Herblore cape',
-		'Hunter cape',
-		'Construct. cape',
-		'Magic cape',
-		'Attack cape',
-		'Strength cape',
-		'Defence cape',
-		'Hitpoints cape',
-		'Ranging cape',
-		'Quest point cape'
-	]),
 	'trimmed capes2': resolveItems([
 		'Farming cape(t)',
 		'Herblore cape(t)',
@@ -1576,7 +1549,7 @@ export const capes: CollectionLogData = {
 		'Defence cape(t)',
 		'Hitpoints cape(t)',
 		'Ranging cape(t)',
-		'Quest point cape (t)'
+		'Quest point cape'
 	])
 };
 

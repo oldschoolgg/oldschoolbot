@@ -37,9 +37,9 @@ const CommonTable = new LootTable()
 	.add(UncommonTable);
 
 const DailyTable = new LootTable()
-	.every('Coins', [1_000_000, 3_000_000])
+	.every('Coins', [100_000, 1_000_000])
 
-	.add('Coins', [100_000, 10_000_000])
+	.add('Coins', [100_000, 500_000])
 	.add(UncommonTable)
 	.add(CommonTable, 1, 2);
 

@@ -1,6 +1,7 @@
 import { User } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -19,6 +20,7 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
+import { KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
@@ -534,7 +536,7 @@ export default class extends Extendable {
 					data.challengeMode ? ' in Challenge Mode' : ''
 				}, ${
 					data.users.length === 1
-						? 'as a solo'
+						? 'as a solo.'
 						: `with a team of ${data.users.length} minions.`
 				} ${formattedDuration}`;
 			}
@@ -601,10 +603,21 @@ export default class extends Extendable {
 	public maxTripLength(this: User, activity?: Activity) {
 		let max = Time.Minute * 30;
 
+		if (activity === Activity.Alching) {
+			return Time.Hour;
+		}
+
 		const perkTier = getUsersPerkTier(this);
 		if (perkTier === PerkTier.Two) max += Time.Minute * 3;
 		else if (perkTier === PerkTier.Three) max += Time.Minute * 6;
 		else if (perkTier >= PerkTier.Four) max += Time.Minute * 10;
+
+		const sac = this.settings.get(UserSettings.SacrificedValue);
+		const sacPercent = Math.min(
+			100,
+			calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000)
+		);
+		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
 
 		if (!activity) return max;
 		switch (activity) {
@@ -843,5 +856,30 @@ export default class extends Extendable {
 
 	public getAttackStyles(this: User) {
 		return this.settings.get(UserSettings.AttackStyle);
+	}
+
+	public resolveAvailableItemBoosts(this: User, monster: KillableMonster) {
+		const boosts = new Bank();
+		if (monster.itemInBankBoosts) {
+			for (const boostSet of monster.itemInBankBoosts) {
+				let highestBoostAmount = 0;
+				let highestBoostItem = 0;
+
+				// find the highest boost that the player has
+				for (const [itemID, boostAmount] of Object.entries(boostSet)) {
+					const parsedId = parseInt(itemID);
+					if (!this.hasItemEquippedOrInBank(parsedId)) continue;
+					if (boostAmount > highestBoostAmount) {
+						highestBoostAmount = boostAmount;
+						highestBoostItem = parsedId;
+					}
+				}
+
+				if (highestBoostAmount && highestBoostItem) {
+					boosts.add(highestBoostItem, highestBoostAmount);
+				}
+			}
+		}
+		return boosts.bank;
 	}
 }
