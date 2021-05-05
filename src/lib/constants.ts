@@ -330,7 +330,8 @@ export const enum BitField {
 	BypassAgeRestriction = 9,
 	HasHosidiusWallkit = 10,
 	HasPermanentEventBackgrounds = 11,
-	HasPermanentTierOne = 12
+	HasPermanentTierOne = 12,
+	DisabledRandomEvents = 13
 }
 
 interface BitFieldData {
