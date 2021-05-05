@@ -6,6 +6,7 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { BitField } from './constants';
+import { GuildSettings } from './settings/types/GuildSettings';
 import { UserSettings } from './settings/types/UserSettings';
 import { hasBasicChannelPerms } from './util/hasBasicChannelPerms';
 import resolveItems from './util/resolveItems';
@@ -173,43 +174,51 @@ async function finalizeEvent(event: RandomEvent, user: KlasaUser, ch: TextChanne
 	ch.send(`You finished the ${event.name} event, and received... ${loot}.`);
 }
 
+const options = {
+	max: 1,
+	time: 30_000,
+	errors: ['time']
+};
+
 export async function triggerRandomEvent(ch: Channel, user: KlasaUser) {
-	if (user.settings.get(UserSettings.BitField).includes(BitField.DisabledRandomEvents)) {
-		console.log(`${user.username} not getting event because disabled for user`);
+	if (
+		user.settings.get(UserSettings.BitField).includes(BitField.DisabledRandomEvents) ||
+		!hasBasicChannelPerms(ch)
+	) {
 		return;
 	}
 
-	if (!hasBasicChannelPerms(ch)) {
-		console.log(`${user.username} not getting event because insufficient channel perms`);
-		return;
-	}
 	const prev = cache.get(user.id);
 
-	// Max 1 event per 30 mins per user
+	// Max 1 event per 3h mins per user
 	if (prev && Date.now() - prev < Time.Hour * 3) {
-		console.log(`${user.username} not getting event because of 30min limit`);
 		return;
 	}
 
 	const event = randArrItem(RandomEvents);
 	const roll = randInt(1, 4);
 	user.log(`getting ${event.name} random event.`);
+
+	const embed = new MessageEmbed().setFooter(
+		`Use \`${ch.guild.settings.get(
+			GuildSettings.Prefix
+		)}randomevents disable\` to disable random events.`
+	);
+
 	switch (roll) {
 		case 1: {
 			const randTrivia = randArrItem(triviaQuestions);
 			await ch.send(
-				`${user}, you've encountered the ${event.name} random event! To complete this event, answer this trivia question... ${randTrivia.q}`
+				embed.setDescription(
+					`${user}, you've encountered the ${event.name} random event! To complete this event, answer this trivia question... ${randTrivia.q}`
+				)
 			);
 			try {
 				await ch.awaitMessages(
 					answer =>
 						answer.author.id === user.id &&
 						randTrivia.a.includes(answer.content.toLowerCase()),
-					{
-						max: 1,
-						time: 30_000,
-						errors: ['time']
-					}
+					options
 				);
 				finalizeEvent(event, user, ch);
 				return;
@@ -218,21 +227,18 @@ export async function triggerRandomEvent(ch: Channel, user: KlasaUser) {
 			}
 		}
 		case 2: {
-			const embed = new MessageEmbed().setImage(
-				'https://cdn.discordapp.com/attachments/357422607982919680/801688145120067624/Certer_random_event.png'
-			);
-			await ch.send(
-				`${user}, you've encountered the ${event.name} random event! To complete this event, specify the letter corresponding to the answer in this image:`,
-				embed
-			);
+			embed
+				.setDescription(
+					`${user}, you've encountered the ${event.name} random event! To complete this event, specify the letter corresponding to the answer in this image:`
+				)
+				.setImage(
+					'https://cdn.discordapp.com/attachments/357422607982919680/801688145120067624/Certer_random_event.png'
+				);
+			await ch.send(embed);
 			try {
 				await ch.awaitMessages(
 					answer => answer.author.id === user.id && answer.content.toLowerCase() === 'a',
-					{
-						max: 1,
-						time: 30_000,
-						errors: ['time']
-					}
+					options
 				);
 				finalizeEvent(event, user, ch);
 				return;
@@ -241,21 +247,18 @@ export async function triggerRandomEvent(ch: Channel, user: KlasaUser) {
 			}
 		}
 		case 3: {
-			const embed = new MessageEmbed().setImage(
-				'https://cdn.discordapp.com/attachments/342983479501389826/807737932072747018/nmgilesre.gif'
-			);
-			await ch.send(
-				`${user}, you've encountered the ${event.name} random event! To complete this event, specify the letter corresponding to the answer in this image:`,
-				embed
-			);
+			embed
+				.setImage(
+					'https://cdn.discordapp.com/attachments/342983479501389826/807737932072747018/nmgilesre.gif'
+				)
+				.setDescription(
+					`${user}, you've encountered the ${event.name} random event! To complete this event, specify the letter corresponding to the answer in this image:`
+				);
+			await ch.send(embed);
 			try {
 				await ch.awaitMessages(
 					answer => answer.author.id === user.id && answer.content.toLowerCase() === 'a',
-					{
-						max: 1,
-						time: 30_000,
-						errors: ['time']
-					}
+					options
 				);
 				finalizeEvent(event, user, ch);
 				return;
@@ -265,14 +268,12 @@ export async function triggerRandomEvent(ch: Channel, user: KlasaUser) {
 		}
 		case 4: {
 			const message = await ch.send(
-				`${user}, you've encountered the ${event.name} random event! To complete this event, reaction to this message with any emoji.`
+				embed.setDescription(
+					`${user}, you've encountered the ${event.name} random event! To complete this event, reaction to this message with any emoji.`
+				)
 			);
 			try {
-				await message.awaitReactions((_, _user) => user.id === _user.id, {
-					max: 1,
-					time: 30_000,
-					errors: ['time']
-				});
+				await message.awaitReactions((_, _user) => user.id === _user.id, options);
 				finalizeEvent(event, user, ch);
 				return;
 			} catch (err) {
