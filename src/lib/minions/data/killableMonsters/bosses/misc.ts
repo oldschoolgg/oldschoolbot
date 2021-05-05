@@ -215,7 +215,8 @@ const killableBosses: KillableMonster[] = [
 			{ [itemID('Bandos tassets')]: 5 }
 		],
 		levelRequirements: {
-			prayer: 43
+			prayer: 43,
+			slayer: 93
 		},
 		defaultAttackStyles: [SkillsEnum.Strength],
 		combatXpMultiplier: 1.15
