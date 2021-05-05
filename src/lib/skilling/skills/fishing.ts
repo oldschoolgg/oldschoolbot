@@ -28,8 +28,7 @@ const fishes: Fish[] = [
 		id: itemID('Raw karambwanji'),
 		name: 'Karambwanji',
 		qpRequired: 15,
-		timePerFish: 3.6,
-		clueScrollChance: 443_697
+		timePerFish: 3.6
 	},
 	{
 		level: 10,
