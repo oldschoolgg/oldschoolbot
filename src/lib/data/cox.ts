@@ -387,14 +387,12 @@ export async function calcCoxDuration(
 	}
 	let duration = baseDuration;
 
-	if(challengeMode) {
+	if (challengeMode) {
 		duration = baseCmDuration;
 		duration = reduceNumByPercent(duration, totalReduction / 1.3);
-	}
-	else {
+	} else {
 		duration = reduceNumByPercent(duration, totalReduction);
 	}
-
 
 	duration -= duration * (teamSizeBoostPercent(size) / 100);
 

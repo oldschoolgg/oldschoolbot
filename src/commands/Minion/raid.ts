@@ -130,8 +130,16 @@ export default class extends BotCommand {
 **Range Gear Score:** <:Twisted_bow:403018312402862081> ${range.toFixed(1)}%
 **Mage Gear Score:** <:Kodai_insignia:403018312264712193> ${mage.toFixed(1)}%
 **Total Gear Score:** ${Emoji.Gear} ${total.toFixed(1)}%
-**Death Chance Solo:** ${Emoji.Skull} ${(await createTeam([msg.author], false))[0].deathChance.toFixed(1)}%, CM ${Emoji.Skull} ${(await createTeam([msg.author], true))[0].deathChance.toFixed(1)}%
-**Death Chance Team:** ${Emoji.Skull} ${(await createTeam(Array(2).fill(msg.author), false))[0].deathChance.toFixed(1)}%, CM ${Emoji.Skull} ${(await createTeam(Array(2).fill(msg.author), true))[0].deathChance.toFixed(1)}%`);
+**Death Chance Solo:** ${Emoji.Skull} ${(
+				await createTeam([msg.author], false)
+			)[0].deathChance.toFixed(1)}%, CM ${Emoji.Skull} ${(
+				await createTeam([msg.author], true)
+			)[0].deathChance.toFixed(1)}%
+**Death Chance Team:** ${Emoji.Skull} ${(
+				await createTeam(Array(2).fill(msg.author), false)
+			)[0].deathChance.toFixed(1)}%, CM ${Emoji.Skull} ${(
+				await createTeam(Array(2).fill(msg.author), true)
+			)[0].deathChance.toFixed(1)}%`);
 		}
 
 		if (type !== 'mass' && type !== 'solo') {

@@ -69,7 +69,7 @@ export default class extends Task {
 			const isPurple = userLoot.items().some(([item]) => purpleItems.includes(item.id));
 			const isGreen = userLoot.items().some(([item]) => greenItems.includes(item.id));
 			const isBlue = userLoot.items().some(([item]) => blueItems.includes(item.id));
-			const emote = isBlue? Emoji.Blue : isGreen? Emoji.Green : Emoji.Purple;
+			const emote = isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
 			if (isPurple) {
 				const itemsToAnnounce = filterBankFromArrayOfItems(purpleItems, _userLoot);
 				this.client.emit(

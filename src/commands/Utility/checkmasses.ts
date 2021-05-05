@@ -40,9 +40,11 @@ export default class extends BotCommand {
 		const massStr = masses
 			.map(
 				m =>
-					`${m.type}${m.data.challengeMode?` CM`:``}: ${m.data.users.length} users returning to <#${
-						m.channel_id
-					}> in ${formatDuration(m.finish_date.getTime() - now)}`
+					`${m.type}${m.data.challengeMode ? ` CM` : ``}: ${
+						m.data.users.length
+					} users returning to <#${m.channel_id}> in ${formatDuration(
+						m.finish_date.getTime() - now
+					)}`
 			)
 			.join('\n');
 		return msg.channel.send(`**Masses in this server:**
