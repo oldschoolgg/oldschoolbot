@@ -4,11 +4,8 @@ import { BitField } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
-const typeString = (
-	pre: string
-) => `You didn't specify if you want to enable/disable random events for this server, or for you personally.
-
-- If you disable it for yourself, you won't receive random events, even if the server has them enabled.  Example: \`${pre}randomevents enable\`.`;
+const typeString = (pre: string) =>
+	`You didn't specify if you want to enable/disable random events for this server, or for you personally. Example: \`${pre}randomevents enable\`.`;
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
