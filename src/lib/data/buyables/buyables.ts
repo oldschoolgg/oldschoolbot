@@ -527,6 +527,14 @@ const questBuyables: Buyable[] = [
 		}),
 		gpCost: 100_000,
 		qpRequired: 20
+	},
+	{
+		name: 'Warrior helm',
+		outputItems: resolveNameBank({
+			'Warrior helm': 1
+		}),
+		gpCost: 780_000,
+		qpRequired: 60
 	}
 ];
 
