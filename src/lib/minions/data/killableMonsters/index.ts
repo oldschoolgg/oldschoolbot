@@ -67,7 +67,8 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Armadyl chestplate')]: 2 },
-			{ [itemID('Armadyl chainskirt')]: 2 }
+			{ [itemID('Armadyl chainskirt')]: 2 },
+			{ [itemID('Twisted Bow')]: 15 }
 		],
 		levelRequirements: {
 			prayer: 43
