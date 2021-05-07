@@ -8,11 +8,15 @@ export default class extends Monitor {
 	public constructor(store: MonitorStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			ignoreOthers: false,
-			ignoreEdits: !store.client.options.commandEditing
+			ignoreEdits: !store.client.options.commandEditing,
+			ignoreBots: false
 		});
 	}
 
 	public async run(message: KlasaMessage) {
+		if (message.author.bot && !['798308589373489172'].includes(message.author.id)) {
+			return;
+		}
 		if (message.guild && message.guild.me === null) {
 			await message.guild.members.fetch(this.client.user!.id);
 		}
