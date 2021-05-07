@@ -1,4 +1,5 @@
 import { Time } from 'e';
+import { Bank } from 'oldschooljs';
 
 import itemID from '../../../util/itemID';
 import { BlastableBar } from '../../types';
@@ -9,7 +10,7 @@ const BlastableBars: BlastableBar[] = [
 		level: 1,
 		xp: 6.2,
 		id: itemID('Bronze bar'),
-		inputOres: { [itemID('Copper ore')]: 1, [itemID('Tin ore')]: 1 },
+		inputOres: new Bank({ 'Copper ore': 1, 'Tin ore': 1 }),
 		timeToUse: Time.Second * 1.05
 	},
 	{
@@ -17,7 +18,7 @@ const BlastableBars: BlastableBar[] = [
 		level: 15,
 		xp: 12.5,
 		id: itemID('Iron bar'),
-		inputOres: { [itemID('Iron ore')]: 1 },
+		inputOres: new Bank({ 'Iron ore': 1 }),
 		timeToUse: Time.Second * 0.47
 	},
 	{
@@ -25,7 +26,7 @@ const BlastableBars: BlastableBar[] = [
 		level: 20,
 		xp: 13.6,
 		id: itemID('Silver bar'),
-		inputOres: { [itemID('Silver ore')]: 1 },
+		inputOres: new Bank({ 'Silver ore': 1 }),
 		timeToUse: Time.Second * 0.47
 	},
 	{
@@ -33,7 +34,7 @@ const BlastableBars: BlastableBar[] = [
 		level: 30,
 		xp: 17.5,
 		id: itemID('Steel bar'),
-		inputOres: { [itemID('Iron ore')]: 1, [itemID('Coal')]: 1 },
+		inputOres: new Bank({ 'Iron ore': 1, Coal: 1 }),
 		timeToUse: Number(Time.Second)
 	},
 	{
@@ -41,7 +42,7 @@ const BlastableBars: BlastableBar[] = [
 		level: 40,
 		xp: 22.5,
 		id: itemID('Gold bar'),
-		inputOres: { [itemID('Gold ore')]: 1 },
+		inputOres: new Bank({ 'Gold ore': 1 }),
 		timeToUse: Time.Second * 0.47
 	},
 	{
@@ -49,7 +50,7 @@ const BlastableBars: BlastableBar[] = [
 		level: 50,
 		xp: 30,
 		id: itemID('Mithril bar'),
-		inputOres: { [itemID('Mithril ore')]: 1, [itemID('Coal')]: 2 },
+		inputOres: new Bank({ 'Mithril ore': 1, Coal: 2 }),
 		timeToUse: Time.Second * 1.6
 	},
 	{
@@ -57,7 +58,7 @@ const BlastableBars: BlastableBar[] = [
 		level: 70,
 		xp: 37.5,
 		id: itemID('Adamantite bar'),
-		inputOres: { [itemID('Adamantite ore')]: 1, [itemID('Coal')]: 3 },
+		inputOres: new Bank({ 'Adamantite ore': 1, Coal: 3 }),
 		timeToUse: Time.Second * 1.8
 	},
 	{
@@ -65,7 +66,7 @@ const BlastableBars: BlastableBar[] = [
 		level: 85,
 		xp: 50,
 		id: itemID('Runite bar'),
-		inputOres: { [itemID('Runite ore')]: 1, [itemID('Coal')]: 4 },
+		inputOres: new Bank({ 'Runite ore': 1, Coal: 4 }),
 		timeToUse: Time.Second * 2.6
 	}
 ];

@@ -1,5 +1,4 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
@@ -8,20 +7,11 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { ItemBank } from '../../lib/types';
 import { BlastFurnaceActivityTaskOptions } from '../../lib/types/minions';
-import {
-	bankHasItem,
-	formatDuration,
-	itemID,
-	itemNameFromID,
-	removeItemFromBank,
-	skillsMeetRequirements,
-	stringMatches
-} from '../../lib/util';
+import { formatDuration, itemID, skillsMeetRequirements, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
-export function hasSkillRequirements(user: KlasaUser): boolean {
+export function hasStatsForBlastFurnace(user: KlasaUser): boolean {
 	return skillsMeetRequirements(user.rawSkills, {
 		crafting: 12,
 		firemaking: 16,
@@ -41,8 +31,8 @@ export default class extends BotCommand {
 			aliases: ['bf', 'blastfurnace'],
 			usageDelim: ' ',
 			categoryFlags: ['minion', 'skilling'],
-			description: 'Sends your minion to smelt items, which is turning ores into bars.',
-			examples: ['+Blastfurnace bronze']
+			description: 'Sends your minion to the blast furnace to smelt bars.',
+			examples: ['+blastfurnace bronze']
 		});
 	}
 
@@ -58,7 +48,7 @@ export default class extends BotCommand {
 			bar =>
 				stringMatches(bar.name, barName) || stringMatches(bar.name.split(' ')[0], barName)
 		);
-		const hasSkills = hasSkillRequirements(msg.author);
+		const hasSkills = hasStatsForBlastFurnace(msg.author);
 		if (!hasSkills) {
 			return msg.send(
 				`You do not have high enough stats to use the Blast Furnace, you need atleast crafting: 12, firemaking: 16, magic: 33, mining: 50, smithing: 20 ,and thieving: 13 `
@@ -101,22 +91,17 @@ export default class extends BotCommand {
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
 
+		await msg.author.settings.sync(true);
+		const userBank = msg.author.bank();
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
+			const max = userBank.fits(bar.inputOres);
+			if (max < quantity && max !== 0) quantity = max;
 		}
-
-		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
-
 		// Check the user has the required ores to smith these bars.
 		// Multiplying the ore required by the quantity of bars.
-		const requiredOres: [string, number][] = Object.entries(bar.inputOres);
-		for (const [oreID, qty] of requiredOres) {
-			if (!bankHasItem(userBank, parseInt(oreID), qty * quantity)) {
-				return msg.send(`You don't have enough ${itemNameFromID(parseInt(oreID))}.`);
-			}
-		}
 
 		const duration = quantity * timeToSmithSingleBar;
 		if (duration > maxTripLength) {
@@ -129,28 +114,25 @@ export default class extends BotCommand {
 			);
 		}
 
+		const itemsNeeded = bar.inputOres.clone().multiply(quantity);
+		if (!userBank.has(itemsNeeded.bank)) {
+			return msg.send(
+				`You don't have enough items. For ${quantity}x ${
+					bar.name
+				}, you're missing **${itemsNeeded.clone().remove(userBank)}**.`
+			);
+		}
+
 		// cost to pay the foreman to use blast furance
-		const itemsToRemove = new Bank();
-		const coinstoremove = Math.floor(72000 * (duration / Time.Hour));
+		const coinsToRemove = Math.floor(72000 * (duration / Time.Hour));
 		const gp = msg.author.settings.get(UserSettings.GP);
-		if (gp < coinstoremove) {
-			return msg.send(`You need atleast ${coinstoremove} GP to work at the Blast Furnace.`);
+		if (gp < coinsToRemove) {
+			return msg.send(`You need atleast ${coinsToRemove} GP to work at the Blast Furnace.`);
 		}
 
-		itemsToRemove.add('Coins', coinstoremove);
-		await msg.author.removeItemsFromBank(itemsToRemove.bank);
+		itemsNeeded.add('Coins', coinsToRemove);
 
-		// Remove the ores from their bank.
-		let newBank: ItemBank = { ...userBank };
-		for (const [oreID, qty] of requiredOres) {
-			if (newBank[parseInt(oreID)] < qty) {
-				this.client.wtf(
-					new Error(`${msg.author.sanitizedName} had insufficient ores to be removed.`)
-				);
-				return;
-			}
-			newBank = removeItemFromBank(newBank, parseInt(oreID), qty * quantity);
-		}
+		await msg.author.removeItemsFromBank(itemsNeeded);
 
 		await addSubTaskToActivityTask<BlastFurnaceActivityTaskOptions>(this.client, {
 			barID: bar.id,
@@ -160,7 +142,6 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.BlastFurnace
 		});
-		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		let goldGauntletMessage = ``;
 		if (
@@ -175,7 +156,7 @@ export default class extends BotCommand {
 				bar.name
 			}, it'll take around ${formatDuration(
 				duration
-			)} to finish. Costing ${coinstoremove} GP for your time in the Blast Furnace.${goldGauntletMessage}${coalbag}${graceful}`
+			)} to finish. Costing ${coinsToRemove} GP for your time in the Blast Furnace.${goldGauntletMessage}${coalbag}${graceful}`
 		);
 	}
 }

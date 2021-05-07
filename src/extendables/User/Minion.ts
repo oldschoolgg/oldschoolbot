@@ -559,7 +559,7 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently smelting ${data.quantity}x ${
 					bar!.name
-				}at the Blast Furnace. ${formattedDuration} Your ${
+				} at the Blast Furnace. ${formattedDuration} Your ${
 					Emoji.Smithing
 				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
 			}

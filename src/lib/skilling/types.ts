@@ -123,7 +123,7 @@ export interface BlastableBar {
 	xp: number;
 	id: number;
 	name: string;
-	inputOres: ItemBank;
+	inputOres: Bank;
 	timeToUse: number;
 }
 
