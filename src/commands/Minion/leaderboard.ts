@@ -556,7 +556,7 @@ ORDER BY u."logBankLength" DESC;`
 					subList
 						.map(
 							({ id, creatureCount }) =>
-								`**${this.getUsername(id)}:** ${creatureCount} Catched`
+								`**${this.getUsername(id)}:** ${creatureCount} caught`
 						)
 						.join('\n')
 				),

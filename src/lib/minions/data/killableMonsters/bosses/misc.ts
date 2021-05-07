@@ -28,10 +28,14 @@ const killableBosses: KillableMonster[] = [
 			"Dharok's greataxe"
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 5,
-			[itemID('Berserker ring')]: 5
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Barrows gloves')]: 5
+			},
+			{
+				[itemID('Berserker ring')]: 5
+			}
+		],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -50,9 +54,14 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 8,
 		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
 		qpRequired: 205,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon warhammer')]: 10
+			},
+			{
+				[itemID('Dragon hunter crossbow')]: 20
+			}
+		],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -69,11 +78,18 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 8,
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 5,
-			[itemID('Ranger boots')]: 5,
-			[itemID("Iban's staff")]: 2
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Ranger boots')]: 5,
+				[itemID('Pegasian boots')]: 7
+			},
+			{
+				[itemID("Iban's staff")]: 2
+			},
+			{
+				[itemID('Barrows gloves')]: 5
+			}
+		],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -107,9 +123,14 @@ const killableBosses: KillableMonster[] = [
 			["Black d'hide body", "Karil's leathertop"]
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon warhammer')]: 10
+			},
+			{
+				[itemID('Elder maul')]: 5
+			}
+		],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -149,10 +170,10 @@ const killableBosses: KillableMonster[] = [
 			'Jar of spirits'
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Bandos godsword')]: 5,
-			[itemID('Dragon warhammer')]: 10
-		},
+		itemInBankBoosts: [
+			{ [itemID('Dragon warhammer')]: 10 },
+			{ [itemID('Bandos godsword')]: 5 }
+		],
 		groupKillable: true,
 		respawnTime: 20_000,
 		levelRequirements: {
@@ -183,16 +204,17 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate'],
 			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets'],
-			'Zamorakian spear'
+			['Zamorakian spear', 'Zamorakian hasta']
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Spectral spirit shield')]: 10,
-			[itemID('Bandos chestplate')]: 5,
-			[itemID('Bandos tassets')]: 5
-		},
+		itemInBankBoosts: [
+			{ [itemID('Spectral spirit shield')]: 10 },
+			{ [itemID('Bandos chestplate')]: 5 },
+			{ [itemID('Bandos tassets')]: 5 }
+		],
 		levelRequirements: {
-			prayer: 43
+			prayer: 43,
+			slayer: 93
 		},
 		defaultAttackStyles: [SkillsEnum.Strength],
 		combatXpMultiplier: 1.15

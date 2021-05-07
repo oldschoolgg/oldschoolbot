@@ -1,5 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { Bank, Items, Openables } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Emoji } from '../../lib/constants';
@@ -7,6 +7,7 @@ import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
+import { itemNameFromID } from '../../lib/util';
 
 const gearSpawns = [
 	{
@@ -25,6 +26,11 @@ const gearSpawns = [
 		setup: UserSettings.Gear.Range
 	}
 ];
+
+const openablesBank = new Bank();
+for (const i of Openables.values()) {
+	openablesBank.add(i.id, 100);
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -50,6 +56,24 @@ export default class extends BotCommand {
 					console.error(err);
 				}
 			}
+		}
+
+		if (msg.flagArgs.random) {
+			let t = new Bank();
+			for (let i = 0; i < 50; i++) {
+				t.add(Items.random().id);
+			}
+			await msg.author.addItemsToBank(t);
+			return msg.channel.send(`Added 50 random items to your bank.`);
+		}
+
+		if (msg.flagArgs.openables) {
+			await msg.author.addItemsToBank(openablesBank);
+			return msg.channel.send(
+				`Gave you 100x of every openable item, which is: ${Openables.map(i => i.id)
+					.map(itemNameFromID)
+					.join(', ')}.`
+			);
 		}
 
 		if (!itemArray) return;

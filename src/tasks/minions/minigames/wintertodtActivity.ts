@@ -138,9 +138,9 @@ export default class extends Task {
 
 		if (!channelIsSendable(channel)) return;
 
-		let output = `${user} ${
+		let output = `${user}, ${
 			user.minionName
-		} finished subdueing Wintertodt ${quantity}x times. You got ${fmXpToGive.toLocaleString()} Firemaking XP, ${wcXpToGive.toLocaleString()} Woodcutting XP and ${conXP.toLocaleString()} Construction XP, you cut ${numberOfRoots}x Bruma roots.`;
+		} finished subduing Wintertodt ${quantity}x times. You got ${fmXpToGive.toLocaleString()} Firemaking XP, ${wcXpToGive.toLocaleString()} Woodcutting XP and ${conXP.toLocaleString()} Construction XP, you cut ${numberOfRoots}x Bruma roots.`;
 
 		if (fmBonusXP > 0) {
 			output += `\n\n**Firemaking Bonus XP:** ${fmBonusXP.toLocaleString()}`;

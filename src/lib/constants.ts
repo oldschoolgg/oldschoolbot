@@ -34,7 +34,8 @@ export const enum Roles {
 	TopSkiller = '795266465329709076',
 	TopCollector = '795271210141351947',
 	TopSacrificer = '795933981715464192',
-	TopMinigamer = '832798997033779220'
+	TopMinigamer = '832798997033779220',
+	TopeClueHunter = '839135887467610123'
 }
 
 export const enum Emoji {
@@ -89,6 +90,8 @@ export const enum Emoji {
 	Tangleroot = '<:tangleroot:324127378978635778>',
 	Herblore = '<:herblore:630911040535658496>',
 	Purple = '🟪',
+	Green = '🟩',
+	Blue = '🟦',
 	Thieving = '<:thieving:630910829352452123>',
 	Hunter = '<:hunter:630911040166559784>',
 	Ely = '<:ely:784453586033049630>',
@@ -335,6 +338,8 @@ export const enum BitField {
 	HasHosidiusWallkit = 10,
 	HasPermanentEventBackgrounds = 11,
 	HasPermanentTierOne = 12,
+	DisabledRandomEvents = 13,
+
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201
 }

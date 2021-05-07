@@ -66,7 +66,7 @@ export interface Fish {
 	xp: number;
 	id: number;
 	name: string;
-	petChance: number;
+	petChance?: number;
 	timePerFish: number;
 	bait?: number;
 	qpRequired?: number;
