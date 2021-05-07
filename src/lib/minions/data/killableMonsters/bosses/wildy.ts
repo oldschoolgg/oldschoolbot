@@ -24,10 +24,7 @@ const killableBosses: KillableMonster[] = [
 			"Verac's flail"
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 2,
-			[itemID('Berserker ring')]: 2
-		},
+		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 2 }, { [itemID('Berserker ring')]: 2 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.225
 	},
@@ -48,9 +45,7 @@ const killableBosses: KillableMonster[] = [
 			"Verac's flail"
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 3
-		},
+		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 1110,
 		combatXpMultiplier: 1.156
@@ -72,9 +67,7 @@ const killableBosses: KillableMonster[] = [
 			"Verac's flail"
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 3
-		},
+		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.525
 	},
@@ -93,10 +86,7 @@ const killableBosses: KillableMonster[] = [
 			["Black d'hide chaps", "Karil's leatherskirt"]
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Archers ring')]: 3,
-			[itemID('Barrows gloves')]: 3
-		},
+		itemInBankBoosts: [{ [itemID('Archers ring')]: 3 }, { [itemID('Barrows gloves')]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.075
 	},
@@ -111,10 +101,10 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID("Karil's leathertop")]: 3,
-			[itemID("Karil's leatherskirt")]: 3
-		},
+		itemInBankBoosts: [
+			{ [itemID("Karil's leathertop")]: 3 },
+			{ [itemID("Karil's leatherskirt")]: 3 }
+		],
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.125
 	},
@@ -129,9 +119,7 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Occult necklace')]: 10
-		},
+		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.25
 	},
@@ -162,9 +150,7 @@ const killableBosses: KillableMonster[] = [
 			]
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Armadyl crossbow')]: 10
-		},
+		itemInBankBoosts: [{ [itemID('Armadyl crossbow')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.075
 	},
@@ -179,9 +165,10 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 8,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Occult necklace')]: 10
-		},
+		itemInBankBoosts: [
+			{ [itemID('Occult necklace')]: 10 },
+			{ [itemID('Harmonised nightmare staff')]: 10 }
+		],
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.3
 	}

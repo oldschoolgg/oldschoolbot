@@ -19,9 +19,11 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 7,
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon warhammer')]: 10
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
@@ -43,10 +45,15 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 7,
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Ranger boots')]: 5,
-			[itemID('Armadyl crossbow')]: 5
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Ranger boots')]: 5,
+				[itemID('Pegasian boots')]: 7
+			},
+			{
+				[itemID('Armadyl crossbow')]: 5
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
@@ -73,9 +80,11 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 7,
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Armadyl crossbow')]: 5
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Armadyl crossbow')]: 5
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
@@ -102,9 +111,11 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 7,
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon warhammer')]: 10
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {

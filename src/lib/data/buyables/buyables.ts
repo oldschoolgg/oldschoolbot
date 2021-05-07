@@ -693,6 +693,13 @@ const Buyables: Buyable[] = [
 			strength: 65
 		}
 	},
+	{
+		name: 'Torstol',
+		outputItems: resolveNameBank({
+			Torstol: 1
+		}),
+		itemCost: resolveNameBank({ 'Torstol potion (unf)': 1 })
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
