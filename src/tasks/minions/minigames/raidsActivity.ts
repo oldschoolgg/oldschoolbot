@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { coxLog } from '../../../lib/data/collectionLog';
+import { coxLog, metamorphPets } from '../../../lib/data/collectionLog';
 import { createTeam } from '../../../lib/data/cox';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -18,14 +18,6 @@ import { sendToChannelID } from '../../../lib/util/webhook';
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
 const blueItems = resolveItems(['Metamorphic dust']);
-
-export const metamorphPets = resolveItems([
-	'Puppadile',
-	'Tektiny',
-	'Vanguard',
-	'Vasa minirio',
-	'Vespina'
-]);
 
 const purpleItems = [...Object.values(coxLog), ...metamorphPets]
 	.flat(2)
