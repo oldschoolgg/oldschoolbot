@@ -72,8 +72,8 @@ export default class extends Task {
 				roll(50) &&
 				user.settings.get(UserSettings.CollectionLogBank)[itemID('Metamorphic dust')]
 			) {
-				const cl = user.collectionLog;
-				const unownedPet = shuffleArr(metamorphPets).find(pet => !cl[pet]);
+				const { bank } = user.allItemsOwned();
+				const unownedPet = shuffleArr(metamorphPets).find(pet => !bank[pet]);
 				if (unownedPet) {
 					userLoot.add(unownedPet);
 				}
