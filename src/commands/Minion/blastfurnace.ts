@@ -118,8 +118,8 @@ export default class extends BotCommand {
 				}s you can smelt is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`
 			);
 		}
-		// Check the user has the required ores to smith these bars.
 
+		// Check the user has the required ores to smith these bars.
 		const itemsNeeded = bar.inputOres.clone().multiply(quantity);
 		if (!userBank.has(itemsNeeded.bank)) {
 			return msg.send(
@@ -129,8 +129,9 @@ export default class extends BotCommand {
 			);
 		}
 
-		// cost to pay the foreman to use blast furance
-		const coinsToRemove = Math.floor(72000 * (duration / Time.Hour));
+		// Cost to pay the foreman to use blast furance
+		const gpPerHour = 72_000 * 3.5;
+		const coinsToRemove = Math.floor(gpPerHour * (duration / Time.Hour));
 		const gp = msg.author.settings.get(UserSettings.GP);
 		if (gp < coinsToRemove) {
 			return msg.send(`You need atleast ${coinsToRemove} GP to work at the Blast Furnace.`);
