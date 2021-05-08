@@ -1,7 +1,7 @@
-import { metamorphPets } from '../../tasks/minions/minigames/raidsActivity';
 import { ItemBank } from '../types';
 import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
+import { metamorphPets } from './collectionLog';
 
 interface Createable {
 	name: string;
