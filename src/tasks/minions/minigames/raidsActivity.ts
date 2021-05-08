@@ -69,7 +69,7 @@ export default class extends Task {
 			const userLoot = new Bank(_userLoot);
 			if (
 				challengeMode &&
-				roll(5) &&
+				roll(50) &&
 				user.settings.get(UserSettings.CollectionLogBank)[itemID('Metamorphic dust')]
 			) {
 				const cl = user.collectionLog;
