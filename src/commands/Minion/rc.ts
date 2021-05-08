@@ -1,7 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
@@ -65,7 +64,7 @@ export default class extends BotCommand {
 
 		let { tripLength } = rune;
 		const boosts = [];
-		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasGracefulEquipped()) {
 			tripLength -= rune.tripLength * 0.1;
 			boosts.push(`10% for Graceful`);
 		}
