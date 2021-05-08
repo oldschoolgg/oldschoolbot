@@ -48,5 +48,7 @@ export namespace ClientSettings {
 
 		export const CollectingCost = T<O.Readonly<ItemBank>>('collecting_cost');
 		export const CollectingLoot = T<O.Readonly<ItemBank>>('collecting_loot');
+
+		export const MTACostBank = T<O.Readonly<ItemBank>>('mta_cost');
 	}
 }

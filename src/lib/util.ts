@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
 import { objectEntries, randInt, shuffleArr } from 'e';
 import { KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
@@ -446,10 +447,22 @@ export function formatSkillRequirements(reqs: Record<string, number>) {
 	return arr.join(', ');
 }
 
-export function formatItemBoosts(items: ItemBank) {
+export function formatItemBoosts(items: ItemBank[]) {
 	const str = [];
-	for (const [itemID, boostAmount] of Object.entries(items)) {
-		str.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+	for (const itemSet of items) {
+		const itemEntries = Object.entries(itemSet);
+		const multiple = itemEntries.length > 1;
+		const bonusStr = [];
+
+		for (const [itemID, boostAmount] of itemEntries) {
+			bonusStr.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+		}
+
+		if (multiple) {
+			str.push(`(${bonusStr.join(' OR ')})`);
+		} else {
+			str.push(bonusStr.join(''));
+		}
 	}
 	return str.join(', ');
 }
@@ -485,4 +498,14 @@ export function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank)
 	}
 
 	return returnBank;
+}
+
+export function updateBankSetting(
+	client: KlasaClient,
+	setting: string,
+	bankToAdd: Bank | ItemBank
+) {
+	const current = new Bank(client.settings.get(setting) as ItemBank);
+	const newBank = current.add(bankToAdd);
+	return client.settings.update(setting, newBank.bank);
 }

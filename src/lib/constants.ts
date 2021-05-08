@@ -34,7 +34,8 @@ export const enum Roles {
 	TopSkiller = '795266465329709076',
 	TopCollector = '795271210141351947',
 	TopSacrificer = '795933981715464192',
-	TopMinigamer = '832798997033779220'
+	TopMinigamer = '832798997033779220',
+	TopeClueHunter = '839135887467610123'
 }
 
 export const enum Emoji {
@@ -89,6 +90,8 @@ export const enum Emoji {
 	Tangleroot = '<:tangleroot:324127378978635778>',
 	Herblore = '<:herblore:630911040535658496>',
 	Purple = '🟪',
+	Green = '🟩',
+	Blue = '🟦',
 	Thieving = '<:thieving:630910829352452123>',
 	Hunter = '<:hunter:630911040166559784>',
 	Ely = '<:ely:784453586033049630>',
@@ -191,7 +194,8 @@ export const enum Tasks {
 	CastleWars = 'castleWarsActivity',
 	MageArena = 'mageArenaActivity',
 	Raids = 'raidsActivity',
-	Collecting = 'collectingActivity'
+	Collecting = 'collectingActivity',
+	MageTrainingArena = 'mageTrainingArenaActivity'
 }
 
 export enum Activity {
@@ -246,7 +250,8 @@ export enum Activity {
 	CastleWars = 'CastleWars',
 	MageArena = 'MageArena',
 	Raids = 'Raids',
-	Collecting = 'Collecting'
+	Collecting = 'Collecting',
+	MageTrainingArena = 'MageTrainingArena'
 }
 
 export enum ActivityGroup {
@@ -325,7 +330,8 @@ export const enum BitField {
 	BypassAgeRestriction = 9,
 	HasHosidiusWallkit = 10,
 	HasPermanentEventBackgrounds = 11,
-	HasPermanentTierOne = 12
+	HasPermanentTierOne = 12,
+	DisabledRandomEvents = 13
 }
 
 interface BitFieldData {

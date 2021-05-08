@@ -15,6 +15,8 @@ import resolveItems from '../../../lib/util/resolveItems';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic']);
+const greenItems = resolveItems(['Twisted ancestral colour kit']);
+const blueItems = resolveItems(['Metamorphic dust']);
 const purpleItems = Object.values(coxLog)
 	.flat(2)
 	.filter(i => !notPurple.includes(i));
@@ -65,18 +67,21 @@ export default class extends Task {
 			totalLoot.add(userLoot);
 
 			const isPurple = userLoot.items().some(([item]) => purpleItems.includes(item.id));
+			const isGreen = userLoot.items().some(([item]) => greenItems.includes(item.id));
+			const isBlue = userLoot.items().some(([item]) => blueItems.includes(item.id));
+			const emote = isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
 			if (isPurple) {
 				const itemsToAnnounce = filterBankFromArrayOfItems(purpleItems, _userLoot);
 				this.client.emit(
 					Events.ServerNotification,
-					`${Emoji.Purple} ${user.username} just received **${new Bank(
+					`${emote} ${user.username} just received **${new Bank(
 						itemsToAnnounce
 					)}** on their ${formatOrdinal(
 						await user.getMinigameScore(challengeMode ? 'RaidsChallengeMode' : 'Raids')
 					)} raid.`
 				);
 			}
-			const str = isPurple ? `${Emoji.Purple} ||${userLoot}||` : userLoot.toString();
+			const str = isPurple ? `${emote} ||${userLoot}||` : userLoot.toString();
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 
 			resultMessage += `\n${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${

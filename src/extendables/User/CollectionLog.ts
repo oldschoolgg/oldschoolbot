@@ -15,7 +15,7 @@ export function shuffleRandom<T>(input: number, arr: T[]): T[] {
 
 const allCollectionLogItems = uniqueArr(
 	collectionLogTypes
-		.filter(i => !['Holiday', 'Diango', 'Overall', 'Capes'].includes(i.name))
+		.filter(i => !['Holiday', 'Diango', 'Overall', 'Capes', 'Clue Hunter'].includes(i.name))
 		.map(i => Object.values(i.items))
 		.flat(Infinity) as number[]
 );

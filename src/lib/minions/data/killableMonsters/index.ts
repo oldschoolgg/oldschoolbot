@@ -26,11 +26,11 @@ const killableMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems([]),
 		notifyDrops: resolveItems([]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 2,
-			[itemID("Iban's staff")]: 5,
-			[itemID('Strange old lockpick')]: 7
-		},
+		itemInBankBoosts: [
+			{ [itemID('Barrows gloves')]: 2 },
+			{ [itemID("Iban's staff")]: 5 },
+			{ [itemID('Strange old lockpick')]: 7 }
+		],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -65,10 +65,10 @@ const killableMonsters: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Pet dagannoth prime']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Armadyl chestplate')]: 2,
-			[itemID('Armadyl chainskirt')]: 2
-		},
+		itemInBankBoosts: [
+			{ [itemID('Armadyl chestplate')]: 2 },
+			{ [itemID('Armadyl chainskirt')]: 2 }
+		],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -94,10 +94,7 @@ const killableMonsters: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Pet dagannoth rex']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Occult necklace')]: 5,
-			[itemID("Iban's staff")]: 5
-		},
+		itemInBankBoosts: [{ [itemID('Occult necklace')]: 5 }, { [itemID("Iban's staff")]: 5 }],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -123,11 +120,11 @@ const killableMonsters: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Pet dagannoth supreme']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Bandos chestplate')]: 2,
-			[itemID('Bandos tassets')]: 2,
-			[itemID('Saradomin godsword')]: 2
-		},
+		itemInBankBoosts: [
+			{ [itemID('Bandos chestplate')]: 2 },
+			{ [itemID('Bandos tassets')]: 2 },
+			{ [itemID('Saradomin godsword')]: 2 }
+		],
 		levelRequirements: {
 			prayer: 43
 		}
@@ -197,9 +194,7 @@ const killableMonsters: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,
-		itemInBankBoosts: {
-			[itemID('Ring of the gods')]: 3
-		},
+		itemInBankBoosts: [{ [itemID('Ring of the gods')]: 3 }],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -304,9 +299,8 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 0,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Zamorakian spear')]: 10
-		},
+		itemInBankBoosts: [{ [itemID('Zamorakian spear')]: 10 }],
+
 		combatXpMultiplier: 1.025
 	},
 	{
