@@ -1,4 +1,4 @@
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
@@ -8,19 +8,28 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { BlastFurnaceActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, skillsMeetRequirements, stringMatches } from '../../lib/util';
+import {
+	formatDuration,
+	formatSkillRequirements,
+	itemID,
+	skillsMeetRequirements,
+	stringMatches
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
-export function hasStatsForBlastFurnace(user: KlasaUser): boolean {
-	return skillsMeetRequirements(user.rawSkills, {
-		crafting: 12,
-		firemaking: 16,
-		magic: 33,
-		mining: 50,
-		smithing: 20,
-		thieving: 13
-	});
-}
+const requiredSkills = {
+	cooking: 70,
+	farming: 70,
+	fishing: 70,
+	mining: 70,
+	woodcutting: 70,
+	agility: 70,
+	smithing: 70,
+	herblore: 70,
+	construction: 70,
+	hunter: 70
+};
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -48,10 +57,12 @@ export default class extends BotCommand {
 			bar =>
 				stringMatches(bar.name, barName) || stringMatches(bar.name.split(' ')[0], barName)
 		);
-		const hasSkills = hasStatsForBlastFurnace(msg.author);
-		if (!hasSkills) {
+
+		if (!skillsMeetRequirements(msg.author.rawSkills, requiredSkills)) {
 			return msg.send(
-				`You do not have high enough stats to use the Blast Furnace, you need atleast crafting: 12, firemaking: 16, magic: 33, mining: 50, smithing: 20 ,and thieving: 13 `
+				`You don't have the required stats to use the Blast Furance, you need: ${formatSkillRequirements(
+					requiredSkills
+				)}.`
 			);
 		}
 
@@ -100,8 +111,6 @@ export default class extends BotCommand {
 			const max = userBank.fits(bar.inputOres);
 			if (max < quantity && max !== 0) quantity = max;
 		}
-		// Check the user has the required ores to smith these bars.
-		// Multiplying the ore required by the quantity of bars.
 
 		const duration = quantity * timeToSmithSingleBar;
 		if (duration > maxTripLength) {
@@ -113,6 +122,7 @@ export default class extends BotCommand {
 				}s you can smelt is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`
 			);
 		}
+		// Check the user has the required ores to smith these bars.
 
 		const itemsNeeded = bar.inputOres.clone().multiply(quantity);
 		if (!userBank.has(itemsNeeded.bank)) {
@@ -152,11 +162,11 @@ export default class extends BotCommand {
 		}
 
 		return msg.send(
-			`${msg.author.minionName} is now smelting ${quantity}x ${
+			`${msg.author.minionName} is now smelting  ${quantity}x ${
 				bar.name
-			}, it'll take around ${formatDuration(
+			} at the Blast Furnace, it'll take around ${formatDuration(
 				duration
-			)} to finish. Costing ${coinsToRemove} GP for your time in the Blast Furnace.${goldGauntletMessage}${coalbag}${graceful}`
+			)} to finish. You paid ${coinsToRemove} GP to use the Blast Furnace.${goldGauntletMessage}${coalbag}${graceful}`
 		);
 	}
 }
