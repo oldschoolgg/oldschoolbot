@@ -1213,7 +1213,7 @@ setCustomItem(
 			requirements: {
 				defence: 99,
 				// @ts-expect-error dgg
-				dungoneering: 99,
+				dungeoneering: 99,
 				magic: 99
 			}
 		}
@@ -1244,7 +1244,7 @@ setCustomItem(
 			requirements: {
 				defence: 99,
 				// @ts-expect-error dgg
-				dungoneering: 99,
+				dungeoneering: 99,
 				ranged: 99
 			}
 		}
@@ -1275,7 +1275,7 @@ setCustomItem(
 			requirements: {
 				defence: 99,
 				// @ts-expect-error dgg
-				dungoneering: 99
+				dungeoneering: 99
 			}
 		}
 	},
