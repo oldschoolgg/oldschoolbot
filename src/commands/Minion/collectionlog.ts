@@ -7,7 +7,7 @@ import { collectionLogTypes } from '../../lib/data/collectionLog';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { stringMatches } from '../../lib/util';
+import { itemNameFromID, stringMatches } from '../../lib/util';
 
 const slicedCollectionLogTypes = collectionLogTypes.slice(0, collectionLogTypes.length - 1);
 
@@ -23,7 +23,16 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [inputType = 'all']) {
+	async run(msg: KlasaMessage, [inputType]: [string]) {
+		if (!inputType) {
+			const { percent, notOwned } = msg.author.completion();
+			return msg.send(
+				`You have **${percent.toFixed(2)}%** Collection Log Completion.
+				
+Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
+			);
+		}
+
 		await msg.author.settings.sync(true);
 
 		const monster = killableMonsters.find(_type =>

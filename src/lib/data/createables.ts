@@ -61,6 +61,39 @@ const chaoticCreatables: Createable[] = [
 	}
 ];
 
+const twistedAncestral: Createable[] = [
+	{
+		name: 'Twisted ancestral hat',
+		inputItems: {
+			[itemID('Ancestral hat')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1
+		},
+		outputItems: {
+			[itemID('Twisted ancestral hat')]: 1
+		}
+	},
+	{
+		name: 'Twisted ancestral robe top',
+		inputItems: {
+			[itemID('Ancestral robe top')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1
+		},
+		outputItems: {
+			[itemID('Twisted ancestral robe top')]: 1
+		}
+	},
+	{
+		name: 'Twisted ancestral robe bottom',
+		inputItems: {
+			[itemID('Ancestral robe bottom')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1
+		},
+		outputItems: {
+			[itemID('Twisted ancestral robe bottom')]: 1
+		}
+	}
+];
+
 const crystalTools: Createable[] = [
 	{
 		name: 'Crystal pickaxe',
@@ -4203,6 +4236,37 @@ const Createables: Createable[] = [
 		},
 		requiredSkills: { magic: 60, runecraft: 60 }
 	},
+	{
+		name: 'Kodai wand',
+		inputItems: {
+			[itemID('Master wand')]: 1,
+			[itemID('Kodai insignia')]: 1
+		},
+		outputItems: {
+			[itemID('Kodai wand')]: 1
+		}
+	},
+	{
+		name: 'Partyhat & specs',
+		inputItems: {
+			[itemID('Blue partyhat')]: 1,
+			[itemID('Sagacious spectacles')]: 1
+		},
+		outputItems: {
+			[itemID('Partyhat & specs')]: 1
+		}
+	},
+	{
+		name: 'Blue partyhat',
+		inputItems: {
+			[itemID('Partyhat & specs')]: 1
+		},
+		outputItems: {
+			[itemID('Blue partyhat')]: 1,
+			[itemID('Sagacious spectacles')]: 1
+		},
+		noCl: true
+	},
 	...crystalTools,
 	...brokenItems,
 	...lockedItems,
@@ -4220,7 +4284,8 @@ const Createables: Createable[] = [
 			[itemID(`Frozen key`)]: 1
 		}
 	},
-	...chaoticCreatables
+	...chaoticCreatables,
+	...twistedAncestral
 ];
 
 export default Createables;

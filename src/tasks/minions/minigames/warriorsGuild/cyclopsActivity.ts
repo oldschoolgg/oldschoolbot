@@ -47,10 +47,9 @@ const defenders = [
 
 export default class extends Task {
 	async run(data: CyclopsActivityTaskOptions) {
-		const { userID, channelID, quantity, duration } = data;
+		const { userID, channelID, quantity } = data;
 		const user = await this.client.users.fetch(userID);
 		const userBank = new Bank(user.settings.get(UserSettings.Bank));
-		user.incrementMinionDailyDuration(duration);
 
 		let loot = new Bank();
 

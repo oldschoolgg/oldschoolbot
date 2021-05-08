@@ -19,6 +19,10 @@ export interface GloryChargingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface WealthChargingActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	courseID: string;
 	quantity: number;
@@ -282,4 +286,9 @@ export interface GauntletOptions extends ActivityTaskOptions {
 export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
 	leader: string;
 	users: string[];
+}
+
+export interface CollectingOptions extends ActivityTaskOptions {
+	collectableID: number;
+	quantity: number;
 }

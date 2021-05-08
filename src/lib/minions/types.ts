@@ -63,10 +63,11 @@ export interface KillableMonster {
 	qpRequired: number;
 
 	/**
-	 * A object of ([key: itemID]: boostPercentage) boosts that apply to
-	 * this monster.
+	 * An array of objects of ([key: itemID]: boostPercentage) boosts that apply to
+	 * this monster. For each set, only the item with the greatest boost (that the user also possesses)
+	 * will be used as boost.
 	 */
-	itemInBankBoosts?: ItemBank;
+	itemInBankBoosts?: ItemBank[];
 	/**
 	 * Whether or not this monster can be groupkilled.
 	 */
@@ -90,4 +91,6 @@ export interface KillableMonster {
 	pohBoosts?: POHBoosts;
 	defaultAttackStyles?: AttackStyles[];
 	disallowedAttackStyles?: AttackStyles[];
+	customMonsterHP?: number;
+	combatXpMultiplier?: number;
 }

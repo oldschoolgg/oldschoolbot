@@ -151,7 +151,6 @@ declare module 'discord.js' {
 		): Promise<string>;
 		skillLevel(skillName: SkillsEnum): number;
 		totalLevel(returnXP = false): number;
-		incrementMinionDailyDuration(duration: number): Promise<SettingsUpdateResult>;
 		toggleBusy(busy: boolean): void;
 		/**
 		 * Returns how many of an item a user owns, checking their bank and all equipped gear.
@@ -231,7 +230,17 @@ declare module 'discord.js' {
 		getGear(gearType: GearSetupType): GearSetup;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
 		getAttackStyles(): AttackStyles[];
-		owns(bank: ItemBank | Bank): boolean;
+		owns(bank: ItemBank | Bank | string | number): boolean;
+		completion(): {
+			percent: number;
+			notOwned: number[];
+			owned: number[];
+		};
+
+		/**
+		 * Get item boosts the user has available for the given `KillableMonster`.
+		 */
+		resolveAvailableItemBoosts(monster: KillableMonster): ItemBank;
 		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.
@@ -251,6 +260,7 @@ declare module 'discord.js' {
 		isIronman: boolean;
 		maxTripLength(activity?: OSBActivity): number;
 		rawSkills: Skills;
+		bitfield: readonly BitField[];
 	}
 
 	interface TextChannel {

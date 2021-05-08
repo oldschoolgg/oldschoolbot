@@ -17,7 +17,6 @@ export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
 		const { oreID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 

@@ -5,7 +5,13 @@ import { PatreonConfig, ProviderConfig, RedditAppConfig, TwitterAppConfig } from
 
 export const botToken = '';
 export const providerConfig: ProviderConfig | null = {
-	default: 'json'
+	default: 'postgres',
+	postgres: {
+		database: 'postgres',
+		user: 'postgres',
+		password: 'postgres',
+		port: 5432
+	}
 };
 export const production = os.platform() === 'linux';
 export const staging = false;

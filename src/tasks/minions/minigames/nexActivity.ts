@@ -35,7 +35,6 @@ export default class extends Task {
 		for (const id of users) {
 			const user = await this.client.users.fetch(id).catch(noOp);
 			if (!user) continue;
-			user.incrementMinionDailyDuration(duration);
 			const [data] = getNexGearStats(user, users);
 			parsedUsers.push({ ...data, id: user.id });
 		}

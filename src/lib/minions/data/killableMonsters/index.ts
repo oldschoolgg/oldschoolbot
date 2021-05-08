@@ -7,6 +7,7 @@ import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { makeKillTable } from '../../../util/setCustomMonster';
 import { KillableMonster } from '../../types';
+import { NIGHTMARES_HP } from './../../../constants';
 import bosses from './bosses';
 import AbyssalDragon, { AbyssalDragonLootTable } from './custom/AbyssalDragon';
 import KingGoldemar, { KingGoldemarLootTable } from './custom/KingGoldemar';
@@ -31,11 +32,11 @@ const killableMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems([]),
 
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 2,
-			[itemID("Iban's staff")]: 5,
-			[itemID('Strange old lockpick')]: 7
-		},
+		itemInBankBoosts: [
+			{ [itemID('Barrows gloves')]: 2 },
+			{ [itemID("Iban's staff")]: 5 },
+			{ [itemID('Strange old lockpick')]: 7 }
+		],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -46,7 +47,9 @@ const killableMonsters: KillableMonster[] = [
 				'Ornate rejuvenation pool': 10
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged]
+		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged],
+		customMonsterHP: 600,
+		combatXpMultiplier: 1.09
 	},
 	{
 		id: Monsters.DagannothPrime.id,
@@ -67,13 +70,14 @@ const killableMonsters: KillableMonster[] = [
 			['Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Armadyl chestplate')]: 2,
-			[itemID('Armadyl chainskirt')]: 2
-		},
+		itemInBankBoosts: [
+			{ [itemID('Armadyl chestplate')]: 2 },
+			{ [itemID('Armadyl chainskirt')]: 2 }
+		],
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		combatXpMultiplier: 1.3
 	},
 	{
 		id: Monsters.DagannothRex.id,
@@ -94,13 +98,11 @@ const killableMonsters: KillableMonster[] = [
 			['Bandos tassets', "Torag's platelegs"]
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Occult necklace')]: 5,
-			[itemID("Iban's staff")]: 5
-		},
+		itemInBankBoosts: [{ [itemID('Occult necklace')]: 5 }, { [itemID("Iban's staff")]: 5 }],
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		combatXpMultiplier: 1.3
 	},
 	{
 		id: Monsters.DagannothSupreme.id,
@@ -121,11 +123,11 @@ const killableMonsters: KillableMonster[] = [
 			['Bandos tassets', "Torag's platelegs"]
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Bandos chestplate')]: 2,
-			[itemID('Bandos tassets')]: 2,
-			[itemID('Saradomin godsword')]: 2
-		},
+		itemInBankBoosts: [
+			{ [itemID('Bandos chestplate')]: 2 },
+			{ [itemID('Bandos tassets')]: 2 },
+			{ [itemID('Saradomin godsword')]: 2 }
+		],
 		levelRequirements: {
 			prayer: 43
 		}
@@ -195,9 +197,7 @@ const killableMonsters: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,
-		itemInBankBoosts: {
-			[itemID('Ring of the gods')]: 3
-		},
+		itemInBankBoosts: [{ [itemID('Ring of the gods')]: 3 }],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -302,9 +302,9 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 0,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Zamorakian spear')]: 10
-		}
+		itemInBankBoosts: [{ [itemID('Zamorakian spear')]: 10 }],
+
+		combatXpMultiplier: 1.025
 	},
 	{
 		id: Monsters.Ankou.id,
@@ -419,11 +419,13 @@ const killableMonsters: KillableMonster[] = [
 				[GearStat.DefenceRanged]: 150
 			}
 		},
-		itemInBankBoosts: {
-			[itemID('Saradomin godsword')]: 5,
-			[itemID('Dragon warhammer')]: 5,
-			[itemID('Bandos godsword')]: 5
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Saradomin godsword')]: 5,
+				[itemID('Dragon warhammer')]: 5,
+				[itemID('Bandos godsword')]: 5
+			}
+		],
 		itemsRequired: deepResolveItems([['Anti-dragon shield', 'Abyssal cape']]),
 		groupKillable: true,
 		respawnTime: Time.Second * 20,
@@ -544,7 +546,8 @@ export const NightmareMonster: KillableMonster = {
 			[GearStat.DefenceSlash]: 150,
 			[GearStat.AttackCrush]: 80
 		}
-	}
+	},
+	customMonsterHP: NIGHTMARES_HP
 };
 
 export default killableMonsters;

@@ -15,7 +15,6 @@ export default class extends Task {
 	async run(data: SmeltingActivityTaskOptions) {
 		let { barID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
 

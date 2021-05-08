@@ -1,7 +1,8 @@
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
 import { objectEntries, randInt, shuffleArr } from 'e';
-import { Gateway, KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
+import { KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
@@ -11,7 +12,6 @@ const emojiRegex = require('emoji-regex');
 
 import {
 	CENA_CHARS,
-	Channel as EChannel,
 	continuationChars,
 	Events,
 	PerkTier,
@@ -21,12 +21,10 @@ import {
 } from './constants';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
-import { UserSettings } from './settings/types/UserSettings';
 import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
-import { sendToChannelID } from './util/webhook';
 
 export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
@@ -361,33 +359,6 @@ export function randomVariation(value: number, percentage: number) {
 	return randFloat(lowerLimit, upperLimit);
 }
 
-export async function incrementMinionDailyDuration(
-	client: KlasaClient,
-	userID: string,
-	duration: number
-) {
-	const settings = await (client.gateways.get('users') as Gateway)!
-		.acquire({
-			id: userID
-		})
-		.sync(true);
-
-	const currentDuration = settings.get(UserSettings.Minion.DailyDuration);
-	const newDuration = currentDuration + duration;
-	if (newDuration > Time.Hour * 18) {
-		const user = await client.users.fetch(userID);
-		if (client.production) {
-			sendToChannelID(client, EChannel.ErrorLogs, {
-				content: `${user.sanitizedName} Minion has been active for ${formatDuration(
-					newDuration
-				)}.`
-			});
-		}
-	}
-
-	return settings.update(UserSettings.Minion.DailyDuration, newDuration);
-}
-
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
 	return 'users' in data;
 }
@@ -467,10 +438,22 @@ export function formatSkillRequirements(reqs: Record<string, number>) {
 	return arr.join(', ');
 }
 
-export function formatItemBoosts(items: ItemBank) {
+export function formatItemBoosts(items: ItemBank[]) {
 	const str = [];
-	for (const [itemID, boostAmount] of Object.entries(items)) {
-		str.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+	for (const itemSet of items) {
+		const itemEntries = Object.entries(itemSet);
+		const multiple = itemEntries.length > 1;
+		const bonusStr = [];
+
+		for (const [itemID, boostAmount] of itemEntries) {
+			bonusStr.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+		}
+
+		if (multiple) {
+			str.push(`(${bonusStr.join(' OR ')})`);
+		} else {
+			str.push(bonusStr.join(''));
+		}
 	}
 	return str.join(', ');
 }
@@ -506,4 +489,14 @@ export function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank)
 	}
 
 	return returnBank;
+}
+
+export function updateBankSetting(
+	client: KlasaClient,
+	setting: string,
+	bankToAdd: Bank | ItemBank
+) {
+	const current = new Bank(client.settings.get(setting) as ItemBank);
+	const newBank = current.add(bankToAdd);
+	return client.settings.update(setting, newBank.bank);
 }

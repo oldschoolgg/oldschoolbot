@@ -2,6 +2,13 @@ import { uniqueArr } from 'e';
 
 import { allKalphiteKingItems } from '../kalphiteking';
 import { allKeyItems, ancientWeapons, pernixOutfit, torvaOutfit, virtusOutfit } from '../nex';
+import {
+	beekeeperOutfit,
+	camoOutfit,
+	lederhosenOutfit,
+	mimeOutfit,
+	zombieOutfit
+} from '../randomEvents';
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
 
@@ -292,6 +299,14 @@ export const mahoganyHomesLog: CollectionLogData = {
 	Other: resolveItems(["Amy's saw", 'Plank sack', 'Hosidius blueprints', 'Builders supply crate'])
 };
 
+export const randomEventsLog: CollectionLogData = {
+	BeeKeeper: beekeeperOutfit,
+	Lederhosen: lederhosenOutfit,
+	Zombie: zombieOutfit,
+	Mime: mimeOutfit,
+	Camo: camoOutfit
+};
+
 const barrows: CollectionLogData = {
 	Barrows: resolveItems([
 		"Ahrim's staff",
@@ -438,7 +453,33 @@ export const bosses: CollectionLogData = {
 	Nightmare: nightmareLog,
 	Zalcano: zalcanoLog,
 	Wintertodt: wintertodtLog,
-	KK: allKalphiteKingItems
+	KK: allKalphiteKingItems,
+	Cox1: resolveItems([
+		'Dexterous prayer scroll',
+		'Torn prayer scroll',
+		'Arcane prayer scroll',
+		'Twisted bow',
+		'Elder maul',
+		'Kodai insignia',
+		'Dragon hunter crossbow',
+		'Dragon claws',
+		'Ancestral hat',
+		'Ancestral robe top',
+		'Ancestral robe bottom',
+		'Twisted buckler'
+	]),
+	Cox2: resolveItems([
+		"Dinh's bulwark",
+		'Dark relic',
+		'Metamorphic dust',
+		'Olmlet',
+		"Xeric's guard",
+		"Xeric's warrior",
+		"Xeric's sentinel",
+		"Xeric's general",
+		"Xeric's champion",
+		'Twisted ancestral colour kit'
+	])
 };
 
 export const pets: CollectionLogData = {
@@ -1523,20 +1564,6 @@ export const capes: CollectionLogData = {
 		'Runecraft hood',
 		'Thieving hood'
 	]),
-	capes: resolveItems([
-		'Mining cape',
-		'Smithing cape',
-		'Woodcutting cape',
-		'Firemaking cape',
-		'Fishing cape',
-		'Agility cape',
-		'Cooking cape',
-		'Crafting cape',
-		'Prayer cape',
-		'Fletching cape',
-		'Runecraft cape',
-		'Thieving cape'
-	]),
 	'trimmed capes': resolveItems([
 		'Mining cape(t)',
 		'Smithing cape(t)',
@@ -1565,20 +1592,6 @@ export const capes: CollectionLogData = {
 		'Dungeoneering hood',
 		'Quest point hood'
 	]),
-	capes2: resolveItems([
-		'Farming cape',
-		'Herblore cape',
-		'Hunter cape',
-		'Construct. cape',
-		'Magic cape',
-		'Attack cape',
-		'Strength cape',
-		'Defence cape',
-		'Hitpoints cape',
-		'Ranging cape',
-		'Dungeoneering cape',
-		'Quest point cape'
-	]),
 	'trimmed capes2': resolveItems([
 		'Farming cape(t)',
 		'Herblore cape(t)',
@@ -1591,7 +1604,7 @@ export const capes: CollectionLogData = {
 		'Hitpoints cape(t)',
 		'Ranging cape(t)',
 		'Dungeoneering cape(t)',
-		'Quest point cape (t)'
+		'Quest point cape'
 	])
 };
 
@@ -1672,13 +1685,23 @@ export const dungeoneeringLog: CollectionLogData = {
 	])
 };
 
+const infinityItems = resolveItems([
+	'Infinity hat',
+	'Infinity top',
+	'Infinity bottoms',
+	'Infinity boots',
+	'Infinity gloves',
+	"Mage's book"
+]);
+const wandItems = resolveItems(['Beginner wand', 'Apprentice wand', 'Teacher wand', 'Master wand']);
+
+export const MTALog: CollectionLogData = {
+	infinity: infinityItems,
+	wands: wandItems
+};
+
 export const coxLog: CollectionLogData = {
-	Misc: resolveItems([
-		'Dexterous prayer scroll',
-		'Torn prayer scroll',
-		'Arcane prayer scroll',
-		'Dark relic'
-	]),
+	Misc: resolveItems(['Dexterous prayer scroll', 'Torn prayer scroll', 'Arcane prayer scroll']),
 	Weapons: resolveItems([
 		'Twisted bow',
 		'Elder maul',
@@ -1693,10 +1716,10 @@ export const coxLog: CollectionLogData = {
 		'Twisted buckler',
 		"Dinh's bulwark"
 	]),
-	Others: resolveItems([
+	Others: resolveItems(['Olmlet', 'Dark relic']),
+	CM: resolveItems([
+		'Twisted ancestral colour kit',
 		'Metamorphic dust',
-		'Olmlet',
-
 		"Xeric's guard",
 		"Xeric's warrior",
 		"Xeric's sentinel",
@@ -2058,6 +2081,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		items: castleWars
 	},
 	{
+		name: 'Mage Training Arena',
+		aliases: ['mta'],
+		items: MTALog
+	},
+	{
 		name: 'Minigames',
 		aliases: ['minigames', 'minigame'],
 		items: {
@@ -2100,8 +2128,14 @@ export const collectionLogTypes: CollectionLogType[] = [
 			whiteDecorative,
 			goldDecorative,
 			castleWarsGodItems,
-			castleWarsOther
+			castleWarsOther,
+			mta: [...wandItems, ...infinityItems]
 		}
+	},
+	{
+		name: 'Random Events',
+		aliases: ['random events'],
+		items: randomEventsLog
 	}
 ];
 export const allCollectionLogItems = uniqueArr(

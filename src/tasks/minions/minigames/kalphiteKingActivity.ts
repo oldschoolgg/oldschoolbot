@@ -24,14 +24,7 @@ interface NexUser {
 }
 
 export default class extends Task {
-	async run({
-		id,
-		channelID,
-		leader,
-		users,
-		quantity,
-		duration
-	}: KalphiteKingActivityTaskOptions) {
+	async run({ id, channelID, leader, users, quantity }: KalphiteKingActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -41,7 +34,6 @@ export default class extends Task {
 		for (const id of users) {
 			const user = await this.client.users.fetch(id).catch(noOp);
 			if (!user) continue;
-			user.incrementMinionDailyDuration(duration);
 			const [data] = getKalphiteKingGearStats(user, users);
 			parsedUsers.push({ ...data, id: user.id });
 		}

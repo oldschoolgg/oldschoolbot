@@ -19,16 +19,20 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 7,
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon warhammer')]: 10
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
 			prayer: 43
 		},
 		uniques: [...resolveItems(['Rune sword']), ...bosses.Bandos, ...bosses.Shards],
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultAttackStyles: [SkillsEnum.Attack],
+		customMonsterHP: 656,
+		combatXpMultiplier: 1.126
 	},
 	{
 		id: Monsters.CommanderZilyana.id,
@@ -41,10 +45,15 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 7,
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Ranger boots')]: 5,
-			[itemID('Armadyl crossbow')]: 5
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Ranger boots')]: 5,
+				[itemID('Pegasian boots')]: 7
+			},
+			{
+				[itemID('Armadyl crossbow')]: 5
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
@@ -56,7 +65,9 @@ const killableBosses: KillableMonster[] = [
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Ranged]
+		defaultAttackStyles: [SkillsEnum.Ranged],
+		customMonsterHP: 723,
+		combatXpMultiplier: 1.132
 	},
 	{
 		id: Monsters.Kreearra.id,
@@ -69,9 +80,11 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 7,
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Armadyl crossbow')]: 5
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Armadyl crossbow')]: 5
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
@@ -83,7 +96,9 @@ const killableBosses: KillableMonster[] = [
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		defaultAttackStyles: [SkillsEnum.Ranged],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic]
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
+		customMonsterHP: 641,
+		combatXpMultiplier: 1.159
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -96,9 +111,11 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 7,
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon warhammer')]: 10
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
@@ -109,7 +126,9 @@ const killableBosses: KillableMonster[] = [
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultAttackStyles: [SkillsEnum.Attack],
+		customMonsterHP: 708,
+		combatXpMultiplier: 1.135
 	}
 ];
 

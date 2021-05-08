@@ -9,9 +9,11 @@ import {
 	uniqueArr
 } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import {
 	Activity,
@@ -28,6 +30,7 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
+import { KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MasterSkillcapes } from '../../lib/skilling/skillcapes';
 import Skills from '../../lib/skilling/skills';
@@ -56,6 +59,7 @@ import {
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
+	CollectingOptions,
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
@@ -70,6 +74,7 @@ import {
 	GroupMonsterActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
+	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	NexActivityTaskOptions,
@@ -80,6 +85,7 @@ import {
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SoulWarsOptions,
+	WealthChargingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
@@ -88,7 +94,6 @@ import {
 	convertLVLtoXP,
 	convertXPtoLVL,
 	formatDuration,
-	incrementMinionDailyDuration,
 	itemNameFromID,
 	stringMatches,
 	toKMB,
@@ -181,12 +186,6 @@ export default class extends Extendable {
 				return `${this.minionName} is currently killing ${data.quantity}x ${
 					monster!.name
 				} with a party of ${data.users.length}. ${formattedDuration}`;
-			}
-
-			case Activity.Raids: {
-				const data = currentTask as RaidsActivityTaskOptions;
-
-				return `${this.minionName} is currently raiding Chambers of Xeric. With a party of ${data.team.length}. ${formattedDuration}`;
 			}
 
 			case Activity.ClueCompletion: {
@@ -527,6 +526,11 @@ export default class extends Extendable {
 				return `${this.minionName} is currently charging ${data.quantity}x inventories of glories at the Fountain of Rune. ${formattedDuration}`;
 			}
 
+			case Activity.WealthCharging: {
+				const data = currentTask as WealthChargingActivityTaskOptions;
+				return `${this.minionName} is currently charging ${data.quantity}x inventories of rings of wealth at the Fountain of Rune. ${formattedDuration}`;
+			}
+
 			case Activity.GnomeRestaurant: {
 				return `${this.minionName} is currently doing Gnome Restaurant deliveries. ${formattedDuration}`;
 			}
@@ -556,6 +560,38 @@ export default class extends Extendable {
 				return `${this.minionName} is currently doing Dungeoneering with a team of ${
 					data.users.length
 				} minions, on the ${formatOrdinal(data.floor)} floor. ${formattedDuration}`;
+			}
+
+			case Activity.CastleWars: {
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.quantity}x Castle Wars games. ${formattedDuration}`;
+			}
+
+			case Activity.MageArena: {
+				return `${this.minionName} is currently doing the Mage Arena. ${formattedDuration}`;
+			}
+
+			case Activity.Raids: {
+				const data = currentTask as RaidsActivityTaskOptions;
+				return `${this.minionName} is currently doing the Chamber's of Xeric${
+					data.challengeMode ? ' in Challenge Mode' : ''
+				}, ${
+					data.users.length === 1
+						? 'as a solo.'
+						: `with a team of ${data.users.length} minions.`
+				} ${formattedDuration}`;
+			}
+
+			case Activity.Collecting: {
+				const data = currentTask as CollectingOptions;
+				const collectable = collectables.find(c => c.item.id === data.collectableID)!;
+				return `${this.minionName} is currently collecting ${
+					data.quantity * collectable.quantity
+				}x ${collectable.item.name}. ${formattedDuration}`;
+			}
+
+			case Activity.MageTrainingArena: {
+				return `${this.minionName} is currently training at the Mage Training Arena. ${formattedDuration}`;
 			}
 		}
 	}
@@ -608,11 +644,23 @@ export default class extends Extendable {
 	public maxTripLength(this: User, activity?: Activity) {
 		let max = Time.Minute * 30;
 
+		if (activity === Activity.Alching) {
+			return Time.Hour;
+		}
+
 		const perkTier = getUsersPerkTier(this);
 		if (perkTier === PerkTier.Two) max += Time.Minute * 3;
 		else if (perkTier === PerkTier.Three) max += Time.Minute * 6;
 		else if (perkTier >= PerkTier.Four) max += Time.Minute * 10;
 
+		const sac = this.settings.get(UserSettings.SacrificedValue);
+		const sacPercent = Math.min(
+			100,
+			calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000)
+		);
+		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
+
+		if (!activity) return max;
 		switch (activity) {
 			case Activity.Nightmare:
 			case Activity.GroupMonsterKilling:
@@ -663,10 +711,6 @@ export default class extends Extendable {
 		return name
 			? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**`
 			: `${prefix} ${icon} Your minion`;
-	}
-
-	public async incrementMinionDailyDuration(this: User, duration: number) {
-		return incrementMinionDailyDuration(this.client as KlasaClient, this.id, duration);
 	}
 
 	public async addXP(
@@ -943,5 +987,30 @@ export default class extends Extendable {
 
 	public getAttackStyles(this: User) {
 		return this.settings.get(UserSettings.AttackStyle);
+	}
+
+	public resolveAvailableItemBoosts(this: User, monster: KillableMonster) {
+		const boosts = new Bank();
+		if (monster.itemInBankBoosts) {
+			for (const boostSet of monster.itemInBankBoosts) {
+				let highestBoostAmount = 0;
+				let highestBoostItem = 0;
+
+				// find the highest boost that the player has
+				for (const [itemID, boostAmount] of Object.entries(boostSet)) {
+					const parsedId = parseInt(itemID);
+					if (!this.hasItemEquippedOrInBank(parsedId)) continue;
+					if (boostAmount > highestBoostAmount) {
+						highestBoostAmount = boostAmount;
+						highestBoostItem = parsedId;
+					}
+				}
+
+				if (highestBoostAmount && highestBoostItem) {
+					boosts.add(highestBoostItem, highestBoostAmount);
+				}
+			}
+		}
+		return boosts.bank;
 	}
 }

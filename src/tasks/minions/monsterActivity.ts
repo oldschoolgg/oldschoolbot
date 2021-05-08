@@ -29,7 +29,6 @@ export default class extends Task {
 			return channel.send(`${user.minionName} failed to defeat Koschei the deathless.`);
 		}
 
-		user.incrementMinionDailyDuration(duration);
 		await user.incrementMonsterScore(monsterID, quantity);
 
 		// Abyssal set bonuses -- grants the user a few extra kills

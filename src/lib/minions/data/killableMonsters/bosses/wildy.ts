@@ -24,11 +24,9 @@ const killableBosses: KillableMonster[] = [
 			"Verac's flail"
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 2,
-			[itemID('Berserker ring')]: 2
-		},
-		defaultAttackStyles: [SkillsEnum.Attack]
+		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 2 }, { [itemID('Berserker ring')]: 2 }],
+		defaultAttackStyles: [SkillsEnum.Attack],
+		combatXpMultiplier: 1.225
 	},
 	{
 		id: Monsters.Vetion.id,
@@ -47,10 +45,10 @@ const killableBosses: KillableMonster[] = [
 			"Verac's flail"
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 3
-		},
-		defaultAttackStyles: [SkillsEnum.Attack]
+		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 3 }],
+		defaultAttackStyles: [SkillsEnum.Attack],
+		customMonsterHP: 1110,
+		combatXpMultiplier: 1.156
 	},
 	{
 		id: Monsters.Venenatis.id,
@@ -69,10 +67,9 @@ const killableBosses: KillableMonster[] = [
 			"Verac's flail"
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 3
-		},
-		defaultAttackStyles: [SkillsEnum.Attack]
+		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 3 }],
+		defaultAttackStyles: [SkillsEnum.Attack],
+		combatXpMultiplier: 1.525
 	},
 	{
 		id: Monsters.ChaosElemental.id,
@@ -89,11 +86,9 @@ const killableBosses: KillableMonster[] = [
 			["Black d'hide chaps", "Karil's leatherskirt"]
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Archers ring')]: 3,
-			[itemID('Barrows gloves')]: 3
-		},
-		defaultAttackStyles: [SkillsEnum.Attack]
+		itemInBankBoosts: [{ [itemID('Archers ring')]: 3 }, { [itemID('Barrows gloves')]: 3 }],
+		defaultAttackStyles: [SkillsEnum.Attack],
+		combatXpMultiplier: 1.075
 	},
 	{
 		id: Monsters.ChaosFanatic.id,
@@ -106,11 +101,12 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID("Karil's leathertop")]: 3,
-			[itemID("Karil's leatherskirt")]: 3
-		},
-		defaultAttackStyles: [SkillsEnum.Ranged]
+		itemInBankBoosts: [
+			{ [itemID("Karil's leathertop")]: 3 },
+			{ [itemID("Karil's leatherskirt")]: 3 }
+		],
+		defaultAttackStyles: [SkillsEnum.Ranged],
+		combatXpMultiplier: 1.125
 	},
 	{
 		id: Monsters.CrazyArchaeologist.id,
@@ -123,10 +119,9 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Occult necklace')]: 10
-		},
-		defaultAttackStyles: [SkillsEnum.Magic]
+		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
+		defaultAttackStyles: [SkillsEnum.Magic],
+		combatXpMultiplier: 1.25
 	},
 	{
 		id: Monsters.KingBlackDragon.id,
@@ -155,10 +150,9 @@ const killableBosses: KillableMonster[] = [
 			]
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Armadyl crossbow')]: 10
-		},
-		defaultAttackStyles: [SkillsEnum.Ranged]
+		itemInBankBoosts: [{ [itemID('Armadyl crossbow')]: 10 }],
+		defaultAttackStyles: [SkillsEnum.Ranged],
+		combatXpMultiplier: 1.075
 	},
 	{
 		id: Monsters.Scorpia.id,
@@ -171,10 +165,12 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 8,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Occult necklace')]: 10
-		},
-		defaultAttackStyles: [SkillsEnum.Magic]
+		itemInBankBoosts: [
+			{ [itemID('Occult necklace')]: 10 },
+			{ [itemID('Harmonised nightmare staff')]: 10 }
+		],
+		defaultAttackStyles: [SkillsEnum.Magic],
+		combatXpMultiplier: 1.3
 	}
 ];
 
