@@ -1,13 +1,15 @@
-import { Message, MessageAttachment, MessageCollector } from 'discord.js';
+import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import MinionCommand from '../../commands/Minion/minion';
-import { Emoji, PerkTier, Time } from '../constants';
+import { production } from '../../config';
+import { BitField, Emoji, PerkTier, Time } from '../constants';
 import clueTiers from '../minions/data/clueTiers';
+import { triggerRandomEvent } from '../randomEvents';
 import { setActivityLoot } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, generateContinuationChar, stringMatches } from '../util';
+import { channelIsSendable, generateContinuationChar, roll, stringMatches } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
 
@@ -22,12 +24,11 @@ export async function handleTripFinish(
 		| undefined
 		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: MessageAttachment | Buffer | undefined,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_data: ActivityTaskOptions,
+	data: ActivityTaskOptions,
 	loot: ItemBank | null
 ) {
 	if (loot) {
-		setActivityLoot(_data.id, loot);
+		setActivityLoot(data.id, loot);
 	}
 
 	const perkTier = getUsersPerkTier(user);
@@ -52,7 +53,22 @@ export async function handleTripFinish(
 			? attachment
 			: new MessageAttachment(attachment)
 		: undefined;
-	sendToChannelID(client, channelID, { content: message, image: attachable });
+
+	const channel = client.channels.get(channelID);
+
+	sendToChannelID(client, channelID, { content: message, image: attachable }).then(() => {
+		const minutes = Math.min(30, data.duration / Time.Minute);
+		const randomEventChance = 60 - minutes;
+		if (
+			channel &&
+			!user.bitfield.includes(BitField.DisabledRandomEvents) &&
+			roll(production ? randomEventChance : 1) &&
+			channel instanceof TextChannel
+		) {
+			triggerRandomEvent(channel, user);
+		}
+	});
+
 	if (!onContinue) return;
 
 	const existingCollector = collectors.get(user.id);
@@ -62,7 +78,6 @@ export async function handleTripFinish(
 		collectors.delete(user.id);
 	}
 
-	const channel = client.channels.get(channelID);
 	if (!channelIsSendable(channel)) return;
 	const collector = new MessageCollector(
 		channel,

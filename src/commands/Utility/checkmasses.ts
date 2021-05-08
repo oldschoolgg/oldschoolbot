@@ -18,17 +18,20 @@ export default class extends BotCommand {
 		if (!msg.guild) return null;
 		const channelIDs = msg.guild.channels.filter(c => c.type === 'text').map(c => c.id);
 
-		const masses: any[] = await getConnection().query(
+		let masses: any[] = await getConnection().query(
 			`
-SELECT *
-FROM activity
-WHERE
-completed = false AND 
-group_activity = true AND
-channel_id = ANY($1);
+	SELECT *
+	FROM activity
+	WHERE
+	completed = false AND
+	group_activity = true AND
+	channel_id = ANY($1)
+	ORDER by finish_date ASC;
 `,
 			[channelIDs]
 		);
+
+		masses = masses.filter(m => m.data.users.length > 1);
 
 		if (masses.length === 0) {
 			return msg.channel.send(`There are no active masses in this server.`);
@@ -37,9 +40,11 @@ channel_id = ANY($1);
 		const massStr = masses
 			.map(
 				m =>
-					`${m.type}: ${m.data.users.length} users returning to <#${
-						m.channel_id
-					}> in ${formatDuration(m.finish_date.getTime() - now)}`
+					`${m.type}${m.data.challengeMode ? ` CM` : ``}: ${
+						m.data.users.length
+					} users returning to <#${m.channel_id}> in ${formatDuration(
+						m.finish_date.getTime() - now
+					)}`
 			)
 			.join('\n');
 		return msg.channel.send(`**Masses in this server:**

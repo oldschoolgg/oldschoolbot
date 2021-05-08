@@ -1378,7 +1378,8 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Blue partyhat')]: 1,
 			[itemID('Sagacious spectacles')]: 1
-		}
+		},
+		noCl: true
 	},
 	...crystalTools,
 	...ornamentKits,

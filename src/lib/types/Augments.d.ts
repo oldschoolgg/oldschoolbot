@@ -228,6 +228,11 @@ declare module 'discord.js' {
 			notOwned: number[];
 			owned: number[];
 		};
+
+		/**
+		 * Get item boosts the user has available for the given `KillableMonster`.
+		 */
+		resolveAvailableItemBoosts(monster: KillableMonster): ItemBank;
 		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.
@@ -247,6 +252,7 @@ declare module 'discord.js' {
 		isIronman: boolean;
 		maxTripLength(activity?: OSBActivity): number;
 		rawSkills: Skills;
+		bitfield: readonly BitField[];
 	}
 
 	interface TextChannel {
