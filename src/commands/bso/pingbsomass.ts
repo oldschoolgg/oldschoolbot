@@ -18,7 +18,7 @@ export default class extends BotCommand {
 			return;
 		}
 		return msg.send(
-			`<@&759573020464906242> - *Note: You can type \`.roles bso mass\` to remove, or add, this role to yourself.`
+			`<@&759573020464906242> - *Note: You can type \`.roles bso-mass\` to remove, or add, this role to yourself.`
 		);
 	}
 }
