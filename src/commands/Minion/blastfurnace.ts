@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Activity, Time } from '../../lib/constants';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -13,7 +14,9 @@ import {
 	formatSkillRequirements,
 	itemID,
 	skillsMeetRequirements,
-	stringMatches
+	stringMatches,
+	toKMB,
+	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
@@ -140,6 +143,11 @@ export default class extends BotCommand {
 		itemsNeeded.add('Coins', coinsToRemove);
 
 		await msg.author.removeItemsFromBank(itemsNeeded);
+		updateBankSetting(
+			this.client,
+			ClientSettings.EconomyStats.BlastFurnaceCostBank,
+			itemsNeeded
+		);
 
 		await addSubTaskToActivityTask<BlastFurnaceActivityTaskOptions>(this.client, {
 			barID: bar.id,
@@ -159,11 +167,13 @@ export default class extends BotCommand {
 		}
 
 		return msg.send(
-			`${msg.author.minionName} is now smelting  ${quantity}x ${
+			`${msg.author.minionName} is now smelting ${quantity}x ${
 				bar.name
 			} at the Blast Furnace, it'll take around ${formatDuration(
 				duration
-			)} to finish. You paid ${coinsToRemove} GP to use the Blast Furnace.${goldGauntletMessage}${coalbag}${graceful}`
+			)} to finish. You paid ${toKMB(
+				coinsToRemove
+			)} GP to use the Blast Furnace.${goldGauntletMessage}${coalbag}${graceful}`
 		);
 	}
 }
