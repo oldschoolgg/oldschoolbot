@@ -18,16 +18,12 @@ import {
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 const requiredSkills = {
-	cooking: 70,
-	farming: 70,
-	fishing: 70,
-	mining: 70,
-	woodcutting: 70,
-	agility: 70,
-	smithing: 70,
-	herblore: 70,
-	construction: 70,
-	hunter: 70
+	crafting: 12,
+	firemaking: 16,
+	magic: 33,
+	mining: 50,
+	smithing: 20,
+	thieving: 13
 };
 
 export default class extends BotCommand {
