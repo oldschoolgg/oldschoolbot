@@ -18,7 +18,14 @@ import { sendToChannelID } from '../../../lib/util/webhook';
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
 const blueItems = resolveItems(['Metamorphic dust']);
-const metamorphPets = resolveItems(['Puppadile', 'Tektiny', 'Vanguard', 'Vasa minirio', 'Vespina']);
+
+export const metamorphPets = resolveItems([
+	'Puppadile',
+	'Tektiny',
+	'Vanguard',
+	'Vasa minirio',
+	'Vespina'
+]);
 
 const purpleItems = [...Object.values(coxLog), ...metamorphPets]
 	.flat(2)
