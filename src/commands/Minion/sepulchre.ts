@@ -2,7 +2,6 @@ import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { sepulchreBoosts, sepulchreFloors } from '../../lib/minions/data/sepulchre';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -33,7 +32,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (!hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (!msg.author.hasGracefulEquipped()) {
 			return msg.send(
 				`You need Graceful equipped in your Skilling setup to do the Hallowed Sepulchre.`
 			);

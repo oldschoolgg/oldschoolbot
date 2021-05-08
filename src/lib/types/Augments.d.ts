@@ -233,6 +233,10 @@ declare module 'discord.js' {
 		 * Get item boosts the user has available for the given `KillableMonster`.
 		 */
 		resolveAvailableItemBoosts(monster: KillableMonster): ItemBank;
+		/**
+		 * Returns true if the user has full Graceful equipped in any setup.
+		 */
+		hasGracefulEquipped(): boolean;
 		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.

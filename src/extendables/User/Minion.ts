@@ -16,6 +16,7 @@ import {
 	Time,
 	ZALCANO_ID
 } from '../../lib/constants';
+import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
@@ -663,6 +664,14 @@ export default class extends Extendable {
 	public get minionIsBusy(this: User): boolean {
 		const usersTask = this.client.getActivityOfUser(this.id);
 		return Boolean(usersTask);
+	}
+
+	public hasGracefulEquipped(this: User) {
+		const rawGear = this.rawGear();
+		for (const i of Object.values(rawGear)) {
+			if (hasGracefulEquipped(i)) return true;
+		}
+		return false;
 	}
 
 	// @ts-ignore 2784
