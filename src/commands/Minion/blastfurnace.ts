@@ -132,7 +132,7 @@ export default class extends BotCommand {
 		}
 
 		// Cost to pay the foreman to use blast furance
-		const gpPerHour = 72_000 * 3.5;
+		const gpPerHour = (msg.author.isIronman ? 1 : 3.5) * 72_000;
 		const coinsToRemove = Math.floor(gpPerHour * (duration / Time.Hour));
 		const gp = msg.author.settings.get(UserSettings.GP);
 		if (gp < coinsToRemove) {
