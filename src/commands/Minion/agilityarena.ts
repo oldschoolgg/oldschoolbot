@@ -2,7 +2,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -119,7 +118,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const duration = msg.author.maxTripLength(Activity.AgilityArena);
 
-		if (!hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (!msg.author.hasGracefulEquipped()) {
 			return msg.send(
 				await chatHeadImage({
 					content: `Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!`,

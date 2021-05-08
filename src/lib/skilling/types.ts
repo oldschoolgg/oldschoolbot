@@ -120,6 +120,15 @@ export interface Bar {
 	chanceOfFail: number;
 }
 
+export interface BlastableBar {
+	level: number;
+	xp: number;
+	id: number;
+	name: string;
+	inputOres: Bank;
+	timeToUse: number;
+}
+
 export interface SmithedItem {
 	level: number;
 	xp: number;

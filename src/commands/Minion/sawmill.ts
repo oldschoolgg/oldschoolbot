@@ -1,7 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { Planks } from '../../lib/minions/data/planks';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -65,7 +64,7 @@ export default class extends BotCommand {
 			boosts.push(`2x for Hammy`);
 		}
 
-		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasGracefulEquipped()) {
 			timePerPlank *= 0.9;
 			boosts.push(`10% for Graceful`);
 		}

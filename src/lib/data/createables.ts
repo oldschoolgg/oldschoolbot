@@ -895,6 +895,15 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Coal bag',
+		outputItems: {
+			[itemID('Coal bag')]: 1
+		},
+		inputItems: {
+			[itemID('Golden nugget')]: 100
+		}
+	},
+	{
 		name: 'Mining gloves',
 		outputItems: {
 			[itemID('Mining gloves')]: 1
