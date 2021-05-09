@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
+import { GearSetupTypes, GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
@@ -26,7 +27,10 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 2 }, { [itemID('Berserker ring')]: 2 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.225
+		combatXpMultiplier: 1.225,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.Vetion.id,
@@ -48,7 +52,10 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 1110,
-		combatXpMultiplier: 1.156
+		combatXpMultiplier: 1.156,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.Venenatis.id,
@@ -69,7 +76,10 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.525
+		combatXpMultiplier: 1.525,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.ChaosElemental.id,
@@ -88,7 +98,10 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Archers ring')]: 3 }, { [itemID('Barrows gloves')]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.075
+		combatXpMultiplier: 1.075,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.ChaosFanatic.id,
@@ -106,7 +119,10 @@ const killableBosses: KillableMonster[] = [
 			{ [itemID("Karil's leatherskirt")]: 3 }
 		],
 		defaultAttackStyles: [SkillsEnum.Ranged],
-		combatXpMultiplier: 1.125
+		combatXpMultiplier: 1.125,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.CrazyArchaeologist.id,
@@ -121,7 +137,10 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Magic],
-		combatXpMultiplier: 1.25
+		combatXpMultiplier: 1.25,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.KingBlackDragon.id,
@@ -152,7 +171,10 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Armadyl crossbow')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Ranged],
-		combatXpMultiplier: 1.075
+		combatXpMultiplier: 1.075,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.Scorpia.id,
@@ -170,7 +192,10 @@ const killableBosses: KillableMonster[] = [
 			{ [itemID('Harmonised nightmare staff')]: 10 }
 		],
 		defaultAttackStyles: [SkillsEnum.Magic],
-		combatXpMultiplier: 1.3
+		combatXpMultiplier: 1.3,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	}
 ];
 

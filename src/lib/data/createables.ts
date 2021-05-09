@@ -1,6 +1,7 @@
 import { ItemBank } from '../types';
-import { resolveNameBank } from '../util';
+import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
+import { metamorphPets } from './collectionLog';
 
 interface Createable {
 	name: string;
@@ -60,6 +61,15 @@ const chaoticCreatables: Createable[] = [
 		requiredSkills: { crafting: 120 }
 	}
 ];
+const metamorphPetCreatables: Createable[] = metamorphPets.map(pet => ({
+	name: itemNameFromID(pet)!,
+	inputItems: {
+		[itemID('Metamorphic dust')]: 1
+	},
+	outputItems: {
+		[pet]: 1
+	}
+}));
 
 const twistedAncestral: Createable[] = [
 	{
@@ -4294,7 +4304,8 @@ const Createables: Createable[] = [
 		}
 	},
 	...chaoticCreatables,
-	...twistedAncestral
+	...twistedAncestral,
+	...metamorphPetCreatables
 ];
 
 export default Createables;
