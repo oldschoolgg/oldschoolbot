@@ -32,7 +32,9 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Barrows gloves')]: 5
 			},
 			{
-				[itemID('Berserker ring')]: 5
+				[itemID('Berserker ring')]: 5,
+				[itemID('Berserker ring (i)')]: 7,
+				[itemID('Twisted bow')]: 10
 			}
 		],
 		levelRequirements: {
