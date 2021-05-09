@@ -26,7 +26,15 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Callisto cub']),
 		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 2 }, { [itemID('Berserker ring')]: 2 }],
+		itemInBankBoosts: [
+			{
+				[itemID('Berserker ring')]: 3,
+				[itemID('Berserker ring (i)')]: 5
+			},
+			{
+				[itemID('Barrows gloves')]: 3
+			}
+		],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.225,
 		healAmountNeeded: 15 * 20,
@@ -100,7 +108,15 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID('Archers ring')]: 3 }, { [itemID('Barrows gloves')]: 3 }],
+		itemInBankBoosts: [
+			{
+				[itemID('Archers ring')]: 3,
+				[itemID('Archers ring (i)')]: 5
+			},
+			{
+				[itemID('Barrows gloves')]: 3
+			}
+		],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.075,
 		healAmountNeeded: 15 * 20,
