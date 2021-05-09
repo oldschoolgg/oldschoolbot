@@ -1,4 +1,4 @@
-import { DMChannel, MessageAttachment, TextChannel } from 'discord.js';
+import { DMChannel, MessageAttachment, Permissions, TextChannel } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 
 import { bankImageCache } from '../lib/constants';
@@ -7,6 +7,43 @@ import { ItemBank } from './../lib/types/index';
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [TextChannel, DMChannel] });
+	}
+
+	// @ts-ignore 2784
+	get attachable(this: TextChannel) {
+		return (
+			!this.guild ||
+			(this.postable &&
+				this.permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.ATTACH_FILES, false))
+		);
+	}
+
+	// @ts-ignore 2784
+	get embedable(this: TextChannel) {
+		return (
+			!this.guild ||
+			(this.postable &&
+				this.permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.EMBED_LINKS, false))
+		);
+	}
+
+	// @ts-ignore 2784
+	get postable(this: TextChannel) {
+		return (
+			!this.guild ||
+			this.permissionsFor(this.guild.me!)!.has(
+				[Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES],
+				false
+			)
+		);
+	}
+
+	// @ts-ignore 2784
+	get readable(this: TextChannel) {
+		return (
+			!this.guild ||
+			this.permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.VIEW_CHANNEL, false)
+		);
 	}
 
 	async sendBankImage(
