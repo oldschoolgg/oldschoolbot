@@ -216,7 +216,12 @@ const killableMonsters: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,
-		itemInBankBoosts: [{ [itemID('Ring of the gods')]: 3 }],
+		itemInBankBoosts: [
+			{
+				[itemID('Ring of the gods')]: 3,
+				[itemID('Ring of the gods (i)')]: 5
+			}
+		],
 		levelRequirements: {
 			prayer: 43
 		},
