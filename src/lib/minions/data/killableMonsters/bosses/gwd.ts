@@ -55,7 +55,7 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				[itemID('Armadyl crossbow')]: 5,
-				[itemID('Twised bow')]: 10
+				[itemID('Twisted bow')]: 10
 			}
 		],
 		groupKillable: true,
