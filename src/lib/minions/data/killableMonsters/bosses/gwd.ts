@@ -22,7 +22,9 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{
-				[itemID('Dragon warhammer')]: 10
+				[itemID('Dragon warhammer')]: 10,
+				[itemID('Bandos godsword')]: 5,
+				[itemID('Bandos godsword (or)')]: 5
 			}
 		],
 		groupKillable: true,
@@ -49,11 +51,12 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{
-				[itemID('Ranger boots')]: 5,
-				[itemID('Pegasian boots')]: 7
+				[itemID('Ranger boots')]: 3,
+				[itemID('Pegasian boots')]: 5
 			},
 			{
-				[itemID('Armadyl crossbow')]: 5
+				[itemID('Armadyl crossbow')]: 5,
+				[itemID('Twised bow')]: 10
 			}
 		],
 		groupKillable: true,
@@ -85,7 +88,8 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{
-				[itemID('Armadyl crossbow')]: 5
+				[itemID('Armadyl crossbow')]: 5,
+				[itemID('Twisted bow')]: 10
 			}
 		],
 		groupKillable: true,
@@ -117,7 +121,10 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{
-				[itemID('Dragon warhammer')]: 10
+				[itemID('Dragon warhammer')]: 10,
+				[itemID('Bandos godsword')]: 5,
+				[itemID('Bandos godsword (or)')]: 5,
+				[itemID('Dragon claws')]: 3
 			}
 		],
 		groupKillable: true,
