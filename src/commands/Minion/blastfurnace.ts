@@ -58,7 +58,7 @@ export default class extends BotCommand {
 
 		if (!skillsMeetRequirements(msg.author.rawSkills, requiredSkills)) {
 			return msg.send(
-				`You don't have the required stats to use the Blast Furance, you need: ${formatSkillRequirements(
+				`You don't have the required stats to use the Blast Furce, you need: ${formatSkillRequirements(
 					requiredSkills
 				)}.`
 			);
@@ -131,7 +131,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		// Cost to pay the foreman to use blast furance
+		// Cost to pay the foreman to use blast furnace
 		const gpPerHour = (msg.author.isIronman ? 1 : 3.5) * 72_000;
 		const coinsToRemove = Math.floor(gpPerHour * (duration / Time.Hour));
 		const gp = msg.author.settings.get(UserSettings.GP);
