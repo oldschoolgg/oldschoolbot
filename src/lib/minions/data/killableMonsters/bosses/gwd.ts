@@ -23,8 +23,7 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Dragon warhammer')]: 10,
-				[itemID('Bandos godsword')]: 5,
-				[itemID('Bandos godsword (or)')]: 5
+				[itemID('Bandos godsword')]: 5
 			}
 		],
 		groupKillable: true,
@@ -123,7 +122,6 @@ const killableBosses: KillableMonster[] = [
 			{
 				[itemID('Dragon warhammer')]: 10,
 				[itemID('Bandos godsword')]: 5,
-				[itemID('Bandos godsword (or)')]: 5,
 				[itemID('Dragon claws')]: 3
 			}
 		],
