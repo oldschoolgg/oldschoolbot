@@ -159,7 +159,7 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
 			'Anti-dragon shield',
-			['Armadyl crossbow', 'Rune crossbow'],
+			['Armadyl crossbow', 'Rune crossbow', 'Twisted bow'],
 			[
 				"Black d'hide body",
 				"Black d'hide body (g)",
@@ -175,7 +175,13 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Prince black dragon', 'Draconic visage']),
 		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID('Armadyl crossbow')]: 10 }],
+		itemInBankBoosts: [
+			{
+				[itemID('Armadyl crossbow')]: 6,
+				[itemID('Dragon hunter crossbow')]: 8,
+				[itemID('Twisted bow')]: 10
+			}
+		],
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.075,
 		healAmountNeeded: 15 * 20,
