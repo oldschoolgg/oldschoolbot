@@ -58,7 +58,7 @@ export default class extends BotCommand {
 
 		if (!skillsMeetRequirements(msg.author.rawSkills, requiredSkills)) {
 			return msg.send(
-				`You don't have the required stats to use the Blast Furce, you need: ${formatSkillRequirements(
+				`You don't have the required stats to use the Blast Furnace, you need: ${formatSkillRequirements(
 					requiredSkills
 				)}.`
 			);
