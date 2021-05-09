@@ -1578,6 +1578,20 @@ export const capes: CollectionLogData = {
 		'Runecraft cape(t)',
 		'Thieving cape(t)'
 	]),
+	'master capes': resolveItems([
+		'Mining master cape',
+		'Smithing master cape',
+		'Woodcutting master cape',
+		'Firemaking master cape',
+		'Fishing master cape',
+		'Agility master cape',
+		'Cooking master cape',
+		'Crafting master cape',
+		'Prayer master cape',
+		'Fletching master cape',
+		'Runecraft master cape',
+		'Thieving master cape'
+	]),
 	hoods2: resolveItems([
 		'Farming hood',
 		'Herblore hood',
@@ -1605,6 +1619,20 @@ export const capes: CollectionLogData = {
 		'Ranging cape(t)',
 		'Dungeoneering cape(t)',
 		'Quest point cape'
+	]),
+	'master capes2': resolveItems([
+		'Farming master cape',
+		'Herblore master cape',
+		'Hunter master cape',
+		'Construction master cape',
+		'Magic master cape',
+		'Attack master cape',
+		'Strength master cape',
+		'Defence master cape',
+		'Hitpoints master cape',
+		'Ranged master cape',
+		'Dungeoneering master cape',
+		'Master quest cape'
 	])
 };
 
@@ -1700,6 +1728,14 @@ export const MTALog: CollectionLogData = {
 	wands: wandItems
 };
 
+export const metamorphPets = resolveItems([
+	'Puppadile',
+	'Tektiny',
+	'Vanguard',
+	'Vasa minirio',
+	'Vespina'
+]);
+
 export const coxLog: CollectionLogData = {
 	Misc: resolveItems(['Dexterous prayer scroll', 'Torn prayer scroll', 'Arcane prayer scroll']),
 	Weapons: resolveItems([
@@ -1725,7 +1761,8 @@ export const coxLog: CollectionLogData = {
 		"Xeric's sentinel",
 		"Xeric's general",
 		"Xeric's champion"
-	])
+	]),
+	pets: metamorphPets
 };
 
 export const miscLog: CollectionLogData = {

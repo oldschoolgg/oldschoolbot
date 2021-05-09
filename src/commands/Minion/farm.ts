@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import defaultPatches from '../../lib/minions/farming/defaultPatches';
 import resolvePatchTypeSetting from '../../lib/minions/farming/functions/resolvePatchTypeSettings';
@@ -195,7 +194,7 @@ export default class extends BotCommand {
 		}
 
 		// Reduce time if user has graceful equipped
-		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasGracefulEquipped()) {
 			boostStr.push('10% time for Graceful');
 			duration *= 0.9;
 		}

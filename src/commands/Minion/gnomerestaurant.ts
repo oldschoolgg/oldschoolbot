@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -48,7 +47,7 @@ export default class extends BotCommand {
 			boosts.push(`${scoreBoost}% boost for experience in the minigame`);
 		}
 
-		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasGracefulEquipped()) {
 			deliveryLength = reduceNumByPercent(deliveryLength, 25);
 			boosts.push(`25% for Graceful`);
 		}
