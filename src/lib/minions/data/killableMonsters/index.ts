@@ -362,7 +362,7 @@ const killableMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Sraracha', 'Jar of eyes']),
 		qpRequired: 0,
 		itemInBankBoosts: [
-			{ [itemID('Dragon claws')]: 5 }
+			{·[itemID('Dragon·claws')]:·5·}
 		],
 		levelRequirements: {
 			prayer: 43
