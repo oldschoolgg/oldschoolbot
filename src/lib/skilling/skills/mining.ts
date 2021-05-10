@@ -116,7 +116,7 @@ const ores: Ore[] = [
 		name: 'Mithril ore',
 		respawnTime: 10,
 		petChance: 150_000,
-		nuggets: 107, //If you want N/hr at 99, for example, do round(floor(30_min_qty_without_boosts / N),1) * 10
+		nuggets: 107, //If you want N/hr at 99, for example, do Math.floor(10 * ore.nuggets / N);
 		clueScrollChance: 148_320
 	},
 	{
