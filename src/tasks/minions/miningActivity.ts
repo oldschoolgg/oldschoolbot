@@ -51,7 +51,8 @@ export default class extends Task {
 		const loot = new Bank();
 
 		const numberOfMinutes = duration / Time.Minute;
-
+		//We divide ore.nuggets below to avoid a nasty float in the ore definition.
+		const nuggetRolls = Math.floor(quantity / (ore.nuggets / 10));
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {
 				loot.bank = multiplyBank(loot.values(), 2);
@@ -81,7 +82,7 @@ export default class extends Task {
 		}
 
 		if (numberOfMinutes > 10 && ore.nuggets) {
-			const numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
+			const numberOfNuggets = rand(0, nuggetRolls);
 			loot.add('Golden nugget', numberOfNuggets);
 		} else if (numberOfMinutes > 10 && ore.minerals) {
 			let numberOfMinerals = 0;

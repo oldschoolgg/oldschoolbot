@@ -97,7 +97,7 @@ const ores: Ore[] = [
 		name: 'Gold ore',
 		respawnTime: 4,
 		petChance: 300_000,
-		nuggets: true,
+		nuggets: 204,  //based on 204/trip @ 99 with 30 minute trip
 		clueScrollChance: 296_640
 	},
 	{
@@ -116,7 +116,7 @@ const ores: Ore[] = [
 		name: 'Mithril ore',
 		respawnTime: 10,
 		petChance: 150_000,
-		nuggets: true,
+		nuggets: 107, //If you want N/hr at 99, for example, do round(floor(30_min_qty_without_boosts / N),1) * 10
 		clueScrollChance: 148_320
 	},
 	{
@@ -126,7 +126,7 @@ const ores: Ore[] = [
 		name: 'Adamantite ore',
 		respawnTime: 18,
 		petChance: 60_000,
-		nuggets: true,
+		nuggets: 66,
 		clueScrollChance: 59_328
 	},
 	{
@@ -136,7 +136,7 @@ const ores: Ore[] = [
 		name: 'Runite ore',
 		respawnTime: 50,
 		petChance: 45_000,
-		nuggets: true,
+		nuggets: 26,
 		clueScrollChance: 42_377
 	},
 	{

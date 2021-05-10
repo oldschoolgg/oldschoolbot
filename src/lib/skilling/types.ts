@@ -38,7 +38,7 @@ export interface Ore {
 	name: string;
 	respawnTime: number;
 	petChance?: number;
-	nuggets?: boolean;
+	nuggets?: number;  //Number of ore per 50% nugget chance x10. Cur rate is flat 7/hr average. This aims for 10/hr @ 99
 	minerals?: number;
 	clueScrollChance?: number;
 }
