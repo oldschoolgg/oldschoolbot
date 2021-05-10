@@ -196,6 +196,17 @@ export default class extends BotCommand {
 					];
 				}
 
+				if (
+					isChallengeMode &&
+					!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
+					!user.hasItemEquippedOrInBank('Twisted bow')
+				) {
+					return [
+						true,
+						'You need either a Dragon hunter crossbow or Twisted bow to attempt Challenge Mode Chambers of Xeric.'
+					];
+				}
+
 				return [false];
 			}
 		};
