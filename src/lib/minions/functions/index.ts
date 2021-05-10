@@ -2,6 +2,7 @@ import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
+import { NIGHTMARES_HP } from '../../constants';
 import { SkillsEnum } from '../../skilling/types';
 import killableMonsters from '../data/killableMonsters';
 import { KillableMonster } from '../types';
@@ -15,6 +16,11 @@ export type AttackStyles =
 	| SkillsEnum.Defence
 	| SkillsEnum.Magic
 	| SkillsEnum.Ranged;
+
+const miscHpMap: Record<number, number> = {
+	9415: NIGHTMARES_HP,
+	3127: 250
+};
 
 export function resolveAttackStyles(
 	user: KlasaUser,

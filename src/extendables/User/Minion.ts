@@ -53,6 +53,7 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { Creature, SkillsEnum } from '../../lib/skilling/types';
+import { Skills as TSkills } from '../../lib/types';
 import {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
@@ -96,7 +97,9 @@ import {
 	convertLVLtoXP,
 	convertXPtoLVL,
 	formatDuration,
+	formatSkillRequirements,
 	itemNameFromID,
+	skillsMeetRequirements,
 	stringMatches,
 	toKMB,
 	toTitleCase,
@@ -1034,5 +1037,13 @@ export default class extends Extendable {
 			}
 		}
 		return boosts.bank;
+	}
+
+	public hasSkillReqs(this: User, reqs: TSkills): [boolean, string | null] {
+		const hasReqs = skillsMeetRequirements(this.rawSkills, reqs);
+		if (!hasReqs) {
+			return [false, formatSkillRequirements(reqs)];
+		}
+		return [true, null];
 	}
 }
