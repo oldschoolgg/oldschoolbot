@@ -1596,6 +1596,14 @@ export const MTALog: CollectionLogData = {
 	wands: wandItems
 };
 
+export const metamorphPets = resolveItems([
+	'Puppadile',
+	'Tektiny',
+	'Vanguard',
+	'Vasa minirio',
+	'Vespina'
+]);
+
 export const coxLog: CollectionLogData = {
 	Misc: resolveItems(['Dexterous prayer scroll', 'Torn prayer scroll', 'Arcane prayer scroll']),
 	Weapons: resolveItems([
@@ -1621,7 +1629,8 @@ export const coxLog: CollectionLogData = {
 		"Xeric's sentinel",
 		"Xeric's general",
 		"Xeric's champion"
-	])
+	]),
+	pets: metamorphPets
 };
 
 export const miscLog: CollectionLogData = {

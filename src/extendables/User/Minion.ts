@@ -16,6 +16,7 @@ import {
 	Time,
 	ZALCANO_ID
 } from '../../lib/constants';
+import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
@@ -45,6 +46,7 @@ import {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	BarbarianAssaultActivityTaskOptions,
+	BlastFurnaceActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
@@ -552,6 +554,18 @@ export default class extends Extendable {
 			case Activity.MageTrainingArena: {
 				return `${this.minionName} is currently training at the Mage Training Arena. ${formattedDuration}`;
 			}
+
+			case Activity.BlastFurnace: {
+				const data = currentTask as BlastFurnaceActivityTaskOptions;
+
+				const bar = Smithing.BlastableBars.find(bar => bar.id === data.barID);
+
+				return `${this.minionName} is currently smelting ${data.quantity}x ${
+					bar!.name
+				} at the Blast Furnace. ${formattedDuration} Your ${
+					Emoji.Smithing
+				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+			}
 		}
 	}
 
@@ -650,6 +664,14 @@ export default class extends Extendable {
 	public get minionIsBusy(this: User): boolean {
 		const usersTask = this.client.getActivityOfUser(this.id);
 		return Boolean(usersTask);
+	}
+
+	public hasGracefulEquipped(this: User) {
+		const rawGear = this.rawGear();
+		for (const i of Object.values(rawGear)) {
+			if (hasGracefulEquipped(i)) return true;
+		}
+		return false;
 	}
 
 	// @ts-ignore 2784

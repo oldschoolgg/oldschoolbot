@@ -3,7 +3,6 @@ import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import MinionCommand from '../../commands/Minion/minion';
-import { production } from '../../config';
 import { BitField, Emoji, PerkTier, Time } from '../constants';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
@@ -62,7 +61,7 @@ export async function handleTripFinish(
 		if (
 			channel &&
 			!user.bitfield.includes(BitField.DisabledRandomEvents) &&
-			roll(production ? randomEventChance : 1) &&
+			roll(randomEventChance) &&
 			channel instanceof TextChannel
 		) {
 			triggerRandomEvent(channel, user);
