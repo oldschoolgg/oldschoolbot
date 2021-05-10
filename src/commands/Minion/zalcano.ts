@@ -41,10 +41,18 @@ export default class extends BotCommand {
 		if (
 			msg.author.skillLevel(SkillsEnum.Mining) < 70 ||
 			msg.author.skillLevel(SkillsEnum.Smithing) < 70 ||
+			msg.author.skillLevel(SkillsEnum.Cooking) < 70 ||
+			msg.author.skillLevel(SkillsEnum.Farming) < 70 ||
+			msg.author.skillLevel(SkillsEnum.Fishing) < 70 ||
+			msg.author.skillLevel(SkillsEnum.Woodcutting) < 70 ||
+			msg.author.skillLevel(SkillsEnum.Agility) < 70 ||
+			msg.author.skillLevel(SkillsEnum.Herblore) < 70 ||
+			msg.author.skillLevel(SkillsEnum.Construction) < 70 ||
+			msg.author.skillLevel(SkillsEnum.Hunter) < 70 ||
 			msg.author.settings.get(UserSettings.QP) < 150
 		) {
 			return msg.send(
-				`To fight Zalcano, you need: Level 70 Mining, Level 70 Smithing and 150 QP.`
+				`To fight Zalcano, you need: Level 70 Mining, Smithing, Cooking, Farming, Fishing, Woodcutting, Agility, Herblore, Construction, Hunter and 150 QP.`
 			);
 		}
 
