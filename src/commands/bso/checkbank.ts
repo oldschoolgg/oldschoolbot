@@ -13,9 +13,10 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		const bank = msg.author.settings.get(UserSettings.Bank);
+		const CLBank = msg.author.settings.get(UserSettings.CollectionLogBank);
 
 		const brokenBank = [];
-		for (const id of Object.keys(bank).map(key => parseInt(key))) {
+		for (const id of [...Object.keys(bank), ...Object.keys(CLBank)].map(key => parseInt(key))) {
 			const item = Items.get(id);
 			if (!item) {
 				brokenBank.push(id);
@@ -40,11 +41,14 @@ export default class extends BotCommand {
 			str += `Removed ${favorites.length - newFavs.length} from favorites\n`;
 
 			const newBank = { ...bank };
+			const newCL = { ...CLBank };
 			for (const id of brokenBank) {
 				str += `Removed ${newBank[id]}x of item ID ${id} from bank\n`;
 				delete newBank[id];
+				delete newCL[id];
 			}
 			await msg.author.settings.update(UserSettings.Bank, newBank);
+			await msg.author.settings.update(UserSettings.CollectionLogBank, newCL);
 			return msg.channel.send(str);
 		}
 
