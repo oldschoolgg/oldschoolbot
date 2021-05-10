@@ -319,7 +319,7 @@ export default class BankImageTask extends Task {
 			items = pageLoot;
 		}
 
-		if (items.length > 250) compact = true;
+		if (items.length > 500 && !flags.nc) compact = true;
 
 		const itemWidthSize = compact ? 12 + 21 : 36 + 21;
 
