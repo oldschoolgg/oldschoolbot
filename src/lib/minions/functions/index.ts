@@ -2,6 +2,7 @@ import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
+import { NIGHTMARES_HP } from '../../constants';
 import { SkillsEnum } from '../../skilling/types';
 import killableMonsters from '../data/killableMonsters';
 import { KillableMonster } from '../types';
@@ -47,7 +48,8 @@ export function resolveAttackStyles(
 
 const miscHpMap: Record<number, number> = {
 	3127: 250,
-	46274: 5000
+	46274: 5000,
+	9415: NIGHTMARES_HP
 };
 
 export async function addMonsterXP(
