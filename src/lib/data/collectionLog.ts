@@ -1633,7 +1633,8 @@ export const capes: CollectionLogData = {
 		'Ranged master cape',
 		'Dungeoneering master cape',
 		'Master quest cape'
-	])
+	]),
+	expert: resolveItems(['Support cape', "Gatherer's cape", "Combatant's cape", "Artisan's cape"])
 };
 
 export const quest: CollectionLogData = {

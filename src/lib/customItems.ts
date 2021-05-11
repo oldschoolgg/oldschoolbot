@@ -903,6 +903,10 @@ setCustomItem(40_023, 'Dungeoneering cape', 'Fire cape', {}, 20_000);
 setCustomItem(40_024, 'Dungeoneering cape(t)', 'Fire cape', {}, 20_000);
 setCustomItem(40_025, 'Dungeoneering hood', 'Rune full helm', {}, 20_000);
 setCustomItem(40_053, 'Master quest cape', 'Abyssal cape', {}, 10_000_000);
+setCustomItem(40_054, 'Support cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_055, "Gatherer's cape", 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_056, "Combatant's cape", 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_057, "Artisan's cape", 'Abyssal cape', {}, 200_000_000);
 
 setCustomItem(40_026, 'Scroll of life', 'Coal', {}, 1_000_000);
 setCustomItem(40_027, 'Herbicide', 'Coal', {}, 1_000_000);
