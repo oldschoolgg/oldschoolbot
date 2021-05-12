@@ -237,6 +237,7 @@ declare module 'discord.js' {
 		 * Returns true if the user has full Graceful equipped in any setup.
 		 */
 		hasGracefulEquipped(): boolean;
+		hasSkillReqs(reqs: Skills): [boolean, string | null];
 		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.

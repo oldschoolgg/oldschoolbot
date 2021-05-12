@@ -8,10 +8,9 @@ import { readableStatName } from '../../lib/gear';
 import { gearSetupMeetsRequirement } from '../../lib/minions/functions/gearSetupMeetsRequirement';
 import { KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { Skills } from '../../lib/types';
-import { formatItemReqs, itemNameFromID, toTitleCase } from '../../lib/util';
+import { formatItemReqs, itemNameFromID } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Extendable {
@@ -59,17 +58,12 @@ export default class extends Extendable {
 		}
 
 		if (monster.levelRequirements) {
-			for (const [skillEnum, levelRequired] of Object.entries(monster.levelRequirements)) {
-				if (this.skillLevel(skillEnum as SkillsEnum) < (levelRequired as number)) {
-					return [
-						false,
-						`You need level ${levelRequired} ${toTitleCase(skillEnum)} to kill ${
-							monster.name
-						}. Check https://www.oldschool.gg/oldschoolbot/minions?${toTitleCase(
-							skillEnum
-						)} for information on how to train this skill.`
-					];
-				}
+			const [hasReqs, str] = this.hasSkillReqs(monster.levelRequirements);
+			if (!hasReqs) {
+				return [
+					false,
+					`You don't meet the skill requirements to kill ${monster.name}, you need: ${str}.`
+				];
 			}
 		}
 
