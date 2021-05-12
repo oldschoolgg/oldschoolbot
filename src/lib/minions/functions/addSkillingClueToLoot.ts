@@ -1,6 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { birdsNestID, nestTable } from '../../simulation/birdsNest';
 import { SkillsEnum } from '../../skilling/types';
 import { randFloat, roll } from '../../util';
 import itemID from '../../util/itemID';
@@ -11,8 +12,6 @@ const clues = [
 	[itemID('Clue scroll(hard)'), 2 / 10],
 	[itemID('Clue scroll(elite)'), 1 / 10]
 ];
-
-const birdsNestID = 5075;
 
 export default function addSkillingClueToLoot(
 	user: KlasaUser,
@@ -25,6 +24,10 @@ export default function addSkillingClueToLoot(
 	const chance = Math.floor(clueChance / (100 + userLevel));
 	let nests = 0;
 	for (let i = 0; i < quantity; i++) {
+		if (skill === SkillsEnum.Woodcutting && roll(256)) {
+			loot.add(nestTable.roll());
+		}
+
 		if (!roll(chance)) continue;
 		let nextTier = false;
 		let gotClue = false;
