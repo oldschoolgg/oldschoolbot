@@ -258,6 +258,36 @@ const herbs = resolveItems([
 	'Torstol'
 ]);
 
+const secondaries = resolveItems([
+	'Eye of newt',
+	'Unicorn horn dust',
+	'Snake weed',
+	'Limpwurt root',
+	'Ashes',
+	'Volcanic Ash',
+	"Red spiders' eggs",
+	'Chocolate dust',
+	'White berries',
+	"Toad's legs",
+	'Goat horn dust',
+	'Snape grass',
+	'Mort myre fungus',
+	'Kebbit teeth dust',
+	'Gorak claw powder',
+	'Dragon scale dust',
+	'Yew roots',
+	'Wine of zamorak',
+	'Potato cactus',
+	'Jangerberries',
+	'Magic roots',
+	'Crushed nest',
+	'Poison ivy berries',
+	"Zulrah's scales",
+	'Torstol',
+	'Crushed superior dragon bones',
+	'Amylase crystal'
+]);
+
 const bones = resolveItems([
 	'Bones',
 	'Babydragon bones',
@@ -811,6 +841,11 @@ export const filterableTypes: Filterable[] = [
 		name: 'Herbs',
 		aliases: ['herbs'],
 		items: herbs
+	},
+	{
+		name: 'Secondaries',
+		aliases: ['seconds, secondary'],
+		items: secondaries
 	},
 	{
 		name: 'Food',
