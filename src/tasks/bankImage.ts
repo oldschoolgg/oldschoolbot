@@ -2,7 +2,6 @@ import { Canvas, createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
-import { Util } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
@@ -25,8 +24,13 @@ import {
 	sha256Hash,
 	stringMatches
 } from '../lib/util';
-import { canvasImageFromBuffer, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
+import {
+	canvasImageFromBuffer,
+	canvasToBufferAsync,
+	fillTextXTimesInCtx
+} from '../lib/util/canvasUtil';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
+import getOSItem from '../lib/util/getOSItem';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -478,49 +482,35 @@ export default class BankImageTask extends Task {
 				yLoc + distanceFromTop - 24
 			);
 
-			// Check for names flag and draw its shadow and name
-			if (flags.names) {
-				const __name = `${itemNameFromID(id)!.replace('Grimy', 'Grmy').slice(0, 7)}..`;
-				ctx.fillStyle = 'black';
-				fillTextXTimesInCtx(
-					ctx,
-					__name,
-					floor(xLoc + (itemSize - item.width) / 2),
-					yLoc + distanceFromTop
-				);
-				ctx.fillStyle = 'white';
-				fillTextXTimesInCtx(
-					ctx,
-					__name,
-					floor(xLoc + (itemSize - item.width) / 2) - 1,
-					yLoc + distanceFromTop - 1
-				);
+			let bottomItemText: string | number | null = null;
+
+			if (flags.sv) {
+				bottomItemText = value;
 			}
 
-			// Check for sv flag and draw its shadow and value
-			if ((flags.showvalue || flags.sv) && !flags.names) {
-				const formattedValue = Util.toKMB(value);
+			if (flags.av) {
+				bottomItemText = (getOSItem(id)?.highalch ?? 0) * quantity;
+			}
+
+			if (flags.names) {
+				bottomItemText = `${itemNameFromID(id)!.replace('Grimy', 'Grmy').slice(0, 7)}..`;
+			}
+
+			if (bottomItemText) {
 				ctx.fillStyle = 'black';
-				fillTextXTimesInCtx(
-					ctx,
-					formattedValue,
-					floor(xLoc + (itemSize - item.width) / 2),
-					yLoc + distanceFromTop
-				);
-				ctx.fillStyle = generateHexColorForCashStack(value);
-				fillTextXTimesInCtx(
-					ctx,
-					formattedValue,
-					floor(xLoc + (itemSize - item.width) / 2) - 1,
-					yLoc + distanceFromTop - 1
-				);
+				let text =
+					typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText;
+				fillTextXTimesInCtx(ctx, text, floor(xLoc), yLoc + distanceFromTop);
+				ctx.fillStyle =
+					typeof bottomItemText === 'string'
+						? 'white'
+						: generateHexColorForCashStack(bottomItemText);
+				fillTextXTimesInCtx(ctx, text, floor(xLoc - 1), yLoc + distanceFromTop - 1);
 			}
 		}
 
-		const image =
-			items.length > 2000
-				? canvas.toBuffer('image/jpeg', { quality: 0.75 })
-				: canvas.toBuffer('image/png');
+		const args = items.length > 2000 ? ['image/jpeg', { quality: 0.75 }] : ['image/png'];
+		const image = await canvasToBufferAsync(canvas, ...args);
 
 		return {
 			image,
