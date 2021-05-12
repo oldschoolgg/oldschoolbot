@@ -448,11 +448,6 @@ export const bosses: CollectionLogData = {
 		'Dark relic',
 		'Metamorphic dust',
 		'Olmlet',
-		"Xeric's guard",
-		"Xeric's warrior",
-		"Xeric's sentinel",
-		"Xeric's general",
-		"Xeric's champion",
 		'Twisted ancestral colour kit'
 	])
 };
