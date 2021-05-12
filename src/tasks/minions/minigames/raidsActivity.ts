@@ -1,23 +1,25 @@
-import { noOp } from 'e';
+import { noOp, shuffleArr } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { coxLog } from '../../../lib/data/collectionLog';
+import { coxLog, metamorphPets } from '../../../lib/data/collectionLog';
 import { createTeam } from '../../../lib/data/cox';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
-import { addBanks, filterBankFromArrayOfItems } from '../../../lib/util';
+import { addBanks, filterBankFromArrayOfItems, roll } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
+import itemID from '../../../lib/util/itemID';
 import resolveItems from '../../../lib/util/resolveItems';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
 const blueItems = resolveItems(['Metamorphic dust']);
-const purpleItems = Object.values(coxLog)
+
+const purpleItems = [...Object.values(coxLog), ...metamorphPets]
 	.flat(2)
 	.filter(i => !notPurple.includes(i));
 
@@ -64,14 +66,28 @@ export default class extends Task {
 			);
 
 			const userLoot = new Bank(_userLoot);
+			if (
+				challengeMode &&
+				roll(50) &&
+				user.settings.get(UserSettings.CollectionLogBank)[itemID('Metamorphic dust')]
+			) {
+				const { bank } = user.allItemsOwned();
+				const unownedPet = shuffleArr(metamorphPets).find(pet => !bank[pet]);
+				if (unownedPet) {
+					userLoot.add(unownedPet);
+				}
+			}
+
 			totalLoot.add(userLoot);
 
-			const isPurple = userLoot.items().some(([item]) => purpleItems.includes(item.id));
-			const isGreen = userLoot.items().some(([item]) => greenItems.includes(item.id));
-			const isBlue = userLoot.items().some(([item]) => blueItems.includes(item.id));
+			const items = userLoot.items();
+
+			const isPurple = items.some(([item]) => purpleItems.includes(item.id));
+			const isGreen = items.some(([item]) => greenItems.includes(item.id));
+			const isBlue = items.some(([item]) => blueItems.includes(item.id));
 			const emote = isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
 			if (isPurple) {
-				const itemsToAnnounce = filterBankFromArrayOfItems(purpleItems, _userLoot);
+				const itemsToAnnounce = filterBankFromArrayOfItems(purpleItems, userLoot.bank);
 				this.client.emit(
 					Events.ServerNotification,
 					`${emote} ${user.username} just received **${new Bank(

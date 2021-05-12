@@ -2,7 +2,6 @@ import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { plunderBoosts, plunderRooms } from '../../lib/minions/data/plunder';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -39,7 +38,7 @@ export default class extends BotCommand {
 
 		const boosts = [];
 
-		if (!hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (!msg.author.hasGracefulEquipped()) {
 			plunderTime *= 1.075;
 			boosts.push(`-7.5% time penalty for not having graceful equipped`);
 		}

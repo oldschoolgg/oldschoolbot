@@ -1,7 +1,6 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -38,7 +37,7 @@ export default class extends BotCommand {
 			: boostStr.push('');
 
 		// Reduce time if user has graceful equipped
-		if (hasGracefulEquipped(user.getGear('skilling'))) {
+		if (user.hasGracefulEquipped()) {
 			nonGracefulTimeAddition = 0;
 			boostStr.push('10% from graceful outfit');
 		}

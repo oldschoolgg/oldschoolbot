@@ -2,7 +2,6 @@ import { Canvas, createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
-import { Util } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
@@ -25,8 +24,13 @@ import {
 	sha256Hash,
 	stringMatches
 } from '../lib/util';
-import { canvasImageFromBuffer, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
+import {
+	canvasImageFromBuffer,
+	canvasToBufferAsync,
+	fillTextXTimesInCtx
+} from '../lib/util/canvasUtil';
 import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
+import getOSItem from '../lib/util/getOSItem';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -50,10 +54,12 @@ export type BankImageResult =
 	  };
 
 const CACHE_DIR = './icon_cache';
-const spacer = 12;
+
 const itemSize = 32;
 const distanceFromTop = 32;
 const distanceFromSide = 16;
+
+const { floor, ceil } = Math;
 
 export default class BankImageTask extends Task {
 	public itemIconsList: Set<number>;
@@ -240,6 +246,9 @@ export default class BankImageTask extends Task {
 		user?: KlasaUser | string,
 		collectionLog?: ItemBank
 	): Promise<BankImageResult> {
+		let compact = Boolean(flags.compact);
+		const spacer = compact ? 2 : 12;
+
 		const settings =
 			typeof user === 'undefined'
 				? null
@@ -298,32 +307,36 @@ export default class BankImageTask extends Task {
 			partialValue = addArrayOfNumbers(items.map(i => i[2]));
 		}
 
+		const chunkSize = compact ? 140 : 56;
+		const chunked = util.chunk(items, chunkSize);
+
 		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
 		const { page, noBorder, wide } = flags;
 		if (Number(page) >= 0) {
-			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${
-				util.chunk(items, 56).length
-			}`;
+			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${chunked.length}`;
 		}
 
 		// Paging
 		if (typeof page === 'number' && !flags.full) {
-			const chunked = util.chunk(items, 56);
 			const pageLoot = chunked[page];
 			if (!pageLoot) throw 'You have no items on this page.';
 			items = pageLoot;
 		}
 
+		if (items.length > 500 && !flags.nc) compact = true;
+
+		const itemWidthSize = compact ? 12 + 21 : 36 + 21;
+
 		let width = wide
-			? 5 + this.borderVertical!.width + 20 + Math.ceil(Math.sqrt(items.length)) * (36 + 21)
+			? 5 + this.borderVertical!.width + 20 + ceil(Math.sqrt(items.length)) * itemWidthSize
 			: 488;
 		if (width < 488) width = 488;
-		const itemsPerRow = Math.floor((width - this.borderVertical!.width * 2) / (36 + 21));
+		const itemsPerRow = floor((width - this.borderVertical!.width * 2) / itemWidthSize);
 		const canvasHeight =
-			Math.floor(
-				Math.floor(
-					Math.ceil(items.length / itemsPerRow) *
-						Math.floor((itemSize + spacer / 2) * 1.08)
+			floor(
+				floor(
+					ceil(items.length / itemsPerRow) *
+						floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08))
 				) +
 					itemSize * 1.5
 			) - 2;
@@ -367,7 +380,7 @@ export default class BankImageTask extends Task {
 			};
 		}
 
-		const canvas = createCanvas(width, canvasHeight <= 331 ? 331 : canvasHeight);
+		const canvas = createCanvas(width, canvasHeight);
 
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
@@ -398,25 +411,30 @@ export default class BankImageTask extends Task {
 		ctx.font = '16px RuneScape Bold 12';
 
 		ctx.fillStyle = '#000000';
-		fillTextXTimesInCtx(ctx, title, Math.floor(canvas.width / 2) + 1, 22);
+		fillTextXTimesInCtx(ctx, title, floor(canvas.width / 2) + 1, 22);
 
 		ctx.fillStyle = '#ff981f';
-		fillTextXTimesInCtx(ctx, title, Math.floor(canvas.width / 2), 21);
+		fillTextXTimesInCtx(ctx, title, floor(canvas.width / 2), 21);
 
 		// Draw Items
 		ctx.textAlign = 'start';
 		ctx.fillStyle = '#494034';
-		ctx.font = '16px OSRSFontCompact';
+		ctx.font = compact ? '14px OSRSFontCompact' : '16px OSRSFontCompact';
 
 		let xLoc = 0;
-		let yLoc = 0;
+		let yLoc = compact ? 5 : 0;
 		for (let i = 0; i < items.length; i++) {
-			if (i % itemsPerRow === 0) yLoc += Math.floor((itemSize + spacer / 2) * 1.08);
+			if (i % itemsPerRow === 0)
+				yLoc += floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08));
 			// For some reason, it starts drawing at -2 so we compensate that
 			// Adds the border width
 			// Adds distance from side
 			// 36 + 21 is the itemLength + the space between each item
-			xLoc = 2 + this.borderVertical!.width + 20 + (i % itemsPerRow) * (36 + 21);
+			xLoc =
+				2 +
+				this.borderVertical!.width +
+				(compact ? 9 : 20) +
+				(i % itemsPerRow) * itemWidthSize;
 			const [id, quantity, value] = items[i];
 			const item = await this.getItemImage(id, quantity).catch(() => {
 				console.error(`Failed to load item image for item with id: ${id}`);
@@ -426,12 +444,15 @@ export default class BankImageTask extends Task {
 				continue;
 			}
 
+			const itemHeight = compact ? item.height / 1 : item.height;
+			const itemWidth = compact ? item.width / 1 : item.width;
+
 			ctx.drawImage(
 				item,
-				Math.floor(xLoc + (itemSize - item.width) / 2) + 2,
-				Math.floor(yLoc + (itemSize - item.height) / 2),
-				item.width,
-				item.height
+				floor(xLoc + (itemSize - itemWidth) / 2) + 2,
+				floor(yLoc + (itemSize - itemHeight) / 2),
+				itemWidth,
+				itemHeight
 			);
 
 			// Check if new cl item
@@ -461,49 +482,35 @@ export default class BankImageTask extends Task {
 				yLoc + distanceFromTop - 24
 			);
 
-			// Check for names flag and draw its shadow and name
-			if (flags.names) {
-				const __name = `${itemNameFromID(id)!.replace('Grimy', 'Grmy').slice(0, 7)}..`;
-				ctx.fillStyle = 'black';
-				fillTextXTimesInCtx(
-					ctx,
-					__name,
-					Math.floor(xLoc + (itemSize - item.width) / 2),
-					yLoc + distanceFromTop
-				);
-				ctx.fillStyle = 'white';
-				fillTextXTimesInCtx(
-					ctx,
-					__name,
-					Math.floor(xLoc + (itemSize - item.width) / 2) - 1,
-					yLoc + distanceFromTop - 1
-				);
+			let bottomItemText: string | number | null = null;
+
+			if (flags.sv) {
+				bottomItemText = value;
 			}
 
-			// Check for sv flag and draw its shadow and value
-			if ((flags.showvalue || flags.sv) && !flags.names) {
-				const formattedValue = Util.toKMB(value);
+			if (flags.av) {
+				bottomItemText = (getOSItem(id)?.highalch ?? 0) * quantity;
+			}
+
+			if (flags.names) {
+				bottomItemText = `${itemNameFromID(id)!.replace('Grimy', 'Grmy').slice(0, 7)}..`;
+			}
+
+			if (bottomItemText) {
 				ctx.fillStyle = 'black';
-				fillTextXTimesInCtx(
-					ctx,
-					formattedValue,
-					Math.floor(xLoc + (itemSize - item.width) / 2),
-					yLoc + distanceFromTop
-				);
-				ctx.fillStyle = generateHexColorForCashStack(value);
-				fillTextXTimesInCtx(
-					ctx,
-					formattedValue,
-					Math.floor(xLoc + (itemSize - item.width) / 2) - 1,
-					yLoc + distanceFromTop - 1
-				);
+				let text =
+					typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText;
+				fillTextXTimesInCtx(ctx, text, floor(xLoc), yLoc + distanceFromTop);
+				ctx.fillStyle =
+					typeof bottomItemText === 'string'
+						? 'white'
+						: generateHexColorForCashStack(bottomItemText);
+				fillTextXTimesInCtx(ctx, text, floor(xLoc - 1), yLoc + distanceFromTop - 1);
 			}
 		}
 
-		const image =
-			items.length > 2000
-				? canvas.toBuffer('image/jpeg', { quality: 0.75 })
-				: canvas.toBuffer('image/png');
+		const args = items.length > 2000 ? ['image/jpeg', { quality: 0.75 }] : ['image/png'];
+		const image = await canvasToBufferAsync(canvas, ...args);
 
 		return {
 			image,
@@ -517,6 +524,7 @@ export default class BankImageTask extends Task {
 		title = '',
 		type: any
 	): Promise<Buffer> {
+		const spacer = 12;
 		const canvas = createCanvas(488, 331);
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
@@ -617,10 +625,8 @@ export default class BankImageTask extends Task {
 			const completedThisSection = items.every(itemID => Boolean(collectionLog[itemID]));
 
 			for (const itemID of flatItems) {
-				const xLoc = Math.floor(
-					column * 0.7 * ((canvas.width - 40) / 8) + distanceFromSide
-				);
-				const yLoc = Math.floor(itemSize * (row * 1.22) + spacer + distanceFromTop);
+				const xLoc = floor(column * 0.7 * ((canvas.width - 40) / 8) + distanceFromSide);
+				const yLoc = floor(itemSize * (row * 1.22) + spacer + distanceFromTop);
 
 				await drawItem(
 					itemID,
