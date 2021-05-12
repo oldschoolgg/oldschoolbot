@@ -376,7 +376,7 @@ export default class BankImageTask extends Task {
 			};
 		}
 
-		const canvas = createCanvas(width, canvasHeight <= 331 ? 331 : canvasHeight);
+		const canvas = createCanvas(width, canvasHeight);
 
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
