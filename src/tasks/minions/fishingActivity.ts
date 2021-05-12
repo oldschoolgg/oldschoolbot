@@ -103,13 +103,7 @@ export default class extends Task {
 
 		// Add clue scrolls
 		if (fish.clueScrollChance) {
-			loot.bank = addSkillingClueToLoot(
-				user,
-				SkillsEnum.Fishing,
-				quantity,
-				fish.clueScrollChance,
-				loot.bank
-			);
+			addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, fish.clueScrollChance, loot);
 		}
 
 		// Add barbarian fish to loot
