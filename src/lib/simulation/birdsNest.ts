@@ -2,7 +2,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 export const birdsNestID = 5075;
 
-const treeSeeds = new LootTable()
+export const treeSeedsNest = new LootTable()
 	.add('Acorn', 1, 214)
 	.add('Apple tree seed', 1, 170)
 	.add('Willow seed', 1, 135)
@@ -23,7 +23,7 @@ const treeSeeds = new LootTable()
 	.add('Celastrus seed', 1, 3)
 	.add('Redwood tree seed', 1, 2);
 
-const wysonSeeds = new LootTable()
+export const wysonSeedsNest = new LootTable()
 	.add('Sweetcorn seed', 6, 102)
 	.add('Strawberry seed', 6, 100)
 	.add('Acorn', 1, 80)
@@ -64,5 +64,5 @@ export const nestTable = new LootTable()
 	.every(birdsNestID)
 	.add(eggNest, 1, 3)
 	.add(ringNests, 1, 32)
-	.add(wysonSeeds, 1, 65 / 2)
-	.add(treeSeeds, 1, 65 / 2);
+	.add(wysonSeedsNest, 1, 65 / 2)
+	.add(treeSeedsNest, 1, 65 / 2);
