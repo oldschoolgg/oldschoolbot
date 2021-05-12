@@ -195,7 +195,8 @@ export const enum Tasks {
 	MageArena = 'mageArenaActivity',
 	Raids = 'raidsActivity',
 	Collecting = 'collectingActivity',
-	MageTrainingArena = 'mageTrainingArenaActivity'
+	MageTrainingArena = 'mageTrainingArenaActivity',
+	BlastFurnaceActivity = 'blastFurnaceActivity'
 }
 
 export enum Activity {
@@ -251,7 +252,8 @@ export enum Activity {
 	MageArena = 'MageArena',
 	Raids = 'Raids',
 	Collecting = 'Collecting',
-	MageTrainingArena = 'MageTrainingArena'
+	MageTrainingArena = 'MageTrainingArena',
+	BlastFurnace = 'BlastFurnace'
 }
 
 export enum ActivityGroup {
@@ -331,7 +333,8 @@ export const enum BitField {
 	HasHosidiusWallkit = 10,
 	HasPermanentEventBackgrounds = 11,
 	HasPermanentTierOne = 12,
-	DisabledRandomEvents = 13
+	DisabledRandomEvents = 13,
+	PermanentIronman = 14
 }
 
 interface BitFieldData {
@@ -349,7 +352,8 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction' },
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' },
 	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
-	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' }
+	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
+	[BitField.PermanentIronman]: { name: 'Permanent Ironman' }
 } as const;
 
 export const enum PatronTierID {

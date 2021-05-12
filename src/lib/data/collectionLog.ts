@@ -1596,6 +1596,14 @@ export const MTALog: CollectionLogData = {
 	wands: wandItems
 };
 
+export const metamorphPets = resolveItems([
+	'Puppadile',
+	'Tektiny',
+	'Vanguard',
+	'Vasa minirio',
+	'Vespina'
+]);
+
 export const coxLog: CollectionLogData = {
 	Misc: resolveItems(['Dexterous prayer scroll', 'Torn prayer scroll', 'Arcane prayer scroll']),
 	Weapons: resolveItems([
@@ -1621,8 +1629,16 @@ export const coxLog: CollectionLogData = {
 		"Xeric's sentinel",
 		"Xeric's general",
 		"Xeric's champion"
-	])
+	]),
+	pets: metamorphPets
 };
+
+export const evilChickenOutfit = resolveItems([
+	'Evil chicken head',
+	'Evil chicken wings',
+	'Evil chicken legs',
+	'Evil chicken feet'
+]);
 
 export const miscLog: CollectionLogData = {
 	'God Books': resolveItems([
@@ -1633,7 +1649,8 @@ export const miscLog: CollectionLogData = {
 		'Book of darkness',
 		'Book of law'
 	]),
-	Tzhaar: resolveItems(['Fire cape'])
+	Tzhaar: resolveItems(['Fire cape']),
+	evilChickenOutfit
 };
 
 export const sepulchreLog: CollectionLogData = {

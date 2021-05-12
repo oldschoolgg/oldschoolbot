@@ -3,7 +3,6 @@ import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import MinionCommand from '../../commands/Minion/minion';
-import { production } from '../../config';
 import { BitField, Emoji, PerkTier, Time } from '../constants';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
@@ -56,17 +55,19 @@ export async function handleTripFinish(
 
 	const channel = client.channels.get(channelID);
 
-	const minutes = Math.min(30, data.duration / Time.Minute);
-	const randomEventChance = 60 - minutes;
-	if (
-		channel &&
-		!user.bitfield.includes(BitField.DisabledRandomEvents) &&
-		roll(production ? randomEventChance : 1) &&
-		channel instanceof TextChannel
-	) {
-		triggerRandomEvent(channel, user);
-	}
-	sendToChannelID(client, channelID, { content: message, image: attachable });
+	sendToChannelID(client, channelID, { content: message, image: attachable }).then(() => {
+		const minutes = Math.min(30, data.duration / Time.Minute);
+		const randomEventChance = 60 - minutes;
+		if (
+			channel &&
+			!user.bitfield.includes(BitField.DisabledRandomEvents) &&
+			roll(randomEventChance) &&
+			channel instanceof TextChannel
+		) {
+			triggerRandomEvent(channel, user);
+		}
+	});
+
 	if (!onContinue) return;
 
 	const existingCollector = collectors.get(user.id);
