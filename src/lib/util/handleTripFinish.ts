@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import MinionCommand from '../../commands/Minion/minion';
-import { BitField, Emoji, PerkTier, Time } from '../constants';
+import { Activity, BitField, Emoji, PerkTier, Time } from '../constants';
 import { getRandomMysteryBox } from '../data/openables';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
@@ -47,7 +47,12 @@ export async function handleTripFinish(
 		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
 	}
 
-	if (loot && data.duration > Time.Minute * 20 && roll(15)) {
+	if (
+		data.type !== Activity.GroupMonsterKilling &&
+		loot &&
+		data.duration > Time.Minute * 20 &&
+		roll(15)
+	) {
 		const emoji = getSupportGuild(client).emojis.random().toString();
 		const bonusLoot = new Bank().add(loot).add(getRandomMysteryBox());
 		message += `\n${emoji} **You received 2x loot and a Mystery box.**`;
