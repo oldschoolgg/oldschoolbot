@@ -1,11 +1,11 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Events, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { addBanks, addItemToBank, itemID, multiplyBank, rand, roll } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 const possibleFound = new LootTable()
@@ -61,10 +61,7 @@ export default class extends Task {
 				str += `\nZippy has **doubled** your loot.`;
 			}
 
-			str += `\n\nZippy has found these items for you: ${await createReadableItemListFromBank(
-				this.client,
-				bonusLoot
-			)}`;
+			str += `\n\nZippy has found these items for you: ${new Bank(bonusLoot)}`;
 		}
 		await user.addItemsToBank(loot, true);
 
