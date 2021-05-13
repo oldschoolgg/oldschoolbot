@@ -81,7 +81,7 @@ export default class TradeableItemBankArgument extends Argument {
 
 			if (itemIsTradeable(item.id) && userBank.amount(item.id) >= qty) {
 				bank.add(item.id, qty);
-				totalPrice += (await this.client.fetchItemPrice(item.id)) * qty;
+				totalPrice += item.price * qty;
 			} else {
 				invalidBank.add(item.id, qty);
 			}
