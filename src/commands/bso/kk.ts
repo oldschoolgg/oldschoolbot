@@ -154,6 +154,12 @@ export default class extends BotCommand {
 				msgs.push(`${percent}% boost for Drygore mace`);
 			}
 
+			if (equippedWeapon?.id === itemID('Offhand drygore mace')) {
+				const percent = 5;
+				effectiveTime = reduceNumByPercent(effectiveTime, percent);
+				msgs.push(`${percent}% boost for Offhand drygore mace`);
+			}
+
 			// Increase duration for lower melee-strength gear.
 			let rangeStrBonus = 0;
 			if (data.percentAttackStrength < 40) {
