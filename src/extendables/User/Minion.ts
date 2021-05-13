@@ -679,6 +679,11 @@ export default class extends Extendable {
 
 		if (!activity) return max;
 		switch (activity) {
+			case Activity.Fishing:
+				if (this.hasItemEquippedAnywhere('Fish sack')) {
+					max += Time.Minute * 8;
+				}
+				break;
 			case Activity.Nightmare:
 			case Activity.GroupMonsterKilling:
 			case Activity.MonsterKilling:
