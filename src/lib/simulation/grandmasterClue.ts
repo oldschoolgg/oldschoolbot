@@ -77,7 +77,7 @@ const table = new LootTable()
 	.tertiary(5_000, 'Deathtouched dart')
 	.tertiary(50, LampTable)
 	.tertiary(
-		200_000,
+		150_000,
 		new LootTable()
 			.add('First age tiara')
 			.add('First age amulet')
