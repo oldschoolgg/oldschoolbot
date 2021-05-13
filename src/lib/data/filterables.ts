@@ -4,8 +4,6 @@ import { allPetIDs } from '../../commands/Minion/equippet';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
-import { ItemTuple } from '../types';
-import { stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
 	cluesAll,
@@ -261,6 +259,36 @@ const herbs = resolveItems([
 	'Lantadyme',
 	'Dwarf weed',
 	'Torstol'
+]);
+
+const secondaries = resolveItems([
+	'Eye of newt',
+	'Unicorn horn dust',
+	'Snake weed',
+	'Limpwurt root',
+	'Ashes',
+	'Volcanic Ash',
+	"Red spiders' eggs",
+	'Chocolate dust',
+	'White berries',
+	"Toad's legs",
+	'Goat horn dust',
+	'Snape grass',
+	'Mort myre fungus',
+	'Kebbit teeth dust',
+	'Gorak claw powder',
+	'Dragon scale dust',
+	'Yew roots',
+	'Wine of zamorak',
+	'Potato cactus',
+	'Jangerberries',
+	'Magic roots',
+	'Crushed nest',
+	'Poison ivy berries',
+	"Zulrah's scales",
+	'Torstol',
+	'Crushed superior dragon bones',
+	'Amylase crystal'
 ]);
 
 const bones = resolveItems([
@@ -820,6 +848,11 @@ export const filterableTypes: Filterable[] = [
 		items: herbs
 	},
 	{
+		name: 'Secondaries',
+		aliases: ['seconds, secondary'],
+		items: secondaries
+	},
+	{
 		name: 'Food',
 		aliases: ['food'],
 		items: food
@@ -903,17 +936,3 @@ export const filterableTypes: Filterable[] = [
 		]
 	}
 ];
-
-export function filterByCategory(filterQuery: string, items: ItemTuple[]) {
-	const filtered = filterableTypes.find(_filtered =>
-		_filtered.aliases.some(name => stringMatches(name, filterQuery))
-	);
-
-	if (!filtered) {
-		throw `That's not a valid filter type. The valid types are: ${filterableTypes
-			.map(filtered => filtered.name)
-			.join(', ')}.`;
-	}
-
-	return items.filter(item => filtered.items.includes(item[0]));
-}

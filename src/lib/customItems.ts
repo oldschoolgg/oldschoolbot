@@ -28,13 +28,13 @@ function setCustomItem(
 	if (hasSet.has(id)) throw new Error(`Tried to add 2 custom items with same id ${id}`);
 	hasSet.add(id);
 	const data = deepMerge({ ...getOSItem(baseItem) }, { ...newItemData, name, id });
+	data.price = price || 1;
 
 	Items.set(id, data);
 	const cleanName = cleanString(name);
 	itemNameMap.set(cleanName, id);
 	itemNameMap.set(name, id);
-	// Set the item custom price
-	customPrices[id] = price || 1;
+
 	// Add the item to the custom items array
 	customItems.push(id);
 }
