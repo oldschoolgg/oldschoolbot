@@ -280,15 +280,15 @@ export default class BankImageTask extends Task {
 
 		// Sorting
 		const sort = flags.sort ? BankSortMethods.find(s => s === flags.sort) ?? null : 'value';
-		if (sort) {
+		if (sort || favorites?.length) {
 			items = items.sort((a, b) => {
 				if (favorites) {
 					const aFav = favorites.includes(a[0].id);
 					const bFav = favorites.includes(b[0].id);
 					if (aFav && bFav) return 0;
-					if (aFav) return -1;
+					if (bFav) return 1;
 				}
-				return sorts[sort](a, b);
+				return sort ? sorts[sort](a, b) : 0;
 			});
 		}
 
