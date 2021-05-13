@@ -18,13 +18,13 @@ import { BankSortMethods, sorts } from '../lib/sorts';
 import { ItemBank } from '../lib/types';
 import {
 	addArrayOfNumbers,
+	cleanString,
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
 	restoreCtx,
 	roll,
 	saveCtx,
-	sha256Hash,
-	stringMatches
+	sha256Hash
 } from '../lib/util';
 import {
 	canvasImageFromBuffer,
@@ -301,7 +301,7 @@ export default class BankImageTask extends Task {
 		if (filter || searchQuery) {
 			partial = true;
 			bank.filter(item => {
-				if (searchQuery) return stringMatches(item.name, searchQuery);
+				if (searchQuery) return cleanString(item.name).includes(cleanString(searchQuery));
 				return filter!.items.includes(item.id);
 			}, true);
 		}
