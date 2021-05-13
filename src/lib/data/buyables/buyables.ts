@@ -741,7 +741,15 @@ const Buyables: Buyable[] = [
 	...gnomeClothes,
 	...canifisClothes,
 	...castleWarsBuyables,
-	...cmCapes
+	...cmCapes,
+	{
+		name: 'Master quest cape',
+		outputItems: resolveNameBank({
+			'Master quest cape': 1
+		}),
+		gpCost: 1_000_000_000,
+		qpRequired: 5000
+	}
 ];
 
 export default Buyables;
