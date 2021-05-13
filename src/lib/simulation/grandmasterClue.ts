@@ -44,36 +44,35 @@ const DragonTable = new LootTable()
 	.add('Dragon plateskirt', [1, 5], 2);
 
 const boxTable = new LootTable()
-	.add('Tradeable mystery box', [1, 2], 50)
-	.add('Untradeable mystery box', 1, 20)
+	.add('Tradeable mystery box', [1, 2], 100)
+	.add('Untradeable mystery box', 1, 40)
 	.add('Equippable mystery box', 1, 5)
 	.add('Pet mystery box');
 
 const runeTable = new LootTable()
-	.add('Nature rune', [1000, 5000])
-	.add('Law rune', [1000, 5000])
-	.add('Death rune', [1000, 5000])
-	.add('Blood rune', [1000, 5000])
-	.add('Soul rune', [1000, 5000])
-	.add('Wrath rune', [1000, 5000])
-	.add('Astral rune', [1000, 5000]);
+	.add('Nature rune', [3000, 5000])
+	.add('Law rune', [3000, 5000])
+	.add('Death rune', [3000, 5000])
+	.add('Blood rune', [3000, 5000])
+	.add('Soul rune', [3000, 5000])
+	.add('Wrath rune', [3000, 5000])
+	.add('Astral rune', [3000, 5000]);
 
 const PlankTable = new LootTable()
-	.add('Oak plank', [100, 400])
-	.add('Teak plank', [50, 200])
-	.add('Mahogany plank', [20, 120]);
+	.add('Oak plank', [1000, 4000])
+	.add('Teak plank', [500, 2000])
+	.add('Mahogany plank', [500, 1200]);
 
 const Supplies = new LootTable()
 	.add('Gingerbread gnome', [3, 5])
 	.add('Shark', [155, 322])
-	.add('Bucket of sand', [200, 2000])
-	.add('Purple sweets', [50, 210])
-	.add('Saradomin brew(4)', [20, 30])
-	.add('Super restore(4)', [20, 30]);
+	.add('Purple sweets', [50, 510])
+	.add('Saradomin brew(4)', [20, 50])
+	.add('Super restore(4)', [20, 50]);
 
 const table = new LootTable()
 	.tertiary(2500, ClueHunterTable)
-	.tertiary(6000, BlessingTable)
+	.tertiary(8000, BlessingTable)
 	.tertiary(5_000, 'Deathtouched dart')
 	.tertiary(50, LampTable)
 	.tertiary(
@@ -87,7 +86,7 @@ const table = new LootTable()
 	)
 	.add(ClueTable, [1, 3])
 	.add(boxTable, [1, 3])
-	.add(DragonTable, [1, 6], 2)
+	.add(DragonTable, [3, 10], 2)
 	.add(runeTable, [1, 5])
 	.add('Coins', [5_000_000, 25_000_000])
 	.add(AllBarrows, 3)
@@ -100,7 +99,7 @@ class GrandmasterClue extends Clue {
 		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
-			const numberOfRolls = randInt(2, 7);
+			const numberOfRolls = randInt(5, 11);
 
 			for (let i = 0; i < numberOfRolls; i++) {
 				loot.add(table.roll());
