@@ -341,7 +341,7 @@ export const enum BitField {
 	HasPermanentEventBackgrounds = 11,
 	HasPermanentTierOne = 12,
 	DisabledRandomEvents = 13,
-
+	PermanentIronman = 14,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201
 }
@@ -362,7 +362,8 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' },
 	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
-	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp' }
+	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp' },
+	[BitField.PermanentIronman]: { name: 'Permanent Ironman' }
 } as const;
 
 export const enum PatronTierID {
@@ -410,7 +411,6 @@ export const NIGHTMARE_ID = 9415;
  */
 export const userQueues: Map<string, PQueue> = new Map();
 
-export const syncPriceCache = new Map<number, number>();
 export const bankImageCache = new Map<string, string>();
 
 export const skillEmoji = {

@@ -30,12 +30,12 @@ export default class extends Task {
 
 		// Add clue scrolls
 		if (log.clueScrollChance) {
-			loot.bank = addSkillingClueToLoot(
+			addSkillingClueToLoot(
 				user,
 				SkillsEnum.Woodcutting,
 				quantity,
 				log.clueScrollChance,
-				loot.bank
+				loot
 			);
 		}
 

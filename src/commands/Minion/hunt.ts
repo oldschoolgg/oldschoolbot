@@ -267,7 +267,10 @@ export default class extends BotCommand {
 					? Math.round(duration / (9 * Time.Minute))
 					: Math.round(duration / (18 * Time.Minute));
 
-			if (bankHasItem(userBank.bank, itemID('Stamina potion(4)'), staminaPotionQuantity)) {
+			if (
+				!msg.flagArgs.ns &&
+				bankHasItem(userBank.bank, itemID('Stamina potion(4)'), staminaPotionQuantity)
+			) {
 				removeBank.add(itemID('Stamina potion(4)'), staminaPotionQuantity);
 				boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4)`);
 				duration *= 0.8;
