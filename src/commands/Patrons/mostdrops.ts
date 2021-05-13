@@ -21,7 +21,6 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [itemName]: [string]) {
 		const item = getOSItem(itemName);
-		// if (allNexItems.includes(item.id)) return msg.send("That item doesn't exist.");
 
 		const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT 10;`;
 
