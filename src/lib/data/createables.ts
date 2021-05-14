@@ -732,12 +732,12 @@ const lockedItems: Createable[] = [
 		noCl: true
 	},
 	{
-		name: 'Unlock ava\'s assembler',
+		name: "Unlock ava's assembler",
 		inputItems: {
-			[itemID('Ava\'s assembler (l)')]: 1
+			[itemID("Ava's assembler (l)")]: 1
 		},
 		outputItems: {
-			[itemID('Ava\'s assembler')]: 1
+			[itemID("Ava's assembler")]: 1
 		},
 		noCl: true
 	},
