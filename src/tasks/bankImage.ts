@@ -315,7 +315,7 @@ export default class BankImageTask extends Task {
 				if (favorites) {
 					const aFav = favorites.includes(a[0].id);
 					const bFav = favorites.includes(b[0].id);
-					if (aFav && bFav) return 0;
+					if (aFav && bFav) return sorts[sort](a, b);
 					if (bFav) return 1;
 					if (aFav) return -1;
 				}
