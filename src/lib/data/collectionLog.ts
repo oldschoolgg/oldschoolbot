@@ -473,11 +473,6 @@ export const bosses: CollectionLogData = {
 		'Dark relic',
 		'Metamorphic dust',
 		'Olmlet',
-		"Xeric's guard",
-		"Xeric's warrior",
-		"Xeric's sentinel",
-		"Xeric's general",
-		"Xeric's champion",
 		'Twisted ancestral colour kit'
 	])
 };
@@ -1765,6 +1760,13 @@ export const coxLog: CollectionLogData = {
 	pets: metamorphPets
 };
 
+export const evilChickenOutfit = resolveItems([
+	'Evil chicken head',
+	'Evil chicken wings',
+	'Evil chicken legs',
+	'Evil chicken feet'
+]);
+
 export const miscLog: CollectionLogData = {
 	'God Books': resolveItems([
 		'Holy book',
@@ -1774,7 +1776,8 @@ export const miscLog: CollectionLogData = {
 		'Book of darkness',
 		'Book of law'
 	]),
-	Tzhaar: resolveItems(['Fire cape'])
+	Tzhaar: resolveItems(['Fire cape']),
+	evilChickenOutfit
 };
 
 export const customBossLog: CollectionLogData = {

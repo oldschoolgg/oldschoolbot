@@ -7,9 +7,23 @@ import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { Skills } from '../../lib/types';
 import { ZalcanoActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+
+const skillRequirements: Skills = {
+	mining: 70,
+	smithing: 70,
+	cooking: 70,
+	farming: 70,
+	fishing: 70,
+	woodcutting: 70,
+	agility: 70,
+	herblore: 70,
+	construction: 70,
+	hunter: 70
+};
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -38,14 +52,12 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		if (
-			msg.author.skillLevel(SkillsEnum.Mining) < 70 ||
-			msg.author.skillLevel(SkillsEnum.Smithing) < 70 ||
-			msg.author.settings.get(UserSettings.QP) < 150
-		) {
-			return msg.send(
-				`To fight Zalcano, you need: Level 70 Mining, Level 70 Smithing and 150 QP.`
-			);
+		const [hasSkillReqs, reason] = msg.author.hasSkillReqs(skillRequirements);
+		if (!hasSkillReqs) {
+			return msg.channel.send(`To fight Zalcano, you need: ${reason}.`);
+		}
+		if (msg.author.settings.get(UserSettings.QP) < 150) {
+			return msg.send(`To fight Zalcano, you need 150 QP.`);
 		}
 
 		const kc = msg.author.getKC(ZALCANO_ID);

@@ -13,7 +13,6 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { KalphiteKingActivityTaskOptions } from '../../../lib/types/minions';
 import { addBanks, channelIsSendable, noOp } from '../../../lib/util';
-import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
@@ -83,10 +82,7 @@ export default class extends Task {
 			if (kcToAdd) user.incrementMonsterScore(KalphiteKingMonster.id, kcToAdd);
 			const purple = Object.keys(loot).some(id => allNexItems.includes(parseInt(id)));
 
-			resultStr += `${
-				purple ? Emoji.Purple : ''
-			} **${user} received:** ||${await createReadableItemListFromBank(
-				this.client,
+			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(
 				loot
 			)}||\n`;
 

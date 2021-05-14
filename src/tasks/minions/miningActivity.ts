@@ -61,13 +61,7 @@ export default class extends Task {
 
 		// Add clue scrolls
 		if (ore.clueScrollChance) {
-			addSkillingClueToLoot(
-				user,
-				SkillsEnum.Mining,
-				quantity,
-				ore.clueScrollChance,
-				loot.values()
-			);
+			addSkillingClueToLoot(user, SkillsEnum.Mining, quantity, ore.clueScrollChance, loot);
 		}
 
 		// Roll for pet
