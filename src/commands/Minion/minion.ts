@@ -14,6 +14,7 @@ import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
+import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
 import { randomItemFromArray } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
@@ -204,6 +205,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			try {
 				await PoHTable.delete({ userID: msg.author.id });
 				await MinigameTable.delete({ userID: msg.author.id });
+				await XPGainsTable.delete({ userID: msg.author.id });
 				await NewUserTable.delete({ id: msg.author.id });
 			} catch (_) {}
 
