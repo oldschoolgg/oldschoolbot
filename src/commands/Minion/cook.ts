@@ -63,7 +63,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.bank();
 		const inputCost = new Bank(cookable.inputCookables);
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Cooking);
+		const maxTripLength = 200984200 
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToCookSingleCookable);

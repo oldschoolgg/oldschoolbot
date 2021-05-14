@@ -72,7 +72,7 @@ export default class extends BotCommand {
 		const userBank = new Bank(msg.author.settings.get(UserSettings.Bank));
 
 		if (minigame === 'tokens') {
-			const maxTripLength = msg.author.maxTripLength(Activity.AnimatedArmour);
+			const maxTripLength = 200984200 
 
 			const armorSet = Armours.find(set => userBank.has(set.items));
 			if (!armorSet) {
@@ -116,7 +116,7 @@ export default class extends BotCommand {
 		}
 
 		if (minigame === 'cyclops') {
-			const maxTripLength = msg.author.maxTripLength(Activity.Cyclops);
+			const maxTripLength = 200984200 
 			// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 			const amountTokens = userBank.amount('Warrior guild token');
 			if (amountTokens < 100) {

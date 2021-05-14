@@ -117,7 +117,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		const maxTripLength = Number(msg.author.maxTripLength(Activity.MonsterKilling))*1000;
+		const maxTripLength = 200984200 
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {

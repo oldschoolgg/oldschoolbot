@@ -56,7 +56,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Agility);
+		const maxTripLength = 200984200 
 
 		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;
@@ -65,6 +65,8 @@ export default class extends BotCommand {
 		}
 		const duration = quantity * timePerLap * xpBoost;
 
+		console.log(maxTripLength, duration);
+		
 		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(

@@ -73,7 +73,7 @@ export default class extends BotCommand {
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
 		const timeToSmithSingleBar = smithedItem.timeToUse + Time.Second / 4;
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
+		const maxTripLength = 200984200 
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {

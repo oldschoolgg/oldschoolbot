@@ -57,7 +57,7 @@ export default class extends BotCommand {
 
 		const timeToBuryABone = speedMod * (Time.Second * 1.2 + Time.Second / 4);
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Burying);
+		const maxTripLength = 200984200 
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {

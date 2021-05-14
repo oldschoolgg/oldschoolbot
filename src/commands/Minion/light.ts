@@ -54,7 +54,7 @@ export default class extends BotCommand {
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
 		const timeToLightSingleLog = Time.Second * 2.4 + Time.Second / 4;
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Firemaking);
+		const maxTripLength = 200984200 
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {

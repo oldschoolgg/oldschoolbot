@@ -100,7 +100,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Collecting);
+		const maxTripLength = 200984200 
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / collectable.duration);

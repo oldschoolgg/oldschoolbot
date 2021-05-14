@@ -102,7 +102,7 @@ export default class extends BotCommand {
 		const amountOfThisBone = userBank.amount(bone.inputId);
 		if (!amountOfThisBone) return msg.send(`You have no ${bone.name}.`);
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Offering);
+		const maxTripLength = 200984200 
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {

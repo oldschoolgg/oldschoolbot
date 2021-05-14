@@ -67,7 +67,7 @@ export default class extends BotCommand {
 
 		let timeToEnchantTen = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Casting);
+		const maxTripLength = 200984200 
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToEnchantTen);

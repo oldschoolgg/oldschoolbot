@@ -74,7 +74,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.bank();
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Enchanting);
+		const maxTripLength = 200984200 
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToEnchantTen);

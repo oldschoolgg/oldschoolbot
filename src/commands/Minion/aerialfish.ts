@@ -81,7 +81,7 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [tripTime]: [number | string | undefined]) {
-		const maxTripLength = msg.author.maxTripLength(Activity.AerialFishing);
+		const maxTripLength = 200984200 
 
 		if (typeof tripTime !== 'number') {
 			tripTime = Math.floor(maxTripLength / Time.Minute);

@@ -72,7 +72,7 @@ export default class extends BotCommand {
 			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Fletching);
+		const maxTripLength = 200984200 
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToFletchSingleItem);

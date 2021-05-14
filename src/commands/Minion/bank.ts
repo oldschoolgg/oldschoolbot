@@ -12,7 +12,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows your bank, with all your items and GP.',
-			cooldown: 30,
+			cooldown: 5,
 			usage: '[page:int|name:string]',
 			requiredPermissions: ['ATTACH_FILES'],
 			aliases: ['b'],

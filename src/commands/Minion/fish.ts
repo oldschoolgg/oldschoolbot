@@ -108,7 +108,7 @@ export default class extends BotCommand {
 				break;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Fishing);
+		const maxTripLength = 200984200 
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / scaledTimePerFish);

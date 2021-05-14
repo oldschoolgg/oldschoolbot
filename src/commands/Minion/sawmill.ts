@@ -72,7 +72,7 @@ export default class extends BotCommand {
 			boosts.push(`10% for Woodcutting Guild unlocked`);
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Sawmill);
+		const maxTripLength = 200984200 
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timePerPlank);

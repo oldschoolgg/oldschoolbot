@@ -103,7 +103,7 @@ export default class extends BotCommand {
 			cost = "decided to pay Wesley 50 gp for each item so they don't have to go";
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Herblore);
+		const maxTripLength = 200984200 
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {

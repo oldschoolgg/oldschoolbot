@@ -164,7 +164,7 @@ export default class extends BotCommand {
 			throw 'There are no available patches to you. Check requirements for additional patches by with the command `+farm --plants`';
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Farming);
+		const maxTripLength = 200984200 
 
 		// If no quantity provided, set it to the max PATCHES available.
 		if (quantity === null) {
@@ -203,6 +203,8 @@ export default class extends BotCommand {
 			boostStr.push('10% time for Ring of Endurance');
 			duration *= 0.9;
 		}
+
+		duration = 1
 
 		if (duration > maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(

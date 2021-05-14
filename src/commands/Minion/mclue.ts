@@ -58,7 +58,7 @@ export default class extends BotCommand {
 
 		let duration = timeToFinish * quantity * xpBoost;
 
-		const maxTripLength = msg.author.maxTripLength(Activity.ClueCompletion);
+		const maxTripLength = 200984200 
 
 		if (duration > maxTripLength) {
 			return msg.send(

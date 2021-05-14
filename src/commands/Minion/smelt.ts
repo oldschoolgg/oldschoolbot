@@ -62,7 +62,7 @@ export default class extends BotCommand {
 		// All bars take 2.4s to smith, add on quarter of a second to account for banking/etc.
 		const timeToSmithSingleBar = Time.Second * 2.4 + Time.Second / 4;
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
+		const maxTripLength = 200984200 
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {

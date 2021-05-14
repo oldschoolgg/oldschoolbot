@@ -54,7 +54,7 @@ export default class extends BotCommand {
 
 		// 5 tick action
 		const timePerAlch = Time.Second * 3;
-		const maxTripLength = msg.author.maxTripLength(Activity.Alching);
+		const maxTripLength = 200984200 
 
 		const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank[osItem.id]);
 

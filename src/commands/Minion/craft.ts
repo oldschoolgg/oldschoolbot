@@ -104,7 +104,7 @@ export default class extends BotCommand {
 			timeToCraftSingleItem /= 3.25;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Crafting);
+		const maxTripLength = 200984200 
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {

@@ -105,7 +105,7 @@ export default class extends BotCommand {
 
 		const timeToPickpocket = (pickpocketable.customTickRate ?? 2) * 600;
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Pickpocket);
+		const maxTripLength = 200984200 
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {

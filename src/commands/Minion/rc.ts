@@ -92,7 +92,7 @@ export default class extends BotCommand {
 		if (inventorySize > 28) {
 			boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
 		}
-		const maxTripLength = msg.author.maxTripLength(Activity.Runecraft);
+		const maxTripLength = 200984200 
 
 		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 

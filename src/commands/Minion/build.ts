@@ -80,7 +80,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.bank();
 		const planksHas = userBank.amount(plank);
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Construction);
+		const maxTripLength = 200984200 
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or time.
 		if (quantity === null) {
