@@ -48,7 +48,7 @@ export default class extends BotCommand {
 			boosts.push(`${scoreBoost}% boost for experience in the minigame`);
 		}
 
-		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasGracefulEquipped()) {
 			deliveryLength = reduceNumByPercent(deliveryLength, 25);
 			boosts.push(`25% for Graceful`);
 		}

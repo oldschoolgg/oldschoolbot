@@ -1,13 +1,17 @@
+import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity, Time, xpBoost } from '../../lib/constants';
+import { evilChickenOutfit } from '../../lib/data/collectionLog';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { birdsNestID, treeSeedsNest, wysonSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { OfferingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration, roll, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 
@@ -21,6 +25,8 @@ const specialBones = [
 		xp: 6750
 	}
 ];
+
+const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -44,6 +50,31 @@ export default class extends BotCommand {
 		if (typeof quantity === 'string') {
 			boneName = quantity;
 			quantity = null;
+		}
+
+		const egg = eggs.find(egg => stringMatches(boneName, egg.name));
+		if (egg) {
+			const quantityOwned = userBank.amount(egg.id);
+			if (quantityOwned === 0) {
+				return msg.channel.send(`You don't own any of these eggs.`);
+			}
+			if (!quantity) quantity = quantityOwned;
+			await msg.author.removeItemsFromBank({ [egg.id]: quantity });
+			let loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				if (roll(300)) {
+					loot.add(randArrItem(evilChickenOutfit));
+				} else {
+					loot.add(birdsNestID);
+					loot.add(roll(2) ? treeSeedsNest.roll() : wysonSeedsNest.roll());
+				}
+			}
+
+			const xpStr = await msg.author.addXP(SkillsEnum.Prayer, quantity * 100);
+			await msg.author.addItemsToBank(loot, true);
+			return msg.channel.send(
+				`You offered ${quantity}x ${egg.name} to the Shrine and received ${loot} and ${xpStr}.`
+			);
 		}
 
 		const specialBone = specialBones.find(bone => stringMatches(bone.item.name, boneName));

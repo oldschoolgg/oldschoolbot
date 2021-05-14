@@ -527,6 +527,38 @@ const questBuyables: Buyable[] = [
 		}),
 		gpCost: 100_000,
 		qpRequired: 20
+	},
+	{
+		name: 'Warrior helm',
+		outputItems: resolveNameBank({
+			'Warrior helm': 1
+		}),
+		gpCost: 780_000,
+		qpRequired: 60
+	},
+	{
+		name: 'Berserker helm',
+		outputItems: resolveNameBank({
+			'Berserker helm': 1
+		}),
+		gpCost: 780_000,
+		qpRequired: 60
+	},
+	{
+		name: 'Archer helm',
+		outputItems: resolveNameBank({
+			'Archer helm': 1
+		}),
+		gpCost: 780_000,
+		qpRequired: 60
+	},
+	{
+		name: 'Farseer helm',
+		outputItems: resolveNameBank({
+			'Farseer helm': 1
+		}),
+		gpCost: 780_000,
+		qpRequired: 60
 	}
 ];
 
@@ -680,7 +712,7 @@ const Buyables: Buyable[] = [
 		outputItems: {
 			[itemID('Potato with cheese')]: 1
 		},
-		gpCost: 400,
+		gpCost: 650,
 		skillsNeeded: {
 			attack: 65,
 			strength: 65

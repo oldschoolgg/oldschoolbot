@@ -82,7 +82,7 @@ export default class extends BotCommand {
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
-		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasGracefulEquipped()) {
 			boosts.push(`10% for Graceful`);
 			duration *= 0.9;
 		}

@@ -4,7 +4,7 @@ import { chunk, sleep } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 
-import { Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
+import { BitField, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -14,6 +14,7 @@ import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
+import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
 import { randomItemFromArray } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
@@ -83,6 +84,36 @@ export default class MinionCommand extends BotCommand {
 		 * If the user is an ironman already, lets ask them if they want to de-iron.
 		 */
 		if (msg.author.isIronman) {
+			const isPerm = msg.author.bitfield.includes(BitField.PermanentIronman);
+			if (isPerm) {
+				return msg.channel.send(`You're a **permanent** ironman and you cannot de-iron.`);
+			}
+			if (msg.flagArgs.permanent) {
+				await msg.channel.send(
+					`Would you like to change your ironman to a *permanent* iron? The only thing in your account that will change, is that you will no longer be able to de-iron. This is *permanent* and cannot be reversed, its permanent ironman mode.
+Please say \`permanent\` to confirm.`
+				);
+				try {
+					await msg.channel.awaitMessages(
+						answer =>
+							answer.author.id === msg.author.id &&
+							answer.content.toLowerCase() === 'permanent',
+						{
+							max: 1,
+							time: 15_000,
+							errors: ['time']
+						}
+					);
+					await msg.author.settings.update(
+						UserSettings.BitField,
+						BitField.PermanentIronman
+					);
+					return msg.send('You are now a **permanent** Ironman. Enjoy!');
+				} catch (err) {
+					return msg.channel.send('Cancelled.');
+				}
+			}
+
 			await msg.send(
 				`Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again. Please say \`deiron\` to confirm.`
 			);
@@ -174,6 +205,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			try {
 				await PoHTable.delete({ userID: msg.author.id });
 				await MinigameTable.delete({ userID: msg.author.id });
+				await XPGainsTable.delete({ userID: msg.author.id });
 				await NewUserTable.delete({ id: msg.author.id });
 			} catch (_) {}
 

@@ -60,7 +60,7 @@ export default class extends BotCommand {
 		const boosts = [];
 		let timePerPlank = (Time.Second * 37) / 27;
 
-		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasGracefulEquipped()) {
 			timePerPlank *= 0.9;
 			boosts.push(`10% for Graceful`);
 		}

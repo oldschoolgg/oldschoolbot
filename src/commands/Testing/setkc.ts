@@ -15,7 +15,9 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [kc]: [number]) {
 		const entity = await getMinigameEntity(msg.author.id);
-		entity.Raids = kc;
+		if (!msg.flagArgs.cm) {
+			entity.Raids = kc;
+		}
 		entity.RaidsChallengeMode = kc;
 		await entity.save();
 

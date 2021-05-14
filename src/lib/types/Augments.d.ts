@@ -33,7 +33,6 @@ declare module 'klasa' {
 		public orm: Connection;
 		public oneCommandAtATimeCache: Set<string>;
 		public secondaryUserBusyCache: Set<string>;
-		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public cacheItemPrice(itemID: number): Promise<number>;
 		public query<T>(query: string, values?: string[]): Promise<T>;
 		public settings: Settings;
@@ -104,7 +103,6 @@ declare module 'klasa' {
 
 declare module 'discord.js' {
 	interface Client {
-		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public query<T>(query: string): Promise<T>;
 		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 	}
@@ -228,6 +226,16 @@ declare module 'discord.js' {
 			notOwned: number[];
 			owned: number[];
 		};
+
+		/**
+		 * Get item boosts the user has available for the given `KillableMonster`.
+		 */
+		resolveAvailableItemBoosts(monster: KillableMonster): ItemBank;
+		/**
+		 * Returns true if the user has full Graceful equipped in any setup.
+		 */
+		hasGracefulEquipped(): boolean;
+		hasSkillReqs(reqs: Skills): [boolean, string | null];
 		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.
@@ -247,6 +255,7 @@ declare module 'discord.js' {
 		isIronman: boolean;
 		maxTripLength(activity?: OSBActivity): number;
 		rawSkills: Skills;
+		bitfield: readonly BitField[];
 	}
 
 	interface TextChannel {

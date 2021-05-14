@@ -20,7 +20,7 @@ import resolveItems from '../../lib/util/resolveItems';
 const pickaxes = [
 	{
 		id: itemID('3rd age pickaxe'),
-		reductionPercent: 13,
+		reductionPercent: 11,
 		miningLvl: 61
 	},
 	{

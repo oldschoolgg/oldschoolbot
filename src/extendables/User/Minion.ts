@@ -1,6 +1,7 @@
 import { User } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -15,10 +16,12 @@ import {
 	Time,
 	ZALCANO_ID
 } from '../../lib/constants';
+import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
+import { KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
@@ -39,10 +42,13 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { Creature, SkillsEnum } from '../../lib/skilling/types';
+import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
+import { Skills as TSkills } from '../../lib/types';
 import {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	BarbarianAssaultActivityTaskOptions,
+	BlastFurnaceActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
@@ -79,7 +85,9 @@ import {
 	addItemToBank,
 	convertXPtoLVL,
 	formatDuration,
+	formatSkillRequirements,
 	itemNameFromID,
+	skillsMeetRequirements,
 	stringMatches,
 	toKMB,
 	toTitleCase,
@@ -550,6 +558,18 @@ export default class extends Extendable {
 			case Activity.MageTrainingArena: {
 				return `${this.minionName} is currently training at the Mage Training Arena. ${formattedDuration}`;
 			}
+
+			case Activity.BlastFurnace: {
+				const data = currentTask as BlastFurnaceActivityTaskOptions;
+
+				const bar = Smithing.BlastableBars.find(bar => bar.id === data.barID);
+
+				return `${this.minionName} is currently smelting ${data.quantity}x ${
+					bar!.name
+				} at the Blast Furnace. ${formattedDuration} Your ${
+					Emoji.Smithing
+				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+			}
 		}
 	}
 
@@ -601,10 +621,21 @@ export default class extends Extendable {
 	public maxTripLength(this: User, activity?: Activity) {
 		let max = Time.Minute * 30;
 
+		if (activity === Activity.Alching) {
+			return Time.Hour;
+		}
+
 		const perkTier = getUsersPerkTier(this);
 		if (perkTier === PerkTier.Two) max += Time.Minute * 3;
 		else if (perkTier === PerkTier.Three) max += Time.Minute * 6;
 		else if (perkTier >= PerkTier.Four) max += Time.Minute * 10;
+
+		const sac = this.settings.get(UserSettings.SacrificedValue);
+		const sacPercent = Math.min(
+			100,
+			calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000)
+		);
+		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
 
 		if (!activity) return max;
 		switch (activity) {
@@ -639,6 +670,14 @@ export default class extends Extendable {
 		return Boolean(usersTask);
 	}
 
+	public hasGracefulEquipped(this: User) {
+		const rawGear = this.rawGear();
+		for (const i of Object.values(rawGear)) {
+			if (hasGracefulEquipped(i)) return true;
+		}
+		return false;
+	}
+
 	// @ts-ignore 2784
 	public get minionName(this: User): string {
 		const name = this.settings.get(UserSettings.Minion.Name);
@@ -670,7 +709,16 @@ export default class extends Extendable {
 		const skill = Object.values(Skills).find(skill => skill.id === skillName)!;
 
 		const newXP = Math.min(200_000_000, currentXP + amount);
+		const totalXPAdded = newXP - currentXP;
 		const newLevel = convertXPtoLVL(newXP);
+
+		if (totalXPAdded > 0) {
+			XPGainsTable.insert({
+				userID: this.id,
+				skill: skillName,
+				xp: amount
+			});
+		}
 
 		// If they reached a XP milestone, send a server notification.
 		for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, 200_000_000]) {
@@ -843,5 +891,38 @@ export default class extends Extendable {
 
 	public getAttackStyles(this: User) {
 		return this.settings.get(UserSettings.AttackStyle);
+	}
+
+	public resolveAvailableItemBoosts(this: User, monster: KillableMonster) {
+		const boosts = new Bank();
+		if (monster.itemInBankBoosts) {
+			for (const boostSet of monster.itemInBankBoosts) {
+				let highestBoostAmount = 0;
+				let highestBoostItem = 0;
+
+				// find the highest boost that the player has
+				for (const [itemID, boostAmount] of Object.entries(boostSet)) {
+					const parsedId = parseInt(itemID);
+					if (!this.hasItemEquippedOrInBank(parsedId)) continue;
+					if (boostAmount > highestBoostAmount) {
+						highestBoostAmount = boostAmount;
+						highestBoostItem = parsedId;
+					}
+				}
+
+				if (highestBoostAmount && highestBoostItem) {
+					boosts.add(highestBoostItem, highestBoostAmount);
+				}
+			}
+		}
+		return boosts.bank;
+	}
+
+	public hasSkillReqs(this: User, reqs: TSkills): [boolean, string | null] {
+		const hasReqs = skillsMeetRequirements(this.rawSkills, reqs);
+		if (!hasReqs) {
+			return [false, formatSkillRequirements(reqs)];
+		}
+		return [true, null];
 	}
 }

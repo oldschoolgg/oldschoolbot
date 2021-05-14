@@ -2,7 +2,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -188,7 +187,7 @@ export default class extends BotCommand {
 		let duration: number = timeBirdHouseRun;
 
 		// Reduce time if user has graceful equipped
-		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasGracefulEquipped()) {
 			boostStr.push('10% time for Graceful');
 			duration *= 0.9;
 		}
@@ -313,7 +312,7 @@ export default class extends BotCommand {
 		let duration: number = timeBirdHouseRun;
 
 		// Reduce time if user has graceful equipped
-		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasGracefulEquipped()) {
 			boostStr.push('10% time for Graceful');
 			duration *= 0.9;
 		}

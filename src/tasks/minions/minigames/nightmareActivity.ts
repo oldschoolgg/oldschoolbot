@@ -6,7 +6,6 @@ import { Emoji, NIGHTMARE_ID } from '../../../lib/constants';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
-import { setActivityLoot } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
@@ -24,7 +23,7 @@ interface NightmareUser {
 const RawNightmare = Misc.Nightmare;
 
 export default class extends Task {
-	async run({ id, channelID, leader, users, quantity, duration }: NightmareActivityTaskOptions) {
+	async run({ channelID, leader, users, quantity, duration }: NightmareActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -103,8 +102,6 @@ export default class extends Task {
 			}
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
-
-		setActivityLoot(id, totalLoot.bank);
 
 		if (users.length > 1) {
 			sendToChannelID(this.client, channelID, { content: resultStr });

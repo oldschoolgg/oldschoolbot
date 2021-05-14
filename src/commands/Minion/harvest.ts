@@ -107,7 +107,7 @@ export default class extends BotCommand {
 		let duration = patchType.lastQuantity * (timePerPatchTravel + timePerPatchHarvest) * xpBoost;
 
 		// Reduce time if user has graceful equipped
-		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasGracefulEquipped()) {
 			boostStr.push('10% time for Graceful');
 			duration *= 0.9;
 		}

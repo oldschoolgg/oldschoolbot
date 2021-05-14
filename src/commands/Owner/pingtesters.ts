@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Roles, SupportServer } from '../../lib/constants';
+import { Roles } from '../../lib/constants';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
@@ -12,8 +12,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		if (!msg.guild || msg.guild.id !== SupportServer) return;
 		if (
+			!msg.guild ||
+			msg.channel.id !== '680770361893322761' ||
 			!msg.member ||
 			(!msg.member.roles.has(Roles.Moderator) && !msg.member.roles.has(Roles.Contributor))
 		) {

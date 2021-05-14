@@ -1,4 +1,4 @@
-import { CanvasRenderingContext2D, Image } from 'canvas';
+import { Canvas, CanvasRenderingContext2D, Image } from 'canvas';
 
 import { formatItemStackQuantity, generateHexColorForCashStack } from '../util';
 
@@ -51,4 +51,15 @@ export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
 		canvasImage.onerror = () => reject(new Error('Failed to load image.'));
 		canvasImage.src = imageBuffer;
 	});
+}
+
+export function canvasToBufferAsync(canvas: Canvas, ...args: any[]) {
+	return new Promise<Buffer>((resolve, reject) =>
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		canvas.toBuffer((error: Error | null, buffer: Buffer | null): void => {
+			if (error) reject(error);
+			else resolve(buffer!);
+		}, ...args)
+	);
 }
