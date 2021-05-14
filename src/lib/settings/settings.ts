@@ -1,12 +1,10 @@
 import { Util } from 'discord.js';
 import { Gateway, KlasaClient, Settings } from 'klasa';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { getConnection } from 'typeorm';
 
 import { client } from '../..';
 import { MinigameKey, Minigames } from '../../extendables/User/Minigame';
 import { Emoji } from '../constants';
-import { ActivityTable } from '../typeorm/ActivityTable.entity';
 import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { NewUserTable } from '../typeorm/NewUserTable.entity';
 
@@ -98,13 +96,4 @@ export async function getMinionName(userID: string): Promise<string> {
 	return name
 		? `${prefix} ${displayIcon} **${Util.escapeMarkdown(name)}**`
 		: `${prefix} ${displayIcon} Your minion`;
-}
-
-export async function setActivityLoot(id: string, loot: ItemBank) {
-	await getConnection()
-		.createQueryBuilder()
-		.update(ActivityTable)
-		.set({ loot })
-		.where('id = :id', { id })
-		.execute();
 }
