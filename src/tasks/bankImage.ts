@@ -2,35 +2,33 @@ import { Canvas, createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
+import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
 import { bankImageCache, Events } from '../lib/constants';
 import { allCollectionLogItems } from '../lib/data/collectionLog';
-import { filterableTypes, filterByCategory } from '../lib/data/filterables';
+import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
 import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import { BankSortMethods, sorts } from '../lib/sorts';
 import { ItemBank } from '../lib/types';
 import {
 	addArrayOfNumbers,
-	filterItemTupleByQuery,
+	cleanString,
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
-	itemNameFromID,
 	restoreCtx,
 	saveCtx,
-	sha256Hash,
-	stringMatches
+	sha256Hash
 } from '../lib/util';
 import {
 	canvasImageFromBuffer,
 	canvasToBufferAsync,
 	fillTextXTimesInCtx
 } from '../lib/util/canvasUtil';
-import createTupleOfItemsFromBank from '../lib/util/createTupleOfItemsFromBank';
-import getOSItem from '../lib/util/getOSItem';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -239,13 +237,14 @@ export default class BankImageTask extends Task {
 	}
 
 	async generateBankImage(
-		itemLoot: ItemBank,
+		_bank: Bank | ItemBank,
 		title = '',
 		showValue = true,
 		flags: { [key: string]: string | number } = {},
 		user?: KlasaUser | string,
 		collectionLog?: ItemBank
 	): Promise<BankImageResult> {
+		const bank = _bank instanceof Bank ? _bank : new Bank(_bank);
 		let compact = Boolean(flags.compact);
 		const spacer = compact ? 2 : 12;
 
@@ -256,56 +255,45 @@ export default class BankImageTask extends Task {
 				? await getUserSettings(user)
 				: user.settings;
 
+		const favorites = settings?.get(UserSettings.FavoriteItems);
+
 		const bankBackgroundID =
 			settings?.get(UserSettings.BankBackground) ?? flags.background ?? 1;
 		const currentCL = collectionLog ?? settings?.get(UserSettings.CollectionLogBank);
-
-		let items = await createTupleOfItemsFromBank(this.client, itemLoot);
-
 		let partial = false;
-		let partialValue = 0;
-		const totalValue = addArrayOfNumbers(items.map(i => i[2]));
+
 		// Filtering
-		const searchQuery = flags.search || flags.s;
-		if (searchQuery && typeof searchQuery === 'string') {
+		const searchQuery = flags.search as string | undefined;
+		const filter = flags.filter
+			? filterableTypes.find(type => type.aliases.some(alias => flags.filter === alias)) ??
+			  null
+			: null;
+		if (filter || searchQuery) {
 			partial = true;
-			items = filterItemTupleByQuery(searchQuery, items);
+			bank.filter(item => {
+				if (searchQuery) return cleanString(item.name).includes(cleanString(searchQuery));
+				return filter!.items.includes(item.id);
+			}, true);
 		}
 
-		// Filter by preset
-		for (const flag of Object.keys(flags)) {
-			if (
-				filterableTypes.some(type => type.aliases.some(alias => stringMatches(alias, flag)))
-			) {
-				partial = true;
-				items = filterByCategory(flag, items);
-			}
-		}
+		let items = bank.items();
 
-		// Remove items that have 0 qty
-		items = items.filter(i => i[1] > 0);
-
-		// Sorting by value
-		items = items.sort((a, b) => b[2] - a[2]);
-
-		// Sorting by favorites
-		if (settings) {
-			const favorites = settings.get(UserSettings.FavoriteItems);
-			if (favorites.length > 0) {
-				// Sort favorite items to the front
-				items = items.sort((a, b) => {
-					const aFav = favorites.includes(a[0]);
-					const bFav = favorites.includes(b[0]);
-					if (aFav && bFav) return 0;
+		// Sorting
+		const sort = flags.sort ? BankSortMethods.find(s => s === flags.sort) ?? 'value' : 'value';
+		if (sort || favorites?.length) {
+			items = items.sort((a, b) => {
+				if (favorites) {
+					const aFav = favorites.includes(a[0].id);
+					const bFav = favorites.includes(b[0].id);
+					if (aFav && bFav) return sorts[sort](a, b);
+					if (bFav) return 1;
 					if (aFav) return -1;
-					return 1;
-				});
-			}
+				}
+				return sorts[sort](a, b);
+			});
 		}
 
-		if (partial) {
-			partialValue = addArrayOfNumbers(items.map(i => i[2]));
-		}
+		const totalValue = addArrayOfNumbers(items.map(([i, q]) => i.price * q));
 
 		const chunkSize = compact ? 140 : 56;
 		const chunked = util.chunk(items, chunkSize);
@@ -347,7 +335,7 @@ export default class BankImageTask extends Task {
 			bankBackgroundID === 14 &&
 			flags.showNewCL !== undefined &&
 			currentCL !== undefined &&
-			Object.keys(itemLoot).some(
+			Object.keys(bank.bank).some(
 				i => !currentCL[i] && allCollectionLogItems.includes(parseInt(i))
 			);
 
@@ -368,7 +356,7 @@ export default class BankImageTask extends Task {
 			totalValue,
 			canvasHeight,
 			Object.entries(flags).toString(),
-			sha256Hash(items.toString())
+			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join(''))
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
@@ -403,7 +391,7 @@ export default class BankImageTask extends Task {
 			this.drawBorder(canvas, bgImage.name === 'Default');
 		}
 		if (showValue) {
-			title += ` (Value: ${partial ? `${toKMB(partialValue)} of ` : ''}${toKMB(totalValue)})`;
+			title += ` (Value: ${toKMB(totalValue)})`;
 		}
 
 		// Draw Bank Title
@@ -435,20 +423,20 @@ export default class BankImageTask extends Task {
 				this.borderVertical!.width +
 				(compact ? 9 : 20) +
 				(i % itemsPerRow) * itemWidthSize;
-			const [id, quantity, value] = items[i];
-			const item = await this.getItemImage(id, quantity).catch(() => {
-				console.error(`Failed to load item image for item with id: ${id}`);
+			const [item, quantity] = items[i];
+			const itemImage = await this.getItemImage(item.id, quantity).catch(() => {
+				console.error(`Failed to load item image for item with id: ${item.id}`);
 			});
-			if (!item) {
-				this.client.emit(Events.Warn, `Item with ID[${id}] has no item image.`);
+			if (!itemImage) {
+				this.client.emit(Events.Warn, `Item with ID[${item.id}] has no item image.`);
 				continue;
 			}
 
-			const itemHeight = compact ? item.height / 1 : item.height;
-			const itemWidth = compact ? item.width / 1 : item.width;
+			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
+			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
 
 			ctx.drawImage(
-				item,
+				itemImage,
 				floor(xLoc + (itemSize - itemWidth) / 2) + 2,
 				floor(yLoc + (itemSize - itemHeight) / 2),
 				itemWidth,
@@ -459,8 +447,8 @@ export default class BankImageTask extends Task {
 			const isNewCLItem =
 				flags.showNewCL &&
 				currentCL &&
-				!currentCL[id] &&
-				allCollectionLogItems.includes(id);
+				!currentCL[item.id] &&
+				allCollectionLogItems.includes(item.id);
 			const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
 			const formattedQuantity = formatItemStackQuantity(quantity);
 
@@ -485,15 +473,15 @@ export default class BankImageTask extends Task {
 			let bottomItemText: string | number | null = null;
 
 			if (flags.sv) {
-				bottomItemText = value;
+				bottomItemText = item.price * quantity;
 			}
 
 			if (flags.av) {
-				bottomItemText = (getOSItem(id)?.highalch ?? 0) * quantity;
+				bottomItemText = (item.highalch ?? 0) * quantity;
 			}
 
 			if (flags.names) {
-				bottomItemText = `${itemNameFromID(id)!.replace('Grimy', 'Grmy').slice(0, 7)}..`;
+				bottomItemText = `${item.name!.replace('Grimy', 'Grmy').slice(0, 7)}..`;
 			}
 
 			if (bottomItemText) {

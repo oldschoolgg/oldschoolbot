@@ -58,7 +58,10 @@ const ringNests = new LootTable()
 	.add('Ruby ring', 1, 9)
 	.add('Diamond ring', 1, 1);
 
-const eggNest = new LootTable().add('Red bird egg').add('Blue bird egg').add('Green bird egg');
+export const eggNest = new LootTable()
+	.add('Red bird egg')
+	.add('Blue bird egg')
+	.add('Green bird egg');
 
 export const nestTable = new LootTable()
 	.every(birdsNestID)

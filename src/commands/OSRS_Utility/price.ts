@@ -18,7 +18,7 @@ export default class extends BotCommand {
 		const item = Items.get(name);
 		if (!item) return msg.send(`Couldn't find that item.`);
 
-		const priceOfItem = await this.client.fetchItemPrice(item.id);
+		const priceOfItem = item.price;
 
 		const embed = new MessageEmbed()
 			.setTitle(item.name)
