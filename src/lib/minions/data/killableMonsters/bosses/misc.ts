@@ -58,7 +58,8 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 205,
 		itemInBankBoosts: [
 			{
-				[itemID('Dragon warhammer')]: 20,
+				[itemID('Bandos godsword')]: 15,
+ 				[itemID('Dragon warhammer')]: 15,
 				[itemID('Dragon hunter crossbow')]: 30
 			}
 		],
