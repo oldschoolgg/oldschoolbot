@@ -820,6 +820,8 @@ export default class extends Extendable {
 		if (totalXPAdded > 0) {
 			XPGainsTable.insert({
 				userID: this.id,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
 				skill: skillName,
 				xp: amount
 			});
