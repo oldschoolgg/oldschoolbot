@@ -55,6 +55,39 @@ const twistedAncestral: Createable[] = [
 		outputItems: {
 			[itemID('Twisted ancestral robe bottom')]: 1
 		}
+	},
+	{
+		name: 'Revert ancestral robe bottom',
+		inputItems: {
+			[itemID('Twisted ancestral robe bottom')]: 1
+		},
+		outputItems: {
+			[itemID('Ancestral robe bottom')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1	
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert ancestral robe top',
+		inputItems: {
+			[itemID('Twisted ancestral robe top')]: 1
+		},
+		outputItems: {
+			[itemID('Ancestral robe top')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1	
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert ancestral robe hat',
+		inputItems: {
+			[itemID('Twisted ancestral robe hat')]: 1
+		},
+		outputItems: {
+			[itemID('Ancestral robe hat')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1	
+		},
+		noCl: true
 	}
 ];
 
