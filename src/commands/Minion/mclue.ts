@@ -63,7 +63,10 @@ export default class extends BotCommand {
 
 		if (
 			clueTier.name === 'Grandmaster' &&
-			msg.author.settings.get(UserSettings.ClueScores)[19836] < 50
+			(
+				msg.author.settings.get(UserSettings.ClueScores)[19836] === undefined ||
+				msg.author.settings.get(UserSettings.ClueScores)[19836] < 100
+			)
 		) {
 			return msg.send(`You aren't experienced enough to complete a Grandmaster clue.`);
 		}
