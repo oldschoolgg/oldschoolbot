@@ -1,10 +1,10 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import { filterBankFromArrayOfItems, itemID, multiplyBank, noOp, roll } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { filterBankFromArrayOfItems, noOp, roll } from '../../lib/util';
 import { sendToChannelID } from '../../lib/util/webhook';
 
 const uniques = [
@@ -49,37 +49,34 @@ export default class extends Task {
 		}
 
 		let resultMessage = `<@${partyLeaderID}> Your raid has finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
-		for (let [userID, userLoot] of Object.entries(loot)) {
+		for (let [userID, _userLoot] of Object.entries(loot)) {
+			const userLoot = new Bank(_userLoot);
 			const user = await this.client.users.fetch(userID).catch(noOp);
-			const purple = Object.keys(filterBankFromArrayOfItems(uniques, userLoot)).length > 0;
+			const purple =
+				Object.keys(filterBankFromArrayOfItems(uniques, userLoot.bank)).length > 0;
 			if (!user) continue;
 			const personalPoints = team.find(u => u.id === user.id)?.personalPoints;
 			user.incrementMinigameScore('Raids', 1);
 			if (roll(10)) {
-				userLoot = multiplyBank(userLoot, 2);
-				userLoot[getRandomMysteryBox()] = 1;
+				userLoot.multiply(2);
+				userLoot.add(getRandomMysteryBox());
 			} else if (user.usingPet('Flappy')) {
-				userLoot = multiplyBank(userLoot, 2);
+				userLoot.multiply(2);
 			}
-			if (roll(2000)) {
-				userLoot[23931] = 1;
-			}
+
 			if (roll(4500)) {
-				userLoot[itemID('Takon')] = 1;
+				userLoot.add('Takon');
 			}
 			if (roll(140)) {
-				userLoot[itemID('Clue scroll (grandmaster)')] = 1;
+				userLoot.add('Clue scroll (grandmaster)');
 			}
 			if (roll(2000)) {
-				userLoot[itemID('Steve')] = 1;
+				userLoot.add('Steve');
 			}
 
 			resultMessage += `\n**${user}** received: ${
 				purple ? '🟪' : ''
-			} ||${await createReadableItemListFromBank(
-				this.client,
-				userLoot
-			)}|| (${personalPoints?.toLocaleString()} pts, ${
+			} ||${userLoot}|| (${personalPoints?.toLocaleString()} pts, ${
 				Math.round((personalPoints! / totalPoints) * 10000) / 100
 			}%${user.usingPet('Flappy') ? `, <:flappy:812280578195456002> 2x loot` : ''})`;
 			await user.addItemsToBank(userLoot, true);

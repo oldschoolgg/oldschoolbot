@@ -36,7 +36,7 @@ export default class extends BotCommand {
 			`Found ${items.length} items:\n${(items as Item[])
 				.map(
 					(item, index) => `${gettedItem!.id === item.id ? '**' : ''}
-${index + 1}. ${item.name}[${item.id}] ${
+${index + 1}. ${item.name}[${item.id}] Price[${item.price}] ${
 						item.tradeable_on_ge ? 'GE_Tradeable' : 'Not_GE_Tradeable'
 					} ${item.tradeable ? 'Tradeable' : 'Not_Tradeable'} ${
 						item.incomplete ? 'Incomplete' : 'Not_Incomplete'

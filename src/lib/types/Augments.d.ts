@@ -33,7 +33,6 @@ declare module 'klasa' {
 		public orm: Connection;
 		public oneCommandAtATimeCache: Set<string>;
 		public secondaryUserBusyCache: Set<string>;
-		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public cacheItemPrice(itemID: number): Promise<number>;
 		public query<T>(query: string, values?: string[]): Promise<T>;
 		public settings: Settings;
@@ -105,7 +104,6 @@ declare module 'klasa' {
 
 declare module 'discord.js' {
 	interface Client {
-		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public query<T>(query: string): Promise<T>;
 		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 	}

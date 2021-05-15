@@ -20,7 +20,7 @@ import itemID from '../../lib/util/itemID';
 const axes = [
 	{
 		id: itemID('3rd age axe'),
-		reductionPercent: 13,
+		reductionPercent: 12,
 		wcLvl: 61
 	},
 	{

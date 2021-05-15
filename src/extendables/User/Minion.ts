@@ -53,6 +53,7 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { Creature, SkillsEnum } from '../../lib/skilling/types';
+import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
 import { Skills as TSkills } from '../../lib/types';
 import {
 	AgilityActivityTaskOptions,
@@ -814,6 +815,17 @@ export default class extends Extendable {
 
 		const newXP = Math.min(5_000_000_000, currentXP + amount);
 		const newLevel = convertXPtoLVL(newXP, 120);
+		const totalXPAdded = newXP - currentXP;
+
+		if (totalXPAdded > 0) {
+			XPGainsTable.insert({
+				userID: this.id,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				skill: skillName,
+				xp: amount
+			});
+		}
 
 		// If they reached a XP milestone, send a server notification.
 		for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, 200_000_000]) {

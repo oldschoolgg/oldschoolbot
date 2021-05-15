@@ -8,12 +8,10 @@ import { Emoji } from '../../../lib/constants';
 import { KalphiteKingMonster } from '../../../lib/kalphiteking';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { allNexItems } from '../../../lib/nex';
-import { setActivityLoot } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { KalphiteKingActivityTaskOptions } from '../../../lib/types/minions';
 import { addBanks, channelIsSendable, noOp } from '../../../lib/util';
-import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
@@ -24,7 +22,7 @@ interface NexUser {
 }
 
 export default class extends Task {
-	async run({ id, channelID, leader, users, quantity }: KalphiteKingActivityTaskOptions) {
+	async run({ channelID, leader, users, quantity }: KalphiteKingActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -83,10 +81,7 @@ export default class extends Task {
 			if (kcToAdd) user.incrementMonsterScore(KalphiteKingMonster.id, kcToAdd);
 			const purple = Object.keys(loot).some(id => allNexItems.includes(parseInt(id)));
 
-			resultStr += `${
-				purple ? Emoji.Purple : ''
-			} **${user} received:** ||${await createReadableItemListFromBank(
-				this.client,
+			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(
 				loot
 			)}||\n`;
 
@@ -108,8 +103,6 @@ export default class extends Task {
 			}
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
-
-		setActivityLoot(id, totalLoot.bank);
 
 		let debug = production
 			? ''

@@ -9,12 +9,10 @@ import { roll } from '../../../lib/data/monsters/raids';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { allNexItems, NexMonster } from '../../../lib/nex';
-import { setActivityLoot } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NexActivityTaskOptions } from '../../../lib/types/minions';
 import { addBanks, channelIsSendable, noOp, randomItemFromArray } from '../../../lib/util';
-import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
@@ -25,7 +23,7 @@ interface NexUser {
 }
 
 export default class extends Task {
-	async run({ id, channelID, leader, users, quantity, duration }: NexActivityTaskOptions) {
+	async run({ channelID, leader, users, quantity, duration }: NexActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -90,10 +88,7 @@ export default class extends Task {
 			if (kcToAdd) user.incrementMonsterScore(NexMonster.id, kcToAdd);
 			const purple = Object.keys(loot).some(id => allNexItems.includes(parseInt(id)));
 
-			resultStr += `${
-				purple ? Emoji.Purple : ''
-			} **${user} received:** ||${await createReadableItemListFromBank(
-				this.client,
+			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(
 				loot
 			)}||\n`;
 
@@ -115,8 +110,6 @@ export default class extends Task {
 			}
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
-
-		setActivityLoot(id, totalLoot.bank);
 
 		let debug = production
 			? ''

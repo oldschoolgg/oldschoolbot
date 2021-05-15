@@ -1,5 +1,4 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
@@ -29,12 +28,7 @@ export default class extends BotCommand {
 			`**Your last 10 activities:**\n
 ${res
 	.slice(0, 10)
-	.map(
-		(i, ind) =>
-			`${ind + 1}. **${i.type}** trip for **${formatDuration(i.duration)}**, got ${
-				i.loot ? `${new Bank(i.loot).length} items` : 'no loot'
-			}`
-	)
+	.map((i, ind) => `${ind + 1}. **${i.type}** trip for **${formatDuration(i.duration)}**`)
 	.join('\n')}`
 		);
 	}

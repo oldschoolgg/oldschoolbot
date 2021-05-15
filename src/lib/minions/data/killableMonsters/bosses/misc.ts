@@ -33,7 +33,9 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Barrows gloves')]: 5
 			},
 			{
-				[itemID('Berserker ring')]: 5
+				[itemID('Berserker ring')]: 5,
+				[itemID('Berserker ring (i)')]: 7,
+				[itemID('Twisted bow')]: 10
 			}
 		],
 		levelRequirements: {
@@ -80,14 +82,27 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{
-				[itemID('Ranger boots')]: 5,
-				[itemID('Pegasian boots')]: 7
+				[itemID('Ranger boots')]: 2,
+				[itemID('Pegasian boots')]: 4
 			},
 			{
-				[itemID("Iban's staff")]: 2
+				[itemID("Iban's staff")]: 2,
+				[itemID('Harmonised nightmare staff')]: 5
 			},
 			{
-				[itemID('Barrows gloves')]: 5
+				[itemID('Barrows gloves')]: 3
+			},
+			{
+				[itemID('Twisted bow')]: 5
+			},
+			{
+				[itemID('Ancestral hat')]: 2
+			},
+			{
+				[itemID('Ancestral robe top')]: 2
+			},
+			{
+				[itemID('Ancestral robe bottom')]: 2
 			}
 		],
 		levelRequirements: {
@@ -214,7 +229,7 @@ const killableBosses: KillableMonster[] = [
 		],
 		levelRequirements: {
 			prayer: 43,
-			slayer: 93
+			slayer: 91
 		},
 		defaultAttackStyles: [SkillsEnum.Strength],
 		combatXpMultiplier: 1.15
