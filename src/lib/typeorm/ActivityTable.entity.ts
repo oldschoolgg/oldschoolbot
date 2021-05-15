@@ -1,4 +1,3 @@
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 import {
 	BaseEntity,
 	Column,
@@ -48,9 +47,6 @@ export class ActivityTable extends BaseEntity {
 
 	@Column('json', { name: 'data', nullable: false })
 	public data!: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelID' | 'userID'>;
-
-	@Column('json', { name: 'loot', nullable: true, default: null })
-	public loot!: ItemBank | null;
 
 	public get taskData() {
 		return {

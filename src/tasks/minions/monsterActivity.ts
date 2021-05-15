@@ -8,18 +8,16 @@ import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
 import { allKeyPieces } from '../../lib/nex';
-import { setActivityLoot } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { bones } from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { channelIsSendable, itemID, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
-		const { id, monsterID, userID, channelID, quantity, duration } = data;
+		const { monsterID, userID, channelID, quantity, duration } = data;
 		const monster = effectiveMonsters.find(mon => mon.id === monsterID)!;
 		const fullMonster = Monsters.get(monsterID);
 		const user = await this.client.users.fetch(userID);
@@ -37,11 +35,7 @@ export default class extends Task {
 			abyssalBonus += 0.25;
 		}
 
-		const preExistingLoot = (await ActivityTable.findOne({ id }))?.loot;
-
-		let loot = preExistingLoot
-			? new Bank(preExistingLoot)
-			: new Bank((monster as any).table.kill(Math.ceil(quantity * abyssalBonus)));
+		let loot = new Bank((monster as any).table.kill(Math.ceil(quantity * abyssalBonus)));
 		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(20)) {
@@ -94,9 +88,6 @@ export default class extends Task {
 			}
 		}
 
-		if (loot) {
-			setActivityLoot(id, loot.bank);
-		}
 		announceLoot(this.client, user, monster as KillableMonster, loot.bank);
 
 		const xpRes = await addMonsterXP(user, monsterID, quantity, duration);

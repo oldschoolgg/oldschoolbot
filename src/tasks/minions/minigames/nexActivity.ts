@@ -9,7 +9,6 @@ import { roll } from '../../../lib/data/monsters/raids';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { allNexItems, NexMonster } from '../../../lib/nex';
-import { setActivityLoot } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { NexActivityTaskOptions } from '../../../lib/types/minions';
@@ -24,7 +23,7 @@ interface NexUser {
 }
 
 export default class extends Task {
-	async run({ id, channelID, leader, users, quantity, duration }: NexActivityTaskOptions) {
+	async run({ channelID, leader, users, quantity, duration }: NexActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -111,8 +110,6 @@ export default class extends Task {
 			}
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
-
-		setActivityLoot(id, totalLoot.bank);
 
 		let debug = production
 			? ''

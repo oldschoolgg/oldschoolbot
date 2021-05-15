@@ -8,7 +8,6 @@ import { Emoji } from '../../../lib/constants';
 import { KalphiteKingMonster } from '../../../lib/kalphiteking';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { allNexItems } from '../../../lib/nex';
-import { setActivityLoot } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { KalphiteKingActivityTaskOptions } from '../../../lib/types/minions';
@@ -23,7 +22,7 @@ interface NexUser {
 }
 
 export default class extends Task {
-	async run({ id, channelID, leader, users, quantity }: KalphiteKingActivityTaskOptions) {
+	async run({ channelID, leader, users, quantity }: KalphiteKingActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -104,8 +103,6 @@ export default class extends Task {
 			}
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
-
-		setActivityLoot(id, totalLoot.bank);
 
 		let debug = production
 			? ''

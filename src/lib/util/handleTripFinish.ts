@@ -9,7 +9,6 @@ import { BitField, Emoji, PerkTier, Time } from '../constants';
 import { getRandomMysteryBox } from '../data/openables';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
-import { setActivityLoot } from '../settings/settings';
 import { RuneTable, SeedTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import Mining from '../skilling/skills/mining';
 import { ActivityTaskOptions } from '../types/minions';
@@ -38,10 +37,6 @@ export async function handleTripFinish(
 	data: ActivityTaskOptions,
 	loot: ItemBank | null
 ) {
-	if (loot) {
-		setActivityLoot(data.id, loot);
-	}
-
 	const perkTier = getUsersPerkTier(user);
 	const continuationChar = generateContinuationChar(user);
 	if (onContinue) {
