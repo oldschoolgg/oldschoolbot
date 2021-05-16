@@ -63,7 +63,7 @@ const twistedAncestral: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Ancestral robe bottom')]: 1,
-			[itemID('Twisted ancestral colour kit')]: 1	
+			[itemID('Twisted ancestral colour kit')]: 1
 		},
 		noCl: true
 	},
@@ -74,7 +74,7 @@ const twistedAncestral: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Ancestral robe top')]: 1,
-			[itemID('Twisted ancestral colour kit')]: 1	
+			[itemID('Twisted ancestral colour kit')]: 1
 		},
 		noCl: true
 	},
@@ -85,7 +85,7 @@ const twistedAncestral: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Ancestral robe hat')]: 1,
-			[itemID('Twisted ancestral colour kit')]: 1	
+			[itemID('Twisted ancestral colour kit')]: 1
 		},
 		noCl: true
 	}
