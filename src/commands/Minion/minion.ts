@@ -105,9 +105,7 @@ export default class MinionCommand extends BotCommand {
 						}
 						const mon = effectiveMonsters.find(m => m.id === parseInt(monID));
 						if (!mon) return `**${Monsters.get(parseInt(monID))?.name}:** ${monKC}`;
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore
-						return `${mon?.emoji} **${mon!.name}**: ${monKC}`;
+						return `${(mon as any)?.emoji ?? ''}**${mon!.name}**: ${monKC}`;
 					})
 					.join('\n'),
 				true
