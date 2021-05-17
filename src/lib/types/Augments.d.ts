@@ -42,7 +42,6 @@ declare module 'klasa' {
 		public _peakIntervalCache: Peak[];
 		public wtf(error: Error): void;
 		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
-		osggDB?: Db;
 		commentStream?: CommentStream;
 		submissionStream?: SubmissionStream;
 		fastifyServer: FastifyInstance;
