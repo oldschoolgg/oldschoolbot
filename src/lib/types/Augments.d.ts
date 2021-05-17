@@ -2,7 +2,6 @@ import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageEmbed } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
-import { Db } from 'mongodb';
 import { Bank, Player } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
