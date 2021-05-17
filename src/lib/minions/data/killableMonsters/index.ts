@@ -2,6 +2,7 @@ import { Monsters } from 'oldschooljs';
 
 import { Time, ZALCANO_ID } from '../../../constants';
 import { GearSetupTypes, GearStat } from '../../../gear/types';
+import { KalphiteKingMonster } from '../../../kalphiteking';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
@@ -599,5 +600,10 @@ export const effectiveMonsters = [
 	},
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127 },
 	{ name: 'Mimic', aliases: ['mimic'], id: 23184 },
-	{ name: 'Hespori', aliases: ['hespori'], id: 8583 }
+	{ name: 'Hespori', aliases: ['hespori'], id: 8583 },
+	{
+		id: KalphiteKingMonster.id,
+		name: 'Kalphite King',
+		aliases: ['kalphite king', 'kk']
+	}
 ];

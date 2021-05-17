@@ -350,10 +350,6 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			})
 			.slice(0, 2000);
 
-		if (msg.flagArgs.server && msg.guild) {
-			list = list.filter((kcUser: KCUser) => msg.guild!.members.has(kcUser.id));
-		}
-
 		this.doMenu(
 			msg,
 			util
