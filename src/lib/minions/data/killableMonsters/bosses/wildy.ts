@@ -175,7 +175,7 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
 			'Anti-dragon shield',
-			['Armadyl crossbow', 'Rune crossbow', 'Twisted bow'],
+			['Armadyl crossbow', 'Rune crossbow', 'Twisted bow', 'Dragon hunter crossbow'],
 			[
 				"Black d'hide body",
 				"Black d'hide body (g)",
