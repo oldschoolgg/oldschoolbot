@@ -2,22 +2,24 @@ import { MessageEmbed } from 'discord.js';
 import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Time } from '../../lib/constants';
-import { allMbTables } from '../../lib/data/openables';
+import { allMbTables, MysteryBoxes } from '../../lib/data/openables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { DragonTable } from '../../lib/simulation/grandmasterClue';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks, formatDuration, updateBankSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
+import { LampTable } from '../../lib/xpLamps';
 
 const eightHours = Time.Hour * 8;
 const contractTable = new LootTable()
 	.every('Coins', [1_500_000, 4_500_000])
-	.add(DragonTable)
+	.tertiary(50, LampTable)
+	.tertiary(50, MysteryBoxes)
+	.add(DragonTable, [1, 2], 2)
 	.add(
 		new LootTable()
 			.add('Clue scroll (beginner)', 1, 50)
@@ -26,7 +28,7 @@ const contractTable = new LootTable()
 			.add('Clue scroll (hard)', 1, 20)
 			.add('Clue scroll (elite)', 1, 10)
 			.add('Clue scroll (master)', 1, 5)
-			.add(MasterClueTable, 1, 10)
+			.add('Clue scroll (Grandmaster)', 1, 2)
 	);
 
 export default class DailyCommand extends BotCommand {
