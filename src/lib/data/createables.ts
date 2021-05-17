@@ -79,12 +79,12 @@ const twistedAncestral: Createable[] = [
 		noCl: true
 	},
 	{
-		name: 'Revert ancestral robe hat',
+		name: 'Revert ancestral hat',
 		inputItems: {
-			[itemID('Twisted ancestral robe hat')]: 1
+			[itemID('Twisted ancestral hat')]: 1
 		},
 		outputItems: {
-			[itemID('Ancestral robe hat')]: 1,
+			[itemID('Ancestral hat')]: 1,
 			[itemID('Twisted ancestral colour kit')]: 1
 		},
 		noCl: true
