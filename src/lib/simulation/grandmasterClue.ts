@@ -18,7 +18,7 @@ const ClueHunterTable = new LootTable()
 	.add('Clue hunter boots')
 	.add('Clue hunter cloak');
 
-const ClueTable = new LootTable()
+export const ClueTable = new LootTable()
 	.add('Clue scroll (beginner)')
 	.add('Clue scroll (easy)')
 	.add('Clue scroll (medium)')
@@ -31,7 +31,7 @@ const ClueTable = new LootTable()
 
 const BlessingTable = new LootTable().add('Dwarven blessing').add('Monkey nuts');
 
-const DragonTable = new LootTable()
+export const DragonTable = new LootTable()
 	.add('Dragon sword', [1, 5], 2)
 	.add('Dragon sword', [1, 5], 2)
 	.add('Dragon boots', [1, 5], 2)
