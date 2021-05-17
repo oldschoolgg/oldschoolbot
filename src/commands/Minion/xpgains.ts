@@ -36,7 +36,8 @@ INNER JOIN "new_users" "new_user" ON xp_gains.user_id = "new_user"."id"
 WHERE date > now() - INTERVAL '1 ${interval}'
 ${skillObj ? `AND skill = '${skillObj.id}'` : ''}
 GROUP BY "new_user".username
-ORDER BY total_xp DESC;`
+ORDER BY total_xp DESC
+LIMIT 10;`
 		);
 
 		if (res.length === 0) {
