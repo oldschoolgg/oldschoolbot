@@ -2,7 +2,7 @@ import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
-import { PatchTypes } from '../../lib/minions/farming';
+import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -409,7 +409,8 @@ export default class extends Task {
 
 			await user.settings.update(getPatchType, updatePatches);
 
-			const currentContract = user.settings.get(UserSettings.Minion.FarmingContract);
+			const currentContract =
+				user.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
 
 			const { contractsCompleted } = currentContract;
 
