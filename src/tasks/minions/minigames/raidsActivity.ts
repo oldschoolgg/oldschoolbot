@@ -18,6 +18,7 @@ import { sendToChannelID } from '../../../lib/util/webhook';
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
 const blueItems = resolveItems(['Metamorphic dust']);
+const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
 
 const purpleItems = [...Object.values(coxLog), ...metamorphPets]
 	.flat(2)
@@ -82,7 +83,10 @@ export default class extends Task {
 
 			const items = userLoot.items();
 
-			const isPurple = items.some(([item]) => purpleItems.includes(item.id));
+			const isPurple = items.some(
+				([item]) =>
+					purpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id)
+			);
 			const isGreen = items.some(([item]) => greenItems.includes(item.id));
 			const isBlue = items.some(([item]) => blueItems.includes(item.id));
 			const emote = isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
