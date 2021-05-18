@@ -69,7 +69,7 @@ export namespace UserSettings {
 		export const FarmingContract = T<FarmingContract | null>('minion.farmingContract');
 		export const DefaultCompostToUse = T<CompostTier>('minion.defaultCompostToUse');
 		export const DefaultPay = T<boolean>('minion.defaultPay');
-		export const BirdhouseTraps = T<BirdhouseData>('minion.birdhouseTraps');
+		export const BirdhouseTraps = T<BirdhouseData | null>('minion.birdhouseTraps');
 	}
 
 	export namespace Skills {
