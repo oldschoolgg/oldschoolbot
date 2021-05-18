@@ -1778,7 +1778,8 @@ export const miscLog: CollectionLogData = {
 		'Book of law'
 	]),
 	Tzhaar: resolveItems(['Fire cape']),
-	evilChickenOutfit
+	evilChickenOutfit,
+	other: resolveItems(['Amulet of eternal glory'])
 };
 
 export const customBossLog: CollectionLogData = {

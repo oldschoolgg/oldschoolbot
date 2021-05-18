@@ -4,8 +4,7 @@ import { O } from 'ts-toolbelt';
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
 import { PatchTypes } from '../../minions/farming';
-import defaultContracts from '../../minions/farming/defaultContracts';
-import { CompostTier, FarmingPatchTypes } from '../../minions/farming/types';
+import { CompostTier, FarmingContract, FarmingPatchTypes } from '../../minions/farming/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
@@ -75,10 +74,10 @@ export namespace UserSettings {
 		export const Ironman = T<boolean>('minion.ironman');
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
-		export const FarmingContract = T<typeof defaultContracts>('minion.farmingContract');
+		export const FarmingContract = T<FarmingContract | null>('minion.farmingContract');
 		export const DefaultCompostToUse = T<CompostTier>('minion.defaultCompostToUse');
 		export const DefaultPay = T<boolean>('minion.defaultPay');
-		export const BirdhouseTraps = T<BirdhouseData>('minion.birdhouseTraps');
+		export const BirdhouseTraps = T<BirdhouseData | null>('minion.birdhouseTraps');
 	}
 
 	export namespace Skills {
