@@ -1,11 +1,10 @@
-import { randInt } from 'e';
+import { randInt, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { production } from '../../config';
-import { Emoji, Events, Time } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/data/openables';
-import { PatchTypes } from '../../lib/minions/farming';
+import { Emoji, Events } from '../../lib/constants';
+import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -445,7 +444,8 @@ export default class extends Task {
 
 			await user.settings.update(getPatchType, updatePatches);
 
-			const currentContract = user.settings.get(UserSettings.Minion.FarmingContract);
+			const currentContract =
+				user.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
 
 			const { contractsCompleted } = currentContract;
 
@@ -526,4 +526,7 @@ export default class extends Task {
 			}
 		}
 	}
+}
+function getRandomMysteryBox(): number {
+	throw new Error('Function not implemented.');
 }

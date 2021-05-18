@@ -828,7 +828,7 @@ export default class extends Extendable {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				skill: skillName,
-				xp: amount
+				xp: Math.floor(amount)
 			});
 		}
 

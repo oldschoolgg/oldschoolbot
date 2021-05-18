@@ -1,8 +1,6 @@
 import { Client, SchemaFolder } from 'klasa';
 
-import defaultContracts from '../../minions/farming/defaultContracts';
 import { FarmingPatchTypes } from '../../minions/farming/types';
-import defaultBirdHouseTrap from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 
 Client.defaultUserSchema
@@ -45,10 +43,10 @@ Client.defaultUserSchema
 			.add('ironman', 'boolean', { default: false })
 			.add('icon', 'string', { default: null })
 			.add('equippedPet', 'integer', { default: null })
-			.add('farmingContract', 'any', { default: defaultContracts })
+			.add('farmingContract', 'any', { default: null })
 			.add('defaultCompostToUse', 'string', { default: 'compost' })
 			.add('defaultPay', 'boolean', { default: false })
-			.add('birdhouseTraps', 'any', { default: defaultBirdHouseTrap })
+			.add('birdhouseTraps', 'any', { default: null })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder

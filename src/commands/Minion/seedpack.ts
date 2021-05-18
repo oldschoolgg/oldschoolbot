@@ -4,6 +4,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { requiresMinion } from '../../lib/minions/decorators';
+import { defaultFarmingContract } from '../../lib/minions/farming';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
@@ -155,7 +156,8 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const { plantTier } = msg.author.settings.get(UserSettings.Minion.FarmingContract);
+		const { plantTier } =
+			msg.author.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
 		const loot = new Bank();
 
 		if (bankHasItem(userBank, itemID('Seed pack'), 1)) {
