@@ -1,11 +1,11 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, util } from 'klasa';
-import { Monsters } from 'oldschooljs';
 import { IsNull, Not } from 'typeorm';
 
 import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Emoji, Time } from '../../lib/constants';
 import { collectionLogTypes } from '../../lib/data/collectionLog';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
@@ -326,7 +326,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 	}
 
 	async kc(msg: KlasaMessage, [name = '']: [string]) {
-		const monster = Monsters.find(
+		const monster = effectiveMonsters.find(
 			mon =>
 				stringMatches(mon.name, name) ||
 				mon.aliases.some(alias => stringMatches(alias, name))
