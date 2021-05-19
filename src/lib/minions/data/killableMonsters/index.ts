@@ -591,13 +591,18 @@ export default killableMonsters;
 export const effectiveMonsters = [
 	...killableMonsters,
 	NightmareMonster,
-	{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID },
+	{
+		name: 'Zalcano',
+		aliases: ['zalcano'],
+		id: ZALCANO_ID,
+		emoji: '<:Smolcano:604670895113633802>'
+	},
 	{
 		id: 46274,
 		name: 'Nex',
 		aliases: ['nex']
 	},
-	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127 },
-	{ name: 'Mimic', aliases: ['mimic'], id: 23184 },
-	{ name: 'Hespori', aliases: ['hespori'], id: 8583 }
+	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
+	{ name: 'Mimic', aliases: ['mimic'], id: 23184, emoji: '<:Tangleroot:324127378978635778>' },
+	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' }
 ];

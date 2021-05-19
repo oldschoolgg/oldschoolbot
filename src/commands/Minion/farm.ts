@@ -4,8 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import defaultPatches from '../../lib/minions/farming/defaultPatches';
-import resolvePatchTypeSetting from '../../lib/minions/farming/functions/resolvePatchTypeSettings';
+import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcNumOfPatches, returnListOfPlants } from '../../lib/skilling/functions/calcsFarming';

@@ -680,6 +680,11 @@ export default class extends Extendable {
 
 		if (!activity) return max;
 		switch (activity) {
+			case Activity.Fishing:
+				if (this.hasItemEquippedAnywhere('Fish sack')) {
+					max += Time.Minute * 9;
+				}
+				break;
 			case Activity.Nightmare:
 			case Activity.GroupMonsterKilling:
 			case Activity.MonsterKilling:
@@ -823,7 +828,7 @@ export default class extends Extendable {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				skill: skillName,
-				xp: amount
+				xp: Math.floor(amount)
 			});
 		}
 
