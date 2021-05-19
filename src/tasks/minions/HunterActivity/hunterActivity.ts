@@ -158,7 +158,7 @@ export default class extends Task {
 
 		const masterCapeEffect =
 			creature.id === 3251 && user.hasItemEquippedAnywhere(itemID('Hunter master cape'));
-		
+
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
 		xpStr += await user.addXP(SkillsEnum.Hunter, xpReceived, duration);
 
