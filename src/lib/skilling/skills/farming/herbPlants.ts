@@ -534,6 +534,41 @@ const herbPlants: Plant[] = [
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
+	},
+	{
+		level: 99,
+		plantXp: 0,
+		checkXp: 9199.5,
+		harvestXp: 22_024.5,
+		name: `Athelas`,
+		aliases: ['athelas', 'athelas seed'],
+		inputItems: resolveNameBank({ 'Athelas seed': 1 }),
+		outputCrop: itemID('Athelas'),
+		petChance: 98_364,
+		seedType: 'herb',
+		growthTime: 80,
+		numOfStages: 4,
+		chance1: 71,
+		chance99: 80,
+		chanceOfDeath: 28,
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[900, 1], // Canifs Patches (1)
+			[1500, 2], // Troll Stronghold (1)
+			[3000, 3] // Harmony Island Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	}
 ];
 
