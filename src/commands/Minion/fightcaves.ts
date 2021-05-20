@@ -2,7 +2,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
-import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
 import { GearSetupTypes } from '../../lib/gear/types';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -52,7 +51,7 @@ export default class extends BotCommand {
 		debugStr += `${percentIncreaseFromKC}% from KC`;
 
 		// Reduce time based on Gear
-		const usersRangeStats = sumOfSetupStats(user.getGear('range'));
+		const usersRangeStats = user.getGear('range').stats;
 		const percentIncreaseFromRangeStats =
 			Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromRangeStats);
@@ -85,7 +84,7 @@ export default class extends BotCommand {
 	async checkGear(user: KlasaUser) {
 		const equippedWeapon = user.equippedWeapon(GearSetupTypes.Range);
 
-		const usersRangeStats = sumOfSetupStats(user.getGear('range'));
+		const usersRangeStats = user.getGear('range').stats;
 
 		if (
 			!equippedWeapon ||
@@ -128,7 +127,7 @@ export default class extends BotCommand {
 		const preJadDeathChance = this.determineChanceOfDeathPreJad(msg.author);
 
 		const attempts = msg.author.settings.get(UserSettings.Stats.FightCavesAttempts);
-		const usersRangeStats = sumOfSetupStats(msg.author.getGear('range'));
+		const usersRangeStats = msg.author.getGear('range').stats;
 		const jadKC = msg.author.getKC(TzTokJad.id);
 
 		duration += (rand(1, 5) * duration) / 100;

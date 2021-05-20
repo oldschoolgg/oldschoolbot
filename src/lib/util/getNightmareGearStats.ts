@@ -24,7 +24,7 @@ export function getNightmareGearStats(
 ] {
 	const kc = user.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 1;
 	const weapon = user.equippedWeapon(GearSetupTypes.Melee);
-	const gearStats = user.setupStats(GearSetupTypes.Melee);
+	const gearStats = user.getGear('melee').stats;
 	const percentMeleeStrength = calcWhatPercent(
 		gearStats.melee_strength,
 		maxOtherStats.melee_strength

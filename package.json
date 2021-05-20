@@ -7,7 +7,6 @@
 		"test": "yarn test:lint && yarn test:unit",
 		"test:lint": "eslint \"{src,tests}/**/*.ts\"",
 		"test:unit": "jest",
-		"test:watch": "jest --watch",
 		"dev": "yarn wipedist && tsc -w -p src"
 	},
 	"dependencies": {
