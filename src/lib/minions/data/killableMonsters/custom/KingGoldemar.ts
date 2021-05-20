@@ -5,7 +5,6 @@ import { MysteryBoxes } from '../../../../data/openables';
 import setCustomMonster from '../../../../util/setCustomMonster';
 
 export const KingGoldemarLootTable = new LootTable()
-	.tertiary(2900, 'Broken dwarven warhammer')
 	.tertiary(20, 'Clue scroll (master)')
 	.oneIn(
 		80,
@@ -24,10 +23,6 @@ export const KingGoldemarLootTable = new LootTable()
 	.add('Beer', [1, 4])
 	.add('Kebab', [1, 4])
 	.add('Hammer', 1)
-	.add('Oily cloth')
-	.add('Axe head')
-	.add('Pickaxe handle')
-	.add('Hair')
 	.add('Gold bar')
 	.add('Gold ring', 2)
 	.add('Dwarven helmet', 2)
@@ -36,6 +31,7 @@ export const KingGoldemarLootTable = new LootTable()
 	.add('Gold ore', [2, 20], 2)
 	.add('Coins', [50_000, 1_000_000])
 	.add('Skull piece')
+	.add('Athelas seed')
 	.add('Dwarven rock cake')
 	.add('Dwarven stout')
 	.tertiary(80, 'Clue scroll (grandmaster)')
