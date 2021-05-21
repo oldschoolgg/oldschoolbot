@@ -6,6 +6,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
+import defaultBirdhouseTrap from '../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
@@ -157,7 +158,8 @@ export default class extends BotCommand {
 			);
 		}
 
-		const previousBirdhouseTraps = msg.author.settings.get(UserSettings.Minion.BirdhouseTraps);
+		const previousBirdhouseTraps =
+			msg.author.settings.get(UserSettings.Minion.BirdhouseTraps) ?? defaultBirdhouseTrap;
 
 		const timeBirdHouseRun = birdhouse.runTime;
 
@@ -277,7 +279,8 @@ export default class extends BotCommand {
 		let returnMessageStr = '';
 		const boostStr = [];
 
-		const previousBirdhouseTraps = msg.author.settings.get(UserSettings.Minion.BirdhouseTraps);
+		const previousBirdhouseTraps =
+			msg.author.settings.get(UserSettings.Minion.BirdhouseTraps) ?? defaultBirdhouseTrap;
 
 		const storePreviousBirdhouse = previousBirdhouseTraps.lastPlaced;
 
@@ -353,7 +356,8 @@ export default class extends BotCommand {
 		let finalStr = '';
 		let nothingPlaced = false;
 
-		const currentBirdHouses = msg.author.settings.get(UserSettings.Minion.BirdhouseTraps);
+		const currentBirdHouses =
+			msg.author.settings.get(UserSettings.Minion.BirdhouseTraps) ?? defaultBirdhouseTrap;
 
 		if (currentBirdHouses.lastPlaced) {
 			const { lastPlaced } = currentBirdHouses;
