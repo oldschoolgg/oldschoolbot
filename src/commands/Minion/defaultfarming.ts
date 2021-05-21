@@ -51,6 +51,13 @@ export default class extends BotCommand {
 	async tier(msg: KlasaMessage, [newCompostTier]: [CompostTier]) {
 		await msg.author.settings.sync(true);
 
+		if(newCompostTier === undefined) {
+			return msg.send(
+				'You must specify a compost type. The available tiers to select are `compost`, `supercompost`, and `ultracompost`.' +
+					`For example, \`${msg.cmdPrefix}defaultfarming tier supercompost\`.`
+			);
+		}
+
 		const compostTier = CompostTiers.find(i => stringMatches(newCompostTier, i.name));
 		if (!compostTier) {
 			return msg.send(
