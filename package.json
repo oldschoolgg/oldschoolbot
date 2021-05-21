@@ -7,7 +7,6 @@
 		"test": "yarn test:lint && yarn test:unit",
 		"test:lint": "eslint \"{src,tests}/**/*.ts\"",
 		"test:unit": "jest --coverage",
-		"test:coverage": "npm run test:run --coverage",
 		"dev": "yarn wipedist && tsc -w -p src"
 	},
 	"dependencies": {
