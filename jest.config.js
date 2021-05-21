@@ -13,6 +13,5 @@ module.exports = {
 	setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
 	collectCoverageFrom: [
 		"./src/lib/structures/Gear.ts"
-	],
-	coverageProvider: 'v8',
+	]
 };
