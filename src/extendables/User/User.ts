@@ -71,7 +71,7 @@ export default class extends Extendable {
 			for (const [setup, requirements] of objectEntries(monster.minimumGearRequirements)) {
 				if (setup && requirements) {
 					const [meetsRequirements, unmetKey, has] = gearSetupMeetsRequirement(
-						this.setupStats(setup),
+						this.getGear(setup).stats,
 						requirements
 					);
 					if (!meetsRequirements) {
