@@ -1,7 +1,7 @@
 import { Gear } from '../src/lib/structures/Gear';
+import getOSItem from '../src/lib/util/getOSItem';
 import itemID from '../src/lib/util/itemID';
 
-// error if weapon 2h?
 const testGear = new Gear({
 	'2h': 'Twisted bow',
 	head: 'Dragon full helm',
@@ -27,7 +27,7 @@ describe('Gear', () => {
 	});
 
 	test('equippedWeapon', () => {
-		expect(testGear.equippedWeapon()?.item).toEqual(itemID('Twisted bow'));
+		expect(testGear.equippedWeapon()).toEqual(getOSItem('Twisted bow'));
 	});
 
 	test('hasEquipped', () => {
