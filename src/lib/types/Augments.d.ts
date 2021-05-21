@@ -193,10 +193,6 @@ declare module 'discord.js' {
 		 * Gets the CL count for an item.
 		 */
 		getCL(itemID: number): number;
-		/**
-		 *
-		 */
-		equippedWeapon(setupType: GearSetupTypes): Item | null;
 		rawGear(): UserFullGearSetup;
 		allItemsOwned(): Bank;
 		/**

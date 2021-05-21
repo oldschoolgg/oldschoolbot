@@ -1,5 +1,5 @@
 import { notEmpty, objectKeys } from 'e';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { getSimilarItems } from '../data/similarItems';
 import { constructGearSetup, GearSetup, GearSlotItem, GearStats, PartialGearSetup } from '../gear';
@@ -103,10 +103,11 @@ export class Gear {
 		return items[every ? 'every' : 'some'](i => allItems.includes(i));
 	}
 
-	equippedWeapon() {
+	equippedWeapon(): Item | null {
 		const normalWeapon = this.weapon;
 		const twoHandedWeapon = this['2h'];
-		return normalWeapon === null ? twoHandedWeapon : normalWeapon;
+		if (!normalWeapon && !twoHandedWeapon) return null;
+		return getOSItem(normalWeapon === null ? twoHandedWeapon!.item : normalWeapon.item);
 	}
 
 	getStats() {

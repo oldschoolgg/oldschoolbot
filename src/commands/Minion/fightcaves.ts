@@ -2,7 +2,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
-import { GearSetupTypes } from '../../lib/gear/types';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -82,9 +81,10 @@ export default class extends BotCommand {
 	}
 
 	async checkGear(user: KlasaUser) {
-		const equippedWeapon = user.equippedWeapon(GearSetupTypes.Range);
+		const gear = user.getGear('range');
+		const equippedWeapon = gear.equippedWeapon();
 
-		const usersRangeStats = user.getGear('range').stats;
+		const usersRangeStats = gear.stats;
 
 		if (
 			!equippedWeapon ||
