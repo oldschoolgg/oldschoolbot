@@ -38,9 +38,9 @@ export class Gear {
 	[EquipmentSlot.Weapon]: GearSlotItem | null = null;
 	stats = baseStats;
 
-	constructor(_setup: GearSetup | PartialGearSetup) {
+	constructor(_setup: GearSetup | PartialGearSetup = {}) {
 		const setup =
-			typeof _setup.ammo === 'undefined' || typeof _setup.ammo === 'string'
+			typeof _setup?.ammo === 'undefined' || typeof _setup?.ammo === 'string'
 				? constructGearSetup(_setup as PartialGearSetup)
 				: (_setup as GearSetup);
 
@@ -84,18 +84,23 @@ export class Gear {
 			.map(i => i.item);
 
 		if (similar) {
-			for (const item of values) {
-				values.push(...getSimilarItems(item));
+			for (const item of [...values]) {
+				const similarItems = getSimilarItems(item);
+				for (const simItem of similarItems) {
+					if (!values.includes(simItem)) {
+						values.push(simItem);
+					}
+				}
 			}
 		}
 
 		return values;
 	}
 
-	hasEquipped(_items: string | (string | number)[], every: boolean) {
+	hasEquipped(_items: string | (string | number)[], every = false) {
 		const items = resolveItems(_items);
-		const allItems = this.allItems(every);
-		return items.every(i => allItems.includes(i));
+		const allItems = this.allItems(true);
+		return items[every ? 'every' : 'some'](i => allItems.includes(i));
 	}
 
 	equippedWeapon() {

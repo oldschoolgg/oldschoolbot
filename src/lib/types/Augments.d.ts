@@ -12,13 +12,7 @@ import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BankImageResult } from '../../tasks/bankImage';
 import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
-import {
-	GearSetup,
-	GearSetupType,
-	GearSetupTypes,
-	GearStats,
-	UserFullGearSetup
-} from '../gear/types';
+import { GearSetupType, GearSetupTypes, UserFullGearSetup } from '../gear/types';
 import { KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';

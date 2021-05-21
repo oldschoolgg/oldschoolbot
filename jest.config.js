@@ -10,5 +10,9 @@ module.exports = {
 			tsconfig: '<rootDir>/tests/tsconfig.json'
 		}
 	},
-	setupFilesAfterEnv: ['<rootDir>/tests/setup.ts']
+	setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
+	collectCoverageFrom: [
+		"./src/lib/structures/Gear.ts"
+	],
+	coverageProvider: 'v8',
 };
