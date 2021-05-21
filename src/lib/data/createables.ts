@@ -425,12 +425,462 @@ const brokenItems: Createable[] = [
 
 const lockedItems: Createable[] = [
 	{
+		name: 'Unlock infernal max cape',
+		inputItems: {
+			[itemID('Infernal max cape (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal max cape')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock fire max cape',
+		inputItems: {
+			[itemID('Fire max cape (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Fire max cape')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock assembler max cape',
+		inputItems: {
+			[itemID('Assembler max cape (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Assembler max cape')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock bronze defender',
+		inputItems: {
+			[itemID('Bronze defender (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Bronze defender')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock iron defender',
+		inputItems: {
+			[itemID('Iron defender (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Iron defender')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock steel defender',
+		inputItems: {
+			[itemID('Steel defender (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Steel defender')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock black defender',
+		inputItems: {
+			[itemID('Black defender (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Black defender')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock mithril defender',
+		inputItems: {
+			[itemID('Mithril defender (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Mithril defender')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock adamant defender',
+		inputItems: {
+			[itemID('Adamant defender (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Adamant defender')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock rune defender',
+		inputItems: {
+			[itemID('Rune defender (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Rune defender')]: 1
+		},
+		noCl: true
+	},
+	{
 		name: 'Unlock dragon defender',
 		inputItems: {
 			[itemID('Dragon defender (l)')]: 1
 		},
 		outputItems: {
 			[itemID('Dragon defender')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock saradomin halo',
+		inputItems: {
+			[itemID('Saradomin halo (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Saradomin halo')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock zamorak halo',
+		inputItems: {
+			[itemID('Zamorak halo (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Zamorak halo')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock guthix halo',
+		inputItems: {
+			[itemID('Guthix halo (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Guthix halo')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock healer hat',
+		inputItems: {
+			[itemID('Healer hat (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Healer hat')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock fighter hat',
+		inputItems: {
+			[itemID('Fighter hat (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Fighter hat')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock ranger hat',
+		inputItems: {
+			[itemID('Ranger hat (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Ranger hat')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock fighter torso',
+		inputItems: {
+			[itemID('Fighter torso (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Fighter torso')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock penance skirt',
+		inputItems: {
+			[itemID('Penance skirt (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Penance skirt')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock void knight top',
+		inputItems: {
+			[itemID('Void knight top (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Void knight top')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock elite void top',
+		inputItems: {
+			[itemID('Elite void top (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Elite void top')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock void knight robe',
+		inputItems: {
+			[itemID('Void knight robe (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Void knight robe')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock elite void robe',
+		inputItems: {
+			[itemID('Elite void robe (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Elite void robe')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock void knight mace',
+		inputItems: {
+			[itemID('Void knight mace (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Void knight mace')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock void knight gloves',
+		inputItems: {
+			[itemID('Void knight gloves (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Void knight gloves')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock void mage helm',
+		inputItems: {
+			[itemID('Void mage helm (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Void mage helm')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock void ranger helm',
+		inputItems: {
+			[itemID('Void ranger helm (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Void ranger helm')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock void melee helm',
+		inputItems: {
+			[itemID('Void melee helm (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Void melee helm')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock avernic defender',
+		inputItems: {
+			[itemID('Avernic defender (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Avernic defender')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock armadyl halo',
+		inputItems: {
+			[itemID('Armadyl halo (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Armadyl halo')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock bandos halo',
+		inputItems: {
+			[itemID('Bandos halo (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Bandos halo')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock seren halo',
+		inputItems: {
+			[itemID('Seren halo (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Seren halo')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock ancient halo',
+		inputItems: {
+			[itemID('Ancient halo (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Ancient halo')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock brassica halo',
+		inputItems: {
+			[itemID('Brassica halo (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Brassica halo')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Unlock ava's assembler",
+		inputItems: {
+			[itemID("Ava's assembler (l)")]: 1
+		},
+		outputItems: {
+			[itemID("Ava's assembler")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock fire cape',
+		inputItems: {
+			[itemID('Fire cape (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Fire cape')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock infernal cape',
+		inputItems: {
+			[itemID('Infernal cape (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal cape')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock infernal cape',
+		inputItems: {
+			[itemID('Infernal cape (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal cape')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock imbued saradomin max cape',
+		inputItems: {
+			[itemID('Imbued saradomin max cape (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Imbued saradomin max cape')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock imbued zamorak max cape',
+		inputItems: {
+			[itemID('Imbued zamorak max cape (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Imbued zamorak max cape')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock imbued guthix max cape',
+		inputItems: {
+			[itemID('Imbued guthix max cape (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Imbued guthix max cape')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock imbued saradomin cape',
+		inputItems: {
+			[itemID('Imbued saradomin cape (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Imbued saradomin cape')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock imbued guthix cape',
+		inputItems: {
+			[itemID('Imbued guthix cape (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Imbued guthix cape')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock imbued zamorak cape',
+		inputItems: {
+			[itemID('Imbued zamorak cape (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Imbued zamorak cape')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock runner hat',
+		inputItems: {
+			[itemID('Runner hat (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Runner hat')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Unlock barronite mace',
+		inputItems: {
+			[itemID('Barronite mace (l)')]: 1
+		},
+		outputItems: {
+			[itemID('Barronite mace')]: 1
 		},
 		noCl: true
 	}
@@ -4202,6 +4652,16 @@ const Createables: Createable[] = [
 			'Eldritch nightmare staff': 1
 		}),
 		noCl: true
+	},
+	{
+		name: 'Guardian boots',
+		outputItems: resolveNameBank({
+			'Guardian boots': 1
+		}),
+		inputItems: resolveNameBank({
+			'Bandos boots': 1,
+			'Black tourmaline core': 1
+		})
 	},
 	{
 		name: 'Ferocious gloves',
