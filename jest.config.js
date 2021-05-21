@@ -13,5 +13,13 @@ module.exports = {
 	setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
 	collectCoverageFrom: [
 		"./src/lib/structures/Gear.ts"
-	]
+	],
+	coverageThreshold: {
+    	global: {
+			branches: 100,
+			functions: 100,
+			lines: 100,
+			statements: 100,
+   		},
+ 	},
 };
