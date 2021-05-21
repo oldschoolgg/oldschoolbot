@@ -4,7 +4,7 @@
 		"build": "yarn wipedist && tsc -p src",
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -w -p src\" \"node dist/\"",
-		"test": "yarn test:lint && yarn test:unit",
+		"test": "tsc -p src && yarn test:lint && yarn test:unit",
 		"test:lint": "eslint \"{src,tests}/**/*.ts\"",
 		"test:unit": "jest --coverage",
 		"dev": "yarn wipedist && tsc -w -p src"
