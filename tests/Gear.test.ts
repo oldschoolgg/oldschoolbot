@@ -1,4 +1,4 @@
-import { constructGearSetup } from '../src/lib/gear';
+import { constructGearSetup, GearStat } from '../src/lib/gear';
 import { Gear } from '../src/lib/structures/Gear';
 import getOSItem from '../src/lib/util/getOSItem';
 import itemID from '../src/lib/util/itemID';
@@ -97,5 +97,20 @@ describe('Gear', () => {
 			prayer: 0,
 			ranged_strength: 0
 		});
+	});
+
+	test('meetsStatRequirements', () => {
+		expect(
+			testGear.meetsStatRequirements({
+				[GearStat.DefenceRanged]: 57 + 120,
+				[GearStat.DefenceStab]: 47 + 26,
+				[GearStat.AttackCrush]: 65
+			})
+		).toEqual([false, 'attack_crush', +0]);
+		expect(
+			testGear.meetsStatRequirements({
+				[GearStat.AttackRanged]: 20
+			})
+		).toEqual([true, null, null]);
 	});
 });
