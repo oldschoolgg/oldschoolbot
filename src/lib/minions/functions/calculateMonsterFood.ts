@@ -26,7 +26,7 @@ export default function calculateMonsterFood(
 
 	messages.push(`${monster.name} needs ${healAmountNeeded}HP worth of food per kill.`);
 
-	const gearStats = user.setupStats(attackStyleToUse);
+	const gearStats = user.getGear(attackStyleToUse).stats;
 
 	let totalPercentOfGearLevel = 0;
 	let totalOffensivePercent = 0;

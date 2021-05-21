@@ -255,7 +255,7 @@ export default class extends BotCommand {
 
 		// Up to 12.5% speed boost for max strength
 		const fighter = randArrItem(users);
-		const gearStats = fighter.setupStats(GearSetupTypes.Melee);
+		const gearStats = fighter.getGear(GearSetupTypes.Melee).stats;
 		const strengthPercent = round(
 			calcWhatPercent(gearStats.melee_strength, maxOtherStats.melee_strength) / 8,
 			2

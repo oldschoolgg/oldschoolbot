@@ -1,7 +1,7 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Message, MessageReaction } from 'discord.js';
+import { debounce } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
-import { debounce } from 'ts-debounce';
 
 import { ReactionEmoji } from '../../lib/constants';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
