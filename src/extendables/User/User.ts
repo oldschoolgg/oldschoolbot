@@ -5,7 +5,6 @@ import PromiseQueue from 'p-queue';
 
 import { Events, PerkTier, userQueues } from '../../lib/constants';
 import { readableStatName } from '../../lib/gear';
-import { gearSetupMeetsRequirement } from '../../lib/minions/functions/gearSetupMeetsRequirement';
 import { KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
@@ -69,9 +68,9 @@ export default class extends Extendable {
 
 		if (monster.minimumGearRequirements) {
 			for (const [setup, requirements] of objectEntries(monster.minimumGearRequirements)) {
+				const gear = this.getGear(setup);
 				if (setup && requirements) {
-					const [meetsRequirements, unmetKey, has] = gearSetupMeetsRequirement(
-						this.getGear(setup).stats,
+					const [meetsRequirements, unmetKey, has] = gear.meetsStatRequirements(
 						requirements
 					);
 					if (!meetsRequirements) {

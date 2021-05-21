@@ -3,6 +3,7 @@ import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { getSimilarItems } from '../data/similarItems';
 import { constructGearSetup, GearSetup, GearSlotItem, GearStats, PartialGearSetup } from '../gear';
+import { GearRequirement } from '../minions/types';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
 
@@ -119,5 +120,20 @@ export class Gear {
 			}
 		}
 		return sum;
+	}
+
+	meetsStatRequirements(
+		gearRequirements: GearRequirement
+	): [false, keyof GearStats, number] | [true, null, null] {
+		const keys = objectKeys(this.stats as Record<keyof GearStats, number>);
+		for (const key of keys) {
+			const required = gearRequirements?.[key];
+			if (!required) continue;
+			const has = this.stats[key];
+			if (has < required) {
+				return [false, key, has];
+			}
+		}
+		return [true, null, null];
 	}
 }
