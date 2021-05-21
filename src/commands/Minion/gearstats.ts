@@ -4,6 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { defaultGear } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { Gear } from '../../lib/structures/Gear';
 import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
@@ -27,7 +28,7 @@ export default class extends BotCommand {
 				gear[item.equipment.slot] = { item: item.id, quantity: 1 };
 			}
 		}
-		const image = await generateGearImage(this.client, msg.author, gear, null, null);
+		const image = await generateGearImage(this.client, msg.author, new Gear(gear), null, null);
 		return msg.send(new MessageAttachment(image, 'osbot.png'));
 	}
 }

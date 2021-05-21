@@ -3,7 +3,7 @@ import { KlasaUser } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { maxOffenceStats } from '../gear';
-import { GearSetupTypes, GearStats } from '../gear/types';
+import { GearStats } from '../gear/types';
 import { KalphiteKingMonster } from '../kalphiteking';
 import { UserSettings } from '../settings/types/UserSettings';
 
@@ -24,8 +24,9 @@ export function getKalphiteKingGearStats(
 	string
 ] {
 	const kc = user.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 1;
-	const weapon = user.equippedWeapon(GearSetupTypes.Melee);
-	const gearStats = user.setupStats(GearSetupTypes.Melee);
+	const gear = user.getGear('melee');
+	const weapon = gear.equippedWeapon();
+	const gearStats = gear.stats;
 	const percentAttackStrength = calcWhatPercent(
 		gearStats.attack_crush + gearStats.melee_strength,
 		maxOffenceStats.attack_crush + gearStats.melee_strength

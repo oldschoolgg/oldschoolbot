@@ -270,18 +270,6 @@ export function round(value = 1, precision = 1) {
 	return Math.round(value * multiplier) / multiplier;
 }
 
-export function entries<T extends {}>(obj: T) {
-	return Object.entries(obj) as [keyof T, T[keyof T]][];
-}
-
-export function values<T extends {}>(obj: T) {
-	return Object.values(obj) as T[keyof T][];
-}
-
-export function keys<T extends {}>(obj: T) {
-	return Object.keys(obj) as (keyof T)[];
-}
-
 export const anglerBoosts = [
 	[itemID('Angler hat'), 0.4],
 	[itemID('Angler top'), 0.8],
