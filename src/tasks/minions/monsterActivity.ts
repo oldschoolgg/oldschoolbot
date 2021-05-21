@@ -100,8 +100,8 @@ export default class extends Task {
 			monster.name.toLowerCase() === 'unicorn' &&
 			user.hasItemEquippedAnywhere('Iron dagger') &&
 			!(
-				user.hasItemEquippedOrInBank('Clue hunter boots') ||
-				user.hasItemEquippedOrInBank('Clue hunter cloak')
+				user.hasItemEquippedOrInBank('Clue hunter cloak') ||
+				user.hasItemEquippedOrInBank('Clue hunter boots')
 			)
 		) {
 			loot.add(new Bank({ 'Clue hunter boots': 1, 'Clue hunter cloak': 1 }));
