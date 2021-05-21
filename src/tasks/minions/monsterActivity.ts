@@ -96,6 +96,16 @@ export default class extends Task {
 			monster.name
 		} KC is now ${user.getKC(monsterID)}.\n${xpRes.join(', ')}.`;
 
+		if (
+			monster.name.toLowerCase() === 'unicorn' &&
+			user.hasItemEquippedAnywhere('Iron dagger') &&
+			!(user.hasItemEquippedOrInBank('Clue hunter boots') || user.hasItemEquippedOrInBank('Clue hunter cloak'))
+		) {
+
+			loot.add(new Bank({ 'Clue hunter boots': 1, 'Clue hunter cloak': 1 }));
+			str += `\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.`;
+		}
+
 		if (gotBrock) {
 			str += `\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.`;
 		}
