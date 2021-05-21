@@ -3,7 +3,6 @@ import { FSWatcher } from 'chokidar';
 import { MessageEmbed } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Bank, Player } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
@@ -12,16 +11,11 @@ import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BankImageResult } from '../../tasks/bankImage';
 import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
-import {
-	GearSetup,
-	GearSetupType,
-	GearSetupTypes,
-	GearStats,
-	UserFullGearSetup
-} from '../gear/types';
+import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
+import { Gear } from '../structures/Gear';
 import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
 import { AttackStyles } from '../util';
@@ -157,7 +151,7 @@ declare module 'discord.js' {
 		 * Returns true if the user has this item equipped in any of their setups.
 		 * @param itemID The item ID.
 		 */
-		hasItemEquippedAnywhere(item: number | string): boolean;
+		hasItemEquippedAnywhere(_item: number | string | string[], every = false): boolean;
 		/**
 		 * Checks whether they have the given item in their bank OR equipped.
 		 * @param item
@@ -204,15 +198,10 @@ declare module 'discord.js' {
 		 * Gets the CL count for an item.
 		 */
 		getCL(itemID: number): number;
-		/**
-		 *
-		 */
-		equippedWeapon(setupType: GearSetupTypes): Item | null;
 		rawGear(): UserFullGearSetup;
 		equippedPet(): number | null;
 		usingPet(name: string): boolean;
 		allItemsOwned(): Bank;
-		setupStats(setup: GearSetupTypes): GearStats;
 		/**
 		 * Returns this users update promise queue.
 		 */
@@ -223,7 +212,7 @@ declare module 'discord.js' {
 		queueFn(fn: (...args: any[]) => Promise<any>): Promise<void>;
 		bank(options?: GetUserBankOptions): Bank;
 		getPOH(): Promise<PoHTable>;
-		getGear(gearType: GearSetupType): GearSetup;
+		getGear(gearType: GearSetupType): Gear;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
 		getAttackStyles(): AttackStyles[];
 		owns(bank: ItemBank | Bank | string | number): boolean;

@@ -68,7 +68,7 @@ export function resolveGearTypeSetting(type: GearSetupType) {
 	}
 }
 
-type PartialGearSetup = Partial<
+export type PartialGearSetup = Partial<
 	{
 		[key in EquipmentSlot]: string;
 	}

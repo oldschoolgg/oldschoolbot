@@ -59,7 +59,7 @@ export default class extends Task {
 		let farmersPiecesCheck = 0;
 		if (
 			bankHasItem(userBank, itemID(`Farmer's strawhat`), 1) ||
-			user.hasItemEquippedAnywhere(itemID(`Farmer's strawhat`))
+			user.hasItemEquippedAnywhere(`Farmer's strawhat`)
 		) {
 			bonusXpMultiplier += 0.004;
 			farmersPiecesCheck += 1;
@@ -67,8 +67,7 @@ export default class extends Task {
 		if (
 			bankHasItem(userBank, itemID(`Farmer's jacket`), 1) ||
 			bankHasItem(userBank, itemID(`Farmer's shirt`), 1) ||
-			user.hasItemEquippedAnywhere(itemID(`Farmer's jacket`)) ||
-			user.hasItemEquippedAnywhere(itemID(`Farmer's shirt`))
+			user.hasItemEquippedAnywhere([`Farmer's jacket`, `Farmer's shirt`])
 		) {
 			bonusXpMultiplier += 0.008;
 			farmersPiecesCheck += 1;

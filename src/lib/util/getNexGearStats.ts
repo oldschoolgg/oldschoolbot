@@ -3,7 +3,7 @@ import { KlasaUser } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { maxOffenceStats } from '../gear';
-import { GearSetupTypes, GearStats } from '../gear/types';
+import { GearStats } from '../gear/types';
 import { NexMonster } from '../nex';
 import { UserSettings } from '../settings/types/UserSettings';
 
@@ -24,8 +24,9 @@ export function getNexGearStats(
 	string
 ] {
 	const kc = user.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 1;
-	const weapon = user.equippedWeapon(GearSetupTypes.Range);
-	const gearStats = user.setupStats(GearSetupTypes.Range);
+	const gear = user.getGear('range');
+	const weapon = gear.equippedWeapon();
+	const gearStats = gear.stats;
 	const percentRangeStrength = calcWhatPercent(
 		gearStats.attack_ranged + gearStats.ranged_strength,
 		maxOffenceStats.attack_ranged + gearStats.ranged_strength

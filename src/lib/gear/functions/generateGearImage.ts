@@ -4,9 +4,10 @@ import * as fs from 'fs';
 import { KlasaClient, KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { GearSetup, GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..';
+import { GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..';
 import BankImageTask from '../../../tasks/bankImage';
 import { UserSettings } from '../../settings/types/UserSettings';
+import { Gear } from '../../structures/Gear';
 import { toTitleCase } from '../../util';
 import {
 	canvasImageFromBuffer,
@@ -14,7 +15,6 @@ import {
 	drawTitleText,
 	fillTextXTimesInCtx
 } from '../../util/canvasUtil';
-import { sumOfSetupStats } from './sumOfSetupStats';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
 
@@ -69,7 +69,7 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 export async function generateGearImage(
 	client: KlasaClient,
 	user: KlasaUser,
-	gearSetup: GearSetup,
+	gearSetup: Gear,
 	gearType: GearSetupTypes | null,
 	petID: number | null
 ) {
@@ -81,7 +81,7 @@ export async function generateGearImage(
 	const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
 	const userBg = bankTask.backgroundImages.find(i => i.id === userBgID)!.image!;
 
-	const gearStats = sumOfSetupStats(gearSetup);
+	const gearStats = gearSetup.stats;
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
 	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
