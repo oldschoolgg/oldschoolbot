@@ -1,19 +1,30 @@
+import { constructGearSetup } from '../src/lib/gear';
 import { Gear } from '../src/lib/structures/Gear';
 import getOSItem from '../src/lib/util/getOSItem';
 import itemID from '../src/lib/util/itemID';
 
-const testGear = new Gear({
-	'2h': 'Twisted bow',
-	head: 'Dragon full helm',
-	body: '3rd age platebody',
-	legs: '3rd age platelegs'
-});
-
 describe('Gear', () => {
+	const testGear = new Gear({
+		'2h': 'Twisted bow',
+		head: 'Dragon full helm',
+		body: '3rd age platebody',
+		legs: '3rd age platelegs'
+	});
+
 	test('misc', () => {
 		expect(testGear['2h']).toEqual({ item: itemID('Twisted bow'), quantity: 1 });
 		expect(testGear.head).toEqual({ item: itemID('Dragon full helm'), quantity: 1 });
 		expect(testGear.feet).toEqual(null);
+
+		const otherInitMethod = new Gear(
+			constructGearSetup({
+				'2h': 'Twisted bow',
+				head: 'Dragon full helm',
+				body: '3rd age platebody',
+				legs: '3rd age platelegs'
+			})
+		);
+		expect(otherInitMethod.raw()).toEqual(testGear.raw());
 	});
 
 	test('allItems', () => {
@@ -28,6 +39,12 @@ describe('Gear', () => {
 
 	test('equippedWeapon', () => {
 		expect(testGear.equippedWeapon()).toEqual(getOSItem('Twisted bow'));
+
+		const noWeapon = new Gear();
+		expect(noWeapon.equippedWeapon()).toEqual(null);
+
+		const normalWeapon = new Gear({ weapon: 'Dragon dagger' });
+		expect(normalWeapon.equippedWeapon()).toEqual(getOSItem('Dragon dagger'));
 	});
 
 	test('hasEquipped', () => {
