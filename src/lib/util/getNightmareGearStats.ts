@@ -3,7 +3,6 @@ import { KlasaUser } from 'klasa';
 
 import { NIGHTMARES_HP, ZAM_HASTA_CRUSH } from '../constants';
 import { maxOtherStats } from '../gear';
-import { GearSetupTypes } from '../gear/types';
 import { NightmareMonster } from '../minions/data/killableMonsters';
 import { UserSettings } from '../settings/types/UserSettings';
 
@@ -23,8 +22,9 @@ export function getNightmareGearStats(
 	string
 ] {
 	const kc = user.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 1;
-	const weapon = user.equippedWeapon(GearSetupTypes.Melee);
-	const gearStats = user.setupStats(GearSetupTypes.Melee);
+	const gear = user.getGear('melee');
+	const weapon = gear.equippedWeapon();
+	const gearStats = gear.stats;
 	const percentMeleeStrength = calcWhatPercent(
 		gearStats.melee_strength,
 		maxOtherStats.melee_strength

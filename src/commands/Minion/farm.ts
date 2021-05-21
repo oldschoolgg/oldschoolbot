@@ -321,7 +321,7 @@ export default class extends BotCommand {
 
 			if (
 				bankHasItem(userBank, itemID('Magic secateurs')) ||
-				msg.author.hasItemEquippedAnywhere(itemID(`Magic secateurs`))
+				msg.author.hasItemEquippedAnywhere(`Magic secateurs`)
 			) {
 				boostStr.push('10% crop yield for Magic Secateurs');
 			}
@@ -329,8 +329,7 @@ export default class extends BotCommand {
 			if (
 				bankHasItem(userBank, itemID('Farming cape')) ||
 				bankHasItem(userBank, itemID('Farming cape(t)')) ||
-				msg.author.hasItemEquippedAnywhere(itemID(`Farming cape`)) ||
-				msg.author.hasItemEquippedAnywhere(itemID(`Farming cape(t)`))
+				msg.author.hasItemEquippedAnywhere([`Farming cape(t)`, `Farming cape`])
 			) {
 				boostStr.push('5% crop yield for Farming Skillcape');
 			}

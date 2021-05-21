@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
 import { hasArrayOfItemsEquipped, hasItemEquipped } from '../../lib/gear';
-import { GearSetupTypes } from '../../lib/gear/types';
 import { KalphiteKingMonster } from '../../lib/kalphiteking';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -113,7 +112,7 @@ export default class extends BotCommand {
 
 			// Special inquisitor outfit damage boost
 			const rangeGear = user.getGear('melee');
-			const equippedWeapon = user.equippedWeapon(GearSetupTypes.Melee);
+			const equippedWeapon = rangeGear.equippedWeapon();
 			if (hasArrayOfItemsEquipped(torvaOutfit, rangeGear)) {
 				const percent = 8;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
