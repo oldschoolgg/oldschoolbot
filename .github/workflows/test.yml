@@ -30,6 +30,11 @@ jobs:
                   key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles(matrix.os == 'windows-latest' && '**\yarn.lock' || '**/yarn.lock') }}
             - name: Install Dependencies
               run: yarn
+            - name: Copy Configuration
+              run: |
+                  pushd src &&
+                  cp config.example.ts config.ts &&
+                  popd
             - name: Test
               run: yarn test
             - name: Upload coverage data to Codecov
