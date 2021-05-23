@@ -1,7 +1,11 @@
-import { Misc, Monsters } from 'oldschooljs';
+import '../../lib/data/itemAliases';
+import '../../lib/customItems';
+
+import { Misc } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util/bank';
 
 import { KillWorkerArgs } from '.';
+import { findMonster } from '../../lib/util/findMonster';
 
 export function cleanString(str: string) {
 	return str.replace(/[^0-9a-zA-Z]/gi, '').toUpperCase();
@@ -11,10 +15,9 @@ export function stringMatches(str: string, str2: string) {
 	return cleanString(str) === cleanString(str2);
 }
 
+
 export default ({ quantity, bossName, limit }: KillWorkerArgs) => {
-	const osjsMonster = Monsters.find(mon =>
-		mon.aliases.some(alias => stringMatches(alias, bossName))
-	);
+	const osjsMonster = findMonster(bossName);
 
 	if (osjsMonster) {
 		if (quantity > limit) {
@@ -25,7 +28,7 @@ export default ({ quantity, bossName, limit }: KillWorkerArgs) => {
 			);
 		}
 
-		return osjsMonster.kill(quantity, {});
+		return osjsMonster.table.kill(quantity);
 	}
 
 	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {
