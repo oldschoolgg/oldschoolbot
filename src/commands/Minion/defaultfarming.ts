@@ -62,7 +62,7 @@ export default class extends BotCommand {
 		if (!compostTier) {
 			return msg.send(
 				'The available tiers to select are `compost`, `supercompost`, and `ultracompost`.' +
-					`For example, \`${msg.cmdPrefix}defaultfarming tier supercompost\`.`
+					` For example, \`${msg.cmdPrefix}defaultfarming tier supercompost\`.`
 			);
 		}
 
