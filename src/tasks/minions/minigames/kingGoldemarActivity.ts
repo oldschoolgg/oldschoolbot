@@ -1,4 +1,4 @@
-import { percentChance, randArrItem } from 'e';
+import { percentChance, randArrItem, reduceNumByPercent } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -59,7 +59,10 @@ export default class extends Task {
 
 		await Promise.all(users.map(u => u.incrementMonsterScore(KingGoldemar.id, 1)));
 
-		const dwwhChance = calcDwwhChance(bossUsers.length);
+		let dwwhChance = calcDwwhChance(bossUsers.length);
+		if (users.some(u => u.getGear('melee').hasEquipped('Ring of luck'))) {
+			dwwhChance = Math.floor(reduceNumByPercent(dwwhChance, 15));
+		}
 		const gotDWWH = roll(dwwhChance);
 		const dwwhRecipient = gotDWWH
 			? users.find(u => u.id === dwwhTable.roll().item) ?? null
@@ -100,7 +103,7 @@ export default class extends Task {
 			resultStr += `\n\nAt this rate, it will take approximately ${dwwhChance} trips (${formatDuration(
 				dwwhChance * duration
 			)}) to receive a DWWH, costing ${toKMB(
-				dwwhChance * gpCostPerKill
+				dwwhChance * gpCostPerKill(users[0])
 			)} GP. 1 in ${dwwhChance}`;
 		}
 

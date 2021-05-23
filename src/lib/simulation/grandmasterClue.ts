@@ -73,6 +73,7 @@ const Supplies = new LootTable()
 const table = new LootTable()
 	.tertiary(2500, ClueHunterTable)
 	.tertiary(8000, BlessingTable)
+	.tertiary(8000, 'Ring of luck')
 	.tertiary(5_000, 'Deathtouched dart')
 	.tertiary(50, LampTable)
 	.tertiary(

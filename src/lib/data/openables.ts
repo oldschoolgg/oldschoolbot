@@ -429,8 +429,7 @@ const Openables: Openable[] = [
 			.add('10 sided die', 1, 4)
 			.add('12 sided die', 1, 3)
 			.add('20 sided die', 1, 3)
-			.add('100 sided die')
-			.tertiary(100, 'Ring of luck'),
+			.add('100 sided die'),
 		emoji: Emoji.BirthdayPresent
 	},
 	{

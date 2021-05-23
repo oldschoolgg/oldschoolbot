@@ -255,7 +255,8 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Pernix body')]: resolveItems(['Gorajan archer top']),
 	[itemID('Pernix chaps')]: resolveItems(['Gorajan archer legs']),
 	[itemID('Pernix gloves')]: resolveItems(['Gorajan archer gloves']),
-	[itemID('Pernix boots')]: resolveItems(['Gorajan archer boots'])
+	[itemID('Pernix boots')]: resolveItems(['Gorajan archer boots']),
+	[itemID('Ring of charos')]: resolveItems(['Ring of charos(a)'])
 };
 
 export function getSimilarItems(itemID: number) {

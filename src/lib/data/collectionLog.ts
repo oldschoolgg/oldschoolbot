@@ -104,8 +104,7 @@ const gamblersBag = resolveItems([
 	'10 sided die',
 	'12 sided die',
 	'20 sided die',
-	'100 sided die',
-	'Ring of luck'
+	'100 sided die'
 ]);
 
 const secondEaster = resolveItems([

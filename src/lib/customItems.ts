@@ -969,7 +969,7 @@ setCustomItem(45_104, '10 sided die', 'Coal', {}, 1000);
 setCustomItem(45_105, '12 sided die', 'Coal', {}, 1000);
 setCustomItem(45_106, '20 sided die', 'Coal', {}, 1000);
 setCustomItem(45_107, '100 sided die', 'Coal', {}, 1000);
-setCustomItem(45_108, 'Ring of luck', 'Coal', {}, 1000);
+setCustomItem(45_108, 'Ring of luck', 'Berserker ring', {}, 1000);
 
 // Pets
 setCustomItem(47_000, 'Flappy', 'Herbi', {}, 1_000_000);

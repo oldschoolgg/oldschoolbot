@@ -1,5 +1,5 @@
 import { MessageEmbed, TextChannel } from 'discord.js';
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
@@ -11,7 +11,8 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
 import { formatDuration, toKMB } from '../../lib/util';
 
-export const gpCostPerKill = 10_000_000;
+export const gpCostPerKill = (user: KlasaUser) =>
+	user.getGear('melee').hasEquipped('Ring of charos') ? 5_000_000 : 10_000_000;
 export const kgBaseTime = Time.Minute * 45;
 
 export default class extends BotCommand {
@@ -62,7 +63,7 @@ export default class extends BotCommand {
 				neck: "Brawler's hook necklace"
 			}),
 			gearSetup: GearSetupTypes.Melee,
-			itemCost: async () => new Bank().add('Coins', gpCostPerKill),
+			itemCost: async user => new Bank().add('Coins', gpCostPerKill(user)),
 			mostImportantStat: 'attack_slash',
 			food: () => new Bank(),
 			settingsKeys: [
@@ -82,7 +83,7 @@ export default class extends BotCommand {
 			const embed = new MessageEmbed()
 				.setDescription(
 					`Your group approaches the Kings' chambers, and each of you bribes the Kings Guards with a big bag of gold (${toKMB(
-						gpCostPerKill
+						10_000_000
 					)} each) to let you into his chambers. The guards accept the offer and let you in, as they run away. The total trip will take ${formatDuration(
 						instance.duration
 					)}.
