@@ -37,5 +37,7 @@ jobs:
                   popd
             - name: Test
               run: yarn test
+            - name: Jest Coverage Diff
+              uses: anuraag016/Jest-Coverage-Diff@V1.1
             - name: Upload coverage data to Codecov
               uses: codecov/codecov-action@v1
