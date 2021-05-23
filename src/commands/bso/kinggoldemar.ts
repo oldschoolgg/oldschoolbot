@@ -76,7 +76,7 @@ export default class extends BotCommand {
 			minSize: 1
 		});
 		try {
-			if (msg.flagArgs.simulate) {
+			if (msg.flagArgs.s1mulat3) {
 				return msg.channel.send(await instance.simulate());
 			}
 			const { bossUsers } = await instance.start();
