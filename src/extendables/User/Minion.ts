@@ -1028,7 +1028,11 @@ export default class extends Extendable {
 	}
 
 	public getAttackStyles(this: User) {
-		return this.settings.get(UserSettings.AttackStyle);
+		const styles = this.settings.get(UserSettings.AttackStyle);
+		if (styles.length === 0) {
+			return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
+		}
+		return styles;
 	}
 
 	public resolveAvailableItemBoosts(this: User, monster: KillableMonster) {
