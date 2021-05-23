@@ -1001,8 +1001,8 @@ setCustomItem(
 	"Vesta's longsword",
 	{
 		equipment: {
-			attack_stab: 66,
-			attack_slash: 36,
+			attack_stab: 25,
+			attack_slash: 130,
 			attack_crush: 36,
 			attack_magic: -5,
 			attack_ranged: 0,
@@ -1029,9 +1029,9 @@ setCustomItem(
 	"Vesta's longsword",
 	{
 		equipment: {
-			attack_stab: 22,
-			attack_slash: 2,
-			attack_crush: 22,
+			attack_stab: 2,
+			attack_slash: 45,
+			attack_crush: 5,
 			attack_magic: -5,
 			attack_ranged: 0,
 
@@ -1115,8 +1115,8 @@ setCustomItem(
 	'Ghrazi rapier',
 	{
 		equipment: {
-			attack_stab: 100,
-			attack_slash: 75,
+			attack_stab: 120,
+			attack_slash: 45,
 			attack_crush: 0,
 			attack_magic: 0,
 			attack_ranged: 0,
@@ -1143,8 +1143,8 @@ setCustomItem(
 	'Ghrazi rapier',
 	{
 		equipment: {
-			attack_stab: 30,
-			attack_slash: 15,
+			attack_stab: 35,
+			attack_slash: 9,
 			attack_crush: 0,
 			attack_magic: 0,
 			attack_ranged: 0,

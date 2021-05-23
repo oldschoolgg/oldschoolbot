@@ -19,23 +19,21 @@ export type UserDenyResult = [true, string] | [false];
 function teamSizeBoostPercent(size: number) {
 	switch (size) {
 		case 1:
-			return -10;
+			return -5;
 		case 2:
-			return 12;
+			return 15;
 		case 3:
-			return 13;
+			return 19;
 		case 4:
-			return 18;
+			return 21;
 		case 5:
 			return 23;
 		case 6:
 			return 26;
 		case 7:
 			return 29;
-		case 8:
-			return 33;
 		default:
-			return 35;
+			return 31;
 	}
 }
 
@@ -43,10 +41,10 @@ export function calcFood(solo: boolean, kc: number) {
 	const items = new Bank();
 
 	let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));
-	if (solo) brewsNeeded++;
+	if (solo) brewsNeeded += 2;
 	const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
 
-	items.add('Saradomin brew(4)', brewsNeeded);
+	items.add('Saradomin brew(4)', brewsNeeded + 1);
 	items.add('Super restore(4)', restoresNeeded);
 	return items;
 }
@@ -172,7 +170,7 @@ export class BossInstance {
 	async init() {
 		const mass = new Mass({
 			channel: this.channel,
-			maxSize: 20,
+			maxSize: 10,
 			minSize: this.minSize,
 			leader: this.leader,
 			text: this.massText,
@@ -292,7 +290,6 @@ export class BossInstance {
 
 			const percentToAdd = userPercentChange / this.users!.length;
 			totalPercent += percentToAdd;
-			debugStr.push(`-${formatDuration(calcPercentOfNum(percentToAdd, this.baseDuration))}`);
 
 			bossUsers.push({
 				user,
@@ -341,17 +338,19 @@ export class BossInstance {
 	}
 
 	async simulate() {
-		const arr = Array(15).fill(this.leader);
+		const arr = Array(30).fill(this.leader);
 		const normalTable = table([
 			[
 				'Team Size',
 				'%',
 				'Duration',
 				'Death Chance',
-				'DWWH Hours(hrs until team gets a dwwh)'
+				'DWWH Chance',
+				'DWWH Hours',
+				'Item Cost For DWWH'
 			],
 			...(await Promise.all(
-				[1, 2, 3, 4, 5, 6, 7, 8, 9, 15].map(async i => {
+				[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(async i => {
 					let ar = arr.slice(0, i);
 					this.users = ar;
 					const { bossUsers, duration } = await this.calculateBossUsers();
@@ -361,7 +360,9 @@ export class BossInstance {
 						bossUsers[0].userPercentChange.toFixed(1),
 						formatDuration(duration),
 						bossUsers[0].deathChance.toFixed(1),
-						formatDuration(dwwhChance * duration)
+						dwwhChance,
+						formatDuration(dwwhChance * duration),
+						bossUsers[0].itemsToRemove.multiply(bossUsers.length).multiply(dwwhChance)
 					];
 				})
 			))

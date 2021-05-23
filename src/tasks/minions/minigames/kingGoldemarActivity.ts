@@ -8,6 +8,7 @@ import { Emoji } from '../../../lib/constants';
 import KingGoldemar, {
 	KingGoldemarLootTable
 } from '../../../lib/minions/data/killableMonsters/custom/KingGoldemar';
+import { addMonsterXP } from '../../../lib/minions/functions';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { NewBossOptions } from '../../../lib/types/minions';
 import { formatDuration, roll, toKMB, updateBankSetting } from '../../../lib/util';
@@ -24,7 +25,15 @@ const methodsOfDeath = [
 	'Fell into a lava fountain'
 ];
 
-export const calcDwwhChance = (size: number) => 900 - Math.min(10, size) * 155;
+export const calcDwwhChance = (_size: number) => {
+	const size = Math.min(_size, 10);
+	const baseRate = 850;
+	const modDenominator = 15;
+
+	let dropRate = (baseRate / 2) * (1 + size / modDenominator);
+	let groupRate = Math.ceil(dropRate / size);
+	return Math.ceil(groupRate);
+};
 
 export default class extends Task {
 	async run({ channelID, users: idArr, duration, bossUsers }: NewBossOptions) {
@@ -74,6 +83,7 @@ export default class extends Task {
 			if (dwwhRecipient === user) {
 				loot.add('Broken dwarven warhammer');
 			}
+			await addMonsterXP(user, KingGoldemar.id, 1, duration);
 			await user.addItemsToBank(loot, true);
 			resultStr += `\n${user} received ${loot}.`;
 		}
@@ -86,9 +96,13 @@ export default class extends Task {
 			)}.`;
 		}
 
-		resultStr += `\n\nAt this rate, it will take approximately ${dwwhChance} trips (${formatDuration(
-			dwwhChance * duration
-		)}) to receive a DWWH, costing ${toKMB(dwwhChance * gpCostPerKill)} GP.`;
+		if (1 > 2) {
+			resultStr += `\n\nAt this rate, it will take approximately ${dwwhChance} trips (${formatDuration(
+				dwwhChance * duration
+			)}) to receive a DWWH, costing ${toKMB(
+				dwwhChance * gpCostPerKill
+			)} GP. 1 in ${dwwhChance}`;
+		}
 
 		sendToChannelID(this.client, channelID, { content: resultStr });
 	}

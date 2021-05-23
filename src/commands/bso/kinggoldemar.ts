@@ -26,20 +26,15 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		if (1 > 0) {
-			return msg.channel.send(
-				`You try to fight King Goldemar, but he kills you and takes all the items from your bank.`
-			);
-		}
 		const instance = new BossInstance({
 			leader: msg.author,
 			id: KingGoldemar.id,
-			baseDuration: Time.Minute * 40,
+			baseDuration: Time.Minute * 120,
 			baseFoodRequired: 500,
 			skillRequirements: {
-				attack: 100,
-				strength: 100,
-				defence: 100
+				attack: 105,
+				strength: 105,
+				defence: 105
 			},
 			itemBoosts: [
 				['Drygore longsword', 10],
@@ -61,7 +56,7 @@ export default class extends BotCommand {
 				hands: 'Gorajan warrior gloves',
 				feet: 'Gorajan warrior boots',
 				cape: 'Abyssal cape',
-				ring: 'Treasonous ring(i)',
+				ring: 'Warrior ring(i)',
 				weapon: 'Drygore longsword',
 				shield: 'Offhand drygore longsword',
 				neck: "Brawler's hook necklace"
