@@ -13,7 +13,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                node_version: [14]
+                node_version: [14.14.0]
                 os: [ubuntu-latest, windows-latest]
 
         steps:
@@ -30,5 +30,14 @@ jobs:
                   key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles(matrix.os == 'windows-latest' && '**\yarn.lock' || '**/yarn.lock') }}
             - name: Install Dependencies
               run: yarn
+            - name: Copy Configuration
+              run: |
+                  pushd src &&
+                  cp config.example.ts config.ts &&
+                  popd
             - name: Test
               run: yarn test
+            - name: Jest Coverage Diff
+              uses: anuraag016/Jest-Coverage-Diff@V1.1
+            - name: Upload coverage data to Codecov
+              uses: codecov/codecov-action@v1

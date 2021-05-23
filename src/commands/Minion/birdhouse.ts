@@ -386,7 +386,7 @@ export default class extends BotCommand {
 				)}!\n`;
 			} else {
 				emojiStr = `${Emoji.Tick} `;
-				contentStr = `Your ${birdhouse.name}s is ready to be collected!\n`;
+				contentStr = `Your ${birdhouse.name}s are ready to be collected!\n`;
 			}
 
 			finalStr += emojiStr + baseStr + contentStr;
