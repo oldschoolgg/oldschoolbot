@@ -1,7 +1,8 @@
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { addBanks, removeItemFromBank } from 'oldschooljs/dist/util';
 
-import { GearSetup, GearSetupTypes, GearStat } from '../../gear/types';
+import { GearSetupTypes, GearStat } from '../../gear/types';
+import { Gear } from '../../structures/Gear';
 import { ItemBank } from '../../types';
 import { removeBankFromBank } from '../../util';
 import getOSItem from '../../util/getOSItem';
@@ -15,7 +16,7 @@ function getItemScore(item: Item) {
 
 export default function getUserBestGearFromBank(
 	userBank: ItemBank,
-	userGear: GearSetup,
+	userGear: Gear,
 	gearType: GearSetupTypes,
 	type: string,
 	style: string,
@@ -23,7 +24,7 @@ export default function getUserBestGearFromBank(
 ) {
 	let toRemoveFromGear: ItemBank = {};
 	let toRemoveFromBank: ItemBank = {};
-	const gearToEquip = { ...userGear };
+	const gearToEquip = { ...userGear.raw() };
 
 	let score2h = 0;
 	let score2hExtra = 0;
@@ -38,13 +39,13 @@ export default function getUserBestGearFromBank(
 	switch (extra) {
 		case 'strength':
 			switch (gearType) {
-				case 'melee':
+				case GearSetupTypes.Melee:
 					gearStatExtra = GearStat.MeleeStrength;
 					break;
-				case 'range':
+				case GearSetupTypes.Range:
 					gearStatExtra = GearStat.RangedStrength;
 					break;
-				case 'mage':
+				case GearSetupTypes.Mage:
 					gearStatExtra = GearStat.MagicDamage;
 					break;
 			}
@@ -71,7 +72,7 @@ export default function getUserBestGearFromBank(
 	};
 
 	// Read current equipped user gear, removes it and add to bank
-	for (const [slot, item] of Object.entries(userGear)) {
+	for (const [slot, item] of Object.entries(userGear.raw())) {
 		if (item) {
 			toRemoveFromGear = addBanks([toRemoveFromGear, { [item.item]: item.quantity }]);
 		}
