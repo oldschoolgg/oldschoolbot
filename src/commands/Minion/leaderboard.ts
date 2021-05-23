@@ -468,13 +468,13 @@ DESC LIMIT 500;`
 			);
 		}
 
-		const items = Object.values(type.items).flat(Infinity);
+		const items = Object.values(type.items).flat(Infinity) as number[];
 
 		const result = (await this.client.orm.query(
 			`SELECT u.id, u."logBankLength", u."collectionLogBank" FROM (
   SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank"
   FROM users
-  WHERE "collectionLogBank" ?& $1
+  WHERE "collectionLogBank" ?| $1
    ${msg.flagArgs.im ? 'AND "minion.ironman" = true' : ''}
 ) u
 WHERE u."logBankLength" > 300
