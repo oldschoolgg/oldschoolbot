@@ -266,7 +266,7 @@ DESC LIMIT 2000;`
 		if (Date.now() - this.petLeaderboard.lastUpdated > CACHE_TIME) {
 			this.petLeaderboard.list = await this.query(
 				`SELECT u.id, u.petcount FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS(pets)) petcount, id FROM users
+  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS(pets)) petcount, id FROM users
 ) u
 ORDER BY u.petcount DESC LIMIT 2000;`
 			);
@@ -468,14 +468,18 @@ DESC LIMIT 500;`
 			);
 		}
 
-		const result = (await this.query(
+		const items = Object.values(type.items).flat(Infinity);
+
+		const result = (await this.client.orm.query(
 			`SELECT u.id, u."logBankLength", u."collectionLogBank" FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank" FROM users ${
-		msg.flagArgs.im ? 'WHERE "minion.ironman" = true' : ''
-  }
+  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank"
+  FROM users
+  WHERE "collectionLogBank" ?& $1
+   ${msg.flagArgs.im ? 'AND "minion.ironman" = true' : ''}
 ) u
 WHERE u."logBankLength" > 300
-ORDER BY u."logBankLength" DESC;`
+ORDER BY u."logBankLength" DESC;`,
+			[items]
 		)) as CLUser[];
 		const users = await Workers.leaderboard({
 			type: 'cl',
@@ -483,7 +487,6 @@ ORDER BY u."logBankLength" DESC;`
 			collectionLogInput: type
 		});
 
-		const items = Object.values(type.items).flat(Infinity);
 		this.doMenu(
 			msg,
 			util

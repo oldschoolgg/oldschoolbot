@@ -123,7 +123,7 @@ export default class extends Task {
 			const type = collectionLogTypes.find(t => t.name === clName)!;
 			const result = (await this.client.query(
 				`SELECT u.id, u."logBankLength", u."collectionLogBank" FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank" FROM users
+  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank" FROM users
 ) u
 WHERE u."logBankLength" > 400 ORDER BY u."logBankLength" DESC;`
 			)) as CLUser[];
@@ -146,7 +146,7 @@ WHERE u."logBankLength" > 400 ORDER BY u."logBankLength" DESC;`
 		const mostUniques = await this.client.query<
 			SkillUser[]
 		>(`SELECT u.id, u.sacbanklength FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
+  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
 		topSacrificers.push(mostUniques[0].id);
