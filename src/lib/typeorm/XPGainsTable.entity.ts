@@ -1,4 +1,3 @@
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 import {
 	BaseEntity,
 	Column,
@@ -7,6 +6,8 @@ import {
 	Index,
 	PrimaryGeneratedColumn
 } from 'typeorm';
+
+import { SkillsEnum } from '../skilling/types';
 
 @Entity({ name: 'xp_gains' })
 export class XPGainsTable extends BaseEntity {
