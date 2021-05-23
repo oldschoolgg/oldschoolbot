@@ -48,6 +48,7 @@ export default class DailyCommand extends BotCommand {
 		const lastDate = msg.author.settings.get(UserSettings.LastItemContractDate);
 		const difference = currentDate - lastDate;
 		const totalContracts = msg.author.settings.get(UserSettings.TotalItemContracts);
+		const total = `\n\nYou've completed ${totalContracts} Item Contracts.`;
 		if (!msg.author.settings.get(UserSettings.CurrentItemContract)) {
 			await msg.author.settings.update(
 				UserSettings.CurrentItemContract,
@@ -56,7 +57,6 @@ export default class DailyCommand extends BotCommand {
 		}
 		const currentItem = getOSItem(msg.author.settings.get(UserSettings.CurrentItemContract)!);
 		let durationRemaining = formatDuration(Date.now() - (lastDate + eightHours));
-		console.log({ lastDate, eightHours, durationRemaining, difference });
 
 		const embed = new MessageEmbed().setThumbnail(
 			`https://static.runelite.net/cache/item/icon/${currentItem.id}.png`
@@ -64,7 +64,7 @@ export default class DailyCommand extends BotCommand {
 
 		if (difference < eightHours) {
 			return msg.send(
-				`You have no item contract available at the moment. Come back in ${durationRemaining}.`
+				`You have no item contract available at the moment. Come back in ${durationRemaining}. ${total}`
 			);
 		}
 
@@ -72,7 +72,7 @@ export default class DailyCommand extends BotCommand {
 			if (difference < eightHours) {
 				return msg.channel.send(
 					embed.setDescription(
-						`Your current contract is a ${currentItem.name}, you can't skip it yet, you need to wait ${durationRemaining}.`
+						`Your current contract is a ${currentItem.name}, you can't skip it yet, you need to wait ${durationRemaining}. ${total}`
 					)
 				);
 			}
@@ -112,7 +112,9 @@ export default class DailyCommand extends BotCommand {
 		const userBank = msg.author.bank();
 		const cost = new Bank().add(currentItem.id);
 		if (!userBank.has(currentItem.id)) {
-			embed.setDescription(`Your current contract is a ${currentItem.name}, go get one!`);
+			embed.setDescription(
+				`Your current contract is a ${currentItem.name}, go get one!${total}`
+			);
 			return msg.channel.send(embed);
 		}
 
