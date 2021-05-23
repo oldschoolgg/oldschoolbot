@@ -7,7 +7,6 @@ import { GearRequirement } from '../minions/types';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
 
-// test
 const baseStats: GearStats = {
 	attack_stab: 0,
 	attack_slash: 0,
@@ -87,13 +86,10 @@ export class Gear {
 
 		if (similar) {
 			for (const item of [...values]) {
-				console.log(1111111111);
 				const similarItems = getSimilarItems(item);
 				for (const simItem of similarItems) {
 					if (!values.includes(simItem)) {
 						values.push(simItem);
-
-						console.log(2222222222);
 					}
 				}
 			}
