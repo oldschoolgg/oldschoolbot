@@ -56,7 +56,7 @@ export class Mass {
 			const [denied, reason] = await this.customDenier(this.leader);
 			if (denied) {
 				throw new Error(
-					`The mass couldn't start because the leader doesn't meet the requirements: ${reason}.`
+					`The mass couldn't start because the leader doesn't meet the requirements: ${reason}`
 				);
 			}
 		}
