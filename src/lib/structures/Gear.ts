@@ -136,4 +136,16 @@ export class Gear {
 		}
 		return [true, null, null];
 	}
+
+	toString() {
+		const allItems = this.allItems(false);
+		if (allItems.length === 0) {
+			return 'No items';
+		}
+		let items = [];
+		for (const item of allItems) {
+			items.push(getOSItem(item).name);
+		}
+		return items.join(', ');
+	}
 }
