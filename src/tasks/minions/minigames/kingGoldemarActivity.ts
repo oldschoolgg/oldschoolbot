@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { gpCostPerKill } from '../../../commands/bso/kinggoldemar';
-import { Emoji } from '../../../lib/constants';
+import { Emoji, Events } from '../../../lib/constants';
 import KingGoldemar, {
 	KingGoldemarLootTable
 } from '../../../lib/minions/data/killableMonsters/custom/KingGoldemar';
@@ -80,7 +80,10 @@ export default class extends Task {
 		let resultStr = `${tagAll}\n\n${killStr}\n\n${Emoji.Casket} **Loot:**`;
 
 		if (gotDWWH) {
-			// announce
+			this.client.emit(
+				Events.ServerNotification,
+				`**${dwwhRecipient?.username}** just received a **Dwarven warhammer** in a team of ${users.length}!`
+			);
 		}
 
 		const totalLoot = new Bank();
