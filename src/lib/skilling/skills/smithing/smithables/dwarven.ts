@@ -69,7 +69,7 @@ const Dwarven: SmithedItem[] = [
 		level: 120,
 		xp: 100_000,
 		id: itemID('Dwarven full helm'),
-		inputBars: { [itemID('Dwarven full helm')]: 2 },
+		inputBars: { [itemID('Dwarven bar')]: 2 },
 		timeToUse: Time.Minute * 3,
 		outputMultiple: 1,
 		requiresBlacksmith: true
@@ -79,7 +79,7 @@ const Dwarven: SmithedItem[] = [
 		level: 120,
 		xp: 100_000,
 		id: itemID('Dwarven platebody'),
-		inputBars: { [itemID('Dwarven platebody')]: 5 },
+		inputBars: { [itemID('Dwarven bar')]: 5 },
 		timeToUse: Time.Minute * 3,
 		outputMultiple: 1,
 		requiresBlacksmith: true
@@ -89,7 +89,7 @@ const Dwarven: SmithedItem[] = [
 		level: 120,
 		xp: 100_000,
 		id: itemID('Dwarven platelegs'),
-		inputBars: { [itemID('Dwarven platelegs')]: 4 },
+		inputBars: { [itemID('Dwarven bar')]: 4 },
 		timeToUse: Time.Minute * 3,
 		outputMultiple: 1,
 		requiresBlacksmith: true
@@ -99,7 +99,7 @@ const Dwarven: SmithedItem[] = [
 		level: 120,
 		xp: 100_000,
 		id: itemID('Dwarven gloves'),
-		inputBars: { [itemID('Dwarven gloves')]: 2 },
+		inputBars: { [itemID('Dwarven bar')]: 2 },
 		timeToUse: Time.Minute * 3,
 		outputMultiple: 1,
 		requiresBlacksmith: true
@@ -109,7 +109,7 @@ const Dwarven: SmithedItem[] = [
 		level: 120,
 		xp: 100_000,
 		id: itemID('Dwarven boots'),
-		inputBars: { [itemID('Dwarven boots')]: 2 },
+		inputBars: { [itemID('Dwarven bar')]: 2 },
 		timeToUse: Time.Minute * 3,
 		outputMultiple: 1,
 		requiresBlacksmith: true
