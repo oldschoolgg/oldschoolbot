@@ -4,8 +4,8 @@ import '../../lib/data/itemAliases';
 import { Misc } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util/bank';
 
-import { KillWorkerArgs } from '.';
 import { findMonster } from '../../lib/util/findMonster';
+import { KillWorkerArgs } from '.';
 
 export function cleanString(str: string) {
 	return str.replace(/[^0-9a-zA-Z]/gi, '').toUpperCase();
