@@ -32,7 +32,7 @@ export default class extends BotCommand {
 		const currentEquippedGear = msg.author.getGear(gearType);
 
 		let refund = new Bank();
-		for (const val of Object.values(currentEquippedGear)) {
+		for (const val of Object.values(currentEquippedGear.raw())) {
 			if (!val) continue;
 			refund.add(val.item, val.quantity);
 		}
