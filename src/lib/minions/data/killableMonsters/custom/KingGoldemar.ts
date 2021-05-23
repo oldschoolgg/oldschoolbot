@@ -4,8 +4,16 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { MysteryBoxes } from '../../../../data/openables';
 import setCustomMonster from '../../../../util/setCustomMonster';
 
+const dwarvenArmorTable = new LootTable()
+	.add('Dwarven full helm')
+	.add('Dwarven platebody')
+	.add('Dwarven platelegs')
+	.add('Dwarven gloves')
+	.add('Dwarven boots');
+
 export const KingGoldemarLootTable = new LootTable()
 	.tertiary(20, 'Clue scroll (master)')
+	.tertiary(500, dwarvenArmorTable)
 	.oneIn(
 		20,
 		new LootTable()
@@ -37,7 +45,7 @@ export const KingGoldemarLootTable = new LootTable()
 setCustomMonster(696969, 'King Goldemar', KingGoldemarLootTable, Monsters.GeneralGraardor, {
 	id: 696969,
 	name: 'King Goldemar',
-	aliases: ['king goldemar', 'dwarf king', 'goldemar']
+	aliases: ['king goldemar', 'dwarf king', 'goldemar', 'kg']
 });
 
 const KingGoldemar = Monsters.find(mon => mon.name === 'King Goldemar')!;
