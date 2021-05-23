@@ -1,5 +1,5 @@
-import '../../lib/data/itemAliases';
 import '../../lib/customItems';
+import '../../lib/data/itemAliases';
 
 import { Misc } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util/bank';
@@ -14,7 +14,6 @@ export function cleanString(str: string) {
 export function stringMatches(str: string, str2: string) {
 	return cleanString(str) === cleanString(str2);
 }
-
 
 export default ({ quantity, bossName, limit }: KillWorkerArgs) => {
 	const osjsMonster = findMonster(bossName);
