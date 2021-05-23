@@ -1783,7 +1783,12 @@ export const miscLog: CollectionLogData = {
 };
 
 export const customBossLog: CollectionLogData = {
-	'King Goldmar': resolveItems(['Broken dwarven warhammer', 'Dwarven ore', 'Dwarven crate']),
+	'King Goldmar': resolveItems([
+		'Broken dwarven warhammer',
+		'Dwarven ore',
+		'Dwarven crate',
+		'Athelas seed'
+	]),
 	Malygos: resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori']),
 	KK: allKalphiteKingItems,
 	nex1: [...torvaOutfit, ...pernixOutfit],

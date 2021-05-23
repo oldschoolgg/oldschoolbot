@@ -4,6 +4,7 @@ import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
 import { IPatchData } from '../minions/farming/types';
+import { BossUser } from '../structures/Boss';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
 export interface ActivityTaskOptions {
@@ -192,22 +193,19 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 
 export interface FishingTrawlerActivityTaskOptions extends MinigameActivityTaskOptions {}
 
-export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
-	leader: string;
+export interface BossActivityTaskOptions extends ActivityTaskOptions {
 	users: string[];
 	quantity: number;
 }
 
-export interface NexActivityTaskOptions extends ActivityTaskOptions {
-	leader: string;
-	users: string[];
-	quantity: number;
+interface StoredBossUser extends Omit<BossUser, 'user'> {
+	user: string;
 }
 
-export interface KalphiteKingActivityTaskOptions extends ActivityTaskOptions {
-	leader: string;
+export interface NewBossOptions extends ActivityTaskOptions {
 	users: string[];
 	quantity: number;
+	bossUsers: StoredBossUser[];
 }
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {

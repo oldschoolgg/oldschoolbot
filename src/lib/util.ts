@@ -490,3 +490,10 @@ export function updateBankSetting(
 	const newBank = current.add(bankToAdd);
 	return client.settings.update(setting, newBank.bank);
 }
+
+/**
+ * ⚠️ Mutates
+ */
+export function removeFromArr<T>(array: T[], item: T) {
+	return (array = array.filter(i => i !== item));
+}

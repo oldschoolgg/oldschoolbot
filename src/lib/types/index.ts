@@ -98,8 +98,6 @@ export interface MakePartyOptions {
 	leader: KlasaUser;
 	message: string;
 	ironmanAllowed: boolean;
-	usersAllowed?: string[];
-	party?: boolean;
 	customDenier?(user: KlasaUser): [boolean, string] | [boolean];
 }
 

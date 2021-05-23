@@ -907,6 +907,8 @@ setCustomItem(40_054, 'Support cape', 'Abyssal cape', {}, 200_000_000);
 setCustomItem(40_055, "Gatherer's cape", 'Abyssal cape', {}, 200_000_000);
 setCustomItem(40_056, "Combatant's cape", 'Abyssal cape', {}, 200_000_000);
 setCustomItem(40_057, "Artisan's cape", 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_058, 'Completionist cape', 'Abyssal cape', {}, 500_000_000);
+setCustomItem(40_059, 'Completionist cape (t)', 'Abyssal cape', {}, 500_000_000);
 
 setCustomItem(40_026, 'Scroll of life', 'Coal', {}, 1_000_000);
 setCustomItem(40_027, 'Herbicide', 'Coal', {}, 1_000_000);
@@ -1292,6 +1294,150 @@ setCustomItem(48_014, 'Gorajan bonecrusher (u)', 'Coal', {}, 20_000_000);
 /**
  * END DUNGEONEERING
  */
+
+/**
+ * START DWARVEN ARMOR
+ */
+setCustomItem(
+	48_015,
+	'Dwarven full helm',
+	'Torva full helm',
+	{
+		equipment: {
+			attack_stab: 35,
+			attack_slash: 18,
+			attack_crush: 18,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 70,
+			defence_slash: 75,
+			defence_crush: 75,
+			defence_magic: -5,
+			defence_ranged: 55,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Head,
+			requirements: null
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	48_016,
+	'Dwarven platebody',
+	'Torva platebody',
+	{
+		equipment: {
+			attack_stab: 35,
+			attack_slash: 18,
+			attack_crush: 18,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 160,
+			defence_slash: 150,
+			defence_crush: 150,
+			defence_magic: 0,
+			defence_ranged: 165,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Body,
+			requirements: null
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	48_017,
+	'Dwarven platelegs',
+	'Torva platelegs',
+	{
+		equipment: {
+			attack_stab: 35,
+			attack_slash: 18,
+			attack_crush: 18,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 130,
+			defence_slash: 130,
+			defence_crush: 130,
+			defence_magic: 0,
+			defence_ranged: 130,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Legs,
+			requirements: null
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	48_018,
+	'Dwarven boots',
+	'Torva boots',
+	{
+		equipment: {
+			attack_stab: 22,
+			attack_slash: 2,
+			attack_crush: 2,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 24,
+			defence_slash: 24,
+			defence_crush: 24,
+			defence_magic: 0,
+			defence_ranged: 35,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Feet,
+			requirements: null
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	48_019,
+	'Dwarven gloves',
+	'Torva gloves',
+	{
+		equipment: {
+			attack_stab: 26,
+			attack_slash: 16,
+			attack_crush: 16,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 18,
+			defence_slash: 18,
+			defence_crush: 18,
+			defence_magic: 0,
+			defence_ranged: 35,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Hands,
+			requirements: null
+		}
+	},
+	50_000_000
+);
 
 /**
  * Misc Items

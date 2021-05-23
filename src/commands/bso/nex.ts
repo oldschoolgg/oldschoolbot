@@ -10,7 +10,7 @@ import { NexMonster, pernixOutfit } from '../../lib/nex';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
-import { NexActivityTaskOptions } from '../../lib/types/minions';
+import { BossActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, resolveNameBank } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
@@ -301,13 +301,12 @@ export default class extends BotCommand {
 		}
 		foodString += `${foodRemoved.join(', ')}.`;
 
-		await addSubTaskToActivityTask<NexActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<BossActivityTaskOptions>(this.client, {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
 			type: Activity.Nex,
-			leader: msg.author.id,
 			users: users.map(u => u.id)
 		});
 

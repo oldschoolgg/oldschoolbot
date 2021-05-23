@@ -11,7 +11,7 @@ import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import bosses from './bosses';
 import AbyssalDragon, { AbyssalDragonLootTable } from './custom/AbyssalDragon';
-import KingGoldemar, { KingGoldemarLootTable } from './custom/KingGoldemar';
+import KingGoldemar from './custom/KingGoldemar';
 import Koschei, { koscheiTable } from './custom/Koschei';
 import SeaKraken, { KrakenTable } from './custom/SeaKraken';
 import Treebeard, { TreebeardLootTable } from './custom/Treebeard';
@@ -359,36 +359,6 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0
 	},
 	{
-		id: KingGoldemar.id,
-		name: KingGoldemar.name,
-		aliases: KingGoldemar.aliases,
-		timeToFinish: Time.Minute * 22,
-		table: {
-			kill: makeKillTable(KingGoldemarLootTable)
-		},
-		emoji: '',
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		qpRequired: 26,
-		notifyDrops: resolveItems(['Dwarven ore', 'Dwarven warhammer']),
-		healAmountNeeded: 20 * 20,
-		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush],
-		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
-				[GearStat.DefenceCrush]: 150,
-				[GearStat.AttackCrush]: 80
-			}
-		},
-		groupKillable: true,
-		respawnTime: Time.Second * 20,
-		levelRequirements: {
-			prayer: 43
-		},
-		uniques: resolveItems(['Broken dwarven warhammer', 'Dwarven crate', 'Dwarven ore'])
-	},
-	{
 		id: SeaKraken.id,
 		name: SeaKraken.name,
 		aliases: SeaKraken.aliases,
@@ -414,7 +384,8 @@ const killableMonsters: KillableMonster[] = [
 		groupKillable: true,
 		respawnTime: Time.Second * 20,
 		levelRequirements: {
-			prayer: 43
+			prayer: 43,
+			ranged: 120
 		}
 	},
 	{
@@ -462,7 +433,10 @@ const killableMonsters: KillableMonster[] = [
 		groupKillable: true,
 		respawnTime: Time.Second * 20,
 		levelRequirements: {
-			prayer: 99
+			prayer: 99,
+			attack: 99,
+			strength: 120,
+			defence: 99
 		},
 		uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
 		notifyDrops: resolveItems(['Abyssal cape', 'Ori'])
@@ -517,7 +491,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 9,
 		qpRequired: 100,
-		healAmountNeeded: 2000 * 25,
+		healAmountNeeded: 10_000 * 25,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash],
 		respawnTime: Time.Second * 20
@@ -543,6 +517,9 @@ const killableMonsters: KillableMonster[] = [
 			[GearSetupTypes.Mage]: {
 				[GearStat.AttackMagic]: 30 + 10 + 10 + 6 + 6 + 22 + 6
 			}
+		},
+		levelRequirements: {
+			magic: 120
 		}
 	}
 ];
@@ -610,5 +587,10 @@ export const effectiveMonsters = [
 	},
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
 	{ name: 'Mimic', aliases: ['mimic'], id: 23184, emoji: '<:Tangleroot:324127378978635778>' },
-	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' }
+	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' },
+	{
+		id: KingGoldemar.id,
+		name: 'King Goldemar',
+		aliases: ['king goldemar', 'kg']
+	}
 ];
