@@ -354,7 +354,7 @@ export class BossInstance {
 					let ar = arr.slice(0, i);
 					this.users = ar;
 					const { bossUsers, duration } = await this.calculateBossUsers();
-					const dwwhChance = calcDwwhChance(bossUsers.length);
+					const dwwhChance = calcDwwhChance(bossUsers.map(i => i.user));
 					return [
 						bossUsers.length,
 						bossUsers[0].userPercentChange.toFixed(1),

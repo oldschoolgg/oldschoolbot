@@ -25,14 +25,19 @@ const methodsOfDeath = [
 	'Fell into a lava fountain'
 ];
 
-export const calcDwwhChance = (_size: number) => {
-	const size = Math.min(_size, 10);
+export const calcDwwhChance = (users: KlasaUser[]) => {
+	const size = Math.min(users.length, 10);
 	const baseRate = 850;
 	const modDenominator = 15;
 
 	let dropRate = (baseRate / 2) * (1 + size / modDenominator);
 	let groupRate = Math.ceil(dropRate / size);
-	return Math.ceil(groupRate);
+	groupRate = Math.ceil(groupRate);
+
+	if (users.some(u => u.getGear('melee').hasEquipped('Ring of luck'))) {
+		groupRate = Math.floor(reduceNumByPercent(groupRate, 15));
+	}
+	return groupRate;
 };
 
 export default class extends Task {
@@ -59,10 +64,8 @@ export default class extends Task {
 
 		await Promise.all(users.map(u => u.incrementMonsterScore(KingGoldemar.id, 1)));
 
-		let dwwhChance = calcDwwhChance(bossUsers.length);
-		if (users.some(u => u.getGear('melee').hasEquipped('Ring of luck'))) {
-			dwwhChance = Math.floor(reduceNumByPercent(dwwhChance, 15));
-		}
+		let dwwhChance = calcDwwhChance(users);
+
 		const gotDWWH = roll(dwwhChance);
 		const dwwhRecipient = gotDWWH
 			? users.find(u => u.id === dwwhTable.roll().item) ?? null
