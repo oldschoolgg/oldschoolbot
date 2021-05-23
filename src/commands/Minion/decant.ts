@@ -31,8 +31,7 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.Bank, finalUserBank);
 
 		if (
-			msg.author.hasItemEquippedAnywhere('Iron dagger') &&
-			msg.author.hasItemEquippedAnywhere('Bronze arrow') &&
+			msg.author.hasItemEquippedAnywhere(['Iron dagger', 'Bronze arrow'], true) &&
 			!msg.author.hasItemEquippedOrInBank('Clue hunter gloves')
 		) {
 			await msg.author.addItemsToBank(new Bank({ 'Clue hunter gloves': 1 }), true);
