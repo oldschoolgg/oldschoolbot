@@ -241,8 +241,6 @@ export class BossInstance {
 		let totalPercent = 0;
 
 		// Track user len outside the loop because the loop corrupts it. (calcFoodForUser())
-		const userLen = this.users!.length;
-
 		for (const user of this.users!) {
 			const gear = user.getGear(this.gearSetup);
 			let debugStr = [];
@@ -278,7 +276,7 @@ export class BossInstance {
 			debugStr.push(`**Boosts**[${itemBoostPercent.toFixed(1)}%]`);
 
 			// Items to remove
-			const itemsToRemove = await this.calcFoodForUser(user, userLen === 1);
+			const itemsToRemove = await this.calcFoodForUser(user, this.users!.length === 1);
 			debugStr.push(`**Cost**[${itemsToRemove}]`);
 
 			// Total
@@ -293,7 +291,8 @@ export class BossInstance {
 			debugStr.push(`**Death**[${deathChance.toFixed(2)}%]`);
 
 			// Apply a percentage of maxReduction based on the percent of total boosts.
-			const percentToAdd = ((userPercentChange / totalSpeedReduction) * maxReduction) / userLen;
+			const percentToAdd =
+				((userPercentChange / totalSpeedReduction) * maxReduction) / this.users!.length;
 			totalPercent += percentToAdd;
 
 			bossUsers.push({
@@ -309,7 +308,7 @@ export class BossInstance {
 		duration = reduceNumByPercent(duration, totalPercent);
 
 		// Reduce or increase the duration based on the team size. Solo is longer, big team is faster.
-		duration -= duration * (teamSizeBoostPercent(userLen) / 100);
+		duration -= duration * (teamSizeBoostPercent(this.users!.length) / 100);
 
 		return {
 			bossUsers,
@@ -344,6 +343,25 @@ export class BossInstance {
 
 	async simulate() {
 		const arr = Array(30).fill(this.leader);
+		let results: any[] = [];
+		for (const num of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
+			let ar = arr.slice(0, num);
+			this.users = ar;
+			const { bossUsers, duration } = await this.calculateBossUsers();
+			if (this.users.length !== bossUsers.length) {
+				console.error('wtfffffffff');
+			}
+			const dwwhChance = calcDwwhChance(bossUsers.map(i => i.user));
+			results.push([
+				bossUsers.length,
+				bossUsers[0].userPercentChange.toFixed(1),
+				formatDuration(duration),
+				bossUsers[0].deathChance.toFixed(1),
+				dwwhChance,
+				formatDuration(dwwhChance * duration),
+				bossUsers[0].itemsToRemove.multiply(bossUsers.length).multiply(dwwhChance)
+			]);
+		}
 		const normalTable = table([
 			[
 				'Team Size',
@@ -354,23 +372,7 @@ export class BossInstance {
 				'DWWH Hours',
 				'Item Cost For DWWH'
 			],
-			...(await Promise.all(
-				[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(async i => {
-					let ar = arr.slice(0, i);
-					this.users = ar;
-					const { bossUsers, duration } = await this.calculateBossUsers();
-					const dwwhChance = calcDwwhChance(bossUsers.map(i => i.user));
-					return [
-						bossUsers.length,
-						bossUsers[0].userPercentChange.toFixed(1),
-						formatDuration(duration),
-						bossUsers[0].deathChance.toFixed(1),
-						dwwhChance,
-						formatDuration(dwwhChance * duration),
-						bossUsers[0].itemsToRemove.multiply(bossUsers.length).multiply(dwwhChance)
-					];
-				})
-			))
+			...results
 		]);
 		return new MessageAttachment(Buffer.from(normalTable), `boss-sim.txt`);
 	}
