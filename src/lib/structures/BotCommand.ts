@@ -9,6 +9,7 @@ export abstract class BotCommand extends Command {
 	public oneAtTime: boolean;
 	public perkTier?: number;
 	public ironCantUse?: boolean;
+	public disabled?: boolean;
 	public examples: string[];
 	public categoryFlags: CategoryFlag[];
 
@@ -27,7 +28,8 @@ export abstract class BotCommand extends Command {
 					altProtection: false,
 					oneAtTime: false,
 					guildOnly: false,
-					ironCantUse: false
+					ironCantUse: false,
+					disabled: false
 				},
 				options
 			)
@@ -37,6 +39,7 @@ export abstract class BotCommand extends Command {
 		this.guildOnly = options.guildOnly!;
 		this.perkTier = options.perkTier;
 		this.ironCantUse = options.ironCantUse;
+		this.disabled = options.disabled;
 		this.examples = options.examples || [];
 		this.categoryFlags = options.categoryFlags || [];
 		this.bitfieldsRequired = options.bitfieldsRequired || [];
@@ -59,6 +62,7 @@ export interface BotCommandOptions extends CommandOptions {
 	guildOnly?: boolean;
 	perkTier?: number;
 	ironCantUse?: boolean;
+	disabled?: boolean;
 	testingCommand?: boolean;
 	examples?: string[];
 	description?: string;
