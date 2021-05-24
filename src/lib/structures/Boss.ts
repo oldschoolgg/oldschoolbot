@@ -229,6 +229,7 @@ export class BossInstance {
 	}
 
 	async calculateBossUsers() {
+		const maxReduction = 40;
 		const speedReductionForGear = 25;
 		const speedReductionForKC = 35;
 		let speedReductionForBoosts = sumArr(this.itemBoosts.map(i => i[1]));
@@ -288,7 +289,8 @@ export class BossInstance {
 				randFloat(4.5, 5.5);
 			debugStr.push(`**Death**[${deathChance.toFixed(2)}%]`);
 
-			const percentToAdd = userPercentChange / this.users!.length;
+			// Apply a percentage of maxReduction based on the percent of total boosts.
+			const percentToAdd = ((userPercentChange / totalSpeedReduction) * maxReduction) / this.users!.length;
 			totalPercent += percentToAdd;
 
 			bossUsers.push({
