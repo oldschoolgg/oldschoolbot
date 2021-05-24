@@ -60,6 +60,15 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (currentTask.type === Activity.KingGoldemar) {
+			const data = currentTask as BossActivityTaskOptions;
+			if (data.users.length > 1) {
+				return msg.send(
+					`${msg.author.minionName} is fighting King Goldemar with a team, they cant leave their team!`
+				);
+			}
+		}
+
 		if (currentTask.type === Activity.KalphiteKing) {
 			return msg.send(
 				`${msg.author.minionName} is fighting the Kalphite King with a team, they cant leave their team!`
