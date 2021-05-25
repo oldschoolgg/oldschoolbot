@@ -12,7 +12,9 @@ import { Gear } from '../../lib/structures/Gear';
 import { formatDuration, toKMB } from '../../lib/util';
 
 export const gpCostPerKill = (user: KlasaUser) =>
-	user.getGear('melee').hasEquipped('Ring of charos') ? 5_000_000 : 10_000_000;
+	user.getGear('melee').hasEquipped(['Ring of charos', 'Ring of charos(a)'], false)
+		? 5_000_000
+		: 10_000_000;
 export const kgBaseTime = Time.Minute * 45;
 
 export default class extends BotCommand {
