@@ -203,12 +203,6 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
-		id: 21,
-		name: 'Sn0w',
-		image: null,
-		available: false
-	},
-	{
 		id: 22,
 		name: 'Obama',
 		image: null,
@@ -243,24 +237,12 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
-		id: 29,
-		name: "Sparcos's Background (29)",
-		image: null,
-		available: false
-	},
-	{
 		id: 30,
 		name: 'Troll',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 10_000_000
-	},
-	{
-		id: 31,
-		name: 'Wyrms Background (31)',
-		image: null,
-		available: false
 	},
 	{
 		id: 32,
@@ -335,30 +317,6 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
-		id: 42,
-		name: 'Banana',
-		image: null,
-		available: false
-	},
-	{
-		id: 43,
-		name: 'ElyJosh',
-		image: null,
-		available: false
-	},
-	{
-		id: 44,
-		name: 'Duck',
-		image: null,
-		available: false
-	},
-	{
-		id: 45,
-		name: 'Birdie CustomBG',
-		image: null,
-		available: false
-	},
-	{
 		id: 46,
 		name: 'Jad (person)',
 		image: null,
@@ -377,20 +335,8 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
-		id: 49,
-		name: 'Iron dev',
-		image: null,
-		available: false
-	},
-	{
 		id: 50,
 		name: 'Dragon sin',
-		image: null,
-		available: false
-	},
-	{
-		id: 51,
-		name: 'Primal predator',
 		image: null,
 		available: false
 	},
@@ -407,80 +353,14 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
-		id: 54,
-		name: 'Casej22 CustomBG',
-		image: null,
-		available: false
-	},
-	{
-		id: 55,
-		name: 'SammyHammy CustomBG',
-		image: null,
-		available: false
-	},
-	{
-		id: 56,
-		name: 'Lashiing CustomBG',
-		image: null,
-		available: false
-	},
-	{
-		id: 57,
-		name: 'AXZ4 CustomBG',
-		image: null,
-		available: false
-	},
-	{
 		id: 58,
 		name: 'Doom CustomBG',
 		image: null,
 		available: false
 	},
 	{
-		id: 59,
-		name: 'Osmosis CustomBG',
-		image: null,
-		available: false
-	},
-	{
-		id: 60,
-		name: 'AnimeLewds CustomBG',
-		image: null,
-		available: false
-	},
-	{
-		id: 61,
-		name: 'Felix CustomBG',
-		image: null,
-		available: false
-	},
-	{
 		id: 62,
 		name: 'PlayLazily CustomBG',
-		image: null,
-		available: false
-	},
-	{
-		id: 63,
-		name: 'Slippy CustomBG',
-		image: null,
-		available: false
-	},
-	{
-		id: 64,
-		name: 'BigPoppa CustomBG',
-		image: null,
-		available: false
-	},
-	{
-		id: 65,
-		name: 'ChildishMarvino CustomBG',
-		image: null,
-		available: false
-	},
-	{
-		id: 66,
-		name: 'Nicholas CustomBG',
 		image: null,
 		available: false
 	},
@@ -568,12 +448,6 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
-		id: 73,
-		name: 'Lilbourne CustomBG',
-		image: null,
-		available: false
-	},
-	{
 		id: 74,
 		name: 'Aki CustomBG',
 		image: null,
@@ -582,12 +456,6 @@ const backgroundImages: BankBackground[] = [
 	{
 		id: 75,
 		name: 'Sunny CustomBG',
-		image: null,
-		available: false
-	},
-	{
-		id: 76,
-		name: 'Robson CustomBG',
 		image: null,
 		available: false
 	}
