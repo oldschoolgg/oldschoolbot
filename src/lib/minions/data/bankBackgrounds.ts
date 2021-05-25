@@ -203,6 +203,12 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
+		id: 20,
+		name: '	PoGnome CustomBG (20)',
+		image: null,
+		available: false
+	},
+	{
 		id: 22,
 		name: 'Obama',
 		image: null,
