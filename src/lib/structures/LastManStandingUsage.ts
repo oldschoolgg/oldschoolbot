@@ -77,7 +77,9 @@ export const LMS_PREP = [
 	'{1} grabs a Dragonfire shield from the ground on The Mountain.',
 	'{1} snatches a pair of Dragon claws.',
 	'{1} grabs a lone pair of pants.',
-	'{1} trips over while running to a building, {2} picks them up and they run off together.'
+	'{1} grabs a lone ranger boot and wears it on their head.',
+	'{1} trips over while running to a building, {2} picks them up and they run off together.',
+	'{1} has to go to the bathroom and comes back to {2} picking their pockets'
 ].map(string => new LastManStandingUsage(string));
 
 export const LMS_FINAL = [
@@ -113,6 +115,7 @@ export const LMS_FINAL = [
 	'{1K} shoots {2D} with a Dark bow.',
 	"{1K} stabs {2D} in the back with a Vesta's longsword.",
 	'{1K} kills {2D} with a Ghrazi rapier.',
+	'{1K} punches {2D} in the face.',
 	'{1D} Talks about how good they are while fighting {2K} and is promptly stacked out by {2K}.',
 	'{1K} repeatedly stabs {2D} to death with Draggon dagger.',
 	'{1D} is found to be using an auto-prayer client and is banned mid game.'
@@ -232,5 +235,11 @@ export const LMS_ROUND = [
 	"{1K} kills {2D} with a Statius's warhammer.",
 	'{1K} and {2K} track down and kill {3D}.',
 	'{1K} tracks down and kills {2D}.',
-	'{1K} repeatedly stabs {2D} to death with a Dragon dagger.'
+	'{1K} repeatedly stabs {2D} to death with a Dragon dagger.',
+	'{1D} trips and falls into the river.',
+	'{1D} gets killed by a bot using an auto prayer switcher.',
+	'{1D} gets hit in the head by a falling supply crate.',
+	'{1D} disconnects due to their mom pulling out the internet cord',
+	'{1K} smashes {2D} over the head with a pet rock.',
+	"{1D} gets told it's time for dinner"
 ].map(string => new LastManStandingUsage(string));
