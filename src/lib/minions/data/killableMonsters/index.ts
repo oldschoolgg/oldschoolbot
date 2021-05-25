@@ -385,7 +385,7 @@ const killableMonsters: KillableMonster[] = [
 		respawnTime: Time.Second * 20,
 		levelRequirements: {
 			prayer: 43,
-			ranged: 120
+			ranged: 105
 		}
 	},
 	{
@@ -435,7 +435,7 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 99,
 			attack: 99,
-			strength: 120,
+			strength: 105,
 			defence: 99
 		},
 		uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
@@ -519,7 +519,7 @@ const killableMonsters: KillableMonster[] = [
 			}
 		},
 		levelRequirements: {
-			magic: 120
+			magic: 105
 		}
 	}
 ];
