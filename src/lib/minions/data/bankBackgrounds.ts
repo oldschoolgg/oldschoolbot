@@ -335,12 +335,6 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
-		id: 50,
-		name: 'Dragon sin',
-		image: null,
-		available: false
-	},
-	{
 		id: 52,
 		name: 'Cyrillax CustomBG',
 		image: null,
@@ -349,12 +343,6 @@ const backgroundImages: BankBackground[] = [
 	{
 		id: 53,
 		name: 'AvariceBruh CustomBG',
-		image: null,
-		available: false
-	},
-	{
-		id: 58,
-		name: 'Doom CustomBG',
 		image: null,
 		available: false
 	},
@@ -435,18 +423,7 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false
 	},
-	{
-		id: 71,
-		name: 'Owain CustomBG',
-		image: null,
-		available: false
-	},
-	{
-		id: 72,
-		name: 'Sleepy CustomBG',
-		image: null,
-		available: false
-	},
+
 	{
 		id: 74,
 		name: 'Aki CustomBG',
