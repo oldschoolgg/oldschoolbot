@@ -113,10 +113,12 @@ export class Mass {
 
 				switch (reaction.emoji.id) {
 					case ReactionEmoji.Join: {
-						await this.addUser(user);
-						if (this.users.length >= this.maxSize) {
-							collector.stop();
-							start();
+						if(this.users.length < this.maxSize) {
+							await this.addUser(user);
+							if (this.users.length >= this.maxSize) {
+								collector.stop();
+								start();
+							}
 						}
 						break;
 					}
