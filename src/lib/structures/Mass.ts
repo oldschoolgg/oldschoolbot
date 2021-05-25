@@ -113,7 +113,7 @@ export class Mass {
 
 				switch (reaction.emoji.id) {
 					case ReactionEmoji.Join: {
-						this.addUser(user);
+						await this.addUser(user);
 						if (this.users.length >= this.maxSize) {
 							collector.stop();
 							start();
@@ -169,7 +169,7 @@ This party will automatically depart in 2 minutes, or if the leader clicks the s
 	async removeUser(user: KlasaUser) {
 		if (user === this.leader) return;
 		if (!this.users.includes(user)) return false;
-		removeFromArr(this.users, user);
+		this.users = removeFromArr(this.users, user);
 		this.update();
 	}
 
