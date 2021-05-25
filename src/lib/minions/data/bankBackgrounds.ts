@@ -423,7 +423,12 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false
 	},
-
+	{
+		id: 71,
+		name: 'Beans CustomBG (71)',
+		image: null,
+		available: false
+	},
 	{
 		id: 74,
 		name: 'Aki CustomBG',
