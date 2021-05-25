@@ -88,6 +88,7 @@ export default class extends Task {
 			if (dwwhRecipient === user) {
 				loot.add('Broken dwarven warhammer');
 			}
+			totalLoot.add(loot);
 			await addMonsterXP(user, KingGoldemar.id, 1, duration);
 			await user.addItemsToBank(loot, true);
 			resultStr += `\n${user} received ${loot}.`;
