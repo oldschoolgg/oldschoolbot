@@ -16,11 +16,14 @@ import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { ItemBank, SettingsEntry } from '../../lib/types';
 import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
-import { Workers } from '../../lib/workers';
-import { CLUser } from '../../lib/workers/leaderboard.worker';
 import PostgresProvider from '../../providers/postgres';
 
 const CACHE_TIME = Time.Minute * 5;
+
+export interface CLUser {
+	id: string;
+	qty: number;
+}
 
 export interface SkillUser {
 	id: string;
@@ -470,39 +473,36 @@ DESC LIMIT 500;`
 
 		const items = Object.values(type.items).flat(Infinity) as number[];
 
-		const result = (await this.client.orm.query(
-			`SELECT u.id, u."logBankLength", u."collectionLogBank" FROM (
-  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank"
+		const users = (
+			await this.client.orm.query(
+				`
+SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
+				  FROM (
+  SELECT ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank")) "cl_keys",
+  				id, "collectionLogBank",
+			    cardinality(ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank" - array[${items
+					.map(i => `'${i}'`)
+					.join(', ')}]))) "inverse_length"
   FROM users
-  WHERE "collectionLogBank" ?| $1
-   ${msg.flagArgs.im ? 'AND "minion.ironman" = true' : ''}
+  WHERE "collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
+  ${msg.flagArgs.im ? 'AND "minion.ironman" = true' : ''}
 ) u
-WHERE u."logBankLength" > 300
-ORDER BY u."logBankLength" DESC;`,
-			[items]
-		)) as CLUser[];
-		const users = await Workers.leaderboard({
-			type: 'cl',
-			users: result,
-			collectionLogInput: type
-		});
+ORDER BY qty DESC
+LIMIT 50;
+`
+			)
+		).filter((i: any) => i.qty > 0) as CLUser[];
+
+		if (users.length === 0) {
+			return msg.channel.send(`No users found.`);
+		}
 
 		this.doMenu(
 			msg,
 			util
 				.chunk(users, 10)
 				.map(subList =>
-					subList
-						.map(
-							({ id, collectionLogBank }) =>
-								`**${this.getUsername(id)}:** ${
-									Object.entries(collectionLogBank).filter(
-										([itemID, qty]) =>
-											qty > 0 && items.includes(parseInt(itemID))
-									).length
-								}`
-						)
-						.join('\n')
+					subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')
 				),
 			`${type.name} Collection Log Leaderboard`
 		);
