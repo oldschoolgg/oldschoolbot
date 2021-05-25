@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
+import { GearSetupTypes, GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
@@ -25,12 +26,20 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Callisto cub']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 2,
-			[itemID('Berserker ring')]: 2
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Berserker ring')]: 3,
+				[itemID('Berserker ring (i)')]: 5
+			},
+			{
+				[itemID('Barrows gloves')]: 3
+			}
+		],
 		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.225
+		combatXpMultiplier: 1.225,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.Vetion.id,
@@ -50,12 +59,13 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 3
-		},
+		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 1110,
-		combatXpMultiplier: 1.156
+		combatXpMultiplier: 1.156,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.Venenatis.id,
@@ -75,11 +85,12 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 3
-		},
+		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.525
+		combatXpMultiplier: 1.525,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.ChaosElemental.id,
@@ -97,12 +108,20 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Archers ring')]: 3,
-			[itemID('Barrows gloves')]: 3
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Archers ring')]: 3,
+				[itemID('Archers ring (i)')]: 5
+			},
+			{
+				[itemID('Barrows gloves')]: 3
+			}
+		],
 		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.075
+		combatXpMultiplier: 1.075,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.ChaosFanatic.id,
@@ -116,12 +135,15 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 6,
 		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID("Karil's leathertop")]: 3,
-			[itemID("Karil's leatherskirt")]: 3
-		},
+		itemInBankBoosts: [
+			{ [itemID("Karil's leathertop")]: 3 },
+			{ [itemID("Karil's leatherskirt")]: 3 }
+		],
 		defaultAttackStyles: [SkillsEnum.Ranged],
-		combatXpMultiplier: 1.125
+		combatXpMultiplier: 1.125,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.CrazyArchaeologist.id,
@@ -134,11 +156,12 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Occult necklace')]: 10
-		},
+		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Magic],
-		combatXpMultiplier: 1.25
+		combatXpMultiplier: 1.25,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.KingBlackDragon.id,
@@ -152,7 +175,7 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
 			'Anti-dragon shield',
-			['Armadyl crossbow', 'Rune crossbow'],
+			['Armadyl crossbow', 'Rune crossbow', 'Twisted bow', 'Dragon hunter crossbow'],
 			[
 				"Black d'hide body",
 				"Black d'hide body (g)",
@@ -168,11 +191,18 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Prince black dragon', 'Draconic visage']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Armadyl crossbow')]: 10
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Armadyl crossbow')]: 6,
+				[itemID('Dragon hunter crossbow')]: 8,
+				[itemID('Twisted bow')]: 10
+			}
+		],
 		defaultAttackStyles: [SkillsEnum.Ranged],
-		combatXpMultiplier: 1.075
+		combatXpMultiplier: 1.075,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.Scorpia.id,
@@ -186,11 +216,15 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 8,
 		notifyDrops: resolveItems(["Scorpia's offspring"]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Occult necklace')]: 10
-		},
+		itemInBankBoosts: [
+			{ [itemID('Occult necklace')]: 10 },
+			{ [itemID('Harmonised nightmare staff')]: 10 }
+		],
 		defaultAttackStyles: [SkillsEnum.Magic],
-		combatXpMultiplier: 1.3
+		combatXpMultiplier: 1.3,
+		healAmountNeeded: 15 * 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	}
 ];
 

@@ -14,11 +14,12 @@ import {
 } from 'typeorm';
 
 import { client } from '../..';
+import { Events } from '../constants';
 
 @Entity({ name: 'giveaway' })
 export class GiveawayTable extends BaseEntity {
 	@PrimaryGeneratedColumn('increment')
-	public id!: string;
+	public id!: number;
 
 	@PrimaryColumn('varchar', { length: 19, name: 'user_id', nullable: false })
 	public userID!: string;
@@ -75,10 +76,10 @@ export class GiveawayTable extends BaseEntity {
 				u => !u.isIronman && !u.bot && u.id !== this.userID
 			);
 
+			const creator = await client.users.fetch(this.userID);
+
 			if (users.length === 0 || !channel || !message) {
 				console.error('Giveaway failed');
-				const creator = await client.users.fetch(this.userID).catch(noOp);
-				if (!creator) return;
 				await creator.addItemsToBank(this.bank);
 				creator
 					.send(
@@ -95,11 +96,15 @@ export class GiveawayTable extends BaseEntity {
 			const winner = randArrItem(users);
 			await winner.addItemsToBank(this.bank);
 
-			const str = `<@${this.userID}> **Giveaway finished:** ${
-				users.length
-			} users joined, the winner is... ||**${winner}**||
+			const osBank = new Bank(this.bank);
+			client.emit(
+				Events.EconomyLog,
+				`${winner.username}[${winner.id}] won ${osBank} in a giveaway of ${users.length} made by ${creator.username}[${creator.id}].`
+			);
+
+			const str = `<@${this.userID}> **Giveaway finished:** ${users.length} users joined, the winner is... ||**${winner}**||
 			
-They received these items: ${new Bank(this.bank)}`;
+They received these items: ${osBank}`;
 
 			const resultMsg = await channel.send(str);
 			message.edit(

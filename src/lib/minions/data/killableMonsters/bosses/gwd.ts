@@ -20,9 +20,12 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 7,
 		notifyDrops: resolveItems(['Pet general graardor']),
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon warhammer')]: 10,
+				[itemID('Bandos godsword')]: 5
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
@@ -45,10 +48,16 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 7,
 		notifyDrops: resolveItems(['Pet zilyana']),
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Ranger boots')]: 5,
-			[itemID('Armadyl crossbow')]: 5
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Ranger boots')]: 3,
+				[itemID('Pegasian boots')]: 5
+			},
+			{
+				[itemID('Armadyl crossbow')]: 5,
+				[itemID('Twisted bow')]: 10
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
@@ -76,9 +85,12 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 7,
 		notifyDrops: resolveItems(["Pet kree'arra"]),
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Armadyl crossbow')]: 5
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Armadyl crossbow')]: 5,
+				[itemID('Twisted bow')]: 10
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
@@ -106,9 +118,13 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 7,
 		notifyDrops: resolveItems(["Pet k'ril tsutsaroth"]),
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon warhammer')]: 10,
+				[itemID('Bandos godsword')]: 5,
+				[itemID('Dragon claws')]: 3
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {

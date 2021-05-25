@@ -34,7 +34,8 @@ export const enum Roles {
 	TopSkiller = '795266465329709076',
 	TopCollector = '795271210141351947',
 	TopSacrificer = '795933981715464192',
-	TopMinigamer = '832798997033779220'
+	TopMinigamer = '832798997033779220',
+	TopeClueHunter = '839135887467610123'
 }
 
 export const enum Emoji {
@@ -89,6 +90,8 @@ export const enum Emoji {
 	Tangleroot = '<:tangleroot:324127378978635778>',
 	Herblore = '<:herblore:630911040535658496>',
 	Purple = '🟪',
+	Green = '🟩',
+	Blue = '🟦',
 	Thieving = '<:thieving:630910829352452123>',
 	Hunter = '<:hunter:630911040166559784>',
 	Ely = '<:ely:784453586033049630>',
@@ -192,7 +195,8 @@ export const enum Tasks {
 	MageArena = 'mageArenaActivity',
 	Raids = 'raidsActivity',
 	Collecting = 'collectingActivity',
-	MageTrainingArena = 'mageTrainingArenaActivity'
+	MageTrainingArena = 'mageTrainingArenaActivity',
+	BlastFurnaceActivity = 'blastFurnaceActivity'
 }
 
 export enum Activity {
@@ -248,7 +252,8 @@ export enum Activity {
 	MageArena = 'MageArena',
 	Raids = 'Raids',
 	Collecting = 'Collecting',
-	MageTrainingArena = 'MageTrainingArena'
+	MageTrainingArena = 'MageTrainingArena',
+	BlastFurnace = 'BlastFurnace'
 }
 
 export enum ActivityGroup {
@@ -327,7 +332,9 @@ export const enum BitField {
 	BypassAgeRestriction = 9,
 	HasHosidiusWallkit = 10,
 	HasPermanentEventBackgrounds = 11,
-	HasPermanentTierOne = 12
+	HasPermanentTierOne = 12,
+	DisabledRandomEvents = 13,
+	PermanentIronman = 14
 }
 
 interface BitFieldData {
@@ -345,7 +352,8 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction' },
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' },
 	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
-	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' }
+	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
+	[BitField.PermanentIronman]: { name: 'Permanent Ironman' }
 } as const;
 
 export const enum PatronTierID {
@@ -394,7 +402,6 @@ export const NIGHTMARE_ID = 9415;
  */
 export const userQueues: Map<string, PQueue> = new Map();
 
-export const syncPriceCache = new Map<number, number>();
 export const bankImageCache = new Map<string, string>();
 
 export const skillEmoji = {

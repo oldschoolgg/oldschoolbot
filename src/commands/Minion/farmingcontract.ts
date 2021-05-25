@@ -1,6 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { defaultFarmingContract } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getPlantToGrow } from '../../lib/skilling/functions/calcFarmingContracts';
@@ -33,7 +34,8 @@ export default class extends BotCommand {
 	) {
 		await msg.author.settings.sync(true);
 		const farmingLevel = msg.author.skillLevel(SkillsEnum.Farming);
-		const currentContract = msg.author.settings.get(UserSettings.Minion.FarmingContract);
+		const currentContract =
+			msg.author.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
 
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 

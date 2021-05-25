@@ -65,7 +65,7 @@ export interface Fish {
 	xp: number;
 	id: number;
 	name: string;
-	petChance: number;
+	petChance?: number;
 	timePerFish: number;
 	bait?: number;
 	qpRequired?: number;
@@ -116,6 +116,15 @@ export interface Bar {
 	 * Chance that the ore will fail to smelt (i.e iron), out of 100
 	 */
 	chanceOfFail: number;
+}
+
+export interface BlastableBar {
+	level: number;
+	xp: number;
+	id: number;
+	name: string;
+	inputOres: Bank;
+	timeToUse: number;
 }
 
 export interface SmithedItem {

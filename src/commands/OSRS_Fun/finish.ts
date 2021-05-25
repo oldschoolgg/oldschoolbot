@@ -941,8 +941,9 @@ ${lootMSG.join('\n')}`);
 				let arcKC = -1;
 				let specKC = -1;
 				let petKC = -1;
+				let jarKC = -1;
 				const lootMSG = [];
-				while (loot.length < 4) {
+				while (loot.length < 5) {
 					kc++;
 					if (roll(5000)) {
 						if (!loot.includes('PET')) {
@@ -953,6 +954,17 @@ ${lootMSG.join('\n')}`);
 							);
 						} else {
 							duplicates.push('<:Pet_dark_core:324127377347313674>');
+						}
+					}
+					if (roll(1000)) {
+						if (!loot.includes('JAR')) {
+							loot.push('JAR');
+							jarKC = kc;
+							lootMSG.push(
+								`**Jar of Spirits:** ${jarKC.toLocaleString()} KC <:jarOfSpirits:838735098894614548>`
+							);
+						} else {
+							duplicates.push('<:jarOfSpirits:838735098894614548>');
 						}
 					}
 					if (roll(585)) {

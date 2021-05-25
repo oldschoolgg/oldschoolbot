@@ -5,13 +5,19 @@ import { SkillUser } from '../commands/Minion/leaderboard';
 import { production } from '../config';
 import { Roles } from '../lib/constants';
 import { collectionLogTypes } from '../lib/data/collectionLog';
+import ClueTiers from '../lib/minions/data/clueTiers';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';
 import { Workers } from '../lib/workers';
 import { CLUser } from '../lib/workers/leaderboard.worker';
 
-async function addRoles(g: Guild, users: string[], role: Roles, badge: number): Promise<string> {
+async function addRoles(
+	g: Guild,
+	users: string[],
+	role: Roles,
+	badge: number | null
+): Promise<string> {
 	let added: string[] = [];
 	let removed: string[] = [];
 	const roleName = g.roles.get(role)!.name!;
@@ -20,7 +26,7 @@ async function addRoles(g: Guild, users: string[], role: Roles, badge: number): 
 			if (production) {
 				await mem.roles.remove(role);
 			}
-			if (mem.user.settings.get(UserSettings.Badges).includes(badge)) {
+			if (badge && mem.user.settings.get(UserSettings.Badges).includes(badge)) {
 				await mem.user.settings.update(UserSettings.Badges, badge, {
 					arrayAction: 'remove'
 				});
@@ -32,7 +38,7 @@ async function addRoles(g: Guild, users: string[], role: Roles, badge: number): 
 			if (production && !mem.roles.has(role)) {
 				await mem.roles.add(role);
 			}
-			if (!mem.user.settings.get(UserSettings.Badges).includes(badge)) {
+			if (badge && !mem.user.settings.get(UserSettings.Badges).includes(badge)) {
 				await mem.user.settings.update(UserSettings.Badges, badge, {
 					arrayAction: 'add'
 				});
@@ -106,11 +112,18 @@ export default class extends Task {
 
 		// Top Collectors
 		const topCollectors = [];
-		for (const clName of ['Pets', 'Skilling', 'Clue all', 'Boss', 'Minigames']) {
+		for (const clName of [
+			'Pets',
+			'Skilling',
+			'Clue all',
+			'Boss',
+			'Minigames',
+			'Chambers of Xeric'
+		]) {
 			const type = collectionLogTypes.find(t => t.name === clName)!;
 			const result = (await this.client.query(
 				`SELECT u.id, u."logBankLength", u."collectionLogBank" FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank" FROM users
+  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank" FROM users
 ) u
 WHERE u."logBankLength" > 400 ORDER BY u."logBankLength" DESC;`
 			)) as CLUser[];
@@ -133,7 +146,7 @@ WHERE u."logBankLength" > 400 ORDER BY u."logBankLength" DESC;`
 		const mostUniques = await this.client.query<
 			SkillUser[]
 		>(`SELECT u.id, u.sacbanklength FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
+  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
 		topSacrificers.push(mostUniques[0].id);
@@ -149,7 +162,8 @@ ORDER BY u.sacbanklength DESC LIMIT 1;`);
 			'gnome_restaurant',
 			'soul_wars',
 			'castle_wars',
-			'raids'
+			'raids',
+			'raids_challenge_mode'
 		];
 		for (const game of minigames) {
 			const result = (await this.client.query(
@@ -162,6 +176,22 @@ LIMIT 1;`
 		}
 
 		result += await addRoles(g, topMinigamers, Roles.TopMinigamer, 11);
+
+		// Top clue hunters
+		let topClueHunters: string[] = [];
+
+		for (const clueTier of ClueTiers) {
+			const result = (await this.client.query(
+				`SELECT id, ("clueScores"->>'${clueTier.id}')::int as qty
+FROM users
+WHERE "clueScores"->>'${clueTier.id}' IS NOT NULL
+ORDER BY qty DESC 
+LIMIT 1;`
+			)) as any[];
+			topClueHunters.push(result[0].id);
+		}
+
+		result += await addRoles(g, topClueHunters, Roles.TopeClueHunter, null);
 
 		return result;
 	}

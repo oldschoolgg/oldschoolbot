@@ -138,3 +138,11 @@ setItemAlias(11897, 'Decorative magic robe');
 setItemAlias(11899, 'Decorative ranged top');
 setItemAlias(11900, 'Decorative ranged legs');
 setItemAlias(11901, 'Decorative quiver');
+
+// Lamp (Genie event)
+setItemAlias(2528, 'Genie lamp');
+
+// Birds eggs
+setItemAlias(5076, 'Red bird egg');
+setItemAlias(5077, 'Blue bird egg');
+setItemAlias(5078, 'Green bird egg');

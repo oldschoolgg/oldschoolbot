@@ -12,7 +12,7 @@ export default class extends Task {
 
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.id === mixableID)!;
 
-		const xpReceived = zahur ? 0 : quantity * mixableItem.xp;
+		const xpReceived = zahur && mixableItem.zahur === true ? 0 : quantity * mixableItem.xp;
 
 		if (mixableItem.outputMultiple) {
 			quantity *= mixableItem.outputMultiple;

@@ -272,18 +272,6 @@ export function round(value = 1, precision = 1) {
 	return Math.round(value * multiplier) / multiplier;
 }
 
-export function entries<T extends {}>(obj: T) {
-	return Object.entries(obj) as [keyof T, T[keyof T]][];
-}
-
-export function values<T extends {}>(obj: T) {
-	return Object.values(obj) as T[keyof T][];
-}
-
-export function keys<T extends {}>(obj: T) {
-	return Object.keys(obj) as (keyof T)[];
-}
-
 export const anglerBoosts = [
 	[itemID('Angler hat'), 0.4],
 	[itemID('Angler top'), 0.8],
@@ -447,10 +435,22 @@ export function formatSkillRequirements(reqs: Record<string, number>) {
 	return arr.join(', ');
 }
 
-export function formatItemBoosts(items: ItemBank) {
+export function formatItemBoosts(items: ItemBank[]) {
 	const str = [];
-	for (const [itemID, boostAmount] of Object.entries(items)) {
-		str.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+	for (const itemSet of items) {
+		const itemEntries = Object.entries(itemSet);
+		const multiple = itemEntries.length > 1;
+		const bonusStr = [];
+
+		for (const [itemID, boostAmount] of itemEntries) {
+			bonusStr.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+		}
+
+		if (multiple) {
+			str.push(`(${bonusStr.join(' OR ')})`);
+		} else {
+			str.push(bonusStr.join(''));
+		}
 	}
 	return str.join(', ');
 }

@@ -2,13 +2,14 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
+import defaultBirdhouseTrap from '../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { BirdhouseActivityTaskOptions } from './../../lib/types/minions';
@@ -157,7 +158,8 @@ export default class extends BotCommand {
 			);
 		}
 
-		const previousBirdhouseTraps = msg.author.settings.get(UserSettings.Minion.BirdhouseTraps);
+		const previousBirdhouseTraps =
+			msg.author.settings.get(UserSettings.Minion.BirdhouseTraps) ?? defaultBirdhouseTrap;
 
 		const timeBirdHouseRun = birdhouse.runTime;
 
@@ -187,7 +189,7 @@ export default class extends BotCommand {
 		let duration: number = timeBirdHouseRun;
 
 		// Reduce time if user has graceful equipped
-		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasGracefulEquipped()) {
 			boostStr.push('10% time for Graceful');
 			duration *= 0.9;
 		}
@@ -234,6 +236,11 @@ export default class extends BotCommand {
 			return msg.send(`You don't have enough seeds to bait the birdhouses.`);
 		}
 
+		await updateBankSetting(
+			this.client,
+			ClientSettings.EconomyStats.FarmingCostBank,
+			removeBank
+		);
 		await msg.author.removeItemsFromBank(removeBank.bank);
 
 		// If user does not have something already placed, just place the new birdhouses.
@@ -272,7 +279,8 @@ export default class extends BotCommand {
 		let returnMessageStr = '';
 		const boostStr = [];
 
-		const previousBirdhouseTraps = msg.author.settings.get(UserSettings.Minion.BirdhouseTraps);
+		const previousBirdhouseTraps =
+			msg.author.settings.get(UserSettings.Minion.BirdhouseTraps) ?? defaultBirdhouseTrap;
 
 		const storePreviousBirdhouse = previousBirdhouseTraps.lastPlaced;
 
@@ -307,7 +315,7 @@ export default class extends BotCommand {
 		let duration: number = timeBirdHouseRun;
 
 		// Reduce time if user has graceful equipped
-		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasGracefulEquipped()) {
 			boostStr.push('10% time for Graceful');
 			duration *= 0.9;
 		}
@@ -348,7 +356,8 @@ export default class extends BotCommand {
 		let finalStr = '';
 		let nothingPlaced = false;
 
-		const currentBirdHouses = msg.author.settings.get(UserSettings.Minion.BirdhouseTraps);
+		const currentBirdHouses =
+			msg.author.settings.get(UserSettings.Minion.BirdhouseTraps) ?? defaultBirdhouseTrap;
 
 		if (currentBirdHouses.lastPlaced) {
 			const { lastPlaced } = currentBirdHouses;
@@ -377,7 +386,7 @@ export default class extends BotCommand {
 				)}!\n`;
 			} else {
 				emojiStr = `${Emoji.Tick} `;
-				contentStr = `Your ${birdhouse.name}s is ready to be collected!\n`;
+				contentStr = `Your ${birdhouse.name}s are ready to be collected!\n`;
 			}
 
 			finalStr += emojiStr + baseStr + contentStr;

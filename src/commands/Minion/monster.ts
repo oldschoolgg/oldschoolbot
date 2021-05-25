@@ -44,13 +44,12 @@ export default class MinionCommand extends BotCommand {
 
 		const ownedBoostItems = [];
 		let totalItemBoost = 0;
-		if (monster.itemInBankBoosts) {
-			for (const [itemID, boostAmount] of Object.entries(monster.itemInBankBoosts)) {
-				if (!msg.author.hasItemEquippedOrInBank(parseInt(itemID))) continue;
-				timeToFinish *= (100 - boostAmount) / 100;
-				totalItemBoost += boostAmount;
-				ownedBoostItems.push(itemNameFromID(parseInt(itemID)));
-			}
+		for (const [itemID, boostAmount] of Object.entries(
+			msg.author.resolveAvailableItemBoosts(monster)
+		)) {
+			timeToFinish *= (100 - boostAmount) / 100;
+			totalItemBoost += boostAmount;
+			ownedBoostItems.push(itemNameFromID(parseInt(itemID)));
 		}
 		const maxCanKill = Math.floor(
 			msg.author.maxTripLength(Activity.MonsterKilling) / timeToFinish
@@ -84,7 +83,7 @@ export default class MinionCommand extends BotCommand {
 				str.push(
 					`You own ${ownedBoostItems.join(
 						', '
-					)} for a total boost of **${totalItemBoost}**\n`
+					)} for a total boost of **${totalItemBoost}**%.\n`
 				);
 			}
 		}

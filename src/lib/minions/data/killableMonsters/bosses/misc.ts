@@ -27,10 +27,16 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Baby mole']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 5,
-			[itemID('Berserker ring')]: 5
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Barrows gloves')]: 5
+			},
+			{
+				[itemID('Berserker ring')]: 5,
+				[itemID('Berserker ring (i)')]: 7,
+				[itemID('Twisted bow')]: 10
+			}
+		],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -50,9 +56,14 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
 		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
 		qpRequired: 205,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Bandos godsword')]: 15,
+				[itemID('Dragon warhammer')]: 15,
+				[itemID('Dragon claws')]: 10,
+				[itemID('Dragon hunter crossbow')]: 30
+			}
+		],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -75,11 +86,31 @@ const killableBosses: KillableMonster[] = [
 			'Pet snakeling'
 		]),
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Barrows gloves')]: 5,
-			[itemID('Ranger boots')]: 5,
-			[itemID("Iban's staff")]: 2
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Ranger boots')]: 2,
+				[itemID('Pegasian boots')]: 4
+			},
+			{
+				[itemID("Iban's staff")]: 2,
+				[itemID('Harmonised nightmare staff')]: 5
+			},
+			{
+				[itemID('Barrows gloves')]: 3
+			},
+			{
+				[itemID('Twisted bow')]: 5
+			},
+			{
+				[itemID('Ancestral hat')]: 2
+			},
+			{
+				[itemID('Ancestral robe top')]: 2
+			},
+			{
+				[itemID('Ancestral robe bottom')]: 2
+			}
+		],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -114,9 +145,14 @@ const killableBosses: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Jar of sand', 'Kalphite princess']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon warhammer')]: 10
+			},
+			{
+				[itemID('Elder maul')]: 5
+			}
+		],
 		levelRequirements: {
 			prayer: 43
 		},
@@ -150,10 +186,10 @@ const killableBosses: KillableMonster[] = [
 			'Jar of spirits'
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Bandos godsword')]: 5,
-			[itemID('Dragon warhammer')]: 10
-		},
+		itemInBankBoosts: [
+			{ [itemID('Dragon warhammer')]: 10 },
+			{ [itemID('Bandos godsword')]: 5 }
+		],
 		groupKillable: true,
 		respawnTime: 20_000,
 		levelRequirements: {
@@ -184,17 +220,18 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate'],
 			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets'],
-			'Zamorakian spear'
+			['Zamorakian spear', 'Zamorakian hasta']
 		]),
 		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Spectral spirit shield')]: 10,
-			[itemID('Bandos chestplate')]: 5,
-			[itemID('Bandos tassets')]: 5
-		},
+		itemInBankBoosts: [
+			{ [itemID('Spectral spirit shield')]: 10 },
+			{ [itemID('Bandos chestplate')]: 5 },
+			{ [itemID('Bandos tassets')]: 5 }
+		],
 		levelRequirements: {
-			prayer: 43
+			prayer: 43,
+			slayer: 91
 		},
 		defaultAttackStyles: [SkillsEnum.Strength],
 		combatXpMultiplier: 1.15

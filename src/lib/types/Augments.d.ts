@@ -2,9 +2,7 @@ import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageEmbed } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
-import { Db } from 'mongodb';
 import { Bank, Player } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
@@ -13,19 +11,14 @@ import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BankImageResult } from '../../tasks/bankImage';
 import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
-import {
-	GearSetup,
-	GearSetupType,
-	GearSetupTypes,
-	GearStats,
-	UserFullGearSetup
-} from '../gear/types';
+import { GearSetupType, UserFullGearSetup } from '../gear/types';
+import { AttackStyles } from '../minions/functions';
 import { KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
+import { Gear } from '../structures/Gear';
 import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
-import { AttackStyles } from '../util';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
 declare module 'klasa' {
@@ -33,7 +26,6 @@ declare module 'klasa' {
 		public orm: Connection;
 		public oneCommandAtATimeCache: Set<string>;
 		public secondaryUserBusyCache: Set<string>;
-		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public cacheItemPrice(itemID: number): Promise<number>;
 		public query<T>(query: string, values?: string[]): Promise<T>;
 		public settings: Settings;
@@ -43,13 +35,13 @@ declare module 'klasa' {
 		public _peakIntervalCache: Peak[];
 		public wtf(error: Error): void;
 		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
-		osggDB?: Db;
 		commentStream?: CommentStream;
 		submissionStream?: SubmissionStream;
 		fastifyServer: FastifyInstance;
 		minionTicker: NodeJS.Timeout;
 		giveawayTicker: NodeJS.Timeout;
 		analyticsInterval: NodeJS.Timeout;
+		metricsInterval: NodeJS.Timeout;
 		minionActivityCache: Map<string, ActivityTable['taskData']>;
 	}
 
@@ -104,7 +96,6 @@ declare module 'klasa' {
 
 declare module 'discord.js' {
 	interface Client {
-		public fetchItemPrice(itemID: number | string): Promise<number>;
 		public query<T>(query: string): Promise<T>;
 		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 	}
@@ -155,7 +146,7 @@ declare module 'discord.js' {
 		 * Returns true if the user has this item equipped in any of their setups.
 		 * @param itemID The item ID.
 		 */
-		hasItemEquippedAnywhere(item: number | string): boolean;
+		hasItemEquippedAnywhere(_item: number | string | string[], every = false): boolean;
 		/**
 		 * Checks whether they have the given item in their bank OR equipped.
 		 * @param item
@@ -202,13 +193,8 @@ declare module 'discord.js' {
 		 * Gets the CL count for an item.
 		 */
 		getCL(itemID: number): number;
-		/**
-		 *
-		 */
-		equippedWeapon(setupType: GearSetupTypes): Item | null;
 		rawGear(): UserFullGearSetup;
 		allItemsOwned(): Bank;
-		setupStats(setup: GearSetupTypes): GearStats;
 		/**
 		 * Returns this users update promise queue.
 		 */
@@ -219,7 +205,7 @@ declare module 'discord.js' {
 		queueFn(fn: (...args: any[]) => Promise<any>): Promise<void>;
 		bank(options?: GetUserBankOptions): Bank;
 		getPOH(): Promise<PoHTable>;
-		getGear(gearType: GearSetupType): GearSetup;
+		getGear(gearType: GearSetupType): Gear;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
 		getAttackStyles(): AttackStyles[];
 		owns(bank: ItemBank | Bank | string | number): boolean;
@@ -228,6 +214,16 @@ declare module 'discord.js' {
 			notOwned: number[];
 			owned: number[];
 		};
+
+		/**
+		 * Get item boosts the user has available for the given `KillableMonster`.
+		 */
+		resolveAvailableItemBoosts(monster: KillableMonster): ItemBank;
+		/**
+		 * Returns true if the user has full Graceful equipped in any setup.
+		 */
+		hasGracefulEquipped(): boolean;
+		hasSkillReqs(reqs: Skills): [boolean, string | null];
 		perkTier: PerkTier;
 		/**
 		 * Returns this users Collection Log bank.
@@ -247,6 +243,7 @@ declare module 'discord.js' {
 		isIronman: boolean;
 		maxTripLength(activity?: OSBActivity): number;
 		rawSkills: Skills;
+		bitfield: readonly BitField[];
 	}
 
 	interface TextChannel {

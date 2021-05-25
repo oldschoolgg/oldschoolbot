@@ -1,7 +1,9 @@
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { Gear } from '../structures/Gear';
+
 export type UserFullGearSetup = {
-	[key in GearSetupTypes]: GearSetup;
+	[key in GearSetupTypes]: Gear;
 };
 
 export enum GearSetupTypes {

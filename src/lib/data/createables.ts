@@ -1,6 +1,7 @@
 import { ItemBank } from '../types';
-import { resolveNameBank } from '../util';
+import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
+import { metamorphPets } from './collectionLog';
 
 interface Createable {
 	name: string;
@@ -14,6 +15,16 @@ interface Createable {
 	cantBeInCL?: boolean;
 }
 
+const metamorphPetCreatables: Createable[] = metamorphPets.map(pet => ({
+	name: itemNameFromID(pet)!,
+	inputItems: {
+		[itemID('Metamorphic dust')]: 1
+	},
+	outputItems: {
+		[pet]: 1
+	}
+}));
+
 const twistedAncestral: Createable[] = [
 	{
 		name: 'Twisted ancestral hat',
@@ -22,7 +33,7 @@ const twistedAncestral: Createable[] = [
 			[itemID('Twisted ancestral colour kit')]: 1
 		},
 		outputItems: {
-			[itemID('Crystal pickaxe')]: 1
+			[itemID('Twisted ancestral hat')]: 1
 		}
 	},
 	{
@@ -32,7 +43,7 @@ const twistedAncestral: Createable[] = [
 			[itemID('Twisted ancestral colour kit')]: 1
 		},
 		outputItems: {
-			[itemID('Crystal pickaxe')]: 1
+			[itemID('Twisted ancestral robe top')]: 1
 		}
 	},
 	{
@@ -44,6 +55,39 @@ const twistedAncestral: Createable[] = [
 		outputItems: {
 			[itemID('Twisted ancestral robe bottom')]: 1
 		}
+	},
+	{
+		name: 'Revert ancestral robe bottom',
+		inputItems: {
+			[itemID('Twisted ancestral robe bottom')]: 1
+		},
+		outputItems: {
+			[itemID('Ancestral robe bottom')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert ancestral robe top',
+		inputItems: {
+			[itemID('Twisted ancestral robe top')]: 1
+		},
+		outputItems: {
+			[itemID('Ancestral robe top')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert ancestral hat',
+		inputItems: {
+			[itemID('Twisted ancestral hat')]: 1
+		},
+		outputItems: {
+			[itemID('Ancestral hat')]: 1,
+			[itemID('Twisted ancestral colour kit')]: 1
+		},
+		noCl: true
 	}
 ];
 
@@ -644,6 +688,15 @@ const Createables: Createable[] = [
 		},
 		inputItems: {
 			[itemID('Golden nugget')]: 30
+		}
+	},
+	{
+		name: 'Coal bag',
+		outputItems: {
+			[itemID('Coal bag')]: 1
+		},
+		inputItems: {
+			[itemID('Golden nugget')]: 100
 		}
 	},
 	{
@@ -1351,10 +1404,32 @@ const Createables: Createable[] = [
 			[itemID('Kodai wand')]: 1
 		}
 	},
+	{
+		name: 'Partyhat & specs',
+		inputItems: {
+			[itemID('Blue partyhat')]: 1,
+			[itemID('Sagacious spectacles')]: 1
+		},
+		outputItems: {
+			[itemID('Partyhat & specs')]: 1
+		}
+	},
+	{
+		name: 'Blue partyhat',
+		inputItems: {
+			[itemID('Partyhat & specs')]: 1
+		},
+		outputItems: {
+			[itemID('Blue partyhat')]: 1,
+			[itemID('Sagacious spectacles')]: 1
+		},
+		noCl: true
+	},
 	...crystalTools,
 	...ornamentKits,
 	...hunterClothing,
-	...twistedAncestral
+	...twistedAncestral,
+	...metamorphPetCreatables
 ];
 
 export default Createables;

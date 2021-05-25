@@ -1,5 +1,12 @@
 import { uniqueArr } from 'e';
 
+import {
+	beekeeperOutfit,
+	camoOutfit,
+	lederhosenOutfit,
+	mimeOutfit,
+	zombieOutfit
+} from '../randomEvents';
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
 
@@ -269,6 +276,14 @@ export const mahoganyHomesLog: CollectionLogData = {
 	Other: resolveItems(["Amy's saw", 'Plank sack', 'Hosidius blueprints', 'Builders supply crate'])
 };
 
+export const randomEventsLog: CollectionLogData = {
+	BeeKeeper: beekeeperOutfit,
+	Lederhosen: lederhosenOutfit,
+	Zombie: zombieOutfit,
+	Mime: mimeOutfit,
+	Camo: camoOutfit
+};
+
 const barrows: CollectionLogData = {
 	Barrows: resolveItems([
 		"Ahrim's staff",
@@ -433,11 +448,6 @@ export const bosses: CollectionLogData = {
 		'Dark relic',
 		'Metamorphic dust',
 		'Olmlet',
-		"Xeric's guard",
-		"Xeric's warrior",
-		"Xeric's sentinel",
-		"Xeric's general",
-		"Xeric's champion",
 		'Twisted ancestral colour kit'
 	])
 };
@@ -1496,20 +1506,6 @@ export const capes: CollectionLogData = {
 		'Runecraft hood',
 		'Thieving hood'
 	]),
-	capes: resolveItems([
-		'Mining cape',
-		'Smithing cape',
-		'Woodcutting cape',
-		'Firemaking cape',
-		'Fishing cape',
-		'Agility cape',
-		'Cooking cape',
-		'Crafting cape',
-		'Prayer cape',
-		'Fletching cape',
-		'Runecraft cape',
-		'Thieving cape'
-	]),
 	'trimmed capes': resolveItems([
 		'Mining cape(t)',
 		'Smithing cape(t)',
@@ -1537,19 +1533,6 @@ export const capes: CollectionLogData = {
 		'Ranging hood',
 		'Quest point hood'
 	]),
-	capes2: resolveItems([
-		'Farming cape',
-		'Herblore cape',
-		'Hunter cape',
-		'Construct. cape',
-		'Magic cape',
-		'Attack cape',
-		'Strength cape',
-		'Defence cape',
-		'Hitpoints cape',
-		'Ranging cape',
-		'Quest point cape'
-	]),
 	'trimmed capes2': resolveItems([
 		'Farming cape(t)',
 		'Herblore cape(t)',
@@ -1561,7 +1544,7 @@ export const capes: CollectionLogData = {
 		'Defence cape(t)',
 		'Hitpoints cape(t)',
 		'Ranging cape(t)',
-		'Quest point cape (t)'
+		'Quest point cape'
 	])
 };
 
@@ -1608,6 +1591,14 @@ export const MTALog: CollectionLogData = {
 	wands: wandItems
 };
 
+export const metamorphPets = resolveItems([
+	'Puppadile',
+	'Tektiny',
+	'Vanguard',
+	'Vasa minirio',
+	'Vespina'
+]);
+
 export const coxLog: CollectionLogData = {
 	Misc: resolveItems(['Dexterous prayer scroll', 'Torn prayer scroll', 'Arcane prayer scroll']),
 	Weapons: resolveItems([
@@ -1633,8 +1624,16 @@ export const coxLog: CollectionLogData = {
 		"Xeric's sentinel",
 		"Xeric's general",
 		"Xeric's champion"
-	])
+	]),
+	pets: metamorphPets
 };
+
+export const evilChickenOutfit = resolveItems([
+	'Evil chicken head',
+	'Evil chicken wings',
+	'Evil chicken legs',
+	'Evil chicken feet'
+]);
 
 export const miscLog: CollectionLogData = {
 	'God Books': resolveItems([
@@ -1645,7 +1644,9 @@ export const miscLog: CollectionLogData = {
 		'Book of darkness',
 		'Book of law'
 	]),
-	Tzhaar: resolveItems(['Fire cape'])
+	Tzhaar: resolveItems(['Fire cape']),
+	evilChickenOutfit,
+	other: resolveItems(['Amulet of eternal glory'])
 };
 
 export const sepulchreLog: CollectionLogData = {
@@ -1985,6 +1986,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 			castleWarsOther,
 			mta: [...wandItems, ...infinityItems]
 		}
+	},
+	{
+		name: 'Random Events',
+		aliases: ['random events'],
+		items: randomEventsLog
 	}
 ];
 export const allCollectionLogItems = uniqueArr(

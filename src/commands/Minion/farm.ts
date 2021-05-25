@@ -2,10 +2,8 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import defaultPatches from '../../lib/minions/farming/defaultPatches';
-import resolvePatchTypeSetting from '../../lib/minions/farming/functions/resolvePatchTypeSettings';
+import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcNumOfPatches, returnListOfPlants } from '../../lib/skilling/functions/calcsFarming';
@@ -194,7 +192,7 @@ export default class extends BotCommand {
 		}
 
 		// Reduce time if user has graceful equipped
-		if (hasGracefulEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasGracefulEquipped()) {
 			boostStr.push('10% time for Graceful');
 			duration *= 0.9;
 		}
@@ -314,7 +312,7 @@ export default class extends BotCommand {
 
 			if (
 				bankHasItem(userBank, itemID('Magic secateurs')) ||
-				msg.author.hasItemEquippedAnywhere(itemID(`Magic secateurs`))
+				msg.author.hasItemEquippedAnywhere(`Magic secateurs`)
 			) {
 				boostStr.push('10% crop yield for Magic Secateurs');
 			}
@@ -322,8 +320,7 @@ export default class extends BotCommand {
 			if (
 				bankHasItem(userBank, itemID('Farming cape')) ||
 				bankHasItem(userBank, itemID('Farming cape(t)')) ||
-				msg.author.hasItemEquippedAnywhere(itemID(`Farming cape`)) ||
-				msg.author.hasItemEquippedAnywhere(itemID(`Farming cape(t)`))
+				msg.author.hasItemEquippedAnywhere([`Farming cape(t)`, `Farming cape`])
 			) {
 				boostStr.push('5% crop yield for Farming Skillcape');
 			}
