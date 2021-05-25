@@ -15,10 +15,7 @@ export default class extends Task {
 		if (this.client.analyticsInterval) {
 			clearInterval(this.client.analyticsInterval);
 		}
-		this.client.analyticsInterval = setInterval(
-			this.analyticsTick.bind(this),
-			Time.Minute * 20
-		);
+		this.client.analyticsInterval = setInterval(this.analyticsTick.bind(this), Time.Minute * 5);
 
 		if (this.client.minionTicker) {
 			clearTimeout(this.client.minionTicker);
