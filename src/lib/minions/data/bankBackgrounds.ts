@@ -312,19 +312,13 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 40,
-		name: 'Turbo CustomBG',
+		name: 'Turbo CustomBG (40)',
 		image: null,
 		available: false
 	},
 	{
 		id: 41,
 		name: 'Shady',
-		image: null,
-		available: false
-	},
-	{
-		id: 46,
-		name: 'Jad (person)',
 		image: null,
 		available: false
 	},
