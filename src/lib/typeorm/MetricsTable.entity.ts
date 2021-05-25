@@ -26,12 +26,12 @@ export class MetricsTable extends BaseEntity {
 	@Column({ type: 'bigint', nullable: false })
 	public memorySizeRSS!: number;
 
-	@Column({ type: 'int', nullable: false })
+	@Column({ type: 'real', nullable: false })
 	public cpuUser!: number;
 
-	@Column({ type: 'int', nullable: false })
+	@Column({ type: 'real', nullable: false })
 	public cpuSystem!: number;
 
-	@Column({ type: 'real', nullable: true })
+	@Column({ type: 'real', nullable: false })
 	public cpuPercent!: number;
 }
