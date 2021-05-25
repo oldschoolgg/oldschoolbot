@@ -4,7 +4,7 @@ import { Bank, Misc, Openables as _Openables } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
-import botOpenables from '../../lib/data/openables';
+import botOpenables, { IronmanPMBTable } from '../../lib/data/openables';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -244,7 +244,9 @@ export default class extends BotCommand {
 		}
 
 		for (let i = 0; i < quantity + smokeyBonus; i++) {
-			if (typeof botOpenable.table === 'function') {
+			if (botOpenable.name === 'Pet Mystery box' && msg.author.isIronman) {
+				loot.add(IronmanPMBTable.roll());
+			} else if (typeof botOpenable.table === 'function') {
 				loot.add(botOpenable.table());
 			} else {
 				loot.add(botOpenable.table.roll());

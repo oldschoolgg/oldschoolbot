@@ -1,5 +1,5 @@
 import { randArrItem } from 'e';
-import { Items } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
@@ -311,6 +311,14 @@ const testerGiftTable = new LootTable()
 	.add('Rocktail', [30, 60])
 	.add('Tradeable mystery box', [1, 3])
 	.add(baseTGBTable);
+
+export const IronmanPMBTable = new LootTable()
+	.add(PetsTable, 1, PetsTable.length)
+	.add('Smokey')
+	.add('Craig')
+	.add('Hoppy')
+	.add('Flappy')
+	.add('Cob');
 
 const Openables: Openable[] = [
 	{
