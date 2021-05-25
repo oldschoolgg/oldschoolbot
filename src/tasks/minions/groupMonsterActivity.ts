@@ -43,7 +43,6 @@ export default class extends Task {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
 			await addMonsterXP(user, monsterID, Math.ceil(quantity / users.length), duration);
-			totalLoot.add(loot);
 			const kcToAdd = kcAmounts[user.id];
 			if (user.equippedPet() === itemID('Ori')) {
 				loot = addBanks([monster.table.kill(Math.ceil(kcToAdd * 0.25)) ?? {}, loot]);

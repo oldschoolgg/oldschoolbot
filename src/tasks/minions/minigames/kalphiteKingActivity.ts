@@ -10,7 +10,7 @@ import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { allNexItems } from '../../../lib/nex';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
-import { KalphiteKingActivityTaskOptions } from '../../../lib/types/minions';
+import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { addBanks, channelIsSendable, noOp } from '../../../lib/util';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -22,7 +22,7 @@ interface NexUser {
 }
 
 export default class extends Task {
-	async run({ channelID, leader, users, quantity }: KalphiteKingActivityTaskOptions) {
+	async run({ channelID, userID, users, quantity }: BossActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -69,7 +69,7 @@ export default class extends Task {
 			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
 		}
 
-		const leaderUser = await this.client.users.fetch(leader);
+		const leaderUser = await this.client.users.fetch(userID);
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${KalphiteKingMonster.name}!\n\n`;
 		const totalLoot = new Bank();
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
@@ -124,17 +124,17 @@ export default class extends Task {
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
-			if (!kcAmounts[leader]) {
+			if (!kcAmounts[userID]) {
 				channel.send(
 					`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`
 				);
 			} else {
 				channel.sendBankImage({
-					bank: teamsLoot[leader],
+					bank: teamsLoot[userID],
 					content: `${leaderUser}, ${
 						leaderUser.minionName
 					} finished killing ${quantity} ${KalphiteKingMonster.name}, you died ${
-						deaths[leader] ?? 0
+						deaths[userID] ?? 0
 					} times. Your Kalphite King KC is now ${
 						(leaderUser.settings.get(UserSettings.MonsterScores)[
 							KalphiteKingMonster.id

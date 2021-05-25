@@ -719,7 +719,7 @@ const Buyables: Buyable[] = [
 		outputItems: {
 			[itemID('Potato with cheese')]: 1
 		},
-		gpCost: 2500,
+		gpCost: 850,
 		skillsNeeded: {
 			attack: 65,
 			strength: 65
@@ -741,7 +741,15 @@ const Buyables: Buyable[] = [
 	...gnomeClothes,
 	...canifisClothes,
 	...castleWarsBuyables,
-	...cmCapes
+	...cmCapes,
+	{
+		name: 'Master quest cape',
+		outputItems: resolveNameBank({
+			'Master quest cape': 1
+		}),
+		gpCost: 1_000_000_000,
+		qpRequired: 5000
+	}
 ];
 
 export default Buyables;

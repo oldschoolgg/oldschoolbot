@@ -1,5 +1,7 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { GemRockTable } from '../skilling/skills/mining';
+
 export const Ahrims = new LootTable()
 	.add("Ahrim's hood")
 	.add("Ahrim's robetop")
@@ -43,3 +45,19 @@ export const AllBarrows = new LootTable()
 	.add(Dharoks)
 	.add(Ahrims)
 	.add(Guthans);
+
+export const DougTable = new LootTable()
+	.add('Pure essence', [500, 800], 85)
+	.add('Copper ore', [500, 800], 85)
+	.add('Tin ore', [500, 800], 85)
+	.add('Saltpetre', [400, 800], 85)
+	.add('Iron ore', [400, 500], 80)
+	.add('Silver ore', [400, 500], 80)
+	.add('Volcanic ash', [400, 500], 80)
+	.add('Coal', [300, 500], 70)
+	.add('Gold ore', [300, 500], 70)
+	.add(GemRockTable, [1, 3], 65)
+	.add('Mithril ore', [300, 500], 55)
+	.add('Adamantite ore', [50, 300], 55)
+	.add('Runite ore', [20, 50], 45)
+	.add('Amethyst', [20, 50], 45);

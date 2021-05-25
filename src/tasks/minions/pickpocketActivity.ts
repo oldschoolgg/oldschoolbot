@@ -87,17 +87,21 @@ export default class extends Task {
 
 		let boosts = [];
 		const bloodshardCount = loot.amount('Blood shard');
+		const seedCount = loot.amount('Enhanced crystal teleport seed');
 		if (user.hasItemEquippedOrInBank(itemID("Thieves' armband"))) {
 			boosts.push(`3x loot for Thieves armband`);
 			loot.bank = multiplyBankNotClues(loot.bank, 3);
 			if (bloodshardCount) {
 				loot.bank[itemID('Blood shard')] = bloodshardCount;
 			}
+			if (seedCount) {
+				loot.bank[itemID('Enhanced crystal teleport seed')] = seedCount;
+			}
 		}
 
 		const minutes = duration / Time.Minute;
 		let gotWil = false;
-		if (roll(Math.floor(2000 / minutes))) {
+		if (roll(Math.floor(4000 / minutes))) {
 			loot.add('Wilvus');
 			gotWil = true;
 		}

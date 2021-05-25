@@ -13,7 +13,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
-import { NightmareActivityTaskOptions } from '../../lib/types/minions';
+import { BossActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
@@ -223,13 +223,12 @@ export default class extends BotCommand {
 
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, totalCost);
 
-		await addSubTaskToActivityTask<NightmareActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<BossActivityTaskOptions>(this.client, {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
 			type: Activity.Nightmare,
-			leader: msg.author.id,
 			users: users.map(u => u.id)
 		});
 

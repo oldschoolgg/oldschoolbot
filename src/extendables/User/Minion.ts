@@ -15,20 +15,11 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
-import {
-	Activity,
-	Emoji,
-	Events,
-	MAX_QP,
-	PerkTier,
-	skillEmoji,
-	Time,
-	ZALCANO_ID
-} from '../../lib/constants';
+import { Activity, Emoji, Events, MAX_QP, PerkTier, skillEmoji, Time } from '../../lib/constants';
 import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
 import { KillableMonster } from '../../lib/minions/types';
@@ -60,6 +51,7 @@ import {
 	AlchingActivityTaskOptions,
 	BarbarianAssaultActivityTaskOptions,
 	BlastFurnaceActivityTaskOptions,
+	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
@@ -81,7 +73,6 @@ import {
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
-	NexActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	RaidsActivityTaskOptions,
@@ -115,7 +106,6 @@ import {
 	gorajanWarriorOutfit
 } from '../../tasks/minions/dungeoneeringActivity';
 import {
-	NightmareActivityTaskOptions,
 	PlunderActivityTaskOptions,
 	SepulchreActivityTaskOptions
 } from './../../lib/types/minions';
@@ -417,7 +407,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Nightmare: {
-				const data = currentTask as NightmareActivityTaskOptions;
+				const data = currentTask as BossActivityTaskOptions;
 
 				return `${this.minionName} is currently killing The Nightmare, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
@@ -506,9 +496,14 @@ export default class extends Extendable {
 				return `${this.minionName} is currently doing Mahogany Homes. ${formattedDuration}`;
 			}
 			case Activity.Nex: {
-				const data = currentTask as NexActivityTaskOptions;
+				const data = currentTask as BossActivityTaskOptions;
 
 				return `${this.minionName} is currently killing ${data.quantity} Nex, with a party of ${data.users.length}. ${formattedDuration}`;
+			}
+			case Activity.KingGoldemar: {
+				const data = currentTask as BossActivityTaskOptions;
+
+				return `${this.minionName} is currently killing ${data.quantity} King Goldemar, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
 
 			case Activity.Enchanting: {
@@ -623,11 +618,7 @@ export default class extends Extendable {
 	}
 
 	public async getKCByName(this: KlasaUser, kcName: string) {
-		const mon = [
-			...killableMonsters,
-			NightmareMonster,
-			{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID }
-		].find(
+		const mon = effectiveMonsters.find(
 			mon =>
 				stringMatches(mon.name, kcName) ||
 				mon.aliases.some(alias => stringMatches(alias, kcName))

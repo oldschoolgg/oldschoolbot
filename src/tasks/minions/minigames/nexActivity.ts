@@ -11,7 +11,7 @@ import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { allNexItems, NexMonster } from '../../../lib/nex';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
-import { NexActivityTaskOptions } from '../../../lib/types/minions';
+import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { addBanks, channelIsSendable, noOp, randomItemFromArray } from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -23,7 +23,7 @@ interface NexUser {
 }
 
 export default class extends Task {
-	async run({ channelID, leader, users, quantity, duration }: NexActivityTaskOptions) {
+	async run({ channelID, userID, users, quantity, duration }: BossActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -73,7 +73,7 @@ export default class extends Task {
 			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
 		}
 
-		const leaderUser = await this.client.users.fetch(leader);
+		const leaderUser = await this.client.users.fetch(userID);
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NexMonster.name}!\n\n`;
 		const totalLoot = new Bank();
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
@@ -129,17 +129,17 @@ export default class extends Task {
 			const channel = this.client.channels.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
-			if (!kcAmounts[leader]) {
+			if (!kcAmounts[userID]) {
 				channel.send(
 					`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill Nex, they apologize and promise to try harder next time.`
 				);
 			} else {
 				channel.sendBankImage({
-					bank: teamsLoot[leader],
+					bank: teamsLoot[userID],
 					content: `${leaderUser}, ${
 						leaderUser.minionName
 					} finished killing ${quantity} ${NexMonster.name}, you died ${
-						deaths[leader] ?? 0
+						deaths[userID] ?? 0
 					} times. Your Nex KC is now ${
 						(leaderUser.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) +
 						quantity

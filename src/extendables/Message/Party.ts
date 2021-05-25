@@ -62,10 +62,6 @@ async function _setup(
 						return false;
 					}
 
-					if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
-						return false;
-					}
-
 					if (options.customDenier && reaction.emoji.id === ReactionEmoji.Join) {
 						const [customDenied, reason] = options.customDenier(user);
 						if (customDenied) {
@@ -90,7 +86,7 @@ async function _setup(
 				},
 				{
 					time: 120_000,
-					max: options.usersAllowed?.length ?? options.maxSize,
+					max: options.maxSize,
 					dispose: true
 				}
 			);
@@ -103,7 +99,7 @@ async function _setup(
 
 			function startTrip() {
 				if (usersWhoConfirmed.length < options.minSize) {
-					reject(`Not enough people joined your ${options.party ? 'party' : 'mass'}!`);
+					reject(`Not enough people joined your mass!`);
 					return;
 				}
 
@@ -115,10 +111,6 @@ async function _setup(
 				switch (reaction.emoji.id) {
 					case ReactionEmoji.Join: {
 						if (usersWhoConfirmed.includes(user)) return;
-
-						if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
-							return;
-						}
 
 						// Add the user
 						usersWhoConfirmed.push(user);
@@ -134,11 +126,7 @@ async function _setup(
 
 					case ReactionEmoji.Stop: {
 						if (user === options.leader) {
-							reject(
-								`The leader (${options.leader.username}) cancelled this ${
-									options.party ? 'party' : 'mass'
-								}!`
-							);
+							reject(`The leader (${options.leader.username}) cancelled this mass!`);
 							collector.stop('partyCreatorEnd');
 						}
 						break;

@@ -104,8 +104,7 @@ const gamblersBag = resolveItems([
 	'10 sided die',
 	'12 sided die',
 	'20 sided die',
-	'100 sided die',
-	'Ring of luck'
+	'100 sided die'
 ]);
 
 const secondEaster = resolveItems([
@@ -562,8 +561,7 @@ export const pets: CollectionLogData = {
 		'Peky',
 		'Steve',
 		'Frosty'
-	]),
-	BSOPetsExclusive: resolveItems(['Cob', 'Smokey', 'Hoppy', 'Craig', 'Flappy'])
+	])
 };
 
 export const cluesShared: CollectionLogData = {
@@ -1628,7 +1626,8 @@ export const capes: CollectionLogData = {
 		'Ranged master cape',
 		'Dungeoneering master cape',
 		'Master quest cape'
-	])
+	]),
+	expert: resolveItems(['Support cape', "Gatherer's cape", "Combatant's cape", "Artisan's cape"])
 };
 
 export const quest: CollectionLogData = {
@@ -1782,8 +1781,16 @@ export const miscLog: CollectionLogData = {
 };
 
 export const customBossLog: CollectionLogData = {
-	'King Goldmar': resolveItems(['Dwarven warhammer', 'Dwarven ore', 'Dwarven crate']),
-	Malygos: resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori'])
+	'King Goldmar': resolveItems([
+		'Broken dwarven warhammer',
+		'Dwarven ore',
+		'Dwarven crate',
+		'Athelas seed'
+	]),
+	Malygos: resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori']),
+	KK: allKalphiteKingItems,
+	nex1: [...torvaOutfit, ...pernixOutfit],
+	nex2: [...virtusOutfit, ...ancientWeapons]
 };
 
 export const sepulchreLog: CollectionLogData = {

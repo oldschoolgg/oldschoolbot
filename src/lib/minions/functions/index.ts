@@ -5,6 +5,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import { NIGHTMARES_HP } from '../../constants';
 import { SkillsEnum } from '../../skilling/types';
 import killableMonsters from '../data/killableMonsters';
+import KingGoldemar from '../data/killableMonsters/custom/KingGoldemar';
 import { KillableMonster } from '../types';
 
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
@@ -17,11 +18,26 @@ export type AttackStyles =
 	| SkillsEnum.Magic
 	| SkillsEnum.Ranged;
 
+function meleeOnly(user: KlasaUser): AttackStyles[] {
+	const skills = user.getAttackStyles();
+	if (skills.some(skill => skill === SkillsEnum.Ranged || skill === SkillsEnum.Magic)) {
+		return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
+	}
+	return skills;
+}
+
 export function resolveAttackStyles(
 	user: KlasaUser,
 	monsterID: number
 ): [KillableMonster | undefined, Monster | undefined, AttackStyles[]] {
+	if (monsterID === KingGoldemar.id) return [undefined, undefined, meleeOnly(user)];
+
 	const killableMon = killableMonsters.find(m => m.id === monsterID);
+
+	if (!killableMon) {
+		return [undefined, undefined, [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence]];
+	}
+
 	const osjsMon = Monsters.get(monsterID);
 
 	// The styles chosen by this user to use.
@@ -49,7 +65,8 @@ export function resolveAttackStyles(
 const miscHpMap: Record<number, number> = {
 	3127: 250,
 	46274: 5000,
-	9415: NIGHTMARES_HP
+	9415: NIGHTMARES_HP,
+	[KingGoldemar.id]: 10_000
 };
 
 export async function addMonsterXP(

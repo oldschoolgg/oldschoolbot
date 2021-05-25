@@ -57,8 +57,8 @@ export const NexMonster: KillableMonster = {
 				.every('Big bones')
 				.add(
 					new LootTable()
-						.every('Saradomin brew(4)', [10, 80])
-						.every('Super restore(4)', [10, 80])
+						.every('Saradomin brew(4)', [2, 15])
+						.every('Super restore(4)', [1, 5])
 				)
 				.add('Magic logs', 375)
 				.add('Green dragonhide', 400)
@@ -71,7 +71,7 @@ export const NexMonster: KillableMonster = {
 				.add('Magic seed', 5)
 				.tertiary(1500, 'Ancient emblem')
 				.tertiary(5, 'Tradeable mystery box')
-				.tertiary(50, 'Clue scroll (grandmaster)')
+				.tertiary(90, 'Clue scroll (grandmaster)')
 				.tertiary(3000, 'Bloodsoaked feather')
 		)
 	},

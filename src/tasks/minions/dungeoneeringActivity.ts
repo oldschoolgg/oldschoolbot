@@ -100,7 +100,12 @@ export default class extends Task {
 			if (gorajanEquipped > 0) {
 				str += ` ${bonusXP.toLocaleString()} Bonus XP`;
 			}
-			if (floor >= 5 && roll(Math.floor(2000 / minutes))) {
+			const shardChance = user.hasItemEquippedAnywhere('Dungeoneering master cape')
+				? 500
+				: user.skillLevel(SkillsEnum.Dungeoneering) >= 99
+				? 1200
+				: 2000;
+			if (floor >= 5 && roll(Math.floor(shardChance / minutes))) {
 				str += ` **1x Gorajan shards**`;
 				await u.addItemsToBank(new Bank().add('Gorajan shards'), true);
 			}

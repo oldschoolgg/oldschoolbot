@@ -40,7 +40,8 @@ export default class extends BotCommand {
 			await msg.author.settings.sync(true);
 			const gp = msg.author.settings.get(UserSettings.GP);
 
-			if (roll(10) && amount !== gp) {
+			const hasRing = msg.author.hasItemEquippedOrInBank('Ring of luck');
+			if (roll(hasRing ? 100 : 10) && amount !== gp) {
 				await msg.channel.send(
 					`${msg.author.minionName} ignores your amount and decides to gamble your entire cash stack!`
 				);
