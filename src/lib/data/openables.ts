@@ -1,5 +1,5 @@
 import { randArrItem } from 'e';
-import { Bank, Items } from 'oldschooljs';
+import { Items } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
