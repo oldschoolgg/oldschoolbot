@@ -41,6 +41,7 @@ declare module 'klasa' {
 		minionTicker: NodeJS.Timeout;
 		giveawayTicker: NodeJS.Timeout;
 		analyticsInterval: NodeJS.Timeout;
+		metricsInterval: NodeJS.Timeout;
 		minionActivityCache: Map<string, ActivityTable['taskData']>;
 	}
 
