@@ -561,8 +561,7 @@ export const pets: CollectionLogData = {
 		'Peky',
 		'Steve',
 		'Frosty'
-	]),
-	BSOPetsExclusive: resolveItems(['Cob', 'Smokey', 'Hoppy', 'Craig', 'Flappy'])
+	])
 };
 
 export const cluesShared: CollectionLogData = {
