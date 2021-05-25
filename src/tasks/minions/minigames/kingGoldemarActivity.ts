@@ -67,14 +67,10 @@ export default class extends Task {
 		let dwwhChance = calcDwwhChance(users);
 
 		const gotDWWH = roll(dwwhChance);
-		const dwwhRecipient = gotDWWH
-			? randArrItem(dwwhTable)
-			: null;
+		const dwwhRecipient = gotDWWH ? randArrItem(dwwhTable) : null;
 		const killStr =
 			gotDWWH && dwwhRecipient
-				? `${
-					dwwhRecipient?.username
-				} delivers a crushing blow to King Goldemars warhammer, breaking it. The king has no choice but to flee the chambers, **leaving behind his broken hammer.**`
+				? `${dwwhRecipient?.username} delivers a crushing blow to King Goldemars warhammer, breaking it. The king has no choice but to flee the chambers, **leaving behind his broken hammer.**`
 				: `Your team brought King Goldemar to a very weak state, he fled the chambers before he could be killed and escaped through a secret exit, promising to get revenge on you.`;
 
 		let resultStr = `${tagAll}\n\n${killStr}\n\n${Emoji.Casket} **Loot:**`;
