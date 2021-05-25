@@ -903,6 +903,12 @@ setCustomItem(40_023, 'Dungeoneering cape', 'Fire cape', {}, 20_000);
 setCustomItem(40_024, 'Dungeoneering cape(t)', 'Fire cape', {}, 20_000);
 setCustomItem(40_025, 'Dungeoneering hood', 'Rune full helm', {}, 20_000);
 setCustomItem(40_053, 'Master quest cape', 'Abyssal cape', {}, 10_000_000);
+setCustomItem(40_054, 'Support cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_055, "Gatherer's cape", 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_056, "Combatant's cape", 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_057, "Artisan's cape", 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_058, 'Completionist cape', 'Abyssal cape', {}, 500_000_000);
+setCustomItem(40_059, 'Completionist cape (t)', 'Abyssal cape', {}, 500_000_000);
 
 setCustomItem(40_026, 'Scroll of life', 'Coal', {}, 1_000_000);
 setCustomItem(40_027, 'Herbicide', 'Coal', {}, 1_000_000);
@@ -963,7 +969,7 @@ setCustomItem(45_104, '10 sided die', 'Coal', {}, 1000);
 setCustomItem(45_105, '12 sided die', 'Coal', {}, 1000);
 setCustomItem(45_106, '20 sided die', 'Coal', {}, 1000);
 setCustomItem(45_107, '100 sided die', 'Coal', {}, 1000);
-setCustomItem(45_108, 'Ring of luck', 'Coal', {}, 1000);
+setCustomItem(45_108, 'Ring of luck', 'Berserker ring', {}, 1000);
 
 // Pets
 setCustomItem(47_000, 'Flappy', 'Herbi', {}, 1_000_000);
@@ -995,8 +1001,8 @@ setCustomItem(
 	"Vesta's longsword",
 	{
 		equipment: {
-			attack_stab: 66,
-			attack_slash: 36,
+			attack_stab: 25,
+			attack_slash: 130,
 			attack_crush: 36,
 			attack_magic: -5,
 			attack_ranged: 0,
@@ -1023,9 +1029,9 @@ setCustomItem(
 	"Vesta's longsword",
 	{
 		equipment: {
-			attack_stab: 22,
-			attack_slash: 2,
-			attack_crush: 22,
+			attack_stab: 2,
+			attack_slash: 45,
+			attack_crush: 5,
 			attack_magic: -5,
 			attack_ranged: 0,
 
@@ -1109,8 +1115,8 @@ setCustomItem(
 	'Ghrazi rapier',
 	{
 		equipment: {
-			attack_stab: 100,
-			attack_slash: 75,
+			attack_stab: 120,
+			attack_slash: 45,
 			attack_crush: 0,
 			attack_magic: 0,
 			attack_ranged: 0,
@@ -1137,8 +1143,8 @@ setCustomItem(
 	'Ghrazi rapier',
 	{
 		equipment: {
-			attack_stab: 30,
-			attack_slash: 15,
+			attack_stab: 35,
+			attack_slash: 9,
 			attack_crush: 0,
 			attack_magic: 0,
 			attack_ranged: 0,
@@ -1290,6 +1296,150 @@ setCustomItem(48_014, 'Gorajan bonecrusher (u)', 'Coal', {}, 20_000_000);
  */
 
 /**
+ * START DWARVEN ARMOR
+ */
+setCustomItem(
+	48_015,
+	'Dwarven full helm',
+	'Torva full helm',
+	{
+		equipment: {
+			attack_stab: 7,
+			attack_slash: 7,
+			attack_crush: 28,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 5,
+			defence_slash: 55,
+			defence_crush: 115,
+			defence_magic: -5,
+			defence_ranged: 55,
+
+			melee_strength: 3,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Head,
+			requirements: null
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	48_016,
+	'Dwarven platebody',
+	'Torva platebody',
+	{
+		equipment: {
+			attack_stab: 12,
+			attack_slash: 12,
+			attack_crush: 43,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 65,
+			defence_slash: 65,
+			defence_crush: 200,
+			defence_magic: 0,
+			defence_ranged: 105,
+
+			melee_strength: 2,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Body,
+			requirements: null
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	48_017,
+	'Dwarven platelegs',
+	'Torva platelegs',
+	{
+		equipment: {
+			attack_stab: 8,
+			attack_slash: 8,
+			attack_crush: 34,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 50,
+			defence_slash: 50,
+			defence_crush: 190,
+			defence_magic: 0,
+			defence_ranged: 50,
+
+			melee_strength: 3,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Legs,
+			requirements: null
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	48_018,
+	'Dwarven boots',
+	'Torva boots',
+	{
+		equipment: {
+			attack_stab: 5,
+			attack_slash: 2,
+			attack_crush: 10,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 5,
+			defence_slash: 5,
+			defence_crush: 24,
+			defence_magic: 0,
+			defence_ranged: 15,
+
+			melee_strength: 3,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Feet,
+			requirements: null
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	48_019,
+	'Dwarven gloves',
+	'Torva gloves',
+	{
+		equipment: {
+			attack_stab: 4,
+			attack_slash: 9,
+			attack_crush: 15,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 5,
+			defence_slash: 5,
+			defence_crush: 18,
+			defence_magic: 0,
+			defence_ranged: 10,
+
+			melee_strength: 3,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Hands,
+			requirements: null
+		}
+	},
+	50_000_000
+);
+
+/**
  * Misc Items
  *
  * 50_000 - 60_000
@@ -1305,3 +1455,5 @@ setCustomItem(50_006, 'Blacksmith gloves', 'Leather gloves', {}, 100_000);
 setCustomItem(50_007, 'Blacksmith boots', 'Rune boots', {}, 100_000);
 
 setCustomItem(50_008, 'Mysterious seed', 'Magic seed', {}, 100_000);
+setCustomItem(50_009, 'Athelas seed', 'Magic seed', {}, 1_000_000);
+setCustomItem(50_010, 'Athelas', 'Magic seed', {}, 1_000_000);

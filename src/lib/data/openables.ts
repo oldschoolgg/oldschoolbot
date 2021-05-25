@@ -1,6 +1,5 @@
 import { randArrItem } from 'e';
 import { Items } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
@@ -313,6 +312,14 @@ const testerGiftTable = new LootTable()
 	.add('Tradeable mystery box', [1, 3])
 	.add(baseTGBTable);
 
+export const IronmanPMBTable = new LootTable()
+	.add(PetsTable, 1, PetsTable.length)
+	.add('Smokey')
+	.add('Craig')
+	.add('Hoppy')
+	.add('Flappy')
+	.add('Cob');
+
 const Openables: Openable[] = [
 	{
 		name: 'Birthday present',
@@ -430,8 +437,7 @@ const Openables: Openable[] = [
 			.add('10 sided die', 1, 4)
 			.add('12 sided die', 1, 3)
 			.add('20 sided die', 1, 3)
-			.add('100 sided die')
-			.tertiary(100, 'Ring of luck'),
+			.add('100 sided die'),
 		emoji: Emoji.BirthdayPresent
 	},
 	{
@@ -523,26 +529,28 @@ const cantBeDropped = [
 	...ALL_PRIMAL
 ] as number[];
 
-export const tmbTable = Items.filter(i => {
-	if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
-		return false;
+export const tmbTable: number[] = [];
+export const umbTable: number[] = [];
+export const embTable: number[] = [];
+for (const item of Items.values()) {
+	if (
+		(item.id >= 40_000 && item.id <= 50_000) ||
+		allItemsIDs.includes(item.id) ||
+		cantBeDropped.includes(item.id) ||
+		item.duplicate
+	) {
+		continue;
 	}
-	return (i as Item).tradeable_on_ge && !(i as Item).duplicate;
-}).map(i => i.id);
-
-export const umbTable = Items.filter(i => {
-	if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
-		return false;
+	if (item.tradeable_on_ge) {
+		tmbTable.push(item.id);
+	} else if (!item.tradeable) {
+		umbTable.push(item.id);
 	}
-	return !(i as Item).tradeable && !(i as Item).duplicate;
-}).map(i => i.id);
-
-export const embTable = Items.filter((i: Item) => {
-	if (allItemsIDs.includes(i.id) || cantBeDropped.includes(i.id)) {
-		return false;
+	if (Boolean(item.equipable_by_player) && Boolean(item.equipment?.slot)) {
+		embTable.push(item.id);
 	}
-	return !i.duplicate && Boolean(i.equipable_by_player) && Boolean(i.equipment?.slot);
-}).map(i => i.id);
+}
+export const allMbTables = [...tmbTable, ...umbTable, ...embTable];
 
 function randomEquippable(): number {
 	const res = randArrItem(embTable);

@@ -26,6 +26,7 @@ export default function setCustomMonster(
 		...newItemData,
 		name,
 		id,
-		kill: makeKillTable(table)
+		kill: makeKillTable(table),
+		allItems: table.allItems
 	});
 }

@@ -47,6 +47,10 @@ export namespace UserSettings {
 	export const AttackStyle = T<readonly SkillsEnum[]>('attack_style');
 	export const DungeoneeringTokens = T<number>('dungeoneering_tokens');
 	export const TotalCoxPoints = T<number>('total_cox_points');
+	export const TotalItemContracts = T<number>('total_item_contracts');
+	export const LastItemContractDate = T<number>('last_item_contract_date');
+	export const CurrentItemContract = T<number | null>('current_item_contract');
+	export const ItemContractBank = T<O.Readonly<ItemBank>>('item_contract_bank');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');

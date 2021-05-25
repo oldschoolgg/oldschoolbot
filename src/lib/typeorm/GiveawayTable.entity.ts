@@ -19,7 +19,7 @@ import { Events } from '../constants';
 @Entity({ name: 'giveaway' })
 export class GiveawayTable extends BaseEntity {
 	@PrimaryGeneratedColumn('increment')
-	public id!: string;
+	public id!: number;
 
 	@PrimaryColumn('varchar', { length: 19, name: 'user_id', nullable: false })
 	public userID!: string;

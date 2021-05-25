@@ -7,6 +7,8 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.GroupMonsterKilling:
 		case Activity.MonsterKilling:
 		case Activity.KalphiteKing:
+		case Activity.Nex:
+		case Activity.KingGoldemar:
 			return ActivityGroup.Monster;
 		case Activity.Fishing:
 		case Activity.Agility:
@@ -53,7 +55,6 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.Raids:
 		case Activity.MahoganyHomes:
 		case Activity.AerialFishing:
-		case Activity.Nex:
 		case Activity.SoulWars:
 		case Activity.GnomeRestaurant:
 		case Activity.RoguesDenMaze:

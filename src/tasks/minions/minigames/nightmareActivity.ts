@@ -9,7 +9,7 @@ import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
-import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
+import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { addBanks, multiplyBank, noOp, randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -24,7 +24,7 @@ interface NightmareUser {
 const RawNightmare = Misc.Nightmare;
 
 export default class extends Task {
-	async run({ channelID, leader, users, quantity, duration }: NightmareActivityTaskOptions) {
+	async run({ channelID, userID, users, quantity, duration }: BossActivityTaskOptions) {
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -65,7 +65,7 @@ export default class extends Task {
 			}
 		}
 
-		const leaderUser = await this.client.users.fetch(leader);
+		const leaderUser = await this.client.users.fetch(userID);
 
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NightmareMonster.name}!\n\n`;
 
@@ -116,7 +116,7 @@ export default class extends Task {
 
 		if (users.length > 1) {
 			sendToChannelID(this.client, channelID, { content: resultStr });
-		} else if (!kcAmounts[leader]) {
+		} else if (!kcAmounts[userID]) {
 			sendToChannelID(this.client, channelID, {
 				content: `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Nightmare, they apologize and promise to try harder next time.`
 			});
@@ -124,7 +124,7 @@ export default class extends Task {
 			const { image } = await this.client.tasks
 				.get('bankImage')!
 				.generateBankImage(
-					teamsLoot[leader],
+					teamsLoot[userID],
 					`${quantity}x Nightmare`,
 					true,
 					{ showNewCL: 1 },
@@ -133,7 +133,7 @@ export default class extends Task {
 			sendToChannelID(this.client, channelID, {
 				content: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 					NightmareMonster.name
-				}, you died ${deaths[leader] ?? 0} times. Your Nightmare KC is now ${
+				}, you died ${deaths[userID] ?? 0} times. Your Nightmare KC is now ${
 					(leaderUser.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ??
 						0) + quantity
 				}.`,

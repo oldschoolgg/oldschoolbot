@@ -71,6 +71,7 @@ export default class extends Task {
 
 		if (user.usingPet('Shelldon')) {
 			loot.multiply(2);
+			totalXP *= 1.5;
 			str += `\nYou received **2x** extra fish from Shelldon helping you.`;
 		}
 

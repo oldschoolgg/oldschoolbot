@@ -4,6 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { production } from '../../config';
 import { Emoji, Events } from '../../lib/constants';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -159,7 +160,7 @@ export default class extends Task {
 			}
 
 			if (plant.name === `Mysterious tree`) {
-				let upper = randInt(quantity, quantity * 2);
+				let upper = randInt(quantity, quantity * 4);
 				for (let i = 0; i < upper; i++) {
 					loot = addItemToBank(loot, getRandomMysteryBox());
 				}
@@ -526,7 +527,4 @@ export default class extends Task {
 			}
 		}
 	}
-}
-function getRandomMysteryBox(): number {
-	throw new Error('Function not implemented.');
 }

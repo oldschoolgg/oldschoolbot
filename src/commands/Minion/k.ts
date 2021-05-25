@@ -1,7 +1,6 @@
 import {
 	calcWhatPercent,
 	increaseNumByPercent,
-	objectEntries,
 	objectKeys,
 	reduceNumByPercent,
 	round,
@@ -180,13 +179,9 @@ export default class extends BotCommand {
 		// If you have dwarven blessing, you need 1 prayer pot per 5 mins
 		const prayerPots = msg.author.bank().amount('Prayer potion(4)');
 		const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
-		const gearSetupsUsed = objectEntries(msg.author.rawGear()).filter(entry =>
-			monster.attackStyleToUse?.includes(entry[0])
-		);
+
 		let prayerPotsNeeded = Math.max(1, fiveMinIncrements);
-		const hasPrayerMasterCape = gearSetupsUsed.some(
-			c => c[1].cape?.item === itemID('Prayer master cape')
-		);
+		const hasPrayerMasterCape = msg.author.hasItemEquippedAnywhere('Prayer master cape');
 		if (hasPrayerMasterCape && hasBlessing) {
 			boosts.push(`40% less prayer pots`);
 			prayerPotsNeeded = Math.floor(0.6 * prayerPotsNeeded);

@@ -21,6 +21,7 @@ import {
 } from './constants';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
+import { SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import itemID from './util/itemID';
@@ -397,6 +398,7 @@ export function channelIsSendable(channel: Channel | undefined): channel is Text
 
 export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 	for (const [skillName, level] of objectEntries(requirements)) {
+		if (skillName === SkillsEnum.Slayer) continue;
 		const xpHas = skills[skillName];
 		const levelHas = convertXPtoLVL(xpHas ?? 1, 120);
 		if (levelHas < level!) return false;
@@ -487,4 +489,11 @@ export function updateBankSetting(
 	const current = new Bank(client.settings.get(setting) as ItemBank);
 	const newBank = current.add(bankToAdd);
 	return client.settings.update(setting, newBank.bank);
+}
+
+/**
+ * ⚠️ Mutates
+ */
+export function removeFromArr<T>(array: T[], item: T) {
+	return (array = array.filter(i => i !== item));
 }

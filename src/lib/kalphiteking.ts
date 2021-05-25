@@ -28,7 +28,7 @@ export const KalphiteKingMonster: KillableMonster = {
 	table: {
 		kill: makeKillTable(
 			new LootTable()
-				.tertiary(40, 'Clue scroll (grandmaster)')
+				.tertiary(80, 'Clue scroll (grandmaster)')
 				.tertiary(6000, 'Baby kalphite king')
 				.tertiary(2500, 'Perfect chitin')
 				.tertiary(

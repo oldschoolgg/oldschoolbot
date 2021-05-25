@@ -11,7 +11,7 @@ import { torvaOutfit } from '../../lib/nex';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
-import { KalphiteKingActivityTaskOptions } from '../../lib/types/minions';
+import { BossActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, resolveNameBank } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
@@ -153,6 +153,12 @@ export default class extends BotCommand {
 				msgs.push(`${percent}% boost for Drygore mace`);
 			}
 
+			if (rangeGear.shield?.item === itemID('Offhand drygore mace')) {
+				const percent = 5;
+				effectiveTime = reduceNumByPercent(effectiveTime, percent);
+				msgs.push(`${percent}% boost for Offhand drygore mace`);
+			}
+
 			// Increase duration for lower melee-strength gear.
 			let rangeStrBonus = 0;
 			if (data.percentAttackStrength < 40) {
@@ -270,13 +276,12 @@ export default class extends BotCommand {
 		}
 		foodString += `${foodRemoved.join(', ')}.`;
 
-		await addSubTaskToActivityTask<KalphiteKingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<BossActivityTaskOptions>(this.client, {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
 			type: Activity.KalphiteKing,
-			leader: msg.author.id,
 			users: users.map(u => u.id)
 		});
 

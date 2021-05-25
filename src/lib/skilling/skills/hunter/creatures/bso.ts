@@ -13,7 +13,7 @@ const customBSOCreatures: Creature[] = [
 		table: new LootTable()
 			.tertiary(6000, 'Sandy')
 			.tertiary(17, MysteryBoxes)
-			.tertiary(200, 'Clue scroll (grandmaster)')
+			.tertiary(250, 'Clue scroll (grandmaster)')
 			.add('Sand')
 			.add('Sandworms', [10, 100]),
 		qpRequired: 3,
