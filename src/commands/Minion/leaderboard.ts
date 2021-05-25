@@ -113,7 +113,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
 			usage:
-				'[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame] [name:...string]',
+				'[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|itemcontracts] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -455,6 +455,26 @@ DESC LIMIT 500;`
 					.join('\n')
 			),
 			`${skill ? toTitleCase(skill.id) : 'Overall'} Leaderboard`
+		);
+	}
+
+	async itemcontracts(msg: KlasaMessage) {
+		const result: { id: string; qty: number }[] = await this.client.orm.query(`
+SELECT id, total_item_contracts as qty
+FROM users
+WHERE total_item_contracts > 0
+ORDER BY total_item_contracts DESC
+LIMIT 50;
+`);
+		console.log({ result });
+		this.doMenu(
+			msg,
+			util
+				.chunk(result, 10)
+				.map(subList =>
+					subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')
+				),
+			`Item Contract Leaderboard`
 		);
 	}
 
