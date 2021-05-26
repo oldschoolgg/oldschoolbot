@@ -345,7 +345,8 @@ export const enum BitField {
 	DisabledRandomEvents = 13,
 	PermanentIronman = 14,
 	HasGivenBirthdayPack = 200,
-	HasPermanentSpawnLamp = 201
+	HasPermanentSpawnLamp = 201,
+	HasScrollOfFarming = 202
 }
 
 interface BitFieldData {
