@@ -30,7 +30,7 @@ export const ClueTable = new LootTable()
 	.add(HardClueTable);
 
 const BlessingTable = new LootTable().add('Dwarven blessing').add('Monkey nuts');
-const RingOfLuckTable = new LootTable().add('Ring of luck').add('Ring of life',1, 2);
+const RingOfLuckTable = new LootTable().add('Ring of luck').add('Ring of life', 1, 2);
 
 export const DragonTable = new LootTable()
 	.add('Dragon sword', [1, 5], 2)
