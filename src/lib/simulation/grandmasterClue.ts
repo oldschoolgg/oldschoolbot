@@ -30,6 +30,7 @@ export const ClueTable = new LootTable()
 	.add(HardClueTable);
 
 const BlessingTable = new LootTable().add('Dwarven blessing').add('Monkey nuts');
+const RingOfLuckTable = new LootTable().add('Ring of luck').add('Ring of life');
 
 export const DragonTable = new LootTable()
 	.add('Dragon sword', [1, 5], 2)
@@ -73,7 +74,7 @@ const Supplies = new LootTable()
 const table = new LootTable()
 	.tertiary(2500, ClueHunterTable)
 	.tertiary(8000, BlessingTable)
-	.tertiary(8000, 'Ring of luck')
+	.tertiary(8000, RingOfLuckTable)
 	.tertiary(5_000, 'Deathtouched dart')
 	.tertiary(50, LampTable)
 	.tertiary(
