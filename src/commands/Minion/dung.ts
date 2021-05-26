@@ -83,6 +83,10 @@ const dungBuyables = [
 		cost: 400_000
 	},
 	{
+		item: getOSItem('Scroll of farming'),
+		cost: 400_000
+	},
+	{
 		item: getOSItem('Scroll of cleansing'),
 		cost: 400_000
 	},

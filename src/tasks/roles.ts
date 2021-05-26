@@ -1,7 +1,7 @@
 import { Guild } from 'discord.js';
 import { Task } from 'klasa';
 
-import { SkillUser } from '../commands/Minion/leaderboard';
+import { CLUser, SkillUser } from '../commands/Minion/leaderboard';
 import { production } from '../config';
 import { Roles } from '../lib/constants';
 import { collectionLogTypes } from '../lib/data/collectionLog';
@@ -9,8 +9,6 @@ import ClueTiers from '../lib/minions/data/clueTiers';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';
-import { Workers } from '../lib/workers';
-import { CLUser } from '../lib/workers/leaderboard.worker';
 
 async function addRoles(
 	g: Guild,
@@ -121,17 +119,25 @@ export default class extends Task {
 			'Chambers of Xeric'
 		]) {
 			const type = collectionLogTypes.find(t => t.name === clName)!;
-			const result = (await this.client.query(
-				`SELECT u.id, u."logBankLength", u."collectionLogBank" FROM (
-  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank" FROM users
-) u
-WHERE u."logBankLength" > 400 ORDER BY u."logBankLength" DESC;`
-			)) as CLUser[];
-			const users = await Workers.leaderboard({
-				type: 'cl',
-				users: result,
-				collectionLogInput: type
-			});
+			const items = Object.values(type.items).flat(Infinity) as number[];
+			const users = (
+				await this.client.orm.query(
+					`
+SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
+				  FROM (
+  SELECT ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank")) "cl_keys",
+  				id, "collectionLogBank",
+			    cardinality(ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank" - array[${items
+					.map(i => `'${i}'`)
+					.join(', ')}]))) "inverse_length"
+			FROM users
+			WHERE "collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
+			) u
+			ORDER BY qty DESC
+			LIMIT 1;
+			`
+				)
+			).filter((i: any) => i.qty > 0) as CLUser[];
 			topCollectors.push(users[0].id);
 		}
 

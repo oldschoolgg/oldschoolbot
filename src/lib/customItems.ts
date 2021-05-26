@@ -1439,6 +1439,8 @@ setCustomItem(
 	50_000_000
 );
 
+setCustomItem(48_200, 'Scroll of farming', 'Coal', {}, 1_000_000);
+
 /**
  * Misc Items
  *
