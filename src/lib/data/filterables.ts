@@ -1,6 +1,7 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { allPetIDs } from '../../commands/Minion/equippet';
+import { customItems } from '../customItems';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
@@ -969,5 +970,10 @@ export const filterableTypes: Filterable[] = [
 			...(Openables.find(o => o.name === 'Holiday Mystery box')!.table as LootTable).allItems,
 			...(Openables.find(o => o.name === 'Christmas cracker')!.table as LootTable).allItems
 		]
+	},
+	{
+		name: 'Custom Items',
+		aliases: ['custom', 'custom items'],
+		items: customItems
 	}
 ];
