@@ -2,7 +2,7 @@ import { Monsters } from 'oldschooljs';
 
 import { AssignableSlayerTask } from '../types';
 
-export const bossTasks: AssignableSlayerTask[] = [
+export const bossTasks: readonly AssignableSlayerTask[] = [
 	{
 		name: 'Abyssal sire',
 		amount: [3, 35],
@@ -171,4 +171,4 @@ export const bossTasks: AssignableSlayerTask[] = [
 		weight: 1,
 		id: [Monsters.Zulrah.id]
 	}
-];
+] as const;
