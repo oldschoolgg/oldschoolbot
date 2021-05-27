@@ -7,7 +7,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemID, roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
-
 const options = {
 	max: 1,
 	time: 10000,
@@ -50,6 +49,7 @@ const hammyDoubleMessages = [
 	`You give {item} to Hammy while he's on his hamster wheel. When he stops and the dust settles, you realize there are now two.`,
 	`Hammy takes your {item} while you aren't looking and runs to the casino. He comes back rich and hands you an extra {item} for your trouble.`
 ];
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
