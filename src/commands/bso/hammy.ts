@@ -25,7 +25,7 @@ export default class extends BotCommand {
 			usage: '<item:string>',
 			usageDelim: ',',
 			oneAtTime: true,
-			aliases: ['feed','feedhammy'],
+			aliases: ['feed', 'feedhammy'],
 			cooldown: 5,
 			altProtection: true
 		});
