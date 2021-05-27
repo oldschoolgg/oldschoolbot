@@ -80,11 +80,11 @@ const DeadLumberjackTable = new LootTable()
 	.every('Iron axe');
 
 export const TreebeardLootTable = new LootTable()
-	.tertiary(5000, 'Green crystal')
 	.tertiary(1200, TanglerootTable)
 	.tertiary(50, 'Clue scroll (master)')
 	.tertiary(300, DeadLumberjackTable)
 	.tertiary(100, 'Mysterious seed')
+	.tertiary(100, 'Ent hide')
 	.every(AllSeedTables, [2, 3])
 	.add(AllSeedTables, [5, 10])
 	.add(CleanHerbTable, [2, 3])

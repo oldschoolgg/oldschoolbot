@@ -497,3 +497,19 @@ export function updateBankSetting(
 export function removeFromArr<T>(array: T[], item: T) {
 	return (array = array.filter(i => i !== item));
 }
+
+const masterFarmerOutfit = resolveItems([
+	'Master farmer hat',
+	'Master farmer jacket',
+	'Master farmer pants',
+	'Master farmer gloves',
+	'Master farmer boots'
+]);
+
+export function userHasMasterFarmerOutfit(user: KlasaUser) {
+	const allItems = user.allItemsOwned();
+	for (const item of masterFarmerOutfit) {
+		if (!allItems.has(item)) return false;
+	}
+	return true;
+}

@@ -509,7 +509,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 9,
 		qpRequired: 100,
-		healAmountNeeded: 50 * 25,
+		healAmountNeeded: 60 * 25,
 		attackStyleToUse: GearSetupTypes.Mage,
 		attackStylesUsed: [GearStat.AttackMagic],
 		respawnTime: Time.Second * 40,

@@ -560,7 +560,8 @@ export const pets: CollectionLogData = {
 		'Brock',
 		'Peky',
 		'Steve',
-		'Frosty'
+		'Frosty',
+		'Obis'
 	])
 };
 
