@@ -10,8 +10,7 @@ export const clientOptions: KlasaClientOptions = {
 	messageCacheMaxSize: 200,
 	messageCacheLifetime: 120,
 	messageSweepInterval: 120,
-	disabledEvents: ['CHANNEL_PINS_UPDATE'],
-	disableEveryone: true,
+	// disableEveryone: true,
 	shards: 'auto',
 	ws: {
 		// @ts-ignore Intents aren't documented as a valid WS property in our current d.js version
@@ -34,7 +33,7 @@ export const clientOptions: KlasaClientOptions = {
 	permissionLevels,
 	pieceDefaults: { commands: { deletable: true } },
 	readyMessage: (client: KlasaClient) =>
-		`[Old School Bot] Ready to serve ${client.guilds.size} guilds.`,
+		`[Old School Bot] Ready to serve ${client.guilds.cache.size} guilds.`,
 	schedule: {
 		interval: 10000
 	},

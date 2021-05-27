@@ -34,7 +34,7 @@ export default class extends BotCommand {
 			Date.now() - msg.author.settings.get(UserSettings.LastDailyTimestamp) < Time.Minute &&
 			this.client.production
 		) {
-			(this.client.channels.get(Channel.ErrorLogs) as TextChannel).send(
+			(this.client.channels.cache.get(Channel.ErrorLogs) as TextChannel).send(
 				`(${msg.author.sanitizedName})[${msg.author.id}] paid daily to (${user.sanitizedName})[${user.id}]`
 			);
 		}
