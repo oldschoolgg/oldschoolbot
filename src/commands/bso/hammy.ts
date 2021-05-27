@@ -1,11 +1,12 @@
 import { randArrItem } from 'e';
-import { Bank } from 'oldschooljs';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
+import { Emoji } from '../../lib/constants';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {itemID, roll} from '../../lib/util';
+import { itemID, roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
-import {Emoji} from "../../lib/constants";
+
 
 const options = {
 	max: 1,
@@ -31,8 +32,8 @@ const hammyMessages = [
 	"Your Hammy gnaws on the {item} until it's a worthless piece of junk which you discard.",
 	'You show Hammy your {item} and he hides it in his cheeks. You spend hours trying to get it out, only to give up in despair.',
 	'The last time Hammy saw your {item} he was too small to eat it, but not anymore!',
-	Emoji.MoneyBag + ' Hammy took your {item} and diced it...\n\n He lost. ' + Emoji.Sad,
-	Emoji.MoneyBag + ' Hammy took your {item} and diced it...\n\n He won, but ate the profit as well as your {item}. ' + Emoji.Sad
+	`${Emoji.MoneyBag} Hammy took your {item} and diced it...\n\n He lost. ${Emoji.Sad}`,
+	`${Emoji.MoneyBag} Hammy took your {item} and diced it...\n\n He won, but ate the profit as well as your {item}. ${Emoji.Sad}`
 ];
 
 const hammyFailMessages = [
@@ -40,11 +41,11 @@ const hammyFailMessages = [
 	"Hammy refused to eat {item} for personal reasons. Don't ask.",
 	'Hammy will NEVER eat another {item} after what happened last summer...',
 	'You dropped your {item} but Hammy helpfully caught it and slipped it back into your pack.',
-	Emoji.MoneyBag + ` Hammy took your {item} and diced it...\n\nHe won, but ate the profit. At least you didn't lost anything` + Emoji.Joy
+	`${Emoji.MoneyBag} Hammy took your {item} and diced it...\n\nHe won, but ate the profit. At least you didn't lost anything ${Emoji.Joy}`
 ];
 
 const hammyDoubleMessages = [
-	Emoji.MoneyBag + ` Hammy took your {item} and diced it...\n\nHe won, and actually brought you the profit!` + Emoji.Joy,
+	`${Emoji.MoneyBag} Hammy took your {item} and diced it...\n\nHe won, and actually brought you the profit! ${Emoji.Joy}`,
 	'You feed {item} to Hammy and he hides it in his cheeks. You go to pull it out and find it doubled. How did that happen?',
 	`You give {item} to Hammy while he's on his hamster wheel. When he stops and the dust settles, you realize there are now two.`,
 	`Hammy takes your {item} while you aren't looking and runs to the casino. He comes back rich and hands you an extra {item} for your trouble.`
@@ -73,11 +74,14 @@ export default class extends BotCommand {
 			try {
 				await msg.channel.awaitMessages(
 					_msg =>
-						_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+						_msg.author.id === msg.author.id &&
+						_msg.content.toLowerCase() === 'confirm',
 					options
 				);
 			} catch (err) {
-				return dropMsg.edit(`You decide it's not worth risking your ${firstItem.name}, leaving Hammy to fend for himself.`);
+				return dropMsg.edit(
+					`You decide it's not worth risking your ${firstItem.name}, leaving Hammy to fend for himself.`
+				);
 			}
 		}
 
@@ -88,13 +92,13 @@ export default class extends BotCommand {
 			return msg.send(`You don't have a Hammy, so how could you feed it?`);
 		}
 
-		if(roll(chanceToDouble)) {
+		if (roll(chanceToDouble)) {
 			let loot = new Bank();
 			loot.add(firstItem.name);
 			await msg.author.addItemsToBank(loot, true);
 			return msg.send(randArrItem(hammyDoubleMessages).replace(/\{item\}/g, firstItem.name));
 		}
-		if(roll(chanceToSave)) {
+		if (roll(chanceToSave)) {
 			return msg.send(randArrItem(hammyFailMessages).replace(/\{item\}/g, firstItem.name));
 		}
 		await msg.author.removeItemFromBank(firstItem.id);
