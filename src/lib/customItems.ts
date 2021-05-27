@@ -1459,3 +1459,11 @@ setCustomItem(50_007, 'Blacksmith boots', 'Rune boots', {}, 100_000);
 setCustomItem(50_008, 'Mysterious seed', 'Magic seed', {}, 100_000);
 setCustomItem(50_009, 'Athelas seed', 'Magic seed', {}, 1_000_000);
 setCustomItem(50_010, 'Athelas', 'Magic seed', {}, 1_000_000);
+
+// Master farmer
+setCustomItem(50_011, 'Ent hide', 'Magic seed', {}, 1_000_000);
+setCustomItem(50_012, 'Master farmer hat', 'Rune full helm', {}, 1_000_000);
+setCustomItem(50_013, 'Master farmer jacket', 'Rune platebody', {}, 1_000_000);
+setCustomItem(50_014, 'Master farmer pants', 'Rune platelegs', {}, 1_000_000);
+setCustomItem(50_015, 'Master farmer gloves', 'Leather gloves', {}, 1_000_000);
+setCustomItem(50_016, 'Master farmer boots', 'Rune boots', {}, 1_000_000);

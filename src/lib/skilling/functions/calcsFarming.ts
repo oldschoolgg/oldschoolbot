@@ -2,7 +2,7 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 
 import { BitField } from '../../constants';
 import Farming from '../../skilling/skills/farming';
-import { itemNameFromID, rand } from '../../util';
+import { itemNameFromID, rand, userHasMasterFarmerOutfit } from '../../util';
 import { Plant, SkillsEnum } from '../types';
 
 export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
@@ -23,7 +23,8 @@ export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
 			break;
 		}
 	}
-	if (user.bitfield.includes(BitField.HasScrollOfFarming)) numOfPatches += 3;
+	if (user.bitfield.includes(BitField.HasScrollOfFarming)) numOfPatches += 2;
+	if (userHasMasterFarmerOutfit(user)) numOfPatches += 3;
 	return numOfPatches;
 }
 
