@@ -9,7 +9,7 @@ const tier3ElligibleBits = [BitField.IsPatronTier3, BitField.isContributor, BitF
 
 export default function getUsersPerkTier(
 	userOrBitfield: KlasaUser | readonly BitField[]
-): PerkTier {
+): PerkTier | 0 {
 	if (userOrBitfield instanceof User && userOrBitfield.client.owners.has(userOrBitfield)) {
 		return 10;
 	}
