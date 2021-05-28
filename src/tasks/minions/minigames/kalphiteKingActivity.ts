@@ -8,10 +8,11 @@ import { Emoji } from '../../../lib/constants';
 import { KalphiteKingMonster } from '../../../lib/kalphiteking';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { allNexItems } from '../../../lib/nex';
+import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, channelIsSendable, noOp } from '../../../lib/util';
+import { addBanks, channelIsSendable, noOp, updateBankSetting } from '../../../lib/util';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
@@ -91,6 +92,8 @@ export default class extends Task {
 				size: users.length
 			});
 		}
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.KalphiteKingLoot, totalLoot);
 
 		// Show deaths in the result
 		const deathEntries = Object.entries(deaths);

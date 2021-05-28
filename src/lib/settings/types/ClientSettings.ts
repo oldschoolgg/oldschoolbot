@@ -58,5 +58,11 @@ export namespace ClientSettings {
 
 		export const KingGoldemarCost = T<O.Readonly<ItemBank>>('kg_cost');
 		export const KingGoldemarLoot = T<O.Readonly<ItemBank>>('kg_loot');
+
+		export const KalphiteKingCost = T<O.Readonly<ItemBank>>('kk_cost');
+		export const KalphiteKingLoot = T<O.Readonly<ItemBank>>('kk_loot');
+
+		export const NexCost = T<O.Readonly<ItemBank>>('nex_cost');
+		export const NexLoot = T<O.Readonly<ItemBank>>('nex_loot');
 	}
 }

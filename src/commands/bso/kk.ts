@@ -1,5 +1,6 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
 import { hasArrayOfItemsEquipped, hasItemEquipped } from '../../lib/gear';
@@ -8,14 +9,42 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../lib/minions/types';
 import { torvaOutfit } from '../../lib/nex';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { Gear } from '../../lib/structures/Gear';
 import { MakePartyOptions } from '../../lib/types';
 import { BossActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, resolveNameBank } from '../../lib/util';
+import { formatDuration, itemID, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getKalphiteKingGearStats } from '../../lib/util/getKalphiteKingGearStats';
+
+const minimumSoloGear = new Gear({
+	body: 'Torva platebody',
+	legs: 'Torva platelegs',
+	feet: 'Torva boots',
+	hands: 'Torva gloves'
+});
+
+function calcFood(user: KlasaUser, teamSize: number, quantity: number) {
+	let [healAmountNeeded] = calculateMonsterFood(KalphiteKingMonster, user);
+	const kc = user.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0;
+	if (kc > 50) healAmountNeeded *= 0.5;
+	else if (kc > 30) healAmountNeeded *= 0.6;
+	else if (kc > 15) healAmountNeeded *= 0.7;
+	else if (kc > 10) healAmountNeeded *= 0.8;
+	else if (kc > 5) healAmountNeeded *= 0.9;
+
+	let brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
+	if (teamSize === 1) brewsNeeded++;
+	const restoresNeeded = Math.ceil(brewsNeeded / 3);
+	const items = new Bank({
+		'Saradomin brew(4)': brewsNeeded,
+		'Super restore(4)': restoresNeeded
+	});
+	return items;
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -54,7 +83,7 @@ export default class extends BotCommand {
 		}
 	}
 
-	async run(msg: KlasaMessage) {
+	async run(msg: KlasaMessage, [type = 'mass']: ['mass' | 'solo' | undefined]) {
 		this.checkReqs([msg.author], KalphiteKingMonster, 2);
 
 		const partyOptions: MakePartyOptions = {
@@ -98,7 +127,19 @@ export default class extends BotCommand {
 			}
 		};
 
-		const users = await msg.makePartyAwaiter(partyOptions);
+		const users = type === 'mass' ? await msg.makePartyAwaiter(partyOptions) : [msg.author];
+
+		if (users.length === 1) {
+			if (!msg.author.getGear('melee').meetsStatRequirements(minimumSoloGear.stats)) {
+				return msg.channel.send(`Your gear isn't good enough to solo the Kalphite King.`);
+			}
+			if (msg.author.getKC(KalphiteKingMonster.id) < 50) {
+				return msg.channel.send(
+					`You need atleast 50 KC before you can solo the Kalphite King.`
+				);
+			}
+		}
+
 		let debugStr = '';
 		let effectiveTime = KalphiteKingMonster.timeToFinish;
 
@@ -215,6 +256,10 @@ export default class extends BotCommand {
 			debugStr += `${msgs.join(', ')}. `;
 		}
 
+		if (users.length === 1) {
+			effectiveTime = reduceNumByPercent(effectiveTime, 20);
+		}
+
 		let [quantity, duration, perKillTime] = await calcDurQty(
 			users,
 			{ ...KalphiteKingMonster, timeToFinish: effectiveTime },
@@ -227,52 +272,17 @@ export default class extends BotCommand {
 		let foodString = 'Removed brews/restores from users: ';
 		let foodRemoved = [];
 		for (const user of users) {
-			let [healAmountNeeded] = calculateMonsterFood(KalphiteKingMonster, user);
-			const kc = user.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0;
-			if (kc > 50) healAmountNeeded *= 0.5;
-			else if (kc > 30) healAmountNeeded *= 0.6;
-			else if (kc > 15) healAmountNeeded *= 0.7;
-			else if (kc > 10) healAmountNeeded *= 0.8;
-			else if (kc > 5) healAmountNeeded *= 0.9;
-			if (users.length > 1) {
-				healAmountNeeded /= (users.length + 1) / 1.5;
-			}
-
-			const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
-			const restoresNeeded = Math.ceil(brewsNeeded / 3);
-			if (
-				!user.bank().has(
-					resolveNameBank({
-						'Saradomin brew(4)': brewsNeeded,
-						'Super restore(4)': restoresNeeded
-					})
-				)
-			) {
+			const food = calcFood(user, users.length, quantity);
+			if (!user.bank().has(food.bank)) {
 				throw `${user.username} doesn't have enough brews or restores.`;
 			}
 		}
+		const totalCost = new Bank();
 		for (const user of users) {
-			let [healAmountNeeded] = calculateMonsterFood(KalphiteKingMonster, user);
-			const kc = user.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0;
-			if (kc > 50) healAmountNeeded *= 0.5;
-			else if (kc > 30) healAmountNeeded *= 0.6;
-			else if (kc > 15) healAmountNeeded *= 0.7;
-			else if (kc > 10) healAmountNeeded *= 0.8;
-			else if (kc > 5) healAmountNeeded *= 0.9;
-
-			if (users.length > 1) {
-				healAmountNeeded /= (users.length + 1) / 1.5;
-			}
-
-			const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
-			const restoresNeeded = Math.ceil(brewsNeeded / 3);
-			await user.removeItemsFromBank(
-				resolveNameBank({
-					'Saradomin brew(4)': brewsNeeded,
-					'Super restore(4)': restoresNeeded
-				})
-			);
-			foodRemoved.push(`${brewsNeeded}/${restoresNeeded} from ${user.username}`);
+			const food = calcFood(user, users.length, quantity);
+			await user.removeItemsFromBank(food.bank);
+			totalCost.add(food);
+			foodRemoved.push(`${food} from ${user.username}`);
 		}
 		foodString += `${foodRemoved.join(', ')}.`;
 
@@ -284,6 +294,8 @@ export default class extends BotCommand {
 			type: Activity.KalphiteKing,
 			users: users.map(u => u.id)
 		});
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.KalphiteKingCost, totalCost);
 
 		let str = `${partyOptions.leader.username}'s party (${users
 			.map(u => u.username)

@@ -491,11 +491,8 @@ export function updateBankSetting(
 	return client.settings.update(setting, newBank.bank);
 }
 
-/**
- * ⚠️ Mutates
- */
 export function removeFromArr<T>(array: T[], item: T) {
-	return (array = array.filter(i => i !== item));
+	return array.filter(i => i !== item);
 }
 
 const masterFarmerOutfit = resolveItems([

@@ -76,25 +76,29 @@ export default class DailyCommand extends BotCommand {
 					)
 				);
 			}
-			const sellMsg = await msg.channel.send(
-				embed.setDescription(
-					`Are you sure you want to skip your item contract? You won't be able to get another contract for ${formatDuration(
-						eightHours / 2
-					)}. Say \`y\` to confirm.`
-				)
-			);
 
-			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'y',
-					{
-						max: 1,
-						time: 13_000,
-						errors: ['time']
-					}
+			if (!msg.flagArgs.confirm && !msg.flagArgs.cf && !msg.flagArgs.yes) {
+				const sellMsg = await msg.channel.send(
+					embed.setDescription(
+						`Are you sure you want to skip your item contract? You won't be able to get another contract for ${formatDuration(
+							eightHours / 2
+						)}. Say \`y\` to confirm.`
+					)
 				);
-			} catch (err) {
-				return sellMsg.edit(`Cancelled.`);
+
+				try {
+					await msg.channel.awaitMessages(
+						_msg =>
+							_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'y',
+						{
+							max: 1,
+							time: 13_000,
+							errors: ['time']
+						}
+					);
+				} catch (err) {
+					return sellMsg.edit(`Cancelled.`);
+				}
 			}
 			const newItem = randArrItem(allMbTables);
 			await msg.author.settings.update(
