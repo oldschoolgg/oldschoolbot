@@ -5,6 +5,12 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
+const options = {
+	max: 1,
+	time: 10000,
+	errors: ['time']
+};
+
 const hammyMessages = [
 	'You try to use a {item} on Hammy, he swiftly eats it.',
 	"You shove the {item} in Hammy's face; he crushes it with his teeth in rage, barely missing your hand.",
@@ -40,6 +46,25 @@ export default class extends BotCommand {
 		}
 		if (!bank.has(itemID('Hammy'))) {
 			return msg.send(`You don't have a Hammy, so how could you feed it?`);
+		}
+
+		if (!msg.flagArgs.confirm && !msg.flagArgs.cf && !msg.flagArgs.yes) {
+			const dropMsg = await msg.channel.send(
+				`${msg.author}, are you sure you want to give ${firstItem.name} to Hammy? You probably won't get it back... Type \`confirm\` to confirm.`
+			);
+
+			try {
+				await msg.channel.awaitMessages(
+					_msg =>
+						_msg.author.id === msg.author.id &&
+						_msg.content.toLowerCase() === 'confirm',
+					options
+				);
+			} catch (err) {
+				return dropMsg.edit(
+					`You decide it's not worth risking your ${firstItem.name}, leaving Hammy to fend for himself.`
+				);
+			}
 		}
 
 		await msg.author.removeItemFromBank(firstItem.id);
