@@ -24,7 +24,7 @@ export default class extends BotCommand {
 			return;
 		}
 		return message.channel.send(
-			`<@&${roleToPing.roleID}> You were pinged because you have this role, you can remove it using \`+role ${roleToPing.name}\`.`
+			`<@&${roleToPing.roleID}> You were pinged because you have this role, you can remove it using \`=roles ${roleToPing.name}\`.`
 		);
 	}
 }
