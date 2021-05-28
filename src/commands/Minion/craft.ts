@@ -35,10 +35,10 @@ export function hasFallyHardDiary(user: KlasaUser): boolean {
 		crafting: 40,
 		farming: 45,
 		prayer: 70,
-		runecraft: 56
+		runecraft: 56,
 		// slayer: 72,
-		// strength: 37,
-		// defense: 50
+		strength: 37,
+		defence: 50
 	});
 }
 

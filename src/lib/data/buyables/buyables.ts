@@ -430,6 +430,14 @@ const questBuyables: Buyable[] = [
 		qpRequired: 85
 	},
 	{
+		name: 'Silverlight',
+		outputItems: {
+			[itemID('Silverlight')]: 1
+		},
+		gpCost: 50_000,
+		qpRequired: 3
+	},
+	{
 		name: 'Darklight',
 		outputItems: {
 			[itemID('Darklight')]: 1
@@ -558,6 +566,99 @@ const questBuyables: Buyable[] = [
 			'Farseer helm': 1
 		}),
 		gpCost: 780_000,
+		qpRequired: 60
+	},
+	{
+		name: "Doctor's hat",
+		outputItems: resolveNameBank({
+			"Doctor's hat": 1
+		}),
+		gpCost: 60_000,
+		qpRequired: 60
+	},
+	{
+		name: 'Medical gown',
+		outputItems: resolveNameBank({
+			'Medical gown': 1
+		}),
+		gpCost: 60_000,
+		qpRequired: 60
+	},
+	{
+		name: 'Ring of charos',
+		outputItems: resolveNameBank({
+			'Ring of charos': 1
+		}),
+		gpCost: 100_000,
+		qpRequired: 60
+	},
+	{
+		name: 'Nurse hat',
+		outputItems: resolveNameBank({
+			'Nurse hat': 1
+		}),
+		gpCost: 60_000,
+		qpRequired: 60
+	},
+	{
+		name: 'Holy wrench',
+		outputItems: resolveNameBank({
+			'Holy wrench': 1
+		}),
+		gpCost: 70_000,
+		qpRequired: 70
+	},
+	{
+		name: 'Initiate outfit',
+		outputItems: resolveNameBank({
+			'Initiate sallet': 1,
+			'Initiate hauberk': 1,
+			'Initiate cuisse': 1
+		}),
+		gpCost: 250_000,
+		qpRequired: 35
+	},
+	{
+		name: 'Proselyte outfit',
+		outputItems: resolveNameBank({
+			'Proselyte sallet': 1,
+			'Proselyte hauberk': 1,
+			'Proselyte cuisse': 1,
+			'Proselyte tasset': 1
+		}),
+		gpCost: 500_000,
+		qpRequired: 75
+	},
+	{
+		name: 'Excalibur',
+		outputItems: {
+			[itemID('Excalibur')]: 1
+		},
+		gpCost: 50_000,
+		qpRequired: 15
+	},
+	{
+		name: 'Bomber jacket',
+		outputItems: {
+			[itemID('Bomber jacket')]: 1
+		},
+		gpCost: 50_000,
+		qpRequired: 21
+	},
+	{
+		name: 'Bomber cap',
+		outputItems: {
+			[itemID('Bomber cap')]: 1
+		},
+		gpCost: 50_000,
+		qpRequired: 21
+	},
+	{
+		name: 'Pet rock',
+		outputItems: {
+			[itemID('Pet rock')]: 1
+		},
+		gpCost: 500_000,
 		qpRequired: 60
 	}
 ];
