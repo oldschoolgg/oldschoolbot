@@ -4,11 +4,9 @@ import { AssignableSlayerTask } from '../types';
 
 export const vannakaTasks: AssignableSlayerTask[] = [
 	{
-		name: 'Aberrant spectre',
+		monster: Monsters.AberrantSpectre,
 		amount: [60, 120],
-
 		weight: 8,
-		alternatives: ['Deviant Spectre'],
 		id: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		combatLevel: 65,
 		slayerLevel: 60,
@@ -16,18 +14,16 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Abyssal demon',
+		monster: Monsters.AbyssalDemon,
 		amount: [60, 120],
-
 		weight: 5,
-		alternatives: ['Abyssal sire'],
 		id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
 		combatLevel: 85,
 		slayerLevel: 85,
 		unlocked: true
 	},
 	{
-		name: 'Ankou',
+		monster: Monsters.Ankou,
 		amount: [25, 35],
 		weight: 7,
 		id: [Monsters.Ankou.id],
@@ -35,10 +31,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Banshee',
+		monster: Monsters.Banshee,
 		amount: [60, 120],
 		weight: 6,
-		alternatives: ['Twisted Banshee'],
 		id: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
 		combatLevel: 20,
 		slayerLevel: 15,
@@ -46,22 +41,18 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Basilisk',
+		monster: Monsters.Basilisk,
 		amount: [60, 120],
-
 		weight: 8,
-		alternatives: ['Basilisk Knight'],
 		id: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
 		combatLevel: 40,
 		slayerLevel: 40,
 		unlocked: true
 	},
 	{
-		name: 'Bloodveld',
+		monster: Monsters.Bloodveld,
 		amount: [60, 120],
-
 		weight: 8,
-		alternatives: ['Mutated Bloodveld'],
 		id: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
 		combatLevel: 50,
 		slayerLevel: 50,
@@ -69,10 +60,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Blue Dragon',
+		monster: Monsters.BlueDragon,
 		amount: [60, 120],
 		weight: 7,
-		alternatives: ['Baby Blue Dragon', 'Brutal Blue Dragon', 'Vorkath'],
 		id: [
 			Monsters.BlueDragon.id,
 			Monsters.BabyBlueDragon.id,
@@ -84,7 +74,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Brine rat',
+		monster: Monsters.BrineRat,
 		amount: [60, 120],
 		weight: 7,
 		id: [Monsters.BrineRat.id],
@@ -94,7 +84,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Bronze Dragon',
+		monster: Monsters.BronzeDragon,
 		amount: [30, 50],
 		weight: 7,
 		id: [Monsters.BronzeDragon.id],
@@ -103,7 +93,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Cave bug',
+		monster: Monsters.CaveBug,
 		amount: [10, 20],
 		weight: 7,
 		id: [Monsters.CaveBug.id],
@@ -111,7 +101,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Cave crawler',
+		monster: Monsters.CaveCrawler,
 		amount: [60, 120],
 		weight: 7,
 		id: [Monsters.CaveCrawler.id],
@@ -120,7 +110,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Cave slime',
+		monster: Monsters.CaveSlime,
 		amount: [10, 20],
 		weight: 7,
 		id: [Monsters.CaveSlime.id],
@@ -129,7 +119,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Cockatrice',
+		monster: Monsters.Cockatrice,
 		amount: [60, 120],
 		weight: 8,
 		id: [Monsters.Cockatrice.id],
@@ -138,7 +128,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Crawling Hand',
+		monster: Monsters.CrawlingHand,
 		amount: [60, 120],
 		weight: 6,
 		id: [Monsters.CrawlingHand.id],
@@ -147,7 +137,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Crocodile',
+		monster: Monsters.Crocodile,
 		amount: [60, 120],
 		weight: 6,
 		id: [Monsters.Crocodile.id],
@@ -155,16 +145,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Dagannoth',
+		monster: Monsters.Dagannoth,
 		amount: [60, 120],
 		weight: 7,
-		alternatives: [
-			'Dagannoth spawn',
-			'Dagannoth fledgeling',
-			'Dagannoth Supreme',
-			'Dagannoth Rex',
-			'Dagannoth Prime'
-		],
 		id: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
@@ -178,9 +161,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Dust devil',
+		monster: Monsters.DustDevil,
 		amount: [60, 120],
-
 		weight: 8,
 		id: [Monsters.DustDevil.id],
 		combatLevel: 70,
@@ -189,7 +171,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Earth warrior',
+		monster: Monsters.EarthWarrior,
 		amount: [40, 80],
 		weight: 6,
 		id: [Monsters.EarthWarrior.id],
@@ -197,10 +179,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Elf warrior',
+		monster: Monsters.ElfWarrior,
 		amount: [40, 100],
 		weight: 7,
-		alternatives: ['Iorwerth Archer', 'Elf Archer', 'Iorwerth Warrior', 'Mourner'],
 		id: [
 			Monsters.ElfWarrior.id,
 			Monsters.IorwerthArcher.id,
@@ -213,7 +194,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Fever spider',
+		monster: Monsters.FeverSpider,
 		amount: [60, 120],
 		weight: 7,
 		id: [Monsters.FeverSpider.id],
@@ -223,7 +204,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Fire giant',
+		monster: Monsters.FireGiant,
 		amount: [60, 120],
 		weight: 7,
 		id: [Monsters.FireGiant.id],
@@ -231,11 +212,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Gargoyle',
+		monster: Monsters.Gargoyle,
 		amount: [60, 120],
-
 		weight: 5,
-		alternatives: ['Grotesque Guardians'],
 		id: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		combatLevel: 80,
 		slayerLevel: 75,
@@ -243,7 +222,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Ghoul',
+		monster: Monsters.Ghoul,
 		amount: [10, 40],
 		weight: 7,
 		id: [Monsters.Ghoul.id],
@@ -252,17 +231,16 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Green dragon',
+		monster: Monsters.GreenDragon,
 		amount: [40, 80],
 		weight: 6,
-		alternatives: ['Baby Green dragon', 'Brutal Green dragon'],
 		id: [Monsters.GreenDragon.id, Monsters.BabyGreenDragon.id, Monsters.BrutalGreenDragon.id],
 		combatLevel: 52,
 		questPoints: 34,
 		unlocked: true
 	},
 	{
-		name: 'Harpie Bug Swarm',
+		monster: Monsters.HarpieBugSwarm,
 		amount: [60, 120],
 		weight: 8,
 		id: [Monsters.HarpieBugSwarm.id],
@@ -271,32 +249,23 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Skeleton dogs summoned by vetion
-		name: 'Hellhound',
+		monster: Monsters.Hellhound,
 		amount: [40, 80],
 		weight: 7,
-		alternatives: ['Cerberus', "Vet'ion"],
-		id: [
-			Monsters.Hellhound.id,
-			Monsters.Cerberus
-				.id /* ,
-			Monsters.SkeletonHellhound.id,
-			Monsters.GreaterSkeletonHellhound.id */
-		],
+		id: [Monsters.Hellhound.id, Monsters.Cerberus.id],
 		combatLevel: 75,
 		unlocked: true
 	},
 	{
-		name: 'Hill Giant',
+		monster: Monsters.HillGiant,
 		amount: [60, 120],
 		weight: 7,
-		alternatives: ['Obor', 'Cyclops'],
 		id: [Monsters.HillGiant.id, Monsters.Obor.id, Monsters.Cyclops.id],
 		combatLevel: 25,
 		unlocked: true
 	},
 	{
-		name: 'Hobgoblin',
+		monster: Monsters.Hobgoblin,
 		amount: [60, 120],
 		weight: 7,
 		id: [Monsters.Hobgoblin.id],
@@ -304,8 +273,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Revenant cave in future?
-		name: 'Ice giant',
+		monster: Monsters.IceGiant,
 		amount: [40, 80],
 		weight: 7,
 		id: [Monsters.IceGiant.id],
@@ -313,7 +281,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Ice warrior',
+		monster: Monsters.IceWarrior,
 		amount: [60, 120],
 		weight: 7,
 		id: [Monsters.IceWarrior.id],
@@ -321,7 +289,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Infernal Mage',
+		monster: Monsters.InfernalMage,
 		amount: [60, 120],
 		weight: 8,
 		id: [Monsters.InfernalMage.id],
@@ -331,17 +299,16 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Jelly',
+		monster: Monsters.Jelly,
 		amount: [60, 120],
 		weight: 8,
-		alternatives: ['Warped Jelly'],
 		id: [Monsters.Jelly.id, Monsters.WarpedJelly.id],
 		combatLevel: 57,
 		slayerLevel: 52,
 		unlocked: true
 	},
 	{
-		name: 'Jungle horror',
+		monster: Monsters.JungleHorror,
 		amount: [60, 120],
 		weight: 8,
 		id: [Monsters.JungleHorror.id],
@@ -350,10 +317,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Kalphite worker',
+		monster: Monsters.KalphiteWorker,
 		amount: [60, 120],
 		weight: 7,
-		alternatives: ['Kalphite soldier', 'Kalphite guardian', 'Kalphite Queen'],
 		id: [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
@@ -364,7 +330,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Killerwatt',
+		monster: Monsters.Killerwatt,
 		amount: [30, 80],
 		weight: 6,
 		id: [Monsters.Killerwatt.id],
@@ -374,7 +340,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Kurask',
+		monster: Monsters.Kurask,
 		amount: [60, 120],
 		weight: 7,
 		id: [Monsters.Kurask.id],
@@ -383,10 +349,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Lizard',
+		monster: Monsters.Lizard,
 		amount: [60, 120],
 		weight: 7,
-		alternatives: ['Small Lizard', 'Desert Lizard', 'Sulphur Lizard'],
 		id: [
 			Monsters.Lizard.id,
 			Monsters.SmallLizard.id,
@@ -397,17 +362,15 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		// Revenant cave in future? Kril body guard, count in kril?
-		name: 'Lesser demon',
+		monster: Monsters.LesserDemon,
 		amount: [60, 120],
 		weight: 7,
-		//		alternatives: ["Zakl'n Gritch"],
-		id: [Monsters.LesserDemon.id /* , Monsters.ZaklnGritch.id*/],
+		id: [Monsters.LesserDemon.id],
 		combatLevel: 60,
 		unlocked: true
 	},
 	{
-		name: 'Mogre',
+		monster: Monsters.Mogre,
 		amount: [60, 120],
 		weight: 7,
 		id: [Monsters.Mogre.id],
@@ -416,7 +379,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Molanisk',
+		monster: Monsters.Molanisk,
 		amount: [39, 50],
 		weight: 7,
 		id: [Monsters.Molanisk.id],
@@ -426,20 +389,17 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Moss giant',
+		monster: Monsters.MossGiant,
 		amount: [60, 120],
 		weight: 7,
-		alternatives: ['Bryophyta'],
 		id: [Monsters.MossGiant.id, Monsters.Bryophyta.id],
 		combatLevel: 40,
 		unlocked: true
 	},
 	{
-		name: 'Nechryael',
+		monster: Monsters.Nechryael,
 		amount: [60, 120],
-
 		weight: 5,
-		alternatives: ['Greater Nechryael'],
 		id: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		combatLevel: 85,
 		slayerLevel: 80,
@@ -447,16 +407,15 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Ogre',
+		monster: Monsters.Ogre,
 		amount: [60, 120],
 		weight: 7,
-		alternatives: ['Ogress Shaman', 'Ogress Warrior'],
 		id: [Monsters.Ogre.id, Monsters.OgressShaman.id, Monsters.OgressWarrior.id],
 		combatLevel: 40,
 		unlocked: true
 	},
 	{
-		name: 'Otherworldly being',
+		monster: Monsters.Otherworldlybeing,
 		amount: [60, 120],
 		weight: 8,
 		id: [Monsters.Otherworldlybeing.id],
@@ -465,7 +424,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Pyrefiend',
+		monster: Monsters.Pyrefiend,
 		amount: [60, 120],
 		weight: 8,
 		id: [Monsters.Pyrefiend.id],
@@ -474,7 +433,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Rockslug',
+		monster: Monsters.Rockslug,
 		amount: [60, 120],
 		weight: 7,
 		id: [Monsters.Rockslug.id],
@@ -483,10 +442,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Shade',
+		monster: Monsters.Shade,
 		amount: [60, 120],
 		weight: 8,
-		alternatives: ['Loar Shade', 'Phrin Shade', 'Riyl Shade', 'Asyn Shade', 'Fiyr Shade'],
 		id: [
 			Monsters.Shade.id,
 			Monsters.LoarShade.id,
@@ -499,10 +457,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Sea Snake Hatchling',
+		monster: Monsters.SeaSnakeHatchling,
 		amount: [60, 120],
 		weight: 6,
-		alternatives: ['Sea Snake Young'],
 		id: [Monsters.SeaSnakeHatchling.id, Monsters.SeaSnakeYoung.id],
 		combatLevel: 50,
 		slayerLevel: 40,
@@ -510,7 +467,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Shadow warrior',
+		monster: Monsters.ShadowWarrior,
 		amount: [40, 80],
 		weight: 8,
 		id: [Monsters.ShadowWarrior.id],
@@ -519,10 +476,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Spiritual ranger',
+		monster: Monsters.SpiritualRanger,
 		amount: [60, 120],
 		weight: 8,
-		alternatives: ['Spiritual warrior', 'Spiritual mage'],
 		id: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
 		combatLevel: 60,
 		slayerLevel: 63,
@@ -530,7 +486,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Terror dog',
+		monster: Monsters.TerrorDog,
 		amount: [20, 45],
 		weight: 6,
 		id: [Monsters.TerrorDog.id],
@@ -540,16 +496,15 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Mountain troll',
+		monster: Monsters.MountainTroll,
 		amount: [60, 120],
 		weight: 7,
-		alternatives: ['Ice troll', 'Troll general'],
 		id: [Monsters.MountainTroll.id, Monsters.IceTroll.id, Monsters.TrollGeneral.id],
 		combatLevel: 60,
 		unlocked: true
 	},
 	{
-		name: 'Turoth',
+		monster: Monsters.Turoth,
 		amount: [60, 120],
 		weight: 8,
 		id: [Monsters.Turoth.id],
@@ -558,11 +513,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Feral Vampyre',
+		monster: Monsters.FeralVampyre,
 		amount: [10, 20],
-
 		weight: 7,
-		alternatives: ['Vampyre Juvinate', 'Vyrewatch', 'Vyrewatch Sentinel'],
 		id: [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
@@ -574,7 +527,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Wall beast',
+		monster: Monsters.WallBeast,
 		amount: [10, 20],
 		weight: 6,
 		id: [Monsters.WallBeast.id],
@@ -583,7 +536,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Werewolf',
+		monster: Monsters.Werewolf,
 		amount: [40, 80],
 		weight: 7,
 		id: [Monsters.Werewolf.id],

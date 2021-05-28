@@ -8,7 +8,7 @@ import { nieveTasks } from './nieveTasks';
 import { turaelTasks } from './turaelTasks';
 import { vannakaTasks } from './vannakaTasks';
 
-const allTasks: AssignableSlayerTask[] = [
+export const allSlayerTasks: AssignableSlayerTask[] = [
 	...bossTasks,
 	...chaeldarTasks,
 	...konarTasks,
@@ -18,5 +18,3 @@ const allTasks: AssignableSlayerTask[] = [
 	...vannakaTasks,
 	...duradelTasks
 ];
-
-export default allTasks;

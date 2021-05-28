@@ -1,23 +1,23 @@
 import { Item } from 'oldschooljs/dist/meta/types';
+import Monster from 'oldschooljs/dist/structures/Monster';
 
 export interface AssignableSlayerTask {
-	name: string;
+	monster: Monster;
 	amount: [number, number];
 	weight: number;
 	id: number[];
 	slayerLevel?: number;
 	combatLevel?: number;
-	alternatives?: string[];
 	questPoints?: number;
 	unlocked?: boolean;
 }
 
 export interface SlayerMaster {
+	id: number;
 	name: string;
 	aliases: string[];
 	tasks: AssignableSlayerTask[];
 	bossTasks?: true;
-	masterId: number;
 	basePoints: number;
 	combatLvl?: number;
 	slayerLvl?: number;

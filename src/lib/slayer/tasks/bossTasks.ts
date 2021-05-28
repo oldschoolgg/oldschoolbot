@@ -2,173 +2,173 @@ import { Monsters } from 'oldschooljs';
 
 import { AssignableSlayerTask } from '../types';
 
-export const bossTasks: readonly AssignableSlayerTask[] = [
+export const bossTasks: AssignableSlayerTask[] = [
 	{
-		name: 'Abyssal sire',
+		monster: Monsters.AbyssalSire,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.AbyssalSire.id],
 		slayerLevel: 85
 	},
 	{
-		name: 'Alchemical hydra',
+		monster: Monsters.AlchemicalHydra,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.AlchemicalHydra.id],
 		slayerLevel: 95
 	},
 	{
-		name: 'Barrows',
+		monster: Monsters.Barrows,
 		amount: [1, 6],
 		weight: 1,
 		id: [Monsters.Barrows.id]
 	},
 	{
-		name: 'Callisto',
+		monster: Monsters.Callisto,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.Callisto.id]
 	},
 	{
-		name: 'Cerberus',
+		monster: Monsters.Cerberus,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.Cerberus.id],
 		slayerLevel: 91
 	},
 	{
-		name: 'Chaos elemental',
+		monster: Monsters.ChaosElemental,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.ChaosElemental.id]
 	},
 	{
-		name: 'Chaos fanatic',
+		monster: Monsters.ChaosFanatic,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.ChaosFanatic.id]
 	},
 	{
-		name: 'Commander Zilyana',
+		monster: Monsters.CommanderZilyana,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.CommanderZilyana.id]
 	},
 	{
-		name: 'Crazy archaeologist',
+		monster: Monsters.CrazyArchaeologist,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.CrazyArchaeologist.id]
 	},
 	{
-		name: 'Dagannoth prime',
+		monster: Monsters.DagannothPrime,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.DagannothPrime.id]
 	},
 	{
-		name: 'Dagannoth supreme',
+		monster: Monsters.DagannothSupreme,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.DagannothSupreme.id]
 	},
 	{
-		name: 'Dagannoth rex',
+		monster: Monsters.DagannothRex,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.DagannothRex.id]
 	},
 	{
-		name: 'General graardor',
+		monster: Monsters.GeneralGraardor,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.GeneralGraardor.id]
 	},
 	{
-		name: 'Giant mole',
+		monster: Monsters.GiantMole,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.GiantMole.id]
 	},
 	{
-		name: 'Grotesque guardians',
+		monster: Monsters.GrotesqueGuardians,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.GrotesqueGuardians.id],
 		slayerLevel: 75
 	},
 	{
-		name: 'Kril tsutsaroth',
+		monster: Monsters.KrilTsutsaroth,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.KrilTsutsaroth.id]
 	},
 	{
-		name: 'Kalphite queen',
+		monster: Monsters.KalphiteQueen,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.KalphiteQueen.id]
 	},
 	{
-		name: 'King black dragon',
+		monster: Monsters.KingBlackDragon,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.KingBlackDragon.id]
 	},
 	{
-		name: 'Kraken',
+		monster: Monsters.Kraken,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.Kraken.id],
 		slayerLevel: 87
 	},
 	{
-		name: "Kree'arra",
+		monster: Monsters.Kreearra,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.Kreearra.id]
 	},
 	{
-		name: 'Sarachnis',
+		monster: Monsters.Sarachnis,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.Sarachnis.id]
 	},
 	{
-		name: 'Scorpia',
+		monster: Monsters.Scorpia,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.Scorpia.id]
 	},
 	{
-		name: 'Thermonuclear smoke devil',
+		monster: Monsters.ThermonuclearSmokeDevil,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.ThermonuclearSmokeDevil.id],
 		slayerLevel: 93
 	},
 	{
-		name: 'Venenatis',
+		monster: Monsters.Venenatis,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.Venenatis.id]
 	},
 	{
-		name: "Vet'ion",
+		monster: Monsters.Vetion,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.Vetion.id]
 	},
 	{
-		name: 'Vorkath',
+		monster: Monsters.Vorkath,
 		amount: [3, 35],
 		weight: 1,
 		id: [Monsters.Vorkath.id]
 	},
 	{
-		name: 'Zulrah',
+		monster: Monsters.Zulrah,
 		amount: [3, 15],
 		weight: 1,
 		id: [Monsters.Zulrah.id]
 	}
-] as const;
+];

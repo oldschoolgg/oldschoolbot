@@ -9,62 +9,62 @@ import { SlayerMaster } from './types';
 
 export const slayerMasters: SlayerMaster[] = [
 	{
+		id: 1,
 		name: 'Turael',
-		aliases: ['turael', 'tu', 'tur', 'tura', 'turry'],
+		aliases: ['turael', 'tu', 'tura'],
 		tasks: turaelTasks,
-		masterId: 1,
 		basePoints: 0
 	},
 	{
+		id: 2,
 		name: 'Mazchna',
 		aliases: ['mazchna', 'ma', 'maz'],
 		tasks: mazchnaTasks,
-		masterId: 3,
 		basePoints: 2,
 		combatLvl: 20,
 		questPoints: 1
 	},
 	{
+		id: 3,
 		name: 'Vannaka',
-		aliases: ['vannaka', 'va', 'van', 'vanna'],
+		aliases: ['vannaka', 'van', 'vanna'],
 		tasks: vannakaTasks,
-		masterId: 4,
 		basePoints: 4,
 		combatLvl: 40
 	},
 	{
+		id: 4,
 		name: 'Chaeldar',
-		aliases: ['chaeldar', 'ch', 'cha', 'chael'],
+		aliases: ['chaeldar', 'cha', 'chael'],
 		tasks: chaeldarTasks,
-		masterId: 5,
 		basePoints: 10,
 		combatLvl: 70,
 		questPoints: 3
 	},
 	{
+		id: 5,
 		name: 'Konar quo Maten',
-		aliases: ['konar quo maten', 'konar', 'ko', 'kon', 'kona'],
+		aliases: ['konar quo maten', 'konar', 'kon', 'kona'],
 		tasks: konarTasks,
 		bossTasks: true,
-		masterId: 6,
 		basePoints: 14,
 		combatLvl: 75
 	},
 	{
+		id: 6,
 		name: 'Nieve',
-		aliases: ['nieve', 'steve', 'ni', 'nie', 'niev'],
+		aliases: ['nieve', 'steve', 'nie', 'niev'],
 		tasks: nieveTasks,
 		bossTasks: true,
-		masterId: 7,
 		basePoints: 15,
 		combatLvl: 85
 	},
 	{
+		id: 7,
 		name: 'Duradel',
-		aliases: ['duradel', 'du', 'dur', 'dura', 'duradaddy'],
+		aliases: ['duradel', 'dur', 'dura', 'duradaddy'],
 		tasks: duradelTasks,
 		bossTasks: true,
-		masterId: 8,
 		basePoints: 15,
 		combatLvl: 100,
 		slayerLvl: 50

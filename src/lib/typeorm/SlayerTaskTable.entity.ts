@@ -11,7 +11,7 @@ import {
 
 import { NewUserTable } from './NewUserTable.entity';
 
-@Check('quantity_remaining > -1')
+@Check('quantity_remaining >= 0')
 @Entity('slayer_tasks')
 export class SlayerTaskTable extends BaseEntity {
 	@PrimaryGeneratedColumn('increment')
@@ -19,15 +19,21 @@ export class SlayerTaskTable extends BaseEntity {
 
 	@ManyToOne(() => NewUserTable, user => user.slayerTasks, { nullable: false })
 	@JoinColumn({ name: 'user_id' })
-	user!: NewUserTable;
+	public user!: NewUserTable;
 
-	@CreateDateColumn({ name: 'created_at' })
+	@CreateDateColumn({ name: 'created_at', nullable: false })
 	public createdAt!: Date;
 
-	@Column({ name: 'quantity', type: 'smallint', nullable: false, default: 0 })
+	@Column({ name: 'quantity', type: 'smallint', nullable: false })
 	public quantity!: number;
 
 	// The task is considered "finished" when this is 0. Anything more than 0 is incomplete, and only 1 with more than 0 can exist.
-	@Column({ name: 'quantity_remaining', type: 'smallint', nullable: false, default: 0 })
+	@Column({ name: 'quantity_remaining', type: 'smallint', nullable: false })
 	public quantityRemaining!: number;
+
+	@Column({ name: 'slayer_master_id', type: 'smallint', nullable: false })
+	public slayerMasterID!: number;
+
+	@Column({ name: 'monster_id', type: 'smallint', nullable: false })
+	public monsterID!: number;
 }

@@ -4,27 +4,25 @@ import { AssignableSlayerTask } from '../types';
 
 export const konarTasks: AssignableSlayerTask[] = [
 	{
-		name: 'Aberrant spectre',
+		monster: Monsters.AberrantSpectre,
 		amount: [120, 170],
 		weight: 6,
-		alternatives: ['Deviant Spectre'],
 		id: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		combatLevel: 65,
 		slayerLevel: 60,
 		unlocked: true
 	},
 	{
-		name: 'Abyssal demon',
+		monster: Monsters.AbyssalDemon,
 		amount: [120, 170],
 		weight: 9,
-		alternatives: ['Abyssal sire'],
 		id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
 		combatLevel: 85,
 		slayerLevel: 85,
 		unlocked: true
 	},
 	{
-		name: 'Adamant Dragon',
+		monster: Monsters.AdamantDragon,
 		amount: [3, 6],
 		weight: 5,
 		id: [Monsters.AdamantDragon.id],
@@ -32,7 +30,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Ankou',
+		monster: Monsters.Ankou,
 		amount: [50, 50],
 		weight: 5,
 		id: [Monsters.Ankou.id],
@@ -40,37 +38,33 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Aviansie',
+		monster: Monsters.Aviansie,
 		amount: [120, 170],
 		weight: 6,
-		alternatives: ["Kree'arra"],
 		id: [Monsters.Aviansie.id, Monsters.Kreearra.id],
 		unlocked: false
 	},
 	{
-		name: 'Basilisk',
+		monster: Monsters.Basilisk,
 		amount: [110, 170],
 		weight: 5,
-		alternatives: ['Basilisk Knight'],
 		id: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
 		combatLevel: 40,
 		slayerLevel: 40,
 		unlocked: false
 	},
 	{
-		name: 'Black Demon',
+		monster: Monsters.BlackDemon,
 		amount: [120, 170],
 		weight: 9,
-		alternatives: ['Skotizo'],
 		id: [Monsters.BlackDemon.id, Monsters.Skotizo.id],
 		combatLevel: 80,
 		unlocked: true
 	},
 	{
-		name: 'Bloodveld',
+		monster: Monsters.Bloodveld,
 		amount: [120, 170],
 		weight: 9,
-		alternatives: ['Mutated Bloodveld'],
 		id: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
 		combatLevel: 50,
 		slayerLevel: 50,
@@ -78,17 +72,16 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Blue Dragon',
+		monster: Monsters.BlueDragon,
 		amount: [120, 170],
 		weight: 8,
-		alternatives: ['Baby Blue Dragon', 'Brutal Blue Dragon'],
 		id: [Monsters.BlueDragon.id, Monsters.BabyBlueDragon.id, Monsters.BrutalBlueDragon.id],
 		combatLevel: 65,
 		questPoints: 34,
 		unlocked: true
 	},
 	{
-		name: 'Brine rat',
+		monster: Monsters.BrineRat,
 		amount: [120, 170],
 		weight: 2,
 		id: [Monsters.BrineRat.id],
@@ -98,7 +91,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Bronze Dragon',
+		monster: Monsters.BronzeDragon,
 		amount: [30, 50],
 		weight: 5,
 		id: [Monsters.BronzeDragon.id],
@@ -107,26 +100,18 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Cave kraken',
+		monster: Monsters.CaveKraken,
 		amount: [80, 100],
 		weight: 9,
-		alternatives: ['Kraken'],
 		id: [Monsters.CaveKraken.id, Monsters.Kraken.id],
 		combatLevel: 80,
 		slayerLevel: 87,
 		unlocked: true
 	},
 	{
-		name: 'Dagannoth',
+		monster: Monsters.Dagannoth,
 		amount: [120, 170],
 		weight: 8,
-		alternatives: [
-			'Dagannoth spawn',
-			'Dagannoth fledgeling',
-			'Dagannoth Supreme',
-			'Dagannoth Rex',
-			'Dagannoth Prime'
-		],
 		id: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
@@ -140,7 +125,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Dark beast',
+		monster: Monsters.DarkBeast,
 		amount: [10, 15],
 		weight: 5,
 		id: [Monsters.DarkBeast.id],
@@ -150,7 +135,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Drake',
+		monster: Monsters.Drake,
 		amount: [75, 138],
 		weight: 10,
 		id: [Monsters.Drake.id],
@@ -158,7 +143,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Dust devil',
+		monster: Monsters.DustDevil,
 		amount: [120, 170],
 
 		weight: 6,
@@ -169,7 +154,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Fire giant',
+		monster: Monsters.FireGiant,
 		amount: [120, 170],
 		weight: 9,
 		id: [Monsters.FireGiant.id],
@@ -177,11 +162,10 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Spitting wyvern',
+		monster: Monsters.FossilIslandWyvernSpitting,
 		amount: [15, 30],
 
 		weight: 9,
-		alternatives: ['Taloned Wyvern', 'Long-tailed Wyvern', 'Ancient Wyvern'],
 		id: [
 			Monsters.FossilIslandWyvernAncient.id,
 			Monsters.FossilIslandWyvernLongTailed.id,
@@ -194,11 +178,10 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Gargoyle',
+		monster: Monsters.Gargoyle,
 		amount: [120, 170],
 
 		weight: 6,
-		alternatives: ['Grotesque Guardians'],
 		id: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		combatLevel: 80,
 		slayerLevel: 75,
@@ -206,34 +189,31 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Greater demon',
+		monster: Monsters.GreaterDemon,
 		amount: [120, 170],
 		weight: 7,
-		alternatives: ['Skotizo'],
 		id: [Monsters.GreaterDemon.id, Monsters.Skotizo.id],
 		combatLevel: 75,
 		unlocked: true
 	},
 	{
-		name: 'Hellhound',
+		monster: Monsters.Hellhound,
 		amount: [120, 170],
 		weight: 8,
-		alternatives: ['Cerberus'],
 		id: [Monsters.Hellhound.id, Monsters.Cerberus.id],
 		combatLevel: 75,
 		unlocked: true
 	},
 	{
-		name: 'Hydra',
+		monster: Monsters.Hydra,
 		amount: [125, 190],
 		weight: 10,
-		alternatives: ['Alchemical Hydra'],
 		id: [Monsters.Hydra.id, Monsters.AlchemicalHydra.id],
 		slayerLevel: 95,
 		unlocked: true
 	},
 	{
-		name: 'Iron dragon',
+		monster: Monsters.IronDragon,
 		amount: [30, 50],
 
 		weight: 5,
@@ -243,20 +223,18 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Jelly',
+		monster: Monsters.Jelly,
 		amount: [120, 170],
 		weight: 6,
-		alternatives: ['Warped Jelly'],
 		id: [Monsters.Jelly.id, Monsters.WarpedJelly.id],
 		combatLevel: 57,
 		slayerLevel: 52,
 		unlocked: true
 	},
 	{
-		name: 'Kalphite worker',
+		monster: Monsters.KalphiteWorker,
 		amount: [120, 170],
 		weight: 9,
-		alternatives: ['Kalphite soldier', 'Kalphite guardian', 'Kalphite Queen'],
 		id: [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
@@ -267,7 +245,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Kurask',
+		monster: Monsters.Kurask,
 		amount: [120, 170],
 		weight: 3,
 		id: [Monsters.Kurask.id],
@@ -276,25 +254,23 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Lizardman',
+		monster: Monsters.Lizardman,
 		amount: [90, 110],
 		weight: 8,
-		alternatives: ['Lizardman brute', 'Lizardman Shaman'],
 		id: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman.id],
 		unlocked: false
 	},
 	{
-		name: 'Mithril Dragon',
+		monster: Monsters.MithrilDragon,
 		amount: [3, 6],
 		weight: 5,
 		id: [Monsters.MithrilDragon.id],
 		unlocked: false
 	},
 	{
-		name: 'Zygomite',
+		monster: Monsters.Zygomite,
 		amount: [10, 25],
 		weight: 2,
-		alternatives: ['Ancient Zygomite'],
 		id: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
 		combatLevel: 60,
 		slayerLevel: 57,
@@ -302,11 +278,10 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Nechryael',
+		monster: Monsters.Nechryael,
 		amount: [110, 110],
 
 		weight: 7,
-		alternatives: ['Greater Nechryael'],
 		id: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		combatLevel: 85,
 		slayerLevel: 80,
@@ -314,16 +289,15 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Red Dragon',
+		monster: Monsters.RedDragon,
 		amount: [30, 50],
 		weight: 5,
-		alternatives: ['Baby Red dragon', 'Brutal Red Dragon'],
 		id: [Monsters.RedDragon.id, Monsters.BabyRedDragon.id, Monsters.BrutalRedDragon.id],
 		questPoints: 34,
 		unlocked: false
 	},
 	{
-		name: 'Rune Dragon',
+		monster: Monsters.RuneDragon,
 		amount: [3, 6],
 		weight: 5,
 		id: [Monsters.RuneDragon.id],
@@ -331,7 +305,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Skeletal Wyvern',
+		monster: Monsters.SkeletalWyvern,
 		amount: [5, 12],
 		weight: 5,
 		id: [Monsters.SkeletalWyvern.id],
@@ -341,26 +315,24 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Smoke Devil',
+		monster: Monsters.SmokeDevil,
 		amount: [120, 170],
 		weight: 7,
-		alternatives: ['Thermonuclear Smoke Devil'],
 		id: [Monsters.SmokeDevil.id, Monsters.ThermonuclearSmokeDevil.id],
 		combatLevel: 75,
 		slayerLevel: 93,
 		unlocked: true
 	},
 	{
-		name: 'Mountain troll',
+		monster: Monsters.MountainTroll,
 		amount: [120, 170],
 		weight: 6,
-		alternatives: ['Troll general'],
 		id: [Monsters.MountainTroll.id, Monsters.TrollGeneral.id],
 		combatLevel: 60,
 		unlocked: true
 	},
 	{
-		name: 'Turoth',
+		monster: Monsters.Turoth,
 		amount: [120, 170],
 		weight: 3,
 		id: [Monsters.Turoth.id],
@@ -369,11 +341,10 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Feral Vampyre',
+		monster: Monsters.FeralVampyre,
 		amount: [100, 160],
 
 		weight: 4,
-		alternatives: ['Vampyre Juvinate', 'Vyrewatch', 'Vyrewatch Sentinel'],
 		id: [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
@@ -385,7 +356,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: false
 	},
 	{
-		name: 'Waterfiend',
+		monster: Monsters.Waterfiend,
 		amount: [120, 170],
 		weight: 2,
 		id: [Monsters.Waterfiend.id],
@@ -393,7 +364,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Wyrm',
+		monster: Monsters.Wyrm,
 		amount: [125, 190],
 		weight: 10,
 		id: [Monsters.Wyrm.id],

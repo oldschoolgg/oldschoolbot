@@ -4,10 +4,9 @@ import { AssignableSlayerTask } from '../types';
 
 export const mazchnaTasks: AssignableSlayerTask[] = [
 	{
-		name: 'Banshee',
+		monster: Monsters.Banshee,
 		amount: [40, 70],
 		weight: 8,
-		alternatives: ['Twisted Banshee'],
 		id: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
 		combatLevel: 20,
 		slayerLevel: 15,
@@ -15,19 +14,17 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Bat',
+		monster: Monsters.Bat,
 		amount: [40, 70],
 		weight: 7,
-		alternatives: ['Giant bat', 'Deathwing'],
 		id: [Monsters.Bat.id, Monsters.GiantBat.id],
 		combatLevel: 5,
 		unlocked: true
 	},
 	{
-		name: 'Black bear',
+		monster: Monsters.BlackBear,
 		amount: [40, 70],
 		weight: 6,
-		alternatives: ['Grizzly bear cub', 'Bear cub', 'Grizzly bear', 'Callisto'],
 		id: [
 			Monsters.BlackBear.id,
 			Monsters.GrizzlyBearCub.id,
@@ -39,7 +36,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Catablepon',
+		monster: Monsters.Catablepon,
 		amount: [20, 30],
 		weight: 8,
 		id: [Monsters.Catablepon.id],
@@ -47,7 +44,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Cave bug',
+		monster: Monsters.CaveBug,
 		amount: [10, 20],
 		weight: 8,
 		id: [Monsters.CaveBug.id],
@@ -55,7 +52,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Cave crawler',
+		monster: Monsters.CaveCrawler,
 		amount: [40, 70],
 		weight: 8,
 		id: [Monsters.CaveCrawler.id],
@@ -64,7 +61,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Cave slime',
+		monster: Monsters.CaveSlime,
 		amount: [10, 20],
 		weight: 8,
 		id: [Monsters.CaveSlime.id],
@@ -73,7 +70,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Cockatrice',
+		monster: Monsters.Cockatrice,
 		amount: [40, 70],
 		weight: 8,
 		id: [Monsters.Cockatrice.id],
@@ -82,7 +79,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Crawling hand',
+		monster: Monsters.CrawlingHand,
 		amount: [40, 70],
 		weight: 8,
 		id: [Monsters.CrawlingHand.id],
@@ -91,10 +88,9 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Lizard',
+		monster: Monsters.Lizard,
 		amount: [40, 70],
 		weight: 8,
-		alternatives: ['Small Lizard', 'Desert Lizard', 'Sulphur Lizard'],
 		id: [
 			Monsters.Lizard.id,
 			Monsters.SmallLizard.id,
@@ -105,16 +101,15 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Guard dog',
+		monster: Monsters.GuardDog,
 		amount: [40, 70],
 		weight: 7,
-		alternatives: ['Jackal', 'Wild dog'],
 		id: [Monsters.GuardDog.id, Monsters.Jackal.id, Monsters.WildDog.id],
 		combatLevel: 15,
 		unlocked: true
 	},
 	{
-		name: 'Earth warrior',
+		monster: Monsters.EarthWarrior,
 		amount: [40, 70],
 		weight: 6,
 		id: [Monsters.EarthWarrior.id],
@@ -122,7 +117,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Flesh Crawler',
+		monster: Monsters.FleshCrawler,
 		amount: [15, 25],
 		weight: 7,
 		id: [Monsters.FleshCrawler.id],
@@ -130,16 +125,15 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Ghost',
+		monster: Monsters.Ghost,
 		amount: [40, 70],
 		weight: 7,
-		alternatives: ['Tortured soul'],
 		id: [Monsters.Ghost.id, Monsters.TorturedSoul.id],
 		combatLevel: 13,
 		unlocked: true
 	},
 	{
-		name: 'Ghoul',
+		monster: Monsters.Ghoul,
 		amount: [10, 20],
 		weight: 7,
 		id: [Monsters.Ghoul.id],
@@ -148,16 +142,15 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Hill Giant',
+		monster: Monsters.HillGiant,
 		amount: [40, 70],
 		weight: 7,
-		alternatives: ['Obor', 'Cyclops'],
 		id: [Monsters.HillGiant.id, Monsters.Obor.id, Monsters.Cyclops.id],
 		combatLevel: 25,
 		unlocked: true
 	},
 	{
-		name: 'Hobgoblin',
+		monster: Monsters.Hobgoblin,
 		amount: [40, 70],
 		weight: 7,
 		id: [Monsters.Hobgoblin.id],
@@ -165,7 +158,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Ice warrior',
+		monster: Monsters.IceWarrior,
 		amount: [40, 70],
 		weight: 7,
 		id: [Monsters.IceWarrior.id],
@@ -173,10 +166,9 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Kalphite worker',
+		monster: Monsters.KalphiteWorker,
 		amount: [40, 70],
 		weight: 6,
-		alternatives: ['Kalphite soldier', 'Kalphite guardian', 'Kalphite Queen'],
 		id: [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
@@ -187,7 +179,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Killerwatt',
+		monster: Monsters.Killerwatt,
 		amount: [30, 80],
 		weight: 6,
 		id: [Monsters.Killerwatt.id],
@@ -197,7 +189,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Mogre',
+		monster: Monsters.Mogre,
 		amount: [40, 70],
 		weight: 8,
 		id: [Monsters.Mogre.id],
@@ -206,7 +198,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Pyrefiend',
+		monster: Monsters.Pyrefiend,
 		amount: [40, 70],
 		weight: 8,
 		id: [Monsters.Pyrefiend.id],
@@ -215,7 +207,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Rockslug',
+		monster: Monsters.Rockslug,
 		amount: [40, 70],
 		weight: 8,
 		id: [Monsters.Rockslug.id],
@@ -224,16 +216,9 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Scorpion',
+		monster: Monsters.Scorpion,
 		amount: [40, 70],
 		weight: 7,
-		alternatives: [
-			'King Scorpion',
-			'Poison Scorpion',
-			'Pit Scorpion',
-			'Scorpia',
-			'Lobstrosity'
-		],
 		id: [
 			Monsters.Scorpion.id,
 			Monsters.KingScorpion.id,
@@ -246,10 +231,9 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Shade',
+		monster: Monsters.Shade,
 		amount: [40, 70],
 		weight: 8,
-		alternatives: ['Loar Shade', 'Phrin Shade', 'Riyl Shade', 'Asyn Shade', 'Fiyr Shade'],
 		id: [
 			Monsters.Shade.id,
 			Monsters.LoarShade.id,
@@ -262,10 +246,9 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Skeleton',
+		monster: Monsters.Skeleton,
 		amount: [40, 70],
 		weight: 7,
-		alternatives: ['Skeleton mage', "Vet'ion", 'Skogre', 'Skeleton fremennik'],
 		id: [
 			Monsters.SkeletonMage.id,
 			Monsters.Vetion.id,
@@ -276,10 +259,9 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Feral Vampyre',
+		monster: Monsters.FeralVampyre,
 		amount: [10, 20],
 		weight: 6,
-		alternatives: ['Vampyre Juvinate', 'Vyrewatch', 'Vyrewatch Sentinel'],
 		id: [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
@@ -291,7 +273,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Wall beast',
+		monster: Monsters.WallBeast,
 		amount: [10, 20],
 		weight: 7,
 		id: [Monsters.WallBeast.id],
@@ -300,10 +282,9 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Wolf',
+		monster: Monsters.Wolf,
 		amount: [40, 70],
 		weight: 7,
-		alternatives: ['Big Wolf', 'Desert Wolf', 'Ice wolf', 'Jungle wolf', 'White wolf'],
 		id: [
 			Monsters.Wolf.id,
 			Monsters.BigWolf.id,
@@ -316,19 +297,9 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		name: 'Zombie',
+		monster: Monsters.Zombie,
 		amount: [40, 70],
 		weight: 7,
-		alternatives: [
-			'Monkey Zombie',
-			'Undead chicken',
-			'Undead cow',
-			'Undead Druid',
-			'Undead one',
-			'Zombie rat',
-			'Zogre',
-			'Vorkath'
-		],
 		id: [
 			Monsters.Zombie.id,
 			Monsters.MonkeyZombie.id,

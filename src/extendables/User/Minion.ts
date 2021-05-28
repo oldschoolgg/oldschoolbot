@@ -929,4 +929,21 @@ export default class extends Extendable {
 		}
 		return [true, null];
 	}
+
+	// @ts-ignore 2784
+	public get combatLevel(this: User): number {
+		const defence = this.skillLevel(SkillsEnum.Defence);
+		const ranged = this.skillLevel(SkillsEnum.Ranged);
+		const hitpoints = this.skillLevel(SkillsEnum.Hitpoints);
+		const magic = this.skillLevel(SkillsEnum.Magic);
+		const prayer = this.skillLevel(SkillsEnum.Prayer);
+		const attack = this.skillLevel(SkillsEnum.Attack);
+		const strength = this.skillLevel(SkillsEnum.Strength);
+
+		const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
+		const melee = 0.325 * (attack + strength);
+		const range = 0.325 * (Math.floor(ranged / 2) + ranged);
+		const mage = 0.325 * (Math.floor(magic / 2) + magic);
+		return Math.floor(base + Math.max(melee, range, mage));
+	}
 }

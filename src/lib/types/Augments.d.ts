@@ -244,6 +244,7 @@ declare module 'discord.js' {
 		maxTripLength(activity?: OSBActivity): number;
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
+		combatLevel: number;
 	}
 
 	interface TextChannel {
