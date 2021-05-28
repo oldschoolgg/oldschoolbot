@@ -9,10 +9,17 @@ import { roll } from '../../../lib/data/monsters/raids';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { allNexItems, NexMonster } from '../../../lib/nex';
+import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, channelIsSendable, noOp, randomItemFromArray } from '../../../lib/util';
+import {
+	addBanks,
+	channelIsSendable,
+	noOp,
+	randomItemFromArray,
+	updateBankSetting
+} from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
@@ -98,6 +105,8 @@ export default class extends Task {
 				size: users.length
 			});
 		}
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.NexLoot, totalLoot);
 
 		// Show deaths in the result
 		const deathEntries = Object.entries(deaths);

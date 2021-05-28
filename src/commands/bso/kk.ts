@@ -1,5 +1,6 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
 import { hasArrayOfItemsEquipped, hasItemEquipped } from '../../lib/gear';
@@ -8,11 +9,12 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../lib/minions/types';
 import { torvaOutfit } from '../../lib/nex';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { BossActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, resolveNameBank } from '../../lib/util';
+import { formatDuration, itemID, resolveNameBank, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getKalphiteKingGearStats } from '../../lib/util/getKalphiteKingGearStats';
@@ -251,6 +253,7 @@ export default class extends BotCommand {
 				throw `${user.username} doesn't have enough brews or restores.`;
 			}
 		}
+		const totalCost = new Bank();
 		for (const user of users) {
 			let [healAmountNeeded] = calculateMonsterFood(KalphiteKingMonster, user);
 			const kc = user.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0;
@@ -266,12 +269,12 @@ export default class extends BotCommand {
 
 			const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
 			const restoresNeeded = Math.ceil(brewsNeeded / 3);
-			await user.removeItemsFromBank(
-				resolveNameBank({
-					'Saradomin brew(4)': brewsNeeded,
-					'Super restore(4)': restoresNeeded
-				})
-			);
+			const items = new Bank({
+				'Saradomin brew(4)': brewsNeeded,
+				'Super restore(4)': restoresNeeded
+			});
+			await user.removeItemsFromBank(items);
+			totalCost.add(items);
 			foodRemoved.push(`${brewsNeeded}/${restoresNeeded} from ${user.username}`);
 		}
 		foodString += `${foodRemoved.join(', ')}.`;
@@ -284,6 +287,8 @@ export default class extends BotCommand {
 			type: Activity.KalphiteKing,
 			users: users.map(u => u.id)
 		});
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.KalphiteKingCost, totalCost);
 
 		let str = `${partyOptions.leader.username}'s party (${users
 			.map(u => u.username)
