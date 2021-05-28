@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Events, Time } from '../../../lib/constants';
+import { Activity, Emoji, Events, Time } from '../../../lib/constants';
 import { hasArrayOfItemsEquipped } from '../../../lib/gear';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
@@ -105,7 +105,6 @@ export default class extends Task {
 
 		await user.addXP(SkillsEnum.Fishing, fishXpReceived);
 		await user.addXP(SkillsEnum.Hunter, huntXpReceived);
-		await user.addItemsToBank(loot.values(), true);
 		await user.incrementCreatureScore(bluegill.id, bluegillCaught);
 		await user.incrementCreatureScore(commonTench.id, commonTenchCaught);
 		await user.incrementCreatureScore(mottledEel.id, mottledEelCaught);
@@ -143,6 +142,19 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Fishing level is now ${newFishLevel}!`;
 		}
 
+		// Heron Pet roll
+		const totalFishCaught =
+			greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;
+		if (roll((636_833 - user.skillLevel(SkillsEnum.Fishing) * 25) / totalFishCaught)) {
+			loot.add('Heron');
+			str += `\nYou have a funny feeling you're being followed...`;
+			this.client.emit(
+				Events.ServerNotification,
+				`${Emoji.Fishing} **${user.username}'s** minion, ${user.minionName}, just received a **Heron** while Aerial fishing at level ${currentFishLevel} Fishing!`
+			);
+		}
+
+		await user.addItemsToBank(loot.values(), true);
 		str += `\n\nYou received: ${loot}.`;
 
 		if (loot.amount('Golden tench') > 0) {

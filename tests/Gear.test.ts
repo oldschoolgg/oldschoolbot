@@ -113,4 +113,11 @@ describe('Gear', () => {
 			})
 		).toEqual([true, null, null]);
 	});
+
+	test('toString', () => {
+		expect(testGear.toString()).toEqual(
+			'3rd age platebody, Dragon full helm, 3rd age platelegs, Twisted bow'
+		);
+		expect(new Gear().toString()).toEqual('No items');
+	});
 });
