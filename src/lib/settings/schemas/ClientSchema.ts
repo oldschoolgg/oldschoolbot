@@ -26,6 +26,10 @@ Client.defaultClientSchema
 	.add('item_contract_loot', 'any', { default: {} })
 	.add('kg_cost', 'any', { default: {} })
 	.add('kg_loot', 'any', { default: {} })
+	.add('nex_cost', 'any', { default: {} })
+	.add('nex_loot', 'any', { default: {} })
+	.add('kk_cost', 'any', { default: {} })
+	.add('kk_loot', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })
