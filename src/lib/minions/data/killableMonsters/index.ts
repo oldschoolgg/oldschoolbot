@@ -45,7 +45,8 @@ const killableMonsters: KillableMonster[] = [
 			pool: {
 				'Rejuvenation pool': 10,
 				'Fancy rejuvenation pool': 10,
-				'Ornate rejuvenation pool': 10
+				'Ornate rejuvenation pool': 10,
+				'Ancient rejuvenation pool': 20
 			}
 		},
 		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged],
@@ -437,6 +438,11 @@ const killableMonsters: KillableMonster[] = [
 			attack: 99,
 			strength: 105,
 			defence: 99
+		},
+		pohBoosts: {
+			pool: {
+				'Ancient rejuvenation pool': 10
+			}
 		},
 		uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
 		notifyDrops: resolveItems(['Abyssal cape', 'Ori'])

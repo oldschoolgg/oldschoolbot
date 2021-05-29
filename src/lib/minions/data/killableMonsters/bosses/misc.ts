@@ -197,7 +197,8 @@ const killableBosses: KillableMonster[] = [
 			pool: {
 				'Rejuvenation pool': 50,
 				'Fancy rejuvenation pool': 50,
-				'Ornate rejuvenation pool': 50
+				'Ornate rejuvenation pool': 50,
+				'Ancient rejuvenation pool': 57
 			}
 		},
 		defaultAttackStyles: [SkillsEnum.Attack],
