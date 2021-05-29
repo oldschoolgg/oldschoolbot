@@ -133,10 +133,6 @@ export default class extends BotCommand {
 			cost
 		)} GP. They'll come back in around ${formatDuration(duration)}.`;
 
-		if (hasHammy) {
-			response += `\n\nHammy stares intently into the eyes of the sawmill operator - who, knowing what Hammy is capable of, apologetically reduces the price to only 1gp for you.`;
-		}
-
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
 		}
