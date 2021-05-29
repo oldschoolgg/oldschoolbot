@@ -94,8 +94,8 @@ export default class extends BotCommand {
 
 		if (roll(chanceToDouble)) {
 			let loot = new Bank();
-			loot.add(firstItem.name);
-			await msg.author.addItemsToBank(loot, true);
+			loot.add(firstItem.id);
+			await msg.author.addItemsToBank(loot, false);
 			return msg.send(randArrItem(hammyDoubleMessages).replace(/\{item\}/g, firstItem.name));
 		}
 		if (roll(chanceToSave)) {
