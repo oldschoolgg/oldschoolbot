@@ -7,7 +7,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AberrantSpectre,
 		amount: [120, 185],
 		weight: 6,
-		id: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
+		monsters: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		combatLevel: 65,
 		slayerLevel: 60,
 		questPoints: 1,
@@ -17,7 +17,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AbyssalDemon,
 		amount: [120, 185],
 		weight: 9,
-		id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
 		combatLevel: 85,
 		slayerLevel: 85,
 		questPoints: 1,
@@ -27,7 +27,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AdamantDragon,
 		amount: [3, 7],
 		weight: 2,
-		id: [Monsters.AdamantDragon.id],
+		monsters: [Monsters.AdamantDragon.id],
 		questPoints: 205,
 		unlocked: true
 	},
@@ -35,7 +35,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Ankou,
 		amount: [50, 90],
 		weight: 5,
-		id: [Monsters.Ankou.id],
+		monsters: [Monsters.Ankou.id],
 		combatLevel: 40,
 		unlocked: true
 	},
@@ -43,14 +43,14 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Aviansie,
 		amount: [120, 185],
 		weight: 6,
-		id: [Monsters.Aviansie.id, Monsters.Kreearra.id],
+		monsters: [Monsters.Aviansie.id, Monsters.Kreearra.id],
 		unlocked: false
 	},
 	{
 		monster: Monsters.Basilisk,
 		amount: [120, 180],
 		weight: 6,
-		id: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
+		monsters: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
 		combatLevel: 40,
 		slayerLevel: 40,
 		unlocked: false
@@ -59,7 +59,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlackDemon,
 		amount: [120, 185],
 		weight: 9,
-		id: [
+		monsters: [
 			Monsters.BlackDemon.id,
 			Monsters.DemonicGorilla.id,
 			Monsters.Porazdir.id,
@@ -72,7 +72,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlackDragon,
 		amount: [10, 20],
 		weight: 6,
-		id: [
+		monsters: [
 			Monsters.BlackDragon.id,
 			Monsters.BabyBlackDragon.id,
 			Monsters.BrutalBlackDragon.id,
@@ -86,7 +86,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Bloodveld,
 		amount: [120, 185],
 		weight: 9,
-		id: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
+		monsters: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
 		combatLevel: 50,
 		slayerLevel: 50,
 		questPoints: 1,
@@ -96,7 +96,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlueDragon,
 		amount: [120, 185],
 		weight: 4,
-		id: [
+		monsters: [
 			Monsters.BlueDragon.id,
 			Monsters.BabyBlueDragon.id,
 			Monsters.BrutalBlueDragon.id,
@@ -110,7 +110,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BrineRat,
 		amount: [120, 185],
 		weight: 3,
-		id: [Monsters.BrineRat.id],
+		monsters: [Monsters.BrineRat.id],
 		combatLevel: 45,
 		slayerLevel: 47,
 		questPoints: 4,
@@ -120,7 +120,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveHorror,
 		amount: [120, 180],
 		weight: 5,
-		id: [Monsters.CaveHorror.id],
+		monsters: [Monsters.CaveHorror.id],
 		combatLevel: 85,
 		slayerLevel: 58,
 		questPoints: 11,
@@ -130,7 +130,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveKraken,
 		amount: [100, 120],
 		weight: 6,
-		id: [Monsters.CaveKraken.id, Monsters.Kraken.id],
+		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id],
 		combatLevel: 80,
 		slayerLevel: 87,
 		unlocked: true
@@ -139,7 +139,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Dagannoth,
 		amount: [120, 185],
 		weight: 8,
-		id: [
+		monsters: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
 			Monsters.DaganothFledgeling.id,
@@ -155,7 +155,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.DarkBeast,
 		amount: [10, 20],
 		weight: 5,
-		id: [Monsters.DarkBeast.id],
+		monsters: [Monsters.DarkBeast.id],
 		combatLevel: 90,
 		slayerLevel: 90,
 		questPoints: 24,
@@ -165,7 +165,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Drake,
 		amount: [30, 95],
 		weight: 7,
-		id: [Monsters.Drake.id],
+		monsters: [Monsters.Drake.id],
 		slayerLevel: 84,
 		unlocked: true
 	},
@@ -174,7 +174,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [120, 185],
 
 		weight: 6,
-		id: [Monsters.DustDevil.id],
+		monsters: [Monsters.DustDevil.id],
 		combatLevel: 70,
 		slayerLevel: 65,
 		questPoints: 12,
@@ -184,7 +184,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.ElfWarrior,
 		amount: [60, 90],
 		weight: 4,
-		id: [
+		monsters: [
 			Monsters.ElfWarrior.id,
 			Monsters.IorwerthArcher.id,
 			Monsters.ElfArcher.id,
@@ -199,7 +199,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FireGiant,
 		amount: [120, 185],
 		weight: 9,
-		id: [Monsters.FireGiant.id],
+		monsters: [Monsters.FireGiant.id],
 		combatLevel: 65,
 		unlocked: true
 	},
@@ -207,7 +207,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FossilIslandWyvernSpitting,
 		amount: [20, 60],
 		weight: 5,
-		id: [
+		monsters: [
 			Monsters.FossilIslandWyvernAncient.id,
 			Monsters.FossilIslandWyvernLongTailed.id,
 			Monsters.FossilIslandWyvernSpitting.id,
@@ -222,7 +222,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Gargoyle,
 		amount: [120, 185],
 		weight: 6,
-		id: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
+		monsters: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		combatLevel: 80,
 		slayerLevel: 75,
 		questPoints: 1,
@@ -232,7 +232,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GreaterDemon,
 		amount: [120, 185],
 		weight: 7,
-		id: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
+		monsters: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
 		combatLevel: 70,
 		unlocked: true
 	},
@@ -240,7 +240,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Hellhound,
 		amount: [120, 185],
 		weight: 8,
-		id: [Monsters.Hellhound.id, Monsters.Cerberus.id],
+		monsters: [Monsters.Hellhound.id, Monsters.Cerberus.id],
 		combatLevel: 75,
 		unlocked: true
 	},
@@ -249,7 +249,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [30, 60],
 
 		weight: 5,
-		id: [Monsters.IronDragon.id],
+		monsters: [Monsters.IronDragon.id],
 		combatLevel: 80,
 		questPoints: 34,
 		unlocked: true
@@ -258,7 +258,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.KalphiteWorker,
 		amount: [120, 185],
 		weight: 9,
-		id: [
+		monsters: [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
@@ -271,7 +271,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Kurask,
 		amount: [120, 185],
 		weight: 3,
-		id: [Monsters.Kurask.id],
+		monsters: [Monsters.Kurask.id],
 		combatLevel: 65,
 		slayerLevel: 70,
 		unlocked: true
@@ -280,14 +280,14 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Lizardman,
 		amount: [90, 120],
 		weight: 8,
-		id: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman.id],
+		monsters: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman.id],
 		unlocked: false
 	},
 	{
 		monster: Monsters.ScarabMage,
 		amount: [30, 60],
 		weight: 4,
-		id: [Monsters.ScarabMage.id, Monsters.LocustRider.id],
+		monsters: [Monsters.ScarabMage.id, Monsters.LocustRider.id],
 		combatLevel: 85,
 		questPoints: 7,
 		unlocked: true
@@ -296,14 +296,14 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.MithrilDragon,
 		amount: [4, 9],
 		weight: 5,
-		id: [Monsters.MithrilDragon.id],
+		monsters: [Monsters.MithrilDragon.id],
 		unlocked: false
 	},
 	{
 		monster: Monsters.Zygomite,
 		amount: [10, 25],
 		weight: 2,
-		id: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
+		monsters: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
 		combatLevel: 60,
 		slayerLevel: 57,
 		questPoints: 3,
@@ -314,7 +314,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [110, 170],
 
 		weight: 7,
-		id: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
+		monsters: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		combatLevel: 85,
 		slayerLevel: 80,
 		questPoints: 1,
@@ -324,7 +324,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.RedDragon,
 		amount: [30, 80],
 		weight: 5,
-		id: [Monsters.RedDragon.id, Monsters.BabyRedDragon.id, Monsters.BrutalRedDragon.id],
+		monsters: [Monsters.RedDragon.id, Monsters.BabyRedDragon.id, Monsters.BrutalRedDragon.id],
 		questPoints: 34,
 		unlocked: false
 	},
@@ -332,7 +332,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.RuneDragon,
 		amount: [3, 6],
 		weight: 2,
-		id: [Monsters.RuneDragon.id],
+		monsters: [Monsters.RuneDragon.id],
 		questPoints: 205,
 		unlocked: true
 	},
@@ -340,7 +340,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.SkeletalWyvern,
 		amount: [5, 15],
 		weight: 5,
-		id: [Monsters.SkeletalWyvern.id],
+		monsters: [Monsters.SkeletalWyvern.id],
 		combatLevel: 70,
 		slayerLevel: 72,
 		questPoints: 1,
@@ -350,7 +350,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.SmokeDevil,
 		amount: [120, 185],
 		weight: 7,
-		id: [Monsters.SmokeDevil.id, Monsters.ThermonuclearSmokeDevil.id],
+		monsters: [Monsters.SmokeDevil.id, Monsters.ThermonuclearSmokeDevil.id],
 		combatLevel: 75,
 		slayerLevel: 93,
 		unlocked: true
@@ -359,7 +359,11 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.SpiritualRanger,
 		amount: [120, 185],
 		weight: 6,
-		id: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
+		monsters: [
+			Monsters.SpiritualRanger.id,
+			Monsters.SpiritualWarrior.id,
+			Monsters.SpiritualMage.id
+		],
 		combatLevel: 60,
 		slayerLevel: 63,
 		questPoints: 1,
@@ -369,7 +373,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.SteelDragon,
 		amount: [30, 60],
 		weight: 5,
-		id: [Monsters.SteelDragon.id],
+		monsters: [Monsters.SteelDragon.id],
 		combatLevel: 85,
 		questPoints: 34,
 		unlocked: true
@@ -378,7 +382,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Suqah,
 		amount: [120, 185],
 		weight: 8,
-		id: [Monsters.Suqah.id],
+		monsters: [Monsters.Suqah.id],
 		combatLevel: 85,
 		questPoints: 12,
 		unlocked: true
@@ -387,7 +391,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.MountainTroll,
 		amount: [120, 185],
 		weight: 6,
-		id: [Monsters.MountainTroll.id, Monsters.IceTroll.id, Monsters.TrollGeneral.id],
+		monsters: [Monsters.MountainTroll.id, Monsters.IceTroll.id, Monsters.TrollGeneral.id],
 		combatLevel: 60,
 		unlocked: true
 	},
@@ -395,7 +399,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Turoth,
 		amount: [120, 185],
 		weight: 3,
-		id: [Monsters.Turoth.id],
+		monsters: [Monsters.Turoth.id],
 		combatLevel: 60,
 		slayerLevel: 55,
 		unlocked: true
@@ -404,7 +408,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.TzHaarKet,
 		amount: [110, 180],
 		weight: 10,
-		id: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id],
+		monsters: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id],
 		unlocked: false
 	},
 	{
@@ -412,7 +416,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [110, 170],
 
 		weight: 6,
-		id: [
+		monsters: [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
@@ -426,7 +430,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Wyrm,
 		amount: [80, 145],
 		weight: 7,
-		id: [Monsters.Wyrm.id],
+		monsters: [Monsters.Wyrm.id],
 		slayerLevel: 62,
 		unlocked: true
 	}

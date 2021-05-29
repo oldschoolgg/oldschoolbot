@@ -7,7 +7,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AberrantSpectre,
 		amount: [120, 170],
 		weight: 6,
-		id: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
+		monsters: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		combatLevel: 65,
 		slayerLevel: 60,
 		unlocked: true
@@ -16,7 +16,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AbyssalDemon,
 		amount: [120, 170],
 		weight: 9,
-		id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
 		combatLevel: 85,
 		slayerLevel: 85,
 		unlocked: true
@@ -25,7 +25,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AdamantDragon,
 		amount: [3, 6],
 		weight: 5,
-		id: [Monsters.AdamantDragon.id],
+		monsters: [Monsters.AdamantDragon.id],
 		questPoints: 205,
 		unlocked: true
 	},
@@ -33,7 +33,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Ankou,
 		amount: [50, 50],
 		weight: 5,
-		id: [Monsters.Ankou.id],
+		monsters: [Monsters.Ankou.id],
 		combatLevel: 40,
 		unlocked: true
 	},
@@ -41,14 +41,14 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Aviansie,
 		amount: [120, 170],
 		weight: 6,
-		id: [Monsters.Aviansie.id, Monsters.Kreearra.id],
+		monsters: [Monsters.Aviansie.id, Monsters.Kreearra.id],
 		unlocked: false
 	},
 	{
 		monster: Monsters.Basilisk,
 		amount: [110, 170],
 		weight: 5,
-		id: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
+		monsters: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
 		combatLevel: 40,
 		slayerLevel: 40,
 		unlocked: false
@@ -57,7 +57,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlackDemon,
 		amount: [120, 170],
 		weight: 9,
-		id: [Monsters.BlackDemon.id, Monsters.Skotizo.id],
+		monsters: [Monsters.BlackDemon.id, Monsters.Skotizo.id],
 		combatLevel: 80,
 		unlocked: true
 	},
@@ -65,7 +65,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Bloodveld,
 		amount: [120, 170],
 		weight: 9,
-		id: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
+		monsters: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
 		combatLevel: 50,
 		slayerLevel: 50,
 		questPoints: 1,
@@ -75,7 +75,11 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlueDragon,
 		amount: [120, 170],
 		weight: 8,
-		id: [Monsters.BlueDragon.id, Monsters.BabyBlueDragon.id, Monsters.BrutalBlueDragon.id],
+		monsters: [
+			Monsters.BlueDragon.id,
+			Monsters.BabyBlueDragon.id,
+			Monsters.BrutalBlueDragon.id
+		],
 		combatLevel: 65,
 		questPoints: 34,
 		unlocked: true
@@ -84,7 +88,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BrineRat,
 		amount: [120, 170],
 		weight: 2,
-		id: [Monsters.BrineRat.id],
+		monsters: [Monsters.BrineRat.id],
 		combatLevel: 45,
 		slayerLevel: 47,
 		questPoints: 4,
@@ -94,7 +98,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BronzeDragon,
 		amount: [30, 50],
 		weight: 5,
-		id: [Monsters.BronzeDragon.id],
+		monsters: [Monsters.BronzeDragon.id],
 		combatLevel: 75,
 		questPoints: 34,
 		unlocked: true
@@ -103,7 +107,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveKraken,
 		amount: [80, 100],
 		weight: 9,
-		id: [Monsters.CaveKraken.id, Monsters.Kraken.id],
+		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id],
 		combatLevel: 80,
 		slayerLevel: 87,
 		unlocked: true
@@ -112,7 +116,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Dagannoth,
 		amount: [120, 170],
 		weight: 8,
-		id: [
+		monsters: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
 			Monsters.DaganothFledgeling.id,
@@ -128,7 +132,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.DarkBeast,
 		amount: [10, 15],
 		weight: 5,
-		id: [Monsters.DarkBeast.id],
+		monsters: [Monsters.DarkBeast.id],
 		combatLevel: 90,
 		slayerLevel: 90,
 		questPoints: 24,
@@ -138,7 +142,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Drake,
 		amount: [75, 138],
 		weight: 10,
-		id: [Monsters.Drake.id],
+		monsters: [Monsters.Drake.id],
 		slayerLevel: 84,
 		unlocked: true
 	},
@@ -147,7 +151,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [120, 170],
 
 		weight: 6,
-		id: [Monsters.DustDevil.id],
+		monsters: [Monsters.DustDevil.id],
 		combatLevel: 70,
 		slayerLevel: 65,
 		questPoints: 12,
@@ -157,7 +161,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FireGiant,
 		amount: [120, 170],
 		weight: 9,
-		id: [Monsters.FireGiant.id],
+		monsters: [Monsters.FireGiant.id],
 		combatLevel: 65,
 		unlocked: true
 	},
@@ -166,7 +170,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [15, 30],
 
 		weight: 9,
-		id: [
+		monsters: [
 			Monsters.FossilIslandWyvernAncient.id,
 			Monsters.FossilIslandWyvernLongTailed.id,
 			Monsters.FossilIslandWyvernSpitting.id,
@@ -182,7 +186,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [120, 170],
 
 		weight: 6,
-		id: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
+		monsters: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		combatLevel: 80,
 		slayerLevel: 75,
 		questPoints: 1,
@@ -192,7 +196,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GreaterDemon,
 		amount: [120, 170],
 		weight: 7,
-		id: [Monsters.GreaterDemon.id, Monsters.Skotizo.id],
+		monsters: [Monsters.GreaterDemon.id, Monsters.Skotizo.id],
 		combatLevel: 75,
 		unlocked: true
 	},
@@ -200,7 +204,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Hellhound,
 		amount: [120, 170],
 		weight: 8,
-		id: [Monsters.Hellhound.id, Monsters.Cerberus.id],
+		monsters: [Monsters.Hellhound.id, Monsters.Cerberus.id],
 		combatLevel: 75,
 		unlocked: true
 	},
@@ -208,7 +212,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Hydra,
 		amount: [125, 190],
 		weight: 10,
-		id: [Monsters.Hydra.id, Monsters.AlchemicalHydra.id],
+		monsters: [Monsters.Hydra.id, Monsters.AlchemicalHydra.id],
 		slayerLevel: 95,
 		unlocked: true
 	},
@@ -217,7 +221,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [30, 50],
 
 		weight: 5,
-		id: [Monsters.IronDragon.id],
+		monsters: [Monsters.IronDragon.id],
 		combatLevel: 80,
 		questPoints: 34,
 		unlocked: true
@@ -226,7 +230,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Jelly,
 		amount: [120, 170],
 		weight: 6,
-		id: [Monsters.Jelly.id, Monsters.WarpedJelly.id],
+		monsters: [Monsters.Jelly.id, Monsters.WarpedJelly.id],
 		combatLevel: 57,
 		slayerLevel: 52,
 		unlocked: true
@@ -235,7 +239,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.KalphiteWorker,
 		amount: [120, 170],
 		weight: 9,
-		id: [
+		monsters: [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
@@ -248,7 +252,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Kurask,
 		amount: [120, 170],
 		weight: 3,
-		id: [Monsters.Kurask.id],
+		monsters: [Monsters.Kurask.id],
 		combatLevel: 65,
 		slayerLevel: 70,
 		unlocked: true
@@ -257,21 +261,21 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Lizardman,
 		amount: [90, 110],
 		weight: 8,
-		id: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman.id],
+		monsters: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman.id],
 		unlocked: false
 	},
 	{
 		monster: Monsters.MithrilDragon,
 		amount: [3, 6],
 		weight: 5,
-		id: [Monsters.MithrilDragon.id],
+		monsters: [Monsters.MithrilDragon.id],
 		unlocked: false
 	},
 	{
 		monster: Monsters.Zygomite,
 		amount: [10, 25],
 		weight: 2,
-		id: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
+		monsters: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
 		combatLevel: 60,
 		slayerLevel: 57,
 		questPoints: 3,
@@ -282,7 +286,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [110, 110],
 
 		weight: 7,
-		id: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
+		monsters: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		combatLevel: 85,
 		slayerLevel: 80,
 		questPoints: 1,
@@ -292,7 +296,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.RedDragon,
 		amount: [30, 50],
 		weight: 5,
-		id: [Monsters.RedDragon.id, Monsters.BabyRedDragon.id, Monsters.BrutalRedDragon.id],
+		monsters: [Monsters.RedDragon.id, Monsters.BabyRedDragon.id, Monsters.BrutalRedDragon.id],
 		questPoints: 34,
 		unlocked: false
 	},
@@ -300,7 +304,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.RuneDragon,
 		amount: [3, 6],
 		weight: 5,
-		id: [Monsters.RuneDragon.id],
+		monsters: [Monsters.RuneDragon.id],
 		questPoints: 205,
 		unlocked: true
 	},
@@ -308,7 +312,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.SkeletalWyvern,
 		amount: [5, 12],
 		weight: 5,
-		id: [Monsters.SkeletalWyvern.id],
+		monsters: [Monsters.SkeletalWyvern.id],
 		combatLevel: 70,
 		slayerLevel: 72,
 		questPoints: 1,
@@ -318,7 +322,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.SmokeDevil,
 		amount: [120, 170],
 		weight: 7,
-		id: [Monsters.SmokeDevil.id, Monsters.ThermonuclearSmokeDevil.id],
+		monsters: [Monsters.SmokeDevil.id, Monsters.ThermonuclearSmokeDevil.id],
 		combatLevel: 75,
 		slayerLevel: 93,
 		unlocked: true
@@ -327,7 +331,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.MountainTroll,
 		amount: [120, 170],
 		weight: 6,
-		id: [Monsters.MountainTroll.id, Monsters.TrollGeneral.id],
+		monsters: [Monsters.MountainTroll.id, Monsters.TrollGeneral.id],
 		combatLevel: 60,
 		unlocked: true
 	},
@@ -335,7 +339,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Turoth,
 		amount: [120, 170],
 		weight: 3,
-		id: [Monsters.Turoth.id],
+		monsters: [Monsters.Turoth.id],
 		combatLevel: 60,
 		slayerLevel: 55,
 		unlocked: true
@@ -345,7 +349,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [100, 160],
 
 		weight: 4,
-		id: [
+		monsters: [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
@@ -359,7 +363,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Waterfiend,
 		amount: [120, 170],
 		weight: 2,
-		id: [Monsters.Waterfiend.id],
+		monsters: [Monsters.Waterfiend.id],
 		combatLevel: 75,
 		unlocked: true
 	},
@@ -367,7 +371,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Wyrm,
 		amount: [125, 190],
 		weight: 10,
-		id: [Monsters.Wyrm.id],
+		monsters: [Monsters.Wyrm.id],
 		slayerLevel: 62,
 		unlocked: true
 	}

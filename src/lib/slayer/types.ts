@@ -5,7 +5,7 @@ export interface AssignableSlayerTask {
 	monster: Monster;
 	amount: [number, number];
 	weight: number;
-	id: number[];
+	monsters: number[];
 	slayerLevel?: number;
 	combatLevel?: number;
 	questPoints?: number;

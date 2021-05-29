@@ -7,7 +7,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AberrantSpectre,
 		amount: [130, 200],
 		weight: 7,
-		id: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
+		monsters: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		combatLevel: 65,
 		slayerLevel: 60,
 		questPoints: 1,
@@ -17,7 +17,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AbyssalDemon,
 		amount: [130, 200],
 		weight: 12,
-		id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
 		combatLevel: 85,
 		slayerLevel: 85,
 		questPoints: 1,
@@ -27,7 +27,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AdamantDragon,
 		amount: [4, 9],
 		weight: 2,
-		id: [Monsters.AdamantDragon.id],
+		monsters: [Monsters.AdamantDragon.id],
 		questPoints: 205,
 		unlocked: true
 	},
@@ -35,7 +35,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Ankou,
 		amount: [50, 80],
 		weight: 5,
-		id: [Monsters.Ankou.id],
+		monsters: [Monsters.Ankou.id],
 		combatLevel: 40,
 		unlocked: true
 	},
@@ -43,14 +43,14 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Aviansie,
 		amount: [120, 200],
 		weight: 8,
-		id: [Monsters.Aviansie.id, Monsters.Kreearra.id],
+		monsters: [Monsters.Aviansie.id, Monsters.Kreearra.id],
 		unlocked: false
 	},
 	{
 		monster: Monsters.Basilisk,
 		amount: [130, 200],
 		weight: 7,
-		id: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
+		monsters: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
 		combatLevel: 40,
 		slayerLevel: 40,
 		unlocked: false
@@ -59,7 +59,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlackDemon,
 		amount: [130, 200],
 		weight: 8,
-		id: [
+		monsters: [
 			Monsters.BlackDemon.id,
 			Monsters.DemonicGorilla.id,
 			Monsters.Porazdir.id,
@@ -72,7 +72,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlackDragon,
 		amount: [10, 20],
 		weight: 9,
-		id: [
+		monsters: [
 			Monsters.BlackDragon.id,
 			Monsters.BabyBlackDragon.id,
 			Monsters.BrutalBlackDragon.id,
@@ -86,7 +86,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Bloodveld,
 		amount: [130, 200],
 		weight: 8,
-		id: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
+		monsters: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
 		combatLevel: 50,
 		slayerLevel: 50,
 		questPoints: 1,
@@ -96,7 +96,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlueDragon,
 		amount: [110, 170],
 		weight: 4,
-		id: [
+		monsters: [
 			Monsters.BlueDragon.id,
 			Monsters.BabyBlueDragon.id,
 			Monsters.BrutalBlueDragon.id,
@@ -110,7 +110,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveHorror,
 		amount: [130, 200],
 		weight: 4,
-		id: [Monsters.CaveHorror.id],
+		monsters: [Monsters.CaveHorror.id],
 		combatLevel: 85,
 		slayerLevel: 58,
 		questPoints: 11,
@@ -120,7 +120,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveKraken,
 		amount: [100, 120],
 		weight: 9,
-		id: [Monsters.CaveKraken.id, Monsters.Kraken.id],
+		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id],
 		combatLevel: 80,
 		slayerLevel: 87,
 		unlocked: true
@@ -129,7 +129,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Dagannoth,
 		amount: [130, 200],
 		weight: 9,
-		id: [
+		monsters: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
 			Monsters.DaganothFledgeling.id,
@@ -145,7 +145,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.DarkBeast,
 		amount: [10, 20],
 		weight: 11,
-		id: [Monsters.DarkBeast.id],
+		monsters: [Monsters.DarkBeast.id],
 		combatLevel: 90,
 		slayerLevel: 90,
 		questPoints: 24,
@@ -155,7 +155,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Drake,
 		amount: [50, 110],
 		weight: 8,
-		id: [Monsters.Drake.id],
+		monsters: [Monsters.Drake.id],
 		slayerLevel: 84,
 		unlocked: true
 	},
@@ -163,7 +163,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.DustDevil,
 		amount: [130, 200],
 		weight: 5,
-		id: [Monsters.DustDevil.id],
+		monsters: [Monsters.DustDevil.id],
 		combatLevel: 70,
 		slayerLevel: 65,
 		questPoints: 12,
@@ -173,7 +173,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.ElfWarrior,
 		amount: [100, 170],
 		weight: 4,
-		id: [
+		monsters: [
 			Monsters.ElfWarrior.id,
 			Monsters.IorwerthArcher.id,
 			Monsters.ElfArcher.id,
@@ -188,7 +188,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FireGiant,
 		amount: [130, 200],
 		weight: 7,
-		id: [Monsters.FireGiant.id],
+		monsters: [Monsters.FireGiant.id],
 		combatLevel: 65,
 		unlocked: true
 	},
@@ -196,7 +196,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FossilIslandWyvernSpitting,
 		amount: [20, 60],
 		weight: 5,
-		id: [
+		monsters: [
 			Monsters.FossilIslandWyvernAncient.id,
 			Monsters.FossilIslandWyvernLongTailed.id,
 			Monsters.FossilIslandWyvernSpitting.id,
@@ -212,7 +212,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [130, 200],
 
 		weight: 8,
-		id: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
+		monsters: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		combatLevel: 80,
 		slayerLevel: 75,
 		questPoints: 1,
@@ -222,7 +222,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GreaterDemon,
 		amount: [130, 200],
 		weight: 9,
-		id: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
+		monsters: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
 		combatLevel: 70,
 		unlocked: true
 	},
@@ -230,7 +230,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Hellhound,
 		amount: [130, 200],
 		weight: 10,
-		id: [Monsters.Hellhound.id, Monsters.Cerberus.id],
+		monsters: [Monsters.Hellhound.id, Monsters.Cerberus.id],
 		combatLevel: 75,
 		unlocked: true
 	},
@@ -238,7 +238,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.IronDragon,
 		amount: [40, 60],
 		weight: 5,
-		id: [Monsters.IronDragon.id],
+		monsters: [Monsters.IronDragon.id],
 		combatLevel: 80,
 		questPoints: 34,
 		unlocked: true
@@ -247,7 +247,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.KalphiteWorker,
 		amount: [130, 200],
 		weight: 9,
-		id: [
+		monsters: [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
@@ -260,7 +260,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Kurask,
 		amount: [130, 200],
 		weight: 4,
-		id: [Monsters.Kurask.id],
+		monsters: [Monsters.Kurask.id],
 		combatLevel: 65,
 		slayerLevel: 70,
 		unlocked: true
@@ -269,21 +269,21 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Lizardman,
 		amount: [130, 210],
 		weight: 10,
-		id: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman.id],
+		monsters: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman.id],
 		unlocked: false
 	},
 	{
 		monster: Monsters.MithrilDragon,
 		amount: [5, 10],
 		weight: 9,
-		id: [Monsters.MithrilDragon.id],
+		monsters: [Monsters.MithrilDragon.id],
 		unlocked: false
 	},
 	{
 		monster: Monsters.Zygomite,
 		amount: [20, 30],
 		weight: 2,
-		id: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
+		monsters: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
 		combatLevel: 60,
 		slayerLevel: 57,
 		questPoints: 3,
@@ -293,7 +293,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Nechryael,
 		amount: [110, 200],
 		weight: 9,
-		id: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
+		monsters: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		combatLevel: 85,
 		slayerLevel: 80,
 		questPoints: 1,
@@ -303,7 +303,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.RedDragon,
 		amount: [30, 65],
 		weight: 8,
-		id: [Monsters.RedDragon.id, Monsters.BabyRedDragon.id, Monsters.BrutalRedDragon.id],
+		monsters: [Monsters.RedDragon.id, Monsters.BabyRedDragon.id, Monsters.BrutalRedDragon.id],
 		questPoints: 34,
 		unlocked: false
 	},
@@ -311,7 +311,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.RuneDragon,
 		amount: [3, 8],
 		weight: 2,
-		id: [Monsters.RuneDragon.id],
+		monsters: [Monsters.RuneDragon.id],
 		questPoints: 205,
 		unlocked: true
 	},
@@ -319,7 +319,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.SkeletalWyvern,
 		amount: [20, 40],
 		weight: 7,
-		id: [Monsters.SkeletalWyvern.id],
+		monsters: [Monsters.SkeletalWyvern.id],
 		combatLevel: 70,
 		slayerLevel: 72,
 		questPoints: 1,
@@ -329,7 +329,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.SmokeDevil,
 		amount: [130, 200],
 		weight: 9,
-		id: [Monsters.SmokeDevil.id, Monsters.ThermonuclearSmokeDevil.id],
+		monsters: [Monsters.SmokeDevil.id, Monsters.ThermonuclearSmokeDevil.id],
 		combatLevel: 75,
 		slayerLevel: 93,
 		unlocked: true
@@ -338,7 +338,11 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.SpiritualRanger,
 		amount: [130, 200],
 		weight: 7,
-		id: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
+		monsters: [
+			Monsters.SpiritualRanger.id,
+			Monsters.SpiritualWarrior.id,
+			Monsters.SpiritualMage.id
+		],
 		combatLevel: 60,
 		slayerLevel: 63,
 		questPoints: 1,
@@ -348,7 +352,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.SteelDragon,
 		amount: [10, 20],
 		weight: 7,
-		id: [Monsters.SteelDragon.id],
+		monsters: [Monsters.SteelDragon.id],
 		combatLevel: 85,
 		questPoints: 34,
 		unlocked: true
@@ -357,7 +361,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Suqah,
 		amount: [60, 90],
 		weight: 8,
-		id: [Monsters.Suqah.id],
+		monsters: [Monsters.Suqah.id],
 		combatLevel: 85,
 		questPoints: 12,
 		unlocked: true
@@ -366,7 +370,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.MountainTroll,
 		amount: [130, 200],
 		weight: 6,
-		id: [
+		monsters: [
 			Monsters.MountainTroll.id,
 			Monsters.IceTroll.id,
 			Monsters.TrollGeneral.id,
@@ -379,14 +383,14 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.TzHaarKet,
 		amount: [130, 199],
 		weight: 10,
-		id: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id],
+		monsters: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id],
 		unlocked: false
 	},
 	{
 		monster: Monsters.FeralVampyre,
 		amount: [100, 210],
 		weight: 8,
-		id: [
+		monsters: [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
@@ -400,7 +404,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Waterfiend,
 		amount: [130, 200],
 		weight: 2,
-		id: [Monsters.Waterfiend.id],
+		monsters: [Monsters.Waterfiend.id],
 		combatLevel: 75,
 		unlocked: true
 	},
@@ -408,7 +412,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Wyrm,
 		amount: [100, 160],
 		weight: 8,
-		id: [Monsters.Wyrm.id],
+		monsters: [Monsters.Wyrm.id],
 		slayerLevel: 62,
 		unlocked: true
 	}

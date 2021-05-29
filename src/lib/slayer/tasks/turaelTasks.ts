@@ -7,7 +7,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Banshee,
 		amount: [15, 50],
 		weight: 8,
-		id: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
+		monsters: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
 		combatLevel: 20,
 		slayerLevel: 15,
 		questPoints: 1,
@@ -17,7 +17,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Bat,
 		amount: [15, 50],
 		weight: 7,
-		id: [Monsters.Bat.id, Monsters.GiantBat.id],
+		monsters: [Monsters.Bat.id, Monsters.GiantBat.id],
 		combatLevel: 5,
 		unlocked: true
 	},
@@ -25,7 +25,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Bird,
 		amount: [15, 50],
 		weight: 6,
-		id: [
+		monsters: [
 			Monsters.Chicken.id,
 			Monsters.MountedTerrorBirdGnome.id,
 			Monsters.TerrorBird.id,
@@ -42,7 +42,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlackBear,
 		amount: [15, 50],
 		weight: 7,
-		id: [
+		monsters: [
 			Monsters.BlackBear.id,
 			Monsters.GrizzlyBearCub.id,
 			Monsters.BearCub.id,
@@ -56,7 +56,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveBug,
 		amount: [10, 20],
 		weight: 8,
-		id: [Monsters.CaveBug.id],
+		monsters: [Monsters.CaveBug.id],
 		slayerLevel: 7,
 		unlocked: true
 	},
@@ -64,7 +64,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveCrawler,
 		amount: [15, 50],
 		weight: 8,
-		id: [Monsters.CaveCrawler.id],
+		monsters: [Monsters.CaveCrawler.id],
 		combatLevel: 10,
 		slayerLevel: 10,
 		unlocked: true
@@ -73,7 +73,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveSlime,
 		amount: [10, 20],
 		weight: 8,
-		id: [Monsters.CaveSlime.id],
+		monsters: [Monsters.CaveSlime.id],
 		combatLevel: 15,
 		slayerLevel: 17,
 		unlocked: true
@@ -82,7 +82,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Cow,
 		amount: [15, 50],
 		weight: 8,
-		id: [Monsters.Cow.id, Monsters.CowCalf.id, Monsters.UndeadCow.id],
+		monsters: [Monsters.Cow.id, Monsters.CowCalf.id, Monsters.UndeadCow.id],
 		combatLevel: 5,
 		unlocked: true
 	},
@@ -90,7 +90,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CrawlingHand,
 		amount: [15, 50],
 		weight: 8,
-		id: [Monsters.CrawlingHand.id],
+		monsters: [Monsters.CrawlingHand.id],
 		slayerLevel: 5,
 		questPoints: 1,
 		unlocked: true
@@ -99,7 +99,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GuardDog,
 		amount: [15, 50],
 		weight: 7,
-		id: [Monsters.GuardDog.id, Monsters.Jackal.id, Monsters.WildDog.id],
+		monsters: [Monsters.GuardDog.id, Monsters.Jackal.id, Monsters.WildDog.id],
 		combatLevel: 15,
 		unlocked: true
 	},
@@ -107,7 +107,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Dwarf,
 		amount: [15, 50],
 		weight: 7,
-		id: [
+		monsters: [
 			Monsters.Dwarf.id,
 			Monsters.BlackGuard.id,
 			Monsters.ChaosDwarf.id,
@@ -120,7 +120,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Ghost,
 		amount: [15, 50],
 		weight: 7,
-		id: [Monsters.Ghost.id, Monsters.TorturedSoul.id],
+		monsters: [Monsters.Ghost.id, Monsters.TorturedSoul.id],
 		combatLevel: 13,
 		unlocked: true
 	},
@@ -128,14 +128,14 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Goblin,
 		amount: [15, 50],
 		weight: 7,
-		id: [Monsters.Goblin.id, Monsters.CaveGoblinGuard.id, Monsters.GeneralGraardor.id],
+		monsters: [Monsters.Goblin.id, Monsters.CaveGoblinGuard.id, Monsters.GeneralGraardor.id],
 		unlocked: true
 	},
 	{
 		monster: Monsters.Icefiend,
 		amount: [15, 50],
 		weight: 8,
-		id: [Monsters.Icefiend.id],
+		monsters: [Monsters.Icefiend.id],
 		combatLevel: 20,
 		unlocked: true
 	},
@@ -143,7 +143,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.KalphiteWorker,
 		amount: [15, 50],
 		weight: 6,
-		id: [
+		monsters: [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
@@ -156,7 +156,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Lizard,
 		amount: [15, 50],
 		weight: 8,
-		id: [
+		monsters: [
 			Monsters.Lizard.id,
 			Monsters.SmallLizard.id,
 			Monsters.DesertLizard.id,
@@ -169,7 +169,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Minotaur,
 		amount: [10, 20],
 		weight: 7,
-		id: [Monsters.Minotaur.id],
+		monsters: [Monsters.Minotaur.id],
 		combatLevel: 7,
 		unlocked: true
 	},
@@ -177,7 +177,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Monkey,
 		amount: [15, 50],
 		weight: 6,
-		id: [
+		monsters: [
 			Monsters.Monkey.id,
 			Monsters.MonkeyGuard.id,
 			Monsters.MonkeyArcher.id,
@@ -191,7 +191,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Rat,
 		amount: [15, 50],
 		weight: 7,
-		id: [
+		monsters: [
 			Monsters.Rat.id,
 			Monsters.GiantRat.id,
 			Monsters.DungeonRat.id,
@@ -205,7 +205,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Scorpion,
 		amount: [15, 50],
 		weight: 7,
-		id: [
+		monsters: [
 			Monsters.Scorpion.id,
 			Monsters.KingScorpion.id,
 			Monsters.PoisonScorpion.id,
@@ -220,7 +220,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Skeleton,
 		amount: [15, 50],
 		weight: 7,
-		id: [
+		monsters: [
 			Monsters.Skeleton.id,
 			Monsters.SkeletonMage.id,
 			Monsters.Vetion.id,
@@ -234,7 +234,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Spider,
 		amount: [15, 50],
 		weight: 6,
-		id: [
+		monsters: [
 			Monsters.Spider.id,
 			Monsters.GiantSpider.id,
 			Monsters.ShadowSpider.id,
@@ -249,7 +249,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Wolf,
 		amount: [15, 50],
 		weight: 7,
-		id: [
+		monsters: [
 			Monsters.Wolf.id,
 			Monsters.BigWolf.id,
 			Monsters.DesertWolf.id,
@@ -264,7 +264,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Zombie,
 		amount: [15, 50],
 		weight: 7,
-		id: [
+		monsters: [
 			Monsters.Zombie.id,
 			Monsters.MonkeyZombie.id,
 			Monsters.UndeadChicken.id,

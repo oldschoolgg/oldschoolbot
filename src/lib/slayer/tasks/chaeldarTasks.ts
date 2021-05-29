@@ -7,7 +7,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AberrantSpectre,
 		amount: [110, 170],
 		weight: 8,
-		id: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
+		monsters: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
 		combatLevel: 65,
 		slayerLevel: 60,
 		questPoints: 1,
@@ -17,7 +17,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AbyssalDemon,
 		amount: [110, 170],
 		weight: 12,
-		id: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
 		combatLevel: 85,
 		slayerLevel: 85,
 		questPoints: 1,
@@ -27,14 +27,14 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Aviansie,
 		amount: [110, 170],
 		weight: 9,
-		id: [Monsters.Aviansie.id, Monsters.Kreearra.id],
+		monsters: [Monsters.Aviansie.id, Monsters.Kreearra.id],
 		unlocked: false
 	},
 	{
 		monster: Monsters.Banshee,
 		amount: [110, 170],
 		weight: 5,
-		id: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
+		monsters: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
 		combatLevel: 20,
 		slayerLevel: 15,
 		questPoints: 1,
@@ -44,7 +44,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Basilisk,
 		amount: [110, 170],
 		weight: 7,
-		id: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
+		monsters: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
 		combatLevel: 40,
 		slayerLevel: 40,
 		unlocked: true
@@ -53,7 +53,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlackDemon,
 		amount: [110, 170],
 		weight: 10,
-		id: [
+		monsters: [
 			Monsters.BlackDemon.id,
 			Monsters.DemonicGorilla.id,
 			Monsters.Porazdir.id,
@@ -66,7 +66,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Bloodveld,
 		amount: [110, 170],
 		weight: 8,
-		id: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
+		monsters: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
 		combatLevel: 50,
 		slayerLevel: 50,
 		questPoints: 1,
@@ -76,7 +76,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlueDragon,
 		amount: [110, 170],
 		weight: 8,
-		id: [
+		monsters: [
 			Monsters.BlueDragon.id,
 			Monsters.BabyBlueDragon.id,
 			Monsters.BrutalBlueDragon.id,
@@ -90,7 +90,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BrineRat,
 		amount: [110, 170],
 		weight: 7,
-		id: [Monsters.BrineRat.id],
+		monsters: [Monsters.BrineRat.id],
 		combatLevel: 45,
 		slayerLevel: 47,
 		questPoints: 4,
@@ -100,7 +100,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BronzeDragon,
 		amount: [10, 20],
 		weight: 11,
-		id: [Monsters.BronzeDragon.id],
+		monsters: [Monsters.BronzeDragon.id],
 		combatLevel: 75,
 		questPoints: 34,
 		unlocked: true
@@ -109,7 +109,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveCrawler,
 		amount: [110, 170],
 		weight: 5,
-		id: [Monsters.CaveCrawler.id],
+		monsters: [Monsters.CaveCrawler.id],
 		combatLevel: 10,
 		slayerLevel: 10,
 		unlocked: true
@@ -119,7 +119,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		amount: [110, 170],
 
 		weight: 10,
-		id: [Monsters.CaveHorror.id],
+		monsters: [Monsters.CaveHorror.id],
 		combatLevel: 85,
 		slayerLevel: 58,
 		questPoints: 11,
@@ -129,7 +129,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveKraken,
 		amount: [30, 50],
 		weight: 12,
-		id: [Monsters.CaveKraken.id, Monsters.Kraken.id],
+		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id],
 		combatLevel: 80,
 		slayerLevel: 87,
 		unlocked: true
@@ -138,7 +138,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveSlime,
 		amount: [10, 20],
 		weight: 6,
-		id: [Monsters.CaveSlime.id],
+		monsters: [Monsters.CaveSlime.id],
 		combatLevel: 15,
 		slayerLevel: 17,
 		unlocked: true
@@ -147,7 +147,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Cockatrice,
 		amount: [110, 170],
 		weight: 6,
-		id: [Monsters.Cockatrice.id],
+		monsters: [Monsters.Cockatrice.id],
 		combatLevel: 25,
 		slayerLevel: 25,
 		unlocked: true
@@ -156,7 +156,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Dagannoth,
 		amount: [110, 170],
 		weight: 11,
-		id: [
+		monsters: [
 			Monsters.Dagannoth.id,
 			Monsters.DagannothSpawn.id,
 			Monsters.DaganothFledgeling.id,
@@ -173,7 +173,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		amount: [110, 170],
 
 		weight: 9,
-		id: [Monsters.DustDevil.id],
+		monsters: [Monsters.DustDevil.id],
 		combatLevel: 70,
 		slayerLevel: 65,
 		questPoints: 12,
@@ -183,7 +183,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.ElfWarrior,
 		amount: [110, 170],
 		weight: 8,
-		id: [
+		monsters: [
 			Monsters.ElfWarrior.id,
 			Monsters.IorwerthArcher.id,
 			Monsters.ElfArcher.id,
@@ -198,7 +198,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FeverSpider,
 		amount: [110, 170],
 		weight: 7,
-		id: [Monsters.FeverSpider.id],
+		monsters: [Monsters.FeverSpider.id],
 		combatLevel: 40,
 		slayerLevel: 42,
 		questPoints: 7,
@@ -208,7 +208,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FireGiant,
 		amount: [110, 170],
 		weight: 12,
-		id: [Monsters.FireGiant.id],
+		monsters: [Monsters.FireGiant.id],
 		combatLevel: 65,
 		unlocked: true
 	},
@@ -216,7 +216,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FossilIslandWyvernSpitting,
 		amount: [10, 20],
 		weight: 7,
-		id: [
+		monsters: [
 			Monsters.FossilIslandWyvernSpitting.id,
 			Monsters.FossilIslandWyvernTaloned.id,
 			Monsters.FossilIslandWyvernLongTailed.id,
@@ -232,7 +232,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		amount: [110, 170],
 
 		weight: 11,
-		id: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
+		monsters: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
 		combatLevel: 80,
 		slayerLevel: 75,
 		questPoints: 1,
@@ -242,7 +242,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GreaterDemon,
 		amount: [110, 170],
 		weight: 9,
-		id: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
+		monsters: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
 		combatLevel: 70,
 		unlocked: true
 	},
@@ -250,7 +250,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.HarpieBugSwarm,
 		amount: [110, 170],
 		weight: 6,
-		id: [Monsters.HarpieBugSwarm.id],
+		monsters: [Monsters.HarpieBugSwarm.id],
 		combatLevel: 45,
 		slayerLevel: 33,
 		unlocked: true
@@ -259,7 +259,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Hellhound,
 		amount: [110, 170],
 		weight: 9,
-		id: [Monsters.Hellhound.id, Monsters.Cerberus.id],
+		monsters: [Monsters.Hellhound.id, Monsters.Cerberus.id],
 		combatLevel: 75,
 		unlocked: true
 	},
@@ -267,7 +267,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.InfernalMage,
 		amount: [110, 170],
 		weight: 7,
-		id: [Monsters.InfernalMage.id],
+		monsters: [Monsters.InfernalMage.id],
 		combatLevel: 40,
 		slayerLevel: 45,
 		questPoints: 1,
@@ -278,7 +278,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		amount: [25, 45],
 
 		weight: 12,
-		id: [Monsters.IronDragon.id],
+		monsters: [Monsters.IronDragon.id],
 		combatLevel: 80,
 		questPoints: 34,
 		unlocked: true
@@ -287,7 +287,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Jelly,
 		amount: [110, 170],
 		weight: 10,
-		id: [Monsters.Jelly.id, Monsters.WarpedJelly.id],
+		monsters: [Monsters.Jelly.id, Monsters.WarpedJelly.id],
 		combatLevel: 57,
 		slayerLevel: 52,
 		unlocked: true
@@ -296,7 +296,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.JungleHorror,
 		amount: [110, 170],
 		weight: 10,
-		id: [Monsters.JungleHorror.id],
+		monsters: [Monsters.JungleHorror.id],
 		combatLevel: 65,
 		questPoints: 11,
 		unlocked: true
@@ -305,7 +305,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.KalphiteWorker,
 		amount: [110, 170],
 		weight: 11,
-		id: [
+		monsters: [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
@@ -318,7 +318,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Kurask,
 		amount: [110, 170],
 		weight: 12,
-		id: [Monsters.Kurask.id],
+		monsters: [Monsters.Kurask.id],
 		combatLevel: 65,
 		slayerLevel: 70,
 		unlocked: true
@@ -327,7 +327,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.LesserDemon,
 		amount: [110, 170],
 		weight: 9,
-		id: [Monsters.LesserDemon.id],
+		monsters: [Monsters.LesserDemon.id],
 		combatLevel: 60,
 		unlocked: true
 	},
@@ -335,14 +335,14 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Lizardman,
 		amount: [70, 90],
 		weight: 8,
-		id: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman.id],
+		monsters: [Monsters.Lizardman.id, Monsters.LizardmanBrute.id, Monsters.LizardmanShaman.id],
 		unlocked: false
 	},
 	{
 		monster: Monsters.Lizard,
 		amount: [110, 170],
 		weight: 5,
-		id: [
+		monsters: [
 			Monsters.Lizard.id,
 			Monsters.SmallLizard.id,
 			Monsters.DesertLizard.id,
@@ -355,7 +355,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Mogre,
 		amount: [110, 170],
 		weight: 6,
-		id: [Monsters.Mogre.id],
+		monsters: [Monsters.Mogre.id],
 		combatLevel: 30,
 		slayerLevel: 32,
 		unlocked: true
@@ -364,7 +364,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Molanisk,
 		amount: [39, 50],
 		weight: 6,
-		id: [Monsters.Molanisk.id],
+		monsters: [Monsters.Molanisk.id],
 		combatLevel: 50,
 		slayerLevel: 39,
 		questPoints: 8,
@@ -374,7 +374,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Zygomite,
 		amount: [8, 15],
 		weight: 7,
-		id: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
+		monsters: [Monsters.Zygomite.id, Monsters.AncientZygomite.id],
 		combatLevel: 60,
 		slayerLevel: 57,
 		questPoints: 3,
@@ -385,7 +385,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		amount: [110, 170],
 
 		weight: 12,
-		id: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
+		monsters: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
 		combatLevel: 85,
 		slayerLevel: 80,
 		questPoints: 1,
@@ -395,7 +395,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Pyrefiend,
 		amount: [110, 170],
 		weight: 6,
-		id: [Monsters.Pyrefiend.id],
+		monsters: [Monsters.Pyrefiend.id],
 		combatLevel: 25,
 		slayerLevel: 30,
 		unlocked: true
@@ -404,7 +404,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Rockslug,
 		amount: [110, 170],
 		weight: 5,
-		id: [Monsters.Rockslug.id],
+		monsters: [Monsters.Rockslug.id],
 		combatLevel: 20,
 		slayerLevel: 20,
 		unlocked: true
@@ -413,7 +413,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.ShadowWarrior,
 		amount: [110, 170],
 		weight: 8,
-		id: [Monsters.ShadowWarrior.id],
+		monsters: [Monsters.ShadowWarrior.id],
 		combatLevel: 60,
 		questPoints: 111,
 		unlocked: true
@@ -422,7 +422,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.SkeletalWyvern,
 		amount: [10, 20],
 		weight: 7,
-		id: [Monsters.SkeletalWyvern.id],
+		monsters: [Monsters.SkeletalWyvern.id],
 		combatLevel: 70,
 		slayerLevel: 72,
 		questPoints: 1,
@@ -433,7 +433,11 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		amount: [110, 170],
 
 		weight: 12,
-		id: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
+		monsters: [
+			Monsters.SpiritualRanger.id,
+			Monsters.SpiritualWarrior.id,
+			Monsters.SpiritualMage.id
+		],
 		combatLevel: 60,
 		slayerLevel: 63,
 		questPoints: 1,
@@ -443,7 +447,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.MountainTroll,
 		amount: [110, 170],
 		weight: 11,
-		id: [Monsters.MountainTroll.id, Monsters.IceTroll.id, Monsters.TrollGeneral.id],
+		monsters: [Monsters.MountainTroll.id, Monsters.IceTroll.id, Monsters.TrollGeneral.id],
 		combatLevel: 60,
 		unlocked: true
 	},
@@ -451,7 +455,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Turoth,
 		amount: [110, 170],
 		weight: 10,
-		id: [Monsters.Turoth.id],
+		monsters: [Monsters.Turoth.id],
 		combatLevel: 60,
 		slayerLevel: 55,
 		unlocked: true
@@ -460,14 +464,14 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.TzHaarKet,
 		amount: [90, 150],
 		weight: 8,
-		id: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id],
+		monsters: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id],
 		unlocked: false
 	},
 	{
 		monster: Monsters.FeralVampyre,
 		amount: [80, 120],
 		weight: 6,
-		id: [
+		monsters: [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
@@ -481,7 +485,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.WallBeast,
 		amount: [10, 20],
 		weight: 6,
-		id: [Monsters.WallBeast.id],
+		monsters: [Monsters.WallBeast.id],
 		combatLevel: 30,
 		slayerLevel: 35,
 		unlocked: true
@@ -490,7 +494,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Wyrm,
 		amount: [60, 120],
 		weight: 6,
-		id: [Monsters.Wyrm.id],
+		monsters: [Monsters.Wyrm.id],
 		slayerLevel: 62,
 		unlocked: true
 	}

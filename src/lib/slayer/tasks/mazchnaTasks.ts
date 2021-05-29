@@ -7,7 +7,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Banshee,
 		amount: [40, 70],
 		weight: 8,
-		id: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
+		monsters: [Monsters.Banshee.id, Monsters.TwistedBanshee.id],
 		combatLevel: 20,
 		slayerLevel: 15,
 		questPoints: 1,
@@ -17,7 +17,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Bat,
 		amount: [40, 70],
 		weight: 7,
-		id: [Monsters.Bat.id, Monsters.GiantBat.id],
+		monsters: [Monsters.Bat.id, Monsters.GiantBat.id],
 		combatLevel: 5,
 		unlocked: true
 	},
@@ -25,7 +25,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlackBear,
 		amount: [40, 70],
 		weight: 6,
-		id: [
+		monsters: [
 			Monsters.BlackBear.id,
 			Monsters.GrizzlyBearCub.id,
 			Monsters.BearCub.id,
@@ -39,7 +39,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Catablepon,
 		amount: [20, 30],
 		weight: 8,
-		id: [Monsters.Catablepon.id],
+		monsters: [Monsters.Catablepon.id],
 		combatLevel: 35,
 		unlocked: true
 	},
@@ -47,7 +47,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveBug,
 		amount: [10, 20],
 		weight: 8,
-		id: [Monsters.CaveBug.id],
+		monsters: [Monsters.CaveBug.id],
 		slayerLevel: 7,
 		unlocked: true
 	},
@@ -55,7 +55,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveCrawler,
 		amount: [40, 70],
 		weight: 8,
-		id: [Monsters.CaveCrawler.id],
+		monsters: [Monsters.CaveCrawler.id],
 		combatLevel: 10,
 		slayerLevel: 10,
 		unlocked: true
@@ -64,7 +64,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveSlime,
 		amount: [10, 20],
 		weight: 8,
-		id: [Monsters.CaveSlime.id],
+		monsters: [Monsters.CaveSlime.id],
 		combatLevel: 15,
 		slayerLevel: 17,
 		unlocked: true
@@ -73,7 +73,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Cockatrice,
 		amount: [40, 70],
 		weight: 8,
-		id: [Monsters.Cockatrice.id],
+		monsters: [Monsters.Cockatrice.id],
 		combatLevel: 25,
 		slayerLevel: 25,
 		unlocked: true
@@ -82,7 +82,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CrawlingHand,
 		amount: [40, 70],
 		weight: 8,
-		id: [Monsters.CrawlingHand.id],
+		monsters: [Monsters.CrawlingHand.id],
 		slayerLevel: 5,
 		questPoints: 1,
 		unlocked: true
@@ -91,7 +91,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Lizard,
 		amount: [40, 70],
 		weight: 8,
-		id: [
+		monsters: [
 			Monsters.Lizard.id,
 			Monsters.SmallLizard.id,
 			Monsters.DesertLizard.id,
@@ -104,7 +104,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GuardDog,
 		amount: [40, 70],
 		weight: 7,
-		id: [Monsters.GuardDog.id, Monsters.Jackal.id, Monsters.WildDog.id],
+		monsters: [Monsters.GuardDog.id, Monsters.Jackal.id, Monsters.WildDog.id],
 		combatLevel: 15,
 		unlocked: true
 	},
@@ -112,7 +112,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.EarthWarrior,
 		amount: [40, 70],
 		weight: 6,
-		id: [Monsters.EarthWarrior.id],
+		monsters: [Monsters.EarthWarrior.id],
 		combatLevel: 35,
 		unlocked: true
 	},
@@ -120,7 +120,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FleshCrawler,
 		amount: [15, 25],
 		weight: 7,
-		id: [Monsters.FleshCrawler.id],
+		monsters: [Monsters.FleshCrawler.id],
 		combatLevel: 15,
 		unlocked: true
 	},
@@ -128,7 +128,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Ghost,
 		amount: [40, 70],
 		weight: 7,
-		id: [Monsters.Ghost.id, Monsters.TorturedSoul.id],
+		monsters: [Monsters.Ghost.id, Monsters.TorturedSoul.id],
 		combatLevel: 13,
 		unlocked: true
 	},
@@ -136,7 +136,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Ghoul,
 		amount: [10, 20],
 		weight: 7,
-		id: [Monsters.Ghoul.id],
+		monsters: [Monsters.Ghoul.id],
 		combatLevel: 25,
 		questPoints: 1,
 		unlocked: true
@@ -145,7 +145,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.HillGiant,
 		amount: [40, 70],
 		weight: 7,
-		id: [Monsters.HillGiant.id, Monsters.Obor.id, Monsters.Cyclops.id],
+		monsters: [Monsters.HillGiant.id, Monsters.Obor.id, Monsters.Cyclops.id],
 		combatLevel: 25,
 		unlocked: true
 	},
@@ -153,7 +153,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Hobgoblin,
 		amount: [40, 70],
 		weight: 7,
-		id: [Monsters.Hobgoblin.id],
+		monsters: [Monsters.Hobgoblin.id],
 		combatLevel: 20,
 		unlocked: true
 	},
@@ -161,7 +161,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.IceWarrior,
 		amount: [40, 70],
 		weight: 7,
-		id: [Monsters.IceWarrior.id],
+		monsters: [Monsters.IceWarrior.id],
 		combatLevel: 45,
 		unlocked: true
 	},
@@ -169,7 +169,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.KalphiteWorker,
 		amount: [40, 70],
 		weight: 6,
-		id: [
+		monsters: [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
@@ -182,7 +182,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Killerwatt,
 		amount: [30, 80],
 		weight: 6,
-		id: [Monsters.Killerwatt.id],
+		monsters: [Monsters.Killerwatt.id],
 		combatLevel: 50,
 		slayerLevel: 37,
 		questPoints: 4,
@@ -192,7 +192,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Mogre,
 		amount: [40, 70],
 		weight: 8,
-		id: [Monsters.Mogre.id],
+		monsters: [Monsters.Mogre.id],
 		combatLevel: 30,
 		slayerLevel: 32,
 		unlocked: true
@@ -201,7 +201,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Pyrefiend,
 		amount: [40, 70],
 		weight: 8,
-		id: [Monsters.Pyrefiend.id],
+		monsters: [Monsters.Pyrefiend.id],
 		combatLevel: 25,
 		slayerLevel: 30,
 		unlocked: true
@@ -210,7 +210,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Rockslug,
 		amount: [40, 70],
 		weight: 8,
-		id: [Monsters.Rockslug.id],
+		monsters: [Monsters.Rockslug.id],
 		combatLevel: 20,
 		slayerLevel: 20,
 		unlocked: true
@@ -219,7 +219,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Scorpion,
 		amount: [40, 70],
 		weight: 7,
-		id: [
+		monsters: [
 			Monsters.Scorpion.id,
 			Monsters.KingScorpion.id,
 			Monsters.PoisonScorpion.id,
@@ -234,7 +234,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Shade,
 		amount: [40, 70],
 		weight: 8,
-		id: [
+		monsters: [
 			Monsters.Shade.id,
 			Monsters.LoarShade.id,
 			Monsters.PhrinShade.id,
@@ -249,7 +249,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Skeleton,
 		amount: [40, 70],
 		weight: 7,
-		id: [
+		monsters: [
 			Monsters.SkeletonMage.id,
 			Monsters.Vetion.id,
 			Monsters.Skogre.id,
@@ -262,7 +262,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FeralVampyre,
 		amount: [10, 20],
 		weight: 6,
-		id: [
+		monsters: [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
@@ -276,7 +276,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.WallBeast,
 		amount: [10, 20],
 		weight: 7,
-		id: [Monsters.WallBeast.id],
+		monsters: [Monsters.WallBeast.id],
 		combatLevel: 30,
 		slayerLevel: 35,
 		unlocked: true
@@ -285,7 +285,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Wolf,
 		amount: [40, 70],
 		weight: 7,
-		id: [
+		monsters: [
 			Monsters.Wolf.id,
 			Monsters.BigWolf.id,
 			Monsters.DesertWolf.id,
@@ -300,7 +300,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Zombie,
 		amount: [40, 70],
 		weight: 7,
-		id: [
+		monsters: [
 			Monsters.Zombie.id,
 			Monsters.MonkeyZombie.id,
 			Monsters.UndeadChicken.id,
