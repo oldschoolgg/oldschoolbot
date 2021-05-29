@@ -58,11 +58,6 @@ export default class extends BotCommand {
 
 		const boosts = [];
 		let timePerPlank = (Time.Second * 37) / 27;
-		const hasHammy = msg.author.equippedPet() === itemID('Hammy');
-		if (hasHammy) {
-			timePerPlank *= 0.5;
-			boosts.push(`2x for Hammy`);
-		}
 
 		if (msg.author.hasGracefulEquipped()) {
 			timePerPlank *= 0.9;
@@ -93,7 +88,7 @@ export default class extends BotCommand {
 
 		const GP = msg.author.settings.get(UserSettings.GP);
 
-		const cost = hasHammy ? 1 : plank!.gpCost * 2 * quantity;
+		const cost = plank!.gpCost * 2 * quantity;
 
 		if (GP < cost) {
 			return msg.send(`You need ${toKMB(cost)} GP to create ${quantity} planks.`);
