@@ -131,6 +131,16 @@ const logs: Log[] = [
 		petChance: 72_321,
 		qpRequired: 0,
 		clueScrollChance: 72_321
+	},
+	{
+		level: 105,
+		xp: 300,
+		id: 50_017,
+		name: 'Elder Logs',
+		respawnTime: -0.25,
+		petChance: 72_321,
+		qpRequired: 0,
+		clueScrollChance: 42_321
 	}
 ];
 

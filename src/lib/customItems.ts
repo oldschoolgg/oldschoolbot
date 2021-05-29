@@ -1467,3 +1467,6 @@ setCustomItem(50_013, 'Master farmer jacket', 'Rune platebody', {}, 1_000_000);
 setCustomItem(50_014, 'Master farmer pants', 'Rune platelegs', {}, 1_000_000);
 setCustomItem(50_015, 'Master farmer gloves', 'Leather gloves', {}, 1_000_000);
 setCustomItem(50_016, 'Master farmer boots', 'Rune boots', {}, 1_000_000);
+
+setCustomItem(50_017, 'Elder logs', 'Magic logs', {}, 19_000);
+setCustomItem(50_018, 'Elder plank', 'Mahogany plank', {}, 10_000);

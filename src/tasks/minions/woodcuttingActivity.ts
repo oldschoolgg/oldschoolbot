@@ -6,7 +6,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { itemID, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -16,7 +16,8 @@ export default class extends Task {
 
 		const log = Woodcutting.Logs.find(Log => Log.id === logID)!;
 
-		const xpReceived = quantity * log.xp;
+		let xpReceived = quantity * log.xp;
+		if (logID === itemID('Elder logs')) xpReceived *= 2;
 
 		const xpRes = await user.addXP(SkillsEnum.Woodcutting, xpReceived, duration);
 
