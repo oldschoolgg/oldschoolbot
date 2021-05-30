@@ -64,5 +64,9 @@ export namespace ClientSettings {
 
 		export const NexCost = T<O.Readonly<ItemBank>>('nex_cost');
 		export const NexLoot = T<O.Readonly<ItemBank>>('nex_loot');
+
+		export const HammyDestroyed = T<O.Readonly<ItemBank>>('hammy_destroyed');
+		export const HammyDoubled = T<O.Readonly<ItemBank>>('hammy_doubled');
+		export const HammySpared = T<O.Readonly<ItemBank>>('hammy_spared');
 	}
 }

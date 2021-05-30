@@ -30,6 +30,9 @@ Client.defaultClientSchema
 	.add('nex_loot', 'any', { default: {} })
 	.add('kk_cost', 'any', { default: {} })
 	.add('kk_loot', 'any', { default: {} })
+	.add('hammy_destroyed', 'any', { default: {} })
+	.add('hammy_doubled', 'any', { default: {} })
+	.add('hammy_spared', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })
