@@ -118,7 +118,7 @@ export default class extends BotCommand {
 		if (!bank.has(firstItem.id)) {
 			return msg.send(`You don't have a ${firstItem.name}.`);
 		}
-		if (!bank.has(itemID('Hammy')) && !(msg.author.equippedPet() === itemID('Hammy'))) {
+		if (!bank.has(itemID('Hammy')) && msg.author.equippedPet() !== itemID('Hammy')) {
 			return msg.send(`You don't have a Hammy, so how could you feed it?`);
 		}
 
