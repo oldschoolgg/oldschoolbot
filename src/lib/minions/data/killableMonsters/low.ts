@@ -11,7 +11,6 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Imp.aliases,
 		timeToFinish: Time.Second * 13,
 		table: Monsters.Imp,
-		emoji: '',
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 5,
@@ -23,7 +22,6 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.EarthWarrior.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.EarthWarrior,
-		emoji: '',
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 1,
@@ -39,7 +37,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Ghoul.aliases,
 		timeToFinish: Time.Second * 17.5,
 		table: Monsters.Ghoul,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 1,
@@ -55,7 +53,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Hobgoblin.aliases,
 		timeToFinish: Time.Second * 14.5,
 		table: Monsters.Hobgoblin,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 1,
@@ -71,7 +69,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Jogre.aliases,
 		timeToFinish: Time.Second * 19.5,
 		table: Monsters.Jogre,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 1,
@@ -87,7 +85,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.ChaosDruid.aliases,
 		timeToFinish: Time.Second * 17.5,
 		table: Monsters.ChaosDruid,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 1,
@@ -103,7 +101,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Unicorn.aliases,
 		timeToFinish: Time.Second * 15.5,
 		table: Monsters.Unicorn,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 1,

@@ -170,7 +170,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Guard.aliases,
 		timeToFinish: Time.Second * 7.4,
 		table: Monsters.Guard,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -194,7 +194,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Goblin.aliases,
 		timeToFinish: Time.Second * 4.7,
 		table: Monsters.Goblin,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -245,7 +245,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.GreaterDemon.aliases,
 		timeToFinish: Time.Second * 25,
 		table: Monsters.GreaterDemon,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -282,7 +282,6 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Zombie.aliases,
 		timeToFinish: Time.Second * 9,
 		table: Monsters.Zombie,
-		emoji: '',
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -295,7 +294,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Rat.aliases,
 		timeToFinish: Time.Second * 1.5,
 		table: Monsters.Rat,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -307,7 +306,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.FireGiant.aliases,
 		timeToFinish: Time.Second * 16,
 		table: Monsters.FireGiant,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -320,7 +319,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.BlueDragon.aliases,
 		timeToFinish: Time.Second * 40,
 		table: Monsters.BlueDragon,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -336,7 +335,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Ankou.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.Ankou,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
@@ -348,7 +347,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Dwarf.aliases,
 		timeToFinish: Time.Second * 6,
 		table: Monsters.Dwarf,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,

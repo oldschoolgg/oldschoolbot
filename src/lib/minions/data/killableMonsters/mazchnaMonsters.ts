@@ -1,11 +1,9 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-// import itemID from '../../../../util/itemID';
-import { Time } from '../../../../constants';
-import { SpinyHelmetSlayerHelmets } from '../../../../skilling/skills/slayer/slayerHelmets';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
-import { KillableMonster } from '../../../types';
-// import { GearSetupTypes, GearStat } from '../../../../gear/types';
+import { allSlayerHelmets } from '../../../slayer/slayerUtil';
+import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
+import { KillableMonster } from '../../types';
 
 const MazchnaMonsters: KillableMonster[] = [
 	{
@@ -14,7 +12,6 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.AsynShade.aliases,
 		timeToFinish: Time.Second * 25,
 		table: Monsters.AsynShade,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -26,7 +23,6 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.Catablepon.aliases,
 		timeToFinish: Time.Second * 14,
 		table: Monsters.Catablepon,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -38,7 +34,6 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.Cockatrice.aliases,
 		timeToFinish: Time.Second * 14,
 		table: Monsters.Cockatrice,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -48,17 +43,14 @@ const MazchnaMonsters: KillableMonster[] = [
 			slayer: 25
 		},
 
-		superiorName: Monsters.Cockathrice.name,
-		superiorId: Monsters.Cockathrice.id,
-		superiorTable: Monsters.Cockathrice
+		superior: Monsters.Cockathrice
 	},
 	{
-		id: Monsters.Cyclopse.id,
-		name: Monsters.Cyclopse.name,
-		aliases: Monsters.Cyclopse.aliases,
+		id: Monsters.Cyclops.id,
+		name: Monsters.Cyclops.name,
+		aliases: Monsters.Cyclops.aliases,
 		timeToFinish: Time.Second * 35,
-		table: Monsters.Cyclopse,
-		emoji: '<:fishing:630911040091193356>',
+		table: Monsters.Cyclops,
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -70,17 +62,13 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.EarthWarrior.aliases,
 		timeToFinish: Time.Second * 25,
 		table: Monsters.EarthWarrior,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
 		qpRequired: 0,
 		levelRequirements: {
 			agility: 15
-		},
-
-		cannonballs: 4,
-		cannonBoost: 25
+		}
 	},
 	{
 		id: Monsters.FeralVampyre.id,
@@ -88,14 +76,10 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.FeralVampyre.aliases,
 		timeToFinish: Time.Second * 30,
 		table: Monsters.FeralVampyre,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 1,
-
-		cannonballs: 3,
-		cannonBoost: 20
+		qpRequired: 1
 	},
 	{
 		id: Monsters.FiyrShade.id,
@@ -103,7 +87,6 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.FiyrShade.aliases,
 		timeToFinish: Time.Second * 30,
 		table: Monsters.FiyrShade,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -115,7 +98,6 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.FleshCrawler.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.FleshCrawler,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -127,14 +109,10 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.Ghoul.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.Ghoul,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 1,
-
-		cannonballs: 3,
-		cannonBoost: 25
+		qpRequired: 1
 	},
 	{
 		id: Monsters.HillGiant.id,
@@ -142,14 +120,10 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.HillGiant.aliases,
 		timeToFinish: Time.Second * 24,
 		table: Monsters.HillGiant,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		barrageAmount: 3,
-		barrageBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Hobgoblin.id,
@@ -157,14 +131,10 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.Hobgoblin.aliases,
 		timeToFinish: Time.Second * 27,
 		table: Monsters.Hobgoblin,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 4,
-		cannonBoost: 35
+		qpRequired: 0
 	},
 	{
 		id: Monsters.IceWarrior.id,
@@ -172,7 +142,6 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.IceWarrior.aliases,
 		timeToFinish: Time.Second * 28,
 		table: Monsters.IceWarrior,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
@@ -184,7 +153,6 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.Killerwatt.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.Killerwatt,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -200,7 +168,6 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.LoarShade.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.LoarShade,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -212,7 +179,6 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.Mogre.aliases,
 		timeToFinish: Time.Second * 25,
 		table: Monsters.Mogre,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -220,10 +186,7 @@ const MazchnaMonsters: KillableMonster[] = [
 		qpRequired: 10,
 		levelRequirements: {
 			slayer: 32
-		},
-
-		cannonballs: 3,
-		cannonBoost: 15
+		}
 	},
 	{
 		id: Monsters.PhrinShade.id,
@@ -231,7 +194,7 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.PhrinShade.aliases,
 		timeToFinish: Time.Second * 18,
 		table: Monsters.PhrinShade,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -243,7 +206,7 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.Pyrefiend.aliases,
 		timeToFinish: Time.Second * 22,
 		table: Monsters.Pyrefiend,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -252,32 +215,7 @@ const MazchnaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 30
 		},
-
-		superiorName: Monsters.FlamingPyrelord.name,
-		superiorId: Monsters.FlamingPyrelord.id,
-		superiorTable: Monsters.FlamingPyrelord
-	},
-	{
-		id: Monsters.Pyrelord.id,
-		name: Monsters.Pyrelord.name,
-		aliases: Monsters.Pyrelord.aliases,
-		timeToFinish: Time.Second * 46,
-		table: Monsters.Pyrelord,
-		emoji: '<:fishing:630911040091193356>',
-		wildy: false,
-		canBeKilled: true,
-		difficultyRating: 2,
-		itemsRequired: resolveItems(["Black d'hide body", "Black d'hide chaps"]),
-		qpRequired: 0,
-		levelRequirements: {
-			slayer: 30
-		},
-
-		superiorName: Monsters.InfernalPyrelord.name,
-		superiorId: Monsters.InfernalPyrelord.id,
-		superiorTable: Monsters.InfernalPyrelord,
-		cannonballs: 4,
-		cannonBoost: 30
+		superior: Monsters.FlamingPyrelord
 	},
 	{
 		id: Monsters.RiylShade.id,
@@ -285,7 +223,7 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.RiylShade.aliases,
 		timeToFinish: Time.Second * 27,
 		table: Monsters.RiylShade,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -297,7 +235,7 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.Rockslug.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.Rockslug,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -306,10 +244,7 @@ const MazchnaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 20
 		},
-
-		superiorName: Monsters.GiantRockslug.name,
-		superiorId: Monsters.GiantRockslug.id,
-		superiorTable: Monsters.GiantRockslug
+		superior: Monsters.GiantRockslug
 	},
 	{
 		id: Monsters.Shade.id,
@@ -317,7 +252,7 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.Shade.aliases,
 		timeToFinish: Time.Second * 45,
 		table: Monsters.Shade,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
@@ -329,7 +264,7 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.VampyreJuvinate.aliases,
 		timeToFinish: Time.Second * 30,
 		table: Monsters.VampyreJuvinate,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -342,7 +277,7 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.Vyrewatch.aliases,
 		timeToFinish: Time.Second * 40,
 		table: Monsters.Vyrewatch,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
@@ -355,7 +290,7 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.VyrewatchSentinel.aliases,
 		timeToFinish: Time.Second * 60,
 		table: Monsters.VyrewatchSentinel,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
@@ -369,11 +304,10 @@ const MazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.WallBeast.aliases,
 		timeToFinish: Time.Second * 35,
 		table: Monsters.WallBeast,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([SpinyHelmetSlayerHelmets]),
+		itemsRequired: deepResolveItems([allSlayerHelmets]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 35

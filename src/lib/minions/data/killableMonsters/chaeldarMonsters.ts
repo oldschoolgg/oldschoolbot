@@ -5,8 +5,6 @@ import { itemID } from 'oldschooljs/dist/util';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
-// import { GearSetupTypes, GearStat } from '../../../../gear/types';
-
 const ChaeldarMonsters: KillableMonster[] = [
 	{
 		id: Monsters.AncientZygomite.id,
@@ -14,7 +12,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.AncientZygomite.aliases,
 		timeToFinish: Time.Second * 40,
 		table: Monsters.AncientZygomite,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
@@ -30,7 +28,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.Aviansie.aliases,
 		timeToFinish: Time.Second * 60,
 		table: Monsters.Aviansie,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
@@ -45,14 +43,10 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.BlackDemon.aliases,
 		timeToFinish: Time.Second * 34,
 		table: Monsters.BlackDemon,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0,
-
-		cannonballs: 6,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.CaveHorror.id,
@@ -60,7 +54,6 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.CaveHorror.aliases,
 		timeToFinish: Time.Second * 24,
 		table: Monsters.CaveHorror,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -75,12 +68,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 58
 		},
-
-		superiorName: Monsters.CaveAbomination.name,
-		superiorId: Monsters.CaveAbomination.id,
-		superiorTable: Monsters.CaveAbomination,
-		cannonballs: 6,
-		cannonBoost: 30
+		superior: Monsters.CaveAbomination
 	},
 	{
 		id: Monsters.CaveKraken.id,
@@ -88,7 +76,6 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.CaveKraken.aliases,
 		timeToFinish: Time.Second * 35,
 		table: Monsters.CaveKraken,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 4,
@@ -96,7 +83,6 @@ const ChaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 87
 		},
-
 		slayerOnly: true
 	},
 	{
@@ -105,7 +91,6 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.FossilIslandWyvernAncient.aliases,
 		timeToFinish: Time.Second * 130,
 		table: Monsters.FossilIslandWyvernAncient,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
@@ -129,7 +114,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.FossilIslandWyvernLongTailed.aliases,
 		timeToFinish: Time.Second * 73,
 		table: Monsters.FossilIslandWyvernLongTailed,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
@@ -153,7 +138,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.FossilIslandWyvernSpitting.aliases,
 		timeToFinish: Time.Second * 73,
 		table: Monsters.FossilIslandWyvernSpitting,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
@@ -177,7 +162,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.FossilIslandWyvernTaloned.aliases,
 		timeToFinish: Time.Second * 73,
 		table: Monsters.FossilIslandWyvernTaloned,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
@@ -201,14 +186,11 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.GreaterDemon.aliases,
 		timeToFinish: Time.Second * 25,
 		table: Monsters.GreaterDemon,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0,
-
-		cannonballs: 5,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.IronDragon.id,
@@ -216,16 +198,18 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.IronDragon.aliases,
 		timeToFinish: Time.Second * 46,
 		table: Monsters.IronDragon,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Dragon hunter lance')]: 10
-		}
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon hunter lance')]: 10
+			}
+		]
 	},
 	{
 		id: Monsters.Kraken.id,
@@ -233,7 +217,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.Kraken.aliases,
 		timeToFinish: Time.Second * 90,
 		table: Monsters.Kraken,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
@@ -257,10 +241,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 30,
-
-		cannonballs: 4,
-		cannonBoost: 40
+		qpRequired: 30
 	},
 	{
 		id: Monsters.LizardmanBrute.id,
@@ -272,10 +253,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 30,
-
-		cannonballs: 6,
-		cannonBoost: 40
+		qpRequired: 30
 	},
 	{
 		id: Monsters.LizardmanShaman.id,
@@ -292,15 +270,14 @@ const ChaeldarMonsters: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,
-		itemInBankBoosts: {
-			[itemID('Ring of the gods')]: 3
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Ring of the gods')]: 3
+			}
+		],
 		levelRequirements: {
 			prayer: 43
-		},
-
-		cannonballs: 6,
-		cannonBoost: 20
+		}
 	},
 	{
 		id: Monsters.Porazdir.id,
@@ -308,7 +285,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.Porazdir.aliases,
 		timeToFinish: Time.Minute * 13,
 		table: Monsters.Porazdir,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
@@ -321,35 +298,14 @@ const ChaeldarMonsters: KillableMonster[] = [
 			]
 		]),
 		qpRequired: 0
-	} /*
-	{
-		id: Monsters.ReanimateTzHaar.id,
-		name: Monsters.ReanimateTzHaar.name,
-		aliases: Monsters.ReanimatedTzHaar.aliases,
-		timeToFinish: Time.Second * 2,
-		table: Monsters.ReanimatedTzHaar,
-		emoji: '<:fishing:630911040091193356>',
-		wildy: false,
-		canBeKilled: true,
-		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
-		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
-		levelRequirements: {
-			slayer: 5
-		}
 	},
-	*/,
 	{
 		id: Monsters.SkeletalWyvern.id,
 		name: Monsters.SkeletalWyvern.name,
 		aliases: Monsters.SkeletalWyvern.aliases,
 		timeToFinish: Time.Second * 80,
 		table: Monsters.SkeletalWyvern,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
@@ -374,16 +330,17 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.Skotizo.aliases,
 		timeToFinish: Time.Second * 160,
 		table: Monsters.Skotizo,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Dark totem']),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Arclight')]: 10
-		},
-		consumedItem: 'Dark totem'
+		itemInBankBoosts: [
+			{
+				[itemID('Arclight')]: 10
+			}
+		]
 	},
 	{
 		id: Monsters.TzHaarKet.id,
@@ -391,7 +348,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.TzHaarKet.aliases,
 		timeToFinish: Time.Second * 35,
 		table: Monsters.TzHaarKet,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -403,7 +360,7 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.Wyrm.aliases,
 		timeToFinish: Time.Second * 30,
 		table: Monsters.Wyrm,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
@@ -411,17 +368,16 @@ const ChaeldarMonsters: KillableMonster[] = [
 			['Boots of stone', 'Boots of brimstone', 'Granite boots']
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Dragon hunter crossbow')]: 3,
-			[itemID('Dragon hunter lance')]: 3
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon hunter crossbow')]: 3,
+				[itemID('Dragon hunter lance')]: 3
+			}
+		],
 		levelRequirements: {
 			slayer: 62
 		},
-
-		superiorName: Monsters.ShadowWyrm.name,
-		superiorId: Monsters.ShadowWyrm.id,
-		superiorTable: Monsters.ShadowWyrm
+		superior: Monsters.ShadowWyrm
 	},
 	{
 		id: Monsters.Zygomite.id,
@@ -429,7 +385,6 @@ const ChaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.Zygomite.aliases,
 		timeToFinish: Time.Second * 25,
 		table: Monsters.Zygomite,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,

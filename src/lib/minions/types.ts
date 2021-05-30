@@ -5,6 +5,7 @@ import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
 import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
+import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
@@ -54,7 +55,7 @@ export interface KillableMonster {
 	table: {
 		kill(quantity: number): ItemBank;
 	};
-	emoji: string;
+	emoji?: string;
 	wildy: boolean;
 	canBeKilled: boolean;
 	difficultyRating: number;
@@ -93,4 +94,6 @@ export interface KillableMonster {
 	disallowedAttackStyles?: AttackStyles[];
 	customMonsterHP?: number;
 	combatXpMultiplier?: number;
+	superior?: SimpleMonster;
+	slayerOnly?: true;
 }

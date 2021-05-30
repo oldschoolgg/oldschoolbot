@@ -1,14 +1,10 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
+import { itemID } from 'oldschooljs/dist/util';
 
-import { Time } from '../../../../constants';
-import {
-	EarMuffsSlayerHelmets,
-	SpinyHelmetSlayerHelmets
-} from '../../../../skilling/skills/slayer/slayerHelmets';
-import itemID from '../../../../util/itemID';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
-import { KillableMonster } from '../../../types';
-// import { GearSetupTypes, GearStat } from '../../../../gear/types';
+import { allSlayerHelmets } from '../../../slayer/slayerUtil';
+import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
+import { KillableMonster } from '../../types';
 
 const TuraelMonsters: KillableMonster[] = [
 	{
@@ -17,18 +13,15 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Banshee.aliases,
 		timeToFinish: Time.Second * 12,
 		table: Monsters.Banshee,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([EarMuffsSlayerHelmets]),
+		itemsRequired: deepResolveItems([allSlayerHelmets]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 15
 		},
-		superiorName: Monsters.ScreamingBanshee.name,
-		superiorId: Monsters.ScreamingBanshee.id,
-		superiorTable: Monsters.ScreamingBanshee
+		superior: Monsters.ScreamingBanshee
 	},
 	{
 		id: Monsters.Bat.id,
@@ -36,14 +29,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Bat.aliases,
 		timeToFinish: Time.Second * 5,
 		table: Monsters.Bat,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 50
+		qpRequired: 0
 	},
 	{
 		id: Monsters.BearCub.id,
@@ -51,14 +41,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.BearCub.aliases,
 		timeToFinish: Time.Second * 12,
 		table: Monsters.BearCub,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 40
+		qpRequired: 0
 	},
 	{
 		id: Monsters.BigWolf.id,
@@ -66,14 +53,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.BigWolf.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.BigWolf,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0,
-
-		cannonballs: 4,
-		cannonBoost: 35
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Bird.id,
@@ -81,14 +65,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Bird.aliases,
 		timeToFinish: Time.Second * 3,
 		table: Monsters.Bird,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 50
+		qpRequired: 0
 	},
 	{
 		id: Monsters.BlackBear.id,
@@ -96,7 +77,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.BlackBear.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.BlackBear,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -108,7 +89,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.BlackGuard.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.BlackGuard,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -120,11 +101,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.CaveBug.aliases,
 		timeToFinish: Time.Second * 6,
 		table: Monsters.CaveBug,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([SpinyHelmetSlayerHelmets]),
+		itemsRequired: deepResolveItems([allSlayerHelmets]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 7
@@ -136,7 +116,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.CaveCrawler.aliases,
 		timeToFinish: Time.Second * 25,
 		table: Monsters.CaveCrawler,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -145,10 +125,7 @@ const TuraelMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 10
 		},
-
-		superiorName: Monsters.ChasmCrawler.name,
-		superiorId: Monsters.ChasmCrawler.id,
-		superiorTable: Monsters.ChasmCrawler
+		superior: Monsters.ChasmCrawler
 	},
 	{
 		id: Monsters.CaveGoblinGuard.id,
@@ -156,7 +133,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.CaveGoblinGuard.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.CaveGoblinGuard,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -168,23 +145,19 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.CaveSlime.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.CaveSlime,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([
-			SpinyHelmetSlayerHelmets,
-			['Antidote++(4)', 'Antipoison(4)']
-		]),
+		itemsRequired: deepResolveItems([allSlayerHelmets, ['Antidote++(4)', 'Antipoison(4)']]),
 		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 5
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Slayer helmet')]: 5
+			}
+		],
 		levelRequirements: {
 			slayer: 17
-		},
-		cannonballs: 2,
-		cannonBoost: 30
+		}
 	},
 	{
 		id: Monsters.ChaosDwarf.id,
@@ -192,14 +165,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.ChaosDwarf.aliases,
 		timeToFinish: Time.Second * 35,
 		table: Monsters.ChaosDwarf,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Chicken.id,
@@ -207,14 +177,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Chicken.aliases,
 		timeToFinish: Time.Second * 2,
 		table: Monsters.Chicken,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 50
+		qpRequired: 0
 	},
 	{
 		id: Monsters.ChompyBird.id,
@@ -222,7 +189,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.ChompyBird.aliases,
 		timeToFinish: Time.Second * 30,
 		table: Monsters.ChompyBird,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -235,14 +202,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Cow.aliases,
 		timeToFinish: Time.Second * 6,
 		table: Monsters.Cow,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 40
+		qpRequired: 0
 	},
 	{
 		id: Monsters.CowCalf.id,
@@ -250,14 +214,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.CowCalf.aliases,
 		timeToFinish: Time.Second * 4,
 		table: Monsters.CowCalf,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.CrawlingHand.id,
@@ -265,7 +226,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.CrawlingHand.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.CrawlingHand,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -273,10 +234,7 @@ const TuraelMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 5
 		},
-
-		superiorName: Monsters.CrushingHand.name,
-		superiorId: Monsters.CrushingHand.id,
-		superiorTable: Monsters.CrushingHand
+		superior: Monsters.CrushingHand
 	},
 	{
 		id: Monsters.CryptRat.id,
@@ -284,26 +242,21 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.CryptRat.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.CryptRat,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
 		qpRequired: 1
 	},
 	{
-		id: Monsters.Deathwing.id,
-		name: Monsters.Deathwing.name,
-		aliases: Monsters.Deathwing.aliases,
+		id: Monsters.DeathWing.id,
+		name: Monsters.DeathWing.name,
+		aliases: Monsters.DeathWing.aliases,
 		timeToFinish: Time.Second * 40,
-		table: Monsters.Deathwing,
-		emoji: '<:fishing:630911040091193356>',
+		table: Monsters.DeathWing,
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 111,
-
-		cannonballs: 2,
-		cannonBoost: 30
+		qpRequired: 111
 	},
 	{
 		id: Monsters.DemonicGorilla.id,
@@ -311,7 +264,6 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.DemonicGorilla.aliases,
 		timeToFinish: Time.Second * 110,
 		table: Monsters.DemonicGorilla,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
@@ -324,9 +276,11 @@ const TuraelMonsters: KillableMonster[] = [
 			['Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
 		qpRequired: 175,
-		itemInBankBoosts: {
-			[itemID('Arclight')]: 20
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Arclight')]: 20
+			}
+		],
 		levelRequirements: {
 			slayer: 69
 		}
@@ -337,18 +291,13 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.DesertLizard.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.DesertLizard,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems(['Ice cooler']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 22
-		},
-
-		cannonballs: 2,
-		cannonBoost: 30
+		}
 	},
 	{
 		id: Monsters.DesertWolf.id,
@@ -356,14 +305,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.DesertWolf.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.DesertWolf,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Duck.id,
@@ -371,14 +316,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Duck.aliases,
 		timeToFinish: Time.Second * 2,
 		table: Monsters.Duck,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Duckling.id,
@@ -386,14 +327,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Duckling.aliases,
 		timeToFinish: Time.Second * 2,
 		table: Monsters.Duckling,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 50
+		qpRequired: 0
 	},
 	{
 		id: Monsters.DungeonRat.id,
@@ -401,14 +338,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.DungeonRat.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.DungeonRat,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Dwarf.id,
@@ -416,14 +349,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Dwarf.aliases,
 		timeToFinish: Time.Second * 8,
 		table: Monsters.Dwarf,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 35
+		qpRequired: 0
 	},
 	{
 		id: Monsters.DwarfGangMember.id,
@@ -431,14 +360,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.DwarfGangMember.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.DwarfGangMember,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Ghost.id,
@@ -446,14 +371,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Ghost.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Ghost,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.GiantBat.id,
@@ -461,14 +382,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.GiantBat.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.GiantBat,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.GiantCryptSpider.id,
@@ -476,7 +393,6 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.GiantCryptSpider.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.GiantCryptSpider,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -488,14 +404,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.GiantRat.aliases,
 		timeToFinish: Time.Second * 6,
 		table: Monsters.GiantRat,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.GiantSpider.id,
@@ -503,14 +415,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.GiantSpider.aliases,
 		timeToFinish: Time.Second * 6,
 		table: Monsters.GiantSpider,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Goblin.id,
@@ -518,14 +426,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Goblin.aliases,
 		timeToFinish: Time.Second * 6,
 		table: Monsters.Goblin,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 20
+		qpRequired: 0
 	},
 	{
 		id: Monsters.GrizzlyBear.id,
@@ -533,14 +437,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.GrizzlyBear.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.GrizzlyBear,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 40
+		qpRequired: 0
 	},
 	{
 		id: Monsters.GrizzlyBearCub.id,
@@ -548,14 +448,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.GrizzlyBearCub.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.GrizzlyBearCub,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 20
+		qpRequired: 0
 	},
 	{
 		id: Monsters.GuardDog.id,
@@ -563,14 +459,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.GuardDog.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.GuardDog,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 3,
-		cannonBoost: 40
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Icefiend.id,
@@ -578,7 +470,6 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Icefiend.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Icefiend,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -590,7 +481,6 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.IceWolf.aliases,
 		timeToFinish: Time.Second * 30,
 		table: Monsters.IceWolf,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -602,14 +492,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Jackal.aliases,
 		timeToFinish: Time.Second * 12,
 		table: Monsters.Jackal,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 25
+		qpRequired: 0
 	},
 	{
 		id: Monsters.JungleWolf.id,
@@ -617,14 +503,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.JungleWolf.aliases,
 		timeToFinish: Time.Second * 25,
 		table: Monsters.JungleWolf,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0,
-		itemInBankBoosts: {
-			[itemID('Slayer helmet')]: 10
-		}
+		qpRequired: 0
 	},
 	{
 		id: Monsters.KalphiteGuardian.id,
@@ -632,15 +514,12 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.KalphiteGuardian.aliases,
 		timeToFinish: Time.Second * 50,
 		table: Monsters.KalphiteGuardian,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
-		qpRequired: 0,
-
-		cannonballs: 10,
-		cannonBoost: 50
+		qpRequired: 0
 	},
 	{
 		id: Monsters.KalphiteSoldier.id,
@@ -648,15 +527,12 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.KalphiteSoldier.aliases,
 		timeToFinish: Time.Second * 18,
 		table: Monsters.KalphiteSoldier,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
-		qpRequired: 0,
-
-		cannonballs: 5,
-		cannonBoost: 50
+		qpRequired: 0
 	},
 	{
 		id: Monsters.KalphiteWorker.id,
@@ -664,14 +540,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.KalphiteWorker.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.KalphiteWorker,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 3,
-		cannonBoost: 50
+		qpRequired: 0
 	},
 	{
 		id: Monsters.KingScorpion.id,
@@ -679,14 +552,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.KingScorpion.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.KingScorpion,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 40
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Lizard.id,
@@ -694,18 +564,13 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Lizard.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.Lizard,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems(['Ice cooler']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 22
-		},
-
-		cannonballs: 2,
-		cannonBoost: 25
+		}
 	},
 	{
 		id: Monsters.Lobstrosity.id,
@@ -713,7 +578,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Lobstrosity.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.Lobstrosity,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -734,7 +599,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Minotaur.aliases,
 		timeToFinish: Time.Second * 8,
 		table: Monsters.Minotaur,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -746,14 +611,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Monkey.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Monkey,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 35
+		qpRequired: 0
 	},
 	{
 		id: Monsters.MonkeyArcher.id,
@@ -761,7 +623,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.MonkeyArcher.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.MonkeyArcher,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -773,7 +635,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.MonkeyGuard.aliases,
 		timeToFinish: Time.Second * 60,
 		table: Monsters.MonkeyGuard,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -785,7 +647,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.MonkeyZombie.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.MonkeyZombie,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -797,14 +659,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.MountedTerrorBirdGnome.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.MountedTerrorBirdGnome,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Penguin.id,
@@ -812,14 +671,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Penguin.aliases,
 		timeToFinish: Time.Second * 3,
 		table: Monsters.Penguin,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.PitScorpion.id,
@@ -827,14 +683,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.PitScorpion.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.PitScorpion,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 3,
-		cannonBoost: 35
+		qpRequired: 0
 	},
 	{
 		id: Monsters.PoisonScorpion.id,
@@ -842,15 +695,12 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.PoisonScorpion.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.PoisonScorpion,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
 		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Rat.id,
@@ -858,14 +708,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Rat.aliases,
 		timeToFinish: Time.Second * 2,
 		table: Monsters.Rat,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 50
+		qpRequired: 0
 	},
 	/*
 	{
@@ -874,7 +721,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.ReanimatedDog.aliases,
 		timeToFinish: Time.Second * 2,
 		table: Monsters.ReanimatedDog,
-		emoji: '<:fishing:630911040091193356>',
+	
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -891,7 +738,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.ReanimatedDog.aliases,
 		timeToFinish: Time.Second * 2,
 		table: Monsters.ReanimatedDog,
-		emoji: '<:fishing:630911040091193356>',
+	
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -908,14 +755,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Rooster.aliases,
 		timeToFinish: Time.Second * 6,
 		table: Monsters.Rooster,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 40
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Scorpion.id,
@@ -923,14 +767,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Scorpion.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Scorpion,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 35
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Seagull.id,
@@ -938,14 +779,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Seagull.aliases,
 		timeToFinish: Time.Second * 3,
 		table: Monsters.Seagull,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 40
+		qpRequired: 0
 	},
 	{
 		id: Monsters.ShadowSpider.id,
@@ -953,14 +791,16 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.ShadowSpider.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.ShadowSpider,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
 		qpRequired: 1,
-		itemInBankBoosts: {
-			[itemID('Spectral spirit shield')]: 3
-		}
+		itemInBankBoosts: [
+			{
+				[itemID('Spectral spirit shield')]: 3
+			}
+		]
 	},
 	{
 		id: Monsters.Skeleton.id,
@@ -968,14 +808,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Skeleton.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Skeleton,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.SkeletonFremennik.id,
@@ -983,14 +820,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.SkeletonFremennik.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.SkeletonFremennik,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 3,
-		cannonBoost: 35
+		qpRequired: 0
 	},
 	{
 		id: Monsters.SkeletonMage.id,
@@ -998,14 +832,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.SkeletonMage.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.SkeletonMage,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 3,
-		cannonBoost: 35
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Skogre.id,
@@ -1013,7 +844,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Skogre.aliases,
 		timeToFinish: Time.Second * 30,
 		table: Monsters.Skogre,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -1026,18 +857,13 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.SmallLizard.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.SmallLizard,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems(['Ice cooler']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 22
-		},
-
-		cannonballs: 2,
-		cannonBoost: 30
+		}
 	},
 	{
 		id: Monsters.Spider.id,
@@ -1045,14 +871,11 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Spider.aliases,
 		timeToFinish: Time.Second * 5,
 		table: Monsters.Spider,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 1,
-		cannonBoost: 40
+		qpRequired: 0
 	},
 	{
 		id: Monsters.SulphurLizard.id,
@@ -1060,7 +883,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.SulphurLizard.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.SulphurLizard,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -1078,7 +901,7 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.TempleSpider.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.TempleSpider,
-		emoji: '<:fishing:630911040091193356>',
+
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -1090,14 +913,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.TerrorBird.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.TerrorBird,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.TorturedGorilla.id,
@@ -1105,7 +924,6 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.TorturedGorilla.aliases,
 		timeToFinish: Time.Second * 70,
 		table: Monsters.TorturedGorilla,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
@@ -1115,9 +933,11 @@ const TuraelMonsters: KillableMonster[] = [
 			['Abyssal whip', 'Dragon scimitar']
 		]),
 		qpRequired: 175,
-		itemInBankBoosts: {
-			[itemID('Arclight')]: 20
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Arclight')]: 20
+			}
+		],
 		levelRequirements: {
 			slayer: 69
 		}
@@ -1128,7 +948,6 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.TorturedSoul.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.TorturedSoul,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -1140,7 +959,6 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.TwistedBanshee.aliases,
 		timeToFinish: Time.Second * 30,
 		table: Monsters.TwistedBanshee,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -1150,10 +968,7 @@ const TuraelMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 15
 		},
-
-		superiorName: Monsters.ScreamingTwistedBanshee.name,
-		superiorId: Monsters.ScreamingTwistedBanshee.id,
-		superiorTable: Monsters.ScreamingTwistedBanshee
+		superior: Monsters.ScreamingTwistedBanshee
 	},
 	{
 		id: Monsters.UndeadChicken.id,
@@ -1161,7 +976,6 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.UndeadChicken.aliases,
 		timeToFinish: Time.Second * 2,
 		table: Monsters.UndeadChicken,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -1185,7 +999,6 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.UndeadDruid.aliases,
 		timeToFinish: Time.Second * 60,
 		table: Monsters.UndeadDruid,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
@@ -1197,7 +1010,6 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.UndeadOne.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.UndeadOne,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
@@ -1209,14 +1021,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.WhiteWolf.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.WhiteWolf,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 3,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.WildDog.id,
@@ -1224,14 +1032,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.WildDog.aliases,
 		timeToFinish: Time.Second * 20,
 		table: Monsters.WildDog,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 3,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Wolf.id,
@@ -1239,14 +1043,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Wolf.aliases,
 		timeToFinish: Time.Second * 7,
 		table: Monsters.Wolf,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 40
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Zogre.id,
@@ -1254,7 +1054,6 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Zogre.aliases,
 		timeToFinish: Time.Second * 30,
 		table: Monsters.Zogre,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
@@ -1267,14 +1066,10 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.Zombie.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Zombie,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0,
-
-		cannonballs: 2,
-		cannonBoost: 30
+		qpRequired: 0
 	},
 	{
 		id: Monsters.ZombieRat.id,
@@ -1282,7 +1077,6 @@ const TuraelMonsters: KillableMonster[] = [
 		aliases: Monsters.ZombieRat.aliases,
 		timeToFinish: Time.Second * 8,
 		table: Monsters.ZombieRat,
-		emoji: '<:fishing:630911040091193356>',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
