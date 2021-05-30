@@ -53,7 +53,7 @@ export default class extends BotCommand {
 						return (
 							`${item.name}: ${Object.entries(item.inputItems)
 								.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
-								.join(', ')}` + `${skillsRequired}${qpRequired}${gpCost}`
+								.join(', ')}${skillsRequired}${qpRequired}${gpCost}`
 						);
 					}).join('\n\n')
 				),
