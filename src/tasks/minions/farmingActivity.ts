@@ -379,12 +379,23 @@ export default class extends Task {
 			let tangleroot = false;
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementMonsterScore(Monsters.Hespori.id);
-				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel });
+				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
+					farmingLevel: currentFarmingLevel
+				});
 				loot = hesporiLoot;
 				for (const hesporiLoot of Object.keys(loot)) {
 					if (itemID(hesporiLoot) === itemID('Tangleroot')) {
 						tangleroot = true;
 					}
+				}
+				if (
+					roll(
+						(plantToHarvest.petChance - currentFarmingLevel * 25) /
+							patchType.lastQuantity /
+							5
+					)
+				) {
+					loot[itemID('Plopper')] = 1;
 				}
 			} else if (
 				patchType.patchPlanted &&
