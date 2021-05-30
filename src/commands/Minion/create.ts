@@ -9,6 +9,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	addBanks,
 	bankHasAllItemsFromBank,
+	itemNameFromID,
 	multiplyBank,
 	removeBankFromBank,
 	stringMatches
@@ -17,7 +18,7 @@ import {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[quantity:int{1}] <itemName:...string>',
+			usage: '[quantity:int{1}] [itemName:...string]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
@@ -34,6 +35,34 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
+		if (msg.flagArgs.items) {
+			return msg.channel.sendFile(
+				Buffer.from(
+					Createables.map(item => {
+						const skillsRequired =
+							item.requiredSkills === undefined
+								? ''
+								: `\nRequired skills: ${Object.entries(item.requiredSkills)
+									.map(entry => `${entry[0]}: ${entry[1]}`)
+									.join(',')}`;
+						const qpRequired =
+							item.QPRequired === undefined
+								? ''
+								: `\nQP Required: ${item.QPRequired}`;
+						const gpCost = item.GPCost === undefined ? '' : `\nGP Cost: ${item.GPCost}`;
+						return (
+							`${item.name}: ${Object.entries(item.inputItems)
+								.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
+								.join(', ')}` + `${skillsRequired}${qpRequired}${gpCost}`
+						);
+					}).join('\n\n')
+				),
+				`Available creatable items.txt`
+			);
+		}
+		if (itemName === undefined) {
+			throw `Item name is a required argument.`;
+		}
 		itemName = itemName.toLowerCase();
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
