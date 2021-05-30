@@ -43,18 +43,16 @@ export default class extends BotCommand {
 							item.requiredSkills === undefined
 								? ''
 								: `\nRequired skills: ${Object.entries(item.requiredSkills)
-										.map(entry => `${entry[0]}: ${entry[1]}`)
-										.join(',')}`;
+									.map(entry => `${entry[0]}: ${entry[1]}`)
+									.join(',')}`;
 						const qpRequired =
 							item.QPRequired === undefined
 								? ''
 								: `\nQP Required: ${item.QPRequired}`;
 						const gpCost = item.GPCost === undefined ? '' : `\nGP Cost: ${item.GPCost}`;
-						return (
-							`${item.name}: ${Object.entries(item.inputItems)
-								.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
-								.join(', ')}${skillsRequired}${qpRequired}${gpCost}`
-						);
+						return `${item.name}: ${Object.entries(item.inputItems)
+							.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
+							.join(', ')}${skillsRequired}${qpRequired}${gpCost}`;
 					}).join('\n\n')
 				),
 				`Available creatable items.txt`
