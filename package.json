@@ -23,7 +23,7 @@
 		"discord.js": "discordjs/discord.js#fe7df708e44e0280dfaf0f8e457b154781bb5140",
 		"e": "^0.2.0",
 		"emoji-regex": "^9.2.2",
-		"fastify": "^3.16.2",
+		"fastify": "^3.17.0",
 		"fastify-cors": "^5.2.0",
 		"fastify-helmet": "^5.3.1",
 		"fastify-rate-limit": "^5.5.0",
