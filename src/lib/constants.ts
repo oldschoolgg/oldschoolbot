@@ -347,6 +347,8 @@ export const enum BitField {
 	HasPermanentTierOne = 12,
 	DisabledRandomEvents = 13,
 	PermanentIronman = 14,
+	DisabledHammyFeedConfirm = 15,
+	PreloadHammyDestroyed = 16,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202

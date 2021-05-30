@@ -34,6 +34,9 @@ Client.defaultClientSchema
 	.add('vasa_loot', 'any', { default: {} })
 	.add('ods_cost', 'any', { default: {} })
 	.add('ods_loot', 'any', { default: {} })
+	.add('hammy_destroyed', 'any', { default: {} })
+	.add('hammy_doubled', 'any', { default: {} })
+	.add('hammy_spared', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })

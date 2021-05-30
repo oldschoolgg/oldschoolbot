@@ -516,3 +516,17 @@ export function updateGPTrackSetting(client: KlasaClient, setting: string, amoun
 	const newValue = current + amount;
 	return client.settings.update(setting, newValue);
 }
+
+/**
+ * Counts the total number of items in the bank. Example 2x Air rune, 1x Dust rune returns 3.
+ * @param bank The ItemBank object we will be counting
+ */
+export function countAllItemsInBank(bank: ItemBank) {
+	let totalQty = 0;
+	for (const [itemID, qty] of Object.entries(bank)) {
+		const item = Items.get(parseInt(itemID));
+		if (!item) continue;
+		totalQty += qty;
+	}
+	return totalQty;
+}
