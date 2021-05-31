@@ -15,8 +15,7 @@ export default class extends Event {
 		if (!guild.available) return;
 		if (
 			this.client.settings.get(ClientSettings.GuildBlacklist).includes(guild.id) ||
-			(guild.owner &&
-				this.client.settings.get(ClientSettings.GuildBlacklist).includes(guild.owner.id))
+			this.client.settings.get(ClientSettings.UserBlacklist).includes(guild.ownerID)
 		) {
 			guild.leave();
 			this.client.emit('warn', `Blacklisted guild detected: ${guild.name} [${guild.id}]`);
