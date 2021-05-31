@@ -8,7 +8,7 @@ import hopsPlants from './hops';
 import specialPlants from './specialPlants';
 import trees from './trees';
 
-const plants: Plant[] = [
+export const plants: Plant[] = [
 	...herbPlants,
 	...trees,
 	...allotmentPlants,
