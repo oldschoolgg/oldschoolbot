@@ -22,6 +22,15 @@ async function addRoles(
 	let added: string[] = [];
 	let removed: string[] = [];
 	const roleName = g.roles.get(role)!.name!;
+	await Promise.all(
+		users.map(async u => {
+			const member = g.members.get(u);
+			if (!member) {
+				await g.members.fetch(u);
+			}
+		})
+	);
+
 	for (const mem of g.members.values()) {
 		if (mem.roles.has(role) && !users.includes(mem.user.id)) {
 			if (production) {
