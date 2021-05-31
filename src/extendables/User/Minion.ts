@@ -103,13 +103,13 @@ import {
 import { Minigames } from './Minigame';
 
 const suffixes = new SimpleTable<string>()
-	.add('🎉', 200)
-	.add('🎆', 10)
-	.add('🙌', 10)
-	.add('🎇', 10)
-	.add('🥳', 10)
-	.add('🍻', 10)
-	.add('🎊', 10)
+	.add('ðŸŽ‰', 200)
+	.add('ðŸŽ†', 10)
+	.add('ðŸ™Œ', 10)
+	.add('ðŸŽ‡', 10)
+	.add('ðŸ¥³', 10)
+	.add('ðŸ»', 10)
+	.add('ðŸŽŠ', 10)
 	.add(Emoji.PeepoNoob, 1)
 	.add(Emoji.PeepoRanger, 1)
 	.add(Emoji.PeepoSlayer);
@@ -599,8 +599,8 @@ export default class extends Extendable {
 		const kc = mon
 			? this.getKC(((mon as unknown) as Monster).id)
 			: minigame
-			? await this.getMinigameScore(minigame!.key)
-			: this.getCreatureScore(creature!);
+				? await this.getMinigameScore(minigame!.key)
+				: this.getCreatureScore(creature!);
 
 		const name = minigame ? minigame.name : mon ? mon!.name : creature?.name;
 		return [name, kc];
@@ -740,7 +740,7 @@ export default class extends Extendable {
 				{
 					count: string;
 				}[]
-			>(`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > 13034430;`);
+				>(`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > 13034430;`);
 
 			let str = `${skill.emoji} **${this.username}'s** minion, ${
 				this.minionName
@@ -753,7 +753,7 @@ export default class extends Extendable {
 					{
 						count: string;
 					}[]
-				>(
+					>(
 					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${skillName}" > 13034430;`
 				);
 				str += ` They are the ${formatOrdinal(

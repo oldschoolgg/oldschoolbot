@@ -1,5 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
+import Items from 'oldschooljs/dist/structures/Items';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -10,7 +11,6 @@ import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import resolveItems from '../../lib/util/resolveItems';
-import Items from 'oldschooljs/dist/structures/Items';
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',
@@ -41,9 +41,8 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [[bankToAlch]]: [[Bank]]) {
-		if (bankToAlch === undefined)
-		{
-			throw "You must specify item[s] to alch.";
+		if (bankToAlch === undefined) {
+			throw 'You must specify item[s] to alch.';
 		}
 
 		if (!msg.author.bank().fits(bankToAlch)) {
@@ -62,7 +61,7 @@ export default class extends BotCommand {
 		for (const [itemID, qty] of Object.entries(bankToAlch.bank)) {
 			const item = Items.get(parseInt(itemID));
 			if (!(item!.highalch && item!.tradeable)) {
-				throw "Not all selected items are alchable.";
+				throw 'Not all selected items are alchable.';
 			}
 
 			// Subtract quantities used until we reach max.
@@ -156,9 +155,11 @@ export default class extends BotCommand {
 
 		msg.author.log(`alched ${bankToAlch.toString()} for ${alchValue}`);
 
-		const response = `${msg.author.minionName} is now alching  ${
-			bankToAlch.toString()
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+		const response = `${
+			msg.author.minionName
+		} is now alching  ${bankToAlch.toString()}, it'll take around ${formatDuration(
+			duration
+		)} to finish.`;
 
 		return msg.send(response);
 	}

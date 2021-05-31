@@ -1,9 +1,10 @@
+import { Bank } from 'oldschooljs';
+
 import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
 import { IPatchData } from '../minions/farming/types';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
-import { Bank } from 'oldschooljs';
 
 export interface ActivityTaskOptions {
 	type: Activity;
