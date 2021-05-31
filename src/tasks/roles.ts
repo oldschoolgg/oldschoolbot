@@ -26,7 +26,7 @@ async function addRoles(
 		users.map(async u => {
 			const member = g.members.get(u);
 			if (!member) {
-				await g.members.fetch(u);
+				await g.members.fetch(u).catch(noOp);
 			}
 		})
 	);
