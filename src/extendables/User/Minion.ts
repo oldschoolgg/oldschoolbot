@@ -103,13 +103,13 @@ import {
 import { Minigames } from './Minigame';
 
 const suffixes = new SimpleTable<string>()
-	.add('ðŸŽ‰', 200)
-	.add('ðŸŽ†', 10)
-	.add('ðŸ™Œ', 10)
-	.add('ðŸŽ‡', 10)
-	.add('ðŸ¥³', 10)
-	.add('ðŸ»', 10)
-	.add('ðŸŽŠ', 10)
+	.add('🎉', 200)
+	.add('🎆', 10)
+	.add('🙌', 10)
+	.add('🎇', 10)
+	.add('🥳', 10)
+	.add('🍻', 10)
+	.add('🎊', 10)
 	.add(Emoji.PeepoNoob, 1)
 	.add(Emoji.PeepoRanger, 1)
 	.add(Emoji.PeepoSlayer);
