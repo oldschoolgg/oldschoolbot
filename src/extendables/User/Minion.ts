@@ -366,9 +366,7 @@ export default class extends Extendable {
 			case Activity.Alching: {
 				const data = currentTask as AlchingActivityTaskOptions;
 
-				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
-					data.itemID
-				)}. ${formattedDuration}`;
+				return `${this.minionName} is currently alching ${data.alchBank}. ${formattedDuration}`;
 			}
 
 			case Activity.Farming: {

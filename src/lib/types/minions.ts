@@ -3,6 +3,7 @@ import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
 import { IPatchData } from '../minions/farming/types';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import { Bank } from 'oldschooljs';
 
 export interface ActivityTaskOptions {
 	type: Activity;
@@ -138,7 +139,7 @@ export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
-	itemID: number;
+	alchBank: Bank;
 	quantity: number;
 	alchValue: number;
 }
