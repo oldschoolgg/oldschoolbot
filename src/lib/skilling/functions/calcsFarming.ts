@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { KlasaMessage, KlasaUser } from 'klasa';
 
 import { BitField } from '../../constants';
@@ -57,7 +58,7 @@ export function calcVariableYield(
 }
 
 export function returnListOfPlants(msg: KlasaMessage) {
-	return msg.channel.sendFile(
+	const attachment = new MessageAttachment(
 		Buffer.from(
 			Farming.Plants.map(
 				plant =>
@@ -78,4 +79,5 @@ export function returnListOfPlants(msg: KlasaMessage) {
 		),
 		`Farming Plants.txt`
 	);
+	return msg.channel.send(attachment);
 }

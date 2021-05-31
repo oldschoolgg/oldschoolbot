@@ -48,8 +48,8 @@ export default function getUsersPerkTier(
 
 	if (userOrBitfield instanceof User) {
 		const supportGuild = getSupportGuild(userOrBitfield.client);
-		const member = supportGuild.members.get(userOrBitfield.id);
-		if (member && [Roles.Booster].some(roleID => member.roles.has(roleID))) {
+		const member = supportGuild.members.cache.get(userOrBitfield.id);
+		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
 			return PerkTier.One;
 		}
 	}

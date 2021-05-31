@@ -9,7 +9,7 @@ export default class extends Task {
 	async run() {
 		const currentDate = Date.now();
 
-		for (const user of this.client.users.values()) {
+		for (const user of this.client.users.cache.values()) {
 			if (getUsersPerkTier(user) < PerkTier.Two) continue;
 			const lastVoteDate = user.settings.get(UserSettings.LastDailyTimestamp);
 			if (lastVoteDate === -1) continue;

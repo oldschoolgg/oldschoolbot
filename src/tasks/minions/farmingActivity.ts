@@ -194,7 +194,7 @@ export default class extends Task {
 				str += `\nYou received 4x loot from Plopper`;
 			}
 
-			const channel = this.client.channels.get(channelID);
+			const channel = this.client.channels.cache.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
 			channel.send(str);
@@ -519,7 +519,7 @@ export default class extends Task {
 				).bank
 			);
 			await user.addItemsToBank(loot, true);
-			const channel = this.client.channels.get(channelID);
+			const channel = this.client.channels.cache.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
 			if (user.usingPet('Plopper')) {

@@ -43,19 +43,13 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank(loot.bank, true);
-		const currentLevel = user.skillLevel(SkillsEnum.Agility);
-		await user.addXP(SkillsEnum.Agility, agilityXP);
-		const nextLevel = user.skillLevel(SkillsEnum.Agility);
+		const xpStr = await user.addXP(SkillsEnum.Agility, agilityXP);
 
 		let str = `${user}, ${
 			user.minionName
 		} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${floors[0]}-${
 			floors[floors.length - 1]
-		}), you received ${agilityXP.toLocaleString()} Agility XP. ${numCoffinsOpened}x coffins opened.`;
-
-		if (nextLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Agility level is now ${nextLevel}!`;
-		}
+		}), and opened ${numCoffinsOpened}x coffins.\n\n${xpStr}`;
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!

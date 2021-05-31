@@ -25,9 +25,9 @@ async function _setup(
 	const confirmMessage = (await msg.channel.send(getMessageContent())) as KlasaMessage;
 	async function addEmojis() {
 		await confirmMessage.react(ReactionEmoji.Join);
-		await sleep(750);
+		await sleep(50);
 		await confirmMessage.react(ReactionEmoji.Stop);
-		await sleep(750);
+		await sleep(50);
 		await confirmMessage.react(ReactionEmoji.Start);
 	}
 

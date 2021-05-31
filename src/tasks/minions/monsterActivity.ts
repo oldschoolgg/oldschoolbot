@@ -21,7 +21,7 @@ export default class extends Task {
 		const monster = effectiveMonsters.find(mon => mon.id === monsterID)!;
 		const fullMonster = Monsters.get(monsterID);
 		const user = await this.client.users.fetch(userID);
-		const channel = this.client.channels.get(channelID);
+		const channel = this.client.channels.cache.get(channelID);
 		if (!channelIsSendable(channel)) return;
 		if (monster.name === 'Koschei the deathless' && !roll(5000)) {
 			return channel.send(`${user.minionName} failed to defeat Koschei the deathless.`);

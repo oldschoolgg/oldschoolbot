@@ -20,7 +20,7 @@ export default class extends BotCommand {
 			return message.channel.send(`No role with that name found.`);
 		}
 		if (!message.member) return;
-		if (!message.member?.roles.has('759572886364225558')) {
+		if (!message.member?.roles.cache.has('759572886364225558')) {
 			return;
 		}
 		return message.channel.send(

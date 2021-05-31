@@ -15,7 +15,9 @@ export default class extends Finalizer {
 		} catch (err) {
 			this.client.emit(
 				'error',
-				`${message.author.username}[${message.author.id}] has exceeded the RateLimit for ${message.command}`
+				new Error(
+					`${message.author.username}[${message.author.id}] has exceeded the RateLimit for ${message.command}`
+				)
 			);
 		}
 	}

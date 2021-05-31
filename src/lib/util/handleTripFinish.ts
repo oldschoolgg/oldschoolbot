@@ -48,7 +48,7 @@ export async function handleTripFinish(
 		data.duration > Time.Minute * 20 &&
 		roll(15)
 	) {
-		const emoji = getSupportGuild(client).emojis.random().toString();
+		const emoji = getSupportGuild(client).emojis.cache.random().toString();
 		const bonusLoot = new Bank().add(loot).add(getRandomMysteryBox());
 		message += `\n${emoji} **You received 2x loot and a Mystery box.**`;
 		await user.addItemsToBank(bonusLoot, true);
@@ -121,7 +121,7 @@ export async function handleTripFinish(
 			: new MessageAttachment(attachment)
 		: undefined;
 
-	const channel = client.channels.get(channelID);
+	const channel = client.channels.cache.get(channelID);
 
 	sendToChannelID(client, channelID, { content: message, image: attachable }).then(() => {
 		const minutes = Math.min(30, data.duration / Time.Minute);
