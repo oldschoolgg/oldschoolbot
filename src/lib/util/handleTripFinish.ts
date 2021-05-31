@@ -48,7 +48,7 @@ export async function handleTripFinish(
 			: new MessageAttachment(attachment)
 		: undefined;
 
-	const channel = client.channels.get(channelID);
+	const channel = client.channels.cache.get(channelID);
 
 	sendToChannelID(client, channelID, { content: message, image: attachable }).then(() => {
 		const minutes = Math.min(30, data.duration / Time.Minute);

@@ -244,7 +244,7 @@ DESC LIMIT 2000;`
 		let { list } = this.qpLeaderboard;
 
 		if (onlyForGuild && msg.guild) {
-			list = list.filter((qpUser: QPUser) => msg.guild!.members.has(qpUser.id));
+			list = list.filter((qpUser: QPUser) => msg.guild!.members.cache.has(qpUser.id));
 		}
 
 		this.doMenu(
@@ -279,7 +279,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 		let { list } = this.petLeaderboard;
 
 		if (onlyForGuild && msg.guild) {
-			list = list.filter((gpUser: PetUser) => msg.guild!.members.has(gpUser.id));
+			list = list.filter((gpUser: PetUser) => msg.guild!.members.cache.has(gpUser.id));
 		}
 
 		this.doMenu(
@@ -354,7 +354,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			.slice(0, 2000);
 
 		if (msg.flagArgs.server && msg.guild) {
-			list = list.filter((kcUser: KCUser) => msg.guild!.members.has(kcUser.id));
+			list = list.filter((kcUser: KCUser) => msg.guild!.members.cache.has(kcUser.id));
 		}
 
 		this.doMenu(
@@ -419,7 +419,7 @@ DESC LIMIT 500;`
 		const onlyForGuild = msg.flagArgs.server;
 
 		if (onlyForGuild && msg.guild) {
-			res = res.filter((user: SkillUser) => msg.guild!.members.has(user.id));
+			res = res.filter((user: SkillUser) => msg.guild!.members.cache.has(user.id));
 		}
 
 		if (msg.flagArgs.im || msg.flagArgs.ironman) {
