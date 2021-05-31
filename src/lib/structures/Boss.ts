@@ -9,7 +9,7 @@ import { Activity } from '../constants';
 import { GearSetupTypes, GearStats } from '../gear';
 import { Skills } from '../types';
 import { NewBossOptions } from '../types/minions';
-import { formatDuration, formatSkillRequirements, itemID, updateBankSetting } from '../util';
+import { formatDuration, formatSkillRequirements, updateBankSetting } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { Gear } from './Gear';
 import { Mass } from './Mass';
@@ -262,8 +262,7 @@ export class BossInstance {
 			// Item boosts
 			let itemBoosts = 0;
 			for (const [name, amount] of this.itemBoosts) {
-				const allItems = gear.allItems(false);
-				if (allItems.includes(itemID(name))) {
+				if (gear.hasEquipped(name, false, true)) {
 					itemBoosts += amount;
 				}
 			}

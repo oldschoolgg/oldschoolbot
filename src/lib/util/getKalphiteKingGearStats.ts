@@ -1,6 +1,5 @@
 import { calcWhatPercent, randInt } from 'e';
 import { KlasaUser } from 'klasa';
-import { itemID } from 'oldschooljs/dist/util';
 
 import { maxOffenceStats } from '../gear';
 import { GearStats } from '../gear/types';
@@ -53,7 +52,7 @@ export function getKalphiteKingGearStats(
 	// e.g. 75% of of the best = 1.5x damage done.
 	damageDone *= percentWeaponAttackCrush / 80;
 
-	if (weapon?.id === itemID('Drygore mace')) {
+	if (gear.hasEquipped('Drygore mace')) {
 		damageDone *= 1.1;
 	}
 

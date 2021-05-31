@@ -13,6 +13,7 @@ import {
 	removeBankFromBank,
 	stringMatches
 } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -65,18 +66,17 @@ export default class extends BotCommand {
 			throw `You need ${createableItem.GPCost.toLocaleString()} coins to create this item.`;
 		}
 
+		const output =
+			createableItem.outputItems ?? new Bank().add(getOSItem(createableItem.name).id).bank;
+
 		if (createableItem.cantBeInCL) {
 			const cl = new Bank(msg.author.settings.get(UserSettings.CollectionLogBank));
-			if (
-				Object.keys(createableItem.outputItems).some(
-					itemID => cl.amount(Number(itemID)) > 0
-				)
-			) {
+			if (Object.keys(output).some(itemID => cl.amount(Number(itemID)) > 0)) {
 				return msg.channel.send(`You can only create this item once!`);
 			}
 		}
 
-		const outItems = multiplyBank(createableItem.outputItems, quantity);
+		const outItems = multiplyBank(output, quantity);
 		const inItems = multiplyBank(createableItem.inputItems, quantity);
 
 		const outputItemsString = new Bank(outItems).toString();
