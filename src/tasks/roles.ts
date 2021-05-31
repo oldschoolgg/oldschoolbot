@@ -1,4 +1,5 @@
 import { Guild } from 'discord.js';
+import { noOp } from 'e';
 import { Task } from 'klasa';
 
 import { CLUser, SkillUser } from '../commands/Minion/leaderboard';
@@ -56,7 +57,7 @@ export default class extends Task {
 	async run() {
 		const g = this.client.guilds.get('342983479501389826');
 		if (!g) return;
-		await g.members.fetch();
+		g.members.fetch().catch(noOp);
 		const skillVals = Object.values(Skills);
 
 		// Top Skillers
