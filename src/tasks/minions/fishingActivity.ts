@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, Time, MIN_LENGTH_FOR_PET} from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET} from '../../lib/constants';
 import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { Cookables } from '../../lib/skilling/skills/cooking';

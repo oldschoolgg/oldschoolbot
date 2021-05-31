@@ -100,9 +100,9 @@ export default class extends Task {
 			}
 		}
 
+		let gotWil = false;
 		if(duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
-			let gotWil = false;
 			if (roll(Math.floor(4000 / minutes))) {
 				loot.add('Wilvus');
 				gotWil = true;
