@@ -10,6 +10,7 @@ import { roll, rollRogueOutfitDoubleLoot } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { multiplyBankNotClues } from '../../lib/util/mbnc';
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
@@ -99,11 +100,13 @@ export default class extends Task {
 			}
 		}
 
-		const minutes = duration / Time.Minute;
-		let gotWil = false;
-		if (roll(Math.floor(4000 / minutes))) {
-			loot.add('Wilvus');
-			gotWil = true;
+		if(duration >= MIN_LENGTH_FOR_PET) {
+			const minutes = duration / Time.Minute;
+			let gotWil = false;
+			if (roll(Math.floor(4000 / minutes))) {
+				loot.add('Wilvus');
+				gotWil = true;
+			}
 		}
 
 		await user.addItemsToBank(loot.values(), true);

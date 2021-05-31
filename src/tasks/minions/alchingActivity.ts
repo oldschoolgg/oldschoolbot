@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
@@ -36,7 +37,7 @@ export default class extends Task {
 			}
 		}
 
-		if (duration > Time.Minute * 20 && roll(Math.ceil(8000 / (duration / Time.Minute)))) {
+		if (duration > MIN_LENGTH_FOR_PET && roll(Math.ceil(8000 / (duration / Time.Minute)))) {
 			loot.add('Lil lamb');
 		}
 
