@@ -599,8 +599,8 @@ export default class extends Extendable {
 		const kc = mon
 			? this.getKC(((mon as unknown) as Monster).id)
 			: minigame
-				? await this.getMinigameScore(minigame!.key)
-				: this.getCreatureScore(creature!);
+			? await this.getMinigameScore(minigame!.key)
+			: this.getCreatureScore(creature!);
 
 		const name = minigame ? minigame.name : mon ? mon!.name : creature?.name;
 		return [name, kc];
@@ -740,7 +740,7 @@ export default class extends Extendable {
 				{
 					count: string;
 				}[]
-				>(`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > 13034430;`);
+			>(`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > 13034430;`);
 
 			let str = `${skill.emoji} **${this.username}'s** minion, ${
 				this.minionName
@@ -753,7 +753,7 @@ export default class extends Extendable {
 					{
 						count: string;
 					}[]
-					>(
+				>(
 					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${skillName}" > 13034430;`
 				);
 				str += ` They are the ${formatOrdinal(
