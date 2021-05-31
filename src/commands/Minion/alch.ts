@@ -40,12 +40,12 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage, [[bankToAlch]]: [[Bank]]) {
-		if (bankToAlch === undefined) {
+	async run(msg: KlasaMessage, [[bankSelected]]: [[Bank]]) {
+		if (bankSelected === undefined) {
 			throw 'You must specify item[s] to alch.';
 		}
 
-		if (!msg.author.bank().fits(bankToAlch)) {
+		if (!msg.author.bank().fits(bankSelected)) {
 			throw "You don't have all of those items.";
 		}
 
@@ -58,27 +58,36 @@ export default class extends BotCommand {
 		let quantity = 0;
 		let alchValue = 0;
 
-		for (const [itemID, qty] of Object.entries(bankToAlch.bank)) {
+		let bankToAlch = new Bank();
+
+		for (const [itemID, qty] of Object.entries(bankSelected.bank)) {
 			const item = Items.get(parseInt(itemID));
 			if (!(item!.highalch && item!.tradeable)) {
-				throw 'Not all selected items are alchable.';
+				if (Object.keys(msg.flagArgs).length > 0) {
+					continue;
+				} else {
+					throw 'Not all selected items are alchable.';
+				}
 			}
 
 			// Subtract quantities used until we reach max.
-			let qtyUsable = qty;
-			if (qtyUsable > maxRemaining) {
-				qtyUsable = maxRemaining;
-				bankToAlch.bank[itemID] = qtyUsable;
-			}
+			let qtyUsable = qty > maxRemaining ? maxRemaining : qty;
+
 			maxRemaining -= qtyUsable;
 			if (maxRemaining < 0) {
 				maxRemaining = 0;
 			}
-
+			if (qtyUsable <= 0) {
+				continue;
+			}
+			bankToAlch.add(item!.id, qtyUsable);
 			quantity += qtyUsable;
 			alchValue += qtyUsable * item!.highalch;
 		}
 
+		if (quantity === 0) {
+			return msg.send(`No items selected to alch!`);
+		}
 		const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), quantity);
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) < 55) {
