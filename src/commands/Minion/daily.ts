@@ -94,7 +94,7 @@ export default class DailyCommand extends BotCommand {
 			user.log(`[NAC-DAILY]`);
 		}
 
-		const guild = this.client.guilds.get(SupportServer);
+		const guild = this.client.guilds.cache.get(SupportServer);
 		if (!guild) return;
 		const member = await guild.members.fetch(user).catch(() => null);
 

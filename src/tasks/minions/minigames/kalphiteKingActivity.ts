@@ -124,7 +124,7 @@ export default class extends Task {
 				sendToChannelID(this.client, channelID, { content: resultStr + debug });
 			}
 		} else {
-			const channel = this.client.channels.get(channelID);
+			const channel = this.client.channels.cache.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
 			if (!kcAmounts[userID]) {

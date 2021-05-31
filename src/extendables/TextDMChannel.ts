@@ -87,7 +87,7 @@ export default class extends Extendable {
 		}
 		const sent = await this.send(
 			content ?? cached,
-			image && !cached ? new MessageAttachment(image!) : undefined
+			image && !cached ? new MessageAttachment(image!) : {}
 		);
 
 		const url = sent.attachments.first()?.proxyURL;

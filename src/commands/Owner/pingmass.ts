@@ -17,7 +17,10 @@ export default class extends BotCommand {
 		if (!msg.guild || msg.guild.id !== SupportServer) return;
 		if (!msg.member) return;
 		if (!(msg.channel instanceof TextChannel)) return;
-		if (!msg.member.roles.has('734055552933429280') && !msg.member.roles.has(Roles.Moderator)) {
+		if (
+			!msg.member.roles.cache.has('734055552933429280') &&
+			!msg.member.roles.cache.has(Roles.Moderator)
+		) {
 			return;
 		}
 		if (msg.channel.id === '789717054902763520') {

@@ -49,7 +49,7 @@ WHERE "lastDailyTimestamp" != 0;
 					}
 					for (const id of ['732207379818479756', '792691343284764693']) {
 						boxFrenzy(
-							client.channels.get(id) as TextChannel,
+							client.channels.cache.get(id) as TextChannel,
 							`🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
 ${

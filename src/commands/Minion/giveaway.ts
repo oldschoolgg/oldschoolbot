@@ -59,7 +59,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const reaction = msg.guild.emojis.random();
+		const reaction = msg.guild.emojis.cache.random();
 		await msg.author.removeItemsFromBank(bank);
 
 		const giveaway = new GiveawayTable();

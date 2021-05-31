@@ -74,7 +74,7 @@ async function reactChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 			time: 30_000,
 			errors: ['time']
 		});
-		const winner = collected.first()?.users.first();
+		const winner = collected.first()?.users.cache.first();
 		return winner ?? null;
 	} catch (err) {
 		return null;
