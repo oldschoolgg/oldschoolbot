@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, Time, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -42,7 +42,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished woodcutting, you received ${loot}. ${xpRes}`;
 
-		if(duration >= MIN_LENGTH_FOR_PET) {
+		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
 			if (roll(Math.floor(4000 / minutes))) {
 				loot.add('Peky');

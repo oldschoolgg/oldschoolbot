@@ -2,7 +2,7 @@ import { randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Time, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -48,7 +48,7 @@ export default class extends Task {
 			[bar.id]: quantity
 		});
 
-		if(duration >= MIN_LENGTH_FOR_PET) {
+		if (duration >= MIN_LENGTH_FOR_PET) {
 			const numMinutes = duration / Time.Minute;
 			if (user.settings.get(UserSettings.QP) > 10) {
 				for (let i = 0; i < numMinutes; i++) {

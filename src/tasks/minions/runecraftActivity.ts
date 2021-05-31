@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, Time, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -28,7 +28,7 @@ export default class extends Task {
 			[rune.id]: runeQuantity
 		});
 
-		if(duration >= MIN_LENGTH_FOR_PET) {
+		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
 			if (roll(Math.floor(5000 / minutes)) && !user.hasItemEquippedOrInBank('Obis')) {
 				loot.add('Obis');

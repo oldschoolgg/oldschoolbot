@@ -2,7 +2,7 @@ import { roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, Time, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
@@ -88,7 +88,7 @@ export default class extends Task {
 			}
 		}
 
-		if(duration >= MIN_LENGTH_FOR_PET) {
+		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutesInTrip = Math.ceil(duration / Time.Minute);
 			for (let i = 0; i < minutesInTrip; i++) {
 				if (roll(12_000)) {

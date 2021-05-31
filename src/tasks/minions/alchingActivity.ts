@@ -2,8 +2,8 @@ import { Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
-import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, roll } from '../../lib/util';

@@ -2,7 +2,7 @@ import { percentChance, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../lib/constants';
+import { Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
@@ -10,7 +10,6 @@ import { roll, rollRogueOutfitDoubleLoot } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { multiplyBankNotClues } from '../../lib/util/mbnc';
-import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
@@ -101,7 +100,7 @@ export default class extends Task {
 		}
 
 		let gotWil = false;
-		if(duration >= MIN_LENGTH_FOR_PET) {
+		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
 			if (roll(Math.floor(4000 / minutes))) {
 				loot.add('Wilvus');

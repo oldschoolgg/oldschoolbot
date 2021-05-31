@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, MIN_LENGTH_FOR_PET} from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { Cookables } from '../../lib/skilling/skills/cooking';
@@ -153,7 +153,7 @@ export default class extends Task {
 			}
 		}
 
-		if(duration >= MIN_LENGTH_FOR_PET) {
+		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutesInTrip = Math.ceil(duration / 1000 / 60);
 			for (let i = 0; i < minutesInTrip; i++) {
 				if (roll(8000)) {
