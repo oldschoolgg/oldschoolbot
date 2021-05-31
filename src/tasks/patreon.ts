@@ -229,7 +229,7 @@ export default class PatreonTask extends Task {
 			if (settings.get(UserSettings.GithubID)) continue;
 
 			const username =
-				this.client.users.get(patron.discordID)?.username ??
+				this.client.users.cache.get(patron.discordID)?.username ??
 				`${patron.discordID}|${patron.patreonID}`;
 
 			if (settings.get(UserSettings.PatreonID) !== patron.patreonID) {
@@ -276,7 +276,7 @@ export default class PatreonTask extends Task {
 		const githubResult = await this.syncGithub();
 		messages = messages.concat(githubResult);
 
-		const channel = this.client.channels.get(Channel.ErrorLogs) as TextChannel;
+		const channel = this.client.channels.cache.get(Channel.ErrorLogs) as TextChannel;
 		if (production) {
 			channel.sendFile(Buffer.from(result.join('\n')), 'patreon.txt');
 			channel.send(messages.join(', '));

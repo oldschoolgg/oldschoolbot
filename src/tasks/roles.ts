@@ -31,9 +31,9 @@ async function addRoles(
 ): Promise<string> {
 	let added: string[] = [];
 	let removed: string[] = [];
-	const roleName = g.roles.get(role)!.name!;
-	for (const mem of g.members.values()) {
-		if (mem.roles.has(role) && !users.includes(mem.user.id)) {
+	const roleName = g.roles.cache.get(role)!.name!;
+	for (const mem of g.members.cache.values()) {
+		if (mem.roles.cache.has(role) && !users.includes(mem.user.id)) {
 			if (production) {
 				await mem.roles.remove(role);
 			}
@@ -46,7 +46,7 @@ async function addRoles(
 		}
 
 		if (users.includes(mem.user.id)) {
-			if (production && !mem.roles.has(role)) {
+			if (production && !mem.roles.cache.has(role)) {
 				await mem.roles.add(role);
 			}
 			if (badge && !mem.user.settings.get(UserSettings.Badges).includes(badge)) {
@@ -65,7 +65,7 @@ Removed ${roleName} from: ${removed.join(', ')}.
 
 export default class extends Task {
 	async run() {
-		const g = this.client.guilds.get('342983479501389826');
+		const g = this.client.guilds.cache.get('342983479501389826');
 		if (!g) return;
 		await g.members.fetch();
 		const skillVals = Object.values(Skills);
