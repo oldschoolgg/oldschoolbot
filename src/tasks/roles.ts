@@ -10,17 +10,6 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';
 
-const minigames = [
-	'barb_assault',
-	'agility_arena',
-	'mahogany_homes',
-	'gnome_restaurant',
-	'soul_wars',
-	'castle_wars',
-	'raids',
-	'raids_challenge_mode'
-];
-
 const collections = ['Pets', 'Skilling', 'Clue all', 'Boss', 'Minigames', 'Chambers of Xeric'];
 
 async function addRoles(
@@ -163,22 +152,6 @@ ORDER BY u.sacbanklength DESC LIMIT 1;`);
 		topSacrificers.push(mostUniques[0].id);
 
 		result += await addRoles(g, topSacrificers, Roles.TopSacrificer, 8);
-
-		// Top minigamers
-		let topMinigamers = (
-			await Promise.all(
-				minigames.map(m =>
-					this.client.query(
-						`SELECT user_id 
-FROM minigames
-ORDER BY ${m} DESC
-LIMIT 1;`
-					)
-				)
-			)
-		).map((i: any) => i[0].user_id);
-
-		result += await addRoles(g, topMinigamers, Roles.TopMinigamer, 11);
 
 		// Top clue hunters
 		let topClueHunters = (

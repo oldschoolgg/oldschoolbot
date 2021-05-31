@@ -31,11 +31,10 @@ export const enum Roles {
 	PatronTier3 = '687408140832342043',
 	Patron = '679620175838183424',
 	// Status Roles
-	TopSkiller = '795266465329709076',
-	TopCollector = '795271210141351947',
-	TopSacrificer = '795933981715464192',
-	TopMinigamer = '832798997033779220',
-	TopeClueHunter = '839135887467610123'
+	TopSkiller = '848966830617788427',
+	TopCollector = '848966773885763586',
+	TopSacrificer = '848966732265160775',
+	TopeClueHunter = '848967350120218636'
 }
 
 export const enum Emoji {
