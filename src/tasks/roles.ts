@@ -157,7 +157,7 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 		const mostUniques = await this.client.query<
 			SkillUser[]
 		>(`SELECT u.id, u.sacbanklength FROM (
-  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
 		topSacrificers.push(mostUniques[0].id);
