@@ -61,12 +61,15 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const plants = Farming.Plants.find(plants =>
-			plants.aliases.some(
-				alias =>
-					stringMatches(alias, plantName) || stringMatches(alias.split(' ')[0], plantName)
-			)
-		);
+		const plants =
+			Farming.Plants.find(plants => plants.name.toLowerCase() === plantName.toLowerCase()) ??
+			Farming.Plants.find(plants =>
+				plants.aliases.some(
+					alias =>
+						stringMatches(alias, plantName) ||
+						stringMatches(alias.split(' ')[0], plantName)
+				)
+			);
 
 		if (!plants) {
 			throw `That's not a valid seed to plant. Valid seeds are ${Farming.Plants.map(
