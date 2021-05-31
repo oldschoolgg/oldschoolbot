@@ -919,10 +919,10 @@
   dependencies:
     table "*"
 
-"@types/twit@^2.2.28":
-  version "2.2.28"
-  resolved "https://registry.yarnpkg.com/@types/twit/-/twit-2.2.28.tgz#e92d873e4e4817bd700107a6317c16f7dfd84006"
-  integrity sha512-TPA6z6ccishqrIn5IynZmkUsew0VAtRJjTSMz03ivgtRGpTWcPtUgSQueQpVoTC2h/8kEEDPDultg2c3uIgjrw==
+"@types/twit@^2.2.29":
+  version "2.2.29"
+  resolved "https://registry.yarnpkg.com/@types/twit/-/twit-2.2.29.tgz#b46ff77d38251c0e0a58d39f5de7a971d191c3b0"
+  integrity sha512-ERhd8NTq1nW4/kQTdxKcS0QofOLnogM8U3LpL1rEtr/cDonaSMGh1+9NUEmBKjbSNqxh4UPBhM1rMHb8VEwUdg==
   dependencies:
     "@types/geojson" "*"
     "@types/node" "*"
@@ -2411,10 +2411,10 @@ fastify-warning@^0.2.0:
   resolved "https://registry.yarnpkg.com/fastify-warning/-/fastify-warning-0.2.0.tgz#e717776026a4493dc9a2befa44db6d17f618008f"
   integrity sha512-s1EQguBw/9qtc1p/WTY4eq9WMRIACkj+HTcOIK1in4MV5aFaQC9ZCIt0dJ7pr5bIf4lPpHvAtP2ywpTNgs7hqw==
 
-fastify@^3.16.2:
-  version "3.16.2"
-  resolved "https://registry.yarnpkg.com/fastify/-/fastify-3.16.2.tgz#be26789fe9bac588bcbd5ae3ff6d1dc06cd53f00"
-  integrity sha512-tdu0fz6wk9AbtD91AbzZGjKgEQLcIy7rT2vEzTUL/zifAMS/L7ViKY9p9k3g3yCRnIQzYzxH2RAbvYZaTbKasw==
+fastify@^3.17.0:
+  version "3.17.0"
+  resolved "https://registry.yarnpkg.com/fastify/-/fastify-3.17.0.tgz#1194c430ac3f27fc3e332e461f9521f5e4ff977a"
+  integrity sha512-Jjmqsxtnu7827KPNZWNdz2NUuFCQMojnGgflQ4D8RRatC4DAYA+fx3EDxKsbHim3tFFPLT8qig43K2yMNlUzMA==
   dependencies:
     "@fastify/ajv-compiler" "^1.0.0"
     "@fastify/proxy-addr" "^3.0.0"
@@ -3838,9 +3838,9 @@ lodash.truncate@^4.4.2:
   integrity sha1-WjUNoLERO4N+z//VgSy+WNbq4ZM=
 
 lodash@4.x, lodash@^4.17.15, lodash@^4.17.19:
-  version "4.17.20"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
-  integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 lru-cache@^6.0.0:
   version "6.0.0"
@@ -5728,10 +5728,10 @@ typeorm@^0.2.32:
     yargs "^16.2.0"
     zen-observable-ts "^1.0.0"
 
-typescript@^4.2.4:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.2.4.tgz#8610b59747de028fda898a8aef0e103f156d0961"
-  integrity sha512-V+evlYHZnQkaz8TRBuxTA92yZBPotr5H+WhQ7bD3hZUndx5tGOa1fuCgeSjxAzM1RiN5IzvadIXTVefuuwZCRg==
+typescript@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.2.tgz#399ab18aac45802d6f2498de5054fcbbe716a805"
+  integrity sha512-zZ4hShnmnoVnAHpVHWpTcxdv7dWP60S2FsydQLV8V5PbS3FifjWFFRiHSWpDJahly88PRyV5teTSLoq4eG7mKw==
 
 ultron@~1.1.0:
   version "1.1.1"

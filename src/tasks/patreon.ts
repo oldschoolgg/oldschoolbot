@@ -82,8 +82,8 @@ export default class PatreonTask extends Task {
 
 	async validatePerks(userID: string, shouldHave: PerkTier): Promise<string | null> {
 		const settings = await getUserSettings(userID);
-		let perkTier: PerkTier | null = getUsersPerkTier(settings.get(UserSettings.BitField));
-		if (perkTier === 0 || perkTier === 1) perkTier = null;
+		let perkTier: PerkTier | 0 | null = getUsersPerkTier(settings.get(UserSettings.BitField));
+		if (perkTier === 0 || perkTier === PerkTier.One) perkTier = null;
 
 		if (!perkTier) {
 			await this.givePerks(userID, shouldHave);
