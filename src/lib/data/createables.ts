@@ -2,10 +2,11 @@ import { ItemBank } from '../types';
 import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
 import { metamorphPets } from './collectionLog';
+import { dyedCreatables } from './dyedCreatables';
 
-interface Createable {
+export interface Createable {
 	name: string;
-	outputItems: ItemBank;
+	outputItems?: ItemBank;
 	inputItems: ItemBank;
 	cantHaveItems?: ItemBank;
 	requiredSkills?: Record<string, number>;
@@ -4362,7 +4363,8 @@ const Createables: Createable[] = [
 	},
 	...chaoticCreatables,
 	...twistedAncestral,
-	...metamorphPetCreatables
+	...metamorphPetCreatables,
+	...dyedCreatables
 ];
 
 export default Createables;

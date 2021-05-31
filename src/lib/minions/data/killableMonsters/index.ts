@@ -387,6 +387,11 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43,
 			ranged: 105
+		},
+		pohBoosts: {
+			pool: {
+				'Ancient rejuvenation pool': 10
+			}
 		}
 	},
 	{
@@ -526,6 +531,11 @@ const killableMonsters: KillableMonster[] = [
 		},
 		levelRequirements: {
 			magic: 105
+		},
+		pohBoosts: {
+			pool: {
+				'Ancient rejuvenation pool': 10
+			}
 		}
 	}
 ];

@@ -197,6 +197,22 @@ const Bows: Fletchable[] = [
 		tickRate: 2
 	},
 	{
+		name: 'Elder bow(u)',
+		id: itemID('Magic longbow (u)'),
+		level: 105,
+		xp: 391.5,
+		inputItems: new Bank({ 'Elder logs': 1 }),
+		tickRate: 3
+	},
+	{
+		name: 'Elder bow',
+		id: itemID('Elder bow'),
+		level: 105,
+		xp: 391.5,
+		inputItems: new Bank({ 'Elder bow': 1, 'Bow string': 1 }),
+		tickRate: 2
+	},
+	{
 		name: 'Toxic blowpipe (empty)',
 		id: itemID('Toxic blowpipe (empty)'),
 		level: 53,

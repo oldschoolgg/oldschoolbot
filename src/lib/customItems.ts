@@ -942,8 +942,6 @@ setCustomItem(40_051, 'Gorajan archer boots', 'Pernix boots', {}, 55_000_000);
 
 setCustomItem(40_052, 'Scroll of mystery', 'Coal', {}, 1_000_000);
 
-// Pets
-
 /**
  * Non-mystery box items
  *
@@ -1178,6 +1176,59 @@ setCustomItem(47_524, 'Water balloon', 'Coal', {}, 100_000);
 setCustomItem(47_525, 'Ice cream', 'Coal', {}, 100_000);
 setCustomItem(47_526, 'Crab hat', 'Coal', {}, 100_000);
 setCustomItem(47_527, 'Steve', 'Herbi', {}, 1_000_000);
+
+/**
+ * -----------------------------------------------------------------------------------------------
+ * Dyes
+ * -----------------------------------------------------------------------------------------------
+ */
+// Ice
+setCustomItem(41_053, 'Offhand drygore rapier (ice)', 'Offhand drygore rapier', {}, 1_000_000);
+setCustomItem(41_054, 'Drygore rapier (ice)', 'Drygore rapier', {}, 1_000_000);
+setCustomItem(41_055, 'Offhand drygore mace (ice)', 'Offhand Drygore mace', {}, 1_000_000);
+setCustomItem(41_056, 'Drygore mace (ice)', 'Drygore mace', {}, 1_000_000);
+setCustomItem(
+	41_057,
+	'Offhand drygore longsword (ice)',
+	'Offhand drygore longsword',
+	{},
+	1_000_000
+);
+setCustomItem(41_058, 'Drygore longsword (ice)', 'Drygore longsword', {}, 1_000_000);
+
+// Blood
+setCustomItem(41_059, 'Offhand drygore rapier (blood)', 'Offhand drygore rapier', {}, 1_000_000);
+setCustomItem(41_060, 'Drygore rapier (blood)', 'Drygore rapier', {}, 1_000_000);
+setCustomItem(41_061, 'Offhand drygore mace (blood)', 'Offhand Drygore mace', {}, 1_000_000);
+setCustomItem(41_062, 'Drygore mace (blood)', 'Drygore mace', {}, 1_000_000);
+setCustomItem(
+	41_063,
+	'Offhand drygore longsword (blood)',
+	'Offhand drygore longsword',
+	{},
+	1_000_000
+);
+setCustomItem(41_064, 'Drygore longsword (blood)', 'Drygore longsword', {}, 1_000_000);
+// Shadow
+setCustomItem(41_065, 'Offhand drygore rapier (shadow)', 'Offhand drygore rapier', {}, 1_000_000);
+setCustomItem(41_066, 'Drygore rapier (shadow)', 'Drygore rapier', {}, 1_000_000);
+setCustomItem(41_067, 'Offhand drygore mace (shadow)', 'Offhand Drygore mace', {}, 1_000_000);
+setCustomItem(41_068, 'Drygore mace (shadow)', 'Drygore mace', {}, 1_000_000);
+setCustomItem(
+	41_069,
+	'Offhand drygore longsword (shadow)',
+	'Offhand drygore longsword',
+	{},
+	1_000_000
+);
+setCustomItem(41_070, 'Drygore longsword (shadow)', 'Drygore longsword', {}, 1_000_000);
+// 3a
+setCustomItem(41_071, 'Offhand drygore rapier (3a)', 'Offhand drygore rapier', {}, 1_000_000);
+setCustomItem(41_072, 'Drygore rapier (3a)', 'Drygore rapier', {}, 1_000_000);
+setCustomItem(41_073, 'Offhand drygore mace (3a)', 'Offhand Drygore mace', {}, 1_000_000);
+setCustomItem(41_074, 'Drygore mace (3a)', 'Drygore mace', {}, 1_000_000);
+setCustomItem(41_075, 'Offhand drygore longsword (3a)', 'Offhand drygore longsword', {}, 1_000_000);
+setCustomItem(41_076, 'Drygore longsword (3a)', 'Drygore longsword', {}, 1_000_000);
 
 /**
  *
@@ -1441,6 +1492,11 @@ setCustomItem(
 
 setCustomItem(48_200, 'Scroll of farming', 'Coal', {}, 1_000_000);
 
+setCustomItem(48_201, 'Shadow dye', 'Coal', {}, 100_000_000);
+setCustomItem(48_202, 'Ice dye', 'Coal', {}, 100_000_000);
+setCustomItem(48_203, 'Blood dye', 'Coal', {}, 100_000_000);
+setCustomItem(48_204, 'Third age dye', 'Coal', {}, 100_000_000);
+
 /**
  * Misc Items
  *
@@ -1470,3 +1526,5 @@ setCustomItem(50_016, 'Master farmer boots', 'Rune boots', {}, 1_000_000);
 
 setCustomItem(50_017, 'Elder logs', 'Magic logs', {}, 19_000);
 setCustomItem(50_018, 'Elder plank', 'Mahogany plank', {}, 10_000);
+setCustomItem(50_019, 'Elder bow(u)', 'Magic logs', {}, 19_000);
+setCustomItem(50_020, 'Elder bow', 'Mahogany plank', {}, 10_000);

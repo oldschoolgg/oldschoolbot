@@ -1837,6 +1837,7 @@ const gmLog: CollectionLogData = {
 		'First age bracelet',
 		'First age ring'
 	]),
+	Dyes: resolveItems(['Shadow dye', 'Blood dye', 'Third age dye', 'Ice dye']),
 	Misc: resolveItems(['Dwarven blessing'])
 };
 

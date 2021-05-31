@@ -70,10 +70,17 @@ const Supplies = new LootTable()
 	.add('Saradomin brew(4)', [20, 50])
 	.add('Super restore(4)', [20, 50]);
 
+const DyeTable = new LootTable()
+	.add('Third age dye', 2)
+	.add('Blood dye', 1, 3)
+	.add('Shadow dye', 1, 3)
+	.add('Ice dye', 1, 3);
+
 const table = new LootTable()
 	.tertiary(2500, ClueHunterTable)
 	.tertiary(18_000, BlessingTable)
-	.tertiary(55_000, 'Ring of luck')
+	.tertiary(14_000, DyeTable)
+	.tertiary(8000, 'Ring of luck')
 	.tertiary(5_000, 'Deathtouched dart')
 	.tertiary(50, LampTable)
 	.tertiary(

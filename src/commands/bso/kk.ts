@@ -15,7 +15,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
 import { MakePartyOptions } from '../../lib/types';
 import { BossActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, updateBankSetting } from '../../lib/util';
+import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getKalphiteKingGearStats } from '../../lib/util/getKalphiteKingGearStats';
@@ -152,16 +152,16 @@ export default class extends BotCommand {
 			let msgs = [];
 
 			// Special inquisitor outfit damage boost
-			const rangeGear = user.getGear('melee');
-			const equippedWeapon = rangeGear.equippedWeapon();
-			if (hasArrayOfItemsEquipped(torvaOutfit, rangeGear)) {
+			const meleeGear = user.getGear('melee');
+			const equippedWeapon = meleeGear.equippedWeapon();
+			if (hasArrayOfItemsEquipped(torvaOutfit, meleeGear)) {
 				const percent = 8;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for full Torva`);
 			} else {
 				let i = 0;
 				for (const inqItem of torvaOutfit) {
-					if (hasItemEquipped(inqItem, rangeGear)) {
+					if (hasItemEquipped(inqItem, meleeGear)) {
 						const percent = 1;
 						i += percent;
 					}
@@ -188,13 +188,13 @@ export default class extends BotCommand {
 				msgs.push(`-${percent}% penalty for bad weapon`);
 			}
 
-			if (equippedWeapon?.id === itemID('Drygore mace')) {
+			if (meleeGear.hasEquipped('Drygore mace')) {
 				const percent = 14;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for Drygore mace`);
 			}
 
-			if (rangeGear.shield?.item === itemID('Offhand drygore mace')) {
+			if (meleeGear.hasEquipped('Offhand drygore mace')) {
 				const percent = 5;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for Offhand drygore mace`);

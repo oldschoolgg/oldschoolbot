@@ -256,10 +256,51 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Pernix chaps')]: resolveItems(['Gorajan archer legs']),
 	[itemID('Pernix gloves')]: resolveItems(['Gorajan archer gloves']),
 	[itemID('Pernix boots')]: resolveItems(['Gorajan archer boots']),
-	[itemID('Ring of charos')]: resolveItems(['Ring of charos(a)'])
+	[itemID('Ring of charos')]: resolveItems(['Ring of charos(a)']),
+	[itemID('Drygore rapier')]: resolveItems([
+		'Drygore rapier (ice)',
+		'Drygore rapier (blood)',
+		'Drygore rapier (shadow)',
+		'Drygore rapier (3a)'
+	]),
+	[itemID('Offhand drygore rapier')]: resolveItems([
+		'Offhand drygore rapier (ice)',
+		'Offhand drygore rapier (blood)',
+		'Offhand drygore rapier (shadow)',
+		'Offhand drygore rapier (3a)'
+	]),
+	[itemID('Drygore longsword')]: resolveItems([
+		'Drygore longsword (ice)',
+		'Drygore longsword (blood)',
+		'Drygore longsword (shadow)',
+		'Drygore longsword (3a)'
+	]),
+	[itemID('Offhand drygore longsword')]: resolveItems([
+		'Offhand drygore longsword (ice)',
+		'Offhand drygore longsword (blood)',
+		'Offhand drygore longsword (shadow)',
+		'Offhand drygore longsword (3a)'
+	]),
+	[itemID('Drygore mace')]: resolveItems([
+		'Drygore mace (ice)',
+		'Drygore mace (blood)',
+		'Drygore mace (shadow)',
+		'Drygore mace (3a)'
+	]),
+	[itemID('Offhand drygore mace')]: resolveItems([
+		'Offhand drygore mace (ice)',
+		'Offhand drygore mace (blood)',
+		'Offhand drygore mace (shadow)',
+		'Offhand drygore mace (3a)'
+	])
 };
 
-export function getSimilarItems(itemID: number) {
+export function getSimilarItems(itemID: number, inverse = false) {
+	if (inverse) {
+		const entry = Object.entries(SimilarItems).find(ent => ent[1].includes(itemID));
+		if (!entry) return [];
+		return entry.flat(2).map(i => (typeof i === 'string' ? Number(i) : i));
+	}
 	return [...new Set([...(SimilarItems[itemID] ?? []), itemID])];
 }
 

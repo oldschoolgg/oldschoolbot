@@ -466,7 +466,6 @@ WHERE total_item_contracts > 0
 ORDER BY total_item_contracts DESC
 LIMIT 50;
 `);
-		console.log({ result });
 		this.doMenu(
 			msg,
 			util
