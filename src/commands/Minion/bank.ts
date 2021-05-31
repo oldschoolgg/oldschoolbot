@@ -1,5 +1,4 @@
-import { MessageAttachment } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
