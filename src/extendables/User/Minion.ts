@@ -606,6 +606,14 @@ export default class extends Extendable {
 					Emoji.Smithing
 				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
 			}
+
+			case Activity.OuraniaDeliveryService: {
+				return `${this.minionName} is currently delivering in the Ourania Deliver Service. ${formattedDuration}`;
+			}
+
+			case Activity.VasaMagus: {
+				return `${this.minionName} is currently killing Vasa Magus. ${formattedDuration}`;
+			}
 		}
 	}
 
