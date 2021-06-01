@@ -1,7 +1,7 @@
+import { Intents } from 'discord.js';
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
 import { customClientOptions, production, providerConfig } from '../../config';
-import { Intents } from './Intents';
 import permissionLevels from './permissionLevels';
 
 export const clientOptions: KlasaClientOptions = {
@@ -10,11 +10,9 @@ export const clientOptions: KlasaClientOptions = {
 	messageCacheMaxSize: 200,
 	messageCacheLifetime: 120,
 	messageSweepInterval: 120,
-	disabledEvents: ['CHANNEL_PINS_UPDATE'],
-	disableEveryone: true,
+	// disableEveryone: true,
 	shards: 'auto',
 	ws: {
-		// @ts-ignore Intents aren't documented as a valid WS property in our current d.js version
 		intents: new Intents([
 			'GUILDS',
 			'GUILD_MEMBERS',
@@ -34,10 +32,7 @@ export const clientOptions: KlasaClientOptions = {
 	permissionLevels,
 	pieceDefaults: { commands: { deletable: true } },
 	readyMessage: (client: KlasaClient) =>
-		`[Old School Bot] Ready to serve ${client.guilds.size} guilds.`,
-	schedule: {
-		interval: 10000
-	},
+		`[Old School Bot] Ready to serve ${client.guilds.cache.size} guilds.`,
 	partials: ['USER'],
 	production,
 	...customClientOptions
