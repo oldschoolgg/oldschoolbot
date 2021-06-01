@@ -1,5 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { table } from 'table';
 
 import { Time } from '../../lib/constants';
 import Createables from '../../lib/data/createables';
@@ -36,27 +37,25 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
 		if (msg.flagArgs.items) {
-			return msg.channel.sendFile(
-				Buffer.from(
-					Createables.map(item => {
-						const skillsRequired =
-							item.requiredSkills === undefined
-								? ''
-								: `\nRequired skills: ${Object.entries(item.requiredSkills)
-										.map(entry => `${entry[0]}: ${entry[1]}`)
-										.join(',')}`;
-						const qpRequired =
-							item.QPRequired === undefined
-								? ''
-								: `\nQP Required: ${item.QPRequired}`;
-						const gpCost = item.GPCost === undefined ? '' : `\nGP Cost: ${item.GPCost}`;
-						return `${item.name}: ${Object.entries(item.inputItems)
-							.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
-							.join(', ')}${skillsRequired}${qpRequired}${gpCost}`;
-					}).join('\n\n')
-				),
-				`Available creatable items.txt`
-			);
+			const creatableTable = table([
+				['Item Name', 'Input Items', 'GP Cost', 'Skills Required', 'QP Required'],
+				...Createables.map(i => [
+					i.name,
+					`${Object.entries(i.inputItems)
+						.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
+						.join('\n')}`,
+					`${i.GPCost ?? 0}`,
+					`${
+						i.requiredSkills === undefined
+							? ''
+							: Object.entries(i.requiredSkills)
+								.map(entry => `${entry[0]}: ${entry[1]}`)
+								.join('\n')
+					}`,
+					`${i.QPRequired ?? ''}`
+				])
+			]);
+			return msg.channel.sendFile(Buffer.from(creatableTable), `Creatables.txt`);
 		}
 		if (itemName === undefined) {
 			throw `Item name is a required argument.`;
