@@ -75,7 +75,9 @@ export default class extends BotCommand {
 			channel: msg.channel as TextChannel,
 			activity: Activity.KingGoldemar,
 			massText: `${msg.author.username} is assembling a team to fight King Goldemar! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
-			minSize: 1
+			minSize: 1,
+			solo: false,
+			canDie: true
 		});
 		try {
 			if (msg.flagArgs.s1mulat3) {

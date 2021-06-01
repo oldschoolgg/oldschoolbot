@@ -7,6 +7,7 @@ import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
 export default class extends Inhibitor {
 	public async run(msg: KlasaMessage, command: Command) {
+		if (2 > 1) return;
 		if (!command.restrictedChannels || command.restrictedChannels.length === 0) return;
 		const bitfield = msg.author.settings.get(UserSettings.BitField);
 		if (

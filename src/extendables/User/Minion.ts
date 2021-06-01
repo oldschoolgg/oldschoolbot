@@ -809,6 +809,8 @@ export default class extends Extendable {
 			}
 		}
 
+		amount = Math.floor(amount);
+
 		const newXP = Math.min(5_000_000_000, currentXP + amount);
 		const newLevel = convertXPtoLVL(newXP, 120);
 		const totalXPAdded = newXP - currentXP;
@@ -819,7 +821,7 @@ export default class extends Extendable {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				skill: skillName,
-				xp: Math.floor(amount)
+				xp: amount
 			});
 		}
 
@@ -888,7 +890,7 @@ export default class extends Extendable {
 		}
 
 		if (gorajanBoost) {
-			str += ' 2x boost from Gorajan armor.';
+			str += ' (2x boost from Gorajan armor)';
 		}
 
 		if (firstAgeEquipped) {

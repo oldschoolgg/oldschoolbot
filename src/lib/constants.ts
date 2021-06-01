@@ -200,7 +200,9 @@ export const enum Tasks {
 	Collecting = 'collectingActivity',
 	MageTrainingArena = 'mageTrainingArenaActivity',
 	BlastFurnaceActivity = 'blastFurnaceActivity',
-	KingGoldemar = 'kingGoldemarActivity'
+	KingGoldemar = 'kingGoldemarActivity',
+	VasaMagus = 'vasaMagusActivity',
+	OuraniaDeliveryService = 'ouraniaDeliveryServiceActivity'
 }
 
 export enum Activity {
@@ -261,7 +263,9 @@ export enum Activity {
 	Collecting = 'Collecting',
 	MageTrainingArena = 'MageTrainingArena',
 	BlastFurnace = 'BlastFurnace',
-	KingGoldemar = 'KingGoldemar'
+	KingGoldemar = 'KingGoldemar',
+	VasaMagus = 'VasaMagus',
+	OuraniaDeliveryService = 'OuraniaDeliveryService'
 }
 
 export enum ActivityGroup {

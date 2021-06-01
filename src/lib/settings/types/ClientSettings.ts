@@ -64,5 +64,11 @@ export namespace ClientSettings {
 
 		export const NexCost = T<O.Readonly<ItemBank>>('nex_cost');
 		export const NexLoot = T<O.Readonly<ItemBank>>('nex_loot');
+
+		export const VasaCost = T<O.Readonly<ItemBank>>('vasa_cost');
+		export const VasaLoot = T<O.Readonly<ItemBank>>('vasa_loot');
+
+		export const ODSCost = T<O.Readonly<ItemBank>>('ods_cost');
+		export const ODSLoot = T<O.Readonly<ItemBank>>('ods_loot');
 	}
 }

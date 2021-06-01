@@ -40,6 +40,7 @@ Client.defaultUserSchema
 	.add('last_item_contract_date', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('current_item_contract', 'integer', { default: null })
 	.add('item_contract_bank', 'any', { default: {} })
+	.add('ourania_tokens', 'integer', { default: 0 })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')

@@ -1230,6 +1230,45 @@ setCustomItem(41_074, 'Drygore mace (3a)', 'Drygore mace', {}, 1_000_000);
 setCustomItem(41_075, 'Offhand drygore longsword (3a)', 'Offhand drygore longsword', {}, 1_000_000);
 setCustomItem(41_076, 'Drygore longsword (3a)', 'Drygore longsword', {}, 1_000_000);
 
+setCustomItem(41_077, 'Master runecrafter hat', 'Rune full helm', {}, 1_000_000);
+setCustomItem(41_078, 'Master runecrafter robe', 'Rune platebody', {}, 1_000_000);
+setCustomItem(41_079, 'Master runecrafter skirt', 'Rune platelegs', {}, 1_000_000);
+setCustomItem(41_080, 'Master runecrafter boots', 'Rune boots', {}, 1_000_000);
+setCustomItem(41_081, 'Elder pouch', 'Coal', {}, 1_000_000);
+setCustomItem(41_082, 'Elder thread', 'Coal', {}, 1_000_000);
+setCustomItem(41_083, 'Elder talisman', 'Coal', {}, 1_000_000);
+setCustomItem(
+	41_084,
+	'Vasa cloak',
+	'Infernal cape',
+	{
+		duplicate: false,
+		tradeable: true,
+		tradeable_on_ge: true,
+		wiki_name: 'Abyssal cape',
+		equipment: {
+			attack_stab: 2,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 38,
+			attack_ranged: 0,
+			defence_stab: 23,
+			defence_slash: 23,
+			defence_crush: 23,
+			defence_magic: 36,
+			defence_ranged: 23,
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 10,
+			slot: EquipmentSlot.Cape,
+			requirements: null
+		}
+	},
+	1_000_000
+);
+setCustomItem(41_085, 'Tattered robes of Vasa', 'Coal', {}, 1_000_000);
+
 /**
  *
  * Dungeoneering
@@ -1528,3 +1567,6 @@ setCustomItem(50_017, 'Elder logs', 'Magic logs', {}, 19_000);
 setCustomItem(50_018, 'Elder plank', 'Mahogany plank', {}, 10_000);
 setCustomItem(50_019, 'Elder bow(u)', 'Magic logs', {}, 19_000);
 setCustomItem(50_020, 'Elder bow', 'Mahogany plank', {}, 10_000);
+setCustomItem(50_021, 'Elder rune', 'Fire rune', {}, 500);
+setCustomItem(50_022, 'Jar of magic', 'Fire rune', {}, 1_000_000);
+setCustomItem(50_023, 'Magus scroll', 'Fire rune', {}, 500_000);

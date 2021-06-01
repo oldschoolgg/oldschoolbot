@@ -118,5 +118,9 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.BlastFurnaceActivity;
 		case Activity.KingGoldemar:
 			return Tasks.KingGoldemar;
+		case Activity.VasaMagus:
+			return Tasks.VasaMagus;
+		case Activity.OuraniaDeliveryService:
+			return Tasks.OuraniaDeliveryService;
 	}
 }

@@ -1,3 +1,4 @@
+import { increaseNumByPercent } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -16,14 +17,31 @@ export default class extends Task {
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
 
 		const quantityPerEssence = calcMaxRCQuantity(rune, user);
-		const runeQuantity = essenceQuantity * quantityPerEssence;
+		let runeQuantity = essenceQuantity * quantityPerEssence;
+		if (rune.name === 'Elder rune') {
+			runeQuantity = Math.max(1, Math.floor(runeQuantity / 3));
+		}
 
-		const xpReceived = essenceQuantity * rune.xp;
+		let xpReceived = essenceQuantity * rune.xp;
 
+		const hasMaster = user.hasItemEquippedAnywhere(
+			[
+				'Master runecrafter hat',
+				'Master runecrafter robe',
+				'Master runecrafter skirt',
+				'Master runecrafter boots'
+			],
+			true
+		);
+		if (hasMaster) {
+			xpReceived = increaseNumByPercent(xpReceived, 10);
+		}
 		const xpRes = await user.addXP(SkillsEnum.Runecraft, xpReceived, duration);
 
 		let str = `${user}, ${user.minionName} finished crafting ${runeQuantity} ${rune.name}. ${xpRes}`;
-
+		if (hasMaster) {
+			str += `You received 10% bonus XP from your Master runecrafter outfit.`;
+		}
 		const loot = new Bank({
 			[rune.id]: runeQuantity
 		});

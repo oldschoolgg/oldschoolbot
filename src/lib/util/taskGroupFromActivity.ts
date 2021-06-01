@@ -9,6 +9,7 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.KalphiteKing:
 		case Activity.Nex:
 		case Activity.KingGoldemar:
+		case Activity.VasaMagus:
 			return ActivityGroup.Monster;
 		case Activity.Fishing:
 		case Activity.Agility:
@@ -63,6 +64,7 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.CastleWars:
 		case Activity.MageArena:
 		case Activity.MageTrainingArena:
+		case Activity.OuraniaDeliveryService:
 			return ActivityGroup.Minigame;
 		default: {
 			console.error(`Unrecognized activity: ${type}`);

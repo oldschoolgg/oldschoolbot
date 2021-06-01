@@ -60,6 +60,12 @@ export default class extends BotCommand {
 			return msg.send(`You need ${rune.qpRequired} QP to craft this rune.`);
 		}
 
+		if (rune.name === 'Elder rune' && !msg.author.owns('Elder talisman')) {
+			return msg.channel.send(
+				`You cannot craft Elder runes because you don't own an Elder talisman.`
+			);
+		}
+
 		const numEssenceOwned = await msg.author.numberOfItemInBank(itemID('Pure essence'));
 
 		let { tripLength } = rune;
@@ -75,6 +81,10 @@ export default class extends BotCommand {
 		} else if (msg.author.skillLevel(SkillsEnum.Agility) >= 60) {
 			tripLength -= rune.tripLength * 0.05;
 			boosts.push(`5% for 60+ Agility`);
+		}
+		if (msg.author.usingPet('Obis')) {
+			tripLength /= 2;
+			boosts.push(`2x from Obis (3x more essence)`);
 		}
 
 		let inventorySize = 28;
@@ -100,7 +110,15 @@ export default class extends BotCommand {
 			quantity = Math.min(numEssenceOwned, maxCanDo);
 		}
 
-		if (numEssenceOwned === 0 || quantity === 0 || numEssenceOwned < quantity) {
+		let essenceRequired = quantity;
+		if (msg.author.usingPet('Obis')) {
+			essenceRequired *= 3;
+		}
+		if (rune.name === 'Elder rune') {
+			essenceRequired *= 3;
+		}
+
+		if (numEssenceOwned === 0 || essenceRequired === 0 || numEssenceOwned < essenceRequired) {
 			return msg.send(
 				`You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players (\`${msg.cmdPrefix}ge\`).`
 			);
@@ -119,7 +137,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemFromBank(itemID('Pure essence'), quantity);
+		await msg.author.removeItemFromBank(itemID('Pure essence'), essenceRequired);
 
 		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>(this.client, {
 			runeID: rune.id,
@@ -130,13 +148,15 @@ export default class extends BotCommand {
 			type: Activity.Runecraft
 		});
 
-		const response = `${msg.author.minionName} is now turning ${quantity}x Essence into ${
+		const response = `${
+			msg.author.minionName
+		} is now turning ${essenceRequired}x Essence into ${
 			rune.name
 		}, it'll take around ${formatDuration(
 			duration
-		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
-			quantityPerEssence * quantity
-		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
+		)} to finish, this will take ${numberOfInventories}x trips to the altar.
+		
+**Boosts:** ${boosts.join(', ')}`;
 
 		return msg.send(response);
 	}

@@ -306,6 +306,17 @@ export const randomEventsLog: CollectionLogData = {
 	Camo: camoOutfit
 };
 
+export const ODSLog: CollectionLogData = {
+	log: resolveItems([
+		'Master runecrafter hat',
+		'Master runecrafter robe',
+		'Master runecrafter skirt',
+		'Master runecrafter boots',
+		'Elder thread',
+		'Elder talisman'
+	])
+};
+
 const barrows: CollectionLogData = {
 	Barrows: resolveItems([
 		"Ahrim's staff",
@@ -1791,7 +1802,8 @@ export const customBossLog: CollectionLogData = {
 	Malygos: resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori']),
 	KK: allKalphiteKingItems,
 	nex1: [...torvaOutfit, ...pernixOutfit],
-	nex2: [...virtusOutfit, ...ancientWeapons]
+	nex2: [...virtusOutfit, ...ancientWeapons],
+	vasa: resolveItems(['Tattered robes of Vasa', 'Jar of magic'])
 };
 
 export const sepulchreLog: CollectionLogData = {
@@ -2179,13 +2191,19 @@ export const collectionLogTypes: CollectionLogType[] = [
 			goldDecorative,
 			castleWarsGodItems,
 			castleWarsOther,
-			mta: [...wandItems, ...infinityItems]
+			mta: [...wandItems, ...infinityItems],
+			ods: ODSLog.log
 		}
 	},
 	{
 		name: 'Random Events',
 		aliases: ['random events'],
 		items: randomEventsLog
+	},
+	{
+		name: 'Ourania Delivery Service',
+		aliases: ['ods', 'ourania delivery service'],
+		items: ODSLog
 	}
 ];
 export const allCollectionLogItems = uniqueArr(

@@ -51,6 +51,7 @@ export namespace UserSettings {
 	export const LastItemContractDate = T<number>('last_item_contract_date');
 	export const CurrentItemContract = T<number | null>('current_item_contract');
 	export const ItemContractBank = T<O.Readonly<ItemBank>>('item_contract_bank');
+	export const OuraniaTokens = T<number>('ourania_tokens');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');
