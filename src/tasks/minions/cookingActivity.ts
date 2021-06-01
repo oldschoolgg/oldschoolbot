@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -44,12 +45,14 @@ export default class extends Task {
 		loot.remove(cookable.id, burnedAmount);
 		loot.add(cookable.burntCookable, burnedAmount);
 
-		const minutesInTrip = Math.ceil(duration / 1000 / 60);
-		for (let i = 0; i < minutesInTrip; i++) {
-			if (roll(5000)) {
-				loot.add('Remy');
-				str += `\n<:remy:748491189925183638> A small rat notices you cooking, and tells you you're cooking it all wrong! He crawls into your bank to help you with your cooking. You can equip Remy for a boost to your cooking skills.`;
-				break;
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutesInTrip = Math.ceil(duration / 1000 / 60);
+			for (let i = 0; i < minutesInTrip; i++) {
+				if (roll(5000)) {
+					loot.add('Remy');
+					str += `\n<:remy:748491189925183638> A small rat notices you cooking, and tells you you're cooking it all wrong! He crawls into your bank to help you with your cooking. You can equip Remy for a boost to your cooking skills.`;
+					break;
+				}
 			}
 		}
 

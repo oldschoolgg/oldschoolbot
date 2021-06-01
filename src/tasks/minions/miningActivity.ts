@@ -2,7 +2,7 @@ import { roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, Time } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
@@ -88,12 +88,14 @@ export default class extends Task {
 			}
 		}
 
-		const minutesInTrip = Math.ceil(duration / Time.Minute);
-		for (let i = 0; i < minutesInTrip; i++) {
-			if (roll(12_000)) {
-				loot.add('Doug');
-				str += `\n<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining.`;
-				break;
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutesInTrip = Math.ceil(duration / Time.Minute);
+			for (let i = 0; i < minutesInTrip; i++) {
+				if (roll(12_000)) {
+					loot.add('Doug');
+					str += `\n<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining.`;
+					break;
+				}
 			}
 		}
 
