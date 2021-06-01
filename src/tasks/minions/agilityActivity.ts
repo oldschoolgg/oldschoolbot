@@ -2,7 +2,7 @@ import { randInt, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji, Events, Time } from '../../lib/constants';
+import { Activity, Emoji, Events, MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -80,38 +80,38 @@ export default class extends Task {
 				}
 			}
 		}
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutes = duration / Time.Minute;
+			if (course.id === 4) {
+				for (let i = 0; i < minutes; i++) {
+					if (roll(4000)) {
+						loot.add('Scruffy');
+						str += `\n\n<:scruffy:749945071146762301> As you jump off the rooftop in Varrock, a stray dog covered in flies approaches you. You decide to adopt the dog, and name him 'Scruffy'.`;
+						break;
+					}
+				}
+			}
 
-		const minutes = duration / Time.Minute;
-		if (course.id === 4) {
-			for (let i = 0; i < minutes; i++) {
-				if (roll(4000)) {
-					loot.add('Scruffy');
-					str += `\n\n<:scruffy:749945071146762301> As you jump off the rooftop in Varrock, a stray dog covered in flies approaches you. You decide to adopt the dog, and name him 'Scruffy'.`;
-					break;
+			if (course.id === 11) {
+				for (let i = 0; i < minutes; i++) {
+					if (roll(1600)) {
+						loot.add('Harry');
+						str += `\n\n<:harry:749945071104819292> As you jump across a rooftop, you notice a monkey perched on the roof - which has escaped from the Ardougne Zoo! You decide to adopt the monkey, and call him Harry.`;
+						break;
+					}
+				}
+			}
+
+			if (course.id === 12) {
+				for (let i = 0; i < minutes; i++) {
+					if (roll(1600)) {
+						loot.add('Skipper');
+						str += `\n\n<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept.`;
+						break;
+					}
 				}
 			}
 		}
-
-		if (course.id === 11) {
-			for (let i = 0; i < minutes; i++) {
-				if (roll(1600)) {
-					loot.add('Harry');
-					str += `\n\n<:harry:749945071104819292> As you jump across a rooftop, you notice a monkey perched on the roof - which has escaped from the Ardougne Zoo! You decide to adopt the monkey, and call him Harry.`;
-					break;
-				}
-			}
-		}
-
-		if (course.id === 12) {
-			for (let i = 0; i < minutes; i++) {
-				if (roll(1600)) {
-					loot.add('Skipper');
-					str += `\n\n<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept.`;
-					break;
-				}
-			}
-		}
-
 		// Roll for pet
 		if (
 			course.petChance &&

@@ -108,6 +108,11 @@ export const Minigames: Minigame[] = [
 		name: 'Magic Training Arena',
 		key: 'MagicTrainingArena',
 		column: 'magic_training_arena'
+	},
+	{
+		name: 'Ourania Delivery Service',
+		key: 'OuraniaDeliveryService',
+		column: 'ourania_delivery_service'
 	}
 ];
 

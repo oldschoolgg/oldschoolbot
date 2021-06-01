@@ -2,7 +2,7 @@ import { randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Time } from '../../lib/constants';
+import { MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -48,13 +48,15 @@ export default class extends Task {
 			[bar.id]: quantity
 		});
 
-		const numMinutes = duration / Time.Minute;
-		if (user.settings.get(UserSettings.QP) > 10) {
-			for (let i = 0; i < numMinutes; i++) {
-				if (roll(6500)) {
-					str += `\n\n<:zak:751035589952012298> While Smelting ores on Neitiznot, a Yak approaches you and says "Moooo". and is now following you around. You decide to name him 'Zak'.`;
-					loot.add('Zak');
-					break;
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const numMinutes = duration / Time.Minute;
+			if (user.settings.get(UserSettings.QP) > 10) {
+				for (let i = 0; i < numMinutes; i++) {
+					if (roll(6500)) {
+						str += `\n\n<:zak:751035589952012298> While Smelting ores on Neitiznot, a Yak approaches you and says "Moooo". and is now following you around. You decide to name him 'Zak'.`;
+						loot.add('Zak');
+						break;
+					}
 				}
 			}
 		}

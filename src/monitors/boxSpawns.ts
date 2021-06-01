@@ -5,6 +5,7 @@ import { KlasaMessage, KlasaUser, Monitor, MonitorStore } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 
+import { production } from '../config';
 import { Color, SupportServer, Time } from '../lib/constants';
 import { getRandomMysteryBox } from '../lib/data/openables';
 import { roll, stringMatches } from '../lib/util';
@@ -38,6 +39,7 @@ async function triviaChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 		const winner = collected.first()?.author;
 		return winner ?? null;
 	} catch (err) {
+		msg.channel.send('Nobody answered in time, sorry!');
 		return null;
 	}
 }
@@ -47,7 +49,12 @@ async function itemChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 		.split(' ')
 		.map(part => shuffleArr([...part]).join(''))
 		.join(' ');
-	await msg.channel.send(`Unscramble this item name for a reward: ${scrambed}`);
+
+	const embed = new MessageEmbed()
+		.setColor(Color.Orange)
+		.setTitle('Answer this for a reward!')
+		.setDescription(`Unscramble this item name for a reward: ${scrambed}`);
+	await msg.channel.send(embed);
 
 	try {
 		const collected = await msg.channel.awaitMessages(
@@ -62,12 +69,17 @@ async function itemChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 		const winner = collected.first()?.author;
 		return winner ?? null;
 	} catch (err) {
+		msg.channel.send('Nobody answered in time, sorry!');
 		return null;
 	}
 }
 
 async function reactChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
-	const message = await msg.channel.send(`React to this message with any emoji for a reward!`);
+	const embed = new MessageEmbed()
+		.setColor(Color.Orange)
+		.setTitle('Answer this for a reward!')
+		.setDescription(`React to this message with any emoji for a reward!`);
+	const message = await msg.channel.send(embed);
 	try {
 		const collected = await message.awaitReactions(() => true, {
 			max: 1,
@@ -103,7 +115,7 @@ export default class extends Monitor {
 
 	public constructor(store: MonitorStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			enabled: true,
+			enabled: production,
 			ignoreOthers: false,
 			ignoreBots: true,
 			ignoreEdits: true,

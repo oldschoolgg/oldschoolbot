@@ -99,6 +99,8 @@ interface BossOptions {
 	massText: string;
 	leader: KlasaUser;
 	minSize: number;
+	solo: boolean;
+	canDie: boolean;
 }
 
 export interface BossUser {
@@ -131,6 +133,8 @@ export class BossInstance {
 	users: KlasaUser[] | null = null;
 	leader: KlasaUser;
 	minSize: number;
+	solo: boolean;
+	canDie: boolean;
 
 	constructor(options: BossOptions) {
 		this.baseDuration = options.baseDuration;
@@ -149,6 +153,8 @@ export class BossInstance {
 		this.activity = options.activity;
 		this.leader = options.leader;
 		this.minSize = options.minSize;
+		this.solo = options.solo;
+		this.canDie = options.canDie;
 		this.massText = [
 			options.massText,
 			'\n',
@@ -180,7 +186,7 @@ export class BossInstance {
 				return result;
 			}
 		});
-		this.users = await mass.init();
+		this.users = this.solo ? [this.leader] : await mass.init();
 		await this.validateTeam();
 		const { bossUsers, duration, totalPercent } = await this.calculateBossUsers();
 		this.bossUsers = bossUsers;
@@ -284,9 +290,10 @@ export class BossInstance {
 			);
 
 			// Death chance
-			let deathChance =
-				Math.max(0, reduceNumByPercent(55, kcBoostPercent * 2.4 + gearBoostPercent)) +
-				randFloat(4.5, 5.5);
+			let deathChance = this.canDie
+				? Math.max(0, reduceNumByPercent(55, kcBoostPercent * 2.4 + gearBoostPercent)) +
+				  randFloat(4.5, 5.5)
+				: 0;
 			debugStr.push(`**Death**[${deathChance.toFixed(2)}%]`);
 
 			// Apply a percentage of maxReduction based on the percent of total boosts.

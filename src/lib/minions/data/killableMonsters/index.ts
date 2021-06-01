@@ -9,7 +9,7 @@ import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { makeKillTable } from '../../../util/setCustomMonster';
 import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
-import bosses from './bosses';
+import { bossKillables } from './bosses';
 import AbyssalDragon, { AbyssalDragonLootTable } from './custom/AbyssalDragon';
 import KingGoldemar from './custom/KingGoldemar';
 import Koschei, { koscheiTable } from './custom/Koschei';
@@ -18,7 +18,7 @@ import Treebeard, { TreebeardLootTable } from './custom/Treebeard';
 import low from './low';
 
 const killableMonsters: KillableMonster[] = [
-	...bosses,
+	...bossKillables,
 	...low,
 	{
 		id: Monsters.Barrows.id,

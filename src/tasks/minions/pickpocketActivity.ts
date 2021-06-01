@@ -2,7 +2,7 @@ import { percentChance, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../lib/constants';
+import { Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
@@ -99,11 +99,13 @@ export default class extends Task {
 			}
 		}
 
-		const minutes = duration / Time.Minute;
 		let gotWil = false;
-		if (roll(Math.floor(4000 / minutes))) {
-			loot.add('Wilvus');
-			gotWil = true;
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutes = duration / Time.Minute;
+			if (roll(Math.floor(4000 / minutes))) {
+				loot.add('Wilvus');
+				gotWil = true;
+			}
 		}
 
 		await user.addItemsToBank(loot.values(), true);

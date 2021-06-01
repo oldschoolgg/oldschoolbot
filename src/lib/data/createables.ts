@@ -4135,6 +4135,16 @@ const Createables: Createable[] = [
 		})
 	},
 	{
+		name: 'Elder pouch',
+		inputItems: resolveNameBank({
+			'Abyssal pouch': 1,
+			'Elder thread': 1
+		}),
+		outputItems: resolveNameBank({
+			'Elder pouch': 1
+		})
+	},
+	{
 		name: 'Zamorakian hasta',
 		inputItems: resolveNameBank({
 			'Zamorakian spear': 1
@@ -4379,6 +4389,20 @@ const Createables: Createable[] = [
 		}),
 		outputItems: {
 			[itemID(`Frozen key`)]: 1
+		}
+	},
+	{
+		name: `Vasa cloak`,
+		inputItems: resolveNameBank({
+			'Tattered robes of Vasa': 1
+		}),
+		outputItems: {
+			[itemID(`Vasa cloak`)]: 1
+		},
+		requiredSkills: {
+			crafting: 105,
+			magic: 105,
+			runecraft: 105
 		}
 	},
 	...chaoticCreatables,

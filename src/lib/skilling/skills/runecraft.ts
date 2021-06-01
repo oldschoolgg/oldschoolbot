@@ -157,6 +157,16 @@ const Runes: Rune[] = [
 		levels: [[95, 1]],
 		qpRequired: 200,
 		tripLength: Time.Minute
+	},
+	{
+		xp: 285,
+		id: itemID('Elder rune'),
+		name: 'Elder rune',
+		levels: [
+			[99, 1],
+			[120, 2]
+		],
+		tripLength: Time.Minute * 30
 	}
 ];
 
@@ -185,6 +195,11 @@ const RCPouches = [
 		id: itemID('Abyssal pouch'),
 		level: 90,
 		capacity: 64
+	},
+	{
+		id: itemID('Elder pouch'),
+		level: 99,
+		capacity: 128
 	}
 ];
 

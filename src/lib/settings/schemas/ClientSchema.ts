@@ -30,6 +30,10 @@ Client.defaultClientSchema
 	.add('nex_loot', 'any', { default: {} })
 	.add('kk_cost', 'any', { default: {} })
 	.add('kk_loot', 'any', { default: {} })
+	.add('vasa_cost', 'any', { default: {} })
+	.add('vasa_loot', 'any', { default: {} })
+	.add('ods_cost', 'any', { default: {} })
+	.add('ods_loot', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })

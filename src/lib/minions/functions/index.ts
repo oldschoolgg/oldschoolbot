@@ -6,6 +6,7 @@ import { NIGHTMARES_HP } from '../../constants';
 import { SkillsEnum } from '../../skilling/types';
 import killableMonsters from '../data/killableMonsters';
 import KingGoldemar from '../data/killableMonsters/custom/KingGoldemar';
+import { VasaMagus } from '../data/killableMonsters/custom/VasaMagus';
 import { KillableMonster } from '../types';
 
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
@@ -31,6 +32,7 @@ export function resolveAttackStyles(
 	monsterID: number
 ): [KillableMonster | undefined, Monster | undefined, AttackStyles[]] {
 	if (monsterID === KingGoldemar.id) return [undefined, undefined, meleeOnly(user)];
+	if (monsterID === VasaMagus.id) return [undefined, undefined, [SkillsEnum.Magic]];
 
 	const killableMon = killableMonsters.find(m => m.id === monsterID);
 
@@ -66,7 +68,8 @@ const miscHpMap: Record<number, number> = {
 	3127: 250,
 	46274: 5000,
 	9415: NIGHTMARES_HP,
-	[KingGoldemar.id]: 10_000
+	[KingGoldemar.id]: 10_000,
+	[VasaMagus.id]: 3900
 };
 
 export async function addMonsterXP(

@@ -1,7 +1,7 @@
+import { Intents } from 'discord.js';
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
 import { customClientOptions, production, providerConfig } from '../../config';
-import { Intents } from './Intents';
 import permissionLevels from './permissionLevels';
 
 export const clientOptions: KlasaClientOptions = {
@@ -13,7 +13,6 @@ export const clientOptions: KlasaClientOptions = {
 	// disableEveryone: true,
 	shards: 'auto',
 	ws: {
-		// @ts-ignore Intents aren't documented as a valid WS property in our current d.js version
 		intents: new Intents([
 			'GUILDS',
 			'GUILD_MESSAGES',

@@ -200,7 +200,9 @@ export const enum Tasks {
 	Collecting = 'collectingActivity',
 	MageTrainingArena = 'mageTrainingArenaActivity',
 	BlastFurnaceActivity = 'blastFurnaceActivity',
-	KingGoldemar = 'kingGoldemarActivity'
+	KingGoldemar = 'kingGoldemarActivity',
+	VasaMagus = 'vasaMagusActivity',
+	OuraniaDeliveryService = 'ouraniaDeliveryServiceActivity'
 }
 
 export enum Activity {
@@ -261,7 +263,9 @@ export enum Activity {
 	Collecting = 'Collecting',
 	MageTrainingArena = 'MageTrainingArena',
 	BlastFurnace = 'BlastFurnace',
-	KingGoldemar = 'KingGoldemar'
+	KingGoldemar = 'KingGoldemar',
+	VasaMagus = 'VasaMagus',
+	OuraniaDeliveryService = 'OuraniaDeliveryService'
 }
 
 export enum ActivityGroup {
@@ -407,6 +411,7 @@ export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;
 export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
+export const MIN_LENGTH_FOR_PET = Time.Minute * 5;
 
 /**
  * Map<user_id, PromiseQueue>
