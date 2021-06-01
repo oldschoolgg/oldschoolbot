@@ -49,8 +49,8 @@ export default class extends BotCommand {
 						i.requiredSkills === undefined
 							? ''
 							: Object.entries(i.requiredSkills)
-								.map(entry => `${entry[0]}: ${entry[1]}`)
-								.join('\n')
+									.map(entry => `${entry[0]}: ${entry[1]}`)
+									.join('\n')
 					}`,
 					`${i.QPRequired ?? ''}`
 				])
