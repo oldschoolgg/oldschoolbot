@@ -501,6 +501,7 @@ const cantBeDropped = [
 	itemID('Dwarven pickaxe'),
 	itemID('Dwarven greataxe'),
 	itemID('Dwarven greathammer'),
+	itemID('Dwarven gauntlets'),
 	itemID('Dwarven knife'),
 	itemID('Dwarven blessing'),
 	itemID('Helm of raedwald'),
@@ -510,6 +511,7 @@ const cantBeDropped = [
 	itemID('Clue hunter boots'),
 	itemID('Clue hunter cloak'),
 	itemID('Cob'),
+	itemID('Tester gift box'),
 	22664, // JMOD Scythe of Vitur,
 	...resolveItems([
 		'Red Partyhat',
