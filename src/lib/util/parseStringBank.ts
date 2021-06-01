@@ -74,7 +74,7 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 		if (flagsKeys.includes('tradeables') && !item.tradeable) continue;
 		if (flagsKeys.includes('untradeables') && item.tradeable) continue;
 		if (flagsKeys.includes('equippables') && !item.equipment?.slot) continue;
-		if (flagsKeys.includes('search') && !item.name.toLowerCase().includes(flags.search)) {
+		if (flagsKeys.includes('search') && !item.name.toLowerCase().includes(flags.search.toLowerCase())) {
 			continue;
 		}
 

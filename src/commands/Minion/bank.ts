@@ -44,7 +44,7 @@ export default class extends BotCommand {
 		if (msg.flagArgs.text) {
 			const textBank = [];
 			for (const [item, qty] of bank.items()) {
-				if (msg.flagArgs.search && !item.name.toLowerCase().includes(msg.flagArgs.search)) {
+				if (msg.flagArgs.search && !item.name.toLowerCase().includes(msg.flagArgs.search.toLowerCase())) {
 					continue;
 				}
 				textBank.push(`${item.name}: ${qty.toLocaleString()}`);
