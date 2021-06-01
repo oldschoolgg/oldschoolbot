@@ -63,9 +63,7 @@ export default class TradeableItemBankArgument extends Argument {
 		if (search) {
 			items = [
 				...items,
-				...userBank
-					.items()
-					.filter(i => i[0].name.toLowerCase().includes(search.toLowerCase()))
+				...userBank.items().filter(i => i[0].name.toLowerCase().includes(search))
 			];
 		}
 
