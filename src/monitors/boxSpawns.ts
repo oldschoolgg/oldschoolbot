@@ -38,7 +38,7 @@ async function triviaChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 		const winner = collected.first()?.author;
 		return winner ?? null;
 	} catch (err) {
-		msg.channel.send("Nobody answered in time, sorry!");
+		msg.channel.send('Nobody answered in time, sorry!');
 		return null;
 	}
 }
@@ -68,7 +68,7 @@ async function itemChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 		const winner = collected.first()?.author;
 		return winner ?? null;
 	} catch (err) {
-		msg.channel.send("Nobody answered in time, sorry!");
+		msg.channel.send('Nobody answered in time, sorry!');
 		return null;
 	}
 }
@@ -125,7 +125,7 @@ export default class extends Monitor {
 	async run(msg: KlasaMessage) {
 		if (
 			!msg.guild ||
-			msg.guild.id !== SupportServer ||
+			msg.guild!.id !== SupportServer ||
 			msg.channel.id !== '792691343284764693'
 		) {
 			return;
