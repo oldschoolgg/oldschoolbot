@@ -57,7 +57,7 @@ export const Pools: PoHObject[] = [
 			.add('Stamina potion(4)', 100)
 			.add('Prayer potion(4)', 200)
 			.add('Marble block', 20)
-			.add('Elder planks', 30),
+			.add('Elder plank', 30),
 		requiredInPlace: 29241
 	}
 ];
