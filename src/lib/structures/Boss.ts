@@ -241,7 +241,7 @@ export class BossInstance {
 		let speedReductionForBoosts = sumArr(this.itemBoosts.map(i => i[1]));
 		const totalSpeedReduction =
 			speedReductionForGear + speedReductionForKC + speedReductionForBoosts;
-		const kcCap = 250;
+		const kcCap = 100;
 
 		const bossUsers: BossUser[] = [];
 		let totalPercent = 0;
