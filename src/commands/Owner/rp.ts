@@ -61,6 +61,7 @@ export default class extends BotCommand {
 **Alch** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceAlching)}
 **Pickpocket** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePickpocket)}
 **Dice** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceDice)}
+**Open** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceOpen)}
 `);
 			}
 			case 'check':
