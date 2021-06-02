@@ -497,3 +497,9 @@ export function updateBankSetting(
 	const newBank = current.add(bankToAdd);
 	return client.settings.update(setting, newBank.bank);
 }
+
+export function updateGPTrackSetting(client: KlasaClient, setting: string, amount: number) {
+	const current = client.settings.get(setting) as number;
+	const newValue = current + amount;
+	return client.settings.update(setting, newValue);
+}

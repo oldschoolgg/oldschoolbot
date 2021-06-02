@@ -3,15 +3,29 @@ import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import MinionCommand from '../../commands/Minion/minion';
-import { BitField, Emoji, PerkTier, Time } from '../constants';
+import { Activity, BitField, COINS_ID, Emoji, PerkTier, Time } from '../constants';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
+import { ClientSettings } from '../settings/types/ClientSettings';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, generateContinuationChar, roll, stringMatches } from '../util';
+import {
+	channelIsSendable,
+	generateContinuationChar,
+	roll,
+	stringMatches,
+	updateGPTrackSetting
+} from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
+
+const activitiesToTrackAsPVMGPSource = [
+	Activity.GroupMonsterKilling,
+	Activity.MonsterKilling,
+	Activity.Raids,
+	Activity.ClueCompletion
+];
 
 export async function handleTripFinish(
 	client: KlasaClient,
@@ -29,6 +43,13 @@ export async function handleTripFinish(
 	const continuationChar = generateContinuationChar(user);
 	if (onContinue) {
 		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
+	}
+
+	if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
+		const GP = loot[COINS_ID];
+		if (typeof GP === 'number') {
+			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
+		}
 	}
 
 	const clueReceived = loot ? clueTiers.find(tier => loot[tier.scrollID] > 0) : undefined;
