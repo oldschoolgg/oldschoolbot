@@ -486,6 +486,7 @@ allItemsIDs = removeDuplicatesFromArray(allItemsIDs);
 const cantBeDropped = [
 	...Object.values(coxLog).flat(Infinity),
 	...Object.values(customBossLog).flat(Infinity),
+	itemID('Abyssal pouch'),
 	itemID('Dwarven crate'),
 	itemID('Halloween mask set'),
 	itemID('Partyhat set'),
