@@ -6,7 +6,7 @@ import { Color, Emoji, Image } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { rand } from '../../lib/util';
+import { rand, updateGPTrackSetting } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -45,16 +45,14 @@ export default class extends BotCommand {
 			const gp = msg.author.settings.get(UserSettings.GP);
 			if (amount > gp) return msg.send("You don't have enough GP.");
 			const won = roll >= 55;
-			let amountToAdd = won ? gp + amount : gp - amount;
+			let amountToAdd = won ? amount : -amount;
 			if (roll === 73) amountToAdd += amount > 100 ? amount * 0.2 : amount + 73;
 
-			await msg.author.settings.update(UserSettings.GP, amountToAdd);
-
-			const dicingBank = this.client.settings.get(ClientSettings.EconomyStats.DicingBank);
-			const dividedAmount = (won ? -amount : amount) / 1_000_000;
-			this.client.settings.update(
-				ClientSettings.EconomyStats.DicingBank,
-				Math.floor(dicingBank + Math.round(dividedAmount * 100) / 100)
+			await msg.author.addGP(amountToAdd);
+			updateGPTrackSetting(
+				this.client,
+				ClientSettings.EconomyStats.GPSourceDice,
+				amountToAdd
 			);
 
 			if (won) {
@@ -68,7 +66,7 @@ export default class extends BotCommand {
 			embed.setDescription(
 				`${msg.author.username} rolled **${roll}** on the percentile dice, and you ${
 					won ? 'won' : 'lost'
-				} ${Util.toKMB(amountToAdd - gp)} GP. ${roll === 73 ? Emoji.Bpaptu : ''}`
+				} ${Util.toKMB(amountToAdd)} GP. ${roll === 73 ? Emoji.Bpaptu : ''}`
 			);
 		}
 
