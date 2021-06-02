@@ -1850,7 +1850,7 @@ const gmLog: CollectionLogData = {
 		'First age ring'
 	]),
 	Dyes: resolveItems(['Shadow dye', 'Blood dye', 'Third age dye', 'Ice dye']),
-	Misc: resolveItems(['Dwarven blessing'])
+	Misc: resolveItems(['Dwarven blessing', 'Ring of luck'])
 };
 
 export const skillingLog: CollectionLogData = {
