@@ -2,14 +2,23 @@ import { percentChance } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Misc, Openables as _Openables } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
+import Openable from 'oldschooljs/dist/structures/Openable';
 
-import { Events, MIMIC_MONSTER_ID } from '../../lib/constants';
+import { COINS_ID, Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import botOpenables, { IronmanPMBTable } from '../../lib/data/openables';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, addItemToBank, rand, roll, stringMatches } from '../../lib/util';
+import {
+	addBanks,
+	addItemToBank,
+	rand,
+	roll,
+	stringMatches,
+	updateGPTrackSetting
+} from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
@@ -152,6 +161,13 @@ export default class extends BotCommand {
 
 		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
+		if (typeof loot[COINS_ID] === 'number') {
+			updateGPTrackSetting(
+				this.client,
+				ClientSettings.EconomyStats.GPSourceOpen,
+				loot[COINS_ID]
+			);
+		}
 
 		msg.author.incrementClueScore(clueTier.id, quantity);
 
@@ -177,7 +193,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: any) {
+	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: Openable) {
 		if (msg.author.numItemsInBankSync(osjsOpenable.id) < quantity) {
 			return msg.send(
 				`You don't have enough ${
@@ -188,16 +204,23 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(osjsOpenable.id, quantity);
 
-		const loot = osjsOpenable.open(quantity);
+		const loot = osjsOpenable.open(quantity, {});
 
 		this.client.emit(
 			Events.Log,
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${osjsOpenable.name}.`
 		);
 
-		msg.author.incrementOpenableScore(osjsOpenable.itemID, quantity);
+		msg.author.incrementOpenableScore(osjsOpenable.id, quantity);
 		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
+		if (typeof loot[COINS_ID] === 'number') {
+			updateGPTrackSetting(
+				this.client,
+				ClientSettings.EconomyStats.GPSourceOpen,
+				loot[COINS_ID]
+			);
+		}
 
 		return msg.channel.sendBankImage({
 			bank: loot,
@@ -269,6 +292,13 @@ export default class extends BotCommand {
 		msg.author.incrementOpenableScore(botOpenable.itemID, quantity);
 		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot.values(), true);
+		if (loot.amount('Coins') > 0) {
+			updateGPTrackSetting(
+				this.client,
+				ClientSettings.EconomyStats.GPSourceOpen,
+				loot.amount('Coins')
+			);
+		}
 
 		return msg.channel.sendBankImage({
 			bank: loot.values(),
