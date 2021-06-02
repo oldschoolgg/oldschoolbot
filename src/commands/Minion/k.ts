@@ -147,7 +147,13 @@ export default class extends BotCommand {
 			boosts.push(`40% boost for Dwarven warhammer`);
 		}
 
+		// Give DHCB's 30% boost priority, and then fallback to dhl's 20%
 		if (Monsters.get(monster.id)?.data.attributes.includes(MonsterAttribute.Dragon)) {
+			if (msg.author.hasItemEquippedAnywhere(itemID('Dragon hunter crossbow'))) {
+				timeToFinish *= 0.7;
+				boosts.push(`30% boost for Dragon hunter crossbow`);
+			}
+		} else if (Monsters.get(monster.id)?.data.attributes.includes(MonsterAttribute.Dragon)) {
 			if (msg.author.hasItemEquippedAnywhere(itemID('Dragon hunter lance'))) {
 				timeToFinish *= 0.8;
 				boosts.push(`20% boost for Dragon hunter lance`);

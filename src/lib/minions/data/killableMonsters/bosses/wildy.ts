@@ -188,7 +188,6 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Armadyl crossbow')]: 6,
-				[itemID('Dragon hunter crossbow')]: 8,
 				[itemID('Twisted bow')]: 10
 			}
 		],
