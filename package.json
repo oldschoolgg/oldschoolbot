@@ -48,7 +48,7 @@
 		"table": "^6.7.1",
 		"ts-toolbelt": "^8.0.7",
 		"twit": "^2.2.9",
-		"typeorm": "^0.2.32",
+		"typeorm": "^0.2.33",
 		"utf-8-validate": "^5.0.5",
 		"zlib-sync": "^0.1.7"
 	},

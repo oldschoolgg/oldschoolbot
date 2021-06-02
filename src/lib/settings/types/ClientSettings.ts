@@ -70,5 +70,11 @@ export namespace ClientSettings {
 
 		export const ODSCost = T<O.Readonly<ItemBank>>('ods_cost');
 		export const ODSLoot = T<O.Readonly<ItemBank>>('ods_loot');
+
+		export const GPSourceSellingItems = T<number>('gp_sell');
+		export const GPSourcePVMLoot = T<number>('gp_pvm');
+		export const GPSourceAlching = T<number>('gp_alch');
+		export const GPSourcePickpocket = T<number>('gp_pickpocket');
+		export const GPSourceDice = T<number>('gp_dice');
 	}
 }

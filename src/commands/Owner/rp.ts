@@ -54,6 +54,15 @@ export default class extends BotCommand {
 					`${Emoji.RottenPotato} Bypassed age restriction for ${input.username}.`
 				);
 			}
+			case 'gptrack': {
+				return msg.channel.send(`
+**Sell** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceSellingItems)}
+**PvM/Clues** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePVMLoot)}
+**Alch** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceAlching)}
+**Pickpocket** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePickpocket)}
+**Dice** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceDice)}
+`);
+			}
 			case 'check':
 			case 'c': {
 				if (!input) return;

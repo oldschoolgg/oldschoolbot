@@ -4,9 +4,10 @@ import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, roll } from '../../lib/util';
+import { itemID, roll, updateGPTrackSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -42,6 +43,7 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank(loot, true);
+		updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchValue);
 
 		const xpReceived = quantity * 65;
 		const xpRes = await user.addXP(SkillsEnum.Magic, xpReceived, duration);
