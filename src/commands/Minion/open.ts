@@ -154,7 +154,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: any) {
+	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: Openable) {
 		if (msg.author.numItemsInBankSync(osjsOpenable.id) < quantity) {
 			return msg.send(
 				`You don't have enough ${
@@ -165,14 +165,14 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(osjsOpenable.id, quantity);
 
-		const loot = osjsOpenable.open(quantity);
+		const loot = osjsOpenable.open(quantity, {});
 
 		this.client.emit(
 			Events.Log,
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${osjsOpenable.name}.`
 		);
 
-		msg.author.incrementOpenableScore(osjsOpenable.itemID, quantity);
+		msg.author.incrementOpenableScore(osjsOpenable.id, quantity);
 		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
 
