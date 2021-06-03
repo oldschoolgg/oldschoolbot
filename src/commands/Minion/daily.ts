@@ -25,7 +25,13 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration, isWeekend, roll, stringMatches } from '../../lib/util';
+import {
+	formatDuration,
+	isWeekend,
+	roll,
+	stringMatches,
+	updateGPTrackSetting
+} from '../../lib/util';
 
 const options = {
 	max: 1,
@@ -161,13 +167,10 @@ export default class DailyCommand extends BotCommand {
 		}
 
 		if (loot[COINS_ID] > 0) {
-			const dailiesAmount = this.client.settings.get(
-				ClientSettings.EconomyStats.DailiesAmount
-			);
-			const dividedAmount = loot[COINS_ID] / 1_000_000;
-			this.client.settings.update(
-				ClientSettings.EconomyStats.DailiesAmount,
-				Math.floor(dailiesAmount + Math.round(dividedAmount * 100) / 100)
+			updateGPTrackSetting(
+				this.client,
+				ClientSettings.EconomyStats.GPSourceDaily,
+				loot[COINS_ID]
 			);
 		}
 
