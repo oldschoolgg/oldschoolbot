@@ -694,7 +694,8 @@ export default class extends Extendable {
 		this: User,
 		skillName: SkillsEnum,
 		amount: number,
-		duration?: number
+		duration?: number,
+		minimal?: boolean
 	): Promise<string> {
 		await this.settings.sync(true);
 		const currentXP = this.settings.get(`skills.${skillName}`) as number;
@@ -767,14 +768,18 @@ export default class extends Extendable {
 
 		await this.settings.update(`skills.${skillName}`, Math.floor(newXP));
 
-		let str = `You received ${Math.ceil(amount).toLocaleString()} ${skillEmoji[skillName]} XP`;
-		if (duration) {
+		let str = minimal
+			? `+${Math.ceil(amount).toLocaleString()} ${skillEmoji[skillName]}`
+			: `You received ${Math.ceil(amount).toLocaleString()} ${skillEmoji[skillName]} XP`;
+		if (duration && !minimal) {
 			let rawXPHr = (amount / (duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 			str += ` (${toKMB(rawXPHr)}/Hr)`;
 		}
 		if (currentLevel !== newLevel) {
-			str += `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
+			str += minimal
+				? `(Levelled up to ${newLevel})`
+				: `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
 		}
 		return str;
 	}

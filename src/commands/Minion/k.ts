@@ -9,6 +9,7 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
+import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import findMonster, {
@@ -80,6 +81,18 @@ export default class extends BotCommand {
 		if (!name) return msg.channel.send(invalidMonster(msg.cmdPrefix));
 		const monster = findMonster(name);
 		if (!monster) return msg.channel.send(invalidMonster(msg.cmdPrefix));
+
+		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
+		const isOnTask =
+			usersTask.assignedTask !== null &&
+			usersTask.currentTask !== null &&
+			usersTask.assignedTask.monsters.includes(monster.id);
+
+		if (monster.slayerOnly && !isOnTask) {
+			return msg.channel.send(
+				`You can't kill ${monster.name}, because you're not on a slayer task.`
+			);
+		}
 
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);

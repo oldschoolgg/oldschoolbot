@@ -52,8 +52,16 @@ export function userCanUseMaster(user: KlasaUser, master: SlayerMaster) {
 	);
 }
 
+export function userCanUseTask(user: KlasaUser, task: AssignableSlayerTask) {
+	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
+	if (task.questPoints && task.questPoints > user.settings.get(UserSettings.QP)) return false;
+	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
+	return true;
+}
+
+// boss tasks
 export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
-	const baseTasks = [...master.tasks];
+	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t));
 	const assignedTask = weightedPick(baseTasks);
 	const newUser = await getNewUser(_user.id);
 

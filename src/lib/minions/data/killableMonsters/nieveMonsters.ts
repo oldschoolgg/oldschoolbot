@@ -5,7 +5,7 @@ import { itemID } from 'oldschooljs/dist/util';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
-const NieveMonsters: KillableMonster[] = [
+export const nieveMonsters: KillableMonster[] = [
 	{
 		id: Monsters.BabyBlackDragon.id,
 		name: Monsters.BabyBlackDragon.name,
@@ -126,5 +126,3 @@ const NieveMonsters: KillableMonster[] = [
 		qpRequired: 0
 	}
 ];
-
-export default NieveMonsters;

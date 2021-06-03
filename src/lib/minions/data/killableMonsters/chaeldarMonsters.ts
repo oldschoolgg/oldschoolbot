@@ -5,7 +5,7 @@ import { itemID } from 'oldschooljs/dist/util';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
-const ChaeldarMonsters: KillableMonster[] = [
+export const chaeldarMonsters: KillableMonster[] = [
 	{
 		id: Monsters.AncientZygomite.id,
 		name: Monsters.AncientZygomite.name,
@@ -395,5 +395,3 @@ const ChaeldarMonsters: KillableMonster[] = [
 		}
 	}
 ];
-
-export default ChaeldarMonsters;

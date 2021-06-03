@@ -5,7 +5,7 @@ import { allSlayerHelmets } from '../../../slayer/slayerUtil';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
-const MazchnaMonsters: KillableMonster[] = [
+export const mazchnaMonsters: KillableMonster[] = [
 	{
 		id: Monsters.AsynShade.id,
 		name: Monsters.AsynShade.name,
@@ -314,5 +314,3 @@ const MazchnaMonsters: KillableMonster[] = [
 		}
 	}
 ];
-
-export default MazchnaMonsters;

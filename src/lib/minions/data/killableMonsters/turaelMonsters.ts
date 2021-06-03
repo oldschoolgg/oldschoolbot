@@ -6,7 +6,7 @@ import { allSlayerHelmets } from '../../../slayer/slayerUtil';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
-const TuraelMonsters: KillableMonster[] = [
+export const turaelMonsters: KillableMonster[] = [
 	{
 		id: Monsters.Banshee.id,
 		name: Monsters.Banshee.name,
@@ -1083,5 +1083,3 @@ const TuraelMonsters: KillableMonster[] = [
 		qpRequired: 32
 	}
 ];
-
-export default TuraelMonsters;

@@ -6,7 +6,7 @@ import { allSlayerHelmets } from '../../../slayer/slayerUtil';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
-const VannakaMonsters: KillableMonster[] = [
+export const vannakaMonsters: KillableMonster[] = [
 	{
 		id: Monsters.AberrantSpectre.id,
 		name: Monsters.AberrantSpectre.name,
@@ -885,5 +885,3 @@ const VannakaMonsters: KillableMonster[] = [
 		]
 	}
 ];
-
-export default VannakaMonsters;

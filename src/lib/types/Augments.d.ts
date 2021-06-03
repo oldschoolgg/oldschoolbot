@@ -104,7 +104,7 @@ declare module 'discord.js' {
 		addItemsToBank(
 			items: ItemBank | Bank,
 			collectionLog?: boolean
-		): Promise<{ previousCL: ItemBank }>;
+		): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }>;
 		removeItemsFromBank(
 			items: ItemBank | Bank,
 			collectionLog?: boolean
@@ -133,7 +133,12 @@ declare module 'discord.js' {
 		addGP(amount: number): Promise<SettingsUpdateResult>;
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
 		addQP(amount: number): Promise<SettingsUpdateResult>;
-		addXP(skillName: SkillsEnum, amount: number, duration?: number): Promise<string>;
+		addXP(
+			skillName: SkillsEnum,
+			amount: number,
+			duration?: number,
+			minimal?: boolean
+		): Promise<string>;
 		skillLevel(skillName: SkillsEnum): number;
 		totalLevel(returnXP = false): number;
 		toggleBusy(busy: boolean): void;

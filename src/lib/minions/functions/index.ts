@@ -55,7 +55,9 @@ export async function addMonsterXP(
 	user: KlasaUser,
 	monsterID: number,
 	quantity: number,
-	duration: number
+	duration: number,
+	isOnTask: boolean,
+	taskQuantity: number | null
 ) {
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, monsterID);
 	const monster = killableMonsters.find(mon => mon.id === monsterID);
@@ -75,16 +77,21 @@ export async function addMonsterXP(
 	let res: string[] = [];
 
 	for (const style of attackStyles) {
-		res.push(await user.addXP(style, Math.floor(xpPerSkill), duration));
+		res.push(await user.addXP(style, Math.floor(xpPerSkill), duration, true));
+	}
+
+	if (isOnTask) {
+		res.push(await user.addXP(SkillsEnum.Slayer, taskQuantity! * hp, duration, true));
 	}
 
 	res.push(
 		await user.addXP(
 			SkillsEnum.Hitpoints,
 			Math.floor(hp * quantity * 1.33 * xpMultiplier),
-			duration
+			duration,
+			true
 		)
 	);
 
-	return res;
+	return `**XP Gains:** ${res.join(' ')}`;
 }

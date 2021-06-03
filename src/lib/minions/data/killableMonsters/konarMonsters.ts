@@ -6,7 +6,7 @@ import { allSlayerHelmets } from '../../../slayer/slayerUtil';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
-const KonarMonsters: KillableMonster[] = [
+export const konarMonsters: KillableMonster[] = [
 	{
 		id: Monsters.AdamantDragon.id,
 		name: Monsters.AdamantDragon.name,
@@ -207,5 +207,3 @@ const KonarMonsters: KillableMonster[] = [
 		qpRequired: 0
 	}
 ];
-
-export default KonarMonsters;

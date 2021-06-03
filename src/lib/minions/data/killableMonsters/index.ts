@@ -8,10 +8,24 @@ import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import bosses from './bosses';
+import { chaeldarMonsters } from './chaeldarMonsters';
+import { konarMonsters } from './konarMonsters';
+import { krystiliaMonsters } from './krystiliaMonsters';
 import low from './low';
+import { mazchnaMonsters } from './mazchnaMonsters';
+import { nieveMonsters } from './nieveMonsters';
+import { turaelMonsters } from './turaelMonsters';
+import { vannakaMonsters } from './vannakaMonsters';
 
 const killableMonsters: KillableMonster[] = [
 	...bosses,
+	...chaeldarMonsters,
+	...konarMonsters,
+	...krystiliaMonsters,
+	...mazchnaMonsters,
+	...nieveMonsters,
+	...turaelMonsters,
+	...vannakaMonsters,
 	...low,
 	{
 		id: Monsters.Barrows.id,

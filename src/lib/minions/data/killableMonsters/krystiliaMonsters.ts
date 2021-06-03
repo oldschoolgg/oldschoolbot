@@ -4,7 +4,7 @@ import { Monsters } from 'oldschooljs';
 import resolveItems from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
-const KrystiliaMonsters: KillableMonster[] = [
+export const krystiliaMonsters: KillableMonster[] = [
 	{
 		id: Monsters.ArmadylianGuard.id,
 		name: Monsters.ArmadylianGuard.name,
@@ -310,5 +310,3 @@ const KrystiliaMonsters: KillableMonster[] = [
 		qpRequired: 0
 	}
 ];
-
-export default KrystiliaMonsters;

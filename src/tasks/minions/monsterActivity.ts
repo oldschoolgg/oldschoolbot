@@ -17,12 +17,26 @@ export default class extends Task {
 		const loot = new Bank(monster.table.kill(quantity));
 
 		announceLoot(this.client, user, monster, loot.bank);
-
-		const xpRes = await addMonsterXP(user, monsterID, quantity, duration);
+		const usersTask = await getUsersCurrentSlayerInfo(user.id);
+		const isOnTask =
+			usersTask.assignedTask !== null &&
+			usersTask.currentTask !== null &&
+			usersTask.assignedTask.monsters.includes(monsterID);
+		const quantitySlayed = isOnTask
+			? Math.max(usersTask.currentTask!.quantityRemaining, quantity)
+			: null;
+		const xpRes = await addMonsterXP(
+			user,
+			monsterID,
+			quantity,
+			duration,
+			isOnTask,
+			quantitySlayed
+		);
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
 			monster.name
-		} KC is now ${user.getKC(monsterID)}.\n${xpRes.join(', ')}.`;
+		} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
 
 		if (
 			monster.id === Monsters.Unicorn.id &&
@@ -35,34 +49,28 @@ export default class extends Task {
 			str += `\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.`;
 		}
 
-		const usersTask = await getUsersCurrentSlayerInfo(user.id);
-		const isOnTask =
-			usersTask.assignedTask !== null &&
-			usersTask.currentTask !== null &&
-			usersTask.assignedTask.monsters.includes(monsterID);
 		if (isOnTask) {
-			const quantitySlayed = Math.max(usersTask.currentTask!.quantityRemaining, quantity);
-			str += `You killed ${quantitySlayed}x of your ${
+			const quantityLeft = Math.max(
+				0,
+				usersTask.currentTask!.quantityRemaining - quantitySlayed!
+			);
+			str += `\nYou killed ${quantitySlayed}x of your ${
 				usersTask.currentTask!.quantityRemaining
-			} remaining kills, you now have ${
-				usersTask.currentTask!.quantityRemaining - quantitySlayed
-			} kills remaining.`;
-			const thisTripFinishesTask =
-				quantitySlayed === usersTask.currentTask!.quantityRemaining;
+			} remaining kills, you now have ${quantityLeft} kills remaining.`;
+			const thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {
-				str += `This trip finished your task.`;
+				str += ` This trip finished your task.`;
 			}
-			usersTask.currentTask!.quantityRemaining =
-				usersTask.currentTask!.quantityRemaining - quantitySlayed;
+			usersTask.currentTask!.quantityRemaining = quantityLeft;
 			await usersTask.currentTask!.save();
 		}
 
-		const { previousCL } = await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
-				loot.bank,
+				itemsAdded,
 				`Loot From ${quantity} ${monster.name}:`,
 				true,
 				{ showNewCL: 1 },
@@ -81,7 +89,7 @@ export default class extends Task {
 			},
 			image!,
 			data,
-			loot.bank
+			itemsAdded
 		);
 	}
 }
