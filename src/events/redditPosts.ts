@@ -102,10 +102,12 @@ export default class extends Event {
 			embed.setURL(url);
 		}
 
-		this.client.guilds
+		this.client.guilds.cache
 			.filter(guild => Boolean(guild.settings.get(GuildSettings.JMODComments)))
 			.map(guild => {
-				const channel = guild.channels.get(guild.settings.get(GuildSettings.JMODComments));
+				const channel = guild.channels.cache.get(
+					guild.settings.get(GuildSettings.JMODComments)
+				);
 				if (channel && channel instanceof TextChannel && channel.postable) {
 					sendToChannelID(this.client, channel.id, { content: `<${url}>`, embed });
 				}

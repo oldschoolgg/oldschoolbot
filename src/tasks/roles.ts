@@ -10,6 +10,19 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';
 
+const minigames = [
+	'barb_assault',
+	'agility_arena',
+	'mahogany_homes',
+	'gnome_restaurant',
+	'soul_wars',
+	'castle_wars',
+	'raids',
+	'raids_challenge_mode'
+];
+
+const collections = ['Pets', 'Skilling', 'Clue all', 'Boss', 'Minigames', 'Chambers of Xeric'];
+
 async function addRoles(
 	g: Guild,
 	users: string[],
@@ -18,9 +31,9 @@ async function addRoles(
 ): Promise<string> {
 	let added: string[] = [];
 	let removed: string[] = [];
-	const roleName = g.roles.get(role)!.name!;
-	for (const mem of g.members.values()) {
-		if (mem.roles.has(role) && !users.includes(mem.user.id)) {
+	const roleName = g.roles.cache.get(role)!.name!;
+	for (const mem of g.members.cache.values()) {
+		if (mem.roles.cache.has(role) && !users.includes(mem.user.id)) {
 			if (production) {
 				await mem.roles.remove(role);
 			}
@@ -33,7 +46,7 @@ async function addRoles(
 		}
 
 		if (users.includes(mem.user.id)) {
-			if (production && !mem.roles.has(role)) {
+			if (production && !mem.roles.cache.has(role)) {
 				await mem.roles.add(role);
 			}
 			if (badge && !mem.user.settings.get(UserSettings.Badges).includes(badge)) {
@@ -52,36 +65,33 @@ Removed ${roleName} from: ${removed.join(', ')}.
 
 export default class extends Task {
 	async run() {
-		const g = this.client.guilds.get('342983479501389826');
+		const g = this.client.guilds.cache.get('342983479501389826');
 		if (!g) return;
 		await g.members.fetch();
 		const skillVals = Object.values(Skills);
 
 		// Top Skillers
-		let topSkillers = [];
-		for (const skill of skillVals) {
-			const rankOne = (
-				await this.client.query<
+		const topSkillers = (
+			await Promise.all([
+				...skillVals.map(s =>
+					this.client.query<
+						{
+							id: string;
+							xp: string;
+						}[]
+					>(`SELECT id, "skills.${s.id}" as xp FROM users ORDER BY xp DESC LIMIT 1;`)
+				),
+				this.client.query<
 					{
 						id: string;
-						xp: string;
 					}[]
-				>(`SELECT id, "skills.${skill.id}" as xp FROM users ORDER BY xp DESC LIMIT 1;`)
-			)[0];
-			topSkillers.push(rankOne.id);
-		}
-
-		// Rank 1 XP
-		const rankOne = await this.client.query<
-			{
-				id: string;
-			}[]
-		>(
-			`SELECT id,  ${skillVals.map(s => `"skills.${s.id}"`)}, ${skillVals
-				.map(s => `"skills.${s.id}"`)
-				.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 1;`
-		);
-		topSkillers.push(rankOne[0].id);
+				>(
+					`SELECT id,  ${skillVals.map(s => `"skills.${s.id}"`)}, ${skillVals
+						.map(s => `"skills.${s.id}"`)
+						.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 1;`
+				)
+			])
+		).map(i => i[0].id);
 
 		// Rank 1 Total Level
 		const rankOneTotal = (
@@ -109,20 +119,13 @@ export default class extends Task {
 		let result = await addRoles(g, topSkillers, Roles.TopSkiller, 9);
 
 		// Top Collectors
-		const topCollectors = [];
-		for (const clName of [
-			'Pets',
-			'Skilling',
-			'Clue all',
-			'Boss',
-			'Minigames',
-			'Chambers of Xeric'
-		]) {
-			const type = collectionLogTypes.find(t => t.name === clName)!;
-			const items = Object.values(type.items).flat(Infinity) as number[];
-			const users = (
-				await this.client.orm.query(
-					`
+		const topCollectors = await Promise.all(
+			collections.map(async clName => {
+				const type = collectionLogTypes.find(t => t.name === clName)!;
+				const items = Object.values(type.items).flat(Infinity) as number[];
+				const users = (
+					await this.client.orm.query(
+						`
 SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 				  FROM (
   SELECT ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank")) "cl_keys",
@@ -135,11 +138,13 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 			) u
 			ORDER BY qty DESC
 			LIMIT 1;
-			`
-				)
-			).filter((i: any) => i.qty > 0) as CLUser[];
-			topCollectors.push(users[0].id);
-		}
+`
+					)
+				).filter((i: any) => i.qty > 0) as CLUser[];
+
+				return users[0].id;
+			})
+		);
 
 		result += await addRoles(g, topCollectors, Roles.TopCollector, 10);
 
@@ -152,7 +157,7 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 		const mostUniques = await this.client.query<
 			SkillUser[]
 		>(`SELECT u.id, u.sacbanklength FROM (
-  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
 		topSacrificers.push(mostUniques[0].id);
@@ -160,42 +165,35 @@ ORDER BY u.sacbanklength DESC LIMIT 1;`);
 		result += await addRoles(g, topSacrificers, Roles.TopSacrificer, 8);
 
 		// Top minigamers
-		let topMinigamers = [];
-		const minigames = [
-			'barb_assault',
-			'agility_arena',
-			'mahogany_homes',
-			'gnome_restaurant',
-			'soul_wars',
-			'castle_wars',
-			'raids',
-			'raids_challenge_mode'
-		];
-		for (const game of minigames) {
-			const result = (await this.client.query(
-				`SELECT user_id 
+		let topMinigamers = (
+			await Promise.all(
+				minigames.map(m =>
+					this.client.query(
+						`SELECT user_id 
 FROM minigames
-ORDER BY ${game} DESC
+ORDER BY ${m} DESC
 LIMIT 1;`
-			)) as any[];
-			topMinigamers.push(result[0].user_id);
-		}
+					)
+				)
+			)
+		).map((i: any) => i[0].user_id);
 
 		result += await addRoles(g, topMinigamers, Roles.TopMinigamer, 11);
 
 		// Top clue hunters
-		let topClueHunters: string[] = [];
-
-		for (const clueTier of ClueTiers) {
-			const result = (await this.client.query(
-				`SELECT id, ("clueScores"->>'${clueTier.id}')::int as qty
+		let topClueHunters = (
+			await Promise.all(
+				ClueTiers.map(t =>
+					this.client.query(
+						`SELECT id, ("clueScores"->>'${t.id}')::int as qty
 FROM users
-WHERE "clueScores"->>'${clueTier.id}' IS NOT NULL
+WHERE "clueScores"->>'${t.id}' IS NOT NULL
 ORDER BY qty DESC 
 LIMIT 1;`
-			)) as any[];
-			topClueHunters.push(result[0].id);
-		}
+					)
+				)
+			)
+		).map((i: any) => i[0].id);
 
 		result += await addRoles(g, topClueHunters, Roles.TopeClueHunter, null);
 

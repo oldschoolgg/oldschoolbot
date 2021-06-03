@@ -39,7 +39,7 @@ export default class extends BotCommand {
 	}
 
 	async servers(msg: KlasaMessage) {
-		return msg.send(`Old School Bot is in ${this.client.guilds.size} servers.`);
+		return msg.send(`Old School Bot is in ${this.client.guilds.cache.size} servers.`);
 	}
 
 	async minions(msg: KlasaMessage) {

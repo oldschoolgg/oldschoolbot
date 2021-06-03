@@ -26,7 +26,7 @@ export default class extends BotCommand {
 			if (!role) {
 				return msg.channel.send(`That's not a valid role.\n${allRolesStr}`);
 			}
-			const has = msg.member.roles.has(role.roleID);
+			const has = msg.member.roles.cache.has(role.roleID);
 			if (!has) {
 				await msg.member.roles.add(role.roleID);
 				return msg.channel.send(
@@ -52,7 +52,7 @@ export default class extends BotCommand {
 				'346238402737340416'
 			].includes(role.id) ||
 			!msg.member ||
-			!msg.member!.roles.has(Roles.Moderator)
+			!msg.member!.roles.cache.has(Roles.Moderator)
 		) {
 			return;
 		}
@@ -67,7 +67,7 @@ export default class extends BotCommand {
 
 	async remove(msg: KlasaMessage, [role]: [Role]) {
 		if (!msg.guild || msg.guild.id !== SupportServer) return;
-		if (!role || !msg.member || !msg.member!.roles.has(Roles.Moderator)) {
+		if (!role || !msg.member || !msg.member!.roles.cache.has(Roles.Moderator)) {
 			return;
 		}
 		const entity = await PingableRolesTable.findOne({ roleID: role.id });

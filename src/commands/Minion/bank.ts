@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
@@ -44,7 +44,10 @@ export default class extends BotCommand {
 		if (msg.flagArgs.text) {
 			const textBank = [];
 			for (const [item, qty] of bank.items()) {
-				if (msg.flagArgs.search && !item.name.toLowerCase().includes(msg.flagArgs.search)) {
+				if (
+					msg.flagArgs.search &&
+					!item.name.toLowerCase().includes(msg.flagArgs.search.toLowerCase())
+				) {
 					continue;
 				}
 				textBank.push(`${item.name}: ${qty.toLocaleString()}`);
@@ -55,11 +58,11 @@ export default class extends BotCommand {
 			}
 
 			if (msg.flagArgs.full) {
-				return msg.channel.sendFile(
+				const attachment = new MessageAttachment(
 					Buffer.from(textBank.join('\n')),
-					`${msg.author.username}s_Bank.txt`,
-					'Here is your entire bank in txt file format.'
+					`${msg.author.username}s_Bank.txt`
 				);
+				return msg.channel.send('Here is your entire bank in txt file format.', attachment);
 			}
 
 			const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));

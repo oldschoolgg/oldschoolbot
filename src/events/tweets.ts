@@ -202,15 +202,15 @@ export default class extends Event {
 		else return;
 
 		if (key === 'hexis') {
-			return (this.client.channels.get(HEXIS_CHANNEL) as TextChannel)!
+			return (this.client.channels.cache.get(HEXIS_CHANNEL) as TextChannel)!
 				.send(`<${url}>`, { embed })
 				.catch(() => null);
 		}
 
-		this.client.guilds
+		this.client.guilds.cache
 			.filter(guild => Boolean(guild.settings.get(key as string)))
 			.map(guild => {
-				const channel = guild.channels.get(guild.settings.get(key) as string);
+				const channel = guild.channels.cache.get(guild.settings.get(key) as string);
 				if (
 					channel &&
 					channel instanceof TextChannel &&

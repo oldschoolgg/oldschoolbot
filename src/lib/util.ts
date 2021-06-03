@@ -41,15 +41,15 @@ export function cleanMentions(guild: Guild | null, input: string, showAt = true)
 			switch (type) {
 				case '@':
 				case '@!': {
-					const tag = guild?.client.users.get(id);
+					const tag = guild?.client.users.cache.get(id);
 					return tag ? `${at}${tag.username}` : `<${type}${zeroWidthSpace}${id}>`;
 				}
 				case '@&': {
-					const role = guild?.roles.get(id);
+					const role = guild?.roles.cache.get(id);
 					return role ? `${at}${role.name}` : match;
 				}
 				case '#': {
-					const channel = guild?.channels.get(id);
+					const channel = guild?.channels.cache.get(id);
 					return channel ? `#${channel.name}` : `<${type}${zeroWidthSpace}${id}>`;
 				}
 				default:
@@ -366,7 +366,7 @@ export function countSkillsAtleast99(user: KlasaUser) {
 }
 
 export function getSupportGuild(client: Client) {
-	const guild = client.guilds.get(SupportServer);
+	const guild = client.guilds.cache.get(SupportServer);
 	if (!guild) throw `Can't find support guild.`;
 	return guild;
 }
@@ -496,4 +496,10 @@ export function updateBankSetting(
 	const current = new Bank(client.settings.get(setting) as ItemBank);
 	const newBank = current.add(bankToAdd);
 	return client.settings.update(setting, newBank.bank);
+}
+
+export function updateGPTrackSetting(client: KlasaClient, setting: string, amount: number) {
+	const current = client.settings.get(setting) as number;
+	const newValue = current + amount;
+	return client.settings.update(setting, newValue);
 }

@@ -1291,7 +1291,7 @@ const Createables: Createable[] = [
 		})
 	},
 	{
-		name: '	Harmonised nightmare staff',
+		name: 'Harmonised nightmare staff',
 		inputItems: resolveNameBank({
 			'Nightmare staff': 1,
 			'Harmonised orb': 1

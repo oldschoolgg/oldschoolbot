@@ -271,4 +271,16 @@ declare module 'discord.js' {
 		}): Promise<KlasaMessage>;
 		__triviaQuestionsDone: any;
 	}
+
+	interface NewsChannel {
+		sendBankImage(options: {
+			bank: ItemBank;
+			content?: string;
+			title?: string;
+			background?: number;
+			flags?: Record<string, string | number>;
+			user?: KlasaUser;
+		}): Promise<KlasaMessage>;
+		__triviaQuestionsDone: any;
+	}
 }
