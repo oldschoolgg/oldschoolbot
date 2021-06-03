@@ -46,4 +46,22 @@ export class AnalyticsTable extends BaseEntity {
 
 	@Column({ type: 'bigint', nullable: true })
 	public dailiesAmount!: number;
+
+	@Column({ type: 'bigint', nullable: true })
+	public gpSellingItems!: number;
+
+	@Column({ type: 'bigint', nullable: true })
+	public gpPvm!: number;
+
+	@Column({ type: 'bigint', nullable: true })
+	public gpAlching!: number;
+
+	@Column({ type: 'bigint', nullable: true })
+	public gpPickpocket!: number;
+
+	@Column({ type: 'bigint', nullable: true })
+	public gpDice!: number;
+
+	@Column({ type: 'bigint', nullable: true })
+	public gpOpen!: number;
 }
