@@ -57,12 +57,14 @@ export default class extends BotCommand {
 			case 'gptrack': {
 				return msg.channel.send(`
 **Sell** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceSellingItems)}
-**PvM/Clues** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePVMLoot)}
+**PvM** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePVMLoot)}
 **Alch** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceAlching)}
 **Pickpocket** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePickpocket)}
 **Dice** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceDice)}
 **Open** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceOpen)}
 **Pet** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePet)}
+**Daily** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceDaily)}
+**Item Contracts** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceItemContracts)}
 `);
 			}
 			case 'check':

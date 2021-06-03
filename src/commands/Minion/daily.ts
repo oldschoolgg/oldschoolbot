@@ -21,10 +21,19 @@ const { triviaQuestions } = JSON.parse(
 
 import { COINS_ID, Emoji, SupportServer, Time } from '../../lib/constants';
 import pets from '../../lib/data/pets';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration, isWeekend, itemID, rand, roll, stringMatches } from '../../lib/util';
+import {
+	formatDuration,
+	isWeekend,
+	itemID,
+	rand,
+	roll,
+	stringMatches,
+	updateGPTrackSetting
+} from '../../lib/util';
 
 const options = {
 	max: 1,
@@ -171,6 +180,14 @@ export default class DailyCommand extends BotCommand {
 
 		if (roll(2500)) {
 			loot[741] = 1;
+		}
+
+		if (loot[COINS_ID] > 0) {
+			updateGPTrackSetting(
+				this.client,
+				ClientSettings.EconomyStats.GPSourceDaily,
+				loot[COINS_ID]
+			);
 		}
 
 		await user.addItemsToBank(loot, true);

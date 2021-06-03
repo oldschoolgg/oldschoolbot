@@ -10,7 +10,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { DragonTable } from '../../lib/simulation/grandmasterClue';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, formatDuration, updateBankSetting } from '../../lib/util';
+import { addBanks, formatDuration, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { LampTable } from '../../lib/xpLamps';
 
@@ -158,6 +158,11 @@ export default class DailyCommand extends BotCommand {
 		]);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.ItemContractCost, cost);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.ItemContractLoot, loot);
+		updateGPTrackSetting(
+			this.client,
+			ClientSettings.EconomyStats.GPSourceItemContracts,
+			loot.amount('Coins')
+		);
 		return msg.channel.send(
 			embed.setDescription(
 				`You handed in a ${currentItem.name} and received ${loot}. You've completed ${
