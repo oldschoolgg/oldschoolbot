@@ -54,4 +54,5 @@ Client.defaultClientSchema
 	.add('gp_alch', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_pickpocket', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
-	.add('gp_open', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER });
+	.add('gp_open', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_pet', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER });

@@ -77,5 +77,6 @@ export namespace ClientSettings {
 		export const GPSourcePickpocket = T<number>('gp_pickpocket');
 		export const GPSourceDice = T<number>('gp_dice');
 		export const GPSourceOpen = T<number>('gp_open');
+		export const GPSourcePet = T<number>('gp_pet');
 	}
 }

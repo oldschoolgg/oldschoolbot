@@ -110,6 +110,13 @@ export async function handleTripFinish(
 		message += `\nDoug did some mining while you were on your trip and got you: ${bonusLoot}.`;
 	}
 	if (bonusLoot.length > 0) {
+		if (bonusLoot.has('Coins')) {
+			updateGPTrackSetting(
+				client,
+				ClientSettings.EconomyStats.GPSourcePet,
+				bonusLoot.amount('Coins')
+			);
+		}
 		await user.addItemsToBank(bonusLoot.bank, true);
 	}
 	if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
