@@ -78,5 +78,7 @@ export namespace ClientSettings {
 		export const GPSourceDice = T<number>('gp_dice');
 		export const GPSourceOpen = T<number>('gp_open');
 		export const GPSourcePet = T<number>('gp_pet');
+		export const GPSourceDaily = T<number>('gp_daily');
+		export const GPSourceItemContracts = T<number>('gp_ic');
 	}
 }
