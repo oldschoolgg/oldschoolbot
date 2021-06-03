@@ -45,7 +45,7 @@ export default class extends BotCommand {
 		for (const pre of presets) {
 			str += `**${pre.name}:** ${gearPresetToStr(pre)}\n`;
 		}
-		if (str.length > 2048) {
+		if (str.length > 2000) {
 			const attachment = new MessageAttachment(
 				Buffer.from(`${title}\n${str}`),
 				`${msg.author.username}s-GearPresets.txt`
