@@ -111,7 +111,15 @@ export default class extends Task {
 			totalXP,
 			dicingBank: this.client.settings.get(ClientSettings.EconomyStats.DicingBank),
 			duelTaxBank: this.client.settings.get(ClientSettings.EconomyStats.DuelTaxBank),
-			dailiesAmount: this.client.settings.get(ClientSettings.EconomyStats.DailiesAmount)
+			dailiesAmount: this.client.settings.get(ClientSettings.EconomyStats.DailiesAmount),
+			gpAlching: this.client.settings.get(ClientSettings.EconomyStats.GPSourceAlching),
+			gpPvm: this.client.settings.get(ClientSettings.EconomyStats.GPSourcePVMLoot),
+			gpSellingItems: this.client.settings.get(
+				ClientSettings.EconomyStats.GPSourceSellingItems
+			),
+			gpPickpocket: this.client.settings.get(ClientSettings.EconomyStats.GPSourcePickpocket),
+			gpOpen: this.client.settings.get(ClientSettings.EconomyStats.GPSourceOpen),
+			gpDice: this.client.settings.get(ClientSettings.EconomyStats.GPSourceDice)
 		});
 	}
 }
