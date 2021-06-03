@@ -1,8 +1,9 @@
-import { MessageAttachment } from 'discord.js';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { cleanString } from 'oldschooljs/dist/util';
 
+import { Color } from '../../lib/constants';
 import { defaultGear, resolveGearTypeSetting } from '../../lib/gear';
 import { gearPresetToStr, globalPresets } from '../../lib/gear/functions/gearPresets';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
@@ -39,11 +40,20 @@ export default class extends BotCommand {
 		if (presets.length === 0) {
 			return msg.send(`You have no presets.`);
 		}
-		let str = '**Your presets:**\n';
+		let title = '**Your presets:**';
+		let str = '';
 		for (const pre of presets) {
 			str += `**${pre.name}:** ${gearPresetToStr(pre)}\n`;
 		}
-		return msg.send(str);
+		if (str.length > 2048) {
+			const attachment = new MessageAttachment(
+				Buffer.from(`${title}\n${str}`),
+				`${msg.author.username}s-GearPresets.txt`
+			);
+			return msg.channel.send('Here are your gear presets...', attachment);
+		}
+		const embed = new MessageEmbed().setColor(Color.Orange).setTitle(title).setDescription(str);
+		return msg.channel.send(embed);
 	}
 
 	async equip(msg: KlasaMessage, [name, setup]: [string, string]) {
