@@ -187,7 +187,7 @@ export default class extends BotCommand {
 					: ``
 			}`,
 			title: opened,
-			flags: { showNewCL: 1, wide: Object.keys(loot).length > 250 ? 1 : 0 },
+			flags: { showNewCL: 1, wide: Object.keys(loot).length > 250 ? 1 : 0, ...msg.flagArgs },
 			user: msg.author,
 			cl: previousCL
 		});
@@ -225,7 +225,7 @@ export default class extends BotCommand {
 		return msg.channel.sendBankImage({
 			bank: loot,
 			title: `You opened ${quantity} ${osjsOpenable.name}`,
-			flags: { showNewCL: 1 },
+			flags: { showNewCL: 1, ...msg.flagArgs },
 			user: msg.author,
 			cl: previousCL
 		});
@@ -303,7 +303,7 @@ export default class extends BotCommand {
 		return msg.channel.sendBankImage({
 			bank: loot.values(),
 			title: `You opened ${quantity} ${botOpenable.name}`,
-			flags: { showNewCL: 1, wide: Object.keys(loot.values()).length > 250 ? 1 : 0 },
+			flags: { showNewCL: 1, wide: Object.keys(loot.values()).length > 250 ? 1 : 0, ...msg.flagArgs },
 			user: msg.author,
 			content: hasSmokey ? `You got ${smokeyBonus}x bonus rolls from Smokey.` : undefined,
 			cl: previousCL
