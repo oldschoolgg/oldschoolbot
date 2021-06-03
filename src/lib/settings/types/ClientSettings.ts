@@ -86,5 +86,9 @@ export namespace ClientSettings {
 		export const GPSourcePet = T<number>('gp_pet');
 		export const GPSourceDaily = T<number>('gp_daily');
 		export const GPSourceItemContracts = T<number>('gp_ic');
+
+		export const HammyDestroyed = T<O.Readonly<ItemBank>>('hammy_destroyed');
+		export const HammyDoubled = T<O.Readonly<ItemBank>>('hammy_doubled');
+		export const HammySpared = T<O.Readonly<ItemBank>>('hammy_spared');
 	}
 }

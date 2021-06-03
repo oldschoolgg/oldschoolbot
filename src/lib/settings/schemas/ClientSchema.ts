@@ -38,6 +38,9 @@ Client.defaultClientSchema
 	.add('mage_arena_cost', 'any', { default: {} })
 	.add('hunter_cost', 'any', { default: {} })
 	.add('hunter_loot', 'any', { default: {} })
+	.add('hammy_destroyed', 'any', { default: {} })
+	.add('hammy_doubled', 'any', { default: {} })
+	.add('hammy_spared', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })
