@@ -1,5 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import {
 	assignNewSlayerTask,
@@ -44,7 +45,9 @@ export default class extends BotCommand {
 
 			return msg.channel.send(`${baseInfo}
 		
-You've done ${totalTasksDone} tasks.`);
+You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.settings.get(
+				UserSettings.Slayer.TaskStreak
+			)}.`);
 		}
 
 		const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);

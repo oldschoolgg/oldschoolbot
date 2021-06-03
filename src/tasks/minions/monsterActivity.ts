@@ -4,7 +4,8 @@ import { Bank, Monsters } from 'oldschooljs';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
-import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -49,17 +50,29 @@ export default class extends Task {
 			str += `\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.`;
 		}
 
+		console.log({ isOnTask, usersTask, monsterID: monster.id });
+
 		if (isOnTask) {
 			const quantityLeft = Math.max(
 				0,
 				usersTask.currentTask!.quantityRemaining - quantitySlayed!
 			);
-			str += `\nYou killed ${quantitySlayed}x of your ${
-				usersTask.currentTask!.quantityRemaining
-			} remaining kills, you now have ${quantityLeft} kills remaining.`;
+
 			const thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {
-				str += ` This trip finished your task.`;
+				const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
+				user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
+				const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
+				const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
+				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
+
+				str += ` You've completed ${
+					usersTask.totalTasksDone + 1
+				} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.'`;
+			} else {
+				str += `\nYou killed ${quantitySlayed}x of your ${
+					usersTask.currentTask!.quantityRemaining
+				} remaining kills, you now have ${quantityLeft} kills remaining.`;
 			}
 			usersTask.currentTask!.quantityRemaining = quantityLeft;
 			await usersTask.currentTask!.save();

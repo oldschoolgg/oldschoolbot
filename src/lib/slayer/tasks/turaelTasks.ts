@@ -34,7 +34,8 @@ export const turaelTasks: AssignableSlayerTask[] = [
 			Monsters.Seagull.id,
 			Monsters.Penguin.id,
 			Monsters.Duck.id,
-			Monsters.Duckling.id
+			Monsters.Duckling.id,
+			Monsters.Bird.id
 		],
 		unlocked: true
 	},

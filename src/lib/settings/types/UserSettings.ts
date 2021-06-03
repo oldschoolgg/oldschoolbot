@@ -44,6 +44,11 @@ export namespace UserSettings {
 	export const AttackStyle = T<readonly SkillsEnum[]>('attack_style');
 	export const TotalCoxPoints = T<number>('total_cox_points');
 
+	export namespace Slayer {
+		export const SlayerPoints = T<number>('slayer_points');
+		export const TaskStreak = T<number>('slayer_task_streak');
+	}
+
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');
 

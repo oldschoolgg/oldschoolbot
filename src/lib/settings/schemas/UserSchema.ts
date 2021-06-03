@@ -31,6 +31,10 @@ Client.defaultUserSchema
 	.add('openable_scores', 'any', { default: {} })
 	.add('attack_style', 'string', { array: true, default: [] })
 	.add('total_cox_points', 'integer', { default: 0 })
+
+	.add('slayer_points', 'integer', { default: 0 })
+	.add('slayer_task_streak', 'integer', { default: 0 })
+
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')

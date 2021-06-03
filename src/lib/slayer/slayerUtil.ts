@@ -1,6 +1,6 @@
 import { randFloat, randInt } from 'e';
 import { KlasaUser } from 'klasa';
-import { MoreThanOrEqual } from 'typeorm';
+import { MoreThan } from 'typeorm';
 
 import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
@@ -9,7 +9,7 @@ import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
 import { slayerMasters } from './slayerMasters';
 import { AssignableSlayerTask, SlayerMaster } from './types';
 
-export function streakPoints(currentStreak: number, master: SlayerMaster) {
+export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster) {
 	const streaks = [1000, 250, 100, 50, 10];
 	const multiplier = [50, 35, 25, 15, 5];
 
@@ -81,20 +81,23 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 		SlayerTaskTable.findOne({
 			where: {
 				user: id,
-				quantityRemaining: MoreThanOrEqual(0)
+				quantityRemaining: MoreThan(0)
 			}
 		}),
 		SlayerTaskTable.count({ where: { user: id, quantityRemaining: 0 } })
 	]);
 
+	const slayerMaster = currentTask
+		? slayerMasters.find(master => master.id === currentTask.slayerMasterID)
+		: null;
+
 	return {
 		currentTask: currentTask ?? null,
 		assignedTask: currentTask
-			? slayerMasters
-					.find(master => master.id === currentTask.slayerMasterID)!
-					.tasks.find(m => m.monster.id === currentTask.monsterID)!
+			? slayerMaster!.tasks.find(m => m.monster.id === currentTask.monsterID)!
 			: null,
-		totalTasksDone
+		totalTasksDone,
+		slayerMaster
 	};
 }
 
