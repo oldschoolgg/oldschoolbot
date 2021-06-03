@@ -510,3 +510,9 @@ export function userHasMasterFarmerOutfit(user: KlasaUser) {
 	}
 	return true;
 }
+
+export function updateGPTrackSetting(client: KlasaClient, setting: string, amount: number) {
+	const current = client.settings.get(setting) as number;
+	const newValue = current + amount;
+	return client.settings.update(setting, newValue);
+}

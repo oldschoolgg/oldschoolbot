@@ -502,7 +502,7 @@ export default class extends Task {
 			}
 
 			if (plantToHarvest.name === `Mysterious tree`) {
-				let upper = randInt(quantity, quantity * 2);
+				let upper = randInt(quantity, quantity * 6);
 				for (let i = 0; i < upper; i++) {
 					loot = addItemToBank(loot, getRandomMysteryBox());
 				}

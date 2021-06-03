@@ -233,10 +233,10 @@ export default class extends BotCommand {
 				msgs.push(`10% for ${user.username} over 200 kc`);
 			} else if (data.kc > 100) {
 				effectiveTime = reduceNumByPercent(effectiveTime, 7);
-				msgs.push(`7% for ${user.username} over 200 kc`);
+				msgs.push(`7% for ${user.username} over 100 kc`);
 			} else if (data.kc > 50) {
 				effectiveTime = reduceNumByPercent(effectiveTime, 5);
-				msgs.push(`5% for ${user.username} over 200 kc`);
+				msgs.push(`5% for ${user.username} over 50 kc`);
 			}
 
 			debugStr += `${msgs.join(', ')}. `;

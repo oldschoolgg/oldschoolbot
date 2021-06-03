@@ -46,7 +46,8 @@ export default class ODSCommand extends BotCommand {
 			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'minigame'],
-			description: 'Sends your minion to do barbarian assault, or buy rewards and gamble.',
+			description:
+				'Sends your minion to complete Ourania Delivery Service trips, or buy rewards.',
 			examples: ['+ods start'],
 			subcommands: true,
 			usage: '[start|buy] [buyable:...string]',

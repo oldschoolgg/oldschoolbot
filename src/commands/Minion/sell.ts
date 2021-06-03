@@ -2,13 +2,12 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, itemID } from '../../lib/util';
+import { itemID, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 
 const options = {
 	max: 1,
-	time: 10000,
+	time: 10_000,
 	errors: ['time']
 };
 
@@ -58,30 +57,17 @@ export default class extends BotCommand {
 			return msg.send(`You cant sell coins.`);
 		}
 
-		await msg.author.removeItemsFromBank(bankToSell.bank);
-		await msg.author.settings.update(
-			UserSettings.GP,
-			msg.author.settings.get(UserSettings.GP) + totalPrice
-		);
+		await Promise.all([
+			msg.author.removeItemsFromBank(bankToSell.bank),
+			msg.author.addGP(totalPrice)
+		]);
 
-		const itemSellTaxBank = this.client.settings.get(
-			ClientSettings.EconomyStats.ItemSellTaxBank
+		updateGPTrackSetting(
+			this.client,
+			ClientSettings.EconomyStats.GPSourceSellingItems,
+			totalPrice
 		);
-		if (tax > 0) {
-			const dividedAmount = tax / 1_000_000;
-			this.client.settings.update(
-				ClientSettings.EconomyStats.ItemSellTaxBank,
-				Math.floor(itemSellTaxBank + Math.round(dividedAmount * 100) / 100)
-			);
-		}
-
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.SoldItemsBank,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.SoldItemsBank),
-				bankToSell.bank
-			])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank);
 
 		msg.author.log(`sold ${JSON.stringify(bankToSell.bank)} for ${totalPrice}`);
 
