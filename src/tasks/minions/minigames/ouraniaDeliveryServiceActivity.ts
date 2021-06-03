@@ -7,7 +7,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from "../../../lib/util/itemID";
+import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
@@ -18,7 +18,7 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		const level = user.skillLevel(SkillsEnum.Magic);
 		let tokens = Math.floor((quantity / 2) * 3.235 * (level / 25 + 1));
-		if(user.equippedPet() === itemID('Flappy')) {
+		if (user.equippedPet() === itemID('Flappy')) {
 			tokens *= 2;
 		}
 
