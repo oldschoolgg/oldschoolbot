@@ -1,5 +1,4 @@
-import { CpuInfo } from 'node:os';
-import os from 'os';
+import os, { CpuInfo } from 'os';
 import { monitorEventLoopDelay } from 'perf_hooks';
 
 const h = monitorEventLoopDelay();
