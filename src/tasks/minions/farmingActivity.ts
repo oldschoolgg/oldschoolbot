@@ -125,6 +125,15 @@ export default class extends Task {
 		}
 		if (farmersPiecesCheck === 4) bonusXpMultiplier += 0.005;
 
+		if (planting && plant !== undefined) {
+			if (plant.name === `Mysterious tree`) {
+				let upper = randInt(quantity, quantity * 4);
+				for (let i = 0; i < upper; i++) {
+					loot = addItemToBank(loot, getRandomMysteryBox());
+				}
+			}
+		}
+
 		if (!patchType.patchPlanted) {
 			if (!plant) {
 				this.client.wtf(new Error(`${user.sanitizedName}'s new patch had no plant found.`));
@@ -157,13 +166,6 @@ export default class extends Task {
 
 			if (user.usingPet('Plopper')) {
 				loot = multiplyBank(loot, 4);
-			}
-
-			if (plant.name === `Mysterious tree`) {
-				let upper = randInt(quantity, quantity * 4);
-				for (let i = 0; i < upper; i++) {
-					loot = addItemToBank(loot, getRandomMysteryBox());
-				}
 			}
 
 			if (Object.keys(loot).length > 0) {
