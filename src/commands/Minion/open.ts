@@ -303,7 +303,11 @@ export default class extends BotCommand {
 		return msg.channel.sendBankImage({
 			bank: loot.values(),
 			title: `You opened ${quantity} ${botOpenable.name}`,
-			flags: { showNewCL: 1, wide: Object.keys(loot.values()).length > 250 ? 1 : 0, ...msg.flagArgs },
+			flags: {
+				showNewCL: 1,
+				wide: Object.keys(loot.values()).length > 250 ? 1 : 0,
+				...msg.flagArgs
+			},
 			user: msg.author,
 			content: hasSmokey ? `You got ${smokeyBonus}x bonus rolls from Smokey.` : undefined,
 			cl: previousCL
