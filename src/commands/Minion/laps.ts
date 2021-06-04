@@ -13,6 +13,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 
 function alching(msg: KlasaMessage, tripLength: number) {
+	if (msg.author.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const bank = msg.author.bank();
 
 	const favAlchables = msg.author.settings
