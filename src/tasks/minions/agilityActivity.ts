@@ -3,11 +3,12 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji, Events, Time } from '../../lib/constants';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank } from '../../lib/util';
+import { addItemToBank, updateGPTrackSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -64,8 +65,10 @@ export default class extends Task {
 
 		if (alch) {
 			const alchedItem = getOSItem(alch.itemID);
-			loot.add('Coins', alchedItem.highalch * alch.quantity);
+			const alchGP = alchedItem.highalch * alch.quantity;
+			loot.add('Coins', alchGP);
 			xpRes += ` ${await user.addXP(SkillsEnum.Magic, alch.quantity * 65, duration)}`;
+			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
 		}
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}.\n${xpRes}`;
