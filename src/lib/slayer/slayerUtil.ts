@@ -79,16 +79,16 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 export function getCommonTaskName(task: AssignableSlayerTask) {
 	let commonName = task.monster.name;
 	switch (task.monster.id) {
-		case Monsters.KaphiteWorker:
+		case Monsters.KalphiteWorker.id:
 			commonName = 'Kalphite';
 			break;
-		case Monsters.MountainTroll:
+		case Monsters.MountainTroll.id:
 			commonName = 'Trolls';
 			break;
-		case Monsters.FossilIslandWyvernSpitting:
+		case Monsters.FossilIslandWyvernSpitting.id:
 			commonName = 'Fossil Island Wyverns';
 			break;
-		case Monsters.FeralVampyre:
+		case Monsters.FeralVampyre.id:
 			commonName = 'Vampyres';
 			break;
 
