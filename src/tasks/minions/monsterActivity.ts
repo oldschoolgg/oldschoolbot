@@ -24,7 +24,7 @@ export default class extends Task {
 			usersTask.currentTask !== null &&
 			usersTask.assignedTask.monsters.includes(monsterID);
 		const quantitySlayed = isOnTask
-			? Math.max(usersTask.currentTask!.quantityRemaining, quantity)
+			? Math.min(usersTask.currentTask!.quantityRemaining, quantity)
 			: null;
 		const xpRes = await addMonsterXP(
 			user,
@@ -51,7 +51,7 @@ export default class extends Task {
 		}
 
 		console.log({ isOnTask, usersTask, monsterID: monster.id });
-
+		console.log({ remaining:usersTask.currentTask!.quantityRemaining, slayed: quantitySlayed});
 		if (isOnTask) {
 			const quantityLeft = Math.max(
 				0,
@@ -68,7 +68,7 @@ export default class extends Task {
 
 				str += ` You've completed ${
 					usersTask.totalTasksDone + 1
-				} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.'`;
+				} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.`;
 			} else {
 				str += `\nYou killed ${quantitySlayed}x of your ${
 					usersTask.currentTask!.quantityRemaining

@@ -17,6 +17,7 @@ export default class extends BotCommand {
 			cooldown: 5,
 			altProtection: true,
 			categoryFlags: ['minion'],
+			aliases: ['st'],
 			description: 'slayer',
 			examples: ['+skillcape mining'],
 			usage: '[input:str]'
@@ -28,13 +29,27 @@ export default class extends BotCommand {
 			msg.author.id
 		);
 
+		let rememberedSlayerMaster;
+		if (msg.flagArgs.unfav || msg.flagArgs.delete || msg.flagArgs.forget) {
+			await msg.author.settings.update(UserSettings.Minion.RememberSlayerMaster, null);
+		} else {
+			rememberedSlayerMaster = msg.author.settings.get(UserSettings.Minion.RememberSlayerMaster);
+		}
+
 		const slayerMaster = input
 			? slayerMasters
 					.filter(m => userCanUseMaster(msg.author, m))
 					.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
-			: null;
+			: rememberedSlayerMaster;
+
+		const matchedSlayerMaster =
+			slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null;
 
 		if (!input || currentTask || !slayerMaster) {
+			let warningInfo = '';
+			if (input && !slayerMaster && matchedSlayerMaster) {
+				warningInfo = `You do not have the requirements to use ${matchedSlayerMaster.name}.\n\n`;
+			}
 			let baseInfo = currentTask
 				? `Your current task is to kill ${currentTask.quantity}x ${
 						assignedTask!.monster.name
@@ -43,11 +58,16 @@ export default class extends BotCommand {
 						msg.cmdPrefix
 				  }slayertask ${slayerMasters.map(i => i.name).join('/')}}\``;
 
-			return msg.channel.send(`${baseInfo}
+			return msg.channel.send(`${warningInfo}${baseInfo}
 		
 You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.settings.get(
 				UserSettings.Slayer.TaskStreak
 			)}.`);
+		}
+
+		// Store favorite slayer master if requested:
+		if (msg.flagArgs.remember || msg.flagArgs.fav || msg.flagArgs.save) {
+			await msg.author.settings.update(UserSettings.Minion.RememberSlayerMaster, slayerMaster.name);
 		}
 
 		const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
