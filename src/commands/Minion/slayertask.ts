@@ -37,7 +37,7 @@ export default class extends BotCommand {
 			}
 			if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 				const alchMessage = await msg.channel.send(
-					`Really skip task? This will cost 30 slayer points.`
+					`Really skip task? This will cost 30 slayer points.\n\nType **confirm** to skip.`
 				);
 
 				try {
@@ -57,6 +57,8 @@ export default class extends BotCommand {
 			}
 			slayerPoints -= 30;
 			await msg.author.settings.update(UserSettings.Slayer.SlayerPoints, slayerPoints);
+			currentTask!.quantityRemaining = 0;
+			currentTask!.save();
 		}
 
 		let rememberedSlayerMaster : string = '';
