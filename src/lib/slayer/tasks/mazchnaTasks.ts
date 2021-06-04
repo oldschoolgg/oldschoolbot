@@ -250,6 +250,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		amount: [40, 70],
 		weight: 7,
 		monsters: [
+			Monsters.Skeleton.id,
 			Monsters.SkeletonMage.id,
 			Monsters.Vetion.id,
 			Monsters.Skogre.id,

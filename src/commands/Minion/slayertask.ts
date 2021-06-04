@@ -80,6 +80,7 @@ export default class extends BotCommand {
 					.find(m => m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))) ?? null
 				: null;
 
+		// TODO: Delete this
 		msg.author.log(`Remembered: ${rememberedSlayerMaster}`);
 		msg.author.log(`slayermaster: ${slayerMaster?.name}`);
 

@@ -91,7 +91,18 @@ export function getCommonTaskName(task: AssignableSlayerTask) {
 		case Monsters.FeralVampyre.id:
 			commonName = 'Vampyres';
 			break;
-
+		case Monsters.ElfWarrior.id:
+			commonName = 'Elves';
+			break;
+		case Monsters.SpiritualRanger.id:
+			commonName = 'Spiritual Creatures';
+			break;
+		case Monsters.BlackBear.id:
+			commonName = 'Bears';
+			break;
+		case Monsters.GuardDog.id:
+			commonName = 'Dogs';
+			break;
 		default:
 	}
 	return commonName;
