@@ -62,6 +62,12 @@ const burnables: Burnable[] = [
 		level: 90,
 		xp: 350,
 		inputLogs: itemID('Redwood logs')
+	},
+	{
+		name: 'Elder logs',
+		level: 105,
+		xp: 750,
+		inputLogs: itemID('Elder logs')
 	}
 ];
 
