@@ -57,25 +57,25 @@ export default class extends BotCommand {
 
 		if (!msg.flagArgs.skip && (currentTask || !slayerMaster)) {
 		//if (currentTask || !slayerMaster) {
-				let warningInfo = '';
-				if (input && !slayerMaster && matchedSlayerMaster) {
-					warningInfo = `You do not have the requirements to use ${matchedSlayerMaster.name}.\n\n`;
-				}
-				let baseInfo = currentTask
-					? `Your current task is to kill ${currentTask.quantity}x ${
-						assignedTask!.monster.name
-					}, you have ${currentTask.quantityRemaining} kills remaining.`
-					: `You have no task at the moment <:FrogBigEyes:847859910933741628> You can get a task using \`${
-						msg.cmdPrefix
-					}slayertask ${slayerMasters.map(i => i.name).join('/')}}\``;
-
-				return msg.channel.send(`${warningInfo}${baseInfo}
-		
-You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.settings.get(
-					UserSettings.Slayer.TaskStreak
-				)}.`);
+			let warningInfo = '';
+			if (input && !slayerMaster && matchedSlayerMaster) {
+				warningInfo = `You do not have the requirements to use ${matchedSlayerMaster.name}.\n\n`;
 			}
+			let baseInfo = currentTask
+				? `Your current task is to kill ${currentTask.quantity}x ${
+					assignedTask!.monster.name
+				}, you have ${currentTask.quantityRemaining} kills remaining.`
+				: `You have no task at the moment <:FrogBigEyes:847859910933741628> You can get a task using \`${
+					msg.cmdPrefix
+				}slayertask ${slayerMasters.map(i => i.name).join('/')}}\``;
+
+			return msg.channel.send(`${warningInfo}${baseInfo}
+	
+You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.settings.get(
+				UserSettings.Slayer.TaskStreak
+			)}.`);
 		}
+
 
 		// Store favorite slayer master if requested:
 		if (msg.flagArgs.remember || msg.flagArgs.fav || msg.flagArgs.save) {
