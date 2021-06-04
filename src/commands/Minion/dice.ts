@@ -35,7 +35,7 @@ export default class extends BotCommand {
 				'342983479501389826'
 			].includes(msg.channel.id)
 		) {
-			return msg.send(`You can't use spawnlamp in this channel.`);
+			return msg.send(`You can't play dice in this channel.`);
 		}
 		
 		if (!amount) {
