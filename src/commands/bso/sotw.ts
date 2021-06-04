@@ -21,18 +21,16 @@ LIMIT 15;`
 			return msg.channel.send(`No results found.`);
 		}
 
-		const embed = new MessageEmbed()
-			.setTitle(`#1 BSO SOTW - Construction`)
-			.setDescription(
-				res
-					.map(
-						(i: any) =>
-							`**${i.username ?? 'Unknown'}** ${Number(
-								i.total_xp
-							).toLocaleString()} XP`
-					)
-					.join('\n')
-			);
+		const embed = new MessageEmbed().setTitle(`#1 BSO SOTW - Construction`).setDescription(
+			res
+				.map((i: any, index: number) => {
+					const pos = index + 1;
+					let username = `${pos}. ${i.username ?? 'Unknown'}`;
+					if (pos < 3) username = `**${username}**`;
+					return ` ${username} ${Number(i.total_xp).toLocaleString()} XP`;
+				})
+				.join('\n')
+		);
 
 		return msg.send(embed);
 	}
