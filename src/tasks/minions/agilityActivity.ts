@@ -8,11 +8,12 @@ import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank, randomVariation } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: AgilityActivityTaskOptions) {
-		let { courseID, quantity, userID, channelID, duration } = data;
+		let { courseID, quantity, userID, channelID, duration, alch } = data;
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
@@ -62,12 +63,18 @@ export default class extends Task {
 			'Mark of grace': totalMarks
 		});
 
-		const xpRes = await user.addXP(SkillsEnum.Agility, xpReceived, duration);
+		let xpRes = await user.addXP(SkillsEnum.Agility, xpReceived, duration);
 
-		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name} laps and fell on ${lapsFailed} of them, you received ${loot}. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}.\n${xpRes}`;
 
 		if (user.usingPet('Harry')) {
 			str += `Harry found you extra Marks of grace.`;
+		}
+
+		if (alch) {
+			const alchedItem = getOSItem(alch.itemID);
+			loot.add('Coins', alchedItem.highalch * alch.quantity);
+			xpRes += ` ${await user.addXP(SkillsEnum.Magic, alch.quantity * 65, duration)}`;
 		}
 
 		if (course.id === 6) {
@@ -133,6 +140,14 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
+				const flags: Record<string, string> = alch === null ? {} : { alch: 'alch' };
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				if (!res.prompter) res.prompter = {};
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				res.prompter.flags = flags;
+
 				user.log(`continued trip of ${quantity}x ${course.name} laps`);
 				return this.client.commands.get('laps')!.run(res, [quantity, course.aliases[0]]);
 			},
