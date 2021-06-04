@@ -43,6 +43,7 @@ export namespace UserSettings {
 	export const OpenableScores = T<O.Readonly<ItemBank>>('openable_scores');
 	export const AttackStyle = T<readonly SkillsEnum[]>('attack_style');
 	export const TotalCoxPoints = T<number>('total_cox_points');
+	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');
