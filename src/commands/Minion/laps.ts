@@ -15,7 +15,6 @@ import getOSItem from '../../lib/util/getOSItem';
 function alching(msg: KlasaMessage, tripLength: number) {
 	if (msg.author.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const bank = msg.author.bank();
-
 	const favAlchables = msg.author.settings
 		.get(UserSettings.FavoriteAlchables)
 		.filter(id => bank.has(id))
@@ -38,7 +37,7 @@ function alching(msg: KlasaMessage, tripLength: number) {
 
 	const hasInfiniteFireRunes = msg.author.hasItemEquippedAnywhere('Staff of fire');
 
-	let maxCasts = Math.floor(tripLength / (Time.Second * 3 + 2.5));
+	let maxCasts = Math.floor(tripLength / (Time.Second * (3 + 10)));
 	maxCasts = Math.min(alchItemQty, maxCasts);
 	maxCasts = Math.min(nats, maxCasts);
 	if (!hasInfiniteFireRunes) {
@@ -127,6 +126,9 @@ export default class extends BotCommand {
 			course.name
 		} laps, it'll take around ${formatDuration(duration)} to finish.`;
 
+		if (course.name === 'Ape Atoll Agility Course') {
+			return msg.channel.send(`<:karamjanMonkey:739460740871749742> Monkey's can't alch!`);
+		}
 		const alchResult = alching(msg, duration);
 		if (alchResult !== null) {
 			if (!msg.author.owns(alchResult.bankToRemove)) {
