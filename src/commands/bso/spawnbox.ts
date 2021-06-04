@@ -30,7 +30,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.id !== '157797566833098752' && msg.channel.id !== '732207379818479756') {
-			return msg.send(`You can only spawn boxes in #bot-channel-bso in the oldschool.gg server. `);
+			return msg.send(`You can only spawn boxes in #bot-channel-bso in the oldschool.gg server.`);
 		}
 
 		const randomItem = Items.filter(i => (i as Item).tradeable_on_ge).random() as Item;
