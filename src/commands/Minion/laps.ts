@@ -132,7 +132,7 @@ export default class extends BotCommand {
 		const alchResult = alching(msg, duration);
 		if (alchResult !== null) {
 			if (!msg.author.owns(alchResult.bankToRemove)) {
-				return msg.channel.send(`ERROR BRUV: You don't own ${alchResult.bankToRemove}.`);
+				return msg.channel.send(`You don't own ${alchResult.bankToRemove}.`);
 			}
 			await msg.author.removeItemsFromBank(alchResult.bankToRemove);
 			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
