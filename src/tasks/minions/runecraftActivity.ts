@@ -48,7 +48,7 @@ export default class extends Task {
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
-			if (roll(Math.floor(5000 / minutes)) && !user.hasItemEquippedOrInBank('Obis')) {
+			if (roll(Math.floor(5000 / minutes))) {
 				loot.add('Obis');
 			}
 		}
