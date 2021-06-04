@@ -9,7 +9,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[item:item]',
-			description: 'Favorites an item to be used in alching..',
+			description: 'Favorites an item to be used in alching.',
 			examples: ['+favalch rune platebody'],
 			categoryFlags: ['minion', 'skilling']
 		});
