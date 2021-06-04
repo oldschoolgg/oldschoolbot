@@ -29,7 +29,7 @@ export default class extends BotCommand {
 			msg.author.id
 		);
 
-		let rememberedSlayerMaster;
+		let rememberedSlayerMaster : string | null;
 		if (msg.flagArgs.unfav || msg.flagArgs.delete || msg.flagArgs.forget) {
 			await msg.author.settings.update(UserSettings.Minion.RememberSlayerMaster, null);
 		} else {
@@ -41,9 +41,11 @@ export default class extends BotCommand {
 			? slayerMasters
 					.filter(m => userCanUseMaster(msg.author, m))
 					.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
-			: slayerMasters
-				.filter(m => userCanUseMaster(msg.author, m))
-				.find(m => m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))) ?? null;
+			: rememberedSlayerMaster
+				? slayerMasters
+					.filter(m => userCanUseMaster(msg.author, m))
+					.find(m => m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))) ?? null
+				: null;
 
 		const matchedSlayerMaster = input
 			? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
