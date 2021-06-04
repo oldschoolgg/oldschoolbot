@@ -27,6 +27,10 @@ export interface WealthChargingActivityTaskOptions extends ActivityTaskOptions {
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	courseID: string;
 	quantity: number;
+	alch: {
+		itemID: number;
+		quantity: number;
+	} | null;
 }
 
 export interface CookingActivityTaskOptions extends ActivityTaskOptions {

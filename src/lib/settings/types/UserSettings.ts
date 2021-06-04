@@ -52,6 +52,7 @@ export namespace UserSettings {
 	export const CurrentItemContract = T<number | null>('current_item_contract');
 	export const ItemContractBank = T<O.Readonly<ItemBank>>('item_contract_bank');
 	export const OuraniaTokens = T<number>('ourania_tokens');
+	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');
