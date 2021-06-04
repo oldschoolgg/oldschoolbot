@@ -36,14 +36,18 @@ export default class extends BotCommand {
 			rememberedSlayerMaster = msg.author.settings.get(UserSettings.Minion.RememberSlayerMaster);
 		}
 
+		// Match on input slayermaster if specified, falling back to remembered.
 		const slayerMaster = input
 			? slayerMasters
 					.filter(m => userCanUseMaster(msg.author, m))
 					.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
-			: rememberedSlayerMaster;
+			: slayerMasters
+				.filter(m => userCanUseMaster(msg.author, m))
+				.find(m => m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))) ?? null;
 
-		const matchedSlayerMaster =
-			slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null;
+		const matchedSlayerMaster = input
+			? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
+			: null;
 
 		if (!input || currentTask || !slayerMaster) {
 			let warningInfo = '';
