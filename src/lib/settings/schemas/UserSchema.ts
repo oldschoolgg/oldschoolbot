@@ -34,6 +34,7 @@ Client.defaultUserSchema
 
 	.add('slayer_points', 'integer', { default: 0 })
 	.add('slayer_task_streak', 'integer', { default: 0 })
+	.add('rememberSlayerMaster', 'string', {default: null})
 
 	.add('minion', folder =>
 		folder
@@ -46,7 +47,6 @@ Client.defaultUserSchema
 			.add('defaultCompostToUse', 'string', { default: 'compost' })
 			.add('defaultPay', 'boolean', { default: false })
 			.add('birdhouseTraps', 'any', { default: null })
-			.add('rememberSlayerMaster', 'string', {default: null})
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder

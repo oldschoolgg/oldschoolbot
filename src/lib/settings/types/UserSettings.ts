@@ -47,6 +47,7 @@ export namespace UserSettings {
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer_points');
 		export const TaskStreak = T<number>('slayer_task_streak');
+		export const RememberSlayerMaster =T<string | null>('rememberSlayerMaster');
 	}
 
 	export namespace Stats {
@@ -75,7 +76,6 @@ export namespace UserSettings {
 		export const DefaultCompostToUse = T<CompostTier>('minion.defaultCompostToUse');
 		export const DefaultPay = T<boolean>('minion.defaultPay');
 		export const BirdhouseTraps = T<BirdhouseData | null>('minion.birdhouseTraps');
-		export const RememberSlayerMaster =T<string | null>('minion.rememberSlayerMaster');
 	}
 
 	export namespace Skills {

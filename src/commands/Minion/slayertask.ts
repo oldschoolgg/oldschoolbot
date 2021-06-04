@@ -8,7 +8,7 @@ import {
 	userCanUseMaster
 } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { stringMatches } from '../../lib/util';
+import {formatDuration, stringMatches} from '../../lib/util';
 import { Monsters } from 'oldschooljs';
 
 export default class extends BotCommand {
@@ -30,11 +30,40 @@ export default class extends BotCommand {
 			msg.author.id
 		);
 
+		if (currentTask && msg.flagArgs.skip) {
+			let slayerPoints = msg.author.settings.get(UserSettings.Slayer.SlayerPoints) ?? 0;
+			if (slayerPoints < 30) {
+				return msg.send(`You need 30 points to cancel, you only have: ${slayerPoints}`);
+			}
+			if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
+				const alchMessage = await msg.channel.send(
+					`Really skip task? This will cost 30 slayer points.`
+				);
+
+				try {
+					await msg.channel.awaitMessages(
+						_msg =>
+							_msg.author.id === msg.author.id &&
+							_msg.content.toLowerCase() === 'confirm',
+						{
+							max: 1,
+							time: 10_000,
+							errors: ['time']
+						}
+					);
+				} catch (err) {
+					return alchMessage.edit(`Not cancelling slayer task.`);
+				}
+			}
+			slayerPoints -= 30;
+			await msg.author.settings.update(UserSettings.Slayer.SlayerPoints, slayerPoints);
+		}
+
 		let rememberedSlayerMaster : string = '';
 		if (msg.flagArgs.unfav || msg.flagArgs.delete || msg.flagArgs.forget) {
-			await msg.author.settings.update(UserSettings.Minion.RememberSlayerMaster, null);
+			await msg.author.settings.update(UserSettings.Slayer.RememberSlayerMaster, null);
 		} else {
-			rememberedSlayerMaster = msg.author.settings.get(UserSettings.Minion.RememberSlayerMaster) ?? '';
+			rememberedSlayerMaster = msg.author.settings.get(UserSettings.Slayer.RememberSlayerMaster) ?? '';
 		}
 
 		// Match on input slayermaster if specified, falling back to remembered.
@@ -55,8 +84,7 @@ export default class extends BotCommand {
 			? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
 			: null;
 
-		if (!msg.flagArgs.skip && (currentTask || !slayerMaster)) {
-		//if (currentTask || !slayerMaster) {
+		if (currentTask || !slayerMaster) {
 			let warningInfo = '';
 			if (input && !slayerMaster && matchedSlayerMaster) {
 				warningInfo = `You do not have the requirements to use ${matchedSlayerMaster.name}.\n\n`;
@@ -79,7 +107,7 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 
 		// Store favorite slayer master if requested:
 		if (msg.flagArgs.remember || msg.flagArgs.fav || msg.flagArgs.save) {
-			await msg.author.settings.update(UserSettings.Minion.RememberSlayerMaster, slayerMaster.name);
+			await msg.author.settings.update(UserSettings.Slayer.RememberSlayerMaster, slayerMaster.name);
 		}
 
 		const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
