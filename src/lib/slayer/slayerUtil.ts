@@ -8,6 +8,7 @@ import { SkillsEnum } from '../skilling/types';
 import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
 import { slayerMasters } from './slayerMasters';
 import { AssignableSlayerTask, SlayerMaster } from './types';
+import { Monsters } from 'oldschooljs';
 
 export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster) {
 	const streaks = [1000, 250, 100, 50, 10];
@@ -75,7 +76,26 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 
 	return { currentTask, assignedTask };
 }
+export function getCommonTaskName(task: AssignableSlayerTask) {
+	let commonName = task.monster.name;
+	switch (task.monster.id) {
+		case Monsters.KaphiteWorker:
+			commonName = 'Kalphite';
+			break;
+		case Monsters.MountainTroll:
+			commonName = 'Trolls';
+			break;
+		case Monsters.FossilIslandWyvernSpitting:
+			commonName = 'Fossil Island Wyverns';
+			break;
+		case Monsters.FeralVampyre:
+			commonName = 'Vampyres';
+			break;
 
+		default:
+	}
+	return commonName;
+}
 export async function getUsersCurrentSlayerInfo(id: string) {
 	const [currentTask, totalTasksDone] = await Promise.all([
 		SlayerTaskTable.findOne({
@@ -119,3 +139,4 @@ export const allSlayerHelmets = [
 	'Twisted slayer helmet',
 	'Twisted slayer helmet (i)'
 ];
+

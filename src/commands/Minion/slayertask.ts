@@ -5,11 +5,11 @@ import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import {
 	assignNewSlayerTask,
 	getUsersCurrentSlayerInfo,
-	userCanUseMaster
+	userCanUseMaster,
+	getCommonTaskName
 } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {formatDuration, stringMatches} from '../../lib/util';
-import { Monsters } from 'oldschooljs';
+import { stringMatches} from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -111,25 +111,9 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 		}
 
 		const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
-		let commonName = newSlayerTask.assignedTask.monster.name;
-		switch (newSlayerTask.assignedTask.monster.id) {
-			case Monsters.KaphiteWorker:
-				commonName = 'Kalphite';
-				break;
-			case Monsters.MountainTroll:
-				commonName = 'Trolls';
-				break;
-			case Monsters.FossilIslandWyvernSpitting:
-				commonName = 'Fossil Island Wyverns';
-				break;
-			case Monsters.FeralVampyre:
-				commonName = 'Vampyres';
-				break;
-
-			default:
-		}
+		let commonName = getCommonTaskName(newSlayerTask.assignedTask);
 		return msg.channel.send(
-			`${slayerMaster.name} has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${newSlayerTask.assignedTask.monster.name}.`
+			`${slayerMaster.name} has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.`
 		);
 	}
 }
