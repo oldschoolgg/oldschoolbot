@@ -51,7 +51,7 @@ export default class extends Task {
 		}
 
 		console.log({ isOnTask, usersTask, monsterID: monster.id });
-		console.log({ remaining:usersTask.currentTask!.quantityRemaining, slayed: quantitySlayed});
+		console.log({ remaining:usersTask.currentTask?.quantityRemaining, slayed: quantitySlayed});
 		if (isOnTask) {
 			const quantityLeft = Math.max(
 				0,
