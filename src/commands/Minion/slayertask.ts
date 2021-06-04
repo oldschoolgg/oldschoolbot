@@ -47,11 +47,14 @@ export default class extends BotCommand {
 					.find(m => m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))) ?? null
 				: null;
 
+		msg.author.log(`Remembered: ${rememberedSlayerMaster}`);
+		msg.author.log(`slayermaster: ${slayerMaster?.name}`);
+
 		const matchedSlayerMaster = input
 			? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
 			: null;
 
-		if (!input || currentTask || !slayerMaster) {
+		if (currentTask || !slayerMaster) {
 			let warningInfo = '';
 			if (input && !slayerMaster && matchedSlayerMaster) {
 				warningInfo = `You do not have the requirements to use ${matchedSlayerMaster.name}.\n\n`;
