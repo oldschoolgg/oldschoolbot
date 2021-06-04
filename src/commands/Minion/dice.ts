@@ -29,6 +29,15 @@ export default class extends BotCommand {
 			.setThumbnail(Image.DiceBag)
 			.setTitle('Dice Roll');
 
+		if (
+			![
+				'792692390778896424',
+				'342983479501389826'
+			].includes(msg.channel.id)
+		) {
+			return msg.send(`You can't use spawnlamp in this channel.`);
+		}
+		
 		if (!amount) {
 			embed.setDescription(`You rolled **${roll}** on the percentile dice.`);
 		} else {
