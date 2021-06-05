@@ -398,11 +398,10 @@ export interface SlayerTaskUnlocks {
 }
 
 export function getSlayerReward(id: SlayerTaskUnlocksEnum) {
-	SlayerRewardsShop.forEach( srs => {
+	return SlayerRewardsShop.forEach( srs => {
 		if (srs.id === id)
 			return srs.name;
 	})
-	return 'Please report this error.';
 }
 export function hasSlayerUnlock(
 	myUnlocks: SlayerTaskUnlocksEnum[] | number[],
