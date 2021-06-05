@@ -90,10 +90,10 @@ export default class extends BotCommand {
 			: null;
 
 		// Special handling for Turael skip
-		if (currentTask && input && slayerMaster.name === 'Turael') {
+		if (currentTask && input && slayerMaster && slayerMaster.name === 'Turael') {
 
 			// TODO: Make sure they aren't already on a Turael task.
-			if (slayerMaster.tasks.find(t => t.monster === currentTask.monster)) {
+			if (slayerMaster.tasks.find(t => t.monster.id === currentTask.monsterID)) {
 				return msg.send(`You cannot skip this task because Turael assigns it.`);
 			}
 			if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
