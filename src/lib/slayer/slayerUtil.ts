@@ -397,11 +397,13 @@ export interface SlayerTaskUnlocks {
 	canBeRemoved?: boolean;
 }
 
-export function getSlayerReward(id: SlayerTaskUnlocksEnum) {
-	return SlayerRewardsShop.forEach( srs => {
+export function getSlayerReward(id: SlayerTaskUnlocksEnum) : string {
+	let name = '';
+	SlayerRewardsShop.forEach( srs => {
 		if (srs.id === id)
-			return srs.name;
-	})
+			name = srs.name;
+	});
+	return name;
 }
 export function hasSlayerUnlock(
 	myUnlocks: SlayerTaskUnlocksEnum[] | number[],
