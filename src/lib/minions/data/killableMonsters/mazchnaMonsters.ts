@@ -307,7 +307,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([allSlayerHelmets]),
+		itemsRequired: deepResolveItems([['Spiny helmet', ...allSlayerHelmets]]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 35

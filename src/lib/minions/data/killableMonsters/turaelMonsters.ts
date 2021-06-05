@@ -16,7 +16,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([allSlayerHelmets]),
+		itemsRequired: deepResolveItems([['Earmuffs', ...allSlayerHelmets]]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 15
@@ -295,6 +295,7 @@ export const turaelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		qpRequired: 0,
+		itemsRequired: deepResolveItems(['Ice cooler']),
 		levelRequirements: {
 			slayer: 22
 		}

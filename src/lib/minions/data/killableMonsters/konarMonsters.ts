@@ -185,7 +185,7 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([allSlayerHelmets]),
+		itemsRequired: deepResolveItems([['Facemask', ...allSlayerHelmets]]),
 		notifyDrops: resolveItems(['Dragon chainbody']),
 		qpRequired: 0,
 		levelRequirements: {
