@@ -205,6 +205,7 @@ export enum SlayerTaskUnlocksEnum {
 
 export function getSlayerReward(id : SlayerTaskUnlocksEnum) {
 	for(const u in SlayerRewardsShop) {
+		console.log(`u: ${u} id: ${id} SRS[u]: ${SlayerRewardsShop[u]}`);
 		if (SlayerRewardsShop[u].id === id) {
 			return SlayerRewardsShop[u].name;
 		}
@@ -220,9 +221,11 @@ export function hasSlayerUnlock(myUnlocks : SlayerTaskUnlocksEnum[] | number[], 
 			myUnlocks.find( unlock => { return unlock === required[unlockReq] }) === undefined
 		) {
 			success = false;
+			console.log(`_i: ${_i} - unlockReq: ${unlockReq} required[unlockreq]: ${required[unlockReq]}`);
 			missing.push(getSlayerReward(required[unlockReq] as SlayerTaskUnlocksEnum));
 		}
 	}
+	console.log(`missing: ${missing}`);
 	errors = missing.join(`, `);
 	return { success, errors };
 }
