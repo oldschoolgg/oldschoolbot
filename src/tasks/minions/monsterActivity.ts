@@ -68,7 +68,7 @@ export default class extends Task {
 				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 
 				str += ` You've completed ${
-					usersTask.totalTasksDone + 1
+					currentStreak
 				} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.`;
 			} else {
 				str += `\nYou killed ${quantitySlayed}x of your ${
