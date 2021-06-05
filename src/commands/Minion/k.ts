@@ -22,6 +22,8 @@ import findMonster, {
 	removeDuplicatesFromArray
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import {deepResolveItems} from "../../lib/util/resolveItems";
+import itemID from "../../lib/util/itemID";
 
 const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
 const invalidMonsterMsg = (prefix: string) =>
@@ -127,6 +129,11 @@ export default class extends BotCommand {
 				boosts.push(messages.join(' + '));
 			}
 		}
+		// Add 15% slayer boost on task if they have black mask or similar
+		if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			boosts.push("15% for Slayer Helmet on task");
+		}
 		for (const [itemID, boostAmount] of Object.entries(
 			msg.author.resolveAvailableItemBoosts(monster)
 		)) {
@@ -139,6 +146,13 @@ export default class extends BotCommand {
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = floor(maxTripLength / timeToFinish);
+		}
+		if (typeof quantity !== 'number') quantity = parseInt(quantity);
+		if (isOnTask) {
+			quantity = Math.min(
+				quantity,
+				usersTask.currentTask!.quantityRemaining
+			);
 		}
 
 		// Check food

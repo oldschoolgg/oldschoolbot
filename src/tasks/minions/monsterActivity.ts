@@ -44,9 +44,9 @@ export default class extends Task {
 		const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
 		// Check if superiors unlock is purchased
 		const superiorsUnlocked = isOnTask
-			? mySlayerUnlocks.
-				find( unlock => { return unlock === SlayerTaskUnlocksEnum.LikeABoss }) ?? undefined
+			? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)
 			: undefined;
+
 		const superiorTable = superiorsUnlocked && monster.superior
 			? monster.superior
 			: undefined;
