@@ -409,7 +409,7 @@ const slayerCreatables: Createable[] = [
 	{
 		name: 'Uncharge black mask',
 		inputItems: resolveNameBank({
-			'Black mask 10': 1
+			'Black mask (10)': 1
 		}),
 		outputItems: resolveNameBank({ 'Black mask': 1 }),
 		GPCost: 0,
