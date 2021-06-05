@@ -52,7 +52,7 @@ export default class extends BotCommand {
 						}
 					);
 				} catch (err) {
-					return alchMessage.edit(`Not cancelling slayer task.`);
+					return alchMessage.edit(`Not skipping slayer task.`);
 				}
 			}
 			slayerPoints -= 30;
@@ -89,10 +89,51 @@ export default class extends BotCommand {
 			? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
 			: null;
 
+		// Special handling for Turael skip
+		if (currentTask && input && slayerMaster.name === 'Turael') {
+
+			// TODO: Make sure they aren't already on a Turael task.
+			if (slayerMaster.tasks.find(t => t.monster === currentTask.monster)) {
+				return msg.send(`You cannot skip this task because Turael assigns it.`);
+			}
+			if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
+				const alchMessage = await msg.channel.send(
+					`Really cancel task? This will reset your streak to 0 and give you a new` +
+					` ${slayerMaster.name} task.\n\nType **confirm** to skip.`
+				);
+
+				try {
+					await msg.channel.awaitMessages(
+						_msg =>
+							_msg.author.id === msg.author.id &&
+							_msg.content.toLowerCase() === 'confirm',
+						{
+							max: 1,
+							time: 10_000,
+							errors: ['time']
+						}
+					);
+				} catch (err) {
+					return alchMessage.edit(`Not cancelling slayer task.`);
+				}
+			}
+
+			currentTask!.quantityRemaining = 0;
+			currentTask!.skipped = true;
+			currentTask!.save();
+			msg.author.settings.update(UserSettings.Slayer.TaskStreak, 0);
+			const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
+			let commonName = getCommonTaskName(newSlayerTask.assignedTask);
+			return msg.channel.send(
+				`Your task has been skipped.\n\n ${slayerMaster.name}` +
+				` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.`
+			);
+		}
 		if (currentTask || !slayerMaster) {
 			let warningInfo = '';
 			if (input && !slayerMaster && matchedSlayerMaster) {
 				warningInfo = `You do not have the requirements to use ${matchedSlayerMaster.name}.\n\n`;
+				// TODO: Show requirements
 			}
 			let baseInfo = currentTask
 				? `Your current task is to kill ${currentTask.quantity}x ${
