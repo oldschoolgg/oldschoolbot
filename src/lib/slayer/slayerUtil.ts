@@ -210,7 +210,7 @@ export function getSlayerReward(id : SlayerTaskUnlocksEnum) {
 		}
 	}
 }
-export function hasSlayerUnlock(myUnlocks : readonly SlayerTaskUnlocksEnum[] | number[], required : SlayerTaskUnlocksEnum[] | number[]) {
+export function hasSlayerUnlock(myUnlocks : SlayerTaskUnlocksEnum[] | number[], required : SlayerTaskUnlocksEnum[] | number[]) {
 	const missing = [];
 	let success = true;
 	let errors = '';
