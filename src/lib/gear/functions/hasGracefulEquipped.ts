@@ -79,7 +79,7 @@ export function hasGracefulEquipped(setup: GearSetup) {
 			'Trailblazer graceful cape',
 			'Agility cape',
 			'Agility cape (t)',
-			'Agility master cape',
+			'Agility master cape'
 		])
 	});
 }
