@@ -500,7 +500,304 @@ const slayerCreatables: Createable[] = [
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
 				SlayerTaskUnlocksEnum.KingBlackBonnet
 			]
-	}
+	},
+	{
+		name: 'Black slayer helmet (i)',
+		inputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Kbd heads': 1 }),
+		outputItems: resolveNameBank({ 'Black slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Revert black slayer helmet',
+		outputItems: resolveNameBank({ 'Slayer helmet': 1, 'Kbd heads': 1 }),
+		inputItems: resolveNameBank({ 'Black slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Revert black slayer helmet (i)',
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Kbd heads': 1 }),
+		inputItems: resolveNameBank({ 'Black slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Green slayer helmet',
+		inputItems: resolveNameBank({ 'Slayer helmet': 1, 'Kq head': 1 }),
+		outputItems: resolveNameBank({ 'Green slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Green slayer helmet (i)',
+		inputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Kq head': 1 }),
+		outputItems: resolveNameBank({ 'Green slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Revert green slayer helmet',
+		outputItems: resolveNameBank({ 'Slayer helmet': 1, 'Kq head': 1 }),
+		inputItems: resolveNameBank({ 'Green slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Revert green slayer helmet (i)',
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Kq head': 1 }),
+		inputItems: resolveNameBank({ 'Green slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Red slayer helmet',
+		inputItems: resolveNameBank({ 'Slayer helmet': 1, 'Abyssal head': 1 }),
+		outputItems: resolveNameBank({ 'Red slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Red slayer helmet (i)',
+		inputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Abyssal head': 1 }),
+		outputItems: resolveNameBank({ 'Red slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Revert red slayer helmet',
+		outputItems: resolveNameBank({ 'Slayer helmet': 1, 'Abyssal head': 1 }),
+		inputItems: resolveNameBank({ 'Red slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Revert red slayer helmet (i)',
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Abyssal head': 1 }),
+		inputItems: resolveNameBank({ 'Red slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Purple slayer helmet',
+		inputItems: resolveNameBank({ 'Slayer helmet': 1, 'Dark claw': 1 }),
+		outputItems: resolveNameBank({ 'Purple slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Purple slayer helmet (i)',
+		inputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Dark claw': 1 }),
+		outputItems: resolveNameBank({ 'Purple slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Revert purple slayer helmet',
+		outputItems: resolveNameBank({ 'Slayer helmet': 1, 'Dark claw': 1 }),
+		inputItems: resolveNameBank({ 'Purple slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Revert purple slayer helmet (i)',
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Dark claw': 1 }),
+		inputItems: resolveNameBank({ 'Purple slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Turquoise slayer helmet',
+		inputItems: resolveNameBank({ 'Slayer helmet': 1, "Vorkath's head": 1 }),
+		outputItems: resolveNameBank({ 'Turquoise slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Turquoise slayer helmet (i)',
+		inputItems: resolveNameBank({ 'Slayer helmet (i)': 1, "Vorkath's head": 1 }),
+		outputItems: resolveNameBank({ 'Turquoise slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Revert turquoise slayer helmet',
+		outputItems: resolveNameBank({ 'Slayer helmet': 1, "Vorkath's head": 1 }),
+		inputItems: resolveNameBank({ 'Turquoise slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Revert turquoise slayer helmet (i)',
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, "Vorkath's head": 1 }),
+		inputItems: resolveNameBank({ 'Turquoise slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Hydra slayer helmet',
+		inputItems: resolveNameBank({ 'Slayer helmet': 1, 'Alchemical hydra heads': 1 }),
+		outputItems: resolveNameBank({ 'Hydra slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Hydra slayer helmet (i)',
+		inputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Alchemical hydra heads': 1 }),
+		outputItems: resolveNameBank({ 'Hydra slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Revert hydra slayer helmet',
+		outputItems: resolveNameBank({ 'Slayer helmet': 1, 'Alchemical hydra heads': 1 }),
+		inputItems: resolveNameBank({ 'Hydra slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Revert hydra slayer helmet (i)',
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Alchemical hydra heads': 1 }),
+		inputItems: resolveNameBank({ 'Hydra slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Twisted slayer helmet',
+		inputItems: resolveNameBank({ 'Slayer helmet': 1, 'Twisted horns': 1 }),
+		outputItems: resolveNameBank({ 'Twisted slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Twisted slayer helmet (i)',
+		inputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Twisted horns': 1 }),
+		outputItems: resolveNameBank({ 'Twisted slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Revert twisted slayer helmet',
+		outputItems: resolveNameBank({ 'Slayer helmet': 1, 'Twisted horns': 1 }),
+		inputItems: resolveNameBank({ 'Twisted slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
+	{
+		name: 'Revert twisted slayer helmet (i)',
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Tiwsted horns': 1 }),
+		inputItems: resolveNameBank({ 'Twisted slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
+	},
 
 ];
 

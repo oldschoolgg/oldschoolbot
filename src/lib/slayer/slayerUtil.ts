@@ -9,6 +9,9 @@ import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
 import { slayerMasters } from './slayerMasters';
 import { AssignableSlayerTask, SlayerMaster } from './types';
 import { Monsters, MonsterSlayerMaster } from 'oldschooljs';
+import slayertask from "../../commands/Minion/slayertask";
+import { bossTasks } from "./tasks/bossTasks";
+import {roll} from "../util";
 
 export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster) {
 	const streaks = [1000, 250, 100, 50, 10];
@@ -56,17 +59,48 @@ export function userCanUseMaster(user: KlasaUser, master: SlayerMaster) {
 	);
 }
 
-export function userCanUseTask(user: KlasaUser, task: AssignableSlayerTask) {
+export function userCanUseTask(user: KlasaUser, task: AssignableSlayerTask, master: SlayerMaster) {
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.settings.get(UserSettings.QP)) return false;
 	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
+	const myUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
+	// Slayer unlock restrictions:
+	const lmon = task.monster.name.toLowerCase();
+	const lmast = master.name.toLowerCase();
+	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed))
+		return false;
+	if (lmon === 'mithril draogn' && !myUnlocks.includes(SlayerTaskUnlocksEnum.IHopeYouMithMe))
+		return false;
+	if (lmon === 'aviansie' && !myUnlocks.includes(SlayerTaskUnlocksEnum.WatchTheBirdie))
+		return false;
+	if (lmon === 'tzhaar-ket' && !myUnlocks.includes(SlayerTaskUnlocksEnum.HotStuff))
+		return false;
+	if (lmon === 'spitting wyvern' && myUnlocks.includes(SlayerTaskUnlocksEnum.StopTheWyvern))
+		return false;
+	if (lmon === 'feral vampyre' &&
+		(lmast === 'konar quo maten' || lmast === 'duradel' || lmast === 'nieve' || lmast === 'chaeldar')
+		&& !myUnlocks.includes(SlayerTaskUnlocksEnum.ActualVampyreSlayer)
+	) return false;
+	if (lmon === 'basilisk' &&
+		(lmast === 'konar quo maten' || lmast === 'duradel' || lmast === 'nieve')
+		&& !myUnlocks.includes(SlayerTaskUnlocksEnum.Basilocked)
+	) return false;
 	return true;
 }
 
 // boss tasks
 export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
-	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t));
-	const assignedTask = weightedPick(baseTasks);
+	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master));
+	let assignedTask;
+	if (
+		_user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.LikeABoss)
+		&& roll(25)
+	) {
+		assignedTask = weightedPick(bossTasks);
+	} else {
+		assignedTask = weightedPick(baseTasks);
+	}
+
 	const newUser = await getNewUser(_user.id);
 
 	const currentTask = new SlayerTaskTable();
@@ -201,13 +235,18 @@ export enum SlayerTaskUnlocksEnum {
 	BiggerAndBadder,
 	KingBlackBonnet,
 	KalphiteKhat,
-
-
+	UnholyHelmet,
+	DarkMantle,
+	UndeadHead,
+	UseMoreHead,
+	TwistedVision,
+	StopTheWyvern,
+	Basilocked,
+	ActualVampyreSlayer
 }
 
 export function getSlayerReward(id : SlayerTaskUnlocksEnum) {
 	for(const u in SlayerRewardsShop) {
-		console.log(`u: ${u} id: ${id} SRS[u]: ${SlayerRewardsShop[u]}`);
 		if (SlayerRewardsShop[u].id === id) {
 			return SlayerRewardsShop[u].name;
 		}
@@ -228,19 +267,6 @@ export function hasSlayerUnlock(myUnlocks : SlayerTaskUnlocksEnum[] | number[], 
 			missing.push(getSlayerReward(req as SlayerTaskUnlocksEnum));
 		}
 	});
-	/* tslint:disable:no-unused-variable */
-		/*
-
-	for (const [ _i, unlockReq ] of Object.entries(required)) {
-		if (
-			myUnlocks.find( unlock => { return unlock === required[unlockReq] }) === undefined
-		) {
-			success = false;
-			console.log(`_i: ${_i} - unlockReq: ${unlockReq} required[unlockreq]: ${required[unlockReq]}`);
-			missing.push(getSlayerReward(unlockReq as SlayerTaskUnlocksEnum));
-		}
-	}
-		 */
 
 	console.log(`missing: ${missing}`);
 	errors = missing.join(`, `);
@@ -308,6 +334,83 @@ export const SlayerRewardsShop : SlayerTaskUnlocks[] = [
 		name: 'Like a Boss',
 		desc: 'Unlocks boss tasks from high level slayer masters.',
 		slayerPointCost: 200,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.BiggerAndBadder,
+		name: 'Bigger and Badder',
+		desc: 'Unlocks superiors.',
+		slayerPointCost: 150,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.KingBlackBonnet,
+		name: 'King Black Bonnet',
+		desc: 'Unlocks ability to create the Black slayer helmet.',
+		slayerPointCost: 1_000,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.KalphiteKhat,
+		name: 'Kalphite Khat',
+		desc: 'Unlocks ability to create the Green slayer helmet.',
+		slayerPointCost: 1_000,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.UnholyHelmet,
+		name: 'Unholy Helmet',
+		desc: 'Unlocks ability to create the Red slayer helmet.',
+		slayerPointCost: 1_000,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.DarkMantle,
+		name: 'Dark Mantle',
+		desc: 'Unlocks ability to create the Purple slayer helmet.',
+		slayerPointCost: 1_000,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.UndeadHead,
+		name: 'Undead Head',
+		desc: 'Unlocks ability to create the Turquoise slayer helmet.',
+		slayerPointCost: 1_000,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.UseMoreHead,
+		name: 'Use More Head',
+		desc: 'Unlocks ability to create the Hydra slayer helmet.',
+		slayerPointCost: 1_000,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.TwistedVision,
+		name: 'Twisted Vision',
+		desc: 'Unlocks ability to create the Twisted slayer helmet.',
+		slayerPointCost: 1_000,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.StopTheWyvern,
+		name: 'Stop The Wyvern',
+		desc: 'Prevents slayer masters from assigning Fossil island wyverns.',
+		slayerPointCost: 500,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.Basilocked,
+		name: 'Basilocked',
+		desc: 'Unlocks the ability for Konar, Duradel and Nieve to assign Basilisks',
+		slayerPointCost: 80,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.ActualVampyreSlayer,
+		name: 'Actual Vampyre Slayer',
+		desc: 'Unlocks the ability for Konar, Duradel, Nieve and Chaeldar to assign Vampyres',
+		slayerPointCost: 80,
 		canBeRemoved: true
 	}
 ];

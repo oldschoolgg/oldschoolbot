@@ -97,7 +97,7 @@ export default class extends BotCommand {
 				createableItem.requiredSlayerUnlocks
 			);
 			if (!success) {
-				throw `You have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
+				throw `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}
 			/*
 			for (const unlockReq of Object.entries(createableItem.requiredSlayerUnlocks)) {

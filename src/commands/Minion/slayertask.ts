@@ -6,7 +6,7 @@ import {
 	assignNewSlayerTask,
 	getUsersCurrentSlayerInfo,
 	userCanUseMaster,
-	getCommonTaskName
+	getCommonTaskName, SlayerTaskUnlocksEnum
 } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches} from '../../lib/util';
@@ -30,9 +30,13 @@ export default class extends BotCommand {
 			msg.author.id
 		);
 
-		if (msg.flagArgs.malevolent) {
+		if (msg.flagArgs.mal3v0lent) {
 			await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks,2);
-			return "Hopefully updated";
+			return msg.send('Hopefully updated');
+		}
+		if (msg.flagArgs.b4ws) {
+			await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks,SlayerTaskUnlocksEnum.LikeABoss);
+			return msg.send('Hopefully updated');
 		}
 		if (currentTask && msg.flagArgs.skip) {
 			let slayerPoints = msg.author.settings.get(UserSettings.Slayer.SlayerPoints) ?? 0;
