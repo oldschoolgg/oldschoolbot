@@ -1,5 +1,6 @@
 import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { MessageAttachment } from 'discord.js';
 
 import { Activity } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -22,10 +23,10 @@ import findMonster, {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
-const invalidMonster = (prefix: string) =>
-	`That isn't a valid monster, the available monsters are: ${killableMonsters
-		.map(mon => mon.name)
-		.join(', ')}. For example, \`${prefix}minion kill 5 zulrah\``;
+const validMonsters = killableMonsters.map(mon => mon.name).join(', ');
+const invalidMonsterMsg = (prefix: string) =>
+	`That isn't a valid monster, the available monsters are attached.` +
+	`\n\n For example, \`${prefix}minion kill 5 zulrah\``;
 
 const { floor } = Math;
 
@@ -78,7 +79,10 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		if (!name) return msg.channel.send(invalidMonster(msg.cmdPrefix));
+		if (!name) return msg.channel.send(
+			invalidMonsterMsg(msg.cmdPrefix),
+			new MessageAttachment(Buffer.from(validMonsters),'validMonsters.txt')
+		);
 		const monster = findMonster(name);
 		if (!monster) return msg.channel.send(invalidMonster(msg.cmdPrefix));
 
