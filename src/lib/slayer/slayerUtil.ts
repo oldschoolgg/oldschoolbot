@@ -222,7 +222,7 @@ export function hasSlayerUnlock(myUnlocks : SlayerTaskUnlocksEnum[] | number[], 
 		) {
 			success = false;
 			console.log(`_i: ${_i} - unlockReq: ${unlockReq} required[unlockreq]: ${required[unlockReq]}`);
-			missing.push(getSlayerReward(required[unlockReq] as SlayerTaskUnlocksEnum));
+			missing.push(getSlayerReward(unlockReq as SlayerTaskUnlocksEnum));
 		}
 	}
 	console.log(`missing: ${missing}`);
