@@ -65,7 +65,7 @@ export default class extends BotCommand {
 					`${
 						msg.author.username
 					} rolled **${roll}** on the percentile dice, and you won ${Util.toKMB(
-						amountToAdd - gp
+						amountToAdd
 					)} GP.\n\nYou received a **Gamblers Bag**.`
 				);
 			}
