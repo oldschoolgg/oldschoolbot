@@ -86,7 +86,10 @@ export default class extends BotCommand {
 		}
 		if (createableItem.requiredSlayerUnlocks) {
 			let mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
-			const { success, errors } = hasSlayerUnlock(mySlayerUnlocks, createableItem.requiredSlayerUnlocks);
+			const { success, errors } = hasSlayerUnlock(
+				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
+				createableItem.requiredSlayerUnlocks
+			);
 			if (!success) {
 				throw `You have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}

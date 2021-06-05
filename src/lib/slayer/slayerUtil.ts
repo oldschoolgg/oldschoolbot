@@ -214,7 +214,8 @@ export function hasSlayerUnlock(myUnlocks : readonly SlayerTaskUnlocksEnum[] | n
 	const missing = [];
 	let success = true;
 	let errors = '';
-	for (const [ i, unlockReq ] of Object.entries(required)) {
+	/* tslint:disable:no-unused-variable */
+	for (const [ _i, unlockReq ] of Object.entries(required)) {
 		if (
 			myUnlocks.find( unlock => { return unlock === required[unlockReq] }) === undefined
 		) {
