@@ -9,7 +9,6 @@ import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
 import { slayerMasters } from './slayerMasters';
 import { AssignableSlayerTask, SlayerMaster } from './types';
 import { Monsters, MonsterSlayerMaster } from 'oldschooljs';
-import slayertask from "../../commands/Minion/slayertask";
 import { bossTasks } from "./tasks/bossTasks";
 import {roll} from "../util";
 
