@@ -43,6 +43,31 @@ export const vannakaMonsters: KillableMonster[] = [
 		superior: Monsters.GreaterAbyssalDemon
 	},
 	{
+		id: Monsters.AbyssalSire.id,
+		name: Monsters.AbyssalSire.name,
+		aliases: Monsters.AbyssalSire.aliases,
+		timeToFinish: Time.Second * 180,
+		table: Monsters.AbyssalDemon,
+
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 3,
+		qpRequired: 0,
+		levelRequirements: {
+			slayer: 85
+		},
+		notifyDrops: resolveItems(['Abyssal orhpan', 'Jar of miasma', 'Abyssal head', 'Abyssal dagger']),
+		itemInBankBoosts: [
+			{
+				[itemID('Arclight')]: 10
+			},
+			{
+				[itemID('Bandos godsword')]: 5,
+				[itemID('Dragon warhammer')]: 10
+			}
+		]
+	},
+	{
 		id: Monsters.Ankou.id,
 		name: Monsters.Ankou.name,
 		aliases: Monsters.Ankou.aliases,
@@ -377,6 +402,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
+		notifyDrops: resolveItems(['Noon', 'Jar of stone']),
 		itemsRequired: deepResolveItems(
 			[
 				'Brittle key',
@@ -388,6 +414,16 @@ export const vannakaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 75
 		},
+		itemInBankBoosts: [
+			{
+				[itemID('Armadyl crossbow')]: 3,
+				[itemID('Toxic blowpipe')]: 5
+			},
+			{
+				[itemID('Saradomin godsword')]: 6,
+				[itemID('Dragon claws')]: 10
+			}
+		]
 	},
 	{
 		id: Monsters.GiantSeaSnake.id,

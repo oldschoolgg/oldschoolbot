@@ -129,6 +129,41 @@ export const konarMonsters: KillableMonster[] = [
 		superior: Monsters.ColossalHydra
 	},
 	{
+		id: Monsters.AlchemicalHydra.id,
+		name: Monsters.AlchemicalHydra.name,
+		aliases: Monsters.AlchemicalHydra.aliases,
+		timeToFinish: Time.Second * 240,
+		table: Monsters.AlchemicalHydra,
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 6,
+		itemsRequired: deepResolveItems([
+			['Boots of stone', 'Boots of brimstone', 'Granite boots'],
+			'Antidote++(4)'
+		]),
+		notifyDrops: resolveItems(
+			[
+				'Hydra leather',
+				'Hydra tail',
+				"Hydra's claw",
+				'Ikkle hydra',
+				'Jar of chemicals'
+			]
+		),
+		qpRequired: 0,
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon hunter crossbow')]: 8,
+				[itemID('Dragon hunter lance')]: 10,
+				[itemID('Twisted bow')]: 12
+			}
+		],
+		slayerOnly: true,
+		levelRequirements: {
+			slayer: 95
+		},
+	},
+	{
 		id: Monsters.MithrilDragon.id,
 		name: Monsters.MithrilDragon.name,
 		aliases: Monsters.MithrilDragon.aliases,
@@ -142,7 +177,8 @@ export const konarMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Dragon hunter lance')]: 10
+				[itemID('Dragon hunter lance')]: 10,
+				[itemID('Dragon hunter crossbow')]: 10
 			}
 		]
 	},
@@ -193,6 +229,29 @@ export const konarMonsters: KillableMonster[] = [
 		},
 		slayerOnly: true,
 		superior: Monsters.NuclearSmokeDevil
+	},
+	{
+		id: Monsters.ThermonuclearSmokeDevil.id,
+		name: Monsters.ThermonuclearSmokeDevil.name,
+		aliases: Monsters.ThermonuclearSmokeDevil.aliases,
+		timeToFinish: Time.Second * 40,
+		table: Monsters.ThermonuclearSmokeDevil,
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 4,
+		itemsRequired: deepResolveItems([['Facemask', ...allSlayerHelmets]]),
+		notifyDrops: resolveItems(['Dragon chainbody', 'Smoke Battlestaff', 'Pet smoke devil']),
+		qpRequired: 0,
+		levelRequirements: {
+			slayer: 93
+		},
+		slayerOnly: true,
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon warhammer')]: 5,
+				[itemID('Dragon claws')]: 10
+			}
+		]
 	},
 	{
 		id: Monsters.Waterfiend.id,

@@ -76,7 +76,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.CaveKraken.aliases,
 		timeToFinish: Time.Second * 35,
 		table: Monsters.CaveKraken,
-		wildy: true,
+		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
 		qpRequired: 0,
@@ -224,6 +224,16 @@ export const chaeldarMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			['Trident of the seas', 'Trident of the seas (full)', 'Uncharged trident']
 		]),
+		notifyDrops: resolveItems(['Jar of sand', 'Pet kraken']),
+		itemInBankBoosts: [
+			{
+				[itemID('Uncharged trident')]: 5,
+				[itemID('Trident of the seas')]: 5,
+				[itemID('Trident of the seas (full)')]: 8,
+				[itemID('Sanguinesti staff')]: 11,
+				[itemID('Harmonised nightmare staff')]: 15
+			}
+		],
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 87
@@ -319,6 +329,11 @@ export const chaeldarMonsters: KillableMonster[] = [
 			]
 		]),
 		notifyDrops: resolveItems(['Draconic visage']),
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon hunter crossbow')]: 15
+			}
+		],
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 72
@@ -335,10 +350,12 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Dark totem']),
+		notifyDrops: resolveItems(['Jar of darkness', 'Skotos']),
 		qpRequired: 0,
+		// Skotizo requires 1 totem per kill, and arclight makes kill 2x faster irl.
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 10
+				[itemID('Arclight')]: 50
 			}
 		]
 	},
@@ -371,7 +388,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Dragon hunter crossbow')]: 3,
-				[itemID('Dragon hunter lance')]: 3
+				[itemID('Dragon hunter lance')]: 7
 			}
 		],
 		levelRequirements: {
