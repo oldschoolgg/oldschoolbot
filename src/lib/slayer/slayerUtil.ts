@@ -212,6 +212,7 @@ export function getSlayerReward(id : SlayerTaskUnlocksEnum) {
 			return SlayerRewardsShop[u].name;
 		}
 	}
+	return 'Please report this error.';
 }
 export function hasSlayerUnlock(myUnlocks : SlayerTaskUnlocksEnum[] | number[], required : SlayerTaskUnlocksEnum[] | number[]) {
 	const missing : string[] = [];
