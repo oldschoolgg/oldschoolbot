@@ -93,6 +93,12 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 	let assignedTask;
 	if (
 		_user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.LikeABoss)
+		&& (
+			master.name.toLowerCase() === 'konar quo maten'
+			|| master.name.toLowerCase() === 'duradel'
+			|| master.name.toLowerCase() === 'nieve'
+			|| master.name.toLowerCase() === 'chaeldar'
+		)
 		&& roll(25)
 	) {
 		assignedTask = weightedPick(bossTasks);

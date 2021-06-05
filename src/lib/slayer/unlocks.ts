@@ -1,3 +1,4 @@
+// Note: We aren't using this file, I went about it another way that I feel works better.
 export const slayerShopUnlocks = [
 	{
 		name: 'Gargoyle smasher',

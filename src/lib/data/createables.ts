@@ -542,7 +542,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.KalphiteKhat
 			]
 	},
 	{
@@ -553,7 +553,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.KalphiteKhat
 			]
 	},
 	{
@@ -564,7 +564,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.KalphiteKhat
 			]
 	},
 	{
@@ -575,7 +575,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.KalphiteKhat
 			]
 	},
 	{
@@ -586,7 +586,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.UnholyHelmet
 			]
 	},
 	{
@@ -597,7 +597,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.UnholyHelmet
 			]
 	},
 	{
@@ -608,7 +608,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.UnholyHelmet
 			]
 	},
 	{
@@ -619,7 +619,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.UnholyHelmet
 			]
 	},
 	{
@@ -630,7 +630,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.DarkMantle
 			]
 	},
 	{
@@ -641,7 +641,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.DarkMantle
 			]
 	},
 	{
@@ -652,7 +652,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.DarkMantle
 			]
 	},
 	{
@@ -663,7 +663,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.DarkMantle
 			]
 	},
 	{
@@ -674,7 +674,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.UndeadHead
 			]
 	},
 	{
@@ -685,7 +685,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.UndeadHead
 			]
 	},
 	{
@@ -696,7 +696,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.UndeadHead
 			]
 	},
 	{
@@ -707,7 +707,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.UndeadHead
 			]
 	},
 	{
@@ -718,7 +718,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.UseMoreHead
 			]
 	},
 	{
@@ -729,7 +729,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.UseMoreHead
 			]
 	},
 	{
@@ -740,7 +740,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.UseMoreHead
 			]
 	},
 	{
@@ -751,7 +751,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.UseMoreHead
 			]
 	},
 	{
@@ -762,7 +762,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.TwistedVision
 			]
 	},
 	{
@@ -773,7 +773,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.TwistedVision
 			]
 	},
 	{
@@ -784,7 +784,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.TwistedVision
 			]
 	},
 	{
@@ -795,7 +795,7 @@ const slayerCreatables: Createable[] = [
 		requiredSlayerUnlocks:
 			[
 				SlayerTaskUnlocksEnum.MalevolentMasquerade,
-				SlayerTaskUnlocksEnum.KingBlackBonnet
+				SlayerTaskUnlocksEnum.TwistedVision
 			]
 	},
 
