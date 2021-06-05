@@ -219,6 +219,7 @@ export function hasSlayerUnlock(myUnlocks : SlayerTaskUnlocksEnum[] | number[], 
 		if (
 			myUnlocks.find( unlock => { return unlock === required[unlockReq] }) === undefined
 		) {
+			success = false;
 			missing.push(getSlayerReward(required[unlockReq] as SlayerTaskUnlocksEnum));
 		}
 	}

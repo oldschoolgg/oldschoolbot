@@ -85,6 +85,8 @@ export default class extends BotCommand {
 			}
 		}
 		if (createableItem.requiredSlayerUnlocks) {
+			console.log(`Required items...`);
+			console.log(createableItem.requiredSlayerUnlocks);
 			let mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
 			let mySlayerUnlocksIter : SlayerTaskUnlocksEnum[] = [];
 			for (const msu in mySlayerUnlocks) {
