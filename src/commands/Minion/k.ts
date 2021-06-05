@@ -84,7 +84,10 @@ export default class extends BotCommand {
 			new MessageAttachment(Buffer.from(validMonsters),'validMonsters.txt')
 		);
 		const monster = findMonster(name);
-		if (!monster) return msg.channel.send(invalidMonster(msg.cmdPrefix));
+		if (!monster) return msg.channel.send(
+			invalidMonsterMsg(msg.cmdPrefix),
+			new MessageAttachment(Buffer.from(validMonsters),'validMonsters.txt')
+		);
 
 		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
 		const isOnTask =
