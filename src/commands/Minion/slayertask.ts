@@ -37,7 +37,7 @@ export default class extends BotCommand {
 		testBank.add({ 'Drake\'s tooth' : 3});
 		testBank.filter( (item) => {
 			return monsterArray
-				.find( baditem => { return baditem.name !== item.name; })
+				.find( baditem => { return baditem === item.name; }) === undefined
 
 		}, true);
 
