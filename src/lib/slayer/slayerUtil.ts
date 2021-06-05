@@ -9,7 +9,6 @@ import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
 import { slayerMasters } from './slayerMasters';
 import { AssignableSlayerTask, SlayerMaster } from './types';
 import { Monsters, MonsterSlayerMaster } from 'oldschooljs';
-import {BitField} from "../constants";
 
 export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster) {
 	const streaks = [1000, 250, 100, 50, 10];
@@ -215,7 +214,7 @@ export function getSlayerReward(id : SlayerTaskUnlocksEnum) {
 	}
 }
 export function hasSlayerUnlock(myUnlocks : SlayerTaskUnlocksEnum[] | number[], required : SlayerTaskUnlocksEnum[] | number[]) {
-	const missing = [];
+	const missing : string[] = [];
 	let success = true;
 	let errors = '';
 
