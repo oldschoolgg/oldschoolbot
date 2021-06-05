@@ -461,6 +461,34 @@ const slayerCreatables: Createable[] = [
 		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
+	},
+	{
+		name: 'Revert slayer helmet',
+		inputItems: resolveNameBank({ 'Slayer helmet': 1 }),
+		outputItems: resolveNameBank({
+			'Black mask': 1,
+			'Earmuffs': 1,
+			'Facemask': 1,
+			'Nose peg': 1,
+			'Spiny helmet': 1,
+			'Enchanted gem': 1
+		}),
+		GPCost: 0,
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
+	},
+	{
+		name: 'Revert slayer helmet (i)',
+		inputItems: resolveNameBank({ 'Slayer helmet (i)': 1 }),
+		outputItems: resolveNameBank({
+			'Black mask (i)': 1,
+			'Earmuffs': 1,
+			'Facemask': 1,
+			'Nose peg': 1,
+			'Spiny helmet': 1,
+			'Enchanted gem': 1
+		}),
+		GPCost: 0,
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
 	}
 ];
 
