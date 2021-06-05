@@ -575,6 +575,11 @@ export const vannakaMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			['Leaf-bladed spear', 'Leaf-bladed battleaxe', 'Leaf-bladed sword']
 		]),
+		itemInBankBoosts: [
+			{
+				[itemID('Leaf-bladed battleaxe')]: 15
+			}
+		],
 		notifyDrops: resolveItems(['Kurask head']),
 		qpRequired: 0,
 		levelRequirements: {
