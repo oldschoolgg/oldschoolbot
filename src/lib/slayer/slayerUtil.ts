@@ -9,6 +9,7 @@ import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
 import { slayerMasters } from './slayerMasters';
 import { AssignableSlayerTask, SlayerMaster } from './types';
 import { Monsters, MonsterSlayerMaster } from 'oldschooljs';
+import {BitField} from "../constants";
 
 export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster) {
 	const streaks = [1000, 250, 100, 50, 10];
@@ -217,7 +218,19 @@ export function hasSlayerUnlock(myUnlocks : SlayerTaskUnlocksEnum[] | number[], 
 	const missing = [];
 	let success = true;
 	let errors = '';
+
+	console.log(`Required unlocks: ${required}`);
+	required.forEach( req => {
+		console.log(`Checking for req: ${req}  in ${myUnlocks}`);
+		if (!myUnlocks.includes(req)) {
+			success = false;
+			console.log(`Missing requirement: req unlockReq: ${req}`);
+			missing.push(getSlayerReward(req as SlayerTaskUnlocksEnum));
+		}
+	});
 	/* tslint:disable:no-unused-variable */
+		/*
+
 	for (const [ _i, unlockReq ] of Object.entries(required)) {
 		if (
 			myUnlocks.find( unlock => { return unlock === required[unlockReq] }) === undefined
@@ -227,6 +240,8 @@ export function hasSlayerUnlock(myUnlocks : SlayerTaskUnlocksEnum[] | number[], 
 			missing.push(getSlayerReward(unlockReq as SlayerTaskUnlocksEnum));
 		}
 	}
+		 */
+
 	console.log(`missing: ${missing}`);
 	errors = missing.join(`, `);
 	return { success, errors };

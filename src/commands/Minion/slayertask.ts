@@ -31,7 +31,7 @@ export default class extends BotCommand {
 		);
 
 		if (msg.flagArgs.malevolent) {
-			await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks,[2]);
+			await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks,2);
 			return "Hopefully updated";
 		}
 		if (currentTask && msg.flagArgs.skip) {
