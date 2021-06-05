@@ -789,7 +789,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Revert twisted slayer helmet (i)',
-		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Tiwsted horns': 1 }),
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Twisted horns': 1 }),
 		inputItems: resolveNameBank({ 'Twisted slayer helmet (i)': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks:
