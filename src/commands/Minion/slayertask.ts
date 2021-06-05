@@ -58,6 +58,7 @@ export default class extends BotCommand {
 			slayerPoints -= 30;
 			await msg.author.settings.update(UserSettings.Slayer.SlayerPoints, slayerPoints);
 			currentTask!.quantityRemaining = 0;
+			currentTask!.skipped = true;
 			currentTask!.save();
 			return msg.send('Your task has been skipped.');
 		}

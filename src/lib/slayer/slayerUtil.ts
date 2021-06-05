@@ -72,6 +72,7 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 	currentTask.quantityRemaining = currentTask.quantity;
 	currentTask.slayerMasterID = master.id;
 	currentTask.monsterID = assignedTask.monster.id;
+	currentTask.skipped = false;
 	await currentTask.save();
 
 	return { currentTask, assignedTask };
@@ -112,10 +113,11 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 		SlayerTaskTable.findOne({
 			where: {
 				user: id,
-				quantityRemaining: MoreThan(0)
+				quantityRemaining: MoreThan(0),
+				skipped: false
 			}
 		}),
-		SlayerTaskTable.count({ where: { user: id, quantityRemaining: 0 } })
+		SlayerTaskTable.count({ where: { user: id, quantityRemaining: 0, skipped: false } })
 	]);
 
 	const slayerMaster = currentTask

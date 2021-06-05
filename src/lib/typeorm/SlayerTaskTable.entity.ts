@@ -36,4 +36,7 @@ export class SlayerTaskTable extends BaseEntity {
 
 	@Column({ name: 'monster_id', type: 'smallint', nullable: false })
 	public monsterID!: number;
+
+	@Column({ name: 'skipped', type: 'boolean', nullable: false})
+	public skipped!: boolean;
 }
