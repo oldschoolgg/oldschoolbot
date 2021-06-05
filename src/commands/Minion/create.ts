@@ -15,6 +15,7 @@ import {
 	removeBankFromBank,
 	stringMatches
 } from '../../lib/util';
+import {hasSlayerUnlock, SlayerTaskUnlocksEnum} from "../../lib/slayer/slayerUtil";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -82,6 +83,25 @@ export default class extends BotCommand {
 					throw `You need ${lvl} ${skillName} to create this item.`;
 				}
 			}
+		}
+		if (createableItem.requiredSlayerUnlocks) {
+			const mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
+			const { success, errors } = hasSlayerUnlock(mySlayerUnlocks, createableItem.requiredSlayerUnlocks);
+			if (!success) {
+				throw `You have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
+			}
+			/*
+			for (const unlockReq of Object.entries(createableItem.requiredSlayerUnlocks)) {
+				if (
+					mySlayerUnlocks
+						.find( unlock => { return unlock === createableItem.requiredSlayerUnlocks[unlockReq] })
+					=== false
+				) {
+					throw `You don't have the required Slayer Unlocks to create this item.`;
+				}
+			}
+			*
+			 */
 		}
 
 		if (

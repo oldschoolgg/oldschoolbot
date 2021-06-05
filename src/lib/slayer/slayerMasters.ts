@@ -47,7 +47,7 @@ export const slayerMasters: SlayerMaster[] = [
 		aliases: ['konar quo maten', 'konar', 'kon', 'kona'],
 		tasks: konarTasks,
 		bossTasks: true,
-		basePoints: 14,
+		basePoints: 18,
 		combatLvl: 75
 	},
 	{

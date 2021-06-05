@@ -35,6 +35,7 @@ Client.defaultUserSchema
 	.add('slayer_points', 'integer', { default: 0 })
 	.add('slayer_task_streak', 'integer', { default: 0 })
 	.add('rememberSlayerMaster', 'string', {default: null})
+	.add('slayerUnlocks', 'integer', { array: true, default: [] })
 
 	.add('minion', folder =>
 		folder

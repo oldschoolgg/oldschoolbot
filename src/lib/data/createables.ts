@@ -1,7 +1,8 @@
-import { ItemBank } from '../types';
-import { itemNameFromID, resolveNameBank } from '../util';
+import {ItemBank} from '../types';
+import {itemNameFromID, resolveNameBank} from '../util';
 import itemID from '../util/itemID';
-import { metamorphPets } from './collectionLog';
+import {metamorphPets} from './collectionLog';
+import {SlayerTaskUnlocksEnum} from '../slayer/slayerUtil';
 
 interface Createable {
 	name: string;
@@ -13,6 +14,7 @@ interface Createable {
 	noCl?: boolean;
 	GPCost?: number;
 	cantBeInCL?: boolean;
+	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 }
 
 const metamorphPetCreatables: Createable[] = metamorphPets.map(pet => ({
@@ -400,6 +402,65 @@ const hunterClothing: Createable[] = [
 		inputItems: resolveNameBank({ 'Dark kebbit fur': 2 }),
 		outputItems: resolveNameBank({ 'Gloves of silence': 1 }),
 		GPCost: 600
+	}
+];
+
+const slayerCreatables: Createable[] = [
+	{
+		name: 'Uncharge black mask',
+		inputItems: resolveNameBank({
+			'Black mask 10': 1
+		}),
+		outputItems: resolveNameBank({ 'Black mask': 1 }),
+		GPCost: 0,
+	},
+	{
+		name: 'Slayer ring (8)',
+		inputItems: resolveNameBank({
+			'Gold bar': 1,
+			'Enchanted gem': 1
+		}),
+		outputItems: resolveNameBank({ 'Slayer ring (8)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.RingBling]
+	},
+	{
+		name: 'Slayer ring (eternal)',
+		inputItems: resolveNameBank({
+			'Gold bar': 1,
+			'Eternal gem': 1
+		}),
+		outputItems: resolveNameBank({ 'Slayer ring (eternal)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.RingBling]
+	},
+	{
+		name: 'Slayer helmet',
+		inputItems: resolveNameBank({
+			'Black mask': 1,
+			'Earmuffs': 1,
+			'Facemask': 1,
+			'Nose peg': 1,
+			'Spiny helmet': 1,
+			'Enchanted gem': 1
+		}),
+		outputItems: resolveNameBank({ 'Slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
+	},
+	{
+		name: 'Slayer helmet (i)',
+		inputItems: resolveNameBank({
+			'Black mask (i)': 1,
+			'Earmuffs': 1,
+			'Facemask': 1,
+			'Nose peg': 1,
+			'Spiny helmet': 1,
+			'Enchanted gem': 1
+		}),
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
 	}
 ];
 
@@ -1453,7 +1514,8 @@ const Createables: Createable[] = [
 	...ornamentKits,
 	...hunterClothing,
 	...twistedAncestral,
-	...metamorphPetCreatables
+	...metamorphPetCreatables,
+	...slayerCreatables
 ];
 
 export default Createables;

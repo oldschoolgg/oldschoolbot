@@ -8,7 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import {
 	calculateSlayerPoints,
 	getSlayerMasterOSJSbyID,
-	getUsersCurrentSlayerInfo
+	getUsersCurrentSlayerInfo, SlayerTaskUnlocksEnum
 } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -38,9 +38,23 @@ export default class extends Task {
 		);
 
 
+		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
+		// TODO: Remove debug logging
 		console.log(usersTask);
 		const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
-		const killOptions : MonsterKillOptions = { onSlayerTask: isOnTask, slayerMaster: slayerMaster };
+		// Check if superiors unlock is purchased
+		const superiorsUnlocked = isOnTask
+			? mySlayerUnlocks.
+				find( unlock => { return unlock === SlayerTaskUnlocksEnum.LikeABoss }) ?? undefined
+			: undefined;
+		const superiorTable = superiorsUnlocked && monster.superior
+			? monster.superior
+			: undefined;
+		const killOptions : MonsterKillOptions = {
+			onSlayerTask: isOnTask,
+			slayerMaster: slayerMaster,
+			hasSuperiors: superiorTable
+		};
 		const loot = new Bank(monster.table.kill(quantity, killOptions));
 		announceLoot(this.client, user, monster, loot.bank);
 

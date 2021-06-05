@@ -8,6 +8,7 @@ import { CompostTier, FarmingContract, FarmingPatchTypes } from '../../minions/f
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
+import { SlayerTaskUnlocksEnum } from "../../slayer/slayerUtil";
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -48,6 +49,7 @@ export namespace UserSettings {
 		export const SlayerPoints = T<number>('slayer_points');
 		export const TaskStreak = T<number>('slayer_task_streak');
 		export const RememberSlayerMaster =T<string | null>('rememberSlayerMaster');
+		export const SlayerUnlocks = T<readonly SlayerTaskUnlocksEnum[]>('slayerUnlocks');
 	}
 
 	export namespace Stats {

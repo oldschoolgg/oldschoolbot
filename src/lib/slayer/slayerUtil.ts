@@ -170,3 +170,122 @@ export function getSlayerMasterOSJSbyID(slayerMasterID : number) {
 	];
 	return osjsSlayerMaster[slayerMasterID];
 }
+export interface SlayerTaskUnlocks {
+	id: SlayerTaskUnlocksEnum,
+	name: string,
+	desc?: string,
+	slayerPointCost: number,
+	canBeRemoved?: boolean
+}
+export enum SlayerTaskUnlocksEnum {
+	Dummy = 0,
+	// Not in use, but in theory gives 10% boost
+	GargoyleSmasher,
+	// Slayer helm unlock
+	MalevolentMasquerade,
+	// Create slayer rings
+	RingBling,
+	// Unlock Red Dragons (not in use)
+	SeeingRed,
+	// Unlock mith Dragons (not in use)
+	IHopeYouMithMe,
+	// Unlock aviansies (not in use)
+	WatchTheBirdie,
+	// TzHaar unlock (not in use)
+	HotStuff,
+	// Lizardman unlock (not in use)
+	ReptileGotRipped,
+	// Unlock boss tasks. Definitely will use this one for the preroll.
+	LikeABoss,
+	// Unlock superiors
+	BiggerAndBadder,
+
+
+}
+
+export function getSlayerReward(id : SlayerTaskUnlocksEnum) {
+	for(const u in SlayerRewardsShop) {
+		if (SlayerRewardsShop[u].id === id) {
+			return SlayerRewardsShop[u].name;
+		}
+	}
+}
+export function hasSlayerUnlock(myUnlocks : SlayerTaskUnlocksEnum[] | number[], required : SlayerTaskUnlocksEnum[] | number[]) {
+	const missing = [];
+	let success = true;
+	let errors = '';
+	for (const unlockReq of Object.entries(required)) {
+		if (
+			myUnlocks.find( unlock => { return unlock === required[unlockReq] }) === false
+		) {
+			missing.push(getSlayerReward(required[unlockReq] as SlayerTaskUnlocksEnum));
+		}
+	}
+	errors = missing.join(`, `);
+	return { success, errors };
+}
+export const SlayerRewardsShop : SlayerTaskUnlocks[] = [
+	{
+		id: SlayerTaskUnlocksEnum.GargoyleSmasher,
+		name: 'Gargoyle smasher',
+		desc: 'Allows you to kill gargoyles faster.',
+		slayerPointCost: 120,
+		canBeRemoved: false
+	},
+	{
+		id: SlayerTaskUnlocksEnum.MalevolentMasquerade,
+		name: 'Malevolent Masquerade',
+		desc: 'Unlocks ability to create Slayer helmets.',
+		slayerPointCost: 400,
+		canBeRemoved: false
+	},
+	{
+		id: SlayerTaskUnlocksEnum.RingBling,
+		name: 'Ring Bling',
+		desc: 'Unlocks ability to create Slayer rings.',
+		slayerPointCost: 300,
+		canBeRemoved: false
+	},
+	{
+		id: SlayerTaskUnlocksEnum.SeeingRed,
+		name: 'Seeing Red',
+		desc: 'Allows slayer masters to assign Red dragons.',
+		slayerPointCost: 50,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.IHopeYouMithMe,
+		name: 'I hope you mith me!',
+		desc: 'Unlocks the ability to receive Mithril dragons as a task.',
+		slayerPointCost: 80,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.WatchTheBirdie,
+		name: 'Watch the birdie',
+		desc: 'Unlocks the ability to receive Aviansies as a task.',
+		slayerPointCost: 80,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.HotStuff,
+		name: 'Hot Stuff',
+		desc: 'Unlocks the ability to receive TzHaar as a task.',
+		slayerPointCost: 100,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.ReptileGotRipped,
+		name: 'Reptile got Ripped',
+		desc: 'Unlocks the ability to receive Lizardmen as a task.',
+		slayerPointCost: 75,
+		canBeRemoved: true
+	},
+	{
+		id: SlayerTaskUnlocksEnum.LikeABoss,
+		name: 'Like a Boss',
+		desc: 'Unlocks boss tasks from high level slayer masters.',
+		slayerPointCost: 200,
+		canBeRemoved: true
+	}
+];

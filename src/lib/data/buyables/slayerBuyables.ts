@@ -4,6 +4,13 @@ import { Buyable } from './buyables';
 // Most prices >=10k are x10, < 10k = x100
 export const slayerBuyables: Buyable[] = [
 	{
+		name: 'Enchanted gem',
+		outputItems: resolveNameBank({
+			'Enchanted gem': 1
+		}),
+		gpCost: 100_000
+	},
+	{
 		name: 'Mirror shield',
 		outputItems: resolveNameBank({
 			'Mirror shield': 1
