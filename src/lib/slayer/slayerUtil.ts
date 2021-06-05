@@ -156,3 +156,17 @@ export const allSlayerHelmets = [
 	'Twisted slayer helmet (i)'
 ];
 
+export function getSlayerMasterOSJSbyID(slayerMasterID : number) {
+	const osjsSlayerMaster = [
+		'dummy',
+		'turael',
+		'mazchna',
+		'vannaka',
+		'chaeldar',
+		'konar',
+		'nieve',
+		'duradel',
+		'krystilia'
+	];
+	return osjsSlayerMaster[slayerMasterID];
+}

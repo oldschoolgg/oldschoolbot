@@ -5,10 +5,13 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import {
+	calculateSlayerPoints,
+	getSlayerMasterOSJSbyID,
+	getUsersCurrentSlayerInfo
+} from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { slayerMasters } from "../../lib/slayer/slayerMasters";
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
@@ -34,11 +37,11 @@ export default class extends Task {
 			quantitySlayed
 		);
 
-		//const slayerMaster = isOnTask ?
-		//	slayerMasters.find(master => master.id === usersTask.currentTask.slayerMasterID).name;
-		const slayerMaster = isOnTask ? usersTask.slayerMaster.name.toLowerCase() : undefined;
+
+		console.log(usersTask);
+		const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
 		const killOptions : MonsterKillOptions = { onSlayerTask: isOnTask, slayerMaster: slayerMaster };
-		const loot = new Bank(monster.table.kill(quantity,{ onSlayerTask: isOnTask }));
+		const loot = new Bank(monster.table.kill(quantity, killOptions));
 		announceLoot(this.client, user, monster, loot.bank);
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
