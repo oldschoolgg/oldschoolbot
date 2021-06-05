@@ -52,8 +52,7 @@ export default class extends BotCommand {
 			return msg.send(`You need level 55 Magic to cast High Alchemy`);
 		}
 
-		// 5 tick action
-		const timePerAlch = Time.Second * 3;
+		const timePerAlch = Time.Second * 1.5;
 		const maxTripLength = msg.author.maxTripLength(Activity.Alching);
 
 		const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank[osItem.id]);
