@@ -1,5 +1,5 @@
 import { uniqueArr } from 'e';
-
+/*
 import {
 	beekeeperOutfit,
 	camoOutfit,
@@ -7,6 +7,8 @@ import {
 	mimeOutfit,
 	zombieOutfit
 } from '../randomEvents';
+*/
+
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
 
@@ -276,6 +278,7 @@ export const mahoganyHomesLog: CollectionLogData = {
 	Other: resolveItems(["Amy's saw", 'Plank sack', 'Hosidius blueprints', 'Builders supply crate'])
 };
 
+/*
 export const randomEventsLog: CollectionLogData = {
 	BeeKeeper: beekeeperOutfit,
 	Lederhosen: lederhosenOutfit,
@@ -283,6 +286,7 @@ export const randomEventsLog: CollectionLogData = {
 	Mime: mimeOutfit,
 	Camo: camoOutfit
 };
+*/
 
 const barrows: CollectionLogData = {
 	Barrows: resolveItems([
@@ -1986,12 +1990,15 @@ export const collectionLogTypes: CollectionLogType[] = [
 			castleWarsOther,
 			mta: [...wandItems, ...infinityItems]
 		}
-	},
+	}
+	/*,
 	{
 		name: 'Random Events',
 		aliases: ['random events'],
 		items: randomEventsLog
 	}
+	
+	 */
 ];
 export const allCollectionLogItems = uniqueArr(
 	collectionLogTypes.map(i => Object.values(i.items)).flat(Infinity) as number[]
