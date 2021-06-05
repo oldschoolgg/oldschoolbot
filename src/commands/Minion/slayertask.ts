@@ -137,7 +137,7 @@ export default class extends BotCommand {
 			}
 			let baseInfo = currentTask
 				? `Your current task is to kill ${currentTask.quantity}x ${
-					assignedTask!.monster.name
+					getCommonTaskName(assignedTask!)
 				}, you have ${currentTask.quantityRemaining} kills remaining.`
 				: `You have no task at the moment <:FrogBigEyes:847859910933741628> You can get a task using \`${
 					msg.cmdPrefix

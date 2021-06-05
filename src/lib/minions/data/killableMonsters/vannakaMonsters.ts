@@ -368,6 +368,28 @@ export const vannakaMonsters: KillableMonster[] = [
 		superior: Monsters.MarbleGargoyle
 	},
 	{
+		id: Monsters.GrotesqueGuardians.id,
+		name: Monsters.GrotesqueGuardians.name,
+		aliases: Monsters.GrotesqueGuardians.aliases,
+		timeToFinish: Time.Second * 150,
+		table: Monsters.GrotesqueGuardians,
+
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 4,
+		itemsRequired: deepResolveItems(
+			[
+				'Brittle key',
+				['Rock hammer', 'Rock thrownhammer', 'Granite hammer']
+			]
+		),
+		slayerOnly: true,
+		qpRequired: 0,
+		levelRequirements: {
+			slayer: 75
+		},
+	},
+	{
 		id: Monsters.GiantSeaSnake.id,
 		name: Monsters.GiantSeaSnake.name,
 		aliases: Monsters.GiantSeaSnake.aliases,
