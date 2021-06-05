@@ -20,7 +20,7 @@ export default class extends Task {
 		const kcAmounts: { [key: string]: number } = {};
 
 		for (let i = 0; i < quantity; i++) {
-			const loot = monster.table.kill(1);
+			const loot = monster.table.kill(1, {});
 			const userWhoGetsLoot = randomItemFromArray(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = addBanks([currentLoot ?? {}, loot]);

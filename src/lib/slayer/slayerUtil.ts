@@ -8,7 +8,7 @@ import { SkillsEnum } from '../skilling/types';
 import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
 import { slayerMasters } from './slayerMasters';
 import { AssignableSlayerTask, SlayerMaster } from './types';
-import { Monsters } from 'oldschooljs';
+import { Monsters, MonsterSlayerMaster } from 'oldschooljs';
 
 export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster) {
 	const streaks = [1000, 250, 100, 50, 10];
@@ -158,15 +158,15 @@ export const allSlayerHelmets = [
 
 export function getSlayerMasterOSJSbyID(slayerMasterID : number) {
 	const osjsSlayerMaster = [
-		'dummy',
-		'turael',
-		'mazchna',
-		'vannaka',
-		'chaeldar',
-		'konar',
-		'nieve',
-		'duradel',
-		'krystilia'
+		MonsterSlayerMaster.Turael,
+		MonsterSlayerMaster.Turael,
+		MonsterSlayerMaster.Mazchna,
+		MonsterSlayerMaster.Vannaka,
+		MonsterSlayerMaster.Chaeldar,
+		MonsterSlayerMaster.Konar,
+		MonsterSlayerMaster.Nieve,
+		MonsterSlayerMaster.Duradel,
+		MonsterSlayerMaster.Krystilia
 	];
 	return osjsSlayerMaster[slayerMasterID];
 }
