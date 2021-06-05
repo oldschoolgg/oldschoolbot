@@ -489,7 +489,19 @@ const slayerCreatables: Createable[] = [
 		}),
 		GPCost: 0,
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
+	},
+	{
+		name: 'Black slayer helmet',
+		inputItems: resolveNameBank({ 'Slayer helmet': 1, 'Kbd heads': 1 }),
+		outputItems: resolveNameBank({ 'Black slayer helmet': 1 }),
+		GPCost: 0,
+		requiredSlayerUnlocks:
+			[
+				SlayerTaskUnlocksEnum.MalevolentMasquerade,
+				SlayerTaskUnlocksEnum.KingBlackBonnet
+			]
 	}
+
 ];
 
 const Createables: Createable[] = [

@@ -30,6 +30,10 @@ export default class extends BotCommand {
 			msg.author.id
 		);
 
+		if (msg.flagArgs.malevolent) {
+			await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks,[2]);
+			return "Hopefully updated";
+		}
 		if (currentTask && msg.flagArgs.skip) {
 			let slayerPoints = msg.author.settings.get(UserSettings.Slayer.SlayerPoints) ?? 0;
 			if (slayerPoints < 30) {

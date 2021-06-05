@@ -199,6 +199,8 @@ export enum SlayerTaskUnlocksEnum {
 	LikeABoss,
 	// Unlock superiors
 	BiggerAndBadder,
+	KingBlackBonnet,
+	KalphiteKhat,
 
 
 }
