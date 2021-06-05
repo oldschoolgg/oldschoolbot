@@ -56,7 +56,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 85
 		},
-		notifyDrops: resolveItems(['Abyssal orhpan', 'Jar of miasma', 'Abyssal head', 'Abyssal dagger']),
+		notifyDrops: resolveItems(['Abyssal orphan', 'Jar of miasma', 'Abyssal head', 'Abyssal dagger']),
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 10
