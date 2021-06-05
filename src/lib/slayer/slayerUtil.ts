@@ -210,13 +210,13 @@ export function getSlayerReward(id : SlayerTaskUnlocksEnum) {
 		}
 	}
 }
-export function hasSlayerUnlock(myUnlocks : SlayerTaskUnlocksEnum[] | number[], required : SlayerTaskUnlocksEnum[] | number[]) {
+export function hasSlayerUnlock(myUnlocks : readonly SlayerTaskUnlocksEnum[] | number[], required : SlayerTaskUnlocksEnum[] | number[]) {
 	const missing = [];
 	let success = true;
 	let errors = '';
 	for (const [ i, unlockReq ] of Object.entries(required)) {
 		if (
-			myUnlocks.find( unlock => { return unlock === required[unlockReq] }) === false
+			myUnlocks.find( unlock => { return unlock === required[unlockReq] }) === undefined
 		) {
 			missing.push(getSlayerReward(required[unlockReq] as SlayerTaskUnlocksEnum));
 		}
