@@ -23,10 +23,10 @@ import findMonster, {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
-const validMonsters = killableMonsters.map(mon => mon.name).join(', ');
+const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
 const invalidMonsterMsg = (prefix: string) =>
-	`That isn't a valid monster, the available monsters are attached.` +
-	`\n\n For example, \`${prefix}minion kill 5 zulrah\``;
+	`That isn't a valid monster.\n\nFor example, \`${prefix}minion kill 5 zulrah\`` +
+	`\n\nTry: \`${prefix}k --monsters\` for a list of killable monsters.`;
 
 const { floor } = Math;
 
@@ -79,15 +79,14 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		if (!name) return msg.channel.send(
-			invalidMonsterMsg(msg.cmdPrefix),
-			new MessageAttachment(Buffer.from(validMonsters),'validMonsters.txt')
-		);
+		if (msg.flagArgs.monsters) {
+			return msg.channel.send(
+				new MessageAttachment(Buffer.from(validMonsters),'validMonsters.txt')
+			);
+		}
+		if (!name) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 		const monster = findMonster(name);
-		if (!monster) return msg.channel.send(
-			invalidMonsterMsg(msg.cmdPrefix),
-			new MessageAttachment(Buffer.from(validMonsters),'validMonsters.txt')
-		);
+		if (!monster) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 
 		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
 		const isOnTask =
