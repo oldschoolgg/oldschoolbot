@@ -11,8 +11,6 @@ import {
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches} from '../../lib/util';
 
-import { Bank } from 'oldschooljs';
-
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -28,21 +26,6 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [input]: [string | undefined]) {
-		let testBank = new Bank();
-		const monsterArray = ['Dragon thrownaxe','Dragon knife', 'Drake\'s tooth', 'Drake\'s claw'];
-		// TODO: For monsters with different drop rates on/off task
-		// Just nuke any uniques they got at the rare rate, and roll the better rate.
-		testBank.add({ 'Dragon thrownaxe': 100});
-		testBank.add({ 'Twisted bow': 3});
-		testBank.add({ 'Drake\'s tooth' : 3});
-		testBank.filter( (item) => {
-			return monsterArray
-				.find( baditem => { return baditem === item.name; }) === undefined
-
-		}, true);
-
-
-
 		const { currentTask, totalTasksDone, assignedTask } = await getUsersCurrentSlayerInfo(
 			msg.author.id
 		);
