@@ -22,7 +22,6 @@ import findMonster, {
 	removeDuplicatesFromArray
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import {deepResolveItems} from "../../lib/util/resolveItems";
 import itemID from "../../lib/util/itemID";
 
 const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
