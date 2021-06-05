@@ -6,6 +6,7 @@ import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
+import { MonsterKillOptions } from 'oldschooljs';
 
 import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
@@ -53,7 +54,7 @@ export interface KillableMonster {
 	aliases: string[];
 	timeToFinish: number;
 	table: {
-		kill(quantity: number): ItemBank;
+		kill(quantity: number, options: MonsterKillOptions): ItemBank;
 	};
 	emoji?: string;
 	wildy: boolean;
