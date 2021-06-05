@@ -1,16 +1,16 @@
 import { randFloat, randInt } from 'e';
 import { KlasaUser } from 'klasa';
+import { Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import { MoreThan } from 'typeorm';
 
 import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
+import { roll } from '../util';
 import { slayerMasters } from './slayerMasters';
+import { bossTasks } from './tasks/bossTasks';
 import { AssignableSlayerTask, SlayerMaster } from './types';
-import { Monsters, MonsterSlayerMaster } from 'oldschooljs';
-import { bossTasks } from "./tasks/bossTasks";
-import {roll} from "../util";
 
 export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster) {
 	const streaks = [1000, 250, 100, 50, 10];
@@ -66,24 +66,29 @@ export function userCanUseTask(user: KlasaUser, task: AssignableSlayerTask, mast
 	// Slayer unlock restrictions:
 	const lmon = task.monster.name.toLowerCase();
 	const lmast = master.name.toLowerCase();
-	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed))
-		return false;
+	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed)) return false;
 	if (lmon === 'mithril draogn' && !myUnlocks.includes(SlayerTaskUnlocksEnum.IHopeYouMithMe))
 		return false;
 	if (lmon === 'aviansie' && !myUnlocks.includes(SlayerTaskUnlocksEnum.WatchTheBirdie))
 		return false;
-	if (lmon === 'tzhaar-ket' && !myUnlocks.includes(SlayerTaskUnlocksEnum.HotStuff))
-		return false;
+	if (lmon === 'tzhaar-ket' && !myUnlocks.includes(SlayerTaskUnlocksEnum.HotStuff)) return false;
 	if (lmon === 'spitting wyvern' && myUnlocks.includes(SlayerTaskUnlocksEnum.StopTheWyvern))
 		return false;
-	if (lmon === 'feral vampyre' &&
-		(lmast === 'konar quo maten' || lmast === 'duradel' || lmast === 'nieve' || lmast === 'chaeldar')
-		&& !myUnlocks.includes(SlayerTaskUnlocksEnum.ActualVampyreSlayer)
-	) return false;
-	if (lmon === 'basilisk' &&
-		(lmast === 'konar quo maten' || lmast === 'duradel' || lmast === 'nieve')
-		&& !myUnlocks.includes(SlayerTaskUnlocksEnum.Basilocked)
-	) return false;
+	if (
+		lmon === 'feral vampyre' &&
+		(lmast === 'konar quo maten' ||
+			lmast === 'duradel' ||
+			lmast === 'nieve' ||
+			lmast === 'chaeldar') &&
+		!myUnlocks.includes(SlayerTaskUnlocksEnum.ActualVampyreSlayer)
+	)
+		return false;
+	if (
+		lmon === 'basilisk' &&
+		(lmast === 'konar quo maten' || lmast === 'duradel' || lmast === 'nieve') &&
+		!myUnlocks.includes(SlayerTaskUnlocksEnum.Basilocked)
+	)
+		return false;
 	return true;
 }
 
@@ -92,14 +97,14 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master));
 	let assignedTask;
 	if (
-		_user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.LikeABoss)
-		&& (
-			master.name.toLowerCase() === 'konar quo maten'
-			|| master.name.toLowerCase() === 'duradel'
-			|| master.name.toLowerCase() === 'nieve'
-			|| master.name.toLowerCase() === 'chaeldar'
-		)
-		&& roll(25)
+		_user.settings
+			.get(UserSettings.Slayer.SlayerUnlocks)
+			.includes(SlayerTaskUnlocksEnum.LikeABoss) &&
+		(master.name.toLowerCase() === 'konar quo maten' ||
+			master.name.toLowerCase() === 'duradel' ||
+			master.name.toLowerCase() === 'nieve' ||
+			master.name.toLowerCase() === 'chaeldar') &&
+		roll(25)
 	) {
 		assignedTask = weightedPick(bossTasks);
 	} else {
@@ -195,7 +200,7 @@ export const allSlayerHelmets = [
 	'Twisted slayer helmet (i)'
 ];
 
-export function getSlayerMasterOSJSbyID(slayerMasterID : number) {
+export function getSlayerMasterOSJSbyID(slayerMasterID: number) {
 	const osjsSlayerMaster = [
 		MonsterSlayerMaster.Turael,
 		MonsterSlayerMaster.Turael,
@@ -210,11 +215,11 @@ export function getSlayerMasterOSJSbyID(slayerMasterID : number) {
 	return osjsSlayerMaster[slayerMasterID];
 }
 export interface SlayerTaskUnlocks {
-	id: SlayerTaskUnlocksEnum,
-	name: string,
-	desc?: string,
-	slayerPointCost: number,
-	canBeRemoved?: boolean
+	id: SlayerTaskUnlocksEnum;
+	name: string;
+	desc?: string;
+	slayerPointCost: number;
+	canBeRemoved?: boolean;
 }
 export enum SlayerTaskUnlocksEnum {
 	Dummy = 0,
@@ -250,21 +255,24 @@ export enum SlayerTaskUnlocksEnum {
 	ActualVampyreSlayer
 }
 
-export function getSlayerReward(id : SlayerTaskUnlocksEnum) {
-	for(const u in SlayerRewardsShop) {
+export function getSlayerReward(id: SlayerTaskUnlocksEnum) {
+	for (const u in SlayerRewardsShop) {
 		if (SlayerRewardsShop[u].id === id) {
 			return SlayerRewardsShop[u].name;
 		}
 	}
 	return 'Please report this error.';
 }
-export function hasSlayerUnlock(myUnlocks : SlayerTaskUnlocksEnum[] | number[], required : SlayerTaskUnlocksEnum[] | number[]) {
-	const missing : string[] = [];
+export function hasSlayerUnlock(
+	myUnlocks: SlayerTaskUnlocksEnum[] | number[],
+	required: SlayerTaskUnlocksEnum[] | number[]
+) {
+	const missing: string[] = [];
 	let success = true;
 	let errors = '';
 
 	console.log(`Required unlocks: ${required}`);
-	required.forEach( req => {
+	required.forEach(req => {
 		console.log(`Checking for req: ${req}  in ${myUnlocks}`);
 		if (!myUnlocks.includes(req)) {
 			success = false;
@@ -277,7 +285,7 @@ export function hasSlayerUnlock(myUnlocks : SlayerTaskUnlocksEnum[] | number[], 
 	errors = missing.join(`, `);
 	return { success, errors };
 }
-export const SlayerRewardsShop : SlayerTaskUnlocks[] = [
+export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	{
 		id: SlayerTaskUnlocksEnum.GargoyleSmasher,
 		name: 'Gargoyle smasher',

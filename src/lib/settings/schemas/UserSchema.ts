@@ -34,7 +34,7 @@ Client.defaultUserSchema
 
 	.add('slayer_points', 'integer', { default: 0 })
 	.add('slayer_task_streak', 'integer', { default: 0 })
-	.add('rememberSlayerMaster', 'string', {default: null})
+	.add('rememberSlayerMaster', 'string', { default: null })
 	.add('slayerUnlocks', 'integer', { array: true, default: [] })
 
 	.add('minion', folder =>
@@ -68,7 +68,10 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Fishing, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 			.add(SkillsEnum.Mining, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 			.add(SkillsEnum.Smithing, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
-			.add(SkillsEnum.Woodcutting, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Woodcutting, 'integer', {
+				default: 0,
+				maximum: Number.MAX_SAFE_INTEGER
+			})
 			.add(SkillsEnum.Firemaking, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 			.add(SkillsEnum.Runecraft, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 			.add(SkillsEnum.Crafting, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
@@ -78,14 +81,20 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Farming, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 			.add(SkillsEnum.Herblore, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 			.add(SkillsEnum.Hunter, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
-			.add(SkillsEnum.Construction, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Construction, 'integer', {
+				default: 0,
+				maximum: Number.MAX_SAFE_INTEGER
+			})
 			.add(SkillsEnum.Magic, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 			.add(SkillsEnum.Ranged, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 			.add(SkillsEnum.Attack, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 			.add(SkillsEnum.Strength, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 			.add(SkillsEnum.Defence, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 			.add(SkillsEnum.Slayer, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
-			.add(SkillsEnum.Hitpoints, 'integer', { default: 1154, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Hitpoints, 'integer', {
+				default: 1154,
+				maximum: Number.MAX_SAFE_INTEGER
+			})
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder

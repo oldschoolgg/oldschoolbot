@@ -6,6 +6,7 @@ import { Time } from '../../lib/constants';
 import Createables from '../../lib/data/createables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { hasSlayerUnlock, SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	addBanks,
@@ -15,7 +16,6 @@ import {
 	removeBankFromBank,
 	stringMatches
 } from '../../lib/util';
-import {hasSlayerUnlock, SlayerTaskUnlocksEnum} from "../../lib/slayer/slayerUtil";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -88,7 +88,7 @@ export default class extends BotCommand {
 			console.log(`Required items...`);
 			console.log(createableItem.requiredSlayerUnlocks);
 			let mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
-			let mySlayerUnlocksIter : SlayerTaskUnlocksEnum[] = [];
+			let mySlayerUnlocksIter: SlayerTaskUnlocksEnum[] = [];
 			for (const msu in mySlayerUnlocks) {
 				mySlayerUnlocksIter.push(mySlayerUnlocks[msu] as SlayerTaskUnlocksEnum);
 			}

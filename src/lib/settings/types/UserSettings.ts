@@ -7,8 +7,8 @@ import { PatchTypes } from '../../minions/farming';
 import { CompostTier, FarmingContract, FarmingPatchTypes } from '../../minions/farming/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
+import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUtil';
 import { ItemBank } from '../../types';
-import { SlayerTaskUnlocksEnum } from "../../slayer/slayerUtil";
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -48,7 +48,7 @@ export namespace UserSettings {
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer_points');
 		export const TaskStreak = T<number>('slayer_task_streak');
-		export const RememberSlayerMaster =T<string | null>('rememberSlayerMaster');
+		export const RememberSlayerMaster = T<string | null>('rememberSlayerMaster');
 		export const SlayerUnlocks = T<readonly SlayerTaskUnlocksEnum[]>('slayerUnlocks');
 	}
 

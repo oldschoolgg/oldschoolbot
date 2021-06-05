@@ -41,14 +41,14 @@ export const slayerBuyables: Buyable[] = [
 	{
 		name: 'Facemask',
 		outputItems: resolveNameBank({
-			'Facemask': 1
+			Facemask: 1
 		}),
 		gpCost: 20_000
 	},
 	{
 		name: 'Earmuffs',
 		outputItems: resolveNameBank({
-			'Earmuffs': 1
+			Earmuffs: 1
 		}),
 		gpCost: 20_000
 	},

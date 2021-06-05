@@ -141,15 +141,13 @@ export const konarMonsters: KillableMonster[] = [
 			['Boots of stone', 'Boots of brimstone', 'Granite boots'],
 			'Antidote++(4)'
 		]),
-		notifyDrops: resolveItems(
-			[
-				'Hydra leather',
-				'Hydra tail',
-				"Hydra's claw",
-				'Ikkle hydra',
-				'Jar of chemicals'
-			]
-		),
+		notifyDrops: resolveItems([
+			'Hydra leather',
+			'Hydra tail',
+			"Hydra's claw",
+			'Ikkle hydra',
+			'Jar of chemicals'
+		]),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -161,7 +159,7 @@ export const konarMonsters: KillableMonster[] = [
 		slayerOnly: true,
 		levelRequirements: {
 			slayer: 95
-		},
+		}
 	},
 	{
 		id: Monsters.MithrilDragon.id,

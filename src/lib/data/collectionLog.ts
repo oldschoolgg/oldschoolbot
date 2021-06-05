@@ -1,4 +1,5 @@
 import { uniqueArr } from 'e';
+
 /*
 import {
 	beekeeperOutfit,
@@ -8,7 +9,6 @@ import {
 	zombieOutfit
 } from '../randomEvents';
 */
-
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
 
@@ -1991,7 +1991,7 @@ export const collectionLogTypes: CollectionLogType[] = [
 			mta: [...wandItems, ...infinityItems]
 		}
 	}
-	/*,
+	/* ,
 	{
 		name: 'Random Events',
 		aliases: ['random events'],

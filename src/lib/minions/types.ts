@@ -1,4 +1,5 @@
 import { Image } from 'canvas';
+import { MonsterKillOptions } from 'oldschooljs';
 import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
 import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
@@ -6,7 +7,6 @@ import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
-import { MonsterKillOptions } from 'oldschooljs';
 
 import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';

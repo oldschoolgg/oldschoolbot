@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { AssignableSlayerTask } from '../types';
-import {bossTasks} from "./bossTasks";
+import { bossTasks } from './bossTasks';
 
 export const konarTasks: AssignableSlayerTask[] = [
 	{

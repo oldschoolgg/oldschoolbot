@@ -56,7 +56,12 @@ export const vannakaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 85
 		},
-		notifyDrops: resolveItems(['Abyssal orphan', 'Jar of miasma', 'Abyssal head', 'Abyssal dagger']),
+		notifyDrops: resolveItems([
+			'Abyssal orphan',
+			'Jar of miasma',
+			'Abyssal head',
+			'Abyssal dagger'
+		]),
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 10
@@ -403,12 +408,10 @@ export const vannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		notifyDrops: resolveItems(['Noon', 'Jar of stone']),
-		itemsRequired: deepResolveItems(
-			[
-				'Brittle key',
-				['Rock hammer', 'Rock thrownhammer', 'Granite hammer']
-			]
-		),
+		itemsRequired: deepResolveItems([
+			'Brittle key',
+			['Rock hammer', 'Rock thrownhammer', 'Granite hammer']
+		]),
 		slayerOnly: true,
 		qpRequired: 0,
 		levelRequirements: {

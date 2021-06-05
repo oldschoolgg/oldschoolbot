@@ -1,5 +1,5 @@
 import { Task } from 'klasa';
-import { Bank, Monsters, MonsterKillOptions } from 'oldschooljs';
+import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -8,7 +8,8 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import {
 	calculateSlayerPoints,
 	getSlayerMasterOSJSbyID,
-	getUsersCurrentSlayerInfo, SlayerTaskUnlocksEnum
+	getUsersCurrentSlayerInfo,
+	SlayerTaskUnlocksEnum
 } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -37,22 +38,21 @@ export default class extends Task {
 			quantitySlayed
 		);
 
-
 		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
 		// TODO: Remove debug logging
 		console.log(usersTask);
-		const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
+		const slayerMaster = isOnTask
+			? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id)
+			: undefined;
 		// Check if superiors unlock is purchased
 		const superiorsUnlocked = isOnTask
 			? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)
 			: undefined;
 
-		const superiorTable = superiorsUnlocked && monster.superior
-			? monster.superior
-			: undefined;
-		const killOptions : MonsterKillOptions = {
+		const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
+		const killOptions: MonsterKillOptions = {
 			onSlayerTask: isOnTask,
-			slayerMaster: slayerMaster,
+			slayerMaster,
 			hasSuperiors: superiorTable
 		};
 		const loot = new Bank(monster.table.kill(quantity, killOptions));
@@ -75,7 +75,10 @@ export default class extends Task {
 
 		// TODO: Delete logging
 		console.log({ isOnTask, usersTask, monsterID: monster.id });
-		console.log({ remaining:usersTask.currentTask?.quantityRemaining, slayed: quantitySlayed});
+		console.log({
+			remaining: usersTask.currentTask?.quantityRemaining,
+			slayed: quantitySlayed
+		});
 		if (isOnTask) {
 			const quantityLeft = Math.max(
 				0,
@@ -90,9 +93,7 @@ export default class extends Task {
 				const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 
-				str += ` You've completed ${
-					currentStreak
-				} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.`;
+				str += ` You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.`;
 			} else {
 				str += `\nYou killed ${quantitySlayed}x of your ${
 					usersTask.currentTask!.quantityRemaining

@@ -1,6 +1,6 @@
+import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { MessageAttachment } from 'discord.js';
 
 import { Activity } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -22,7 +22,7 @@ import findMonster, {
 	removeDuplicatesFromArray
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import itemID from "../../lib/util/itemID";
+import itemID from '../../lib/util/itemID';
 
 const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
 const invalidMonsterMsg = (prefix: string) =>
@@ -82,7 +82,7 @@ export default class extends BotCommand {
 
 		if (msg.flagArgs.monsters) {
 			return msg.channel.send(
-				new MessageAttachment(Buffer.from(validMonsters),'validMonsters.txt')
+				new MessageAttachment(Buffer.from(validMonsters), 'validMonsters.txt')
 			);
 		}
 		if (!name) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
@@ -131,7 +131,7 @@ export default class extends BotCommand {
 		// Add 15% slayer boost on task if they have black mask or similar
 		if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push("15% for Slayer Helmet on task");
+			boosts.push('15% for Slayer Helmet on task');
 		}
 		for (const [itemID, boostAmount] of Object.entries(
 			msg.author.resolveAvailableItemBoosts(monster)
@@ -148,10 +148,7 @@ export default class extends BotCommand {
 		}
 		if (typeof quantity !== 'number') quantity = parseInt(quantity);
 		if (isOnTask) {
-			quantity = Math.min(
-				quantity,
-				usersTask.currentTask!.quantityRemaining
-			);
+			quantity = Math.min(quantity, usersTask.currentTask!.quantityRemaining);
 		}
 
 		// Check food
