@@ -1,13 +1,13 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import {
 	assignNewSlayerTask,
 	getCommonTaskName,
 	getUsersCurrentSlayerInfo,
 	userCanUseMaster
 } from '../../lib/slayer/slayerUtil';
+import { slayerMasters } from '../../lib/slayer/slayerMasters';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
