@@ -233,6 +233,7 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43,
 			slayer: 91
 		},
+		slayerOnly: true,
 		defaultAttackStyles: [SkillsEnum.Strength],
 		combatXpMultiplier: 1.15
 	}

@@ -57,6 +57,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 85
 		},
+		slayerOnly: true,
 		notifyDrops: resolveItems([
 			'Abyssal orphan',
 			'Jar of miasma',

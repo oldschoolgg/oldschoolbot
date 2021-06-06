@@ -31,9 +31,9 @@ export default class extends BotCommand {
 			unlocks.push(getSlayerReward(u));
 		})
 		throw `You currently have the following rewards unlocked:\n` +
-			`\`${unlocks.join(`\n`)}\`\n` +
-			`Usage:\n\`${msg.cmdPrefix}slayeshop [unlock|lock] Reward\`\n\nExample:` +
-			`\n\n\`${msg.cmdPrefix}slayershop unlock Malevolent Masquerade\``;
+			`\`${unlocks.join(`\n`)}\`\n\n` +
+			`Usage:\n\`${msg.cmdPrefix}slayeshop [unlock|lock] Reward\`\nExample:` +
+			`\n\`${msg.cmdPrefix}slayershop unlock Malevolent Masquerade\``;
 	}
 	async unlock(msg: KlasaMessage, [buyableName = '']: [string]) {
 		if (msg.flagArgs.unlocks) {
