@@ -180,7 +180,7 @@ export default class extends BotCommand {
 				  )}, you have ${currentTask.quantityRemaining} kills remaining.\n\nOptions:\n${monsterList}`
 				: `You have no task at the moment <:FrogBigEyes:847859910933741628> You can get a task using \`${
 						msg.cmdPrefix
-				  }slayertask ${slayerMasters.map(i => i.name).join('/')}}\``;
+				  }slayertask ${slayerMasters.map(i => i.name).join('/')}\``;
 
 			return msg.channel.send(`${warningInfo}${baseInfo}
 	
@@ -203,7 +203,7 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 			myUnlocks.forEach(u => {
 				if (
 					SlayerRewardsShop
-						.find(srs => { return srs.id === u && srs.extendID; })!
+						.find(srs => { return srs.id === u && srs.extendID.length; })!
 						.extendID!.includes(newSlayerTask.currentTask.monsterID)
 				) {
 					console.log(`Extending... previous: ${newSlayerTask.currentTask.quantity}`);

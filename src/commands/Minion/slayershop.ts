@@ -32,10 +32,12 @@ export default class extends BotCommand {
 		}
 		let unlocks : string[] = [];
 		const myUnlocks = await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
+		const myPoints = await msg.author.settings.get(UserSettings.Slayer.SlayerPoints);
+
 		myUnlocks.forEach(u => {
 			unlocks.push(getSlayerReward(u));
 		})
-		throw `You currently have the following rewards unlocked:\n` +
+		throw `Current points: ${myPoints}\nYou currently have the following rewards unlocked:\n` +
 			`\`${unlocks.join(`\n`)}\`\n\n` +
 			`Usage:\n\`${msg.cmdPrefix}slayershop [unlock|lock|buy] Reward\`\nExample:` +
 			`\n\`${msg.cmdPrefix}slayershop unlock Malevolent Masquerade\``;
@@ -50,7 +52,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`You can buy:\n${returnStr}`);
 		}
 		if (buyableName === '') {
-			throw `You must specify an item to purchase.`;
+			throw `You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls buy --help\``;
 		}
 
 		const buyable = SlayerRewardsShop.find(
@@ -126,7 +128,7 @@ export default class extends BotCommand {
 			return msg.channel.sendFile(Buffer.from(returnStr), 'slayerUnlocks.txt');
 		}
 		if (buyableName === '') {
-			throw `You must specify an Unlock to purchase.`;
+			throw `You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls unlock --help\``;
 		}
 
 		const buyable = SlayerRewardsShop.find(
