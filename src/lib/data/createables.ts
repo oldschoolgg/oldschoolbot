@@ -4385,6 +4385,20 @@ const Createables: Createable[] = [
 			runecraft: 105
 		}
 	},
+	{
+		name: `Bryophyta's staff(i)`,
+		inputItems: resolveNameBank({
+			"Bryophyta's staff": 1,
+			'Magus scroll': 1
+		}),
+		outputItems: {
+			[itemID(`Bryophyta's staff(i)`)]: 1
+		},
+		requiredSkills: {
+			crafting: 105,
+			magic: 105
+		}
+	},
 	...chaoticCreatables,
 	...twistedAncestral,
 	...metamorphPetCreatables,

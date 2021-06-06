@@ -52,8 +52,7 @@ export default class extends BotCommand {
 			return msg.send(`You need level 55 Magic to cast High Alchemy`);
 		}
 
-		// 5 tick action
-		const timePerAlch = Time.Second * 3;
+		const timePerAlch = Time.Second * 1.5;
 		const maxTripLength = msg.author.maxTripLength(Activity.Alching);
 
 		const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank[osItem.id]);
@@ -66,7 +65,7 @@ export default class extends BotCommand {
 			return msg.send(`The max number of alchs you can do is ${maxCasts}!`);
 		}
 
-		const duration = quantity * timePerAlch;
+		let duration = quantity * timePerAlch;
 		let fireRuneCost = quantity * 5;
 
 		for (const runeProvider of unlimitedFireRuneProviders) {
@@ -81,6 +80,14 @@ export default class extends BotCommand {
 			...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
 			'Nature rune': quantity
 		});
+
+		let speed = parseInt(msg.flagArgs.speed);
+		if (speed && !isNaN(speed) && typeof speed === 'number' && speed > 1 && speed < 6) {
+			consumedItems.multiply(speed);
+			consumedItems.add('Nature rune', Math.floor(consumedItems.amount('Nature rune') * 0.5));
+			duration /= speed;
+		}
+
 		consumedItems.add(osItem.id, quantity);
 
 		if (!msg.author.owns(consumedItems)) {
@@ -93,7 +100,7 @@ export default class extends BotCommand {
 					alchValue
 				)}). This will take approximately ${formatDuration(
 					duration
-				)}, and consume ${quantity}x Nature runes.`
+				)}, and consume ${consumedItems}.`
 			);
 
 			try {
