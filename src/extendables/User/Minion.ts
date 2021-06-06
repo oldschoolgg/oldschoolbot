@@ -570,6 +570,10 @@ export default class extends Extendable {
 					Emoji.Smithing
 				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
 			}
+
+			case Activity.MageArena2: {
+				return `${this.minionName} is currently attempting the Mage Arena II. ${formattedDuration}`;
+			}
 		}
 	}
 
