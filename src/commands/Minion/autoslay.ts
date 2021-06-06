@@ -62,6 +62,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '',
+			aliases: ['as', 'slay'],
 			usageDelim: ' ',
 			description: 'Sends your minion to kill your slayer monster monsters.'
 		});

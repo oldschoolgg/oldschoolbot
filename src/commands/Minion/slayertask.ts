@@ -11,6 +11,7 @@ import {
 } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
+import {production} from "../../config.example";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -31,16 +32,18 @@ export default class extends BotCommand {
 			msg.author.id
 		);
 
-		if (msg.flagArgs.mal3v0lent) {
-			await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks, 2);
-			return msg.send('Hopefully updated');
-		}
-		if (msg.flagArgs.b4ws) {
-			await msg.author.settings.update(
-				UserSettings.Slayer.SlayerUnlocks,
-				SlayerTaskUnlocksEnum.LikeABoss
-			);
-			return msg.send('Hopefully updated');
+		if (production === false) {
+			if (msg.flagArgs.mal3v0lent) {
+				await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks, 2);
+				return msg.send('Hopefully updated');
+			}
+			if (msg.flagArgs.b4ws) {
+				await msg.author.settings.update(
+					UserSettings.Slayer.SlayerUnlocks,
+					SlayerTaskUnlocksEnum.LikeABoss
+				);
+				return msg.send('Hopefully updated');
+			}
 		}
 		if (currentTask && msg.flagArgs.skip) {
 			let slayerPoints = msg.author.settings.get(UserSettings.Slayer.SlayerPoints) ?? 0;
