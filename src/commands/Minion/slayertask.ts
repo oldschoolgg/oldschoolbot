@@ -67,6 +67,11 @@ export default class extends BotCommand {
 					throw `Failed to find a monster with that name!`;
 				}
 				idToRemove = osjsMonster.id;
+			} else {
+				osjsMonster = Monsters.find(mon => mon.id === idToRemove);
+				if (!osjsMonster) {
+					throw `Failed to find a monster with that id!`;
+				}
 			}
 			// Now we can remove based on ID.
 			if (!myBlockList.includes(idToRemove)) {
