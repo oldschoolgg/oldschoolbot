@@ -75,7 +75,7 @@ export default class extends BotCommand {
 			}
 			// Now we can remove based on ID.
 			if (!myBlockList.includes(idToRemove)) {
-				return msg.channel.send(`ID: ${idToRemove} is not on the block list!`);
+				return msg.channel.send(`${idToRemove}: ${osjsMonster.name} is not on the block list!`);
 			}
 			if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
 				const alchMessage = await msg.channel.send(
