@@ -203,7 +203,9 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 			myUnlocks.forEach(u => {
 				if (
 					SlayerRewardsShop
-						.find(srs => { return srs.id === u && srs.extendID.length; })!
+						.find(srs => {
+							return srs.id === u && srs.extendID !== undefined &&srs.extendID.length;
+						})!
 						.extendID!.includes(newSlayerTask.currentTask.monsterID)
 				) {
 					console.log(`Extending... previous: ${newSlayerTask.currentTask.quantity}`);
