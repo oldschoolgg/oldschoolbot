@@ -46,6 +46,7 @@ export enum SlayerTaskUnlocksEnum {
 	ActualVampyreSlayer
 }
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
+	/* Anything commented won't appear in lists.
 	{
 		id: SlayerTaskUnlocksEnum.GargoyleSmasher,
 		name: 'Gargoyle smasher',
@@ -53,138 +54,158 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 120,
 		canBeRemoved: false
 	},
+	 */
 	{
 		id: SlayerTaskUnlocksEnum.MalevolentMasquerade,
 		name: 'Malevolent Masquerade',
 		desc: 'Unlocks ability to create Slayer helmets.',
 		slayerPointCost: 400,
-		canBeRemoved: false
+		canBeRemoved: false,
+		aliases: ['slayer helm', 'slayer helmet']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.RingBling,
 		name: 'Ring Bling',
 		desc: 'Unlocks ability to create Slayer rings.',
 		slayerPointCost: 300,
-		canBeRemoved: false
+		canBeRemoved: false,
+		aliases: ['slayer ring', 'slayer rings']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.SeeingRed,
 		name: 'Seeing Red',
 		desc: 'Allows slayer masters to assign Red dragons.',
 		slayerPointCost: 50,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['red dragon', 'red dragons']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.IHopeYouMithMe,
 		name: 'I hope you mith me!',
 		desc: 'Unlocks the ability to receive Mithril dragons as a task.',
 		slayerPointCost: 80,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['mithril dragons','mithril dragon']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.WatchTheBirdie,
 		name: 'Watch the birdie',
 		desc: 'Unlocks the ability to receive Aviansies as a task.',
 		slayerPointCost: 80,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['aviansie', 'aviansies']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.HotStuff,
 		name: 'Hot Stuff',
 		desc: 'Unlocks the ability to receive TzHaar as a task.',
 		slayerPointCost: 100,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['tzaar', 'unlock tzhaar']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.ReptileGotRipped,
 		name: 'Reptile got Ripped',
 		desc: 'Unlocks the ability to receive Lizardmen as a task.',
 		slayerPointCost: 75,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['lizardmen', 'lizardman', 'unlock lizardmen', 'unlock lizardman']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.LikeABoss,
 		name: 'Like a Boss',
 		desc: 'Unlocks boss tasks from high level slayer masters.',
 		slayerPointCost: 200,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['boss tasks', 'unlock boss tasks']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.BiggerAndBadder,
 		name: 'Bigger and Badder',
 		desc: 'Unlocks superiors.',
 		slayerPointCost: 150,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['superiors', 'superior']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.KingBlackBonnet,
 		name: 'King Black Bonnet',
 		desc: 'Unlocks ability to create the Black slayer helmet.',
 		slayerPointCost: 1_000,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['kbd slayer helmet', 'black slayer helmet']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.KalphiteKhat,
 		name: 'Kalphite Khat',
 		desc: 'Unlocks ability to create the Green slayer helmet.',
 		slayerPointCost: 1_000,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['green slayer helmet', 'kq slayer helmet']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.UnholyHelmet,
 		name: 'Unholy Helmet',
 		desc: 'Unlocks ability to create the Red slayer helmet.',
 		slayerPointCost: 1_000,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['red slayer helmet', 'abyssal slayer helmet']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.DarkMantle,
 		name: 'Dark Mantle',
 		desc: 'Unlocks ability to create the Purple slayer helmet.',
 		slayerPointCost: 1_000,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['purple slayer helmet', 'skotizo slayer helmet']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.UndeadHead,
 		name: 'Undead Head',
 		desc: 'Unlocks ability to create the Turquoise slayer helmet.',
 		slayerPointCost: 1_000,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['vorkath slayer helmet', 'turquoise slayer helmet', 'blue slayer helmet']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.UseMoreHead,
 		name: 'Use More Head',
 		desc: 'Unlocks ability to create the Hydra slayer helmet.',
 		slayerPointCost: 1_000,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['hydra slayer helmet', 'alchemical slayer helmet']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.TwistedVision,
 		name: 'Twisted Vision',
 		desc: 'Unlocks ability to create the Twisted slayer helmet.',
 		slayerPointCost: 1_000,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['twisted slayer helmet', 'horny slayer helmet']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.StopTheWyvern,
 		name: 'Stop The Wyvern',
 		desc: 'Prevents slayer masters from assigning Fossil island wyverns.',
 		slayerPointCost: 500,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['block fossil island wyverns', 'fossil island wyverns']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.Basilocked,
 		name: 'Basilocked',
 		desc: 'Unlocks the ability for Konar, Duradel and Nieve to assign Basilisks',
 		slayerPointCost: 80,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['basilisks', 'basilisk']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.ActualVampyreSlayer,
 		name: 'Actual Vampyre Slayer',
 		desc: 'Unlocks the ability for Konar, Duradel, Nieve and Chaeldar to assign Vampyres',
 		slayerPointCost: 80,
-		canBeRemoved: true
+		canBeRemoved: true,
+		aliases: ['vampyre slayer', 'vampire slayer', 'actual vampire slayer', 'vampyres', 'vampires']
 	}
 ];
 export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster) {
@@ -395,6 +416,7 @@ export interface SlayerTaskUnlocks {
 	desc?: string;
 	slayerPointCost: number;
 	canBeRemoved?: boolean;
+	aliases?: string[];
 }
 
 export function getSlayerReward(id: SlayerTaskUnlocksEnum) : string {
