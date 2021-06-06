@@ -51,7 +51,7 @@ export default class extends BotCommand {
 			msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks)
 				.includes(buyable.id)
 		) {
-			return msg.channel.send(`You have already unlocked ${buyable.name()}`);
+			return msg.channel.send(`You have already unlocked ${buyable.nam}`);
 		}
 
 		const curSlayerPoints = msg.author.settings.get(UserSettings.Slayer.SlayerPoints);
@@ -96,7 +96,7 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks, buyable.id);
 
 		return msg.send(
-			`You unlocked ${itemString} for ${slayerPointCost} Slayer points.`
+			`You unlocked ${toTitleCase(buyable.name)} for ${slayerPointCost} Slayer points.`
 		);
 	}
 	async lock(msg: KlasaMessage, [toLockName = '']: [string]) {
@@ -158,7 +158,7 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks, buyable.id);
 
 		return msg.send(
-			`You re-locked ${itemString}.`
+			`You re-locked ${removeMsg}.`
 		);
 	}
 }
