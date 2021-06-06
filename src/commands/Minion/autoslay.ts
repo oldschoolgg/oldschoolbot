@@ -71,6 +71,7 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage) {
 		const { minionName } = msg.author;
+		let quantity = null;
 
 		const boosts = [];
 		let messages: string[] = [];

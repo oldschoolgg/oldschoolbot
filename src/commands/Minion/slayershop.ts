@@ -24,7 +24,7 @@ export default class extends BotCommand {
 	}
 
 	@requiresMinion
-	async run(msg: KlasaMessage, [input]: [string]) {
+	async run(msg: KlasaMessage, [_input]: [string]) {
 		throw `Usage:\n\`${msg.cmdPrefix}slayeshop [unlock|lock] Reward\`\n\nExample:` +
 			`\n\n\`${msg.cmdPrefix}slayershop unlock Malevolent Masquerade\``;
 	}
