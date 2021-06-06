@@ -9,6 +9,7 @@ import { allMbTables, MysteryBoxes } from '../../lib/data/openables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { DragonTable } from '../../lib/simulation/grandmasterClue';
+import { runeAlchablesTable } from '../../lib/simulation/sharedTables';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks, formatDuration, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
@@ -16,10 +17,11 @@ import { LampTable } from '../../lib/xpLamps';
 
 const eightHours = Time.Hour * 8;
 const contractTable = new LootTable()
-	.every('Coins', [1_500_000, 4_500_000])
+	.every('Coins', [500_000, 3_500_000])
 	.tertiary(50, LampTable)
 	.tertiary(50, MysteryBoxes)
 	.add(DragonTable, [1, 2], 2)
+	.add(runeAlchablesTable, [1, 3], 3)
 	.add(
 		new LootTable()
 			.add('Clue scroll (beginner)', 1, 50)
