@@ -9,6 +9,7 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import findMonster, {
@@ -17,7 +18,8 @@ import findMonster, {
 	isWeekend,
 	itemNameFromID,
 	randomVariation,
-	removeDuplicatesFromArray
+	removeDuplicatesFromArray,
+	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
@@ -130,6 +132,7 @@ export default class extends BotCommand {
 					`You don't have the items needed to kill ${quantity}x ${monster.name}, you need: ${itemCost}.`
 				);
 			}
+			updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, itemCost);
 			await msg.author.removeItemsFromBank(itemCost);
 		}
 
