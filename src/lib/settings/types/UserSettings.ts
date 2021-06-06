@@ -50,6 +50,7 @@ export namespace UserSettings {
 		export const TaskStreak = T<number>('slayer_task_streak');
 		export const RememberSlayerMaster = T<string | null>('rememberSlayerMaster');
 		export const SlayerUnlocks = T<readonly SlayerTaskUnlocksEnum[]>('slayerUnlocks');
+		export const BlockedTasks = T<readonly number[]>('slayerBlockedMonsterIDs');
 	}
 
 	export namespace Stats {

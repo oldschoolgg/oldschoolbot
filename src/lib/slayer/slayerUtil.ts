@@ -123,9 +123,14 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 
 	return { currentTask, assignedTask };
 }
-export function getCommonTaskName(task: AssignableSlayerTask) {
-	let commonName = task.monster.name;
-	switch (task.monster.id) {
+export function calcMaxBlockedTasks(qps: number) {
+	// 6 Blocks total 5 for 250 qps, + 1 for lumby.
+	// For now we're do 1 free + 1 for every 50 qps.
+	return 1 + Math.floor(qps / 50);
+}
+export function getCommonTaskName(task: Monsters) {
+	let commonName = task.name;
+	switch (task.id) {
 		case Monsters.KalphiteWorker.id:
 			commonName = 'Kalphite';
 			break;

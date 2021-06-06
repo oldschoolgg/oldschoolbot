@@ -8,6 +8,7 @@ export default function resolveItems(_itemArray: string | number | (string | num
 	const newArray: number[] = [];
 
 	for (const item of itemArray) {
+		console.log(`type: ${typeof item} - item: ${item}`);
 		if (typeof item === 'number') {
 			newArray.push(item);
 		} else {

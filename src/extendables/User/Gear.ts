@@ -28,11 +28,13 @@ export default class extends Extendable {
 		};
 	}
 
-	// These changes are necessary so that similar items work while equipped!
+	/* These changes are necessary so that similar items work while equipped!
+	 * Change _item type defintion of this fn AND in augments.d.ts
+	 * And ofc, hasItemEquippedOrInBank needs SimilarItems[id]
+	 */
 	public hasItemEquippedAnywhere(
 		this: User,
 		_item: number | string | string[] | number[],
-		//_item: number | string | (string|number)[],
 		every = false
 	): boolean {
 		const items = resolveItems(_item);

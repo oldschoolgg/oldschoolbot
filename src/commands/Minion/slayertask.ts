@@ -1,18 +1,20 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { production } from '../../config';
+import { Monsters } from 'oldschooljs';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
-import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
+import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
 import {
 	assignNewSlayerTask,
+	calcMaxBlockedTasks,
 	getCommonTaskName,
 	getUsersCurrentSlayerInfo,
 	userCanUseMaster
 } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
+
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -32,28 +34,43 @@ export default class extends BotCommand {
 		const { currentTask, totalTasksDone, assignedTask } = await getUsersCurrentSlayerInfo(
 			msg.author.id
 		);
+		const myBlockList = await msg.author.get(UserSettings.Slayer.BlockedTasks) ?? [];
+		const myQPs = await msg.author.get(UserSettings.QP) ?? 0;
 
-		if (!production) {
-			if (msg.flagArgs.mal3v0lent) {
-				await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks, 2);
-				return msg.send('Hopefully updated');
-			}
-			if (msg.flagArgs.b4ws) {
-				await msg.author.settings.update(
-					UserSettings.Slayer.SlayerUnlocks,
-					SlayerTaskUnlocksEnum.LikeABoss
-				);
-				return msg.send('Hopefully updated');
-			}
+		const maxBlocks = calcMaxBlockedTasks(myQPs);
+		if(
+			msg.flagArgs.listblocks
+			|| msg.flagArgs.list
+			|| (input && input === "listblocks")
+			|| (input && input === "list")
+		) {
+			let mobs : string[] = [];
+			let outstr = `You have a maximum of ${maxBlocks} task blocks. You are using ${myBlockList.length}` +
+				` and have ${maxBlocks - myBlockList.length} remaining\n\nBlocked Tasks:`;
+			const myBlockedMonsters = Monsters.filter(m => { return myBlockList.includes(m.id) });
+			myBlockedMonsters.forEach(m => {mobs.push(m.name)});
+			outstr += mobs.join(`\n`);
+			return msg.channel.send(`${outstr}\n\nTry: \`${msg.cmdPrefix}st --block\` to block a task.`);
 		}
-		if (currentTask && msg.flagArgs.skip) {
+
+		if (currentTask && (msg.flagArgs.skip || msg.flagArgs.block)) {
+			const toBlock = msg.flagArgs.block ? true : false;
+			if (myBlockList.length >= maxBlocks) {
+				return msg.channel.send(
+					`You cannot have more than ${maxBlocks} slayerblocks!\n\nUse:\n` +
+						`\`${msg.cmdPrefix}st --unblock MONSTER_ID\`\n to remove a block.\n` +
+						`\`${msg.cmdPrefix}st --list\` for list of blocked monsters and their IDs.`
+				);
+			}
 			let slayerPoints = msg.author.settings.get(UserSettings.Slayer.SlayerPoints) ?? 0;
-			if (slayerPoints < 30) {
-				return msg.send(`You need 30 points to cancel, you only have: ${slayerPoints}`);
+			if (slayerPoints < toBlock ? 100 : 30) {
+				return msg.send(`You need ${toBlock ? 100 : 30} points to ${toBlock ? 'block' : 'cancel'},` +
+					` you only have: ${slayerPoints}`);
 			}
 			if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 				const alchMessage = await msg.channel.send(
-					`Really skip task? This will cost 30 slayer points.\n\nType **confirm** to skip.`
+					`Really ${toBlock ? 'block' : 'skip'} task? This will cost ${toBlock ? 100 : 30}` +
+						` slayer points.\n\nType **confirm** to ${toBlock ? 'block' : 'skip'}.`
 				);
 
 				try {
@@ -68,15 +85,16 @@ export default class extends BotCommand {
 						}
 					);
 				} catch (err) {
-					return alchMessage.edit(`Not skipping slayer task.`);
+					return alchMessage.edit(`Not ${toBlock ? 'blocking' : 'skipping'} slayer task.`);
 				}
 			}
-			slayerPoints -= 30;
+			slayerPoints -= toBlock ? 100 : 30;
 			await msg.author.settings.update(UserSettings.Slayer.SlayerPoints, slayerPoints);
+			await msg.author.settings.update(UserSettings.Slayer.BlockedTasks, currentTask.monsterID);
 			currentTask!.quantityRemaining = 0;
 			currentTask!.skipped = true;
 			currentTask!.save();
-			return msg.send('Your task has been skipped.');
+			return msg.send(`Your task has been ${toBlock ? 'blocked' : 'skipped'}.`);
 		}
 
 		let rememberedSlayerMaster: string = '';
@@ -141,7 +159,7 @@ export default class extends BotCommand {
 			currentTask!.save();
 			msg.author.settings.update(UserSettings.Slayer.TaskStreak, 0);
 			const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
-			let commonName = getCommonTaskName(newSlayerTask.assignedTask);
+			let commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 			return msg.channel.send(
 				`Your task has been skipped.\n\n ${slayerMaster.name}` +
 					` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.`
@@ -173,7 +191,7 @@ export default class extends BotCommand {
 			}
 			let baseInfo = currentTask
 				? `Your current task is to kill ${currentTask.quantity}x ${getCommonTaskName(
-						assignedTask!
+						assignedTask!.monster
 				  )}, you have ${
 						currentTask.quantityRemaining
 				  } kills remaining.\n\nOptions:\n${monsterList}`
@@ -217,7 +235,7 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 			});
 		}
 
-		let commonName = getCommonTaskName(newSlayerTask.assignedTask);
+		let commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 		return msg.channel.send(
 			`${slayerMaster.name} has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.`
 		);
