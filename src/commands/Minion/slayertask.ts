@@ -200,11 +200,22 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 		const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
 		const myUnlocks = await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks) ?? undefined;
 		if (myUnlocks) {
+			SlayerRewardsShop.filter(srs => { return srs.extendID !== undefined; })
+				.forEach(srsf => {
+					if (srsf.extendID!.includes(currentTask.monsterID)) {
+						console.log(`Extending... previous: ${newSlayerTask.currentTask.quantity}`);
+						newSlayerTask.currentTask.quantity *= srsf.extendMult;
+						console.log(`New: ${newSlayerTask.currentTask.quantity}`);
+						newSlayerTask.currentTask.save();
+					}
+				})
+
+			/*
 			myUnlocks.forEach(u => {
 				if (
 					SlayerRewardsShop
 						.find(srs => {
-							return srs.id === u && srs.extendID !== undefined &&srs.extendID.length;
+							return srs.id === u && srs.extendID !== undefined && srs.extendID.length;
 						})!
 						.extendID!.includes(newSlayerTask.currentTask.monsterID)
 				) {
@@ -214,6 +225,8 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 					newSlayerTask.currentTask.save();
 				}
 			})
+
+			 */
 		}
 
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask);
