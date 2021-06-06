@@ -116,6 +116,13 @@ export const slayerBuyables: Buyable[] = [
 		gpCost: 50_000
 	},
 	{
+		name: 'Fungicide',
+		outputItems: resolveNameBank({
+			'Fungicide spray 10': 1
+		}),
+		gpCost: 50_000
+	},
+	{
 		name: 'Fungicide spray 10',
 		outputItems: resolveNameBank({
 			'Fungicide spray 10': 1

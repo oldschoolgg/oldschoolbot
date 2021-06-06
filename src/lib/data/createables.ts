@@ -407,6 +407,34 @@ const hunterClothing: Createable[] = [
 
 const slayerCreatables: Createable[] = [
 	{
+		name: 'Dragon hunter lance',
+		inputItems: resolveNameBank({
+			'Hydra claw': 1,
+			'Zamorakian hasta': 1
+		}),
+		outputItems: resolveNameBank({ 'Dragon hunter lance': 1 }),
+		GPCost: 0
+	},
+	{
+		name: 'Uncut zenyte',
+		inputItems: resolveNameBank({
+			'Onyx': 1,
+			'Zenyte shard': 1
+		}),
+		outputItems: resolveNameBank({ 'Uncut zenyte': 1 }),
+		GPCost: 0
+	},
+	{
+		name: 'Brimstone ring',
+		inputItems: resolveNameBank({
+			"Hydra's eye": 1,
+			"Hydra's fang": 1,
+			"Hydra's heart": 1
+		}),
+		outputItems: resolveNameBank({ 'Brimstone ring': 1 }),
+		GPCost: 0
+	},
+	{
 		name: 'Uncharge black mask',
 		inputItems: resolveNameBank({
 			'Black mask (10)': 1
