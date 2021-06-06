@@ -62,6 +62,7 @@ export interface KillableMonster {
 	difficultyRating: number;
 	itemsRequired?: ArrayItemsResolved;
 	notifyDrops?: ArrayItemsResolved;
+	existsInCatacombs?: boolean;
 	qpRequired: number;
 
 	/**

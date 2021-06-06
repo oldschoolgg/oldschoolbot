@@ -50,6 +50,7 @@ export const nieveMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
 			['Anti-dragon shield', 'Dragonfire shield', 'Dragonfire ward'],
@@ -101,6 +102,7 @@ export const nieveMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),

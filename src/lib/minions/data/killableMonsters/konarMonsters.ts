@@ -51,6 +51,7 @@ export const konarMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),

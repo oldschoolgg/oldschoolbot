@@ -40,6 +40,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 85
 		},
+		existsInCatacombs: true,
 		superior: Monsters.GreaterAbyssalDemon
 	},
 	{
@@ -81,6 +82,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		wildy: true,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0
 	},
@@ -202,6 +204,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0
@@ -215,6 +218,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
@@ -260,6 +264,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 2,
 		itemInBankBoosts: [
@@ -302,6 +307,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
+		existsInCatacombs: true,
 		itemsRequired: deepResolveItems([allSlayerHelmets]),
 		qpRequired: 0,
 		levelRequirements: {
@@ -319,6 +325,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
+		existsInCatacombs: true,
 		itemsRequired: deepResolveItems([['Facemask', ...allSlayerHelmets]]),
 		notifyDrops: resolveItems(['Dragon chainbody', 'Dust battlestaff']),
 		qpRequired: 4,
@@ -376,6 +383,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		wildy: true,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Giant champion scroll']),
 		qpRequired: 0
@@ -457,6 +465,7 @@ export const vannakaMonsters: KillableMonster[] = [
 				[itemID('Arclight')]: 10
 			}
 		],
+		existsInCatacombs: true,
 		levelRequirements: {
 			slayer: 80
 		},
@@ -501,6 +510,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 3,
 		notifyDrops: resolveItems(['Smouldering stone']),
 		qpRequired: 0
@@ -635,6 +645,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		wildy: true,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0
 	},
@@ -663,6 +674,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		wildy: true,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0
 	},
@@ -699,6 +711,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 105,
 		levelRequirements: {
@@ -923,6 +936,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
+		existsInCatacombs: true,
 		itemsRequired: deepResolveItems([
 			["Black d'hide body", "Karil's leathertop"],
 			["Black d'hide chaps", "Karil's leatherskirt"]

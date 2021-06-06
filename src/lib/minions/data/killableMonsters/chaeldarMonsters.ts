@@ -46,6 +46,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
+		existsInCatacombs: true,
 		qpRequired: 0
 	},
 	{
@@ -189,6 +190,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0
 	},
@@ -201,6 +203,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),

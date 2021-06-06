@@ -50,10 +50,13 @@ export default class extends Task {
 			: undefined;
 
 		const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
+		const isInCatacombs = monster.existsInCatacombs ?? undefined;
+
 		const killOptions: MonsterKillOptions = {
 			onSlayerTask: isOnTask,
 			slayerMaster,
-			hasSuperiors: superiorTable
+			hasSuperiors: superiorTable,
+			inCatacombs: isInCatacombs
 		};
 		const loot = new Bank(monster.table.kill(quantity, killOptions));
 		announceLoot(this.client, user, monster, loot.bank);

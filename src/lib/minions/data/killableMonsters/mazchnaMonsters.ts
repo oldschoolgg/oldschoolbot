@@ -53,6 +53,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		table: Monsters.Cyclops,
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0
 	},
@@ -122,6 +123,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		table: Monsters.HillGiant,
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -255,6 +257,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 3,
 		qpRequired: 0
 	},

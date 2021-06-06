@@ -374,6 +374,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Ghost,
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -812,6 +813,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -962,6 +964,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.TwistedBanshee,
 		wildy: false,
 		canBeKilled: true,
+		existsInCatacombs: true,
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([['Earmuffs', 'Slayer helmet']]),
 		notifyDrops: resolveItems([]),
