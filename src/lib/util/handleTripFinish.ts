@@ -2,7 +2,9 @@ import { Message, MessageAttachment, MessageCollector, TextChannel } from 'disco
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { toKMB } from 'oldschooljs/dist/util';
 
+import { alching } from '../../commands/Minion/laps';
 import MinionCommand from '../../commands/Minion/minion';
 import { Activity, BitField, COINS_ID, Emoji, PerkTier, Time } from '../constants';
 import { getRandomMysteryBox } from '../data/openables';
@@ -19,6 +21,7 @@ import {
 	itemID,
 	roll,
 	stringMatches,
+	updateBankSetting,
 	updateGPTrackSetting
 } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
@@ -135,6 +138,28 @@ export async function handleTripFinish(
 		} else {
 			message += `You can get your minion to complete them using \`+minion clue easy/medium/etc\``;
 		}
+	}
+
+	const alchResult = user.usingPet('Voidling') ? alching(user, data.duration) : null;
+	if (alchResult !== null) {
+		if (!user.owns(alchResult.bankToRemove)) {
+			message += `\Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`;
+		}
+		await user.removeItemsFromBank(alchResult.bankToRemove);
+		updateBankSetting(
+			client,
+			ClientSettings.EconomyStats.MagicCostBank,
+			alchResult.bankToRemove
+		);
+
+		const alchGP = alchResult.itemToAlch.highalch * alchResult.maxCasts;
+		await user.addGP(alchGP);
+		updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
+		message += `\nYour Voidling alched ${alchResult.maxCasts}x ${
+			alchResult.itemToAlch.name
+		}. Removed ${alchResult.bankToRemove} from your bank and added ${toKMB(alchGP)} GP.`;
+	} else {
+		message += `\nYour Voidling didn't alch anything because you either: don't have Nature runes, Fire Runes, or any Favorited alchables that you own.`;
 	}
 
 	const attachable = attachment
