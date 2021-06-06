@@ -16,7 +16,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([['Earmuffs', ...allSlayerHelmets]]),
+		itemsRequired: deepResolveItems([['Earmuffs', 'Slayer helmet']]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 15
@@ -104,7 +104,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([allSlayerHelmets]),
+		itemsRequired: deepResolveItems([['Spiny helmet', 'Slayer helmet']]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 7
@@ -148,7 +148,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([allSlayerHelmets, ['Antidote++(4)', 'Antipoison(4)']]),
+		itemsRequired: deepResolveItems([['Spiny helmet', 'Slayer helmet'], ['Antidote++(4)', 'Antipoison(4)']]),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{

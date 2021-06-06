@@ -10,7 +10,14 @@ const slayerHelmSimilar = resolveItems([
 	'Hydra slayer helmet (i)',
 	'Twisted slayer helmet (i)',
 	'Slayer helmet (i)',
-	'Slayer helmet'
+	'Slayer helmet',
+	'Black slayer helmet',
+	'Green slayer helmet',
+	'Red slayer helmet',
+	'Purple slayer helmet',
+	'Turquoise slayer helmet',
+	'Hydra slayer helmet',
+	'Twisted slayer helmet',
 ]);
 
 const SimilarItems: Record<number, number[]> = {
@@ -211,6 +218,7 @@ const SimilarItems: Record<number, number[]> = {
 		'Trident of the seas (e)'
 	]),
 	[itemID('Trident of the swamp')]: resolveItems(['Trident of the swamp (e)']),
+	[itemID('Slayer helmet')]: slayerHelmSimilar,
 	[itemID('Slayer helmet (i)')]: slayerHelmSimilar,
 	[itemID('Black mask')]: [
 		...slayerHelmSimilar,

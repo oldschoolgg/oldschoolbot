@@ -220,7 +220,7 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([['Facemask', ...allSlayerHelmets]]),
+		itemsRequired: deepResolveItems([['Facemask', 'Slayer helmet']]),
 		notifyDrops: resolveItems(['Dragon chainbody']),
 		qpRequired: 0,
 		levelRequirements: {
@@ -238,7 +238,7 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
-		itemsRequired: deepResolveItems([['Facemask', ...allSlayerHelmets]]),
+		itemsRequired: deepResolveItems([['Facemask', 'Slayer helmet']]),
 		notifyDrops: resolveItems(['Dragon chainbody', 'Smoke Battlestaff', 'Pet smoke devil']),
 		qpRequired: 0,
 		levelRequirements: {

@@ -17,7 +17,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([['Nose peg', ...allSlayerHelmets]]),
+		itemsRequired: deepResolveItems([['Nose peg', 'Slayer helmet']]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 60
@@ -327,7 +327,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		existsInCatacombs: true,
-		itemsRequired: deepResolveItems([['Facemask', ...allSlayerHelmets]]),
+		itemsRequired: deepResolveItems([['Facemask', 'Slayer helmet']]),
 		notifyDrops: resolveItems(['Dragon chainbody', 'Dust battlestaff']),
 		qpRequired: 4,
 		levelRequirements: {
