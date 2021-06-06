@@ -5,7 +5,7 @@ import { itemID } from 'oldschooljs/dist/util';
 import { defaultGear, resolveGearTypeSetting } from '../../lib/gear';
 import { GearSetup, UserFullGearSetup } from '../../lib/gear/types';
 import { Gear } from '../../lib/structures/Gear';
-import resolveItems, {deepResolveItems} from '../../lib/util/resolveItems';
+import resolveItems from '../../lib/util/resolveItems';
 import SimilarItems from "../../lib/data/similarItems";
 
 export default class extends Extendable {
@@ -30,7 +30,7 @@ export default class extends Extendable {
 
 	public hasItemEquippedAnywhere(
 		this: User,
-		_item: number | string | string[],
+		_item: number | string | string[] | number[],
 		every = false
 	): boolean {
 		const items = resolveItems(_item);
