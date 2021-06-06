@@ -7,11 +7,9 @@ import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, roll, updateGPTrackSetting } from '../../lib/util';
+import { roll, updateGPTrackSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-
-const bryophytasStaffId = itemID("Bryophyta's staff");
 
 export default class extends Task {
 	async run(data: AlchingActivityTaskOptions) {
@@ -24,9 +22,11 @@ export default class extends Task {
 		// If bryophyta's staff is equipped when starting the alch activity
 		// calculate how many runes have been saved
 		let savedRunes = 0;
-		if (user.hasItemEquippedAnywhere(bryophytasStaffId)) {
+		const hasImbuedStaff = user.hasItemEquippedAnywhere("Bryophyta's staff(i)");
+		const hasStaff = user.hasItemEquippedAnywhere("Bryophyta's staff");
+		if (hasImbuedStaff || hasStaff) {
 			for (let i = 0; i < quantity; i++) {
-				if (roll(15)) savedRunes++;
+				if (roll(hasImbuedStaff ? 7 : 15)) savedRunes++;
 			}
 
 			if (savedRunes > 0) {
