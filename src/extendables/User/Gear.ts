@@ -48,7 +48,11 @@ export default class extends Extendable {
 
 	public hasItemEquippedOrInBank(this: User, item: number | string) {
 		const id = typeof item === 'string' ? itemID(item) : item;
-		return this.hasItemEquippedAnywhere(SimilarItems[id], false) || this.numItemsInBankSync(id, true) > 0;
+		if (SimilarItems[id] === undefined) {
+			return this.hasItemEquippedAnywhere(id, false) || this.numItemsInBankSync(id, true) > 0;
+		} else {
+			return this.hasItemEquippedAnywhere(SimilarItems[id], false) || this.numItemsInBankSync(id, true) > 0;
+		}
 	}
 
 	public getGear(this: User, setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling'): GearSetup {

@@ -46,9 +46,9 @@ export default class extends BotCommand {
 		) {
 			let mobs : string[] = [];
 			let outstr = `You have a maximum of ${maxBlocks} task blocks. You are using ${myBlockList.length}` +
-				` and have ${maxBlocks - myBlockList.length} remaining\n\nBlocked Tasks:`;
+				` and have ${maxBlocks - myBlockList.length} remaining\n\nBlocked Tasks:\n`;
 			const myBlockedMonsters = Monsters.filter(m => { return myBlockList.includes(m.id) });
-			myBlockedMonsters.forEach(m => {mobs.push(m.name)});
+			myBlockedMonsters.forEach(m => {mobs.push(`${m.id}: ${m.name}`)});
 			outstr += mobs.join(`\n`);
 			return msg.channel.send(`${outstr}\n\nTry: \`${msg.cmdPrefix}st --block\` to block a task.`);
 		}
@@ -90,7 +90,8 @@ export default class extends BotCommand {
 			}
 			slayerPoints -= toBlock ? 100 : 30;
 			await msg.author.settings.update(UserSettings.Slayer.SlayerPoints, slayerPoints);
-			await msg.author.settings.update(UserSettings.Slayer.BlockedTasks, currentTask.monsterID);
+			if(toBlock)
+				await msg.author.settings.update(UserSettings.Slayer.BlockedTasks, currentTask.monsterID);
 			currentTask!.quantityRemaining = 0;
 			currentTask!.skipped = true;
 			currentTask!.save();
