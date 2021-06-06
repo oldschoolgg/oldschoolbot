@@ -198,7 +198,7 @@ const RCPouches = [
 	},
 	{
 		id: itemID('Elder pouch'),
-		level: 99,
+		level: 105,
 		capacity: 128
 	}
 ];
