@@ -75,9 +75,6 @@ export default class extends BotCommand {
 		const boosts = [];
 		let messages: string[] = [];
 
-		let quantity = null;
-
-
 		if (msg.flagArgs.monsters) {
 			return msg.channel.send(
 				new MessageAttachment(Buffer.from(validMonsters), 'validMonsters.txt')
@@ -88,7 +85,12 @@ export default class extends BotCommand {
 		const isOnTask =
 			usersTask.assignedTask !== null &&
 			usersTask.currentTask !== null;
-		const monster = usersTask.assignedTask.monster;
+		const monster =  findMonster(usersTask.assignedTask.monster.name);
+		if (!monster) {
+			this.client.wtf(new Error(`${msg.author.sanitizedName} couldn't Autoslay `  +
+				`monster  with id: ${usersTask.assignedTask.monster.id}. This shouldn't happen.`))
+			return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
+		}
 
 
 		if (!isOnTask) {
@@ -104,12 +106,13 @@ export default class extends BotCommand {
 		}
 
 		// Check requirements
-		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
+		const [hasReqs, _reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) {
 			this.client.wtf(
 				new Error(`${msg.author.sanitizedName} doesn't have requirements to Autoslay `  +
 					`monster with id: ${monster.id}. This shouldn't happen.`)
 			);
+			return msg.channel.send(`An error has occured. :sad:`);
 		}
 
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(
@@ -150,7 +153,7 @@ export default class extends BotCommand {
 		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
 
 		// If no quantity provided, set it to the max.
-		if (quantity === null) {
+		if (quantity === null || quantity === undefined) {
 			quantity = floor(maxTripLength / timeToFinish);
 		}
 		if (typeof quantity !== 'number') quantity = parseInt(quantity);
