@@ -99,9 +99,6 @@ export default class extends BotCommand {
 			return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 		}
 
-
-
-
 		if (!monster) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 
 		if (monster.slayerOnly && !isOnTask) {

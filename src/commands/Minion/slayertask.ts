@@ -10,8 +10,9 @@ import {
 	userCanUseMaster
 } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { stringMatches } from '../../lib/util';
+import findMonster, { stringMatches } from '../../lib/util';
 import {production} from "../../config.example";
+import killableMonsters from "../../lib/minions/data/killableMonsters";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -152,10 +153,22 @@ export default class extends BotCommand {
 				warningInfo = `You do not have the requirements to use ${matchedSlayerMaster.name}.\n\n`;
 				// TODO: Show requirements
 			}
+			let alternateMonsters : string[] = [];
+			let monsterList = '';
+			if (currentTask) {
+				const altMobs = assignedTask.monsters;
+				altMobs.forEach(m => {
+					const monster = killableMonsters.find(
+						mon => mon.id === m
+					);
+					alternateMonsters.push(monster.name);
+				})
+				monsterList = alternateMonsters.join(`, `);
+			}
 			let baseInfo = currentTask
 				? `Your current task is to kill ${currentTask.quantity}x ${getCommonTaskName(
 						assignedTask!
-				  )}, you have ${currentTask.quantityRemaining} kills remaining.`
+				  )}, you have ${currentTask.quantityRemaining} kills remaining.\n\nOptions:\n${monsterList}`
 				: `You have no task at the moment <:FrogBigEyes:847859910933741628> You can get a task using \`${
 						msg.cmdPrefix
 				  }slayertask ${slayerMasters.map(i => i.name).join('/')}}\``;
