@@ -2,7 +2,7 @@ import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { Activity } from '../../lib/constants';
+import {Activity, Time} from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
@@ -142,11 +142,6 @@ export default class extends BotCommand {
 				boosts.push(messages.join(' + '));
 			}
 		}
-		// Add 15% slayer boost on task if they have black mask or similar
-		if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push('15% for Slayer Helmet on task');
-		}
 		for (const [itemID, boostAmount] of Object.entries(
 			msg.author.resolveAvailableItemBoosts(monster)
 		)) {
@@ -160,11 +155,17 @@ export default class extends BotCommand {
 		if (quantity === null || quantity === undefined) {
 			quantity = floor(maxTripLength / timeToFinish);
 		}
+		// TODO: call +k. Everything after here is identical 100 lines (most above is identical too, small diffs)
 		if (typeof quantity !== 'number') quantity = parseInt(quantity);
 		if (isOnTask) {
 			quantity = Math.min(quantity, usersTask.currentTask!.quantityRemaining);
 		}
 
+		// Add 15% slayer boost on task if they have black mask or similar
+		if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			boosts.push('15% for Slayer Helmet on task');
+		}
 		// Check food
 		let foodStr: undefined | string = undefined;
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
@@ -203,6 +204,29 @@ export default class extends BotCommand {
 		if (isWeekend()) {
 			boosts.push(`10% for Weekend`);
 			duration *= 0.9;
+		}
+
+		// Remove antidote++(4) from hydras + alchemical hydra
+		if (['hydra','alchemical hydra'].includes(monster.name.toLowerCase())) {
+			const potsTotal = await msg.author.numberOfItemInBank(itemID('Antidote++(4)'));
+			//Potions actually last 36+ minutes for a 4-dose, but we want item sink
+			const potsToRemove = Math.ceil(duration / (15 * Time.Minute));
+			if (potsToRemove > potsTotal) {
+				return msg.channel.send(
+					`You don't have enough Antidote++(4) to kill ${quantity}x ${monster.name}.`
+				);
+			}
+			await msg.author.removeItemFromBank(itemID('Antidote++(4)'), potsToRemove);
+		}
+		// Check for enough totems and remove them
+		if (monster.name.toLowerCase() === 'skotizo') {
+			const darkTotemsInBank = await msg.author.numberOfItemInBank(itemID('Dark totem'));
+			if (quantity > darkTotemsInBank) {
+				return msg.channel.send(
+					`You don't have enough Dark totems to kill ${quantity}x Skotizo.`
+				);
+			}
+			await msg.author.removeItemFromBank(itemID('Dark totem'), quantity);
 		}
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
