@@ -432,5 +432,6 @@ export const skillEmoji = {
 	woodcutting: '<:woodcutting:630911040099450892>',
 	hunter: '<:hunter:630911040166559784>',
 	cml: '<:CrystalMathLabs:364657225249062912>',
-	clock: '<:ehpclock:352323705210142721>'
+	clock: '<:ehpclock:352323705210142721>',
+	combat: '<:combat:802136963956080650>'
 };

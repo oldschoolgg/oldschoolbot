@@ -129,7 +129,7 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 export function calcMaxBlockedTasks(qps: number) {
 	// 6 Blocks total 5 for 250 qps, + 1 for lumby.
 	// For now we're do 1 free + 1 for every 50 qps.
-	return 1 + Math.floor(qps / 50);
+	return Math.min(1 + Math.floor(qps / 50), 6);
 }
 export function getCommonTaskName(task: Monster) {
 	let commonName = task.name;

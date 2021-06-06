@@ -178,7 +178,7 @@ export default class extends BotCommand {
 					aRequirements.push(`Quest points: ${matchedSlayerMaster.questPoints}`);
 				warningInfo = `You do not have the requirements to use ${matchedSlayerMaster.name}.\n\n`;
 				if (aRequirements.length)
-					warningInfo += `Requires: ${aRequirements.join(`\n`)}\n\n`;
+					warningInfo += `**Requires**:\n${aRequirements.join(`\n`)}\n\n`;
 			}
 			let alternateMonsters: string[] = [];
 			let monsterList = '';

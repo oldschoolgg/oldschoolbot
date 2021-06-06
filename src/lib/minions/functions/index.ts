@@ -81,7 +81,8 @@ export async function addMonsterXP(
 	}
 
 	if (isOnTask) {
-		res.push(await user.addXP(SkillsEnum.Slayer, taskQuantity! * hp, duration, true));
+		const mult = hp >= 250 ? 1.05 : 1;
+		res.push(await user.addXP(SkillsEnum.Slayer, taskQuantity! * hp * mult, duration, true));
 	}
 
 	res.push(

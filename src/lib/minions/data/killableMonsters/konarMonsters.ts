@@ -232,7 +232,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.ThermonuclearSmokeDevil.id,
 		name: Monsters.ThermonuclearSmokeDevil.name,
 		aliases: Monsters.ThermonuclearSmokeDevil.aliases,
-		timeToFinish: Time.Second * 40,
+		timeToFinish: Time.Second * 60,
 		table: Monsters.ThermonuclearSmokeDevil,
 		wildy: false,
 		canBeKilled: true,
