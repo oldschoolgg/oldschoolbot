@@ -102,9 +102,9 @@ export default class extends BotCommand {
 		}
 		if (currentTask && (msg.flagArgs.skip || msg.flagArgs.block)) {
 			const toBlock = msg.flagArgs.block ? true : false;
-			if (myBlockList.length >= maxBlocks) {
+			if (toBlock && myBlockList.length >= maxBlocks) {
 				return msg.channel.send(
-					`You cannot have more than ${maxBlocks} slayerblocks!\n\nUse:\n` +
+					`You cannot have more than ${maxBlocks} slayer blocks!\n\nUse:\n` +
 						`\`${msg.cmdPrefix}st --unblock MONSTER_ID\`\n to remove a block.\n` +
 						`\`${msg.cmdPrefix}st --list\` for list of blocked monsters and their IDs.`
 				);

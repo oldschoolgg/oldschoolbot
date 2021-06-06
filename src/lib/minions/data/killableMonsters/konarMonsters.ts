@@ -154,6 +154,10 @@ export const konarMonsters: KillableMonster[] = [
 				[itemID('Dragon hunter crossbow')]: 8,
 				[itemID('Dragon hunter lance')]: 10,
 				[itemID('Twisted bow')]: 12
+			},
+			{
+				[itemID('Barrows gloves')]: 3,
+				[itemID('Ferocious gloves')]: 6
 			}
 		],
 		slayerOnly: true,
@@ -226,7 +230,13 @@ export const konarMonsters: KillableMonster[] = [
 			slayer: 93
 		},
 		slayerOnly: true,
-		superior: Monsters.NuclearSmokeDevil
+		superior: Monsters.NuclearSmokeDevil,
+		itemInBankBoosts: [
+			{
+				[itemID('Kodai wand')]: 12,
+				[itemID('Staff of the dead')]: 8
+			}
+		]
 	},
 	{
 		id: Monsters.ThermonuclearSmokeDevil.id,

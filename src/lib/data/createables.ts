@@ -435,6 +435,15 @@ const slayerCreatables: Createable[] = [
 		GPCost: 0
 	},
 	{
+		name: 'Arclight',
+		inputItems: resolveNameBank({
+			'Darklight': 1,
+			'Ancient shard': 3
+		}),
+		outputItems: resolveNameBank({ 'Arclight': 1 }),
+		GPCost: 0
+	},
+	{
 		name: 'Brimstone ring',
 		inputItems: resolveNameBank({
 			"Hydra's eye": 1,

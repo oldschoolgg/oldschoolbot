@@ -332,7 +332,13 @@ export const vannakaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 65
 		},
-		superior: Monsters.ChokeDevil
+		superior: Monsters.ChokeDevil,
+		itemInBankBoosts: [
+			{
+				[itemID('Kodai wand')]: 15,
+				[itemID('Staff of the dead')]: 10
+			}
+		]
 	},
 	{
 		id: Monsters.ElfArcher.id,
