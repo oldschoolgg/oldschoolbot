@@ -48,7 +48,7 @@ export default class extends BotCommand {
 			let outstr = `You have a maximum of ${maxBlocks} task blocks. You are using ${myBlockList.length}` +
 				` and have ${maxBlocks - myBlockList.length} remaining\n\nBlocked Tasks:\n`;
 			const myBlockedMonsters = Monsters.filter(m => { return myBlockList.includes(m.id) });
-			myBlockedMonsters.forEach(m => {mobs.push(`${m.id}: ${m.name}`)});
+			myBlockedMonsters.forEach(m => {mobs.push(`${m.id}: ${getCommonTaskName(m)}`)});
 			outstr += mobs.join(`\n`);
 			return msg.channel.send(`${outstr}\n\nTry: \`${msg.cmdPrefix}st --block\` to block a task.`);
 		}
