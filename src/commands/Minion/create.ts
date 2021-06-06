@@ -6,7 +6,8 @@ import { Time } from '../../lib/constants';
 import Createables from '../../lib/data/createables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { hasSlayerUnlock, SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUtil';
+import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
+import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	addBanks,

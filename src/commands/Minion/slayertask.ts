@@ -13,6 +13,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 import {production} from "../../config.example";
 import killableMonsters from "../../lib/minions/data/killableMonsters";
+import {SlayerRewardsShop} from "../../lib/slayer/slayerUnlocks";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -197,6 +198,22 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 		}
 
 		const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
+		const myUnlocks = await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks) ?? undefined;
+		if (myUnlocks) {
+			myUnlocks.forEach(u => {
+				if (
+					SlayerRewardsShop
+						.find(srs => { return srs.id = u && srs.extendID; })!
+						.extendID.includes(newSlayerTask.currentTask.monsterID)
+				) {
+					console.log(`Extending... previous: ${newSlayerTask.currentTask.quantity}`);
+					newSlayerTask.currentTask.quantity *= 1.5;
+					console.log(`New: ${newSlayerTask.currentTask.quantity}`);
+					newSlayerTask.currentTask.save();
+				}
+			})
+		}
+
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask);
 		return msg.channel.send(
 			`${slayerMaster.name} has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.`

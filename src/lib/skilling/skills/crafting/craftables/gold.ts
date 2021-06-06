@@ -11,6 +11,7 @@ const Gold: Craftable[] = [
 		inputItems: resolveNameBank({ 'Gold bar': 1 }),
 		tickRate: 3
 	},
+
 	{
 		name: 'Gold necklace',
 		id: itemID('Gold necklace'),

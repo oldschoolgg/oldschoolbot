@@ -1,7 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Time } from '../../lib/constants';
-import { getSlayerReward, SlayerRewardsShop } from '../../lib/slayer/slayerUtil';
+import { getSlayerReward } from '../../lib/slayer/slayerUtil';
+import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -10,7 +11,7 @@ import { stringMatches, toTitleCase } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[unlock|lock] [name:...string]',
+			usage: '[unlock|lock|buy] [name:...string]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
@@ -36,19 +37,22 @@ export default class extends BotCommand {
 		})
 		throw `You currently have the following rewards unlocked:\n` +
 			`\`${unlocks.join(`\n`)}\`\n\n` +
-			`Usage:\n\`${msg.cmdPrefix}slayershop [unlock|lock] Reward\`\nExample:` +
+			`Usage:\n\`${msg.cmdPrefix}slayershop [unlock|lock|buy] Reward\`\nExample:` +
 			`\n\`${msg.cmdPrefix}slayershop unlock Malevolent Masquerade\``;
 	}
-	async unlock(msg: KlasaMessage, [buyableName = '']: [string]) {
-		if (msg.flagArgs.unlocks || msg.flagArgs.help) {
-			let returnStr = `${SlayerRewardsShop.map(item => `${item.name}: ${item.desc}`).join(`\n`)}`;
-			return msg.channel.sendFile(Buffer.from(returnStr), 'slayerUnlocks.txt');
+	async buy(msg: KlasaMessage, [buyableName = '']: [string]) {
+		if (msg.flagArgs.items || msg.flagArgs.help) {
+			let returnStr = `${SlayerRewardsShop
+				.filter(i => {
+					return i.item !== undefined && i.item > 0;
+				})
+				.map(item => `${item.name} - ${item.slayerPointCost} points: ${item.desc}`).join(`\n`)}`;
+			return msg.channel.send(`You can buy:\n${returnStr}`);
 		}
 		if (buyableName === '') {
-			throw `You must specify an Unlock to purchase.`;
+			throw `You must specify an item to purchase.`;
 		}
 
-		// TODO: turn this into a table?
 		const buyable = SlayerRewardsShop.find(
 			item =>
 				stringMatches(buyableName, item.name) ||
@@ -56,7 +60,83 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			throw `I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop --unlocks\` for a list.`;
+			throw `I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop [buy|unlock] --help\` for a list.`;
+		}
+
+		await msg.author.settings.sync(true);
+
+		if (buyable.haveOne && msg.author.numberOfItemInBank(buyable.item) >= 1) {
+			return msg.channel.send(`You can only have 1 ${buyable.name}`);
+		}
+
+		const curSlayerPoints = msg.author.settings.get(UserSettings.Slayer.SlayerPoints);
+		const slayerPointCost = buyable.slayerPointCost;
+
+		if (curSlayerPoints < slayerPointCost) {
+			throw `You need ${slayerPointCost} Slayer points to make this purchase.\n` +
+			`You have: ${curSlayerPoints}`;
+		}
+
+		let purchaseMsg = `${buyable.name} for ${slayerPointCost} Slayer points`;
+
+		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
+			const sellMsg = await msg.channel.send(
+				`${msg.author}, say \`confirm\` to confirm that you want to buy ${purchaseMsg}.`
+			);
+
+			// Confirm the user wants to buy
+			try {
+				await msg.channel.awaitMessages(
+					_msg =>
+						_msg.author.id === msg.author.id &&
+						_msg.content.toLowerCase() === 'confirm',
+					{
+						max: 1,
+						time: Time.Second * 10,
+						errors: ['time']
+					}
+				);
+			} catch (err) {
+				return sellMsg.edit(
+					`Cancelling purchase of ${toTitleCase(buyable.name)}.`
+				);
+			}
+		}
+
+		await msg.author.settings.update(
+			UserSettings.Slayer.SlayerPoints,
+			curSlayerPoints - slayerPointCost
+		);
+
+		await msg.author.addItemsToBank(buyable.item, true);
+
+		return msg.send(
+			`You bought ${toTitleCase(buyable.name)} for ${slayerPointCost} Slayer points.`
+		);
+	}
+	async unlock(msg: KlasaMessage, [buyableName = '']: [string]) {
+		if (msg.flagArgs.unlocks || msg.flagArgs.help) {
+			// TODO: turn this into a table?
+			let returnStr = `${SlayerRewardsShop
+				.filter(i => {
+					return i.item === undefined || i.item === 0;
+				})
+				.map(item => `${item.name} - ${item.slayerPointCost} points: ${item.desc}`)
+				.join(`\n`)}`;
+			return msg.channel.sendFile(Buffer.from(returnStr), 'slayerUnlocks.txt');
+		}
+		if (buyableName === '') {
+			throw `You must specify an Unlock to purchase.`;
+		}
+
+		const buyable = SlayerRewardsShop.find(
+			item =>
+				stringMatches(buyableName, item.name) ||
+				(item.aliases && item.aliases.some(alias => stringMatches(alias, buyableName)))
+		);
+
+		if (!buyable) {
+			throw `I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop [buy|unlock] --help\` for a list.`;
 		}
 
 		await msg.author.settings.sync(true);
@@ -91,7 +171,7 @@ export default class extends BotCommand {
 						_msg.content.toLowerCase() === 'confirm',
 					{
 						max: 1,
-						time: Time.Second * 15,
+						time: Time.Second * 10,
 						errors: ['time']
 					}
 				);
@@ -158,7 +238,7 @@ export default class extends BotCommand {
 						_msg.content.toLowerCase() === 'confirm',
 					{
 						max: 1,
-						time: Time.Second * 15,
+						time: Time.Second * 10,
 						errors: ['time']
 					}
 				);

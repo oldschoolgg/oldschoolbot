@@ -885,7 +885,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems(['Slayer ring (8)']),
+		itemsRequired: resolveItems(['Slayer ring (8)', 'Slayer ring (eternal)']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 40

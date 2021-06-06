@@ -1,4 +1,4 @@
-import { SlayerTaskUnlocksEnum } from '../slayer/slayerUtil';
+import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
 import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
