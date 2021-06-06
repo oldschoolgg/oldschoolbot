@@ -12,8 +12,7 @@ import {
 	getUsersCurrentSlayerInfo
 } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { addBanks } from '../../lib/util';
-// import { ItemBank } from "../../lib/types";
+import { addBanks } from '../../lib/util';;
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
@@ -63,12 +62,12 @@ export default class extends Task {
 			inCatacombs: isInCatacombs
 		};
 		const loot = new Bank(monster.table.kill(quantity, killOptions));
+		const superiorCount = loot.bank[420];
 		announceLoot(this.client, user, monster, loot.bank);
 
-		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
-			monster.name
-		} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
-
+		const superiorMessage = superiorCount ? `, including ${superiorCount} superiors` : '';
+		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
+			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
 		if (
 			monster.id === Monsters.Unicorn.id &&
 			user.hasItemEquippedAnywhere('Iron dagger') &&
@@ -112,7 +111,7 @@ export default class extends Task {
 
 		// TODO: Refactor this into a 'lootFilter' function/class/something
 		// Order: Fang, eye, heart.
-		const numHydraEyes = await loot.bank[itemID("Hydra's eye")];
+		const numHydraEyes = loot.bank[itemID("Hydra's eye")];
 		const numDarkTotemBases = loot.bank[itemID('Dark totem base')];
 		const ringPieces = resolveItems([
 			"Hydra's eye",
@@ -125,7 +124,7 @@ export default class extends Task {
 			'Dark totem top'
 		]) as number[];
 		loot.filter(l => {
-			return l.id !== itemID("Hydra's eye") && l.id !== itemID('Dark totem base');
+			return l.id !== 420 && l.id !== itemID("Hydra's eye") && l.id !== itemID('Dark totem base');
 		}, true);
 		if (numDarkTotemBases) {
 			for (let x = 0; x < numDarkTotemBases; x++) {
