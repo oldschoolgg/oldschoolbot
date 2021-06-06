@@ -1,6 +1,7 @@
 import { randFloat, randInt } from 'e';
 import { KlasaUser } from 'klasa';
-import { Monster, Monsters, MonsterSlayerMaster } from 'oldschooljs';
+import {  Monsters, MonsterSlayerMaster } from 'oldschooljs';
+import Monster from 'oldschooljs/dist/structures/Monster';
 import { MoreThan } from 'typeorm';
 
 import { getNewUser } from '../settings/settings';
