@@ -12,12 +12,11 @@ import {
 	getUsersCurrentSlayerInfo
 } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import itemID from '../../lib/util/itemID';
-//import { ItemBank } from "../../lib/types";
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { addBanks } from '../../lib/util';
-import resolveItems from "../../lib/util/resolveItems";
-
+// import { ItemBank } from "../../lib/types";
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
+import resolveItems from '../../lib/util/resolveItems';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
@@ -115,11 +114,18 @@ export default class extends Task {
 		// Order: Fang, eye, heart.
 		const numHydraEyes = await loot.bank[itemID("Hydra's eye")];
 		const numDarkTotemBases = loot.bank[itemID('Dark totem base')];
-		const ringPieces =  resolveItems(["Hydra's eye", "Hydra's fang", "Hydra's heart"]) as number[];
-		const totemPieces =
-			resolveItems(['Dark totem base', 'Dark totem middle', 'Dark totem top']) as number[];
+		const ringPieces = resolveItems([
+			"Hydra's eye",
+			"Hydra's fang",
+			"Hydra's heart"
+		]) as number[];
+		const totemPieces = resolveItems([
+			'Dark totem base',
+			'Dark totem middle',
+			'Dark totem top'
+		]) as number[];
 		loot.filter(l => {
-			return l.id !== itemID("Hydra's eye") && l.id !== itemID('Dark totem base')
+			return l.id !== itemID("Hydra's eye") && l.id !== itemID('Dark totem base');
 		}, true);
 		if (numDarkTotemBases) {
 			for (let x = 0; x < numDarkTotemBases; x++) {
@@ -130,8 +136,7 @@ export default class extends Task {
 				}
 				const minBank = Math.min(...bank);
 				for (let i = 0; i < bank.length; i++) {
-					if (bank[i] === minBank)
-					{
+					if (bank[i] === minBank) {
 						loot.add(totemPieces[i]);
 						break;
 					}
