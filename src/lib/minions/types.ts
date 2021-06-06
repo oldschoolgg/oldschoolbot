@@ -1,4 +1,5 @@
 import { Image } from 'canvas';
+import { Bank } from 'oldschooljs';
 import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
 import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
@@ -93,4 +94,5 @@ export interface KillableMonster {
 	disallowedAttackStyles?: AttackStyles[];
 	customMonsterHP?: number;
 	combatXpMultiplier?: number;
+	itemCost?: Bank;
 }
