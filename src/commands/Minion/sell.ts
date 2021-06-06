@@ -1,3 +1,4 @@
+import { calcPercentOfNum } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 
@@ -19,12 +20,21 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			ironCantUse: true,
 			categoryFlags: ['minion'],
-			description: 'Sells an item to the bot for 80% of G.E price.',
+			description: 'Sells an item to the bot.',
 			examples: ['+sell bronze arrow']
 		});
 	}
 
-	async run(msg: KlasaMessage, [[bankToSell, totalPrice]]: [[Bank, number]]) {
+	async run(msg: KlasaMessage, [[bankToSell]]: [[Bank, number]]) {
+		let totalPrice = 0;
+		for (const [item, qty] of bankToSell.items()) {
+			if (item.price > item.highalch * 3) {
+				totalPrice += item.price * qty;
+			} else {
+				totalPrice += calcPercentOfNum(30, item.highalch) * qty;
+			}
+		}
+
 		if (msg.author.isIronman) return msg.send(`Iron players can't sell items.`);
 		const hasSkipper =
 			msg.author.equippedPet() === itemID('Skipper') ||
@@ -74,7 +84,7 @@ export default class extends BotCommand {
 		return msg.send(
 			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}** GP (${Util.toKMB(
 				totalPrice
-			)}). Tax: ${tax.toLocaleString()} ${
+			)}).  Tax: ${tax.toLocaleString()} ${
 				hasSkipper
 					? `\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you weren't charged any tax on the sale!`
 					: ''

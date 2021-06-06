@@ -1178,6 +1178,7 @@ setCustomItem(47_526, 'Crab hat', 'Coal', {}, 100_000);
 setCustomItem(47_527, 'Steve', 'Herbi', {}, 1_000_000);
 
 setCustomItem(47_528, "Bryophyta's staff(i)", "Bryophyta's staff", {}, 1_000_000);
+setCustomItem(47_529, 'Voidling', 'Herbi', {}, 10_000_000);
 
 /**
  * -----------------------------------------------------------------------------------------------

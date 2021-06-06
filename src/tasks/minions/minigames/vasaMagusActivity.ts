@@ -24,7 +24,7 @@ export default class extends Task {
 
 		for (let i = 0; i < quantity; i++) {
 			loot.add(VasaMagusLootTable.roll());
-			loot.add(randArrItem(bossKillables).table.kill(randInt(1, 2)));
+			loot.add(randArrItem(bossKillables).table.kill(randInt(1, 3)));
 		}
 
 		const xpRes = await addMonsterXP(user, VasaMagus.id, quantity, duration);
