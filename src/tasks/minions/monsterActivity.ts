@@ -112,8 +112,8 @@ export default class extends Task {
 		}
 
 		// Fang, eye, heart.
-		const numHydraEyes = await user.numberOfItemInBank(itemID("Hydra's eye"));
-		const numDarkTotemBases = await user.numberOfItemInBank(itemID('Dark totem base'));
+		const numHydraEyes = await loot.bank[itemID("Hydra's eye")];
+		const numDarkTotemBases = loot.bank[itemID('Dark totem base')];
 		const ringPieces =  resolveItems(["Hydra's eye", "Hydra's fang", "Hydra's heart"]) as number[];
 		const totemPieces =
 			resolveItems(['Dark totem base', 'Dark totem middle', 'Dark totem top']) as number[];
@@ -125,11 +125,15 @@ export default class extends Task {
 				const bank: number[] = [];
 				const myBank = addBanks([user.allItemsOwned().bank, loot.bank]);
 				for (const piece of totemPieces) {
-					bank.push(myBank.bank[piece] ?? 0);
+					bank.push(myBank[piece] ?? 0);
 				}
 				const minBank = Math.min(...bank);
 				for (let i = 0; i < bank.length; i++) {
-					if (bank[i] === minBank) loot.add(totemPieces[i]);
+					if (bank[i] === minBank)
+					{
+						loot.add(totemPieces[i]);
+						break;
+					}
 				}
 			}
 		}
@@ -138,11 +142,14 @@ export default class extends Task {
 				const bank: number[] = [];
 				const myBank = addBanks([user.allItemsOwned().bank, loot.bank]);
 				for (const piece of ringPieces) {
-					bank.push(myBank.bank[piece] ?? 0);
+					bank.push(myBank[piece] ?? 0);
 				}
 				const minBank = Math.min(...bank);
 				for (let i = 0; i < bank.length; i++) {
-					if (bank[i] === minBank) loot.add(ringPieces[i]);
+					if (bank[i] === minBank) {
+						loot.add(ringPieces[i]);
+						break;
+					}
 				}
 			}
 		}
