@@ -34,8 +34,8 @@ export default class extends BotCommand {
 		const { currentTask, totalTasksDone, assignedTask } = await getUsersCurrentSlayerInfo(
 			msg.author.id
 		);
-		const myBlockList = await msg.author.get(UserSettings.Slayer.BlockedTasks) ?? [];
-		const myQPs = await msg.author.get(UserSettings.QP) ?? 0;
+		const myBlockList = await msg.author.settings.get(UserSettings.Slayer.BlockedTasks) ?? [];
+		const myQPs = await msg.author.settings.get(UserSettings.QP) ?? 0;
 
 		const maxBlocks = calcMaxBlockedTasks(myQPs);
 		if(
@@ -63,7 +63,7 @@ export default class extends BotCommand {
 				);
 			}
 			let slayerPoints = msg.author.settings.get(UserSettings.Slayer.SlayerPoints) ?? 0;
-			if (slayerPoints < toBlock ? 100 : 30) {
+			if (slayerPoints < (toBlock ? 100 : 30)) {
 				return msg.send(`You need ${toBlock ? 100 : 30} points to ${toBlock ? 'block' : 'cancel'},` +
 					` you only have: ${slayerPoints}`);
 			}

@@ -1,6 +1,6 @@
 import { randFloat, randInt } from 'e';
 import { KlasaUser } from 'klasa';
-import { Monsters, MonsterSlayerMaster } from 'oldschooljs';
+import { Monster, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import { MoreThan } from 'typeorm';
 
 import { getNewUser } from '../settings/settings';
@@ -128,7 +128,7 @@ export function calcMaxBlockedTasks(qps: number) {
 	// For now we're do 1 free + 1 for every 50 qps.
 	return 1 + Math.floor(qps / 50);
 }
-export function getCommonTaskName(task: Monsters) {
+export function getCommonTaskName(task: Monster) {
 	let commonName = task.name;
 	switch (task.id) {
 		case Monsters.KalphiteWorker.id:
