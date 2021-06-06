@@ -1,6 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { AssignableSlayerTask } from '../types';
+import { bossTasks } from "./bossTasks";
 
 export const duradelTasks: AssignableSlayerTask[] = [
 	{
@@ -415,5 +416,6 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monsters: [Monsters.Wyrm.id],
 		slayerLevel: 62,
 		unlocked: true
-	}
+	},
+	...bossTasks
 ];

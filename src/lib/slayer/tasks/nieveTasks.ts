@@ -1,6 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { AssignableSlayerTask } from '../types';
+import { bossTasks } from "./bossTasks";
 
 export const nieveTasks: AssignableSlayerTask[] = [
 	{
@@ -433,5 +434,6 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monsters: [Monsters.Wyrm.id],
 		slayerLevel: 62,
 		unlocked: true
-	}
+	},
+	...bossTasks
 ];

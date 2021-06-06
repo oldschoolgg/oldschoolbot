@@ -10,6 +10,7 @@ export interface AssignableSlayerTask {
 	combatLevel?: number;
 	questPoints?: number;
 	unlocked?: boolean;
+	isBoss?: boolean;
 }
 
 export interface SlayerMaster {
