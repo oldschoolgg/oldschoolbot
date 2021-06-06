@@ -53,6 +53,48 @@ export default class extends BotCommand {
 			return msg.channel.send(`${outstr}\n\nTry: \`${msg.cmdPrefix}st --block\` to block a task.`);
 		}
 
+		if (msg.flagArgs.unblock) {
+			if (!input) {
+				throw `You must specify a monster to unblock!`;
+			}
+			let osjsMonster;
+			let idToRemove = parseInt(input);
+			if (isNaN(idToRemove)) {
+				// Lets lookup the ID from the name:
+				osjsMonster = Monsters.find(mon =>
+					mon.aliases.some(alias => stringMatches(alias, input)));
+				if (!osjsMonster) {
+					throw `Failed to find a monster with that name!`;
+				}
+				idToRemove = osjsMonster.id;
+			}
+			// Now we can remove based on ID.
+			if (!myBlockList.includes(idToRemove)) {
+				return msg.channel.send(`ID: ${idToRemove} is not on the block list!`);
+			}
+			if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
+				const alchMessage = await msg.channel.send(
+					`Really unblock ${osjsMonster.name}s? You will have to pay to block it again ` +
+						`in the future.\n\nType **confirm** to unblock.`
+				);
+				try {
+					await msg.channel.awaitMessages(
+						_msg =>
+							_msg.author.id === msg.author.id &&
+							_msg.content.toLowerCase() === 'confirm',
+						{
+							max: 1,
+							time: 10_000,
+							errors: ['time']
+						}
+					);
+				} catch (err) {
+					return alchMessage.edit(`Not unblocking ${osjsMonster.name}s.`);
+				}
+			}
+			await msg.author.settings.update(UserSettings.Slayer.BlockedTasks, idToRemove);
+			return msg.channel.send(`${osjsMonster.name}s have been unblocked`);
+		}
 		if (currentTask && (msg.flagArgs.skip || msg.flagArgs.block)) {
 			const toBlock = msg.flagArgs.block ? true : false;
 			if (myBlockList.length >= maxBlocks) {
