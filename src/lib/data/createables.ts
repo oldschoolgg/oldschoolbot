@@ -444,6 +444,24 @@ const slayerCreatables: Createable[] = [
 		GPCost: 0
 	},
 	{
+		name: 'Boots of brimstone',
+		inputItems: resolveNameBank({
+			"Drake's claw": 1,
+			'Boots of stone': 1
+		}),
+		outputItems: resolveNameBank({ 'Brimstone ring': 1 }),
+		GPCost: 0
+	},
+	{
+		name: 'Devout boots',
+		inputItems: resolveNameBank({
+			"Drake's tooth": 1,
+			'Holy sandals': 1
+		}),
+		outputItems: resolveNameBank({ 'Brimstone ring': 1 }),
+		GPCost: 0
+	},
+	{
 		name: 'Brimstone ring',
 		inputItems: resolveNameBank({
 			"Hydra's eye": 1,
