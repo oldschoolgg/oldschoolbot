@@ -36,7 +36,7 @@ export function alching(user: KlasaUser, tripLength: number) {
 
 	const hasInfiniteFireRunes = user.hasItemEquippedAnywhere('Staff of fire');
 
-	let maxCasts = Math.floor(tripLength / (Time.Second * (3 + 10)));
+	let maxCasts = Math.floor(tripLength / (Time.Second * 5));
 	maxCasts = Math.min(alchItemQty, maxCasts);
 	maxCasts = Math.min(nats, maxCasts);
 	if (!hasInfiniteFireRunes) {
