@@ -113,11 +113,7 @@ export default class extends BotCommand {
 		// Check requirements
 		const [hasReqs, _reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) {
-			this.client.wtf(
-				new Error(`${msg.author.sanitizedName} doesn't have requirements to Autoslay `  +
-					`monster with id: ${monster.id}. This shouldn't happen.`)
-			);
-			return msg.channel.send(`An error has occured. :sad:`);
+			return msg.channel.send(`You don't have the requirements to kill ${monster.name}.\n${_reason}`);
 		}
 
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(
