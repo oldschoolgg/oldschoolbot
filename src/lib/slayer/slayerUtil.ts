@@ -112,6 +112,7 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 	) {
 		bossTask = true;
 	}
+	console.log(`Boss task? ${bossTask}.`);
 	const assignedTask = bossTask ? weightedPick(bossTasks) : weightedPick(baseTasks);
 	const newUser = await getNewUser(_user.id);
 
