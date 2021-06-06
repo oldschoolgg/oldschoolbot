@@ -28,9 +28,11 @@ export default class extends Extendable {
 		};
 	}
 
+	// These changes are necessary so that similar items work while equipped!
 	public hasItemEquippedAnywhere(
 		this: User,
 		_item: number | string | string[] | number[],
+		//_item: number | string | (string|number)[],
 		every = false
 	): boolean {
 		const items = resolveItems(_item);
