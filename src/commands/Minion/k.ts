@@ -195,7 +195,9 @@ export default class extends BotCommand {
 		if (monster.name.toLowerCase() === 'skotizo') {
 			const darkTotemsInBank = await msg.author.numberOfItemInBank(itemID('Dark totem'));
 			if (quantity > darkTotemsInBank) {
-				return msg.channel.send(`You don't have enough Dark totems to skill ${quantity}x Skotizo.`);
+				return msg.channel.send(
+					`You don't have enough Dark totems to skill ${quantity}x Skotizo.`
+				);
 			}
 			await msg.author.removeItemFromBank(itemID('Dark totem'), quantity);
 		}

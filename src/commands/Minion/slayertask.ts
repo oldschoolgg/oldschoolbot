@@ -1,19 +1,18 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { production } from '../../config';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { slayerMasters } from '../../lib/slayer/slayerMasters';
+import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import {
 	assignNewSlayerTask,
 	getCommonTaskName,
 	getUsersCurrentSlayerInfo,
 	userCanUseMaster
 } from '../../lib/slayer/slayerUtil';
-import { slayerMasters } from '../../lib/slayer/slayerMasters';
-
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
-import { production } from "../../config";
-import killableMonsters from "../../lib/minions/data/killableMonsters";
-import { SlayerTaskUnlocksEnum, SlayerRewardsShop } from "../../lib/slayer/slayerUnlocks";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -34,7 +33,7 @@ export default class extends BotCommand {
 			msg.author.id
 		);
 
-		if (production === false) {
+		if (!production) {
 			if (msg.flagArgs.mal3v0lent) {
 				await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks, 2);
 				return msg.send('Hopefully updated');
@@ -151,7 +150,7 @@ export default class extends BotCommand {
 		if (currentTask || !slayerMaster) {
 			let warningInfo = '';
 			if (input && !slayerMaster && matchedSlayerMaster) {
-				let aRequirements : string[] = [];
+				let aRequirements: string[] = [];
 				if (matchedSlayerMaster.slayerLvl)
 					aRequirements.push(`Slayer Level: ${matchedSlayerMaster.slayerLvl}`);
 				if (matchedSlayerMaster.combatLvl)
@@ -162,22 +161,22 @@ export default class extends BotCommand {
 				if (aRequirements.length)
 					warningInfo += `Requires: ${aRequirements.join(`\n`)}\n\n`;
 			}
-			let alternateMonsters : string[] = [];
+			let alternateMonsters: string[] = [];
 			let monsterList = '';
 			if (currentTask && assignedTask) {
 				const altMobs = assignedTask.monsters;
 				altMobs.forEach(m => {
-					const monster = killableMonsters.find(
-						mon => mon.id === m
-					);
+					const monster = killableMonsters.find(mon => mon.id === m);
 					alternateMonsters.push(monster!.name);
-				})
+				});
 				monsterList = alternateMonsters.join(`, `);
 			}
 			let baseInfo = currentTask
 				? `Your current task is to kill ${currentTask.quantity}x ${getCommonTaskName(
 						assignedTask!
-				  )}, you have ${currentTask.quantityRemaining} kills remaining.\n\nOptions:\n${monsterList}`
+				  )}, you have ${
+						currentTask.quantityRemaining
+				  } kills remaining.\n\nOptions:\n${monsterList}`
 				: `You have no task at the moment <:FrogBigEyes:847859910933741628> You can get a task using \`${
 						msg.cmdPrefix
 				  }slayertask ${slayerMasters.map(i => i.name).join('/')}\``;
@@ -198,20 +197,24 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 		}
 
 		const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
-		const myUnlocks = await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks) ?? undefined;
+		const myUnlocks =
+			(await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks)) ?? undefined;
 		if (myUnlocks) {
-			SlayerRewardsShop.filter(srs => { return srs.extendID !== undefined; })
-				.forEach(srsf => {
-					if (
-						myUnlocks.includes(srsf.id)
-							&& srsf.extendID!.includes(newSlayerTask.currentTask.monsterID)
-					) {
-						newSlayerTask.currentTask.quantity =
-							Math.ceil(newSlayerTask.currentTask.quantity * srsf.extendMult!);
-						newSlayerTask.currentTask.quantityRemaining = newSlayerTask.currentTask.quantity;
-						newSlayerTask.currentTask.save();
-					}
-				});
+			SlayerRewardsShop.filter(srs => {
+				return srs.extendID !== undefined;
+			}).forEach(srsf => {
+				if (
+					myUnlocks.includes(srsf.id) &&
+					srsf.extendID!.includes(newSlayerTask.currentTask.monsterID)
+				) {
+					newSlayerTask.currentTask.quantity = Math.ceil(
+						newSlayerTask.currentTask.quantity * srsf.extendMult!
+					);
+					newSlayerTask.currentTask.quantityRemaining =
+						newSlayerTask.currentTask.quantity;
+					newSlayerTask.currentTask.save();
+				}
+			});
 		}
 
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask);

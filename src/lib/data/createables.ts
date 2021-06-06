@@ -428,7 +428,7 @@ const slayerCreatables: Createable[] = [
 	{
 		name: 'Uncut zenyte',
 		inputItems: resolveNameBank({
-			'Onyx': 1,
+			Onyx: 1,
 			'Zenyte shard': 1
 		}),
 		outputItems: resolveNameBank({ 'Uncut zenyte': 1 }),

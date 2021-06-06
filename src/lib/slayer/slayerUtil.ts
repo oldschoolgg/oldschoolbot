@@ -9,9 +9,9 @@ import { SkillsEnum } from '../skilling/types';
 import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
 import { roll } from '../util';
 import { slayerMasters } from './slayerMasters';
+import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
 import { bossTasks } from './tasks/bossTasks';
 import { AssignableSlayerTask, SlayerMaster } from './types';
-import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from "./slayerUnlocks";
 
 export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster) {
 	const streaks = [1000, 250, 100, 50, 10];
@@ -216,11 +216,10 @@ export function getSlayerMasterOSJSbyID(slayerMasterID: number) {
 	return osjsSlayerMaster[slayerMasterID];
 }
 
-export function getSlayerReward(id: SlayerTaskUnlocksEnum) : string {
+export function getSlayerReward(id: SlayerTaskUnlocksEnum): string {
 	let name = '';
-	SlayerRewardsShop.forEach( srs => {
-		if (srs.id === id)
-			name = srs.name;
+	SlayerRewardsShop.forEach(srs => {
+		if (srs.id === id) name = srs.name;
 	});
 	return name;
 }
@@ -246,4 +245,3 @@ export function hasSlayerUnlock(
 	errors = missing.join(`, `);
 	return { success, errors };
 }
-

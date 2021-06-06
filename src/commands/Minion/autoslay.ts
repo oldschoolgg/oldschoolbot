@@ -84,9 +84,7 @@ export default class extends BotCommand {
 		}
 
 		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
-		const isOnTask =
-			usersTask.assignedTask !== null &&
-			usersTask.currentTask !== null;
+		const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
 
 		if (!isOnTask) {
 			return msg.channel.send(`You're not on a slayer task, so you can't autoslay!`);
@@ -94,8 +92,14 @@ export default class extends BotCommand {
 
 		const monster = findMonster(usersTask.assignedTask!.monster.name);
 		if (!monster) {
-			this.client.wtf(new Error(`${msg.author.sanitizedName} couldn't Autoslay `  +
-				`monster  with id: ${usersTask.assignedTask!.monster.id}. This shouldn't happen.`))
+			this.client.wtf(
+				new Error(
+					`${msg.author.sanitizedName} couldn't Autoslay ` +
+						`monster  with id: ${
+							usersTask.assignedTask!.monster.id
+						}. This shouldn't happen.`
+				)
+			);
 			return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 		}
 
@@ -110,7 +114,9 @@ export default class extends BotCommand {
 		// Check requirements
 		const [hasReqs, _reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) {
-			return msg.channel.send(`You don't have the requirements to kill ${monster.name}.\n${_reason}`);
+			return msg.channel.send(
+				`You don't have the requirements to kill ${monster.name}.\n${_reason}`
+			);
 		}
 
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(

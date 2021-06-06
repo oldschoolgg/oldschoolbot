@@ -503,4 +503,3 @@ export function updateGPTrackSetting(client: KlasaClient, setting: string, amoun
 	const newValue = current + amount;
 	return client.settings.update(setting, newValue);
 }
-

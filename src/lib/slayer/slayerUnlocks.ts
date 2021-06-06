@@ -1,6 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
-import itemID from "../util/itemID";
+import itemID from '../util/itemID';
 
 export interface SlayerTaskUnlocks {
 	id: SlayerTaskUnlocksEnum;
@@ -118,7 +118,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		desc: 'Unlocks the ability to receive Mithril dragons as a task.',
 		slayerPointCost: 80,
 		canBeRemoved: true,
-		aliases: ['mithril dragons','mithril dragon']
+		aliases: ['mithril dragons', 'mithril dragon']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.WatchTheBirdie,
@@ -238,7 +238,13 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		desc: 'Unlocks the ability for Konar, Duradel, Nieve and Chaeldar to assign Vampyres',
 		slayerPointCost: 80,
 		canBeRemoved: true,
-		aliases: ['vampyre slayer', 'vampire slayer', 'actual vampire slayer', 'vampyres', 'vampires']
+		aliases: [
+			'vampyre slayer',
+			'vampire slayer',
+			'actual vampire slayer',
+			'vampyres',
+			'vampires'
+		]
 	},
 	{
 		id: SlayerTaskUnlocksEnum.SlayerRing,
@@ -248,7 +254,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		item: itemID('Slayer ring (8)'),
 		haveOne: false,
 		aliases: ['slayer ring 8', 'slayer ring (8)']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.HerbSack,
@@ -277,7 +282,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 9,
 		canBeRemoved: true,
 		aliases: ['extend dark beasts']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.AnkouVeryMuch,
@@ -288,7 +292,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 2,
 		canBeRemoved: true,
 		aliases: ['extend ankous', 'extend ankou']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.SuqANotherOne,
@@ -299,7 +302,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 3,
 		canBeRemoved: true,
 		aliases: ['suqanother one', 'suq a nother one', 'extend suqahs']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.FireAndDarkness,
@@ -310,7 +312,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 3,
 		canBeRemoved: true,
 		aliases: ['fire and darkness', 'extend black dragons', 'extend black drags']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.PedalToTheMetals,
@@ -320,8 +321,12 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendID: [Monsters.BronzeDragon.id, Monsters.IronDragon.id, Monsters.SteelDragon.id],
 		extendMult: 3,
 		canBeRemoved: true,
-		aliases: ['extend metal dragons', 'extend steel dragons', 'extend bronze dragons', 'extend iron dragons']
-
+		aliases: [
+			'extend metal dragons',
+			'extend steel dragons',
+			'extend bronze dragons',
+			'extend iron dragons'
+		]
 	},
 	{
 		id: SlayerTaskUnlocksEnum.IReallyMithYou,
@@ -332,7 +337,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 4,
 		canBeRemoved: true,
 		aliases: ['extend mith dragons', 'extend mithril dragons', 'extend mith drags']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.AdamindSomeMore,
@@ -343,7 +347,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 5,
 		canBeRemoved: true,
 		aliases: ['extend addy dragons', 'extend adamant dragons']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.RUUUUUNE,
@@ -354,7 +357,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 9,
 		canBeRemoved: true,
 		aliases: ['rune', 'extend rune dragons', 'extend rune dragon']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.SpiritualFervour,
@@ -365,7 +367,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.4,
 		canBeRemoved: true,
 		aliases: ['extend spiritual creatures', 'extend spirituals']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.BirdsOfAFeather,
@@ -376,7 +377,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.33,
 		canBeRemoved: true,
 		aliases: ['extend aviansies', 'extend birds']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.GreaterChallenge,
@@ -387,8 +387,8 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.4,
 		canBeRemoved: true,
 		aliases: ['extend greaters', 'extend greater demons']
-
-	},{
+	},
+	{
 		id: SlayerTaskUnlocksEnum.ItsDarkInHere,
 		name: 'ItsDarkInHere',
 		desc: 'Extends Black demon beast tasks.',
@@ -397,7 +397,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.4,
 		canBeRemoved: true,
 		aliases: ['extend black demons']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.BleedMeDry,
@@ -408,7 +407,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.4,
 		canBeRemoved: true,
 		aliases: ['extend bloodvelds']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.SmellYaLater,
@@ -419,7 +417,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.4,
 		canBeRemoved: true,
 		aliases: ['extend aberrant spectres', 'extend abby specs']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.Horrorific,
@@ -430,7 +427,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.5,
 		canBeRemoved: true,
 		aliases: ['extend cave horrors']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.ToDustYouShallReturn,
@@ -441,7 +437,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.5,
 		canBeRemoved: true,
 		aliases: ['extend dusties', 'extend dust devils']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.WyverNotherOne,
@@ -452,7 +447,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 2,
 		canBeRemoved: true,
 		aliases: ['extend wyverns', 'extend skeletal wyverns']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.GetSmashed,
@@ -463,7 +457,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.5,
 		canBeRemoved: true,
 		aliases: ['extend gargs', 'extend gargoyles']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.NechsPlease,
@@ -474,8 +467,8 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.67,
 		canBeRemoved: true,
 		aliases: ['extend nechs', 'extend nechryaels']
-
-	},{
+	},
+	{
 		id: SlayerTaskUnlocksEnum.AugmentMyAbbies,
 		name: 'AugmentMyAbbies',
 		desc: 'Extends Abyssal demon tasks.',
@@ -484,7 +477,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.5,
 		canBeRemoved: true,
 		aliases: ['augment my abbys', 'extend abby demons', 'extend abyssal demons']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.KrackOn,
@@ -495,7 +487,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.67,
 		canBeRemoved: true,
 		aliases: ['extend cave kraken', 'extend kraken']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.GetScabarightOnIt,
@@ -506,7 +497,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 3,
 		canBeRemoved: true,
 		aliases: ['extend scabarites', 'extend scarabs', 'extend scarabites']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.WyverNotherTwo,
@@ -517,7 +507,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.5,
 		canBeRemoved: true,
 		aliases: ['extend fossil island wyverns', 'extend fossil wyverns']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.Basilonger,
@@ -528,7 +517,6 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.4,
 		canBeRemoved: true,
 		aliases: ['extend basilisks', 'extend basilisk']
-
 	},
 	{
 		id: SlayerTaskUnlocksEnum.MoreAtStake,
@@ -539,6 +527,5 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.5,
 		canBeRemoved: true,
 		aliases: ['extend vampyres', 'extend vampires']
-
 	}
 ];

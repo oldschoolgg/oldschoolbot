@@ -5,12 +5,12 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import {
 	calculateSlayerPoints,
 	getSlayerMasterOSJSbyID,
 	getUsersCurrentSlayerInfo
 } from '../../lib/slayer/slayerUtil';
-import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
