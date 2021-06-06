@@ -409,7 +409,7 @@ const slayerCreatables: Createable[] = [
 	{
 		name: 'Dragon hunter lance',
 		inputItems: resolveNameBank({
-			'Hydra claw': 1,
+			"Hydra's claw": 1,
 			'Zamorakian hasta': 1
 		}),
 		outputItems: resolveNameBank({ 'Dragon hunter lance': 1 }),
