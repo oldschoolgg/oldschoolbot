@@ -111,7 +111,8 @@ export default class extends Task {
 			await usersTask.currentTask!.save();
 		}
 
-		// Fang, eye, heart.
+		// TODO: Refactor this into a 'lootFilter' function/class/something
+		// Order: Fang, eye, heart.
 		const numHydraEyes = await loot.bank[itemID("Hydra's eye")];
 		const numDarkTotemBases = loot.bank[itemID('Dark totem base')];
 		const ringPieces =  resolveItems(["Hydra's eye", "Hydra's fang", "Hydra's heart"]) as number[];
@@ -153,7 +154,6 @@ export default class extends Task {
 				}
 			}
 		}
-
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
