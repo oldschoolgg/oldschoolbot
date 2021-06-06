@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { allSlayerHelmets } from '../../../slayer/slayerUtil';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
@@ -309,7 +308,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		existsInCatacombs: true,
-		itemsRequired: deepResolveItems([allSlayerHelmets]),
+		itemsRequired: deepResolveItems(['Slayer helmet']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 60
