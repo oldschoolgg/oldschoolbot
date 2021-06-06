@@ -27,6 +27,7 @@ export interface BankBackground {
 	bitfield?: BitField;
 	sacValueRequired?: number;
 	skillsNeeded?: Skills;
+	transparent?: true;
 }
 
 export interface ClueMilestoneReward {

@@ -15,6 +15,7 @@ import {
 	toKMB
 } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import resolveItems from '../../lib/util/resolveItems';
 import BankImageTask from '../../tasks/bankImage';
 
 export default class extends BotCommand {
@@ -106,6 +107,21 @@ export default class extends BotCommand {
 					Number(selectedImage.perkTierNeeded) - 1
 				} patrons.`
 			);
+		}
+
+		if (selectedImage.name === 'Pets') {
+			const cl = new Bank(msg.author.collectionLog);
+			const hasPet = resolveItems([
+				'Rocky',
+				'Bloodhound',
+				'Giant squirrel',
+				'Baby chinchompa'
+			]).some(id => cl.has(id));
+			if (!hasPet) {
+				return msg.channel.send(
+					`You need to have one of these pets to purchase the Pets background: Rocky, Bloodhound, Giant squirrel, Baby chinchompa.`
+				);
+			}
 		}
 
 		/**
