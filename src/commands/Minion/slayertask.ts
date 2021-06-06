@@ -206,31 +206,12 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 						myUnlocks.includes(srsf.id)
 							&& srsf.extendID!.includes(newSlayerTask.currentTask.monsterID)
 					) {
-						console.log(`Extending... previous: ${newSlayerTask.currentTask.quantity}`);
 						newSlayerTask.currentTask.quantity =
 							Math.ceil(newSlayerTask.currentTask.quantity * srsf.extendMult!);
-						console.log(`New: ${newSlayerTask.currentTask.quantity}`);
+						newSlayerTask.currentTask.quantityRemaining = newSlayerTask.currentTask.quantity;
 						newSlayerTask.currentTask.save();
 					}
-				})
-
-			/*
-			myUnlocks.forEach(u => {
-				if (
-					SlayerRewardsShop
-						.find(srs => {
-							return srs.id === u && srs.extendID !== undefined && srs.extendID.length;
-						})!
-						.extendID!.includes(newSlayerTask.currentTask.monsterID)
-				) {
-					console.log(`Extending... previous: ${newSlayerTask.currentTask.quantity}`);
-					newSlayerTask.currentTask.quantity *= 1.5;
-					console.log(`New: ${newSlayerTask.currentTask.quantity}`);
-					newSlayerTask.currentTask.save();
-				}
-			})
-
-			 */
+				});
 		}
 
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask);
