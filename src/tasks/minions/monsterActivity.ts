@@ -8,9 +8,9 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import {
 	calculateSlayerPoints,
 	getSlayerMasterOSJSbyID,
-	getUsersCurrentSlayerInfo,
-	SlayerTaskUnlocksEnum
+	getUsersCurrentSlayerInfo
 } from '../../lib/slayer/slayerUtil';
+import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
