@@ -10,7 +10,7 @@ import {
 	userCanUseMaster
 } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import findMonster, { stringMatches } from '../../lib/util';
+import { stringMatches } from '../../lib/util';
 import {production} from "../../config.example";
 import killableMonsters from "../../lib/minions/data/killableMonsters";
 
@@ -155,13 +155,13 @@ export default class extends BotCommand {
 			}
 			let alternateMonsters : string[] = [];
 			let monsterList = '';
-			if (currentTask) {
+			if (currentTask && assignedTask) {
 				const altMobs = assignedTask.monsters;
 				altMobs.forEach(m => {
 					const monster = killableMonsters.find(
 						mon => mon.id === m
 					);
-					alternateMonsters.push(monster.name);
+					alternateMonsters.push(monster!.name);
 				})
 				monsterList = alternateMonsters.join(`, `);
 			}
