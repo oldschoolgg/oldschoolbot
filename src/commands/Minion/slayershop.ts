@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Time } from '../../lib/constants';
-import { SlayerRewardsShop } from '../../lib/slayer/slayerUtil';
+import { getSlayerReward, SlayerRewardsShop } from '../../lib/slayer/slayerUtil';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -25,10 +25,21 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage, [_input]: [string]) {
-		throw `Usage:\n\`${msg.cmdPrefix}slayeshop [unlock|lock] Reward\`\n\nExample:` +
+		let unlocks : string[] = [];
+		const myUnlocks = await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
+		myUnlocks.forEach(u => {
+			unlocks.push(getSlayerReward(u));
+		})
+		throw `You currently have the following rewards unlocked:\n` +
+			`\`${unlocks.join(`\n`)}\`\n` +
+			`Usage:\n\`${msg.cmdPrefix}slayeshop [unlock|lock] Reward\`\n\nExample:` +
 			`\n\n\`${msg.cmdPrefix}slayershop unlock Malevolent Masquerade\``;
 	}
 	async unlock(msg: KlasaMessage, [buyableName = '']: [string]) {
+		if (msg.flagArgs.unlocks) {
+			let returnStr = `${SlayerRewardsShop.map(item => `__${item.name}__: ${item.desc}`).join(`\n`)}`;
+			return msg.channel.sendFile(Buffer.from(returnStr), 'slayerUnlocks.txt');
+		}
 		if (buyableName === '') {
 			throw `You must specify an Unlock to purchase.`;
 		}
@@ -40,9 +51,7 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			throw `I don't recognize that, the unlocks you can buy are: ${SlayerRewardsShop.map(
-				item => `${item.name}: ${item.desc}`
-			).join(`\n`)}.`;
+			throw `I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop buy --unlocks\` for a list.`;
 		}
 
 		await msg.author.settings.sync(true);
@@ -114,9 +123,9 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			throw `I don't recognize that, the unlocks you can remove are: ${SlayerRewardsShop.map(
-				item => item.canBeRemoved ? `${item.name}: ${item.desc}` : ''
-			).join(`\n`)}.`;
+			throw `I don't recognize that, the unlocks you can remove are:\n${SlayerRewardsShop.map(
+				item => item.canBeRemoved ? `__${item.name}__: ${item.desc}` : ''
+			).join(`\n`)}`;
 		}
 
 		await msg.author.settings.sync(true);
@@ -133,7 +142,7 @@ export default class extends BotCommand {
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
 			const sellMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to confirm that you want to unlock ${removeMsg}.`
+				`${msg.author}, say \`confirm\` to confirm that you want to **lock** ${removeMsg}.`
 			);
 
 			// Confirm the user wants to buy

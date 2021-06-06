@@ -132,7 +132,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		name: 'King Black Bonnet',
 		desc: 'Unlocks ability to create the Black slayer helmet.',
 		slayerPointCost: 1_000,
-		canBeRemoved: true,
+		canBeRemoved: false,
 		aliases: ['kbd slayer helmet', 'black slayer helmet']
 	},
 	{
@@ -140,7 +140,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		name: 'Kalphite Khat',
 		desc: 'Unlocks ability to create the Green slayer helmet.',
 		slayerPointCost: 1_000,
-		canBeRemoved: true,
+		canBeRemoved: false,
 		aliases: ['green slayer helmet', 'kq slayer helmet']
 	},
 	{
@@ -148,7 +148,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		name: 'Unholy Helmet',
 		desc: 'Unlocks ability to create the Red slayer helmet.',
 		slayerPointCost: 1_000,
-		canBeRemoved: true,
+		canBeRemoved: false,
 		aliases: ['red slayer helmet', 'abyssal slayer helmet']
 	},
 	{
@@ -156,7 +156,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		name: 'Dark Mantle',
 		desc: 'Unlocks ability to create the Purple slayer helmet.',
 		slayerPointCost: 1_000,
-		canBeRemoved: true,
+		canBeRemoved: false,
 		aliases: ['purple slayer helmet', 'skotizo slayer helmet']
 	},
 	{
@@ -164,7 +164,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		name: 'Undead Head',
 		desc: 'Unlocks ability to create the Turquoise slayer helmet.',
 		slayerPointCost: 1_000,
-		canBeRemoved: true,
+		canBeRemoved: false,
 		aliases: ['vorkath slayer helmet', 'turquoise slayer helmet', 'blue slayer helmet']
 	},
 	{
@@ -172,7 +172,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		name: 'Use More Head',
 		desc: 'Unlocks ability to create the Hydra slayer helmet.',
 		slayerPointCost: 1_000,
-		canBeRemoved: true,
+		canBeRemoved: false,
 		aliases: ['hydra slayer helmet', 'alchemical slayer helmet']
 	},
 	{
@@ -180,7 +180,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		name: 'Twisted Vision',
 		desc: 'Unlocks ability to create the Twisted slayer helmet.',
 		slayerPointCost: 1_000,
-		canBeRemoved: true,
+		canBeRemoved: false,
 		aliases: ['twisted slayer helmet', 'horny slayer helmet']
 	},
 	{
