@@ -86,7 +86,12 @@ export default class extends BotCommand {
 		const isOnTask =
 			usersTask.assignedTask !== null &&
 			usersTask.currentTask !== null;
-		const monster =  findMonster(usersTask.assignedTask.monster.name);
+
+		if (!isOnTask) {
+			return msg.channel.send(`You're not on a slayer task, so you can't autoslay!`);
+		}
+
+		const monster = findMonster(usersTask.assignedTask!.monster.name);
 		if (!monster) {
 			this.client.wtf(new Error(`${msg.author.sanitizedName} couldn't Autoslay `  +
 				`monster  with id: ${usersTask.assignedTask.monster.id}. This shouldn't happen.`))
@@ -94,9 +99,7 @@ export default class extends BotCommand {
 		}
 
 
-		if (!isOnTask) {
-			return msg.channel.send(`You're not on a slayer task, so you can't autoslay!`);
-		}
+
 
 		if (!monster) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 

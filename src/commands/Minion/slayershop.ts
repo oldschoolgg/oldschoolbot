@@ -51,7 +51,7 @@ export default class extends BotCommand {
 			msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks)
 				.includes(buyable.id)
 		) {
-			return msg.channel.send(`You have already unlocked ${buyable.nam}`);
+			return msg.channel.send(`You have already unlocked ${buyable.name}`);
 		}
 
 		const curSlayerPoints = msg.author.settings.get(UserSettings.Slayer.SlayerPoints);
@@ -125,7 +125,7 @@ export default class extends BotCommand {
 			!msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks)
 				.includes(buyable.id)
 		) {
-			return msg.channel.send(`You don't have ${buyable.name()} unlocked, so you cannot remove it.`);
+			return msg.channel.send(`You don't have ${buyable.name} unlocked, so you cannot remove it.`);
 		}
 
 		let removeMsg = `${buyable.name}. You will have to spend another ${buyable.slayerPointCost} ` +
