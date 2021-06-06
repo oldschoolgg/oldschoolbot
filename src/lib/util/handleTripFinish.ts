@@ -140,26 +140,28 @@ export async function handleTripFinish(
 		}
 	}
 
-	const alchResult = user.usingPet('Voidling') ? alching(user, data.duration) : null;
-	if (alchResult !== null) {
-		if (!user.owns(alchResult.bankToRemove)) {
-			message += `\Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`;
-		}
-		await user.removeItemsFromBank(alchResult.bankToRemove);
-		updateBankSetting(
-			client,
-			ClientSettings.EconomyStats.MagicCostBank,
-			alchResult.bankToRemove
-		);
+	if (user.usingPet('Voidling')) {
+		const alchResult = alching(user, data.duration);
+		if (alchResult !== null) {
+			if (!user.owns(alchResult.bankToRemove)) {
+				message += `\Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`;
+			}
+			await user.removeItemsFromBank(alchResult.bankToRemove);
+			updateBankSetting(
+				client,
+				ClientSettings.EconomyStats.MagicCostBank,
+				alchResult.bankToRemove
+			);
 
-		const alchGP = alchResult.itemToAlch.highalch * alchResult.maxCasts;
-		await user.addGP(alchGP);
-		updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
-		message += `\nYour Voidling alched ${alchResult.maxCasts}x ${
-			alchResult.itemToAlch.name
-		}. Removed ${alchResult.bankToRemove} from your bank and added ${toKMB(alchGP)} GP.`;
-	} else {
-		message += `\nYour Voidling didn't alch anything because you either: don't have Nature runes, Fire Runes, or any Favorited alchables that you own.`;
+			const alchGP = alchResult.itemToAlch.highalch * alchResult.maxCasts;
+			await user.addGP(alchGP);
+			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
+			message += `\nYour Voidling alched ${alchResult.maxCasts}x ${
+				alchResult.itemToAlch.name
+			}. Removed ${alchResult.bankToRemove} from your bank and added ${toKMB(alchGP)} GP.`;
+		} else {
+			message += `\nYour Voidling didn't alch anything because you either: don't have Nature runes, Fire Runes, or any Favorited alchables that you own.`;
+		}
 	}
 
 	const attachable = attachment
