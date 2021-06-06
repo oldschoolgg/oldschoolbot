@@ -120,7 +120,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
+		itemsRequired: deepResolveItems([['Antidote++(4)', 'Super antipoison (4)', 'Antipoison(4)']]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 10

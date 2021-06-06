@@ -164,5 +164,19 @@ export const slayerBuyables: Buyable[] = [
 		}),
 		gpCost: 50_000,
 		qpRequired: 20
+	},
+	{
+		name: 'Antipoison(4)',
+		outputItems: resolveNameBank({
+			'Antipoison(4)': 1
+		}),
+		gpCost: 10_000
+	},
+	{
+		name: 'Antipoison',
+		outputItems: resolveNameBank({
+			'Antipoison(4)': 1
+		}),
+		gpCost: 10_000
 	}
 ];

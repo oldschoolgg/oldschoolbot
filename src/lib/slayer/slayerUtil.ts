@@ -64,6 +64,8 @@ export function userCanUseTask(user: KlasaUser, task: AssignableSlayerTask, mast
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.settings.get(UserSettings.QP)) return false;
 	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
+	const myBlockList = user.settings.get(UserSettings.Slayer.BlockedTasks) ?? [];
+	if (myBlockList.includes(task.monster.id)) return false;
 	const myUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
 	// Slayer unlock restrictions:
 	const lmon = task.monster.name.toLowerCase();
