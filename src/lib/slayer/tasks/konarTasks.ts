@@ -375,6 +375,5 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monsters: [Monsters.Wyrm.id],
 		slayerLevel: 62,
 		unlocked: true
-	},
-	...bossTasks
+	}
 ];
