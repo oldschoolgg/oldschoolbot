@@ -96,7 +96,7 @@ export function userCanUseTask(user: KlasaUser, task: AssignableSlayerTask, mast
 // boss tasks
 export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master));
-	let assignedTask;
+	let bossTask = false;
 	if (
 		_user.settings
 			.get(UserSettings.Slayer.SlayerUnlocks)
@@ -107,11 +107,9 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 			master.name.toLowerCase() === 'chaeldar') &&
 		roll(25)
 	) {
-		assignedTask = weightedPick(bossTasks);
-	} else {
-		assignedTask = weightedPick(baseTasks);
+		bossTask = true;
 	}
-
+	const assignedTask = bossTask ? weightedPick(bossTasks) : weightedPick(baseTasks);
 	const newUser = await getNewUser(_user.id);
 
 	const currentTask = new SlayerTaskTable();

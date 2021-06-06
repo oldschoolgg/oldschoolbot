@@ -26,7 +26,7 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage, [_input]: [string]) {
-		if (msg.flagArgs.unlocks || msg.flagArgs.help) {
+		if (msg.flagArgs.unlocks || msg.flagArgs.help || _input === 'help') {
 			let returnStr = `${SlayerRewardsShop.map(item => `${item.name}: ${item.desc}`).join(
 				`\n`
 			)}`;
