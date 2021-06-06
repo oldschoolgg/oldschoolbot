@@ -407,6 +407,16 @@ const hunterClothing: Createable[] = [
 
 const slayerCreatables: Createable[] = [
 	{
+		name: 'Dark totem',
+		inputItems: resolveNameBank({
+			'Dark totem base': 1,
+			'Dark totem middle': 1,
+			'Dark totem top': 1
+		}),
+		outputItems: resolveNameBank({ 'Dark totem': 1 }),
+		GPCost: 0
+	},
+	{
 		name: 'Dragon hunter lance',
 		inputItems: resolveNameBank({
 			"Hydra's claw": 1,

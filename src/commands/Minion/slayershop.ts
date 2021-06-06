@@ -16,15 +16,19 @@ export default class extends BotCommand {
 			cooldown: 5,
 			altProtection: true,
 			subcommands: true,
-			aliases: ['tfs', 'tfshop'],
-			description: `Allows a player to purchase farmer's items from the tithefarm shop.`,
-			examples: ['+tfs farmers hat', '+tithefarmshop farmers jacket'],
+			aliases: ['sls', 'slshop'],
+			description: `Allows a player to purchase slayer unlocks.`,
+			examples: ['+sls unlock malevolent masqureade', '+slshop unlock slayer helmet'],
 			categoryFlags: ['minion']
 		});
 	}
 
 	@requiresMinion
 	async run(msg: KlasaMessage, [_input]: [string]) {
+		if (msg.flagArgs.unlocks || msg.flagArgs.help) {
+			let returnStr = `${SlayerRewardsShop.map(item => `${item.name}: ${item.desc}`).join(`\n`)}`;
+			return msg.channel.sendFile(Buffer.from(returnStr), 'slayerUnlocks.txt');
+		}
 		let unlocks : string[] = [];
 		const myUnlocks = await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
 		myUnlocks.forEach(u => {
@@ -32,18 +36,19 @@ export default class extends BotCommand {
 		})
 		throw `You currently have the following rewards unlocked:\n` +
 			`\`${unlocks.join(`\n`)}\`\n\n` +
-			`Usage:\n\`${msg.cmdPrefix}slayeshop [unlock|lock] Reward\`\nExample:` +
+			`Usage:\n\`${msg.cmdPrefix}slayershop [unlock|lock] Reward\`\nExample:` +
 			`\n\`${msg.cmdPrefix}slayershop unlock Malevolent Masquerade\``;
 	}
 	async unlock(msg: KlasaMessage, [buyableName = '']: [string]) {
-		if (msg.flagArgs.unlocks) {
-			let returnStr = `${SlayerRewardsShop.map(item => `__${item.name}__: ${item.desc}`).join(`\n`)}`;
+		if (msg.flagArgs.unlocks || msg.flagArgs.help) {
+			let returnStr = `${SlayerRewardsShop.map(item => `${item.name}: ${item.desc}`).join(`\n`)}`;
 			return msg.channel.sendFile(Buffer.from(returnStr), 'slayerUnlocks.txt');
 		}
 		if (buyableName === '') {
 			throw `You must specify an Unlock to purchase.`;
 		}
 
+		// TODO: turn this into a table?
 		const buyable = SlayerRewardsShop.find(
 			item =>
 				stringMatches(buyableName, item.name) ||
@@ -51,7 +56,7 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			throw `I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop buy --unlocks\` for a list.`;
+			throw `I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop --unlocks\` for a list.`;
 		}
 
 		await msg.author.settings.sync(true);

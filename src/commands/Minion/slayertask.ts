@@ -150,8 +150,16 @@ export default class extends BotCommand {
 		if (currentTask || !slayerMaster) {
 			let warningInfo = '';
 			if (input && !slayerMaster && matchedSlayerMaster) {
+				let aRequirements : string[] = [];
+				if (matchedSlayerMaster.slayerLvl)
+					aRequirements.push(`Slayer Level: ${matchedSlayerMaster.slayerLvl}`);
+				if (matchedSlayerMaster.combatLvl)
+					aRequirements.push(`Combat Level: ${matchedSlayerMaster.combatLvl}`);
+				if (matchedSlayerMaster.questPoints)
+					aRequirements.push(`Quest points: ${matchedSlayerMaster.questPoints}`);
 				warningInfo = `You do not have the requirements to use ${matchedSlayerMaster.name}.\n\n`;
-				// TODO: Show requirements
+				if (aRequirements.length)
+					warningInfo += `Requires: ${aRequirements.join(`\n`)}\n\n`;
 			}
 			let alternateMonsters : string[] = [];
 			let monsterList = '';
