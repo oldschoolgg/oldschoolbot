@@ -159,7 +159,7 @@ export const maxMageGear = constructGearSetup({
 	head: 'Ancestral hat',
 	neck: 'Amulet of fury',
 	body: 'Ancestral robe top',
-	cape: 'Saradomin cape',
+	cape: 'Imbued saradomin cape',
 	hands: 'Barrows gloves',
 	legs: 'Ancestral robe bottom',
 	feet: 'Eternal boots',
