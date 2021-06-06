@@ -65,7 +65,7 @@ export default class extends BotCommand {
 
 		await msg.author.settings.sync(true);
 
-		if (buyable.haveOne && msg.author.numberOfItemInBank(buyable.item) >= 1) {
+		if (buyable.haveOne && await msg.author.numberOfItemInBank(buyable.item) >= 1) {
 			return msg.channel.send(`You can only have 1 ${buyable.name}`);
 		}
 
@@ -108,7 +108,7 @@ export default class extends BotCommand {
 			curSlayerPoints - slayerPointCost
 		);
 
-		await msg.author.addItemsToBank(buyable.item, true);
+		await msg.author.addItemsToBank({ [buyable.item]: 1 }, true);
 
 		return msg.send(
 			`You bought ${toTitleCase(buyable.name)} for ${slayerPointCost} Slayer points.`

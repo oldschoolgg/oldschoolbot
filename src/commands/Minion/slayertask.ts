@@ -6,14 +6,14 @@ import {
 	assignNewSlayerTask,
 	getCommonTaskName,
 	getUsersCurrentSlayerInfo,
-	SlayerTaskUnlocksEnum,
 	userCanUseMaster
 } from '../../lib/slayer/slayerUtil';
+
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
-import {production} from "../../config.example";
+import { production } from "../../config";
 import killableMonsters from "../../lib/minions/data/killableMonsters";
-import {SlayerRewardsShop} from "../../lib/slayer/slayerUnlocks";
+import { SlayerTaskUnlocksEnum, SlayerRewardsShop } from "../../lib/slayer/slayerUnlocks";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -203,8 +203,8 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 			myUnlocks.forEach(u => {
 				if (
 					SlayerRewardsShop
-						.find(srs => { return srs.id = u && srs.extendID; })!
-						.extendID.includes(newSlayerTask.currentTask.monsterID)
+						.find(srs => { return srs.id === u && srs.extendID; })!
+						.extendID!.includes(newSlayerTask.currentTask.monsterID)
 				) {
 					console.log(`Extending... previous: ${newSlayerTask.currentTask.quantity}`);
 					newSlayerTask.currentTask.quantity *= 1.5;
