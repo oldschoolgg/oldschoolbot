@@ -94,7 +94,7 @@ export default class extends BotCommand {
 		const monster = findMonster(usersTask.assignedTask!.monster.name);
 		if (!monster) {
 			this.client.wtf(new Error(`${msg.author.sanitizedName} couldn't Autoslay `  +
-				`monster  with id: ${usersTask.assignedTask.monster.id}. This shouldn't happen.`))
+				`monster  with id: ${usersTask.assignedTask!.monster.id}. This shouldn't happen.`))
 			return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 		}
 
