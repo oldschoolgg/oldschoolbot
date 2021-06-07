@@ -136,7 +136,9 @@ export default class extends BotCommand {
 			throw `You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls unlock --help\``;
 		}
 
-		const buyable = SlayerRewardsShop.find(
+		const buyable = SlayerRewardsShop.filter(srs => {
+			return srs.item === undefined
+		}).find(
 			item =>
 				stringMatches(buyableName, item.name) ||
 				(item.aliases && item.aliases.some(alias => stringMatches(alias, buyableName)))
