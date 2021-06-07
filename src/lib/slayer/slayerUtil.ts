@@ -1,6 +1,6 @@
 import { randFloat, randInt } from 'e';
 import { KlasaUser } from 'klasa';
-import {  Monsters, MonsterSlayerMaster } from 'oldschooljs';
+import {  Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { MoreThan } from 'typeorm';
 
@@ -13,7 +13,6 @@ import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
 import { bossTasks } from './tasks/bossTasks';
 import { AssignableSlayerTask, SlayerMaster } from './types';
-import Bank from "../../extendables/User/Bank";
 import itemID from "../util/itemID";
 import resolveItems from "../util/resolveItems";
 

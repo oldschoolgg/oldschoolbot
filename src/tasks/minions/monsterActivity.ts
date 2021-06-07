@@ -12,10 +12,8 @@ import {
 	getUsersCurrentSlayerInfo
 } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { addBanks } from '../../lib/util';;
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
-import resolveItems from '../../lib/util/resolveItems';
+
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
