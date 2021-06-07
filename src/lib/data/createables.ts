@@ -339,6 +339,90 @@ const ornamentKits: Createable[] = [
 			'Armadyl godsword ornament kit': 1
 		}),
 		noCl: true
+	},
+	{
+		name: 'Amulet of torture (or)',
+		inputItems: resolveNameBank({
+			'Amulet of torture': 1,
+			'Torture ornament kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Amulet of torture (or)': 1
+		})
+	},
+	{
+		name: 'Revert amulet of torture',
+		inputItems: resolveNameBank({
+			'Amulet of torture (or)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Amulet of torture': 1,
+			'Torture ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Necklace of anguish (or)',
+		inputItems: resolveNameBank({
+			'Necklace of anguish': 1,
+			'Anguish ornament kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Necklace of anguish (or)': 1
+		})
+	},
+	{
+		name: 'Revert necklace of anguish',
+		inputItems: resolveNameBank({
+			'Necklace of anguish (or)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Necklace of anguish': 1,
+			'Anguish ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Tormented bracelet (or)',
+		inputItems: resolveNameBank({
+			'Tormented bracelet': 1,
+			'Tormented ornament kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Tormented bracelet (or)': 1
+		})
+	},
+	{
+		name: 'Revert tormented bracelet',
+		inputItems: resolveNameBank({
+			'Tormented bracelet (or)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Tormented bracelet': 1,
+			'Tormented ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Occult necklace (or)',
+		inputItems: resolveNameBank({
+			'Occult necklace': 1,
+			'Occult ornament kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Occult necklace (or)': 1
+		})
+	},
+	{
+		name: 'Revert occult necklace',
+		inputItems: resolveNameBank({
+			'Occult necklace (or)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Occult necklace': 1,
+			'Occult ornament kit': 1
+		}),
+		noCl: true
 	}
 ];
 
