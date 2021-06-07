@@ -66,7 +66,7 @@ export default class extends Extendable {
 			cl?: ItemBank;
 		}
 	) {
-		const { image, cacheKey } = await this.client.tasks
+		const { image, cacheKey, isTransparent } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
 				bank,
@@ -87,7 +87,9 @@ export default class extends Extendable {
 		}
 		const sent = await this.send(
 			content ?? cached,
-			image && !cached ? new MessageAttachment(image!) : {}
+			image && !cached
+				? new MessageAttachment(image!, isTransparent ? `bank.png` : 'bank.jpg')
+				: {}
 		);
 
 		const url = sent.attachments.first()?.proxyURL;
