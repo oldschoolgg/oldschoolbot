@@ -287,9 +287,9 @@ export function filterLootReplace(myBank : Bank, myLoot : Bank) {
 	if (numDarkTotemBases) {
 		for (let x = 0; x < numDarkTotemBases; x++) {
 			const bank: number[] = [];
-			const myBank = addBanks([myBank.bank, myLoot.bank]);
+			const combinedBank = addBanks([myBank.bank, myLoot.bank]);
 			for (const piece of totemPieces) {
-				bank.push(myBank[piece] ?? 0);
+				bank.push(combinedBank[piece] ?? 0);
 			}
 			const minBank = Math.min(...bank);
 			for (let i = 0; i < bank.length; i++) {
@@ -303,9 +303,9 @@ export function filterLootReplace(myBank : Bank, myLoot : Bank) {
 	if (numHydraEyes) {
 		for (let x = 0; x < numHydraEyes; x++) {
 			const bank: number[] = [];
-			const myBank = addBanks([myBank, myLoot.bank]);
+			const combinedBank = addBanks([myBank, myLoot.bank]);
 			for (const piece of ringPieces) {
-				bank.push(myBank[piece] ?? 0);
+				bank.push(combinedBank[piece] ?? 0);
 			}
 			const minBank = Math.min(...bank);
 			for (let i = 0; i < bank.length; i++) {
