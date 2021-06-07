@@ -99,7 +99,7 @@ export default class extends Task {
 				const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 
-				str += ` You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.`;
+				str += `\nYou've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.`;
 			} else {
 				str += `\nYou killed ${quantitySlayed}x of your ${
 					usersTask.currentTask!.quantityRemaining

@@ -23,6 +23,7 @@ import findMonster, {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
+import {SkillsEnum} from "../../lib/skilling/types";
 
 const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
 const invalidMonsterMsg = (prefix: string) =>
@@ -148,7 +149,15 @@ export default class extends BotCommand {
 		}
 
 		// Add 15% slayer boost on task if they have black mask or similar
-		if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))) {
+		if (
+			(
+				isOnTask
+				&& (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic))
+				&& msg.author.hasItemEquippedOrInBank(itemID('Black mask (i)'))
+			) || (
+				isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))
+			)
+		) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
 			boosts.push('15% for Slayer Helmet on task');
 		}

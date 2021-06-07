@@ -107,7 +107,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.Hydra.id,
 		name: Monsters.Hydra.name,
 		aliases: Monsters.Hydra.aliases,
-		timeToFinish: Time.Second * 160,
+		timeToFinish: Time.Second * 110,
 		table: Monsters.Hydra,
 		wildy: false,
 		canBeKilled: true,

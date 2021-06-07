@@ -449,7 +449,7 @@ const slayerCreatables: Createable[] = [
 			"Drake's claw": 1,
 			'Boots of stone': 1
 		}),
-		outputItems: resolveNameBank({ 'Brimstone ring': 1 }),
+		outputItems: resolveNameBank({ 'Boots of brimstone': 1 }),
 		GPCost: 0
 	},
 	{
@@ -458,7 +458,7 @@ const slayerCreatables: Createable[] = [
 			"Drake's tooth": 1,
 			'Holy sandals': 1
 		}),
-		outputItems: resolveNameBank({ 'Brimstone ring': 1 }),
+		outputItems: resolveNameBank({ 'Devout boots': 1 }),
 		GPCost: 0
 	},
 	{

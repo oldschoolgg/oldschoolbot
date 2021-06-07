@@ -269,7 +269,7 @@ export const turaelMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			'Bandos chestplate',
 			["Verac's plateskirt", 'Bandos tassets'],
-			['Abyssal whip', 'Dragon scimitar'],
+			['Arclight','Abyssal whip', 'Dragon scimitar'],
 			['Rune crossbow', "Karil's crossbow", 'Armadyl crossbow'],
 			['Armadyl chestplate', "Karil's leathertop"],
 			['Armadyl chainskirt', "Karil's leatherskirt"]

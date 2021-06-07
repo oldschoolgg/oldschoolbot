@@ -465,7 +465,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.TzHaarKet,
 		amount: [90, 150],
 		weight: 8,
-		monsters: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id],
+		monsters: [Monsters.TzHaarKet.id],
 		unlocked: false
 	},
 	{
