@@ -470,7 +470,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	},
 	{
 		id: SlayerTaskUnlocksEnum.AugmentMyAbbies,
-		name: 'AugmentMyAbbies',
+		name: 'Augment My Abbies',
 		desc: 'Extends Abyssal demon tasks.',
 		slayerPointCost: 100,
 		extendID: [Monsters.AbyssalDemon.id],

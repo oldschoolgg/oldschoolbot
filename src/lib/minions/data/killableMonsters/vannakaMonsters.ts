@@ -160,7 +160,12 @@ export const vannakaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 50
 		},
-		superior: Monsters.InsatiableBloodveld
+		superior: Monsters.InsatiableBloodveld,
+		itemInBankBoosts: [
+			{
+				[itemID('Arclight')]: 15
+			}
+		]
 	},
 	{
 		id: Monsters.BlueDragon.id,
@@ -741,7 +746,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 10
+				[itemID('Arclight')]: 15
 			}
 		],
 		superior: Monsters.InsatiableMutatedBloodveld
