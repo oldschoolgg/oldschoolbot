@@ -8,11 +8,15 @@ import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
-import { roll } from '../util';
+import {addBanks, roll} from '../util';
 import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
 import { bossTasks } from './tasks/bossTasks';
 import { AssignableSlayerTask, SlayerMaster } from './types';
+import Bank from "../../extendables/User/Bank";
+import itemID from "../util/itemID";
+import resolveItems from "../util/resolveItems";
+
 
 export enum AutoslayOptionsEnum {
 	Reserved,
@@ -260,4 +264,57 @@ export function hasSlayerUnlock(
 	console.log(`missing: ${missing}`);
 	errors = missing.join(`, `);
 	return { success, errors };
+}
+
+export function filterLootReplace(myBank : Bank, myLoot : Bank) {
+
+	// TODO: Refactor this into a 'lootFilter' function/class/something
+	// Order: Fang, eye, heart.
+	const numHydraEyes = myLoot.bank[itemID("Hydra's eye")];
+	const numDarkTotemBases = myLoot.bank[itemID('Dark totem base')];
+	const ringPieces = resolveItems([
+		"Hydra's eye",
+		"Hydra's fang",
+		"Hydra's heart"
+	]) as number[];
+	const totemPieces = resolveItems([
+		'Dark totem base',
+		'Dark totem middle',
+		'Dark totem top'
+	]) as number[];
+	myLoot.filter(l => {
+		return l.id !== 420 && l.id !== itemID("Hydra's eye") && l.id !== itemID('Dark totem base');
+	}, true);
+	if (numDarkTotemBases) {
+		for (let x = 0; x < numDarkTotemBases; x++) {
+			const bank: number[] = [];
+			const myBank = addBanks([myBank.bank, myLoot.bank]);
+			for (const piece of totemPieces) {
+				bank.push(myBank[piece] ?? 0);
+			}
+			const minBank = Math.min(...bank);
+			for (let i = 0; i < bank.length; i++) {
+				if (bank[i] === minBank) {
+					myLoot.add(totemPieces[i]);
+					break;
+				}
+			}
+		}
+	}
+	if (numHydraEyes) {
+		for (let x = 0; x < numHydraEyes; x++) {
+			const bank: number[] = [];
+			const myBank = addBanks([myBank, myLoot.bank]);
+			for (const piece of ringPieces) {
+				bank.push(myBank[piece] ?? 0);
+			}
+			const minBank = Math.min(...bank);
+			for (let i = 0; i < bank.length; i++) {
+				if (bank[i] === minBank) {
+					myLoot.add(ringPieces[i]);
+					break;
+				}
+			}
+		}
+	}
 }

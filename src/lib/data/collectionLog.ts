@@ -453,6 +453,49 @@ export const bosses: CollectionLogData = {
 		'Metamorphic dust',
 		'Olmlet',
 		'Twisted ancestral colour kit'
+	]),
+	'Grotesque Guardians': resolveItems([
+		'Black tourmaline core',
+		'Granite hammer',
+		'Granite maul',
+		'Granite ring',
+		'Granite gloves',
+		'Granite dust',
+		'Jar of stone',
+		'Noon'
+	]),
+	'Abyssal Sire': resolveItems([
+		'Abyssal whip',
+		'Abyssal dagger',
+		'Bludgeon claw',
+		'Bludgeon spine',
+		'Bludgeon axon',
+		'Jar of miasma',
+		'Abyssal orphan'
+	]),
+	Kraken: resolveItems([
+		'Trident of the seas (full)',
+		'Kraken tentacle',
+		'Jar of dirt',
+		'Pet kraken'
+	]),
+	'Thermonuclear Smoke Devil': resolveItems([
+		'Occult necklace',
+		'Smoke battlestaff',
+		'Dragon chainbody',
+		'Jar of smoke',
+		'Pet smoke devil'
+	]),
+	'Alchemical Hydra': resolveItems([
+		"Hydra's claw",
+		'Hydra leather',
+		"Hydra's eye",
+		"Hydra's fang",
+		"Hydra's heart",
+		'Hydra tail',
+		'Alchemical hydra heads',
+		'Jar of chemicals',
+		'Ikkle hydra'
 	])
 };
 

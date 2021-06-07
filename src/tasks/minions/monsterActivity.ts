@@ -7,7 +7,7 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import {
-	calculateSlayerPoints,
+	calculateSlayerPoints, filterLootReplace,
 	getSlayerMasterOSJSbyID,
 	getUsersCurrentSlayerInfo
 } from '../../lib/slayer/slayerUtil';
@@ -63,6 +63,7 @@ export default class extends Task {
 		};
 		const loot = new Bank(monster.table.kill(quantity, killOptions));
 		const newSuperiorCount = loot.bank[420];
+
 		announceLoot(this.client, user, monster, loot.bank);
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
@@ -112,55 +113,7 @@ export default class extends Task {
 			await usersTask.currentTask!.save();
 		}
 
-		// TODO: Refactor this into a 'lootFilter' function/class/something
-		// Order: Fang, eye, heart.
-		const numHydraEyes = loot.bank[itemID("Hydra's eye")];
-		const numDarkTotemBases = loot.bank[itemID('Dark totem base')];
-		const ringPieces = resolveItems([
-			"Hydra's eye",
-			"Hydra's fang",
-			"Hydra's heart"
-		]) as number[];
-		const totemPieces = resolveItems([
-			'Dark totem base',
-			'Dark totem middle',
-			'Dark totem top'
-		]) as number[];
-		loot.filter(l => {
-			return l.id !== 420 && l.id !== itemID("Hydra's eye") && l.id !== itemID('Dark totem base');
-		}, true);
-		if (numDarkTotemBases) {
-			for (let x = 0; x < numDarkTotemBases; x++) {
-				const bank: number[] = [];
-				const myBank = addBanks([user.allItemsOwned().bank, loot.bank]);
-				for (const piece of totemPieces) {
-					bank.push(myBank[piece] ?? 0);
-				}
-				const minBank = Math.min(...bank);
-				for (let i = 0; i < bank.length; i++) {
-					if (bank[i] === minBank) {
-						loot.add(totemPieces[i]);
-						break;
-					}
-				}
-			}
-		}
-		if (numHydraEyes) {
-			for (let x = 0; x < numHydraEyes; x++) {
-				const bank: number[] = [];
-				const myBank = addBanks([user.allItemsOwned().bank, loot.bank]);
-				for (const piece of ringPieces) {
-					bank.push(myBank[piece] ?? 0);
-				}
-				const minBank = Math.min(...bank);
-				for (let i = 0; i < bank.length; i++) {
-					if (bank[i] === minBank) {
-						loot.add(ringPieces[i]);
-						break;
-					}
-				}
-			}
-		}
+		filterLootReplace(user.allItemsOwned(), loot);
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
