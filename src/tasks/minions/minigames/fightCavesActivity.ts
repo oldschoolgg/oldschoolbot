@@ -138,7 +138,6 @@ export default class extends Task {
 
 			usersTask.currentTask!.quantityRemaining = 0;
 			await usersTask.currentTask!.save();
-			const xpMsg = await user.addXP(SkillsEnum.Slayer, slayerXP);
 
 			slayerMsg = ` Jad task completed.`;
 			// End slayer code
