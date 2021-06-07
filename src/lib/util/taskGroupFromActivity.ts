@@ -65,6 +65,7 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.MageArena:
 		case Activity.MageTrainingArena:
 		case Activity.OuraniaDeliveryService:
+		case Activity.MageArena2:
 			return ActivityGroup.Minigame;
 		default: {
 			console.error(`Unrecognized activity: ${type}`);

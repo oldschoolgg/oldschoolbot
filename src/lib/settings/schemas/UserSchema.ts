@@ -42,6 +42,7 @@ Client.defaultUserSchema
 	.add('item_contract_bank', 'any', { default: {} })
 	.add('ourania_tokens', 'integer', { default: 0 })
 	.add('favorite_alchables', 'integer', { array: true, default: [] })
+	.add('bank_bg_hex', 'string', { default: null })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')

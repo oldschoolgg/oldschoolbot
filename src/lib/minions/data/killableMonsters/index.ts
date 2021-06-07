@@ -1,4 +1,4 @@
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { Time, ZALCANO_ID } from '../../../constants';
 import { GearSetupTypes, GearStat } from '../../../gear/types';
@@ -537,6 +537,31 @@ const killableMonsters: KillableMonster[] = [
 				'Ancient rejuvenation pool': 10
 			}
 		}
+	},
+	{
+		id: Monsters.PriffRabbit.id,
+		name: Monsters.PriffRabbit.name,
+		aliases: Monsters.PriffRabbit.aliases,
+		timeToFinish: Time.Hour,
+		table: Monsters.PriffRabbit,
+		emoji: '',
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 10,
+		qpRequired: 205,
+		levelRequirements: {
+			prayer: 43
+		},
+		uniques: resolveItems(['Crystal grail']),
+		healAmountNeeded: 400 * 20,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
+		minimumGearRequirements: {
+			[GearSetupTypes.Range]: {
+				[GearStat.AttackRanged]: 20 + 33 + 10 + 94 + 8
+			}
+		},
+		itemCost: new Bank().add('Stamina potion(4)', 5).add('Ruby dragon bolts (e)', 100)
 	}
 ];
 

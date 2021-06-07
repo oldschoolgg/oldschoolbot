@@ -18,6 +18,7 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -29,7 +30,8 @@ import {
 	itemID,
 	itemNameFromID,
 	randomVariation,
-	removeDuplicatesFromArray
+	removeDuplicatesFromArray,
+	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { findMonster } from '../../lib/util/findMonster';
@@ -194,6 +196,17 @@ export default class extends BotCommand {
 				);
 			}
 		}
+		quantity = Math.max(1, quantity);
+		const itemCost = monster.itemCost ? monster.itemCost.clone().multiply(quantity) : null;
+		if (itemCost) {
+			if (!msg.author.owns(itemCost)) {
+				return msg.channel.send(
+					`You don't have the items needed to kill ${quantity}x ${monster.name}, you need: ${itemCost}.`
+				);
+			}
+			updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, itemCost);
+			await msg.author.removeItemsFromBank(itemCost);
+		}
 
 		// Check food
 		let foodStr: undefined | string = undefined;
@@ -217,7 +230,7 @@ export default class extends BotCommand {
 			foodStr = result;
 		}
 
-		if (duration > maxTripLength) {
+		if (quantity > 1 && duration > maxTripLength) {
 			return msg.send(
 				`${minionName} can't go on PvM trips longer than ${formatDuration(
 					maxTripLength
@@ -296,6 +309,11 @@ export default class extends BotCommand {
 		}, it'll take around ${formatDuration(
 			duration
 		)} to finish. Attack styles used: ${attackStyles.join(', ')}.`;
+
+		if (itemCost) {
+			response += `Removed ${itemCost}.`;
+		}
+
 		if (foodStr) {
 			response += ` Removed ${foodStr}.\n`;
 		}

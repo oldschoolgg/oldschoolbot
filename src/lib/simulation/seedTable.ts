@@ -1,4 +1,4 @@
-import MasterFarmer from 'oldschooljs/dist/simulation/monsters/low/MasterFarmer';
+import MasterFarmer from 'oldschooljs/dist/simulation/monsters/low/g-m/MasterFarmer';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import {

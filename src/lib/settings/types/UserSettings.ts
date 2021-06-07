@@ -53,6 +53,7 @@ export namespace UserSettings {
 	export const ItemContractBank = T<O.Readonly<ItemBank>>('item_contract_bank');
 	export const OuraniaTokens = T<number>('ourania_tokens');
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
+	export const BankBackgroundHex = T<string | null>('bank_bg_hex');
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');
