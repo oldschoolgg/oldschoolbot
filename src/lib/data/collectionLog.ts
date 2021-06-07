@@ -1803,7 +1803,7 @@ export const customBossLog: CollectionLogData = {
 	KK: allKalphiteKingItems,
 	nex1: [...torvaOutfit, ...pernixOutfit],
 	nex2: [...virtusOutfit, ...ancientWeapons],
-	vasa: resolveItems(['Tattered robes of Vasa', 'Jar of magic'])
+	vasa: resolveItems(['Tattered robes of Vasa', 'Jar of magic', 'Voidling', 'Magus scroll'])
 };
 
 export const sepulchreLog: CollectionLogData = {
