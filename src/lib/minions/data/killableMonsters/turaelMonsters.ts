@@ -265,7 +265,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.DemonicGorilla,
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 5,
+		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
 			'Bandos chestplate',
 			["Verac's plateskirt", 'Bandos tassets'],
@@ -928,7 +928,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.TorturedGorilla,
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 4,
+		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
 			'Bandos chestplate',
 			["Verac's plateskirt", 'Bandos tassets'],
