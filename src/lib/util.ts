@@ -397,13 +397,13 @@ export function channelIsSendable(channel: Channel | undefined): channel is Text
 	return true;
 }
 export function calcCombatLevel(skills: Skills) {
-	const defence = convertXPtoLVL(skills.defence);
-	const ranged = convertXPtoLVL(skills.ranged);
-	const hitpoints = convertXPtoLVL(skills.hitpoints);
-	const magic = convertXPtoLVL(skills.magic);
-	const prayer = convertXPtoLVL(skills.prayer);
-	const attack = convertXPtoLVL(skills.attack);
-	const strength = convertXPtoLVL(skills.strength);
+	const defence = skills.defence ? convertXPtoLVL(skills.defence) : 1;
+	const ranged = skills.ranged ? convertXPtoLVL(skills.ranged) : 1;
+	const hitpoints = skills.hitpoints ? convertXPtoLVL(skills.hitpoints) : 1;
+	const magic = skills.magic ? convertXPtoLVL(skills.magic) : 1;
+	const prayer = skills.prayer ? convertXPtoLVL(skills.prayer) : 1;
+	const attack = skills.attack ? convertXPtoLVL(skills.attack) : 1;
+	const strength = skills.strength ? convertXPtoLVL(skills.strength) : 1;
 
 	const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
 	const melee = 0.325 * (attack + strength);
