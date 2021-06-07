@@ -303,7 +303,7 @@ export function filterLootReplace(myBank : Bank, myLoot : Bank) {
 	if (numHydraEyes) {
 		for (let x = 0; x < numHydraEyes; x++) {
 			const bank: number[] = [];
-			const combinedBank = addBanks([myBank, myLoot.bank]);
+			const combinedBank = addBanks([myBank.bank, myLoot.bank]);
 			for (const piece of ringPieces) {
 				bank.push(combinedBank[piece] ?? 0);
 			}
