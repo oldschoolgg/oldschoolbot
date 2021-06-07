@@ -38,8 +38,9 @@ export default class extends BotCommand {
 			return msg.channel.send(`You're not on a slayer task, so you can't autoslay!`);
 		}
 		if (
-			(_mode === '' && autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked))
-			|| (_mode === 'default' || _mode === 'lowest')
+			(_mode === '' && !autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked))
+			|| _mode === 'default'
+			|| _mode === 'lowest'
 		) {
 			// This code handles the default option for autoslay:
 			if (msg.flagArgs.save && autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked)) {
@@ -49,7 +50,7 @@ export default class extends BotCommand {
 			}
 			return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
 		} else if (
-			(_mode === '' && !autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked))
+			(_mode === '' && autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked))
 			|| (_mode === 'highest' || _mode === 'boss')
 		) {
 			// This code handles the 'highest/boss' setting of autoslay.
