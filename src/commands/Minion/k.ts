@@ -165,7 +165,7 @@ export default class extends BotCommand {
 				boosts.push('15% for Dragon hunter lance');
 			} else if (
 				msg.author.hasItemEquippedOrInBank('Dragon hunter crossbow')
-				&& attackStyles.includes([SkillsEnum.Ranged])
+				&& attackStyles.includes(SkillsEnum.Ranged)
 			) {
 				timeToFinish = reduceNumByPercent(timeToFinish, 15);
 				boosts.push('15% for Dragon hunter crossbow');
