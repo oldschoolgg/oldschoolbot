@@ -109,7 +109,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		let purchaseMsg = `${buyable.name} for ${slayerPointCost} Slayer points`;
+		let purchaseMsg = `1x ${buyable.name} for ${slayerPointCost} Slayer points`;
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
 			const sellMsg = await msg.channel.send(

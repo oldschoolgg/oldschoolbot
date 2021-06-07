@@ -319,7 +319,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 3,
+		difficultyRating: 4,
 		existsInCatacombs: true,
 		itemsRequired: deepResolveItems(['Slayer helmet']),
 		qpRequired: 0,
