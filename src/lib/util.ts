@@ -396,12 +396,30 @@ export function channelIsSendable(channel: Channel | undefined): channel is Text
 
 	return true;
 }
+export function calcCombatLevel(skills: Skills) {
+	const defence = convertXPtoLVL(skills.defence);
+	const ranged = convertXPtoLVL(skills.ranged);
+	const hitpoints = convertXPtoLVL(skills.hitpoints);
+	const magic = convertXPtoLVL(skills.magic);
+	const prayer = convertXPtoLVL(skills.prayer);
+	const attack = convertXPtoLVL(skills.attack);
+	const strength = convertXPtoLVL(skills.strength);
 
+	const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
+	const melee = 0.325 * (attack + strength);
+	const range = 0.325 * (Math.floor(ranged / 2) + ranged);
+	const mage = 0.325 * (Math.floor(magic / 2) + magic);
+	return Math.floor(base + Math.max(melee, range, mage));
+}
 export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 	for (const [skillName, level] of objectEntries(requirements)) {
-		const xpHas = skills[skillName];
-		const levelHas = convertXPtoLVL(xpHas ?? 1);
-		if (levelHas < level!) return false;
+		if (skillName === 'combat') {
+			if(calcCombatLevel(skills) < level!) return false;
+		} else {
+			const xpHas = skills[skillName];
+			const levelHas = convertXPtoLVL(xpHas ?? 1);
+			if (levelHas < level!) return false;
+		}
 	}
 	return true;
 }
