@@ -51,6 +51,7 @@ export namespace UserSettings {
 	export const LastItemContractDate = T<number>('last_item_contract_date');
 	export const CurrentItemContract = T<number | null>('current_item_contract');
 	export const ItemContractBank = T<O.Readonly<ItemBank>>('item_contract_bank');
+	export const ItemContractStreak = T<number>('item_contract_streak');
 	export const OuraniaTokens = T<number>('ourania_tokens');
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
 	export const BankBackgroundHex = T<string | null>('bank_bg_hex');
