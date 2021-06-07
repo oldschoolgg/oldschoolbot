@@ -232,7 +232,7 @@ export default class extends BotCommand {
 			if (currentTask && assignedTask) {
 				const altMobs = assignedTask.monsters;
 				altMobs.forEach(m => {
-					const monster = killableMonsters.find(mon => mon.id === m && m !== assignedTask.monsterID);
+					const monster = killableMonsters.find(mon => mon.id === m && m !== assignedTask.monster.id);
 					alternateMonsters.push(monster!.name);
 				});
 				monsterList = alternateMonsters.length > 1
