@@ -683,7 +683,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0
-	}
+	},
 	{
 		id: Monsters.Bryophyta.id,
 		name: Monsters.Bryophyta.name,
