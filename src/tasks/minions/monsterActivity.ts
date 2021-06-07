@@ -67,7 +67,7 @@ export default class extends Task {
 		announceLoot(this.client, user, monster, loot.bank);
 		if (superiorCount && superiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
-			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + SuperiorCount);
+			await user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + SuperiorCount);
 		}
 		const superiorMessage = superiorCount ? `, including **${superiorCount} superiors**` : '';
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
