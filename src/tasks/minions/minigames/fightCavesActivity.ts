@@ -36,7 +36,21 @@ export default class extends Task {
 
 		const attemptsStr = `You have tried Fight caves ${attempts + 1}x times.`;
 
+		// Add slayer
+		const usersTask = await getUsersCurrentSlayerInfo(user.id);
+		const isOnTask =
+			usersTask.currentTask !== null
+			&& usersTask.currentTask !== undefined
+			&& usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id
+			&& usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+
 		if (preJadDeathTime) {
+			let slayerMsg = ''
+			if (isOnTask) {
+				slayerMsg = ' Task cancelled.';
+				usersTask.currentTask!.quantityRemaining = 0;
+				await usersTask.currentTask!.save();
+			}
 			// Give back supplies based on how far in they died, for example if they
 			// died 80% of the way through, give back approximately 20% of their supplies.
 			const percSuppliesToRefund = 100 - calcWhatPercent(preJadDeathTime, duration);
@@ -72,6 +86,12 @@ export default class extends Task {
 		}
 
 		if (diedToJad) {
+			let slayerMsg = ''
+			if (isOnTask) {
+				slayerMsg = ' Task cancelled.';
+				usersTask.currentTask!.quantityRemaining = 0;
+				await usersTask.currentTask!.save();
+			}
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
 			await user.addItemsToBank(failBank, true);
 
@@ -85,7 +105,9 @@ export default class extends Task {
 					return this.client.commands.get('fightcaves')!.run(res, []);
 				},
 				await chatHeadImage({
-					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
+					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${
+						tokkulReward
+					}x Tokkul. ${attemptsStr}.${slayerMsg}`,
 					head: 'mejJal'
 				}),
 				data,
@@ -117,14 +139,6 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank(loot, true);
-
-		// Add slayer
-		const usersTask = await getUsersCurrentSlayerInfo(user.id);
-		const isOnTask =
-			usersTask.currentTask !== null
-			&& usersTask.currentTask !== undefined
-			&& usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id
-			&& usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
 
 		let slayerMsg = '';
 		if (isOnTask) {

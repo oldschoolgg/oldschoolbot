@@ -16,12 +16,7 @@ export const nieveMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter lance')]: 10
-			}
-		]
+		qpRequired: 0
 	},
 	{
 		id: Monsters.BlackDragon.id,
@@ -34,12 +29,7 @@ export const nieveMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter lance')]: 15
-			}
-		]
+		qpRequired: 0
 	},
 	{
 		id: Monsters.BrutalBlackDragon.id,
@@ -60,11 +50,6 @@ export const nieveMonsters: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter crossbow')]: 10
-			}
-		],
 		levelRequirements: {
 			prayer: 43
 		}
@@ -107,11 +92,6 @@ export const nieveMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter lance')]: 10
-			}
-		],
 		levelRequirements: {
 			prayer: 43
 		}

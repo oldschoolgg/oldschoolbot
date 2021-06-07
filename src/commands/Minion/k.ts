@@ -148,6 +148,28 @@ export default class extends BotCommand {
 			quantity = Math.min(quantity, usersTask.currentTask!.quantityRemaining);
 		}
 
+		// Dragonbane, in the worst way possible. We need to add dragonbane to monsters.
+		// Removed vorkath because he has a special boost.
+		if (
+			monster.name.toLowerCase().includes('dragon')
+			|| monster.name.toLowerCase() === 'drake'
+			|| monster.name.toLowerCase().includes('hydra')
+			|| monster.name.toLowerCase() === ('wyrm')
+		) {
+			if (
+				msg.author.hasItemEquippedOrInBank('Dragon hunter lance')
+				&& !attackStyles.includes([SkillsEnum.Ranged, SkillsEnum.Magic])
+			) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 15);
+				boosts.push('15% for Dragon hunter lance');
+			} else if (
+				msg.author.hasItemEquippedOrInBank('Dragon hunter crossbow')
+				&& attackStyles.includes([SkillsEnum.Ranged])
+			) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 15);
+				boosts.push('15% for Dragon hunter crossbow');
+			}
+		}
 		// Add 15% slayer boost on task if they have black mask or similar
 		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
 			if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask (i)'))) {

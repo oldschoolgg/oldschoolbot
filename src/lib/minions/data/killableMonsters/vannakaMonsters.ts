@@ -187,11 +187,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter crossbow')]: 10
-			}
-		]
 	},
 	{
 		id: Monsters.BrineRat.id,
@@ -235,12 +230,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
-		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter lance')]: 10
-			}
-		]
+		qpRequired: 0
 	},
 	{
 		id: Monsters.BrutalGreenDragon.id,

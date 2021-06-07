@@ -4,6 +4,7 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
+import {SkillsEnum} from "../../../skilling/types";
 
 export const chaeldarMonsters: KillableMonster[] = [
 	{
@@ -35,7 +36,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		levelRequirements: {
 			agility: 60
-		}
+		},
+		defaultAttackStyles: [SkillsEnum.Ranged],
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic]
 	},
 	{
 		id: Monsters.BlackDemon.id,
@@ -92,7 +95,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 87
 		},
-		slayerOnly: true
+		slayerOnly: true,
+		defaultAttackStyles: [SkillsEnum.Magic],
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged]
 	},
 	{
 		id: Monsters.FossilIslandWyvernAncient.id,
@@ -223,12 +228,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
-		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter lance')]: 10
-			}
-		]
+		qpRequired: 0
 	},
 	{
 		id: Monsters.Kraken.id,
@@ -257,7 +257,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 87
 		},
-
+		defaultAttackStyles: [SkillsEnum.Magic],
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
 		slayerOnly: true
 	},
 	{
@@ -348,11 +349,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 			]
 		]),
 		notifyDrops: resolveItems(['Draconic visage']),
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter crossbow')]: 15
-			}
-		],
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 72
@@ -404,12 +400,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 			['Boots of stone', 'Boots of brimstone', 'Granite boots']
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter crossbow')]: 3,
-				[itemID('Dragon hunter lance')]: 7
-			}
-		],
 		levelRequirements: {
 			slayer: 62
 		},

@@ -1,9 +1,11 @@
-import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import {Time} from 'e';
+import {Monsters} from 'oldschooljs';
+import {itemID} from 'oldschooljs/dist/util';
 
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import resolveItems, {deepResolveItems} from '../../../util/resolveItems';
+import {KillableMonster} from '../../types';
+import {UserSettings} from "../../../settings/types/UserSettings";
+import {SkillsEnum} from "../../../skilling/types";
 
 export const turaelMonsters: KillableMonster[] = [
 	{
@@ -616,7 +618,9 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		defaultAttackStyles: [SkillsEnum.Ranged],
+		disallowedAttackStyles: [SkillsEnum.Strength, SkillsEnum.Attack],
 	},
 	{
 		id: Monsters.MonkeyArcher.id,
@@ -628,7 +632,8 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 20
+		qpRequired: 20,
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength]
 	},
 	{
 		id: Monsters.MonkeyGuard.id,

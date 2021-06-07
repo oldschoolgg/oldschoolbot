@@ -17,12 +17,7 @@ export const konarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Anti-dragon shield', 'Antidote++(4)']),
-		qpRequired: 205,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter lance')]: 10
-			}
-		]
+		qpRequired: 205
 	},
 	{
 		id: Monsters.BabyRedDragon.id,
@@ -34,12 +29,7 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter lance')]: 10
-			}
-		]
+		qpRequired: 0
 	},
 	{
 		id: Monsters.BrutalRedDragon.id,
@@ -54,12 +44,7 @@ export const konarMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
-		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter lance')]: 10
-			}
-		]
+		qpRequired: 0
 	},
 	{
 		id: Monsters.DarkBeast.id,
@@ -92,11 +77,6 @@ export const konarMonsters: KillableMonster[] = [
 			'Anti-dragon shield'
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter lance')]: 10
-			}
-		],
 		levelRequirements: {
 			slayer: 84
 		},
@@ -118,11 +98,6 @@ export const konarMonsters: KillableMonster[] = [
 		]),
 		notifyDrops: resolveItems(['Hydra tail']),
 		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter lance')]: 10
-			}
-		],
 		levelRequirements: {
 			slayer: 95
 		},
@@ -151,9 +126,7 @@ export const konarMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Dragon hunter crossbow')]: 8,
-				[itemID('Dragon hunter lance')]: 10,
-				[itemID('Twisted bow')]: 12
+				[itemID('Twisted bow')]: 10
 			},
 			{
 				[itemID('Barrows gloves')]: 3,
@@ -176,13 +149,7 @@ export const konarMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Dragon full helm']),
-		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter lance')]: 10,
-				[itemID('Dragon hunter crossbow')]: 10
-			}
-		]
+		qpRequired: 0
 	},
 	{
 		id: Monsters.RedDragon.id,
@@ -207,12 +174,7 @@ export const konarMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield', 'Insulated boots']),
 		notifyDrops: resolveItems(['Dragon metal lump', 'Draconic visage']),
-		qpRequired: 205,
-		itemInBankBoosts: [
-			{
-				[itemID('Dragon hunter lance')]: 10
-			}
-		]
+		qpRequired: 205
 	},
 	{
 		id: Monsters.SmokeDevil.id,

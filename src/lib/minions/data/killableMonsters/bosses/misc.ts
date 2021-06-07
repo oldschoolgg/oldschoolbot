@@ -60,7 +60,10 @@ const killableBosses: KillableMonster[] = [
 			{
 				[itemID('Bandos godsword')]: 15,
 				[itemID('Dragon warhammer')]: 15,
-				[itemID('Dragon claws')]: 10,
+				[itemID('Dragon claws')]: 10
+			},
+			{
+				[itemID('Dragon hunter lance')]: 20,
 				[itemID('Dragon hunter crossbow')]: 30
 			}
 		],
