@@ -7,8 +7,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
 import { getSlayerReward } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {itemNameFromID, stringMatches, toTitleCase} from '../../lib/util';
-import Createables from "../../lib/data/createables";
+import { stringMatches, toTitleCase} from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
