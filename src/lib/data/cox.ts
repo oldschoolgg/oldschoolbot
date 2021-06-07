@@ -326,6 +326,10 @@ function teamSizeBoostPercent(size: number) {
 const itemBoosts = [
 	[
 		{
+			item: getOSItem('Dragon hunter lance'),
+			boost: 5
+		},
+		{
 			item: getOSItem('Twisted bow'),
 			boost: 10
 		},
