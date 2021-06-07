@@ -5,6 +5,7 @@ import { Eatables } from '../../lib/data/eatables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import User from "../../extendables/User/User";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -22,6 +23,7 @@ export default class extends BotCommand {
 		msg.author.settings.update(paths.map(path => [path, 14_000_000]));
 		msg.author.settings.update(UserSettings.GP, 1_000_000_000);
 		msg.author.settings.update(UserSettings.QP, 250);
+		msg.author.settings.update(UserSettings.Slayer.SlayerPoints, 100000);
 		const loot: Record<string, number> = Object.fromEntries(
 			Eatables.map(({ id }) => [id, 1000])
 		);
