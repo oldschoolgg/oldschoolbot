@@ -236,7 +236,7 @@ export default class extends BotCommand {
 					alternateMonsters.push(monster!.name);
 				});
 				monsterList = alternateMonsters.length > 1
-					? ` ${alternateMonsters.join(`/`)}\n`
+					? ` ${alternateMonsters.join(`/`)}`
 					: '';
 			}
 			let baseInfo = currentTask
