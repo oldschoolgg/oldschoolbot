@@ -47,7 +47,15 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		existsInCatacombs: true,
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: [
+			{
+				[itemID('Arclight')]: 10
+			},
+			{
+				[itemID('Saradomin godsword')]: 5
+			}
+		]
 	},
 	{
 		id: Monsters.CaveHorror.id,
@@ -192,7 +200,15 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		existsInCatacombs: true,
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: [
+			{
+				[itemID('Arclight')]: 12
+			},
+			{
+				[itemID('Saradomin godsword')]: 3
+			}
+		]
 	},
 	{
 		id: Monsters.IronDragon.id,

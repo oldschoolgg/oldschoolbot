@@ -227,7 +227,8 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [
 			{ [itemID('Spectral spirit shield')]: 10 },
 			{ [itemID('Bandos chestplate')]: 5 },
-			{ [itemID('Bandos tassets')]: 5 }
+			{ [itemID('Bandos tassets')]: 5 },
+			{ [itemID('Arclight')] : 15}
 		],
 		levelRequirements: {
 			prayer: 43,

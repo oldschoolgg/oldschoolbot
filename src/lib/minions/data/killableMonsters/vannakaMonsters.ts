@@ -40,7 +40,15 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 85
 		},
 		existsInCatacombs: true,
-		superior: Monsters.GreaterAbyssalDemon
+		superior: Monsters.GreaterAbyssalDemon,
+		itemInBankBoosts: [
+			{
+				[itemID('Arclight')]: 10
+			},
+			{
+				[itemID('Saradomin godsword')]: 5
+			}
+		]
 	},
 	{
 		id: Monsters.AbyssalSire.id,
