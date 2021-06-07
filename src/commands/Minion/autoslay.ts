@@ -41,6 +41,7 @@ export default class extends BotCommand {
 			(_mode === '' && !autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked))
 			|| _mode === 'default'
 			|| _mode === 'lowest'
+			|| msg.flagArgs.lowest
 		) {
 			// This code handles the default option for autoslay:
 			if (msg.flagArgs.save && autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked)) {
@@ -51,7 +52,7 @@ export default class extends BotCommand {
 			return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
 		} else if (
 			(_mode === '' && autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked))
-			|| (_mode === 'highest' || _mode === 'boss')
+			|| (_mode === 'highest' || _mode === 'boss' || msg.flagArgs.boss || msg.flagArgs.highest)
 		) {
 			// This code handles the 'highest/boss' setting of autoslay.
 			const myQPs = await msg.author.settings.get(UserSettings.QP);
