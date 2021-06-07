@@ -460,7 +460,6 @@ export const bosses: CollectionLogData = {
 		'Granite maul',
 		'Granite ring',
 		'Granite gloves',
-		'Granite dust',
 		'Jar of stone',
 		'Noon'
 	]),
@@ -1693,7 +1692,64 @@ export const miscLog: CollectionLogData = {
 	]),
 	Tzhaar: resolveItems(['Fire cape']),
 	evilChickenOutfit,
-	other: resolveItems(['Amulet of eternal glory'])
+	other: resolveItems(['Amulet of eternal glory']),
+	Slayer1: resolveItems([
+		'Imbued heart',
+		'Eternal gem',
+		'Mist battlestaff',
+		'Dust battlestaff',
+		"Hydra's eye",
+		"Hydra's fang",
+		"Hydra's heart",
+		'Hydra tail',
+		"Drake's tooth",
+		"Drake's claw",
+		'Dragon harpoon',
+		'Dragon sword'
+	]),
+	Slayer2: resolveItems([
+		'Dragon thrownaxe',
+		'Dragon knife',
+		'Abyssal whip',
+		'Abyssal dagger',
+		'Abyssal head',
+		'Dragon boots',
+		'Granite maul',
+		'Uncharged trident',
+		'Kraken tentacle',
+		'Dark bow',
+		'Death talisman',
+		'Occult necklace'
+	]),
+	'Demonic Gorillas': resolveItems([
+		'Zenyte shard',
+		'Heavy frame',
+		'Light frame',
+		'Monkey tail',
+		'Ballista limbs',
+		'Ballista spring'
+	]),
+	'Mystic Sets': resolveItems([
+		'Mystic hat (light)',
+		'Mystic robe top (light)',
+		'Mystic robe bottom (light)',
+		'Mystic gloves (light)',
+		'Mystic boots (light)',
+		'Mystic hat (dark)',
+		'Mystic robe top (dark)',
+		'Mystic robe bottom (dark)',
+		'Mystic gloves (dark)',
+		'Mystic boots (dark)'
+	]),
+	Konar: resolveItems([
+		'Brimstone key',
+		'Mystic hat (dusk)',
+		'Mystic robe top (dusk)',
+		'Mystic robe bottom (dusk)',
+		'Mystic gloves (dusk)',
+		'Mystic boots (dusk)',
+		'Broken dragon hasta'
+	])
 };
 
 export const sepulchreLog: CollectionLogData = {
