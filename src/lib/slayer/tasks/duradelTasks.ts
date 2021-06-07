@@ -374,8 +374,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monsters: [
 			Monsters.MountainTroll.id,
 			Monsters.IceTroll.id,
-			Monsters.TrollGeneral.id,
-			Monsters.ReanimatedTroll.id
+			Monsters.TrollGeneral.id
 		],
 		combatLevel: 60,
 		unlocked: true

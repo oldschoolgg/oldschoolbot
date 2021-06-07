@@ -171,6 +171,7 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 				user: id,
 				quantityRemaining: MoreThan(0),
 				skipped: false
+
 			}
 		}),
 		SlayerTaskTable.count({ where: { user: id, quantityRemaining: 0, skipped: false } })

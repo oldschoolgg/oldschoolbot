@@ -127,6 +127,19 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 0
 	},
 	{
+		id: Monsters.Obor.id,
+		name: Monsters.Obor.name,
+		aliases: Monsters.Obor.aliases,
+		timeToFinish: Time.Second * 65,
+		table: Monsters.Obor,
+		wildy: false,
+		canBeKilled: true,
+		existsInCatacombs: false,
+		difficultyRating: 3,
+		qpRequired: 0,
+		itemsRequired: resolveItems(['Giant key'])
+	},
+	{
 		id: Monsters.Hobgoblin.id,
 		name: Monsters.Hobgoblin.name,
 		aliases: Monsters.Hobgoblin.aliases,

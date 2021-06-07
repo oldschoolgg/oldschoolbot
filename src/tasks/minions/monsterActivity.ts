@@ -65,7 +65,7 @@ export default class extends Task {
 		const superiorCount = loot.bank[420];
 		announceLoot(this.client, user, monster, loot.bank);
 
-		const superiorMessage = superiorCount ? `, including ${superiorCount} superiors` : '';
+		const superiorMessage = superiorCount ? `, including **${superiorCount} superiors**` : '';
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
 		if (

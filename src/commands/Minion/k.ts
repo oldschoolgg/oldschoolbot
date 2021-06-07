@@ -192,6 +192,8 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
+		// Todo add a new 'recurring cost' field to the KillableMonster that loops and does this.
+		// Needs some thinking, because it needs to have 1 per qty, and then timed ones.
 		// Remove antidote++(4) from hydras + alchemical hydra
 		if (['hydra','alchemical hydra'].includes(monster.name.toLowerCase())) {
 			const potsTotal = await msg.author.numberOfItemInBank(itemID('Antidote++(4)'));
@@ -213,6 +215,26 @@ export default class extends BotCommand {
 				);
 			}
 			await msg.author.removeItemFromBank(itemID('Dark totem'), quantity);
+		}
+		// Check for enough giant keys and remove them
+		if (monster.name.toLowerCase() === 'obor') {
+			const costQtyBank = await msg.author.numberOfItemInBank(itemID('Giant key'));
+			if (quantity > costQtyBank) {
+				return msg.channel.send(
+					`You don't have enough Giant keys to kill ${quantity}x Obor.`
+				);
+			}
+			await msg.author.removeItemFromBank(itemID('Giant key'), quantity);
+		}
+		// Check for enough mossy keys and remove them
+		if (monster.name.toLowerCase() === 'bryophyta') {
+			const costQtyBank = await msg.author.numberOfItemInBank(itemID('Mossy key'));
+			if (quantity > costQtyBank) {
+				return msg.channel.send(
+					`You don't have enough Mossy keys to kill ${quantity}x Bryophyta.`
+				);
+			}
+			await msg.author.removeItemFromBank(itemID('Mossy key'), quantity);
 		}
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {

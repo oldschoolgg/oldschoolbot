@@ -1,59 +1,10 @@
-import { MessageAttachment } from 'discord.js';
-import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import {Activity, Time} from '../../lib/constants';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { CommandStore, KlasaMessage } from 'klasa';
+
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
-import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
-import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import { calcPOHBoosts } from '../../lib/poh';
+
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import findMonster, {
-	addArrayOfNumbers,
-	formatDuration,
-	isWeekend,
-	itemNameFromID,
-	randomVariation,
-	removeDuplicatesFromArray
-} from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import itemID from '../../lib/util/itemID';
-
-const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
-const invalidMonsterMsg = (prefix: string) =>
-	`That isn't a valid monster.\n\nFor example, \`${prefix}minion kill 5 zulrah\`` +
-	`\n\nTry: \`${prefix}k --monsters\` for a list of killable monsters.`;
-
-const { floor } = Math;
-
-function applySkillBoost(
-	user: KlasaUser,
-	duration: number,
-	styles: AttackStyles[]
-): [number, string] {
-	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
-
-	let newDuration = duration;
-	let str = '';
-	let percent = round(calcWhatPercent(skillTotal, styles.length * 99), 2);
-
-	if (percent < 50) {
-		percent = 50 - percent;
-		newDuration = increaseNumByPercent(newDuration, percent);
-		str = `-${percent.toFixed(2)}% for low stats`;
-	} else {
-		percent = Math.min(15, percent / 6.5);
-		newDuration = reduceNumByPercent(newDuration, percent);
-		str = `${percent.toFixed(2)}% for stats`;
-	}
-
-	return [newDuration, str];
-}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -71,17 +22,6 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage) {
-		const { minionName } = msg.author;
-		let quantity = null;
-
-		const boosts = [];
-		let messages: string[] = [];
-
-		if (msg.flagArgs.monsters) {
-			return msg.channel.send(
-				new MessageAttachment(Buffer.from(validMonsters), 'validMonsters.txt')
-			);
-		}
 
 		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
 		const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
@@ -89,7 +29,7 @@ export default class extends BotCommand {
 		if (!isOnTask) {
 			return msg.channel.send(`You're not on a slayer task, so you can't autoslay!`);
 		}
-
+/*
 		const monster = findMonster(usersTask.assignedTask!.monster.name);
 		if (!monster) {
 			this.client.wtf(
@@ -102,7 +42,9 @@ export default class extends BotCommand {
 			);
 			return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 		}
-
+*/
+		return this.client.commands.get('k')?.run(msg, [undefined, usersTask.assignedTask!.monster.name]);
+/*
 		if (!monster) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 
 		if (monster.slayerOnly && !isOnTask) {
@@ -256,5 +198,7 @@ export default class extends BotCommand {
 		}
 
 		return msg.send(response);
+		*/
+
 	}
 }

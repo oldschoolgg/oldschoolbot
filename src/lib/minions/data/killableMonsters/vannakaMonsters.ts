@@ -683,6 +683,20 @@ export const vannakaMonsters: KillableMonster[] = [
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0
+	}
+	{
+		id: Monsters.Bryophyta.id,
+		name: Monsters.Bryophyta.name,
+		aliases: Monsters.Bryophyta.aliases,
+		timeToFinish: Time.Second * 75,
+		table: Monsters.Bryophyta,
+
+		wildy: false,
+		canBeKilled: true,
+		existsInCatacombs: false,
+		difficultyRating: 3,
+		qpRequired: 0,
+		itemsRequired: resolveItems(['Mossy key'])
 	},
 	{
 		id: Monsters.MountainTroll.id,
