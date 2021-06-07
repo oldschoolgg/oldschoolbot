@@ -146,8 +146,8 @@ export default class extends BotCommand {
 		const isOnTask =
 			usersTask.currentTask !== null
 			&& usersTask.currentTask !== undefined
-			&& usersTask.monsterID === Monsters.TzHaarKet.id
-			&& usersTask.quantityRemaining === usersTask.quantity;
+			&& usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id
+			&& usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
 
 		// 15% boost for on task
 		if (isOnTask && msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Black mask (i)'))))
