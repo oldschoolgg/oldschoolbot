@@ -233,7 +233,7 @@ export default class extends BotCommand {
 				const altMobs = assignedTask.monsters;
 				altMobs.forEach(m => {
 					const monster = killableMonsters.find(mon => mon.id === m);
-					if(monster.id !== assignedTask.monster.id) alternateMonsters.push(monster!.name);
+					if(monster!.id !== assignedTask.monster.id) alternateMonsters.push(monster!.name);
 				});
 				monsterList = alternateMonsters.length > 1
 					? `(${alternateMonsters.join(`/`)})`
