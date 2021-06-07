@@ -32,6 +32,7 @@ Client.defaultUserSchema
 	.add('attack_style', 'string', { array: true, default: [] })
 	.add('total_cox_points', 'integer', { default: 0 })
 	.add('favorite_alchables', 'integer', { array: true, default: [] })
+	.add('bank_bg_hex', 'string', { default: null })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')
