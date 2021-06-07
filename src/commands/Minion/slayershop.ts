@@ -1,12 +1,14 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { table } from 'table';
 import { Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
 import { getSlayerReward } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { stringMatches, toTitleCase } from '../../lib/util';
+import {itemNameFromID, stringMatches, toTitleCase} from '../../lib/util';
+import Createables from "../../lib/data/createables";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -26,12 +28,31 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage, [_input]: [string]) {
-		if (msg.flagArgs.unlocks || msg.flagArgs.help || _input === 'help') {
+		if (msg.flagArgs.unlocks || msg.flagArgs.help || _input === 'help' || _input === 'unlocks') {
+			//const myUnlocks = SlayerRewardsShop.filter(srs => { return srs.item !== undefined });
+			const unlockTable = table([
+				['Slayer Points', 'Name', 'Description', 'Type'],
+				...SlayerRewardsShop.map(i => [
+					i.slayerPointCost,
+					i.name,
+					i.desc,
+					i.item !== undefined
+						? 'buy'
+						: i.extendMult !== undefined
+							? 'extend'
+							: 'unlock'
+				])
+			]);
+			return msg.channel.sendFile(Buffer.from(unlockTable), `slayerRewardsItems.txt`);
+		}
+		/*
+		if (msg.flagArgs.unlocks || msg.flagArgs.help || _input === 'help' || _input === 'unlocks') {
 			let returnStr = `${SlayerRewardsShop.map(item => `${item.name}: ${item.desc}`).join(
 				`\n`
 			)}`;
 			return msg.channel.sendFile(Buffer.from(returnStr), 'slayerUnlocks.txt');
 		}
+		 */
 		let unlocks: string[] = [];
 		const myUnlocks = await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
 		const myPoints = await msg.author.settings.get(UserSettings.Slayer.SlayerPoints);
@@ -49,6 +70,20 @@ export default class extends BotCommand {
 
 	async buy(msg: KlasaMessage, [buyableName = '']: [string]) {
 		if (msg.flagArgs.items || msg.flagArgs.help) {
+			const myUnlocks = SlayerRewardsShop.filter(srs => { return srs.item !== undefined });
+			const unlockTable = table([
+				['Slayer Points', 'Name', 'Description', 'Type'],
+				...myUnlocks.map(i => [
+					i.slayerPointCost,
+					i.name,
+					i.desc,
+					'item'
+				])
+			]);
+			return msg.channel.sendFile(Buffer.from(unlockTable), `slayerRewardsItems.txt`);
+		}
+		/*
+		if (msg.flagArgs.items || msg.flagArgs.help) {
 			let returnStr = `${SlayerRewardsShop.filter(i => {
 				return i.item !== undefined && i.item > 0;
 			})
@@ -56,6 +91,7 @@ export default class extends BotCommand {
 				.join(`\n`)}`;
 			return msg.channel.send(`You can buy:\n${returnStr}`);
 		}
+		 */
 		if (buyableName === '') {
 			throw `You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls buy --help\``;
 		}
@@ -127,6 +163,22 @@ export default class extends BotCommand {
 	}
 
 	async unlock(msg: KlasaMessage, [buyableName = '']: [string]) {
+		if (msg.flagArgs.items || msg.flagArgs.help) {
+			const myUnlocks = SlayerRewardsShop.filter(srs => { return srs.item === undefined });
+			const unlockTable = table([
+				['Slayer Points', 'Name', 'Description', 'Type'],
+				...myUnlocks.map(i => [
+					i.slayerPointCost,
+					i.name,
+					i.desc,
+					i.extendMult === undefined
+						? 'unlock'
+						: 'extend'
+				])
+			]);
+			return msg.channel.sendFile(Buffer.from(unlockTable), `slayerRewardsUnlocks.txt`);
+		}
+		/*
 		if (msg.flagArgs.unlocks || msg.flagArgs.help) {
 			// TODO: turn this into a table?
 			let returnStr = `${SlayerRewardsShop.filter(i => {
@@ -136,6 +188,7 @@ export default class extends BotCommand {
 				.join(`\n`)}`;
 			return msg.channel.sendFile(Buffer.from(returnStr), 'slayerUnlocks.txt');
 		}
+		 */
 		if (buyableName === '') {
 			throw `You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls unlock --help\``;
 		}
