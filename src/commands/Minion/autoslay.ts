@@ -59,36 +59,36 @@ export default class extends BotCommand {
 				// Save highest as the default if 'highest' is toggled OFF.
 				await msg.author.settings
 					.update(UserSettings.Slayer.AutoslayOptions, AutoslayOptionsEnum.HighestUnlocked);
-				const allMonsters = killableMonsters.filter(m => {
-					return usersTask.assignedTask!.monsters.includes(m.id);
-				});
-				if (allMonsters.length === 0) return msg.channel
-					.send(`Please report this error. No monster variations found.`);
-				let maxDiff = 0;
-				let maxMobName = '';
-				// Use difficultyRating for autoslay highest.
-				allMonsters.forEach(m => {
-					if (
-						m.difficultyRating > maxDiff
-						&& (m.levelRequirements === undefined || msg.author.hasSkillReqs(m.levelRequirements))
-					) {
-						if(m.qpRequired === undefined || m.qpRequired <= myQPs ) {
-							maxDiff = m.difficultyRating;
-							maxMobName = m.name;
-						}
+			}
+			const allMonsters = killableMonsters.filter(m => {
+				return usersTask.assignedTask!.monsters.includes(m.id);
+			});
+			if (allMonsters.length === 0) return msg.channel
+				.send(`Please report this error. No monster variations found.`);
+			let maxDiff = 0;
+			let maxMobName = '';
+			// Use difficultyRating for autoslay highest.
+			allMonsters.forEach(m => {
+				if (
+					m.difficultyRating > maxDiff
+					&& (m.levelRequirements === undefined || msg.author.hasSkillReqs(m.levelRequirements))
+				) {
+					if(m.qpRequired === undefined || m.qpRequired <= myQPs ) {
+						maxDiff = m.difficultyRating;
+						maxMobName = m.name;
 					}
-				});
-				if (maxMobName !== '') {
-					return this.client.commands.get('k')?.run(msg, [null, maxMobName]);
-				} else {
-					return msg.channel.send(`Can't find any monsters you have the requirements to kill!`);
 				}
+			});
+			if (maxMobName !== '') {
+				return this.client.commands.get('k')?.run(msg, [null, maxMobName]);
+			} else {
+				return msg.channel.send(`Can't find any monsters you have the requirements to kill!`);
 			}
 		} else {
 			return msg.channel.send(`Unrecognized mode. Please use:\n\`${msg.cmdPrefix}as [lowest|highest]\``);
 		}
 
-
+		return msg.channel.send(`Error: fell through. Please report this`);
 
 	}
 }
