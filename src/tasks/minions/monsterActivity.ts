@@ -16,7 +16,6 @@ import { addBanks } from '../../lib/util';;
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
-import SuperiorCount = UserSettings.Slayer.SuperiorCount;
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
@@ -69,7 +68,7 @@ export default class extends Task {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
 			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
 		}
-		const superiorMessage = superiorCount ? `, including **${superiorCount} superiors**` : '';
+		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
 		if (
