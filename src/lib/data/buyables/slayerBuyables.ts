@@ -32,6 +32,13 @@ export const slayerBuyables: Buyable[] = [
 		gpCost: 1000
 	},
 	{
+		name: 'Rock thrownhammer',
+		outputItems: resolveNameBank({
+			'Rock thrownhammer': 1
+		}),
+		gpCost: 50_000
+	},
+	{
 		name: 'Rock hammer',
 		outputItems: resolveNameBank({
 			'Rock hammer': 1

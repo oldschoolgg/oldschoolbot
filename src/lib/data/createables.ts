@@ -462,6 +462,43 @@ const slayerCreatables: Createable[] = [
 		GPCost: 0
 	},
 	{
+		name: 'Uncharged toxic trident',
+		inputItems: resolveNameBank({
+			'Magic fang': 1,
+			'Uncharged trident': 1
+		}),
+		outputItems: resolveNameBank({ 'Uncharged toxic trident': 1 }),
+		GPCost: 0
+	},
+	{
+		name: "Bryophyta's staff",
+		inputItems: resolveNameBank({
+			'Nature rune': 1000,
+			"Bryophyta's essence": 1,
+			'Battlestaff': 1
+		}),
+		outputItems: resolveNameBank({ "Bryophyta's staff": 1 }),
+		GPCost:0
+	},
+	{
+		name: 'Toxic staff (uncharged)',
+		inputItems: resolveNameBank({
+			'Magic fang': 1,
+			'Staff of the dead': 1
+		}),
+		outputItems: resolveNameBank({ 'Toxic staff (uncharged)': 1 }),
+		GPCost: 0
+	},
+	{
+		name: 'Abyssal tentacle',
+		inputItems: resolveNameBank({
+			'Kraken tentacle': 1,
+			'Abyssal whip': 1
+		}),
+		outputItems: resolveNameBank({ 'Abyssal tentacle': 1 }),
+		GPCost: 0
+	},
+	{
 		name: 'Brimstone ring',
 		inputItems: resolveNameBank({
 			"Hydra's eye": 1,
