@@ -158,7 +158,8 @@ export default class extends BotCommand {
 		) {
 			if (
 				msg.author.hasItemEquippedOrInBank('Dragon hunter lance')
-				&& !attackStyles.includes([SkillsEnum.Ranged, SkillsEnum.Magic])
+				&& !attackStyles.includes(SkillsEnum.Ranged)
+				&& !attackStyles.includes(SkillsEnum.Magic)
 			) {
 				timeToFinish = reduceNumByPercent(timeToFinish, 15);
 				boosts.push('15% for Dragon hunter lance');

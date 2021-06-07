@@ -77,7 +77,7 @@ export default class extends Task {
 					return this.client.commands.get('fightcaves')!.run(res, []);
 				},
 				await chatHeadImage({
-					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
+					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}${slayerMsg}`,
 					head: 'mejJal'
 				}),
 				data,

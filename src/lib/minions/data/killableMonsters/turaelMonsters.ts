@@ -4,7 +4,6 @@ import {itemID} from 'oldschooljs/dist/util';
 
 import resolveItems, {deepResolveItems} from '../../../util/resolveItems';
 import {KillableMonster} from '../../types';
-import {UserSettings} from "../../../settings/types/UserSettings";
 import {SkillsEnum} from "../../../skilling/types";
 
 export const turaelMonsters: KillableMonster[] = [
