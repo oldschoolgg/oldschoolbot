@@ -70,6 +70,8 @@ export function userCanUseMaster(user: KlasaUser, master: SlayerMaster) {
 
 export function userCanUseTask(user: KlasaUser, task: AssignableSlayerTask, master: SlayerMaster) {
 	if (task.isBoss) return false;
+	const myLastTask = user.settings.get(UserSettings.Slayer.LastTask);
+	if (myLastTask === task.monster.id) return false;
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.settings.get(UserSettings.QP)) return false;
 	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
@@ -135,6 +137,7 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 	currentTask.monsterID = assignedTask.monster.id;
 	currentTask.skipped = false;
 	await currentTask.save();
+	await _user.settings.update(UserSettings.Slayer.LastTask, assignedTask.monster.id);
 
 	return { currentTask, assignedTask };
 }

@@ -41,6 +41,7 @@ Client.defaultUserSchema
 			.add('blocked_ids', 'integer', { array: true, default: [] })
 			.add('autoslay_options', 'integer', { array: true, default: [] })
 			.add('superior_count', 'integer', { default: 0 })
+			.add('last_task', 'integer', { default: 0 })
 	)
 
 	.add('minion', folder =>

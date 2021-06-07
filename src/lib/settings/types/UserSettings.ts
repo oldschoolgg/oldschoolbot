@@ -53,6 +53,7 @@ export namespace UserSettings {
 		export const SlayerUnlocks = T<readonly SlayerTaskUnlocksEnum[]>('slayer.unlocks');
 		export const BlockedTasks = T<readonly number[]>('slayer.blocked_ids');
 		export const AutoslayOptions = T<readonly number[]>('slayer.autoslay_options');
+		export const LastTask = T<number>('slayer.last_task');
 	}
 
 	export namespace Stats {
