@@ -71,10 +71,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([
 			'Witchwood icon',
-			"Guthan's warspear",
-			"Guthan's chainskirt",
-			"Guthan's platebody",
-			"Guthan's helm"
+			["Karil's leathertop", 'Armadyl chestplate'],
+			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		qpRequired: 20,
 		levelRequirements: {

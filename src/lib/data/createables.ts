@@ -426,6 +426,14 @@ const slayerCreatables: Createable[] = [
 		GPCost: 0
 	},
 	{
+		name: 'Ferocious gloves',
+		inputItems: resolveNameBank({
+			'Hydra leather': 1
+		}),
+		outputItems: resolveNameBank({ 'Ferocious gloves': 1 }),
+		GPCost: 0
+	},
+	{
 		name: 'Uncut zenyte',
 		inputItems: resolveNameBank({
 			Onyx: 1,
