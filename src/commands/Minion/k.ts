@@ -149,18 +149,18 @@ export default class extends BotCommand {
 		}
 
 		// Add 15% slayer boost on task if they have black mask or similar
-		if (
-			(
-				isOnTask
-				&& (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic))
-				&& msg.author.hasItemEquippedOrInBank(itemID('Black mask (i)'))
-			) || (
-				isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))
-			)
-		) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push('15% for Slayer Helmet on task');
+		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
+			if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask (i)'))) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 15);
+				boosts.push('15% for Black mask (i) on non-melee task');
+			}
+		} else {
+			if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 15);
+				boosts.push('15% for Black mask on melee task');
+			}
 		}
+
 		// Check food
 		let foodStr: undefined | string = undefined;
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
