@@ -74,7 +74,7 @@ export default class DailyCommand extends BotCommand {
 			if (difference < eightHours) {
 				return msg.channel.send(
 					embed.setDescription(
-						`Your current contract is a ${currentItem.name}, you can't skip it yet, you need to wait ${durationRemaining}. ${total}`
+						`Your current contract is a ${currentItem.name} (Id: ${currentItem.id}), you can't skip it yet, you need to wait ${durationRemaining}. ${total}`
 					)
 				);
 			}
