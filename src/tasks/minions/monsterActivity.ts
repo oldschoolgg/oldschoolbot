@@ -49,7 +49,7 @@ export default class extends Task {
 			: undefined;
 		// Check if superiors unlock is purchased
 		const superiorsUnlocked = isOnTask
-			? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)
+			? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder)
 			: undefined;
 
 		const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;

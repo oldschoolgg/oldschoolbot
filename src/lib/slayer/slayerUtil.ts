@@ -73,7 +73,7 @@ export function userCanUseTask(user: KlasaUser, task: AssignableSlayerTask, mast
 	const lmast = master.name.toLowerCase();
 	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped)) return false;
 	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed)) return false;
-	if (lmon === 'mithril draogn' && !myUnlocks.includes(SlayerTaskUnlocksEnum.IHopeYouMithMe))
+	if (lmon === 'mithril dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.IHopeYouMithMe))
 		return false;
 	if (lmon === 'aviansie' && !myUnlocks.includes(SlayerTaskUnlocksEnum.WatchTheBirdie))
 		return false;

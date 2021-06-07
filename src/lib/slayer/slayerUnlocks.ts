@@ -464,7 +464,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		desc: 'Extends Nechryael tasks',
 		slayerPointCost: 100,
 		extendID: [Monsters.Nechryael.id],
-		extendMult: 1.67,
+		extendMult: 1.5,
 		canBeRemoved: true,
 		aliases: ['extend nechs', 'extend nechryaels']
 	},

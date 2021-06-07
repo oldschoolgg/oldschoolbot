@@ -409,7 +409,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.TzHaarKet,
 		amount: [110, 180],
 		weight: 10,
-		monsters: [Monsters.TzHaarKet.id, Monsters.TzTokJad.id],
+		monsters: [Monsters.TzHaarKet.id],
 		unlocked: false
 	},
 	{
