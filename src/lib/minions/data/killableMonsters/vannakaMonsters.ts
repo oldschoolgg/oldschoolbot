@@ -468,7 +468,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 10
+				[itemID('Arclight')]: 10,
+				[itemID('Staff of the dead')]: 15,
+				[itemID('Kodai wand')]: 20
 			}
 		],
 		existsInCatacombs: true,
@@ -737,6 +739,11 @@ export const vannakaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 50
 		},
+		itemInBankBoosts: [
+			{
+				[itemID('Arclight')]: 10
+			}
+		],
 		superior: Monsters.InsatiableMutatedBloodveld
 	},
 	{
