@@ -46,13 +46,13 @@ export namespace UserSettings {
 	export const TotalCoxPoints = T<number>('total_cox_points');
 
 	export namespace Slayer {
-		export const SlayerPoints = T<number>('slayer_points');
-		export const TaskStreak = T<number>('slayer_task_streak');
-		export const RememberSlayerMaster = T<string | null>('slayer_remember_master');
-		export const SuperiorCount = T<number>('slayer_superior_count');
-		export const SlayerUnlocks = T<readonly SlayerTaskUnlocksEnum[]>('slayer_unlocks');
-		export const BlockedTasks = T<readonly number[]>('slayer_blocked_ids');
-		export const AutoslayOptions = T<readonly number[]>('slayer_autoslay_options');
+		export const SlayerPoints = T<number>('slayer.points');
+		export const TaskStreak = T<number>('slayer.task_streak');
+		export const RememberSlayerMaster = T<string | null>('slayer.remember_master');
+		export const SuperiorCount = T<number>('slayer.superior_count');
+		export const SlayerUnlocks = T<readonly SlayerTaskUnlocksEnum[]>('slayer.unlocks');
+		export const BlockedTasks = T<readonly number[]>('slayer.blocked_ids');
+		export const AutoslayOptions = T<readonly number[]>('slayer.autoslay_options');
 	}
 
 	export namespace Stats {

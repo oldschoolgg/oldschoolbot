@@ -31,13 +31,17 @@ Client.defaultUserSchema
 	.add('openable_scores', 'any', { default: {} })
 	.add('attack_style', 'string', { array: true, default: [] })
 	.add('total_cox_points', 'integer', { default: 0 })
-	.add('slayer_unlocks', 'integer', { array: true, default: [] })
-	.add('slayer_blocked_ids', 'integer', { array: true, default: [] })
-	.add('slayer_autoslay_options, integer', { array: true, default: [] })
-	.add('slayer_points', 'integer', { default: 0 })
-	.add('slayer_task_streak', 'integer', { default: 0 })
-	.add('slayer_remember_master', 'string', { default: null })
-	.add('slayer_superior_count', 'integer', { default: 0 })
+
+	.add('slayer', folder =>
+		folder
+			.add('points', 'integer', { default: 0 })
+			.add('task_streak', 'integer', { default: 0 })
+			.add('remember_master', 'string', { default: null })
+			.add('unlocks', 'integer', { array: true, default: [] })
+			.add('blocked_ids', 'integer', { array: true, default: [] })
+			.add('autoslay_options', 'integer', { array: true, default: [] })
+			.add('superior_count', 'integer', { default: 0 })
+	)
 
 	.add('minion', folder =>
 		folder
