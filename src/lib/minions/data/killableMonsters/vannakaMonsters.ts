@@ -59,7 +59,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 3,
+		difficultyRating: 5,
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 85

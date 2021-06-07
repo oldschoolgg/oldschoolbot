@@ -32,12 +32,16 @@ Client.defaultUserSchema
 	.add('attack_style', 'string', { array: true, default: [] })
 	.add('total_cox_points', 'integer', { default: 0 })
 
-	.add('slayer_points', 'integer', { default: 0 })
-	.add('slayer_task_streak', 'integer', { default: 0 })
-	.add('rememberSlayerMaster', 'string', { default: null })
-	.add('slayerUnlocks', 'integer', { array: true, default: [] })
-	.add('slayerBlockedMonsterIDs', 'integer', { array: true, default: [] })
-	.add('slayerSuperiorCount', 'integer', { default: 0 })
+	.add('slayer', folder =>
+		folder
+			.add('points', 'integer', { default: 0 })
+			.add('task_streak', 'integer', { default: 0 })
+			.add('remember_master', 'string', { default: null })
+			.add('unlocks', 'integer', { array: true, default: [] })
+			.add('blocked_ids', 'integer', { array: true, default: [] })
+			.add('superior_count', 'integer', { default: 0 })
+			.add('autoslay_options, integer', { array: true, default: [] })
+	)
 
 	.add('minion', folder =>
 		folder

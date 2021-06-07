@@ -136,7 +136,7 @@ export const konarMonsters: KillableMonster[] = [
 		table: Monsters.AlchemicalHydra,
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 6,
+		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
 			['Boots of stone', 'Boots of brimstone', 'Granite boots'],
 			'Antidote++(4)'

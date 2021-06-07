@@ -14,6 +14,11 @@ import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
 import { bossTasks } from './tasks/bossTasks';
 import { AssignableSlayerTask, SlayerMaster } from './types';
 
+export enum AutoslayOptionsEnum {
+	Reserved,
+	HighestUnlocked
+}
+
 export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster) {
 	const streaks = [1000, 250, 100, 50, 10];
 	const multiplier = [50, 35, 25, 15, 5];
@@ -100,6 +105,7 @@ export function userCanUseTask(user: KlasaUser, task: AssignableSlayerTask, mast
 
 // boss tasks
 export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
+	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master));
 	let bossTask = false;
 	if (

@@ -239,7 +239,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 4,
+		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			['Trident of the seas', 'Trident of the seas (full)', 'Uncharged trident']
 		]),
@@ -367,7 +367,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 5,
+		difficultyRating: 0,
 		itemsRequired: resolveItems(['Dark totem']),
 		notifyDrops: resolveItems(['Jar of darkness', 'Skotos']),
 		qpRequired: 0,
