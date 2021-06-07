@@ -37,11 +37,13 @@ Client.defaultUserSchema
 	.add('dungeoneering_tokens', 'integer', { default: 0 })
 	.add('total_cox_points', 'integer', { default: 0 })
 	.add('total_item_contracts', 'integer', { default: 0 })
+	.add('item_contract_streak', 'integer', { default: 0 })
 	.add('last_item_contract_date', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('current_item_contract', 'integer', { default: null })
 	.add('item_contract_bank', 'any', { default: {} })
 	.add('ourania_tokens', 'integer', { default: 0 })
 	.add('favorite_alchables', 'integer', { array: true, default: [] })
+	.add('bank_bg_hex', 'string', { default: null })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')

@@ -10,7 +10,7 @@ import { Color, SupportServer, Time } from '../lib/constants';
 import { getRandomMysteryBox } from '../lib/data/openables';
 import { roll, stringMatches } from '../lib/util';
 
-async function triviaChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
+export async function triviaChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 	const { question, correct_answer, incorrect_answers } = await fetch(
 		'https://opentdb.com/api.php?amount=1&category=9&difficulty=medium&type=multiple'
 	)
@@ -43,7 +43,8 @@ async function triviaChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 		return null;
 	}
 }
-async function itemChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
+
+export async function itemChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 	const randomItem = Items.random();
 	const scrambed = randomItem.name
 		.split(' ')
@@ -74,7 +75,7 @@ async function itemChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 	}
 }
 
-async function reactChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
+export async function reactChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 	const embed = new MessageEmbed()
 		.setColor(Color.Orange)
 		.setTitle('Answer this for a reward!')

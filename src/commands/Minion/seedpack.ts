@@ -1,3 +1,4 @@
+import { randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
@@ -162,6 +163,9 @@ export default class extends BotCommand {
 
 		if (bankHasItem(userBank, itemID('Seed pack'), 1)) {
 			loot.add(openSeedPack(plantTier));
+			if (plantTier > 2 && roll(10)) {
+				loot.add('Mysterious seed', randInt(1, 3));
+			}
 		} else {
 			return msg.send(`You have no seed packs to open!`);
 		}

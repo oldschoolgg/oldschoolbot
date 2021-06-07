@@ -1,8 +1,10 @@
 import { MessageEmbed } from 'discord.js';
+import { calcPercentOfNum } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Items, Util } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { sellPriceOfItem } from '../Minion/sell';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -26,7 +28,11 @@ export default class extends BotCommand {
 			.setThumbnail(
 				`https://raw.githubusercontent.com/runelite/static.runelite.net/gh-pages/cache/item/icon/${item.id}.png`
 			)
-			.setDescription(`${priceOfItem.toLocaleString()} (${Util.toKMB(priceOfItem)})`);
+			.setDescription(
+				`**Price:** ${Util.toKMB(priceOfItem)} 
+**Sell price:** ${Util.toKMB(calcPercentOfNum(80, sellPriceOfItem(item)))}
+**Alch value:** ${Util.toKMB(item.highalch)}`
+			);
 
 		return msg.send({ embed });
 	}

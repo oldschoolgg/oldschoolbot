@@ -202,7 +202,8 @@ export const enum Tasks {
 	BlastFurnaceActivity = 'blastFurnaceActivity',
 	KingGoldemar = 'kingGoldemarActivity',
 	VasaMagus = 'vasaMagusActivity',
-	OuraniaDeliveryService = 'ouraniaDeliveryServiceActivity'
+	OuraniaDeliveryService = 'ouraniaDeliveryServiceActivity',
+	MageArena2 = 'mageArena2Activity'
 }
 
 export enum Activity {
@@ -265,7 +266,8 @@ export enum Activity {
 	BlastFurnace = 'BlastFurnace',
 	KingGoldemar = 'KingGoldemar',
 	VasaMagus = 'VasaMagus',
-	OuraniaDeliveryService = 'OuraniaDeliveryService'
+	OuraniaDeliveryService = 'OuraniaDeliveryService',
+	MageArena2 = 'MageArena2'
 }
 
 export enum ActivityGroup {

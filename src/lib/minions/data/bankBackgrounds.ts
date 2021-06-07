@@ -440,6 +440,15 @@ const backgroundImages: BankBackground[] = [
 		name: 'Sunny CustomBG',
 		image: null,
 		available: false
+	},
+	{
+		id: 76,
+		name: 'Pets',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true
 	}
 ];
 

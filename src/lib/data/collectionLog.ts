@@ -1789,7 +1789,7 @@ export const miscLog: CollectionLogData = {
 	]),
 	Tzhaar: resolveItems(['Fire cape']),
 	evilChickenOutfit,
-	other: resolveItems(['Amulet of eternal glory'])
+	other: resolveItems(['Amulet of eternal glory', 'Crystal grail'])
 };
 
 export const customBossLog: CollectionLogData = {
@@ -1803,7 +1803,7 @@ export const customBossLog: CollectionLogData = {
 	KK: allKalphiteKingItems,
 	nex1: [...torvaOutfit, ...pernixOutfit],
 	nex2: [...virtusOutfit, ...ancientWeapons],
-	vasa: resolveItems(['Tattered robes of Vasa', 'Jar of magic'])
+	vasa: resolveItems(['Tattered robes of Vasa', 'Jar of magic', 'Voidling', 'Magus scroll'])
 };
 
 export const sepulchreLog: CollectionLogData = {

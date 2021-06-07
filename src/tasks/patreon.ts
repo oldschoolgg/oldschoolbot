@@ -193,6 +193,9 @@ export default class PatreonTask extends Task {
 		if (bg?.perkTierNeeded) {
 			await settings.update(UserSettings.BankBackground, 1);
 		}
+		if (settings.get(UserSettings.BankBackgroundHex) !== null) {
+			await settings.reset(UserSettings.BankBackgroundHex);
+		}
 	}
 
 	async syncGithub() {

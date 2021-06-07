@@ -122,5 +122,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.VasaMagus;
 		case Activity.OuraniaDeliveryService:
 			return Tasks.OuraniaDeliveryService;
+		case Activity.MageArena2:
+			return Tasks.MageArena2;
 	}
 }

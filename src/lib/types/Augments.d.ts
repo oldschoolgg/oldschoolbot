@@ -62,7 +62,7 @@ declare module 'klasa' {
 			title?: string,
 			showValue?: boolean,
 			flags?: { [key: string]: string | number },
-			user?: KlasaUser | string,
+			user?: KlasaUser,
 			cl?: ItemBank
 		): Promise<BankImageResult>;
 		generateCollectionLogImage(
