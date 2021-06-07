@@ -28,10 +28,10 @@ export default class extends BotCommand {
 
 		const autoslayOptions = msg.author.settings.get(UserSettings.Slayer.AutoslayOptions);
 		if (_mode === 'check' || msg.flagArgs.check) {
-			const msg = autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked)
+			const autoMsg = autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked)
 				? 'You will automatically kill the highest combat level creatures you can.'
 				: 'You will automatically kill the default (lowest combat level) creatures you can.';
-			return msg.channel.send(msg);
+			return msg.channel.send(autoMsg);
 		}
 		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
 		const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
@@ -62,7 +62,7 @@ export default class extends BotCommand {
 				await msg.author.settings
 					.update(UserSettings.Slayer.AutoslayOptions, AutoslayOptionsEnum.HighestUnlocked);
 				const allMonsters = killableMonsters.filter(m => {
-					return usersTask.assignedTask.monsters.includes(m.id);
+					return usersTask.assignedTask!.monsters.includes(m.id);
 				});
 				if (allMonsters.length === 0) return msg.channel
 					.send(`Please report this error. No monster variations found.`);
@@ -72,7 +72,7 @@ export default class extends BotCommand {
 				allMonsters.forEach(m => {
 					if (
 						m.difficultyRating > maxDiff
-						&& skillsMeetRequirements(msg.author.rawSkills, m.levelRequirements)
+						&& msg.author.hasSkillReqs(m.levelRequirements)
 					) {
 						if(m.qpRequired === undefined || m.qpRequired <= myQPs ) {
 							maxDiff = m.difficultyRating;
