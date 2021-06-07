@@ -435,6 +435,15 @@ const slayerCreatables: Createable[] = [
 		GPCost: 0
 	},
 	{
+		name: 'Neitiznot faceguard',
+		inputItems: resolveNameBank({
+			'Basilisk jaw': 1,
+			'Helm of neitiznot': 1
+		}),
+		outputItems: resolveNameBank({ 'Neitiznot faceguard': 1 }),
+		GPCost: 0
+	},
+	{
 		name: 'Arclight',
 		inputItems: resolveNameBank({
 			'Darklight': 1,

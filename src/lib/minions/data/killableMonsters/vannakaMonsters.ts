@@ -556,7 +556,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.IceTroll,
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 3,
+		difficultyRating: 4,
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{

@@ -1742,13 +1742,14 @@ export const miscLog: CollectionLogData = {
 		'Mystic boots (dark)'
 	]),
 	Konar: resolveItems([
-		'Brimstone key',
+		'Basilisk jaw',
 		'Mystic hat (dusk)',
 		'Mystic robe top (dusk)',
 		'Mystic robe bottom (dusk)',
 		'Mystic gloves (dusk)',
 		'Mystic boots (dusk)',
-		'Broken dragon hasta'
+		'Broken dragon hasta',
+		'Brimstone key'
 	])
 };
 
