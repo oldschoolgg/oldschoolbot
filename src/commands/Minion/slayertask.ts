@@ -232,16 +232,16 @@ export default class extends BotCommand {
 			if (currentTask && assignedTask) {
 				const altMobs = assignedTask.monsters;
 				altMobs.forEach(m => {
-					const monster = killableMonsters.find(mon => mon.id === m);
+					const monster = killableMonsters.find(mon => mon.id === m && m !== assignedTask.monsterID);
 					alternateMonsters.push(monster!.name);
 				});
 				monsterList = alternateMonsters.length > 1
-					? ` ${alternateMonsters.join(`/`)}`
+					? `(${alternateMonsters.join(`/`)})`
 					: '';
 			}
 			let baseInfo = currentTask
-				? `Your current task is to kill ${currentTask.quantity}x ${monsterList === '' ?
-					getCommonTaskName(assignedTask!.monster) : monsterList}, you have ${
+				? `Your current task is to kill ${currentTask.quantity}x ${getCommonTaskName(assignedTask!.monster)}`
+					+ `${monsterList}, you have ${
 						currentTask.quantityRemaining
 				  } kills remaining.`
 				: `You have no task at the moment <:FrogBigEyes:847859910933741628> You can get a task using \`${
