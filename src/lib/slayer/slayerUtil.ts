@@ -150,25 +150,28 @@ export function getCommonTaskName(task: Monster) {
 			commonName = 'Kalphite';
 			break;
 		case Monsters.MountainTroll.id:
-			commonName = 'Trolls';
+			commonName = 'Troll';
 			break;
 		case Monsters.FossilIslandWyvernSpitting.id:
-			commonName = 'Fossil Island Wyverns';
+			commonName = 'Fossil Island Wyvern';
 			break;
 		case Monsters.FeralVampyre.id:
-			commonName = 'Vampyres';
+			commonName = 'Vampyre';
 			break;
 		case Monsters.ElfWarrior.id:
-			commonName = 'Elves';
+			commonName = 'Elve';
 			break;
 		case Monsters.SpiritualRanger.id:
-			commonName = 'Spiritual Creatures';
+			commonName = 'Spiritual Creature';
 			break;
 		case Monsters.BlackBear.id:
-			commonName = 'Bears';
+			commonName = 'Bear';
 			break;
 		case Monsters.GuardDog.id:
-			commonName = 'Dogs';
+			commonName = 'Dog';
+			break;
+		case Monsters.TzHaarKet.id:
+			commonName = 'TzHaar';
 			break;
 		default:
 	}

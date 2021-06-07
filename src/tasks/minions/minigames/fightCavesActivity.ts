@@ -17,6 +17,7 @@ import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
+import {calculateSlayerPoints, getUsersCurrentSlayerInfo} from "../../../lib/slayer/slayerUtil";
 
 const TokkulID = itemID('Tokkul');
 const TzrekJadPet = itemID('Tzrek-jad');
@@ -116,6 +117,27 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
+		// Add slayer
+		const usersTask = await getUsersCurrentSlayerInfo(user.id);
+		const isOnTask =
+			usersTask.currentTask !== null
+			&& usersTask.currentTask !== undefined
+			&& usersTask.monsterID === Monsters.TzHaarKet.id
+			&& usersTask.quantityRemaining === usersTask.quantity;
+
+		const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
+		user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
+		const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
+		const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
+		await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
+
+		const slayerMsg = `\nYou've completed ${currentStreak} tasks and received ${points} points; `
+			+ `giving you a total of ${newPoints}; return to a Slayer master.`;
+
+		usersTask.currentTask.quantityRemaining = 0;
+		await usersTask.currentTask!.save();
+		// End slayer code
+
 		handleTripFinish(
 			this.client,
 			user,
@@ -128,7 +150,7 @@ export default class extends Task {
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad.id)
-				)} time! I am most impressed, I give you... ${new Bank(loot)}.`,
+				)} time! I am most impressed, I give you... ${new Bank(loot)}.${slayerMsg}`,
 				head: 'mejJal'
 			}),
 			data,

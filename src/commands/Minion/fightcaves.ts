@@ -22,6 +22,8 @@ import {
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import itemID from '../../lib/util/itemID';
+import {getUsersCurrentSlayerInfo} from "../../lib/slayer/slayerUtil";
+import {getSimilarItems} from "../../lib/data/similarItems";
 
 const { TzTokJad } = Monsters;
 
@@ -138,6 +140,21 @@ export default class extends BotCommand {
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		const newBank = removeBankFromBank(bank, fightCavesSupplies);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
+
+		// Add slayer
+		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
+		const isOnTask =
+			usersTask.currentTask !== null
+			&& usersTask.currentTask !== undefined
+			&& usersTask.monsterID === Monsters.TzHaarKet.id
+			&& usersTask.quantityRemaining === usersTask.quantity;
+
+		// 15% boost for on task
+		if (isOnTask && msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Black mask (i)'))))
+		{
+			duration *= .85;
+			debugStr = debugStr === '' ? '15% on Task with Black mask (i)' : ', 15% on Task with Black mask (i)';
+		}
 
 		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>(this.client, {
 			userID: msg.author.id,
