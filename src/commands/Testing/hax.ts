@@ -5,7 +5,6 @@ import { Eatables } from '../../lib/data/eatables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import User from "../../extendables/User/User";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
