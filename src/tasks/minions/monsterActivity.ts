@@ -63,11 +63,11 @@ export default class extends Task {
 			inCatacombs: isInCatacombs
 		};
 		const loot = new Bank(monster.table.kill(quantity, killOptions));
-		const superiorCount = loot.bank[420];
+		const newSuperiorCount = loot.bank[420];
 		announceLoot(this.client, user, monster, loot.bank);
-		if (superiorCount && superiorCount > 0) {
+		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
-			await user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + SuperiorCount);
+			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
 		}
 		const superiorMessage = superiorCount ? `, including **${superiorCount} superiors**` : '';
 		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
