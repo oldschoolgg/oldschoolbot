@@ -20,7 +20,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			oneAtTime: true,
-			cooldown: 5,
+			cooldown: 2,
 			altProtection: true,
 			categoryFlags: ['minion'],
 			aliases: ['st'],
