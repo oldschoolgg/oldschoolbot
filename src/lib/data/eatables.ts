@@ -7,6 +7,31 @@ import itemID from '../util/itemID';
 
 export const Eatables: Eatable[] = [
 	{
+		name: 'Shrimps',
+		id: itemID('Shrimps'),
+		healAmount: 1
+	},
+	{
+		name: 'Anchovies',
+		id: itemID('Anchovies'),
+		healAmount: 1
+	},
+	{
+		name: 'Sardine',
+		id: itemID('Sardine'),
+		healAmount: 4
+	},
+	{
+		name: 'Herring',
+		id: itemID('Herring'),
+		healAmount: 5
+	},
+	{
+		name: 'Mackerel',
+		id: itemID('Mackerel'),
+		healAmount: 6
+	},
+	{
 		name: 'Trout',
 		id: itemID('Trout'),
 		healAmount: 7
