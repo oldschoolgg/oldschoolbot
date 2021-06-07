@@ -157,10 +157,10 @@ function calcSetupPercent(
 
 export const maxMageGear = constructGearSetup({
 	head: 'Ancestral hat',
-	neck: 'Amulet of fury',
+	neck: 'Occult necklace',
 	body: 'Ancestral robe top',
 	cape: 'Saradomin cape',
-	hands: 'Barrows gloves',
+	hands: 'Tormented bracelet',
 	legs: 'Ancestral robe bottom',
 	feet: 'Eternal boots',
 	weapon: 'Harmonised nightmare staff',
@@ -171,7 +171,7 @@ const maxMage = new Gear(maxMageGear);
 
 export const maxRangeGear = constructGearSetup({
 	head: 'Armadyl helmet',
-	neck: 'Amulet of fury',
+	neck: 'Necklace of anguish',
 	body: 'Armadyl chestplate',
 	cape: "Ava's assembler",
 	hands: 'Barrows gloves',
@@ -185,12 +185,12 @@ const maxRange = new Gear(maxRangeGear);
 
 export const maxMeleeGear = constructGearSetup({
 	head: "Inquisitor's great helm",
-	neck: 'Amulet of fury',
+	neck: 'Amulet of torture',
 	body: "Inquisitor's hauberk",
 	cape: 'Fire cape',
-	hands: 'Barrows gloves',
+	hands: 'Ferocious gloves',
 	legs: "Inquisitor's plateskirt",
-	feet: 'Spiked manacles',
+	feet: 'Primordial boots',
 	weapon: "Inquisitor's mace",
 	shield: 'Dragon defender',
 	ring: 'Berserker ring(i)'
