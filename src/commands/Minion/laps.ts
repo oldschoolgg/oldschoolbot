@@ -13,6 +13,19 @@ import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 
+const unlimitedFireRuneProviders = [
+	'Staff of fire',
+	'Fire battlestaff',
+	'Mystic fire staff',
+	'Lava battlestaff',
+	'Mystic lava staff',
+	'Steam battlestaff',
+	'Mystic steam staff',
+	'Smoke battlestaff',
+	'Mystic smoke staff',
+	'Tome of fire'
+];
+
 function alching(msg: KlasaMessage, tripLength: number) {
 	if (msg.author.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const bank = msg.author.bank();
@@ -36,7 +49,7 @@ function alching(msg: KlasaMessage, tripLength: number) {
 	const nats = bank.amount('Nature rune');
 	const fireRunes = bank.amount('Fire rune');
 
-	const hasInfiniteFireRunes = msg.author.hasItemEquippedAnywhere('Staff of fire');
+	const hasInfiniteFireRunes = msg.author.hasItemEquippedAnywhere(unlimitedFireRuneProviders);
 
 	let maxCasts = Math.floor(tripLength / (Time.Second * (3 + 10)));
 	maxCasts = Math.min(alchItemQty, maxCasts);
