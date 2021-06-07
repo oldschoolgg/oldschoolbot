@@ -36,7 +36,7 @@ export default class extends BotCommand {
 					i.name,
 					i.desc,
 					i.item !== undefined
-						? 'buy'
+						? 'item/buy'
 						: i.extendMult !== undefined
 							? 'extend'
 							: 'unlock'
@@ -44,14 +44,7 @@ export default class extends BotCommand {
 			]);
 			return msg.channel.sendFile(Buffer.from(unlockTable), `slayerRewardsItems.txt`);
 		}
-		/*
-		if (msg.flagArgs.unlocks || msg.flagArgs.help || _input === 'help' || _input === 'unlocks') {
-			let returnStr = `${SlayerRewardsShop.map(item => `${item.name}: ${item.desc}`).join(
-				`\n`
-			)}`;
-			return msg.channel.sendFile(Buffer.from(returnStr), 'slayerUnlocks.txt');
-		}
-		 */
+
 		let unlocks: string[] = [];
 		const myUnlocks = await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
 		const myPoints = await msg.author.settings.get(UserSettings.Slayer.SlayerPoints);
@@ -76,21 +69,12 @@ export default class extends BotCommand {
 					i.slayerPointCost,
 					i.name,
 					i.desc,
-					'item'
+					'item/buy'
 				])
 			]);
 			return msg.channel.sendFile(Buffer.from(unlockTable), `slayerRewardsItems.txt`);
 		}
-		/*
-		if (msg.flagArgs.items || msg.flagArgs.help) {
-			let returnStr = `${SlayerRewardsShop.filter(i => {
-				return i.item !== undefined && i.item > 0;
-			})
-				.map(item => `${item.name} - ${item.slayerPointCost} points: ${item.desc}`)
-				.join(`\n`)}`;
-			return msg.channel.send(`You can buy:\n${returnStr}`);
-		}
-		 */
+
 		if (buyableName === '') {
 			throw `You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls buy --help\``;
 		}
@@ -177,17 +161,7 @@ export default class extends BotCommand {
 			]);
 			return msg.channel.sendFile(Buffer.from(unlockTable), `slayerRewardsUnlocks.txt`);
 		}
-		/*
-		if (msg.flagArgs.unlocks || msg.flagArgs.help) {
-			// TODO: turn this into a table?
-			let returnStr = `${SlayerRewardsShop.filter(i => {
-				return i.item === undefined || i.item === 0;
-			})
-				.map(item => `${item.name} - ${item.slayerPointCost} points: ${item.desc}`)
-				.join(`\n`)}`;
-			return msg.channel.sendFile(Buffer.from(returnStr), 'slayerUnlocks.txt');
-		}
-		 */
+
 		if (buyableName === '') {
 			throw `You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls unlock --help\``;
 		}
