@@ -1,4 +1,3 @@
-
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -7,7 +6,6 @@ import {AutoslayOptionsEnum, getUsersCurrentSlayerInfo} from '../../lib/slayer/s
 import { BotCommand } from '../../lib/structures/BotCommand';
 import {UserSettings} from "../../lib/settings/types/UserSettings";
 import killableMonsters from "../../lib/minions/data/killableMonsters";
-import {skillsMeetRequirements} from "../../lib/util";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -72,7 +70,7 @@ export default class extends BotCommand {
 				allMonsters.forEach(m => {
 					if (
 						m.difficultyRating > maxDiff
-						&& msg.author.hasSkillReqs(m.levelRequirements)
+						&& (m.levelRequirements === undefined || msg.author.hasSkillReqs(m.levelRequirements))
 					) {
 						if(m.qpRequired === undefined || m.qpRequired <= myQPs ) {
 							maxDiff = m.difficultyRating;
