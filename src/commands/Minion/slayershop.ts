@@ -60,7 +60,11 @@ export default class extends BotCommand {
 			throw `You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls buy --help\``;
 		}
 
-		const buyable = SlayerRewardsShop.find(
+		const buyable = SlayerRewardsShop
+			.filter(i => {
+				return i.item !== undefined && i.item > 0;
+			})
+			.find(
 			item =>
 				stringMatches(buyableName, item.name) ||
 				(item.aliases && item.aliases.some(alias => stringMatches(alias, buyableName)))
