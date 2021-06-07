@@ -1,6 +1,7 @@
 import { calcPercentOfNum } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -11,6 +12,13 @@ const options = {
 	time: 10_000,
 	errors: ['time']
 };
+
+export function sellPriceOfItem(item: Item) {
+	if (item.price > item.highalch * 3) {
+		return item.price;
+	}
+	return calcPercentOfNum(30, item.highalch);
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -28,11 +36,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [[bankToSell]]: [[Bank, number]]) {
 		let totalPrice = 0;
 		for (const [item, qty] of bankToSell.items()) {
-			if (item.price > item.highalch * 3) {
-				totalPrice += item.price * qty;
-			} else {
-				totalPrice += calcPercentOfNum(30, item.highalch) * qty;
-			}
+			totalPrice += sellPriceOfItem(item) * qty;
 		}
 
 		if (msg.author.isIronman) return msg.send(`Iron players can't sell items.`);
