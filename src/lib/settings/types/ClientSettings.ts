@@ -70,7 +70,11 @@ export namespace ClientSettings {
 
 		export const ODSCost = T<O.Readonly<ItemBank>>('ods_cost');
 		export const ODSLoot = T<O.Readonly<ItemBank>>('ods_loot');
+
 		export const MageArenaCost = T<O.Readonly<ItemBank>>('mage_arena_cost');
+
+		export const HunterCost = T<O.Readonly<ItemBank>>('hunter_cost');
+		export const HunterLoot = T<O.Readonly<ItemBank>>('hunter_loot');
 
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');

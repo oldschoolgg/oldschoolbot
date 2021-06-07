@@ -4,13 +4,14 @@ import { Bank } from 'oldschooljs';
 import { Activity, Time } from '../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcLootXPHunting } from '../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, formatDuration, stringMatches } from '../../lib/util';
+import { bankHasItem, formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from './../../lib/constants';
@@ -290,6 +291,7 @@ export default class extends BotCommand {
 			);
 		}
 
+		updateBankSetting(this.client, ClientSettings.EconomyStats.HunterCost, removeBank);
 		await msg.author.removeItemsFromBank(removeBank.bank);
 
 		let wildyPeak = null;
