@@ -16,7 +16,6 @@ import { addBanks } from '../../lib/util';;
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
-import User from "../../extendables/User/User";
 import SuperiorCount = UserSettings.Slayer.SuperiorCount;
 
 export default class extends Task {
