@@ -18,6 +18,7 @@ import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import {calculateSlayerPoints, getUsersCurrentSlayerInfo} from "../../../lib/slayer/slayerUtil";
+import {SkillsEnum} from "../../../lib/skilling/types";
 
 const TokkulID = itemID('Tokkul');
 const TzrekJadPet = itemID('Tzrek-jad');
@@ -125,18 +126,24 @@ export default class extends Task {
 			&& usersTask.monsterID === Monsters.TzHaarKet.id
 			&& usersTask.quantityRemaining === usersTask.quantity;
 
-		const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
-		user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
-		const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
-		const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
-		await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
+		let slayerMsg = '';
+		if (isOnTask) {
+			// 25,250 for Jad + 11,760 for waves.
+			const slayerXP = 37_010;
+			const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
+			user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
+			const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
+			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
+			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 
-		const slayerMsg = `\nYou've completed ${currentStreak} tasks and received ${points} points; `
-			+ `giving you a total of ${newPoints}; return to a Slayer master.`;
+			usersTask.currentTask!.quantityRemaining = 0;
+			await usersTask.currentTask!.save();
+			const xpMsg = await user.addXP(SkillsEnum.Slayer, slayerXP);
 
-		usersTask.currentTask.quantityRemaining = 0;
-		await usersTask.currentTask!.save();
-		// End slayer code
+			slayerMsg = `\nYou've completed ${currentStreak} tasks and received ${points} points; `
+				+ `giving you a total of ${newPoints}; return to a Slayer master.\n${xpMsg}`;
+			// End slayer code
+		}
 
 		handleTripFinish(
 			this.client,
