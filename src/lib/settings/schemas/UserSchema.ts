@@ -37,6 +37,7 @@ Client.defaultUserSchema
 	.add('rememberSlayerMaster', 'string', { default: null })
 	.add('slayerUnlocks', 'integer', { array: true, default: [] })
 	.add('slayerBlockedMonsterIDs', 'integer', { array: true, default: [] })
+	.add('slayerSuperiorCount', 'integer', { default: 0})
 
 	.add('minion', folder =>
 		folder
