@@ -37,14 +37,6 @@ const Bolts: Fletchable[] = [
 		tickRate: 0.2
 	},
 	{
-		name: 'Broad bolts',
-		id: itemID('Broad bolts'),
-		level: 55,
-		xp: 3,
-		inputItems: new Bank({ 'Unfinished broad bolts': 1, feather: 1 }),
-		tickRate: 0.2
-	},
-	{
 		name: 'Adamant bolts',
 		id: itemID('Adamant bolts'),
 		level: 61,
