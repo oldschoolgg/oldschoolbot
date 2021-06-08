@@ -90,7 +90,7 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			throw `I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop [buy|unlock|lock] --help\` for a list.`;
+			throw `I don't recognize that.\nTry: \`${msg.cmdPrefix}slayershop [buy|unlock|lock] --help\` for a list.`;
 		}
 
 		await msg.author.settings.sync(true);
