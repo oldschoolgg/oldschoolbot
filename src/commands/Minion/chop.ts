@@ -45,37 +45,37 @@ const axes = [
 	},
 	{
 		id: itemID('Rune axe'),
-		reductionPercent: 8,
+		reductionPercent: 7,
 		wcLvl: 41
 	},
 	{
 		id: itemID('Adamant axe'),
-		reductionPercent: 7,
+		reductionPercent: 6,
 		wcLvl: 31
 	},
 	{
 		id: itemID('Mithril axe'),
-		reductionPercent: 6,
+		reductionPercent: 5,
 		wcLvl: 21
 	},
 	{
 		id: itemID('Black axe'),
-		reductionPercent: 5,
+		reductionPercent: 4,
 		wcLvl: 11
 	},
 	{
 		id: itemID('Steel axe'),
-		reductionPercent: 4,
+		reductionPercent: 3,
 		wcLvl: 6
 	},
 	{
 		id: itemID('Iron axe'),
-		reductionPercent: 3,
+		reductionPercent: 2,
 		wcLvl: 1
 	},
 	{
 		id: itemID('Bronze axe'),
-		reductionPercent: 2,
+		reductionPercent: 1,
 		wcLvl: 1
 	}
 ];
