@@ -89,7 +89,7 @@ export default class extends Task {
 
 			const quantityLeft = Math.max(
 				0,
-				usersTask.currentTask!.quantityRemaining - effectiveSlayed!
+				usersTask.currentTask!.quantityRemaining - effectiveSlayed
 			);
 
 			const thisTripFinishesTask = quantityLeft === 0;
@@ -102,7 +102,7 @@ export default class extends Task {
 
 				str += `\nYou've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.`;
 			} else {
-				str += `\nYou killed ${quantitySlayed}x of your ${
+				str += `\nYou killed ${effectiveSlayed}x of your ${
 					usersTask.currentTask!.quantityRemaining
 				} remaining kills, you now have ${quantityLeft} kills remaining.`;
 			}
