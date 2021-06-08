@@ -54,7 +54,7 @@ export interface KillableMonster {
 	aliases: string[];
 	timeToFinish: number;
 	table: {
-		kill(quantity: number): ItemBank;
+		kill(quantity: number): Bank;
 	};
 	emoji: string;
 	wildy: boolean;
