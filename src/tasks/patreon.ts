@@ -82,8 +82,8 @@ export default class PatreonTask extends Task {
 
 	async validatePerks(userID: string, shouldHave: PerkTier): Promise<string | null> {
 		const settings = await getUserSettings(userID);
-		let perkTier: PerkTier | null = getUsersPerkTier(settings.get(UserSettings.BitField));
-		if (perkTier === 0 || perkTier === 1) perkTier = null;
+		let perkTier: PerkTier | 0 | null = getUsersPerkTier(settings.get(UserSettings.BitField));
+		if (perkTier === 0 || perkTier === PerkTier.One) perkTier = null;
 
 		if (!perkTier) {
 			await this.givePerks(userID, shouldHave);
@@ -193,6 +193,9 @@ export default class PatreonTask extends Task {
 		if (bg?.perkTierNeeded) {
 			await settings.update(UserSettings.BankBackground, 1);
 		}
+		if (settings.get(UserSettings.BankBackgroundHex) !== null) {
+			await settings.reset(UserSettings.BankBackgroundHex);
+		}
 	}
 
 	async syncGithub() {
@@ -229,7 +232,7 @@ export default class PatreonTask extends Task {
 			if (settings.get(UserSettings.GithubID)) continue;
 
 			const username =
-				this.client.users.get(patron.discordID)?.username ??
+				this.client.users.cache.get(patron.discordID)?.username ??
 				`${patron.discordID}|${patron.patreonID}`;
 
 			if (settings.get(UserSettings.PatreonID) !== patron.patreonID) {
@@ -276,7 +279,7 @@ export default class PatreonTask extends Task {
 		const githubResult = await this.syncGithub();
 		messages = messages.concat(githubResult);
 
-		const channel = this.client.channels.get(Channel.ErrorLogs) as TextChannel;
+		const channel = this.client.channels.cache.get(Channel.ErrorLogs) as TextChannel;
 		if (production) {
 			channel.sendFile(Buffer.from(result.join('\n')), 'patreon.txt');
 			channel.send(messages.join(', '));

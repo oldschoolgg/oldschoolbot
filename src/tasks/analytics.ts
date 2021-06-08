@@ -15,10 +15,7 @@ export default class extends Task {
 		if (this.client.analyticsInterval) {
 			clearInterval(this.client.analyticsInterval);
 		}
-		this.client.analyticsInterval = setInterval(
-			this.analyticsTick.bind(this),
-			Time.Minute * 20
-		);
+		this.client.analyticsInterval = setInterval(this.analyticsTick.bind(this), Time.Minute * 5);
 
 		if (this.client.minionTicker) {
 			clearTimeout(this.client.minionTicker);
@@ -97,8 +94,11 @@ export default class extends Task {
 		const taskCounts = await this.calculateMinionTaskCounts();
 
 		await AnalyticsTable.insert({
-			guildsCount: this.client.guilds.size,
-			membersCount: this.client.guilds.reduce((acc, curr) => (acc += curr.memberCount), 0),
+			guildsCount: this.client.guilds.cache.size,
+			membersCount: this.client.guilds.cache.reduce(
+				(acc, curr) => (acc += curr.memberCount),
+				0
+			),
 			timestamp: Math.floor(Date.now() / 1000),
 			clueTasksCount: taskCounts.Clue,
 			minigameTasksCount: taskCounts.Minigame,
@@ -111,7 +111,16 @@ export default class extends Task {
 			totalXP,
 			dicingBank: this.client.settings.get(ClientSettings.EconomyStats.DicingBank),
 			duelTaxBank: this.client.settings.get(ClientSettings.EconomyStats.DuelTaxBank),
-			dailiesAmount: this.client.settings.get(ClientSettings.EconomyStats.DailiesAmount)
+			dailiesAmount: this.client.settings.get(ClientSettings.EconomyStats.DailiesAmount),
+			gpAlching: this.client.settings.get(ClientSettings.EconomyStats.GPSourceAlching),
+			gpPvm: this.client.settings.get(ClientSettings.EconomyStats.GPSourcePVMLoot),
+			gpSellingItems: this.client.settings.get(
+				ClientSettings.EconomyStats.GPSourceSellingItems
+			),
+			gpPickpocket: this.client.settings.get(ClientSettings.EconomyStats.GPSourcePickpocket),
+			gpOpen: this.client.settings.get(ClientSettings.EconomyStats.GPSourceOpen),
+			gpDice: this.client.settings.get(ClientSettings.EconomyStats.GPSourceDice),
+			gpDaily: this.client.settings.get(ClientSettings.EconomyStats.GPSourceDaily)
 		});
 	}
 }

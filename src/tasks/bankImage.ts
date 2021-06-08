@@ -44,11 +44,13 @@ export type BankImageResult =
 			cachedURL: null;
 			image: Buffer;
 			cacheKey: string;
+			isTransparent: boolean;
 	  }
 	| {
 			cachedURL: string;
 			image: null;
 			cacheKey: string;
+			isTransparent: boolean;
 	  };
 
 const CACHE_DIR = './icon_cache';
@@ -93,7 +95,11 @@ export default class BankImageTask extends Task {
 			backgroundImages.map(async img => ({
 				...img,
 				image: await canvasImageFromBuffer(
-					fs.readFileSync(`./src/lib/resources/images/bank_backgrounds/${img.id}.jpg`)
+					fs.readFileSync(
+						`./src/lib/resources/images/bank_backgrounds/${img.id}.${
+							img.transparent ? 'png' : 'jpg'
+						}`
+					)
 				),
 				repeatImage: fs.existsSync(
 					`./src/lib/resources/images/bank_backgrounds/r${img.id}.jpg`
@@ -241,7 +247,7 @@ export default class BankImageTask extends Task {
 		title = '',
 		showValue = true,
 		flags: { [key: string]: string | number } = {},
-		user?: KlasaUser | string,
+		user?: KlasaUser,
 		collectionLog?: ItemBank
 	): Promise<BankImageResult> {
 		const bank = _bank instanceof Bank ? _bank : new Bank(_bank);
@@ -330,6 +336,7 @@ export default class BankImageTask extends Task {
 			) - 2;
 
 		let bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID)!;
+		const isTransparent = Boolean(bgImage.transparent);
 
 		const isPurple: boolean =
 			bankBackgroundID === 14 &&
@@ -343,9 +350,11 @@ export default class BankImageTask extends Task {
 			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
 		}
 
+		const hexColor = user?.settings.get(UserSettings.BankBackgroundHex);
+
 		const cacheKey = [
 			title,
-			typeof user === 'string' ? user : user?.id ?? 'nouser',
+			user?.id ?? 'nouser',
 			showValue,
 			bankBackgroundID,
 			searchQuery,
@@ -356,7 +365,8 @@ export default class BankImageTask extends Task {
 			totalValue,
 			canvasHeight,
 			Object.entries(flags).toString(),
-			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join(''))
+			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join('')),
+			hexColor ?? 'no-hex'
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
@@ -364,7 +374,8 @@ export default class BankImageTask extends Task {
 			return {
 				cachedURL: cached,
 				image: null,
-				cacheKey
+				cacheKey,
+				isTransparent
 			};
 		}
 
@@ -379,18 +390,26 @@ export default class BankImageTask extends Task {
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-		ctx.fillStyle = ctx.createPattern(bgImage.repeatImage ?? this.repeatingImage, 'repeat');
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		ctx.drawImage(
-			bgImage!.image,
-			0,
-			0,
-			wide ? canvas.width : bgImage.image!.width!,
-			wide ? canvas.height : bgImage.image!.height!
-		);
+		if (!isTransparent) {
+			ctx.fillStyle = ctx.createPattern(bgImage.repeatImage ?? this.repeatingImage, 'repeat');
+		}
+		if (hexColor) {
+			ctx.fillStyle = hexColor;
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+		}
+
+		if (bankBackgroundID !== 20) {
+			ctx.drawImage(
+				bgImage!.image,
+				0,
+				0,
+				wide ? canvas.width : bgImage.image!.width!,
+				wide ? canvas.height : bgImage.image!.height!
+			);
+		}
 
 		// Skips border if noBorder is set
-		if (noBorder !== 1) {
+		if (!isTransparent && noBorder !== 1) {
 			this.drawBorder(canvas, bgImage.name === 'Default');
 		}
 		if (showValue) {
@@ -500,13 +519,17 @@ export default class BankImageTask extends Task {
 			}
 		}
 
-		const args = items.length > 2000 ? ['image/jpeg', { quality: 0.75 }] : ['image/png'];
-		const image = await canvasToBufferAsync(canvas, ...args);
+		// const args =
+		// 	!isTransparent && items.length > 2000
+		// 		? ['image/jpeg', { quality: 0.75 }]
+		// 		: ['image/png'];
+		const image = await canvasToBufferAsync(canvas, 'image/png');
 
 		return {
 			image,
 			cacheKey,
-			cachedURL: null
+			cachedURL: null,
+			isTransparent
 		};
 	}
 

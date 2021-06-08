@@ -51,5 +51,18 @@ export namespace ClientSettings {
 
 		export const MTACostBank = T<O.Readonly<ItemBank>>('mta_cost');
 		export const BlastFurnaceCostBank = T<O.Readonly<ItemBank>>('bf_cost');
+
+		export const MageArenaCost = T<O.Readonly<ItemBank>>('mage_arena_cost');
+
+		export const HunterCost = T<O.Readonly<ItemBank>>('hunter_cost');
+		export const HunterLoot = T<O.Readonly<ItemBank>>('hunter_loot');
+
+		export const GPSourceSellingItems = T<number>('gp_sell');
+		export const GPSourcePVMLoot = T<number>('gp_pvm');
+		export const GPSourceAlching = T<number>('gp_alch');
+		export const GPSourcePickpocket = T<number>('gp_pickpocket');
+		export const GPSourceDice = T<number>('gp_dice');
+		export const GPSourceOpen = T<number>('gp_open');
+		export const GPSourceDaily = T<number>('gp_daily');
 	}
 }

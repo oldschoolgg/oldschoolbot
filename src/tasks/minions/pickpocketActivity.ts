@@ -3,10 +3,11 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { rollRogueOutfitDoubleLoot } from '../../lib/util';
+import { rollRogueOutfitDoubleLoot, updateGPTrackSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
@@ -72,7 +73,15 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank(loot.values(), true);
+		if (loot.has('Coins')) {
+			updateGPTrackSetting(
+				this.client,
+				ClientSettings.EconomyStats.GPSourcePickpocket,
+				loot.amount('Coins')
+			);
+		}
+
+		await user.addItemsToBank(loot, true);
 		const xpRes = await user.addXP(SkillsEnum.Thieving, xpReceived);
 
 		let str = `${user}, ${user.minionName} finished pickpocketing a ${

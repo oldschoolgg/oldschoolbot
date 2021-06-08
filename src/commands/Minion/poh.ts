@@ -4,11 +4,12 @@ import { Bank } from 'oldschooljs';
 import { BitField, Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from '../../lib/poh';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
-import { itemID, itemNameFromID, stringMatches } from '../../lib/util';
+import { itemID, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import PoHImage from '../../tasks/pohImage';
 
@@ -163,6 +164,11 @@ export default class POHCommand extends BotCommand {
 				}
 			}
 			await msg.author.removeItemsFromBank(obj.itemCost.bank);
+			updateBankSetting(
+				this.client,
+				ClientSettings.EconomyStats.ConstructCostBank,
+				obj.itemCost
+			);
 		}
 
 		poh[obj.slot] = obj.id;

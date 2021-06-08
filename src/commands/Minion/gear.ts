@@ -27,7 +27,7 @@ export default class extends BotCommand {
 		if (msg.flagArgs.text) {
 			const textBank = [];
 
-			for (const gearItem of Object.values(gear)) {
+			for (const gearItem of Object.values(gear.raw())) {
 				if (!gearItem) continue;
 				textBank.push(
 					`${getOSItem(gearItem.item).name}: ${gearItem.quantity.toLocaleString()}`

@@ -169,7 +169,7 @@ export default class extends Task {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			const channel = this.client.channels.get(channelID);
+			const channel = this.client.channels.cache.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
 			channel.send(str);
@@ -451,7 +451,7 @@ export default class extends Task {
 				).bank
 			);
 			await user.addItemsToBank(loot, true);
-			const channel = this.client.channels.get(channelID);
+			const channel = this.client.channels.cache.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
 			channel.send(infoStr.join('\n'));
