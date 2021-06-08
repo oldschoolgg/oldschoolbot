@@ -40,7 +40,7 @@ describe('util', () => {
 			)
 		).toStrictEqual({
 			[itemID('Lobster')]: 20,
-			[itemID('Shark')]: 68,
+			[itemID('Shark')]: 66,
 			[itemID('Shrimps')]: 50
 		});
 	});
