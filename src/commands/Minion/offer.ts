@@ -72,6 +72,7 @@ export default class extends BotCommand {
 			if (quantity > unsiredsOwned) {
 				return msg.channel.send(`You don't have ${quantity} Unsired to offer the Font. You have ${unsiredsOwned}.`)
 			}
+			await msg.author.removeItemsFromBank({ [itemID('Unsired')]: quantity });
 			let loot = new Bank();
 			for (let iter = 0; iter < quantity; iter++) {
 				loot.add(UnsiredLootTable.roll());
