@@ -233,9 +233,18 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Spectral spirit shield')]: 10 },
-			{ [itemID('Bandos chestplate')]: 5 },
-			{ [itemID('Bandos tassets')]: 5 },
-			{ [itemID('Arclight')] : 15}
+			{
+				[itemID('Bandos chestplate')]: 5,
+				[itemID("Inquisitor's hauberk")]: 8
+			},
+			{
+				[itemID('Bandos tassets')]: 5,
+				[itemID("Inquisitor's plateskirt")]: 8
+			},
+			{
+				[itemID('Arclight')]: 15,
+				[itemID("Inquisitor's mace'")]: 8
+			}
 		],
 		levelRequirements: {
 			prayer: 43,

@@ -76,7 +76,8 @@ export enum SlayerTaskUnlocksEnum {
 	// Item Purchases:
 	SlayerRing,
 	HerbSack,
-	RunePouch
+	RunePouch,
+	DoubleTrouble
 }
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	/* Anything commented won't appear in lists.
@@ -527,5 +528,13 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.5,
 		canBeRemoved: true,
 		aliases: ['extend vampyres', 'extend vampires']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.DoubleTrouble,
+		name: 'Double Trouble',
+		desc: 'Each Grotesque Guardians kc gives 2 kc to your slayer task',
+		slayerPointCost: 500,
+		canBeRemoved: true,
+		aliases: ['double trouble', 'double garg kc','double grotesque kc', '2x groteque kc', '2x ggs kc']
 	}
 ];

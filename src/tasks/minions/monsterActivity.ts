@@ -81,11 +81,17 @@ export default class extends Task {
 		}
 
 		if (isOnTask) {
-			const effectiveSlayed = usersTask.currentTask!.monsterID === Monsters.KrilTsutsaroth.id
+			const effectiveSlayed = monsterID === Monsters.KrilTsutsaroth.id
 				? quantitySlayed! * 2
-				: usersTask.currentTask!.monsterID === Monsters.Kreearra.id
+				: monsterID === Monsters.Kreearra.id
 					? quantitySlayed! * 4
-					: quantitySlayed!;
+					:
+						monsterID === Monsters.GrotesqueGuardians.id
+						&& user.settings
+							.get(UserSettings.Slayer.SlayerUnlocks)
+							.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+						? quantitySlayed! * 2
+						: quantitySlayed!;
 
 			const quantityLeft = Math.max(
 				0,
