@@ -16,7 +16,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		if (!msg.guild) return null;
-		const channelIDs = msg.guild.channels.filter(c => c.type === 'text').map(c => c.id);
+		const channelIDs = msg.guild.channels.cache.filter(c => c.type === 'text').map(c => c.id);
 
 		let masses: any[] = await getConnection().query(
 			`

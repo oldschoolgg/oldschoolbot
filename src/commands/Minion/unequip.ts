@@ -7,6 +7,7 @@ import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { Gear } from '../../lib/structures/Gear';
 import { toTitleCase } from '../../lib/util';
 
 export default class extends BotCommand {
@@ -57,7 +58,7 @@ export default class extends BotCommand {
 		const image = await generateGearImage(
 			this.client,
 			msg.author,
-			newGear,
+			new Gear(newGear),
 			gearType,
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);

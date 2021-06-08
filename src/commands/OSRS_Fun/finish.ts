@@ -2118,7 +2118,57 @@ ${lootMSG.join('\n')}`);
 				return msg.send(`
 It took you **${kc}** kills to finish Alchemical Hydra ${emote}
 
+
+
 ${lootMSG}`);
+			}
+
+			case 'TEMPOROSS':
+			case 'TP': {
+				const lootMSG = [];
+				while (loot.length !== 6) {
+					kc++;
+					if (!loot.includes('DH') && roll(8000)) {
+						loot.push('DH');
+						lootMSG.push(
+							`**Dragon Harpoon:** ${kc.toLocaleString()} Permits <:Dragon_harpoon:403018313115893767>`
+						);
+					}
+					if (!loot.includes('PET') && roll(8000)) {
+						loot.push('PET');
+						lootMSG.push(
+							`**Tiny Tempor:** ${kc.toLocaleString()} Permits <:TinyTempor:824483631694217277>`
+						);
+					}
+					if (!loot.includes('TW') && roll(1600)) {
+						loot.push('TW');
+						lootMSG.push(
+							`**Tome of Water:** ${kc.toLocaleString()} Permits <:Tome_of_water:846871674472890368>`
+						);
+					}
+					if (!loot.includes('FB') && roll(400)) {
+						loot.push('FB');
+						lootMSG.push(
+							`**Fish Barrel:** ${kc.toLocaleString()} Permits <:Fish_barrel:846871290282377297>`
+						);
+					}
+					if (!loot.includes('TB') && roll(400)) {
+						loot.push('TB');
+						lootMSG.push(
+							`**Tackle Box:** ${kc.toLocaleString()} Permits <:Tackle_box:846871523524345866>`
+						);
+					}
+					if (!loot.includes('BH') && roll(1600)) {
+						loot.push('BH');
+						lootMSG.push(
+							`**Big Harpoonfish:** ${kc.toLocaleString()} Permits <:Big_harpoonfish:846871597322207252>`
+						);
+					}
+				}
+				return msg.send(`
+	It took you **${kc.toLocaleString()}** Permits to finish Tempoross <:TinyTempor:824483631694217277>
+
+${lootMSG.join('\n')}`);
 			}
 			case 'HESPORIS':
 			case 'HESPORI': {

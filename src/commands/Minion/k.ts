@@ -9,6 +9,7 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import findMonster, {
@@ -17,7 +18,8 @@ import findMonster, {
 	isWeekend,
 	itemNameFromID,
 	randomVariation,
-	removeDuplicatesFromArray
+	removeDuplicatesFromArray,
+	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
@@ -122,6 +124,18 @@ export default class extends BotCommand {
 			quantity = floor(maxTripLength / timeToFinish);
 		}
 
+		quantity = Math.max(1, quantity);
+		const itemCost = monster.itemCost ? monster.itemCost.clone().multiply(quantity) : null;
+		if (itemCost) {
+			if (!msg.author.owns(itemCost)) {
+				return msg.channel.send(
+					`You don't have the items needed to kill ${quantity}x ${monster.name}, you need: ${itemCost}.`
+				);
+			}
+			updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, itemCost);
+			await msg.author.removeItemsFromBank(itemCost);
+		}
+
 		// Check food
 		let foodStr: undefined | string = undefined;
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
@@ -145,7 +159,7 @@ export default class extends BotCommand {
 		}
 
 		let duration = timeToFinish * quantity;
-		if (duration > maxTripLength) {
+		if (quantity > 1 && duration > maxTripLength) {
 			return msg.send(
 				`${minionName} can't go on PvM trips longer than ${formatDuration(
 					maxTripLength
@@ -176,6 +190,11 @@ export default class extends BotCommand {
 		}, it'll take around ${formatDuration(
 			duration
 		)} to finish. Attack styles used: ${attackStyles.join(', ')}.`;
+
+		if (itemCost) {
+			response += `Removed ${itemCost}.`;
+		}
+
 		if (foodStr) {
 			response += ` Removed ${foodStr}.\n`;
 		}

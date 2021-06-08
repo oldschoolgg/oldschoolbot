@@ -4,6 +4,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Events, Time } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
+import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import {
 	calcBabyChinchompaChance,
@@ -13,7 +14,7 @@ import {
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { rand, roll, stringMatches } from '../../../lib/util';
+import { rand, roll, stringMatches, updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
@@ -187,6 +188,8 @@ export default class extends Task {
 				} while hunting a ${creature.name}, their Hunter level is ${currentLevel}!`
 			);
 		}
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.HunterLoot, loot);
 
 		handleTripFinish(
 			this.client,

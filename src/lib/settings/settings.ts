@@ -45,7 +45,9 @@ export async function batchSyncNewUserUsernames(client: KlasaClient) {
 		.insert()
 		.into(NewUserTable)
 		.values(
-			client.users.filter(u => u.hasMinion).map(u => ({ id: u.id, username: u.username }))
+			client.users.cache
+				.filter(u => u.hasMinion)
+				.map(u => ({ id: u.id, username: u.username }))
 		)
 		.orUpdate({
 			conflict_target: ['id'],

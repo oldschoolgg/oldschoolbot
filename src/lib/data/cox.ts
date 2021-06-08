@@ -14,8 +14,8 @@ import { Bank } from 'oldschooljs';
 import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { constructGearSetup, GearStats } from '../gear';
-import { sumOfSetupStats } from '../gear/functions/sumOfSetupStats';
 import { SkillsEnum } from '../skilling/types';
+import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
@@ -159,7 +159,7 @@ export const maxMageGear = constructGearSetup({
 	head: 'Ancestral hat',
 	neck: 'Amulet of fury',
 	body: 'Ancestral robe top',
-	cape: 'Saradomin cape',
+	cape: 'Imbued saradomin cape',
 	hands: 'Barrows gloves',
 	legs: 'Ancestral robe bottom',
 	feet: 'Eternal boots',
@@ -167,7 +167,7 @@ export const maxMageGear = constructGearSetup({
 	shield: 'Arcane spirit shield',
 	ring: 'Seers ring(i)'
 });
-const maxMageSum = sumOfSetupStats(maxMageGear);
+const maxMage = new Gear(maxMageGear);
 
 export const maxRangeGear = constructGearSetup({
 	head: 'Armadyl helmet',
@@ -181,7 +181,7 @@ export const maxRangeGear = constructGearSetup({
 	ring: 'Archers ring(i)',
 	ammo: 'Dragon arrow'
 });
-const maxRangeSum = sumOfSetupStats(maxRangeGear);
+const maxRange = new Gear(maxRangeGear);
 
 export const maxMeleeGear = constructGearSetup({
 	head: "Inquisitor's great helm",
@@ -195,26 +195,26 @@ export const maxMeleeGear = constructGearSetup({
 	shield: 'Dragon defender',
 	ring: 'Berserker ring(i)'
 });
-const maxMeleeSum = sumOfSetupStats(maxMeleeGear);
+const maxMelee = new Gear(maxMeleeGear);
 
 export function calculateUserGearPercents(user: KlasaUser) {
 	const melee = calcSetupPercent(
-		maxMeleeSum,
-		sumOfSetupStats(user.getGear('melee')),
+		maxMelee.stats,
+		user.getGear('melee').stats,
 		'melee_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged', 'attack_magic'],
 		true
 	);
 	const range = calcSetupPercent(
-		maxRangeSum,
-		sumOfSetupStats(user.getGear('range')),
+		maxRange.stats,
+		user.getGear('range').stats,
 		'ranged_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_magic'],
 		false
 	);
 	const mage = calcSetupPercent(
-		maxMageSum,
-		sumOfSetupStats(user.getGear('mage')),
+		maxMage.stats,
+		user.getGear('mage').stats,
 		'magic_damage',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged'],
 		false

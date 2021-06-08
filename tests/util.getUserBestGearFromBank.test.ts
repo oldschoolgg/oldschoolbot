@@ -2,6 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import { GearSetup, GearSetupTypes } from '../src/lib/gear/types';
 import getUserBestGearFromBank from '../src/lib/minions/functions/getUserBestGearFromBank';
+import { Gear } from '../src/lib/structures/Gear';
 import itemID from '../src/lib/util/itemID';
 
 const userBank = new Bank({
@@ -32,14 +33,14 @@ const nullGear: GearSetup = {
 	shield: null,
 	weapon: null
 };
-const userGear: GearSetup = {
+const userGear = new Gear({
 	...nullGear,
 	'2h': { item: itemID('Elder maul'), quantity: 1 },
 	body: { item: itemID('Dragon chainbody'), quantity: 1 },
 	cape: { item: itemID('Cape of legends'), quantity: 1 },
 	hands: { item: itemID('Leather gloves'), quantity: 1 },
 	neck: { item: itemID('Amulet of strength'), quantity: 1 }
-};
+});
 
 describe('getUserBestGearFromBank', () => {
 	test('autoequip melee attack slash', async () => {

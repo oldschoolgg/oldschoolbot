@@ -5,10 +5,11 @@ import { Activity, Time } from '../../lib/constants';
 import { GearSetupTypes } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, randomVariation } from '../../lib/util';
+import { formatDuration, randomVariation, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -54,7 +55,11 @@ export default class extends BotCommand {
 			attackStylesUsed: [GearSetupTypes.Mage]
 		});
 
+		const totalCost = itemsNeeded.add(foodRemoved);
+
 		await msg.author.removeItemsFromBank(itemsNeeded);
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.MageArenaCost, totalCost);
 
 		await addSubTaskToActivityTask<ActivityTaskOptions>(this.client, {
 			userID: msg.author.id,
@@ -68,7 +73,7 @@ export default class extends BotCommand {
 				msg.author.minionName
 			} is now doing the Mage Arena, it will take approximately ${formatDuration(
 				duration
-			)}. Removed ${itemsNeeded.add(foodRemoved)} from your bank.`
+			)}. Removed ${totalCost} from your bank.`
 		);
 	}
 }

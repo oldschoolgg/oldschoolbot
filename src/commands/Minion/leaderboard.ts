@@ -16,11 +16,14 @@ import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { ItemBank, SettingsEntry } from '../../lib/types';
 import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
-import { Workers } from '../../lib/workers';
-import { CLUser } from '../../lib/workers/leaderboard.worker';
 import PostgresProvider from '../../providers/postgres';
 
 const CACHE_TIME = Time.Minute * 5;
+
+export interface CLUser {
+	id: string;
+	qty: number;
+}
 
 export interface SkillUser {
 	id: string;
@@ -241,7 +244,7 @@ DESC LIMIT 2000;`
 		let { list } = this.qpLeaderboard;
 
 		if (onlyForGuild && msg.guild) {
-			list = list.filter((qpUser: QPUser) => msg.guild!.members.has(qpUser.id));
+			list = list.filter((qpUser: QPUser) => msg.guild!.members.cache.has(qpUser.id));
 		}
 
 		this.doMenu(
@@ -266,7 +269,7 @@ DESC LIMIT 2000;`
 		if (Date.now() - this.petLeaderboard.lastUpdated > CACHE_TIME) {
 			this.petLeaderboard.list = await this.query(
 				`SELECT u.id, u.petcount FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS(pets)) petcount, id FROM users
+  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS(pets)) petcount, id FROM users
 ) u
 ORDER BY u.petcount DESC LIMIT 2000;`
 			);
@@ -276,7 +279,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 		let { list } = this.petLeaderboard;
 
 		if (onlyForGuild && msg.guild) {
-			list = list.filter((gpUser: PetUser) => msg.guild!.members.has(gpUser.id));
+			list = list.filter((gpUser: PetUser) => msg.guild!.members.cache.has(gpUser.id));
 		}
 
 		this.doMenu(
@@ -351,7 +354,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			.slice(0, 2000);
 
 		if (msg.flagArgs.server && msg.guild) {
-			list = list.filter((kcUser: KCUser) => msg.guild!.members.has(kcUser.id));
+			list = list.filter((kcUser: KCUser) => msg.guild!.members.cache.has(kcUser.id));
 		}
 
 		this.doMenu(
@@ -416,7 +419,7 @@ DESC LIMIT 500;`
 		const onlyForGuild = msg.flagArgs.server;
 
 		if (onlyForGuild && msg.guild) {
-			res = res.filter((user: SkillUser) => msg.guild!.members.has(user.id));
+			res = res.filter((user: SkillUser) => msg.guild!.members.cache.has(user.id));
 		}
 
 		if (msg.flagArgs.im || msg.flagArgs.ironman) {
@@ -471,38 +474,38 @@ DESC LIMIT 500;`
 			);
 		}
 
-		const result = (await this.query(
-			`SELECT u.id, u."logBankLength", u."collectionLogBank" FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("collectionLogBank")) "logBankLength" , id, "collectionLogBank" FROM users ${
-		msg.flagArgs.im ? 'WHERE "minion.ironman" = true' : ''
-  }
-) u
-WHERE u."logBankLength" > 300
-ORDER BY u."logBankLength" DESC;`
-		)) as CLUser[];
-		const users = await Workers.leaderboard({
-			type: 'cl',
-			users: result,
-			collectionLogInput: type
-		});
+		const items = Object.values(type.items).flat(Infinity) as number[];
 
-		const items = Object.values(type.items).flat(Infinity);
+		const users = (
+			await this.client.orm.query(
+				`
+SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
+				  FROM (
+  SELECT ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank")) "cl_keys",
+  				id, "collectionLogBank",
+			    cardinality(ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank" - array[${items
+					.map(i => `'${i}'`)
+					.join(', ')}]))) "inverse_length"
+  FROM users
+  WHERE "collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
+  ${msg.flagArgs.im ? 'AND "minion.ironman" = true' : ''}
+) u
+ORDER BY qty DESC
+LIMIT 50;
+`
+			)
+		).filter((i: any) => i.qty > 0) as CLUser[];
+
+		if (users.length === 0) {
+			return msg.channel.send(`No users found.`);
+		}
+
 		this.doMenu(
 			msg,
 			util
 				.chunk(users, 10)
 				.map(subList =>
-					subList
-						.map(
-							({ id, collectionLogBank }) =>
-								`**${this.getUsername(id)}:** ${
-									Object.entries(collectionLogBank).filter(
-										([itemID, qty]) =>
-											qty > 0 && items.includes(parseInt(itemID))
-									).length
-								}`
-						)
-						.join('\n')
+					subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')
 				),
 			`${type.name} Collection Log Leaderboard`
 		);

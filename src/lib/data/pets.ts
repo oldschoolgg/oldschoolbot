@@ -632,6 +632,19 @@ const pets: Pet[] = [
 				num
 			)} Spoils of war to get the Lil' Creator! <:Lil_creator:798221383951319111>`,
 		bossKeys: ['soulwars']
+	},
+	{
+		id: 48,
+		emoji: '<:TinyTempor:824483631694217277>',
+		chance: 8000,
+		name: 'Tiny Tempor',
+		type: 'SPECIAL',
+		altNames: ['TINYTEMPOR', 'TEMPOROSS'],
+		formatFinish: (num: number) =>
+			`You had to spend ${fm(
+				num
+			)} Permits to get the Tiny Tempor! <:TinyTempor:824483631694217277>`,
+		bossKeys: ['tempoross']
 	}
 ];
 

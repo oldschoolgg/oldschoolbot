@@ -21,6 +21,9 @@ Client.defaultClientSchema
 	.add('collecting_loot', 'any', { default: {} })
 	.add('mta_cost', 'any', { default: {} })
 	.add('bf_cost', 'any', { default: {} })
+	.add('mage_arena_cost', 'any', { default: {} })
+	.add('hunter_cost', 'any', { default: {} })
+	.add('hunter_loot', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })
@@ -34,4 +37,12 @@ Client.defaultClientSchema
 			.add('fightCavesCost', 'any', { default: {} })
 			.add('PVMCost', 'any', { default: {} })
 			.add('thievingCost', 'any', { default: {} })
-	);
+	)
+
+	.add('gp_sell', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_pvm', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_alch', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_pickpocket', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_open', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_daily', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER });

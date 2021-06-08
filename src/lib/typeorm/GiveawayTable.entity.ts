@@ -19,7 +19,7 @@ import { Events } from '../constants';
 @Entity({ name: 'giveaway' })
 export class GiveawayTable extends BaseEntity {
 	@PrimaryGeneratedColumn('increment')
-	public id!: string;
+	public id!: number;
 
 	@PrimaryColumn('varchar', { length: 19, name: 'user_id', nullable: false })
 	public userID!: string;
@@ -68,11 +68,11 @@ export class GiveawayTable extends BaseEntity {
 				.where('id = :id', { id: this.id })
 				.execute();
 
-			const channel = client.channels.get(this.channelID) as TextChannel | undefined;
+			const channel = client.channels.cache.get(this.channelID) as TextChannel | undefined;
 			const message = await channel?.messages.fetch(this.messageID).catch(noOp);
 
-			const reactions = message ? message.reactions.get(this.reactionID) : undefined;
-			const users: KlasaUser[] = (reactions?.users.array() || []).filter(
+			const reactions = message ? message.reactions.cache.get(this.reactionID) : undefined;
+			const users: KlasaUser[] = (reactions?.users.cache.array() || []).filter(
 				u => !u.isIronman && !u.bot && u.id !== this.userID
 			);
 

@@ -15,7 +15,7 @@ export default class extends Task {
 	cacheBadges() {
 		const newCache = new Map();
 
-		const usersWithBadges = this.client.users.filter(
+		const usersWithBadges = this.client.users.cache.filter(
 			u => u.settings.get(UserSettings.Badges).length > 0
 		);
 		for (const user of usersWithBadges.values()) {

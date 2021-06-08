@@ -240,6 +240,24 @@ const backgroundImages: BankBackground[] = [
 		skillsNeeded: {
 			farming: 99
 		}
+	},
+	{
+		id: 19,
+		name: 'Pets',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true
+	},
+	{
+		id: 20,
+		name: 'Transparent',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true
 	}
 ];
 

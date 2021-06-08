@@ -17,12 +17,12 @@ export async function resolveChannel(
 	client: KlasaClient,
 	channelID: string
 ): Promise<WebhookClient | TextChannel | undefined> {
-	const channel = client.channels.get(channelID);
-	if (!channelIsSendable(channel)) return undefined;
-
+	const channel = client.channels.cache.get(channelID);
+	if (!channel) return undefined;
 	if (channel.type === 'dm') {
-		return channel;
+		return channel as TextChannel;
 	}
+	if (!channelIsSendable(channel)) return undefined;
 
 	const cached = webhookCache.get(channelID);
 	if (cached) return cached;
