@@ -81,11 +81,20 @@ export async function addMonsterXP(
 	}
 
 	if (isOnTask) {
+		let newSlayerXP = 0;
 		if (osjsMon?.data?.slayerXP) {
-			res.push(await user.addXP(SkillsEnum.Slayer, taskQuantity! * osjsMon.data.slayerXP, duration, true));
+			newSlayerXP += taskQuantity! * osjsMon.data.slayerXP;
 		} else {
-			res.push(await user.addXP(SkillsEnum.Slayer, taskQuantity! * hp, duration, true));
+			newSlayerXP += taskQuantity! * hp;
 		}
+		// Give slayer XP for K'ril + Kree'Arra
+		if (monsterID === Monsters.KrilTsutsaroth.id) {
+			newSlayerXP += taskQuantity! * 142;
+		}
+		if (monsterID === Monsters.Kreearra.id) {
+			newSlayerXP += taskQuantity! * (132.5 + 124 + 132.5);
+		}
+		res.push(await user.addXP(SkillsEnum.Slayer, newSlayerXP, duration, true));
 	}
 
 	res.push(

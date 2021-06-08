@@ -13,6 +13,8 @@ import { calcPOHBoosts } from '../../lib/poh';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { Monsters } from 'oldschooljs';
+
 import findMonster, {
 	addArrayOfNumbers,
 	formatDuration,
@@ -145,7 +147,13 @@ export default class extends BotCommand {
 		}
 		if (typeof quantity !== 'number') quantity = parseInt(quantity);
 		if (isOnTask) {
-			quantity = Math.min(quantity, usersTask.currentTask!.quantityRemaining);
+			let effectiveQtyRemaining = usersTask.currentTask!.quantityRemaining;
+			if (usersTask.currentTask!.monsterID === Monsters.KrilTsutsaroth.id) {
+				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
+			} else if (usersTask.currentTask!.monsterID === Monsters.Kreearra.id) {
+				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 4);
+			}
+			quantity = Math.min(quantity, effectiveQtyRemaining);
 		}
 
 		// Dragonbane, in the worst way possible. We need to add dragonbane to monsters.

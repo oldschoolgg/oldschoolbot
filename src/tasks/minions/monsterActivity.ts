@@ -81,9 +81,15 @@ export default class extends Task {
 		}
 
 		if (isOnTask) {
+			const effectiveSlayed = usersTask.currentTask!.monsterID === Monsters.KrilTsutsaroth.id
+				? quantitySlayed! * 2
+				: usersTask.currentTask!.monsterID === Monsters.Kreearra.id
+					? quantitySlayed! * 4
+					: quantitySlayed!;
+
 			const quantityLeft = Math.max(
 				0,
-				usersTask.currentTask!.quantityRemaining - quantitySlayed!
+				usersTask.currentTask!.quantityRemaining - effectiveSlayed!
 			);
 
 			const thisTripFinishesTask = quantityLeft === 0;
