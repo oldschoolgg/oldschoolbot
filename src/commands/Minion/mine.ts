@@ -19,29 +19,29 @@ import resolveItems from '../../lib/util/resolveItems';
 
 const pickaxes = [
 	{
-		id: itemID('3rd age pickaxe'),
-		reductionPercent: 11,
-		miningLvl: 61
-	},
-	{
 		id: itemID('Crystal pickaxe'),
-		reductionPercent: 11,
+		reductionPercent: 12,
 		miningLvl: 71
 	},
 	{
-		id: itemID('Gilded pickaxe'),
+		id: itemID('Infernal pickaxe'),
 		reductionPercent: 11,
+		miningLvl: 61
+	},
+	{
+		id: itemID('3rd age pickaxe'),
+		reductionPercent: 9,
 		miningLvl: 41
 	},
 	{
-		id: itemID('Infernal pickaxe'),
-		reductionPercent: 10,
+		id: itemID('Dragon pickaxe'),
+		reductionPercent: 9,
 		miningLvl: 61
 	},
 	{
-		id: itemID('Dragon pickaxe'),
-		reductionPercent: 6,
-		miningLvl: 61
+		id: itemID('Gilded pickaxe'),
+		reductionPercent: 5,
+		miningLvl: 41
 	},
 	{
 		id: itemID('Rune pickaxe'),
