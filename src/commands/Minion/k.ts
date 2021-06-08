@@ -149,10 +149,17 @@ export default class extends BotCommand {
 		}
 		if (typeof quantity !== 'number') quantity = parseInt(quantity);
 		if (isOnTask) {
+			// Todo: Probably handle this in a separate function to make everything easier.
 			let effectiveQtyRemaining = usersTask.currentTask!.quantityRemaining;
-			if (monster.id === Monsters.KrilTsutsaroth.id) {
+			if (
+				monster.id === Monsters.KrilTsutsaroth.id
+				&& usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
+			) {
 				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
-			} else if (monster.id === Monsters.Kreearra.id) {
+			} else if (
+				monster.id === Monsters.Kreearra.id
+				&& usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
+			) {
 				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 4);
 			} else if (
 				monster.id === Monsters.GrotesqueGuardians.id

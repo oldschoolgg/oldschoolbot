@@ -81,9 +81,17 @@ export default class extends Task {
 		}
 
 		if (isOnTask) {
-			const effectiveSlayed = monsterID === Monsters.KrilTsutsaroth.id
+			const effectiveSlayed =
+				(
+					monsterID === Monsters.KrilTsutsaroth.id
+					&& usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
+				)
 				? quantitySlayed! * 2
-				: monsterID === Monsters.Kreearra.id
+				:
+					(
+						monsterID === Monsters.Kreearra.id
+						&& usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
+					)
 					? quantitySlayed! * 4
 					:
 						monsterID === Monsters.GrotesqueGuardians.id
