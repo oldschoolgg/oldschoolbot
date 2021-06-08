@@ -19,19 +19,9 @@ import itemID from '../../lib/util/itemID';
 
 const axes = [
 	{
-		id: itemID('3rd age axe'),
-		reductionPercent: 12,
-		wcLvl: 61
-	},
-	{
 		id: itemID('Crystal axe'),
 		reductionPercent: 12,
-		wcLvl: 61
-	},
-	{
-		id: itemID('Gilded axe'),
-		reductionPercent: 12,
-		wcLvl: 41
+		wcLvl: 71
 	},
 	{
 		id: itemID('Infernal axe'),
@@ -39,9 +29,19 @@ const axes = [
 		wcLvl: 61
 	},
 	{
+		id: itemID('3rd age axe'),
+		reductionPercent: 9,
+		wcLvl: 61
+	},
+	{
 		id: itemID('Dragon axe'),
 		reductionPercent: 9,
 		wcLvl: 61
+	},
+	{
+		id: itemID('Gilded axe'),
+		reductionPercent: 7,
+		wcLvl: 41
 	},
 	{
 		id: itemID('Rune axe'),
