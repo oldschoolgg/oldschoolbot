@@ -4212,10 +4212,10 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-oldschooljs@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.9.0.tgz#279cb8b6ceb52ad7554b8915958782908b001f56"
-  integrity sha512-40KGbZ7nPczS5XZfX9Iv6gEDoTg2zPOQJKNpxfbD+/WgO7uepWRuYgVlDXuwdf80O5rZbp74yzoZrLsvDZtVLw==
+oldschooljs@^1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.9.1.tgz#0495185ac6ccf953c1da1241a88458a9a3720986"
+  integrity sha512-6qFwmg8RdEKF9hpmJoErcaJ2S/5MHL+qyUeTgQCAxNxtprz0f2q65LzhF6v+Q8R2+8fRGOA3d5FtUfOdnDMYNw==
   dependencies:
     e "^0.2.0"
     jsdom "^16.0.1"
