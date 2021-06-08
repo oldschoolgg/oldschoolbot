@@ -5,7 +5,6 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { production } from '../../../config';
 import { Emoji } from '../../../lib/constants';
-import { roll } from '../../../lib/data/monsters/raids';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { allNexItems, NexMonster } from '../../../lib/nex';
@@ -18,6 +17,7 @@ import {
 	channelIsSendable,
 	noOp,
 	randomItemFromArray,
+	roll,
 	updateBankSetting
 } from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';

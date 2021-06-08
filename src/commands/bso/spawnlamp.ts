@@ -7,7 +7,6 @@ import { BitField, Color, PerkTier } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
 import { LampTable } from '../../lib/xpLamps';
 
 export default class extends BotCommand {
@@ -89,12 +88,10 @@ export default class extends BotCommand {
 			const col = collected.first();
 			if (!col) return;
 			const winner = col.author!;
-			const box = LampTable.roll()[0].item;
-			await winner.addItemsToBank({ [box]: 1 });
+			const box = LampTable.roll();
+			await winner.addItemsToBank(box);
 			return msg.channel.send(
-				`Congratulations, ${winner}! You got it. I've given you: **1x ${
-					getOSItem(box).name
-				}**.`
+				`Congratulations, ${winner}! You got it. I've given you: **${box}**.`
 			);
 		} catch (err) {
 			return msg.channel.send(`Nobody got it! :(`);

@@ -13,6 +13,19 @@ import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 
+const unlimitedFireRuneProviders = [
+	'Staff of fire',
+	'Fire battlestaff',
+	'Mystic fire staff',
+	'Lava battlestaff',
+	'Mystic lava staff',
+	'Steam battlestaff',
+	'Mystic steam staff',
+	'Smoke battlestaff',
+	'Mystic smoke staff',
+	'Tome of fire'
+];
+
 export function alching(user: KlasaUser, tripLength: number) {
 	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const bank = user.bank();
@@ -33,7 +46,7 @@ export function alching(user: KlasaUser, tripLength: number) {
 	const nats = bank.amount('Nature rune');
 	const fireRunes = bank.amount('Fire rune');
 
-	const hasInfiniteFireRunes = user.hasItemEquippedAnywhere('Staff of fire');
+	const hasInfiniteFireRunes = user.hasItemEquippedAnywhere(unlimitedFireRuneProviders);
 
 	let maxCasts = Math.floor(tripLength / (Time.Second * 5));
 	maxCasts = Math.min(alchItemQty, maxCasts);

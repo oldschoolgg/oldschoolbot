@@ -1,4 +1,4 @@
-import { Misc, Monsters } from 'oldschooljs';
+import { Bank, Misc, Monsters } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util/bank';
 
 import { KillWorkerArgs } from '.';
@@ -11,7 +11,7 @@ export function stringMatches(str: string, str2: string) {
 	return cleanString(str) === cleanString(str2);
 }
 
-export default ({ quantity, bossName, limit }: KillWorkerArgs) => {
+export default ({ quantity, bossName, limit }: KillWorkerArgs): Bank | string => {
 	const osjsMonster = Monsters.find(mon =>
 		mon.aliases.some(alias => stringMatches(alias, bossName))
 	);
@@ -39,11 +39,8 @@ export default ({ quantity, bossName, limit }: KillWorkerArgs) => {
 				Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }] }).id
 			]);
 		}
-		return bank;
+		return new Bank(bank);
 	}
 
-	switch (cleanString(bossName)) {
-		default:
-			return "I don't have that monster!";
-	}
+	return "I don't have that monster!";
 };

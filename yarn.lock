@@ -662,28 +662,28 @@
     prettier "^2.1.2"
 
 "@sapphire/discord-utilities@^2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.1.2.tgz#69faf1d4c5866fbdfeb3b2b4887c48b4543fb9bd"
-  integrity sha512-dyWNqPL8Ja6mCvf27oKekrDoS7sYudnvuw4PYGpIApq+pCUA2BbHxPWVa6bOkVYb//tAFksmZorgPOdMC+R21g==
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.1.3.tgz#7ec5afb814985d698f26016fb62bb8841780a8d7"
+  integrity sha512-YwLun3UfeVRlZ8KHwFlV3g4w0h/6UqTpHyM0vhMtIwegAlPYXj/qY4h3MlzXiaRyDJyknzDmh/lswYWcuYXr6A==
   dependencies:
-    twemoji-parser "^13.0.0"
+    twemoji-parser "^13.1.0"
 
 "@sapphire/time-utilities@^1.3.2":
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.3.2.tgz#9ac6c9f626acc5585382765c82f20f1d0dc5a191"
-  integrity sha512-tmXk5VOEdzXOzdtZkll7v6IbQs1tpTRP2VeqgTNFTxsES+iI0TiPRBqBx2tKdTLaMLdzgaw/mFmeCXXmmn9+6A==
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.3.3.tgz#a659eaa8044171b3a22cc2b853a2cb4b9d10b318"
+  integrity sha512-0N3fx7NYpUBEZemGV+/CEXx+SHtc356gahbDGwXxi7dI5nN5zRjLkjo69O5bbMpZUlMGyBmdZlfSdrE2eV/zyg==
   dependencies:
-    "@sapphire/utilities" "^1.5.2"
+    "@sapphire/utilities" "^1.5.3"
 
 "@sapphire/utilities@^1.4.7":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.5.0.tgz#8ab8001219668e3a9db65e13d7305aec3b838e9b"
   integrity sha512-lgWjTsy9Dsl21zy4mAzZcftOhijWVq2Gok/aFfS8f3Jue5DC7jSTlJoyEypo9ihbLXHpl8ceIUlRPkMiXcaxIw==
 
-"@sapphire/utilities@^1.5.2":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.5.2.tgz#05188f78a41ea0ef8a753ebe58bb5c40eedbaecf"
-  integrity sha512-0QqQzv7KCQuUWQgmWgGfkqhRKgjHkxWywjfVErBMXQWjXbjALN6uOKNVTNwUOOD4qD7sDpgyeRLX/bn3mRz1CQ==
+"@sapphire/utilities@^1.5.3":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.5.3.tgz#d83991aa833057f81c137932c3c89bb5a2486a4f"
+  integrity sha512-fwsnjtKaXHapR9umm1F8gSwRz5guA37heAoq8AF+TY84Ykw8xWHrPReL1Yh5gNfLTss3L1QsnUmb5zueJHkMDA==
 
 "@sentry/apm@5.20.1":
   version "5.20.1"
@@ -4217,10 +4217,10 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-oldschooljs@^1.8.7:
-  version "1.8.7"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.8.7.tgz#357497fa4841832fd0a8b50481f3c8a09bae707e"
-  integrity sha512-17zN/T08Fx9ptwm5jE4vbKxyymVMw1gUMlamhFCQ9ujhc5xobKZqrOv9KVH7w9UIpWGpgJ4oz90J0oRXgxhRnA==
+oldschooljs@^1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.9.1.tgz#0495185ac6ccf953c1da1241a88458a9a3720986"
+  integrity sha512-6qFwmg8RdEKF9hpmJoErcaJ2S/5MHL+qyUeTgQCAxNxtprz0f2q65LzhF6v+Q8R2+8fRGOA3d5FtUfOdnDMYNw==
   dependencies:
     e "^0.2.0"
     jsdom "^16.0.1"
@@ -5649,10 +5649,10 @@ tweetnacl@^1.0.3:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
   integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
-twemoji-parser@^13.0.0:
-  version "13.0.0"
-  resolved "https://registry.yarnpkg.com/twemoji-parser/-/twemoji-parser-13.0.0.tgz#bd9d1b98474f1651dc174696b45cabefdfa405af"
-  integrity sha512-zMaGdskpH8yKjT2RSE/HwE340R4Fm+fbie4AaqjDa4H/l07YUmAvxkSfNl6awVWNRRQ0zdzLQ8SAJZuY5MgstQ==
+twemoji-parser@^13.1.0:
+  version "13.1.0"
+  resolved "https://registry.yarnpkg.com/twemoji-parser/-/twemoji-parser-13.1.0.tgz#65e7e449c59258791b22ac0b37077349127e3ea4"
+  integrity sha512-AQOzLJpYlpWMy8n+0ATyKKZzWlZBJN+G0C+5lhX7Ftc2PeEVdUU/7ns2Pn2vVje26AIZ/OHwFoUbdv6YYD/wGg==
 
 twit@^2.2.9:
   version "2.2.11"
