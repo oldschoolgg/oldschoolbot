@@ -349,7 +349,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Ankou.aliases,
 		timeToFinish: Time.Second * 15,
 		table: Monsters.Ankou,
-
+		existsInCatacombs: true,
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,

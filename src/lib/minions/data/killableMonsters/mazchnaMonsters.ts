@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
+import itemID from "../../../util/itemID";
 
 export const mazchnaMonsters: KillableMonster[] = [
 	{
@@ -13,8 +14,14 @@ export const mazchnaMonsters: KillableMonster[] = [
 		table: Monsters.AsynShade,
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 2,
-		qpRequired: 4
+		difficultyRating: 4,
+		qpRequired: 4,
+		itemInBankBoosts: [
+			{
+				[itemID('Salve amulet (ei)')]: 15,
+				[itemID('Salve amulet (i)')]: 10
+			}
+		]
 	},
 	{
 		id: Monsters.Catablepon.id,
@@ -90,7 +97,13 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 4
+		qpRequired: 4,
+		itemInBankBoosts: [
+			{
+				[itemID('Salve amulet (ei)')]: 15,
+				[itemID('Salve amulet (i)')]: 10
+			}
+		]
 	},
 	{
 		id: Monsters.FleshCrawler.id,
@@ -185,7 +198,13 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 4
+		qpRequired: 4,
+		itemInBankBoosts: [
+			{
+				[itemID('Salve amulet (ei)')]: 15,
+				[itemID('Salve amulet (i)')]: 10
+			}
+		]
 	},
 	{
 		id: Monsters.Mogre.id,
@@ -212,7 +231,13 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 4
+		qpRequired: 4,
+		itemInBankBoosts: [
+			{
+				[itemID('Salve amulet (ei)')]: 15,
+				[itemID('Salve amulet (i)')]: 10
+			}
+		]
 	},
 	{
 		id: Monsters.Pyrefiend.id,
@@ -241,7 +266,13 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 4
+		qpRequired: 4,
+		itemInBankBoosts: [
+			{
+				[itemID('Salve amulet (ei)')]: 15,
+				[itemID('Salve amulet (i)')]: 10
+			}
+		]
 	},
 	{
 		id: Monsters.Rockslug.id,
@@ -271,7 +302,13 @@ export const mazchnaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		existsInCatacombs: true,
 		difficultyRating: 3,
-		qpRequired: 0
+		qpRequired: 0,
+		itemInBankBoosts: [
+			{
+				[itemID('Salve amulet (ei)')]: 15,
+				[itemID('Salve amulet (i)')]: 10
+			}
+		]
 	},
 	{
 		id: Monsters.VampyreJuvinate.id,

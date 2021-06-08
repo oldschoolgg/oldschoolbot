@@ -9,7 +9,7 @@ export const nieveMonsters: KillableMonster[] = [
 		id: Monsters.BabyBlackDragon.id,
 		name: Monsters.BabyBlackDragon.name,
 		aliases: Monsters.BabyBlackDragon.aliases,
-		timeToFinish: Time.Second * 20,
+		timeToFinish: Time.Second * 16,
 		table: Monsters.BabyBlackDragon,
 
 		wildy: false,
@@ -21,7 +21,7 @@ export const nieveMonsters: KillableMonster[] = [
 		id: Monsters.BlackDragon.id,
 		name: Monsters.BlackDragon.name,
 		aliases: Monsters.BlackDragon.aliases,
-		timeToFinish: Time.Second * 75,
+		timeToFinish: Time.Second * 70,
 		table: Monsters.BlackDragon,
 
 		wildy: false,

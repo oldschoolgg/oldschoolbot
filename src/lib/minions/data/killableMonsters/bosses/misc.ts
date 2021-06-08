@@ -65,6 +65,10 @@ const killableBosses: KillableMonster[] = [
 			{
 				[itemID('Dragon hunter lance')]: 20,
 				[itemID('Dragon hunter crossbow')]: 30
+			},
+			{
+				[itemID('Salve amulet (ei)')]: 15,
+				[itemID('Salve amulet (i)')]: 10
 			}
 		],
 		levelRequirements: {

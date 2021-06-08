@@ -55,7 +55,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		name: Monsters.AbyssalSire.name,
 		aliases: Monsters.AbyssalSire.aliases,
 		timeToFinish: Time.Second * 180,
-		table: Monsters.AbyssalDemon,
+		table: Monsters.AbyssalSire,
 
 		wildy: false,
 		canBeKilled: true,
@@ -85,7 +85,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Ankou.id,
 		name: Monsters.Ankou.name,
 		aliases: Monsters.Ankou.aliases,
-		timeToFinish: Time.Second * 25,
+		timeToFinish: Time.Second * 15,
 		table: Monsters.Ankou,
 
 		wildy: true,
