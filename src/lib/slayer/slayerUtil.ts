@@ -277,6 +277,7 @@ export function filterLootReplace(myBank : Bank, myLoot : Bank) {
 	// Order: Fang, eye, heart.
 	const numHydraEyes = myLoot.bank[itemID("Hydra's eye")];
 	const numDarkTotemBases = myLoot.bank[itemID('Dark totem base')];
+	const numBludgeonPieces = myLoot.bank[itemID('Bludgeon claw')];
 	const ringPieces = resolveItems([
 		"Hydra's eye",
 		"Hydra's fang",
@@ -286,10 +287,36 @@ export function filterLootReplace(myBank : Bank, myLoot : Bank) {
 		'Dark totem base',
 		'Dark totem middle',
 		'Dark totem top'
+	]) as number[]
+	const bludgeonPieces = resolveItems([
+		'Bludgeon claw',
+		'Bludgeon spine',
+		'Bludgeon axon'
 	]) as number[];
+
 	myLoot.filter(l => {
-		return l.id !== 420 && l.id !== itemID("Hydra's eye") && l.id !== itemID('Dark totem base');
+		return 	l.id !== 420
+			&& l.id !== itemID("Hydra's eye")
+			&& l.id !== itemID('Dark totem base')
+			&& l.id !== itemID('Bludgeon claw');
 	}, true);
+
+	if (numBludgeonPieces) {
+		for (let x = 0; x < numBludgeonPieces; x++) {
+			const bank: number[] = [];
+			const combinedBank = addBanks([myBank.bank, myLoot.bank]);
+			for (const piece of bludgeonPieces) {
+				bank.push(combinedBank[piece] ?? 0);
+			}
+			const minBank = Math.min(...bank);
+			for (let i = 0; i < bank.length; i++) {
+				if (bank[i] === minBank) {
+					myLoot.add(bludgeonPieces[i]);
+					break;
+				}
+			}
+		}
+	}
 	if (numDarkTotemBases) {
 		for (let x = 0; x < numDarkTotemBases; x++) {
 			const bank: number[] = [];

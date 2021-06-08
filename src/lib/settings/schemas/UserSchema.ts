@@ -42,6 +42,7 @@ Client.defaultUserSchema
 			.add('autoslay_options', 'integer', { array: true, default: [] })
 			.add('superior_count', 'integer', { default: 0 })
 			.add('last_task', 'integer', { default: 0 })
+			.add('unsired_offered', 'integer', {default: 0 })
 	)
 
 	.add('minion', folder =>

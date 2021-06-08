@@ -390,7 +390,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	},
 	{
 		id: SlayerTaskUnlocksEnum.ItsDarkInHere,
-		name: 'ItsDarkInHere',
+		name: 'Its Dark In Here',
 		desc: 'Extends Black demon beast tasks.',
 		slayerPointCost: 100,
 		extendID: [Monsters.BlackDemon.id],
@@ -470,7 +470,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	},
 	{
 		id: SlayerTaskUnlocksEnum.AugmentMyAbbies,
-		name: 'Augment My Abbies',
+		name: 'Augment my Abbies',
 		desc: 'Extends Abyssal demon tasks.',
 		slayerPointCost: 100,
 		extendID: [Monsters.AbyssalDemon.id],

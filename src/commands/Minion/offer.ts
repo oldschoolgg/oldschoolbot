@@ -1,6 +1,6 @@
 import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/collectionLog';
@@ -14,6 +14,8 @@ import { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, roll, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
+import itemID from '../../lib/util/itemID';
+import {filterLootReplace} from "../../lib/slayer/slayerUtil";
 
 const specialBones = [
 	{
@@ -27,6 +29,14 @@ const specialBones = [
 ];
 
 const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
+
+const UnsiredLootTable = new LootTable()
+	.add('Abyssal head', 1, 10)
+	.add('Abyssal orphan', 1, 5)
+	.add('Abyssal dagger', 1, 26)
+	.add('Abyssal whip', 1, 12)
+	.add('Bludgeon claw', 1, 62)
+	.add('Jar of miasma', 1, 13);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -50,6 +60,37 @@ export default class extends BotCommand {
 		if (typeof quantity === 'string') {
 			boneName = quantity;
 			quantity = null;
+		}
+
+		if (boneName.toLowerCase() === 'unsired') {
+			const unsiredsOwned = userBank.amount(itemID('Unsired'));
+			if (unsiredsOwned === 0) {
+				return msg.channel.send(`You don't have any Unsireds to offer to the Font of Consumption.`);
+			}
+			if (quantity > unsiredsOwned) {
+				return msg.channel.send(`You don't have ${quantity} Unsired to offer the Font. You have ${unsiredsOwned}.`)
+			}
+			quantity = quantity ?? unsiredsOwned;
+			let loot = new Bank();
+			for (let iter = 0; iter < quantity; iter++) {
+				loot.add(UnsiredLootTable.roll());
+			}
+			filterLootReplace(msg.author.allItemsOwned(), loot);
+			const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
+			await msg.author.addItemsToBank(loot.values(), true);
+			msg.author.settings.update(
+				UserSettings.Slayer.UnsiredOffered,
+				msg.author.settings.get(UserSettings.Slayer.UnsiredOffered) + quantity
+			);
+
+			return msg.channel.sendBankImage({
+				bank: loot.values(),
+				title: `Loot from offering ${quantity} Unsired`,
+				flags: { showNewCL: 1 },
+				user: msg.author,
+				cl: previousCL
+			});
+
 		}
 
 		const egg = eggs.find(egg => stringMatches(boneName, egg.name));

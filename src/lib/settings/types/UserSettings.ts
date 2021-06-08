@@ -54,6 +54,7 @@ export namespace UserSettings {
 		export const BlockedTasks = T<readonly number[]>('slayer.blocked_ids');
 		export const AutoslayOptions = T<readonly number[]>('slayer.autoslay_options');
 		export const LastTask = T<number>('slayer.last_task');
+		export const UnsiredOffered = T<number>('slayer.unsired_offered');
 	}
 
 	export namespace Stats {
