@@ -26,6 +26,8 @@ import findMonster, {
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import {SkillsEnum} from "../../lib/skilling/types";
+import {UserSettings} from "../../lib/settings/types/UserSettings";
+import {SlayerTaskUnlocksEnum} from "../../lib/slayer/slayerUnlocks";
 
 const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
 const invalidMonsterMsg = (prefix: string) =>
@@ -148,10 +150,17 @@ export default class extends BotCommand {
 		if (typeof quantity !== 'number') quantity = parseInt(quantity);
 		if (isOnTask) {
 			let effectiveQtyRemaining = usersTask.currentTask!.quantityRemaining;
-			if (usersTask.currentTask!.monsterID === Monsters.KrilTsutsaroth.id) {
+			if (monster.id === Monsters.KrilTsutsaroth.id) {
 				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
-			} else if (usersTask.currentTask!.monsterID === Monsters.Kreearra.id) {
+			} else if (monster.id === Monsters.Kreearra.id) {
 				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 4);
+			} else if (
+				monster.id === Monsters.GrotesqueGuardians.id
+				&& msg.author.settings
+					.get(UserSettings.Slayer.SlayerUnlocks)
+					.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+			) {
+				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
 			}
 			quantity = Math.min(quantity, effectiveQtyRemaining);
 		}

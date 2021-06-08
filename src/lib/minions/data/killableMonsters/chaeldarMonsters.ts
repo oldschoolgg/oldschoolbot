@@ -237,7 +237,15 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
-			['Trident of the seas', 'Trident of the seas (full)', 'Uncharged trident', 'Uncharged toxic trident']
+			[
+				'Trident of the seas',
+				'Trident of the seas (full)',
+				'Uncharged trident',
+				'Uncharged toxic trident',
+				'Trident of the swamp',
+				'Sanguinesti staff',
+				'Harmonised nightmare staff'
+			]
 		]),
 		notifyDrops: resolveItems(['Jar of sand', 'Pet kraken']),
 		itemInBankBoosts: [

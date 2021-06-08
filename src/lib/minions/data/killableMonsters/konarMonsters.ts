@@ -216,6 +216,22 @@ export const konarMonsters: KillableMonster[] = [
 			{
 				[itemID('Dragon warhammer')]: 5,
 				[itemID('Dragon claws')]: 10
+			},
+			{
+				[itemID('Harmonised nightmare staff')]: 13,
+				[itemID('Trident of the swamp')]: 10,
+				[itemID('Uncharged toxic trident')]: 10,
+				[itemID('Trident of the seas')]: 8,
+				[itemID('Uncharged trident')]: 8,
+			},
+			{
+				[itemID('Ancestral hat')]: 5,
+			},
+			{
+				[itemID('Ancestral robe bottom')]: 4,
+			},
+			{
+				[itemID('Ancestral robe top')]: 4,
 			}
 		]
 	},
