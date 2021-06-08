@@ -90,7 +90,7 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			throw `I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop [buy|unlock] --help\` for a list.`;
+			throw `I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop [buy|unlock|lock] --help\` for a list.`;
 		}
 
 		await msg.author.settings.sync(true);
@@ -175,7 +175,7 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			throw `I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop [buy|unlock] --help\` for a list.`;
+			throw `I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop [buy|unlock|lock] --help\` for a list.`;
 		}
 
 		await msg.author.settings.sync(true);
@@ -243,10 +243,24 @@ export default class extends BotCommand {
 				item.canBeRemoved
 		);
 
-		if (!buyable) {
-			throw `I don't recognize that, the unlocks you can remove are:\n${SlayerRewardsShop.map(
-				item => (item.canBeRemoved ? `__${item.name}__: ${item.desc}` : '')
-			).join(`\n`)}`;
+		if (!buyable || toLockName === 'help' || msg.flagArgs.help) {
+			const myLocks = SlayerRewardsShop.filter(srs => { return srs.canBeRemoved === true });
+			const lockTable = table([
+				['Slayer Points', 'Name', 'Description', 'Type'],
+				...myLocks.map(i => [
+					i.slayerPointCost,
+					i.name,
+					i.desc,
+					i.extendMult === undefined
+						? 'lock'
+						: 'extend'
+				])
+			]);
+			return msg.channel.sendFile(
+				Buffer.from(lockTable),
+				`slayerRewardsLocks.txt`,
+				`I don't recognize that item. Here is a list of unlocks you can re-lock.`
+			);
 		}
 
 		await msg.author.settings.sync(true);

@@ -142,7 +142,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		desc: 'Unlocks the ability to receive Lizardmen as a task.',
 		slayerPointCost: 75,
 		canBeRemoved: true,
-		aliases: ['lizardmen', 'lizardman', 'unlock lizardmen', 'unlock lizardman']
+		aliases: ['lizardmen', 'lizardman', 'unlock lizardmen', 'unlock lizardman', 'shamans', 'unlock shamans']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.LikeABoss,
