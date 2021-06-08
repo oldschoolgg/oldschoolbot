@@ -1,6 +1,6 @@
 import { randArrItem, Time } from 'e';
 import { Task } from 'klasa';
-import { Bank, Monsters } from 'oldschooljs';
+import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -35,7 +35,7 @@ export default class extends Task {
 			abyssalBonus += 0.25;
 		}
 
-		let loot = new Bank((monster as any).table.kill(Math.ceil(quantity * abyssalBonus)));
+		let loot = (monster as KillableMonster).table.kill(Math.ceil(quantity * abyssalBonus));
 		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(20)) {

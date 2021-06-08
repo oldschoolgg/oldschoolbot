@@ -10,7 +10,7 @@ export function makeKillTable(table: LootTable) {
 			loot.add(table.roll());
 		}
 
-		return loot.values();
+		return loot;
 	};
 }
 

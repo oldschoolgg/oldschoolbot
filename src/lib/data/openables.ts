@@ -476,7 +476,7 @@ export const MysteryBoxes = new LootTable()
 	.add(19939);
 
 export function getRandomMysteryBox() {
-	return MysteryBoxes.roll()[0].item;
+	return MysteryBoxes.roll().items()[0][0].id;
 }
 
 let allItemsIDs = Openables.map(

@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { percentChance, randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Misc, Openables as _Openables } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -284,7 +284,7 @@ export default class extends BotCommand {
 				}, just received a Lil' creator! They've done ${await msg.author.getMinigameScore(
 					'SoulWars'
 				)} Soul wars games, and this is their ${formatOrdinal(
-					msg.author.getOpenableScore(botOpenable.itemID) + quantity
+					msg.author.getOpenableScore(botOpenable.itemID) + randInt(1, quantity)
 				)} Spoils of war crate.`
 			);
 		}

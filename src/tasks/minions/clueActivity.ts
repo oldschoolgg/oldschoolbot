@@ -50,7 +50,7 @@ export default class extends Task {
 			const numberOfMinutes = Math.floor(duration / Time.Minute);
 
 			for (let i = 0; i < numberOfMinutes / rand(5, 10); i++) {
-				const { item } = possibleFound.roll()[0];
+				const item = possibleFound.roll().items()[0][0].id;
 				bonusLoot = addItemToBank(bonusLoot, item);
 			}
 

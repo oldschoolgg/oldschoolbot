@@ -421,8 +421,9 @@ export default class BankImageTask extends Task {
 
 		if (!isTransparent) {
 			ctx.fillStyle = ctx.createPattern(bgImage.repeatImage ?? this.repeatingImage, 'repeat');
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
-		if (hexColor) {
+		if (hexColor && isTransparent) {
 			ctx.fillStyle = hexColor;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}

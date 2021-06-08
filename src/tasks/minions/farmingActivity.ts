@@ -382,7 +382,7 @@ export default class extends Task {
 				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
 					farmingLevel: currentFarmingLevel
 				});
-				loot = hesporiLoot;
+				loot = hesporiLoot.bank;
 				for (const hesporiLoot of Object.keys(loot)) {
 					if (itemID(hesporiLoot) === itemID('Tangleroot')) {
 						tangleroot = true;

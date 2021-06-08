@@ -1,4 +1,3 @@
-import { roll } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
@@ -11,7 +10,6 @@ import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	formatDuration,
-	multiplyBank,
 	percentChance,
 	rand
 } from '../../../lib/util';
@@ -96,7 +94,7 @@ export default class extends Task {
 		await user.incrementMonsterScore(Monsters.TzTokJad.id);
 		let loot = Monsters.TzTokJad.kill();
 
-		if (loot[TzrekJadPet]) {
+		if (loot.has('Tzrek-jad')) {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}** just received their ${formatOrdinal(
@@ -116,12 +114,8 @@ export default class extends Task {
 			);
 		}
 
-		if (roll(2000)) {
-			loot[23939] = 1;
-		}
-
 		if (user.usingPet('Flappy')) {
-			loot = multiplyBank(loot, 2);
+			loot.multiply(2);
 		}
 
 		await user.addItemsToBank(loot, true);
@@ -138,11 +132,11 @@ export default class extends Task {
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad.id)
-				)} time! I am most impressed, I give you... ${new Bank(loot)}.`,
+				)} time! I am most impressed, I give you... ${loot}.`,
 				head: 'mejJal'
 			}),
 			data,
-			loot
+			loot.bank
 		);
 	}
 }
