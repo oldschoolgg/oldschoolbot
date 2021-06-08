@@ -6,9 +6,8 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
-import { ItemBank } from '../../lib/types';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
-import { addBanks, noOp, randomItemFromArray } from '../../lib/util';
+import { noOp, randomItemFromArray } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -16,14 +15,14 @@ export default class extends Task {
 		const { monsterID, channelID, quantity, users, leader, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
-		const teamsLoot: { [key: string]: ItemBank } = {};
+		const teamsLoot: { [key: string]: Bank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
 		for (let i = 0; i < quantity; i++) {
 			const loot = monster.table.kill(1);
 			const userWhoGetsLoot = randomItemFromArray(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
-			teamsLoot[userWhoGetsLoot] = addBanks([currentLoot ?? {}, loot]);
+			teamsLoot[userWhoGetsLoot] = loot.add(currentLoot);
 			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot])
 				? ++kcAmounts[userWhoGetsLoot]
 				: 1;
@@ -46,11 +45,9 @@ export default class extends Task {
 				isImportantItemForMonster(parseInt(itemID), monster)
 			);
 
-			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(
-				loot
-			)}||\n`;
+			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;
 
-			announceLoot(this.client, leaderUser, monster, loot, {
+			announceLoot(this.client, leaderUser, monster, loot.bank, {
 				leader: leaderUser,
 				lootRecipient: user,
 				size: users.length

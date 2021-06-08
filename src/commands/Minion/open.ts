@@ -1,3 +1,4 @@
+import { randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Misc, Openables } from 'oldschooljs';
 import Openable from 'oldschooljs/dist/structures/Openable';
@@ -227,23 +228,21 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
 
-		const loot = new Bank();
 		const score = msg.author.getOpenableScore(itemID('Spoils of war'));
-		for (let i = 0; i < quantity; i++) {
-			const rollLoot = botOpenable.table.roll();
-			if (rollLoot.some(i => i.item === itemID("Lil' creator"))) {
-				this.client.emit(
-					Events.ServerNotification,
-					`<:lil_creator:798221383951319111> **${msg.author.username}'s** minion, ${
-						msg.author.minionName
-					}, just received a Lil' creator! They've done ${await msg.author.getMinigameScore(
-						'SoulWars'
-					)} Soul wars games, and this is their ${formatOrdinal(
-						score + i
-					)} Spoils of war crate.`
-				);
-			}
-			loot.add(rollLoot);
+
+		const loot = botOpenable.table.roll(quantity);
+
+		if (loot.has("Lil' creator")) {
+			this.client.emit(
+				Events.ServerNotification,
+				`<:lil_creator:798221383951319111> **${msg.author.username}'s** minion, ${
+					msg.author.minionName
+				}, just received a Lil' creator! They've done ${await msg.author.getMinigameScore(
+					'SoulWars'
+				)} Soul wars games, and this is their ${formatOrdinal(
+					score + randInt(1, quantity)
+				)} Spoils of war crate.`
+			);
 		}
 
 		msg.author.incrementOpenableScore(botOpenable.itemID, quantity);

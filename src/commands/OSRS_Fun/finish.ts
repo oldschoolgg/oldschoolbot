@@ -1,10 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import alchemicalHydra from '../../lib/data/monsters/alchemicalHydra';
-import hespori from '../../lib/data/monsters/hespori';
-import raids from '../../lib/data/monsters/raids';
-import tob from '../../lib/data/monsters/tob';
 import pets from '../../lib/data/pets';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { roll } from '../../lib/util';
@@ -41,6 +37,96 @@ const BARROWS_ITEMS = [
 	'<:Ahrims_robeskirt:403038864350117888>',
 	'<:Ahrims_hood:403038864362438666>'
 ];
+
+function hesporiFinish() {
+	const lootMSG = [];
+	const loot: string[] = [];
+	let kc = 0;
+	while (loot.length < 1) {
+		kc++;
+		if (!loot.includes('BCB') && roll(35)) {
+			loot.push('BCB');
+			lootMSG.push(
+				`**Bottomless Compost Bucket:** ${kc.toLocaleString()} KC <:Bottomless_compost_bucket:545978484078411777>`
+			);
+		}
+	}
+	return [kc, lootMSG.join('\n')];
+}
+
+function hydraFinish() {
+	const lootMSG = [];
+	const loot: any[] = [];
+	let kc = 0;
+	let RP = 0;
+	while (loot.length !== 9) {
+		kc++;
+		if (!loot.includes('PET') && roll(3000)) {
+			loot.push('PET');
+			lootMSG.push(
+				`**Ikkle hydra:** ${kc.toLocaleString()} KC <:Ikkle_hydra:534941897228156948>`
+			);
+		}
+		if (!loot.includes('JOC') && roll(2000)) {
+			loot.push('JOC');
+			lootMSG.push(
+				`**Jar of chemicals:** ${kc.toLocaleString()} KC <:Jar_of_chemicals:545975448547622912>`
+			);
+		}
+		if (!loot.includes('HC') && roll(1000)) {
+			loot.push('HC');
+			lootMSG.push(
+				`**Hydra's claw:** ${kc.toLocaleString()} KC <:Hydras_claw:545975448178262057>`
+			);
+		}
+		if (!loot.includes('HL') && roll(512)) {
+			loot.push('HL');
+			lootMSG.push(
+				`**Hydra leather:** ${kc.toLocaleString()} KC <:Hydra_leather:545975447973003267>`
+			);
+		}
+		if (!loot.includes('HT') && roll(512)) {
+			loot.push('HT');
+			lootMSG.push(
+				`**Hydra tail:** ${kc.toLocaleString()} KC <:Hydratail:545976358506070016>`
+			);
+		}
+		if (!loot.includes('HHeads') && roll(256)) {
+			loot.push('HHeads');
+			lootMSG.push(
+				`**Alchemical hydra heads:** ${kc.toLocaleString()} KC <:Alchemical_hydra_heads:545975448153227267>`
+			);
+		}
+		if (roll(180)) {
+			let LOCK = false;
+			if (!loot.includes('HE') && RP === 0) {
+				loot.push('HE');
+				lootMSG.push(
+					`**Hydra's eye:** ${kc.toLocaleString()} KC <:Hydras_eye:545975448358748211>`
+				);
+				RP++;
+				LOCK = true;
+			}
+			if (!loot.includes('HF') && !LOCK) {
+				loot.push('HF');
+				lootMSG.push(
+					`**Hydra's fang:** ${kc.toLocaleString()} KC <:Hydras_fang:545975448580915210>`
+				);
+				RP++;
+				LOCK = true;
+			}
+			if (!loot.includes('HH') && !LOCK) {
+				loot.push('HH');
+				lootMSG.push(
+					`**Hydra's heart:** ${kc.toLocaleString()} KC <:Hydras_heart:545975448493096960>`
+				);
+				RP++;
+				LOCK = true;
+			}
+		}
+	}
+	return [kc, lootMSG.join('\n'), '<:Ikkle_hydra:534941897228156948>'];
+}
 
 async function getAllPetsEmbed(petsRecieved: string[]) {
 	const embed = new MessageEmbed()
@@ -131,11 +217,6 @@ export default class extends BotCommand {
 		const duplicates: string[] = [];
 
 		switch (BossName.replace(/\W/g, '').toUpperCase()) {
-			case 'RAIDS2':
-			case 'THEATREOFBLOOD':
-			case 'TOB': {
-				return msg.send(tob.finish());
-			}
 			case 'MOLE':
 			case 'GIANTMOLE': {
 				const lootMSG = [];
@@ -1154,48 +1235,6 @@ It took you **${kc.toLocaleString()}** kills to finish Wintertodt <:Phoenix:3241
 
 ${lootMSG.join('\n')}`);
 			}
-			case 'RAIDS':
-			case 'OLM':
-			case 'RAIDS1':
-			case 'COX':
-			case 'CHAMBERSOFXERIC':
-				// eslint-disable-next-line no-case-declarations
-				const theDrops = new Map();
-				while (theDrops.size < 13) {
-					kc++;
-					if (!roll(25)) continue;
-					const dropRecieved = raids.determineItem()!;
-					if (roll(65)) {
-						if (!theDrops.has(raids.drops.pet.shortName)) {
-							theDrops.set(raids.drops.pet.shortName, {
-								theKC: `**${raids.drops.pet.name}:** ${kc} KC ${raids.drops.pet.emoji} with ${dropRecieved.emoji}`,
-								dup: 0
-							});
-						} else {
-							theDrops.get(raids.drops.pet.shortName).theKC += ` ${
-								dropRecieved!.emoji
-							}`;
-							theDrops.get(raids.drops.pet.shortName).dup++;
-						}
-					}
-
-					if (!theDrops.has(dropRecieved.shortName)) {
-						theDrops.set(dropRecieved.shortName, {
-							theKC: `**${dropRecieved.name}** ${kc} KC ${dropRecieved.emoji}`,
-							dup: 0
-						});
-					} else {
-						theDrops.get(dropRecieved.shortName).dup++;
-					}
-				}
-
-				theDrops.forEach(value => loot.push(`${value.theKC} ${value.dup} duplicates`));
-				return msg.send(
-					`It took you **${kc.toLocaleString()}** kills to finish the Chambers of Xeric <:Olmlet:324127376873357316> ${loot.join(
-						'\n'
-					)}`
-				);
-			// end of chambers of xeric finish command
 			case 'VORKATH': {
 				const lootMSG = [];
 				let vh = 0;
@@ -2114,11 +2153,9 @@ ${lootMSG.join('\n')}`);
 			case 'HYDRAS':
 			case 'HYDRA':
 			case 'HYDRABOSS': {
-				const [kc, lootMSG, emote] = alchemicalHydra.finish();
+				const [kc, lootMSG, emote] = hydraFinish();
 				return msg.send(`
 It took you **${kc}** kills to finish Alchemical Hydra ${emote}
-
-
 
 ${lootMSG}`);
 			}
@@ -2172,7 +2209,7 @@ ${lootMSG.join('\n')}`);
 			}
 			case 'HESPORIS':
 			case 'HESPORI': {
-				const [kc, lootMSG] = hespori.finish();
+				const [kc, lootMSG] = hesporiFinish();
 				return msg.send(`
 It took you **${kc}** kills to finish Hespori!
 
