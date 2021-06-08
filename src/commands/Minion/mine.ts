@@ -42,6 +42,41 @@ const pickaxes = [
 		id: itemID('Dragon pickaxe'),
 		reductionPercent: 6,
 		miningLvl: 61
+	},
+	{
+		id: itemID('Rune pickaxe'),
+		reductionPercent: 5,
+		miningLvl: 41
+	},
+	{
+		id: itemID('Adamant pickaxe'),
+		reductionPercent: 4,
+		miningLvl: 31
+	},
+	{
+		id: itemID('Mithril pickaxe'),
+		reductionPercent: 3,
+		miningLvl: 21
+	},
+	{
+		id: itemID('Black pickaxe'),
+		reductionPercent: 3,
+		miningLvl: 11
+	},
+	{
+		id: itemID('Steel pickaxe'),
+		reductionPercent: 2,
+		miningLvl: 6
+	},
+	{
+		id: itemID('Iron pickaxe'),
+		reductionPercent: 1,
+		miningLvl: 1
+	},
+	{
+		id: itemID('Bronze pickaxe'),
+		reductionPercent: 1,
+		miningLvl: 1
 	}
 ];
 
