@@ -168,7 +168,7 @@ const killableBosses: KillableMonster[] = [
 		},
 		defaultAttackStyles: [SkillsEnum.Strength],
 		customMonsterHP: 510,
-		combatXpMultiplier: 1.0875
+		combatXpMultiplier: 1.05
 	},
 	{
 		id: Monsters.CorporealBeast.id,

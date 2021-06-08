@@ -388,7 +388,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.Wyrm.id,
 		name: Monsters.Wyrm.name,
 		aliases: Monsters.Wyrm.aliases,
-		timeToFinish: Time.Second * 30,
+		timeToFinish: Time.Second * 24,
 		table: Monsters.Wyrm,
 
 		wildy: false,

@@ -100,7 +100,7 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.Slayer.BlockedTasks, idToRemove);
 			return msg.channel.send(`${osjsMonster.name}s have been unblocked`);
 		}
-		if (currentTask && (msg.flagArgs.skip || msg.flagArgs.block)) {
+		if (currentTask && (msg.flagArgs.skip || msg.flagArgs.block || (input && input === 'skip'))) {
 			const toBlock = msg.flagArgs.block ? true : false;
 			if (toBlock && myBlockList.length >= maxBlocks) {
 				return msg.channel.send(
@@ -210,7 +210,7 @@ export default class extends BotCommand {
 			let commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 			return msg.channel.send(
 				`Your task has been skipped.\n\n ${slayerMaster.name}` +
-					` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.`
+					` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}s.`
 			);
 		}
 		if (currentTask || !slayerMaster) {
@@ -290,7 +290,7 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 				`don't kill any regular TzHaar first.`;
 		}
 		return msg.channel.send(
-			`${slayerMaster.name} has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.`
+			`${slayerMaster.name} has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}s.`
 		);
 	}
 }

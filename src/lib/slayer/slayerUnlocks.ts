@@ -134,7 +134,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		desc: 'Unlocks the ability to receive TzHaar as a task.',
 		slayerPointCost: 100,
 		canBeRemoved: true,
-		aliases: ['tzaar', 'unlock tzhaar']
+		aliases: ['tzhaar', 'unlock tzhaar', 'jad', 'jad tasks', 'jad task']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.ReptileGotRipped,

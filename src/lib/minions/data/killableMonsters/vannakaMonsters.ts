@@ -401,7 +401,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Gargoyle.id,
 		name: Monsters.Gargoyle.name,
 		aliases: Monsters.Gargoyle.aliases,
-		timeToFinish: Time.Second * 30,
+		timeToFinish: Time.Second * 19,
 		table: Monsters.Gargoyle,
 
 		wildy: false,
@@ -516,7 +516,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Hellhound.id,
 		name: Monsters.Hellhound.name,
 		aliases: Monsters.Hellhound.aliases,
-		timeToFinish: Time.Second * 26,
+		timeToFinish: Time.Second * 24,
 		table: Monsters.Hellhound,
 
 		wildy: false,
@@ -591,7 +591,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 3,
+		difficultyRating: 5,
 		qpRequired: 12
 	},
 	{
@@ -753,7 +753,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Nechryael.id,
 		name: Monsters.Nechryael.name,
 		aliases: Monsters.Nechryael.aliases,
-		timeToFinish: Time.Second * 27,
+		timeToFinish: Time.Second * 19,
 		table: Monsters.Nechryael,
 
 		wildy: false,
@@ -865,7 +865,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 2,
+		difficultyRating: 4,
 		qpRequired: 0,
 		levelRequirements: {
 			agility: 60,

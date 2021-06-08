@@ -40,8 +40,7 @@ export default class extends Task {
 		);
 
 		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
-		// TODO: Remove debug logging
-		console.log(usersTask);
+
 		const slayerMaster = isOnTask
 			? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id)
 			: undefined;
@@ -81,12 +80,6 @@ export default class extends Task {
 			str += `\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.`;
 		}
 
-		// TODO: Delete logging
-		console.log({ isOnTask, usersTask, monsterID: monster.id });
-		console.log({
-			remaining: usersTask.currentTask?.quantityRemaining,
-			slayed: quantitySlayed
-		});
 		if (isOnTask) {
 			const quantityLeft = Math.max(
 				0,

@@ -35,7 +35,7 @@ export default class MinionCommand extends BotCommand {
 			return msg.send(
 				`Thats not a valid monster to kill. Valid monsters are ${killableMonsters
 					.map(mon => mon.name)
-					.join(', ')}.`
+					.join(`\n`)}.`
 			);
 		}
 
