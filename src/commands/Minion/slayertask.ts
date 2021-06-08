@@ -100,7 +100,9 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.Slayer.BlockedTasks, idToRemove);
 			return msg.channel.send(`${osjsMonster.name}s have been unblocked`);
 		}
-		if (currentTask && (msg.flagArgs.skip || msg.flagArgs.block || (input && input === 'skip'))) {
+		if (input && (input === 'skip' || input === 'block'))
+			msg.flagArgs[input] = 'yes';
+		if (currentTask && (msg.flagArgs.skip || msg.flagArgs.block)) {
 			const toBlock = msg.flagArgs.block ? true : false;
 			if (toBlock && myBlockList.length >= maxBlocks) {
 				return msg.channel.send(
@@ -288,9 +290,11 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 		if (commonName === 'TzHaar') {
 			commonName += `. You can choose to kill TzTok-Jad with ${msg.cmdPrefix}fightcaves as long as you ` +
 				`don't kill any regular TzHaar first.`;
+		} else {
+			commonName += 's';
 		}
 		return msg.channel.send(
-			`${slayerMaster.name} has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}s.`
+			`${slayerMaster.name} has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.`
 		);
 	}
 }

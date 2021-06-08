@@ -464,6 +464,7 @@ export const bosses: CollectionLogData = {
 		'Noon'
 	]),
 	'Abyssal Sire': resolveItems([
+		'Unsired',
 		'Abyssal whip',
 		'Abyssal dagger',
 		'Bludgeon claw',

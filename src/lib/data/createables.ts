@@ -610,6 +610,16 @@ const slayerCreatables: Createable[] = [
 		GPCost: 0
 	},
 	{
+		name: 'Abyssal bludgeon',
+		inputItems: resolveNameBank({
+			'Bludgeon claw': 1,
+			'Bludgeon spine': 1,
+			'Bludgeon axon': 1
+		}),
+		outputItems: resolveNameBank({ 'Abyssal bludgeon': 1 }),
+		GPCost: 0
+	},
+	{
 		name: 'Uncharge black mask',
 		inputItems: resolveNameBank({
 			'Black mask (10)': 1

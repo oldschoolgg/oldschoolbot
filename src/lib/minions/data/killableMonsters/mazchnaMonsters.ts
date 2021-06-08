@@ -43,7 +43,6 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([['Mirror shield', "V's shield"]]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 25
@@ -183,7 +182,6 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: resolveItems(['Insulated boots']),
 		qpRequired: 4,
 		levelRequirements: {
 			slayer: 37
@@ -215,7 +213,6 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems(['Fishing explosive']),
 		qpRequired: 10,
 		levelRequirements: {
 			slayer: 32
@@ -284,7 +281,6 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([['Bag of salt', 'Brine sabre']]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 20
@@ -359,7 +355,6 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([['Spiny helmet', 'Slayer helmet']]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 35

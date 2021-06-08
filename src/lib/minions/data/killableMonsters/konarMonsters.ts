@@ -72,10 +72,6 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([
-			['Boots of stone', 'Boots of brimstone', 'Granite boots'],
-			'Anti-dragon shield'
-		]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 84
@@ -93,7 +89,6 @@ export const konarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
-			['Boots of stone', 'Boots of brimstone', 'Granite boots'],
 			'Antidote++(4)'
 		]),
 		notifyDrops: resolveItems(['Hydra tail']),
@@ -113,7 +108,6 @@ export const konarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
-			['Boots of stone', 'Boots of brimstone', 'Granite boots'],
 			'Antidote++(4)'
 		]),
 		notifyDrops: resolveItems([
@@ -131,6 +125,10 @@ export const konarMonsters: KillableMonster[] = [
 			{
 				[itemID('Barrows gloves')]: 3,
 				[itemID('Ferocious gloves')]: 6
+			},
+			{
+				[itemID('Saradomin godsword')]: 8,
+				[itemID('Dragon claws')]: 10
 			}
 		],
 		slayerOnly: true,
@@ -172,7 +170,7 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
-		itemsRequired: resolveItems(['Anti-dragon shield', 'Insulated boots']),
+		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Dragon metal lump', 'Draconic visage']),
 		qpRequired: 205
 	},
@@ -185,7 +183,6 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([['Facemask', 'Slayer helmet']]),
 		notifyDrops: resolveItems(['Dragon chainbody']),
 		qpRequired: 0,
 		levelRequirements: {
@@ -209,7 +206,6 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
-		itemsRequired: deepResolveItems([['Facemask', 'Slayer helmet']]),
 		notifyDrops: resolveItems(['Dragon chainbody', 'Smoke Battlestaff', 'Pet smoke devil']),
 		qpRequired: 0,
 		levelRequirements: {

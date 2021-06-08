@@ -104,7 +104,6 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([['Spiny helmet', 'Slayer helmet']]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 7
@@ -148,7 +147,6 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([['Spiny helmet', 'Slayer helmet'], ['Antidote++(4)', 'Antipoison(4)']]),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -295,7 +293,6 @@ export const turaelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		qpRequired: 0,
-		itemsRequired: deepResolveItems(['Ice cooler']),
 		levelRequirements: {
 			slayer: 22
 		}
@@ -893,9 +890,6 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([
-			['Boots of stone', 'Boots of brimstone', 'Granite boots']
-		]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 44

@@ -16,7 +16,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([['Nose peg', 'Slayer helmet']]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 60
@@ -128,7 +127,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([['Mirror shield', "V's shield"]]),
 		notifyDrops: resolveItems(['Basilisk head']),
 		qpRequired: 1,
 		levelRequirements: {
@@ -146,7 +144,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([['Mirror shield', "V's shield"]]),
 		notifyDrops: resolveItems(['Basilisk head', 'Basilisk jaw']),
 		qpRequired: 120,
 		levelRequirements: {
@@ -329,7 +326,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		existsInCatacombs: true,
-		itemsRequired: deepResolveItems([['Facemask', 'Slayer helmet']]),
 		notifyDrops: resolveItems(['Dragon chainbody', 'Dust battlestaff']),
 		qpRequired: 4,
 		levelRequirements: {
@@ -377,7 +373,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems(['Slayer gloves']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 42
@@ -407,7 +402,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([['Rock hammer', 'Rock thrownhammer', 'Granite hammer']]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 75
@@ -427,7 +421,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Noon', 'Jar of stone']),
 		itemsRequired: deepResolveItems([
 			'Brittle key',
-			['Rock hammer', 'Rock thrownhammer', 'Granite hammer']
 		]),
 		slayerOnly: true,
 		qpRequired: 0,
@@ -505,7 +498,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems(['Lit bug lantern']),
 		qpRequired: 1,
 		levelRequirements: {
 			slayer: 33,
@@ -632,9 +624,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([
-			['Leaf-bladed spear', 'Leaf-bladed battleaxe', 'Leaf-bladed sword']
-		]),
 		itemInBankBoosts: [
 			{
 				[itemID('Leaf-bladed battleaxe')]: 15
@@ -670,7 +659,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems(['Slayer bell']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 39
@@ -942,9 +930,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([
-			['Leaf-bladed spear', 'Leaf-bladed battleaxe', 'Leaf-bladed sword']
-		]),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{

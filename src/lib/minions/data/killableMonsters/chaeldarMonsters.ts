@@ -17,7 +17,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems(['Fungicide spray 10']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 57
@@ -70,7 +69,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([
-			'Witchwood icon',
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
@@ -247,7 +245,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 				[itemID('Uncharged trident')]: 5,
 				[itemID('Trident of the seas')]: 5,
 				[itemID('Trident of the seas (full)')]: 8,
-				[itemID('Sanguinesti staff')]: 11,
+				[itemID('Uncharged toxic trident')]: 10,
+				[itemID('Trident of the swamp')]: 10,
+				[itemID('Sanguinesti staff')]: 12,
 				[itemID('Harmonised nightmare staff')]: 15
 			}
 		],
@@ -287,7 +287,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.LizardmanShaman.id,
 		name: Monsters.LizardmanShaman.name,
 		aliases: Monsters.LizardmanShaman.aliases,
-		timeToFinish: Time.Minute * 52,
+		timeToFinish: Time.Second * 52,
 		table: Monsters.LizardmanShaman,
 		emoji: '<:Dragon_warhammer:405998717154623488>',
 		wildy: false,
@@ -394,9 +394,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([
-			['Boots of stone', 'Boots of brimstone', 'Granite boots']
-		]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 62
@@ -412,7 +409,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems(['Fungicide spray 10']),
 		qpRequired: 3,
 		levelRequirements: {
 			slayer: 57
