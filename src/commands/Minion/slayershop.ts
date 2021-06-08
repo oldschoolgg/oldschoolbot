@@ -61,7 +61,7 @@ export default class extends BotCommand {
 	}
 
 	async buy(msg: KlasaMessage, [buyableName = '']: [string]) {
-		if (msg.flagArgs.items || msg.flagArgs.help) {
+		if (msg.flagArgs.items || msg.flagArgs.help || buyableName === 'help') {
 			const myUnlocks = SlayerRewardsShop.filter(srs => { return srs.item !== undefined });
 			const unlockTable = table([
 				['Slayer Points', 'Name', 'Description', 'Type'],
@@ -146,7 +146,7 @@ export default class extends BotCommand {
 	}
 
 	async unlock(msg: KlasaMessage, [buyableName = '']: [string]) {
-		if (msg.flagArgs.items || msg.flagArgs.help) {
+		if (msg.flagArgs.items || msg.flagArgs.help || buyableName === 'help') {
 			const myUnlocks = SlayerRewardsShop.filter(srs => { return srs.item === undefined });
 			const unlockTable = table([
 				['Slayer Points', 'Name', 'Description', 'Type'],
