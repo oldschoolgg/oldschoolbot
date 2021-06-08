@@ -32,7 +32,7 @@ export default class MinionCommand extends BotCommand {
 		const monster = findMonster(name);
 
 		if (!monster) {
-			return msg.send(
+			return msg.sendFile(
 				killableMonsters
 					.map(mon => mon.name)
 					.join(`\n`),
