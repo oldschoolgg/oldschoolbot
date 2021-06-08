@@ -1,6 +1,7 @@
 import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
+import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Activity, Time } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/collectionLog';
@@ -67,10 +68,10 @@ export default class extends BotCommand {
 			if (unsiredsOwned === 0) {
 				return msg.channel.send(`You don't have any Unsireds to offer to the Font of Consumption.`);
 			}
+			quantity = quantity ?? unsiredsOwned;
 			if (quantity > unsiredsOwned) {
 				return msg.channel.send(`You don't have ${quantity} Unsired to offer the Font. You have ${unsiredsOwned}.`)
 			}
-			quantity = quantity ?? unsiredsOwned;
 			let loot = new Bank();
 			for (let iter = 0; iter < quantity; iter++) {
 				loot.add(UnsiredLootTable.roll());
