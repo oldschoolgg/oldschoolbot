@@ -2,7 +2,7 @@ import {Time} from 'e';
 import {Monsters} from 'oldschooljs';
 import {itemID} from 'oldschooljs/dist/util';
 
-import resolveItems, {deepResolveItems} from '../../../util/resolveItems';
+import  {deepResolveItems} from '../../../util/resolveItems';
 import {KillableMonster} from '../../types';
 import {SkillsEnum} from "../../../skilling/types";
 
