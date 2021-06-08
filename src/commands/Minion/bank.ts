@@ -40,7 +40,6 @@ export default class extends BotCommand {
 		if (bank.length === 0) {
 			return msg.send(`No items found.`);
 		}
-
 		if (msg.flagArgs.text) {
 			const textBank = [];
 			for (const [item, qty] of bank.items()) {
@@ -50,7 +49,12 @@ export default class extends BotCommand {
 				) {
 					continue;
 				}
-				textBank.push(`${item.name}: ${qty.toLocaleString()}`);
+
+				if (msg.flagArgs.id) {
+					textBank.push(`${item.name} (${item.id.toString()}): ${qty.toLocaleString()}`);
+				} else {
+					textBank.push(`${item.name}: ${qty.toLocaleString()}`);
+				}
 			}
 
 			if (textBank.length === 0) {

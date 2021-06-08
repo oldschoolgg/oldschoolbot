@@ -501,6 +501,9 @@ export default class BankImageTask extends Task {
 			if (flags.av) {
 				bottomItemText = (item.highalch ?? 0) * quantity;
 			}
+			if (flags.id) {
+				bottomItemText = item.id.toString();
+			}
 
 			if (flags.names) {
 				bottomItemText = `${item.name!.replace('Grimy', 'Grmy').slice(0, 7)}..`;
