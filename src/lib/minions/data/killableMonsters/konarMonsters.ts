@@ -16,7 +16,7 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: resolveItems(['Anti-dragon shield', 'Antidote++(4)']),
+		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 205
 	},
 	{

@@ -65,10 +65,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		slayerOnly: true,
 		notifyDrops: resolveItems([
-			'Abyssal orphan',
-			'Jar of miasma',
-			'Abyssal head',
-			'Abyssal dagger'
+			'Unsired'
 		]),
 		itemInBankBoosts: [
 			{
@@ -252,7 +249,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems(['Waterskin(4)']),
 		qpRequired: 0
 	},
 	{
@@ -308,7 +304,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		existsInCatacombs: true,
-		itemsRequired: deepResolveItems(['Slayer helmet']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 60
@@ -448,7 +443,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 4,
-		itemsRequired: resolveItems(['Antidote++(4)']),
 		qpRequired: 0
 	},
 	{
@@ -902,7 +896,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems(['Slayer ring (8)', 'Slayer ring (eternal)']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 40
@@ -953,8 +946,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		existsInCatacombs: true,
 		itemsRequired: deepResolveItems([
-			["Black d'hide body", "Karil's leathertop"],
-			["Black d'hide chaps", "Karil's leatherskirt"]
+			["Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
+			["Black d'hide chaps", "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		qpRequired: 0,
 		levelRequirements: {

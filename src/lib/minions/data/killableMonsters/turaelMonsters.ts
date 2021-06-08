@@ -16,7 +16,6 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([['Earmuffs', 'Slayer helmet']]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 15
@@ -119,7 +118,6 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([['Antidote++(4)', 'Super antipoison (4)', 'Antipoison(4)']]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 10
@@ -191,7 +189,6 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([['Ogre bow', 'Comp ogre bow']]),
 		qpRequired: 3
 	},
 	{
@@ -517,7 +514,6 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
 		qpRequired: 0
 	},
 	{
@@ -530,7 +526,6 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
 		qpRequired: 0
 	},
 	{
@@ -583,11 +578,9 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		itemsRequired: deepResolveItems([
 			[
-				'Merfolk trident',
 				'Trident of the seas',
 				'Trident of the swamp',
-				'Brine sabre',
-				'Magic secateurs'
+				'Brine sabre'
 			]
 		]),
 		qpRequired: 10
@@ -701,7 +694,6 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([['Antidote++(4)', 'Antipoison(4)']]),
 		qpRequired: 0
 	},
 	{
@@ -851,7 +843,6 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems(['Comp ogre bow', 'Sanfew serum(4)']),
 		qpRequired: 5
 	},
 	{
@@ -963,8 +954,6 @@ export const turaelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		existsInCatacombs: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([['Earmuffs', 'Slayer helmet']]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 15
@@ -1058,7 +1047,6 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems(['Comp ogre bow', 'Sanfew serum (4)']),
 		qpRequired: 5
 	},
 	{

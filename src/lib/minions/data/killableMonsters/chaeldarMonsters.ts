@@ -237,7 +237,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
-			['Trident of the seas', 'Trident of the seas (full)', 'Uncharged trident']
+			['Trident of the seas', 'Trident of the seas (full)', 'Uncharged trident', 'Uncharged toxic trident']
 		]),
 		notifyDrops: resolveItems(['Jar of sand', 'Pet kraken']),
 		itemInBankBoosts: [
@@ -294,13 +294,18 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
-			["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow']
+			["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow', 'Toxic blowpipe', 'Toxic blowpipe (uncharged)']
 		]),
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,
 		itemInBankBoosts: [
 			{
 				[itemID('Ring of the gods')]: 3
+			},
+			{
+				[itemID('Toxic blowpipe')]: 15,
+				[itemID('Toxic blowpipe (uncharged)')]: 10,
+				[itemID('Armadyl crossbow')]: 8
 			}
 		],
 		levelRequirements: {

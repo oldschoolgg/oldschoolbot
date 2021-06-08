@@ -246,7 +246,6 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: resolveItems(["Black d'hide body", "Black d'hide chaps"]),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 30
@@ -316,7 +315,6 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		itemsRequired: deepResolveItems([['Ivandis flail', 'Blisterwood flail', 'Dark bow']]),
 		qpRequired: 1
 	},
 	{
@@ -329,7 +327,6 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
-		itemsRequired: deepResolveItems([['Ivandis flail', 'Blisterwood flail', 'Dark bow']]),
 		qpRequired: 0
 	},
 	{
@@ -342,8 +339,6 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		itemsRequired: deepResolveItems([['Ivandis flail', 'Blisterwood flail', 'Dark bow']]),
-		notifyDrops: resolveItems(['Blood shard']),
 		qpRequired: 0
 	},
 	{

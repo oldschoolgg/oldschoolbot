@@ -155,6 +155,7 @@ export default class extends BotCommand {
 			|| monster.name.toLowerCase() === 'drake'
 			|| monster.name.toLowerCase().includes('hydra')
 			|| monster.name.toLowerCase() === ('wyrm')
+			|| monster.name.toLowerCase().includes('wyvern')
 		) {
 			if (
 				msg.author.hasItemEquippedOrInBank('Dragon hunter lance')
