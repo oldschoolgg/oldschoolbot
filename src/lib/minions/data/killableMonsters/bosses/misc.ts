@@ -243,7 +243,7 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				[itemID('Arclight')]: 15,
-				[itemID("Inquisitor's mace'")]: 8
+				[itemID("Inquisitor's mace")]: 8
 			}
 		],
 		levelRequirements: {
