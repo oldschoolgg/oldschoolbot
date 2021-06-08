@@ -2,6 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import itemID from '../../../../util/itemID';
 import { Fletchable } from '../../../types';
+import {SlayerTaskUnlocksEnum} from "../../../../slayer/slayerUnlocks";
 
 const Slayer: Fletchable[] = [
 	{
@@ -51,6 +52,33 @@ const Slayer: Fletchable[] = [
 		xp: 1,
 		inputItems: new Bank({ 'Monkey tail': 1, 'Unstrung light ballista': 1 }),
 		tickRate: 3
+	},
+	{
+		name: 'Broad arrows',
+		id: itemID('Broad arrows'),
+		level: 52,
+		xp: 10,
+		inputItems: new Bank({ 'Broad arrowheads': 1, 'Headless arrow': 1 }),
+		tickRate: 0.13,
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.BroaderFletching]
+	},
+	{
+		name: 'Broad bolts',
+		id: itemID('Broad bolts'),
+		level: 55,
+		xp: 3,
+		inputItems: new Bank({ 'Unfinished broad bolts': 1, 'Feather': 1 }),
+		tickRate: 0.2,
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.BroaderFletching]
+	},
+	{
+		name: 'Amethyst broad bolts',
+		id: itemID('Amethyst broad bolts'),
+		level: 76,
+		xp: 10.6,
+		inputItems: new Bank({ 'Broad bolts': 1, 'Amethyst bolt tips': 1 }),
+		tickRate: 0.2,
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.BroaderFletching]
 	}
 ];
 

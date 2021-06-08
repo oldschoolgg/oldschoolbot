@@ -77,7 +77,8 @@ export enum SlayerTaskUnlocksEnum {
 	SlayerRing,
 	HerbSack,
 	RunePouch,
-	DoubleTrouble
+	DoubleTrouble,
+	BroaderFletching
 }
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	/* Anything commented won't appear in lists.
@@ -536,5 +537,13 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 500,
 		canBeRemoved: true,
 		aliases: ['double trouble', 'double garg kc','double grotesque kc', '2x groteque kc', '2x ggs kc']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.BroaderFletching,
+		name: 'Broader fletching',
+		desc: 'Unlocks ability to fletch broad ammunition',
+		slayerPointCost: 300,
+		canBeRemoved: false,
+		aliases: ['broad bolts', 'broads', 'broad arrows', 'fletching', 'broad fletching']
 	}
 ];

@@ -86,8 +86,6 @@ export default class extends BotCommand {
 			}
 		}
 		if (createableItem.requiredSlayerUnlocks) {
-			console.log(`Required items...`);
-			console.log(createableItem.requiredSlayerUnlocks);
 			let mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
 			let mySlayerUnlocksIter: SlayerTaskUnlocksEnum[] = [];
 
@@ -101,18 +99,6 @@ export default class extends BotCommand {
 			if (!success) {
 				throw `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}
-			/*
-			for (const unlockReq of Object.entries(createableItem.requiredSlayerUnlocks)) {
-				if (
-					mySlayerUnlocks
-						.find( unlock => { return unlock === createableItem.requiredSlayerUnlocks[unlockReq] })
-					=== false
-				) {
-					throw `You don't have the required Slayer Unlocks to create this item.`;
-				}
-			}
-			*
-			 */
 		}
 
 		if (

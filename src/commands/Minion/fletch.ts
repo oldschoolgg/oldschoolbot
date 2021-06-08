@@ -9,6 +9,9 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import {UserSettings} from "../../lib/settings/types/UserSettings";
+import {SlayerTaskUnlocksEnum} from "../../lib/slayer/slayerUnlocks";
+import {hasSlayerUnlock} from "../../lib/slayer/slayerUtil";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -61,6 +64,22 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} needs ${fletchable.level} Fletching to fletch ${fletchable.name}.`
 			);
+		}
+
+		if (fletchable.requiredSlayerUnlocks) {
+			let mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
+			let mySlayerUnlocksIter: SlayerTaskUnlocksEnum[] = [];
+
+			mySlayerUnlocks.forEach(msu => {
+				mySlayerUnlocksIter.push(msu as SlayerTaskUnlocksEnum);
+			});
+			const { success, errors } = hasSlayerUnlock(
+				mySlayerUnlocksIter,
+				fletchable.requiredSlayerUnlocks
+			);
+			if (!success) {
+				throw `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
+			}
 		}
 
 		await msg.author.settings.sync(true);
