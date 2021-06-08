@@ -9,7 +9,6 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { rollRogueOutfitDoubleLoot, updateGPTrackSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
@@ -60,14 +59,9 @@ export default class extends Task {
 
 			if (rollRogueOutfitDoubleLoot(user)) {
 				rogueOutfitBoostActivated = true;
-				lootItems.forEach(item => {
-					if (item.item === itemID('Rocky')) {
-						// no double pet drop
-						loot.add(item.item, item.quantity);
-					} else {
-						loot.add(item.item, item.quantity * 2);
-					}
-				});
+				const doubledLoot = lootItems.multiply(2);
+				if (doubledLoot.has('Rocky')) doubledLoot.remove('Rocky');
+				loot.add(doubledLoot);
 			} else {
 				loot.add(lootItems);
 			}

@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
-import { roll } from '../../lib/data/monsters/raids';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -16,6 +15,7 @@ import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	formatDuration,
+	roll,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';

@@ -1,5 +1,5 @@
 import { Task } from 'klasa';
-import { Bank, Monsters } from 'oldschooljs';
+import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -13,7 +13,7 @@ export default class extends Task {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		await user.incrementMonsterScore(monsterID, quantity);
-		const loot = new Bank(monster.table.kill(quantity));
+		const loot = monster.table.kill(quantity);
 
 		announceLoot(this.client, user, monster, loot.bank);
 

@@ -1,5 +1,4 @@
 import { Emoji } from '../constants';
-import raids from './monsters/raids';
 
 const xpEmoji = Emoji.XP;
 const gpEmoji = Emoji.GP;
@@ -146,11 +145,7 @@ const pets: Pet[] = [
 		type: 'BOSS',
 		altNames: ['OLMLET', 'RAIDS', 'OLMLET', 'OLM'],
 		formatFinish: (num: number) =>
-			`You had to do ${fm(
-				num
-			)} Raids to get the Olmlet Pet! <:Olmlet:324127376873357316> it came with a ${
-				raids.determineItem()!.emoji
-			}`,
+			`You had to do ${fm(num)} Raids to get the Olmlet Pet! <:Olmlet:324127376873357316>`,
 		bossKeys: ['chambersofXeric', 'chambersofXericChallengeMode']
 	},
 	{
