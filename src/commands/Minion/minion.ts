@@ -236,16 +236,6 @@ Type \`confirm\` if you understand the above information, and want to become an 
 	}
 
 	@requiresMinion
-	async combat(msg: KlasaMessage) {
-		return msg.send(`Your combat level is: ${msg.author.combatLevel}`);
-	}
-
-	@requiresMinion
-	async combatlevel(msg: KlasaMessage) {
-		this.combat(msg);
-	}
-
-	@requiresMinion
 	async kc(msg: KlasaMessage) {
 		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
 		const entries = Object.entries(monsterScores);
