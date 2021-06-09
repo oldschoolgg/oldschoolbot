@@ -244,24 +244,21 @@ export const konarMonsters: KillableMonster[] = [
 		slayerOnly: true,
 		itemInBankBoosts: [
 			{
-				[itemID('Dragon warhammer')]: 5,
+				[itemID('Dragon dagger')]: 5,
 				[itemID('Dragon claws')]: 10
 			},
 			{
-				[itemID('Harmonised nightmare staff')]: 13,
-				[itemID('Trident of the swamp')]: 10,
-				[itemID('Uncharged toxic trident')]: 10,
-				[itemID('Trident of the seas')]: 8,
-				[itemID('Uncharged trident')]: 8
+				[itemID('Harmonised nightmare staff')]: 12,
+				[itemID('Trident of the swamp')]: 9,
+				[itemID('Uncharged toxic trident')]: 9,
+				[itemID('Trident of the seas')]: 7,
+				[itemID('Uncharged trident')]: 7
 			},
 			{
-				[itemID('Ancestral hat')]: 5
+				[itemID('Ancestral robe bottom')]: 2
 			},
 			{
-				[itemID('Ancestral robe bottom')]: 4
-			},
-			{
-				[itemID('Ancestral robe top')]: 4
+				[itemID('Ancestral robe top')]: 3
 			}
 		],
 		healAmountNeeded: 20 * 5,

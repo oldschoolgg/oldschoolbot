@@ -63,7 +63,6 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monsters: [
 			Monsters.BlackDemon.id,
 			Monsters.DemonicGorilla.id,
-			Monsters.Porazdir.id,
 			Monsters.Skotizo.id
 		],
 		combatLevel: 80,

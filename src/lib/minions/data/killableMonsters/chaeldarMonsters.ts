@@ -379,7 +379,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.Porazdir,
 
 		wildy: false,
-		canBeKilled: true,
+		canBeKilled: false,
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			[
