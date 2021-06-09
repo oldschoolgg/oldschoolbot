@@ -1,6 +1,7 @@
-import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round } from 'e';
+import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Time } from '../../lib/constants';
+import { table } from 'table';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
@@ -117,14 +118,14 @@ export default class extends BotCommand {
 						killsPerHour * osjsMon!.data!.slayerXP :
 						killsPerHour * osjsMon!.data!.hitpoints).toLocaleString();
 				}
-				const foodPerHour = calculateMonsterFood(kMonster, msg.author);
-				simTable.push([master.name, kMonster.name, foodPerHour, Math.floor(killsPerHour).toString(),
+				const foodPerHour = calculateMonsterFood(kMonster!, msg.author)[0] * killsPerHour;
+				simTable.push([master!.name, kMonster!.name, foodPerHour.toLocaleString(), Math.floor(killsPerHour).toString(),
 					slayerXpPerHour, `${percentReduced}% for KC, ${boostMsg}`]);
 
 			});
 		});
 
-		return msg.channel.sendFile(Buffer.from(simTable), `slayerMonsterSim.txt`);
+		return msg.channel.sendFile(Buffer.from(table(simTable)), `slayerMonsterSim.txt`);
 
 /*
 		// Check requirements
