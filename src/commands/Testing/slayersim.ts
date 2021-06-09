@@ -101,7 +101,7 @@ export default class extends BotCommand {
 		// TODO Sim code for masters, tasks xp/per hour
 		// Sim code for numnber of tasks.
 		const simTable: string[][] = [];
-		simTable.push(['Master', 'Monster', 'Food/hr', 'Kills/hr', 'SlayerXP/hr', 'Boost MSG']);
+		simTable.push(['Master', 'Monster', 'Food/hr', 'Sharks/hr', 'Kills/hr', 'SlayerXP/hr', 'Boost MSG']);
 
 		slayerMasters.forEach(master => {
 			master.tasks.forEach(task => {
@@ -123,7 +123,8 @@ export default class extends BotCommand {
 						killsPerHour * osjsMon!.data!.hitpoints).toLocaleString();
 				}
 				const foodPerHour = calculateMonsterFood(kMonster!, msg.author)[0] * killsPerHour;
-				simTable.push([master!.name, kMonster!.name, foodPerHour.toLocaleString(), Math.floor(killsPerHour).toString(),
+				simTable.push([master!.name, kMonster!.name, Math.round(foodPerHour).toLocaleString(),
+					Math.ceil(foodPerHour / 20).toLocaleString(), Math.floor(killsPerHour).toString(),
 					slayerXpPerHour, `${percentReduced}% for KC, ${boostMsg}`]);
 
 			});
