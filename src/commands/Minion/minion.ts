@@ -237,13 +237,12 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 	@requiresMinion
 	async combat(msg: KlasaMessage) {
-		const embed = await minionStatsEmbed(msg.author);
 		return msg.send(`Your combat level is: ${msg.author.combatLevel}`);
 	}
+
 	@requiresMinion
 	async combatlevel(msg: KlasaMessage) {
-		const embed = await minionStatsEmbed(msg.author);
-		return msg.send(`Your combat level is: ${msg.author.combatLevel}`);
+		combat(msg);
 	}
 
 	@requiresMinion
