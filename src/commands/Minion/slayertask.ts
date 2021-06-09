@@ -181,17 +181,12 @@ export default class extends BotCommand {
 					) ?? null
 			: null;
 
-		// TODO: Delete this
-		msg.author.log(`Remembered: ${rememberedSlayerMaster}`);
-		msg.author.log(`slayermaster: ${slayerMaster?.name}`);
-
 		const matchedSlayerMaster = input
 			? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
 			: null;
 
 		// Special handling for Turael skip
 		if (currentTask && input && slayerMaster && slayerMaster.name === 'Turael') {
-			// TODO: Make sure they aren't already on a Turael task.
 			if (slayerMaster.tasks.find(t => t.monster.id === currentTask.monsterID)) {
 				return msg.send(`You cannot skip this task because Turael assigns it.`);
 			}

@@ -46,39 +46,11 @@ export const slayerBuyables: Buyable[] = [
 		gpCost: 100_000
 	},
 	{
-		name: 'Mirror shield',
-		outputItems: resolveNameBank({
-			'Mirror shield': 1
-		}),
-		gpCost: 50_000
-	},
-	{
 		name: 'Leaf-bladed spear',
 		outputItems: resolveNameBank({
 			'Leaf-bladed spear': 1
 		}),
 		gpCost: 310_000
-	},
-	{
-		name: 'Bag of salt',
-		outputItems: resolveNameBank({
-			'Bag of salt': 1
-		}),
-		gpCost: 1000
-	},
-	{
-		name: 'Rock thrownhammer',
-		outputItems: resolveNameBank({
-			'Rock thrownhammer': 1
-		}),
-		gpCost: 50_000
-	},
-	{
-		name: 'Rock hammer',
-		outputItems: resolveNameBank({
-			'Rock hammer': 1
-		}),
-		gpCost: 50_000
 	},
 	{
 		name: 'Facemask',
@@ -116,96 +88,11 @@ export const slayerBuyables: Buyable[] = [
 		gpCost: 65_000
 	},
 	{
-		name: 'Fishing explosive',
-		outputItems: resolveNameBank({
-			'Fishing explosive': 1
-		}),
-		gpCost: 50_000
-	},
-	{
-		name: 'Ice cooler',
-		outputItems: resolveNameBank({
-			'Ice cooler': 1
-		}),
-		gpCost: 50_000
-	},
-	{
-		name: 'Slayer gloves',
-		outputItems: resolveNameBank({
-			'Slayer gloves': 1
-		}),
-		gpCost: 50_000
-	},
-	{
-		name: 'Unlit bug lantern',
-		outputItems: resolveNameBank({
-			'Lit bug lantern': 1
-		}),
-		gpCost: 50_000
-	},
-	{
-		name: 'Lit bug lantern',
-		outputItems: resolveNameBank({
-			'Lit bug lantern': 1
-		}),
-		gpCost: 50_000
-	},
-	{
-		name: 'Insulated boots',
-		outputItems: resolveNameBank({
-			'Insulated boots': 1
-		}),
-		gpCost: 50_000
-	},
-	{
-		name: 'Fungicide',
-		outputItems: resolveNameBank({
-			'Fungicide spray 10': 1
-		}),
-		gpCost: 50_000
-	},
-	{
-		name: 'Fungicide spray 10',
-		outputItems: resolveNameBank({
-			'Fungicide spray 10': 1
-		}),
-		gpCost: 50_000
-	},
-	{
-		name: 'Fungicide spray',
-		outputItems: resolveNameBank({
-			'Fungicide spray 10': 1
-		}),
-		gpCost: 50_000
-	},
-	{
-		name: 'Witchwood icon',
-		outputItems: resolveNameBank({
-			'Witchwood icon': 1
-		}),
-		gpCost: 50_000
-	},
-	{
-		name: 'Slayer bell',
-		outputItems: resolveNameBank({
-			'Slayer bell': 1
-		}),
-		gpCost: 50_000
-	},
-	{
 		name: 'Boots of stone',
 		outputItems: resolveNameBank({
 			'Boots of stone': 1
 		}),
 		gpCost: 100_000
-	},
-	{
-		name: 'Reinforced goggles',
-		outputItems: resolveNameBank({
-			'Reinforced goggles': 1
-		}),
-		gpCost: 50_000,
-		qpRequired: 20
 	},
 	{
 		name: 'Antipoison(4)',

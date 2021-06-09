@@ -71,13 +71,13 @@ export default class extends Task {
 				channelID,
 				`${user} You died ${formatDuration(
 					preJadDeathTime
-				)} into your attempt. The following supplies were refunded back into your bank: ${itemLootBank}.`,
+				)} into your attempt.${slayerMsg} The following supplies were refunded back into your bank: ${itemLootBank}.`,
 				res => {
 					user.log(`continued trip of fightcaves`);
 					return this.client.commands.get('fightcaves')!.run(res, []);
 				},
 				await chatHeadImage({
-					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}${slayerMsg}`,
+					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
 					head: 'mejJal'
 				}),
 				data,
@@ -150,9 +150,9 @@ export default class extends Task {
 
 			usersTask.currentTask!.quantityRemaining = 0;
 			await usersTask.currentTask!.save();
-			await user.addXP(SkillsEnum.Slayer, slayerXP);
+			const xpMessage = await user.addXP(SkillsEnum.Slayer, slayerXP);
 
-			slayerMsg = ` Jad task completed.`;
+			slayerMsg = ` Jad task completed. ${xpMessage}`;
 			// End slayer code
 		}
 
@@ -160,7 +160,7 @@ export default class extends Task {
 			this.client,
 			user,
 			channelID,
-			`${user}`,
+			`${user}${slayerMsg}`,
 			res => {
 				user.log(`continued trip of fightcaves`);
 				return this.client.commands.get('fightcaves')!.run(res, []);
@@ -168,7 +168,7 @@ export default class extends Task {
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad.id)
-				)} time! I am most impressed, I give you... ${loot}.${slayerMsg}`,
+				)} time! I am most impressed, I give you... ${loot}.`,
 				head: 'mejJal'
 			}),
 			data,

@@ -60,12 +60,11 @@ export default class extends BotCommand {
 		const defaultMsg = `Current points: ${myPoints}\nYou currently have the following ` +
 			`rewards unlocked:\n\`${unlocks.join(`\n`)}\`\n\n` +
 			`Usage:\n\`${msg.cmdPrefix}slayershop [unlock|lock|buy] Reward\`\nExample:` +
-			`\n\`${msg.cmdPrefix}slayershop unlock Malevolent Masquerade\``
+			`\n\`${msg.cmdPrefix}slayershop unlock Malevolent Masquerade\``;
 		if (defaultMsg.length > 2000) {
 			return msg.channel.sendFile(Buffer.from(defaultMsg), `currentUnlocks.txt`);
-		} else {
-			return msg.channel.send(defaultMsg);
 		}
+		return msg.channel.send(defaultMsg);
 	}
 
 	async buy(msg: KlasaMessage, [buyableName = '']: [string]) {

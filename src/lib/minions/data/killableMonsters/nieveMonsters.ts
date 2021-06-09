@@ -57,7 +57,8 @@ export const nieveMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
 		levelRequirements: {
-			prayer: 43
+			prayer: 43,
+			slayer: 77
 		},
 		healAmountNeeded: 20 * 4,
 		attackStyleToUse: GearSetupTypes.Melee,

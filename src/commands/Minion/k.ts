@@ -182,7 +182,6 @@ export default class extends BotCommand {
 		}
 		if (typeof quantity !== 'number') quantity = parseInt(quantity);
 		if (isOnTask) {
-			// Todo: Probably handle this in a separate function to make everything easier.
 			let effectiveQtyRemaining = usersTask.currentTask!.quantityRemaining;
 			if (
 				monster.id === Monsters.KrilTsutsaroth.id &&
@@ -257,9 +256,7 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		// Todo add a new 'recurring cost' field to the KillableMonster that loops and does this.
-		// Needs some thinking, because it needs to have 1 per qty, and then timed ones.
-		// Remove antidote++(4) from hydras + alchemical hydra
+		// TODO: Add a time-based cost to KillableMonsters
 		if (['hydra', 'alchemical hydra'].includes(monster.name.toLowerCase())) {
 			const potsTotal = await msg.author.numberOfItemInBank(itemID('Antidote++(4)'));
 			// Potions actually last 36+ minutes for a 4-dose, but we want item sink

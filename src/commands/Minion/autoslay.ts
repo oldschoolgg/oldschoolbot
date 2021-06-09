@@ -15,7 +15,8 @@ export default class extends BotCommand {
 			usage: '[_mode:...string]',
 			aliases: ['as', 'slay'],
 			usageDelim: ' ',
-			description: 'Sends your minion to kill your slayer monster monsters.'
+			description: 'Automatically chooses which monster to slay and sends your minion to kill it.',
+			examples: ['+autoslay', '+autoslay highest --save', '+autoslay default']
 		});
 	}
 
