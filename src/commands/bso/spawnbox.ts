@@ -36,10 +36,12 @@ export default class extends BotCommand {
 			triviaChallenge
 		]);
 		const winner = await item(msg);
-		if (winner) {
+		if (winner && !winner.isIronman) {
 			const loot = new Bank().add(getRandomMysteryBox());
 			await winner.addItemsToBank(loot);
 			return msg.channel.send(`Congratulations, ${winner}! You received: **${loot}**.`);
+		} else if (winner && winner.isIronman) {
+			return msg.channel.send(`Congratulations, ${winner}! You won! But you stand alone, no box for you.`);
 		}
 	}
 }
