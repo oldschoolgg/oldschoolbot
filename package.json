@@ -37,7 +37,7 @@
 		"oldschooljs": "^1.9.1",
 		"p-queue": "^6.6.2",
 		"pg": "^8.6.0",
-		"piscina": "^1.6.3",
+		"piscina": "^3.1.0",
 		"random-js": "^2.1.0",
 		"reflect-metadata": "^0.1.13",
 		"rss-parser": "^3.12.0",
