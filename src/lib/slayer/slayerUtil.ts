@@ -256,17 +256,17 @@ export function hasSlayerUnlock(
 	let success = true;
 	let errors = '';
 
-	console.log(`Required unlocks: ${required}`);
+	// console.log(`Required unlocks: ${required}`);
 	required.forEach(req => {
-		console.log(`Checking for req: ${req}  in ${myUnlocks}`);
+		// console.log(`Checking for req: ${req}  in ${myUnlocks}`);
 		if (!myUnlocks.includes(req)) {
 			success = false;
-			console.log(`Missing requirement: req unlockReq: ${req}`);
+			// console.log(`Missing requirement: req unlockReq: ${req}`);
 			missing.push(getSlayerReward(req as SlayerTaskUnlocksEnum));
 		}
 	});
 
-	console.log(`missing: ${missing}`);
+	// console.log(`missing: ${missing}`);
 	errors = missing.join(`, `);
 	return { success, errors };
 }
