@@ -197,6 +197,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				UserSettings.CarpenterPoints,
 				UserSettings.ZealTokens,
 				UserSettings.OpenableScores,
+				'slayer',
 				'gear',
 				'stats',
 				'skills',
