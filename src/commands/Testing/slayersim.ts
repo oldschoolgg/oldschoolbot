@@ -20,7 +20,7 @@ import {SlayerMaster} from "../../lib/slayer/types";
 import {slayerMasters} from "../../lib/slayer/slayerMasters";
 
 // boss tasks
-export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
+export function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
 	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master));
 	let bossTask = false;
@@ -101,7 +101,7 @@ export default class extends BotCommand {
 		if (option === 'tasksim' ) {
 			const simTable: string[][] = [];
 			simTable.push(['Master', 'Monster', 'Weight', 'Rolls', 'Total Rolls']);
-			const tasks = {};
+			const tasks : any = {};
 			const iterations = 5000;
 			slayerMasters.forEach(master => {
 				for (let i = 1; i < iterations; i++) {
