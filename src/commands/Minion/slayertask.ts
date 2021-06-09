@@ -14,6 +14,8 @@ import {
 } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
+import itemID from '../../lib/util/itemID';
+import { SkillsEnum } from "../../lib/skilling/types";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -167,17 +169,22 @@ export default class extends BotCommand {
 		}
 
 		// Match on input slayermaster if specified, falling back to remembered.
-		const slayerMaster = input
-			? slayerMasters
+		const has99SlayerCape = msg.author.skillLevel(SkillsEnum.Slayer) >= 99
+			&& msg.author.hasItemEquippedOrInBank(itemID('Slayer cape'));
+
+		const slayerMaster = input && has99SlayerCape
+			? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
+			: input
+				? slayerMasters
 					.filter(m => userCanUseMaster(msg.author, m))
 					.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
-			: rememberedSlayerMaster !== ''
-			? slayerMasters
+				: rememberedSlayerMaster !== ''
+				? slayerMasters
 					.filter(m => userCanUseMaster(msg.author, m))
 					.find(m =>
 						m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))
 					) ?? null
-			: null;
+				: null;
 
 		const matchedSlayerMaster = input
 			? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
@@ -221,6 +228,7 @@ export default class extends BotCommand {
 					` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}s.`
 			);
 		}
+
 		if (currentTask || !slayerMaster) {
 			let warningInfo = '';
 			if (input && !slayerMaster && matchedSlayerMaster) {
@@ -235,7 +243,7 @@ export default class extends BotCommand {
 				if (aRequirements.length)
 					warningInfo += `**Requires**:\n${aRequirements.join(`\n`)}\n\n`;
 			}
-			
+
 			let monsterList = '';
 			if (currentTask && assignedTask) {
 				const altMobs = assignedTask.monsters;

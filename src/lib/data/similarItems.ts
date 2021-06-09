@@ -247,6 +247,7 @@ const SimilarItems: Record<number, number[]> = {
 			'Black mask (10)'
 		])
 	],
+	[itemID('Slayer cape')]: resolveItems(['Slayer cape (t)']),
 	[itemID('Nose peg')]: slayerHelmSimilar,
 	[itemID('Earmuffs')]: slayerHelmSimilar,
 	[itemID('Spiny helmet')]: slayerHelmSimilar,
