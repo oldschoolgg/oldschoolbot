@@ -22,8 +22,8 @@ import { numberOfGorajanOutfitsEquipped } from '../../tasks/minions/dungeoneerin
 
 export type Floor = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
-export function isValidFloor(floor: number): floor is Floor {
-	return [1, 2, 3, 4, 5, 6, 7].includes(floor);
+export function isValidFloor(floor: number | string): floor is Floor {
+	return [1, 2, 3, 4, 5, 6, 7].includes(floor as number);
 }
 
 export interface DungeoneeringOptions extends ActivityTaskOptions {
@@ -210,8 +210,13 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async start(msg: KlasaMessage, [floor]: [number | undefined]) {
-		const floorToDo = floor || maxFloorUserCanDo(msg.author);
+	async start(msg: KlasaMessage, [floor]: [number | string | undefined]) {
+		let floorToDo = Boolean(floor)
+			? (floor === 'solo' ? maxFloorUserCanDo(msg.author) : Number(floor)) ??
+			  maxFloorUserCanDo(msg.author)
+			: maxFloorUserCanDo(msg.author);
+		const isSolo = floor === 'solo';
+		if (isSolo) floorToDo = maxFloorUserCanDo(msg.author);
 
 		if (!isValidFloor(floorToDo)) {
 			return msg.channel.send(`That's an invalid floor.`);
@@ -284,7 +289,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const users = await msg.makePartyAwaiter(partyOptions);
+		const users = floor === 'solo' ? [msg.author] : await msg.makePartyAwaiter(partyOptions);
 		const boosts = [];
 		for (const user of users) {
 			const check = partyOptions.customDenier!(user);
