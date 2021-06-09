@@ -14,6 +14,7 @@ import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { Monsters } from 'oldschooljs';
+import Monster from 'oldschooljs/dist/structures/Monster';
 
 import findMonster, {
 	addArrayOfNumbers,
@@ -115,7 +116,7 @@ export default class extends BotCommand {
 			msg.author.getKC(monster.id)
 		);
 
-		const attackStyles = resolveAttackStyles(msg.author, monster.id)[2];
+		const [, osjsMon, attackStyles ] = resolveAttackStyles(msg.author, monster.id);
 		const [newTime, skillBoostMsg] = applySkillBoost(msg.author, timeToFinish, attackStyles);
 
 		timeToFinish = newTime;
@@ -174,13 +175,17 @@ export default class extends BotCommand {
 
 		// Dragonbane, in the worst way possible. We need to add dragonbane to monsters.
 		// Removed vorkath because he has a special boost.
-		if (
+/*		if (
 			monster.name.toLowerCase().includes('dragon')
 			|| monster.name.toLowerCase() === 'drake'
 			|| monster.name.toLowerCase().includes('hydra')
 			|| monster.name.toLowerCase() === ('wyrm')
 			|| monster.name.toLowerCase().includes('wyvern')
 		) {
+
+ */
+		if (osjsMon?.data?.attributes?.includes('dragon'))
+		{
 			if (
 				msg.author.hasItemEquippedOrInBank('Dragon hunter lance')
 				&& !attackStyles.includes(SkillsEnum.Ranged)
