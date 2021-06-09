@@ -431,7 +431,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Pyrefiend,
 		amount: [60, 120],
 		weight: 8,
-		monsters: [Monsters.Pyrefiend.id],
+		monsters: [Monsters.Pyrefiend.id, Monsters.Pyrelord.id],
 		combatLevel: 25,
 		slayerLevel: 30,
 		unlocked: true
@@ -455,7 +455,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 			Monsters.PhrinShade.id,
 			Monsters.RiylShade.id,
 			Monsters.AsynShade.id,
-			Monsters.FiyrShade.id
+			Monsters.FiyrShade.id,
+			Monsters.UriumShade.id
 		],
 		combatLevel: 30,
 		unlocked: true

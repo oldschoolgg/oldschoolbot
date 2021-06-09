@@ -266,6 +266,24 @@ export const mazchnaMonsters: KillableMonster[] = [
 		]
 	},
 	{
+		id: Monsters.UriumShade.id,
+		name: Monsters.UriumShade.name,
+		aliases: Monsters.UriumShade.aliases,
+		timeToFinish: Time.Second * 30,
+		table: Monsters.UriumShade,
+
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 6,
+		qpRequired: 4,
+		itemInBankBoosts: [
+			{
+				[itemID('Salve amulet (ei)')]: 15,
+				[itemID('Salve amulet (i)')]: 10
+			}
+		]
+	},
+	{
 		id: Monsters.Pyrefiend.id,
 		name: Monsters.Pyrefiend.name,
 		aliases: Monsters.Pyrefiend.aliases,
@@ -281,6 +299,25 @@ export const mazchnaMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.FlamingPyrelord,
 		healAmountNeeded: 8,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackMagic]
+	},
+	{
+		id: Monsters.Pyrelord.id,
+		name: Monsters.Pyrelord.name,
+		aliases: Monsters.Pyrelord.aliases,
+		timeToFinish: Time.Second * 40,
+		table: Monsters.Pyrelord,
+
+		wildy: false,
+		canBeKilled: true,
+		difficultyRating: 2,
+		qpRequired: 0,
+		levelRequirements: {
+			slayer: 30
+		},
+		superior: Monsters.FlamingPyrelord,
+		healAmountNeeded: 15,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},

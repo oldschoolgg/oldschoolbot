@@ -395,7 +395,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Pyrefiend,
 		amount: [110, 170],
 		weight: 6,
-		monsters: [Monsters.Pyrefiend.id],
+		monsters: [Monsters.Pyrefiend.id, Monsters.Pyrelord.id],
 		combatLevel: 25,
 		slayerLevel: 30,
 		unlocked: true
