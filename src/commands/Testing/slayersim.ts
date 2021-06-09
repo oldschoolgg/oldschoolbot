@@ -130,9 +130,9 @@ export default class extends BotCommand {
 			master.tasks.forEach(task => {
 				task.monsters.forEach(tmon =>
 				{
-					const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, tmon!.id);
+					const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, tmon);
 					const kMonster = killableMonsters.find(km => {
-						return km.id === tmon.id;
+						return km.id === tmon;
 					});
 					let [killTime, percentReduced] = reducedTimeFromKC(
 						kMonster!,
