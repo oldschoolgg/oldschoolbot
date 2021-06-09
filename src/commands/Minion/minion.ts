@@ -206,11 +206,11 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			]);
 
 			try {
+				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
 				await PoHTable.delete({ userID: msg.author.id });
 				await MinigameTable.delete({ userID: msg.author.id });
 				await XPGainsTable.delete({ userID: msg.author.id });
 				await NewUserTable.delete({ id: msg.author.id });
-				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
 			} catch (_) {}
 
 			await msg.author.settings.update([
