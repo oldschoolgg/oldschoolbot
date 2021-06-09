@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
-import {GearSetupTypes, GearStat} from "../../../gear";
+
+import { GearSetupTypes, GearStat } from '../../../gear';
 import itemID from '../../../util/itemID';
 import resolveItems from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';

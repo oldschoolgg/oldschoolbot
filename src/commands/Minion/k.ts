@@ -12,11 +12,11 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import findMonster, {
