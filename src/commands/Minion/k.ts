@@ -14,7 +14,7 @@ import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { Monsters } from 'oldschooljs';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import MonsterAttribute from 'oldschooljs/dist/meta/monsterData';
 
 import findMonster, {
 	addArrayOfNumbers,
@@ -184,7 +184,7 @@ export default class extends BotCommand {
 		) {
 
  */
-		if (osjsMon?.data?.attributes?.includes('dragon'))
+		if (osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon))
 		{
 			if (
 				msg.author.hasItemEquippedOrInBank('Dragon hunter lance')
