@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
@@ -679,7 +679,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		existsInCatacombs: false,
 		difficultyRating: 3,
 		qpRequired: 0,
-		itemsRequired: resolveItems(['Mossy key'])
+		itemsRequired: resolveItems(['Mossy key']),
+		itemCost: new Bank().add('Mossy key', 1)
 	},
 	{
 		id: Monsters.MountainTroll.id,

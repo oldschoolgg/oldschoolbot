@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { SkillsEnum } from '../../../skilling/types';
@@ -389,7 +389,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 			{
 				[itemID('Arclight')]: 50
 			}
-		]
+		],
+		itemCost: new Bank().add('Dark totem', 1)
 	},
 	{
 		id: Monsters.TzHaarKet.id,

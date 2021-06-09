@@ -270,36 +270,6 @@ export default class extends BotCommand {
 			}
 			await msg.author.removeItemFromBank(itemID('Antidote++(4)'), potsToRemove);
 		}
-		// Check for enough totems and remove them
-		if (monster.name.toLowerCase() === 'skotizo') {
-			const darkTotemsInBank = await msg.author.numberOfItemInBank(itemID('Dark totem'));
-			if (quantity > darkTotemsInBank) {
-				return msg.channel.send(
-					`You don't have enough Dark totems to kill ${quantity}x Skotizo.`
-				);
-			}
-			await msg.author.removeItemFromBank(itemID('Dark totem'), quantity);
-		}
-		// Check for enough giant keys and remove them
-		if (monster.name.toLowerCase() === 'obor') {
-			const costQtyBank = await msg.author.numberOfItemInBank(itemID('Giant key'));
-			if (quantity > costQtyBank) {
-				return msg.channel.send(
-					`You don't have enough Giant keys to kill ${quantity}x Obor.`
-				);
-			}
-			await msg.author.removeItemFromBank(itemID('Giant key'), quantity);
-		}
-		// Check for enough mossy keys and remove them
-		if (monster.name.toLowerCase() === 'bryophyta') {
-			const costQtyBank = await msg.author.numberOfItemInBank(itemID('Mossy key'));
-			if (quantity > costQtyBank) {
-				return msg.channel.send(
-					`You don't have enough Mossy keys to kill ${quantity}x Bryophyta.`
-				);
-			}
-			await msg.author.removeItemFromBank(itemID('Mossy key'), quantity);
-		}
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
 			monsterID: monster.id,

@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import itemID from '../../../util/itemID';
 import resolveItems from '../../../util/resolveItems';
@@ -149,7 +149,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		existsInCatacombs: false,
 		difficultyRating: 3,
 		qpRequired: 0,
-		itemsRequired: resolveItems(['Giant key'])
+		itemsRequired: resolveItems(['Giant key']),
+		itemCost: new Bank().add('Giant key', 1)
 	},
 	{
 		id: Monsters.Hobgoblin.id,
