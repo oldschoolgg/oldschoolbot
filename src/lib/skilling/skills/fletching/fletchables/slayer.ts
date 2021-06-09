@@ -68,7 +68,7 @@ const Slayer: Fletchable[] = [
 		level: 55,
 		xp: 3,
 		inputItems: new Bank({ 'Unfinished broad bolts': 1, Feather: 1 }),
-		tickRate: 0.2,
+		tickRate: 0.08,
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.BroaderFletching]
 	},
 	{
@@ -77,7 +77,7 @@ const Slayer: Fletchable[] = [
 		level: 76,
 		xp: 10.6,
 		inputItems: new Bank({ 'Broad bolts': 1, 'Amethyst bolt tips': 1 }),
-		tickRate: 0.2,
+		tickRate: 0.13,
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.BroaderFletching]
 	}
 ];

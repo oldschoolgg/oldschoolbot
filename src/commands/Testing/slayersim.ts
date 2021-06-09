@@ -96,6 +96,8 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [option = '']: [null | number | string, string]) {
 
 		if (option === 'tasksim' ) {
+			throw `Command disabled because it takes a long time to run.`;
+			/*
 			const simTable: string[][] = [];
 			simTable.push(['Master', 'Monster', 'Weight', 'Rolls', 'Total Rolls']);
 
@@ -114,8 +116,10 @@ export default class extends BotCommand {
 
 			});
 			return msg.channel.sendFile(Buffer.from(table(simTable)), `slayerMasterTaskSim.txt`);
-
+			*/
 		}
+
+
 		// Start sim code
 		// TODO Sim code for masters, tasks xp/per hour
 		// Sim code for numnber of tasks.

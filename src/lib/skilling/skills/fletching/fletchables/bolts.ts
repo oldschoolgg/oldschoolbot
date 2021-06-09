@@ -10,7 +10,7 @@ const Bolts: Fletchable[] = [
 		level: 9,
 		xp: 0.5,
 		inputItems: new Bank({ 'Bronze bolts (unf)': 1, feather: 1 }),
-		tickRate: 0.2
+		tickRate: 0.08
 	},
 	{
 		name: 'Iron bolts',
@@ -18,7 +18,7 @@ const Bolts: Fletchable[] = [
 		level: 39,
 		xp: 1.5,
 		inputItems: new Bank({ 'Iron bolts (unf)': 1, feather: 1 }),
-		tickRate: 0.2
+		tickRate: 0.08
 	},
 	{
 		name: 'Steel bolts',
@@ -26,7 +26,7 @@ const Bolts: Fletchable[] = [
 		level: 46,
 		xp: 3.5,
 		inputItems: new Bank({ 'Steel bolts (unf)': 1, feather: 1 }),
-		tickRate: 0.2
+		tickRate: 0.08
 	},
 	{
 		name: 'Mithril bolts',
@@ -34,7 +34,7 @@ const Bolts: Fletchable[] = [
 		level: 54,
 		xp: 5,
 		inputItems: new Bank({ 'Mithril bolts (unf)': 1, feather: 1 }),
-		tickRate: 0.2
+		tickRate: 0.08
 	},
 	{
 		name: 'Adamant bolts',
@@ -42,7 +42,7 @@ const Bolts: Fletchable[] = [
 		level: 61,
 		xp: 7,
 		inputItems: new Bank({ 'Adamant bolts (unf)': 1, feather: 1 }),
-		tickRate: 0.2
+		tickRate: 0.08
 	},
 	{
 		name: 'Runite bolts',
@@ -50,7 +50,7 @@ const Bolts: Fletchable[] = [
 		level: 69,
 		xp: 10,
 		inputItems: new Bank({ 'Runite bolts (unf)': 1, feather: 1 }),
-		tickRate: 0.2
+		tickRate: 0.08
 	},
 	{
 		name: 'Dragon bolts',
@@ -58,7 +58,7 @@ const Bolts: Fletchable[] = [
 		level: 84,
 		xp: 12,
 		inputItems: new Bank({ 'Dragon bolts (unf)': 1, feather: 1 }),
-		tickRate: 0.2
+		tickRate: 0.08
 	}
 ];
 

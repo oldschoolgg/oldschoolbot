@@ -8,35 +8,35 @@ export const slayerBuyables: Buyable[] = [
 		outputItems: resolveNameBank({
 			'Broad arrows': 1
 		}),
-		gpCost: 600
+		gpCost: 250
 	},
 	{
 		name: 'Broad arrowheads',
 		outputItems: resolveNameBank({
 			'Broad arrowheads': 1
 		}),
-		gpCost: 550
+		gpCost: 225
 	},
 	{
 		name: 'Broad arrowhead pack',
 		outputItems: resolveNameBank({
 			'Broad arrowheads': 100
 		}),
-		gpCost: 55_000
+		gpCost: 22_500
 	},
 	{
 		name: 'Unfinished broad bolts',
 		outputItems: resolveNameBank({
 			'Unfinished broad bolts': 1
 		}),
-		gpCost: 550
+		gpCost: 225
 	},
 	{
 		name: 'Unfinished broad bolt pack',
 		outputItems: resolveNameBank({
 			'Unfinished broad bolts': 100
 		}),
-		gpCost: 55_000
+		gpCost: 22_500
 	},
 	{
 		name: 'Enchanted gem',

@@ -368,14 +368,6 @@ export const bosses: CollectionLogData = {
 		'Jar of spirits',
 		'Pet dark core'
 	]),
-	Cerberus: resolveItems([
-		'Primordial crystal',
-		'Pegasian crystal',
-		'Eternal crystal',
-		'Smouldering stone',
-		'Jar of souls',
-		'Hellpuppy'
-	]),
 	'Dagannoth Kings': resolveItems([
 		'Dragon axe',
 		'Mud battlestaff',
@@ -454,6 +446,16 @@ export const bosses: CollectionLogData = {
 		'Olmlet',
 		'Twisted ancestral colour kit'
 	]),
+	Skotizo: resolveItems([
+		'Dark totem',
+		'Dark claw',
+		'Uncut onyx',
+		'Jar of darkness',
+		'Skotos',
+		'Dark totem base',
+		'Dark totem middle',
+		'Dark totem top'
+	]),
 	'Grotesque Guardians': resolveItems([
 		'Black tourmaline core',
 		'Granite hammer',
@@ -478,6 +480,14 @@ export const bosses: CollectionLogData = {
 		'Kraken tentacle',
 		'Jar of dirt',
 		'Pet kraken'
+	]),
+	Cerberus: resolveItems([
+		'Primordial crystal',
+		'Pegasian crystal',
+		'Eternal crystal',
+		'Smouldering stone',
+		'Jar of souls',
+		'Hellpuppy'
 	]),
 	'Thermonuclear Smoke Devil': resolveItems([
 		'Occult necklace',
@@ -1722,6 +1732,12 @@ export const miscLog: CollectionLogData = {
 		'Death talisman',
 		'Occult necklace'
 	]),
+	Slayer3: resolveItems([
+		'Basilisk jaw',
+		'Brine sabre',
+		'Leaf-bladed battleaxe',
+		'Leaf-bladed sword'
+	]),
 	'Demonic Gorillas': resolveItems([
 		'Zenyte shard',
 		'Heavy frame',
@@ -1743,7 +1759,6 @@ export const miscLog: CollectionLogData = {
 		'Mystic boots (dark)'
 	]),
 	Konar: resolveItems([
-		'Basilisk jaw',
 		'Mystic hat (dusk)',
 		'Mystic robe top (dusk)',
 		'Mystic robe bottom (dusk)',
@@ -1751,6 +1766,12 @@ export const miscLog: CollectionLogData = {
 		'Mystic boots (dusk)',
 		'Broken dragon hasta',
 		'Brimstone key'
+	]),
+	Misc1: resolveItems([
+		'Giant key',
+		'Hill giant club',
+		'Mossy key',
+		"Bryophyta's essence"
 	])
 };
 
