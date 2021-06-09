@@ -38,10 +38,9 @@ export default class extends BotCommand {
 
 		const maxBlocks = calcMaxBlockedTasks(myQPs);
 		if (
-			msg.flagArgs.listblocks ||
-			msg.flagArgs.list ||
-			(input && input === 'listblocks') ||
-			(input && input === 'list')
+			msg.flagArgs.listblocks || msg.flagArgs.blocks || msg.flagArgs.blocklist ||	msg.flagArgs.list ||
+			(input && input === 'listblocks') || (input && input === 'list') ||
+			(input && input == 'blocks') || (input && input == 'blocklist')
 		) {
 			let mobs: string[] = [];
 			let outstr =
@@ -59,7 +58,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (msg.flagArgs.unblock) {
+		if (msg.flagArgs.unblock || (input && input === 'unblock')) {
 			if (!input) {
 				throw `You must specify a monster to unblock!`;
 			}
@@ -69,26 +68,10 @@ export default class extends BotCommand {
 				? Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, input)))
 				: Monsters.find(mon => mon.id === idToRemove);
 			if (!osjsMonster) {
-				throw `Failed to find a monster with that id!`;
+				throw `Failed to find a monster with that name or id!`;
 			}
 			idToRemove = osjsMonster.id;
-			/*
-			if (isNaN(idToRemove)) {
-				// Lets lookup the ID from the name:
-				osjsMonster = Monsters.find(mon =>
-					mon.aliases.some(alias => stringMatches(alias, input))
-				);
-				if (!osjsMonster) {
-					throw `Failed to find a monster with that name!`;
-				}
-				idToRemove = osjsMonster.id;
-			} else {
-				osjsMonster = Monsters.find(mon => mon.id === idToRemove);
-				if (!osjsMonster) {
-					throw `Failed to find a monster with that id!`;
-				}
-			}
-			 */
+
 			// Now we can remove based on ID.
 			if (!myBlockList.includes(idToRemove)) {
 				return msg.channel.send(
