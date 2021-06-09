@@ -143,6 +143,37 @@ export default class extends BotCommand {
 			boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 		}
 
+		// Removed vorkath because he has a special boost.
+		if (
+			monster.name.toLowerCase() !== 'vorkath' &&
+			osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)
+		) {
+			if (
+				msg.author.hasItemEquippedOrInBank('Dragon hunter lance') &&
+				!attackStyles.includes(SkillsEnum.Ranged) &&
+				!attackStyles.includes(SkillsEnum.Magic)
+			) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 15);
+				boosts.push('15% for Dragon hunter lance');
+			} else if (
+				msg.author.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
+				attackStyles.includes(SkillsEnum.Ranged)
+			) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 15);
+				boosts.push('15% for Dragon hunter crossbow');
+			}
+		}
+		// Add 15% slayer boost on task if they have black mask or similar
+		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
+			if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask (i)'))) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 15);
+				boosts.push('15% for Black mask (i) on non-melee task');
+			}
+		} else if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			boosts.push('15% for Black mask on melee task');
+		}
+
 		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
 
 		// If no quantity provided, set it to the max.
@@ -174,36 +205,6 @@ export default class extends BotCommand {
 			quantity = Math.min(quantity, effectiveQtyRemaining);
 		}
 
-		// Removed vorkath because he has a special boost.
-		if (
-			monster.name.toLowerCase() !== 'vorkath' &&
-			osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)
-		) {
-			if (
-				msg.author.hasItemEquippedOrInBank('Dragon hunter lance') &&
-				!attackStyles.includes(SkillsEnum.Ranged) &&
-				!attackStyles.includes(SkillsEnum.Magic)
-			) {
-				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				boosts.push('15% for Dragon hunter lance');
-			} else if (
-				msg.author.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				attackStyles.includes(SkillsEnum.Ranged)
-			) {
-				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				boosts.push('15% for Dragon hunter crossbow');
-			}
-		}
-		// Add 15% slayer boost on task if they have black mask or similar
-		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-			if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask (i)'))) {
-				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				boosts.push('15% for Black mask (i) on non-melee task');
-			}
-		} else if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push('15% for Black mask on melee task');
-		}
 		quantity = Math.max(1, quantity);
 		const itemCost = monster.itemCost ? monster.itemCost.clone().multiply(quantity) : null;
 		if (itemCost) {
