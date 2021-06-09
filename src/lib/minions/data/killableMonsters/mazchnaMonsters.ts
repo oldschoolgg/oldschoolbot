@@ -32,7 +32,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 10
 	},
 	{
 		id: Monsters.Cockatrice.id,
@@ -48,7 +49,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 			slayer: 25
 		},
 
-		superior: Monsters.Cockathrice
+		superior: Monsters.Cockathrice,
+		healAmountNeeded: 12
 	},
 	{
 		id: Monsters.Cyclops.id,
@@ -60,7 +62,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		existsInCatacombs: true,
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 24
 	},
 	{
 		id: Monsters.EarthWarrior.id,
@@ -74,7 +77,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		levelRequirements: {
 			agility: 15
-		}
+		},
+		healAmountNeeded: 14
 	},
 	{
 		id: Monsters.FeralVampyre.id,
@@ -136,7 +140,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		existsInCatacombs: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 13
 	},
 	{
 		id: Monsters.Obor.id,
@@ -150,7 +155,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 0,
 		itemsRequired: resolveItems(['Giant key']),
-		itemCost: new Bank().add('Giant key', 1)
+		itemCost: new Bank().add('Giant key', 1),
+		healAmountNeeded: 20 * 5
 	},
 	{
 		id: Monsters.Hobgoblin.id,
@@ -161,7 +167,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 14
 	},
 	{
 		id: Monsters.IceWarrior.id,
@@ -172,7 +179,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 17
 	},
 	{
 		id: Monsters.Killerwatt.id,
@@ -186,7 +194,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 4,
 		levelRequirements: {
 			slayer: 37
-		}
+		},
+		healAmountNeeded: 16
 	},
 	{
 		id: Monsters.LoarShade.id,
@@ -251,7 +260,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 30
 		},
-		superior: Monsters.FlamingPyrelord
+		superior: Monsters.FlamingPyrelord,
+		healAmountNeeded: 17
 	},
 	{
 		id: Monsters.RiylShade.id,
@@ -285,7 +295,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 20
 		},
-		superior: Monsters.GiantRockslug
+		superior: Monsters.GiantRockslug,
+		healAmountNeeded: 12
 	},
 	{
 		id: Monsters.Shade.id,
@@ -328,7 +339,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 4,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 28
 	},
 	{
 		id: Monsters.VyrewatchSentinel.id,
@@ -340,7 +352,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 5,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 75
 	},
 	{
 		id: Monsters.WallBeast.id,

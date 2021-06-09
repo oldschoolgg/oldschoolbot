@@ -252,7 +252,8 @@ const killableBosses: KillableMonster[] = [
 		},
 		slayerOnly: true,
 		defaultAttackStyles: [SkillsEnum.Strength],
-		combatXpMultiplier: 1.15
+		combatXpMultiplier: 1.15,
+		healAmountNeeded: 20 * 15
 	}
 ];
 

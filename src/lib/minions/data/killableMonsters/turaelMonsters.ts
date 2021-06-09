@@ -278,7 +278,8 @@ export const turaelMonsters: KillableMonster[] = [
 		],
 		levelRequirements: {
 			slayer: 69
-		}
+		},
+		healAmountNeeded: 20 * 5
 	},
 	{
 		id: Monsters.DesertLizard.id,
@@ -927,7 +928,8 @@ export const turaelMonsters: KillableMonster[] = [
 		],
 		levelRequirements: {
 			slayer: 69
-		}
+		},
+		healAmountNeeded: 20 * 3
 	},
 	{
 		id: Monsters.TorturedSoul.id,

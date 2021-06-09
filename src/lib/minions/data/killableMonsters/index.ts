@@ -216,32 +216,6 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0
 	},
 	{
-		id: Monsters.LizardmanShaman.id,
-		name: Monsters.LizardmanShaman.name,
-		aliases: Monsters.LizardmanShaman.aliases,
-		timeToFinish: Time.Second * 52,
-		table: Monsters.LizardmanShaman,
-		emoji: '<:Dragon_warhammer:405998717154623488>',
-		wildy: false,
-		canBeKilled: true,
-		difficultyRating: 6,
-		itemsRequired: deepResolveItems([
-			["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow']
-		]),
-		notifyDrops: resolveItems(['Dragon warhammer']),
-		qpRequired: 30,
-		itemInBankBoosts: [
-			{
-				[itemID('Ring of the gods')]: 3,
-				[itemID('Ring of the gods (i)')]: 5
-			}
-		],
-		levelRequirements: {
-			prayer: 43
-		},
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic]
-	},
-	{
 		id: Monsters.Lizardman.id,
 		name: Monsters.Lizardman.name,
 		aliases: Monsters.Lizardman.aliases,

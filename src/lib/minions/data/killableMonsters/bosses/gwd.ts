@@ -34,7 +34,8 @@ const killableBosses: KillableMonster[] = [
 		uniques: [...resolveItems(['Rune sword']), ...bosses.Bandos, ...bosses.Shards],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 656,
-		combatXpMultiplier: 1.126
+		combatXpMultiplier: 1.126,
+		healAmountNeeded: 20 * 15
 	},
 	{
 		id: Monsters.CommanderZilyana.id,
@@ -71,7 +72,8 @@ const killableBosses: KillableMonster[] = [
 		]),
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		customMonsterHP: 723,
-		combatXpMultiplier: 1.132
+		combatXpMultiplier: 1.132,
+		healAmountNeeded: 20 * 12
 	},
 	{
 		id: Monsters.Kreearra.id,
@@ -104,7 +106,8 @@ const killableBosses: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
 		customMonsterHP: 641,
-		combatXpMultiplier: 1.159
+		combatXpMultiplier: 1.159,
+		healAmountNeeded: 20 * 14
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -140,7 +143,8 @@ const killableBosses: KillableMonster[] = [
 		]),
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 708,
-		combatXpMultiplier: 1.135
+		combatXpMultiplier: 1.135,
+		healAmountNeeded: 20 * 15
 	}
 ];
 

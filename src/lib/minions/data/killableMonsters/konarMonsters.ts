@@ -17,7 +17,8 @@ export const konarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		qpRequired: 205
+		qpRequired: 205,
+		healAmountNeeded: 20 * 5
 	},
 	{
 		id: Monsters.BabyRedDragon.id,
@@ -29,7 +30,8 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 15
 	},
 	{
 		id: Monsters.BrutalRedDragon.id,
@@ -44,7 +46,8 @@ export const konarMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 85
 	},
 	{
 		id: Monsters.DarkBeast.id,
@@ -60,7 +63,8 @@ export const konarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 90
 		},
-		superior: Monsters.NightBeast
+		superior: Monsters.NightBeast,
+		healAmountNeeded: 20 * 3
 	},
 	{
 		id: Monsters.Drake.id,
@@ -77,7 +81,8 @@ export const konarMonsters: KillableMonster[] = [
 			slayer: 84
 		},
 
-		superior: Monsters.GuardianDrake
+		superior: Monsters.GuardianDrake,
+		healAmountNeeded: 70
 	},
 	{
 		id: Monsters.Hydra.id,
@@ -94,7 +99,8 @@ export const konarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 95
 		},
-		superior: Monsters.ColossalHydra
+		superior: Monsters.ColossalHydra,
+		healAmountNeeded: 20 * 5
 	},
 	{
 		id: Monsters.AlchemicalHydra.id,
@@ -130,7 +136,8 @@ export const konarMonsters: KillableMonster[] = [
 		slayerOnly: true,
 		levelRequirements: {
 			slayer: 95
-		}
+		},
+		healAmountNeeded: 20 * 22
 	},
 	{
 		id: Monsters.MithrilDragon.id,
@@ -143,7 +150,8 @@ export const konarMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Dragon full helm']),
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 85
 	},
 	{
 		id: Monsters.RedDragon.id,
@@ -155,7 +163,8 @@ export const konarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 26
 	},
 	{
 		id: Monsters.RuneDragon.id,
@@ -168,7 +177,8 @@ export const konarMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Dragon metal lump', 'Draconic visage']),
-		qpRequired: 205
+		qpRequired: 205,
+		healAmountNeeded: 20 * 6
 	},
 	{
 		id: Monsters.SmokeDevil.id,
@@ -191,7 +201,8 @@ export const konarMonsters: KillableMonster[] = [
 				[itemID('Kodai wand')]: 12,
 				[itemID('Staff of the dead')]: 8
 			}
-		]
+		],
+		healAmountNeeded: 16
 	},
 	{
 		id: Monsters.ThermonuclearSmokeDevil.id,
@@ -229,7 +240,8 @@ export const konarMonsters: KillableMonster[] = [
 			{
 				[itemID('Ancestral robe top')]: 4
 			}
-		]
+		],
+		healAmountNeeded: 20 * 5
 	},
 	{
 		id: Monsters.Waterfiend.id,
@@ -241,6 +253,7 @@ export const konarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Mist battlestaff']),
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 38
 	}
 ];

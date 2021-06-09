@@ -20,7 +20,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 57
-		}
+		},
+		healAmountNeeded: 16
 	},
 	{
 		id: Monsters.Aviansie.id,
@@ -37,7 +38,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 			agility: 60
 		},
 		defaultAttackStyles: [SkillsEnum.Ranged],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic]
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
+		healAmountNeeded: 24
 	},
 	{
 		id: Monsters.BlackDemon.id,
@@ -57,7 +59,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 			{
 				[itemID('Saradomin godsword')]: 5
 			}
-		]
+		],
+		healAmountNeeded: 30
 	},
 	{
 		id: Monsters.CaveHorror.id,
@@ -76,7 +79,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 58
 		},
-		superior: Monsters.CaveAbomination
+		superior: Monsters.CaveAbomination,
+		healAmountNeeded: 20
 	},
 	{
 		id: Monsters.CaveKraken.id,
@@ -93,7 +97,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		},
 		slayerOnly: true,
 		defaultAttackStyles: [SkillsEnum.Magic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged]
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
+		healAmountNeeded: 20 * 1
 	},
 	{
 		id: Monsters.FossilIslandWyvernAncient.id,
@@ -116,7 +121,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 2,
 		levelRequirements: {
 			slayer: 82
-		}
+		},
+		healAmountNeeded: 20 * 4
 	},
 	{
 		id: Monsters.FossilIslandWyvernLongTailed.id,
@@ -140,7 +146,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 2,
 		levelRequirements: {
 			slayer: 66
-		}
+		},
+		healAmountNeeded: 20 * 2
 	},
 	{
 		id: Monsters.FossilIslandWyvernSpitting.id,
@@ -164,7 +171,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 2,
 		levelRequirements: {
 			slayer: 66
-		}
+		},
+		healAmountNeeded: 45
 	},
 	{
 		id: Monsters.FossilIslandWyvernTaloned.id,
@@ -188,7 +196,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 2,
 		levelRequirements: {
 			slayer: 66
-		}
+		},
+		healAmountNeeded: 50
 	},
 	{
 		id: Monsters.GreaterDemon.id,
@@ -209,7 +218,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 			{
 				[itemID('Saradomin godsword')]: 3
 			}
-		]
+		],
+		healAmountNeeded: 18
 	},
 	{
 		id: Monsters.IronDragon.id,
@@ -265,7 +275,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		},
 		defaultAttackStyles: [SkillsEnum.Magic],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
-		slayerOnly: true
+		slayerOnly: true,
+		healAmountNeeded: 20 * 6
 	},
 	{
 		id: Monsters.Lizardman.id,
@@ -277,7 +288,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 30
+		qpRequired: 30,
+		healAmountNeeded: 14
 	},
 	{
 		id: Monsters.LizardmanBrute.id,
@@ -289,7 +301,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 30
+		qpRequired: 30,
+		healAmountNeeded: 16
 	},
 	{
 		id: Monsters.LizardmanShaman.id,
@@ -324,7 +337,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 		],
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		healAmountNeeded: 20 * 2,
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic]
 	},
 	{
 		id: Monsters.Porazdir.id,
@@ -344,7 +359,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 				'Toxic staff of the dead'
 			]
 		]),
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 20 * 25
 	},
 	{
 		id: Monsters.SkeletalWyvern.id,
@@ -369,7 +385,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 72
-		}
+		},
+		healAmountNeeded: 20 * 3
 	},
 	{
 		id: Monsters.Skotizo.id,
@@ -390,7 +407,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 				[itemID('Arclight')]: 50
 			}
 		],
-		itemCost: new Bank().add('Dark totem', 1)
+		itemCost: new Bank().add('Dark totem', 1),
+		healAmountNeeded: 20 * 15
 	},
 	{
 		id: Monsters.TzHaarKet.id,
@@ -418,7 +436,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 62
 		},
-		superior: Monsters.ShadowWyrm
+		superior: Monsters.ShadowWyrm,
+		healAmountNeeded: 35
 	},
 	{
 		id: Monsters.Zygomite.id,
@@ -432,6 +451,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 3,
 		levelRequirements: {
 			slayer: 57
-		}
+		},
+		healAmountNeeded: 14
 	}
 ];

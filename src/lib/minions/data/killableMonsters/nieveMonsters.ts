@@ -15,7 +15,8 @@ export const nieveMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 20 * 1
 	},
 	{
 		id: Monsters.BlackDragon.id,
@@ -28,7 +29,8 @@ export const nieveMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 20 * 2
 	},
 	{
 		id: Monsters.BrutalBlackDragon.id,
@@ -51,7 +53,8 @@ export const nieveMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		healAmountNeeded: 20 * 4
 	},
 	{
 		id: Monsters.LocustRider.id,
@@ -63,7 +66,8 @@ export const nieveMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 21
 	},
 	{
 		id: Monsters.ScarabMage.id,
@@ -75,7 +79,8 @@ export const nieveMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 18
 	},
 	{
 		id: Monsters.SteelDragon.id,
@@ -93,7 +98,8 @@ export const nieveMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		healAmountNeeded: 45
 	},
 	{
 		id: Monsters.Suqah.id,
@@ -104,6 +110,7 @@ export const nieveMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 20
 	}
 ];
