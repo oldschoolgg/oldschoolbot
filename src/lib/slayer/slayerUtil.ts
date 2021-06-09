@@ -249,8 +249,8 @@ export function getSlayerReward(id: SlayerTaskUnlocksEnum): string {
 
 	 */
 	const name = SlayerRewardsShop.find(srs => {
-		return srs.id === id;
-	}).name;
+		return srs!.id === id;
+	})!.name;
 	return name;
 }
 export function hasSlayerUnlock(
