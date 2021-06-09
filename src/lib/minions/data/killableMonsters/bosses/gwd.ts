@@ -2,7 +2,7 @@ import {Monsters} from 'oldschooljs';
 
 import {Time} from '../../../../constants';
 import {bosses} from '../../../../data/collectionLog';
-import {GearSetupTypes, GearStat} from '../../../../gear/types';
+import {GearSetupTypes, GearStat} from '../../../../gear';
 import {SkillsEnum} from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, {deepResolveItems} from '../../../../util/resolveItems';

@@ -1,10 +1,9 @@
 import {Time} from 'e';
 import {Bank, Monsters} from 'oldschooljs';
 import {itemID} from 'oldschooljs/dist/util';
-import {GearSetupTypes} from '../../../../gear/types';
 import resolveItems, {deepResolveItems} from '../../../util/resolveItems';
 import {KillableMonster} from '../../types';
-import {GearStat} from "../../../gear";
+import {GearSetupTypes, GearStat} from "../../../gear";
 
 export const vannakaMonsters: KillableMonster[] = [
 	{
