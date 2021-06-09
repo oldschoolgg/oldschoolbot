@@ -50,14 +50,9 @@ export default class extends BotCommand {
 			return msg.channel.sendFile(Buffer.from(unlockTable), `slayerRewardsItems.txt`);
 		}
 
-		//let unlocks: string[] = [];
 		const myUnlocks = await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
 		const myPoints = await msg.author.settings.get(UserSettings.Slayer.SlayerPoints);
-/*
-		myUnlocks.forEach(u => {
-			unlocks.push(getSlayerReward(u));
-		});
-		*/
+
 		const unlocksStr = myUnlocks.map(mu => {
 			return getSlayerReward(mu);
 		}).join(`\n`);
