@@ -63,8 +63,16 @@ export default class extends BotCommand {
 			if (!input) {
 				throw `You must specify a monster to unblock!`;
 			}
-			let osjsMonster;
+
 			let idToRemove = parseInt(input);
+			const osjsMonster = isNaN(idToRemove)
+				? Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, input)))
+				: Monsters.find(mon => mon.id === idToRemove);
+			if (!osjsMonster) {
+				throw `Failed to find a monster with that id!`;
+			}
+			idToRemove = osjsMonster.id;
+			/*
 			if (isNaN(idToRemove)) {
 				// Lets lookup the ID from the name:
 				osjsMonster = Monsters.find(mon =>
@@ -80,6 +88,7 @@ export default class extends BotCommand {
 					throw `Failed to find a monster with that id!`;
 				}
 			}
+			 */
 			// Now we can remove based on ID.
 			if (!myBlockList.includes(idToRemove)) {
 				return msg.channel.send(

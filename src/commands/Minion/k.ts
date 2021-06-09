@@ -172,18 +172,11 @@ export default class extends BotCommand {
 			quantity = Math.min(quantity, effectiveQtyRemaining);
 		}
 
-		// Dragonbane, in the worst way possible. We need to add dragonbane to monsters.
 		// Removed vorkath because he has a special boost.
-		/*		if (
-			monster.name.toLowerCase().includes('dragon')
-			|| monster.name.toLowerCase() === 'drake'
-			|| monster.name.toLowerCase().includes('hydra')
-			|| monster.name.toLowerCase() === ('wyrm')
-			|| monster.name.toLowerCase().includes('wyvern')
+		if (
+			monster.name.toLowerCase() !== 'vorkath'
+			&& osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)
 		) {
-
- */
-		if (osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
 			if (
 				msg.author.hasItemEquippedOrInBank('Dragon hunter lance') &&
 				!attackStyles.includes(SkillsEnum.Ranged) &&
