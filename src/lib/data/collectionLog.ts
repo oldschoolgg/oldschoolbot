@@ -1682,7 +1682,7 @@ export const dungeoneeringLog: CollectionLogData = {
 		'Offhand Chaotic longsword',
 		'Offhand chaotic crossbow'
 	]),
-	Shields: resolveItems(['Farseer kiteshield', 'Amulet of zealots', 'Chaotic remnant']),
+	Shields: resolveItems(['Farseer kiteshield', 'Chaotic remnant']),
 	Scrolls: resolveItems([
 		'Scroll of life',
 		'Scroll of efficiency',
