@@ -101,9 +101,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.usingPet('Ishi') && monster.name !== 'Ogress Warrior') {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			this.kill(msg, ['Ogress Warrior']);
+			this.run(msg, [null, 'Ogress Warrior']);
 			return msg.channel.send(`Let's kill some ogress warriors instead? 🥰 🐳`);
 		}
 
