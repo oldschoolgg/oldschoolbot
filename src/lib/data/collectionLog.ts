@@ -573,7 +573,8 @@ export const pets: CollectionLogData = {
 		'Steve',
 		'Frosty',
 		'Obis'
-	])
+	]),
+	BSOpets3: resolveItems(['Voidling'])
 };
 
 export const cluesShared: CollectionLogData = {
