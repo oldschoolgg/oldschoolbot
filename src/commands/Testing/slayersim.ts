@@ -8,13 +8,10 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import { UserSettings } from '../../lib/settings/types/UserSettings'
-import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { userCanUseTask, weightedPick} from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import {
-	addArrayOfNumbers, itemNameFromID,
-	roll
+	addArrayOfNumbers
 } from '../../lib/util';
 import {SlayerMaster} from "../../lib/slayer/types";
 import {slayerMasters} from "../../lib/slayer/slayerMasters";
@@ -101,7 +98,7 @@ export default class extends BotCommand {
 		if (option === 'tasksim' ) {
 			const simTable: string[][] = [];
 			simTable.push(['Master', 'Monster', 'Weight', 'Rolls', 'Total Rolls']);
-			const tasks : any = {};
+			let tasks  : { [key : string] : {} } = {};
 			const iterations = 5000;
 			slayerMasters.forEach(master => {
 				for (let i = 1; i < iterations; i++) {
