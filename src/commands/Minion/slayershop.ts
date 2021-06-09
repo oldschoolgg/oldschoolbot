@@ -59,7 +59,7 @@ export default class extends BotCommand {
 		});
 		*/
 		const unlocksStr = myUnlocks.map(mu => {
-			getSlayerReward(mu);
+			return getSlayerReward(mu);
 		}).join(`\n`);
 		const defaultMsg = `Current points: ${myPoints}\nYou currently have the following ` +
 			`rewards unlocked:\n\`${unlocksStr}\`\n\n` +

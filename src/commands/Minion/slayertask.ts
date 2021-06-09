@@ -54,7 +54,7 @@ export default class extends BotCommand {
 				return myBlockList.includes(m.id);
 			});
 			outstr += `${myBlockedMonsters.map(mbm => {
-				`${mbm.id}: ${getCommonTaskName(mbm)}`;
+				return `${mbm.id}: ${getCommonTaskName(mbm)}`;
 			}).join(`\n`)}`;
 			return msg.channel.send(
 				`${outstr}\n\nTry: \`${msg.cmdPrefix}st --block\` to block a task.`
