@@ -242,13 +242,6 @@ export function getSlayerMasterOSJSbyID(slayerMasterID: number) {
 }
 
 export function getSlayerReward(id: SlayerTaskUnlocksEnum): string {
-	/*
-	let name = '';
-	SlayerRewardsShop.forEach(srs => {
-		if (srs.id === id) name = srs.name;
-	});
-
-	 */
 	const name = SlayerRewardsShop.find(srs => {
 		return srs!.id === id;
 	})!.name;

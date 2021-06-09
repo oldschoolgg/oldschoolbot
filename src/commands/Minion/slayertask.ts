@@ -25,8 +25,8 @@ export default class extends BotCommand {
 			altProtection: true,
 			categoryFlags: ['minion'],
 			aliases: ['st'],
-			description: 'slayer',
-			examples: ['+skillcape mining'],
+			description: 'Gets a slayer task from the master of your choice.',
+			examples: ['+slayertask turael', '+st duradel --save', '+st konar --forget'],
 			usage: '[input:str]'
 		});
 	}
@@ -65,7 +65,7 @@ export default class extends BotCommand {
 
 		if (msg.flagArgs.unblock || (input && input === 'unblock')) {
 			if (!input) {
-				throw `You must specify a monster to unblock!`;
+				return msg.channel.send(`You must specify a monster to unblock!`);
 			}
 
 			let idToRemove = parseInt(input);
@@ -73,7 +73,7 @@ export default class extends BotCommand {
 				? Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, input)))
 				: Monsters.find(mon => mon.id === idToRemove);
 			if (!osjsMonster) {
-				throw `Failed to find a monster with that name or id!`;
+				return msg.channel.send(`Failed to find a monster with that name or id!`);
 			}
 			idToRemove = osjsMonster.id;
 
@@ -112,7 +112,7 @@ export default class extends BotCommand {
 			if (toBlock && myBlockList.length >= maxBlocks) {
 				return msg.channel.send(
 					`You cannot have more than ${maxBlocks} slayer blocks!\n\nUse:\n` +
-						`\`${msg.cmdPrefix}st --unblock MONSTER_ID\`\n to remove a block.\n` +
+						`\`${msg.cmdPrefix}st --unblock kalphite\`\n to remove a block.\n` +
 						`\`${msg.cmdPrefix}st --list\` for list of blocked monsters and their IDs.`
 				);
 			}

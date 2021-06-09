@@ -64,7 +64,7 @@ export default class extends BotCommand {
 		}
 
 		if (boneName.toLowerCase() === 'unsired') {
-			const unsiredsOwned = userBank.amount(itemID('Unsired'));
+			const unsiredsOwned = userBank.amount('Unsired');
 			if (unsiredsOwned === 0) {
 				return msg.channel.send(
 					`You don't have any Unsireds to offer to the Font of Consumption.`

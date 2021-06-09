@@ -33,7 +33,6 @@ export default class extends BotCommand {
 			_input === 'help' ||
 			_input === 'unlocks'
 		) {
-			// const myUnlocks = SlayerRewardsShop.filter(srs => { return srs.item !== undefined });
 			const unlockTable = table([
 				['Slayer Points', 'Name', 'Description', 'Type'],
 				...SlayerRewardsShop.map(i => [
@@ -79,7 +78,7 @@ export default class extends BotCommand {
 		}
 
 		if (buyableName === '') {
-			throw `You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls buy --help\``;
+			return msg.channel.send(`You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls buy --help\``);
 		}
 
 		const buyable = SlayerRewardsShop.filter(i => {
@@ -91,7 +90,7 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			throw `I don't recognize that.\nTry: \`${msg.cmdPrefix}slayershop [buy|unlock|lock] --help\` for a list.`;
+			return msg.channel.send( `I don't recognize that.\nTry: \`${msg.cmdPrefix}slayershop [buy|unlock|lock] --help\` for a list.`);
 		}
 
 		await msg.author.settings.sync(true);
@@ -104,7 +103,7 @@ export default class extends BotCommand {
 		const { slayerPointCost } = buyable;
 
 		if (curSlayerPoints < slayerPointCost) {
-			throw (
+			return msg.channel.send(
 				`You need ${slayerPointCost} Slayer points to make this purchase.\n` +
 				`You have: ${curSlayerPoints}`
 			);
@@ -164,7 +163,7 @@ export default class extends BotCommand {
 		}
 
 		if (buyableName === '') {
-			throw `You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls unlock --help\``;
+			return msg.channel.send(`You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls unlock --help\``);
 		}
 
 		const buyable = SlayerRewardsShop.filter(srs => {
@@ -176,7 +175,7 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			throw `I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop [buy|unlock|lock] --help\` for a list.`;
+			return msg.channel.send(`I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop [buy|unlock|lock] --help\` for a list.`);
 		}
 
 		await msg.author.settings.sync(true);
@@ -189,7 +188,7 @@ export default class extends BotCommand {
 		const { slayerPointCost } = buyable;
 
 		if (curSlayerPoints < slayerPointCost) {
-			throw (
+			return msg.channel.send(
 				`You need ${slayerPointCost} Slayer points to make this purchase.\n` +
 				`You have: ${curSlayerPoints}`
 			);
@@ -233,7 +232,7 @@ export default class extends BotCommand {
 
 	async lock(msg: KlasaMessage, [toLockName = '']: [string]) {
 		if (toLockName === '') {
-			throw `You must specify an Unlock to remove.`;
+			return msg.channel.send(`You must specify an Unlock to remove.`);
 		}
 
 		const buyable = SlayerRewardsShop.find(
