@@ -1,7 +1,6 @@
+import { Bank } from 'oldschooljs';
 import { resolve } from 'path';
 import Piscina from 'piscina';
-
-import { ItemBank } from '../types';
 
 export interface CasketWorkerArgs {
 	clueTierID: number;
@@ -17,8 +16,8 @@ export interface KillWorkerArgs {
 export const piscinaPool = new Piscina();
 
 export const Workers = {
-	casketOpen: (args: CasketWorkerArgs): Promise<[ItemBank, string]> =>
+	casketOpen: (args: CasketWorkerArgs): Promise<[Bank, string]> =>
 		piscinaPool.runTask(args, resolve(__dirname, 'casket.worker.js')),
-	kill: (args: KillWorkerArgs): Promise<ItemBank | string> =>
+	kill: (args: KillWorkerArgs): Promise<Bank | string> =>
 		piscinaPool.runTask(args, resolve(__dirname, 'kill.worker.js'))
 };

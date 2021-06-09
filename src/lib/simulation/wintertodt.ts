@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
-import { ReturnedLootItem } from 'oldschooljs/dist/meta/types';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { addBanks } from 'oldschooljs/dist/util';
@@ -175,7 +174,7 @@ export class WintertodtCrateClass {
 		}
 	}
 
-	public lootRoll(skills: Partial<LevelRequirements>): ReturnedLootItem[] {
+	public lootRoll(skills: Partial<LevelRequirements>) {
 		const roll = randInt(1, 9);
 
 		if (roll <= 6) {

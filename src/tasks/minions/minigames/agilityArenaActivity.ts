@@ -5,7 +5,6 @@ import {
 	hasKaramjaEliteDiary
 } from '../../../commands/Minion/agilityarena';
 import { Time } from '../../../lib/constants';
-import { roll } from '../../../lib/data/monsters/raids';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
 import {
@@ -13,7 +12,8 @@ import {
 	formatDuration,
 	itemID,
 	randomVariation,
-	reduceNumByPercent
+	reduceNumByPercent,
+	roll
 } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 

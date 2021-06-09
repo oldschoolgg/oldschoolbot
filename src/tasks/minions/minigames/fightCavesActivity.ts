@@ -94,7 +94,7 @@ export default class extends Task {
 		await user.incrementMonsterScore(Monsters.TzTokJad.id);
 		const loot = Monsters.TzTokJad.kill();
 
-		if (loot[TzrekJadPet]) {
+		if (loot.has('Tzrek-jad')) {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}** just received their ${formatOrdinal(
@@ -128,11 +128,11 @@ export default class extends Task {
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad.id)
-				)} time! I am most impressed, I give you... ${new Bank(loot)}.`,
+				)} time! I am most impressed, I give you... ${loot}.`,
 				head: 'mejJal'
 			}),
 			data,
-			loot
+			loot.bank
 		);
 	}
 }
