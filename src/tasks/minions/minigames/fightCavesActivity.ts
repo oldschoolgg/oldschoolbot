@@ -49,6 +49,7 @@ export default class extends Task {
 			if (isOnTask) {
 				slayerMsg = ' Task cancelled.';
 				usersTask.currentTask!.quantityRemaining = 0;
+				usersTask.currentTask!.skipped = true;
 				await usersTask.currentTask!.save();
 			}
 			// Give back supplies based on how far in they died, for example if they
@@ -90,6 +91,7 @@ export default class extends Task {
 			if (isOnTask) {
 				slayerMsg = ' Task cancelled.';
 				usersTask.currentTask!.quantityRemaining = 0;
+				usersTask.currentTask!.skipped = true;
 				await usersTask.currentTask!.save();
 			}
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
