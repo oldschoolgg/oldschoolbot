@@ -141,7 +141,7 @@ const killableBosses: KillableMonster[] = [
 		],
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.125,
-		healAmountNeeded: 15 * 20,
+		healAmountNeeded: 12 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
@@ -159,7 +159,7 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.25,
-		healAmountNeeded: 15 * 20,
+		healAmountNeeded: 11 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},

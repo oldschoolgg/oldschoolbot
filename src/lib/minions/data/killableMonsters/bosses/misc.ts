@@ -74,6 +74,9 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
+		healAmountNeeded: 20 * 20,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
 		defaultAttackStyles: [SkillsEnum.Ranged]
 	},
 	{

@@ -97,7 +97,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0,
-		healAmountNeeded: 20,
+		healAmountNeeded: 15,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
@@ -309,7 +309,7 @@ export const vannakaMonsters: KillableMonster[] = [
 				[itemID('Dragonbone necklace')]: 2
 			}
 		],
-		healAmountNeeded: 18,
+		healAmountNeeded: 9,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged]
 	},
@@ -439,7 +439,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Giant champion scroll']),
 		qpRequired: 0,
-		healAmountNeeded: 22,
+		healAmountNeeded: 17,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
@@ -458,7 +458,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 75
 		},
 		superior: Monsters.MarbleGargoyle,
-		healAmountNeeded: 24,
+		healAmountNeeded: 15,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
@@ -735,7 +735,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0,
-		healAmountNeeded: 26,
+		healAmountNeeded: 18,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},

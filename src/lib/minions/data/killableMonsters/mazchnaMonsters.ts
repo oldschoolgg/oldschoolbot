@@ -280,7 +280,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 			slayer: 30
 		},
 		superior: Monsters.FlamingPyrelord,
-		healAmountNeeded: 17,
+		healAmountNeeded: 8,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},

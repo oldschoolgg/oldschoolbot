@@ -474,7 +474,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 62
 		},
 		superior: Monsters.ShadowWyrm,
-		healAmountNeeded: 35,
+		healAmountNeeded: 15,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic]
 	},
