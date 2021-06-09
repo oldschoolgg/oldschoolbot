@@ -1,6 +1,7 @@
 import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Time } from '../../lib/constants';
+import { bossTasks } from '../../lib/slayer/tasks/bossTasks';
 import { table } from 'table';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -83,7 +84,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[quantity:int{1}|name:...string] [name:...string]',
+			usage: '[option:...string]',
 			usageDelim: ' ',
 			description: 'Sends your minion to kill monsters.'
 		});
@@ -91,8 +92,11 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
+	async run(msg: KlasaMessage, [option = '']: [null | number | string, string]) {
 
+		if (option === 'return' ) {
+			return msg.channel.send(`Returning because you asked nicely.`);
+		}
 		// Start sim code
 		// TODO Sim code for masters, tasks xp/per hour
 		// Sim code for numnber of tasks.
@@ -103,11 +107,11 @@ export default class extends BotCommand {
 			master.tasks.forEach(task => {
 				const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, task!.monster!.id);
 				const kMonster = killableMonsters.find(km => {
-					return km.id === task!.monster;
+					return km.id === task!.monster.id;
 				});
 				let [killTime, percentReduced] = reducedTimeFromKC(
-					kMonster,
-					msg.author.getKC(monster.id)
+					kMonster!,
+					msg.author.getKC(task.monster.id)
 				);
 				const [newDuration, boostMsg] = applySkillBoost(msg.author, killTime, attackStyles);
 				// add code to uses boosts maybe?
