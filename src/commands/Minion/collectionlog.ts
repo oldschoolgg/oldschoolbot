@@ -4,7 +4,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import { collectionLogTypes } from '../../lib/data/collectionLog';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID, stringMatches } from '../../lib/util';
@@ -35,7 +34,7 @@ Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 
 		await msg.author.settings.sync(true);
 
-		const monster = killableMonsters.find(_type =>
+		const monster = Monsters.find(_type =>
 			_type.aliases.some(name => stringMatches(name, inputType))
 		);
 
