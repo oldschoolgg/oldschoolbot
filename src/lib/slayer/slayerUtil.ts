@@ -125,7 +125,7 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 	) {
 		bossTask = true;
 	}
-	console.log(`Boss task? ${bossTask}.`);
+
 	const assignedTask = bossTask ? weightedPick(bossTasks) : weightedPick(baseTasks);
 	const newUser = await getNewUser(_user.id);
 
@@ -255,17 +255,13 @@ export function hasSlayerUnlock(
 	let success = true;
 	let errors = '';
 
-	// console.log(`Required unlocks: ${required}`);
 	required.forEach(req => {
-		// console.log(`Checking for req: ${req}  in ${myUnlocks}`);
 		if (!myUnlocks.includes(req)) {
 			success = false;
-			// console.log(`Missing requirement: req unlockReq: ${req}`);
 			missing.push(getSlayerReward(req as SlayerTaskUnlocksEnum));
 		}
 	});
 
-	// console.log(`missing: ${missing}`);
 	errors = missing.join(`, `);
 	return { success, errors };
 }

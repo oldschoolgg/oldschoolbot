@@ -12,8 +12,8 @@ import { UserSettings } from '../../lib/settings/types/UserSettings'
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { userCanUseTask, weightedPick} from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import  {
-	addArrayOfNumbers,
+import {
+	addArrayOfNumbers, itemNameFromID,
 	roll
 } from '../../lib/util';
 import {SlayerMaster} from "../../lib/slayer/types";
@@ -24,6 +24,8 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master));
 	let bossTask = false;
+
+	/*
 	if (
 		_user.settings
 			.get(UserSettings.Slayer.SlayerUnlocks)
@@ -37,6 +39,8 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 		bossTask = true;
 	}
 	console.log(`Boss task? ${bossTask}.`);
+
+	 */
 	const assignedTask = bossTask ? weightedPick(bossTasks) : weightedPick(baseTasks);
 	//const newUser = await getNewUser(_user.id);
 
@@ -52,7 +56,7 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 		*/
 	//await _user.settings.update(UserSettings.Slayer.LastTask, assignedTask.monster.id);
 
-	return { assignedTask,  };
+	return assignedTask;
 }
 function applySkillBoost(
 	user: KlasaUser,
@@ -94,8 +98,25 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage, [option = '']: [null | number | string, string]) {
 
-		if (option === 'return' ) {
-			return msg.channel.send(`Returning because you asked nicely.`);
+		if (option === 'tasksim' ) {
+			const simTable: string[][] = [];
+			simTable.push(['Master', 'Monster', 'Weight', 'Rolls', 'Total Rolls']);
+			const tasks = {};
+			const iterations = 5000;
+			slayerMasters.forEach(master => {
+				for (let i = 1; i < iterations; i++) {
+					const newTask = assignNewSlayerTask(msg.author, master);
+					tasks[newTask!.monster!.name] = tasks[newTask!.monster!.name] ?
+						{ ct: tasks[newTask!.monster!.name].ct + 1, weight: tasks[newTask!.monster!.name].weight }
+						: { ct: 1, weight: tasks[newTask!.monster!.name].weight };
+				}
+				Object.keys(tasks).forEach(tstr => {
+					simTable.push([master.name, tstr, tasks[tstr].weight.toString(), tasks[tstr].ct.toLocaleString(), iterations.toLocaleString()]);
+				});
+
+			});
+			return msg.channel.sendFile(Buffer.from(table(simTable)), `slayerMasterTaskSim.txt`);
+
 		}
 		// Start sim code
 		// TODO Sim code for masters, tasks xp/per hour
