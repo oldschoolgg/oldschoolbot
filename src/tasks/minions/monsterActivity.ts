@@ -1,5 +1,5 @@
 import { Task } from 'klasa';
-import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
+import { MonsterKillOptions, Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -58,7 +58,7 @@ export default class extends Task {
 			hasSuperiors: superiorTable,
 			inCatacombs: isInCatacombs
 		};
-		const loot = new monster.table.kill(quantity, killOptions);
+		const loot = monster.table.kill(quantity, killOptions);
 		const newSuperiorCount = loot.bank[420];
 
 		announceLoot(this.client, user, monster, loot.bank);
