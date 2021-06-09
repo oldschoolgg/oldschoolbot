@@ -253,6 +253,10 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monsters: [Monsters.HarpieBugSwarm.id],
 		combatLevel: 45,
 		slayerLevel: 33,
+		levelRequirements: {
+			firemaking: 33,
+			slayer: 33
+		},
 		unlocked: true
 	},
 	{

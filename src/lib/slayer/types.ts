@@ -1,4 +1,5 @@
 import { Item } from 'oldschooljs/dist/meta/types';
+import { LevelRequirements } from "../skilling/types";
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 export interface AssignableSlayerTask {
@@ -11,6 +12,7 @@ export interface AssignableSlayerTask {
 	questPoints?: number;
 	unlocked?: boolean;
 	isBoss?: boolean;
+	levelRequirements?: LevelRequirements;
 }
 
 export interface SlayerMaster {

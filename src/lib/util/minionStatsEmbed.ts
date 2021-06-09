@@ -23,7 +23,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		if (skill === 'overall') {
 			return `${
 				skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore
-			} ${totalLevel}`;
+			} ${totalLevel}\n${user.combatLevel}`;
 		}
 
 		const skillXP = rawSkills[skill as keyof Skills] ?? 1;

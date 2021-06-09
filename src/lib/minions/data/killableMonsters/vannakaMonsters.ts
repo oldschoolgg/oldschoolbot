@@ -503,6 +503,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 4,
+		levelRequirements: {
+			slayer: 40
+		},
 		qpRequired: 0
 	},
 	{
@@ -930,6 +933,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
+		levelRequirements: {
+			slayer: 40
+		},
 		itemsRequired: resolveItems(['Antidote++(4)']),
 		qpRequired: 57
 	},
@@ -943,6 +949,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
+		levelRequirements: {
+			slayer: 40
+		},
 		itemsRequired: resolveItems(['Antidote++(4)']),
 		qpRequired: 57
 	},

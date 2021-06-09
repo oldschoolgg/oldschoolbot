@@ -242,7 +242,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 10,
+		qpRequired: 0,
 		levelRequirements: {
 			slayer: 32
 		}

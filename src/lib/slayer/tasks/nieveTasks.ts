@@ -78,6 +78,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 			Monsters.BrutalBlackDragon.id,
 			Monsters.KingBlackDragon.id
 		],
+		slayerLevel: 77,
 		combatLevel: 80,
 		questPoints: 34,
 		unlocked: true

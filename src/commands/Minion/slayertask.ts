@@ -235,24 +235,19 @@ export default class extends BotCommand {
 				if (aRequirements.length)
 					warningInfo += `**Requires**:\n${aRequirements.join(`\n`)}\n\n`;
 			}
-			let alternateMonsters: string[] = [];
+			
 			let monsterList = '';
 			if (currentTask && assignedTask) {
 				const altMobs = assignedTask.monsters;
-				altMobs.forEach(m => {
-					const monster = killableMonsters.find(mon => mon.id === m);
-					if (monster!.id !== assignedTask.monster.id)
-						alternateMonsters.push(monster!.name);
-				});
 
-				const m1 = killableMonsters.filter(m => {
+				const alternateMonsters = killableMonsters.filter(m => {
 					return altMobs.includes(m.id) && m!.id !== assignedTask.monster.id;
 				}).map(m => {
 					return m!.name;
 				});
 
 				monsterList =
-					alternateMonsters.length > 0 ? ` (${alternateMonsters.join(`/`)})[Testing: ${m1.join(`/`)}]` : '';
+					alternateMonsters.length > 0 ? ` (${alternateMonsters.join(`/`)})` : '';
 			}
 			let baseInfo = currentTask
 				? `Your current task is to kill ${currentTask.quantity}x ${getCommonTaskName(
