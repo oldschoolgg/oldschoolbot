@@ -527,7 +527,7 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@kcp/tags@^1.0.0":
+"@kcp/tags@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@kcp/tags/-/tags-1.0.0.tgz#d18ad9fc3c26027a2d0a6504b168c127cd34d654"
   integrity sha512-Crjwrtn4g8wNsj2gmtR8Pbw78dER5QOqj1HqI08hInpxZUYOnLtJrKA9OaDHZthpG+JN0Vtvp4oNr8+8N5NiJw==
@@ -3763,9 +3763,9 @@ klasa-decorators@^0.0.1:
   resolved "https://registry.yarnpkg.com/klasa-decorators/-/klasa-decorators-0.0.1.tgz#c4bcc7dd2b78814b4f625e611f82790ec6061d52"
   integrity sha512-uCoMz750Lnp0dM8VC787hnRrF9wqWfUrjT7dp+8ihqp6xmtX8ZSXoeK08WJgAhEdEdIDsUG+VMXi9gcG54EZMA==
 
-"klasa@github:gc/klasa#815a8806781f17c130a7d16b5bd04047dc321c52":
+"klasa@github:gc/klasa#b7851bbb43a9130353cef990817ff39e91202547":
   version "0.5.0-dev"
-  resolved "https://codeload.github.com/gc/klasa/tar.gz/815a8806781f17c130a7d16b5bd04047dc321c52"
+  resolved "https://codeload.github.com/gc/klasa/tar.gz/b7851bbb43a9130353cef990817ff39e91202547"
   dependencies:
     "@klasa/querybuilder" "^0.0.1"
     "@klasa/settings-gateway" "^0.0.10"
