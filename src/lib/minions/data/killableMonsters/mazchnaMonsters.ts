@@ -1,6 +1,6 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
-
+import { GearSetupTypes, GearStat } from '../../../../gear/types';
 import itemID from '../../../util/itemID';
 import resolveItems from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
@@ -33,7 +33,9 @@ export const mazchnaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		qpRequired: 0,
-		healAmountNeeded: 10
+		healAmountNeeded: 10,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackStab]
 	},
 	{
 		id: Monsters.Cockatrice.id,
@@ -50,7 +52,9 @@ export const mazchnaMonsters: KillableMonster[] = [
 		},
 
 		superior: Monsters.Cockathrice,
-		healAmountNeeded: 12
+		healAmountNeeded: 12,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Cyclops.id,
@@ -63,7 +67,9 @@ export const mazchnaMonsters: KillableMonster[] = [
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0,
-		healAmountNeeded: 24
+		healAmountNeeded: 24,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.EarthWarrior.id,
@@ -78,7 +84,9 @@ export const mazchnaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			agility: 15
 		},
-		healAmountNeeded: 14
+		healAmountNeeded: 14,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.FeralVampyre.id,
@@ -141,7 +149,9 @@ export const mazchnaMonsters: KillableMonster[] = [
 		existsInCatacombs: true,
 		difficultyRating: 1,
 		qpRequired: 0,
-		healAmountNeeded: 13
+		healAmountNeeded: 13,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Obor.id,
@@ -156,7 +166,9 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemsRequired: resolveItems(['Giant key']),
 		itemCost: new Bank().add('Giant key', 1),
-		healAmountNeeded: 20 * 5
+		healAmountNeeded: 20 * 5,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.Hobgoblin.id,
@@ -168,7 +180,9 @@ export const mazchnaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		qpRequired: 0,
-		healAmountNeeded: 14
+		healAmountNeeded: 14,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.IceWarrior.id,
@@ -180,7 +194,9 @@ export const mazchnaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		qpRequired: 0,
-		healAmountNeeded: 17
+		healAmountNeeded: 17,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Killerwatt.id,
@@ -195,7 +211,9 @@ export const mazchnaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 37
 		},
-		healAmountNeeded: 16
+		healAmountNeeded: 16,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.LoarShade.id,
@@ -261,7 +279,9 @@ export const mazchnaMonsters: KillableMonster[] = [
 			slayer: 30
 		},
 		superior: Monsters.FlamingPyrelord,
-		healAmountNeeded: 17
+		healAmountNeeded: 17,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.RiylShade.id,
@@ -296,7 +316,9 @@ export const mazchnaMonsters: KillableMonster[] = [
 			slayer: 20
 		},
 		superior: Monsters.GiantRockslug,
-		healAmountNeeded: 12
+		healAmountNeeded: 12,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Shade.id,
@@ -340,7 +362,9 @@ export const mazchnaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		qpRequired: 0,
-		healAmountNeeded: 28
+		healAmountNeeded: 28,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.VyrewatchSentinel.id,
@@ -353,7 +377,9 @@ export const mazchnaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 5,
 		qpRequired: 0,
-		healAmountNeeded: 75
+		healAmountNeeded: 75,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.WallBeast.id,

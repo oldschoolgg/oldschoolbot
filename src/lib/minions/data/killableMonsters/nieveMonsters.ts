@@ -1,6 +1,6 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
-
+import { GearSetupTypes, GearStat } from '../../../../gear/types';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
@@ -16,7 +16,9 @@ export const nieveMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		qpRequired: 0,
-		healAmountNeeded: 20 * 1
+		healAmountNeeded: 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.BlackDragon.id,
@@ -30,7 +32,9 @@ export const nieveMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
-		healAmountNeeded: 20 * 2
+		healAmountNeeded: 20 * 2,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.BrutalBlackDragon.id,
@@ -54,7 +58,9 @@ export const nieveMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		healAmountNeeded: 20 * 4
+		healAmountNeeded: 20 * 4,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.LocustRider.id,
@@ -67,7 +73,9 @@ export const nieveMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		qpRequired: 0,
-		healAmountNeeded: 21
+		healAmountNeeded: 21,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.ScarabMage.id,
@@ -80,7 +88,9 @@ export const nieveMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		qpRequired: 0,
-		healAmountNeeded: 18
+		healAmountNeeded: 18,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.SteelDragon.id,
@@ -99,7 +109,9 @@ export const nieveMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		healAmountNeeded: 45
+		healAmountNeeded: 45,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.Suqah.id,
@@ -111,6 +123,8 @@ export const nieveMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		qpRequired: 0,
-		healAmountNeeded: 20
+		healAmountNeeded: 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackMagic]
 	}
 ];

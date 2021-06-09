@@ -1,10 +1,11 @@
-import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
-
-import { SkillsEnum } from '../../../skilling/types';
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import {Time} from 'e';
+import {Bank, Monsters} from 'oldschooljs';
+import {itemID} from 'oldschooljs/dist/util';
+import {GearSetupTypes} from '../../../../gear/types';
+import {SkillsEnum} from '../../../skilling/types';
+import resolveItems, {deepResolveItems} from '../../../util/resolveItems';
+import {KillableMonster} from '../../types';
+import {GearStat} from "../../../gear";
 
 export const chaeldarMonsters: KillableMonster[] = [
 	{
@@ -21,7 +22,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 57
 		},
-		healAmountNeeded: 16
+		healAmountNeeded: 16,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.Aviansie.id,
@@ -60,7 +63,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 				[itemID('Saradomin godsword')]: 5
 			}
 		],
-		healAmountNeeded: 30
+		healAmountNeeded: 30,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.CaveHorror.id,
@@ -80,7 +85,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 58
 		},
 		superior: Monsters.CaveAbomination,
-		healAmountNeeded: 20
+		healAmountNeeded: 20,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.CaveKraken.id,
@@ -98,7 +105,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 		slayerOnly: true,
 		defaultAttackStyles: [SkillsEnum.Magic],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
-		healAmountNeeded: 20 * 1
+		healAmountNeeded: 20,
+		attackStyleToUse: GearSetupTypes.Mage,
+		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.FossilIslandWyvernAncient.id,
@@ -122,7 +131,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 82
 		},
-		healAmountNeeded: 20 * 4
+		healAmountNeeded: 20 * 4,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.FossilIslandWyvernLongTailed.id,
@@ -147,7 +158,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 66
 		},
-		healAmountNeeded: 20 * 2
+		healAmountNeeded: 20 * 2,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.FossilIslandWyvernSpitting.id,
@@ -172,7 +185,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 66
 		},
-		healAmountNeeded: 45
+		healAmountNeeded: 45,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.FossilIslandWyvernTaloned.id,
@@ -197,7 +212,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 66
 		},
-		healAmountNeeded: 50
+		healAmountNeeded: 50,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.GreaterDemon.id,
@@ -219,7 +236,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 				[itemID('Saradomin godsword')]: 3
 			}
 		],
-		healAmountNeeded: 18
+		healAmountNeeded: 18,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.IronDragon.id,
@@ -234,7 +253,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 35,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.Kraken.id,
@@ -276,7 +298,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Magic],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
 		slayerOnly: true,
-		healAmountNeeded: 20 * 6
+		healAmountNeeded: 20 * 7,
+		attackStyleToUse: GearSetupTypes.Mage,
+		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.Lizardman.id,
@@ -289,7 +313,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		qpRequired: 30,
-		healAmountNeeded: 14
+		healAmountNeeded: 14,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.LizardmanBrute.id,
@@ -302,7 +328,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		qpRequired: 30,
-		healAmountNeeded: 16
+		healAmountNeeded: 16,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.LizardmanShaman.id,
@@ -339,7 +367,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 			prayer: 43
 		},
 		healAmountNeeded: 20 * 2,
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic]
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.Porazdir.id,
@@ -360,7 +390,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 			]
 		]),
 		qpRequired: 0,
-		healAmountNeeded: 20 * 25
+		healAmountNeeded: 20 * 25,
+		attackStyleToUse: GearSetupTypes.Mage,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic],
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged]
 	},
 	{
 		id: Monsters.SkeletalWyvern.id,
@@ -386,7 +419,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 72
 		},
-		healAmountNeeded: 20 * 3
+		healAmountNeeded: 20 * 3,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.Skotizo.id,
@@ -408,7 +443,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 			}
 		],
 		itemCost: new Bank().add('Dark totem', 1),
-		healAmountNeeded: 20 * 15
+		healAmountNeeded: 20 * 15,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.TzHaarKet.id,
@@ -437,7 +474,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 62
 		},
 		superior: Monsters.ShadowWyrm,
-		healAmountNeeded: 35
+		healAmountNeeded: 35,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.Zygomite.id,
@@ -452,6 +491,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 57
 		},
-		healAmountNeeded: 14
+		healAmountNeeded: 14,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic]
 	}
 ];

@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
-
+import { GearSetupTypes, GearStat } from '../../../../gear/types';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
@@ -18,7 +18,9 @@ export const konarMonsters: KillableMonster[] = [
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 205,
-		healAmountNeeded: 20 * 5
+		healAmountNeeded: 20 * 5,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.BabyRedDragon.id,
@@ -31,7 +33,9 @@ export const konarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		qpRequired: 0,
-		healAmountNeeded: 15
+		healAmountNeeded: 15,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.BrutalRedDragon.id,
@@ -47,7 +51,9 @@ export const konarMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
-		healAmountNeeded: 85
+		healAmountNeeded: 85,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.DarkBeast.id,
@@ -64,7 +70,9 @@ export const konarMonsters: KillableMonster[] = [
 			slayer: 90
 		},
 		superior: Monsters.NightBeast,
-		healAmountNeeded: 20 * 3
+		healAmountNeeded: 20 * 3,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.Drake.id,
@@ -82,7 +90,9 @@ export const konarMonsters: KillableMonster[] = [
 		},
 
 		superior: Monsters.GuardianDrake,
-		healAmountNeeded: 70
+		healAmountNeeded: 70,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.Hydra.id,
@@ -100,7 +110,9 @@ export const konarMonsters: KillableMonster[] = [
 			slayer: 95
 		},
 		superior: Monsters.ColossalHydra,
-		healAmountNeeded: 20 * 5
+		healAmountNeeded: 20 * 5,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.AlchemicalHydra.id,
@@ -137,7 +149,9 @@ export const konarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 95
 		},
-		healAmountNeeded: 20 * 22
+		healAmountNeeded: 20 * 22,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.MithrilDragon.id,
@@ -151,7 +165,9 @@ export const konarMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Dragon full helm']),
 		qpRequired: 0,
-		healAmountNeeded: 85
+		healAmountNeeded: 85,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.RedDragon.id,
@@ -164,7 +180,9 @@ export const konarMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
-		healAmountNeeded: 26
+		healAmountNeeded: 26,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.RuneDragon.id,
@@ -178,7 +196,9 @@ export const konarMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Dragon metal lump', 'Draconic visage']),
 		qpRequired: 205,
-		healAmountNeeded: 20 * 6
+		healAmountNeeded: 20 * 6,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.SmokeDevil.id,
@@ -202,7 +222,9 @@ export const konarMonsters: KillableMonster[] = [
 				[itemID('Staff of the dead')]: 8
 			}
 		],
-		healAmountNeeded: 16
+		healAmountNeeded: 16,
+		attackStyleToUse: GearSetupTypes.Mage,
+		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.ThermonuclearSmokeDevil.id,
@@ -241,7 +263,9 @@ export const konarMonsters: KillableMonster[] = [
 				[itemID('Ancestral robe top')]: 4
 			}
 		],
-		healAmountNeeded: 20 * 5
+		healAmountNeeded: 20 * 5,
+		attackStyleToUse: GearSetupTypes.Mage,
+		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.Waterfiend.id,
@@ -254,6 +278,8 @@ export const konarMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Mist battlestaff']),
 		qpRequired: 0,
-		healAmountNeeded: 38
+		healAmountNeeded: 38,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	}
 ];
