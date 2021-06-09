@@ -273,6 +273,7 @@ export function hasSlayerUnlock(
 export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	// TODO: Refactor this into a 'lootFilter' function/class/something
 	// Order: Fang, eye, heart.
+	const numBlackMask = myLoot.bank[itemID('Black mask (10)')];
 	const numHydraEyes = myLoot.bank[itemID("Hydra's eye")];
 	const numDarkTotemBases = myLoot.bank[itemID('Dark totem base')];
 	const numBludgeonPieces = myLoot.bank[itemID('Bludgeon claw')];
@@ -291,12 +292,18 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	myLoot.filter(l => {
 		return (
 			l.id !== 420 &&
+			l.id !== (itemID('Black mask (10)')) &&
 			l.id !== itemID("Hydra's eye") &&
 			l.id !== itemID('Dark totem base') &&
 			l.id !== itemID('Bludgeon claw')
 		);
 	}, true);
 
+	if (numBlackMask) {
+		for (let x = 0; x < numBlackMask; x++) {
+			myLoot.add('Black mask');
+		}
+	}
 	if (numBludgeonPieces) {
 		for (let x = 0; x < numBludgeonPieces; x++) {
 			const bank: number[] = [];
