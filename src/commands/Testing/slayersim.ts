@@ -98,14 +98,15 @@ export default class extends BotCommand {
 		if (option === 'tasksim' ) {
 			const simTable: string[][] = [];
 			simTable.push(['Master', 'Monster', 'Weight', 'Rolls', 'Total Rolls']);
-			let tasks  : { [key : string] : {} } = {};
-			const iterations = 5000;
+
 			slayerMasters.forEach(master => {
+				let tasks  : { [key : string] : { ct: number, weight: number} } = {};
+				const iterations = 3000;
 				for (let i = 1; i < iterations; i++) {
 					const newTask = assignNewSlayerTask(msg.author, master);
 					tasks[newTask!.monster!.name] = tasks[newTask!.monster!.name] ?
-						{ ct: tasks[newTask!.monster!.name].ct + 1, weight: tasks[newTask!.monster!.name].weight }
-						: { ct: 1, weight: tasks[newTask!.monster!.name].weight };
+						{ ct: tasks[newTask!.monster!.name].ct + 1, weight: newTask!.weight }
+						: { ct: 1, weight: newTask!.weight };
 				}
 				Object.keys(tasks).forEach(tstr => {
 					simTable.push([master.name, tstr, tasks[tstr].weight.toString(), tasks[tstr].ct.toLocaleString(), iterations.toLocaleString()]);

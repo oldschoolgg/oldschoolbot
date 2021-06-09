@@ -1034,7 +1034,7 @@ export const turaelMonsters: KillableMonster[] = [
 		id: Monsters.Wolf.id,
 		name: Monsters.Wolf.name,
 		aliases: Monsters.Wolf.aliases,
-		timeToFinish: Time.Second * 7,
+		timeToFinish: Time.Second * 14,
 		table: Monsters.Wolf,
 		wildy: false,
 		canBeKilled: true,
