@@ -85,7 +85,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 	},
 	{
 		monster: Monsters.BronzeDragon,
-		amount: [30, 50],
+		amount: [10, 20],
 		weight: 7,
 		monsters: [Monsters.BronzeDragon.id],
 		combatLevel: 75,

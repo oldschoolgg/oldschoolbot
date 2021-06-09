@@ -50,15 +50,19 @@ export default class extends BotCommand {
 			return msg.channel.sendFile(Buffer.from(unlockTable), `slayerRewardsItems.txt`);
 		}
 
-		let unlocks: string[] = [];
+		//let unlocks: string[] = [];
 		const myUnlocks = await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
 		const myPoints = await msg.author.settings.get(UserSettings.Slayer.SlayerPoints);
-
+/*
 		myUnlocks.forEach(u => {
 			unlocks.push(getSlayerReward(u));
 		});
+		*/
+		const unlocksStr = myUnlocks.map(mu => {
+			getSlayerReward(mu);
+		}).join(`\n`);
 		const defaultMsg = `Current points: ${myPoints}\nYou currently have the following ` +
-			`rewards unlocked:\n\`${unlocks.join(`\n`)}\`\n\n` +
+			`rewards unlocked:\n\`${unlocksStr}\`\n\n` +
 			`Usage:\n\`${msg.cmdPrefix}slayershop [unlock|lock|buy] Reward\`\nExample:` +
 			`\n\`${msg.cmdPrefix}slayershop unlock Malevolent Masquerade\``;
 		if (defaultMsg.length > 2000) {
