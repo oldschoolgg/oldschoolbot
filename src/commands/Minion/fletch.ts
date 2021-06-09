@@ -68,13 +68,9 @@ export default class extends BotCommand {
 
 		if (fletchable.requiredSlayerUnlocks) {
 			let mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
-			let mySlayerUnlocksIter: SlayerTaskUnlocksEnum[] = [];
 
-			mySlayerUnlocks.forEach(msu => {
-				mySlayerUnlocksIter.push(msu as SlayerTaskUnlocksEnum);
-			});
 			const { success, errors } = hasSlayerUnlock(
-				mySlayerUnlocksIter,
+				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
 				fletchable.requiredSlayerUnlocks
 			);
 			if (!success) {

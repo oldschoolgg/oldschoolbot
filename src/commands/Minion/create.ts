@@ -86,17 +86,10 @@ export default class extends BotCommand {
 			}
 		}
 		if (createableItem.requiredSlayerUnlocks) {
-			let mySlayerUnlocks: SlayerTaskUnlocksEnum[] = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
-			let mySlayerUnlocksIter: SlayerTaskUnlocksEnum[] = [];
+			let mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
 
-			/*
-			mySlayerUnlocks.forEach(msu => {
-				mySlayerUnlocksIter.push(msu as SlayerTaskUnlocksEnum);
-			});
-
-			 */
 			const { success, errors } = hasSlayerUnlock(
-				mySlayerUnlocks,
+				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
 				createableItem.requiredSlayerUnlocks
 			);
 			if (!success) {
