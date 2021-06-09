@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { GearSetupTypes, GearStat } from '../../../gear';
 import { SkillsEnum } from '../../../skilling/types';
 import { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
@@ -279,7 +280,9 @@ export const turaelMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 69
 		},
-		healAmountNeeded: 20 * 5
+		healAmountNeeded: 20 * 5,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackSlash, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.DesertLizard.id,
@@ -929,7 +932,9 @@ export const turaelMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 69
 		},
-		healAmountNeeded: 20 * 3
+		healAmountNeeded: 20 * 3,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackSlash, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.TorturedSoul.id,
