@@ -14,7 +14,7 @@ import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { Monsters } from 'oldschooljs';
-import MonsterAttribute from 'oldschooljs/dist/meta/monsterData';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import findMonster, {
 	addArrayOfNumbers,
