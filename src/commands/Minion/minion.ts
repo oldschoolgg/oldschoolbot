@@ -242,7 +242,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 	@requiresMinion
 	async combatlevel(msg: KlasaMessage) {
-		combat(msg);
+		this.combat(msg);
 	}
 
 	@requiresMinion
