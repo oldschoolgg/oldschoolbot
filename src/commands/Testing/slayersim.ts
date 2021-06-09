@@ -128,28 +128,30 @@ export default class extends BotCommand {
 
 		slayerMasters.forEach(master => {
 			master.tasks.forEach(task => {
-				const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, task!.monster!.id);
-				const kMonster = killableMonsters.find(km => {
-					return km.id === task!.monster.id;
+				task.monsters.forEach(tmon =>
+				{
+					const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, tmon!.id);
+					const kMonster = killableMonsters.find(km => {
+						return km.id === tmon.id;
+					});
+					let [killTime, percentReduced] = reducedTimeFromKC(
+						kMonster!,
+						msg.author.getKC(task.monster.id)
+					);
+					const [newDuration, boostMsg] = applySkillBoost(msg.author, killTime, attackStyles);
+					// add code to uses boosts maybe?
+					const killsPerHour = Time.Hour / newDuration;
+					let slayerXpPerHour = 'NA';
+					if (osjsMon?.data?.hitpoints) {
+						slayerXpPerHour = (osjsMon!.data!.slayerXP ?
+							killsPerHour * osjsMon!.data!.slayerXP :
+							killsPerHour * osjsMon!.data!.hitpoints).toLocaleString();
+					}
+					const foodPerHour = calculateMonsterFood(kMonster!, msg.author)[0] * killsPerHour;
+					simTable.push([master!.name, kMonster!.name, Math.round(foodPerHour).toLocaleString(),
+						Math.ceil(foodPerHour / 20).toLocaleString(), Math.floor(killsPerHour).toString(),
+						slayerXpPerHour, `${percentReduced}% for KC, ${boostMsg}`]);
 				});
-				let [killTime, percentReduced] = reducedTimeFromKC(
-					kMonster!,
-					msg.author.getKC(task.monster.id)
-				);
-				const [newDuration, boostMsg] = applySkillBoost(msg.author, killTime, attackStyles);
-				// add code to uses boosts maybe?
-				const killsPerHour = Time.Hour / newDuration;
-				let slayerXpPerHour = 'NA';
-				if (osjsMon?.data?.hitpoints) {
-					slayerXpPerHour = (osjsMon!.data!.slayerXP ?
-						killsPerHour * osjsMon!.data!.slayerXP :
-						killsPerHour * osjsMon!.data!.hitpoints).toLocaleString();
-				}
-				const foodPerHour = calculateMonsterFood(kMonster!, msg.author)[0] * killsPerHour;
-				simTable.push([master!.name, kMonster!.name, Math.round(foodPerHour).toLocaleString(),
-					Math.ceil(foodPerHour / 20).toLocaleString(), Math.floor(killsPerHour).toString(),
-					slayerXpPerHour, `${percentReduced}% for KC, ${boostMsg}`]);
-
 			});
 		});
 
