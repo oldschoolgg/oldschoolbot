@@ -413,8 +413,8 @@ export function calcCombatLevel(skills: Skills) {
 }
 export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 	for (const [skillName, level] of objectEntries(requirements)) {
-		if (skillName as string === 'combat') {
-			if(calcCombatLevel(skills) < level!) return false;
+		if ((skillName as string) === 'combat') {
+			if (calcCombatLevel(skills) < level!) return false;
 		} else {
 			const xpHas = skills[skillName];
 			const levelHas = convertXPtoLVL(xpHas ?? 1);

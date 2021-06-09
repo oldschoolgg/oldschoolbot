@@ -5,6 +5,8 @@ import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 import { Emoji, Events } from '../../../lib/constants';
 import fightCavesSupplies from '../../../lib/minions/data/fightCavesSupplies';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../../lib/skilling/types';
+import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
 import {
 	calcPercentOfNum,
@@ -17,8 +19,6 @@ import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import {calculateSlayerPoints, getUsersCurrentSlayerInfo} from "../../../lib/slayer/slayerUtil";
-import {SkillsEnum} from "../../../lib/skilling/types";
 
 const TokkulID = itemID('Tokkul');
 const TzrekJadPet = itemID('Tzrek-jad');
@@ -39,13 +39,13 @@ export default class extends Task {
 		// Add slayer
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
-			usersTask.currentTask !== null
-			&& usersTask.currentTask !== undefined
-			&& usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id
-			&& usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask !== null &&
+			usersTask.currentTask !== undefined &&
+			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
+			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
 
 		if (preJadDeathTime) {
-			let slayerMsg = ''
+			let slayerMsg = '';
 			if (isOnTask) {
 				slayerMsg = ' Task cancelled.';
 				usersTask.currentTask!.quantityRemaining = 0;
@@ -86,7 +86,7 @@ export default class extends Task {
 		}
 
 		if (diedToJad) {
-			let slayerMsg = ''
+			let slayerMsg = '';
 			if (isOnTask) {
 				slayerMsg = ' Task cancelled.';
 				usersTask.currentTask!.quantityRemaining = 0;
@@ -105,9 +105,7 @@ export default class extends Task {
 					return this.client.commands.get('fightcaves')!.run(res, []);
 				},
 				await chatHeadImage({
-					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${
-						tokkulReward
-					}x Tokkul. ${attemptsStr}.${slayerMsg}`,
+					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.${slayerMsg}`,
 					head: 'mejJal'
 				}),
 				data,

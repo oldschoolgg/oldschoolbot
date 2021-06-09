@@ -88,9 +88,7 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 6,
-		itemsRequired: deepResolveItems([
-			'Antidote++(4)'
-		]),
+		itemsRequired: deepResolveItems(['Antidote++(4)']),
 		notifyDrops: resolveItems(['Hydra tail']),
 		qpRequired: 0,
 		levelRequirements: {
@@ -107,9 +105,7 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 7,
-		itemsRequired: deepResolveItems([
-			'Antidote++(4)'
-		]),
+		itemsRequired: deepResolveItems(['Antidote++(4)']),
 		notifyDrops: resolveItems([
 			'Hydra leather',
 			'Hydra tail',
@@ -222,16 +218,16 @@ export const konarMonsters: KillableMonster[] = [
 				[itemID('Trident of the swamp')]: 10,
 				[itemID('Uncharged toxic trident')]: 10,
 				[itemID('Trident of the seas')]: 8,
-				[itemID('Uncharged trident')]: 8,
+				[itemID('Uncharged trident')]: 8
 			},
 			{
-				[itemID('Ancestral hat')]: 5,
+				[itemID('Ancestral hat')]: 5
 			},
 			{
-				[itemID('Ancestral robe bottom')]: 4,
+				[itemID('Ancestral robe bottom')]: 4
 			},
 			{
-				[itemID('Ancestral robe top')]: 4,
+				[itemID('Ancestral robe top')]: 4
 			}
 		]
 	},

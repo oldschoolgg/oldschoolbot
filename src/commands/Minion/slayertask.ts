@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-
 import { Monsters } from 'oldschooljs';
+
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
@@ -14,7 +14,6 @@ import {
 } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
-
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -34,23 +33,30 @@ export default class extends BotCommand {
 		const { currentTask, totalTasksDone, assignedTask } = await getUsersCurrentSlayerInfo(
 			msg.author.id
 		);
-		const myBlockList = await msg.author.settings.get(UserSettings.Slayer.BlockedTasks) ?? [];
-		const myQPs = await msg.author.settings.get(UserSettings.QP) ?? 0;
+		const myBlockList = (await msg.author.settings.get(UserSettings.Slayer.BlockedTasks)) ?? [];
+		const myQPs = (await msg.author.settings.get(UserSettings.QP)) ?? 0;
 
 		const maxBlocks = calcMaxBlockedTasks(myQPs);
-		if(
-			msg.flagArgs.listblocks
-			|| msg.flagArgs.list
-			|| (input && input === "listblocks")
-			|| (input && input === "list")
+		if (
+			msg.flagArgs.listblocks ||
+			msg.flagArgs.list ||
+			(input && input === 'listblocks') ||
+			(input && input === 'list')
 		) {
-			let mobs : string[] = [];
-			let outstr = `You have a maximum of ${maxBlocks} task blocks. You are using ${myBlockList.length}` +
+			let mobs: string[] = [];
+			let outstr =
+				`You have a maximum of ${maxBlocks} task blocks. You are using ${myBlockList.length}` +
 				` and have ${maxBlocks - myBlockList.length} remaining\n\nBlocked Tasks:\n`;
-			const myBlockedMonsters = Monsters.filter(m => { return myBlockList.includes(m.id) });
-			myBlockedMonsters.forEach(m => {mobs.push(`${m.id}: ${getCommonTaskName(m)}`)});
+			const myBlockedMonsters = Monsters.filter(m => {
+				return myBlockList.includes(m.id);
+			});
+			myBlockedMonsters.forEach(m => {
+				mobs.push(`${m.id}: ${getCommonTaskName(m)}`);
+			});
 			outstr += mobs.join(`\n`);
-			return msg.channel.send(`${outstr}\n\nTry: \`${msg.cmdPrefix}st --block\` to block a task.`);
+			return msg.channel.send(
+				`${outstr}\n\nTry: \`${msg.cmdPrefix}st --block\` to block a task.`
+			);
 		}
 
 		if (msg.flagArgs.unblock) {
@@ -62,7 +68,8 @@ export default class extends BotCommand {
 			if (isNaN(idToRemove)) {
 				// Lets lookup the ID from the name:
 				osjsMonster = Monsters.find(mon =>
-					mon.aliases.some(alias => stringMatches(alias, input)));
+					mon.aliases.some(alias => stringMatches(alias, input))
+				);
 				if (!osjsMonster) {
 					throw `Failed to find a monster with that name!`;
 				}
@@ -75,7 +82,9 @@ export default class extends BotCommand {
 			}
 			// Now we can remove based on ID.
 			if (!myBlockList.includes(idToRemove)) {
-				return msg.channel.send(`${idToRemove}: ${osjsMonster.name} is not on the block list!`);
+				return msg.channel.send(
+					`${idToRemove}: ${osjsMonster.name} is not on the block list!`
+				);
 			}
 			if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
 				const alchMessage = await msg.channel.send(
@@ -100,8 +109,7 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.Slayer.BlockedTasks, idToRemove);
 			return msg.channel.send(`${osjsMonster.name}s have been unblocked`);
 		}
-		if (input && (input === 'skip' || input === 'block'))
-			msg.flagArgs[input] = 'yes';
+		if (input && (input === 'skip' || input === 'block')) msg.flagArgs[input] = 'yes';
 		if (currentTask && (msg.flagArgs.skip || msg.flagArgs.block)) {
 			const toBlock = msg.flagArgs.block ? true : false;
 			if (toBlock && myBlockList.length >= maxBlocks) {
@@ -113,13 +121,16 @@ export default class extends BotCommand {
 			}
 			let slayerPoints = msg.author.settings.get(UserSettings.Slayer.SlayerPoints) ?? 0;
 			if (slayerPoints < (toBlock ? 100 : 30)) {
-				return msg.send(`You need ${toBlock ? 100 : 30} points to ${toBlock ? 'block' : 'cancel'},` +
-					` you only have: ${slayerPoints}`);
+				return msg.send(
+					`You need ${toBlock ? 100 : 30} points to ${toBlock ? 'block' : 'cancel'},` +
+						` you only have: ${slayerPoints}`
+				);
 			}
 			if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 				const alchMessage = await msg.channel.send(
-					`Really ${toBlock ? 'block' : 'skip'} task? This will cost ${toBlock ? 100 : 30}` +
-						` slayer points.\n\nType **confirm** to ${toBlock ? 'block' : 'skip'}.`
+					`Really ${toBlock ? 'block' : 'skip'} task? This will cost ${
+						toBlock ? 100 : 30
+					}` + ` slayer points.\n\nType **confirm** to ${toBlock ? 'block' : 'skip'}.`
 				);
 
 				try {
@@ -134,13 +145,18 @@ export default class extends BotCommand {
 						}
 					);
 				} catch (err) {
-					return alchMessage.edit(`Not ${toBlock ? 'blocking' : 'skipping'} slayer task.`);
+					return alchMessage.edit(
+						`Not ${toBlock ? 'blocking' : 'skipping'} slayer task.`
+					);
 				}
 			}
 			slayerPoints -= toBlock ? 100 : 30;
 			await msg.author.settings.update(UserSettings.Slayer.SlayerPoints, slayerPoints);
-			if(toBlock)
-				await msg.author.settings.update(UserSettings.Slayer.BlockedTasks, currentTask.monsterID);
+			if (toBlock)
+				await msg.author.settings.update(
+					UserSettings.Slayer.BlockedTasks,
+					currentTask.monsterID
+				);
 			currentTask!.quantityRemaining = 0;
 			currentTask!.skipped = true;
 			currentTask!.save();
@@ -235,17 +251,17 @@ export default class extends BotCommand {
 				const altMobs = assignedTask.monsters;
 				altMobs.forEach(m => {
 					const monster = killableMonsters.find(mon => mon.id === m);
-					if(monster!.id !== assignedTask.monster.id) alternateMonsters.push(monster!.name);
+					if (monster!.id !== assignedTask.monster.id)
+						alternateMonsters.push(monster!.name);
 				});
-				monsterList = alternateMonsters.length > 0
-					? ` (${alternateMonsters.join(`/`)})`
-					: '';
+				monsterList =
+					alternateMonsters.length > 0 ? ` (${alternateMonsters.join(`/`)})` : '';
 			}
 			let baseInfo = currentTask
-				? `Your current task is to kill ${currentTask.quantity}x ${getCommonTaskName(assignedTask!.monster)}s`
-					+ `${monsterList}, you have ${
-						currentTask.quantityRemaining
-				  } kills remaining.`
+				? `Your current task is to kill ${currentTask.quantity}x ${getCommonTaskName(
+						assignedTask!.monster
+				  )}s` +
+				  `${monsterList}, you have ${currentTask.quantityRemaining} kills remaining.`
 				: `You have no task at the moment <:FrogBigEyes:847859910933741628> You can get a task using \`${
 						msg.cmdPrefix
 				  }slayertask ${slayerMasters.map(i => i.name).join('/')}\``;
@@ -288,7 +304,8 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 		if (commonName === 'TzHaar') {
-			commonName += `. You can choose to kill TzTok-Jad with ${msg.cmdPrefix}fightcaves as long as you ` +
+			commonName +=
+				`. You can choose to kill TzTok-Jad with ${msg.cmdPrefix}fightcaves as long as you ` +
 				`don't kill any regular TzHaar first.`;
 		} else {
 			commonName += 's';

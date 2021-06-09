@@ -3,15 +3,15 @@ import { table } from 'table';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
+import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import {UserSettings} from "../../lib/settings/types/UserSettings";
-import {SlayerTaskUnlocksEnum} from "../../lib/slayer/slayerUnlocks";
-import {hasSlayerUnlock} from "../../lib/slayer/slayerUtil";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

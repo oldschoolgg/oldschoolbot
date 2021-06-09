@@ -1,6 +1,6 @@
 import { randFloat, randInt } from 'e';
 import { KlasaUser } from 'klasa';
-import {  Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
+import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { MoreThan } from 'typeorm';
 
@@ -8,14 +8,13 @@ import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
-import {addBanks, roll} from '../util';
+import { addBanks, roll } from '../util';
+import itemID from '../util/itemID';
+import resolveItems from '../util/resolveItems';
 import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
 import { bossTasks } from './tasks/bossTasks';
 import { AssignableSlayerTask, SlayerMaster } from './types';
-import itemID from "../util/itemID";
-import resolveItems from "../util/resolveItems";
-
 
 export enum AutoslayOptionsEnum {
 	Reserved,
@@ -81,7 +80,8 @@ export function userCanUseTask(user: KlasaUser, task: AssignableSlayerTask, mast
 	// Slayer unlock restrictions:
 	const lmon = task.monster.name.toLowerCase();
 	const lmast = master.name.toLowerCase();
-	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped)) return false;
+	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped))
+		return false;
 	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed)) return false;
 	if (lmon === 'mithril dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.IHopeYouMithMe))
 		return false;
@@ -187,7 +187,6 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 				user: id,
 				quantityRemaining: MoreThan(0),
 				skipped: false
-
 			}
 		}),
 		SlayerTaskTable.count({ where: { user: id, quantityRemaining: 0, skipped: false } })
@@ -271,23 +270,18 @@ export function hasSlayerUnlock(
 	return { success, errors };
 }
 
-export function filterLootReplace(myBank : Bank, myLoot : Bank) {
-
+export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	// TODO: Refactor this into a 'lootFilter' function/class/something
 	// Order: Fang, eye, heart.
 	const numHydraEyes = myLoot.bank[itemID("Hydra's eye")];
 	const numDarkTotemBases = myLoot.bank[itemID('Dark totem base')];
 	const numBludgeonPieces = myLoot.bank[itemID('Bludgeon claw')];
-	const ringPieces = resolveItems([
-		"Hydra's eye",
-		"Hydra's fang",
-		"Hydra's heart"
-	]) as number[];
+	const ringPieces = resolveItems(["Hydra's eye", "Hydra's fang", "Hydra's heart"]) as number[];
 	const totemPieces = resolveItems([
 		'Dark totem base',
 		'Dark totem middle',
 		'Dark totem top'
-	]) as number[]
+	]) as number[];
 	const bludgeonPieces = resolveItems([
 		'Bludgeon claw',
 		'Bludgeon spine',
@@ -295,10 +289,12 @@ export function filterLootReplace(myBank : Bank, myLoot : Bank) {
 	]) as number[];
 
 	myLoot.filter(l => {
-		return 	l.id !== 420
-			&& l.id !== itemID("Hydra's eye")
-			&& l.id !== itemID('Dark totem base')
-			&& l.id !== itemID('Bludgeon claw');
+		return (
+			l.id !== 420 &&
+			l.id !== itemID("Hydra's eye") &&
+			l.id !== itemID('Dark totem base') &&
+			l.id !== itemID('Bludgeon claw')
+		);
 	}, true);
 
 	if (numBludgeonPieces) {

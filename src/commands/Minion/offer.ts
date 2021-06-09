@@ -10,13 +10,13 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { birdsNestID, treeSeedsNest, wysonSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, roll, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
-import {filterLootReplace} from "../../lib/slayer/slayerUtil";
 
 const specialBones = [
 	{
@@ -66,11 +66,15 @@ export default class extends BotCommand {
 		if (boneName.toLowerCase() === 'unsired') {
 			const unsiredsOwned = userBank.amount(itemID('Unsired'));
 			if (unsiredsOwned === 0) {
-				return msg.channel.send(`You don't have any Unsireds to offer to the Font of Consumption.`);
+				return msg.channel.send(
+					`You don't have any Unsireds to offer to the Font of Consumption.`
+				);
 			}
 			quantity = quantity ?? unsiredsOwned;
 			if (quantity > unsiredsOwned) {
-				return msg.channel.send(`You don't have ${quantity} Unsired to offer the Font. You have ${unsiredsOwned}.`)
+				return msg.channel.send(
+					`You don't have ${quantity} Unsired to offer the Font. You have ${unsiredsOwned}.`
+				);
 			}
 			await msg.author.removeItemsFromBank({ [itemID('Unsired')]: quantity });
 			let loot = new Bank();
@@ -92,7 +96,6 @@ export default class extends BotCommand {
 				user: msg.author,
 				cl: previousCL
 			});
-
 		}
 
 		const egg = eggs.find(egg => stringMatches(boneName, egg.name));

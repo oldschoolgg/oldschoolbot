@@ -538,10 +538,10 @@ const slayerCreatables: Createable[] = [
 	{
 		name: 'Arclight',
 		inputItems: resolveNameBank({
-			'Darklight': 1,
+			Darklight: 1,
 			'Ancient shard': 3
 		}),
-		outputItems: resolveNameBank({ 'Arclight': 1 }),
+		outputItems: resolveNameBank({ Arclight: 1 }),
 		GPCost: 0
 	},
 	{
@@ -576,10 +576,10 @@ const slayerCreatables: Createable[] = [
 		inputItems: resolveNameBank({
 			'Nature rune': 1000,
 			"Bryophyta's essence": 1,
-			'Battlestaff': 1
+			Battlestaff: 1
 		}),
 		outputItems: resolveNameBank({ "Bryophyta's staff": 1 }),
-		GPCost:0
+		GPCost: 0
 	},
 	{
 		name: 'Toxic staff (uncharged)',

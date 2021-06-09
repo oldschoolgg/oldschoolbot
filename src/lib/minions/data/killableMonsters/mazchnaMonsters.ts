@@ -1,9 +1,9 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import resolveItems  from '../../../util/resolveItems';
+import itemID from '../../../util/itemID';
+import resolveItems from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
-import itemID from "../../../util/itemID";
 
 export const mazchnaMonsters: KillableMonster[] = [
 	{

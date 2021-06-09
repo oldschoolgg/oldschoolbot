@@ -2,9 +2,9 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { SkillsEnum } from '../../../skilling/types';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
-import {SkillsEnum} from "../../../skilling/types";
 
 export const chaeldarMonsters: KillableMonster[] = [
 	{
@@ -302,7 +302,13 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
-			["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow', 'Toxic blowpipe', 'Toxic blowpipe (empty)']
+			[
+				"Karil's crossbow",
+				'Rune crossbow',
+				'Armadyl crossbow',
+				'Toxic blowpipe',
+				'Toxic blowpipe (empty)'
+			]
 		]),
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,

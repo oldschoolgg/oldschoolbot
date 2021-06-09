@@ -1,8 +1,10 @@
 import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { Monsters } from 'oldschooljs';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import {Activity, Time} from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
@@ -10,12 +12,12 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { Monsters } from 'oldschooljs';
-import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-
 import findMonster, {
 	addArrayOfNumbers,
 	formatDuration,
@@ -26,9 +28,6 @@ import findMonster, {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
-import {SkillsEnum} from "../../lib/skilling/types";
-import {UserSettings} from "../../lib/settings/types/UserSettings";
-import {SlayerTaskUnlocksEnum} from "../../lib/slayer/slayerUnlocks";
 
 const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
 const invalidMonsterMsg = (prefix: string) =>
@@ -116,7 +115,7 @@ export default class extends BotCommand {
 			msg.author.getKC(monster.id)
 		);
 
-		const [, osjsMon, attackStyles ] = resolveAttackStyles(msg.author, monster.id);
+		const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, monster.id);
 		const [newTime, skillBoostMsg] = applySkillBoost(msg.author, timeToFinish, attackStyles);
 
 		timeToFinish = newTime;
@@ -153,18 +152,18 @@ export default class extends BotCommand {
 			// Todo: Probably handle this in a separate function to make everything easier.
 			let effectiveQtyRemaining = usersTask.currentTask!.quantityRemaining;
 			if (
-				monster.id === Monsters.KrilTsutsaroth.id
-				&& usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
+				monster.id === Monsters.KrilTsutsaroth.id &&
+				usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
 			) {
 				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
 			} else if (
-				monster.id === Monsters.Kreearra.id
-				&& usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
+				monster.id === Monsters.Kreearra.id &&
+				usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
 			) {
 				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 4);
 			} else if (
-				monster.id === Monsters.GrotesqueGuardians.id
-				&& msg.author.settings
+				monster.id === Monsters.GrotesqueGuardians.id &&
+				msg.author.settings
 					.get(UserSettings.Slayer.SlayerUnlocks)
 					.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
 			) {
@@ -175,7 +174,7 @@ export default class extends BotCommand {
 
 		// Dragonbane, in the worst way possible. We need to add dragonbane to monsters.
 		// Removed vorkath because he has a special boost.
-/*		if (
+		/*		if (
 			monster.name.toLowerCase().includes('dragon')
 			|| monster.name.toLowerCase() === 'drake'
 			|| monster.name.toLowerCase().includes('hydra')
@@ -184,18 +183,17 @@ export default class extends BotCommand {
 		) {
 
  */
-		if (osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon))
-		{
+		if (osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
 			if (
-				msg.author.hasItemEquippedOrInBank('Dragon hunter lance')
-				&& !attackStyles.includes(SkillsEnum.Ranged)
-				&& !attackStyles.includes(SkillsEnum.Magic)
+				msg.author.hasItemEquippedOrInBank('Dragon hunter lance') &&
+				!attackStyles.includes(SkillsEnum.Ranged) &&
+				!attackStyles.includes(SkillsEnum.Magic)
 			) {
 				timeToFinish = reduceNumByPercent(timeToFinish, 15);
 				boosts.push('15% for Dragon hunter lance');
 			} else if (
-				msg.author.hasItemEquippedOrInBank('Dragon hunter crossbow')
-				&& attackStyles.includes(SkillsEnum.Ranged)
+				msg.author.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
+				attackStyles.includes(SkillsEnum.Ranged)
 			) {
 				timeToFinish = reduceNumByPercent(timeToFinish, 15);
 				boosts.push('15% for Dragon hunter crossbow');
@@ -207,11 +205,9 @@ export default class extends BotCommand {
 				timeToFinish = reduceNumByPercent(timeToFinish, 15);
 				boosts.push('15% for Black mask (i) on non-melee task');
 			}
-		} else {
-			if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))) {
-				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				boosts.push('15% for Black mask on melee task');
-			}
+		} else if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			boosts.push('15% for Black mask on melee task');
 		}
 
 		// Check food
@@ -257,9 +253,9 @@ export default class extends BotCommand {
 		// Todo add a new 'recurring cost' field to the KillableMonster that loops and does this.
 		// Needs some thinking, because it needs to have 1 per qty, and then timed ones.
 		// Remove antidote++(4) from hydras + alchemical hydra
-		if (['hydra','alchemical hydra'].includes(monster.name.toLowerCase())) {
+		if (['hydra', 'alchemical hydra'].includes(monster.name.toLowerCase())) {
 			const potsTotal = await msg.author.numberOfItemInBank(itemID('Antidote++(4)'));
-			//Potions actually last 36+ minutes for a 4-dose, but we want item sink
+			// Potions actually last 36+ minutes for a 4-dose, but we want item sink
 			const potsToRemove = Math.ceil(duration / (15 * Time.Minute));
 			if (potsToRemove > potsTotal) {
 				return msg.channel.send(

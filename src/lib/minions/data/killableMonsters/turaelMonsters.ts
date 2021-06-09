@@ -1,10 +1,10 @@
-import {Time} from 'e';
-import {Monsters} from 'oldschooljs';
-import {itemID} from 'oldschooljs/dist/util';
+import { Time } from 'e';
+import { Monsters } from 'oldschooljs';
+import { itemID } from 'oldschooljs/dist/util';
 
-import  {deepResolveItems} from '../../../util/resolveItems';
-import {KillableMonster} from '../../types';
-import {SkillsEnum} from "../../../skilling/types";
+import { SkillsEnum } from '../../../skilling/types';
+import { deepResolveItems } from '../../../util/resolveItems';
+import { KillableMonster } from '../../types';
 
 export const turaelMonsters: KillableMonster[] = [
 	{
@@ -265,7 +265,7 @@ export const turaelMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			'Bandos chestplate',
 			["Verac's plateskirt", 'Bandos tassets'],
-			['Arclight','Abyssal whip', 'Dragon scimitar'],
+			['Arclight', 'Abyssal whip', 'Dragon scimitar'],
 			['Rune crossbow', "Karil's crossbow", 'Armadyl crossbow'],
 			['Armadyl chestplate', "Karil's leathertop"],
 			['Armadyl chainskirt', "Karil's leatherskirt"]
@@ -577,11 +577,7 @@ export const turaelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		itemsRequired: deepResolveItems([
-			[
-				'Trident of the seas',
-				'Trident of the swamp',
-				'Brine sabre'
-			]
+			['Trident of the seas', 'Trident of the swamp', 'Brine sabre']
 		]),
 		qpRequired: 10
 	},
@@ -609,7 +605,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		defaultAttackStyles: [SkillsEnum.Ranged],
-		disallowedAttackStyles: [SkillsEnum.Strength, SkillsEnum.Attack],
+		disallowedAttackStyles: [SkillsEnum.Strength, SkillsEnum.Attack]
 	},
 	{
 		id: Monsters.MonkeyArcher.id,

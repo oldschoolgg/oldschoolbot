@@ -151,7 +151,10 @@ declare module 'discord.js' {
 		 * Returns true if the user has this item equipped in any of their setups.
 		 * @param itemID The item ID.
 		 */
-		hasItemEquippedAnywhere(_item: number | string | string[] | number[], every = false): boolean;
+		hasItemEquippedAnywhere(
+			_item: number | string | string[] | number[],
+			every = false
+		): boolean;
 		/**
 		 * Checks whether they have the given item in their bank OR equipped.
 		 * @param item

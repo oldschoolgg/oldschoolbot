@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 
+import { SlayerTaskUnlocksEnum } from '../../../../slayer/slayerUnlocks';
 import itemID from '../../../../util/itemID';
 import { Fletchable } from '../../../types';
-import {SlayerTaskUnlocksEnum} from "../../../../slayer/slayerUnlocks";
 
 const Slayer: Fletchable[] = [
 	{
@@ -67,7 +67,7 @@ const Slayer: Fletchable[] = [
 		id: itemID('Broad bolts'),
 		level: 55,
 		xp: 3,
-		inputItems: new Bank({ 'Unfinished broad bolts': 1, 'Feather': 1 }),
+		inputItems: new Bank({ 'Unfinished broad bolts': 1, Feather: 1 }),
 		tickRate: 0.2,
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.BroaderFletching]
 	},

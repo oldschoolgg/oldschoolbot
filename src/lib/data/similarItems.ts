@@ -17,7 +17,7 @@ const slayerHelmSimilar = resolveItems([
 	'Purple slayer helmet',
 	'Turquoise slayer helmet',
 	'Hydra slayer helmet',
-	'Twisted slayer helmet',
+	'Twisted slayer helmet'
 ]);
 const slayerHelmSimilarI = resolveItems([
 	'Black slayer helmet (i)',
@@ -27,7 +27,7 @@ const slayerHelmSimilarI = resolveItems([
 	'Turquoise slayer helmet (i)',
 	'Hydra slayer helmet (i)',
 	'Twisted slayer helmet (i)',
-	'Slayer helmet (i)',
+	'Slayer helmet (i)'
 ]);
 
 const SimilarItems: Record<number, number[]> = {

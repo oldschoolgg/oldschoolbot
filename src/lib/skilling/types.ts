@@ -2,8 +2,8 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Emoji } from '../constants';
+import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
-import { SlayerTaskUnlocksEnum } from "../slayer/slayerUnlocks";
 
 export enum SkillsEnum {
 	Agility = 'agility',

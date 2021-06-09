@@ -64,9 +64,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 85
 		},
 		slayerOnly: true,
-		notifyDrops: resolveItems([
-			'Unsired'
-		]),
+		notifyDrops: resolveItems(['Unsired']),
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 10
@@ -180,7 +178,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
-		qpRequired: 0,
+		qpRequired: 0
 	},
 	{
 		id: Monsters.BrineRat.id,
@@ -414,9 +412,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		notifyDrops: resolveItems(['Noon', 'Jar of stone']),
-		itemsRequired: deepResolveItems([
-			'Brittle key',
-		]),
+		itemsRequired: deepResolveItems(['Brittle key']),
 		slayerOnly: true,
 		qpRequired: 0,
 		levelRequirements: {

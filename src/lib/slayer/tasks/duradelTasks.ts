@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { AssignableSlayerTask } from '../types';
-import { bossTasks } from "./bossTasks";
+import { bossTasks } from './bossTasks';
 
 export const duradelTasks: AssignableSlayerTask[] = [
 	{
@@ -371,11 +371,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.MountainTroll,
 		amount: [130, 200],
 		weight: 6,
-		monsters: [
-			Monsters.MountainTroll.id,
-			Monsters.IceTroll.id,
-			Monsters.TrollGeneral.id
-		],
+		monsters: [Monsters.MountainTroll.id, Monsters.IceTroll.id, Monsters.TrollGeneral.id],
 		combatLevel: 60,
 		unlocked: true
 	},

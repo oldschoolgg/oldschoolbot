@@ -1,13 +1,13 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-
 import { table } from 'table';
+
 import { Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
 import { getSlayerReward } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { stringMatches, toTitleCase} from '../../lib/util';
+import { stringMatches, toTitleCase } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -27,8 +27,13 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage, [_input]: [string]) {
-		if (msg.flagArgs.unlocks || msg.flagArgs.help || _input === 'help' || _input === 'unlocks') {
-			//const myUnlocks = SlayerRewardsShop.filter(srs => { return srs.item !== undefined });
+		if (
+			msg.flagArgs.unlocks ||
+			msg.flagArgs.help ||
+			_input === 'help' ||
+			_input === 'unlocks'
+		) {
+			// const myUnlocks = SlayerRewardsShop.filter(srs => { return srs.item !== undefined });
 			const unlockTable = table([
 				['Slayer Points', 'Name', 'Description', 'Type'],
 				...SlayerRewardsShop.map(i => [
@@ -38,8 +43,8 @@ export default class extends BotCommand {
 					i.item !== undefined
 						? 'item/buy'
 						: i.extendMult !== undefined
-							? 'extend'
-							: 'unlock'
+						? 'extend'
+						: 'unlock'
 				])
 			]);
 			return msg.channel.sendFile(Buffer.from(unlockTable), `slayerRewardsItems.txt`);
@@ -62,15 +67,12 @@ export default class extends BotCommand {
 
 	async buy(msg: KlasaMessage, [buyableName = '']: [string]) {
 		if (msg.flagArgs.items || msg.flagArgs.help || buyableName === 'help') {
-			const myUnlocks = SlayerRewardsShop.filter(srs => { return srs.item !== undefined });
+			const myUnlocks = SlayerRewardsShop.filter(srs => {
+				return srs.item !== undefined;
+			});
 			const unlockTable = table([
 				['Slayer Points', 'Name', 'Description', 'Type'],
-				...myUnlocks.map(i => [
-					i.slayerPointCost,
-					i.name,
-					i.desc,
-					'item/buy'
-				])
+				...myUnlocks.map(i => [i.slayerPointCost, i.name, i.desc, 'item/buy'])
 			]);
 			return msg.channel.sendFile(Buffer.from(unlockTable), `slayerRewardsItems.txt`);
 		}
@@ -79,11 +81,9 @@ export default class extends BotCommand {
 			throw `You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls buy --help\``;
 		}
 
-		const buyable = SlayerRewardsShop
-			.filter(i => {
-				return i.item !== undefined && i.item > 0;
-			})
-			.find(
+		const buyable = SlayerRewardsShop.filter(i => {
+			return i.item !== undefined && i.item > 0;
+		}).find(
 			item =>
 				stringMatches(buyableName, item.name) ||
 				(item.aliases && item.aliases.some(alias => stringMatches(alias, buyableName)))
@@ -147,16 +147,16 @@ export default class extends BotCommand {
 
 	async unlock(msg: KlasaMessage, [buyableName = '']: [string]) {
 		if (msg.flagArgs.items || msg.flagArgs.help || buyableName === 'help') {
-			const myUnlocks = SlayerRewardsShop.filter(srs => { return srs.item === undefined });
+			const myUnlocks = SlayerRewardsShop.filter(srs => {
+				return srs.item === undefined;
+			});
 			const unlockTable = table([
 				['Slayer Points', 'Name', 'Description', 'Type'],
 				...myUnlocks.map(i => [
 					i.slayerPointCost,
 					i.name,
 					i.desc,
-					i.extendMult === undefined
-						? 'unlock'
-						: 'extend'
+					i.extendMult === undefined ? 'unlock' : 'extend'
 				])
 			]);
 			return msg.channel.sendFile(Buffer.from(unlockTable), `slayerRewardsUnlocks.txt`);
@@ -167,7 +167,7 @@ export default class extends BotCommand {
 		}
 
 		const buyable = SlayerRewardsShop.filter(srs => {
-			return srs.item === undefined
+			return srs.item === undefined;
 		}).find(
 			item =>
 				stringMatches(buyableName, item.name) ||
@@ -244,16 +244,16 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable || toLockName === 'help' || msg.flagArgs.help) {
-			const myLocks = SlayerRewardsShop.filter(srs => { return srs.canBeRemoved === true });
+			const myLocks = SlayerRewardsShop.filter(srs => {
+				return srs.canBeRemoved === true;
+			});
 			const lockTable = table([
 				['Slayer Points', 'Name', 'Description', 'Type'],
 				...myLocks.map(i => [
 					i.slayerPointCost,
 					i.name,
 					i.desc,
-					i.extendMult === undefined
-						? 'lock'
-						: 'extend'
+					i.extendMult === undefined ? 'lock' : 'extend'
 				])
 			]);
 			return msg.channel.sendFile(

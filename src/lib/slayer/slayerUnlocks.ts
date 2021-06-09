@@ -144,7 +144,14 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		desc: 'Unlocks the ability to receive Lizardmen as a task.',
 		slayerPointCost: 75,
 		canBeRemoved: true,
-		aliases: ['lizardmen', 'lizardman', 'unlock lizardmen', 'unlock lizardman', 'shamans', 'unlock shamans']
+		aliases: [
+			'lizardmen',
+			'lizardman',
+			'unlock lizardmen',
+			'unlock lizardman',
+			'shamans',
+			'unlock shamans'
+		]
 	},
 	{
 		id: SlayerTaskUnlocksEnum.LikeABoss,
@@ -536,7 +543,13 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		desc: 'Each Grotesque Guardians kc gives 2 kc to your slayer task',
 		slayerPointCost: 500,
 		canBeRemoved: true,
-		aliases: ['double trouble', 'double garg kc','double grotesque kc', '2x groteque kc', '2x ggs kc']
+		aliases: [
+			'double trouble',
+			'double garg kc',
+			'double grotesque kc',
+			'2x groteque kc',
+			'2x ggs kc'
+		]
 	},
 	{
 		id: SlayerTaskUnlocksEnum.BroaderFletching,

@@ -7,13 +7,13 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import {
-	calculateSlayerPoints, filterLootReplace,
+	calculateSlayerPoints,
+	filterLootReplace,
 	getSlayerMasterOSJSbyID,
 	getUsersCurrentSlayerInfo
 } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
@@ -64,10 +64,16 @@ export default class extends Task {
 		announceLoot(this.client, user, monster, loot.bank);
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
-			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
+			user.settings.update(
+				UserSettings.Slayer.SuperiorCount,
+				oldSuperiorCount + newSuperiorCount
+			);
 		}
-		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
-		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
+		const superiorMessage = newSuperiorCount
+			? `, including **${newSuperiorCount} superiors**`
+			: '';
+		let str =
+			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
 		if (
 			monster.id === Monsters.Unicorn.id &&
@@ -82,24 +88,18 @@ export default class extends Task {
 
 		if (isOnTask) {
 			const effectiveSlayed =
-				(
-					monsterID === Monsters.KrilTsutsaroth.id
-					&& usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
-				)
-				? quantitySlayed! * 2
-				:
-					(
-						monsterID === Monsters.Kreearra.id
-						&& usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
-					)
+				monsterID === Monsters.KrilTsutsaroth.id &&
+				usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
+					? quantitySlayed! * 2
+					: monsterID === Monsters.Kreearra.id &&
+					  usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
 					? quantitySlayed! * 4
-					:
-						monsterID === Monsters.GrotesqueGuardians.id
-						&& user.settings
+					: monsterID === Monsters.GrotesqueGuardians.id &&
+					  user.settings
 							.get(UserSettings.Slayer.SlayerUnlocks)
 							.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
-						? quantitySlayed! * 2
-						: quantitySlayed!;
+					? quantitySlayed! * 2
+					: quantitySlayed!;
 
 			const quantityLeft = Math.max(
 				0,
