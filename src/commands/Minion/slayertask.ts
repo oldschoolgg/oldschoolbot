@@ -44,8 +44,8 @@ export default class extends BotCommand {
 			msg.flagArgs.list ||
 			(input && input === 'listblocks') ||
 			(input && input === 'list') ||
-			(input && input == 'blocks') ||
-			(input && input == 'blocklist')
+			(input && input === 'blocks') ||
+			(input && input === 'blocklist')
 		) {
 			let mobs: string[] = [];
 			let outstr =
@@ -127,7 +127,7 @@ export default class extends BotCommand {
 				const alchMessage = await msg.channel.send(
 					`Really ${toBlock ? 'block' : 'skip'} task? This will cost ${
 						toBlock ? 100 : 30
-					}` + ` slayer points.\n\nType **confirm** to ${toBlock ? 'block' : 'skip'}.`
+					} slayer points.\n\nType **confirm** to ${toBlock ? 'block' : 'skip'}.`
 				);
 
 				try {
