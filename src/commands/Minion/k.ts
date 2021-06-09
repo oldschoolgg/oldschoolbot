@@ -174,8 +174,8 @@ export default class extends BotCommand {
 
 		// Removed vorkath because he has a special boost.
 		if (
-			monster.name.toLowerCase() !== 'vorkath'
-			&& osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)
+			monster.name.toLowerCase() !== 'vorkath' &&
+			osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)
 		) {
 			if (
 				msg.author.hasItemEquippedOrInBank('Dragon hunter lance') &&

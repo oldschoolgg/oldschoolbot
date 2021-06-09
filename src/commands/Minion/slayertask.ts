@@ -38,9 +38,14 @@ export default class extends BotCommand {
 
 		const maxBlocks = calcMaxBlockedTasks(myQPs);
 		if (
-			msg.flagArgs.listblocks || msg.flagArgs.blocks || msg.flagArgs.blocklist ||	msg.flagArgs.list ||
-			(input && input === 'listblocks') || (input && input === 'list') ||
-			(input && input == 'blocks') || (input && input == 'blocklist')
+			msg.flagArgs.listblocks ||
+			msg.flagArgs.blocks ||
+			msg.flagArgs.blocklist ||
+			msg.flagArgs.list ||
+			(input && input === 'listblocks') ||
+			(input && input === 'list') ||
+			(input && input == 'blocks') ||
+			(input && input == 'blocklist')
 		) {
 			let mobs: string[] = [];
 			let outstr =
