@@ -85,7 +85,7 @@ export default class extends BotCommand {
 			}
 			if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
 				const alchMessage = await msg.channel.send(
-					`Really unblock ${osjsMonster.name}s? You will have to pay to block it again ` +
+					`Really unblock ${osjsMonster.name}? You will have to pay to block it again ` +
 						`in the future.\n\nType **confirm** to unblock.`
 				);
 				try {
@@ -100,11 +100,11 @@ export default class extends BotCommand {
 						}
 					);
 				} catch (err) {
-					return alchMessage.edit(`Not unblocking ${osjsMonster.name}s.`);
+					return alchMessage.edit(`Not unblocking ${osjsMonster.name}.`);
 				}
 			}
 			await msg.author.settings.update(UserSettings.Slayer.BlockedTasks, idToRemove);
-			return msg.channel.send(`${osjsMonster.name}s have been unblocked`);
+			return msg.channel.send(`${osjsMonster.name} have been unblocked`);
 		}
 		if (input && (input === 'skip' || input === 'block')) msg.flagArgs[input] = 'yes';
 		if (currentTask && (msg.flagArgs.skip || msg.flagArgs.block)) {
@@ -260,7 +260,7 @@ export default class extends BotCommand {
 			let baseInfo = currentTask
 				? `Your current task is to kill ${currentTask.quantity}x ${getCommonTaskName(
 						assignedTask!.monster
-				  )}s` +
+				  )}` +
 				  `${monsterList}, you have ${currentTask.quantityRemaining} kills remaining.`
 				: `You have no task at the moment <:FrogBigEyes:847859910933741628> You can get a task using \`${
 						msg.cmdPrefix
