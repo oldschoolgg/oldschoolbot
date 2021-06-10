@@ -151,7 +151,8 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			"Verac's flail",
 			"Verac's plateskirt",
-			["Black d'hide body", "Karil's leathertop"]
+			["Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
+			["Black d'hide chaps", "karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		notifyDrops: resolveItems(['Jar of sand', 'Kalphite princess']),
 		qpRequired: 0,
