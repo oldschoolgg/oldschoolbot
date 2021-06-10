@@ -140,11 +140,13 @@ export default class extends BotCommand {
 			course.name
 		} laps, it'll take around ${formatDuration(duration)} to finish.`;
 
-		if (course.name === 'Ape Atoll Agility Course') {
-			return msg.channel.send(`<:karamjanMonkey:739460740871749742> Monkey's can't alch!`);
-		}
 		const alchResult = alching(msg, duration);
 		if (alchResult !== null) {
+			if (course.name === 'Ape Atoll Agility Course') {
+				return msg.channel.send(
+					`<:karamjanMonkey:739460740871749742> Monkey's can't alch!`
+				);
+			}
 			if (!msg.author.owns(alchResult.bankToRemove)) {
 				return msg.channel.send(`You don't own ${alchResult.bankToRemove}.`);
 			}
