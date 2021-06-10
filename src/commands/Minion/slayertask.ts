@@ -225,7 +225,7 @@ export default class extends BotCommand {
 			let commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 			return msg.channel.send(
 				`Your task has been skipped.\n\n ${slayerMaster.name}` +
-					` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}s.`
+					` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.`
 			);
 		}
 
@@ -307,8 +307,6 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 			commonName +=
 				`. You can choose to kill TzTok-Jad with ${msg.cmdPrefix}fightcaves as long as you ` +
 				`don't kill any regular TzHaar first.`;
-		} else {
-			commonName += 's';
 		}
 		return msg.channel.send(
 			`${slayerMaster.name} has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.`

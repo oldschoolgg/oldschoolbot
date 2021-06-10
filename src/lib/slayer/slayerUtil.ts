@@ -163,7 +163,7 @@ export function getCommonTaskName(task: Monster) {
 			commonName = 'Vampyre';
 			break;
 		case Monsters.ElfWarrior.id:
-			commonName = 'Elve';
+			commonName = 'Elves';
 			break;
 		case Monsters.SpiritualRanger.id:
 			commonName = 'Spiritual Creature';
@@ -179,6 +179,7 @@ export function getCommonTaskName(task: Monster) {
 			break;
 		default:
 	}
+	if (commonName !== 'TzHaar' && !commonName.endsWith('s')) commonName += 's';
 	return commonName;
 }
 export async function getUsersCurrentSlayerInfo(id: string) {
