@@ -146,3 +146,11 @@ setItemAlias(2528, 'Genie lamp');
 setItemAlias(5076, 'Red bird egg');
 setItemAlias(5077, 'Blue bird egg');
 setItemAlias(5078, 'Green bird egg');
+
+// Twisted ancestral
+setItemAlias(21018, ['Ancestral hat', 'Twisted ancestral hat']);
+setItemAlias(21021, ['Ancestral robe top', 'Twisted ancestral robe top']);
+setItemAlias(21024, ['Ancestral robe bottom', 'Twisted ancestral robe bottom']);
+
+// Misc gear
+setItemAlias(12002, ['Occult necklace', 'Occult necklace (or)']);
