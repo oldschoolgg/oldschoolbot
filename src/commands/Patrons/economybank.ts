@@ -22,7 +22,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		const query = `select
-				jsonb_object_agg(itemID, itemQTY)::jsonb as banks
+				jsonb_object_agg(itemID, itemQTY) as banks
 			 from (
 				select key as itemID, sum(value::int) as itemQTY
 				from users

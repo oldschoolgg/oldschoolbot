@@ -537,6 +537,9 @@ export default class BankImageTask extends Task {
 			if (flags.av) {
 				bottomItemText = (item.highalch ?? 0) * quantity;
 			}
+			if (flags.id) {
+				bottomItemText = item.id.toString();
+			}
 
 			if (flags.id) {
 				bottomItemText = item.id.toString();
