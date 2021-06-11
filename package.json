@@ -34,7 +34,7 @@
 		"klasa-decorators": "^0.0.1",
 		"node-fetch": "^2.6.1",
 		"numbro": "^2.3.2",
-		"oldschooljs": "^1.9.1",
+		"oldschooljs": "1.9.2",
 		"p-queue": "^6.6.2",
 		"pg": "^8.6.0",
 		"piscina": "^1.6.3",
