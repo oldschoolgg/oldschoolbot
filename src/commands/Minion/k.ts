@@ -15,7 +15,8 @@ import {
 	CombatCannonItemBank,
 	CombatOptionsEnum,
 	iceBarrageConsumables,
-	iceBurstConsumables, SlayerActivityConstants
+	iceBurstConsumables,
+	SlayerActivityConstants
 } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';

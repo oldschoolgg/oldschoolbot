@@ -64,15 +64,17 @@ export default class extends BotCommand {
 				`${outstr}\n\nTry: \`${msg.cmdPrefix}st --block\` to block a task.`
 			);
 		}
-
-		if (msg.flagArgs.unblock || (input && input === 'unblock')) {
-			if (!input) {
+		const inputArray = input ? input.split(' ') : undefined;
+		const inputUnblock = inputArray?.slice(0, 1)[0] === 'unblock';
+		if (msg.flagArgs.unblock || inputUnblock) {
+			const monToBlock = inputUnblock ? inputArray!.slice(1).join(' ') : input;
+			if (!monToBlock) {
 				return msg.channel.send(`You must specify a monster to unblock!`);
 			}
 
-			let idToRemove = parseInt(input);
+			let idToRemove = parseInt(monToBlock);
 			const osjsMonster = isNaN(idToRemove)
-				? Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, input)))
+				? Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monToBlock)))
 				: Monsters.find(mon => mon.id === idToRemove);
 			if (!osjsMonster) {
 				return msg.channel.send(`Failed to find a monster with that name or id!`);

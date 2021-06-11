@@ -589,7 +589,7 @@ export const turaelMonsters: KillableMonster[] = [
 		id: Monsters.KalphiteSoldier.id,
 		name: Monsters.KalphiteSoldier.name,
 		aliases: Monsters.KalphiteSoldier.aliases,
-		timeToFinish: Time.Second * 18,
+		timeToFinish: Time.Second * 14,
 		table: Monsters.KalphiteSoldier,
 
 		wildy: false,

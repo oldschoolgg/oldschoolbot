@@ -327,7 +327,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Dagannoth.id,
 		name: Monsters.Dagannoth.name,
 		aliases: Monsters.Dagannoth.aliases,
-		timeToFinish: Time.Second * 12,
+		timeToFinish: Time.Second * 16,
 		table: Monsters.Dagannoth,
 
 		wildy: false,
@@ -636,7 +636,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Hellhound.id,
 		name: Monsters.Hellhound.name,
 		aliases: Monsters.Hellhound.aliases,
-		timeToFinish: Time.Second * 24,
+		timeToFinish: Time.Second * 32,
 		table: Monsters.Hellhound,
 
 		wildy: false,
@@ -675,7 +675,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.IceTroll.id,
 		name: Monsters.IceTroll.name,
 		aliases: Monsters.IceTroll.aliases,
-		timeToFinish: Time.Second * 35,
+		timeToFinish: Time.Second * 19,
 		table: Monsters.IceTroll,
 		wildy: false,
 		canBeKilled: true,

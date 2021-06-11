@@ -5,12 +5,12 @@ import { Consumable } from '../types';
 
 // Configure boost percents
 export const boostCannon = 30;
-export const boostCannonMulti = 50;
+export const boostCannonMulti = 55;
 export const boostIceBurst = 35;
 export const boostIceBarrage = 55;
 // What % of the kills should be cannon XP
-export const xpPercentToCannon = 50;
-export const xpPercentToCannonM = 80;
+export const xpPercentToCannon = 40;
+export const xpPercentToCannonM = 70;
 // Amount to vary cannon vs regular XP
 export const xpCannonVaryPercent = 10;
 
@@ -67,7 +67,7 @@ export const CombatOptionsArray: CombatOptionsDesc[] = [
 
 export const cannonSingleConsumables: Consumable = {
 	itemCost: new Bank().add('Cannonball', 1),
-	qtyPerMinute: 18
+	qtyPerMinute: 16
 };
 export const cannonMultiConsumables: Consumable = {
 	itemCost: new Bank().add('Cannonball', 1),

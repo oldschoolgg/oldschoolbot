@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 
+import { CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
@@ -14,11 +15,19 @@ import {
 } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import {CombatOptionsEnum} from "../../lib/minions/data/combatConstants";
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
-		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
+		const {
+			monsterID,
+			userID,
+			channelID,
+			quantity,
+			duration,
+			usingCannon,
+			cannonMulti,
+			burstOrBarrage
+		} = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		await user.incrementMonsterScore(monsterID, quantity);
@@ -54,9 +63,7 @@ export default class extends Task {
 			: undefined;
 
 		const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
-		const isInCatacombs = !usingCannon
-			? monster.existsInCatacombs ?? undefined
-			: undefined;
+		const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
 
 		const killOptions: MonsterKillOptions = {
 			onSlayerTask: isOnTask,
@@ -152,9 +159,10 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of killing ${monster.name}`);
-				if (usingCannon) res.flagArgs.cannon = true;
-				if (burstOrBarrage == CombatOptionsEnum.AlwaysIceBarrage) res.flagArgs.barrage = true;
-				if (burstOrBarrage == CombatOptionsEnum.AlwaysIceBurst) res.flagArgs.burst = true;
+				if (usingCannon) res.flagArgs.cannon = 'yes';
+				if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBarrage)
+					res.flagArgs.barrage = 'yes';
+				if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBurst) res.flagArgs.burst = 'yes';
 				return this.client.commands.get('k')!.run(res, [quantity, monster.name]);
 			},
 			image!,
