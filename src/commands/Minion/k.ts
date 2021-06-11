@@ -1,7 +1,10 @@
+import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { Monsters } from 'oldschooljs';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import { Activity } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
@@ -10,6 +13,10 @@ import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { calcPOHBoosts } from '../../lib/poh';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
+import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import findMonster, {
@@ -22,11 +29,12 @@ import findMonster, {
 	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import itemID from '../../lib/util/itemID';
 
-const invalidMonster = (prefix: string) =>
-	`That isn't a valid monster, the available monsters are: ${killableMonsters
-		.map(mon => mon.name)
-		.join(', ')}. For example, \`${prefix}minion kill 5 zulrah\``;
+const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
+const invalidMonsterMsg = (prefix: string) =>
+	`That isn't a valid monster.\n\nFor example, \`${prefix}minion kill 5 zulrah\`` +
+	`\n\nTry: \`${prefix}k --monsters\` for a list of killable monsters.`;
 
 const { floor } = Math;
 
@@ -79,9 +87,26 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		if (!name) return msg.channel.send(invalidMonster(msg.cmdPrefix));
+		if (msg.flagArgs.monsters) {
+			return msg.channel.send(
+				new MessageAttachment(Buffer.from(validMonsters), 'validMonsters.txt')
+			);
+		}
+		if (!name) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 		const monster = findMonster(name);
-		if (!monster) return msg.channel.send(invalidMonster(msg.cmdPrefix));
+		if (!monster) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
+
+		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
+		const isOnTask =
+			usersTask.assignedTask !== null &&
+			usersTask.currentTask !== null &&
+			usersTask.assignedTask.monsters.includes(monster.id);
+
+		if (monster.slayerOnly && !isOnTask) {
+			return msg.channel.send(
+				`You can't kill ${monster.name}, because you're not on a slayer task.`
+			);
+		}
 
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
@@ -92,7 +117,7 @@ export default class extends BotCommand {
 			msg.author.getKC(monster.id)
 		);
 
-		const attackStyles = resolveAttackStyles(msg.author, monster.id)[2];
+		const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, monster.id);
 		const [newTime, skillBoostMsg] = applySkillBoost(msg.author, timeToFinish, attackStyles);
 
 		timeToFinish = newTime;
@@ -110,6 +135,7 @@ export default class extends BotCommand {
 				boosts.push(messages.join(' + '));
 			}
 		}
+
 		for (const [itemID, boostAmount] of Object.entries(
 			msg.author.resolveAvailableItemBoosts(monster)
 		)) {
@@ -117,11 +143,65 @@ export default class extends BotCommand {
 			boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 		}
 
+		// Removed vorkath because he has a special boost.
+		if (
+			monster.name.toLowerCase() !== 'vorkath' &&
+			osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)
+		) {
+			if (
+				msg.author.hasItemEquippedOrInBank('Dragon hunter lance') &&
+				!attackStyles.includes(SkillsEnum.Ranged) &&
+				!attackStyles.includes(SkillsEnum.Magic)
+			) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 15);
+				boosts.push('15% for Dragon hunter lance');
+			} else if (
+				msg.author.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
+				attackStyles.includes(SkillsEnum.Ranged)
+			) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 15);
+				boosts.push('15% for Dragon hunter crossbow');
+			}
+		}
+		// Add 15% slayer boost on task if they have black mask or similar
+		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
+			if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask (i)'))) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 15);
+				boosts.push('15% for Black mask (i) on non-melee task');
+			}
+		} else if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			boosts.push('15% for Black mask on melee task');
+		}
+
 		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = floor(maxTripLength / timeToFinish);
+		}
+		if (typeof quantity !== 'number') quantity = parseInt(quantity);
+		if (isOnTask) {
+			let effectiveQtyRemaining = usersTask.currentTask!.quantityRemaining;
+			if (
+				monster.id === Monsters.KrilTsutsaroth.id &&
+				usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
+			) {
+				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
+			} else if (
+				monster.id === Monsters.Kreearra.id &&
+				usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
+			) {
+				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 4);
+			} else if (
+				monster.id === Monsters.GrotesqueGuardians.id &&
+				msg.author.settings
+					.get(UserSettings.Slayer.SlayerUnlocks)
+					.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+			) {
+				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
+			}
+			quantity = Math.min(quantity, effectiveQtyRemaining);
 		}
 
 		quantity = Math.max(1, quantity);
@@ -174,6 +254,18 @@ export default class extends BotCommand {
 		if (isWeekend()) {
 			boosts.push(`10% for Weekend`);
 			duration *= 0.9;
+		}
+
+		if (['hydra', 'alchemical hydra'].includes(monster.name.toLowerCase())) {
+			const potsTotal = await msg.author.numberOfItemInBank(itemID('Antidote++(4)'));
+			// Potions actually last 36+ minutes for a 4-dose, but we want item sink
+			const potsToRemove = Math.ceil(duration / (15 * Time.Minute));
+			if (potsToRemove > potsTotal) {
+				return msg.channel.send(
+					`You don't have enough Antidote++(4) to kill ${quantity}x ${monster.name}.`
+				);
+			}
+			await msg.author.removeItemFromBank(itemID('Antidote++(4)'), potsToRemove);
 		}
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {

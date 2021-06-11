@@ -3,8 +3,11 @@ import { table } from 'table';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
+import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
@@ -61,6 +64,18 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} needs ${fletchable.level} Fletching to fletch ${fletchable.name}.`
 			);
+		}
+
+		if (fletchable.requiredSlayerUnlocks) {
+			let mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
+
+			const { success, errors } = hasSlayerUnlock(
+				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
+				fletchable.requiredSlayerUnlocks
+			);
+			if (!success) {
+				throw `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
+			}
 		}
 
 		await msg.author.settings.sync(true);
