@@ -1,18 +1,22 @@
 import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Time } from '../../lib/constants';
 import { table } from 'table';
+
+import { Time } from '../../lib/constants';
+import {
+	boostCannon,
+	boostCannonMulti,
+	boostIceBarrage,
+	boostIceBurst
+} from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
+import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {
-	addArrayOfNumbers
-} from '../../lib/util';
-import {slayerMasters} from "../../lib/slayer/slayerMasters";
-import {boostCannon, boostCannonMulti, boostIceBarrage, boostIceBurst} from "../../lib/minions/data/combatConstants";
+import { addArrayOfNumbers } from '../../lib/util';
 
 function applySkillBoostJr(
 	user: KlasaUser,
@@ -60,25 +64,41 @@ export default class extends BotCommand {
 
 		// Start sim code
 		const simTable: string[][] = [];
-		simTable.push(['Master', 'Monster', 'Food/hr', 'Sharks/hr', 'Kills/hr', 'SlayerXP/hr','Cannon', 'KPH', 'MCannon', 'KPH', 'Burst', 'KPH', 'Barrage', 'KPH', 'Boost MSG']);
+		simTable.push([
+			'Master',
+			'Monster',
+			'Food/hr',
+			'Sharks/hr',
+			'Kills/hr',
+			'SlayerXP/hr',
+			'Cannon',
+			'KPH',
+			'MCannon',
+			'KPH',
+			'Burst',
+			'KPH',
+			'Barrage',
+			'KPH',
+			'Boost MSG'
+		]);
 
 		slayerMasters.forEach(master => {
 			master.tasks.forEach(task => {
-				task.monsters.forEach(tmon =>
-				{
+				task.monsters.forEach(tmon => {
 					const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, tmon);
 					const kMonster = killableMonsters.find(km => {
 						return km.id === tmon;
 					});
-					let [killTime, percentReduced] = reducedTimeFromKC(
-						kMonster!,
-						1000000
+					let [killTime, percentReduced] = reducedTimeFromKC(kMonster!, 1000000);
+					const [newDuration, boostMsg] = applySkillBoostJr(
+						msg.author,
+						killTime,
+						attackStyles
 					);
-					const [newDuration, boostMsg] = applySkillBoostJr(msg.author, killTime, attackStyles);
-					const mSlayerXP = osjsMon?.data?.hitpoints ?
-						osjsMon!.data!.slayerXP ?
-							osjsMon!.data!.slayerXP :
-							osjsMon!.data!.hitpoints
+					const mSlayerXP = osjsMon?.data?.hitpoints
+						? osjsMon!.data!.slayerXP
+							? osjsMon!.data!.slayerXP
+							: osjsMon!.data!.hitpoints
 						: 0;
 
 					// add boosts
@@ -92,20 +112,20 @@ export default class extends BotCommand {
 					let killsPerHourBurst = 0;
 					if (kMonster?.canCannon) {
 						if (kMonster?.cannonMulti) {
-							const tmpNewDuration = newDuration * (1 - boostCannonMulti/100);
+							const tmpNewDuration = newDuration * (1 - boostCannonMulti / 100);
 							killsPerHourCannonM = Time.Hour / tmpNewDuration;
 							cannonMXP = (killsPerHourCannonM * mSlayerXP).toLocaleString();
 						} else {
-							const tmpNewDuration = newDuration * (1 - boostCannon/100);
+							const tmpNewDuration = newDuration * (1 - boostCannon / 100);
 							killsPerHourCannon = Time.Hour / tmpNewDuration;
 							cannonXP = (killsPerHourCannon * mSlayerXP).toLocaleString();
 						}
 					}
 					if (kMonster?.canBarrage) {
-						const tmpBarrageDuration = newDuration * (1 - boostIceBarrage/100);
+						const tmpBarrageDuration = newDuration * (1 - boostIceBarrage / 100);
 						killsPerHourBarrage = Time.Hour / tmpBarrageDuration;
 						barrageXP = (killsPerHourBarrage * mSlayerXP).toLocaleString();
-						const tmpBurstDuration = newDuration * (1 - boostIceBurst/100);
+						const tmpBurstDuration = newDuration * (1 - boostIceBurst / 100);
 						killsPerHourBurst = Time.Hour / tmpBurstDuration;
 						burstXP = (killsPerHourBurst * mSlayerXP).toLocaleString();
 					}
@@ -114,11 +134,25 @@ export default class extends BotCommand {
 					let slayerXpPerHour = 'NA';
 					slayerXpPerHour = (killsPerHour * mSlayerXP).toLocaleString();
 
-					const foodPerHour = calculateMonsterFood(kMonster!, msg.author)[0] * killsPerHour;
-					simTable.push([master!.name, kMonster!.name, Math.round(foodPerHour).toLocaleString(),
-						Math.ceil(foodPerHour / 20).toLocaleString(), Math.floor(killsPerHour).toString(),
-						slayerXpPerHour, cannonXP, killsPerHourCannon.toLocaleString(), cannonMXP, killsPerHourCannonM.toLocaleString(),  burstXP,
-						killsPerHourBurst.toLocaleString(), barrageXP, killsPerHourBarrage.toLocaleString(), `${percentReduced}% for KC, ${boostMsg}`]);
+					const foodPerHour =
+						calculateMonsterFood(kMonster!, msg.author)[0] * killsPerHour;
+					simTable.push([
+						master!.name,
+						kMonster!.name,
+						Math.round(foodPerHour).toLocaleString(),
+						Math.ceil(foodPerHour / 20).toLocaleString(),
+						Math.floor(killsPerHour).toString(),
+						slayerXpPerHour,
+						cannonXP,
+						killsPerHourCannon.toLocaleString(),
+						cannonMXP,
+						killsPerHourCannonM.toLocaleString(),
+						burstXP,
+						killsPerHourBurst.toLocaleString(),
+						barrageXP,
+						killsPerHourBarrage.toLocaleString(),
+						`${percentReduced}% for KC, ${boostMsg}`
+					]);
 				});
 			});
 		});

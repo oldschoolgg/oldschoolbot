@@ -1,7 +1,7 @@
-import { Consumable } from "../types";
 import { Bank } from 'oldschooljs';
-import itemID from "../../util/itemID";
 
+import itemID from '../../util/itemID';
+import { Consumable } from '../types';
 
 // Configure boost percents
 export const boostCannon = 30;
@@ -15,10 +15,10 @@ export const xpPercentToCannonM = 80;
 export const xpCannonVaryPercent = 10;
 
 export interface CombatOptionsDesc {
-	id: number,
-	name: string,
-	desc: string,
-	aliases: string[]
+	id: number;
+	name: string;
+	desc: string;
+	aliases: string[];
 }
 export enum CombatOptionsEnum {
 	NullOption,
@@ -31,7 +31,7 @@ export const CombatCannonItemBank = {
 	[itemID('Cannon base')]: 1,
 	[itemID('Cannon furnace')]: 1,
 	[itemID('Cannon stand')]: 1
-}
+};
 
 export const CombatOptionsArray: CombatOptionsDesc[] = [
 	{
@@ -50,31 +50,29 @@ export const CombatOptionsArray: CombatOptionsDesc[] = [
 		id: CombatOptionsEnum.AlwaysIceBarrage,
 		name: 'Always Ice Barrage',
 		desc: 'Use Ice barrage whenever possible',
-		aliases: ['always barrage', 'alwaysicebarrage', 'always ice barrage', 'barrage', 'ice barrage']
+		aliases: [
+			'always barrage',
+			'alwaysicebarrage',
+			'always ice barrage',
+			'barrage',
+			'ice barrage'
+		]
 	}
-]
+];
 
-export const cannonSingleConsumables : Consumable = {
-	itemCost: new Bank()
-		.add('Cannonball', 1),
+export const cannonSingleConsumables: Consumable = {
+	itemCost: new Bank().add('Cannonball', 1),
 	qtyPerMinute: 18
-}
-export const cannonMultiConsumables : Consumable = {
-	itemCost: new Bank()
-		.add('Cannonball', 1),
+};
+export const cannonMultiConsumables: Consumable = {
+	itemCost: new Bank().add('Cannonball', 1),
 	qtyPerMinute: 60
-}
-export const iceBarrageConsumables : Consumable = {
-	itemCost: new Bank()
-		.add('Water rune', 6)
-		.add('Blood rune', 2)
-		.add('Death rune', 4),
+};
+export const iceBarrageConsumables: Consumable = {
+	itemCost: new Bank().add('Water rune', 6).add('Blood rune', 2).add('Death rune', 4),
 	qtyPerMinute: 20
-}
-export const iceBurstConsumables : Consumable = {
-	itemCost: new Bank()
-		.add('Water rune', 2)
-		.add('Chaos rune', 4)
-		.add('Death rune', 4),
+};
+export const iceBurstConsumables: Consumable = {
+	itemCost: new Bank().add('Water rune', 2).add('Chaos rune', 4).add('Death rune', 4),
 	qtyPerMinute: 20
-}
+};

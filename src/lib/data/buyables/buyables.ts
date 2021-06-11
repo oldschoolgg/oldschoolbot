@@ -1,5 +1,6 @@
 import { MinigameKey } from '../../../extendables/User/Minigame';
 import { MAX_QP } from '../../constants';
+import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
@@ -8,7 +9,6 @@ import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 import { slayerBuyables } from './slayerBuyables';
-import {CombatCannonItemBank} from "../../minions/data/combatConstants";
 
 export interface Buyable {
 	name: string;

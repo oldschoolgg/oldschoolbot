@@ -5,12 +5,25 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Activity, Time } from '../../lib/constants';
+import {
+	boostCannon,
+	boostCannonMulti,
+	boostIceBarrage,
+	boostIceBurst,
+	cannonMultiConsumables,
+	cannonSingleConsumables,
+	CombatCannonItemBank,
+	CombatOptionsEnum,
+	iceBarrageConsumables,
+	iceBurstConsumables
+} from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
+import { Consumable } from '../../lib/minions/types';
 import { calcPOHBoosts } from '../../lib/poh';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -30,15 +43,6 @@ import findMonster, {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
-import {
-	boostCannon,
-	boostCannonMulti,
-	boostIceBarrage, boostIceBurst, cannonMultiConsumables, cannonSingleConsumables, CombatCannonItemBank,
-	CombatOptionsEnum,
-	iceBarrageConsumables,
-	iceBurstConsumables
-} from "../../lib/minions/data/combatConstants";
-import {Consumable} from "../../lib/minions/types";
 
 const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
 const invalidMonsterMsg = (prefix: string) =>
@@ -184,7 +188,7 @@ export default class extends BotCommand {
 		}
 
 		// Start of the consumable code. continued later in other costs.
-		const consumableCosts : Consumable[] = [];
+		const consumableCosts: Consumable[] = [];
 
 		// Calculate Cannon and Barrage boosts + costs:
 		let usingCannon = false;
@@ -199,27 +203,44 @@ export default class extends BotCommand {
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !monster!.canBarrage) {
 			return msg.send(`${monster!.name} cannot be barraged or bursted.`);
 		}
-		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !attackStyles.includes(SkillsEnum.Magic)) {
+		if (
+			(msg.flagArgs.burst || msg.flagArgs.barrage) &&
+			!attackStyles.includes(SkillsEnum.Magic)
+		) {
 			return msg.send(`You can only barrage/burst when you're using magic!`);
 		}
 		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
-		if (attackStyles.includes(SkillsEnum.Magic) &&
-			monster!.canBarrage && (msg.flagArgs.barrage || myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage))) {
+		if (
+			attackStyles.includes(SkillsEnum.Magic) &&
+			monster!.canBarrage &&
+			(msg.flagArgs.barrage || myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage))
+		) {
 			consumableCosts.push(iceBarrageConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
 			boosts.push(`${boostIceBarrage}% for Ice Barrage`);
-		} else if(attackStyles.includes(SkillsEnum.Magic) &&
-			monster!.canBarrage && (msg.flagArgs.burst || myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst))) {
+		} else if (
+			attackStyles.includes(SkillsEnum.Magic) &&
+			monster!.canBarrage &&
+			(msg.flagArgs.burst || myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst))
+		) {
 			consumableCosts.push(iceBurstConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst);
 			boosts.push(`${boostIceBurst}% for Ice Burst`);
-		} else if(hasCannon && monster!.cannonMulti && (msg.flagArgs.cannon || myCBOpts.includes(CombatOptionsEnum.AlwaysCannon))) {
+		} else if (
+			hasCannon &&
+			monster!.cannonMulti &&
+			(msg.flagArgs.cannon || myCBOpts.includes(CombatOptionsEnum.AlwaysCannon))
+		) {
 			usingCannon = true;
 			cannonMulti = true;
 			consumableCosts.push(cannonMultiConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostCannonMulti);
 			boosts.push(`${boostCannonMulti}% for Cannon in multi`);
-		} else if(hasCannon && monster!.canCannon && (msg.flagArgs.cannon || myCBOpts.includes(CombatOptionsEnum.AlwaysCannon))) {
+		} else if (
+			hasCannon &&
+			monster!.canCannon &&
+			(msg.flagArgs.cannon || myCBOpts.includes(CombatOptionsEnum.AlwaysCannon))
+		) {
 			usingCannon = true;
 			consumableCosts.push(cannonSingleConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
@@ -270,11 +291,10 @@ export default class extends BotCommand {
 
 		if (['hydra', 'alchemical hydra'].includes(monster.name.toLowerCase())) {
 			// Add a cost of 1 antidote++(4) per 15 minutes
-			const hydraCost : Consumable = {
-				itemCost: new Bank()
-					.add('Antidote++(4)', 1),
+			const hydraCost: Consumable = {
+				itemCost: new Bank().add('Antidote++(4)', 1),
 				qtyPerMinute: 0.067
-			}
+			};
 			consumableCosts.push(hydraCost);
 		}
 
@@ -285,14 +305,15 @@ export default class extends BotCommand {
 			const itemCost = cc!.qtyPerKill
 				? cc!.itemCost.clone().multiply(quantity as number)
 				: cc!.qtyPerMinute
-					? cc!.itemCost.clone().multiply(Math.ceil((duration / Time.Minute) * cc!.qtyPerMinute))
-					: null;
-			if (itemCost)
-			{
+				? cc!.itemCost
+						.clone()
+						.multiply(Math.ceil((duration / Time.Minute) * cc!.qtyPerMinute))
+				: null;
+			if (itemCost) {
 				pvmCost = true;
 				lootToRemove.add(itemCost);
 			}
-		})
+		});
 
 		if (msg.author.hasItemEquippedOrInBank('Staff of water')) {
 			lootToRemove.removeItem(itemID('Water rune'), 1_000_000);
@@ -334,8 +355,7 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (pvmCost)
-		{
+		if (pvmCost) {
 			if (!msg.author.owns(lootToRemove)) {
 				return msg.channel.send(
 					`You don't have the items needed to kill ${quantity}x ${monster.name}, you need: ${lootToRemove}.`
@@ -352,8 +372,8 @@ export default class extends BotCommand {
 			quantity,
 			duration,
 			type: Activity.MonsterKilling,
-			usingCannon: usingCannon,
-			cannonMulti: cannonMulti
+			usingCannon,
+			cannonMulti
 		});
 
 		let response = `${minionName} is now killing ${quantity}x ${

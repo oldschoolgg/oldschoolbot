@@ -3,13 +3,13 @@ import { O } from 'ts-toolbelt';
 
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
+import { CombatOptionsEnum } from '../../minions/data/combatConstants';
 import { PatchTypes } from '../../minions/farming';
 import { CompostTier, FarmingContract, FarmingPatchTypes } from '../../minions/farming/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import { ItemBank } from '../../types';
-import {CombatOptionsEnum} from "../../minions/data/combatConstants";
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 

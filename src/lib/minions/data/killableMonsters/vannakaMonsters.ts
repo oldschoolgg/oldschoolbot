@@ -58,7 +58,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		healAmountNeeded: 35,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackStab],
-		canBarrage: true,
+		canBarrage: true
 	},
 	{
 		id: Monsters.AbyssalSire.id,

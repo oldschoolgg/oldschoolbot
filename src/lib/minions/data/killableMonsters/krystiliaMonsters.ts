@@ -186,7 +186,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		// itemsRequired: resolveItems(['Lockpick']),
 		levelRequirements: {
-			//thieving: 39
+			// thieving: 39
 		},
 		qpRequired: 0
 	},

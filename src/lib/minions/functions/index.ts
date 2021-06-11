@@ -4,10 +4,14 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { NIGHTMARES_HP } from '../../constants';
 import { SkillsEnum } from '../../skilling/types';
+import { randomVariation } from '../../util';
+import {
+	xpCannonVaryPercent,
+	xpPercentToCannon,
+	xpPercentToCannonM
+} from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
 import { KillableMonster } from '../types';
-import {xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM} from "../data/combatConstants";
-import {randomVariation} from "../../util";
 
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
 export { default as calculateMonsterFood } from './calculateMonsterFood';
@@ -70,8 +74,8 @@ export async function addMonsterXP(
 	const cannonQty = cannonMulti
 		? randomVariation(Math.floor((xpPercentToCannonM / 100) * quantity), xpCannonVaryPercent)
 		: usingCannon
-			? randomVariation(Math.floor((xpPercentToCannon / 100) * quantity), xpCannonVaryPercent)
-			: 0;
+		? randomVariation(Math.floor((xpPercentToCannon / 100) * quantity), xpCannonVaryPercent)
+		: 0;
 
 	const normalQty = quantity - cannonQty;
 
@@ -93,7 +97,9 @@ export async function addMonsterXP(
 	}
 	// Add cannon xp
 	if (usingCannon)
-		res.push(await user.addXP(SkillsEnum.Ranged, Math.floor(hp * 2 * cannonQty), duration, true));
+		res.push(
+			await user.addXP(SkillsEnum.Ranged, Math.floor(hp * 2 * cannonQty), duration, true)
+		);
 
 	if (isOnTask) {
 		let newSlayerXP = 0;
