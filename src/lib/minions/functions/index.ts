@@ -95,11 +95,6 @@ export async function addMonsterXP(
 	for (const style of attackStyles) {
 		res.push(await user.addXP(style, Math.floor(xpPerSkill), duration, true));
 	}
-	// Add cannon xp
-	if (usingCannon)
-		res.push(
-			await user.addXP(SkillsEnum.Ranged, Math.floor(hp * 2 * cannonQty), duration, true)
-		);
 
 	if (isOnTask) {
 		let newSlayerXP = 0;
@@ -126,6 +121,13 @@ export async function addMonsterXP(
 			true
 		)
 	);
+
+	// Add cannon xp last so it's easy to distinguish
+	if (usingCannon) {
+		res.push(
+			await user.addXP(SkillsEnum.Ranged, Math.floor(hp * 2 * cannonQty), duration, true)
+		);
+	}
 
 	return `**XP Gains:** ${res.join(' ')}`;
 }
