@@ -105,7 +105,5 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`Unrecognized mode. Please use:\n\`${msg.cmdPrefix}as [lowest|highest]\``
 		);
-
-		return msg.channel.send(`Error: fell through. Please report this`);
 	}
 }
