@@ -103,7 +103,7 @@ export default class extends Extendable {
 		this: User,
 		inputItems: ItemBank | Bank,
 		collectionLog = false
-	): Promise<{ previousCL: ItemBank }> {
+	): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }> {
 		const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
 		await this.settings.sync(true);
 
@@ -112,7 +112,7 @@ export default class extends Extendable {
 		for (const { scrollID } of clueTiers) {
 			// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
 			if (!_items[scrollID]) continue;
-			const alreadyHasThisScroll = await this.hasItem(scrollID);
+			const alreadyHasThisScroll = this.settings.get(UserSettings.Bank)[scrollID];
 			if (alreadyHasThisScroll) {
 				// If they already have this scroll in their bank, delete it from the loot.
 				delete _items[scrollID];
@@ -149,7 +149,8 @@ export default class extends Extendable {
 		);
 
 		return {
-			previousCL
+			previousCL,
+			itemsAdded: _items
 		};
 	}
 

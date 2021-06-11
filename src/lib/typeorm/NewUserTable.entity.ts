@@ -1,6 +1,16 @@
-import { BaseEntity, Check, Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import {
+	BaseEntity,
+	Check,
+	Column,
+	Entity,
+	JoinColumn,
+	OneToMany,
+	OneToOne,
+	PrimaryColumn
+} from 'typeorm';
 
 import { MinigameTable } from './MinigameTable.entity';
+import { SlayerTaskTable } from './SlayerTaskTable.entity';
 
 @Check('pizazz_points > -1')
 @Entity('new_users')
@@ -17,4 +27,7 @@ export class NewUserTable extends BaseEntity {
 
 	@Column({ name: 'pizazz_points', type: 'int', nullable: false, default: 0 })
 	public PizazzPoints!: number;
+
+	@OneToMany(() => SlayerTaskTable, task => task.user, { nullable: false })
+	slayerTasks!: SlayerTaskTable[];
 }
