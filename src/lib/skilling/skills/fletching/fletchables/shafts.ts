@@ -23,6 +23,15 @@ const Shafts: Fletchable[] = [
 		outputMultiple: 15
 	},
 	{
+		name: 'Ogre arrow shaft',
+		id: itemID('Ogre arrow shaft'),
+		level: 5,
+		xp: 7.2,
+		inputItems: new Bank({ 'Achey tree logs': 1 }),
+		tickRate: 2,
+		outputMultiple: 15
+	},
+	{
 		name: 'Oak arrow shaft',
 		id: itemID('Arrow shaft'),
 		level: 15,

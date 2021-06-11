@@ -32,20 +32,19 @@ export default class extends BotCommand {
 
 		const userBank = msg.author.bank();
 
-		for (const tier of diary.tiers) {
+		for (const tier of [diary.easy, diary.medium, diary.hard, diary.elite]) {
 			const [canDo, reason] = await userhasDiaryTier(msg.author, tier);
+			const name = `${toTitleCase(tier.name)} ${diary.name} Diary`;
+
 			if (canDo) {
 				if (userBank.has(tier.item.id)) continue;
-			} else {
-				const name = `${toTitleCase(tier.tier)} ${diary.name} Diary`;
-				if (canDo) {
-					await msg.author.addItemsToBank(new Bank().add(tier.item.id), true);
-					return msg.channel.send(
-						`You successfully claimed a ${tier.item.name} from the ${name}.`
-					);
-				}
-				return msg.channel.send(`You can't claim the ${name} because ${reason}.`);
+				await msg.author.addItemsToBank(new Bank().add(tier.item.id), true);
+				return msg.channel.send(
+					`You successfully claimed a ${tier.item.name} from the ${name}.`
+				);
 			}
+
+			return msg.channel.send(`You can't claim the ${name} because ${reason}.`);
 		}
 	}
 }

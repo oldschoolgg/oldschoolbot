@@ -11,7 +11,7 @@ import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
 interface DiaryTier {
-	tier: 'easy' | 'medium' | 'hard' | 'elite';
+	name: 'Easy' | 'Medium' | 'Hard' | 'Elite';
 	item: Item;
 	skillReqs: Skills;
 	ownedItems?: number[];
@@ -23,7 +23,10 @@ interface DiaryTier {
 }
 interface Diary {
 	name: string;
-	tiers: DiaryTier[];
+	easy: DiaryTier;
+	medium: DiaryTier;
+	hard: DiaryTier;
+	elite: DiaryTier;
 }
 
 export async function userhasDiaryTier(
@@ -63,10 +66,13 @@ export async function userhasDiaryTier(
 	if (tier.minigameReqs) {
 		const entries = Object.entries(tier.minigameReqs);
 		const scores = await user.getAllMinigameScores();
-		for (const [key, score] of entries) {
+		for (const [key, neededScore] of entries) {
 			const thisScore = scores.find(m => m.minigame.key === key)!;
-			if (thisScore.score < score!) {
-				return [false, `you don't have ${score} KC in ${thisScore.minigame.name}`];
+			if (thisScore.score < neededScore!) {
+				return [
+					false,
+					`you don't have ${neededScore} KC in ${thisScore.minigame.name}, you have ${thisScore.score}`
+				];
 			}
 		}
 	}
@@ -98,114 +104,115 @@ export async function userhasDiaryTier(
 	return [true];
 }
 
-const WesternProv: Diary = {
+export const WesternProv: Diary = {
 	name: 'Western Provinces',
-	tiers: [
-		{
-			tier: 'easy',
-			item: getOSItem('Western banner 1'),
-			skillReqs: {
-				fletching: 20,
-				hunter: 9,
-				mining: 15,
-				ranged: 30
-			},
-			minigameReqs: {
-				BigChompyBirdHunting: 30
-			},
-			collectionLogReqs: resolveItems(['Orange feather', 'Iron ore', 'Oak shortbow']),
-			lapsReqs: {
-				'Gnome Stronghold Agility Course': 1
-			},
-			qp: 10
+	easy: {
+		name: 'Easy',
+		item: getOSItem('Western banner 1'),
+		skillReqs: {
+			fletching: 20,
+			hunter: 9,
+			mining: 15,
+			ranged: 30
 		},
-		{
-			tier: 'medium',
-			item: getOSItem('Western banner 2'),
-			skillReqs: {
-				agility: 37,
-				cooking: 42,
-				firemaking: 35,
-				fishing: 46,
-				fletching: 5,
-				hunter: 31,
-				mining: 40,
-				ranged: 30,
-				woodcutting: 35
-			},
-			collectionLogReqs: resolveItems(['Raw bass', 'Teak logs', 'Gold ore']),
-			minigameReqs: {
-				BigChompyBirdHunting: 125,
-				GnomeRestaurant: 1
-			},
-			qp: 44
+		minigameReqs: {
+			BigChompyBirdHunting: 30
 		},
-		{
-			tier: 'hard',
-			item: getOSItem('Western banner 3'),
-			skillReqs: {
-				agility: 56,
-				construction: 65,
-				cooking: 70,
-				farming: 68,
-				firemaking: 50,
-				fishing: 62,
-				fletching: 5,
-				hunter: 69,
-				ranged: 70,
-				magic: 64,
-				mining: 70,
-				thieving: 75,
-				woodcutting: 50
-			},
-			collectionLogReqs: resolveItems([
-				'Raw monkfish',
-				'Dashing kebbit fur',
-				'Mahogany logs',
-				'Adamantite ore'
-			]),
-			lapsReqs: {
-				'Ape Atoll Agility Course': 1
-			},
-			minigameReqs: {
-				BigChompyBirdHunting: 300
-			},
-			qp: 92,
-			monsterScores: {
-				Zulrah: 1
-			}
+		collectionLogReqs: resolveItems(['Orange feather', 'Iron ore', 'Oak shortbow']),
+		lapsReqs: {
+			'Gnome Stronghold Agility Course': 1
 		},
-		{
-			tier: 'elite',
-			item: getOSItem('Western banner 4'),
-			skillReqs: {
-				agility: 85,
-				attack: 42,
-				defence: 42,
-				farming: 75,
-				fletching: 85,
-				hitpoints: 42,
-				magic: 42,
-				prayer: 22,
-				ranged: 42,
-				slayer: 93,
-				strength: 42,
-				thieving: 85
-			},
-			collectionLogReqs: resolveItems([
-				'Magic longbow',
-				'Void knight top',
-				'Void knight robe',
-				'Void knight gloves'
-			]),
-			monsterScores: {
-				'Thermonuclear smoke devil': 1
-			},
-			minigameReqs: {
-				BigChompyBirdHunting: 1000
-			}
+		qp: 10
+	},
+	medium: {
+		name: 'Medium',
+		item: getOSItem('Western banner 2'),
+		skillReqs: {
+			agility: 37,
+			cooking: 42,
+			firemaking: 35,
+			fishing: 46,
+			fletching: 5,
+			hunter: 31,
+			mining: 40,
+			ranged: 30,
+			woodcutting: 35
+		},
+		collectionLogReqs: resolveItems(['Raw bass', 'Teak logs', 'Gold ore']),
+		minigameReqs: {
+			BigChompyBirdHunting: 125,
+			GnomeRestaurant: 1
+		},
+		qp: 44
+	},
+	hard: {
+		name: 'Hard',
+		item: getOSItem('Western banner 3'),
+		skillReqs: {
+			agility: 56,
+			construction: 65,
+			cooking: 70,
+			farming: 68,
+			firemaking: 50,
+			fishing: 62,
+			fletching: 5,
+			hunter: 69,
+			ranged: 70,
+			magic: 64,
+			mining: 70,
+			thieving: 75,
+			woodcutting: 50
+		},
+		collectionLogReqs: resolveItems([
+			'Raw monkfish',
+			'Dashing kebbit fur',
+			'Mahogany logs',
+			'Adamantite ore'
+		]),
+		lapsReqs: {
+			'Ape Atoll Agility Course': 1
+		},
+		minigameReqs: {
+			BigChompyBirdHunting: 300
+		},
+		qp: 92,
+		monsterScores: {
+			Zulrah: 1
 		}
-	]
+	},
+	elite: {
+		name: 'Elite',
+		item: getOSItem('Western banner 4'),
+		skillReqs: {
+			agility: 85,
+			attack: 42,
+			defence: 42,
+			farming: 75,
+			fletching: 85,
+			hitpoints: 42,
+			magic: 42,
+			prayer: 22,
+			ranged: 42,
+			slayer: 93,
+			strength: 42,
+			thieving: 85
+		},
+		collectionLogReqs: resolveItems([
+			'Magic longbow',
+			'Void knight top',
+			'Void knight robe',
+			'Void knight gloves'
+		]),
+		monsterScores: {
+			'Thermonuclear smoke devil': 1
+		},
+		minigameReqs: {
+			BigChompyBirdHunting: 1000
+		}
+	}
 };
 
 export const diaries = [WesternProv];
+export const diariesObject = {
+	WesternProv
+};

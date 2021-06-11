@@ -1,3 +1,6 @@
+import { Bank } from 'oldschooljs';
+
+import { chompyHats } from '../../../commands/Minion/chompyhunt';
 import { MinigameKey } from '../../../extendables/User/Minigame';
 import { MAX_QP } from '../../constants';
 import { ItemBank, Skills } from '../../types';
@@ -837,5 +840,14 @@ const Buyables: Buyable[] = [
 	...castleWarsBuyables,
 	...cmCapes
 ];
+
+for (const [chompyHat, qty] of chompyHats) {
+	Buyables.push({
+		name: chompyHat.name,
+		outputItems: new Bank().add(chompyHat.id).bank,
+		gpCost: qty * 44,
+		minigameScoreReq: ['BigChompyBirdHunting', qty]
+	});
+}
 
 export default Buyables;
