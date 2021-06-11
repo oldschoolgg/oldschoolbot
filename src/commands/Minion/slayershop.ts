@@ -52,10 +52,13 @@ export default class extends BotCommand {
 		const myUnlocks = await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
 		const myPoints = await msg.author.settings.get(UserSettings.Slayer.SlayerPoints);
 
-		const unlocksStr = myUnlocks.map(mu => {
-			return getSlayerReward(mu);
-		}).join(`\n`);
-		const defaultMsg = `Current points: ${myPoints}\nYou currently have the following ` +
+		const unlocksStr = myUnlocks
+			.map(mu => {
+				return getSlayerReward(mu);
+			})
+			.join(`\n`);
+		const defaultMsg =
+			`Current points: ${myPoints}\nYou currently have the following ` +
 			`rewards unlocked:\n\`${unlocksStr}\`\n\n` +
 			`Usage:\n\`${msg.cmdPrefix}slayershop [unlock|lock|buy] Reward\`\nExample:` +
 			`\n\`${msg.cmdPrefix}slayershop unlock Malevolent Masquerade\``;
@@ -78,7 +81,9 @@ export default class extends BotCommand {
 		}
 
 		if (buyableName === '') {
-			return msg.channel.send(`You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls buy --help\``);
+			return msg.channel.send(
+				`You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls buy --help\``
+			);
 		}
 
 		const buyable = SlayerRewardsShop.filter(i => {
@@ -90,7 +95,9 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			return msg.channel.send( `I don't recognize that.\nTry: \`${msg.cmdPrefix}slayershop [buy|unlock|lock] --help\` for a list.`);
+			return msg.channel.send(
+				`I don't recognize that.\nTry: \`${msg.cmdPrefix}slayershop [buy|unlock|lock] --help\` for a list.`
+			);
 		}
 
 		await msg.author.settings.sync(true);
@@ -105,7 +112,7 @@ export default class extends BotCommand {
 		if (curSlayerPoints < slayerPointCost) {
 			return msg.channel.send(
 				`You need ${slayerPointCost} Slayer points to make this purchase.\n` +
-				`You have: ${curSlayerPoints}`
+					`You have: ${curSlayerPoints}`
 			);
 		}
 
@@ -163,7 +170,9 @@ export default class extends BotCommand {
 		}
 
 		if (buyableName === '') {
-			return msg.channel.send(`You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls unlock --help\``);
+			return msg.channel.send(
+				`You must specify an item to purchase.\nTry:\n\`${msg.cmdPrefix}sls unlock --help\``
+			);
 		}
 
 		const buyable = SlayerRewardsShop.filter(srs => {
@@ -175,7 +184,9 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			return msg.channel.send(`I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop [buy|unlock|lock] --help\` for a list.`);
+			return msg.channel.send(
+				`I don't recognize that.\nRun\`${msg.cmdPrefix}slayershop [buy|unlock|lock] --help\` for a list.`
+			);
 		}
 
 		await msg.author.settings.sync(true);
@@ -190,7 +201,7 @@ export default class extends BotCommand {
 		if (curSlayerPoints < slayerPointCost) {
 			return msg.channel.send(
 				`You need ${slayerPointCost} Slayer points to make this purchase.\n` +
-				`You have: ${curSlayerPoints}`
+					`You have: ${curSlayerPoints}`
 			);
 		}
 

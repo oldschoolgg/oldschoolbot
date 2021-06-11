@@ -1,20 +1,19 @@
 import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Time } from '../../lib/constants';
-import { bossTasks } from '../../lib/slayer/tasks/bossTasks';
 import { table } from 'table';
+
+import { Time } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import { userCanUseTask, weightedPick} from '../../lib/slayer/slayerUtil';
+import { slayerMasters } from '../../lib/slayer/slayerMasters';
+import { userCanUseTask, weightedPick } from '../../lib/slayer/slayerUtil';
+import { bossTasks } from '../../lib/slayer/tasks/bossTasks';
+import { SlayerMaster } from '../../lib/slayer/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {
-	addArrayOfNumbers
-} from '../../lib/util';
-import {SlayerMaster} from "../../lib/slayer/types";
-import {slayerMasters} from "../../lib/slayer/slayerMasters";
+import { addArrayOfNumbers } from '../../lib/util';
 
 // boss tasks
 export function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
@@ -39,7 +38,7 @@ export function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
 
 	 */
 	const assignedTask = bossTask ? weightedPick(bossTasks) : weightedPick(baseTasks);
-	//const newUser = await getNewUser(_user.id);
+	// const newUser = await getNewUser(_user.id);
 
 	/*
 		const currentTask = new SlayerTaskTable();
@@ -51,7 +50,7 @@ export function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
 		currentTask.skipped = false;
 		await currentTask.save();
 		*/
-	//await _user.settings.update(UserSettings.Slayer.LastTask, assignedTask.monster.id);
+	// await _user.settings.update(UserSettings.Slayer.LastTask, assignedTask.monster.id);
 
 	return assignedTask;
 }
@@ -94,8 +93,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage, [option = '']: [null | number | string, string]) {
-
-		if (option === 'tasksim' ) {
+		if (option === 'tasksim') {
 			throw `Command disabled because it takes a long time to run.`;
 			/*
 			const simTable: string[][] = [];
@@ -119,17 +117,23 @@ export default class extends BotCommand {
 			*/
 		}
 
-
 		// Start sim code
 		// TODO Sim code for masters, tasks xp/per hour
 		// Sim code for numnber of tasks.
 		const simTable: string[][] = [];
-		simTable.push(['Master', 'Monster', 'Food/hr', 'Sharks/hr', 'Kills/hr', 'SlayerXP/hr', 'Boost MSG']);
+		simTable.push([
+			'Master',
+			'Monster',
+			'Food/hr',
+			'Sharks/hr',
+			'Kills/hr',
+			'SlayerXP/hr',
+			'Boost MSG'
+		]);
 
 		slayerMasters.forEach(master => {
 			master.tasks.forEach(task => {
-				task.monsters.forEach(tmon =>
-				{
+				task.monsters.forEach(tmon => {
 					const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, tmon);
 					const kMonster = killableMonsters.find(km => {
 						return km.id === tmon;
@@ -138,26 +142,38 @@ export default class extends BotCommand {
 						kMonster!,
 						msg.author.getKC(task.monster.id)
 					);
-					const [newDuration, boostMsg] = applySkillBoost(msg.author, killTime, attackStyles);
+					const [newDuration, boostMsg] = applySkillBoost(
+						msg.author,
+						killTime,
+						attackStyles
+					);
 					// add code to uses boosts maybe?
 					const killsPerHour = Time.Hour / newDuration;
 					let slayerXpPerHour = 'NA';
 					if (osjsMon?.data?.hitpoints) {
-						slayerXpPerHour = (osjsMon!.data!.slayerXP ?
-							killsPerHour * osjsMon!.data!.slayerXP :
-							killsPerHour * osjsMon!.data!.hitpoints).toLocaleString();
+						slayerXpPerHour = (osjsMon!.data!.slayerXP
+							? killsPerHour * osjsMon!.data!.slayerXP
+							: killsPerHour * osjsMon!.data!.hitpoints
+						).toLocaleString();
 					}
-					const foodPerHour = calculateMonsterFood(kMonster!, msg.author)[0] * killsPerHour;
-					simTable.push([master!.name, kMonster!.name, Math.round(foodPerHour).toLocaleString(),
-						Math.ceil(foodPerHour / 20).toLocaleString(), Math.floor(killsPerHour).toString(),
-						slayerXpPerHour, `${percentReduced}% for KC, ${boostMsg}`]);
+					const foodPerHour =
+						calculateMonsterFood(kMonster!, msg.author)[0] * killsPerHour;
+					simTable.push([
+						master!.name,
+						kMonster!.name,
+						Math.round(foodPerHour).toLocaleString(),
+						Math.ceil(foodPerHour / 20).toLocaleString(),
+						Math.floor(killsPerHour).toString(),
+						slayerXpPerHour,
+						`${percentReduced}% for KC, ${boostMsg}`
+					]);
 				});
 			});
 		});
 
 		return msg.channel.sendFile(Buffer.from(table(simTable)), `slayerMonsterSim.txt`);
 
-/*
+		/*
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;
@@ -218,6 +234,5 @@ export default class extends BotCommand {
 			quantity = floor(maxTripLength / timeToFinish);
 		}
 		*/
-
 	}
 }

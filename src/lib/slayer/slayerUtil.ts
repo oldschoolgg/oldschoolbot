@@ -8,7 +8,7 @@ import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
-import {addBanks, roll, skillsMeetRequirements} from '../util';
+import { addBanks, roll, skillsMeetRequirements } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { slayerMasters } from './slayerMasters';
@@ -74,7 +74,8 @@ export function userCanUseTask(user: KlasaUser, task: AssignableSlayerTask, mast
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.settings.get(UserSettings.QP)) return false;
 	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
-	if (task.levelRequirements && !skillsMeetRequirements(user.rawSkills, task.levelRequirements)) return false;
+	if (task.levelRequirements && !skillsMeetRequirements(user.rawSkills, task.levelRequirements))
+		return false;
 	const myBlockList = user.settings.get(UserSettings.Slayer.BlockedTasks) ?? [];
 	if (myBlockList.includes(task.monster.id)) return false;
 	const myUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
@@ -243,9 +244,9 @@ export function getSlayerMasterOSJSbyID(slayerMasterID: number) {
 }
 
 export function getSlayerReward(id: SlayerTaskUnlocksEnum): string {
-	const name = SlayerRewardsShop.find(srs => {
+	const { name } = SlayerRewardsShop.find(srs => {
 		return srs!.id === id;
-	})!.name;
+	})!;
 	return name;
 }
 export function hasSlayerUnlock(
@@ -289,7 +290,7 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	myLoot.filter(l => {
 		return (
 			l.id !== 420 &&
-			l.id !== (itemID('Black mask (10)')) &&
+			l.id !== itemID('Black mask (10)') &&
 			l.id !== itemID("Hydra's eye") &&
 			l.id !== itemID('Dark totem base') &&
 			l.id !== itemID('Bludgeon claw')

@@ -1,8 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { getNewUser } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {SlayerTaskTable} from "../../lib/typeorm/SlayerTaskTable.entity";
-import {getNewUser} from "../../lib/settings/settings";
+import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

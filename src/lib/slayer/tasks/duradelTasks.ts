@@ -60,11 +60,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlackDemon,
 		amount: [130, 200],
 		weight: 8,
-		monsters: [
-			Monsters.BlackDemon.id,
-			Monsters.DemonicGorilla.id,
-			Monsters.Skotizo.id
-		],
+		monsters: [Monsters.BlackDemon.id, Monsters.DemonicGorilla.id, Monsters.Skotizo.id],
 		combatLevel: 80,
 		unlocked: true
 	},

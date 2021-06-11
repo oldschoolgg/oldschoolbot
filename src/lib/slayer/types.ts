@@ -1,6 +1,7 @@
 import { Item } from 'oldschooljs/dist/meta/types';
-import { LevelRequirements } from "../skilling/types";
 import Monster from 'oldschooljs/dist/structures/Monster';
+
+import { LevelRequirements } from '../skilling/types';
 
 export interface AssignableSlayerTask {
 	monster: Monster;

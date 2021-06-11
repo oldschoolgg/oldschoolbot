@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
 import {
@@ -15,7 +16,6 @@ import {
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
-import { SkillsEnum } from "../../lib/skilling/types";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -55,9 +55,11 @@ export default class extends BotCommand {
 			const myBlockedMonsters = Monsters.filter(m => {
 				return myBlockList.includes(m.id);
 			});
-			outstr += `${myBlockedMonsters.map(mbm => {
-				return `${mbm.id}: ${getCommonTaskName(mbm)}`;
-			}).join(`\n`)}`;
+			outstr += `${myBlockedMonsters
+				.map(mbm => {
+					return `${mbm.id}: ${getCommonTaskName(mbm)}`;
+				})
+				.join(`\n`)}`;
 			return msg.channel.send(
 				`${outstr}\n\nTry: \`${msg.cmdPrefix}st --block\` to block a task.`
 			);
@@ -169,21 +171,24 @@ export default class extends BotCommand {
 		}
 
 		// Match on input slayermaster if specified, falling back to remembered.
-		const has99SlayerCape = msg.author.skillLevel(SkillsEnum.Slayer) >= 99
-			&& msg.author.hasItemEquippedOrInBank(itemID('Slayer cape'));
+		const has99SlayerCape =
+			msg.author.skillLevel(SkillsEnum.Slayer) >= 99 &&
+			msg.author.hasItemEquippedOrInBank(itemID('Slayer cape'));
 
-		const slayerMaster = input && has99SlayerCape
-			? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
-			: input
+		const slayerMaster =
+			input && has99SlayerCape
+				? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, input))) ??
+				  null
+				: input
 				? slayerMasters
-					.filter(m => userCanUseMaster(msg.author, m))
-					.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
+						.filter(m => userCanUseMaster(msg.author, m))
+						.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
 				: rememberedSlayerMaster !== ''
 				? slayerMasters
-					.filter(m => userCanUseMaster(msg.author, m))
-					.find(m =>
-						m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))
-					) ?? null
+						.filter(m => userCanUseMaster(msg.author, m))
+						.find(m =>
+							m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))
+						) ?? null
 				: null;
 
 		const matchedSlayerMaster = input
@@ -248,11 +253,13 @@ export default class extends BotCommand {
 			if (currentTask && assignedTask) {
 				const altMobs = assignedTask.monsters;
 
-				const alternateMonsters = killableMonsters.filter(m => {
-					return altMobs.includes(m.id) && m!.id !== assignedTask.monster.id;
-				}).map(m => {
-					return m!.name;
-				});
+				const alternateMonsters = killableMonsters
+					.filter(m => {
+						return altMobs.includes(m.id) && m!.id !== assignedTask.monster.id;
+					})
+					.map(m => {
+						return m!.name;
+					});
 
 				monsterList =
 					alternateMonsters.length > 0 ? ` (${alternateMonsters.join(`/`)})` : '';
@@ -260,8 +267,7 @@ export default class extends BotCommand {
 			let baseInfo = currentTask
 				? `Your current task is to kill ${currentTask.quantity}x ${getCommonTaskName(
 						assignedTask!.monster
-				  )}` +
-				  `${monsterList}, you have ${currentTask.quantityRemaining} kills remaining.`
+				  )}${monsterList}, you have ${currentTask.quantityRemaining} kills remaining.`
 				: `You have no task at the moment <:FrogBigEyes:847859910933741628> You can get a task using \`${
 						msg.cmdPrefix
 				  }slayertask ${slayerMasters.map(i => i.name).join('/')}\``;

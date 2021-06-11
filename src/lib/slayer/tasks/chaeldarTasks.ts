@@ -54,11 +54,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlackDemon,
 		amount: [110, 170],
 		weight: 10,
-		monsters: [
-			Monsters.BlackDemon.id,
-			Monsters.DemonicGorilla.id,
-			Monsters.Skotizo.id
-		],
+		monsters: [Monsters.BlackDemon.id, Monsters.DemonicGorilla.id, Monsters.Skotizo.id],
 		combatLevel: 80,
 		unlocked: true
 	},
