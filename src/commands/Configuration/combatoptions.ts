@@ -86,10 +86,12 @@ export default class extends BotCommand {
 			newcbopt.id === CombatOptionsEnum.AlwaysIceBurst &&
 			myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)
 		) {
-			if (warningMsg === '' &&
-				(myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst
-					|| myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)
-				))
+			if (
+				warningMsg === '' &&
+				myCBOpts.includes(
+					CombatOptionsEnum.AlwaysIceBurst ||
+						myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)
+				)
 			)
 				warningMsg = `\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**`;
 			await msg.author.settings.update(
@@ -100,6 +102,8 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.CombatOptions, newcbopt.id);
 
-		return msg.send(`${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`);
+		return msg.send(
+			`${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`
+		);
 	}
 }
