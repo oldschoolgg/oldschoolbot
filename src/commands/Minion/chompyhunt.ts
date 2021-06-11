@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { percentChance, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -41,6 +41,11 @@ export const chompyHats = [
 	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
+const avas = [
+	[getOSItem("Ava's accumulator"), 72],
+	[getOSItem("Ava's assembler"), 80]
+] as const;
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -62,13 +67,20 @@ export default class extends BotCommand {
 			return msg.channel.send(`You need atleast 10 QP to hunt Chompy birds.`);
 		}
 
+		const rangeGear = msg.author.getGear('range');
+		if (!rangeGear.hasEquipped('Ogre bow')) {
+			return msg.channel.send(
+				`You need an Ogre bow equipped in your range outfit, and Ogre arrows to hunt Chompy birds!`
+			);
+		}
+
 		const tripLength = msg.author.maxTripLength(Activity.BigChompyBirdHunting);
 
 		let boosts = [];
 		let quantity = Math.floor((baseChompyPerHour / Time.Hour) * tripLength);
 		for (const [diary, boost] of diaryBoosts) {
 			const [hasDiary] = await userhasDiaryTier(msg.author, diary);
-			if (hasDiary) {
+			if (1 || hasDiary) {
 				let bonus = 0;
 				for (let i = 0; i < quantity; i++) {
 					if (percentChance(boost)) {
@@ -82,10 +94,19 @@ export default class extends BotCommand {
 			}
 		}
 
-		const cost = new Bank().add('Ogre arrow', quantity);
+		let arrowsNeeded = quantity;
+		for (const [ava, percent] of avas) {
+			if (rangeGear.hasEquipped(ava.name)) {
+				arrowsNeeded = Math.floor(reduceNumByPercent(arrowsNeeded, percent));
+				boosts.push(`${percent}% less arrows for ${ava.name}`);
+				break;
+			}
+		}
+
+		const cost = new Bank().add('Ogre arrow', arrowsNeeded);
 		if (!msg.author.owns(cost)) {
 			return msg.channel.send(
-				`You don't have enough Ogre arrow's to kill ${quantity}x Chompy birds, you need ${quantity}.`
+				`You don't have enough Ogre arrow's to kill ${quantity}x Chompy birds, you need ${arrowsNeeded}.`
 			);
 		}
 
@@ -102,7 +123,9 @@ export default class extends BotCommand {
 
 		let str = `${
 			msg.author.minionName
-		} is now hunting Big Chompy's! The trip will take ${formatDuration(tripLength)}.`;
+		} is now hunting Big Chompy's! The trip will take ${formatDuration(
+			tripLength
+		)}. Removed ${cost} from your bank.`;
 
 		if (boosts.length > 0) {
 			str += `\n**Boosts:** ${boosts.join(', ')}.`;

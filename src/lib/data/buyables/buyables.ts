@@ -829,6 +829,13 @@ const Buyables: Buyable[] = [
 		}),
 		itemCost: resolveNameBank({ 'Torstol potion (unf)': 1 })
 	},
+	{
+		name: 'Ogre bow',
+		outputItems: resolveNameBank({
+			'Ogre bow': 1
+		}),
+		gpCost: 10_000
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,

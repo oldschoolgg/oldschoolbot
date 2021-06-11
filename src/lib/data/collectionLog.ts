@@ -1,6 +1,5 @@
-import { chunk, uniqueArr } from 'e';
+import { uniqueArr } from 'e';
 
-import { chompyHats } from '../../commands/Minion/chompyhunt';
 import {
 	beekeeperOutfit,
 	camoOutfit,
@@ -1678,15 +1677,32 @@ export const sepulchreLog: CollectionLogData = {
 };
 
 const chompyHuntingLog: CollectionLogData = {
-	pet: resolveItems(['Chompy chick'])
+	pet: resolveItems(['Chompy chick']),
+	1: resolveItems([
+		'Chompy bird hat (ogre bowman)',
+		'Chompy bird hat (bowman)',
+		'Chompy bird hat (ogre yeoman)',
+		'Chompy bird hat (yeoman)',
+		'Chompy bird hat (ogre marksman)',
+		'Chompy bird hat (marksman)'
+	]),
+	2: resolveItems([
+		'Chompy bird hat (ogre woodsman)',
+		'Chompy bird hat (woodsman)',
+		'Chompy bird hat (ogre forester)',
+		'Chompy bird hat (forester)',
+		'Chompy bird hat (ogre bowmaster)',
+		'Chompy bird hat (bowmaster)'
+	]),
+	3: resolveItems([
+		'Chompy bird hat (ogre expert)',
+		'Chompy bird hat (expert)',
+		'Chompy bird hat (ogre dragon archer)',
+		'Chompy bird hat (dragon archer)',
+		'Chompy bird hat (expert ogre dragon archer)',
+		'Chompy bird hat (expert dragon archer)'
+	])
 };
-
-for (const i of chunk(
-	chompyHats.map(i => i[0]),
-	6
-)) {
-	chompyHuntingLog[i[0].name] = i.map(i => i.id);
-}
 
 export const skillingLog: CollectionLogData = {
 	Mining: resolveItems([
