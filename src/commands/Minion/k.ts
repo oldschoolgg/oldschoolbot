@@ -198,9 +198,13 @@ export default class extends BotCommand {
 				'burst' :
 				msg.flagArgs.cannon ?
 					'cannon' :
-					myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) ?
+					myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
+					attackStyles.includes(SkillsEnum.Magic) &&
+					monster!.canBarrage ?
 						'barrage' :
-						myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst) ?
+						myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
+						attackStyles.includes(SkillsEnum.Magic) &&
+						monster!.canBarrage ?
 							'burst' :
 							myCBOpts.includes(CombatOptionsEnum.AlwaysCannon) ?
 								'cannon' :
