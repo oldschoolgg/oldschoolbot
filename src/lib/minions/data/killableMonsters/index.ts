@@ -93,7 +93,10 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		combatXpMultiplier: 1.3
+		combatXpMultiplier: 1.3,
+		healAmountNeeded: 100,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.DagannothRex.id,
@@ -127,7 +130,10 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		combatXpMultiplier: 1.3
+		combatXpMultiplier: 1.3,
+		healAmountNeeded: 100,
+		attackStyleToUse: GearSetupTypes.Mage,
+		attackStylesUsed: [GearStat.AttackSlash],
 	},
 	{
 		id: Monsters.DagannothSupreme.id,
@@ -163,7 +169,10 @@ const killableMonsters: KillableMonster[] = [
 		],
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		healAmountNeeded: 100,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.Man.id,

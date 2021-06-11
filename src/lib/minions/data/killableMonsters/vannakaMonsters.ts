@@ -112,7 +112,13 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
-		canBarrage: true
+		canBarrage: true,
+		itemInBankBoosts: [
+			{
+				[itemID('Kodai wand')]: 12,
+				[itemID('Staff of the dead')]: 8
+			}
+		]
 	},
 	{
 		id: Monsters.BabyBlueDragon.id,
@@ -312,7 +318,10 @@ export const vannakaMonsters: KillableMonster[] = [
 		canCannon: true,
 		// Not multi but you can safespot for same effect.
 		cannonMulti: true,
-		canBarrage: false
+		canBarrage: false,
+		healAmountNeeded: 24,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Dagannoth.id,
@@ -348,7 +357,10 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 2
+		qpRequired: 2,
+		healAmountNeeded: 9,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.DaganothFledgeling.id,
@@ -360,7 +372,10 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 2
+		qpRequired: 2,
+		healAmountNeeded: 16,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.DeviantSpectre.id,
@@ -407,7 +422,10 @@ export const vannakaMonsters: KillableMonster[] = [
 		],
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: true
+		canBarrage: true,
+		healAmountNeeded: 16,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.ElfArcher.id,
@@ -425,7 +443,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
 	},
 	{
 		id: Monsters.ElfWarrior.id,
@@ -443,7 +461,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackStab],
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
 	},
 	{
 		id: Monsters.FeverSpider.id,
@@ -458,7 +476,10 @@ export const vannakaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 42
-		}
+		},
+		healAmountNeeded: 14,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.FireGiant.id,
@@ -541,7 +562,10 @@ export const vannakaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 40
 		},
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 40,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.GreaterNechryael.id,
@@ -584,7 +608,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
-		healAmountNeeded: 18,
+		healAmountNeeded: 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true
@@ -603,7 +627,10 @@ export const vannakaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 33,
 			firemaking: 33
-		}
+		},
+		healAmountNeeded: 14,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Hellhound.id,
@@ -811,9 +838,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 39
 		},
-		healAmountNeeded: 10,
+		healAmountNeeded: 12,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackSlash]
+		attackStylesUsed: [GearStat.AttackSlash],
 	},
 	{
 		id: Monsters.MossGiant.id,
@@ -861,7 +888,10 @@ export const vannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		qpRequired: 1,
-		canCannon: true
+		canCannon: true,
+		healAmountNeeded: 28,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Mourner.id,
@@ -874,7 +904,10 @@ export const vannakaMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 1,
 		qpRequired: 0,
-		canCannon: true
+		canCannon: true,
+		healAmountNeeded: 12,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.MutatedBloodveld.id,
@@ -897,8 +930,8 @@ export const vannakaMonsters: KillableMonster[] = [
 			}
 		],
 		superior: Monsters.InsatiableMutatedBloodveld,
-		healAmountNeeded: 36,
-		attackStyleToUse: GearSetupTypes.Range,
+		healAmountNeeded: 40,
+		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackMagic],
 		canCannon: true,
 		cannonMulti: true
@@ -985,7 +1018,10 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 12,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.SeaSnakeHatchling.id,
@@ -1001,7 +1037,10 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 40
 		},
 		itemsRequired: resolveItems(['Antidote++(4)']),
-		qpRequired: 57
+		qpRequired: 57,
+		healAmountNeeded: 20,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.SeaSnakeYoung.id,
@@ -1017,7 +1056,10 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 40
 		},
 		itemsRequired: resolveItems(['Antidote++(4)']),
-		qpRequired: 57
+		qpRequired: 57,
+		healAmountNeeded: 30,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.ShadowWarrior.id,
@@ -1029,7 +1071,10 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 111
+		qpRequired: 111,
+		healAmountNeeded: 12,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.SpiritualMage.id,
@@ -1101,7 +1146,10 @@ export const vannakaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 40
-		}
+		},
+		healAmountNeeded: 28,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.TrollGeneral.id,
@@ -1182,6 +1230,9 @@ export const vannakaMonsters: KillableMonster[] = [
 			{
 				[itemID('Wolfbane')]: 10
 			}
-		]
+		],
+		healAmountNeeded: 13,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	}
 ];

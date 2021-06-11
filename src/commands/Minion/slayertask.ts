@@ -127,7 +127,7 @@ export default class extends BotCommand {
 			}
 			if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 				const alchMessage = await msg.channel.send(
-					`Really ${toBlock ? 'block' : 'skip'} task? This will cost ${
+					`Really ${toBlock ? 'block' : 'skip'} task? You have ${slayerPoints} and this will cost ${
 						toBlock ? 100 : 30
 					} slayer points.\n\nType **confirm** to ${toBlock ? 'block' : 'skip'}.`
 				);
@@ -159,7 +159,7 @@ export default class extends BotCommand {
 			currentTask!.quantityRemaining = 0;
 			currentTask!.skipped = true;
 			currentTask!.save();
-			return msg.send(`Your task has been ${toBlock ? 'blocked' : 'skipped'}.`);
+			return msg.send(`Your task has been ${toBlock ? 'blocked' : 'skipped'}. You have ${slayerPoints} slayer points.`);
 		}
 
 		let rememberedSlayerMaster: string = '';
