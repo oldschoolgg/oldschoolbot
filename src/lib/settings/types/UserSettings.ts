@@ -7,6 +7,7 @@ import { PatchTypes } from '../../minions/farming';
 import { CompostTier, FarmingContract, FarmingPatchTypes } from '../../minions/farming/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
+import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import { ItemBank } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
@@ -45,6 +46,18 @@ export namespace UserSettings {
 	export const TotalCoxPoints = T<number>('total_cox_points');
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
 	export const BankBackgroundHex = T<string | null>('bank_bg_hex');
+
+	export namespace Slayer {
+		export const SlayerPoints = T<number>('slayer.points');
+		export const TaskStreak = T<number>('slayer.task_streak');
+		export const RememberSlayerMaster = T<string | null>('slayer.remember_master');
+		export const SuperiorCount = T<number>('slayer.superior_count');
+		export const SlayerUnlocks = T<readonly SlayerTaskUnlocksEnum[]>('slayer.unlocks');
+		export const BlockedTasks = T<readonly number[]>('slayer.blocked_ids');
+		export const AutoslayOptions = T<readonly number[]>('slayer.autoslay_options');
+		export const LastTask = T<number>('slayer.last_task');
+		export const UnsiredOffered = T<number>('slayer.unsired_offered');
+	}
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');
@@ -97,6 +110,7 @@ export namespace UserSettings {
 		export const Defence = T<number>(`skills.${SkillsEnum.Defence}`);
 		export const Ranged = T<number>(`skills.${SkillsEnum.Ranged}`);
 		export const Hitpoints = T<number>(`skills.${SkillsEnum.Hitpoints}`);
+		export const Slayer = T<number>(`skills.${SkillsEnum.Slayer}`);
 	}
 
 	export namespace Gear {

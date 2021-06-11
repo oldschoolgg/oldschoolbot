@@ -8,12 +8,14 @@ import { BitField, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { getNewUser } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
+import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
 import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
 import { randomItemFromArray } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -195,6 +197,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				UserSettings.CarpenterPoints,
 				UserSettings.ZealTokens,
 				UserSettings.OpenableScores,
+				'slayer',
 				'gear',
 				'stats',
 				'skills',
@@ -203,6 +206,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			]);
 
 			try {
+				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
 				await PoHTable.delete({ userID: msg.author.id });
 				await MinigameTable.delete({ userID: msg.author.id });
 				await XPGainsTable.delete({ userID: msg.author.id });

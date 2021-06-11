@@ -106,6 +106,7 @@ export const enum Emoji {
 	Defence = '<:defence:630911040393052180>',
 	Ranged = '<:ranged:630911040258834473>',
 	Gear = '<:gear:835314891950129202>',
+	Slayer = '<:slayer:630911040560824330>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -433,5 +434,6 @@ export const skillEmoji = {
 	woodcutting: '<:woodcutting:630911040099450892>',
 	hunter: '<:hunter:630911040166559784>',
 	cml: '<:CrystalMathLabs:364657225249062912>',
-	clock: '<:ehpclock:352323705210142721>'
+	clock: '<:ehpclock:352323705210142721>',
+	combat: '<:combat:802136963956080650>'
 };
