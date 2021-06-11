@@ -37,6 +37,7 @@ export default class extends Task {
 			duration,
 			isOnTask,
 			quantitySlayed,
+			false,
 			data.usingCannon,
 			data.cannonMulti
 		);
