@@ -2103,15 +2103,12 @@ export const collectionLogTypes: CollectionLogType[] = [
 			castleWarsOther,
 			mta: [...wandItems, ...infinityItems]
 		}
-	}
-	/* ,
+	},
 	{
 		name: 'Random Events',
 		aliases: ['random events'],
 		items: randomEventsLog
 	}
-	
-	 */
 ];
 export const allCollectionLogItems = uniqueArr(
 	collectionLogTypes.map(i => Object.values(i.items)).flat(Infinity) as number[]
