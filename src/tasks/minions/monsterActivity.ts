@@ -65,45 +65,6 @@ export default class extends Task {
 		const loot = monster.table.kill(quantity, killOptions);
 		const newSuperiorCount = loot.bank[420];
 
-		const usersTask = await getUsersCurrentSlayerInfo(user.id);
-		const isOnTask =
-			usersTask.assignedTask !== null &&
-			usersTask.currentTask !== null &&
-			usersTask.assignedTask.monsters.includes(monsterID);
-		const quantitySlayed = isOnTask
-			? Math.min(usersTask.currentTask!.quantityRemaining, quantity)
-			: null;
-		const xpRes = await addMonsterXP(
-			user,
-			monsterID,
-			quantity,
-			duration,
-			isOnTask,
-			quantitySlayed
-		);
-
-		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
-
-		const slayerMaster = isOnTask
-			? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id)
-			: undefined;
-		// Check if superiors unlock is purchased
-		const superiorsUnlocked = isOnTask
-			? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder)
-			: undefined;
-
-		const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
-		const isInCatacombs = monster.existsInCatacombs ?? undefined;
-
-		const killOptions: MonsterKillOptions = {
-			onSlayerTask: isOnTask,
-			slayerMaster,
-			hasSuperiors: superiorTable,
-			inCatacombs: isInCatacombs
-		};
-		const loot = monster.table.kill(quantity, killOptions);
-		const newSuperiorCount = loot.bank[420];
-
 		announceLoot(this.client, user, monster, loot.bank);
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
