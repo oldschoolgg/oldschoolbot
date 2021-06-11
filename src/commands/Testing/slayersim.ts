@@ -63,7 +63,9 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage, [option = '']: [null | number | string, string]) {
-
+		if (option !== '') {
+			return msg.send('No options supported at this time');
+		}
 		// Start sim code
 		const simTable: string[][] = [];
 		simTable.push([
