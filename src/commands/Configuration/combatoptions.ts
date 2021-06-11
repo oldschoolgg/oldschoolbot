@@ -66,29 +66,40 @@ export default class extends BotCommand {
 			);
 		}
 
+		let warningMsg = '';
 		// If enabling Ice Barrage, make sure burst isn't also enabled:
 		if (
 			nextBool &&
 			newcbopt.id === CombatOptionsEnum.AlwaysIceBarrage &&
 			myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst)
-		)
+		) {
+			if (warningMsg === '' && myCBOpts.includes(CombatOptionsEnum.AlwaysCannon))
+				warningMsg = `\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**`;
 			await msg.author.settings.update(
 				UserSettings.CombatOptions,
 				CombatOptionsEnum.AlwaysIceBurst
 			);
+		}
 		// If enabling Ice Burst, make sure barrage isn't also enabled:
 		if (
 			nextBool &&
 			newcbopt.id === CombatOptionsEnum.AlwaysIceBurst &&
 			myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)
-		)
+		) {
+			if (warningMsg === '' &&
+				(myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst
+					|| myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)
+				))
+			)
+				warningMsg = `\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**`;
 			await msg.author.settings.update(
 				UserSettings.CombatOptions,
 				CombatOptionsEnum.AlwaysIceBarrage
 			);
+		}
 
 		await msg.author.settings.update(UserSettings.CombatOptions, newcbopt.id);
 
-		return msg.send(`${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.`);
+		return msg.send(`${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`);
 	}
 }
