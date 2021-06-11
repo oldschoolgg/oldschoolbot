@@ -337,6 +337,13 @@ export default class extends BotCommand {
 			lootToRemove.add(itemCost);
 		}
 
+		if (pvmCost) {
+			if (!msg.author.owns(lootToRemove)) {
+				return msg.channel.send(
+					`You don't have the items needed to kill ${quantity}x ${monster.name}, you need: ${lootToRemove}.`
+				);
+			}
+		}
 		// Check food
 		let foodStr: undefined | string = undefined;
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
@@ -367,13 +374,6 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (pvmCost) {
-			if (!msg.author.owns(lootToRemove)) {
-				return msg.channel.send(
-					`You don't have the items needed to kill ${quantity}x ${monster.name}, you need: ${lootToRemove}.`
-				);
-			}
-		}
 		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
 		await msg.author.removeItemsFromBank(lootToRemove);
 
