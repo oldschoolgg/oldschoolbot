@@ -193,18 +193,6 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 0
 	},
 	{
-		id: Monsters.ChompyBird.id,
-		name: Monsters.ChompyBird.name,
-		aliases: Monsters.ChompyBird.aliases,
-		timeToFinish: Time.Second * 30,
-		table: Monsters.ChompyBird,
-
-		wildy: false,
-		canBeKilled: true,
-		difficultyRating: 1,
-		qpRequired: 3
-	},
-	{
 		id: Monsters.Cow.id,
 		name: Monsters.Cow.name,
 		aliases: Monsters.Cow.aliases,
