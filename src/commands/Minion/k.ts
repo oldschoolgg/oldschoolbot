@@ -192,23 +192,23 @@ export default class extends BotCommand {
 
 		// Set chosen boost based on priority:
 		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
-		const boostChoice = msg.flagArgs.barrage ?
-			'barrage' :
-			msg.flagArgs.burst ?
-				'burst' :
-				msg.flagArgs.cannon ?
-					'cannon' :
-					myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
-					attackStyles.includes(SkillsEnum.Magic) &&
-					monster!.canBarrage ?
-						'barrage' :
-						myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
-						attackStyles.includes(SkillsEnum.Magic) &&
-						monster!.canBarrage ?
-							'burst' :
-							myCBOpts.includes(CombatOptionsEnum.AlwaysCannon) ?
-								'cannon' :
-								'none';
+		const boostChoice = msg.flagArgs.barrage
+			? 'barrage'
+			: msg.flagArgs.burst
+			? 'burst'
+			: msg.flagArgs.cannon
+			? 'cannon'
+			: myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
+			  attackStyles.includes(SkillsEnum.Magic) &&
+			  monster!.canBarrage
+			? 'barrage'
+			: myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
+			  attackStyles.includes(SkillsEnum.Magic) &&
+			  monster!.canBarrage
+			? 'burst'
+			: myCBOpts.includes(CombatOptionsEnum.AlwaysCannon)
+			? 'cannon'
+			: 'none';
 
 		// Calculate Cannon and Barrage boosts + costs:
 		let usingCannon = false;
@@ -230,11 +230,19 @@ export default class extends BotCommand {
 			return msg.send(`${monster!.name} cannot be killed with a cannon.`);
 		}
 
-		if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+		if (
+			boostChoice === 'barrage' &&
+			attackStyles.includes(SkillsEnum.Magic) &&
+			monster!.canBarrage
+		) {
 			consumableCosts.push(iceBarrageConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
 			boosts.push(`${boostIceBarrage}% for Ice Barrage`);
-		} else if (boostChoice === 'burst' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+		} else if (
+			boostChoice === 'burst' &&
+			attackStyles.includes(SkillsEnum.Magic) &&
+			monster!.canBarrage
+		) {
 			consumableCosts.push(iceBurstConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst);
 			boosts.push(`${boostIceBurst}% for Ice Burst`);

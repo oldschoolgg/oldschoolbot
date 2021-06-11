@@ -70,7 +70,9 @@ export default class extends BotCommand {
 
 		let warningMsg = '';
 		const hasCannon = myCBOpts.includes(CombatOptionsEnum.AlwaysCannon);
-		const hasBurstB = myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst) || myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage);
+		const hasBurstB =
+			myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst) ||
+			myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage);
 		// If enabling Ice Barrage, make sure burst isn't also enabled:
 		if (
 			nextBool &&
@@ -96,7 +98,12 @@ export default class extends BotCommand {
 			);
 		}
 		// Warn if enabling cannon with ice burst/barrage:
-		if (nextBool && newcbopt.id === CombatOptionsEnum.AlwaysCannon && warningMsg === '' && hasBurstB)
+		if (
+			nextBool &&
+			newcbopt.id === CombatOptionsEnum.AlwaysCannon &&
+			warningMsg === '' &&
+			hasBurstB
+		)
 			warningMsg = priorityWarningMsg;
 
 		await msg.author.settings.update(UserSettings.CombatOptions, newcbopt.id);
