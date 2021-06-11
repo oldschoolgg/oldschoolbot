@@ -131,7 +131,7 @@ export default class extends BotCommand {
 					}
 
 					const killsPerHour = Time.Hour / newDuration;
-					let slayerXpPerHour = 'NA';
+					let slayerXpPerHour = '';
 					slayerXpPerHour = (killsPerHour * mSlayerXP).toLocaleString();
 
 					const foodPerHour =

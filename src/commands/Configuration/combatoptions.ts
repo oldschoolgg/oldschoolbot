@@ -73,7 +73,7 @@ export default class extends BotCommand {
 			newcbopt.id === CombatOptionsEnum.AlwaysIceBarrage &&
 			myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst)
 		) {
-			if (warningMsg === '' && myCBOpts.includes(CombatOptionsEnum.AlwaysCannon))
+			if (myCBOpts.includes(CombatOptionsEnum.AlwaysCannon))
 				warningMsg = `\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**`;
 			await msg.author.settings.update(
 				UserSettings.CombatOptions,
