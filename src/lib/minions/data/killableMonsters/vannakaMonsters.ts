@@ -74,6 +74,13 @@ export const vannakaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 85
 		},
+		pohBoosts: {
+			pool: {
+				'Rejuvenation pool': 10,
+				'Fancy rejuvenation pool': 10,
+				'Ornate rejuvenation pool': 10
+			}
+		},
 		slayerOnly: true,
 		notifyDrops: resolveItems(['Unsired']),
 		itemInBankBoosts: [
