@@ -7,7 +7,6 @@ import {
 	mimeOutfit,
 	zombieOutfit
 } from '../randomEvents';
-
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
 
