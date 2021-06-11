@@ -133,7 +133,7 @@ const killableMonsters: KillableMonster[] = [
 		combatXpMultiplier: 1.3,
 		healAmountNeeded: 100,
 		attackStyleToUse: GearSetupTypes.Mage,
-		attackStylesUsed: [GearStat.AttackSlash],
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.DagannothSupreme.id,

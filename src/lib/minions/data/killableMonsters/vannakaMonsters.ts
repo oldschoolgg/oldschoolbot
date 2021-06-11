@@ -443,7 +443,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.ElfWarrior.id,
@@ -461,7 +461,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackStab],
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.FeverSpider.id,
@@ -840,7 +840,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		healAmountNeeded: 12,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackSlash],
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.MossGiant.id,

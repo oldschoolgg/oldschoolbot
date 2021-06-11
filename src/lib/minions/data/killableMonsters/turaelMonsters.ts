@@ -1,11 +1,11 @@
-import {Time} from 'e';
-import {Monsters} from 'oldschooljs';
-import {itemID} from 'oldschooljs/dist/util';
+import { Time } from 'e';
+import { Monsters } from 'oldschooljs';
+import { itemID } from 'oldschooljs/dist/util';
 
-import {GearSetupTypes, GearStat} from '../../../gear';
-import {SkillsEnum} from '../../../skilling/types';
-import {deepResolveItems} from '../../../util/resolveItems';
-import {KillableMonster} from '../../types';
+import { GearSetupTypes, GearStat } from '../../../gear';
+import { SkillsEnum } from '../../../skilling/types';
+import { deepResolveItems } from '../../../util/resolveItems';
+import { KillableMonster } from '../../types';
 
 export const turaelMonsters: KillableMonster[] = [
 	{
@@ -1168,7 +1168,7 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 48,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush,GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.UndeadOne.id,
