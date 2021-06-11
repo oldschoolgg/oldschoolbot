@@ -119,7 +119,8 @@ export const konarMonsters: KillableMonster[] = [
 		superior: Monsters.ColossalHydra,
 		healAmountNeeded: 20 * 5,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
+		canCannon: true
 	},
 	{
 		id: Monsters.AlchemicalHydra.id,

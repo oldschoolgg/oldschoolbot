@@ -26,6 +26,11 @@ export enum CombatOptionsEnum {
 	AlwaysIceBurst,
 	AlwaysIceBarrage
 }
+export enum SlayerActivityConstants {
+	None,
+	IceBarrage,
+	IceBurst
+}
 export const CombatCannonItemBank = {
 	[itemID('Cannon barrels')]: 1,
 	[itemID('Cannon base')]: 1,

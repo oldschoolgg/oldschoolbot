@@ -15,7 +15,7 @@ import {
 	CombatCannonItemBank,
 	CombatOptionsEnum,
 	iceBarrageConsumables,
-	iceBurstConsumables
+	iceBurstConsumables, SlayerActivityConstants
 } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -213,6 +213,7 @@ export default class extends BotCommand {
 		// Calculate Cannon and Barrage boosts + costs:
 		let usingCannon = false;
 		let cannonMulti = false;
+		let burstOrBarrage = 0;
 		const hasCannon = msg.author.owns(CombatCannonItemBank);
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !monster!.canBarrage) {
 			return msg.send(`${monster!.name} cannot be barraged or bursted.`);
@@ -238,6 +239,7 @@ export default class extends BotCommand {
 			consumableCosts.push(iceBarrageConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
 			boosts.push(`${boostIceBarrage}% for Ice Barrage`);
+			burstOrBarrage = SlayerActivityConstants.IceBarrage;
 		} else if (
 			boostChoice === 'burst' &&
 			attackStyles.includes(SkillsEnum.Magic) &&
@@ -246,6 +248,7 @@ export default class extends BotCommand {
 			consumableCosts.push(iceBurstConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst);
 			boosts.push(`${boostIceBurst}% for Ice Burst`);
+			burstOrBarrage = SlayerActivityConstants.IceBurst;
 		} else if (boostChoice === 'cannon' && hasCannon && monster!.cannonMulti) {
 			usingCannon = true;
 			cannonMulti = true;
@@ -385,7 +388,8 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.MonsterKilling,
 			usingCannon,
-			cannonMulti
+			cannonMulti,
+			burstOrBarrage
 		});
 
 		let response = `${minionName} is now killing ${quantity}x ${

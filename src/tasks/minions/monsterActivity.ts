@@ -14,10 +14,11 @@ import {
 } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import {CombatOptionsEnum} from "../../lib/minions/data/combatConstants";
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
-		const { monsterID, userID, channelID, quantity, duration } = data;
+		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		await user.incrementMonsterScore(monsterID, quantity);
@@ -38,8 +39,8 @@ export default class extends Task {
 			isOnTask,
 			quantitySlayed,
 			false,
-			data.usingCannon,
-			data.cannonMulti
+			usingCannon,
+			cannonMulti
 		);
 
 		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
@@ -53,7 +54,7 @@ export default class extends Task {
 			: undefined;
 
 		const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
-		const isInCatacombs = !data.usingCannon
+		const isInCatacombs = !usingCannon
 			? monster.existsInCatacombs ?? undefined
 			: undefined;
 
@@ -151,6 +152,9 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of killing ${monster.name}`);
+				if (usingCannon) res.flagArgs.cannon = true;
+				if (burstOrBarrage == CombatOptionsEnum.AlwaysIceBarrage) res.flagArgs.barrage = true;
+				if (burstOrBarrage == CombatOptionsEnum.AlwaysIceBurst) res.flagArgs.burst = true;
 				return this.client.commands.get('k')!.run(res, [quantity, monster.name]);
 			},
 			image!,
