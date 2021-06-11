@@ -5,6 +5,8 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 
+const priorityWarningMsg = `\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**`;
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -67,14 +69,15 @@ export default class extends BotCommand {
 		}
 
 		let warningMsg = '';
+		const hasCannon = myCBOpts.includes(CombatOptionsEnum.AlwaysCannon);
+		const hasBurstB = myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst) || myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage);
 		// If enabling Ice Barrage, make sure burst isn't also enabled:
 		if (
 			nextBool &&
 			newcbopt.id === CombatOptionsEnum.AlwaysIceBarrage &&
 			myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst)
 		) {
-			if (myCBOpts.includes(CombatOptionsEnum.AlwaysCannon))
-				warningMsg = `\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**`;
+			if (hasCannon) warningMsg = priorityWarningMsg;
 			await msg.author.settings.update(
 				UserSettings.CombatOptions,
 				CombatOptionsEnum.AlwaysIceBurst
@@ -86,19 +89,15 @@ export default class extends BotCommand {
 			newcbopt.id === CombatOptionsEnum.AlwaysIceBurst &&
 			myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)
 		) {
-			if (
-				warningMsg === '' &&
-				myCBOpts.includes(
-					CombatOptionsEnum.AlwaysIceBurst ||
-						myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)
-				)
-			)
-				warningMsg = `\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**`;
+			if (warningMsg === '' && hasBurstB) warningMsg = priorityWarningMsg;
 			await msg.author.settings.update(
 				UserSettings.CombatOptions,
 				CombatOptionsEnum.AlwaysIceBarrage
 			);
 		}
+		// Warn if enabling cannon with ice burst/barrage:
+		if (nextBool && newcbopt.id === CombatOptionsEnum.AlwaysCannon && warningMsg === '' && hasBurstB)
+			warningMsg = priorityWarningMsg;
 
 		await msg.author.settings.update(UserSettings.CombatOptions, newcbopt.id);
 
