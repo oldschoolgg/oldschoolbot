@@ -187,8 +187,24 @@ export default class extends BotCommand {
 			boosts.push('15% for Black mask on melee task');
 		}
 
-		// Start of the consumable code. continued later in other costs.
+		// Initialize consumable costs before any are calculated.
 		const consumableCosts: Consumable[] = [];
+
+		// Set chosen boost based on priority:
+		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
+		const boostChoice = msg.flagArgs.barrage ?
+			'barrage' :
+			msg.flagArgs.burst ?
+				'burst' :
+				msg.flagArgs.cannon ?
+					'cannon' :
+					myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) ?
+						'barrage' :
+						myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst) ?
+							'burst' :
+							myCBOpts.includes(CombatOptionsEnum.AlwaysCannon) ?
+								'cannon' :
+								'none';
 
 		// Calculate Cannon and Barrage boosts + costs:
 		let usingCannon = false;
@@ -209,38 +225,22 @@ export default class extends BotCommand {
 		if (msg.flagArgs.cannon && !monster!.canCannon) {
 			return msg.send(`${monster!.name} cannot be killed with a cannon.`);
 		}
-		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
-		if (
-			attackStyles.includes(SkillsEnum.Magic) &&
-			monster!.canBarrage &&
-			(msg.flagArgs.barrage || myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage))
-		) {
+
+		if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 			consumableCosts.push(iceBarrageConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
 			boosts.push(`${boostIceBarrage}% for Ice Barrage`);
-		} else if (
-			attackStyles.includes(SkillsEnum.Magic) &&
-			monster!.canBarrage &&
-			(msg.flagArgs.burst || myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst))
-		) {
+		} else if (boostChoice === 'burst' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 			consumableCosts.push(iceBurstConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst);
 			boosts.push(`${boostIceBurst}% for Ice Burst`);
-		} else if (
-			hasCannon &&
-			monster!.cannonMulti &&
-			(msg.flagArgs.cannon || myCBOpts.includes(CombatOptionsEnum.AlwaysCannon))
-		) {
+		} else if (boostChoice === 'cannon' && hasCannon && monster!.cannonMulti) {
 			usingCannon = true;
 			cannonMulti = true;
 			consumableCosts.push(cannonMultiConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostCannonMulti);
 			boosts.push(`${boostCannonMulti}% for Cannon in multi`);
-		} else if (
-			hasCannon &&
-			monster!.canCannon &&
-			(msg.flagArgs.cannon || myCBOpts.includes(CombatOptionsEnum.AlwaysCannon))
-		) {
+		} else if (boostChoice === 'cannon' && hasCannon && monster!.canCannon) {
 			usingCannon = true;
 			consumableCosts.push(cannonSingleConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
