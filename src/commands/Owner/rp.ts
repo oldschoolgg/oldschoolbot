@@ -31,20 +31,6 @@ export default class extends BotCommand {
 	) {
 		if (msg.guild!.id !== '342983479501389826') return null;
 
-		switch (cmd.toLowerCase()) {
-			case 'resettask': {
-				const { currentTask } = await getUsersCurrentSlayerInfo(msg.author.id);
-				if (!currentTask) return msg.channel.send(`You have no task.`);
-				await currentTask.remove();
-				return msg.channel.send(`Deleted your task.`);
-			}
-			case 'slayerreset': {
-				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
-				await msg.author.settings.reset(UserSettings.Skills.Slayer);
-				return msg.channel.send(`Deleted ALL your task history, your slayer XP`);
-			}
-		}
-
 		const isMod = msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator);
 		const isOwner = this.client.owners.has(msg.author);
 		if (!isMod && !isOwner) return null;
