@@ -18,7 +18,7 @@ const diaryBoosts = [
 	[WesternProv.easy, 25]
 ] as const;
 
-const baseChompyPerHour = 150;
+const baseChompyPerHour = 100;
 
 export const chompyHats = [
 	[getOSItem('Chompy bird hat (ogre bowman)'), 30],
@@ -65,7 +65,7 @@ export default class extends BotCommand {
 		const tripLength = msg.author.maxTripLength(Activity.BigChompyBirdHunting);
 
 		let boosts = [];
-		let quantity = (baseChompyPerHour / Time.Hour) * tripLength;
+		let quantity = Math.floor((baseChompyPerHour / Time.Hour) * tripLength);
 		for (const [diary, boost] of diaryBoosts) {
 			const [hasDiary] = await userhasDiaryTier(msg.author, diary);
 			if (hasDiary) {

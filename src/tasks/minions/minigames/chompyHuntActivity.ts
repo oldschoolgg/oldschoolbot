@@ -26,7 +26,7 @@ export default class extends Task {
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Bones');
 			loot.add('Raw chompy');
-			if (hasElite && roll(500)) {
+			if (hasElite && roll(250)) {
 				loot.add('Chompy chick');
 			}
 		}

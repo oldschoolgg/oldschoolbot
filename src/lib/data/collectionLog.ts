@@ -1,5 +1,6 @@
-import { uniqueArr } from 'e';
+import { chunk, uniqueArr } from 'e';
 
+import { chompyHats } from '../../commands/Minion/chompyhunt';
 import {
 	beekeeperOutfit,
 	camoOutfit,
@@ -1676,6 +1677,17 @@ export const sepulchreLog: CollectionLogData = {
 	Pets: resolveItems(['Giant squirrel', 'Dark squirrel'])
 };
 
+const chompyHuntingLog: CollectionLogData = {
+	pet: resolveItems(['Chompy chick'])
+};
+
+for (const i of chunk(
+	chompyHats.map(i => i[0]),
+	6
+)) {
+	chompyHuntingLog[i[0].name] = i.map(i => i.id);
+}
+
 export const skillingLog: CollectionLogData = {
 	Mining: resolveItems([
 		'Prospector helmet',
@@ -1991,6 +2003,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Random Events',
 		aliases: ['random events'],
 		items: randomEventsLog
+	},
+	{
+		name: 'Big Chompy Hunting',
+		aliases: ['chompy', 'bgc', 'big chompy hunting'],
+		items: chompyHuntingLog
 	}
 ];
 export const allCollectionLogItems = uniqueArr(

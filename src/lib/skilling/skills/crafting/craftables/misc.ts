@@ -158,14 +158,6 @@ const Misc: Craftable[] = [
 		xp: 15,
 		inputItems: resolveNameBank({ 'Steel bar': 1 }),
 		tickRate: 3
-	},
-	{
-		name: 'Wolfbone arrowtips',
-		id: itemID('Wolfbone arrowtips'),
-		level: 5,
-		xp: 2.5,
-		inputItems: resolveNameBank({ 'Wolf bones': 1 }),
-		tickRate: 3
 	}
 ];
 
