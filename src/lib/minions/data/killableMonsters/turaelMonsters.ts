@@ -415,15 +415,18 @@ export const turaelMonsters: KillableMonster[] = [
 		id: Monsters.GiantCryptSpider.id,
 		name: Monsters.GiantCryptSpider.name,
 		aliases: Monsters.GiantCryptSpider.aliases,
-		timeToFinish: Time.Second * 20,
+		timeToFinish: Time.Second * 25,
 		table: Monsters.GiantCryptSpider,
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
 		qpRequired: 1,
-		canCannon: true,
+		canCannon: false,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		healAmountNeeded: 16,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.GiantRat.id,
@@ -958,7 +961,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 1,
+		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 14,
 		attackStyleToUse: GearSetupTypes.Melee,
@@ -1025,6 +1028,7 @@ export const turaelMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 44
 		},
+		canCannon: true,
 		healAmountNeeded: 18,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackCrush]
