@@ -1,6 +1,5 @@
 import { uniqueArr } from 'e';
 
-/*
 import {
 	beekeeperOutfit,
 	camoOutfit,
@@ -8,7 +7,7 @@ import {
 	mimeOutfit,
 	zombieOutfit
 } from '../randomEvents';
-*/
+
 import Agility, { gracefulItems } from '../skilling/skills/agility';
 import resolveItems from '../util/resolveItems';
 
@@ -278,7 +277,6 @@ export const mahoganyHomesLog: CollectionLogData = {
 	Other: resolveItems(["Amy's saw", 'Plank sack', 'Hosidius blueprints', 'Builders supply crate'])
 };
 
-/*
 export const randomEventsLog: CollectionLogData = {
 	BeeKeeper: beekeeperOutfit,
 	Lederhosen: lederhosenOutfit,
@@ -286,7 +284,6 @@ export const randomEventsLog: CollectionLogData = {
 	Mime: mimeOutfit,
 	Camo: camoOutfit
 };
-*/
 
 const barrows: CollectionLogData = {
 	Barrows: resolveItems([

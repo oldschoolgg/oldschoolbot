@@ -269,7 +269,6 @@ export function hasSlayerUnlock(
 }
 
 export function filterLootReplace(myBank: Bank, myLoot: Bank) {
-	// TODO: Refactor this into a 'lootFilter' function/class/something
 	// Order: Fang, eye, heart.
 	const numBlackMask = myLoot.bank[itemID('Black mask (10)')];
 	const numHydraEyes = myLoot.bank[itemID("Hydra's eye")];

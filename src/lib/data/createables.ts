@@ -644,6 +644,9 @@ const slayerCreatables: Createable[] = [
 		}),
 		outputItems: resolveNameBank({ 'Slayer ring (8)': 1 }),
 		GPCost: 0,
+		requiredSkills: {
+			crafting: 75
+		},
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.RingBling]
 	},
 	{
@@ -654,6 +657,9 @@ const slayerCreatables: Createable[] = [
 		}),
 		outputItems: resolveNameBank({ 'Slayer ring (eternal)': 1 }),
 		GPCost: 0,
+		requiredSkills: {
+			crafting: 75
+		},
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.RingBling]
 	},
 	{
@@ -666,6 +672,9 @@ const slayerCreatables: Createable[] = [
 			'Spiny helmet': 1,
 			'Enchanted gem': 1
 		}),
+		requiredSkills: {
+			crafting: 55
+		},
 		outputItems: resolveNameBank({ 'Slayer helmet': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
@@ -682,6 +691,9 @@ const slayerCreatables: Createable[] = [
 		}),
 		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1 }),
 		GPCost: 0,
+		requiredSkills: {
+			crafting: 55
+		},
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
 	},
 	{
@@ -695,6 +707,9 @@ const slayerCreatables: Createable[] = [
 			'Spiny helmet': 1,
 			'Enchanted gem': 1
 		}),
+		requiredSkills: {
+			crafting: 55
+		},
 		GPCost: 0,
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
 	},
@@ -709,6 +724,9 @@ const slayerCreatables: Createable[] = [
 			'Spiny helmet': 1,
 			'Enchanted gem': 1
 		}),
+		requiredSkills: {
+			crafting: 55
+		},
 		GPCost: 0,
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
 	},

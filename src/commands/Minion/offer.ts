@@ -78,12 +78,10 @@ export default class extends BotCommand {
 			}
 			await msg.author.removeItemsFromBank({ [itemID('Unsired')]: quantity });
 			let loot = new Bank();
-			for (let iter = 0; iter < quantity; iter++) {
-				loot.add(UnsiredLootTable.roll());
-			}
+			loot.add(UnsiredLootTable.roll(quantity));
+
 			filterLootReplace(msg.author.allItemsOwned(), loot);
-			const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
-			await msg.author.addItemsToBank(loot.values(), true);
+			const { previousCL } = await msg.author.addItemsToBank(loot.values(), true);
 			msg.author.settings.update(
 				UserSettings.Slayer.UnsiredOffered,
 				msg.author.settings.get(UserSettings.Slayer.UnsiredOffered) + quantity

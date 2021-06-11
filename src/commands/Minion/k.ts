@@ -256,7 +256,6 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		// TODO: Add a time-based cost to KillableMonsters
 		if (['hydra', 'alchemical hydra'].includes(monster.name.toLowerCase())) {
 			const potsTotal = await msg.author.numberOfItemInBank(itemID('Antidote++(4)'));
 			// Potions actually last 36+ minutes for a 4-dose, but we want item sink
