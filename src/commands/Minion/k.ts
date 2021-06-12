@@ -82,7 +82,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[quantity:int{1}|name:...string] [name:...string]',
+			usage: '[quantity:int{1}|name:...string] [name:...string] [cannon|burst|barrage|none]',
 			usageDelim: ' ',
 			description: 'Sends your minion to kill monsters.'
 		});
@@ -90,9 +90,10 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
+	async run(msg: KlasaMessage, [quantity, name = '', method = '']: [null | number | string, string, string]) {
 		console.log(`${msg.cmdPrefix}k:`);
 		console.log(msg.flagArgs);
+		console.log(`qty: ${quantity}, name: ${name}, methods: ${method}`);
 		const { minionName } = msg.author;
 
 		const boosts = [];

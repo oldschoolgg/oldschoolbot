@@ -160,13 +160,14 @@ export default class extends Task {
 			res => {
 				console.log(`Cannon: ${usingCannon} Burst or Barrage: ${burstOrBarrage}`);
 				user.log(`continued trip of killing ${monster.name}`);
-				if (usingCannon) res.flagArgs.cannon = 'yes';
+				let method = 'none';
+				if (usingCannon) method = 'cannon';
 				else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBarrage)
-					res.flagArgs.barrage = 'yes';
+					method = 'barrage';
 				else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBurst)
-					res.flagArgs.burst = 'yes';
-				console.log(res.flagArgs);
-				return this.client.commands.get('k')!.run(res, [quantity, monster.name]);
+					method = 'burst';
+				console.log(`method: ${method}`);
+				return this.client.commands.get('k')!.run(res, [quantity, monster.name, method]);
 			},
 			image!,
 			data,
