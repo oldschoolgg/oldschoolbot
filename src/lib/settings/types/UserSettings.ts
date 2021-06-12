@@ -3,6 +3,7 @@ import { O } from 'ts-toolbelt';
 
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
+import { CombatOptionsEnum } from '../../minions/data/combatConstants';
 import { PatchTypes } from '../../minions/farming';
 import { CompostTier, FarmingContract, FarmingPatchTypes } from '../../minions/farming/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
@@ -46,6 +47,7 @@ export namespace UserSettings {
 	export const TotalCoxPoints = T<number>('total_cox_points');
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
 	export const BankBackgroundHex = T<string | null>('bank_bg_hex');
+	export const CombatOptions = T<readonly CombatOptionsEnum[]>('combat_options');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');
@@ -57,6 +59,7 @@ export namespace UserSettings {
 		export const AutoslayOptions = T<readonly number[]>('slayer.autoslay_options');
 		export const LastTask = T<number>('slayer.last_task');
 		export const UnsiredOffered = T<number>('slayer.unsired_offered');
+		export const ChewedBonesOffered = T<number>('slayer.chewed_offered');
 	}
 
 	export namespace Stats {

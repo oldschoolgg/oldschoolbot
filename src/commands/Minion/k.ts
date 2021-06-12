@@ -1,22 +1,36 @@
 import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Activity, Time } from '../../lib/constants';
+import {
+	boostCannon,
+	boostCannonMulti,
+	boostIceBarrage,
+	boostIceBurst,
+	cannonMultiConsumables,
+	cannonSingleConsumables,
+	CombatCannonItemBank,
+	CombatOptionsEnum,
+	iceBarrageConsumables,
+	iceBurstConsumables,
+	SlayerActivityConstants
+} from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
+import { Consumable } from '../../lib/minions/types';
 import { calcPOHBoosts } from '../../lib/poh';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import findMonster, {
@@ -68,7 +82,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[quantity:int{1}|name:...string] [name:...string]',
+			usage: '[quantity:int{1}|name:...string] [name:...string] [cannon|burst|barrage|none]',
 			usageDelim: ' ',
 			description: 'Sends your minion to kill monsters.'
 		});
@@ -76,7 +90,10 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
+	async run(
+		msg: KlasaMessage,
+		[quantity, name = '', method = '']: [null | number | string, string, string]
+	) {
 		const { minionName } = msg.author;
 
 		const boosts = [];
@@ -174,6 +191,71 @@ export default class extends BotCommand {
 			boosts.push('15% for Black mask on melee task');
 		}
 
+		// Initialize consumable costs before any are calculated.
+		const consumableCosts: Consumable[] = [];
+
+		// Set chosen boost based on priority:
+		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
+		const boostChoice = determineBoostChoice(
+			myCBOpts as CombatOptionsEnum[],
+			attackStyles,
+			msg,
+			monster,
+			method ?? 'none'
+		);
+
+		// Calculate Cannon and Barrage boosts + costs:
+		let usingCannon = false;
+		let cannonMulti = false;
+		let burstOrBarrage = 0;
+		const hasCannon = msg.author.owns(CombatCannonItemBank);
+		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !monster!.canBarrage) {
+			return msg.send(`${monster!.name} cannot be barraged or bursted.`);
+		}
+		if (
+			(msg.flagArgs.burst || msg.flagArgs.barrage) &&
+			!attackStyles.includes(SkillsEnum.Magic)
+		) {
+			return msg.send(`You can only barrage/burst when you're using magic!`);
+		}
+		if (msg.flagArgs.cannon && !hasCannon) {
+			return msg.send(`You don't own a Dwarf multicannon, so how could you use one?`);
+		}
+		if (msg.flagArgs.cannon && !monster!.canCannon) {
+			return msg.send(`${monster!.name} cannot be killed with a cannon.`);
+		}
+
+		if (
+			boostChoice === 'barrage' &&
+			attackStyles.includes(SkillsEnum.Magic) &&
+			monster!.canBarrage
+		) {
+			consumableCosts.push(iceBarrageConsumables);
+			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
+			boosts.push(`${boostIceBarrage}% for Ice Barrage`);
+			burstOrBarrage = SlayerActivityConstants.IceBarrage;
+		} else if (
+			boostChoice === 'burst' &&
+			attackStyles.includes(SkillsEnum.Magic) &&
+			monster!.canBarrage
+		) {
+			consumableCosts.push(iceBurstConsumables);
+			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst);
+			boosts.push(`${boostIceBurst}% for Ice Burst`);
+			burstOrBarrage = SlayerActivityConstants.IceBurst;
+		} else if (boostChoice === 'cannon' && hasCannon && monster!.cannonMulti) {
+			usingCannon = true;
+			cannonMulti = true;
+			consumableCosts.push(cannonMultiConsumables);
+			timeToFinish = reduceNumByPercent(timeToFinish, boostCannonMulti);
+			boosts.push(`${boostCannonMulti}% for Cannon in multi`);
+		} else if (boostChoice === 'cannon' && hasCannon && monster!.canCannon) {
+			usingCannon = true;
+			consumableCosts.push(cannonSingleConsumables);
+			timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
+			boosts.push(`${boostCannon}% for Cannon in singles`);
+		}
+
 		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
 
 		// If no quantity provided, set it to the max.
@@ -205,17 +287,70 @@ export default class extends BotCommand {
 		}
 
 		quantity = Math.max(1, quantity);
-		const itemCost = monster.itemCost ? monster.itemCost.clone().multiply(quantity) : null;
-		if (itemCost) {
-			if (!msg.author.owns(itemCost)) {
-				return msg.channel.send(
-					`You don't have the items needed to kill ${quantity}x ${monster.name}, you need: ${itemCost}.`
-				);
-			}
-			updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, itemCost);
-			await msg.author.removeItemsFromBank(itemCost);
+		let duration = timeToFinish * quantity;
+		if (quantity > 1 && duration > maxTripLength) {
+			return msg.send(
+				`${minionName} can't go on PvM trips longer than ${formatDuration(
+					maxTripLength
+				)}, try a lower quantity. The highest amount you can do for ${
+					monster.name
+				} is ${floor(maxTripLength / timeToFinish)}.`
+			);
 		}
 
+		if (['hydra', 'alchemical hydra'].includes(monster.name.toLowerCase())) {
+			// Add a cost of 1 antidote++(4) per 15 minutes
+			const hydraCost: Consumable = {
+				itemCost: new Bank().add('Antidote++(4)', 1),
+				qtyPerMinute: 0.067
+			};
+			consumableCosts.push(hydraCost);
+		}
+
+		// Check consumables: (hope this forEach is ok :) )
+		const lootToRemove = new Bank();
+		let pvmCost = false;
+		consumableCosts.forEach(cc => {
+			let itemMultiple = cc!.qtyPerKill ?? cc!.qtyPerMinute ?? null;
+
+			if (itemMultiple && typeof itemMultiple === 'number') {
+				// Free casts for kodai + sotd
+				if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
+					itemMultiple = Math.ceil(0.85 * itemMultiple);
+				} else if (msg.author.hasItemEquippedAnywhere('Staff of the dead')) {
+					itemMultiple = Math.ceil((6 / 7) * itemMultiple);
+				}
+				const itemCost = cc!.qtyPerKill
+					? cc!.itemCost.clone().multiply(itemMultiple)
+					: cc!.qtyPerMinute
+					? cc!.itemCost
+							.clone()
+							.multiply(Math.ceil((duration / Time.Minute) * itemMultiple))
+					: null;
+				if (itemCost) {
+					pvmCost = true;
+					lootToRemove.add(itemCost);
+				}
+			}
+		});
+
+		if (msg.author.hasItemEquippedAnywhere('Staff of water')) {
+			lootToRemove.remove('Water rune');
+		}
+
+		const itemCost = monster.itemCost ? monster.itemCost.clone().multiply(quantity) : null;
+		if (itemCost) {
+			pvmCost = true;
+			lootToRemove.add(itemCost);
+		}
+
+		if (pvmCost) {
+			if (!msg.author.owns(lootToRemove)) {
+				return msg.channel.send(
+					`You don't have the items needed to kill ${quantity}x ${monster.name}, you need: ${lootToRemove}.`
+				);
+			}
+		}
 		// Check food
 		let foodStr: undefined | string = undefined;
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
@@ -238,17 +373,7 @@ export default class extends BotCommand {
 			foodStr = result;
 		}
 
-		let duration = timeToFinish * quantity;
-		if (quantity > 1 && duration > maxTripLength) {
-			return msg.send(
-				`${minionName} can't go on PvM trips longer than ${formatDuration(
-					maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${
-					monster.name
-				} is ${floor(maxTripLength / timeToFinish)}.`
-			);
-		}
-
+		// Boosts that don't affect quantity:
 		duration = randomVariation(duration, 3);
 
 		if (isWeekend()) {
@@ -256,17 +381,8 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (['hydra', 'alchemical hydra'].includes(monster.name.toLowerCase())) {
-			const potsTotal = await msg.author.numberOfItemInBank(itemID('Antidote++(4)'));
-			// Potions actually last 36+ minutes for a 4-dose, but we want item sink
-			const potsToRemove = Math.ceil(duration / (15 * Time.Minute));
-			if (potsToRemove > potsTotal) {
-				return msg.channel.send(
-					`You don't have enough Antidote++(4) to kill ${quantity}x ${monster.name}.`
-				);
-			}
-			await msg.author.removeItemFromBank(itemID('Antidote++(4)'), potsToRemove);
-		}
+		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
+		await msg.author.removeItemsFromBank(lootToRemove);
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
 			monsterID: monster.id,
@@ -274,17 +390,19 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.MonsterKilling
+			type: Activity.MonsterKilling,
+			usingCannon,
+			cannonMulti,
+			burstOrBarrage
 		});
-
 		let response = `${minionName} is now killing ${quantity}x ${
 			monster.name
 		}, it'll take around ${formatDuration(
 			duration
 		)} to finish. Attack styles used: ${attackStyles.join(', ')}.`;
 
-		if (itemCost) {
-			response += `Removed ${itemCost}.`;
+		if (pvmCost) {
+			response += ` Removed ${lootToRemove}.`;
 		}
 
 		if (foodStr) {

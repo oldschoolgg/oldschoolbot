@@ -5,6 +5,7 @@ import { chompyHats } from '../../../commands/Minion/chompyhunt';
 import { MinigameKey } from '../../../extendables/User/Minigame';
 import { MAX_QP } from '../../constants';
 import { diaries, userhasDiaryTier } from '../../diaries';
+import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
@@ -667,6 +668,44 @@ const questBuyables: Buyable[] = [
 		},
 		gpCost: 500_000,
 		qpRequired: 60
+	},
+	{
+		name: 'Dwarf multicannon',
+		outputItems: CombatCannonItemBank,
+		gpCost: 10_000_000,
+		qpRequired: 5
+	},
+	{
+		name: 'Cannon barrels',
+		outputItems: {
+			[itemID('Cannon barrels')]: 1
+		},
+		gpCost: 2_500_000,
+		qpRequired: 5
+	},
+	{
+		name: 'Cannon base',
+		outputItems: {
+			[itemID('Cannon base')]: 1
+		},
+		gpCost: 2_500_000,
+		qpRequired: 5
+	},
+	{
+		name: 'Cannon furnace',
+		outputItems: {
+			[itemID('Cannon furnace')]: 1
+		},
+		gpCost: 2_500_000,
+		qpRequired: 5
+	},
+	{
+		name: 'Cannon stand',
+		outputItems: {
+			[itemID('Cannon stand')]: 1
+		},
+		gpCost: 2_500_000,
+		qpRequired: 5
 	}
 ];
 

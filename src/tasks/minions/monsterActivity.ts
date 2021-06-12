@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 
+import { CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
@@ -17,7 +18,16 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
-		const { monsterID, userID, channelID, quantity, duration } = data;
+		const {
+			monsterID,
+			userID,
+			channelID,
+			quantity,
+			duration,
+			usingCannon,
+			cannonMulti,
+			burstOrBarrage
+		} = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		await user.incrementMonsterScore(monsterID, quantity);
@@ -36,7 +46,10 @@ export default class extends Task {
 			quantity,
 			duration,
 			isOnTask,
-			quantitySlayed
+			quantitySlayed,
+			false,
+			usingCannon,
+			cannonMulti
 		);
 
 		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
@@ -50,7 +63,7 @@ export default class extends Task {
 			: undefined;
 
 		const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
-		const isInCatacombs = monster.existsInCatacombs ?? undefined;
+		const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
 
 		const killOptions: MonsterKillOptions = {
 			onSlayerTask: isOnTask,
@@ -114,7 +127,7 @@ export default class extends Task {
 				const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 
-				str += `\nYou've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.`;
+				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
 			} else {
 				str += `\nYou killed ${effectiveSlayed}x of your ${
 					usersTask.currentTask!.quantityRemaining
@@ -146,7 +159,11 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of killing ${monster.name}`);
-				return this.client.commands.get('k')!.run(res, [quantity, monster.name]);
+				let method = 'none';
+				if (usingCannon) method = 'cannon';
+				else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBarrage) method = 'barrage';
+				else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBurst) method = 'burst';
+				return this.client.commands.get('k')!.run(res, [quantity, monster.name, method]);
 			},
 			image!,
 			data,
