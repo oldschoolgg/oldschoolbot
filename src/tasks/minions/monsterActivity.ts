@@ -160,9 +160,10 @@ export default class extends Task {
 			res => {
 				user.log(`continued trip of killing ${monster.name}`);
 				if (usingCannon) res.flagArgs.cannon = 'yes';
-				if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBarrage)
+				else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBarrage)
 					res.flagArgs.barrage = 'yes';
-				if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBurst) res.flagArgs.burst = 'yes';
+				else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBurst)
+					res.flagArgs.burst = 'yes';
 				return this.client.commands.get('k')!.run(res, [quantity, monster.name]);
 			},
 			image!,
