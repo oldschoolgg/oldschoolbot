@@ -253,7 +253,19 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Spiny helmet')]: slayerHelmSimilar,
 	[itemID('Facemask')]: slayerHelmSimilar,
 	[itemID('Reinforced goggles')]: slayerHelmSimilar,
-	[itemID('Anti-dragon shield')]: resolveItems([11284, 11283, 21633, 21634, 22003, 22002])
+	[itemID('Anti-dragon shield')]: resolveItems([11284, 11283, 21633, 21634, 22003, 22002]),
+	[itemID('Staff of water')]: resolveItems([
+		'Mist battlestaff',
+		'Mystic mist staff',
+		'Tome of water',
+		'Water battlestaff',
+		'Mystic water staff',
+		'Steam battlestaff',
+		'Mystic steam staff',
+		'Kodai wand',
+		'Mud battlestaff',
+		'Mystic mud staff'
+	])
 };
 
 export function getSimilarItems(itemID: number) {

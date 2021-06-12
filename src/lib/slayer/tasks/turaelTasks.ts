@@ -30,7 +30,6 @@ export const turaelTasks: AssignableSlayerTask[] = [
 			Monsters.MountedTerrorBirdGnome.id,
 			Monsters.TerrorBird.id,
 			Monsters.Rooster.id,
-			Monsters.ChompyBird.id,
 			Monsters.Seagull.id,
 			Monsters.Penguin.id,
 			Monsters.Duck.id,

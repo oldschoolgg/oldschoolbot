@@ -1732,7 +1732,8 @@ export const miscLog: CollectionLogData = {
 		'Basilisk jaw',
 		'Brine sabre',
 		'Leaf-bladed battleaxe',
-		'Leaf-bladed sword'
+		'Leaf-bladed sword',
+		'Black mask'
 	]),
 	'Demonic Gorillas': resolveItems([
 		'Zenyte shard',
@@ -1763,7 +1764,16 @@ export const miscLog: CollectionLogData = {
 		'Broken dragon hasta',
 		'Brimstone key'
 	]),
-	Misc1: resolveItems(['Giant key', 'Hill giant club', 'Mossy key', "Bryophyta's essence"])
+	Misc1: resolveItems([
+		'Dragon full helm',
+		'Dragon limbs',
+		'Dragon metal slice',
+		'Dragon metal lump',
+		'Draconic visage',
+		'Skeletal visage',
+		'Wyvern visage'
+	]),
+	Misc2: resolveItems(['Giant key', 'Hill giant club', 'Mossy key', "Bryophyta's essence"])
 };
 
 export const sepulchreLog: CollectionLogData = {
