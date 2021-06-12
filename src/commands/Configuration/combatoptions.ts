@@ -91,7 +91,7 @@ export default class extends BotCommand {
 			newcbopt.id === CombatOptionsEnum.AlwaysIceBurst &&
 			myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)
 		) {
-			if (warningMsg === '' && hasBurstB) warningMsg = priorityWarningMsg;
+			if (warningMsg === '' && hasCannon) warningMsg = priorityWarningMsg;
 			await msg.author.settings.update(
 				UserSettings.CombatOptions,
 				CombatOptionsEnum.AlwaysIceBarrage
