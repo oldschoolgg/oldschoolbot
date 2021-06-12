@@ -32,7 +32,7 @@ export function determineBoostChoice(
 ) {
 	let boostChoice = 'none';
 
-	if (msg.flagArgs.burst) {
+	if (msg.flagArgs.barrage) {
 		boostChoice = 'barrage';
 	} else if (msg.flagArgs.burst) {
 		boostChoice = 'burst';
