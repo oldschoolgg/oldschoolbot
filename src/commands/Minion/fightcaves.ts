@@ -2,11 +2,13 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
+import { getSimilarItems } from '../../lib/data/similarItems';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FightCavesActivityTaskOptions } from '../../lib/types/minions';
 import {
@@ -138,6 +140,26 @@ export default class extends BotCommand {
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		const newBank = removeBankFromBank(bank, fightCavesSupplies);
 		await msg.author.settings.update(UserSettings.Bank, newBank);
+
+		// Add slayer
+		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
+		const isOnTask =
+			usersTask.currentTask !== null &&
+			usersTask.currentTask !== undefined &&
+			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
+			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+
+		// 15% boost for on task
+		if (
+			isOnTask &&
+			msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Black mask (i)')))
+		) {
+			duration *= 0.85;
+			debugStr =
+				debugStr === ''
+					? '15% on Task with Black mask (i)'
+					: ', 15% on Task with Black mask (i)';
+		}
 
 		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>(this.client, {
 			userID: msg.author.id,

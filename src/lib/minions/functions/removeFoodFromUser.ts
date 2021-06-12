@@ -65,7 +65,7 @@ export default async function removeFoodFromUser({
 		);
 
 		let reductionsStr =
-			reductions.length > 0 ? `**Base Food Reductions:** ${reductions.join(', ')}. ` : '';
+			reductions.length > 0 ? ` **Base Food Reductions:** ${reductions.join(', ')}. ` : '';
 		return [`${new Bank(foodToRemove)} from ${user.username}${reductionsStr}`, foodToRemove];
 	}
 }

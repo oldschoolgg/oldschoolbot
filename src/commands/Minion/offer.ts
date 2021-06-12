@@ -4,11 +4,13 @@ import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/collectionLog';
+import { Offerables } from '../../lib/data/offerData';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { birdsNestID, treeSeedsNest, wysonSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, roll, stringMatches } from '../../lib/util';
@@ -50,6 +52,47 @@ export default class extends BotCommand {
 		if (typeof quantity === 'string') {
 			boneName = quantity;
 			quantity = null;
+		}
+
+		const whichOfferable = Offerables.find(
+			item =>
+				stringMatches(boneName, item.name) ||
+				(item.aliases && item.aliases.some(alias => stringMatches(alias, boneName)))
+		);
+		if (whichOfferable) {
+			const offerableOwned = userBank.amount(whichOfferable.itemID);
+			if (offerableOwned === 0) {
+				return msg.channel.send(
+					`You don't have any ${whichOfferable.name} to offer to the ${whichOfferable.offerWhere}.`
+				);
+			}
+			quantity = quantity ?? offerableOwned;
+			if (quantity > offerableOwned) {
+				return msg.channel.send(
+					`You don't have ${quantity} ${whichOfferable.name} to offer the ${whichOfferable.offerWhere}. You have ${offerableOwned}.`
+				);
+			}
+			await msg.author.removeItemsFromBank({ [whichOfferable.itemID]: quantity });
+			let loot = new Bank();
+			loot.add(whichOfferable.table.roll(quantity));
+
+			filterLootReplace(msg.author.allItemsOwned(), loot);
+			const { previousCL } = await msg.author.addItemsToBank(loot.values(), true);
+			if (whichOfferable.economyCounter) {
+				const oldValue: number = msg.author.settings.get(
+					whichOfferable.economyCounter
+				) as number;
+				if (typeof quantity !== 'number') quantity = parseInt(quantity);
+				msg.author.settings.update(whichOfferable.economyCounter, oldValue + quantity);
+			}
+
+			return msg.channel.sendBankImage({
+				bank: loot.values(),
+				title: `Loot from offering ${quantity} ${whichOfferable.name}`,
+				flags: { showNewCL: 1 },
+				user: msg.author,
+				cl: previousCL
+			});
 		}
 
 		const egg = eggs.find(egg => stringMatches(boneName, egg.name));

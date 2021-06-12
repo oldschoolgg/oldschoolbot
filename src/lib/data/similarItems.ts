@@ -10,7 +10,24 @@ const slayerHelmSimilar = resolveItems([
 	'Hydra slayer helmet (i)',
 	'Twisted slayer helmet (i)',
 	'Slayer helmet (i)',
-	'Slayer helmet'
+	'Slayer helmet',
+	'Black slayer helmet',
+	'Green slayer helmet',
+	'Red slayer helmet',
+	'Purple slayer helmet',
+	'Turquoise slayer helmet',
+	'Hydra slayer helmet',
+	'Twisted slayer helmet'
+]);
+const slayerHelmSimilarI = resolveItems([
+	'Black slayer helmet (i)',
+	'Green slayer helmet (i)',
+	'Red slayer helmet (i)',
+	'Purple slayer helmet (i)',
+	'Turquoise slayer helmet (i)',
+	'Hydra slayer helmet (i)',
+	'Twisted slayer helmet (i)',
+	'Slayer helmet (i)'
 ]);
 
 const SimilarItems: Record<number, number[]> = {
@@ -211,7 +228,9 @@ const SimilarItems: Record<number, number[]> = {
 		'Trident of the seas (e)'
 	]),
 	[itemID('Trident of the swamp')]: resolveItems(['Trident of the swamp (e)']),
-	[itemID('Slayer helmet (i)')]: slayerHelmSimilar,
+	[itemID('Slayer helmet')]: slayerHelmSimilar,
+	[itemID('Slayer helmet (i)')]: slayerHelmSimilarI,
+	[itemID('Black mask (i)')]: slayerHelmSimilarI,
 	[itemID('Black mask')]: [
 		...slayerHelmSimilar,
 		...resolveItems([
@@ -228,13 +247,25 @@ const SimilarItems: Record<number, number[]> = {
 			'Black mask (10)'
 		])
 	],
-	[itemID('Black mask (i)')]: slayerHelmSimilar,
-	[itemID('Nosepeg')]: slayerHelmSimilar,
+	[itemID('Slayer cape')]: resolveItems(['Slayer cape (t)']),
+	[itemID('Nose peg')]: slayerHelmSimilar,
 	[itemID('Earmuffs')]: slayerHelmSimilar,
 	[itemID('Spiny helmet')]: slayerHelmSimilar,
 	[itemID('Facemask')]: slayerHelmSimilar,
 	[itemID('Reinforced goggles')]: slayerHelmSimilar,
-	[itemID('Anti-dragon shield')]: resolveItems([11284, 11283, 21633, 21634, 22003, 22002])
+	[itemID('Anti-dragon shield')]: resolveItems([11284, 11283, 21633, 21634, 22003, 22002]),
+	[itemID('Staff of water')]: resolveItems([
+		'Mist battlestaff',
+		'Mystic mist staff',
+		'Tome of water',
+		'Water battlestaff',
+		'Mystic water staff',
+		'Steam battlestaff',
+		'Mystic steam staff',
+		'Kodai wand',
+		'Mud battlestaff',
+		'Mystic mud staff'
+	])
 };
 
 export function getSimilarItems(itemID: number) {
