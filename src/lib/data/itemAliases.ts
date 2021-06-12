@@ -168,3 +168,9 @@ setItemAlias(2992, 'Chompy bird hat (ogre dragon archer)');
 setItemAlias(2993, 'Chompy bird hat (dragon archer)');
 setItemAlias(2994, 'Chompy bird hat (expert ogre dragon archer)');
 setItemAlias(2995, 'Chompy bird hat (expert dragon archer)');
+
+// Item aliases
+setItemAlias(11137, 'Antique lamp 1');
+setItemAlias(11139, 'Antique lamp 2');
+setItemAlias(11141, 'Antique lamp 3');
+setItemAlias(11185, 'Antique lamp 4');

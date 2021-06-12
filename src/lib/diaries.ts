@@ -11,7 +11,7 @@ import { itemNameFromID } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
-interface DiaryTier {
+export interface DiaryTier {
 	name: 'Easy' | 'Medium' | 'Hard' | 'Elite';
 	item: Item;
 	skillReqs: Skills;
@@ -691,7 +691,7 @@ export const KaramjaDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Nature rune', 'Cooked karambwan']),
 		monsterScores: {
-			'Steel dragon': 1
+			'Steel Dragon': 1
 		}
 	},
 	elite: {
@@ -759,7 +759,7 @@ export const KourendKebosDiary: Diary = {
 		collectionLogReqs: resolveItems(['Adamantite bar']),
 		monsterScores: {
 			Wyrm: 1,
-			'Lizardman shaman': 1
+			'Lizardman Shaman': 1
 		}
 	},
 	elite: {
@@ -857,7 +857,7 @@ export const LumbridgeDraynorDiary: Diary = {
 			thieving: 78,
 			woodcutting: 75
 		},
-		collectionLogReqs: resolveItems(['Magic logs', 'Water runes', 'Adamant platebody']),
+		collectionLogReqs: resolveItems(['Magic logs', 'Water rune', 'Adamant platebody']),
 		qp: MAX_QP
 	}
 };
@@ -1005,7 +1005,7 @@ export const VarrockDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems([
 			'Super combat potion(4)',
-			'Mahogany planks',
+			'Mahogany plank',
 			'Rune dart',
 			'Earth rune'
 		])

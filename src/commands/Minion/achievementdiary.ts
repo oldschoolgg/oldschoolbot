@@ -1,8 +1,8 @@
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Minigames } from '../../extendables/User/Minigame';
-import { diaries, userhasDiaryTier } from '../../lib/diaries';
+import { diaries, DiaryTier, userhasDiaryTier } from '../../lib/diaries';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	formatSkillRequirements,
@@ -10,6 +10,22 @@ import {
 	stringMatches,
 	toTitleCase
 } from '../../lib/util';
+
+const lampRewards = {
+	Easy: 'Antique lamp 1',
+	Medium: 'Antique lamp 2',
+	Hard: 'Antique lamp 3',
+	Elite: 'Antique lamp 4'
+} as const;
+
+async function howManyOfTierCompleted(user: KlasaUser, tiers: DiaryTier[]) {
+	let completed = 0;
+	for (const tier of tiers) {
+		const [has] = await userhasDiaryTier(user, tier);
+		if (has) completed++;
+	}
+	return completed;
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -88,17 +104,29 @@ export default class extends BotCommand {
 			return msg.channel.send(diaries.map(d => d.name));
 		}
 
-		const userBank = msg.author.bank();
+		const allItems = msg.author.allItemsOwned();
+		const cl = new Bank(msg.author.collectionLog);
 
-		for (const tier of [diary.easy, diary.medium, diary.hard, diary.elite]) {
-			const [canDo, reason] = await userhasDiaryTier(msg.author, tier);
-			const name = `${toTitleCase(tier.name)} ${diary.name} Diary`;
+		for (const tier of ['easy', 'medium', 'hard', 'elite'] as const) {
+			const diaryTier = diary[tier];
+			const [canDo, reason] = await userhasDiaryTier(msg.author, diaryTier);
+			const name = `${toTitleCase(diaryTier.name)} ${diary.name} Diary`;
 
 			if (canDo) {
-				if (userBank.has(tier.item.id)) continue;
-				await msg.author.addItemsToBank(new Bank().add(tier.item.id), true);
+				if (allItems.has(diaryTier.item.id)) continue;
+				const hasCompleted = await howManyOfTierCompleted(
+					msg.author,
+					diaries.map(d => d[tier])
+				);
+				const loot = new Bank();
+				loot.add(lampRewards[diaryTier.name]);
+				if (cl.amount(lampRewards[diaryTier.name]) < hasCompleted) {
+					loot.add(diaryTier.item.id);
+				}
+				await msg.author.addItemsToBank(loot, true);
+
 				return msg.channel.send(
-					`You successfully claimed a ${tier.item.name} from the ${name}.`
+					`You successfully completed the ${name} and received ${loot}.`
 				);
 			}
 

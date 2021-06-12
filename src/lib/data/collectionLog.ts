@@ -1584,7 +1584,7 @@ export const capes: CollectionLogData = {
 		'Defence hood',
 		'Hitpoints hood',
 		'Ranging hood',
-		'Quest point hood'
+		'Slayer hood'
 	]),
 	'trimmed capes2': resolveItems([
 		'Farming cape(t)',
@@ -1597,8 +1597,10 @@ export const capes: CollectionLogData = {
 		'Defence cape(t)',
 		'Hitpoints cape(t)',
 		'Ranging cape(t)',
-		'Quest point cape'
-	])
+		'Slayer cape(t)'
+	]),
+	otherCapes: resolveItems(['Quest point hood', 'Achievement diary hood', 'Max hood']),
+	otherCapes2: resolveItems(['Quest point cape', 'Achievement diary cape(t)', 'Max cape'])
 };
 
 export const quest: CollectionLogData = {
