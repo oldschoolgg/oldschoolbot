@@ -36,7 +36,10 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 10,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackStab]
+		attackStylesUsed: [GearStat.AttackStab],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Cockatrice.id,
@@ -87,7 +90,10 @@ export const mazchnaMonsters: KillableMonster[] = [
 		},
 		healAmountNeeded: 14,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush]
+		attackStylesUsed: [GearStat.AttackCrush],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.FeralVampyre.id,
@@ -126,7 +132,10 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Ghoul.id,
@@ -137,7 +146,11 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 1
+		qpRequired: 1,
+		canCannon: true,
+		// Can safespot for the multi-effect
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.HillGiant.id,
@@ -152,7 +165,10 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 13,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush]
+		attackStylesUsed: [GearStat.AttackCrush],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Obor.id,
@@ -183,7 +199,10 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 14,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush]
+		attackStylesUsed: [GearStat.AttackCrush],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.IceWarrior.id,
@@ -197,7 +216,10 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 17,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush]
+		attackStylesUsed: [GearStat.AttackCrush],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Killerwatt.id,
@@ -245,7 +267,10 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 32
-		}
+		},
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.PhrinShade.id,

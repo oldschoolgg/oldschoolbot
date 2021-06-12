@@ -48,7 +48,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.BlackDemon.id,
 		name: Monsters.BlackDemon.name,
 		aliases: Monsters.BlackDemon.aliases,
-		timeToFinish: Time.Second * 34,
+		timeToFinish: Time.Second * 40,
 		table: Monsters.BlackDemon,
 		wildy: false,
 		canBeKilled: true,
@@ -65,13 +65,17 @@ export const chaeldarMonsters: KillableMonster[] = [
 		],
 		healAmountNeeded: 30,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackSlash]
+		attackStylesUsed: [GearStat.AttackSlash],
+		canCannon: true,
+		// Even if no multi, can safespot for same effect
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.CaveHorror.id,
 		name: Monsters.CaveHorror.name,
 		aliases: Monsters.CaveHorror.aliases,
-		timeToFinish: Time.Second * 24,
+		timeToFinish: Time.Second * 16,
 		table: Monsters.CaveHorror,
 		wildy: false,
 		canBeKilled: true,
@@ -87,7 +91,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 		superior: Monsters.CaveAbomination,
 		healAmountNeeded: 20,
 		attackStyleToUse: GearSetupTypes.Range,
-		attackStylesUsed: [GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackMagic],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.CaveKraken.id,
@@ -113,7 +120,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.FossilIslandWyvernAncient.id,
 		name: Monsters.FossilIslandWyvernAncient.name,
 		aliases: Monsters.FossilIslandWyvernAncient.aliases,
-		timeToFinish: Time.Second * 130,
+		timeToFinish: Time.Second * 117,
 		table: Monsters.FossilIslandWyvernAncient,
 		wildy: false,
 		canBeKilled: true,
@@ -139,7 +146,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.FossilIslandWyvernLongTailed.id,
 		name: Monsters.FossilIslandWyvernLongTailed.name,
 		aliases: Monsters.FossilIslandWyvernLongTailed.aliases,
-		timeToFinish: Time.Second * 73,
+		timeToFinish: Time.Second * 65,
 		table: Monsters.FossilIslandWyvernLongTailed,
 
 		wildy: false,
@@ -166,7 +173,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.FossilIslandWyvernSpitting.id,
 		name: Monsters.FossilIslandWyvernSpitting.name,
 		aliases: Monsters.FossilIslandWyvernSpitting.aliases,
-		timeToFinish: Time.Second * 73,
+		timeToFinish: Time.Second * 65,
 		table: Monsters.FossilIslandWyvernSpitting,
 
 		wildy: false,
@@ -193,7 +200,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.FossilIslandWyvernTaloned.id,
 		name: Monsters.FossilIslandWyvernTaloned.name,
 		aliases: Monsters.FossilIslandWyvernTaloned.aliases,
-		timeToFinish: Time.Second * 73,
+		timeToFinish: Time.Second * 65,
 		table: Monsters.FossilIslandWyvernTaloned,
 
 		wildy: false,
@@ -238,13 +245,16 @@ export const chaeldarMonsters: KillableMonster[] = [
 		],
 		healAmountNeeded: 18,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackSlash]
+		attackStylesUsed: [GearStat.AttackSlash],
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.IronDragon.id,
 		name: Monsters.IronDragon.name,
 		aliases: Monsters.IronDragon.aliases,
-		timeToFinish: Time.Second * 46,
+		timeToFinish: Time.Second * 23,
 		table: Monsters.IronDragon,
 
 		wildy: false,
@@ -256,7 +266,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		healAmountNeeded: 35,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackSlash]
+		attackStylesUsed: [GearStat.AttackSlash],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Kraken.id,
@@ -315,7 +328,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 30,
 		healAmountNeeded: 14,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.LizardmanBrute.id,
@@ -330,7 +346,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 30,
 		healAmountNeeded: 16,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.LizardmanShaman.id,
@@ -369,7 +388,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 		healAmountNeeded: 20 * 2,
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
 		attackStyleToUse: GearSetupTypes.Range,
-		attackStylesUsed: [GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackRanged],
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Porazdir.id,
@@ -399,7 +421,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.SkeletalWyvern.id,
 		name: Monsters.SkeletalWyvern.name,
 		aliases: Monsters.SkeletalWyvern.aliases,
-		timeToFinish: Time.Second * 80,
+		timeToFinish: Time.Second * 88,
 		table: Monsters.SkeletalWyvern,
 
 		wildy: false,
