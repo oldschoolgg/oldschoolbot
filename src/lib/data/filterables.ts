@@ -451,6 +451,10 @@ const godwars = resolveItems([
 	'Godsword shard 2',
 	'Godsword shard 3',
 	'Godsword blade',
+	'Armadyl godsword (or)',
+	'Bandos godsword (or)',
+	'Zamorak godsword (or)',
+	'Saradomin godsword (or)',
 	...godwarsGear
 ]);
 

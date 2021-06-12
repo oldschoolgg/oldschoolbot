@@ -31,6 +31,7 @@ Client.defaultUserSchema
 	.add('openable_scores', 'any', { default: {} })
 	.add('attack_style', 'string', { array: true, default: [] })
 	.add('total_cox_points', 'integer', { default: 0 })
+	.add('combat_options', 'integer', { array: true, default: [] })
 
 	.add('slayer', folder =>
 		folder
@@ -43,6 +44,7 @@ Client.defaultUserSchema
 			.add('superior_count', 'integer', { default: 0 })
 			.add('last_task', 'integer', { default: 0 })
 			.add('unsired_offered', 'integer', { default: 0 })
+			.add('chewed_offered', 'integer', { default: 0 })
 	)
 
 	.add('favorite_alchables', 'integer', { array: true, default: [] })

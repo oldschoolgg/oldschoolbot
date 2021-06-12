@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
@@ -31,6 +32,7 @@ export default class extends BotCommand {
 		});
 	}
 
+	@requiresMinion
 	async run(msg: KlasaMessage, [input]: [string | undefined]) {
 		const { currentTask, totalTasksDone, assignedTask } = await getUsersCurrentSlayerInfo(
 			msg.author.id
@@ -64,15 +66,17 @@ export default class extends BotCommand {
 				`${outstr}\n\nTry: \`${msg.cmdPrefix}st --block\` to block a task.`
 			);
 		}
-
-		if (msg.flagArgs.unblock || (input && input === 'unblock')) {
-			if (!input) {
+		const inputArray = input ? input.split(' ') : undefined;
+		const inputUnblock = inputArray?.slice(0, 1)[0] === 'unblock';
+		if (msg.flagArgs.unblock || inputUnblock) {
+			const monToBlock = inputUnblock ? inputArray!.slice(1).join(' ') : input;
+			if (!monToBlock) {
 				return msg.channel.send(`You must specify a monster to unblock!`);
 			}
 
-			let idToRemove = parseInt(input);
+			let idToRemove = parseInt(monToBlock);
 			const osjsMonster = isNaN(idToRemove)
-				? Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, input)))
+				? Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monToBlock)))
 				: Monsters.find(mon => mon.id === idToRemove);
 			if (!osjsMonster) {
 				return msg.channel.send(`Failed to find a monster with that name or id!`);
@@ -108,6 +112,13 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.Slayer.BlockedTasks, idToRemove);
 			return msg.channel.send(`${osjsMonster.name} have been unblocked`);
 		}
+
+		// Prevent any actions that affect the layer task list when minion is busy.
+		if (msg.author.minionIsBusy) {
+			return msg.channel.send(
+				`You can only manage your block list while your minion is busy.`
+			);
+		}
 		if (input && (input === 'skip' || input === 'block')) msg.flagArgs[input] = 'yes';
 		if (currentTask && (msg.flagArgs.skip || msg.flagArgs.block)) {
 			const toBlock = msg.flagArgs.block ? true : false;
@@ -127,7 +138,9 @@ export default class extends BotCommand {
 			}
 			if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 				const alchMessage = await msg.channel.send(
-					`Really ${toBlock ? 'block' : 'skip'} task? This will cost ${
+					`Really ${
+						toBlock ? 'block' : 'skip'
+					} task? You have ${slayerPoints} and this will cost ${
 						toBlock ? 100 : 30
 					} slayer points.\n\nType **confirm** to ${toBlock ? 'block' : 'skip'}.`
 				);
@@ -159,7 +172,11 @@ export default class extends BotCommand {
 			currentTask!.quantityRemaining = 0;
 			currentTask!.skipped = true;
 			currentTask!.save();
-			return msg.send(`Your task has been ${toBlock ? 'blocked' : 'skipped'}.`);
+			return msg.send(
+				`Your task has been ${
+					toBlock ? 'blocked' : 'skipped'
+				}. You have ${slayerPoints} slayer points.`
+			);
 		}
 
 		let rememberedSlayerMaster: string = '';
@@ -280,11 +297,13 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 		}
 
 		// Store favorite slayer master if requested:
+		let updateMsg = '';
 		if (msg.flagArgs.remember || msg.flagArgs.fav || msg.flagArgs.save) {
 			await msg.author.settings.update(
 				UserSettings.Slayer.RememberSlayerMaster,
 				slayerMaster.name
 			);
+			updateMsg = `\n\n**Saved ${slayerMaster!.name} as default slayer master.**`;
 		}
 
 		const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
@@ -315,7 +334,7 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 				`don't kill any regular TzHaar first.`;
 		}
 		return msg.channel.send(
-			`${slayerMaster.name} has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.`
+			`${slayerMaster.name} has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.${updateMsg}`
 		);
 	}
 }

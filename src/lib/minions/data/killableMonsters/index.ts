@@ -93,7 +93,10 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		combatXpMultiplier: 1.3
+		combatXpMultiplier: 1.3,
+		healAmountNeeded: 100,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.DagannothRex.id,
@@ -127,7 +130,10 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		combatXpMultiplier: 1.3
+		combatXpMultiplier: 1.3,
+		healAmountNeeded: 100,
+		attackStyleToUse: GearSetupTypes.Mage,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.DagannothSupreme.id,
@@ -163,7 +169,10 @@ const killableMonsters: KillableMonster[] = [
 		],
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		healAmountNeeded: 100,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.Man.id,
@@ -188,7 +197,9 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true
 	},
 	{
 		id: Monsters.Woman.id,
@@ -197,145 +208,6 @@ const killableMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 4.69,
 		table: Monsters.Woman,
 		emoji: '🧍‍♀️',
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		qpRequired: 0
-	},
-	{
-		id: Monsters.Goblin.id,
-		name: Monsters.Goblin.name,
-		aliases: Monsters.Goblin.aliases,
-		timeToFinish: Time.Second * 4.7,
-		table: Monsters.Goblin,
-
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		notifyDrops: resolveItems(['Goblin champion scroll']),
-		qpRequired: 0
-	},
-	{
-		id: Monsters.Lizardman.id,
-		name: Monsters.Lizardman.name,
-		aliases: Monsters.Lizardman.aliases,
-		timeToFinish: Time.Second * 20,
-		table: Monsters.Lizardman,
-		emoji: '<:Xerics_talisman_inert:456176488669249539>',
-		wildy: false,
-		canBeKilled: true,
-		difficultyRating: 3,
-		qpRequired: 30
-	},
-	{
-		id: Monsters.GreaterDemon.id,
-		name: Monsters.GreaterDemon.name,
-		aliases: Monsters.GreaterDemon.aliases,
-		timeToFinish: Time.Second * 25,
-		table: Monsters.GreaterDemon,
-
-		wildy: false,
-		canBeKilled: true,
-		difficultyRating: 2,
-		qpRequired: 0
-	},
-	{
-		id: Monsters.Cow.id,
-		name: Monsters.Cow.name,
-		aliases: Monsters.Cow.aliases,
-		timeToFinish: Time.Second * 6,
-		table: Monsters.Cow,
-		emoji: '🐮',
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		qpRequired: 0
-	},
-	{
-		id: Monsters.Skeleton.id,
-		name: Monsters.Skeleton.name,
-		aliases: Monsters.Skeleton.aliases,
-		timeToFinish: Time.Second * 9,
-		table: Monsters.Skeleton,
-		emoji: '☠️',
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		notifyDrops: resolveItems(['Skeleton champion scroll']),
-		qpRequired: 0
-	},
-	{
-		id: Monsters.Zombie.id,
-		name: Monsters.Zombie.name,
-		aliases: Monsters.Zombie.aliases,
-		timeToFinish: Time.Second * 9,
-		table: Monsters.Zombie,
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		notifyDrops: resolveItems(['Zombie champion scroll']),
-		qpRequired: 0
-	},
-	{
-		id: Monsters.Rat.id,
-		name: Monsters.Rat.name,
-		aliases: Monsters.Rat.aliases,
-		timeToFinish: Time.Second * 1.5,
-		table: Monsters.Rat,
-
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		qpRequired: 0
-	},
-	{
-		id: Monsters.FireGiant.id,
-		name: Monsters.FireGiant.name,
-		aliases: Monsters.FireGiant.aliases,
-		timeToFinish: Time.Second * 16,
-		table: Monsters.FireGiant,
-
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		notifyDrops: resolveItems(['Giant champion scroll']),
-		qpRequired: 0
-	},
-	{
-		id: Monsters.BlueDragon.id,
-		name: Monsters.BlueDragon.name,
-		aliases: Monsters.BlueDragon.aliases,
-		timeToFinish: Time.Second * 40,
-		table: Monsters.BlueDragon,
-
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		itemsRequired: resolveItems(['Anti-dragon shield']),
-		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID('Zamorakian spear')]: 10 }],
-
-		combatXpMultiplier: 1.025
-	},
-	{
-		id: Monsters.Ankou.id,
-		name: Monsters.Ankou.name,
-		aliases: Monsters.Ankou.aliases,
-		timeToFinish: Time.Second * 15,
-		table: Monsters.Ankou,
-		existsInCatacombs: true,
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
-		qpRequired: 0
-	},
-	{
-		id: Monsters.Dwarf.id,
-		name: Monsters.Dwarf.name,
-		aliases: Monsters.Dwarf.aliases,
-		timeToFinish: Time.Second * 6,
-		table: Monsters.Dwarf,
-
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,

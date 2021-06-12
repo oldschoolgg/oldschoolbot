@@ -33,7 +33,8 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true
 	},
 	{
 		id: Monsters.BearCub.id,
@@ -57,7 +58,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Bird.id,
@@ -81,7 +85,8 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true
 	},
 	{
 		id: Monsters.BlackGuard.id,
@@ -93,7 +98,8 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true
 	},
 	{
 		id: Monsters.CaveBug.id,
@@ -135,7 +141,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 8
+		qpRequired: 8,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.CaveSlime.id,
@@ -166,7 +175,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Chicken.id,
@@ -181,28 +193,19 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 0
 	},
 	{
-		id: Monsters.ChompyBird.id,
-		name: Monsters.ChompyBird.name,
-		aliases: Monsters.ChompyBird.aliases,
-		timeToFinish: Time.Second * 30,
-		table: Monsters.ChompyBird,
-
-		wildy: false,
-		canBeKilled: true,
-		difficultyRating: 1,
-		qpRequired: 3
-	},
-	{
 		id: Monsters.Cow.id,
 		name: Monsters.Cow.name,
 		aliases: Monsters.Cow.aliases,
 		timeToFinish: Time.Second * 6,
 		table: Monsters.Cow,
-
+		emoji: '🐮',
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.CowCalf.id,
@@ -296,7 +299,13 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 22
-		}
+		},
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false,
+		healAmountNeeded: 11,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.DesertWolf.id,
@@ -307,7 +316,13 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false,
+		healAmountNeeded: 11,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Duck.id,
@@ -351,7 +366,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.DwarfGangMember.id,
@@ -362,7 +380,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 15,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Ghost.id,
@@ -374,7 +395,10 @@ export const turaelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		existsInCatacombs: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.GiantBat.id,
@@ -391,12 +415,18 @@ export const turaelMonsters: KillableMonster[] = [
 		id: Monsters.GiantCryptSpider.id,
 		name: Monsters.GiantCryptSpider.name,
 		aliases: Monsters.GiantCryptSpider.aliases,
-		timeToFinish: Time.Second * 20,
+		timeToFinish: Time.Second * 25,
 		table: Monsters.GiantCryptSpider,
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 1
+		qpRequired: 1,
+		canCannon: false,
+		cannonMulti: false,
+		canBarrage: false,
+		healAmountNeeded: 16,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.GiantRat.id,
@@ -407,7 +437,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.GiantSpider.id,
@@ -418,7 +451,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.Goblin.id,
@@ -429,7 +465,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.GrizzlyBear.id,
@@ -440,7 +479,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.GrizzlyBearCub.id,
@@ -473,7 +515,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 8,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.IceWolf.id,
@@ -484,7 +529,12 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 26,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush],
+		canCannon: true,
+		cannonMulti: true
 	},
 	{
 		id: Monsters.Jackal.id,
@@ -495,7 +545,13 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false,
+		healAmountNeeded: 10,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.JungleWolf.id,
@@ -506,7 +562,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 22,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.KalphiteGuardian.id,
@@ -518,19 +577,31 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		healAmountNeeded: 40,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush],
+		canBarrage: false
 	},
 	{
 		id: Monsters.KalphiteSoldier.id,
 		name: Monsters.KalphiteSoldier.name,
 		aliases: Monsters.KalphiteSoldier.aliases,
-		timeToFinish: Time.Second * 18,
+		timeToFinish: Time.Second * 16,
 		table: Monsters.KalphiteSoldier,
 
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 18,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush],
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false
 	},
 	{
 		id: Monsters.KalphiteWorker.id,
@@ -542,7 +613,13 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false,
+		healAmountNeeded: 12,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.KingScorpion.id,
@@ -554,7 +631,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 14,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Lizard.id,
@@ -568,7 +648,10 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 22
-		}
+		},
+		healAmountNeeded: 16,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Lobstrosity.id,
@@ -583,7 +666,10 @@ export const turaelMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			['Trident of the seas', 'Trident of the swamp', 'Brine sabre']
 		]),
-		qpRequired: 10
+		qpRequired: 10,
+		healAmountNeeded: 22,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackStab]
 	},
 	{
 		id: Monsters.Minotaur.id,
@@ -595,7 +681,13 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false,
+		healAmountNeeded: 9,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Monkey.id,
@@ -622,7 +714,10 @@ export const turaelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 2,
 		qpRequired: 20,
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength]
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
+		healAmountNeeded: 18,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.MonkeyGuard.id,
@@ -634,7 +729,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 20
+		qpRequired: 20,
+		healAmountNeeded: 50,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.MonkeyZombie.id,
@@ -646,7 +744,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 20
+		qpRequired: 20,
+		healAmountNeeded: 17,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.MountedTerrorBirdGnome.id,
@@ -658,7 +759,13 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false,
+		healAmountNeeded: 16,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Penguin.id,
@@ -682,7 +789,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 11,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.PoisonScorpion.id,
@@ -694,7 +804,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 11,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Rat.id,
@@ -708,42 +821,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0
 	},
-	/*
 	{
-		id: Monsters.ReanimatedDog.id,
-		name: Monsters.ReanimatedDog.name,
-		aliases: Monsters.ReanimatedDog.aliases,
-		timeToFinish: Time.Second * 2,
-		table: Monsters.ReanimatedDog,
-	
-		wildy: false,
-		canBeKilled: true,
-		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
-		qpRequired: 0,
-		levelRequirements: {
-			slayer: 5
-		}
-	},
-		{
-		id: Monsters.ReanimatedScorpion.id,
-		name: Monsters.ReanimatedDog.name,
-		aliases: Monsters.ReanimatedDog.aliases,
-		timeToFinish: Time.Second * 2,
-		table: Monsters.ReanimatedDog,
-	
-		wildy: false,
-		canBeKilled: true,
-		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
-		qpRequired: 0,
-		levelRequirements: {
-			slayer: 5
-		}
-	},
-	*/ {
 		id: Monsters.Rooster.id,
 		name: Monsters.Rooster.name,
 		aliases: Monsters.Rooster.aliases,
@@ -765,7 +843,13 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false,
+		healAmountNeeded: 8,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Seagull.id,
@@ -794,7 +878,10 @@ export const turaelMonsters: KillableMonster[] = [
 			{
 				[itemID('Spectral spirit shield')]: 3
 			}
-		]
+		],
+		healAmountNeeded: 14,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Skeleton.id,
@@ -807,7 +894,13 @@ export const turaelMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		existsInCatacombs: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false,
+		healAmountNeeded: 11,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.SkeletonFremennik.id,
@@ -819,7 +912,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 13,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.SkeletonMage.id,
@@ -830,8 +926,11 @@ export const turaelMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 1,
-		qpRequired: 0
+		difficultyRating: 2,
+		qpRequired: 0,
+		healAmountNeeded: 14,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.Skogre.id,
@@ -843,7 +942,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 5
+		qpRequired: 5,
+		healAmountNeeded: 32,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.SmallLizard.id,
@@ -857,7 +959,10 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 22
-		}
+		},
+		healAmountNeeded: 9,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Spider.id,
@@ -869,7 +974,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.SulphurLizard.id,
@@ -884,7 +992,11 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 44
-		}
+		},
+		canCannon: true,
+		healAmountNeeded: 18,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.TempleSpider.id,
@@ -896,7 +1008,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 18,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.TerrorBird.id,
@@ -907,7 +1022,13 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false,
+		healAmountNeeded: 13,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.TorturedGorilla.id,
@@ -932,7 +1053,7 @@ export const turaelMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 69
 		},
-		healAmountNeeded: 20 * 3,
+		healAmountNeeded: 65,
 		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackSlash, GearStat.AttackRanged]
 	},
@@ -945,7 +1066,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 1
+		qpRequired: 1,
+		healAmountNeeded: 15,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.TwistedBanshee.id,
@@ -961,7 +1085,10 @@ export const turaelMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 15
 		},
-		superior: Monsters.ScreamingTwistedBanshee
+		superior: Monsters.ScreamingTwistedBanshee,
+		healAmountNeeded: 25,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.UndeadChicken.id,
@@ -995,7 +1122,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 48,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.UndeadOne.id,
@@ -1006,7 +1136,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		healAmountNeeded: 16,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.WhiteWolf.id,
@@ -1017,7 +1150,13 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false,
+		healAmountNeeded: 16,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.WildDog.id,
@@ -1028,7 +1167,13 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false,
+		healAmountNeeded: 16,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Wolf.id,
@@ -1039,7 +1184,13 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: false,
+		healAmountNeeded: 12,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Zogre.id,
@@ -1050,7 +1201,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 5
+		qpRequired: 5,
+		healAmountNeeded: 28,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Zombie.id,
@@ -1061,7 +1215,13 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false,
+		healAmountNeeded: 9,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.ZombieRat.id,
@@ -1072,6 +1232,9 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		qpRequired: 32
+		qpRequired: 32,
+		healAmountNeeded: 6,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush]
 	}
 ];
