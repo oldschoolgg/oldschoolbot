@@ -288,11 +288,13 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 		}
 
 		// Store favorite slayer master if requested:
+		let updateMsg = '';
 		if (msg.flagArgs.remember || msg.flagArgs.fav || msg.flagArgs.save) {
 			await msg.author.settings.update(
 				UserSettings.Slayer.RememberSlayerMaster,
 				slayerMaster.name
 			);
+			updateMsg = `\n\n**Saved ${slayerMaster!.name} as default**`;
 		}
 
 		const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
@@ -323,7 +325,7 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 				`don't kill any regular TzHaar first.`;
 		}
 		return msg.channel.send(
-			`${slayerMaster.name} has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.`
+			`${slayerMaster.name} has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.${updateMsg}`
 		);
 	}
 }
