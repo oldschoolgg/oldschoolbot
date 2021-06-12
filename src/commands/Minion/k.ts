@@ -318,27 +318,26 @@ export default class extends BotCommand {
 		const lootToRemove = new Bank();
 		let pvmCost = false;
 		consumableCosts.forEach(cc => {
-			let itemMultiple = cc!.qtyPerKill
-				? cc!.itemCost.clone().multiply(quantity as number)
-				: cc!.qtyPerMinute
-				? cc!.qtyPerMinute
-				: null;
-			// Free casts for kodai + sotd
-			if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
-				itemMultiple = Math.ceil(0.85 * itemMultiple);
-			}  else if (msg.author.hasItemEquippedAnywhere('Staff of the dead')) {
-				itemMultiple *= Math.ceil((6/7) * itemMultiple);
-			}
-			const itemCost = cc!.qtyPerKill
-				? cc!.itemCost.clone().multiply(itemMultiple)
-				: cc!.qtyPerMinute
-				? cc!.itemCost
-						.clone()
-						.multiply(Math.ceil((duration / Time.Minute) * itemMultiple))
-				: null;
-			if (itemCost) {
-				pvmCost = true;
-				lootToRemove.add(itemCost);
+			let itemMultiple = cc!.qtyPerKill ?? cc!.qtyPerMinute ?? null;
+
+			if (itemMultiple && typeof itemMultiple === 'number') {
+				// Free casts for kodai + sotd
+				if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
+					itemMultiple *= Math.ceil(0.85 * itemMultiple);
+				}  else if (msg.author.hasItemEquippedAnywhere('Staff of the dead')) {
+					itemMultiple *= Math.ceil((6/7) * itemMultiple);
+				}
+				const itemCost = cc!.qtyPerKill
+					? cc!.itemCost.clone().multiply(itemMultiple)
+					: cc!.qtyPerMinute
+					? cc!.itemCost
+							.clone()
+							.multiply(Math.ceil((duration / Time.Minute) * itemMultiple))
+					: null;
+				if (itemCost) {
+					pvmCost = true;
+					lootToRemove.add(itemCost);
+				}
 			}
 		});
 
