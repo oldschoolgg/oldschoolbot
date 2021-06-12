@@ -90,10 +90,10 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity, name = '', method = '']: [null | number | string, string, string]) {
-		console.log(`${msg.cmdPrefix}k:`);
-		console.log(msg.flagArgs);
-		console.log(`qty: ${quantity}, name: ${name}, methods: ${method}`);
+	async run(
+		msg: KlasaMessage,
+		[quantity, name = '', method = '']: [null | number | string, string, string]
+	) {
 		const { minionName } = msg.author;
 
 		const boosts = [];
@@ -395,7 +395,6 @@ export default class extends BotCommand {
 			cannonMulti,
 			burstOrBarrage
 		});
-		console.log(`Cannon: ${usingCannon} Multi: ${cannonMulti} Burst/barrage: ${burstOrBarrage}`);
 		let response = `${minionName} is now killing ${quantity}x ${
 			monster.name
 		}, it'll take around ${formatDuration(
