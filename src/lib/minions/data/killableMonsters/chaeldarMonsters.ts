@@ -68,7 +68,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		// Even if no multi, can safespot for same effect
-		cannonMulti: true,
+		cannonMulti: false,
 		canBarrage: false
 	},
 	{
@@ -421,7 +421,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.SkeletalWyvern.id,
 		name: Monsters.SkeletalWyvern.name,
 		aliases: Monsters.SkeletalWyvern.aliases,
-		timeToFinish: Time.Second * 80,
+		timeToFinish: Time.Second * 88,
 		table: Monsters.SkeletalWyvern,
 
 		wildy: false,

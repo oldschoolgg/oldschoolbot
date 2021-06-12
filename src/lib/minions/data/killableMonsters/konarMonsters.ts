@@ -191,7 +191,7 @@ export const konarMonsters: KillableMonster[] = [
 		healAmountNeeded: 26,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash],
-		canCannon: true,
+		canCannon: false,
 		cannonMulti: false,
 		canBarrage: false
 	},

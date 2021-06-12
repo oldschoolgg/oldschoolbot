@@ -323,9 +323,9 @@ export default class extends BotCommand {
 			if (itemMultiple && typeof itemMultiple === 'number') {
 				// Free casts for kodai + sotd
 				if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
-					itemMultiple *= Math.ceil(0.85 * itemMultiple);
+					itemMultiple = Math.ceil(0.85 * itemMultiple);
 				}  else if (msg.author.hasItemEquippedAnywhere('Staff of the dead')) {
-					itemMultiple *= Math.ceil((6/7) * itemMultiple);
+					itemMultiple = Math.ceil((6/7) * itemMultiple);
 				}
 				const itemCost = cc!.qtyPerKill
 					? cc!.itemCost.clone().multiply(itemMultiple)
