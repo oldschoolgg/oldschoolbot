@@ -942,6 +942,8 @@ setCustomItem(40_051, 'Gorajan archer boots', 'Pernix boots', {}, 55_000_000);
 
 setCustomItem(40_052, 'Scroll of mystery', 'Coal', {}, 1_000_000);
 
+setCustomItem(40_060, 'Slayer master cape', 'Abyssal cape', {}, 10_000_000);
+
 /**
  * Non-mystery box items
  *

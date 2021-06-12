@@ -255,6 +255,10 @@ export const MasterSkillcapes: MasterSkillcape[] = [
 	{
 		skill: SkillsEnum.Dungeoneering,
 		item: getOSItem('Dungeoneering master cape')
+	},
+	{
+		skill: SkillsEnum.Slayer,
+		item: getOSItem('Slayer master cape')
 	}
 ];
 

@@ -1691,11 +1691,12 @@ export const capes: CollectionLogData = {
 		'Hitpoints master cape',
 		'Ranged master cape',
 		'Dungeoneering master cape',
-		'Master quest cape'
+		'Slayer master cape'
 	]),
 	expert: resolveItems(['Support cape', "Gatherer's cape", "Combatant's cape", "Artisan's cape"]),
 	otherCapes: resolveItems(['Quest point hood', 'Achievement diary hood', 'Max hood']),
-	otherCapes2: resolveItems(['Quest point cape', 'Achievement diary cape(t)', 'Max cape'])
+	otherCapes2: resolveItems(['Quest point cape', 'Achievement diary cape(t)', 'Max cape']),
+	otherCapes3: resolveItems(['Master quest cape'])
 };
 
 export const quest: CollectionLogData = {
