@@ -28,7 +28,7 @@ export const nieveMonsters: KillableMonster[] = [
 		id: Monsters.BlackDragon.id,
 		name: Monsters.BlackDragon.name,
 		aliases: Monsters.BlackDragon.aliases,
-		timeToFinish: Time.Second * 70,
+		timeToFinish: Time.Second * 76,
 		table: Monsters.BlackDragon,
 
 		wildy: false,
@@ -134,7 +134,7 @@ export const nieveMonsters: KillableMonster[] = [
 		id: Monsters.Suqah.id,
 		name: Monsters.Suqah.name,
 		aliases: Monsters.Suqah.aliases,
-		timeToFinish: Time.Second * 19,
+		timeToFinish: Time.Second * 21,
 		table: Monsters.Suqah,
 		wildy: false,
 		canBeKilled: true,

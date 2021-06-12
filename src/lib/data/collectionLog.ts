@@ -1732,7 +1732,8 @@ export const miscLog: CollectionLogData = {
 		'Basilisk jaw',
 		'Brine sabre',
 		'Leaf-bladed battleaxe',
-		'Leaf-bladed sword'
+		'Leaf-bladed sword',
+		'Black mask'
 	]),
 	'Demonic Gorillas': resolveItems([
 		'Zenyte shard',

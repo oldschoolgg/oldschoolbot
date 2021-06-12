@@ -64,7 +64,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.AbyssalSire.id,
 		name: Monsters.AbyssalSire.name,
 		aliases: Monsters.AbyssalSire.aliases,
-		timeToFinish: Time.Second * 180,
+		timeToFinish: Time.Second * 195,
 		table: Monsters.AbyssalSire,
 
 		wildy: false,
@@ -100,7 +100,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Ankou.id,
 		name: Monsters.Ankou.name,
 		aliases: Monsters.Ankou.aliases,
-		timeToFinish: Time.Second * 15,
+		timeToFinish: Time.Second * 13,
 		table: Monsters.Ankou,
 
 		wildy: true,
@@ -124,7 +124,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.BabyBlueDragon.id,
 		name: Monsters.BabyBlueDragon.name,
 		aliases: Monsters.BabyBlueDragon.aliases,
-		timeToFinish: Time.Second * 18,
+		timeToFinish: Time.Second * 15,
 		table: Monsters.BabyBlueDragon,
 
 		wildy: false,
@@ -174,7 +174,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.BasiliskKnight.id,
 		name: Monsters.BasiliskKnight.name,
 		aliases: Monsters.BasiliskKnight.aliases,
-		timeToFinish: Time.Second * 110,
+		timeToFinish: Time.Second * 80,
 		table: Monsters.BasiliskKnight,
 
 		wildy: false,
@@ -188,7 +188,18 @@ export const vannakaMonsters: KillableMonster[] = [
 		superior: Monsters.BasiliskSentinel,
 		healAmountNeeded: 20 * 4,
 		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic],
+		itemInBankBoosts: [
+			{
+				[itemID("Inquisitor's mace")]: 10
+			},
+			{
+				[itemID("Inquisitor's hauberk")]: 4
+			},
+			{
+				[itemID("Inquisitor's plateskirt")]: 4
+			}
+		]
 	},
 	{
 		id: Monsters.Bloodveld.id,
@@ -381,7 +392,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.DeviantSpectre.id,
 		name: Monsters.DeviantSpectre.name,
 		aliases: Monsters.DeviantSpectre.aliases,
-		timeToFinish: Time.Second * 40,
+		timeToFinish: Time.Second * 34,
 		table: Monsters.DeviantSpectre,
 
 		wildy: false,
@@ -431,7 +442,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.ElfArcher.id,
 		name: Monsters.ElfArcher.name,
 		aliases: Monsters.ElfArcher.aliases,
-		timeToFinish: Time.Second * 55,
+		timeToFinish: Time.Second * 27,
 		table: Monsters.ElfArcher,
 
 		wildy: false,
@@ -449,7 +460,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.ElfWarrior.id,
 		name: Monsters.ElfWarrior.name,
 		aliases: Monsters.ElfWarrior.aliases,
-		timeToFinish: Time.Second * 55,
+		timeToFinish: Time.Second * 27,
 		table: Monsters.ElfWarrior,
 
 		wildy: false,
@@ -485,7 +496,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.FireGiant.id,
 		name: Monsters.FireGiant.name,
 		aliases: Monsters.FireGiant.aliases,
-		timeToFinish: Time.Second * 16,
+		timeToFinish: Time.Second * 18,
 		table: Monsters.FireGiant,
 
 		wildy: true,
@@ -503,7 +514,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Gargoyle.id,
 		name: Monsters.Gargoyle.name,
 		aliases: Monsters.Gargoyle.aliases,
-		timeToFinish: Time.Second * 19,
+		timeToFinish: Time.Second * 15,
 		table: Monsters.Gargoyle,
 
 		wildy: false,
@@ -514,7 +525,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 75
 		},
 		superior: Monsters.MarbleGargoyle,
-		healAmountNeeded: 15,
+		healAmountNeeded: 14,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
@@ -522,7 +533,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.GrotesqueGuardians.id,
 		name: Monsters.GrotesqueGuardians.name,
 		aliases: Monsters.GrotesqueGuardians.aliases,
-		timeToFinish: Time.Second * 150,
+		timeToFinish: Time.Second * 180,
 		table: Monsters.GrotesqueGuardians,
 
 		wildy: false,
@@ -543,6 +554,10 @@ export const vannakaMonsters: KillableMonster[] = [
 			{
 				[itemID('Saradomin godsword')]: 6,
 				[itemID('Dragon claws')]: 10
+			},
+			{
+				[itemID('Scythe of vitur')]: 10,
+				[itemID('Scythe of vitur (uncharged)')]: 10
 			}
 		],
 		healAmountNeeded: 20 * 12,
@@ -571,7 +586,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.GreaterNechryael.id,
 		name: Monsters.GreaterNechryael.name,
 		aliases: Monsters.GreaterNechryael.aliases,
-		timeToFinish: Time.Second * 38,
+		timeToFinish: Time.Second * 40,
 		table: Monsters.GreaterNechryael,
 
 		wildy: false,
@@ -636,7 +651,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Hellhound.id,
 		name: Monsters.Hellhound.name,
 		aliases: Monsters.Hellhound.aliases,
-		timeToFinish: Time.Second * 32,
+		timeToFinish: Time.Second * 36,
 		table: Monsters.Hellhound,
 
 		wildy: false,
@@ -716,7 +731,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.IorwerthArcher.id,
 		name: Monsters.IorwerthArcher.name,
 		aliases: Monsters.IorwerthArcher.aliases,
-		timeToFinish: Time.Second * 60,
+		timeToFinish: Time.Second * 30,
 		table: Monsters.IorwerthArcher,
 
 		wildy: false,
@@ -732,7 +747,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.IorwerthWarrior.id,
 		name: Monsters.IorwerthWarrior.name,
 		aliases: Monsters.IorwerthWarrior.aliases,
-		timeToFinish: Time.Second * 63,
+		timeToFinish: Time.Second * 32,
 		table: Monsters.IorwerthWarrior,
 
 		wildy: false,
@@ -783,7 +798,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Kurask.id,
 		name: Monsters.Kurask.name,
 		aliases: Monsters.Kurask.aliases,
-		timeToFinish: Time.Second * 25,
+		timeToFinish: Time.Second * 20,
 		table: Monsters.Kurask,
 
 		wildy: false,
@@ -913,7 +928,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.MutatedBloodveld.id,
 		name: Monsters.MutatedBloodveld.name,
 		aliases: Monsters.MutatedBloodveld.aliases,
-		timeToFinish: Time.Second * 25,
+		timeToFinish: Time.Second * 30,
 		table: Monsters.MutatedBloodveld,
 
 		wildy: false,
@@ -1080,7 +1095,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.SpiritualMage.id,
 		name: Monsters.SpiritualMage.name,
 		aliases: Monsters.SpiritualMage.aliases,
-		timeToFinish: Time.Second * 28,
+		timeToFinish: Time.Second * 15,
 		table: Monsters.SpiritualMage,
 
 		wildy: false,
@@ -1099,7 +1114,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.SpiritualRanger.id,
 		name: Monsters.SpiritualRanger.name,
 		aliases: Monsters.SpiritualRanger.aliases,
-		timeToFinish: Time.Second * 36,
+		timeToFinish: Time.Second * 18,
 		table: Monsters.SpiritualRanger,
 
 		wildy: false,
@@ -1118,7 +1133,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.SpiritualWarrior.id,
 		name: Monsters.SpiritualWarrior.name,
 		aliases: Monsters.SpiritualWarrior.aliases,
-		timeToFinish: Time.Second * 38,
+		timeToFinish: Time.Second * 19,
 		table: Monsters.SpiritualWarrior,
 
 		wildy: false,

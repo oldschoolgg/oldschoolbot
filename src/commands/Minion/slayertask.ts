@@ -16,6 +16,7 @@ import {
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
+import {requiresMinion} from "../../lib/minions/decorators";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -31,6 +32,7 @@ export default class extends BotCommand {
 		});
 	}
 
+	@requiresMinion
 	async run(msg: KlasaMessage, [input]: [string | undefined]) {
 		const { currentTask, totalTasksDone, assignedTask } = await getUsersCurrentSlayerInfo(
 			msg.author.id
