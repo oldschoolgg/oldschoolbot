@@ -39,6 +39,7 @@ export const allPetIDs = [
 		'Baby kalphite king',
 		'Craig',
 		'Snappy the Turtle',
+		'Hoppy',
 		'Steve',
 		'Frosty',
 		'Voidling'
