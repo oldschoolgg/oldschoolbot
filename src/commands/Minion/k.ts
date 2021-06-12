@@ -200,7 +200,8 @@ export default class extends BotCommand {
 			myCBOpts as CombatOptionsEnum[],
 			attackStyles,
 			msg,
-			monster
+			monster,
+			method ?? 'none'
 		);
 
 		// Calculate Cannon and Barrage boosts + costs:

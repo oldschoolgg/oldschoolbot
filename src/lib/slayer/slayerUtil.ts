@@ -28,15 +28,16 @@ export function determineBoostChoice(
 	cbOpts: CombatOptionsEnum[],
 	atkStyles: AttackStyles[],
 	msg: KlasaMessage,
-	monster: KillableMonster
+	monster: KillableMonster,
+	method?: string
 ) {
 	let boostChoice = 'none';
 
-	if (msg.flagArgs.barrage) {
+	if (msg.flagArgs.barrage || (method && method === 'barrage')) {
 		boostChoice = 'barrage';
-	} else if (msg.flagArgs.burst) {
+	} else if (msg.flagArgs.burst || (method && method === 'burst')) {
 		boostChoice = 'burst';
-	} else if (msg.flagArgs.cannon) {
+	} else if (msg.flagArgs.cannon || (method && method === 'cannon')) {
 		boostChoice = 'cannon';
 	} else if (
 		cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
