@@ -50,6 +50,13 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (buyable.customReq) {
+			const [hasCustomReq, reason] = await buyable.customReq(msg.author);
+			if (!hasCustomReq) {
+				return msg.channel.send(reason!);
+			}
+		}
+
 		if (buyable.qpRequired) {
 			const QP = msg.author.settings.get(UserSettings.QP);
 			if (QP < buyable.qpRequired) {

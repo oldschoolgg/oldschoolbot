@@ -1,5 +1,10 @@
+import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
+
+import { chompyHats } from '../../../commands/Minion/chompyhunt';
 import { MinigameKey } from '../../../extendables/User/Minigame';
 import { MAX_QP } from '../../constants';
+import { diaries, userhasDiaryTier } from '../../diaries';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
@@ -20,6 +25,7 @@ export interface Buyable {
 	skillsNeeded?: Skills;
 	restockTime?: number;
 	minigameScoreReq?: [MinigameKey, number];
+	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
 }
 
 const cmCapes: Buyable[] = [
@@ -866,6 +872,34 @@ const Buyables: Buyable[] = [
 		}),
 		itemCost: resolveNameBank({ 'Torstol potion (unf)': 1 })
 	},
+	{
+		name: 'Ogre bow',
+		outputItems: resolveNameBank({
+			'Ogre bow': 1
+		}),
+		gpCost: 10_000
+	},
+	{
+		name: 'Achievement diary cape',
+		outputItems: resolveNameBank({
+			'Achievement diary cape': 1,
+			'Achievement diary cape(t)': 1,
+			'Achievement diary hood': 1
+		}),
+		gpCost: 1_000_000,
+		customReq: async user => {
+			for (const diary of diaries.map(d => d.elite)) {
+				const [has] = await userhasDiaryTier(user, diary);
+				if (!has) {
+					return [
+						false,
+						`You can't buy this because you haven't completed all the Elite diaries!`
+					];
+				}
+			}
+			return [true];
+		}
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -878,5 +912,14 @@ const Buyables: Buyable[] = [
 	...cmCapes,
 	...slayerBuyables
 ];
+
+for (const [chompyHat, qty] of chompyHats) {
+	Buyables.push({
+		name: chompyHat.name,
+		outputItems: new Bank().add(chompyHat.id).bank,
+		gpCost: qty * 44,
+		minigameScoreReq: ['BigChompyBirdHunting', qty]
+	});
+}
 
 export default Buyables;
