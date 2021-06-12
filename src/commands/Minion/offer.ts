@@ -74,14 +74,16 @@ export default class extends BotCommand {
 				}
 				await msg.author.removeItemsFromBank({[whichOfferable.itemID]: quantity});
 				let loot = new Bank();
-				loot.add(offerableOwned.roll(quantity));
+				loot.add(whichOfferable.table.roll(quantity));
 
 				filterLootReplace(msg.author.allItemsOwned(), loot);
 				const {previousCL} = await msg.author.addItemsToBank(loot.values(), true);
 				if (whichOfferable.economyCounter) {
+					const oldValue : number = msg.author.settings.get(whichOfferable.economyCounter) as number;
+					if (typeof quantity !== 'number') quantity = parseInt(quantity);
 					msg.author.settings.update(
 						whichOfferable.economyCounter,
-						msg.author.settings.get(whichOfferable.economyCounter) + quantity
+						oldValue + quantity
 					);
 				}
 
