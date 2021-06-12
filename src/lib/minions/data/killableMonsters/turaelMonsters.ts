@@ -988,7 +988,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		wildy: false,
 		canBeKilled: true,
-		difficultyRating: 1,
+		difficultyRating: 2,
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 44

@@ -49,7 +49,7 @@ export const Offerables: Offerable[] = [
 	{
 		name: 'Unsired',
 		itemID: itemID('Unsired'),
-		offerWhere: 'Font of conumption',
+		offerWhere: 'Font of consumption',
 		table: UnsiredLootTable,
 		economyCounter: UserSettings.Slayer.UnsiredOffered,
 		aliases: ['unsired', 'sired', 'sire']
