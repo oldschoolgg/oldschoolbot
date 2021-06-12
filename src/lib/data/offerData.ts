@@ -56,7 +56,7 @@ export const Offerables : Offerable[] = [
 	{
 		name: 'Chewed bones',
 		itemID: itemID('Chewed bones'),
-		offerWhere: 'pyre ship',
+		offerWhere: 'barbarian spirit',
 		economyCounter: UserSettings.Slayer.ChewedBonesOffered,
 		table: ChewedBonesLootTable,
 		aliases: ['chewed bones', 'chewed']

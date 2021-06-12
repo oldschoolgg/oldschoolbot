@@ -1,5 +1,5 @@
 import { randFloat, randInt } from 'e';
-import { KlasaUser } from 'klasa';
+import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { MoreThan } from 'typeorm';
@@ -15,10 +15,33 @@ import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
 import { bossTasks } from './tasks/bossTasks';
 import { AssignableSlayerTask, SlayerMaster } from './types';
+import { CombatOptionsEnum } from "../minions/data/combatConstants";
+import { AttackStyles } from "../minions/functions";
+import { KillableMonster } from "../minions/types";
 
 export enum AutoslayOptionsEnum {
 	Reserved,
 	HighestUnlocked
+}
+
+export function determineBoostChoice(cbOpts : CombatOptionsEnum[], atkStyles : AttackStyles[], msg : KlasaMessage, monster : KillableMonster) {
+	let boostChoice = 'none';
+
+	if (msg.flagArgs.burst) {
+		boostChoice = 'barrage';
+	} else if (msg.flagArgs.burst) {
+		boostChoice = 'burst';
+	} else if (msg.flagArgs.cannon) {
+		boostChoice = 'cannon';
+	} else if (cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) && atkStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+		boostChoice = 'barrage';
+	} else if (cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) && atkStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+		boostChoice = 'burst';
+	} else if (cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
+		boostChoice = 'cannon';
+	}
+
+	return boostChoice;
 }
 
 export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster) {

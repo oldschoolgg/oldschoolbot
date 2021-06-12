@@ -13,7 +13,6 @@ import {
 	cannonMultiConsumables,
 	cannonSingleConsumables,
 	CombatCannonItemBank,
-	CombatOptionsEnum,
 	iceBarrageConsumables,
 	iceBurstConsumables,
 	SlayerActivityConstants
@@ -30,7 +29,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import {determineBoostChoice, getUsersCurrentSlayerInfo} from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import findMonster, {
@@ -193,23 +192,7 @@ export default class extends BotCommand {
 
 		// Set chosen boost based on priority:
 		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
-		const boostChoice = msg.flagArgs.barrage
-			? 'barrage'
-			: msg.flagArgs.burst
-			? 'burst'
-			: msg.flagArgs.cannon
-			? 'cannon'
-			: myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
-			  attackStyles.includes(SkillsEnum.Magic) &&
-			  monster!.canBarrage
-			? 'barrage'
-			: myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
-			  attackStyles.includes(SkillsEnum.Magic) &&
-			  monster!.canBarrage
-			? 'burst'
-			: myCBOpts.includes(CombatOptionsEnum.AlwaysCannon)
-			? 'cannon'
-			: 'none';
+		const boostChoice = determineBoostChoice(myCBOpts, attackStyles, msg.flagArgs, monster);
 
 		// Calculate Cannon and Barrage boosts + costs:
 		let usingCannon = false;
