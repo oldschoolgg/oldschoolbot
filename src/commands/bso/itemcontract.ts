@@ -196,7 +196,7 @@ export default class DailyCommand extends BotCommand {
 		);
 		let res = `You handed in a ${currentItem.name} and received ${loot}. You've completed ${
 			totalContracts + 1
-		} Item Contracts, and you're streak is now at ${newStreak}.`;
+		} Item Contracts, and your streak is now at ${newStreak}.`;
 		if (gotBonus.length > 0) {
 			res += `\n\n${gotBonus}`;
 		}

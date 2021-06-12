@@ -62,11 +62,11 @@ export default class extends BotCommand {
 			attackStylesUsed: [GearSetupTypes.Mage]
 		});
 
-		const totalCost = itemsNeeded.add(foodRemoved);
+		await msg.author.removeItemsFromBank(itemsNeeded);
+
+		const totalCost = itemsNeeded.clone().add(foodRemoved);
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.MageArenaCost, totalCost);
-
-		await msg.author.removeItemsFromBank(itemsNeeded);
 
 		await addSubTaskToActivityTask<ActivityTaskOptions>(this.client, {
 			userID: msg.author.id,

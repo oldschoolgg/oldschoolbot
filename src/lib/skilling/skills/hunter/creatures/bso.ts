@@ -15,7 +15,7 @@ const customBSOCreatures: Creature[] = [
 			.tertiary(19, MysteryBoxes)
 			.tertiary(300, 'Clue scroll (grandmaster)')
 			.add('Sand')
-			.add('Sandworms', [10, 100]),
+			.add('Sandworms', [2, 20]),
 		qpRequired: 3,
 		huntTechnique: HunterTechniqueEnum.Tracking,
 		catchTime: 91,

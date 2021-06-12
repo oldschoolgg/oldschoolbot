@@ -573,7 +573,8 @@ export const pets: CollectionLogData = {
 		'Steve',
 		'Frosty',
 		'Obis'
-	])
+	]),
+	BSOpets3: resolveItems(['Voidling'])
 };
 
 export const cluesShared: CollectionLogData = {
@@ -1681,13 +1682,15 @@ export const dungeoneeringLog: CollectionLogData = {
 		'Offhand Chaotic longsword',
 		'Offhand chaotic crossbow'
 	]),
-	Shields: resolveItems(['Farseer kiteshield', 'Amulet of zealots', 'Chaotic remnant']),
+	Shields: resolveItems(['Farseer kiteshield', 'Chaotic remnant']),
 	Scrolls: resolveItems([
 		'Scroll of life',
 		'Scroll of efficiency',
 		'Scroll of cleansing',
 		'Scroll of dexterity',
-		'Scroll of teleportation'
+		'Scroll of teleportation',
+		'Scroll of farming',
+		'Scroll of proficiency'
 	]),
 
 	Other: resolveItems(['Frosty', 'Gorajan shards', 'Amulet of zealots', 'Herbicide']),

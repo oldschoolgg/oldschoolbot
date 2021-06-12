@@ -59,3 +59,4 @@ export const CorporealBeastTable = new LootTable()
 	.tertiary(200, 'Clue scroll (elite)')
 	.tertiary(5000, 'Pet dark core');
 Monsters.CorporealBeast.table = CorporealBeastTable;
+Monsters.CorporealBeast.allItems = CorporealBeastTable.allItems;
