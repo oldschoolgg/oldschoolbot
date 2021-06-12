@@ -44,6 +44,7 @@ Client.defaultUserSchema
 			.add('superior_count', 'integer', { default: 0 })
 			.add('last_task', 'integer', { default: 0 })
 			.add('unsired_offered', 'integer', { default: 0 })
+			.add('chewed_offered', 'integer', { default: 0 })
 	)
 
 	.add('favorite_alchables', 'integer', { array: true, default: [] })

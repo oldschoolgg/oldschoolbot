@@ -16,7 +16,7 @@ export default class extends BotCommand {
 			categoryFlags: ['settings', 'minion'],
 			aliases: ['cbopts', 'cbops'],
 			examples: ['+combatoptions add always cannon', '+combatoptions remove always cannon'],
-			description: 'Allows you to disable receiving random events for yourself.'
+			description: 'Allows you to set and remove your combat options, like always cannon.'
 		});
 	}
 

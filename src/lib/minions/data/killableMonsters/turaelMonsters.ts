@@ -821,42 +821,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0
 	},
-	/*
 	{
-		id: Monsters.ReanimatedDog.id,
-		name: Monsters.ReanimatedDog.name,
-		aliases: Monsters.ReanimatedDog.aliases,
-		timeToFinish: Time.Second * 2,
-		table: Monsters.ReanimatedDog,
-	
-		wildy: false,
-		canBeKilled: true,
-		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
-		qpRequired: 0,
-		levelRequirements: {
-			slayer: 5
-		}
-	},
-		{
-		id: Monsters.ReanimatedScorpion.id,
-		name: Monsters.ReanimatedDog.name,
-		aliases: Monsters.ReanimatedDog.aliases,
-		timeToFinish: Time.Second * 2,
-		table: Monsters.ReanimatedDog,
-	
-		wildy: false,
-		canBeKilled: true,
-		difficultyRating: 2,
-		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
-		qpRequired: 0,
-		levelRequirements: {
-			slayer: 5
-		}
-	},
-	*/ {
 		id: Monsters.Rooster.id,
 		name: Monsters.Rooster.name,
 		aliases: Monsters.Rooster.aliases,

@@ -1,7 +1,6 @@
 import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Activity, Time } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/collectionLog';
@@ -16,7 +15,7 @@ import { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, roll, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
-import itemID from '../../lib/util/itemID';
+import { Offerables } from "../../lib/data/offerData";
 
 const specialBones = [
 	{
@@ -30,14 +29,6 @@ const specialBones = [
 ];
 
 const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
-
-const UnsiredLootTable = new LootTable()
-	.add('Abyssal head', 1, 10)
-	.add('Abyssal orphan', 1, 5)
-	.add('Abyssal dagger', 1, 26)
-	.add('Abyssal whip', 1, 12)
-	.add('Bludgeon claw', 1, 62)
-	.add('Jar of miasma', 1, 13);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -63,37 +54,44 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		if (boneName.toLowerCase() === 'unsired') {
-			const unsiredsOwned = userBank.amount('Unsired');
-			if (unsiredsOwned === 0) {
-				return msg.channel.send(
-					`You don't have any Unsireds to offer to the Font of Consumption.`
-				);
-			}
-			quantity = quantity ?? unsiredsOwned;
-			if (quantity > unsiredsOwned) {
-				return msg.channel.send(
-					`You don't have ${quantity} Unsired to offer the Font. You have ${unsiredsOwned}.`
-				);
-			}
-			await msg.author.removeItemsFromBank({ [itemID('Unsired')]: quantity });
-			let loot = new Bank();
-			loot.add(UnsiredLootTable.roll(quantity));
+		const whichOfferable = Offerables.find(
+			item =>
+				stringMatches(boneName, item.name) ||
+				(item.aliases && item.aliases.some(alias => stringMatches(alias, boneName)))
+		);
+		if (whichOfferable) {
+				const offerableOwned = userBank.amount(whichOfferable.itemID);
+				if (offerableOwned === 0) {
+					return msg.channel.send(
+						`You don't have any ${whichOfferable.name} to offer to the ${whichOfferable.offerWhere}.`
+					);
+				}
+				quantity = quantity ?? offerableOwned;
+				if (quantity > offerableOwned) {
+					return msg.channel.send(
+						`You don't have ${quantity} ${whichOfferable.name} to offer the ${whichOfferable.offerWhere}. You have ${offerableOwned}.`
+					);
+				}
+				await msg.author.removeItemsFromBank({[whichOfferable.itemID]: quantity});
+				let loot = new Bank();
+				loot.add(offerableOwned.roll(quantity));
 
-			filterLootReplace(msg.author.allItemsOwned(), loot);
-			const { previousCL } = await msg.author.addItemsToBank(loot.values(), true);
-			msg.author.settings.update(
-				UserSettings.Slayer.UnsiredOffered,
-				msg.author.settings.get(UserSettings.Slayer.UnsiredOffered) + quantity
-			);
+				filterLootReplace(msg.author.allItemsOwned(), loot);
+				const {previousCL} = await msg.author.addItemsToBank(loot.values(), true);
+				if (whichOfferable.economyCounter) {
+					msg.author.settings.update(
+						whichOfferable.economyCounter,
+						msg.author.settings.get(whichOfferable.economyCounter) + quantity
+					);
+				}
 
-			return msg.channel.sendBankImage({
-				bank: loot.values(),
-				title: `Loot from offering ${quantity} Unsired`,
-				flags: { showNewCL: 1 },
-				user: msg.author,
-				cl: previousCL
-			});
+				return msg.channel.sendBankImage({
+					bank: loot.values(),
+					title: `Loot from offering ${quantity} ${whichOfferable.name}`,
+					flags: {showNewCL: 1},
+					user: msg.author,
+					cl: previousCL
+				});
 		}
 
 		const egg = eggs.find(egg => stringMatches(boneName, egg.name));

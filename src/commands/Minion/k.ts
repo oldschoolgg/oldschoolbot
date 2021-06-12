@@ -342,7 +342,7 @@ export default class extends BotCommand {
 		});
 
 		if (msg.author.hasItemEquippedAnywhere('Staff of water')) {
-			lootToRemove.removeItem(itemID('Water rune'), 1_000_000);
+			lootToRemove.remove('Water rune');
 		}
 
 		const itemCost = monster.itemCost ? monster.itemCost.clone().multiply(quantity) : null;

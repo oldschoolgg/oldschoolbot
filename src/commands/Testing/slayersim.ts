@@ -50,7 +50,6 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '[option:...string]',
 			usageDelim: ' ',
-			description: 'Sends your minion to kill monsters.'
 		});
 		this.enabled = !this.client.production;
 	}
