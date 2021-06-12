@@ -712,13 +712,405 @@ export const KaramjaDiary: Diary = {
 	}
 };
 
+export const KourendKebosDiary: Diary = {
+	name: 'Kourend & Kebos',
+	easy: {
+		name: 'Easy',
+		item: getOSItem("Rada's blessing 1"),
+		skillReqs: {
+			agility: 49,
+			crafting: 30,
+			farming: 45,
+			firemaking: 50,
+			fishing: 43,
+			hunter: 53,
+			mining: 42,
+			woodcutting: 50
+		},
+		collectionLogReqs: resolveItems(['Iron ore', 'Raw trout', 'Strength potion(3)'])
+	},
+	medium: {
+		name: 'Medium',
+		item: getOSItem("Rada's blessing 2"),
+		skillReqs: {
+			construction: 25,
+			fishing: 20,
+			herblore: 12,
+			mining: 15,
+			thieving: 25
+		},
+		minigameReqs: {
+			Wintertodt: 1
+		},
+		collectionLogReqs: resolveItems(['Chinchompa'])
+	},
+	hard: {
+		name: 'Hard',
+		item: getOSItem("Rada's blessing 3"),
+		skillReqs: {
+			farming: 74,
+			magic: 66,
+			mining: 65,
+			slayer: 62,
+			smithing: 70,
+			thieving: 49,
+			woodcutting: 60
+		},
+		collectionLogReqs: resolveItems(['Adamantite bar']),
+		monsterScores: {
+			Wyrm: 1,
+			'Lizardman shaman': 1
+		}
+	},
+	elite: {
+		name: 'Elite',
+		item: getOSItem("Rada's blessing 4"),
+		skillReqs: {
+			cooking: 84,
+			crafting: 38,
+			farming: 85,
+			fishing: 82,
+			fletching: 40,
+			magic: 90,
+			mining: 38,
+			runecraft: 77,
+			slayer: 95,
+			woodcutting: 95
+		},
+		collectionLogReqs: resolveItems([
+			'Blood rune',
+			'Redwood logs',
+			'Dark totem',
+			'Raw anglerfish'
+		]),
+		monsterScores: {
+			Hydra: 1
+		},
+		minigameReqs: {
+			Raids: 1
+		}
+	}
+};
+export const LumbridgeDraynorDiary: Diary = {
+	name: 'Lumbridge & Draynor',
+	easy: {
+		name: 'Easy',
+		item: getOSItem("Explorer's ring 1"),
+		skillReqs: {
+			agility: 10,
+			firemaking: 15,
+			fishing: 15,
+			mining: 15,
+			runecraft: 5,
+			slayer: 7,
+			woodcutting: 15
+		},
+		lapsReqs: {
+			'Draynor Village Rooftop Course': 1
+		},
+		collectionLogReqs: resolveItems(['Water rune', 'Oak logs', 'Raw anchovies', 'Iron ore'])
+	},
+	medium: {
+		name: 'Medium',
+		item: getOSItem("Explorer's ring 2"),
+		skillReqs: {
+			agility: 20,
+			crafting: 38,
+			fishing: 30,
+			hunter: 50,
+			magic: 31,
+			ranged: 50,
+			runecraft: 23,
+			strength: 19,
+			thieving: 38,
+			woodcutting: 36
+		},
+		lapsReqs: {
+			'Al Kharid Rooftop Course': 1
+		},
+		collectionLogReqs: resolveItems(['Raw salmon', 'Willow logs', 'Coif'])
+	},
+	hard: {
+		name: 'Hard',
+		item: getOSItem("Explorer's ring 3"),
+		skillReqs: {
+			agility: 46,
+			crafting: 70,
+			farming: 63,
+			firemaking: 65,
+			magic: 60,
+			prayer: 52,
+			runecraft: 59,
+			woodcutting: 57
+		},
+		collectionLogReqs: resolveItems(['Cosmic rune', 'Barrows gloves', 'Amulet of power'])
+	},
+	elite: {
+		name: 'Elite',
+		item: getOSItem("Explorer's ring 4"),
+		skillReqs: {
+			agility: 70,
+			ranged: 70,
+			runecraft: 76,
+			smithing: 88,
+			strength: 70,
+			thieving: 78,
+			woodcutting: 75
+		},
+		collectionLogReqs: resolveItems(['Magic logs', 'Water runes', 'Adamant platebody']),
+		qp: MAX_QP
+	}
+};
+
+export const MorytaniaDiary: Diary = {
+	name: 'Morytania',
+	easy: {
+		name: 'Easy',
+		item: getOSItem('Morytania legs 1'),
+		skillReqs: {
+			cooking: 12,
+			crafting: 15,
+			farming: 23,
+			slayer: 15
+		},
+		monsterScores: {
+			Banshee: 1,
+			Ghoul: 1,
+			Werewolf: 1
+		}
+	},
+	medium: {
+		name: 'Medium',
+		item: getOSItem('Morytania legs 2'),
+		skillReqs: {
+			agility: 42,
+			cooking: 40,
+			fishing: 50,
+			herblore: 22,
+			hunter: 29,
+			slayer: 42,
+			smithing: 50,
+			woodcutting: 45
+		},
+		collectionLogReqs: resolveItems(['Swamp lizard', 'Cannonball']),
+		lapsReqs: {
+			'Canifis Rooftop Agility Course': 1
+		}
+	},
+	hard: {
+		name: 'Hard',
+		item: getOSItem('Morytania legs 3'),
+		skillReqs: {
+			agility: 71,
+			construction: 50,
+			defence: 70,
+			farming: 53,
+			firemaking: 50,
+			magic: 66,
+			mining: 55,
+			prayer: 70,
+			slayer: 58,
+			woodcutting: 50,
+			smithing: 50,
+			thieving: 42
+		},
+		collectionLogReqs: resolveItems(['Watermelon', 'Mahogany logs', 'Mithril ore', 'Mushroom']),
+		monsterScores: {
+			'Cave horror': 1
+		}
+	},
+	elite: {
+		name: 'Elite',
+		item: getOSItem('Morytania legs 4'),
+		skillReqs: {
+			attack: 70,
+			crafting: 84,
+			defence: 70,
+			firemaking: 80,
+			fishing: 96,
+			magic: 83,
+			ranged: 70,
+			slayer: 85,
+			strength: 76
+		},
+		collectionLogReqs: resolveItems(['Raw shark', "Black d'hide body"]),
+		monsterScores: {
+			Barrows: 1,
+			'Abyssal demon': 1
+		}
+	}
+};
+
+export const VarrockDiary: Diary = {
+	name: 'Varrock',
+	easy: {
+		name: 'Easy',
+		item: getOSItem('Varrock armour 1'),
+		skillReqs: {
+			agility: 13,
+			crafting: 8,
+			fishing: 20,
+			mining: 15,
+			runecraft: 9,
+			thieving: 5
+		},
+		collectionLogReqs: resolveItems(['Iron ore', 'Plank', 'Logs', 'Earth rune', 'Raw trout'])
+	},
+	medium: {
+		name: 'Medium',
+		item: getOSItem('Varrock armour 2'),
+		skillReqs: {
+			agility: 30,
+			crafting: 36,
+			farming: 30,
+			firemaking: 40,
+			herblore: 10,
+			magic: 25,
+			thieving: 25
+		},
+		collectionLogReqs: resolveItems(['Strength potion(3)', 'Mahogany plank']),
+		lapsReqs: {
+			'Varrock Rooftop Course': 1
+		},
+		qp: 32
+	},
+	hard: {
+		name: 'Hard',
+		item: getOSItem('Varrock armour 3'),
+		skillReqs: {
+			agility: 51,
+			construction: 50,
+			farming: 68,
+			firemaking: 60,
+			hunter: 66,
+			magic: 54,
+			prayer: 52,
+			ranged: 40,
+			thieving: 53,
+			woodcutting: 60
+		},
+		collectionLogReqs: resolveItems(['Yew roots', 'Yew logs']),
+		qp: 44
+	},
+	elite: {
+		name: 'Elite',
+		item: getOSItem('Varrock armour 4'),
+		skillReqs: {
+			cooking: 95,
+			fletching: 81,
+			herblore: 90,
+			magic: 86,
+			runecraft: 78,
+			smithing: 89
+		},
+		collectionLogReqs: resolveItems([
+			'Super combat potion(4)',
+			'Mahogany planks',
+			'Rune dart',
+			'Earth rune'
+		])
+	}
+};
+
+export const WildernessDiary: Diary = {
+	name: 'Wilderness',
+	easy: {
+		name: 'Easy',
+		item: getOSItem('Wilderness sword 1'),
+		skillReqs: {
+			agility: 15,
+			magic: 21,
+			mining: 15
+		},
+		collectionLogReqs: resolveItems(["Red spiders' eggs", 'Iron ore']),
+		monsterScores: {
+			Mammoth: 1,
+			'Earth warrior': 1
+		}
+	},
+	medium: {
+		name: 'Medium',
+		item: getOSItem('Wilderness sword 2'),
+		skillReqs: {
+			agility: 60,
+			strength: 60,
+			magic: 60,
+			mining: 55,
+			slayer: 50,
+			smithing: 50,
+			woodcutting: 61
+		},
+		collectionLogReqs: resolveItems(['Mithril ore', 'Yew logs']),
+		monsterScores: {
+			'Green dragon': 1,
+			Ankou: 1,
+			Bloodveld: 1
+		},
+		lapsReqs: {
+			'Wilderness Agility Course': 1
+		}
+	},
+	hard: {
+		name: 'Hard',
+		item: getOSItem('Wilderness sword 3'),
+		skillReqs: {
+			agility: 64,
+			fishing: 53,
+			hunter: 67,
+			magic: 66,
+			slayer: 68,
+			smithing: 75
+		},
+		collectionLogReqs: resolveItems(['Black salamander', 'Adamant scimitar']),
+		monsterScores: {
+			'Chaos Elemental': 1,
+			'Crazy archeologist': 1,
+			'Chaos Fanatic': 1,
+			Scorpia: 1,
+			'Spiritual warrior': 1
+		}
+	},
+	elite: {
+		name: 'Elite',
+		item: getOSItem('Wilderness sword 4'),
+		skillReqs: {
+			agility: 60,
+			cooking: 90,
+			firemaking: 75,
+			fishing: 85,
+			magic: 96,
+			mining: 85,
+			slayer: 83,
+			smithing: 90,
+			strength: 60,
+			thieving: 84,
+			woodcutting: 75
+		},
+		collectionLogReqs: resolveItems([
+			'Rune scimitar',
+			'Raw dark crab',
+			'Dark crab',
+			'Magic logs'
+		]),
+		monsterScores: {
+			Callisto: 1,
+			Venenatis: 1,
+			"Vet'ion": 1
+		}
+	}
+};
+
 export const diariesObject = {
-	WesternProv,
 	ArdougneDiary,
 	DesertDiary,
 	FaladorDiary,
 	FremennikDiary,
 	KandarinDiary,
-	KaramjaDiary
+	KaramjaDiary,
+	KourendKebosDiary,
+	LumbridgeDraynorDiary,
+	MorytaniaDiary,
+	WesternProv,
+	WildernessDiary
 } as const;
 export const diaries = Object.values(diariesObject);
