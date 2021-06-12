@@ -244,7 +244,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.ThermonuclearSmokeDevil.id,
 		name: Monsters.ThermonuclearSmokeDevil.name,
 		aliases: Monsters.ThermonuclearSmokeDevil.aliases,
-		timeToFinish: Time.Second * 60,
+		timeToFinish: Time.Second * 78,
 		table: Monsters.ThermonuclearSmokeDevil,
 		wildy: false,
 		canBeKilled: true,
@@ -257,15 +257,18 @@ export const konarMonsters: KillableMonster[] = [
 		slayerOnly: true,
 		itemInBankBoosts: [
 			{
-				[itemID('Dragon dagger')]: 5,
-				[itemID('Dragon claws')]: 10
+				[itemID('Dragon dagger')]: 3,
+				[itemID('Dragon claws')]: 8
 			},
 			{
-				[itemID('Harmonised nightmare staff')]: 12,
-				[itemID('Trident of the swamp')]: 9,
-				[itemID('Uncharged toxic trident')]: 9,
-				[itemID('Trident of the seas')]: 7,
-				[itemID('Uncharged trident')]: 7
+				[itemID('Harmonised nightmare staff')]: 8,
+				[itemID('Trident of the swamp')]: 6,
+				[itemID('Uncharged toxic trident')]: 6,
+				[itemID('Trident of the seas')]: 5,
+				[itemID('Uncharged trident')]: 5
+			},
+			{
+				[itemID('Occult necklace')]: 5
 			},
 			{
 				[itemID('Ancestral robe bottom')]: 2

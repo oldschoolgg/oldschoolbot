@@ -92,7 +92,7 @@ export const vannakaMonsters: KillableMonster[] = [
 				[itemID('Dragon warhammer')]: 10
 			}
 		],
-		healAmountNeeded: 20 * 20,
+		healAmountNeeded: 20 * 14,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackStab]
 	},
