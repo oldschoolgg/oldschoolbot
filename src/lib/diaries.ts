@@ -96,9 +96,11 @@ export async function userhasDiaryTier(
 		const userScores = user.settings.get(UserSettings.MonsterScores);
 		for (const [name, score] of entries) {
 			const mon = Monsters.find(mon => mon.name === name)!;
-
-			if (userScores[mon.id] || userScores[mon.id] < score) {
-				return [false, `you don't have ${score} ${mon.name} KC`];
+			if (!userScores[mon.id] || userScores[mon.id] < score) {
+				return [
+					false,
+					`you don't have ${score} ${mon.name} KC, you have ${userScores[mon.id] ?? 0} KC`
+				];
 			}
 		}
 	}
@@ -455,8 +457,8 @@ export const FaladorDiary: Diary = {
 			'Prospector boots'
 		]),
 		monsterScores: {
-			'Skeletal wyvern': 1,
-			'Blue dragon': 1
+			'Skeletal Wyvern': 1,
+			'Blue Dragon': 1
 		},
 		lapsReqs: {
 			'Falador Rooftop Course': 1
@@ -544,14 +546,14 @@ export const FremennikDiary: Diary = {
 			strength: 70
 		},
 		monsterScores: {
-			'Dagannoth rex': 1,
-			'Dagannoth prime': 1,
-			'Dagannoth supreme': 1,
-			'General graardor': 1,
+			'Dagannoth Rex': 1,
+			'Dagannoth Prime': 1,
+			'Dagannoth Supreme': 1,
+			'General Graardor': 1,
 			"Kree'arra": 1,
-			'Commander zilyana': 1,
+			'Commander Zilyana': 1,
 			"K'ril Tsutsaroth": 1,
-			'Spiritual mage': 1
+			'Spiritual Mage': 1
 		},
 		collectionLogReqs: resolveItems(['Astral rune', 'Dragonstone amulet']),
 		qp: 50
@@ -935,8 +937,7 @@ export const MorytaniaDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Raw shark', "Black d'hide body"]),
 		monsterScores: {
-			Barrows: 1,
-			'Abyssal demon': 1
+			'Abyssal Demon': 1
 		}
 	}
 };
@@ -1108,6 +1109,7 @@ export const diariesObject = {
 	LumbridgeDraynorDiary,
 	MorytaniaDiary,
 	WesternProv,
-	WildernessDiary
+	WildernessDiary,
+	VarrockDiary
 } as const;
 export const diaries = Object.values(diariesObject);
