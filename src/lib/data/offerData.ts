@@ -1,14 +1,15 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-import itemID from "../util/itemID";
-import { UserSettings } from "../settings/types/UserSettings";
+
+import { UserSettings } from '../settings/types/UserSettings';
+import itemID from '../util/itemID';
 
 export interface Offerable {
-	name: string,
-	itemID: number,
-	offerWhere: string,
-	table: LootTable,
-	economyCounter?: string,
-	aliases?: string[]
+	name: string;
+	itemID: number;
+	offerWhere: string;
+	table: LootTable;
+	economyCounter?: string;
+	aliases?: string[];
 }
 
 export const UnsiredLootTable = new LootTable()
@@ -42,9 +43,9 @@ export const ChewedBonesLootTable = new LootTable()
 	.add('Super str. mix(1)', 1, 2)
 	.add('Super str. mix(2)', 1, 2)
 	.add('Super def. mix(1)', 1, 2)
-	.add('Super def. mix(2)', 1, 2)
+	.add('Super def. mix(2)', 1, 2);
 
-export const Offerables : Offerable[] = [
+export const Offerables: Offerable[] = [
 	{
 		name: 'Unsired',
 		itemID: itemID('Unsired'),
@@ -61,4 +62,4 @@ export const Offerables : Offerable[] = [
 		table: ChewedBonesLootTable,
 		aliases: ['chewed bones', 'chewed']
 	}
-]
+];

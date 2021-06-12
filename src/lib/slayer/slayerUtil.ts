@@ -4,6 +4,9 @@ import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { MoreThan } from 'typeorm';
 
+import { CombatOptionsEnum } from '../minions/data/combatConstants';
+import { AttackStyles } from '../minions/functions';
+import { KillableMonster } from '../minions/types';
 import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
@@ -15,16 +18,18 @@ import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
 import { bossTasks } from './tasks/bossTasks';
 import { AssignableSlayerTask, SlayerMaster } from './types';
-import { CombatOptionsEnum } from "../minions/data/combatConstants";
-import { AttackStyles } from "../minions/functions";
-import { KillableMonster } from "../minions/types";
 
 export enum AutoslayOptionsEnum {
 	Reserved,
 	HighestUnlocked
 }
 
-export function determineBoostChoice(cbOpts : CombatOptionsEnum[], atkStyles : AttackStyles[], msg : KlasaMessage, monster : KillableMonster) {
+export function determineBoostChoice(
+	cbOpts: CombatOptionsEnum[],
+	atkStyles: AttackStyles[],
+	msg: KlasaMessage,
+	monster: KillableMonster
+) {
 	let boostChoice = 'none';
 
 	if (msg.flagArgs.burst) {
@@ -33,9 +38,17 @@ export function determineBoostChoice(cbOpts : CombatOptionsEnum[], atkStyles : A
 		boostChoice = 'burst';
 	} else if (msg.flagArgs.cannon) {
 		boostChoice = 'cannon';
-	} else if (cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) && atkStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+	} else if (
+		cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
+		atkStyles.includes(SkillsEnum.Magic) &&
+		monster!.canBarrage
+	) {
 		boostChoice = 'barrage';
-	} else if (cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) && atkStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+	} else if (
+		cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
+		atkStyles.includes(SkillsEnum.Magic) &&
+		monster!.canBarrage
+	) {
 		boostChoice = 'burst';
 	} else if (cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
 		boostChoice = 'cannon';

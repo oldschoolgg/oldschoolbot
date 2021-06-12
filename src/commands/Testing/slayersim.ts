@@ -49,7 +49,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '[option:...string]',
-			usageDelim: ' ',
+			usageDelim: ' '
 		});
 		this.enabled = !this.client.production;
 	}
