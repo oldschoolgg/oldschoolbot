@@ -158,12 +158,14 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
+				console.log(`Cannon: ${usingCannon} Burst or Barrage: ${burstOrBarrage}`);
 				user.log(`continued trip of killing ${monster.name}`);
 				if (usingCannon) res.flagArgs.cannon = 'yes';
 				else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBarrage)
 					res.flagArgs.barrage = 'yes';
 				else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBurst)
 					res.flagArgs.burst = 'yes';
+				console.log(res.flagArgs);
 				return this.client.commands.get('k')!.run(res, [quantity, monster.name]);
 			},
 			image!,
