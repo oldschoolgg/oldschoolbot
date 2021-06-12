@@ -75,7 +75,7 @@ export interface KillableMonster {
 	/**
 	 * Whether or not this monster can be groupkilled.
 	 */
-	groupKillable?: true;
+	groupKillable?: boolean;
 	respawnTime?: number;
 	levelRequirements?: LevelRequirements;
 	uniques?: ArrayItemsResolved;
@@ -99,5 +99,18 @@ export interface KillableMonster {
 	combatXpMultiplier?: number;
 	itemCost?: Bank;
 	superior?: SimpleMonster;
-	slayerOnly?: true;
+	slayerOnly?: boolean;
+	canBarrage?: boolean;
+	canCannon?: boolean;
+	cannonMulti?: boolean;
+}
+/*
+ * Monsters will have an array of Consumables
+ * Math.ceil(duration / Time.Minute * qtyPerMinute)
+ * Or quantity * qtyPerKill.
+ */
+export interface Consumable {
+	itemCost: Bank;
+	qtyPerMinute?: number;
+	qtyPerKill?: number;
 }

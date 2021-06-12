@@ -103,7 +103,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`Can't find any monsters you have the requirements to kill!`);
 		}
 		return msg.channel.send(
-			`Unrecognized mode. Please use:\n\`${msg.cmdPrefix}as [lowest|highest]\``
+			`Unrecognized mode. Please use:\n\`${msg.cmdPrefix}as [default|highest]\``
 		);
 	}
 }
