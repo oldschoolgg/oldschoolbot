@@ -14,9 +14,9 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			aliases: ['cp'],
+			aliases: ['cp', 'checkpatches'],
 			description: `Allows a player to check the growth status of all patches at once.`,
-			examples: ['+checkpatch', '+cp'],
+			examples: ['+checkpatch', '+cp', '+checkpatches'],
 			categoryFlags: ['minion']
 		});
 	}
