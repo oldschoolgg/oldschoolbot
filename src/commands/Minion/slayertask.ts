@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
@@ -16,7 +17,6 @@ import {
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
-import {requiresMinion} from "../../lib/minions/decorators";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -68,7 +68,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.minionIsBusy) {
-			return msg.channel.send(`Can only use ${msg.cmdPrefix}slayertask list when minion is busy.`);
+			return msg.channel.send(
+				`Can only use ${msg.cmdPrefix}slayertask list when minion is busy.`
+			);
 		}
 		const inputArray = input ? input.split(' ') : undefined;
 		const inputUnblock = inputArray?.slice(0, 1)[0] === 'unblock';
