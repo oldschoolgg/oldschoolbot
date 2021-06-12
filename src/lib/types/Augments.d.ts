@@ -105,7 +105,7 @@ declare module 'discord.js' {
 		addItemsToBank(
 			items: ItemBank | Bank,
 			collectionLog?: boolean
-		): Promise<{ previousCL: ItemBank }>;
+		): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }>;
 		removeItemsFromBank(
 			items: ItemBank | Bank,
 			collectionLog?: boolean
@@ -152,7 +152,10 @@ declare module 'discord.js' {
 		 * Returns true if the user has this item equipped in any of their setups.
 		 * @param itemID The item ID.
 		 */
-		hasItemEquippedAnywhere(_item: number | string | string[], every = false): boolean;
+		hasItemEquippedAnywhere(
+			_item: number | string | string[] | number[],
+			every = false
+		): boolean;
 		/**
 		 * Checks whether they have the given item in their bank OR equipped.
 		 * @param item
@@ -252,6 +255,7 @@ declare module 'discord.js' {
 		maxTripLength(activity?: OSBActivity): number;
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
+		combatLevel: number;
 	}
 
 	interface TextChannel {

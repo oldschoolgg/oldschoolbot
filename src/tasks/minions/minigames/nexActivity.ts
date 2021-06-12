@@ -67,7 +67,7 @@ export default class extends Task {
 			}
 
 			const loot = new Bank();
-			loot.add(NexMonster.table.kill(1));
+			loot.add(NexMonster.table.kill(1, {}));
 			if (roll(80 + users.length * 2)) {
 				loot.add(randomItemFromArray(allNexItems), 1);
 			}
@@ -87,7 +87,14 @@ export default class extends Task {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
 			if (kcAmounts[user.id]) {
-				await addMonsterXP(user, 46274, Math.ceil(quantity / users.length), duration);
+				await addMonsterXP(
+					user,
+					46274,
+					Math.ceil(quantity / users.length),
+					duration,
+					false,
+					null
+				);
 			}
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);

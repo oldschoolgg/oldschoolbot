@@ -24,15 +24,13 @@ export default class extends Task {
 
 		for (let i = 0; i < quantity; i++) {
 			loot.add(VasaMagusLootTable.roll());
-			loot.add(randArrItem(bossKillables).table.kill(randInt(1, 3)));
+			loot.add(randArrItem(bossKillables).table.kill(randInt(1, 3), {}));
 		}
 
-		const xpRes = await addMonsterXP(user, VasaMagus.id, quantity, duration);
+		const xpRes = await addMonsterXP(user, VasaMagus.id, quantity, duration, false, null);
 		await user.addItemsToBank(loot, true);
 
-		let resultStr = `${user}, ${user.minionName} finished killing ${quantity}x Vasa Magus.\n\n${
-			Emoji.Casket
-		} **Loot:** ${loot}\n\n${xpRes.join(', ')}`;
+		let resultStr = `${user}, ${user.minionName} finished killing ${quantity}x Vasa Magus.\n\n${Emoji.Casket} **Loot:** ${loot}\n\n${xpRes}`;
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.VasaLoot, loot);
 

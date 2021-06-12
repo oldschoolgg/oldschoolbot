@@ -66,10 +66,8 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const smithedItem = Smithing.SmithableItems.find(
-			_smithedItem =>
-				stringMatches(_smithedItem.name, smithableItem) ||
-				stringMatches(_smithedItem.name.split(' ')[0], smithableItem)
+		const smithedItem = Smithing.SmithableItems.find(_smithedItem =>
+			stringMatches(_smithedItem.name, smithableItem)
 		);
 
 		if (!smithedItem) {

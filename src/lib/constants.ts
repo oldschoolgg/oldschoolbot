@@ -106,6 +106,7 @@ export const enum Emoji {
 	Ranged = '<:ranged:630911040258834473>',
 	Dungeoneering = '<:dungeoneering:828683755198873623>',
 	Gear = '<:gear:835314891950129202>',
+	Slayer = '<:slayer:630911040560824330>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -204,7 +205,8 @@ export const enum Tasks {
 	KingGoldemar = 'kingGoldemarActivity',
 	VasaMagus = 'vasaMagusActivity',
 	OuraniaDeliveryService = 'ouraniaDeliveryServiceActivity',
-	MageArena2 = 'mageArena2Activity'
+	MageArena2 = 'mageArena2Activity',
+	BigChompyBirdHunting = 'chompyHuntActivity'
 }
 
 export enum Activity {
@@ -268,7 +270,8 @@ export enum Activity {
 	KingGoldemar = 'KingGoldemar',
 	VasaMagus = 'VasaMagus',
 	OuraniaDeliveryService = 'OuraniaDeliveryService',
-	MageArena2 = 'MageArena2'
+	MageArena2 = 'MageArena2',
+	BigChompyBirdHunting = 'BigChompyBirdHunting'
 }
 
 export enum ActivityGroup {
@@ -452,5 +455,6 @@ export const skillEmoji = {
 	hunter: '<:hunter:630911040166559784>',
 	cml: '<:CrystalMathLabs:364657225249062912>',
 	clock: '<:ehpclock:352323705210142721>',
-	dungeoneering: '<:dungeoneering:828683755198873623>'
+	dungeoneering: '<:dungeoneering:828683755198873623>',
+	combat: '<:combat:802136963956080650>'
 };

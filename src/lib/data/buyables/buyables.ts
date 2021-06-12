@@ -1,5 +1,11 @@
+import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
+
+import { chompyHats } from '../../../commands/Minion/chompyhunt';
 import { MinigameKey } from '../../../extendables/User/Minigame';
 import { MAX_QP } from '../../constants';
+import { diaries, userhasDiaryTier } from '../../diaries';
+import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
@@ -7,6 +13,7 @@ import { canifisClothes } from './canifisClothes';
 import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
+import { slayerBuyables } from './slayerBuyables';
 
 export interface Buyable {
 	name: string;
@@ -18,6 +25,7 @@ export interface Buyable {
 	skillsNeeded?: Skills;
 	restockTime?: number;
 	minigameScoreReq?: [MinigameKey, number];
+	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
 }
 
 const cmCapes: Buyable[] = [
@@ -660,6 +668,44 @@ const questBuyables: Buyable[] = [
 		},
 		gpCost: 500_000,
 		qpRequired: 60
+	},
+	{
+		name: 'Dwarf multicannon',
+		outputItems: CombatCannonItemBank,
+		gpCost: 10_000_000,
+		qpRequired: 5
+	},
+	{
+		name: 'Cannon barrels',
+		outputItems: {
+			[itemID('Cannon barrels')]: 1
+		},
+		gpCost: 2_500_000,
+		qpRequired: 5
+	},
+	{
+		name: 'Cannon base',
+		outputItems: {
+			[itemID('Cannon base')]: 1
+		},
+		gpCost: 2_500_000,
+		qpRequired: 5
+	},
+	{
+		name: 'Cannon furnace',
+		outputItems: {
+			[itemID('Cannon furnace')]: 1
+		},
+		gpCost: 2_500_000,
+		qpRequired: 5
+	},
+	{
+		name: 'Cannon stand',
+		outputItems: {
+			[itemID('Cannon stand')]: 1
+		},
+		gpCost: 2_500_000,
+		qpRequired: 5
 	}
 ];
 
@@ -833,6 +879,34 @@ const Buyables: Buyable[] = [
 		}),
 		itemCost: resolveNameBank({ 'Torstol potion (unf)': 1 })
 	},
+	{
+		name: 'Ogre bow',
+		outputItems: resolveNameBank({
+			'Ogre bow': 1
+		}),
+		gpCost: 10_000
+	},
+	{
+		name: 'Achievement diary cape',
+		outputItems: resolveNameBank({
+			'Achievement diary cape': 1,
+			'Achievement diary cape(t)': 1,
+			'Achievement diary hood': 1
+		}),
+		gpCost: 1_000_000,
+		customReq: async user => {
+			for (const diary of diaries.map(d => d.elite)) {
+				const [has] = await userhasDiaryTier(user, diary);
+				if (!has) {
+					return [
+						false,
+						`You can't buy this because you haven't completed all the Elite diaries!`
+					];
+				}
+			}
+			return [true];
+		}
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -850,7 +924,17 @@ const Buyables: Buyable[] = [
 		}),
 		gpCost: 1_000_000_000,
 		qpRequired: 5000
-	}
+	},
+	...slayerBuyables
 ];
+
+for (const [chompyHat, qty] of chompyHats) {
+	Buyables.push({
+		name: chompyHat.name,
+		outputItems: new Bank().add(chompyHat.id).bank,
+		gpCost: qty * 44,
+		minigameScoreReq: ['BigChompyBirdHunting', qty]
+	});
+}
 
 export default Buyables;

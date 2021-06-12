@@ -46,6 +46,9 @@ export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	monsterID: number;
 	quantity: number;
+	usingCannon?: boolean;
+	cannonMulti?: boolean;
+	burstOrBarrage?: number;
 }
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {

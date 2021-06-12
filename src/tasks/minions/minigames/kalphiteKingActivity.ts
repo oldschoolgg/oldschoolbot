@@ -60,7 +60,7 @@ export default class extends Task {
 			}
 
 			const loot = new Bank();
-			loot.add(KalphiteKingMonster.table.kill(1));
+			loot.add(KalphiteKingMonster.table.kill(1, {}));
 			const winner = teamTable.roll()?.item;
 			if (!winner) continue;
 			const currentLoot = teamsLoot[winner];

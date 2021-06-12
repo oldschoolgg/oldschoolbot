@@ -20,7 +20,7 @@ export default class extends Task {
 		const kcAmounts: { [key: string]: number } = {};
 
 		for (let i = 0; i < quantity; i++) {
-			let loot = monster.table.kill(1);
+			let loot = monster.table.kill(1, {});
 			if (roll(10) && monster.id !== 696969) {
 				loot.multiply(4);
 				loot.add(getRandomMysteryBox());
@@ -41,11 +41,20 @@ export default class extends Task {
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
-			await addMonsterXP(user, monsterID, Math.ceil(quantity / users.length), duration);
+			await addMonsterXP(
+				user,
+				monsterID,
+				Math.ceil(quantity / users.length),
+				duration,
+				false,
+				null
+			);
+			totalLoot.add(loot);
+			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
 			if (user.equippedPet() === itemID('Ori')) {
 				loot.bank = addBanks([
-					monster.table.kill(Math.ceil(kcToAdd * 0.25)).bank ?? {},
+					monster.table.kill(Math.ceil(kcToAdd * 0.25), {}).bank ?? {},
 					loot.bank
 				]);
 			}

@@ -149,6 +149,12 @@ const Skillcapes: Skillcape[] = [
 		hood: itemID('Dungeoneering hood'),
 		untrimmed: itemID('Dungeoneering cape'),
 		trimmed: itemID('Dungeoneering cape(t)')
+	},
+	{
+		skill: SkillsEnum.Slayer,
+		hood: itemID('Slayer hood'),
+		untrimmed: itemID('Slayer cape'),
+		trimmed: itemID('Slayer cape(t)')
 	}
 ];
 

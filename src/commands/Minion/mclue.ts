@@ -120,6 +120,16 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
+		if (
+			msg.author.hasItemEquippedAnywhere(
+				['Achievement diary cape', 'Achievement diary cape(t)'],
+				false
+			)
+		) {
+			boosts.push(`10% for Achievement diary cape`);
+			duration *= 0.9;
+		}
+
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>(this.client, {
 			clueID: clueTier.id,
 			userID: msg.author.id,

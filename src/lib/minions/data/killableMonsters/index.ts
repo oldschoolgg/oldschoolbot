@@ -10,15 +10,29 @@ import { makeKillTable } from '../../../util/setCustomMonster';
 import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import { bossKillables } from './bosses';
+import { chaeldarMonsters } from './chaeldarMonsters';
 import AbyssalDragon, { AbyssalDragonLootTable } from './custom/AbyssalDragon';
 import KingGoldemar from './custom/KingGoldemar';
 import Koschei, { koscheiTable } from './custom/Koschei';
 import SeaKraken, { KrakenTable } from './custom/SeaKraken';
 import Treebeard, { TreebeardLootTable } from './custom/Treebeard';
+import { konarMonsters } from './konarMonsters';
+import { krystiliaMonsters } from './krystiliaMonsters';
 import low from './low';
+import { mazchnaMonsters } from './mazchnaMonsters';
+import { nieveMonsters } from './nieveMonsters';
+import { turaelMonsters } from './turaelMonsters';
+import { vannakaMonsters } from './vannakaMonsters';
 
 const killableMonsters: KillableMonster[] = [
 	...bossKillables,
+	...chaeldarMonsters,
+	...konarMonsters,
+	...krystiliaMonsters,
+	...mazchnaMonsters,
+	...nieveMonsters,
+	...turaelMonsters,
+	...vannakaMonsters,
 	...low,
 	{
 		id: Monsters.Barrows.id,
@@ -86,7 +100,10 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		combatXpMultiplier: 1.3
+		combatXpMultiplier: 1.3,
+		healAmountNeeded: 100,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.DagannothRex.id,
@@ -119,7 +136,10 @@ const killableMonsters: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		combatXpMultiplier: 1.3
+		combatXpMultiplier: 1.3,
+		healAmountNeeded: 100,
+		attackStyleToUse: GearSetupTypes.Mage,
+		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
 		id: Monsters.DagannothSupreme.id,
@@ -154,7 +174,10 @@ const killableMonsters: KillableMonster[] = [
 		],
 		levelRequirements: {
 			prayer: 43
-		}
+		},
+		healAmountNeeded: 100,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.Man.id,
@@ -175,11 +198,13 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Guard.aliases,
 		timeToFinish: Time.Second * 7.4,
 		table: Monsters.Guard,
-		emoji: '',
+
 		wildy: false,
 		canBeKilled: false,
 		difficultyRating: 0,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: true
 	},
 	{
 		id: Monsters.Woman.id,

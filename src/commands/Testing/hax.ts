@@ -22,6 +22,7 @@ export default class extends BotCommand {
 		msg.author.settings.update(paths.map(path => [path, 14_000_000]));
 		msg.author.settings.update(UserSettings.GP, 1_000_000_000);
 		msg.author.settings.update(UserSettings.QP, 250);
+		msg.author.settings.update(UserSettings.Slayer.SlayerPoints, 100000);
 		const loot: Record<string, number> = Object.fromEntries(
 			Eatables.map(({ id }) => [id, 1000])
 		);

@@ -398,14 +398,6 @@ export const bosses: CollectionLogData = {
 		'Jar of spirits',
 		'Pet dark core'
 	]),
-	Cerberus: resolveItems([
-		'Primordial crystal',
-		'Pegasian crystal',
-		'Eternal crystal',
-		'Smouldering stone',
-		'Jar of souls',
-		'Hellpuppy'
-	]),
 	'Dagannoth Kings': resolveItems([
 		'Dragon axe',
 		'Mud battlestaff',
@@ -484,6 +476,67 @@ export const bosses: CollectionLogData = {
 		'Metamorphic dust',
 		'Olmlet',
 		'Twisted ancestral colour kit'
+	]),
+	Skotizo: resolveItems([
+		'Dark totem',
+		'Dark claw',
+		'Uncut onyx',
+		'Jar of darkness',
+		'Skotos',
+		'Dark totem base',
+		'Dark totem middle',
+		'Dark totem top'
+	]),
+	'Grotesque Guardians': resolveItems([
+		'Black tourmaline core',
+		'Granite hammer',
+		'Granite maul',
+		'Granite ring',
+		'Granite gloves',
+		'Jar of stone',
+		'Noon'
+	]),
+	'Abyssal Sire': resolveItems([
+		'Unsired',
+		'Abyssal whip',
+		'Abyssal dagger',
+		'Bludgeon claw',
+		'Bludgeon spine',
+		'Bludgeon axon',
+		'Jar of miasma',
+		'Abyssal orphan'
+	]),
+	Kraken: resolveItems([
+		'Trident of the seas (full)',
+		'Kraken tentacle',
+		'Jar of dirt',
+		'Pet kraken'
+	]),
+	Cerberus: resolveItems([
+		'Primordial crystal',
+		'Pegasian crystal',
+		'Eternal crystal',
+		'Smouldering stone',
+		'Jar of souls',
+		'Hellpuppy'
+	]),
+	'Thermonuclear Smoke Devil': resolveItems([
+		'Occult necklace',
+		'Smoke battlestaff',
+		'Dragon chainbody',
+		'Jar of smoke',
+		'Pet smoke devil'
+	]),
+	'Alchemical Hydra': resolveItems([
+		"Hydra's claw",
+		'Hydra leather',
+		"Hydra's eye",
+		"Hydra's fang",
+		"Hydra's heart",
+		'Hydra tail',
+		'Alchemical hydra heads',
+		'Jar of chemicals',
+		'Ikkle hydra'
 	])
 };
 
@@ -1610,7 +1663,7 @@ export const capes: CollectionLogData = {
 		'Hitpoints hood',
 		'Ranging hood',
 		'Dungeoneering hood',
-		'Quest point hood'
+		'Slayer hood'
 	]),
 	'trimmed capes2': resolveItems([
 		'Farming cape(t)',
@@ -1624,7 +1677,7 @@ export const capes: CollectionLogData = {
 		'Hitpoints cape(t)',
 		'Ranging cape(t)',
 		'Dungeoneering cape(t)',
-		'Quest point cape'
+		'Slayer cape(t)'
 	]),
 	'master capes2': resolveItems([
 		'Farming master cape',
@@ -1640,7 +1693,9 @@ export const capes: CollectionLogData = {
 		'Dungeoneering master cape',
 		'Master quest cape'
 	]),
-	expert: resolveItems(['Support cape', "Gatherer's cape", "Combatant's cape", "Artisan's cape"])
+	expert: resolveItems(['Support cape', "Gatherer's cape", "Combatant's cape", "Artisan's cape"]),
+	otherCapes: resolveItems(['Quest point hood', 'Achievement diary hood', 'Max hood']),
+	otherCapes2: resolveItems(['Quest point cape', 'Achievement diary cape(t)', 'Max cape'])
 };
 
 export const quest: CollectionLogData = {
@@ -1792,7 +1847,81 @@ export const miscLog: CollectionLogData = {
 	]),
 	Tzhaar: resolveItems(['Fire cape']),
 	evilChickenOutfit,
-	other: resolveItems(['Amulet of eternal glory', 'Crystal grail'])
+	other: resolveItems(['Amulet of eternal glory', 'Crystal grail']),
+	Slayer1: resolveItems([
+		'Imbued heart',
+		'Eternal gem',
+		'Mist battlestaff',
+		'Dust battlestaff',
+		"Hydra's eye",
+		"Hydra's fang",
+		"Hydra's heart",
+		'Hydra tail',
+		"Drake's tooth",
+		"Drake's claw",
+		'Dragon harpoon',
+		'Dragon sword'
+	]),
+	Slayer2: resolveItems([
+		'Dragon thrownaxe',
+		'Dragon knife',
+		'Abyssal whip',
+		'Abyssal dagger',
+		'Abyssal head',
+		'Dragon boots',
+		'Granite maul',
+		'Uncharged trident',
+		'Kraken tentacle',
+		'Dark bow',
+		'Death talisman',
+		'Occult necklace'
+	]),
+	Slayer3: resolveItems([
+		'Basilisk jaw',
+		'Brine sabre',
+		'Leaf-bladed battleaxe',
+		'Leaf-bladed sword',
+		'Black mask'
+	]),
+	'Demonic Gorillas': resolveItems([
+		'Zenyte shard',
+		'Heavy frame',
+		'Light frame',
+		'Monkey tail',
+		'Ballista limbs',
+		'Ballista spring'
+	]),
+	'Mystic Sets': resolveItems([
+		'Mystic hat (light)',
+		'Mystic robe top (light)',
+		'Mystic robe bottom (light)',
+		'Mystic gloves (light)',
+		'Mystic boots (light)',
+		'Mystic hat (dark)',
+		'Mystic robe top (dark)',
+		'Mystic robe bottom (dark)',
+		'Mystic gloves (dark)',
+		'Mystic boots (dark)'
+	]),
+	Konar: resolveItems([
+		'Mystic hat (dusk)',
+		'Mystic robe top (dusk)',
+		'Mystic robe bottom (dusk)',
+		'Mystic gloves (dusk)',
+		'Mystic boots (dusk)',
+		'Broken dragon hasta',
+		'Brimstone key'
+	]),
+	Misc1: resolveItems([
+		'Dragon full helm',
+		'Dragon limbs',
+		'Dragon metal slice',
+		'Dragon metal lump',
+		'Draconic visage',
+		'Skeletal visage',
+		'Wyvern visage'
+	]),
+	Misc2: resolveItems(['Giant key', 'Hill giant club', 'Mossy key', "Bryophyta's essence"])
 };
 
 export const customBossLog: CollectionLogData = {
@@ -1854,6 +1983,34 @@ const gmLog: CollectionLogData = {
 	]),
 	Dyes: resolveItems(['Shadow dye', 'Blood dye', 'Third age dye', 'Ice dye']),
 	Misc: resolveItems(['Dwarven blessing', 'Ring of luck'])
+};
+
+const chompyHuntingLog: CollectionLogData = {
+	pet: resolveItems(['Chompy chick']),
+	1: resolveItems([
+		'Chompy bird hat (ogre bowman)',
+		'Chompy bird hat (bowman)',
+		'Chompy bird hat (ogre yeoman)',
+		'Chompy bird hat (yeoman)',
+		'Chompy bird hat (ogre marksman)',
+		'Chompy bird hat (marksman)'
+	]),
+	2: resolveItems([
+		'Chompy bird hat (ogre woodsman)',
+		'Chompy bird hat (woodsman)',
+		'Chompy bird hat (ogre forester)',
+		'Chompy bird hat (forester)',
+		'Chompy bird hat (ogre bowmaster)',
+		'Chompy bird hat (bowmaster)'
+	]),
+	3: resolveItems([
+		'Chompy bird hat (ogre expert)',
+		'Chompy bird hat (expert)',
+		'Chompy bird hat (ogre dragon archer)',
+		'Chompy bird hat (dragon archer)',
+		'Chompy bird hat (expert ogre dragon archer)',
+		'Chompy bird hat (expert dragon archer)'
+	])
 };
 
 export const skillingLog: CollectionLogData = {
@@ -2207,6 +2364,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Ourania Delivery Service',
 		aliases: ['ods', 'ourania delivery service'],
 		items: ODSLog
+	},
+	{
+		name: 'Big Chompy Hunting',
+		aliases: ['chompy', 'bgc', 'big chompy hunting'],
+		items: chompyHuntingLog
 	}
 ];
 export const allCollectionLogItems = uniqueArr(

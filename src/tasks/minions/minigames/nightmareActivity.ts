@@ -72,17 +72,18 @@ export default class extends Task {
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
-
-			if (roll(4000)) {
-				loot[23929] = 1;
-			}
-
 			if (duration > Time.Minute * 20 && roll(10)) {
 				loot = multiplyBank(loot, 2);
 				loot[getRandomMysteryBox()] = 1;
 			}
-
-			await addMonsterXP(user, NIGHTMARE_ID, Math.ceil(quantity / users.length), duration);
+			await addMonsterXP(
+				user,
+				NIGHTMARE_ID,
+				Math.ceil(quantity / users.length),
+				duration,
+				false,
+				null
+			);
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];

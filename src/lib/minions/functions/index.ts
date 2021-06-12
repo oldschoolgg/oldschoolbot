@@ -4,6 +4,12 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { NIGHTMARES_HP } from '../../constants';
 import { SkillsEnum } from '../../skilling/types';
+import { randomVariation } from '../../util';
+import {
+	xpCannonVaryPercent,
+	xpPercentToCannon,
+	xpPercentToCannonM
+} from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
 import KingGoldemar from '../data/killableMonsters/custom/KingGoldemar';
 import { VasaMagus } from '../data/killableMonsters/custom/VasaMagus';
@@ -76,12 +82,25 @@ export async function addMonsterXP(
 	user: KlasaUser,
 	monsterID: number,
 	quantity: number,
-	duration: number
+	duration: number,
+	isOnTask: boolean,
+	taskQuantity: number | null,
+	minimal?: boolean,
+	usingCannon?: boolean,
+	cannonMulti?: boolean
 ) {
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, monsterID);
 	const monster = killableMonsters.find(mon => mon.id === monsterID);
 	let hp = miscHpMap[monsterID] || 1;
 	let xpMultiplier = 1;
+	const cannonQty = cannonMulti
+		? randomVariation(Math.floor((xpPercentToCannonM / 100) * quantity), xpCannonVaryPercent)
+		: usingCannon
+		? randomVariation(Math.floor((xpPercentToCannon / 100) * quantity), xpCannonVaryPercent)
+		: 0;
+
+	const normalQty = quantity - cannonQty;
+
 	if (monster && monster.customMonsterHP) {
 		hp = monster.customMonsterHP;
 	} else if (osjsMon?.data?.hitpoints) {
@@ -90,22 +109,52 @@ export async function addMonsterXP(
 	if (monster && monster.combatXpMultiplier) {
 		xpMultiplier = monster.combatXpMultiplier;
 	}
-	const totalXP = hp * 4 * quantity * xpMultiplier;
+	const totalXP = hp * 4 * normalQty * xpMultiplier;
 	const xpPerSkill = totalXP / attackStyles.length;
 
 	let res: string[] = [];
 
 	for (const style of attackStyles) {
-		res.push(await user.addXP(style, Math.floor(xpPerSkill), duration));
+		res.push(await user.addXP(style, Math.floor(xpPerSkill), duration, minimal ?? true));
+	}
+
+	if (isOnTask) {
+		let newSlayerXP = 0;
+		if (osjsMon?.data?.slayerXP) {
+			newSlayerXP += taskQuantity! * osjsMon.data.slayerXP;
+		} else {
+			newSlayerXP += taskQuantity! * hp;
+		}
+		// Give slayer XP for K'ril + Kree'Arra
+		if (monsterID === Monsters.KrilTsutsaroth.id) {
+			newSlayerXP += taskQuantity! * 142;
+		}
+		if (monsterID === Monsters.Kreearra.id) {
+			newSlayerXP += taskQuantity! * (132.5 + 124 + 132.5);
+		}
+		res.push(await user.addXP(SkillsEnum.Slayer, newSlayerXP, duration, minimal ?? true));
 	}
 
 	res.push(
 		await user.addXP(
 			SkillsEnum.Hitpoints,
 			Math.floor(hp * quantity * 1.33 * xpMultiplier),
-			duration
+			duration,
+			minimal ?? true
 		)
 	);
 
-	return res;
+	// Add cannon xp last so it's easy to distinguish
+	if (usingCannon) {
+		res.push(
+			await user.addXP(
+				SkillsEnum.Ranged,
+				Math.floor(hp * 2 * cannonQty),
+				duration,
+				minimal ?? true
+			)
+		);
+	}
+
+	return `**XP Gains:** ${res.join(' ')}`;
 }

@@ -102,7 +102,7 @@ export default class extends Extendable {
 		this: User,
 		inputItems: ItemBank | Bank,
 		collectionLog = false
-	): Promise<{ previousCL: ItemBank }> {
+	): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }> {
 		const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
 		await this.settings.sync(true);
 
@@ -135,7 +135,8 @@ export default class extends Extendable {
 		);
 
 		return {
-			previousCL
+			previousCL,
+			itemsAdded: _items
 		};
 	}
 

@@ -65,6 +65,9 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
+		healAmountNeeded: 20 * 20,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
 		defaultAttackStyles: [SkillsEnum.Ranged]
 	},
 	{
@@ -133,7 +136,8 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			"Verac's flail",
 			"Verac's plateskirt",
-			["Black d'hide body", "Karil's leathertop"]
+			["Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
+			["Black d'hide chaps", "karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: [
@@ -156,7 +160,7 @@ const killableBosses: KillableMonster[] = [
 		},
 		defaultAttackStyles: [SkillsEnum.Strength],
 		customMonsterHP: 510,
-		combatXpMultiplier: 1.0875
+		combatXpMultiplier: 1.05
 	},
 	{
 		id: Monsters.CorporealBeast.id,
@@ -223,15 +227,27 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Spectral spirit shield')]: 10 },
-			{ [itemID('Bandos chestplate')]: 5 },
-			{ [itemID('Bandos tassets')]: 5 }
+			{
+				[itemID('Bandos chestplate')]: 5,
+				[itemID("Inquisitor's hauberk")]: 8
+			},
+			{
+				[itemID('Bandos tassets')]: 5,
+				[itemID("Inquisitor's plateskirt")]: 8
+			},
+			{
+				[itemID('Arclight')]: 15,
+				[itemID("Inquisitor's mace")]: 8
+			}
 		],
 		levelRequirements: {
 			prayer: 43,
 			slayer: 91
 		},
+		slayerOnly: true,
 		defaultAttackStyles: [SkillsEnum.Strength],
-		combatXpMultiplier: 1.15
+		combatXpMultiplier: 1.15,
+		healAmountNeeded: 20 * 15
 	}
 ];
 

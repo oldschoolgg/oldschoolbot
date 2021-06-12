@@ -21,7 +21,6 @@ import {
 } from './constants';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
-import { SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import itemID from './util/itemID';
@@ -395,13 +394,30 @@ export function channelIsSendable(channel: Channel | undefined): channel is Text
 
 	return true;
 }
+export function calcCombatLevel(skills: Skills) {
+	const defence = skills.defence ? convertXPtoLVL(skills.defence) : 1;
+	const ranged = skills.ranged ? convertXPtoLVL(skills.ranged) : 1;
+	const hitpoints = skills.hitpoints ? convertXPtoLVL(skills.hitpoints) : 1;
+	const magic = skills.magic ? convertXPtoLVL(skills.magic) : 1;
+	const prayer = skills.prayer ? convertXPtoLVL(skills.prayer) : 1;
+	const attack = skills.attack ? convertXPtoLVL(skills.attack) : 1;
+	const strength = skills.strength ? convertXPtoLVL(skills.strength) : 1;
 
+	const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
+	const melee = 0.325 * (attack + strength);
+	const range = 0.325 * (Math.floor(ranged / 2) + ranged);
+	const mage = 0.325 * (Math.floor(magic / 2) + magic);
+	return Math.floor(base + Math.max(melee, range, mage));
+}
 export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 	for (const [skillName, level] of objectEntries(requirements)) {
-		if (skillName === SkillsEnum.Slayer) continue;
-		const xpHas = skills[skillName];
-		const levelHas = convertXPtoLVL(xpHas ?? 1, 120);
-		if (levelHas < level!) return false;
+		if ((skillName as string) === 'combat') {
+			if (calcCombatLevel(skills) < level!) return false;
+		} else {
+			const xpHas = skills[skillName];
+			const levelHas = convertXPtoLVL(xpHas ?? 1, 120);
+			if (levelHas < level!) return false;
+		}
 	}
 	return true;
 }
@@ -418,12 +434,12 @@ export function formatItemReqs(items: ArrayItemsResolved) {
 	return str.join(', ');
 }
 
-export function formatSkillRequirements(reqs: Record<string, number>) {
+export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {
 	let arr = [];
 	for (const [name, num] of objectEntries(reqs)) {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		arr.push(` ${skillEmoji[name]} **${num}** ${toTitleCase(name)}`);
+		arr.push(`${emojis ? ` ${skillEmoji[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
 	}
 	return arr.join(', ');
 }
@@ -515,4 +531,13 @@ export function updateGPTrackSetting(client: KlasaClient, setting: string, amoun
 	const current = client.settings.get(setting) as number;
 	const newValue = current + amount;
 	return client.settings.update(setting, newValue);
+}
+
+export function textEffect(str: string, effect: 'none' | 'strikethrough') {
+	let wrap = '';
+
+	if (effect === 'strikethrough') {
+		wrap = '~~';
+	}
+	return `${wrap}${str.replace(/~/g, '')}${wrap}`;
 }

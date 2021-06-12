@@ -33,10 +33,10 @@ export default class MinionCommand extends BotCommand {
 		const monster = findMonster(name);
 
 		if (!monster) {
-			return msg.send(
-				`Thats not a valid monster to kill. Valid monsters are ${killableMonsters
-					.map(mon => mon.name)
-					.join(', ')}.`
+			return msg.channel.sendFile(
+				Buffer.from(killableMonsters.map(mon => mon.name).join(`\n`)),
+				'killableMonsters.txt',
+				"That's not a valid monster to kill. See attached file for list of killable monsters."
 			);
 		}
 

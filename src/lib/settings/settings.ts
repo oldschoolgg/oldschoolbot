@@ -71,13 +71,19 @@ export async function incrementMinigameScore(
 	minigame: MinigameKey,
 	amountToAdd = 1
 ) {
+	const entity = await getMinigameEntity(userID);
 	const game = Minigames.find(m => m.key === minigame)!;
-	await getConnection()
-		.createQueryBuilder()
-		.update(MinigameTable)
-		.set({ [minigame]: () => `${game.column} + ${amountToAdd}` })
-		.where('userID = :userID', { userID })
-		.execute();
+
+	let previousScore = entity[game.key];
+
+	entity[game.key] += amountToAdd;
+	await entity.save();
+
+	return {
+		entity,
+		newScore: entity[game.key],
+		previousScore
+	};
 }
 
 export async function getMinionName(userID: string): Promise<string> {

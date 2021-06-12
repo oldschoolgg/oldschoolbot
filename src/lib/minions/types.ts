@@ -1,11 +1,12 @@
 import { Image } from 'canvas';
-import { Bank } from 'oldschooljs';
+import { Bank, MonsterKillOptions } from 'oldschooljs';
 import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
 import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
 import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
+import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
@@ -54,14 +55,15 @@ export interface KillableMonster {
 	aliases: string[];
 	timeToFinish: number;
 	table: {
-		kill(quantity: number): Bank;
+		kill(quantity: number, options: MonsterKillOptions): Bank;
 	};
-	emoji: string;
+	emoji?: string;
 	wildy: boolean;
 	canBeKilled: boolean;
 	difficultyRating: number;
 	itemsRequired?: ArrayItemsResolved;
 	notifyDrops?: ArrayItemsResolved;
+	existsInCatacombs?: boolean;
 	qpRequired: number;
 
 	/**
@@ -73,7 +75,7 @@ export interface KillableMonster {
 	/**
 	 * Whether or not this monster can be groupkilled.
 	 */
-	groupKillable?: true;
+	groupKillable?: boolean;
 	respawnTime?: number;
 	levelRequirements?: LevelRequirements;
 	uniques?: ArrayItemsResolved;
@@ -96,4 +98,19 @@ export interface KillableMonster {
 	customMonsterHP?: number;
 	combatXpMultiplier?: number;
 	itemCost?: Bank;
+	superior?: SimpleMonster;
+	slayerOnly?: boolean;
+	canBarrage?: boolean;
+	canCannon?: boolean;
+	cannonMulti?: boolean;
+}
+/*
+ * Monsters will have an array of Consumables
+ * Math.ceil(duration / Time.Minute * qtyPerMinute)
+ * Or quantity * qtyPerKill.
+ */
+export interface Consumable {
+	itemCost: Bank;
+	qtyPerMinute?: number;
+	qtyPerKill?: number;
 }

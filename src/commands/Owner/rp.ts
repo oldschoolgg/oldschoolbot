@@ -27,6 +27,7 @@ export default class extends BotCommand {
 		[cmd, input, str]: [string, KlasaUser | undefined, string | undefined]
 	) {
 		if (msg.guild!.id !== '342983479501389826') return null;
+
 		const isMod = msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator);
 		const isOwner = this.client.owners.has(msg.author);
 		if (!isMod && !isOwner) return null;
