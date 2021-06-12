@@ -367,7 +367,7 @@ export const DesertDiary: Diary = {
 			'Pollnivneach Rooftop Course': 1
 		},
 		monsterScores: {
-			'Dust devil': 1
+			'Dust Devil': 1
 		},
 		collectionLogReqs: resolveItems(['Mithril platebody'])
 	},
@@ -588,7 +588,7 @@ export const KandarinDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Bass', 'Maple shortbow', 'Limpwurt root', 'Coal']),
 		monsterScores: {
-			'Fire giant': 1
+			'Fire Giant': 1
 		},
 		minigameReqs: {
 			BarbarianAssault: 1
@@ -617,7 +617,7 @@ export const KandarinDiary: Diary = {
 			"Seers' Village Rooftop Course": 1
 		},
 		monsterScores: {
-			'Mithril dragon': 1
+			'Mithril Dragon': 1
 		}
 	},
 	elite: {
@@ -894,7 +894,7 @@ export const MorytaniaDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Swamp lizard', 'Cannonball']),
 		lapsReqs: {
-			'Canifis Rooftop Agility Course': 1
+			'Canifis Rooftop Course': 1
 		}
 	},
 	hard: {
@@ -916,7 +916,7 @@ export const MorytaniaDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Watermelon', 'Mahogany logs', 'Mithril ore', 'Mushroom']),
 		monsterScores: {
-			'Cave horror': 1
+			'Cave Horror': 1
 		}
 	},
 	elite: {
@@ -1025,7 +1025,7 @@ export const WildernessDiary: Diary = {
 		collectionLogReqs: resolveItems(["Red spiders' eggs", 'Iron ore']),
 		monsterScores: {
 			Mammoth: 1,
-			'Earth warrior': 1
+			'Earth Warrior': 1
 		}
 	},
 	medium: {
@@ -1045,9 +1045,6 @@ export const WildernessDiary: Diary = {
 			'Green dragon': 1,
 			Ankou: 1,
 			Bloodveld: 1
-		},
-		lapsReqs: {
-			'Wilderness Agility Course': 1
 		}
 	},
 	hard: {
@@ -1064,10 +1061,10 @@ export const WildernessDiary: Diary = {
 		collectionLogReqs: resolveItems(['Black salamander', 'Adamant scimitar']),
 		monsterScores: {
 			'Chaos Elemental': 1,
-			'Crazy archeologist': 1,
+			'Crazy Archaeologist': 1,
 			'Chaos Fanatic': 1,
 			Scorpia: 1,
-			'Spiritual warrior': 1
+			'Spiritual Warrior': 1
 		}
 	},
 	elite: {

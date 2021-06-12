@@ -119,10 +119,11 @@ export default class extends BotCommand {
 					diaries.map(d => d[tier])
 				);
 				const loot = new Bank();
-				loot.add(lampRewards[diaryTier.name]);
 				if (cl.amount(lampRewards[diaryTier.name]) < hasCompleted) {
-					loot.add(diaryTier.item.id);
+					loot.add(lampRewards[diaryTier.name]);
 				}
+				loot.add(diaryTier.item.id);
+
 				await msg.author.addItemsToBank(loot, true);
 
 				return msg.channel.send(
