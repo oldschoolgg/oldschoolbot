@@ -66,12 +66,6 @@ export default class extends BotCommand {
 				`${outstr}\n\nTry: \`${msg.cmdPrefix}st --block\` to block a task.`
 			);
 		}
-
-		if (msg.author.minionIsBusy) {
-			return msg.channel.send(
-				`Can only use ${msg.cmdPrefix}slayertask list when minion is busy.`
-			);
-		}
 		const inputArray = input ? input.split(' ') : undefined;
 		const inputUnblock = inputArray?.slice(0, 1)[0] === 'unblock';
 		if (msg.flagArgs.unblock || inputUnblock) {
@@ -117,6 +111,13 @@ export default class extends BotCommand {
 			}
 			await msg.author.settings.update(UserSettings.Slayer.BlockedTasks, idToRemove);
 			return msg.channel.send(`${osjsMonster.name} have been unblocked`);
+		}
+
+		// Prevent any actions that affect the layer task list when minion is busy.
+		if (msg.author.minionIsBusy) {
+			return msg.channel.send(
+				`You can only manage your block list while your minion is busy.`
+			);
 		}
 		if (input && (input === 'skip' || input === 'block')) msg.flagArgs[input] = 'yes';
 		if (currentTask && (msg.flagArgs.skip || msg.flagArgs.block)) {
