@@ -64,6 +64,10 @@ export default class extends BotCommand {
 				`${outstr}\n\nTry: \`${msg.cmdPrefix}st --block\` to block a task.`
 			);
 		}
+
+		if (msg.author.minionIsBusy) {
+			return msg.channel.send(`Can only use ${msg.cmdPrefix}slayertask list when minion is busy.`);
+		}
 		const inputArray = input ? input.split(' ') : undefined;
 		const inputUnblock = inputArray?.slice(0, 1)[0] === 'unblock';
 		if (msg.flagArgs.unblock || inputUnblock) {
@@ -294,7 +298,7 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 				UserSettings.Slayer.RememberSlayerMaster,
 				slayerMaster.name
 			);
-			updateMsg = `\n\n**Saved ${slayerMaster!.name} as default**`;
+			updateMsg = `\n\n**Saved ${slayerMaster!.name} as default slayer master.**`;
 		}
 
 		const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
