@@ -1584,7 +1584,7 @@ export const capes: CollectionLogData = {
 		'Defence hood',
 		'Hitpoints hood',
 		'Ranging hood',
-		'Quest point hood'
+		'Slayer hood'
 	]),
 	'trimmed capes2': resolveItems([
 		'Farming cape(t)',
@@ -1597,8 +1597,10 @@ export const capes: CollectionLogData = {
 		'Defence cape(t)',
 		'Hitpoints cape(t)',
 		'Ranging cape(t)',
-		'Quest point cape'
-	])
+		'Slayer cape(t)'
+	]),
+	otherCapes: resolveItems(['Quest point hood', 'Achievement diary hood', 'Max hood']),
+	otherCapes2: resolveItems(['Quest point cape', 'Achievement diary cape(t)', 'Max cape'])
 };
 
 export const quest: CollectionLogData = {
@@ -1801,6 +1803,34 @@ export const sepulchreLog: CollectionLogData = {
 		'Dark graceful cape'
 	]),
 	Pets: resolveItems(['Giant squirrel', 'Dark squirrel'])
+};
+
+const chompyHuntingLog: CollectionLogData = {
+	pet: resolveItems(['Chompy chick']),
+	1: resolveItems([
+		'Chompy bird hat (ogre bowman)',
+		'Chompy bird hat (bowman)',
+		'Chompy bird hat (ogre yeoman)',
+		'Chompy bird hat (yeoman)',
+		'Chompy bird hat (ogre marksman)',
+		'Chompy bird hat (marksman)'
+	]),
+	2: resolveItems([
+		'Chompy bird hat (ogre woodsman)',
+		'Chompy bird hat (woodsman)',
+		'Chompy bird hat (ogre forester)',
+		'Chompy bird hat (forester)',
+		'Chompy bird hat (ogre bowmaster)',
+		'Chompy bird hat (bowmaster)'
+	]),
+	3: resolveItems([
+		'Chompy bird hat (ogre expert)',
+		'Chompy bird hat (expert)',
+		'Chompy bird hat (ogre dragon archer)',
+		'Chompy bird hat (dragon archer)',
+		'Chompy bird hat (expert ogre dragon archer)',
+		'Chompy bird hat (expert dragon archer)'
+	])
 };
 
 export const skillingLog: CollectionLogData = {
@@ -2118,6 +2148,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Random Events',
 		aliases: ['random events'],
 		items: randomEventsLog
+	},
+	{
+		name: 'Big Chompy Hunting',
+		aliases: ['chompy', 'bgc', 'big chompy hunting'],
+		items: chompyHuntingLog
 	}
 ];
 export const allCollectionLogItems = uniqueArr(

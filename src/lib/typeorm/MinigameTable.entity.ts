@@ -62,4 +62,7 @@ export class MinigameTable extends BaseEntity {
 
 	@Column({ name: 'magic_training_arena', type: 'int', nullable: false, default: 0 })
 	public MagicTrainingArena!: number;
+
+	@Column({ name: 'big_chompy_bird_hunting', type: 'int', nullable: false, default: 0 })
+	public BigChompyBirdHunting!: number;
 }
