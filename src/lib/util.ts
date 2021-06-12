@@ -443,12 +443,12 @@ export function formatItemReqs(items: ArrayItemsResolved) {
 	return str.join(', ');
 }
 
-export function formatSkillRequirements(reqs: Record<string, number>) {
+export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {
 	let arr = [];
 	for (const [name, num] of objectEntries(reqs)) {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		arr.push(` ${skillEmoji[name]} **${num}** ${toTitleCase(name)}`);
+		arr.push(`${emojis ? ` ${skillEmoji[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
 	}
 	return arr.join(', ');
 }
@@ -520,4 +520,13 @@ export function updateGPTrackSetting(client: KlasaClient, setting: string, amoun
 	const current = client.settings.get(setting) as number;
 	const newValue = current + amount;
 	return client.settings.update(setting, newValue);
+}
+
+export function textEffect(str: string, effect: 'none' | 'strikethrough') {
+	let wrap = '';
+
+	if (effect === 'strikethrough') {
+		wrap = '~~';
+	}
+	return `${wrap}${str.replace(/~/g, '')}${wrap}`;
 }

@@ -8,6 +8,7 @@ import {
 	formatSkillRequirements,
 	itemNameFromID,
 	stringMatches,
+	textEffect,
 	toTitleCase
 } from '../../lib/util';
 
@@ -46,41 +47,55 @@ export default class extends BotCommand {
 		const diary = diaries.find(d => stringMatches(d.name, input));
 
 		if (!diary) {
-			return msg.channel.send(diaries.map(d => d.name));
+			let str = `Your Achievement Diaries\n\n`;
+			for (const dir of diaries) {
+				const res = await Promise.all(
+					[dir.easy, dir.medium, dir.hard, dir.elite].map(async tier => {
+						return {
+							name: tier.name,
+							has: (await userhasDiaryTier(msg.author, tier))[0]
+						};
+					})
+				);
+				str += `**${dir.name}:** ${res
+					.map(t => textEffect(t.name, t.has ? 'strikethrough' : 'none'))
+					.join(' - ')}\n`;
+			}
+			return msg.channel.send(str);
 		}
 
-		let str = `Requirements for ${diary.name} Diary\n\n`;
+		let str = `**Requirements for ${diary.name} Diary**\n`;
 
 		for (const tier of [diary.easy, diary.medium, diary.hard, diary.elite]) {
-			let thisStr = `${tier.name}\n`;
-			thisStr += formatSkillRequirements(tier.skillReqs);
+			let thisStr = `**${tier.name}**\n`;
+			thisStr += `- Skill Reqs: ${formatSkillRequirements(tier.skillReqs, false)}\n`;
 
 			if (tier.ownedItems) {
-				thisStr += `Must Own: ${tier.ownedItems.map(itemNameFromID).join(', ')}\n`;
+				thisStr += `- Must Own: ${tier.ownedItems.map(itemNameFromID).join(', ')}\n`;
 			}
 
 			if (tier.collectionLogReqs) {
-				thisStr += `Must Have in CL: ${tier.collectionLogReqs
+				thisStr += `- Must Have in CL: ${tier.collectionLogReqs
 					.map(itemNameFromID)
 					.join(', ')}\n`;
 			}
 
 			if (tier.qp) {
-				thisStr += `Must Have ${tier.qp} QP\n`;
+				thisStr += `- ${tier.qp} QP\n`;
 			}
 
 			if (tier.minigameReqs) {
 				const entries = Object.entries(tier.minigameReqs);
 				for (const [key, neededScore] of entries) {
 					const minigame = Minigames.find(m => m.key === key)!;
-					thisStr += `Must Have ${neededScore} KC in ${minigame.name}`;
+					thisStr += `- Must Have ${neededScore} KC in ${minigame.name}`;
 				}
 			}
 
 			if (tier.lapsReqs) {
 				const entries = Object.entries(tier.lapsReqs);
 				for (const [name, score] of entries) {
-					thisStr += `Must Have ${score} Laps of ${name}`;
+					thisStr += `- Must Have ${score} Laps of ${name}`;
 				}
 			}
 
@@ -88,13 +103,13 @@ export default class extends BotCommand {
 				const entries = Object.entries(tier.monsterScores);
 				for (const [name, score] of entries) {
 					const mon = Monsters.find(mon => mon.name === name)!;
-					thisStr += `Must Have ${score} KC of ${mon.name}`;
+					thisStr += `- Must Have ${score} KC of ${mon.name}`;
 				}
 			}
 
-			str += thisStr;
+			str += `${thisStr}\n`;
 		}
-		return msg.channel.sendFile(Buffer.from(str), `${diary.name}_requirements.txt`);
+		return msg.channel.send(str, { split: true });
 	}
 
 	async claim(msg: KlasaMessage, [input = '']: [string | undefined]) {
