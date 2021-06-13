@@ -1934,7 +1934,8 @@ export const customBossLog: CollectionLogData = {
 	Malygos: resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori']),
 	KK: allKalphiteKingItems,
 	nex1: [...torvaOutfit, ...pernixOutfit],
-	nex2: [...virtusOutfit, ...ancientWeapons]
+	nex2: [...virtusOutfit, ...ancientWeapons],
+	vasa: resolveItems(['Tattered robes of Vasa', 'Jar of magic', 'Voidling', 'Magus scroll'])
 };
 export const sepulchreLog: CollectionLogData = {
 	Misc: resolveItems([

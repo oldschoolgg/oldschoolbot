@@ -4,7 +4,6 @@ import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
-// import { calcDwwhChance } from '../../tasks/minions/minigames/kingGoldemarActivity';
 import { Activity } from '../constants';
 import { GearSetupTypes, GearStats } from '../gear';
 import { Skills } from '../types';
