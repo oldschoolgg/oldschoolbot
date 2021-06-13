@@ -1599,8 +1599,22 @@ export const capes: CollectionLogData = {
 		'Ranging cape(t)',
 		'Slayer cape(t)'
 	]),
-	otherCapes: resolveItems(['Quest point hood', 'Achievement diary hood', 'Max hood']),
-	otherCapes2: resolveItems(['Quest point cape', 'Achievement diary cape(t)', 'Max cape'])
+	otherCapes: resolveItems(['Quest point hood', 'Achievement diary hood']),
+	otherCapes2: resolveItems(['Quest point cape', 'Achievement diary cape(t)']),
+	maxHoods: resolveItems([
+		'Max hood',
+		'Ardougne max hood',
+		'Ardougne max hood',
+		'Ardougne max hood',
+		'Ardougne max hood'
+	]),
+	maxCapes: resolveItems([
+		'Max cape',
+		'Ardougne max cape',
+		'Ardougne max cape',
+		'Ardougne max cape',
+		'Ardougne max cape'
+	])
 };
 
 export const quest: CollectionLogData = {
