@@ -1,6 +1,8 @@
 import PQueue from 'p-queue';
 import { join } from 'path';
 
+import Skills from './skilling/skills';
+
 export const enum Time {
 	Millisecond = 1,
 	Second = 1000,
@@ -439,3 +441,6 @@ export const skillEmoji = {
 	clock: '<:ehpclock:352323705210142721>',
 	combat: '<:combat:802136963956080650>'
 };
+
+export const LEVEL_99_XP = 13_034_431;
+export const MAX_TOTAL_LEVEL = Object.values(Skills).length * 99;

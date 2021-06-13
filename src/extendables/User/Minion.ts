@@ -10,12 +10,15 @@ import {
 	Activity,
 	Emoji,
 	Events,
+	LEVEL_99_XP,
 	MAX_QP,
+	MAX_TOTAL_LEVEL,
 	PerkTier,
 	skillEmoji,
 	Time,
 	ZALCANO_ID
 } from '../../lib/constants';
+import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
@@ -698,6 +701,7 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentXP = this.settings.get(`skills.${params.skillName}`) as number;
 		const currentLevel = this.skillLevel(params.skillName);
+		const currentTotalLevel = this.totalLevel();
 
 		const name = toTitleCase(params.skillName);
 
@@ -743,7 +747,7 @@ export default class extends Extendable {
 				{
 					count: string;
 				}[]
-			>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" > 13034430;`);
+			>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${LEVEL_99_XP};`);
 
 			let str = `${skill.emoji} **${this.username}'s** minion, ${
 				this.minionName
@@ -757,7 +761,7 @@ export default class extends Extendable {
 						count: string;
 					}[]
 				>(
-					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" > 13034430;`
+					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${LEVEL_99_XP};`
 				);
 				str += ` They are the ${formatOrdinal(
 					parseInt(ironmenWith.count) + 1
@@ -778,7 +782,11 @@ export default class extends Extendable {
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 			str += ` (${toKMB(rawXPHr)}/Hr)`;
 		}
-		if (currentLevel !== newLevel) {
+
+		if (currentTotalLevel < MAX_TOTAL_LEVEL && this.totalLevel() >= MAX_TOTAL_LEVEL) {
+			str += `\n\n**Congratulations, your minion has reached the maximum total level!**\n\n`;
+			onMax(this);
+		} else if (currentLevel !== newLevel) {
 			str += params.minimal
 				? `(Levelled up to ${newLevel})`
 				: `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
