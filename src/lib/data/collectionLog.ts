@@ -1604,16 +1604,20 @@ export const capes: CollectionLogData = {
 	maxHoods: resolveItems([
 		'Max hood',
 		'Ardougne max hood',
-		'Ardougne max hood',
-		'Ardougne max hood',
-		'Ardougne max hood'
+		'Infernal max hood',
+		'Assembler max hood',
+		'Imbued guthix max hood',
+		'Imbued saradomin max hood',
+		'Imbued zamorak max hood'
 	]),
 	maxCapes: resolveItems([
 		'Max cape',
 		'Ardougne max cape',
-		'Ardougne max cape',
-		'Ardougne max cape',
-		'Ardougne max cape'
+		'Infernal max cape',
+		'Assembler max cape',
+		'Imbued guthix max cape',
+		'Imbued saradomin max cape',
+		'Imbued zamorak max cape'
 	])
 };
 
