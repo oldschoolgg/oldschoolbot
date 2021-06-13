@@ -41,8 +41,10 @@ export default class extends Task {
 		let str = `${user}, ${
 			user.minionName
 		} finished completing the Fishing Trawler ${quantity}x times. You received ${await user.addXP(
-			SkillsEnum.Fishing,
-			totalXP
+			{
+				skillName: SkillsEnum.Fishing,
+				amount: totalXP
+			}
 		)}`;
 
 		if (xpBonusPercent > 0) {
@@ -53,6 +55,13 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot.bank, true);
 
+		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
+		await user.addXP({ skillName: SkillsEnum.Fishing, amount: totalXP });
+		const newLevel = user.skillLevel(SkillsEnum.Fishing);
+
+		if (currentLevel !== newLevel) {
+			str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
+		}
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(

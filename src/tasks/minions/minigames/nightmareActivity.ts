@@ -71,14 +71,13 @@ export default class extends Task {
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
-			await addMonsterXP(
-				user,
-				NIGHTMARE_ID,
-				Math.ceil(quantity / users.length),
+			await addMonsterXP(user, {
+				monsterID: NIGHTMARE_ID,
+				quantity: Math.ceil(quantity / users.length),
 				duration,
-				false,
-				null
-			);
+				isOnTask: false,
+				taskQuantity: null
+			});
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];

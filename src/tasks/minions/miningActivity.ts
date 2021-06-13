@@ -42,7 +42,11 @@ export default class extends Task {
 			}
 		}
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);
-		const xpRes = await user.addXP(SkillsEnum.Mining, xpReceived, duration);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Mining,
+			amount: xpReceived,
+			duration
+		});
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${xpRes}`;
 

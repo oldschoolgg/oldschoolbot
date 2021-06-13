@@ -11,7 +11,7 @@ import {
 	xpPercentToCannonM
 } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
-import { KillableMonster } from '../types';
+import { AddMonsterXpParams, KillableMonster } from '../types';
 
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
 export { default as calculateMonsterFood } from './calculateMonsterFood';
@@ -57,28 +57,24 @@ export function resolveAttackStyles(
 	return [killableMon, osjsMon, attackStyles];
 }
 
-export async function addMonsterXP(
-	user: KlasaUser,
-	monsterID: number,
-	quantity: number,
-	duration: number,
-	isOnTask: boolean,
-	taskQuantity: number | null,
-	minimal?: boolean,
-	usingCannon?: boolean,
-	cannonMulti?: boolean
-) {
-	const [, osjsMon, attackStyles] = resolveAttackStyles(user, monsterID);
-	const monster = killableMonsters.find(mon => mon.id === monsterID);
-	let hp = miscHpMap[monsterID] ?? 1;
+export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) {
+	const [, osjsMon, attackStyles] = resolveAttackStyles(user, params.monsterID);
+	const monster = killableMonsters.find(mon => mon.id === params.monsterID);
+	let hp = miscHpMap[params.monsterID] ?? 1;
 	let xpMultiplier = 1;
-	const cannonQty = cannonMulti
-		? randomVariation(Math.floor((xpPercentToCannonM / 100) * quantity), xpCannonVaryPercent)
-		: usingCannon
-		? randomVariation(Math.floor((xpPercentToCannon / 100) * quantity), xpCannonVaryPercent)
+	const cannonQty = params.cannonMulti
+		? randomVariation(
+				Math.floor((xpPercentToCannonM / 100) * params.quantity),
+				xpCannonVaryPercent
+		  )
+		: params.usingCannon
+		? randomVariation(
+				Math.floor((xpPercentToCannon / 100) * params.quantity),
+				xpCannonVaryPercent
+		  )
 		: 0;
 
-	const normalQty = quantity - cannonQty;
+	const normalQty = params.quantity - cannonQty;
 
 	if (monster && monster.customMonsterHP) {
 		hp = monster.customMonsterHP;
@@ -94,44 +90,58 @@ export async function addMonsterXP(
 	let res: string[] = [];
 
 	for (const style of attackStyles) {
-		res.push(await user.addXP(style, Math.floor(xpPerSkill), duration, minimal ?? true));
+		res.push(
+			await user.addXP({
+				skillName: style,
+				amount: Math.floor(xpPerSkill),
+				duration: params.duration,
+				minimal: params.minimal ?? true
+			})
+		);
 	}
 
-	if (isOnTask) {
+	if (params.isOnTask) {
 		let newSlayerXP = 0;
 		if (osjsMon?.data?.slayerXP) {
-			newSlayerXP += taskQuantity! * osjsMon.data.slayerXP;
+			newSlayerXP += params.taskQuantity! * osjsMon.data.slayerXP;
 		} else {
-			newSlayerXP += taskQuantity! * hp;
+			newSlayerXP += params.taskQuantity! * hp;
 		}
 		// Give slayer XP for K'ril + Kree'Arra
-		if (monsterID === Monsters.KrilTsutsaroth.id) {
-			newSlayerXP += taskQuantity! * 142;
+		if (params.monsterID === Monsters.KrilTsutsaroth.id) {
+			newSlayerXP += params.taskQuantity! * 142;
 		}
-		if (monsterID === Monsters.Kreearra.id) {
-			newSlayerXP += taskQuantity! * (132.5 + 124 + 132.5);
+		if (params.monsterID === Monsters.Kreearra.id) {
+			newSlayerXP += params.taskQuantity! * (132.5 + 124 + 132.5);
 		}
-		res.push(await user.addXP(SkillsEnum.Slayer, newSlayerXP, duration, minimal ?? true));
+		res.push(
+			await user.addXP({
+				skillName: SkillsEnum.Slayer,
+				amount: newSlayerXP,
+				duration: params.duration,
+				minimal: params.minimal ?? true
+			})
+		);
 	}
 
 	res.push(
-		await user.addXP(
-			SkillsEnum.Hitpoints,
-			Math.floor(hp * quantity * 1.33 * xpMultiplier),
-			duration,
-			minimal ?? true
-		)
+		await user.addXP({
+			skillName: SkillsEnum.Hitpoints,
+			amount: Math.floor(hp * params.quantity * 1.33 * xpMultiplier),
+			duration: params.duration,
+			minimal: params.minimal ?? true
+		})
 	);
 
 	// Add cannon xp last so it's easy to distinguish
-	if (usingCannon) {
+	if (params.usingCannon) {
 		res.push(
-			await user.addXP(
-				SkillsEnum.Ranged,
-				Math.floor(hp * 2 * cannonQty),
-				duration,
-				minimal ?? true
-			)
+			await user.addXP({
+				skillName: SkillsEnum.Ranged,
+				amount: Math.floor(hp * 2 * cannonQty),
+				duration: params.duration,
+				minimal: params.minimal ?? true
+			})
 		);
 	}
 

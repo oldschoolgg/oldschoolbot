@@ -81,7 +81,11 @@ export default class extends Task {
 
 		const user = await this.client.users.fetch(userID);
 		await user.addItemsToBank(loot.bank, true);
-		const xpRes = await user.addXP(SkillsEnum.Cooking, totalXP, duration);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Cooking,
+			amount: totalXP,
+			duration
+		});
 
 		let str = `<@${userID}>, ${minionName} finished completing ${quantity}x Gnome Restaurant deliveries. You received **${loot}**. ${xpRes}`;
 
