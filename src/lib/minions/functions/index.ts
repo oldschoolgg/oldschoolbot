@@ -85,7 +85,6 @@ export async function addMonsterXP(
 	duration: number,
 	isOnTask: boolean,
 	taskQuantity: number | null,
-	minimal?: boolean,
 	usingCannon?: boolean,
 	cannonMulti?: boolean
 ) {
@@ -115,7 +114,7 @@ export async function addMonsterXP(
 	let res: string[] = [];
 
 	for (const style of attackStyles) {
-		res.push(await user.addXP(style, Math.floor(xpPerSkill), duration, minimal ?? true));
+		res.push(await user.addXP(style, Math.floor(xpPerSkill), duration));
 	}
 
 	if (isOnTask) {
@@ -132,28 +131,20 @@ export async function addMonsterXP(
 		if (monsterID === Monsters.Kreearra.id) {
 			newSlayerXP += taskQuantity! * (132.5 + 124 + 132.5);
 		}
-		res.push(await user.addXP(SkillsEnum.Slayer, newSlayerXP, duration, minimal ?? true));
+		res.push(await user.addXP(SkillsEnum.Slayer, newSlayerXP, duration));
 	}
 
 	res.push(
 		await user.addXP(
 			SkillsEnum.Hitpoints,
 			Math.floor(hp * quantity * 1.33 * xpMultiplier),
-			duration,
-			minimal ?? true
+			duration
 		)
 	);
 
 	// Add cannon xp last so it's easy to distinguish
 	if (usingCannon) {
-		res.push(
-			await user.addXP(
-				SkillsEnum.Ranged,
-				Math.floor(hp * 2 * cannonQty),
-				duration,
-				minimal ?? true
-			)
-		);
+		res.push(await user.addXP(SkillsEnum.Ranged, Math.floor(hp * 2 * cannonQty), duration));
 	}
 
 	return `**XP Gains:** ${res.join(' ')}`;
