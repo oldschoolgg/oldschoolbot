@@ -20,8 +20,9 @@ import {
 	getUsersCurrentSlayerInfo
 } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { channelIsSendable, itemID, rand, roll } from '../../lib/util';
+import { itemID, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { sendToChannelID } from '../../lib/util/webhook';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
@@ -38,10 +39,10 @@ export default class extends Task {
 		const monster = effectiveMonsters.find(mon => mon.id === monsterID)! as KillableMonster;
 		const fullMonster = Monsters.get(monsterID);
 		const user = await this.client.users.fetch(userID);
-		const channel = this.client.channels.cache.get(channelID);
-		if (!channelIsSendable(channel)) return;
 		if (monster.name === 'Koschei the deathless' && !roll(5000)) {
-			return channel.send(`${user.minionName} failed to defeat Koschei the deathless.`);
+			sendToChannelID(this.client, channelID, {
+				content: `${user}, ${user.minionName} failed to defeat Koschei the deathless.`
+			});
 		}
 
 		await user.incrementMonsterScore(monsterID, quantity);
@@ -83,7 +84,6 @@ export default class extends Task {
 		);
 		const newSuperiorCount = loot.bank[420];
 
-		announceLoot(this.client, user, monster, loot.bank);
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
 			user.settings.update(
@@ -103,7 +103,6 @@ export default class extends Task {
 			duration,
 			isOnTask,
 			quantitySlayed,
-			false,
 			usingCannon,
 			cannonMulti
 		);
@@ -192,92 +191,89 @@ export default class extends Task {
 		) {
 			loot.add('Clue hunter cloak');
 			loot.add('Clue hunter boots');
-
-			if (user.settings.get(UserSettings.Bank)[itemID('Gorajan bonecrusher')]) {
-				let totalXP = 0;
-				for (const bone of bones) {
-					const amount = loot.amount(bone.inputId);
-					if (amount > 0) {
-						totalXP += bone.xp * amount * 4;
-						loot.remove(bone.inputId, amount);
-					}
-				}
-				str += await user.addXP(SkillsEnum.Prayer, totalXP, duration);
-			}
-
-			if (isOnTask) {
-				const effectiveSlayed =
-					monsterID === Monsters.KrilTsutsaroth.id &&
-					usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
-						? quantitySlayed! * 2
-						: monsterID === Monsters.Kreearra.id &&
-						  usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
-						? quantitySlayed! * 4
-						: monsterID === Monsters.GrotesqueGuardians.id &&
-						  user.settings
-								.get(UserSettings.Slayer.SlayerUnlocks)
-								.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
-						? quantitySlayed! * 2
-						: quantitySlayed!;
-
-				const quantityLeft = Math.max(
-					0,
-					usersTask.currentTask!.quantityRemaining - effectiveSlayed
-				);
-
-				const thisTripFinishesTask = quantityLeft === 0;
-				if (thisTripFinishesTask) {
-					const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
-					user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
-					const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
-					const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
-					await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
-
-					str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
-				} else {
-					str += `\nYou killed ${effectiveSlayed}x of your ${
-						usersTask.currentTask!.quantityRemaining
-					} remaining kills, you now have ${quantityLeft} kills remaining.`;
-				}
-				usersTask.currentTask!.quantityRemaining = quantityLeft;
-				await usersTask.currentTask!.save();
-			}
-
-			filterLootReplace(user.allItemsOwned(), loot);
-
-			const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
-
-			const { image } = await this.client.tasks
-				.get('bankImage')!
-				.generateBankImage(
-					itemsAdded,
-					`Loot From ${quantity} ${monster.name}:`,
-					true,
-					{ showNewCL: 1 },
-					user,
-					previousCL
-				);
-
-			handleTripFinish(
-				this.client,
-				user,
-				channelID,
-				str,
-				res => {
-					user.log(`continued trip of killing ${monster.name}`);
-					let method = 'none';
-					if (usingCannon) method = 'cannon';
-					else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBarrage)
-						method = 'barrage';
-					else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBurst) method = 'burst';
-					return this.client.commands
-						.get('k')!
-						.run(res, [quantity, monster.name, method]);
-				},
-				image!,
-				data,
-				itemsAdded
-			);
 		}
+
+		if (user.settings.get(UserSettings.Bank)[itemID('Gorajan bonecrusher')]) {
+			let totalXP = 0;
+			for (const bone of bones) {
+				const amount = loot.amount(bone.inputId);
+				if (amount > 0) {
+					totalXP += bone.xp * amount * 4;
+					loot.remove(bone.inputId, amount);
+				}
+			}
+			str += await user.addXP(SkillsEnum.Prayer, totalXP, duration);
+		}
+
+		if (isOnTask) {
+			const effectiveSlayed =
+				monsterID === Monsters.KrilTsutsaroth.id &&
+				usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
+					? quantitySlayed! * 2
+					: monsterID === Monsters.Kreearra.id &&
+					  usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
+					? quantitySlayed! * 4
+					: monsterID === Monsters.GrotesqueGuardians.id &&
+					  user.settings
+							.get(UserSettings.Slayer.SlayerUnlocks)
+							.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+					? quantitySlayed! * 2
+					: quantitySlayed!;
+
+			const quantityLeft = Math.max(
+				0,
+				usersTask.currentTask!.quantityRemaining - effectiveSlayed
+			);
+
+			const thisTripFinishesTask = quantityLeft === 0;
+			if (thisTripFinishesTask) {
+				const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
+				user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
+				const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
+				const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
+				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
+
+				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
+			} else {
+				str += `\nYou killed ${effectiveSlayed}x of your ${
+					usersTask.currentTask!.quantityRemaining
+				} remaining kills, you now have ${quantityLeft} kills remaining.`;
+			}
+			usersTask.currentTask!.quantityRemaining = quantityLeft;
+			await usersTask.currentTask!.save();
+		}
+
+		filterLootReplace(user.allItemsOwned(), loot);
+
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+
+		const { image } = await this.client.tasks
+			.get('bankImage')!
+			.generateBankImage(
+				itemsAdded,
+				`Loot From ${quantity} ${monster.name}:`,
+				true,
+				{ showNewCL: 1 },
+				user,
+				previousCL
+			);
+		console.log(222222222222222);
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of killing ${monster.name}`);
+				let method = 'none';
+				if (usingCannon) method = 'cannon';
+				else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBarrage) method = 'barrage';
+				else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBurst) method = 'burst';
+				return this.client.commands.get('k')!.run(res, [quantity, monster.name, method]);
+			},
+			image!,
+			data,
+			itemsAdded
+		);
 	}
 }
