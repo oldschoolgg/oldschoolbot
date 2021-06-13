@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
+import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -15,7 +16,6 @@ import {
 	addBanks,
 	bankHasAllItemsFromBank,
 	formatDuration,
-	itemID,
 	rogueOutfitPercentBonus,
 	round,
 	stringMatches
@@ -49,7 +49,7 @@ export default class extends BotCommand {
 						npc,
 						5 * (Time.Hour / ((npc.customTickRate ?? 2) * 600)),
 						false,
-						false
+						(await userhasDiaryTier(msg.author, ArdougneDiary.hard))[0]
 					);
 					results.push([npc.name, round(xpReceived, 2) / 5, damageTaken / 5]);
 				}
@@ -131,6 +131,13 @@ export default class extends BotCommand {
 					pickpocketable.name
 				} is ${Math.floor(maxTripLength / timeToPickpocket)}.`
 			);
+		}
+
+		const boosts = [];
+
+		const [hasArdyHard] = await userhasDiaryTier(msg.author, ArdougneDiary.hard);
+		if (hasArdyHard) {
+			boosts.push(`+10% chance of success from Ardougne Hard diary`);
 		}
 
 		const [successfulQuantity, damageTaken, xpReceived] = calcLootXPPickpocketing(

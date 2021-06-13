@@ -11,7 +11,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import { Activity } from '../../lib/constants';
+import { Activity, Time } from '../../lib/constants';
 import {
 	boostCannon,
 	boostCannonMulti,
@@ -40,7 +40,7 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import {
+import findMonster, {
 	addArrayOfNumbers,
 	formatDuration,
 	isWeekend,
@@ -51,7 +51,7 @@ import {
 	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { findMonster } from '../../lib/util/findMonster';
+import itemID from '../../lib/util/itemID';
 
 const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
 const invalidMonsterMsg = (prefix: string) =>
@@ -179,19 +179,10 @@ export default class extends BotCommand {
 			timeToFinish *= (100 - boostAmount) / 100;
 			boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 		}
-
 		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven warhammer'))) {
 			timeToFinish *= 0.6;
 			boosts.push(`40% boost for Dwarven warhammer`);
 		}
-
-		if (Monsters.get(monster.id)?.data.attributes.includes(MonsterAttribute.Dragon)) {
-			if (msg.author.hasItemEquippedAnywhere(itemID('Dragon hunter lance'))) {
-				timeToFinish *= 0.8;
-				boosts.push(`20% boost for Dragon hunter lance`);
-			}
-		}
-
 		// Removed vorkath because he has a special boost.
 		if (
 			monster.name.toLowerCase() !== 'vorkath' &&
@@ -332,6 +323,7 @@ export default class extends BotCommand {
 			quantity = Math.min(quantity, effectiveQtyRemaining);
 		}
 
+
 		let duration = timeToFinish * quantity;
 		// If you have dwarven blessing, you need 1 prayer pot per 5 mins
 		const prayerPots = msg.author.bank().amount('Prayer potion(4)');
@@ -351,6 +343,7 @@ export default class extends BotCommand {
 				);
 			}
 		}
+
 		quantity = Math.max(1, quantity);
 		if (quantity > 1 && duration > maxTripLength) {
 			return msg.send(
@@ -437,22 +430,16 @@ export default class extends BotCommand {
 			foodStr = result;
 		}
 
-		if (quantity > 1 && duration > maxTripLength) {
-			return msg.send(
-				`${minionName} can't go on PvM trips longer than ${formatDuration(
-					maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${
-					monster.name
-				} is ${floor(maxTripLength / timeToFinish)}.`
-			);
-		}
-
+		// Boosts that don't affect quantity:
 		duration = randomVariation(duration, 3);
 
 		if (isWeekend()) {
 			boosts.push(`10% for Weekend`);
 			duration *= 0.9;
 		}
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
+		await msg.author.removeItemsFromBank(lootToRemove);
 
 		if (
 			attackStyles.includes(SkillsEnum.Ranged) &&

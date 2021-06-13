@@ -146,7 +146,11 @@ export default class extends Task {
 			// TODO: Check wiki in future for herblore xp from herbiboar
 			if (currentHerbLevel >= 31) {
 				herbXP += quantity * rand(25, 75);
-				xpStr = await user.addXP(SkillsEnum.Herblore, herbXP, duration);
+				xpStr = await user.addXP({
+					skillName: SkillsEnum.Herblore,
+					amount: herbXP,
+					duration
+				});
 			}
 		}
 		const loot = new Bank();
@@ -158,7 +162,11 @@ export default class extends Task {
 		}
 
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
-		xpStr += await user.addXP(SkillsEnum.Hunter, xpReceived, duration);
+		xpStr += await user.addXP({
+			skillName: SkillsEnum.Hunter,
+			amount: xpReceived,
+			duration
+		});
 
 		let str = `${user}, ${user.minionName} finished hunting ${
 			creature.name

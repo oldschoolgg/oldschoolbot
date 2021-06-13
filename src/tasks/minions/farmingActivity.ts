@@ -148,7 +148,10 @@ export default class extends Task {
 				str += ` You received an additional ${bonusXP.toLocaleString()} in bonus XP.`;
 			}
 
-			await user.addXP(SkillsEnum.Farming, Math.floor(farmingXpReceived + bonusXP));
+			await user.addXP({
+				skillName: SkillsEnum.Farming,
+				amount: Math.floor(farmingXpReceived + bonusXP)
+			});
 			const newLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
 
 			if (newLevel > currentFarmingLevel) {
@@ -355,8 +358,14 @@ export default class extends Task {
 				);
 			}
 
-			await user.addXP(SkillsEnum.Farming, Math.floor(farmingXpReceived + bonusXP));
-			await user.addXP(SkillsEnum.Woodcutting, Math.floor(woodcuttingXp));
+			await user.addXP({
+				skillName: SkillsEnum.Farming,
+				amount: Math.floor(farmingXpReceived + bonusXP)
+			});
+			await user.addXP({
+				skillName: SkillsEnum.Woodcutting,
+				amount: Math.floor(woodcuttingXp)
+			});
 
 			const newFarmingLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
 			const newWoodcuttingLevel = Math.min(99, user.skillLevel(SkillsEnum.Woodcutting));

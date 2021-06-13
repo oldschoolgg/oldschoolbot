@@ -19,7 +19,11 @@ export default class extends Task {
 		let xpReceived = quantity * log.xp;
 		if (logID === itemID('Elder logs')) xpReceived *= 2;
 
-		const xpRes = await user.addXP(SkillsEnum.Woodcutting, xpReceived, duration);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Woodcutting,
+			amount: xpReceived,
+			duration
+		});
 
 		let loot = new Bank({
 			[log.id]: quantity

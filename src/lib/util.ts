@@ -21,6 +21,8 @@ import {
 } from './constants';
 import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
+import killableMonsters from './minions/data/killableMonsters';
+import { KillableMonster } from './minions/types';
 import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import itemID from './util/itemID';
@@ -420,6 +422,13 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 		}
 	}
 	return true;
+}
+
+export default function findMonster(str: string): KillableMonster | undefined {
+	const mon = killableMonsters.find(
+		mon => stringMatches(mon.name, str) || mon.aliases.some(alias => stringMatches(alias, str))
+	);
+	return mon;
 }
 
 export function formatItemReqs(items: ArrayItemsResolved) {

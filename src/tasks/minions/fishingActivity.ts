@@ -83,14 +83,26 @@ export default class extends Task {
 			}
 		}
 
-		let xpRes = await user.addXP(SkillsEnum.Fishing, xpReceived, duration);
+		let xpRes = await user.addXP({
+			skillName: SkillsEnum.Fishing,
+			amount: xpReceived,
+			duration
+		});
 		xpRes +=
 			agilityXpReceived > 0
-				? await user.addXP(SkillsEnum.Agility, agilityXpReceived, duration)
+				? await user.addXP({
+						skillName: SkillsEnum.Agility,
+						amount: agilityXpReceived,
+						duration
+				  })
 				: '';
 		xpRes +=
 			strengthXpReceived > 0
-				? await user.addXP(SkillsEnum.Strength, strengthXpReceived, duration)
+				? await user.addXP({
+						skillName: SkillsEnum.Strength,
+						amount: strengthXpReceived,
+						duration
+				  })
 				: '';
 
 		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;

@@ -42,7 +42,7 @@ export default class extends Task {
 			loot.add(item.id, quantity - crushed);
 		}
 
-		const xpRes = await user.addXP(SkillsEnum.Crafting, xpReceived);
+		const xpRes = await user.addXP({ skillName: SkillsEnum.Crafting, amount: xpReceived });
 
 		let str = `${user}, ${user.minionName} finished crafting ${quantity} ${item.name}, ${
 			crushed ? `crushing ${crushed} of them` : ``

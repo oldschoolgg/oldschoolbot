@@ -96,16 +96,16 @@ export default class extends Task {
 			? Math.min(usersTask.currentTask!.quantityRemaining, quantity)
 			: null;
 
-		const xpRes = await addMonsterXP(
-			user,
+		const xpRes = await addMonsterXP(user, {
 			monsterID,
 			quantity,
 			duration,
 			isOnTask,
-			quantitySlayed,
+			taskQuantity: quantitySlayed,
+			minimal: false,
 			usingCannon,
 			cannonMulti
-		);
+		});
 
 		const superiorMessage = newSuperiorCount
 			? `, including **${newSuperiorCount} superiors**`
@@ -211,14 +211,14 @@ export default class extends Task {
 				usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
 					? quantitySlayed! * 2
 					: monsterID === Monsters.Kreearra.id &&
-					  usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
+					usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
 					? quantitySlayed! * 4
 					: monsterID === Monsters.GrotesqueGuardians.id &&
-					  user.settings
-							.get(UserSettings.Slayer.SlayerUnlocks)
-							.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
-					? quantitySlayed! * 2
-					: quantitySlayed!;
+					user.settings
+						.get(UserSettings.Slayer.SlayerUnlocks)
+						.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+						? quantitySlayed! * 2
+						: quantitySlayed!;
 
 			const quantityLeft = Math.max(
 				0,

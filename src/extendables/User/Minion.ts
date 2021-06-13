@@ -22,7 +22,7 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
-import { KillableMonster } from '../../lib/minions/types';
+import { AddXpParams, KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MasterSkillcapes } from '../../lib/skilling/skillcapes';
 import Skills from '../../lib/skilling/skills';
@@ -747,27 +747,21 @@ export default class extends Extendable {
 			: `${prefix} ${icon} Your minion`;
 	}
 
-	public async addXP(
-		this: User,
-		skillName: SkillsEnum,
-		amount: number,
-		duration?: number,
-		multiplier = true
-	): Promise<string> {
+	public async addXP(this: User, params: AddXpParams): Promise<string> {
 		await this.settings.sync(true);
-		const currentXP = this.settings.get(`skills.${skillName}`) as number;
-		const currentLevel = this.skillLevel(skillName);
+		const currentXP = this.settings.get(`skills.${params.skillName}`) as number;
+		const currentLevel = this.skillLevel(params.skillName);
 
-		const name = toTitleCase(skillName);
+		const name = toTitleCase(params.skillName);
 
 		if (currentXP >= 5_000_000_000) {
 			return `You received no XP because you have 5b ${name} XP already.`;
 		}
 
-		const skill = Object.values(Skills).find(skill => skill.id === skillName)!;
+		const skill = Object.values(Skills).find(skill => skill.id === params.skillName)!;
 
-		if (multiplier) {
-			amount *= 5;
+		if (params.multiplier) {
+			params.amount *= 5;
 		}
 
 		const rawGear = this.rawGear();
@@ -859,7 +853,9 @@ export default class extends Extendable {
 					Events.ServerNotification,
 					`${skill.emoji} **${this.username}'s** minion, ${
 						this.minionName
-					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(skillName)}!`
+					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(
+						params.skillName
+					)}!`
 				);
 				break;
 			}
@@ -868,22 +864,22 @@ export default class extends Extendable {
 		for (const num of [99, 120]) {
 			// If they just reached 99, send a server notification.
 			if (currentLevel < num && newLevel >= num) {
-				const skillNameCased = toTitleCase(skillName);
+				const skillNameCased = toTitleCase(params.skillName);
 				const [usersWith] = await this.client.query<
 					{
 						count: string;
 					}[]
 				>(
-					`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > ${
+					`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" > ${
 						convertLVLtoXP(num) - 1
 					};`
 				);
 
-				let str = `${skill.emoji} **${this.username}'s** minion, ${
-					this.minionName
-				}, just achieved level ${num} in ${skillNameCased}! They are the ${formatOrdinal(
-					parseInt(usersWith.count) + 1
-				)} to get ${num} ${skillNameCased}.`;
+			let str = `${skill.emoji} **${this.username}'s** minion, ${
+				this.minionName
+			}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
+				parseInt(usersWith.count) + 1
+			)} to get 99 ${skillNameCased}.`;
 
 				if (this.isIronman) {
 					const [ironmenWith] = await this.client.query<
@@ -891,7 +887,7 @@ export default class extends Extendable {
 							count: string;
 						}[]
 					>(
-						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${skillName}" > ${
+						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" > ${
 							convertLVLtoXP(num) - 1
 						};`
 					);
@@ -903,9 +899,14 @@ export default class extends Extendable {
 			}
 		}
 
-		await this.settings.update(`skills.${skillName}`, Math.floor(newXP));
+		await this.settings.update(`skills.${params.skillName}`, Math.floor(newXP));
 
-		let str = `You received ${amount.toLocaleString()} ${skillEmoji[skillName]} XP`;
+		let str = params.minimal
+			? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
+			: `You received ${Math.ceil(params.amount).toLocaleString()} ${
+					skillEmoji[params.skillName]
+			  } XP`;
+
 		if (masterCape) {
 			if (isMatchingCape) {
 				str += ` You received 8% bonus XP for having a ${masterCape.item.name}.`;
@@ -924,19 +925,21 @@ export default class extends Extendable {
 			}% bonus XP for First age outfit items.`;
 		}
 
-		if (duration) {
-			let rawXPHr = (amount / (duration / Time.Minute)) * 60;
+		if (params.duration && !params.minimal) {
+			let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 			str += ` (${toKMB(rawXPHr)}/Hr)`;
 		}
 		if (currentLevel !== newLevel) {
-			str += `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
+			str += params.minimal
+				? `(Levelled up to ${newLevel})`
+				: `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
 		}
 		return str;
 	}
 
 	public skillLevel(this: User, skillName: SkillsEnum) {
-		return convertXPtoLVL(this.settings.get(`skills.${skillName}`) as number, 120);
+		return convertXPtoLVL(this.settings.get(`skills.${params.skillName}`) as number, 120);
 	}
 
 	public totalLevel(this: User, returnXP = false) {
