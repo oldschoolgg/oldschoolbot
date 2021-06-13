@@ -1,7 +1,7 @@
 import PQueue from 'p-queue';
 import { join } from 'path';
 
-import Skills from './skilling/skills';
+import { SkillsEnum } from './skilling/types';
 
 export const enum Time {
 	Millisecond = 1,
@@ -443,4 +443,4 @@ export const skillEmoji = {
 };
 
 export const LEVEL_99_XP = 13_034_431;
-export const MAX_TOTAL_LEVEL = Object.values(Skills).length * 99;
+export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * 99;
