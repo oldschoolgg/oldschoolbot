@@ -5,6 +5,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Activity, Time } from '../../lib/constants';
+import { getSimilarItems } from '../../lib/data/similarItems';
 import {
 	boostCannon,
 	boostCannonMulti,
@@ -44,7 +45,6 @@ import findMonster, {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
-import {getSimilarItems} from "../../lib/data/similarItems";
 
 const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
 const invalidMonsterMsg = (prefix: string) =>
@@ -339,7 +339,7 @@ export default class extends BotCommand {
 		});
 
 		if (msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Staff of water')))) {
-			lootToRemove.remove('Water rune',lootToRemove.amount('Water rune'));
+			lootToRemove.remove('Water rune', lootToRemove.amount('Water rune'));
 		}
 
 		const itemCost = monster.itemCost ? monster.itemCost.clone().multiply(quantity) : null;
