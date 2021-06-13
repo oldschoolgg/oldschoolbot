@@ -42,14 +42,16 @@ export default class extends Task {
 			: null;
 		const xpRes = await addMonsterXP(
 			user,
-			monsterID,
-			quantity,
-			duration,
-			isOnTask,
-			quantitySlayed,
-			false,
-			usingCannon,
-			cannonMulti
+			{
+				monsterID: monsterID,
+				quantity: quantity,
+				duration: duration,
+				isOnTask: isOnTask,
+				taskQuantity: quantitySlayed,
+				usingCannon: usingCannon,
+				cannonMulti: cannonMulti,
+				minimal: false
+			}
 		);
 
 		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);

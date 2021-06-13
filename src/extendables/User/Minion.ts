@@ -21,7 +21,7 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
-import { KillableMonster } from '../../lib/minions/types';
+import { AddXpParams, KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
@@ -696,32 +696,29 @@ export default class extends Extendable {
 
 	public async addXP(
 		this: User,
-		skillName: SkillsEnum,
-		amount: number,
-		duration?: number,
-		minimal?: boolean
+		params: AddXpParams
 	): Promise<string> {
 		await this.settings.sync(true);
-		const currentXP = this.settings.get(`skills.${skillName}`) as number;
-		const currentLevel = this.skillLevel(skillName);
+		const currentXP = this.settings.get(`skills.${params.skillName}`) as number;
+		const currentLevel = this.skillLevel(params.skillName);
 
-		const name = toTitleCase(skillName);
+		const name = toTitleCase(params.skillName);
 
 		if (currentXP >= 200_000_000) {
 			return `You received no XP because you have 200m ${name} XP already.`;
 		}
 
-		const skill = Object.values(Skills).find(skill => skill.id === skillName)!;
+		const skill = Object.values(Skills).find(skill => skill.id === params.skillName)!;
 
-		const newXP = Math.min(200_000_000, currentXP + amount);
+		const newXP = Math.min(200_000_000, currentXP + params.amount);
 		const totalXPAdded = newXP - currentXP;
 		const newLevel = convertXPtoLVL(newXP);
 
 		if (totalXPAdded > 0) {
 			XPGainsTable.insert({
 				userID: this.id,
-				skill: skillName,
-				xp: Math.floor(amount)
+				skill: params.skillName,
+				xp: Math.floor(params.amount)
 			});
 		}
 
@@ -734,7 +731,7 @@ export default class extends Extendable {
 					Events.ServerNotification,
 					`${skill.emoji} **${this.username}'s** minion, ${
 						this.minionName
-					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(skillName)}!`
+					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(params.skillName)}!`
 				);
 				break;
 			}
@@ -742,12 +739,12 @@ export default class extends Extendable {
 
 		// If they just reached 99, send a server notification.
 		if (currentLevel < 99 && newLevel >= 99) {
-			const skillNameCased = toTitleCase(skillName);
+			const skillNameCased = toTitleCase(params.skillName);
 			const [usersWith] = await this.client.query<
 				{
 					count: string;
 				}[]
-			>(`SELECT COUNT(*) FROM users WHERE "skills.${skillName}" > 13034430;`);
+			>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" > 13034430;`);
 
 			let str = `${skill.emoji} **${this.username}'s** minion, ${
 				this.minionName
@@ -761,7 +758,7 @@ export default class extends Extendable {
 						count: string;
 					}[]
 				>(
-					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${skillName}" > 13034430;`
+					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" > 13034430;`
 				);
 				str += ` They are the ${formatOrdinal(
 					parseInt(ironmenWith.count) + 1
@@ -770,18 +767,18 @@ export default class extends Extendable {
 			this.client.emit(Events.ServerNotification, str);
 		}
 
-		await this.settings.update(`skills.${skillName}`, Math.floor(newXP));
+		await this.settings.update(`skills.${params.skillName}`, Math.floor(newXP));
 
-		let str = minimal
-			? `+${Math.ceil(amount).toLocaleString()} ${skillEmoji[skillName]}`
-			: `You received ${Math.ceil(amount).toLocaleString()} ${skillEmoji[skillName]} XP`;
-		if (duration && !minimal) {
-			let rawXPHr = (amount / (duration / Time.Minute)) * 60;
+		let str = params.minimal
+			? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
+			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
+		if (params.duration && !params.minimal) {
+			let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 			str += ` (${toKMB(rawXPHr)}/Hr)`;
 		}
 		if (currentLevel !== newLevel) {
-			str += minimal
+			str += params.minimal
 				? `(Levelled up to ${newLevel})`
 				: `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
 		}
