@@ -38,11 +38,13 @@ export default class extends Task {
 			if (!user) continue;
 			await addMonsterXP(
 				user,
-				monsterID,
-				Math.ceil(quantity / users.length),
-				duration,
-				false,
-				null
+				{
+					monsterID: monsterID,
+					quantity: Math.ceil(quantity / users.length),
+					duration: duration,
+					isOnTask: false,
+					taskQuantity: null
+				}
 			);
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);

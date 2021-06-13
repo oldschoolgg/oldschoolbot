@@ -53,6 +53,13 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot.bank, true);
 
+		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
+		await user.addXP({ skillName: SkillsEnum.Fishing, totalXP });
+		const newLevel = user.skillLevel(SkillsEnum.Fishing);
+
+		if (currentLevel !== newLevel) {
+			str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
+		}
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(

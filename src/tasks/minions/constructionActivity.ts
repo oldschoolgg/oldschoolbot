@@ -18,7 +18,7 @@ export default class extends Task {
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xpReceived);
 		}
-		const xpRes = await user.addXP(SkillsEnum.Construction, xpReceived + bonusXP, duration);
+		const xpRes = await user.addXP({ skillName: SkillsEnum.Construction, amount: xpReceived + bonusXP, duration: duration });
 
 		let str = `${user}, ${user.minionName} finished constructing ${quantity}x ${object.name}. ${xpRes}`;
 

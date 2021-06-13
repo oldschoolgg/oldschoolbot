@@ -19,7 +19,7 @@ export default class extends Task {
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xp);
 		}
-		const xpRes = await user.addXP(SkillsEnum.Construction, xp + bonusXP, duration);
+		const xpRes = await user.addXP({ skillName: SkillsEnum.Construction, amount: xp + bonusXP, duration: duration });
 		await user.settings.update(
 			UserSettings.CarpenterPoints,
 			user.settings.get(UserSettings.CarpenterPoints) + points

@@ -73,11 +73,13 @@ export default class extends Task {
 			if (!user) continue;
 			await addMonsterXP(
 				user,
-				NIGHTMARE_ID,
-				Math.ceil(quantity / users.length),
-				duration,
-				false,
-				null
+				{
+					monsterID: NIGHTMARE_ID,
+					quantity: Math.ceil(quantity / users.length),
+					duration: duration,
+					isOnTask: false,
+					taskQuantity: null
+				}
 			);
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);

@@ -20,7 +20,7 @@ export default class extends Task {
 		const XPMod = 1;
 		const xpReceived = quantity * bone.xp * XPMod;
 
-		await user.addXP(SkillsEnum.Prayer, xpReceived);
+		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived });
 		const newLevel = user.skillLevel(SkillsEnum.Prayer);
 
 		let str = `${user}, ${user.minionName} finished burying ${quantity} ${

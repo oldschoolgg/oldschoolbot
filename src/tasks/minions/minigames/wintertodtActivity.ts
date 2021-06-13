@@ -98,7 +98,7 @@ export default class extends Task {
 			numberOfBraziers += randInt(1, 7);
 		}
 		const conXP = numberOfBraziers * constructionXPPerBrazier;
-		user.addXP(SkillsEnum.Construction, conXP);
+		user.addXP({ skillName: SkillsEnum.Construction, amount: conXP });
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
@@ -121,8 +121,8 @@ export default class extends Task {
 			}
 		}
 
-		await user.addXP(SkillsEnum.Woodcutting, wcXpToGive);
-		await user.addXP(SkillsEnum.Firemaking, fmXpToGive);
+		await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive });
+		await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive });
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		await user.addItemsToBank(loot, true);
