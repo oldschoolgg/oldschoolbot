@@ -1,4 +1,3 @@
-import { resolveNameBank } from '../../util';
 import { Buyable } from './buyables';
 
 export const fremennikClothes: Buyable[] = [

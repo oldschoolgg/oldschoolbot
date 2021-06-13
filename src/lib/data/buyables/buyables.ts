@@ -9,6 +9,7 @@ import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
 import { canifisClothes } from './canifisClothes';
+import { capeBuyables } from './capes';
 import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
@@ -669,7 +670,8 @@ const Buyables: Buyable[] = [
 	...canifisClothes,
 	...castleWarsBuyables,
 	...cmCapes,
-	...slayerBuyables
+	...slayerBuyables,
+	...capeBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

@@ -1,4 +1,3 @@
-import { resolveNameBank } from '../../util';
 import { Buyable } from './buyables';
 
 // Most prices >=10k are x10, < 10k = x100
