@@ -104,7 +104,13 @@ export default class extends BotCommand {
 			return msg.send(`You need ${totalGPCost.toLocaleString()} GP to purchase this item.`);
 		}
 
-		const outItems = multiplyBank(buyable.outputItems, quantity);
+		let output =
+			buyable.outputItems === undefined
+				? new Bank().add(buyable.name).bank
+				: buyable.outputItems instanceof Bank
+				? buyable.outputItems.bank
+				: buyable.outputItems;
+		const outItems = multiplyBank(output, quantity);
 		const itemString = new Bank(outItems).toString();
 
 		// Start building a string to show to the user.
