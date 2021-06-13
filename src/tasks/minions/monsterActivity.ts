@@ -257,7 +257,7 @@ export default class extends Task {
 				user,
 				previousCL
 			);
-		console.log(222222222222222);
+
 		handleTripFinish(
 			this.client,
 			user,
