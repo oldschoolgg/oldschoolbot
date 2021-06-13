@@ -40,7 +40,10 @@ const Silver: Craftable[] = [
 		id: itemID('Opal amulet'),
 		level: 1,
 		xp: 4,
-		inputItems: resolveNameBank({ 'Opal amulet (u)': 1, 'Ball of wool': 1 }),
+		inputItems: resolveNameBank({
+			'Opal amulet (u)': 1,
+			'Ball of wool': 1
+		}),
 		tickRate: 2
 	},
 	{
@@ -80,7 +83,10 @@ const Silver: Craftable[] = [
 		id: itemID('Jade amulet'),
 		level: 1,
 		xp: 4,
-		inputItems: resolveNameBank({ 'Jade amulet (u)': 1, 'Ball of wool': 1 }),
+		inputItems: resolveNameBank({
+			'Jade amulet (u)': 1,
+			'Ball of wool': 1
+		}),
 		tickRate: 2
 	},
 	{
@@ -142,7 +148,10 @@ const Silver: Craftable[] = [
 		id: itemID('Unblessed symbol'),
 		level: 16,
 		xp: 4,
-		inputItems: resolveNameBank({ 'Unstrung symbol': 1, 'Ball of wool': 1 }),
+		inputItems: resolveNameBank({
+			'Unstrung symbol': 1,
+			'Ball of wool': 1
+		}),
 		tickRate: 2
 	},
 	{
@@ -158,7 +167,10 @@ const Silver: Craftable[] = [
 		id: itemID('Unpowered symbol'),
 		level: 17,
 		xp: 4,
-		inputItems: resolveNameBank({ 'Unstrung emblem': 1, 'Ball of wool': 1 }),
+		inputItems: resolveNameBank({
+			'Unstrung emblem': 1,
+			'Ball of wool': 1
+		}),
 		tickRate: 2
 	},
 	{

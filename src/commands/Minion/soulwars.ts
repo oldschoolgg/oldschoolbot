@@ -30,8 +30,16 @@ const buyables = [
 ];
 
 const imbueables = [
-	{ input: getOSItem('Black mask'), output: getOSItem('Black mask (i)'), tokens: 500 },
-	{ input: getOSItem('Slayer helmet'), output: getOSItem('Slayer helmet (i)'), tokens: 500 },
+	{
+		input: getOSItem('Black mask'),
+		output: getOSItem('Black mask (i)'),
+		tokens: 500
+	},
+	{
+		input: getOSItem('Slayer helmet'),
+		output: getOSItem('Slayer helmet (i)'),
+		tokens: 500
+	},
 	{
 		input: getOSItem('Turquoise slayer helmet'),
 		output: getOSItem('Turquoise slayer helmet (i)'),
@@ -67,8 +75,16 @@ const imbueables = [
 		output: getOSItem('Hydra slayer helmet (i)'),
 		tokens: 500
 	},
-	{ input: getOSItem('Salve amulet'), output: getOSItem('Salve amulet (i)'), tokens: 320 },
-	{ input: getOSItem('Salve amulet (e)'), output: getOSItem('Salve amulet(ei)'), tokens: 320 },
+	{
+		input: getOSItem('Salve amulet'),
+		output: getOSItem('Salve amulet (i)'),
+		tokens: 320
+	},
+	{
+		input: getOSItem('Salve amulet (e)'),
+		output: getOSItem('Salve amulet(ei)'),
+		tokens: 320
+	},
 	{
 		input: getOSItem('Ring of the gods'),
 		output: getOSItem('Ring of the gods (i)'),

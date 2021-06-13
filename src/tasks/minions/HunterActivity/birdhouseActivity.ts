@@ -41,7 +41,10 @@ export default class extends Task {
 
 			if (placing && gotCraft) {
 				craftingXP = birdhouse.craftXP * 4;
-				str += await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftingXP });
+				str += await user.addXP({
+					skillName: SkillsEnum.Crafting,
+					amount: craftingXP
+				});
 			}
 
 			const updateBirdhouseData: BirdhouseData = {
@@ -72,14 +75,20 @@ export default class extends Task {
 				loot.add(birdhouseToCollect.table.roll());
 			}
 			await user.addItemsToBank(loot.values(), true);
-			await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP });
+			await user.addXP({
+				skillName: SkillsEnum.Hunter,
+				amount: hunterXP
+			});
 			const newHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 
 			str += `\n\nYou received ${hunterXP.toLocaleString()} XP from collecting the birdhouses.`;
 
 			if (placing && gotCraft) {
 				craftingXP = birdhouse.craftXP * 4;
-				await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftingXP });
+				await user.addXP({
+					skillName: SkillsEnum.Crafting,
+					amount: craftingXP
+				});
 				str += `You also received ${craftingXP.toLocaleString()} crafting XP for making own birdhouses.`;
 				const newCraftLevel = user.skillLevel(SkillsEnum.Crafting);
 				if (newCraftLevel > currentCraftingLevel) {

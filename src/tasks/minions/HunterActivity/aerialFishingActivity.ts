@@ -103,8 +103,14 @@ export default class extends Task {
 			}
 		}
 
-		await user.addXP({ skillName: SkillsEnum.Fishing, amount: fishXpReceived });
-		await user.addXP({ skillName: SkillsEnum.Hunter, amount: huntXpReceived });
+		await user.addXP({
+			skillName: SkillsEnum.Fishing,
+			amount: fishXpReceived
+		});
+		await user.addXP({
+			skillName: SkillsEnum.Hunter,
+			amount: huntXpReceived
+		});
 		await user.incrementCreatureScore(bluegill.id, bluegillCaught);
 		await user.incrementCreatureScore(commonTench.id, commonTenchCaught);
 		await user.incrementCreatureScore(mottledEel.id, mottledEelCaught);

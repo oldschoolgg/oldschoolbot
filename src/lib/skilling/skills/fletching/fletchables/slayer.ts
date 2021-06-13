@@ -26,7 +26,10 @@ const Slayer: Fletchable[] = [
 		id: itemID('Unstrung heavy ballista'),
 		level: 72,
 		xp: 1,
-		inputItems: new Bank({ 'Ballista spring': 1, 'Incomplete heavy ballista': 1 }),
+		inputItems: new Bank({
+			'Ballista spring': 1,
+			'Incomplete heavy ballista': 1
+		}),
 		tickRate: 3
 	},
 	{
@@ -34,7 +37,10 @@ const Slayer: Fletchable[] = [
 		id: itemID('Unstrung light ballista'),
 		level: 72,
 		xp: 1,
-		inputItems: new Bank({ 'Ballista spring': 1, 'Incomplete light ballista': 1 }),
+		inputItems: new Bank({
+			'Ballista spring': 1,
+			'Incomplete light ballista': 1
+		}),
 		tickRate: 3
 	},
 	{
@@ -42,7 +48,10 @@ const Slayer: Fletchable[] = [
 		id: itemID('Heavy ballista'),
 		level: 72,
 		xp: 1,
-		inputItems: new Bank({ 'Monkey tail': 1, 'Unstrung heavy ballista': 1 }),
+		inputItems: new Bank({
+			'Monkey tail': 1,
+			'Unstrung heavy ballista': 1
+		}),
 		tickRate: 3
 	},
 	{
@@ -50,7 +59,10 @@ const Slayer: Fletchable[] = [
 		id: itemID('Light ballista'),
 		level: 72,
 		xp: 1,
-		inputItems: new Bank({ 'Monkey tail': 1, 'Unstrung light ballista': 1 }),
+		inputItems: new Bank({
+			'Monkey tail': 1,
+			'Unstrung light ballista': 1
+		}),
 		tickRate: 3
 	},
 	{

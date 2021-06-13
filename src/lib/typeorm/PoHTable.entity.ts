@@ -15,25 +15,60 @@ export class PoHTable extends BaseEntity {
 	@Column({ type: 'integer', default: null, nullable: true })
 	public throne!: number | null;
 
-	@Column({ type: 'integer', name: 'mounted_cape', default: null, nullable: true })
+	@Column({
+		type: 'integer',
+		name: 'mounted_cape',
+		default: null,
+		nullable: true
+	})
 	public mountedCape!: number | null;
 
-	@Column({ type: 'integer', name: 'mounted_fish', default: null, nullable: true })
+	@Column({
+		type: 'integer',
+		name: 'mounted_fish',
+		default: null,
+		nullable: true
+	})
 	public mountedFish!: number | null;
 
-	@Column({ type: 'integer', name: 'mounted_head', default: null, nullable: true })
+	@Column({
+		type: 'integer',
+		name: 'mounted_head',
+		default: null,
+		nullable: true
+	})
 	public mountedHead!: number | null;
 
-	@Column({ type: 'integer', name: 'mounted_item', default: null, nullable: true })
+	@Column({
+		type: 'integer',
+		name: 'mounted_item',
+		default: null,
+		nullable: true
+	})
 	public mountedItem!: number | null;
 
-	@Column({ type: 'integer', name: 'jewellery_box', default: null, nullable: true })
+	@Column({
+		type: 'integer',
+		name: 'jewellery_box',
+		default: null,
+		nullable: true
+	})
 	public jewelleryBox!: number | null;
 
-	@Column({ type: 'integer', name: 'prayer_altar', default: null, nullable: true })
+	@Column({
+		type: 'integer',
+		name: 'prayer_altar',
+		default: null,
+		nullable: true
+	})
 	public prayerAltar!: number | null;
 
-	@Column({ type: 'integer', name: 'spellbook_altar', default: null, nullable: true })
+	@Column({
+		type: 'integer',
+		name: 'spellbook_altar',
+		default: null,
+		nullable: true
+	})
 	public spellbookAltar!: number | null;
 
 	// Dungeon
@@ -43,7 +78,12 @@ export class PoHTable extends BaseEntity {
 	@Column({ type: 'integer', default: null, nullable: true })
 	public torch!: number | null;
 
-	@Column({ type: 'integer', name: 'dungeon_decoration', default: null, nullable: true })
+	@Column({
+		type: 'integer',
+		name: 'dungeon_decoration',
+		default: null,
+		nullable: true
+	})
 	public dungeonDecoration!: number | null;
 
 	@Column({ type: 'integer', default: null, nullable: true })

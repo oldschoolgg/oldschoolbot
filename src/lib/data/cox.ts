@@ -48,7 +48,14 @@ function kcPointsEffect(kc: number) {
 export async function createTeam(
 	users: KlasaUser[],
 	cm: boolean
-): Promise<Array<{ deaths: number; deathChance: number } & ChambersOfXericOptions['team'][0]>> {
+): Promise<
+	Array<
+		{
+			deaths: number;
+			deathChance: number;
+		} & ChambersOfXericOptions['team'][0]
+	>
+> {
 	let res = [];
 	for (const u of users) {
 		let points = 24_000;
@@ -359,7 +366,11 @@ const itemBoosts = [
 export async function calcCoxDuration(
 	_team: KlasaUser[],
 	challengeMode: boolean
-): Promise<{ reductions: Record<string, number>; duration: number; totalReduction: number }> {
+): Promise<{
+	reductions: Record<string, number>;
+	duration: number;
+	totalReduction: number;
+}> {
 	const team = shuffleArr(_team).slice(0, 9);
 	const size = team.length;
 
@@ -403,7 +414,11 @@ export async function calcCoxDuration(
 	duration -= duration * (teamSizeBoostPercent(size) / 100);
 
 	duration = randomVariation(duration, 5);
-	return { duration, reductions, totalReduction: totalSpeedReductions / size };
+	return {
+		duration,
+		reductions,
+		totalReduction: totalSpeedReductions / size
+	};
 }
 
 export async function calcCoxInput(u: KlasaUser, solo: boolean) {

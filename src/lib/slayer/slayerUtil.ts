@@ -229,7 +229,9 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 				skipped: false
 			}
 		}),
-		SlayerTaskTable.count({ where: { user: id, quantityRemaining: 0, skipped: false } })
+		SlayerTaskTable.count({
+			where: { user: id, quantityRemaining: 0, skipped: false }
+		})
 	]);
 
 	const slayerMaster = currentTask

@@ -62,7 +62,11 @@ const cmCapes: Buyable[] = [
 ];
 
 const constructionBuyables: Buyable[] = [
-	{ name: 'Bolt of cloth', outputItems: resolveNameBank({ 'Bolt of cloth': 1 }), gpCost: 5000 },
+	{
+		name: 'Bolt of cloth',
+		outputItems: resolveNameBank({ 'Bolt of cloth': 1 }),
+		gpCost: 5000
+	},
 	{
 		name: 'Limestone brick',
 		outputItems: resolveNameBank({ 'Limestone brick': 1 }),
@@ -917,8 +921,7 @@ const Buyables: Buyable[] = [
 	...canifisClothes,
 	...castleWarsBuyables,
 	...cmCapes,
-	...slayerBuyables
-	...cmCapes,
+	...slayerBuyables,
 	{
 		name: 'Master quest cape',
 		outputItems: resolveNameBank({
@@ -926,7 +929,7 @@ const Buyables: Buyable[] = [
 		}),
 		gpCost: 1_000_000_000,
 		qpRequired: 5000
-	},
+	}
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

@@ -29,7 +29,9 @@ export default class extends Monitor {
 			const newUserPets = { ...userPets };
 			if (!newUserPets[pet.id]) newUserPets[pet.id] = 1;
 			else newUserPets[pet.id]++;
-			await msg.author.settings.update(UserSettings.Pets, { ...newUserPets });
+			await msg.author.settings.update(UserSettings.Pets, {
+				...newUserPets
+			});
 			if (!channelIsSendable(msg.channel)) return;
 			if (userPets[pet.id] > 1) {
 				msg.channel.send(

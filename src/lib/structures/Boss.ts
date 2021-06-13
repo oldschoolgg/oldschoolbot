@@ -4,7 +4,7 @@ import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
-import { calcDwwhChance } from '../../tasks/minions/minigames/kingGoldemarActivity';
+// import { calcDwwhChance } from '../../tasks/minions/minigames/kingGoldemarActivity';
 import { Activity } from '../constants';
 import { GearSetupTypes, GearStats } from '../gear';
 import { Skills } from '../types';
@@ -13,6 +13,26 @@ import { formatDuration, formatSkillRequirements, updateBankSetting } from '../u
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { Gear } from './Gear';
 import { Mass } from './Mass';
+
+export const gpCostPerKill = (user: KlasaUser) =>
+	user.getGear('melee').hasEquipped(['Ring of charos', 'Ring of charos(a)'], false)
+		? 5_000_000
+		: 10_000_000;
+
+export const calcDwwhChance = (users: KlasaUser[]) => {
+	const size = Math.min(users.length, 10);
+	const baseRate = 850;
+	const modDenominator = 15;
+
+	let dropRate = (baseRate / 2) * (1 + size / modDenominator);
+	let groupRate = Math.ceil(dropRate / size);
+	groupRate = Math.ceil(groupRate);
+
+	if (users.some(u => u.getGear('melee').hasEquipped('Ring of luck'))) {
+		groupRate = Math.floor(reduceNumByPercent(groupRate, 15));
+	}
+	return groupRate;
+};
 
 export type UserDenyResult = [true, string] | [false];
 

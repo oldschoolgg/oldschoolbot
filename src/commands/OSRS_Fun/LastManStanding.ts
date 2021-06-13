@@ -33,7 +33,9 @@ export default class extends BotCommand {
 			: [];
 		// Autofill using authors from the last 100 messages, if none are given to the command
 		if (contestants === 'auto') {
-			const messages = await message.channel.messages.fetch({ limit: 100 });
+			const messages = await message.channel.messages.fetch({
+				limit: 100
+			});
 
 			for (const { author } of messages.values()) {
 				const name = cleanMentions(message.guild, author.username);

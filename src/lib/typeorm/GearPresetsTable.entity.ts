@@ -8,7 +8,12 @@ export class GearPresetsTable extends BaseEntity {
 	@PrimaryColumn('varchar', { length: 12, name: 'name', nullable: false })
 	public name!: string;
 
-	@Column({ name: 'two_handed', type: 'integer', default: null, nullable: true })
+	@Column({
+		name: 'two_handed',
+		type: 'integer',
+		default: null,
+		nullable: true
+	})
 	public TwoHanded: number | null = null;
 
 	@Column({ name: 'body', type: 'integer', default: null, nullable: true })
@@ -44,6 +49,11 @@ export class GearPresetsTable extends BaseEntity {
 	@Column({ name: 'ammo', type: 'integer', default: null, nullable: true })
 	public Ammo: number | null = null;
 
-	@Column({ name: 'ammo_qty', type: 'integer', default: null, nullable: true })
+	@Column({
+		name: 'ammo_qty',
+		type: 'integer',
+		default: null,
+		nullable: true
+	})
 	public AmmoQuantity: number | null = null;
 }

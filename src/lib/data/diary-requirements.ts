@@ -8,7 +8,10 @@ export const diaryRequirements: Record<
 	Partial<
 		Record<
 			SkillsEnum,
-			{ statReq: [number, number, number, number]; boost: [number, number, number, number] }
+			{
+				statReq: [number, number, number, number];
+				boost: [number, number, number, number];
+			}
 		>
 	>
 > = {

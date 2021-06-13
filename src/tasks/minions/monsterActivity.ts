@@ -202,7 +202,11 @@ export default class extends Task {
 					loot.remove(bone.inputId, amount);
 				}
 			}
-			str += await user.addXP(SkillsEnum.Prayer, totalXP, duration);
+			str += await user.addXP({
+				skillName: SkillsEnum.Prayer,
+				amount: totalXP,
+				duration
+			});
 		}
 
 		if (isOnTask) {
@@ -211,14 +215,14 @@ export default class extends Task {
 				usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
 					? quantitySlayed! * 2
 					: monsterID === Monsters.Kreearra.id &&
-					usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
+					  usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
 					? quantitySlayed! * 4
 					: monsterID === Monsters.GrotesqueGuardians.id &&
-					user.settings
-						.get(UserSettings.Slayer.SlayerUnlocks)
-						.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
-						? quantitySlayed! * 2
-						: quantitySlayed!;
+					  user.settings
+							.get(UserSettings.Slayer.SlayerUnlocks)
+							.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+					? quantitySlayed! * 2
+					: quantitySlayed!;
 
 			const quantityLeft = Math.max(
 				0,

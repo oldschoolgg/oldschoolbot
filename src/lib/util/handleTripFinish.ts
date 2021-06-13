@@ -172,7 +172,10 @@ export async function handleTripFinish(
 
 	const channel = client.channels.cache.get(channelID);
 
-	sendToChannelID(client, channelID, { content: message, image: attachable }).then(() => {
+	sendToChannelID(client, channelID, {
+		content: message,
+		image: attachable
+	}).then(() => {
 		const minutes = Math.min(30, data.duration / Time.Minute);
 		const randomEventChance = 60 - minutes;
 		if (

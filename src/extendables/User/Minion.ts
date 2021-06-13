@@ -771,40 +771,42 @@ export default class extends Extendable {
 			.map(i => i.item);
 
 		// Get cape object from MasterSkillCapes that matches active skill.
-		const matchingCape = multiplier
-			? MasterSkillcapes.find(cape => skillName === cape.skill)
+		const matchingCape = params.multiplier
+			? MasterSkillcapes.find(cape => params.skillName === cape.skill)
 			: undefined;
 
 		// If the matching cape is equipped, isMatchingCape = true
 		const isMatchingCape =
-			multiplier && matchingCape ? allCapes.includes(matchingCape.item.id) : false;
+			params.multiplier && matchingCape ? allCapes.includes(matchingCape.item.id) : false;
 
 		// Get the masterCape object for use in text output
 		const masterCape = isMatchingCape
 			? matchingCape
-			: multiplier
+			: params.multiplier
 			? MasterSkillcapes.find(cape => allCapes.includes(cape.item.id))
 			: undefined;
 
 		if (masterCape) {
-			amount = increaseNumByPercent(amount, isMatchingCape ? 8 : 3);
+			params.amount = increaseNumByPercent(params.amount, isMatchingCape ? 8 : 3);
 		}
 
 		let gorajanBoost = false;
 		const gorajanMeleeBoost =
-			multiplier &&
-			[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(skillName) &&
+			params.multiplier &&
+			[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(
+				params.skillName
+			) &&
 			hasArrayOfItemsEquipped(gorajanWarriorOutfit, this.getGear('melee'));
 		const gorajanRangeBoost =
-			multiplier &&
-			skillName === SkillsEnum.Ranged &&
+			params.multiplier &&
+			params.skillName === SkillsEnum.Ranged &&
 			hasArrayOfItemsEquipped(gorajanArcherOutfit, this.getGear('range'));
 		const gorajanMageBoost =
-			multiplier &&
-			skillName === SkillsEnum.Magic &&
+			params.multiplier &&
+			params.skillName === SkillsEnum.Magic &&
 			hasArrayOfItemsEquipped(gorajanOccultOutfit, this.getGear('mage'));
 		if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost) {
-			amount *= 2;
+			params.amount *= 2;
 			gorajanBoost = true;
 		}
 
@@ -822,15 +824,15 @@ export default class extends Extendable {
 		}
 		if (firstAgeEquipped > 0) {
 			if (firstAgeEquipped === 5) {
-				amount = increaseNumByPercent(amount, 6);
+				params.amount = increaseNumByPercent(params.amount, 6);
 			} else {
-				amount = increaseNumByPercent(amount, firstAgeEquipped);
+				params.amount = increaseNumByPercent(params.amount, firstAgeEquipped);
 			}
 		}
 
-		amount = Math.floor(amount);
+		params.amount = Math.floor(params.amount);
 
-		const newXP = Math.min(5_000_000_000, currentXP + amount);
+		const newXP = Math.min(5_000_000_000, currentXP + params.amount);
 		const newLevel = convertXPtoLVL(newXP, 120);
 		const totalXPAdded = newXP - currentXP;
 
@@ -839,8 +841,8 @@ export default class extends Extendable {
 				userID: this.id,
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
-				skill: skillName,
-				xp: amount
+				skill: params.skillName,
+				xp: params.amount
 			});
 		}
 
@@ -875,11 +877,11 @@ export default class extends Extendable {
 					};`
 				);
 
-			let str = `${skill.emoji} **${this.username}'s** minion, ${
-				this.minionName
-			}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
-				parseInt(usersWith.count) + 1
-			)} to get 99 ${skillNameCased}.`;
+				let str = `${skill.emoji} **${this.username}'s** minion, ${
+					this.minionName
+				}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
+					parseInt(usersWith.count) + 1
+				)} to get 99 ${skillNameCased}.`;
 
 				if (this.isIronman) {
 					const [ironmenWith] = await this.client.query<
@@ -887,9 +889,9 @@ export default class extends Extendable {
 							count: string;
 						}[]
 					>(
-						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" > ${
-							convertLVLtoXP(num) - 1
-						};`
+						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${
+							params.skillName
+						}" > ${convertLVLtoXP(num) - 1};`
 					);
 					str += ` They are the ${formatOrdinal(
 						parseInt(ironmenWith.count) + 1
@@ -939,7 +941,7 @@ export default class extends Extendable {
 	}
 
 	public skillLevel(this: User, skillName: SkillsEnum) {
-		return convertXPtoLVL(this.settings.get(`skills.${params.skillName}`) as number, 120);
+		return convertXPtoLVL(this.settings.get(`skills.${skillName}`) as number, 120);
 	}
 
 	public totalLevel(this: User, returnXP = false) {

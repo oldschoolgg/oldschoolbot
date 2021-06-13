@@ -72,7 +72,9 @@ export default class extends BotCommand {
 					`You don't have ${quantity} ${whichOfferable.name} to offer the ${whichOfferable.offerWhere}. You have ${offerableOwned}.`
 				);
 			}
-			await msg.author.removeItemsFromBank({ [whichOfferable.itemID]: quantity });
+			await msg.author.removeItemsFromBank({
+				[whichOfferable.itemID]: quantity
+			});
 			let loot = new Bank();
 			loot.add(whichOfferable.table.roll(quantity));
 

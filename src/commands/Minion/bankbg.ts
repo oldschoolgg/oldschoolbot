@@ -208,7 +208,10 @@ export default class extends BotCommand {
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.BankBgCostBank,
 			addBanks([
-				{ ...(selectedImage.itemCost ?? {}), '995': selectedImage.gpCost ?? 0 },
+				{
+					...(selectedImage.itemCost ?? {}),
+					'995': selectedImage.gpCost ?? 0
+				},
 				this.client.settings.get(ClientSettings.EconomyStats.BankBgCostBank)
 			])
 		);

@@ -187,7 +187,11 @@ export default class extends BotCommand {
 					: ``
 			}`,
 			title: opened,
-			flags: { showNewCL: 1, wide: Object.keys(loot).length > 250 ? 1 : 0, ...msg.flagArgs },
+			flags: {
+				showNewCL: 1,
+				wide: Object.keys(loot).length > 250 ? 1 : 0,
+				...msg.flagArgs
+			},
 			user: msg.author,
 			cl: previousCL
 		});

@@ -143,12 +143,18 @@ export default class extends BotCommand {
 	}
 
 	async cacheUsernames() {
-		const allNewUsers = await NewUserTable.find({ username: Not(IsNull()) });
+		const allNewUsers = await NewUserTable.find({
+			username: Not(IsNull())
+		});
 		for (const user of allNewUsers) {
 			this.usernameCache.map.set(user.id, stripEmojis(user.username!));
 		}
 
-		const arrayOfUsers: { badges: number[]; id: string; ironman: boolean }[] = await this.query(
+		const arrayOfUsers: {
+			badges: number[];
+			id: string;
+			ironman: boolean;
+		}[] = await this.query(
 			`SELECT "badges", "id", "minion.ironman" as "ironman" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0 OR "minion.ironman" = true;`,
 			false
 		);
@@ -209,7 +215,10 @@ ${msg.flagArgs.im ? 'AND "minion.ironman" = true' : ''}
 ORDER BY "sacrificedValue"
 DESC LIMIT 2000;`
 			)
-		).map((res: any) => ({ ...res, amount: parseInt(res.sacrificedValue) }));
+		).map((res: any) => ({
+			...res,
+			amount: parseInt(res.sacrificedValue)
+		}));
 
 		this.doMenu(
 			msg,

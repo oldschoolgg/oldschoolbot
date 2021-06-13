@@ -22,7 +22,9 @@ export default class extends BotCommand {
 		if (!mon) {
 			return msg.channel.send(`Thats not a valid monster.`);
 		}
-		const currentMonsterScores = { ...msg.author.settings.get(UserSettings.MonsterScores) };
+		const currentMonsterScores = {
+			...msg.author.settings.get(UserSettings.MonsterScores)
+		};
 		currentMonsterScores[mon.id] = kc;
 		await msg.author.settings.update(UserSettings.MonsterScores, currentMonsterScores);
 		return msg.send(`Set your ${mon.name} KC to ${kc}.`);

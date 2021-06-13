@@ -151,7 +151,9 @@ export default class extends Event {
 		}
 		const twitter = new Twit(twitterAppConfig);
 
-		const stream = twitter.stream('statuses/filter', { follow: ALL_TWITTERS });
+		const stream = twitter.stream('statuses/filter', {
+			follow: ALL_TWITTERS
+		});
 
 		stream.on('tweet', this.handleTweet.bind(this));
 	}
@@ -218,7 +220,10 @@ export default class extends Event {
 					channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.EMBED_LINKS) &&
 					channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.SEND_MESSAGES)
 				) {
-					sendToChannelID(this.client, channel.id, { content: `<${url}>`, embed });
+					sendToChannelID(this.client, channel.id, {
+						content: `<${url}>`,
+						embed
+					});
 				}
 			});
 	}

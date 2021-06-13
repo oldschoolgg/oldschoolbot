@@ -102,7 +102,9 @@ export default class extends Task {
 					await user.removeItemFromBank(itemID('Saradomin brew(4)'), 10);
 					await user.removeItemFromBank(itemID('Super restore(4)'), 5);
 				}
-				const newGear = { ...user.settings.get(UserSettings.Gear.Misc) };
+				const newGear = {
+					...user.settings.get(UserSettings.Gear.Misc)
+				};
 				newGear[EquipmentSlot.Body] = null;
 				newGear[EquipmentSlot.Legs] = null;
 				await user.settings.update(UserSettings.Gear.Misc, newGear);

@@ -16,7 +16,10 @@ const Built: Craftable[] = [
 		id: itemID('Toxic staff (uncharged)'),
 		level: 59,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Staff of the dead': 1, 'Magic fang': 1 }),
+		inputItems: resolveNameBank({
+			'Staff of the dead': 1,
+			'Magic fang': 1
+		}),
 		tickRate: 3
 	},
 	{
@@ -24,7 +27,10 @@ const Built: Craftable[] = [
 		id: itemID('Uncharged toxic trident'),
 		level: 59,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Uncharged trident': 1, 'Magic fang': 1 }),
+		inputItems: resolveNameBank({
+			'Uncharged trident': 1,
+			'Magic fang': 1
+		}),
 		tickRate: 3
 	}
 ];

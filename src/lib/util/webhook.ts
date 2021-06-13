@@ -81,6 +81,10 @@ export async function sendToChannelID(
 				split: true
 			});
 		}
-		return channel.send(data.content, { files, embed: data.embed, split: true });
+		return channel.send(data.content, {
+			files,
+			embed: data.embed,
+			split: true
+		});
 	});
 }

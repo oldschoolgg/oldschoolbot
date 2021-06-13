@@ -16,6 +16,7 @@ import {
 	addBanks,
 	bankHasAllItemsFromBank,
 	formatDuration,
+	itemID,
 	rogueOutfitPercentBonus,
 	round,
 	stringMatches
@@ -49,7 +50,8 @@ export default class extends BotCommand {
 						npc,
 						5 * (Time.Hour / ((npc.customTickRate ?? 2) * 600)),
 						false,
-						(await userhasDiaryTier(msg.author, ArdougneDiary.hard))[0]
+						(await userhasDiaryTier(msg.author, ArdougneDiary.hard))[0],
+						false
 					);
 					results.push([npc.name, round(xpReceived, 2) / 5, damageTaken / 5]);
 				}
@@ -147,6 +149,7 @@ export default class extends BotCommand {
 			msg.author.hasItemEquippedAnywhere(itemID('Thieving cape')) ||
 				msg.author.hasItemEquippedAnywhere(itemID('Thieving cape(t)')) ||
 				msg.author.hasItemEquippedAnywhere(itemID('Thieving master cape')),
+			hasArdyHard,
 			msg.author.hasItemEquippedOrInBank("Thieves' armband")
 		);
 
@@ -158,8 +161,6 @@ export default class extends BotCommand {
 			activityName: 'Pickpocketing',
 			attackStylesUsed: []
 		});
-
-		const boosts = [];
 
 		if (rogueOutfitPercentBonus(msg.author) > 0) {
 			boosts.push(

@@ -213,7 +213,10 @@ export default class extends Extendable {
 		}
 		const itemBank = bank instanceof Bank ? { ...bank.bank } : bank;
 		return bankHasAllItemsFromBank(
-			{ ...this.settings.get(UserSettings.Bank), 995: this.settings.get(UserSettings.GP) },
+			{
+				...this.settings.get(UserSettings.Bank),
+				995: this.settings.get(UserSettings.GP)
+			},
 			itemBank
 		);
 	}

@@ -1,20 +1,16 @@
 import { MessageEmbed, TextChannel } from 'discord.js';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
 import { GearSetupTypes } from '../../lib/gear/types';
 import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/KingGoldemar';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { BossInstance } from '../../lib/structures/Boss';
+import { BossInstance, gpCostPerKill } from '../../lib/structures/Boss';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
 import { formatDuration, toKMB } from '../../lib/util';
 
-export const gpCostPerKill = (user: KlasaUser) =>
-	user.getGear('melee').hasEquipped(['Ring of charos', 'Ring of charos(a)'], false)
-		? 5_000_000
-		: 10_000_000;
 export const kgBaseTime = Time.Minute * 45;
 
 export default class extends BotCommand {

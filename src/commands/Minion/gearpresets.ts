@@ -70,7 +70,10 @@ export default class extends BotCommand {
 			return msg.send(`That's not a valid gear setup.`);
 		}
 
-		const userPreset = await GearPresetsTable.findOne({ userID: msg.author.id, name });
+		const userPreset = await GearPresetsTable.findOne({
+			userID: msg.author.id,
+			name
+		});
 		const globalPreset = globalPresets.find(i => i.name === name);
 		if (!userPreset && !globalPreset) {
 			return msg.send(`You don't have a gear preset with that name.`);
@@ -101,7 +104,10 @@ export default class extends BotCommand {
 		newGear.ring = gearItem(preset.Ring);
 
 		if (preset.Ammo) {
-			newGear.ammo = { item: preset.Ammo, quantity: preset.AmmoQuantity! };
+			newGear.ammo = {
+				item: preset.Ammo,
+				quantity: preset.AmmoQuantity!
+			};
 			toRemove.add(preset.Ammo, preset.AmmoQuantity!);
 		}
 
@@ -137,7 +143,10 @@ export default class extends BotCommand {
 	async delete(msg: KlasaMessage, [name]: [string]) {
 		if (!name) return msg.send(`You didn't supply a name.`);
 
-		const preset = await GearPresetsTable.findOne({ userID: msg.author.id, name });
+		const preset = await GearPresetsTable.findOne({
+			userID: msg.author.id,
+			name
+		});
 		if (!preset) {
 			return msg.send(`You don't have a gear preset with that name.`);
 		}
@@ -157,7 +166,9 @@ export default class extends BotCommand {
 			return msg.send(`That's not a valid gear setup.`);
 		}
 
-		const currentPresets = await GearPresetsTable.find({ userID: msg.author.id });
+		const currentPresets = await GearPresetsTable.find({
+			userID: msg.author.id
+		});
 		if (currentPresets.some(pre => pre.name === name)) {
 			return msg.send(`You already have a gear presets called \`${name}\`.`);
 		}

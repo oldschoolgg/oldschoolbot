@@ -33,7 +33,10 @@ const Javelins: Fletchable[] = [
 		id: itemID('Mithril javelin'),
 		level: 47,
 		xp: 8,
-		inputItems: new Bank({ 'Mithril javelin heads': 1, 'Javelin shaft': 1 }),
+		inputItems: new Bank({
+			'Mithril javelin heads': 1,
+			'Javelin shaft': 1
+		}),
 		tickRate: 0.13
 	},
 	{
@@ -41,7 +44,10 @@ const Javelins: Fletchable[] = [
 		id: itemID('Adamant javelin'),
 		level: 62,
 		xp: 10,
-		inputItems: new Bank({ 'Adamant javelin heads': 1, 'Javelin shaft': 1 }),
+		inputItems: new Bank({
+			'Adamant javelin heads': 1,
+			'Javelin shaft': 1
+		}),
 		tickRate: 0.13
 	},
 	{
@@ -57,7 +63,10 @@ const Javelins: Fletchable[] = [
 		id: itemID('Amethyst javelin'),
 		level: 84,
 		xp: 13.5,
-		inputItems: new Bank({ 'Amethyst javelin heads': 1, 'Javelin shaft': 1 }),
+		inputItems: new Bank({
+			'Amethyst javelin heads': 1,
+			'Javelin shaft': 1
+		}),
 		tickRate: 0.13
 	},
 	{

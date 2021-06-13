@@ -111,8 +111,14 @@ export default class extends Task {
 			}
 		}
 
-		await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive });
-		await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive });
+		await user.addXP({
+			skillName: SkillsEnum.Woodcutting,
+			amount: wcXpToGive
+		});
+		await user.addXP({
+			skillName: SkillsEnum.Firemaking,
+			amount: fmXpToGive
+		});
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		if (user.usingPet('Flappy')) {

@@ -198,7 +198,10 @@ export const Cookables: Cookable[] = [
 		xp: 200,
 		id: itemID('Wine of zamorak'),
 		name: 'Wine of zamorak',
-		inputCookables: { [itemID(`Zamorak's grapes`)]: 1, [itemID('Jug of water')]: 1 },
+		inputCookables: {
+			[itemID(`Zamorak's grapes`)]: 1,
+			[itemID('Jug of water')]: 1
+		},
 		stopBurnAt: 125,
 		stopBurnAtCG: 125,
 		burntCookable: itemID('Jug of bad wine')

@@ -25,7 +25,7 @@ import { turaelMonsters } from './turaelMonsters';
 import { vannakaMonsters } from './vannakaMonsters';
 
 const killableMonsters: KillableMonster[] = [
-	...bosses,
+	...bossKillables,
 	...chaeldarMonsters,
 	...konarMonsters,
 	...krystiliaMonsters,
@@ -45,7 +45,7 @@ const killableMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
+
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Barrows gloves')]: 2 },
@@ -85,7 +85,7 @@ const killableMonsters: KillableMonster[] = [
 			['Armadyl chestplate', "Karil's leathertop"],
 			['Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
-		notifyDrops: resolveItems(['Pet dagannoth prime']),
+
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -160,7 +160,7 @@ const killableMonsters: KillableMonster[] = [
 			['Bandos chestplate', "Torag's platebody"],
 			['Bandos tassets', "Torag's platelegs"]
 		]),
-		notifyDrops: resolveItems(['Pet dagannoth supreme']),
+
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -499,9 +499,24 @@ export const effectiveMonsters = [
 		name: 'Kalphite King',
 		aliases: ['kalphite king', 'kk']
 	},
-	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
-	{ name: 'Mimic', aliases: ['mimic'], id: 23184, emoji: '<:Tangleroot:324127378978635778>' },
-	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' },
+	{
+		name: 'TzTok-Jad',
+		aliases: ['jad'],
+		id: 3127,
+		emoji: '<:Tzrekjad:324127379188613121>'
+	},
+	{
+		name: 'Mimic',
+		aliases: ['mimic'],
+		id: 23184,
+		emoji: '<:Tangleroot:324127378978635778>'
+	},
+	{
+		name: 'Hespori',
+		aliases: ['hespori'],
+		id: 8583,
+		emoji: '<:Casket:365003978678730772>'
+	},
 	{
 		id: KingGoldemar.id,
 		name: 'King Goldemar',

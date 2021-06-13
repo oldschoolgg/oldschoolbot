@@ -372,7 +372,9 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.isContributor]: { name: 'Contributor' },
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction' },
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' },
-	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
+	[BitField.HasPermanentEventBackgrounds]: {
+		name: 'Permanent Event Backgrounds'
+	},
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
 	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp' },
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman' }

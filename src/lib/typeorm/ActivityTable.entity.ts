@@ -22,10 +22,16 @@ export class ActivityTable extends BaseEntity {
 	@PrimaryColumn('varchar', { length: 19, name: 'user_id', nullable: false })
 	public userID!: string;
 
-	@Column('timestamp without time zone', { name: 'start_date', nullable: false })
+	@Column('timestamp without time zone', {
+		name: 'start_date',
+		nullable: false
+	})
 	public startDate!: Date;
 
-	@Column('timestamp without time zone', { name: 'finish_date', nullable: false })
+	@Column('timestamp without time zone', {
+		name: 'finish_date',
+		nullable: false
+	})
 	public finishDate!: Date;
 
 	@Column('integer', { name: 'duration', nullable: false })
@@ -42,7 +48,11 @@ export class ActivityTable extends BaseEntity {
 	@Column({ type: 'enum', enum: Activity, name: 'type', nullable: false })
 	public type!: Activity;
 
-	@PrimaryColumn('varchar', { length: 19, name: 'channel_id', nullable: false })
+	@PrimaryColumn('varchar', {
+		length: 19,
+		name: 'channel_id',
+		nullable: false
+	})
 	public channelID!: string;
 
 	@Column('json', { name: 'data', nullable: false })

@@ -37,7 +37,10 @@ export default class extends Task {
 			}
 		}
 
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Firemaking, amount: xpReceived });
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Firemaking,
+			amount: xpReceived
+		});
 
 		let str = `${user}, ${user.minionName} finished lighting ${quantity} ${burnable.name}. ${xpRes}`;
 

@@ -3,7 +3,9 @@ import { Canvas } from 'canvas-constructor';
 import { MessageAttachment } from 'discord.js';
 import * as fs from 'fs';
 
-registerFont('./src/lib/resources/osrs-font-quill-8.ttf', { family: 'Regular' });
+registerFont('./src/lib/resources/osrs-font-quill-8.ttf', {
+	family: 'Regular'
+});
 
 const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
 const mejJalChatHead = fs.readFileSync('./src/lib/resources/images/mejJal.png');

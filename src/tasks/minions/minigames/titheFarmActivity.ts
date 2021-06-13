@@ -98,7 +98,10 @@ export default class extends Task {
 			)} Bonus XP from your farmer's outfit pieces.`;
 		}
 
-		await user.addXP({ skillName: SkillsEnum.Farming, amount: Math.floor(totalXp) });
+		await user.addXP({
+			skillName: SkillsEnum.Farming,
+			amount: Math.floor(totalXp)
+		});
 
 		const newFarmingLevel = user.skillLevel(SkillsEnum.Farming);
 

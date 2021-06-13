@@ -23,16 +23,16 @@ import { ItemBank, MakePartyOptions, Skills } from '.';
 
 declare module 'klasa' {
 	interface KlasaClient {
-		public orm: Connection;
-		public oneCommandAtATimeCache: Set<string>;
-		public secondaryUserBusyCache: Set<string>;
+		orm: Connection;
+		oneCommandAtATimeCache: Set<string>;
+		secondaryUserBusyCache: Set<string>;
 		public cacheItemPrice(itemID: number): Promise<number>;
 		public query<T>(query: string, values?: string[]): Promise<T>;
-		public settings: Settings;
-		public production: boolean;
-		public _fileChangeWatcher?: FSWatcher;
-		public _badgeCache: Map<string, string>;
-		public _peakIntervalCache: Peak[];
+		settings: Settings;
+		production: boolean;
+		_fileChangeWatcher?: FSWatcher;
+		_badgeCache: Map<string, string>;
+		_peakIntervalCache: Peak[];
 		public wtf(error: Error): void;
 		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 		commentStream?: CommentStream;

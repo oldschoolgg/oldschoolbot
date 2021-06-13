@@ -28,7 +28,11 @@ export default class extends Task {
 		);
 
 		let totalXP = level * (quantity * randFloat(39, 41));
-		const xpRes = await user.addXP(SkillsEnum.Runecraft, totalXP, duration);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Runecraft,
+			amount: totalXP,
+			duration
+		});
 
 		let str = `${user}, ${user.minionName} finished completing ${quantity}x Ourania deliveries, you received ${tokens} tokens. ${xpRes}`;
 

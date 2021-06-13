@@ -33,7 +33,9 @@ import {
 } from '../lib/util/canvasUtil';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
-registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
+registerFont('./src/lib/resources/osrs-font-compact.otf', {
+	family: 'Regular'
+});
 registerFont('./src/lib/resources/osrs-font-bold.ttf', { family: 'Regular' });
 
 const bankImageFile = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/1.jpg');
@@ -377,7 +379,10 @@ export default class BankImageTask extends Task {
 			);
 
 		if (isPurple) {
-			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
+			bgImage = {
+				...bgImage,
+				image: await canvasImageFromBuffer(coxPurpleBg)
+			};
 		}
 
 		const hexColor = user?.settings.get(UserSettings.BankBackgroundHex);

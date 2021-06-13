@@ -36,7 +36,10 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank(loot, true);
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: thievingXP });
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Thieving,
+			amount: thievingXP
+		});
 
 		let str = `${user}, ${
 			user.minionName
