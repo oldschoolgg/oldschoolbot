@@ -1,10 +1,9 @@
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { getConnection } from 'typeorm';
 
 import { Events, LEVEL_99_XP } from './constants';
 import Skills from './skilling/skills';
 import { formatOrdinal } from './util/formatOrdinal';
-import { sendToChannelID } from './util/webhook';
 
 const skillsVals = Object.values(Skills);
 const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${LEVEL_99_XP}`).join(' AND ');
