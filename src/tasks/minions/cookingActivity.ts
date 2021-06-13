@@ -31,7 +31,11 @@ export default class extends Task {
 
 		const xpReceived = (quantity - burnedAmount) * cookable.xp;
 
-		const xpRes = await user.addXP(SkillsEnum.Cooking, xpReceived, duration);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Cooking,
+			amount: xpReceived,
+			duration
+		});
 
 		let str = `${user}, ${user.minionName} finished cooking ${quantity}x ${cookable.name}. ${xpRes}`;
 

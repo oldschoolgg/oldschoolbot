@@ -41,7 +41,7 @@ export default class extends Task {
 
 		user.incrementMinigameScore('AgilityArena', ticketsReceived);
 
-		await user.addXP(SkillsEnum.Agility, agilityXP);
+		await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP });
 		const nextLevel = user.skillLevel(SkillsEnum.Agility);
 
 		let str = `${user}, ${

@@ -18,7 +18,11 @@ export default class extends Task {
 
 		const xpReceived = quantity * log.xp;
 
-		const xpRes = await user.addXP(SkillsEnum.Woodcutting, xpReceived, duration);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Woodcutting,
+			amount: xpReceived,
+			duration
+		});
 
 		let loot = new Bank({
 			[log.id]: quantity
