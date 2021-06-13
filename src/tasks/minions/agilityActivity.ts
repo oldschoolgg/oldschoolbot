@@ -1,8 +1,9 @@
-import { randInt, roll } from 'e';
+import { increaseNumByPercent, randInt, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji, Events, Time } from '../../lib/constants';
+import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
@@ -46,6 +47,12 @@ export default class extends Task {
 			totalMarks = Math.ceil(totalMarks / 5);
 		}
 
+		const [hasFallyElite] = await userhasDiaryTier(user, FaladorDiary.elite);
+		const diaryBonus = hasFallyElite && course.name === 'Ardougne Rooftop Course';
+		if (diaryBonus) {
+			totalMarks = Math.floor(increaseNumByPercent(totalMarks, 25));
+		}
+
 		const xpReceived = (quantity - lapsFailed / 2) * course.xp;
 
 		await user.settings.update(
@@ -71,7 +78,11 @@ export default class extends Task {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
 		}
 
-		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}.\n${xpRes}`;
+		let str = `${user}, ${user.minionName} finished ${quantity} ${
+			course.name
+		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot} ${
+			diaryBonus ? '(2x bonus Marks for Ardougne Elite diary)' : ''
+		}.\n${xpRes}`;
 
 		if (course.id === 6) {
 			const currentLapCount = user.settings.get(UserSettings.LapsScores)[course.id];
