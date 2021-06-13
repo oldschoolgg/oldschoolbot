@@ -32,6 +32,12 @@ export default class extends Task {
 			loot.add(_loot);
 		}
 
+		const xpBonusPercent = anglerBoostPercent(user);
+		if (xpBonusPercent > 0) {
+			const bonusXP = Math.ceil(calcPercentOfNum(xpBonusPercent, totalXP));
+			totalXP += bonusXP;
+		}
+
 		let str = `${user}, ${
 			user.minionName
 		} finished completing the Fishing Trawler ${quantity}x times. You received ${await user.addXP(
@@ -39,11 +45,8 @@ export default class extends Task {
 			totalXP
 		)}`;
 
-		const xpBonusPercent = anglerBoostPercent(user);
 		if (xpBonusPercent > 0) {
-			const bonusXP = Math.ceil(calcPercentOfNum(xpBonusPercent, totalXP));
-			str += `\n\n${xpBonusPercent}% Bonus XP (${bonusXP}) for Angler outfit pieces.`;
-			totalXP += bonusXP;
+			str += ` ${xpBonusPercent}% Bonus XP for Angler outfit pieces.`;
 		}
 
 		if (hasEliteArdy) str += `\n\n50% Extra fish for Ardougne Elite diary`;
