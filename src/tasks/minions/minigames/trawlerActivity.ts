@@ -1,28 +1,12 @@
-import { KlasaUser, Task } from 'klasa';
+import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	addBanks,
-	anglerBoostPercent,
-	calcPercentOfNum,
-	skillsMeetRequirements
-} from '../../../lib/util';
+import { addBanks, anglerBoostPercent, calcPercentOfNum } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-
-function hasEliteArdougneDiary(user: KlasaUser): boolean {
-	return skillsMeetRequirements(user.rawSkills, {
-		agility: 90,
-		cooking: 91,
-		crafting: 35,
-		firemaking: 50,
-		fishing: 81,
-		fletching: 69,
-		smithing: 91
-	});
-}
 
 export default class extends Task {
 	async run(data: FishingTrawlerActivityTaskOptions) {
@@ -37,10 +21,11 @@ export default class extends Task {
 		const loot = new Bank();
 
 		let totalXP = 0;
+		const [hasEliteArdy] = await userhasDiaryTier(user, ArdougneDiary.elite);
 		for (let i = 0; i < quantity; i++) {
 			const { loot: _loot, xp } = fishingTrawlerLoot(
 				fishingLevel,
-				hasEliteArdougneDiary(user),
+				hasEliteArdy,
 				addBanks([loot.bank, allItemsOwned])
 			);
 			totalXP += xp;
@@ -49,7 +34,10 @@ export default class extends Task {
 
 		let str = `${user}, ${
 			user.minionName
-		} finished completing the Fishing Trawler ${quantity}x times. You received ${totalXP.toLocaleString()} Fishing XP.`;
+		} finished completing the Fishing Trawler ${quantity}x times. You received ${await user.addXP(
+			SkillsEnum.Fishing,
+			totalXP
+		)}`;
 
 		const xpBonusPercent = anglerBoostPercent(user);
 		if (xpBonusPercent > 0) {
@@ -58,15 +46,10 @@ export default class extends Task {
 			totalXP += bonusXP;
 		}
 
+		if (hasEliteArdy) str += `\n\n50% Extra fish for Ardougne Elite diary`;
+
 		await user.addItemsToBank(loot.bank, true);
 
-		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		await user.addXP(SkillsEnum.Fishing, totalXP);
-		const newLevel = user.skillLevel(SkillsEnum.Fishing);
-
-		if (currentLevel !== newLevel) {
-			str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
-		}
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
