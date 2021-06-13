@@ -17,7 +17,7 @@ export default class extends Task {
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Smithing,
 			amount: xpReceived,
-			duration: duration
+			duration
 		});
 
 		const loot = new Bank({

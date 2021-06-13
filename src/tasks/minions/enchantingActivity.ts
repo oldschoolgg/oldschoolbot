@@ -13,7 +13,11 @@ export default class extends Task {
 		const enchantable = Enchantables.find(fletchable => fletchable.id === itemID)!;
 
 		const xpReceived = quantity * enchantable.xp;
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Magic, amount: xpReceived, duration: duration });
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Magic,
+			amount: xpReceived,
+			duration
+		});
 
 		const loot = enchantable.output.clone().multiply(quantity);
 		await user.addItemsToBank(loot.bank, true);

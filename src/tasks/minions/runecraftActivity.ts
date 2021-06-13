@@ -20,7 +20,11 @@ export default class extends Task {
 
 		const xpReceived = essenceQuantity * rune.xp;
 
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Runecraft, amount: xpReceived, duration: duration });
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Runecraft,
+			amount: xpReceived,
+			duration
+		});
 
 		let str = `${user}, ${user.minionName} finished crafting ${runeQuantity} ${rune.name}. ${xpRes}`;
 

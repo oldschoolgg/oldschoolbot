@@ -21,9 +21,8 @@ export default class extends Task {
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Herblore,
 			amount: xpReceived,
-			duration: duration
+			duration
 		});
-
 
 		let str = `${user}, ${user.minionName} finished making ${quantity} ${mixableItem.name}s. ${xpRes}`;
 

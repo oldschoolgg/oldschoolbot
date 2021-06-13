@@ -20,7 +20,11 @@ export default class extends Task {
 			xpReceived = quantity * 56.2;
 		}
 
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Smithing, amount: xpReceived, duration: duration });
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Smithing,
+			amount: xpReceived,
+			duration
+		});
 
 		let str = `${user}, ${user.minionName} finished smelting ${quantity}x ${bar.name} at the Blast Furnace. ${xpRes}`;
 

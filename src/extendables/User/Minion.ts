@@ -694,10 +694,7 @@ export default class extends Extendable {
 			: `${prefix} ${icon} Your minion`;
 	}
 
-	public async addXP(
-		this: User,
-		params: AddXpParams
-	): Promise<string> {
+	public async addXP(this: User, params: AddXpParams): Promise<string> {
 		await this.settings.sync(true);
 		const currentXP = this.settings.get(`skills.${params.skillName}`) as number;
 		const currentLevel = this.skillLevel(params.skillName);
@@ -731,7 +728,9 @@ export default class extends Extendable {
 					Events.ServerNotification,
 					`${skill.emoji} **${this.username}'s** minion, ${
 						this.minionName
-					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(params.skillName)}!`
+					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(
+						params.skillName
+					)}!`
 				);
 				break;
 			}
@@ -744,7 +743,7 @@ export default class extends Extendable {
 				{
 					count: string;
 				}[]
-				>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" > 13034430;`);
+			>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" > 13034430;`);
 
 			let str = `${skill.emoji} **${this.username}'s** minion, ${
 				this.minionName
@@ -757,7 +756,7 @@ export default class extends Extendable {
 					{
 						count: string;
 					}[]
-					>(
+				>(
 					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" > 13034430;`
 				);
 				str += ` They are the ${formatOrdinal(
@@ -771,7 +770,9 @@ export default class extends Extendable {
 
 		let str = params.minimal
 			? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
-			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
+			: `You received ${Math.ceil(params.amount).toLocaleString()} ${
+					skillEmoji[params.skillName]
+			  } XP`;
 		if (params.duration && !params.minimal) {
 			let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;

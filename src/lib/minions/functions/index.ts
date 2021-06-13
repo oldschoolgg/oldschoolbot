@@ -11,7 +11,7 @@ import {
 	xpPercentToCannonM
 } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
-import {AddMonsterXpParams, KillableMonster} from '../types';
+import { AddMonsterXpParams, KillableMonster } from '../types';
 
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
 export { default as calculateMonsterFood } from './calculateMonsterFood';
@@ -57,19 +57,22 @@ export function resolveAttackStyles(
 	return [killableMon, osjsMon, attackStyles];
 }
 
-export async function addMonsterXP(
-	user: KlasaUser,
-	params: AddMonsterXpParams
-) {
+export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) {
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, params.monsterID);
 	const monster = killableMonsters.find(mon => mon.id === params.monsterID);
 	let hp = miscHpMap[params.monsterID] ?? 1;
 	let xpMultiplier = 1;
 	const cannonQty = params.cannonMulti
-		? randomVariation(Math.floor((xpPercentToCannonM / 100) * params.quantity), xpCannonVaryPercent)
+		? randomVariation(
+				Math.floor((xpPercentToCannonM / 100) * params.quantity),
+				xpCannonVaryPercent
+		  )
 		: params.usingCannon
-			? randomVariation(Math.floor((xpPercentToCannon / 100) * params.quantity), xpCannonVaryPercent)
-			: 0;
+		? randomVariation(
+				Math.floor((xpPercentToCannon / 100) * params.quantity),
+				xpCannonVaryPercent
+		  )
+		: 0;
 
 	const normalQty = params.quantity - cannonQty;
 
@@ -87,14 +90,13 @@ export async function addMonsterXP(
 	let res: string[] = [];
 
 	for (const style of attackStyles) {
-		res.push(await user.addXP(
-			{
+		res.push(
+			await user.addXP({
 				skillName: style,
 				amount: Math.floor(xpPerSkill),
 				duration: params.duration,
 				minimal: params.minimal ?? true
-			}
-			)
+			})
 		);
 	}
 
@@ -112,40 +114,36 @@ export async function addMonsterXP(
 		if (params.monsterID === Monsters.Kreearra.id) {
 			newSlayerXP += params.taskQuantity! * (132.5 + 124 + 132.5);
 		}
-		res.push(await user.addXP(
-			{
+		res.push(
+			await user.addXP({
 				skillName: SkillsEnum.Slayer,
 				amount: newSlayerXP,
 				duration: params.duration,
 				minimal: params.minimal ?? true
-			}
-		));
+			})
+		);
 	}
 
 	res.push(
-		await user.addXP(
-			{
-				skillName: SkillsEnum.Hitpoints,
-				amount: Math.floor(hp * params.quantity * 1.33 * xpMultiplier),
-				duration: params.duration,
-				minimal: params.minimal ?? true
-			}
-		)
+		await user.addXP({
+			skillName: SkillsEnum.Hitpoints,
+			amount: Math.floor(hp * params.quantity * 1.33 * xpMultiplier),
+			duration: params.duration,
+			minimal: params.minimal ?? true
+		})
 	);
 
 	// Add cannon xp last so it's easy to distinguish
 	if (params.usingCannon) {
 		res.push(
 			await user.addXP({
-					skillName: SkillsEnum.Ranged,
-					amount: Math.floor(hp * 2 * cannonQty),
-					duration: params.duration,
-					minimal: params.minimal ?? true
-				}
-			)
+				skillName: SkillsEnum.Ranged,
+				amount: Math.floor(hp * 2 * cannonQty),
+				duration: params.duration,
+				minimal: params.minimal ?? true
+			})
 		);
 	}
 
 	return `**XP Gains:** ${res.join(' ')}`;
 }
-

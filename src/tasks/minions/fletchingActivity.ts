@@ -15,13 +15,11 @@ export default class extends Task {
 			fletchable => fletchable.name === fletchableName
 		)!;
 
-		const xpRes = await user.addXP(
-			{
-				skillName: SkillsEnum.Fletching,
-				amount: quantity * fletchableItem.xp,
-				duration: duration
-			}
-		);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Fletching,
+			amount: quantity * fletchableItem.xp,
+			duration
+		});
 
 		let quantityToGive = fletchableItem.outputMultiple
 			? quantity * fletchableItem.outputMultiple

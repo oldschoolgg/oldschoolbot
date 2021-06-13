@@ -14,14 +14,22 @@ export default class extends Task {
 		const spell = Castables.find(i => i.id === spellID)!;
 
 		const xpReceived = quantity * spell.xp;
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Magic, amount: xpReceived, duration: duration});
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Magic,
+			amount: xpReceived,
+			duration
+		});
 
 		let craftXpReceived = 0;
 		let craftXpRes = ``;
 		if (spell.craftXp) {
 			craftXpReceived = spell.craftXp * quantity;
 
-			craftXpRes = await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftXpReceived, duration: duration });
+			craftXpRes = await user.addXP({
+				skillName: SkillsEnum.Crafting,
+				amount: craftXpReceived,
+				duration
+			});
 		}
 
 		// let craftXpRes = ``;

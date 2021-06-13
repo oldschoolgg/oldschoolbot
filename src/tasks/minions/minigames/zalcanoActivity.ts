@@ -30,7 +30,11 @@ export default class extends Task {
 			miningXP += randInt(1100, 1400);
 		}
 
-		let xpRes = await user.addXP({ skillName: SkillsEnum.Mining, amount: miningXP, duration: duration });
+		let xpRes = await user.addXP({
+			skillName: SkillsEnum.Mining,
+			amount: miningXP,
+			duration
+		});
 		xpRes += await user.addXP({ skillName: SkillsEnum.Smithing, amount: smithingXP });
 		xpRes += await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP });
 

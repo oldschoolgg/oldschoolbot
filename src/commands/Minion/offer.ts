@@ -113,12 +113,10 @@ export default class extends BotCommand {
 				}
 			}
 
-			const xpStr = await msg.author.addXP(
-				{
-					skillName: SkillsEnum.Prayer,
-					amount: quantity * 100
-				}
-			);
+			const xpStr = await msg.author.addXP({
+				skillName: SkillsEnum.Prayer,
+				amount: quantity * 100
+			});
 			await msg.author.addItemsToBank(loot, true);
 			return msg.channel.send(
 				`You offered ${quantity}x ${egg.name} to the Shrine and received ${loot} and ${xpStr}.`
@@ -144,12 +142,10 @@ export default class extends BotCommand {
 			}
 			const xp = quantity * specialBone.xp;
 			await Promise.all([
-				msg.author.addXP(
-					{
-						skillName: SkillsEnum.Construction,
-						amount: xp
-					}
-				),
+				msg.author.addXP({
+					skillName: SkillsEnum.Construction,
+					amount: xp
+				}),
 				msg.author.removeItemFromBank(specialBone.item.id, quantity)
 			]);
 			return msg.send(

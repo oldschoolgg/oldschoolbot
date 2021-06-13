@@ -331,12 +331,10 @@ export default class extends Task {
 				);
 			}
 
-			await user.addXP(
-				{
-					skillName: SkillsEnum.Farming,
-					amount: Math.floor(farmingXpReceived + bonusXP)
-				}
-			);
+			await user.addXP({
+				skillName: SkillsEnum.Farming,
+				amount: Math.floor(farmingXpReceived + bonusXP)
+			});
 			await user.addXP({
 				skillName: SkillsEnum.Woodcutting,
 				amount: Math.floor(woodcuttingXp)

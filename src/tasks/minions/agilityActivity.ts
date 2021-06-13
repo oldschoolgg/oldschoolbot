@@ -64,7 +64,11 @@ export default class extends Task {
 			)
 		);
 
-		let xpRes = await user.addXP({ skillName: SkillsEnum.Agility, amount: xpReceived, duration: duration });
+		let xpRes = await user.addXP({
+			skillName: SkillsEnum.Agility,
+			amount: xpReceived,
+			duration
+		});
 
 		const loot = new Bank({
 			'Mark of grace': totalMarks
@@ -74,7 +78,11 @@ export default class extends Task {
 			const alchedItem = getOSItem(alch.itemID);
 			const alchGP = alchedItem.highalch * alch.quantity;
 			loot.add('Coins', alchGP);
-			xpRes += ` ${await user.addXP({ skillName: SkillsEnum.Magic, amount: alch.quantity * 65, duration: duration })}`;
+			xpRes += ` ${await user.addXP({
+				skillName: SkillsEnum.Magic,
+				amount: alch.quantity * 65,
+				duration
+			})}`;
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
 		}
 

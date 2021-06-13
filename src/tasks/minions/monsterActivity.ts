@@ -40,19 +40,16 @@ export default class extends Task {
 		const quantitySlayed = isOnTask
 			? Math.min(usersTask.currentTask!.quantityRemaining, quantity)
 			: null;
-		const xpRes = await addMonsterXP(
-			user,
-			{
-				monsterID: monsterID,
-				quantity: quantity,
-				duration: duration,
-				isOnTask: isOnTask,
-				taskQuantity: quantitySlayed,
-				minimal: false,
-				usingCannon: usingCannon,
-				cannonMulti: cannonMulti
-			}
-		);
+		const xpRes = await addMonsterXP(user, {
+			monsterID,
+			quantity,
+			duration,
+			isOnTask,
+			taskQuantity: quantitySlayed,
+			minimal: false,
+			usingCannon,
+			cannonMulti
+		});
 
 		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
 

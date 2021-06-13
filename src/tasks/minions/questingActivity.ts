@@ -51,7 +51,7 @@ export default class extends Task {
 			await user.addXP({ skillName: SkillsEnum.Magic, amount: 325 });
 			str += `${Emoji.Magic} You received 325 Magic XP for completing Witch's Potion.`;
 		} else if (magicXP < 1000 && newQP > 15 && roll(2)) {
-			await user.addXP({ skillName: SkillsEnum.Magic, amount: 1000});
+			await user.addXP({ skillName: SkillsEnum.Magic, amount: 1000 });
 			str += `${Emoji.Magic} You received 1000 Magic XP for completing Fairytale I - Growing Pains.`;
 		} else if (
 			user.skillLevel(SkillsEnum.Cooking) >= 40 &&
