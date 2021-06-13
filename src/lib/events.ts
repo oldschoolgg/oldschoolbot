@@ -1,7 +1,7 @@
 import { KlasaClient, KlasaUser } from 'klasa';
 import { getConnection } from 'typeorm';
 
-import { LEVEL_99_XP } from './constants';
+import { Events, LEVEL_99_XP } from './constants';
 import Skills from './skilling/skills';
 import { formatOrdinal } from './util/formatOrdinal';
 import { sendToChannelID } from './util/webhook';
@@ -29,17 +29,16 @@ async function howManyMaxed() {
 
 export async function onMax(user: KlasaUser) {
 	const { normies, irons } = await howManyMaxed();
-	console.log(user.id);
 
-	sendToChannelID(user.client as KlasaClient, '829354476338020492', {
-		content: `🎉 ${
-			user.username
-		}'s minion just achieved level 99 in every skill, they are the **${formatOrdinal(
-			normies
-		)}** minion to be maxed${
-			user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'
-		} 🎉`
-	});
+	const str = `🎉 ${
+		user.username
+	}'s minion just achieved level 99 in every skill, they are the **${formatOrdinal(
+		normies
+	)}** minion to be maxed${
+		user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'
+	} 🎉`;
 
-	user.send(`lol gz on max`);
+	user.client.emit(Events.ServerNotification, str);
+
+	user.send(`Congratulations on maxing!`);
 }
