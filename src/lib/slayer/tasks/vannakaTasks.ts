@@ -250,6 +250,10 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		monsters: [Monsters.HarpieBugSwarm.id],
 		combatLevel: 45,
 		slayerLevel: 33,
+		levelRequirements: {
+			firemaking: 33,
+			slayer: 33
+		},
 		unlocked: true
 	},
 	{
@@ -481,7 +485,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.SpiritualRanger,
+		monster: Monsters.SpiritualMage,
 		amount: [60, 120],
 		weight: 8,
 		monsters: [
@@ -489,9 +493,12 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 			Monsters.SpiritualWarrior.id,
 			Monsters.SpiritualMage.id
 		],
+		levelRequirements: {
+			slayer: 60
+		},
 		combatLevel: 60,
 		slayerLevel: 63,
-		questPoints: 1,
+		questPoints: 3,
 		unlocked: true
 	},
 	{

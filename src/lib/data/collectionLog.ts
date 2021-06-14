@@ -1696,7 +1696,25 @@ export const capes: CollectionLogData = {
 	expert: resolveItems(['Support cape', "Gatherer's cape", "Combatant's cape", "Artisan's cape"]),
 	otherCapes: resolveItems(['Quest point hood', 'Achievement diary hood', 'Max hood']),
 	otherCapes2: resolveItems(['Quest point cape', 'Achievement diary cape(t)', 'Max cape']),
-	otherCapes3: resolveItems(['Master quest cape'])
+	otherCapes3: resolveItems(['Master quest cape']),
+	maxHoods: resolveItems([
+		'Max hood',
+		'Ardougne max hood',
+		'Infernal max hood',
+		'Assembler max hood',
+		'Imbued guthix max hood',
+		'Imbued saradomin max hood',
+		'Imbued zamorak max hood'
+	]),
+	maxCapes: resolveItems([
+		'Max cape',
+		'Ardougne max cape',
+		'Infernal max cape',
+		'Assembler max cape',
+		'Imbued guthix max cape',
+		'Imbued saradomin max cape',
+		'Imbued zamorak max cape'
+	])
 };
 
 export const quest: CollectionLogData = {
@@ -1878,6 +1896,8 @@ export const miscLog: CollectionLogData = {
 		'Occult necklace'
 	]),
 	Slayer3: resolveItems([
+		'Herb sack',
+		'Rune pouch',
 		'Basilisk jaw',
 		'Brine sabre',
 		'Leaf-bladed battleaxe',

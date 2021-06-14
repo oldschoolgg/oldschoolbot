@@ -82,7 +82,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.Drake.id,
 		name: Monsters.Drake.name,
 		aliases: Monsters.Drake.aliases,
-		timeToFinish: Time.Second * 54,
+		timeToFinish: Time.Second * 45,
 		table: Monsters.Drake,
 
 		wildy: false,

@@ -113,6 +113,8 @@ export interface Consumable {
 	itemCost: Bank;
 	qtyPerMinute?: number;
 	qtyPerKill?: number;
+	// For staff of the dead / kodai
+	isRuneCost?: boolean;
 }
 
 export interface AddXpParams {

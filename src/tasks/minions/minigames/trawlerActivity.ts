@@ -33,16 +33,26 @@ export default class extends Task {
 			loot.add(_loot);
 		}
 
-		let str = `${user}, ${
-			user.minionName
-		} finished completing the Fishing Trawler ${quantity}x times. You received ${totalXP.toLocaleString()} Fishing XP.`;
-
 		const xpBonusPercent = anglerBoostPercent(user);
 		if (xpBonusPercent > 0) {
 			const bonusXP = Math.ceil(calcPercentOfNum(xpBonusPercent, totalXP));
-			str += `\n\n${xpBonusPercent}% Bonus XP (${bonusXP}) for Angler outfit pieces.`;
 			totalXP += bonusXP;
 		}
+
+		let str = `${user}, ${
+			user.minionName
+		} finished completing the Fishing Trawler ${quantity}x times. You received ${await user.addXP(
+			{
+				skillName: SkillsEnum.Fishing,
+				amount: totalXP
+			}
+		)}`;
+
+		if (xpBonusPercent > 0) {
+			str += ` ${xpBonusPercent}% Bonus XP for Angler outfit pieces.`;
+		}
+
+		if (hasEliteArdy) str += `\n\n50% Extra fish for Ardougne Elite diary`;
 
 		if (user.hasItemEquippedAnywhere(itemID('Fishing master cape'))) {
 			loot.multiply(4);

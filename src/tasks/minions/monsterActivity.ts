@@ -166,8 +166,6 @@ export default class extends Task {
 			}
 		}
 
-		announceLoot(this.client, user, monster as KillableMonster, loot.bank);
-
 		if (gotBrock) {
 			str += `\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.`;
 		}
@@ -182,6 +180,15 @@ export default class extends Task {
 
 		if (abyssalBonus > 1) {
 			str += `\n\nOri has used the abyss to transmute you +25% bonus loot!`;
+		}
+
+		announceLoot(this.client, user, monster, loot.bank);
+		if (newSuperiorCount && newSuperiorCount > 0) {
+			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
+			user.settings.update(
+				UserSettings.Slayer.SuperiorCount,
+				oldSuperiorCount + newSuperiorCount
+			);
 		}
 
 		if (

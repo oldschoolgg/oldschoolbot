@@ -15,7 +15,18 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
-import { Activity, Emoji, Events, MAX_QP, PerkTier, skillEmoji, Time } from '../../lib/constants';
+import {
+	Activity,
+	Emoji,
+	Events,
+	LEVEL_99_XP,
+	MAX_QP,
+	MAX_TOTAL_LEVEL,
+	PerkTier,
+	skillEmoji,
+	Time
+} from '../../lib/constants';
+import { onMax } from '../../lib/events';
 import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
@@ -759,6 +770,7 @@ export default class extends Extendable {
 		}
 
 		const skill = Object.values(Skills).find(skill => skill.id === params.skillName)!;
+		const currentTotalLevel = this.totalLevel();
 
 		if (params.multiplier) {
 			params.amount *= 5;
@@ -839,10 +851,8 @@ export default class extends Extendable {
 		if (totalXPAdded > 0) {
 			XPGainsTable.insert({
 				userID: this.id,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				skill: params.skillName,
-				xp: params.amount
+				xp: Math.floor(params.amount)
 			});
 		}
 
@@ -865,16 +875,14 @@ export default class extends Extendable {
 
 		for (const num of [99, 120]) {
 			// If they just reached 99, send a server notification.
-			if (currentLevel < num && newLevel >= num) {
+			if (currentLevel < 99 && newLevel >= 99) {
 				const skillNameCased = toTitleCase(params.skillName);
 				const [usersWith] = await this.client.query<
 					{
 						count: string;
 					}[]
 				>(
-					`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" > ${
-						convertLVLtoXP(num) - 1
-					};`
+					`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${LEVEL_99_XP};`
 				);
 
 				let str = `${skill.emoji} **${this.username}'s** minion, ${
@@ -932,7 +940,11 @@ export default class extends Extendable {
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 			str += ` (${toKMB(rawXPHr)}/Hr)`;
 		}
-		if (currentLevel !== newLevel) {
+
+		if (currentTotalLevel < MAX_TOTAL_LEVEL && this.totalLevel() >= MAX_TOTAL_LEVEL) {
+			str += `\n\n**Congratulations, your minion has reached the maximum total level!**\n\n`;
+			onMax(this);
+		} else if (currentLevel !== newLevel) {
 			str += params.minimal
 				? `(Levelled up to ${newLevel})`
 				: `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
