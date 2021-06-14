@@ -4,10 +4,7 @@ import { Bank } from 'oldschooljs';
 import { chompyHats } from '../../../commands/Minion/chompyhunt';
 import { MinigameKey } from '../../../extendables/User/Minigame';
 import { MAX_QP } from '../../constants';
-<<<<<<< HEAD
 import { diaries, userhasDiaryTier } from '../../diaries';
-=======
->>>>>>> master
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
@@ -528,45 +525,33 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Cannon barrels',
-<<<<<<< HEAD
 		outputItems: {
 			[itemID('Cannon barrels')]: 1
 		},
-=======
->>>>>>> master
 		gpCost: 2_500_000,
 		qpRequired: 5
 	},
 	{
 		name: 'Cannon base',
-<<<<<<< HEAD
 		outputItems: {
 			[itemID('Cannon base')]: 1
 		},
-=======
->>>>>>> master
 		gpCost: 2_500_000,
 		qpRequired: 5
 	},
 	{
 		name: 'Cannon furnace',
-<<<<<<< HEAD
 		outputItems: {
 			[itemID('Cannon furnace')]: 1
 		},
-=======
->>>>>>> master
 		gpCost: 2_500_000,
 		qpRequired: 5
 	},
 	{
 		name: 'Cannon stand',
-<<<<<<< HEAD
 		outputItems: {
 			[itemID('Cannon stand')]: 1
 		},
-=======
->>>>>>> master
 		gpCost: 2_500_000,
 		qpRequired: 5
 	}
@@ -651,7 +636,6 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Compost',
-<<<<<<< HEAD
 		outputItems: {
 			[itemID('Compost')]: 1
 		},
@@ -663,9 +647,6 @@ const Buyables: Buyable[] = [
 			[itemID('Bank lottery ticket')]: 1
 		},
 		gpCost: 10_000_000
-=======
-		gpCost: 400
->>>>>>> master
 	},
 	{
 		name: 'Amylase pack',
@@ -688,14 +669,10 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Potato with cheese',
-<<<<<<< HEAD
 		outputItems: {
 			[itemID('Potato with cheese')]: 1
 		},
 		gpCost: 850,
-=======
-		gpCost: 650,
->>>>>>> master
 		skillsNeeded: {
 			attack: 65,
 			strength: 65
@@ -707,7 +684,6 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Ogre bow',
-<<<<<<< HEAD
 		outputItems: resolveNameBank({
 			'Ogre bow': 1
 		}),
@@ -734,10 +710,6 @@ const Buyables: Buyable[] = [
 			return [true];
 		}
 	},
-=======
-		gpCost: 10_000
-	},
->>>>>>> master
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -749,7 +721,7 @@ const Buyables: Buyable[] = [
 	...castleWarsBuyables,
 	...cmCapes,
 	...slayerBuyables,
-<<<<<<< HEAD
+	...capeBuyables,
 	{
 		name: 'Master quest cape',
 		outputItems: resolveNameBank({
@@ -758,9 +730,6 @@ const Buyables: Buyable[] = [
 		gpCost: 1_000_000_000,
 		qpRequired: 5000
 	}
-=======
-	...capeBuyables
->>>>>>> master
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
