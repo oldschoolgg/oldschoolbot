@@ -11,11 +11,8 @@ import {
 	xpPercentToCannonM
 } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
-<<<<<<< HEAD
 import KingGoldemar from '../data/killableMonsters/custom/KingGoldemar';
 import { VasaMagus } from '../data/killableMonsters/custom/VasaMagus';
-=======
->>>>>>> master
 import { AddMonsterXpParams, KillableMonster } from '../types';
 
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
