@@ -8,14 +8,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	bankHasItem,
-	formatDuration,
-	itemID,
-	itemNameFromID,
-	removeItemFromBank,
-	stringMatches
-} from '../../lib/util';
+import { bankHasItem, formatDuration, itemID, itemNameFromID, removeItemFromBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -41,22 +34,17 @@ export default class extends BotCommand {
 		}
 
 		const bar = Smithing.Bars.find(
-			bar =>
-				stringMatches(bar.name, barName) || stringMatches(bar.name.split(' ')[0], barName)
+			bar => stringMatches(bar.name, barName) || stringMatches(bar.name.split(' ')[0], barName)
 		);
 
 		if (!bar) {
 			return msg.send(
-				`Thats not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(
-					bar => bar.name
-				).join(', ')}.`
+				`Thats not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(bar => bar.name).join(', ')}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < bar.level) {
-			return msg.send(
-				`${msg.author.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`
-			);
+			return msg.send(`${msg.author.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`);
 		}
 
 		// All bars take 2.4s to smith, add on quarter of a second to account for banking/etc.
@@ -89,15 +77,15 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					bar.name
-				}s you can smelt is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`
+				)}, try a lower quantity. The highest amount of ${bar.name}s you can smelt is ${Math.floor(
+					maxTripLength / timeToSmithSingleBar
+				)}.`
 			);
 		}
 
 		if (bar.id === itemID('Dwarven bar') && msg.author.equippedPet() !== itemID('Klik')) {
 			return msg.channel.send(
-				`You try to smelt the bars, but nothing is happening. Perhaps the furnace is not hot enough to melt dwarven ore.`
+				'You try to smelt the bars, but nothing is happening. Perhaps the furnace is not hot enough to melt dwarven ore.'
 			);
 		}
 
@@ -105,9 +93,7 @@ export default class extends BotCommand {
 		let newBank: ItemBank = { ...userBank };
 		for (const [oreID, qty] of requiredOres) {
 			if (newBank[parseInt(oreID)] < qty) {
-				this.client.wtf(
-					new Error(`${msg.author.sanitizedName} had insufficient ores to be removed.`)
-				);
+				this.client.wtf(new Error(`${msg.author.sanitizedName} had insufficient ores to be removed.`));
 				return;
 			}
 			newBank = removeItemFromBank(newBank, parseInt(oreID), qty * quantity);
@@ -123,18 +109,15 @@ export default class extends BotCommand {
 		});
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		let goldGauntletMessage = ``;
-		if (
-			bar.id === itemID('Gold bar') &&
-			msg.author.hasItemEquippedAnywhere(itemID('Goldsmith gauntlets'))
-		) {
-			goldGauntletMessage = `\n\n**Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.`;
+		let goldGauntletMessage = '';
+		if (bar.id === itemID('Gold bar') && msg.author.hasItemEquippedAnywhere(itemID('Goldsmith gauntlets'))) {
+			goldGauntletMessage = '\n\n**Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.';
 		}
 
 		return msg.send(
-			`${msg.author.minionName} is now smelting ${quantity}x ${
-				bar.name
-			}, it'll take around ${formatDuration(duration)} to finish.${goldGauntletMessage}`
+			`${msg.author.minionName} is now smelting ${quantity}x ${bar.name}, it'll take around ${formatDuration(
+				duration
+			)} to finish.${goldGauntletMessage}`
 		);
 	}
 }

@@ -31,19 +31,8 @@ export const virtusOutfit = resolveItems([
 export const ancientWeapons = resolveItems(['Virtus wand', 'Virtus book', 'Zaryte bow']);
 
 export const allNexItems = [torvaOutfit, pernixOutfit, virtusOutfit, ancientWeapons].flat();
-export const allKeyPieces = resolveItems([
-	'Key piece 1',
-	'Key piece 2',
-	'Key piece 3',
-	'Key piece 4'
-]);
-export const allKeyItems = resolveItems([
-	'Frozen key',
-	'Key piece 1',
-	'Key piece 2',
-	'Key piece 3',
-	'Key piece 4'
-]);
+export const allKeyPieces = resolveItems(['Key piece 1', 'Key piece 2', 'Key piece 3', 'Key piece 4']);
+export const allKeyItems = resolveItems(['Frozen key', 'Key piece 1', 'Key piece 2', 'Key piece 3', 'Key piece 4']);
 
 export const NexMonster: KillableMonster = {
 	id: 46274,
@@ -55,11 +44,7 @@ export const NexMonster: KillableMonster = {
 		kill: makeKillTable(
 			new LootTable()
 				.every('Big bones')
-				.add(
-					new LootTable()
-						.every('Saradomin brew(4)', [2, 15])
-						.every('Super restore(4)', [1, 5])
-				)
+				.add(new LootTable().every('Saradomin brew(4)', [2, 15]).every('Super restore(4)', [1, 5]))
 				.add('Magic logs', 375)
 				.add('Green dragonhide', 400)
 				.add('Uncut dragonstone', 20)

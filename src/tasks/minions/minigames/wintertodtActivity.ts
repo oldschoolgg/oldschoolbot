@@ -9,15 +9,7 @@ import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	addBanks,
-	bankHasItem,
-	channelIsSendable,
-	multiplyBank,
-	noOp,
-	rand,
-	roll
-} from '../../../lib/util';
+import { addBanks, bankHasItem, channelIsSendable, multiplyBank, noOp, rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
@@ -88,7 +80,7 @@ export default class extends Task {
 			numberOfBraziers += randInt(1, 7);
 		}
 		const conXP = numberOfBraziers * constructionXPPerBrazier;
-		user.addXP(SkillsEnum.Construction, conXP);
+		user.addXP({ skillName: SkillsEnum.Construction, amount: conXP });
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
@@ -111,8 +103,8 @@ export default class extends Task {
 			}
 		}
 
-		await user.addXP(SkillsEnum.Woodcutting, wcXpToGive);
-		await user.addXP(SkillsEnum.Firemaking, fmXpToGive);
+		await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive });
+		await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive });
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		if (user.usingPet('Flappy')) {
@@ -128,7 +120,7 @@ export default class extends Task {
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
 			loot,
-			``,
+			'',
 			true,
 			{
 				showNewCL: 1
@@ -151,7 +143,7 @@ export default class extends Task {
 		}
 
 		if (gotToad) {
-			output += `\n\n<:wintertoad:749945071230779493> A Wintertoad sneakily hops into your bank!`;
+			output += '\n\n<:wintertoad:749945071230779493> A Wintertoad sneakily hops into your bank!';
 		}
 
 		handleTripFinish(
@@ -160,7 +152,7 @@ export default class extends Task {
 			channelID,
 			output,
 			res => {
-				user.log(`continued trip of wintertodt`);
+				user.log('continued trip of wintertodt');
 				return this.client.commands.get('wintertodt')!.run(res, []);
 			},
 			image!,

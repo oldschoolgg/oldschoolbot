@@ -4,7 +4,7 @@ import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const trackingCreatures: Creature[] = [
 	{
-		name: `Polar kebbit`,
+		name: 'Polar kebbit',
 		id: 31,
 		aliases: ['polar kebbit'],
 		level: 1,
@@ -16,7 +16,7 @@ const trackingCreatures: Creature[] = [
 		intercept: 99
 	},
 	{
-		name: `Common kebbit`,
+		name: 'Common kebbit',
 		id: 32,
 		aliases: ['common kebbit'],
 		level: 3,
@@ -28,7 +28,7 @@ const trackingCreatures: Creature[] = [
 		intercept: 99
 	},
 	{
-		name: `Feldip weasel`,
+		name: 'Feldip weasel',
 		id: 33,
 		aliases: ['feldip weasel', 'feldips'],
 		level: 7,
@@ -40,7 +40,7 @@ const trackingCreatures: Creature[] = [
 		intercept: 99
 	},
 	{
-		name: `Desert devil`,
+		name: 'Desert devil',
 		id: 34,
 		aliases: ['desert devil'],
 		level: 13,
@@ -52,7 +52,7 @@ const trackingCreatures: Creature[] = [
 		intercept: 99
 	},
 	{
-		name: `Razor-backed kebbit`,
+		name: 'Razor-backed kebbit',
 		id: 35,
 		aliases: ['razor-backed kebbit', 'razor kebbit'],
 		level: 49,
@@ -64,7 +64,7 @@ const trackingCreatures: Creature[] = [
 		intercept: 99
 	},
 	{
-		name: `Herbiboar`,
+		name: 'Herbiboar',
 		id: 36,
 		aliases: ['herbiboar', 'herbi'],
 		level: 80,

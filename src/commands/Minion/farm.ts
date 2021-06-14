@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
+import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -17,7 +18,8 @@ import {
 	formatDuration,
 	itemNameFromID,
 	removeItemFromBank,
-	stringMatches
+	stringMatches,
+	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
@@ -31,7 +33,7 @@ export default class extends BotCommand {
 			usage: '[quantity:int{1}|name:...string] [plantName:...string]',
 			aliases: ['plant'],
 			usageDelim: ' ',
-			description: `Allows a player to plant or harvest and replant seeds for farming.`,
+			description: 'Allows a player to plant or harvest and replant seeds for farming.',
 			examples: ['+plant ranarr seed', '+farm oak tree'],
 			categoryFlags: ['minion']
 		});
@@ -65,16 +67,14 @@ export default class extends BotCommand {
 			Farming.Plants.find(plants => plants.name.toLowerCase() === plantName.toLowerCase()) ??
 			Farming.Plants.find(plants =>
 				plants.aliases.some(
-					alias =>
-						stringMatches(alias, plantName) ||
-						stringMatches(alias.split(' ')[0], plantName)
+					alias => stringMatches(alias, plantName) || stringMatches(alias.split(' ')[0], plantName)
 				)
 			);
 
 		if (!plants) {
-			throw `That's not a valid seed to plant. Valid seeds are ${Farming.Plants.map(
-				plants => plants.name
-			).join(', ')}. *Make sure you are not attempting to farm 0 crops.*`;
+			throw `That's not a valid seed to plant. Valid seeds are ${Farming.Plants.map(plants => plants.name).join(
+				', '
+			)}. *Make sure you are not attempting to farm 0 crops.*`;
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Farming) < plants.level) {
@@ -118,9 +118,7 @@ export default class extends BotCommand {
 			currentWoodcuttingLevel < planted.treeWoodcuttingLevel
 		) {
 			const gpToCutTree =
-				planted.seedType === 'redwood'
-					? 2000 * storeHarvestableQuantity
-					: 200 * storeHarvestableQuantity;
+				planted.seedType === 'redwood' ? 2000 * storeHarvestableQuantity : 200 * storeHarvestableQuantity;
 			if (GP < gpToCutTree) {
 				throw `${msg.author.minionName} remembers that they do not have ${planted.treeWoodcuttingLevel} woodcutting or the ${gpToCutTree} GP required to be able to harvest the currently planted trees, and so they cancel their trip.`;
 			}
@@ -128,28 +126,21 @@ export default class extends BotCommand {
 
 		if (msg.flagArgs.supercompost || msg.flagArgs.sc) {
 			upgradeType = 'supercompost';
-			infoStr.push(`You are treating all of your patches with supercompost.`);
+			infoStr.push('You are treating all of your patches with supercompost.');
 		} else if (msg.flagArgs.ultracompost || msg.flagArgs.uc) {
 			upgradeType = 'ultracompost';
-			infoStr.push(`You are treating all of your patches with ultracompost.`);
+			infoStr.push('You are treating all of your patches with ultracompost.');
 		}
 
-		if (
-			msg.flagArgs.pay ||
-			(msg.author.settings.get(UserSettings.Minion.DefaultPay) && plants.canPayFarmer)
-		) {
+		if (msg.flagArgs.pay || (msg.author.settings.get(UserSettings.Minion.DefaultPay) && plants.canPayFarmer)) {
 			payment = true;
 		}
 
 		if (!plants.canPayFarmer && payment) {
 			throw `You cannot pay a farmer to look after your ${plants.name}s!`;
 		}
-		if (
-			!plants.canCompostandPay &&
-			payment &&
-			(upgradeType === 'supercompost' || upgradeType === 'ultracompost')
-		) {
-			throw `You do not need to use compost if you are paying a nearby farmer to look over your crops.`;
+		if (!plants.canCompostandPay && payment && (upgradeType === 'supercompost' || upgradeType === 'ultracompost')) {
+			throw 'You do not need to use compost if you are paying a nearby farmer to look over your crops.';
 		}
 
 		if (!plants.canCompostPatch && upgradeType !== null) {
@@ -171,9 +162,7 @@ export default class extends BotCommand {
 		// If no quantity provided, set it to the max PATCHES available.
 		if (quantity === null) {
 			quantity = Math.min(
-				Math.floor(
-					maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)
-				),
+				Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)),
 				numOfPatches
 			);
 		}
@@ -184,12 +173,9 @@ export default class extends BotCommand {
 
 		let duration: number = 0;
 		if (patchType.patchPlanted) {
-			duration =
-				patchType.lastQuantity *
-				(timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest);
+			duration = patchType.lastQuantity * (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest);
 			if (quantity > patchType.lastQuantity) {
-				duration +=
-					(quantity - patchType.lastQuantity) * (timePerPatchTravel + timePerPatchPlant);
+				duration += (quantity - patchType.lastQuantity) * (timePerPatchTravel + timePerPatchPlant);
 			}
 		} else {
 			duration = quantity * (timePerPatchTravel + timePerPatchPlant);
@@ -201,7 +187,7 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (msg.author.hasItemEquippedAnywhere(itemID(`Ring of endurance`))) {
+		if (msg.author.hasItemEquippedAnywhere(itemID('Ring of endurance'))) {
 			boostStr.push('10% time for Ring of Endurance');
 			duration *= 0.9;
 		}
@@ -210,9 +196,7 @@ export default class extends BotCommand {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
 			)}, try a lower quantity. The highest amount of ${plants.name} you can plant is ${
-				(Math.floor(
-					maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)
-				),
+				(Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)),
 				numOfPatches)
 			}.`;
 		}
@@ -230,13 +214,11 @@ export default class extends BotCommand {
 					throw `You don't have enough ${itemNameFromID(parseInt(seedID))}s.`;
 				}
 			}
-			const _qty = hasScroll
-				? Math.floor(calcPercentOfNum(85, qty * quantity))
-				: qty * quantity;
+			const _qty = hasScroll ? Math.floor(calcPercentOfNum(85, qty * quantity)) : qty * quantity;
 			newBank = removeItemFromBank(newBank, parseInt(seedID), _qty);
 			econBank.add(parseInt(seedID), _qty);
 			if (hasScroll) {
-				boostStr.push(`15% less seeds used from Scroll of life`);
+				boostStr.push('15% less seeds used from Scroll of life');
 			}
 		}
 
@@ -265,15 +247,9 @@ export default class extends BotCommand {
 
 		if (canPay) {
 			newBank = paymentBank;
-			infoStr.push(`You are paying a nearby farmer to look after your patches.`);
-		} else if (
-			!canPay &&
-			msg.author.settings.get(UserSettings.Minion.DefaultPay) &&
-			plants.canPayFarmer
-		) {
-			infoStr.push(
-				`You did not have enough payment to automatically pay for crop protection.`
-			);
+			infoStr.push('You are paying a nearby farmer to look after your patches.');
+		} else if (!canPay && msg.author.settings.get(UserSettings.Minion.DefaultPay) && plants.canPayFarmer) {
+			infoStr.push('You did not have enough payment to automatically pay for crop protection.');
 		}
 
 		const defaultCompostTier = msg.author.settings.get(UserSettings.Minion.DefaultCompostToUse);
@@ -286,18 +262,12 @@ export default class extends BotCommand {
 			!(!plants.canCompostandPay && payment) ||
 			(msg.author.settings.get(UserSettings.Minion.DefaultPay) && !canPay)
 		) {
-			if (
-				bankHasItem(userBank, itemID(defaultCompostTier), quantity) &&
-				plants.canCompostPatch
-			) {
+			if (bankHasItem(userBank, itemID(defaultCompostTier), quantity) && plants.canCompostPatch) {
 				upgradeType = defaultCompostTier;
 				infoStr.push(`You are treating all of your patches with ${defaultCompostTier}.`);
-			} else if (
-				bankHasItem(userBank, itemID('compost'), quantity) &&
-				plants.canCompostPatch
-			) {
+			} else if (bankHasItem(userBank, itemID('compost'), quantity) && plants.canCompostPatch) {
 				upgradeType = 'compost';
-				infoStr.push(`You are treating all of your patches with compost.`);
+				infoStr.push('You are treating all of your patches with compost.');
 			}
 		}
 
@@ -307,24 +277,17 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.FarmingCostBank,
-			new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingCostBank)).add(
-				econBank
-			).bank
-		);
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.FarmingCostBank, econBank);
 		// If user does not have something already planted, just plant the new seeds.
 		if (!patchType.patchPlanted) {
-			infoStr.unshift(
-				`${msg.author.minionName} is now planting ${quantity}x ${plants.name}.`
-			);
+			infoStr.unshift(`${msg.author.minionName} is now planting ${quantity}x ${plants.name}.`);
 		} else if (patchType.patchPlanted) {
-			if (!planted)
-				throw `This error shouldn't happen. Just to clear possible undefined error`;
+			if (!planted) throw "This error shouldn't happen. Just to clear possible undefined error";
 
 			if (
 				bankHasItem(userBank, itemID('Magic secateurs')) ||
-				msg.author.hasItemEquippedAnywhere(`Magic secateurs`)
+				msg.author.hasItemEquippedAnywhere('Magic secateurs')
 			) {
 				boostStr.push('10% crop yield for Magic Secateurs');
 			}
@@ -332,7 +295,7 @@ export default class extends BotCommand {
 			if (
 				bankHasItem(userBank, itemID('Farming cape')) ||
 				bankHasItem(userBank, itemID('Farming cape(t)')) ||
-				msg.author.hasItemEquippedAnywhere([`Farming cape(t)`, `Farming cape`])
+				msg.author.hasItemEquippedAnywhere(['Farming cape(t)', 'Farming cape'])
 			) {
 				boostStr.push('5% crop yield for Farming Skillcape');
 			}
@@ -340,6 +303,14 @@ export default class extends BotCommand {
 			infoStr.unshift(
 				`${msg.author.minionName} is now harvesting ${storeHarvestableQuantity}x ${storeHarvestablePlant}, and then planting ${quantity}x ${plants.name}.`
 			);
+		}
+
+		for (const [diary, tier] of [[ArdougneDiary, ArdougneDiary.elite]] as const) {
+			const [has] = await userhasDiaryTier(msg.author, tier);
+			if (has) {
+				boostStr.push(`4% for ${diary.name} ${tier.name}`);
+				duration *= 0.96;
+			}
 		}
 
 		await addSubTaskToActivityTask<FarmingActivityTaskOptions>(this.client, {
@@ -359,7 +330,7 @@ export default class extends BotCommand {
 
 		return msg.send(
 			`${infoStr.join(' ')}\n\nIt'll take around ${formatDuration(duration)} to finish.\n\n${
-				boostStr.length > 0 ? `**Boosts**: ` : ``
+				boostStr.length > 0 ? '**Boosts**: ' : ''
 			}${boostStr.join(', ')}`
 		);
 	}

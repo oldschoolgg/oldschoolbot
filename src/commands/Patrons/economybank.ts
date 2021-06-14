@@ -27,13 +27,13 @@ export default class extends BotCommand {
 				select key as itemID, sum(value::int) as itemQTY
 				from users
 				cross join jsonb_each_text(bank)
-				${msg.flagArgs.im ? ` where users."minion.ironman" = true ` : ``}
+				${msg.flagArgs.im ? ' where users."minion.ironman" = true ' : ''}
 				group by key
 			 ) s where itemQTY >= ${IGNORE_LESS_THEN};`;
 		const queryBank = await this.client.query<{ banks: ItemBank }[]>(query);
 		return msg.channel.sendBankImage({
 			bank: queryBank[0].banks,
-			title: `Entire Economy Bank`
+			title: 'Entire Economy Bank'
 		});
 	}
 }

@@ -5,6 +5,14 @@ const logs: Log[] = [
 	{
 		level: 1,
 		xp: 25,
+		id: 2862,
+		name: 'Achey tree logs',
+		respawnTime: 10,
+		qpRequired: 4
+	},
+	{
+		level: 1,
+		xp: 25,
 		id: 1511,
 		name: 'Logs',
 		respawnTime: 3,

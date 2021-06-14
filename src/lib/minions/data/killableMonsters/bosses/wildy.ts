@@ -18,12 +18,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		itemsRequired: resolveItems([
-			"Verac's helm",
-			"Verac's brassard",
-			"Verac's plateskirt",
-			"Verac's flail"
-		]),
+		itemsRequired: resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -50,12 +45,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: resolveItems([
-			"Verac's helm",
-			"Verac's brassard",
-			"Verac's plateskirt",
-			"Verac's flail"
-		]),
+		itemsRequired: resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]),
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
@@ -75,12 +65,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		itemsRequired: resolveItems([
-			"Verac's helm",
-			"Verac's brassard",
-			"Verac's plateskirt",
-			"Verac's flail"
-		]),
+		itemsRequired: resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]),
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
@@ -130,13 +115,10 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		qpRequired: 0,
-		itemInBankBoosts: [
-			{ [itemID("Karil's leathertop")]: 3 },
-			{ [itemID("Karil's leatherskirt")]: 3 }
-		],
+		itemInBankBoosts: [{ [itemID("Karil's leathertop")]: 3 }, { [itemID("Karil's leatherskirt")]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.125,
-		healAmountNeeded: 15 * 20,
+		healAmountNeeded: 12 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
@@ -154,7 +136,7 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.25,
-		healAmountNeeded: 15 * 20,
+		healAmountNeeded: 11 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
@@ -171,24 +153,13 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			'Anti-dragon shield',
 			['Armadyl crossbow', 'Rune crossbow', 'Twisted bow', 'Dragon hunter crossbow'],
-			[
-				"Black d'hide body",
-				"Black d'hide body (g)",
-				"Black d'hide body (t)",
-				"Karil's leathertop"
-			],
-			[
-				"Black d'hide chaps",
-				"Black d'hide chaps (g)",
-				"Black d'hide chaps (t)",
-				"Karil's leatherskirt"
-			]
+			["Black d'hide body", "Black d'hide body (g)", "Black d'hide body (t)", "Karil's leathertop"],
+			["Black d'hide chaps", "Black d'hide chaps (g)", "Black d'hide chaps (t)", "Karil's leatherskirt"]
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
 				[itemID('Armadyl crossbow')]: 6,
-				[itemID('Dragon hunter crossbow')]: 8,
 				[itemID('Twisted bow')]: 10
 			}
 		],
@@ -209,10 +180,7 @@ const killableBosses: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 8,
 		qpRequired: 0,
-		itemInBankBoosts: [
-			{ [itemID('Occult necklace')]: 10 },
-			{ [itemID('Harmonised nightmare staff')]: 10 }
-		],
+		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }, { [itemID('Harmonised nightmare staff')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.3,
 		healAmountNeeded: 15 * 20,

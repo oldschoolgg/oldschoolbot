@@ -33,12 +33,7 @@ export default class POHCommand extends BotCommand {
 			altProtection: true,
 			categoryFlags: ['minion'],
 			description: 'Allows you to access and build in your POH.',
-			examples: [
-				'+poh build demonic throne',
-				'+poh',
-				'+poh items',
-				'+poh destroy demonic throne'
-			],
+			examples: ['+poh build demonic throne', '+poh', '+poh items', '+poh destroy demonic throne'],
 			subcommands: true,
 			usage: '[build|destroy|items|mountItem|wallkit] [input:...str]',
 			usageDelim: ' '
@@ -59,14 +54,14 @@ export default class POHCommand extends BotCommand {
 
 		if (!input || !selectedKit) {
 			return msg.send(
-				`Your current wallkit is the '${
-					currentWallkit.name
-				}' wallkit. The available wallkits are: ${wallkits.map(i => i.name).join(', ')}.`
+				`Your current wallkit is the '${currentWallkit.name}' wallkit. The available wallkits are: ${wallkits
+					.map(i => i.name)
+					.join(', ')}.`
 			);
 		}
 
 		if (currentWallkit.imageID === selectedKit.imageID) {
-			return msg.send(`This is already your wallkit.`);
+			return msg.send('This is already your wallkit.');
 		}
 
 		const bitfield = msg.author.settings.get(UserSettings.BitField);
@@ -81,7 +76,7 @@ export default class POHCommand extends BotCommand {
 		}
 		poh.backgroundID = selectedKit.imageID;
 		await poh.save();
-		return msg.send(``, await this.genImage(poh));
+		return msg.send('', await this.genImage(poh));
 	}
 
 	async items(msg: KlasaMessage) {
@@ -105,14 +100,12 @@ export default class POHCommand extends BotCommand {
 
 		const obj = PoHObjects.find(i => stringMatches(i.name, name));
 		if (!obj) {
-			return msg.send(`That's not a valid thing to build in your PoH.`);
+			return msg.send("That's not a valid thing to build in your PoH.");
 		}
 
 		const level = msg.author.skillLevel(SkillsEnum.Construction);
 		if (level < obj.level) {
-			return msg.send(
-				`You need level ${obj.level} Construction to build a ${obj.name} in your house.`
-			);
+			return msg.send(`You need level ${obj.level} Construction to build a ${obj.name} in your house.`);
 		}
 
 		const inPlace = poh[obj.slot];
@@ -131,28 +124,20 @@ export default class POHCommand extends BotCommand {
 		}
 
 		if (obj.itemCost) {
-			const userBank = msg.author
-				.bank()
-				.add('Coins', msg.author.settings.get(UserSettings.GP));
+			const userBank = msg.author.bank().add('Coins', msg.author.settings.get(UserSettings.GP));
 			if (!userBank.has(obj.itemCost.bank)) {
-				return msg.send(
-					`You don't have enough items to build a ${obj.name}, you need ${obj.itemCost}.`
-				);
+				return msg.send(`You don't have enough items to build a ${obj.name}, you need ${obj.itemCost}.`);
 			}
 			if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
 				let str = `${msg.author}, say \`confirm\` to confirm that you want to build a ${obj.name} using ${obj.itemCost}.`;
 				if (inPlace !== null) {
-					str += ` You will lose the ${
-						getPOHObject(inPlace).name
-					} that you currently have there.`;
+					str += ` You will lose the ${getPOHObject(inPlace).name} that you currently have there.`;
 				}
 				const sellMsg = await msg.channel.send(str);
 
 				try {
 					await msg.channel.awaitMessages(
-						_msg =>
-							_msg.author.id === msg.author.id &&
-							_msg.content.toLowerCase() === 'confirm',
+						_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 						{
 							max: 1,
 							time: Time.Second * 15,
@@ -160,28 +145,21 @@ export default class POHCommand extends BotCommand {
 						}
 					);
 				} catch (err) {
-					return sellMsg.edit(`Cancelled.`);
+					return sellMsg.edit('Cancelled.');
 				}
 			}
 			await msg.author.removeItemsFromBank(obj.itemCost.bank);
-			updateBankSetting(
-				this.client,
-				ClientSettings.EconomyStats.ConstructCostBank,
-				obj.itemCost
-			);
+			updateBankSetting(this.client, ClientSettings.EconomyStats.ConstructCostBank, obj.itemCost);
 		}
 
 		poh[obj.slot] = obj.id;
 		await poh.save();
-		return msg.send(
-			`You built a ${obj.name} in your house, using ${obj.itemCost}.`,
-			await this.genImage(poh)
-		);
+		return msg.send(`You built a ${obj.name} in your house, using ${obj.itemCost}.`, await this.genImage(poh));
 	}
 
 	async mountItem(msg: KlasaMessage, [name]: [string]) {
 		if (1 < 2) {
-			return msg.send(`Item mounting is currently disabled.`);
+			return msg.send('Item mounting is currently disabled.');
 		}
 		const poh = await msg.author.getPOH();
 		if (!name) {
@@ -189,12 +167,12 @@ export default class POHCommand extends BotCommand {
 		}
 
 		if (poh.mountedItem === null) {
-			return msg.send(`You need to build a mount for the item first.`);
+			return msg.send('You need to build a mount for the item first.');
 		}
 
 		const item = getOSItem(name);
 		if (['Magic stone', 'Coins'].includes(item.name)) {
-			return msg.send(`You can't mount this item.`);
+			return msg.send("You can't mount this item.");
 		}
 
 		const userBank = msg.author.bank();
@@ -202,7 +180,7 @@ export default class POHCommand extends BotCommand {
 			return msg.send(`You don't have 1x ${item.name}.`);
 		}
 		if (userBank.amount('Magic stone') < 2) {
-			return msg.send(`You don't have 2x Magic stone.`);
+			return msg.send("You don't have 2x Magic stone.");
 		}
 		const currItem = poh.mountedItem === 1112 ? null : poh.mountedItem;
 
@@ -216,9 +194,7 @@ export default class POHCommand extends BotCommand {
 		return msg.send(
 			`You mounted a ${item.name} in your house, using 2x Magic stone and 1x ${
 				item.name
-			} (given back when another item is mounted).${
-				currItem ? ` Refunded 1x ${itemNameFromID(currItem)}.` : ''
-			}`,
+			} (given back when another item is mounted).${currItem ? ` Refunded 1x ${itemNameFromID(currItem)}.` : ''}`,
 			await this.genImage(poh)
 		);
 	}
@@ -226,7 +202,7 @@ export default class POHCommand extends BotCommand {
 	async destroy(msg: KlasaMessage, [name]: [string]) {
 		const obj = PoHObjects.find(i => stringMatches(i.name, name));
 		if (!obj) {
-			return msg.send(`That's not a valid thing to build in your PoH.`);
+			return msg.send("That's not a valid thing to build in your PoH.");
 		}
 
 		const poh = await msg.author.getPOH();
@@ -237,9 +213,7 @@ export default class POHCommand extends BotCommand {
 			await poh.save();
 			await msg.author.addItemsToBank({ [inPlace!]: 1 });
 			return msg.send(
-				`You removed a ${obj.name} from your house, and were refunded 1x ${itemNameFromID(
-					inPlace!
-				)}.`,
+				`You removed a ${obj.name} from your house, and were refunded 1x ${itemNameFromID(inPlace!)}.`,
 				await this.genImage(poh)
 			);
 		}

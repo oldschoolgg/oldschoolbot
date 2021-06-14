@@ -109,9 +109,7 @@ export async function fetchSponsors() {
 }
 
 export async function getUserFromGithubID(githubID: string) {
-	const result = await client.query<{ id: string }[]>(
-		`SELECT id FROM users WHERE github_id = '${githubID}';`
-	);
+	const result = await client.query<{ id: string }[]>(`SELECT id FROM users WHERE github_id = '${githubID}';`);
 	if (result.length === 0) return null;
 	return client.users.fetch(result[0].id);
 }

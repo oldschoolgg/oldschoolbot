@@ -30,9 +30,7 @@ export default class extends Task {
 				: `${user}, ${user.minionName} finished charging ${amnt} rings of wealth.`;
 
 		if (loot.length !== 0 && deaths > 0) {
-			str += ` They died ${deaths}x times, causing the loss of ${
-				wealthInventorySize * deaths
-			} rings of wealth.`;
+			str += ` They died ${deaths}x times, causing the loss of ${wealthInventorySize * deaths} rings of wealth.`;
 		}
 
 		await user.addItemsToBank(loot.bank, true);

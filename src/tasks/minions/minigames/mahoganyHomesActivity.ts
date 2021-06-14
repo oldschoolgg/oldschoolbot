@@ -19,12 +19,14 @@ export default class extends Task {
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xp);
 		}
-		const xpRes = await user.addXP(SkillsEnum.Construction, xp + bonusXP, duration);
-
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Construction,
+			amount: xp + bonusXP,
+			duration
+		});
 		if (user.usingPet('Flappy')) {
 			points *= 2;
 		}
-
 		await user.settings.update(
 			UserSettings.CarpenterPoints,
 			user.settings.get(UserSettings.CarpenterPoints) + points
@@ -34,7 +36,7 @@ export default class extends Task {
 			user.minionName
 		} finished doing ${quantity}x Mahogany Homes contracts, you received ${points} Carpenter points. ${xpRes} ${
 			user.usingPet('Flappy')
-				? ` \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.`
+				? ' \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.'
 				: ''
 		}`;
 
@@ -48,7 +50,7 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued trip of mahogany homes`);
+				user.log('continued trip of mahogany homes');
 				return (this.client.commands.get('mh') as MahoganyHomesCommand).build(res);
 			},
 			undefined,

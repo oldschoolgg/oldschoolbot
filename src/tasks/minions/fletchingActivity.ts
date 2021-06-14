@@ -11,19 +11,15 @@ export default class extends Task {
 		let { fletchableName, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
 
-		const fletchableItem = Fletching.Fletchables.find(
-			fletchable => fletchable.name === fletchableName
-		)!;
+		const fletchableItem = Fletching.Fletchables.find(fletchable => fletchable.name === fletchableName)!;
 
-		const xpRes = await user.addXP(
-			SkillsEnum.Fletching,
-			quantity * fletchableItem.xp,
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Fletching,
+			amount: quantity * fletchableItem.xp,
 			duration
-		);
+		});
 
-		let quantityToGive = fletchableItem.outputMultiple
-			? quantity * fletchableItem.outputMultiple
-			: quantity;
+		let quantityToGive = fletchableItem.outputMultiple ? quantity * fletchableItem.outputMultiple : quantity;
 
 		const loot = new Bank({ [fletchableItem.id]: quantityToGive });
 		await user.addItemsToBank(loot, true);
@@ -34,10 +30,8 @@ export default class extends Task {
 			channelID,
 			`${user}, ${user.minionName} finished fletching ${quantity}x ${fletchableItem.name}, and received ${loot}. ${xpRes}`,
 			res => {
-				user.log(`continued fletching trip`);
-				return this.client.commands
-					.get('fletch')!
-					.run(res, [quantity, fletchableItem.name]);
+				user.log('continued fletching trip');
+				return this.client.commands.get('fletch')!.run(res, [quantity, fletchableItem.name]);
 			},
 			undefined,
 			data,

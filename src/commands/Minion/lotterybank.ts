@@ -29,21 +29,16 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [[initBankToSell, totalPrice]]: [[Bank, number]]) {
 		if (msg.author.isIronman) {
-			return msg.channel.send(`Ironmen cannot participate in the lottery.`);
+			return msg.channel.send('Ironmen cannot participate in the lottery.');
 		}
 		const bankToSell = initBankToSell.filter((i, qty) => {
 			if (msg.flagArgs.bypass && msg.author.id === '157797566833098752') return true;
-			let stackPrice =
-				(this.client.settings!.get(ClientSettings.Prices)[i.id]?.price ?? 1) * qty;
-			return (
-				hasSet.has(i.id) ||
-				allPetIDs.includes(i.id) ||
-				(i.tradeable_on_ge && stackPrice > 3_000_000)
-			);
+			let stackPrice = (this.client.settings!.get(ClientSettings.Prices)[i.id]?.price ?? 1) * qty;
+			return hasSet.has(i.id) || allPetIDs.includes(i.id) || (i.tradeable_on_ge && stackPrice > 3_000_000);
 		});
 
 		if (bankToSell.items().some(i => i[0].id >= 40_000 && i[0].id <= 45_000)) {
-			return msg.send(`You can't add that item to the lottery.`);
+			return msg.send("You can't add that item to the lottery.");
 		}
 
 		if (bankToSell.amount('Lottery ticket')) {
@@ -56,7 +51,7 @@ export default class extends BotCommand {
 		let amountOfTickets = Math.floor(totalPrice / 10_000_000);
 
 		if (amountOfTickets < 5) {
-			return msg.send(`Those items aren't worth enough.`);
+			return msg.send("Those items aren't worth enough.");
 		}
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
@@ -66,13 +61,11 @@ export default class extends BotCommand {
 
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 					options
 				);
 			} catch (err) {
-				return sellMsg.edit(`Cancelling bank lottery sacrifice.`);
+				return sellMsg.edit('Cancelling bank lottery sacrifice.');
 			}
 		}
 

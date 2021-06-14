@@ -72,17 +72,17 @@ export default class extends Task {
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
-
-			if (roll(4000)) {
-				loot[23929] = 1;
-			}
-
 			if (duration > Time.Minute * 20 && roll(10)) {
 				loot = multiplyBank(loot, 2);
 				loot[getRandomMysteryBox()] = 1;
 			}
-
-			await addMonsterXP(user, NIGHTMARE_ID, Math.ceil(quantity / users.length), duration);
+			await addMonsterXP(user, {
+				monsterID: NIGHTMARE_ID,
+				quantity: Math.ceil(quantity / users.length),
+				duration,
+				isOnTask: false,
+				taskQuantity: null
+			});
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
@@ -91,9 +91,7 @@ export default class extends Task {
 				isImportantItemForMonster(parseInt(itemID), NightmareMonster)
 			);
 
-			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(
-				loot
-			)}||\n`;
+			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
 
 			announceLoot(this.client, leaderUser, NightmareMonster, loot, {
 				leader: leaderUser,
@@ -123,19 +121,12 @@ export default class extends Task {
 		} else {
 			const { image } = await this.client.tasks
 				.get('bankImage')!
-				.generateBankImage(
-					teamsLoot[userID],
-					`${quantity}x Nightmare`,
-					true,
-					{ showNewCL: 1 },
-					leaderUser
-				);
+				.generateBankImage(teamsLoot[userID], `${quantity}x Nightmare`, true, { showNewCL: 1 }, leaderUser);
 			sendToChannelID(this.client, channelID, {
 				content: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 					NightmareMonster.name
 				}, you died ${deaths[userID] ?? 0} times. Your Nightmare KC is now ${
-					(leaderUser.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ??
-						0) + quantity
+					(leaderUser.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 0) + quantity
 				}.`,
 				image: image!
 			});

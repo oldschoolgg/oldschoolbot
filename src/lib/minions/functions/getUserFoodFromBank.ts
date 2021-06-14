@@ -5,10 +5,7 @@ import { Eatable, Eatables } from '../../data/eatables';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { ItemBank } from '../../types';
 
-export default function getUserFoodFromBank(
-	user: KlasaUser,
-	totalHealingNeeded: number
-): false | ItemBank {
+export default function getUserFoodFromBank(user: KlasaUser, totalHealingNeeded: number): false | ItemBank {
 	const userBank = user.settings.get(UserSettings.Bank);
 	let totalHealingCalc = totalHealingNeeded;
 	let foodToRemove: ItemBank = {};

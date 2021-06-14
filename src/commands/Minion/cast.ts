@@ -38,28 +38,22 @@ export default class extends BotCommand {
 
 		if (!spell) {
 			return msg.send(
-				`That is not a valid spell to cast, the spells you can cast are: ${Castables.map(
-					i => i.name
-				).join(', ')}.`
+				`That is not a valid spell to cast, the spells you can cast are: ${Castables.map(i => i.name).join(
+					', '
+				)}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) < spell.level) {
-			return msg.send(
-				`${msg.author.minionName} needs ${spell.level} Magic to cast ${spell.name}.`
-			);
+			return msg.send(`${msg.author.minionName} needs ${spell.level} Magic to cast ${spell.name}.`);
 		}
 
 		if (spell.craftLevel && msg.author.skillLevel(SkillsEnum.Crafting) < spell.craftLevel) {
-			return msg.send(
-				`${msg.author.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`
-			);
+			return msg.send(`${msg.author.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`);
 		}
 
 		if (spell.qpRequired && msg.author.settings.get(UserSettings.QP) < spell.qpRequired) {
-			return msg.send(
-				`${msg.author.minionName} needs ${spell.qpRequired} QP to cast ${spell.name}.`
-			);
+			return msg.send(`${msg.author.minionName} needs ${spell.qpRequired} QP to cast ${spell.name}.`);
 		}
 
 		await msg.author.settings.sync(true);
@@ -82,9 +76,9 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					spell.name
-				}s you can cast is ${Math.floor(maxTripLength / timeToEnchantTen)}.`
+				)}, try a lower quantity. The highest amount of ${spell.name}s you can cast is ${Math.floor(
+					maxTripLength / timeToEnchantTen
+				)}.`
 			);
 		}
 		const cost = determineRunes(msg.author, spell.input.clone().multiply(quantity));
@@ -110,10 +104,7 @@ export default class extends BotCommand {
 		await msg.author.removeItemsFromBank(cost.bank);
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.MagicCostBank,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.MagicCostBank),
-				cost.bank
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.MagicCostBank), cost.bank])
 		);
 
 		await addSubTaskToActivityTask<CastingActivityTaskOptions>(this.client, {
@@ -137,10 +128,10 @@ export default class extends BotCommand {
 		}
 
 		return msg.send(
-			`${msg.author.minionName} is now casting ${quantity}x ${
-				spell.name
-			}, it'll take around ${formatDuration(duration)} to finish. Removed ${cost}${
-				spell.gpCost ? ` and ${gpCost} Coins` : ``
+			`${msg.author.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDuration(
+				duration
+			)} to finish. Removed ${cost}${
+				spell.gpCost ? ` and ${gpCost} Coins` : ''
 			} from your bank. **${magicXpHr}** ${craftXpHr}`
 		);
 	}

@@ -1,7 +1,11 @@
+import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
 import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
 import { metamorphPets } from './collectionLog';
+import { capeCreatables } from './creatables/capes';
+import { ornamentKits } from './creatables/ornaments';
+import { slayerCreatables } from './creatables/slayer';
 import { dyedCreatables } from './dyedCreatables';
 
 export interface Createable {
@@ -14,6 +18,7 @@ export interface Createable {
 	noCl?: boolean;
 	GPCost?: number;
 	cantBeInCL?: boolean;
+	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 }
 
 const chaoticCreatables: Createable[] = [
@@ -451,279 +456,8 @@ const brokenItems: Createable[] = [
 const lockedItems: Createable[] = [
 	{
 		name: 'Unlock dragon defender',
-		inputItems: {
-			[itemID('Dragon defender (l)')]: 1
-		},
-		outputItems: {
-			[itemID('Dragon defender')]: 1
-		},
-		noCl: true
-	}
-];
-
-const ornamentKits: Createable[] = [
-	{
-		name: 'Dragon defender (t)',
-		inputItems: resolveNameBank({ 'Dragon defender': 1, 'Dragon defender ornament kit': 1 }),
-		outputItems: resolveNameBank({ 'Dragon defender (t)': 1 })
-	},
-	{
-		name: 'Dragon defender',
-		inputItems: resolveNameBank({ 'Dragon defender (t)': 1 }),
-		outputItems: resolveNameBank({ 'Dragon defender': 1, 'Dragon defender ornament kit': 1 }),
-		noCl: true
-	},
-	{
-		name: 'Rune defender (t)',
-		inputItems: resolveNameBank({ 'Rune defender': 1, 'Rune defender ornament kit': 1 }),
-		outputItems: resolveNameBank({ 'Rune defender (t)': 1 })
-	},
-	{
-		name: 'Rune defender',
-		inputItems: resolveNameBank({ 'Rune defender (t)': 1 }),
-		outputItems: resolveNameBank({ 'Rune defender': 1, 'Rune defender ornament kit': 1 }),
-		noCl: true
-	},
-	{
-		name: 'Dragon pickaxe (or)',
-		inputItems: resolveNameBank({ 'Dragon pickaxe': 1, 'Zalcano shard': 1 }),
-		outputItems: resolveNameBank({ 'Dragon pickaxe (or)': 1 })
-	},
-	{
-		name: 'Dragon pickaxe',
-		inputItems: resolveNameBank({ 'Dragon pickaxe (or)': 1 }),
-		outputItems: resolveNameBank({ 'Dragon pickaxe': 1, 'Zalcano shard': 1 }),
-		noCl: true
-	},
-	{
-		name: 'Dragon sq shield (g)',
-		inputItems: resolveNameBank({ 'Dragon sq shield ornament kit': 1, 'Dragon sq shield': 1 }),
-		outputItems: resolveNameBank({ 'Dragon sq shield (g)': 1 })
-	},
-	{
-		name: 'Revert dragon sq shield',
-		inputItems: resolveNameBank({ 'Dragon sq shield (g)': 1 }),
-		outputItems: resolveNameBank({ 'Dragon sq shield ornament kit': 1, 'Dragon sq shield': 1 }),
-		noCl: true
-	},
-	{
-		name: 'Dragon platelegs (g)',
-		inputItems: resolveNameBank({ 'Dragon platelegs': 1, 'Dragon legs/skirt ornament kit': 1 }),
-		outputItems: resolveNameBank({ 'Dragon platelegs (g)': 1 })
-	},
-	{
-		name: 'Dragon platelegs',
-		inputItems: resolveNameBank({ 'Dragon platelegs (g)': 1 }),
-		outputItems: resolveNameBank({
-			'Dragon platelegs': 1,
-			'Dragon legs/skirt ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Dragon plateskirt (g)',
-		inputItems: resolveNameBank({
-			'Dragon plateskirt': 1,
-			'Dragon legs/skirt ornament kit': 1
-		}),
-		outputItems: resolveNameBank({ 'Dragon plateskirt (g)': 1 })
-	},
-	{
-		name: 'Dragon plateskirt',
-		inputItems: resolveNameBank({ 'Dragon plateskirt (g)': 1 }),
-		outputItems: resolveNameBank({
-			'Dragon plateskirt': 1,
-			'Dragon legs/skirt ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Dragon chainbody (g)',
-		inputItems: resolveNameBank({
-			'Dragon chainbody': 1,
-			'Dragon chainbody ornament kit': 1
-		}),
-		outputItems: resolveNameBank({ 'Dragon chainbody (g)': 1 })
-	},
-	{
-		name: 'Dragon chainbody',
-		inputItems: resolveNameBank({ 'Dragon chainbody (g)': 1 }),
-		outputItems: resolveNameBank({
-			'Dragon chainbody': 1,
-			'Dragon chainbody ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Amulet of fury (or)',
-		inputItems: resolveNameBank({ 'Amulet of fury': 1, 'Fury ornament kit': 1 }),
-		outputItems: resolveNameBank({
-			'Amulet of fury (or)': 1
-		})
-	},
-	{
-		name: 'Amulet of fury',
-		inputItems: resolveNameBank({
-			'Amulet of fury (or)': 1
-		}),
-		outputItems: resolveNameBank({ 'Amulet of fury': 1, 'Fury ornament kit': 1 }),
-		noCl: true
-	},
-	// Godswords
-	{
-		name: 'Zamorak godsword (or)',
-		inputItems: resolveNameBank({ 'Zamorak godsword': 1, 'Zamorak godsword ornament kit': 1 }),
-		outputItems: resolveNameBank({
-			'Zamorak godsword (or)': 1
-		})
-	},
-	{
-		name: 'Revert zamorak godsword',
-		inputItems: resolveNameBank({
-			'Zamorak godsword (or)': 1
-		}),
-		outputItems: resolveNameBank({ 'Zamorak godsword': 1, 'Zamorak godsword ornament kit': 1 }),
-		noCl: true
-	},
-	{
-		name: 'Bandos godsword (or)',
-		inputItems: resolveNameBank({ 'Bandos godsword': 1, 'Bandos godsword ornament kit': 1 }),
-		outputItems: resolveNameBank({
-			'Bandos godsword (or)': 1
-		})
-	},
-	{
-		name: 'Revert bandos godsword',
-		inputItems: resolveNameBank({
-			'Bandos godsword (or)': 1
-		}),
-		outputItems: resolveNameBank({ 'Bandos godsword': 1, 'Bandos godsword ornament kit': 1 }),
-		noCl: true
-	},
-	{
-		name: 'Saradomin godsword (or)',
-		inputItems: resolveNameBank({
-			'Saradomin godsword': 1,
-			'Saradomin godsword ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Saradomin godsword (or)': 1
-		})
-	},
-	{
-		name: 'Revert saradomin godsword',
-		inputItems: resolveNameBank({
-			'Saradomin godsword (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Saradomin godsword': 1,
-			'Saradomin godsword ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Armadyl godsword (or)',
-		inputItems: resolveNameBank({
-			'Armadyl godsword': 1,
-			'Armadyl godsword ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Armadyl godsword (or)': 1
-		})
-	},
-	{
-		name: 'Revert Armadyl godsword',
-		inputItems: resolveNameBank({
-			'Armadyl godsword (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Armadyl godsword': 1,
-			'Armadyl godsword ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Amulet of torture (or)',
-		inputItems: resolveNameBank({
-			'Amulet of torture': 1,
-			'Torture ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Amulet of torture (or)': 1
-		})
-	},
-	{
-		name: 'Revert amulet of torture',
-		inputItems: resolveNameBank({
-			'Amulet of torture (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Amulet of torture': 1,
-			'Torture ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Necklace of anguish (or)',
-		inputItems: resolveNameBank({
-			'Necklace of anguish': 1,
-			'Anguish ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Necklace of anguish (or)': 1
-		})
-	},
-	{
-		name: 'Revert necklace of anguish',
-		inputItems: resolveNameBank({
-			'Necklace of anguish (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Necklace of anguish': 1,
-			'Anguish ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Tormented bracelet (or)',
-		inputItems: resolveNameBank({
-			'Tormented bracelet': 1,
-			'Tormented ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Tormented bracelet (or)': 1
-		})
-	},
-	{
-		name: 'Revert tormented bracelet',
-		inputItems: resolveNameBank({
-			'Tormented bracelet (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Tormented bracelet': 1,
-			'Tormented ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Occult necklace (or)',
-		inputItems: resolveNameBank({
-			'Occult necklace': 1,
-			'Occult ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Occult necklace (or)': 1
-		})
-	},
-	{
-		name: 'Revert occult necklace',
-		inputItems: resolveNameBank({
-			'Occult necklace (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Occult necklace': 1,
-			'Occult ornament kit': 1
-		}),
+		inputItems: { [itemID('Dragon defender (l)')]: 1 },
+		outputItems: { [itemID('Dragon defender')]: 1 },
 		noCl: true
 	}
 ];
@@ -910,6 +644,158 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Crystal key')]: 1
 		}
+	},
+	{
+		name: "Verac's armour set",
+		inputItems: {
+			[itemID("Verac's helm")]: 1,
+			[itemID("Verac's brassard")]: 1,
+			[itemID("Verac's plateskirt")]: 1,
+			[itemID("Verac's flail")]: 1
+		},
+		outputItems: {
+			[itemID("Verac's armour set")]: 1
+		}
+	},
+	{
+		name: 'Veracs',
+		inputItems: {
+			[itemID("Verac's armour set")]: 1
+		},
+		outputItems: {
+			[itemID("Verac's helm")]: 1,
+			[itemID("Verac's brassard")]: 1,
+			[itemID("Verac's plateskirt")]: 1,
+			[itemID("Verac's flail")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Dharok's armour set",
+		inputItems: {
+			[itemID("Dharok's helm")]: 1,
+			[itemID("Dharok's platebody")]: 1,
+			[itemID("Dharok's platelegs")]: 1,
+			[itemID("Dharok's greataxe")]: 1
+		},
+		outputItems: {
+			[itemID("Dharok's armour set")]: 1
+		}
+	},
+	{
+		name: 'Dharoks',
+		inputItems: {
+			[itemID("Dharok's armour set")]: 1
+		},
+		outputItems: {
+			[itemID("Dharok's helm")]: 1,
+			[itemID("Dharok's platebody")]: 1,
+			[itemID("Dharok's platelegs")]: 1,
+			[itemID("Dharok's greataxe")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Guthan's armour set",
+		inputItems: {
+			[itemID("Guthan's helm")]: 1,
+			[itemID("Guthan's platebody")]: 1,
+			[itemID("Guthan's chainskirt")]: 1,
+			[itemID("Guthan's warspear")]: 1
+		},
+		outputItems: {
+			[itemID("Guthan's armour set")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Guthans',
+		inputItems: {
+			[itemID("Guthan's armour set")]: 1
+		},
+		outputItems: {
+			[itemID("Guthan's helm")]: 1,
+			[itemID("Guthan's platebody")]: 1,
+			[itemID("Guthan's chainskirt")]: 1,
+			[itemID("Guthan's warspear")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Ahrim's armour set",
+		inputItems: {
+			[itemID("Ahrim's hood")]: 1,
+			[itemID("Ahrim's robetop")]: 1,
+			[itemID("Ahrim's robeskirt")]: 1,
+			[itemID("Ahrim's staff")]: 1
+		},
+		outputItems: {
+			[itemID("Ahrim's armour set")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Ahrims',
+		inputItems: {
+			[itemID("Ahrim's armour set")]: 1
+		},
+		outputItems: {
+			[itemID("Ahrim's hood")]: 1,
+			[itemID("Ahrim's robetop")]: 1,
+			[itemID("Ahrim's robeskirt")]: 1,
+			[itemID("Ahrim's staff")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Torag's armour set",
+		inputItems: {
+			[itemID("Torag's helm")]: 1,
+			[itemID("Torag's platebody")]: 1,
+			[itemID("Torag's platelegs")]: 1,
+			[itemID("Torag's hammers")]: 1
+		},
+		outputItems: {
+			[itemID("Torag's armour set")]: 1
+		}
+	},
+	{
+		name: 'Torags',
+		inputItems: {
+			[itemID("Torag's armour set")]: 1
+		},
+		outputItems: {
+			[itemID("Torag's helm")]: 1,
+			[itemID("Torag's platebody")]: 1,
+			[itemID("Torag's platelegs")]: 1,
+			[itemID("Torag's hammers")]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Karil's armour set",
+		inputItems: {
+			[itemID("Karil's coif")]: 1,
+			[itemID("Karil's leathertop")]: 1,
+			[itemID("Karil's leatherskirt")]: 1,
+			[itemID("Karil's crossbow")]: 1
+		},
+		outputItems: {
+			[itemID("Karil's armour set")]: 1
+		}
+	},
+	{
+		name: 'Karils',
+		inputItems: {
+			[itemID("Karil's armour set")]: 1
+		},
+		outputItems: {
+			[itemID("Karil's coif")]: 1,
+			[itemID("Karil's leathertop")]: 1,
+			[itemID("Karil's leatherskirt")]: 1,
+			[itemID("Karil's crossbow")]: 1
+		},
+		noCl: true
 	},
 	/**
 	 * Prospector outfit
@@ -1342,6 +1228,34 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Coconut milk',
+		inputItems: resolveNameBank({
+			Vial: 1,
+			Coconut: 1
+		}),
+		outputItems: resolveNameBank({
+			'Coconut milk': 1,
+			'Coconut shell': 1
+		})
+	},
+	{
+		name: 'Zamorakian hasta',
+		inputItems: resolveNameBank({
+			'Zamorakian spear': 1
+		}),
+		outputItems: resolveNameBank({
+			'Zamorakian hasta': 1
+		}),
+		QPRequired: 3,
+		requiredSkills: {
+			fishing: 55,
+			firemaking: 35,
+			crafting: 11,
+			smithing: 5
+		},
+		GPCost: 300_000
+	},
+	{
 		name: 'Avernic defender',
 		inputItems: {
 			[itemID('Avernic defender hilt')]: 1,
@@ -1361,8 +1275,6 @@ const Createables: Createable[] = [
 			[itemID('Kodai wand')]: 1
 		}
 	},
-	// Melee armour sets
-	// bronze
 	{
 		name: 'Zamorakian spear',
 		inputItems: resolveNameBank({
@@ -1537,7 +1449,8 @@ const Createables: Createable[] = [
 			[itemID(`Zulrah's Scales`)]: 25000
 		}
 	}, */
-	// Nightmare
+	// Melee armour sets
+	// bronze
 	{
 		name: 'Bronze (lg)',
 		inputItems: {
@@ -4239,16 +4152,6 @@ const Createables: Createable[] = [
 		noCl: true
 	},
 	{
-		name: 'Ferocious gloves',
-		outputItems: resolveNameBank({
-			'Ferocious gloves': 1
-		}),
-		inputItems: resolveNameBank({
-			'Hydra leather': 1
-		}),
-		QPRequired: 205
-	},
-	{
 		name: "Inquisitor's",
 		inputItems: resolveNameBank({
 			"Inquisitor's armour set": 1
@@ -4272,22 +4175,22 @@ const Createables: Createable[] = [
 		})
 	},
 	{
-		name: `Zamorak's grapes`,
+		name: "Zamorak's grapes",
 		inputItems: resolveNameBank({
 			Grapes: 1,
 			"Bologa's blessing": 1
 		}),
 		outputItems: {
-			[itemID(`Zamorak's grapes`)]: 1
+			[itemID("Zamorak's grapes")]: 1
 		}
 	},
 	{
-		name: `Toad's legs`,
+		name: "Toad's legs",
 		inputItems: resolveNameBank({
 			'Swamp toad': 1
 		}),
 		outputItems: {
-			[itemID(`Toad's legs`)]: 1
+			[itemID("Toad's legs")]: 1
 		}
 	},
 	{
@@ -4360,7 +4263,7 @@ const Createables: Createable[] = [
 	...ornamentKits,
 	...hunterClothing,
 	{
-		name: `Frozen key`,
+		name: 'Frozen key',
 		inputItems: resolveNameBank({
 			'Key piece 1': 1,
 			'Key piece 2': 1,
@@ -4368,16 +4271,16 @@ const Createables: Createable[] = [
 			'Key piece 4': 1
 		}),
 		outputItems: {
-			[itemID(`Frozen key`)]: 1
+			[itemID('Frozen key')]: 1
 		}
 	},
 	{
-		name: `Vasa cloak`,
+		name: 'Vasa cloak',
 		inputItems: resolveNameBank({
 			'Tattered robes of Vasa': 1
 		}),
 		outputItems: {
-			[itemID(`Vasa cloak`)]: 1
+			[itemID('Vasa cloak')]: 1
 		},
 		requiredSkills: {
 			crafting: 105,
@@ -4386,13 +4289,13 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: `Bryophyta's staff(i)`,
+		name: "Bryophyta's staff(i)",
 		inputItems: resolveNameBank({
 			"Bryophyta's staff": 1,
 			'Magus scroll': 1
 		}),
 		outputItems: {
-			[itemID(`Bryophyta's staff(i)`)]: 1
+			[itemID("Bryophyta's staff(i)")]: 1
 		},
 		requiredSkills: {
 			crafting: 105,
@@ -4402,7 +4305,9 @@ const Createables: Createable[] = [
 	...chaoticCreatables,
 	...twistedAncestral,
 	...metamorphPetCreatables,
-	...dyedCreatables
+	...dyedCreatables,
+	...slayerCreatables,
+	...capeCreatables
 ];
 
 export default Createables;

@@ -2,6 +2,7 @@ import { User } from 'discord.js';
 import { Extendable, ExtendableStore } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
+import SimilarItems from '../../lib/data/similarItems';
 import { defaultGear, resolveGearTypeSetting } from '../../lib/gear';
 import { GearSetup, UserFullGearSetup } from '../../lib/gear/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -28,11 +29,7 @@ export default class extends Extendable {
 		};
 	}
 
-	public hasItemEquippedAnywhere(
-		this: User,
-		_item: number | string | string[],
-		every = false
-	): boolean {
+	public hasItemEquippedAnywhere(this: User, _item: number | string | string[] | number[], every = false): boolean {
 		const items = resolveItems(_item);
 		for (const gear of Object.values(this.rawGear())) {
 			if (gear.hasEquipped(items, every)) {
@@ -44,7 +41,10 @@ export default class extends Extendable {
 
 	public hasItemEquippedOrInBank(this: User, item: number | string) {
 		const id = typeof item === 'string' ? itemID(item) : item;
-		return this.hasItemEquippedAnywhere(id, false) || this.numItemsInBankSync(id, true) > 0;
+		if (SimilarItems[id] === undefined) {
+			return this.hasItemEquippedAnywhere(id, false) || this.numItemsInBankSync(id, true) > 0;
+		}
+		return this.hasItemEquippedAnywhere(SimilarItems[id], false) || this.numItemsInBankSync(id, true) > 0;
 	}
 
 	public equippedPet(this: User) {

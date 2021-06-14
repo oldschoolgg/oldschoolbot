@@ -5,7 +5,7 @@ import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const customBSOCreatures: Creature[] = [
 	{
-		name: `Sand Gecko`,
+		name: 'Sand Gecko',
 		id: 3251,
 		aliases: ['sand gecko'],
 		level: 120,

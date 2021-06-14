@@ -16,8 +16,7 @@ export default class extends BotCommand {
 			!msg.guild ||
 			msg.channel.id !== '680770361893322761' ||
 			!msg.member ||
-			(!msg.member.roles.cache.has(Roles.Moderator) &&
-				!msg.member.roles.cache.has(Roles.Contributor))
+			(!msg.member.roles.cache.has(Roles.Moderator) && !msg.member.roles.cache.has(Roles.Contributor))
 		) {
 			return;
 		}

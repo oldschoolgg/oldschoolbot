@@ -39,6 +39,7 @@ export const allPetIDs = [
 		'Baby kalphite king',
 		'Craig',
 		'Snappy the Turtle',
+		'Hoppy',
 		'Steve',
 		'Frosty',
 		'Voidling'
@@ -66,7 +67,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const petItem = itemArray.find(i => userBank[i.id] && allPetIDs.includes(i.id));
 		if (!petItem) {
-			return msg.send(`That's not a pet, or you do not own this pet.`);
+			return msg.send("That's not a pet, or you do not own this pet.");
 		}
 
 		const currentlyEquippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
@@ -76,10 +77,7 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update([
 			[UserSettings.Minion.EquippedPet, petItem.id],
-			[
-				UserSettings.Bank,
-				removeItemFromBank(msg.author.settings.get(UserSettings.Bank), petItem.id)
-			]
+			[UserSettings.Bank, removeItemFromBank(msg.author.settings.get(UserSettings.Bank), petItem.id)]
 		]);
 
 		msg.author.log(`equipping ${petItem.name}[${petItem.id}]`);

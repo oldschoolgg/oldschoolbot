@@ -34,13 +34,9 @@ Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 
 		await msg.author.settings.sync(true);
 
-		const monster = Monsters.find(_type =>
-			_type.aliases.some(name => stringMatches(name, inputType))
-		);
+		const monster = Monsters.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
 
-		const type = slicedCollectionLogTypes.find(_type =>
-			_type.aliases.some(name => stringMatches(name, inputType))
-		);
+		const type = slicedCollectionLogTypes.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
 
 		if (!type && !monster) {
 			return msg.send(

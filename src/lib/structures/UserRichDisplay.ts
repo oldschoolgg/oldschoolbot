@@ -1,12 +1,5 @@
 import { MessageReaction } from 'discord.js';
-import {
-	KlasaMessage,
-	KlasaUser,
-	ReactionHandler,
-	RichDisplay,
-	RichDisplayRunOptions,
-	util
-} from 'klasa';
+import { KlasaMessage, KlasaUser, ReactionHandler, RichDisplay, RichDisplayRunOptions, util } from 'klasa';
 
 import { Time } from '../constants';
 
@@ -29,9 +22,7 @@ export class UserRichDisplay extends RichDisplay {
 			if (display) display.stop();
 		}
 
-		const handler = (await super.run(message, options)).once('end', () =>
-			UserRichDisplay.handlers.delete(target)
-		);
+		const handler = (await super.run(message, options)).once('end', () => UserRichDisplay.handlers.delete(target));
 		UserRichDisplay.handlers.set(target, handler);
 
 		return handler;

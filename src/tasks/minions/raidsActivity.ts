@@ -8,35 +8,12 @@ import { filterBankFromArrayOfItems, noOp, roll } from '../../lib/util';
 import { sendToChannelID } from '../../lib/util/webhook';
 
 const uniques = [
-	21034,
-	21079,
-	20997,
-	21003,
-	21043,
-	21012,
-	21018,
-	21021,
-	21024,
-	13652,
-	22386,
-	20851,
-	21000,
-	21015,
-	22388,
-	22390,
-	22392,
-	22394,
-	22396
+	21034, 21079, 20997, 21003, 21043, 21012, 21018, 21021, 21024, 13652, 22386, 20851, 21000, 21015, 22388, 22390,
+	22392, 22394, 22396
 ];
 
 export default class extends Task {
-	async run({
-		channelID,
-		team,
-		challengeMode,
-		duration,
-		partyLeaderID
-	}: RaidsActivityTaskOptions) {
+	async run({ channelID, team, challengeMode, duration, partyLeaderID }: RaidsActivityTaskOptions) {
 		const loot = ChambersOfXeric.complete({
 			challengeMode,
 			timeToComplete: duration,
@@ -52,8 +29,7 @@ export default class extends Task {
 		for (let [userID, _userLoot] of Object.entries(loot)) {
 			const userLoot = new Bank(_userLoot);
 			const user = await this.client.users.fetch(userID).catch(noOp);
-			const purple =
-				Object.keys(filterBankFromArrayOfItems(uniques, userLoot.bank)).length > 0;
+			const purple = Object.keys(filterBankFromArrayOfItems(uniques, userLoot.bank)).length > 0;
 			if (!user) continue;
 			const personalPoints = team.find(u => u.id === user.id)?.personalPoints;
 			user.incrementMinigameScore('Raids', 1);
@@ -78,7 +54,7 @@ export default class extends Task {
 				purple ? '🟪' : ''
 			} ||${userLoot}|| (${personalPoints?.toLocaleString()} pts, ${
 				Math.round((personalPoints! / totalPoints) * 10000) / 100
-			}%${user.usingPet('Flappy') ? `, <:flappy:812280578195456002> 2x loot` : ''})`;
+			}%${user.usingPet('Flappy') ? ', <:flappy:812280578195456002> 2x loot' : ''})`;
 			await user.addItemsToBank(userLoot, true);
 		}
 

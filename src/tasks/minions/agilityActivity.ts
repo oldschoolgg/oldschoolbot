@@ -1,8 +1,9 @@
-import { randInt, roll } from 'e';
+import { increaseNumByPercent, randInt, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji, Events, MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
+import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
@@ -23,10 +24,7 @@ export default class extends Task {
 		// Calculate failed laps
 		let lapsFailed = 0;
 		for (let t = 0; t < quantity; t++) {
-			if (
-				randInt(1, 100) >
-				(100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)
-			) {
+			if (randInt(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
 				lapsFailed += 1;
 			}
 		}
@@ -49,37 +47,50 @@ export default class extends Task {
 			totalMarks = Math.ceil(totalMarks / 5);
 		}
 
+		const [hasFallyElite] = await userhasDiaryTier(user, FaladorDiary.elite);
+		const diaryBonus = hasFallyElite && course.name === 'Ardougne Rooftop Course';
+		if (diaryBonus) {
+			totalMarks = Math.floor(increaseNumByPercent(totalMarks, 25));
+		}
+
 		const xpReceived = (quantity - lapsFailed / 2) * course.xp;
 
 		await user.settings.update(
 			UserSettings.LapsScores,
-			addItemToBank(
-				user.settings.get(UserSettings.LapsScores),
-				course.id,
-				quantity - lapsFailed
-			)
+			addItemToBank(user.settings.get(UserSettings.LapsScores), course.id, quantity - lapsFailed)
 		);
 
-		let loot = new Bank({
-			'Mark of grace': totalMarks
+		let xpRes = await user.addXP({
+			skillName: SkillsEnum.Agility,
+			amount: xpReceived,
+			duration
 		});
 
-		let xpRes = await user.addXP(SkillsEnum.Agility, xpReceived, duration);
-
-		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}.\n${xpRes}`;
-
-		if (user.usingPet('Harry')) {
-			str += `Harry found you extra Marks of grace.`;
-		}
+		const loot = new Bank({
+			'Mark of grace': totalMarks
+		});
 
 		if (alch) {
 			const alchedItem = getOSItem(alch.itemID);
 			const alchGP = alchedItem.highalch * alch.quantity;
 			loot.add('Coins', alchGP);
-			xpRes += ` ${await user.addXP(SkillsEnum.Magic, alch.quantity * 65, duration)}`;
+			xpRes += ` ${await user.addXP({
+				skillName: SkillsEnum.Magic,
+				amount: alch.quantity * 65,
+				duration
+			})}`;
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
 		}
 
+		let str = `${user}, ${user.minionName} finished ${quantity} ${
+			course.name
+		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot} ${
+			diaryBonus ? '(2x bonus Marks for Ardougne Elite diary)' : ''
+		}.\n${xpRes}`;
+
+		if (user.usingPet('Harry')) {
+			str += 'Harry found you extra Marks of grace.';
+		}
 		if (course.id === 6) {
 			const currentLapCount = user.settings.get(UserSettings.LapsScores)[course.id];
 			for (const monkey of Agility.MonkeyBackpacks) {
@@ -96,7 +107,8 @@ export default class extends Task {
 				for (let i = 0; i < minutes; i++) {
 					if (roll(4000)) {
 						loot.add('Scruffy');
-						str += `\n\n<:scruffy:749945071146762301> As you jump off the rooftop in Varrock, a stray dog covered in flies approaches you. You decide to adopt the dog, and name him 'Scruffy'.`;
+						str +=
+							"\n\n<:scruffy:749945071146762301> As you jump off the rooftop in Varrock, a stray dog covered in flies approaches you. You decide to adopt the dog, and name him 'Scruffy'.";
 						break;
 					}
 				}
@@ -106,7 +118,8 @@ export default class extends Task {
 				for (let i = 0; i < minutes; i++) {
 					if (roll(1600)) {
 						loot.add('Harry');
-						str += `\n\n<:harry:749945071104819292> As you jump across a rooftop, you notice a monkey perched on the roof - which has escaped from the Ardougne Zoo! You decide to adopt the monkey, and call him Harry.`;
+						str +=
+							'\n\n<:harry:749945071104819292> As you jump across a rooftop, you notice a monkey perched on the roof - which has escaped from the Ardougne Zoo! You decide to adopt the monkey, and call him Harry.';
 						break;
 					}
 				}
@@ -116,19 +129,17 @@ export default class extends Task {
 				for (let i = 0; i < minutes; i++) {
 					if (roll(1600)) {
 						loot.add('Skipper');
-						str += `\n\n<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept.`;
+						str +=
+							"\n\n<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept.";
 						break;
 					}
 				}
 			}
 		}
 		// Roll for pet
-		if (
-			course.petChance &&
-			roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)
-		) {
+		if (course.petChance && roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)) {
 			loot.add('Giant squirrel');
-			str += `\nYou have a funny feeling you're being followed...`;
+			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`

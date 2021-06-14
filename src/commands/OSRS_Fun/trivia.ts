@@ -30,10 +30,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		if (
-			!msg.channel.__triviaQuestionsDone ||
-			msg.channel.__triviaQuestionsDone.length === triviaQuestions.length
-		) {
+		if (!msg.channel.__triviaQuestionsDone || msg.channel.__triviaQuestionsDone.length === triviaQuestions.length) {
 			msg.channel.__triviaQuestionsDone = [];
 		}
 
@@ -41,14 +38,11 @@ export default class extends BotCommand {
 		msg.channel.__triviaQuestionsDone.push(index);
 		await msg.send(item.q);
 		try {
-			const collected = await msg.channel.awaitMessages(
-				answer => item.a.includes(answer.content.toLowerCase()),
-				{
-					max: 1,
-					time: 30000,
-					errors: ['time']
-				}
-			);
+			const collected = await msg.channel.awaitMessages(answer => item.a.includes(answer.content.toLowerCase()), {
+				max: 1,
+				time: 30000,
+				errors: ['time']
+			});
 			const winner = collected.first()!;
 			return msg.channel.send(
 				`<:RSTickBox:381462594734522372> ${winner.author} had the right answer with \`${winner.content}\`!`

@@ -11,14 +11,7 @@ import { ClueTier } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {
-	addBanks,
-	addItemToBank,
-	rand,
-	roll,
-	stringMatches,
-	updateGPTrackSetting
-} from '../../lib/util';
+import { addBanks, addItemToBank, rand, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
@@ -35,11 +28,7 @@ const itemsToNotifyOf = resolveItems([
 
 const Openables = _Openables.filter(i => i.name !== 'Mystery box');
 
-const allOpenables = [
-	...ClueTiers.map(i => i.id),
-	...botOpenables.map(i => i.itemID),
-	...Openables.map(i => i.id)
-];
+const allOpenables = [...ClueTiers.map(i => i.id), ...botOpenables.map(i => i.itemID), ...Openables.map(i => i.id)];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -59,7 +48,7 @@ export default class extends BotCommand {
 		const available = msg.author.bank().filter(i => allOpenables.includes(i.id));
 
 		if (available.length === 0) {
-			return `You have no openable items.`;
+			return 'You have no openable items.';
 		}
 
 		return `You have ${available}.`;
@@ -75,9 +64,7 @@ export default class extends BotCommand {
 		if (clue) {
 			return this.clueOpen(msg, quantity, clue);
 		}
-		const osjsOpenable = Openables.find(openable =>
-			openable.aliases.some(alias => stringMatches(alias, name))
-		);
+		const osjsOpenable = Openables.find(openable => openable.aliases.some(alias => stringMatches(alias, name)));
 		if (osjsOpenable) {
 			return this.osjsOpenablesOpen(msg, quantity, osjsOpenable);
 		}
@@ -88,9 +75,9 @@ export default class extends BotCommand {
 	async clueOpen(msg: KlasaMessage, quantity: number, clueTier: ClueTier) {
 		if (msg.author.numItemsInBankSync(clueTier.id) < quantity) {
 			return msg.send(
-				`You don't have enough ${
-					clueTier.name
-				} Caskets to open!\n\n However... ${await this.showAvailable(msg)}`
+				`You don't have enough ${clueTier.name} Caskets to open!\n\n However... ${await this.showAvailable(
+					msg
+				)}`
 			);
 		}
 
@@ -119,12 +106,11 @@ export default class extends BotCommand {
 			}
 		}
 
-		const opened = `You opened ${quantity} ${clueTier.name} Clue Casket${
-			quantity > 1 ? 's' : ''
-		} ${mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''}`;
+		const opened = `You opened ${quantity} ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
+			mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
+		}`;
 
-		const nthCasket =
-			(msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + quantity;
+		const nthCasket = (msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + quantity;
 
 		// If this tier has a milestone reward, and their new score meets the req, and
 		// they don't own it already, add it to the loot.
@@ -142,11 +128,9 @@ export default class extends BotCommand {
 		if (announcedLoot.length > 0) {
 			this.client.emit(
 				Events.ServerNotification,
-				`**${msg.author.username}'s** minion, ${
-					msg.author.minionName
-				}, just opened their ${formatOrdinal(nthCasket)} ${
-					clueTier.name
-				} casket and received **${announcedLoot}**!`
+				`**${msg.author.username}'s** minion, ${msg.author.minionName}, just opened their ${formatOrdinal(
+					nthCasket
+				)} ${clueTier.name} casket and received **${announcedLoot}**!`
 			);
 		}
 
@@ -162,11 +146,7 @@ export default class extends BotCommand {
 		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
 		if (typeof loot[COINS_ID] === 'number') {
-			updateGPTrackSetting(
-				this.client,
-				ClientSettings.EconomyStats.GPSourceOpen,
-				loot[COINS_ID]
-			);
+			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot[COINS_ID]);
 		}
 
 		msg.author.incrementClueScore(clueTier.id, quantity);
@@ -184,7 +164,7 @@ export default class extends BotCommand {
 					? ` You also received ${extraClueRolls} extra roll${
 							extraClueRolls > 1 ? 's' : ''
 					  } from your casket${quantity > 1 ? 's' : ''}!`
-					: ``
+					: ''
 			}`,
 			title: opened,
 			flags: { showNewCL: 1, wide: Object.keys(loot).length > 250 ? 1 : 0, ...msg.flagArgs },
@@ -196,9 +176,7 @@ export default class extends BotCommand {
 	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: Openable) {
 		if (msg.author.numItemsInBankSync(osjsOpenable.id) < quantity) {
 			return msg.send(
-				`You don't have enough ${
-					osjsOpenable.name
-				} to open!\n\n However... ${await this.showAvailable(msg)}`
+				`You don't have enough ${osjsOpenable.name} to open!\n\n However... ${await this.showAvailable(msg)}`
 			);
 		}
 
@@ -215,11 +193,7 @@ export default class extends BotCommand {
 		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot, true);
 		if (typeof loot[COINS_ID] === 'number') {
-			updateGPTrackSetting(
-				this.client,
-				ClientSettings.EconomyStats.GPSourceOpen,
-				loot[COINS_ID]
-			);
+			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot[COINS_ID]);
 		}
 
 		return msg.channel.sendBankImage({
@@ -232,9 +206,7 @@ export default class extends BotCommand {
 	}
 
 	async botOpenablesOpen(msg: KlasaMessage, quantity: number, name: string) {
-		const botOpenable = botOpenables.find(thing =>
-			thing.aliases.some(alias => stringMatches(alias, name))
-		);
+		const botOpenable = botOpenables.find(thing => thing.aliases.some(alias => stringMatches(alias, name)));
 
 		if (!botOpenable) {
 			return msg.send(
@@ -249,9 +221,7 @@ export default class extends BotCommand {
 
 		if (msg.author.numItemsInBankSync(botOpenable.itemID) < quantity) {
 			return msg.send(
-				`You don't have enough ${
-					botOpenable.name
-				} to open!\n\n However... ${await this.showAvailable(msg)}`
+				`You don't have enough ${botOpenable.name} to open!\n\n However... ${await this.showAvailable(msg)}`
 			);
 		}
 
@@ -293,11 +263,7 @@ export default class extends BotCommand {
 		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
 		await msg.author.addItemsToBank(loot.values(), true);
 		if (loot.amount('Coins') > 0) {
-			updateGPTrackSetting(
-				this.client,
-				ClientSettings.EconomyStats.GPSourceOpen,
-				loot.amount('Coins')
-			);
+			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
 		}
 
 		return msg.channel.sendBankImage({

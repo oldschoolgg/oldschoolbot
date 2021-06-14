@@ -41,9 +41,7 @@ export async function handleTripFinish(
 	user: KlasaUser,
 	channelID: string,
 	message: string,
-	onContinue:
-		| undefined
-		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
+	onContinue: undefined | ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
 	loot: ItemBank | null
@@ -54,12 +52,7 @@ export async function handleTripFinish(
 		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
 	}
 
-	if (
-		data.type !== Activity.GroupMonsterKilling &&
-		loot &&
-		data.duration > Time.Minute * 20 &&
-		roll(15)
-	) {
+	if (data.type !== Activity.GroupMonsterKilling && loot && data.duration > Time.Minute * 20 && roll(15)) {
 		const emoji = getSupportGuild(client).emojis.cache.random().toString();
 		const bonusLoot = new Bank().add(loot).add(getRandomMysteryBox());
 		message += `\n${emoji} **You received 2x loot and a Mystery box.**`;
@@ -114,11 +107,7 @@ export async function handleTripFinish(
 	}
 	if (bonusLoot.length > 0) {
 		if (bonusLoot.has('Coins')) {
-			updateGPTrackSetting(
-				client,
-				ClientSettings.EconomyStats.GPSourcePet,
-				bonusLoot.amount('Coins')
-			);
+			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourcePet, bonusLoot.amount('Coins'));
 		}
 		await user.addItemsToBank(bonusLoot.bank, true);
 	}
@@ -136,7 +125,7 @@ export async function handleTripFinish(
 		if (perkTier > PerkTier.One) {
 			message += ` Say \`c\` if you want to complete this ${clueReceived.name} clue now.`;
 		} else {
-			message += `You can get your minion to complete them using \`+minion clue easy/medium/etc\``;
+			message += 'You can get your minion to complete them using `+minion clue easy/medium/etc`';
 		}
 	}
 
@@ -147,20 +136,17 @@ export async function handleTripFinish(
 				message += `\Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`;
 			}
 			await user.removeItemsFromBank(alchResult.bankToRemove);
-			updateBankSetting(
-				client,
-				ClientSettings.EconomyStats.MagicCostBank,
-				alchResult.bankToRemove
-			);
+			updateBankSetting(client, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
 
 			const alchGP = alchResult.itemToAlch.highalch * alchResult.maxCasts;
 			await user.addGP(alchGP);
 			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
-			message += `\nYour Voidling alched ${alchResult.maxCasts}x ${
-				alchResult.itemToAlch.name
-			}. Removed ${alchResult.bankToRemove} from your bank and added ${toKMB(alchGP)} GP.`;
+			message += `\nYour Voidling alched ${alchResult.maxCasts}x ${alchResult.itemToAlch.name}. Removed ${
+				alchResult.bankToRemove
+			} from your bank and added ${toKMB(alchGP)} GP.`;
 		} else {
-			message += `\nYour Voidling didn't alch anything because you either: don't have Nature runes, Fire Runes, or any Favorited alchables that you own.`;
+			message +=
+				"\nYour Voidling didn't alch anything because you either: don't have Nature runes, Fire Runes, or any Favorited alchables that you own.";
 		}
 	}
 
@@ -198,8 +184,7 @@ export async function handleTripFinish(
 	const collector = new MessageCollector(
 		channel,
 		(mes: Message) =>
-			mes.author === user &&
-			(mes.content.toLowerCase() === 'c' || stringMatches(mes.content, continuationChar)),
+			mes.author === user && (mes.content.toLowerCase() === 'c' || stringMatches(mes.content, continuationChar)),
 		{
 			time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
 			max: 1

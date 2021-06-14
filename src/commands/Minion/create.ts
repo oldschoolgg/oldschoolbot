@@ -6,6 +6,8 @@ import { Time } from '../../lib/constants';
 import Createables from '../../lib/data/createables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
+import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	addBanks,
@@ -25,13 +27,8 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true,
-			description:
-				'Allows you to create items, like godswords or spirit shields - and pack barrows armor sets.',
-			examples: [
-				'+create armadyl godsword',
-				'+create elysian spirit shield',
-				'+create dharoks armour set'
-			],
+			description: 'Allows you to create items, like godswords or spirit shields - and pack barrows armor sets.',
+			examples: ['+create armadyl godsword', '+create elysian spirit shield', '+create dharoks armour set'],
 			categoryFlags: ['minion']
 		});
 	}
@@ -56,24 +53,21 @@ export default class extends BotCommand {
 					`${i.QPRequired ?? ''}`
 				])
 			]);
-			return msg.channel.sendFile(Buffer.from(creatableTable), `Creatables.txt`);
+			return msg.channel.sendFile(Buffer.from(creatableTable), 'Creatables.txt');
 		}
 		if (itemName === undefined) {
-			throw `Item name is a required argument.`;
+			throw 'Item name is a required argument.';
 		}
 		itemName = itemName.toLowerCase();
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
-		if (!createableItem) throw `That's not a valid item you can create.`;
+		if (!createableItem) throw "That's not a valid item you can create.";
 
 		if (!quantity || createableItem.cantHaveItems) {
 			quantity = 1;
 		}
 
-		if (
-			createableItem.QPRequired &&
-			msg.author.settings.get(UserSettings.QP) < createableItem.QPRequired
-		) {
+		if (createableItem.QPRequired && msg.author.settings.get(UserSettings.QP) < createableItem.QPRequired) {
 			throw `You need ${createableItem.QPRequired} QP to create this item.`;
 		}
 
@@ -84,21 +78,28 @@ export default class extends BotCommand {
 				}
 			}
 		}
+		if (createableItem.requiredSlayerUnlocks) {
+			let mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
 
-		if (
-			createableItem.GPCost &&
-			msg.author.settings.get(UserSettings.GP) < createableItem.GPCost * quantity
-		) {
+			const { success, errors } = hasSlayerUnlock(
+				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
+				createableItem.requiredSlayerUnlocks
+			);
+			if (!success) {
+				throw `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
+			}
+		}
+
+		if (createableItem.GPCost && msg.author.settings.get(UserSettings.GP) < createableItem.GPCost * quantity) {
 			throw `You need ${createableItem.GPCost.toLocaleString()} coins to create this item.`;
 		}
 
-		const output =
-			createableItem.outputItems ?? new Bank().add(getOSItem(createableItem.name).id).bank;
+		const output = createableItem.outputItems ?? new Bank().add(getOSItem(createableItem.name).id).bank;
 
 		if (createableItem.cantBeInCL) {
 			const cl = new Bank(msg.author.settings.get(UserSettings.CollectionLogBank));
 			if (Object.keys(output).some(itemID => cl.amount(Number(itemID)) > 0)) {
-				return msg.channel.send(`You can only create this item once!`);
+				return msg.channel.send('You can only create this item once!');
 			}
 		}
 
@@ -114,9 +115,7 @@ export default class extends BotCommand {
 		// Ensure they have the required items to create the item.
 		if (!bankHasAllItemsFromBank(userBank, inItems)) {
 			throw `You don't have the required items to create this item. You need: ${inputItemsString}${
-				createableItem.GPCost
-					? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP`
-					: ''
+				createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
 			}.`;
 		}
 
@@ -137,18 +136,14 @@ export default class extends BotCommand {
 				`${
 					msg.author
 				}, say \`confirm\` to confirm that you want to create **${outputItemsString}** using ${inputItemsString}${
-					createableItem.GPCost
-						? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP`
-						: ''
+					createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
 				}.`
 			);
 
 			// Confirm the user wants to create the item(s)
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 					{
 						max: 1,
 						time: Time.Second * 15,
@@ -156,7 +151,7 @@ export default class extends BotCommand {
 					}
 				);
 			} catch (err) {
-				return sellMsg.edit(`Cancelling item creation.`);
+				return sellMsg.edit('Cancelling item creation.');
 			}
 		}
 

@@ -65,4 +65,7 @@ export class MinigameTable extends BaseEntity {
 
 	@Column({ name: 'ourania_delivery_service', type: 'int', nullable: false, default: 0 })
 	public OuraniaDeliveryService!: number;
+
+	@Column({ name: 'big_chompy_bird_hunting', type: 'int', nullable: false, default: 0 })
+	public BigChompyBirdHunting!: number;
 }

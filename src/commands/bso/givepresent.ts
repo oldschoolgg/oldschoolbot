@@ -15,23 +15,19 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [user]: [KlasaUser]) {
 		const cl = new Bank(msg.author.settings.get(UserSettings.CollectionLogBank));
 		if (!cl.has('Cursed banana')) {
-			return msg.send(
-				`You cant give out a birthday pack because you haven't yet completed the birthday event.`
-			);
+			return msg.send("You cant give out a birthday pack because you haven't yet completed the birthday event.");
 		}
-		if (user.id === msg.author.id) throw `You can't give boxes to yourself!`;
+		if (user.id === msg.author.id) throw "You can't give boxes to yourself!";
 		if (user.bot) throw 'no';
-		if (
-			msg.author.settings.get(UserSettings.BitField).includes(BitField.HasGivenBirthdayPack)
-		) {
-			return msg.send(`You have already given out a birthday pack.`);
+		if (msg.author.settings.get(UserSettings.BitField).includes(BitField.HasGivenBirthdayPack)) {
+			return msg.send('You have already given out a birthday pack.');
 		}
 		if (
 			msg.author.perkTier < PerkTier.Four &&
 			Date.now() - msg.author.createdTimestamp < Time.Month * 12 &&
 			!msg.author.settings.get(UserSettings.BitField).includes(BitField.BypassAgeRestriction)
 		) {
-			throw `You cannot use this command as your account is too new, as a measure against alt accounts. You can become a T3 patron at <https://github.com/sponsors/gc> to bypass this.`;
+			throw 'You cannot use this command as your account is too new, as a measure against alt accounts. You can become a T3 patron at <https://github.com/sponsors/gc> to bypass this.';
 		}
 
 		await user.addItemsToBank(new Bank({ 'Birthday pack': 1 }));

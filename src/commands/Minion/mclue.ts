@@ -38,9 +38,9 @@ export default class extends BotCommand {
 	}
 
 	invalidClue(msg: KlasaMessage): string {
-		return `That isn't a valid clue tier, the valid tiers are: ${ClueTiers.map(
-			tier => tier.name
-		).join(', ')}. For example, \`${msg.cmdPrefix}minion clue 1 easy\``;
+		return `That isn't a valid clue tier, the valid tiers are: ${ClueTiers.map(tier => tier.name).join(
+			', '
+		)}. For example, \`${msg.cmdPrefix}minion clue 1 easy\``;
 	}
 
 	@requiresMinion
@@ -66,7 +66,7 @@ export default class extends BotCommand {
 			(msg.author.settings.get(UserSettings.ClueScores)[19836] === undefined ||
 				msg.author.settings.get(UserSettings.ClueScores)[19836] < 100)
 		) {
-			return msg.send(`You aren't experienced enough to complete a Grandmaster clue.`);
+			return msg.send("You aren't experienced enough to complete a Grandmaster clue.");
 		}
 
 		let [timeToFinish, percentReduced] = reducedClueTime(
@@ -75,13 +75,13 @@ export default class extends BotCommand {
 		);
 
 		timeToFinish /= 2;
-		boosts.push(`👻 2x Boost`);
+		boosts.push('👻 2x Boost');
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);
 
 		if (hasClueHunterEquipped(msg.author.getGear('skilling'))) {
 			timeToFinish /= 2;
-			boosts.push(`2x Boost for Clue hunter outfit`);
+			boosts.push('2x Boost for Clue hunter outfit');
 		}
 
 		let duration = timeToFinish * quantity;
@@ -92,9 +92,9 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${
-					clueTier.name
-				} is ${Math.floor(maxTripLength / timeToFinish)}.`
+				)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${Math.floor(
+					maxTripLength / timeToFinish
+				)}.`
 			);
 		}
 
@@ -111,12 +111,17 @@ export default class extends BotCommand {
 		duration += (randomAddedDuration * duration) / 100;
 
 		if (msg.author.hasGracefulEquipped()) {
-			boosts.push(`10% for Graceful`);
+			boosts.push('10% for Graceful');
 			duration *= 0.9;
 		}
 
 		if (isWeekend()) {
-			boosts.push(`10% for Weekend`);
+			boosts.push('10% for Weekend');
+			duration *= 0.9;
+		}
+
+		if (msg.author.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
+			boosts.push('10% for Achievement diary cape');
 			duration *= 0.9;
 		}
 

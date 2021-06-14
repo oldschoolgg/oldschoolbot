@@ -4,10 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
 import { bossKillables } from '../../../lib/minions/data/killableMonsters/bosses';
-import {
-	VasaMagus,
-	VasaMagusLootTable
-} from '../../../lib/minions/data/killableMonsters/custom/VasaMagus';
+import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killableMonsters/custom/VasaMagus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { NewBossOptions } from '../../../lib/types/minions';
@@ -24,15 +21,19 @@ export default class extends Task {
 
 		for (let i = 0; i < quantity; i++) {
 			loot.add(VasaMagusLootTable.roll());
-			loot.add(randArrItem(bossKillables).table.kill(randInt(1, 3)));
+			loot.add(randArrItem(bossKillables).table.kill(randInt(1, 3), {}));
 		}
 
-		const xpRes = await addMonsterXP(user, VasaMagus.id, quantity, duration);
+		const xpRes = await addMonsterXP(user, {
+			monsterID: VasaMagus.id,
+			quantity,
+			duration,
+			isOnTask: false,
+			taskQuantity: null
+		});
 		await user.addItemsToBank(loot, true);
 
-		let resultStr = `${user}, ${user.minionName} finished killing ${quantity}x Vasa Magus.\n\n${
-			Emoji.Casket
-		} **Loot:** ${loot}\n\n${xpRes.join(', ')}`;
+		let resultStr = `${user}, ${user.minionName} finished killing ${quantity}x Vasa Magus.\n\n${Emoji.Casket} **Loot:** ${loot}\n\n${xpRes}`;
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.VasaLoot, loot);
 

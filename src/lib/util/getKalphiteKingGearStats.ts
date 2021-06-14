@@ -67,11 +67,11 @@ export function getKalphiteKingGearStats(
 		percentChanceOfDeath = randInt(1, 4);
 	}
 
-	const debugString = `\n**${user.username}:** DamageDone[${Math.floor(
-		damageDone
-	)}HP] DeathChance[${Math.floor(percentChanceOfDeath)}%] WeaponStrength[${Math.floor(
-		percentWeaponAttackCrush
-	)}%] GearStrength[${Math.floor(percentAttackStrength)}%] TotalGear[${totalGearPercent}%]\n`;
+	const debugString = `\n**${user.username}:** DamageDone[${Math.floor(damageDone)}HP] DeathChance[${Math.floor(
+		percentChanceOfDeath
+	)}%] WeaponStrength[${Math.floor(percentWeaponAttackCrush)}%] GearStrength[${Math.floor(
+		percentAttackStrength
+	)}%] TotalGear[${totalGearPercent}%]\n`;
 
 	return [
 		{

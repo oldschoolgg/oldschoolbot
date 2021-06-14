@@ -61,9 +61,7 @@ export default class extends Task {
 		for (const id of users) {
 			const u = await this.client.users.fetch(id).catch(noOp);
 			if (!u) return;
-			let xp = Math.floor(
-				randomVariation((baseXp * u.skillLevel(SkillsEnum.Dungeoneering)) / 120, 5)
-			);
+			let xp = Math.floor(randomVariation((baseXp * u.skillLevel(SkillsEnum.Dungeoneering)) / 120, 5));
 			const maxFloor = maxFloorUserCanDo(u);
 			xp = reduceNumByPercent(xp, (maxFloor - floor) * 5);
 
@@ -78,7 +76,11 @@ export default class extends Task {
 				bonusXP += Math.floor(xp * (gorajanEquipped / 2));
 				xp += bonusXP;
 			}
-			await u.addXP(SkillsEnum.Dungeoneering, xp / 5, duration);
+			await u.addXP({
+				skillName: SkillsEnum.Dungeoneering,
+				amount: xp / 5,
+				duration
+			});
 			await u.settings.update(
 				UserSettings.DungeoneeringTokens,
 				u.settings.get(UserSettings.DungeoneeringTokens) + tokens
@@ -90,9 +92,7 @@ export default class extends Task {
 			if (gotMysteryBox) {
 				await u.addItemsToBank({ [getRandomMysteryBox()]: 1 });
 			}
-			str += `${
-				gotMysteryBox ? Emoji.MysteryBox : ''
-			} ${u} received: ${xp.toLocaleString()} XP (${toKMB(
+			str += `${gotMysteryBox ? Emoji.MysteryBox : ''} ${u} received: ${xp.toLocaleString()} XP (${toKMB(
 				rawXPHr
 			)}/hr) and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens (${toKMB(
 				rawXPHr * 0.1
@@ -106,11 +106,11 @@ export default class extends Task {
 				? 1200
 				: 2000;
 			if (floor >= 5 && roll(Math.floor(shardChance / minutes))) {
-				str += ` **1x Gorajan shards**`;
+				str += ' **1x Gorajan shards**';
 				await u.addItemsToBank(new Bank().add('Gorajan shards'), true);
 			}
 			if (floor === 7 && roll(Math.floor(20_000 / minutes))) {
-				str += ` **1x Gorajan bonecrusher (u)**`;
+				str += ' **1x Gorajan bonecrusher (u)**';
 				await u.addItemsToBank(new Bank().add('Gorajan bonecrusher (u)'), true);
 			}
 			str += '\n';

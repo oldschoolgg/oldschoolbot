@@ -1,6 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { MAX_QP } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
@@ -21,10 +22,9 @@ export default class extends BotCommand {
 
 		msg.author.settings.update(paths.map(path => [path, 14_000_000]));
 		msg.author.settings.update(UserSettings.GP, 1_000_000_000);
-		msg.author.settings.update(UserSettings.QP, 250);
-		const loot: Record<string, number> = Object.fromEntries(
-			Eatables.map(({ id }) => [id, 1000])
-		);
+		msg.author.settings.update(UserSettings.QP, MAX_QP);
+		msg.author.settings.update(UserSettings.Slayer.SlayerPoints, 100000);
+		const loot: Record<string, number> = Object.fromEntries(Eatables.map(({ id }) => [id, 1000]));
 		const bank = new Bank(loot);
 		bank.add('Zamorakian spear');
 		bank.add('Dragon warhammer');
@@ -79,7 +79,7 @@ export default class extends BotCommand {
 			});
 		}
 		return msg.send(
-			`Gave you 99 in all skills, 1b GP, 250 QP, and 1k of all eatable foods. **Gave your POH an ornate rejuve pool**`
+			`Gave you 99 in all skills, 1b GP, ${MAX_QP} QP, and 1k of all eatable foods. **Gave your POH an ornate rejuve pool**`
 		);
 	}
 }

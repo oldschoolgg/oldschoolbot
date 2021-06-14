@@ -10,7 +10,24 @@ const slayerHelmSimilar = resolveItems([
 	'Hydra slayer helmet (i)',
 	'Twisted slayer helmet (i)',
 	'Slayer helmet (i)',
-	'Slayer helmet'
+	'Slayer helmet',
+	'Black slayer helmet',
+	'Green slayer helmet',
+	'Red slayer helmet',
+	'Purple slayer helmet',
+	'Turquoise slayer helmet',
+	'Hydra slayer helmet',
+	'Twisted slayer helmet'
+]);
+const slayerHelmSimilarI = resolveItems([
+	'Black slayer helmet (i)',
+	'Green slayer helmet (i)',
+	'Red slayer helmet (i)',
+	'Purple slayer helmet (i)',
+	'Turquoise slayer helmet (i)',
+	'Hydra slayer helmet (i)',
+	'Twisted slayer helmet (i)',
+	'Slayer helmet (i)'
 ]);
 
 const SimilarItems: Record<number, number[]> = {
@@ -38,15 +55,9 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Tzhaar-ket-om')]: resolveItems(['Tzhaar-ket-om (t)']),
 	[itemID('Berserker necklace')]: resolveItems(['Berserker necklace (or)']),
 	[itemID('Amulet of fury')]: resolveItems(['Amulet of fury (or)', 'Amulet of blood fury']),
-	[itemID('Amulet of torture')]: resolveItems([
-		'Amulet of torture (or)',
-		"Brawler's hook necklace"
-	]),
+	[itemID('Amulet of torture')]: resolveItems(['Amulet of torture (or)', "Brawler's hook necklace"]),
 	[itemID('Tormented bracelet')]: resolveItems(['Tormented bracelet (or)']),
-	[itemID('Necklace of anguish')]: resolveItems([
-		'Necklace of anguish (or)',
-		'Farsight snapshot necklace'
-	]),
+	[itemID('Necklace of anguish')]: resolveItems(['Necklace of anguish (or)', 'Farsight snapshot necklace']),
 	[itemID('Occult necklace')]: resolveItems(['Occult necklace (or)', 'Arcane blast necklace']),
 	// 12797 = Dragon pickaxe (upgraded)
 	[itemID('Dragon pickaxe')]: resolveItems(['Dragon pickaxe(or)', 12797]),
@@ -199,25 +210,16 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Void melee helm')]: resolveItems(['Void melee helm (l)']),
 	[itemID('Void mage helm')]: resolveItems(['Void mage helm (l)']),
 	[itemID('Void ranger helm')]: resolveItems(['Void ranger helm (l)']),
-	[itemID('Void knight top')]: resolveItems([
-		'Void knight top (l)',
-		'Elite void top',
-		'Elite void top (l)'
-	]),
+	[itemID('Void knight top')]: resolveItems(['Void knight top (l)', 'Elite void top', 'Elite void top (l)']),
 	[itemID('Elite void top')]: resolveItems(['Elite void top (l)']),
-	[itemID('Void knight robe')]: resolveItems([
-		'Void knight robe (l)',
-		'Elite void robe',
-		'Elite void robe (l)'
-	]),
+	[itemID('Void knight robe')]: resolveItems(['Void knight robe (l)', 'Elite void robe', 'Elite void robe (l)']),
 	[itemID('Elite void robe')]: resolveItems(['Elite void robe (l)']),
 	[itemID('Void knight gloves')]: resolveItems(['Void knight gloves (l)']),
-	[itemID('Trident of the seas')]: resolveItems([
-		'Trident of the seas (full)',
-		'Trident of the seas (e)'
-	]),
+	[itemID('Trident of the seas')]: resolveItems(['Trident of the seas (full)', 'Trident of the seas (e)']),
 	[itemID('Trident of the swamp')]: resolveItems(['Trident of the swamp (e)']),
-	[itemID('Slayer helmet (i)')]: slayerHelmSimilar,
+	[itemID('Slayer helmet')]: slayerHelmSimilar,
+	[itemID('Slayer helmet (i)')]: slayerHelmSimilarI,
+	[itemID('Black mask (i)')]: slayerHelmSimilarI,
 	[itemID('Black mask')]: [
 		...slayerHelmSimilar,
 		...resolveItems([
@@ -234,8 +236,8 @@ const SimilarItems: Record<number, number[]> = {
 			'Black mask (10)'
 		])
 	],
-	[itemID('Black mask (i)')]: slayerHelmSimilar,
-	[itemID('Nosepeg')]: slayerHelmSimilar,
+	[itemID('Slayer cape')]: resolveItems(['Slayer cape (t)']),
+	[itemID('Nose peg')]: slayerHelmSimilar,
 	[itemID('Earmuffs')]: slayerHelmSimilar,
 	[itemID('Spiny helmet')]: slayerHelmSimilar,
 	[itemID('Facemask')]: slayerHelmSimilar,
@@ -292,6 +294,18 @@ const SimilarItems: Record<number, number[]> = {
 		'Offhand drygore mace (blood)',
 		'Offhand drygore mace (shadow)',
 		'Offhand drygore mace (3a)'
+	]),
+	[itemID('Staff of water')]: resolveItems([
+		'Mist battlestaff',
+		'Mystic mist staff',
+		'Tome of water',
+		'Water battlestaff',
+		'Mystic water staff',
+		'Steam battlestaff',
+		'Mystic steam staff',
+		'Kodai wand',
+		'Mud battlestaff',
+		'Mystic mud staff'
 	])
 };
 

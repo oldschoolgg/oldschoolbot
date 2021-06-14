@@ -46,8 +46,8 @@ const hammyFailMessages = [
 const hammyDoubleMessages = [
 	`${Emoji.MoneyBag} Hammy took your {item} and diced it...\n\nHe won, and actually brought you the profit! ${Emoji.Joy}`,
 	'You feed {item} to Hammy and he hides it in his cheeks. You go to pull it out and find it doubled. How did that happen?',
-	`You give {item} to Hammy while he's on his hamster wheel. When he stops and the dust settles, you realize there are now two.`,
-	`Hammy takes your {item} while you aren't looking and runs to the casino. He comes back rich and hands you an extra {item} for your trouble.`
+	"You give {item} to Hammy while he's on his hamster wheel. When he stops and the dust settles, you realize there are now two.",
+	"Hammy takes your {item} while you aren't looking and runs to the casino. He comes back rich and hands you an extra {item} for your trouble."
 ];
 
 export default class extends BotCommand {
@@ -73,9 +73,7 @@ export default class extends BotCommand {
 
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 					options
 				);
 			} catch (err) {
@@ -89,7 +87,7 @@ export default class extends BotCommand {
 			return msg.send(`You don't have a ${firstItem.name}.`);
 		}
 		if (!bank.has(itemID('Hammy'))) {
-			return msg.send(`You don't have a Hammy, so how could you feed it?`);
+			return msg.send("You don't have a Hammy, so how could you feed it?");
 		}
 
 		if (roll(chanceToDouble)) {

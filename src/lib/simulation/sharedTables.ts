@@ -38,13 +38,7 @@ export const Veracs = new LootTable()
 	.add("Verac's plateskirt")
 	.add("Verac's flail");
 
-export const AllBarrows = new LootTable()
-	.add(Veracs)
-	.add(Karils)
-	.add(Torags)
-	.add(Dharoks)
-	.add(Ahrims)
-	.add(Guthans);
+export const AllBarrows = new LootTable().add(Veracs).add(Karils).add(Torags).add(Dharoks).add(Ahrims).add(Guthans);
 
 export const DougTable = new LootTable()
 	.add('Pure essence', [500, 800], 85)

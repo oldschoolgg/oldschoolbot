@@ -38,11 +38,9 @@ export default class extends BotCommand {
 
 		if (!shopInventory) {
 			return msg.send(
-				`I don't recognize that item JalYt, here are my wares: ${TokkulShopItem.map(
-					item => {
-						return item.name;
-					}
-				).join(', ')}.`
+				`I don't recognize that item JalYt, here are my wares: ${TokkulShopItem.map(item => {
+					return item.name;
+				}).join(', ')}.`
 			);
 		}
 
@@ -63,9 +61,7 @@ export default class extends BotCommand {
 		}
 
 		if (type === 'sell' && msg.author.numItemsInBankSync(shopInventory.inputItem) === 0) {
-			return msg.send(
-				`I am sorry JalYt. You don't have any **${shopInventory.name}** to sell me.`
-			);
+			return msg.send(`I am sorry JalYt. You don't have any **${shopInventory.name}** to sell me.`);
 		}
 
 		if (quantity === undefined) {
@@ -103,9 +99,7 @@ export default class extends BotCommand {
 			// Confirm the user wants to buy
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 					{
 						max: 1,
 						time: Time.Second * 15,
@@ -113,9 +107,7 @@ export default class extends BotCommand {
 					}
 				);
 			} catch (err) {
-				return sellMsg.edit(
-					`Cancelling ${type === 'buy' ? 'purchase' : 'sale'} of **${outItems}**.`
-				);
+				return sellMsg.edit(`Cancelling ${type === 'buy' ? 'purchase' : 'sale'} of **${outItems}**.`);
 			}
 		}
 
@@ -124,8 +116,6 @@ export default class extends BotCommand {
 			addBanks([outItems.bank, removeBankFromBank(userBank, inItems.bank)])
 		);
 
-		return msg.send(
-			`You ${type === 'buy' ? 'bought' : 'sold'} **${outItems}** for **${inItems}**.`
-		);
+		return msg.send(`You ${type === 'buy' ? 'bought' : 'sold'} **${outItems}** for **${inItems}**.`);
 	}
 }

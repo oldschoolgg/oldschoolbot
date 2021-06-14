@@ -25,14 +25,10 @@ export default class extends BotCommand {
 		}
 
 		const nextBool = command === 'enable' ? false : true;
-		const currentStatus = msg.author.settings
-			.get(UserSettings.BitField)
-			.includes(BitField.DisabledRandomEvents);
+		const currentStatus = msg.author.settings.get(UserSettings.BitField).includes(BitField.DisabledRandomEvents);
 
 		if (currentStatus === nextBool) {
-			return msg.send(
-				`Random events are already ${!currentStatus ? 'enabled' : 'disabled'} for you.`
-			);
+			return msg.send(`Random events are already ${!currentStatus ? 'enabled' : 'disabled'} for you.`);
 		}
 
 		await msg.author.settings.update(UserSettings.BitField, BitField.DisabledRandomEvents);

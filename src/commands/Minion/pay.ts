@@ -23,20 +23,17 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [user, amount]: [KlasaUser, number]) {
 		await msg.author.settings.sync(true);
 		const GP = msg.author.settings.get(UserSettings.GP);
-		if (msg.author.isIronman) throw `Iron players can't send money.`;
-		if (user.isIronman) throw `Iron players can't receive money.`;
-		if (GP < amount) throw `You don't have enough GP.`;
-		if (this.client.oneCommandAtATimeCache.has(user.id)) throw `That user is busy right now.`;
-		if (user.id === msg.author.id) throw `You can't send money to yourself.`;
-		if (user.bot) throw `You can't send money to a bot.`;
+		if (msg.author.isIronman) throw "Iron players can't send money.";
+		if (user.isIronman) throw "Iron players can't receive money.";
+		if (GP < amount) throw "You don't have enough GP.";
+		if (this.client.oneCommandAtATimeCache.has(user.id)) throw 'That user is busy right now.';
+		if (user.id === msg.author.id) throw "You can't send money to yourself.";
+		if (user.bot) throw "You can't send money to a bot.";
 
 		await msg.author.removeGP(amount);
 		await user.addGP(amount);
 
-		this.client.emit(
-			Events.EconomyLog,
-			`${msg.author.sanitizedName} paid ${amount} GP to ${user.sanitizedName}.`
-		);
+		this.client.emit(Events.EconomyLog, `${msg.author.sanitizedName} paid ${amount} GP to ${user.sanitizedName}.`);
 
 		return msg.send(`You sent ${amount.toLocaleString()} GP to ${user}.`);
 	}

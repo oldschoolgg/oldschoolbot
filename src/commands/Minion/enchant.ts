@@ -89,9 +89,9 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					enchantable.name
-				}s you can enchant is ${Math.floor(maxTripLength / timeToEnchantTen)}.`
+				)}, try a lower quantity. The highest amount of ${enchantable.name}s you can enchant is ${Math.floor(
+					maxTripLength / timeToEnchantTen
+				)}.`
 			);
 		}
 
@@ -99,20 +99,15 @@ export default class extends BotCommand {
 
 		if (!userBank.has(cost.bank)) {
 			return msg.send(
-				`You don't have the materials needed to enchant ${quantity}x ${
-					enchantable.name
-				}, you need ${enchantable.input}, you're missing **${cost
-					.clone()
-					.remove(userBank)}**.`
+				`You don't have the materials needed to enchant ${quantity}x ${enchantable.name}, you need ${
+					enchantable.input
+				}, you're missing **${cost.clone().remove(userBank)}**.`
 			);
 		}
 		await msg.author.removeItemsFromBank(cost.bank);
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.MagicCostBank,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.MagicCostBank),
-				cost.bank
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.MagicCostBank), cost.bank])
 		);
 
 		await addSubTaskToActivityTask<EnchantingActivityTaskOptions>(this.client, {
@@ -131,9 +126,7 @@ export default class extends BotCommand {
 		return msg.send(
 			`${msg.author.minionName} is now enchanting ${quantity}x ${
 				enchantable.name
-			}, it'll take around ${formatDuration(
-				duration
-			)} to finish. Removed ${cost} from your bank. ${xpHr}`
+			}, it'll take around ${formatDuration(duration)} to finish. Removed ${cost} from your bank. ${xpHr}`
 		);
 	}
 }

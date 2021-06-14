@@ -20,8 +20,9 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		return msg.channel.sendBankImage({
 			bank: this.client.settings.get(ClientSettings.EconomyStats.SacrificedBank),
-			title: `Sacrificed Items Of All Players`,
-			content: `Note: Approximately 130b worth of items are not shown, as they were sacrificed before items were starting to be tracked.`
+			title: 'Sacrificed Items Of All Players',
+			content:
+				'Note: Approximately 130b worth of items are not shown, as they were sacrificed before items were starting to be tracked.'
 		});
 	}
 }

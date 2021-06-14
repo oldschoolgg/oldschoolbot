@@ -12,14 +12,7 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	addBanks,
-	channelIsSendable,
-	noOp,
-	randomItemFromArray,
-	roll,
-	updateBankSetting
-} from '../../../lib/util';
+import { addBanks, channelIsSendable, noOp, randomItemFromArray, roll, updateBankSetting } from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
@@ -67,7 +60,7 @@ export default class extends Task {
 			}
 
 			const loot = new Bank();
-			loot.add(NexMonster.table.kill(1));
+			loot.add(NexMonster.table.kill(1, {}));
 			if (roll(80 + users.length * 2)) {
 				loot.add(randomItemFromArray(allNexItems), 1);
 			}
@@ -87,7 +80,13 @@ export default class extends Task {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
 			if (kcAmounts[user.id]) {
-				await addMonsterXP(user, 46274, Math.ceil(quantity / users.length), duration);
+				await addMonsterXP(user, {
+					monsterID: 46274,
+					quantity: Math.ceil(quantity / users.length),
+					duration,
+					isOnTask: false,
+					taskQuantity: null
+				});
 			}
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
@@ -95,9 +94,7 @@ export default class extends Task {
 			if (kcToAdd) user.incrementMonsterScore(NexMonster.id, kcToAdd);
 			const purple = Object.keys(loot).some(id => allNexItems.includes(parseInt(id)));
 
-			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(
-				loot
-			)}||\n`;
+			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
 
 			announceLoot(this.client, leaderUser, NexMonster, loot, {
 				leader: leaderUser,
@@ -120,9 +117,7 @@ export default class extends Task {
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
 
-		let debug = production
-			? ''
-			: `\`\`\`\n${JSON.stringify([parsedUsers, deaths], null, 4)}\n\`\`\``;
+		let debug = production ? '' : `\`\`\`\n${JSON.stringify([parsedUsers, deaths], null, 4)}\n\`\`\``;
 
 		if (users.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
@@ -145,13 +140,10 @@ export default class extends Task {
 			} else {
 				channel.sendBankImage({
 					bank: teamsLoot[userID],
-					content: `${leaderUser}, ${
-						leaderUser.minionName
-					} finished killing ${quantity} ${NexMonster.name}, you died ${
-						deaths[userID] ?? 0
-					} times. Your Nex KC is now ${
-						(leaderUser.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) +
-						quantity
+					content: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
+						NexMonster.name
+					}, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${
+						(leaderUser.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) + quantity
 					}.`,
 					title: `${quantity}x Nex`,
 					background: leaderUser.settings.get(UserSettings.BankBackground),

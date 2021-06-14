@@ -37,9 +37,9 @@ export default class extends Task {
 			return;
 		}
 
-		let str = `${user}, ${user.minionName} finished completing ${quantity} ${
-			clueTier.name
-		} clues. ${user.minionName} carefully places the reward casket${
+		let str = `${user}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${
+			user.minionName
+		} carefully places the reward casket${
 			quantity > 1 ? 's' : ''
 		} in your bank. You can open this casket using \`=open ${clueTier.name}\``;
 
@@ -58,7 +58,7 @@ export default class extends Task {
 
 			if (roll(15)) {
 				loot = multiplyBank(loot, 2);
-				str += `\nZippy has **doubled** your loot.`;
+				str += '\nZippy has **doubled** your loot.';
 			}
 
 			str += `\n\nZippy has found these items for you: ${new Bank(bonusLoot)}`;

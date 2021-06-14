@@ -74,11 +74,11 @@ export function getNexGearStats(
 		percentChanceOfDeath = randInt(1, 4);
 	}
 
-	const debugString = `\n**${user.username}:** DamageDone[${Math.floor(
-		damageDone
-	)}HP] DeathChance[${Math.floor(percentChanceOfDeath)}%] WeaponStrength[${Math.floor(
-		percentWeaponAttackRanged
-	)}%] GearStrength[${Math.floor(percentRangeStrength)}%] TotalGear[${totalGearPercent}%]\n`;
+	const debugString = `\n**${user.username}:** DamageDone[${Math.floor(damageDone)}HP] DeathChance[${Math.floor(
+		percentChanceOfDeath
+	)}%] WeaponStrength[${Math.floor(percentWeaponAttackRanged)}%] GearStrength[${Math.floor(
+		percentRangeStrength
+	)}%] TotalGear[${totalGearPercent}%]\n`;
 
 	return [
 		{

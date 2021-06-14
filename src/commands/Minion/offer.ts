@@ -4,11 +4,13 @@ import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/collectionLog';
+import { Offerables } from '../../lib/data/offerData';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { birdsNestID, treeSeedsNest, wysonSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, roll, stringMatches } from '../../lib/util';
@@ -52,11 +54,50 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
+		const whichOfferable = Offerables.find(
+			item =>
+				stringMatches(boneName, item.name) ||
+				(item.aliases && item.aliases.some(alias => stringMatches(alias, boneName)))
+		);
+		if (whichOfferable) {
+			const offerableOwned = userBank.amount(whichOfferable.itemID);
+			if (offerableOwned === 0) {
+				return msg.channel.send(
+					`You don't have any ${whichOfferable.name} to offer to the ${whichOfferable.offerWhere}.`
+				);
+			}
+			quantity = quantity ?? offerableOwned;
+			if (quantity > offerableOwned) {
+				return msg.channel.send(
+					`You don't have ${quantity} ${whichOfferable.name} to offer the ${whichOfferable.offerWhere}. You have ${offerableOwned}.`
+				);
+			}
+			await msg.author.removeItemsFromBank({ [whichOfferable.itemID]: quantity });
+			let loot = new Bank();
+			loot.add(whichOfferable.table.roll(quantity));
+
+			filterLootReplace(msg.author.allItemsOwned(), loot);
+			const { previousCL } = await msg.author.addItemsToBank(loot.values(), true);
+			if (whichOfferable.economyCounter) {
+				const oldValue: number = msg.author.settings.get(whichOfferable.economyCounter) as number;
+				if (typeof quantity !== 'number') quantity = parseInt(quantity);
+				msg.author.settings.update(whichOfferable.economyCounter, oldValue + quantity);
+			}
+
+			return msg.channel.sendBankImage({
+				bank: loot.values(),
+				title: `Loot from offering ${quantity} ${whichOfferable.name}`,
+				flags: { showNewCL: 1 },
+				user: msg.author,
+				cl: previousCL
+			});
+		}
+
 		const egg = eggs.find(egg => stringMatches(boneName, egg.name));
 		if (egg) {
 			const quantityOwned = userBank.amount(egg.id);
 			if (quantityOwned === 0) {
-				return msg.channel.send(`You don't own any of these eggs.`);
+				return msg.channel.send("You don't own any of these eggs.");
 			}
 			if (!quantity) quantity = quantityOwned;
 			await msg.author.removeItemsFromBank({ [egg.id]: quantity });
@@ -70,7 +111,10 @@ export default class extends BotCommand {
 				}
 			}
 
-			const xpStr = await msg.author.addXP(SkillsEnum.Prayer, quantity * 100);
+			const xpStr = await msg.author.addXP({
+				skillName: SkillsEnum.Prayer,
+				amount: quantity * 100
+			});
 			await msg.author.addItemsToBank(loot, true);
 			return msg.channel.send(
 				`You offered ${quantity}x ${egg.name} to the Shrine and received ${loot} and ${xpStr}.`
@@ -80,23 +124,22 @@ export default class extends BotCommand {
 		const specialBone = specialBones.find(bone => stringMatches(bone.item.name, boneName));
 		if (specialBone) {
 			if (msg.author.settings.get(UserSettings.QP) < 8) {
-				return msg.send(`You need atleast 8 QP to offer long/curved bones for XP.`);
+				return msg.send('You need atleast 8 QP to offer long/curved bones for XP.');
 			}
 			if (msg.author.skillLevel(SkillsEnum.Construction) < 30) {
-				return msg.send(
-					`You need atleast level 30 Construction to offer long/curved bones for XP.`
-				);
+				return msg.send('You need atleast level 30 Construction to offer long/curved bones for XP.');
 			}
 			const amountHas = userBank.amount(specialBone.item.id);
 			if (quantity === null) quantity = Math.max(amountHas, 1);
 			if (amountHas < quantity) {
-				return msg.send(
-					`You don't have ${quantity}x ${specialBone.item.name}, you have ${amountHas}.`
-				);
+				return msg.send(`You don't have ${quantity}x ${specialBone.item.name}, you have ${amountHas}.`);
 			}
 			const xp = quantity * specialBone.xp;
 			await Promise.all([
-				msg.author.addXP(SkillsEnum.Construction, xp),
+				msg.author.addXP({
+					skillName: SkillsEnum.Construction,
+					amount: xp
+				}),
 				msg.author.removeItemFromBank(specialBone.item.id, quantity)
 			]);
 			return msg.send(
@@ -109,23 +152,17 @@ export default class extends BotCommand {
 		const speedMod = 4.8;
 
 		const bone = Prayer.Bones.find(
-			bone =>
-				stringMatches(bone.name, boneName) ||
-				stringMatches(bone.name.split(' ')[0], boneName)
+			bone => stringMatches(bone.name, boneName) || stringMatches(bone.name.split(' ')[0], boneName)
 		);
 
 		if (!bone) {
 			return msg.send(
-				`That's not a valid bone to offer. Valid bones are ${Prayer.Bones.map(
-					bone => bone.name
-				).join(', ')}.`
+				`That's not a valid bone to offer. Valid bones are ${Prayer.Bones.map(bone => bone.name).join(', ')}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Prayer) < bone.level) {
-			return msg.send(
-				`${msg.author.minionName} needs ${bone.level} Prayer to offer ${bone.name}.`
-			);
+			return msg.send(`${msg.author.minionName} needs ${bone.level} Prayer to offer ${bone.name}.`);
 		}
 
 		const timeToBuryABone = speedMod * (Time.Second * 1.2 + Time.Second / 4);
@@ -151,9 +188,9 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					bone.name
-				}s you can bury is ${Math.floor(maxTripLength / timeToBuryABone)}.`
+				)}, try a lower quantity. The highest amount of ${bone.name}s you can bury is ${Math.floor(
+					maxTripLength / timeToBuryABone
+				)}.`
 			);
 		}
 

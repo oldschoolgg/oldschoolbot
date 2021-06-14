@@ -18,7 +18,7 @@ export default class extends BotCommand {
 		const [kcName, kcAmount] = await msg.author.getKCByName(name);
 
 		if (!kcName) {
-			return msg.send(`That's not a valid monster, minigame or hunting creature.`);
+			return msg.send("That's not a valid monster, minigame or hunting creature.");
 		}
 
 		return msg.send(`Your ${kcName} KC is: ${kcAmount}.`);

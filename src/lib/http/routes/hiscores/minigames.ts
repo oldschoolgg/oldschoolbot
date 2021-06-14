@@ -30,7 +30,7 @@ export const minigamesGetRoute = (server: FastifyServer) =>
 
 			let where = ` WHERE ${minigame.column} > ${minToShow}`;
 			if (request.query.ironmen) {
-				where += ` AND is_iron = true`;
+				where += ' AND is_iron = true';
 			}
 
 			const res = await getConnection().query(

@@ -923,8 +923,7 @@ export default class extends BotCommand {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			meleeGearPoints +=
-				meleeGearBonus.find(_item => getSimilarItems(_item.itemID).includes(item.id))
-					?.itemPoint ?? 0;
+				meleeGearBonus.find(_item => getSimilarItems(_item.itemID).includes(item.id))?.itemPoint ?? 0;
 		}
 		// Scores the range gear
 		for (const key of Object.values(EquipmentSlot) as EquipmentSlot[]) {
@@ -934,8 +933,7 @@ export default class extends BotCommand {
 			const item = getOSItem(itemSlot.item);
 			if (!item.equipment) continue;
 			rangeGearPoints +=
-				rangeGearBonus.find(_item => getSimilarItems(_item.itemID).includes(item.id))
-					?.itemPoint ?? 0;
+				rangeGearBonus.find(_item => getSimilarItems(_item.itemID).includes(item.id))?.itemPoint ?? 0;
 		}
 		// Scores the mage gear
 		for (const key of Object.values(EquipmentSlot) as EquipmentSlot[]) {
@@ -945,8 +943,7 @@ export default class extends BotCommand {
 			const item = getOSItem(itemSlot.item);
 			if (!item.equipment) continue;
 			mageGearPoints +=
-				mageGearBonus.find(_item => getSimilarItems(_item.itemID).includes(item.id))
-					?.itemPoint ?? 0;
+				mageGearBonus.find(_item => getSimilarItems(_item.itemID).includes(item.id))?.itemPoint ?? 0;
 		}
 
 		let totalGearPoints = meleeGearPoints + rangeGearPoints + mageGearPoints;
@@ -1003,9 +1000,7 @@ export default class extends BotCommand {
 			duration = Time.Minute * 50 + rand(Time.Minute * 2, Time.Minute * 10);
 		} else {
 			duration =
-				Time.Minute * 55 -
-				(users.length % 10) * 2 * Time.Minute +
-				rand(Time.Minute * 2, Time.Minute * 10);
+				Time.Minute * 55 - (users.length % 10) * 2 * Time.Minute + rand(Time.Minute * 2, Time.Minute * 10);
 		}
 		// Max 25% boost for experienced raiders
 		if (teamKCBoost > 25) {
@@ -1084,9 +1079,7 @@ export default class extends BotCommand {
 			users.length
 		} minions is starting! <:Olmlet:324127376873357316>
 
-**Team:** ${users
-			.map(u => `${u.username} (${this.gearPointCalc(u)[1]}/${MAX_itemPoints})`)
-			.join(', ')}
+**Team:** ${users.map(u => `${u.username} (${this.gearPointCalc(u)[1]}/${MAX_itemPoints})`).join(', ')}
 **Boosts:** ${gearSpeedBoosts.join(', ')}.
 
 The total trip will take ${formatDuration(duration)}.

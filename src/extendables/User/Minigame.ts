@@ -113,6 +113,11 @@ export const Minigames: Minigame[] = [
 		name: 'Ourania Delivery Service',
 		key: 'OuraniaDeliveryService',
 		column: 'ourania_delivery_service'
+	},
+	{
+		name: 'Big Chompy Bird Hunting',
+		key: 'BigChompyBirdHunting',
+		column: 'big_chompy_bird_hunting'
 	}
 ];
 

@@ -60,7 +60,7 @@ export default class extends Task {
 			}
 
 			const loot = new Bank();
-			loot.add(KalphiteKingMonster.table.kill(1));
+			loot.add(KalphiteKingMonster.table.kill(1, {}));
 			const winner = teamTable.roll()?.item;
 			if (!winner) continue;
 			const currentLoot = teamsLoot[winner];
@@ -82,9 +82,7 @@ export default class extends Task {
 			if (kcToAdd) user.incrementMonsterScore(KalphiteKingMonster.id, kcToAdd);
 			const purple = Object.keys(loot).some(id => allNexItems.includes(parseInt(id)));
 
-			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(
-				loot
-			)}||\n`;
+			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
 
 			announceLoot(this.client, leaderUser, KalphiteKingMonster, loot, {
 				leader: leaderUser,
@@ -107,18 +105,14 @@ export default class extends Task {
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
 
-		let debug = production
-			? ''
-			: `\`\`\`\n${JSON.stringify([parsedUsers, deaths], null, 4)}\n\`\`\``;
+		let debug = production ? '' : `\`\`\`\n${JSON.stringify([parsedUsers, deaths], null, 4)}\n\`\`\``;
 
 		if (users.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
 				sendToChannelID(this.client, channelID, {
 					content: `${users
 						.map(id => `<@${id}>`)
-						.join(
-							' '
-						)} Your team all died, and failed to defeat the Kalphite King. ${debug}`
+						.join(' ')} Your team all died, and failed to defeat the Kalphite King. ${debug}`
 				});
 			} else {
 				sendToChannelID(this.client, channelID, { content: resultStr + debug });
@@ -134,14 +128,10 @@ export default class extends Task {
 			} else {
 				channel.sendBankImage({
 					bank: teamsLoot[userID],
-					content: `${leaderUser}, ${
-						leaderUser.minionName
-					} finished killing ${quantity} ${KalphiteKingMonster.name}, you died ${
-						deaths[userID] ?? 0
-					} times. Your Kalphite King KC is now ${
-						(leaderUser.settings.get(UserSettings.MonsterScores)[
-							KalphiteKingMonster.id
-						] ?? 0) + quantity
+					content: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
+						KalphiteKingMonster.name
+					}, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${
+						(leaderUser.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0) + quantity
 					}.`,
 					title: `${quantity}x Kalphite King`,
 					background: leaderUser.settings.get(UserSettings.BankBackground),

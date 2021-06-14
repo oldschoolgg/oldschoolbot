@@ -40,10 +40,7 @@ export default class extends Task {
 				points *= 2;
 			}
 
-			await user.settings.update(
-				UserSettings.ZealTokens,
-				user.settings.get(UserSettings.ZealTokens) + points
-			);
+			await user.settings.update(UserSettings.ZealTokens, user.settings.get(UserSettings.ZealTokens) + points);
 
 			user.incrementMinigameScore('SoulWars', quantity);
 			str += `${user} received ${points}x Zeal Tokens.`;

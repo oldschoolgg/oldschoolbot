@@ -70,7 +70,7 @@ export default class extends BotCommand {
 								.join(', ')}`
 					).join('\n')
 				),
-				`Available crafting items.txt`
+				'Available crafting items.txt'
 			);
 		}
 
@@ -88,9 +88,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Crafting) < Craft.level) {
-			return msg.send(
-				`${msg.author.minionName} needs ${Craft.level} Crafting to craft ${Craft.name}.`
-			);
+			return msg.send(`${msg.author.minionName} needs ${Craft.level} Crafting to craft ${Craft.name}.`);
 		}
 
 		await msg.author.settings.sync(true);
@@ -120,7 +118,7 @@ export default class extends BotCommand {
 				if (id === 995) {
 					const userGP = msg.author.settings.get(UserSettings.GP);
 					if (userGP < qty) {
-						return msg.send(`You do not have enough GP.`);
+						return msg.send('You do not have enough GP.');
 					}
 					quantity = Math.min(quantity, Math.floor(userGP / qty));
 					continue;
@@ -139,9 +137,9 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					Craft.name
-				}s you can craft is ${Math.floor(maxTripLength / timeToCraftSingleItem)}.`
+				)}, try a lower quantity. The highest amount of ${Craft.name}s you can craft is ${Math.floor(
+					maxTripLength / timeToCraftSingleItem
+				)}.`
 			);
 		}
 
@@ -181,9 +179,9 @@ export default class extends BotCommand {
 		});
 
 		return msg.send(
-			`${msg.author.minionName} is now crafting ${quantity}x ${
-				Craft.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
+			`${msg.author.minionName} is now crafting ${quantity}x ${Craft.name}, it'll take around ${formatDuration(
+				duration
+			)} to finish.`
 		);
 	}
 }

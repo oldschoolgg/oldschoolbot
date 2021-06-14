@@ -75,10 +75,10 @@ export default class extends BotCommand {
 
 			if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 				throw `${
-					users.length === 1 ? `You don't` : `${user.username} doesn't`
-				} have enough brews/restores. You need at least ${
-					monster.healAmountNeeded! * quantity
-				} HP in food to ${users.length === 1 ? 'start the mass' : 'enter the mass'}.`;
+					users.length === 1 ? "You don't" : `${user.username} doesn't`
+				} have enough brews/restores. You need at least ${monster.healAmountNeeded! * quantity} HP in food to ${
+					users.length === 1 ? 'start the mass' : 'enter the mass'
+				}.`;
 			}
 		}
 	}
@@ -131,12 +131,10 @@ export default class extends BotCommand {
 
 		if (users.length === 1) {
 			if (!msg.author.getGear('melee').meetsStatRequirements(minimumSoloGear.stats)) {
-				return msg.channel.send(`Your gear isn't good enough to solo the Kalphite King.`);
+				return msg.channel.send("Your gear isn't good enough to solo the Kalphite King.");
 			}
 			if (msg.author.getKC(KalphiteKingMonster.id) < 50) {
-				return msg.channel.send(
-					`You need atleast 50 KC before you can solo the Kalphite King.`
-				);
+				return msg.channel.send('You need atleast 50 KC before you can solo the Kalphite King.');
 			}
 		}
 
@@ -178,11 +176,7 @@ export default class extends BotCommand {
 				msgs.push(`-${percent}% penalty for 140 attack crush`);
 			}
 
-			if (
-				!equippedWeapon ||
-				!equippedWeapon.equipment ||
-				equippedWeapon.equipment.attack_crush < 95
-			) {
+			if (!equippedWeapon || !equippedWeapon.equipment || equippedWeapon.equipment.attack_crush < 95) {
 				const percent = 30;
 				effectiveTime = increaseNumByPercent(effectiveTime, percent);
 				msgs.push(`-${percent}% penalty for bad weapon`);
@@ -211,9 +205,7 @@ export default class extends BotCommand {
 			}
 			if (rangeStrBonus !== 0) {
 				effectiveTime = increaseNumByPercent(effectiveTime, rangeStrBonus);
-				msgs.push(
-					`-${rangeStrBonus}% penalty for ${data.percentAttackStrength}% attack strength`
-				);
+				msgs.push(`-${rangeStrBonus}% penalty for ${data.percentAttackStrength}% attack strength`);
 			}
 
 			// Increase duration for lower KC.
@@ -299,11 +291,11 @@ export default class extends BotCommand {
 
 		let str = `${partyOptions.leader.username}'s party (${users
 			.map(u => u.username)
-			.join(', ')}) is now off to kill ${quantity}x ${
-			KalphiteKingMonster.name
-		}. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
-			KalphiteKingMonster.timeToFinish
-		)} - the total trip will take ${formatDuration(duration)}. ${foodString}`;
+			.join(', ')}) is now off to kill ${quantity}x ${KalphiteKingMonster.name}. Each kill takes ${formatDuration(
+			perKillTime
+		)} instead of ${formatDuration(KalphiteKingMonster.timeToFinish)} - the total trip will take ${formatDuration(
+			duration
+		)}. ${foodString}`;
 
 		str += ` \n\n${debugStr}`;
 

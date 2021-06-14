@@ -21,11 +21,11 @@ export default class extends BotCommand {
 		 * If the user is an ironman already, lets ask them if they want to de-iron.
 		 */
 		if (msg.author.isIronman) {
-			return msg.send(`You're already an ironman.`);
+			return msg.send("You're already an ironman.");
 		}
 
 		if (msg.author.minionIsBusy) {
-			return msg.send(`Your minion is still on a trip.`);
+			return msg.send('Your minion is still on a trip.');
 		}
 
 		const existingGiveaways = await GiveawayTable.find({
@@ -34,9 +34,7 @@ export default class extends BotCommand {
 		});
 
 		if (existingGiveaways.length !== 0) {
-			return msg.channel.send(
-				`You can't become an ironman because you have active giveaways.`
-			);
+			return msg.channel.send("You can't become an ironman because you have active giveaways.");
 		}
 
 		await msg.send(
@@ -53,9 +51,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 
 		try {
 			await msg.channel.awaitMessages(
-				answer =>
-					answer.author.id === msg.author.id &&
-					answer.content === 'confirm permanent ironman',
+				answer => answer.author.id === msg.author.id && answer.content === 'confirm permanent ironman',
 				{
 					max: 1,
 					time: 15000,
@@ -64,9 +60,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 			);
 
 			msg.author.log(
-				`just became an ironman, previous settings: ${JSON.stringify(
-					msg.author.settings.toJSON()
-				)}`
+				`just became an ironman, previous settings: ${JSON.stringify(msg.author.settings.toJSON())}`
 			);
 
 			await msg.author.settings.reset();

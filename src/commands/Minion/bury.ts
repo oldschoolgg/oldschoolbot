@@ -36,23 +36,17 @@ export default class extends BotCommand {
 		}
 
 		const bone = Prayer.Bones.find(
-			bone =>
-				stringMatches(bone.name, boneName) ||
-				stringMatches(bone.name.split(' ')[0], boneName)
+			bone => stringMatches(bone.name, boneName) || stringMatches(bone.name.split(' ')[0], boneName)
 		);
 
 		if (!bone) {
 			return msg.send(
-				`That's not a valid bone to bury. Valid bones are ${Prayer.Bones.map(
-					bone => bone.name
-				).join(', ')}.`
+				`That's not a valid bone to bury. Valid bones are ${Prayer.Bones.map(bone => bone.name).join(', ')}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Prayer) < bone.level) {
-			return msg.send(
-				`${msg.author.minionName} needs ${bone.level} Prayer to bury ${bone.name}.`
-			);
+			return msg.send(`${msg.author.minionName} needs ${bone.level} Prayer to bury ${bone.name}.`);
 		}
 
 		const timeToBuryABone = speedMod * (Time.Second * 1.2 + Time.Second / 4);
@@ -78,9 +72,9 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					bone.name
-				}s you can bury is ${Math.floor(maxTripLength / timeToBuryABone)}.`
+				)}, try a lower quantity. The highest amount of ${bone.name}s you can bury is ${Math.floor(
+					maxTripLength / timeToBuryABone
+				)}.`
 			);
 		}
 
@@ -96,9 +90,7 @@ export default class extends BotCommand {
 		});
 
 		return msg.send(
-			`${msg.author.minionName} is now burying ${cost}, it'll take around ${formatDuration(
-				duration
-			)} to finish.`
+			`${msg.author.minionName} is now burying ${cost}, it'll take around ${formatDuration(duration)} to finish.`
 		);
 	}
 }

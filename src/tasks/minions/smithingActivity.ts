@@ -20,14 +20,21 @@ export default class extends Task {
 			xpReceived *= 1.1;
 		}
 
-		await user.addXP(SkillsEnum.Smithing, xpReceived);
-		const xpRes = await user.addXP(SkillsEnum.Smithing, xpReceived, duration);
+		await user.addXP({
+			skillName: SkillsEnum.Smithing,
+			amount: xpReceived
+		});
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Smithing,
+			amount: xpReceived,
+			duration
+		});
 		const loot = new Bank({
 			[smithedItem.id]: quantity * smithedItem.outputMultiple
 		});
 		let str = `${user}, ${user.minionName} finished smithing, you received ${loot}. ${xpRes}`;
 		if (hasBS) {
-			str += `\n**10%** Bonus XP For Blacksmith Outfit`;
+			str += '\n**10%** Bonus XP For Blacksmith Outfit';
 		}
 
 		await user.addItemsToBank(loot, true);

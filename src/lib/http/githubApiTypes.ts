@@ -1,11 +1,5 @@
 export interface GithubSponsorsWebhookData {
-	action:
-		| 'created'
-		| 'cancelled'
-		| 'edited'
-		| 'tier_changed'
-		| 'pending_cancellation'
-		| 'pending_tier_change';
+	action: 'created' | 'cancelled' | 'edited' | 'tier_changed' | 'pending_cancellation' | 'pending_tier_change';
 	sponsorship: Sponsorship;
 	sender: GithubUser;
 	changes?: Changes;

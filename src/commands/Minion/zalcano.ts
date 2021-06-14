@@ -57,7 +57,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`To fight Zalcano, you need: ${reason}.`);
 		}
 		if (msg.author.settings.get(UserSettings.QP) < 150) {
-			return msg.send(`To fight Zalcano, you need 150 QP.`);
+			return msg.send('To fight Zalcano, you need 150 QP.');
 		}
 
 		const kc = msg.author.getKC(ZALCANO_ID);
@@ -68,20 +68,19 @@ export default class extends BotCommand {
 		baseTime = reduceNumByPercent(baseTime, kcLearned / 6);
 		boosts.push(`${(kcLearned / 6).toFixed(2)}% boost for experience`);
 
-		const skillPercentage =
-			msg.author.skillLevel(SkillsEnum.Mining) + msg.author.skillLevel(SkillsEnum.Smithing);
+		const skillPercentage = msg.author.skillLevel(SkillsEnum.Mining) + msg.author.skillLevel(SkillsEnum.Smithing);
 
 		baseTime = reduceNumByPercent(baseTime, skillPercentage / 40);
 		boosts.push(`${skillPercentage / 40}% boost for levels`);
 
 		if (msg.author.equippedPet() === itemID('Obis')) {
 			baseTime /= 2;
-			boosts.push(`2x boost for Obis`);
+			boosts.push('2x boost for Obis');
 		}
 
 		if (!msg.author.hasGracefulEquipped()) {
 			baseTime *= 1.15;
-			boosts.push(`-15% time penalty for not having graceful equipped`);
+			boosts.push('-15% time penalty for not having graceful equipped');
 		}
 
 		let healAmountNeeded = 7 * 12;
@@ -116,9 +115,7 @@ export default class extends BotCommand {
 				msg.author.minionName
 			} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDuration(
 				duration
-			)}. (${formatDuration(
-				baseTime
-			)} per kill). Removed ${food}.\n\n**Boosts:** ${boosts.join(', ')}.`
+			)}. (${formatDuration(baseTime)} per kill). Removed ${food}.\n\n**Boosts:** ${boosts.join(', ')}.`
 		);
 	}
 }

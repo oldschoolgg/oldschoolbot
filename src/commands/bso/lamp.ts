@@ -20,19 +20,17 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [[item], skillName]: [Item[], string]) {
 		const lamp = XPLamps.find(lamp => lamp.itemID === item.id);
 		if (!lamp) {
-			return msg.send(`That's not a valid XP Lamp.`);
+			return msg.send("That's not a valid XP Lamp.");
 		}
 
 		skillName = skillName.toLowerCase();
 
 		const isValidSkill = Object.values(Skills).some(skill => skill.id === skillName);
 		if (!isValidSkill) {
-			return msg.send(`That's not a valid skill.`);
+			return msg.send("That's not a valid skill.");
 		}
-		if (skillName === 'construction') {
-			return msg.channel.send(
-				`You cannot lamp construction because there is an ongoing Skill Of The Week for it!`
-			);
+		if (skillName === 'slayer') {
+			return msg.channel.send('A magical force prevents you from using a lamp on this skill.');
 		}
 
 		const bank = new Bank(msg.author.settings.get(UserSettings.Bank));
@@ -40,13 +38,18 @@ export default class extends BotCommand {
 			return msg.send(`You don't have any ${lamp.name} lamps!`);
 		}
 
-		await msg.author.addXP(skillName as SkillsEnum, lamp.amount, undefined, false);
+		await msg.author.addXP({
+			skillName: skillName as SkillsEnum,
+			amount: lamp.amount,
+			duration: undefined,
+			minimal: false
+		});
 		await msg.author.removeItemFromBank(lamp.itemID);
 
 		return msg.send(
-			`Added ${lamp.amount.toLocaleString()} ${toTitleCase(
-				skillName
-			)} XP from your ${itemNameFromID(lamp.itemID)}`
+			`Added ${lamp.amount.toLocaleString()} ${toTitleCase(skillName)} XP from your ${itemNameFromID(
+				lamp.itemID
+			)}`
 		);
 	}
 }

@@ -61,10 +61,7 @@ export default class extends BotCommand {
 			itemCost: async () => new Bank().add('Elder rune', randInt(55, 100)),
 			mostImportantStat: 'attack_magic',
 			food: () => new Bank(),
-			settingsKeys: [
-				ClientSettings.EconomyStats.VasaCost,
-				ClientSettings.EconomyStats.VasaLoot
-			],
+			settingsKeys: [ClientSettings.EconomyStats.VasaCost, ClientSettings.EconomyStats.VasaLoot],
 			channel: msg.channel as TextChannel,
 			activity: Activity.VasaMagus,
 			massText: `${msg.author.username} is assembling a team to fight Vasa Magus! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
@@ -78,9 +75,7 @@ export default class extends BotCommand {
 			}
 			const { bossUsers } = await instance.start();
 			const embed = new MessageEmbed().setDescription(
-				`Your team is off to fight Vasa Magus. The total trip will take ${formatDuration(
-					instance.duration
-				)}.
+				`Your team is off to fight Vasa Magus. The total trip will take ${formatDuration(instance.duration)}.
 
 ${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
 `

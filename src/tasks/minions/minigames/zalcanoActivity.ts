@@ -30,9 +30,13 @@ export default class extends Task {
 			miningXP += randInt(1100, 1400);
 		}
 
-		let xpRes = await user.addXP(SkillsEnum.Mining, miningXP, duration);
-		xpRes += await user.addXP(SkillsEnum.Smithing, smithingXP);
-		xpRes += await user.addXP(SkillsEnum.Runecraft, runecraftXP);
+		let xpRes = await user.addXP({
+			skillName: SkillsEnum.Mining,
+			amount: miningXP,
+			duration
+		});
+		xpRes += await user.addXP({ skillName: SkillsEnum.Smithing, amount: smithingXP });
+		xpRes += await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP });
 
 		const kc = user.getKC(ZALCANO_ID);
 
@@ -41,10 +45,7 @@ export default class extends Task {
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${
 					user.minionName
-				}, just received **Smolcano**, their Zalcano KC is ${randInt(
-					kc || 1,
-					(kc || 1) + quantity
-				)}!`
+				}, just received **Smolcano**, their Zalcano KC is ${randInt(kc || 1, (kc || 1) + quantity)}!`
 			);
 		}
 
@@ -52,25 +53,17 @@ export default class extends Task {
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(
-				loot.bank,
-				`Loot From ${quantity}x Zalcano`,
-				true,
-				{ showNewCL: 1 },
-				user
-			);
+			.generateBankImage(loot.bank, `Loot From ${quantity}x Zalcano`, true, { showNewCL: 1 }, user);
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
-			`${user}, ${
-				user.minionName
-			} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${
+			`${user}, ${user.minionName} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${
 				kc + quantity
 			}. ${xpRes}`,
 			res => {
-				user.log(`continued zalcano`);
+				user.log('continued zalcano');
 				return this.client.commands.get('zalcano')!.run(res, []);
 			},
 			image!,

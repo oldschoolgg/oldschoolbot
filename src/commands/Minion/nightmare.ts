@@ -26,13 +26,13 @@ function soloMessage(user: KlasaUser, duration: number, quantity: number) {
 	const kc = user.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 0;
 	let str = `${user.minionName} is now off to kill The Nightmare ${quantity} times.`;
 	if (kc < 5) {
-		str += ` They are terrified to face The Nightmare, and set off to fight it with great fear.`;
+		str += ' They are terrified to face The Nightmare, and set off to fight it with great fear.';
 	} else if (kc < 10) {
-		str += ` They are scared to face The Nightmare, but set off with great courage.`;
+		str += ' They are scared to face The Nightmare, but set off with great courage.';
 	} else if (kc < 50) {
-		str += ` They are confident in killing The Nightmare, and prepared for battle.`;
+		str += ' They are confident in killing The Nightmare, and prepared for battle.';
 	} else {
-		str += ` They are not scared of The Nightmare anymore, and ready to fight!`;
+		str += ' They are not scared of The Nightmare anymore, and ready to fight!';
 	}
 
 	return `${str} The trip will take approximately ${formatDuration(duration)}.`;
@@ -78,10 +78,10 @@ export default class extends BotCommand {
 
 			if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 				throw `${
-					users.length === 1 ? `You don't` : `${user.username} doesn't`
-				} have enough food. You need at least ${
-					monster.healAmountNeeded! * quantity
-				} HP in food to ${users.length === 1 ? 'start the mass' : 'enter the mass'}.`;
+					users.length === 1 ? "You don't" : `${user.username} doesn't`
+				} have enough food. You need at least ${monster.healAmountNeeded! * quantity} HP in food to ${
+					users.length === 1 ? 'start the mass' : 'enter the mass'
+				}.`;
 			}
 		}
 	}
@@ -98,9 +98,7 @@ export default class extends BotCommand {
 			minSize: 2,
 			maxSize: (maximumSizeForParty ?? maximumSize) - 1,
 			ironmanAllowed: true,
-			message: `${msg.author.username} is doing a ${
-				NightmareMonster.name
-			} mass! Anyone can click the ${
+			message: `${msg.author.username} is doing a ${NightmareMonster.name} mass! Anyone can click the ${
 				Emoji.Join
 			} reaction to join, click it again to leave. The maximum size for this mass is ${
 				maximumSizeForParty ?? maximumSize
@@ -244,7 +242,7 @@ export default class extends BotCommand {
 				  )} - the total trip will take ${formatDuration(duration)}.`;
 
 		if (hasCob && type === 'solo') {
-			str += `\n2x Boost from Cob`;
+			str += '\n2x Boost from Cob';
 		}
 
 		return msg.channel.send(str, {

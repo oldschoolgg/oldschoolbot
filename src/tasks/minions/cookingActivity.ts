@@ -25,15 +25,15 @@ export default class extends Task {
 			stopBurningLvl = cookable.stopBurnAt;
 		}
 
-		burnedAmount = calcBurntCookables(
-			quantity,
-			stopBurningLvl,
-			user.skillLevel(SkillsEnum.Cooking)
-		);
+		burnedAmount = calcBurntCookables(quantity, stopBurningLvl, user.skillLevel(SkillsEnum.Cooking));
 
 		const xpReceived = (quantity - burnedAmount) * cookable.xp;
 
-		const xpRes = await user.addXP(SkillsEnum.Cooking, xpReceived, duration);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Cooking,
+			amount: xpReceived,
+			duration
+		});
 
 		let str = `${user}, ${user.minionName} finished cooking ${quantity}x ${cookable.name}. ${xpRes}`;
 
@@ -50,7 +50,8 @@ export default class extends Task {
 			for (let i = 0; i < minutesInTrip; i++) {
 				if (roll(5000)) {
 					loot.add('Remy');
-					str += `\n<:remy:748491189925183638> A small rat notices you cooking, and tells you you're cooking it all wrong! He crawls into your bank to help you with your cooking. You can equip Remy for a boost to your cooking skills.`;
+					str +=
+						"\n<:remy:748491189925183638> A small rat notices you cooking, and tells you you're cooking it all wrong! He crawls into your bank to help you with your cooking. You can equip Remy for a boost to your cooking skills.";
 					break;
 				}
 			}

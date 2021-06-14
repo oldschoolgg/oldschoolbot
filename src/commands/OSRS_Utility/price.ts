@@ -18,7 +18,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [name]: [string]) {
 		const item = Items.get(name);
-		if (!item) return msg.send(`Couldn't find that item.`);
+		if (!item) return msg.send("Couldn't find that item.");
 
 		const priceOfItem = item.price;
 

@@ -124,5 +124,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.OuraniaDeliveryService;
 		case Activity.MageArena2:
 			return Tasks.MageArena2;
+		case Activity.BigChompyBirdHunting:
+			return Tasks.BigChompyBirdHunting;
 	}
 }

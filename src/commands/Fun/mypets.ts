@@ -7,8 +7,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description:
-				'View the virtual pets you have, which are not the pets in your bank or from your minion.',
+			description: 'View the virtual pets you have, which are not the pets in your bank or from your minion.',
 			cooldown: 3,
 			examples: ['+mypets'],
 			categoryFlags: ['utility']

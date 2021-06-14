@@ -30,7 +30,7 @@ export default class MemorySweeper extends Task {
 
 	async run() {
 		const queryRes = await (this.client.providers.default as PostgresProvider).runAll(
-			`SELECT ARRAY(SELECT "id" FROM users WHERE "badges"::text <> '{}'::text OR "bank"::text <> '{}'::text OR "minion.hasBought" = true); `
+			'SELECT ARRAY(SELECT "id" FROM users WHERE "badges"::text <> \'{}\'::text OR "bank"::text <> \'{}\'::text OR "minion.hasBought" = true); '
 		);
 
 		const shouldCacheUsers: Set<string> = new Set(queryRes[0].array);

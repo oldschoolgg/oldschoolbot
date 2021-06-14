@@ -1,8 +1,9 @@
 import { randArrItem, Time } from 'e';
 import { Task } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
+import { CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
@@ -11,20 +12,28 @@ import { allKeyPieces } from '../../lib/nex';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { bones } from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
+import {
+	calculateSlayerPoints,
+	filterLootReplace,
+	getSlayerMasterOSJSbyID,
+	getUsersCurrentSlayerInfo
+} from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { channelIsSendable, itemID, rand, roll } from '../../lib/util';
+import { itemID, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { sendToChannelID } from '../../lib/util/webhook';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
-		const { monsterID, userID, channelID, quantity, duration } = data;
-		const monster = effectiveMonsters.find(mon => mon.id === monsterID)!;
+		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
+		const monster = effectiveMonsters.find(mon => mon.id === monsterID)! as KillableMonster;
 		const fullMonster = Monsters.get(monsterID);
 		const user = await this.client.users.fetch(userID);
-		const channel = this.client.channels.cache.get(channelID);
-		if (!channelIsSendable(channel)) return;
 		if (monster.name === 'Koschei the deathless' && !roll(5000)) {
-			return channel.send(`${user.minionName} failed to defeat Koschei the deathless.`);
+			sendToChannelID(this.client, channelID, {
+				content: `${user}, ${user.minionName} failed to defeat Koschei the deathless.`
+			});
 		}
 
 		await user.incrementMonsterScore(monsterID, quantity);
@@ -35,7 +44,55 @@ export default class extends Task {
 			abyssalBonus += 0.25;
 		}
 
-		let loot = (monster as KillableMonster).table.kill(Math.ceil(quantity * abyssalBonus));
+		const usersTask = await getUsersCurrentSlayerInfo(user.id);
+		const isOnTask =
+			usersTask.assignedTask !== null &&
+			usersTask.currentTask !== null &&
+			usersTask.assignedTask.monsters.includes(monsterID);
+
+		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
+
+		const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
+		// Check if superiors unlock is purchased
+		const superiorsUnlocked = isOnTask
+			? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder)
+			: undefined;
+
+		const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
+		const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
+
+		const killOptions: MonsterKillOptions = {
+			onSlayerTask: isOnTask,
+			slayerMaster,
+			hasSuperiors: superiorTable,
+			inCatacombs: isInCatacombs
+		};
+		const loot = (monster as KillableMonster).table.kill(Math.ceil(quantity * abyssalBonus), killOptions);
+		const newSuperiorCount = loot.bank[420];
+
+		if (newSuperiorCount && newSuperiorCount > 0) {
+			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
+			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
+		}
+
+		const quantitySlayed = isOnTask ? Math.min(usersTask.currentTask!.quantityRemaining, quantity) : null;
+
+		const xpRes = await addMonsterXP(user, {
+			monsterID,
+			quantity,
+			duration,
+			isOnTask,
+			taskQuantity: quantitySlayed,
+			minimal: false,
+			usingCannon,
+			cannonMulti
+		});
+
+		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
+		let str =
+			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
+			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
+
 		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(20)) {
@@ -88,20 +145,12 @@ export default class extends Task {
 			}
 		}
 
-		announceLoot(this.client, user, monster as KillableMonster, loot.bank);
-
-		const xpRes = await addMonsterXP(user, monsterID, quantity, duration);
-
-		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}. Your ${
-			monster.name
-		} KC is now ${user.getKC(monsterID)}.\n${xpRes.join(', ')}.`;
-
 		if (gotBrock) {
-			str += `\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.`;
+			str += '\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.';
 		}
 
 		if (gotKlik) {
-			str += `\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.`;
+			str += '\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.';
 		}
 
 		if (bananas > 0) {
@@ -109,7 +158,22 @@ export default class extends Task {
 		}
 
 		if (abyssalBonus > 1) {
-			str += `\n\nOri has used the abyss to transmute you +25% bonus loot!`;
+			str += '\n\nOri has used the abyss to transmute you +25% bonus loot!';
+		}
+
+		announceLoot(this.client, user, monster, loot.bank);
+		if (newSuperiorCount && newSuperiorCount > 0) {
+			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
+			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
+		}
+
+		if (
+			monster.id === Monsters.Unicorn.id &&
+			user.hasItemEquippedAnywhere('Iron dagger') &&
+			!user.hasItemEquippedOrInBank('Clue hunter cloak')
+		) {
+			loot.add('Clue hunter cloak');
+			loot.add('Clue hunter boots');
 		}
 
 		if (user.settings.get(UserSettings.Bank)[itemID('Gorajan bonecrusher')]) {
@@ -121,15 +185,53 @@ export default class extends Task {
 					loot.remove(bone.inputId, amount);
 				}
 			}
-			str += await user.addXP(SkillsEnum.Prayer, totalXP, duration);
+			str += await user.addXP({
+				skillName: SkillsEnum.Prayer,
+				amount: totalXP,
+				duration
+			});
 		}
 
-		const { previousCL } = await user.addItemsToBank(loot, true);
+		if (isOnTask) {
+			const effectiveSlayed =
+				monsterID === Monsters.KrilTsutsaroth.id &&
+				usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
+					? quantitySlayed! * 2
+					: monsterID === Monsters.Kreearra.id && usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
+					? quantitySlayed! * 4
+					: monsterID === Monsters.GrotesqueGuardians.id &&
+					  user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+					? quantitySlayed! * 2
+					: quantitySlayed!;
+
+			const quantityLeft = Math.max(0, usersTask.currentTask!.quantityRemaining - effectiveSlayed);
+
+			const thisTripFinishesTask = quantityLeft === 0;
+			if (thisTripFinishesTask) {
+				const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
+				user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
+				const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
+				const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
+				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
+
+				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
+			} else {
+				str += `\nYou killed ${effectiveSlayed}x of your ${
+					usersTask.currentTask!.quantityRemaining
+				} remaining kills, you now have ${quantityLeft} kills remaining.`;
+			}
+			usersTask.currentTask!.quantityRemaining = quantityLeft;
+			await usersTask.currentTask!.save();
+		}
+
+		filterLootReplace(user.allItemsOwned(), loot);
+
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
-				loot.bank,
+				itemsAdded,
 				`Loot From ${quantity} ${monster.name}:`,
 				true,
 				{ showNewCL: 1 },
@@ -144,11 +246,15 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of killing ${monster.name}`);
-				return this.client.commands.get('k')!.run(res, [quantity, monster.name]);
+				let method = 'none';
+				if (usingCannon) method = 'cannon';
+				else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBarrage) method = 'barrage';
+				else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBurst) method = 'burst';
+				return this.client.commands.get('k')!.run(res, [quantity, monster.name, method]);
 			},
 			image!,
 			data,
-			loot.bank
+			itemsAdded
 		);
 	}
 }

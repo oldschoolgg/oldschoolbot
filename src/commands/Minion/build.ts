@@ -55,23 +55,19 @@ export default class extends BotCommand {
 
 		await msg.author.settings.sync(true);
 		const object = Constructables.find(
-			object =>
-				stringMatches(object.name, objectName) ||
-				stringMatches(object.name.split(' ')[0], objectName)
+			object => stringMatches(object.name, objectName) || stringMatches(object.name.split(' ')[0], objectName)
 		);
 
 		if (!object) {
 			return msg.send(
-				`Thats not a valid object to build. Valid objects are ${Constructables.map(
-					object => object.name
-				).join(', ')}.`
+				`Thats not a valid object to build. Valid objects are ${Constructables.map(object => object.name).join(
+					', '
+				)}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Construction) < object.level) {
-			return msg.send(
-				`${msg.author.minionName} needs ${object.level} Construction to create a ${object.name}.`
-			);
+			return msg.send(`${msg.author.minionName} needs ${object.level} Construction to create a ${object.name}.`);
 		}
 
 		let timeToBuildSingleObject = object.ticks * 300;
@@ -91,11 +87,7 @@ export default class extends BotCommand {
 		}
 
 		if (planksHas < planksQtyCost * quantity) {
-			return msg.send(
-				`You don't have enough ${itemNameFromID(plank)} to make ${quantity}x ${
-					object.name
-				}.`
-			);
+			return msg.send(`You don't have enough ${itemNameFromID(plank)} to make ${quantity}x ${object.name}.`);
 		}
 
 		let totalPlanksNeeded = planksQtyCost * quantity;
@@ -114,15 +106,15 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)} minutes, try a lower quantity. The highest amount of ${
-					object.name
-				}s you can build is ${Math.floor(maxTripLength / timeToBuildSingleObject)}.`
+				)} minutes, try a lower quantity. The highest amount of ${object.name}s you can build is ${Math.floor(
+					maxTripLength / timeToBuildSingleObject
+				)}.`
 			);
 		}
 
 		const gpNeeded = Math.floor(10_000 * (invsPerTrip / 8));
 		if (msg.author.settings.get(UserSettings.GP) < gpNeeded) {
-			return msg.send(`You don't have enough GP to pay your Butler.`);
+			return msg.send("You don't have enough GP to pay your Butler.");
 		}
 		await msg.author.removeGP(gpNeeded);
 		await msg.author.removeItemFromBank(plank, totalPlanksNeeded);
@@ -143,23 +135,18 @@ export default class extends BotCommand {
 			type: Activity.Construction
 		});
 
-		const xpHr = `${(
-			((object.xp * quantity) / (duration / Time.Minute)) *
-			60
-		).toLocaleString()} XP/Hr`;
+		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
 		let str = `${msg.author.minionName} is now constructing ${quantity}x ${
 			object.name
-		}, it'll take around ${formatDuration(
-			duration
-		)} to finish. Removed ${totalPlanksNeeded}x ${itemNameFromID(
+		}, it'll take around ${formatDuration(duration)} to finish. Removed ${totalPlanksNeeded}x ${itemNameFromID(
 			plank
 		)} from your bank. **${xpHr}**
 
 You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.`;
 
 		if (hasScroll) {
-			str += `\nYour Scroll of proficiency allows you to save 15% of your planks.`;
+			str += '\nYour Scroll of proficiency allows you to save 15% of your planks.';
 		}
 		return msg.send(str);
 	}

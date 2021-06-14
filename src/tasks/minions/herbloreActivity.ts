@@ -33,11 +33,15 @@ export default class extends Task {
 			quantity *= mixableItem.outputMultiple;
 		}
 
-		const xpRes = await user.addXP(SkillsEnum.Herblore, xpReceived, duration);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Herblore,
+			amount: xpReceived,
+			duration
+		});
 
-		let str = `${user}, ${user.minionName} finished making ${quantity - bonus} ${
-			mixableItem.name
-		}s. ${xpRes} ${bonus > 0 ? `\n\n**${bonus}x extra for Herblore master cape**` : ''}`;
+		let str = `${user}, ${user.minionName} finished making ${quantity - bonus} ${mixableItem.name}s. ${xpRes} ${
+			bonus > 0 ? `\n\n**${bonus}x extra for Herblore master cape**` : ''
+		}`;
 
 		const loot = {
 			[mixableItem.id]: quantity

@@ -36,7 +36,11 @@ export default class extends Task {
 			xpReceived = quantity * 56.2;
 		}
 
-		const xpRes = await user.addXP(SkillsEnum.Smithing, xpReceived, duration);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Smithing,
+			amount: xpReceived,
+			duration
+		});
 
 		let str = `${user}, ${user.minionName} finished smelting ${quantity}x ${bar.name}. ${xpRes}`;
 
@@ -53,7 +57,8 @@ export default class extends Task {
 			if (user.settings.get(UserSettings.QP) > 10) {
 				for (let i = 0; i < numMinutes; i++) {
 					if (roll(6500)) {
-						str += `\n\n<:zak:751035589952012298> While Smelting ores on Neitiznot, a Yak approaches you and says "Moooo". and is now following you around. You decide to name him 'Zak'.`;
+						str +=
+							'\n\n<:zak:751035589952012298> While Smelting ores on Neitiznot, a Yak approaches you and says "Moooo". and is now following you around. You decide to name him \'Zak\'.';
 						loot.add('Zak');
 						break;
 					}

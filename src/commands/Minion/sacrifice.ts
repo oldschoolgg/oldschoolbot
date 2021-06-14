@@ -33,9 +33,7 @@ export default class extends BotCommand {
 
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 					{
 						max: 1,
 						time: 10000,
@@ -48,23 +46,19 @@ export default class extends BotCommand {
 		}
 
 		if (totalPrice > 200_000_000) {
-			this.client.emit(
-				Events.ServerNotification,
-				`${msg.author.username} just sacrificed ${bankToSac}!`
-			);
+			this.client.emit(Events.ServerNotification, `${msg.author.username} just sacrificed ${bankToSac}!`);
 		}
 
 		let str = '';
 
 		const hasSkipper =
-			msg.author.equippedPet() === itemID('Skipper') ||
-			msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
+			msg.author.equippedPet() === itemID('Skipper') || msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
 		if (hasSkipper) {
 			totalPrice *= 1.4;
 		}
 
 		if (totalPrice >= 30_000_000 && roll(10)) {
-			str += `You received a *Hunk of crystal*.`;
+			str += 'You received a *Hunk of crystal*.';
 			await msg.author.addItemsToBank({ 742: 1 }, true);
 		}
 
@@ -84,10 +78,7 @@ export default class extends BotCommand {
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.SacrificedBank,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.SacrificedBank),
-				bankToSac.bank
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.SacrificedBank), bankToSac.bank])
 		);
 
 		msg.author.log(`sacrificed ${bankToSac} for ${totalPrice}`);
@@ -108,10 +99,12 @@ export default class extends BotCommand {
 		}
 
 		if (gotHammy) {
-			str += `\n\n<:Hamstare:685036648089780234> A small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes.`;
+			str +=
+				'\n\n<:Hamstare:685036648089780234> A small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes.';
 		}
 		if (hasSkipper) {
-			str += `\n<:skipper:755853421801766912> Skipper has negotiated with the bank and gotten you +40% extra value from your sacrifice.`;
+			str +=
+				'\n<:skipper:755853421801766912> Skipper has negotiated with the bank and gotten you +40% extra value from your sacrifice.';
 		}
 
 		return msg.send(

@@ -14,9 +14,7 @@ export default class extends Argument {
 
 		const constructor = this.constructor as typeof Argument;
 		if (constructor.regex.userOrMember.test(arg)) {
-			const user = await this.client.users
-				.fetch(constructor.regex.userOrMember.exec(arg)![1])
-				.catch(() => null);
+			const user = await this.client.users.fetch(constructor.regex.userOrMember.exec(arg)![1]).catch(() => null);
 
 			const rsn = user?.settings.get('RSN');
 			if (rsn) return rsn;

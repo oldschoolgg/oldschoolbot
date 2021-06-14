@@ -44,7 +44,7 @@ export default class extends Inhibitor {
 			}" - <:ishi:813000865417134090>`;
 		}
 		if (msg.author.equippedPet() === itemID('Hammy') && roll(10)) {
-			throw `<:Hamstare:685036648089780234> Hammy has interrupted your command because he is hungry and wants attention.`;
+			throw '<:Hamstare:685036648089780234> Hammy has interrupted your command because he is hungry and wants attention.';
 		}
 	}
 }

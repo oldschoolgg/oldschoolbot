@@ -28,13 +28,7 @@ const names: Record<keyof typeof chatHeads, string> = {
 	alry: 'Alry the Angler'
 };
 
-export default async function chatHeadImage({
-	content,
-	head
-}: {
-	content: string;
-	head: keyof typeof chatHeads;
-}) {
+export default async function chatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
 	const canvas = new Canvas(519, 142);
 	canvas.context.imageSmoothingEnabled = false;
 

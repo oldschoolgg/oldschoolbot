@@ -30,7 +30,7 @@ export default class extends Task {
 			channelID,
 			`<@${userID}>, ${minionName} finished ${quantity}x Castle Wars games and received ${loot}.`,
 			res => {
-				user.log(`continued castle wars`);
+				user.log('continued castle wars');
 				return (this.client.commands.get('castlewars') as CastleWarsCommand)!.play(res);
 			},
 			undefined,

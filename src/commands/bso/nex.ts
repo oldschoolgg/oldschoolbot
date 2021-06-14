@@ -51,10 +51,10 @@ export default class extends BotCommand {
 
 			if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 				throw `${
-					users.length === 1 ? `You don't` : `${user.username} doesn't`
-				} have enough brews/restores. You need at least ${
-					monster.healAmountNeeded! * quantity
-				} HP in food to ${users.length === 1 ? 'start the mass' : 'enter the mass'}.`;
+					users.length === 1 ? "You don't" : `${user.username} doesn't`
+				} have enough brews/restores. You need at least ${monster.healAmountNeeded! * quantity} HP in food to ${
+					users.length === 1 ? 'start the mass' : 'enter the mass'
+				}.`;
 			}
 		}
 	}
@@ -68,7 +68,7 @@ export default class extends BotCommand {
 		}
 
 		if (!type || (type !== 'mass' && type !== 'solo')) {
-			return msg.send(`Specify your team setup for Nex, either solo or mass.`);
+			return msg.send('Specify your team setup for Nex, either solo or mass.');
 		}
 
 		this.checkReqs([msg.author], NexMonster, 2);
@@ -78,9 +78,7 @@ export default class extends BotCommand {
 			minSize: 2,
 			maxSize: 8,
 			ironmanAllowed: true,
-			message: `${msg.author.username} is doing a ${
-				NexMonster.name
-			} mass! Anyone can click the ${
+			message: `${msg.author.username} is doing a ${NexMonster.name} mass! Anyone can click the ${
 				Emoji.Join
 			} reaction to join, click it again to leave. The maximum size for this mass is ${8}.`,
 			customDenier: user => {
@@ -127,17 +125,11 @@ export default class extends BotCommand {
 		let effectiveTime = NexMonster.timeToFinish;
 		const isSolo = users.length === 1;
 
-		if (
-			isSolo &&
-			(users[0].settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) < 200
-		) {
+		if (isSolo && (users[0].settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) < 200) {
 			effectiveTime = increaseNumByPercent(effectiveTime, 20);
 		}
 
-		if (
-			isSolo &&
-			(users[0].settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) > 500
-		) {
+		if (isSolo && (users[0].settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) > 500) {
 			effectiveTime = reduceNumByPercent(effectiveTime, 20);
 		}
 
@@ -197,9 +189,7 @@ export default class extends BotCommand {
 			}
 			if (rangeStrBonus !== 0) {
 				effectiveTime = increaseNumByPercent(effectiveTime, rangeStrBonus);
-				msgs.push(
-					`-${rangeStrBonus}% penalty for ${data.percentRangeStrength}% range strength`
-				);
+				msgs.push(`-${rangeStrBonus}% penalty for ${data.percentRangeStrength}% range strength`);
 			}
 
 			// Increase duration for lower KC.

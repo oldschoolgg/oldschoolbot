@@ -64,7 +64,7 @@ export default class extends BotCommand {
 				t.add(Items.random().id);
 			}
 			await msg.author.addItemsToBank(t);
-			return msg.channel.send(`Added 50 random items to your bank.`);
+			return msg.channel.send('Added 50 random items to your bank.');
 		}
 
 		if (msg.flagArgs.openables) {
@@ -88,7 +88,7 @@ export default class extends BotCommand {
 		}
 
 		const osItem = itemArray[0];
-		await msg.author.addItemsToBank({ [osItem.id]: qty });
+		await msg.author.addItemsToBank({ [osItem.id]: qty }, Boolean(msg.flagArgs.cl));
 
 		for (const setup of ['range', 'melee', 'mage', 'skilling']) {
 			if (msg.flagArgs[setup]) {

@@ -21,10 +21,7 @@ export default class extends Task {
 		let crushed = 0;
 		if (item.crushChance) {
 			for (let i = 0; i < quantity; i++) {
-				if (
-					randFloat(0, 1) >
-					(currentLevel - 1) * item.crushChance[0] + item.crushChance[1]
-				) {
+				if (randFloat(0, 1) > (currentLevel - 1) * item.crushChance[0] + item.crushChance[1]) {
 					crushed++;
 				}
 			}
@@ -42,14 +39,17 @@ export default class extends Task {
 			loot.add(item.id, quantity - crushed);
 		}
 
-		const xpRes = await user.addXP(SkillsEnum.Crafting, xpReceived);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Crafting,
+			amount: xpReceived
+		});
 
 		let str = `${user}, ${user.minionName} finished crafting ${quantity} ${item.name}, ${
-			crushed ? `crushing ${crushed} of them` : ``
+			crushed ? `crushing ${crushed} of them` : ''
 		}. ${xpRes}`;
 
 		if (hasScroll) {
-			str += `\n\nYour Scroll of dexterity allows you to receive 15% extra items.`;
+			str += '\n\nYour Scroll of dexterity allows you to receive 15% extra items.';
 		}
 
 		await user.addItemsToBank(loot, true);

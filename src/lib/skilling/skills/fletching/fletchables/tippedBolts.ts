@@ -75,14 +75,6 @@ const TippedBolts: Fletchable[] = [
 		xp: 9.4,
 		inputItems: new Bank({ 'Onyx bolt tips': 1, 'Runite bolts': 1 }),
 		tickRate: 0.2
-	},
-	{
-		name: 'Amethyst broad bolts',
-		id: itemID('Amethyst broad bolts'),
-		level: 76,
-		xp: 10.6,
-		inputItems: new Bank({ 'Amethyst bolt tips': 1, 'Broad bolts': 1 }),
-		tickRate: 0.2
 	}
 ];
 

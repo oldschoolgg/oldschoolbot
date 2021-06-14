@@ -33,13 +33,9 @@ export default async function removeFoodFromUser({
 	const userBank = user.settings.get(UserSettings.Bank);
 
 	const rawGear = user.rawGear();
-	const gearSetupsUsed = objectEntries(rawGear).filter(entry =>
-		attackStylesUsed.includes(entry[0])
-	);
+	const gearSetupsUsed = objectEntries(rawGear).filter(entry => attackStylesUsed.includes(entry[0]));
 	const reductions = [];
-	const elyUsed = gearSetupsUsed.some(
-		entry => entry[1].shield?.item === itemID('Elysian spirit shield')
-	);
+	const elyUsed = gearSetupsUsed.some(entry => entry[1].shield?.item === itemID('Elysian spirit shield'));
 	if (elyUsed) {
 		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, 17.5);
 		reductions.push(`17.5% for Ely ${Emoji.Ely}`);
@@ -56,16 +52,13 @@ export default async function removeFoodFromUser({
 			i => i.name
 		).join(', ')}.`;
 	} else {
-		await user.queueFn(() =>
-			user.settings.update(UserSettings.Bank, removeBankFromBank(userBank, foodToRemove))
-		);
+		await user.queueFn(() => user.settings.update(UserSettings.Bank, removeBankFromBank(userBank, foodToRemove)));
 		await client.settings.update(
 			ClientSettings.EconomyStats.PVMCost,
 			addBanks([client.settings.get(ClientSettings.EconomyStats.PVMCost), foodToRemove])
 		);
 
-		let reductionsStr =
-			reductions.length > 0 ? `**Base Food Reductions:** ${reductions.join(', ')}. ` : '';
+		let reductionsStr = reductions.length > 0 ? ` **Base Food Reductions:** ${reductions.join(', ')}. ` : '';
 		return [`${new Bank(foodToRemove)} from ${user.username}${reductionsStr}`, foodToRemove];
 	}
 }
