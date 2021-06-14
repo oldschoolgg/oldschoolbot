@@ -437,9 +437,6 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
-		await msg.author.removeItemsFromBank(lootToRemove);
-
 		if (
 			attackStyles.includes(SkillsEnum.Ranged) &&
 			msg.author.hasItemEquippedAnywhere('Ranged master cape')
