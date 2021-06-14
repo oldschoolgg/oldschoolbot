@@ -64,9 +64,7 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 
 	// Add filterables
 	const flagsKeys = Object.keys(flags);
-	const filter = filterableTypes.find(type =>
-		type.aliases.some(alias => flagsKeys.includes(alias))
-	);
+	const filter = filterableTypes.find(type => type.aliases.some(alias => flagsKeys.includes(alias)));
 
 	const outputBank = new Bank();
 
@@ -74,10 +72,7 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 		if (flagsKeys.includes('tradeables') && !item.tradeable) continue;
 		if (flagsKeys.includes('untradeables') && item.tradeable) continue;
 		if (flagsKeys.includes('equippables') && !item.equipment?.slot) continue;
-		if (
-			flagsKeys.includes('search') &&
-			!item.name.toLowerCase().includes(flags.search.toLowerCase())
-		) {
+		if (flagsKeys.includes('search') && !item.name.toLowerCase().includes(flags.search.toLowerCase())) {
 			continue;
 		}
 

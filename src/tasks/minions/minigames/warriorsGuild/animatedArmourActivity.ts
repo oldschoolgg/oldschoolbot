@@ -27,7 +27,7 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued trip of animated armor`);
+				user.log('continued trip of animated armor');
 				return this.client.commands.get('warriorsguild')!.run(res, [quantity, 'tokens']);
 			},
 			undefined,

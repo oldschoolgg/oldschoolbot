@@ -55,9 +55,7 @@ export default class extends BotCommand {
 		}
 
 		if (currentTask.type === Activity.SoulWars) {
-			return msg.send(
-				`${msg.author.minionName} is currently doing Soul Wars, and cant leave their team!`
-			);
+			return msg.send(`${msg.author.minionName} is currently doing Soul Wars, and cant leave their team!`);
 		}
 
 		if (currentTask.type === Activity.Raids) {
@@ -71,26 +69,22 @@ export default class extends BotCommand {
 
 		const cancelMsg = await msg.channel.send(
 			`${msg.author} ${msg.author.minionStatus}\n Say \`confirm\` if you want to call your minion back from their trip. ` +
-				`They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any.`
+				"They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any."
 		);
 
 		if (!msg.flagArgs.cf) {
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 					options
 				);
 			} catch (err) {
-				return cancelMsg.edit(`Halting cancellation of minion task.`);
+				return cancelMsg.edit('Halting cancellation of minion task.');
 			}
 		}
 
 		await (this.client as OldSchoolBotClient).cancelTask(msg.author.id);
 
-		return msg.send(
-			`${msg.author.minionName}'s trip was cancelled, and they're now available.`
-		);
+		return msg.send(`${msg.author.minionName}'s trip was cancelled, and they're now available.`);
 	}
 }

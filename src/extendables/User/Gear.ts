@@ -28,11 +28,7 @@ export default class extends Extendable {
 		};
 	}
 
-	public hasItemEquippedAnywhere(
-		this: User,
-		_item: number | string | string[] | number[],
-		every = false
-	): boolean {
+	public hasItemEquippedAnywhere(this: User, _item: number | string | string[] | number[], every = false): boolean {
 		const items = resolveItems(_item);
 		for (const gear of Object.values(this.rawGear())) {
 			if (gear.hasEquipped(items, every)) {
@@ -47,10 +43,7 @@ export default class extends Extendable {
 		if (SimilarItems[id] === undefined) {
 			return this.hasItemEquippedAnywhere(id, false) || this.numItemsInBankSync(id, true) > 0;
 		}
-		return (
-			this.hasItemEquippedAnywhere(SimilarItems[id], false) ||
-			this.numItemsInBankSync(id, true) > 0
-		);
+		return this.hasItemEquippedAnywhere(SimilarItems[id], false) || this.numItemsInBankSync(id, true) > 0;
 	}
 
 	public getGear(this: User, setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling'): GearSetup {

@@ -33,9 +33,7 @@ export default class extends BotCommand {
 
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 					{
 						max: 1,
 						time: 10000,
@@ -48,10 +46,7 @@ export default class extends BotCommand {
 		}
 
 		if (totalPrice > 200_000_000) {
-			this.client.emit(
-				Events.ServerNotification,
-				`${msg.author.username} just sacrificed ${bankToSac}!`
-			);
+			this.client.emit(Events.ServerNotification, `${msg.author.username} just sacrificed ${bankToSac}!`);
 		}
 
 		const newValue = msg.author.settings.get(UserSettings.SacrificedValue) + totalPrice;
@@ -65,10 +60,7 @@ export default class extends BotCommand {
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.SacrificedBank,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.SacrificedBank),
-				bankToSac.bank
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.SacrificedBank), bankToSac.bank])
 		);
 
 		msg.author.log(`sacrificed ${bankToSac} for ${totalPrice}`);

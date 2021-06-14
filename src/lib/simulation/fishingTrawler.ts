@@ -96,9 +96,7 @@ export function fishingTrawlerLoot(fishingLevel: number, hasEliteArd: boolean, b
 	for (let i = 0; i < len; i++) {
 		const fishToGive = possibleFish[0];
 
-		let qty = Math.floor(
-			randomVariation((ableToFish.indexOf(fishToGive) + 1) * multiplier, 50)
-		);
+		let qty = Math.floor(randomVariation((ableToFish.indexOf(fishToGive) + 1) * multiplier, 50));
 		// 50% Extra fish for having elite diary
 		if (hasEliteArd) {
 			qty = Math.floor(qty * 1.5);

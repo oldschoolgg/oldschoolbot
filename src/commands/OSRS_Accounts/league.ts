@@ -21,7 +21,7 @@ export default class extends BotCommand {
 		try {
 			const player = await Hiscores.fetch(username, { type: AccountType.Seasonal });
 			const embed = this.getStatsEmbed(username, 7981338, player);
-			embed.setFooter(`Trailblazer Leagues`);
+			embed.setFooter('Trailblazer Leagues');
 			return msg.send({ embed });
 		} catch (err) {
 			return msg.send(err.message);

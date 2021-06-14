@@ -17,18 +17,15 @@ export default class extends BotCommand {
 		if (!msg.guild || msg.guild.id !== SupportServer) return;
 		if (!msg.member) return;
 		if (!(msg.channel instanceof TextChannel)) return;
-		if (
-			!msg.member.roles.cache.has('734055552933429280') &&
-			!msg.member.roles.cache.has(Roles.Moderator)
-		) {
+		if (!msg.member.roles.cache.has('734055552933429280') && !msg.member.roles.cache.has(Roles.Moderator)) {
 			return;
 		}
 		if (msg.channel.id === '789717054902763520') {
-			return msg.send(`<@&789724904885846016>`);
+			return msg.send('<@&789724904885846016>');
 		}
 
 		if (msg.channel.parentID === '835876917252587581') {
-			return msg.send(`<@&836539487815204865>`);
+			return msg.send('<@&836539487815204865>');
 		}
 		return msg.send('<@&711215501543473182>');
 	}

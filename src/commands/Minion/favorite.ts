@@ -22,12 +22,10 @@ export default class extends BotCommand {
 		if (!items) {
 			const currentFavorites = msg.author.settings.get(UserSettings.FavoriteItems);
 			if (currentFavorites.length === 0) {
-				return msg.send(`You have no favorited items.`);
+				return msg.send('You have no favorited items.');
 			}
 			return msg.send(
-				`Your current favorite items are: ${currentFavorites
-					.map(id => itemNameFromID(id))
-					.join(', ')}.`
+				`Your current favorite items are: ${currentFavorites.map(id => itemNameFromID(id)).join(', ')}.`
 			);
 		}
 

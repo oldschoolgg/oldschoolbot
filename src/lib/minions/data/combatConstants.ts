@@ -55,13 +55,7 @@ export const CombatOptionsArray: CombatOptionsDesc[] = [
 		id: CombatOptionsEnum.AlwaysIceBarrage,
 		name: 'Always Ice Barrage',
 		desc: 'Use Ice barrage whenever possible',
-		aliases: [
-			'always barrage',
-			'alwaysicebarrage',
-			'always ice barrage',
-			'barrage',
-			'ice barrage'
-		]
+		aliases: ['always barrage', 'alwaysicebarrage', 'always ice barrage', 'barrage', 'ice barrage']
 	}
 ];
 

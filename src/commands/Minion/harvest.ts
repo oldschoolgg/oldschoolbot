@@ -21,7 +21,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '<seedType:...string>',
 			usageDelim: ' ',
-			description: `Allows a player to harvest a specific patch without replanting a seed.`,
+			description: 'Allows a player to harvest a specific patch without replanting a seed.',
 			examples: ['+harvest herb', '+harvest tree'],
 			categoryFlags: ['minion']
 		});
@@ -83,18 +83,14 @@ export default class extends BotCommand {
 			currentWoodcuttingLevel < planted.treeWoodcuttingLevel
 		) {
 			const gpToCutTree =
-				planted.seedType === 'redwood'
-					? 2000 * storeHarvestableQuantity
-					: 200 * storeHarvestableQuantity;
+				planted.seedType === 'redwood' ? 2000 * storeHarvestableQuantity : 200 * storeHarvestableQuantity;
 			if (GP < gpToCutTree) {
 				throw `${msg.author.minionName} remembers that they do not have ${planted.treeWoodcuttingLevel} woodcutting or the ${gpToCutTree} GP required to be able to harvest the currently planted trees, and so they cancel their trip.`;
 			}
 		}
 
 		if (!planted) {
-			this.client.wtf(
-				new Error(`${msg.author.sanitizedName}'s patch had no plant found in it.`)
-			);
+			this.client.wtf(new Error(`${msg.author.sanitizedName}'s patch had no plant found in it.`));
 			return;
 		}
 
@@ -110,7 +106,7 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (msg.author.hasItemEquippedAnywhere(itemID(`Ring of endurance`))) {
+		if (msg.author.hasItemEquippedAnywhere(itemID('Ring of endurance'))) {
 			boostStr.push('10% time for Ring of Endurance');
 			duration *= 0.9;
 		}
@@ -125,14 +121,11 @@ export default class extends BotCommand {
 
 		// If user does not have something already planted, just plant the new seeds.
 		if (!patchType.patchPlanted) {
-			throw `There is nothing planted in this patch to harvest!`;
+			throw 'There is nothing planted in this patch to harvest!';
 		} else if (patchType.patchPlanted) {
 			if (planted.needsChopForHarvest) {
 				if (!planted.treeWoodcuttingLevel) return;
-				if (
-					currentWoodcuttingLevel < planted.treeWoodcuttingLevel &&
-					GP < 200 * storeHarvestableQuantity
-				) {
+				if (currentWoodcuttingLevel < planted.treeWoodcuttingLevel && GP < 200 * storeHarvestableQuantity) {
 					throw `Your minion remembers that they do not have ${planted.treeWoodcuttingLevel} woodcutting or the 200GP per patch required to be able to harvest the currently planted trees.`;
 				}
 			}
@@ -141,7 +134,7 @@ export default class extends BotCommand {
 
 			if (
 				bankHasItem(userBank, itemID('Magic secateurs')) ||
-				msg.author.hasItemEquippedAnywhere(itemID(`Magic secateurs`))
+				msg.author.hasItemEquippedAnywhere(itemID('Magic secateurs'))
 			) {
 				boostStr.push('10% crop yield for Magic Secateurs');
 			}
@@ -149,8 +142,8 @@ export default class extends BotCommand {
 			if (
 				bankHasItem(userBank, itemID('Farming cape')) ||
 				bankHasItem(userBank, itemID('Farming cape(t)')) ||
-				msg.author.hasItemEquippedAnywhere(itemID(`Farming cape`)) ||
-				msg.author.hasItemEquippedAnywhere(itemID(`Farming cape(t)`))
+				msg.author.hasItemEquippedAnywhere(itemID('Farming cape')) ||
+				msg.author.hasItemEquippedAnywhere(itemID('Farming cape(t)'))
 			) {
 				boostStr.push('5% crop yield for Farming Skillcape');
 			}
@@ -159,7 +152,7 @@ export default class extends BotCommand {
 				msg.author.minionName
 			} is now harvesting ${storeHarvestableQuantity}x ${storeHarvestablePlant}.\nIt'll take around ${formatDuration(
 				duration
-			)} to finish.\n\n${boostStr.length > 0 ? `**Boosts**: ` : ``}${boostStr.join(', ')}`;
+			)} to finish.\n\n${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 		}
 
 		await addSubTaskToActivityTask<FarmingActivityTaskOptions>(this.client, {

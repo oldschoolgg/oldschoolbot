@@ -20,8 +20,7 @@ export function calcLootXPHunting(
 		}
 		successful++;
 
-		xpReceived +=
-			creature.hunterXP + (creature.name === 'Herbiboar' ? 27 * (currentLevel - 80) : 0);
+		xpReceived += creature.hunterXP + (creature.name === 'Herbiboar' ? 27 * (currentLevel - 80) : 0);
 	}
 
 	return [successful, xpReceived, chanceOfSuccess];

@@ -51,10 +51,7 @@ export default class extends Task {
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.GauntletLoot,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.GauntletLoot),
-				loot.bank
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.GauntletLoot), loot.bank])
 		);
 
 		const { image } = await this.client.tasks
@@ -74,10 +71,8 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued gauntlet`);
-				return this.client.commands
-					.get('gauntlet')!
-					.run(res, [corrupted ? 'corrupted' : 'normal', quantity]);
+				user.log('continued gauntlet');
+				return this.client.commands.get('gauntlet')!.run(res, [corrupted ? 'corrupted' : 'normal', quantity]);
 			},
 			image!,
 			data,

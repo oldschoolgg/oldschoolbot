@@ -34,17 +34,15 @@ export default class extends BotCommand {
 		masses = masses.filter(m => m.data.users.length > 1);
 
 		if (masses.length === 0) {
-			return msg.channel.send(`There are no active masses in this server.`);
+			return msg.channel.send('There are no active masses in this server.');
 		}
 		const now = Date.now();
 		const massStr = masses
 			.map(
 				m =>
-					`${m.type}${m.data.challengeMode ? ` CM` : ``}: ${
-						m.data.users.length
-					} users returning to <#${m.channel_id}> in ${formatDuration(
-						m.finish_date.getTime() - now
-					)}`
+					`${m.type}${m.data.challengeMode ? ' CM' : ''}: ${m.data.users.length} users returning to <#${
+						m.channel_id
+					}> in ${formatDuration(m.finish_date.getTime() - now)}`
 			)
 			.join('\n');
 		return msg.channel.send(`**Masses in this server:**

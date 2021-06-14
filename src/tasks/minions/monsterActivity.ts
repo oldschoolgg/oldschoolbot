@@ -18,16 +18,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
-		const {
-			monsterID,
-			userID,
-			channelID,
-			quantity,
-			duration,
-			usingCannon,
-			cannonMulti,
-			burstOrBarrage
-		} = data;
+		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		await user.incrementMonsterScore(monsterID, quantity);
@@ -37,9 +28,7 @@ export default class extends Task {
 			usersTask.assignedTask !== null &&
 			usersTask.currentTask !== null &&
 			usersTask.assignedTask.monsters.includes(monsterID);
-		const quantitySlayed = isOnTask
-			? Math.min(usersTask.currentTask!.quantityRemaining, quantity)
-			: null;
+		const quantitySlayed = isOnTask ? Math.min(usersTask.currentTask!.quantityRemaining, quantity) : null;
 		const xpRes = await addMonsterXP(user, {
 			monsterID,
 			quantity,
@@ -53,9 +42,7 @@ export default class extends Task {
 
 		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
 
-		const slayerMaster = isOnTask
-			? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id)
-			: undefined;
+		const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
 		// Check if superiors unlock is purchased
 		const superiorsUnlocked = isOnTask
 			? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder)
@@ -76,14 +63,9 @@ export default class extends Task {
 		announceLoot(this.client, user, monster, loot.bank);
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
-			user.settings.update(
-				UserSettings.Slayer.SuperiorCount,
-				oldSuperiorCount + newSuperiorCount
-			);
+			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
 		}
-		const superiorMessage = newSuperiorCount
-			? `, including **${newSuperiorCount} superiors**`
-			: '';
+		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
@@ -95,7 +77,7 @@ export default class extends Task {
 			loot.add('Clue hunter cloak');
 			loot.add('Clue hunter boots');
 
-			str += `\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.`;
+			str += '\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.';
 		}
 
 		if (isOnTask) {
@@ -103,20 +85,14 @@ export default class extends Task {
 				monsterID === Monsters.KrilTsutsaroth.id &&
 				usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
 					? quantitySlayed! * 2
-					: monsterID === Monsters.Kreearra.id &&
-					  usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
+					: monsterID === Monsters.Kreearra.id && usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
 					? quantitySlayed! * 4
 					: monsterID === Monsters.GrotesqueGuardians.id &&
-					  user.settings
-							.get(UserSettings.Slayer.SlayerUnlocks)
-							.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+					  user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.DoubleTrouble)
 					? quantitySlayed! * 2
 					: quantitySlayed!;
 
-			const quantityLeft = Math.max(
-				0,
-				usersTask.currentTask!.quantityRemaining - effectiveSlayed
-			);
+			const quantityLeft = Math.max(0, usersTask.currentTask!.quantityRemaining - effectiveSlayed);
 
 			const thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {

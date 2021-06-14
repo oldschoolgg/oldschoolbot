@@ -22,7 +22,7 @@ export default class extends BotCommand {
 			parser.parseURL('http://services.runescape.com/m=news/latest_news.rss?oldschool=true')
 		]);
 		const display = new RichDisplay();
-		display.setFooterPrefix(`Page `);
+		display.setFooterPrefix('Page ');
 
 		for (const item of feed.items as any) {
 			display.addPage(

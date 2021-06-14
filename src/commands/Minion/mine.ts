@@ -106,24 +106,16 @@ export default class extends BotCommand {
 
 		if (!ore) {
 			return msg.send(
-				`Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(
-					ore => ore.name
-				).join(', ')}.`
+				`Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Mining) < ore.level) {
-			return msg.send(
-				`${msg.author.minionName} needs ${ore.level} Mining to mine ${ore.name}.`
-			);
+			return msg.send(`${msg.author.minionName} needs ${ore.level} Mining to mine ${ore.name}.`);
 		}
 
 		// Calculate the time it takes to mine a single ore of this type, at this persons level.
-		let timeToMine = determineScaledOreTime(
-			ore!.xp,
-			ore.respawnTime,
-			msg.author.skillLevel(SkillsEnum.Mining)
-		);
+		let timeToMine = determineScaledOreTime(ore!.xp, ore.respawnTime, msg.author.skillLevel(SkillsEnum.Mining));
 
 		// For each pickaxe, if they have it, give them its' bonus and break.
 		const boosts = [];
@@ -169,9 +161,9 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					ore.name
-				} you can mine is ${Math.floor(maxTripLength / timeToMine)}.`
+				)}, try a lower quantity. The highest amount of ${ore.name} you can mine is ${Math.floor(
+					maxTripLength / timeToMine
+				)}.`
 			);
 		}
 

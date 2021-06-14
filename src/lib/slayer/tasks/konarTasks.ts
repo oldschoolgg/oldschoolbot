@@ -76,11 +76,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlueDragon,
 		amount: [120, 170],
 		weight: 8,
-		monsters: [
-			Monsters.BlueDragon.id,
-			Monsters.BabyBlueDragon.id,
-			Monsters.BrutalBlueDragon.id
-		],
+		monsters: [Monsters.BlueDragon.id, Monsters.BabyBlueDragon.id, Monsters.BrutalBlueDragon.id],
 		combatLevel: 65,
 		questPoints: 34,
 		unlocked: true

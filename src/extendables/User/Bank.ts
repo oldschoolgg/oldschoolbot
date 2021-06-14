@@ -8,12 +8,7 @@ import SimilarItems from '../../lib/data/similarItems';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
-import {
-	addBanks,
-	bankHasAllItemsFromBank,
-	removeBankFromBank,
-	removeItemFromBank
-} from '../../lib/util';
+import { addBanks, bankHasAllItemsFromBank, removeBankFromBank, removeItemFromBank } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
 
 export interface GetUserBankOptions {
@@ -82,20 +77,14 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentGP = this.settings.get(UserSettings.GP);
 		if (currentGP < amount) throw `${this.sanitizedName} doesn't have enough GP.`;
-		this.log(
-			`had ${amount} GP removed. BeforeBalance[${currentGP}] NewBalance[${
-				currentGP - amount
-			}]`
-		);
+		this.log(`had ${amount} GP removed. BeforeBalance[${currentGP}] NewBalance[${currentGP - amount}]`);
 		return this.queueFn(() => this.settings.update(UserSettings.GP, currentGP - amount));
 	}
 
 	public async addGP(this: User, amount: number) {
 		await this.settings.sync(true);
 		const currentGP = this.settings.get(UserSettings.GP);
-		this.log(
-			`had ${amount} GP added. BeforeBalance[${currentGP}] NewBalance[${currentGP + amount}]`
-		);
+		this.log(`had ${amount} GP added. BeforeBalance[${currentGP}] NewBalance[${currentGP + amount}]`);
 		return this.queueFn(() => this.settings.update(UserSettings.GP, currentGP + amount));
 	}
 
@@ -158,20 +147,14 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const bank = { ...this.settings.get(UserSettings.Bank) };
 		if (typeof bank[itemID] === 'undefined' || bank[itemID] < amountToRemove) {
-			this.client.emit(
-				Events.Wtf,
-				`${this.username}[${this.id}] [NEI] ${itemID} ${amountToRemove}`
-			);
+			this.client.emit(Events.Wtf, `${this.username}[${this.id}] [NEI] ${itemID} ${amountToRemove}`);
 
 			throw `${this.username}[${this.id}] doesn't have enough of item[${itemID}] to remove ${amountToRemove}.`;
 		}
 
 		this.log(`had Quantity[${amountToRemove}] of ItemID[${itemID}] removed from bank.`);
 		return this.queueFn(() =>
-			this.settings.update(
-				UserSettings.Bank,
-				removeItemFromBank(bank, itemID, amountToRemove)
-			)
+			this.settings.update(UserSettings.Bank, removeItemFromBank(bank, itemID, amountToRemove))
 		);
 	}
 
@@ -200,9 +183,7 @@ export default class extends Extendable {
 		}
 
 		this.log(`Had items removed from bank - ${JSON.stringify(items)}`);
-		return this.queueFn(() =>
-			this.settings.update(UserSettings.Bank, removeBankFromBank(currentBank, items))
-		);
+		return this.queueFn(() => this.settings.update(UserSettings.Bank, removeBankFromBank(currentBank, items)));
 	}
 
 	public async hasItem(this: User, itemID: number, amount = 1, sync = true) {
@@ -221,9 +202,7 @@ export default class extends Extendable {
 
 	public owns(this: User, bank: ItemBank | Bank | string | number) {
 		if (typeof bank === 'string' || typeof bank === 'number') {
-			return Boolean(
-				this.settings.get(UserSettings.Bank)[typeof bank === 'number' ? bank : itemID(bank)]
-			);
+			return Boolean(this.settings.get(UserSettings.Bank)[typeof bank === 'number' ? bank : itemID(bank)]);
 		}
 		const itemBank = bank instanceof Bank ? { ...bank.bank } : bank;
 		return bankHasAllItemsFromBank(

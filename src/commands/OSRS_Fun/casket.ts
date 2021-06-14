@@ -66,9 +66,7 @@ export default class extends BotCommand {
 
 		if (!clueTier) {
 			return msg.send(
-				`Not a valid clue tier. The valid tiers are: ${clueTiers
-					.map(_tier => _tier.name)
-					.join(', ')}`
+				`Not a valid clue tier. The valid tiers are: ${clueTiers.map(_tier => _tier.name).join(', ')}`
 			);
 		}
 
@@ -76,9 +74,7 @@ export default class extends BotCommand {
 
 		if (Object.keys(loot).length === 0) return msg.send(`${title} and got nothing :(`);
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(loot.bank, title);
+		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(loot.bank, title);
 
 		return msg.send(new MessageAttachment(image!, 'osbot.png'));
 	}

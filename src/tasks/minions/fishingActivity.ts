@@ -47,9 +47,7 @@ export default class extends Task {
 					leapingSalmon += 1;
 					agilityXpReceived += 6;
 					strengthXpReceived += 6;
-				} else if (
-					roll(255 / (32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing))))
-				) {
+				} else if (roll(255 / (32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing))))) {
 					xpReceived += 50;
 					leapingTrout += 1;
 					agilityXpReceived += 5;
@@ -136,12 +134,9 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		if (
-			fish.petChance &&
-			roll((fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25) / quantity)
-		) {
+		if (fish.petChance && roll((fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25) / quantity)) {
 			loot.add('Heron');
-			str += `\nYou have a funny feeling you're being followed...`;
+			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Fishing} **${user.username}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${currentLevel} Fishing!`

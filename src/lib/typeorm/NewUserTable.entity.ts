@@ -1,13 +1,4 @@
-import {
-	BaseEntity,
-	Check,
-	Column,
-	Entity,
-	JoinColumn,
-	OneToMany,
-	OneToOne,
-	PrimaryColumn
-} from 'typeorm';
+import { BaseEntity, Check, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 
 import { MinigameTable } from './MinigameTable.entity';
 import { SlayerTaskTable } from './SlayerTaskTable.entity';

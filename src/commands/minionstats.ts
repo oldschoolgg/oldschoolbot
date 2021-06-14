@@ -43,12 +43,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		const { id } = msg.author;
-		const [
-			[totalActivities],
-			[firstActivity],
-			countsPerActivity,
-			[_totalDuration]
-		] = (await Promise.all([
+		const [[totalActivities], [firstActivity], countsPerActivity, [_totalDuration]] = (await Promise.all([
 			this.client.query(totalActivitiesQuery(id)),
 			this.client.query(firstActivityQuery(id)),
 			this.client.query(countsPerActivityQuery(id)),

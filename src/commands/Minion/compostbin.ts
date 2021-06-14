@@ -8,33 +8,33 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { addItemToBank, bankHasItem, removeItemFromBank, stringMatches } from '../../lib/util';
 
 const SuperCompostables = [
-	`Pineapple`,
-	`Watermelon`,
-	`Coconut`,
-	`Coconut shell`,
-	`Papaya fruit`,
-	`Mushroom`,
-	`Poison ivy berries`,
-	`Jangerberries`,
-	`White berries`,
-	`Snape grass`,
-	`Toadflax`,
-	`Avantoe`,
-	`Kwuarm`,
-	`Snapdragon`,
-	`Cadantine`,
-	`Lantadyme`,
-	`Dwarf weed`,
-	`Torstol`,
-	`Oak roots`,
-	`Willow roots`,
-	`Maple roots`,
-	`Yew roots`,
-	`Magic roots`,
-	`Celastrus bark`,
-	`Calquat fruit`,
-	`White tree fruit`,
-	`White lily`
+	'Pineapple',
+	'Watermelon',
+	'Coconut',
+	'Coconut shell',
+	'Papaya fruit',
+	'Mushroom',
+	'Poison ivy berries',
+	'Jangerberries',
+	'White berries',
+	'Snape grass',
+	'Toadflax',
+	'Avantoe',
+	'Kwuarm',
+	'Snapdragon',
+	'Cadantine',
+	'Lantadyme',
+	'Dwarf weed',
+	'Torstol',
+	'Oak roots',
+	'Willow roots',
+	'Maple roots',
+	'Yew roots',
+	'Magic roots',
+	'Celastrus bark',
+	'Calquat fruit',
+	'White tree fruit',
+	'White lily'
 ];
 
 export default class extends BotCommand {
@@ -60,21 +60,15 @@ export default class extends BotCommand {
 
 		if (!cropToCompost) {
 			return msg.send(
-				`You need to select a crop to compost. The crops you can compost are: ${SuperCompostables.join(
-					', '
-				)}.`
+				`You need to select a crop to compost. The crops you can compost are: ${SuperCompostables.join(', ')}.`
 			);
 		}
 
-		const superCompostableCrop = SuperCompostables.find(crop =>
-			stringMatches(crop, cropToCompost)
-		);
+		const superCompostableCrop = SuperCompostables.find(crop => stringMatches(crop, cropToCompost));
 
 		if (!superCompostableCrop) {
 			return msg.send(
-				`That's not a valid crop to compost. The crops you can compost are: ${SuperCompostables.join(
-					', '
-				)}.`
+				`That's not a valid crop to compost. The crops you can compost are: ${SuperCompostables.join(', ')}.`
 			);
 		}
 
@@ -83,9 +77,7 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			quantity = msg.author.numItemsInBankSync(itemID(superCompostableCrop));
 		} else if (!bankHasItem(userBank, itemID(superCompostableCrop), quantity)) {
-			return msg.send(
-				`You do not have enough ${superCompostableCrop} to compost for the quantity specified`
-			);
+			return msg.send(`You do not have enough ${superCompostableCrop} to compost for the quantity specified`);
 		}
 
 		if (quantity === 0) {
@@ -99,9 +91,7 @@ export default class extends BotCommand {
 
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 					{
 						max: 1,
 						time: Time.Second * 15,
@@ -109,13 +99,13 @@ export default class extends BotCommand {
 					}
 				);
 			} catch (err) {
-				return sellMsg.edit(`Cancelling the compost process.`);
+				return sellMsg.edit('Cancelling the compost process.');
 			}
 		}
 
 		let newBank = userBank;
 		newBank = await removeItemFromBank(newBank, itemID(superCompostableCrop), quantity);
-		newBank = await addItemToBank(newBank, itemID(`Supercompost`), quantity);
+		newBank = await addItemToBank(newBank, itemID('Supercompost'), quantity);
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 

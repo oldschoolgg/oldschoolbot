@@ -5,10 +5,7 @@ import { resolveNameBank } from 'oldschooljs/dist/util';
 import { ItemBank } from '../../types';
 import { rand, roll } from '../../util';
 
-const Room1Table = new LootTable()
-	.add('Ivory Comb', 1, 3)
-	.add('Pottery scarab')
-	.add('Pottery statuette');
+const Room1Table = new LootTable().add('Ivory Comb', 1, 3).add('Pottery scarab').add('Pottery statuette');
 
 const Room2Table = new LootTable().add('Ivory Comb').add('Pottery scarab').add('Pottery statuette');
 

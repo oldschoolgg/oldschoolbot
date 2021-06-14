@@ -18,9 +18,9 @@ export default class extends Task {
 			return;
 		}
 
-		const str = `${user}, ${user.minionName} finished completing ${quantity} ${
-			clueTier.name
-		} clues. ${user.minionName} carefully places the reward casket${
+		const str = `${user}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${
+			user.minionName
+		} carefully places the reward casket${
 			quantity > 1 ? 's' : ''
 		} in your bank. You can open this casket using \`+open ${clueTier.name}\``;
 

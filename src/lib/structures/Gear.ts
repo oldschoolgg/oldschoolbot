@@ -122,9 +122,7 @@ export class Gear {
 		return sum;
 	}
 
-	meetsStatRequirements(
-		gearRequirements: GearRequirement
-	): [false, keyof GearStats, number] | [true, null, null] {
+	meetsStatRequirements(gearRequirements: GearRequirement): [false, keyof GearStats, number] | [true, null, null] {
 		const keys = objectKeys(this.stats as Record<keyof GearStats, number>);
 		for (const key of keys) {
 			const required = gearRequirements?.[key];

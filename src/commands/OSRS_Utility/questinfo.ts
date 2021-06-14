@@ -114,10 +114,6 @@ export default class extends BotCommand {
 			.addField('**Length**', quest.length, true)
 			.addField('Requirements', quest.requirements.join('\n'), true)
 			.addField('Rewards', quest.rewards.join('\n'), true)
-			.addField(
-				'Trivia',
-				quest.trivia[Math.floor(Math.random() * quest.trivia.length)],
-				true
-			);
+			.addField('Trivia', quest.trivia[Math.floor(Math.random() * quest.trivia.length)], true);
 	}
 }

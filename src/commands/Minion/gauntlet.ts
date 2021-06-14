@@ -5,12 +5,7 @@ import { Activity } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GauntletOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	formatSkillRequirements,
-	skillsMeetRequirements,
-	toTitleCase
-} from '../../lib/util';
+import { formatDuration, formatSkillRequirements, skillsMeetRequirements, toTitleCase } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 const baseRequirements = {
@@ -64,7 +59,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [type, quantity]: ['corrupted' | 'normal', number | undefined]) {
 		if (msg.author.settings.get(UserSettings.QP) < 200) {
-			return msg.send(`You need atleast 200 QP to do the Gauntlet.`);
+			return msg.send('You need atleast 200 QP to do the Gauntlet.');
 		}
 		const readableName = `${toTitleCase(type)} Gauntlet`;
 		const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;
@@ -84,7 +79,7 @@ export default class extends BotCommand {
 
 		if (type === 'corrupted' && normalKC < 50) {
 			return msg.send(
-				`You can't attempt the Corrupted Gauntlet, you have less than 50 normal Gauntlets completed - you would not stand a chance in the Corrupted Gauntlet!`
+				"You can't attempt the Corrupted Gauntlet, you have less than 50 normal Gauntlets completed - you would not stand a chance in the Corrupted Gauntlet!"
 			);
 		}
 
@@ -92,8 +87,7 @@ export default class extends BotCommand {
 
 		const boosts = [];
 
-		const scoreBoost =
-			Math.min(100, calcWhatPercent(type === 'corrupted' ? corruptedKC : normalKC, 100)) / 5;
+		const scoreBoost = Math.min(100, calcWhatPercent(type === 'corrupted' ? corruptedKC : normalKC, 100)) / 5;
 		if (scoreBoost > 1) {
 			baseLength = reduceNumByPercent(baseLength, scoreBoost);
 			boosts.push(`${scoreBoost}% boost for experience in the minigame`);

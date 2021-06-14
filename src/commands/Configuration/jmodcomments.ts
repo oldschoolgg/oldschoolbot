@@ -24,16 +24,16 @@ export default class extends BotCommand {
 			return msg.send(TWEETS_RATELIMITING);
 		}
 		if (msg.guild!.settings.get(GuildSettings.JMODComments) === msg.channel.id) {
-			return msg.send(`JMod Comments are already enabled in this channel.`);
+			return msg.send('JMod Comments are already enabled in this channel.');
 		}
 		if (msg.guild!.settings.get(GuildSettings.JMODComments) !== null) {
 			await msg.guild!.settings.update(GuildSettings.JMODComments, msg.channel.id);
 			return msg.send(
-				`JMod Comments are already enabled in another channel, but I've switched them to use this channel.`
+				"JMod Comments are already enabled in another channel, but I've switched them to use this channel."
 			);
 		}
 		await msg.guild!.settings.update(GuildSettings.JMODComments, msg.channel.id);
-		return msg.send(`Enabled JMod Comments in this channel.`);
+		return msg.send('Enabled JMod Comments in this channel.');
 	}
 
 	async off(msg: KlasaMessage) {

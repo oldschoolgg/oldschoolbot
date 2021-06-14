@@ -36,11 +36,7 @@ export const Thrones: PoHObject[] = [
 		name: 'Skeleton throne',
 		slot: 'throne',
 		level: 88,
-		itemCost: new Bank()
-			.add('Magic stone', 5)
-			.add('Marble block', 4)
-			.add('Bones', 5)
-			.add('Skull')
+		itemCost: new Bank().add('Magic stone', 5).add('Marble block', 4).add('Bones', 5).add('Skull')
 	},
 	{
 		id: 13670,

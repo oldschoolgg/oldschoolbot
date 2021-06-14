@@ -28,9 +28,7 @@ export default class extends Extendable {
 		// Remove all reactions if the user has permissions to do so
 		if (
 			this.guild &&
-			(this.channel as TextChannel)
-				.permissionsFor(this.guild.me!)!
-				.has(Permissions.FLAGS.MANAGE_MESSAGES)
+			(this.channel as TextChannel).permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.MANAGE_MESSAGES)
 		) {
 			this.reactions.removeAll().catch(noOp);
 		}

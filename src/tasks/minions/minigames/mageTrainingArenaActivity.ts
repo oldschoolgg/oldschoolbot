@@ -39,7 +39,7 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued mta`);
+				user.log('continued mta');
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				return this.client.commands.get('mta')!.train(res, []);

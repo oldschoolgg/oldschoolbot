@@ -16,10 +16,7 @@ export default async function announceLoot(
 ) {
 	if (!monster.notifyDrops) return;
 	const kc = user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
-	const itemsToAnnounce = filterBankFromArrayOfItems(
-		(monster.notifyDrops as number[]) ?? [],
-		loot
-	);
+	const itemsToAnnounce = filterBankFromArrayOfItems((monster.notifyDrops as number[]) ?? [], loot);
 	if (Object.keys(itemsToAnnounce).length > 0) {
 		const lootStr = new Bank(itemsToAnnounce).toString();
 

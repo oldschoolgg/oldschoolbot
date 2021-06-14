@@ -19,12 +19,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 3,
-		itemsRequired: resolveItems([
-			"Dharok's helm",
-			"Dharok's platebody",
-			"Dharok's platelegs",
-			"Dharok's greataxe"
-		]),
+		itemsRequired: resolveItems(["Dharok's helm", "Dharok's platebody", "Dharok's platelegs", "Dharok's greataxe"]),
 		notifyDrops: resolveItems(['Baby mole']),
 		qpRequired: 0,
 		itemInBankBoosts: [
@@ -89,12 +84,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 8,
-		notifyDrops: resolveItems([
-			'Tanzanite mutagen',
-			'Magma mutagen',
-			'Jar of swamp',
-			'Pet snakeling'
-		]),
+		notifyDrops: resolveItems(['Tanzanite mutagen', 'Magma mutagen', 'Jar of swamp', 'Pet snakeling']),
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{
@@ -197,10 +187,7 @@ const killableBosses: KillableMonster[] = [
 			'Jar of spirits'
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: [
-			{ [itemID('Dragon warhammer')]: 10 },
-			{ [itemID('Bandos godsword')]: 5 }
-		],
+		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 10 }, { [itemID('Bandos godsword')]: 5 }],
 		groupKillable: true,
 		respawnTime: 20_000,
 		levelRequirements: {
