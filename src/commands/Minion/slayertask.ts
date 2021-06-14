@@ -35,8 +35,8 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [input]: [string | undefined]) {
 		const { currentTask, totalTasksDone, assignedTask } = await getUsersCurrentSlayerInfo(msg.author.id);
-		const myBlockList = (await msg.author.settings.get(UserSettings.Slayer.BlockedTasks)) ?? [];
-		const myQPs = (await msg.author.settings.get(UserSettings.QP)) ?? 0;
+		const myBlockList = msg.author.settings.get(UserSettings.Slayer.BlockedTasks);
+		const myQPs = msg.author.settings.get(UserSettings.QP);
 
 		const maxBlocks = calcMaxBlockedTasks(myQPs);
 		if (
