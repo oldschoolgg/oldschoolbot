@@ -24,18 +24,15 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [amount]: [number]) {
 		const roll = rand(1, 100);
 
-		const embed = new MessageEmbed()
-			.setColor(Color.Orange)
-			.setThumbnail(Image.DiceBag)
-			.setTitle('Dice Roll');
+		const embed = new MessageEmbed().setColor(Color.Orange).setThumbnail(Image.DiceBag).setTitle('Dice Roll');
 
 		if (!amount) {
 			embed.setDescription(`You rolled **${roll}** on the percentile dice.`);
 		} else {
-			if (msg.author.isIronman) return msg.send(`You're an ironman and you cant play dice.`);
+			if (msg.author.isIronman) return msg.send("You're an ironman and you cant play dice.");
 
 			if (amount < 20_000_000 || amount > 10_000_000_000) {
-				return msg.send(`You must dice atleast 20m and less than 10b.`);
+				return msg.send('You must dice atleast 20m and less than 10b.');
 			}
 
 			await msg.author.settings.sync(true);
@@ -45,11 +42,7 @@ export default class extends BotCommand {
 			let amountToAdd = won ? amount : -amount;
 
 			await msg.author.addGP(amountToAdd);
-			updateGPTrackSetting(
-				this.client,
-				ClientSettings.EconomyStats.GPSourceDice,
-				amountToAdd
-			);
+			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceDice, amountToAdd);
 
 			if (won) {
 				const wins = msg.author.settings.get(UserSettings.Stats.DiceWins);
@@ -62,9 +55,7 @@ export default class extends BotCommand {
 			if (amount >= 100_000_000 && won && percentChance(3)) {
 				await msg.author.addItemsToBank(new Bank().add('Gamblers bag'), true);
 				return msg.send(
-					`${
-						msg.author.username
-					} rolled **${roll}** on the percentile dice, and you won ${Util.toKMB(
+					`${msg.author.username} rolled **${roll}** on the percentile dice, and you won ${Util.toKMB(
 						amountToAdd
 					)} GP.\n\nYou received a **Gamblers Bag**.`
 				);

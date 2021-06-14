@@ -28,36 +28,28 @@ export default class extends BotCommand {
 		}
 
 		if (!msg.guild || msg.guild.id !== '342983479501389826') {
-			return msg.send(`You can only do this in the Oldschool.gg server.`);
+			return msg.send('You can only do this in the Oldschool.gg server.');
 		}
 
 		if (
-			![
-				'732207379818479756',
-				'342983479501389826',
-				'792691343284764693',
-				'812289826346762250'
-			].includes(msg.channel.id)
+			!['732207379818479756', '342983479501389826', '792691343284764693', '812289826346762250'].includes(
+				msg.channel.id
+			)
 		) {
-			return msg.send(`You can't use spawnlamp in this channel.`);
+			return msg.send("You can't use spawnlamp in this channel.");
 		}
 
 		const currentDate = Date.now();
 		const lastDate = msg.author.settings.get(UserSettings.LastSpawnLamp);
 		const difference = currentDate - lastDate;
 
-		let cooldown = [PerkTier.Six, PerkTier.Five].includes(msg.author.perkTier)
-			? Time.Hour * 12
-			: Time.Hour * 24;
+		let cooldown = [PerkTier.Six, PerkTier.Five].includes(msg.author.perkTier) ? Time.Hour * 12 : Time.Hour * 24;
 
 		if (!hasTier5 && !hasTier4 && hasPerm) {
 			cooldown = Time.Hour * 48;
 		}
 
-		if (
-			difference < cooldown &&
-			!['157797566833098752', '242043489611808769'].includes(msg.author.id)
-		) {
+		if (difference < cooldown && !['157797566833098752', '242043489611808769'].includes(msg.author.id)) {
 			const duration = formatDuration(Date.now() - (lastDate + cooldown));
 			return msg.send(`You can spawn another lamp in ${duration}.`);
 		}
@@ -68,10 +60,8 @@ export default class extends BotCommand {
 
 		const embed = new MessageEmbed()
 			.setColor(Color.Orange)
-			.setThumbnail(`https://static.runelite.net/cache/item/icon/11157.png`)
-			.setTitle(
-				`Answer me this, for a random XP Lamp! What level would you be at with ${xp} XP?`
-			);
+			.setThumbnail('https://static.runelite.net/cache/item/icon/11157.png')
+			.setTitle(`Answer me this, for a random XP Lamp! What level would you be at with ${xp} XP?`);
 
 		await msg.channel.send(embed);
 
@@ -90,11 +80,9 @@ export default class extends BotCommand {
 			const winner = col.author!;
 			const box = LampTable.roll();
 			await winner.addItemsToBank(box);
-			return msg.channel.send(
-				`Congratulations, ${winner}! You got it. I've given you: **${box}**.`
-			);
+			return msg.channel.send(`Congratulations, ${winner}! You got it. I've given you: **${box}**.`);
 		} catch (err) {
-			return msg.channel.send(`Nobody got it! :(`);
+			return msg.channel.send('Nobody got it! :(');
 		}
 	}
 }

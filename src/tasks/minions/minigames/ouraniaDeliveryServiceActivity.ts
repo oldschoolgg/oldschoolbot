@@ -22,10 +22,7 @@ export default class extends Task {
 			tokens *= 2;
 		}
 
-		await user.settings.update(
-			UserSettings.OuraniaTokens,
-			user.settings.get(UserSettings.OuraniaTokens) + tokens
-		);
+		await user.settings.update(UserSettings.OuraniaTokens, user.settings.get(UserSettings.OuraniaTokens) + tokens);
 
 		let totalXP = level * (quantity * randFloat(39, 41));
 		const xpRes = await user.addXP({
@@ -42,10 +39,8 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued ods`);
-				return (this.client.commands.get('ods') as ODSCommand)!.start(res) as Promise<
-					KlasaMessage
-				>;
+				user.log('continued ods');
+				return (this.client.commands.get('ods') as ODSCommand)!.start(res) as Promise<KlasaMessage>;
 			},
 			undefined,
 			data,

@@ -18,25 +18,19 @@ export async function boxFrenzy(channel: TextChannel, content: string, quantity:
 		channel.sendBankImage({
 			bank: bank.bank,
 			content,
-			title: `Guess These Item Names For A Mystery Box`
+			title: 'Guess These Item Names For A Mystery Box'
 		});
 
 		await channel.awaitMessages(
 			(_msg: KlasaMessage) => {
-				const isRight = items.find(
-					i => stringMatches(i[0].name, _msg.content) && !guessed.has(i[0].id)
-				);
+				const isRight = items.find(i => stringMatches(i[0].name, _msg.content) && !guessed.has(i[0].id));
 				if (isRight) {
 					const item = isRight[0];
 					const box = getRandomMysteryBox();
 					_msg.author.addItemsToBank({ [box]: 1 });
 					guessed.add(item.id);
 					_msg.channel.send(
-						`${
-							_msg.author
-						}, you guessed one of the items correctly and received 1x ${itemNameFromID(
-							box
-						)}.`
+						`${_msg.author}, you guessed one of the items correctly and received 1x ${itemNameFromID(box)}.`
 					);
 				}
 				return false;

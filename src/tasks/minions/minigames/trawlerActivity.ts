@@ -41,31 +41,29 @@ export default class extends Task {
 
 		let str = `${user}, ${
 			user.minionName
-		} finished completing the Fishing Trawler ${quantity}x times. You received ${await user.addXP(
-			{
-				skillName: SkillsEnum.Fishing,
-				amount: totalXP
-			}
-		)}`;
+		} finished completing the Fishing Trawler ${quantity}x times. You received ${await user.addXP({
+			skillName: SkillsEnum.Fishing,
+			amount: totalXP
+		})}`;
 
 		if (xpBonusPercent > 0) {
 			str += ` ${xpBonusPercent}% Bonus XP for Angler outfit pieces.`;
 		}
 
-		if (hasEliteArdy) str += `\n\n50% Extra fish for Ardougne Elite diary`;
+		if (hasEliteArdy) str += '\n\n50% Extra fish for Ardougne Elite diary';
 
 		if (user.hasItemEquippedAnywhere(itemID('Fishing master cape'))) {
 			loot.multiply(4);
 			for (let i = 0; i < quantity; i++) {
 				if (roll(2)) loot.add(getRandomMysteryBox());
 			}
-			str += `\n\nYou received **4x** extra fish because you are a master at Fishing.`;
+			str += '\n\nYou received **4x** extra fish because you are a master at Fishing.';
 		}
 
 		if (user.usingPet('Shelldon')) {
 			loot.multiply(2);
 			totalXP *= 1.5;
-			str += `\nYou received **2x** extra fish from Shelldon helping you.`;
+			str += '\nYou received **2x** extra fish from Shelldon helping you.';
 		}
 
 		await user.addItemsToBank(loot.bank, true);
@@ -79,13 +77,7 @@ export default class extends Task {
 		}
 		const { image } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(
-				loot.bank,
-				`Loot From ${quantity}x Fishing Trawler`,
-				true,
-				{ showNewCL: 1 },
-				user
-			);
+			.generateBankImage(loot.bank, `Loot From ${quantity}x Fishing Trawler`, true, { showNewCL: 1 }, user);
 
 		handleTripFinish(
 			this.client,
@@ -93,7 +85,7 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued fishing trawler`);
+				user.log('continued fishing trawler');
 				return this.client.commands.get('fishingtrawler')!.run(res, []);
 			},
 			image!,

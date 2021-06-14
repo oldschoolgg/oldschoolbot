@@ -37,15 +37,7 @@ const riskDeathNumbers = [
 
 export default class extends Task {
 	async run(data: HunterActivityTaskOptions) {
-		const {
-			creatureName,
-			quantity,
-			userID,
-			channelID,
-			usingHuntPotion,
-			wildyPeak,
-			duration
-		} = data;
+		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		const userBank = user.bank();
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
@@ -58,9 +50,7 @@ export default class extends Task {
 
 		const creature = Hunter.Creatures.find(creature =>
 			creature.aliases.some(
-				alias =>
-					stringMatches(alias, creatureName) ||
-					stringMatches(alias.split(' ')[0], creatureName)
+				alias => stringMatches(alias, creatureName) || stringMatches(alias.split(' ')[0], creatureName)
 			)
 		);
 
@@ -75,14 +65,10 @@ export default class extends Task {
 		if (creature.wildy) {
 			let riskPkChance = creature.id === BLACK_CHIN_ID ? 100 : 200;
 			riskPkChance +=
-				riskDeathNumbers.find(_peaktier => _peaktier.peakTier === wildyPeak?.peakTier)
-					?.extraChance ?? 0;
+				riskDeathNumbers.find(_peaktier => _peaktier.peakTier === wildyPeak?.peakTier)?.extraChance ?? 0;
 			let riskDeathChance = 20;
 			// The more experienced the less chance of death.
-			riskDeathChance += Math.min(
-				Math.floor((user.getCreatureScore(creature) ?? 1) / 100),
-				200
-			);
+			riskDeathChance += Math.min(Math.floor((user.getCreatureScore(creature) ?? 1) / 100), 200);
 
 			// Gives lower death chance depending on what the user got equipped in misc.
 			const [, , score] = hasWildyHuntGearEquipped(user.getGear('misc'));
@@ -108,7 +94,8 @@ export default class extends Task {
 				await user.settings.update(UserSettings.Gear.Misc, newGear);
 				pkedQuantity = 0.5 * successfulQuantity;
 				xpReceived *= 0.8;
-				diedStr = `Your minion got killed during the activity and lost gear, catch quantity, 10x Saradomin brew and 5x Super restore.`;
+				diedStr =
+					'Your minion got killed during the activity and lost gear, catch quantity, 10x Saradomin brew and 5x Super restore.';
 			}
 			if (gotPked && !died) {
 				if (
@@ -141,7 +128,7 @@ export default class extends Task {
 				user.hasItemEquippedOrInBank(Number(itemID('Magic secateurs')))
 			);
 			if (user.hasItemEquippedOrInBank(Number(itemID('Magic secateurs')))) {
-				magicSecStr = ` Extra herbs for Magic secateurs`;
+				magicSecStr = ' Extra herbs for Magic secateurs';
 			}
 			// TODO: Check wiki in future for herblore xp from herbiboar
 			if (currentHerbLevel >= 31) {
@@ -177,11 +164,11 @@ export default class extends Task {
 		if (user.usingPet('Sandy')) {
 			if (creature.id === 3251) {
 				if (user.hasItemEquippedAnywhere(itemID('Hunter master cape'))) {
-					str += `\nYou received **double** loot because of Sandy, and being a master hunter.`;
+					str += '\nYou received **double** loot because of Sandy, and being a master hunter.';
 					loot.multiply(2);
 				}
 			} else {
-				str += `\nYou received **triple** loot because of Sandy.`;
+				str += '\nYou received **triple** loot because of Sandy.';
 				loot.multiply(3);
 			}
 		}
@@ -199,13 +186,13 @@ export default class extends Task {
 		}
 
 		if (loot.amount('Baby chinchompa') > 0 || loot.amount('Herbi') > 0) {
-			str += `\n\n**You have a funny feeling like you're being followed....**`;
+			str += "\n\n**You have a funny feeling like you're being followed....**";
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${user.minionName}, just received a ${
 					loot.amount('Baby chinchompa') > 0
-						? `**Baby chinchompa** <:Baby_chinchompa_red:324127375539306497>`
-						: `**Herbi** <:Herbi:357773175318249472>`
+						? '**Baby chinchompa** <:Baby_chinchompa_red:324127375539306497>'
+						: '**Herbi** <:Herbi:357773175318249472>'
 				} while hunting a ${creature.name}, their Hunter level is ${currentLevel}!`
 			);
 		}

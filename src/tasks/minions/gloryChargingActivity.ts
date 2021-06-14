@@ -34,13 +34,11 @@ export default class extends Task {
 				: `${user}, ${user.minionName} finished charging ${amnt} Amulets of glory.`;
 
 		if (loot.length !== 0 && deaths > 0) {
-			str += ` They died ${deaths}x times, causing the loss of ${
-				gloriesInventorySize * deaths
-			} glories.`;
+			str += ` They died ${deaths}x times, causing the loss of ${gloriesInventorySize * deaths} glories.`;
 		}
 
 		if (loot.has('Amulet of eternal glory')) {
-			str += `\n**Your minion received an Amulet of eternal glory.**`;
+			str += '\n**Your minion received an Amulet of eternal glory.**';
 		}
 
 		await user.addItemsToBank(loot.bank, true);

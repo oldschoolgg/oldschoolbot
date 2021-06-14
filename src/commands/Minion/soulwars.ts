@@ -159,9 +159,7 @@ export default class extends BotCommand {
 		};
 
 		const users =
-			input === 'solo'
-				? [msg.author]
-				: (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
+			input === 'solo' ? [msg.author] : (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
 		if (users.length === 0) {
 			return;
 		}
@@ -182,9 +180,7 @@ export default class extends BotCommand {
 
 		const str = `${partyOptions.leader.username}'s party (${users
 			.map(u => u.username)
-			.join(
-				', '
-			)}) is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatDuration(
+			.join(', ')}) is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatDuration(
 			duration
 		)}.`;
 
@@ -208,15 +204,11 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.ZealTokens, bal - item.tokens);
 		await msg.author.addItemsToBank({ [item.item.id]: 1 }, true);
-		return msg.channel.send(
-			`Added 1x ${item.item.name} to your bank, removed ${item.tokens}x Zeal Tokens.`
-		);
+		return msg.channel.send(`Added 1x ${item.item.name} to your bank, removed ${item.tokens}x Zeal Tokens.`);
 	}
 
 	async imbue(msg: KlasaMessage, [input = '']: [string]) {
-		const item = imbueables.find(
-			i => stringMatches(input, i.input.name) || stringMatches(input, i.output.name)
-		);
+		const item = imbueables.find(i => stringMatches(input, i.input.name) || stringMatches(input, i.output.name));
 		if (!item) {
 			return msg.channel.send(
 				`That's not a valid item you can imbue. These are the items you can imbue: ${imbueables

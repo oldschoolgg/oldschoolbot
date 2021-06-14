@@ -1,13 +1,5 @@
 import { User } from 'discord.js';
-import {
-	calcPercentOfNum,
-	calcWhatPercent,
-	increaseNumByPercent,
-	notEmpty,
-	objectValues,
-	randInt,
-	uniqueArr
-} from 'e';
+import { calcPercentOfNum, calcWhatPercent, increaseNumByPercent, notEmpty, objectValues, randInt, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -116,10 +108,7 @@ import {
 	gorajanOccultOutfit,
 	gorajanWarriorOutfit
 } from '../../tasks/minions/dungeoneeringActivity';
-import {
-	PlunderActivityTaskOptions,
-	SepulchreActivityTaskOptions
-} from './../../lib/types/minions';
+import { PlunderActivityTaskOptions, SepulchreActivityTaskOptions } from './../../lib/types/minions';
 import { Minigames } from './Minigame';
 
 const suffixes = new SimpleTable<string>()
@@ -171,9 +160,7 @@ export default class extends Extendable {
 		let formattedDuration = `${formatDuration(durationRemaining)} remaining.`;
 
 		if (this.settings.get('troll')) {
-			formattedDuration = `Approximately ${formatDuration(
-				randInt(Time.Minute, Time.Minute * 1200)
-			)} remaining.`;
+			formattedDuration = `Approximately ${formatDuration(randInt(Time.Minute, Time.Minute * 1200))} remaining.`;
 		}
 
 		switch (currentTask.type) {
@@ -190,9 +177,9 @@ export default class extends Extendable {
 				const data = currentTask as GroupMonsterActivityTaskOptions;
 				const monster = killableMonsters.find(mon => mon.id === data.monsterID);
 
-				return `${this.minionName} is currently killing ${data.quantity}x ${
-					monster!.name
-				} with a party of ${data.users.length}. ${formattedDuration}`;
+				return `${this.minionName} is currently killing ${data.quantity}x ${monster!.name} with a party of ${
+					data.users.length
+				}. ${formattedDuration}`;
 			}
 
 			case Activity.ClueCompletion: {
@@ -223,23 +210,19 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently running ${data.quantity}x ${
 					course!.name
-				} laps. ${formattedDuration} Your ${
-					Emoji.Agility
-				} Agility level is ${this.skillLevel(SkillsEnum.Agility)}`;
+				} laps. ${formattedDuration} Your ${Emoji.Agility} Agility level is ${this.skillLevel(
+					SkillsEnum.Agility
+				)}`;
 			}
 
 			case Activity.Cooking: {
 				const data = currentTask as CookingActivityTaskOptions;
 
-				const cookable = Cooking.Cookables.find(
-					cookable => cookable.id === data.cookableID
-				);
+				const cookable = Cooking.Cookables.find(cookable => cookable.id === data.cookableID);
 
 				return `${this.minionName} is currently cooking ${data.quantity}x ${
 					cookable!.name
-				}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${this.skillLevel(
-					SkillsEnum.Cooking
-				)}`;
+				}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${this.skillLevel(SkillsEnum.Cooking)}`;
 			}
 
 			case Activity.Fishing: {
@@ -249,9 +232,7 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently fishing ${data.quantity}x ${
 					fish!.name
-				}. ${formattedDuration} Your ${Emoji.Fishing} Fishing level is ${this.skillLevel(
-					SkillsEnum.Fishing
-				)}`;
+				}. ${formattedDuration} Your ${Emoji.Fishing} Fishing level is ${this.skillLevel(SkillsEnum.Fishing)}`;
 			}
 
 			case Activity.Mining: {
@@ -261,9 +242,7 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently mining ${data.quantity}x ${
 					ore!.name
-				}. ${formattedDuration} Your ${Emoji.Mining} Mining level is ${this.skillLevel(
-					SkillsEnum.Mining
-				)}`;
+				}. ${formattedDuration} Your ${Emoji.Mining} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
 			}
 
 			case Activity.Smelting: {
@@ -281,9 +260,7 @@ export default class extends Extendable {
 			case Activity.Smithing: {
 				const data = currentTask as SmithingActivityTaskOptions;
 
-				const SmithableItem = Smithing.SmithableItems.find(
-					item => item.id === data.smithedBarID
-				);
+				const SmithableItem = Smithing.SmithableItems.find(item => item.id === data.smithedBarID);
 
 				return `${this.minionName} is currently smithing ${data.quantity}x ${
 					SmithableItem!.name
@@ -299,9 +276,7 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently offering ${data.quantity}x ${
 					bones!.name
-				}. ${formattedDuration} Your ${Emoji.Prayer} Prayer level is ${this.skillLevel(
-					SkillsEnum.Prayer
-				)}`;
+				}. ${formattedDuration} Your ${Emoji.Prayer} Prayer level is ${this.skillLevel(SkillsEnum.Prayer)}`;
 			}
 
 			case Activity.Burying: {
@@ -311,9 +286,7 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently burying ${data.quantity}x ${
 					bones!.name
-				}. ${formattedDuration} Your ${Emoji.Prayer} Prayer level is ${this.skillLevel(
-					SkillsEnum.Prayer
-				)}`;
+				}. ${formattedDuration} Your ${Emoji.Prayer} Prayer level is ${this.skillLevel(SkillsEnum.Prayer)}`;
 			}
 
 			case Activity.Firemaking: {
@@ -323,9 +296,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently lighting ${data.quantity}x ${
 					burn!.name
-				}. ${formattedDuration} Your ${
-					Emoji.Firemaking
-				} Firemaking level is ${this.skillLevel(SkillsEnum.Firemaking)}`;
+				}. ${formattedDuration} Your ${Emoji.Firemaking} Firemaking level is ${this.skillLevel(
+					SkillsEnum.Firemaking
+				)}`;
 			}
 
 			case Activity.Questing: {
@@ -343,20 +316,20 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently chopping ${data.quantity}x ${
 					log!.name
-				}. ${formattedDuration} Your ${
-					Emoji.Woodcutting
-				} Woodcutting level is ${this.skillLevel(SkillsEnum.Woodcutting)}`;
+				}. ${formattedDuration} Your ${Emoji.Woodcutting} Woodcutting level is ${this.skillLevel(
+					SkillsEnum.Woodcutting
+				)}`;
 			}
 			case Activity.Runecraft: {
 				const data = currentTask as RunecraftActivityTaskOptions;
 
 				const rune = Runecraft.Runes.find(_rune => _rune.id === data.runeID);
 
-				return `${this.minionName} is currently turning ${
-					data.essenceQuantity
-				}x Essence into ${rune!.name}. ${formattedDuration} Your ${
-					Emoji.Runecraft
-				} Runecraft level is ${this.skillLevel(SkillsEnum.Runecraft)}`;
+				return `${this.minionName} is currently turning ${data.essenceQuantity}x Essence into ${
+					rune!.name
+				}. ${formattedDuration} Your ${Emoji.Runecraft} Runecraft level is ${this.skillLevel(
+					SkillsEnum.Runecraft
+				)}`;
 			}
 
 			case Activity.FightCaves: {
@@ -371,9 +344,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently fletching ${data.quantity}x ${
 					data.fletchableName
-				}. ${formattedDuration} Your ${
-					Emoji.Fletching
-				} Fletching level is ${this.skillLevel(SkillsEnum.Fletching)}`;
+				}. ${formattedDuration} Your ${Emoji.Fletching} Fletching level is ${this.skillLevel(
+					SkillsEnum.Fletching
+				)}`;
 			}
 			case Activity.Herblore: {
 				const data = currentTask as HerbloreActivityTaskOptions;
@@ -404,17 +377,15 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently farming ${data.quantity}x ${
 					plants!.name
-				}. ${formattedDuration} Your ${Emoji.Farming} Farming level is ${this.skillLevel(
-					SkillsEnum.Farming
-				)}.`;
+				}. ${formattedDuration} Your ${Emoji.Farming} Farming level is ${this.skillLevel(SkillsEnum.Farming)}.`;
 			}
 
 			case Activity.Sawmill: {
 				const data = currentTask as SawmillActivityTaskOptions;
 				const plank = Planks.find(_plank => _plank.outputItem === data.plankID);
-				return `${this.minionName} is currently creating ${
-					data.plankQuantity
-				}x ${itemNameFromID(plank!.outputItem)}s. ${formattedDuration}`;
+				return `${this.minionName} is currently creating ${data.plankQuantity}x ${itemNameFromID(
+					plank!.outputItem
+				)}s. ${formattedDuration}`;
 			}
 
 			case Activity.Nightmare: {
@@ -528,9 +499,7 @@ export default class extends Extendable {
 			case Activity.Casting: {
 				const data = currentTask as CastingActivityTaskOptions;
 				const spell = Castables.find(i => i.id === data.spellID);
-				return `${this.minionName} is currently casting ${data.quantity}x ${
-					spell!.name
-				}. ${formattedDuration}`;
+				return `${this.minionName} is currently casting ${data.quantity}x ${spell!.name}. ${formattedDuration}`;
 			}
 
 			case Activity.GloryCharging: {
@@ -588,18 +557,16 @@ export default class extends Extendable {
 				return `${this.minionName} is currently doing the Chamber's of Xeric${
 					data.challengeMode ? ' in Challenge Mode' : ''
 				}, ${
-					data.users.length === 1
-						? 'as a solo.'
-						: `with a team of ${data.users.length} minions.`
+					data.users.length === 1 ? 'as a solo.' : `with a team of ${data.users.length} minions.`
 				} ${formattedDuration}`;
 			}
 
 			case Activity.Collecting: {
 				const data = currentTask as CollectingOptions;
 				const collectable = collectables.find(c => c.item.id === data.collectableID)!;
-				return `${this.minionName} is currently collecting ${
-					data.quantity * collectable.quantity
-				}x ${collectable.item.name}. ${formattedDuration}`;
+				return `${this.minionName} is currently collecting ${data.quantity * collectable.quantity}x ${
+					collectable.item.name
+				}. ${formattedDuration}`;
 			}
 
 			case Activity.MageTrainingArena: {
@@ -613,9 +580,9 @@ export default class extends Extendable {
 
 				return `${this.minionName} is currently smelting ${data.quantity}x ${
 					bar!.name
-				} at the Blast Furnace. ${formattedDuration} Your ${
-					Emoji.Smithing
-				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
+				} at the Blast Furnace. ${formattedDuration} Your ${Emoji.Smithing} Smithing level is ${this.skillLevel(
+					SkillsEnum.Smithing
+				)}`;
 			}
 
 			case Activity.OuraniaDeliveryService: {
@@ -642,9 +609,7 @@ export default class extends Extendable {
 
 	public async getKCByName(this: KlasaUser, kcName: string) {
 		const mon = effectiveMonsters.find(
-			mon =>
-				stringMatches(mon.name, kcName) ||
-				mon.aliases.some(alias => stringMatches(alias, kcName))
+			mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
 		);
 		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
 		const creature = Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
@@ -654,7 +619,7 @@ export default class extends Extendable {
 		}
 
 		const kc = mon
-			? this.getKC(((mon as unknown) as Monster).id)
+			? this.getKC((mon as unknown as Monster).id)
 			: minigame
 			? await this.getMinigameScore(minigame!.key)
 			: this.getCreatureScore(creature!);
@@ -686,10 +651,7 @@ export default class extends Extendable {
 		else if (perkTier >= PerkTier.Four) max += Time.Minute * 10;
 
 		const sac = this.settings.get(UserSettings.SacrificedValue);
-		const sacPercent = Math.min(
-			100,
-			calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000)
-		);
+		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
 		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
 
 		if (!activity) return max;
@@ -753,9 +715,7 @@ export default class extends Extendable {
 
 		const icon = this.settings.get(UserSettings.Minion.Icon) ?? Emoji.Minion;
 
-		return name
-			? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**`
-			: `${prefix} ${icon} Your minion`;
+		return name ? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${icon} Your minion`;
 	}
 
 	public async addXP(this: User, params: AddXpParams): Promise<string> {
@@ -788,8 +748,7 @@ export default class extends Extendable {
 			: undefined;
 
 		// If the matching cape is equipped, isMatchingCape = true
-		const isMatchingCape =
-			params.multiplier && matchingCape ? allCapes.includes(matchingCape.item.id) : false;
+		const isMatchingCape = params.multiplier && matchingCape ? allCapes.includes(matchingCape.item.id) : false;
 
 		// Get the masterCape object for use in text output
 		const masterCape = isMatchingCape
@@ -805,9 +764,7 @@ export default class extends Extendable {
 		let gorajanBoost = false;
 		const gorajanMeleeBoost =
 			params.multiplier &&
-			[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(
-				params.skillName
-			) &&
+			[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(params.skillName) &&
 			hasArrayOfItemsEquipped(gorajanWarriorOutfit, this.getGear('melee'));
 		const gorajanRangeBoost =
 			params.multiplier &&
@@ -865,9 +822,7 @@ export default class extends Extendable {
 					Events.ServerNotification,
 					`${skill.emoji} **${this.username}'s** minion, ${
 						this.minionName
-					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(
-						params.skillName
-					)}!`
+					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(params.skillName)}!`
 				);
 				break;
 			}
@@ -881,9 +836,7 @@ export default class extends Extendable {
 					{
 						count: string;
 					}[]
-				>(
-					`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${LEVEL_99_XP};`
-				);
+				>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${LEVEL_99_XP};`);
 
 				let str = `${skill.emoji} **${this.username}'s** minion, ${
 					this.minionName
@@ -897,13 +850,11 @@ export default class extends Extendable {
 							count: string;
 						}[]
 					>(
-						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${
-							params.skillName
-						}" > ${convertLVLtoXP(num) - 1};`
+						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" > ${
+							convertLVLtoXP(num) - 1
+						};`
 					);
-					str += ` They are the ${formatOrdinal(
-						parseInt(ironmenWith.count) + 1
-					)} Ironman to get ${num}.`;
+					str += ` They are the ${formatOrdinal(parseInt(ironmenWith.count) + 1)} Ironman to get ${num}.`;
 				}
 				this.client.emit(Events.ServerNotification, str);
 			}
@@ -913,9 +864,7 @@ export default class extends Extendable {
 
 		let str = params.minimal
 			? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
-			: `You received ${Math.ceil(params.amount).toLocaleString()} ${
-					skillEmoji[params.skillName]
-			  } XP`;
+			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
 
 		if (masterCape) {
 			if (isMatchingCape) {
@@ -942,7 +891,7 @@ export default class extends Extendable {
 		}
 
 		if (currentTotalLevel < MAX_TOTAL_LEVEL && this.totalLevel() >= MAX_TOTAL_LEVEL) {
-			str += `\n\n**Congratulations, your minion has reached the maximum total level!**\n\n`;
+			str += '\n\n**Congratulations, your minion has reached the maximum total level!**\n\n';
 			onMax(this);
 		} else if (currentLevel !== newLevel) {
 			str += params.minimal
@@ -968,9 +917,7 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 	get isBusy(this: User) {
 		const client = this.client as KlasaClient;
-		return (
-			client.oneCommandAtATimeCache.has(this.id) || client.secondaryUserBusyCache.has(this.id)
-		);
+		return client.oneCommandAtATimeCache.has(this.id) || client.secondaryUserBusyCache.has(this.id);
 	}
 
 	/**
@@ -1026,10 +973,7 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const scores = this.settings.get(UserSettings.OpenableScores);
 
-		return this.settings.update(
-			UserSettings.OpenableScores,
-			addItemToBank(scores, openableID, amountToAdd)
-		);
+		return this.settings.update(UserSettings.OpenableScores, addItemToBank(scores, openableID, amountToAdd));
 	}
 
 	public async incrementClueScore(this: User, clueID: number, amountToAdd = 1) {
@@ -1038,10 +982,7 @@ export default class extends Extendable {
 
 		this.log(`had Quantity[${amountToAdd}] KC added to Clue[${clueID}]`);
 
-		return this.settings.update(
-			UserSettings.ClueScores,
-			addItemToBank(currentClueScores, clueID, amountToAdd)
-		);
+		return this.settings.update(UserSettings.ClueScores, addItemToBank(currentClueScores, clueID, amountToAdd));
 	}
 
 	public async incrementCreatureScore(this: User, creatureID: number, amountToAdd = 1) {

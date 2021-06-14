@@ -24,7 +24,7 @@ export default class extends Task {
 			try {
 				const query = createQueryBuilder(ActivityTable).select().where('completed = false');
 				if (production) {
-					query.andWhere(`finish_date < now()`);
+					query.andWhere('finish_date < now()');
 				}
 				const result = await query.getMany();
 				await Promise.all(result.map(t => t.complete()));
@@ -60,9 +60,7 @@ export default class extends Task {
 			const group = taskGroupFromActivity(task.type);
 
 			if (task.groupActivity) {
-				minionTaskCounts[
-					group
-				] += (task.data as GroupMonsterActivityTaskOptions).users.length;
+				minionTaskCounts[group] += (task.data as GroupMonsterActivityTaskOptions).users.length;
 			} else {
 				minionTaskCounts[group] += 1;
 			}
@@ -82,10 +80,10 @@ export default class extends Task {
 		const [numberOfMinions, totalSacrificed, numberOfIronmen, totalGP, totalXP] = (
 			await Promise.all(
 				[
-					`SELECT COUNT(*) FROM users WHERE "minion.hasBought" = true;`,
-					`SELECT SUM ("sacrificedValue") AS count FROM users;`,
-					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;`,
-					`SELECT SUM ("GP") AS count FROM users;`,
+					'SELECT COUNT(*) FROM users WHERE "minion.hasBought" = true;',
+					'SELECT SUM ("sacrificedValue") AS count FROM users;',
+					'SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;',
+					'SELECT SUM ("GP") AS count FROM users;',
 					this.generateTotalXPQuery()
 				].map(query => this.client.query(query))
 			)
@@ -95,10 +93,7 @@ export default class extends Task {
 
 		await AnalyticsTable.insert({
 			guildsCount: this.client.guilds.cache.size,
-			membersCount: this.client.guilds.cache.reduce(
-				(acc, curr) => (acc += curr.memberCount),
-				0
-			),
+			membersCount: this.client.guilds.cache.reduce((acc, curr) => (acc += curr.memberCount), 0),
 			timestamp: Math.floor(Date.now() / 1000),
 			clueTasksCount: taskCounts.Clue,
 			minigameTasksCount: taskCounts.Minigame,
@@ -114,16 +109,12 @@ export default class extends Task {
 			dailiesAmount: this.client.settings.get(ClientSettings.EconomyStats.DailiesAmount),
 			gpAlching: this.client.settings.get(ClientSettings.EconomyStats.GPSourceAlching),
 			gpPvm: this.client.settings.get(ClientSettings.EconomyStats.GPSourcePVMLoot),
-			gpSellingItems: this.client.settings.get(
-				ClientSettings.EconomyStats.GPSourceSellingItems
-			),
+			gpSellingItems: this.client.settings.get(ClientSettings.EconomyStats.GPSourceSellingItems),
 			gpPickpocket: this.client.settings.get(ClientSettings.EconomyStats.GPSourcePickpocket),
 			gpOpen: this.client.settings.get(ClientSettings.EconomyStats.GPSourceOpen),
 			gpDice: this.client.settings.get(ClientSettings.EconomyStats.GPSourceDice),
 			gpDaily: this.client.settings.get(ClientSettings.EconomyStats.GPSourceDaily),
-			gpItemContracts: this.client.settings.get(
-				ClientSettings.EconomyStats.GPSourceItemContracts
-			)
+			gpItemContracts: this.client.settings.get(ClientSettings.EconomyStats.GPSourceItemContracts)
 		});
 	}
 }

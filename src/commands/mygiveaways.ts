@@ -20,13 +20,12 @@ export default class extends BotCommand {
 		});
 
 		if (existingGiveaways.length === 0) {
-			return msg.channel.send(`You don't have any active giveaways.`);
+			return msg.channel.send("You don't have any active giveaways.");
 		}
 
 		return msg.channel.send(
 			`You have ${existingGiveaways.length} active giveaways:\n${existingGiveaways.map(
-				(g, i) =>
-					`${i + 1}. ${formatDuration(g.finishDate.getTime() - g.startDate.getTime())}`
+				(g, i) => `${i + 1}. ${formatDuration(g.finishDate.getTime() - g.startDate.getTime())}`
 			)}`
 		);
 	}

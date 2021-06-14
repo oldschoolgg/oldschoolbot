@@ -47,18 +47,14 @@ import {
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { findMonster } from '../../lib/util/findMonster';
 
-const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
+const validMonsters = killableMonsters.map(mon => mon.name).join('\n');
 const invalidMonsterMsg = (prefix: string) =>
 	`That isn't a valid monster.\n\nFor example, \`${prefix}minion kill 5 zulrah\`` +
 	`\n\nTry: \`${prefix}k --monsters\` for a list of killable monsters.`;
 
 const { floor } = Math;
 
-function applySkillBoost(
-	user: KlasaUser,
-	duration: number,
-	styles: AttackStyles[]
-): [number, string] {
+function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
 
 	let newDuration = duration;
@@ -92,10 +88,7 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	@minionNotBusy
-	async run(
-		msg: KlasaMessage,
-		[quantity, name = '', method = '']: [null | number | string, string, string]
-	) {
+	async run(msg: KlasaMessage, [quantity, name = '', method = '']: [null | number | string, string, string]) {
 		const { minionName } = msg.author;
 
 		const boosts = [];
@@ -107,14 +100,11 @@ export default class extends BotCommand {
 		}
 
 		if (msg.flagArgs.monsters) {
-			return msg.channel.send(
-				new MessageAttachment(Buffer.from(validMonsters), 'validMonsters.txt')
-			);
+			return msg.channel.send(new MessageAttachment(Buffer.from(validMonsters), 'validMonsters.txt'));
 		}
 		if (!name) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 		const monster = findMonster(name);
-		if (!monster || !monster.canBeKilled)
-			return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
+		if (!monster || !monster.canBeKilled) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 
 		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
 		const isOnTask =
@@ -123,28 +113,23 @@ export default class extends BotCommand {
 			usersTask.assignedTask.monsters.includes(monster.id);
 
 		if (monster.slayerOnly && !isOnTask) {
-			return msg.channel.send(
-				`You can't kill ${monster.name}, because you're not on a slayer task.`
-			);
+			return msg.channel.send(`You can't kill ${monster.name}, because you're not on a slayer task.`);
 		}
 
 		if (monster.id === 696969) {
-			throw `You would be foolish to try to face King Goldemar in a solo fight.`;
+			throw 'You would be foolish to try to face King Goldemar in a solo fight.';
 		}
 
 		if (msg.author.usingPet('Ishi') && monster.name !== 'Ogress Warrior') {
 			this.run(msg, [null, 'Ogress Warrior', '']);
-			return msg.channel.send(`Let's kill some ogress warriors instead? 🥰 🐳`);
+			return msg.channel.send("Let's kill some ogress warriors instead? 🥰 🐳");
 		}
 
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;
 
-		let [timeToFinish, percentReduced] = reducedTimeFromKC(
-			monster,
-			msg.author.getKC(monster.id)
-		);
+		let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, msg.author.getKC(monster.id));
 
 		const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, monster.id);
 		const [newTime, skillBoostMsg] = applySkillBoost(msg.author, timeToFinish, attackStyles);
@@ -153,36 +138,28 @@ export default class extends BotCommand {
 		boosts.push(skillBoostMsg);
 
 		timeToFinish /= 2;
-		boosts.push(`2x BSO Boost`);
+		boosts.push('2x BSO Boost');
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
 
 		if (monster.pohBoosts) {
-			const [boostPercent, messages] = calcPOHBoosts(
-				await msg.author.getPOH(),
-				monster.pohBoosts
-			);
+			const [boostPercent, messages] = calcPOHBoosts(await msg.author.getPOH(), monster.pohBoosts);
 			if (boostPercent > 0) {
 				timeToFinish = reduceNumByPercent(timeToFinish, boostPercent);
 				boosts.push(messages.join(' + '));
 			}
 		}
 
-		for (const [itemID, boostAmount] of Object.entries(
-			msg.author.resolveAvailableItemBoosts(monster)
-		)) {
+		for (const [itemID, boostAmount] of Object.entries(msg.author.resolveAvailableItemBoosts(monster))) {
 			timeToFinish *= (100 - boostAmount) / 100;
 			boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 		}
 		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven warhammer'))) {
 			timeToFinish *= 0.6;
-			boosts.push(`40% boost for Dwarven warhammer`);
+			boosts.push('40% boost for Dwarven warhammer');
 		}
 		// Removed vorkath because he has a special boost.
-		if (
-			monster.name.toLowerCase() !== 'vorkath' &&
-			osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)
-		) {
+		if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
 			if (
 				msg.author.hasItemEquippedOrInBank('Dragon hunter lance') &&
 				!attackStyles.includes(SkillsEnum.Ranged) &&
@@ -230,33 +207,22 @@ export default class extends BotCommand {
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !monster!.canBarrage) {
 			return msg.send(`${monster!.name} cannot be barraged or bursted.`);
 		}
-		if (
-			(msg.flagArgs.burst || msg.flagArgs.barrage) &&
-			!attackStyles.includes(SkillsEnum.Magic)
-		) {
-			return msg.send(`You can only barrage/burst when you're using magic!`);
+		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !attackStyles.includes(SkillsEnum.Magic)) {
+			return msg.send("You can only barrage/burst when you're using magic!");
 		}
 		if (msg.flagArgs.cannon && !hasCannon) {
-			return msg.send(`You don't own a Dwarf multicannon, so how could you use one?`);
+			return msg.send("You don't own a Dwarf multicannon, so how could you use one?");
 		}
 		if (msg.flagArgs.cannon && !monster!.canCannon) {
 			return msg.send(`${monster!.name} cannot be killed with a cannon.`);
 		}
 
-		if (
-			boostChoice === 'barrage' &&
-			attackStyles.includes(SkillsEnum.Magic) &&
-			monster!.canBarrage
-		) {
+		if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 			consumableCosts.push(iceBarrageConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
 			boosts.push(`${boostIceBarrage}% for Ice Barrage`);
 			burstOrBarrage = SlayerActivityConstants.IceBarrage;
-		} else if (
-			boostChoice === 'burst' &&
-			attackStyles.includes(SkillsEnum.Magic) &&
-			monster!.canBarrage
-		) {
+		} else if (boostChoice === 'burst' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 			consumableCosts.push(iceBurstConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst);
 			boosts.push(`${boostIceBurst}% for Ice Burst`);
@@ -280,14 +246,14 @@ export default class extends BotCommand {
 		const hasZealotsAmulet = msg.author.hasItemEquippedAnywhere('Amulet of zealots');
 		if (hasZealotsAmulet && hasBlessing) {
 			timeToFinish *= 0.75;
-			boosts.push(`25% for Dwarven blessing & Amulet of zealots`);
+			boosts.push('25% for Dwarven blessing & Amulet of zealots');
 		} else if (hasBlessing) {
 			timeToFinish *= 0.8;
-			boosts.push(`20% for Dwarven blessing`);
+			boosts.push('20% for Dwarven blessing');
 		}
 		if (monster.wildy && hasZealotsAmulet) {
 			timeToFinish *= 0.95;
-			boosts.push(`5% for Amulet of zealots`);
+			boosts.push('5% for Amulet of zealots');
 		}
 
 		// If no quantity provided, set it to the max.
@@ -309,9 +275,7 @@ export default class extends BotCommand {
 				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 4);
 			} else if (
 				monster.id === Monsters.GrotesqueGuardians.id &&
-				msg.author.settings
-					.get(UserSettings.Slayer.SlayerUnlocks)
-					.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+				msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.DoubleTrouble)
 			) {
 				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
 			}
@@ -326,15 +290,13 @@ export default class extends BotCommand {
 		let prayerPotsNeeded = Math.max(1, fiveMinIncrements);
 		const hasPrayerMasterCape = msg.author.hasItemEquippedAnywhere('Prayer master cape');
 		if (hasPrayerMasterCape && hasBlessing) {
-			boosts.push(`40% less prayer pots`);
+			boosts.push('40% less prayer pots');
 			prayerPotsNeeded = Math.floor(0.6 * prayerPotsNeeded);
 		}
 		prayerPotsNeeded = Math.max(1, prayerPotsNeeded);
 		if (hasBlessing) {
 			if (prayerPots < prayerPotsNeeded) {
-				return msg.send(
-					`You don't have enough Prayer potion(4)'s to power your Dwarven blessing.`
-				);
+				return msg.send("You don't have enough Prayer potion(4)'s to power your Dwarven blessing.");
 			}
 		}
 
@@ -343,9 +305,9 @@ export default class extends BotCommand {
 			return msg.send(
 				`${minionName} can't go on PvM trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${
-					monster.name
-				} is ${floor(maxTripLength / timeToFinish)}.`
+				)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(
+					maxTripLength / timeToFinish
+				)}.`
 			);
 		}
 
@@ -376,9 +338,7 @@ export default class extends BotCommand {
 				const itemCost = cc!.qtyPerKill
 					? cc!.itemCost.clone().multiply(itemMultiple)
 					: cc!.qtyPerMinute
-					? cc!.itemCost
-							.clone()
-							.multiply(Math.ceil((duration / Time.Minute) * itemMultiple))
+					? cc!.itemCost.clone().multiply(Math.ceil((duration / Time.Minute) * itemMultiple))
 					: null;
 				if (itemCost) {
 					pvmCost = true;
@@ -430,25 +390,19 @@ export default class extends BotCommand {
 		duration = randomVariation(duration, 3);
 
 		if (isWeekend()) {
-			boosts.push(`10% for Weekend`);
+			boosts.push('10% for Weekend');
 			duration *= 0.9;
 		}
 
-		if (
-			attackStyles.includes(SkillsEnum.Ranged) &&
-			msg.author.hasItemEquippedAnywhere('Ranged master cape')
-		) {
+		if (attackStyles.includes(SkillsEnum.Ranged) && msg.author.hasItemEquippedAnywhere('Ranged master cape')) {
 			duration *= 0.85;
-			boosts.push(`15% for Ranged master cape`);
-		} else if (
-			attackStyles.includes(SkillsEnum.Magic) &&
-			msg.author.hasItemEquippedAnywhere('Magic master cape')
-		) {
+			boosts.push('15% for Ranged master cape');
+		} else if (attackStyles.includes(SkillsEnum.Magic) && msg.author.hasItemEquippedAnywhere('Magic master cape')) {
 			duration *= 0.85;
-			boosts.push(`15% for Magic master cape`);
+			boosts.push('15% for Magic master cape');
 		} else if (msg.author.hasItemEquippedAnywhere('Attack master cape')) {
 			duration *= 0.85;
-			boosts.push(`15% for Attack master cape`);
+			boosts.push('15% for Attack master cape');
 		}
 
 		if (hasBlessing && prayerPotsNeeded) {
@@ -463,8 +417,8 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.Gear.Range, rangeSetup);
 			if (monster.name === 'Koschei the deathless') {
 				return msg.channel.send(
-					`You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - Koschei immediately locks` +
-						` eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly.`
+					'You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - Koschei immediately locks' +
+						' eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly.'
 				);
 			}
 			usedDart = true;
@@ -472,7 +426,7 @@ export default class extends BotCommand {
 
 		if (monster.name === 'Koschei the deathless') {
 			return msg.channel.send(
-				`You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.`
+				'You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.'
 			);
 		}
 		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
@@ -496,9 +450,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		let response = `${minionName} is now killing ${quantity}x ${
-			monster.name
-		}, it'll take around ${formatDuration(
+		let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 			duration
 		)} to finish. Attack styles used: ${attackStyles.join(', ')}.`;
 

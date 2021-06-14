@@ -81,79 +81,77 @@ export const warmGear = resolveItems([
 ]) as number[];
 
 const ores = resolveItems([
-	`Copper ore`,
-	`Tin ore`,
-	`Iron ore`,
-	`Blurite ore`,
-	`Silver ore`,
-	`Coal`,
-	`Elemental ore`,
-	`Gold ore`,
-	`Mithril ore`,
-	`Lovakite ore`,
-	`Adamantite ore`,
-	`Runite ore`
+	'Copper ore',
+	'Tin ore',
+	'Iron ore',
+	'Blurite ore',
+	'Silver ore',
+	'Coal',
+	'Elemental ore',
+	'Gold ore',
+	'Mithril ore',
+	'Lovakite ore',
+	'Adamantite ore',
+	'Runite ore'
 ]);
 
 const bars = resolveItems([
-	`Bronze bar`,
-	`Blurite bar`,
-	`Iron bar`,
-	`Elemental metal`,
-	`Steel bar`,
-	`Primed bar`,
-	`Primed mind bar`,
-	`Lovakite bar`,
-	`Mithril bar`,
-	`Adamantite bar`,
-	`Runite bar`
+	'Bronze bar',
+	'Blurite bar',
+	'Iron bar',
+	'Elemental metal',
+	'Steel bar',
+	'Primed bar',
+	'Primed mind bar',
+	'Lovakite bar',
+	'Mithril bar',
+	'Adamantite bar',
+	'Runite bar'
 ]);
 
 const smithingMisc = resolveItems([
-	`Shield left half`,
-	`Shield right half`,
-	`Dragon metal shard`,
-	`Dragon metal slice`,
-	`Godsword blade`,
-	`Godsword shards 1 & 2`,
-	`Godsword shards 1 & 3`,
-	`Godsword shards 2 & 3`,
-	`Godsword shard 1`,
-	`Godsword shard 2`,
-	`Godsword shard 3`,
-	`Armadyl hilt`,
-	`Bandos hilt`,
-	`Saradomin hilt`,
-	`Zamorak hilt`,
-	`Arcane sigil`,
-	`Spectral sigil`,
-	`Elysian sigil`,
-	`Blessed Spirit Shield`,
-	`Smouldering stone`,
-	`Dragon metal lump`,
-	`Draconic visage`,
-	`Skeletal visage`,
-	`Wyvern visage`
+	'Shield left half',
+	'Shield right half',
+	'Dragon metal shard',
+	'Dragon metal slice',
+	'Godsword blade',
+	'Godsword shards 1 & 2',
+	'Godsword shards 1 & 3',
+	'Godsword shards 2 & 3',
+	'Godsword shard 1',
+	'Godsword shard 2',
+	'Godsword shard 3',
+	'Armadyl hilt',
+	'Bandos hilt',
+	'Saradomin hilt',
+	'Zamorak hilt',
+	'Arcane sigil',
+	'Spectral sigil',
+	'Elysian sigil',
+	'Blessed Spirit Shield',
+	'Smouldering stone',
+	'Dragon metal lump',
+	'Draconic visage',
+	'Skeletal visage',
+	'Wyvern visage'
 ]);
 
 const gems = resolveItems([
-	`Amethyst`,
-	`Sapphire`,
-	`Opal`,
-	`Jade`,
-	`Red topaz`,
-	`Emerald`,
-	`Ruby`,
-	`Diamond`,
-	`Dragonstone`,
-	`Onyx`,
-	`Zenyte`,
-	`Zenyte shard`
+	'Amethyst',
+	'Sapphire',
+	'Opal',
+	'Jade',
+	'Red topaz',
+	'Emerald',
+	'Ruby',
+	'Diamond',
+	'Dragonstone',
+	'Onyx',
+	'Zenyte',
+	'Zenyte shard'
 ]);
 
-const craftingItems = Craftables.flatMap(item =>
-	Object.keys(item.inputItems).map(key => parseInt(key))
-);
+const craftingItems = Craftables.flatMap(item => Object.keys(item.inputItems).map(key => parseInt(key)));
 
 const craftingItemsSet = [...new Set(craftingItems)];
 
@@ -355,9 +353,7 @@ const bones = resolveItems([
 	'Zogre bones'
 ]);
 
-const fletchingItems = Fletchables.flatMap(item =>
-	Object.keys(item.inputItems).map(key => parseInt(key))
-);
+const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems).map(key => parseInt(key)));
 
 const fletchingItemsSet = [...new Set(fletchingItems)];
 
@@ -847,15 +843,7 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'Farming',
 		aliases: ['farming', 'farm', 'seeds'],
-		items: [
-			...resolveItems([
-				'Compost',
-				'Supercompost',
-				'Ultracompost',
-				'Bottomless compost bucket '
-			]),
-			...seeds
-		]
+		items: [...resolveItems(['Compost', 'Supercompost', 'Ultracompost', 'Bottomless compost bucket ']), ...seeds]
 	},
 	{
 		name: 'Herblore',

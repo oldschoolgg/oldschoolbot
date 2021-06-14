@@ -14,9 +14,7 @@ import { Gear } from './Gear';
 import { Mass } from './Mass';
 
 export const gpCostPerKill = (user: KlasaUser) =>
-	user.getGear('melee').hasEquipped(['Ring of charos', 'Ring of charos(a)'], false)
-		? 5_000_000
-		: 10_000_000;
+	user.getGear('melee').hasEquipped(['Ring of charos', 'Ring of charos(a)'], false) ? 5_000_000 : 10_000_000;
 
 export const calcDwwhChance = (users: KlasaUser[]) => {
 	const size = Math.min(users.length, 10);
@@ -94,7 +92,7 @@ function calcSetupPercent(
 	}
 
 	if (isNaN(totalPercent) || totalPercent < 0 || totalPercent > 100) {
-		throw new Error(`Invalid total gear percent.`);
+		throw new Error('Invalid total gear percent.');
 	}
 
 	return totalPercent;
@@ -232,14 +230,9 @@ export class BossInstance {
 			return [true, `doesn't have ${itemCost}`];
 		}
 
-		const gearPercent = calcSetupPercent(
-			this.bisGear,
-			user.getGear(this.gearSetup),
-			this.mostImportantStat,
-			[]
-		);
+		const gearPercent = calcSetupPercent(this.bisGear, user.getGear(this.gearSetup), this.mostImportantStat, []);
 		if (gearPercent < 20) {
-			return [true, `has terrible gear`];
+			return [true, 'has terrible gear'];
 		}
 
 		return [false];
@@ -258,8 +251,7 @@ export class BossInstance {
 		const speedReductionForGear = 25;
 		const speedReductionForKC = 35;
 		let speedReductionForBoosts = sumArr(this.itemBoosts.map(i => i[1]));
-		const totalSpeedReduction =
-			speedReductionForGear + speedReductionForKC + speedReductionForBoosts;
+		const totalSpeedReduction = speedReductionForGear + speedReductionForKC + speedReductionForBoosts;
 		const kcCap = 250;
 
 		const bossUsers: BossUser[] = [];
@@ -292,10 +284,7 @@ export class BossInstance {
 				}
 			}
 			const itemBoostPercent = calcWhatPercent(itemBoosts, speedReductionForBoosts);
-			const itemBoostsBoostPercent = calcPercentOfNum(
-				itemBoostPercent,
-				speedReductionForBoosts
-			);
+			const itemBoostsBoostPercent = calcPercentOfNum(itemBoostPercent, speedReductionForBoosts);
 			userPercentChange += itemBoostsBoostPercent;
 			debugStr.push(`**Boosts**[${itemBoostPercent.toFixed(1)}%]`);
 
@@ -304,20 +293,16 @@ export class BossInstance {
 			debugStr.push(`**Cost**[${itemsToRemove}]`);
 
 			// Total
-			debugStr.push(
-				`**Total**[${calcWhatPercent(userPercentChange, totalSpeedReduction).toFixed(2)}%]`
-			);
+			debugStr.push(`**Total**[${calcWhatPercent(userPercentChange, totalSpeedReduction).toFixed(2)}%]`);
 
 			// Death chance
 			let deathChance = this.canDie
-				? Math.max(0, reduceNumByPercent(55, kcBoostPercent * 2.4 + gearBoostPercent)) +
-				  randFloat(4.5, 5.5)
+				? Math.max(0, reduceNumByPercent(55, kcBoostPercent * 2.4 + gearBoostPercent)) + randFloat(4.5, 5.5)
 				: 0;
 			debugStr.push(`**Death**[${deathChance.toFixed(2)}%]`);
 
 			// Apply a percentage of maxReduction based on the percent of total boosts.
-			const percentToAdd =
-				((userPercentChange / totalSpeedReduction) * maxReduction) / this.users!.length;
+			const percentToAdd = ((userPercentChange / totalSpeedReduction) * maxReduction) / this.users!.length;
 			totalPercent += percentToAdd;
 
 			bossUsers.push({
@@ -388,17 +373,9 @@ export class BossInstance {
 			]);
 		}
 		const normalTable = table([
-			[
-				'Team Size',
-				'%',
-				'Duration',
-				'Death Chance',
-				'DWWH Chance',
-				'DWWH Hours',
-				'Item Cost For DWWH'
-			],
+			['Team Size', '%', 'Duration', 'Death Chance', 'DWWH Chance', 'DWWH Hours', 'Item Cost For DWWH'],
 			...results
 		]);
-		return new MessageAttachment(Buffer.from(normalTable), `boss-sim.txt`);
+		return new MessageAttachment(Buffer.from(normalTable), 'boss-sim.txt');
 	}
 }

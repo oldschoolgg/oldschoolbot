@@ -107,12 +107,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Dwarf,
 		amount: [15, 50],
 		weight: 7,
-		monsters: [
-			Monsters.Dwarf.id,
-			Monsters.BlackGuard.id,
-			Monsters.ChaosDwarf.id,
-			Monsters.DwarfGangMember.id
-		],
+		monsters: [Monsters.Dwarf.id, Monsters.BlackGuard.id, Monsters.ChaosDwarf.id, Monsters.DwarfGangMember.id],
 		combatLevel: 6,
 		unlocked: true
 	},
@@ -156,12 +151,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Lizard,
 		amount: [15, 50],
 		weight: 8,
-		monsters: [
-			Monsters.Lizard.id,
-			Monsters.SmallLizard.id,
-			Monsters.DesertLizard.id,
-			Monsters.SulphurLizard.id
-		],
+		monsters: [Monsters.Lizard.id, Monsters.SmallLizard.id, Monsters.DesertLizard.id, Monsters.SulphurLizard.id],
 		slayerLevel: 22,
 		unlocked: true
 	},

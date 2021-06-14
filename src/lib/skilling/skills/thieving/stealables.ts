@@ -68,11 +68,7 @@ export const Stalls: Stall[] = [
 		level: 5,
 		xp: 16,
 		id: 4707,
-		table: new LootTable()
-			.add('Cake')
-			.add('Bread')
-			.add('Chocolate slice')
-			.tertiary(124_066, 'Rocky'),
+		table: new LootTable().add('Cake').add('Bread').add('Chocolate slice').tertiary(124_066, 'Rocky'),
 		respawnTime: Time.Second * 2
 	},
 	{

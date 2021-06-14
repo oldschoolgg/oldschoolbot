@@ -44,7 +44,8 @@ export default class extends Task {
 		}
 
 		if (roll(350)) {
-			str += `\n<:zippy:749240799090180196> While you walk through the forest north of falador, a small ferret jumps onto your back and joins you on your adventures!`;
+			str +=
+				'\n<:zippy:749240799090180196> While you walk through the forest north of falador, a small ferret jumps onto your back and joins you on your adventures!';
 			user.addItemsToBank({ 10092: 1 }, true);
 		}
 
@@ -55,12 +56,7 @@ export default class extends Task {
 		} else if (magicXP < 1000 && newQP > 15 && roll(2)) {
 			await user.addXP({ skillName: SkillsEnum.Magic, amount: 1000 });
 			str += `${Emoji.Magic} You received 1000 Magic XP for completing Fairytale I - Growing Pains.`;
-		} else if (
-			user.skillLevel(SkillsEnum.Cooking) >= 40 &&
-			newQP > 50 &&
-			magicXP < 2500 &&
-			roll(2)
-		) {
+		} else if (user.skillLevel(SkillsEnum.Cooking) >= 40 && newQP > 50 && magicXP < 2500 && roll(2)) {
 			await user.addXP({ skillName: SkillsEnum.Magic, amount: 2500 });
 			str += `${Emoji.Magic} You received 2500 Magic XP for completing Recipe For Disaster (Lumbridge guide subquest).`;
 		}
@@ -73,7 +69,7 @@ export default class extends Task {
 			hasMaxQP
 				? undefined
 				: res => {
-						user.log(`continued trip of Questing.`);
+						user.log('continued trip of Questing.');
 						return this.client.commands.get('quest')!.run(res as KlasaMessage, []);
 				  },
 			undefined,

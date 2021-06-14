@@ -701,10 +701,7 @@ const Buyables: Buyable[] = [
 			for (const diary of diaries.map(d => d.elite)) {
 				const [has] = await userhasDiaryTier(user, diary);
 				if (!has) {
-					return [
-						false,
-						`You can't buy this because you haven't completed all the Elite diaries!`
-					];
+					return [false, "You can't buy this because you haven't completed all the Elite diaries!"];
 				}
 			}
 			return [true];

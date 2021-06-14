@@ -14,12 +14,7 @@ export function fillTextXTimesInCtx(
 	}
 }
 
-export function drawItemQuantityText(
-	ctx: CanvasRenderingContext2D,
-	quantity: number,
-	x: number,
-	y: number
-) {
+export function drawItemQuantityText(ctx: CanvasRenderingContext2D, quantity: number, x: number, y: number) {
 	const quantityColor = generateHexColorForCashStack(quantity);
 	const formattedQuantity = formatItemStackQuantity(quantity);
 	ctx.font = '16px OSRSFontCompact';

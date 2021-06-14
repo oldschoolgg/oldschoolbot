@@ -55,15 +55,7 @@ export function calcLootXPPickpocketing(
 
 export default class extends Task {
 	async run(data: PickpocketActivityTaskOptions) {
-		const {
-			monsterID,
-			quantity,
-			successfulQuantity,
-			userID,
-			channelID,
-			xpReceived,
-			duration
-		} = data;
+		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		const npc = Pickpocketables.find(_npc => _npc.id === monsterID)!;
 
@@ -88,7 +80,7 @@ export default class extends Task {
 		const bloodshardCount = loot.amount('Blood shard');
 		const seedCount = loot.amount('Enhanced crystal teleport seed');
 		if (user.hasItemEquippedOrInBank(itemID("Thieves' armband"))) {
-			boosts.push(`3x loot for Thieves armband`);
+			boosts.push('3x loot for Thieves armband');
 			loot.bank = multiplyBankNotClues(loot.bank, 3);
 			if (bloodshardCount) {
 				loot.bank[itemID('Blood shard')] = bloodshardCount;
@@ -108,11 +100,7 @@ export default class extends Task {
 		}
 
 		if (loot.has('Coins')) {
-			updateGPTrackSetting(
-				this.client,
-				ClientSettings.EconomyStats.GPSourcePickpocket,
-				loot.amount('Coins')
-			);
+			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourcePickpocket, loot.amount('Coins'));
 		}
 
 		await user.addItemsToBank(loot, true);
@@ -125,17 +113,18 @@ export default class extends Task {
 		}x pickpockets. ${xpRes}`;
 
 		if (gotWil) {
-			str += `<:wilvus:787320791011164201> A raccoon saw you thieving and partners with you to help you steal more stuff!`;
+			str +=
+				'<:wilvus:787320791011164201> A raccoon saw you thieving and partners with you to help you steal more stuff!';
 		}
 
 		str += `\n\nYou received: ${loot}.`;
 
 		if (rogueOutfitBoostActivated) {
-			str += `\nYour rogue outfit allows you to take some extra loot.`;
+			str += '\nYour rogue outfit allows you to take some extra loot.';
 		}
 
 		if (loot.amount('Rocky') > 0) {
-			str += `\n\n**You have a funny feeling you're being followed...**`;
+			str += "\n\n**You have a funny feeling you're being followed...**";
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${user.minionName}, just received a **Rocky** <:Rocky:324127378647285771> while pickpocketing a ${npc.name}, their Thieving level is ${currentLevel}!`

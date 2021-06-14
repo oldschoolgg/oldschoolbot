@@ -65,22 +65,12 @@ declare module 'klasa' {
 			user?: KlasaUser,
 			cl?: ItemBank
 		): Promise<BankImageResult>;
-		generateCollectionLogImage(
-			collectionLog: ItemBank,
-			title: string = '',
-			type: any
-		): Promise<Buffer>;
+		generateCollectionLogImage(collectionLog: ItemBank, title: string = '', type: any): Promise<Buffer>;
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
 	}
 	interface Command {
 		kill(message: KlasaMessage, [quantity, monster]: [number | string, string]): Promise<any>;
-		getStatsEmbed(
-			username: string,
-			color: number,
-			player: Player,
-			key = 'level',
-			showExtra = true
-		): MessageEmbed;
+		getStatsEmbed(username: string, color: number, player: Player, key = 'level', showExtra = true): MessageEmbed;
 	}
 	interface KlasaMessage {
 		cmdPrefix: string;
@@ -106,28 +96,16 @@ declare module 'discord.js' {
 			items: ItemBank | Bank,
 			collectionLog?: boolean
 		): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }>;
-		removeItemsFromBank(
-			items: ItemBank | Bank,
-			collectionLog?: boolean
-		): Promise<SettingsUpdateResult>;
+		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
 		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
 		removeItemFromBank(itemID: number, numberToRemove?: number): Promise<SettingsUpdateResult>;
-		incrementMonsterScore(
-			monsterID: number,
-			numberToAdd?: number
-		): Promise<SettingsUpdateResult>;
+		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 
-		incrementOpenableScore(
-			openableID: number,
-			numberToAdd?: number
-		): Promise<SettingsUpdateResult>;
+		incrementOpenableScore(openableID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementMinigameScore(this: User, minigame: MinigameKey, amountToAdd = 1): Promise<number>;
-		incrementCreatureScore(
-			creatureID: number,
-			numberToAdd?: number
-		): Promise<SettingsUpdateResult>;
+		incrementCreatureScore(creatureID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		hasItem(itemID: number, amount = 1, sync = true): Promise<boolean>;
 		numberOfItemInBank(itemID: number, sync = true): Promise<number>;
 		log(stringLog: string): void;
@@ -147,10 +125,7 @@ declare module 'discord.js' {
 		 * Returns true if the user has this item equipped in any of their setups.
 		 * @param itemID The item ID.
 		 */
-		hasItemEquippedAnywhere(
-			_item: number | string | string[] | number[],
-			every = false
-		): boolean;
+		hasItemEquippedAnywhere(_item: number | string | string[] | number[], every = false): boolean;
 		/**
 		 * Checks whether they have the given item in their bank OR equipped.
 		 * @param item

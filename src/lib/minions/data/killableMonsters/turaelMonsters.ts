@@ -663,9 +663,7 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([
-			['Trident of the seas', 'Trident of the swamp', 'Brine sabre']
-		]),
+		itemsRequired: deepResolveItems([['Trident of the seas', 'Trident of the swamp', 'Brine sabre']]),
 		qpRequired: 10,
 		healAmountNeeded: 22,
 		attackStyleToUse: GearSetupTypes.Melee,

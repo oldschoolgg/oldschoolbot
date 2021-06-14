@@ -48,11 +48,7 @@ export default class extends Task {
 				greaterSirenCaught++;
 				continue;
 			}
-			if (
-				currentRoll >= 67 &&
-				currentFishLevel >= mottledEel.fishLvl! &&
-				currentHuntLevel >= mottledEel.level!
-			) {
+			if (currentRoll >= 67 && currentFishLevel >= mottledEel.fishLvl! && currentHuntLevel >= mottledEel.level!) {
 				mottledEelCaught++;
 				continue;
 			}
@@ -118,13 +114,9 @@ export default class extends Task {
 			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, fishXpReceived));
 		}
 
-		let str = `${user}, ${
-			user.minionName
-		} finished aerial fishing and caught ${greaterSirenCaught}x ${
+		let str = `${user}, ${user.minionName} finished aerial fishing and caught ${greaterSirenCaught}x ${
 			greaterSiren.name
-		}, ${mottledEelCaught}x ${mottledEel.name}, ${commonTenchCaught}x ${
-			commonTench.name
-		}, ${bluegillCaught}x ${
+		}, ${mottledEelCaught}x ${mottledEel.name}, ${commonTenchCaught}x ${commonTench.name}, ${bluegillCaught}x ${
 			bluegill.name
 		}, you also received ${huntXpReceived.toLocaleString()} Hunter XP and ${fishXpReceived.toLocaleString()} Fishing XP. ${
 			user.minionName
@@ -143,11 +135,10 @@ export default class extends Task {
 		}
 
 		// Heron Pet roll
-		const totalFishCaught =
-			greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;
+		const totalFishCaught = greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;
 		if (roll((636_833 - user.skillLevel(SkillsEnum.Fishing) * 25) / totalFishCaught)) {
 			loot.add('Heron');
-			str += `\nYou have a funny feeling you're being followed...`;
+			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Fishing} **${user.username}'s** minion, ${user.minionName}, just received a **Heron** while Aerial fishing at level ${currentFishLevel} Fishing!`
@@ -158,7 +149,7 @@ export default class extends Task {
 		str += `\n\nYou received: ${loot}.`;
 
 		if (loot.amount('Golden tench') > 0) {
-			str += `\n\n**The cormorant has brought you a very strange tench.**`;
+			str += '\n\n**The cormorant has brought you a very strange tench.**';
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${user.minionName}, just received a **Golden tench** while aerial fishing, their Fishing/Hunter level is ${currentFishLevel}/${currentHuntLevel}!`
@@ -171,15 +162,12 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued trip of Aerial fishing.`);
+				user.log('continued trip of Aerial fishing.');
 				return this.client.commands
 					.get('aerialfish')!
 					.run(res, [
 						Math.floor(
-							Math.min(
-								user.maxTripLength(Activity.AerialFishing) / Time.Minute,
-								duration / Time.Minute
-							)
+							Math.min(user.maxTripLength(Activity.AerialFishing) / Time.Minute, duration / Time.Minute)
 						)
 					]);
 			},

@@ -23,8 +23,7 @@ const patMessages = [
 	'You give {name} head pats, they get comfortable and start falling asleep.'
 ];
 
-const randomPatMessage = (minionName: string) =>
-	randomItemFromArray(patMessages).replace('{name}', minionName);
+const randomPatMessage = (minionName: string) => randomItemFromArray(patMessages).replace('{name}', minionName);
 
 async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
 	try {
@@ -42,8 +41,7 @@ export default class MinionCommand extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage:
-				'[seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest|mix|hunt] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+			usage: '[seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest|mix|hunt] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -58,14 +56,12 @@ export default class MinionCommand extends BotCommand {
 	@requiresMinion
 	async seticon(msg: KlasaMessage, [icon]: [string]) {
 		if (msg.author.perkTier < PerkTier.Six) {
-			return msg.send(
-				`You need to be a Tier 5 Patron to change your minion's icon to a custom icon.`
-			);
+			return msg.send("You need to be a Tier 5 Patron to change your minion's icon to a custom icon.");
 		}
 
 		const res = FormattedCustomEmoji.exec(icon);
 		if (!res || !res[0]) {
-			return msg.channel.send(`That's not a valid emoji.`);
+			return msg.channel.send("That's not a valid emoji.");
 		}
 		await msg.author.settings.update(UserSettings.Minion.Icon, res[0]);
 
@@ -118,16 +114,14 @@ export default class MinionCommand extends BotCommand {
 	@requiresMinion
 	async qp(msg: KlasaMessage) {
 		return msg.send(
-			`${msg.author.minionName}'s Quest Point count is: ${msg.author.settings.get(
-				UserSettings.QP
-			)}.`
+			`${msg.author.minionName}'s Quest Point count is: ${msg.author.settings.get(UserSettings.QP)}.`
 		);
 	}
 
 	@requiresMinion
 	async clues(msg: KlasaMessage) {
 		const clueScores = msg.author.settings.get(UserSettings.ClueScores);
-		if (Object.keys(clueScores).length === 0) throw `You haven't done any clues yet.`;
+		if (Object.keys(clueScores).length === 0) throw "You haven't done any clues yet.";
 
 		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
 		for (const [clueID, clueScore] of Object.entries(clueScores)) {
@@ -176,24 +170,19 @@ export default class MinionCommand extends BotCommand {
 		}
 
 		await msg.send(
-			`Are you sure you want to spend ${Util.toKMB(
-				cost
-			)} on buying a minion? Please say \`yes\` to confirm.`
+			`Are you sure you want to spend ${Util.toKMB(cost)} on buying a minion? Please say \`yes\` to confirm.`
 		);
 
 		try {
 			await msg.channel.awaitMessages(
-				answer =>
-					answer.author.id === msg.author.id && answer.content.toLowerCase() === 'yes',
+				answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'yes',
 				{
 					max: 1,
 					time: 15000,
 					errors: ['time']
 				}
 			);
-			const response = await msg.channel.send(
-				`${Emoji.Search} Finding the right minion for you...`
-			);
+			const response = await msg.channel.send(`${Emoji.Search} Finding the right minion for you...`);
 
 			await sleep(3000);
 
@@ -227,7 +216,7 @@ export default class MinionCommand extends BotCommand {
 			name.length > 30 ||
 			['\n', '`', '@', '<', ':'].some(char => name.includes(char))
 		) {
-			return msg.send(`That's not a valid name for your minion.`);
+			return msg.send("That's not a valid name for your minion.");
 		}
 
 		await msg.author.settings.update(UserSettings.Minion.Name, name);

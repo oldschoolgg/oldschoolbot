@@ -7,8 +7,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '<bank:str>',
 			permissionLevel: 10,
-			description:
-				'Allows you to generate a bank image directly from an item bank JSON object.',
+			description: 'Allows you to generate a bank image directly from an item bank JSON object.',
 			examples: ['+bi {1:1}']
 		});
 	}

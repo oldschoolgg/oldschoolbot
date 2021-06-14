@@ -90,28 +90,20 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const course = Agility.Courses.find(course =>
-			course.aliases.some(alias => stringMatches(alias, name))
-		);
+		const course = Agility.Courses.find(course => course.aliases.some(alias => stringMatches(alias, name)));
 
 		if (!course) {
 			return msg.send(
-				`Thats not a valid course. Valid courses are ${Agility.Courses.map(
-					course => course.name
-				).join(', ')}.`
+				`Thats not a valid course. Valid courses are ${Agility.Courses.map(course => course.name).join(', ')}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Agility) < course.level) {
-			return msg.send(
-				`${msg.author.minionName} needs ${course.level} agility to train at ${course.name}.`
-			);
+			return msg.send(`${msg.author.minionName} needs ${course.level} agility to train at ${course.name}.`);
 		}
 
 		if (course.qpRequired && msg.author.settings.get(UserSettings.QP) < course.qpRequired) {
-			return msg.send(
-				`You need atleast ${course.qpRequired} Quest Points to do this course.`
-			);
+			return msg.send(`You need atleast ${course.qpRequired} Quest Points to do this course.`);
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Agility);
@@ -127,9 +119,9 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					course.name
-				} laps you can do is ${Math.floor(maxTripLength / timePerLap)}.`
+				)}, try a lower quantity. The highest amount of ${course.name} laps you can do is ${Math.floor(
+					maxTripLength / timePerLap
+				)}.`
 			);
 		}
 
@@ -140,20 +132,14 @@ export default class extends BotCommand {
 		const alchResult = alching(msg.author, duration);
 		if (alchResult !== null) {
 			if (course.name === 'Ape Atoll Agility Course') {
-				return msg.channel.send(
-					`<:karamjanMonkey:739460740871749742> Monkey's can't alch!`
-				);
+				return msg.channel.send("<:karamjanMonkey:739460740871749742> Monkey's can't alch!");
 			}
 			if (!msg.author.owns(alchResult.bankToRemove)) {
 				return msg.channel.send(`You don't own ${alchResult.bankToRemove}.`);
 			}
 			await msg.author.removeItemsFromBank(alchResult.bankToRemove);
 			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
-			updateBankSetting(
-				this.client,
-				ClientSettings.EconomyStats.MagicCostBank,
-				alchResult.bankToRemove
-			);
+			updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
 		}
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>(this.client, {

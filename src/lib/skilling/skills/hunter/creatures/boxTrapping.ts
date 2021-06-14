@@ -4,7 +4,7 @@ import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const boxTrappingCreatures: Creature[] = [
 	{
-		name: `Chinchompa`,
+		name: 'Chinchompa',
 		id: 7,
 		aliases: ['chinchompa', 'chin', 'chins'],
 		level: 53,
@@ -18,7 +18,7 @@ const boxTrappingCreatures: Creature[] = [
 		intercept: 1.69495
 	},
 	{
-		name: `Carnivorous chinchompa`,
+		name: 'Carnivorous chinchompa',
 		id: 8,
 		aliases: ['carnivorous chinchompa', 'red chinchompa', 'red chin', 'red chins'],
 		level: 63,
@@ -32,7 +32,7 @@ const boxTrappingCreatures: Creature[] = [
 		intercept: -31.33
 	},
 	{
-		name: `Black chinchompa`,
+		name: 'Black chinchompa',
 		id: 9,
 		aliases: ['black chinchompa', 'black chin', 'black chins'],
 		level: 73,

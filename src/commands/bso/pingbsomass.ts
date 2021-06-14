@@ -14,14 +14,11 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		if (!msg.guild || msg.guild.id !== SupportServer) return;
 		if (!msg.member) return;
-		if (
-			!msg.member.roles.cache.has('759572886364225558') &&
-			!msg.member.roles.cache.has(Roles.Moderator)
-		) {
+		if (!msg.member.roles.cache.has('759572886364225558') && !msg.member.roles.cache.has(Roles.Moderator)) {
 			return;
 		}
 		return msg.send(
-			`<@&759573020464906242> - *Note: You can type \`.roles bso-mass\` to remove, or add, this role to yourself.`
+			'<@&759573020464906242> - *Note: You can type `.roles bso-mass` to remove, or add, this role to yourself.'
 		);
 	}
 }

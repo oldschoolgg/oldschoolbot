@@ -55,10 +55,7 @@ export default class DailyCommand extends BotCommand {
 		const streak = msg.author.settings.get(UserSettings.ItemContractStreak);
 		const total = `\n\nYou've completed ${totalContracts} Item Contracts, you currently have a streak of ${streak}.`;
 		if (!msg.author.settings.get(UserSettings.CurrentItemContract)) {
-			await msg.author.settings.update(
-				UserSettings.CurrentItemContract,
-				randArrItem(allMbTables)
-			);
+			await msg.author.settings.update(UserSettings.CurrentItemContract, randArrItem(allMbTables));
 		}
 		const currentItem = getOSItem(msg.author.settings.get(UserSettings.CurrentItemContract)!);
 		let durationRemaining = formatDuration(Date.now() - (lastDate + eightHours));
@@ -93,8 +90,7 @@ export default class DailyCommand extends BotCommand {
 
 				try {
 					await msg.channel.awaitMessages(
-						_msg =>
-							_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'y',
+						_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'y',
 						{
 							max: 1,
 							time: 13_000,
@@ -102,14 +98,11 @@ export default class DailyCommand extends BotCommand {
 						}
 					);
 				} catch (err) {
-					return sellMsg.edit(`Cancelled.`);
+					return sellMsg.edit('Cancelled.');
 				}
 			}
 			const newItem = randArrItem(allMbTables);
-			await msg.author.settings.update(
-				UserSettings.LastItemContractDate,
-				currentDate - eightHours / 2
-			);
+			await msg.author.settings.update(UserSettings.LastItemContractDate, currentDate - eightHours / 2);
 			await msg.author.settings.update(UserSettings.CurrentItemContract, newItem);
 			await msg.author.settings.reset(UserSettings.ItemContractStreak);
 			return msg.channel.send(
@@ -145,7 +138,7 @@ export default class DailyCommand extends BotCommand {
 					}
 				);
 			} catch (err) {
-				return sellMsg.edit(`Cancelled.`);
+				return sellMsg.edit('Cancelled.');
 			}
 		}
 
@@ -160,9 +153,7 @@ export default class DailyCommand extends BotCommand {
 			[10, 5]
 		]) {
 			if (newStreak % kc === 0) {
-				gotBonus = `You got ${rolls} bonus rolls for your ${formatOrdinal(
-					newStreak
-				)} contract!`;
+				gotBonus = `You got ${rolls} bonus rolls for your ${formatOrdinal(newStreak)} contract!`;
 				for (let i = 0; i < rolls; i++) {
 					loot.add(contractTable.roll());
 					loot.add(runeAlchablesTable.roll());
@@ -189,11 +180,7 @@ export default class DailyCommand extends BotCommand {
 		]);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.ItemContractCost, cost);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.ItemContractLoot, loot);
-		updateGPTrackSetting(
-			this.client,
-			ClientSettings.EconomyStats.GPSourceItemContracts,
-			loot.amount('Coins')
-		);
+		updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceItemContracts, loot.amount('Coins'));
 		let res = `You handed in a ${currentItem.name} and received ${loot}. You've completed ${
 			totalContracts + 1
 		} Item Contracts, and your streak is now at ${newStreak}.`;

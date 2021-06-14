@@ -21,7 +21,7 @@ export default class extends BotCommand {
 		if (!items) {
 			const currentFavorites = msg.author.settings.get(UserSettings.FavoriteAlchables);
 			if (currentFavorites.length === 0) {
-				return msg.send(`You have no favorited alchable items.`);
+				return msg.send('You have no favorited alchable items.');
 			}
 			return msg.send(
 				`Your current favorite alchable items are: ${currentFavorites
@@ -33,7 +33,7 @@ export default class extends BotCommand {
 		const [item] = items;
 
 		if (!item.highalch) {
-			return msg.channel.send(`That item isn't alchable.`);
+			return msg.channel.send("That item isn't alchable.");
 		}
 
 		if (currentFavorites.includes(item.id)) {

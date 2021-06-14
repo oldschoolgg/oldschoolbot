@@ -26,16 +26,7 @@ import { sendToChannelID } from '../../lib/util/webhook';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
-		const {
-			monsterID,
-			userID,
-			channelID,
-			quantity,
-			duration,
-			usingCannon,
-			cannonMulti,
-			burstOrBarrage
-		} = data;
+		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
 		const monster = effectiveMonsters.find(mon => mon.id === monsterID)! as KillableMonster;
 		const fullMonster = Monsters.get(monsterID);
 		const user = await this.client.users.fetch(userID);
@@ -61,9 +52,7 @@ export default class extends Task {
 
 		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
 
-		const slayerMaster = isOnTask
-			? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id)
-			: undefined;
+		const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
 		// Check if superiors unlock is purchased
 		const superiorsUnlocked = isOnTask
 			? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder)
@@ -78,23 +67,15 @@ export default class extends Task {
 			hasSuperiors: superiorTable,
 			inCatacombs: isInCatacombs
 		};
-		const loot = (monster as KillableMonster).table.kill(
-			Math.ceil(quantity * abyssalBonus),
-			killOptions
-		);
+		const loot = (monster as KillableMonster).table.kill(Math.ceil(quantity * abyssalBonus), killOptions);
 		const newSuperiorCount = loot.bank[420];
 
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
-			user.settings.update(
-				UserSettings.Slayer.SuperiorCount,
-				oldSuperiorCount + newSuperiorCount
-			);
+			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
 		}
 
-		const quantitySlayed = isOnTask
-			? Math.min(usersTask.currentTask!.quantityRemaining, quantity)
-			: null;
+		const quantitySlayed = isOnTask ? Math.min(usersTask.currentTask!.quantityRemaining, quantity) : null;
 
 		const xpRes = await addMonsterXP(user, {
 			monsterID,
@@ -107,9 +88,7 @@ export default class extends Task {
 			cannonMulti
 		});
 
-		const superiorMessage = newSuperiorCount
-			? `, including **${newSuperiorCount} superiors**`
-			: '';
+		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
@@ -167,11 +146,11 @@ export default class extends Task {
 		}
 
 		if (gotBrock) {
-			str += `\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.`;
+			str += '\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.';
 		}
 
 		if (gotKlik) {
-			str += `\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.`;
+			str += '\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.';
 		}
 
 		if (bananas > 0) {
@@ -179,16 +158,13 @@ export default class extends Task {
 		}
 
 		if (abyssalBonus > 1) {
-			str += `\n\nOri has used the abyss to transmute you +25% bonus loot!`;
+			str += '\n\nOri has used the abyss to transmute you +25% bonus loot!';
 		}
 
 		announceLoot(this.client, user, monster, loot.bank);
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
-			user.settings.update(
-				UserSettings.Slayer.SuperiorCount,
-				oldSuperiorCount + newSuperiorCount
-			);
+			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
 		}
 
 		if (
@@ -221,20 +197,14 @@ export default class extends Task {
 				monsterID === Monsters.KrilTsutsaroth.id &&
 				usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
 					? quantitySlayed! * 2
-					: monsterID === Monsters.Kreearra.id &&
-					  usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
+					: monsterID === Monsters.Kreearra.id && usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
 					? quantitySlayed! * 4
 					: monsterID === Monsters.GrotesqueGuardians.id &&
-					  user.settings
-							.get(UserSettings.Slayer.SlayerUnlocks)
-							.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+					  user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.DoubleTrouble)
 					? quantitySlayed! * 2
 					: quantitySlayed!;
 
-			const quantityLeft = Math.max(
-				0,
-				usersTask.currentTask!.quantityRemaining - effectiveSlayed
-			);
+			const quantityLeft = Math.max(0, usersTask.currentTask!.quantityRemaining - effectiveSlayed);
 
 			const thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {

@@ -18,10 +18,10 @@ LIMIT 15;`
 		);
 
 		if (res.length === 0) {
-			return msg.channel.send(`No results found.`);
+			return msg.channel.send('No results found.');
 		}
 
-		const embed = new MessageEmbed().setTitle(`#1 BSO SOTW - Construction`).setDescription(
+		const embed = new MessageEmbed().setTitle('#1 BSO SOTW - Construction').setDescription(
 			res
 				.map((i: any, index: number) => {
 					const pos = index + 1;

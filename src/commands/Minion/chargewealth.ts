@@ -61,10 +61,7 @@ export default class extends BotCommand {
 
 		const maxTripLength = msg.author.maxTripLength(Activity.WealthCharging);
 
-		const max = Math.min(
-			amountHas / wealthInventorySize,
-			Math.floor(maxTripLength / invDuration)
-		);
+		const max = Math.min(amountHas / wealthInventorySize, Math.floor(maxTripLength / invDuration));
 		if (quantity === undefined) {
 			quantity = Math.floor(max);
 		}

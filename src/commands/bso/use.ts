@@ -12,12 +12,12 @@ const usables = [
 		run: async (msg: KlasaMessage) => {
 			const bits = msg.author.bitfield;
 			if (bits.includes(BitField.HasScrollOfFarming)) {
-				return msg.channel.send(`You have already unlocked the Scroll of farming.`);
+				return msg.channel.send('You have already unlocked the Scroll of farming.');
 			}
 			await msg.author.removeItemsFromBank(new Bank().add('Scroll of farming'));
 			await msg.author.settings.update(UserSettings.BitField, BitField.HasScrollOfFarming);
 			return msg.channel.send(
-				`You have used your Scroll of farming - you feel your Farming skills have improved and are now able to use more Farming patches.`
+				'You have used your Scroll of farming - you feel your Farming skills have improved and are now able to use more Farming patches.'
 			);
 		}
 	}
@@ -38,11 +38,11 @@ export default class extends BotCommand {
 		const firstItem = getOSItem(firstItemStr);
 		const usable = usables.find(u => u.item === firstItem);
 		if (!usable) {
-			return msg.channel.send(`That's not a usable item.`);
+			return msg.channel.send("That's not a usable item.");
 		}
 
 		if (!bank.has(firstItem.id)) {
-			return msg.channel.send(`You don't own this item.`);
+			return msg.channel.send("You don't own this item.");
 		}
 
 		return usable.run(msg);

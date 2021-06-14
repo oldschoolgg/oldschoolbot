@@ -19,15 +19,13 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		if (
 			msg.author.perkTier < PerkTier.Four &&
-			!msg.author.settings
-				.get(UserSettings.BitField)
-				.includes(BitField.HasPermanentEventBackgrounds)
+			!msg.author.settings.get(UserSettings.BitField).includes(BitField.HasPermanentEventBackgrounds)
 		) {
-			return msg.send(`You need to be a T3 patron or higher to use this command.`);
+			return msg.send('You need to be a T3 patron or higher to use this command.');
 		}
 
 		if (msg.author.id !== '157797566833098752' && msg.channel.id !== '732207379818479756') {
-			return msg.send(`You can only use this in the BSO channel.`);
+			return msg.send('You can only use this in the BSO channel.');
 		}
 		const item = randArrItem([
 			itemChallenge,

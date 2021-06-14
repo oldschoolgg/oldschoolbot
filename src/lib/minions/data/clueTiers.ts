@@ -1,11 +1,11 @@
 import { Clues } from 'oldschooljs';
 
-const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
-
 import { Time } from '../../constants';
 import { GrandmasterClueTable } from '../../simulation/grandmasterClue';
 import itemID from '../../util/itemID';
 import { ClueTier } from '../types';
+
+const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 
 const ClueTiers: ClueTier[] = [
 	{

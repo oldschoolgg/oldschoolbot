@@ -71,7 +71,7 @@ export default class extends Task {
 		// Roll for pet
 		if (ore.petChance && roll((ore.petChance - currentLevel * 25) / quantity)) {
 			loot.add('Rock golem');
-			str += `\nYou have a funny feeling you're being followed...`;
+			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Mining} **${user.username}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
@@ -97,7 +97,8 @@ export default class extends Task {
 			for (let i = 0; i < minutesInTrip; i++) {
 				if (roll(12_000)) {
 					loot.add('Doug');
-					str += `\n<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining.`;
+					str +=
+						"\n<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining.";
 					break;
 				}
 			}
@@ -114,13 +115,12 @@ export default class extends Task {
 
 		const hasKlik = user.equippedPet() === itemID('Klik');
 		if (hasKlik) {
-			const smeltedOre = Smithing.Bars.find(
-				o => o.inputOres[ore.id] && Object.keys(o.inputOres).length === 1
-			);
+			const smeltedOre = Smithing.Bars.find(o => o.inputOres[ore.id] && Object.keys(o.inputOres).length === 1);
 			if (smeltedOre) {
 				loot.remove(ore.id, loot.amount(ore.id));
 				loot.add(smeltedOre.id, quantity);
-				str += `\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and smelts all your ores!`;
+				str +=
+					'\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and smelts all your ores!';
 			}
 		}
 

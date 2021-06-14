@@ -24,9 +24,7 @@ export default class extends Argument {
 			const constructor = this.constructor as typeof Argument;
 			// If they mentioned someone, return their avatar.
 			const member = constructor.regex.userOrMember.test(arg)
-				? await msg
-						.guild!.members.fetch(constructor.regex.userOrMember.exec(arg)![1])
-						.catch(() => null)
+				? await msg.guild!.members.fetch(constructor.regex.userOrMember.exec(arg)![1]).catch(() => null)
 				: null;
 
 			if (member) {

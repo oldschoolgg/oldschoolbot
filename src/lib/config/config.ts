@@ -30,8 +30,7 @@ export const clientOptions: KlasaClientOptions = {
 	providers: providerConfig ?? undefined,
 	permissionLevels,
 	pieceDefaults: { commands: { deletable: true } },
-	readyMessage: (client: KlasaClient) =>
-		`[Old School Bot] Ready to serve ${client.guilds.cache.size} guilds.`,
+	readyMessage: (client: KlasaClient) => `[Old School Bot] Ready to serve ${client.guilds.cache.size} guilds.`,
 	partials: ['USER'],
 	production,
 	...customClientOptions

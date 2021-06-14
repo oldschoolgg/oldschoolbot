@@ -55,9 +55,7 @@ export class Mass {
 		if (this.customDenier) {
 			const [denied, reason] = await this.customDenier(this.leader);
 			if (denied) {
-				throw new Error(
-					`The mass couldn't start because the leader doesn't meet the requirements: ${reason}`
-				);
+				throw new Error(`The mass couldn't start because the leader doesn't meet the requirements: ${reason}`);
 			}
 		}
 		this.users.push(this.leader);
@@ -125,11 +123,7 @@ export class Mass {
 
 					case ReactionEmoji.Stop: {
 						if (user === this.leader) {
-							reject(
-								new Error(
-									`The leader (${this.leader.username}) cancelled this mass`
-								)
-							);
+							reject(new Error(`The leader (${this.leader.username}) cancelled this mass`));
 							collector.stop();
 						}
 						break;

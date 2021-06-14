@@ -4,17 +4,12 @@ import * as fs from 'fs';
 import { KlasaClient, KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..';
 import BankImageTask from '../../../tasks/bankImage';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { Gear } from '../../structures/Gear';
 import { toTitleCase } from '../../util';
-import {
-	canvasImageFromBuffer,
-	drawItemQuantityText,
-	drawTitleText,
-	fillTextXTimesInCtx
-} from '../../util/canvasUtil';
+import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
+import { GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
 
@@ -89,11 +84,7 @@ export async function generateGearImage(
 	const isTransparent = userBgID === 12;
 	if (!isTransparent) {
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		ctx.drawImage(
-			userBg,
-			(canvas.width - userBg.width) * 0.5,
-			(canvas.height - userBg.height) * 0.5
-		);
+		ctx.drawImage(userBg, (canvas.width - userBg.width) * 0.5, (canvas.height - userBg.height) * 0.5);
 		ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 		bankTask?.drawBorder(canvas, false);
 	}
@@ -109,15 +100,9 @@ export async function generateGearImage(
 	ctx.translate(225, 0);
 	ctx.font = '16px RuneScape Bold 12';
 	ctx.textAlign = 'start';
-	drawText(canvas, `Attack bonus`, 0, 25);
+	drawText(canvas, 'Attack bonus', 0, 25);
 	ctx.font = '16px OSRSFontCompact';
-	drawText(
-		canvas,
-		`Stab: ${gearStats.attack_stab}`,
-		0,
-		50,
-		maxOffenceStats.attack_stab === gearStats.attack_stab
-	);
+	drawText(canvas, `Stab: ${gearStats.attack_stab}`, 0, 50, maxOffenceStats.attack_stab === gearStats.attack_stab);
 	drawText(
 		canvas,
 		`Slash: ${gearStats.attack_slash}`,
@@ -151,15 +136,9 @@ export async function generateGearImage(
 	ctx.translate(canvas.width - bankTask.borderVertical!.width * 2, 0);
 	ctx.font = '16px RuneScape Bold 12';
 	ctx.textAlign = 'end';
-	drawText(canvas, `Defence bonus`, 0, 25);
+	drawText(canvas, 'Defence bonus', 0, 25);
 	ctx.font = '16px OSRSFontCompact';
-	drawText(
-		canvas,
-		`Stab: ${gearStats.defence_stab}`,
-		0,
-		50,
-		maxDefenceStats.defence_stab === gearStats.defence_stab
-	);
+	drawText(canvas, `Stab: ${gearStats.defence_stab}`, 0, 50, maxDefenceStats.defence_stab === gearStats.defence_stab);
 	drawText(
 		canvas,
 		`Slash: ${gearStats.defence_slash}`,

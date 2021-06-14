@@ -5,14 +5,7 @@ import { Time } from '../../../lib/constants';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	calcWhatPercent,
-	formatDuration,
-	itemID,
-	randomVariation,
-	reduceNumByPercent,
-	roll
-} from '../../../lib/util';
+import { calcWhatPercent, formatDuration, itemID, randomVariation, reduceNumByPercent, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -49,15 +42,13 @@ export default class extends Task {
 		await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP });
 		const nextLevel = user.skillLevel(SkillsEnum.Agility);
 
-		let str = `${user}, ${
-			user.minionName
-		} finished doing the Brimhaven Agility Arena for ${formatDuration(
+		let str = `${user}, ${user.minionName} finished doing the Brimhaven Agility Arena for ${formatDuration(
 			duration
 		)}, you received ${Math.floor(
 			agilityXP
 		).toLocaleString()} Agility XP and ${ticketsReceived} Agility arena tickets.${
 			user.usingPet('Flappy')
-				? ` \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.`
+				? ' \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.'
 				: ''
 		}`;
 
@@ -83,7 +74,7 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued trip of agility arena`);
+				user.log('continued trip of agility arena');
 				return this.client.commands.get('agilityarena')!.run(res, []);
 			},
 			undefined,

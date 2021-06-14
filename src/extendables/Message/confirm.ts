@@ -15,8 +15,7 @@ export default class extends Extendable {
 
 		try {
 			await this.channel.awaitMessages(
-				_msg =>
-					_msg.author.id === this.author.id && _msg.content.toLowerCase() === 'confirm',
+				_msg => _msg.author.id === this.author.id && _msg.content.toLowerCase() === 'confirm',
 				{
 					max: 1,
 					time: 20_000,
@@ -24,7 +23,7 @@ export default class extends Extendable {
 				}
 			);
 		} catch (err) {
-			sellMsg.edit(`User did not confirm in time.`);
+			sellMsg.edit('User did not confirm in time.');
 			throw 'User did not confirm in time.';
 		}
 	}

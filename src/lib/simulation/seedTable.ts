@@ -1,11 +1,7 @@
 import MasterFarmer from 'oldschooljs/dist/simulation/monsters/low/g-m/MasterFarmer';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import {
-	HighSeedPackTable,
-	LowSeedPackTable,
-	MediumSeedPackTable
-} from '../../commands/Minion/seedpack';
+import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../commands/Minion/seedpack';
 import CrystalChestTable from './crystalChest';
 
 export const SeedTable = new LootTable()

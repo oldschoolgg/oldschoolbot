@@ -16,11 +16,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [name, kc]: [string, number]) {
-		const mon = effectiveMonsters.find(m =>
-			m.aliases.some(alias => stringMatches(alias, name))
-		);
+		const mon = effectiveMonsters.find(m => m.aliases.some(alias => stringMatches(alias, name)));
 		if (!mon) {
-			return msg.channel.send(`Thats not a valid monster.`);
+			return msg.channel.send('Thats not a valid monster.');
 		}
 		const currentMonsterScores = { ...msg.author.settings.get(UserSettings.MonsterScores) };
 		currentMonsterScores[mon.id] = kc;

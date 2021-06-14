@@ -33,14 +33,9 @@ export default class extends BotCommand {
 		if (msg.flagArgs.items) {
 			const normalTable = table([
 				['Item Name', 'Lvl', 'XP', 'Items Required'],
-				...Fletching.Fletchables.map(i => [
-					i.name,
-					`${i.level}`,
-					`${i.xp}`,
-					`${i.inputItems}`
-				])
+				...Fletching.Fletchables.map(i => [i.name, `${i.level}`, `${i.xp}`, `${i.inputItems}`])
 			]);
-			return msg.channel.sendFile(Buffer.from(normalTable), `Fletchables.txt`);
+			return msg.channel.sendFile(Buffer.from(normalTable), 'Fletchables.txt');
 		}
 
 		if (typeof quantity === 'string') {
@@ -107,18 +102,18 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					fletchable.name
-				}s you can fletch is ${Math.floor(maxTripLength / timeToFletchSingleItem)}.`
+				)}, try a lower quantity. The highest amount of ${fletchable.name}s you can fletch is ${Math.floor(
+					maxTripLength / timeToFletchSingleItem
+				)}.`
 			);
 		}
 
 		const itemsNeeded = fletchable.inputItems.clone().multiply(quantity);
 		if (!userBank.has(itemsNeeded.bank)) {
 			return msg.send(
-				`You don't have enough items. For ${quantity}x ${
-					fletchable.name
-				}, you're missing **${itemsNeeded.clone().remove(userBank)}**.`
+				`You don't have enough items. For ${quantity}x ${fletchable.name}, you're missing **${itemsNeeded
+					.clone()
+					.remove(userBank)}**.`
 			);
 		}
 
@@ -136,9 +131,7 @@ export default class extends BotCommand {
 		return msg.send(
 			`${msg.author.minionName} is now Fletching ${quantity}${sets} ${
 				fletchable.name
-			}, it'll take around ${formatDuration(
-				duration
-			)} to finish. Removed ${itemsNeeded} from your bank. ${
+			}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank. ${
 				hasScruffy
 					? '\n<:scruffy:749945071146762301> To help out, Scruffy is fetching items from the bank for you - making your training much faster! Good boy.'
 					: ''

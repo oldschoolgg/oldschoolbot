@@ -64,10 +64,7 @@ export default class extends BotCommand {
 			itemCost: async user => new Bank().add('Coins', gpCostPerKill(user)),
 			mostImportantStat: 'attack_slash',
 			food: () => new Bank(),
-			settingsKeys: [
-				ClientSettings.EconomyStats.KingGoldemarCost,
-				ClientSettings.EconomyStats.KingGoldemarLoot
-			],
+			settingsKeys: [ClientSettings.EconomyStats.KingGoldemarCost, ClientSettings.EconomyStats.KingGoldemarLoot],
 			channel: msg.channel as TextChannel,
 			activity: Activity.KingGoldemar,
 			massText: `${msg.author.username} is assembling a team to fight King Goldemar! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,

@@ -22,7 +22,7 @@ export default class extends BotCommand {
 		}
 
 		await user.addItemsToBank(new Bank({ 'Beach mystery box': 1 }), true);
-		user.send(`You were given 1x Beach mystery box.`);
+		user.send('You were given 1x Beach mystery box.');
 		sendToChannelID(this.client, '665678499578904596', {
 			content: `${msg.author.username} gave a bmb to ${user.id}`
 		});

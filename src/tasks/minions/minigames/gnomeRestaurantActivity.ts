@@ -93,16 +93,13 @@ export default class extends Task {
 
 		let str = `<@${userID}>, ${minionName} finished completing ${quantity}x Gnome Restaurant deliveries.  You received **${loot}**. ${xpRes} ${
 			user.usingPet('Flappy')
-				? ` \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.`
+				? ' \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.'
 				: ''
 		}`;
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.GnomeRestaurantLootBank,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.GnomeRestaurantLootBank),
-				loot.bank
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.GnomeRestaurantLootBank), loot.bank])
 		);
 
 		handleTripFinish(
@@ -111,7 +108,7 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued gnome restaurant`);
+				user.log('continued gnome restaurant');
 				return this.client.commands.get('gnomerestaurant')!.run(res, []);
 			},
 			undefined,

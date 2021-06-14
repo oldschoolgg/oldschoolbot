@@ -198,8 +198,7 @@ export default class extends BotCommand {
 			usage: '[_mode:...string]',
 			aliases: ['as', 'slay'],
 			usageDelim: ' ',
-			description:
-				'Automatically chooses which monster to slay and sends your minion to kill it.',
+			description: 'Automatically chooses which monster to slay and sends your minion to kill it.',
 			examples: ['+autoslay', '+autoslay highest --save', '+autoslay default']
 		});
 	}
@@ -215,8 +214,7 @@ export default class extends BotCommand {
 			} else if (autoslayOptions.includes(AutoslayOptionsEnum.MaxEfficiency)) {
 				autoMsg = 'You will automatically kill the most efficient monster you can.';
 			} else {
-				autoMsg =
-					'You will automatically kill the default (lowest combat level) creatures you can.';
+				autoMsg = 'You will automatically kill the default (lowest combat level) creatures you can.';
 			}
 			return msg.channel.send(autoMsg);
 		}
@@ -224,14 +222,10 @@ export default class extends BotCommand {
 		const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
 
 		if (!isOnTask) {
-			return msg.channel.send(`You're not on a slayer task, so you can't autoslay!`);
+			return msg.channel.send("You're not on a slayer task, so you can't autoslay!");
 		}
 		// Determine method:
-		const method = determineAutoslayMethod(
-			msg,
-			_mode,
-			autoslayOptions as AutoslayOptionsEnum[]
-		);
+		const method = determineAutoslayMethod(msg, _mode, autoslayOptions as AutoslayOptionsEnum[]);
 
 		if (method === 'ehp') {
 			// Save as default is user --save's
@@ -250,18 +244,13 @@ export default class extends BotCommand {
 				if (ehpMonster.efficientMethod) msg.flagArgs[ehpMonster.efficientMethod] = 'yes';
 				return this.client.commands.get('k')?.run(msg, [null, ehpMonster.efficientName]);
 			}
-			return this.client.commands
-				.get('k')
-				?.run(msg, [null, usersTask.assignedTask!.monster.name]);
+			return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
 		}
 		if (method === 'boss') {
 			// This code handles the 'highest/boss' setting of autoslay.
 			const myQPs = await msg.author.settings.get(UserSettings.QP);
 
-			if (
-				msg.flagArgs.save &&
-				!autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked)
-			) {
+			if (msg.flagArgs.save && !autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked)) {
 				// Save highest as the default if 'highest' is toggled OFF.
 				await wipeDBArrayByKey(msg.author, UserSettings.Slayer.AutoslayOptions);
 				await msg.author.settings.update(
@@ -273,15 +262,14 @@ export default class extends BotCommand {
 				return usersTask.assignedTask!.monsters.includes(m.id);
 			});
 			if (allMonsters.length === 0)
-				return msg.channel.send(`Please report this error. No monster variations found.`);
+				return msg.channel.send('Please report this error. No monster variations found.');
 			let maxDiff = 0;
 			let maxMobName = '';
 			// Use difficultyRating for autoslay highest.
 			allMonsters.forEach(m => {
 				if (
 					m.difficultyRating > maxDiff &&
-					(m.levelRequirements === undefined ||
-						msg.author.hasSkillReqs(m.levelRequirements))
+					(m.levelRequirements === undefined || msg.author.hasSkillReqs(m.levelRequirements))
 				) {
 					if (m.qpRequired === undefined || m.qpRequired <= myQPs) {
 						maxDiff = m.difficultyRating;
@@ -292,19 +280,15 @@ export default class extends BotCommand {
 			if (maxMobName !== '') {
 				return this.client.commands.get('k')?.run(msg, [null, maxMobName]);
 			}
-			return msg.channel.send(`Can't find any monsters you have the requirements to kill!`);
+			return msg.channel.send("Can't find any monsters you have the requirements to kill!");
 		} else if (method === 'default') {
 			// This code handles the default option for autoslay:
 			if (msg.flagArgs.save && autoslayOptions.length) {
 				// Lowest / default = none
 				await wipeDBArrayByKey(msg.author, UserSettings.Slayer.AutoslayOptions);
 			}
-			return this.client.commands
-				.get('k')
-				?.run(msg, [null, usersTask.assignedTask!.monster.name]);
+			return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
 		}
-		return msg.channel.send(
-			`Unrecognized mode. Please use:\n\`${msg.cmdPrefix}as [default|highest|efficient]\``
-		);
+		return msg.channel.send(`Unrecognized mode. Please use:\n\`${msg.cmdPrefix}as [default|highest|efficient]\``);
 	}
 }

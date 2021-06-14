@@ -17,12 +17,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			categoryFlags: ['minion'],
 			aliases: ['gri'],
-			restrictedChannels: [
-				'342983479501389826',
-				'732207379818479756',
-				'792691343284764693',
-				'792692390778896424'
-			]
+			restrictedChannels: ['342983479501389826', '732207379818479756', '792691343284764693', '792692390778896424']
 		});
 	}
 
@@ -38,28 +33,25 @@ export default class extends BotCommand {
 
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'yes',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'yes',
 					options
 				);
 			} catch (err) {
-				return sellMsg.edit(`Cancelling.`);
+				return sellMsg.edit('Cancelling.');
 			}
 		}
 
 		await msg.author.settings.sync(true);
 		const bank = msg.author.bank();
 		const item = bank.random();
-		if (!item) return msg.send(`No items found.`);
+		if (!item) return msg.send('No items found.');
 		if (item.id >= 40_000 && item.id <= 45_000) {
 			return msg.send(`You can't give away your ${itemNameFromID(item.id)}!`);
 		}
-		if (!item) return msg.send(`You have no items!`);
+		if (!item) return msg.send('You have no items!');
 		await msg.author.removeItemFromBank(item.id, item.qty);
 		await user.addItemsToBank({ [item.id]: item.qty });
 
-		return msg.send(
-			`You gave ${item.qty.toLocaleString()}x ${itemNameFromID(item.id)} to ${user.username}.`
-		);
+		return msg.send(`You gave ${item.qty.toLocaleString()}x ${itemNameFromID(item.id)} to ${user.username}.`);
 	}
 }

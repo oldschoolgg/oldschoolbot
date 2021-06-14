@@ -19,8 +19,7 @@ export function calcLootXPHunting(
 		}
 		successful++;
 
-		xpReceived +=
-			creature.hunterXP + (creature.name === 'Herbiboar' ? 27 * (currentLevel - 80) : 0);
+		xpReceived += creature.hunterXP + (creature.name === 'Herbiboar' ? 27 * (currentLevel - 80) : 0);
 	}
 
 	return [successful, xpReceived, chanceOfSuccess];
@@ -28,11 +27,7 @@ export function calcLootXPHunting(
 
 export function calcBabyChinchompaChance(currentLevel: number, creature: Creature): number {
 	const baseRate =
-		creature.name === 'Chinchompa'
-			? 131395
-			: creature.name === 'Carnivorous chinchompa'
-			? 98373
-			: 82758;
+		creature.name === 'Chinchompa' ? 131395 : creature.name === 'Carnivorous chinchompa' ? 98373 : 82758;
 	return baseRate - currentLevel * 25;
 }
 

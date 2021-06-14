@@ -27,14 +27,11 @@ export async function triviaChallenge(msg: KlasaMessage): Promise<KlasaUser | nu
 	await msg.channel.send(embed);
 
 	try {
-		const collected = await msg.channel.awaitMessages(
-			_msg => stringMatches(_msg.content, correct_answer),
-			{
-				max: 1,
-				time: 14_000,
-				errors: ['time']
-			}
-		);
+		const collected = await msg.channel.awaitMessages(_msg => stringMatches(_msg.content, correct_answer), {
+			max: 1,
+			time: 14_000,
+			errors: ['time']
+		});
 
 		const winner = collected.first()?.author;
 		return winner ?? null;
@@ -58,14 +55,11 @@ export async function itemChallenge(msg: KlasaMessage): Promise<KlasaUser | null
 	await msg.channel.send(embed);
 
 	try {
-		const collected = await msg.channel.awaitMessages(
-			_msg => stringMatches(_msg.content, randomItem.name),
-			{
-				max: 1,
-				time: 14_000,
-				errors: ['time']
-			}
-		);
+		const collected = await msg.channel.awaitMessages(_msg => stringMatches(_msg.content, randomItem.name), {
+			max: 1,
+			time: 14_000,
+			errors: ['time']
+		});
 
 		const winner = collected.first()?.author;
 		return winner ?? null;
@@ -79,7 +73,7 @@ export async function reactChallenge(msg: KlasaMessage): Promise<KlasaUser | nul
 	const embed = new MessageEmbed()
 		.setColor(Color.Orange)
 		.setTitle('Answer this for a reward!')
-		.setDescription(`React to this message with any emoji for a reward!`);
+		.setDescription('React to this message with any emoji for a reward!');
 	const message = await msg.channel.send(embed);
 	try {
 		const collected = await message.awaitReactions(() => true, {
@@ -125,11 +119,7 @@ export default class extends Monitor {
 	}
 
 	async run(msg: KlasaMessage) {
-		if (
-			!msg.guild ||
-			msg.guild.id !== SupportServer ||
-			msg.channel.id !== '792691343284764693'
-		) {
+		if (!msg.guild || msg.guild.id !== SupportServer || msg.channel.id !== '792691343284764693') {
 			return;
 		}
 

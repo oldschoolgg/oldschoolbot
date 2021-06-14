@@ -24,10 +24,7 @@ export default class extends Task {
 		// Calculate failed laps
 		let lapsFailed = 0;
 		for (let t = 0; t < quantity; t++) {
-			if (
-				randInt(1, 100) >
-				(100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)
-			) {
+			if (randInt(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
 				lapsFailed += 1;
 			}
 		}
@@ -60,11 +57,7 @@ export default class extends Task {
 
 		await user.settings.update(
 			UserSettings.LapsScores,
-			addItemToBank(
-				user.settings.get(UserSettings.LapsScores),
-				course.id,
-				quantity - lapsFailed
-			)
+			addItemToBank(user.settings.get(UserSettings.LapsScores), course.id, quantity - lapsFailed)
 		);
 
 		let xpRes = await user.addXP({
@@ -96,7 +89,7 @@ export default class extends Task {
 		}.\n${xpRes}`;
 
 		if (user.usingPet('Harry')) {
-			str += `Harry found you extra Marks of grace.`;
+			str += 'Harry found you extra Marks of grace.';
 		}
 		if (course.id === 6) {
 			const currentLapCount = user.settings.get(UserSettings.LapsScores)[course.id];
@@ -114,7 +107,8 @@ export default class extends Task {
 				for (let i = 0; i < minutes; i++) {
 					if (roll(4000)) {
 						loot.add('Scruffy');
-						str += `\n\n<:scruffy:749945071146762301> As you jump off the rooftop in Varrock, a stray dog covered in flies approaches you. You decide to adopt the dog, and name him 'Scruffy'.`;
+						str +=
+							"\n\n<:scruffy:749945071146762301> As you jump off the rooftop in Varrock, a stray dog covered in flies approaches you. You decide to adopt the dog, and name him 'Scruffy'.";
 						break;
 					}
 				}
@@ -124,7 +118,8 @@ export default class extends Task {
 				for (let i = 0; i < minutes; i++) {
 					if (roll(1600)) {
 						loot.add('Harry');
-						str += `\n\n<:harry:749945071104819292> As you jump across a rooftop, you notice a monkey perched on the roof - which has escaped from the Ardougne Zoo! You decide to adopt the monkey, and call him Harry.`;
+						str +=
+							'\n\n<:harry:749945071104819292> As you jump across a rooftop, you notice a monkey perched on the roof - which has escaped from the Ardougne Zoo! You decide to adopt the monkey, and call him Harry.';
 						break;
 					}
 				}
@@ -134,19 +129,17 @@ export default class extends Task {
 				for (let i = 0; i < minutes; i++) {
 					if (roll(1600)) {
 						loot.add('Skipper');
-						str += `\n\n<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept.`;
+						str +=
+							"\n\n<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept.";
 						break;
 					}
 				}
 			}
 		}
 		// Roll for pet
-		if (
-			course.petChance &&
-			roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)
-		) {
+		if (course.petChance && roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)) {
 			loot.add('Giant squirrel');
-			str += `\nYou have a funny feeling you're being followed...`;
+			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`

@@ -8,12 +8,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { ActivityTaskOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	formatSkillRequirements,
-	skillsMeetRequirements,
-	stringMatches
-} from '../../lib/util';
+import { formatDuration, formatSkillRequirements, skillsMeetRequirements, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
@@ -201,42 +196,31 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.DungeoneeringTokens, balance - cost);
 		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
 
-		return msg.send(
-			`Successfully purchased 1x ${
-				item.name
-			} for ${cost.toLocaleString()} Dungeoneering tokens.`
-		);
+		return msg.send(`Successfully purchased 1x ${item.name} for ${cost.toLocaleString()} Dungeoneering tokens.`);
 	}
 
 	@minionNotBusy
 	@requiresMinion
 	async start(msg: KlasaMessage, [floor]: [number | string | undefined]) {
 		let floorToDo = Boolean(floor)
-			? (floor === 'solo' ? maxFloorUserCanDo(msg.author) : Number(floor)) ??
-			  maxFloorUserCanDo(msg.author)
+			? (floor === 'solo' ? maxFloorUserCanDo(msg.author) : Number(floor)) ?? maxFloorUserCanDo(msg.author)
 			: maxFloorUserCanDo(msg.author);
 		const isSolo = floor === 'solo';
 		if (isSolo) floorToDo = maxFloorUserCanDo(msg.author);
 
 		if (!isValidFloor(floorToDo)) {
-			return msg.channel.send(`That's an invalid floor.`);
+			return msg.channel.send("That's an invalid floor.");
 		}
 
 		if (determineDgLevelForFloor(floorToDo) > msg.author.skillLevel(SkillsEnum.Dungeoneering)) {
-			return msg.channel.send(
-				`You need level ${determineDgLevelForFloor(floorToDo)} to do Floor ${floorToDo}.`
-			);
+			return msg.channel.send(`You need level ${determineDgLevelForFloor(floorToDo)} to do Floor ${floorToDo}.`);
 		}
 
 		const dungeonLength = Time.Minute * 5 * (floorToDo / 2) * 1;
-		const quantity = Math.floor(
-			msg.author.maxTripLength(Activity.Dungeoneering) / dungeonLength
-		);
+		const quantity = Math.floor(msg.author.maxTripLength(Activity.Dungeoneering) / dungeonLength);
 		let duration = quantity * dungeonLength;
 
-		let message = `${
-			msg.author.username
-		} has created a Dungeoneering party! Anyone can click the ${
+		let message = `${msg.author.username} has created a Dungeoneering party! Anyone can click the ${
 			Emoji.Join
 		} reaction to join, click it again to leave.
 
@@ -326,19 +310,19 @@ export default class extends BotCommand {
 
 		if (users.length === 1) {
 			duration = increaseNumByPercent(duration, 20);
-			boosts.push(`-20% for not having a team`);
+			boosts.push('-20% for not having a team');
 		} else if (users.length === 2) {
 			duration = increaseNumByPercent(duration, 15);
-			boosts.push(`-15% for having a small team`);
+			boosts.push('-15% for having a small team');
 		}
 
 		let str = `${partyOptions.leader.username}'s dungeoneering party (${users
 			.map(u => u.username)
 			.join(', ')}) is now off to do ${quantity}x dungeons of the ${formatOrdinal(
 			floorToDo
-		)} floor. Each dungeon takes ${formatDuration(
-			dungeonLength
-		)} - the total trip will take ${formatDuration(duration)}.`;
+		)} floor. Each dungeon takes ${formatDuration(dungeonLength)} - the total trip will take ${formatDuration(
+			duration
+		)}.`;
 
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

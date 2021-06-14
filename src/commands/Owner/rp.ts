@@ -22,10 +22,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(
-		msg: KlasaMessage,
-		[cmd, input, str]: [string, KlasaUser | undefined, string | undefined]
-	) {
+	async run(msg: KlasaMessage, [cmd, input, str]: [string, KlasaUser | undefined, string | undefined]) {
 		if (msg.guild!.id !== '342983479501389826') return null;
 
 		const isMod = msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator);
@@ -41,19 +38,13 @@ export default class extends BotCommand {
 			case 'bypassage': {
 				if (!input) return;
 				await input.settings.sync(true);
-				if (
-					input.settings
-						.get(UserSettings.BitField)
-						.includes(BitField.BypassAgeRestriction)
-				) {
-					return msg.send(`This user is already bypassed.`);
+				if (input.settings.get(UserSettings.BitField).includes(BitField.BypassAgeRestriction)) {
+					return msg.send('This user is already bypassed.');
 				}
 				await input.settings.update(UserSettings.BitField, BitField.BypassAgeRestriction, {
 					arrayAction: 'add'
 				});
-				return msg.send(
-					`${Emoji.RottenPotato} Bypassed age restriction for ${input.username}.`
-				);
+				return msg.send(`${Emoji.RottenPotato} Bypassed age restriction for ${input.username}.`);
 			}
 			case 'gptrack': {
 				return msg.channel.send(`
@@ -87,14 +78,10 @@ export default class extends BotCommand {
 					where: { userID: msg.author.id },
 					take: 10
 				});
-				const lastTasksStr = lastTasks
-					.map(i => (i.completed ? i.type : `*${i.type}*`))
-					.join(', ');
+				const lastTasksStr = lastTasks.map(i => (i.completed ? i.type : `*${i.type}*`)).join(', ');
 
 				const userBadges = input.settings.get(UserSettings.Badges).map(i => badges[i]);
-				const isBlacklisted = this.client.settings
-					.get(ClientSettings.UserBlacklist)
-					.includes(input.id);
+				const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(input.id);
 				return msg.send(
 					`**${input.username}**
 **Bitfields:** ${bitfields}
@@ -112,7 +99,7 @@ export default class extends BotCommand {
 			case 'patreon': {
 				msg.channel.send('Running patreon task...');
 				await this.client.tasks.get('patreon')?.run();
-				return msg.channel.send(`Finished syncing patrons.`);
+				return msg.channel.send('Finished syncing patrons.');
 			}
 			case 'roles': {
 				msg.channel.send('Running roles task...');
@@ -135,23 +122,19 @@ export default class extends BotCommand {
 					.then(res => res.json())
 					.catch(() => null);
 				if (!res || !res.id) {
-					return msg.send(
-						`Could not find user in github API. Is the username written properly?`
-					);
+					return msg.send('Could not find user in github API. Is the username written properly?');
 				}
 				const alreadyHasName = await this.client.query<{ github_id: string }[]>(
 					`SELECT github_id FROM users WHERE github_id = '${res.id}'`
 				);
 				if (alreadyHasName.length > 0) {
-					return msg.send(`Someone already has this Github account connected.`);
+					return msg.send('Someone already has this Github account connected.');
 				}
 				await input.settings.update(UserSettings.GithubID, parseInt(res.id));
 				if (!msg.flagArgs.nosync) {
 					await (this.client.tasks.get('patreon') as PatreonTask).syncGithub();
 				}
-				return msg.send(
-					`Set ${res.login}[${res.id}] as ${input.username}'s Github account.`
-				);
+				return msg.send(`Set ${res.login}[${res.id}] as ${input.username}'s Github account.`);
 			}
 			case 'giveperm': {
 				if (!input) return;
@@ -187,19 +170,19 @@ export default class extends BotCommand {
 					[7, 8].includes(bit) ||
 					(action !== 'add' && action !== 'remove')
 				) {
-					return msg.send(`Invalid bitfield.`);
+					return msg.send('Invalid bitfield.');
 				}
 
 				let newBits = [...input.settings.get(UserSettings.BitField)];
 
 				if (action === 'add') {
 					if (newBits.includes(bit)) {
-						return msg.send(`Already has this bit, so can't add.`);
+						return msg.send("Already has this bit, so can't add.");
 					}
 					newBits.push(bit);
 				} else {
 					if (!newBits.includes(bit)) {
-						return msg.send(`Doesn't have this bit, so can't remove.`);
+						return msg.send("Doesn't have this bit, so can't remove.");
 					}
 					newBits = newBits.filter(i => i !== bit);
 				}
@@ -209,9 +192,9 @@ export default class extends BotCommand {
 				});
 
 				return msg.channel.send(
-					`${action === 'add' ? 'Added' : 'Removed'} '${
-						(BitFieldData as any)[bit].name
-					}' bit to ${input.username}.`
+					`${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData as any)[bit].name}' bit to ${
+						input.username
+					}.`
 				);
 			}
 
@@ -230,19 +213,19 @@ export default class extends BotCommand {
 				const badge = Number(_badge);
 
 				if (!badgesKeys.includes(_badge) || (action !== 'add' && action !== 'remove')) {
-					return msg.send(`Invalid badge.`);
+					return msg.send('Invalid badge.');
 				}
 
 				let newBadges = [...input.settings.get(UserSettings.Badges)];
 
 				if (action === 'add') {
 					if (newBadges.includes(badge)) {
-						return msg.send(`Already has this badge, so can't add.`);
+						return msg.send("Already has this badge, so can't add.");
 					}
 					newBadges.push(badge);
 				} else {
 					if (!newBadges.includes(badge)) {
-						return msg.send(`Doesn't have this badge, so can't remove.`);
+						return msg.send("Doesn't have this badge, so can't remove.");
 					}
 					newBadges = newBadges.filter(i => i !== badge);
 				}
@@ -252,9 +235,7 @@ export default class extends BotCommand {
 				});
 
 				return msg.channel.send(
-					`${action === 'add' ? 'Added' : 'Removed'} ${badges[badge]} badge to ${
-						input.username
-					}.`
+					`${action === 'add' ? 'Added' : 'Removed'} ${badges[badge]} badge to ${input.username}.`
 				);
 			}
 
@@ -285,9 +266,7 @@ LIMIT 10;
 		// Owner commands
 		switch (cmd.toLowerCase()) {
 			case 'debugpatreon': {
-				const result = await (this.client.tasks.get(
-					'patreon'
-				) as PatreonTask).fetchPatrons();
+				const result = await (this.client.tasks.get('patreon') as PatreonTask).fetchPatrons();
 				return msg.sendLarge(JSON.stringify(result, null, 4));
 			}
 		}

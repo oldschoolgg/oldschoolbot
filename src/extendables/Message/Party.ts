@@ -78,11 +78,9 @@ async function _setup(
 						reaction.users.remove(user);
 					}
 
-					return ([
-						ReactionEmoji.Join,
-						ReactionEmoji.Stop,
-						ReactionEmoji.Start
-					] as string[]).includes(reaction.emoji.id);
+					return ([ReactionEmoji.Join, ReactionEmoji.Stop, ReactionEmoji.Start] as string[]).includes(
+						reaction.emoji.id
+					);
 				},
 				{
 					time: 120_000,
@@ -99,7 +97,7 @@ async function _setup(
 
 			function startTrip() {
 				if (usersWhoConfirmed.length < options.minSize) {
-					reject(`Not enough people joined your mass!`);
+					reject('Not enough people joined your mass!');
 					return;
 				}
 

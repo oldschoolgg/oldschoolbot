@@ -57,7 +57,8 @@ export default class extends Task {
 			if (user.settings.get(UserSettings.QP) > 10) {
 				for (let i = 0; i < numMinutes; i++) {
 					if (roll(6500)) {
-						str += `\n\n<:zak:751035589952012298> While Smelting ores on Neitiznot, a Yak approaches you and says "Moooo". and is now following you around. You decide to name him 'Zak'.`;
+						str +=
+							'\n\n<:zak:751035589952012298> While Smelting ores on Neitiznot, a Yak approaches you and says "Moooo". and is now following you around. You decide to name him \'Zak\'.';
 						loot.add('Zak');
 						break;
 					}

@@ -35,13 +35,7 @@ export default class extends Task {
 
 		// Add clue scrolls
 		if (log.clueScrollChance) {
-			addSkillingClueToLoot(
-				user,
-				SkillsEnum.Woodcutting,
-				quantity,
-				log.clueScrollChance,
-				loot
-			);
+			addSkillingClueToLoot(user, SkillsEnum.Woodcutting, quantity, log.clueScrollChance, loot);
 		}
 
 		let str = `${user}, ${user.minionName} finished woodcutting, you received ${loot}. ${xpRes}`;
@@ -50,17 +44,15 @@ export default class extends Task {
 			const minutes = duration / Time.Minute;
 			if (roll(Math.floor(4000 / minutes))) {
 				loot.add('Peky');
-				str += `<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.`;
+				str +=
+					'<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.';
 			}
 		}
 
 		// Roll for pet
-		if (
-			log.petChance &&
-			roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)
-		) {
+		if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
 			loot.add('Beaver');
-			str += `\nYou have a funny feeling you're being followed...`;
+			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Woodcutting} **${user.username}'s** minion, ${

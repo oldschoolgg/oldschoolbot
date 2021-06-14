@@ -4175,22 +4175,22 @@ const Createables: Createable[] = [
 		})
 	},
 	{
-		name: `Zamorak's grapes`,
+		name: "Zamorak's grapes",
 		inputItems: resolveNameBank({
 			Grapes: 1,
 			"Bologa's blessing": 1
 		}),
 		outputItems: {
-			[itemID(`Zamorak's grapes`)]: 1
+			[itemID("Zamorak's grapes")]: 1
 		}
 	},
 	{
-		name: `Toad's legs`,
+		name: "Toad's legs",
 		inputItems: resolveNameBank({
 			'Swamp toad': 1
 		}),
 		outputItems: {
-			[itemID(`Toad's legs`)]: 1
+			[itemID("Toad's legs")]: 1
 		}
 	},
 	{
@@ -4263,7 +4263,7 @@ const Createables: Createable[] = [
 	...ornamentKits,
 	...hunterClothing,
 	{
-		name: `Frozen key`,
+		name: 'Frozen key',
 		inputItems: resolveNameBank({
 			'Key piece 1': 1,
 			'Key piece 2': 1,
@@ -4271,16 +4271,16 @@ const Createables: Createable[] = [
 			'Key piece 4': 1
 		}),
 		outputItems: {
-			[itemID(`Frozen key`)]: 1
+			[itemID('Frozen key')]: 1
 		}
 	},
 	{
-		name: `Vasa cloak`,
+		name: 'Vasa cloak',
 		inputItems: resolveNameBank({
 			'Tattered robes of Vasa': 1
 		}),
 		outputItems: {
-			[itemID(`Vasa cloak`)]: 1
+			[itemID('Vasa cloak')]: 1
 		},
 		requiredSkills: {
 			crafting: 105,
@@ -4289,13 +4289,13 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: `Bryophyta's staff(i)`,
+		name: "Bryophyta's staff(i)",
 		inputItems: resolveNameBank({
 			"Bryophyta's staff": 1,
 			'Magus scroll': 1
 		}),
 		outputItems: {
-			[itemID(`Bryophyta's staff(i)`)]: 1
+			[itemID("Bryophyta's staff(i)")]: 1
 		},
 		requiredSkills: {
 			crafting: 105,

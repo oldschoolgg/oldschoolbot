@@ -91,9 +91,7 @@ export default class extends Task {
 				isImportantItemForMonster(parseInt(itemID), NightmareMonster)
 			);
 
-			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(
-				loot
-			)}||\n`;
+			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
 
 			announceLoot(this.client, leaderUser, NightmareMonster, loot, {
 				leader: leaderUser,
@@ -123,19 +121,12 @@ export default class extends Task {
 		} else {
 			const { image } = await this.client.tasks
 				.get('bankImage')!
-				.generateBankImage(
-					teamsLoot[userID],
-					`${quantity}x Nightmare`,
-					true,
-					{ showNewCL: 1 },
-					leaderUser
-				);
+				.generateBankImage(teamsLoot[userID], `${quantity}x Nightmare`, true, { showNewCL: 1 }, leaderUser);
 			sendToChannelID(this.client, channelID, {
 				content: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 					NightmareMonster.name
 				}, you died ${deaths[userID] ?? 0} times. Your Nightmare KC is now ${
-					(leaderUser.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ??
-						0) + quantity
+					(leaderUser.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 0) + quantity
 				}.`,
 				image: image!
 			});

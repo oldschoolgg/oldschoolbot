@@ -3,9 +3,7 @@ import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
-import KingGoldemar, {
-	KingGoldemarLootTable
-} from '../../../lib/minions/data/killableMonsters/custom/KingGoldemar';
+import KingGoldemar, { KingGoldemarLootTable } from '../../../lib/minions/data/killableMonsters/custom/KingGoldemar';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { calcDwwhChance, gpCostPerKill } from '../../../lib/structures/Boss';
@@ -56,7 +54,7 @@ export default class extends Task {
 		const killStr =
 			gotDWWH && dwwhRecipient
 				? `${dwwhRecipient?.username} delivers a crushing blow to King Goldemars warhammer, breaking it. The king has no choice but to flee the chambers, **leaving behind his broken hammer.**`
-				: `Your team brought King Goldemar to a very weak state, he fled the chambers before he could be killed and escaped through a secret exit, promising to get revenge on you.`;
+				: 'Your team brought King Goldemar to a very weak state, he fled the chambers before he could be killed and escaped through a secret exit, promising to get revenge on you.';
 
 		let resultStr = `${tagAll}\n\n${killStr}\n\n${Emoji.Casket} **Loot:**`;
 
@@ -96,9 +94,7 @@ export default class extends Task {
 		if (1 > 2) {
 			resultStr += `\n\nAt this rate, it will take approximately ${dwwhChance} trips (${formatDuration(
 				dwwhChance * duration
-			)}) to receive a DWWH, costing ${toKMB(
-				dwwhChance * gpCostPerKill(users[0])
-			)} GP. 1 in ${dwwhChance}`;
+			)}) to receive a DWWH, costing ${toKMB(dwwhChance * gpCostPerKill(users[0]))} GP. 1 in ${dwwhChance}`;
 		}
 
 		sendToChannelID(this.client, channelID, { content: resultStr });

@@ -26,11 +26,7 @@ import {
 	saveCtx,
 	sha256Hash
 } from '../lib/util';
-import {
-	canvasImageFromBuffer,
-	canvasToBufferAsync,
-	fillTextXTimesInCtx
-} from '../lib/util/canvasUtil';
+import { canvasImageFromBuffer, canvasToBufferAsync, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -100,18 +96,12 @@ export default class BankImageTask extends Task {
 				...img,
 				image: await canvasImageFromBuffer(
 					fs.readFileSync(
-						`./src/lib/resources/images/bank_backgrounds/${img.id}.${
-							img.transparent ? 'png' : 'jpg'
-						}`
+						`./src/lib/resources/images/bank_backgrounds/${img.id}.${img.transparent ? 'png' : 'jpg'}`
 					)
 				),
-				repeatImage: fs.existsSync(
-					`./src/lib/resources/images/bank_backgrounds/r${img.id}.jpg`
-				)
+				repeatImage: fs.existsSync(`./src/lib/resources/images/bank_backgrounds/r${img.id}.jpg`)
 					? await canvasImageFromBuffer(
-							fs.readFileSync(
-								`./src/lib/resources/images/bank_backgrounds/r${img.id}.jpg`
-							)
+							fs.readFileSync(`./src/lib/resources/images/bank_backgrounds/r${img.id}.jpg`)
 					  )
 					: null
 			}))
@@ -126,13 +116,9 @@ export default class BankImageTask extends Task {
 		this.borderVertical = await canvasImageFromBuffer(
 			fs.readFileSync('./src/lib/resources/images/bank_border_v.png')
 		);
-		this.imageHamstare = await canvasImageFromBuffer(
-			fs.readFileSync('./src/lib/resources/images/hamstare.png')
-		);
+		this.imageHamstare = await canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/hamstare.png'));
 
-		this.imageHamstare2 = await canvasImageFromBuffer(
-			fs.readFileSync('./src/lib/resources/images/hamstare2.png')
-		);
+		this.imageHamstare2 = await canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/hamstare2.png'));
 	}
 
 	async cacheFiles() {
@@ -173,9 +159,9 @@ export default class BankImageTask extends Task {
 	}
 
 	async fetchAndCacheImage(itemID: number) {
-		const imageBuffer = await fetch(
-			`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`
-		).then(result => result.buffer());
+		const imageBuffer = await fetch(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`).then(
+			result => result.buffer()
+		);
 
 		await fs.promises.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
 
@@ -262,13 +248,7 @@ export default class BankImageTask extends Task {
 			wide ? this.borderVertical?.width! : canvas.width / 2 - ham.width! / 2,
 			canvas.height - ham.height! - this.borderHorizontal?.height!
 		);
-		ctx.drawImage(
-			ham,
-			0,
-			0,
-			wide ? canvas.width - this.borderVertical?.width! * 2 : ham.width!,
-			ham.height!
-		);
+		ctx.drawImage(ham, 0, 0, wide ? canvas.width - this.borderVertical?.width! * 2 : ham.width!, ham.height!);
 		ctx.restore();
 	}
 
@@ -285,24 +265,18 @@ export default class BankImageTask extends Task {
 		const spacer = compact ? 2 : 12;
 
 		const settings =
-			typeof user === 'undefined'
-				? null
-				: typeof user === 'string'
-				? await getUserSettings(user)
-				: user.settings;
+			typeof user === 'undefined' ? null : typeof user === 'string' ? await getUserSettings(user) : user.settings;
 
 		const favorites = settings?.get(UserSettings.FavoriteItems);
 
-		const bankBackgroundID =
-			settings?.get(UserSettings.BankBackground) ?? flags.background ?? 1;
+		const bankBackgroundID = settings?.get(UserSettings.BankBackground) ?? flags.background ?? 1;
 		const currentCL = collectionLog ?? settings?.get(UserSettings.CollectionLogBank);
 		let partial = false;
 
 		// Filtering
 		const searchQuery = flags.search as string | undefined;
 		const filter = flags.filter
-			? filterableTypes.find(type => type.aliases.some(alias => flags.filter === alias)) ??
-			  null
+			? filterableTypes.find(type => type.aliases.some(alias => flags.filter === alias)) ?? null
 			: null;
 		if (filter || searchQuery) {
 			partial = true;
@@ -351,17 +325,12 @@ export default class BankImageTask extends Task {
 
 		const itemWidthSize = compact ? 12 + 21 : 36 + 21;
 
-		let width = wide
-			? 5 + this.borderVertical!.width + 20 + ceil(Math.sqrt(items.length)) * itemWidthSize
-			: 488;
+		let width = wide ? 5 + this.borderVertical!.width + 20 + ceil(Math.sqrt(items.length)) * itemWidthSize : 488;
 		if (width < 488) width = 488;
 		const itemsPerRow = floor((width - this.borderVertical!.width * 2) / itemWidthSize);
 		const canvasHeight =
 			floor(
-				floor(
-					ceil(items.length / itemsPerRow) *
-						floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08))
-				) +
+				floor(ceil(items.length / itemsPerRow) * floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08))) +
 					itemSize * 1.5
 			) - 2;
 
@@ -372,9 +341,7 @@ export default class BankImageTask extends Task {
 			bankBackgroundID === 14 &&
 			flags.showNewCL !== undefined &&
 			currentCL !== undefined &&
-			Object.keys(bank.bank).some(
-				i => !currentCL[i] && allCollectionLogItems.includes(parseInt(i))
-			);
+			Object.keys(bank.bank).some(i => !currentCL[i] && allCollectionLogItems.includes(parseInt(i)));
 
 		if (isPurple) {
 			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
@@ -409,10 +376,7 @@ export default class BankImageTask extends Task {
 			};
 		}
 
-		const canvas = createCanvas(
-			width,
-			bankBackgroundID === 1 ? canvasHeight : Math.max(331, canvasHeight)
-		);
+		const canvas = createCanvas(width, bankBackgroundID === 1 ? canvasHeight : Math.max(331, canvasHeight));
 
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
@@ -471,17 +435,12 @@ export default class BankImageTask extends Task {
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
 		for (let i = 0; i < items.length; i++) {
-			if (i % itemsPerRow === 0)
-				yLoc += floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08));
+			if (i % itemsPerRow === 0) yLoc += floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08));
 			// For some reason, it starts drawing at -2 so we compensate that
 			// Adds the border width
 			// Adds distance from side
 			// 36 + 21 is the itemLength + the space between each item
-			xLoc =
-				2 +
-				this.borderVertical!.width +
-				(compact ? 9 : 20) +
-				(i % itemsPerRow) * itemWidthSize;
+			xLoc = 2 + this.borderVertical!.width + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			const [item, quantity] = items[i];
 			const itemImage = await this.getItemImage(item.id, quantity).catch(() => {
 				console.error(`Failed to load item image for item with id: ${item.id}`);
@@ -504,30 +463,17 @@ export default class BankImageTask extends Task {
 
 			// Check if new cl item
 			const isNewCLItem =
-				flags.showNewCL &&
-				currentCL &&
-				!currentCL[item.id] &&
-				allCollectionLogItems.includes(item.id);
+				flags.showNewCL && currentCL && !currentCL[item.id] && allCollectionLogItems.includes(item.id);
 			const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
 			const formattedQuantity = formatItemStackQuantity(quantity);
 
 			// Draw qty shadow
 			ctx.fillStyle = '#000000';
-			fillTextXTimesInCtx(
-				ctx,
-				formattedQuantity,
-				xLoc + distanceFromSide - 17,
-				yLoc + distanceFromTop - 23
-			);
+			fillTextXTimesInCtx(ctx, formattedQuantity, xLoc + distanceFromSide - 17, yLoc + distanceFromTop - 23);
 
 			// Draw qty
 			ctx.fillStyle = quantityColor;
-			fillTextXTimesInCtx(
-				ctx,
-				formattedQuantity,
-				xLoc + distanceFromSide - 18,
-				yLoc + distanceFromTop - 24
-			);
+			fillTextXTimesInCtx(ctx, formattedQuantity, xLoc + distanceFromSide - 18, yLoc + distanceFromTop - 24);
 
 			let bottomItemText: string | number | null = null;
 
@@ -548,13 +494,10 @@ export default class BankImageTask extends Task {
 
 			if (bottomItemText) {
 				ctx.fillStyle = 'black';
-				let text =
-					typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText;
+				let text = typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText;
 				fillTextXTimesInCtx(ctx, text, floor(xLoc), yLoc + distanceFromTop);
 				ctx.fillStyle =
-					typeof bottomItemText === 'string'
-						? 'white'
-						: generateHexColorForCashStack(bottomItemText);
+					typeof bottomItemText === 'string' ? 'white' : generateHexColorForCashStack(bottomItemText);
 				fillTextXTimesInCtx(ctx, text, floor(xLoc - 1), yLoc + distanceFromTop - 1);
 			}
 		}
@@ -573,11 +516,7 @@ export default class BankImageTask extends Task {
 		};
 	}
 
-	async generateCollectionLogImage(
-		collectionLog: ItemBank,
-		title = '',
-		type: any
-	): Promise<Buffer> {
+	async generateCollectionLogImage(collectionLog: ItemBank, title = '', type: any): Promise<Buffer> {
 		const spacer = 12;
 		const canvas = createCanvas(488, 331);
 		const ctx = canvas.getContext('2d');
@@ -637,20 +576,12 @@ export default class BankImageTask extends Task {
 			if (hasItem) {
 				ctx.fillStyle = '#000000';
 				for (let t = 0; t < 5; t++) {
-					ctx.fillText(
-						formattedQuantity,
-						x + distanceFromSide - 18 + 1,
-						y + distanceFromTop - 24 + 1
-					);
+					ctx.fillText(formattedQuantity, x + distanceFromSide - 18 + 1, y + distanceFromTop - 24 + 1);
 				}
 
 				ctx.fillStyle = completed ? '#55fa6c' : quantityColor;
 				for (let t = 0; t < 5; t++) {
-					ctx.fillText(
-						formattedQuantity,
-						x + distanceFromSide - 18,
-						y + distanceFromTop - 24
-					);
+					ctx.fillText(formattedQuantity, x + distanceFromSide - 18, y + distanceFromTop - 24);
 				}
 			}
 

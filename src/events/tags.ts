@@ -17,11 +17,7 @@ export default class TagHandler extends Event {
 		// tslint:disable-next-line
 		if (this.client.options.typing) message.channel.startTyping();
 		try {
-			if (
-				!message.guild ||
-				message.guild.id !== SupportServer ||
-				message.channel.id !== Channel.SupportChannel
-			) {
+			if (!message.guild || message.guild.id !== SupportServer || message.channel.id !== Channel.SupportChannel) {
 				await this.client.inhibitors.run(message, tagCommand);
 			}
 
@@ -31,13 +27,7 @@ export default class TagHandler extends Event {
 				const response = (await commandRun) as KlasaMessage | KlasaMessage[];
 				// tslint:disable-next-line
 				this.client.finalizers.run(message, tagCommand, response, timer);
-				this.client.emit(
-					'commandSuccess',
-					message,
-					tagCommand,
-					['show', command],
-					response
-				);
+				this.client.emit('commandSuccess', message, tagCommand, ['show', command], response);
 			} catch (error) {
 				this.client.emit('commandError', message, tagCommand, ['show', command], error);
 			}

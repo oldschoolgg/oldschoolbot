@@ -48,9 +48,7 @@ export default class extends Task {
 					leapingSalmon += 1;
 					agilityXpReceived += 6;
 					strengthXpReceived += 6;
-				} else if (
-					roll(255 / (32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing))))
-				) {
+				} else if (roll(255 / (32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing))))) {
 					xpReceived += 50;
 					leapingTrout += 1;
 					agilityXpReceived += 5;
@@ -119,7 +117,8 @@ export default class extends Task {
 			if (cookedFish) {
 				loot.remove(fish.id, quantity);
 				loot.add(cookedFish.id, quantity);
-				str += `\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and cooks all your fish!`;
+				str +=
+					'\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and cooks all your fish!';
 			}
 		}
 
@@ -145,12 +144,9 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		if (
-			fish.petChance &&
-			roll((fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25) / quantity)
-		) {
+		if (fish.petChance && roll((fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25) / quantity)) {
 			loot.add('Heron');
-			str += `\nYou have a funny feeling you're being followed...`;
+			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Fishing} **${user.username}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${currentLevel} Fishing!`
@@ -170,7 +166,8 @@ export default class extends Task {
 			for (let i = 0; i < minutesInTrip; i++) {
 				if (roll(8000)) {
 					loot.add('Shelldon');
-					str += `\n<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called Sheldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!`;
+					str +=
+						'\n<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called Sheldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!';
 					break;
 				}
 			}

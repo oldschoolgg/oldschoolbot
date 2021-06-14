@@ -34,7 +34,7 @@ export default class extends Task {
 		});
 		let str = `${user}, ${user.minionName} finished smithing, you received ${loot}. ${xpRes}`;
 		if (hasBS) {
-			str += `\n**10%** Bonus XP For Blacksmith Outfit`;
+			str += '\n**10%** Bonus XP For Blacksmith Outfit';
 		}
 
 		await user.addItemsToBank(loot, true);

@@ -28,9 +28,7 @@ export default class extends Task {
 			const userWhoGetsLoot = randomItemFromArray(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = loot.add(currentLoot);
-			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot])
-				? ++kcAmounts[userWhoGetsLoot]
-				: 1;
+			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot]) ? ++kcAmounts[userWhoGetsLoot] : 1;
 		}
 
 		const leaderUser = await this.client.users.fetch(leader);
@@ -52,18 +50,13 @@ export default class extends Task {
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
 			if (user.equippedPet() === itemID('Ori')) {
-				loot.bank = addBanks([
-					monster.table.kill(Math.ceil(kcToAdd * 0.25), {}).bank ?? {},
-					loot.bank
-				]);
+				loot.bank = addBanks([monster.table.kill(Math.ceil(kcToAdd * 0.25), {}).bank ?? {}, loot.bank]);
 			}
 			await user.addItemsToBank(loot, true);
 			totalLoot.add(loot);
 
 			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
-			const purple = Object.keys(loot).some(itemID =>
-				isImportantItemForMonster(parseInt(itemID), monster)
-			);
+			const purple = Object.keys(loot).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;
 
@@ -79,15 +72,6 @@ export default class extends Task {
 			resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
 		}
 
-		handleTripFinish(
-			this.client,
-			leaderUser,
-			channelID,
-			resultStr,
-			undefined,
-			undefined,
-			data,
-			totalLoot.bank
-		);
+		handleTripFinish(this.client, leaderUser, channelID, resultStr, undefined, undefined, data, totalLoot.bank);
 	}
 }

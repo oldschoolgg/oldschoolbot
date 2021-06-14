@@ -4,10 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
 import { bossKillables } from '../../../lib/minions/data/killableMonsters/bosses';
-import {
-	VasaMagus,
-	VasaMagusLootTable
-} from '../../../lib/minions/data/killableMonsters/custom/VasaMagus';
+import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killableMonsters/custom/VasaMagus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { NewBossOptions } from '../../../lib/types/minions';

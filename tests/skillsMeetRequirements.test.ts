@@ -47,9 +47,7 @@ describe('skillsMeetRequirements', () => {
 	test('doesnt meet requirements', () => {
 		expect(skillsMeetRequirements(convert({ agility: 1 }), { agility: 10 })).toBeFalsy();
 		expect(skillsMeetRequirements(convert({ agility: 49 }), { agility: 50 })).toBeFalsy();
-		expect(
-			skillsMeetRequirements(convert({ agility: 49, runecraft: 1 }), { agility: 50 })
-		).toBeFalsy();
+		expect(skillsMeetRequirements(convert({ agility: 49, runecraft: 1 }), { agility: 50 })).toBeFalsy();
 		expect(
 			skillsMeetRequirements(
 				convert({

@@ -40,9 +40,7 @@ const oauthCallbackRoute = (server: FastifyInstance) =>
 		async handler(request, reply) {
 			const authFetch = await fetch('https://discord.com/api/oauth2/token', {
 				headers: {
-					Authorization: `Basic ${Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString(
-						'base64'
-					)}`,
+					Authorization: `Basic ${Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64')}`,
 					'Content-Type': 'application/x-www-form-urlencoded'
 				},
 				body: encode({

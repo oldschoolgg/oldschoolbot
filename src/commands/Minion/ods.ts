@@ -46,8 +46,7 @@ export default class ODSCommand extends BotCommand {
 			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'minigame'],
-			description:
-				'Sends your minion to complete Ourania Delivery Service trips, or buy rewards.',
+			description: 'Sends your minion to complete Ourania Delivery Service trips, or buy rewards.',
 			examples: ['+ods start'],
 			subcommands: true,
 			usage: '[start|buy] [buyable:...string]',
@@ -94,14 +93,12 @@ export default class ODSCommand extends BotCommand {
 		// const boosts = ['asdf'];
 
 		let waveTime = randomVariation(Time.Minute * 4, 10);
-		const quantity = Math.floor(
-			msg.author.maxTripLength(Activity.OuraniaDeliveryService) / waveTime
-		);
+		const quantity = Math.floor(msg.author.maxTripLength(Activity.OuraniaDeliveryService) / waveTime);
 		const duration = quantity * waveTime;
 		const essenceRequired = quantity * randInt(235, 265);
 		const cost = new Bank().add('Pure essence', essenceRequired);
 		if (!msg.author.owns(cost)) {
-			return msg.channel.send(`You don't have enough Pure Essence to do Ourania Deliveries.`);
+			return msg.channel.send("You don't have enough Pure Essence to do Ourania Deliveries.");
 		}
 
 		await msg.author.removeItemsFromBank(cost);

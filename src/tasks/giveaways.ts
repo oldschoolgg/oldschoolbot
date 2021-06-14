@@ -13,7 +13,7 @@ export default class extends Task {
 				const query = createQueryBuilder(GiveawayTable)
 					.select()
 					.where('completed = false')
-					.andWhere(`finish_date < now()`);
+					.andWhere('finish_date < now()');
 				const result = await query.getMany();
 				await Promise.all(result.map(t => t.complete()));
 			} catch (err) {

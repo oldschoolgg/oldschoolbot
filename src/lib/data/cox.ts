@@ -75,9 +75,7 @@ export async function createTeam(
 		deathChance -= calcPercentOfNum(kcPercent, 10);
 
 		if (users.length > 1) {
-			points -=
-				Math.min(6, Math.max(3, users.length)) *
-				Math.min(1600, calcPercentOfNum(15, points));
+			points -= Math.min(6, Math.max(3, users.length)) * Math.min(1600, calcPercentOfNum(15, points));
 		} else {
 			deathChance += 5;
 		}
@@ -250,7 +248,7 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 	for (const user of users) {
 		const { total } = calculateUserGearPercents(user);
 		if (total < 20) {
-			return `Your gear is terrible! You do not stand a chance in the Chamber's of Xeric.`;
+			return "Your gear is terrible! You do not stand a chance in the Chamber's of Xeric.";
 		}
 		if (!hasMinRaidsRequirements(user)) {
 			return `${user.username} doesn't meet the stat requirements to do the Chamber's of Xeric.`;

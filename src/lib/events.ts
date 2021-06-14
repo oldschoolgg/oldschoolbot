@@ -29,15 +29,11 @@ async function howManyMaxed() {
 export async function onMax(user: KlasaUser) {
 	const { normies, irons } = await howManyMaxed();
 
-	const str = `🎉 ${
-		user.username
-	}'s minion just achieved level 99 in every skill, they are the **${formatOrdinal(
+	const str = `🎉 ${user.username}'s minion just achieved level 99 in every skill, they are the **${formatOrdinal(
 		normies
-	)}** minion to be maxed${
-		user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'
-	} 🎉`;
+	)}** minion to be maxed${user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'} 🎉`;
 
 	user.client.emit(Events.ServerNotification, str);
 
-	user.send(`Congratulations on maxing!`);
+	user.send('Congratulations on maxing!');
 }

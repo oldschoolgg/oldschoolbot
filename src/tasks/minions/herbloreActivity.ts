@@ -39,9 +39,9 @@ export default class extends Task {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished making ${quantity - bonus} ${
-			mixableItem.name
-		}s. ${xpRes} ${bonus > 0 ? `\n\n**${bonus}x extra for Herblore master cape**` : ''}`;
+		let str = `${user}, ${user.minionName} finished making ${quantity - bonus} ${mixableItem.name}s. ${xpRes} ${
+			bonus > 0 ? `\n\n**${bonus}x extra for Herblore master cape**` : ''
+		}`;
 
 		const loot = {
 			[mixableItem.id]: quantity
