@@ -12,7 +12,8 @@ module.exports = {
 	},
 	setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
 	collectCoverageFrom: [
-		"./src/lib/structures/Gear.ts"
+		"./src/lib/structures/Gear.ts",
+		"./src/lib/util/parseStringBank.ts"
 	],
 	coverageThreshold: {
     	global: {
