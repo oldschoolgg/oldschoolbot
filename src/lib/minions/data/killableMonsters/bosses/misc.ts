@@ -19,7 +19,7 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.GiantMole,
 		emoji: '<:Baby_mole:324127375858204672>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		itemsRequired: resolveItems(["Dharok's helm", "Dharok's platebody", "Dharok's platelegs", "Dharok's greataxe"]),
 		qpRequired: 0,
@@ -47,7 +47,7 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.Vorkath,
 		emoji: '<:Vorki:400713309252222977>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 8,
 		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
 		qpRequired: 205,
@@ -82,7 +82,7 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.Zulrah,
 		emoji: '<:Pet_snakeling:324127377816944642>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 8,
 		qpRequired: 75,
 		itemInBankBoosts: [
@@ -135,7 +135,7 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.KalphiteQueen,
 		emoji: '<:Kalphite_princess_2nd_form:324127376915300352>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
 			"Verac's flail",
@@ -179,7 +179,7 @@ const killableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 30,
 		emoji: '<:Pet_dark_core:324127377347313674>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 6,
 		itemsRequired: resolveItems(['Zamorakian spear']),
 		notifyDrops: resolveItems([
@@ -218,7 +218,7 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.Cerberus,
 		emoji: '<:Hellpuppy:324127376185491458>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
 			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate'],
