@@ -1,4 +1,5 @@
 import { Image } from 'canvas';
+import { KlasaMessage } from 'klasa';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
@@ -13,6 +14,7 @@ import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
+import { CombatOptionsEnum } from './data/combatConstants';
 import { AttackStyles } from './functions';
 
 export interface BankBackground {
@@ -134,4 +136,13 @@ export interface AddMonsterXpParams {
 	minimal?: boolean;
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
+}
+
+export interface DetermineBoostParams {
+	cbOpts: CombatOptionsEnum[];
+	atkStyles: AttackStyles[];
+	msg: KlasaMessage;
+	monster: KillableMonster;
+	method?: string | null;
+	isOnTask?: boolean;
 }
