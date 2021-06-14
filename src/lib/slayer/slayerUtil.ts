@@ -1,12 +1,11 @@
 import { randFloat, randInt } from 'e';
-import { KlasaMessage, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { MoreThan } from 'typeorm';
 
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
-import { AttackStyles } from '../minions/functions';
-import {DetermineBoostParams, KillableMonster} from '../minions/types';
+import { DetermineBoostParams } from '../minions/types';
 import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
