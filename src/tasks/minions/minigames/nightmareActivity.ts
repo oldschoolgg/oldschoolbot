@@ -7,11 +7,11 @@ import { getRandomMysteryBox } from '../../../lib/data/openables';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { addBanks, multiplyBank, noOp, randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
 
@@ -24,7 +24,8 @@ interface NightmareUser {
 const RawNightmare = Misc.Nightmare;
 
 export default class extends Task {
-	async run({ channelID, userID, users, quantity, duration }: BossActivityTaskOptions) {
+	async run(data: BossActivityTaskOptions) {
+		const { channelID, userID, users, quantity, duration } = data;
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -86,7 +87,7 @@ export default class extends Task {
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
-			if (kcToAdd) user.incrementMonsterScore(NightmareMonster.id, kcToAdd);
+			if (kcToAdd) await user.incrementMonsterScore(NightmareMonster.id, kcToAdd);
 			const purple = Object.keys(loot).some(itemID =>
 				isImportantItemForMonster(parseInt(itemID), NightmareMonster)
 			);
@@ -122,14 +123,23 @@ export default class extends Task {
 			const { image } = await this.client.tasks
 				.get('bankImage')!
 				.generateBankImage(teamsLoot[userID], `${quantity}x Nightmare`, true, { showNewCL: 1 }, leaderUser);
-			sendToChannelID(this.client, channelID, {
-				content: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
+
+			const kc = leaderUser.getKC(NightmareMonster.id);
+			handleTripFinish(
+				this.client,
+				leaderUser,
+				channelID,
+				`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 					NightmareMonster.name
-				}, you died ${deaths[userID] ?? 0} times. Your Nightmare KC is now ${
-					(leaderUser.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 0) + quantity
-				}.`,
-				image: image!
-			});
+				}, you died ${deaths[userID] ?? 0} times. Your Nightmare KC is now ${kc}.`,
+				res => {
+					leaderUser.log(`continued trip of ${quantity}x plunder`);
+					return this.client.commands.get('nightmare')!.run(res, ['solo']);
+				},
+				image!,
+				data,
+				totalLoot.bank
+			);
 		}
 	}
 }
