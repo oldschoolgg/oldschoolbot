@@ -1,6 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { KalphiteKingMonster } from '../../kalphiteking';
+import AbyssalDragon from '../../minions/data/killableMonsters/custom/AbyssalDragon';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 
@@ -18,7 +19,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AbyssalDemon,
 		amount: [120, 170],
 		weight: 9,
-		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, AbyssalDragon.id],
 		combatLevel: 85,
 		slayerLevel: 85,
 		unlocked: true
