@@ -1,4 +1,5 @@
 import { Image } from 'canvas';
+import { KlasaMessage } from 'klasa';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
@@ -13,9 +14,8 @@ import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
+import { CombatOptionsEnum } from './data/combatConstants';
 import { AttackStyles } from './functions';
-import {CombatOptionsEnum} from "./data/combatConstants";
-import {KlasaMessage} from "klasa";
 
 export interface BankBackground {
 	image: Image | null;
