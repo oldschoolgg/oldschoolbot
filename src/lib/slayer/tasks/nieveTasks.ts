@@ -2,6 +2,7 @@ import { Monsters } from 'oldschooljs';
 
 import { KalphiteKingMonster } from '../../kalphiteking';
 import AbyssalDragon from '../../minions/data/killableMonsters/custom/AbyssalDragon';
+import SeaKraken from '../../minions/data/killableMonsters/custom/SeaKraken';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 
@@ -129,7 +130,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveKraken,
 		amount: [100, 120],
 		weight: 6,
-		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id],
+		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id, SeaKraken.id],
 		combatLevel: 80,
 		slayerLevel: 87,
 		unlocked: true
