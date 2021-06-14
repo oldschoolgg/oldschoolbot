@@ -13,7 +13,7 @@ export default async function announceLoot(
 	loot: ItemBank,
 	team?: { leader: KlasaUser; lootRecipient: KlasaUser; size: number }
 ) {
-	if (!monster.notifyDrops) return;
+	const notifyDrops = (monster.notifyDrops ?? []) as number[];
 	const kc = user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
 	const items = new Bank(loot).filter(i => monster.notifyDrops?.includes(i.id) ?? false);
 
