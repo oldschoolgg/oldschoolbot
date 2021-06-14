@@ -6,7 +6,7 @@ import { MoreThan } from 'typeorm';
 
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { AttackStyles } from '../minions/functions';
-import { KillableMonster } from '../minions/types';
+import {DetermineBoostParams, KillableMonster} from '../minions/types';
 import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
@@ -25,34 +25,31 @@ export enum AutoslayOptionsEnum {
 	MaxEfficiency
 }
 
-export function determineBoostChoice(
-	cbOpts: CombatOptionsEnum[],
-	atkStyles: AttackStyles[],
-	msg: KlasaMessage,
-	monster: KillableMonster,
-	method?: string
-) {
+export function determineBoostChoice(params: DetermineBoostParams) {
 	let boostChoice = 'none';
 
-	if (msg.flagArgs.barrage || (method && method === 'barrage')) {
+	// BSO Only:
+	if (!params.isOnTask) return boostChoice;
+
+	if (params.msg.flagArgs.barrage || (params.method && params.method === 'barrage')) {
 		boostChoice = 'barrage';
-	} else if (msg.flagArgs.burst || (method && method === 'burst')) {
+	} else if (params.msg.flagArgs.burst || (params.method && params.method === 'burst')) {
 		boostChoice = 'burst';
-	} else if (msg.flagArgs.cannon || (method && method === 'cannon')) {
+	} else if (params.msg.flagArgs.cannon || (params.method && params.method === 'cannon')) {
 		boostChoice = 'cannon';
 	} else if (
-		cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
-		atkStyles.includes(SkillsEnum.Magic) &&
-		monster!.canBarrage
+		params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
+		params.atkStyles.includes(SkillsEnum.Magic) &&
+		params.monster!.canBarrage
 	) {
 		boostChoice = 'barrage';
 	} else if (
-		cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
-		atkStyles.includes(SkillsEnum.Magic) &&
-		monster!.canBarrage
+		params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
+		params.atkStyles.includes(SkillsEnum.Magic) &&
+		params.monster!.canBarrage
 	) {
 		boostChoice = 'burst';
-	} else if (cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
+	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
 		boostChoice = 'cannon';
 	}
 

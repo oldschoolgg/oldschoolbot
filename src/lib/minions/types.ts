@@ -14,6 +14,8 @@ import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
 import { AttackStyles } from './functions';
+import {CombatOptionsEnum} from "./data/combatConstants";
+import {KlasaMessage} from "klasa";
 
 export interface BankBackground {
 	image: Image | null;
@@ -134,4 +136,13 @@ export interface AddMonsterXpParams {
 	minimal?: boolean;
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
+}
+
+export interface DetermineBoostParams {
+	cbOpts: CombatOptionsEnum[];
+	atkStyles: AttackStyles[];
+	msg: KlasaMessage;
+	monster: KillableMonster;
+	method?: string | null;
+	isOnTask?: boolean;
 }

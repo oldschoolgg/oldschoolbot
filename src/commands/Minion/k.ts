@@ -191,19 +191,23 @@ export default class extends BotCommand {
 
 		// Set chosen boost based on priority:
 		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
-		const boostChoice = determineBoostChoice(
-			myCBOpts as CombatOptionsEnum[],
-			attackStyles,
+		const boostChoice = determineBoostChoice({
+			cbOpts: myCBOpts as CombatOptionsEnum[],
+			atkStyles: attackStyles,
 			msg,
 			monster,
-			method ?? 'none'
-		);
+			method: method ?? 'none',
+			isOnTask
+		});
 
 		// Calculate Cannon and Barrage boosts + costs:
 		let usingCannon = false;
 		let cannonMulti = false;
 		let burstOrBarrage = 0;
 		const hasCannon = msg.author.owns(CombatCannonItemBank);
+		if (!isOnTask && (msg.flagArgs.burst || msg.flagArgs.barrage || msg.flagArgs.cannon)) {
+			return msg.send('You can only burst/barrage/cannon while on task in BSO.');
+		}
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !monster!.canBarrage) {
 			return msg.send(`${monster!.name} cannot be barraged or bursted.`);
 		}
