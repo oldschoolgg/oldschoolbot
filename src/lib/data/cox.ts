@@ -289,7 +289,7 @@ async function kcEffectiveness(u: KlasaUser, challengeMode: boolean, isSolo: boo
 	return kcEffectiveness;
 }
 
-const speedReductionForGear = 15;
+const speedReductionForGear = 16;
 const speedReductionForKC = 40;
 const totalSpeedReductions = speedReductionForGear + speedReductionForKC + 10 + 5;
 const baseDuration = Time.Minute * 83;
@@ -327,7 +327,7 @@ const itemBoosts = [
 	[
 		{
 			item: getOSItem('Twisted bow'),
-			boost: 10
+			boost: 9
 		},
 		{
 			item: getOSItem('Dragon hunter crossbow'),
@@ -337,7 +337,7 @@ const itemBoosts = [
 	[
 		{
 			item: getOSItem('Dragon warhammer'),
-			boost: 5
+			boost: 4
 		},
 		{
 			item: getOSItem('Bandos godsword'),
@@ -351,7 +351,7 @@ const itemBoosts = [
 	[
 		{
 			item: getOSItem('Dragon hunter lance'),
-			boost: 5
+			boost: 4
 		}
 	]
 ];

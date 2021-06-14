@@ -1749,6 +1749,8 @@ export const miscLog: CollectionLogData = {
 		'Occult necklace'
 	]),
 	Slayer3: resolveItems([
+		'Herb sack',
+		'Rune pouch',
 		'Basilisk jaw',
 		'Brine sabre',
 		'Leaf-bladed battleaxe',

@@ -332,7 +332,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.SpiritualRanger,
+		monster: Monsters.SpiritualMage,
 		amount: [130, 200],
 		weight: 7,
 		monsters: [
@@ -340,9 +340,12 @@ export const duradelTasks: AssignableSlayerTask[] = [
 			Monsters.SpiritualWarrior.id,
 			Monsters.SpiritualMage.id
 		],
+		levelRequirements: {
+			slayer: 60
+		},
 		combatLevel: 60,
 		slayerLevel: 63,
-		questPoints: 1,
+		questPoints: 3,
 		unlocked: true
 	},
 	{
