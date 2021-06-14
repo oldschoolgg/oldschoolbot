@@ -1,6 +1,6 @@
-import numbro from 'numbro';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
+import { fromKMB } from 'oldschooljs/dist/util';
 
 import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
@@ -12,9 +12,9 @@ function parseQuantityAndItem(str = ''): [Item, number] | null {
 	let [potentialQty, ...potentialName] = str.split(' ');
 	// Fix for 3rd age items
 	if (potentialQty === '3rd') potentialQty = '';
-	let parsedQty = numbro(potentialQty).value() as number | undefined;
+	let parsedQty: number | undefined = fromKMB(potentialQty);
 	// Can return number, NaN or undefined. We want it to be only number or undefined.
-	if (parsedQty !== undefined && isNaN(parsedQty)) parsedQty = undefined;
+	if (isNaN(parsedQty)) parsedQty = undefined;
 	const parsedName = parsedQty === undefined ? str : potentialName.join('');
 
 	let osItem: Item | undefined = undefined;
