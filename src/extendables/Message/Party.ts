@@ -151,6 +151,9 @@ async function _setup(
 						}
 						break;
 					}
+
+					default:
+						break;
 				}
 			});
 
