@@ -21,7 +21,8 @@ import { AssignableSlayerTask, SlayerMaster } from './types';
 
 export enum AutoslayOptionsEnum {
 	Reserved,
-	HighestUnlocked
+	HighestUnlocked,
+	MaxEfficiency
 }
 
 export function determineBoostChoice(
@@ -203,7 +204,7 @@ export function getCommonTaskName(task: Monster) {
 		case Monsters.ElfWarrior.id:
 			commonName = 'Elves';
 			break;
-		case Monsters.SpiritualRanger.id:
+		case Monsters.SpiritualMage.id:
 			commonName = 'Spiritual Creature';
 			break;
 		case Monsters.BlackBear.id:

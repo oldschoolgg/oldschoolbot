@@ -5,6 +5,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Activity, Time } from '../../lib/constants';
+import { getSimilarItems } from '../../lib/data/similarItems';
 import {
 	boostCannon,
 	boostCannonMulti,
@@ -111,7 +112,8 @@ export default class extends BotCommand {
 		}
 		if (!name) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 		const monster = findMonster(name);
-		if (!monster) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
+		if (!monster || !monster.canBeKilled)
+			return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 
 		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
 		const isOnTask =
@@ -314,11 +316,13 @@ export default class extends BotCommand {
 			let itemMultiple = cc!.qtyPerKill ?? cc!.qtyPerMinute ?? null;
 
 			if (itemMultiple && typeof itemMultiple === 'number') {
-				// Free casts for kodai + sotd
-				if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
-					itemMultiple = Math.ceil(0.85 * itemMultiple);
-				} else if (msg.author.hasItemEquippedAnywhere('Staff of the dead')) {
-					itemMultiple = Math.ceil((6 / 7) * itemMultiple);
+				if (cc.isRuneCost) {
+					// Free casts for kodai + sotd
+					if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
+						itemMultiple = Math.ceil(0.85 * itemMultiple);
+					} else if (msg.author.hasItemEquippedAnywhere('Staff of the dead')) {
+						itemMultiple = Math.ceil((6 / 7) * itemMultiple);
+					}
 				}
 				const itemCost = cc!.qtyPerKill
 					? cc!.itemCost.clone().multiply(itemMultiple)
@@ -334,8 +338,8 @@ export default class extends BotCommand {
 			}
 		});
 
-		if (msg.author.hasItemEquippedAnywhere('Staff of water')) {
-			lootToRemove.remove('Water rune');
+		if (msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Staff of water')))) {
+			lootToRemove.remove('Water rune', lootToRemove.amount('Water rune'));
 		}
 
 		const itemCost = monster.itemCost ? monster.itemCost.clone().multiply(quantity) : null;
