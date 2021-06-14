@@ -17,6 +17,7 @@ export function calcLootXPPickpocketing(
 	npc: Pickpockable,
 	quantity: number,
 	hasThievingCape: boolean,
+	hasDiary: boolean,
 	armband: boolean
 ): [number, number, number, number] {
 	let xpReceived = 0;
@@ -30,10 +31,12 @@ export function calcLootXPPickpocketing(
 	const thievCape = hasThievingCape && npc.customTickRate === undefined ? 1.1 : 1;
 
 	let chanceOfSuccess = (npc.slope * currentLevel + npc.intercept) * diary * thievCape;
+	if (hasDiary) chanceOfSuccess += 10;
 	if (armband) {
 		// 50% better success chance if has armband
 		chanceOfSuccess += chanceOfSuccess / 2;
 	}
+
 	for (let i = 0; i < quantity; i++) {
 		if (!percentChance(chanceOfSuccess)) {
 			// The minion has just been stunned, and cant pickpocket for a few ticks, therefore
@@ -113,7 +116,10 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank(loot, true);
-		const xpRes = await user.addXP(SkillsEnum.Thieving, xpReceived);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Thieving,
+			amount: xpReceived
+		});
 
 		let str = `${user}, ${user.minionName} finished pickpocketing a ${
 			npc.name

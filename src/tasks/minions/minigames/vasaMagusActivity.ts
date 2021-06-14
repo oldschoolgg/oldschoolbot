@@ -27,7 +27,13 @@ export default class extends Task {
 			loot.add(randArrItem(bossKillables).table.kill(randInt(1, 3), {}));
 		}
 
-		const xpRes = await addMonsterXP(user, VasaMagus.id, quantity, duration, false, null);
+		const xpRes = await addMonsterXP(user, {
+			monsterID: VasaMagus.id,
+			quantity,
+			duration,
+			isOnTask: false,
+			taskQuantity: null
+		});
 		await user.addItemsToBank(loot, true);
 
 		let resultStr = `${user}, ${user.minionName} finished killing ${quantity}x Vasa Magus.\n\n${Emoji.Casket} **Loot:** ${loot}\n\n${xpRes}`;

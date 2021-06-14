@@ -2,18 +2,13 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
+import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { AgilityArenaActivityTaskOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	itemID,
-	resolveNameBank,
-	skillsMeetRequirements,
-	stringMatches
-} from '../../lib/util';
+import { formatDuration, itemID, resolveNameBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
@@ -35,31 +30,6 @@ const buyables = [
 		aliases: ['pirates']
 	}
 ];
-
-export function hasKaramjaEliteDiary(user: KlasaUser): boolean {
-	return skillsMeetRequirements(user.rawSkills, {
-		farming: 72,
-		runecraft: 91,
-		agility: 53,
-		cooking: 53,
-		mining: 52,
-		smithing: 40,
-		thieving: 50,
-		woodcutting: 50,
-		fishing: 65
-	});
-}
-
-export function hasKaramjaMedDiary(user: KlasaUser): boolean {
-	return skillsMeetRequirements(user.rawSkills, {
-		agility: 12,
-		cooking: 16,
-		fishing: 65,
-		farming: 27,
-		mining: 40,
-		woodcutting: 50
-	});
-}
 
 const ticketQuantities = {
 	1: 240,
@@ -87,12 +57,11 @@ const brimhavenGraceful = resolveNameBank({
 	'Brimhaven graceful cape': 1
 });
 
-export function determineXPFromTickets(qty: number, user: KlasaUser) {
+export function determineXPFromTickets(qty: number, user: KlasaUser, hasDiary: boolean) {
 	let baseXP = ticketQuantities[qty as keyof typeof ticketQuantities] ?? ticketQuantities[1000];
 	// The experience reward from the tickets is increased by 5 per ticket for each Agility level above 40.
 	baseXP += 5 * (user.skillLevel(SkillsEnum.Agility) - 40);
 	let xpToGive = baseXP * qty;
-	const hasDiary = hasKaramjaMedDiary(user);
 	if (hasDiary) xpToGive *= 1.1;
 	return xpToGive;
 }
@@ -129,7 +98,8 @@ export default class extends BotCommand {
 
 		const boosts = [];
 
-		if (hasKaramjaEliteDiary(msg.author)) {
+		const [hasKaramjaElite] = await userhasDiaryTier(msg.author, KaramjaDiary.elite);
+		if (hasKaramjaElite) {
 			boosts.push(`10% extra tickets for Karamja Elite diary`);
 		}
 
@@ -207,13 +177,17 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			if (amountTicketsHas < qty) {
 				return msg.send(`You don't have enough Agility arena tickets.`);
 			}
-			const xpToGive = determineXPFromTickets(qty, msg.author);
+			const [hasKaramjaMed] = await userhasDiaryTier(msg.author, KaramjaDiary.medium);
+			const xpToGive = determineXPFromTickets(qty, msg.author, hasKaramjaMed);
 			let str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(
 				xpToGive / qty
 			).toFixed(2)} ea)`;
 			await msg.author.removeItemFromBank(itemID('Agility arena ticket'), qty);
-			await msg.author.addXP(SkillsEnum.Agility, xpToGive);
-			if (hasKaramjaMedDiary(msg.author)) {
+			await msg.author.addXP({
+				skillName: SkillsEnum.Agility,
+				amount: xpToGive
+			});
+			if (hasKaramjaMed) {
 				str += `\n\nYou received 10% extra XP for the Karamja Medium Diary.`;
 			}
 			return msg.send(str);

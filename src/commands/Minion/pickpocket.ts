@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
+import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -49,6 +50,7 @@ export default class extends BotCommand {
 						npc,
 						5 * (Time.Hour / ((npc.customTickRate ?? 2) * 600)),
 						false,
+						(await userhasDiaryTier(msg.author, ArdougneDiary.hard))[0],
 						false
 					);
 					results.push([npc.name, round(xpReceived, 2) / 5, damageTaken / 5]);
@@ -133,6 +135,13 @@ export default class extends BotCommand {
 			);
 		}
 
+		const boosts = [];
+
+		const [hasArdyHard] = await userhasDiaryTier(msg.author, ArdougneDiary.hard);
+		if (hasArdyHard) {
+			boosts.push(`+10% chance of success from Ardougne Hard diary`);
+		}
+
 		const [successfulQuantity, damageTaken, xpReceived] = calcLootXPPickpocketing(
 			msg.author.skillLevel(SkillsEnum.Thieving),
 			pickpocketable,
@@ -140,6 +149,7 @@ export default class extends BotCommand {
 			msg.author.hasItemEquippedAnywhere(itemID('Thieving cape')) ||
 				msg.author.hasItemEquippedAnywhere(itemID('Thieving cape(t)')) ||
 				msg.author.hasItemEquippedAnywhere(itemID('Thieving master cape')),
+			hasArdyHard,
 			msg.author.hasItemEquippedOrInBank("Thieves' armband")
 		);
 
@@ -151,8 +161,6 @@ export default class extends BotCommand {
 			activityName: 'Pickpocketing',
 			attackStylesUsed: []
 		});
-
-		const boosts = [];
 
 		if (rogueOutfitPercentBonus(msg.author) > 0) {
 			boosts.push(

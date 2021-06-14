@@ -36,7 +36,11 @@ export default class extends Task {
 		if (hasMaster) {
 			xpReceived = increaseNumByPercent(xpReceived, 10);
 		}
-		const xpRes = await user.addXP(SkillsEnum.Runecraft, xpReceived, duration);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Runecraft,
+			amount: xpReceived,
+			duration
+		});
 
 		let str = `${user}, ${user.minionName} finished crafting ${runeQuantity} ${rune.name}. ${xpRes}`;
 		if (hasMaster) {

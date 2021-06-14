@@ -202,11 +202,11 @@ export const enum Tasks {
 	Collecting = 'collectingActivity',
 	MageTrainingArena = 'mageTrainingArenaActivity',
 	BlastFurnaceActivity = 'blastFurnaceActivity',
+	MageArena2 = 'mageArena2Activity',
+	BigChompyBirdHunting = 'chompyHuntActivity',
 	KingGoldemar = 'kingGoldemarActivity',
 	VasaMagus = 'vasaMagusActivity',
-	OuraniaDeliveryService = 'ouraniaDeliveryServiceActivity',
-	MageArena2 = 'mageArena2Activity',
-	BigChompyBirdHunting = 'chompyHuntActivity'
+	OuraniaDeliveryService = 'ouraniaDeliveryServiceActivity'
 }
 
 export enum Activity {
@@ -267,11 +267,11 @@ export enum Activity {
 	Collecting = 'Collecting',
 	MageTrainingArena = 'MageTrainingArena',
 	BlastFurnace = 'BlastFurnace',
+	MageArena2 = 'MageArena2',
+	BigChompyBirdHunting = 'BigChompyBirdHunting',
 	KingGoldemar = 'KingGoldemar',
 	VasaMagus = 'VasaMagus',
-	OuraniaDeliveryService = 'OuraniaDeliveryService',
-	MageArena2 = 'MageArena2',
-	BigChompyBirdHunting = 'BigChompyBirdHunting'
+	OuraniaDeliveryService = 'OuraniaDeliveryService'
 }
 
 export enum ActivityGroup {
@@ -386,7 +386,6 @@ export const enum PatronTierID {
 	Five = '5262216'
 }
 
-export const MAX_QP = 5000;
 export const badges: { [key: number]: string } = {
 	0: Emoji.Spanner,
 	1: Emoji.PinkGem,
@@ -402,6 +401,8 @@ export const badges: { [key: number]: string } = {
 	11: Emoji.MinigameIcon,
 	12: Emoji.SOTW
 };
+
+export const MAX_QP = 5000;
 
 export const MIMIC_MONSTER_ID = 23184;
 
@@ -455,6 +456,6 @@ export const skillEmoji = {
 	hunter: '<:hunter:630911040166559784>',
 	cml: '<:CrystalMathLabs:364657225249062912>',
 	clock: '<:ehpclock:352323705210142721>',
-	dungeoneering: '<:dungeoneering:828683755198873623>',
-	combat: '<:combat:802136963956080650>'
+	combat: '<:combat:802136963956080650>',
+	dungeoneering: '<:dungeoneering:828683755198873623>'
 };

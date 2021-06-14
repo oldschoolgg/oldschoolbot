@@ -87,14 +87,13 @@ export default class extends Task {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
 			if (kcAmounts[user.id]) {
-				await addMonsterXP(
-					user,
-					46274,
-					Math.ceil(quantity / users.length),
+				await addMonsterXP(user, {
+					monsterID: 46274,
+					quantity: Math.ceil(quantity / users.length),
 					duration,
-					false,
-					null
-				);
+					isOnTask: false,
+					taskQuantity: null
+				});
 			}
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);

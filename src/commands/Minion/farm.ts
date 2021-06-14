@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
+import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -17,7 +18,8 @@ import {
 	formatDuration,
 	itemNameFromID,
 	removeItemFromBank,
-	stringMatches
+	stringMatches,
+	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
@@ -307,12 +309,8 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.FarmingCostBank,
-			new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingCostBank)).add(
-				econBank
-			).bank
-		);
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.FarmingCostBank, econBank);
 		// If user does not have something already planted, just plant the new seeds.
 		if (!patchType.patchPlanted) {
 			infoStr.unshift(
@@ -340,6 +338,14 @@ export default class extends BotCommand {
 			infoStr.unshift(
 				`${msg.author.minionName} is now harvesting ${storeHarvestableQuantity}x ${storeHarvestablePlant}, and then planting ${quantity}x ${plants.name}.`
 			);
+		}
+
+		for (const [diary, tier] of [[ArdougneDiary, ArdougneDiary.elite]] as const) {
+			const [has] = await userhasDiaryTier(msg.author, tier);
+			if (has) {
+				boostStr.push(`4% for ${diary.name} ${tier.name}`);
+				duration *= 0.96;
+			}
 		}
 
 		await addSubTaskToActivityTask<FarmingActivityTaskOptions>(this.client, {

@@ -30,9 +30,19 @@ export default class extends Task {
 			miningXP += randInt(1100, 1400);
 		}
 
-		let xpRes = await user.addXP(SkillsEnum.Mining, miningXP, duration);
-		xpRes += await user.addXP(SkillsEnum.Smithing, smithingXP);
-		xpRes += await user.addXP(SkillsEnum.Runecraft, runecraftXP);
+		let xpRes = await user.addXP({
+			skillName: SkillsEnum.Mining,
+			amount: miningXP,
+			duration
+		});
+		xpRes += await user.addXP({
+			skillName: SkillsEnum.Smithing,
+			amount: smithingXP
+		});
+		xpRes += await user.addXP({
+			skillName: SkillsEnum.Runecraft,
+			amount: runecraftXP
+		});
 
 		const kc = user.getKC(ZALCANO_ID);
 

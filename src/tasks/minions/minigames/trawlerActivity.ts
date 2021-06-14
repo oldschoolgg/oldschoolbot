@@ -1,31 +1,13 @@
-import { KlasaUser, Task } from 'klasa';
+import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { getRandomMysteryBox } from '../../../lib/data/openables';
+import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	addBanks,
-	anglerBoostPercent,
-	calcPercentOfNum,
-	itemID,
-	roll,
-	skillsMeetRequirements
-} from '../../../lib/util';
+import { addBanks, anglerBoostPercent, calcPercentOfNum, itemID, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-
-function hasEliteArdougneDiary(user: KlasaUser): boolean {
-	return skillsMeetRequirements(user.rawSkills, {
-		agility: 90,
-		cooking: 91,
-		crafting: 35,
-		firemaking: 50,
-		fishing: 81,
-		fletching: 69,
-		smithing: 91
-	});
-}
 
 export default class extends Task {
 	async run(data: FishingTrawlerActivityTaskOptions) {
@@ -40,10 +22,11 @@ export default class extends Task {
 		const loot = new Bank();
 
 		let totalXP = 0;
+		const [hasEliteArdy] = await userhasDiaryTier(user, ArdougneDiary.elite);
 		for (let i = 0; i < quantity; i++) {
 			const { loot: _loot, xp } = fishingTrawlerLoot(
 				fishingLevel,
-				hasEliteArdougneDiary(user),
+				hasEliteArdy,
 				addBanks([loot.bank, allItemsOwned])
 			);
 			totalXP += xp;
@@ -78,7 +61,7 @@ export default class extends Task {
 		await user.addItemsToBank(loot.bank, true);
 
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		await user.addXP(SkillsEnum.Fishing, totalXP);
+		await user.addXP({ skillName: SkillsEnum.Fishing, amount: totalXP });
 		const newLevel = user.skillLevel(SkillsEnum.Fishing);
 
 		if (currentLevel !== newLevel) {

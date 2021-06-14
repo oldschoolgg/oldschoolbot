@@ -13,7 +13,7 @@ import { BankImageResult } from '../../tasks/bankImage';
 import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
-import { KillableMonster } from '../minions/types';
+import { AddXpParams, KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
@@ -23,16 +23,16 @@ import { ItemBank, MakePartyOptions, Skills } from '.';
 
 declare module 'klasa' {
 	interface KlasaClient {
-		public orm: Connection;
-		public oneCommandAtATimeCache: Set<string>;
-		public secondaryUserBusyCache: Set<string>;
+		orm: Connection;
+		oneCommandAtATimeCache: Set<string>;
+		secondaryUserBusyCache: Set<string>;
 		public cacheItemPrice(itemID: number): Promise<number>;
 		public query<T>(query: string, values?: string[]): Promise<T>;
-		public settings: Settings;
-		public production: boolean;
-		public _fileChangeWatcher?: FSWatcher;
-		public _badgeCache: Map<string, string>;
-		public _peakIntervalCache: Peak[];
+		settings: Settings;
+		production: boolean;
+		_fileChangeWatcher?: FSWatcher;
+		_badgeCache: Map<string, string>;
+		_peakIntervalCache: Peak[];
 		public wtf(error: Error): void;
 		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 		commentStream?: CommentStream;
@@ -134,12 +134,7 @@ declare module 'discord.js' {
 		addGP(amount: number): Promise<SettingsUpdateResult>;
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
 		addQP(amount: number): Promise<SettingsUpdateResult>;
-		addXP(
-			skillName: SkillsEnum,
-			amount: number,
-			duration?: number,
-			multiplier = true
-		): Promise<string>;
+		addXP(params: AddXpParams): Promise<string>;
 		skillLevel(skillName: SkillsEnum): number;
 		totalLevel(returnXP = false): number;
 		toggleBusy(busy: boolean): void;

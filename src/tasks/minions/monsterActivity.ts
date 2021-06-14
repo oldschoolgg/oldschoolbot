@@ -96,16 +96,16 @@ export default class extends Task {
 			? Math.min(usersTask.currentTask!.quantityRemaining, quantity)
 			: null;
 
-		const xpRes = await addMonsterXP(
-			user,
+		const xpRes = await addMonsterXP(user, {
 			monsterID,
 			quantity,
 			duration,
 			isOnTask,
-			quantitySlayed,
+			taskQuantity: quantitySlayed,
+			minimal: false,
 			usingCannon,
 			cannonMulti
-		);
+		});
 
 		const superiorMessage = newSuperiorCount
 			? `, including **${newSuperiorCount} superiors**`
@@ -202,7 +202,11 @@ export default class extends Task {
 					loot.remove(bone.inputId, amount);
 				}
 			}
-			str += await user.addXP(SkillsEnum.Prayer, totalXP, duration);
+			str += await user.addXP({
+				skillName: SkillsEnum.Prayer,
+				amount: totalXP,
+				duration
+			});
 		}
 
 		if (isOnTask) {

@@ -364,6 +364,7 @@ export default class BankImageTask extends Task {
 				) +
 					itemSize * 1.5
 			) - 2;
+
 		let bgImage = this.backgroundImages.find(bg => bg.id === bankBackgroundID)!;
 		const isTransparent = Boolean(bgImage.transparent);
 
@@ -537,10 +538,6 @@ export default class BankImageTask extends Task {
 			if (flags.av) {
 				bottomItemText = (item.highalch ?? 0) * quantity;
 			}
-			if (flags.id) {
-				bottomItemText = item.id.toString();
-			}
-
 			if (flags.id) {
 				bottomItemText = item.id.toString();
 			}

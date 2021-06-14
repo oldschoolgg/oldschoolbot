@@ -76,14 +76,13 @@ export default class extends Task {
 				loot = multiplyBank(loot, 2);
 				loot[getRandomMysteryBox()] = 1;
 			}
-			await addMonsterXP(
-				user,
-				NIGHTMARE_ID,
-				Math.ceil(quantity / users.length),
+			await addMonsterXP(user, {
+				monsterID: NIGHTMARE_ID,
+				quantity: Math.ceil(quantity / users.length),
 				duration,
-				false,
-				null
-			);
+				isOnTask: false,
+				taskQuantity: null
+			});
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];

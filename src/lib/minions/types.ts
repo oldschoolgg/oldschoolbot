@@ -11,7 +11,7 @@ import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
-import { LevelRequirements } from '../skilling/types';
+import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
 import { AttackStyles } from './functions';
 
@@ -113,4 +113,23 @@ export interface Consumable {
 	itemCost: Bank;
 	qtyPerMinute?: number;
 	qtyPerKill?: number;
+}
+
+export interface AddXpParams {
+	skillName: SkillsEnum;
+	amount: number;
+	duration?: number;
+	multiplier?: boolean;
+	minimal?: boolean;
+}
+
+export interface AddMonsterXpParams {
+	monsterID: number;
+	quantity: number;
+	duration: number;
+	isOnTask: boolean;
+	taskQuantity: number | null;
+	minimal?: boolean;
+	usingCannon?: boolean;
+	cannonMulti?: boolean;
 }

@@ -179,19 +179,10 @@ export default class extends BotCommand {
 			timeToFinish *= (100 - boostAmount) / 100;
 			boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 		}
-
 		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven warhammer'))) {
 			timeToFinish *= 0.6;
 			boosts.push(`40% boost for Dwarven warhammer`);
 		}
-
-		if (Monsters.get(monster.id)?.data.attributes.includes(MonsterAttribute.Dragon)) {
-			if (msg.author.hasItemEquippedAnywhere(itemID('Dragon hunter lance'))) {
-				timeToFinish *= 0.8;
-				boosts.push(`20% boost for Dragon hunter lance`);
-			}
-		}
-
 		// Removed vorkath because he has a special boost.
 		if (
 			monster.name.toLowerCase() !== 'vorkath' &&
@@ -351,6 +342,7 @@ export default class extends BotCommand {
 				);
 			}
 		}
+
 		quantity = Math.max(1, quantity);
 		if (quantity > 1 && duration > maxTripLength) {
 			return msg.send(
@@ -437,16 +429,7 @@ export default class extends BotCommand {
 			foodStr = result;
 		}
 
-		if (quantity > 1 && duration > maxTripLength) {
-			return msg.send(
-				`${minionName} can't go on PvM trips longer than ${formatDuration(
-					maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${
-					monster.name
-				} is ${floor(maxTripLength / timeToFinish)}.`
-			);
-		}
-
+		// Boosts that don't affect quantity:
 		duration = randomVariation(duration, 3);
 
 		if (isWeekend()) {

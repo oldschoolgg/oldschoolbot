@@ -1,26 +1,11 @@
 import { randInt } from 'e';
-import { KlasaUser, Task } from 'klasa';
+import { Task } from 'klasa';
 
+import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { BarbarianAssaultActivityTaskOptions } from '../../../lib/types/minions';
-import { calcPercentOfNum, calcWhatPercent, noOp, skillsMeetRequirements } from '../../../lib/util';
+import { calcPercentOfNum, calcWhatPercent, noOp } from '../../../lib/util';
 import { sendToChannelID } from '../../../lib/util/webhook';
-
-function hasKandarinHardDiary(user: KlasaUser): boolean {
-	return skillsMeetRequirements(user.rawSkills, {
-		agility: 60,
-		crafting: 10,
-		firemaking: 65,
-		fishing: 70,
-		fletching: 70,
-		prayer: 70,
-		thieving: 53,
-		woodcutting: 60,
-		farming: 26,
-		herblore: 48,
-		smithing: 75
-	});
-}
 
 function generateExpertiseString(totalLevel: number) {
 	if (totalLevel === 4) {
@@ -59,7 +44,8 @@ export default class extends Task {
 			const user = await this.client.users.fetch(id).catch(noOp);
 			if (!user) continue;
 			let pts = basePoints + randInt(-3, 3);
-			if (hasKandarinHardDiary(user)) {
+			const [hasDiary] = await userhasDiaryTier(user, KandarinDiary.hard);
+			if (hasDiary) {
 				pts *= 1.1;
 				resultStr += `${user.username} received 10% extra pts for kandarin hard diary. `;
 			}

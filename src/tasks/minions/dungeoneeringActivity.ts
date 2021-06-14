@@ -78,7 +78,11 @@ export default class extends Task {
 				bonusXP += Math.floor(xp * (gorajanEquipped / 2));
 				xp += bonusXP;
 			}
-			await u.addXP(SkillsEnum.Dungeoneering, xp / 5, duration);
+			await u.addXP({
+				skillName: SkillsEnum.Dungeoneering,
+				amount: xp / 5,
+				duration
+			});
 			await u.settings.update(
 				UserSettings.DungeoneeringTokens,
 				u.settings.get(UserSettings.DungeoneeringTokens) + tokens

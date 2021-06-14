@@ -917,6 +917,7 @@ const Buyables: Buyable[] = [
 	...canifisClothes,
 	...castleWarsBuyables,
 	...cmCapes,
+	...slayerBuyables,
 	{
 		name: 'Master quest cape',
 		outputItems: resolveNameBank({
@@ -924,8 +925,7 @@ const Buyables: Buyable[] = [
 		}),
 		gpCost: 1_000_000_000,
 		qpRequired: 5000
-	},
-	...slayerBuyables
+	}
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

@@ -48,7 +48,7 @@ export function alching(user: KlasaUser, tripLength: number) {
 
 	const hasInfiniteFireRunes = user.hasItemEquippedAnywhere(unlimitedFireRuneProviders);
 
-	let maxCasts = Math.floor(tripLength / (Time.Second * 5));
+	let maxCasts = Math.floor(tripLength / (Time.Second * (3 + 10)));
 	maxCasts = Math.min(alchItemQty, maxCasts);
 	maxCasts = Math.min(nats, maxCasts);
 	if (!hasInfiniteFireRunes) {
@@ -137,7 +137,7 @@ export default class extends BotCommand {
 			course.name
 		} laps, it'll take around ${formatDuration(duration)} to finish.`;
 
-		const alchResult = msg.flagArgs.alch ? alching(msg.author, duration) : null;
+		const alchResult = alching(msg.author, duration);
 		if (alchResult !== null) {
 			if (course.name === 'Ape Atoll Agility Course') {
 				return msg.channel.send(
