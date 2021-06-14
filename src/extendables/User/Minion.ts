@@ -722,6 +722,7 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentXP = this.settings.get(`skills.${params.skillName}`) as number;
 		const currentLevel = this.skillLevel(params.skillName);
+		const multiplier = params.multiplier !== false;
 
 		const name = toTitleCase(params.skillName);
 
@@ -732,7 +733,7 @@ export default class extends Extendable {
 		const skill = Object.values(Skills).find(skill => skill.id === params.skillName)!;
 		const currentTotalLevel = this.totalLevel();
 
-		if (params.multiplier !== false) {
+		if (multiplier) {
 			params.amount *= 5;
 		}
 
@@ -743,17 +744,15 @@ export default class extends Extendable {
 			.map(i => i.item);
 
 		// Get cape object from MasterSkillCapes that matches active skill.
-		const matchingCape = params.multiplier
-			? MasterSkillcapes.find(cape => params.skillName === cape.skill)
-			: undefined;
+		const matchingCape = multiplier ? MasterSkillcapes.find(cape => params.skillName === cape.skill) : undefined;
 
 		// If the matching cape is equipped, isMatchingCape = true
-		const isMatchingCape = params.multiplier && matchingCape ? allCapes.includes(matchingCape.item.id) : false;
+		const isMatchingCape = multiplier && matchingCape ? allCapes.includes(matchingCape.item.id) : false;
 
 		// Get the masterCape object for use in text output
 		const masterCape = isMatchingCape
 			? matchingCape
-			: params.multiplier
+			: multiplier
 			? MasterSkillcapes.find(cape => allCapes.includes(cape.item.id))
 			: undefined;
 
@@ -763,15 +762,15 @@ export default class extends Extendable {
 
 		let gorajanBoost = false;
 		const gorajanMeleeBoost =
-			params.multiplier &&
+			multiplier &&
 			[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(params.skillName) &&
 			hasArrayOfItemsEquipped(gorajanWarriorOutfit, this.getGear('melee'));
 		const gorajanRangeBoost =
-			params.multiplier &&
+			multiplier &&
 			params.skillName === SkillsEnum.Ranged &&
 			hasArrayOfItemsEquipped(gorajanArcherOutfit, this.getGear('range'));
 		const gorajanMageBoost =
-			params.multiplier &&
+			multiplier &&
 			params.skillName === SkillsEnum.Magic &&
 			hasArrayOfItemsEquipped(gorajanOccultOutfit, this.getGear('mage'));
 		if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost) {
