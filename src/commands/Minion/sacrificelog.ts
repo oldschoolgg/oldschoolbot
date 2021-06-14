@@ -18,8 +18,7 @@ export default class extends BotCommand {
 			aliases: ['sl'],
 			usage: '[type:string]',
 			categoryFlags: ['minion'],
-			description:
-				"The same thing as the collection log, except sourced from the items you've sacrificed.",
+			description: "The same thing as the collection log, except sourced from the items you've sacrificed.",
 			examples: ['+sacrificelog boss', '+sl skilling']
 		});
 	}
@@ -27,13 +26,9 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [inputType = 'all']) {
 		await msg.author.settings.sync(true);
 
-		const monster = killableMonsters.find(_type =>
-			_type.aliases.some(name => stringMatches(name, inputType))
-		);
+		const monster = killableMonsters.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
 
-		const type = slicedCollectionLogTypes.find(_type =>
-			_type.aliases.some(name => stringMatches(name, inputType))
-		);
+		const type = slicedCollectionLogTypes.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
 
 		if (!type && !monster) {
 			return msg.send(
@@ -62,9 +57,7 @@ export default class extends BotCommand {
 				.get('bankImage')!
 				.generateCollectionLogImage(
 					log,
-					`${msg.author.username}'s ${(type || monster!).name} Sacrifice Log (${num}/${
-						items.length
-					})`,
+					`${msg.author.username}'s ${(type || monster!).name} Sacrifice Log (${num}/${items.length})`,
 					monster ? { ...monster, items: chunkedMonsterItems } : type
 				)
 		);

@@ -11,16 +11,7 @@ import { sendToChannelID } from '../../../lib/util/webhook';
 
 export default class extends Task {
 	async run(data: BirdhouseActivityTaskOptions) {
-		const {
-			birdhouseName,
-			birdhouseData,
-			userID,
-			channelID,
-			duration,
-			placing,
-			gotCraft,
-			currentDate
-		} = data;
+		const { birdhouseName, birdhouseData, userID, channelID, duration, placing, gotCraft, currentDate } = data;
 
 		const user = await this.client.users.fetch(userID);
 		const currentHunterLevel = user.skillLevel(SkillsEnum.Hunter);
@@ -57,9 +48,7 @@ export default class extends Task {
 			sendToChannelID(this.client, channelID, { content: str });
 		} else {
 			let str = '';
-			const birdhouseToCollect = birdhouses.find(
-				_birdhouse => _birdhouse.name === birdhouseData.lastPlaced
-			);
+			const birdhouseToCollect = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseData.lastPlaced);
 			if (!birdhouseToCollect) return;
 			if (placing) {
 				str = `${user}, ${user.minionName} finished placing 4x ${birdhouse.name} and collecting 4x full ${birdhouseToCollect.name}.`;
@@ -110,21 +99,12 @@ export default class extends Task {
 			await user.settings.update(UserSettings.Minion.BirdhouseTraps, updateBirdhouseData);
 
 			if (!placing) {
-				str += `\nThe birdhouses have been cleared. The birdhouse spots are ready to have new birdhouses.`;
+				str += '\nThe birdhouses have been cleared. The birdhouse spots are ready to have new birdhouses.';
 			} else {
 				str += `\n${user.minionName} tells you to come back after your birdhouses are full!`;
 			}
 
-			handleTripFinish(
-				this.client,
-				user,
-				channelID,
-				str,
-				undefined,
-				undefined,
-				data,
-				loot.bank
-			);
+			handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, loot.bank);
 		}
 	}
 }

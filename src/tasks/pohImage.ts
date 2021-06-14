@@ -5,13 +5,7 @@ import * as fs from 'fs';
 import { Task } from 'klasa';
 import path from 'path';
 
-import {
-	DUNGEON_FLOOR_Y,
-	GROUND_FLOOR_Y,
-	HOUSE_WIDTH,
-	Placeholders,
-	TOP_FLOOR_Y
-} from '../lib/poh';
+import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '../lib/poh';
 import { PoHTable } from '../lib/typeorm/PoHTable.entity';
 import { canvasImageFromBuffer } from '../lib/util/canvasUtil';
 
@@ -105,13 +99,7 @@ export default class PoHImage extends Task {
 						const image = await this.client.tasks.get('bankImage')!.getItemImage(id, 1);
 						const h = image.height * 0.8;
 						const w = image.width * 0.8;
-						ctx.drawImage(
-							image,
-							mX + (mount.width - w) / 2,
-							mY + (mount.height - h) / 2,
-							w,
-							h
-						);
+						ctx.drawImage(image, mX + (mount.width - w) / 2, mY + (mount.height - h) / 2, w, h);
 					}
 
 					continue;

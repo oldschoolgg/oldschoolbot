@@ -25,14 +25,9 @@ export default class extends BotCommand {
 	}
 
 	@requiresMinion
-	async run(
-		msg: KlasaMessage,
-		[gearType, itemArray]: [GearSetupTypes, Item[]]
-	): Promise<KlasaMessage> {
+	async run(msg: KlasaMessage, [gearType, itemArray]: [GearSetupTypes, Item[]]): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
-			return msg.send(
-				`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`
-			);
+			return msg.send(`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`);
 		}
 
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
@@ -41,7 +36,7 @@ export default class extends BotCommand {
 		const itemToUnequip = itemArray.find(i => hasItemEquipped(i.id, currentEquippedGear));
 
 		if (!itemToUnequip) {
-			return msg.send(`You don't have this item equipped!`);
+			return msg.send("You don't have this item equipped!");
 		}
 
 		// it thinks equipment can be null somehow but hasItemEquipped already checks that

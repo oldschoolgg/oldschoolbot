@@ -26,7 +26,8 @@ export default class extends Task {
 			!user.hasItemEquippedOrInBank('Helm of raedwald')
 		) {
 			loot.add('Helm of raedwald');
-			str += `\n\nWhile on the way to the sawmill, a helmet falls out of a tree onto the ground infront of you... **You've found the Helm of Raedwald!**`;
+			str +=
+				"\n\nWhile on the way to the sawmill, a helmet falls out of a tree onto the ground infront of you... **You've found the Helm of Raedwald!**";
 		}
 
 		await user.addItemsToBank(loot, true);

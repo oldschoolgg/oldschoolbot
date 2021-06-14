@@ -112,30 +112,22 @@ export function userCanUseTask(user: KlasaUser, task: AssignableSlayerTask, mast
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.settings.get(UserSettings.QP)) return false;
 	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
-	if (task.levelRequirements && !skillsMeetRequirements(user.rawSkills, task.levelRequirements))
-		return false;
+	if (task.levelRequirements && !skillsMeetRequirements(user.rawSkills, task.levelRequirements)) return false;
 	const myBlockList = user.settings.get(UserSettings.Slayer.BlockedTasks) ?? [];
 	if (myBlockList.includes(task.monster.id)) return false;
 	const myUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
 	// Slayer unlock restrictions:
 	const lmon = task.monster.name.toLowerCase();
 	const lmast = master.name.toLowerCase();
-	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped))
-		return false;
+	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped)) return false;
 	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed)) return false;
-	if (lmon === 'mithril dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.IHopeYouMithMe))
-		return false;
-	if (lmon === 'aviansie' && !myUnlocks.includes(SlayerTaskUnlocksEnum.WatchTheBirdie))
-		return false;
+	if (lmon === 'mithril dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.IHopeYouMithMe)) return false;
+	if (lmon === 'aviansie' && !myUnlocks.includes(SlayerTaskUnlocksEnum.WatchTheBirdie)) return false;
 	if (lmon === 'tzhaar-ket' && !myUnlocks.includes(SlayerTaskUnlocksEnum.HotStuff)) return false;
-	if (lmon === 'spitting wyvern' && myUnlocks.includes(SlayerTaskUnlocksEnum.StopTheWyvern))
-		return false;
+	if (lmon === 'spitting wyvern' && myUnlocks.includes(SlayerTaskUnlocksEnum.StopTheWyvern)) return false;
 	if (
 		lmon === 'feral vampyre' &&
-		(lmast === 'konar quo maten' ||
-			lmast === 'duradel' ||
-			lmast === 'nieve' ||
-			lmast === 'chaeldar') &&
+		(lmast === 'konar quo maten' || lmast === 'duradel' || lmast === 'nieve' || lmast === 'chaeldar') &&
 		!myUnlocks.includes(SlayerTaskUnlocksEnum.ActualVampyreSlayer)
 	)
 		return false;
@@ -154,9 +146,7 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master));
 	let bossTask = false;
 	if (
-		_user.settings
-			.get(UserSettings.Slayer.SlayerUnlocks)
-			.includes(SlayerTaskUnlocksEnum.LikeABoss) &&
+		_user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.LikeABoss) &&
 		(master.name.toLowerCase() === 'konar quo maten' ||
 			master.name.toLowerCase() === 'duradel' ||
 			master.name.toLowerCase() === 'nieve' ||
@@ -233,15 +223,11 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 		SlayerTaskTable.count({ where: { user: id, quantityRemaining: 0, skipped: false } })
 	]);
 
-	const slayerMaster = currentTask
-		? slayerMasters.find(master => master.id === currentTask.slayerMasterID)
-		: null;
+	const slayerMaster = currentTask ? slayerMasters.find(master => master.id === currentTask.slayerMasterID) : null;
 
 	return {
 		currentTask: currentTask ?? null,
-		assignedTask: currentTask
-			? slayerMaster!.tasks.find(m => m.monster.id === currentTask.monsterID)!
-			: null,
+		assignedTask: currentTask ? slayerMaster!.tasks.find(m => m.monster.id === currentTask.monsterID)! : null,
 		totalTasksDone,
 		slayerMaster
 	};
@@ -302,7 +288,7 @@ export function hasSlayerUnlock(
 		}
 	});
 
-	errors = missing.join(`, `);
+	errors = missing.join(', ');
 	return { success, errors };
 }
 
@@ -313,16 +299,8 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	const numDarkTotemBases = myLoot.bank[itemID('Dark totem base')];
 	const numBludgeonPieces = myLoot.bank[itemID('Bludgeon claw')];
 	const ringPieces = resolveItems(["Hydra's eye", "Hydra's fang", "Hydra's heart"]) as number[];
-	const totemPieces = resolveItems([
-		'Dark totem base',
-		'Dark totem middle',
-		'Dark totem top'
-	]) as number[];
-	const bludgeonPieces = resolveItems([
-		'Bludgeon claw',
-		'Bludgeon spine',
-		'Bludgeon axon'
-	]) as number[];
+	const totemPieces = resolveItems(['Dark totem base', 'Dark totem middle', 'Dark totem top']) as number[];
+	const bludgeonPieces = resolveItems(['Bludgeon claw', 'Bludgeon spine', 'Bludgeon axon']) as number[];
 
 	myLoot.filter(l => {
 		return (

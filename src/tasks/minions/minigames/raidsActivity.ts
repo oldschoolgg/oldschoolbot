@@ -20,9 +20,7 @@ const greenItems = resolveItems(['Twisted ancestral colour kit']);
 const blueItems = resolveItems(['Metamorphic dust']);
 const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
 
-const purpleItems = [...Object.values(coxLog), ...metamorphPets]
-	.flat(2)
-	.filter(i => !notPurple.includes(i));
+const purpleItems = [...Object.values(coxLog), ...metamorphPets].flat(2).filter(i => !notPurple.includes(i));
 
 export default class extends Task {
 	async run({ channelID, users, challengeMode, duration, leader }: RaidsOptions) {
@@ -87,18 +85,11 @@ export default class extends Task {
 			const isGreen = items.some(([item]) => greenItems.includes(item.id));
 			const isBlue = items.some(([item]) => blueItems.includes(item.id));
 			const emote = isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
-			if (
-				items.some(
-					([item]) =>
-						purpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id)
-				)
-			) {
+			if (items.some(([item]) => purpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
 				const itemsToAnnounce = filterBankFromArrayOfItems(purpleItems, userLoot.bank);
 				this.client.emit(
 					Events.ServerNotification,
-					`${emote} ${user.username} just received **${new Bank(
-						itemsToAnnounce
-					)}** on their ${formatOrdinal(
+					`${emote} ${user.username} just received **${new Bank(itemsToAnnounce)}** on their ${formatOrdinal(
 						await user.getMinigameScore(challengeMode ? 'RaidsChallengeMode' : 'Raids')
 					)} raid.`
 				);
@@ -114,10 +105,7 @@ export default class extends Task {
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.CoxLoot,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.CoxLoot),
-				totalLoot.bank
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CoxLoot), totalLoot.bank])
 		);
 
 		sendToChannelID(this.client, channelID, { content: resultMessage });

@@ -19,7 +19,7 @@ export default class extends BotCommand {
 			usage: '[quantity:int{1}|name:...string] [plantName:...string]',
 			aliases: ['af'],
 			usageDelim: ' ',
-			description: `Automatically plants the available things you can plant.`,
+			description: 'Automatically plants the available things you can plant.',
 			examples: ['+autofarm'],
 			categoryFlags: ['minion', 'skilling']
 		});
@@ -38,11 +38,7 @@ export default class extends BotCommand {
 			const lastPlantTime: number = patchData.plantTime;
 			const difference = currentDate - lastPlantTime;
 			if (difference < p.growthTime * Time.Minute) return false;
-			const numOfPatches = calcNumOfPatches(
-				p,
-				msg.author,
-				msg.author.settings.get(UserSettings.QP)
-			);
+			const numOfPatches = calcNumOfPatches(p, msg.author, msg.author.settings.get(UserSettings.QP));
 			const reqItems = new Bank(p.inputItems).multiply(numOfPatches);
 			if (!userBank.has(reqItems.bank)) {
 				return false;
@@ -50,9 +46,7 @@ export default class extends BotCommand {
 			return true;
 		});
 		if (!toPlant) {
-			return msg.channel.send(
-				`There's no Farming crops that you have the requirements to plant.`
-			);
+			return msg.channel.send("There's no Farming crops that you have the requirements to plant.");
 		}
 		return this.client.commands.get('farm')?.run(msg, [toPlant.name]);
 	}

@@ -18,12 +18,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		itemsRequired: resolveItems([
-			"Verac's helm",
-			"Verac's brassard",
-			"Verac's plateskirt",
-			"Verac's flail"
-		]),
+		itemsRequired: resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]),
 		notifyDrops: resolveItems(['Callisto cub']),
 		qpRequired: 0,
 		itemInBankBoosts: [
@@ -51,12 +46,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 8,
-		itemsRequired: resolveItems([
-			"Verac's helm",
-			"Verac's brassard",
-			"Verac's plateskirt",
-			"Verac's flail"
-		]),
+		itemsRequired: resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]),
 		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 3 }],
@@ -77,12 +67,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: true,
 		canBeKilled: true,
 		difficultyRating: 9,
-		itemsRequired: resolveItems([
-			"Verac's helm",
-			"Verac's brassard",
-			"Verac's plateskirt",
-			"Verac's flail"
-		]),
+		itemsRequired: resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]),
 		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 3 }],
@@ -135,10 +120,7 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 6,
 		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
-		itemInBankBoosts: [
-			{ [itemID("Karil's leathertop")]: 3 },
-			{ [itemID("Karil's leatherskirt")]: 3 }
-		],
+		itemInBankBoosts: [{ [itemID("Karil's leathertop")]: 3 }, { [itemID("Karil's leatherskirt")]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.125,
 		healAmountNeeded: 12 * 20,
@@ -176,18 +158,8 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			'Anti-dragon shield',
 			['Armadyl crossbow', 'Rune crossbow', 'Twisted bow', 'Dragon hunter crossbow'],
-			[
-				"Black d'hide body",
-				"Black d'hide body (g)",
-				"Black d'hide body (t)",
-				"Karil's leathertop"
-			],
-			[
-				"Black d'hide chaps",
-				"Black d'hide chaps (g)",
-				"Black d'hide chaps (t)",
-				"Karil's leatherskirt"
-			]
+			["Black d'hide body", "Black d'hide body (g)", "Black d'hide body (t)", "Karil's leathertop"],
+			["Black d'hide chaps", "Black d'hide chaps (g)", "Black d'hide chaps (t)", "Karil's leatherskirt"]
 		]),
 		notifyDrops: resolveItems(['Prince black dragon', 'Draconic visage']),
 		qpRequired: 0,
@@ -215,10 +187,7 @@ const killableBosses: KillableMonster[] = [
 		difficultyRating: 8,
 		notifyDrops: resolveItems(["Scorpia's offspring"]),
 		qpRequired: 0,
-		itemInBankBoosts: [
-			{ [itemID('Occult necklace')]: 10 },
-			{ [itemID('Harmonised nightmare staff')]: 10 }
-		],
+		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }, { [itemID('Harmonised nightmare staff')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.3,
 		healAmountNeeded: 15 * 20,

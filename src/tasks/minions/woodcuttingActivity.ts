@@ -30,24 +30,15 @@ export default class extends Task {
 
 		// Add clue scrolls
 		if (log.clueScrollChance) {
-			addSkillingClueToLoot(
-				user,
-				SkillsEnum.Woodcutting,
-				quantity,
-				log.clueScrollChance,
-				loot
-			);
+			addSkillingClueToLoot(user, SkillsEnum.Woodcutting, quantity, log.clueScrollChance, loot);
 		}
 
 		let str = `${user}, ${user.minionName} finished woodcutting, you received ${loot}. ${xpRes}`;
 
 		// Roll for pet
-		if (
-			log.petChance &&
-			roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)
-		) {
+		if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
 			loot.add('Beaver');
-			str += `\nYou have a funny feeling you're being followed...`;
+			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Woodcutting} **${user.username}'s** minion, ${

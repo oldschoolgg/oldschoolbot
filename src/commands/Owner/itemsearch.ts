@@ -23,7 +23,7 @@ export default class extends BotCommand {
 			}
 			return i.name.toLowerCase() === name.toLowerCase();
 		}).array();
-		if (items.length === 0) return msg.send(`No results for that item.`);
+		if (items.length === 0) return msg.send('No results for that item.');
 
 		const gettedItem = Items.get(name);
 
@@ -39,9 +39,7 @@ ${index + 1}. ${item.name}[${item.id}] Price[${item.price}] ${
 						item.tradeable_on_ge ? 'GE_Tradeable' : 'Not_GE_Tradeable'
 					} ${item.tradeable ? 'Tradeable' : 'Not_Tradeable'} ${
 						item.incomplete ? 'Incomplete' : 'Not_Incomplete'
-					} ${item.duplicate ? 'Duplicate' : 'Not_Duplicate'}${
-						gettedItem!.id === item.id ? '**' : ''
-					}`
+					} ${item.duplicate ? 'Duplicate' : 'Not_Duplicate'}${gettedItem!.id === item.id ? '**' : ''}`
 				)
 				.join('\n')}`
 		);

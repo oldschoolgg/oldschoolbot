@@ -38,13 +38,7 @@ export default class extends Task {
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(
-				loot.bank,
-				`Loot From ${quantity}x Pyramid Plunder:`,
-				true,
-				{ showNewCL: 1 },
-				user
-			);
+			.generateBankImage(loot.bank, `Loot From ${quantity}x Pyramid Plunder:`, true, { showNewCL: 1 }, user);
 
 		handleTripFinish(
 			this.client,

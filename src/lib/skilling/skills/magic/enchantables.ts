@@ -15,11 +15,7 @@ const jewelery: Enchantable[] = [
 	{
 		name: 'Zenyte ring',
 		id: itemID('Zenyte ring'),
-		input: new Bank()
-			.add('Zenyte ring')
-			.add('Cosmic rune', 1)
-			.add('Soul rune', 20)
-			.add('Blood rune', 20),
+		input: new Bank().add('Zenyte ring').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
 		output: new Bank().add('Ring of suffering'),
 		xp: 110,
 		level: 93
@@ -27,11 +23,7 @@ const jewelery: Enchantable[] = [
 	{
 		name: 'Zenyte amulet',
 		id: itemID('Zenyte amulet'),
-		input: new Bank()
-			.add('Zenyte amulet')
-			.add('Cosmic rune', 1)
-			.add('Soul rune', 20)
-			.add('Blood rune', 20),
+		input: new Bank().add('Zenyte amulet').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
 		output: new Bank().add('Amulet of torture'),
 		xp: 110,
 		level: 93
@@ -39,11 +31,7 @@ const jewelery: Enchantable[] = [
 	{
 		name: 'Zenyte necklace',
 		id: itemID('Zenyte necklace'),
-		input: new Bank()
-			.add('Zenyte necklace')
-			.add('Cosmic rune', 1)
-			.add('Soul rune', 20)
-			.add('Blood rune', 20),
+		input: new Bank().add('Zenyte necklace').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
 		output: new Bank().add('Necklace of anguish'),
 		xp: 110,
 		level: 93
@@ -51,11 +39,7 @@ const jewelery: Enchantable[] = [
 	{
 		name: 'Zenyte bracelet',
 		id: itemID('Zenyte bracelet'),
-		input: new Bank()
-			.add('Zenyte bracelet')
-			.add('Cosmic rune', 1)
-			.add('Soul rune', 20)
-			.add('Blood rune', 20),
+		input: new Bank().add('Zenyte bracelet').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
 		output: new Bank().add('Tormented bracelet'),
 		xp: 110,
 		level: 93
@@ -64,11 +48,7 @@ const jewelery: Enchantable[] = [
 	{
 		name: 'Onyx necklace',
 		id: itemID('Onyx necklace'),
-		input: new Bank()
-			.add('Onyx necklace')
-			.add('Cosmic rune', 1)
-			.add('Earth rune', 20)
-			.add('Fire rune', 20),
+		input: new Bank().add('Onyx necklace').add('Cosmic rune', 1).add('Earth rune', 20).add('Fire rune', 20),
 		output: new Bank().add('Berserker necklace'),
 		xp: 97,
 		level: 87
@@ -76,11 +56,7 @@ const jewelery: Enchantable[] = [
 	{
 		name: 'Onyx amulet',
 		id: itemID('Onyx amulet'),
-		input: new Bank()
-			.add('Onyx amulet')
-			.add('Cosmic rune', 1)
-			.add('Earth rune', 20)
-			.add('Fire rune', 20),
+		input: new Bank().add('Onyx amulet').add('Cosmic rune', 1).add('Earth rune', 20).add('Fire rune', 20),
 		output: new Bank().add('Amulet of fury'),
 		xp: 97,
 		level: 87
@@ -88,11 +64,7 @@ const jewelery: Enchantable[] = [
 	{
 		name: 'Onyx ring',
 		id: itemID('Onyx ring'),
-		input: new Bank()
-			.add('Onyx ring')
-			.add('Cosmic rune', 1)
-			.add('Earth rune', 20)
-			.add('Fire rune', 20),
+		input: new Bank().add('Onyx ring').add('Cosmic rune', 1).add('Earth rune', 20).add('Fire rune', 20),
 		output: new Bank().add('Ring of stone'),
 		xp: 97,
 		level: 87
@@ -100,11 +72,7 @@ const jewelery: Enchantable[] = [
 	{
 		name: 'Onyx bracelet',
 		id: itemID('Onyx bracelet'),
-		input: new Bank()
-			.add('Onyx bracelet')
-			.add('Cosmic rune', 1)
-			.add('Earth rune', 20)
-			.add('Fire rune', 20),
+		input: new Bank().add('Onyx bracelet').add('Cosmic rune', 1).add('Earth rune', 20).add('Fire rune', 20),
 		output: new Bank().add('Regen bracelet'),
 		xp: 97,
 		level: 87
@@ -113,11 +81,7 @@ const jewelery: Enchantable[] = [
 	{
 		name: 'Dragon necklace',
 		id: itemID('Dragon necklace'),
-		input: new Bank()
-			.add('Dragon necklace')
-			.add('Cosmic rune', 1)
-			.add('Earth rune', 15)
-			.add('Water rune', 15),
+		input: new Bank().add('Dragon necklace').add('Cosmic rune', 1).add('Earth rune', 15).add('Water rune', 15),
 		output: new Bank().add('Skills necklace'),
 		xp: 78,
 		level: 68
@@ -125,11 +89,7 @@ const jewelery: Enchantable[] = [
 	{
 		name: 'Dragonstone amulet',
 		id: itemID('Dragonstone amulet'),
-		input: new Bank()
-			.add('Dragonstone amulet')
-			.add('Cosmic rune', 1)
-			.add('Earth rune', 15)
-			.add('Water rune', 15),
+		input: new Bank().add('Dragonstone amulet').add('Cosmic rune', 1).add('Earth rune', 15).add('Water rune', 15),
 		output: new Bank().add('Amulet of glory'),
 		xp: 78,
 		level: 68
@@ -137,11 +97,7 @@ const jewelery: Enchantable[] = [
 	{
 		name: 'Dragonstone ring',
 		id: itemID('Dragonstone ring'),
-		input: new Bank()
-			.add('Dragonstone ring')
-			.add('Cosmic rune', 1)
-			.add('Earth rune', 15)
-			.add('Water rune', 15),
+		input: new Bank().add('Dragonstone ring').add('Cosmic rune', 1).add('Earth rune', 15).add('Water rune', 15),
 		output: new Bank().add('Ring of wealth'),
 		xp: 78,
 		level: 68
@@ -149,11 +105,7 @@ const jewelery: Enchantable[] = [
 	{
 		name: 'Dragonstone bracelet',
 		id: itemID('Dragonstone bracelet'),
-		input: new Bank()
-			.add('Dragonstone bracelet')
-			.add('Cosmic rune', 1)
-			.add('Earth rune', 15)
-			.add('Water rune', 15),
+		input: new Bank().add('Dragonstone bracelet').add('Cosmic rune', 1).add('Earth rune', 15).add('Water rune', 15),
 		output: new Bank().add('Combat bracelet'),
 		xp: 78,
 		level: 68
@@ -403,11 +355,7 @@ const bolts = [
 	{
 		name: '10x Sapphire bolts',
 		id: itemID('Sapphire bolts'),
-		input: new Bank()
-			.add('Sapphire bolts', 10)
-			.add('Water rune', 1)
-			.add('Cosmic rune', 1)
-			.add('Mind rune'),
+		input: new Bank().add('Sapphire bolts', 10).add('Water rune', 1).add('Cosmic rune', 1).add('Mind rune'),
 		output: new Bank().add('Sapphire bolts (e)', 10),
 		xp: 17,
 		level: 7
@@ -423,11 +371,7 @@ const bolts = [
 	{
 		name: '10x Emerald bolts',
 		id: itemID('Emerald bolts'),
-		input: new Bank()
-			.add('Emerald bolts', 10)
-			.add('Air rune', 3)
-			.add('Cosmic rune', 1)
-			.add('Nature rune'),
+		input: new Bank().add('Emerald bolts', 10).add('Air rune', 3).add('Cosmic rune', 1).add('Nature rune'),
 		output: new Bank().add('Emerald bolts (e)', 10),
 		xp: 37,
 		level: 27
@@ -443,11 +387,7 @@ const bolts = [
 	{
 		name: '10x Ruby bolts',
 		id: itemID('Ruby bolts'),
-		input: new Bank()
-			.add('Ruby bolts', 10)
-			.add('Blood rune', 1)
-			.add('Cosmic rune', 1)
-			.add('Fire rune', 5),
+		input: new Bank().add('Ruby bolts', 10).add('Blood rune', 1).add('Cosmic rune', 1).add('Fire rune', 5),
 		output: new Bank().add('Ruby bolts (e)', 10),
 		xp: 59,
 		level: 49
@@ -455,11 +395,7 @@ const bolts = [
 	{
 		name: '10x Diamond bolts',
 		id: itemID('Diamond bolts'),
-		input: new Bank()
-			.add('Diamond bolts', 10)
-			.add('Law rune', 2)
-			.add('Cosmic rune', 1)
-			.add('Earth rune', 10),
+		input: new Bank().add('Diamond bolts', 10).add('Law rune', 2).add('Cosmic rune', 1).add('Earth rune', 10),
 		output: new Bank().add('Diamond bolts (e)', 10),
 		xp: 67,
 		level: 57
@@ -467,11 +403,7 @@ const bolts = [
 	{
 		name: '10x Dragonstone bolts',
 		id: itemID('Dragonstone bolts'),
-		input: new Bank()
-			.add('Dragonstone bolts', 10)
-			.add('Soul rune', 1)
-			.add('Cosmic rune', 1)
-			.add('Earth rune', 15),
+		input: new Bank().add('Dragonstone bolts', 10).add('Soul rune', 1).add('Cosmic rune', 1).add('Earth rune', 15),
 		output: new Bank().add('Dragonstone bolts (e)', 10),
 		xp: 78,
 		level: 68
@@ -479,11 +411,7 @@ const bolts = [
 	{
 		name: '10x Onyx bolts',
 		id: itemID('Onyx bolts'),
-		input: new Bank()
-			.add('Onyx bolts', 10)
-			.add('Fire rune', 20)
-			.add('Cosmic rune', 1)
-			.add('Death rune', 1),
+		input: new Bank().add('Onyx bolts', 10).add('Fire rune', 20).add('Cosmic rune', 1).add('Death rune', 1),
 		output: new Bank().add('Onyx bolts (e)', 10),
 		xp: 97,
 		level: 87
@@ -516,11 +444,7 @@ const bolts = [
 	{
 		name: '10x Emerald dragon bolts',
 		id: itemID('Emerald dragon bolts'),
-		input: new Bank()
-			.add('Emerald dragon bolts', 10)
-			.add('Air rune', 3)
-			.add('Nature rune')
-			.add('Cosmic rune', 1),
+		input: new Bank().add('Emerald dragon bolts', 10).add('Air rune', 3).add('Nature rune').add('Cosmic rune', 1),
 		output: new Bank().add('Emerald dragon bolts (e)', 10),
 		xp: 37,
 		level: 27
@@ -536,11 +460,7 @@ const bolts = [
 	{
 		name: '10x Onyx dragon bolts',
 		id: itemID('Onyx dragon bolts'),
-		input: new Bank()
-			.add('Onyx dragon bolts', 10)
-			.add('Fire rune', 20)
-			.add('Death rune', 20)
-			.add('Cosmic rune', 1),
+		input: new Bank().add('Onyx dragon bolts', 10).add('Fire rune', 20).add('Death rune', 20).add('Cosmic rune', 1),
 		output: new Bank().add('Onyx dragon bolts (e)', 10),
 		xp: 97,
 		level: 87
@@ -564,11 +484,7 @@ const bolts = [
 	{
 		name: '10x Ruby dragon bolts',
 		id: itemID('Ruby dragon bolts'),
-		input: new Bank()
-			.add('Ruby dragon bolts', 10)
-			.add('Fire rune', 5)
-			.add('Blood rune')
-			.add('Cosmic rune', 1),
+		input: new Bank().add('Ruby dragon bolts', 10).add('Fire rune', 5).add('Blood rune').add('Cosmic rune', 1),
 		output: new Bank().add('Ruby dragon bolts (e)', 10),
 		xp: 59,
 		level: 49
@@ -576,11 +492,7 @@ const bolts = [
 	{
 		name: '10x Sapphire dragon bolts',
 		id: itemID('Sapphire dragon bolts'),
-		input: new Bank()
-			.add('Sapphire dragon bolts', 10)
-			.add('Water rune')
-			.add('Mind rune')
-			.add('Cosmic rune', 1),
+		input: new Bank().add('Sapphire dragon bolts', 10).add('Water rune').add('Mind rune').add('Cosmic rune', 1),
 		output: new Bank().add('Sapphire dragon bolts (e)', 10),
 		xp: 17.5,
 		level: 7

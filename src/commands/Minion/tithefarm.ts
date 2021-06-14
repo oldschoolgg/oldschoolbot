@@ -25,15 +25,10 @@ export default class extends BotCommand {
 
 		// Reduce time based on tithe farm completions
 		const titheFarmsCompleted = user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
-		const percentIncreaseFromCompletions =
-			Math.floor(Math.min(50, titheFarmsCompleted) / 2) / 100;
+		const percentIncreaseFromCompletions = Math.floor(Math.min(50, titheFarmsCompleted) / 2) / 100;
 		baseTime = Math.floor(baseTime * (1 - percentIncreaseFromCompletions));
 		Math.floor(percentIncreaseFromCompletions * 100) > 0
-			? boostStr.push(
-					`${Math.floor(
-						percentIncreaseFromCompletions * 100
-					)}% from Tithe Farms completed`
-			  )
+			? boostStr.push(`${Math.floor(percentIncreaseFromCompletions * 100)}% from Tithe Farms completed`)
 			: boostStr.push('');
 
 		// Reduce time if user has graceful equipped
@@ -73,11 +68,9 @@ export default class extends BotCommand {
 		});
 
 		return msg.send(
-			`Your minion is off completing a round of the ${
-				Emoji.MinigameIcon
-			} Tithe Farm. It'll take ${formatDuration(duration)} to finish.\n\n${
-				boostStr.length > 0 ? `**Boosts:** ` : ``
-			}${boostStr.join(', ')}`
+			`Your minion is off completing a round of the ${Emoji.MinigameIcon} Tithe Farm. It'll take ${formatDuration(
+				duration
+			)} to finish.\n\n${boostStr.length > 0 ? '**Boosts:** ' : ''}${boostStr.join(', ')}`
 		);
 	}
 }

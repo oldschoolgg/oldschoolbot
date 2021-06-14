@@ -24,9 +24,7 @@ export default class extends BotCommand {
 		msg.author.settings.update(UserSettings.GP, 1_000_000_000);
 		msg.author.settings.update(UserSettings.QP, MAX_QP);
 		msg.author.settings.update(UserSettings.Slayer.SlayerPoints, 100000);
-		const loot: Record<string, number> = Object.fromEntries(
-			Eatables.map(({ id }) => [id, 1000])
-		);
+		const loot: Record<string, number> = Object.fromEntries(Eatables.map(({ id }) => [id, 1000]));
 		const bank = new Bank(loot);
 		bank.add('Zamorakian spear');
 		bank.add('Dragon warhammer');

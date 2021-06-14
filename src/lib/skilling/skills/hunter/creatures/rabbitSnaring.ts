@@ -5,7 +5,7 @@ import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const rabbitSnaringCreatures: Creature[] = [
 	{
-		name: `White rabbit`,
+		name: 'White rabbit',
 		id: 30,
 		aliases: ['white rabbit', 'rabbit'],
 		level: 27,

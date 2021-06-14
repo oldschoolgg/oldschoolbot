@@ -54,9 +54,7 @@ export default class extends BotCommand {
 					results.push([npc.name, round(xpReceived, 2) / 5, damageTaken / 5]);
 				}
 				for (const [name, xp, damageTaken] of results.sort((a, b) => a[1] - b[1])) {
-					str += `\n${name} ${xp.toLocaleString()} XP/HR and ${
-						damageTaken / 20
-					} Sharks/hr`;
+					str += `\n${name} ${xp.toLocaleString()} XP/HR and ${damageTaken / 20} Sharks/hr`;
 				}
 				str += '\n\n\n';
 			}
@@ -78,10 +76,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (
-			pickpocketable.qpRequired &&
-			msg.author.settings.get(UserSettings.QP) < pickpocketable.qpRequired
-		) {
+		if (pickpocketable.qpRequired && msg.author.settings.get(UserSettings.QP) < pickpocketable.qpRequired) {
 			return msg.send(
 				`You need atleast **${pickpocketable.qpRequired}** QP to pickpocket a ${pickpocketable.name}.`
 			);
@@ -91,11 +86,7 @@ export default class extends BotCommand {
 			pickpocketable.itemsRequired &&
 			!bankHasAllItemsFromBank(msg.author.allItemsOwned().bank, pickpocketable.itemsRequired)
 		) {
-			return msg.send(
-				`You need these items to pickpocket this NPC: ${new Bank(
-					pickpocketable.itemsRequired
-				)}.`
-			);
+			return msg.send(`You need these items to pickpocket this NPC: ${new Bank(pickpocketable.itemsRequired)}.`);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Thieving) < pickpocketable.level) {
@@ -129,7 +120,7 @@ export default class extends BotCommand {
 
 		const [hasArdyHard] = await userhasDiaryTier(msg.author, ArdougneDiary.hard);
 		if (hasArdyHard) {
-			boosts.push(`+10% chance of success from Ardougne Hard diary`);
+			boosts.push('+10% chance of success from Ardougne Hard diary');
 		}
 
 		const [successfulQuantity, damageTaken, xpReceived] = calcLootXPPickpocketing(
@@ -150,19 +141,12 @@ export default class extends BotCommand {
 		});
 
 		if (rogueOutfitPercentBonus(msg.author) > 0) {
-			boosts.push(
-				`${rogueOutfitPercentBonus(
-					msg.author
-				)}% chance of x2 loot due to rogue outfit equipped`
-			);
+			boosts.push(`${rogueOutfitPercentBonus(msg.author)}% chance of x2 loot due to rogue outfit equipped`);
 		}
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.ThievingCost,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.ThievingCost),
-				foodRemoved
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.ThievingCost), foodRemoved])
 		);
 
 		await addSubTaskToActivityTask<PickpocketActivityTaskOptions>(this.client, {
@@ -179,9 +163,7 @@ export default class extends BotCommand {
 
 		let str = `${msg.author.minionName} is now going to pickpocket a ${
 			pickpocketable.name
-		} ${quantity}x times, it'll take around ${formatDuration(
-			duration
-		)} to finish. Removed ${foodString}`;
+		} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish. Removed ${foodString}`;
 
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

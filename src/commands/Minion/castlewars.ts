@@ -49,9 +49,7 @@ You have played ${kc.CastleWars} Castle Wars games.`);
 		return msg.send(
 			`${
 				msg.author.minionName
-			} is now doing ${quantity} games of Castle Wars. The trip will take around ${formatDuration(
-				duration
-			)}.`
+			} is now doing ${quantity} games of Castle Wars. The trip will take around ${formatDuration(duration)}.`
 		);
 	}
 }

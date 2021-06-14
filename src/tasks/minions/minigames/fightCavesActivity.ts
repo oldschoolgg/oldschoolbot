@@ -8,13 +8,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	calcPercentOfNum,
-	calcWhatPercent,
-	formatDuration,
-	percentChance,
-	rand
-} from '../../../lib/util';
+import { calcPercentOfNum, calcWhatPercent, formatDuration, percentChance, rand } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -74,7 +68,7 @@ export default class extends Task {
 					preJadDeathTime
 				)} into your attempt.${slayerMsg} The following supplies were refunded back into your bank: ${itemLootBank}.`,
 				res => {
-					user.log(`continued trip of fightcaves`);
+					user.log('continued trip of fightcaves');
 					return this.client.commands.get('fightcaves')!.run(res, []);
 				},
 				await chatHeadImage({
@@ -103,7 +97,7 @@ export default class extends Task {
 				channelID,
 				`${user}`,
 				res => {
-					user.log(`continued trip of fightcaves`);
+					user.log('continued trip of fightcaves');
 					return this.client.commands.get('fightcaves')!.run(res, []);
 				},
 				await chatHeadImage({
@@ -121,11 +115,9 @@ export default class extends Task {
 		if (loot.has('Tzrek-jad')) {
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}** just received their ${formatOrdinal(
-					user.getCL(TzrekJadPet) + 1
-				)} ${Emoji.TzRekJad} TzRek-jad pet by killing TzTok-Jad, on their ${formatOrdinal(
-					user.getKC(TzTokJad.id)
-				)} kill!`
+				`**${user.username}** just received their ${formatOrdinal(user.getCL(TzrekJadPet) + 1)} ${
+					Emoji.TzRekJad
+				} TzRek-jad pet by killing TzTok-Jad, on their ${formatOrdinal(user.getKC(TzTokJad.id))} kill!`
 			);
 		}
 
@@ -164,7 +156,7 @@ export default class extends Task {
 			channelID,
 			`${user}${slayerMsg}`,
 			res => {
-				user.log(`continued trip of fightcaves`);
+				user.log('continued trip of fightcaves');
 				return this.client.commands.get('fightcaves')!.run(res, []);
 			},
 			await chatHeadImage({

@@ -28,7 +28,7 @@ export default class extends BotCommand {
 		const osItem = itemArray.find(i => userBank[i.id]);
 
 		if (!osItem) {
-			return msg.send(`You don't have any of this item to drop!`);
+			return msg.send("You don't have any of this item to drop!");
 		}
 
 		const numItemsHas = userBank[osItem.id];
@@ -47,8 +47,7 @@ export default class extends BotCommand {
 
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'drop',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'drop',
 					options
 				);
 			} catch (err) {

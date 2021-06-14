@@ -12,12 +12,7 @@ export abstract class BotCommand extends Command {
 	public examples: string[];
 	public categoryFlags: CategoryFlag[];
 
-	public constructor(
-		store: CommandStore,
-		file: string[],
-		directory: string,
-		options: BotCommandOptions = {}
-	) {
+	public constructor(store: CommandStore, file: string[], directory: string, options: BotCommandOptions = {}) {
 		super(
 			store,
 			file,

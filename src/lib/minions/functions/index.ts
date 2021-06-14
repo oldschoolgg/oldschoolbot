@@ -5,16 +5,12 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import { NIGHTMARES_HP } from '../../constants';
 import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
-import {
-	xpCannonVaryPercent,
-	xpPercentToCannon,
-	xpPercentToCannonM
-} from '../data/combatConstants';
+import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
 import { AddMonsterXpParams, KillableMonster } from '../types';
 
-export { default as reducedTimeForGroup } from './reducedTimeForGroup';
 export { default as calculateMonsterFood } from './calculateMonsterFood';
+export { default as reducedTimeForGroup } from './reducedTimeForGroup';
 
 export type AttackStyles =
 	| SkillsEnum.Attack
@@ -47,10 +43,7 @@ export function resolveAttackStyles(
 
 	// If their attack style can't be used on this monster, or they have no selected attack styles selected,
 	// use the monsters default attack style.
-	if (
-		attackStyles.length === 0 ||
-		attackStyles.some(s => killableMon?.disallowedAttackStyles?.includes(s))
-	) {
+	if (attackStyles.length === 0 || attackStyles.some(s => killableMon?.disallowedAttackStyles?.includes(s))) {
 		attackStyles = monsterStyles;
 	}
 
@@ -63,15 +56,9 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 	let hp = miscHpMap[params.monsterID] ?? 1;
 	let xpMultiplier = 1;
 	const cannonQty = params.cannonMulti
-		? randomVariation(
-				Math.floor((xpPercentToCannonM / 100) * params.quantity),
-				xpCannonVaryPercent
-		  )
+		? randomVariation(Math.floor((xpPercentToCannonM / 100) * params.quantity), xpCannonVaryPercent)
 		: params.usingCannon
-		? randomVariation(
-				Math.floor((xpPercentToCannon / 100) * params.quantity),
-				xpCannonVaryPercent
-		  )
+		? randomVariation(Math.floor((xpPercentToCannon / 100) * params.quantity), xpCannonVaryPercent)
 		: 0;
 
 	const normalQty = params.quantity - cannonQty;

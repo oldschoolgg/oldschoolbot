@@ -17,7 +17,7 @@ export default class extends BotCommand {
 			cooldown: 5,
 			altProtection: true,
 			aliases: ['tfs', 'tfshop'],
-			description: `Allows a player to purchase farmer's items from the tithefarm shop.`,
+			description: "Allows a player to purchase farmer's items from the tithefarm shop.",
 			examples: ['+tfs farmers hat', '+tithefarmshop farmers jacket'],
 			categoryFlags: ['minion']
 		});
@@ -61,9 +61,7 @@ export default class extends BotCommand {
 			// Confirm the user wants to buy
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 					{
 						max: 1,
 						time: Time.Second * 15,
@@ -71,21 +69,14 @@ export default class extends BotCommand {
 					}
 				);
 			} catch (err) {
-				return sellMsg.edit(
-					`Cancelling purchase of ${quantity} ${toTitleCase(buyable.name)}.`
-				);
+				return sellMsg.edit(`Cancelling purchase of ${quantity} ${toTitleCase(buyable.name)}.`);
 			}
 		}
 
-		await msg.author.settings.update(
-			UserSettings.Stats.TitheFarmPoints,
-			titheFarmPoints - titheFarmPointsCost
-		);
+		await msg.author.settings.update(UserSettings.Stats.TitheFarmPoints, titheFarmPoints - titheFarmPointsCost);
 
 		await msg.author.addItemsToBank(outItems, true);
 
-		return msg.send(
-			`You purchased ${itemString} for ${titheFarmPointsCost} Tithe Farm points.`
-		);
+		return msg.send(`You purchased ${itemString} for ${titheFarmPointsCost} Tithe Farm points.`);
 	}
 }

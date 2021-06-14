@@ -20,7 +20,8 @@ export default class extends BotCommand {
 			usage: '<easy|medium|hard|easier|current|completed>',
 			usageDelim: ' ',
 			aliases: ['fc', 'fcontract'],
-			description: `Allows a player to be assigned a farming contract. Can also check stats for farming contracts.`,
+			description:
+				'Allows a player to be assigned a farming contract. Can also check stats for farming contracts.',
 			examples: ['+fc easy', '+fcontract current', '+farmingcontract completed'],
 			categoryFlags: ['minion']
 		});
@@ -28,14 +29,10 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(
-		msg: KlasaMessage,
-		[contractLevel]: ['easy' | 'medium' | 'hard' | 'easier' | 'current' | 'completed']
-	) {
+	async run(msg: KlasaMessage, [contractLevel]: ['easy' | 'medium' | 'hard' | 'easier' | 'current' | 'completed']) {
 		await msg.author.settings.sync(true);
 		const farmingLevel = msg.author.skillLevel(SkillsEnum.Farming);
-		const currentContract =
-			msg.author.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
+		const currentContract = msg.author.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
 
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
@@ -50,7 +47,7 @@ export default class extends BotCommand {
 			}
 			return msg.send(
 				await chatHeadImage({
-					content: `I tried to check my diary but you haven't completed any farming contracts yet...`,
+					content: "I tried to check my diary but you haven't completed any farming contracts yet...",
 					head: 'jane'
 				})
 			);
@@ -59,7 +56,7 @@ export default class extends BotCommand {
 		if (bankHasItem(userBank, itemID('Seed pack'), 1)) {
 			return msg.send(
 				await chatHeadImage({
-					content: `You need to open your seed pack before receiving a new contract!`,
+					content: 'You need to open your seed pack before receiving a new contract!',
 					head: 'jane'
 				})
 			);
@@ -68,7 +65,7 @@ export default class extends BotCommand {
 		if (!currentContract.hasContract && contractLevel === 'easier') {
 			return msg.send(
 				await chatHeadImage({
-					content: `You currently don't have a contract, so you can't ask for something easier!`,
+					content: "You currently don't have a contract, so you can't ask for something easier!",
 					head: 'jane'
 				})
 			);
@@ -77,7 +74,7 @@ export default class extends BotCommand {
 		if (!currentContract.hasContract && contractLevel === 'current') {
 			return msg.send(
 				await chatHeadImage({
-					content: `You currently don't have a contract!`,
+					content: "You currently don't have a contract!",
 					head: 'jane'
 				})
 			);
@@ -107,7 +104,7 @@ export default class extends BotCommand {
 				if (currentContract.difficultyLevel === 'easy') {
 					return msg.send(
 						await chatHeadImage({
-							content: `Pardon me, but you already have the easiest contract level available!`,
+							content: 'Pardon me, but you already have the easiest contract level available!',
 							head: 'jane'
 						})
 					);
@@ -125,10 +122,7 @@ export default class extends BotCommand {
 					contractsCompleted: currentContract.contractsCompleted
 				};
 
-				await msg.author.settings.update(
-					UserSettings.Minion.FarmingContract,
-					farmingContractUpdate
-				);
+				await msg.author.settings.update(UserSettings.Minion.FarmingContract, farmingContractUpdate);
 
 				return msg.send(
 					await chatHeadImage({
@@ -140,7 +134,7 @@ export default class extends BotCommand {
 
 			let easierStr = '';
 			if (currentContract.difficultyLevel !== 'easy') {
-				easierStr = `\nYou can request an easier contract if you'd like.`;
+				easierStr = "\nYou can request an easier contract if you'd like.";
 			}
 			return msg.send(
 				await chatHeadImage({
@@ -164,10 +158,7 @@ export default class extends BotCommand {
 			contractsCompleted: currentContract.contractsCompleted
 		};
 
-		await msg.author.settings.update(
-			UserSettings.Minion.FarmingContract,
-			farmingContractUpdate
-		);
+		await msg.author.settings.update(UserSettings.Minion.FarmingContract, farmingContractUpdate);
 
 		return msg.send(
 			await chatHeadImage({

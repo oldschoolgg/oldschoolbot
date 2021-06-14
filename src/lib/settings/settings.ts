@@ -44,11 +44,7 @@ export async function batchSyncNewUserUsernames(client: KlasaClient) {
 		.createQueryBuilder()
 		.insert()
 		.into(NewUserTable)
-		.values(
-			client.users.cache
-				.filter(u => u.hasMinion)
-				.map(u => ({ id: u.id, username: u.username }))
-		)
+		.values(client.users.cache.filter(u => u.hasMinion).map(u => ({ id: u.id, username: u.username })))
 		.orUpdate({
 			conflict_target: ['id'],
 			overwrite: ['username']
@@ -66,11 +62,7 @@ export async function getMinigameEntity(userID: string): Promise<MinigameTable> 
 	return value;
 }
 
-export async function incrementMinigameScore(
-	userID: string,
-	minigame: MinigameKey,
-	amountToAdd = 1
-) {
+export async function incrementMinigameScore(userID: string, minigame: MinigameKey, amountToAdd = 1) {
 	const entity = await getMinigameEntity(userID);
 	const game = Minigames.find(m => m.key === minigame)!;
 
@@ -88,11 +80,11 @@ export async function incrementMinigameScore(
 
 export async function getMinionName(userID: string): Promise<string> {
 	const result = await client.query<{ name?: string; isIronman: boolean; icon?: string }[]>(
-		`SELECT "minion.name" as name, "minion.ironman" as isIronman, "minion.icon" as icon FROM users WHERE id = $1;`,
+		'SELECT "minion.name" as name, "minion.ironman" as isIronman, "minion.icon" as icon FROM users WHERE id = $1;',
 		[userID]
 	);
 	if (result.length === 0) {
-		throw new Error(`No user found in database for minion name.`);
+		throw new Error('No user found in database for minion name.');
 	}
 
 	const [{ name, isIronman, icon }] = result;
@@ -101,7 +93,5 @@ export async function getMinionName(userID: string): Promise<string> {
 
 	const displayIcon = icon ?? Emoji.Minion;
 
-	return name
-		? `${prefix} ${displayIcon} **${Util.escapeMarkdown(name)}**`
-		: `${prefix} ${displayIcon} Your minion`;
+	return name ? `${prefix} ${displayIcon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${displayIcon} Your minion`;
 }

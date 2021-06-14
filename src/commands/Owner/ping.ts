@@ -17,7 +17,7 @@ export default class extends BotCommand {
 		const roles = await PingableRolesTable.find();
 		const roleToPing = roles.find(i => i.id === Number(str) || stringMatches(i.name, str));
 		if (!roleToPing) {
-			return message.channel.send(`No role with that name found.`);
+			return message.channel.send('No role with that name found.');
 		}
 		if (!message.member) return;
 		if (!message.member?.roles.cache.has('734055552933429280')) {

@@ -7,8 +7,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
-			description:
-				'Shows the creation date/avg playtime of your account. See: https://i.imgur.com/PPviStZ.png',
+			description: 'Shows the creation date/avg playtime of your account. See: https://i.imgur.com/PPviStZ.png',
 			usage: '[playtime:int{1,10000}] [arrival:int{1,10000}]',
 			usageDelim: ' ',
 			examples: ['+hans 197 1016'],

@@ -33,10 +33,7 @@ export default class extends Event {
 	async init() {
 		if (!redditAppConfig) {
 			this.disable();
-			this.client.emit(
-				'log',
-				`Disabling Reddit Posts because there is no reddit credentials.`
-			);
+			this.client.emit('log', 'Disabling Reddit Posts because there is no reddit credentials.');
 			return;
 		}
 
@@ -57,9 +54,7 @@ export default class extends Event {
 			this.sendEmbed({
 				text: comment.body.slice(0, 1950),
 				url: `https://www.reddit.com${comment.permalink}?context=1`,
-				jmod: JagexMods.find(
-					mod => mod.redditUsername.toLowerCase() === comment.author.name.toLowerCase()
-				)
+				jmod: JagexMods.find(mod => mod.redditUsername.toLowerCase() === comment.author.name.toLowerCase())
 			});
 		});
 
@@ -79,9 +74,7 @@ export default class extends Event {
 				text: post.selftext,
 				url: `https://www.reddit.com${post.permalink}`,
 				title: post.title,
-				jmod: JagexMods.find(
-					mod => mod.redditUsername.toLowerCase() === post.author.name.toLowerCase()
-				)
+				jmod: JagexMods.find(mod => mod.redditUsername.toLowerCase() === post.author.name.toLowerCase())
 			});
 		});
 	}
@@ -90,11 +83,7 @@ export default class extends Event {
 		const embed = new MessageEmbed().setDescription(he.decode(text)).setColor(1942002);
 
 		if (jmod) {
-			embed.setAuthor(
-				jmod.formattedName,
-				undefined,
-				`https://www.reddit.com/user/${jmod.redditUsername}`
-			);
+			embed.setAuthor(jmod.formattedName, undefined, `https://www.reddit.com/user/${jmod.redditUsername}`);
 		}
 
 		if (title) {
@@ -105,9 +94,7 @@ export default class extends Event {
 		this.client.guilds.cache
 			.filter(guild => Boolean(guild.settings.get(GuildSettings.JMODComments)))
 			.map(guild => {
-				const channel = guild.channels.cache.get(
-					guild.settings.get(GuildSettings.JMODComments)
-				);
+				const channel = guild.channels.cache.get(guild.settings.get(GuildSettings.JMODComments));
 				if (channel && channel instanceof TextChannel && channel.postable) {
 					sendToChannelID(this.client, channel.id, { content: `<${url}>`, embed });
 				}

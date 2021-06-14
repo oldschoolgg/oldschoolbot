@@ -20,9 +20,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [petName]: [string]) {
 		const cleanName = cleanString(petName);
 
-		const pet = pets.find(
-			_pet => cleanString(_pet.name) === cleanName || _pet.altNames.includes(cleanName)
-		);
+		const pet = pets.find(_pet => cleanString(_pet.name) === cleanName || _pet.altNames.includes(cleanName));
 		if (!pet) return msg.send("I don't recognize that pet!");
 
 		let count = 0;

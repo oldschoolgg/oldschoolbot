@@ -118,10 +118,6 @@ interface NormalGauntletOptions {
 }
 
 export function gauntlet({ died, type }: NormalGauntletOptions) {
-	const loot = died
-		? DiedTable.roll()
-		: type === 'normal'
-		? StandardTable.roll()
-		: CorruptedTable.roll();
+	const loot = died ? DiedTable.roll() : type === 'normal' ? StandardTable.roll() : CorruptedTable.roll();
 	return loot;
 }

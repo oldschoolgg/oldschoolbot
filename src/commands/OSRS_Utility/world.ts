@@ -23,10 +23,7 @@ export default class extends BotCommand {
 		const embed = new MessageEmbed()
 			.setColor(7981338)
 			.setThumbnail('https://i.imgur.com/56i6oyn.png')
-			.setFooter(
-				`Old School RuneScape World ${world.number}`,
-				'https://i.imgur.com/fVakfwp.png'
-			)
+			.setFooter(`Old School RuneScape World ${world.number}`, 'https://i.imgur.com/fVakfwp.png')
 			.addField('Access', world.members ? 'Members' : 'Free to Play', true)
 			.addField('Location', world.location, true)
 			.addField('Players', world.players, true)

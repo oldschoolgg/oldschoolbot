@@ -37,24 +37,16 @@ export default class extends BotCommand {
 
 		ctx.fillText('Your General Graardor kill count is: ', 11, 10);
 		ctx.fillStyle = '#ff0000';
-		ctx.fillText(
-			kc.toString(),
-			12 + ctx.measureText('Your General Graardor kill count is: ').width,
-			10
-		);
+		ctx.fillText(kc.toString(), 12 + ctx.measureText('Your General Graardor kill count is: ').width, 10);
 
 		ctx.fillStyle = '#ff0000';
-		ctx.fillText(`You have a funny feeling like you're being followed.`, 11, 25);
+		ctx.fillText("You have a funny feeling like you're being followed.", 11, 25);
 
 		ctx.fillStyle = '#005f00';
 		ctx.fillText(`${username} received a drop: Pet general graardor`, 11, 40);
 
 		ctx.fillStyle = '#005f00';
-		ctx.fillText(
-			`${username} received a drop: Bandos ${Math.random() > 0.5 ? 'chestplate' : 'tassets'}`,
-			11,
-			54
-		);
+		ctx.fillText(`${username} received a drop: Bandos ${Math.random() > 0.5 ? 'chestplate' : 'tassets'}`, 11, 54);
 
 		/* Username */
 		const randMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
@@ -63,8 +55,6 @@ export default class extends BotCommand {
 		ctx.fillStyle = '#0000ff';
 		ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
 
-		return msg.send(
-			new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`)
-		);
+		return msg.send(new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`));
 	}
 }

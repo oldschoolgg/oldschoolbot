@@ -90,7 +90,7 @@ export default class extends BotCommand {
 		if (!msg.author.hasGracefulEquipped()) {
 			return msg.send(
 				await chatHeadImage({
-					content: `Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!`,
+					content: 'Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!',
 					head: 'izzy'
 				})
 			);
@@ -100,7 +100,7 @@ export default class extends BotCommand {
 
 		const [hasKaramjaElite] = await userhasDiaryTier(msg.author, KaramjaDiary.elite);
 		if (hasKaramjaElite) {
-			boosts.push(`10% extra tickets for Karamja Elite diary`);
+			boosts.push('10% extra tickets for Karamja Elite diary');
 		}
 
 		await addSubTaskToActivityTask<AgilityArenaActivityTaskOptions>(this.client, {
@@ -112,9 +112,7 @@ export default class extends BotCommand {
 			minigameID: 'AgilityArena'
 		});
 
-		let str = `${
-			msg.author.minionName
-		} is now doing the Brimhaven Agility Arena for ${formatDuration(duration)}.`;
+		let str = `${msg.author.minionName} is now doing the Brimhaven Agility Arena for ${formatDuration(duration)}.`;
 
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -124,9 +122,7 @@ export default class extends BotCommand {
 
 	async buy(msg: KlasaMessage, [input = '', qty = 1]: [string | undefined, number | undefined]) {
 		const buyable = buyables.find(
-			i =>
-				stringMatches(input, i.item.name) ||
-				i.aliases.some(alias => stringMatches(alias, input))
+			i => stringMatches(input, i.item.name) || i.aliases.some(alias => stringMatches(alias, input))
 		);
 		const isNotValid = !buyable && !['recolor', 'xp'].includes(input);
 		if (isNotValid) {
@@ -149,7 +145,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 		if (amountTicketsHas === 0) {
 			return msg.send(
 				await chatHeadImage({
-					content: `Are ye serious! You have no tickets, you can't buy anythin!`,
+					content: "Are ye serious! You have no tickets, you can't buy anythin!",
 					head: 'izzy'
 				})
 			);
@@ -158,13 +154,11 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 		if (buyable) {
 			const cost = qty * buyable.cost;
 			if (amountTicketsHas < cost) {
-				return msg.send(`You don't have enough Agility arena tickets.`);
+				return msg.send("You don't have enough Agility arena tickets.");
 			}
 			await msg.author.removeItemFromBank(itemID('Agility arena ticket'), cost);
 			await msg.author.addItemsToBank({ [buyable.item.id]: qty }, true);
-			return msg.send(
-				`Successfully purchased ${qty}x ${buyable.item.name} for ${cost}x Agility arena tickets.`
-			);
+			return msg.send(`Successfully purchased ${qty}x ${buyable.item.name} for ${cost}x Agility arena tickets.`);
 		}
 		if (input === 'xp') {
 			if (!(qty in ticketQuantities)) {
@@ -175,7 +169,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 				);
 			}
 			if (amountTicketsHas < qty) {
-				return msg.send(`You don't have enough Agility arena tickets.`);
+				return msg.send("You don't have enough Agility arena tickets.");
 			}
 			const [hasKaramjaMed] = await userhasDiaryTier(msg.author, KaramjaDiary.medium);
 			const xpToGive = determineXPFromTickets(qty, msg.author, hasKaramjaMed);
@@ -188,7 +182,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 				amount: xpToGive
 			});
 			if (hasKaramjaMed) {
-				str += `\n\nYou received 10% extra XP for the Karamja Medium Diary.`;
+				str += '\n\nYou received 10% extra XP for the Karamja Medium Diary.';
 			}
 			return msg.send(str);
 		}
@@ -198,7 +192,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			if (!bank.has(plainGraceful)) {
 				return msg.send(
 					await chatHeadImage({
-						content: `Ye don't have a full set of Graceful in your bank for me to recolor!`,
+						content: "Ye don't have a full set of Graceful in your bank for me to recolor!",
 						head: 'izzy'
 					})
 				);
@@ -221,7 +215,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			});
 			return msg.send(
 				await chatHeadImage({
-					content: `I've recolored ye Graceful set, and taken your tickets!`,
+					content: "I've recolored ye Graceful set, and taken your tickets!",
 					head: 'izzy'
 				})
 			);

@@ -62,7 +62,7 @@ export default class extends BotCommand {
 				t.add(Items.random().id);
 			}
 			await msg.author.addItemsToBank(t);
-			return msg.channel.send(`Added 50 random items to your bank.`);
+			return msg.channel.send('Added 50 random items to your bank.');
 		}
 
 		if (msg.flagArgs.openables) {

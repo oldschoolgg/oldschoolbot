@@ -4,13 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { Minigames } from '../../extendables/User/Minigame';
 import { diaries, DiaryTier, userhasDiaryTier } from '../../lib/diaries';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {
-	formatSkillRequirements,
-	itemNameFromID,
-	stringMatches,
-	textEffect,
-	toTitleCase
-} from '../../lib/util';
+import { formatSkillRequirements, itemNameFromID, stringMatches, textEffect, toTitleCase } from '../../lib/util';
 
 const lampRewards = {
 	Easy: 'Antique lamp 1',
@@ -47,7 +41,7 @@ export default class extends BotCommand {
 		const diary = diaries.find(d => stringMatches(d.name, input));
 
 		if (!diary) {
-			let str = `Your Achievement Diaries\n\n`;
+			let str = 'Your Achievement Diaries\n\n';
 			for (const dir of diaries) {
 				const res = await Promise.all(
 					[dir.easy, dir.medium, dir.hard, dir.elite].map(async tier => {
@@ -75,9 +69,7 @@ export default class extends BotCommand {
 			}
 
 			if (tier.collectionLogReqs) {
-				thisStr += `- Must Have in CL: ${tier.collectionLogReqs
-					.map(itemNameFromID)
-					.join(', ')}\n`;
+				thisStr += `- Must Have in CL: ${tier.collectionLogReqs.map(itemNameFromID).join(', ')}\n`;
 			}
 
 			if (tier.qp) {
@@ -141,9 +133,7 @@ export default class extends BotCommand {
 
 				await msg.author.addItemsToBank(loot, true);
 
-				return msg.channel.send(
-					`You successfully completed the ${name} and received ${loot}.`
-				);
+				return msg.channel.send(`You successfully completed the ${name} and received ${loot}.`);
 			}
 
 			return msg.channel.send(`You can't claim the ${name} because ${reason}.`);
