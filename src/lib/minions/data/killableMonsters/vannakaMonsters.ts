@@ -100,7 +100,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Ankou.id,
 		name: Monsters.Ankou.name,
 		aliases: Monsters.Ankou.aliases,
-		timeToFinish: Time.Second * 13,
+		timeToFinish: Time.Second * 14,
 		table: Monsters.Ankou,
 
 		wildy: true,
@@ -392,7 +392,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.DeviantSpectre.id,
 		name: Monsters.DeviantSpectre.name,
 		aliases: Monsters.DeviantSpectre.aliases,
-		timeToFinish: Time.Second * 34,
+		timeToFinish: Time.Second * 37,
 		table: Monsters.DeviantSpectre,
 
 		wildy: false,
@@ -651,7 +651,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Hellhound.id,
 		name: Monsters.Hellhound.name,
 		aliases: Monsters.Hellhound.aliases,
-		timeToFinish: Time.Second * 36,
+		timeToFinish: Time.Second * 39,
 		table: Monsters.Hellhound,
 
 		wildy: false,
@@ -663,6 +663,11 @@ export const vannakaMonsters: KillableMonster[] = [
 		healAmountNeeded: 18,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackStab],
+		itemInBankBoosts: [
+			{
+				[itemID('Arclight')]: 15
+			}
+		],
 		canCannon: true,
 		// Not multi but you can safespot for the same effect
 		cannonMulti: true,
@@ -690,7 +695,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.IceTroll.id,
 		name: Monsters.IceTroll.name,
 		aliases: Monsters.IceTroll.aliases,
-		timeToFinish: Time.Second * 19,
+		timeToFinish: Time.Second * 23,
 		table: Monsters.IceTroll,
 		wildy: false,
 		canBeKilled: true,
@@ -798,7 +803,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Kurask.id,
 		name: Monsters.Kurask.name,
 		aliases: Monsters.Kurask.aliases,
-		timeToFinish: Time.Second * 20,
+		timeToFinish: Time.Second * 22,
 		table: Monsters.Kurask,
 
 		wildy: false,
@@ -1122,7 +1127,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 0,
 		levelRequirements: {
-			agility: 60,
 			slayer: 63
 		},
 		healAmountNeeded: 25,
@@ -1158,7 +1162,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 		canBeKilled: true,
 		difficultyRating: 2,
-		qpRequired: 0,
+		qpRequired: 3,
 		levelRequirements: {
 			slayer: 40
 		},

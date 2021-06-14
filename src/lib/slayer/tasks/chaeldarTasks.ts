@@ -429,7 +429,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.SpiritualRanger,
+		monster: Monsters.SpiritualMage,
 		amount: [110, 170],
 
 		weight: 12,
@@ -438,9 +438,12 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 			Monsters.SpiritualWarrior.id,
 			Monsters.SpiritualMage.id
 		],
+		levelRequirements: {
+			slayer: 60
+		},
 		combatLevel: 60,
 		slayerLevel: 63,
-		questPoints: 1,
+		questPoints: 3,
 		unlocked: true
 	},
 	{

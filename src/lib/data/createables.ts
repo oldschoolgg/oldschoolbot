@@ -3,7 +3,13 @@ import { ItemBank } from '../types';
 import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
 import { metamorphPets } from './collectionLog';
+<<<<<<< HEAD
 import { dyedCreatables } from './dyedCreatables';
+=======
+import { capeCreatables } from './creatables/capes';
+import { ornamentKits } from './creatables/ornaments';
+import { slayerCreatables } from './creatables/slayer';
+>>>>>>> master
 
 export interface Createable {
 	name: string;
@@ -206,6 +212,7 @@ const crystalTools: Createable[] = [
 	}
 ];
 
+<<<<<<< HEAD
 const brokenItems: Createable[] = [
 	{
 		name: 'Fix fire cape',
@@ -559,6 +566,8 @@ const ornamentKits: Createable[] = [
 	} // Godswords{name: 'Zamorak godsword (or)',inputItems: resolveNameBank({'Zamorak godsword': 1,'Zamorak godsword ornament kit': 1}),outputItems: resolveNameBank({'Zamorak godsword (or)': 1})},{name: 'Revert zamorak godsword',inputItems: resolveNameBank({'Zamorak godsword (or)': 1}),outputItems: resolveNameBank({'Zamorak godsword': 1,'Zamorak godsword ornament kit': 1}),noCl: true},{name: 'Bandos godsword (or)',inputItems: resolveNameBank({'Bandos godsword': 1,'Bandos godsword ornament kit': 1}),outputItems: resolveNameBank({'Bandos godsword (or)': 1})},{name: 'Revert bandos godsword',inputItems: resolveNameBank({'Bandos godsword (or)': 1}),outputItems: resolveNameBank({'Bandos godsword': 1,'Bandos godsword ornament kit': 1}),noCl: true},{name: 'Saradomin godsword (or)',inputItems: resolveNameBank({'Saradomin godsword': 1,'Saradomin godsword ornament kit': 1}),outputItems: resolveNameBank({'Saradomin godsword (or)': 1})},{name: 'Revert saradomin godsword',inputItems: resolveNameBank({'Saradomin godsword (or)': 1}),outputItems: resolveNameBank({'Saradomin godsword': 1,'Saradomin godsword ornament kit': 1}),noCl: true},{name: 'Armadyl godsword (or)',inputItems: resolveNameBank({'Armadyl godsword': 1,'Armadyl godsword ornament kit': 1}),outputItems: resolveNameBank({'Armadyl godsword (or)': 1})},{name: 'Revert Armadyl godsword',inputItems: resolveNameBank({'Armadyl godsword (or)': 1}),outputItems: resolveNameBank({'Armadyl godsword': 1,'Armadyl godsword ornament kit': 1}),noCl: true},{name: 'Amulet of torture (or)',inputItems: resolveNameBank({'Amulet of torture': 1,'Torture ornament kit': 1}),outputItems: resolveNameBank({'Amulet of torture (or)': 1})},{name: 'Revert amulet of torture',inputItems: resolveNameBank({'Amulet of torture (or)': 1}),outputItems: resolveNameBank({'Amulet of torture': 1,'Torture ornament kit': 1}),noCl: true},{name: 'Necklace of anguish (or)',inputItems: resolveNameBank({'Necklace of anguish': 1,'Anguish ornament kit': 1}),outputItems: resolveNameBank({'Necklace of anguish (or)': 1})},{name: 'Revert necklace of anguish',inputItems: resolveNameBank({'Necklace of anguish (or)': 1}),outputItems: resolveNameBank({'Necklace of anguish': 1,'Anguish ornament kit': 1}),noCl: true},{name: 'Tormented bracelet (or)',inputItems: resolveNameBank({'Tormented bracelet': 1,'Tormented ornament kit': 1}),outputItems: resolveNameBank({'Tormented bracelet (or)': 1})},{name: 'Revert tormented bracelet',inputItems: resolveNameBank({'Tormented bracelet (or)': 1}),outputItems: resolveNameBank({'Tormented bracelet': 1,'Tormented ornament kit': 1}),noCl: true},{name: 'Occult necklace (or)',inputItems: resolveNameBank({'Occult necklace': 1,'Occult ornament kit': 1}),outputItems: resolveNameBank({'Occult necklace (or)': 1})},{name: 'Revert occult necklace',inputItems: resolveNameBank({'Occult necklace (or)': 1}),outputItems: resolveNameBank({'Occult necklace': 1,'Occult ornament kit': 1}),noCl: true}
 ];
 
+=======
+>>>>>>> master
 const hunterClothing: Createable[] = [
 	{
 		name: 'Polar camouflage gear',
@@ -4868,9 +4877,15 @@ const Createables: Createable[] = [
 	},
 	...chaoticCreatables,
 	...twistedAncestral,
+<<<<<<< HEAD
 	...slayerCreatables,
 	...metamorphPetCreatables,
 	...dyedCreatables
+=======
+	...metamorphPetCreatables,
+	...slayerCreatables,
+	...capeCreatables
+>>>>>>> master
 ];
 
 export default Createables;

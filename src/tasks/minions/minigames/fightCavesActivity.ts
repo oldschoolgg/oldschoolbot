@@ -156,10 +156,7 @@ export default class extends Task {
 
 			usersTask.currentTask!.quantityRemaining = 0;
 			await usersTask.currentTask!.save();
-			const xpMessage = await user.addXP({
-				skillName: SkillsEnum.Slayer,
-				amount: slayerXP
-			});
+			const xpMessage = await user.addXP({ skillName: SkillsEnum.Slayer, amount: slayerXP });
 
 			slayerMsg = ` Jad task completed. ${xpMessage}`;
 			// End slayer code

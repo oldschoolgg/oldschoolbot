@@ -39,6 +39,9 @@ export default function getUserBestGearFromBank(
 	switch (extra) {
 		case 'strength':
 			switch (gearType) {
+				case GearSetupTypes.Skilling:
+				case GearSetupTypes.Misc:
+					break;
 				case GearSetupTypes.Melee:
 					gearStatExtra = GearStat.MeleeStrength;
 					break;
@@ -52,6 +55,8 @@ export default function getUserBestGearFromBank(
 			break;
 		case 'prayer':
 			gearStatExtra = GearStat.Prayer;
+			break;
+		default:
 			break;
 	}
 

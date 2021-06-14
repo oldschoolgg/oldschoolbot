@@ -108,6 +108,22 @@ export default class extends Extendable {
 
 		const previousCL = this.settings.get(UserSettings.CollectionLogBank);
 
+<<<<<<< HEAD
+=======
+		for (const { scrollID } of clueTiers) {
+			// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
+			if (!_items[scrollID]) continue;
+			const alreadyHasThisScroll = this.settings.get(UserSettings.Bank)[scrollID];
+			if (alreadyHasThisScroll) {
+				// If they already have this scroll in their bank, delete it from the loot.
+				delete _items[scrollID];
+			} else {
+				// If they dont have it in their bank, reset the amount to 1 incase they got more than 1 of the clue.
+				_items[scrollID] = 1;
+			}
+		}
+
+>>>>>>> master
 		const items = {
 			..._items
 		};

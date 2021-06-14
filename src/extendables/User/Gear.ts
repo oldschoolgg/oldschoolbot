@@ -52,10 +52,13 @@ export default class extends Extendable {
 			this.hasItemEquippedAnywhere(SimilarItems[id], false) ||
 			this.numItemsInBankSync(id, true) > 0
 		);
+<<<<<<< HEAD
 	}
 
 	public equippedPet(this: User) {
 		return this.settings.get(UserSettings.Minion.EquippedPet);
+=======
+>>>>>>> master
 	}
 
 	public getGear(this: User, setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling'): GearSetup {

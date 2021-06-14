@@ -110,11 +110,14 @@ export const Minigames: Minigame[] = [
 		column: 'magic_training_arena'
 	},
 	{
+<<<<<<< HEAD
 		name: 'Ourania Delivery Service',
 		key: 'OuraniaDeliveryService',
 		column: 'ourania_delivery_service'
 	},
 	{
+=======
+>>>>>>> master
 		name: 'Big Chompy Bird Hunting',
 		key: 'BigChompyBirdHunting',
 		column: 'big_chompy_bird_hunting'

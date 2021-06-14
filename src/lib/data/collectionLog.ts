@@ -1662,8 +1662,12 @@ export const capes: CollectionLogData = {
 		'Defence hood',
 		'Hitpoints hood',
 		'Ranging hood',
+<<<<<<< HEAD
 		'Slayer hood',
 		'Dungeoneering hood'
+=======
+		'Slayer hood'
+>>>>>>> master
 	]),
 	'trimmed capes2': resolveItems([
 		'Farming cape(t)',
@@ -1676,6 +1680,7 @@ export const capes: CollectionLogData = {
 		'Defence cape(t)',
 		'Hitpoints cape(t)',
 		'Ranging cape(t)',
+<<<<<<< HEAD
 		'Dungeoneering cape(t)',
 		'Slayer cape(t)'
 	]),
@@ -1697,6 +1702,30 @@ export const capes: CollectionLogData = {
 	otherCapes: resolveItems(['Quest point hood', 'Achievement diary hood', 'Max hood']),
 	otherCapes2: resolveItems(['Quest point cape', 'Achievement diary cape(t)', 'Max cape']),
 	otherCapes3: resolveItems(['Master quest cape'])
+=======
+		'Slayer cape(t)'
+	]),
+	otherCapes: resolveItems(['Quest point hood', 'Achievement diary hood']),
+	otherCapes2: resolveItems(['Quest point cape', 'Achievement diary cape(t)']),
+	maxHoods: resolveItems([
+		'Max hood',
+		'Ardougne max hood',
+		'Infernal max hood',
+		'Assembler max hood',
+		'Imbued guthix max hood',
+		'Imbued saradomin max hood',
+		'Imbued zamorak max hood'
+	]),
+	maxCapes: resolveItems([
+		'Max cape',
+		'Ardougne max cape',
+		'Infernal max cape',
+		'Assembler max cape',
+		'Imbued guthix max cape',
+		'Imbued saradomin max cape',
+		'Imbued zamorak max cape'
+	])
+>>>>>>> master
 };
 
 export const quest: CollectionLogData = {
@@ -1878,6 +1907,11 @@ export const miscLog: CollectionLogData = {
 		'Occult necklace'
 	]),
 	Slayer3: resolveItems([
+<<<<<<< HEAD
+=======
+		'Herb sack',
+		'Rune pouch',
+>>>>>>> master
 		'Basilisk jaw',
 		'Brine sabre',
 		'Leaf-bladed battleaxe',
@@ -1923,6 +1957,7 @@ export const miscLog: CollectionLogData = {
 		'Wyvern visage'
 	]),
 	Misc2: resolveItems(['Giant key', 'Hill giant club', 'Mossy key', "Bryophyta's essence"])
+<<<<<<< HEAD
 };
 export const customBossLog: CollectionLogData = {
 	'King Goldmar': resolveItems([
@@ -1936,6 +1971,8 @@ export const customBossLog: CollectionLogData = {
 	nex1: [...torvaOutfit, ...pernixOutfit],
 	nex2: [...virtusOutfit, ...ancientWeapons],
 	vasa: resolveItems(['Tattered robes of Vasa', 'Jar of magic', 'Voidling', 'Magus scroll'])
+=======
+>>>>>>> master
 };
 export const sepulchreLog: CollectionLogData = {
 	Misc: resolveItems([
@@ -1964,6 +2001,7 @@ export const sepulchreLog: CollectionLogData = {
 	Pets: resolveItems(['Giant squirrel', 'Dark squirrel'])
 };
 
+<<<<<<< HEAD
 const gmLog: CollectionLogData = {
 	Outfit: resolveItems([
 		'Helm of raedwald',
@@ -1984,6 +2022,8 @@ const gmLog: CollectionLogData = {
 	Misc: resolveItems(['Dwarven blessing', 'Ring of luck'])
 };
 
+=======
+>>>>>>> master
 const chompyHuntingLog: CollectionLogData = {
 	pet: resolveItems(['Chompy chick']),
 	1: resolveItems([
@@ -2360,11 +2400,14 @@ export const collectionLogTypes: CollectionLogType[] = [
 		items: randomEventsLog
 	},
 	{
+<<<<<<< HEAD
 		name: 'Ourania Delivery Service',
 		aliases: ['ods', 'ourania delivery service'],
 		items: ODSLog
 	},
 	{
+=======
+>>>>>>> master
 		name: 'Big Chompy Hunting',
 		aliases: ['chompy', 'bgc', 'big chompy hunting'],
 		items: chompyHuntingLog

@@ -260,6 +260,7 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Facemask')]: slayerHelmSimilar,
 	[itemID('Reinforced goggles')]: slayerHelmSimilar,
 	[itemID('Anti-dragon shield')]: resolveItems([11284, 11283, 21633, 21634, 22003, 22002]),
+<<<<<<< HEAD
 	[itemID('Torva full helm')]: resolveItems(['Gorajan warrior helmet']),
 	[itemID('Torva platebody')]: resolveItems(['Gorajan warrior top']),
 	[itemID('Torva platelegs')]: resolveItems(['Gorajan warrior legs']),
@@ -312,6 +313,8 @@ const SimilarItems: Record<number, number[]> = {
 		'Offhand drygore mace (shadow)',
 		'Offhand drygore mace (3a)'
 	]),
+=======
+>>>>>>> master
 	[itemID('Staff of water')]: resolveItems([
 		'Mist battlestaff',
 		'Mystic mist staff',

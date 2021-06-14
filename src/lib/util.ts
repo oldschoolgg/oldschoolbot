@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
 import { objectEntries, randInt, shuffleArr } from 'e';
-import { KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
+import { KlasaClient, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -540,4 +540,12 @@ export function textEffect(str: string, effect: 'none' | 'strikethrough') {
 		wrap = '~~';
 	}
 	return `${wrap}${str.replace(/~/g, '')}${wrap}`;
+}
+
+export async function wipeDBArrayByKey(
+	user: KlasaUser,
+	key: string
+): Promise<SettingsUpdateResults> {
+	const active: any[] = user.settings.get(key) as any[];
+	return user.settings.update(key, active);
 }

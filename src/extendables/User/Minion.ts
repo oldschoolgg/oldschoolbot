@@ -14,9 +14,25 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
+<<<<<<< HEAD
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import { Activity, Emoji, Events, MAX_QP, PerkTier, skillEmoji, Time } from '../../lib/constants';
 import { hasArrayOfItemsEquipped } from '../../lib/gear';
+=======
+import {
+	Activity,
+	Emoji,
+	Events,
+	LEVEL_99_XP,
+	MAX_QP,
+	MAX_TOTAL_LEVEL,
+	PerkTier,
+	skillEmoji,
+	Time,
+	ZALCANO_ID
+} from '../../lib/constants';
+import { onMax } from '../../lib/events';
+>>>>>>> master
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -751,6 +767,7 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentXP = this.settings.get(`skills.${params.skillName}`) as number;
 		const currentLevel = this.skillLevel(params.skillName);
+<<<<<<< HEAD
 
 		const name = toTitleCase(params.skillName);
 
@@ -759,11 +776,17 @@ export default class extends Extendable {
 		}
 
 		const skill = Object.values(Skills).find(skill => skill.id === params.skillName)!;
+=======
+		const currentTotalLevel = this.totalLevel();
+
+		const name = toTitleCase(params.skillName);
+>>>>>>> master
 
 		if (params.multiplier) {
 			params.amount *= 5;
 		}
 
+<<<<<<< HEAD
 		const rawGear = this.rawGear();
 		const allCapes = objectValues(rawGear)
 			.map(val => val.cape)
@@ -834,15 +857,25 @@ export default class extends Extendable {
 
 		const newXP = Math.min(5_000_000_000, currentXP + params.amount);
 		const newLevel = convertXPtoLVL(newXP, 120);
+=======
+		const skill = Object.values(Skills).find(skill => skill.id === params.skillName)!;
+
+		const newXP = Math.min(200_000_000, currentXP + params.amount);
+>>>>>>> master
 		const totalXPAdded = newXP - currentXP;
 
 		if (totalXPAdded > 0) {
 			XPGainsTable.insert({
 				userID: this.id,
+<<<<<<< HEAD
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				skill: params.skillName,
 				xp: params.amount
+=======
+				skill: params.skillName,
+				xp: Math.floor(params.amount)
+>>>>>>> master
 			});
 		}
 
@@ -863,18 +896,42 @@ export default class extends Extendable {
 			}
 		}
 
+<<<<<<< HEAD
 		for (const num of [99, 120]) {
 			// If they just reached 99, send a server notification.
 			if (currentLevel < num && newLevel >= num) {
 				const skillNameCased = toTitleCase(params.skillName);
 				const [usersWith] = await this.client.query<
+=======
+		// If they just reached 99, send a server notification.
+		if (currentLevel < 99 && newLevel >= 99) {
+			const skillNameCased = toTitleCase(params.skillName);
+			const [usersWith] = await this.client.query<
+				{
+					count: string;
+				}[]
+			>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${LEVEL_99_XP};`);
+
+			let str = `${skill.emoji} **${this.username}'s** minion, ${
+				this.minionName
+			}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
+				parseInt(usersWith.count) + 1
+			)} to get 99 ${skillNameCased}.`;
+
+			if (this.isIronman) {
+				const [ironmenWith] = await this.client.query<
+>>>>>>> master
 					{
 						count: string;
 					}[]
 				>(
+<<<<<<< HEAD
 					`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" > ${
 						convertLVLtoXP(num) - 1
 					};`
+=======
+					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${LEVEL_99_XP};`
+>>>>>>> master
 				);
 
 				let str = `${skill.emoji} **${this.username}'s** minion, ${
@@ -917,6 +974,7 @@ export default class extends Extendable {
 			}
 		}
 
+<<<<<<< HEAD
 		if (gorajanBoost) {
 			str += ' (2x boost from Gorajan armor)';
 		}
@@ -927,12 +985,29 @@ export default class extends Extendable {
 			}% bonus XP for First age outfit items.`;
 		}
 
+=======
+		await this.settings.update(`skills.${params.skillName}`, Math.floor(newXP));
+
+		let str = params.minimal
+			? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
+			: `You received ${Math.ceil(params.amount).toLocaleString()} ${
+					skillEmoji[params.skillName]
+			  } XP`;
+>>>>>>> master
 		if (params.duration && !params.minimal) {
 			let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 			str += ` (${toKMB(rawXPHr)}/Hr)`;
 		}
+<<<<<<< HEAD
 		if (currentLevel !== newLevel) {
+=======
+
+		if (currentTotalLevel < MAX_TOTAL_LEVEL && this.totalLevel() >= MAX_TOTAL_LEVEL) {
+			str += `\n\n**Congratulations, your minion has reached the maximum total level!**\n\n`;
+			onMax(this);
+		} else if (currentLevel !== newLevel) {
+>>>>>>> master
 			str += params.minimal
 				? `(Levelled up to ${newLevel})`
 				: `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
