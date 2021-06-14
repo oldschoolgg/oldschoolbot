@@ -72,7 +72,7 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 			[itemID(`Gricoller's can`)]: 1
 		},
 		titheFarmPoints: 200
-	},	
+	},
 	{
 		name: `Seed box`,
 		aliases: ['seed box'],
@@ -80,7 +80,7 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 			[itemID(`Seed box`)]: 1
 		},
 		titheFarmPoints: 250
-	},	
+	},
 	{
 		name: `Herb sack`,
 		aliases: ['herb sack'],
@@ -88,7 +88,7 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 			[itemID(`Herb sack`)]: 1
 		},
 		titheFarmPoints: 250
-	},	
+	},
 	{
 		name: `Bologa's blessing`,
 		aliases: ['bologa'],
