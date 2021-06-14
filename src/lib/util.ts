@@ -531,7 +531,10 @@ export function textEffect(str: string, effect: 'none' | 'strikethrough') {
 	return `${wrap}${str.replace(/~/g, '')}${wrap}`;
 }
 
-export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
+export async function wipeDBArrayByKey(
+	user: KlasaUser,
+	key: string
+): Promise<SettingsUpdateResults> {
 	const active: any[] = user.settings.get(key) as any[];
 	return user.settings.update(key, active);
 }

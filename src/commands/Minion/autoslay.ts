@@ -6,14 +6,14 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { AutoslayOptionsEnum, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {wipeDBArrayByKey} from "../../lib/util";
+import { wipeDBArrayByKey } from '../../lib/util';
 
 interface AutoslayLink {
-	monsterID: number,
+	monsterID: number;
 	// Name and Monster must be specified if either is.
-	efficientName?: string,
-	efficientMonster?: number,
-	efficientMethod?: string
+	efficientName?: string;
+	efficientMonster?: number;
+	efficientMethod?: string;
 }
 enum AutoSlayMethod {
 	None = 'none',
@@ -21,7 +21,7 @@ enum AutoSlayMethod {
 	Barrage = 'barrage',
 	Burst = 'burst'
 }
-const AutoSlayMaxEfficiencyTable : AutoslayLink[] = [
+const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 	{
 		monsterID: Monsters.KalphiteWorker.id,
 		efficientName: Monsters.KalphiteSoldier.name,
@@ -166,13 +166,17 @@ const AutoSlayMaxEfficiencyTable : AutoslayLink[] = [
 		efficientMonster: Monsters.AbyssalDemon.id,
 		efficientMethod: AutoSlayMethod.Barrage
 	}
-]
-function determineAutoslayMethod(m: KlasaMessage, passedStr: string | undefined, autoslayOptions: AutoslayOptionsEnum[]) {
+];
+function determineAutoslayMethod(
+	m: KlasaMessage,
+	passedStr: string | undefined,
+	autoslayOptions: AutoslayOptionsEnum[]
+) {
 	const p = passedStr ? passedStr : '';
 	let method = 'unknown';
 	if (m.flagArgs.default || m.flagArgs.lowest || p === 'default' || p === 'lowest') {
 		method = 'default';
-	} else if (m.flagArgs.highest || m.flagArgs.boss || p === 'boss' || p === 'highest')  {
+	} else if (m.flagArgs.highest || m.flagArgs.boss || p === 'boss' || p === 'highest') {
 		method = 'boss';
 	} else if (m.flagArgs.ehp || m.flagArgs.efficient || p === 'ehp' || p === 'efficient') {
 		method = 'ehp';
@@ -211,7 +215,8 @@ export default class extends BotCommand {
 			} else if (autoslayOptions.includes(AutoslayOptionsEnum.MaxEfficiency)) {
 				autoMsg = 'You will automatically kill the most efficient monster you can.';
 			} else {
-				autoMsg = 'You will automatically kill the default (lowest combat level) creatures you can.';
+				autoMsg =
+					'You will automatically kill the default (lowest combat level) creatures you can.';
 			}
 			return msg.channel.send(autoMsg);
 		}
@@ -222,14 +227,15 @@ export default class extends BotCommand {
 			return msg.channel.send(`You're not on a slayer task, so you can't autoslay!`);
 		}
 		// Determine method:
-		const method = determineAutoslayMethod(msg, _mode, autoslayOptions as AutoslayOptionsEnum[]);
+		const method = determineAutoslayMethod(
+			msg,
+			_mode,
+			autoslayOptions as AutoslayOptionsEnum[]
+		);
 
 		if (method === 'ehp') {
 			// Save as default is user --save's
-			if (
-				msg.flagArgs.save &&
-				!autoslayOptions.includes(AutoslayOptionsEnum.MaxEfficiency)
-			) {
+			if (msg.flagArgs.save && !autoslayOptions.includes(AutoslayOptionsEnum.MaxEfficiency)) {
 				await wipeDBArrayByKey(msg.author, UserSettings.Slayer.AutoslayOptions);
 				await msg.author.settings.update(
 					UserSettings.Slayer.AutoslayOptions,
@@ -241,12 +247,12 @@ export default class extends BotCommand {
 			});
 
 			if (ehpMonster && ehpMonster.efficientName) {
-				if (ehpMonster.efficientMethod)
-					msg.flagArgs[ehpMonster.efficientMethod] = 'yes';
+				if (ehpMonster.efficientMethod) msg.flagArgs[ehpMonster.efficientMethod] = 'yes';
 				return this.client.commands.get('k')?.run(msg, [null, ehpMonster.efficientName]);
-			} else {
-				return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
 			}
+			return this.client.commands
+				.get('k')
+				?.run(msg, [null, usersTask.assignedTask!.monster.name]);
 		}
 		if (method === 'boss') {
 			// This code handles the 'highest/boss' setting of autoslay.
@@ -287,8 +293,7 @@ export default class extends BotCommand {
 				return this.client.commands.get('k')?.run(msg, [null, maxMobName]);
 			}
 			return msg.channel.send(`Can't find any monsters you have the requirements to kill!`);
-		} else if (method === 'default')
-		{
+		} else if (method === 'default') {
 			// This code handles the default option for autoslay:
 			if (msg.flagArgs.save && autoslayOptions.length) {
 				// Lowest / default = none
