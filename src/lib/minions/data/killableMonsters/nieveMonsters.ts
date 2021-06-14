@@ -14,7 +14,7 @@ export const nieveMonsters: KillableMonster[] = [
 		table: Monsters.BabyBlackDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 20,
@@ -32,7 +32,7 @@ export const nieveMonsters: KillableMonster[] = [
 		table: Monsters.BlackDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
@@ -51,7 +51,7 @@ export const nieveMonsters: KillableMonster[] = [
 		table: Monsters.BrutalBlackDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
@@ -78,7 +78,7 @@ export const nieveMonsters: KillableMonster[] = [
 		table: Monsters.LocustRider,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 21,
@@ -96,7 +96,7 @@ export const nieveMonsters: KillableMonster[] = [
 		table: Monsters.ScarabMage,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 18,
@@ -114,7 +114,7 @@ export const nieveMonsters: KillableMonster[] = [
 		table: Monsters.SteelDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
@@ -137,7 +137,7 @@ export const nieveMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 21,
 		table: Monsters.Suqah,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 20,

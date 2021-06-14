@@ -103,7 +103,7 @@ export default class extends BotCommand {
 		}
 		if (!name) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 		const monster = findMonster(name);
-		if (!monster || !monster.canBeKilled) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
+		if (!monster) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 
 		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
 		const isOnTask =

@@ -15,7 +15,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 12,
 		table: Monsters.Banshee,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		levelRequirements: {
@@ -31,7 +31,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Bat,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true
@@ -44,7 +44,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.BearCub,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -56,7 +56,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.BigWolf,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		canCannon: true,
@@ -71,7 +71,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Bird,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -83,7 +83,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.BlackBear,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true
@@ -96,7 +96,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.BlackGuard,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true
@@ -108,7 +108,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 6,
 		table: Monsters.CaveBug,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		levelRequirements: {
@@ -123,7 +123,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.CaveCrawler,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		levelRequirements: {
@@ -139,7 +139,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.CaveGoblinGuard,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 8,
 		canCannon: true,
@@ -153,7 +153,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 15,
 		table: Monsters.CaveSlime,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		itemInBankBoosts: [
@@ -173,7 +173,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.ChaosDwarf,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		canCannon: true,
@@ -188,7 +188,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Chicken,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -200,7 +200,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Cow,
 		emoji: '🐮',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -215,7 +215,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.CowCalf,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -227,7 +227,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.CrawlingHand,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		levelRequirements: {
@@ -242,7 +242,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 15,
 		table: Monsters.CryptRat,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 1
 	},
@@ -253,7 +253,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 40,
 		table: Monsters.DeathWing,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 111
 	},
@@ -264,7 +264,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 110,
 		table: Monsters.DemonicGorilla,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
 			'Bandos chestplate',
@@ -294,7 +294,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 15,
 		table: Monsters.DesertLizard,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		levelRequirements: {
@@ -314,7 +314,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 15,
 		table: Monsters.DesertWolf,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -331,7 +331,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 2,
 		table: Monsters.Duck,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -342,7 +342,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 2,
 		table: Monsters.Duckling,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -353,7 +353,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 10,
 		table: Monsters.DungeonRat,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -364,7 +364,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 8,
 		table: Monsters.Dwarf,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -378,7 +378,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 20,
 		table: Monsters.DwarfGangMember,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 15,
@@ -392,7 +392,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Ghost,
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 1,
 		qpRequired: 0,
@@ -407,7 +407,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 15,
 		table: Monsters.GiantBat,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -418,7 +418,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 25,
 		table: Monsters.GiantCryptSpider,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 1,
 		canCannon: false,
@@ -435,7 +435,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 6,
 		table: Monsters.GiantRat,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -449,7 +449,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 6,
 		table: Monsters.GiantSpider,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -463,7 +463,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 6,
 		table: Monsters.Goblin,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -477,7 +477,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 10,
 		table: Monsters.GrizzlyBear,
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -491,7 +491,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 10,
 		table: Monsters.GrizzlyBearCub,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -502,7 +502,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 15,
 		table: Monsters.GuardDog,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -513,7 +513,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Icefiend,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 8,
@@ -527,7 +527,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 30,
 		table: Monsters.IceWolf,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 26,
@@ -543,7 +543,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 12,
 		table: Monsters.Jackal,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -560,7 +560,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 25,
 		table: Monsters.JungleWolf,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 22,
@@ -575,7 +575,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.KalphiteGuardian,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		canCannon: true,
@@ -593,7 +593,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.KalphiteSoldier,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 18,
@@ -611,7 +611,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.KalphiteWorker,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -629,7 +629,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.KingScorpion,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 14,
@@ -643,7 +643,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 20,
 		table: Monsters.Lizard,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		levelRequirements: {
@@ -661,7 +661,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Lobstrosity,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		itemsRequired: deepResolveItems([['Trident of the seas', 'Trident of the swamp', 'Brine sabre']]),
 		qpRequired: 10,
@@ -677,7 +677,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Minotaur,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -695,7 +695,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Monkey,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		defaultAttackStyles: [SkillsEnum.Ranged],
@@ -709,7 +709,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.MonkeyArcher,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 20,
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
@@ -725,7 +725,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.MonkeyGuard,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 20,
 		healAmountNeeded: 50,
@@ -740,7 +740,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.MonkeyZombie,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 20,
 		healAmountNeeded: 17,
@@ -755,7 +755,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.MountedTerrorBirdGnome,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -773,7 +773,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Penguin,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -785,7 +785,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.PitScorpion,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 11,
@@ -800,7 +800,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.PoisonScorpion,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 11,
@@ -815,7 +815,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Rat,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -827,7 +827,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Rooster,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -839,7 +839,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Scorpion,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -857,7 +857,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Seagull,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0
 	},
@@ -869,7 +869,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.ShadowSpider,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 1,
 		itemInBankBoosts: [
@@ -889,7 +889,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Skeleton,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 1,
 		qpRequired: 0,
@@ -908,7 +908,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.SkeletonFremennik,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 13,
@@ -923,7 +923,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.SkeletonMage,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 14,
@@ -938,7 +938,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Skogre,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 5,
 		healAmountNeeded: 32,
@@ -952,7 +952,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 10,
 		table: Monsters.SmallLizard,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		levelRequirements: {
@@ -970,7 +970,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Spider,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -985,7 +985,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.SulphurLizard,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		levelRequirements: {
@@ -1004,7 +1004,7 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.TempleSpider,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 18,
@@ -1018,7 +1018,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 15,
 		table: Monsters.TerrorBird,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -1035,7 +1035,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 70,
 		table: Monsters.TorturedGorilla,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
 			'Bandos chestplate',
@@ -1062,7 +1062,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 20,
 		table: Monsters.TorturedSoul,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 1,
 		healAmountNeeded: 15,
@@ -1076,7 +1076,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 30,
 		table: Monsters.TwistedBanshee,
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0,
@@ -1095,20 +1095,8 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 2,
 		table: Monsters.UndeadChicken,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
-		qpRequired: 1
-	},
-	{
-		id: Monsters.UndeadCow.id,
-		name: Monsters.UndeadCow.name,
-		aliases: Monsters.UndeadCow.aliases,
-		timeToFinish: Time.Second * 6,
-		table: Monsters.UndeadCow,
-		emoji: '🐮',
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 0,
 		qpRequired: 1
 	},
 	{
@@ -1118,7 +1106,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 60,
 		table: Monsters.UndeadDruid,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 48,
@@ -1132,7 +1120,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 20,
 		table: Monsters.UndeadOne,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 16,
@@ -1146,7 +1134,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 20,
 		table: Monsters.WhiteWolf,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -1163,7 +1151,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 20,
 		table: Monsters.WildDog,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -1180,7 +1168,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 14,
 		table: Monsters.Wolf,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -1197,7 +1185,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 30,
 		table: Monsters.Zogre,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 5,
 		healAmountNeeded: 28,
@@ -1211,7 +1199,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Zombie,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -1228,7 +1216,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 8,
 		table: Monsters.ZombieRat,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 32,
 		healAmountNeeded: 6,

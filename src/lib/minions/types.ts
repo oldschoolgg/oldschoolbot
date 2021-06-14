@@ -61,7 +61,6 @@ export interface KillableMonster {
 	};
 	emoji?: string;
 	wildy: boolean;
-	canBeKilled: boolean;
 	difficultyRating: number;
 	itemsRequired?: ArrayItemsResolved;
 	notifyDrops?: ArrayItemsResolved;
