@@ -1608,7 +1608,8 @@ export const capes: CollectionLogData = {
 		'Assembler max hood',
 		'Imbued guthix max hood',
 		'Imbued saradomin max hood',
-		'Imbued zamorak max hood'
+		'Imbued zamorak max hood',
+		'Mythical max hood'
 	]),
 	maxCapes: resolveItems([
 		'Max cape',
@@ -1617,7 +1618,8 @@ export const capes: CollectionLogData = {
 		'Assembler max cape',
 		'Imbued guthix max cape',
 		'Imbued saradomin max cape',
-		'Imbued zamorak max cape'
+		'Imbued zamorak max cape',
+		'Mythical max cape'
 	])
 };
 
