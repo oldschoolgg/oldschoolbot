@@ -6,7 +6,6 @@ import { MysteryBoxes } from '../../../../data/openables';
 import setCustomMonster from '../../../../util/setCustomMonster';
 
 export const VasaMagusLootTable = new LootTable()
-	.add('Coins', [50_000, 200_000])
 	.add('Rune pickaxe', [1, 9])
 	.add('Rune full helm', [5, 9])
 	.add('Rune platelegs', [5, 9])
@@ -18,7 +17,7 @@ export const VasaMagusLootTable = new LootTable()
 	.add('Elder rune', [50, 100])
 	.add('Pure essence', [1000, 2000])
 	.tertiary(16, RareDropTable)
-	.tertiary(15, 'Clue scroll (grandmaster)')
+	.tertiary(3, 'Clue scroll (grandmaster)')
 	.tertiary(15, MysteryBoxes)
 	.tertiary(1000, 'Jar of magic')
 	.tertiary(500, 'Voidling')
