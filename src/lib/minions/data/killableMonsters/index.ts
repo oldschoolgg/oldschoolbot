@@ -35,7 +35,7 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.Barrows,
 		emoji: '<:Dharoks_helm:403038864199122947>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: resolveItems([]),
 		notifyDrops: resolveItems([]),
@@ -67,7 +67,7 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.DagannothPrime,
 		emoji: '<:Pet_dagannoth_prime:324127376877289474>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			"Guthan's platebody",
@@ -106,7 +106,7 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.DagannothRex,
 		emoji: '<:Pet_dagannoth_rex:324127377091330049>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			"Guthan's platebody",
@@ -143,7 +143,7 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.DagannothSupreme,
 		emoji: '<:Pet_dagannoth_supreme:324127377066164245>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			"Guthan's platebody",
@@ -182,7 +182,6 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.Man,
 		emoji: '🧍‍♂️',
 		wildy: false,
-		canBeKilled: false,
 		difficultyRating: 0,
 		qpRequired: 0,
 		defaultAttackStyles: [SkillsEnum.Attack]
@@ -193,9 +192,7 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Guard.aliases,
 		timeToFinish: Time.Second * 7.4,
 		table: Monsters.Guard,
-
 		wildy: false,
-		canBeKilled: false,
 		difficultyRating: 0,
 		qpRequired: 0,
 		canCannon: true,
@@ -209,7 +206,6 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.Woman,
 		emoji: '🧍‍♀️',
 		wildy: false,
-		canBeKilled: false,
 		difficultyRating: 0,
 		qpRequired: 0
 	},
@@ -221,7 +217,6 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.Sarachnis,
 		emoji: '<:Sraracha:608231007803670529>',
 		wildy: false,
-		canBeKilled: true,
 		difficultyRating: 5,
 		notifyDrops: resolveItems(['Sraracha', 'Jar of eyes']),
 		qpRequired: 0,
@@ -253,7 +248,7 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.PriffRabbit,
 		emoji: '',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 10,
 		qpRequired: 205,
 		levelRequirements: {
@@ -280,7 +275,6 @@ export const NightmareMonster: KillableMonster = {
 	table: Monsters.GeneralGraardor,
 	emoji: '<:Little_nightmare:758149284952014928>',
 	wildy: false,
-	canBeKilled: false,
 	difficultyRating: 7,
 	notifyDrops: resolveItems([
 		'Little nightmare',
