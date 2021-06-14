@@ -49,7 +49,6 @@ export const KalphiteKingMonster: KillableMonster = {
 	},
 	emoji: '',
 	wildy: false,
-	canBeKilled: false,
 	difficultyRating: 10,
 	qpRequired: 0,
 	groupKillable: true,

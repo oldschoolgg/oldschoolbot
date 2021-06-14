@@ -15,7 +15,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.AberrantSpectre,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		levelRequirements: {
@@ -38,7 +38,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.AbyssalDemon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		notifyDrops: resolveItems(['Abyssal head', 'Abyssal dagger']),
 		qpRequired: 0,
@@ -68,7 +68,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.AbyssalSire,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		qpRequired: 0,
 		levelRequirements: {
@@ -104,7 +104,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Ankou,
 
 		wildy: true,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0,
@@ -128,7 +128,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.BabyBlueDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 12,
@@ -143,7 +143,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.BabyGreenDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 10,
@@ -158,7 +158,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Basilisk,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		notifyDrops: resolveItems(['Basilisk head']),
 		qpRequired: 1,
@@ -178,7 +178,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.BasiliskKnight,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Basilisk head', 'Basilisk jaw']),
 		qpRequired: 120,
@@ -209,7 +209,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Bloodveld,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		levelRequirements: {
@@ -234,7 +234,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.BlueDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
@@ -252,7 +252,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.BrineRat,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 3,
 		levelRequirements: {
@@ -271,7 +271,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.BronzeDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
@@ -289,7 +289,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.BrutalBlueDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
@@ -307,7 +307,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.BrutalGreenDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
@@ -323,7 +323,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Crocodile,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		canCannon: true,
@@ -342,7 +342,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Dagannoth,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 2,
@@ -366,7 +366,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.DagannothSpawn,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 2,
 		healAmountNeeded: 9,
@@ -381,7 +381,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.DaganothFledgeling,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 2,
 		healAmountNeeded: 16,
@@ -396,7 +396,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.DeviantSpectre,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		existsInCatacombs: true,
 		qpRequired: 0,
@@ -416,7 +416,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.DustDevil,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		existsInCatacombs: true,
 		notifyDrops: resolveItems(['Dragon chainbody', 'Dust battlestaff']),
@@ -446,7 +446,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.ElfArcher,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 22,
 		healAmountNeeded: 22,
@@ -464,7 +464,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.ElfWarrior,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 22,
 		healAmountNeeded: 26,
@@ -482,7 +482,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.FeverSpider,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		levelRequirements: {
@@ -500,7 +500,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.FireGiant,
 
 		wildy: true,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Giant champion scroll']),
@@ -518,7 +518,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Gargoyle,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		levelRequirements: {
@@ -537,7 +537,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.GrotesqueGuardians,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		notifyDrops: resolveItems(['Noon', 'Jar of stone']),
 		itemsRequired: deepResolveItems(['Brittle key']),
@@ -565,24 +565,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged, GearStat.AttackMagic]
 	},
 	{
-		id: Monsters.GiantSeaSnake.id,
-		name: Monsters.GiantSeaSnake.name,
-		aliases: Monsters.GiantSeaSnake.aliases,
-		timeToFinish: Time.Second * 55,
-		table: Monsters.GiantSeaSnake,
-
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 4,
-		levelRequirements: {
-			slayer: 40
-		},
-		qpRequired: 0,
-		healAmountNeeded: 40,
-		attackStyleToUse: GearSetupTypes.Melee,
-		attackStylesUsed: [GearStat.AttackCrush]
-	},
-	{
 		id: Monsters.GreaterNechryael.id,
 		name: Monsters.GreaterNechryael.name,
 		aliases: Monsters.GreaterNechryael.aliases,
@@ -590,7 +572,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.GreaterNechryael,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		qpRequired: 0,
 		itemInBankBoosts: [
@@ -619,7 +601,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.GreenDragon,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
@@ -636,7 +618,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.HarpieBugSwarm,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 1,
 		levelRequirements: {
@@ -655,7 +637,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Hellhound,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 3,
 		notifyDrops: resolveItems(['Smouldering stone']),
@@ -680,7 +662,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 27,
 		table: Monsters.IceGiant,
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		notifyDrops: resolveItems(['Giant champion scroll']),
 		qpRequired: 0,
@@ -698,7 +680,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 23,
 		table: Monsters.IceTroll,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		qpRequired: 0,
 		itemInBankBoosts: [
@@ -721,7 +703,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.InfernalMage,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		levelRequirements: {
@@ -740,7 +722,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.IorwerthArcher,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 12,
 		healAmountNeeded: 20,
@@ -756,7 +738,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.IorwerthWarrior,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		qpRequired: 12,
 		healAmountNeeded: 20,
@@ -772,7 +754,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Jelly,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		levelRequirements: {
@@ -791,7 +773,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.JungleHorror,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 20,
 		healAmountNeeded: 14,
@@ -807,7 +789,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Kurask,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		itemInBankBoosts: [
 			{
@@ -832,7 +814,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.LesserDemon,
 
 		wildy: true,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0,
@@ -852,7 +834,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Molanisk,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		levelRequirements: {
@@ -870,7 +852,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.MossGiant,
 
 		wildy: true,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0,
@@ -887,7 +869,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Bryophyta,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: false,
 		difficultyRating: 3,
 		qpRequired: 0,
@@ -905,7 +887,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.MountainTroll,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 1,
 		canCannon: true,
@@ -921,7 +903,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Mourner,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -937,7 +919,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.MutatedBloodveld,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 105,
@@ -964,7 +946,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Nechryael,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		qpRequired: 0,
 		itemInBankBoosts: [
@@ -988,7 +970,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Ogre,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 16,
@@ -1007,7 +989,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.OgressShaman,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 18,
@@ -1022,7 +1004,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.OgressWarrior,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		attackStyleToUse: GearSetupTypes.Melee,
@@ -1036,7 +1018,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Otherworldlybeing,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 12,
@@ -1051,7 +1033,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.SeaSnakeHatchling,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		levelRequirements: {
 			slayer: 40
@@ -1070,7 +1052,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.SeaSnakeYoung,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		levelRequirements: {
 			slayer: 40
@@ -1089,7 +1071,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.ShadowWarrior,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 111,
 		healAmountNeeded: 12,
@@ -1104,7 +1086,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.SpiritualMage,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		qpRequired: 0,
 		levelRequirements: {
@@ -1123,7 +1105,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.SpiritualRanger,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		levelRequirements: {
@@ -1141,7 +1123,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.SpiritualWarrior,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		levelRequirements: {
@@ -1160,7 +1142,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.TerrorDog,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 3,
 		levelRequirements: {
@@ -1178,7 +1160,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.TrollGeneral,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 20 * 2,
@@ -1193,7 +1175,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Turoth,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		itemInBankBoosts: [
@@ -1217,7 +1199,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.WarpedJelly,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		existsInCatacombs: true,
 		itemsRequired: deepResolveItems([
@@ -1242,7 +1224,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		table: Monsters.Werewolf,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		itemInBankBoosts: [

@@ -17,7 +17,7 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.GeneralGraardor,
 		emoji: '<:Pet_general_graardor:324127377376673792>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		qpRequired: 75,
 		itemInBankBoosts: [
@@ -47,7 +47,7 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.CommanderZilyana,
 		emoji: '<:Pet_zilyana:324127378248957952>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		qpRequired: 75,
 		itemInBankBoosts: [
@@ -86,7 +86,7 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.Kreearra,
 		emoji: '<:Pet_kreearra:324127377305239555>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		qpRequired: 75,
 		itemInBankBoosts: [
@@ -121,7 +121,7 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.KrilTsutsaroth,
 		emoji: '<:Pet_kril_tsutsaroth:324127377527406594>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		qpRequired: 75,
 		itemInBankBoosts: [

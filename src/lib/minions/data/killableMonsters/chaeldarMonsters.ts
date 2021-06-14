@@ -16,7 +16,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.AncientZygomite,
 
 		wildy: false,
-		canBeKilled: true,
 		difficultyRating: 3,
 		qpRequired: 0,
 		levelRequirements: {
@@ -34,7 +33,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.Aviansie,
 
 		wildy: false,
-		canBeKilled: true,
 		difficultyRating: 4,
 		qpRequired: 0,
 		levelRequirements: {
@@ -51,7 +49,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 36,
 		table: Monsters.BlackDemon,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		existsInCatacombs: true,
 		qpRequired: 0,
@@ -78,7 +76,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 16,
 		table: Monsters.CaveHorror,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
@@ -103,7 +101,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 35,
 		table: Monsters.CaveKraken,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		qpRequired: 0,
 		levelRequirements: {
@@ -123,7 +121,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 117,
 		table: Monsters.FossilIslandWyvernAncient,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
@@ -144,7 +142,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.FossilIslandWyvernLongTailed,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
 			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
@@ -165,7 +163,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.FossilIslandWyvernSpitting,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
 			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
@@ -186,7 +184,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.FossilIslandWyvernTaloned,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
 			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
@@ -207,7 +205,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.GreaterDemon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0,
@@ -234,7 +232,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.IronDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
@@ -255,7 +253,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.Kraken,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			[
@@ -299,7 +297,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.Lizardman,
 		emoji: '<:Xerics_talisman_inert:456176488669249539>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 30,
 		healAmountNeeded: 14,
@@ -317,7 +315,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.LizardmanBrute,
 		emoji: '<:Xerics_talisman_inert:456176488669249539>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 30,
 		healAmountNeeded: 16,
@@ -335,7 +333,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.LizardmanShaman,
 		emoji: '<:Dragon_warhammer:405998717154623488>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
 			["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow', 'Toxic blowpipe', 'Toxic blowpipe (empty)']
@@ -364,25 +362,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBarrage: false
 	},
 	{
-		id: Monsters.Porazdir.id,
-		name: Monsters.Porazdir.name,
-		aliases: Monsters.Porazdir.aliases,
-		timeToFinish: Time.Minute * 13,
-		table: Monsters.Porazdir,
-
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 5,
-		itemsRequired: deepResolveItems([
-			['Zamorak staff', 'Staff of the dead', 'Toxic staff (uncharged)', 'Toxic staff of the dead']
-		]),
-		qpRequired: 0,
-		healAmountNeeded: 20 * 25,
-		attackStyleToUse: GearSetupTypes.Mage,
-		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged]
-	},
-	{
 		id: Monsters.SkeletalWyvern.id,
 		name: Monsters.SkeletalWyvern.name,
 		aliases: Monsters.SkeletalWyvern.aliases,
@@ -390,7 +369,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.SkeletalWyvern,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
 			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
@@ -412,7 +391,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.Skotizo,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 0,
 		itemsRequired: resolveItems(['Dark totem']),
 		notifyDrops: resolveItems(['Jar of darkness', 'Skotos']),
@@ -436,7 +415,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.TzHaarKet,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0
 	},
@@ -448,7 +427,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.Wyrm,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		levelRequirements: {
@@ -466,7 +445,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 25,
 		table: Monsters.Zygomite,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 3,
 		levelRequirements: {

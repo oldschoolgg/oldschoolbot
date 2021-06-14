@@ -15,7 +15,7 @@ export const konarMonsters: KillableMonster[] = [
 		table: Monsters.AdamantDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 205,
@@ -31,7 +31,7 @@ export const konarMonsters: KillableMonster[] = [
 		table: Monsters.BabyRedDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 15,
@@ -46,7 +46,7 @@ export const konarMonsters: KillableMonster[] = [
 		table: Monsters.BrutalRedDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
@@ -64,7 +64,7 @@ export const konarMonsters: KillableMonster[] = [
 		table: Monsters.DarkBeast,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		qpRequired: 0,
 		levelRequirements: {
@@ -86,7 +86,7 @@ export const konarMonsters: KillableMonster[] = [
 		table: Monsters.Drake,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		levelRequirements: {
@@ -108,7 +108,7 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 110,
 		table: Monsters.Hydra,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems(['Antidote++(4)']),
 		notifyDrops: resolveItems(['Hydra tail']),
@@ -129,7 +129,7 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 240,
 		table: Monsters.AlchemicalHydra,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems(['Antidote++(4)']),
 		notifyDrops: resolveItems(['Hydra leather', 'Hydra tail', "Hydra's claw", 'Ikkle hydra', 'Jar of chemicals']),
@@ -162,7 +162,7 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 54,
 		table: Monsters.MithrilDragon,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Dragon full helm']),
@@ -178,7 +178,7 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 27,
 		table: Monsters.RedDragon,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
@@ -196,7 +196,7 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 100,
 		table: Monsters.RuneDragon,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Dragon metal lump', 'Draconic visage']),
@@ -212,7 +212,7 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 17,
 		table: Monsters.SmokeDevil,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		notifyDrops: resolveItems(['Dragon chainbody']),
 		qpRequired: 0,
@@ -241,7 +241,7 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 78,
 		table: Monsters.ThermonuclearSmokeDevil,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		notifyDrops: resolveItems(['Dragon chainbody', 'Smoke Battlestaff', 'Pet smoke devil']),
 		qpRequired: 0,
@@ -282,7 +282,7 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 40,
 		table: Monsters.Waterfiend,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Mist battlestaff']),
 		qpRequired: 0,

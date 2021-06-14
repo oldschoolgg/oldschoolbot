@@ -6,24 +6,13 @@ import { KillableMonster } from '../../types';
 
 export const krystiliaMonsters: KillableMonster[] = [
 	{
-		id: Monsters.ArmadylianGuard.id,
-		name: Monsters.ArmadylianGuard.name,
-		aliases: Monsters.ArmadylianGuard.aliases,
-		timeToFinish: Time.Second * 20,
-		table: Monsters.ArmadylianGuard,
-		wildy: true,
-		canBeKilled: false,
-		difficultyRating: 4,
-		qpRequired: 0
-	},
-	{
 		id: Monsters.DesertBandit.id,
 		name: Monsters.DesertBandit.name,
 		aliases: Monsters.DesertBandit.aliases,
 		timeToFinish: Time.Second * 14,
 		table: Monsters.DesertBandit,
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0
 	},
@@ -34,7 +23,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 25,
 		table: Monsters.BlackKnight,
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		qpRequired: 0
 	},
@@ -46,7 +35,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.ChaosDruid,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		canCannon: true,
@@ -61,7 +50,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.DarkWarrior,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		canCannon: true,
@@ -76,7 +65,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.DeadlyRedSpider,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		canCannon: true,
@@ -91,7 +80,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.ElderChaosDruid,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		canCannon: true,
@@ -106,7 +95,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.Ent,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Dragon axe', 'Rune axe']),
 		qpRequired: 0,
@@ -122,7 +111,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.GuardBandit,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		canCannon: true,
@@ -137,7 +126,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.LavaDragon,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
@@ -151,7 +140,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.MagicAxe,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		// itemsRequired: resolveItems(['Lockpick']),
 		qpRequired: 0,
@@ -167,7 +156,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.Mammoth,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		canCannon: true,
@@ -182,7 +171,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.Pirate,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		// itemsRequired: resolveItems(['Lockpick']),
 		levelRequirements: {
@@ -198,7 +187,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.RevenantCyclops,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 9,
 		qpRequired: 0
 	},
@@ -210,7 +199,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.RevenantDarkBeast,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 9,
 		qpRequired: 0
 	},
@@ -222,7 +211,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.RevenantDemon,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 9,
 		qpRequired: 0
 	},
@@ -234,7 +223,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.RevenantDragon,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 9,
 		qpRequired: 0
 	},
@@ -246,7 +235,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.RevenantGoblin,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 9,
 		qpRequired: 0
 	},
@@ -258,7 +247,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.RevenantHellhound,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 9,
 		qpRequired: 0
 	},
@@ -270,7 +259,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.RevenantHobgoblin,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 9,
 		qpRequired: 0
 	},
@@ -282,7 +271,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.RevenantImp,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 9,
 		qpRequired: 0
 	},
@@ -294,7 +283,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.RevenantKnight,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 9,
 		qpRequired: 0
 	},
@@ -306,7 +295,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.RevenantOrk,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 9,
 		qpRequired: 0
 	},
@@ -318,7 +307,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.RevenantPyrefiend,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 9,
 		qpRequired: 0
 	},
@@ -330,7 +319,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		table: Monsters.Rogue,
 
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		qpRequired: 0
 	}
