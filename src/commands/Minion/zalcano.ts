@@ -15,9 +15,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 const skillRequirements: Skills = {
 	mining: 70,
 	smithing: 70,
-	cooking: 70,
 	farming: 70,
-	fishing: 70,
 	woodcutting: 70,
 	agility: 70,
 	herblore: 70,
