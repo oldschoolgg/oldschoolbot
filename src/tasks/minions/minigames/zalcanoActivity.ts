@@ -45,10 +45,7 @@ export default class extends Task {
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${
 					user.minionName
-				}, just received **Smolcano**, their Zalcano KC is ${randInt(
-					kc || 1,
-					(kc || 1) + quantity
-				)}!`
+				}, just received **Smolcano**, their Zalcano KC is ${randInt(kc || 1, (kc || 1) + quantity)}!`
 			);
 		}
 
@@ -56,25 +53,17 @@ export default class extends Task {
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(
-				loot.bank,
-				`Loot From ${quantity}x Zalcano`,
-				true,
-				{ showNewCL: 1 },
-				user
-			);
+			.generateBankImage(loot.bank, `Loot From ${quantity}x Zalcano`, true, { showNewCL: 1 }, user);
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
-			`${user}, ${
-				user.minionName
-			} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${
+			`${user}, ${user.minionName} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${
 				kc + quantity
 			}. ${xpRes}`,
 			res => {
-				user.log(`continued zalcano`);
+				user.log('continued zalcano');
 				return this.client.commands.get('zalcano')!.run(res, []);
 			},
 			image!,

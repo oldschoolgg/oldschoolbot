@@ -53,12 +53,7 @@ export default class extends Task {
 		} else if (magicXP < 1000 && newQP > 15 && roll(2)) {
 			await user.addXP({ skillName: SkillsEnum.Magic, amount: 1000 });
 			str += `${Emoji.Magic} You received 1000 Magic XP for completing Fairytale I - Growing Pains.`;
-		} else if (
-			user.skillLevel(SkillsEnum.Cooking) >= 40 &&
-			newQP > 50 &&
-			magicXP < 2500 &&
-			roll(2)
-		) {
+		} else if (user.skillLevel(SkillsEnum.Cooking) >= 40 && newQP > 50 && magicXP < 2500 && roll(2)) {
 			await user.addXP({ skillName: SkillsEnum.Magic, amount: 2500 });
 			str += `${Emoji.Magic} You received 2500 Magic XP for completing Recipe For Disaster (Lumbridge guide subquest).`;
 		}
@@ -71,7 +66,7 @@ export default class extends Task {
 			hasMaxQP
 				? undefined
 				: res => {
-						user.log(`continued trip of Questing.`);
+						user.log('continued trip of Questing.');
 						return this.client.commands.get('quest')!.run(res as KlasaMessage, []);
 				  },
 			undefined,

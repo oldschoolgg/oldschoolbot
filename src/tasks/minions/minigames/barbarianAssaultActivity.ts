@@ -9,27 +9,21 @@ import { sendToChannelID } from '../../../lib/util/webhook';
 
 function generateExpertiseString(totalLevel: number) {
 	if (totalLevel === 4) {
-		return `Your team are all level 1, and new to Barbarian Assault.`;
+		return 'Your team are all level 1, and new to Barbarian Assault.';
 	}
 	if (totalLevel <= 10) {
-		return `Some members of your team have a decent amount of experience with Barbarian Assault.`;
+		return 'Some members of your team have a decent amount of experience with Barbarian Assault.';
 	}
 	if (totalLevel <= 15) {
-		return `Your team is quite skilled at Barbarian Assault.`;
+		return 'Your team is quite skilled at Barbarian Assault.';
 	}
-	return `Your team are the best-of-the-best at Barbarian Assault!`;
+	return 'Your team are the best-of-the-best at Barbarian Assault!';
 }
 
 export default class extends Task {
-	async run({
-		channelID,
-		leader,
-		users,
-		quantity,
-		totalLevel
-	}: BarbarianAssaultActivityTaskOptions) {
+	async run({ channelID, leader, users, quantity, totalLevel }: BarbarianAssaultActivityTaskOptions) {
 		let basePoints = 35;
-		let resultStr = `The base amount of points is 35. `;
+		let resultStr = 'The base amount of points is 35. ';
 		resultStr += `Your teams total level is ${totalLevel}/${users.length * 5}. `;
 
 		const teamSkillPercent = calcWhatPercent(totalLevel, users.length * 5);

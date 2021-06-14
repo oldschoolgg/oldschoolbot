@@ -41,7 +41,7 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued trip of mahogany homes`);
+				user.log('continued trip of mahogany homes');
 				return (this.client.commands.get('mh') as MahoganyHomesCommand).build(res);
 			},
 			undefined,

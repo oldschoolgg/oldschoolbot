@@ -53,8 +53,7 @@ export default class extends BotCommand {
 
 		// Reduce time based on Gear
 		const usersRangeStats = user.getGear('range').stats;
-		const percentIncreaseFromRangeStats =
-			Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
+		const percentIncreaseFromRangeStats = Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromRangeStats);
 
 		debugStr += `, ${percentIncreaseFromRangeStats}% from Gear`;
@@ -93,11 +92,11 @@ export default class extends BotCommand {
 			!equippedWeapon.weapon ||
 			!['crossbow', 'bow'].includes(equippedWeapon.weapon.weapon_type)
 		) {
-			throw `JalYt, you not wearing ranged weapon?! TzTok-Jad stomp you to death if you get close, come back with range weapon.`;
+			throw 'JalYt, you not wearing ranged weapon?! TzTok-Jad stomp you to death if you get close, come back with range weapon.';
 		}
 
 		if (usersRangeStats.attack_ranged < 160) {
-			throw `JalYt, your ranged gear not strong enough! You die very quickly with your bad gear, come back with better range gear.`;
+			throw 'JalYt, your ranged gear not strong enough! You die very quickly with your bad gear, come back with better range gear.';
 		}
 
 		if (!bankHasAllItemsFromBank(user.settings.get(UserSettings.Bank), fightCavesSupplies)) {
@@ -107,7 +106,7 @@ export default class extends BotCommand {
 		}
 
 		if (user.skillLevel(SkillsEnum.Prayer) < 43) {
-			throw `JalYt, come back when you have atleast 43 Prayer, TzTok-Jad annihilate you without protection from gods.`;
+			throw 'JalYt, come back when you have atleast 43 Prayer, TzTok-Jad annihilate you without protection from gods.';
 		}
 	}
 
@@ -150,15 +149,9 @@ export default class extends BotCommand {
 			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
 
 		// 15% boost for on task
-		if (
-			isOnTask &&
-			msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Black mask (i)')))
-		) {
+		if (isOnTask && msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Black mask (i)')))) {
 			duration *= 0.85;
-			debugStr =
-				debugStr === ''
-					? '15% on Task with Black mask (i)'
-					: ', 15% on Task with Black mask (i)';
+			debugStr = debugStr === '' ? '15% on Task with Black mask (i)' : ', 15% on Task with Black mask (i)';
 		}
 
 		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>(this.client, {
@@ -175,21 +168,13 @@ export default class extends BotCommand {
 		// Track this food cost in Economy Stats
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.FightCavesCost,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.FightCavesCost),
-				fightCavesSupplies
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.FightCavesCost), fightCavesSupplies])
 		);
 
-		const totalDeathChance = (
-			((100 - preJadDeathChance) * (100 - jadDeathChance)) /
-			100
-		).toFixed(1);
+		const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 
 		return msg.send(
-			`**Duration:** ${formatDuration(duration)} (${(duration / 1000 / 60).toFixed(
-				2
-			)} minutes)
+			`**Duration:** ${formatDuration(duration)} (${(duration / 1000 / 60).toFixed(2)} minutes)
 **Boosts:** ${debugStr}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
 **Jad KC:** ${jadKC}

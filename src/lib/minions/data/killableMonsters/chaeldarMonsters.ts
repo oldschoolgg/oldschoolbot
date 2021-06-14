@@ -126,13 +126,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
-			[
-				'Elemental shield',
-				'Mind shield',
-				'Dragonfire shield',
-				'Dragonfire ward',
-				'Ancient wyvern shield'
-			]
+			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
 		qpRequired: 2,
 		levelRequirements: {
@@ -153,13 +147,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
-			[
-				'Elemental shield',
-				'Mind shield',
-				'Dragonfire shield',
-				'Dragonfire ward',
-				'Ancient wyvern shield'
-			]
+			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
 		qpRequired: 2,
 		levelRequirements: {
@@ -180,13 +168,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
-			[
-				'Elemental shield',
-				'Mind shield',
-				'Dragonfire shield',
-				'Dragonfire ward',
-				'Ancient wyvern shield'
-			]
+			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
 		qpRequired: 2,
 		levelRequirements: {
@@ -207,13 +189,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
-			[
-				'Elemental shield',
-				'Mind shield',
-				'Dragonfire shield',
-				'Dragonfire ward',
-				'Ancient wyvern shield'
-			]
+			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
 		qpRequired: 2,
 		levelRequirements: {
@@ -362,13 +338,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
-			[
-				"Karil's crossbow",
-				'Rune crossbow',
-				'Armadyl crossbow',
-				'Toxic blowpipe',
-				'Toxic blowpipe (empty)'
-			]
+			["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow', 'Toxic blowpipe', 'Toxic blowpipe (empty)']
 		]),
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,
@@ -404,12 +374,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: false,
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
-			[
-				'Zamorak staff',
-				'Staff of the dead',
-				'Toxic staff (uncharged)',
-				'Toxic staff of the dead'
-			]
+			['Zamorak staff', 'Staff of the dead', 'Toxic staff (uncharged)', 'Toxic staff of the dead']
 		]),
 		qpRequired: 0,
 		healAmountNeeded: 20 * 25,
@@ -428,13 +393,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBeKilled: true,
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
-			[
-				'Elemental shield',
-				'Mind shield',
-				'Dragonfire shield',
-				'Dragonfire ward',
-				'Ancient wyvern shield'
-			]
+			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
 		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,

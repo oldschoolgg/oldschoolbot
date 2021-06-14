@@ -6,10 +6,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {
-	AnimatedArmourActivityTaskOptions,
-	CyclopsActivityTaskOptions
-} from '../../lib/types/minions';
+import { AnimatedArmourActivityTaskOptions, CyclopsActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import resolveItems from '../../lib/util/resolveItems';
@@ -55,17 +52,14 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	@minionNotBusy
-	async run(
-		msg: KlasaMessage,
-		[quantity = null, minigame]: [null | number, 'tokens' | 'cyclops']
-	) {
+	async run(msg: KlasaMessage, [quantity = null, minigame]: [null | number, 'tokens' | 'cyclops']) {
 		await msg.author.settings.sync(true);
 
 		const atkLvl = msg.author.skillLevel(SkillsEnum.Attack);
 		const strLvl = msg.author.skillLevel(SkillsEnum.Strength);
 		if (atkLvl + strLvl < 130 && atkLvl !== 99 && strLvl !== 99) {
 			return msg.send(
-				`To enter the Warrior's Guild, your Attack and Strength levels must add up to atleast 130, or you must have level 99 in either.`
+				"To enter the Warrior's Guild, your Attack and Strength levels must add up to atleast 130, or you must have level 99 in either."
 			);
 		}
 
@@ -120,14 +114,13 @@ export default class extends BotCommand {
 			// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 			const amountTokens = userBank.amount('Warrior guild token');
 			if (amountTokens < 100) {
-				return msg.send(`You need atleast 100 Warriors guild tokens to kill Cyclops.`);
+				return msg.send('You need atleast 100 Warriors guild tokens to kill Cyclops.');
 			}
 			// If no quantity provided, set it to the max.
 			if (quantity === null) {
 				const maxTokensTripLength = Math.floor((amountTokens - 10) / 10) * Time.Minute;
 				quantity = Math.floor(
-					(maxTokensTripLength > maxTripLength ? maxTripLength : maxTokensTripLength) /
-						(Time.Second * 30)
+					(maxTokensTripLength > maxTripLength ? maxTripLength : maxTokensTripLength) / (Time.Second * 30)
 				);
 			}
 

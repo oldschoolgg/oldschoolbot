@@ -82,11 +82,9 @@ async function _setup(
 						reaction.users.remove(user);
 					}
 
-					return ([
-						ReactionEmoji.Join,
-						ReactionEmoji.Stop,
-						ReactionEmoji.Start
-					] as string[]).includes(reaction.emoji.id);
+					return ([ReactionEmoji.Join, ReactionEmoji.Stop, ReactionEmoji.Start] as string[]).includes(
+						reaction.emoji.id
+					);
 				},
 				{
 					time: 120_000,

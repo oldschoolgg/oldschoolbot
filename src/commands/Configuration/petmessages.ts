@@ -20,10 +20,10 @@ export default class extends BotCommand {
 
 	async on(msg: KlasaMessage) {
 		if (msg.guild!.settings.get(GuildSettings.PetChannel)) {
-			return msg.send(`Pet Messages are already enabled in this guild.`);
+			return msg.send('Pet Messages are already enabled in this guild.');
 		}
 		await msg.guild!.settings.update(GuildSettings.PetChannel, msg.channel);
-		return msg.send(`Enabled Pet Messages in this guild.`);
+		return msg.send('Enabled Pet Messages in this guild.');
 	}
 
 	async off(msg: KlasaMessage) {

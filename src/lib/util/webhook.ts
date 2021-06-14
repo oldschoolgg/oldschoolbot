@@ -1,10 +1,4 @@
-import {
-	MessageAttachment,
-	MessageEmbed,
-	Permissions,
-	TextChannel,
-	WebhookClient
-} from 'discord.js';
+import { MessageAttachment, MessageEmbed, Permissions, TextChannel, WebhookClient } from 'discord.js';
 import { KlasaClient } from 'klasa';
 import PQueue from 'p-queue';
 
@@ -29,7 +23,7 @@ export async function resolveChannel(
 
 	const db = await WebhookTable.findOne({ channelID });
 	if (db) {
-		client.emit('log', `Restoring webhook from DB.`);
+		client.emit('log', 'Restoring webhook from DB.');
 		webhookCache.set(db.channelID, new WebhookClient(db.webhookID, db.webhookToken));
 		return webhookCache.get(db.channelID);
 	}
@@ -39,7 +33,7 @@ export async function resolveChannel(
 	}
 
 	try {
-		client.emit('log', `Trying to create webhook.`);
+		client.emit('log', 'Trying to create webhook.');
 		const createdWebhook = await channel.createWebhook(client.user!.username, {
 			avatar: client.user!.displayAvatarURL({})
 		});

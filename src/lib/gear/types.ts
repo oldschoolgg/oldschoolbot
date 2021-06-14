@@ -72,11 +72,7 @@ export type DefenceGearStat =
 	| GearStat.DefenceStab
 	| GearStat.DefenceCrush;
 
-export type OtherGearStat =
-	| GearStat.MeleeStrength
-	| GearStat.RangedStrength
-	| GearStat.MagicDamage
-	| GearStat.Prayer;
+export type OtherGearStat = GearStat.MeleeStrength | GearStat.RangedStrength | GearStat.MagicDamage | GearStat.Prayer;
 
 export type GearRequired = Partial<
 	{

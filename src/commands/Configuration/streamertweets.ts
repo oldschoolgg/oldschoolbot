@@ -24,16 +24,16 @@ export default class extends BotCommand {
 			return msg.send(TWEETS_RATELIMITING);
 		}
 		if (msg.guild!.settings.get(GuildSettings.StreamerTweets) === msg.channel.id) {
-			return msg.send(`Streamer Tweets are already enabled in this channel.`);
+			return msg.send('Streamer Tweets are already enabled in this channel.');
 		}
 		if (msg.guild!.settings.get(GuildSettings.StreamerTweets) !== null) {
 			await msg.guild!.settings.update(GuildSettings.StreamerTweets, msg.channel);
 			return msg.send(
-				`Streamer Tweets are already enabled in another channel, but I've switched them to use this channel.`
+				"Streamer Tweets are already enabled in another channel, but I've switched them to use this channel."
 			);
 		}
 		await msg.guild!.settings.update(GuildSettings.StreamerTweets, msg.channel);
-		return msg.send(`Enabled Streamer Tweets in this channel.`);
+		return msg.send('Enabled Streamer Tweets in this channel.');
 	}
 
 	async off(msg: KlasaMessage) {

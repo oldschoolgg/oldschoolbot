@@ -130,7 +130,7 @@ export default class extends Task {
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
 			loot,
-			``,
+			'',
 			true,
 			{
 				showNewCL: 1
@@ -158,7 +158,7 @@ export default class extends Task {
 			channelID,
 			output,
 			res => {
-				user.log(`continued trip of wintertodt`);
+				user.log('continued trip of wintertodt');
 				return this.client.commands.get('wintertodt')!.run(res, []);
 			},
 			image!,

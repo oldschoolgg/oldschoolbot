@@ -8,13 +8,7 @@ import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { ClientSettings } from '../settings/types/ClientSettings';
 import { ActivityTaskOptions } from '../types/minions';
-import {
-	channelIsSendable,
-	generateContinuationChar,
-	roll,
-	stringMatches,
-	updateGPTrackSetting
-} from '../util';
+import { channelIsSendable, generateContinuationChar, roll, stringMatches, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
 
@@ -32,9 +26,7 @@ export async function handleTripFinish(
 	user: KlasaUser,
 	channelID: string,
 	message: string,
-	onContinue:
-		| undefined
-		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
+	onContinue: undefined | ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
 	loot: ItemBank | null
@@ -59,7 +51,7 @@ export async function handleTripFinish(
 		if (perkTier > PerkTier.One) {
 			message += ` Say \`c\` if you want to complete this ${clueReceived.name} clue now.`;
 		} else {
-			message += `You can get your minion to complete them using \`+minion clue easy/medium/etc\``;
+			message += 'You can get your minion to complete them using `+minion clue easy/medium/etc`';
 		}
 	}
 
@@ -97,8 +89,7 @@ export async function handleTripFinish(
 	const collector = new MessageCollector(
 		channel,
 		(mes: Message) =>
-			mes.author === user &&
-			(mes.content.toLowerCase() === 'c' || stringMatches(mes.content, continuationChar)),
+			mes.author === user && (mes.content.toLowerCase() === 'c' || stringMatches(mes.content, continuationChar)),
 		{
 			time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
 			max: 1

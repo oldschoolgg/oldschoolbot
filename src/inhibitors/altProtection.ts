@@ -17,7 +17,7 @@ export default class extends Inhibitor {
 			Date.now() - msg.author.createdTimestamp < Time.Month &&
 			!msg.author.settings.get(UserSettings.BitField).includes(BitField.BypassAgeRestriction)
 		) {
-			throw `You cannot use this command as your account is too new. You can ask to be manually verified if you have social media accounts as proof of identity.`;
+			throw 'You cannot use this command as your account is too new. You can ask to be manually verified if you have social media accounts as proof of identity.';
 		}
 	}
 }

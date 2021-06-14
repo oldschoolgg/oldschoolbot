@@ -18,12 +18,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		const {
-			dicingBank,
-			duelTaxBank,
-			dailiesAmount,
-			itemSellTaxBank
-		} = (this.client.settings.get('economyStats') as any).toJSON();
+		const { dicingBank, duelTaxBank, dailiesAmount, itemSellTaxBank } = (
+			this.client.settings.get('economyStats') as any
+		).toJSON();
 
 		return msg.send(`**Economy Stats:**
 Dicing GP removed (Net amount): ${Util.toKMB(dicingBank * 1_000_000)}

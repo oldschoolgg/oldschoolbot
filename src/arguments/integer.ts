@@ -27,8 +27,6 @@ export default class extends Argument {
 		}
 
 		// @ts-ignore 2341
-		return this.constructor.minOrMax(this.client, number, min, max, possible, message)
-			? number
-			: null;
+		return this.constructor.minOrMax(this.client, number, min, max, possible, message) ? number : null;
 	}
 }

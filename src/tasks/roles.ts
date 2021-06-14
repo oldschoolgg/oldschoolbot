@@ -23,12 +23,7 @@ const minigames = [
 
 const collections = ['Pets', 'Skilling', 'Clue all', 'Boss', 'Minigames', 'Chambers of Xeric'];
 
-async function addRoles(
-	g: Guild,
-	users: string[],
-	role: Roles,
-	badge: number | null
-): Promise<string> {
+async function addRoles(g: Guild, users: string[], role: Roles, badge: number | null): Promise<string> {
 	let added: string[] = [];
 	let removed: string[] = [];
 	const roleName = g.roles.cache.get(role)!.name!;
@@ -104,9 +99,7 @@ export default class extends Task {
 			.map(u => {
 				let totalLevel = 0;
 				for (const skill of skillVals) {
-					totalLevel += convertXPtoLVL(
-						Number(u[`skills.${skill.id}` as keyof SkillUser]) as any
-					);
+					totalLevel += convertXPtoLVL(Number(u[`skills.${skill.id}` as keyof SkillUser]) as any);
 				}
 				return {
 					id: u.id,
@@ -151,12 +144,10 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 		// Top sacrificers
 		let topSacrificers = [];
 		const mostValue = await this.client.query<SkillUser[]>(
-			`SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 3;`
+			'SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 3;'
 		);
 		for (const u of mostValue) topSacrificers.push(u.id);
-		const mostUniques = await this.client.query<
-			SkillUser[]
-		>(`SELECT u.id, u.sacbanklength FROM (
+		const mostUniques = await this.client.query<SkillUser[]>(`SELECT u.id, u.sacbanklength FROM (
   SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);

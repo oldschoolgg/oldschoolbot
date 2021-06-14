@@ -156,14 +156,13 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const { plantTier } =
-			msg.author.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
+		const { plantTier } = msg.author.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
 		const loot = new Bank();
 
 		if (bankHasItem(userBank, itemID('Seed pack'), 1)) {
 			loot.add(openSeedPack(plantTier));
 		} else {
-			return msg.send(`You have no seed packs to open!`);
+			return msg.send('You have no seed packs to open!');
 		}
 
 		await msg.author.removeItemFromBank(itemID('Seed pack'), 1);

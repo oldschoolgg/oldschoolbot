@@ -27,9 +27,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public completion(this: User) {
-		const clItems = Object.keys(this.settings.get(UserSettings.CollectionLogBank)).map(i =>
-			parseInt(i)
-		);
+		const clItems = Object.keys(this.settings.get(UserSettings.CollectionLogBank)).map(i => parseInt(i));
 		const owned = clItems.filter(i => allCollectionLogItems.includes(i));
 		const notOwned = shuffleRandom(
 			Number(this.id),

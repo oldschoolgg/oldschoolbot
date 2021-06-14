@@ -23,10 +23,7 @@ export default class extends BotCommand {
 			ironCantUse: true,
 			categoryFlags: ['minion'],
 			description: 'Sells items to other players for GP.',
-			examples: [
-				'+sellto @Magnaboy 1b 2 Elysian sigil',
-				'+sellto @Magnaboy 500k 1 Dragon platelegs'
-			]
+			examples: ['+sellto @Magnaboy 1b 2 Elysian sigil', '+sellto @Magnaboy 500k 1 Dragon platelegs']
 		});
 	}
 
@@ -39,22 +36,20 @@ export default class extends BotCommand {
 		}
 
 		// Make sure blacklisted members can't be traded.
-		const isBlacklisted = this.client.settings
-			.get(ClientSettings.UserBlacklist)
-			.includes(buyerMember.user.id);
-		if (isBlacklisted) throw `Blacklisted players can't buy items.`;
-		if (msg.author.isIronman) throw `Iron players can't sell items.`;
-		if (buyerMember.user.isIronman) throw `Iron players can't be sold items.`;
-		if (buyerMember.user.id === msg.author.id) throw `You can't trade yourself.`;
-		if (buyerMember.user.bot) throw `You can't trade a bot.`;
+		const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(buyerMember.user.id);
+		if (isBlacklisted) throw "Blacklisted players can't buy items.";
+		if (msg.author.isIronman) throw "Iron players can't sell items.";
+		if (buyerMember.user.isIronman) throw "Iron players can't be sold items.";
+		if (buyerMember.user.id === msg.author.id) throw "You can't trade yourself.";
+		if (buyerMember.user.bot) throw "You can't trade a bot.";
 		if (buyerMember.user.isBusy) {
-			throw `That user is busy right now.`;
+			throw 'That user is busy right now.';
 		}
 
 		await Promise.all([buyerMember.user.settings.sync(true), msg.author.settings.sync(true)]);
 
 		if (buyerMember.user.settings.get(UserSettings.GP) < price) {
-			throw `That user doesn't have enough GP :(`;
+			throw "That user doesn't have enough GP :(";
 		}
 
 		buyerMember.user.toggleBusy(true);
@@ -67,17 +62,10 @@ export default class extends BotCommand {
 		}
 	}
 
-	async sell(
-		msg: KlasaMessage,
-		buyerMember: GuildMember,
-		price: number,
-		[bankToSell, totalPrice]: [Bank, number]
-	) {
+	async sell(msg: KlasaMessage, buyerMember: GuildMember, price: number, [bankToSell, totalPrice]: [Bank, number]) {
 		const bankStr = bankToSell.toString();
 
-		let sellStr = `${
-			msg.author
-		}, say \`confirm\` to confirm that you want to sell ${bankStr} to \`${
+		let sellStr = `${msg.author}, say \`confirm\` to confirm that you want to sell ${bankStr} to \`${
 			buyerMember.user.username
 		}#${buyerMember.user.discriminator}\` for a *total* of ${price.toLocaleString()} GP.`;
 
@@ -93,9 +81,7 @@ export default class extends BotCommand {
 			// Confirm the seller wants to sell
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 					options
 				);
 			} catch (err) {
@@ -112,8 +98,7 @@ export default class extends BotCommand {
 
 		try {
 			await msg.channel.awaitMessages(
-				_msg =>
-					_msg.author.id === buyerMember.user.id && _msg.content.toLowerCase() === 'buy',
+				_msg => _msg.author.id === buyerMember.user.id && _msg.content.toLowerCase() === 'buy',
 				options
 			);
 		} catch (err) {
@@ -122,11 +107,8 @@ export default class extends BotCommand {
 		}
 
 		try {
-			if (
-				buyerMember.user.settings.get(UserSettings.GP) < price ||
-				!msg.author.bank().fits(bankToSell)
-			) {
-				return msg.send(`One of you lacks the required GP or items to make this trade.`);
+			if (buyerMember.user.settings.get(UserSettings.GP) < price || !msg.author.bank().fits(bankToSell)) {
+				return msg.send('One of you lacks the required GP or items to make this trade.');
 			}
 
 			await buyerMember.user.removeGP(price);
@@ -136,7 +118,7 @@ export default class extends BotCommand {
 			await buyerMember.user.addItemsToBank(bankToSell.bank);
 		} catch (err) {
 			this.client.emit(Events.Wtf, err);
-			return msg.send(`Fatal error occurred. Please seek help in the support server.`);
+			return msg.send('Fatal error occurred. Please seek help in the support server.');
 		}
 
 		this.client.emit(

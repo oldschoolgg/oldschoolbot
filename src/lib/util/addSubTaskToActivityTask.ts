@@ -10,7 +10,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 ) {
 	const usersTask = client.getActivityOfUser(taskToAdd.userID);
 	if (usersTask) {
-		throw `That user is busy, so they can't do this minion activity.`;
+		throw "That user is busy, so they can't do this minion activity.";
 	}
 
 	const finishDate = Date.now() + taskToAdd.duration;

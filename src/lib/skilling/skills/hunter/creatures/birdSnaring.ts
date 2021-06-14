@@ -4,7 +4,7 @@ import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const birdSnaringCreatures: Creature[] = [
 	{
-		name: `Crimson swift`,
+		name: 'Crimson swift',
 		id: 1,
 		aliases: ['crimson swift'],
 		level: 1,
@@ -17,15 +17,12 @@ const birdSnaringCreatures: Creature[] = [
 		intercept: 20
 	},
 	{
-		name: `Golden warbler`,
+		name: 'Golden warbler',
 		id: 2,
 		aliases: ['golden warbler'],
 		level: 5,
 		hunterXP: 47,
-		table: new LootTable()
-			.every('Bones')
-			.every('Raw bird meat')
-			.every('Yellow feather', [5, 10]),
+		table: new LootTable().every('Bones').every('Raw bird meat').every('Yellow feather', [5, 10]),
 		huntTechnique: HunterTechniqueEnum.BirdSnaring,
 		multiTraps: true,
 		catchTime: 11,
@@ -33,15 +30,12 @@ const birdSnaringCreatures: Creature[] = [
 		intercept: 15
 	},
 	{
-		name: `Copper longtail`,
+		name: 'Copper longtail',
 		id: 3,
 		aliases: ['copper longtail'],
 		level: 9,
 		hunterXP: 61.2,
-		table: new LootTable()
-			.every('Bones')
-			.every('Raw bird meat')
-			.every('Orange feather', [5, 10]),
+		table: new LootTable().every('Bones').every('Raw bird meat').every('Orange feather', [5, 10]),
 		huntTechnique: HunterTechniqueEnum.BirdSnaring,
 		multiTraps: true,
 		catchTime: 12,
@@ -49,7 +43,7 @@ const birdSnaringCreatures: Creature[] = [
 		intercept: 12
 	},
 	{
-		name: `Cerulean twitch`,
+		name: 'Cerulean twitch',
 		id: 4,
 		aliases: ['cerulean twitch'],
 		level: 11,
@@ -62,15 +56,12 @@ const birdSnaringCreatures: Creature[] = [
 		intercept: 10
 	},
 	{
-		name: `Tropical wagtail`,
+		name: 'Tropical wagtail',
 		id: 5,
 		aliases: ['tropical wagtail'],
 		level: 19,
 		hunterXP: 95.2,
-		table: new LootTable()
-			.every('Bones')
-			.every('Raw bird meat')
-			.every('Stripy feather', [5, 10]),
+		table: new LootTable().every('Bones').every('Raw bird meat').every('Stripy feather', [5, 10]),
 		huntTechnique: HunterTechniqueEnum.BirdSnaring,
 		multiTraps: true,
 		catchTime: 17,

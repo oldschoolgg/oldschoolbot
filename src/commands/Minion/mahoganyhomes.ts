@@ -58,12 +58,7 @@ const contractTiers = [
 
 const planksTable = [1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 4];
 
-function calcTrip(
-	level: number,
-	kc: number,
-	maxLen: number,
-	hasSack: boolean
-): [number, Bank, number, number, number] {
+function calcTrip(level: number, kc: number, maxLen: number, hasSack: boolean): [number, Bank, number, number, number] {
 	const percentSkill = Math.min(100, calcWhatPercent(kc, 300));
 	const qtyPerHour = 31 + Math.ceil(calcPercentOfNum(percentSkill, 5)) + (hasSack ? 6 : 0);
 	const qtyPerMaxLen = (qtyPerHour / Time.Hour) * maxLen;
@@ -96,13 +91,13 @@ function calcTrip(
 
 const buyables = [
 	{ item: getOSItem('Builders supply crate'), cost: 25 },
-	{ item: getOSItem(`Amy's saw`), cost: 500 },
-	{ item: getOSItem(`Plank sack`), cost: 350 },
-	{ item: getOSItem(`Hosidius blueprints`), cost: 2000 },
-	{ item: getOSItem(`Carpenter's helmet`), cost: 400 },
-	{ item: getOSItem(`Carpenter's shirt`), cost: 800 },
-	{ item: getOSItem(`Carpenter's trousers`), cost: 600 },
-	{ item: getOSItem(`Carpenter's boots`), cost: 200 }
+	{ item: getOSItem("Amy's saw"), cost: 500 },
+	{ item: getOSItem('Plank sack'), cost: 350 },
+	{ item: getOSItem('Hosidius blueprints'), cost: 2000 },
+	{ item: getOSItem("Carpenter's helmet"), cost: 400 },
+	{ item: getOSItem("Carpenter's shirt"), cost: 800 },
+	{ item: getOSItem("Carpenter's trousers"), cost: 600 },
+	{ item: getOSItem("Carpenter's boots"), cost: 200 }
 ];
 
 export default class MahoganyHomesCommand extends BotCommand {
@@ -201,9 +196,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.ConstructCostBank,
-			new Bank(this.client.settings.get(ClientSettings.EconomyStats.ConstructCostBank)).add(
-				itemsNeeded
-			).bank
+			new Bank(this.client.settings.get(ClientSettings.EconomyStats.ConstructCostBank)).add(itemsNeeded).bank
 		);
 
 		await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>(this.client, {
@@ -224,7 +217,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		)}. Removed ${itemsNeeded} from your bank.`;
 
 		if (hasSack) {
-			str += `\nYou're getting more XP/Hr because of your Plank sack!`;
+			str += "\nYou're getting more XP/Hr because of your Plank sack!";
 		}
 
 		return msg.send(str);

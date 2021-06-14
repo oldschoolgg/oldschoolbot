@@ -5,7 +5,8 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 
-const priorityWarningMsg = `\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**`;
+const priorityWarningMsg =
+	"\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**";
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -30,9 +31,7 @@ export default class extends BotCommand {
 				})!.name;
 			});
 			return msg.channel.send(
-				`Your current combat options are:\n${cbOpts.join(`\n`)}\n\nTry: \`${
-					msg.cmdPrefix
-				}cbops help\``
+				`Your current combat options are:\n${cbOpts.join('\n')}\n\nTry: \`${msg.cmdPrefix}cbops help\``
 			);
 		}
 
@@ -41,7 +40,7 @@ export default class extends BotCommand {
 				`Changes your Combat Options. Usage: \`${msg.cmdPrefix}cbops [add/remove/list] always cannon\`` +
 					`\n\nList of possible options:\n${CombatOptionsArray.map(coa => {
 						return `**${coa!.name}**: ${coa!.desc}`;
-					}).join(`\n`)}`
+					}).join('\n')}`
 			);
 		}
 
@@ -51,9 +50,7 @@ export default class extends BotCommand {
 				(item.aliases && item.aliases.some(alias => stringMatches(alias, option)))
 		);
 		if (!newcbopt) {
-			return msg.channel.send(
-				`Cannot find matching option. Try: \`${msg.cmdPrefix}cbops help\``
-			);
+			return msg.channel.send(`Cannot find matching option. Try: \`${msg.cmdPrefix}cbops help\``);
 		}
 
 		const myCBOpts = await msg.author.settings.get(UserSettings.CombatOptions);
@@ -63,9 +60,7 @@ export default class extends BotCommand {
 		const nextBool = command !== 'remove';
 
 		if (currentStatus === nextBool) {
-			return msg.send(
-				`"${newcbopt.name}" is already ${currentStatus ? 'enabled' : 'disabled'} for you.`
-			);
+			return msg.send(`"${newcbopt.name}" is already ${currentStatus ? 'enabled' : 'disabled'} for you.`);
 		}
 
 		let warningMsg = '';
@@ -80,10 +75,7 @@ export default class extends BotCommand {
 			myCBOpts.includes(CombatOptionsEnum.AlwaysIceBurst)
 		) {
 			if (hasCannon) warningMsg = priorityWarningMsg;
-			await msg.author.settings.update(
-				UserSettings.CombatOptions,
-				CombatOptionsEnum.AlwaysIceBurst
-			);
+			await msg.author.settings.update(UserSettings.CombatOptions, CombatOptionsEnum.AlwaysIceBurst);
 		}
 		// If enabling Ice Burst, make sure barrage isn't also enabled:
 		if (
@@ -92,24 +84,14 @@ export default class extends BotCommand {
 			myCBOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)
 		) {
 			if (warningMsg === '' && hasCannon) warningMsg = priorityWarningMsg;
-			await msg.author.settings.update(
-				UserSettings.CombatOptions,
-				CombatOptionsEnum.AlwaysIceBarrage
-			);
+			await msg.author.settings.update(UserSettings.CombatOptions, CombatOptionsEnum.AlwaysIceBarrage);
 		}
 		// Warn if enabling cannon with ice burst/barrage:
-		if (
-			nextBool &&
-			newcbopt.id === CombatOptionsEnum.AlwaysCannon &&
-			warningMsg === '' &&
-			hasBurstB
-		)
+		if (nextBool && newcbopt.id === CombatOptionsEnum.AlwaysCannon && warningMsg === '' && hasBurstB)
 			warningMsg = priorityWarningMsg;
 
 		await msg.author.settings.update(UserSettings.CombatOptions, newcbopt.id);
 
-		return msg.send(
-			`${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`
-		);
+		return msg.send(`${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`);
 	}
 }

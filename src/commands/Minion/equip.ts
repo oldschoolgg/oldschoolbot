@@ -7,12 +7,7 @@ import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {
-	formatSkillRequirements,
-	itemNameFromID,
-	skillsMeetRequirements,
-	toTitleCase
-} from '../../lib/util';
+import { formatSkillRequirements, itemNameFromID, skillsMeetRequirements, toTitleCase } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -22,13 +17,8 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '<melee|mage|range|skilling|misc> [quantity:integer{1}] (item:...item)',
 			usageDelim: ' ',
-			description:
-				'Equips an item to one of your gear setups. (melee/range/range/skilling/misc)',
-			examples: [
-				'+equip skilling graceful hood',
-				'+equip melee bandos godsword',
-				'+equip mage staff of fire'
-			],
+			description: 'Equips an item to one of your gear setups. (melee/range/range/skilling/misc)',
+			examples: ['+equip skilling graceful hood', '+equip melee bandos godsword', '+equip mage staff of fire'],
 			categoryFlags: ['minion']
 		});
 	}
@@ -39,19 +29,15 @@ export default class extends BotCommand {
 		[gearType, quantity = 1, itemArray]: [GearSetupTypes, number, Item[]]
 	): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
-			return msg.send(
-				`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`
-			);
+			return msg.send(`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`);
 		}
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
 
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const itemToEquip = itemArray.find(
-			i => userBank[i.id] >= quantity && i.equipable_by_player && i.equipment
-		);
+		const itemToEquip = itemArray.find(i => userBank[i.id] >= quantity && i.equipable_by_player && i.equipment);
 
 		if (!itemToEquip) {
-			return msg.send(`You don't have enough of this item to equip, or its not equippable.`);
+			return msg.send("You don't have enough of this item to equip, or its not equippable.");
 		}
 
 		const { slot } = itemToEquip.equipment!;
@@ -65,7 +51,7 @@ export default class extends BotCommand {
 			(currentEquippedGear[EquipmentSlot.Weapon] || currentEquippedGear[EquipmentSlot.Shield])
 		) {
 			return msg.send(
-				`You can't equip this two-handed item because you have items equipped in your weapon/shield slots.`
+				"You can't equip this two-handed item because you have items equipped in your weapon/shield slots."
 			);
 		}
 
@@ -74,14 +60,12 @@ export default class extends BotCommand {
 			currentEquippedGear[EquipmentSlot.TwoHanded]
 		) {
 			return msg.send(
-				`You can't equip this weapon or shield, because you have a 2H weapon equipped, and need to unequip it first.`
+				"You can't equip this weapon or shield, because you have a 2H weapon equipped, and need to unequip it first."
 			);
 		}
 
 		if (!itemToEquip.stackable && quantity > 1) {
-			return msg.send(
-				`You can't equip more than 1 of this item at once, as it isn't stackable!`
-			);
+			return msg.send("You can't equip more than 1 of this item at once, as it isn't stackable!");
 		}
 
 		if (itemToEquip.equipment?.requirements) {
@@ -104,9 +88,9 @@ export default class extends BotCommand {
 		if (equippedInThisSlot) {
 			const newGear = { ...currentEquippedGear };
 			msg.author.log(
-				`automatically unequipping ${itemNameFromID(
-					newGear[slot]!.item
-				)}, so they can equip ${itemToEquip.name}`
+				`automatically unequipping ${itemNameFromID(newGear[slot]!.item)}, so they can equip ${
+					itemToEquip.name
+				}`
 			);
 			newGear[slot] = null;
 

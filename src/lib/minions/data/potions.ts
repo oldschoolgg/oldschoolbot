@@ -3,48 +3,23 @@ import resolveItems from '../../util/resolveItems';
 const Potions = [
 	{
 		name: 'Saradomin brew',
-		items: resolveItems([
-			'Saradomin brew(1)',
-			'Saradomin brew(2)',
-			'Saradomin brew(3)',
-			'Saradomin brew(4)'
-		])
+		items: resolveItems(['Saradomin brew(1)', 'Saradomin brew(2)', 'Saradomin brew(3)', 'Saradomin brew(4)'])
 	},
 	{
 		name: 'Super restore',
-		items: resolveItems([
-			'Super restore(1)',
-			'Super restore(2)',
-			'Super restore(3)',
-			'Super restore(4)'
-		])
+		items: resolveItems(['Super restore(1)', 'Super restore(2)', 'Super restore(3)', 'Super restore(4)'])
 	},
 	{
 		name: 'Prayer potion',
-		items: resolveItems([
-			'Prayer potion(1)',
-			'Prayer potion(2)',
-			'Prayer potion(3)',
-			'Prayer potion(4)'
-		])
+		items: resolveItems(['Prayer potion(1)', 'Prayer potion(2)', 'Prayer potion(3)', 'Prayer potion(4)'])
 	},
 	{
 		name: 'Sanfew serum',
-		items: resolveItems([
-			'Sanfew serum(1)',
-			'Sanfew serum(2)',
-			'Sanfew serum(3)',
-			'Sanfew serum(4)'
-		])
+		items: resolveItems(['Sanfew serum(1)', 'Sanfew serum(2)', 'Sanfew serum(3)', 'Sanfew serum(4)'])
 	},
 	{
 		name: 'Attack potion',
-		items: resolveItems([
-			'Attack potion(1)',
-			'Attack potion(2)',
-			'Attack potion(3)',
-			'Attack potion(4)'
-		])
+		items: resolveItems(['Attack potion(1)', 'Attack potion(2)', 'Attack potion(3)', 'Attack potion(4)'])
 	},
 	{
 		name: 'Antipoison',
@@ -52,21 +27,11 @@ const Potions = [
 	},
 	{
 		name: "Relicym's balm",
-		items: resolveItems([
-			"Relicym's balm(1)",
-			"Relicym's balm(2)",
-			"Relicym's balm(3)",
-			"Relicym's balm(4)"
-		])
+		items: resolveItems(["Relicym's balm(1)", "Relicym's balm(2)", "Relicym's balm(3)", "Relicym's balm(4)"])
 	},
 	{
 		name: 'Strength potion',
-		items: resolveItems([
-			'Strength potion(1)',
-			'Strength potion(2)',
-			'Strength potion(3)',
-			'Strength potion(4)'
-		])
+		items: resolveItems(['Strength potion(1)', 'Strength potion(2)', 'Strength potion(3)', 'Strength potion(4)'])
 	},
 	{
 		name: 'Serum 207',
@@ -74,138 +39,63 @@ const Potions = [
 	},
 	{
 		name: 'Compost potion',
-		items: resolveItems([
-			'Compost potion(1)',
-			'Compost potion(2)',
-			'Compost potion(3)',
-			'Compost potion(4)'
-		])
+		items: resolveItems(['Compost potion(1)', 'Compost potion(2)', 'Compost potion(3)', 'Compost potion(4)'])
 	},
 	{
 		name: 'Restore potion',
-		items: resolveItems([
-			'Restore potion(1)',
-			'Restore potion(2)',
-			'Restore potion(3)',
-			'Restore potion(4)'
-		])
+		items: resolveItems(['Restore potion(1)', 'Restore potion(2)', 'Restore potion(3)', 'Restore potion(4)'])
 	},
 	{
 		name: 'Guthix balance',
-		items: resolveItems([
-			'Guthix balance(1)',
-			'Guthix balance(2)',
-			'Guthix balance(3)',
-			'Guthix balance(4)'
-		])
+		items: resolveItems(['Guthix balance(1)', 'Guthix balance(2)', 'Guthix balance(3)', 'Guthix balance(4)'])
 	},
 	{
 		name: 'Energy potion',
-		items: resolveItems([
-			'Energy potion(1)',
-			'Energy potion(2)',
-			'Energy potion(3)',
-			'Energy potion(4)'
-		])
+		items: resolveItems(['Energy potion(1)', 'Energy potion(2)', 'Energy potion(3)', 'Energy potion(4)'])
 	},
 	{
 		name: 'Defence potion',
-		items: resolveItems([
-			'Defence potion(1)',
-			'Defence potion(2)',
-			'Defence potion(3)',
-			'Defence potion(4)'
-		])
+		items: resolveItems(['Defence potion(1)', 'Defence potion(2)', 'Defence potion(3)', 'Defence potion(4)'])
 	},
 	{
 		name: 'Agility potion',
-		items: resolveItems([
-			'Agility potion(1)',
-			'Agility potion(2)',
-			'Agility potion(3)',
-			'Agility potion(4)'
-		])
+		items: resolveItems(['Agility potion(1)', 'Agility potion(2)', 'Agility potion(3)', 'Agility potion(4)'])
 	},
 	{
 		name: 'Combat potion',
-		items: resolveItems([
-			'Combat potion(1)',
-			'Combat potion(2)',
-			'Combat potion(3)',
-			'Combat potion(4)'
-		])
+		items: resolveItems(['Combat potion(1)', 'Combat potion(2)', 'Combat potion(3)', 'Combat potion(4)'])
 	},
 	{
 		name: 'Super attack',
-		items: resolveItems([
-			'Super attack(1)',
-			'Super attack(2)',
-			'Super attack(3)',
-			'Super attack(4)'
-		])
+		items: resolveItems(['Super attack(1)', 'Super attack(2)', 'Super attack(3)', 'Super attack(4)'])
 	},
 	{
 		name: 'Superantipoison',
-		items: resolveItems([
-			'Superantipoison(1)',
-			'Superantipoison(2)',
-			'Superantipoison(3)',
-			'Superantipoison(4)'
-		])
+		items: resolveItems(['Superantipoison(1)', 'Superantipoison(2)', 'Superantipoison(3)', 'Superantipoison(4)'])
 	},
 	{
 		name: 'Fishing potion',
-		items: resolveItems([
-			'Fishing potion(1)',
-			'Fishing potion(2)',
-			'Fishing potion(3)',
-			'Fishing potion(4)'
-		])
+		items: resolveItems(['Fishing potion(1)', 'Fishing potion(2)', 'Fishing potion(3)', 'Fishing potion(4)'])
 	},
 	{
 		name: 'Super energy',
-		items: resolveItems([
-			'Super energy(1)',
-			'Super energy(2)',
-			'Super energy(3)',
-			'Super energy(4)'
-		])
+		items: resolveItems(['Super energy(1)', 'Super energy(2)', 'Super energy(3)', 'Super energy(4)'])
 	},
 	{
 		name: 'Hunter potion',
-		items: resolveItems([
-			'Hunter potion(1)',
-			'Hunter potion(2)',
-			'Hunter potion(3)',
-			'Hunter potion(4)'
-		])
+		items: resolveItems(['Hunter potion(1)', 'Hunter potion(2)', 'Hunter potion(3)', 'Hunter potion(4)'])
 	},
 	{
 		name: 'Super strength',
-		items: resolveItems([
-			'Super strength(1)',
-			'Super strength(2)',
-			'Super strength(3)',
-			'Super strength(4)'
-		])
+		items: resolveItems(['Super strength(1)', 'Super strength(2)', 'Super strength(3)', 'Super strength(4)'])
 	},
 	{
 		name: 'Magic essence',
-		items: resolveItems([
-			'Magic essence(1)',
-			'Magic essence(2)',
-			'Magic essence(3)',
-			'Magic essence(4)'
-		])
+		items: resolveItems(['Magic essence(1)', 'Magic essence(2)', 'Magic essence(3)', 'Magic essence(4)'])
 	},
 	{
 		name: 'Super defence',
-		items: resolveItems([
-			'Super defence(1)',
-			'Super defence(2)',
-			'Super defence(3)',
-			'Super defence(4)'
-		])
+		items: resolveItems(['Super defence(1)', 'Super defence(2)', 'Super defence(3)', 'Super defence(4)'])
 	},
 	{
 		name: 'Antidote+',
@@ -213,12 +103,7 @@ const Potions = [
 	},
 	{
 		name: 'Antifire potion',
-		items: resolveItems([
-			'Antifire potion(1)',
-			'Antifire potion(2)',
-			'Antifire potion(3)',
-			'Antifire potion(4)'
-		])
+		items: resolveItems(['Antifire potion(1)', 'Antifire potion(2)', 'Antifire potion(3)', 'Antifire potion(4)'])
 	},
 	{
 		name: 'Divine super attack potion',
@@ -249,12 +134,7 @@ const Potions = [
 	},
 	{
 		name: 'Ranging potion',
-		items: resolveItems([
-			'Ranging potion(1)',
-			'Ranging potion(2)',
-			'Ranging potion(3)',
-			'Ranging potion(4)'
-		])
+		items: resolveItems(['Ranging potion(1)', 'Ranging potion(2)', 'Ranging potion(3)', 'Ranging potion(4)'])
 	},
 	{
 		name: 'Divine ranging potion',
@@ -267,30 +147,15 @@ const Potions = [
 	},
 	{
 		name: 'Magic potion',
-		items: resolveItems([
-			'Magic potion(1)',
-			'Magic potion(2)',
-			'Magic potion(3)',
-			'Magic potion(4)'
-		])
+		items: resolveItems(['Magic potion(1)', 'Magic potion(2)', 'Magic potion(3)', 'Magic potion(4)'])
 	},
 	{
 		name: 'Stamina potion',
-		items: resolveItems([
-			'Stamina potion(1)',
-			'Stamina potion(2)',
-			'Stamina potion(3)',
-			'Stamina potion(4)'
-		])
+		items: resolveItems(['Stamina potion(1)', 'Stamina potion(2)', 'Stamina potion(3)', 'Stamina potion(4)'])
 	},
 	{
 		name: 'Zamorak brew',
-		items: resolveItems([
-			'Zamorak brew(1)',
-			'Zamorak brew(2)',
-			'Zamorak brew(3)',
-			'Zamorak brew(4)'
-		])
+		items: resolveItems(['Zamorak brew(1)', 'Zamorak brew(2)', 'Zamorak brew(3)', 'Zamorak brew(4)'])
 	},
 	{
 		name: 'Divine magic potion',
@@ -307,12 +172,7 @@ const Potions = [
 	},
 	{
 		name: 'Bastion potion',
-		items: resolveItems([
-			'Bastion potion(1)',
-			'Bastion potion(2)',
-			'Bastion potion(3)',
-			'Bastion potion(4)'
-		])
+		items: resolveItems(['Bastion potion(1)', 'Bastion potion(2)', 'Bastion potion(3)', 'Bastion potion(4)'])
 	},
 	{
 		name: 'Battlemage potion',
@@ -374,12 +234,7 @@ const Potions = [
 	},
 	{
 		name: 'Anti-venom+',
-		items: resolveItems([
-			'Anti-venom+(1)',
-			'Anti-venom+(2)',
-			'Anti-venom+(3)',
-			'Anti-venom+(4)'
-		])
+		items: resolveItems(['Anti-venom+(1)', 'Anti-venom+(2)', 'Anti-venom+(3)', 'Anti-venom+(4)'])
 	},
 	{
 		name: 'Divine super combat potion',

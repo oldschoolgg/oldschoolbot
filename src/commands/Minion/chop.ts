@@ -73,23 +73,17 @@ export default class extends BotCommand {
 
 		if (!log) {
 			return msg.channel.send(
-				`That's not a valid log to chop. Valid logs are ${Woodcutting.Logs.map(
-					log => log.name
-				).join(', ')}.`
+				`That's not a valid log to chop. Valid logs are ${Woodcutting.Logs.map(log => log.name).join(', ')}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Woodcutting) < log.level) {
-			return msg.send(
-				`${msg.author.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`
-			);
+			return msg.send(`${msg.author.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`);
 		}
 
 		const QP = msg.author.settings.get(UserSettings.QP);
 		if (QP < log.qpRequired) {
-			return msg.channel.send(
-				`${msg.author.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`
-			);
+			return msg.channel.send(`${msg.author.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`);
 		}
 
 		// Calculate the time it takes to chop a single log of this type, at this persons level.
@@ -125,9 +119,9 @@ export default class extends BotCommand {
 			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					log.name
-				} you can chop is ${Math.floor(maxTripLength / timetoChop)}.`
+				)}, try a lower quantity. The highest amount of ${log.name} you can chop is ${Math.floor(
+					maxTripLength / timetoChop
+				)}.`
 			);
 		}
 

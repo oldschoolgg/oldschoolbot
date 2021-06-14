@@ -15,7 +15,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['cp', 'checkpatches'],
-			description: `Allows a player to check the growth status of all patches at once.`,
+			description: 'Allows a player to check the growth status of all patches at once.',
 			examples: ['+checkpatch', '+cp', '+checkpatches'],
 			categoryFlags: ['minion']
 		});
@@ -46,16 +46,12 @@ export default class extends BotCommand {
 				const { lastPlanted } = patch;
 				const plant = Farming.Plants.find(plants =>
 					plants.aliases.some(
-						alias =>
-							stringMatches(alias, lastPlanted) ||
-							stringMatches(alias.split(' ')[0], lastPlanted)
+						alias => stringMatches(alias, lastPlanted) || stringMatches(alias.split(' ')[0], lastPlanted)
 					)
 				);
 
 				if (!plant) {
-					this.client.wtf(
-						new Error(`${msg.author.sanitizedName}'s patch had no plant found in it.`)
-					);
+					this.client.wtf(new Error(`${msg.author.sanitizedName}'s patch had no plant found in it.`));
 					return;
 				}
 
@@ -81,9 +77,7 @@ export default class extends BotCommand {
 
 		if (nothingPlanted.length > 0) {
 			const emptyEmoji = `${Emoji.RedX} `;
-			const emptyContentStr = `You have nothing planted in these patches: ${nothingPlanted.join(
-				`, `
-			)}.`;
+			const emptyContentStr = `You have nothing planted in these patches: ${nothingPlanted.join(', ')}.`;
 			finalStr += emptyEmoji + emptyContentStr;
 		}
 

@@ -120,8 +120,8 @@ export default class extends BotCommand {
 				UserSettings.HonourLevel
 			)} **High Gambles:** ${msg.author.settings.get(UserSettings.HighGambles)}\n\n` +
 				`You can start a Barbarian Assault party using \`${msg.cmdPrefix}ba start\`, you'll need 2+ people to join to start.` +
-				` We have a BA channel in our server for finding teams: (discord.gg/ob). \n` +
-				`Barbarian Assault works differently in the bot than ingame, there's only 1 role, no waves, and 1 balance of honour points.` +
+				' We have a BA channel in our server for finding teams: (discord.gg/ob). \n' +
+				"Barbarian Assault works differently in the bot than ingame, there's only 1 role, no waves, and 1 balance of honour points." +
 				`\n\nYou can buy rewards with \`${msg.cmdPrefix}ba buy\`, level up your Honour Level with \`${msg.cmdPrefix}ba level\`.` +
 				` You can gamble using \`${msg.cmdPrefix}ba gamble high/medium/low\`.`
 		);
@@ -130,7 +130,7 @@ export default class extends BotCommand {
 	async level(msg: KlasaMessage) {
 		const currentLevel = msg.author.settings.get(UserSettings.HonourLevel);
 		if (currentLevel === 5) {
-			return msg.send(`You've already reached the highest possible Honour level.`);
+			return msg.send("You've already reached the highest possible Honour level.");
 		}
 
 		const points = msg.author.settings.get(UserSettings.HonourPoints);
@@ -144,9 +144,7 @@ export default class extends BotCommand {
 			}
 			await msg.author.settings.update(UserSettings.HonourPoints, points - level.cost);
 			await msg.author.settings.update(UserSettings.HonourLevel, currentLevel + 1);
-			return msg.send(
-				`You've spent ${level.cost} Honour points to level up to Honour level ${level.level}!`
-			);
+			return msg.send(`You've spent ${level.cost} Honour points to level up to Honour level ${level.level}!`);
 		}
 	}
 
@@ -198,7 +196,7 @@ export default class extends BotCommand {
 				parseInt(
 					(
 						await this.client.query<[{ count: string }]>(
-							`SELECT COUNT(*) FROM users WHERE "collectionLogBank"->>'12703' IS NOT NULL;`
+							'SELECT COUNT(*) FROM users WHERE "collectionLogBank"->>\'12703\' IS NOT NULL;'
 						)
 					)[0].count
 				) + 1;
@@ -216,9 +214,7 @@ export default class extends BotCommand {
 			UserSettings.HighGambles,
 			msg.author.settings.get(UserSettings.HighGambles) + 1
 		);
-		return msg.send(
-			`You spent ${cost} Honour Points for a ${name} Gamble, and received... ${loot}.`
-		);
+		return msg.send(`You spent ${cost} Honour Points for a ${name} Gamble, and received... ${loot}.`);
 	}
 
 	@minionNotBusy
@@ -256,10 +252,7 @@ export default class extends BotCommand {
 		// Up to 12.5% speed boost for max strength
 		const fighter = randArrItem(users);
 		const gearStats = fighter.getGear(GearSetupTypes.Melee).stats;
-		const strengthPercent = round(
-			calcWhatPercent(gearStats.melee_strength, maxOtherStats.melee_strength) / 8,
-			2
-		);
+		const strengthPercent = round(calcWhatPercent(gearStats.melee_strength, maxOtherStats.melee_strength) / 8, 2);
 		waveTime = reduceNumByPercent(waveTime, strengthPercent);
 		boosts.push(`${strengthPercent}% for ${fighter.username}'s melee gear`);
 
@@ -270,14 +263,12 @@ export default class extends BotCommand {
 
 		if (users.length === 1) {
 			waveTime = increaseNumByPercent(waveTime, 10);
-			boosts.push(`10% slower for solo`);
+			boosts.push('10% slower for solo');
 		}
 
 		// Up to 10%, at 200 kc, speed boost for team average kc
 		const averageKC =
-			addArrayOfNumbers(
-				await Promise.all(users.map(u => u.getMinigameScore('BarbarianAssault')))
-			) / users.length;
+			addArrayOfNumbers(await Promise.all(users.map(u => u.getMinigameScore('BarbarianAssault')))) / users.length;
 		const kcPercent = round(Math.min(100, calcWhatPercent(averageKC, 200)) / 5, 2);
 		boosts.push(`${kcPercent}% for average KC`);
 		waveTime = reduceNumByPercent(waveTime, kcPercent);
@@ -289,9 +280,7 @@ export default class extends BotCommand {
 
 		let str = `${partyOptions.leader.username}'s party (${users
 			.map(u => u.username)
-			.join(
-				', '
-			)}) is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
+			.join(', ')}) is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
 			waveTime
 		)} - the total trip will take ${formatDuration(duration)}. `;
 

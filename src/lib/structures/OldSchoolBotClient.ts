@@ -13,7 +13,7 @@ Client.use(TagsClient);
 const { production } = clientOptions;
 
 if (typeof production !== 'boolean') {
-	throw new Error(`Must provide production boolean.`);
+	throw new Error('Must provide production boolean.');
 }
 
 const { port, user, password, database } = providerConfig!.postgres!;

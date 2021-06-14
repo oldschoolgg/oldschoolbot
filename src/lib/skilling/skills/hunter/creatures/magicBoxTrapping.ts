@@ -5,7 +5,7 @@ import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const magicBoxTrappingCreatures: Creature[] = [
 	{
-		name: `Imp`,
+		name: 'Imp',
 		id: 22,
 		aliases: ['imp'],
 		level: 71,

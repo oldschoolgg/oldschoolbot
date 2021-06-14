@@ -7,13 +7,7 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	bankHasItem,
-	formatDuration,
-	itemNameFromID,
-	removeItemFromBank,
-	stringMatches
-} from '../../lib/util';
+import { bankHasItem, formatDuration, itemNameFromID, removeItemFromBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -43,7 +37,7 @@ export default class extends BotCommand {
 								.join(', ')}`
 					).join('\n')
 				),
-				`Available Smithing items.txt`
+				'Available Smithing items.txt'
 			);
 		}
 
@@ -87,9 +81,9 @@ export default class extends BotCommand {
 		for (const [barID, qty] of requiredBars) {
 			if (!bankHasItem(userBank, parseInt(barID), qty * quantity)) {
 				return msg.send(
-					`You don't have enough ${itemNameFromID(
-						parseInt(barID)
-					)}'s to smith ${quantity}x ${smithedItem.name}, you need atleast ${qty}.`
+					`You don't have enough ${itemNameFromID(parseInt(barID))}'s to smith ${quantity}x ${
+						smithedItem.name
+					}, you need atleast ${qty}.`
 				);
 			}
 		}
@@ -99,9 +93,9 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					smithedItem.name
-				}s you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`
+				)}, try a lower quantity. The highest amount of ${smithedItem.name}s you can smith is ${Math.floor(
+					maxTripLength / timeToSmithSingleBar
+				)}.`
 			);
 		}
 
@@ -110,9 +104,7 @@ export default class extends BotCommand {
 		let newBank = { ...userBank };
 		for (const [barID, qty] of requiredBars) {
 			if (newBank[parseInt(barID)] < qty) {
-				this.client.wtf(
-					new Error(`${msg.author.sanitizedName} had insufficient bars to be removed.`)
-				);
+				this.client.wtf(new Error(`${msg.author.sanitizedName} had insufficient bars to be removed.`));
 				return;
 			}
 			newBank = removeItemFromBank(newBank, parseInt(barID), qty * quantity);

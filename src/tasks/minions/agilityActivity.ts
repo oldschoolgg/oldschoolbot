@@ -24,10 +24,7 @@ export default class extends Task {
 		// Calculate failed laps
 		let lapsFailed = 0;
 		for (let t = 0; t < quantity; t++) {
-			if (
-				randInt(1, 100) >
-				(100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)
-			) {
+			if (randInt(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
 				lapsFailed += 1;
 			}
 		}
@@ -57,11 +54,7 @@ export default class extends Task {
 
 		await user.settings.update(
 			UserSettings.LapsScores,
-			addItemToBank(
-				user.settings.get(UserSettings.LapsScores),
-				course.id,
-				quantity - lapsFailed
-			)
+			addItemToBank(user.settings.get(UserSettings.LapsScores), course.id, quantity - lapsFailed)
 		);
 
 		let xpRes = await user.addXP({
@@ -104,12 +97,9 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		if (
-			course.petChance &&
-			roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)
-		) {
+		if (course.petChance && roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)) {
 			loot.add('Giant squirrel');
-			str += `\nYou have a funny feeling you're being followed...`;
+			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`

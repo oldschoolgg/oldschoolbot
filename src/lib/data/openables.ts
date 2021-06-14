@@ -53,9 +53,7 @@ export const SpoilsOfWarBaseTable = new LootTable()
 			.add('Cabbage')
 	);
 
-export const SpoilsOfWarTable = new LootTable()
-	.tertiary(400, "Lil' creator")
-	.every(SpoilsOfWarBaseTable, 3);
+export const SpoilsOfWarTable = new LootTable().tertiary(400, "Lil' creator").every(SpoilsOfWarBaseTable, 3);
 
 export const NestBoxes = new LootTable()
 	.add('Nest box (seeds)', 1, 12)

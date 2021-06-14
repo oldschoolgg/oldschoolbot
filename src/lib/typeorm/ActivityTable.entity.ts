@@ -1,12 +1,4 @@
-import {
-	BaseEntity,
-	Column,
-	Entity,
-	getConnection,
-	Index,
-	PrimaryColumn,
-	PrimaryGeneratedColumn
-} from 'typeorm';
+import { BaseEntity, Column, Entity, getConnection, Index, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { client } from '../..';
 import { Activity } from '../constants';
@@ -69,14 +61,14 @@ export class ActivityTable extends BaseEntity {
 
 	public async complete() {
 		if (this.completed) {
-			throw new Error(`Tried to complete an already completed task.`);
+			throw new Error('Tried to complete an already completed task.');
 		}
 
 		const taskName = taskNameFromType(this.type);
 		const task = client.tasks.get(taskName);
 
 		if (!task) {
-			throw new Error(`Missing task`);
+			throw new Error('Missing task');
 		}
 
 		try {

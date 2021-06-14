@@ -8,8 +8,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[rsn:str{1,12}]',
-			description:
-				'Allows you to set your runescape username, to be automatically used in commands.',
+			description: 'Allows you to set your runescape username, to be automatically used in commands.',
 			examples: ['+setrsn Zezima'],
 			categoryFlags: ['settings']
 		});
@@ -19,9 +18,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const RSN = msg.author.settings.get(UserSettings.RSN);
 		if (!newRSN && RSN) {
-			return msg.send(
-				`Your current RSN is: \`${msg.author.settings.get(UserSettings.RSN)}\``
-			);
+			return msg.send(`Your current RSN is: \`${msg.author.settings.get(UserSettings.RSN)}\``);
 		}
 
 		if (!newRSN && !RSN) {

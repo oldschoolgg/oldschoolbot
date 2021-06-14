@@ -25,7 +25,7 @@ export default class extends BotCommand {
 		const result = await Wiki.search(query);
 
 		if (result.length === 0) {
-			return msg.send(`Found no results with that query.`);
+			return msg.send('Found no results with that query.');
 		}
 
 		const [page, ...tail] = result;

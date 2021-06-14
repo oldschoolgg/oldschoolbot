@@ -1189,22 +1189,22 @@ const Createables: Createable[] = [
 		})
 	},
 	{
-		name: `Zamorak's grapes`,
+		name: "Zamorak's grapes",
 		inputItems: resolveNameBank({
 			Grapes: 1,
 			"Bologa's blessing": 1
 		}),
 		outputItems: {
-			[itemID(`Zamorak's grapes`)]: 1
+			[itemID("Zamorak's grapes")]: 1
 		}
 	},
 	{
-		name: `Toad's legs`,
+		name: "Toad's legs",
 		inputItems: resolveNameBank({
 			'Swamp toad': 1
 		}),
 		outputItems: {
-			[itemID(`Toad's legs`)]: 1
+			[itemID("Toad's legs")]: 1
 		}
 	},
 	{
