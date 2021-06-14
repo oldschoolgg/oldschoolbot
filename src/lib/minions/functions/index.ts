@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { NIGHTMARES_HP } from '../../constants';
+import { KalphiteKingMonster } from '../../kalphiteking';
 import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
@@ -26,7 +27,8 @@ const miscHpMap: Record<number, number> = {
 	46274: 5000,
 	9415: NIGHTMARES_HP,
 	[KingGoldemar.id]: 10_000,
-	[VasaMagus.id]: 3900
+	[VasaMagus.id]: 3900,
+	[KalphiteKingMonster.id]: 5300
 };
 
 function meleeOnly(user: KlasaUser): AttackStyles[] {
