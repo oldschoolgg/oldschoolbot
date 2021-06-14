@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import { KalphiteKingMonster } from '../../kalphiteking';
 import { AssignableSlayerTask } from '../types';
 
 export const vannakaTasks: AssignableSlayerTask[] = [
@@ -328,7 +329,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
-			Monsters.KalphiteQueen.id
+			Monsters.KalphiteQueen.id,
+			KalphiteKingMonster.id
 		],
 		combatLevel: 15,
 		unlocked: true
