@@ -732,7 +732,7 @@ export default class extends Extendable {
 		const skill = Object.values(Skills).find(skill => skill.id === params.skillName)!;
 		const currentTotalLevel = this.totalLevel();
 
-		if (params.multiplier) {
+		if (params.multiplier !== false) {
 			params.amount *= 5;
 		}
 
