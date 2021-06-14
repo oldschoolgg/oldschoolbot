@@ -5,6 +5,9 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
+		if (1 > 0) {
+			return msg.channel.send('There is currently no SOTW running.');
+		}
 		const res = await this.client.orm.query(
 			`SELECT "new_user".username, sum(xp) as total_xp
 FROM xp_gains

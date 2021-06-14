@@ -29,10 +29,8 @@ export default class extends BotCommand {
 		if (!isValidSkill) {
 			return msg.send("That's not a valid skill.");
 		}
-		if (skillName === 'construction') {
-			return msg.channel.send(
-				'You cannot lamp construction because there is an ongoing Skill Of The Week for it!'
-			);
+		if (skillName === 'slayer') {
+			return msg.channel.send('A magical force prevents you from using a lamp on this skill.');
 		}
 
 		const bank = new Bank(msg.author.settings.get(UserSettings.Bank));
