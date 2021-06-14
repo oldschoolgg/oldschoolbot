@@ -393,7 +393,7 @@ export default class BankImageTask extends Task {
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
 
-		if (bankBackgroundID !== 20) {
+		if (bankBackgroundID !== 12) {
 			ctx.drawImage(
 				bgImage!.image,
 				0,
