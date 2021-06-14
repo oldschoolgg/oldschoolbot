@@ -301,7 +301,6 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 			Monsters.Zombie.id,
 			Monsters.MonkeyZombie.id,
 			Monsters.UndeadChicken.id,
-			Monsters.UndeadCow.id,
 			Monsters.UndeadDruid.id,
 			Monsters.UndeadOne.id,
 			Monsters.ZombieRat.id,
