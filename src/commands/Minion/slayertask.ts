@@ -35,8 +35,8 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [input]: [string | undefined]) {
 		const { currentTask, totalTasksDone, assignedTask } = await getUsersCurrentSlayerInfo(msg.author.id);
-		const myBlockList = (await msg.author.settings.get(UserSettings.Slayer.BlockedTasks)) ?? [];
-		const myQPs = (await msg.author.settings.get(UserSettings.QP)) ?? 0;
+		const myBlockList = msg.author.settings.get(UserSettings.Slayer.BlockedTasks);
+		const myQPs = msg.author.settings.get(UserSettings.QP);
 
 		const maxBlocks = calcMaxBlockedTasks(myQPs);
 		if (
@@ -252,9 +252,9 @@ export default class extends BotCommand {
 				? `Your current task is to kill ${currentTask.quantity}x ${getCommonTaskName(
 						assignedTask!.monster
 				  )}${monsterList}, you have ${currentTask.quantityRemaining} kills remaining.`
-				: `You have no task at the moment <:FrogBigEyes:847859910933741628> You can get a task using \`${
-						msg.cmdPrefix
-				  }slayertask ${slayerMasters.map(i => i.name).join('/')}\``;
+				: `You have no task at the moment, you can get a task using \`${msg.cmdPrefix}slayertask ${slayerMasters
+						.map(i => i.name)
+						.join('/')}\``;
 
 			return msg.channel.send(`${warningInfo}${baseInfo}
 	
