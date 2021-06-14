@@ -12,14 +12,8 @@ describe('Gear', () => {
 	});
 
 	test('misc', () => {
-		expect(testGear['2h']).toEqual({
-			item: itemID('Twisted bow'),
-			quantity: 1
-		});
-		expect(testGear.head).toEqual({
-			item: itemID('Dragon full helm'),
-			quantity: 1
-		});
+		expect(testGear['2h']).toEqual({ item: itemID('Twisted bow'), quantity: 1 });
+		expect(testGear.head).toEqual({ item: itemID('Dragon full helm'), quantity: 1 });
 		expect(testGear.feet).toEqual(null);
 
 		const otherInitMethod = new Gear(

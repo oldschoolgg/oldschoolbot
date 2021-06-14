@@ -138,9 +138,7 @@ export default class extends Task {
 						.join(' ')} Your team all died, and failed to defeat Nex. ${debug}`
 				});
 			} else {
-				sendToChannelID(this.client, channelID, {
-					content: resultStr + debug
-				});
+				sendToChannelID(this.client, channelID, { content: resultStr + debug });
 			}
 		} else {
 			const channel = this.client.channels.cache.get(channelID);

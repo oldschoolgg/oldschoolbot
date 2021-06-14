@@ -62,11 +62,7 @@ const cmCapes: Buyable[] = [
 ];
 
 const constructionBuyables: Buyable[] = [
-	{
-		name: 'Bolt of cloth',
-		outputItems: resolveNameBank({ 'Bolt of cloth': 1 }),
-		gpCost: 5000
-	},
+	{ name: 'Bolt of cloth', outputItems: resolveNameBank({ 'Bolt of cloth': 1 }), gpCost: 5000 },
 	{
 		name: 'Limestone brick',
 		outputItems: resolveNameBank({ 'Limestone brick': 1 }),

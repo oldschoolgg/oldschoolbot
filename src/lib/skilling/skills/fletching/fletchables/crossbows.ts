@@ -140,10 +140,7 @@ const Crossbows: Fletchable[] = [
 		id: itemID('Bronze crossbow'),
 		level: 9,
 		xp: 6,
-		inputItems: new Bank({
-			'Bronze crossbow (u)': 1,
-			'Crossbow string': 1
-		}),
+		inputItems: new Bank({ 'Bronze crossbow (u)': 1, 'Crossbow string': 1 }),
 		tickRate: 2
 	},
 	{
@@ -151,10 +148,7 @@ const Crossbows: Fletchable[] = [
 		id: itemID('Blurite crossbow'),
 		level: 24,
 		xp: 16,
-		inputItems: new Bank({
-			'Blurite crossbow (u)': 1,
-			'Crossbow string': 1
-		}),
+		inputItems: new Bank({ 'Blurite crossbow (u)': 1, 'Crossbow string': 1 }),
 		tickRate: 2
 	},
 	{
@@ -178,10 +172,7 @@ const Crossbows: Fletchable[] = [
 		id: itemID('Mithril crossbow'),
 		level: 54,
 		xp: 32,
-		inputItems: new Bank({
-			'Mithril crossbow (u)': 1,
-			'Crossbow string': 1
-		}),
+		inputItems: new Bank({ 'Mithril crossbow (u)': 1, 'Crossbow string': 1 }),
 		tickRate: 2
 	},
 	{
@@ -189,10 +180,7 @@ const Crossbows: Fletchable[] = [
 		id: itemID('Adamant crossbow'),
 		level: 61,
 		xp: 41,
-		inputItems: new Bank({
-			'Adamant crossbow (u)': 1,
-			'Crossbow string': 1
-		}),
+		inputItems: new Bank({ 'Adamant crossbow (u)': 1, 'Crossbow string': 1 }),
 		tickRate: 2
 	},
 	{
@@ -200,10 +188,7 @@ const Crossbows: Fletchable[] = [
 		id: itemID('Rune crossbow'),
 		level: 69,
 		xp: 50,
-		inputItems: new Bank({
-			'Runite crossbow (u)': 1,
-			'Crossbow string': 1
-		}),
+		inputItems: new Bank({ 'Runite crossbow (u)': 1, 'Crossbow string': 1 }),
 		tickRate: 2
 	},
 	{
@@ -211,10 +196,7 @@ const Crossbows: Fletchable[] = [
 		id: itemID('Dragon crossbow'),
 		level: 78,
 		xp: 70,
-		inputItems: new Bank({
-			'Dragon crossbow (u)': 1,
-			'Crossbow string': 1
-		}),
+		inputItems: new Bank({ 'Dragon crossbow (u)': 1, 'Crossbow string': 1 }),
 		tickRate: 2
 	}
 ];

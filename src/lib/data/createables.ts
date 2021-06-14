@@ -453,12 +453,8 @@ const brokenItems: Createable[] = [
 const lockedItems: Createable[] = [
 	{
 		name: 'Unlock dragon defender',
-		inputItems: {
-			[itemID('Dragon defender (l)')]: 1
-		},
-		outputItems: {
-			[itemID('Dragon defender')]: 1
-		},
+		inputItems: { [itemID('Dragon defender (l)')]: 1 },
+		outputItems: { [itemID('Dragon defender')]: 1 },
 		noCl: true
 	}
 ];
@@ -466,78 +462,51 @@ const lockedItems: Createable[] = [
 const ornamentKits: Createable[] = [
 	{
 		name: 'Dragon defender (t)',
-		inputItems: resolveNameBank({
-			'Dragon defender': 1,
-			'Dragon defender ornament kit': 1
-		}),
+		inputItems: resolveNameBank({ 'Dragon defender': 1, 'Dragon defender ornament kit': 1 }),
 		outputItems: resolveNameBank({ 'Dragon defender (t)': 1 })
 	},
 	{
 		name: 'Dragon defender',
 		inputItems: resolveNameBank({ 'Dragon defender (t)': 1 }),
-		outputItems: resolveNameBank({
-			'Dragon defender': 1,
-			'Dragon defender ornament kit': 1
-		}),
+		outputItems: resolveNameBank({ 'Dragon defender': 1, 'Dragon defender ornament kit': 1 }),
 		noCl: true
 	},
 	{
 		name: 'Rune defender (t)',
-		inputItems: resolveNameBank({
-			'Rune defender': 1,
-			'Rune defender ornament kit': 1
-		}),
+		inputItems: resolveNameBank({ 'Rune defender': 1, 'Rune defender ornament kit': 1 }),
 		outputItems: resolveNameBank({ 'Rune defender (t)': 1 })
 	},
 	{
 		name: 'Rune defender',
 		inputItems: resolveNameBank({ 'Rune defender (t)': 1 }),
-		outputItems: resolveNameBank({
-			'Rune defender': 1,
-			'Rune defender ornament kit': 1
-		}),
+		outputItems: resolveNameBank({ 'Rune defender': 1, 'Rune defender ornament kit': 1 }),
 		noCl: true
 	},
 	{
 		name: 'Dragon pickaxe (or)',
-		inputItems: resolveNameBank({
-			'Dragon pickaxe': 1,
-			'Zalcano shard': 1
-		}),
+		inputItems: resolveNameBank({ 'Dragon pickaxe': 1, 'Zalcano shard': 1 }),
 		outputItems: resolveNameBank({ 'Dragon pickaxe (or)': 1 })
 	},
 	{
 		name: 'Dragon pickaxe',
 		inputItems: resolveNameBank({ 'Dragon pickaxe (or)': 1 }),
-		outputItems: resolveNameBank({
-			'Dragon pickaxe': 1,
-			'Zalcano shard': 1
-		}),
+		outputItems: resolveNameBank({ 'Dragon pickaxe': 1, 'Zalcano shard': 1 }),
 		noCl: true
 	},
 	{
 		name: 'Dragon sq shield (g)',
-		inputItems: resolveNameBank({
-			'Dragon sq shield ornament kit': 1,
-			'Dragon sq shield': 1
-		}),
+		inputItems: resolveNameBank({ 'Dragon sq shield ornament kit': 1, 'Dragon sq shield': 1 }),
 		outputItems: resolveNameBank({ 'Dragon sq shield (g)': 1 })
 	},
 	{
 		name: 'Revert dragon sq shield',
 		inputItems: resolveNameBank({ 'Dragon sq shield (g)': 1 }),
-		outputItems: resolveNameBank({
-			'Dragon sq shield ornament kit': 1,
-			'Dragon sq shield': 1
-		}),
+		outputItems: resolveNameBank({ 'Dragon sq shield ornament kit': 1, 'Dragon sq shield': 1 }),
 		noCl: true
 	},
 	{
 		name: 'Dragon platelegs (g)',
-		inputItems: resolveNameBank({
-			'Dragon platelegs': 1,
-			'Dragon legs/skirt ornament kit': 1
-		}),
+		inputItems: resolveNameBank({ 'Dragon platelegs': 1, 'Dragon legs/skirt ornament kit': 1 }),
 		outputItems: resolveNameBank({ 'Dragon platelegs (g)': 1 })
 	},
 	{
@@ -568,281 +537,69 @@ const ornamentKits: Createable[] = [
 	},
 	{
 		name: 'Dragon chainbody (g)',
-		inputItems: resolveNameBank({
-			'Dragon chainbody': 1,
-			'Dragon chainbody ornament kit': 1
-		}),
+		inputItems: resolveNameBank({ 'Dragon chainbody': 1, 'Dragon chainbody ornament kit': 1 }),
 		outputItems: resolveNameBank({ 'Dragon chainbody (g)': 1 })
 	},
 	{
 		name: 'Dragon chainbody',
 		inputItems: resolveNameBank({ 'Dragon chainbody (g)': 1 }),
-		outputItems: resolveNameBank({
-			'Dragon chainbody': 1,
-			'Dragon chainbody ornament kit': 1
-		}),
+		outputItems: resolveNameBank({ 'Dragon chainbody': 1, 'Dragon chainbody ornament kit': 1 }),
 		noCl: true
 	},
 	{
 		name: 'Amulet of fury (or)',
-		inputItems: resolveNameBank({
-			'Amulet of fury': 1,
-			'Fury ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Amulet of fury (or)': 1
-		})
+		inputItems: resolveNameBank({ 'Amulet of fury': 1, 'Fury ornament kit': 1 }),
+		outputItems: resolveNameBank({ 'Amulet of fury (or)': 1 })
 	},
 	{
 		name: 'Amulet of fury',
-		inputItems: resolveNameBank({
-			'Amulet of fury (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Amulet of fury': 1,
-			'Fury ornament kit': 1
-		}),
+		inputItems: resolveNameBank({ 'Amulet of fury (or)': 1 }),
+		outputItems: resolveNameBank({ 'Amulet of fury': 1, 'Fury ornament kit': 1 }),
 		noCl: true
-	},
-	// Godswords
-	{
-		name: 'Zamorak godsword (or)',
-		inputItems: resolveNameBank({
-			'Zamorak godsword': 1,
-			'Zamorak godsword ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Zamorak godsword (or)': 1
-		})
-	},
-	{
-		name: 'Revert zamorak godsword',
-		inputItems: resolveNameBank({
-			'Zamorak godsword (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Zamorak godsword': 1,
-			'Zamorak godsword ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Bandos godsword (or)',
-		inputItems: resolveNameBank({
-			'Bandos godsword': 1,
-			'Bandos godsword ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Bandos godsword (or)': 1
-		})
-	},
-	{
-		name: 'Revert bandos godsword',
-		inputItems: resolveNameBank({
-			'Bandos godsword (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Bandos godsword': 1,
-			'Bandos godsword ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Saradomin godsword (or)',
-		inputItems: resolveNameBank({
-			'Saradomin godsword': 1,
-			'Saradomin godsword ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Saradomin godsword (or)': 1
-		})
-	},
-	{
-		name: 'Revert saradomin godsword',
-		inputItems: resolveNameBank({
-			'Saradomin godsword (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Saradomin godsword': 1,
-			'Saradomin godsword ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Armadyl godsword (or)',
-		inputItems: resolveNameBank({
-			'Armadyl godsword': 1,
-			'Armadyl godsword ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Armadyl godsword (or)': 1
-		})
-	},
-	{
-		name: 'Revert Armadyl godsword',
-		inputItems: resolveNameBank({
-			'Armadyl godsword (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Armadyl godsword': 1,
-			'Armadyl godsword ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Amulet of torture (or)',
-		inputItems: resolveNameBank({
-			'Amulet of torture': 1,
-			'Torture ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Amulet of torture (or)': 1
-		})
-	},
-	{
-		name: 'Revert amulet of torture',
-		inputItems: resolveNameBank({
-			'Amulet of torture (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Amulet of torture': 1,
-			'Torture ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Necklace of anguish (or)',
-		inputItems: resolveNameBank({
-			'Necklace of anguish': 1,
-			'Anguish ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Necklace of anguish (or)': 1
-		})
-	},
-	{
-		name: 'Revert necklace of anguish',
-		inputItems: resolveNameBank({
-			'Necklace of anguish (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Necklace of anguish': 1,
-			'Anguish ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Tormented bracelet (or)',
-		inputItems: resolveNameBank({
-			'Tormented bracelet': 1,
-			'Tormented ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Tormented bracelet (or)': 1
-		})
-	},
-	{
-		name: 'Revert tormented bracelet',
-		inputItems: resolveNameBank({
-			'Tormented bracelet (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Tormented bracelet': 1,
-			'Tormented ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Occult necklace (or)',
-		inputItems: resolveNameBank({
-			'Occult necklace': 1,
-			'Occult ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Occult necklace (or)': 1
-		})
-	},
-	{
-		name: 'Revert occult necklace',
-		inputItems: resolveNameBank({
-			'Occult necklace (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Occult necklace': 1,
-			'Occult ornament kit': 1
-		}),
-		noCl: true
-	}
+	} // Godswords{name: 'Zamorak godsword (or)',inputItems: resolveNameBank({'Zamorak godsword': 1,'Zamorak godsword ornament kit': 1}),outputItems: resolveNameBank({'Zamorak godsword (or)': 1})},{name: 'Revert zamorak godsword',inputItems: resolveNameBank({'Zamorak godsword (or)': 1}),outputItems: resolveNameBank({'Zamorak godsword': 1,'Zamorak godsword ornament kit': 1}),noCl: true},{name: 'Bandos godsword (or)',inputItems: resolveNameBank({'Bandos godsword': 1,'Bandos godsword ornament kit': 1}),outputItems: resolveNameBank({'Bandos godsword (or)': 1})},{name: 'Revert bandos godsword',inputItems: resolveNameBank({'Bandos godsword (or)': 1}),outputItems: resolveNameBank({'Bandos godsword': 1,'Bandos godsword ornament kit': 1}),noCl: true},{name: 'Saradomin godsword (or)',inputItems: resolveNameBank({'Saradomin godsword': 1,'Saradomin godsword ornament kit': 1}),outputItems: resolveNameBank({'Saradomin godsword (or)': 1})},{name: 'Revert saradomin godsword',inputItems: resolveNameBank({'Saradomin godsword (or)': 1}),outputItems: resolveNameBank({'Saradomin godsword': 1,'Saradomin godsword ornament kit': 1}),noCl: true},{name: 'Armadyl godsword (or)',inputItems: resolveNameBank({'Armadyl godsword': 1,'Armadyl godsword ornament kit': 1}),outputItems: resolveNameBank({'Armadyl godsword (or)': 1})},{name: 'Revert Armadyl godsword',inputItems: resolveNameBank({'Armadyl godsword (or)': 1}),outputItems: resolveNameBank({'Armadyl godsword': 1,'Armadyl godsword ornament kit': 1}),noCl: true},{name: 'Amulet of torture (or)',inputItems: resolveNameBank({'Amulet of torture': 1,'Torture ornament kit': 1}),outputItems: resolveNameBank({'Amulet of torture (or)': 1})},{name: 'Revert amulet of torture',inputItems: resolveNameBank({'Amulet of torture (or)': 1}),outputItems: resolveNameBank({'Amulet of torture': 1,'Torture ornament kit': 1}),noCl: true},{name: 'Necklace of anguish (or)',inputItems: resolveNameBank({'Necklace of anguish': 1,'Anguish ornament kit': 1}),outputItems: resolveNameBank({'Necklace of anguish (or)': 1})},{name: 'Revert necklace of anguish',inputItems: resolveNameBank({'Necklace of anguish (or)': 1}),outputItems: resolveNameBank({'Necklace of anguish': 1,'Anguish ornament kit': 1}),noCl: true},{name: 'Tormented bracelet (or)',inputItems: resolveNameBank({'Tormented bracelet': 1,'Tormented ornament kit': 1}),outputItems: resolveNameBank({'Tormented bracelet (or)': 1})},{name: 'Revert tormented bracelet',inputItems: resolveNameBank({'Tormented bracelet (or)': 1}),outputItems: resolveNameBank({'Tormented bracelet': 1,'Tormented ornament kit': 1}),noCl: true},{name: 'Occult necklace (or)',inputItems: resolveNameBank({'Occult necklace': 1,'Occult ornament kit': 1}),outputItems: resolveNameBank({'Occult necklace (or)': 1})},{name: 'Revert occult necklace',inputItems: resolveNameBank({'Occult necklace (or)': 1}),outputItems: resolveNameBank({'Occult necklace': 1,'Occult ornament kit': 1}),noCl: true}
 ];
 
 const hunterClothing: Createable[] = [
 	{
 		name: 'Polar camouflage gear',
 		inputItems: resolveNameBank({ 'Polar kebbit fur': 4 }),
-		outputItems: resolveNameBank({
-			'Polar camo top': 1,
-			'Polar camo legs': 1
-		}),
+		outputItems: resolveNameBank({ 'Polar camo top': 1, 'Polar camo legs': 1 }),
 		GPCost: 40
 	},
 	{
 		name: 'Woodland camouflage gear',
 		inputItems: resolveNameBank({ 'Common kebbit fur': 4 }),
-		outputItems: resolveNameBank({
-			'Wood camo top': 1,
-			'Wood camo legs': 1
-		}),
+		outputItems: resolveNameBank({ 'Wood camo top': 1, 'Wood camo legs': 1 }),
 		GPCost: 40
 	},
 	{
 		name: 'Jungle camouflage gear',
 		inputItems: resolveNameBank({ 'Feldip weasel fur': 4 }),
-		outputItems: resolveNameBank({
-			'Jungle camo top': 1,
-			'Jungle camo legs': 1
-		}),
+		outputItems: resolveNameBank({ 'Jungle camo top': 1, 'Jungle camo legs': 1 }),
 		GPCost: 40
 	},
 	{
 		name: 'Desert camouflage gear',
 		inputItems: resolveNameBank({ 'Desert devil fur': 4 }),
-		outputItems: resolveNameBank({
-			'Desert camo top': 1,
-			'Desert camo legs': 1
-		}),
+		outputItems: resolveNameBank({ 'Desert camo top': 1, 'Desert camo legs': 1 }),
 		GPCost: 40
 	},
 	{
 		name: 'Larupia hunter gear',
-		inputItems: resolveNameBank({
-			'Larupia fur': 1,
-			'Tatty larupia fur': 2
-		}),
-		outputItems: resolveNameBank({
-			'Larupia hat': 1,
-			'Larupia top': 1,
-			'Larupia legs': 1
-		}),
+		inputItems: resolveNameBank({ 'Larupia fur': 1, 'Tatty larupia fur': 2 }),
+		outputItems: resolveNameBank({ 'Larupia hat': 1, 'Larupia top': 1, 'Larupia legs': 1 }),
 		GPCost: 700
 	},
 	{
 		name: 'Graahk hunter gear',
 		inputItems: resolveNameBank({ 'Graahk fur': 1, 'Tatty graahk fur': 2 }),
-		outputItems: resolveNameBank({
-			'Graahk headdress': 1,
-			'Graahk top': 1,
-			'Graahk legs': 1
-		}),
+		outputItems: resolveNameBank({ 'Graahk headdress': 1, 'Graahk top': 1, 'Graahk legs': 1 }),
 		GPCost: 1000
 	},
 	{
 		name: 'Kyatt hunter gear',
 		inputItems: resolveNameBank({ 'Kyatt fur': 1, 'Tatty kyatt fur': 2 }),
-		outputItems: resolveNameBank({
-			'Kyatt hat': 1,
-			'Kyatt top': 1,
-			'Kyatt legs': 1
-		}),
+		outputItems: resolveNameBank({ 'Kyatt hat': 1, 'Kyatt top': 1, 'Kyatt legs': 1 }),
 		GPCost: 1400
 	},
 	{
@@ -878,72 +635,49 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Dragon hunter lance',
-		inputItems: resolveNameBank({
-			"Hydra's claw": 1,
-			'Zamorakian hasta': 1
-		}),
+		inputItems: resolveNameBank({ "Hydra's claw": 1, 'Zamorakian hasta': 1 }),
 		outputItems: resolveNameBank({ 'Dragon hunter lance': 1 }),
 		GPCost: 0
 	},
 	{
 		name: 'Ferocious gloves',
-		inputItems: resolveNameBank({
-			'Hydra leather': 1
-		}),
+		inputItems: resolveNameBank({ 'Hydra leather': 1 }),
 		outputItems: resolveNameBank({ 'Ferocious gloves': 1 }),
 		GPCost: 0
 	},
 	{
 		name: 'Uncut zenyte',
-		inputItems: resolveNameBank({
-			Onyx: 1,
-			'Zenyte shard': 1
-		}),
+		inputItems: resolveNameBank({ Onyx: 1, 'Zenyte shard': 1 }),
 		outputItems: resolveNameBank({ 'Uncut zenyte': 1 }),
 		GPCost: 0
 	},
 	{
 		name: 'Neitiznot faceguard',
-		inputItems: resolveNameBank({
-			'Basilisk jaw': 1,
-			'Helm of neitiznot': 1
-		}),
+		inputItems: resolveNameBank({ 'Basilisk jaw': 1, 'Helm of neitiznot': 1 }),
 		outputItems: resolveNameBank({ 'Neitiznot faceguard': 1 }),
 		GPCost: 0
 	},
 	{
 		name: 'Arclight',
-		inputItems: resolveNameBank({
-			Darklight: 1,
-			'Ancient shard': 3
-		}),
+		inputItems: resolveNameBank({ Darklight: 1, 'Ancient shard': 3 }),
 		outputItems: resolveNameBank({ Arclight: 1 }),
 		GPCost: 0
 	},
 	{
 		name: 'Boots of brimstone',
-		inputItems: resolveNameBank({
-			"Drake's claw": 1,
-			'Boots of stone': 1
-		}),
+		inputItems: resolveNameBank({ "Drake's claw": 1, 'Boots of stone': 1 }),
 		outputItems: resolveNameBank({ 'Boots of brimstone': 1 }),
 		GPCost: 0
 	},
 	{
 		name: 'Devout boots',
-		inputItems: resolveNameBank({
-			"Drake's tooth": 1,
-			'Holy sandals': 1
-		}),
+		inputItems: resolveNameBank({ "Drake's tooth": 1, 'Holy sandals': 1 }),
 		outputItems: resolveNameBank({ 'Devout boots': 1 }),
 		GPCost: 0
 	},
 	{
 		name: 'Uncharged toxic trident',
-		inputItems: resolveNameBank({
-			'Magic fang': 1,
-			'Uncharged trident': 1
-		}),
+		inputItems: resolveNameBank({ 'Magic fang': 1, 'Uncharged trident': 1 }),
 		outputItems: resolveNameBank({ 'Uncharged toxic trident': 1 }),
 		GPCost: 0
 	},
@@ -959,38 +693,25 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Toxic staff (uncharged)',
-		inputItems: resolveNameBank({
-			'Magic fang': 1,
-			'Staff of the dead': 1
-		}),
+		inputItems: resolveNameBank({ 'Magic fang': 1, 'Staff of the dead': 1 }),
 		outputItems: resolveNameBank({ 'Toxic staff (uncharged)': 1 }),
 		GPCost: 0
 	},
 	{
 		name: 'Abyssal tentacle',
-		inputItems: resolveNameBank({
-			'Kraken tentacle': 1,
-			'Abyssal whip': 1
-		}),
+		inputItems: resolveNameBank({ 'Kraken tentacle': 1, 'Abyssal whip': 1 }),
 		outputItems: resolveNameBank({ 'Abyssal tentacle': 1 }),
 		GPCost: 0
 	},
 	{
 		name: 'Brimstone ring',
-		inputItems: resolveNameBank({
-			"Hydra's eye": 1,
-			"Hydra's fang": 1,
-			"Hydra's heart": 1
-		}),
+		inputItems: resolveNameBank({ "Hydra's eye": 1, "Hydra's fang": 1, "Hydra's heart": 1 }),
 		outputItems: resolveNameBank({ 'Brimstone ring': 1 }),
 		GPCost: 0
 	},
 	{
 		name: 'Guardian boots',
-		inputItems: resolveNameBank({
-			'Black tourmaline core': 1,
-			'Bandos boots': 1
-		}),
+		inputItems: resolveNameBank({ 'Black tourmaline core': 1, 'Bandos boots': 1 }),
 		outputItems: resolveNameBank({ 'Guardian boots': 1 }),
 		GPCost: 0
 	},
@@ -1006,36 +727,24 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Uncharge black mask',
-		inputItems: resolveNameBank({
-			'Black mask (10)': 1
-		}),
+		inputItems: resolveNameBank({ 'Black mask (10)': 1 }),
 		outputItems: resolveNameBank({ 'Black mask': 1 }),
 		GPCost: 0
 	},
 	{
 		name: 'Slayer ring (8)',
-		inputItems: resolveNameBank({
-			'Gold bar': 1,
-			'Enchanted gem': 1
-		}),
+		inputItems: resolveNameBank({ 'Gold bar': 1, 'Enchanted gem': 1 }),
 		outputItems: resolveNameBank({ 'Slayer ring (8)': 1 }),
 		GPCost: 0,
-		requiredSkills: {
-			crafting: 75
-		},
+		requiredSkills: { crafting: 75 },
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.RingBling]
 	},
 	{
 		name: 'Slayer ring (eternal)',
-		inputItems: resolveNameBank({
-			'Gold bar': 1,
-			'Eternal gem': 1
-		}),
+		inputItems: resolveNameBank({ 'Gold bar': 1, 'Eternal gem': 1 }),
 		outputItems: resolveNameBank({ 'Slayer ring (eternal)': 1 }),
 		GPCost: 0,
-		requiredSkills: {
-			crafting: 75
-		},
+		requiredSkills: { crafting: 75 },
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.RingBling]
 	},
 	{
@@ -1048,9 +757,7 @@ const slayerCreatables: Createable[] = [
 			'Spiny helmet': 1,
 			'Enchanted gem': 1
 		}),
-		requiredSkills: {
-			crafting: 55
-		},
+		requiredSkills: { crafting: 55 },
 		outputItems: resolveNameBank({ 'Slayer helmet': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
@@ -1067,9 +774,7 @@ const slayerCreatables: Createable[] = [
 		}),
 		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1 }),
 		GPCost: 0,
-		requiredSkills: {
-			crafting: 55
-		},
+		requiredSkills: { crafting: 55 },
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
 	},
 	{
@@ -1083,9 +788,7 @@ const slayerCreatables: Createable[] = [
 			'Spiny helmet': 1,
 			'Enchanted gem': 1
 		}),
-		requiredSkills: {
-			crafting: 55
-		},
+		requiredSkills: { crafting: 55 },
 		GPCost: 0,
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
 	},
@@ -1100,9 +803,7 @@ const slayerCreatables: Createable[] = [
 			'Spiny helmet': 1,
 			'Enchanted gem': 1
 		}),
-		requiredSkills: {
-			crafting: 55
-		},
+		requiredSkills: { crafting: 55 },
 		GPCost: 0,
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
 	},
@@ -1138,10 +839,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Revert black slayer helmet (i)',
-		outputItems: resolveNameBank({
-			'Slayer helmet (i)': 1,
-			'Kbd heads': 1
-		}),
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Kbd heads': 1 }),
 		inputItems: resolveNameBank({ 'Black slayer helmet (i)': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [
@@ -1201,10 +899,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Red slayer helmet (i)',
-		inputItems: resolveNameBank({
-			'Slayer helmet (i)': 1,
-			'Abyssal head': 1
-		}),
+		inputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Abyssal head': 1 }),
 		outputItems: resolveNameBank({ 'Red slayer helmet (i)': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [
@@ -1224,10 +919,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Revert red slayer helmet (i)',
-		outputItems: resolveNameBank({
-			'Slayer helmet (i)': 1,
-			'Abyssal head': 1
-		}),
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Abyssal head': 1 }),
 		inputItems: resolveNameBank({ 'Red slayer helmet (i)': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [
@@ -1267,10 +959,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Revert purple slayer helmet (i)',
-		outputItems: resolveNameBank({
-			'Slayer helmet (i)': 1,
-			'Dark claw': 1
-		}),
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Dark claw': 1 }),
 		inputItems: resolveNameBank({ 'Purple slayer helmet (i)': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [
@@ -1280,10 +969,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Turquoise slayer helmet',
-		inputItems: resolveNameBank({
-			'Slayer helmet': 1,
-			"Vorkath's head": 1
-		}),
+		inputItems: resolveNameBank({ 'Slayer helmet': 1, "Vorkath's head": 1 }),
 		outputItems: resolveNameBank({ 'Turquoise slayer helmet': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [
@@ -1293,10 +979,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Turquoise slayer helmet (i)',
-		inputItems: resolveNameBank({
-			'Slayer helmet (i)': 1,
-			"Vorkath's head": 1
-		}),
+		inputItems: resolveNameBank({ 'Slayer helmet (i)': 1, "Vorkath's head": 1 }),
 		outputItems: resolveNameBank({ 'Turquoise slayer helmet (i)': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [
@@ -1306,10 +989,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Revert turquoise slayer helmet',
-		outputItems: resolveNameBank({
-			'Slayer helmet': 1,
-			"Vorkath's head": 1
-		}),
+		outputItems: resolveNameBank({ 'Slayer helmet': 1, "Vorkath's head": 1 }),
 		inputItems: resolveNameBank({ 'Turquoise slayer helmet': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [
@@ -1319,10 +999,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Revert turquoise slayer helmet (i)',
-		outputItems: resolveNameBank({
-			'Slayer helmet (i)': 1,
-			"Vorkath's head": 1
-		}),
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, "Vorkath's head": 1 }),
 		inputItems: resolveNameBank({ 'Turquoise slayer helmet (i)': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [
@@ -1332,10 +1009,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Hydra slayer helmet',
-		inputItems: resolveNameBank({
-			'Slayer helmet': 1,
-			'Alchemical hydra heads': 1
-		}),
+		inputItems: resolveNameBank({ 'Slayer helmet': 1, 'Alchemical hydra heads': 1 }),
 		outputItems: resolveNameBank({ 'Hydra slayer helmet': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [
@@ -1345,10 +1019,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Hydra slayer helmet (i)',
-		inputItems: resolveNameBank({
-			'Slayer helmet (i)': 1,
-			'Alchemical hydra heads': 1
-		}),
+		inputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Alchemical hydra heads': 1 }),
 		outputItems: resolveNameBank({ 'Hydra slayer helmet (i)': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [
@@ -1358,10 +1029,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Revert hydra slayer helmet',
-		outputItems: resolveNameBank({
-			'Slayer helmet': 1,
-			'Alchemical hydra heads': 1
-		}),
+		outputItems: resolveNameBank({ 'Slayer helmet': 1, 'Alchemical hydra heads': 1 }),
 		inputItems: resolveNameBank({ 'Hydra slayer helmet': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [
@@ -1371,10 +1039,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Revert hydra slayer helmet (i)',
-		outputItems: resolveNameBank({
-			'Slayer helmet (i)': 1,
-			'Alchemical hydra heads': 1
-		}),
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Alchemical hydra heads': 1 }),
 		inputItems: resolveNameBank({ 'Hydra slayer helmet (i)': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [
@@ -1394,10 +1059,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Twisted slayer helmet (i)',
-		inputItems: resolveNameBank({
-			'Slayer helmet (i)': 1,
-			'Twisted horns': 1
-		}),
+		inputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Twisted horns': 1 }),
 		outputItems: resolveNameBank({ 'Twisted slayer helmet (i)': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [
@@ -1407,10 +1069,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Revert twisted slayer helmet',
-		outputItems: resolveNameBank({
-			'Slayer helmet': 1,
-			'Twisted horns': 1
-		}),
+		outputItems: resolveNameBank({ 'Slayer helmet': 1, 'Twisted horns': 1 }),
 		inputItems: resolveNameBank({ 'Twisted slayer helmet': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [
@@ -1420,10 +1079,7 @@ const slayerCreatables: Createable[] = [
 	},
 	{
 		name: 'Revert twisted slayer helmet (i)',
-		outputItems: resolveNameBank({
-			'Slayer helmet (i)': 1,
-			'Twisted horns': 1
-		}),
+		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Twisted horns': 1 }),
 		inputItems: resolveNameBank({ 'Twisted slayer helmet (i)': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [

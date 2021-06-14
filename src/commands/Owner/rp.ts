@@ -276,9 +276,7 @@ LIMIT 10;
 			}
 			case 'bank': {
 				if (!input) return;
-				return msg.channel.sendBankImage({
-					bank: input.allItemsOwned().bank
-				});
+				return msg.channel.sendBankImage({ bank: input.allItemsOwned().bank });
 			}
 		}
 

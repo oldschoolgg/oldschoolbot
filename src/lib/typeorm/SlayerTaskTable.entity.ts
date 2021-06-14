@@ -17,9 +17,7 @@ export class SlayerTaskTable extends BaseEntity {
 	@PrimaryGeneratedColumn('increment')
 	public id!: string;
 
-	@ManyToOne(() => NewUserTable, user => user.slayerTasks, {
-		nullable: false
-	})
+	@ManyToOne(() => NewUserTable, user => user.slayerTasks, { nullable: false })
 	@JoinColumn({ name: 'user_id' })
 	public user!: NewUserTable;
 

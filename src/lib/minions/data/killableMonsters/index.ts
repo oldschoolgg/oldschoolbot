@@ -499,24 +499,9 @@ export const effectiveMonsters = [
 		name: 'Kalphite King',
 		aliases: ['kalphite king', 'kk']
 	},
-	{
-		name: 'TzTok-Jad',
-		aliases: ['jad'],
-		id: 3127,
-		emoji: '<:Tzrekjad:324127379188613121>'
-	},
-	{
-		name: 'Mimic',
-		aliases: ['mimic'],
-		id: 23184,
-		emoji: '<:Tangleroot:324127378978635778>'
-	},
-	{
-		name: 'Hespori',
-		aliases: ['hespori'],
-		id: 8583,
-		emoji: '<:Casket:365003978678730772>'
-	},
+	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
+	{ name: 'Mimic', aliases: ['mimic'], id: 23184, emoji: '<:Tangleroot:324127378978635778>' },
+	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' },
 	{
 		id: KingGoldemar.id,
 		name: 'King Goldemar',

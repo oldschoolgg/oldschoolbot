@@ -24,16 +24,10 @@ export class GiveawayTable extends BaseEntity {
 	@PrimaryColumn('varchar', { length: 19, name: 'user_id', nullable: false })
 	public userID!: string;
 
-	@Column('timestamp without time zone', {
-		name: 'start_date',
-		nullable: false
-	})
+	@Column('timestamp without time zone', { name: 'start_date', nullable: false })
 	public startDate!: Date;
 
-	@Column('timestamp without time zone', {
-		name: 'finish_date',
-		nullable: false
-	})
+	@Column('timestamp without time zone', { name: 'finish_date', nullable: false })
 	public finishDate!: Date;
 
 	@Column('integer', { name: 'duration', nullable: false })
@@ -43,11 +37,7 @@ export class GiveawayTable extends BaseEntity {
 	@Column('boolean', { name: 'completed', nullable: false })
 	public completed: boolean = false;
 
-	@PrimaryColumn('varchar', {
-		length: 19,
-		name: 'channel_id',
-		nullable: false
-	})
+	@PrimaryColumn('varchar', { length: 19, name: 'channel_id', nullable: false })
 	public channelID!: string;
 
 	@Column('json', { name: 'loot', nullable: false })
@@ -56,21 +46,13 @@ export class GiveawayTable extends BaseEntity {
 	/**
 	 * The message from the bot containing the giveaway reactions.
 	 */
-	@PrimaryColumn('varchar', {
-		length: 19,
-		name: 'message_id',
-		nullable: false
-	})
+	@PrimaryColumn('varchar', { length: 19, name: 'message_id', nullable: false })
 	public messageID!: string;
 
 	/**
 	 * The reaction used for the giveaway
 	 */
-	@PrimaryColumn('varchar', {
-		length: 19,
-		name: 'reaction_id',
-		nullable: false
-	})
+	@PrimaryColumn('varchar', { length: 19, name: 'reaction_id', nullable: false })
 	public reactionID!: string;
 
 	public async complete() {
