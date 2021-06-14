@@ -4,12 +4,13 @@ import { chunk, sleep } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters, Util } from 'oldschooljs';
 
-import { BitField, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
+import { BitField, Color, Emoji, MAX_LEVEL, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { getNewUser } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
@@ -17,7 +18,7 @@ import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
 import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
-import { randomItemFromArray } from '../../lib/util';
+import { convertLVLtoXP, randomItemFromArray, stringMatches } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
@@ -48,7 +49,7 @@ export default class MinionCommand extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest|mix|hunt] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest|mix|hunt] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -58,6 +59,25 @@ export default class MinionCommand extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		return msg.send(msg.author.minionStatus);
+	}
+
+	@requiresMinion
+	async lvl(msg: KlasaMessage, [input]: [string]) {
+		const values = Object.values(Skills);
+		const skill = values.find(s => stringMatches(s.name, input));
+		if (!skill) {
+			return msg.channel.send(
+				`That's not a valid skill. The valid skills are: ${values.map(v => v.name).join(', ')}.`
+			);
+		}
+		const level = msg.author.skillLevel(skill.id);
+		let str = `${skill.emoji} Your ${skill.name} level is **${level}**.`;
+		if (level < MAX_LEVEL) {
+			const currentXP = msg.author.settings.get(`skills.${skill.id}`) as number;
+			const xpToLevel = convertLVLtoXP(level + 1) - currentXP;
+			str += ` ${xpToLevel.toLocaleString()} XP away from level ${level + 1}`;
+		}
+		return msg.send(str);
 	}
 
 	@requiresMinion
