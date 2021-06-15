@@ -60,6 +60,9 @@ export function determineBoostChoice(params: DetermineBoostParams) {
 		boostChoice = 'cannon';
 	}
 
+	if (boostChoice === 'barrage' && params.msg.author.skillLevel(SkillsEnum.Magic) < 94) {
+		boostChoice = 'burst';
+	}
 	return boostChoice;
 }
 
