@@ -14,17 +14,17 @@ export const XPLamps: XPLamp[] = [
 		name: 'Antique lamp 1'
 	},
 	{
-		itemID: 6796,
+		itemID: 11139,
 		amount: 7500,
 		name: 'Antique lamp 2'
 	},
 	{
-		itemID: 6796,
+		itemID: 11141,
 		amount: 15_000,
 		name: 'Antique lamp 3'
 	},
 	{
-		itemID: 6796,
+		itemID: 11185,
 		amount: 50_000,
 		name: 'Antique lamp 4'
 	},
