@@ -120,7 +120,7 @@ export default class extends BotCommand {
 				.add(plank, totalPlanksNeeded).bank
 		);
 
-		await addSubTaskToActivityTask<ConstructionActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<ConstructionActivityTaskOptions>({
 			objectID: object.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

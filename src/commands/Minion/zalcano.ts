@@ -95,7 +95,7 @@ export default class extends BotCommand {
 			attackStylesUsed: []
 		});
 
-		await addSubTaskToActivityTask<ZalcanoActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<ZalcanoActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

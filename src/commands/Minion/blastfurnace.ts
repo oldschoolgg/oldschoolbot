@@ -141,7 +141,7 @@ export default class extends BotCommand {
 		await msg.author.removeItemsFromBank(itemsNeeded);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.BlastFurnaceCostBank, itemsNeeded);
 
-		await addSubTaskToActivityTask<BlastFurnaceActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<BlastFurnaceActivityTaskOptions>({
 			barID: bar.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

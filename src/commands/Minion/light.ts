@@ -84,7 +84,7 @@ export default class extends BotCommand {
 		// Remove the logs from their bank.
 		await msg.author.removeItemFromBank(log.inputLogs, quantity);
 
-		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>({
 			burnableID: log.inputLogs,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

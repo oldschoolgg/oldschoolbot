@@ -59,7 +59,7 @@ export default class extends BotCommand {
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.MageArenaCost, totalCost);
 
-		await addSubTaskToActivityTask<ActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<ActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,

@@ -58,7 +58,7 @@ export default class extends BotCommand {
 		const maxLaps = Math.floor(msg.author.maxTripLength(Activity.Sepulchre) / lapLength);
 		const tripLength = maxLaps * lapLength;
 
-		await addSubTaskToActivityTask<SepulchreActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<SepulchreActivityTaskOptions>({
 			floors: completableFloors.map(fl => fl.number),
 			quantity: maxLaps,
 			userID: msg.author.id,

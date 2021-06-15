@@ -306,7 +306,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		await addSubTaskToActivityTask<FarmingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 			plantsName: plants.name,
 			patchType,
 			getPatchType,

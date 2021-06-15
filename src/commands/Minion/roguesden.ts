@@ -76,7 +76,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<RoguesDenMazeTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<RoguesDenMazeTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
