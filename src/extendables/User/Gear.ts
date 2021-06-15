@@ -2,7 +2,6 @@ import { User } from 'discord.js';
 import { Extendable, ExtendableStore } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
-import SimilarItems from '../../lib/data/similarItems';
 import { defaultGear, resolveGearTypeSetting } from '../../lib/gear';
 import { GearSetup, UserFullGearSetup } from '../../lib/gear/types';
 import { Gear } from '../../lib/structures/Gear';
