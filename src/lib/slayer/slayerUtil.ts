@@ -155,7 +155,7 @@ export function userCanUseTask(
 
 export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
 	// assignedTask is the task object, currentTask is the database row.
-	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master, true));
+	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master, false));
 	let bossTask = false;
 	if (
 		_user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.LikeABoss) &&
