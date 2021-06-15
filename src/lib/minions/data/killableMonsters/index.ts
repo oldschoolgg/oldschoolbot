@@ -81,8 +81,8 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Armadyl chestplate', "Karil's leathertop"],
-			['Armadyl chainskirt', "Karil's leatherskirt"]
+			['Armadyl chestplate', "Karil's leathertop", 'Pernix body', 'Gorajan archer top'],
+			['Armadyl chainskirt', "Karil's leatherskirt", 'Pernix legs', 'Gorajan archer legs']
 		]),
 
 		qpRequired: 0,
@@ -120,8 +120,8 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Bandos chestplate', "Torag's platebody"],
-			['Bandos tassets', "Torag's platelegs"]
+			['Bandos chestplate', "Torag's platebody", 'Torva platebody', 'Gorajan warrior top'],
+			['Bandos tassets', "Torag's platelegs", 'Torva platelegs', 'Gorajan warrior legs']
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: [
@@ -156,8 +156,8 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Bandos chestplate', "Torag's platebody"],
-			['Bandos tassets', "Torag's platelegs"]
+			['Bandos chestplate', "Torag's platebody", 'Torva platebody', 'Gorajan warrior top'],
+			['Bandos tassets', "Torag's platelegs", 'Torva platelegs', 'Gorajan warrior legs']
 		]),
 
 		qpRequired: 0,
