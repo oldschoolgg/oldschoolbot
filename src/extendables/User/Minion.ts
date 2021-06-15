@@ -7,17 +7,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
-import {
-	Activity,
-	Emoji,
-	Events,
-	LEVEL_99_XP,
-	MAX_QP,
-	MAX_TOTAL_LEVEL,
-	PerkTier,
-	skillEmoji,
-	Time
-} from '../../lib/constants';
+import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, PerkTier, skillEmoji, Time } from '../../lib/constants';
 import { onMax } from '../../lib/events';
 import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
@@ -827,36 +817,34 @@ export default class extends Extendable {
 			}
 		}
 
-		for (const num of [99, 120]) {
-			// If they just reached 99, send a server notification.
-			if (currentLevel < 99 && newLevel >= 99) {
-				const skillNameCased = toTitleCase(params.skillName);
-				const [usersWith] = await this.client.query<
+		// If they just reached 120, send a server notification.
+		if (currentLevel < 120 && newLevel >= 120) {
+			const skillNameCased = toTitleCase(params.skillName);
+			const [usersWith] = await this.client.query<
+				{
+					count: string;
+				}[]
+			>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${convertLVLtoXP(120)};`);
+
+			let str = `${skill.emoji} **${this.username}'s** minion, ${
+				this.minionName
+			}, just achieved level 120 in ${skillNameCased}! They are the ${formatOrdinal(
+				parseInt(usersWith.count) + 1
+			)} to get 120 ${skillNameCased}.`;
+
+			if (this.isIronman) {
+				const [ironmenWith] = await this.client.query<
 					{
 						count: string;
 					}[]
-				>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${LEVEL_99_XP};`);
-
-				let str = `${skill.emoji} **${this.username}'s** minion, ${
-					this.minionName
-				}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
-					parseInt(usersWith.count) + 1
-				)} to get 99 ${skillNameCased}.`;
-
-				if (this.isIronman) {
-					const [ironmenWith] = await this.client.query<
-						{
-							count: string;
-						}[]
-					>(
-						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" > ${
-							convertLVLtoXP(num) - 1
-						};`
-					);
-					str += ` They are the ${formatOrdinal(parseInt(ironmenWith.count) + 1)} Ironman to get ${num}.`;
-				}
-				this.client.emit(Events.ServerNotification, str);
+				>(
+					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${
+						params.skillName
+					}" >= ${convertLVLtoXP(120)};`
+				);
+				str += ` They are the ${formatOrdinal(parseInt(ironmenWith.count) + 1)} Ironman to get 120.`;
 			}
+			this.client.emit(Events.ServerNotification, str);
 		}
 
 		await this.settings.update(`skills.${params.skillName}`, Math.floor(newXP));
