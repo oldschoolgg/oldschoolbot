@@ -7,6 +7,28 @@ export interface XPLamp {
 }
 
 export const XPLamps: XPLamp[] = [
+	// Achievement diary lamps
+	{
+		itemID: 11137,
+		amount: 2500,
+		name: 'Antique lamp 1'
+	},
+	{
+		itemID: 6796,
+		amount: 7500,
+		name: 'Antique lamp 2'
+	},
+	{
+		itemID: 6796,
+		amount: 15_000,
+		name: 'Antique lamp 3'
+	},
+	{
+		itemID: 6796,
+		amount: 50_000,
+		name: 'Antique lamp 4'
+	},
+	// BSO Lamps
 	{
 		itemID: 6796,
 		amount: 20_000,
