@@ -25,6 +25,12 @@ enum AutoSlayMethod {
 
 const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 	{
+		monsterID: Monsters.Jelly.id,
+		efficientName: Monsters.WarpedJelly.name,
+		efficientMonster: Monsters.WarpedJelly.id,
+		efficientMethod: AutoSlayMethod.Barrage
+	},
+	{
 		monsterID: Monsters.SpiritualMage.id,
 		efficientName: Monsters.SpiritualMage.name,
 		efficientMonster: Monsters.SpiritualMage.id,
