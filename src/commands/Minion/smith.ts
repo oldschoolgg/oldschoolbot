@@ -111,7 +111,7 @@ export default class extends BotCommand {
 			usedbars = qty * quantity;
 		}
 
-		await addSubTaskToActivityTask<SmithingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<SmithingActivityTaskOptions>({
 			smithedBarID: smithedItem.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

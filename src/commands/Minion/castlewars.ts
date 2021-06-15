@@ -37,7 +37,7 @@ You have played ${kc.CastleWars} Castle Wars games.`);
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.CastleWars) / gameLength);
 		const duration = quantity * gameLength;
 
-		await addSubTaskToActivityTask<MinigameActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,

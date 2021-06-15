@@ -38,7 +38,7 @@ export default class extends BotCommand {
 			boosts.push('10% for Graceful');
 		}
 
-		await addSubTaskToActivityTask<QuestingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<QuestingActivityTaskOptions>({
 			type: Activity.Questing,
 			duration,
 			userID: msg.author.id,

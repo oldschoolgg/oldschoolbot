@@ -199,7 +199,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 			new Bank(this.client.settings.get(ClientSettings.EconomyStats.ConstructCostBank)).add(itemsNeeded).bank
 		);
 
-		await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			type: Activity.MahoganyHomes,

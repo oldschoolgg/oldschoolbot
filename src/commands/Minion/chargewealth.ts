@@ -83,7 +83,7 @@ export default class extends BotCommand {
 			return msg.send(`You don't have enough Rings of wealth, ${quantityWealths} required.`);
 		}
 
-		await addSubTaskToActivityTask<WealthChargingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<WealthChargingActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

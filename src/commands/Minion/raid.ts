@@ -229,7 +229,7 @@ export default class extends BotCommand {
 			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CoxCost), totalCost.bank])
 		);
 
-		await addSubTaskToActivityTask<RaidsOptions>(this.client, {
+		await addSubTaskToActivityTask<RaidsOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,

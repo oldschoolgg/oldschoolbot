@@ -114,7 +114,7 @@ export default class extends BotCommand {
 		const quantity = tripLength / (randValue * Time.Second);
 		const duration = quantity * (randValue * Time.Second);
 
-		await addSubTaskToActivityTask<AerialFishingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<AerialFishingActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

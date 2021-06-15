@@ -112,7 +112,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemsFromBank(cost);
 
-		await addSubTaskToActivityTask<MinigameActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration: tripLength,

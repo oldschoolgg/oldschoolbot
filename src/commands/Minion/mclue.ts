@@ -96,7 +96,7 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		await addSubTaskToActivityTask<ClueActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			clueID: clueTier.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

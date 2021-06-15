@@ -163,7 +163,7 @@ export default class extends BotCommand {
 			])
 		);
 
-		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>({
 			mixableID: mixableItem.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

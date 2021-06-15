@@ -167,7 +167,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<MiningActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<MiningActivityTaskOptions>({
 			oreID: ore.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

@@ -93,7 +93,7 @@ export default class extends BotCommand {
 				);
 			}
 
-			await addSubTaskToActivityTask<AnimatedArmourActivityTaskOptions>(this.client, {
+			await addSubTaskToActivityTask<AnimatedArmourActivityTaskOptions>({
 				armourID: armorSet.name,
 				userID: msg.author.id,
 				channelID: msg.channel.id,
@@ -148,7 +148,7 @@ export default class extends BotCommand {
 				);
 			}
 
-			await addSubTaskToActivityTask<CyclopsActivityTaskOptions>(this.client, {
+			await addSubTaskToActivityTask<CyclopsActivityTaskOptions>({
 				userID: msg.author.id,
 				channelID: msg.channel.id,
 				quantity,
