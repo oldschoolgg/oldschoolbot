@@ -110,7 +110,7 @@ export default class extends BotCommand {
 			)
 		);
 
-		await addSubTaskToActivityTask<SawmillActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<SawmillActivityTaskOptions>({
 			type: Activity.Sawmill,
 			duration,
 			plankID: plank!.outputItem,

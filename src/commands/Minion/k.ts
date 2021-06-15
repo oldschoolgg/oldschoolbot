@@ -436,7 +436,7 @@ export default class extends BotCommand {
 		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
 		await msg.author.removeItemsFromBank(lootToRemove);
 
-		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
 			monsterID: monster.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

@@ -1,5 +1,4 @@
 import { Emoji, Time } from '../../constants';
-import { ActivityTaskOptions } from '../../types/minions';
 import itemID from '../../util/itemID';
 import { Rune, SkillsEnum } from '../types';
 
@@ -202,12 +201,6 @@ const RCPouches = [
 		capacity: 128
 	}
 ];
-
-export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
-	runeID: number;
-	channelID: string;
-	essenceQuantity: number;
-}
 
 const Runecraft = {
 	aliases: ['runecraft', 'runecrafting'],

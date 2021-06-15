@@ -5,8 +5,10 @@ import { getConnection } from 'typeorm';
 import { client } from '../..';
 import { MinigameKey, Minigames } from '../../extendables/User/Minigame';
 import { Emoji } from '../constants';
+import { ActivityTable } from '../typeorm/ActivityTable.entity';
 import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { NewUserTable } from '../typeorm/NewUserTable.entity';
+import { ActivityTaskData } from '../types/minions';
 
 export async function getUserSettings(userID: string): Promise<Settings> {
 	return (client.gateways.get('users') as Gateway)!
@@ -94,4 +96,32 @@ export async function getMinionName(userID: string): Promise<string> {
 	const displayIcon = icon ?? Emoji.Minion;
 
 	return name ? `${prefix} ${displayIcon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${displayIcon} Your minion`;
+}
+
+export const minionActivityCache = new Map<string, ActivityTaskData>();
+export function getActivityOfUser(userID: string) {
+	const task = minionActivityCache.get(userID);
+	return task ?? null;
+}
+
+export async function cancelTask(userID: string) {
+	await ActivityTable.delete({
+		userID,
+		completed: false
+	});
+	minionActivityCache.delete(userID);
+}
+
+export async function syncActivityCache() {
+	const tasks = await ActivityTable.find({
+		where: {
+			completed: false
+		}
+	});
+	minionActivityCache.clear();
+	for (const task of tasks) {
+		for (const u of task.getUsers()) {
+			minionActivityCache.set(u, task.taskData);
+		}
+	}
 }

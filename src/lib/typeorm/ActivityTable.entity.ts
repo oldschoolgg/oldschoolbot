@@ -2,7 +2,8 @@ import { BaseEntity, Column, Entity, getConnection, Index, PrimaryColumn, Primar
 
 import { client } from '../..';
 import { Activity } from '../constants';
-import { ActivityTaskOptions, GroupMonsterActivityTaskOptions } from '../types/minions';
+import { minionActivityCache } from '../settings/settings';
+import { ActivityTaskData, ActivityTaskOptions, GroupMonsterActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
 
@@ -38,16 +39,16 @@ export class ActivityTable extends BaseEntity {
 	public channelID!: string;
 
 	@Column('json', { name: 'data', nullable: false })
-	public data!: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelID' | 'userID'>;
+	public data!: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelID' | 'userID' | 'duration'>;
 
-	public get taskData() {
+	public get taskData(): ActivityTaskData {
 		return {
 			...this.data,
 			type: this.type,
 			userID: this.userID,
 			channelID: this.channelID,
 			duration: this.duration,
-			finishDate: this.finishDate,
+			finishDate: this.finishDate.getTime(),
 			id: this.id
 		};
 	}
@@ -86,7 +87,7 @@ export class ActivityTable extends BaseEntity {
 			client.oneCommandAtATimeCache.delete(this.userID);
 			const users = isGroupActivity(this.data) ? this.data.users : [this.userID];
 			for (const user of users) {
-				client.minionActivityCache.delete(user);
+				minionActivityCache.delete(user);
 			}
 		}
 	}

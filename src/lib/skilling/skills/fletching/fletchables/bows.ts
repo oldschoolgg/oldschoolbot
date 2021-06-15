@@ -209,7 +209,7 @@ const Bows: Fletchable[] = [
 		id: itemID('Elder bow'),
 		level: 105,
 		xp: 391.5,
-		inputItems: new Bank({ 'Elder bow': 1, 'Bow string': 1 }),
+		inputItems: new Bank({ 'Elder bow(u)': 1, 'Bow string': 1 }),
 		tickRate: 2
 	},
 	{

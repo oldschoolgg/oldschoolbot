@@ -3,8 +3,9 @@ import { Bank } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { getRandomMysteryBox } from '../../lib/data/openables';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import { filterBankFromArrayOfItems, noOp, roll } from '../../lib/util';
+import { filterBankFromArrayOfItems, noOp, roll, updateBankSetting } from '../../lib/util';
 import { sendToChannelID } from '../../lib/util/webhook';
 
 const uniques = [
@@ -24,6 +25,7 @@ export default class extends Task {
 		for (const member of team) {
 			totalPoints += member.personalPoints;
 		}
+		const totalLoot = new Bank();
 
 		let resultMessage = `<@${partyLeaderID}> Your raid has finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
 		for (let [userID, _userLoot] of Object.entries(loot)) {
@@ -49,6 +51,7 @@ export default class extends Task {
 			if (roll(2000)) {
 				userLoot.add('Steve');
 			}
+			totalLoot.add(userLoot);
 
 			resultMessage += `\n**${user}** received: ${
 				purple ? '🟪' : ''
@@ -57,6 +60,8 @@ export default class extends Task {
 			}%${user.usingPet('Flappy') ? ', <:flappy:812280578195456002> 2x loot' : ''})`;
 			await user.addItemsToBank(userLoot, true);
 		}
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.CoxLoot, totalLoot);
 
 		sendToChannelID(this.client, channelID, { content: resultMessage });
 	}

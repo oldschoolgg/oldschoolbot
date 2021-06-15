@@ -7,17 +7,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
-import {
-	Activity,
-	Emoji,
-	Events,
-	LEVEL_99_XP,
-	MAX_QP,
-	MAX_TOTAL_LEVEL,
-	PerkTier,
-	skillEmoji,
-	Time
-} from '../../lib/constants';
+import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, PerkTier, skillEmoji, Time } from '../../lib/constants';
 import { onMax } from '../../lib/events';
 import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
@@ -26,6 +16,7 @@ import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/kill
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
 import { AddXpParams, KillableMonster } from '../../lib/minions/types';
+import { getActivityOfUser } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MasterSkillcapes } from '../../lib/skilling/skillcapes';
 import Skills from '../../lib/skilling/skills';
@@ -42,7 +33,7 @@ import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
 import Mining from '../../lib/skilling/skills/mining';
 import Prayer from '../../lib/skilling/skills/prayer';
-import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
+import Runecraft from '../../lib/skilling/skills/runecraft';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
@@ -79,6 +70,7 @@ import {
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	RaidsActivityTaskOptions,
+	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
@@ -134,7 +126,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionStatus(this: User) {
-		const currentTask = this.client.getActivityOfUser(this.id);
+		const currentTask = getActivityOfUser(this.id);
 
 		if (!currentTask) {
 			return `${this.minionName} is currently doing nothing.
@@ -696,7 +688,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
-		const usersTask = this.client.getActivityOfUser(this.id);
+		const usersTask = getActivityOfUser(this.id);
 		return Boolean(usersTask);
 	}
 
@@ -827,36 +819,34 @@ export default class extends Extendable {
 			}
 		}
 
-		for (const num of [99, 120]) {
-			// If they just reached 99, send a server notification.
-			if (currentLevel < 99 && newLevel >= 99) {
-				const skillNameCased = toTitleCase(params.skillName);
-				const [usersWith] = await this.client.query<
+		// If they just reached 120, send a server notification.
+		if (currentLevel < 120 && newLevel >= 120) {
+			const skillNameCased = toTitleCase(params.skillName);
+			const [usersWith] = await this.client.query<
+				{
+					count: string;
+				}[]
+			>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${convertLVLtoXP(120)};`);
+
+			let str = `${skill.emoji} **${this.username}'s** minion, ${
+				this.minionName
+			}, just achieved level 120 in ${skillNameCased}! They are the ${formatOrdinal(
+				parseInt(usersWith.count) + 1
+			)} to get 120 ${skillNameCased}.`;
+
+			if (this.isIronman) {
+				const [ironmenWith] = await this.client.query<
 					{
 						count: string;
 					}[]
-				>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${LEVEL_99_XP};`);
-
-				let str = `${skill.emoji} **${this.username}'s** minion, ${
-					this.minionName
-				}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
-					parseInt(usersWith.count) + 1
-				)} to get 99 ${skillNameCased}.`;
-
-				if (this.isIronman) {
-					const [ironmenWith] = await this.client.query<
-						{
-							count: string;
-						}[]
-					>(
-						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" > ${
-							convertLVLtoXP(num) - 1
-						};`
-					);
-					str += ` They are the ${formatOrdinal(parseInt(ironmenWith.count) + 1)} Ironman to get ${num}.`;
-				}
-				this.client.emit(Events.ServerNotification, str);
+				>(
+					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${
+						params.skillName
+					}" >= ${convertLVLtoXP(120)};`
+				);
+				str += ` They are the ${formatOrdinal(parseInt(ironmenWith.count) + 1)} Ironman to get 120.`;
 			}
+			this.client.emit(Events.ServerNotification, str);
 		}
 
 		await this.settings.update(`skills.${params.skillName}`, Math.floor(newXP));

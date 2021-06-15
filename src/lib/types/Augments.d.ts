@@ -34,7 +34,6 @@ declare module 'klasa' {
 		_badgeCache: Map<string, string>;
 		_peakIntervalCache: Peak[];
 		public wtf(error: Error): void;
-		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 		commentStream?: CommentStream;
 		submissionStream?: SubmissionStream;
 		fastifyServer: FastifyInstance;
@@ -42,7 +41,6 @@ declare module 'klasa' {
 		giveawayTicker: NodeJS.Timeout;
 		analyticsInterval: NodeJS.Timeout;
 		metricsInterval: NodeJS.Timeout;
-		minionActivityCache: Map<string, ActivityTable['taskData']>;
 	}
 
 	interface Command {
@@ -88,7 +86,6 @@ declare module 'klasa' {
 declare module 'discord.js' {
 	interface Client {
 		public query<T>(query: string): Promise<T>;
-		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {

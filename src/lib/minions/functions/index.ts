@@ -3,11 +3,13 @@ import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { NIGHTMARES_HP } from '../../constants';
+import { KalphiteKingMonster } from '../../kalphiteking';
 import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
 import KingGoldemar from '../data/killableMonsters/custom/KingGoldemar';
+import SeaKraken from '../data/killableMonsters/custom/SeaKraken';
 import { VasaMagus } from '../data/killableMonsters/custom/VasaMagus';
 import { AddMonsterXpParams, KillableMonster } from '../types';
 
@@ -26,7 +28,9 @@ const miscHpMap: Record<number, number> = {
 	46274: 5000,
 	9415: NIGHTMARES_HP,
 	[KingGoldemar.id]: 10_000,
-	[VasaMagus.id]: 3900
+	[VasaMagus.id]: 3900,
+	[KalphiteKingMonster.id]: 5300,
+	[SeaKraken.id]: 3900
 };
 
 function meleeOnly(user: KlasaUser): AttackStyles[] {
@@ -109,7 +113,9 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 
 	if (params.isOnTask) {
 		let newSlayerXP = 0;
-		if (osjsMon?.data?.slayerXP) {
+		if (miscHpMap[params.monsterID]) {
+			newSlayerXP += params.taskQuantity! * miscHpMap[params.monsterID];
+		} else if (osjsMon?.data?.slayerXP) {
 			newSlayerXP += params.taskQuantity! * osjsMon.data.slayerXP;
 		} else {
 			newSlayerXP += params.taskQuantity! * hp;

@@ -1,5 +1,8 @@
 import { Monsters } from 'oldschooljs';
 
+import { KalphiteKingMonster } from '../../kalphiteking';
+import AbyssalDragon from '../../minions/data/killableMonsters/custom/AbyssalDragon';
+import SeaKraken from '../../minions/data/killableMonsters/custom/SeaKraken';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 
@@ -18,7 +21,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AbyssalDemon,
 		amount: [110, 170],
 		weight: 12,
-		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, AbyssalDragon.id],
 		combatLevel: 85,
 		slayerLevel: 85,
 		questPoints: 1,
@@ -125,7 +128,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveKraken,
 		amount: [30, 50],
 		weight: 12,
-		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id],
+		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id, SeaKraken.id],
 		combatLevel: 80,
 		slayerLevel: 87,
 		unlocked: true
@@ -309,7 +312,8 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
-			Monsters.KalphiteQueen.id
+			Monsters.KalphiteQueen.id,
+			KalphiteKingMonster.id
 		],
 		combatLevel: 15,
 		unlocked: true

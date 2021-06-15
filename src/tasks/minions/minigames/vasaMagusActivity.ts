@@ -9,10 +9,11 @@ import { addMonsterXP } from '../../../lib/minions/functions';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { NewBossOptions } from '../../../lib/types/minions';
 import { updateBankSetting } from '../../../lib/util';
-import { sendToChannelID } from '../../../lib/util/webhook';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ channelID, userID, duration, quantity }: NewBossOptions) {
+	async run(data: NewBossOptions) {
+		const { channelID, userID, duration, quantity } = data;
 		const user = await this.client.users.fetch(userID);
 
 		user.incrementMonsterScore(VasaMagus.id, quantity);
@@ -37,6 +38,18 @@ export default class extends Task {
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.VasaLoot, loot);
 
-		sendToChannelID(this.client, channelID, { content: resultStr });
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			resultStr,
+			res => {
+				user.log('continued vasa');
+				return this.client.commands.get('vasa')!.run(res, []);
+			},
+			undefined,
+			data,
+			loot.bank
+		);
 	}
 }

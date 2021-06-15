@@ -6,14 +6,17 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { production } from '../../../config';
 import { Emoji } from '../../../lib/constants';
 import { KalphiteKingMonster } from '../../../lib/kalphiteking';
+import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { allNexItems } from '../../../lib/nex';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { addBanks, channelIsSendable, noOp, updateBankSetting } from '../../../lib/util';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 interface NexUser {
@@ -23,7 +26,8 @@ interface NexUser {
 }
 
 export default class extends Task {
-	async run({ channelID, userID, users, quantity }: BossActivityTaskOptions) {
+	async run(data: BossActivityTaskOptions) {
+		const { channelID, userID, users, quantity, duration } = data;
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -72,17 +76,50 @@ export default class extends Task {
 
 		const leaderUser = await this.client.users.fetch(userID);
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${KalphiteKingMonster.name}!\n\n`;
+
+		let soloXP = '';
+		let soloPrevCl = null;
+		let soloItemsAdded = null;
+
 		const totalLoot = new Bank();
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
 			totalLoot.add(loot);
-			await user.addItemsToBank(loot, true);
+			const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) user.incrementMonsterScore(KalphiteKingMonster.id, kcToAdd);
 			const purple = Object.keys(loot).some(id => allNexItems.includes(parseInt(id)));
 
-			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
+			const usersTask = await getUsersCurrentSlayerInfo(user.id);
+			const isOnTask =
+				usersTask.assignedTask !== null &&
+				usersTask.currentTask !== null &&
+				usersTask.assignedTask.monsters.includes(KalphiteKingMonster.id);
+
+			let xpStr = await addMonsterXP(user, {
+				monsterID: KalphiteKingMonster.id,
+				quantity: Math.ceil(quantity / users.length),
+				duration,
+				isOnTask,
+				taskQuantity: quantity
+			});
+			if (isOnTask) {
+				usersTask.currentTask!.quantityRemaining = Math.max(
+					0,
+					usersTask.currentTask!.quantityRemaining - quantity
+				);
+				await usersTask.currentTask!.save();
+			}
+			if (user.id === userID) {
+				soloXP = xpStr;
+				soloPrevCl = previousCL;
+				soloItemsAdded = itemsAdded;
+			}
+
+			resultStr += `${purple ? Emoji.Purple : ''} ${
+				isOnTask ? Emoji.Slayer : ''
+			} **${user} received:** ||${new Bank(loot)}||\n`;
 
 			announceLoot(this.client, leaderUser, KalphiteKingMonster, loot, {
 				leader: leaderUser,
@@ -126,18 +163,34 @@ export default class extends Task {
 					`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`
 				);
 			} else {
-				channel.sendBankImage({
-					bank: teamsLoot[userID],
-					content: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
+				const { image } = await this.client.tasks
+					.get('bankImage')!
+					.generateBankImage(
+						soloItemsAdded!,
+						`Loot From ${quantity} Kalphite King:`,
+						true,
+						{ showNewCL: 1 },
+						leaderUser,
+						soloPrevCl!
+					);
+
+				handleTripFinish(
+					this.client,
+					leaderUser,
+					channelID,
+					`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 						KalphiteKingMonster.name
 					}, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${
 						(leaderUser.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0) + quantity
-					}.`,
-					title: `${quantity}x Kalphite King`,
-					background: leaderUser.settings.get(UserSettings.BankBackground),
-					user: leaderUser,
-					flags: { showNewCL: 1 }
-				});
+					}.\n\n${soloXP}`,
+					res => {
+						leaderUser.log('continued kk');
+						return this.client.commands.get('kk')!.run(res, ['solo']);
+					},
+					image!,
+					data,
+					soloItemsAdded
+				);
 			}
 		}
 	}

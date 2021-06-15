@@ -119,7 +119,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemsFromBank(itemsNeeded);
 
-		await addSubTaskToActivityTask<FletchingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<FletchingActivityTaskOptions>({
 			fletchableName: fletchable.name,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

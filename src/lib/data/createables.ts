@@ -4277,7 +4277,8 @@ const Createables: Createable[] = [
 	{
 		name: 'Vasa cloak',
 		inputItems: resolveNameBank({
-			'Tattered robes of Vasa': 1
+			'Tattered robes of Vasa': 1,
+			'Abyssal cape': 1
 		}),
 		outputItems: {
 			[itemID('Vasa cloak')]: 1

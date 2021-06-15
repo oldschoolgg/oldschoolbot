@@ -129,7 +129,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<WoodcuttingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<WoodcuttingActivityTaskOptions>({
 			logID: log.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

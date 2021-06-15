@@ -141,7 +141,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>({
 			monsterID: monster.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

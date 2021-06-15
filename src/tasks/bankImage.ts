@@ -273,6 +273,12 @@ export default class BankImageTask extends Task {
 		const currentCL = collectionLog ?? settings?.get(UserSettings.CollectionLogBank);
 		let partial = false;
 
+		if (flags.alch) {
+			bank.filter(item => {
+				return item.price > 1000 && item.price < item.highalch * 3;
+			}, true);
+		}
+
 		// Filtering
 		const searchQuery = flags.search as string | undefined;
 		const filter = flags.filter
@@ -393,7 +399,7 @@ export default class BankImageTask extends Task {
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
 
-		if (bankBackgroundID !== 20) {
+		if (bankBackgroundID !== 12) {
 			ctx.drawImage(
 				bgImage!.image,
 				0,
@@ -481,7 +487,7 @@ export default class BankImageTask extends Task {
 				bottomItemText = item.price * quantity;
 			}
 
-			if (flags.av) {
+			if (flags.av || flags.alch) {
 				bottomItemText = (item.highalch ?? 0) * quantity;
 			}
 			if (flags.id) {

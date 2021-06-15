@@ -83,7 +83,7 @@ export default class extends BotCommand {
 			return msg.send(`You don't have enough ${quantityGlories}x Amulet of glory.`);
 		}
 
-		await addSubTaskToActivityTask<GloryChargingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<GloryChargingActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

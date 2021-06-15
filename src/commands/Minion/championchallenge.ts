@@ -32,7 +32,7 @@ export default class extends BotCommand {
 		}
 		for (const id of championScrolls) bank.remove(id);
 		await msg.author.settings.update(UserSettings.Bank, bank.bank);
-		await addSubTaskToActivityTask<MinigameActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity: 1,

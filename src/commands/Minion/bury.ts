@@ -80,7 +80,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemsFromBank(cost);
 
-		await addSubTaskToActivityTask<BuryingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<BuryingActivityTaskOptions>({
 			boneID: bone.inputId,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

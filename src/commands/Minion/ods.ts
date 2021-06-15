@@ -113,7 +113,7 @@ export default class ODSCommand extends BotCommand {
 		// if (boosts.length > 0) {
 		// 	str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		// }
-		await addSubTaskToActivityTask<MinigameActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

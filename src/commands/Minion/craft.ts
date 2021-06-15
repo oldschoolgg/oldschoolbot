@@ -169,7 +169,7 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		await addSubTaskToActivityTask<CraftingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<CraftingActivityTaskOptions>({
 			craftableID: Craft.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

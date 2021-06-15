@@ -16,6 +16,7 @@ import KingGoldemar from './custom/KingGoldemar';
 import Koschei, { koscheiTable } from './custom/Koschei';
 import SeaKraken, { KrakenTable } from './custom/SeaKraken';
 import Treebeard, { TreebeardLootTable } from './custom/Treebeard';
+import { VasaMagus } from './custom/VasaMagus';
 import { konarMonsters } from './konarMonsters';
 import { krystiliaMonsters } from './krystiliaMonsters';
 import low from './low';
@@ -487,5 +488,10 @@ export const effectiveMonsters = [
 		id: KingGoldemar.id,
 		name: 'King Goldemar',
 		aliases: ['king goldemar', 'kg']
+	},
+	{
+		id: VasaMagus.id,
+		name: 'Vasa Magus',
+		aliases: ['vasa', 'vasa magus', 'vm']
 	}
 ];

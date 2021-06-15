@@ -1,5 +1,6 @@
 import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
@@ -7,10 +8,10 @@ import { getSimilarItems } from '../../lib/data/similarItems';
 import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { pernixOutfit, torvaOutfit, virtusOutfit } from '../../lib/nex';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
-import { RaidsActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, rand } from '../../lib/util';
+import { formatDuration, rand, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
@@ -882,6 +883,12 @@ const mageGearBonus = [
 // Melee + Ranged + Mage + Special weps
 const MAX_itemPoints = 192;
 
+export const minimumCoxSuppliesNeeded = new Bank({
+	'Stamina potion(4)': 1,
+	'Saradomin brew(4)': 6,
+	'Super restore(4)': 2
+});
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -901,6 +908,10 @@ export default class extends BotCommand {
 
 			if (user.minionIsBusy) {
 				throw `${user.username} is busy and can't join the raid.`;
+			}
+
+			if (!user.owns(minimumCoxSuppliesNeeded)) {
+				throw `${user.username} doesn't own enough supplies.`;
 			}
 		}
 	}
@@ -983,6 +994,9 @@ export default class extends BotCommand {
 				if (user.minionIsBusy) {
 					return [true, 'your minion is busy.'];
 				}
+				if (!user.owns(minimumCoxSuppliesNeeded)) {
+					return [true, "you don't have enough supplies."];
+				}
 				return [false];
 			}
 		};
@@ -1038,7 +1052,8 @@ export default class extends BotCommand {
 
 		duration = reduceNumByPercent(duration, gearSpeedBoost);
 
-		const data: RaidsActivityTaskOptions = {
+		const totalCost = new Bank();
+		const data = {
 			duration,
 			challengeMode: false,
 			channelID: msg.channel.id,
@@ -1046,13 +1061,12 @@ export default class extends BotCommand {
 			partyLeaderID: msg.author.id,
 			userID: msg.author.id,
 			type: Activity.Raids,
-			id: rand(1, 10_000_000).toString(),
 			finishDate: Date.now() + (duration as number),
 			users: users.map(u => u.id),
 			team: await Promise.all(
 				users.map(async u => {
 					let points = (this.gearPointCalc(u)[0] * (100 - rand(0, 20))) / 100;
-					const kc = await msg.author.getMinigameScore('Raids');
+					const kc = await u.getMinigameScore('Raids');
 					if (kc < 5) {
 						points /= 5;
 					} else if (kc < 20) {
@@ -1060,6 +1074,8 @@ export default class extends BotCommand {
 					} else if (kc > 1000) {
 						points *= 1.2;
 					}
+					totalCost.add(minimumCoxSuppliesNeeded);
+					await u.removeItemsFromBank(minimumCoxSuppliesNeeded);
 					points = Math.round(points);
 					return {
 						id: u.id,
@@ -1071,7 +1087,9 @@ export default class extends BotCommand {
 			)
 		};
 
-		await addSubTaskToActivityTask(this.client, data);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.CoxCost, totalCost);
+
+		await addSubTaskToActivityTask(data);
 
 		gearSpeedBoosts.push(`${teamKCBoost}% for team KC`);
 
@@ -1081,6 +1099,7 @@ export default class extends BotCommand {
 
 **Team:** ${users.map(u => `${u.username} (${this.gearPointCalc(u)[1]}/${MAX_itemPoints})`).join(', ')}
 **Boosts:** ${gearSpeedBoosts.join(', ')}.
+**Supplies:** Every user had this removed: ${minimumCoxSuppliesNeeded}
 
 The total trip will take ${formatDuration(duration)}.
 		

@@ -99,7 +99,7 @@ export default class extends BotCommand {
 			newBank = removeItemFromBank(newBank, parseInt(oreID), qty * quantity);
 		}
 
-		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>({
 			barID: bar.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
