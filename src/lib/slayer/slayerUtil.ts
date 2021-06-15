@@ -152,7 +152,7 @@ export function userCanUseTask(
 
 export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
 	// assignedTask is the task object, currentTask is the database row.
-	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master));
+	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master, true));
 	let bossTask = false;
 	if (
 		_user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.LikeABoss) &&
@@ -167,7 +167,7 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 
 	let assignedTask: AssignableSlayerTask | null = null;
 	if (bossTask) {
-		const baseBossTasks = bossTasks.filter(t => userCanUseTask(_user, t, master));
+		const baseBossTasks = bossTasks.filter(t => userCanUseTask(_user, t, master, true));
 		if (baseBossTasks.length) {
 			assignedTask = weightedPick(baseBossTasks);
 		} else {
