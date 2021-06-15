@@ -227,7 +227,6 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Black mask')]: [
 		...slayerHelmSimilar,
 		...resolveItems([
-			'Black mask (i)',
 			'Black mask (1)',
 			'Black mask (2)',
 			'Black mask (3)',
