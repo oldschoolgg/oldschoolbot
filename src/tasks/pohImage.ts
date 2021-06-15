@@ -6,6 +6,7 @@ import { Task } from 'klasa';
 import path from 'path';
 
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '../lib/poh';
+import { getActivityOfUser } from '../lib/settings/settings';
 import { PoHTable } from '../lib/typeorm/PoHTable.entity';
 import { canvasImageFromBuffer } from '../lib/util/canvasUtil';
 
@@ -111,7 +112,7 @@ export default class PoHImage extends Task {
 				ctx.drawImage(image, x - width / 2, y - height, width, height);
 			}
 		}
-		const activity = this.client.getActivityOfUser(poh.userID);
+		const activity = getActivityOfUser(poh.userID);
 		if (!activity) {
 			const image = this.imageCache.get(11)!;
 			const [x, y] = this.randMinionCoords();

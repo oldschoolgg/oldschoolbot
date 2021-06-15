@@ -154,7 +154,7 @@ export default class extends BotCommand {
 			debugStr = debugStr === '' ? '15% on Task with Black mask (i)' : ', 15% on Task with Black mask (i)';
 		}
 
-		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity: 1,

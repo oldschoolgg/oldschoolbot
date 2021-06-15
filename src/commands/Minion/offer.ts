@@ -196,7 +196,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(bone.inputId, quantity);
 
-		await addSubTaskToActivityTask<OfferingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<OfferingActivityTaskOptions>({
 			boneID: bone.inputId,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

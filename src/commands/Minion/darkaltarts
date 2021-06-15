@@ -1,0 +1,81 @@
+import { Time } from 'e';
+import { CommandStore, KlasaMessage } from 'klasa';
+
+import { Activity } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { BotCommand } from '../../lib/structures/BotCommand';
+import { Skills } from '../../lib/types';
+import { DarkAltarActivityTaskOptions } from '../../lib/types/minions';
+import { formatDuration } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+
+const skillReqs: Skills = {
+	runecraft: 77,
+	mining: 38,
+	crafting: 38
+};
+
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
+			altProtection: true,
+			oneAtTime: true,
+			cooldown: 1,
+			usage: '<quantity:int{1}|name:...string> [name:...string]',
+			usageDelim: ' ',
+			description: 'Sends your minion to chop logs.',
+			examples: ['+chop 100 logs', '+chop magic logs'],
+			categoryFlags: ['skilling', 'minion']
+		});
+	}
+
+	@requiresMinion
+	@minionNotBusy
+	async run(msg: KlasaMessage) {
+		const [hasSkillReqs, statsNeeded] = msg.author.hasSkillReqs(skillReqs);
+		if (!hasSkillReqs) {
+			return msg.channel.send(
+				`You can't craft Blood runes at the Dark altar, because you need these stats: ${statsNeeded}.`
+			);
+		}
+
+		let durationPerEssence = Time.Second * 0.5;
+		if (!msg.a) const maxTripLength = msg.author.maxTripLength(Activity.Woodcutting);
+
+		// If no quantity provided, set it to the max.
+		if (quantity === null) {
+			quantity = Math.floor(maxTripLength / timetoChop);
+		}
+
+		const duration = quantity * timetoChop;
+
+		if (duration > maxTripLength) {
+			return msg.channel.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					maxTripLength
+				)}, try a lower quantity. The highest amount of ${log.name} you can chop is ${Math.floor(
+					maxTripLength / timetoChop
+				)}.`
+			);
+		}
+
+		await addSubTaskToActivityTask<DarkAltarActivityTaskOptions>(this.client, {
+			logID: log.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Woodcutting
+		});
+
+		let response = `${msg.author.minionName} is now chopping ${quantity}x ${
+			log.name
+		}, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (boosts.length > 0) {
+			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.send(response);
+	}
+}

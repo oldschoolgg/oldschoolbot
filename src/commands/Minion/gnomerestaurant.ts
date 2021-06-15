@@ -107,7 +107,7 @@ export default class extends BotCommand {
 				itemsToRemove.bank
 			])
 		);
-		await addSubTaskToActivityTask<GnomeRestaurantActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<GnomeRestaurantActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,

@@ -88,7 +88,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemsFromBank(totalCost);
 
-		await addSubTaskToActivityTask<CookingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<CookingActivityTaskOptions>({
 			cookableID: cookable.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

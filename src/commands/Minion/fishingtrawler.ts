@@ -39,7 +39,7 @@ export default class extends BotCommand {
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.FishingTrawler) / tripLength);
 		const duration = quantity * tripLength;
 
-		await addSubTaskToActivityTask<FishingTrawlerActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<FishingTrawlerActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			type: Activity.FishingTrawler,

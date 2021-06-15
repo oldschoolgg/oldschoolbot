@@ -4,9 +4,10 @@ import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
-import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
+import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
@@ -114,7 +115,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(itemID('Pure essence'), quantity);
 
-		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
 			runeID: rune.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

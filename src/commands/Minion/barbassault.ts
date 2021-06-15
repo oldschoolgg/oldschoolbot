@@ -286,7 +286,7 @@ export default class extends BotCommand {
 
 		str += `The Fighter is ${fighter.username}'s minion, their melee gear strength bonus is giving a ${strengthPercent}% boost.`;
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
-		await addSubTaskToActivityTask<BarbarianAssaultActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<BarbarianAssaultActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

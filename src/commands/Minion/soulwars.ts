@@ -168,7 +168,7 @@ export default class extends BotCommand {
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.SoulWars) / perDuration);
 		const duration = quantity * perDuration;
 
-		await addSubTaskToActivityTask<SoulWarsOptions>(this.client, {
+		await addSubTaskToActivityTask<SoulWarsOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
