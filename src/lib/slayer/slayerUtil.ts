@@ -24,6 +24,17 @@ export enum AutoslayOptionsEnum {
 	MaxEfficiency
 }
 
+export enum SlayerMasterEnum {
+	Reserved,
+	Turael,
+	Mazchna,
+	Vannaka,
+	Chaeldar,
+	Konar,
+	Nieve,
+	Duradel
+}
+
 export function determineBoostChoice(params: DetermineBoostParams) {
 	let boostChoice = 'none';
 
@@ -162,6 +173,8 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 		} else {
 			assignedTask = weightedPick(baseTasks);
 		}
+	} else {
+		assignedTask = weightedPick(baseTasks);
 	}
 
 	const newUser = await getNewUser(_user.id);

@@ -101,7 +101,7 @@ export default class extends BotCommand {
 
 		if (curSlayerPoints < slayerPointCost) {
 			return msg.channel.send(
-				`You need ${slayerPointCost} Slayer points to make this purchase.\n` + `You have: ${curSlayerPoints}`
+				`You need ${slayerPointCost} Slayer points to make this purchase.\nYou have: ${curSlayerPoints}`
 			);
 		}
 
@@ -182,7 +182,7 @@ export default class extends BotCommand {
 
 		if (curSlayerPoints < slayerPointCost) {
 			return msg.channel.send(
-				`You need ${slayerPointCost} Slayer points to make this purchase.\n` + `You have: ${curSlayerPoints}`
+				`You need ${slayerPointCost} Slayer points to make this purchase.\nYou have: ${curSlayerPoints}`
 			);
 		}
 
