@@ -14,6 +14,7 @@ export interface AssignableSlayerTask {
 	unlocked?: boolean;
 	isBoss?: boolean;
 	levelRequirements?: LevelRequirements;
+	dontAssign?: boolean;
 }
 
 export interface SlayerMaster {

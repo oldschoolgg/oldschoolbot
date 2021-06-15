@@ -98,8 +98,14 @@ export function userCanUseMaster(user: KlasaUser, master: SlayerMaster) {
 	);
 }
 
-export function userCanUseTask(user: KlasaUser, task: AssignableSlayerTask, master: SlayerMaster) {
-	if (task.isBoss) return false;
+export function userCanUseTask(
+	user: KlasaUser,
+	task: AssignableSlayerTask,
+	master: SlayerMaster,
+	allowBossTasks: boolean = false
+) {
+	if (task.isBoss && !allowBossTasks) return false;
+	if (task.dontAssign) return false;
 	const myLastTask = user.settings.get(UserSettings.Slayer.LastTask);
 	if (myLastTask === task.monster.id) return false;
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
@@ -133,7 +139,6 @@ export function userCanUseTask(user: KlasaUser, task: AssignableSlayerTask, mast
 	return true;
 }
 
-// boss tasks
 export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
 	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master));
@@ -149,21 +154,31 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 		bossTask = true;
 	}
 
-	const assignedTask = bossTask ? weightedPick(bossTasks) : weightedPick(baseTasks);
+	let assignedTask: AssignableSlayerTask | null = null;
+	if (bossTask) {
+		const baseBossTasks = bossTasks.filter(t => userCanUseTask(_user, t, master));
+		if (baseBossTasks.length) {
+			assignedTask = weightedPick(baseBossTasks);
+		} else {
+			assignedTask = weightedPick(baseTasks);
+		}
+	}
+
 	const newUser = await getNewUser(_user.id);
 
 	const currentTask = new SlayerTaskTable();
 	currentTask.user = newUser;
-	currentTask.quantity = randInt(assignedTask.amount[0], assignedTask.amount[1]);
+	currentTask.quantity = randInt(assignedTask!.amount[0], assignedTask!.amount[1]);
 	currentTask.quantityRemaining = currentTask.quantity;
 	currentTask.slayerMasterID = master.id;
-	currentTask.monsterID = assignedTask.monster.id;
+	currentTask.monsterID = assignedTask!.monster.id;
 	currentTask.skipped = false;
 	await currentTask.save();
-	await _user.settings.update(UserSettings.Slayer.LastTask, assignedTask.monster.id);
+	await _user.settings.update(UserSettings.Slayer.LastTask, assignedTask!.monster.id);
 
 	return { currentTask, assignedTask };
 }
+
 export function calcMaxBlockedTasks(qps: number) {
 	// 6 Blocks total 5 for 250 qps, + 1 for lumby.
 	// For now we're do 1 free + 1 for every 50 qps.
