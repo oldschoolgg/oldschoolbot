@@ -235,7 +235,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>({
 			birdhouseName: birdhouse.name,
 			birdhouseData: previousBirdhouseTraps,
 			userID: msg.author.id,
@@ -313,7 +313,7 @@ export default class extends BotCommand {
 			duration
 		)} to finish.\n\n${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 
-		await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>({
 			birdhouseName: previousBirdhouseTraps.lastPlaced,
 			birdhouseData: previousBirdhouseTraps,
 			userID: msg.author.id,

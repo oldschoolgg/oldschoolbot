@@ -110,7 +110,7 @@ export default class extends BotCommand {
 
 		const duration = durationPerTodt * quantity;
 
-		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>({
 			minigameID: 'Wintertodt',
 			userID: msg.author.id,
 			channelID: msg.channel.id,

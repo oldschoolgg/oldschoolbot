@@ -58,7 +58,7 @@ export default class extends BotCommand {
 
 		const [duration, boostStr] = this.determineDuration(msg.author);
 
-		await addSubTaskToActivityTask<TitheFarmActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<TitheFarmActivityTaskOptions>({
 			minigameID: 'TitheFarm',
 			userID: msg.author.id,
 			channelID: msg.channel.id,

@@ -156,7 +156,7 @@ export default class extends BotCommand {
 			)} to finish.\n\n${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 		}
 
-		await addSubTaskToActivityTask<FarmingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 			plantsName: patchType.lastPlanted,
 			patchType,
 			getPatchType,

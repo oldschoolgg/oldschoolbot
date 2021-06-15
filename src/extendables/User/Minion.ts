@@ -16,6 +16,7 @@ import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/kill
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
 import { AddXpParams, KillableMonster } from '../../lib/minions/types';
+import { getActivityOfUser } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MasterSkillcapes } from '../../lib/skilling/skillcapes';
 import Skills from '../../lib/skilling/skills';
@@ -32,7 +33,7 @@ import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
 import Mining from '../../lib/skilling/skills/mining';
 import Prayer from '../../lib/skilling/skills/prayer';
-import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
+import Runecraft from '../../lib/skilling/skills/runecraft';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
@@ -69,6 +70,7 @@ import {
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	RaidsActivityTaskOptions,
+	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
@@ -124,7 +126,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionStatus(this: User) {
-		const currentTask = this.client.getActivityOfUser(this.id);
+		const currentTask = getActivityOfUser(this.id);
 
 		if (!currentTask) {
 			return `${this.minionName} is currently doing nothing.
@@ -686,7 +688,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
-		const usersTask = this.client.getActivityOfUser(this.id);
+		const usersTask = getActivityOfUser(this.id);
 		return Boolean(usersTask);
 	}
 

@@ -274,7 +274,7 @@ export default class extends BotCommand {
 			}cancel\` the activity.`;
 		}
 
-		await addSubTaskToActivityTask<HunterActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<HunterActivityTaskOptions>({
 			creatureName: creature.name,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

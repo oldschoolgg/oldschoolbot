@@ -294,7 +294,7 @@ export default class extends BotCommand {
 		}
 		foodString += `${foodRemoved.join(', ')}.`;
 
-		await addSubTaskToActivityTask<BossActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<BossActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

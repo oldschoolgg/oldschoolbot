@@ -136,7 +136,7 @@ export default class extends BotCommand {
 			await msg.author.removeItemFromBank(fish.bait, quantity);
 		}
 
-		await addSubTaskToActivityTask<FishingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<FishingActivityTaskOptions>({
 			fishID: fish.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

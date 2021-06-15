@@ -162,7 +162,7 @@ export default class extends BotCommand {
 			addBanks([this.client.settings.get(ClientSettings.EconomyStats.ThievingCost), foodRemoved])
 		);
 
-		await addSubTaskToActivityTask<PickpocketActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<PickpocketActivityTaskOptions>({
 			monsterID: pickpocketable.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

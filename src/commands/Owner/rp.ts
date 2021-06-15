@@ -3,10 +3,10 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 
 import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
+import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { OldSchoolBotClient } from '../../lib/structures/OldSchoolBotClient';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { formatDuration } from '../../lib/util';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -69,7 +69,7 @@ export default class extends BotCommand {
 					.map(i => i.name)
 					.join(', ')}`;
 
-				const task = this.client.minionActivityCache.get(input.id);
+				const task = minionActivityCache.get(input.id);
 				const taskText = task
 					? `${task.type} - ${formatDuration(task.finishDate - Date.now())} remaining`
 					: 'None';
@@ -108,10 +108,10 @@ export default class extends BotCommand {
 			}
 			case 'canceltask': {
 				if (!input) return;
-				await (this.client as OldSchoolBotClient).cancelTask(input.id);
+				await cancelTask(input.id);
 				this.client.oneCommandAtATimeCache.delete(input.id);
 				this.client.secondaryUserBusyCache.delete(input.id);
-				this.client.minionActivityCache.delete(input.id);
+				minionActivityCache.delete(input.id);
 
 				return msg.react(Emoji.Tick);
 			}

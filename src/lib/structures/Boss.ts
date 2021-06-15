@@ -337,7 +337,7 @@ export class BossInstance {
 		}
 		updateBankSetting(this.client, this.settingsKeys[0], totalCost);
 
-		await addSubTaskToActivityTask<NewBossOptions>(this.client, {
+		await addSubTaskToActivityTask<NewBossOptions>({
 			userID: this.users![0].id,
 			channelID: this.channel.id,
 			quantity: 1,

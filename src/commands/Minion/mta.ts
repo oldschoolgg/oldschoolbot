@@ -109,7 +109,7 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 		await msg.author.removeItemsFromBank(cost);
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.MTACostBank, cost);
 
-		await addSubTaskToActivityTask<MinigameActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,

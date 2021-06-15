@@ -328,7 +328,7 @@ export default class extends BotCommand {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		await addSubTaskToActivityTask<DungeoneeringOptions>(this.client, {
+		await addSubTaskToActivityTask<DungeoneeringOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

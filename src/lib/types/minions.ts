@@ -16,6 +16,12 @@ export interface ActivityTaskOptions {
 	channelID: string;
 }
 
+export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
+	runeID: number;
+	channelID: string;
+	essenceQuantity: number;
+}
+
 export interface GloryChargingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
@@ -302,3 +308,24 @@ export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
 	barID: number;
 	quantity: number;
 }
+
+export type ActivityTaskData =
+	| ActivityTaskOptions
+	| MonsterActivityTaskOptions
+	| BlastFurnaceActivityTaskOptions
+	| WoodcuttingActivityTaskOptions
+	| CollectingOptions
+	| RaidsActivityTaskOptions
+	| MinigameActivityTaskOptions
+	| GauntletOptions
+	| SoulWarsOptions
+	| CastingActivityTaskOptions
+	| EnchantingActivityTaskOptions
+	| ConstructionActivityTaskOptions
+	| HunterActivityTaskOptions
+	| ZalcanoActivityTaskOptions
+	| SawmillActivityTaskOptions
+	| FarmingActivityTaskOptions
+	| HerbloreActivityTaskOptions
+	| FletchingActivityTaskOptions
+	| RunecraftActivityTaskOptions;

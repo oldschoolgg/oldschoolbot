@@ -221,7 +221,7 @@ export default class extends BotCommand {
 
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, totalCost);
 
-		await addSubTaskToActivityTask<BossActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<BossActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

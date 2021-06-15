@@ -1089,7 +1089,7 @@ export default class extends BotCommand {
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.CoxCost, totalCost);
 
-		await addSubTaskToActivityTask(this.client, data);
+		await addSubTaskToActivityTask(data);
 
 		gearSpeedBoosts.push(`${teamKCBoost}% for team KC`);
 
