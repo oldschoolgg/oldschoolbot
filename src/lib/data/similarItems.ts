@@ -1,15 +1,19 @@
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 
+const blackMaskISimilar = resolveItems([
+	'Black mask (10) (i)',
+	'Black mask (9) (i)',
+	'Black mask (8) (i)',
+	'Black mask (7) (i)',
+	'Black mask (6) (i)',
+	'Black mask (5) (i)',
+	'Black mask (4) (i)',
+	'Black mask (3) (i)',
+	'Black mask (2) (i)',
+	'Black mask (1) (i)'
+]);
 const slayerHelmSimilar = resolveItems([
-	'Black slayer helmet (i)',
-	'Green slayer helmet (i)',
-	'Red slayer helmet (i)',
-	'Purple slayer helmet (i)',
-	'Turquoise slayer helmet (i)',
-	'Hydra slayer helmet (i)',
-	'Twisted slayer helmet (i)',
-	'Slayer helmet (i)',
 	'Slayer helmet',
 	'Black slayer helmet',
 	'Green slayer helmet',
@@ -219,7 +223,7 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Trident of the swamp')]: resolveItems(['Trident of the swamp (e)']),
 	[itemID('Slayer helmet')]: slayerHelmSimilar,
 	[itemID('Slayer helmet (i)')]: slayerHelmSimilarI,
-	[itemID('Black mask (i)')]: slayerHelmSimilarI,
+	[itemID('Black mask (i)')]: [...slayerHelmSimilarI, ...blackMaskISimilar],
 	[itemID('Black mask')]: [
 		...slayerHelmSimilar,
 		...resolveItems([
