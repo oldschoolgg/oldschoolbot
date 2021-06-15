@@ -153,19 +153,8 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			'Anti-dragon shield',
 			['Armadyl crossbow', 'Rune crossbow', 'Twisted bow', 'Dragon hunter crossbow'],
-			["Black d'hide body",
-			"Black d'hide body (g)",
-			"Black d'hide body (t)",
-			"Karil's leathertop",
-			'Pernix body',
-			'Gorajan archer top'
-			],
-			["Black d'hide chaps",
-			"Black d'hide chaps (g)",
-			"Black d'hide chaps (t)",
-			"Karil's leatherskirt",
-			'Pernix legs',
-			'Gorajan archer legs']
+			["Black d'hide body", "Black d'hide body (g)", "Black d'hide body (t)", "Karil's leathertop", 'Pernix body', 'Gorajan archer top'],
+			["Black d'hide chaps", "Black d'hide chaps (g)", "Black d'hide chaps (t)", "Karil's leatherskirt", 'Pernix legs', 'Gorajan archer legs']
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: [
