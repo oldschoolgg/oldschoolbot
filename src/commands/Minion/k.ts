@@ -165,14 +165,14 @@ export default class extends BotCommand {
 				!attackStyles.includes(SkillsEnum.Ranged) &&
 				!attackStyles.includes(SkillsEnum.Magic)
 			) {
-				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				boosts.push('15% for Dragon hunter lance');
+				timeToFinish = reduceNumByPercent(timeToFinish, 20);
+				boosts.push('20% for Dragon hunter lance');
 			} else if (
 				msg.author.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
 				attackStyles.includes(SkillsEnum.Ranged)
 			) {
-				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				boosts.push('15% for Dragon hunter crossbow');
+				timeToFinish = reduceNumByPercent(timeToFinish, 20);
+				boosts.push('20% for Dragon hunter crossbow');
 			}
 		}
 		// Add 15% slayer boost on task if they have black mask or similar
