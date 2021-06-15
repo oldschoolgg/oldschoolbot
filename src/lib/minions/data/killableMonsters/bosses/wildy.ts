@@ -158,7 +158,8 @@ const killableBosses: KillableMonster[] = [
 			"Black d'hide body (t)",
 			"Karil's leathertop",
 			'Pernix body',
-			'Gorajan archer top'],
+			'Gorajan archer top'
+			],
 			["Black d'hide chaps",
 			"Black d'hide chaps (g)",
 			"Black d'hide chaps (t)",
