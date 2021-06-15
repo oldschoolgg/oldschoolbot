@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 
-import { CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
+import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
@@ -136,8 +136,8 @@ export default class extends Task {
 				user.log(`continued trip of killing ${monster.name}`);
 				let method = 'none';
 				if (usingCannon) method = 'cannon';
-				else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBarrage) method = 'barrage';
-				else if (burstOrBarrage === CombatOptionsEnum.AlwaysIceBurst) method = 'burst';
+				else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
+				else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
 				return this.client.commands.get('k')!.run(res, [quantity, monster.name, method]);
 			},
 			image!,
