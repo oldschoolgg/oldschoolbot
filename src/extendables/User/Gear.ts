@@ -2,7 +2,7 @@ import { User } from 'discord.js';
 import { Extendable, ExtendableStore } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
-import SimilarItems from '../../lib/data/similarItems';
+import SimilarItems, { getSimilarItems } from '../../lib/data/similarItems';
 import { defaultGear, resolveGearTypeSetting } from '../../lib/gear';
 import { GearSetup, UserFullGearSetup } from '../../lib/gear/types';
 import { Gear } from '../../lib/structures/Gear';
@@ -40,7 +40,11 @@ export default class extends Extendable {
 
 	public hasItemEquippedOrInBank(this: User, item: number | string) {
 		const id = typeof item === 'string' ? itemID(item) : item;
-		return this.hasItemEquippedAnywhere(id, false) || this.numItemsInBankSync(id, true) > 0;
+		// This change should replace BSO's 'inverse' option on hasEquipped/allItems
+		if (SimilarItems[id] === undefined) {
+			return this.hasItemEquippedAnywhere(id, false) || this.numItemsInBankSync(id, true) > 0;
+		}
+		return this.hasItemEquippedAnywhere(getSimilarItems(id), false) || this.numItemsInBankSync(id, true) > 0;
 	}
 
 	public getGear(this: User, setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling'): GearSetup {

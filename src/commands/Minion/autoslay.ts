@@ -4,7 +4,7 @@ import { Monsters } from 'oldschooljs';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { AutoslayOptionsEnum, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import { AutoslayOptionsEnum, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { wipeDBArrayByKey } from '../../lib/util';
 
@@ -14,6 +14,7 @@ interface AutoslayLink {
 	efficientName?: string;
 	efficientMonster?: number;
 	efficientMethod?: string;
+	slayerMasters?: SlayerMasterEnum[];
 }
 enum AutoSlayMethod {
 	None = 'none',
@@ -21,7 +22,26 @@ enum AutoSlayMethod {
 	Barrage = 'barrage',
 	Burst = 'burst'
 }
+
 const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
+	{
+		monsterID: Monsters.Jelly.id,
+		efficientName: Monsters.WarpedJelly.name,
+		efficientMonster: Monsters.WarpedJelly.id,
+		efficientMethod: AutoSlayMethod.Barrage
+	},
+	{
+		monsterID: Monsters.SpiritualMage.id,
+		efficientName: Monsters.SpiritualMage.name,
+		efficientMonster: Monsters.SpiritualMage.id,
+		efficientMethod: AutoSlayMethod.None
+	},
+	{
+		monsterID: Monsters.SpiritualRanger.id,
+		efficientName: Monsters.SpiritualMage.name,
+		efficientMonster: Monsters.SpiritualMage.id,
+		efficientMethod: AutoSlayMethod.None
+	},
 	{
 		monsterID: Monsters.KalphiteWorker.id,
 		efficientName: Monsters.KalphiteSoldier.name,
@@ -54,9 +74,22 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 	},
 	{
 		monsterID: Monsters.MountainTroll.id,
+		efficientName: Monsters.MountainTroll.name,
+		efficientMonster: Monsters.MountainTroll.id,
+		efficientMethod: AutoSlayMethod.Cannon,
+		slayerMasters: [SlayerMasterEnum.Konar]
+	},
+	{
+		monsterID: Monsters.MountainTroll.id,
 		efficientName: Monsters.IceTroll.name,
 		efficientMonster: Monsters.IceTroll.id,
-		efficientMethod: AutoSlayMethod.Cannon
+		efficientMethod: AutoSlayMethod.Cannon,
+		slayerMasters: [
+			SlayerMasterEnum.Chaeldar,
+			SlayerMasterEnum.Vannaka,
+			SlayerMasterEnum.Nieve,
+			SlayerMasterEnum.Duradel
+		]
 	},
 	{
 		monsterID: Monsters.Zygomite.id,
@@ -237,12 +270,15 @@ export default class extends BotCommand {
 				);
 			}
 			const ehpMonster = AutoSlayMaxEfficiencyTable.find(e => {
-				return e.monsterID === usersTask.assignedTask!.monster.id;
+				const masterMatch = !e.slayerMasters || e.slayerMasters.includes(usersTask.currentTask!.slayerMasterID);
+				return masterMatch && e.monsterID === usersTask.assignedTask!.monster.id;
 			});
 
 			if (ehpMonster && ehpMonster.efficientName) {
-				if (ehpMonster.efficientMethod) msg.flagArgs[ehpMonster.efficientMethod] = 'yes';
-				return this.client.commands.get('k')?.run(msg, [null, ehpMonster.efficientName]);
+				if (ehpMonster.efficientMethod) msg.flagArgs[ehpMonster.efficientMethod] = 'force';
+				return this.client.commands
+					.get('k')
+					?.run(msg, [null, ehpMonster.efficientName, ehpMonster.efficientMethod]);
 			}
 			return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
 		}

@@ -210,6 +210,9 @@ const SimilarItems: Record<number, number[]> = {
 		'Saradomin max cape',
 		'Zamorak max cape'
 	]),
+	[itemID('Dragonfire ward')]: resolveItems([22003]),
+	[itemID('Dragonfire shield')]: resolveItems([11284]),
+	[itemID('Ancient wyvern shield')]: resolveItems([21634]),
 	[itemID('Avernic defender')]: resolveItems(['Avernic defender (l)']),
 	[itemID('Void melee helm')]: resolveItems(['Void melee helm (l)']),
 	[itemID('Void mage helm')]: resolveItems(['Void mage helm (l)']),
@@ -227,7 +230,6 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Black mask')]: [
 		...slayerHelmSimilar,
 		...resolveItems([
-			'Black mask (i)',
 			'Black mask (1)',
 			'Black mask (2)',
 			'Black mask (3)',

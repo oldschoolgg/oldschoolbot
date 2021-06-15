@@ -186,14 +186,13 @@ export default class extends BotCommand {
 			method: method ?? 'none',
 			isOnTask
 		});
-
 		// Calculate Cannon and Barrage boosts + costs:
 		let usingCannon = false;
 		let cannonMulti = false;
 		let burstOrBarrage = 0;
 		const hasCannon = msg.author.owns(CombatCannonItemBank);
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !monster!.canBarrage) {
-			return msg.send(`${monster!.name} cannot be barraged or bursted.`);
+			return msg.send(`${monster!.name} cannot be barraged or burst.`);
 		}
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !attackStyles.includes(SkillsEnum.Magic)) {
 			return msg.send("You can only barrage/burst when you're using magic!");
@@ -203,6 +202,14 @@ export default class extends BotCommand {
 		}
 		if (msg.flagArgs.cannon && !monster!.canCannon) {
 			return msg.send(`${monster!.name} cannot be killed with a cannon.`);
+		}
+		if (boostChoice === 'barrage' && msg.author.skillLevel(SkillsEnum.Magic) < 94) {
+			return msg.send(
+				`You need 94 Magic to use Ice Barrage. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`
+			);
+		}
+		if (boostChoice === 'burst' && msg.author.skillLevel(SkillsEnum.Magic) < 70) {
+			return msg.send(`You need 70 Magic to use Ice Burst. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`);
 		}
 
 		if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {

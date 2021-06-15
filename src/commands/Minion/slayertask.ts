@@ -107,7 +107,12 @@ export default class extends BotCommand {
 
 		// Prevent any actions that affect the layer task list when minion is busy.
 		if (msg.author.minionIsBusy) {
-			return msg.channel.send('You can only manage your block list while your minion is busy.');
+			const slayerPoints = msg.author.settings.get(UserSettings.Slayer.SlayerPoints);
+			const slayerStreak = msg.author.settings.get(UserSettings.Slayer.TaskStreak);
+			return msg.channel.send(
+				`Your minion is busy. But you can still manage your block list: \`${msg.cmdPrefix}st blocks\`` +
+					`You have ${slayerPoints} slayer points, and have completed ${slayerStreak} tasks in a row.`
+			);
 		}
 		if (input && (input === 'skip' || input === 'block')) msg.flagArgs[input] = 'yes';
 		if (currentTask && (msg.flagArgs.skip || msg.flagArgs.block)) {
@@ -215,7 +220,7 @@ export default class extends BotCommand {
 			currentTask!.save();
 			msg.author.settings.update(UserSettings.Slayer.TaskStreak, 0);
 			const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
-			let commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
+			let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 			return msg.channel.send(
 				`Your task has been skipped.\n\n ${slayerMaster.name}` +
 					` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.`
@@ -286,7 +291,7 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 			});
 		}
 
-		let commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
+		let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 		if (commonName === 'TzHaar') {
 			commonName +=
 				`. You can choose to kill TzTok-Jad with ${msg.cmdPrefix}fightcaves as long as you ` +
