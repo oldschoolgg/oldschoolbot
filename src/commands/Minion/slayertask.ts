@@ -110,7 +110,7 @@ export default class extends BotCommand {
 			const slayerPoints = msg.author.settings.get(UserSettings.Slayer.SlayerPoints);
 			const slayerStreak = msg.author.settings.get(UserSettings.Slayer.TaskStreak);
 			return msg.channel.send(
-				`Your minion is busy. But you can still manage your block list: \`${msg.cmdPrefix}st blocks\`` +
+				`Your minion is busy, but you can still manage your block list: \`${msg.cmdPrefix}st blocks\`` +
 					`You have ${slayerPoints} slayer points, and have completed ${slayerStreak} tasks in a row.`
 			);
 		}
