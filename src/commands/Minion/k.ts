@@ -186,7 +186,6 @@ export default class extends BotCommand {
 			method: method ?? 'none',
 			isOnTask
 		});
-
 		// Calculate Cannon and Barrage boosts + costs:
 		let usingCannon = false;
 		let cannonMulti = false;

@@ -275,8 +275,10 @@ export default class extends BotCommand {
 			});
 
 			if (ehpMonster && ehpMonster.efficientName) {
-				if (ehpMonster.efficientMethod) msg.flagArgs[ehpMonster.efficientMethod] = 'yes';
-				return this.client.commands.get('k')?.run(msg, [null, ehpMonster.efficientName]);
+				if (ehpMonster.efficientMethod) msg.flagArgs[ehpMonster.efficientMethod] = 'force';
+				return this.client.commands
+					.get('k')
+					?.run(msg, [null, ehpMonster.efficientName, ehpMonster.efficientMethod]);
 			}
 			return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
 		}
