@@ -49,7 +49,10 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 8,
-		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
+		itemsRequired: deepResolveItems([
+			['Armadyl chestplate', 'Pernix body', 'Gorajan archer top'],
+			['Armadyl chainskirt', 'Pernix legs', 'Gorajan archer legs']
+		]),
 		qpRequired: 205,
 		itemInBankBoosts: [
 			{
@@ -140,8 +143,8 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			"Verac's flail",
 			"Verac's plateskirt",
-			["Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
-			["Black d'hide chaps", "karil's leatherskirt", 'Armadyl chainskirt']
+			["Black d'hide body", "Karil's leathertop", 'Armadyl chestplate', 'Pernix body', 'Gorajan archer top'],
+			["Black d'hide chaps", "karil's leatherskirt", 'Armadyl chainskirt', 'Pernix legs', 'Gorajan archer legs']
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: [
@@ -221,8 +224,8 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
-			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate'],
-			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets'],
+			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate', 'Torva platebody', 'Gorajan warrior top'],
+			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets', 'Torva platelegs', 'Gorajan warrior legs'],
 			['Zamorakian spear', 'Zamorakian hasta']
 		]),
 		qpRequired: 0,
