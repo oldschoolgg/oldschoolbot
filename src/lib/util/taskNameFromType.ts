@@ -114,7 +114,5 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.MageArena2;
 		case Activity.BigChompyBirdHunting:
 			return Tasks.BigChompyBirdHunting;
-		case Activity.DarkAltar:
-			return Tasks.DarkAltar;
 	}
 }

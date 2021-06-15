@@ -13,10 +13,6 @@ export interface ActivityTaskOptions {
 	channelID: string;
 }
 
-export interface DarkAltarActivityTaskOptions extends ActivityTaskOptions {
-	quantity: number;
-}
-
 export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	runeID: number;
 	channelID: string;

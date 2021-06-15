@@ -201,8 +201,7 @@ export const enum Tasks {
 	MageTrainingArena = 'mageTrainingArenaActivity',
 	BlastFurnaceActivity = 'blastFurnaceActivity',
 	MageArena2 = 'mageArena2Activity',
-	BigChompyBirdHunting = 'chompyHuntActivity',
-	DarkAltar = 'darkAltarActivity'
+	BigChompyBirdHunting = 'chompyHuntActivity'
 }
 
 export enum Activity {
@@ -261,8 +260,7 @@ export enum Activity {
 	MageTrainingArena = 'MageTrainingArena',
 	BlastFurnace = 'BlastFurnace',
 	MageArena2 = 'MageArena2',
-	BigChompyBirdHunting = 'BigChompyBirdHunting',
-	DarkAltar = 'DarkAltar'
+	BigChompyBirdHunting = 'BigChompyBirdHunting'
 }
 
 export enum ActivityGroup {
