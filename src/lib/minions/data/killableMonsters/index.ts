@@ -227,7 +227,7 @@ const killableMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Fish sack', 'Fishing trophy', 'Pufferfish']),
 		wildy: false,
 
-		difficultyRating: 0,
+		difficultyRating: 7,
 		qpRequired: 0,
 		healAmountNeeded: 20 * 20,
 		attackStyleToUse: GearSetupTypes.Range,
