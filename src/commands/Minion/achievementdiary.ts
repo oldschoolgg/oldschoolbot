@@ -108,7 +108,9 @@ export default class extends BotCommand {
 		const diary = diaries.find(d => stringMatches(d.name, input));
 
 		if (!diary) {
-			return msg.channel.send(diaries.map(d => d.name));
+			return msg.channel.send(
+				`These are the achievement diaries you can claim: ${diaries.map(d => d.name).join(', ')}.`
+			);
 		}
 
 		const allItems = msg.author.allItemsOwned();
@@ -138,5 +140,7 @@ export default class extends BotCommand {
 
 			return msg.channel.send(`You can't claim the ${name} because ${reason}.`);
 		}
+
+		return msg.channel.send(`You have already completed the entire ${diary.name} diary!`);
 	}
 }
