@@ -39,6 +39,9 @@ export enum SlayerMasterEnum {
 export function determineBoostChoice(params: DetermineBoostParams) {
 	let boostChoice = 'none';
 
+	if (params.msg.flagArgs.none || (params.method && params.method === 'none')) {
+		return boostChoice;
+	}
 	if (params.msg.flagArgs.barrage || (params.method && params.method === 'barrage')) {
 		boostChoice = 'barrage';
 	} else if (params.msg.flagArgs.burst || (params.method && params.method === 'burst')) {
