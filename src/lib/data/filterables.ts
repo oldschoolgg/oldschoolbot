@@ -779,10 +779,8 @@ const diango = resolveItems([
 	'Brown toy horsey',
 	'White toy horsey',
 	'Black toy horsey',
-	'Grey toy horsey',
-	'11705',
-	'11706'
-]);
+	'Grey toy horsey'
+]) as number['11705', '11706'];
 
 const food = resolveItems(Eatables.map(food => food.name));
 
