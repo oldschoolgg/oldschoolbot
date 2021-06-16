@@ -2,19 +2,22 @@ import { increaseNumByPercent } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { darkAltarRunes } from '../../commands/Minion/darkaltar';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { DarkAltarOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: DarkAltarOptions) {
-		const { quantity, userID, channelID, duration, hasElite } = data;
+		const { quantity, userID, channelID, duration, hasElite, rune } = data;
 		const user = await this.client.users.fetch(userID);
+
+		const runeData = darkAltarRunes[rune];
 
 		const [xpRes1, xpRes2, xpRes3] = await Promise.all([
 			user.addXP({
 				skillName: SkillsEnum.Runecraft,
-				amount: quantity * 7.7,
+				amount: quantity * runeData.xp,
 				duration
 			}),
 			user.addXP({
@@ -33,7 +36,8 @@ export default class extends Task {
 		if (hasElite) {
 			runeQuantity = Math.floor(increaseNumByPercent(runeQuantity, 10));
 		}
-		let loot = new Bank().add('Blood rune', runeQuantity);
+
+		let loot = new Bank().add(runeData.item.id, runeQuantity);
 
 		let str = `${user}, ${user.minionName} finished runecrafing at the Dark altar, you received ${loot}. ${xpRes1} ${xpRes2} ${xpRes3}`;
 

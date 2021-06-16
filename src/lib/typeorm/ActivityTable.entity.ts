@@ -72,6 +72,7 @@ export class ActivityTable extends BaseEntity {
 			throw new Error('Missing task');
 		}
 
+		client.oneCommandAtATimeCache.add(this.userID);
 		try {
 			await getConnection()
 				.createQueryBuilder()
@@ -79,15 +80,17 @@ export class ActivityTable extends BaseEntity {
 				.set({ completed: true })
 				.where('id = :id', { id: this.id })
 				.execute();
-			client.oneCommandAtATimeCache.add(this.userID);
 			await task.run(this.taskData);
 		} catch (err) {
 			console.error(err);
 		} finally {
 			client.oneCommandAtATimeCache.delete(this.userID);
 			const users = isGroupActivity(this.data) ? this.data.users : [this.userID];
-			console.log(users);
 			for (const user of users) {
+				console.log(`Deleting ${user} from minionActivityCache`);
+				if (!minionActivityCache.has(user)) {
+					console.error(`Tried to delete ${user} from activity cache, but they're not in it.`);
+				}
 				minionActivityCache.delete(user);
 			}
 		}
