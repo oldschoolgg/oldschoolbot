@@ -21,8 +21,8 @@ export default class extends BotCommand {
 			parseInt(arr[0]),
 			arr[1]
 		]);
-		const sepulchreCount = msg.author.getMinigameScore('Sepulchre');
-		if (!sepulchreCount && entries.length === 0) {
+		const sepulchreCount = await msg.author.getMinigameScore('Sepulchre');
+		if (sepulchreCount === 0 && entries.length === 0) {
 			return msg.send("You haven't done any laps yet! Sad.");
 		}
 		const data = `${entries
