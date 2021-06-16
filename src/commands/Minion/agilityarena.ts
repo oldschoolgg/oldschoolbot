@@ -103,7 +103,7 @@ export default class extends BotCommand {
 			boosts.push('10% extra tickets for Karamja Elite diary');
 		}
 
-		await addSubTaskToActivityTask<AgilityArenaActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<AgilityArenaActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,

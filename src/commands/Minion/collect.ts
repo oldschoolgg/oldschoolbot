@@ -128,7 +128,7 @@ export default class extends BotCommand {
 			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
 		);
 
-		await addSubTaskToActivityTask<CollectingOptions>(this.client, {
+		await addSubTaskToActivityTask<CollectingOptions>({
 			collectableID: collectable.item.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

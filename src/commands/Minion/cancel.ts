@@ -2,8 +2,8 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
+import { cancelTask, getActivityOfUser } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { OldSchoolBotClient } from '../../lib/structures/OldSchoolBotClient';
 import { NightmareActivityTaskOptions, RaidsOptions } from './../../lib/types/minions';
 
 const options = {
@@ -25,7 +25,7 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		const currentTask = this.client.getActivityOfUser(msg.author.id) as any;
+		const currentTask = getActivityOfUser(msg.author.id) as any;
 
 		if (!currentTask) {
 			return msg.send(
@@ -83,7 +83,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		await (this.client as OldSchoolBotClient).cancelTask(msg.author.id);
+		await cancelTask(msg.author.id);
 
 		return msg.send(`${msg.author.minionName}'s trip was cancelled, and they're now available.`);
 	}

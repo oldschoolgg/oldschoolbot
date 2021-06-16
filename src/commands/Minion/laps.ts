@@ -145,7 +145,7 @@ export default class extends BotCommand {
 			updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
 		}
 
-		await addSubTaskToActivityTask<AgilityActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({
 			courseID: course.name,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

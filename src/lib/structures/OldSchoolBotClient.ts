@@ -5,7 +5,7 @@ import { Connection, createConnection } from 'typeorm';
 
 import { providerConfig } from '../../config';
 import { clientOptions } from '../config/config';
-import { ActivityTable } from '../typeorm/ActivityTable.entity';
+import { syncActivityCache } from '../settings/settings';
 import { piscinaPool } from '../workers';
 
 Client.use(TagsClient);
@@ -29,8 +29,6 @@ export class OldSchoolBotClient extends Client {
 	public production = production ?? false;
 	public orm!: Connection;
 
-	public minionActivityCache = new Map<string, ActivityTable['taskData']>();
-
 	public constructor(clientOptions: KlasaClientOptions) {
 		super(clientOptions);
 	}
@@ -47,35 +45,8 @@ export class OldSchoolBotClient extends Client {
 			synchronize: !production
 		});
 
-		await this.syncActivityCache();
+		await syncActivityCache();
 
 		return super.login(token);
-	}
-
-	public async syncActivityCache() {
-		const tasks = await ActivityTable.find({
-			where: {
-				completed: false
-			}
-		});
-		this.minionActivityCache.clear();
-		for (const task of tasks) {
-			for (const u of task.getUsers()) {
-				this.minionActivityCache.set(u, task.taskData);
-			}
-		}
-	}
-
-	async cancelTask(userID: string) {
-		await ActivityTable.delete({
-			userID,
-			completed: false
-		});
-		this.minionActivityCache.delete(userID);
-	}
-
-	getActivityOfUser(userID: string) {
-		const task = this.minionActivityCache.get(userID);
-		return task ?? null;
 	}
 }

@@ -111,7 +111,7 @@ export default class extends BotCommand {
 		await msg.author.removeItemsFromBank(consumedItems);
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, consumedItems);
 
-		await addSubTaskToActivityTask<AlchingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<AlchingActivityTaskOptions>({
 			itemID: osItem.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

@@ -113,7 +113,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<GauntletOptions>(this.client, {
+		await addSubTaskToActivityTask<GauntletOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

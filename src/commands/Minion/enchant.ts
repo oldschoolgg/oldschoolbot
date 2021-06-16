@@ -110,7 +110,7 @@ export default class extends BotCommand {
 			addBanks([this.client.settings.get(ClientSettings.EconomyStats.MagicCostBank), cost.bank])
 		);
 
-		await addSubTaskToActivityTask<EnchantingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<EnchantingActivityTaskOptions>({
 			itemID: enchantable.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
