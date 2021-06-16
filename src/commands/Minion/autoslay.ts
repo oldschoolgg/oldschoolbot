@@ -207,16 +207,20 @@ function determineAutoslayMethod(
 ) {
 	const p = passedStr ? passedStr : '';
 	let method = 'unknown';
-	if (m.flagArgs.default || m.flagArgs.lowest || p === 'default' || p === 'lowest') {
+	if (m.flagArgs.default || m.flagArgs.def || p === 'def' || p === 'default') {
 		method = 'default';
 	} else if (m.flagArgs.highest || m.flagArgs.boss || p === 'boss' || p === 'highest') {
 		method = 'boss';
 	} else if (m.flagArgs.ehp || m.flagArgs.efficient || p === 'ehp' || p === 'efficient') {
 		method = 'ehp';
+	} else if (m.flagArgs.lowest || m.flagArgs.low || p === 'lowest' || p === 'low') {
+		method = 'low';
 	} else if (autoslayOptions.includes(AutoslayOptionsEnum.MaxEfficiency)) {
 		method = 'ehp';
 	} else if (autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked)) {
 		method = 'boss';
+	} else if (autoslayOptions.includes(AutoslayOptionsEnum.LowestCombat)) {
+		method = 'low';
 	} else if (p === '') {
 		method = 'default';
 	}
@@ -243,11 +247,13 @@ export default class extends BotCommand {
 		if (_mode === 'check' || msg.flagArgs.check) {
 			let autoMsg = '';
 			if (autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked)) {
-				autoMsg = 'You will automatically kill the highest combat level creatures you can.';
+				autoMsg = 'You will automatically slay the highest combat level creatures you can.';
 			} else if (autoslayOptions.includes(AutoslayOptionsEnum.MaxEfficiency)) {
-				autoMsg = 'You will automatically kill the most efficient monster you can.';
+				autoMsg = 'You will automatically slay the most efficient way.';
+			} else if (autoslayOptions.includes(AutoslayOptionsEnum.LowestCombat)) {
+				autoMsg = 'You will automatically slay the lowest combat level creature.';
 			} else {
-				autoMsg = 'You will automatically kill the default (lowest combat level) creatures you can.';
+				autoMsg = 'You will automatically kill the default slayer creature you can.';
 			}
 			return msg.channel.send(autoMsg);
 		}
@@ -260,8 +266,29 @@ export default class extends BotCommand {
 		// Determine method:
 		const method = determineAutoslayMethod(msg, _mode, autoslayOptions as AutoslayOptionsEnum[]);
 
+		if (method === 'low') {
+			// Save as default if user --save's
+			if (msg.flagArgs.save && !autoslayOptions.includes(AutoslayOptionsEnum.LowestCombat)) {
+				await wipeDBArrayByKey(msg.author, UserSettings.Slayer.AutoslayOptions);
+				await msg.author.settings.update(UserSettings.Slayer.AutoslayOptions, AutoslayOptionsEnum.LowestCombat);
+			}
+			let currentLow = Number.POSITIVE_INFINITY;
+			let currentMonID = 0;
+			// Iterate through all potentials to get the lowest combatlevel.
+			usersTask.assignedTask!.monsters.forEach(m => {
+				const osjsM = Monsters.get(m);
+				if (osjsM && osjsM.data.combatLevel < currentLow) {
+					currentLow = osjsM.data.combatLevel;
+					currentMonID = m;
+				}
+			});
+			if (currentMonID === 0) {
+				return msg.channel.send('Error: Could not get Monster data to find a task.');
+			}
+			return this.client.commands.get('k')?.run(msg, [null, Monsters.get(currentMonID)!.name]);
+		}
 		if (method === 'ehp') {
-			// Save as default is user --save's
+			// Save as default if user --save's
 			if (msg.flagArgs.save && !autoslayOptions.includes(AutoslayOptionsEnum.MaxEfficiency)) {
 				await wipeDBArrayByKey(msg.author, UserSettings.Slayer.AutoslayOptions);
 				await msg.author.settings.update(

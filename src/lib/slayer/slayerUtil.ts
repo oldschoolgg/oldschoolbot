@@ -21,7 +21,8 @@ import { AssignableSlayerTask, SlayerMaster } from './types';
 export enum AutoslayOptionsEnum {
 	Reserved,
 	HighestUnlocked,
-	MaxEfficiency
+	MaxEfficiency,
+	LowestCombat
 }
 
 export enum SlayerMasterEnum {
