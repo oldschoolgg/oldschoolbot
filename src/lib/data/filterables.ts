@@ -780,7 +780,7 @@ const diango = resolveItems([
 	'White toy horsey',
 	'Black toy horsey',
 	'Grey toy horsey'
-])
+]);
 
 const food = resolveItems(Eatables.map(food => food.name));
 
