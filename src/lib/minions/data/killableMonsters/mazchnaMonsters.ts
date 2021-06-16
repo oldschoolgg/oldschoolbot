@@ -439,7 +439,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		itemInBankBoosts: [
 			{
-				[itemID('Invandis flail')]: 12
+				[itemID('Ivandis flail')]: 12
 			}
 		],
 		difficultyRating: 5,
