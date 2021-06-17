@@ -214,6 +214,7 @@ export function getCommonTaskName(task: Monster) {
 		case Monsters.ElfWarrior.id:
 			commonName = 'Elves';
 			break;
+		case Monsters.SpiritualRanger.id:
 		case Monsters.SpiritualMage.id:
 			commonName = 'Spiritual Creature';
 			break;
