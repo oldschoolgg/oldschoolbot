@@ -38,6 +38,7 @@ declare module 'klasa' {
 		submissionStream?: SubmissionStream;
 		fastifyServer: FastifyInstance;
 		minionTicker: NodeJS.Timeout;
+		dailyReminderTicker: NodeJS.Timeout;
 		giveawayTicker: NodeJS.Timeout;
 		analyticsInterval: NodeJS.Timeout;
 		metricsInterval: NodeJS.Timeout;
