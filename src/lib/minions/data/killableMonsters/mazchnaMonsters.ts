@@ -433,14 +433,18 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.VyrewatchSentinel.id,
 		name: Monsters.VyrewatchSentinel.name,
 		aliases: Monsters.VyrewatchSentinel.aliases,
-		timeToFinish: Time.Second * 60,
+		timeToFinish: Time.Second * 30,
 		table: Monsters.VyrewatchSentinel,
 
 		wildy: false,
-
+		itemInBankBoosts: [
+			{
+				[itemID('Ivandis flail')]: 12
+			}
+		],
 		difficultyRating: 5,
 		qpRequired: 0,
-		healAmountNeeded: 75,
+		healAmountNeeded: 40,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},

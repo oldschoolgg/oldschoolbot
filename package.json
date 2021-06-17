@@ -19,7 +19,7 @@
 		"bufferutil": "^4.0.3",
 		"canvas": "^2.8.0",
 		"canvas-constructor": "^1.1.2",
-		"chokidar": "^3.5.1",
+		"chokidar": "^3.5.2",
 		"discord.js": "^12.5.3",
 		"e": "^0.2.0",
 		"emoji-regex": "^9.2.2",

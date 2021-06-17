@@ -77,7 +77,7 @@ export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promis
 		for (const [name, score] of entries) {
 			const course = courses.find(c => c.name === name)!;
 
-			if (userLaps[course.id] || userLaps[course.id] < score) {
+			if (!userLaps[course.id] || userLaps[course.id] < score) {
 				return [false, `you don't have ${score} laps at ${course.name}`];
 			}
 		}
