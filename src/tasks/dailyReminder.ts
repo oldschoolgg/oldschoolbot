@@ -6,7 +6,7 @@ import { Time } from '../lib/constants';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { noOp } from '../lib/util';
 
-const dailyInterval = 12 * 60 * 60;
+const dailyInterval = 12 * Time.Hour;
 const dailyTickInterval = Time.Second * 60;
 
 export default class extends Task {
