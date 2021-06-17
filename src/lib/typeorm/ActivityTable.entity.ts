@@ -87,10 +87,6 @@ export class ActivityTable extends BaseEntity {
 			client.oneCommandAtATimeCache.delete(this.userID);
 			const users = isGroupActivity(this.data) ? this.data.users : [this.userID];
 			for (const user of users) {
-				console.log(`Deleting ${user} from minionActivityCache`);
-				if (!minionActivityCache.has(user)) {
-					console.error(`Tried to delete ${user} from activity cache, but they're not in it.`);
-				}
 				minionActivityCache.delete(user);
 			}
 		}
