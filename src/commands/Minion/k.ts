@@ -115,13 +115,26 @@ export default class extends BotCommand {
 			return msg.channel.send(`You can't kill ${monster.name}, because you're not on a slayer task.`);
 		}
 
+		// Set chosen boost based on priority:
+		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
+		const boostChoice = determineBoostChoice({
+			cbOpts: myCBOpts as CombatOptionsEnum[],
+			msg,
+			monster,
+			method: method ?? 'none',
+			isOnTask
+		});
+
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;
 
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, msg.author.getKC(monster.id));
 
-		const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, monster.id);
+		const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, {
+			monsterID: monster.id,
+			boostMethod: boostChoice
+		});
 		const [newTime, skillBoostMsg] = applySkillBoost(msg.author, timeToFinish, attackStyles);
 
 		timeToFinish = newTime;
@@ -176,16 +189,6 @@ export default class extends BotCommand {
 		// Initialize consumable costs before any are calculated.
 		const consumableCosts: Consumable[] = [];
 
-		// Set chosen boost based on priority:
-		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
-		const boostChoice = determineBoostChoice({
-			cbOpts: myCBOpts as CombatOptionsEnum[],
-			atkStyles: attackStyles,
-			msg,
-			monster,
-			method: method ?? 'none',
-			isOnTask
-		});
 		// Calculate Cannon and Barrage boosts + costs:
 		let usingCannon = false;
 		let cannonMulti = false;

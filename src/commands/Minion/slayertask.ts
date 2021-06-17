@@ -57,7 +57,7 @@ export default class extends BotCommand {
 			});
 			outstr += `${myBlockedMonsters
 				.map(mbm => {
-					return `${mbm.id}: ${getCommonTaskName(mbm)}`;
+					return `${getCommonTaskName(mbm)}`;
 				})
 				.join('\n')}`;
 			return msg.channel.send(`${outstr}\n\nTry: \`${msg.cmdPrefix}st --block\` to block a task.`);
@@ -111,7 +111,7 @@ export default class extends BotCommand {
 			const slayerStreak = msg.author.settings.get(UserSettings.Slayer.TaskStreak);
 			return msg.channel.send(
 				`Your minion is busy, but you can still manage your block list: \`${msg.cmdPrefix}st blocks\`` +
-					`You have ${slayerPoints} slayer points, and have completed ${slayerStreak} tasks in a row.`
+					`\nYou have ${slayerPoints} slayer points, and have completed ${slayerStreak} tasks in a row.`
 			);
 		}
 		if (input && (input === 'skip' || input === 'block')) msg.flagArgs[input] = 'yes';

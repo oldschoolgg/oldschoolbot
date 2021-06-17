@@ -123,7 +123,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Goblin,
 		amount: [15, 50],
 		weight: 7,
-		monsters: [Monsters.Goblin.id, Monsters.CaveGoblinGuard.id, Monsters.GeneralGraardor.id],
+		monsters: [Monsters.Goblin.id, Monsters.CaveGoblinGuard.id],
 		unlocked: true
 	},
 	{
