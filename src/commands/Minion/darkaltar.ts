@@ -22,13 +22,15 @@ export const darkAltarRunes = {
 		item: getOSItem('Soul rune'),
 		baseTime: Time.Second * 2.2,
 		xp: 19.6,
-		level: 90
+		level: 90,
+		petChance: 782_999
 	},
 	blood: {
 		item: getOSItem('Blood rune'),
 		baseTime: Time.Second * 2.2,
 		xp: 17.2,
-		level: 77
+		level: 77,
+		petChance: 804_984
 	}
 } as const;
 

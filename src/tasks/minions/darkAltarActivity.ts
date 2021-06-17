@@ -1,4 +1,4 @@
-import { increaseNumByPercent } from 'e';
+import { increaseNumByPercent, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -38,6 +38,13 @@ export default class extends Task {
 		}
 
 		let loot = new Bank().add(runeData.item.id, runeQuantity);
+
+		const lvl = user.skillLevel(SkillsEnum.Runecraft);
+		for (let i = 0; i < quantity; i++) {
+			if (roll(runeData.petChance - lvl * 25)) {
+				loot.add('Rift guardian');
+			}
+		}
 
 		let str = `${user}, ${user.minionName} finished runecrafing at the Dark altar, you received ${loot}. ${xpRes1} ${xpRes2} ${xpRes3}`;
 
