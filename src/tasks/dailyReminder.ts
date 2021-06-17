@@ -1,5 +1,6 @@
 import { Task } from 'klasa';
 
+import { production } from '../config';
 import { client } from '../index';
 import { Time } from '../lib/constants';
 import { UserSettings } from '../lib/settings/types/UserSettings';
@@ -10,6 +11,7 @@ const dailyTickInterval = Time.Second * 60;
 
 export default class extends Task {
 	async init() {
+		if (!production) return;
 		if (this.client.dailyReminderTicker) {
 			clearInterval(this.client.dailyReminderTicker);
 		}
