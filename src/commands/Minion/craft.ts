@@ -1,6 +1,7 @@
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
+import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Crafting from '../../lib/skilling/skills/crafting';
@@ -8,39 +9,8 @@ import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	bankHasItem,
-	formatDuration,
-	itemID,
-	itemNameFromID,
-	removeItemFromBank,
-	skillsMeetRequirements,
-	stringMatches
-} from '../../lib/util';
+import { bankHasItem, formatDuration, itemID, itemNameFromID, removeItemFromBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-
-export function hasFallyHardDiary(user: KlasaUser): boolean {
-	return skillsMeetRequirements(user.rawSkills, {
-		woodcutting: 71,
-		agility: 59,
-		cooking: 53,
-		firemaking: 49,
-		fishing: 53,
-		magic: 37,
-		mining: 60,
-		smithing: 13,
-		thieving: 58,
-		construction: 16,
-		herblore: 52,
-		crafting: 40,
-		farming: 45,
-		prayer: 70,
-		runecraft: 56,
-		// slayer: 72,
-		strength: 37,
-		defence: 50
-	});
-}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -103,8 +73,8 @@ export default class extends BotCommand {
 			timeToCraftSingleItem /= 2;
 		}
 
-		const hasDiary = hasFallyHardDiary(msg.author);
-		if (Craft.bankChest && (hasDiary || msg.author.skillLevel(SkillsEnum.Crafting) >= 99)) {
+		const [hasFallyHard] = await userhasDiaryTier(msg.author, FaladorDiary.hard);
+		if (Craft.bankChest && (hasFallyHard || msg.author.skillLevel(SkillsEnum.Crafting) >= 99)) {
 			timeToCraftSingleItem /= 3.25;
 		}
 

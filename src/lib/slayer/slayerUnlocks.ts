@@ -425,7 +425,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		desc: 'Extends Dust devils task',
 		slayerPointCost: 100,
 		extendID: [Monsters.DustDevil.id],
-		extendMult: 1.5,
+		extendMult: 1.7,
 		canBeRemoved: true,
 		aliases: ['extend dusties', 'extend dust devils']
 	},

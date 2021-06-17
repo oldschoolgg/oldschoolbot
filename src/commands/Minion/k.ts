@@ -177,11 +177,14 @@ export default class extends BotCommand {
 		}
 		// Add 15% slayer boost on task if they have black mask or similar
 		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-			if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask (i)'))) {
+			if (isOnTask && msg.author.hasItemEquippedOrInBank('Black mask (i)')) {
 				timeToFinish = reduceNumByPercent(timeToFinish, 15);
 				boosts.push('15% for Black mask (i) on non-melee task');
 			}
-		} else if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))) {
+		} else if (
+			isOnTask &&
+			(msg.author.hasItemEquippedOrInBank('Black mask') || msg.author.hasItemEquippedOrInBank('Black mask (i)'))
+		) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
 			boosts.push('15% for Black mask on melee task');
 		}
@@ -199,7 +202,6 @@ export default class extends BotCommand {
 			method: method ?? 'none',
 			isOnTask
 		});
-
 		// Calculate Cannon and Barrage boosts + costs:
 		let usingCannon = false;
 		let cannonMulti = false;
@@ -209,7 +211,7 @@ export default class extends BotCommand {
 			return msg.send('You can only burst/barrage/cannon while on task in BSO.');
 		}
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !monster!.canBarrage) {
-			return msg.send(`${monster!.name} cannot be barraged or bursted.`);
+			return msg.send(`${monster!.name} cannot be barraged or burst.`);
 		}
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !attackStyles.includes(SkillsEnum.Magic)) {
 			return msg.send("You can only barrage/burst when you're using magic!");
@@ -219,6 +221,14 @@ export default class extends BotCommand {
 		}
 		if (msg.flagArgs.cannon && !monster!.canCannon) {
 			return msg.send(`${monster!.name} cannot be killed with a cannon.`);
+		}
+		if (boostChoice === 'barrage' && msg.author.skillLevel(SkillsEnum.Magic) < 94) {
+			return msg.send(
+				`You need 94 Magic to use Ice Barrage. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`
+			);
+		}
+		if (boostChoice === 'burst' && msg.author.skillLevel(SkillsEnum.Magic) < 70) {
+			return msg.send(`You need 70 Magic to use Ice Burst. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`);
 		}
 
 		if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {

@@ -4,7 +4,7 @@ import { Monsters } from 'oldschooljs';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { AutoslayOptionsEnum, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import { AutoslayOptionsEnum, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { wipeDBArrayByKey } from '../../lib/util';
 
@@ -14,6 +14,7 @@ interface AutoslayLink {
 	efficientName?: string;
 	efficientMonster?: number;
 	efficientMethod?: string;
+	slayerMasters?: SlayerMasterEnum[];
 }
 enum AutoSlayMethod {
 	None = 'none',
@@ -21,7 +22,26 @@ enum AutoSlayMethod {
 	Barrage = 'barrage',
 	Burst = 'burst'
 }
+
 const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
+	{
+		monsterID: Monsters.Jelly.id,
+		efficientName: Monsters.WarpedJelly.name,
+		efficientMonster: Monsters.WarpedJelly.id,
+		efficientMethod: AutoSlayMethod.Barrage
+	},
+	{
+		monsterID: Monsters.SpiritualMage.id,
+		efficientName: Monsters.SpiritualMage.name,
+		efficientMonster: Monsters.SpiritualMage.id,
+		efficientMethod: AutoSlayMethod.None
+	},
+	{
+		monsterID: Monsters.SpiritualRanger.id,
+		efficientName: Monsters.SpiritualMage.name,
+		efficientMonster: Monsters.SpiritualMage.id,
+		efficientMethod: AutoSlayMethod.None
+	},
 	{
 		monsterID: Monsters.KalphiteWorker.id,
 		efficientName: Monsters.KalphiteSoldier.name,
@@ -54,9 +74,22 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 	},
 	{
 		monsterID: Monsters.MountainTroll.id,
+		efficientName: Monsters.MountainTroll.name,
+		efficientMonster: Monsters.MountainTroll.id,
+		efficientMethod: AutoSlayMethod.Cannon,
+		slayerMasters: [SlayerMasterEnum.Konar]
+	},
+	{
+		monsterID: Monsters.MountainTroll.id,
 		efficientName: Monsters.IceTroll.name,
 		efficientMonster: Monsters.IceTroll.id,
-		efficientMethod: AutoSlayMethod.Cannon
+		efficientMethod: AutoSlayMethod.Cannon,
+		slayerMasters: [
+			SlayerMasterEnum.Chaeldar,
+			SlayerMasterEnum.Vannaka,
+			SlayerMasterEnum.Nieve,
+			SlayerMasterEnum.Duradel
+		]
 	},
 	{
 		monsterID: Monsters.Zygomite.id,
@@ -174,16 +207,20 @@ function determineAutoslayMethod(
 ) {
 	const p = passedStr ? passedStr : '';
 	let method = 'unknown';
-	if (m.flagArgs.default || m.flagArgs.lowest || p === 'default' || p === 'lowest') {
+	if (m.flagArgs.default || m.flagArgs.def || p === 'def' || p === 'default') {
 		method = 'default';
 	} else if (m.flagArgs.highest || m.flagArgs.boss || p === 'boss' || p === 'highest') {
 		method = 'boss';
 	} else if (m.flagArgs.ehp || m.flagArgs.efficient || p === 'ehp' || p === 'efficient') {
 		method = 'ehp';
+	} else if (m.flagArgs.lowest || m.flagArgs.low || p === 'lowest' || p === 'low') {
+		method = 'low';
 	} else if (autoslayOptions.includes(AutoslayOptionsEnum.MaxEfficiency)) {
 		method = 'ehp';
 	} else if (autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked)) {
 		method = 'boss';
+	} else if (autoslayOptions.includes(AutoslayOptionsEnum.LowestCombat)) {
+		method = 'low';
 	} else if (p === '') {
 		method = 'default';
 	}
@@ -210,11 +247,13 @@ export default class extends BotCommand {
 		if (_mode === 'check' || msg.flagArgs.check) {
 			let autoMsg = '';
 			if (autoslayOptions.includes(AutoslayOptionsEnum.HighestUnlocked)) {
-				autoMsg = 'You will automatically kill the highest combat level creatures you can.';
+				autoMsg = 'You will automatically slay the highest combat level creatures you can.';
 			} else if (autoslayOptions.includes(AutoslayOptionsEnum.MaxEfficiency)) {
-				autoMsg = 'You will automatically kill the most efficient monster you can.';
+				autoMsg = 'You will automatically slay the most efficient way.';
+			} else if (autoslayOptions.includes(AutoslayOptionsEnum.LowestCombat)) {
+				autoMsg = 'You will automatically slay the lowest combat level creature.';
 			} else {
-				autoMsg = 'You will automatically kill the default (lowest combat level) creatures you can.';
+				autoMsg = 'You will automatically kill the default slayer creature you can.';
 			}
 			return msg.channel.send(autoMsg);
 		}
@@ -227,8 +266,29 @@ export default class extends BotCommand {
 		// Determine method:
 		const method = determineAutoslayMethod(msg, _mode, autoslayOptions as AutoslayOptionsEnum[]);
 
+		if (method === 'low') {
+			// Save as default if user --save's
+			if (msg.flagArgs.save && !autoslayOptions.includes(AutoslayOptionsEnum.LowestCombat)) {
+				await wipeDBArrayByKey(msg.author, UserSettings.Slayer.AutoslayOptions);
+				await msg.author.settings.update(UserSettings.Slayer.AutoslayOptions, AutoslayOptionsEnum.LowestCombat);
+			}
+			let currentLow = Number.POSITIVE_INFINITY;
+			let currentMonID = 0;
+			// Iterate through all potentials to get the lowest combatlevel.
+			usersTask.assignedTask!.monsters.forEach(m => {
+				const osjsM = Monsters.get(m);
+				if (osjsM && osjsM.data.combatLevel < currentLow) {
+					currentLow = osjsM.data.combatLevel;
+					currentMonID = m;
+				}
+			});
+			if (currentMonID === 0) {
+				return msg.channel.send('Error: Could not get Monster data to find a task.');
+			}
+			return this.client.commands.get('k')?.run(msg, [null, Monsters.get(currentMonID)!.name]);
+		}
 		if (method === 'ehp') {
-			// Save as default is user --save's
+			// Save as default if user --save's
 			if (msg.flagArgs.save && !autoslayOptions.includes(AutoslayOptionsEnum.MaxEfficiency)) {
 				await wipeDBArrayByKey(msg.author, UserSettings.Slayer.AutoslayOptions);
 				await msg.author.settings.update(
@@ -237,12 +297,15 @@ export default class extends BotCommand {
 				);
 			}
 			const ehpMonster = AutoSlayMaxEfficiencyTable.find(e => {
-				return e.monsterID === usersTask.assignedTask!.monster.id;
+				const masterMatch = !e.slayerMasters || e.slayerMasters.includes(usersTask.currentTask!.slayerMasterID);
+				return masterMatch && e.monsterID === usersTask.assignedTask!.monster.id;
 			});
 
 			if (ehpMonster && ehpMonster.efficientName) {
-				if (ehpMonster.efficientMethod) msg.flagArgs[ehpMonster.efficientMethod] = 'yes';
-				return this.client.commands.get('k')?.run(msg, [null, ehpMonster.efficientName]);
+				if (ehpMonster.efficientMethod) msg.flagArgs[ehpMonster.efficientMethod] = 'force';
+				return this.client.commands
+					.get('k')
+					?.run(msg, [null, ehpMonster.efficientName, ehpMonster.efficientMethod]);
 			}
 			return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
 		}

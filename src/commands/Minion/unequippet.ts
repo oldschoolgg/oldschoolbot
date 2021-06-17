@@ -11,8 +11,9 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			categoryFlags: ['minion'],
+			aliases: ['uep'],
 			description: 'Unequips your pet.',
-			examples: ['+unequippet']
+			examples: ['+unequippet', '+uep']
 		});
 	}
 
