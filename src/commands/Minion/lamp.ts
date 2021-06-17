@@ -59,6 +59,12 @@ export default class extends BotCommand {
 		}
 		const skill = skillName as SkillsEnum;
 
+		if (skill === SkillsEnum.Slayer) {
+			return msg.channel.send(
+				'A magical force prevents you from using the lamp on Slayer, perhaps you should wait a few weeks.'
+			);
+		}
+
 		if (msg.author.skillLevel(skill) < lamp.minimumLevel) {
 			return msg.channel.send(
 				`You can't use this lamp on ${skill} because it requires a minimum level of ${lamp.minimumLevel}.`
