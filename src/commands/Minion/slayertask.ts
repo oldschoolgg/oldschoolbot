@@ -34,6 +34,9 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage, [input]: [string | undefined]) {
+		if (1 > 0) {
+			return msg.channel.send('A magical force prevents you from getting a Slayer Task, try again later.');
+		}
 		const { currentTask, totalTasksDone, assignedTask } = await getUsersCurrentSlayerInfo(msg.author.id);
 		const myBlockList = msg.author.settings.get(UserSettings.Slayer.BlockedTasks);
 		const myQPs = msg.author.settings.get(UserSettings.QP);
