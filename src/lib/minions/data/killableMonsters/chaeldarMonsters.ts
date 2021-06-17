@@ -365,7 +365,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.SkeletalWyvern.id,
 		name: Monsters.SkeletalWyvern.name,
 		aliases: Monsters.SkeletalWyvern.aliases,
-		timeToFinish: Time.Second * 88,
+		timeToFinish: Time.Second * 84,
 		table: Monsters.SkeletalWyvern,
 
 		wildy: false,
@@ -423,7 +423,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.Wyrm.id,
 		name: Monsters.Wyrm.name,
 		aliases: Monsters.Wyrm.aliases,
-		timeToFinish: Time.Second * 24,
+		timeToFinish: Time.Second * 27,
 		table: Monsters.Wyrm,
 
 		wildy: false,

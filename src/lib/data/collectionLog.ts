@@ -1586,52 +1586,39 @@ export const miscLog: CollectionLogData = {
 	]),
 	Tzhaar: resolveItems(['Fire cape']),
 	evilChickenOutfit,
-	other: resolveItems(['Amulet of eternal glory', 'Crystal grail']),
+	other: resolveItems(['Amulet of eternal glory', 'Crystal grail'])
+};
+
+export const slayerLog: CollectionLogData = {
 	Slayer1: resolveItems([
 		'Imbued heart',
 		'Eternal gem',
 		'Mist battlestaff',
 		'Dust battlestaff',
+		'Basilisk jaw',
 		"Hydra's eye",
 		"Hydra's fang",
 		"Hydra's heart",
 		'Hydra tail',
 		"Drake's tooth",
 		"Drake's claw",
-		'Dragon harpoon',
-		'Dragon sword'
+		'Dragon harpoon'
 	]),
 	Slayer2: resolveItems([
+		'Dragon sword',
 		'Dragon thrownaxe',
 		'Dragon knife',
+		'Black mask',
+		'Granite maul',
 		'Abyssal whip',
 		'Abyssal dagger',
-		'Abyssal head',
-		'Dragon boots',
-		'Granite maul',
 		'Uncharged trident',
 		'Kraken tentacle',
 		'Dark bow',
 		'Death talisman',
 		'Occult necklace'
 	]),
-	Slayer3: resolveItems([
-		'Herb sack',
-		'Rune pouch',
-		'Basilisk jaw',
-		'Brine sabre',
-		'Leaf-bladed battleaxe',
-		'Leaf-bladed sword',
-		'Black mask'
-	]),
-	'Demonic Gorillas': resolveItems([
-		'Zenyte shard',
-		'Heavy frame',
-		'Light frame',
-		'Monkey tail',
-		'Ballista limbs',
-		'Ballista spring'
-	]),
+	Slayer3: resolveItems(['Herb sack', 'Rune pouch', 'Brine sabre', 'Leaf-bladed battleaxe', 'Leaf-bladed sword']),
 	'Mystic Sets': resolveItems([
 		'Mystic hat (light)',
 		'Mystic robe top (light)',
@@ -1654,17 +1641,70 @@ export const miscLog: CollectionLogData = {
 		'Brimstone key'
 	]),
 	Misc1: resolveItems([
+		'Dragon boots',
+		'Dragon platelegs',
+		'Dragon plateskirt',
 		'Dragon full helm',
+		'Chewed bones',
 		'Dragon limbs',
 		'Dragon metal slice',
 		'Dragon metal lump',
 		'Draconic visage',
-		'Skeletal visage',
 		'Wyvern visage'
 	]),
-	Misc2: resolveItems(['Giant key', 'Hill giant club', 'Mossy key', "Bryophyta's essence"])
+	Misc2: resolveItems([
+		'Mudskipper hat',
+		'Flippers',
+		'Granite boots',
+		'Granite helm',
+		'Granite legs',
+		'Granite shield',
+		'Right skull half',
+		'Left skull half',
+		'Bottom of sceptre',
+		'Top of sceptre'
+	]),
+	Misc3: resolveItems([
+		'Dark totem base',
+		'Dark totem middle',
+		'Dark totem top',
+		'Dark totem',
+		'Ancient shard',
+		'Brittle key',
+		'Giant key',
+		'Hill giant club',
+		'Mossy key',
+		"Bryophyta's essence",
+		'Blood shard',
+		'Enhanced crystal teleport seed'
+	]),
+	Heads: resolveItems([
+		// Crawling hand
+		7975,
+		'Basilisk head',
+		'Cockatrice head',
+		'Kurask head',
+		'Abyssal head'
+	]),
+	Boots: resolveItems([
+		'Bronze boots',
+		'Iron boots',
+		'Steel boots',
+		'Black boots',
+		'Mithril boots',
+		'Adamant boots',
+		'Rune boots',
+		'Dragon boots'
+	]),
+	'Demonic Gorillas': resolveItems([
+		'Zenyte shard',
+		'Heavy frame',
+		'Light frame',
+		'Monkey tail',
+		'Ballista limbs',
+		'Ballista spring'
+	])
 };
-
 export const sepulchreLog: CollectionLogData = {
 	Misc: resolveItems([
 		'Hallowed mark',
@@ -2030,6 +2070,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Big Chompy Hunting',
 		aliases: ['chompy', 'bgc', 'big chompy hunting'],
 		items: chompyHuntingLog
+	},
+	{
+		name: 'Slayer',
+		aliases: ['slayer', 'slay'],
+		items: slayerLog
 	}
 ];
 export const allCollectionLogItems = uniqueArr(

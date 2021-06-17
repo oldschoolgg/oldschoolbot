@@ -30,7 +30,8 @@ const killableBosses: KillableMonster[] = [
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
-			prayer: 43
+			prayer: 43,
+			strength: 70
 		},
 		uniques: [...resolveItems(['Rune sword']), ...bosses.Bandos, ...bosses.Shards],
 		defaultAttackStyles: [SkillsEnum.Attack],
@@ -101,7 +102,8 @@ const killableBosses: KillableMonster[] = [
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
-			prayer: 43
+			prayer: 40,
+			ranged: 70
 		},
 		uniques: [...bosses.Arma, ...bosses.Shards],
 		itemsRequired: deepResolveItems([
@@ -141,7 +143,8 @@ const killableBosses: KillableMonster[] = [
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
-			prayer: 43
+			prayer: 43,
+			hitpoints: 70
 		},
 		uniques: [...bosses.Zammy, ...bosses.Shards],
 		itemsRequired: deepResolveItems([

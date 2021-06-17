@@ -48,17 +48,9 @@ export function determineBoostChoice(params: DetermineBoostParams) {
 		boostChoice = 'burst';
 	} else if (params.msg.flagArgs.cannon || (params.method && params.method === 'cannon')) {
 		boostChoice = 'cannon';
-	} else if (
-		params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
-		params.atkStyles.includes(SkillsEnum.Magic) &&
-		params.monster!.canBarrage
-	) {
+	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) && params.monster!.canBarrage) {
 		boostChoice = 'barrage';
-	} else if (
-		params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
-		params.atkStyles.includes(SkillsEnum.Magic) &&
-		params.monster!.canBarrage
-	) {
+	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) && params.monster!.canBarrage) {
 		boostChoice = 'burst';
 	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
 		boostChoice = 'cannon';
@@ -222,6 +214,7 @@ export function getCommonTaskName(task: Monster) {
 		case Monsters.ElfWarrior.id:
 			commonName = 'Elves';
 			break;
+		case Monsters.SpiritualRanger.id:
 		case Monsters.SpiritualMage.id:
 			commonName = 'Spiritual Creature';
 			break;
