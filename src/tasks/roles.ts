@@ -18,7 +18,8 @@ const minigames = [
 	'soul_wars',
 	'castle_wars',
 	'raids',
-	'raids_challenge_mode'
+	'raids_challenge_mode',
+	'big_chompy_bird_hunting'
 ];
 
 const collections = ['Pets', 'Skilling', 'Clue all', 'Boss', 'Minigames', 'Chambers of Xeric'];
