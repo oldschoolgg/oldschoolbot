@@ -32,7 +32,7 @@ const killableBosses: KillableMonster[] = [
 		],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.225,
-		healAmountNeeded: 15 * 20,
+		healAmountNeeded: 5 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
@@ -53,7 +53,7 @@ const killableBosses: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 1110,
 		combatXpMultiplier: 1.156,
-		healAmountNeeded: 15 * 20,
+		healAmountNeeded: 5 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
@@ -73,7 +73,7 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.525,
-		healAmountNeeded: 15 * 20,
+		healAmountNeeded: 5 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
@@ -104,7 +104,7 @@ const killableBosses: KillableMonster[] = [
 		],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.075,
-		healAmountNeeded: 15 * 20,
+		healAmountNeeded: 5 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
@@ -123,7 +123,7 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [{ [itemID("Karil's leathertop")]: 3 }, { [itemID("Karil's leatherskirt")]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.125,
-		healAmountNeeded: 12 * 20,
+		healAmountNeeded: 4 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
@@ -141,7 +141,7 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.25,
-		healAmountNeeded: 11 * 20,
+		healAmountNeeded: 4 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
@@ -171,7 +171,7 @@ const killableBosses: KillableMonster[] = [
 		],
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.075,
-		healAmountNeeded: 15 * 20,
+		healAmountNeeded: 5 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
@@ -190,7 +190,7 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }, { [itemID('Harmonised nightmare staff')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.3,
-		healAmountNeeded: 15 * 20,
+		healAmountNeeded: 4 * 20,
 		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash]
 	}
