@@ -27,6 +27,12 @@ export interface WealthChargingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface DarkAltarOptions extends ActivityTaskOptions {
+	quantity: number;
+	hasElite: boolean;
+	rune: 'blood' | 'soul';
+}
+
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	courseID: string;
 	quantity: number;
