@@ -16,12 +16,7 @@ export default class extends Task {
 					.andWhere('finish_date < now()');
 
 				const result = await query.getMany();
-				console.log(`${result.length} tasks are ready to complete.`);
-				for (const task of result) {
-					console.log(`${task.userID}[${task.type}] trip is running`);
-					await task.complete();
-					console.log('Task complete');
-				}
+				await Promise.all(result.map(r => r.complete()));
 			} catch (err) {
 				console.error(err);
 			} finally {
