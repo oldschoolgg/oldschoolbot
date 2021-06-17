@@ -758,6 +758,32 @@ const prayer = resolveItems([
 	...bones
 ]);
 
+const diango = resolveItems([
+	'Hornwood helm',
+	'Hand fan',
+	'Mask of balance',
+	'Druidic wreath',
+	'Disk of returning',
+	'Tiger toy',
+	'Lion toy',
+	'Snow leopard toy',
+	'Amur leopard toy',
+	'Holy handegg',
+	'Peaceful handegg',
+	'Chaotic handegg',
+	'Rainbow scarf',
+	"Diango's claws",
+	'Event rpg',
+	'Green banner',
+	'Spinning plate',
+	'Brown toy horsey',
+	'White toy horsey',
+	'Black toy horsey',
+	'Grey toy horsey',
+	11705,
+	11706
+]);
+
 const food = resolveItems(Eatables.map(food => food.name));
 
 interface Filterable {
@@ -771,6 +797,11 @@ export const filterableTypes: Filterable[] = [
 		name: 'Smithing',
 		aliases: ['smithing', 'smith', 'sm'],
 		items: smithing
+	},
+	{
+		name: 'Diango',
+		aliases: ['diango', 'daily', 'dailies'],
+		items: diango
 	},
 	{
 		name: 'Crafting',
