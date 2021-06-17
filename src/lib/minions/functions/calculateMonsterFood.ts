@@ -41,8 +41,8 @@ export default function calculateMonsterFood(
 		totalOffensivePercent += floor(calcWhatPercent(gearStats[style], maxOffenceStats[style]));
 	}
 
-	totalPercentOfGearLevel = Math.min(floor(max(0, totalPercentOfGearLevel / attackStylesUsed.length)), 85);
-	totalOffensivePercent = floor(max(0, totalOffensivePercent / attackStylesUsed.length)) / 2;
+	totalPercentOfGearLevel = Math.min(floor(max(0, totalPercentOfGearLevel / attackStylesUsed.length)), 95);
+	totalOffensivePercent = floor(max(0, totalOffensivePercent / attackStylesUsed.length));
 
 	messages.push(`You use ${floor(totalPercentOfGearLevel)}% less food because of your defensive stats.`);
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel));
