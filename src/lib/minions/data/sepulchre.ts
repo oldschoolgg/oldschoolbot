@@ -93,7 +93,7 @@ export const sepulchreFloors = [
 		petChance: 2000,
 		agilityLevel: 92,
 		xp: 5850,
-		time: Time.Minute * 4.3,
+		time: Time.Minute * 3.75,
 		lockpickCoffinChance: 600,
 		coffinTable: new LootTable().add(MidTierCoffin, 1, 20).add(HighTierCoffin, 1, 80),
 		numCoffins: 3,
