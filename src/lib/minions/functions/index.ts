@@ -7,7 +7,7 @@ import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
-import { AddMonsterXpParams, KillableMonster } from '../types';
+import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
 
 export { default as calculateMonsterFood } from './calculateMonsterFood';
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
@@ -26,10 +26,10 @@ const miscHpMap: Record<number, number> = {
 
 export function resolveAttackStyles(
 	user: KlasaUser,
-	monsterID: number
+	params: ResolveAttackStylesParams
 ): [KillableMonster | undefined, Monster | undefined, AttackStyles[]] {
-	const killableMon = killableMonsters.find(m => m.id === monsterID);
-	const osjsMon = Monsters.get(monsterID);
+	const killableMon = killableMonsters.find(m => m.id === params.monsterID);
+	const osjsMon = Monsters.get(params.monsterID);
 
 	// The styles chosen by this user to use.
 	let attackStyles = user.getAttackStyles();
@@ -47,11 +47,24 @@ export function resolveAttackStyles(
 		attackStyles = monsterStyles;
 	}
 
+	// Automatically use magic if barrage/burst is chosen
+	if (
+		params.boostMethod &&
+		(params.boostMethod === 'barrage' || params.boostMethod === 'burst') &&
+		!attackStyles.includes(SkillsEnum.Magic)
+	) {
+		attackStyles = [SkillsEnum.Magic];
+	}
 	return [killableMon, osjsMon, attackStyles];
 }
 
 export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) {
-	const [, osjsMon, attackStyles] = resolveAttackStyles(user, params.monsterID);
+	const boostMethod = params.burstOrBarrage ? 'barrage' : 'none';
+
+	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
+		monsterID: params.monsterID,
+		boostMethod
+	});
 	const monster = killableMonsters.find(mon => mon.id === params.monsterID);
 	let hp = miscHpMap[params.monsterID] ?? 1;
 	let xpMultiplier = 1;

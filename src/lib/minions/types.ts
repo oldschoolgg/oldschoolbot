@@ -135,13 +135,18 @@ export interface AddMonsterXpParams {
 	minimal?: boolean;
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
+	burstOrBarrage?: number;
 }
 
 export interface DetermineBoostParams {
 	cbOpts: CombatOptionsEnum[];
-	atkStyles: AttackStyles[];
 	msg: KlasaMessage;
 	monster: KillableMonster;
 	method?: string | null;
 	isOnTask?: boolean;
+}
+
+export interface ResolveAttackStylesParams {
+	monsterID: number;
+	boostMethod?: string;
 }
