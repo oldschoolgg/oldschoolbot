@@ -72,6 +72,7 @@ export class ActivityTable extends BaseEntity {
 			throw new Error('Missing task');
 		}
 
+		client.oneCommandAtATimeCache.add(this.userID);
 		try {
 			await getConnection()
 				.createQueryBuilder()
@@ -79,7 +80,6 @@ export class ActivityTable extends BaseEntity {
 				.set({ completed: true })
 				.where('id = :id', { id: this.id })
 				.execute();
-			client.oneCommandAtATimeCache.add(this.userID);
 			await task.run(this.taskData);
 		} catch (err) {
 			console.error(err);
