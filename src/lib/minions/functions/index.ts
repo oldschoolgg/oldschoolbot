@@ -11,7 +11,7 @@ import killableMonsters from '../data/killableMonsters';
 import KingGoldemar from '../data/killableMonsters/custom/KingGoldemar';
 import SeaKraken from '../data/killableMonsters/custom/SeaKraken';
 import { VasaMagus } from '../data/killableMonsters/custom/VasaMagus';
-import { AddMonsterXpParams, KillableMonster } from '../types';
+import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
 
 export { default as calculateMonsterFood } from './calculateMonsterFood';
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
@@ -42,18 +42,18 @@ function meleeOnly(user: KlasaUser): AttackStyles[] {
 }
 export function resolveAttackStyles(
 	user: KlasaUser,
-	monsterID: number
+	params: ResolveAttackStylesParams
 ): [KillableMonster | undefined, Monster | undefined, AttackStyles[]] {
-	if (monsterID === KingGoldemar.id) return [undefined, undefined, meleeOnly(user)];
-	if (monsterID === VasaMagus.id) return [undefined, undefined, [SkillsEnum.Magic]];
+	if (params.monsterID === KingGoldemar.id) return [undefined, undefined, meleeOnly(user)];
+	if (params.monsterID === VasaMagus.id) return [undefined, undefined, [SkillsEnum.Magic]];
 
-	const killableMon = killableMonsters.find(m => m.id === monsterID);
+	const killableMon = killableMonsters.find(m => m.id === params.monsterID);
 
 	if (!killableMon) {
 		return [undefined, undefined, [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence]];
 	}
 
-	const osjsMon = Monsters.get(monsterID);
+	const osjsMon = Monsters.get(params.monsterID);
 
 	// The styles chosen by this user to use.
 	let attackStyles = user.getAttackStyles();
@@ -71,11 +71,24 @@ export function resolveAttackStyles(
 		attackStyles = monsterStyles;
 	}
 
+	// Automatically use magic if barrage/burst is chosen
+	if (
+		params.boostMethod &&
+		(params.boostMethod === 'barrage' || params.boostMethod === 'burst') &&
+		!attackStyles.includes(SkillsEnum.Magic)
+	) {
+		attackStyles = [SkillsEnum.Magic];
+	}
 	return [killableMon, osjsMon, attackStyles];
 }
 
 export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) {
-	const [, osjsMon, attackStyles] = resolveAttackStyles(user, params.monsterID);
+	const boostMethod = params.burstOrBarrage ? 'barrage' : 'none';
+
+	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
+		monsterID: params.monsterID,
+		boostMethod
+	});
 	const monster = killableMonsters.find(mon => mon.id === params.monsterID);
 	let hp = miscHpMap[params.monsterID] ?? 1;
 	let xpMultiplier = 1;

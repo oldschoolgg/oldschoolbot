@@ -53,6 +53,7 @@ import {
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	DarkAltarOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
@@ -591,6 +592,13 @@ export default class extends Extendable {
 
 			case Activity.BigChompyBirdHunting: {
 				return `${this.minionName} is currently hunting Chompy Birds! ${formattedDuration}`;
+			}
+
+			case Activity.DarkAltar: {
+				const data = currentTask as DarkAltarOptions;
+				return `${this.minionName} is currently runecrafting ${toTitleCase(
+					data.rune
+				)} runes at the Dark Altar. ${formattedDuration}`;
 			}
 		}
 	}

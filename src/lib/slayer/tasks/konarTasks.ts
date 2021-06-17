@@ -45,6 +45,9 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Aviansie,
 		amount: [120, 170],
 		weight: 6,
+		levelRequirements: {
+			agility: 60
+		},
 		monsters: [Monsters.Aviansie.id, Monsters.Kreearra.id],
 		unlocked: false
 	},

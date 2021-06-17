@@ -1,8 +1,7 @@
 import { Time } from 'e';
 import { Task } from 'klasa';
-import { createQueryBuilder, MoreThan } from 'typeorm';
+import { MoreThan } from 'typeorm';
 
-import { production } from '../config';
 import { ActivityGroup } from '../lib/constants';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { ActivityTable } from '../lib/typeorm/ActivityTable.entity';
@@ -16,25 +15,6 @@ export default class extends Task {
 			clearInterval(this.client.analyticsInterval);
 		}
 		this.client.analyticsInterval = setInterval(this.analyticsTick.bind(this), Time.Minute * 5);
-
-		if (this.client.minionTicker) {
-			clearTimeout(this.client.minionTicker);
-		}
-		const ticker = async () => {
-			try {
-				const query = createQueryBuilder(ActivityTable).select().where('completed = false');
-				if (production) {
-					query.andWhere('finish_date < now()');
-				}
-				const result = await query.getMany();
-				await Promise.all(result.map(t => t.complete()));
-			} catch (err) {
-				console.error(err);
-			} finally {
-				this.client.minionTicker = setTimeout(ticker, 5000);
-			}
-		};
-		ticker();
 	}
 
 	async run() {

@@ -75,7 +75,9 @@ export default class extends BotCommand {
 		slayerMasters.forEach(master => {
 			master.tasks.forEach(task => {
 				task.monsters.forEach(tmon => {
-					const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, tmon);
+					const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, {
+						monsterID: tmon
+					});
 					const kMonster = killableMonsters.find(km => {
 						return km.id === tmon;
 					});
