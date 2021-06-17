@@ -34,7 +34,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.AbyssalDemon.id,
 		name: Monsters.AbyssalDemon.name,
 		aliases: Monsters.AbyssalDemon.aliases,
-		timeToFinish: Time.Second * 26,
+		timeToFinish: Time.Second * 29,
 		table: Monsters.AbyssalDemon,
 
 		wildy: false,
@@ -339,7 +339,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Dagannoth.id,
 		name: Monsters.Dagannoth.name,
 		aliases: Monsters.Dagannoth.aliases,
-		timeToFinish: Time.Second * 16,
+		timeToFinish: Time.Second * 15,
 		table: Monsters.Dagannoth,
 
 		wildy: false,
@@ -569,7 +569,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.GreaterNechryael.id,
 		name: Monsters.GreaterNechryael.name,
 		aliases: Monsters.GreaterNechryael.aliases,
-		timeToFinish: Time.Second * 40,
+		timeToFinish: Time.Second * 37.2,
 		table: Monsters.GreaterNechryael,
 
 		wildy: false,

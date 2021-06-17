@@ -8,10 +8,11 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 ) {
 	const usersTask = getActivityOfUser(taskToAdd.userID);
 	if (usersTask) {
-		throw "That user is busy, so they can't do this minion activity.";
+		throw `That user is busy, so they can't do this minion activity. They have a ${usersTask.type} activity still ongoing`;
 	}
+	let duration = Math.floor(taskToAdd.duration);
 
-	const finishDate = new Date(Date.now() + taskToAdd.duration);
+	const finishDate = new Date(Date.now() + duration);
 
 	let __newData: Partial<ActivityTaskOptions> = { ...taskToAdd };
 	delete __newData.type;
@@ -33,7 +34,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 	activity.data = newData;
 	activity.groupActivity = isGroupActivity(taskToAdd);
 	activity.channelID = taskToAdd.channelID;
-	activity.duration = Math.floor(taskToAdd.duration);
+	activity.duration = duration;
 	await activity.save();
 
 	const users = isGroupActivity(newData) ? newData.users : [taskToAdd.userID];

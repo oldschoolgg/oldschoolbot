@@ -124,6 +124,15 @@ export default class extends BotCommand {
 			this.run(msg, [null, 'Ogress Warrior', '']);
 			return msg.channel.send("Let's kill some ogress warriors instead? 🥰 🐳");
 		}
+		// Set chosen boost based on priority:
+		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
+		const boostChoice = determineBoostChoice({
+			cbOpts: myCBOpts as CombatOptionsEnum[],
+			msg,
+			monster,
+			method: method ?? 'none',
+			isOnTask
+		});
 
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
@@ -131,7 +140,10 @@ export default class extends BotCommand {
 
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, msg.author.getKC(monster.id));
 
-		const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, monster.id);
+		const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, {
+			monsterID: monster.id,
+			boostMethod: boostChoice
+		});
 		const [newTime, skillBoostMsg] = applySkillBoost(msg.author, timeToFinish, attackStyles);
 
 		timeToFinish = newTime;
@@ -192,16 +204,6 @@ export default class extends BotCommand {
 		// Initialize consumable costs before any are calculated.
 		const consumableCosts: Consumable[] = [];
 
-		// Set chosen boost based on priority:
-		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
-		const boostChoice = determineBoostChoice({
-			cbOpts: myCBOpts as CombatOptionsEnum[],
-			atkStyles: attackStyles,
-			msg,
-			monster,
-			method: method ?? 'none',
-			isOnTask
-		});
 		// Calculate Cannon and Barrage boosts + costs:
 		let usingCannon = false;
 		let cannonMulti = false;

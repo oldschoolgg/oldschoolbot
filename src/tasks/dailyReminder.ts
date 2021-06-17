@@ -1,24 +1,40 @@
 import { Task } from 'klasa';
 
-import { PerkTier, Time } from '../lib/constants';
+import { production } from '../config';
+import { client } from '../index';
+import { Time } from '../lib/constants';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { noOp } from '../lib/util';
-import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+
+const dailyInterval = 4 * 60 * 60;
+const dailyTickInterval = Time.Second * 60;
 
 export default class extends Task {
+	async init() {
+		if (!production) return;
+		if (this.client.dailyReminderTicker) {
+			clearInterval(this.client.dailyReminderTicker);
+		}
+		this.client.dailyReminderTicker = setInterval(this.dailyReminderTick.bind(this), dailyTickInterval);
+	}
+
 	async run() {
+		this.dailyReminderTick();
+	}
+
+	async dailyReminderTick() {
 		const currentDate = Date.now();
 
-		for (const user of this.client.users.cache.values()) {
-			if (getUsersPerkTier(user) < PerkTier.Two) continue;
-			const lastVoteDate = user.settings.get(UserSettings.LastDailyTimestamp);
-			if (lastVoteDate === -1) continue;
+		const dailyReady = currentDate - dailyInterval;
+		const result = await client.query<{ id: string }[]>(
+			`SELECT id FROM users WHERE bitfield && '{2,3,4,5,6}'::int[] AND "lastDailyTimestamp" != -1 AND "lastDailyTimestamp" < ${dailyReady};`
+		);
 
-			const difference = currentDate - lastVoteDate;
-			if (difference >= Time.Hour * 4) {
-				await user.settings.update(UserSettings.LastDailyTimestamp, -1);
-				await user.send('Your daily is ready!').catch(noOp);
-			}
+		for (const row of result.values()) {
+			const user = await client.users.fetch(row.id);
+
+			await user.settings.update(UserSettings.LastDailyTimestamp, -1);
+			await user.send('Your daily is ready!').catch(noOp);
 		}
 	}
 }

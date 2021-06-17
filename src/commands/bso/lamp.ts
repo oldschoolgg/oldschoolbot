@@ -13,7 +13,9 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '<item:item> <skill:string>',
-			usageDelim: ','
+			usageDelim: ',',
+			examples: ['+lamp antique lamp 4, construction'],
+			description: 'Allows you to use a XP lamp on a skill.'
 		});
 	}
 
