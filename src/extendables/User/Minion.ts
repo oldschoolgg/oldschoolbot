@@ -588,6 +588,10 @@ export default class extends Extendable {
 			case Activity.MageArena2: {
 				return `${this.minionName} is currently attempting the Mage Arena II. ${formattedDuration}`;
 			}
+
+			case Activity.BigChompyBirdHunting: {
+				return `${this.minionName} is currently hunting Chompy Birds! ${formattedDuration}`;
+			}
 		}
 	}
 

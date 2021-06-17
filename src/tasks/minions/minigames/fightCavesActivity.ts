@@ -41,7 +41,7 @@ export default class extends Task {
 		if (preJadDeathTime) {
 			let slayerMsg = '';
 			if (isOnTask) {
-				slayerMsg = ' Task cancelled.';
+				slayerMsg = ' **Task cancelled.**';
 				usersTask.currentTask!.quantityRemaining = 0;
 				usersTask.currentTask!.skipped = true;
 				await usersTask.currentTask!.save();
@@ -83,7 +83,7 @@ export default class extends Task {
 		if (diedToJad) {
 			let slayerMsg = '';
 			if (isOnTask) {
-				slayerMsg = ' Task cancelled.';
+				slayerMsg = ' **Task cancelled.**';
 				usersTask.currentTask!.quantityRemaining = 0;
 				usersTask.currentTask!.skipped = true;
 				await usersTask.currentTask!.save();
@@ -95,13 +95,13 @@ export default class extends Task {
 				this.client,
 				user,
 				channelID,
-				`${user}`,
+				`${user}${slayerMsg}`,
 				res => {
 					user.log('continued trip of fightcaves');
 					return this.client.commands.get('fightcaves')!.run(res, []);
 				},
 				await chatHeadImage({
-					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.${slayerMsg}`,
+					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
 					head: 'mejJal'
 				}),
 				data,

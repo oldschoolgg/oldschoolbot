@@ -43,14 +43,15 @@ export default class extends BotCommand {
 		const myUnlocks = await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
 		const myPoints = await msg.author.settings.get(UserSettings.Slayer.SlayerPoints);
 
-		const unlocksStr = myUnlocks
+		let unlocksStr = myUnlocks
 			.map(mu => {
 				return getSlayerReward(mu);
 			})
 			.join('\n');
+		if (unlocksStr !== '') unlocksStr = `\`${unlocksStr}\``;
 		const defaultMsg =
 			`Current points: ${myPoints}\nYou currently have the following ` +
-			`rewards unlocked:\n\`${unlocksStr}\`\n\n` +
+			`rewards unlocked:\n${unlocksStr}\n\n` +
 			`Usage:\n\`${msg.cmdPrefix}slayershop [unlock|lock|buy] Reward\`\nExample:` +
 			`\n\`${msg.cmdPrefix}slayershop unlock Malevolent Masquerade\``;
 		if (defaultMsg.length > 2000) {
