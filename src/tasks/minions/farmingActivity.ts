@@ -150,10 +150,13 @@ export default class extends Task {
 				loot = multiplyBank(loot, 4);
 			}
 
+			// This code gives the boxes for planing when ONLY planting.
 			if (plant.name === 'Mysterious tree') {
-				let upper = randInt(quantity, quantity * 4);
-				for (let i = 0; i < upper; i++) {
-					loot = addItemToBank(loot, getRandomMysteryBox());
+				for (let j = 0; j < quantity; j++) {
+					let upper = randInt(1, 4);
+					for (let i = 0; i < upper; i++) {
+						loot = addItemToBank(loot, getRandomMysteryBox());
+					}
 				}
 			}
 
@@ -474,11 +477,22 @@ export default class extends Task {
 			if (user.hasItemEquippedAnywhere(itemID('Farming master cape'))) {
 				loot = addItemToBank(loot, getRandomMysteryBox());
 			}
-
-			if (plantToHarvest.name === 'Mysterious tree') {
-				let upper = randInt(quantity, alivePlants * 6);
-				for (let i = 0; i < upper; i++) {
-					loot = addItemToBank(loot, getRandomMysteryBox());
+			// Give boxes for planting when harvesting
+			if (planting && plant.name === 'Mysterious tree') {
+				for (let j = 0; j < quantity; j++) {
+					let upper = randInt(1, 4);
+					for (let i = 0; i < upper; i++) {
+						loot = addItemToBank(loot, getRandomMysteryBox());
+					}
+				}
+			}
+			// Give the boxes for harvesting during a harvest
+			if (alivePlants && plantToHarvest.name === 'Mysterious tree') {
+				for (let j = 0; j < alivePlants; j++) {
+					let upper = randInt(1, 6);
+					for (let i = 0; i < upper; i++) {
+						loot = addItemToBank(loot, getRandomMysteryBox());
+					}
 				}
 			}
 
