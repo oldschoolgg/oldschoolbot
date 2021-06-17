@@ -47,7 +47,8 @@ export default class extends BotCommand {
 			description: 'Sends your minion to runecraft at the dark altar.',
 			examples: ['+darkaltar soul', 'darkaltar blood'],
 			categoryFlags: ['skilling', 'minion'],
-			usage: '[blood|soul]'
+			usage: '[blood|soul]',
+			aliases: ['da']
 		});
 	}
 

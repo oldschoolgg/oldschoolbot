@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 import { createQueryBuilder } from 'typeorm';
 
+import { production } from '../config';
 import { ActivityTable } from '../lib/typeorm/ActivityTable.entity';
 
 export default class extends Task {
@@ -10,10 +11,11 @@ export default class extends Task {
 		}
 		const ticker = async () => {
 			try {
-				const query = createQueryBuilder(ActivityTable)
-					.select()
-					.where('completed = false')
-					.andWhere('finish_date < now()');
+				const query = createQueryBuilder(ActivityTable).select().where('completed = false');
+
+				if (production) {
+					query.andWhere('finish_date < now()');
+				}
 
 				const result = await query.getMany();
 				await Promise.all(result.map(r => r.complete()));

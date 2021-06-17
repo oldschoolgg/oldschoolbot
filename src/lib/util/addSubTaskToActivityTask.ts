@@ -1,6 +1,3 @@
-import { Time } from 'e';
-
-import { production } from '../../config';
 import { getActivityOfUser, minionActivityCache } from '../settings/settings';
 import { ActivityTable } from '../typeorm/ActivityTable.entity';
 import { ActivityTaskOptions } from '../types/minions';
@@ -13,8 +10,9 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 	if (usersTask) {
 		throw `That user is busy, so they can't do this minion activity. They have a ${usersTask.type} activity still ongoing`;
 	}
+	let duration = Math.floor(taskToAdd.duration);
 
-	const finishDate = new Date(Date.now() + (production ? taskToAdd.duration : Time.Second * 5));
+	const finishDate = new Date(Date.now() + duration);
 
 	let __newData: Partial<ActivityTaskOptions> = { ...taskToAdd };
 	delete __newData.type;
@@ -36,7 +34,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 	activity.data = newData;
 	activity.groupActivity = isGroupActivity(taskToAdd);
 	activity.channelID = taskToAdd.channelID;
-	activity.duration = Math.floor(taskToAdd.duration);
+	activity.duration = duration;
 	await activity.save();
 
 	const users = isGroupActivity(newData) ? newData.users : [taskToAdd.userID];
