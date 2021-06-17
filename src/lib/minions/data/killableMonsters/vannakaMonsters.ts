@@ -1090,7 +1090,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		qpRequired: 0,
 		levelRequirements: {
-			agility: 60,
 			slayer: 83
 		},
 		healAmountNeeded: 27,
