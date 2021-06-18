@@ -35,9 +35,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		difficultyRating: 4,
 		qpRequired: 0,
-		levelRequirements: {
-			agility: 60
-		},
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
 		healAmountNeeded: 24

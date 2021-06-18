@@ -28,9 +28,6 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Aviansie,
 		amount: [110, 170],
 		weight: 9,
-		levelRequirements: {
-			agility: 60
-		},
 		monsters: [Monsters.Aviansie.id, Monsters.Kreearra.id],
 		unlocked: false
 	},
