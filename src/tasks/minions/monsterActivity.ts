@@ -59,7 +59,7 @@ export default class extends Task {
 			: undefined;
 
 		const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
-		const isInCatacombs = 1 > 2 && !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
+		const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
 
 		const killOptions: MonsterKillOptions = {
 			onSlayerTask: isOnTask,
@@ -85,7 +85,8 @@ export default class extends Task {
 			taskQuantity: quantitySlayed,
 			minimal: false,
 			usingCannon,
-			cannonMulti
+			cannonMulti,
+			burstOrBarrage
 		});
 
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
