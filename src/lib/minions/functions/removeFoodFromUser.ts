@@ -58,7 +58,7 @@ export default async function removeFoodFromUser({
 			addBanks([client.settings.get(ClientSettings.EconomyStats.PVMCost), foodToRemove])
 		);
 
-		let reductionsStr = reductions.length > 0 ? ` **Base Food Reductions:** ${reductions.join(', ')}. ` : '';
+		let reductionsStr = reductions.length > 0 ? ` **Base Food Reductions:** ${reductions.join(', ')}.` : '';
 		return [`${new Bank(foodToRemove)} from ${user.username}${reductionsStr}`, foodToRemove];
 	}
 }
