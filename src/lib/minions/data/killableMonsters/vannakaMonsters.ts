@@ -561,7 +561,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 20 * 12,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearSetupTypes.Melee,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged, GearStat.AttackMagic]
 	},
 	{
@@ -933,7 +933,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		],
 		superior: Monsters.InsatiableMutatedBloodveld,
 		healAmountNeeded: 40,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackMagic],
 		canCannon: true,
 		cannonMulti: true

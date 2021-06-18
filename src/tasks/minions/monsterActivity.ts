@@ -30,17 +30,6 @@ export default class extends Task {
 			usersTask.currentTask !== null &&
 			usersTask.assignedTask.monsters.includes(monsterID);
 		const quantitySlayed = isOnTask ? Math.min(usersTask.currentTask!.quantityRemaining, quantity) : null;
-		const xpRes = await addMonsterXP(user, {
-			monsterID,
-			quantity,
-			duration,
-			isOnTask,
-			taskQuantity: quantitySlayed,
-			minimal: false,
-			usingCannon,
-			cannonMulti,
-			burstOrBarrage
-		});
 
 		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
 
@@ -60,7 +49,20 @@ export default class extends Task {
 			inCatacombs: isInCatacombs
 		};
 		const loot = monster.table.kill(quantity, killOptions);
+
 		const newSuperiorCount = loot.bank[420];
+		const xpRes = await addMonsterXP(user, {
+			monsterID,
+			quantity,
+			duration,
+			isOnTask,
+			taskQuantity: quantitySlayed,
+			minimal: false,
+			usingCannon,
+			cannonMulti,
+			burstOrBarrage,
+			superiorCount: newSuperiorCount
+		});
 
 		announceLoot(this.client, user, monster, loot.bank);
 		if (newSuperiorCount && newSuperiorCount > 0) {
