@@ -6,6 +6,7 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import {
 	calculateSlayerPoints,
@@ -98,12 +99,15 @@ export default class extends Task {
 			const thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {
 				const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
-				user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
+				await user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
 				const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
 				const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
-
 				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
+				if (usersTask.assignedTask?.isBoss) {
+					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5_000 })}`;
+					str += ' for completing your boss task.';
+				}
 			} else {
 				str += `\nYou killed ${effectiveSlayed}x of your ${
 					usersTask.currentTask!.quantityRemaining
