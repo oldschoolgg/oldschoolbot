@@ -651,10 +651,10 @@
   dependencies:
     "@octokit/openapi-types" "^7.3.2"
 
-"@oldschoolgg/eslint-config@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@oldschoolgg/eslint-config/-/eslint-config-1.2.1.tgz#be5758e28bdde9243f16a16433a5deda500123c9"
-  integrity sha512-LVtL17+19cxlC1XJodWafukh9LiCcJ6HCkbBs2yri2bXY5erLA16Dt/g6SuCcsNjPVtsXcxvfshPYRK5iCNEdg==
+"@oldschoolgg/eslint-config@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@oldschoolgg/eslint-config/-/eslint-config-1.2.2.tgz#3a8d06ca345023033029b1772513e2014057dab0"
+  integrity sha512-ot/wqPu1aFFKDfOdrA7PlMnvd8KPtkqh1BkcQ/QRjCCZgAbVEZJZrzDKQ7P8UAWj5ogsM++PL4tZhS5rC8NhBw==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.26.1"
     "@typescript-eslint/parser" "^4.26.1"
@@ -6118,10 +6118,10 @@ typeorm@^0.2.34:
     yargs "^16.2.0"
     zen-observable-ts "^1.0.0"
 
-typescript@^4.3.2:
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.2.tgz#399ab18aac45802d6f2498de5054fcbbe716a805"
-  integrity sha512-zZ4hShnmnoVnAHpVHWpTcxdv7dWP60S2FsydQLV8V5PbS3FifjWFFRiHSWpDJahly88PRyV5teTSLoq4eG7mKw==
+typescript@^4.3.4:
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.4.tgz#3f85b986945bcf31071decdd96cf8bfa65f9dcbc"
+  integrity sha512-uauPG7XZn9F/mo+7MrsRjyvbxFpzemRjKEZXS4AK83oP2KKOJPvb+9cO/gmnv8arWZvhnjVOXz7B49m1l0e9Ew==
 
 ultron@~1.1.0:
   version "1.1.1"
