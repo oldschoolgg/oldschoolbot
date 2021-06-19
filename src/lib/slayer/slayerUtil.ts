@@ -315,10 +315,12 @@ export function hasSlayerUnlock(
 
 export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	// Order: Fang, eye, heart.
-	const numBlackMask = myLoot.bank[itemID('Black mask (10)')];
-	const numHydraEyes = myLoot.bank[itemID("Hydra's eye")];
-	const numDarkTotemBases = myLoot.bank[itemID('Dark totem base')];
-	const numBludgeonPieces = myLoot.bank[itemID('Bludgeon claw')];
+	const numBlackMask = myLoot.amount('Black mask (10)');
+	let numHydraEyes = myLoot.amount("Hydra's eye");
+	numHydraEyes += myLoot.amount("Hydra's fang");
+	numHydraEyes += myLoot.amount("Hydra's heart");
+	const numDarkTotemBases = myLoot.amount('Dark totem base');
+	const numBludgeonPieces = myLoot.amount('Bludgeon claw');
 	const ringPieces = resolveItems(["Hydra's eye", "Hydra's fang", "Hydra's heart"]) as number[];
 	const totemPieces = resolveItems(['Dark totem base', 'Dark totem middle', 'Dark totem top']) as number[];
 	const bludgeonPieces = resolveItems(['Bludgeon claw', 'Bludgeon spine', 'Bludgeon axon']) as number[];
@@ -328,6 +330,8 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 			l.id !== 420 &&
 			l.id !== itemID('Black mask (10)') &&
 			l.id !== itemID("Hydra's eye") &&
+			l.id !== itemID("Hydra's fang") &&
+			l.id !== itemID("Hydra's heart") &&
 			l.id !== itemID('Dark totem base') &&
 			l.id !== itemID('Bludgeon claw')
 		);
