@@ -414,7 +414,7 @@ export const bosses: CollectionLogData = {
 		'Ancestral robe bottom',
 		'Twisted buckler'
 	]),
-	Cox2: resolveItems(["Dinh's bulwark", 'Dark relic', 'Metamorphic dust', 'Olmlet', 'Twisted ancestral colour kit']),
+	Cox2: resolveItems(["Dinh's bulwark", 'Dark relic', 'Olmlet']),
 	Skotizo: resolveItems([
 		'Dark totem',
 		'Dark claw',
