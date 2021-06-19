@@ -198,6 +198,12 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientName: Monsters.AbyssalDemon.name,
 		efficientMonster: Monsters.AbyssalDemon.id,
 		efficientMethod: AutoSlayMethod.Barrage
+	},
+	{
+		monsterID: Monsters.Lizardman.id,
+		efficientName: Monsters.Lizardman.name,
+		efficientMonster: Monsters.Lizardman.id,
+		efficientMethod: AutoSlayMethod.Cannon
 	}
 ];
 function determineAutoslayMethod(

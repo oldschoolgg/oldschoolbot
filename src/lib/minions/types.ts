@@ -136,6 +136,7 @@ export interface AddMonsterXpParams {
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
 	burstOrBarrage?: number;
+	superiorCount?: number;
 }
 
 export interface DetermineBoostParams {

@@ -693,6 +693,18 @@ export const KourendKebosDiary: Diary = {
 		name: 'Easy',
 		item: getOSItem("Rada's blessing 1"),
 		skillReqs: {
+			construction: 25,
+			fishing: 20,
+			herblore: 12,
+			mining: 15,
+			thieving: 25
+		},
+		collectionLogReqs: resolveItems(['Iron ore', 'Raw trout', 'Strength potion(3)'])
+	},
+	medium: {
+		name: 'Medium',
+		item: getOSItem("Rada's blessing 2"),
+		skillReqs: {
 			agility: 49,
 			crafting: 30,
 			farming: 45,
@@ -701,18 +713,6 @@ export const KourendKebosDiary: Diary = {
 			hunter: 53,
 			mining: 42,
 			woodcutting: 50
-		},
-		collectionLogReqs: resolveItems(['Iron ore', 'Raw trout', 'Strength potion(3)'])
-	},
-	medium: {
-		name: 'Medium',
-		item: getOSItem("Rada's blessing 2"),
-		skillReqs: {
-			construction: 25,
-			fishing: 20,
-			herblore: 12,
-			mining: 15,
-			thieving: 25
 		},
 		minigameReqs: {
 			Wintertodt: 1
