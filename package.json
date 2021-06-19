@@ -21,7 +21,7 @@
 		"canvas-constructor": "^1.1.2",
 		"chokidar": "^3.5.2",
 		"discord.js": "^12.5.3",
-		"e": "^0.2.0",
+		"e": "^0.2.1",
 		"emoji-regex": "^9.2.2",
 		"fastify": "^3.18.0",
 		"fastify-cors": "^5.2.0",

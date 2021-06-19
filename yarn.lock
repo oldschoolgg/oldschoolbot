@@ -2018,6 +2018,11 @@ e@^0.2.0:
   resolved "https://registry.yarnpkg.com/e/-/e-0.2.0.tgz#6ecc0558a5845616054856054884a76901dc5d49"
   integrity sha512-+Pmk1Wh5M3HKmGkgmvuQfbDzmNbRbpHvjEORN8lW6Zc5Qo2HlTVgTQsbCw9y3V6J84LAy987QGRdZnJ8sBXjtw==
 
+e@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/e/-/e-0.2.1.tgz#ecef23b48dd3b8122bcb974d8f9caf906f6c2338"
+  integrity sha512-07oBQ1ewLgTChyGb2H9HrdUjCK/yFDmPHf7WQCZf+m4Rzyrw9gK8wjBVYWpOHntTKxGxxwXA/lyCBYWy4XlfWw==
+
 ecc-jsbn@~0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/ecc-jsbn/-/ecc-jsbn-0.1.2.tgz#3a83a904e54353287874c564b7549386849a98c9"
