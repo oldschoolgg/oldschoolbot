@@ -25,6 +25,8 @@ export default function calculateMonsterFood(
 
 	let totalPercentOfGearLevel = 0;
 	let totalOffensivePercent = 0;
+	
+	//Check all styles the monster uses for defensive%
 	for (const style of attackStylesUsed) {
 		const inverseStyle = inverseOfOffenceStat(style);
 		const usersStyle = gearStats[inverseStyle];
@@ -32,12 +34,14 @@ export default function calculateMonsterFood(
 		const percent = floor(calcWhatPercent(usersStyle, maxStyle));
 		messages.push(`Your ${inverseStyle} bonus is ${percent}% of the best (${usersStyle} out of ${maxStyle})`);
 		totalPercentOfGearLevel += percent;
-
-		totalOffensivePercent += floor(calcWhatPercent(gearStats[style], maxOffenceStats[style]));
 	}
+	
+	totalOffensivePercent = floor(calcWhatPercent(gearStats[attackStyleToUse], maxOffenceStats[attackStyleToUse]));
 
+	//Get average of all defensive%'s and limit it to a cap of 95
 	totalPercentOfGearLevel = Math.min(floor(max(0, totalPercentOfGearLevel / attackStylesUsed.length)), 95);
-	totalOffensivePercent = floor(max(0, totalOffensivePercent / attackStylesUsed.length));
+	//Floor at 0 and cap at 95
+	totalOffensivePercent = Math.min(floor(max(0, totalOffensivePercent)), 95);
 
 	messages.push(`You use ${floor(totalPercentOfGearLevel)}% less food because of your defensive stats.`);
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel));
