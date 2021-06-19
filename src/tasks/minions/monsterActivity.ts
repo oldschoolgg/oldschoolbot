@@ -49,6 +49,7 @@ export default class extends Task {
 			usersTask.assignedTask !== null &&
 			usersTask.currentTask !== null &&
 			usersTask.assignedTask.monsters.includes(monsterID);
+		const quantitySlayed = isOnTask ? Math.min(usersTask.currentTask!.quantityRemaining, quantity) : null;
 
 		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
 
@@ -74,8 +75,6 @@ export default class extends Task {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
 			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
 		}
-
-		const quantitySlayed = isOnTask ? Math.min(usersTask.currentTask!.quantityRemaining, quantity) : null;
 
 		const xpRes = await addMonsterXP(user, {
 			monsterID,
@@ -210,12 +209,15 @@ export default class extends Task {
 			const thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {
 				const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
-				user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
+				await user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
 				const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
 				const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
-
 				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
+				if (usersTask.assignedTask?.isBoss) {
+					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5_000 })}`;
+					str += ' for completing your boss task.';
+				}
 			} else {
 				str += `\nYou killed ${effectiveSlayed}x of your ${
 					usersTask.currentTask!.quantityRemaining

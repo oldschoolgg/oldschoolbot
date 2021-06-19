@@ -98,8 +98,23 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		? randomVariation(Math.floor((xpPercentToCannon / 100) * params.quantity), xpCannonVaryPercent)
 		: 0;
 
-	const normalQty = params.quantity - cannonQty;
+	// Remove superiors from the regular count to be added separately.
+	let normalQty = 0;
+	let superiorQty = 0;
+	let osjsSuperior: Monster | undefined = undefined;
+	if (params.isOnTask && params.superiorCount && monster?.superior) {
+		osjsSuperior = monster.superior;
+		if (osjsSuperior?.data?.hitpoints && osjsSuperior?.data?.slayerXP) {
+			normalQty = params.quantity - cannonQty - params.superiorCount;
+			superiorQty = params.superiorCount;
+		} else {
+			normalQty = params.quantity - cannonQty;
+		}
+	} else {
+		normalQty = params.quantity - cannonQty;
+	}
 
+	// Calculate regular monster XP
 	if (monster && monster.customMonsterHP) {
 		hp = monster.customMonsterHP;
 	} else if (osjsMon?.data?.hitpoints) {
@@ -108,7 +123,16 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 	if (monster && monster.combatXpMultiplier) {
 		xpMultiplier = monster.combatXpMultiplier;
 	}
-	const totalXP = hp * 4 * normalQty * xpMultiplier;
+
+	// Calculate superior XP:
+	let superiorSlayXp = 0;
+	let superiorXp = 0;
+	if (superiorQty) {
+		superiorXp = 4 * superiorQty * osjsSuperior!.data!.hitpoints;
+		superiorSlayXp = superiorQty * osjsSuperior!.data!.slayerXP;
+	}
+
+	const totalXP = hp * 4 * normalQty * xpMultiplier + superiorXp;
 	const xpPerSkill = totalXP / attackStyles.length;
 
 	let res: string[] = [];
@@ -143,7 +167,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		res.push(
 			await user.addXP({
 				skillName: SkillsEnum.Slayer,
-				amount: newSlayerXP,
+				amount: newSlayerXP + superiorSlayXp,
 				duration: params.duration,
 				minimal: params.minimal ?? true
 			})
@@ -153,7 +177,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 	res.push(
 		await user.addXP({
 			skillName: SkillsEnum.Hitpoints,
-			amount: Math.floor(hp * params.quantity * 1.33 * xpMultiplier),
+			amount: Math.floor(hp * normalQty * 1.33 * xpMultiplier + superiorXp / 3),
 			duration: params.duration,
 			minimal: params.minimal ?? true
 		})
