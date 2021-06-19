@@ -94,6 +94,9 @@ export interface Rune {
 	name: string;
 	qpRequired?: number;
 	tripLength: number;
+	inputRune?: Bank;
+	inputTalisman?: Bank;
+	runners?: boolean;
 }
 
 export interface Cookable {
