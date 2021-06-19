@@ -71,7 +71,6 @@ export default class BankImageTask extends Task {
 	public borderVertical: Image | null = null;
 
 	public imageHamstare: Image | null = null;
-	public imageHamstare2: Image | null = null;
 	public constructor(store: TaskStore, file: string[], directory: string) {
 		super(store, file, directory, {});
 
@@ -117,8 +116,6 @@ export default class BankImageTask extends Task {
 			fs.readFileSync('./src/lib/resources/images/bank_border_v.png')
 		);
 		this.imageHamstare = await canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/hamstare.png'));
-
-		this.imageHamstare2 = await canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/hamstare2.png'));
 	}
 
 	async cacheFiles() {
@@ -240,15 +237,16 @@ export default class BankImageTask extends Task {
 	}
 
 	addsHamstare(canvas: Canvas, wide = false) {
+		if (!roll(100)) return;
 		const ctx = canvas.getContext('2d');
 		ctx.save();
-		ctx.globalAlpha = 0.15;
-		const ham = (roll(100) ? this.imageHamstare2 : this.imageHamstare)!;
+		ctx.globalAlpha = 0.9;
+		const ham = this.imageHamstare!;
 		ctx.translate(
 			wide ? this.borderVertical?.width! : canvas.width / 2 - ham.width! / 2,
 			canvas.height - ham.height! - this.borderHorizontal?.height!
 		);
-		ctx.drawImage(ham, 0, 0, wide ? canvas.width - this.borderVertical?.width! * 2 : ham.width!, ham.height!);
+		ctx.drawImage(ham, 0, 0, wide ? canvas.width - this.borderVertical?.width! * 2 : ham.width!, canvas.height / 2);
 		ctx.restore();
 	}
 
