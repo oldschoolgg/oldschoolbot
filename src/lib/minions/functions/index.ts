@@ -102,13 +102,13 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 
 	// Calculate superior XP:
 	let superiorSlayXp = 0;
-	let superiorHpXp = 0;
+	let superiorXp = 0;
 	if (superiorQty) {
-		superiorHpXp = 4 * superiorQty * osjsSuperior!.data!.hitpoints;
-		superiorSlayXp = osjsSuperior!.data!.slayerXP;
+		superiorXp = 4 * superiorQty * osjsSuperior!.data!.hitpoints;
+		superiorSlayXp = superiorQty * osjsSuperior!.data!.slayerXP;
 	}
 
-	const totalXP = hp * 4 * normalQty * xpMultiplier + superiorHpXp;
+	const totalXP = hp * 4 * normalQty * xpMultiplier + superiorXp;
 	const xpPerSkill = totalXP / attackStyles.length;
 
 	let res: string[] = [];
@@ -151,7 +151,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 	res.push(
 		await user.addXP({
 			skillName: SkillsEnum.Hitpoints,
-			amount: Math.floor(hp * params.quantity * 1.33 * xpMultiplier),
+			amount: Math.floor(hp * normalQty * 1.33 * xpMultiplier + superiorXp / 3),
 			duration: params.duration,
 			minimal: params.minimal ?? true
 		})
