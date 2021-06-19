@@ -475,7 +475,7 @@ export default class extends BotCommand {
 		}
 
 		if (foodStr) {
-			response += ` Removed ${foodStr}.\n`;
+			response += ` Removed ${foodStr}\n`;
 		}
 
 		if (hasBlessing) {

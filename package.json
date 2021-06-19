@@ -35,7 +35,7 @@
 		"klasa": "github:gc/klasa#b7851bbb43a9130353cef990817ff39e91202547",
 		"klasa-decorators": "^0.0.1",
 		"node-fetch": "^2.6.1",
-		"oldschooljs": "1.9.2",
+		"oldschooljs": "^1.9.3",
 		"p-queue": "^6.6.2",
 		"pg": "^8.6.0",
 		"piscina": "^3.1.0",
@@ -52,7 +52,7 @@
 		"zlib-sync": "^0.1.7"
 	},
 	"devDependencies": {
-		"@oldschoolgg/eslint-config": "^1.2.1",
+		"@oldschoolgg/eslint-config": "^1.2.2",
 		"@types/he": "^1.1.1",
 		"@types/jest": "^26.0.23",
 		"@types/node": "^14.14.41",
@@ -66,7 +66,7 @@
 		"jest-circus": "^26.6.3",
 		"rimraf": "^3.0.2",
 		"ts-jest": "^26.5.5",
-		"typescript": "^4.3.2"
+		"typescript": "^4.3.4"
 	},
 	"engines": {
 		"node": ">=14.0"

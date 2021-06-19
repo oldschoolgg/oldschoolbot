@@ -47,9 +47,6 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Aviansie,
 		amount: [120, 185],
 		weight: 6,
-		levelRequirements: {
-			agility: 60
-		},
 		monsters: [Monsters.Aviansie.id, Monsters.Kreearra.id],
 		unlocked: false
 	},
