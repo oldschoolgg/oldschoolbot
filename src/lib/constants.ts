@@ -1,3 +1,4 @@
+import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
@@ -464,6 +465,6 @@ export const skillEmoji = {
 	dungeoneering: '<:dungeoneering:828683755198873623>'
 };
 
-export const LEVEL_99_XP = 13_034_431;
+export const LEVEL_120_XP = convertLVLtoXP(120);
 export const MAX_LEVEL = 120;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
