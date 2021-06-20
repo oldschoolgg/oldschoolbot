@@ -1,16 +1,18 @@
-import { Inhibitor, KlasaMessage } from 'klasa';
+import { Command, Inhibitor, KlasaMessage } from 'klasa';
 
-import { Channel, SupportServer } from '../lib/constants';
+import { Channel } from '../lib/constants';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 
 export default class extends Inhibitor {
-	async run(msg: KlasaMessage) {
+	async run(msg: KlasaMessage, cmd: Command) {
 		if (!msg.guild) return;
+		if (msg.channel.id === '855691390339121194' && cmd.name === 'tag') {
+			return;
+		}
 		if (
 			msg.guild &&
-			msg.guild.id === SupportServer &&
-			msg.channel.id === Channel.SupportChannel &&
+			[Channel.SupportChannel, '855691390339121194'].includes(msg.channel.id) &&
 			msg.author.settings.get(UserSettings.Badges).includes(5)
 		) {
 			return;

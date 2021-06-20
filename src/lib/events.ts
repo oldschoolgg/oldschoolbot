@@ -1,9 +1,11 @@
-import { KlasaUser } from 'klasa';
+import { noOp } from 'e';
+import { KlasaClient, KlasaUser } from 'klasa';
 import { getConnection } from 'typeorm';
 
 import { Events, LEVEL_99_XP } from './constants';
 import Skills from './skilling/skills';
 import { formatOrdinal } from './util/formatOrdinal';
+import { sendToChannelID } from './util/webhook';
 
 const skillsVals = Object.values(Skills);
 const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${LEVEL_99_XP}`).join(' AND ');
@@ -34,6 +36,6 @@ export async function onMax(user: KlasaUser) {
 	)}** minion to be maxed${user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'} 🎉`;
 
 	user.client.emit(Events.ServerNotification, str);
-
-	user.send('Congratulations on maxing!');
+	sendToChannelID(user.client as KlasaClient, '342983479501389826', { content: str }).catch(noOp);
+	user.send('Congratulations on maxing!').catch(noOp);
 }
