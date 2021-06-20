@@ -118,6 +118,7 @@ interface BossOptions {
 	minSize: number;
 	solo: boolean;
 	canDie: boolean;
+	kcLearningCap?: number;
 }
 
 export interface BossUser {
@@ -152,6 +153,7 @@ export class BossInstance {
 	minSize: number;
 	solo: boolean;
 	canDie: boolean;
+	kcLearningCap: number;
 
 	constructor(options: BossOptions) {
 		this.baseDuration = options.baseDuration;
@@ -172,6 +174,7 @@ export class BossInstance {
 		this.minSize = options.minSize;
 		this.solo = options.solo;
 		this.canDie = options.canDie;
+		this.kcLearningCap = options.kcLearningCap ?? 250;
 		this.massText = [
 			options.massText,
 			'\n',
@@ -252,7 +255,6 @@ export class BossInstance {
 		const speedReductionForKC = 35;
 		let speedReductionForBoosts = sumArr(this.itemBoosts.map(i => i[1]));
 		const totalSpeedReduction = speedReductionForGear + speedReductionForKC + speedReductionForBoosts;
-		const kcCap = 250;
 
 		const bossUsers: BossUser[] = [];
 		let totalPercent = 0;
@@ -271,7 +273,7 @@ export class BossInstance {
 
 			// KC
 			const kc = user.getKC(this.id);
-			const kcPercent = Math.min(100, calcWhatPercent(kc, kcCap));
+			const kcPercent = Math.min(100, calcWhatPercent(kc, this.kcLearningCap));
 			const kcBoostPercent = calcPercentOfNum(kcPercent, speedReductionForKC);
 			userPercentChange += kcBoostPercent;
 			debugStr.push(`**KC**[${kcPercent.toFixed(1)}%]`);

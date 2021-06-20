@@ -70,7 +70,8 @@ export default class extends BotCommand {
 			massText: `${msg.author.username} is assembling a team to fight King Goldemar! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			minSize: 1,
 			solo: false,
-			canDie: true
+			canDie: true,
+			kcLearningCap: 50
 		});
 		try {
 			if (msg.flagArgs.s1mulat3) {
