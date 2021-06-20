@@ -22,7 +22,8 @@ export const VasaMagusLootTable = new LootTable()
 	.tertiary(1000, 'Jar of magic')
 	.tertiary(500, 'Voidling')
 	.tertiary(350, 'Magus scroll')
-	.tertiary(350, 'Tattered robes of Vasa');
+	.tertiary(350, 'Tattered robes of Vasa')
+	.tertiary(3, 'Magical artifact');
 
 setCustomMonster(294819, 'Vasa Magus', VasaMagusLootTable, Monsters.GeneralGraardor, {
 	id: 294819,
