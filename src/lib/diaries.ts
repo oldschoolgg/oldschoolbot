@@ -750,7 +750,7 @@ export const KourendKebosDiary: Diary = {
 			mining: 38,
 			runecraft: 77,
 			slayer: 95,
-			woodcutting: 95
+			woodcutting: 90
 		},
 		collectionLogReqs: resolveItems(['Blood rune', 'Redwood logs', 'Dark totem', 'Raw anglerfish']),
 		monsterScores: {
