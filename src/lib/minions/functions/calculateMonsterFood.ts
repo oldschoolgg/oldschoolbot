@@ -21,18 +21,23 @@ export default function calculateMonsterFood(
 
 	messages.push(`${monster.name} needs ${healAmountNeeded}HP worth of food per kill.`);
 
-	let gearToCheck;
+	let gearToCheck = GearSetupTypes.Melee;
 
 	switch (attackStyleToUse) {
-		case GearStat.AttackMagic: gearToCheck = GearSetupTypes.Mage;
+		case GearStat.AttackMagic:
+			gearToCheck = GearSetupTypes.Mage;
 			break;
-		case GearStat.AttackRanged: gearToCheck = GearSetupTypes.Range;
+		case GearStat.AttackRanged:
+			gearToCheck = GearSetupTypes.Range;
 			break;
-		case GearStat.AttackSlash: gearToCheck = GearSetupTypes.Melee;
+		case GearStat.AttackSlash:
+			gearToCheck = GearSetupTypes.Melee;
 			break;
-		case GearStat.AttackStab: gearToCheck = GearSetupTypes.Melee;
+		case GearStat.AttackStab:
+			gearToCheck = GearSetupTypes.Melee;
 			break;
-		case GearStat.AttackCrush: gearToCheck = GearSetupTypes.Melee;
+		case GearStat.AttackCrush:
+			gearToCheck = GearSetupTypes.Melee;
 			break;
 	}
 
@@ -40,8 +45,8 @@ export default function calculateMonsterFood(
 
 	let totalPercentOfGearLevel = 0;
 	let totalOffensivePercent = 0;
-	
-	//Check all styles the monster uses for defensive%
+
+	// Check all styles the monster uses for defensive%
 	for (const style of attackStylesUsed) {
 		const inverseStyle = inverseOfOffenceStat(style);
 		const usersStyle = gearStats[inverseStyle];
@@ -50,12 +55,12 @@ export default function calculateMonsterFood(
 		messages.push(`Your ${inverseStyle} bonus is ${percent}% of the best (${usersStyle} out of ${maxStyle})`);
 		totalPercentOfGearLevel += percent;
 	}
-	
+
 	totalOffensivePercent = floor(calcWhatPercent(gearStats[attackStyleToUse], maxOffenceStats[attackStyleToUse]));
 
-	//Get average of all defensive%'s and limit it to a cap of 95
+	// Get average of all defensive%'s and limit it to a cap of 95
 	totalPercentOfGearLevel = Math.min(floor(max(0, totalPercentOfGearLevel / attackStylesUsed.length)), 95);
-	//Floor at 0 and cap at 95
+	// Floor at 0 and cap at 95
 	totalOffensivePercent = Math.min(floor(max(0, totalOffensivePercent)), 95);
 
 	messages.push(`You use ${floor(totalPercentOfGearLevel)}% less food because of your defensive stats.`);

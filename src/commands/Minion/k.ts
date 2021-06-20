@@ -338,25 +338,27 @@ export default class extends BotCommand {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
 
-			let gearToCheck;
+			let gearToCheck = GearSetupTypes.Melee;
 
 			switch (monster.attackStyleToUse) {
-				case GearStat.AttackMagic: gearToCheck = GearSetupTypes.Mage;
+				case GearStat.AttackMagic:
+					gearToCheck = GearSetupTypes.Mage;
 					break;
-				case GearStat.AttackRanged: gearToCheck = GearSetupTypes.Range;
+				case GearStat.AttackRanged:
+					gearToCheck = GearSetupTypes.Range;
 					break;
-				case GearStat.AttackSlash: gearToCheck = GearSetupTypes.Melee;
+				case GearStat.AttackSlash:
+					gearToCheck = GearSetupTypes.Melee;
 					break;
-				case GearStat.AttackStab: gearToCheck = GearSetupTypes.Melee;
+				case GearStat.AttackStab:
+					gearToCheck = GearSetupTypes.Melee;
 					break;
-				case GearStat.AttackCrush: gearToCheck = GearSetupTypes.Melee;
+				case GearStat.AttackCrush:
+					gearToCheck = GearSetupTypes.Melee;
 					break;
 			}
 
 			const [result] = await removeFoodFromUser({
-
-
-
 				client: this.client,
 				user: msg.author,
 				totalHealingNeeded: healAmountNeeded * quantity,
