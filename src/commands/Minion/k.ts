@@ -347,14 +347,7 @@ export default class extends BotCommand {
 				case GearStat.AttackRanged:
 					gearToCheck = GearSetupTypes.Range;
 					break;
-				case GearStat.AttackSlash:
-					gearToCheck = GearSetupTypes.Melee;
-					break;
-				case GearStat.AttackStab:
-					gearToCheck = GearSetupTypes.Melee;
-					break;
-				case GearStat.AttackCrush:
-					gearToCheck = GearSetupTypes.Melee;
+				default:
 					break;
 			}
 
