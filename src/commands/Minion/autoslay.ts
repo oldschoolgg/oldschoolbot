@@ -313,8 +313,9 @@ export default class extends BotCommand {
 			if (
 				ehpKillable?.levelRequirements !== undefined &&
 				!msg.author.hasSkillReqs(ehpKillable.levelRequirements)[0]
-			)
+			) {
 				return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
+			}
 
 			if (ehpMonster && ehpMonster.efficientName) {
 				if (ehpMonster.efficientMethod) msg.flagArgs[ehpMonster.efficientMethod] = 'force';
