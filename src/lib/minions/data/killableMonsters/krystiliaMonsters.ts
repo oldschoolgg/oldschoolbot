@@ -6,17 +6,6 @@ import { KillableMonster } from '../../types';
 
 export const krystiliaMonsters: KillableMonster[] = [
 	{
-		id: Monsters.DesertBandit.id,
-		name: Monsters.DesertBandit.name,
-		aliases: Monsters.DesertBandit.aliases,
-		timeToFinish: Time.Second * 14,
-		table: Monsters.DesertBandit,
-		wildy: true,
-
-		difficultyRating: 3,
-		qpRequired: 0
-	},
-	{
 		id: Monsters.BlackKnight.id,
 		name: Monsters.BlackKnight.name,
 		aliases: Monsters.BlackKnight.aliases,
@@ -177,18 +166,6 @@ export const krystiliaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			// thieving: 39
 		},
-		qpRequired: 0
-	},
-	{
-		id: Monsters.Rogue.id,
-		name: Monsters.Rogue.name,
-		aliases: Monsters.Rogue.aliases,
-		timeToFinish: Time.Second * 20,
-		table: Monsters.Rogue,
-
-		wildy: true,
-
-		difficultyRating: 5,
 		qpRequired: 0
 	}
 ];
