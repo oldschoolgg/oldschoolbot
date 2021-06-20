@@ -861,7 +861,7 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'Diaries',
 		aliases: ['diaries', 'diary', 'ad'],
-		items: diango
+		items: diaries
 	},
 	{
 		name: 'Crafting',
