@@ -242,7 +242,8 @@ const killableMonsters: KillableMonster[] = [
 		respawnTime: Time.Second * 20,
 		levelRequirements: {
 			prayer: 43,
-			ranged: 105
+			ranged: 105,
+			slayer: 101
 		},
 		pohBoosts: {
 			pool: {
@@ -375,7 +376,8 @@ const killableMonsters: KillableMonster[] = [
 			}
 		},
 		levelRequirements: {
-			magic: 105
+			magic: 105,
+			slayer: 101
 		},
 		pohBoosts: {
 			pool: {
