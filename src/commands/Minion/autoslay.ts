@@ -318,9 +318,8 @@ export default class extends BotCommand {
 				}
 			});
 
-			//If we don't have the requirements for the efficient monster, revert to default monster
-			if (cantEHP)
-				return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
+			// If we don't have the requirements for the efficient monster, revert to default monster
+			if (cantEHP) return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
 
 			if (ehpMonster && ehpMonster.efficientName) {
 				if (ehpMonster.efficientMethod) msg.flagArgs[ehpMonster.efficientMethod] = 'force';
