@@ -34,8 +34,8 @@ export default class extends BotCommand {
 				return msg.send('You can only dice up to 500m at a time!');
 			}
 
-			if (amount < 200_000) {
-				return msg.send('You have to dice atleast 200k.');
+			if (amount < 1_000_000) {
+				return msg.send('You have to dice atleast 1,000,000.');
 			}
 
 			await msg.author.settings.sync(true);
@@ -43,7 +43,6 @@ export default class extends BotCommand {
 			if (amount > gp) return msg.send("You don't have enough GP.");
 			const won = roll >= 55;
 			let amountToAdd = won ? amount : -amount;
-			if (roll === 73) amountToAdd += amount > 100 ? amount * 0.2 : amount + 73;
 
 			await msg.author.addGP(amountToAdd);
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceDice, amountToAdd);
