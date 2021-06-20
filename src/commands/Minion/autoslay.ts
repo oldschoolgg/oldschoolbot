@@ -307,19 +307,14 @@ export default class extends BotCommand {
 				return masterMatch && e.monsterID === usersTask.assignedTask!.monster.id;
 			});
 
-			const allMonsters = killableMonsters.filter(m => {
-				return usersTask.assignedTask!.monsters.includes(m.id);
-			});
-
-			const cantEHP = allMonsters.some(m => {
-				if (m.levelRequirements !== undefined) {
-					const [hasSkillReqs] = msg.author.hasSkillReqs(m.levelRequirements);
-					return m.id === ehpMonster?.efficientMonster && !hasSkillReqs;
-				}
-			});
+			const ehpKillable = killableMonsters.find(m => m.id === ehpMonster?.efficientMonster);
 
 			// If we don't have the requirements for the efficient monster, revert to default monster
-			if (cantEHP) return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
+			if (
+				ehpKillable?.levelRequirements !== undefined &&
+				!msg.author.hasSkillReqs(ehpKillable.levelRequirements)[0]
+			)
+				return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
 
 			if (ehpMonster && ehpMonster.efficientName) {
 				if (ehpMonster.efficientMethod) msg.flagArgs[ehpMonster.efficientMethod] = 'force';
