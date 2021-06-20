@@ -68,7 +68,7 @@ export default function calculateMonsterFood(
 			2
 		)}% less food (${healAmountNeeded}HP instead of ${
 			monster.healAmountNeeded
-		}HP) because of your ${attackStyleToUse} gear`
+		}HP) because of your ${gearToCheck} gear`
 	);
 
 	return [healAmountNeeded, messages];
