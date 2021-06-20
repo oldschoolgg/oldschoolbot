@@ -66,7 +66,7 @@ export const cannonSingleConsumables: Consumable = {
 };
 export const cannonMultiConsumables: Consumable = {
 	itemCost: new Bank().add('Cannonball', 1),
-	qtyPerMinute: 60
+	qtyPerMinute: 50
 };
 // 20% less than always casting to lure.
 export const iceBarrageConsumables: Consumable = {

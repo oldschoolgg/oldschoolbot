@@ -18,11 +18,12 @@ import { LampTable } from '../../lib/xpLamps';
 
 const eightHours = Time.Hour * 8;
 const contractTable = new LootTable()
-	.every('Coins', [500_000, 2_500_000])
+	.every('Coins', [1_000_000, 3_500_000])
 	.tertiary(50, LampTable)
 	.tertiary(50, MysteryBoxes)
 	.add(DragonTable, [1, 2], 2)
 	.add(runeAlchablesTable, [1, 3], 3)
+	.every(runeAlchablesTable, [1, 3])
 	.add(
 		new LootTable()
 			.add('Clue scroll (beginner)', 1, 50)

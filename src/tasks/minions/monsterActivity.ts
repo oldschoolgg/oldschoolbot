@@ -70,12 +70,6 @@ export default class extends Task {
 		};
 		const loot = (monster as KillableMonster).table.kill(Math.ceil(quantity * abyssalBonus), killOptions);
 		const newSuperiorCount = loot.bank[420];
-
-		if (newSuperiorCount && newSuperiorCount > 0) {
-			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
-			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
-		}
-
 		const xpRes = await addMonsterXP(user, {
 			monsterID,
 			quantity,
@@ -85,8 +79,14 @@ export default class extends Task {
 			minimal: false,
 			usingCannon,
 			cannonMulti,
-			burstOrBarrage
+			burstOrBarrage,
+			superiorCount: newSuperiorCount
 		});
+
+		if (newSuperiorCount && newSuperiorCount > 0) {
+			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
+			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
+		}
 
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
 		let str =

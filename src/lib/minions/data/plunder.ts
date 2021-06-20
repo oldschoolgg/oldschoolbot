@@ -109,7 +109,7 @@ export const plunderRooms = [
 		number: 8,
 		petChance: 2000,
 		thievingLevel: 91,
-		xp: 12_423,
+		xp: 12_665,
 		rockyChance: 6893,
 		roomTable: Room8Table
 	}

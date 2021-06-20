@@ -672,7 +672,7 @@ const Buyables: Buyable[] = [
 		outputItems: {
 			[itemID('Potato with cheese')]: 1
 		},
-		gpCost: 850,
+		gpCost: 1666,
 		skillsNeeded: {
 			attack: 65,
 			strength: 65

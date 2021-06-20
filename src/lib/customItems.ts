@@ -1551,3 +1551,12 @@ setCustomItem(50_020, 'Elder bow', 'Mahogany plank', {}, 10_000);
 setCustomItem(50_021, 'Elder rune', 'Fire rune', {}, 500);
 setCustomItem(50_022, 'Jar of magic', 'Fire rune', {}, 1_000_000);
 setCustomItem(50_023, 'Magus scroll', 'Fire rune', {}, 500_000);
+setCustomItem(
+	50_024,
+	'Magical artifact',
+	'Fire rune',
+	{
+		highalch: 50_000_000
+	},
+	50_000_000
+);
