@@ -1,7 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 
-import { maxDefenceStats, maxOffenceStats } from '../../gear';
+import { GearSetupTypes, GearStat, maxDefenceStats, maxOffenceStats } from '../../gear';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
 import { calcWhatPercent, reduceNumByPercent } from '../../util';
 import { KillableMonster } from '../types';
@@ -21,7 +21,23 @@ export default function calculateMonsterFood(
 
 	messages.push(`${monster.name} needs ${healAmountNeeded}HP worth of food per kill.`);
 
-	const gearStats = user.getGear(attackStyleToUse).stats;
+	let gearToCheck = GearSetupTypes.Melee;
+
+	switch (attackStyleToUse) {
+		case GearStat.AttackMagic: gearToCheck = GearSetupTypes.Mage;
+			break;
+		case GearStat.AttackRanged: gearToCheck = GearSetupTypes.Range;
+			break;
+		case GearStat.AttackSlash: gearToCheck = GearSetupTypes.Melee;
+			break;
+		case GearStat.AttackStab: gearToCheck = GearSetupTypes.Melee;
+			break;
+		case GearStat.AttackCrush: gearToCheck = GearSetupTypes.Melee;
+			break;
+		default: gearToCheck = GearSetupTypes.Melee;
+	}
+
+	const gearStats = user.getGear(gearToCheck).stats;
 
 	let totalPercentOfGearLevel = 0;
 	let totalOffensivePercent = 0;

@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { GearSetupTypes, GearStat } from '../../../gear';
+import { GearStat } from '../../../gear';
 import { SkillsEnum } from '../../../skilling/types';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
@@ -22,7 +22,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 57
 		},
 		healAmountNeeded: 16,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged]
 	},
 	{
@@ -59,7 +59,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 30,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		// Even if no multi, can safespot for same effect
@@ -85,7 +85,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.CaveAbomination,
 		healAmountNeeded: 20,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic],
 		canCannon: true,
 		cannonMulti: false,
@@ -108,7 +108,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Magic],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
 		healAmountNeeded: 20,
-		attackStyleToUse: GearSetupTypes.Mage,
+		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
@@ -128,7 +128,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 82
 		},
 		healAmountNeeded: 20 * 4,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged]
 	},
 	{
@@ -149,7 +149,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 66
 		},
 		healAmountNeeded: 20 * 2,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -170,7 +170,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 66
 		},
 		healAmountNeeded: 45,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged]
 	},
 	{
@@ -191,7 +191,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 66
 		},
 		healAmountNeeded: 50,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged]
 	},
 	{
@@ -215,7 +215,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 18,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: true,
@@ -236,7 +236,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
 		healAmountNeeded: 35,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: false,
@@ -283,7 +283,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
 		slayerOnly: true,
 		healAmountNeeded: 20 * 7,
-		attackStyleToUse: GearSetupTypes.Mage,
+		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
@@ -298,7 +298,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 30,
 		healAmountNeeded: 14,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: true,
@@ -316,7 +316,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 30,
 		healAmountNeeded: 16,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: true,
@@ -352,7 +352,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		},
 		healAmountNeeded: 20 * 2,
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: false,
@@ -377,7 +377,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 72
 		},
 		healAmountNeeded: 20 * 3,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged]
 	},
 	{
@@ -401,7 +401,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		],
 		itemCost: new Bank().add('Dark totem', 1),
 		healAmountNeeded: 20 * 15,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic]
 	},
 	{
@@ -432,7 +432,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.ShadowWyrm,
 		healAmountNeeded: 15,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic]
 	},
 	{
@@ -449,7 +449,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 57
 		},
 		healAmountNeeded: 14,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic]
 	}
 ];
