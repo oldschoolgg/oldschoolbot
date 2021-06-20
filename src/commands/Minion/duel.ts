@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Util } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { noOp, sleep } from '../../lib/util';
@@ -49,6 +50,9 @@ export default class extends BotCommand {
 		if (user.id === msg.author.id) return msg.send('You cant duel yourself.');
 		if (user.bot) return msg.send('You cant duel a bot.');
 		if (user.isBusy) return msg.send('That user is busy right now.');
+		if (this.client.settings.get(ClientSettings.UserBlacklist).includes(user.id)) {
+			return;
+		}
 
 		user.toggleBusy(true);
 		msg.author.toggleBusy(true);
