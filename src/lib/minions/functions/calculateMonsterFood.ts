@@ -21,7 +21,7 @@ export default function calculateMonsterFood(
 
 	messages.push(`${monster.name} needs ${healAmountNeeded}HP worth of food per kill.`);
 
-	let gearToCheck = GearSetupTypes.Melee;
+	let gearToCheck;
 
 	switch (attackStyleToUse) {
 		case GearStat.AttackMagic: gearToCheck = GearSetupTypes.Mage;
@@ -34,7 +34,6 @@ export default function calculateMonsterFood(
 			break;
 		case GearStat.AttackCrush: gearToCheck = GearSetupTypes.Melee;
 			break;
-		default: gearToCheck = GearSetupTypes.Melee;
 	}
 
 	const gearStats = user.getGear(gearToCheck).stats;
