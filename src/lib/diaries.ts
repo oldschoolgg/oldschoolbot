@@ -635,7 +635,7 @@ export const KaramjaDiary: Diary = {
 			agility: 15,
 			mining: 40
 		},
-		collectionLogReqs: resolveItems(['Gold ore', 'Fire cape']),
+		collectionLogReqs: resolveItems(['Gold ore']),
 		monsterScores: {
 			Jogre: 1
 		}
