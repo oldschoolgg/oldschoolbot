@@ -320,10 +320,47 @@ const SimilarItems: Record<number, number[]> = {
 	])
 };
 
+const exclusiveSimilars: Record<number, number[]> = {
+	[itemID('Support cape')]: resolveItems([
+		'Agility master cape',
+		'Dungeoneering master cape',
+		'Thieving master cape',
+		'Slayer master cape'
+	]),
+	[itemID("Gatherer's cape")]: resolveItems([
+		'Farming master cape',
+		'Fishing master cape',
+		'Hunter master cape',
+		'Mining master cape',
+		'Woodcutting master cape'
+	]),
+	[itemID("Combatant's cape")]: resolveItems([
+		'Attack master cape',
+		'Hitpoints master cape',
+		'Defence master cape',
+		'Magic master cape',
+		'Prayer master cape',
+		'Ranged master cape',
+		'Strength master cape'
+	]),
+	[itemID("Artisan's cape")]: resolveItems([
+		'Crafting master cape',
+		'Construction master cape',
+		'Cooking master cape',
+		'Firemaking master cape',
+		'Fletching master cape',
+		'Herblore master cape',
+		'Runecraft master cape',
+		'Smithing master cape'
+	])
+};
+
 export function getSimilarItems(itemID: number): number[] {
 	const entry = Object.entries(SimilarItems).find(ent => parseInt(ent[0]) === itemID || ent[1].includes(itemID));
-	if (!entry) return [];
-	const res = [parseInt(entry[0]), ...entry[1]];
+	const exclusiveEntry = Object.entries(exclusiveSimilars).find(ent => parseInt(ent[0]) === itemID);
+	if (!entry && !exclusiveEntry) return [];
+	const result = (exclusiveEntry ?? entry)!;
+	const res = [parseInt(result[0]), ...result[1]];
 	return res;
 }
 
