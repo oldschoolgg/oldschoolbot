@@ -9,7 +9,6 @@ import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, PerkTier, skillEmoji, Time } from '../../lib/constants';
 import { onMax } from '../../lib/events';
-import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -768,15 +767,15 @@ export default class extends Extendable {
 		const gorajanMeleeBoost =
 			multiplier &&
 			[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(params.skillName) &&
-			hasArrayOfItemsEquipped(gorajanWarriorOutfit, this.getGear('melee'));
+			this.getGear('melee').hasEquipped(gorajanWarriorOutfit, true);
 		const gorajanRangeBoost =
 			multiplier &&
 			params.skillName === SkillsEnum.Ranged &&
-			hasArrayOfItemsEquipped(gorajanArcherOutfit, this.getGear('range'));
+			this.getGear('range').hasEquipped(gorajanArcherOutfit, true);
 		const gorajanMageBoost =
 			multiplier &&
 			params.skillName === SkillsEnum.Magic &&
-			hasArrayOfItemsEquipped(gorajanOccultOutfit, this.getGear('mage'));
+			this.getGear('mage').hasEquipped(gorajanOccultOutfit, true);
 		if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost) {
 			params.amount *= 2;
 			gorajanBoost = true;
