@@ -51,7 +51,7 @@ export default class extends BotCommand {
 		) {
 			let outstr =
 				`You have a maximum of ${maxBlocks} task blocks. You are using ${myBlockList.length}` +
-				` and have ${maxBlocks - myBlockList.length} remaining\n\nBlocked Tasks:\n`;
+				` and have ${maxBlocks - myBlockList.length} remaining\n\n**Blocked Tasks:**\n`;
 			const myBlockedMonsters = Monsters.filter(m => {
 				return myBlockList.includes(m.id);
 			});
