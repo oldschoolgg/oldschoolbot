@@ -9,7 +9,7 @@ import Crafting from '../../lib/skilling/skills/crafting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { addBanks, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { updateBankSetting, addBanks, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -121,10 +121,7 @@ export default class extends BotCommand {
 
 		if (gpNeeded > 0) await msg.author.removeGP(gpNeeded);
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.CraftingCostBank,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CraftingCostBank), itemsNeeded.bank])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.CraftingCost, itemsNeeded.bank)
 
 		await addSubTaskToActivityTask<CraftingActivityTaskOptions>({
 			craftableID: craftable.id,
