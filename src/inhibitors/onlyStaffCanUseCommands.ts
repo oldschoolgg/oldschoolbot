@@ -11,7 +11,6 @@ export default class extends Inhibitor {
 			return;
 		}
 		if (
-			msg.guild &&
 			[Channel.SupportChannel, '855691390339121194'].includes(msg.channel.id) &&
 			msg.author.settings.get(UserSettings.Badges).includes(5)
 		) {
