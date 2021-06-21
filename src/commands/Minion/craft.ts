@@ -4,7 +4,6 @@ import { Activity, Time } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Crafting from '../../lib/skilling/skills/crafting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -93,7 +92,6 @@ export default class extends BotCommand {
 
 		const itemsNeeded = craftable.inputItems.clone().multiply(quantity);
 		let gpNeeded = 0;
-		const currentGP = msg.author.settings.get(UserSettings.GP);
 		if (itemsNeeded.has('Coins')) gpNeeded = itemsNeeded.amount('Coins');
 
 		// Check the user has all the required items to craft.
@@ -102,15 +100,6 @@ export default class extends BotCommand {
 				`You don't have enough items. For ${quantity}x ${craftable.name}, you're missing **${itemsNeeded
 					.clone()
 					.remove(userBank)}**.`
-			);
-		}
-
-		// Check the user has the GP to craft.
-		if (gpNeeded > currentGP) {
-			return msg.send(
-				`You don't have enough GP. For ${quantity}x ${craftable.name}, you're missing **${
-					gpNeeded - currentGP
-				}**.`
 			);
 		}
 
