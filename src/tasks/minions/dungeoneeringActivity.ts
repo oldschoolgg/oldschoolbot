@@ -41,7 +41,7 @@ const data = [
 export function numberOfGorajanOutfitsEquipped(user: KlasaUser) {
 	let num = 0;
 	for (const outfit of data) {
-		if (user.getGear(outfit[1]).hasEquipped(outfit[0])) num++;
+		if (user.getGear(outfit[1]).hasEquipped(outfit[0], true)) num++;
 	}
 	return num;
 }
