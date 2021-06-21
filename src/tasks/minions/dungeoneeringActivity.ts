@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { DungeoneeringOptions, maxFloorUserCanDo } from '../../commands/Minion/dung';
 import { Emoji } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
-import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { randomVariation, roll, toKMB } from '../../lib/util';
@@ -42,9 +41,7 @@ const data = [
 export function numberOfGorajanOutfitsEquipped(user: KlasaUser) {
 	let num = 0;
 	for (const outfit of data) {
-		if (hasArrayOfItemsEquipped(outfit[0], user.getGear(outfit[1]))) {
-			num++;
-		}
+		if (user.getGear(outfit[1]).hasEquipped(outfit[0])) num++;
 	}
 	return num;
 }
