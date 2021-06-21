@@ -1,26 +1,28 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
-import { GearSetup, hasGearEquipped } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import reducedClueTime from '../../lib/minions/functions/reducedClueTime';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { Gear } from '../../lib/structures/Gear';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import resolveItems from '../../lib/util/resolveItems';
 
-export function hasClueHunterEquipped(setup: GearSetup) {
-	return hasGearEquipped(setup, {
-		head: resolveItems(['Helm of raedwald']),
-		body: resolveItems(['Clue hunter garb']),
-		legs: resolveItems(['Clue hunter trousers']),
-		feet: resolveItems(['Clue hunter boots']),
-		hands: resolveItems(['Clue hunter gloves']),
-		cape: resolveItems(['Clue hunter cloak'])
-	});
+export function hasClueHunterEquipped(setup: Gear) {
+	return setup.hasEquipped(
+		[
+			'Helm of raedwald',
+			'Clue hunter garb',
+			'Clue hunter trousers',
+			'Clue hunter boots',
+			'Clue hunter gloves',
+			'Clue hunter cloak'
+		],
+		true
+	);
 }
 
 export default class extends BotCommand {
