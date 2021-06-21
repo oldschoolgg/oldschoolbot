@@ -337,9 +337,12 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 		);
 	}, true);
 
+	const myClLoot = new Bank(myLoot.bank);
+
 	if (numBlackMask) {
 		for (let x = 0; x < numBlackMask; x++) {
 			myLoot.add('Black mask');
+			myClLoot.add('Black mask (10)');
 		}
 	}
 	if (numBludgeonPieces) {
@@ -353,6 +356,7 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 			for (let i = 0; i < bank.length; i++) {
 				if (bank[i] === minBank) {
 					myLoot.add(bludgeonPieces[i]);
+					myClLoot.add(bludgeonPieces[i]);
 					break;
 				}
 			}
@@ -369,6 +373,7 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 			for (let i = 0; i < bank.length; i++) {
 				if (bank[i] === minBank) {
 					myLoot.add(totemPieces[i]);
+					myClLoot.add(totemPieces[i]);
 					break;
 				}
 			}
@@ -385,9 +390,14 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 			for (let i = 0; i < bank.length; i++) {
 				if (bank[i] === minBank) {
 					myLoot.add(ringPieces[i]);
+					myClLoot.add(ringPieces[i]);
 					break;
 				}
 			}
 		}
 	}
+	return {
+		bankLoot: myLoot,
+		clLoot: myClLoot
+	};
 }
