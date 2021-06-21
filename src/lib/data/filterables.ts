@@ -920,47 +920,47 @@ export const filterableTypes: Filterable[] = [
 	},
 	{
 		name: 'Beginner Clues',
-		aliases: ['clues beginner', 'beginner clues', 'clue beginner', 'beginner clue'],
+		aliases: ['cluesbeginner', 'beginnerclues', 'cluebeginner', 'beginnerclue', 'beginner'],
 		items: Object.values(cluesBeginner).flat(Infinity) as number[]
 	},
 	{
 		name: 'Easy Clues',
-		aliases: ['clues easy', 'easy clues', 'clue easy', 'easy clue'],
+		aliases: ['clueseasy', 'easyclues', 'clueeasy', 'easyclue', 'easy'],
 		items: Object.values(cluesEasy).flat(Infinity) as number[]
 	},
 	{
 		name: 'Medium Clues',
-		aliases: ['clues medium', 'medium clues', 'clue medium', 'medium clue'],
+		aliases: ['cluesmedium', 'mediumclues', 'cluemedium', 'mediumclue', 'medium'],
 		items: Object.values(cluesMedium).flat(Infinity) as number[]
 	},
 	{
 		name: 'Hard Clues',
-		aliases: ['clues hard', 'hard clues', 'clue hard', 'hard clue'],
+		aliases: ['clueshard', 'hardclues', 'cluehard', 'hardclue', 'hard'],
 		items: Object.values(cluesHard).flat(Infinity) as number[]
 	},
 	{
 		name: 'Elite Clues',
-		aliases: ['clues elite', 'elite clues', 'clue elite', 'elite clue'],
+		aliases: ['clueselite', 'eliteclues', 'clueelite', 'eliteclue', 'elite'],
 		items: Object.values(cluesElite).flat(Infinity) as number[]
 	},
 	{
 		name: 'Master Clues',
-		aliases: ['clues master', 'master clues', 'clue master', 'master clue'],
+		aliases: ['cluesmaster', 'masterclues', 'cluemaster', 'masterclue', 'master'],
 		items: Object.values(cluesMaster).flat(Infinity) as number[]
 	},
 	{
 		name: 'All Clues',
-		aliases: ['clues all', 'all clues', 'clue all', 'all clue'],
+		aliases: ['cluesall', 'allclues', 'clueall', 'allclue'],
 		items: Object.values(cluesAll).flat(Infinity) as number[]
 	},
 	{
 		name: 'Clues Shared',
-		aliases: ['clues shared', 'shared clues', 'clue shared', 'shared clue'],
+		aliases: ['cluesshared', 'sharedclues', 'clueshared', 'sharedclue'],
 		items: Object.values(cluesShared).flat(Infinity) as number[]
 	},
 	{
 		name: 'Clues Rares',
-		aliases: ['clues rare', 'rare clues', 'clue rare', 'rare clue'],
+		aliases: ['cluesrare', 'rareclues', 'cluerare', 'rareclue'],
 		items: Object.values(cluesRares).flat(Infinity) as number[]
 	}
 ];
