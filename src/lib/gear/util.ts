@@ -1,11 +1,10 @@
-import { objectValues } from 'e';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
-import { getSimilarItems } from '../data/similarItems';
 import { UserSettings } from '../settings/types/UserSettings';
+import { Gear } from '../structures/Gear';
 import { itemID, toTitleCase } from '../util';
 import getOSItem from '../util/getOSItem';
-import { GearRequired, GearSetup, GearSetupType } from '.';
+import { GearSetup, GearSetupType } from '.';
 
 export function itemInSlot(setup: GearSetup, slot: EquipmentSlot): [null, null] | [Item, number] {
 	const equipped = setup[slot];
@@ -15,35 +14,6 @@ export function itemInSlot(setup: GearSetup, slot: EquipmentSlot): [null, null] 
 
 export function readableStatName(slot: string) {
 	return toTitleCase(slot.replace('_', ' '));
-}
-
-export function hasItemEquipped(item: number, setup: GearSetup) {
-	for (const i of getSimilarItems(item)) {
-		const osItem = getOSItem(i);
-		if (!osItem.equipment) return false;
-		const itemInSlot = setup[osItem.equipment.slot];
-		if (!itemInSlot) return false;
-		if (itemInSlot.item === i) {
-			return true;
-		}
-	}
-	return false;
-}
-
-export function hasGearEquipped(setup: GearSetup, reqs: GearRequired): boolean {
-	for (const items of objectValues(reqs)) {
-		if (!items) continue;
-
-		for (let i = 0; i < items.length; i++) {
-			if (hasItemEquipped(items[i], setup)) {
-				break;
-			} else if (i === items.length - 1) {
-				return false;
-			}
-		}
-	}
-
-	return true;
 }
 
 export function resolveGearTypeSetting(type: GearSetupType) {
@@ -66,8 +36,8 @@ export type PartialGearSetup = Partial<
 		[key in EquipmentSlot]: string;
 	}
 >;
-export function constructGearSetup(setup: PartialGearSetup): GearSetup {
-	return {
+export function constructGearSetup(setup: PartialGearSetup): Gear {
+	return new Gear({
 		'2h': setup['2h'] ? { item: itemID(setup['2h']), quantity: 1 } : null,
 		ammo: setup.ammo ? { item: itemID(setup.ammo), quantity: 1 } : null,
 		body: setup.body ? { item: itemID(setup.body), quantity: 1 } : null,
@@ -80,5 +50,5 @@ export function constructGearSetup(setup: PartialGearSetup): GearSetup {
 		ring: setup.ring ? { item: itemID(setup.ring), quantity: 1 } : null,
 		shield: setup.shield ? { item: itemID(setup.shield), quantity: 1 } : null,
 		weapon: setup.weapon ? { item: itemID(setup.weapon), quantity: 1 } : null
-	};
+	});
 }
