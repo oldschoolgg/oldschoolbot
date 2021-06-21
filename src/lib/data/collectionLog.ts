@@ -1553,8 +1553,8 @@ export const capes: CollectionLogData = {
 		'Defence cape(t)',
 		'Hitpoints cape(t)',
 		'Ranging cape(t)',
-		'Dungeoneering cape(t)',
-		'Slayer cape(t)'
+		'Slayer cape(t)',
+		'Dungeoneering cape(t)'
 	]),
 	'master capes2': resolveItems([
 		'Farming master cape',
