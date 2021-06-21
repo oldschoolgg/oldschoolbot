@@ -2,7 +2,6 @@ import { randInt } from 'e';
 import { Task } from 'klasa';
 
 import { Emoji, Events, Time } from '../../../lib/constants';
-import { hasArrayOfItemsEquipped } from '../../../lib/gear';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
@@ -84,9 +83,9 @@ export default class extends Task {
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
-			hasArrayOfItemsEquipped(
+			user.getGear('skilling').hasEquipped(
 				Object.keys(Firemaking.pyromancerItems).map(i => parseInt(i)),
-				user.getGear('skilling')
+				true
 			)
 		) {
 			const amountToAdd = Math.floor(fmXpToGive * (2.5 / 100));

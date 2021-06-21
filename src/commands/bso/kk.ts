@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
-import { hasItemEquipped } from '../../lib/gear';
 import { KalphiteKingMonster } from '../../lib/kalphiteking';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -159,7 +158,7 @@ export default class extends BotCommand {
 			} else {
 				let i = 0;
 				for (const inqItem of torvaOutfit) {
-					if (hasItemEquipped(inqItem, meleeGear)) {
+					if (meleeGear.hasEquipped([inqItem])) {
 						const percent = 1;
 						i += percent;
 					}

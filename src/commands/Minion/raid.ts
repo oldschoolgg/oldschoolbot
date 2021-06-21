@@ -5,7 +5,6 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
-import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { pernixOutfit, torvaOutfit, virtusOutfit } from '../../lib/nex';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -1028,13 +1027,13 @@ export default class extends BotCommand {
 
 		for (const u of users) {
 			let uBoost = 0;
-			if (hasArrayOfItemsEquipped(torvaOutfit, u.getGear('melee'))) {
+			if (u.getGear('melee').hasEquipped(torvaOutfit, true)) {
 				uBoost += 2 / users.length;
 			}
-			if (hasArrayOfItemsEquipped(virtusOutfit, u.getGear('mage'))) {
+			if (u.getGear('mage').hasEquipped(virtusOutfit, true)) {
 				uBoost += 2 / users.length;
 			}
-			if (hasArrayOfItemsEquipped(pernixOutfit, u.getGear('range'))) {
+			if (u.getGear('range').hasEquipped(pernixOutfit, true)) {
 				uBoost += 2 / users.length;
 			}
 			if (u.hasItemEquippedAnywhere('Drygore rapier')) {

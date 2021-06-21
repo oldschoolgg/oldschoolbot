@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Activity, Time } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { warmGear } from '../../lib/data/filterables';
-import { hasItemEquipped } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -58,7 +57,7 @@ export default class extends BotCommand {
 		let warmGearAmount = 0;
 
 		for (const piece of warmGear) {
-			if (hasItemEquipped(piece, msg.author.getGear('skilling'))) {
+			if (msg.author.getGear('skilling').hasEquipped([piece])) {
 				warmGearAmount++;
 			}
 			if (warmGearAmount > 4) break;

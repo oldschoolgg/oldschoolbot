@@ -35,7 +35,7 @@ describe('Gear', () => {
 		expect(testGear2.hasEquipped('Staff of water')).toBeTruthy();
 		expect(testGear2.hasEquipped('Torva platebody')).toBeTruthy();
 		expect(testGear2.hasEquipped('Torva platebody', true, false)).toBeTruthy();
-		expect(testGear2.hasEquipped('Gorajan warrior top')).toBeTruthy();
+		expect(testGear2.hasEquipped('Gorajan warrior top')).toBeFalsy();
 		expect(testGear2.hasEquipped('Gorajan warrior top', true, false)).toBeFalsy();
 	});
 });

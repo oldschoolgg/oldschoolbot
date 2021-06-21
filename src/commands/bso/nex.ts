@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
-import { hasItemEquipped } from '../../lib/gear';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../lib/minions/types';
@@ -151,7 +150,7 @@ export default class extends BotCommand {
 			} else {
 				let i = 0;
 				for (const inqItem of pernixOutfit) {
-					if (hasItemEquipped(inqItem, rangeGear)) {
+					if (rangeGear.hasEquipped([inqItem])) {
 						const percent = isSolo ? 2.4 : 1;
 						i += percent;
 					}

@@ -3,25 +3,24 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { Activity, Time } from '../../lib/constants';
-import { GearSetup, hasGearEquipped } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { Gear } from '../../lib/structures/Gear';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, formatDuration, itemNameFromID, removeItemFromBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import resolveItems from '../../lib/util/resolveItems';
 
-export function hasBlackSmithEquipped(setup: GearSetup) {
-	return hasGearEquipped(setup, {
-		head: resolveItems(['Blacksmith helmet']),
-		body: resolveItems(['Blacksmith top']),
-		legs: resolveItems(['Blacksmith apron']),
-		feet: resolveItems(['Blacksmith boots']),
-		hands: resolveItems(['Blacksmith gloves'])
-	});
+export function hasBlackSmithEquipped(setup: Gear) {
+	return setup.hasEquipped([
+		'Blacksmith helmet',
+		'Blacksmith top',
+		'Blacksmith apron',
+		'Blacksmith boots',
+		'Blacksmith gloves'
+	]);
 }
 
 export default class extends BotCommand {

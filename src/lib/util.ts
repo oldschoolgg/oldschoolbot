@@ -8,7 +8,6 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer, Time } from './constants';
-import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
 import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
@@ -274,7 +273,7 @@ export function anglerBoostPercent(user: KlasaUser) {
 	let amountEquipped = 0;
 	let boostPercent = 0;
 	for (const [id, percent] of anglerBoosts) {
-		if (hasItemEquipped(id, skillingSetup)) {
+		if (skillingSetup.hasEquipped([id])) {
 			boostPercent += percent;
 			amountEquipped++;
 		}
@@ -291,7 +290,7 @@ export function rogueOutfitPercentBonus(user: KlasaUser): number {
 	const skillingSetup = user.getGear('skilling');
 	let amountEquipped = 0;
 	for (const id of rogueOutfit) {
-		if (hasItemEquipped(id, skillingSetup)) {
+		if (skillingSetup.hasEquipped([id])) {
 			amountEquipped++;
 		}
 	}
