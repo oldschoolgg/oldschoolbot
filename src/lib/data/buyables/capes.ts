@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { diaries, userhasDiaryTier } from '../../diaries';
+import { SkillsEnum } from '../../skilling/types';
 import { Buyable } from './buyables';
 
 export const capeBuyables: Buyable[] = [
@@ -32,6 +33,118 @@ export const capeBuyables: Buyable[] = [
 		customReq: async user => {
 			if (user.totalLevel() < 2277) {
 				return [false, "You can't buy this because you aren't maxed!"];
+			}
+			return [true];
+		}
+	},
+	{
+		name: "Artisan's cape",
+		itemCost: new Bank()
+			.add('Crafting master cape')
+			.add('Construction master cape')
+			.add('Cooking master cape')
+			.add('Firemaking master cape')
+			.add('Fletching master cape')
+			.add('Herblore master cape')
+			.add('Runecraft master cape')
+			.add('Smithing master cape').bank,
+		outputItems: new Bank({
+			"Artisan's cape": 1
+		}),
+		customReq: async user => {
+			for (const skill of [
+				SkillsEnum.Crafting,
+				SkillsEnum.Construction,
+				SkillsEnum.Cooking,
+				SkillsEnum.Firemaking,
+				SkillsEnum.Fletching,
+				SkillsEnum.Herblore,
+				SkillsEnum.Runecraft,
+				SkillsEnum.Smithing
+			]) {
+				if ((user.settings.get(`skills.${skill}`) as number) < 500_000_000) {
+					return [false, `You don't have 500m ${skill}.`];
+				}
+			}
+			return [true];
+		}
+	},
+	{
+		name: "Combatant's cape",
+		itemCost: new Bank()
+			.add('Attack master cape')
+			.add('Hitpoints master cape')
+			.add('Defence master cape')
+			.add('Magic master cape')
+			.add('Prayer master cape')
+			.add('Ranged master cape')
+			.add('Strength master cape').bank,
+		outputItems: new Bank({
+			"Combatant's cape": 1
+		}),
+		customReq: async user => {
+			for (const skill of [
+				SkillsEnum.Attack,
+				SkillsEnum.Hitpoints,
+				SkillsEnum.Defence,
+				SkillsEnum.Magic,
+				SkillsEnum.Prayer,
+				SkillsEnum.Ranged,
+				SkillsEnum.Strength
+			]) {
+				if ((user.settings.get(`skills.${skill}`) as number) < 500_000_000) {
+					return [false, `You don't have 500m ${skill}.`];
+				}
+			}
+			return [true];
+		}
+	},
+	{
+		name: "Gatherer's cape",
+		itemCost: new Bank()
+			.add('Farming master cape')
+			.add('Fishing master cape')
+			.add('Hunter master cape')
+			.add('Mining master cape')
+			.add('Woodcutting master cape').bank,
+		outputItems: new Bank({
+			"Gatherer's cape": 1
+		}),
+		customReq: async user => {
+			for (const skill of [
+				SkillsEnum.Farming,
+				SkillsEnum.Fishing,
+				SkillsEnum.Hunter,
+				SkillsEnum.Mining,
+				SkillsEnum.Woodcutting
+			]) {
+				if ((user.settings.get(`skills.${skill}`) as number) < 500_000_000) {
+					return [false, `You don't have 500m ${skill}.`];
+				}
+			}
+			return [true];
+		}
+	},
+	{
+		name: 'Support cape',
+		itemCost: new Bank()
+			.add('Agility master cape')
+			.add('Dungeoneering master cape')
+			.add('Thieving master cape')
+			.add('Slayer master cape').bank,
+		outputItems: new Bank({
+			'Support cape': 1
+		}),
+		customReq: async user => {
+			for (const skill of [
+				SkillsEnum.Slayer,
+				SkillsEnum.Agility,
+				SkillsEnum.Dungeoneering,
+				SkillsEnum.Thieving
+			]) {
+				if ((user.settings.get(`skills.${skill}`) as number) < 500_000_000) {
+					return [false, `You don't have 500m ${skill}.`];
+				}
 			}
 			return [true];
 		}
