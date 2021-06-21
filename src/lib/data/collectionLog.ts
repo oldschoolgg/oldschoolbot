@@ -1608,7 +1608,7 @@ export const slayerLog: CollectionLogData = {
 		'Dragon sword',
 		'Dragon thrownaxe',
 		'Dragon knife',
-		'Black mask',
+		'Black mask (10)',
 		'Granite maul',
 		'Abyssal whip',
 		'Abyssal dagger',
