@@ -9,7 +9,7 @@ import Crafting from '../../lib/skilling/skills/crafting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { updateBankSetting, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -62,7 +62,7 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.settings.sync(true);
-		const userBank = msg.author.bank();
+		const userBank = msg.author.bank({ withGP: true });
 
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
 		let timeToCraftSingleItem = craftable.tickRate * Time.Second * 0.6 + Time.Second / 4;
@@ -94,10 +94,7 @@ export default class extends BotCommand {
 		const itemsNeeded = craftable.inputItems.clone().multiply(quantity);
 		let gpNeeded = 0;
 		const currentGP = msg.author.settings.get(UserSettings.GP);
-		if (itemsNeeded.has('Coins')) {
-			gpNeeded = itemsNeeded.amount('Coins');
-			itemsNeeded.remove('Coins');
-		}
+		if (itemsNeeded.has('Coins')) gpNeeded = itemsNeeded.amount('Coins');
 
 		// Check the user has all the required items to craft.
 		if (!userBank.has(itemsNeeded.bank)) {
@@ -119,9 +116,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemsFromBank(itemsNeeded);
 
-		if (gpNeeded > 0) await msg.author.removeGP(gpNeeded);
-
-		updateBankSetting(this.client, ClientSettings.EconomyStats.CraftingCost, itemsNeeded.bank)
+		updateBankSetting(this.client, ClientSettings.EconomyStats.CraftingCost, itemsNeeded.bank);
 
 		await addSubTaskToActivityTask<CraftingActivityTaskOptions>({
 			craftableID: craftable.id,
