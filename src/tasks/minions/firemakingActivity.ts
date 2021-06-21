@@ -1,6 +1,5 @@
 import { Task } from 'klasa';
 
-import { hasArrayOfItemsEquipped } from '../../lib/gear';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
@@ -18,9 +17,9 @@ export default class extends Task {
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
-			hasArrayOfItemsEquipped(
+			user.getGear('skilling').hasEquipped(
 				Object.keys(Firemaking.pyromancerItems).map(i => parseInt(i)),
-				user.getGear('skilling')
+				true
 			)
 		) {
 			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));

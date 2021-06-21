@@ -30,13 +30,6 @@ export function hasItemEquipped(item: number, setup: GearSetup) {
 	return false;
 }
 
-export function hasArrayOfItemsEquipped(items: number[], setup: GearSetup) {
-	for (const item of items) {
-		if (!hasItemEquipped(item, setup)) return false;
-	}
-	return true;
-}
-
 export function hasGearEquipped(setup: GearSetup, reqs: GearRequired): boolean {
 	for (const items of objectValues(reqs)) {
 		if (!items) continue;
