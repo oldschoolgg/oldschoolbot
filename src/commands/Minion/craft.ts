@@ -89,7 +89,7 @@ export default class extends BotCommand {
 					continue;
 				}
 				const itemsOwned = userBank[parseInt(itemID)];
-				if (itemsOwned < qty) {
+				if (itemsOwned === undefined || itemsOwned < qty) {
 					return msg.send(`You dont have enough ${itemNameFromID(parseInt(itemID))}.`);
 				}
 				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
