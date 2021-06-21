@@ -635,7 +635,7 @@ export const KaramjaDiary: Diary = {
 			agility: 15,
 			mining: 40
 		},
-		collectionLogReqs: resolveItems(['Gold ore', 'Fire cape']),
+		collectionLogReqs: resolveItems(['Gold ore']),
 		monsterScores: {
 			Jogre: 1
 		}
@@ -750,7 +750,7 @@ export const KourendKebosDiary: Diary = {
 			mining: 38,
 			runecraft: 77,
 			slayer: 95,
-			woodcutting: 95
+			woodcutting: 90
 		},
 		collectionLogReqs: resolveItems(['Blood rune', 'Redwood logs', 'Dark totem', 'Raw anglerfish']),
 		monsterScores: {
