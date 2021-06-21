@@ -3,12 +3,14 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 
 import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
+import { getSimilarItems } from '../../lib/data/similarItems';
 import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
-import { formatDuration } from '../../lib/util';
+import { formatDuration, itemNameFromID } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
 
@@ -17,13 +19,39 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			enabled: true,
 			runIn: ['text'],
-			usage: '<cmd:str> [user:user] [str:...str]',
+			usage: '<cmd:str> [user:user|str:...str] [str:...str]',
 			usageDelim: ' '
 		});
 	}
 
 	async run(msg: KlasaMessage, [cmd, input, str]: [string, KlasaUser | undefined, string | undefined]) {
 		if (msg.guild!.id !== '342983479501389826') return null;
+
+		switch (cmd.toLowerCase()) {
+			case 'hasequipped': {
+				if (typeof input !== 'string') return;
+				console.log(input);
+				const item = getOSItem(input);
+				console.log(item.name);
+				const setupsWith = [];
+				let res = `Does ${msg.author.username} have a ${item.name} (or similar items: ${getSimilarItems(item.id)
+					.map(itemNameFromID)
+					.join(', ')}) equipped?`;
+				for (const [key, gear] of Object.entries(msg.author.rawGear())) {
+					if (gear.hasEquipped([item.id], false, true)) {
+						setupsWith.push(key);
+						continue;
+					}
+				}
+				return msg.channel.send(`${res}
+
+${
+	setupsWith.length === 0
+		? "You don't have this item equipped anywhere."
+		: `You have ${item.name} equipped in these setups: ${setupsWith.join(', ')}.`
+}`);
+			}
+		}
 
 		const isMod = msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator);
 		const isOwner = this.client.owners.has(msg.author);

@@ -78,7 +78,7 @@ export class Gear {
 		};
 	}
 
-	allItems(similar = false, inverse = false): number[] {
+	allItems(similar = false): number[] {
 		const gear = this.raw();
 		const values = Object.values(gear)
 			.filter(notEmpty)
@@ -86,7 +86,7 @@ export class Gear {
 
 		if (similar) {
 			for (const item of [...values]) {
-				const similarItems = getSimilarItems(item, inverse);
+				const similarItems = getSimilarItems(item);
 				for (const simItem of similarItems) {
 					if (!values.includes(simItem)) {
 						values.push(simItem);
@@ -98,9 +98,9 @@ export class Gear {
 		return values;
 	}
 
-	hasEquipped(_items: string | (string | number)[], every = false, inverse = false) {
+	hasEquipped(_items: string | (string | number)[], every = false, includeSimilar = true) {
 		const items = resolveItems(_items);
-		const allItems = this.allItems(true, inverse);
+		const allItems = this.allItems(includeSimilar);
 		return items[every ? 'every' : 'some'](i => allItems.includes(i));
 	}
 

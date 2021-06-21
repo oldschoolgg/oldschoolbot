@@ -112,7 +112,7 @@ const SimilarItems: Record<number, number[]> = {
 		"Ancient d'hide boots",
 		"Bandos d'hide boots"
 	]),
-	[itemID('Amulet of glory (4)')]: resolveItems([
+	[itemID('Amulet of glory')]: resolveItems([
 		'Amulet of glory (1)',
 		'Amulet of glory (2)',
 		'Amulet of glory (3)',
@@ -135,7 +135,9 @@ const SimilarItems: Record<number, number[]> = {
 		13627, // Hosidius hood
 		13667, // All cities hood
 		21061, // Brimhaven Agility Arena hood
-		24743 // Hallowed Sepulchre hood
+		24743, // Hallowed Sepulchre hood
+		'Max hood',
+		'Agility hood'
 	]),
 	[itemID('Graceful top')]: resolveItems([
 		13583, // Arceuus top
@@ -185,8 +187,11 @@ const SimilarItems: Record<number, number[]> = {
 		13629, // Hosidius cape
 		13669, // All cities cape
 		21064, // Brimhaven Agility Arena cape
-		24746 // Hallowed Sepulchre cape
+		24746, // Hallowed Sepulchre cape
+		'Agility cape',
+		'Max cape'
 	]),
+	[itemID('Agility cape')]: resolveItems(['Agility cape(t)']),
 	[itemID('Fire cape')]: resolveItems(['Fire max cape', 'Fire max cape (l)']),
 	[itemID('Infernal cape')]: resolveItems(['Infernal max cape', 'Infernal max cape (l)']),
 	[itemID('Ardougne cloak 4')]: resolveItems(['Ardougne max cape']),
@@ -315,13 +320,11 @@ const SimilarItems: Record<number, number[]> = {
 	])
 };
 
-export function getSimilarItems(itemID: number, inverse = false) {
-	if (inverse) {
-		const entry = Object.entries(SimilarItems).find(ent => ent[1].includes(itemID));
-		if (!entry) return [];
-		return entry.flat(2).map(i => (typeof i === 'string' ? Number(i) : i));
-	}
-	return [...new Set([...(SimilarItems[itemID] ?? []), itemID])];
+export function getSimilarItems(itemID: number): number[] {
+	const entry = Object.entries(SimilarItems).find(ent => parseInt(ent[0]) === itemID || ent[1].includes(itemID));
+	if (!entry) return [];
+	const res = [parseInt(entry[0]), ...entry[1]];
+	return res;
 }
 
 export default SimilarItems;
