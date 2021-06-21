@@ -1,4 +1,5 @@
 import { KlasaMessage, Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, MAX_QP } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -46,7 +47,7 @@ export default class extends Task {
 		if (roll(350)) {
 			str +=
 				'\n<:zippy:749240799090180196> While you walk through the forest north of falador, a small ferret jumps onto your back and joins you on your adventures!';
-			user.addItemsToBank({ 10092: 1 }, true);
+			await user.addItemsToBank(new Bank().add('Zippy'), true);
 		}
 
 		const magicXP = user.settings.get(UserSettings.Skills.Magic);
