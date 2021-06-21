@@ -98,9 +98,9 @@ export class Gear {
 		return values;
 	}
 
-	hasEquipped(_items: string | (string | number)[], every = false) {
+	hasEquipped(_items: string | (string | number)[], every = false, includeSimilar = true) {
 		const items = resolveItems(_items);
-		const allItems = this.allItems(true);
+		const allItems = this.allItems(includeSimilar);
 		return items[every ? 'every' : 'some'](i => allItems.includes(i));
 	}
 
