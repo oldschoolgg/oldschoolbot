@@ -9,7 +9,7 @@ import Crafting from '../../lib/skilling/skills/crafting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { updateBankSetting, addBanks, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { updateBankSetting, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
