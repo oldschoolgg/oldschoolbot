@@ -9,7 +9,7 @@ describe('Gear', () => {
 		head: 'Twisted slayer helmet (i)'
 	});
 
-	test('misc', () => {
+	test('', () => {
 		for (const name of [
 			'Amulet of glory',
 			'Dragon pickaxe',
@@ -17,9 +17,19 @@ describe('Gear', () => {
 			'Dragon defender',
 			'Dragon defender (t)',
 			'Graceful cape',
-			'Slayer helmet'
+			'Slayer helmet (i)'
 		]) {
 			expect(testGear.hasEquipped(name)).toBeTruthy();
+		}
+	});
+
+	const testGear2 = new Gear({
+		weapon: 'Mist battlestaff'
+	});
+
+	test('', () => {
+		for (const name of ['Staff of water']) {
+			expect(testGear2.hasEquipped(name)).toBeTruthy();
 		}
 	});
 });
