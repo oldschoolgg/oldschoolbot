@@ -1,7 +1,7 @@
 import { notEmpty, objectKeys } from 'e';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
-import { inverseSimilarItems } from '../data/similarItems';
+import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
 import { constructGearSetup, GearSetup, GearSlotItem, GearStats, PartialGearSetup } from '../gear';
 import { GearRequirement } from '../minions/types';
 import getOSItem from '../util/getOSItem';
@@ -98,8 +98,25 @@ export class Gear {
 
 	hasEquipped(_items: string | (string | number)[], every = false, includeSimilar = true) {
 		const items = resolveItems(_items);
-		const allItems = this.allItems(includeSimilar);
-		return items[every ? 'every' : 'some'](i => allItems.includes(i));
+		const allItems = this.allItems();
+		if (!includeSimilar) {
+			return items[every ? 'every' : 'some'](i => allItems.includes(i));
+		} else if (every) {
+			// similar = true, every = true
+			const targetCount = items.length;
+			let currentCount = 0;
+			for (const i of [...items]) {
+				const similarItems = getSimilarItems(i);
+				if (similarItems.some(si => allItems.includes(si))) currentCount++;
+			}
+			return currentCount === targetCount;
+		}
+		// similar = true, every = false
+		for (const i of [...items]) {
+			const similarItems = getSimilarItems(i);
+			if (similarItems.some(si => allItems.includes(si))) return true;
+		}
+		return false;
 	}
 
 	equippedWeapon(): Item | null {

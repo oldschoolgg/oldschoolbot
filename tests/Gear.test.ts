@@ -51,7 +51,7 @@ describe('Gear', () => {
 		// Single items
 		expect(testGear.hasEquipped('Twisted bow')).toEqual(true);
 		expect(testGear.hasEquipped('Dragon full helm')).toEqual(true);
-		expect(testGear.hasEquipped('Dragon full helm(g)')).toEqual(true);
+
 		expect(testGear.hasEquipped('3rd age platebody')).toEqual(true);
 		expect(testGear.hasEquipped('3rd age platelegs')).toEqual(true);
 		expect(testGear.hasEquipped('Dragon dagger')).toEqual(false);

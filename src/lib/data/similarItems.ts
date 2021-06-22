@@ -180,8 +180,11 @@ const source: [string, (string | number)[]][] = [
 	[
 		'Black mask',
 		[
+			...blackMaskISimilar,
+			...slayerHelmSimilarI,
 			...slayerHelmSimilar,
 			...[
+				'Black mask (i)',
 				'Black mask (1)',
 				'Black mask (2)',
 				'Black mask (3)',
@@ -213,7 +216,8 @@ const source: [string, (string | number)[]][] = [
 			'Steam battlestaff',
 			'Mystic steam staff',
 			'Mud battlestaff',
-			'Mystic mud staff'
+			'Mystic mud staff',
+			'Kodai wand'
 		]
 	]
 ];
@@ -224,11 +228,13 @@ export const similarItems: Map<number, number[]> = new Map(
 
 export const inverseSimilarItems: Map<number, number> = new Map();
 for (const group of similarItems.entries()) {
+	inverseSimilarItems.set(group[0], group[0]);
 	for (const item of group[1]) {
 		inverseSimilarItems.set(item, group[0]);
 	}
 }
 
 export function getSimilarItems(itemID: number): number[] {
-	return similarItems.get(itemID) ?? [];
+	const similars = similarItems.get(itemID);
+	return similars ? [itemID, ...similars] : [itemID];
 }
