@@ -1,6 +1,6 @@
 import { Gear } from '../../structures/Gear';
 
-const gracefulHoods = [
+export const gracefulHoods = [
 	'Graceful hood',
 	'Arceuus graceful hood',
 	'Piscarilius graceful hood',
@@ -12,7 +12,7 @@ const gracefulHoods = [
 	'Dark graceful hood'
 ];
 
-const gracefulTops = [
+export const gracefulTops = [
 	'Graceful top',
 	'Arceuus graceful top',
 	'Piscarilius graceful top',
@@ -24,7 +24,7 @@ const gracefulTops = [
 	'Dark graceful top'
 ];
 
-const gracefulLegs = [
+export const gracefulLegs = [
 	'Graceful legs',
 	'Arceuus graceful legs',
 	'Piscarilius graceful legs',
@@ -36,7 +36,7 @@ const gracefulLegs = [
 	'Dark graceful legs'
 ];
 
-const gracefulFeet = [
+export const gracefulFeet = [
 	'Graceful boots',
 	'Arceuus graceful boots',
 	'Piscarilius graceful boots',
@@ -48,7 +48,7 @@ const gracefulFeet = [
 	'Dark graceful boots'
 ];
 
-const gracefulHands = [
+export const gracefulHands = [
 	'Graceful gloves',
 	'Arceuus graceful gloves',
 	'Piscarilius graceful gloves',
@@ -60,7 +60,7 @@ const gracefulHands = [
 	'Dark graceful gloves'
 ];
 
-const gracefulCapes = [
+export const gracefulCapes = [
 	'Graceful cape',
 	'Arceuus graceful cape',
 	'Piscarilius graceful cape',
@@ -76,7 +76,8 @@ const gracefulCapes = [
 ];
 
 export function hasGracefulEquipped(setup: Gear) {
-	return [gracefulHoods, gracefulTops, gracefulLegs, gracefulFeet, gracefulHands, gracefulCapes].every(type =>
-		setup.hasEquipped(type, false)
+	return setup.hasEquipped(
+		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful boots', 'Graceful cape'],
+		false
 	);
 }

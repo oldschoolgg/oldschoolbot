@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { O } from 'ts-toolbelt';
 
 import { Events } from '../../lib/constants';
-import SimilarItems from '../../lib/data/similarItems';
+import { similarItems } from '../../lib/data/similarItems';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
@@ -46,8 +46,8 @@ export default class extends Extendable {
 	public numItemsInBankSync(this: User, itemID: number, similar = false) {
 		const bank = this.settings.get(UserSettings.Bank);
 		const itemQty = typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
-		if (similar && itemQty === 0 && SimilarItems[itemID]) {
-			for (const i of SimilarItems[itemID]) {
+		if (similar && itemQty === 0 && similarItems.get(itemID)) {
+			for (const i of similarItems.get(itemID)!) {
 				if (bank[i] && bank[i] > 0) return bank[i];
 			}
 		}
