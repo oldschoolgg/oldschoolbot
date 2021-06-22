@@ -143,7 +143,7 @@ export interface Craftable {
 	id: number;
 	level: number;
 	xp: number;
-	inputItems: ItemBank;
+	inputItems: Bank;
 	tickRate: number;
 	crushChance?: number[];
 	bankChest?: boolean;
