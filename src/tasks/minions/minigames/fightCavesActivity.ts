@@ -110,7 +110,7 @@ export default class extends Task {
 		}
 
 		await user.incrementMonsterScore(Monsters.TzTokJad.id);
-		const loot = Monsters.TzTokJad.kill();
+		const loot = Monsters.TzTokJad.kill(1, { onSlayerTask: isOnTask });
 
 		if (loot.has('Tzrek-jad')) {
 			this.client.emit(

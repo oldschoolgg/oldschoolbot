@@ -227,9 +227,10 @@ export default class extends Task {
 			await usersTask.currentTask!.save();
 		}
 
-		filterLootReplace(user.allItemsOwned(), loot);
+		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, false);
+		await user.addItemsToCollectionLog(clLoot.bank);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
