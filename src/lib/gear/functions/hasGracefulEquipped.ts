@@ -1,6 +1,6 @@
 import { Gear } from '../../structures/Gear';
 
-const gracefulHoods = [
+export const gracefulHoods = [
 	'Graceful hood',
 	'Arceuus graceful hood',
 	'Piscarilius graceful hood',
@@ -9,10 +9,11 @@ const gracefulHoods = [
 	'Hosidius graceful hood',
 	'Kourend graceful hood',
 	'Brimhaven graceful hood',
-	'Dark graceful hood'
+	'Dark graceful hood',
+	'Trailblazer graceful hood'
 ];
 
-const gracefulTops = [
+export const gracefulTops = [
 	'Graceful top',
 	'Arceuus graceful top',
 	'Piscarilius graceful top',
@@ -21,10 +22,11 @@ const gracefulTops = [
 	'Hosidius graceful top',
 	'Kourend graceful top',
 	'Brimhaven graceful top',
-	'Dark graceful top'
+	'Dark graceful top',
+	'Trailblazer graceful top'
 ];
 
-const gracefulLegs = [
+export const gracefulLegs = [
 	'Graceful legs',
 	'Arceuus graceful legs',
 	'Piscarilius graceful legs',
@@ -33,10 +35,11 @@ const gracefulLegs = [
 	'Hosidius graceful legs',
 	'Kourend graceful legs',
 	'Brimhaven graceful legs',
-	'Dark graceful legs'
+	'Dark graceful legs',
+	'Trailblazer graceful legs'
 ];
 
-const gracefulFeet = [
+export const gracefulFeet = [
 	'Graceful boots',
 	'Arceuus graceful boots',
 	'Piscarilius graceful boots',
@@ -45,10 +48,11 @@ const gracefulFeet = [
 	'Hosidius graceful boots',
 	'Kourend graceful boots',
 	'Brimhaven graceful boots',
-	'Dark graceful boots'
+	'Dark graceful boots',
+	'Trailblazer graceful boots'
 ];
 
-const gracefulHands = [
+export const gracefulHands = [
 	'Graceful gloves',
 	'Arceuus graceful gloves',
 	'Piscarilius graceful gloves',
@@ -57,10 +61,11 @@ const gracefulHands = [
 	'Hosidius graceful gloves',
 	'Kourend graceful gloves',
 	'Brimhaven graceful gloves',
-	'Dark graceful gloves'
+	'Dark graceful gloves',
+	'Trailblazer graceful gloves'
 ];
 
-const gracefulCapes = [
+export const gracefulCapes = [
 	'Graceful cape',
 	'Arceuus graceful cape',
 	'Piscarilius graceful cape',
@@ -70,13 +75,15 @@ const gracefulCapes = [
 	'Kourend graceful cape',
 	'Brimhaven graceful cape',
 	'Dark graceful cape',
+	'Trailblazer graceful cape',
 	'Agility cape',
 	'Agility cape (t)',
 	'Max cape'
 ];
 
 export function hasGracefulEquipped(setup: Gear) {
-	return [gracefulHoods, gracefulTops, gracefulLegs, gracefulFeet, gracefulHands, gracefulCapes].every(type =>
-		setup.hasEquipped(type, false)
+	return setup.hasEquipped(
+		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful boots', 'Graceful cape'],
+		false
 	);
 }

@@ -11,7 +11,7 @@ describe('hasGracefulEquipped', () => {
 					feet: 'Shayzien graceful boots',
 					hands: 'Dark graceful gloves',
 					head: 'Piscarilius graceful hood',
-					legs: 'Hosidius graceful legs'
+					legs: 'Trailblazer graceful legs'
 				})
 			)
 		).toEqual(true);
