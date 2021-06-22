@@ -315,6 +315,12 @@ export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface RaidsOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	challengeMode: boolean;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions
