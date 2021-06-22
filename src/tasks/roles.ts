@@ -22,7 +22,7 @@ const minigames = [
 	'big_chompy_bird_hunting'
 ];
 
-const collections = ['Pets', 'Skilling', 'Clue all', 'Boss', 'Minigames', 'Chambers of Xeric', 'Slayer'];
+const collections = ['Overall', 'Pets', 'Skilling', 'Clue all', 'Boss', 'Minigames', 'Chambers of Xeric', 'Slayer'];
 
 const mostSlayerPointsQuery = `SELECT id 
 FROM users
