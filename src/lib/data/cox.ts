@@ -348,8 +348,18 @@ const itemBoosts = [
 	],
 	[
 		{
+			item: getOSItem('Drygore rapier'),
+			boost: 15
+		},
+		{
 			item: getOSItem('Dragon hunter lance'),
 			boost: 5
+		}
+	],
+	[
+		{
+			item: getOSItem('Offhand drygore rapier'),
+			boost: 8
 		}
 	]
 ];
