@@ -154,27 +154,27 @@ function calcSetupPercent(
 }
 
 export const maxMageGear = constructGearSetup({
-	head: 'Ancestral hat',
-	neck: 'Occult necklace',
-	body: 'Ancestral robe top',
-	cape: 'Imbued saradomin cape',
-	hands: 'Tormented bracelet',
-	legs: 'Ancestral robe bottom',
-	feet: 'Eternal boots',
-	weapon: 'Harmonised nightmare staff',
-	shield: 'Arcane spirit shield',
+	head: 'Virtus mask',
+	body: 'Virtus robe top',
+	hands: 'Virtus gloves',
+	legs: 'Virtus robe legs',
+	feet: 'Virtus boots',
+	cape: 'Vasa cloak',
+	neck: 'Arcane blast necklace',
+	weapon: 'Virtus wand',
+	shield: 'Virtus book',
 	ring: 'Seers ring(i)'
 });
 const maxMage = new Gear(maxMageGear);
 
 export const maxRangeGear = constructGearSetup({
-	head: 'Armadyl helmet',
-	neck: 'Necklace of anguish',
-	body: 'Armadyl chestplate',
+	head: 'Pernix cowl',
+	neck: 'Farsight snapshot necklace',
+	body: 'Pernix body',
 	cape: "Ava's assembler",
-	hands: 'Barrows gloves',
-	legs: 'Armadyl chainskirt',
-	feet: 'Pegasian boots',
+	hands: 'Pernix gloves',
+	legs: 'Pernix chaps',
+	feet: 'Pernix boots',
 	'2h': 'Twisted bow',
 	ring: 'Archers ring(i)',
 	ammo: 'Dragon arrow'
@@ -182,15 +182,15 @@ export const maxRangeGear = constructGearSetup({
 const maxRange = new Gear(maxRangeGear);
 
 export const maxMeleeGear = constructGearSetup({
-	head: "Inquisitor's great helm",
-	neck: 'Amulet of torture',
-	body: "Inquisitor's hauberk",
-	cape: 'Fire cape',
-	hands: 'Ferocious gloves',
-	legs: "Inquisitor's plateskirt",
-	feet: 'Primordial boots',
-	weapon: "Inquisitor's mace",
-	shield: 'Dragon defender',
+	head: 'Torva full helm',
+	neck: "Brawler's hook necklace",
+	body: 'Torva platebody',
+	cape: 'Abyssal cape',
+	hands: 'Torva gloves',
+	legs: 'Torva platelegs',
+	feet: 'Torva boots',
+	weapon: 'Drygore rapier',
+	shield: 'Offhand drygore rapier',
 	ring: 'Berserker ring(i)'
 });
 const maxMelee = new Gear(maxMeleeGear);
@@ -348,8 +348,18 @@ const itemBoosts = [
 	],
 	[
 		{
+			item: getOSItem('Drygore rapier'),
+			boost: 15
+		},
+		{
 			item: getOSItem('Dragon hunter lance'),
 			boost: 5
+		}
+	],
+	[
+		{
+			item: getOSItem('Offhand drygore rapier'),
+			boost: 8
 		}
 	]
 ];

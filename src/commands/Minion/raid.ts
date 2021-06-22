@@ -1,991 +1,158 @@
-import { reduceNumByPercent } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { calcWhatPercent } from 'e';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { table } from 'table';
 
-import { Activity, Emoji, Time } from '../../lib/constants';
-import { getSimilarItems } from '../../lib/data/similarItems';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { pernixOutfit, torvaOutfit, virtusOutfit } from '../../lib/nex';
+import { Activity, Emoji } from '../../lib/constants';
+import {
+	calcCoxDuration,
+	calcCoxInput,
+	calculateUserGearPercents,
+	checkCoxTeam,
+	createTeam,
+	hasMinRaidsRequirements,
+	minimumCoxSuppliesNeeded
+} from '../../lib/data/cox';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
-import { formatDuration, rand, updateBankSetting } from '../../lib/util';
+import { RaidsOptions } from '../../lib/types/minions';
+import { addBanks, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import getOSItem from '../../lib/util/getOSItem';
-import itemID from '../../lib/util/itemID';
 
-const meleeGearBonus = [
-	{
-		itemID: itemID('Neitiznot faceguard'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Serpentine helm'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Helm of neitiznot'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Void melee helm'),
-		itemPoint: 2
-	},
-	{
-		itemID: itemID('Void melee helm (l)'),
-		itemPoint: 2
-	},
-	{
-		itemID: itemID('Amulet of torture'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Amulet of torture (or)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Amulet of fury'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Amulet of fury (or)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Amulet of blood fury'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Amulet of glory'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(1)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(2)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(3)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(4)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(5)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(6)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t1)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t2)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t3)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t4)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t5)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t6)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of eternal glory'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Infernal cape'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Infernal cape (l)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Infernal max cape'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Infernal max cape (l)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Fire cape'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Fire cape (l)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Fire max cape'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Fire max cape (l)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Bandos chestplate'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Fighter torso'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Elite void top'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Elite void top (l)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Void knight top'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Void knight top (l)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Bandos tassets'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Elite void robe'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Elite void robe (l)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Void knight robe'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Void knight robe (l)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Scythe of vitur'),
-		itemPoint: 10
-	},
-	{
-		itemID: itemID('Dragon hunter lance'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Zamorakian hasta'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Abyssal tentacle'),
-		itemPoint: 2
-	},
-	{
-		itemID: itemID('Abyssal whip'),
-		itemPoint: 1
-	},
-	{
-		itemID: itemID('Volcanic abyssal whip'),
-		itemPoint: 1
-	},
-	{
-		itemID: itemID('Frozen abyssal whip'),
-		itemPoint: 1
-	},
-	{
-		itemID: itemID('Avernic defender'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Avernic defender (l)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Dragon defender'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Dragon defender (l)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Dragon defender (t)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Ferocious gloves'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Barrows gloves'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Void knight gloves'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Void knight gloves (l)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Primordial boots'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Dragon boots'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Dragon boots (g)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Berserker ring (i)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Brimstone ring'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Drygore rapier'),
-		itemPoint: 15
-	},
-	{
-		itemID: itemID('Offhand drygore rapier'),
-		itemPoint: 10
-	},
-	{
-		itemID: itemID('Torva full helm'),
-		itemPoint: 6
-	},
-	{
-		itemID: itemID('Torva platebody'),
-		itemPoint: 6
-	},
-	{
-		itemID: itemID('Torva platelegs'),
-		itemPoint: 6
-	},
-	{
-		itemID: itemID('Torva boots'),
-		itemPoint: 6
-	},
-	{
-		itemID: itemID('Torva gloves'),
-		itemPoint: 6
-	}
+const uniques = [
+	'Dexterous prayer scroll',
+	'Arcane prayer scroll',
+	'Twisted buckler',
+	'Dragon hunter crossbow',
+	"Dinh's bulwark",
+	'Ancestral hat',
+	'Ancestral robe top',
+	'Ancestral robe bottom',
+	'Dragon claws',
+	'Elder maul',
+	'Kodai insignia',
+	'Twisted bow'
 ];
-
-const rangeGearBonus = [
-	{
-		itemID: itemID('Armadyl helmet'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Void ranger helm'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Void ranger helm (l)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Necklace of anguish'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Necklace of anguish (or)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Amulet of fury'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Amulet of fury (or)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Amulet of blood fury'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Amulet of glory'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(1)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(2)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(3)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(4)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(5)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(6)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t1)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t2)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t3)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t4)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t5)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t6)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of eternal glory'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID("Ava's assembler"),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID("Ava's assembler (l)"),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Assembler max cape'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Assembler max cape (l)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID("Ava's accumulator"),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Armadyl chestplate'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Elite void top'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Elite void top (l)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Void knight top'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Void knight top (l)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Armadyl chainskirt'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Elite void robe'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Elite void robe (l)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Void knight robe'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Void knight robe (l)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Twisted bow'),
-		itemPoint: 14
-	},
-	{
-		itemID: itemID('Dragon hunter crossbow'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Armadyl crossbow'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Dragon crossbow'),
-		itemPoint: 2
-	},
-	{
-		itemID: itemID('Rune crossbow'),
-		itemPoint: 1
-	},
-	{
-		itemID: itemID('Twisted buckler'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Book of law'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Dragon arrow'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Amethyst arrow'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Ruby dragon bolts (e)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Ruby bolts (e)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Barrows gloves'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Void knight gloves'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Void knight gloves (l)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Pegasian boots'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID("Ancient d'hide boots"),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID("Armadyl d'hide boots"),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID("Bandos d'hide boots"),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID("Guthix d'hide boots"),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID("Saradomin d'hide boots"),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID("Zamorak d'hide boots"),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Pernix cowl'),
-		itemPoint: 6
-	},
-	{
-		itemID: itemID('Pernix body'),
-		itemPoint: 6
-	},
-	{
-		itemID: itemID('Pernix chaps'),
-		itemPoint: 6
-	},
-	{
-		itemID: itemID('Pernix boots'),
-		itemPoint: 6
-	},
-	{
-		itemID: itemID('Pernix gloves'),
-		itemPoint: 6
-	}
-];
-
-const mageGearBonus = [
-	{
-		itemID: itemID('Ancestral hat'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Twisted ancestral hat'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID("Ahrim's hood"),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Void mage helm'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Void mage helm (l)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Occult necklace'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Occult necklace (or)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Amulet of fury'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Amulet of fury (or)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Amulet of blood fury'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Amulet of glory'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(1)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(2)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(3)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(4)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(5)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory(6)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t1)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t2)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t3)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t4)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t5)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of glory (t6)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Amulet of eternal glory'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Imbued saradomin cape'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Imbued zamorak cape'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Imbued guthix cape'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Imbued saradomin cape (l)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Imbued zamorak cape (l)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Imbued guthix cape (l)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Imbued saradomin max cape'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Imbued zamorak max cape'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Imbued guthix max cape'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Imbued saradomin max cape (l)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Imbued zamorak max cape (l)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Imbued guthix max cape (l)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Saradomin cape'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Zamorak cape'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Guthix cape'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Saradomin max cape'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Zamorak max cape'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Guthix max cape'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Ancestral robe top'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Twisted ancestral robe top'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID("Ahrim's robetop"),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Elite void top'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Elite void top (l)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Void knight top'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Void knight top (l)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Ancestral robe bottom'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Twisted ancestral robe bottom'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID("Ahrim's robeskirt"),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Elite void robe'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Elite void robe (l)'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Void knight robe'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Void knight robe (l)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Harmonised nightmare staff'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Sanguinesti staff'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Trident of the swamp'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Trident of the swamp (e)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Trident of the seas'),
-		itemPoint: 2
-	},
-	{
-		itemID: itemID('Trident of the seas (full)'),
-		itemPoint: 2
-	},
-	{
-		itemID: itemID('Trident of the seas (e)'),
-		itemPoint: 2
-	},
-	{
-		itemID: itemID('Arcane spirit shield'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Book of darkness'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Tormented bracelet'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Tormented bracelet (or)'),
-		itemPoint: 5
-	},
-	{
-		itemID: itemID('Barrows gloves'),
-		itemPoint: 4
-	},
-	{
-		itemID: itemID('Void knight gloves'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Void knight gloves (l)'),
-		itemPoint: 3
-	},
-	{
-		itemID: itemID('Virtus mask '),
-		itemPoint: 6
-	},
-	{
-		itemID: itemID('Virtus robe top'),
-		itemPoint: 6
-	},
-	{
-		itemID: itemID('Virtus robe legs'),
-		itemPoint: 6
-	},
-	{
-		itemID: itemID('Virtus boots'),
-		itemPoint: 6
-	},
-	{
-		itemID: itemID('Virtus gloves'),
-		itemPoint: 6
-	},
-	{
-		itemID: itemID('Virtus wand'),
-		itemPoint: 6
-	},
-	{
-		itemID: itemID('Virtus book'),
-		itemPoint: 6
-	}
-];
-// Melee + Ranged + Mage + Special weps
-const MAX_itemPoints = 192;
-
-export const minimumCoxSuppliesNeeded = new Bank({
-	'Stamina potion(4)': 1,
-	'Saradomin brew(4)': 6,
-	'Super restore(4)': 2
-});
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			usage: '[mass|solo|gear]',
+			usageDelim: ' ',
+			oneAtTime: true,
 			altProtection: true,
 			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
-			oneAtTime: true,
-			usage: '[solo]'
+			description: 'Sends your minion to do the Chambers of Xeric.',
+			examples: ['+raid solo', '+raid mass']
 		});
 	}
 
-	checkReqs(users: KlasaUser[]) {
-		// Check if every user has the requirements for this raid.
-		for (const user of users) {
-			if (!user.hasMinion) {
-				throw `${user.username} can't do raids, because they don't have a minion.`;
+	async run(msg: KlasaMessage, [type]: [string | undefined]) {
+		if (msg.flagArgs.simulate) {
+			const arr = Array(15).fill(msg.author);
+			const normalTable = table([
+				[
+					'Team Size',
+					'Duration - Normal',
+					'Points - Normal',
+					'Death Chance - Normal',
+					'Duration - Challenge Mode',
+					'Points - Challenge Mode',
+					'Death Chance - Normal'
+				],
+				...(await Promise.all(
+					[1, 2, 3, 4, 5, 6, 7, 8, 9, 15].map(async i => {
+						let ar = arr.slice(0, i);
+						return [
+							ar.length,
+							formatDuration((await calcCoxDuration(ar, false)).duration),
+							(await createTeam(ar, false))[0].personalPoints.toLocaleString(),
+							`${(await createTeam(ar, false))[0].deathChance}%`,
+							formatDuration((await calcCoxDuration(ar, true)).duration),
+							(await createTeam(ar, true))[0].personalPoints.toLocaleString(),
+							`${(await createTeam(ar, true))[0].deathChance}%`
+						];
+					})
+				))
+			]);
+			return msg.channel.sendFile(Buffer.from(normalTable), 'cox-sim.txt');
+		}
+
+		if (!type) {
+			const [normal, cm] = await Promise.all([
+				msg.author.getMinigameScore('Raids'),
+				msg.author.getMinigameScore('RaidsChallengeMode')
+			]);
+			let totalUniques = 0;
+			const cl = new Bank(msg.author.collectionLog);
+			for (const item of uniques) {
+				totalUniques += cl.amount(item);
 			}
-
-			if (user.minionIsBusy) {
-				throw `${user.username} is busy and can't join the raid.`;
+			const totalPoints = msg.author.settings.get(UserSettings.TotalCoxPoints);
+			const { total } = calculateUserGearPercents(msg.author);
+			const normalSolo = await calcCoxDuration([msg.author], false);
+			const normalTeam = await calcCoxDuration(Array(2).fill(msg.author), false);
+			const cmSolo = await calcCoxDuration([msg.author], true);
+			const cmTeam = await calcCoxDuration(Array(2).fill(msg.author), true);
+			return msg.channel.send(`<:Twisted_bow:403018312402862081> Chamber's of Xeric <:Olmlet:324127376873357316>
+**Normal:** ${normal} KC (Solo ${Emoji.CombatSword} ${calcWhatPercent(
+				normalSolo.reductions[msg.author.id],
+				normalSolo.totalReduction
+			).toFixed(1)}%, Team ${Emoji.CombatSword} ${calcWhatPercent(
+				normalTeam.reductions[msg.author.id],
+				normalTeam.totalReduction
+			).toFixed(1)})
+**Challenge Mode:** ${cm} KC (Solo ${Emoji.CombatSword} ${calcWhatPercent(
+				cmSolo.reductions[msg.author.id],
+				cmSolo.totalReduction
+			).toFixed(1)}%, Team ${Emoji.CombatSword} ${calcWhatPercent(
+				cmTeam.reductions[msg.author.id],
+				cmTeam.totalReduction
+			).toFixed(1)})
+**Total Points:** ${totalPoints}
+**Total Uniques:** ${totalUniques} ${
+				totalUniques > 0 ? `(1 unique per ${Math.floor(totalPoints / totalUniques).toLocaleString()} pts)` : ''
 			}
+**Gear Score:** ${Emoji.Gear}${total.toFixed(1)}%`);
+		}
 
-			if (!user.owns(minimumCoxSuppliesNeeded)) {
-				throw `${user.username} doesn't own enough supplies.`;
+		if (type === 'gear') {
+			const { melee, range, mage, total } = calculateUserGearPercents(msg.author);
+			return msg.channel.send(`**Melee Gear Score:** <:Elder_maul:403018312247803906> ${melee.toFixed(1)}%
+**Range Gear Score:** <:Twisted_bow:403018312402862081> ${range.toFixed(1)}%
+**Mage Gear Score:** <:Kodai_insignia:403018312264712193> ${mage.toFixed(1)}%
+**Total Gear Score:** ${Emoji.Gear} ${total.toFixed(1)}%
+**Death Chance Solo:** ${Emoji.Skull} ${(await createTeam([msg.author], false))[0].deathChance.toFixed(1)}%, CM ${
+				Emoji.Skull
+			} ${(await createTeam([msg.author], true))[0].deathChance.toFixed(1)}%
+**Death Chance Team:** ${Emoji.Skull} ${(await createTeam(Array(2).fill(msg.author), false))[0].deathChance.toFixed(
+				1
+			)}%, CM ${Emoji.Skull} ${(await createTeam(Array(2).fill(msg.author), true))[0].deathChance.toFixed(1)}%`);
+		}
+
+		if (type !== 'mass' && type !== 'solo') {
+			return msg.send("Specify your team setup for Chamber's of Xeric, either solo or mass.");
+		}
+
+		const isChallengeMode = Boolean(msg.flagArgs.cm);
+
+		if (isChallengeMode) {
+			const normalKC = await msg.author.getMinigameScore('Raids');
+			if (normalKC < 200) {
+				return msg.channel.send(
+					"You need atleast 200 completions of the Chamber's of Xeric before you can attempt Challenge Mode."
+				);
 			}
 		}
-	}
-
-	gearPointCalc(user: KlasaUser) {
-		// Calculates the amount of raid points based on current gear
-		const currentEquippedMeleeGear = user.getGear('melee');
-		const currentEquippedRangeGear = user.getGear('range');
-		const currentEquippedMageGear = user.getGear('mage');
-		let meleeGearPoints = 0;
-		let rangeGearPoints = 0;
-		let mageGearPoints = 0;
-		// Scores the melee gear
-		for (const key of Object.values(EquipmentSlot) as EquipmentSlot[]) {
-			// Get the item equipped in that slot...
-			const itemSlot = currentEquippedMeleeGear[key];
-			if (!itemSlot) continue;
-			const item = getOSItem(itemSlot.item);
-			if (!item.equipment) continue;
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			meleeGearPoints +=
-				meleeGearBonus.find(_item => getSimilarItems(_item.itemID).includes(item.id))?.itemPoint ?? 0;
-		}
-		// Scores the range gear
-		for (const key of Object.values(EquipmentSlot) as EquipmentSlot[]) {
-			// Get the item equipped in that slot...
-			const itemSlot = currentEquippedRangeGear[key];
-			if (!itemSlot) continue;
-			const item = getOSItem(itemSlot.item);
-			if (!item.equipment) continue;
-			rangeGearPoints +=
-				rangeGearBonus.find(_item => getSimilarItems(_item.itemID).includes(item.id))?.itemPoint ?? 0;
-		}
-		// Scores the mage gear
-		for (const key of Object.values(EquipmentSlot) as EquipmentSlot[]) {
-			// Get the item equipped in that slot...
-			const itemSlot = currentEquippedMageGear[key];
-			if (!itemSlot) continue;
-			const item = getOSItem(itemSlot.item);
-			if (!item.equipment) continue;
-			mageGearPoints +=
-				mageGearBonus.find(_item => getSimilarItems(_item.itemID).includes(item.id))?.itemPoint ?? 0;
-		}
-
-		let totalGearPoints = meleeGearPoints + rangeGearPoints + mageGearPoints;
-
-		// Check spec weapons
-		// DWH
-		if (user.hasItemEquippedOrInBank(13576)) {
-			totalGearPoints += 5;
-		}
-		// BGS or BGS (or)
-		if (user.hasItemEquippedOrInBank(11804) || user.hasItemEquippedOrInBank(20370)) {
-			totalGearPoints += 5;
-		}
-		// Toxic blowpipe
-		if (user.hasItemEquippedOrInBank(12926)) {
-			totalGearPoints += 5;
-		}
-		// Returns base raid points based on gear and gear score.
-		return [totalGearPoints * 100 + 12500, totalGearPoints];
-	}
-
-	@minionNotBusy
-	@requiresMinion
-	async run(msg: KlasaMessage, [input]: ['solo' | undefined]) {
-		this.checkReqs([msg.author]);
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
-			minSize: (await msg.author.getMinigameScore('Raids')) > 199 ? 1 : 2,
-			maxSize: 50,
+			minSize: 2,
+			maxSize: 15,
 			ironmanAllowed: true,
-			message: `${msg.author.username} is starting a party to defeat the Chambers of Xeric! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+			message: `${msg.author.username} is hosting a Chamber's of Xeric mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
@@ -993,117 +160,96 @@ export default class extends BotCommand {
 				if (user.minionIsBusy) {
 					return [true, 'your minion is busy.'];
 				}
-				if (!user.owns(minimumCoxSuppliesNeeded)) {
-					return [true, "you don't have enough supplies."];
+				if (!hasMinRaidsRequirements(user)) {
+					return [true, "You meet the stat requirements to do the Chamber's of Xeric."];
 				}
+
+				if (!user.owns(minimumCoxSuppliesNeeded)) {
+					return [
+						true,
+						`You don't have enough items, you need a minimum of this amount of items: ${minimumCoxSuppliesNeeded}.`
+					];
+				}
+
+				const { total } = calculateUserGearPercents(user);
+				if (total < 20) {
+					return [true, "Your gear is terrible! You do not stand a chance in the Chamber's of Xeric"];
+				}
+
+				if (
+					isChallengeMode &&
+					!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
+					!user.hasItemEquippedOrInBank('Twisted bow')
+				) {
+					return [
+						true,
+						'You need either a Dragon hunter crossbow or Twisted bow to attempt Challenge Mode Chambers of Xeric.'
+					];
+				}
+
 				return [false];
 			}
 		};
 
-		const users = input === 'solo' ? [msg.author] : await msg.makePartyAwaiter(partyOptions);
+		const users =
+			type === 'mass' ? (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy) : [msg.author];
 
-		// Gives experienced players a small time boost to raid
-		let teamKCBoost = 0;
-		for (const user of users) {
-			teamKCBoost += Math.floor((await user.getMinigameScore('Raids')) / 10);
+		const teamCheckFailure = await checkCoxTeam(users, isChallengeMode);
+		if (teamCheckFailure) {
+			return msg.channel.send(`Your mass failed to start because of this reason: ${teamCheckFailure}`);
 		}
 
-		let duration = Time.Hour;
-		if (users.length === 1) {
-			duration = Time.Minute * 50 + rand(Time.Minute * 2, Time.Minute * 10);
-		} else {
-			duration =
-				Time.Minute * 55 - (users.length % 10) * 2 * Time.Minute + rand(Time.Minute * 2, Time.Minute * 10);
-		}
-		// Max 25% boost for experienced raiders
-		if (teamKCBoost > 25) {
-			teamKCBoost = 25;
-		}
-		duration *= (100 - teamKCBoost) / 100;
-		this.checkReqs(users);
+		const { duration, totalReduction, reductions } = await calcCoxDuration(users, isChallengeMode);
 
-		const gearSpeedBoosts = [];
-		let gearSpeedBoost = 0;
-
-		for (const u of users) {
-			let uBoost = 0;
-			if (u.getGear('melee').hasEquipped(torvaOutfit, true)) {
-				uBoost += 2 / users.length;
-			}
-			if (u.getGear('mage').hasEquipped(virtusOutfit, true)) {
-				uBoost += 2 / users.length;
-			}
-			if (u.getGear('range').hasEquipped(pernixOutfit, true)) {
-				uBoost += 2 / users.length;
-			}
-			if (u.hasItemEquippedAnywhere('Drygore rapier')) {
-				uBoost += 5 / users.length;
-			}
-			if (u.hasItemEquippedAnywhere('Offhand drygore rapier')) {
-				uBoost += 2 / users.length;
-			}
-			if (u.hasItemEquippedAnywhere('Twisted bow')) {
-				uBoost += 4 / users.length;
-			}
-			gearSpeedBoost += uBoost;
-			gearSpeedBoosts.push(`${uBoost.toFixed(2)}% from ${u.username}`);
-		}
-
-		duration = reduceNumByPercent(duration, gearSpeedBoost);
+		let debugStr = '';
+		const isSolo = users.length === 1;
 
 		const totalCost = new Bank();
-		const data = {
-			duration,
-			challengeMode: false,
-			channelID: msg.channel.id,
-			quantity: 1,
-			partyLeaderID: msg.author.id,
+
+		await Promise.all(
+			users.map(async u => {
+				const supplies = await calcCoxInput(u, isSolo);
+				await u.removeItemsFromBank(supplies);
+				totalCost.add(supplies);
+				const { total } = calculateUserGearPercents(u);
+				debugStr += `${u.username} (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword} ${calcWhatPercent(
+					reductions[u.id],
+					totalReduction
+				).toFixed(1)}%) used ${supplies}\n`;
+			})
+		);
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.CoxCost,
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CoxCost), totalCost.bank])
+		);
+
+		await addSubTaskToActivityTask<RaidsOptions>({
 			userID: msg.author.id,
+			channelID: msg.channel.id,
+			duration,
 			type: Activity.Raids,
-			finishDate: Date.now() + (duration as number),
+			leader: msg.author.id,
 			users: users.map(u => u.id),
-			team: await Promise.all(
-				users.map(async u => {
-					let points = (this.gearPointCalc(u)[0] * (100 - rand(0, 20))) / 100;
-					const kc = await u.getMinigameScore('Raids');
-					if (kc < 5) {
-						points /= 5;
-					} else if (kc < 20) {
-						points /= 3;
-					} else if (kc > 1000) {
-						points *= 1.2;
-					}
-					totalCost.add(minimumCoxSuppliesNeeded);
-					await u.removeItemsFromBank(minimumCoxSuppliesNeeded);
-					points = Math.round(points);
-					return {
-						id: u.id,
-						personalPoints: points,
-						canReceiveDust: rand(1, 10) <= 7,
-						canReceiveAncientTablet: u.hasItemEquippedOrInBank('Ancient tablet')
-					};
-				})
-			)
-		};
+			challengeMode: isChallengeMode
+		});
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.CoxCost, totalCost);
+		let str = isSolo
+			? `${
+					msg.author.minionName
+			  } is now doing a Chamber's of Xeric raid. The total trip will take ${formatDuration(duration)}.`
+			: `${partyOptions.leader.username}'s party (${users
+					.map(u => u.username)
+					.join(
+						', '
+					)}) is now off to do a Chamber's of Xeric raid - the total trip will take ${formatDuration(
+					duration
+			  )}.`;
 
-		await addSubTaskToActivityTask(data);
+		str += ` \n\n${debugStr}`;
 
-		gearSpeedBoosts.push(`${teamKCBoost}% for team KC`);
-
-		let str = `<:Olmlet:324127376873357316> ${msg.author.username}'s raid with ${
-			users.length
-		} minions is starting! <:Olmlet:324127376873357316>
-
-**Team:** ${users.map(u => `${u.username} (${this.gearPointCalc(u)[1]}/${MAX_itemPoints})`).join(', ')}
-**Boosts:** ${gearSpeedBoosts.join(', ')}.
-**Supplies:** Every user had this removed: ${minimumCoxSuppliesNeeded}
-
-The total trip will take ${formatDuration(duration)}.
-		
-Your personal points are mainly based off the gear you're wearing. For more information, see <https://oldschool.runescape.wiki/w/Chambers_of_Xeric/Strategies>`;
-
-		return msg.channel.send(str);
+		return msg.channel.send(str, {
+			split: true
+		});
 	}
 }
