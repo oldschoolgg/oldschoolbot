@@ -91,8 +91,6 @@ export default class extends BotCommand {
 		}
 
 		const itemsNeeded = craftable.inputItems.clone().multiply(quantity);
-		let gpNeeded = 0;
-		if (itemsNeeded.has('Coins')) gpNeeded = itemsNeeded.amount('Coins');
 
 		// Check the user has all the required items to craft.
 		if (!userBank.has(itemsNeeded.bank)) {
@@ -116,18 +114,10 @@ export default class extends BotCommand {
 			type: Activity.Crafting
 		});
 
-		let gpUsedString = '';
-
-		if (gpNeeded > 0) {
-			gpUsedString += ` and ${gpNeeded} GP`;
-		}
-
 		return msg.send(
 			`${msg.author.minionName} is now crafting ${quantity}x ${
 				craftable.name
-			}, it'll take around ${formatDuration(
-				duration
-			)} to finish. Removed ${itemsNeeded}${gpUsedString} from your bank.`
+			}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`
 		);
 	}
 }
