@@ -167,6 +167,13 @@ export const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler wa
 
 export const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
 
+export const lumberjackOutfit = resolveItems([
+	'Lumberjack hat',
+	'Lumberjack top',
+	'Lumberjack legs',
+	'Lumberjack boots'
+]);
+
 const hunterGear: CollectionLogData = {
 	CamouflageGear: resolveItems([
 		'Polar camo top',
@@ -1817,7 +1824,8 @@ export const skillingLog: CollectionLogData = {
 	MahoganyHomes: Object.values(mahoganyHomesLog).flat(Infinity) as number[],
 	Runecraft: resolveItems(['Small pouch', 'Medium pouch', 'Large pouch', 'Giant pouch', 'Rift guardian']),
 	CrystalTools: resolveItems(['Crystal pickaxe', 'Crystal axe', 'Crystal harpoon']),
-	RogueOutfit: Object.values(rogueOutfit).flat(Infinity) as number[]
+	RogueOutfit: Object.values(rogueOutfit).flat(Infinity) as number[],
+	LumberjackOutfit: Object.values(lumberjackOutfit).flat(Infinity) as number[]
 };
 
 export type CollectionLogData = Record<string, number[]>;
@@ -1995,6 +2003,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		items: { 1: rogueOutfit }
 	},
 	{
+		name: 'Temple Trekking',
+		aliases: ['temple trekking', 'tt', 'temple', 'trek', 'trekking'],
+		items: { 1: lumberjackOutfit }
+	},
+	{
 		name: 'Gauntlet',
 		aliases: ['gauntlet'],
 		items: { 1: gauntletLog }
@@ -2058,7 +2071,8 @@ export const collectionLogTypes: CollectionLogType[] = [
 			goldDecorative,
 			castleWarsGodItems,
 			castleWarsOther,
-			mta: [...wandItems, ...infinityItems]
+			mta: [...wandItems, ...infinityItems],
+			trek: lumberjackOutfit
 		}
 	},
 	{
