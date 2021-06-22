@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { pets } from '../../lib/data/collectionLog';
+import { metamorphPets, pets } from '../../lib/data/collectionLog';
 import { requiresMinion } from '../../lib/minions/decorators';
 import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -44,7 +44,8 @@ export const allPetIDs = [
 		'Frosty',
 		'Voidling'
 	]),
-	Object.values(pets)
+	Object.values(pets),
+	...metamorphPets
 ].flat(Infinity);
 
 export default class extends BotCommand {

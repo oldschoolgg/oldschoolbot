@@ -49,7 +49,7 @@ export default class extends BotCommand {
 		)}.`;
 
 		if (boosts.length > 0) {
-			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
 		return msg.send(response);

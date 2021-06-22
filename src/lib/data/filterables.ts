@@ -151,7 +151,7 @@ const gems = resolveItems([
 	'Zenyte shard'
 ]);
 
-const craftingItems = Craftables.flatMap(item => Object.keys(item.inputItems).map(key => parseInt(key)));
+const craftingItems = Craftables.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
 
 const craftingItemsSet = [...new Set(craftingItems)];
 
@@ -353,7 +353,7 @@ const bones = resolveItems([
 	'Zogre bones'
 ]);
 
-const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems).map(key => parseInt(key)));
+const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
 
 const fletchingItemsSet = [...new Set(fletchingItems)];
 
