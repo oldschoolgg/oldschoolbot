@@ -57,7 +57,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued trip of dark altar');
-				return this.client.commands.get('darkaltar')!.run(res, []);
+				return this.client.commands.get('darkaltar')!.run(res, [rune]);
 			},
 			undefined,
 			data,
