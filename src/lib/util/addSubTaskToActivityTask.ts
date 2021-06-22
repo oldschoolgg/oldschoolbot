@@ -35,11 +35,12 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 	activity.groupActivity = isGroupActivity(taskToAdd);
 	activity.channelID = taskToAdd.channelID;
 	activity.duration = duration;
-	await activity.save();
 
 	const users = isGroupActivity(newData) ? newData.users : [taskToAdd.userID];
 
 	for (const user of users) {
 		minionActivityCache.set(user, activity.taskData);
 	}
+
+	await activity.save();
 }
