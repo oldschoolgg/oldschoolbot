@@ -3,7 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { lumberjackOutfit } from '../../../lib/data/collectionLog';
-import { EasyEncounterLoot, HardEncounterLoot, MediumEncounterLoot } from '../../../lib/minions/data/templeTrekking';
+import { EasyEncounterLoot, HardEncounterLoot, MediumEncounterLoot, rewardTokens } from '../../../lib/minions/data/templeTrekking';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import { percentChance, stringMatches } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -28,15 +28,15 @@ export default class extends Task {
 	async run(data: TempleTrekkingActivityTaskOptions) {
 		const { channelID, quantity, userID, difficulty } = data;
 		const user = await this.client.users.fetch(userID);
-
+		user.incrementMinigameScore('TempleTrekking', quantity);
 		const userBank = user.bank();
 		let loot = new Bank();
 
 		const rewardToken = stringMatches(difficulty, 'hard')
-			? getOSItem(7775)
+			? getOSItem(rewardTokens.hard)
 			: stringMatches(difficulty, 'medium')
-			? getOSItem(7774)
-			: getOSItem(7776);
+			? getOSItem(rewardTokens.medium)
+			: getOSItem(rewardTokens.easy);
 
 		let totalEncounters = 0;
 		for (let trip = 0; trip < quantity; trip++) {
@@ -84,7 +84,7 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued trip of ${quantity}x plunder`);
+				user.log(`continued trip of ${quantity}x treks`);
 				return this.client.commands.get('trek')!.run(res, []);
 			},
 			image!,

@@ -75,3 +75,9 @@ export const ivandisRequirements = {
 	slayer: 38,
 	thieving: 22
 };
+
+export const rewardTokens = {
+	easy: 7776,
+	medium: 7774,
+	hard: 7775
+};

@@ -16,6 +16,8 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
+			usage: '<quantity:int{1}|difficulty:...string> [name:...string]',
+			usageDelim: ' ',
 			categoryFlags: ['minion', 'minigame'],
 			description: 'Sends your minion to Temple Trek.',
 			examples: ['+trek easy/medium/hard']
@@ -77,7 +79,7 @@ export default class extends BotCommand {
 		}
 
 		// Every 50 trips becomes 1% faster to a cap of 10%
-		const percentFaster = Math.min(Math.floor((await msg.author.getMinigameScore('PyramidPlunder')) / 50), 10);
+		const percentFaster = Math.min(Math.floor((await msg.author.getMinigameScore('TempleTrekking')) / 50), 10);
 
 		boosts.push(`${percentFaster.toFixed(1)}% for minion learning`);
 
@@ -98,7 +100,7 @@ export default class extends BotCommand {
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Trekking);
 
-		if (quantity === null) {
+		if (quantity === undefined || quantity === null) {
 			quantity = Math.floor(maxTripLength / tripTime);
 		}
 		const duration = quantity * tripTime;
@@ -118,7 +120,7 @@ export default class extends BotCommand {
 			quantity,
 			userID: msg.author.id,
 			duration,
-			type: Activity.Plunder,
+			type: Activity.Trekking,
 			channelID: msg.channel.id,
 			minigameID: 'TempleTrekking'
 		});
