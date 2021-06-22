@@ -977,11 +977,11 @@ setCustomItem(47_501, 'Diamond crown', 'Bronze full helm', {}, 1_000_000);
 setCustomItem(47_502, 'Royal mystery box', 'Mystery box', {}, 1_000_000);
 
 // 1st age
-setCustomItem(47_503, 'First age tiara', 'Rune full helm', {}, 1_000_000);
-setCustomItem(47_504, 'First age amulet', 'Amulet of strength', {}, 1_000_000);
-setCustomItem(47_505, 'First age cape', 'Fire cape', {}, 1_000_000);
-setCustomItem(47_506, 'First age bracelet', 'Barrows gloves', {}, 1_000_000);
-setCustomItem(47_507, 'First age ring', 'Berserker ring', {}, 1_000_000);
+setCustomItem(47_503, 'First age tiara', 'Rune full helm', {}, 100_000_000);
+setCustomItem(47_504, 'First age amulet', 'Amulet of strength', {}, 100_000_000);
+setCustomItem(47_505, 'First age cape', 'Fire cape', {}, 100_000_000);
+setCustomItem(47_506, 'First age bracelet', 'Barrows gloves', {}, 100_000_000);
+setCustomItem(47_507, 'First age ring', 'Berserker ring', {}, 100_000_000);
 
 setCustomItem(47_508, 'Broken dwarven warhammer', 'Rune warhammer', {}, 1_000_000);
 
