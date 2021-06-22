@@ -325,7 +325,7 @@ const itemBoosts = [
 	[
 		{
 			item: getOSItem('Twisted bow'),
-			boost: 10
+			boost: 8
 		},
 		{
 			item: getOSItem('Dragon hunter crossbow'),
@@ -349,7 +349,7 @@ const itemBoosts = [
 	[
 		{
 			item: getOSItem('Drygore rapier'),
-			boost: 15
+			boost: 12
 		},
 		{
 			item: getOSItem('Dragon hunter lance'),
@@ -359,7 +359,7 @@ const itemBoosts = [
 	[
 		{
 			item: getOSItem('Offhand drygore rapier'),
-			boost: 8
+			boost: 4
 		}
 	]
 ];
@@ -396,8 +396,10 @@ export async function calcCoxDuration(
 			}
 		});
 
-		totalReduction += userPercentChange / size;
-		reductions[u.id] = userPercentChange / size;
+		let perc = Math.min(100, userPercentChange / size);
+
+		totalReduction += perc;
+		reductions[u.id] = perc;
 	}
 	let duration = baseDuration;
 
