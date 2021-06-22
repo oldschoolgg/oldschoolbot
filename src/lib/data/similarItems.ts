@@ -42,7 +42,7 @@ const slayerHelmSimilarI = resolveItems([
 	'Slayer helmet (i)'
 ]);
 
-const source: [string, (string | number)[]][] = [
+const source: [string, (string | number)[], true?][] = [
 	['Dragon full helm', ['Dragon full helm (g)']],
 	['Dragon chainbody', ['Dragon chainbody (g)']],
 	['Dragon platebody', ['Dragon platebody (g)']],
@@ -180,8 +180,11 @@ const source: [string, (string | number)[]][] = [
 	[
 		'Black mask',
 		[
+			...blackMaskISimilar,
+			...slayerHelmSimilarI,
 			...slayerHelmSimilar,
 			...[
+				'Black mask (i)',
 				'Black mask (1)',
 				'Black mask (2)',
 				'Black mask (3)',
@@ -215,6 +218,23 @@ const source: [string, (string | number)[]][] = [
 			'Mud battlestaff',
 			'Mystic mud staff'
 		]
+	],
+	['Attack cape', ['Max cape', 'Attack cape(t)']],
+	[
+		'Kodai wand',
+		[
+			'Staff of water',
+			'Mist battlestaff',
+			'Mystic mist staff',
+			'Tome of water',
+			'Water battlestaff',
+			'Mystic water staff',
+			'Steam battlestaff',
+			'Mystic steam staff',
+			'Mud battlestaff',
+			'Mystic mud staff'
+		],
+		true
 	]
 ];
 
@@ -222,10 +242,14 @@ export const similarItems: Map<number, number[]> = new Map(
 	source.map(entry => [itemID(entry[0]), resolveItems(entry[1])])
 );
 
-export const inverseSimilarItems: Map<number, number> = new Map();
-for (const group of similarItems.entries()) {
-	for (const item of group[1]) {
-		inverseSimilarItems.set(item, group[0]);
+export const inverseSimilarItems: Map<number, Set<number>> = new Map();
+for (const [baseItem, similarItems, isExclusive] of source) {
+	if (isExclusive) continue;
+	for (const item of resolveItems(similarItems)) {
+		if (!inverseSimilarItems.get(item)) {
+			inverseSimilarItems.set(item, new Set());
+		}
+		inverseSimilarItems.get(item)!.add(itemID(baseItem));
 	}
 }
 
