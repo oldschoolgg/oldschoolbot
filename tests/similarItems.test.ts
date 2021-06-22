@@ -52,7 +52,8 @@ describe('Gear', () => {
 		hands: 'Barrows gloves'
 	});
 	test('', () => {
-		expect(testGear4.hasEquipped(['Staff of water', 'Black mask (i)'], true)).toBeTruthy();
+		expect(testGear4.hasEquipped(['Staff of water', 'Black mask (i)', 'Barrows gloves'], true)).toBeTruthy();
+		expect(testGear4.hasEquipped(['Staff of water', 'Black mask (i)', 'Barrows gloves'], true, false)).toBeFalsy();
 	});
 
 	const testGear5 = new Gear({
@@ -81,5 +82,23 @@ describe('Gear', () => {
 			testGear6.hasEquipped(['Mist battlestaff', 'Barrows gloves', 'Red slayer helmet'], true, false)
 		).toBeTruthy();
 		expect(testGear6.hasEquipped(['Staff of water', 'Barrows gloves', 'Slayer helmet'], true, false)).toBeFalsy();
+	});
+
+	const testGear7 = new Gear({
+		weapon: 'Staff of water',
+		head: 'Black mask'
+	});
+	test('', () => {
+		expect(testGear7.hasEquipped('Staff of water', true)).toBeTruthy();
+		expect(testGear7.hasEquipped('Black mask', true)).toBeTruthy();
+	});
+
+	const testGear8 = new Gear({
+		weapon: 'Kodai wand',
+		head: 'Black mask (i)'
+	});
+	test('', () => {
+		expect(testGear8.hasEquipped('Kodai wand', true)).toBeTruthy();
+		expect(testGear8.hasEquipped('Black mask (i)', true)).toBeTruthy();
 	});
 });
