@@ -182,11 +182,7 @@ export default class extends BotCommand {
 					timeToFinish = reduceNumByPercent(timeToFinish, 15);
 					boosts.push('15% for Black mask (i) on non-melee task');
 				}
-			} else if (
-				isOnTask &&
-				(msg.author.hasItemEquippedOrInBank('Black mask') ||
-					msg.author.hasItemEquippedOrInBank('Black mask (i)'))
-			) {
+			} else if (isOnTask && msg.author.hasItemEquippedOrInBank('Black mask')) {
 				timeToFinish = reduceNumByPercent(timeToFinish, 15);
 				boosts.push('15% for Black mask on melee task');
 			}
