@@ -3,12 +3,12 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Activity, Time } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import Crafting from '../../lib/skilling/skills/crafting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, formatDuration, itemNameFromID, removeItemFromBank, stringMatches } from '../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -48,28 +48,25 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const Craft = Crafting.Craftables.find(item => stringMatches(item.name, craftName));
+		const craftable = Crafting.Craftables.find(item => stringMatches(item.name, craftName));
 
-		if (!Craft) {
+		if (!craftable) {
 			return msg.send(
 				`That is not a valid craftable item, to see the items available do \`${msg.cmdPrefix}craft --items\``
 			);
 		}
 
-		if (msg.author.skillLevel(SkillsEnum.Crafting) < Craft.level) {
-			return msg.send(`${msg.author.minionName} needs ${Craft.level} Crafting to craft ${Craft.name}.`);
+		if (msg.author.skillLevel(SkillsEnum.Crafting) < craftable.level) {
+			return msg.send(`${msg.author.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`);
 		}
 
 		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const requiredItems: [string, number][] = Object.entries(Craft.inputItems);
+		const userBank = msg.author.bank({ withGP: true });
 
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
-
-		let timeToCraftSingleItem = Craft.tickRate * Time.Second * 0.6 + Time.Second / 4;
-
+		let timeToCraftSingleItem = craftable.tickRate * Time.Second * 0.6 + Time.Second / 4;
 		const [hasFallyHard] = await userhasDiaryTier(msg.author, FaladorDiary.hard);
-		if (Craft.bankChest && (hasFallyHard || msg.author.skillLevel(SkillsEnum.Crafting) >= 99)) {
+		if (craftable.bankChest && (hasFallyHard || msg.author.skillLevel(SkillsEnum.Crafting) >= 99)) {
 			timeToCraftSingleItem /= 3.25;
 		}
 
@@ -78,64 +75,38 @@ export default class extends BotCommand {
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToCraftSingleItem);
-			for (const [itemID, qty] of requiredItems) {
-				const id = parseInt(itemID);
-				if (id === 995) {
-					const userGP = msg.author.settings.get(UserSettings.GP);
-					if (userGP < qty) {
-						return msg.send('You do not have enough GP.');
-					}
-					quantity = Math.min(quantity, Math.floor(userGP / qty));
-					continue;
-				}
-				const itemsOwned = userBank[parseInt(itemID)];
-				if (itemsOwned === undefined || itemsOwned < qty) {
-					return msg.send(`You dont have enough ${itemNameFromID(parseInt(itemID))}.`);
-				}
-				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
-			}
+			const max = userBank.fits(craftable.inputItems);
+			if (max < quantity && max !== 0) quantity = max;
 		}
 
 		const duration = quantity * timeToCraftSingleItem;
-
 		if (duration > maxTripLength) {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${Craft.name}s you can craft is ${Math.floor(
+				)}, try a lower quantity. The highest amount of ${craftable.name}s you can craft is ${Math.floor(
 					maxTripLength / timeToCraftSingleItem
 				)}.`
 			);
 		}
 
-		// Check the user has add the required items to craft.
-		for (const [itemID, qty] of requiredItems) {
-			const id = parseInt(itemID);
-			if (id === 995) {
-				const userGP = msg.author.settings.get(UserSettings.GP);
-				if (userGP < qty * quantity) {
-					return msg.send(`You don't have enough ${itemNameFromID(id)}.`);
-				}
-				continue;
-			}
-			if (!bankHasItem(userBank, id, qty * quantity)) {
-				return msg.send(`You don't have enough ${itemNameFromID(id)}.`);
-			}
+		const itemsNeeded = craftable.inputItems.clone().multiply(quantity);
+
+		// Check the user has all the required items to craft.
+		if (!userBank.has(itemsNeeded.bank)) {
+			return msg.send(
+				`You don't have enough items. For ${quantity}x ${craftable.name}, you're missing **${itemsNeeded
+					.clone()
+					.remove(userBank)}**.`
+			);
 		}
 
-		// Remove the required items from their bank.
-		let newBank = { ...userBank };
-		for (const [itemID, qty] of requiredItems) {
-			if (parseInt(itemID) === 995) {
-				await msg.author.removeGP(qty * quantity);
-				continue;
-			}
-			newBank = removeItemFromBank(newBank, parseInt(itemID), qty * quantity);
-		}
-		await msg.author.settings.update(UserSettings.Bank, newBank);
+		await msg.author.removeItemsFromBank(itemsNeeded);
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.CraftingCost, itemsNeeded.bank);
 
 		await addSubTaskToActivityTask<CraftingActivityTaskOptions>({
-			craftableID: Craft.id,
+			craftableID: craftable.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -144,9 +115,9 @@ export default class extends BotCommand {
 		});
 
 		return msg.send(
-			`${msg.author.minionName} is now crafting ${quantity}x ${Craft.name}, it'll take around ${formatDuration(
-				duration
-			)} to finish.`
+			`${msg.author.minionName} is now crafting ${quantity}x ${
+				craftable.name
+			}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`
 		);
 	}
 }
