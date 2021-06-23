@@ -50,6 +50,7 @@ export default class extends BotCommand {
 
 	public async returnSuccess(msg: KlasaMessage, message: string, autoslay: boolean) {
 		if (autoslay) {
+			await msg.channel.send(message);
 			try {
 				return this.client.commands.get('autoslay')!.run(msg, ['']);
 			} catch (e) {
