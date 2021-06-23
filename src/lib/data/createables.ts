@@ -1615,6 +1615,499 @@ const Createables: Createable[] = [
 			[itemID('Castle wars ticket')]: 75
 		}
 	},
+	/** Revert Graceful */
+	{
+		name: 'Revert graceful hood',
+		inputItems: {
+			[itemID('Graceful hood')]: 1
+		},
+		outputItems: {
+			[itemID('Mark of grace')]: 28
+		}
+	},
+	{
+		name: 'Revert graceful top',
+		inputItems: {
+			[itemID('Graceful top')]: 1
+		},
+		outputItems: {
+			[itemID('Mark of grace')]: 44
+		}
+	},
+	{
+		name: 'Revert graceful legs',
+		inputItems: {
+			[itemID('Graceful legs')]: 1
+		},
+		outputItems: {
+			[itemID('Mark of grace')]: 48
+		}
+	},
+	{
+		name: 'Revert graceful gloves',
+		inputItems: {
+			[itemID('Graceful gloves')]: 1
+		},
+		outputItems: {
+			[itemID('Mark of grace')]: 30
+		}
+	},
+	{
+		name: 'Revert graceful boots',
+		inputItems: {
+			[itemID('Graceful boots')]: 1
+		},
+		outputItems: {
+			[itemID('Mark of grace')]: 32
+		}
+	},
+	{
+		name: 'Revert graceful cape',
+		inputItems: {
+			[itemID('Graceful cape')]: 1
+		},
+		outputItems: {
+			[itemID('Mark of grace')]: 32
+		}
+	},
+	{
+		name: 'Revert arceuus graceful hood',
+		inputItems: {
+			[itemID('Arceuus graceful hood')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1
+		}
+	},
+	{
+		name: 'Revert arceuus graceful top',
+		inputItems: {
+			[itemID('Arceuus graceful top')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful top')]: 1
+		}
+	},
+	{
+		name: 'Revert arceuus graceful legs',
+		inputItems: {
+			[itemID('Arceuus graceful legs')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful legs')]: 1
+		}
+	},
+	{
+		name: 'Revert arceuus graceful gloves',
+		inputItems: {
+			[itemID('Arceuus graceful gloves')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful gloves')]: 1
+		}
+	},
+	{
+		name: 'Revert arceuus graceful boots',
+		inputItems: {
+			[itemID('Arceuus graceful boots')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful boots')]: 1
+		}
+	},
+	{
+		name: 'Revert arceuus graceful cape',
+		inputItems: {
+			[itemID('Arceuus graceful cape')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful cape')]: 1
+		}
+	},
+	{
+		name: 'Revert piscarilius graceful hood',
+		inputItems: {
+			[itemID('Piscarilius graceful hood')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1
+		}
+	},
+	{
+		name: 'Revert piscarilius graceful top',
+		inputItems: {
+			[itemID('Piscarilius graceful top')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful top')]: 1
+		}
+	},
+	{
+		name: 'Revert piscarilius graceful legs',
+		inputItems: {
+			[itemID('Piscarilius graceful legs')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful legs')]: 1
+		}
+	},
+	{
+		name: 'Revert piscarilius graceful gloves',
+		inputItems: {
+			[itemID('Piscarilius graceful gloves')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful gloves')]: 1
+		}
+	},
+	{
+		name: 'Revert piscarilius graceful boots',
+		inputItems: {
+			[itemID('Piscarilius graceful boots')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful boots')]: 1
+		}
+	},
+	{
+		name: 'Revert piscarilius graceful cape',
+		inputItems: {
+			[itemID('Piscarilius graceful cape')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful cape')]: 1
+		}
+	},
+	{
+		name: 'Revert lovakengj graceful hood',
+		inputItems: {
+			[itemID('Lovakengj graceful hood')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1
+		}
+	},
+	{
+		name: 'Revert lovakengj graceful top',
+		inputItems: {
+			[itemID('Lovakengj graceful top')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful top')]: 1
+		}
+	},
+	{
+		name: 'Revert lovakengj graceful legs',
+		inputItems: {
+			[itemID('Lovakengj graceful legs')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful legs')]: 1
+		}
+	},
+	{
+		name: 'Revert lovakengj graceful gloves',
+		inputItems: {
+			[itemID('Lovakengj graceful gloves')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful gloves')]: 1
+		}
+	},
+	{
+		name: 'Revert lovakengj graceful boots',
+		inputItems: {
+			[itemID('Lovakengj graceful boots')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful boots')]: 1
+		}
+	},
+	{
+		name: 'Revert lovakengj graceful cape',
+		inputItems: {
+			[itemID('Lovakengj graceful cape')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful cape')]: 1
+		}
+	},
+	{
+		name: 'Revert shayzien graceful hood',
+		inputItems: {
+			[itemID('Shayzien graceful hood')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1
+		}
+	},
+	{
+		name: 'Revert shayzien graceful top',
+		inputItems: {
+			[itemID('Shayzien graceful top')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful top')]: 1
+		}
+	},
+	{
+		name: 'Revert shayzien graceful legs',
+		inputItems: {
+			[itemID('Shayzien graceful legs')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful legs')]: 1
+		}
+	},
+	{
+		name: 'Revert shayzien graceful gloves',
+		inputItems: {
+			[itemID('Shayzien graceful gloves')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful gloves')]: 1
+		}
+	},
+	{
+		name: 'Revert shayzien graceful boots',
+		inputItems: {
+			[itemID('Shayzien graceful boots')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful boots')]: 1
+		}
+	},
+	{
+		name: 'Revert shayzien graceful cape',
+		inputItems: {
+			[itemID('Shayzien graceful cape')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful cape')]: 1
+		}
+	},
+	{
+		name: 'Revert hosidius graceful hood',
+		inputItems: {
+			[itemID('Hosidius graceful hood')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1
+		}
+	},
+	{
+		name: 'Revert hosidius graceful top',
+		inputItems: {
+			[itemID('Hosidius graceful top')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful top')]: 1
+		}
+	},
+	{
+		name: 'Revert hosidius graceful legs',
+		inputItems: {
+			[itemID('Hosidius graceful legs')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful legs')]: 1
+		}
+	},
+	{
+		name: 'Revert hosidius graceful gloves',
+		inputItems: {
+			[itemID('Hosidius graceful gloves')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful gloves')]: 1
+		}
+	},
+	{
+		name: 'Revert hosidius graceful boots',
+		inputItems: {
+			[itemID('Hosidius graceful boots')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful boots')]: 1
+		}
+	},
+	{
+		name: 'Revert hosidius graceful cape',
+		inputItems: {
+			[itemID('Hosidius graceful cape')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful cape')]: 1
+		}
+	},
+	{
+		name: 'Revert kourend graceful hood',
+		inputItems: {
+			[itemID('Kourend graceful hood')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1
+		}
+	},
+	{
+		name: 'Revert kourend graceful top',
+		inputItems: {
+			[itemID('Kourend graceful top')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful top')]: 1
+		}
+	},
+	{
+		name: 'Revert kourend graceful legs',
+		inputItems: {
+			[itemID('Kourend graceful legs')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful legs')]: 1
+		}
+	},
+	{
+		name: 'Revert kourend graceful gloves',
+		inputItems: {
+			[itemID('Kourend graceful gloves')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful gloves')]: 1
+		}
+	},
+	{
+		name: 'Revert kourend graceful boots',
+		inputItems: {
+			[itemID('Kourend graceful boots')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful boots')]: 1
+		}
+	},
+	{
+		name: 'Revert kourend graceful cape',
+		inputItems: {
+			[itemID('Kourend graceful cape')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful cape')]: 1
+		}
+	},
+	{
+		name: 'Revert brimhaven graceful hood',
+		inputItems: {
+			[itemID('Brimhaven graceful hood')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1
+		}
+	},
+	{
+		name: 'Revert brimhaven graceful top',
+		inputItems: {
+			[itemID('Brimhaven graceful top')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful top')]: 1
+		}
+	},
+	{
+		name: 'Revert brimhaven graceful legs',
+		inputItems: {
+			[itemID('Brimhaven graceful legs')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful legs')]: 1
+		}
+	},
+	{
+		name: 'Revert brimhaven graceful gloves',
+		inputItems: {
+			[itemID('Brimhaven graceful gloves')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful gloves')]: 1
+		}
+	},
+	{
+		name: 'Revert brimhaven graceful boots',
+		inputItems: {
+			[itemID('Brimhaven graceful boots')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful boots')]: 1
+		}
+	},
+	{
+		name: 'Revert brimhaven graceful cape',
+		inputItems: {
+			[itemID('Brimhaven graceful cape')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful cape')]: 1
+		}
+	},
+	{
+		name: 'Revert trailblazer graceful hood',
+		inputItems: {
+			[itemID('Trailblazer graceful hood')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1,
+			[itemID('Trailblazer graceful ornament kit')]: 1
+		}
+	},
+	{
+		name: 'Revert trailblazer graceful top',
+		inputItems: {
+			[itemID('Trailblazer graceful top')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful top')]: 1,
+			[itemID('Trailblazer graceful ornament kit')]: 1
+		}
+	},
+	{
+		name: 'Revert trailblazer graceful legs',
+		inputItems: {
+			[itemID('Trailblazer graceful legs')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful legs')]: 1,
+			[itemID('Trailblazer graceful ornament kit')]: 1
+		}
+	},
+	{
+		name: 'Revert trailblazer graceful gloves',
+		inputItems: {
+			[itemID('Trailblazer graceful gloves')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful gloves')]: 1,
+			[itemID('Trailblazer graceful ornament kit')]: 1
+		}
+	},
+	{
+		name: 'Revert trailblazer graceful boots',
+		inputItems: {
+			[itemID('Trailblazer graceful boots')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful boots')]: 1,
+			[itemID('Trailblazer graceful ornament kit')]: 1
+		}
+	},
+	{
+		name: 'Revert trailblazer graceful cape',
+		inputItems: {
+			[itemID('Trailblazer graceful cape')]: 1
+		},
+		outputItems: {
+			[itemID('Graceful cape')]: 1,
+			[itemID('Trailblazer graceful ornament kit')]: 1
+		}
+	},
 	...crystalTools,
 	...ornamentKits,
 	...hunterClothing,
