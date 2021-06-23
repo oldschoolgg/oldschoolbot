@@ -9,14 +9,14 @@ import resolveItems from './util/resolveItems';
 import { makeKillTable } from './util/setCustomMonster';
 
 export const allKalphiteKingItems = resolveItems([
-	'Drygore rapier',
-	'Drygore longsword',
 	'Drygore mace',
-	'Offhand drygore rapier',
-	'Offhand drygore longsword',
 	'Offhand drygore mace',
-	'Baby kalphite king',
-	'Perfect chitin'
+	'Drygore longsword',
+	'Offhand drygore longsword',
+	'Drygore rapier',
+	'Offhand drygore rapier',
+	'Perfect chitin',
+	'Baby kalphite king'
 ]);
 
 export const KalphiteKingMonster: KillableMonster = {
