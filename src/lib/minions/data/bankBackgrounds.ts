@@ -140,27 +140,24 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 11,
-		name: 'Dark',
+		name: 'Ariana Grande (11)',
 		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
+		available: false
 	},
 	{
 		id: 12,
-		name: 'Morytania',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Five,
-		gpCost: 10_000_000
-	},
-	{
-		id: 13,
-		name: 'Grass',
+		name: 'Transparent',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
+		gpCost: 10_000_000,
+		transparent: true
+	},
+	{
+		id: 13,
+		name: 'Hween',
+		image: null,
+		available: false
 	},
 	{
 		id: 14,
@@ -171,13 +168,193 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 15,
-		name: 'OSB',
+		name: 'Homer (15)',
 		image: null,
 		available: true,
-		bitfield: BitField.HasPermanentEventBackgrounds
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
 		id: 16,
+		name: 'Jad',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
+	},
+	{
+		id: 17,
+		name: 'Bop',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 2_147_483_647,
+		sacValueRequired: 2_147_483_647
+	},
+	{
+		id: 18,
+		name: 'Racc',
+		image: null,
+		available: false
+	},
+	{
+		id: 19,
+		name: 'tob',
+		image: null,
+		available: false
+	},
+	{
+		id: 20,
+		name: '	PoGnome CustomBG (20)',
+		image: null,
+		available: false
+	},
+	{
+		id: 22,
+		name: 'Obama',
+		image: null,
+		available: false
+	},
+	{
+		id: 23,
+		name: 'ReZeros Background (23)',
+		image: null,
+		available: false
+	},
+	{
+		id: 26,
+		name: 'Weeb (26)',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
+	},
+	{
+		id: 27,
+		name: 'K-Pop (27)',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
+	},
+	{
+		id: 28,
+		name: 'cerb',
+		image: null,
+		available: false
+	},
+	{
+		id: 30,
+		name: 'Troll',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
+	},
+	{
+		id: 32,
+		name: 'Peepo Scooter (32)',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
+	},
+	{
+		id: 33,
+		name: 'Halloween Bot Avatar',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
+	},
+	{
+		id: 34,
+		name: 'Dark',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
+	},
+	{
+		id: 35,
+		name: 'whale',
+		image: null,
+		available: false
+	},
+	{
+		id: 36,
+		name: 'Morytania',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Five,
+		gpCost: 10_000_000
+	},
+	{
+		id: 37,
+		name: 'Grass',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
+	},
+	{
+		id: 38,
+		name: 'Caboose',
+		image: null,
+		available: false
+	},
+	{
+		id: 39,
+		name: 'Zuk',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
+	},
+	{
+		id: 40,
+		name: 'Turbo CustomBG (40)',
+		image: null,
+		available: false
+	},
+	{
+		id: 41,
+		name: 'Shady',
+		image: null,
+		available: false
+	},
+	{
+		id: 47,
+		name: 'Slav',
+		image: null,
+		available: false
+	},
+	{
+		id: 48,
+		name: 'Beans',
+		image: null,
+		available: false
+	},
+	{
+		id: 52,
+		name: 'Cyrillax CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 53,
+		name: 'AvariceBruh CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 62,
+		name: 'PlayLazily CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 67,
 		name: 'Wilderness',
 		image: null,
 		available: true,
@@ -219,7 +396,7 @@ const backgroundImages: BankBackground[] = [
 		gpCost: 100_000_000
 	},
 	{
-		id: 17,
+		id: 68,
 		name: 'Grand Exchange',
 		image: null,
 		available: true,
@@ -228,7 +405,7 @@ const backgroundImages: BankBackground[] = [
 		sacValueRequired: 2_147_483_647
 	},
 	{
-		id: 18,
+		id: 69,
 		name: 'Falador Park',
 		image: null,
 		available: true,
@@ -242,17 +419,32 @@ const backgroundImages: BankBackground[] = [
 		}
 	},
 	{
-		id: 19,
-		name: 'Pets',
+		id: 70,
+		name: 'Pride CustomBG',
 		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 20_000_000,
-		transparent: true
+		available: false
 	},
 	{
-		id: 20,
-		name: 'Transparent',
+		id: 71,
+		name: 'Beans CustomBG (71)',
+		image: null,
+		available: false
+	},
+	{
+		id: 74,
+		name: 'Aki CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 75,
+		name: 'Sunny CustomBG',
+		image: null,
+		available: false
+	},
+	{
+		id: 76,
+		name: 'Pets',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,

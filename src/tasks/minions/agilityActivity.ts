@@ -2,14 +2,14 @@ import { increaseNumByPercent, randInt, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji, Events, Time } from '../../lib/constants';
+import { Activity, Emoji, Events, MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, updateGPTrackSetting } from '../../lib/util';
+import { addItemToBank, randomVariation, updateGPTrackSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -40,7 +40,10 @@ export default class extends Task {
 				}
 			}
 		}
-		if (user.skillLevel(SkillsEnum.Agility) >= course.level + 20) {
+
+		if (user.usingPet('Harry')) {
+			totalMarks = Math.ceil(randomVariation(totalMarks * 2, 10));
+		} else if (user.skillLevel(SkillsEnum.Agility) >= course.level + 20) {
 			totalMarks = Math.ceil(totalMarks / 5);
 		}
 
@@ -85,6 +88,9 @@ export default class extends Task {
 			diaryBonus ? '(2x bonus Marks for Ardougne Elite diary)' : ''
 		}.\n${xpRes}`;
 
+		if (user.usingPet('Harry')) {
+			str += 'Harry found you extra Marks of grace.';
+		}
 		if (course.id === 6) {
 			const currentLapCount = user.settings.get(UserSettings.LapsScores)[course.id];
 			for (const monkey of Agility.MonkeyBackpacks) {
@@ -95,7 +101,41 @@ export default class extends Task {
 				}
 			}
 		}
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutes = duration / Time.Minute;
+			if (course.id === 4) {
+				for (let i = 0; i < minutes; i++) {
+					if (roll(4000)) {
+						loot.add('Scruffy');
+						str +=
+							"\n\n<:scruffy:749945071146762301> As you jump off the rooftop in Varrock, a stray dog covered in flies approaches you. You decide to adopt the dog, and name him 'Scruffy'.";
+						break;
+					}
+				}
+			}
 
+			if (course.id === 11) {
+				for (let i = 0; i < minutes; i++) {
+					if (roll(1600)) {
+						loot.add('Harry');
+						str +=
+							'\n\n<:harry:749945071104819292> As you jump across a rooftop, you notice a monkey perched on the roof - which has escaped from the Ardougne Zoo! You decide to adopt the monkey, and call him Harry.';
+						break;
+					}
+				}
+			}
+
+			if (course.id === 12) {
+				for (let i = 0; i < minutes; i++) {
+					if (roll(1600)) {
+						loot.add('Skipper');
+						str +=
+							"\n\n<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept.";
+						break;
+					}
+				}
+			}
+		}
 		// Roll for pet
 		if (course.petChance && roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)) {
 			loot.add('Giant squirrel');

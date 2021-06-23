@@ -3,10 +3,14 @@ import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { NIGHTMARES_HP } from '../../constants';
+import { KalphiteKingMonster } from '../../kalphiteking';
 import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
+import KingGoldemar from '../data/killableMonsters/custom/KingGoldemar';
+import SeaKraken from '../data/killableMonsters/custom/SeaKraken';
+import { VasaMagus } from '../data/killableMonsters/custom/VasaMagus';
 import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
 
 export { default as calculateMonsterFood } from './calculateMonsterFood';
@@ -20,15 +24,35 @@ export type AttackStyles =
 	| SkillsEnum.Ranged;
 
 const miscHpMap: Record<number, number> = {
+	3127: 250,
+	46274: 5000,
 	9415: NIGHTMARES_HP,
-	3127: 250
+	[KingGoldemar.id]: 10_000,
+	[VasaMagus.id]: 3900,
+	[KalphiteKingMonster.id]: 5300,
+	[SeaKraken.id]: 3900
 };
 
+function meleeOnly(user: KlasaUser): AttackStyles[] {
+	const skills = user.getAttackStyles();
+	if (skills.some(skill => skill === SkillsEnum.Ranged || skill === SkillsEnum.Magic)) {
+		return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
+	}
+	return skills;
+}
 export function resolveAttackStyles(
 	user: KlasaUser,
 	params: ResolveAttackStylesParams
 ): [KillableMonster | undefined, Monster | undefined, AttackStyles[]] {
+	if (params.monsterID === KingGoldemar.id) return [undefined, undefined, meleeOnly(user)];
+	if (params.monsterID === VasaMagus.id) return [undefined, undefined, [SkillsEnum.Magic]];
+
 	const killableMon = killableMonsters.find(m => m.id === params.monsterID);
+
+	if (!killableMon) {
+		return [undefined, undefined, [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence]];
+	}
+
 	const osjsMon = Monsters.get(params.monsterID);
 
 	// The styles chosen by this user to use.
@@ -126,7 +150,9 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 
 	if (params.isOnTask) {
 		let newSlayerXP = 0;
-		if (osjsMon?.data?.slayerXP) {
+		if (miscHpMap[params.monsterID]) {
+			newSlayerXP += params.taskQuantity! * miscHpMap[params.monsterID];
+		} else if (osjsMon?.data?.slayerXP) {
 			newSlayerXP += params.taskQuantity! * osjsMon.data.slayerXP;
 		} else {
 			newSlayerXP += params.taskQuantity! * hp;

@@ -9,8 +9,6 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer, Time } from './constants';
 import { GearSetupTypes } from './gear/types';
-import killableMonsters from './minions/data/killableMonsters';
-import { KillableMonster } from './minions/types';
 import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import itemID from './util/itemID';
@@ -393,18 +391,11 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 			if (calcCombatLevel(skills) < level!) return false;
 		} else {
 			const xpHas = skills[skillName];
-			const levelHas = convertXPtoLVL(xpHas ?? 1);
+			const levelHas = convertXPtoLVL(xpHas ?? 1, 120);
 			if (levelHas < level!) return false;
 		}
 	}
 	return true;
-}
-
-export default function findMonster(str: string): KillableMonster | undefined {
-	const mon = killableMonsters.find(
-		mon => stringMatches(mon.name, str) || mon.aliases.some(alias => stringMatches(alias, str))
-	);
-	return mon;
 }
 
 export function formatItemReqs(items: ArrayItemsResolved) {
@@ -486,6 +477,26 @@ export function updateBankSetting(client: KlasaClient, setting: string, bankToAd
 	const current = new Bank(client.settings.get(setting) as ItemBank);
 	const newBank = current.add(bankToAdd);
 	return client.settings.update(setting, newBank.bank);
+}
+
+export function removeFromArr<T>(array: T[], item: T) {
+	return array.filter(i => i !== item);
+}
+
+const masterFarmerOutfit = resolveItems([
+	'Master farmer hat',
+	'Master farmer jacket',
+	'Master farmer pants',
+	'Master farmer gloves',
+	'Master farmer boots'
+]);
+
+export function userHasMasterFarmerOutfit(user: KlasaUser) {
+	const allItems = user.allItemsOwned();
+	for (const item of masterFarmerOutfit) {
+		if (!allItems.has(item)) return false;
+	}
+	return true;
 }
 
 export function updateGPTrackSetting(client: KlasaClient, setting: string, amount: number) {

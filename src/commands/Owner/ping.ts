@@ -20,11 +20,11 @@ export default class extends BotCommand {
 			return message.channel.send('No role with that name found.');
 		}
 		if (!message.member) return;
-		if (!message.member?.roles.cache.has('734055552933429280')) {
+		if (!message.member?.roles.cache.has('759572886364225558')) {
 			return;
 		}
 		return message.channel.send(
-			`<@&${roleToPing.roleID}> You were pinged because you have this role, you can remove it using \`+role ${roleToPing.name}\`.`
+			`<@&${roleToPing.roleID}> You were pinged because you have this role, you can remove it using \`=roles ${roleToPing.name}\`.`
 		);
 	}
 }

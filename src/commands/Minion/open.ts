@@ -1,26 +1,34 @@
-import { randInt } from 'e';
+import { percentChance, randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank, Misc, Openables } from 'oldschooljs';
+import { Bank, Misc, Openables as _Openables } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Openable from 'oldschooljs/dist/structures/Openable';
 
 import { COINS_ID, Events, MIMIC_MONSTER_ID } from '../../lib/constants';
-import { cluesRares } from '../../lib/data/collectionLog';
-import botOpenables from '../../lib/data/openables';
+import botOpenables, { IronmanPMBTable } from '../../lib/data/openables';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
+import { addBanks, addItemToBank, rand, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
+import resolveItems from '../../lib/util/resolveItems';
+import { hasClueHunterEquipped } from './mclue';
 
-const itemsToNotifyOf = Object.values(cluesRares)
-	.flat(Infinity)
-	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
-	.concat([itemID('Bloodhound')]);
+const itemsToNotifyOf = resolveItems([
+	'Dwarven blessing',
+	'First age tiara',
+	'First age amulet',
+	'First age cape',
+	'First age bracelet',
+	'First age ring'
+]);
 
-const allOpenables = [...Openables.map(i => i.id), ...ClueTiers.map(i => i.id), ...botOpenables.map(i => i.itemID)];
+const Openables = _Openables.filter(i => i.name !== 'Mystery box');
+
+const allOpenables = [...ClueTiers.map(i => i.id), ...botOpenables.map(i => i.itemID), ...Openables.map(i => i.id)];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -56,7 +64,6 @@ export default class extends BotCommand {
 		if (clue) {
 			return this.clueOpen(msg, quantity, clue);
 		}
-
 		const osjsOpenable = Openables.find(openable => openable.aliases.some(alias => stringMatches(alias, name)));
 		if (osjsOpenable) {
 			return this.osjsOpenablesOpen(msg, quantity, osjsOpenable);
@@ -76,7 +83,18 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(clueTier.id, quantity);
 
-		let loot = clueTier.table.open(quantity);
+		const hasCHEquipped = hasClueHunterEquipped(msg.author.getGear('skilling'));
+
+		let extraClueRolls = 0;
+		let loot: ItemBank = {};
+		for (let i = 0; i < quantity; i++) {
+			const roll = rand(1, 3);
+			extraClueRolls += roll - 1;
+			loot = addBanks([clueTier.table.open(roll), loot]);
+			if (clueTier.name === 'Master' && percentChance(hasCHEquipped ? 3.5 : 1.5)) {
+				loot = addItemToBank(loot, itemID('Clue scroll (grandmaster)'));
+			}
+		}
 
 		let mimicNumber = 0;
 		if (clueTier.mimicChance) {
@@ -141,9 +159,15 @@ export default class extends BotCommand {
 
 		return msg.channel.sendBankImage({
 			bank: loot,
-			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.`,
+			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.${
+				extraClueRolls > 0
+					? ` You also received ${extraClueRolls} extra roll${
+							extraClueRolls > 1 ? 's' : ''
+					  } from your casket${quantity > 1 ? 's' : ''}!`
+					: ''
+			}`,
 			title: opened,
-			flags: { showNewCL: 1, ...msg.flagArgs },
+			flags: { showNewCL: 1, wide: Object.keys(loot).length > 250 ? 1 : 0, ...msg.flagArgs },
 			user: msg.author,
 			cl: previousCL
 		});
@@ -203,9 +227,24 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
 
-		const score = msg.author.getOpenableScore(itemID('Spoils of war'));
+		const hasSmokey = msg.author.equippedPet() === itemID('Smokey');
+		const loot = new Bank();
+		let smokeyBonus = 0;
+		if (botOpenable.name.toLowerCase().includes('mystery') && hasSmokey) {
+			for (let i = 0; i < quantity; i++) {
+				if (roll(10)) smokeyBonus++;
+			}
+		}
 
-		const loot = botOpenable.table.roll(quantity);
+		for (let i = 0; i < quantity + smokeyBonus; i++) {
+			if (botOpenable.name === 'Pet Mystery box' && msg.author.isIronman) {
+				loot.add(IronmanPMBTable.roll());
+			} else if (typeof botOpenable.table === 'function') {
+				loot.add(botOpenable.table());
+			} else {
+				loot.add(botOpenable.table.roll());
+			}
+		}
 
 		if (loot.has("Lil' creator")) {
 			this.client.emit(
@@ -215,7 +254,7 @@ export default class extends BotCommand {
 				}, just received a Lil' creator! They've done ${await msg.author.getMinigameScore(
 					'SoulWars'
 				)} Soul wars games, and this is their ${formatOrdinal(
-					score + randInt(1, quantity)
+					msg.author.getOpenableScore(botOpenable.itemID) + randInt(1, quantity)
 				)} Spoils of war crate.`
 			);
 		}
@@ -230,8 +269,13 @@ export default class extends BotCommand {
 		return msg.channel.sendBankImage({
 			bank: loot.values(),
 			title: `You opened ${quantity} ${botOpenable.name}`,
-			flags: { showNewCL: 1, ...msg.flagArgs },
+			flags: {
+				showNewCL: 1,
+				wide: Object.keys(loot.values()).length > 250 ? 1 : 0,
+				...msg.flagArgs
+			},
 			user: msg.author,
+			content: hasSmokey ? `You got ${smokeyBonus}x bonus rolls from Smokey.` : undefined,
 			cl: previousCL
 		});
 	}

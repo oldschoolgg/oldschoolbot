@@ -112,7 +112,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame] [name:...string]',
+			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|itemcontracts] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -322,10 +322,6 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			})
 			.slice(0, 2000);
 
-		if (msg.flagArgs.server && msg.guild) {
-			list = list.filter((kcUser: KCUser) => msg.guild!.members.cache.has(kcUser.id));
-		}
-
 		this.doMenu(
 			msg,
 			util
@@ -359,7 +355,7 @@ DESC LIMIT 500;`
 				.map(user => {
 					let totalLevel = 0;
 					for (const skill of skillsVals) {
-						totalLevel += convertXPtoLVL(Number(user[`skills.${skill.id}` as keyof SkillUser]) as any);
+						totalLevel += convertXPtoLVL(Number(user[`skills.${skill.id}` as keyof SkillUser]) as any, 120);
 					}
 					return {
 						id: user.id,
@@ -415,12 +411,30 @@ DESC LIMIT 500;`
 						const skillXP = Number(obj[objKey] ?? 0);
 
 						return `**${this.getUsername(obj.id)}:** ${skillXP.toLocaleString()} xp (${convertXPtoLVL(
-							skillXP
+							skillXP,
+							120
 						)})`;
 					})
 					.join('\n')
 			),
 			`${skill ? toTitleCase(skill.id) : 'Overall'} Leaderboard`
+		);
+	}
+
+	async itemcontracts(msg: KlasaMessage) {
+		const result: { id: string; qty: number }[] = await this.client.orm.query(`
+SELECT id, total_item_contracts as qty
+FROM users
+WHERE total_item_contracts > 0
+ORDER BY total_item_contracts DESC
+LIMIT 50;
+`);
+		this.doMenu(
+			msg,
+			util
+				.chunk(result, 10)
+				.map(subList => subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')),
+			'Item Contract Leaderboard'
 		);
 	}
 

@@ -1,7 +1,8 @@
+import { increaseNumByPercent } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -17,10 +18,25 @@ export default class extends Task {
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
 
 		const quantityPerEssence = calcMaxRCQuantity(rune, user);
-		const runeQuantity = essenceQuantity * quantityPerEssence;
+		let runeQuantity = essenceQuantity * quantityPerEssence;
+		if (rune.name === 'Elder rune') {
+			runeQuantity = Math.max(1, Math.floor(runeQuantity / 3));
+		}
 
-		const xpReceived = essenceQuantity * rune.xp;
+		let xpReceived = essenceQuantity * rune.xp;
 
+		const hasMaster = user.hasItemEquippedAnywhere(
+			[
+				'Master runecrafter hat',
+				'Master runecrafter robe',
+				'Master runecrafter skirt',
+				'Master runecrafter boots'
+			],
+			true
+		);
+		if (hasMaster) {
+			xpReceived = increaseNumByPercent(xpReceived, 10);
+		}
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Runecraft,
 			amount: xpReceived,
@@ -28,10 +44,19 @@ export default class extends Task {
 		});
 
 		let str = `${user}, ${user.minionName} finished crafting ${runeQuantity} ${rune.name}. ${xpRes}`;
-
+		if (hasMaster) {
+			str += 'You received 10% bonus XP from your Master runecrafter outfit.';
+		}
 		const loot = new Bank({
 			[rune.id]: runeQuantity
 		});
+
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutes = duration / Time.Minute;
+			if (roll(Math.floor(5000 / minutes))) {
+				loot.add('Obis');
+			}
+		}
 
 		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
 			loot.add('Rift guardian');

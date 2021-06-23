@@ -10,9 +10,10 @@ import { KillableMonster } from '../../lib/minions/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
-import findMonster, { formatDuration } from '../../lib/util';
+import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
+import { findMonster } from '../../lib/util/findMonster';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -50,7 +51,7 @@ export default class extends BotCommand {
 				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
 			}
 
-			if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
+			if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 				throw `${
 					users.length === 1 ? "You don't" : `${user.username} doesn't`
 				} have enough food. You need at least ${monster!.healAmountNeeded! * quantity} HP in food to ${
@@ -94,7 +95,7 @@ export default class extends BotCommand {
 					return [true, `you don't have the requirements for this monster; ${reason}`];
 				}
 
-				if (1 > 2 && monster.healAmountNeeded) {
+				if (monster.healAmountNeeded) {
 					try {
 						calculateMonsterFood(monster, user);
 					} catch (err) {
@@ -103,7 +104,7 @@ export default class extends BotCommand {
 
 					// Ensure people have enough food for at least 2 full KC
 					// This makes it so the users will always have enough food for any amount of KC
-					if (1 > 2 && !hasEnoughFoodForMonster(monster, user, 2)) {
+					if (!hasEnoughFoodForMonster(monster, user, 2)) {
 						return [
 							true,
 							`You don't have enough food. You need at least ${
@@ -118,12 +119,15 @@ export default class extends BotCommand {
 		};
 
 		const users = await msg.makePartyAwaiter(partyOptions);
+		if (users.length < 3 && monster.id === 696969) {
+			throw 'You need at least 3 people to fight the Dwarf king.';
+		}
 
 		const [quantity, duration, perKillTime, boostMsgs] = await calcDurQty(users, monster, undefined);
 
 		this.checkReqs(users, monster, quantity);
 
-		if (1 > 2 && monster.healAmountNeeded) {
+		if (monster.healAmountNeeded) {
 			for (const user of users) {
 				const [healAmountNeeded] = calculateMonsterFood(monster, user);
 				await removeFoodFromUser({

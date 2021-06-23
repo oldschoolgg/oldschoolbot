@@ -5,10 +5,11 @@ import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Crafting from '../../lib/skilling/skills/crafting';
+import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, formatDuration, itemNameFromID, removeItemFromBank, stringMatches } from '../../lib/util';
+import { bankHasItem, formatDuration, itemID, itemNameFromID, removeItemFromBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -65,8 +66,12 @@ export default class extends BotCommand {
 		const requiredItems: [string, number][] = Object.entries(Craft.inputItems);
 
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
-
 		let timeToCraftSingleItem = Craft.tickRate * Time.Second * 0.6 + Time.Second / 4;
+		if (msg.author.usingPet('Klik') && Tanning.includes(Craft)) {
+			timeToCraftSingleItem /= 3;
+		} else if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven greathammer'))) {
+			timeToCraftSingleItem /= 2;
+		}
 
 		const [hasFallyHard] = await userhasDiaryTier(msg.author, FaladorDiary.hard);
 		if (Craft.bankChest && (hasFallyHard || msg.author.skillLevel(SkillsEnum.Crafting) >= 99)) {

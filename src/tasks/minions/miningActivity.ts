@@ -2,12 +2,14 @@ import { roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, Time } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Mining from '../../lib/skilling/skills/mining';
+import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { rand } from '../../lib/util';
+import { itemID, multiplyBank, rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -51,6 +53,15 @@ export default class extends Task {
 
 		const loot = new Bank();
 
+		const numberOfMinutes = duration / Time.Minute;
+
+		if (roll(10)) {
+			if (duration > Time.Minute * 10) {
+				loot.bank = multiplyBank(loot.values(), 2);
+				loot.add(getRandomMysteryBox(), 1);
+			}
+		}
+
 		// Add clue scrolls
 		if (ore.clueScrollChance) {
 			addSkillingClueToLoot(user, SkillsEnum.Mining, quantity, ore.clueScrollChance, loot);
@@ -66,8 +77,6 @@ export default class extends Task {
 			);
 		}
 
-		const numberOfMinutes = duration / Time.Minute;
-
 		if (numberOfMinutes > 10 && ore.nuggets) {
 			const numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
 			loot.add('Golden nugget', numberOfNuggets);
@@ -82,6 +91,18 @@ export default class extends Task {
 			}
 		}
 
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutesInTrip = Math.ceil(duration / Time.Minute);
+			for (let i = 0; i < minutesInTrip; i++) {
+				if (roll(12_000)) {
+					loot.add('Doug');
+					str +=
+						"\n<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining.";
+					break;
+				}
+			}
+		}
+
 		// Gem rocks roll off the GemRockTable
 		if (ore.id === 1625) {
 			for (let i = 0; i < quantity; i++) {
@@ -90,6 +111,18 @@ export default class extends Task {
 		} else {
 			loot.add(ore.id, quantity);
 		}
+
+		const hasKlik = user.equippedPet() === itemID('Klik');
+		if (hasKlik) {
+			const smeltedOre = Smithing.Bars.find(o => o.inputOres[ore.id] && Object.keys(o.inputOres).length === 1);
+			if (smeltedOre) {
+				loot.remove(ore.id, loot.amount(ore.id));
+				loot.add(smeltedOre.id, quantity);
+				str +=
+					'\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and smelts all your ores!';
+			}
+		}
+
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;

@@ -1,11 +1,16 @@
+import { randArrItem, Time } from 'e';
 import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+import { KillableMonster } from '../../lib/minions/types';
+import { allKeyPieces } from '../../lib/nex';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { bones } from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import {
@@ -15,14 +20,29 @@ import {
 	getUsersCurrentSlayerInfo
 } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { itemID, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { sendToChannelID } from '../../lib/util/webhook';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
 		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
-		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+		const monster = effectiveMonsters.find(mon => mon.id === monsterID)! as KillableMonster;
+		const fullMonster = Monsters.get(monsterID);
 		const user = await this.client.users.fetch(userID);
+		if (monster.name === 'Koschei the deathless' && !roll(5000)) {
+			sendToChannelID(this.client, channelID, {
+				content: `${user}, ${user.minionName} failed to defeat Koschei the deathless.`
+			});
+		}
+
 		await user.incrementMonsterScore(monsterID, quantity);
+
+		// Abyssal set bonuses -- grants the user a few extra kills
+		let abyssalBonus = 1;
+		if (user.equippedPet() === itemID('Ori')) {
+			abyssalBonus += 0.25;
+		}
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
@@ -48,8 +68,7 @@ export default class extends Task {
 			hasSuperiors: superiorTable,
 			inCatacombs: isInCatacombs
 		};
-		const loot = monster.table.kill(quantity, killOptions);
-
+		const loot = (monster as KillableMonster).table.kill(Math.ceil(quantity * abyssalBonus), killOptions);
 		const newSuperiorCount = loot.bank[420];
 		const xpRes = await addMonsterXP(user, {
 			monsterID,
@@ -64,15 +83,90 @@ export default class extends Task {
 			superiorCount: newSuperiorCount
 		});
 
+		if (newSuperiorCount && newSuperiorCount > 0) {
+			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
+			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
+		}
+
+		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
+		let str =
+			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
+			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
+
+		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
+			for (let i = 0; i < quantity; i++) {
+				if (roll(20)) {
+					loot.add(randArrItem(allKeyPieces));
+				}
+			}
+		}
+
+		if (monster.id === Monsters.Vorkath.id && roll(6000)) {
+			loot.add(23941);
+		}
+
+		let gotKlik = false;
+		const minutes = Math.ceil(duration / Time.Minute);
+		if (fullMonster?.data.attributes.includes(MonsterAttribute.Dragon)) {
+			for (let i = 0; i < minutes; i++) {
+				if (roll(8500)) {
+					gotKlik = true;
+					loot.add('Klik');
+					break;
+				}
+			}
+		}
+
+		let bananas = 0;
+		if (user.equippedPet() === itemID('Harry')) {
+			for (let i = 0; i < minutes; i++) {
+				bananas += rand(1, 3);
+			}
+			loot.add('Banana', bananas);
+		}
+
+		if (monster.id === 290) {
+			for (let i = 0; i < minutes; i++) {
+				if (roll(6000)) {
+					loot.add('Dwarven ore');
+					break;
+				}
+			}
+		}
+
+		let gotBrock = false;
+		if (monster.name.toLowerCase() === 'zulrah') {
+			for (let i = 0; i < minutes; i++) {
+				if (roll(5500)) {
+					gotBrock = true;
+					loot.add('Brock');
+					break;
+				}
+			}
+		}
+
+		if (gotBrock) {
+			str += '\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.';
+		}
+
+		if (gotKlik) {
+			str += '\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.';
+		}
+
+		if (bananas > 0) {
+			str += `\n\n<:harry:749945071104819292> While you were PvMing, Harry went off and picked ${bananas} Bananas for you!`;
+		}
+
+		if (abyssalBonus > 1) {
+			str += '\n\nOri has used the abyss to transmute you +25% bonus loot!';
+		}
+
 		announceLoot(this.client, user, monster, loot.bank);
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
 			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
 		}
-		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
-		let str =
-			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
-			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
+
 		if (
 			monster.id === Monsters.Unicorn.id &&
 			user.hasItemEquippedAnywhere('Iron dagger') &&
@@ -80,8 +174,22 @@ export default class extends Task {
 		) {
 			loot.add('Clue hunter cloak');
 			loot.add('Clue hunter boots');
+		}
 
-			str += '\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.';
+		if (user.settings.get(UserSettings.Bank)[itemID('Gorajan bonecrusher')]) {
+			let totalXP = 0;
+			for (const bone of bones) {
+				const amount = loot.amount(bone.inputId);
+				if (amount > 0) {
+					totalXP += bone.xp * amount * 4;
+					loot.remove(bone.inputId, amount);
+				}
+			}
+			str += await user.addXP({
+				skillName: SkillsEnum.Prayer,
+				amount: totalXP,
+				duration
+			});
 		}
 
 		if (isOnTask) {

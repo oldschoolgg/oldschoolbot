@@ -50,6 +50,10 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (buyable.name === 'Bank lottery ticket' && msg.author.isIronman) {
+			return msg.send('Ironmen cant buy this.');
+		}
+
 		if (buyable.customReq) {
 			const [hasCustomReq, reason] = await buyable.customReq(msg.author);
 			if (!hasCustomReq) {
@@ -160,6 +164,13 @@ export default class extends BotCommand {
 			ClientSettings.EconomyStats.BuyCostBank,
 			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add(econBankChanges).bank
 		);
+
+		if (buyable.name === 'Bank lottery ticket') {
+			await this.client.settings.update(
+				ClientSettings.BankLottery,
+				new Bank(this.client.settings.get(ClientSettings.BankLottery)).add(995, buyable.gpCost! * quantity).bank
+			);
+		}
 
 		await msg.author.addItemsToBank(outItems, true);
 

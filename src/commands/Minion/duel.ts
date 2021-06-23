@@ -25,7 +25,8 @@ export default class extends BotCommand {
 			altProtection: true,
 			ironCantUse: true,
 			examples: ['+duel @Magnaboy', '+duel @Magnaboy 1m'],
-			categoryFlags: ['minion', 'utility']
+			categoryFlags: ['minion', 'utility'],
+			restrictedChannels: ['792692390778896424']
 		});
 	}
 
@@ -49,6 +50,9 @@ export default class extends BotCommand {
 		if (user.id === msg.author.id) return msg.send('You cant duel yourself.');
 		if (user.bot) return msg.send('You cant duel a bot.');
 		if (user.isBusy) return msg.send('That user is busy right now.');
+		if (this.client.settings.get(ClientSettings.UserBlacklist).includes(user.id)) {
+			return;
+		}
 
 		user.toggleBusy(true);
 		msg.author.toggleBusy(true);
@@ -101,14 +105,6 @@ export default class extends BotCommand {
 		await sleep(2000);
 
 		const winningAmount = amount * 2;
-		const tax = winningAmount - winningAmount * 0.95;
-
-		const dicingBank = this.client.settings.get(ClientSettings.EconomyStats.DuelTaxBank);
-		const dividedAmount = tax / 1_000_000;
-		this.client.settings.update(
-			ClientSettings.EconomyStats.DuelTaxBank,
-			Math.floor(dicingBank + Math.round(dividedAmount * 100) / 100)
-		);
 
 		const winsOfWinner = winner.settings.get(UserSettings.Stats.DuelWins);
 		winner.settings.update(UserSettings.Stats.DuelWins, winsOfWinner + 1);
@@ -116,7 +112,7 @@ export default class extends BotCommand {
 		const lossesOfLoser = loser.settings.get(UserSettings.Stats.DuelLosses);
 		loser.settings.update(UserSettings.Stats.DuelLosses, lossesOfLoser + 1);
 
-		await winner.addGP(winningAmount - tax);
+		await winner.addGP(winningAmount);
 
 		if (amount >= 1_000_000_000) {
 			this.client.emit(
@@ -133,7 +129,7 @@ export default class extends BotCommand {
 		);
 
 		return msg.channel.send(
-			`Congratulations ${winner.username}! You won ${Util.toKMB(winningAmount)}, and paid ${Util.toKMB(tax)} tax.`
+			`Congratulations ${winner.username}! You won ${Util.toKMB(winningAmount)}, and paid 0 tax.`
 		);
 	}
 }

@@ -4,7 +4,7 @@ import { Activity } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { cancelTask, getActivityOfUser } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { NightmareActivityTaskOptions, RaidsOptions } from './../../lib/types/minions';
+import { BossActivityTaskOptions, RaidsActivityTaskOptions } from './../../lib/types/minions';
 
 const options = {
 	max: 1,
@@ -33,14 +33,14 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (currentTask.type === Activity.GroupMonsterKilling) {
+		if (currentTask.type === Activity.GroupMonsterKilling || currentTask.type === Activity.Dungeoneering) {
 			return msg.send(
 				`${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`
 			);
 		}
 
 		if (currentTask.type === Activity.Nightmare) {
-			const data = currentTask as NightmareActivityTaskOptions;
+			const data = currentTask as BossActivityTaskOptions;
 			if (data.users.length > 1) {
 				return msg.send(
 					`${msg.author.minionName} is fighting the Nightmare with a team, they cant leave their team!`
@@ -48,6 +48,27 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (currentTask.type === Activity.Nex) {
+			const data = currentTask as BossActivityTaskOptions;
+			if (data.users.length > 1) {
+				return msg.send(`${msg.author.minionName} is fighting Nex with a team, they cant leave their team!`);
+			}
+		}
+
+		if (currentTask.type === Activity.KingGoldemar) {
+			const data = currentTask as BossActivityTaskOptions;
+			if (data.users.length > 1) {
+				return msg.send(
+					`${msg.author.minionName} is fighting King Goldemar with a team, they cant leave their team!`
+				);
+			}
+		}
+
+		if (currentTask.type === Activity.KalphiteKing) {
+			return msg.send(
+				`${msg.author.minionName} is fighting the Kalphite King with a team, they cant leave their team!`
+			);
+		}
 		if (currentTask.type === Activity.BarbarianAssault) {
 			return msg.send(
 				`${msg.author.minionName} is currently doing Barbarian Assault, and cant leave their team!`
@@ -59,7 +80,7 @@ export default class extends BotCommand {
 		}
 
 		if (currentTask.type === Activity.Raids) {
-			const data = currentTask as RaidsOptions;
+			const data = currentTask as RaidsActivityTaskOptions;
 			if (data.users.length > 1) {
 				return msg.send(
 					`${msg.author.minionName} is currently doing the Chamber's of Xeric, they cannot leave their team!`

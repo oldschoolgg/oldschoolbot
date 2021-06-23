@@ -1,8 +1,10 @@
 import { Monsters } from 'oldschooljs';
+import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import { Time } from '../../../../constants';
 import { bosses } from '../../../../data/collectionLog';
 import { GearSetupTypes, GearStat } from '../../../../gear/types';
+import { CorporealBeastTable } from '../../../../simulation/Corp';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
@@ -20,7 +22,6 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 3,
 		itemsRequired: resolveItems(["Dharok's helm", "Dharok's platebody", "Dharok's platelegs", "Dharok's greataxe"]),
-		notifyDrops: resolveItems(['Baby mole']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -49,7 +50,6 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 8,
 		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
-		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
 		qpRequired: 205,
 		itemInBankBoosts: [
 			{
@@ -84,7 +84,6 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 8,
-		notifyDrops: resolveItems(['Tanzanite mutagen', 'Magma mutagen', 'Jar of swamp', 'Pet snakeling']),
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{
@@ -144,7 +143,6 @@ const killableBosses: KillableMonster[] = [
 			["Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
 			["Black d'hide chaps", "karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		notifyDrops: resolveItems(['Jar of sand', 'Kalphite princess']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -161,7 +159,8 @@ const killableBosses: KillableMonster[] = [
 			pool: {
 				'Rejuvenation pool': 10,
 				'Fancy rejuvenation pool': 10,
-				'Ornate rejuvenation pool': 10
+				'Ornate rejuvenation pool': 10,
+				'Ancient rejuvenation pool': 20
 			}
 		},
 		defaultAttackStyles: [SkillsEnum.Strength],
@@ -172,7 +171,12 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.CorporealBeast.id,
 		name: Monsters.CorporealBeast.name,
 		aliases: Monsters.CorporealBeast.aliases,
-		table: Monsters.CorporealBeast,
+		table: new SimpleMonster({
+			id: 319,
+			name: 'Corporeal Beast',
+			table: CorporealBeastTable,
+			aliases: ['corporeal beast', 'corp']
+		}),
 		timeToFinish: Time.Minute * 30,
 		emoji: '<:Pet_dark_core:324127377347313674>',
 		wildy: false,
@@ -184,6 +188,7 @@ const killableBosses: KillableMonster[] = [
 			'Arcane sigil',
 			'Elysian sigil',
 			'Pet dark core',
+			'Divine sigil',
 			'Jar of spirits'
 		]),
 		qpRequired: 0,
@@ -198,7 +203,8 @@ const killableBosses: KillableMonster[] = [
 			pool: {
 				'Rejuvenation pool': 50,
 				'Fancy rejuvenation pool': 50,
-				'Ornate rejuvenation pool': 50
+				'Ornate rejuvenation pool': 50,
+				'Ancient rejuvenation pool': 57
 			}
 		},
 		defaultAttackStyles: [SkillsEnum.Attack],
@@ -220,7 +226,6 @@ const killableBosses: KillableMonster[] = [
 			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets'],
 			['Zamorakian spear', 'Zamorakian hasta']
 		]),
-		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Spectral spirit shield')]: 10 },

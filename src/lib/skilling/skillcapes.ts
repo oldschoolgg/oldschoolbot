@@ -1,3 +1,6 @@
+import { Item } from 'oldschooljs/dist/meta/types';
+
+import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import { SkillsEnum } from './types';
 
@@ -142,10 +145,120 @@ const Skillcapes: Skillcape[] = [
 		trimmed: itemID('Hitpoints cape(t)')
 	},
 	{
+		skill: SkillsEnum.Dungeoneering,
+		hood: itemID('Dungeoneering hood'),
+		untrimmed: itemID('Dungeoneering cape'),
+		trimmed: itemID('Dungeoneering cape(t)')
+	},
+	{
 		skill: SkillsEnum.Slayer,
 		hood: itemID('Slayer hood'),
 		untrimmed: itemID('Slayer cape'),
 		trimmed: itemID('Slayer cape(t)')
+	}
+];
+
+interface MasterSkillcape {
+	skill: SkillsEnum;
+	item: Item;
+}
+
+export const MasterSkillcapes: MasterSkillcape[] = [
+	{
+		skill: SkillsEnum.Mining,
+		item: getOSItem('Mining master cape')
+	},
+	{
+		skill: SkillsEnum.Smithing,
+		item: getOSItem('Smithing master cape')
+	},
+	{
+		skill: SkillsEnum.Woodcutting,
+		item: getOSItem('Woodcutting master cape')
+	},
+	{
+		skill: SkillsEnum.Firemaking,
+		item: getOSItem('Firemaking master cape')
+	},
+	{
+		skill: SkillsEnum.Agility,
+		item: getOSItem('Agility master cape')
+	},
+	{
+		skill: SkillsEnum.Fishing,
+		item: getOSItem('Fishing master cape')
+	},
+	{
+		skill: SkillsEnum.Runecraft,
+		item: getOSItem('Runecraft master cape')
+	},
+	{
+		skill: SkillsEnum.Cooking,
+		item: getOSItem('Cooking master cape')
+	},
+	{
+		skill: SkillsEnum.Crafting,
+		item: getOSItem('Crafting master cape')
+	},
+	{
+		skill: SkillsEnum.Prayer,
+		item: getOSItem('Prayer master cape')
+	},
+	{
+		skill: SkillsEnum.Fletching,
+		item: getOSItem('Fletching master cape')
+	},
+	{
+		skill: SkillsEnum.Thieving,
+		item: getOSItem('Thieving master cape')
+	},
+	{
+		skill: SkillsEnum.Farming,
+		item: getOSItem('Farming master cape')
+	},
+	{
+		skill: SkillsEnum.Herblore,
+		item: getOSItem('Herblore master cape')
+	},
+	{
+		skill: SkillsEnum.Hunter,
+		item: getOSItem('Hunter master cape')
+	},
+	{
+		skill: SkillsEnum.Construction,
+		item: getOSItem('Construction master cape')
+	},
+	{
+		skill: SkillsEnum.Magic,
+		item: getOSItem('Magic master cape')
+	},
+	{
+		skill: SkillsEnum.Hitpoints,
+		item: getOSItem('Hitpoints master cape')
+	},
+	{
+		skill: SkillsEnum.Ranged,
+		item: getOSItem('Ranged master cape')
+	},
+	{
+		skill: SkillsEnum.Attack,
+		item: getOSItem('Attack master cape')
+	},
+	{
+		skill: SkillsEnum.Strength,
+		item: getOSItem('Strength master cape')
+	},
+	{
+		skill: SkillsEnum.Defence,
+		item: getOSItem('Defence master cape')
+	},
+	{
+		skill: SkillsEnum.Dungeoneering,
+		item: getOSItem('Dungeoneering master cape')
+	},
+	{
+		skill: SkillsEnum.Slayer,
+		item: getOSItem('Slayer master cape')
 	}
 ];
 

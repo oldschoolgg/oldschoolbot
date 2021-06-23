@@ -2,22 +2,15 @@ import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageEmbed } from 'discord.js';
 import { chunk, sleep } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Monsters, Util } from 'oldschooljs';
+import { Bank, Monsters, Util } from 'oldschooljs';
 
-import { BitField, Color, Emoji, MAX_LEVEL, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
+import { Color, Emoji, MAX_LEVEL, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { getNewUser } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
-import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
-import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
-import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
-import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
-import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
 import { convertLVLtoXP, randomItemFromArray, stringMatches } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
@@ -49,7 +42,7 @@ export default class MinionCommand extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest|mix|hunt] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest|mix|hunt] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
@@ -95,139 +88,6 @@ export default class MinionCommand extends BotCommand {
 		return msg.send(`Changed your minion icon to ${res}.`);
 	}
 
-	@requiresMinion
-	@minionNotBusy
-	async ironman(msg: KlasaMessage) {
-		/**
-		 * If the user is an ironman already, lets ask them if they want to de-iron.
-		 */
-		if (msg.author.isIronman) {
-			const isPerm = msg.author.bitfield.includes(BitField.PermanentIronman);
-			if (isPerm) {
-				return msg.channel.send("You're a **permanent** ironman and you cannot de-iron.");
-			}
-			if (msg.flagArgs.permanent) {
-				await msg.channel.send(
-					`Would you like to change your ironman to a *permanent* iron? The only thing in your account that will change, is that you will no longer be able to de-iron. This is *permanent* and cannot be reversed, its permanent ironman mode.
-Please say \`permanent\` to confirm.`
-				);
-				try {
-					await msg.channel.awaitMessages(
-						answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'permanent',
-						{
-							max: 1,
-							time: 15_000,
-							errors: ['time']
-						}
-					);
-					await msg.author.settings.update(UserSettings.BitField, BitField.PermanentIronman);
-					return msg.send('You are now a **permanent** Ironman. Enjoy!');
-				} catch (err) {
-					return msg.channel.send('Cancelled.');
-				}
-			}
-
-			await msg.send(
-				'Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again. Please say `deiron` to confirm.'
-			);
-			try {
-				await msg.channel.awaitMessages(
-					answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'deiron',
-					{
-						max: 1,
-						time: 15000,
-						errors: ['time']
-					}
-				);
-				await msg.author.settings.update(UserSettings.Minion.Ironman, false);
-				return msg.send('You are no longer an ironman.');
-			} catch (err) {
-				return msg.channel.send('Cancelled de-ironning.');
-			}
-		}
-
-		const existingGiveaways = await GiveawayTable.find({
-			userID: msg.author.id,
-			completed: false
-		});
-
-		if (existingGiveaways.length !== 0) {
-			return msg.channel.send("You can't become an ironman because you have active giveaways.");
-		}
-
-		await msg.send(
-			`Are you sure you want to start over and play as an ironman?
-
-:warning: **Read the following text before confirming. This is your only warning. ** :warning:
-
-The following things will be COMPLETELY reset/wiped from your account, with no chance of being recovered: Your entire bank, collection log, GP/Coins, QP/Quest Points, Clue Scores, Monster Scores, all XP. If you type \`confirm\`, they will all be wiped.
-
-After becoming an ironman:
-	- You will no longer be able to receive GP from  \`+daily\`
-	- You will no longer be able to use \`+pay\`, \`+duel\`, \`+sellto\`, \`+sell\`, \`+dice\`
-	- You can de-iron at any time, and keep all your stuff acquired while playing as an ironman.
-
-Type \`confirm\` if you understand the above information, and want to become an ironman now.`
-		);
-
-		try {
-			await msg.channel.awaitMessages(
-				answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'confirm',
-				{
-					max: 1,
-					time: 15000,
-					errors: ['time']
-				}
-			);
-
-			msg.author.log(
-				`just became an ironman, previous settings: ${JSON.stringify(msg.author.settings.toJSON())}`
-			);
-
-			await msg.author.settings.reset([
-				UserSettings.Bank,
-				UserSettings.CollectionLogBank,
-				UserSettings.GP,
-				UserSettings.QP,
-				UserSettings.MonsterScores,
-				UserSettings.ClueScores,
-				UserSettings.BankBackground,
-				UserSettings.SacrificedValue,
-				UserSettings.SacrificedBank,
-				UserSettings.HonourLevel,
-				UserSettings.HonourPoints,
-				UserSettings.HighGambles,
-				UserSettings.CarpenterPoints,
-				UserSettings.ZealTokens,
-				UserSettings.OpenableScores,
-				'slayer',
-				'gear',
-				'stats',
-				'skills',
-				'minion',
-				'farmingPatches'
-			]);
-
-			try {
-				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
-				await PoHTable.delete({ userID: msg.author.id });
-				await MinigameTable.delete({ userID: msg.author.id });
-				await XPGainsTable.delete({ userID: msg.author.id });
-				await NewUserTable.delete({ id: msg.author.id });
-			} catch (_) {}
-
-			await msg.author.settings.update([
-				[UserSettings.Minion.Ironman, true],
-				[UserSettings.Minion.HasBought, true]
-			]);
-			return msg.send('You are now an ironman.');
-		} catch (err) {
-			return msg.channel.send('Cancelled ironman swap.');
-		}
-	}
-
-	@requiresMinion
-	@minionNotBusy
 	async pat(msg: KlasaMessage) {
 		return msg.send(randomPatMessage(msg.author.minionName));
 	}
@@ -303,11 +163,25 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			cost = 0;
 		}
 
+		const starter = new Bank({
+			Shark: 300,
+			'Saradomin brew(4)': 20,
+			'Super restore(4)': 10,
+			'Anti-dragon shield': 1,
+			'Tiny lamp': 3,
+			'Small lamp': 1,
+			'Tradeable mystery box': 1,
+			'Dragon bones': 50,
+			Coins: 100_000,
+			'Clue scroll (beginner)': 5,
+			'Equippable mystery box': 1
+		});
+
 		if (cost === 0) {
 			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
-
+			await msg.author.addItemsToBank(starter, true);
 			return msg.channel.send(
-				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them, and check https://www.oldschool.gg/oldschoolbot for more information on them, and **make sure** to read the rules! Breaking the bot rules could result in you being banned or your account wiped - read them here: <https://www.oldschool.gg/oldschoolbot/rules>`
+				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them, and check https://www.oldschool.gg/oldschoolbot for more information on them, and **make sure** to read the rules! Breaking the bot rules could result in you being banned or your account wiped - read them here: <https://www.oldschool.gg/oldschoolbot/rules>\n\nYou received: ${starter}.`
 			);
 		}
 
@@ -344,9 +218,9 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 			await msg.author.settings.update(UserSettings.GP, balance - cost);
 			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
-
+			await msg.author.addItemsToBank(starter, true);
 			await response.edit(
-				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them.`
+				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them.\n\nYou received: **${starter}.**`
 			);
 		} catch (err) {
 			return msg.channel.send('Cancelled minion purchase.');

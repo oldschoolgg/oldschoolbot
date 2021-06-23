@@ -93,6 +93,10 @@ export default class extends BotCommand {
 			msg.author.skillLevel(SkillsEnum.Woodcutting)
 		);
 
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven greataxe'))) {
+			timetoChop /= 2;
+		}
+
 		// If the user has an axe apply boost
 		const boosts = [];
 		for (const axe of axes) {

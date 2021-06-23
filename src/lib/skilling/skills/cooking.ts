@@ -252,6 +252,16 @@ export const Cookables: Cookable[] = [
 		stopBurnAt: 99,
 		stopBurnAtCG: 1,
 		burntCookable: itemID('Burnt manta ray')
+	},
+	{
+		level: 120,
+		xp: 243.2,
+		id: itemID('Rocktail'),
+		name: 'Rocktail',
+		inputCookables: { [itemID('Raw rocktail')]: 1 },
+		stopBurnAt: 120,
+		stopBurnAtCG: 37,
+		burntCookable: 367
 	}
 ];
 

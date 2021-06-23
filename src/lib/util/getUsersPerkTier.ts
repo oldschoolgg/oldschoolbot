@@ -27,7 +27,7 @@ export default function getUsersPerkTier(userOrBitfield: KlasaUser | readonly Bi
 		return PerkTier.Four;
 	}
 
-	if (bitfield.includes(BitField.IsPatronTier2)) {
+	if (bitfield.includes(BitField.IsPatronTier2) || bitfield.includes(BitField.HasPermanentTierOne)) {
 		return PerkTier.Three;
 	}
 

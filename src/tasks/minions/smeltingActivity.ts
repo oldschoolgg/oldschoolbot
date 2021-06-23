@@ -2,9 +2,12 @@ import { randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
+import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
@@ -48,6 +51,20 @@ export default class extends Task {
 		const loot = new Bank({
 			[bar.id]: quantity
 		});
+
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const numMinutes = duration / Time.Minute;
+			if (user.settings.get(UserSettings.QP) > 10) {
+				for (let i = 0; i < numMinutes; i++) {
+					if (roll(6500)) {
+						str +=
+							'\n\n<:zak:751035589952012298> While Smelting ores on Neitiznot, a Yak approaches you and says "Moooo". and is now following you around. You decide to name him \'Zak\'.';
+						loot.add('Zak');
+						break;
+					}
+				}
+			}
+		}
 
 		await user.addItemsToBank(loot, true);
 

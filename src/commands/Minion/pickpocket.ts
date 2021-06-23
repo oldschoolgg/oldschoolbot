@@ -16,6 +16,7 @@ import {
 	addBanks,
 	bankHasAllItemsFromBank,
 	formatDuration,
+	itemID,
 	rogueOutfitPercentBonus,
 	round,
 	stringMatches
@@ -49,7 +50,8 @@ export default class extends BotCommand {
 						npc,
 						5 * (Time.Hour / ((npc.customTickRate ?? 2) * 600)),
 						false,
-						(await userhasDiaryTier(msg.author, ArdougneDiary.hard))[0]
+						(await userhasDiaryTier(msg.author, ArdougneDiary.hard))[0],
+						false
 					);
 					results.push([npc.name, round(xpReceived, 2) / 5, damageTaken / 5]);
 				}
@@ -95,7 +97,11 @@ export default class extends BotCommand {
 			);
 		}
 
-		const timeToPickpocket = (pickpocketable.customTickRate ?? 2) * 600;
+		let timeToPickpocket = (pickpocketable.customTickRate ?? 2) * 600;
+
+		if (msg.author.hasItemEquippedAnywhere(itemID('Thieving master cape'))) {
+			timeToPickpocket *= 0.7;
+		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Pickpocket);
 
@@ -104,6 +110,10 @@ export default class extends BotCommand {
 			quantity = Math.floor(maxTripLength / timeToPickpocket);
 		}
 
+		const hasWilvus = msg.author.equippedPet() === itemID('Wilvus');
+		if (hasWilvus) {
+			timeToPickpocket /= 2;
+		}
 		const duration = quantity * timeToPickpocket;
 
 		if (duration > maxTripLength) {
@@ -127,8 +137,11 @@ export default class extends BotCommand {
 			msg.author.skillLevel(SkillsEnum.Thieving),
 			pickpocketable,
 			quantity,
-			msg.author.hasItemEquippedAnywhere(['Thieving cape', 'Thieving cape(t)']),
-			hasArdyHard
+			msg.author.hasItemEquippedAnywhere(itemID('Thieving cape')) ||
+				msg.author.hasItemEquippedAnywhere(itemID('Thieving cape(t)')) ||
+				msg.author.hasItemEquippedAnywhere(itemID('Thieving master cape')),
+			hasArdyHard,
+			msg.author.hasItemEquippedOrInBank("Thieves' armband")
 		);
 
 		const [foodString, foodRemoved] = await removeFoodFromUser({
@@ -165,8 +178,15 @@ export default class extends BotCommand {
 			pickpocketable.name
 		} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish. Removed ${foodString}`;
 
+		if (hasWilvus) {
+			str += '\n<:wilvus:787320791011164201> 2x Speed boost from Wilvus';
+		}
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		if (msg.author.hasItemEquippedAnywhere(itemID('Thieving master cape'))) {
+			str += '\n30% faster pickpocketing for skill mastery';
 		}
 
 		return msg.send(str);

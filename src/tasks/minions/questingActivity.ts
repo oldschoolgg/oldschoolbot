@@ -1,4 +1,5 @@
 import { KlasaMessage, Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, MAX_QP } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -14,18 +15,15 @@ export default class extends Task {
 		const currentQP = user.settings.get(UserSettings.QP);
 
 		// This assumes you do quests in order of scaling difficulty, ~115 hours for max qp
-		let qpRecieved = rand(1, 3);
-		if (currentQP >= 200) {
-			qpRecieved = 1;
-		} else if (currentQP >= 100) {
-			qpRecieved = rand(1, 2);
-		}
+		let qpRecieved = rand(1, 30);
+
+		const max = user.isIronman ? 100_000 : MAX_QP;
 
 		const newQP = currentQP + qpRecieved;
 
-		// The minion could be at (MAX_QP - 1) QP, but gain 4 QP here, so we'll trim that down from 4 to 1.
-		if (newQP > MAX_QP) {
-			qpRecieved -= newQP - MAX_QP;
+		// The minion could be at (max - 1) QP, but gain 4 QP here, so we'll trim that down from 4 to 1.
+		if (newQP > max) {
+			qpRecieved -= newQP - max;
 		}
 
 		let str = `${user}, ${
@@ -34,9 +32,9 @@ export default class extends Task {
 			currentQP + qpRecieved
 		}.`;
 
-		const hasMaxQP = newQP >= MAX_QP;
+		const hasMaxQP = newQP >= max;
 		if (hasMaxQP) {
-			str += `\n\nYou have achieved the maximum amount of ${MAX_QP} Quest Points!`;
+			str += `\n\nYou have achieved the maximum amount of ${max} Quest Points!`;
 		}
 
 		await user.addQP(qpRecieved);
@@ -44,6 +42,12 @@ export default class extends Task {
 		if (herbLevel === 1 && newQP > 5 && roll(2)) {
 			await user.addXP({ skillName: SkillsEnum.Herblore, amount: 250 });
 			str += `${Emoji.Herblore} You received 250 Herblore XP for completing Druidic Ritual.`;
+		}
+
+		if (roll(350)) {
+			str +=
+				'\n<:zippy:749240799090180196> While you walk through the forest north of falador, a small ferret jumps onto your back and joins you on your adventures!';
+			await user.addItemsToBank(new Bank().add('Zippy'), true);
 		}
 
 		const magicXP = user.settings.get(UserSettings.Skills.Magic);

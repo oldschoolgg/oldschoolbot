@@ -11,6 +11,7 @@ export abstract class BotCommand extends Command {
 	public ironCantUse?: boolean;
 	public examples: string[];
 	public categoryFlags: CategoryFlag[];
+	public restrictedChannels: string[];
 
 	public constructor(store: CommandStore, file: string[], directory: string, options: BotCommandOptions = {}) {
 		super(
@@ -22,7 +23,8 @@ export abstract class BotCommand extends Command {
 					altProtection: false,
 					oneAtTime: false,
 					guildOnly: false,
-					ironCantUse: false
+					ironCantUse: false,
+					restrictedChannels: []
 				},
 				options
 			)
@@ -35,6 +37,7 @@ export abstract class BotCommand extends Command {
 		this.examples = options.examples || [];
 		this.categoryFlags = options.categoryFlags || [];
 		this.bitfieldsRequired = options.bitfieldsRequired || [];
+		this.restrictedChannels = options.restrictedChannels || [];
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -59,4 +62,5 @@ export interface BotCommandOptions extends CommandOptions {
 	description?: string;
 	categoryFlags?: CategoryFlag[];
 	bitfieldsRequired?: BitField[];
+	restrictedChannels?: string[];
 }

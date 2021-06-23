@@ -1,7 +1,10 @@
+import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+
 import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
 import { IPatchData } from '../minions/farming/types';
+import { BossUser } from '../structures/Boss';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
 export interface ActivityTaskOptions {
@@ -209,10 +212,19 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 
 export interface FishingTrawlerActivityTaskOptions extends MinigameActivityTaskOptions {}
 
-export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
-	leader: string;
+export interface BossActivityTaskOptions extends ActivityTaskOptions {
 	users: string[];
 	quantity: number;
+}
+
+interface StoredBossUser extends Omit<BossUser, 'user'> {
+	user: string;
+}
+
+export interface NewBossOptions extends ActivityTaskOptions {
+	users: string[];
+	quantity: number;
+	bossUsers: StoredBossUser[];
 }
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -255,6 +267,15 @@ export interface SkillingTickerTaskData {
 	subTasks: ActivityTaskOptions[];
 }
 
+export interface RaidsActivityTaskOptions extends ActivityTaskOptions {
+	channelID: string;
+	quantity: number;
+	partyLeaderID: string;
+	users: string[];
+	team: TeamMember[];
+	challengeMode: boolean;
+}
+
 export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
 	plankID: number;
 	plankQuantity: number;
@@ -284,12 +305,6 @@ export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOpti
 	users: string[];
 }
 
-export interface RaidsOptions extends ActivityTaskOptions {
-	leader: string;
-	users: string[];
-	challengeMode: boolean;
-}
-
 export interface CollectingOptions extends ActivityTaskOptions {
 	collectableID: number;
 	quantity: number;
@@ -300,13 +315,19 @@ export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface RaidsOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	challengeMode: boolean;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions
 	| BlastFurnaceActivityTaskOptions
 	| WoodcuttingActivityTaskOptions
 	| CollectingOptions
-	| RaidsOptions
+	| RaidsActivityTaskOptions
 	| MinigameActivityTaskOptions
 	| GauntletOptions
 	| SoulWarsOptions

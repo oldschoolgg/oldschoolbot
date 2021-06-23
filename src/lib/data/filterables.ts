@@ -1,3 +1,7 @@
+import LootTable from 'oldschooljs/dist/structures/LootTable';
+
+import { allPetIDs } from '../../commands/Minion/equippet';
+import { customItems } from '../customItems';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
@@ -15,6 +19,7 @@ import {
 	wintertodt
 } from './collectionLog';
 import { Eatables } from './eatables';
+import Openables, { tmbTable, umbTable } from './openables';
 
 export const warmGear = resolveItems([
 	'Staff of fire',
@@ -255,7 +260,8 @@ const seeds = resolveItems([
 	'Tomato seed',
 	'Cabbage seed',
 	'Onion seed',
-	'Potato seed'
+	'Potato seed',
+	'Mysterious seed'
 ]);
 
 const herbs = resolveItems([
@@ -425,12 +431,14 @@ const cluesAndCaskets = resolveItems([
 	'Clue scroll (hard)',
 	'Clue scroll (elite)',
 	'Clue scroll (master)',
+	'Clue scroll (grandmaster)',
 	'Reward casket (beginner)',
 	'Reward casket (easy)',
 	'Reward casket (medium)',
 	'Reward casket (hard)',
 	'Reward casket (elite)',
-	'Reward casket (master)'
+	'Reward casket (master)',
+	'Reward casket (grandmaster)'
 ]);
 
 const godwars = resolveItems([
@@ -1022,5 +1030,33 @@ export const filterableTypes: Filterable[] = [
 		name: 'Clues Rares',
 		aliases: ['clues rare', 'rare clues', 'clue rare', 'rare clue'],
 		items: Object.values(cluesRares).flat(Infinity) as number[]
+	},
+	{
+		name: 'Untradeables',
+		aliases: ['untradeables', 'umb'],
+		items: umbTable
+	},
+	{
+		name: 'Tradeables',
+		aliases: ['tradeables', 'tmb'],
+		items: tmbTable
+	},
+	{
+		name: 'Pets',
+		aliases: ['pets', 'pmb'],
+		items: allPetIDs.flat(Infinity) as number[]
+	},
+	{
+		name: 'Holiday',
+		aliases: ['holiday', 'hmb', 'rare', 'rares'],
+		items: [
+			...(Openables.find(o => o.name === 'Holiday Mystery box')!.table as LootTable).allItems,
+			...(Openables.find(o => o.name === 'Christmas cracker')!.table as LootTable).allItems
+		]
+	},
+	{
+		name: 'Custom Items',
+		aliases: ['custom', 'custom items'],
+		items: customItems
 	}
 ];

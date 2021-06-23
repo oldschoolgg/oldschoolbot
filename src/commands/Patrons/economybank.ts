@@ -4,7 +4,7 @@ import { PerkTier } from '../../lib/constants';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 
-const IGNORE_LESS_THEN = 0;
+const IGNORE_LESS_THEN = 10;
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

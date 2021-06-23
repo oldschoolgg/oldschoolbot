@@ -1,15 +1,24 @@
+import { calcPercentOfNum } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { updateBankSetting, updateGPTrackSetting } from '../../lib/util';
+import { itemID, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 
 const options = {
 	max: 1,
 	time: 10_000,
 	errors: ['time']
 };
+
+export function sellPriceOfItem(item: Item) {
+	if (item.price > item.highalch * 3) {
+		return item.price;
+	}
+	return calcPercentOfNum(30, item.highalch);
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -19,14 +28,22 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			ironCantUse: true,
 			categoryFlags: ['minion'],
-			description: 'Sells an item to the bot for 80% of G.E price.',
+			description: 'Sells an item to the bot.',
 			examples: ['+sell bronze arrow']
 		});
 	}
 
-	async run(msg: KlasaMessage, [[bankToSell, totalPrice]]: [[Bank, number]]) {
+	async run(msg: KlasaMessage, [[bankToSell]]: [[Bank, number]]) {
+		let totalPrice = 0;
+		for (const [item, qty] of bankToSell.items()) {
+			totalPrice += sellPriceOfItem(item) * qty;
+		}
+
 		if (msg.author.isIronman) return msg.send("Iron players can't sell items.");
-		totalPrice = Math.floor(totalPrice * 0.8);
+		const hasSkipper =
+			msg.author.equippedPet() === itemID('Skipper') || msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
+		const tax = hasSkipper ? 0 : Math.ceil((totalPrice / 0.8) * 0.2);
+		totalPrice = hasSkipper ? totalPrice : Math.floor(totalPrice * 0.8);
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 			const sellMsg = await msg.channel.send(
@@ -47,7 +64,9 @@ export default class extends BotCommand {
 			}
 		}
 
-		const tax = Math.ceil((totalPrice / 0.8) * 0.2);
+		if (bankToSell.has('Coins')) {
+			return msg.send('You cant sell coins.');
+		}
 
 		await Promise.all([msg.author.removeItemsFromBank(bankToSell.bank), msg.author.addGP(totalPrice)]);
 
@@ -57,9 +76,13 @@ export default class extends BotCommand {
 		msg.author.log(`sold ${JSON.stringify(bankToSell.bank)} for ${totalPrice}`);
 
 		return msg.send(
-			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${Util.toKMB(totalPrice)})**. Tax: ${Util.toKMB(
-				tax
-			)}`
+			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}** GP (${Util.toKMB(
+				totalPrice
+			)}).  Tax: ${tax.toLocaleString()} ${
+				hasSkipper
+					? "\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you weren't charged any tax on the sale!"
+					: ''
+			}`
 		);
 	}
 }

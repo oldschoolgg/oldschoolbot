@@ -65,6 +65,11 @@ export const Minigames: Minigame[] = [
 		column: 'mahogany_homes'
 	},
 	{
+		name: 'Chambers of Xeric',
+		key: 'Raids',
+		column: 'raids'
+	},
+	{
 		name: 'Gnome Restaurant',
 		key: 'GnomeRestaurant',
 		column: 'gnome_restaurant'
@@ -95,11 +100,6 @@ export const Minigames: Minigame[] = [
 		column: 'castle_wars'
 	},
 	{
-		name: "Chamber's of Xeric",
-		key: 'Raids',
-		column: 'raids'
-	},
-	{
 		name: "Chamber's of Xeric - Challenge Mode",
 		key: 'RaidsChallengeMode',
 		column: 'raids_challenge_mode'
@@ -108,6 +108,11 @@ export const Minigames: Minigame[] = [
 		name: 'Magic Training Arena',
 		key: 'MagicTrainingArena',
 		column: 'magic_training_arena'
+	},
+	{
+		name: 'Ourania Delivery Service',
+		key: 'OuraniaDeliveryService',
+		column: 'ourania_delivery_service'
 	},
 	{
 		name: 'Big Chompy Bird Hunting',

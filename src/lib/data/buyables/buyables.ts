@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { chompyHats } from '../../../commands/Minion/chompyhunt';
 import { MinigameKey } from '../../../extendables/User/Minigame';
 import { MAX_QP } from '../../constants';
+import { diaries, userhasDiaryTier } from '../../diaries';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
@@ -524,21 +525,33 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Cannon barrels',
+		outputItems: {
+			[itemID('Cannon barrels')]: 1
+		},
 		gpCost: 2_500_000,
 		qpRequired: 5
 	},
 	{
 		name: 'Cannon base',
+		outputItems: {
+			[itemID('Cannon base')]: 1
+		},
 		gpCost: 2_500_000,
 		qpRequired: 5
 	},
 	{
 		name: 'Cannon furnace',
+		outputItems: {
+			[itemID('Cannon furnace')]: 1
+		},
 		gpCost: 2_500_000,
 		qpRequired: 5
 	},
 	{
 		name: 'Cannon stand',
+		outputItems: {
+			[itemID('Cannon stand')]: 1
+		},
 		gpCost: 2_500_000,
 		qpRequired: 5
 	}
@@ -623,7 +636,17 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Compost',
-		gpCost: 400
+		outputItems: {
+			[itemID('Compost')]: 1
+		},
+		gpCost: 500
+	},
+	{
+		name: 'Bank lottery ticket',
+		outputItems: {
+			[itemID('Bank lottery ticket')]: 1
+		},
+		gpCost: 10_000_000
 	},
 	{
 		name: 'Amylase pack',
@@ -646,7 +669,10 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Potato with cheese',
-		gpCost: 650,
+		outputItems: {
+			[itemID('Potato with cheese')]: 1
+		},
+		gpCost: 1666,
 		skillsNeeded: {
 			attack: 65,
 			strength: 65
@@ -658,7 +684,28 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Ogre bow',
+		outputItems: resolveNameBank({
+			'Ogre bow': 1
+		}),
 		gpCost: 10_000
+	},
+	{
+		name: 'Achievement diary cape',
+		outputItems: resolveNameBank({
+			'Achievement diary cape': 1,
+			'Achievement diary cape(t)': 1,
+			'Achievement diary hood': 1
+		}),
+		gpCost: 1_000_000,
+		customReq: async user => {
+			for (const diary of diaries.map(d => d.elite)) {
+				const [has] = await userhasDiaryTier(user, diary);
+				if (!has) {
+					return [false, "You can't buy this because you haven't completed all the Elite diaries!"];
+				}
+			}
+			return [true];
+		}
 	},
 	...sepulchreBuyables,
 	...constructionBuyables,
@@ -671,7 +718,15 @@ const Buyables: Buyable[] = [
 	...castleWarsBuyables,
 	...cmCapes,
 	...slayerBuyables,
-	...capeBuyables
+	...capeBuyables,
+	{
+		name: 'Master quest cape',
+		outputItems: resolveNameBank({
+			'Master quest cape': 1
+		}),
+		gpCost: 1_000_000_000,
+		qpRequired: 5000
+	}
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

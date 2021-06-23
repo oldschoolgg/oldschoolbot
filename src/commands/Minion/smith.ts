@@ -1,4 +1,6 @@
+import { calcPercentOfNum } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { itemID } from 'oldschooljs/dist/util';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -6,9 +8,20 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { Gear } from '../../lib/structures/Gear';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, formatDuration, itemNameFromID, removeItemFromBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+
+export function hasBlackSmithEquipped(setup: Gear) {
+	return setup.hasEquipped([
+		'Blacksmith helmet',
+		'Blacksmith top',
+		'Blacksmith apron',
+		'Blacksmith boots',
+		'Blacksmith gloves'
+	]);
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -56,6 +69,10 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (smithedItem.requiresBlacksmith && !hasBlackSmithEquipped(msg.author.getGear('skilling'))) {
+			return msg.send('You need the Blacksmith outfit to smith this item.');
+		}
+
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
 			return msg.send(
 				`${msg.author.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`
@@ -63,7 +80,12 @@ export default class extends BotCommand {
 		}
 
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
-		const timeToSmithSingleBar = smithedItem.timeToUse + Time.Second / 4;
+		let timeToSmithSingleBar = smithedItem.timeToUse + Time.Second / 4;
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven greathammer'))) {
+			timeToSmithSingleBar /= 2;
+		} else if (msg.author.equippedPet() === itemID('Takon')) {
+			timeToSmithSingleBar /= 4;
+		}
 
 		let maxTripLength = msg.author.maxTripLength(Activity.Smithing);
 		if (smithedItem.name === 'Cannonball') {
@@ -73,6 +95,10 @@ export default class extends BotCommand {
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
+		}
+
+		if (smithedItem.name.includes('Gorajan')) {
+			quantity = 1;
 		}
 
 		await msg.author.settings.sync(true);
@@ -102,6 +128,8 @@ export default class extends BotCommand {
 			);
 		}
 
+		const hasScroll = await msg.author.hasItem(itemID('Scroll of efficiency'));
+
 		// Remove the bars from their bank.
 		let usedbars = 0;
 		let newBank = { ...userBank };
@@ -110,8 +138,9 @@ export default class extends BotCommand {
 				this.client.wtf(new Error(`${msg.author.sanitizedName} had insufficient bars to be removed.`));
 				return;
 			}
-			newBank = removeItemFromBank(newBank, parseInt(barID), qty * quantity);
-			usedbars = qty * quantity;
+			const numBars = hasScroll ? Math.ceil(calcPercentOfNum(85, qty * quantity)) : qty * quantity;
+			newBank = removeItemFromBank(newBank, parseInt(barID), numBars);
+			usedbars = numBars;
 		}
 
 		await addSubTaskToActivityTask<SmithingActivityTaskOptions>({
@@ -124,10 +153,17 @@ export default class extends BotCommand {
 		});
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		return msg.send(
-			`${msg.author.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
-				smithedItem.name
-			}, using ${usedbars} bars, it'll take around ${formatDuration(duration)} to finish.`
-		);
+		let str = `${msg.author.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
+			smithedItem.name
+		}, using ${usedbars} bars, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (msg.author.usingPet('Takon')) {
+			str += ' Takon is Smithing for you, at incredible speeds and skill.';
+		}
+		if (hasScroll) {
+			str += ' Your Scroll of efficiency enables you to save 15% of the bars used.';
+		}
+
+		return msg.send(str);
 	}
 }

@@ -1,11 +1,12 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { getRandomMysteryBox } from '../../../lib/data/openables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, anglerBoostPercent, calcPercentOfNum } from '../../../lib/util';
+import { addBanks, anglerBoostPercent, calcPercentOfNum, itemID, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -50,6 +51,20 @@ export default class extends Task {
 		}
 
 		if (hasEliteArdy) str += '\n\n50% Extra fish for Ardougne Elite diary';
+
+		if (user.hasItemEquippedAnywhere(itemID('Fishing master cape'))) {
+			loot.multiply(4);
+			for (let i = 0; i < quantity; i++) {
+				if (roll(2)) loot.add(getRandomMysteryBox());
+			}
+			str += '\n\nYou received **4x** extra fish because you are a master at Fishing.';
+		}
+
+		if (user.usingPet('Shelldon')) {
+			loot.multiply(2);
+			totalXP *= 1.5;
+			str += '\nYou received **2x** extra fish from Shelldon helping you.';
+		}
 
 		await user.addItemsToBank(loot.bank, true);
 

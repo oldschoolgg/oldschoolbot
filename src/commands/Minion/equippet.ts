@@ -3,11 +3,49 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { pets } from '../../lib/data/collectionLog';
 import { requiresMinion } from '../../lib/minions/decorators';
+import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { removeItemFromBank } from '../../lib/util';
+import resolveItems from '../../lib/util/resolveItems';
 
-const allPetIDs = Object.values(pets).flat(Infinity);
+export const allPetIDs = [
+	...resolveItems([
+		'Doug',
+		'Zippy',
+		'Shelldon',
+		'Remy',
+		'Lil Lamb',
+		'Harry',
+		'Klik',
+		'Wintertoad',
+		'Scruffy',
+		'Zak',
+		'Hammy',
+		'Skipper',
+		'Ori',
+		'Cob',
+		'Takon',
+		'Obis',
+		'Peky',
+		'Plopper',
+		'Brock',
+		'Wilvus',
+		'Smokey',
+		'Flappy',
+		'Ishi',
+		'Corgi',
+		'Sandy',
+		'Baby kalphite king',
+		'Craig',
+		'Snappy the Turtle',
+		'Hoppy',
+		'Steve',
+		'Frosty',
+		'Voidling'
+	]),
+	Object.values(pets)
+].flat(Infinity);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -23,6 +61,7 @@ export default class extends BotCommand {
 		});
 	}
 
+	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [itemArray]: [Item[]]): Promise<KlasaMessage> {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
@@ -43,8 +82,6 @@ export default class extends BotCommand {
 
 		msg.author.log(`equipping ${petItem.name}[${petItem.id}]`);
 
-		return msg.send(
-			`${msg.author.minionName} takes their ${petItem.name} from their bank, and puts it down to follow them.`
-		);
+		return msg.send(`${msg.author.minionName} has equipped a ${petItem.name}!`);
 	}
 }

@@ -28,6 +28,9 @@ export default class extends BotCommand {
 		}
 
 		const item = getOSItem(itemName);
+		// if (allNexItems.includes(item.id)) {
+		// 	 return msg.send(`That item doesn't exist.`)
+		// }
 
 		const ironmanPart = msg.flagArgs.im ? 'AND "minion.ironman" = true' : '';
 		const key = 'monsterScores';

@@ -38,6 +38,10 @@ export default class extends Task {
 			}
 		}
 
+		if (user.usingPet('Flappy')) {
+			loot.multiply(2);
+		}
+
 		await user.addItemsToBank(loot.bank, true);
 		const xpStr = await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP });
 

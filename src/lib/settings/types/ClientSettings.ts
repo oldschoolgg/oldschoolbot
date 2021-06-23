@@ -15,6 +15,7 @@ export namespace ClientSettings {
 	export const Prices = T<ItemPriceCache>('prices');
 	export const GuildBlacklist = T<readonly string[]>('guildBlacklist');
 	export const UserBlacklist = T<readonly string[]>('userBlacklist');
+	export const BankLottery = T<O.Readonly<ItemBank>>('bank_lottery');
 
 	export namespace EconomyStats {
 		export const DicingBank = T<number>('economyStats.dicingBank');
@@ -52,6 +53,24 @@ export namespace ClientSettings {
 		export const MTACostBank = T<O.Readonly<ItemBank>>('mta_cost');
 		export const BlastFurnaceCostBank = T<O.Readonly<ItemBank>>('bf_cost');
 
+		export const ItemContractCost = T<O.Readonly<ItemBank>>('item_contract_cost');
+		export const ItemContractLoot = T<O.Readonly<ItemBank>>('item_contract_loot');
+
+		export const KingGoldemarCost = T<O.Readonly<ItemBank>>('kg_cost');
+		export const KingGoldemarLoot = T<O.Readonly<ItemBank>>('kg_loot');
+
+		export const KalphiteKingCost = T<O.Readonly<ItemBank>>('kk_cost');
+		export const KalphiteKingLoot = T<O.Readonly<ItemBank>>('kk_loot');
+
+		export const NexCost = T<O.Readonly<ItemBank>>('nex_cost');
+		export const NexLoot = T<O.Readonly<ItemBank>>('nex_loot');
+
+		export const VasaCost = T<O.Readonly<ItemBank>>('vasa_cost');
+		export const VasaLoot = T<O.Readonly<ItemBank>>('vasa_loot');
+
+		export const ODSCost = T<O.Readonly<ItemBank>>('ods_cost');
+		export const ODSLoot = T<O.Readonly<ItemBank>>('ods_loot');
+
 		export const MageArenaCost = T<O.Readonly<ItemBank>>('mage_arena_cost');
 
 		export const HunterCost = T<O.Readonly<ItemBank>>('hunter_cost');
@@ -63,6 +82,8 @@ export namespace ClientSettings {
 		export const GPSourcePickpocket = T<number>('gp_pickpocket');
 		export const GPSourceDice = T<number>('gp_dice');
 		export const GPSourceOpen = T<number>('gp_open');
+		export const GPSourcePet = T<number>('gp_pet');
 		export const GPSourceDaily = T<number>('gp_daily');
+		export const GPSourceItemContracts = T<number>('gp_ic');
 	}
 }

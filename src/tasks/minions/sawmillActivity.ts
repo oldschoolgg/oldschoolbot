@@ -1,9 +1,11 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import { Planks } from '../../lib/minions/data/planks';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
+import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -15,8 +17,16 @@ export default class extends Task {
 		const loot = new Bank({
 			[plankID]: plankQuantity
 		});
+		const boxChancePerPlank = Math.floor(100 - (Planks.indexOf(plank) + 1) * 8.5) * 5;
+		let boxRolls = Math.floor(plankQuantity / 10);
+		if (plank.name === 'Elder plank') boxRolls *= 2;
+		for (let i = 0; i < boxRolls; i++) {
+			if (roll(boxChancePerPlank)) {
+				loot.add(getRandomMysteryBox());
+			}
+		}
 
-		let str = `${user}, ${user.minionName} finished creating planks, you received ${loot}.`;
+		let str = `${user}, ${user.minionName} finished creating planks, you received ${loot}. You get ${boxRolls} rolls at a 1 in ${boxChancePerPlank} of a box.`;
 
 		if (
 			user.hasItemEquippedAnywhere('Iron dagger') &&

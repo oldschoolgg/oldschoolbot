@@ -31,10 +31,23 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank(loot, true);
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: thievingXP });
+		if (user.usingPet('Flappy')) {
+			loot.multiply(2);
+		}
 
-		let str = `${user}, ${user.minionName} finished doing the Pyramid Plunder ${quantity}x times. ${totalAmountUrns}x urns opened. ${xpRes}`;
+		await user.addItemsToBank(loot, true);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Thieving,
+			amount: thievingXP
+		});
+
+		let str = `${user}, ${
+			user.minionName
+		} finished doing the Pyramid Plunder ${quantity}x times. ${totalAmountUrns}x urns opened. ${xpRes}  ${
+			user.usingPet('Flappy')
+				? ' \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.'
+				: ''
+		}`;
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!

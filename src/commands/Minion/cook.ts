@@ -51,10 +51,18 @@ export default class extends BotCommand {
 			return msg.send(`${msg.author.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`);
 		}
 
+		const hasRemy = msg.author.equippedPet() === itemID('Remy');
+
 		// Based off catherby fish/hr rates
 		let timeToCookSingleCookable = Time.Second * 2.88;
 		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
 			timeToCookSingleCookable /= 1.6;
+		} else if (msg.author.hasItemEquippedAnywhere(itemID('Cooking master cape'))) {
+			timeToCookSingleCookable /= 5;
+		} else if (hasRemy) {
+			timeToCookSingleCookable /= 2;
+		} else if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven gauntlets'))) {
+			timeToCookSingleCookable /= 3;
 		}
 
 		const userBank = msg.author.bank();
@@ -100,7 +108,11 @@ export default class extends BotCommand {
 		return msg.send(
 			`${msg.author.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDuration(
 				duration
-			)} to finish.`
+			)} to finish. ${
+				hasRemy
+					? "\n<:remy:748491189925183638> Remy jumps on your minions' head to help them with their cooking!"
+					: ''
+			}`
 		);
 	}
 }

@@ -46,7 +46,7 @@ export default async function removeFoodFromUser({
 		reductions.push(`${learningPercentage}% for experience`);
 	}
 
-	const foodToRemove = getUserFoodFromBank(userBank, totalHealingNeeded);
+	const foodToRemove = getUserFoodFromBank(user, totalHealingNeeded);
 	if (!foodToRemove) {
 		throw `You don't have enough food to do ${activityName}! You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.map(
 			i => i.name

@@ -5,6 +5,7 @@ import { itemID } from 'oldschooljs/dist/util';
 import SimilarItems, { getSimilarItems } from '../../lib/data/similarItems';
 import { defaultGear, resolveGearTypeSetting } from '../../lib/gear';
 import { GearSetup, UserFullGearSetup } from '../../lib/gear/types';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Gear } from '../../lib/structures/Gear';
 import resolveItems from '../../lib/util/resolveItems';
 
@@ -45,6 +46,10 @@ export default class extends Extendable {
 			return this.hasItemEquippedAnywhere(id, false) || this.numItemsInBankSync(id, true) > 0;
 		}
 		return this.hasItemEquippedAnywhere(getSimilarItems(id), false) || this.numItemsInBankSync(id, true) > 0;
+	}
+
+	public equippedPet(this: User) {
+		return this.settings.get(UserSettings.Minion.EquippedPet);
 	}
 
 	public getGear(this: User, setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling'): GearSetup {

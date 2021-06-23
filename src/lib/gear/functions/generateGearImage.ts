@@ -81,10 +81,13 @@ export async function generateGearImage(
 	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	ctx.drawImage(userBg, (canvas.width - userBg.width) * 0.5, (canvas.height - userBg.height) * 0.5);
-	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
-	bankTask?.drawBorder(canvas, false);
+	const isTransparent = userBgID === 12;
+	if (!isTransparent) {
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		ctx.drawImage(userBg, (canvas.width - userBg.width) * 0.5, (canvas.height - userBg.height) * 0.5);
+		ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
+		bankTask?.drawBorder(canvas, false);
+	}
 
 	ctx.font = '16px OSRSFontCompact';
 	// Draw preset title
@@ -210,6 +213,10 @@ export async function generateGearImage(
 		if (item.quantity > 1) {
 			drawItemQuantityText(ctx, item.quantity, x + 1, y + 9);
 		}
+	}
+
+	if (isTransparent) {
+		return canvas.toBuffer('image/png');
 	}
 
 	return canvas.toBuffer();

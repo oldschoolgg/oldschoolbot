@@ -19,6 +19,11 @@ import resolveItems from '../../lib/util/resolveItems';
 
 const pickaxes = [
 	{
+		id: itemID('Dwarven pickaxe'),
+		reductionPercent: 50,
+		miningLvl: 99
+	},
+	{
 		id: itemID('3rd age pickaxe'),
 		reductionPercent: 11,
 		miningLvl: 61
@@ -117,8 +122,9 @@ export default class extends BotCommand {
 		// Calculate the time it takes to mine a single ore of this type, at this persons level.
 		let timeToMine = determineScaledOreTime(ore!.xp, ore.respawnTime, msg.author.skillLevel(SkillsEnum.Mining));
 
-		// For each pickaxe, if they have it, give them its' bonus and break.
 		const boosts = [];
+
+		// For each pickaxe, if they have it, give them its' bonus and break.
 		for (const pickaxe of pickaxes) {
 			if (
 				msg.author.hasItemEquippedOrInBank(pickaxe.id) &&
@@ -179,6 +185,10 @@ export default class extends BotCommand {
 		let response = `${msg.author.minionName} is now mining ${quantity}x ${
 			ore.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (msg.author.equippedPet() === itemID('Doug')) {
+			response += '\n<:doug:748892864813203591> Doug joins you on your mining trip!';
+		}
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;

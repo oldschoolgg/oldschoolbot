@@ -1,7 +1,6 @@
-import { TextChannel } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { Channel, Events, Time } from '../../lib/constants';
+import { Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
@@ -16,7 +15,8 @@ export default class extends BotCommand {
 			ironCantUse: true,
 			categoryFlags: ['minion'],
 			description: 'Pays GP to another user.',
-			examples: ['+pay @Magnaboy 10m']
+			examples: ['+pay @Magnaboy 10m'],
+			restrictedChannels: ['792691343284764693', '792692390778896424']
 		});
 	}
 
@@ -29,15 +29,6 @@ export default class extends BotCommand {
 		if (this.client.oneCommandAtATimeCache.has(user.id)) throw 'That user is busy right now.';
 		if (user.id === msg.author.id) throw "You can't send money to yourself.";
 		if (user.bot) throw "You can't send money to a bot.";
-
-		if (
-			Date.now() - msg.author.settings.get(UserSettings.LastDailyTimestamp) < Time.Minute &&
-			this.client.production
-		) {
-			(this.client.channels.cache.get(Channel.ErrorLogs) as TextChannel).send(
-				`(${msg.author.sanitizedName})[${msg.author.id}] paid daily to (${user.sanitizedName})[${user.id}]`
-			);
-		}
 
 		await msg.author.removeGP(amount);
 		await user.addGP(amount);

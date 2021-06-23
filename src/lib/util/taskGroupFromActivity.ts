@@ -6,6 +6,10 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 			return ActivityGroup.Clue;
 		case Activity.GroupMonsterKilling:
 		case Activity.MonsterKilling:
+		case Activity.KalphiteKing:
+		case Activity.Nex:
+		case Activity.KingGoldemar:
+		case Activity.VasaMagus:
 			return ActivityGroup.Monster;
 		case Activity.Fishing:
 		case Activity.Agility:
@@ -49,16 +53,18 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 		case Activity.BarbarianAssault:
 		case Activity.AgilityArena:
 		case Activity.ChampionsChallenge:
+		case Activity.Raids:
 		case Activity.MahoganyHomes:
 		case Activity.AerialFishing:
 		case Activity.SoulWars:
 		case Activity.GnomeRestaurant:
 		case Activity.RoguesDenMaze:
 		case Activity.Gauntlet:
+		case Activity.Dungeoneering:
 		case Activity.CastleWars:
 		case Activity.MageArena:
-		case Activity.Raids:
 		case Activity.MageTrainingArena:
+		case Activity.OuraniaDeliveryService:
 		case Activity.MageArena2:
 		case Activity.BigChompyBirdHunting:
 			return ActivityGroup.Minigame;

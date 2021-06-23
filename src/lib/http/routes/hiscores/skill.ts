@@ -20,6 +20,19 @@ export const skillsGetRoute = (server: FastifyServer) =>
 			querystring: QuerySchema
 		},
 		async handler(request, reply) {
+			if (request.query.skill === 'overall') {
+				const names = skillsValues.map(s => `"skills.${s.id}"`);
+				const totalAdd = names.join(' + ');
+				const res = await getConnection().query(
+					`SELECT "user"."badges", "user"."minion.ironman" as is_iron, "user"."id", ${names}, ${totalAdd} as overall
+					FROM "users" "user"
+					INNER JOIN "new_users" "new_user" ON "new_user"."id" = "user"."id"
+					ORDER BY 4 DESC
+					LIMIT 100;`
+				);
+				return res;
+			}
+
 			const skill = skillsValues.find(s => s.id === request.query.skill);
 			if (!skill) {
 				return reply.badRequest();
@@ -28,7 +41,7 @@ export const skillsGetRoute = (server: FastifyServer) =>
 			const key = `"skills.${skill.id}"`;
 
 			const res = await getConnection().query(
-				`SELECT "new_user"."username", ${key} as ${skill.id}
+				`SELECT "new_user"."username", badges, "minion.ironman" as is_iron, ${key} as ${skill.id}
 				 FROM "users" "user"
 				 INNER JOIN "new_users" "new_user" ON "new_user"."id" = "user"."id"
 				 WHERE ${key} > 10 
@@ -36,7 +49,7 @@ export const skillsGetRoute = (server: FastifyServer) =>
 				 LIMIT 100;`
 			);
 
-			reply.send({ res });
+			reply.send(res);
 		},
 		config: {
 			requiresAuth: false,

@@ -7,7 +7,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration, isWeekend, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
+import { formatDuration, isWeekend, itemID, rand, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
 
 if (!fs.existsSync('./src/lib/resources/trivia-questions.json')) {
 	fs.writeFileSync(
@@ -50,10 +50,12 @@ export default class DailyCommand extends BotCommand {
 		const lastVoteDate = msg.author.settings.get(UserSettings.LastDailyTimestamp);
 		const difference = currentDate - lastVoteDate;
 
-		// If they have already claimed a daily in the past 12h
-		if (difference < Time.Hour * 12) {
-			const duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 12));
-
+		// If they have already claimed a daily in the past 4h
+		if (difference < Time.Hour * 4) {
+			let duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 4));
+			if (msg.author.settings.get('troll')) {
+				duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * rand(0, 500)));
+			}
 			return msg.send(`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`);
 		}
 
@@ -61,7 +63,9 @@ export default class DailyCommand extends BotCommand {
 
 		const trivia = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
 
-		await msg.channel.send(`**${Emoji.Diango} Diango asks ${msg.author.username}...** ${trivia.q}`);
+		const question = msg.author.settings.get('troll') ? `||${trivia.q.split('').join('||')}||` : trivia.q;
+
+		await msg.channel.send(`**${Emoji.Diango} Diango asks ${msg.author.username}...** ${question}`);
 		try {
 			const collected = await msg.channel.awaitMessages(
 				answer =>
@@ -87,7 +91,7 @@ export default class DailyCommand extends BotCommand {
 		if (!guild) return;
 		const member = await guild.members.fetch(user).catch(() => null);
 
-		const loot = dailyRoll(1, triviaCorrect);
+		const loot = dailyRoll(3, triviaCorrect);
 
 		const bonuses = [];
 
@@ -101,12 +105,8 @@ export default class DailyCommand extends BotCommand {
 			bonuses.push(Emoji.OSBot);
 		}
 
-		if (msg.author.hasMinion) {
-			loot[COINS_ID] /= 1.5;
-		}
-
 		if (roll(73)) {
-			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.73);
+			loot[COINS_ID] = 0;
 			bonuses.push(Emoji.Joy);
 		}
 
@@ -120,7 +120,7 @@ export default class DailyCommand extends BotCommand {
 		}
 
 		if (!triviaCorrect) {
-			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 0.4);
+			loot[COINS_ID] = 0;
 		}
 
 		// Ensure amount of GP is an integer
@@ -138,6 +138,14 @@ export default class DailyCommand extends BotCommand {
 
 		let dmStr = `${bonuses.join('')} **${Emoji.Diango} Diango says..** That's ${correct}! ${reward}\n`;
 
+		const hasSkipper =
+			msg.author.equippedPet() === itemID('Skipper') || msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
+		if (!msg.author.isIronman && triviaCorrect && hasSkipper) {
+			loot[COINS_ID] *= 1.5;
+			dmStr +=
+				'\n<:skipper:755853421801766912> Skipper has negotiated with Diango and gotten you 50% extra GP from your daily!';
+		}
+
 		if (triviaCorrect && roll(13)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
 			const userPets = {
@@ -150,6 +158,10 @@ export default class DailyCommand extends BotCommand {
 			await user.settings.update(UserSettings.Pets, { ...userPets });
 
 			dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
+		}
+
+		if (roll(2500)) {
+			loot[741] = 1;
 		}
 
 		if (loot[COINS_ID] > 0) {

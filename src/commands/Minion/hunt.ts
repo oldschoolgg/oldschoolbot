@@ -106,6 +106,15 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (
+			creature.id === 3251 &&
+			(msg.author.skillLevel(SkillsEnum.Hunter) < 120 ||
+				msg.author.skillLevel(SkillsEnum.Agility) < 99 ||
+				msg.author.skillLevel(SkillsEnum.Fishing) < 99)
+		) {
+			return msg.send("You need level 120 Hunter, 99 Agility, 99 Fishing to hunt Sand Gecko's.");
+		}
+
 		if (msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0) < creature.level) {
 			return msg.send(`${msg.author.minionName} needs ${creature.level} Hunter to hunt ${creature.name}.`);
 		}
@@ -160,6 +169,12 @@ export default class extends BotCommand {
 		if (!creature.wildy && msg.author.hasGracefulEquipped()) {
 			boosts.push('5% boost for using Graceful');
 			catchTime *= 0.95;
+		}
+
+		// Reduce time by 5% if user has graceful equipped
+		if (msg.author.hasItemEquippedAnywhere(itemID('Hunter master cape'))) {
+			boosts.push('2x boost for being a master hunter');
+			catchTime *= 0.5;
 		}
 
 		if (creature.wildy) {

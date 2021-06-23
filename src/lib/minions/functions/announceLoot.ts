@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import { Events } from '../../constants';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { ItemBank } from '../../types';
-import { filterBankFromArrayOfItems } from '../../util';
 import { KillableMonster } from '../types';
 
 export default async function announceLoot(
@@ -14,18 +13,16 @@ export default async function announceLoot(
 	loot: ItemBank,
 	team?: { leader: KlasaUser; lootRecipient: KlasaUser; size: number }
 ) {
-	const notifyDrops = (monster.notifyDrops ?? []) as number[];
 	const kc = user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
-	const itemsToAnnounce = filterBankFromArrayOfItems(notifyDrops, loot);
-	if (Object.keys(itemsToAnnounce).length > 0) {
-		const lootStr = new Bank(itemsToAnnounce).toString();
+	const items = new Bank(loot).filter(i => monster.notifyDrops?.includes(i.id) ?? false);
 
+	if (items.length > 0) {
 		let notif = '';
 
 		if (team) {
-			notif = `In **${team.leader.username}'s** party of ${team.size} minions killing ${monster.name}, ${team.lootRecipient.username} just received **${lootStr}**!`;
+			notif = `In **${team.leader.username}'s** party of ${team.size} minions killing ${monster.name}, ${team.lootRecipient.username} just received **${items}**!`;
 		} else {
-			notif = `**${user.username}'s** minion, ${user.minionName}, just received **${lootStr}**, their ${monster.name} KC is ${kc}!`;
+			notif = `**${user.username}'s** minion, ${user.minionName}, just received **${items}**, their ${monster.name} KC is ${kc}!`;
 		}
 
 		client.emit(Events.ServerNotification, notif);

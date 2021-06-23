@@ -48,7 +48,10 @@ export default class extends BotCommand {
 		}
 
 		// All bars take 2.4s to smith, add on quarter of a second to account for banking/etc.
-		const timeToSmithSingleBar = Time.Second * 2.4 + Time.Second / 4;
+		let timeToSmithSingleBar = Time.Second * 2.4 + Time.Second / 4;
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven gauntlets'))) {
+			timeToSmithSingleBar /= 2;
+		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
 
@@ -77,6 +80,12 @@ export default class extends BotCommand {
 				)}, try a lower quantity. The highest amount of ${bar.name}s you can smelt is ${Math.floor(
 					maxTripLength / timeToSmithSingleBar
 				)}.`
+			);
+		}
+
+		if (bar.id === itemID('Dwarven bar') && msg.author.equippedPet() !== itemID('Klik')) {
+			return msg.channel.send(
+				'You try to smelt the bars, but nothing is happening. Perhaps the furnace is not hot enough to melt dwarven ore.'
 			);
 		}
 

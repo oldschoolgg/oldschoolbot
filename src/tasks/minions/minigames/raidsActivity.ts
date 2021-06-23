@@ -6,6 +6,7 @@ import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXer
 import { Emoji, Events } from '../../../lib/constants';
 import { coxLog, metamorphPets } from '../../../lib/data/collectionLog';
 import { createTeam } from '../../../lib/data/cox';
+import { getRandomMysteryBox } from '../../../lib/data/openables';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
@@ -65,6 +66,12 @@ export default class extends Task {
 			);
 
 			const userLoot = new Bank(_userLoot);
+			if (roll(10)) {
+				userLoot.multiply(2);
+				userLoot.add(getRandomMysteryBox());
+			} else if (user.usingPet('Flappy')) {
+				userLoot.multiply(2);
+			}
 			if (
 				challengeMode &&
 				roll(50) &&
@@ -77,6 +84,15 @@ export default class extends Task {
 				}
 			}
 
+			if (roll(4500)) {
+				userLoot.add('Takon');
+			}
+			if (roll(140)) {
+				userLoot.add('Clue scroll (grandmaster)');
+			}
+			if (roll(2000)) {
+				userLoot.add('Steve');
+			}
 			totalLoot.add(userLoot);
 
 			const items = userLoot.items();
@@ -100,6 +116,9 @@ export default class extends Task {
 			resultMessage += `\n${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${
 				Emoji.Skull
 			}${deathChance.toFixed(0)}%)`;
+			if (user.usingPet('Flappy')) {
+				resultMessage += '<:flappy:813000865383972874>';
+			}
 			await user.addItemsToBank(userLoot, true);
 		}
 

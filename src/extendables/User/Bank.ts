@@ -5,7 +5,6 @@ import { O } from 'ts-toolbelt';
 
 import { Events } from '../../lib/constants';
 import SimilarItems from '../../lib/data/similarItems';
-import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
 import { addBanks, bankHasAllItemsFromBank, removeBankFromBank, removeItemFromBank } from '../../lib/util';
@@ -97,19 +96,6 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 
 		const previousCL = this.settings.get(UserSettings.CollectionLogBank);
-
-		for (const { scrollID } of clueTiers) {
-			// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
-			if (!_items[scrollID]) continue;
-			const alreadyHasThisScroll = this.settings.get(UserSettings.Bank)[scrollID];
-			if (alreadyHasThisScroll) {
-				// If they already have this scroll in their bank, delete it from the loot.
-				delete _items[scrollID];
-			} else {
-				// If they dont have it in their bank, reset the amount to 1 incase they got more than 1 of the clue.
-				_items[scrollID] = 1;
-			}
-		}
 
 		const items = {
 			..._items

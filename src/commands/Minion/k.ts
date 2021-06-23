@@ -34,17 +34,18 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import findMonster, {
+import {
 	addArrayOfNumbers,
 	formatDuration,
 	isWeekend,
+	itemID,
 	itemNameFromID,
 	randomVariation,
 	removeDuplicatesFromArray,
 	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import itemID from '../../lib/util/itemID';
+import { findMonster } from '../../lib/util/findMonster';
 
 const validMonsters = killableMonsters.map(mon => mon.name).join('\n');
 const invalidMonsterMsg = (prefix: string) =>
@@ -115,6 +116,14 @@ export default class extends BotCommand {
 			return msg.channel.send(`You can't kill ${monster.name}, because you're not on a slayer task.`);
 		}
 
+		if (monster.id === 696969) {
+			throw 'You would be foolish to try to face King Goldemar in a solo fight.';
+		}
+
+		if (msg.author.usingPet('Ishi') && monster.name !== 'Ogress Warrior') {
+			this.run(msg, [null, 'Ogress Warrior', '']);
+			return msg.channel.send("Let's kill some ogress warriors instead? 🥰 🐳");
+		}
 		// Set chosen boost based on priority:
 		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
 		const boostChoice = determineBoostChoice({
@@ -140,6 +149,9 @@ export default class extends BotCommand {
 		timeToFinish = newTime;
 		boosts.push(skillBoostMsg);
 
+		timeToFinish /= 2;
+		boosts.push('2x BSO Boost');
+
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
 
 		if (monster.pohBoosts) {
@@ -154,7 +166,10 @@ export default class extends BotCommand {
 			timeToFinish *= (100 - boostAmount) / 100;
 			boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 		}
-
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven warhammer'))) {
+			timeToFinish *= 0.6;
+			boosts.push('40% boost for Dwarven warhammer');
+		}
 		// Removed vorkath because he has a special boost.
 		if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
 			if (
@@ -162,14 +177,14 @@ export default class extends BotCommand {
 				!attackStyles.includes(SkillsEnum.Ranged) &&
 				!attackStyles.includes(SkillsEnum.Magic)
 			) {
-				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				boosts.push('15% for Dragon hunter lance');
+				timeToFinish = reduceNumByPercent(timeToFinish, 20);
+				boosts.push('20% for Dragon hunter lance');
 			} else if (
 				msg.author.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
 				attackStyles.includes(SkillsEnum.Ranged)
 			) {
-				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				boosts.push('15% for Dragon hunter crossbow');
+				timeToFinish = reduceNumByPercent(timeToFinish, 20);
+				boosts.push('20% for Dragon hunter crossbow');
 			}
 		}
 		// Add 15% slayer boost on task if they have black mask or similar
@@ -194,6 +209,9 @@ export default class extends BotCommand {
 		let cannonMulti = false;
 		let burstOrBarrage = 0;
 		const hasCannon = msg.author.owns(CombatCannonItemBank);
+		if (!isOnTask && (msg.flagArgs.burst || msg.flagArgs.barrage || msg.flagArgs.cannon)) {
+			return msg.send('You can only burst/barrage/cannon while on task in BSO.');
+		}
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !monster!.canBarrage) {
 			return msg.send(`${monster!.name} cannot be barraged or burst.`);
 		}
@@ -240,6 +258,20 @@ export default class extends BotCommand {
 
 		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
 
+		const hasBlessing = msg.author.hasItemEquippedAnywhere('Dwarven blessing');
+		const hasZealotsAmulet = msg.author.hasItemEquippedAnywhere('Amulet of zealots');
+		if (hasZealotsAmulet && hasBlessing) {
+			timeToFinish *= 0.75;
+			boosts.push('25% for Dwarven blessing & Amulet of zealots');
+		} else if (hasBlessing) {
+			timeToFinish *= 0.8;
+			boosts.push('20% for Dwarven blessing');
+		}
+		if (monster.wildy && hasZealotsAmulet) {
+			timeToFinish *= 0.95;
+			boosts.push('5% for Amulet of zealots');
+		}
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = floor(maxTripLength / timeToFinish);
@@ -266,8 +298,25 @@ export default class extends BotCommand {
 			quantity = Math.min(quantity, effectiveQtyRemaining);
 		}
 
-		quantity = Math.max(1, quantity);
 		let duration = timeToFinish * quantity;
+		// If you have dwarven blessing, you need 1 prayer pot per 5 mins
+		const prayerPots = msg.author.bank().amount('Prayer potion(4)');
+		const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
+
+		let prayerPotsNeeded = Math.max(1, fiveMinIncrements);
+		const hasPrayerMasterCape = msg.author.hasItemEquippedAnywhere('Prayer master cape');
+		if (hasPrayerMasterCape && hasBlessing) {
+			boosts.push('40% less prayer pots');
+			prayerPotsNeeded = Math.floor(0.6 * prayerPotsNeeded);
+		}
+		prayerPotsNeeded = Math.max(1, prayerPotsNeeded);
+		if (hasBlessing) {
+			if (prayerPots < prayerPotsNeeded) {
+				return msg.send("You don't have enough Prayer potion(4)'s to power your Dwarven blessing.");
+			}
+		}
+
+		quantity = Math.max(1, quantity);
 		if (quantity > 1 && duration > maxTripLength) {
 			return msg.send(
 				`${minionName} can't go on PvM trips longer than ${formatDuration(
@@ -361,6 +410,41 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
+		if (attackStyles.includes(SkillsEnum.Ranged) && msg.author.hasItemEquippedAnywhere('Ranged master cape')) {
+			duration *= 0.85;
+			boosts.push('15% for Ranged master cape');
+		} else if (attackStyles.includes(SkillsEnum.Magic) && msg.author.hasItemEquippedAnywhere('Magic master cape')) {
+			duration *= 0.85;
+			boosts.push('15% for Magic master cape');
+		} else if (msg.author.hasItemEquippedAnywhere('Attack master cape')) {
+			duration *= 0.85;
+			boosts.push('15% for Attack master cape');
+		}
+
+		if (hasBlessing && prayerPotsNeeded) {
+			await msg.author.removeItemFromBank(itemID('Prayer potion(4)'), prayerPotsNeeded);
+		}
+
+		const rangeSetup = { ...msg.author.getGear('range') };
+		let usedDart = false;
+		if (rangeSetup.weapon?.item === itemID('Deathtouched dart')) {
+			duration = 1;
+			rangeSetup.weapon = null;
+			await msg.author.settings.update(UserSettings.Gear.Range, rangeSetup);
+			if (monster.name === 'Koschei the deathless') {
+				return msg.channel.send(
+					'You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - Koschei immediately locks' +
+						' eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly.'
+				);
+			}
+			usedDart = true;
+		}
+
+		if (monster.name === 'Koschei the deathless') {
+			return msg.channel.send(
+				'You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.'
+			);
+		}
 		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
 		await msg.author.removeItemsFromBank(lootToRemove);
 
@@ -375,6 +459,13 @@ export default class extends BotCommand {
 			cannonMulti,
 			burstOrBarrage
 		});
+
+		if (usedDart) {
+			return msg.send(
+				`<:deathtouched_dart:822674661967265843> ${msg.author.minionName} used a **Deathtouched dart**.`
+			);
+		}
+
 		let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 			duration
 		)} to finish. Attack styles used: ${attackStyles.join(', ')}.`;
@@ -385,6 +476,10 @@ export default class extends BotCommand {
 
 		if (foodStr) {
 			response += ` Removed ${foodStr}\n`;
+		}
+
+		if (hasBlessing) {
+			response += `\nRemoved ${prayerPotsNeeded}x Prayer potion(4) to power Dwarven blessing.`;
 		}
 
 		if (boosts.length > 0) {

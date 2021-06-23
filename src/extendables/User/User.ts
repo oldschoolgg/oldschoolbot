@@ -9,7 +9,7 @@ import { KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { Skills } from '../../lib/types';
-import { formatItemReqs, itemNameFromID } from '../../lib/util';
+import { formatItemReqs, itemID, itemNameFromID } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Extendable {
@@ -31,7 +31,7 @@ export default class extends Extendable {
 		if (monster.qpRequired && this.settings.get(UserSettings.QP) < monster.qpRequired) {
 			return [
 				false,
-				`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`+quest\``
+				`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`=quest\``
 			];
 		}
 
@@ -126,5 +126,9 @@ export default class extends Extendable {
 			throw new Error('Failed to find POH after creation.');
 		}
 		return created;
+	}
+
+	public usingPet(this: User, name: string) {
+		return this.equippedPet() === itemID(name);
 	}
 }

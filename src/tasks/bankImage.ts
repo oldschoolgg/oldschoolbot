@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import { Canvas, createCanvas, Image, registerFont } from 'canvas';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
@@ -21,6 +22,7 @@ import {
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
 	restoreCtx,
+	roll,
 	saveCtx,
 	sha256Hash
 } from '../lib/util';
@@ -68,6 +70,7 @@ export default class BankImageTask extends Task {
 	public borderHorizontal: Image | null = null;
 	public borderVertical: Image | null = null;
 
+	public imageHamstare: Image | null = null;
 	public constructor(store: TaskStore, file: string[], directory: string) {
 		super(store, file, directory, {});
 
@@ -112,6 +115,7 @@ export default class BankImageTask extends Task {
 		this.borderVertical = await canvasImageFromBuffer(
 			fs.readFileSync('./src/lib/resources/images/bank_border_v.png')
 		);
+		this.imageHamstare = await canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/hamstare.png'));
 	}
 
 	async cacheFiles() {
@@ -232,6 +236,20 @@ export default class BankImageTask extends Task {
 		ctx.restore();
 	}
 
+	addsHamstare(canvas: Canvas, wide = false) {
+		if (!roll(100)) return;
+		const ctx = canvas.getContext('2d');
+		ctx.save();
+		ctx.globalAlpha = 0.9;
+		const ham = this.imageHamstare!;
+		ctx.translate(
+			wide ? this.borderVertical?.width! : canvas.width / 2 - ham.width! / 2,
+			canvas.height - ham.height! - this.borderHorizontal?.height!
+		);
+		ctx.drawImage(ham, 0, 0, wide ? canvas.width - this.borderVertical?.width! * 2 : ham.width!, canvas.height / 2);
+		ctx.restore();
+	}
+
 	async generateBankImage(
 		_bank: Bank | ItemBank,
 		title = '',
@@ -252,6 +270,12 @@ export default class BankImageTask extends Task {
 		const bankBackgroundID = settings?.get(UserSettings.BankBackground) ?? flags.background ?? 1;
 		const currentCL = collectionLog ?? settings?.get(UserSettings.CollectionLogBank);
 		let partial = false;
+
+		if (flags.alch) {
+			bank.filter(item => {
+				return item.price > 1000 && item.price < item.highalch * 3;
+			}, true);
+		}
 
 		// Filtering
 		const searchQuery = flags.search as string | undefined;
@@ -373,7 +397,7 @@ export default class BankImageTask extends Task {
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
 
-		if (bankBackgroundID !== 20) {
+		if (bankBackgroundID !== 12) {
 			ctx.drawImage(
 				bgImage!.image,
 				0,
@@ -387,6 +411,12 @@ export default class BankImageTask extends Task {
 		if (!isTransparent && noBorder !== 1) {
 			this.drawBorder(canvas, bgImage.name === 'Default');
 		}
+
+		// Adds hamstare
+		if (bgImage.name === 'Default' && !isTransparent) {
+			this.addsHamstare(canvas, Boolean(wide));
+		}
+
 		if (showValue) {
 			title += ` (Value: ${toKMB(totalValue)})`;
 		}
@@ -455,7 +485,7 @@ export default class BankImageTask extends Task {
 				bottomItemText = item.price * quantity;
 			}
 
-			if (flags.av) {
+			if (flags.av || flags.alch) {
 				bottomItemText = (item.highalch ?? 0) * quantity;
 			}
 			if (flags.id) {
@@ -602,6 +632,7 @@ export default class BankImageTask extends Task {
 		}
 		// Draw border
 		this.drawBorder(canvas);
+		this.addsHamstare(canvas);
 
 		return canvas.toBuffer();
 	}

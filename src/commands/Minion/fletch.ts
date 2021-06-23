@@ -10,7 +10,7 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -82,6 +82,13 @@ export default class extends BotCommand {
 			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6;
 		}
 
+		let hasScruffy = false;
+		if (msg.author.equippedPet() === itemID('Scruffy')) {
+			timeToFletchSingleItem /= 2;
+			hasScruffy = true;
+		}
+
+		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		const maxTripLength = msg.author.maxTripLength(Activity.Fletching);
 
 		if (quantity === null) {
@@ -124,7 +131,11 @@ export default class extends BotCommand {
 		return msg.send(
 			`${msg.author.minionName} is now Fletching ${quantity}${sets} ${
 				fletchable.name
-			}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`
+			}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank. ${
+				hasScruffy
+					? '\n<:scruffy:749945071146762301> To help out, Scruffy is fetching items from the bank for you - making your training much faster! Good boy.'
+					: ''
+			}`
 		);
 	}
 }

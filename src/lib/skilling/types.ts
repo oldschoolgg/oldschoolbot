@@ -28,6 +28,7 @@ export enum SkillsEnum {
 	Defence = 'defence',
 	Ranged = 'ranged',
 	Hitpoints = 'hitpoints',
+	Dungeoneering = 'dungeoneering',
 	Slayer = 'slayer'
 }
 
@@ -73,6 +74,7 @@ export interface Fish {
 	bigFish?: number;
 	bigFishRate?: number;
 	clueScrollChance?: number;
+	aliases?: string[];
 }
 
 export interface Course {
@@ -136,6 +138,7 @@ export interface SmithedItem {
 	inputBars: ItemBank;
 	timeToUse: number;
 	outputMultiple: number;
+	requiresBlacksmith?: boolean;
 }
 
 export interface Craftable {

@@ -1,8 +1,10 @@
+import { percentChance } from 'e';
 import { Task } from 'klasa';
 
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
+import { itemID } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -11,6 +13,19 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.id === mixableID)!;
+
+		const isMixingPotion = mixableItem.xp !== 0 && !mixableItem.wesley && !mixableItem.zahur;
+		const hasHerbMasterCape = user.hasItemEquippedAnywhere(itemID('Herblore master cape'));
+		const herbCapePerk = isMixingPotion && hasHerbMasterCape;
+		let bonus = 0;
+		if (herbCapePerk) {
+			for (let i = 0; i < quantity; i++) {
+				if (percentChance(10)) {
+					bonus++;
+				}
+			}
+			quantity += bonus;
+		}
 
 		const xpReceived = zahur && mixableItem.zahur === true ? 0 : quantity * mixableItem.xp;
 
@@ -24,7 +39,9 @@ export default class extends Task {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished making ${quantity} ${mixableItem.name}s. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished making ${quantity - bonus} ${mixableItem.name}s. ${xpRes} ${
+			bonus > 0 ? `\n\n**${bonus}x extra for Herblore master cape**` : ''
+		}`;
 
 		const loot = {
 			[mixableItem.id]: quantity

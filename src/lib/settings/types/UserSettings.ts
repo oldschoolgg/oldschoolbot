@@ -29,6 +29,8 @@ export namespace UserSettings {
 	export const ClueScores = T<O.Readonly<ItemBank>>('clueScores');
 	export const LapsScores = T<O.Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
+	export const LastSpawnLamp = T<number>('lastSpawnLamp');
+	export const LastGivenBox = T<number>('lastGivenBoxx');
 	export const BitField = T<readonly BitField[]>('bitfield');
 	export const FavoriteItems = T<readonly number[]>('favoriteItems');
 	export const Badges = T<readonly number[]>('badges');
@@ -43,8 +45,16 @@ export namespace UserSettings {
 	export const CarpenterPoints = T<number>('carpenter_points');
 	export const ZealTokens = T<number>('zeal_tokens');
 	export const OpenableScores = T<O.Readonly<ItemBank>>('openable_scores');
+	export const HasSpawnedRMB = T<boolean>('spawned_rmb');
 	export const AttackStyle = T<readonly SkillsEnum[]>('attack_style');
+	export const DungeoneeringTokens = T<number>('dungeoneering_tokens');
 	export const TotalCoxPoints = T<number>('total_cox_points');
+	export const TotalItemContracts = T<number>('total_item_contracts');
+	export const LastItemContractDate = T<number>('last_item_contract_date');
+	export const CurrentItemContract = T<number | null>('current_item_contract');
+	export const ItemContractBank = T<O.Readonly<ItemBank>>('item_contract_bank');
+	export const ItemContractStreak = T<number>('item_contract_streak');
+	export const OuraniaTokens = T<number>('ourania_tokens');
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
 	export const BankBackgroundHex = T<string | null>('bank_bg_hex');
 	export const CombatOptions = T<readonly CombatOptionsEnum[]>('combat_options');
@@ -113,6 +123,7 @@ export namespace UserSettings {
 		export const Defence = T<number>(`skills.${SkillsEnum.Defence}`);
 		export const Ranged = T<number>(`skills.${SkillsEnum.Ranged}`);
 		export const Hitpoints = T<number>(`skills.${SkillsEnum.Hitpoints}`);
+		export const Dungeoneering = T<number>(`skills.${SkillsEnum.Dungeoneering}`);
 		export const Slayer = T<number>(`skills.${SkillsEnum.Slayer}`);
 	}
 

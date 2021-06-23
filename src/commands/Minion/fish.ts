@@ -33,7 +33,10 @@ export default class extends BotCommand {
 		}
 
 		const fish = Fishing.Fishes.find(
-			fish => stringMatches(fish.name, name) || stringMatches(fish.name.split(' ')[0], name)
+			fish =>
+				stringMatches(fish.name, name) ||
+				stringMatches(fish.name.split(' ')[0], name) ||
+				(fish.aliases && fish.aliases.some(alias => stringMatches(alias, name)))
 		);
 
 		if (!fish) {
@@ -64,6 +67,12 @@ export default class extends BotCommand {
 			Time.Second * fish.timePerFish * (1 + (100 - msg.author.skillLevel(SkillsEnum.Fishing)) / 100);
 
 		const boosts = [];
+
+		const hasShelldon = msg.author.equippedPet() === itemID('Shelldon');
+		if (hasShelldon) {
+			scaledTimePerFish /= 2;
+		}
+
 		switch (fish.bait) {
 			case itemID('Fishing bait'):
 				if (msg.author.hasItemEquippedAnywhere(itemID('Pearl fishing rod'))) {
@@ -138,7 +147,11 @@ export default class extends BotCommand {
 
 		let response = `${msg.author.minionName} is now fishing ${quantity}x ${
 			fish.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+		}, it'll take around ${formatDuration(duration)} to finish. ${
+			hasShelldon
+				? `\n<:shelldon:748496988407988244> ${msg.author.minionName} picks up Shelldon to help them fish!`
+				: ''
+		}`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

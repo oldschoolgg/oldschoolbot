@@ -39,6 +39,9 @@ export enum SlayerMasterEnum {
 export function determineBoostChoice(params: DetermineBoostParams) {
 	let boostChoice = 'none';
 
+	// BSO Only:
+	if (!params.isOnTask) return boostChoice;
+
 	if (params.msg.flagArgs.none || (params.method && params.method === 'none')) {
 		return boostChoice;
 	}

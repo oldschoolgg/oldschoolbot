@@ -19,7 +19,6 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 9,
 		itemsRequired: resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]),
-		notifyDrops: resolveItems(['Callisto cub']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -47,7 +46,6 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 8,
 		itemsRequired: resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]),
-		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
@@ -68,7 +66,6 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 9,
 		itemsRequired: resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]),
-		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Attack],
@@ -91,7 +88,6 @@ const killableBosses: KillableMonster[] = [
 			["Black d'hide body", "Karil's leathertop"],
 			["Black d'hide chaps", "Karil's leatherskirt"]
 		]),
-		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -118,7 +114,6 @@ const killableBosses: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 6,
-		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID("Karil's leathertop")]: 3 }, { [itemID("Karil's leatherskirt")]: 3 }],
 		defaultAttackStyles: [SkillsEnum.Ranged],
@@ -161,7 +156,6 @@ const killableBosses: KillableMonster[] = [
 			["Black d'hide body", "Black d'hide body (g)", "Black d'hide body (t)", "Karil's leathertop"],
 			["Black d'hide chaps", "Black d'hide chaps (g)", "Black d'hide chaps (t)", "Karil's leatherskirt"]
 		]),
-		notifyDrops: resolveItems(['Prince black dragon', 'Draconic visage']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -185,7 +179,6 @@ const killableBosses: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 8,
-		notifyDrops: resolveItems(["Scorpia's offspring"]),
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }, { [itemID('Harmonised nightmare staff')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Magic],

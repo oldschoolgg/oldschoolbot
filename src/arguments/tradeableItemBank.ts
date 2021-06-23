@@ -8,7 +8,6 @@ import { filterableTypes } from '../lib/data/filterables';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { stringMatches } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
-import itemIsTradeable from '../lib/util/itemIsTradeable';
 import { parseStringBank } from '../lib/util/parseStringBank';
 
 export type TradeableItemBankArgumentType = [Bank, number, Bank];
@@ -71,7 +70,7 @@ export default class TradeableItemBankArgument extends Argument {
 			if (bank.length === 70) break;
 			const qty = Math.max(1, qtyOverride ?? (_qty === 0 ? Math.max(1, userBank.amount(item.id)) : _qty));
 
-			if (itemIsTradeable(item.id) && userBank.amount(item.id) >= qty) {
+			if (userBank.amount(item.id) >= qty && item.id !== 995) {
 				bank.add(item.id, qty);
 				totalPrice += item.price * qty;
 			} else {

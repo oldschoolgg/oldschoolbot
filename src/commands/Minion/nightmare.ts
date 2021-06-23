@@ -12,8 +12,8 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
-import { NightmareActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../lib/util';
+import { BossActivityTaskOptions } from '../../lib/types/minions';
+import { formatDuration, itemID, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../lib/util/getNightmareGearStats';
@@ -186,6 +186,11 @@ export default class extends BotCommand {
 			}
 		}
 
+		const hasCob = msg.author.equippedPet() === itemID('Cob');
+		if (hasCob && type === 'solo') {
+			effectiveTime /= 2;
+		}
+
 		let [quantity, duration, perKillTime] = await calcDurQty(
 			users,
 			{ ...NightmareMonster, timeToFinish: effectiveTime },
@@ -215,17 +220,16 @@ export default class extends BotCommand {
 
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, totalCost);
 
-		await addSubTaskToActivityTask<NightmareActivityTaskOptions>({
+		await addSubTaskToActivityTask<BossActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
 			type: Activity.Nightmare,
-			leader: msg.author.id,
 			users: users.map(u => u.id)
 		});
 
-		const str =
+		let str =
 			type === 'solo'
 				? `${soloMessage(msg.author, duration, quantity)}`
 				: `${partyOptions.leader.username}'s party (${users
@@ -235,6 +239,10 @@ export default class extends BotCommand {
 				  }. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
 						NightmareMonster.timeToFinish
 				  )} - the total trip will take ${formatDuration(duration)}.`;
+
+		if (hasCob && type === 'solo') {
+			str += '\n2x Boost from Cob';
+		}
 
 		return msg.channel.send(str, {
 			split: true

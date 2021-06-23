@@ -36,6 +36,9 @@ export class MinigameTable extends BaseEntity {
 	@Column({ name: 'mahogany_homes', type: 'int', nullable: false, default: 0 })
 	public MahoganyHomes!: number;
 
+	@Column({ name: 'raids', type: 'int', nullable: false, default: 0 })
+	public Raids = 0;
+
 	@Column({ name: 'gnome_restaurant', type: 'int', nullable: false, default: 0 })
 	public GnomeRestaurant!: number;
 
@@ -54,14 +57,14 @@ export class MinigameTable extends BaseEntity {
 	@Column({ name: 'castle_wars', type: 'int', nullable: false, default: 0 })
 	public CastleWars!: number;
 
-	@Column({ name: 'raids', type: 'int', nullable: false, default: 0 })
-	public Raids!: number;
-
 	@Column({ name: 'raids_challenge_mode', type: 'int', nullable: false, default: 0 })
 	public RaidsChallengeMode!: number;
 
 	@Column({ name: 'magic_training_arena', type: 'int', nullable: false, default: 0 })
 	public MagicTrainingArena!: number;
+
+	@Column({ name: 'ourania_delivery_service', type: 'int', nullable: false, default: 0 })
+	public OuraniaDeliveryService!: number;
 
 	@Column({ name: 'big_chompy_bird_hunting', type: 'int', nullable: false, default: 0 })
 	public BigChompyBirdHunting!: number;

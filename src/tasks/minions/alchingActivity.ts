@@ -1,16 +1,15 @@
+import { Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { roll, updateGPTrackSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
-
-const bryophytasStaffId = itemID("Bryophyta's staff");
 
 export default class extends Task {
 	async run(data: AlchingActivityTaskOptions) {
@@ -23,9 +22,11 @@ export default class extends Task {
 		// If bryophyta's staff is equipped when starting the alch activity
 		// calculate how many runes have been saved
 		let savedRunes = 0;
-		if (user.hasItemEquippedAnywhere(bryophytasStaffId)) {
+		const hasImbuedStaff = user.hasItemEquippedAnywhere("Bryophyta's staff(i)");
+		const hasStaff = user.hasItemEquippedAnywhere("Bryophyta's staff");
+		if (hasImbuedStaff || hasStaff) {
 			for (let i = 0; i < quantity; i++) {
-				if (roll(15)) savedRunes++;
+				if (roll(hasImbuedStaff ? 7 : 15)) savedRunes++;
 			}
 
 			if (savedRunes > 0) {
@@ -36,7 +37,12 @@ export default class extends Task {
 				loot.add(returnedRunes);
 			}
 		}
-		await user.addItemsToBank(loot);
+
+		if (duration > MIN_LENGTH_FOR_PET && roll(Math.ceil(8000 / (duration / Time.Minute)))) {
+			loot.add('Lil lamb');
+		}
+
+		await user.addItemsToBank(loot, true);
 		updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchValue);
 
 		const xpReceived = quantity * 65;
@@ -50,6 +56,11 @@ export default class extends Task {
 		let responses = [
 			`${user}, ${user.minionName} has finished alching ${quantity}x ${item.name}! ${loot} has been added to your bank. ${xpRes}. ${saved}`
 		].join('\n');
+
+		if (loot.has('Lil Lamb')) {
+			responses +=
+				'<:lil_lamb:749240864345423903> While standing at the bank alching, a small lamb, abandoned by its family, licks your minions hand. Your minion adopts the lamb.';
+		}
 
 		handleTripFinish(
 			this.client,

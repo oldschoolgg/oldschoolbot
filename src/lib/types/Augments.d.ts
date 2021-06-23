@@ -52,6 +52,7 @@ declare module 'klasa' {
 		ironCantUse?: boolean;
 		testingCommand?: boolean;
 		bitfieldsRequired?: BitField[];
+		restrictedChannels?: string[];
 	}
 
 	interface Task {
@@ -170,6 +171,8 @@ declare module 'discord.js' {
 		 */
 		getCL(itemID: number): number;
 		rawGear(): UserFullGearSetup;
+		equippedPet(): number | null;
+		usingPet(name: string): boolean;
 		allItemsOwned(): Bank;
 		/**
 		 * Returns this users update promise queue.

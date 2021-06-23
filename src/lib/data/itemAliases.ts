@@ -101,6 +101,11 @@ setItemAlias(25346, 'Blue soul cape');
 
 setItemAlias(6672, 'Fishbowl pet');
 
+setItemAlias(3062, ['pmb'], false);
+setItemAlias(3713, ['hmb'], false);
+setItemAlias(6199, ['tmb'], false);
+setItemAlias(19939, ['umb'], false);
+setItemAlias(47509, ['emb'], false);
 // Castle wars
 setItemAlias(25165, 'Red decorative full helm');
 setItemAlias(4071, 'Red decorative helm');

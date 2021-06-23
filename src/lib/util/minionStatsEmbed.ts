@@ -28,7 +28,8 @@ export async function minionStatsEmbed(user: KlasaUser) {
 
 		const skillXP = rawSkills[skill as keyof Skills] ?? 1;
 		return `${skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore} ${convertXPtoLVL(
-			skillXP
+			skillXP,
+			120
 		).toLocaleString()} (${toKMB(skillXP)})`;
 	};
 
@@ -56,9 +57,17 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		)
 		.addField(
 			'\u200b',
-			['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall'].map(
-				skillCell
-			),
+			[
+				'mining',
+				'smithing',
+				'fishing',
+				'cooking',
+				'firemaking',
+				'woodcutting',
+				'farming',
+				'dungeoneering',
+				'overall'
+			].map(skillCell),
 			true
 		);
 
@@ -81,11 +90,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 			'<:Clue_scroll:365003979840552960> Clue Scores',
 			clueEntries.map(([id, qty]) => {
 				const clueTier = ClueTiers.find(t => t.id === parseInt(id));
-				if (!clueTier) {
-					console.error(`No clueTier: ${id}`);
-					return;
-				}
-				return `**${toTitleCase(clueTier.name)}:** ${qty.toLocaleString()}`;
+				return `**${clueTier ? toTitleCase(clueTier.name) : id}:** ${qty.toLocaleString()}`;
 			}),
 			true
 		);
@@ -119,7 +124,9 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	if (lapCounts.length > 0) {
 		const [id, score] = lapCounts[0];
 		const res = courses.find(c => c.id === parseInt(id))!;
-		otherStats.push([`${res.name} Laps`, score]);
+		if (res) {
+			otherStats.push([`${res.name} Laps`, score]);
+		}
 	}
 
 	const monsterScores = Object.entries(user.settings.get(UserSettings.MonsterScores)).sort((a, b) => a[1] - b[1]);

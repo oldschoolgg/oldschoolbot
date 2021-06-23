@@ -9,7 +9,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Skills } from '../../lib/types';
 import { ZalcanoActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration } from '../../lib/util';
+import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 const skillRequirements: Skills = {
@@ -72,6 +72,11 @@ export default class extends BotCommand {
 
 		baseTime = reduceNumByPercent(baseTime, skillPercentage / 40);
 		boosts.push(`${skillPercentage / 40}% boost for levels`);
+
+		if (msg.author.equippedPet() === itemID('Obis')) {
+			baseTime /= 2;
+			boosts.push('2x boost for Obis');
+		}
 
 		if (!msg.author.hasGracefulEquipped()) {
 			baseTime *= 1.15;

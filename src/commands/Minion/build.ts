@@ -11,6 +11,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, round, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -89,7 +90,12 @@ export default class extends BotCommand {
 			return msg.send(`You don't have enough ${itemNameFromID(plank)} to make ${quantity}x ${object.name}.`);
 		}
 
-		const totalPlanksNeeded = planksQtyCost * quantity;
+		let totalPlanksNeeded = planksQtyCost * quantity;
+
+		const hasScroll = await msg.author.hasItem(itemID('Scroll of proficiency'));
+		if (hasScroll) {
+			totalPlanksNeeded *= 0.85;
+		}
 
 		const objectsPerInv = 26 / planksQtyCost;
 		const invsPerTrip = round(quantity / objectsPerInv, 2);
@@ -131,15 +137,17 @@ export default class extends BotCommand {
 
 		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-		return msg.send(
-			`${msg.author.minionName} is now constructing ${quantity}x ${
-				object.name
-			}, it'll take around ${formatDuration(duration)} to finish. Removed ${totalPlanksNeeded}x ${itemNameFromID(
-				plank
-			)} from your bank. **${xpHr}**
+		let str = `${msg.author.minionName} is now constructing ${quantity}x ${
+			object.name
+		}, it'll take around ${formatDuration(duration)} to finish. Removed ${totalPlanksNeeded}x ${itemNameFromID(
+			plank
+		)} from your bank. **${xpHr}**
 
-You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.
-`
-		);
+You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.`;
+
+		if (hasScroll) {
+			str += '\nYour Scroll of proficiency allows you to save 15% of your planks.';
+		}
+		return msg.send(str);
 	}
 }

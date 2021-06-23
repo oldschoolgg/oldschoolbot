@@ -1,8 +1,9 @@
 import { MessageEmbed } from 'discord.js';
+import { percentChance } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Util } from 'oldschooljs';
+import { Bank, Util } from 'oldschooljs';
 
-import { Color, Emoji, Image } from '../../lib/constants';
+import { Color, Image } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -30,12 +31,8 @@ export default class extends BotCommand {
 		} else {
 			if (msg.author.isIronman) return msg.send("You're an ironman and you cant play dice.");
 
-			if (amount > 500_000_000) {
-				return msg.send('You can only dice up to 500m at a time!');
-			}
-
-			if (amount < 1_000_000) {
-				return msg.send('You have to dice atleast 1,000,000.');
+			if (amount < 20_000_000 || amount > 10_000_000_000) {
+				return msg.send('You must dice atleast 20m and less than 10b.');
 			}
 
 			await msg.author.settings.sync(true);
@@ -55,10 +52,19 @@ export default class extends BotCommand {
 				msg.author.settings.update(UserSettings.Stats.DiceLosses, losses + 1);
 			}
 
+			if (amount >= 100_000_000 && won && percentChance(3)) {
+				await msg.author.addItemsToBank(new Bank().add('Gamblers bag'), true);
+				return msg.send(
+					`${msg.author.username} rolled **${roll}** on the percentile dice, and you won ${Util.toKMB(
+						amountToAdd
+					)} GP.\n\nYou received a **Gamblers Bag**.`
+				);
+			}
+
 			embed.setDescription(
 				`${msg.author.username} rolled **${roll}** on the percentile dice, and you ${
 					won ? 'won' : 'lost'
-				} ${Util.toKMB(amountToAdd)} GP. ${roll === 73 ? Emoji.Bpaptu : ''}`
+				} ${Util.toKMB(amountToAdd)} GP.`
 			);
 		}
 

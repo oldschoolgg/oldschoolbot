@@ -1,44 +1,20 @@
 import { randInt } from 'e';
 import { Task } from 'klasa';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { Emoji, Events } from '../../../lib/constants';
+import { Emoji, Events, Time } from '../../../lib/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, bankHasItem, channelIsSendable, noOp } from '../../../lib/util';
+import { addBanks, bankHasItem, channelIsSendable, multiplyBank, noOp, rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
-const PointsTable = new SimpleTable<number>()
-	.add(420)
-	.add(470)
-	.add(500)
-	.add(505)
-	.add(510)
-	.add(520)
-	.add(550)
-	.add(560)
-	.add(590)
-	.add(600)
-	.add(620)
-	.add(650)
-	.add(660)
-	.add(670)
-	.add(680)
-	.add(700)
-	.add(720)
-	.add(740)
-	.add(750)
-	.add(780)
-	.add(850);
-
 export default class extends Task {
 	async run(data: WintertodtActivityTaskOptions) {
-		const { userID, channelID, quantity } = data;
+		const { userID, channelID, quantity, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);
@@ -48,7 +24,7 @@ export default class extends Task {
 		let totalPoints = 0;
 
 		for (let i = 0; i < quantity; i++) {
-			const points = PointsTable.roll().item;
+			const points = rand(1000, 5_000);
 			totalPoints += points;
 
 			loot = addBanks([
@@ -59,6 +35,12 @@ export default class extends Task {
 					skills: user.rawSkills
 				})
 			]);
+		}
+
+		let gotToad = false;
+		if (roll(100) && duration > Time.Minute * 20) {
+			gotToad = true;
+			loot[itemID('Wintertoad')] = 1;
 		}
 
 		// Track this food cost in Economy Stats
@@ -124,6 +106,14 @@ export default class extends Task {
 		await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive });
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
+		if (user.usingPet('Flappy')) {
+			loot = multiplyBank(loot, 2);
+		}
+
+		if (user.hasItemEquippedAnywhere(itemID('Firemaking master cape'))) {
+			loot = multiplyBank(loot, 2);
+		}
+
 		await user.addItemsToBank(loot, true);
 		user.incrementMinigameScore('Wintertodt', quantity);
 
@@ -149,6 +139,10 @@ export default class extends Task {
 
 		if (newLevel > currentLevel) {
 			output += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
+		}
+
+		if (gotToad) {
+			output += '\n\n<:wintertoad:749945071230779493> A Wintertoad sneakily hops into your bank!';
 		}
 
 		handleTripFinish(

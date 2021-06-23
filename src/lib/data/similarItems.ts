@@ -59,10 +59,10 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Tzhaar-ket-om')]: resolveItems(['Tzhaar-ket-om (t)']),
 	[itemID('Berserker necklace')]: resolveItems(['Berserker necklace (or)']),
 	[itemID('Amulet of fury')]: resolveItems(['Amulet of fury (or)', 'Amulet of blood fury']),
-	[itemID('Amulet of torture')]: resolveItems(['Amulet of torture (or)']),
+	[itemID('Amulet of torture')]: resolveItems(['Amulet of torture (or)', "Brawler's hook necklace"]),
 	[itemID('Tormented bracelet')]: resolveItems(['Tormented bracelet (or)']),
-	[itemID('Necklace of anguish')]: resolveItems(['Necklace of anguish (or)']),
-	[itemID('Occult necklace')]: resolveItems(['Occult necklace (or)']),
+	[itemID('Necklace of anguish')]: resolveItems(['Necklace of anguish (or)', 'Farsight snapshot necklace']),
+	[itemID('Occult necklace')]: resolveItems(['Occult necklace (or)', 'Arcane blast necklace']),
 	// 12797 = Dragon pickaxe (upgraded)
 	[itemID('Dragon pickaxe')]: resolveItems(['Dragon pickaxe(or)', 12797]),
 	// 12795 = Steam battlestaff (or)
@@ -254,6 +254,43 @@ const SimilarItems: Record<number, number[]> = {
 	[itemID('Facemask')]: slayerHelmSimilar,
 	[itemID('Reinforced goggles')]: slayerHelmSimilar,
 	[itemID('Anti-dragon shield')]: resolveItems([11284, 11283, 21633, 21634, 22003, 22002]),
+	[itemID('Ring of charos')]: resolveItems(['Ring of charos(a)']),
+	[itemID('Drygore rapier')]: resolveItems([
+		'Drygore rapier (ice)',
+		'Drygore rapier (blood)',
+		'Drygore rapier (shadow)',
+		'Drygore rapier (3a)'
+	]),
+	[itemID('Offhand drygore rapier')]: resolveItems([
+		'Offhand drygore rapier (ice)',
+		'Offhand drygore rapier (blood)',
+		'Offhand drygore rapier (shadow)',
+		'Offhand drygore rapier (3a)'
+	]),
+	[itemID('Drygore longsword')]: resolveItems([
+		'Drygore longsword (ice)',
+		'Drygore longsword (blood)',
+		'Drygore longsword (shadow)',
+		'Drygore longsword (3a)'
+	]),
+	[itemID('Offhand drygore longsword')]: resolveItems([
+		'Offhand drygore longsword (ice)',
+		'Offhand drygore longsword (blood)',
+		'Offhand drygore longsword (shadow)',
+		'Offhand drygore longsword (3a)'
+	]),
+	[itemID('Drygore mace')]: resolveItems([
+		'Drygore mace (ice)',
+		'Drygore mace (blood)',
+		'Drygore mace (shadow)',
+		'Drygore mace (3a)'
+	]),
+	[itemID('Offhand drygore mace')]: resolveItems([
+		'Offhand drygore mace (ice)',
+		'Offhand drygore mace (blood)',
+		'Offhand drygore mace (shadow)',
+		'Offhand drygore mace (3a)'
+	]),
 	[itemID('Staff of water')]: resolveItems([
 		'Mist battlestaff',
 		'Mystic mist staff',
@@ -268,10 +305,62 @@ const SimilarItems: Record<number, number[]> = {
 	])
 };
 
+const exclusiveSimilars: Record<number, number[]> = {
+	[itemID('Support cape')]: resolveItems([
+		'Agility master cape',
+		'Dungeoneering master cape',
+		'Thieving master cape',
+		'Slayer master cape'
+	]),
+	[itemID("Gatherer's cape")]: resolveItems([
+		'Farming master cape',
+		'Fishing master cape',
+		'Hunter master cape',
+		'Mining master cape',
+		'Woodcutting master cape'
+	]),
+	[itemID("Combatant's cape")]: resolveItems([
+		'Attack master cape',
+		'Hitpoints master cape',
+		'Defence master cape',
+		'Magic master cape',
+		'Prayer master cape',
+		'Ranged master cape',
+		'Strength master cape'
+	]),
+	[itemID("Artisan's cape")]: resolveItems([
+		'Crafting master cape',
+		'Construction master cape',
+		'Cooking master cape',
+		'Firemaking master cape',
+		'Fletching master cape',
+		'Herblore master cape',
+		'Runecraft master cape',
+		'Smithing master cape'
+	]),
+	[itemID('Gorajan warrior helmet')]: resolveItems(['Torva full helm']),
+	[itemID('Gorajan warrior top')]: resolveItems(['Torva platebody']),
+	[itemID('Gorajan warrior legs')]: resolveItems(['Torva platelegs']),
+	[itemID('Gorajan warrior gloves')]: resolveItems(['Torva gloves']),
+	[itemID('Gorajan warrior boots')]: resolveItems(['Torva boots']),
+	[itemID('Gorajan occult helmet')]: resolveItems(['Virtus mask']),
+	[itemID('Gorajan occult top')]: resolveItems(['Virtus robe top']),
+	[itemID('Gorajan occult legs')]: resolveItems(['Virtus robe legs']),
+	[itemID('Gorajan occult gloves')]: resolveItems(['Virtus gloves']),
+	[itemID('Gorajan occult boots')]: resolveItems(['Virtus boots']),
+	[itemID('Gorajan archer helmet')]: resolveItems(['Pernix cowl']),
+	[itemID('Gorajan archer top')]: resolveItems(['Pernix body']),
+	[itemID('Gorajan archer legs')]: resolveItems(['Pernix chaps']),
+	[itemID('Gorajan archer gloves')]: resolveItems(['Pernix gloves']),
+	[itemID('Gorajan archer boots')]: resolveItems(['Pernix boots'])
+};
+
 export function getSimilarItems(itemID: number): number[] {
 	const entry = Object.entries(SimilarItems).find(ent => parseInt(ent[0]) === itemID || ent[1].includes(itemID));
-	if (!entry) return [];
-	const res = [parseInt(entry[0]), ...entry[1]];
+	const exclusiveEntry = Object.entries(exclusiveSimilars).find(ent => parseInt(ent[0]) === itemID);
+	if (!entry && !exclusiveEntry) return [];
+	const result = (exclusiveEntry ?? entry)!;
+	const res = [parseInt(result[0]), ...result[1]];
 	return res;
 }
 

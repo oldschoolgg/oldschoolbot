@@ -23,7 +23,8 @@ export default class extends BotCommand {
 			ironCantUse: true,
 			categoryFlags: ['minion'],
 			description: 'Sells items to other players for GP.',
-			examples: ['+sellto @Magnaboy 1b 2 Elysian sigil', '+sellto @Magnaboy 500k 1 Dragon platelegs']
+			examples: ['+sellto @Magnaboy 1b 2 Elysian sigil', '+sellto @Magnaboy 500k 1 Dragon platelegs'],
+			restrictedChannels: ['792691343284764693']
 		});
 	}
 
@@ -44,6 +45,9 @@ export default class extends BotCommand {
 		if (buyerMember.user.bot) throw "You can't trade a bot.";
 		if (buyerMember.user.isBusy) {
 			throw 'That user is busy right now.';
+		}
+		if (bankToSell.items().some(i => i[0].id >= 40_000 && i[0].id <= 45_000)) {
+			return msg.send('You are trying to sell unsellable items.');
 		}
 
 		await Promise.all([buyerMember.user.settings.sync(true), msg.author.settings.sync(true)]);

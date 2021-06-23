@@ -6,9 +6,24 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import reducedClueTime from '../../lib/minions/functions/reducedClueTime';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { Gear } from '../../lib/structures/Gear';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+
+export function hasClueHunterEquipped(setup: Gear) {
+	return setup.hasEquipped(
+		[
+			'Helm of raedwald',
+			'Clue hunter garb',
+			'Clue hunter trousers',
+			'Clue hunter boots',
+			'Clue hunter gloves',
+			'Clue hunter cloak'
+		],
+		true
+	);
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -48,12 +63,28 @@ export default class extends BotCommand {
 
 		const boosts = [];
 
-		const [timeToFinish, percentReduced] = reducedClueTime(
+		if (
+			clueTier.name === 'Grandmaster' &&
+			(msg.author.settings.get(UserSettings.ClueScores)[19836] === undefined ||
+				msg.author.settings.get(UserSettings.ClueScores)[19836] < 100)
+		) {
+			return msg.send("You aren't experienced enough to complete a Grandmaster clue.");
+		}
+
+		let [timeToFinish, percentReduced] = reducedClueTime(
 			clueTier,
 			msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 1
 		);
 
+		timeToFinish /= 2;
+		boosts.push('👻 2x Boost');
+
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);
+
+		if (hasClueHunterEquipped(msg.author.getGear('skilling'))) {
+			timeToFinish /= 2;
+			boosts.push('2x Boost for Clue hunter outfit');
+		}
 
 		let duration = timeToFinish * quantity;
 

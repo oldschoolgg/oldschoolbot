@@ -2,12 +2,13 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
-import { noOp, randomItemFromArray } from '../../lib/util';
+import { addBanks, itemID, noOp, randomItemFromArray, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -19,7 +20,11 @@ export default class extends Task {
 		const kcAmounts: { [key: string]: number } = {};
 
 		for (let i = 0; i < quantity; i++) {
-			const loot = monster.table.kill(1, {});
+			let loot = monster.table.kill(1, {});
+			if (roll(10) && monster.id !== 696969) {
+				loot.multiply(4);
+				loot.add(getRandomMysteryBox());
+			}
 			const userWhoGetsLoot = randomItemFromArray(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = loot.add(currentLoot);
@@ -31,7 +36,7 @@ export default class extends Task {
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
 		const totalLoot = new Bank();
 
-		for (const [userID, loot] of Object.entries(teamsLoot)) {
+		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
 			await addMonsterXP(user, {
@@ -44,6 +49,12 @@ export default class extends Task {
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
+			if (user.equippedPet() === itemID('Ori')) {
+				loot.bank = addBanks([monster.table.kill(Math.ceil(kcToAdd * 0.25), {}).bank ?? {}, loot.bank]);
+			}
+			await user.addItemsToBank(loot, true);
+			totalLoot.add(loot);
+
 			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
 			const purple = Object.keys(loot).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));
 

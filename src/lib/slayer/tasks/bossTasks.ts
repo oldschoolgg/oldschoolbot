@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import SeaKraken from '../../minions/data/killableMonsters/custom/SeaKraken';
 import { AssignableSlayerTask } from '../types';
 
 export const bossTasks: AssignableSlayerTask[] = [
@@ -170,7 +171,7 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Kraken,
 		amount: [3, 35],
 		weight: 1,
-		monsters: [Monsters.Kraken.id],
+		monsters: [Monsters.Kraken.id, SeaKraken.id, SeaKraken.id],
 		slayerLevel: 87,
 		isBoss: true
 	},

@@ -15,7 +15,6 @@ export const clientOptions: KlasaClientOptions = {
 	ws: {
 		intents: new Intents([
 			'GUILDS',
-			'GUILD_MEMBERS',
 			'GUILD_MESSAGES',
 			'GUILD_MESSAGE_REACTIONS',
 			'DIRECT_MESSAGES',
@@ -27,7 +26,7 @@ export const clientOptions: KlasaClientOptions = {
 	},
 	/* Klasa Options */
 	createPiecesFolders: false,
-	prefix: '+',
+	prefix: '=',
 	providers: providerConfig ?? undefined,
 	permissionLevels,
 	pieceDefaults: { commands: { deletable: true } },

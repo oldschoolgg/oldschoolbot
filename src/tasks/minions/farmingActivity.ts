@@ -1,7 +1,10 @@
+import { randInt, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { production } from '../../config';
 import { Emoji, Events } from '../../lib/constants';
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -11,7 +14,7 @@ import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, channelIsSendable, rand, roll } from '../../lib/util';
+import { addItemToBank, bankHasItem, channelIsSendable, multiplyBank, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import itemID from '../../lib/util/itemID';
 
@@ -30,8 +33,8 @@ export default class extends Task {
 		currentDate
 	}: FarmingActivityTaskOptions) {
 		const user = await this.client.users.fetch(userID);
-		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
-		const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
+		const currentFarmingLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
+		const currentWoodcuttingLevel = Math.min(99, user.skillLevel(SkillsEnum.Woodcutting));
 		let baseBonus = 1;
 		let bonusXP = 0;
 		let plantXp = 0;
@@ -137,10 +140,24 @@ export default class extends Task {
 				skillName: SkillsEnum.Farming,
 				amount: Math.floor(farmingXpReceived + bonusXP)
 			});
-			const newLevel = user.skillLevel(SkillsEnum.Farming);
+			const newLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
 
 			if (newLevel > currentFarmingLevel) {
 				str += `\n${user.minionName}'s Farming level is now ${newLevel}!`;
+			}
+
+			if (user.usingPet('Plopper')) {
+				loot = multiplyBank(loot, 4);
+			}
+
+			// This code gives the boxes for planing when ONLY planting.
+			if (plant.name === 'Mysterious tree') {
+				for (let j = 0; j < quantity; j++) {
+					let upper = randInt(1, 4);
+					for (let i = 0; i < upper; i++) {
+						loot = addItemToBank(loot, getRandomMysteryBox());
+					}
+				}
 			}
 
 			if (Object.keys(loot).length > 0) {
@@ -155,7 +172,7 @@ export default class extends Task {
 			const updatePatches: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
-				plantTime: currentDate + duration,
+				plantTime: currentDate + (production ? duration : 1),
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
 				lastPayment: payment ?? false
@@ -164,6 +181,10 @@ export default class extends Task {
 			await user.settings.update(getPatchType, updatePatches);
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
+
+			if (user.usingPet('Plopper')) {
+				str += '\nYou received 4x loot from Plopper';
+			}
 
 			const channel = this.client.channels.cache.get(channelID);
 			if (!channelIsSendable(channel)) return;
@@ -175,12 +196,14 @@ export default class extends Task {
 			if (!plant) return;
 
 			let quantityDead = 0;
-			for (let i = 0; i < patchType.lastQuantity; i++) {
-				for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
-					const deathRoll = Math.random();
-					if (deathRoll < Math.floor(plantToHarvest.chanceOfDeath * chanceOfDeathReduction) / 128) {
-						quantityDead += 1;
-						break;
+			if (!user.usingPet('Plopper')) {
+				for (let i = 0; i < patchType.lastQuantity; i++) {
+					for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
+						const deathRoll = Math.random();
+						if (deathRoll < Math.floor(plantToHarvest.chanceOfDeath * chanceOfDeathReduction) / 128) {
+							quantityDead += 1;
+							break;
+						}
 					}
 				}
 			}
@@ -210,7 +233,7 @@ export default class extends Task {
 							Math.floor(
 								plantToHarvest.chance1 +
 									(plantToHarvest.chance99 - plantToHarvest.chance1) *
-										((user.skillLevel(SkillsEnum.Farming) - 1) / 98)
+										((currentFarmingLevel - 1) / 98)
 							) * baseBonus
 						) + 1;
 					const chanceToSaveLife = (plantChanceFactor + 1) / 256;
@@ -325,8 +348,8 @@ export default class extends Task {
 				amount: Math.floor(woodcuttingXp)
 			});
 
-			const newFarmingLevel = user.skillLevel(SkillsEnum.Farming);
-			const newWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
+			const newFarmingLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
+			const newWoodcuttingLevel = Math.min(99, user.skillLevel(SkillsEnum.Woodcutting));
 
 			if (newFarmingLevel > currentFarmingLevel) {
 				infoStr.push(`\n${user.minionName}'s Farming level is now ${newFarmingLevel}!`);
@@ -336,24 +359,41 @@ export default class extends Task {
 				infoStr.push(`\n\n${user.minionName}'s Woodcutting level is now ${newWoodcuttingLevel}!`);
 			}
 
+			if (duration > Time.Minute * 20 && roll(10)) {
+				loot = multiplyBank(loot, 2);
+				loot[getRandomMysteryBox()] = 1;
+			}
+
 			let tangleroot = false;
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementMonsterScore(Monsters.Hespori.id);
-				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel });
+				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
+					farmingLevel: currentFarmingLevel
+				});
 				loot = hesporiLoot.bank;
 				for (const hesporiLoot of Object.keys(loot)) {
 					if (itemID(hesporiLoot) === itemID('Tangleroot')) {
 						tangleroot = true;
 					}
 				}
+				if (roll((plantToHarvest.petChance - currentFarmingLevel * 25) / patchType.lastQuantity / 5)) {
+					loot[itemID('Plopper')] = 1;
+				}
 			} else if (
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
 				alivePlants > 0 &&
-				roll((plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) / alivePlants)
+				roll((plantToHarvest.petChance - currentFarmingLevel * 25) / alivePlants)
 			) {
 				loot[itemID('Tangleroot')] = 1;
 				tangleroot = true;
+			} else if (
+				patchType.patchPlanted &&
+				plantToHarvest.petChance &&
+				alivePlants > 0 &&
+				roll((plantToHarvest.petChance - currentFarmingLevel * 25) / alivePlants / 5)
+			) {
+				loot[itemID('Plopper')] = 1;
 			}
 
 			if (plantToHarvest.seedType !== 'hespori') {
@@ -389,7 +429,7 @@ export default class extends Task {
 				updatePatches = {
 					lastPlanted: plant.name,
 					patchPlanted: true,
-					plantTime: currentDate + duration,
+					plantTime: currentDate + (production ? duration : 1),
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
 					lastPayment: payment ? payment : false
@@ -418,14 +458,46 @@ export default class extends Task {
 				janeMessage = true;
 			}
 
-			if (Object.keys(loot).length > 0) {
-				infoStr.push(`\nYou received: ${new Bank(loot)}.`);
-			}
-
 			if (!planting) {
 				infoStr.push('\nThe patches have been cleared. They are ready to have new seeds planted.');
 			} else {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
+			}
+
+			if (loot[itemID('Plopper')]) {
+				infoStr.push(
+					'<:plopper:787310793321349120> You found a pig on a farm and have adopted it to help you with farming.'
+				);
+			}
+
+			if (user.equippedPet() === itemID('Plopper')) {
+				loot = multiplyBank(loot, 4);
+			}
+
+			if (user.hasItemEquippedAnywhere(itemID('Farming master cape'))) {
+				loot = addItemToBank(loot, getRandomMysteryBox());
+			}
+			// Give boxes for planting when harvesting
+			if (planting && plant.name === 'Mysterious tree') {
+				for (let j = 0; j < quantity; j++) {
+					let upper = randInt(1, 4);
+					for (let i = 0; i < upper; i++) {
+						loot = addItemToBank(loot, getRandomMysteryBox());
+					}
+				}
+			}
+			// Give the boxes for harvesting during a harvest
+			if (alivePlants && plantToHarvest.name === 'Mysterious tree') {
+				for (let j = 0; j < alivePlants; j++) {
+					let upper = randInt(1, 6);
+					for (let i = 0; i < upper; i++) {
+						loot = addItemToBank(loot, getRandomMysteryBox());
+					}
+				}
+			}
+
+			if (Object.keys(loot).length > 0) {
+				infoStr.push(`\nYou received: ${new Bank(loot)}.`);
 			}
 
 			await this.client.settings.update(
@@ -436,6 +508,9 @@ export default class extends Task {
 			const channel = this.client.channels.cache.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
+			if (user.usingPet('Plopper')) {
+				infoStr.push('\nYou received 4x loot from Plopper');
+			}
 			channel.send(infoStr.join('\n'));
 			if (janeMessage) {
 				return channel.send(

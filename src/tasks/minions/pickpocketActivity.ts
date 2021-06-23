@@ -1,21 +1,24 @@
-import { percentChance } from 'e';
+import { percentChance, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../lib/constants';
+import { Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { rollRogueOutfitDoubleLoot, updateGPTrackSetting } from '../../lib/util';
+import { roll, rollRogueOutfitDoubleLoot, updateGPTrackSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
+import { multiplyBankNotClues } from '../../lib/util/mbnc';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
 	npc: Pickpockable,
 	quantity: number,
 	hasThievingCape: boolean,
-	hasDiary: boolean
+	hasDiary: boolean,
+	armband: boolean
 ): [number, number, number, number] {
 	let xpReceived = 0;
 
@@ -28,8 +31,11 @@ export function calcLootXPPickpocketing(
 	const thievCape = hasThievingCape && npc.customTickRate === undefined ? 1.1 : 1;
 
 	let chanceOfSuccess = (npc.slope * currentLevel + npc.intercept) * diary * thievCape;
-
 	if (hasDiary) chanceOfSuccess += 10;
+	if (armband) {
+		// 50% better success chance if has armband
+		chanceOfSuccess += chanceOfSuccess / 2;
+	}
 
 	for (let i = 0; i < quantity; i++) {
 		if (!percentChance(chanceOfSuccess)) {
@@ -49,7 +55,7 @@ export function calcLootXPPickpocketing(
 
 export default class extends Task {
 	async run(data: PickpocketActivityTaskOptions) {
-		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived } = data;
+		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		const npc = Pickpocketables.find(_npc => _npc.id === monsterID)!;
 
@@ -70,6 +76,29 @@ export default class extends Task {
 			}
 		}
 
+		let boosts = [];
+		const bloodshardCount = loot.amount('Blood shard');
+		const seedCount = loot.amount('Enhanced crystal teleport seed');
+		if (user.hasItemEquippedOrInBank(itemID("Thieves' armband"))) {
+			boosts.push('3x loot for Thieves armband');
+			loot.bank = multiplyBankNotClues(loot.bank, 3);
+			if (bloodshardCount) {
+				loot.bank[itemID('Blood shard')] = bloodshardCount;
+			}
+			if (seedCount) {
+				loot.bank[itemID('Enhanced crystal teleport seed')] = seedCount;
+			}
+		}
+
+		let gotWil = false;
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutes = duration / Time.Minute;
+			if (roll(Math.floor(4000 / minutes))) {
+				loot.add('Wilvus');
+				gotWil = true;
+			}
+		}
+
 		if (loot.has('Coins')) {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourcePickpocket, loot.amount('Coins'));
 		}
@@ -82,6 +111,11 @@ export default class extends Task {
 		} ${successfulQuantity}x times, due to failures you missed out on ${
 			quantity - successfulQuantity
 		}x pickpockets. ${xpRes}`;
+
+		if (gotWil) {
+			str +=
+				'<:wilvus:787320791011164201> A raccoon saw you thieving and partners with you to help you steal more stuff!';
+		}
 
 		str += `\n\nYou received: ${loot}.`;
 

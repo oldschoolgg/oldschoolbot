@@ -2,13 +2,21 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { Time, ZALCANO_ID } from '../../../constants';
 import { GearSetupTypes, GearStat } from '../../../gear/types';
+import { KalphiteKingMonster } from '../../../kalphiteking';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
+import { makeKillTable } from '../../../util/setCustomMonster';
 import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
-import bosses from './bosses';
+import { bossKillables } from './bosses';
 import { chaeldarMonsters } from './chaeldarMonsters';
+import AbyssalDragon, { AbyssalDragonLootTable } from './custom/AbyssalDragon';
+import KingGoldemar from './custom/KingGoldemar';
+import Koschei, { koscheiTable } from './custom/Koschei';
+import SeaKraken, { KrakenTable } from './custom/SeaKraken';
+import Treebeard, { TreebeardLootTable } from './custom/Treebeard';
+import { VasaMagus } from './custom/VasaMagus';
 import { konarMonsters } from './konarMonsters';
 import { krystiliaMonsters } from './krystiliaMonsters';
 import low from './low';
@@ -18,7 +26,7 @@ import { turaelMonsters } from './turaelMonsters';
 import { vannakaMonsters } from './vannakaMonsters';
 
 const killableMonsters: KillableMonster[] = [
-	...bosses,
+	...bossKillables,
 	...chaeldarMonsters,
 	...konarMonsters,
 	...krystiliaMonsters,
@@ -35,10 +43,8 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.Barrows,
 		emoji: '<:Dharoks_helm:403038864199122947>',
 		wildy: false,
-
 		difficultyRating: 4,
 		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Barrows gloves')]: 2 },
@@ -52,7 +58,8 @@ const killableMonsters: KillableMonster[] = [
 			pool: {
 				'Rejuvenation pool': 10,
 				'Fancy rejuvenation pool': 10,
-				'Ornate rejuvenation pool': 10
+				'Ornate rejuvenation pool': 10,
+				'Ancient rejuvenation pool': 20
 			}
 		},
 		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged],
@@ -77,7 +84,7 @@ const killableMonsters: KillableMonster[] = [
 			['Armadyl chestplate', "Karil's leathertop"],
 			['Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
-		notifyDrops: resolveItems(['Pet dagannoth prime']),
+
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -116,7 +123,6 @@ const killableMonsters: KillableMonster[] = [
 			['Bandos chestplate', "Torag's platebody"],
 			['Bandos tassets', "Torag's platelegs"]
 		]),
-		notifyDrops: resolveItems(['Pet dagannoth rex']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -153,7 +159,7 @@ const killableMonsters: KillableMonster[] = [
 			['Bandos chestplate', "Torag's platebody"],
 			['Bandos tassets', "Torag's platelegs"]
 		]),
-		notifyDrops: resolveItems(['Pet dagannoth supreme']),
+
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -210,6 +216,95 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0
 	},
 	{
+		id: SeaKraken.id,
+		name: SeaKraken.name,
+		aliases: SeaKraken.aliases,
+		timeToFinish: Time.Minute * 17,
+		table: {
+			kill: makeKillTable(KrakenTable)
+		},
+		emoji: '',
+		notifyDrops: resolveItems(['Fish sack', 'Fishing trophy', 'Pufferfish']),
+		wildy: false,
+
+		difficultyRating: 7,
+		qpRequired: 0,
+		healAmountNeeded: 20 * 20,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic],
+		minimumGearRequirements: {
+			[GearSetupTypes.Range]: {
+				[GearStat.DefenceMagic]: 150,
+				[GearStat.AttackRanged]: 80
+			}
+		},
+		groupKillable: true,
+		respawnTime: Time.Second * 20,
+		levelRequirements: {
+			prayer: 43,
+			ranged: 105,
+			slayer: 101
+		},
+		pohBoosts: {
+			pool: {
+				'Ancient rejuvenation pool': 10
+			}
+		}
+	},
+	{
+		id: AbyssalDragon.id,
+		name: AbyssalDragon.name,
+		aliases: AbyssalDragon.aliases,
+		timeToFinish: Time.Minute * 30,
+		table: {
+			kill: makeKillTable(AbyssalDragonLootTable)
+		},
+		emoji: '',
+		wildy: true,
+
+		difficultyRating: 9,
+		qpRequired: 999,
+		healAmountNeeded: 20 * 25,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
+		minimumGearRequirements: {
+			[GearSetupTypes.Melee]: {
+				[GearStat.AttackStab]: 100,
+				[GearStat.DefenceStab]: 150,
+				[GearStat.DefenceSlash]: 150,
+				[GearStat.DefenceMagic]: -20,
+				[GearStat.DefenceRanged]: 150
+			}
+		},
+		itemInBankBoosts: [
+			{
+				[itemID('Saradomin godsword')]: 5
+			},
+			{
+				[itemID('Dragon warhammer')]: 5
+			},
+			{
+				[itemID('Bandos godsword')]: 5
+			}
+		],
+		itemsRequired: deepResolveItems([['Anti-dragon shield', 'Abyssal cape']]),
+		groupKillable: true,
+		respawnTime: Time.Second * 20,
+		levelRequirements: {
+			prayer: 99,
+			attack: 99,
+			strength: 105,
+			defence: 99
+		},
+		pohBoosts: {
+			pool: {
+				'Ancient rejuvenation pool': 10
+			}
+		},
+		uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
+		notifyDrops: resolveItems(['Abyssal cape', 'Ori'])
+	},
+	{
 		id: Monsters.Sarachnis.id,
 		name: Monsters.Sarachnis.name,
 		aliases: Monsters.Sarachnis.aliases,
@@ -241,6 +336,56 @@ const killableMonsters: KillableMonster[] = [
 		}
 	},
 	{
+		id: Koschei.id,
+		name: Koschei.name,
+		aliases: Koschei.aliases,
+		timeToFinish: Time.Hour * 2,
+		table: {
+			kill: makeKillTable(koscheiTable)
+		},
+		emoji: '',
+		wildy: true,
+
+		difficultyRating: 9,
+		qpRequired: 100,
+		healAmountNeeded: 10_000 * 25,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash],
+		respawnTime: Time.Second * 20
+	},
+	{
+		id: Treebeard.id,
+		name: Treebeard.name,
+		aliases: Treebeard.aliases,
+		timeToFinish: Time.Minute * 10,
+		table: {
+			kill: makeKillTable(TreebeardLootTable)
+		},
+		emoji: '',
+		wildy: true,
+
+		difficultyRating: 9,
+		qpRequired: 100,
+		healAmountNeeded: 60 * 25,
+		attackStyleToUse: GearSetupTypes.Mage,
+		attackStylesUsed: [GearStat.AttackMagic],
+		respawnTime: Time.Second * 40,
+		minimumGearRequirements: {
+			[GearSetupTypes.Mage]: {
+				[GearStat.AttackMagic]: 30 + 10 + 10 + 6 + 6 + 22 + 6
+			}
+		},
+		levelRequirements: {
+			magic: 105,
+			slayer: 101
+		},
+		pohBoosts: {
+			pool: {
+				'Ancient rejuvenation pool': 10
+			}
+		}
+	},
+	{
 		id: Monsters.PriffRabbit.id,
 		name: Monsters.PriffRabbit.name,
 		aliases: Monsters.PriffRabbit.aliases,
@@ -248,7 +393,6 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.PriffRabbit,
 		emoji: '',
 		wildy: false,
-
 		difficultyRating: 10,
 		qpRequired: 205,
 		levelRequirements: {
@@ -329,7 +473,27 @@ export const effectiveMonsters = [
 		id: ZALCANO_ID,
 		emoji: '<:Smolcano:604670895113633802>'
 	},
+	{
+		id: 46274,
+		name: 'Nex',
+		aliases: ['nex']
+	},
+	{
+		id: KalphiteKingMonster.id,
+		name: 'Kalphite King',
+		aliases: ['kalphite king', 'kk']
+	},
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
 	{ name: 'Mimic', aliases: ['mimic'], id: 23184, emoji: '<:Tangleroot:324127378978635778>' },
-	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' }
+	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' },
+	{
+		id: KingGoldemar.id,
+		name: 'King Goldemar',
+		aliases: ['king goldemar', 'kg']
+	},
+	{
+		id: VasaMagus.id,
+		name: 'Vasa Magus',
+		aliases: ['vasa', 'vasa magus', 'vm']
+	}
 ];

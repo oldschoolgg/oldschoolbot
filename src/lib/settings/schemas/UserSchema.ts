@@ -12,6 +12,8 @@ Client.defaultUserSchema
 	.add('bitfield', 'integer', { array: true, default: [] })
 	.add('favoriteItems', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
+	.add('lastGivenBoxx', 'integer', { default: 1, maximum: Number.MAX_SAFE_INTEGER })
+	.add('lastSpawnLamp', 'integer', { default: 1, maximum: Number.MAX_SAFE_INTEGER })
 	.add('sacrificedValue', 'integer', { default: 0, minimum: 0 })
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
@@ -20,6 +22,7 @@ Client.defaultUserSchema
 	.add('monsterScores', 'any', { default: {} })
 	.add('lapsScores', 'any', { default: {} })
 	.add('bankBackground', 'integer', { default: 1 })
+	.add('troll', 'boolean', { default: false })
 	.add('sacrificedBank', 'any', { default: {} })
 	.add('honour_level', 'integer', { default: 1 })
 	.add('honour_points', 'integer', { default: 0 })
@@ -29,8 +32,16 @@ Client.defaultUserSchema
 	.add('carpenter_points', 'integer', { default: 0 })
 	.add('zeal_tokens', 'integer', { default: 0 })
 	.add('openable_scores', 'any', { default: {} })
+	.add('spawned_rmb', 'boolean', { default: false })
 	.add('attack_style', 'string', { array: true, default: [] })
+	.add('dungeoneering_tokens', 'integer', { default: 0 })
 	.add('total_cox_points', 'integer', { default: 0 })
+	.add('total_item_contracts', 'integer', { default: 0 })
+	.add('item_contract_streak', 'integer', { default: 0 })
+	.add('last_item_contract_date', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('current_item_contract', 'integer', { default: null })
+	.add('item_contract_bank', 'any', { default: {} })
+	.add('ourania_tokens', 'integer', { default: 0 })
 	.add('combat_options', 'integer', { array: true, default: [] })
 
 	.add('slayer', folder =>
@@ -105,6 +116,10 @@ Client.defaultUserSchema
 			.add(SkillsEnum.Slayer, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 			.add(SkillsEnum.Hitpoints, 'integer', {
 				default: 1154,
+				maximum: Number.MAX_SAFE_INTEGER
+			})
+			.add(SkillsEnum.Dungeoneering, 'integer', {
+				default: 0,
 				maximum: Number.MAX_SAFE_INTEGER
 			})
 	)

@@ -149,7 +149,6 @@ export default class extends Task {
 		}
 
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
-		await user.addItemsToBank(loot.values(), true);
 		xpStr += await user.addXP({
 			skillName: SkillsEnum.Hunter,
 			amount: xpReceived,
@@ -161,6 +160,20 @@ export default class extends Task {
 		} ${quantity}x times, due to clever creatures you missed out on ${
 			quantity - successfulQuantity
 		}x catches. ${xpStr}`;
+
+		if (user.usingPet('Sandy')) {
+			if (creature.id === 3251) {
+				if (user.hasItemEquippedAnywhere(itemID('Hunter master cape'))) {
+					str += '\nYou received **double** loot because of Sandy, and being a master hunter.';
+					loot.multiply(2);
+				}
+			} else {
+				str += '\nYou received **triple** loot because of Sandy.';
+				loot.multiply(3);
+			}
+		}
+
+		await user.addItemsToBank(loot.values(), true);
 
 		str += `\n\nYou received: ${loot}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
 

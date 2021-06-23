@@ -7,7 +7,7 @@ import minionIcons from '../../lib/minions/data/minionIcons';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks } from '../../lib/util';
+import { addBanks, itemID, roll } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -49,6 +49,24 @@ export default class extends BotCommand {
 			this.client.emit(Events.ServerNotification, `${msg.author.username} just sacrificed ${bankToSac}!`);
 		}
 
+		let str = '';
+
+		const hasSkipper =
+			msg.author.equippedPet() === itemID('Skipper') || msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
+		if (hasSkipper) {
+			totalPrice *= 1.4;
+		}
+
+		if (totalPrice >= 30_000_000 && roll(10)) {
+			str += 'You received a *Hunk of crystal*.';
+			await msg.author.addItemsToBank({ 742: 1 }, true);
+		}
+
+		const gotHammy = totalPrice >= 51_530_000 && roll(140);
+		if (gotHammy) {
+			await msg.author.addItemsToBank({ [itemID('Hammy')]: 1 }, true);
+		}
+
 		const newValue = msg.author.settings.get(UserSettings.SacrificedValue) + totalPrice;
 
 		await msg.author.settings.update(UserSettings.SacrificedValue, newValue);
@@ -65,7 +83,6 @@ export default class extends BotCommand {
 
 		msg.author.log(`sacrificed ${bankToSac} for ${totalPrice}`);
 
-		let str = '';
 		const currentIcon = msg.author.settings.get(UserSettings.Minion.Icon);
 		for (const icon of minionIcons) {
 			if (newValue < icon.valueRequired) continue;
@@ -79,6 +96,15 @@ export default class extends BotCommand {
 				);
 				break;
 			}
+		}
+
+		if (gotHammy) {
+			str +=
+				'\n\n<:Hamstare:685036648089780234> A small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes.';
+		}
+		if (hasSkipper) {
+			str +=
+				'\n<:skipper:755853421801766912> Skipper has negotiated with the bank and gotten you +40% extra value from your sacrifice.';
 		}
 
 		return msg.send(

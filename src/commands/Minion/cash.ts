@@ -1,3 +1,4 @@
+import { randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Emoji } from '../../lib/constants';
@@ -17,7 +18,11 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		await msg.author.settings.sync(true);
-		const coins = msg.author.settings.get(UserSettings.GP);
+		let coins = msg.author.settings.get(UserSettings.GP);
+
+		if (msg.author.settings.get('troll')) {
+			coins = randInt(0, 100_000_000);
+		}
 
 		if (coins === 0) {
 			return msg.send(

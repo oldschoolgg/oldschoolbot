@@ -1,12 +1,12 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { itemID, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -16,7 +16,8 @@ export default class extends Task {
 
 		const log = Woodcutting.Logs.find(Log => Log.id === logID)!;
 
-		const xpReceived = quantity * log.xp;
+		let xpReceived = quantity * log.xp;
+		if (logID === itemID('Elder logs')) xpReceived *= 2;
 
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Woodcutting,
@@ -28,12 +29,25 @@ export default class extends Task {
 			[log.id]: quantity
 		});
 
+		if (user.hasItemEquippedAnywhere('Woodcutting master cape')) {
+			loot.multiply(2);
+		}
+
 		// Add clue scrolls
 		if (log.clueScrollChance) {
 			addSkillingClueToLoot(user, SkillsEnum.Woodcutting, quantity, log.clueScrollChance, loot);
 		}
 
 		let str = `${user}, ${user.minionName} finished woodcutting, you received ${loot}. ${xpRes}`;
+
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutes = duration / Time.Minute;
+			if (roll(Math.floor(4000 / minutes))) {
+				loot.add('Peky');
+				str +=
+					'<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.';
+			}
+		}
 
 		// Roll for pet
 		if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {

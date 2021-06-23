@@ -42,6 +42,8 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.WintertodtActivity;
 		case Activity.Alching:
 			return Tasks.AlchingActivity;
+		case Activity.Raids:
+			return Tasks.RaidsActivity;
 		case Activity.Herblore:
 			return Tasks.HerbloreActivity;
 		case Activity.Nightmare:
@@ -82,6 +84,8 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.ConstructionActivity;
 		case Activity.MahoganyHomes:
 			return Tasks.MahoganyHomes;
+		case Activity.Nex:
+			return Tasks.NexActivity;
 		case Activity.Enchanting:
 			return Tasks.Enchanting;
 		case Activity.Casting:
@@ -96,20 +100,28 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.SoulWars;
 		case Activity.RoguesDenMaze:
 			return Tasks.RoguesDenMaze;
+		case Activity.KalphiteKing:
+			return Tasks.KalphiteKing;
 		case Activity.Gauntlet:
 			return Tasks.Gauntlet;
+		case Activity.Dungeoneering:
+			return Tasks.Dungeoneering;
 		case Activity.CastleWars:
 			return Tasks.CastleWars;
 		case Activity.MageArena:
 			return Tasks.MageArena;
-		case Activity.Raids:
-			return Tasks.Raids;
 		case Activity.Collecting:
 			return Tasks.Collecting;
 		case Activity.MageTrainingArena:
 			return Tasks.MageTrainingArena;
 		case Activity.BlastFurnace:
 			return Tasks.BlastFurnaceActivity;
+		case Activity.KingGoldemar:
+			return Tasks.KingGoldemar;
+		case Activity.VasaMagus:
+			return Tasks.VasaMagus;
+		case Activity.OuraniaDeliveryService:
+			return Tasks.OuraniaDeliveryService;
 		case Activity.MageArena2:
 			return Tasks.MageArena2;
 		case Activity.BigChompyBirdHunting:

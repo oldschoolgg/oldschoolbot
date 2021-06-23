@@ -1,3 +1,4 @@
+import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
@@ -14,7 +15,7 @@ export const enum Time {
 }
 
 export const enum Channel {
-	Notifications = '469523207691436042',
+	Notifications = '811589869314899980',
 	ErrorLogs = '665678499578904596',
 	GrandExchange = '682996313209831435',
 	Developers = '648196527294251020',
@@ -33,12 +34,10 @@ export const enum Roles {
 	PatronTier3 = '687408140832342043',
 	Patron = '679620175838183424',
 	// Status Roles
-	TopSkiller = '795266465329709076',
-	TopCollector = '795271210141351947',
-	TopSacrificer = '795933981715464192',
-	TopMinigamer = '832798997033779220',
-	TopClueHunter = '839135887467610123',
-	TopSlayer = '856080958247010324'
+	TopSkiller = '848966830617788427',
+	TopCollector = '848966773885763586',
+	TopSacrificer = '848966732265160775',
+	TopeClueHunter = '848967350120218636'
 }
 
 export const enum Emoji {
@@ -108,6 +107,7 @@ export const enum Emoji {
 	Attack = '<:attack:630911039969427467>',
 	Defence = '<:defence:630911040393052180>',
 	Ranged = '<:ranged:630911040258834473>',
+	Dungeoneering = '<:dungeoneering:828683755198873623>',
 	Gear = '<:gear:835314891950129202>',
 	Slayer = '<:slayer:630911040560824330>',
 	// Badges,
@@ -127,7 +127,8 @@ export const enum Emoji {
 	CollectionLog = '<:collectionLog:802136964027121684>',
 	Minigames = '<:minigameIcon:630400565070921761>',
 	Skull = '<:Skull:802136963926065165>',
-	CombatSword = '<:combat:802136963956080650>'
+	CombatSword = '<:combat:802136963956080650>',
+	SOTW = '<:SOTWtrophy:842938096097820693>'
 }
 
 export const enum ReactionEmoji {
@@ -171,6 +172,7 @@ export const enum Tasks {
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
 	AlchingActivity = 'alchingActivity',
+	RaidsActivity = 'raidsActivity',
 	NightmareActivity = 'nightmareActivity',
 	AnimatedArmourActivity = 'animatedArmourActivity',
 	CyclopsActivity = 'cyclopsActivity',
@@ -191,18 +193,23 @@ export const enum Tasks {
 	BirdhouseActivity = 'birdhouseActivity',
 	AerialFishingActivity = 'aerialFishingActivity',
 	MahoganyHomes = 'mahoganyHomesActivity',
+	NexActivity = 'nexActivity',
 	GnomeRestaurant = 'gnomeRestaurantActivity',
 	SoulWars = 'soulWarsActivity',
 	RoguesDenMaze = 'roguesDenMazeActivity',
+	KalphiteKing = 'kalphiteKingActivity',
 	Gauntlet = 'gauntletActivity',
+	Dungeoneering = 'dungeoneeringActivity',
 	CastleWars = 'castleWarsActivity',
 	MageArena = 'mageArenaActivity',
-	Raids = 'raidsActivity',
 	Collecting = 'collectingActivity',
 	MageTrainingArena = 'mageTrainingArenaActivity',
 	BlastFurnaceActivity = 'blastFurnaceActivity',
 	MageArena2 = 'mageArena2Activity',
 	BigChompyBirdHunting = 'chompyHuntActivity',
+	KingGoldemar = 'kingGoldemarActivity',
+	VasaMagus = 'vasaMagusActivity',
+	OuraniaDeliveryService = 'ouraniaDeliveryServiceActivity',
 	DarkAltar = 'darkAltarActivity'
 }
 
@@ -232,6 +239,7 @@ export enum Activity {
 	Hunter = 'Hunter',
 	Birdhouse = 'Birdhouse',
 	Alching = 'Alching',
+	Raids = 'Raids',
 	AnimatedArmour = 'AnimatedArmour',
 	Cyclops = 'Cyclops',
 	Sawmill = 'Sawmill',
@@ -251,18 +259,23 @@ export enum Activity {
 	ChampionsChallenge = 'ChampionsChallenge',
 	AerialFishing = 'AerialFishing',
 	MahoganyHomes = 'MahoganyHomes',
+	Nex = 'Nex',
 	GnomeRestaurant = 'GnomeRestaurant',
 	SoulWars = 'SoulWars',
 	RoguesDenMaze = 'RoguesDenMaze',
+	KalphiteKing = 'KalphiteKing',
 	Gauntlet = 'Gauntlet',
+	Dungeoneering = 'Dungeoneering',
 	CastleWars = 'CastleWars',
 	MageArena = 'MageArena',
-	Raids = 'Raids',
 	Collecting = 'Collecting',
 	MageTrainingArena = 'MageTrainingArena',
 	BlastFurnace = 'BlastFurnace',
 	MageArena2 = 'MageArena2',
 	BigChompyBirdHunting = 'BigChompyBirdHunting',
+	KingGoldemar = 'KingGoldemar',
+	VasaMagus = 'VasaMagus',
+	OuraniaDeliveryService = 'OuraniaDeliveryService',
 	DarkAltar = 'DarkAltar'
 }
 
@@ -344,7 +357,10 @@ export const enum BitField {
 	HasPermanentEventBackgrounds = 11,
 	HasPermanentTierOne = 12,
 	DisabledRandomEvents = 13,
-	PermanentIronman = 14
+	PermanentIronman = 14,
+	HasGivenBirthdayPack = 200,
+	HasPermanentSpawnLamp = 201,
+	HasScrollOfFarming = 202
 }
 
 interface BitFieldData {
@@ -363,6 +379,7 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' },
 	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
+	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp' },
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman' }
 } as const;
 
@@ -386,10 +403,11 @@ export const badges: { [key: number]: string } = {
 	8: Emoji.Incinerator,
 	9: Emoji.Skiller,
 	10: Emoji.CollectionLog,
-	11: Emoji.MinigameIcon
+	11: Emoji.MinigameIcon,
+	12: Emoji.SOTW
 };
 
-export const MAX_QP = 280;
+export const MAX_QP = 5000;
 
 export const MIMIC_MONSTER_ID = 23184;
 
@@ -406,6 +424,7 @@ export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;
 export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
+export const MIN_LENGTH_FOR_PET = Time.Minute * 5;
 
 /**
  * Map<user_id, PromiseQueue>
@@ -442,9 +461,10 @@ export const skillEmoji = {
 	hunter: '<:hunter:630911040166559784>',
 	cml: '<:CrystalMathLabs:364657225249062912>',
 	clock: '<:ehpclock:352323705210142721>',
-	combat: '<:combat:802136963956080650>'
+	combat: '<:combat:802136963956080650>',
+	dungeoneering: '<:dungeoneering:828683755198873623>'
 };
 
-export const LEVEL_99_XP = 13_034_431;
-export const MAX_LEVEL = 99;
+export const LEVEL_120_XP = convertLVLtoXP(120);
+export const MAX_LEVEL = 120;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;

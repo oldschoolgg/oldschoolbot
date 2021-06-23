@@ -1,8 +1,9 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
+import { Cookables } from '../../lib/skilling/skills/cooking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
@@ -110,7 +111,16 @@ export default class extends Task {
 			[fish.id]: quantity
 		});
 
-		// Add clue scrolls
+		if (user.equippedPet() === itemID('Klik')) {
+			const cookedFish = Cookables.find(c => Boolean(c.inputCookables[fish.id]));
+			if (cookedFish) {
+				loot.remove(fish.id, quantity);
+				loot.add(cookedFish.id, quantity);
+				str +=
+					'\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and cooks all your fish!';
+			}
+		}
+
 		if (fish.clueScrollChance) {
 			addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, fish.clueScrollChance, loot);
 		}
@@ -146,6 +156,18 @@ export default class extends Task {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(fish.bigFishRate)) {
 					loot.add(fish.bigFish);
+				}
+			}
+		}
+
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutesInTrip = Math.ceil(duration / 1000 / 60);
+			for (let i = 0; i < minutesInTrip; i++) {
+				if (roll(8000)) {
+					loot.add('Shelldon');
+					str +=
+						'\n<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called Sheldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!';
+					break;
 				}
 			}
 		}

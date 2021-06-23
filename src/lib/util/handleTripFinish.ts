@@ -1,14 +1,29 @@
 import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { toKMB } from 'oldschooljs/dist/util';
 
+import { alching } from '../../commands/Minion/laps';
 import MinionCommand from '../../commands/Minion/minion';
 import { Activity, BitField, COINS_ID, Emoji, PerkTier, Time } from '../constants';
+import { getRandomMysteryBox } from '../data/openables';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { ClientSettings } from '../settings/types/ClientSettings';
+import { RuneTable, SeedTable, WilvusTable, WoodTable } from '../simulation/seedTable';
+import { DougTable } from '../simulation/sharedTables';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, generateContinuationChar, roll, stringMatches, updateGPTrackSetting } from '../util';
+import {
+	channelIsSendable,
+	generateContinuationChar,
+	getSupportGuild,
+	itemID,
+	roll,
+	stringMatches,
+	updateBankSetting,
+	updateGPTrackSetting
+} from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
 
@@ -37,6 +52,65 @@ export async function handleTripFinish(
 		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
 	}
 
+	if (data.type !== Activity.GroupMonsterKilling && loot && data.duration > Time.Minute * 20 && roll(15)) {
+		const emoji = getSupportGuild(client).emojis.cache.random().toString();
+		const bonusLoot = new Bank().add(loot).add(getRandomMysteryBox());
+		message += `\n${emoji} **You received 2x loot and a Mystery box.**`;
+		await user.addItemsToBank(bonusLoot, true);
+	}
+
+	const minutes = data.duration / Time.Minute;
+	const pet = user.equippedPet();
+	let bonusLoot = new Bank();
+	if (minutes < 5) {
+		// Do nothing
+	} else if (pet === itemID('Peky')) {
+		for (let i = 0; i < minutes; i++) {
+			if (roll(10)) {
+				bonusLoot.add(SeedTable.roll());
+			}
+		}
+		message += `\n<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${bonusLoot}.`;
+	} else if (pet === itemID('Obis')) {
+		let rolls = minutes / 3;
+		for (let i = 0; i < rolls; i++) {
+			bonusLoot.add(RuneTable.roll());
+		}
+		message += `\n<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${bonusLoot}.`;
+	} else if (pet === itemID('Brock')) {
+		let rolls = minutes / 3;
+		for (let i = 0; i < rolls; i++) {
+			bonusLoot.add(WoodTable.roll());
+		}
+		message += `\n<:brock:787310793183854594> Brock did some woodcutting during this trip and got you: ${bonusLoot}.`;
+	} else if (pet === itemID('Wilvus')) {
+		let rolls = minutes / 6;
+		for (let i = 0; i < rolls; i++) {
+			bonusLoot.add(WilvusTable.roll());
+		}
+		message += `\n<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you: ${bonusLoot}.`;
+	} else if (pet === itemID('Smokey')) {
+		for (let i = 0; i < minutes; i++) {
+			if (roll(450)) {
+				bonusLoot.add(getRandomMysteryBox());
+			}
+		}
+		if (bonusLoot.length > 0) {
+			message += `\n<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you ${bonusLoot}.`;
+		}
+	} else if (pet === itemID('Doug')) {
+		for (let i = 0; i < minutes; i++) {
+			bonusLoot.add(DougTable.roll());
+		}
+
+		message += `\nDoug did some mining while you were on your trip and got you: ${bonusLoot}.`;
+	}
+	if (bonusLoot.length > 0) {
+		if (bonusLoot.has('Coins')) {
+			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourcePet, bonusLoot.amount('Coins'));
+		}
+		await user.addItemsToBank(bonusLoot.bank, true);
+	}
 	if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 		const GP = loot[COINS_ID];
 		if (typeof GP === 'number') {
@@ -52,6 +126,27 @@ export async function handleTripFinish(
 			message += ` Say \`c\` if you want to complete this ${clueReceived.name} clue now.`;
 		} else {
 			message += 'You can get your minion to complete them using `+minion clue easy/medium/etc`';
+		}
+	}
+
+	if (user.usingPet('Voidling')) {
+		const alchResult = alching(user, data.duration);
+		if (alchResult !== null) {
+			if (!user.owns(alchResult.bankToRemove)) {
+				message += `\Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`;
+			}
+			await user.removeItemsFromBank(alchResult.bankToRemove);
+			updateBankSetting(client, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
+
+			const alchGP = alchResult.itemToAlch.highalch * alchResult.maxCasts;
+			await user.addGP(alchGP);
+			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
+			message += `\nYour Voidling alched ${alchResult.maxCasts}x ${alchResult.itemToAlch.name}. Removed ${
+				alchResult.bankToRemove
+			} from your bank and added ${toKMB(alchGP)} GP.`;
+		} else {
+			message +=
+				"\nYour Voidling didn't alch anything because you either: don't have Nature runes, Fire Runes, or any Favorited alchables that you own.";
 		}
 	}
 

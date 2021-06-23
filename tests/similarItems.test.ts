@@ -24,12 +24,18 @@ describe('Gear', () => {
 	});
 
 	const testGear2 = new Gear({
-		weapon: 'Mist battlestaff'
+		weapon: 'Mist battlestaff',
+		body: 'Torva platebody',
+		legs: 'Torva platelegs',
+		feet: 'Torva boots',
+		hands: 'Gorajan warrior gloves'
 	});
 
 	test('', () => {
-		for (const name of ['Staff of water']) {
-			expect(testGear2.hasEquipped(name)).toBeTruthy();
-		}
+		expect(testGear2.hasEquipped('Staff of water')).toBeTruthy();
+		expect(testGear2.hasEquipped('Torva platebody')).toBeTruthy();
+		expect(testGear2.hasEquipped('Torva platebody', true, false)).toBeTruthy();
+		expect(testGear2.hasEquipped('Gorajan warrior top')).toBeFalsy();
+		expect(testGear2.hasEquipped('Gorajan warrior top', true, false)).toBeFalsy();
 	});
 });

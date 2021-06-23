@@ -19,7 +19,6 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 7,
-		notifyDrops: resolveItems(['Pet general graardor']),
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{
@@ -51,7 +50,6 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 7,
-		notifyDrops: resolveItems(['Pet zilyana']),
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{
@@ -91,7 +89,6 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 7,
-		notifyDrops: resolveItems(["Pet kree'arra"]),
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{
@@ -128,7 +125,6 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 7,
-		notifyDrops: resolveItems(["Pet k'ril tsutsaroth"]),
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{

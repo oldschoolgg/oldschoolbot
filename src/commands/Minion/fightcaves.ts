@@ -125,13 +125,19 @@ export default class extends BotCommand {
 
 		let [duration, debugStr] = this.determineDuration(msg.author);
 		const jadDeathChance = this.determineChanceOfDeathInJad(msg.author);
-		const preJadDeathChance = this.determineChanceOfDeathPreJad(msg.author);
+		let preJadDeathChance = this.determineChanceOfDeathPreJad(msg.author);
 
 		const attempts = msg.author.settings.get(UserSettings.Stats.FightCavesAttempts);
 		const usersRangeStats = msg.author.getGear('range').stats;
 		const jadKC = msg.author.getKC(TzTokJad.id);
 
 		duration += (rand(1, 5) * duration) / 100;
+
+		const hasToad = msg.author.equippedPet() === itemID('Wintertoad');
+		if (hasToad) {
+			duration /= 2;
+			preJadDeathChance = 0;
+		}
 
 		const diedPreJad = percentChance(preJadDeathChance);
 		const preJadDeathTime = diedPreJad ? rand(Time.Minute * 20, duration) : null;
@@ -179,6 +185,11 @@ export default class extends BotCommand {
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
 **Jad KC:** ${jadKC}
 **Attempts:** ${attempts}
+${
+	hasToad
+		? '<:wintertoad:749945071230779493> The extreme cold of your Wintertoad counters the Fight Caves, allowing you to kill the creatures much faster!'
+		: ''
+}
 
 **Removed from your bank:** ${new Bank(fightCavesSupplies)}`,
 			await chatHeadImage({

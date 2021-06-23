@@ -8,9 +8,8 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, formatDuration, itemNameFromID, stringMatches, toKMB } from '../../lib/util';
+import { addItemToBank, formatDuration, itemID, itemNameFromID, stringMatches, toKMB } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -73,14 +72,7 @@ export default class extends BotCommand {
 			return msg.send(`You don't have any ${itemNameFromID(plank.inputItem)}.`);
 		}
 
-		const GP = msg.author.settings.get(UserSettings.GP);
-		let cost = plank!.gpCost * quantity;
-
-		if (GP < cost) {
-			return msg.send(`You need ${toKMB(cost)} GP to create ${quantity} planks.`);
-		}
-
-		const duration = quantity * timePerPlank;
+		let duration = quantity * timePerPlank;
 
 		if (duration > maxTripLength) {
 			return msg.send(
@@ -90,6 +82,20 @@ export default class extends BotCommand {
 					maxTripLength / timePerPlank
 				)}.`
 			);
+		}
+
+		const GP = msg.author.settings.get(UserSettings.GP);
+
+		let cost = plank!.gpCost * 2 * quantity;
+
+		let speed = parseInt(msg.flagArgs.speed);
+		if (speed && !isNaN(speed) && typeof speed === 'number' && speed > 1 && speed < 6) {
+			cost += cost * (speed * ((speed + 0.2) / 6));
+			duration /= speed;
+		}
+
+		if (GP < cost) {
+			return msg.send(`You need ${toKMB(cost)} GP to create ${quantity} planks.`);
 		}
 
 		await msg.author.removeItemFromBank(plank!.inputItem, quantity);
