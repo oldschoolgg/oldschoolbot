@@ -173,18 +173,24 @@ export default class extends BotCommand {
 				boosts.push('15% for Dragon hunter crossbow');
 			}
 		}
-		// Add 15% slayer boost on task if they have black mask or similar
-		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-			if (isOnTask && msg.author.hasItemEquippedOrInBank('Black mask (i)')) {
+
+		// Black mask and salve don't stack.
+		const salveBoost = boosts.join('').toLowerCase().includes('salve amulet');
+		if (!salveBoost) {
+			// Add 15% slayer boost on task if they have black mask or similar
+			if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
+				if (isOnTask && msg.author.hasItemEquippedOrInBank('Black mask (i)')) {
+					timeToFinish = reduceNumByPercent(timeToFinish, 15);
+					boosts.push('15% for Black mask (i) on non-melee task');
+				}
+			} else if (
+				isOnTask &&
+				(msg.author.hasItemEquippedOrInBank('Black mask') ||
+					msg.author.hasItemEquippedOrInBank('Black mask (i)'))
+			) {
 				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				boosts.push('15% for Black mask (i) on non-melee task');
+				boosts.push('15% for Black mask on melee task');
 			}
-		} else if (
-			isOnTask &&
-			(msg.author.hasItemEquippedOrInBank('Black mask') || msg.author.hasItemEquippedOrInBank('Black mask (i)'))
-		) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push('15% for Black mask on melee task');
 		}
 
 		// Initialize consumable costs before any are calculated.
