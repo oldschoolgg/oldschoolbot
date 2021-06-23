@@ -16,7 +16,6 @@ import {
 } from '../../lib/slayer/slayerUtil';
 import { AssignableSlayerTask } from '../../lib/slayer/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
 import { stringMatches } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
 
@@ -34,8 +33,8 @@ export default class extends BotCommand {
 		});
 	}
 
-	public getAlternateMonsterList(currentTask: SlayerTaskTable, assignedTask: AssignableSlayerTask | null) {
-		if (currentTask && assignedTask) {
+	public getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
+		if (assignedTask) {
 			const altMobs = assignedTask.monsters;
 			const alternateMonsters = killableMonsters
 				.filter(m => {
@@ -51,7 +50,6 @@ export default class extends BotCommand {
 
 	public async returnSuccess(msg: KlasaMessage, message: string, autoslay: boolean) {
 		if (autoslay) {
-			// await msg.channel.send(message);
 			try {
 				return this.client.commands.get('autoslay')!.run(msg, ['']);
 			} catch (e) {
@@ -256,10 +254,7 @@ export default class extends BotCommand {
 				`Your task has been skipped.\n\n ${slayerMaster.name}` +
 				` has assigned you to kill ${
 					newSlayerTask.currentTask.quantity
-				}x ${commonName}${this.getAlternateMonsterList(
-					newSlayerTask.currentTask,
-					newSlayerTask.assignedTask
-				)}.`;
+				}x ${commonName}${this.getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
 			return this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
 		}
 
@@ -278,7 +273,7 @@ export default class extends BotCommand {
 			let baseInfo = currentTask
 				? `Your current task is to kill ${currentTask.quantity}x ${getCommonTaskName(
 						assignedTask!.monster
-				  )}${this.getAlternateMonsterList(currentTask, assignedTask)}, you have ${
+				  )}${this.getAlternateMonsterList(assignedTask)}, you have ${
 						currentTask.quantityRemaining
 				  } kills remaining.`
 				: `You have no task at the moment, you can get a task using \`${msg.cmdPrefix}slayertask ${slayerMasters
@@ -332,10 +327,7 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 
 		returnMessage = `${slayerMaster.name} has assigned you to kill ${
 			newSlayerTask.currentTask.quantity
-		}x ${commonName}${this.getAlternateMonsterList(
-			newSlayerTask.currentTask,
-			newSlayerTask.assignedTask
-		)}.${updateMsg}`;
+		}x ${commonName}${this.getAlternateMonsterList(newSlayerTask.assignedTask)}.${updateMsg}`;
 		return this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
 	}
 }
