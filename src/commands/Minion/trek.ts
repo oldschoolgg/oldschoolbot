@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
-import { GearSetupTypes } from '../../lib/gear';
+import { readableStatName } from '../../lib/gear';
 import { difficulties, trekBankBoosts } from '../../lib/minions/data/templeTrekking';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -39,17 +39,22 @@ export default class extends BotCommand {
 
 		const minLevel = tier.minCombat;
 		const qp = msg.author.settings.get(UserSettings.QP);
-		const gear = msg.author.getGear(GearSetupTypes.Melee);
 
-		if (!gear.meetsStatRequirements(tier.minimumGearRequirements)) {
-			let ret = '';
-			for (const stat of objectEntries(tier.minimumGearRequirements)) {
-				if (ret === '') {
-					ret += ', ';
+		if (tier.minimumGearRequirements) {
+			for (const [setup, requirements] of objectEntries(tier.minimumGearRequirements)) {
+				const gear = msg.author.getGear(setup);
+				if (setup && requirements) {
+					const [meetsRequirements, unmetKey, has] = gear.meetsStatRequirements(requirements);
+					if (!meetsRequirements) {
+						return msg.send(
+							`You don't have the requirements to do ${tier.difficulty} treks! Your ${readableStatName(
+								unmetKey!
+							)} stat in your ${setup} setup is ${has}, but you need atleast ${tier.minimumGearRequirements[setup]![unmetKey!]
+							}.`
+						);
+					}
 				}
-				ret += stat;
 			}
-			return msg.send(`You need at least ${ret} to do Temple Trekking.`);
 		}
 
 		if (qp < 30) {

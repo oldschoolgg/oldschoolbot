@@ -1,12 +1,10 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { bankHasAllItemsFromBank } from 'oldschooljs/dist/util';
 
 import { Time } from '../../lib/constants';
 import TrekShopItems, { TrekExperience } from '../../lib/data/buyables/trekBuyables';
 import { rewardTokens } from '../../lib/minions/data/templeTrekking';
 import { AddXpParams } from '../../lib/minions/types';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { percentChance, rand, reduceNumByPercent, stringMatches, toTitleCase } from '../../lib/util';
@@ -22,7 +20,7 @@ export default class extends BotCommand {
 			aliases: ['ts'],
 			categoryFlags: ['minion'],
 			description: 'Allows you to redeem reward tokens from Temple Trekking.',
-			examples: ['+ts easy bowstring', '+ts 5  hard herbs']
+			examples: ['+ts easy bowstring', '+ts 5 hard herbs']
 		});
 	}
 
@@ -30,7 +28,7 @@ export default class extends BotCommand {
 		const user = msg.author;
 		await user.settings.sync(true);
 
-		const userBank = user.settings.get(UserSettings.Bank);
+		const userBank = user.bank();
 
 		const specifiedItem = TrekShopItems.find(
 			item =>
@@ -49,10 +47,10 @@ export default class extends BotCommand {
 		if (quantity === undefined) {
 			quantity =
 				type === 'easy'
-					? userBank[rewardTokens.easy]
+					? userBank.amount(rewardTokens.easy)
 					: type === 'medium'
-					? userBank[rewardTokens.medium]
-					: userBank[rewardTokens.hard];
+					? userBank.amount(rewardTokens.medium)
+					: userBank.amount(rewardTokens.hard);
 		}
 
 		let outItems = new Bank();
@@ -62,31 +60,38 @@ export default class extends BotCommand {
 		let outXP: AddXpParams[] = [
 			{
 				skillName: SkillsEnum.Agility,
-				amount: 0
+				amount: 0,
+				minimal: true
 			},
 			{
 				skillName: SkillsEnum.Thieving,
-				amount: 0
+				amount: 0,
+				minimal: true
 			},
 			{
 				skillName: SkillsEnum.Slayer,
-				amount: 0
+				amount: 0,
+				minimal: true
 			},
 			{
 				skillName: SkillsEnum.Firemaking,
-				amount: 0
+				amount: 0,
+				minimal: true
 			},
 			{
 				skillName: SkillsEnum.Fishing,
-				amount: 0
+				amount: 0,
+				minimal: true
 			},
 			{
 				skillName: SkillsEnum.Woodcutting,
-				amount: 0
+				amount: 0,
+				minimal: true
 			},
 			{
 				skillName: SkillsEnum.Mining,
-				amount: 0
+				amount: 0,
+				minimal: true
 			}
 		];
 
@@ -128,7 +133,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (!bankHasAllItemsFromBank(userBank, inItems.bank)) {
+		if (!userBank.has(inItems.bank)) {
 			return msg.send("You don't have enough reward tokens for that.");
 		}
 
@@ -162,10 +167,8 @@ export default class extends BotCommand {
 			ret += 'XP. You received: ';
 		}
 
-		ret += (await Promise.all(outXP.map(xp => (xp.amount > 0 ? user.addXP(xp) : ''))))
-			.filter(Boolean)
-			.join(', ')
-			.replace(/You received /g, '');
+		ret += (await Promise.all(outXP.filter(xp => xp.amount > 0).map(xp => user.addXP(xp))))
+			.join(', ');
 
 		return msg.send(`${ret}.`);
 	}

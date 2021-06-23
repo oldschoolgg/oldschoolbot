@@ -2,7 +2,22 @@ import { Time } from 'e';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
-import { GearStat } from '../../gear';
+import { GearSetupTypes, GearStat } from '../../gear';
+import { Skills } from '../../types';
+import { GearRequirements } from '../types';
+
+interface TrekDifficulty {
+	difficulty: string;
+	minCombat: number;
+	minimumGearRequirements: GearRequirements;
+	time: number;
+	boosts: trekBoost;
+}
+
+interface trekBoost {
+	ivandis: number;
+	blisterwood: number;
+}
 
 export const EasyEncounterLoot = new LootTable().add('Riyl remains', 3).add('Nail beast nails', [2, 3]);
 
@@ -10,71 +25,62 @@ export const MediumEncounterLoot = new LootTable().add('Asyn remains', 4).add('N
 
 export const HardEncounterLoot = new LootTable().add('Fiyr remains', 5).add('Nail beast nails', [4, 6]);
 
-export const difficulties = [
+export const difficulties: TrekDifficulty[] = [
 	{
 		difficulty: 'easy',
 		minCombat: 45,
 		minimumGearRequirements: {
-			[GearStat.AttackCrush]: 20,
-			[GearStat.AttackStab]: 20,
-			[GearStat.AttackSlash]: 20,
-			[GearStat.DefenceStab]: 30,
-			[GearStat.DefenceSlash]: 30,
-			[GearStat.DefenceCrush]: 30
-		},
-		gearBoostThreshold: {
-			Offense: 50,
-			Defense: 70
+			[GearSetupTypes.Melee]: {
+				[GearStat.AttackCrush]: 20,
+				[GearStat.AttackStab]: 20,
+				[GearStat.AttackSlash]: 20,
+				[GearStat.DefenceStab]: 30,
+				[GearStat.DefenceSlash]: 30,
+				[GearStat.DefenceCrush]: 30
+			}
 		},
 		time: Time.Minute * 3,
 		boosts: {
 			ivandis: 0.9,
-			blisterwood: 0.95,
-			gearStats: 1
+			blisterwood: 0.95
 		}
 	},
 	{
 		difficulty: 'medium',
 		minCombat: 70,
 		minimumGearRequirements: {
-			[GearStat.AttackCrush]: 30,
-			[GearStat.AttackStab]: 30,
-			[GearStat.AttackSlash]: 30,
-			[GearStat.DefenceStab]: 80,
-			[GearStat.DefenceSlash]: 80,
-			[GearStat.DefenceCrush]: 80
-		},
-		gearBoostThreshold: {
-			Offense: 70,
-			Defense: 150
+			[GearSetupTypes.Melee]: {
+				[GearStat.AttackCrush]: 30,
+				[GearStat.AttackStab]: 30,
+				[GearStat.AttackSlash]: 30,
+				[GearStat.DefenceStab]: 80,
+				[GearStat.DefenceSlash]: 80,
+				[GearStat.DefenceCrush]: 80
+			}
 		},
 		time: Time.Minute * 5,
 		boosts: {
 			ivandis: 0.9,
-			blisterwood: 0.95,
-			gearStats: 0.667
+			blisterwood: 0.95
 		}
 	},
 	{
 		difficulty: 'hard',
 		minCombat: 110,
 		minimumGearRequirements: {
-			[GearStat.AttackCrush]: 80,
-			[GearStat.AttackStab]: 80,
-			[GearStat.AttackSlash]: 80,
-			[GearStat.DefenceStab]: 150,
-			[GearStat.DefenceSlash]: 150,
-			[GearStat.DefenceCrush]: 150
-		},
-		gearBoostThreshold: {
-			Offense: 150,
-			Defense: 250
+			[GearSetupTypes.Melee]: {
+				[GearStat.AttackCrush]: 40,
+				[GearStat.AttackStab]: 40,
+				[GearStat.AttackSlash]: 40,
+				[GearStat.DefenceStab]: 150,
+				[GearStat.DefenceSlash]: 150,
+				[GearStat.DefenceCrush]: 150
+			}
 		},
 		time: Time.Minute * 7,
 		boosts: {
 			ivandis: 0.9,
-			blisterwood: 0.95,
-			gearStats: 0.5
+			blisterwood: 0.95
 		}
 	}
 ];
@@ -83,7 +89,7 @@ export const trekBankBoosts = resolveNameBank({
 	'Salve amulet (e)': 5
 });
 
-export const ivandisRequirements = {
+export const ivandisRequirements: Skills = {
 	attack: 40,
 	strength: 40,
 	agility: 45,
@@ -96,7 +102,7 @@ export const ivandisRequirements = {
 	thieving: 22
 };
 
-export const blisterwoodRequirements = {
+export const blisterwoodRequirements: Skills = {
 	attack: 50,
 	strength: 40,
 	agility: 52,
