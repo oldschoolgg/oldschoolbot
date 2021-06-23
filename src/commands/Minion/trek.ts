@@ -8,7 +8,7 @@ import { difficulties, trekBankBoosts } from '../../lib/minions/data/templeTrekk
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration, itemNameFromID } from '../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { TempleTrekkingActivityTaskOptions } from './../../lib/types/minions';
 
@@ -33,9 +33,9 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const tier = difficulties.find(item => item.difficulty === difficulty);
+		const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
 
-		if (tier === undefined) return msg.send('Cannot start temple trekking due to unknown tier!');
+		if (tier === undefined) return msg.send('Cannot start temple trekking due to unknown tier! Valid tiers are easy/medium/hard. Example: +trek medium');
 
 		const minLevel = tier.minCombat;
 		const qp = msg.author.settings.get(UserSettings.QP);
@@ -62,34 +62,6 @@ export default class extends BotCommand {
 
 		let tripTime = tier.time;
 		const boosts = [];
-		// Gear boost. If not on easy difficulty. Not really relevant, most combat is skipped.
-
-		/*
-		if (tier.difficulty !== 'easy') {
-			let gearBoost = 1;
-
-			const gearStats = gear.getStats();
-			const maxBoostValues = tier.gearBoostThreshold;
-			const minReqValues = tier.minimumGearRequirements;
-
-			
-
-			const minOffensiveReq = Math.min(minReqValues.attack_crush, minReqValues.attack_slash, minReqValues.attack_stab);
-			const maxOffensiveStat = Math.max(gearStats.attack_crush, gearStats.attack_slash, gearStats.attack_stab);
-			const minDefensiveReq = Math.min(minReqValues.defence_crush, minReqValues.defence_slash, minReqValues.defence_stab);
-			const maxDefensiveStat = Math.max(gearStats.defence_crush, gearStats.defence_slash, gearStats.defence_stab);
-
-			// Calc offensive % and defensive %, get the average of the two
-			let totalPercent = Math.min(calcWhatPercent(maxOffensiveStat - minOffensiveReq, maxBoostValues.Offense - minOffensiveReq), 100);
-			totalPercent += Math.min(calcWhatPercent(maxDefensiveStat - minDefensiveReq, maxBoostValues.Defense - minDefensiveReq), 100);
-			totalPercent /= 2;
-			gearBoost -= reduceNumByPercent(1 - tier.boosts.gearStats, 100 - totalPercent);
-
-			const boostMessage = ((1 - gearBoost) * 100).toFixed(2);
-
-			tripTime *= gearBoost;
-			boosts.push(`${boostMessage}% out of ${((1 - tier.boosts.gearStats) * 100).toFixed(2)}% time boost for gear stats`);
-		}*/
 
 		// Every 25 trips becomes 1% faster to a cap of 10%
 		const percentFaster = Math.min(Math.floor((await msg.author.getMinigameScore('TempleTrekking')) / 25), 10);
