@@ -60,8 +60,24 @@ export class ActivityTable extends BaseEntity {
 		return [this.userID];
 	}
 
+	public activitySync() {
+		const users = isGroupActivity(this.data) ? this.data.users : [this.userID];
+
+		for (const user of users) {
+			minionActivityCache.set(user, this.taskData);
+		}
+	}
+
+	public freeUsers() {
+		const users = isGroupActivity(this.data) ? this.data.users : [this.userID];
+		for (const user of users) {
+			minionActivityCache.delete(user);
+		}
+	}
+
 	public async complete() {
 		if (this.completed) {
+			this.freeUsers();
 			throw new Error('Tried to complete an already completed task.');
 		}
 
@@ -69,6 +85,7 @@ export class ActivityTable extends BaseEntity {
 		const task = client.tasks.get(taskName);
 
 		if (!task) {
+			this.freeUsers();
 			throw new Error('Missing task');
 		}
 
@@ -85,10 +102,7 @@ export class ActivityTable extends BaseEntity {
 			console.error(err);
 		} finally {
 			client.oneCommandAtATimeCache.delete(this.userID);
-			const users = isGroupActivity(this.data) ? this.data.users : [this.userID];
-			for (const user of users) {
-				minionActivityCache.delete(user);
-			}
+			this.freeUsers();
 		}
 	}
 }
