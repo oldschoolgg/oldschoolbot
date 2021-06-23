@@ -39,6 +39,7 @@ export default class extends Task {
 			: getOSItem(rewardTokens.easy);
 
 		let totalEncounters = 0;
+		let pieceGotten = false;
 		for (let trip = 0; trip < quantity; trip++) {
 			const encounters = stringMatches(difficulty, 'hard')
 				? randInt(0, 7)
@@ -56,11 +57,11 @@ export default class extends Task {
 					} else {
 						loot.add(EasyEncounterLoot.roll());
 					}
-				} else if (percentChance(5)) {
-					// Of the remaining 10 encounters, 10% have a 50% chance of spawning lumberjacks
+				} else if (percentChance(5) && !pieceGotten) {
 					const piece = this.getLowestCountOutfitPiece(userBank);
 					userBank.add(piece);
 					loot.add(piece);
+					pieceGotten = true;
 				}
 
 				totalEncounters++;

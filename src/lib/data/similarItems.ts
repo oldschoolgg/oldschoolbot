@@ -265,7 +265,8 @@ const SimilarItems: Record<number, number[]> = {
 		'Kodai wand',
 		'Mud battlestaff',
 		'Mystic mud staff'
-	])
+	]),
+	[itemID('Ivandis flail')]: resolveItems(['Blisterwood flail'])
 };
 
 export function getSimilarItems(itemID: number): number[] {

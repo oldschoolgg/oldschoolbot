@@ -15,30 +15,43 @@ export const difficulties = [
 		difficulty: 'easy',
 		minCombat: 45,
 		minimumGearRequirements: {
-			[GearStat.DefenceStab]: 30
+			[GearStat.AttackCrush]: 20,
+			[GearStat.AttackStab]: 20,
+			[GearStat.AttackSlash]: 20,
+			[GearStat.DefenceStab]: 30,
+			[GearStat.DefenceSlash]: 30,
+			[GearStat.DefenceCrush]: 30
 		},
 		gearBoostThreshold: {
-			[GearStat.DefenceStab]: 200
+			Offense: 50,
+			Defense: 70
 		},
-		time: Time.Minute * 5,
+		time: Time.Minute * 3,
 		boosts: {
-			ivandis: 1.1,
+			ivandis: 0.9,
+			blisterwood: 0.95,
 			gearStats: 1
 		}
 	},
 	{
-		// TODO: Balance stat requirements
 		difficulty: 'medium',
 		minCombat: 70,
 		minimumGearRequirements: {
-			[GearStat.DefenceStab]: 100
+			[GearStat.AttackCrush]: 30,
+			[GearStat.AttackStab]: 30,
+			[GearStat.AttackSlash]: 30,
+			[GearStat.DefenceStab]: 80,
+			[GearStat.DefenceSlash]: 80,
+			[GearStat.DefenceCrush]: 80
 		},
 		gearBoostThreshold: {
-			[GearStat.DefenceStab]: 200
+			Offense: 70,
+			Defense: 150
 		},
-		time: Time.Minute * 15,
+		time: Time.Minute * 5,
 		boosts: {
-			ivandis: 1.2,
+			ivandis: 0.9,
+			blisterwood: 0.95,
 			gearStats: 0.667
 		}
 	},
@@ -46,18 +59,26 @@ export const difficulties = [
 		difficulty: 'hard',
 		minCombat: 110,
 		minimumGearRequirements: {
-			[GearStat.DefenceStab]: 150
+			[GearStat.AttackCrush]: 80,
+			[GearStat.AttackStab]: 80,
+			[GearStat.AttackSlash]: 80,
+			[GearStat.DefenceStab]: 150,
+			[GearStat.DefenceSlash]: 150,
+			[GearStat.DefenceCrush]: 150
 		},
 		gearBoostThreshold: {
-			[GearStat.DefenceStab]: 300
+			Offense: 150,
+			Defense: 250
 		},
-		time: Time.Minute * 30,
+		time: Time.Minute * 7,
 		boosts: {
-			ivandis: 1.3,
+			ivandis: 0.9,
+			blisterwood: 0.95,
 			gearStats: 0.5
 		}
 	}
 ];
+
 
 export const trekBankBoosts = resolveNameBank({
 	'Salve amulet (e)': 5
@@ -75,6 +96,22 @@ export const ivandisRequirements = {
 	slayer: 38,
 	thieving: 22
 };
+
+export const blisterwoodRequirements = {
+	attack: 50,
+	strength: 40,
+	agility: 52,
+	crafting: 56,
+	construction: 5,
+	mining: 20,
+	magic: 49,
+	herblore: 40,
+	slayer: 50,
+	thieving: 22,
+	woodcutting: 62,
+	fletching: 60
+};
+
 
 export const rewardTokens = {
 	easy: 7776,

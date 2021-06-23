@@ -2,12 +2,13 @@ import { objectEntries, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
+import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { GearSetupTypes } from '../../lib/gear';
-import { difficulties, ivandisRequirements, trekBankBoosts } from '../../lib/minions/data/templeTrekking';
+import { difficulties, trekBankBoosts } from '../../lib/minions/data/templeTrekking';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { calcWhatPercent, formatDuration, itemNameFromID } from '../../lib/util';
+import { formatDuration, itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { TempleTrekkingActivityTaskOptions } from './../../lib/types/minions';
 
@@ -61,25 +62,38 @@ export default class extends BotCommand {
 
 		let tripTime = tier.time;
 		const boosts = [];
+		// Gear boost. If not on easy difficulty. Not really relevant, most combat is skipped.
 
-		// Gear boost. If not on easy difficulty,
+		/*
 		if (tier.difficulty !== 'easy') {
 			let gearBoost = 1;
-			const gearStat = gear.getStats().defence_stab;
-			const maxValue = tier.gearBoostThreshold.defence_stab;
-			const minValue = tier.minimumGearRequirements.defence_stab;
 
-			gearBoost -= reduceNumByPercent(
-				1 - tier.boosts.gearStats,
-				calcWhatPercent(gearStat - minValue, maxValue - gearStat)
-			);
+			const gearStats = gear.getStats();
+			const maxBoostValues = tier.gearBoostThreshold;
+			const minReqValues = tier.minimumGearRequirements;
+
+			
+
+			const minOffensiveReq = Math.min(minReqValues.attack_crush, minReqValues.attack_slash, minReqValues.attack_stab);
+			const maxOffensiveStat = Math.max(gearStats.attack_crush, gearStats.attack_slash, gearStats.attack_stab);
+			const minDefensiveReq = Math.min(minReqValues.defence_crush, minReqValues.defence_slash, minReqValues.defence_stab);
+			const maxDefensiveStat = Math.max(gearStats.defence_crush, gearStats.defence_slash, gearStats.defence_stab);
+
+			// Calc offensive % and defensive %, get the average of the two
+			let totalPercent = Math.min(calcWhatPercent(maxOffensiveStat - minOffensiveReq, maxBoostValues.Offense - minOffensiveReq), 100);
+			totalPercent += Math.min(calcWhatPercent(maxDefensiveStat - minDefensiveReq, maxBoostValues.Defense - minDefensiveReq), 100);
+			totalPercent /= 2;
+			gearBoost -= reduceNumByPercent(1 - tier.boosts.gearStats, 100 - totalPercent);
+
+			const boostMessage = ((1 - gearBoost) * 100).toFixed(2);
 
 			tripTime *= gearBoost;
-			boosts.push(`${gearBoost}% time boost for gear stats`);
-		}
+			boosts.push(`${boostMessage}% out of ${((1 - tier.boosts.gearStats) * 100).toFixed(2)}% time boost for gear stats`);
+		}*/
 
-		// Every 50 trips becomes 1% faster to a cap of 10%
-		const percentFaster = Math.min(Math.floor((await msg.author.getMinigameScore('TempleTrekking')) / 50), 10);
+
+		// Every 25 trips becomes 1% faster to a cap of 10%
+		const percentFaster = Math.min(Math.floor((await msg.author.getMinigameScore('TempleTrekking')) / 25), 10);
 
 		boosts.push(`${percentFaster.toFixed(1)}% for minion learning`);
 
@@ -92,10 +106,31 @@ export default class extends BotCommand {
 			}
 		}
 
-		const [hasIvandisReqs, reason] = msg.author.hasSkillReqs(ivandisRequirements);
-		if (!hasIvandisReqs) {
-			boosts.push(`${(tier.boosts.ivandis - 1) * 100}% for not having requirements for Ivandis Flail: ${reason}`);
-			tripTime *= tier.boosts.ivandis;
+		if (!msg.author.hasGracefulEquipped()) {
+			boosts.push(`-15% for not having graceful equipped anywhere`);
+			tripTime *= 1.15;
+		}
+
+		const [hasMoryHard] = await userhasDiaryTier(msg.author, MorytaniaDiary.hard);
+
+		if (hasMoryHard) {
+			boosts.push(`15% for Morytania hard diary`);
+			tripTime *= 0.85;
+		}
+
+		
+		if (msg.author.hasItemEquippedOrInBank('Ivandis flail')) {
+
+			let flailBoost = tier.boosts.ivandis;
+			let itemName = 'Ivandis'
+			if (msg.author.hasItemEquippedOrInBank('Blisterwood flail')) {
+				flailBoost -= 1 - tier.boosts.blisterwood
+				itemName = 'Blisterwood'
+			}
+
+			itemName += ' flail'
+			boosts.push(`${((1 - flailBoost) * 100).toFixed(1)}% ${itemName}`);
+			tripTime *= flailBoost;
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Trekking);
@@ -103,6 +138,7 @@ export default class extends BotCommand {
 		if (quantity === undefined || quantity === null) {
 			quantity = Math.floor(maxTripLength / tripTime);
 		}
+
 		const duration = quantity * tripTime;
 
 		if (duration > maxTripLength) {

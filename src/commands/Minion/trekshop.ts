@@ -151,14 +151,13 @@ export default class extends BotCommand {
 		await user.removeItemsFromBank(inItems);
 
 		let ret = `You redeemed **${inItems}** for `;
-		if (outItems.length > 0) ret += `**${outItems}**`;
+		if (outItems.length > 0) {
+			ret += `**${outItems}**`;
+		} else {
+			ret += `XP. You received: `;
+		}
 
-		//TODO: Fix the XP return message
-		await Promise.all(outXP.map(xp => {
-			if (xp.amount > 0) {
-				ret += user.addXP(xp);
-			}
-		}));
+		ret += (await Promise.all(outXP.map(xp => xp.amount > 0 ? user.addXP(xp) : ''))).filter(Boolean).join(', ').replace(/You received /g, '');
 
 		return msg.send(`${ret}.`);
 	}
