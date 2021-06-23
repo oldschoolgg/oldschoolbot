@@ -77,7 +77,7 @@ const killableBosses: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		customMonsterHP: 723,
 		combatXpMultiplier: 1.132,
-		healAmountNeeded: 20 * 5,
+		healAmountNeeded: 18 * 4,
 		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic]
 	},
@@ -114,7 +114,7 @@ const killableBosses: KillableMonster[] = [
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
 		customMonsterHP: 641,
 		combatXpMultiplier: 1.159,
-		healAmountNeeded: 20 * 5,
+		healAmountNeeded: 18 * 4,
 		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
 	},
@@ -154,8 +154,8 @@ const killableBosses: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 708,
 		combatXpMultiplier: 1.135,
-		healAmountNeeded: 20 * 5,
-		attackStyleToUse: GearSetupTypes.Melee,
+		healAmountNeeded: 20 * 3,
+		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackMagic]
 	}
 ];
