@@ -251,7 +251,7 @@ DESC LIMIT 2000;`
 		if (Date.now() - this.petLeaderboard.lastUpdated > CACHE_TIME) {
 			this.petLeaderboard.list = await this.query(
 				`SELECT u.id, u.petcount FROM (
-  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS(pets)) petcount, id FROM users
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS(pets)) petcount, id FROM users
 ) u
 ORDER BY u.petcount DESC LIMIT 2000;`
 			);

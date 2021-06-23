@@ -47,7 +47,6 @@ export default class extends Task {
 			allUsers.map(u => {
 				if (challengeMode) {
 					u.incrementMinigameScore('RaidsChallengeMode', 1);
-					u.incrementMinigameScore('Raids', 1);
 				} else {
 					u.incrementMinigameScore('Raids', 1);
 				}

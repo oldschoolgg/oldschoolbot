@@ -110,15 +110,17 @@ export default class extends BotCommand {
 		}
 
 		if (minigame === 'cyclops') {
+			const hasAttackCape = msg.author.getGear('melee').hasEquipped('Attack cape');
 			const maxTripLength = msg.author.maxTripLength(Activity.Cyclops);
 			// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 			const amountTokens = userBank.amount('Warrior guild token');
-			if (amountTokens < 100) {
+			if (!hasAttackCape && amountTokens < 100) {
 				return msg.send('You need atleast 100 Warriors guild tokens to kill Cyclops.');
 			}
 			// If no quantity provided, set it to the max.
 			if (quantity === null) {
-				const maxTokensTripLength = Math.floor((amountTokens - 10) / 10) * Time.Minute;
+				const maxTokensTripLength =
+					Math.floor((hasAttackCape ? 100_000 : amountTokens - 10) / 10) * Time.Minute;
 				quantity = Math.floor(
 					(maxTokensTripLength > maxTripLength ? maxTripLength : maxTokensTripLength) / (Time.Second * 30)
 				);
@@ -138,7 +140,7 @@ export default class extends BotCommand {
 
 			const tokensToSpend = Math.floor((duration / Time.Minute) * 10 + 10);
 
-			if (amountTokens < tokensToSpend) {
+			if (!hasAttackCape && amountTokens < tokensToSpend) {
 				return msg.send(
 					`You don't have enough Warrior guild tokens to kill cyclopes for ${formatDuration(
 						duration
@@ -158,11 +160,15 @@ export default class extends BotCommand {
 
 			let response = `${
 				msg.author.minionName
-			} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDuration(
-				duration
-			)} to finish. Removed ${tokensToSpend} Warrior guild tokens from your bank.`;
+			} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDuration(duration)} to finish. ${
+				hasAttackCape
+					? 'You used no warrior guild tokens because you have an Attack cape.'
+					: `Removed ${tokensToSpend} Warrior guild tokens from your bank.`
+			}`;
 
-			await msg.author.removeItemFromBank(itemID('Warrior guild token'), tokensToSpend);
+			if (!hasAttackCape) {
+				await msg.author.removeItemFromBank(itemID('Warrior guild token'), tokensToSpend);
+			}
 
 			return msg.send(response);
 		}
