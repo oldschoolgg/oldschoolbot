@@ -45,11 +45,11 @@ export default class extends BotCommand {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const osItem = item.find(i => userBank[i.id] && i.highalch && i.tradeable);
 		if (!osItem) {
-			return msg.send(`You don't have any of this item to alch.`);
+			return msg.send("You don't have any of this item to alch.");
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) < 55) {
-			return msg.send(`You need level 55 Magic to cast High Alchemy`);
+			return msg.send('You need level 55 Magic to cast High Alchemy');
 		}
 
 		// 5 tick action
@@ -91,16 +91,12 @@ export default class extends BotCommand {
 			const alchMessage = await msg.channel.send(
 				`${msg.author}, say \`confirm\` to alch ${quantity} ${osItem.name} (${Util.toKMB(
 					alchValue
-				)}). This will take approximately ${formatDuration(
-					duration
-				)}, and consume ${quantity}x Nature runes.`
+				)}). This will take approximately ${formatDuration(duration)}, and consume ${quantity}x Nature runes.`
 			);
 
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 					{
 						max: 1,
 						time: 10_000,
@@ -113,13 +109,9 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemsFromBank(consumedItems);
-		await updateBankSetting(
-			this.client,
-			ClientSettings.EconomyStats.MagicCostBank,
-			consumedItems
-		);
+		await updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, consumedItems);
 
-		await addSubTaskToActivityTask<AlchingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<AlchingActivityTaskOptions>({
 			itemID: osItem.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

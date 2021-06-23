@@ -26,11 +26,7 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			usage: '[new|delete|equip] [name:str{1,12}] [setup:str]',
 			subcommands: true,
-			examples: [
-				'+gearpresets new pvm melee',
-				'+gearpresets delete pvm',
-				'+gearpresets equip pvm melee'
-			],
+			examples: ['+gearpresets new pvm melee', '+gearpresets delete pvm', '+gearpresets equip pvm melee'],
 			categoryFlags: ['minion', 'skilling']
 		});
 	}
@@ -38,7 +34,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const presets = await GearPresetsTable.find({ userID: msg.author.id });
 		if (presets.length === 0) {
-			return msg.send(`You have no presets.`);
+			return msg.send('You have no presets.');
 		}
 		let title = '**Your presets:**';
 		let str = '';
@@ -58,22 +54,20 @@ export default class extends BotCommand {
 
 	async equip(msg: KlasaMessage, [name, setup]: [string, string]) {
 		if (msg.author.minionIsBusy) {
-			return msg.send(
-				`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`
-			);
+			return msg.send(`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`);
 		}
 
-		if (!name) return msg.send(`You didn't supply a name.`);
-		if (!setup) return msg.send(`You didn't supply a setup.`);
+		if (!name) return msg.send("You didn't supply a name.");
+		if (!setup) return msg.send("You didn't supply a setup.");
 
 		if (!isValidGearSetup(setup)) {
-			return msg.send(`That's not a valid gear setup.`);
+			return msg.send("That's not a valid gear setup.");
 		}
 
 		const userPreset = await GearPresetsTable.findOne({ userID: msg.author.id, name });
 		const globalPreset = globalPresets.find(i => i.name === name);
 		if (!userPreset && !globalPreset) {
-			return msg.send(`You don't have a gear preset with that name.`);
+			return msg.send("You don't have a gear preset with that name.");
 		}
 		const preset = (userPreset ?? globalPreset) as GearPresetsTable;
 
@@ -107,9 +101,7 @@ export default class extends BotCommand {
 
 		if (!msg.author.bank().has(toRemove.bank)) {
 			return msg.send(
-				`You don't have the items in this preset. You're missing: ${toRemove.remove(
-					msg.author.bank()
-				)}.`
+				`You don't have the items in this preset. You're missing: ${toRemove.remove(msg.author.bank())}.`
 			);
 		}
 
@@ -128,18 +120,15 @@ export default class extends BotCommand {
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);
 
-		return msg.send(
-			`You equipped the ${preset.name} preset in your ${setup} setup.`,
-			new MessageAttachment(image)
-		);
+		return msg.send(`You equipped the ${preset.name} preset in your ${setup} setup.`, new MessageAttachment(image));
 	}
 
 	async delete(msg: KlasaMessage, [name]: [string]) {
-		if (!name) return msg.send(`You didn't supply a name.`);
+		if (!name) return msg.send("You didn't supply a name.");
 
 		const preset = await GearPresetsTable.findOne({ userID: msg.author.id, name });
 		if (!preset) {
-			return msg.send(`You don't have a gear preset with that name.`);
+			return msg.send("You don't have a gear preset with that name.");
 		}
 
 		await preset.remove();
@@ -150,11 +139,11 @@ export default class extends BotCommand {
 	async new(msg: KlasaMessage, [name = '', setup = '']: [string, string]) {
 		setup = setup.toLowerCase();
 		name = cleanString(name).toLowerCase();
-		if (!name) return msg.send(`You didn't supply a name.`);
-		if (!setup) return msg.send(`You didn't supply a setup.`);
+		if (!name) return msg.send("You didn't supply a name.");
+		if (!setup) return msg.send("You didn't supply a setup.");
 
 		if (!isValidGearSetup(setup)) {
-			return msg.send(`That's not a valid gear setup.`);
+			return msg.send("That's not a valid gear setup.");
 		}
 
 		const currentPresets = await GearPresetsTable.find({ userID: msg.author.id });
@@ -187,8 +176,6 @@ export default class extends BotCommand {
 		preset.name = name;
 		preset.userID = msg.author.id;
 		await preset.save();
-		return msg.send(
-			`Successfully made a new preset called \`${preset.name}\` based off your ${setup} setup.`
-		);
+		return msg.send(`Successfully made a new preset called \`${preset.name}\` based off your ${setup} setup.`);
 	}
 }

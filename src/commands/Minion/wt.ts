@@ -3,20 +3,13 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Activity, Time } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { warmGear } from '../../lib/data/filterables';
-import { hasItemEquipped } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
-import {
-	addItemToBank,
-	bankHasItem,
-	calcWhatPercent,
-	formatDuration,
-	reduceNumByPercent
-} from '../../lib/util';
+import { addItemToBank, bankHasItem, calcWhatPercent, formatDuration, reduceNumByPercent } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -38,7 +31,7 @@ export default class extends BotCommand {
 		const fmLevel = msg.author.skillLevel(SkillsEnum.Firemaking);
 		const wcLevel = msg.author.skillLevel(SkillsEnum.Woodcutting);
 		if (fmLevel < 50) {
-			return msg.send(`You need 50 Firemaking to have a chance at defeating the Wintertodt.`);
+			return msg.send('You need 50 Firemaking to have a chance at defeating the Wintertodt.');
 		}
 
 		const messages = [];
@@ -55,7 +48,7 @@ export default class extends BotCommand {
 		let warmGearAmount = 0;
 
 		for (const piece of warmGear) {
-			if (hasItemEquipped(piece, msg.author.getGear('skilling'))) {
+			if (msg.author.getGear('skilling').hasEquipped([piece])) {
 				warmGearAmount++;
 			}
 			if (warmGearAmount > 4) break;
@@ -73,9 +66,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const quantity = Math.floor(
-			msg.author.maxTripLength(Activity.Wintertodt) / durationPerTodt
-		);
+		const quantity = Math.floor(msg.author.maxTripLength(Activity.Wintertodt) / durationPerTodt);
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		for (const food of Eatables) {
@@ -109,7 +100,7 @@ export default class extends BotCommand {
 
 		const duration = durationPerTodt * quantity;
 
-		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>({
 			minigameID: 'Wintertodt',
 			userID: msg.author.id,
 			channelID: msg.channel.id,

@@ -35,11 +35,7 @@ export default class extends BotCommand {
 
 		ctx.fillText('Your Corporeal Beast kill count is: ', 11, 40);
 		ctx.fillStyle = '#ff0000';
-		ctx.fillText(
-			kc.toLocaleString(),
-			12 + ctx.measureText('Your Corporeal Beast kill count is: ').width,
-			40
-		);
+		ctx.fillText(kc.toLocaleString(), 12 + ctx.measureText('Your Corporeal Beast kill count is: ').width, 40);
 
 		ctx.fillStyle = '#005f00';
 		ctx.fillText(`${username} received a drop: Elysian sigil`, 11, 54);
@@ -49,8 +45,6 @@ export default class extends BotCommand {
 		ctx.fillStyle = '#0000ff';
 		ctx.fillText('*', 12 + ctx.measureText(`${username}: `).width, 70);
 
-		return msg.send(
-			new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`)
-		);
+		return msg.send(new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`));
 	}
 }

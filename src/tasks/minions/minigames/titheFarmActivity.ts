@@ -26,10 +26,7 @@ export default class extends Task {
 		const determinePoints = determineHarvest - 74;
 
 		await user.settings.update(UserSettings.Stats.TitheFarmsCompleted, titheFarmsCompleted + 1);
-		await user.settings.update(
-			UserSettings.Stats.TitheFarmPoints,
-			titheFarmPoints + determinePoints
-		);
+		await user.settings.update(UserSettings.Stats.TitheFarmPoints, titheFarmPoints + determinePoints);
 
 		let fruit = '';
 		let fruitXp = 0;
@@ -58,30 +55,30 @@ export default class extends Task {
 		let bonusXpMultiplier = 0;
 		let farmersPiecesCheck = 0;
 		if (
-			bankHasItem(userBank, itemID(`Farmer's strawhat`), 1) ||
-			user.hasItemEquippedAnywhere(`Farmer's strawhat`)
+			bankHasItem(userBank, itemID("Farmer's strawhat"), 1) ||
+			user.hasItemEquippedAnywhere("Farmer's strawhat")
 		) {
 			bonusXpMultiplier += 0.004;
 			farmersPiecesCheck += 1;
 		}
 		if (
-			bankHasItem(userBank, itemID(`Farmer's jacket`), 1) ||
-			bankHasItem(userBank, itemID(`Farmer's shirt`), 1) ||
-			user.hasItemEquippedAnywhere([`Farmer's jacket`, `Farmer's shirt`])
+			bankHasItem(userBank, itemID("Farmer's jacket"), 1) ||
+			bankHasItem(userBank, itemID("Farmer's shirt"), 1) ||
+			user.hasItemEquippedAnywhere(["Farmer's jacket", "Farmer's shirt"])
 		) {
 			bonusXpMultiplier += 0.008;
 			farmersPiecesCheck += 1;
 		}
 		if (
-			bankHasItem(userBank, itemID(`Farmer's boro trousers`), 1) ||
-			user.hasItemEquippedAnywhere(itemID(`Farmer's boro trousers`))
+			bankHasItem(userBank, itemID("Farmer's boro trousers"), 1) ||
+			user.hasItemEquippedAnywhere(itemID("Farmer's boro trousers"))
 		) {
 			bonusXpMultiplier += 0.006;
 			farmersPiecesCheck += 1;
 		}
 		if (
-			bankHasItem(userBank, itemID(`Farmer's boots`), 1) ||
-			user.hasItemEquippedAnywhere(itemID(`Farmer's boots`))
+			bankHasItem(userBank, itemID("Farmer's boots"), 1) ||
+			user.hasItemEquippedAnywhere(itemID("Farmer's boots"))
 		) {
 			bonusXpMultiplier += 0.002;
 			farmersPiecesCheck += 1;
@@ -93,12 +90,10 @@ export default class extends Task {
 
 		let bonusXpStr = '';
 		if (bonusXp > 0) {
-			bonusXpStr = `You received an additional ${Math.floor(
-				bonusXp
-			)} Bonus XP from your farmer's outfit pieces.`;
+			bonusXpStr = `You received an additional ${Math.floor(bonusXp)} Bonus XP from your farmer's outfit pieces.`;
 		}
 
-		await user.addXP(SkillsEnum.Farming, Math.floor(totalXp));
+		await user.addXP({ skillName: SkillsEnum.Farming, amount: Math.floor(totalXp) });
 
 		const newFarmingLevel = user.skillLevel(SkillsEnum.Farming);
 
@@ -111,15 +106,15 @@ export default class extends Task {
 		if (roll((7_494_389 - user.skillLevel(SkillsEnum.Farming) * 25) / determineHarvest)) {
 			loot.add('Tangleroot');
 			lootStr.push('\n\n```diff');
-			lootStr.push(`\n- You have a funny feeling you're being followed...`);
+			lootStr.push("\n- You have a funny feeling you're being followed...");
 			lootStr.push('```');
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Farming} **${user.username}'s** minion, ${
 					user.minionName
-				}, just received a Tangleroot by completing the ${
-					Emoji.MinigameIcon
-				} Tithe Farm on their ${titheFarmsCompleted + 1} run!`
+				}, just received a Tangleroot by completing the ${Emoji.MinigameIcon} Tithe Farm on their ${
+					titheFarmsCompleted + 1
+				} run!`
 			);
 
 			await user.addItemsToBank(loot, true);
@@ -133,7 +128,7 @@ export default class extends Task {
 			channelID,
 			returnStr,
 			res => {
-				user.log(`attemped another run of the Tithe Farm.`);
+				user.log('attemped another run of the Tithe Farm.');
 				return this.client.commands.get('tithefarm')!.run(res, []);
 			},
 			undefined,

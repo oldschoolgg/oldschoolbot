@@ -87,12 +87,7 @@ export default class CastleWarsCommand extends BotCommand {
 
 **Pizazz Points Per Hour:** ${pizazzPointsPerHour}
 ${buyables
-	.map(
-		i =>
-			`${i.item.name} - ${i.cost} pts - ${formatDuration(
-				(i.cost / pizazzPointsPerHour) * (Time.Minute * 60)
-			)}`
-	)
+	.map(i => `${i.item.name} - ${i.cost} pts - ${formatDuration((i.cost / pizazzPointsPerHour) * (Time.Minute * 60))}`)
 	.join('\n')}
 
 Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get.`);
@@ -102,25 +97,19 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 	@minionNotBusy
 	async train(msg: KlasaMessage) {
 		const roomDuration = Time.Minute * 14;
-		const quantity = Math.floor(
-			msg.author.maxTripLength(Activity.MageTrainingArena) / roomDuration
-		);
+		const quantity = Math.floor(msg.author.maxTripLength(Activity.MageTrainingArena) / roomDuration);
 		const duration = quantity * roomDuration;
 
-		const cost = determineRunes(msg.author, new Bank().add(RuneTable.roll())).multiply(
-			quantity
-		);
+		const cost = determineRunes(msg.author, new Bank().add(RuneTable.roll())).multiply(quantity);
 
 		if (!msg.author.owns(cost)) {
-			return msg.channel.send(
-				`You don't have enough items for this trip, you need: ${cost}.`
-			);
+			return msg.channel.send(`You don't have enough items for this trip, you need: ${cost}.`);
 		}
 
 		await msg.author.removeItemsFromBank(cost);
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.MTACostBank, cost);
 
-		await addSubTaskToActivityTask<MinigameActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,

@@ -29,7 +29,7 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage) {
 		if (msg.author.skillLevel(SkillsEnum.Magic) < 60) {
-			return msg.channel.send(`You need level 60 Magic to do the Mage Arena.`);
+			return msg.channel.send('You need level 60 Magic to do the Mage Arena.');
 		}
 		const duration = randomVariation(Time.Minute * 10, 5);
 
@@ -41,9 +41,7 @@ export default class extends BotCommand {
 		});
 
 		if (!msg.author.owns(itemsNeeded)) {
-			return msg.channel.send(
-				`You don't own the needed items to do the Mage Arena, you need: ${itemsNeeded}.`
-			);
+			return msg.channel.send(`You don't own the needed items to do the Mage Arena, you need: ${itemsNeeded}.`);
 		}
 
 		const [, foodRemoved] = await removeFoodFromUser({
@@ -61,7 +59,7 @@ export default class extends BotCommand {
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.MageArenaCost, totalCost);
 
-		await addSubTaskToActivityTask<ActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<ActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
@@ -69,9 +67,7 @@ export default class extends BotCommand {
 		});
 
 		return msg.send(
-			`${
-				msg.author.minionName
-			} is now doing the Mage Arena, it will take approximately ${formatDuration(
+			`${msg.author.minionName} is now doing the Mage Arena, it will take approximately ${formatDuration(
 				duration
 			)}. Removed ${totalCost} from your bank.`
 		);

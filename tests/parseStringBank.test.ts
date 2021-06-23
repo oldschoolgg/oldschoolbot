@@ -21,7 +21,7 @@ describe('Bank Parsers', () => {
 			expect(psb(`${input} twisted bow`)).toEqual([[get('Twisted bow'), output]]);
 		}
 
-		const output = psb(` 1 twisted bow, coal,  5k egg,  1b trout `);
+		const output = psb(' 1 twisted bow, coal,  5k egg,  1b trout ');
 		const expected = [
 			[get('Twisted bow'), 1],
 			[get('Coal'), 0],
@@ -41,9 +41,9 @@ describe('Bank Parsers', () => {
 		expect(psb(' ')).toEqual([]);
 		expect(psb(', ')).toEqual([]);
 		expect(psb(',, , , , ,, , , , ,')).toEqual([]);
-		expect(psb('twisted bow, twisted bow, 1000 twisted bow, 5k twisted bow')).toEqual([
-			[get('Twisted bow'), 0]
-		]);
+		expect(psb('twisted bow, twisted bow, 1000 twisted bow, 5k twisted bow')).toEqual([[get('Twisted bow'), 0]]);
+
+		expect(psb('-1 twisted bow')).toEqual([[get('Twisted bow'), 0]]);
 
 		expect(psb('1k twisted bow, twisted bow, 1000 twisted bow, 5k twisted bow')).toEqual([
 			[get('Twisted bow'), 1000]
@@ -59,7 +59,7 @@ describe('Bank Parsers', () => {
 			[get('Steel arrow'), 0],
 			[get('Rune arrow'), 0]
 		]);
-		expect(psb('Steel platelegs, Adamant platelegs, Black platelegs')).toEqual([
+		expect(psb('Steel platelegs, Adamant platelegs,Non-existent item!!, Black platelegs')).toEqual([
 			[get('Steel platelegs'), 0],
 			[get('Adamant platelegs'), 0],
 			[get('Black platelegs'), 0]
@@ -67,11 +67,7 @@ describe('Bank Parsers', () => {
 	});
 
 	test('parseBank - flags', async () => {
-		const bank = new Bank()
-			.add('Steel arrow')
-			.add('Bones')
-			.add('Coal')
-			.add('Clue scroll (easy)');
+		const bank = new Bank().add('Steel arrow').add('Bones').add('Coal').add('Clue scroll (easy)');
 		const res = parseBank({
 			inputBank: bank,
 			flags: { equippables: '' }
@@ -92,11 +88,7 @@ describe('Bank Parsers', () => {
 	});
 
 	test('parseBank - filters', async () => {
-		const bank = new Bank()
-			.add('Steel arrow')
-			.add('Bones')
-			.add('Coal')
-			.add('Clue scroll (easy)');
+		const bank = new Bank().add('Steel arrow').add('Bones').add('Coal').add('Clue scroll (easy)');
 		const res = parseBank({
 			inputBank: bank,
 			flags: { tt: '' }
@@ -149,5 +141,23 @@ describe('Bank Parsers', () => {
 		expect(res2.length).toEqual(2);
 		expect(res2.amount('Coal')).toEqual(6);
 		expect(res2.amount('Bones')).toEqual(2);
+	});
+
+	test('parseBank - other', async () => {
+		const bank = new Bank()
+			.add('Steel arrow')
+			.add('Bones', 2)
+			.add('Coal', 6)
+			.add('Clue scroll (easy)')
+			.add('Rune arrow')
+			.add('Mind rune', 50)
+			.add('Rune platebody');
+		const res = parseBank({
+			inputBank: bank,
+			flags: {},
+			inputStr: '500 coal'
+		});
+		expect(res.length).toEqual(1);
+		expect(res.amount('Coal')).toEqual(6);
 	});
 });

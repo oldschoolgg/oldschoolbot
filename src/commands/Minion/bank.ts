@@ -38,23 +38,24 @@ export default class extends BotCommand {
 		});
 
 		if (bank.length === 0) {
-			return msg.send(`No items found.`);
+			return msg.send('No items found.');
 		}
-
 		if (msg.flagArgs.text) {
 			const textBank = [];
 			for (const [item, qty] of bank.items()) {
-				if (
-					msg.flagArgs.search &&
-					!item.name.toLowerCase().includes(msg.flagArgs.search.toLowerCase())
-				) {
+				if (msg.flagArgs.search && !item.name.toLowerCase().includes(msg.flagArgs.search.toLowerCase())) {
 					continue;
 				}
-				textBank.push(`${item.name}: ${qty.toLocaleString()}`);
+
+				if (msg.flagArgs.id) {
+					textBank.push(`${item.name} (${item.id.toString()}): ${qty.toLocaleString()}`);
+				} else {
+					textBank.push(`${item.name}: ${qty.toLocaleString()}`);
+				}
 			}
 
 			if (textBank.length === 0) {
-				return msg.send(`No items found.`);
+				return msg.send('No items found.');
 			}
 
 			if (msg.flagArgs.full) {
@@ -67,13 +68,11 @@ export default class extends BotCommand {
 
 			const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
 			const display = new UserRichDisplay();
-			display.setFooterPrefix(`Page `);
+			display.setFooterPrefix('Page ');
 
 			for (const page of chunk(textBank, 10)) {
 				display.addPage(
-					new MessageEmbed()
-						.setTitle(`${msg.author.username}'s Bank`)
-						.setDescription(page.join('\n'))
+					new MessageEmbed().setTitle(`${msg.author.username}'s Bank`).setDescription(page.join('\n'))
 				);
 			}
 

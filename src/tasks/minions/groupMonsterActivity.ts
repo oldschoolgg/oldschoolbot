@@ -19,13 +19,11 @@ export default class extends Task {
 		const kcAmounts: { [key: string]: number } = {};
 
 		for (let i = 0; i < quantity; i++) {
-			const loot = monster.table.kill(1);
+			const loot = monster.table.kill(1, {});
 			const userWhoGetsLoot = randomItemFromArray(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = loot.add(currentLoot);
-			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot])
-				? ++kcAmounts[userWhoGetsLoot]
-				: 1;
+			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot]) ? ++kcAmounts[userWhoGetsLoot] : 1;
 		}
 
 		const leaderUser = await this.client.users.fetch(leader);
@@ -36,14 +34,18 @@ export default class extends Task {
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
-			await addMonsterXP(user, monsterID, Math.ceil(quantity / users.length), duration);
+			await addMonsterXP(user, {
+				monsterID,
+				quantity: Math.ceil(quantity / users.length),
+				duration,
+				isOnTask: false,
+				taskQuantity: null
+			});
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
-			const purple = Object.keys(loot).some(itemID =>
-				isImportantItemForMonster(parseInt(itemID), monster)
-			);
+			const purple = Object.keys(loot).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;
 
@@ -59,15 +61,6 @@ export default class extends Task {
 			resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
 		}
 
-		handleTripFinish(
-			this.client,
-			leaderUser,
-			channelID,
-			resultStr,
-			undefined,
-			undefined,
-			data,
-			totalLoot.bank
-		);
+		handleTripFinish(this.client, leaderUser, channelID, resultStr, undefined, undefined, data, totalLoot.bank);
 	}
 }

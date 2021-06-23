@@ -6,13 +6,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { toTitleCase } from '../../lib/util';
 
-const validStyles = [
-	SkillsEnum.Attack,
-	SkillsEnum.Strength,
-	SkillsEnum.Defence,
-	SkillsEnum.Ranged,
-	SkillsEnum.Magic
-];
+const validStyles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Ranged, SkillsEnum.Magic];
 
 function isValidAttackStyle(str: string): str is AttackStyles {
 	return (validStyles as string[]).includes(str);
@@ -38,15 +32,13 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [_styles]: [string]) {
 		if (msg.author.minionIsBusy) {
-			return msg.send(`You can't change your attack style in the middle of a trip.`);
+			return msg.send("You can't change your attack style in the middle of a trip.");
 		}
 		if (!_styles) {
 			return msg.send(
 				`Your current attack style is ${msg.author
 					.getAttackStyles()
-					.map(
-						toTitleCase
-					)}, the available styles are: Shared, Attack, Strength, Defence, Magic, Ranged.`
+					.map(toTitleCase)}, the available styles are: Shared, Attack, Strength, Defence, Magic, Ranged.`
 			);
 		}
 		const parsed = _styles
@@ -54,12 +46,9 @@ export default class extends BotCommand {
 			.split(' ')
 			.map(i => i.trim());
 
-		if (
-			uniqueArr(parsed).length !== parsed.length ||
-			(_styles !== 'shared' && !parsed.every(isValidAttackStyle))
-		) {
+		if (uniqueArr(parsed).length !== parsed.length || (_styles !== 'shared' && !parsed.every(isValidAttackStyle))) {
 			return msg.channel.send(
-				`That is not a valid attack style, the available styles are: Shared, Attack, Strength, Defence, Magic, Ranged.`
+				'That is not a valid attack style, the available styles are: Shared, Attack, Strength, Defence, Magic, Ranged.'
 			);
 		}
 		const styles: AttackStyles[] =
@@ -72,9 +61,7 @@ export default class extends BotCommand {
 		for (const comb of invalidCombinations) {
 			if (comb.every(i => styles.includes(i))) {
 				return msg.send(
-					`That's not a valid attack style, you can't train these at the same time: ${comb.join(
-						', '
-					)}.`
+					`That's not a valid attack style, you can't train these at the same time: ${comb.join(', ')}.`
 				);
 			}
 		}

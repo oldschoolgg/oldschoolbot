@@ -13,12 +13,24 @@ export interface ActivityTaskOptions {
 	channelID: string;
 }
 
+export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
+	runeID: number;
+	channelID: string;
+	essenceQuantity: number;
+}
+
 export interface GloryChargingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
 export interface WealthChargingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
+}
+
+export interface DarkAltarOptions extends ActivityTaskOptions {
+	quantity: number;
+	hasElite: boolean;
+	rune: 'blood' | 'soul';
 }
 
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
@@ -43,6 +55,9 @@ export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	monsterID: number;
 	quantity: number;
+	usingCannon?: boolean;
+	cannonMulti?: boolean;
+	burstOrBarrage?: number;
 }
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
@@ -284,3 +299,24 @@ export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
 	barID: number;
 	quantity: number;
 }
+
+export type ActivityTaskData =
+	| ActivityTaskOptions
+	| MonsterActivityTaskOptions
+	| BlastFurnaceActivityTaskOptions
+	| WoodcuttingActivityTaskOptions
+	| CollectingOptions
+	| RaidsOptions
+	| MinigameActivityTaskOptions
+	| GauntletOptions
+	| SoulWarsOptions
+	| CastingActivityTaskOptions
+	| EnchantingActivityTaskOptions
+	| ConstructionActivityTaskOptions
+	| HunterActivityTaskOptions
+	| ZalcanoActivityTaskOptions
+	| SawmillActivityTaskOptions
+	| FarmingActivityTaskOptions
+	| HerbloreActivityTaskOptions
+	| FletchingActivityTaskOptions
+	| RunecraftActivityTaskOptions;

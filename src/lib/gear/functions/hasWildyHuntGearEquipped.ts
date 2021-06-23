@@ -1,5 +1,5 @@
-import { GearSetup } from '..';
 import getOSItem from '../../util/getOSItem';
+import { GearSetup } from '..';
 
 export function hasWildyHuntGearEquipped(setup: GearSetup): [boolean, string, number] {
 	const userBodyID = setup.body?.item;
@@ -14,26 +14,22 @@ export function hasWildyHuntGearEquipped(setup: GearSetup): [boolean, string, nu
 	};
 
 	if (!userBodyID || !userLegsID) {
-		return [false, `Body and leg armour equipped in misc setup.`, 0];
+		return [false, 'Body and leg armour equipped in misc setup.', 0];
 	}
 
 	const userBodyItem = getOSItem(userBodyID);
 	const userLegsItem = getOSItem(userLegsID);
 
 	if (!userBodyItem.equipment || !userLegsItem.equipment) {
-		return [false, `The body and or legs equipped in misc setup dosen't have any stats.`, 0];
+		return [false, "The body and or legs equipped in misc setup dosen't have any stats.", 0];
 	}
 
 	const userStatsBodyLegs = {
-		userDefenceMage:
-			userBodyItem.equipment.defence_magic + userLegsItem.equipment.defence_magic,
-		userDefenceRanged:
-			userBodyItem.equipment.defence_ranged + userLegsItem.equipment.defence_ranged,
+		userDefenceMage: userBodyItem.equipment.defence_magic + userLegsItem.equipment.defence_magic,
+		userDefenceRanged: userBodyItem.equipment.defence_ranged + userLegsItem.equipment.defence_ranged,
 		userDefenceStab: userBodyItem.equipment.defence_stab + userLegsItem.equipment.defence_stab,
-		userDefenceSlash:
-			userBodyItem.equipment.defence_slash + userLegsItem.equipment.defence_slash,
-		userDefenceCrush:
-			userBodyItem.equipment.defence_crush + userLegsItem.equipment.defence_crush
+		userDefenceSlash: userBodyItem.equipment.defence_slash + userLegsItem.equipment.defence_slash,
+		userDefenceCrush: userBodyItem.equipment.defence_crush + userLegsItem.equipment.defence_crush
 	};
 
 	if (

@@ -44,7 +44,7 @@ export default class extends BotCommand {
 								.join(', ')}`
 					).join('\n')
 				),
-				`Available Herblore potions and items.txt`
+				'Available Herblore potions and items.txt'
 			);
 		}
 
@@ -52,9 +52,7 @@ export default class extends BotCommand {
 			mixName = quantity;
 			quantity = null;
 		}
-		const mixableItem = Herblore.Mixables.find(item =>
-			item.aliases.some(alias => stringMatches(alias, mixName))
-		);
+		const mixableItem = Herblore.Mixables.find(item => item.aliases.some(alias => stringMatches(alias, mixName)));
 
 		if (!mixableItem) {
 			return msg.send(
@@ -68,13 +66,8 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (
-			mixableItem.qpRequired &&
-			msg.author.settings.get(UserSettings.QP) < mixableItem.qpRequired
-		) {
-			return msg.send(
-				`You need atleast **${mixableItem.qpRequired}** QP to make ${mixableItem.name}.`
-			);
+		if (mixableItem.qpRequired && msg.author.settings.get(UserSettings.QP) < mixableItem.qpRequired) {
+			return msg.send(`You need atleast **${mixableItem.qpRequired}** QP to make ${mixableItem.name}.`);
 		}
 
 		let sets = 'x';
@@ -113,7 +106,7 @@ export default class extends BotCommand {
 				if (id === 995) {
 					const userGP = msg.author.settings.get(UserSettings.GP);
 					if (userGP < qty) {
-						return msg.send(`You do not have enough GP.`);
+						return msg.send('You do not have enough GP.');
 					}
 					quantity = Math.min(quantity, Math.floor(userGP / qty));
 					continue;
@@ -132,9 +125,9 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					mixableItem.name
-				}s you can make is ${Math.floor(maxTripLength / timeToMixSingleItem)}.`
+				)}, try a lower quantity. The highest amount of ${mixableItem.name}s you can make is ${Math.floor(
+					maxTripLength / timeToMixSingleItem
+				)}.`
 			);
 		}
 
@@ -170,7 +163,7 @@ export default class extends BotCommand {
 			])
 		);
 
-		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>({
 			mixableID: mixableItem.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

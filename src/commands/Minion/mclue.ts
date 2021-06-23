@@ -25,9 +25,9 @@ export default class extends BotCommand {
 	}
 
 	invalidClue(msg: KlasaMessage): string {
-		return `That isn't a valid clue tier, the valid tiers are: ${ClueTiers.map(
-			tier => tier.name
-		).join(', ')}. For example, \`${msg.cmdPrefix}minion clue 1 easy\``;
+		return `That isn't a valid clue tier, the valid tiers are: ${ClueTiers.map(tier => tier.name).join(
+			', '
+		)}. For example, \`${msg.cmdPrefix}minion clue 1 easy\``;
 	}
 
 	@requiresMinion
@@ -63,9 +63,9 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${
-					clueTier.name
-				} is ${Math.floor(maxTripLength / timeToFinish)}.`
+				)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${Math.floor(
+					maxTripLength / timeToFinish
+				)}.`
 			);
 		}
 
@@ -82,16 +82,21 @@ export default class extends BotCommand {
 		duration += (randomAddedDuration * duration) / 100;
 
 		if (msg.author.hasGracefulEquipped()) {
-			boosts.push(`10% for Graceful`);
+			boosts.push('10% for Graceful');
 			duration *= 0.9;
 		}
 
 		if (isWeekend()) {
-			boosts.push(`10% for Weekend`);
+			boosts.push('10% for Weekend');
 			duration *= 0.9;
 		}
 
-		await addSubTaskToActivityTask<ClueActivityTaskOptions>(this.client, {
+		if (msg.author.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
+			boosts.push('10% for Achievement diary cape');
+			duration *= 0.9;
+		}
+
+		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			clueID: clueTier.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

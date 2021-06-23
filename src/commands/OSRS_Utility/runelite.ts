@@ -30,7 +30,7 @@ https://runelite.net/`
 			.addField('Open Source', 'https://github.com/runelite/runelite', true)
 			.addField('Lightweight & fast', 'No lag, little memory usage', true)
 			.addField('Many Features', 'https://runelite.net/features', true)
-			.setFooter(`*Use of any 3rd party client is at your own risk.`);
+			.setFooter('*Use of any 3rd party client is at your own risk.');
 
 		return msg.send({ embed });
 	}

@@ -73,8 +73,7 @@ export default class extends BotCommand {
 			cooldown: 3,
 			oneAtTime: true,
 			description: 'Shows the rates of getting skilling pets at certain levels.',
-			usage:
-				'<skillLevel:int{1,99}> <hunter|woodcutting|agility|fishing|mining|thieving|farming>',
+			usage: '<skillLevel:int{1,99}> <hunter|woodcutting|agility|fishing|mining|thieving|farming>',
 			usageDelim: ' '
 		});
 	}

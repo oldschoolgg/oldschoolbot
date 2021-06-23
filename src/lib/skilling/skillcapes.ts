@@ -140,6 +140,12 @@ const Skillcapes: Skillcape[] = [
 		hood: itemID('Hitpoints hood'),
 		untrimmed: itemID('Hitpoints cape'),
 		trimmed: itemID('Hitpoints cape(t)')
+	},
+	{
+		skill: SkillsEnum.Slayer,
+		hood: itemID('Slayer hood'),
+		untrimmed: itemID('Slayer cape'),
+		trimmed: itemID('Slayer cape(t)')
 	}
 ];
 

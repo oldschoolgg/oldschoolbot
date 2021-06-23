@@ -21,8 +21,7 @@ export default class extends BotCommand {
 			aliases: ['rd', 'rogues'],
 			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			categoryFlags: ['minion', 'skilling', 'minigame'],
-			description:
-				"Sends your minion to run laps of the Rogues' Den maze. Requires 50 Agility and Thieving.",
+			description: "Sends your minion to run laps of the Rogues' Den maze. Requires 50 Agility and Thieving.",
 			examples: ['+roguesden']
 		});
 	}
@@ -30,10 +29,7 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		if (
-			msg.author.skillLevel(SkillsEnum.Agility) < 50 ||
-			msg.author.skillLevel(SkillsEnum.Thieving) < 50
-		) {
+		if (msg.author.skillLevel(SkillsEnum.Agility) < 50 || msg.author.skillLevel(SkillsEnum.Thieving) < 50) {
 			return msg.send("To attempt the Rogues' Den maze you need 50 Agility and 50 Thieving.");
 		}
 
@@ -42,14 +38,12 @@ export default class extends BotCommand {
 		let baseTime = Time.Minute * 9;
 
 		let skillPercentage =
-			(msg.author.skillLevel(SkillsEnum.Agility) +
-				msg.author.skillLevel(SkillsEnum.Thieving)) /
-			20;
+			(msg.author.skillLevel(SkillsEnum.Agility) + msg.author.skillLevel(SkillsEnum.Thieving)) / 20;
 		boosts.push(`${skillPercentage}% boost for levels`);
 
 		if (msg.author.skillLevel(SkillsEnum.Thieving) >= 80) {
 			skillPercentage += 40;
-			boosts.push(`40% boost for 80+ Thieving`);
+			boosts.push('40% boost for 80+ Thieving');
 		}
 
 		baseTime = reduceNumByPercent(baseTime, skillPercentage);
@@ -60,15 +54,13 @@ export default class extends BotCommand {
 			baseTime = reduceNumByPercent(baseTime, 50);
 
 			const potionsInBank = await msg.author.numberOfItemInBank(itemID('Stamina potion(4)'));
-			const maxPossibleLaps = Math.floor(
-				msg.author.maxTripLength(Activity.RoguesDenMaze) / baseTime
-			);
+			const maxPossibleLaps = Math.floor(msg.author.maxTripLength(Activity.RoguesDenMaze) / baseTime);
 
 			// do as many laps as possible with the current stamina potion supply
 			quantity = Math.min(potionsInBank * 4, maxPossibleLaps);
 			staminasToRemove.add('Stamina potion(4)', Math.max(1, Math.floor(quantity / 4)));
 		} else {
-			boosts.push(`-50% not enough Stamina potions`);
+			boosts.push('-50% not enough Stamina potions');
 		}
 
 		const duration = quantity * baseTime;
@@ -84,7 +76,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<RoguesDenMazeTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<RoguesDenMazeTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

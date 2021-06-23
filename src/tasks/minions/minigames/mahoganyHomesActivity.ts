@@ -19,7 +19,11 @@ export default class extends Task {
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xp);
 		}
-		const xpRes = await user.addXP(SkillsEnum.Construction, xp + bonusXP, duration);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Construction,
+			amount: xp + bonusXP,
+			duration
+		});
 		await user.settings.update(
 			UserSettings.CarpenterPoints,
 			user.settings.get(UserSettings.CarpenterPoints) + points
@@ -37,7 +41,7 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued trip of mahogany homes`);
+				user.log('continued trip of mahogany homes');
 				return (this.client.commands.get('mh') as MahoganyHomesCommand).build(res);
 			},
 			undefined,

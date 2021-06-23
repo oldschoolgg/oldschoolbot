@@ -13,7 +13,7 @@ import { BankImageResult } from '../../tasks/bankImage';
 import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
-import { KillableMonster } from '../minions/types';
+import { AddXpParams, KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
@@ -23,26 +23,25 @@ import { ItemBank, MakePartyOptions, Skills } from '.';
 
 declare module 'klasa' {
 	interface KlasaClient {
-		public orm: Connection;
-		public oneCommandAtATimeCache: Set<string>;
-		public secondaryUserBusyCache: Set<string>;
+		orm: Connection;
+		oneCommandAtATimeCache: Set<string>;
+		secondaryUserBusyCache: Set<string>;
 		public cacheItemPrice(itemID: number): Promise<number>;
 		public query<T>(query: string, values?: string[]): Promise<T>;
-		public settings: Settings;
-		public production: boolean;
-		public _fileChangeWatcher?: FSWatcher;
-		public _badgeCache: Map<string, string>;
-		public _peakIntervalCache: Peak[];
+		settings: Settings;
+		production: boolean;
+		_fileChangeWatcher?: FSWatcher;
+		_badgeCache: Map<string, string>;
+		_peakIntervalCache: Peak[];
 		public wtf(error: Error): void;
-		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 		commentStream?: CommentStream;
 		submissionStream?: SubmissionStream;
 		fastifyServer: FastifyInstance;
 		minionTicker: NodeJS.Timeout;
+		dailyReminderTicker: NodeJS.Timeout;
 		giveawayTicker: NodeJS.Timeout;
 		analyticsInterval: NodeJS.Timeout;
 		metricsInterval: NodeJS.Timeout;
-		minionActivityCache: Map<string, ActivityTable['taskData']>;
 	}
 
 	interface Command {
@@ -64,22 +63,12 @@ declare module 'klasa' {
 			user?: KlasaUser,
 			cl?: ItemBank
 		): Promise<BankImageResult>;
-		generateCollectionLogImage(
-			collectionLog: ItemBank,
-			title: string = '',
-			type: any
-		): Promise<Buffer>;
+		generateCollectionLogImage(collectionLog: ItemBank, title: string = '', type: any): Promise<Buffer>;
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
 	}
 	interface Command {
 		kill(message: KlasaMessage, [quantity, monster]: [number | string, string]): Promise<any>;
-		getStatsEmbed(
-			username: string,
-			color: number,
-			player: Player,
-			key = 'level',
-			showExtra = true
-		): MessageEmbed;
+		getStatsEmbed(username: string, color: number, player: Player, key = 'level', showExtra = true): MessageEmbed;
 	}
 	interface KlasaMessage {
 		cmdPrefix: string;
@@ -97,43 +86,30 @@ declare module 'klasa' {
 declare module 'discord.js' {
 	interface Client {
 		public query<T>(query: string): Promise<T>;
-		public getActivityOfUser(userID: string): ActivityTable['taskData'] | null;
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {
 		addItemsToBank(
 			items: ItemBank | Bank,
 			collectionLog?: boolean
-		): Promise<{ previousCL: ItemBank }>;
-		removeItemsFromBank(
-			items: ItemBank | Bank,
-			collectionLog?: boolean
-		): Promise<SettingsUpdateResult>;
+		): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }>;
+		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
 		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
 		removeItemFromBank(itemID: number, numberToRemove?: number): Promise<SettingsUpdateResult>;
-		incrementMonsterScore(
-			monsterID: number,
-			numberToAdd?: number
-		): Promise<SettingsUpdateResult>;
+		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 
-		incrementOpenableScore(
-			openableID: number,
-			numberToAdd?: number
-		): Promise<SettingsUpdateResult>;
+		incrementOpenableScore(openableID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementMinigameScore(this: User, minigame: MinigameKey, amountToAdd = 1): Promise<number>;
-		incrementCreatureScore(
-			creatureID: number,
-			numberToAdd?: number
-		): Promise<SettingsUpdateResult>;
+		incrementCreatureScore(creatureID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		hasItem(itemID: number, amount = 1, sync = true): Promise<boolean>;
 		numberOfItemInBank(itemID: number, sync = true): Promise<number>;
 		log(stringLog: string): void;
 		addGP(amount: number): Promise<SettingsUpdateResult>;
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
 		addQP(amount: number): Promise<SettingsUpdateResult>;
-		addXP(skillName: SkillsEnum, amount: number, duration?: number): Promise<string>;
+		addXP(params: AddXpParams): Promise<string>;
 		skillLevel(skillName: SkillsEnum): number;
 		totalLevel(returnXP = false): number;
 		toggleBusy(busy: boolean): void;
@@ -146,7 +122,7 @@ declare module 'discord.js' {
 		 * Returns true if the user has this item equipped in any of their setups.
 		 * @param itemID The item ID.
 		 */
-		hasItemEquippedAnywhere(_item: number | string | string[], every = false): boolean;
+		hasItemEquippedAnywhere(_item: number | string | string[] | number[], every = false): boolean;
 		/**
 		 * Checks whether they have the given item in their bank OR equipped.
 		 * @param item
@@ -244,6 +220,7 @@ declare module 'discord.js' {
 		maxTripLength(activity?: OSBActivity): number;
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
+		combatLevel: number;
 	}
 
 	interface TextChannel {

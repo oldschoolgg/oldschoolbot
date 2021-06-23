@@ -8,13 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
-import {
-	addItemToBank,
-	formatDuration,
-	itemNameFromID,
-	stringMatches,
-	toKMB
-} from '../../lib/util';
+import { addItemToBank, formatDuration, itemNameFromID, stringMatches, toKMB } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
@@ -43,16 +37,12 @@ export default class extends BotCommand {
 		}
 
 		const plank = Planks.find(
-			plank =>
-				stringMatches(plank.name, plankName) ||
-				stringMatches(plank.name.split(' ')[0], plankName)
+			plank => stringMatches(plank.name, plankName) || stringMatches(plank.name.split(' ')[0], plankName)
 		);
 
 		if (!plank) {
 			return msg.send(
-				`Thats not a valid plank to make. Valid planks are **${Planks.map(
-					plank => plank.name
-				).join(', ')}**.`
+				`Thats not a valid plank to make. Valid planks are **${Planks.map(plank => plank.name).join(', ')}**.`
 			);
 		}
 
@@ -61,14 +51,11 @@ export default class extends BotCommand {
 
 		if (msg.author.hasGracefulEquipped()) {
 			timePerPlank *= 0.9;
-			boosts.push(`10% for Graceful`);
+			boosts.push('10% for Graceful');
 		}
-		if (
-			msg.author.skillLevel(SkillsEnum.Woodcutting) >= 60 &&
-			msg.author.settings.get(UserSettings.QP) >= 50
-		) {
+		if (msg.author.skillLevel(SkillsEnum.Woodcutting) >= 60 && msg.author.settings.get(UserSettings.QP) >= 50) {
 			timePerPlank *= 0.9;
-			boosts.push(`10% for Woodcutting Guild unlocked`);
+			boosts.push('10% for Woodcutting Guild unlocked');
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Sawmill);
@@ -117,7 +104,7 @@ export default class extends BotCommand {
 			)
 		);
 
-		await addSubTaskToActivityTask<SawmillActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<SawmillActivityTaskOptions>({
 			type: Activity.Sawmill,
 			duration,
 			plankID: plank!.outputItem,
@@ -126,11 +113,9 @@ export default class extends BotCommand {
 			channelID: msg.channel.id
 		});
 
-		let response = `${msg.author.minionName} is now creating ${quantity} ${itemNameFromID(
-			plank.outputItem
-		)}${quantity > 1 ? 's' : ''}. The Sawmill has charged you ${toKMB(
-			cost
-		)} GP. They'll come back in around ${formatDuration(duration)}.`;
+		let response = `${msg.author.minionName} is now creating ${quantity} ${itemNameFromID(plank.outputItem)}${
+			quantity > 1 ? 's' : ''
+		}. The Sawmill has charged you ${toKMB(cost)} GP. They'll come back in around ${formatDuration(duration)}.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;

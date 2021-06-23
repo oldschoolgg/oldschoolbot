@@ -52,20 +52,16 @@ export default class extends BotCommand {
 			.sort(([, a], [, b]) => a.rank - b.rank);
 
 		if (sortedEntries.length === 0) {
-			return msg.send(
-				'You have no boss records!. Try logging into the game, and logging out.'
-			);
+			return msg.send('You have no boss records!. Try logging into the game, and logging out.');
 		}
 
 		const loadingMsg = msg.send(new MessageEmbed().setDescription('Loading...'));
 
 		const display = new RichDisplay();
-		display.setFooterPrefix(`Page `);
+		display.setFooterPrefix('Page ');
 
 		for (const page of chunk(sortedEntries, 12)) {
-			const embed = new MessageEmbed()
-				.setAuthor(`${toTitleCase(username)} - Boss Records`)
-				.setColor(52224);
+			const embed = new MessageEmbed().setAuthor(`${toTitleCase(username)} - Boss Records`).setColor(52224);
 
 			for (const [name, { rank, score }] of page) {
 				embed.addField(

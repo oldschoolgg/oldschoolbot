@@ -5,10 +5,7 @@ import { SkillsEnum } from '../skilling/types';
 
 export const diaryRequirements: Record<
 	string,
-	Record<
-		SkillsEnum,
-		{ statReq: [number, number, number, number]; boost: [number, number, number, number] }
-	>
+	Record<SkillsEnum, { statReq: [number, number, number, number]; boost: [number, number, number, number] }>
 > = {
 	Ardougne: {
 		attack: {

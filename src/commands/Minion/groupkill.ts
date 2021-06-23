@@ -52,10 +52,10 @@ export default class extends BotCommand {
 
 			if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 				throw `${
-					users.length === 1 ? `You don't` : `${user.username} doesn't`
-				} have enough food. You need at least ${
-					monster!.healAmountNeeded! * quantity
-				} HP in food to ${users.length === 1 ? 'start the mass' : 'enter the mass'}.`;
+					users.length === 1 ? "You don't" : `${user.username} doesn't`
+				} have enough food. You need at least ${monster!.healAmountNeeded! * quantity} HP in food to ${
+					users.length === 1 ? 'start the mass' : 'enter the mass'
+				}.`;
 			}
 		}
 	}
@@ -65,8 +65,8 @@ export default class extends BotCommand {
 	@ironsCantUse
 	async run(msg: KlasaMessage, [monsterName, maximumSizeForParty]: [string, number]) {
 		const monster = findMonster(monsterName);
-		if (!monster) throw `That monster doesn't exist!`;
-		if (!monster.groupKillable) throw `This monster can't be killed in groups!`;
+		if (!monster) throw "That monster doesn't exist!";
+		if (!monster.groupKillable) throw "This monster can't be killed in groups!";
 
 		this.checkReqs([msg.author], monster, 2);
 
@@ -77,9 +77,7 @@ export default class extends BotCommand {
 			minSize: 2,
 			maxSize: (maximumSizeForParty ?? maximumSize) - 1,
 			ironmanAllowed: false,
-			message: `${msg.author.username} is doing a ${
-				monster.name
-			} mass! Anyone can click the ${
+			message: `${msg.author.username} is doing a ${monster.name} mass! Anyone can click the ${
 				Emoji.Join
 			} reaction to join, click it again to leave. The maximum size for this mass is ${
 				maximumSizeForParty ?? maximumSize
@@ -121,11 +119,7 @@ export default class extends BotCommand {
 
 		const users = await msg.makePartyAwaiter(partyOptions);
 
-		const [quantity, duration, perKillTime, boostMsgs] = await calcDurQty(
-			users,
-			monster,
-			undefined
-		);
+		const [quantity, duration, perKillTime, boostMsgs] = await calcDurQty(users, monster, undefined);
 
 		this.checkReqs(users, monster, quantity);
 
@@ -143,7 +137,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>({
 			monsterID: monster.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -154,9 +148,7 @@ export default class extends BotCommand {
 			users: users.map(u => u.id)
 		});
 
-		let killsPerHr = `${Math.round(
-			(quantity / (duration / Time.Minute)) * 60
-		).toLocaleString()} Kills/hr`;
+		let killsPerHr = `${Math.round((quantity / (duration / Time.Minute)) * 60).toLocaleString()} Kills/hr`;
 
 		if (boostMsgs.length > 0) {
 			killsPerHr += `\n\n${boostMsgs.join(', ')}.`;
@@ -164,11 +156,11 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`${partyOptions.leader.username}'s party (${users
 				.map(u => u.username)
-				.join(', ')}) is now off to kill ${quantity}x ${
-				monster.name
-			}. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
-				monster.timeToFinish
-			)}- the total trip will take ${formatDuration(duration)}. ${killsPerHr}`
+				.join(', ')}) is now off to kill ${quantity}x ${monster.name}. Each kill takes ${formatDuration(
+				perKillTime
+			)} instead of ${formatDuration(monster.timeToFinish)}- the total trip will take ${formatDuration(
+				duration
+			)}. ${killsPerHr}`
 		);
 	}
 }

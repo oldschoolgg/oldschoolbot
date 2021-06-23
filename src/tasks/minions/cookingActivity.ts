@@ -23,15 +23,15 @@ export default class extends Task {
 			stopBurningLvl = cookable.stopBurnAt;
 		}
 
-		burnedAmount = calcBurntCookables(
-			quantity,
-			stopBurningLvl,
-			user.skillLevel(SkillsEnum.Cooking)
-		);
+		burnedAmount = calcBurntCookables(quantity, stopBurningLvl, user.skillLevel(SkillsEnum.Cooking));
 
 		const xpReceived = (quantity - burnedAmount) * cookable.xp;
 
-		const xpRes = await user.addXP(SkillsEnum.Cooking, xpReceived, duration);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Cooking,
+			amount: xpReceived,
+			duration
+		});
 
 		let str = `${user}, ${user.minionName} finished cooking ${quantity}x ${cookable.name}. ${xpRes}`;
 

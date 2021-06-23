@@ -1,28 +1,12 @@
-import { KlasaUser, Task } from 'klasa';
+import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	addBanks,
-	anglerBoostPercent,
-	calcPercentOfNum,
-	skillsMeetRequirements
-} from '../../../lib/util';
+import { addBanks, anglerBoostPercent, calcPercentOfNum } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-
-function hasEliteArdougneDiary(user: KlasaUser): boolean {
-	return skillsMeetRequirements(user.rawSkills, {
-		agility: 90,
-		cooking: 91,
-		crafting: 35,
-		firemaking: 50,
-		fishing: 81,
-		fletching: 69,
-		smithing: 91
-	});
-}
 
 export default class extends Task {
 	async run(data: FishingTrawlerActivityTaskOptions) {
@@ -37,31 +21,40 @@ export default class extends Task {
 		const loot = new Bank();
 
 		let totalXP = 0;
+		const [hasEliteArdy] = await userhasDiaryTier(user, ArdougneDiary.elite);
 		for (let i = 0; i < quantity; i++) {
 			const { loot: _loot, xp } = fishingTrawlerLoot(
 				fishingLevel,
-				hasEliteArdougneDiary(user),
+				hasEliteArdy,
 				addBanks([loot.bank, allItemsOwned])
 			);
 			totalXP += xp;
 			loot.add(_loot);
 		}
 
-		let str = `${user}, ${
-			user.minionName
-		} finished completing the Fishing Trawler ${quantity}x times. You received ${totalXP.toLocaleString()} Fishing XP.`;
-
 		const xpBonusPercent = anglerBoostPercent(user);
 		if (xpBonusPercent > 0) {
 			const bonusXP = Math.ceil(calcPercentOfNum(xpBonusPercent, totalXP));
-			str += `\n\n${xpBonusPercent}% Bonus XP (${bonusXP}) for Angler outfit pieces.`;
 			totalXP += bonusXP;
 		}
+
+		let str = `${user}, ${
+			user.minionName
+		} finished completing the Fishing Trawler ${quantity}x times. You received ${await user.addXP({
+			skillName: SkillsEnum.Fishing,
+			amount: totalXP
+		})}`;
+
+		if (xpBonusPercent > 0) {
+			str += ` ${xpBonusPercent}% Bonus XP for Angler outfit pieces.`;
+		}
+
+		if (hasEliteArdy) str += '\n\n50% Extra fish for Ardougne Elite diary';
 
 		await user.addItemsToBank(loot.bank, true);
 
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		await user.addXP(SkillsEnum.Fishing, totalXP);
+		await user.addXP({ skillName: SkillsEnum.Fishing, amount: totalXP });
 		const newLevel = user.skillLevel(SkillsEnum.Fishing);
 
 		if (currentLevel !== newLevel) {
@@ -69,13 +62,7 @@ export default class extends Task {
 		}
 		const { image } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(
-				loot.bank,
-				`Loot From ${quantity}x Fishing Trawler`,
-				true,
-				{ showNewCL: 1 },
-				user
-			);
+			.generateBankImage(loot.bank, `Loot From ${quantity}x Fishing Trawler`, true, { showNewCL: 1 }, user);
 
 		handleTripFinish(
 			this.client,
@@ -83,7 +70,7 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued fishing trawler`);
+				user.log('continued fishing trawler');
 				return this.client.commands.get('fishingtrawler')!.run(res, []);
 			},
 			image!,

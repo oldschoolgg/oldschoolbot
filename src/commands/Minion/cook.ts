@@ -36,8 +36,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const cookable = Cooking.Cookables.find(
 			cookable =>
-				stringMatches(cookable.name, cookableName) ||
-				stringMatches(cookable.name.split(' ')[0], cookableName)
+				stringMatches(cookable.name, cookableName) || stringMatches(cookable.name.split(' ')[0], cookableName)
 		);
 
 		if (!cookable) {
@@ -49,9 +48,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Cooking) < cookable.level) {
-			return msg.send(
-				`${msg.author.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`
-			);
+			return msg.send(`${msg.author.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`);
 		}
 
 		// Based off catherby fish/hr rates
@@ -83,15 +80,15 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)} minutes, try a lower quantity. The highest amount of ${
-					cookable.name
-				}s you can cook is ${Math.floor(maxTripLength / timeToCookSingleCookable)}.`
+				)} minutes, try a lower quantity. The highest amount of ${cookable.name}s you can cook is ${Math.floor(
+					maxTripLength / timeToCookSingleCookable
+				)}.`
 			);
 		}
 
 		await msg.author.removeItemsFromBank(totalCost);
 
-		await addSubTaskToActivityTask<CookingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<CookingActivityTaskOptions>({
 			cookableID: cookable.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -101,9 +98,9 @@ export default class extends BotCommand {
 		});
 
 		return msg.send(
-			`${msg.author.minionName} is now cooking ${quantity}x ${
-				cookable.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
+			`${msg.author.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDuration(
+				duration
+			)} to finish.`
 		);
 	}
 }

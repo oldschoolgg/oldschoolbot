@@ -28,8 +28,6 @@ export default class extends Finalizer {
 			cooldownManager = new RateLimitManager(command.bucket, command.cooldown * 1000);
 			this.cooldowns.set(command, cooldownManager);
 		}
-		return cooldownManager.acquire(
-			message.guild ? message[command.cooldownLevel]!.id : message.author.id
-		);
+		return cooldownManager.acquire(message.guild ? message[command.cooldownLevel]!.id : message.author.id);
 	}
 }

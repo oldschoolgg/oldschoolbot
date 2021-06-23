@@ -49,9 +49,7 @@ export default class extends BotCommand {
 			for (const [boss, { rank, score }] of Object.entries(bossRecords)) {
 				if (cleanString(boss) === cleanString(bossName)) {
 					if (score === -1 || rank === -1) {
-						return msg.send(
-							`${toTitleCase(username)}'s has no recorded KC for that boss.`
-						);
+						return msg.send(`${toTitleCase(username)}'s has no recorded KC for that boss.`);
 					}
 					return msg.send(
 						`${toTitleCase(username)}'s ${constants.bossNameMap.get(
@@ -61,9 +59,7 @@ export default class extends BotCommand {
 				}
 			}
 
-			return msg.send(
-				`${toTitleCase(username)} doesn't have any recorded kills for that boss.`
-			);
+			return msg.send(`${toTitleCase(username)} doesn't have any recorded kills for that boss.`);
 		} catch (err) {
 			return msg.send(err.message);
 		}

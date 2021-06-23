@@ -17,14 +17,9 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.GiantMole,
 		emoji: '<:Baby_mole:324127375858204672>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
-		itemsRequired: resolveItems([
-			"Dharok's helm",
-			"Dharok's platebody",
-			"Dharok's platelegs",
-			"Dharok's greataxe"
-		]),
+		itemsRequired: resolveItems(["Dharok's helm", "Dharok's platebody", "Dharok's platelegs", "Dharok's greataxe"]),
 		notifyDrops: resolveItems(['Baby mole']),
 		qpRequired: 0,
 		itemInBankBoosts: [
@@ -51,7 +46,7 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.Vorkath,
 		emoji: '<:Vorki:400713309252222977>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 8,
 		itemsRequired: resolveItems(['Armadyl chestplate', 'Armadyl chainskirt']),
 		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
@@ -60,13 +55,23 @@ const killableBosses: KillableMonster[] = [
 			{
 				[itemID('Bandos godsword')]: 15,
 				[itemID('Dragon warhammer')]: 15,
-				[itemID('Dragon claws')]: 10,
+				[itemID('Dragon claws')]: 10
+			},
+			{
+				[itemID('Dragon hunter lance')]: 20,
 				[itemID('Dragon hunter crossbow')]: 30
+			},
+			{
+				[itemID('Salve amulet (ei)')]: 15,
+				[itemID('Salve amulet (i)')]: 10
 			}
 		],
 		levelRequirements: {
 			prayer: 43
 		},
+		healAmountNeeded: 20 * 10,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
 		defaultAttackStyles: [SkillsEnum.Ranged]
 	},
 	{
@@ -77,14 +82,9 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.Zulrah,
 		emoji: '<:Pet_snakeling:324127377816944642>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 8,
-		notifyDrops: resolveItems([
-			'Tanzanite mutagen',
-			'Magma mutagen',
-			'Jar of swamp',
-			'Pet snakeling'
-		]),
+		notifyDrops: resolveItems(['Tanzanite mutagen', 'Magma mutagen', 'Jar of swamp', 'Pet snakeling']),
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{
@@ -114,7 +114,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		healAmountNeeded: 20 * 20,
+		healAmountNeeded: 20 * 7,
 		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic],
 		minimumGearRequirements: {
@@ -136,12 +136,13 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.KalphiteQueen,
 		emoji: '<:Kalphite_princess_2nd_form:324127376915300352>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
 			"Verac's flail",
 			"Verac's plateskirt",
-			["Black d'hide body", "Karil's leathertop"]
+			["Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
+			["Black d'hide chaps", "karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		notifyDrops: resolveItems(['Jar of sand', 'Kalphite princess']),
 		qpRequired: 0,
@@ -165,7 +166,7 @@ const killableBosses: KillableMonster[] = [
 		},
 		defaultAttackStyles: [SkillsEnum.Strength],
 		customMonsterHP: 510,
-		combatXpMultiplier: 1.0875
+		combatXpMultiplier: 1.05
 	},
 	{
 		id: Monsters.CorporealBeast.id,
@@ -175,7 +176,7 @@ const killableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 30,
 		emoji: '<:Pet_dark_core:324127377347313674>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 6,
 		itemsRequired: resolveItems(['Zamorakian spear']),
 		notifyDrops: resolveItems([
@@ -186,10 +187,7 @@ const killableBosses: KillableMonster[] = [
 			'Jar of spirits'
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: [
-			{ [itemID('Dragon warhammer')]: 10 },
-			{ [itemID('Bandos godsword')]: 5 }
-		],
+		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 10 }, { [itemID('Bandos godsword')]: 5 }],
 		groupKillable: true,
 		respawnTime: 20_000,
 		levelRequirements: {
@@ -215,7 +213,7 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.Cerberus,
 		emoji: '<:Hellpuppy:324127376185491458>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
 			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate'],
@@ -226,15 +224,27 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Spectral spirit shield')]: 10 },
-			{ [itemID('Bandos chestplate')]: 5 },
-			{ [itemID('Bandos tassets')]: 5 }
+			{
+				[itemID('Bandos chestplate')]: 5,
+				[itemID("Inquisitor's hauberk")]: 8
+			},
+			{
+				[itemID('Bandos tassets')]: 5,
+				[itemID("Inquisitor's plateskirt")]: 8
+			},
+			{
+				[itemID('Arclight')]: 15,
+				[itemID("Inquisitor's mace")]: 8
+			}
 		],
 		levelRequirements: {
 			prayer: 43,
 			slayer: 91
 		},
+		slayerOnly: true,
 		defaultAttackStyles: [SkillsEnum.Strength],
-		combatXpMultiplier: 1.15
+		combatXpMultiplier: 1.15,
+		healAmountNeeded: 20 * 7
 	}
 ];
 

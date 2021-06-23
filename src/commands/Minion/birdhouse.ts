@@ -111,13 +111,8 @@ export default class extends BotCommand {
 			aliases: ['bhr', 'bh'],
 			usageDelim: ' ',
 			subcommands: true,
-			description: `Allows a player to set up, replace, collect and check birdhouses.`,
-			examples: [
-				'+birdhouse run yew',
-				'+birdhouse',
-				'+birdhouse check',
-				'+birdhouse collect'
-			],
+			description: 'Allows a player to set up, replace, collect and check birdhouses.',
+			examples: ['+birdhouse run yew', '+birdhouse', '+birdhouse check', '+birdhouse collect'],
 			categoryFlags: ['minion', 'skilling']
 		});
 	}
@@ -133,9 +128,7 @@ export default class extends BotCommand {
 		const boostStr: string[] = [];
 
 		const birdhouse = birdhouses.find(_birdhouse =>
-			_birdhouse.aliases.some(
-				alias => stringMatches(alias, type) || stringMatches(alias.split(' ')[0], type)
-			)
+			_birdhouse.aliases.some(alias => stringMatches(alias, type) || stringMatches(alias.split(' ')[0], type))
 		);
 
 		if (!birdhouse) {
@@ -147,15 +140,11 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Hunter) < birdhouse.huntLvl) {
-			return msg.send(
-				`${msg.author.minionName} needs ${birdhouse.huntLvl} Hunter to place ${birdhouse.name}.`
-			);
+			return msg.send(`${msg.author.minionName} needs ${birdhouse.huntLvl} Hunter to place ${birdhouse.name}.`);
 		}
 
 		if (questPoints < birdhouse.qpRequired) {
-			return msg.send(
-				`${msg.author.minionName} needs ${birdhouse.qpRequired} QP to do Birdhouse runs.`
-			);
+			return msg.send(`${msg.author.minionName} needs ${birdhouse.qpRequired} QP to do Birdhouse runs.`);
 		}
 
 		const previousBirdhouseTraps =
@@ -222,9 +211,7 @@ export default class extends BotCommand {
 		for (const currentSeed of birdhouseSeedReq) {
 			if (userBank.amount(currentSeed.itemID) >= currentSeed.amount * 4) {
 				infoStr.push(
-					`You baited the birdhouses with ${currentSeed.amount * 4}x ${itemNameFromID(
-						currentSeed.itemID
-					)}.`
+					`You baited the birdhouses with ${currentSeed.amount * 4}x ${itemNameFromID(currentSeed.itemID)}.`
 				);
 				removeBank.add(currentSeed.itemID, currentSeed.amount * 4);
 				canPay = true;
@@ -233,14 +220,10 @@ export default class extends BotCommand {
 		}
 
 		if (!canPay) {
-			return msg.send(`You don't have enough seeds to bait the birdhouses.`);
+			return msg.send("You don't have enough seeds to bait the birdhouses.");
 		}
 
-		await updateBankSetting(
-			this.client,
-			ClientSettings.EconomyStats.FarmingCostBank,
-			removeBank
-		);
+		await updateBankSetting(this.client, ClientSettings.EconomyStats.FarmingCostBank, removeBank);
 		await msg.author.removeItemsFromBank(removeBank.bank);
 
 		// If user does not have something already placed, just place the new birdhouses.
@@ -252,7 +235,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>({
 			birdhouseName: birdhouse.name,
 			birdhouseData: previousBirdhouseTraps,
 			userID: msg.author.id,
@@ -266,7 +249,7 @@ export default class extends BotCommand {
 
 		return msg.send(
 			`${infoStr.join(' ')}\n\nIt'll take around ${formatDuration(duration)} to finish.\n\n${
-				boostStr.length > 0 ? `**Boosts**: ` : ``
+				boostStr.length > 0 ? '**Boosts**: ' : ''
 			}${boostStr.join(', ')}`
 		);
 	}
@@ -328,9 +311,9 @@ export default class extends BotCommand {
 			msg.author.minionName
 		} is now collecting 4x ${storePreviousBirdhouse}.\nIt'll take around ${formatDuration(
 			duration
-		)} to finish.\n\n${boostStr.length > 0 ? `**Boosts**: ` : ``}${boostStr.join(', ')}`;
+		)} to finish.\n\n${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 
-		await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>({
 			birdhouseName: previousBirdhouseTraps.lastPlaced,
 			birdhouseData: previousBirdhouseTraps,
 			userID: msg.author.id,
@@ -356,24 +339,19 @@ export default class extends BotCommand {
 		let finalStr = '';
 		let nothingPlaced = false;
 
-		const currentBirdHouses =
-			msg.author.settings.get(UserSettings.Minion.BirdhouseTraps) ?? defaultBirdhouseTrap;
+		const currentBirdHouses = msg.author.settings.get(UserSettings.Minion.BirdhouseTraps) ?? defaultBirdhouseTrap;
 
 		if (currentBirdHouses.lastPlaced) {
 			const { lastPlaced } = currentBirdHouses;
 			const birdhouse = birdhouses.find(_birdhouse =>
 				_birdhouse.aliases.some(
-					alias =>
-						stringMatches(alias, lastPlaced) ||
-						stringMatches(alias.split(' ')[0], lastPlaced)
+					alias => stringMatches(alias, lastPlaced) || stringMatches(alias.split(' ')[0], lastPlaced)
 				)
 			);
 
 			if (!birdhouse) {
 				this.client.wtf(
-					new Error(
-						`${msg.author.sanitizedName}'s birdhouse traps had no birdhouse found in it.`
-					)
+					new Error(`${msg.author.sanitizedName}'s birdhouse traps had no birdhouse found in it.`)
 				);
 				return;
 			}

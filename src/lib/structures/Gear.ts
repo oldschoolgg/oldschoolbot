@@ -1,7 +1,7 @@
 import { notEmpty, objectKeys } from 'e';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
-import { getSimilarItems } from '../data/similarItems';
+import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
 import { constructGearSetup, GearSetup, GearSlotItem, GearStats, PartialGearSetup } from '../gear';
 import { GearRequirement } from '../minions/types';
 import getOSItem from '../util/getOSItem';
@@ -86,11 +86,13 @@ export class Gear {
 
 		if (similar) {
 			for (const item of [...values]) {
+				const inverse = inverseSimilarItems.get(item);
+				if (inverse) {
+					values.push(...inverse.values());
+				}
 				const similarItems = getSimilarItems(item);
-				for (const simItem of similarItems) {
-					if (!values.includes(simItem)) {
-						values.push(simItem);
-					}
+				if (similarItems) {
+					values.push(...similarItems);
 				}
 			}
 		}
@@ -98,9 +100,9 @@ export class Gear {
 		return values;
 	}
 
-	hasEquipped(_items: string | (string | number)[], every = false) {
+	hasEquipped(_items: string | (string | number)[], every = false, includeSimilar = true) {
 		const items = resolveItems(_items);
-		const allItems = this.allItems(true);
+		const allItems = this.allItems(includeSimilar);
 		return items[every ? 'every' : 'some'](i => allItems.includes(i));
 	}
 
@@ -122,9 +124,7 @@ export class Gear {
 		return sum;
 	}
 
-	meetsStatRequirements(
-		gearRequirements: GearRequirement
-	): [false, keyof GearStats, number] | [true, null, null] {
+	meetsStatRequirements(gearRequirements: GearRequirement): [false, keyof GearStats, number] | [true, null, null] {
 		const keys = objectKeys(this.stats as Record<keyof GearStats, number>);
 		for (const key of keys) {
 			const required = gearRequirements?.[key];

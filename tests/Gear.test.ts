@@ -1,25 +1,26 @@
 import { constructGearSetup, GearStat } from '../src/lib/gear';
 import { Gear } from '../src/lib/structures/Gear';
+import { itemNameFromID } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import itemID from '../src/lib/util/itemID';
 
 describe('Gear', () => {
 	const testGear = new Gear({
 		'2h': 'Twisted bow',
-		head: 'Dragon full helm',
+		head: 'Dragon full helm(g)',
 		body: '3rd age platebody',
 		legs: '3rd age platelegs'
 	});
 
 	test('misc', () => {
 		expect(testGear['2h']).toEqual({ item: itemID('Twisted bow'), quantity: 1 });
-		expect(testGear.head).toEqual({ item: itemID('Dragon full helm'), quantity: 1 });
+		expect(testGear.head).toEqual({ item: itemID('Dragon full helm (g)'), quantity: 1 });
 		expect(testGear.feet).toEqual(null);
 
 		const otherInitMethod = new Gear(
 			constructGearSetup({
 				'2h': 'Twisted bow',
-				head: 'Dragon full helm',
+				head: 'Dragon full helm (g)',
 				body: '3rd age platebody',
 				legs: '3rd age platelegs'
 			})
@@ -28,13 +29,10 @@ describe('Gear', () => {
 	});
 
 	test('allItems', () => {
-		const gear = new Gear({ head: 'Dragon full helm' });
-		const allItems = gear.allItems();
-		expect(allItems.length).toEqual(1);
-		expect(allItems[0]).toEqual(itemID('Dragon full helm'));
-
-		const allItems2 = gear.allItems(true);
-		expect(allItems2.length).toEqual(2);
+		const gear = new Gear({ head: 'Max cape' });
+		const allItems = gear.allItems(true);
+		expect(allItems.map(itemNameFromID)).toEqual(['Max cape', 'Graceful cape', 'Attack cape']);
+		expect(allItems.length).toEqual(3);
 	});
 
 	test('equippedWeapon', () => {
@@ -115,9 +113,7 @@ describe('Gear', () => {
 	});
 
 	test('toString', () => {
-		expect(testGear.toString()).toEqual(
-			'3rd age platebody, Dragon full helm, 3rd age platelegs, Twisted bow'
-		);
+		expect(testGear.toString()).toEqual('3rd age platebody, Dragon full helm (g), 3rd age platelegs, Twisted bow');
 		expect(new Gear().toString()).toEqual('No items');
 	});
 });

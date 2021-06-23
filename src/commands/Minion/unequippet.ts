@@ -11,22 +11,20 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			categoryFlags: ['minion'],
+			aliases: ['uep'],
 			description: 'Unequips your pet.',
-			examples: ['+unequippet']
+			examples: ['+unequippet', '+uep']
 		});
 	}
 
 	@requiresMinion
 	async run(msg: KlasaMessage): Promise<KlasaMessage> {
 		const equippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
-		if (!equippedPet) return msg.send(`You don't have a pet equipped.`);
+		if (!equippedPet) return msg.send("You don't have a pet equipped.");
 
 		await msg.author.settings.update([
 			[UserSettings.Minion.EquippedPet, null],
-			[
-				UserSettings.Bank,
-				addItemToBank(msg.author.settings.get(UserSettings.Bank), equippedPet)
-			]
+			[UserSettings.Bank, addItemToBank(msg.author.settings.get(UserSettings.Bank), equippedPet)]
 		]);
 
 		msg.author.log(`unequipping ${itemNameFromID(equippedPet)}[${equippedPet}]`);

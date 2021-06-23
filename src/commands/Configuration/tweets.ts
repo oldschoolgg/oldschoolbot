@@ -13,8 +13,7 @@ export default class extends BotCommand {
 			usage: '<on|off>',
 			permissionLevel: 7,
 			requiredPermissions: ['EMBED_LINKS'],
-			description:
-				'Allows you to receive tweets from all JMods and the OSRS Twitter to your channel.',
+			description: 'Allows you to receive tweets from all JMods and the OSRS Twitter to your channel.',
 			examples: ['+tweets on', '+tweets off'],
 			categoryFlags: ['settings']
 		});
@@ -26,16 +25,16 @@ export default class extends BotCommand {
 		}
 		const tweetChannel = msg.guild!.settings.get(GuildSettings.JModTweets);
 		if (tweetChannel === msg.channel.id) {
-			return msg.send(`Jmod Tweets are already enabled in this channel.`);
+			return msg.send('Jmod Tweets are already enabled in this channel.');
 		}
 		if (tweetChannel) {
 			await msg.guild!.settings.update(GuildSettings.JModTweets, msg.channel);
 			return msg.send(
-				`Jmod Tweets are already enabled in another channel, but I've switched them to use this channel.`
+				"Jmod Tweets are already enabled in another channel, but I've switched them to use this channel."
 			);
 		}
 		await msg.guild!.settings.update(GuildSettings.JModTweets, msg.channel);
-		return msg.send(`Enabled Jmod Tweets in this channel.`);
+		return msg.send('Enabled Jmod Tweets in this channel.');
 	}
 
 	async off(msg: KlasaMessage) {

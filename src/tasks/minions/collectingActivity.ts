@@ -1,28 +1,13 @@
 import { Time } from 'e';
-import { KlasaUser, Task } from 'klasa';
+import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { collectables } from '../../commands/Minion/collect';
+import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { CollectingOptions } from '../../lib/types/minions';
-import { addBanks, skillsMeetRequirements } from '../../lib/util';
+import { addBanks } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-
-function hasMoryHard(user: KlasaUser) {
-	return skillsMeetRequirements(user.rawSkills, {
-		agility: 71,
-		construction: 50,
-		defence: 70,
-		farming: 53,
-		firemaking: 50,
-		magic: 66,
-		mining: 55,
-		prayer: 70,
-		woodcutting: 50,
-		smithing: 50,
-		thieving: 42
-	});
-}
 
 export default class extends Task {
 	async run(data: CollectingOptions) {
@@ -31,7 +16,8 @@ export default class extends Task {
 		const collectable = collectables.find(c => c.item.id === collectableID)!;
 		let colQuantity = collectable.quantity;
 
-		const moryHardBoost = collectable.item.name === 'Mort myre fungus' && hasMoryHard(user);
+		const [hasMoryHard] = await userhasDiaryTier(user, MorytaniaDiary.hard);
+		const moryHardBoost = collectable.item.name === 'Mort myre fungus' && hasMoryHard;
 		if (moryHardBoost) {
 			colQuantity *= 2;
 		}
@@ -43,15 +29,12 @@ export default class extends Task {
 			collectable.item.name
 		}. (${Math.round((totalQuantity / (duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
 		if (moryHardBoost) {
-			str += `\n\n**Boosts:** 2x for Morytania Hard diary`;
+			str += '\n\n**Boosts:** 2x for Morytania Hard diary';
 		}
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.CollectingLoot,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.CollectingLoot),
-				loot.bank
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingLoot), loot.bank])
 		);
 
 		handleTripFinish(
@@ -61,9 +44,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of collecting ${collectable.item.name}`);
-				return this.client.commands
-					.get('collect')!
-					.run(res, [quantity, collectable.item.name]);
+				return this.client.commands.get('collect')!.run(res, [quantity, collectable.item.name]);
 			},
 			undefined,
 			data,

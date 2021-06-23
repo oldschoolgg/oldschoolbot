@@ -61,10 +61,7 @@ export default class extends BotCommand {
 
 		const maxTripLength = msg.author.maxTripLength(Activity.GloryCharging);
 
-		const max = Math.min(
-			amountHas / gloriesInventorySize,
-			Math.floor(maxTripLength / invDuration)
-		);
+		const max = Math.min(amountHas / gloriesInventorySize, Math.floor(maxTripLength / invDuration));
 		if (quantity === undefined) {
 			quantity = Math.floor(max);
 		}
@@ -86,7 +83,7 @@ export default class extends BotCommand {
 			return msg.send(`You don't have enough ${quantityGlories}x Amulet of glory.`);
 		}
 
-		await addSubTaskToActivityTask<GloryChargingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<GloryChargingActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

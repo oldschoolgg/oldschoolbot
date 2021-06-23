@@ -27,9 +27,7 @@ export default class extends BotCommand {
 		const thievingLevel = msg.author.skillLevel(SkillsEnum.Thieving);
 		const minLevel = plunderRooms[0].thievingLevel;
 		if (thievingLevel < minLevel) {
-			return msg.send(
-				`You need atleast level ${minLevel} Thieving to do the Pyramid Plunder.`
-			);
+			return msg.send(`You need atleast level ${minLevel} Thieving to do the Pyramid Plunder.`);
 		}
 
 		const completableRooms = plunderRooms.filter(room => thievingLevel >= room.thievingLevel);
@@ -40,14 +38,12 @@ export default class extends BotCommand {
 
 		if (!msg.author.hasGracefulEquipped()) {
 			plunderTime *= 1.075;
-			boosts.push(`-7.5% time penalty for not having graceful equipped`);
+			boosts.push('-7.5% time penalty for not having graceful equipped');
 		}
 
 		// Every 1h becomes 1% faster to a cap of 10%
 		const percentFaster = Math.min(
-			Math.floor(
-				(await msg.author.getMinigameScore('PyramidPlunder')) / (Time.Hour / plunderTime)
-			),
+			Math.floor((await msg.author.getMinigameScore('PyramidPlunder')) / (Time.Hour / plunderTime)),
 			10
 		);
 
@@ -64,7 +60,7 @@ export default class extends BotCommand {
 		const maxQuantity = Math.floor(msg.author.maxTripLength(Activity.Plunder) / plunderTime);
 		const tripLength = maxQuantity * plunderTime;
 
-		await addSubTaskToActivityTask<PlunderActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<PlunderActivityTaskOptions>({
 			rooms: completableRooms.map(room => room.number),
 			quantity: maxQuantity,
 			userID: msg.author.id,
@@ -78,9 +74,7 @@ export default class extends BotCommand {
 			msg.author.minionName
 		} is now doing Pyramid Plunder ${maxQuantity} times, each cycle they are looting the last two rooms ${
 			completableRooms.length < 2 ? 1 : completableRooms[completableRooms.length - 2].number
-		} and ${
-			completableRooms[completableRooms.length - 1].number
-		}, the trip will take ${formatDuration(
+		} and ${completableRooms[completableRooms.length - 1].number}, the trip will take ${formatDuration(
 			tripLength
 		)}, with each cycle taking ${formatDuration(plunderTime)}.`;
 

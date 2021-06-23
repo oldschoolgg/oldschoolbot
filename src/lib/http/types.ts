@@ -19,9 +19,4 @@ declare module 'fastify' {
 	}
 }
 
-export type FastifyServer = FastifyInstance<
-	Server,
-	IncomingMessage,
-	ServerResponse,
-	FastifyLoggerInstance
->;
+export type FastifyServer = FastifyInstance<Server, IncomingMessage, ServerResponse, FastifyLoggerInstance>;

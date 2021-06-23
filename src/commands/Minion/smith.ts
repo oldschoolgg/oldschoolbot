@@ -7,13 +7,7 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	bankHasItem,
-	formatDuration,
-	itemNameFromID,
-	removeItemFromBank,
-	stringMatches
-} from '../../lib/util';
+import { bankHasItem, formatDuration, itemNameFromID, removeItemFromBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -43,7 +37,7 @@ export default class extends BotCommand {
 								.join(', ')}`
 					).join('\n')
 				),
-				`Available Smithing items.txt`
+				'Available Smithing items.txt'
 			);
 		}
 
@@ -52,10 +46,8 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const smithedItem = Smithing.SmithableItems.find(
-			_smithedItem =>
-				stringMatches(_smithedItem.name, smithableItem) ||
-				stringMatches(_smithedItem.name.split(' ')[0], smithableItem)
+		const smithedItem = Smithing.SmithableItems.find(_smithedItem =>
+			stringMatches(_smithedItem.name, smithableItem)
 		);
 
 		if (!smithedItem) {
@@ -73,7 +65,10 @@ export default class extends BotCommand {
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
 		const timeToSmithSingleBar = smithedItem.timeToUse + Time.Second / 4;
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
+		let maxTripLength = msg.author.maxTripLength(Activity.Smithing);
+		if (smithedItem.name === 'Cannonball') {
+			maxTripLength = Time.Hour;
+		}
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -89,9 +84,9 @@ export default class extends BotCommand {
 		for (const [barID, qty] of requiredBars) {
 			if (!bankHasItem(userBank, parseInt(barID), qty * quantity)) {
 				return msg.send(
-					`You don't have enough ${itemNameFromID(
-						parseInt(barID)
-					)}'s to smith ${quantity}x ${smithedItem.name}, you need atleast ${qty}.`
+					`You don't have enough ${itemNameFromID(parseInt(barID))}'s to smith ${quantity}x ${
+						smithedItem.name
+					}, you need atleast ${qty}.`
 				);
 			}
 		}
@@ -101,9 +96,9 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					smithedItem.name
-				}s you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`
+				)}, try a lower quantity. The highest amount of ${smithedItem.name}s you can smith is ${Math.floor(
+					maxTripLength / timeToSmithSingleBar
+				)}.`
 			);
 		}
 
@@ -112,16 +107,14 @@ export default class extends BotCommand {
 		let newBank = { ...userBank };
 		for (const [barID, qty] of requiredBars) {
 			if (newBank[parseInt(barID)] < qty) {
-				this.client.wtf(
-					new Error(`${msg.author.sanitizedName} had insufficient bars to be removed.`)
-				);
+				this.client.wtf(new Error(`${msg.author.sanitizedName} had insufficient bars to be removed.`));
 				return;
 			}
 			newBank = removeItemFromBank(newBank, parseInt(barID), qty * quantity);
 			usedbars = qty * quantity;
 		}
 
-		await addSubTaskToActivityTask<SmithingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<SmithingActivityTaskOptions>({
 			smithedBarID: smithedItem.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

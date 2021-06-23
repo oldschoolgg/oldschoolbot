@@ -14,7 +14,8 @@ export function calcLootXPPickpocketing(
 	currentLevel: number,
 	npc: Pickpockable,
 	quantity: number,
-	hasThievingCape: boolean
+	hasThievingCape: boolean,
+	hasDiary: boolean
 ): [number, number, number, number] {
 	let xpReceived = 0;
 
@@ -26,7 +27,9 @@ export function calcLootXPPickpocketing(
 	const diary = 1;
 	const thievCape = hasThievingCape && npc.customTickRate === undefined ? 1.1 : 1;
 
-	const chanceOfSuccess = (npc.slope * currentLevel + npc.intercept) * diary * thievCape;
+	let chanceOfSuccess = (npc.slope * currentLevel + npc.intercept) * diary * thievCape;
+
+	if (hasDiary) chanceOfSuccess += 10;
 
 	for (let i = 0; i < quantity; i++) {
 		if (!percentChance(chanceOfSuccess)) {
@@ -68,15 +71,11 @@ export default class extends Task {
 		}
 
 		if (loot.has('Coins')) {
-			updateGPTrackSetting(
-				this.client,
-				ClientSettings.EconomyStats.GPSourcePickpocket,
-				loot.amount('Coins')
-			);
+			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourcePickpocket, loot.amount('Coins'));
 		}
 
 		await user.addItemsToBank(loot, true);
-		const xpRes = await user.addXP(SkillsEnum.Thieving, xpReceived);
+		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: xpReceived });
 
 		let str = `${user}, ${user.minionName} finished pickpocketing a ${
 			npc.name
@@ -87,11 +86,11 @@ export default class extends Task {
 		str += `\n\nYou received: ${loot}.`;
 
 		if (rogueOutfitBoostActivated) {
-			str += `\nYour rogue outfit allows you to take some extra loot.`;
+			str += '\nYour rogue outfit allows you to take some extra loot.';
 		}
 
 		if (loot.amount('Rocky') > 0) {
-			str += `\n\n**You have a funny feeling you're being followed...**`;
+			str += "\n\n**You have a funny feeling you're being followed...**";
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${user.minionName}, just received a **Rocky** <:Rocky:324127378647285771> while pickpocketing a ${npc.name}, their Thieving level is ${currentLevel}!`

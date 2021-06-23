@@ -15,8 +15,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'pvm', 'minigame'],
-			description:
-				'Sends your minion to do the Champions Challenge, if you have all the champion scrolls',
+			description: 'Sends your minion to do the Champions Challenge, if you have all the champion scrolls',
 			examples: ['+cc'],
 			aliases: ['cc']
 		});
@@ -28,12 +27,12 @@ export default class extends BotCommand {
 		const bank = msg.author.bank();
 		if (!bank.has(championScrolls)) {
 			return msg.send(
-				`You don't have a set of Champion Scrolls to do the Champion's Challenge! You need 1 of each.`
+				"You don't have a set of Champion Scrolls to do the Champion's Challenge! You need 1 of each."
 			);
 		}
 		for (const id of championScrolls) bank.remove(id);
 		await msg.author.settings.update(UserSettings.Bank, bank.bank);
-		await addSubTaskToActivityTask<MinigameActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity: 1,

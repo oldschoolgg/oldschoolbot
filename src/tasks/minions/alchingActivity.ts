@@ -40,10 +40,13 @@ export default class extends Task {
 		updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchValue);
 
 		const xpReceived = quantity * 65;
-		const xpRes = await user.addXP(SkillsEnum.Magic, xpReceived, duration);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Magic,
+			amount: xpReceived,
+			duration
+		});
 
-		const saved =
-			savedRunes > 0 ? `Your Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
+		const saved = savedRunes > 0 ? `Your Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
 		let responses = [
 			`${user}, ${user.minionName} has finished alching ${quantity}x ${item.name}! ${loot} has been added to your bank. ${xpRes}. ${saved}`
 		].join('\n');

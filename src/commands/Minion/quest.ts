@@ -26,7 +26,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const currentQP = msg.author.settings.get(UserSettings.QP);
 		if (currentQP >= MAX_QP) {
-			return msg.send(`You already have the maximum amount of Quest Points.`);
+			return msg.send('You already have the maximum amount of Quest Points.');
 		}
 
 		const boosts = [];
@@ -35,21 +35,21 @@ export default class extends BotCommand {
 
 		if (msg.author.hasGracefulEquipped()) {
 			duration *= 0.9;
-			boosts.push(`10% for Graceful`);
+			boosts.push('10% for Graceful');
 		}
 
-		await addSubTaskToActivityTask<QuestingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<QuestingActivityTaskOptions>({
 			type: Activity.Questing,
 			duration,
 			userID: msg.author.id,
 			channelID: msg.channel.id
 		});
-		let response = `${
-			msg.author.minionName
-		} is now completing quests, they'll come back in around ${formatDuration(duration)}.`;
+		let response = `${msg.author.minionName} is now completing quests, they'll come back in around ${formatDuration(
+			duration
+		)}.`;
 
 		if (boosts.length > 0) {
-			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
 		return msg.send(response);

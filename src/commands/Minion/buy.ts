@@ -45,9 +45,16 @@ export default class extends BotCommand {
 			]);
 			return msg.channel.sendFile(
 				Buffer.from(normalTable),
-				`Buyables.txt`,
-				`Here is a table of all buyable items.`
+				'Buyables.txt',
+				'Here is a table of all buyable items.'
 			);
+		}
+
+		if (buyable.customReq) {
+			const [hasCustomReq, reason] = await buyable.customReq(msg.author);
+			if (!hasCustomReq) {
+				return msg.channel.send(reason!);
+			}
 		}
 
 		if (buyable.qpRequired) {
@@ -57,11 +64,8 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (
-			buyable.skillsNeeded &&
-			!skillsMeetRequirements(msg.author.rawSkills, buyable.skillsNeeded)
-		) {
-			return msg.send(`You don't have the required stats to buy this item.`);
+		if (buyable.skillsNeeded && !skillsMeetRequirements(msg.author.rawSkills, buyable.skillsNeeded)) {
+			return msg.send("You don't have the required stats to buy this item.");
 		}
 
 		if (buyable.minigameScoreReq) {
@@ -79,10 +83,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
-		if (
-			buyable.itemCost &&
-			!bankHasAllItemsFromBank(userBank, multiplyBank(buyable.itemCost, quantity))
-		) {
+		if (buyable.itemCost && !bankHasAllItemsFromBank(userBank, multiplyBank(buyable.itemCost, quantity))) {
 			return msg.send(
 				`You don't have the required items to purchase this. You need: ${new Bank(
 					multiplyBank(buyable.itemCost, quantity)
@@ -97,7 +98,13 @@ export default class extends BotCommand {
 			return msg.send(`You need ${totalGPCost.toLocaleString()} GP to purchase this item.`);
 		}
 
-		const outItems = multiplyBank(buyable.outputItems, quantity);
+		let output =
+			buyable.outputItems === undefined
+				? new Bank().add(buyable.name).bank
+				: buyable.outputItems instanceof Bank
+				? buyable.outputItems.bank
+				: buyable.outputItems;
+		const outItems = multiplyBank(output, quantity);
 		const itemString = new Bank(outItems).toString();
 
 		// Start building a string to show to the user.
@@ -118,9 +125,7 @@ export default class extends BotCommand {
 
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 					{
 						max: 1,
 						time: Time.Second * 15,
@@ -128,7 +133,7 @@ export default class extends BotCommand {
 					}
 				);
 			} catch (err) {
-				return sellMsg.edit(`Cancelling purchase.`);
+				return sellMsg.edit('Cancelling purchase.');
 			}
 		}
 
@@ -139,10 +144,7 @@ export default class extends BotCommand {
 			econBankChanges.add(multiplyBank(buyable.itemCost, quantity));
 			await msg.author.settings.update(
 				UserSettings.Bank,
-				removeBankFromBank(
-					msg.author.settings.get(UserSettings.Bank),
-					multiplyBank(buyable.itemCost, quantity)
-				)
+				removeBankFromBank(msg.author.settings.get(UserSettings.Bank), multiplyBank(buyable.itemCost, quantity))
 			);
 		}
 
@@ -156,9 +158,7 @@ export default class extends BotCommand {
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.BuyCostBank,
-			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add(
-				econBankChanges
-			).bank
+			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add(econBankChanges).bank
 		);
 
 		await msg.author.addItemsToBank(outItems, true);

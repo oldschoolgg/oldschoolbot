@@ -14,14 +14,22 @@ export default class extends Task {
 		const spell = Castables.find(i => i.id === spellID)!;
 
 		const xpReceived = quantity * spell.xp;
-		const xpRes = await user.addXP(SkillsEnum.Magic, xpReceived, duration);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Magic,
+			amount: xpReceived,
+			duration
+		});
 
 		let craftXpReceived = 0;
-		let craftXpRes = ``;
+		let craftXpRes = '';
 		if (spell.craftXp) {
 			craftXpReceived = spell.craftXp * quantity;
 
-			craftXpRes = await user.addXP(SkillsEnum.Crafting, craftXpReceived, duration);
+			craftXpRes = await user.addXP({
+				skillName: SkillsEnum.Crafting,
+				amount: craftXpReceived,
+				duration
+			});
 		}
 
 		// let craftXpRes = ``;
@@ -32,9 +40,9 @@ export default class extends Task {
 			await user.addItemsToBank(loot.bank, true);
 		}
 
-		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${
-			spell.name
-		}, you received ${loot ?? 'no items'}. ${xpRes} ${craftXpRes}`;
+		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${spell.name}, you received ${
+			loot ?? 'no items'
+		}. ${xpRes} ${craftXpRes}`;
 
 		handleTripFinish(
 			this.client,

@@ -61,10 +61,7 @@ export default class extends BotCommand {
 
 		const maxTripLength = msg.author.maxTripLength(Activity.WealthCharging);
 
-		const max = Math.min(
-			amountHas / wealthInventorySize,
-			Math.floor(maxTripLength / invDuration)
-		);
+		const max = Math.min(amountHas / wealthInventorySize, Math.floor(maxTripLength / invDuration));
 		if (quantity === undefined) {
 			quantity = Math.floor(max);
 		}
@@ -86,7 +83,7 @@ export default class extends BotCommand {
 			return msg.send(`You don't have enough Rings of wealth, ${quantityWealths} required.`);
 		}
 
-		await addSubTaskToActivityTask<WealthChargingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<WealthChargingActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

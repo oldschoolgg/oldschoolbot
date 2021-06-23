@@ -26,9 +26,9 @@ const pets: Pet[] = [
 		altNames: ['CHINCHOMPA', 'BABYCHINCHOMPA', 'CHIN'],
 		formatFinish: (num: number) =>
 			`You had to catch ${fm(num)} Red Chinchompas to get the Baby Chinchompa Pet! ` +
-			`<:Baby_chinchompa_red:324127375539306497> You also got...\n${xpEmoji} ${fm(
-				num * 265
-			)} XP\n${gpEmoji} ${fm(num * 1318)} GP`
+			`<:Baby_chinchompa_red:324127375539306497> You also got...\n${xpEmoji} ${fm(num * 265)} XP\n${gpEmoji} ${fm(
+				num * 1318
+			)} GP`
 	},
 	{
 		id: 2,
@@ -38,9 +38,7 @@ const pets: Pet[] = [
 		type: 'BOSS',
 		altNames: ['BABYMOLE', 'MOLE', 'GIANTMOLE'],
 		formatFinish: (num: number) =>
-			`You had to kill ${fm(
-				num
-			)} Giant Moles to get the Baby Mole Pet! <:Baby_mole:324127375858204672>`,
+			`You had to kill ${fm(num)} Giant Moles to get the Baby Mole Pet! <:Baby_mole:324127375858204672>`,
 		bossKeys: ['giantMole']
 	},
 	{
@@ -51,9 +49,7 @@ const pets: Pet[] = [
 		type: 'SKILL',
 		altNames: ['BEAVER', 'WC', 'WOODCUTTING'],
 		formatFinish: (num: number) =>
-			`You had to cut ${fm(
-				num
-			)} Magic Logs to get the Beaver Pet! <:Beaver:324127375761604611> ` +
+			`You had to cut ${fm(num)} Magic Logs to get the Beaver Pet! <:Beaver:324127375761604611> ` +
 			`You also got...\n${xpEmoji} ${fm(num * 250)} XP\n${gpEmoji} ${fm(num * 1043)} GP`
 	},
 	{
@@ -64,9 +60,7 @@ const pets: Pet[] = [
 		type: 'SPECIAL',
 		altNames: ['BLOODHOUND'],
 		formatFinish: (num: number) =>
-			`You had to complete ${fm(
-				num
-			)} Master Clues to get the Bloodhound Pet! <:Bloodhound:324127375602483212>`
+			`You had to complete ${fm(num)} Master Clues to get the Bloodhound Pet! <:Bloodhound:324127375602483212>`
 	},
 	{
 		id: 5,
@@ -76,9 +70,7 @@ const pets: Pet[] = [
 		type: 'BOSS',
 		altNames: ['CALLISTO', 'CALLISTOCUB', 'CUB'],
 		formatFinish: (num: number) =>
-			`You had to slay Callisto ${fm(
-				num
-			)} times to get the Callisto Cub Pet! <:Callisto_cub:324127376273440768>`,
+			`You had to slay Callisto ${fm(num)} times to get the Callisto Cub Pet! <:Callisto_cub:324127376273440768>`,
 		bossKeys: ['callisto']
 	},
 	{
@@ -93,9 +85,7 @@ const pets: Pet[] = [
 				num
 			)} times to get the Giant Squirrel Pet! <:Giant_squirrel:324127376432824320> You also got...\n${xpEmoji} ${fm(
 				num * 570
-			)} XP\n<:ehpclock:352323705210142721> ${Math.round(
-				(num * 45) / 3600
-			)} Hours of your time wasted!`
+			)} XP\n<:ehpclock:352323705210142721> ${Math.round((num * 45) / 3600)} Hours of your time wasted!`
 	},
 	{
 		id: 7,
@@ -132,9 +122,7 @@ const pets: Pet[] = [
 		type: 'BOSS',
 		altNames: ['GARGOYLE', 'NOON', 'DAWN', 'GG', 'MIDNIGHT'],
 		formatFinish: (num: number) =>
-			`You had to kill ${fm(
-				num
-			)} Grotesque Guardians to get the Noon Pet! <:Noon:379595337234382848>`,
+			`You had to kill ${fm(num)} Grotesque Guardians to get the Noon Pet! <:Noon:379595337234382848>`,
 		bossKeys: ['grotesqueGuardians']
 	},
 	{
@@ -234,9 +222,7 @@ const pets: Pet[] = [
 		type: 'BOSS',
 		altNames: ['KRAKEN'],
 		formatFinish: (num: number) =>
-			`You had to slay the Kraken ${fm(
-				num
-			)} times to get the Kraken Pet! <:Pet_kraken:324127377477206016>`,
+			`You had to slay the Kraken ${fm(num)} times to get the Kraken Pet! <:Pet_kraken:324127377477206016>`,
 		bossKeys: ['kraken']
 	},
 	{
@@ -247,9 +233,7 @@ const pets: Pet[] = [
 		type: 'BOSS',
 		altNames: ['KREE', 'ARMA', 'ARMADYL', 'KREEARRA'],
 		formatFinish: (num: number) =>
-			`You had to kill Kree'arra ${fm(
-				num
-			)} times to get the Kree'arra Pet! <:Pet_kreearra:324127377305239555>`,
+			`You had to kill Kree'arra ${fm(num)} times to get the Kree'arra Pet! <:Pet_kreearra:324127377305239555>`,
 		bossKeys: ['kreeArra']
 	},
 	{
@@ -298,9 +282,7 @@ const pets: Pet[] = [
 		type: 'BOSS',
 		altNames: ['ZULRAH', 'SNAKELING'],
 		formatFinish: (num: number) =>
-			`You had to kill Zulrah ${fm(
-				num
-			)} times to get the Snakeling Pet! <:Pet_snakeling:324127377816944642>`,
+			`You had to kill Zulrah ${fm(num)} times to get the Snakeling Pet! <:Pet_snakeling:324127377816944642>`,
 		bossKeys: ['zulrah']
 	},
 	{
@@ -324,9 +306,7 @@ const pets: Pet[] = [
 		type: 'SPECIAL',
 		altNames: ['PHOENIX', 'PHEONIX', 'WINTERTODT', 'FM'],
 		formatFinish: (num: number) =>
-			`You had to open ${fm(
-				num
-			)} Wintertodt Supply Crates to get the Phoenix Pet! <:Phoenix:324127378223792129>`,
+			`You had to open ${fm(num)} Wintertodt Supply Crates to get the Phoenix Pet! <:Phoenix:324127378223792129>`,
 		bossKeys: ['wintertodt']
 	},
 	{
@@ -401,9 +381,7 @@ const pets: Pet[] = [
 		type: 'BOSS',
 		altNames: ['SKOTOS', 'SKOTIZO'],
 		formatFinish: (num: number) =>
-			`You had to kill Skotizo ${fm(
-				num
-			)} times to get the Skotos Pet! <:Skotos:324127378890817546>`,
+			`You had to kill Skotizo ${fm(num)} times to get the Skotos Pet! <:Skotos:324127378890817546>`,
 		bossKeys: ['skotizo']
 	},
 	{
@@ -428,9 +406,7 @@ const pets: Pet[] = [
 		type: 'BOSS',
 		altNames: ['JAD'],
 		formatFinish: (num: number) =>
-			`You had to kill Jad ${fm(
-				num
-			)} times to get the TzRek-Jad Pet! <:Tzrekjad:324127379188613121>`,
+			`You had to kill Jad ${fm(num)} times to get the TzRek-Jad Pet! <:Tzrekjad:324127379188613121>`,
 		bossKeys: ['tzTokJad']
 	},
 	{
@@ -454,9 +430,7 @@ const pets: Pet[] = [
 		type: 'BOSS',
 		altNames: ['VETION'],
 		formatFinish: (num: number) =>
-			`You had to kill Vet'ion ${fm(
-				num
-			)} times to get the Vet'ion Jr. Pet! <:Vetion_jr:324127378999738369>`,
+			`You had to kill Vet'ion ${fm(num)} times to get the Vet'ion Jr. Pet! <:Vetion_jr:324127378999738369>`,
 		bossKeys: ['vetion']
 	},
 	{
@@ -480,9 +454,7 @@ const pets: Pet[] = [
 		type: 'BOSS',
 		altNames: ['CERB', 'CERBERUS', 'HELLPUPPY'],
 		formatFinish: (num: number) =>
-			`You had to kill Cerberus ${fm(
-				num
-			)} times to get the Hellpuppy Pet! <:Hellpuppy:324127376185491458>`,
+			`You had to kill Cerberus ${fm(num)} times to get the Hellpuppy Pet! <:Hellpuppy:324127376185491458>`,
 		bossKeys: ['cerberus']
 	},
 	{
@@ -493,9 +465,7 @@ const pets: Pet[] = [
 		type: 'SPECIAL',
 		altNames: ['CHOMPYCHICK'],
 		formatFinish: (num: number) =>
-			`You had to kill ${fm(
-				num
-			)} Chompy Birds to get the Chompy Chick Pet! <:Chompy_chick:346196885859598337>`
+			`You had to kill ${fm(num)} Chompy Birds to get the Chompy Chick Pet! <:Chompy_chick:346196885859598337>`
 	},
 	{
 		id: 38,
@@ -518,9 +488,7 @@ const pets: Pet[] = [
 		type: 'SPECIAL',
 		altNames: ['HERBIBOAR', 'HERBI'],
 		formatFinish: (num: number) =>
-			`You had to track down ${fm(
-				num
-			)} Herbiboars to get the Herbi Pet! <:Herbi:357773175318249472>`
+			`You had to track down ${fm(num)} Herbiboars to get the Herbi Pet! <:Herbi:357773175318249472>`
 	},
 	{
 		id: 40,
@@ -530,9 +498,7 @@ const pets: Pet[] = [
 		type: 'SPECIAL',
 		altNames: ['VORKI', 'VORKATH'],
 		formatFinish: (num: number) =>
-			`You had to slay the almighty Vorkath ${fm(
-				num
-			)} times to get the Vorki Pet! <:Vorki:400713309252222977>`,
+			`You had to slay the almighty Vorkath ${fm(num)} times to get the Vorki Pet! <:Vorki:400713309252222977>`,
 		bossKeys: ['vorkath']
 	},
 	{
@@ -569,9 +535,7 @@ const pets: Pet[] = [
 		type: 'BOSS',
 		altNames: ['ZALCANO'],
 		formatFinish: (num: number) =>
-			`You had to take down Zalcano ${fm(
-				num
-			)} times to get the Smolcano pet! <:Smolcano:604670895113633802>`,
+			`You had to take down Zalcano ${fm(num)} times to get the Smolcano pet! <:Smolcano:604670895113633802>`,
 		bossKeys: ['zalcano']
 	},
 	{
@@ -584,9 +548,7 @@ const pets: Pet[] = [
 		formatFinish: (num: number) =>
 			`You had to complete the Gauntlet ${fm(
 				num
-			)} times to get the Youngllef pet! <:Youngllef:604670894798798858> This took you ${fm(
-				num * 0.15
-			)} hours.`,
+			)} times to get the Youngllef pet! <:Youngllef:604670894798798858> This took you ${fm(num * 0.15)} hours.`,
 		bossKeys: ['theGauntlet', 'theCorruptedGauntlet']
 	},
 	{
@@ -597,9 +559,7 @@ const pets: Pet[] = [
 		type: 'BOSS',
 		altNames: ['SRARACHA', 'SARACHNIS', 'SARACH'],
 		formatFinish: (num: number) =>
-			`You had to kill Sarachnis ${fm(
-				num
-			)} times to get the Sraracha pet! <:Sraracha:608231007803670529>`,
+			`You had to kill Sarachnis ${fm(num)} times to get the Sraracha pet! <:Sraracha:608231007803670529>`,
 		bossKeys: ['sarachnis']
 	},
 	{
@@ -623,9 +583,7 @@ const pets: Pet[] = [
 		type: 'SPECIAL',
 		altNames: ['LILDESTRUCTOR', 'LILCREATOR', 'SOULWARS'],
 		formatFinish: (num: number) =>
-			`You had to open ${fm(
-				num
-			)} Spoils of war to get the Lil' Creator! <:Lil_creator:798221383951319111>`,
+			`You had to open ${fm(num)} Spoils of war to get the Lil' Creator! <:Lil_creator:798221383951319111>`,
 		bossKeys: ['soulwars']
 	},
 	{
@@ -636,9 +594,7 @@ const pets: Pet[] = [
 		type: 'SPECIAL',
 		altNames: ['TINYTEMPOR', 'TEMPOROSS'],
 		formatFinish: (num: number) =>
-			`You had to spend ${fm(
-				num
-			)} Permits to get the Tiny Tempor! <:TinyTempor:824483631694217277>`,
+			`You had to spend ${fm(num)} Permits to get the Tiny Tempor! <:TinyTempor:824483631694217277>`,
 		bossKeys: ['tempoross']
 	}
 ];

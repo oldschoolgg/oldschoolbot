@@ -111,29 +111,24 @@ export default class extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on a trip longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${
-					collectable.item.name
-				} is ${Math.floor(maxTripLength / collectable.duration)}.`
+				)}, try a lower quantity. The highest amount you can do for ${collectable.item.name} is ${Math.floor(
+					maxTripLength / collectable.duration
+				)}.`
 			);
 		}
 
 		const cost = collectable.itemCost.clone().multiply(quantity);
 		if (!msg.author.owns(cost)) {
-			return msg.channel.send(
-				`You don't have the items needed for this trip, you need: ${cost}.`
-			);
+			return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
 		}
 		await msg.author.removeItemsFromBank(cost);
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.CollectingCost,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.CollectingCost),
-				cost.bank
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
 		);
 
-		await addSubTaskToActivityTask<CollectingOptions>(this.client, {
+		await addSubTaskToActivityTask<CollectingOptions>({
 			collectableID: collectable.item.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

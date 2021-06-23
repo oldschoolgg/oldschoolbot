@@ -16,8 +16,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['trawler'],
-			description:
-				'Sends your minion to complete the fishing trawler, allowing you to get the angler outfit.',
+			description: 'Sends your minion to complete the fishing trawler, allowing you to get the angler outfit.',
 			examples: ['+trawler'],
 			categoryFlags: ['minion', 'skilling', 'minigame']
 		});
@@ -27,7 +26,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		if (msg.author.skillLevel(SkillsEnum.Fishing) < 15) {
-			return msg.send(`You need atleast level 15 Fishing to do the Fishing Trawler.`);
+			return msg.send('You need atleast level 15 Fishing to do the Fishing Trawler.');
 		}
 
 		const tripsDone = await msg.author.getMinigameScore('FishingTrawler');
@@ -40,7 +39,7 @@ export default class extends BotCommand {
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.FishingTrawler) / tripLength);
 		const duration = quantity * tripLength;
 
-		await addSubTaskToActivityTask<FishingTrawlerActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<FishingTrawlerActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			type: Activity.FishingTrawler,

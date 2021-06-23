@@ -88,13 +88,8 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.sync(true);
 
-		if (
-			msg.author.skillLevel(SkillsEnum.Fishing) < 43 ||
-			msg.author.skillLevel(SkillsEnum.Hunter) < 35
-		) {
-			return msg.send(
-				`You need atleast level 35 Hunter and 43 Fishing to do Aerial fishing.`
-			);
+		if (msg.author.skillLevel(SkillsEnum.Fishing) < 43 || msg.author.skillLevel(SkillsEnum.Hunter) < 35) {
+			return msg.send('You need atleast level 35 Hunter and 43 Fishing to do Aerial fishing.');
 		}
 
 		if (!Number(tripTime)) {
@@ -119,7 +114,7 @@ export default class extends BotCommand {
 		const quantity = tripLength / (randValue * Time.Second);
 		const duration = quantity * (randValue * Time.Second);
 
-		await addSubTaskToActivityTask<AerialFishingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<AerialFishingActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -128,9 +123,7 @@ export default class extends BotCommand {
 		});
 
 		return msg.send(
-			`${
-				msg.author.minionName
-			} is now doing Aerial fishing, it will take around ${formatDuration(
+			`${msg.author.minionName} is now doing Aerial fishing, it will take around ${formatDuration(
 				duration
 			)} to finish.`
 		);
@@ -139,9 +132,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async buy(msg: KlasaMessage, [itemName = '']: [string]) {
 		const buyable = buyables.find(
-			i =>
-				stringMatches(itemName, i.item.name) ||
-				i.aliases.some(alias => stringMatches(alias, itemName))
+			i => stringMatches(itemName, i.item.name) || i.aliases.some(alias => stringMatches(alias, itemName))
 		);
 
 		if (!buyable) {
@@ -157,7 +148,8 @@ export default class extends BotCommand {
 		if (amountPearlsHas === 0) {
 			return msg.send(
 				await chatHeadImage({
-					content: `You have no Molch pearls, but here is a joke... \nWhere do fish keep their money? \nIn a riverbank. Hehe!`,
+					content:
+						'You have no Molch pearls, but here is a joke... \nWhere do fish keep their money? \nIn a riverbank. Hehe!',
 					head: 'alry'
 				})
 			);
@@ -165,24 +157,20 @@ export default class extends BotCommand {
 		if (amountPearlsHas < buyable.cost) {
 			return msg.send(
 				await chatHeadImage({
-					content: `You don't have enough Molch pearls.`,
+					content: "You don't have enough Molch pearls.",
 					head: 'alry'
 				})
 			);
 		}
 		await msg.author.removeItemFromBank(itemID('Molch pearl'), buyable.cost);
 		await msg.author.addItemsToBank({ [buyable.item.id]: 1 }, true);
-		return msg.send(
-			`Successfully purchased 1x ${buyable.item.name} for ${buyable.cost}x Molch pearls.`
-		);
+		return msg.send(`Successfully purchased 1x ${buyable.item.name} for ${buyable.cost}x Molch pearls.`);
 	}
 
 	@requiresMinion
 	async sell(msg: KlasaMessage, [itemName = '']: [string]) {
 		const sellable = sellables.find(
-			i =>
-				stringMatches(itemName, i.item.name) ||
-				i.aliases.some(alias => stringMatches(alias, itemName))
+			i => stringMatches(itemName, i.item.name) || i.aliases.some(alias => stringMatches(alias, itemName))
 		);
 
 		if (!sellable) {
@@ -205,8 +193,6 @@ export default class extends BotCommand {
 		}
 		await msg.author.removeItemFromBank(sellable.item.id, 1);
 		await msg.author.addItemsToBank({ [itemID('Molch pearl')]: sellable.cost }, true);
-		return msg.send(
-			`Successfully sold 1x ${sellable.item.name} for ${sellable.cost}x Molch pearls.`
-		);
+		return msg.send(`Successfully sold 1x ${sellable.item.name} for ${sellable.cost}x Molch pearls.`);
 	}
 }

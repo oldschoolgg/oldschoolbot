@@ -15,8 +15,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage:
-				'<melee|mage|range> <attack|defence> <crush|slash|stab|ranged|magic> [prayer|strength]',
+			usage: '<melee|mage|range> <attack|defence> <crush|slash|stab|ranged|magic> [prayer|strength]',
 			usageDelim: ' ',
 			aliases: ['aep', 'aequip'],
 			description:
@@ -39,6 +38,7 @@ export default class extends BotCommand {
 				msg.author.settings.get(UserSettings.Bank),
 				msg.author.getGear(gearType),
 				gearType,
+				msg.author.rawSkills,
 				type,
 				style,
 				extra

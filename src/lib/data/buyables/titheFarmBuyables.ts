@@ -10,66 +10,66 @@ interface TitheFarmBuyable {
 
 const TitheFarmBuyables: TitheFarmBuyable[] = [
 	{
-		name: `Farmer's strawhat`,
+		name: "Farmer's strawhat",
 		aliases: ['farmers strawhat', 'farmers hat'],
 		outputItems: {
-			[itemID(`Farmer's strawhat`)]: 1
+			[itemID("Farmer's strawhat")]: 1
 		},
 		titheFarmPoints: 75
 	},
 	{
-		name: `Farmer's jacket`,
+		name: "Farmer's jacket",
 		aliases: ['farmers jacket'],
 		outputItems: {
-			[itemID(`Farmer's jacket`)]: 1
+			[itemID("Farmer's jacket")]: 1
 		},
 		titheFarmPoints: 150
 	},
 	{
-		name: `Farmer's shirt`,
+		name: "Farmer's shirt",
 		aliases: ['farmers shirt'],
 		outputItems: {
-			[itemID(`Farmer's shirt`)]: 1
+			[itemID("Farmer's shirt")]: 1
 		},
 		titheFarmPoints: 150
 	},
 	{
-		name: `Farmer's boro trousers`,
-		aliases: ['farmers trousers', 'farmers bottoms', `farmers legs`],
+		name: "Farmer's boro trousers",
+		aliases: ['farmers trousers', 'farmers bottoms', 'farmers legs'],
 		outputItems: {
-			[itemID(`Farmer's boro trousers`)]: 1
+			[itemID("Farmer's boro trousers")]: 1
 		},
 		titheFarmPoints: 125
 	},
 	{
-		name: `Farmer's boots`,
+		name: "Farmer's boots",
 		aliases: ['farmers boots'],
 		outputItems: {
-			[itemID(`Farmer's boots`)]: 1
+			[itemID("Farmer's boots")]: 1
 		},
 		titheFarmPoints: 50
 	},
 	{
-		name: `Grape seed`,
+		name: 'Grape seed',
 		aliases: ['grape seeds'],
 		outputItems: {
-			[itemID(`Grape seed`)]: 1
+			[itemID('Grape seed')]: 1
 		},
 		titheFarmPoints: 2
 	},
 	{
-		name: `Supercompost`,
+		name: 'Supercompost',
 		aliases: ['super compost'],
 		outputItems: {
-			[itemID(`Supercompost`)]: 1
+			[itemID('Supercompost')]: 1
 		},
 		titheFarmPoints: 5
 	},
 	{
-		name: `Bologa's blessing`,
+		name: "Bologa's blessing",
 		aliases: ['bologa'],
 		outputItems: {
-			[itemID(`Bologa's blessing`)]: 10
+			[itemID("Bologa's blessing")]: 10
 		},
 		titheFarmPoints: 1
 	}
