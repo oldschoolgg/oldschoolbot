@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { bankHasAllItemsFromBank} from 'oldschooljs/dist/util';
+import { bankHasAllItemsFromBank } from 'oldschooljs/dist/util';
 
 import { Time } from '../../lib/constants';
 import TrekShopItems, { TrekExperience } from '../../lib/data/buyables/trekBuyables';
@@ -47,11 +47,16 @@ export default class extends BotCommand {
 		}
 
 		if (quantity === undefined) {
-			quantity = type === 'easy' ? userBank[rewardTokens.easy] : type === 'medium' ? userBank[rewardTokens.medium] : userBank[rewardTokens.hard];
+			quantity =
+				type === 'easy'
+					? userBank[rewardTokens.easy]
+					: type === 'medium'
+					? userBank[rewardTokens.medium]
+					: userBank[rewardTokens.hard];
 		}
 
 		let outItems = new Bank();
-		
+
 		let inItems = new Bank();
 
 		let outXP: AddXpParams[] = [
@@ -86,7 +91,6 @@ export default class extends BotCommand {
 		];
 
 		for (let i = 0; i < quantity; i++) {
-
 			let outputTotal = 0;
 
 			switch (type) {
@@ -105,24 +109,27 @@ export default class extends BotCommand {
 			}
 
 			if (specifiedItem.name === 'Herbs') {
-				outItems.add(percentChance(50) ? 'Tarromin' : 'Harralander', Math.floor(reduceNumByPercent(outputTotal, 34)))
+				outItems.add(
+					percentChance(50) ? 'Tarromin' : 'Harralander',
+					Math.floor(reduceNumByPercent(outputTotal, 34))
+				);
 				outItems.add('Toadflax', Math.floor(reduceNumByPercent(outputTotal, 66)));
 			} else if (specifiedItem.name === 'Ore') {
 				outItems.add('Coal', Math.floor(reduceNumByPercent(outputTotal, 34)));
 				outItems.add('Iron ore', Math.floor(reduceNumByPercent(outputTotal, 66)));
 			} else if (specifiedItem.name === 'Experience') {
-				(outXP.find(item => item.skillName === TrekExperience[Math.floor(Math.random() * TrekExperience.length)]) || outXP[0]).amount += outputTotal;
+				(
+					outXP.find(
+						item => item.skillName === TrekExperience[Math.floor(Math.random() * TrekExperience.length)]
+					) || outXP[0]
+				).amount += outputTotal;
 			} else {
 				outItems.add(specifiedItem.name, outputTotal);
 			}
 		}
 
-
-
 		if (!bankHasAllItemsFromBank(userBank, inItems.bank)) {
-				return msg.send(
-					`You don't have enough reward tokens for that.`
-				);
+			return msg.send("You don't have enough reward tokens for that.");
 		}
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
@@ -145,8 +152,6 @@ export default class extends BotCommand {
 			}
 		}
 
-
-
 		if (outItems.length > 0) await user.addItemsToBank(outItems);
 		await user.removeItemsFromBank(inItems);
 
@@ -154,10 +159,13 @@ export default class extends BotCommand {
 		if (outItems.length > 0) {
 			ret += `**${outItems}**`;
 		} else {
-			ret += `XP. You received: `;
+			ret += 'XP. You received: ';
 		}
 
-		ret += (await Promise.all(outXP.map(xp => xp.amount > 0 ? user.addXP(xp) : ''))).filter(Boolean).join(', ').replace(/You received /g, '');
+		ret += (await Promise.all(outXP.map(xp => (xp.amount > 0 ? user.addXP(xp) : ''))))
+			.filter(Boolean)
+			.join(', ')
+			.replace(/You received /g, '');
 
 		return msg.send(`${ret}.`);
 	}

@@ -3,7 +3,12 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { lumberjackOutfit } from '../../../lib/data/collectionLog';
-import { EasyEncounterLoot, HardEncounterLoot, MediumEncounterLoot, rewardTokens } from '../../../lib/minions/data/templeTrekking';
+import {
+	EasyEncounterLoot,
+	HardEncounterLoot,
+	MediumEncounterLoot,
+	rewardTokens
+} from '../../../lib/minions/data/templeTrekking';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import { percentChance, stringMatches } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';

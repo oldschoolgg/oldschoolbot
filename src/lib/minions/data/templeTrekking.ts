@@ -79,7 +79,6 @@ export const difficulties = [
 	}
 ];
 
-
 export const trekBankBoosts = resolveNameBank({
 	'Salve amulet (e)': 5
 });
@@ -111,7 +110,6 @@ export const blisterwoodRequirements = {
 	woodcutting: 62,
 	fletching: 60
 };
-
 
 export const rewardTokens = {
 	easy: 7776,

@@ -1,5 +1,5 @@
-import itemID from '../../util/itemID';
 import { Emoji } from '../../constants';
+import itemID from '../../util/itemID';
 import { Log, SkillsEnum } from '../types';
 
 const logs: Log[] = [
@@ -149,7 +149,6 @@ const lumberjackItems: { [key: number]: number } = {
 	[itemID('Lumberjack legs')]: 0.6,
 	[itemID('Lumberjack boots')]: 0.2
 };
-
 
 const Woodcutting = {
 	aliases: ['wc', 'woodcutting'],

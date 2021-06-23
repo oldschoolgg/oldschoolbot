@@ -1,4 +1,4 @@
-import { SkillsEnum } from "../../skilling/types";
+import { SkillsEnum } from '../../skilling/types';
 
 interface TrekShopItem {
 	name: string;
@@ -10,7 +10,6 @@ interface TrekShopItem {
 }
 
 const TrekShopItems: TrekShopItem[] = [
-	
 	{
 		name: 'Pure essence',
 		easyRange: [50, 150],
@@ -73,7 +72,6 @@ const TrekShopItems: TrekShopItem[] = [
 		aliases: ['xp'],
 		possibleResults: []
 	}
-
 ];
 
 export const TrekExperience: SkillsEnum[] = [
@@ -84,6 +82,6 @@ export const TrekExperience: SkillsEnum[] = [
 	SkillsEnum.Fishing,
 	SkillsEnum.Woodcutting,
 	SkillsEnum.Mining
-]
+];
 
 export default TrekShopItems;

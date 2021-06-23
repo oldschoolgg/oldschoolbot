@@ -91,7 +91,6 @@ export default class extends BotCommand {
 			boosts.push(`${boostMessage}% out of ${((1 - tier.boosts.gearStats) * 100).toFixed(2)}% time boost for gear stats`);
 		}*/
 
-
 		// Every 25 trips becomes 1% faster to a cap of 10%
 		const percentFaster = Math.min(Math.floor((await msg.author.getMinigameScore('TempleTrekking')) / 25), 10);
 
@@ -107,28 +106,26 @@ export default class extends BotCommand {
 		}
 
 		if (!msg.author.hasGracefulEquipped()) {
-			boosts.push(`-15% for not having graceful equipped anywhere`);
+			boosts.push('-15% for not having graceful equipped anywhere');
 			tripTime *= 1.15;
 		}
 
 		const [hasMoryHard] = await userhasDiaryTier(msg.author, MorytaniaDiary.hard);
 
 		if (hasMoryHard) {
-			boosts.push(`15% for Morytania hard diary`);
+			boosts.push('15% for Morytania hard diary');
 			tripTime *= 0.85;
 		}
 
-		
 		if (msg.author.hasItemEquippedOrInBank('Ivandis flail')) {
-
 			let flailBoost = tier.boosts.ivandis;
-			let itemName = 'Ivandis'
+			let itemName = 'Ivandis';
 			if (msg.author.hasItemEquippedOrInBank('Blisterwood flail')) {
-				flailBoost -= 1 - tier.boosts.blisterwood
-				itemName = 'Blisterwood'
+				flailBoost -= 1 - tier.boosts.blisterwood;
+				itemName = 'Blisterwood';
 			}
 
-			itemName += ' flail'
+			itemName += ' flail';
 			boosts.push(`${((1 - flailBoost) * 100).toFixed(1)}% ${itemName}`);
 			tripTime *= flailBoost;
 		}
