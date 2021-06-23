@@ -10,9 +10,10 @@ import { KillableMonster } from '../../lib/minions/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
-import findMonster, { formatDuration } from '../../lib/util';
+import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
+import findMonster from '../../lib/util/findMonster';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
