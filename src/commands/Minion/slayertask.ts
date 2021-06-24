@@ -37,14 +37,15 @@ export default class extends BotCommand {
 	public getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 		if (assignedTask) {
 			const altMobs = assignedTask.monsters;
-			const alternateMonsters = killableMonsters
+			let alternateMonsters = killableMonsters
 				.filter(m => {
 					return altMobs.includes(m.id) && m!.id !== assignedTask.monster.id;
 				})
 				.map(m => {
 					return m!.name;
 				});
-			return alternateMonsters.length > 0 ? ` (${alternateMonsters.join('/')})` : '';
+			alternateMonsters.unshift(assignedTask.monster.name);
+			return alternateMonsters.length > 1 ? ` (**Possible choices**: ${alternateMonsters.join('/')})` : '';
 		}
 		return '';
 	}
