@@ -253,7 +253,7 @@ export default class PatreonTask extends Task {
 				const [tierID, bitField] = tiers[i];
 
 				if (!patron.entitledTiers.includes(tierID)) continue;
-				if (userBitfield.includes(bitField)) continue;
+				if (userBitfield.includes(bitField)) break;
 
 				result.push(`${username} was given Tier ${i + 1}.`);
 				messages.push(`Giving T${i + 1} patron perks to ${username} PatreonID[${patron.patreonID}]`);
