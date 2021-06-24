@@ -38,7 +38,6 @@ import {
 	addArrayOfNumbers,
 	formatDuration,
 	isWeekend,
-	itemID,
 	itemNameFromID,
 	randomVariation,
 	removeDuplicatesFromArray,
@@ -46,6 +45,7 @@ import {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import findMonster from '../../lib/util/findMonster';
+import itemID from '../../lib/util/itemID';
 
 const validMonsters = killableMonsters.map(mon => mon.name).join('\n');
 const invalidMonsterMsg = (prefix: string) =>
