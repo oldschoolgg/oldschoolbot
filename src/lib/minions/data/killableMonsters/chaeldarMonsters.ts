@@ -84,7 +84,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 58
 		},
 		superior: Monsters.CaveAbomination,
-		healAmountNeeded: 20,
+		healAmountNeeded: 11,
 		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackMagic],
 		canCannon: true,

@@ -222,7 +222,7 @@ export const vannakaMonsters: KillableMonster[] = [
 				[itemID('Arclight')]: 15
 			}
 		],
-		healAmountNeeded: 16,
+		healAmountNeeded: 12,
 		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackMagic],
 		canCannon: true
@@ -933,7 +933,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			}
 		],
 		superior: Monsters.InsatiableMutatedBloodveld,
-		healAmountNeeded: 22,
+		healAmountNeeded: 15,
 		attackStyleToUse: GearSetupTypes.Range,
 		attackStylesUsed: [GearStat.AttackMagic],
 		canCannon: true,

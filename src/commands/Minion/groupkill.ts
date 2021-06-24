@@ -13,7 +13,7 @@ import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
-import { findMonster } from '../../lib/util/findMonster';
+import findMonster from '../../lib/util/findMonster';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

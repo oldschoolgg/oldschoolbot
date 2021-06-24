@@ -8,7 +8,7 @@ import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { calcWhatPercent, formatDuration, formatItemBoosts, formatItemReqs, itemNameFromID } from '../../lib/util';
-import { findMonster } from '../../lib/util/findMonster';
+import findMonster from '../../lib/util/findMonster';
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
