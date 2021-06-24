@@ -21,7 +21,7 @@ import resolveItems from '../../lib/util/resolveItems';
 import { ZAM_HASTA_CRUSH } from './../../lib/constants';
 import { NightmareMonster } from './../../lib/minions/data/killableMonsters/index';
 
-function soloMessage(user: KlasaUser, duration: number, quantity: number) {
+function soloMessage(user: KlasaUser, duration: number, quantity: number, costs: Bank) {
 	const kc = user.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 0;
 	let str = `${user.minionName} is now off to kill The Nightmare ${quantity} times.`;
 	if (kc < 5) {
@@ -34,7 +34,7 @@ function soloMessage(user: KlasaUser, duration: number, quantity: number) {
 		str += ' They are not scared of The Nightmare anymore, and ready to fight!';
 	}
 
-	return `${str} The trip will take approximately ${formatDuration(duration)}.`;
+	return `${str} The trip will take approximately ${formatDuration(duration)}. Removed ${costs} from your bank`;
 }
 
 const inquisitorItems = resolveItems([
@@ -227,7 +227,7 @@ export default class extends BotCommand {
 
 		const str =
 			type === 'solo'
-				? `${soloMessage(msg.author, duration, quantity)}`
+				? `${soloMessage(msg.author, duration, quantity, totalCost)}`
 				: `${partyOptions.leader.username}'s party (${users
 						.map(u => u.username)
 						.join(', ')}) is now off to kill ${quantity}x ${

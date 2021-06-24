@@ -9,6 +9,7 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer, Time } from './constants';
 import { GearSetupTypes } from './gear/types';
+import { POHBoosts } from './poh';
 import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import itemID from './util/itemID';
@@ -438,6 +439,22 @@ export function formatItemBoosts(items: ItemBank[]) {
 		}
 	}
 	return str.join(', ');
+}
+
+export function formatPohBoosts(boosts: POHBoosts) {
+	const bonusStr = [];
+	const slotStr = [];
+
+	for (const [slot, objBoosts] of objectEntries(boosts)) {
+		if (objBoosts === undefined) continue;
+		for (const [name, boostPercent] of objectEntries(objBoosts)) {
+			bonusStr.push(`${boostPercent}% for ${name}`);
+		}
+
+		slotStr.push(`${slot.replace(/\b\S/g, t => t.toUpperCase())}: (${bonusStr.join(' or ')})\n`);
+	}
+
+	return slotStr.join(', ');
 }
 
 export function filterItemTupleByQuery(query: string, items: ItemTuple[]) {
