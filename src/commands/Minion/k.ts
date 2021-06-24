@@ -222,7 +222,15 @@ export default class extends BotCommand {
 			return msg.send(`You need 70 Magic to use Ice Burst. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`);
 		}
 
-		if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+		if (msg.author.hasItemEquippedAnywhere("Dinh's bulwark")) {
+			if (boostChoice === 'barrage' && monster!.canBarrage) {
+				boosts.push("Dinh's Bulwark is preventing you from barraging");
+			} else if (boostChoice === 'burst' && monster!.canBarrage) {
+				boosts.push("Dinh's Bulwark is preventing you from bursting");
+			} else if (boostChoice === 'cannon' && monster!.canCannon) {
+				boosts.push("Dinh's Bulwark is preventing you from using your cannon");
+			}
+		} else if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 			consumableCosts.push(iceBarrageConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
 			boosts.push(`${boostIceBarrage}% for Ice Barrage`);
