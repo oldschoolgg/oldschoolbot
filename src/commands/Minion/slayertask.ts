@@ -44,7 +44,7 @@ export default class extends BotCommand {
 				.map(m => {
 					return m!.name;
 				});
-			return alternateMonsters.length > 0 ? ` (${alternateMonsters.join('/')})` : '';
+			return alternateMonsters.length > 0 ? ` (**Alternate Monsters**: ${alternateMonsters.join(', ')})` : '';
 		}
 		return '';
 	}
