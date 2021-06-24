@@ -44,8 +44,7 @@ export default class extends BotCommand {
 				.map(m => {
 					return m!.name;
 				});
-			alternateMonsters.unshift(assignedTask.monster.name);
-			return alternateMonsters.length > 1 ? ` (**Possible choices**: ${alternateMonsters.join(', ')})` : '';
+			return alternateMonsters.length > 0 ? ` (**Alternate Monsters**: ${alternateMonsters.join(', ')})` : '';
 		}
 		return '';
 	}
