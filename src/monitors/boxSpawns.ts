@@ -27,11 +27,14 @@ export async function triviaChallenge(msg: KlasaMessage): Promise<KlasaUser | nu
 	await msg.channel.send(embed);
 
 	try {
-		const collected = await msg.channel.awaitMessages(_msg => stringMatches(_msg.content, correct_answer), {
-			max: 1,
-			time: 14_000,
-			errors: ['time']
-		});
+		const collected = await msg.channel.awaitMessages(
+			_msg => stringMatches(_msg.content, correct_answer) && !_msg.author.isIronman,
+			{
+				max: 1,
+				time: 14_000,
+				errors: ['time']
+			}
+		);
 
 		const winner = collected.first()?.author;
 		return winner ?? null;
@@ -55,11 +58,14 @@ export async function itemChallenge(msg: KlasaMessage): Promise<KlasaUser | null
 	await msg.channel.send(embed);
 
 	try {
-		const collected = await msg.channel.awaitMessages(_msg => stringMatches(_msg.content, randomItem.name), {
-			max: 1,
-			time: 14_000,
-			errors: ['time']
-		});
+		const collected = await msg.channel.awaitMessages(
+			_msg => stringMatches(_msg.content, randomItem.name) && !_msg.author.isIronman,
+			{
+				max: 1,
+				time: 14_000,
+				errors: ['time']
+			}
+		);
 
 		const winner = collected.first()?.author;
 		return winner ?? null;
@@ -98,10 +104,12 @@ async function challenge(msg: KlasaMessage) {
 		triviaChallenge
 	]);
 	const winner = await item(msg);
-	if (winner) {
+	if (winner && !winner.isIronman) {
 		const loot = new Bank().add(getRandomMysteryBox());
 		await winner.addItemsToBank(loot);
 		return msg.channel.send(`Congratulations, ${winner}! You received: **${loot}**.`);
+	} else if (winner && winner.isIronman) {
+		return msg.channel.send(`Congratulations, ${winner}! You won! But you stand alone, no box for you.`);
 	}
 }
 
