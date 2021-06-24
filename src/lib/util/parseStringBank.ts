@@ -4,7 +4,7 @@ import { fromKMB } from 'oldschooljs/dist/util';
 
 import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
-import { getOSItems } from './getOSItem';
+import getOSItems from './getOSItems';
 
 function parseQuantityAndItem(str = ''): [Item, number][] | null {
 	str = str.trim();
@@ -41,9 +41,8 @@ export function parseStringBank(str = ''): [Item, number][] {
 	let items: [Item, number][] = [];
 	for (let i = 0; i < split.length; i++) {
 		let res = parseQuantityAndItem(split[i]);
-
 		if (res !== null) {
-			items.push(...res);
+			res.map(item => (items.some(existingItem => existingItem[0] === item[0]) ? null : items.push(item)));
 		}
 	}
 	return items;
@@ -85,8 +84,6 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 		if (inputBank.amount(item.id) < qty) continue;
 		outputBank.addItem(item.id, qty);
 	}
-
-	console.log(`ParseBank: ${outputBank.length}`);
 
 	return outputBank;
 }
