@@ -4,9 +4,9 @@ import { fromKMB } from 'oldschooljs/dist/util';
 
 import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
-import getOSItem from './getOSItem';
+import { getOSItems } from './getOSItem';
 
-function parseQuantityAndItem(str = ''): [Item, number] | null {
+function parseQuantityAndItem(str = ''): [Item, number][] | null {
 	str = str.trim();
 	if (!str) return null;
 	let [potentialQty, ...potentialName] = str.split(' ');
@@ -16,10 +16,9 @@ function parseQuantityAndItem(str = ''): [Item, number] | null {
 	// Can return number, NaN or undefined. We want it to be only number or undefined.
 	if (isNaN(parsedQty)) parsedQty = undefined;
 	const parsedName = parsedQty === undefined ? str : potentialName.join('');
-
-	let osItem: Item | undefined = undefined;
+	let osItems: Item[] | undefined = undefined;
 	try {
-		osItem = getOSItem(parsedName);
+		osItems = getOSItems(parsedName);
 	} catch (_) {
 		return null;
 	}
@@ -28,7 +27,10 @@ function parseQuantityAndItem(str = ''): [Item, number] | null {
 
 	quantity = Math.floor(Math.min(MAX_INT_JAVA, quantity));
 
-	return [osItem, quantity];
+	let outItems: [Item, number][] = [];
+	osItems.forEach(item => outItems.push([item, quantity]));
+
+	return outItems;
 }
 
 export function parseStringBank(str = ''): [Item, number][] {
@@ -39,8 +41,9 @@ export function parseStringBank(str = ''): [Item, number][] {
 	let items: [Item, number][] = [];
 	for (let i = 0; i < split.length; i++) {
 		let res = parseQuantityAndItem(split[i]);
-		if (res !== null && !items.some(i => i[0] === res![0])) {
-			items.push(res);
+
+		if (res !== null) {
+			items.push(...res);
 		}
 	}
 	return items;
@@ -82,6 +85,8 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 		if (inputBank.amount(item.id) < qty) continue;
 		outputBank.addItem(item.id, qty);
 	}
+
+	console.log(`ParseBank: ${outputBank.length}`);
 
 	return outputBank;
 }
