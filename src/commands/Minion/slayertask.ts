@@ -37,7 +37,7 @@ export default class extends BotCommand {
 	public getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 		if (assignedTask) {
 			const altMobs = assignedTask.monsters;
-			let alternateMonsters = killableMonsters
+			const alternateMonsters = killableMonsters
 				.filter(m => {
 					return altMobs.includes(m.id) && m!.id !== assignedTask.monster.id;
 				})
