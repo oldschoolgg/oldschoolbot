@@ -1,7 +1,7 @@
 import { notEmpty, objectKeys } from 'e';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
-import { getSimilarItems } from '../data/similarItems';
+import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
 import { constructGearSetup, GearSetup, GearSlotItem, GearStats, PartialGearSetup } from '../gear';
 import { GearRequirement } from '../minions/types';
 import getOSItem from '../util/getOSItem';
@@ -86,11 +86,13 @@ export class Gear {
 
 		if (similar) {
 			for (const item of [...values]) {
+				const inverse = inverseSimilarItems.get(item);
+				if (inverse) {
+					values.push(...inverse.values());
+				}
 				const similarItems = getSimilarItems(item);
-				for (const simItem of similarItems) {
-					if (!values.includes(simItem)) {
-						values.push(simItem);
-					}
+				if (similarItems) {
+					values.push(...similarItems);
 				}
 			}
 		}

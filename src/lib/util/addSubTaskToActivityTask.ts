@@ -1,4 +1,4 @@
-import { getActivityOfUser, minionActivityCache } from '../settings/settings';
+import { getActivityOfUser } from '../settings/settings';
 import { ActivityTable } from '../typeorm/ActivityTable.entity';
 import { ActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';
@@ -35,11 +35,8 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 	activity.groupActivity = isGroupActivity(taskToAdd);
 	activity.channelID = taskToAdd.channelID;
 	activity.duration = duration;
+
+	activity.activitySync();
+
 	await activity.save();
-
-	const users = isGroupActivity(newData) ? newData.users : [taskToAdd.userID];
-
-	for (const user of users) {
-		minionActivityCache.set(user, activity.taskData);
-	}
 }

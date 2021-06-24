@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 
@@ -392,6 +393,8 @@ export const nieveTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.Suqah,
 		amount: [120, 185],
+		extendedAmount: [180, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.SuqANotherOne,
 		weight: 8,
 		monsters: [Monsters.Suqah.id],
 		combatLevel: 85,
