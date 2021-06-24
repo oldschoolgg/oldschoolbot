@@ -1567,8 +1567,8 @@ export const capes: CollectionLogData = {
 		'Defence master cape',
 		'Hitpoints master cape',
 		'Ranged master cape',
-		'Dungeoneering master cape',
-		'Slayer master cape'
+		'Slayer master cape',
+		'Dungeoneering master cape'
 	]),
 	expert: resolveItems(['Support cape', "Gatherer's cape", "Combatant's cape", "Artisan's cape"]),
 	otherCapes: resolveItems(['Quest point hood', 'Achievement diary hood', 'Max hood']),
