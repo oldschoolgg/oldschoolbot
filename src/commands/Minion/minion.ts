@@ -71,9 +71,9 @@ export default class MinionCommand extends BotCommand {
 			);
 		}
 		const level = msg.author.skillLevel(skill.id);
-		let str = `${skill.emoji} Your ${skill.name} level is **${level}**.`;
+		const currentXP = msg.author.settings.get(`skills.${skill.id}`) as number;
+		let str = `${skill.emoji} Your ${skill.name} level is **${level}** (${currentXP.toLocaleString()} XP).`;
 		if (level < MAX_LEVEL) {
-			const currentXP = msg.author.settings.get(`skills.${skill.id}`) as number;
 			const xpToLevel = convertLVLtoXP(level + 1) - currentXP;
 			str += ` ${xpToLevel.toLocaleString()} XP away from level ${level + 1}`;
 		}

@@ -81,15 +81,6 @@ export enum SlayerTaskUnlocksEnum {
 	BroaderFletching
 }
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
-	/* Anything commented won't appear in lists.
-	{
-		id: SlayerTaskUnlocksEnum.GargoyleSmasher,
-		name: 'Gargoyle smasher',
-		desc: 'Allows you to kill gargoyles faster.',
-		slayerPointCost: 120,
-		canBeRemoved: false
-	},
-	 */
 	{
 		id: SlayerTaskUnlocksEnum.MalevolentMasquerade,
 		name: 'Malevolent Masquerade',
