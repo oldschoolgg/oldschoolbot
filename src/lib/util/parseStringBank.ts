@@ -34,12 +34,12 @@ function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 	return [osItems, quantity];
 }
 
-export function parseStringBank(str = ''): [Item, number][] {
+export function parseStringBank(str = ''): [Item, number | undefined][] {
 	str = str.trim().replace(/\s\s+/g, ' ');
 	if (!str) return [];
 	const split = str.split(',');
 	if (split.length === 0) return [];
-	let items: [Item, number][] = [];
+	let items: [Item, number | undefined][] = [];
 	const currentIDs = new Set();
 	for (let i = 0; i < split.length; i++) {
 		let [resItems, quantity] = parseQuantityAndItem(split[i]);
@@ -47,7 +47,7 @@ export function parseStringBank(str = ''): [Item, number][] {
 			for (const item of resItems) {
 				if (currentIDs.has(item.id)) continue;
 				currentIDs.add(item.id);
-				items.push([item, quantity ?? 0]);
+				items.push([item, quantity]);
 			}
 		}
 	}
@@ -66,7 +66,12 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 	if (inputStr) {
 		let _bank = new Bank();
 		const strItems = parseStringBank(inputStr);
-		for (const [item] of strItems) _bank.add(item.id, inputBank.amount(item.id));
+		for (const [item, quantity] of strItems) {
+			_bank.add(
+				item.id,
+				!quantity ? inputBank.amount(item.id) : Math.max(1, Math.min(quantity, inputBank.amount(item.id)))
+			);
+		}
 		return _bank;
 	}
 
