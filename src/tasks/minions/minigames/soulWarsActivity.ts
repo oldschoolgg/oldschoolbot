@@ -5,6 +5,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SoulWarsOptions } from '../../../lib/types/minions';
 import { noOp, roll } from '../../../lib/util';
 import { sendToChannelID } from '../../../lib/util/webhook';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 function calcPoints() {
 	let base = 42.5;
@@ -23,7 +24,8 @@ function calcPoints() {
 }
 
 export default class extends Task {
-	async run({ channelID, leader, users, quantity }: SoulWarsOptions) {
+	async run(data: SoulWarsOptions) {
+		const { channelID, leader, users, quantity } = data;
 		const leaderUser = await this.client.users.fetch(leader);
 		let str = `${leaderUser}, your party finished doing ${quantity}x games of Soul Wars.\n\n`;
 
@@ -41,7 +43,24 @@ export default class extends Task {
 			user.incrementMinigameScore('SoulWars', quantity);
 			str += `${user} received ${points}x Zeal Tokens.`;
 		}
-
+		console.log(users.length)
 		sendToChannelID(this.client, channelID, { content: str });
+
+		if (users.length === 1) {
+			handleTripFinish(
+				this.client,
+				leaderUser,
+				channelID,
+				'',
+				res => {
+					leaderUser.log(`continued trip of killing soul wars}`);
+					return this.client.commands.get('sw')!.run(res, ['solo']);
+				},
+				undefined!,
+				data,
+				null
+			);
+		}
+		
 	}
 }
