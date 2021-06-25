@@ -11,7 +11,7 @@ describe('hasGracefulEquipped', () => {
 					feet: 'Shayzien graceful boots',
 					hands: 'Dark graceful gloves',
 					head: 'Piscarilius graceful hood',
-					legs: 'Hosidius graceful legs'
+					legs: 'Trailblazer graceful legs'
 				})
 			)
 		).toEqual(true);
@@ -22,17 +22,19 @@ describe('hasGracefulEquipped', () => {
 	});
 
 	test('agility cape instead of graceful cape', () => {
+		const base = {
+			body: 'Graceful top',
+			feet: 'Shayzien graceful boots',
+			hands: 'Dark graceful gloves',
+			head: 'Piscarilius graceful hood',
+			legs: 'Hosidius graceful legs'
+		};
+		expect(hasGracefulEquipped(constructGearSetup({ ...base, cape: 'Agility cape' }))).toEqual(true);
 		expect(
-			hasGracefulEquipped(
-				constructGearSetup({
-					body: 'Graceful top',
-					cape: 'Agility cape',
-					feet: 'Shayzien graceful boots',
-					hands: 'Dark graceful gloves',
-					head: 'Piscarilius graceful hood',
-					legs: 'Hosidius graceful legs'
-				})
-			)
+			hasGracefulEquipped(constructGearSetup({ ...base, cape: 'Agility cape', head: 'Agility hood' }))
 		).toEqual(true);
+		expect(hasGracefulEquipped(constructGearSetup({ ...base, cape: 'Agility cape(t)' }))).toEqual(true);
+		expect(hasGracefulEquipped(constructGearSetup({ ...base, cape: 'Max cape' }))).toEqual(true);
+		expect(hasGracefulEquipped(constructGearSetup({ ...base, cape: 'Max cape', head: 'Max hood' }))).toEqual(true);
 	});
 });

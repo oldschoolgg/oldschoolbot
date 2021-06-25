@@ -11,7 +11,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.AberrantSpectre.id,
 		name: Monsters.AberrantSpectre.name,
 		aliases: Monsters.AberrantSpectre.aliases,
-		timeToFinish: Time.Second * 35,
+		timeToFinish: Time.Second * 24,
 		table: Monsters.AberrantSpectre,
 
 		wildy: false,

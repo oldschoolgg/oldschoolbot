@@ -48,14 +48,14 @@ export default class extends BotCommand {
 				return getSlayerReward(mu);
 			})
 			.join('\n');
-		if (unlocksStr !== '') unlocksStr = `\`${unlocksStr}\``;
+		if (unlocksStr !== '') unlocksStr = `${unlocksStr}`;
 		const defaultMsg =
-			`Current points: ${myPoints}\nYou currently have the following ` +
-			`rewards unlocked:\n${unlocksStr}\n\n` +
+			`Current points: ${myPoints}\n**You currently have the following ` +
+			`rewards unlocked:**\n${unlocksStr}\n\n` +
 			`Usage:\n\`${msg.cmdPrefix}slayershop [unlock|lock|buy] Reward\`\nExample:` +
 			`\n\`${msg.cmdPrefix}slayershop unlock Malevolent Masquerade\``;
 		if (defaultMsg.length > 2000) {
-			return msg.channel.sendFile(Buffer.from(defaultMsg), 'currentUnlocks.txt');
+			return msg.channel.sendFile(Buffer.from(defaultMsg.replace(/`/g, '')), 'currentUnlocks.txt');
 		}
 		return msg.channel.send(defaultMsg);
 	}

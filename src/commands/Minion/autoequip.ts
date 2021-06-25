@@ -38,6 +38,7 @@ export default class extends BotCommand {
 				msg.author.settings.get(UserSettings.Bank),
 				msg.author.getGear(gearType),
 				gearType,
+				msg.author.rawSkills,
 				type,
 				style,
 				extra

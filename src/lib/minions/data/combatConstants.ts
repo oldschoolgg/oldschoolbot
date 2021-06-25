@@ -66,7 +66,7 @@ export const cannonSingleConsumables: Consumable = {
 };
 export const cannonMultiConsumables: Consumable = {
 	itemCost: new Bank().add('Cannonball', 1),
-	qtyPerMinute: 60
+	qtyPerMinute: 50
 };
 // 20% less than always casting to lure.
 export const iceBarrageConsumables: Consumable = {
@@ -75,7 +75,7 @@ export const iceBarrageConsumables: Consumable = {
 	isRuneCost: true
 };
 export const iceBurstConsumables: Consumable = {
-	itemCost: new Bank().add('Water rune', 2).add('Chaos rune', 4).add('Death rune', 4),
+	itemCost: new Bank().add('Water rune', 4).add('Chaos rune', 4).add('Death rune', 2),
 	qtyPerMinute: 16,
 	isRuneCost: true
 };
