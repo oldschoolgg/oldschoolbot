@@ -38,7 +38,7 @@ const killableBosses: KillableMonster[] = [
 		customMonsterHP: 656,
 		combatXpMultiplier: 1.126,
 		healAmountNeeded: 20 * 5,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
 	},
 	{
@@ -155,7 +155,7 @@ const killableBosses: KillableMonster[] = [
 		customMonsterHP: 708,
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 20 * 5,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic]
 	}
 ];

@@ -56,7 +56,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 35,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab],
 		canBarrage: true
 	},
@@ -93,7 +93,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 20 * 14,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab]
 	},
 	{
@@ -109,7 +109,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 15,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		canBarrage: true,
@@ -132,7 +132,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 12,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -147,7 +147,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 10,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -167,7 +167,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.MonstrousBasilisk,
 		healAmountNeeded: 18,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -187,7 +187,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.BasiliskSentinel,
 		healAmountNeeded: 20 * 4,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic],
 		itemInBankBoosts: [
 			{
@@ -239,7 +239,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
 		healAmountNeeded: 28,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		combatXpMultiplier: 1.025,
 		canCannon: true
@@ -259,7 +259,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 47
 		},
 		healAmountNeeded: 18,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab],
 		canCannon: true
 	},
@@ -277,7 +277,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
 		healAmountNeeded: 25,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true
 	},
@@ -331,7 +331,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		cannonMulti: true,
 		canBarrage: false,
 		healAmountNeeded: 24,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -352,7 +352,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 9,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: true,
@@ -370,7 +370,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 2,
 		healAmountNeeded: 9,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -385,7 +385,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 2,
 		healAmountNeeded: 16,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -435,7 +435,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: true,
 		healAmountNeeded: 16,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -450,7 +450,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 22,
 		healAmountNeeded: 22,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: false,
@@ -468,7 +468,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 22,
 		healAmountNeeded: 26,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab],
 		canCannon: true,
 		cannonMulti: false,
@@ -489,7 +489,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 42
 		},
 		healAmountNeeded: 14,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -506,7 +506,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Giant champion scroll']),
 		qpRequired: 0,
 		healAmountNeeded: 17,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true
 	},
@@ -526,7 +526,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.MarbleGargoyle,
 		healAmountNeeded: 14,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -561,7 +561,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 20 * 12,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged, GearStat.AttackMagic]
 	},
 	{
@@ -588,7 +588,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.Nechryarch,
 		healAmountNeeded: 28,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canBarrage: true,
 		canCannon: true
@@ -606,7 +606,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
 		healAmountNeeded: 20,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true
 	},
@@ -626,7 +626,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			firemaking: 33
 		},
 		healAmountNeeded: 14,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -643,7 +643,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Smouldering stone']),
 		qpRequired: 0,
 		healAmountNeeded: 18,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab],
 		itemInBankBoosts: [
 			{
@@ -667,7 +667,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Giant champion scroll']),
 		qpRequired: 0,
 		healAmountNeeded: 18,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: false,
@@ -689,7 +689,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 22,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: true,
@@ -726,7 +726,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 12,
 		healAmountNeeded: 20,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackRanged],
 		canCannon: true
 	},
@@ -742,7 +742,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 5,
 		qpRequired: 12,
 		healAmountNeeded: 20,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab],
 		canCannon: true
 	},
@@ -777,7 +777,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 20,
 		healAmountNeeded: 14,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true
 	},
@@ -803,7 +803,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.KingKurask,
 		healAmountNeeded: 26,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -819,7 +819,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 18,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		// No multi spots (i think) but you can safespot for same effect.
@@ -841,7 +841,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 39
 		},
 		healAmountNeeded: 12,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -857,7 +857,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 17,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true
 	},
@@ -892,7 +892,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		qpRequired: 1,
 		canCannon: true,
 		healAmountNeeded: 28,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -908,7 +908,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		canCannon: true,
 		healAmountNeeded: 12,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -959,7 +959,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.Nechryarch,
 		healAmountNeeded: 24,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -974,7 +974,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 16,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		// Safespottable for multi-effect
@@ -1007,7 +1007,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		qpRequired: 0,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1022,7 +1022,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 12,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1041,7 +1041,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Antidote++(4)']),
 		qpRequired: 57,
 		healAmountNeeded: 20,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1060,7 +1060,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Antidote++(4)']),
 		qpRequired: 57,
 		healAmountNeeded: 30,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1075,7 +1075,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 111,
 		healAmountNeeded: 12,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -1111,7 +1111,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 63
 		},
 		healAmountNeeded: 25,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackRanged]
 	},
 	{
@@ -1129,7 +1129,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 68
 		},
 		healAmountNeeded: 26,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -1147,7 +1147,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			slayer: 40
 		},
 		healAmountNeeded: 28,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1162,7 +1162,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 20 * 2,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -1186,7 +1186,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.SpikedTuroth,
 		healAmountNeeded: 18,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -1231,7 +1231,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 13,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	}
 ];

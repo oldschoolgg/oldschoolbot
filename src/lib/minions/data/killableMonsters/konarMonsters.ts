@@ -35,7 +35,7 @@ export const konarMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 15,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -53,7 +53,7 @@ export const konarMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
 		healAmountNeeded: 85,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -72,7 +72,7 @@ export const konarMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.NightBeast,
 		healAmountNeeded: 20 * 3,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic],
 		canCannon: true,
 		cannonMulti: false,
@@ -95,7 +95,7 @@ export const konarMonsters: KillableMonster[] = [
 
 		superior: Monsters.GuardianDrake,
 		healAmountNeeded: 70,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: false,
@@ -118,7 +118,7 @@ export const konarMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.ColossalHydra,
 		healAmountNeeded: 20 * 5,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
 		canCannon: true
 	},
@@ -183,7 +183,7 @@ export const konarMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
 		healAmountNeeded: 26,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: false,
 		cannonMulti: false,
@@ -202,7 +202,7 @@ export const konarMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Dragon metal lump', 'Draconic visage']),
 		qpRequired: 205,
 		healAmountNeeded: 20 * 6,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	},
 	{

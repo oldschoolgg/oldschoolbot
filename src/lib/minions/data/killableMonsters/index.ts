@@ -171,7 +171,7 @@ const killableMonsters: KillableMonster[] = [
 			prayer: 43
 		},
 		healAmountNeeded: 100,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackRanged]
 	},
 	{
@@ -230,7 +230,7 @@ const killableMonsters: KillableMonster[] = [
 		},
 		uniques: resolveItems(['Sraracha', 'Jar of eyes', 'Giant egg sac(full)', 'Sarachnis cudgel']),
 		healAmountNeeded: 9 * 20,
-		attackStyleToUse: GearStat.AttackCrush,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
 		minimumGearRequirements: {
 			[GearSetupTypes.Melee]: {
@@ -307,7 +307,7 @@ export const NightmareMonster: KillableMonster = {
 		'Volatile orb'
 	]),
 	healAmountNeeded: 40 * 20,
-	attackStyleToUse: GearStat.AttackCrush,
+	attackStyleToUse: GearStat.AttackSlash,
 	attackStylesUsed: [GearStat.AttackSlash],
 	minimumGearRequirements: {
 		[GearSetupTypes.Melee]: {
