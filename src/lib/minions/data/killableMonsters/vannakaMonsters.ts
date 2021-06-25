@@ -11,7 +11,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.AberrantSpectre.id,
 		name: Monsters.AberrantSpectre.name,
 		aliases: Monsters.AberrantSpectre.aliases,
-		timeToFinish: Time.Second * 35,
+		timeToFinish: Time.Second * 24,
 		table: Monsters.AberrantSpectre,
 
 		wildy: false,
@@ -179,7 +179,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		wildy: false,
 
-		difficultyRating: 2,
+		difficultyRating: 4,
 		notifyDrops: resolveItems(['Basilisk head', 'Basilisk jaw']),
 		qpRequired: 120,
 		levelRequirements: {
@@ -221,7 +221,7 @@ export const vannakaMonsters: KillableMonster[] = [
 				[itemID('Arclight')]: 15
 			}
 		],
-		healAmountNeeded: 16,
+		healAmountNeeded: 12,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic],
 		canCannon: true
@@ -932,7 +932,7 @@ export const vannakaMonsters: KillableMonster[] = [
 			}
 		],
 		superior: Monsters.InsatiableMutatedBloodveld,
-		healAmountNeeded: 22,
+		healAmountNeeded: 15,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic],
 		canCannon: true,

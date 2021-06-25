@@ -146,7 +146,7 @@ const gems = resolveItems([
 	'Zenyte shard'
 ]);
 
-const craftingItems = Craftables.flatMap(item => Object.keys(item.inputItems).map(key => parseInt(key)));
+const craftingItems = Craftables.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
 
 const craftingItemsSet = [...new Set(craftingItems)];
 
@@ -347,7 +347,7 @@ const bones = resolveItems([
 	'Zogre bones'
 ]);
 
-const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems).map(key => parseInt(key)));
+const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
 
 const fletchingItemsSet = [...new Set(fletchingItems)];
 
@@ -784,6 +784,61 @@ const diango = resolveItems([
 	11706
 ]);
 
+const diaries = resolveItems([
+	'Karamja gloves 1',
+	'Karamja gloves 2',
+	'Karamja gloves 3',
+	'Karamja gloves 4',
+	'Ardougne cloak 1',
+	'Ardougne cloak 2',
+	'Ardougne cloak 3',
+	'Ardougne cloak 4',
+	'Falador shield 1',
+	'Falador shield 2',
+	'Falador shield 3',
+	'Falador shield 4',
+	'Fremennik sea boots 1',
+	'Fremennik sea boots 2',
+	'Fremennik sea boots 3',
+	'Fremennik sea boots 4',
+	'Kandarin headgear 1',
+	'Kandarin headgear 2',
+	'Kandarin headgear 3',
+	'Kandarin headgear 4',
+	'Desert amulet 1',
+	'Desert amulet 2',
+	'Desert amulet 3',
+	'Desert amulet 4',
+	"Explorer's ring 1",
+	"Explorer's ring 2",
+	"Explorer's ring 3",
+	"Explorer's ring 4",
+	'Morytania legs 1',
+	'Morytania legs 2',
+	'Morytania legs 3',
+	'Morytania legs 4',
+	'Varrock armour 1',
+	'Varrock armour 2',
+	'Varrock armour 3',
+	'Varrock armour 4',
+	'Wilderness sword 1',
+	'Wilderness sword 2',
+	'Wilderness sword 3',
+	'Wilderness sword 4',
+	'Western banner 1',
+	'Western banner 2',
+	'Western banner 3',
+	'Western banner 4',
+	"Rada's blessing 1",
+	"Rada's blessing 2",
+	"Rada's blessing 3",
+	"Rada's blessing 4",
+	'Antique lamp 1',
+	'Antique lamp 2',
+	'Antique lamp 3',
+	'Antique lamp 4'
+]);
+
 const food = resolveItems(Eatables.map(food => food.name));
 
 interface Filterable {
@@ -802,6 +857,11 @@ export const filterableTypes: Filterable[] = [
 		name: 'Diango',
 		aliases: ['diango', 'daily', 'dailies'],
 		items: diango
+	},
+	{
+		name: 'Diaries',
+		aliases: ['diaries', 'diary', 'ad'],
+		items: diaries
 	},
 	{
 		name: 'Crafting',

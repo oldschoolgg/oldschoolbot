@@ -1,7 +1,7 @@
 import { notEmpty, objectKeys } from 'e';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
-import { getSimilarItems } from '../data/similarItems';
+import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
 import { constructGearSetup, GearSetup, GearSlotItem, GearStats, PartialGearSetup } from '../gear';
 import { GearRequirement } from '../minions/types';
 import getOSItem from '../util/getOSItem';
@@ -86,11 +86,13 @@ export class Gear {
 
 		if (similar) {
 			for (const item of [...values]) {
+				const inverse = inverseSimilarItems.get(item);
+				if (inverse) {
+					values.push(...inverse.values());
+				}
 				const similarItems = getSimilarItems(item);
-				for (const simItem of similarItems) {
-					if (!values.includes(simItem)) {
-						values.push(simItem);
-					}
+				if (similarItems) {
+					values.push(...similarItems);
 				}
 			}
 		}
@@ -98,10 +100,30 @@ export class Gear {
 		return values;
 	}
 
-	hasEquipped(_items: string | (string | number)[], every = false) {
+	hasEquipped(_items: string | (string | number)[], every = false, includeSimilar = true) {
 		const items = resolveItems(_items);
-		const allItems = this.allItems(true);
-		return items[every ? 'every' : 'some'](i => allItems.includes(i));
+		const allItems = this.allItems();
+		if (!includeSimilar) {
+			return items[every ? 'every' : 'some'](i => allItems.includes(i));
+		} else if (every) {
+			// similar = true, every = true
+			const targetCount = items.length;
+			let currentCount = 0;
+			for (const i of [...items]) {
+				const similarItems = getSimilarItems(i);
+				if (similarItems.length) {
+					if (similarItems.some(si => allItems.includes(si))) currentCount++;
+				} else if (allItems.includes(i)) currentCount++;
+			}
+			return currentCount === targetCount;
+		}
+		// similar = true, every = false
+		for (const i of [...items]) {
+			const similarItems = getSimilarItems(i) ?? [i];
+			if (similarItems.some(si => allItems.includes(si))) return true;
+			else if (allItems.includes(i)) return true;
+		}
+		return false;
 	}
 
 	equippedWeapon(): Item | null {

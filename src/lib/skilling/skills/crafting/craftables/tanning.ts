@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../../../util';
+import { Bank } from 'oldschooljs';
+
 import itemID from '../../../../util/itemID';
 import { Craftable } from '../../../types';
 
@@ -8,7 +9,7 @@ const Tanning: Craftable[] = [
 		id: itemID('Leather'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ Cowhide: 1, Coins: 1 }),
+		inputItems: new Bank({ Cowhide: 1, Coins: 1 }),
 		tickRate: 1,
 		bankChest: true
 	},
@@ -17,7 +18,7 @@ const Tanning: Craftable[] = [
 		id: itemID('Hard leather'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ Cowhide: 1, Coins: 3 }),
+		inputItems: new Bank({ Cowhide: 1, Coins: 3 }),
 		tickRate: 1,
 		bankChest: true
 	},
@@ -26,7 +27,7 @@ const Tanning: Craftable[] = [
 		id: itemID('Green dragon leather'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Green dragonhide': 1, Coins: 20 }),
+		inputItems: new Bank({ 'Green dragonhide': 1, Coins: 20 }),
 		tickRate: 1,
 		bankChest: true
 	},
@@ -35,7 +36,7 @@ const Tanning: Craftable[] = [
 		id: itemID('Blue dragon leather'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Blue dragonhide': 1, Coins: 20 }),
+		inputItems: new Bank({ 'Blue dragonhide': 1, Coins: 20 }),
 		tickRate: 1,
 		bankChest: true
 	},
@@ -44,7 +45,7 @@ const Tanning: Craftable[] = [
 		id: itemID('Red dragon leather'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Red dragonhide': 1, Coins: 20 }),
+		inputItems: new Bank({ 'Red dragonhide': 1, Coins: 20 }),
 		tickRate: 1,
 		bankChest: true
 	},
@@ -53,7 +54,7 @@ const Tanning: Craftable[] = [
 		id: itemID('Black dragon leather'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Black dragonhide': 1, Coins: 20 }),
+		inputItems: new Bank({ 'Black dragonhide': 1, Coins: 20 }),
 		tickRate: 1,
 		bankChest: true
 	}

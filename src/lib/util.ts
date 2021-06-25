@@ -8,10 +8,7 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer, Time } from './constants';
-import { hasItemEquipped } from './gear';
 import { GearSetupTypes } from './gear/types';
-import killableMonsters from './minions/data/killableMonsters';
-import { KillableMonster } from './minions/types';
 import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import itemID from './util/itemID';
@@ -276,7 +273,7 @@ export function anglerBoostPercent(user: KlasaUser) {
 	let amountEquipped = 0;
 	let boostPercent = 0;
 	for (const [id, percent] of anglerBoosts) {
-		if (hasItemEquipped(id, skillingSetup)) {
+		if (skillingSetup.hasEquipped([id])) {
 			boostPercent += percent;
 			amountEquipped++;
 		}
@@ -293,7 +290,7 @@ export function rogueOutfitPercentBonus(user: KlasaUser): number {
 	const skillingSetup = user.getGear('skilling');
 	let amountEquipped = 0;
 	for (const id of rogueOutfit) {
-		if (hasItemEquipped(id, skillingSetup)) {
+		if (skillingSetup.hasEquipped([id])) {
 			amountEquipped++;
 		}
 	}
@@ -399,13 +396,6 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 		}
 	}
 	return true;
-}
-
-export default function findMonster(str: string): KillableMonster | undefined {
-	const mon = killableMonsters.find(
-		mon => stringMatches(mon.name, str) || mon.aliases.some(alias => stringMatches(alias, str))
-	);
-	return mon;
 }
 
 export function formatItemReqs(items: ArrayItemsResolved) {
