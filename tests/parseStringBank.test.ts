@@ -53,13 +53,17 @@ describe('Bank Parsers', () => {
 			[get('3rd age platebody'), 0],
 			[get('3rd age platelegs'), 5]
 		]);
-		expect(psb('Bronze arrow, Iron arrow, Steel arrow, Rune arrow')).toEqual([
+		expect(psb('Bronze arrow, Iron arrow, Steel arrow, Rune arrow').filter(i => i[0].tradeable_on_ge)).toEqual([
 			[get('Bronze arrow'), 0],
 			[get('Iron arrow'), 0],
 			[get('Steel arrow'), 0],
 			[get('Rune arrow'), 0]
 		]);
-		expect(psb('Steel platelegs, Adamant platelegs,Non-existent item!!, Black platelegs')).toEqual([
+		expect(
+			psb('Steel platelegs, Adamant platelegs,Non-existent item!!, Black platelegs').filter(
+				i => i[0].tradeable_on_ge
+			)
+		).toEqual([
 			[get('Steel platelegs'), 0],
 			[get('Adamant platelegs'), 0],
 			[get('Black platelegs'), 0]
@@ -159,5 +163,17 @@ describe('Bank Parsers', () => {
 		});
 		expect(res.length).toEqual(1);
 		expect(res.amount('Coal')).toEqual(6);
+	});
+
+	test('parseBank - same item names', async () => {
+		const bank = new Bank().add(22002).add(22003, 5);
+		const res = parseBank({
+			inputBank: bank,
+			flags: {},
+			inputStr: 'dragonfire ward'
+		});
+		expect(res.length).toEqual(2);
+		expect(res.amount(22003)).toEqual(5);
+		expect(res.amount(22002)).toEqual(1);
 	});
 });
