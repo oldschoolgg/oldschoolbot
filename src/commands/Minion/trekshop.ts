@@ -12,7 +12,7 @@ import { percentChance, rand, reduceNumByPercent, stringMatches, toTitleCase } f
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<easy|medium|hard> [quantity:integer{1,2147483647}] <item:...string>',
+			usage: '<easy|medium|hard> [quantity:integer{1,2147483647}] [item:...string]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
@@ -29,6 +29,14 @@ export default class extends BotCommand {
 		await user.settings.sync(true);
 
 		const userBank = user.bank();
+
+		if (name === undefined) {
+			return msg.send(
+				`Item is required. Possible items: ${TrekShopItems.map(item => {
+					return item.name;
+				}).join(', ')}.`
+			);
+		}
 
 		const specifiedItem = TrekShopItems.find(
 			item =>
@@ -51,6 +59,10 @@ export default class extends BotCommand {
 					: type === 'medium'
 					? userBank.amount(rewardTokens.medium)
 					: userBank.amount(rewardTokens.hard);
+		}
+
+		if (quantity === 0) {
+			return msg.send("You don't have enough reward tokens for that.");
 		}
 
 		let outItems = new Bank();
@@ -123,11 +135,9 @@ export default class extends BotCommand {
 				outItems.add('Coal', Math.floor(reduceNumByPercent(outputTotal, 34)));
 				outItems.add('Iron ore', Math.floor(reduceNumByPercent(outputTotal, 66)));
 			} else if (specifiedItem.name === 'Experience') {
-				(
-					outXP.find(
-						item => item.skillName === TrekExperience[Math.floor(Math.random() * TrekExperience.length)]
-					) || outXP[0]
-				).amount += outputTotal;
+				const randXP = Math.floor(Math.random() * TrekExperience.length) + 1;
+
+				(outXP.find(item => item.skillName === TrekExperience[randXP]) || outXP[0]).amount += outputTotal;
 			} else {
 				outItems.add(specifiedItem.name, outputTotal);
 			}
@@ -167,8 +177,7 @@ export default class extends BotCommand {
 			ret += 'XP. You received: ';
 		}
 
-		ret += (await Promise.all(outXP.filter(xp => xp.amount > 0).map(xp => user.addXP(xp))))
-			.join(', ');
+		ret += (await Promise.all(outXP.filter(xp => xp.amount > 0).map(xp => user.addXP(xp)))).join(', ');
 
 		return msg.send(`${ret}.`);
 	}

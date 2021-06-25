@@ -3,9 +3,10 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
-import { readableStatName } from '../../lib/gear';
+import { GearSetupTypes, GearStat, readableStatName } from '../../lib/gear';
 import { difficulties, trekBankBoosts } from '../../lib/minions/data/templeTrekking';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { GearRequirement } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
@@ -21,7 +22,8 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			categoryFlags: ['minion', 'minigame'],
 			description: 'Sends your minion to Temple Trek.',
-			examples: ['+trek easy/medium/hard']
+			examples: ['+trek easy/medium/hard'],
+			aliases: ['tt']
 		});
 	}
 
@@ -35,7 +37,10 @@ export default class extends BotCommand {
 
 		const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
 
-		if (tier === undefined) return msg.send('Cannot start temple trekking due to unknown tier! Valid tiers are easy/medium/hard. Example: +trek medium');
+		if (tier === undefined)
+			return msg.send(
+				'Cannot start temple trekking due to unknown tier! Valid tiers are easy/medium/hard. Example: +trek medium'
+			);
 
 		const minLevel = tier.minCombat;
 		const qp = msg.author.settings.get(UserSettings.QP);
@@ -44,12 +49,54 @@ export default class extends BotCommand {
 			for (const [setup, requirements] of objectEntries(tier.minimumGearRequirements)) {
 				const gear = msg.author.getGear(setup);
 				if (setup && requirements) {
-					const [meetsRequirements, unmetKey, has] = gear.meetsStatRequirements(requirements);
+					let newRequirements: GearRequirement = requirements;
+					let maxMeleeStat:
+						| GearStat
+						| [
+								(
+									| 'attack_stab'
+									| 'attack_slash'
+									| 'attack_crush'
+									| 'attack_magic'
+									| 'attack_ranged'
+									| 'defence_stab'
+									| 'defence_slash'
+									| 'defence_crush'
+									| 'defence_magic'
+									| 'defence_ranged'
+									| 'melee_strength'
+									| 'ranged_strength'
+									| 'magic_damage'
+									| 'prayer'
+								),
+								number
+						  ] = [GearStat.AttackCrush, -500];
+					objectEntries(gear.getStats()).map(
+						stat =>
+							(maxMeleeStat =
+								!stat[0].startsWith('defence') &&
+								stat[0] !== 'attack_magic' &&
+								stat[0] !== 'attack_ranged' &&
+								stat[1] > maxMeleeStat[1]
+									? stat
+									: maxMeleeStat)
+					);
+
+					if (setup === GearSetupTypes.Melee) {
+						if (maxMeleeStat[0] !== GearStat.AttackCrush) delete newRequirements.attack_crush;
+						if (maxMeleeStat[0] !== GearStat.AttackSlash) delete newRequirements.attack_slash;
+						if (maxMeleeStat[0] !== GearStat.AttackStab) delete newRequirements.attack_stab;
+					} else {
+						newRequirements = requirements;
+					}
+
+					const [meetsRequirements, unmetKey, has] = gear.meetsStatRequirements(newRequirements);
 					if (!meetsRequirements) {
 						return msg.send(
 							`You don't have the requirements to do ${tier.difficulty} treks! Your ${readableStatName(
 								unmetKey!
-							)} stat in your ${setup} setup is ${has}, but you need atleast ${tier.minimumGearRequirements[setup]![unmetKey!]
+							)} stat in your ${setup} setup is ${has}, but you need atleast ${
+								tier.minimumGearRequirements[setup]![unmetKey!]
 							}.`
 						);
 					}
@@ -71,7 +118,7 @@ export default class extends BotCommand {
 		// Every 25 trips becomes 1% faster to a cap of 10%
 		const percentFaster = Math.min(Math.floor((await msg.author.getMinigameScore('TempleTrekking')) / 25), 10);
 
-		boosts.push(`${percentFaster.toFixed(1)}% for minion learning`);
+		boosts.push(`${percentFaster.toFixed(1)}% from completed treks`);
 
 		tripTime = reduceNumByPercent(tripTime, percentFaster);
 

@@ -44,7 +44,6 @@ export default class extends Task {
 			: getOSItem(rewardTokens.easy);
 
 		let totalEncounters = 0;
-		let pieceGotten = false;
 		for (let trip = 0; trip < quantity; trip++) {
 			const encounters = stringMatches(difficulty, 'hard')
 				? randInt(0, 7)
@@ -62,11 +61,10 @@ export default class extends Task {
 					} else {
 						loot.add(EasyEncounterLoot.roll());
 					}
-				} else if (percentChance(5) && !pieceGotten) {
+				} else if (percentChance(3)) {
 					const piece = this.getLowestCountOutfitPiece(userBank);
 					userBank.add(piece);
 					loot.add(piece);
-					pieceGotten = true;
 				}
 
 				totalEncounters++;
@@ -76,13 +74,20 @@ export default class extends Task {
 			loot.add(rewardToken.id);
 		}
 
-		await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
 		let str = `${user}, ${user.minionName} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated.`;
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(loot.bank, `Loot From ${quantity}x Temple Treks:`, true, { showNewCL: 1 }, user);
+			.generateBankImage(
+				itemsAdded,
+				`Loot From ${quantity}x Temple Treks:`,
+				true,
+				{ showNewCL: 1 },
+				user,
+				previousCL
+			);
 
 		handleTripFinish(
 			this.client,
@@ -91,11 +96,11 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x treks`);
-				return this.client.commands.get('trek')!.run(res, []);
+				return this.client.commands.get('trek')!.run(res, [quantity, difficulty]);
 			},
 			image!,
 			data,
-			loot.bank
+			itemsAdded
 		);
 	}
 }

@@ -30,9 +30,9 @@ export default class extends Task {
 			xpReceived += amountToAdd;
 			bonusXP += amountToAdd;
 		} else {
-			// For each prospector item, check if they have it, give its' XP boost if so.
+			// For each lumberjack item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Woodcutting.lumberjackItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
+				if (user.getGear('skilling').hasEquipped([parseInt(itemID)], false)) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;

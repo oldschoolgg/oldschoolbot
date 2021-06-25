@@ -222,12 +222,9 @@ const source: [string, (string | number)[], true?][] = [
 	['Attack cape', ['Max cape', 'Attack cape(t)']],
 	[
 		'Kodai wand',
-		'Mud battlestaff',
-		'Mystic mud staff'
-	]),
-	[itemID('Ivandis flail')]: resolveItems(['Blisterwood flail']),
-	[
 		[
+			'Mud battlestaff',
+			'Mystic mud staff',
 			'Staff of water',
 			'Mist battlestaff',
 			'Mystic mist staff',
@@ -240,7 +237,8 @@ const source: [string, (string | number)[], true?][] = [
 			'Mystic mud staff'
 		],
 		true
-	]
+	],
+	['Ivandis flail', resolveItems(['Blisterwood flail'])]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
