@@ -84,6 +84,6 @@ export const gracefulCapes = [
 export function hasGracefulEquipped(setup: Gear) {
 	return setup.hasEquipped(
 		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful boots', 'Graceful cape'],
-		false
+		true
 	);
 }

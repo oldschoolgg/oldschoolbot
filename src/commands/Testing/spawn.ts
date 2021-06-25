@@ -8,6 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { itemNameFromID } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 
 const gearSpawns = [
 	{
@@ -72,6 +73,12 @@ export default class extends BotCommand {
 					.map(itemNameFromID)
 					.join(', ')}.`
 			);
+		}
+
+		if (msg.flagArgs.id) {
+			const item = getOSItem(Number(msg.flagArgs.id));
+			await msg.author.addItemsToBank({ [item.id]: 1 });
+			return msg.channel.send(`Gave you the item with the id of ${item.id} (${item.name})`);
 		}
 
 		if (!itemArray) return;

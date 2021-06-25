@@ -20,7 +20,7 @@ export default class TradeableItemBankArgument extends Argument {
 
 	async run(arg: string, _: Possible, msg: KlasaMessage): Promise<TradeableItemBankArgumentType> {
 		await msg.author.settings.sync(true);
-		let items: [Item, number][] = parseStringBank(arg);
+		let items: [Item, number | undefined][] = parseStringBank(arg);
 
 		let bank = new Bank();
 
@@ -69,7 +69,7 @@ export default class TradeableItemBankArgument extends Argument {
 		let totalPrice = 0;
 		for (const [item, _qty] of items) {
 			if (bank.length === 70) break;
-			const qty = Math.max(1, qtyOverride ?? (_qty === 0 ? Math.max(1, userBank.amount(item.id)) : _qty));
+			const qty = Math.max(1, qtyOverride ?? (!_qty ? Math.max(1, userBank.amount(item.id)) : _qty));
 
 			if (itemIsTradeable(item.id) && userBank.amount(item.id) >= qty) {
 				bank.add(item.id, qty);

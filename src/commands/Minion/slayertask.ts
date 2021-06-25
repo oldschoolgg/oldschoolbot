@@ -1,3 +1,4 @@
+import { randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
@@ -14,6 +15,7 @@ import {
 	getUsersCurrentSlayerInfo,
 	userCanUseMaster
 } from '../../lib/slayer/slayerUtil';
+import { AssignableSlayerTask } from '../../lib/slayer/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
@@ -32,13 +34,42 @@ export default class extends BotCommand {
 		});
 	}
 
+	public getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
+		if (assignedTask) {
+			const altMobs = assignedTask.monsters;
+			const alternateMonsters = killableMonsters
+				.filter(m => {
+					return altMobs.includes(m.id) && m!.id !== assignedTask.monster.id;
+				})
+				.map(m => {
+					return m!.name;
+				});
+			return alternateMonsters.length > 0 ? ` (**Alternate Monsters**: ${alternateMonsters.join(', ')})` : '';
+		}
+		return '';
+	}
+
+	public async returnSuccess(msg: KlasaMessage, message: string, autoslay: boolean) {
+		if (autoslay) {
+			await msg.channel.send(message);
+			try {
+				return this.client.commands.get('autoslay')!.run(msg, ['']);
+			} catch (e) {
+				return msg.channel.send('It was not possible to auto-slay this task. Please, try again.');
+			}
+		}
+		return msg.channel.send(message);
+	}
+
 	@requiresMinion
 	async run(msg: KlasaMessage, [input]: [string | undefined]) {
 		const { currentTask, totalTasksDone, assignedTask } = await getUsersCurrentSlayerInfo(msg.author.id);
 		const myBlockList = msg.author.settings.get(UserSettings.Slayer.BlockedTasks);
 		const myQPs = msg.author.settings.get(UserSettings.QP);
-
 		const maxBlocks = calcMaxBlockedTasks(myQPs);
+
+		let returnMessage = '';
+
 		if (
 			msg.flagArgs.listblocks ||
 			msg.flagArgs.blocks ||
@@ -221,10 +252,12 @@ export default class extends BotCommand {
 			msg.author.settings.update(UserSettings.Slayer.TaskStreak, 0);
 			const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
 			let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
-			return msg.channel.send(
+			returnMessage =
 				`Your task has been skipped.\n\n ${slayerMaster.name}` +
-					` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.`
-			);
+				` has assigned you to kill ${
+					newSlayerTask.currentTask.quantity
+				}x ${commonName}${this.getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
+			return this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
 		}
 
 		if (currentTask || !slayerMaster) {
@@ -239,33 +272,29 @@ export default class extends BotCommand {
 				if (aRequirements.length) warningInfo += `**Requires**:\n${aRequirements.join('\n')}\n\n`;
 			}
 
-			let monsterList = '';
-			if (currentTask && assignedTask) {
-				const altMobs = assignedTask.monsters;
-
-				const alternateMonsters = killableMonsters
-					.filter(m => {
-						return altMobs.includes(m.id) && m!.id !== assignedTask.monster.id;
-					})
-					.map(m => {
-						return m!.name;
-					});
-
-				monsterList = alternateMonsters.length > 0 ? ` (${alternateMonsters.join('/')})` : '';
-			}
 			let baseInfo = currentTask
 				? `Your current task is to kill ${currentTask.quantity}x ${getCommonTaskName(
 						assignedTask!.monster
-				  )}${monsterList}, you have ${currentTask.quantityRemaining} kills remaining.`
+				  )}${this.getAlternateMonsterList(assignedTask)}, you have ${
+						currentTask.quantityRemaining
+				  } kills remaining.`
 				: `You have no task at the moment, you can get a task using \`${msg.cmdPrefix}slayertask ${slayerMasters
 						.map(i => i.name)
 						.join('/')}\``;
 
-			return msg.channel.send(`${warningInfo}${baseInfo}
-	
+			returnMessage = `${warningInfo}${baseInfo}
+
 You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.settings.get(
 				UserSettings.Slayer.TaskStreak
-			)}.`);
+			)}.`;
+			if (currentTask && !warningInfo) {
+				return this.returnSuccess(
+					msg,
+					returnMessage,
+					Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay)
+				);
+			}
+			return msg.channel.send(returnMessage);
 		}
 
 		// Store favorite slayer master if requested:
@@ -282,9 +311,12 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 				return srs.extendID !== undefined;
 			}).forEach(srsf => {
 				if (myUnlocks.includes(srsf.id) && srsf.extendID!.includes(newSlayerTask.currentTask.monsterID)) {
-					newSlayerTask.currentTask.quantity = Math.ceil(
-						newSlayerTask.currentTask.quantity * srsf.extendMult!
-					);
+					newSlayerTask.currentTask.quantity = newSlayerTask.assignedTask.extendedAmount
+						? randInt(
+								newSlayerTask.assignedTask.extendedAmount[0],
+								newSlayerTask.assignedTask.extendedAmount[1]
+						  )
+						: Math.ceil(newSlayerTask.currentTask.quantity * srsf.extendMult!);
 					newSlayerTask.currentTask.quantityRemaining = newSlayerTask.currentTask.quantity;
 					newSlayerTask.currentTask.save();
 				}
@@ -297,8 +329,10 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 				`. You can choose to kill TzTok-Jad with ${msg.cmdPrefix}fightcaves as long as you ` +
 				"don't kill any regular TzHaar first.";
 		}
-		return msg.channel.send(
-			`${slayerMaster.name} has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}.${updateMsg}`
-		);
+
+		returnMessage = `${slayerMaster.name} has assigned you to kill ${
+			newSlayerTask.currentTask.quantity
+		}x ${commonName}${this.getAlternateMonsterList(newSlayerTask.assignedTask)}.${updateMsg}`;
+		return this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
 	}
 }

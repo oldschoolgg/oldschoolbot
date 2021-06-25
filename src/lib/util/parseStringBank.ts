@@ -1,46 +1,54 @@
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { fromKMB } from 'oldschooljs/dist/util';
 
 import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
-import getOSItem from './getOSItem';
+import { stringMatches } from '../util';
 
-function parseQuantityAndItem(str = ''): [Item, number] | null {
+function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 	str = str.trim();
-	if (!str) return null;
-	let [potentialQty, ...potentialName] = str.split(' ');
+	if (!str) return [];
+	const split = str.split(' ');
+
+	// If we're passed 2 numbers in a row, e.g. '1 1 coal', remove that number and recurse back.
+	if (!isNaN(Number(split[1]))) {
+		split.splice(1, 1);
+		return parseQuantityAndItem(split.join(' '));
+	}
+
+	let [potentialQty, ...potentialName] = split;
 	// Fix for 3rd age items
 	if (potentialQty === '3rd') potentialQty = '';
 	let parsedQty: number | undefined = fromKMB(potentialQty);
 	// Can return number, NaN or undefined. We want it to be only number or undefined.
 	if (isNaN(parsedQty)) parsedQty = undefined;
 	const parsedName = parsedQty === undefined ? str : potentialName.join('');
+	let osItems: Item[] = Array.from(Items.filter(i => stringMatches(i.name, parsedName)).values());
 
-	let osItem: Item | undefined = undefined;
-	try {
-		osItem = getOSItem(parsedName);
-	} catch (_) {
-		return null;
-	}
 	let quantity = parsedQty ?? 0;
 	if (quantity < 0) quantity = 0;
 
 	quantity = Math.floor(Math.min(MAX_INT_JAVA, quantity));
 
-	return [osItem, quantity];
+	return [osItems, quantity];
 }
 
-export function parseStringBank(str = ''): [Item, number][] {
+export function parseStringBank(str = ''): [Item, number | undefined][] {
 	str = str.trim().replace(/\s\s+/g, ' ');
 	if (!str) return [];
 	const split = str.split(',');
 	if (split.length === 0) return [];
-	let items: [Item, number][] = [];
+	let items: [Item, number | undefined][] = [];
+	const currentIDs = new Set();
 	for (let i = 0; i < split.length; i++) {
-		let res = parseQuantityAndItem(split[i]);
-		if (res !== null && !items.some(i => i[0] === res![0])) {
-			items.push(res);
+		let [resItems, quantity] = parseQuantityAndItem(split[i]);
+		if (resItems !== undefined) {
+			for (const item of resItems) {
+				if (currentIDs.has(item.id)) continue;
+				currentIDs.add(item.id);
+				items.push([item, quantity]);
+			}
 		}
 	}
 	return items;
@@ -58,7 +66,12 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 	if (inputStr) {
 		let _bank = new Bank();
 		const strItems = parseStringBank(inputStr);
-		for (const [item] of strItems) _bank.add(item.id, inputBank.amount(item.id));
+		for (const [item, quantity] of strItems) {
+			_bank.add(
+				item.id,
+				!quantity ? inputBank.amount(item.id) : Math.max(1, Math.min(quantity, inputBank.amount(item.id)))
+			);
+		}
 		return _bank;
 	}
 
