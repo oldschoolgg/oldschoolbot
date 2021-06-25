@@ -53,7 +53,11 @@ export function resolveAttackStyles(
 		(params.boostMethod === 'barrage' || params.boostMethod === 'burst') &&
 		!attackStyles.includes(SkillsEnum.Magic)
 	) {
-		attackStyles = [SkillsEnum.Magic];
+		if (attackStyles.includes(SkillsEnum.Defence)) {
+			attackStyles = [SkillsEnum.Magic, SkillsEnum.Defence];
+		} else {
+			attackStyles = [SkillsEnum.Magic];
+		}
 	}
 	return [killableMon, osjsMon, attackStyles];
 }
