@@ -278,5 +278,56 @@ export const Castables: Castable[] = [
 		level: 89,
 		ticks: 3,
 		qpRequired: 50
+	},
+	{
+		id: itemID('Giant seaweed'),
+		name: 'Superglass make giant seaweed',
+		input: new Bank()
+			.add('Astral rune', 2)
+			.add('Fire rune', 6)
+			.add('Air rune', 10)
+			.add('Bucket of sand', 18)
+			.add('Giant seaweed', 3),
+		output: new Bank().add('Molten glass', 29),
+		xp: 78,
+		level: 77,
+		ticks: 12,
+		qpRequired: 50,
+		craftXp: 180,
+		craftLevel: 61
+	},
+	{
+		id: itemID('Seaweed'),
+		name: 'Superglass make seaweed',
+		input: new Bank()
+			.add('Astral rune', 2)
+			.add('Fire rune', 6)
+			.add('Air rune', 10)
+			.add('Bucket of sand', 13)
+			.add('Seaweed', 13),
+		output: new Bank().add('Molten glass', 17),
+		xp: 78,
+		level: 77,
+		ticks: 12,
+		qpRequired: 50,
+		craftXp: 130,
+		craftLevel: 61
+	},
+	{
+		id: itemID('Soda ash'),
+		name: 'Superglass make soda ash',
+		input: new Bank()
+			.add('Astral rune', 2)
+			.add('Fire rune', 6)
+			.add('Air rune', 10)
+			.add('Bucket of sand', 13)
+			.add('Soda ash', 13),
+		output: new Bank().add('Molten glass', 17),
+		xp: 78,
+		level: 77,
+		ticks: 12,
+		qpRequired: 50,
+		craftXp: 130,
+		craftLevel: 61
 	}
 ];
