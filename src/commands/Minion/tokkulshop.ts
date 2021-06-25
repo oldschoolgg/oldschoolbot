@@ -91,7 +91,7 @@ export default class extends BotCommand {
 				);
 			}
 			return msg.send(
-				`I am sorry JalYt, but you don't have enough items for that. You need **${inItems}** to sell for **${tokkul}**.`
+				`I am sorry JalYt, but you don't have enough items for that. You need **${items}** to sell for **${tokkul}**.`
 			);
 		}
 
