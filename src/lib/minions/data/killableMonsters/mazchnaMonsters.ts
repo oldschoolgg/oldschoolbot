@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { GearSetupTypes, GearStat } from '../../../gear';
+import { GearStat } from '../../../gear';
 import itemID from '../../../util/itemID';
 import resolveItems from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
@@ -35,7 +35,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 10,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab],
 		canCannon: true,
 		cannonMulti: false,
@@ -57,7 +57,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 
 		superior: Monsters.Cockathrice,
 		healAmountNeeded: 12,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -72,7 +72,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 24,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -89,7 +89,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 			agility: 15
 		},
 		healAmountNeeded: 14,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		cannonMulti: false,
@@ -164,7 +164,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 13,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		cannonMulti: false,
@@ -184,7 +184,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Giant key']),
 		itemCost: new Bank().add('Giant key', 1),
 		healAmountNeeded: 20 * 5,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
 	},
 	{
@@ -198,7 +198,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 14,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		cannonMulti: false,
@@ -215,7 +215,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 17,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		cannonMulti: false,
@@ -235,7 +235,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 			slayer: 37
 		},
 		healAmountNeeded: 16,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
 	},
 	{
@@ -324,7 +324,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.FlamingPyrelord,
 		healAmountNeeded: 8,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
@@ -343,7 +343,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.FlamingPyrelord,
 		healAmountNeeded: 15,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
@@ -380,7 +380,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.GiantRockslug,
 		healAmountNeeded: 12,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -426,7 +426,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		qpRequired: 0,
 		healAmountNeeded: 28,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -445,7 +445,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		difficultyRating: 5,
 		qpRequired: 0,
 		healAmountNeeded: 40,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
