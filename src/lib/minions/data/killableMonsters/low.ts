@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { Time } from '../../../constants';
-import { GearSetupTypes, GearStat } from '../../../gear/types';
+import { GearStat } from '../../../gear/types';
 import { KillableMonster } from '../../types';
 
 const killableMonsters: KillableMonster[] = [
@@ -26,7 +26,7 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		respawnTime: Time.Second * 1.5,
 		healAmountNeeded: 14,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -40,7 +40,7 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		respawnTime: Time.Second * 10,
 		healAmountNeeded: 8,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	}
 ];
