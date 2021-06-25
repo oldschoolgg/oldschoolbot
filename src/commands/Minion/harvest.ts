@@ -166,7 +166,8 @@ export default class extends BotCommand {
 			quantity: patchType.lastQuantity,
 			planting: false,
 			currentDate,
-			type: Activity.Farming
+			type: Activity.Farming,
+			autoFarmed: false
 		});
 
 		return msg.send(returnMessageStr);
