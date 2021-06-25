@@ -228,7 +228,6 @@ export const similarItems: Map<number, number[]> = new Map(
 );
 
 export const inverseSimilarItems: Map<number, Set<number>> = new Map();
-
 for (const [baseItem, similarItems] of source) {
 	for (const item of resolveItems(similarItems)) {
 		if (!inverseSimilarItems.get(item)) {
@@ -239,7 +238,6 @@ for (const [baseItem, similarItems] of source) {
 }
 
 export function getSimilarItems(itemID: number): number[] {
-
 	const similars = similarItems.get(itemID);
 	return similars ? [itemID, ...similars] : [];
 }
