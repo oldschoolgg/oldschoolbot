@@ -176,4 +176,16 @@ describe('Bank Parsers', () => {
 		expect(res.amount(22003)).toEqual(5);
 		expect(res.amount(22002)).toEqual(1);
 	});
+
+	test('parseBank - extra number', async () => {
+		const bank = new Bank().add('Coal', 5).add('3rd age platebody', 100);
+		const res = parseBank({
+			inputBank: bank,
+			flags: {},
+			inputStr: '1 5 coal, 3 100 3rd age platebody'
+		});
+		expect(res.length).toEqual(2);
+		expect(res.amount('Coal')).toEqual(1);
+		expect(res.amount('3rd age platebody')).toEqual(3);
+	});
 });
