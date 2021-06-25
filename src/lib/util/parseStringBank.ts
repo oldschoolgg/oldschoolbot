@@ -10,6 +10,13 @@ function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 	str = str.trim();
 	if (!str) return [];
 	const split = str.split(' ');
+
+	// If we're passed 2 numbers in a row, e.g. '1 1 coal', remove that number and recurse back.
+	if (!isNaN(Number(split[1]))) {
+		split.splice(1, 1);
+		return parseQuantityAndItem(split.join(' '));
+	}
+
 	let [potentialQty, ...potentialName] = split;
 	// Fix for 3rd age items
 	if (potentialQty === '3rd') potentialQty = '';
