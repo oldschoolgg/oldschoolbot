@@ -78,14 +78,20 @@ export default class extends BotCommand {
 			outItems.add({ Tokkul: quantity * shopInventory.tokkulReturn });
 		}
 
+		// Buy: inItems = tokkul, outItems = item
+		// Sell: inItems = item, outItems = tokkul
+
+		const tokkul = type === 'buy' ? inItems : outItems;
+		const items = type === 'buy' ? outItems : inItems;
+
 		if (!bankHasAllItemsFromBank(userBank, inItems.bank)) {
 			if (type === 'buy') {
 				return msg.send(
-					`I am sorry JalYt, but you don't have enough tokkul for that. You need **${inItems}** to buy **${outItems}**.`
+					`I am sorry JalYt, but you don't have enough tokkul for that. You need **${tokkul}** to buy **${items}**.`
 				);
 			}
 			return msg.send(
-				`I am sorry JalYt, but you don't have enough items for that. You need **${inItems}** to sell for **${outItems}**.`
+				`I am sorry JalYt, but you don't have enough items for that. You need **${items}** to sell for **${tokkul}**.`
 			);
 		}
 
@@ -93,7 +99,7 @@ export default class extends BotCommand {
 			const sellMsg = await msg.channel.send(
 				`${msg.author}, JalYt, say \`confirm\` to confirm that you want to ${
 					type === 'buy' ? 'buy' : 'sell'
-				} **${inItems}** for **${outItems}**.`
+				} **${items}** for **${tokkul}**.`
 			);
 
 			// Confirm the user wants to buy
@@ -107,7 +113,7 @@ export default class extends BotCommand {
 					}
 				);
 			} catch (err) {
-				return sellMsg.edit(`Cancelling ${type === 'buy' ? 'purchase' : 'sale'} of **${outItems}**.`);
+				return sellMsg.edit(`Cancelling ${type === 'buy' ? 'purchase' : 'sale'} of **${items}**.`);
 			}
 		}
 
@@ -116,6 +122,6 @@ export default class extends BotCommand {
 			addBanks([outItems.bank, removeBankFromBank(userBank, inItems.bank)])
 		);
 
-		return msg.send(`You ${type === 'buy' ? 'bought' : 'sold'} **${outItems}** for **${inItems}**.`);
+		return msg.send(`You ${type === 'buy' ? 'bought' : 'sold'} **${items}** for **${tokkul}**.`);
 	}
 }
