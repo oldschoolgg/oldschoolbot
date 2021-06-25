@@ -140,13 +140,11 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [input]: [string]) {
-
 		const perDuration = randomVariation(Time.Minute * 7, 5);
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.SoulWars) / perDuration);
 		const duration = quantity * perDuration;
 
 		if (input === 'solo') {
-
 			await addSubTaskToActivityTask<SoulWarsOptions>({
 				userID: msg.author.id,
 				channelID: msg.channel.id,
@@ -157,9 +155,9 @@ export default class extends BotCommand {
 				users: [msg.author.id]
 			});
 
-			const str = `${msg.author.minionName} is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatDuration(
-				duration
-			)}.`;
+			const str = `${
+				msg.author.minionName
+			} is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatDuration(duration)}.`;
 
 			return msg.channel.send(str);
 		} else if (input === 'mass') {
@@ -198,26 +196,29 @@ export default class extends BotCommand {
 
 			const str = `${partyOptions.leader.username}'s party (${users
 				.map(u => u.username)
-				.join(', ')}) is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatDuration(
-					duration
-				)}.`;
+				.join(
+					', '
+				)}) is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatDuration(
+				duration
+			)}.`;
 
 			return msg.channel.send(str);
 		}
 
-		return msg.send(`Commands: +sw solo|mass|buy|imbue. Current SW points: ${msg.author.settings.get(UserSettings.ZealTokens)}`);
+		return msg.send(
+			`Commands: +sw solo|mass|buy|imbue. Current SW points: ${msg.author.settings.get(UserSettings.ZealTokens)}`
+		);
 	}
 
 	async buy(msg: KlasaMessage, [input = '']: [string]) {
-
-		const possibleItemName = input.split(" ");
+		const possibleItemName = input.split(' ');
 
 		let quantity = 1;
 		if (!Number.isNaN(parseInt(possibleItemName[0]))) {
 			quantity = Number(possibleItemName.shift());
 		}
 
-		input = possibleItemName.join(" ");
+		input = possibleItemName.join(' ');
 
 		const item = buyables.find(i => stringMatches(input, i.item.name));
 		if (!item) {
@@ -230,12 +231,16 @@ export default class extends BotCommand {
 		const bal = msg.author.settings.get(UserSettings.ZealTokens);
 		if (bal < item.tokens * quantity) {
 			return msg.channel.send(
-				`You don't have enough Zeal Tokens to buy ${quantity} ${item.item.name}. You have ${bal} but need ${item.tokens * quantity}.`
+				`You don't have enough Zeal Tokens to buy ${quantity} ${item.item.name}. You have ${bal} but need ${
+					item.tokens * quantity
+				}.`
 			);
 		}
 		await msg.author.settings.update(UserSettings.ZealTokens, bal - item.tokens * quantity);
 		await msg.author.addItemsToBank({ [item.item.id]: quantity }, true);
-		return msg.channel.send(`Added ${quantity}x ${item.item.name} to your bank, removed ${item.tokens * quantity}x Zeal Tokens.`);
+		return msg.channel.send(
+			`Added ${quantity}x ${item.item.name} to your bank, removed ${item.tokens * quantity}x Zeal Tokens.`
+		);
 	}
 
 	async imbue(msg: KlasaMessage, [input = '']: [string]) {

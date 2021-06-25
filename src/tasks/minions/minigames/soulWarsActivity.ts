@@ -4,8 +4,8 @@ import { Task } from 'klasa';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SoulWarsOptions } from '../../../lib/types/minions';
 import { noOp, roll } from '../../../lib/util';
-import { sendToChannelID } from '../../../lib/util/webhook';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { sendToChannelID } from '../../../lib/util/webhook';
 
 function calcPoints() {
 	let base = 42.5;
@@ -43,7 +43,7 @@ export default class extends Task {
 			user.incrementMinigameScore('SoulWars', quantity);
 			str += `${user} received ${points}x Zeal Tokens.`;
 		}
-		console.log(users.length)
+		console.log(users.length);
 		sendToChannelID(this.client, channelID, { content: str });
 
 		if (users.length === 1) {
@@ -53,7 +53,7 @@ export default class extends Task {
 				channelID,
 				'',
 				res => {
-					leaderUser.log(`continued trip of killing soul wars}`);
+					leaderUser.log('continued trip of killing soul wars}');
 					return this.client.commands.get('sw')!.run(res, ['solo']);
 				},
 				undefined!,
@@ -61,6 +61,5 @@ export default class extends Task {
 				null
 			);
 		}
-		
 	}
 }
