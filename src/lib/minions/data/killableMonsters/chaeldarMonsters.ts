@@ -339,6 +339,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 30,
 		itemInBankBoosts: [
 			{
+				[itemID('Ring of the gods (i)')]: 5,
 				[itemID('Ring of the gods')]: 3
 			},
 			{
