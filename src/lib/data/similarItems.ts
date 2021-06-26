@@ -216,26 +216,11 @@ const source: [string, (string | number)[], true?][] = [
 			'Steam battlestaff',
 			'Mystic steam staff',
 			'Mud battlestaff',
-			'Mystic mud staff'
+			'Mystic mud staff',
+			'Kodai wand'
 		]
 	],
 	['Attack cape', ['Max cape', 'Attack cape(t)']],
-	[
-		'Kodai wand',
-		[
-			'Staff of water',
-			'Mist battlestaff',
-			'Mystic mist staff',
-			'Tome of water',
-			'Water battlestaff',
-			'Mystic water staff',
-			'Steam battlestaff',
-			'Mystic steam staff',
-			'Mud battlestaff',
-			'Mystic mud staff'
-		],
-		true
-	],
 	[
 		'Drygore rapier',
 		['Drygore rapier (ice)', 'Drygore rapier (blood)', 'Drygore rapier (shadow)', 'Drygore rapier (3a)']
@@ -272,64 +257,45 @@ const source: [string, (string | number)[], true?][] = [
 			'Offhand drygore mace (3a)'
 		]
 	],
-	[
-		'Support cape',
-		['Agility master cape', 'Dungeoneering master cape', 'Thieving master cape', 'Slayer master cape'],
-		true
-	],
-	[
-		"Gatherer's cape",
-		[
-			'Farming master cape',
-			'Fishing master cape',
-			'Hunter master cape',
-			'Mining master cape',
-			'Woodcutting master cape'
-		],
-		true
-	],
-	[
-		"Combatant's cape",
-		[
-			'Attack master cape',
-			'Hitpoints master cape',
-			'Defence master cape',
-			'Magic master cape',
-			'Prayer master cape',
-			'Ranged master cape',
-			'Strength master cape'
-		],
-		true
-	],
-	[
-		"Artisan's cape",
-		[
-			'Crafting master cape',
-			'Construction master cape',
-			'Cooking master cape',
-			'Firemaking master cape',
-			'Fletching master cape',
-			'Herblore master cape',
-			'Runecraft master cape',
-			'Smithing master cape'
-		],
-		true
-	],
-	['Gorajan warrior helmet', ['Torva full helm'], true],
-	['Gorajan warrior top', ['Torva platebody'], true],
-	['Gorajan warrior legs', ['Torva platelegs'], true],
-	['Gorajan warrior gloves', ['Torva gloves'], true],
-	['Gorajan warrior boots', ['Torva boots'], true],
-	['Gorajan occult helmet', ['Virtus mask'], true],
-	['Gorajan occult top', ['Virtus robe top'], true],
-	['Gorajan occult legs', ['Virtus robe legs'], true],
-	['Gorajan occult gloves', ['Virtus gloves'], true],
-	['Gorajan occult boots', ['Virtus boots'], true],
-	['Gorajan archer helmet', ['Pernix cowl'], true],
-	['Gorajan archer top', ['Pernix body'], true],
-	['Gorajan archer legs', ['Pernix chaps'], true],
-	['Gorajan archer gloves', ['Pernix gloves'], true],
-	['Gorajan archer boots', ['Pernix boots'], true]
+	['Agility master cape', ['Support cape']],
+	['Dungeoneering master cape', ['Support cape']],
+	['Thieving master cape', ['Support cape']],
+	['Slayer master cape', ['Support cape']],
+	['Farming master cape', ["Gatherer's cape"]],
+	['Fishing master cape', ["Gatherer's cape"]],
+	['Hunter master cape', ["Gatherer's cape"]],
+	['Mining master cape', ["Gatherer's cape"]],
+	['Woodcutting master cape', ["Gatherer's cape"]],
+	['Attack master cape', ["Combatant's cape"]],
+	['Hitpoints master cape', ["Combatant's cape"]],
+	['Defence master cape', ["Combatant's cape"]],
+	['Magic master cape', ["Combatant's cape"]],
+	['Prayer master cape', ["Combatant's cape"]],
+	['Ranged master cape', ["Combatant's cape"]],
+	['Strength master cape', ["Combatant's cape"]],
+	['Crafting master cape', ["Artisan's cape"]],
+	['Construction master cape', ["Artisan's cape"]],
+	['Cooking master cape', ["Artisan's cape"]],
+	['Firemaking master cape', ["Artisan's cape"]],
+	['Fletching master cape', ["Artisan's cape"]],
+	['Herblore master cape', ["Artisan's cape"]],
+	['Runecraft master cape', ["Artisan's cape"]],
+	['Smithing master cape', ["Artisan's cape"]],
+	['Torva full helm', ['Gorajan warrior helmet']],
+	['Torva platebody', ['Gorajan warrior top']],
+	['Torva platelegs', ['Gorajan warrior legs']],
+	['Torva gloves', ['Gorajan warrior gloves']],
+	['Torva boots', ['Gorajan warrior boots']],
+	['Virtus mask', ['Gorajan occult helmet']],
+	['Virtus robe top', ['Gorajan occult top']],
+	['Virtus robe legs', ['Gorajan occult legs']],
+	['Virtus gloves', ['Gorajan occult gloves']],
+	['Virtus boots', ['Gorajan occult boots']],
+	['Pernix cowl', ['Gorajan archer helmet']],
+	['Pernix body', ['Gorajan archer top']],
+	['Pernix chaps', ['Gorajan archer legs']],
+	['Pernix gloves', ['Gorajan archer gloves']],
+	['Pernix boots', ['Gorajan archer boots']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
@@ -337,8 +303,7 @@ export const similarItems: Map<number, number[]> = new Map(
 );
 
 export const inverseSimilarItems: Map<number, Set<number>> = new Map();
-for (const [baseItem, similarItems, isExclusive] of source) {
-	if (isExclusive) continue;
+for (const [baseItem, similarItems] of source) {
 	for (const item of resolveItems(similarItems)) {
 		if (!inverseSimilarItems.get(item)) {
 			inverseSimilarItems.set(item, new Set());
@@ -348,5 +313,6 @@ for (const [baseItem, similarItems, isExclusive] of source) {
 }
 
 export function getSimilarItems(itemID: number): number[] {
-	return similarItems.get(itemID) ?? [];
+	const similars = similarItems.get(itemID);
+	return similars ? [itemID, ...similars] : [];
 }
