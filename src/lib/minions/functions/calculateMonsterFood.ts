@@ -61,8 +61,6 @@ export default function calculateMonsterFood(
 	// Floor at 0 and cap at 80
 	totalOffensivePercent = Math.min(floor(max(0, totalOffensivePercent / attackStylesUsed.length)), 80);
 
-
-
 	messages.push(`You use ${floor(totalPercentOfGearLevel)}% less food because of your defensive stats.`);
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel));
 	messages.push(`You use ${floor(totalOffensivePercent)}% less food because of your offensive stats.`);
