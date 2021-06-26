@@ -34,7 +34,9 @@ export async function handleTripFinish(
 	const perkTier = getUsersPerkTier(user);
 	const continuationChar = generateContinuationChar(user);
 	if (onContinue) {
-		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
+		message += !('clueID' in data)
+			? `\nSay \`${continuationChar}\` to repeat this trip.`
+			: `\nSay \`${continuationChar}\` to open your new clue boxes now.`;
 	}
 
 	if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
