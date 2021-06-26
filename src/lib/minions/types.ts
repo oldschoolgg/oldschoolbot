@@ -84,7 +84,7 @@ export interface KillableMonster {
 	 * How much healing (health points restored) is needed per kill.
 	 */
 	healAmountNeeded?: number;
-	attackStyleToUse?: GearSetupTypes;
+	attackStyleToUse?: OffenceGearStat;
 	attackStylesUsed?: OffenceGearStat[];
 	/**
 	 * The minimum *required* gear stats to fight this monster.

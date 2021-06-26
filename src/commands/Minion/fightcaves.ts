@@ -42,7 +42,7 @@ export default class extends BotCommand {
 
 	determineDuration(user: KlasaUser): [number, string] {
 		let baseTime = Time.Hour * 2;
-
+		const gear = user.getGear('range');
 		let debugStr = '';
 
 		// Reduce time based on KC
@@ -52,9 +52,14 @@ export default class extends BotCommand {
 		debugStr += `${percentIncreaseFromKC}% from KC`;
 
 		// Reduce time based on Gear
-		const usersRangeStats = user.getGear('range').stats;
+		const usersRangeStats = gear.stats;
 		const percentIncreaseFromRangeStats = Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromRangeStats);
+
+		if (gear.hasEquipped('Twisted bow')) {
+			debugStr += ', 15% from Twisted bow';
+			baseTime = reduceNumByPercent(baseTime, 15);
+		}
 
 		debugStr += `, ${percentIncreaseFromRangeStats}% from Gear`;
 

@@ -42,7 +42,7 @@ const slayerHelmSimilarI = resolveItems([
 	'Slayer helmet (i)'
 ]);
 
-const source: [string, (string | number)[], true?][] = [
+const source: [string, (string | number)[]][] = [
 	['Dragon full helm', ['Dragon full helm (g)']],
 	['Dragon chainbody', ['Dragon chainbody (g)']],
 	['Dragon platebody', ['Dragon platebody (g)']],
@@ -211,6 +211,7 @@ const source: [string, (string | number)[], true?][] = [
 			'Mist battlestaff',
 			'Mystic mist staff',
 			'Tome of water',
+			'Kodai wand',
 			'Water battlestaff',
 			'Mystic water staff',
 			'Steam battlestaff',

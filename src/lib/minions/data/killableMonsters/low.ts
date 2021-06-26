@@ -31,7 +31,7 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		respawnTime: Time.Second * 1.5,
 		healAmountNeeded: 14,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -45,7 +45,7 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		respawnTime: Time.Second * 10,
 		healAmountNeeded: 8,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{

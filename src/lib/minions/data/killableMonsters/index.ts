@@ -102,7 +102,7 @@ const killableMonsters: KillableMonster[] = [
 		},
 		combatXpMultiplier: 1.3,
 		healAmountNeeded: 100,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
@@ -138,7 +138,7 @@ const killableMonsters: KillableMonster[] = [
 		},
 		combatXpMultiplier: 1.3,
 		healAmountNeeded: 100,
-		attackStyleToUse: GearSetupTypes.Mage,
+		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -177,7 +177,7 @@ const killableMonsters: KillableMonster[] = [
 			prayer: 43
 		},
 		healAmountNeeded: 100,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackRanged]
 	},
 	{
@@ -325,7 +325,7 @@ const killableMonsters: KillableMonster[] = [
 		},
 		uniques: resolveItems(['Sraracha', 'Jar of eyes', 'Giant egg sac(full)', 'Sarachnis cudgel']),
 		healAmountNeeded: 9 * 20,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
 		minimumGearRequirements: {
 			[GearSetupTypes.Melee]: {
@@ -400,7 +400,7 @@ const killableMonsters: KillableMonster[] = [
 		},
 		uniques: resolveItems(['Crystal grail']),
 		healAmountNeeded: 400 * 20,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
 		minimumGearRequirements: {
 			[GearSetupTypes.Range]: {
@@ -451,7 +451,7 @@ export const NightmareMonster: KillableMonster = {
 		'Volatile orb'
 	]),
 	healAmountNeeded: 40 * 20,
-	attackStyleToUse: GearSetupTypes.Melee,
+	attackStyleToUse: GearStat.AttackSlash,
 	attackStylesUsed: [GearStat.AttackSlash],
 	minimumGearRequirements: {
 		[GearSetupTypes.Melee]: {

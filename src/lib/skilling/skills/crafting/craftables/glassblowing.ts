@@ -5,6 +5,14 @@ import { Craftable } from '../../../types';
 
 const Glassblowing: Craftable[] = [
 	{
+		name: 'Molten glass',
+		id: itemID('Molten glass'),
+		level: 1,
+		xp: 20,
+		inputItems: new Bank({ 'Bucket of sand': 1, 'Soda ash': 1 }),
+		tickRate: 2
+	},
+	{
 		name: 'Beer glass',
 		id: itemID('Beer glass'),
 		level: 1,
