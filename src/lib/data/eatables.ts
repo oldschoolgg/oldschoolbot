@@ -153,6 +153,11 @@ export const Eatables: Eatable[] = [
 		healAmount: 14
 	},
 	{
+		name: 'Egg potato',
+		id: itemID('Egg potato'),
+		healAmount: 16
+	},
+	{
 		name: 'Dark crab',
 		id: itemID('Dark crab'),
 		healAmount: 22
