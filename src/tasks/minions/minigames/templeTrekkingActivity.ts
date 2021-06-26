@@ -1,3 +1,4 @@
+import { User } from 'discord.js';
 import { randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -15,12 +16,18 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	getLowestCountOutfitPiece(bank: Bank): number {
+	getLowestCountOutfitPiece(bank: Bank, user: User): number {
 		let lowestCountPiece = 0;
 		let lowestCountAmount = -1;
 
 		for (const piece of lumberjackOutfit) {
-			const amount = bank.amount(piece);
+			let amount = bank.amount(piece);
+
+			for (const setup of Object.values(user.rawGear())) {
+				const thisItemEquipped = Object.values(setup).find(setup => setup?.item === piece);
+				if (thisItemEquipped) amount += thisItemEquipped.quantity;
+			}
+
 			if (lowestCountAmount === -1 || amount < lowestCountAmount) {
 				lowestCountPiece = piece;
 				lowestCountAmount = amount;
@@ -62,7 +69,7 @@ export default class extends Task {
 						loot.add(EasyEncounterLoot.roll());
 					}
 				} else if (percentChance(3)) {
-					const piece = this.getLowestCountOutfitPiece(userBank);
+					const piece = this.getLowestCountOutfitPiece(userBank, user);
 					userBank.add(piece);
 					loot.add(piece);
 				}
