@@ -115,7 +115,19 @@ export default class extends BotCommand {
 			'Heavy ballista',
 			'Twisted Bow',
 			'Saradomin godsword',
-			'Dragon arrow'
+			'Dragon arrow',
+			"Inquisitor's great helm",
+			'Mythical cape',
+			'Amulet of torture',
+			"Rada's blessing 4",
+			'Abyssal bludgeon',
+			"Inquisitor's hauberk",
+			"Inquisitor's plateskirt",
+			'Ferocious gloves',
+			'Primordial boots',
+			'Ring of suffering (i)',
+			'Dragon claws',
+			'Tormented bracelet'
 		]);
 
 		// Remove duplicates
