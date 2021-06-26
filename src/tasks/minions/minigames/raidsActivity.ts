@@ -11,10 +11,10 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { addBanks, filterBankFromArrayOfItems, roll } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import resolveItems from '../../../lib/util/resolveItems';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
@@ -111,7 +111,7 @@ export default class extends Task {
 
 		sendToChannelID(this.client, channelID, { content: resultMessage });
 
-		if (allUsers.length == 1) {
+		if (allUsers.length === 1) {
 			handleTripFinish(
 				this.client,
 				allUsers[0],
@@ -127,14 +127,13 @@ export default class extends Task {
 					// @ts-ignore
 					res.prompter.flags = flags;
 
-					allUsers[0].log(`continued trip of solo CoX`);
+					allUsers[0].log('continued trip of solo CoX');
 					return this.client.commands.get('raid')!.run(res, ['solo']);
-					},
+				},
 				undefined,
 				data,
 				null
 			);
 		}
-		
 	}
 }
