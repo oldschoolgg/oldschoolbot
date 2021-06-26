@@ -14,6 +14,7 @@ import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import itemID from '../../../lib/util/itemID';
 import resolveItems from '../../../lib/util/resolveItems';
 import { sendToChannelID } from '../../../lib/util/webhook';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
@@ -23,7 +24,8 @@ const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane p
 const purpleItems = [...Object.values(coxLog), ...metamorphPets].flat(2).filter(i => !notPurple.includes(i));
 
 export default class extends Task {
-	async run({ channelID, users, challengeMode, duration, leader }: RaidsOptions) {
+	async run(data: RaidsOptions) {
+		const { channelID, users, challengeMode, duration, leader } = data;
 		const allUsers = await Promise.all(users.map(async u => this.client.users.fetch(u)));
 		const team = await createTeam(allUsers, challengeMode);
 
@@ -108,5 +110,31 @@ export default class extends Task {
 		);
 
 		sendToChannelID(this.client, channelID, { content: resultMessage });
+
+		if (allUsers.length == 1) {
+			handleTripFinish(
+				this.client,
+				allUsers[0],
+				channelID,
+				'',
+				res => {
+					const flags: Record<string, string> = challengeMode ? { cm: 'cm' } : {};
+
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					if (!res.prompter) res.prompter = {};
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					res.prompter.flags = flags;
+
+					allUsers[0].log(`continued trip of solo CoX`);
+					return this.client.commands.get('raid')!.run(res, ['solo']);
+					},
+				undefined,
+				data,
+				null
+			);
+		}
+		
 	}
 }
