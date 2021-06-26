@@ -54,7 +54,7 @@ export default class extends BotCommand {
 			.sort((a, b) => b.highalch - a.highalch);
 
 		if (!osItem && !favAlchs) {
-			return msg.send("You don't have any of item to alch.");
+			return msg.send("You don't have any of that item to alch.");
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) < 55) {
