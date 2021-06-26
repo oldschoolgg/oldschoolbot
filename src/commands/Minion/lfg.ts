@@ -1,23 +1,27 @@
 import { MessageEmbed } from 'discord.js';
 import { sleep } from 'e';
-import { CommandStore, KlasaClient, KlasaMessage, KlasaUser, TaskOptions } from 'klasa';
+import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { Monsters } from 'oldschooljs';
 
 import { Activity, Color, Emoji, Events, SupportServer, Time } from '../../lib/constants';
 import { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import forceMainServer from '../../lib/minions/decorators/forceMainServer';
 import ironsCantUse from '../../lib/minions/decorators/ironsCantUse';
+import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../lib/minions/types';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
+import {
+	GroupMonsterActivityTaskOptions,
+	NightmareActivityTaskOptions,
+	RaidsTaskOptions
+} from '../../lib/types/minions';
 import { channelIsSendable, formatDuration, noOp, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 // eslint-disable-next-line no-undef
 import Timeout = NodeJS.Timeout;
-import { Monsters } from 'oldschooljs';
-
-import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
-import { BotCommand } from '../../lib/structures/BotCommand';
-import { ActivityTaskOptions, GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 
 interface UserSentFrom {
 	guild: string | undefined;
@@ -34,10 +38,8 @@ interface LFGMonster {
 }
 
 interface MonterCustomProperties {
-	taskName?: ActivityTaskOptions;
-	activityName?: Activity;
+	result?: GroupMonsterActivityTaskOptions | NightmareActivityTaskOptions | RaidsTaskOptions;
 	uniqueID?: number;
-	taskOptions?: TaskOptions;
 	minQueueSize?: number;
 	maxQueueSize?: number;
 	thumbnail?: string;
@@ -126,7 +128,7 @@ export async function sendLFGMessages(
 export default class extends BotCommand {
 	LFGList: Record<number, LFGMonster> = {};
 	MIN_USERS = 1;
-	MAX_USERS = 2;
+	MAX_USERS = 1;
 	WAIT_TIME = Number(Time.Minute);
 	DEFAULT_MASS_CHANNEL = '858141860900110366'; // #testing-2
 
@@ -147,7 +149,14 @@ export default class extends BotCommand {
 			thumbnail: 'https://oldschool.runescape.wiki/images/5/5c/Corporeal_Beast.png'
 		},
 		[NightmareMonster.id]: {
-			thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png'
+			thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
+			result: <NightmareActivityTaskOptions>{ type: Activity.Nightmare }
+		},
+		// Custom ID for Raids
+		5000000: {
+			uniqueID: 5000000,
+			thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
+			result: <RaidsTaskOptions>{ type: Activity.Raids }
 		}
 	};
 
@@ -273,10 +282,10 @@ export default class extends BotCommand {
 				// Init some vars
 				const finalUsers: KlasaUser[] = [];
 				// Sort users by maxTripLength to use that as the base for this LFG
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				// eslint-disable-next-line @typescript-eslint/unbound-method
-				const sortedUsers = Object.values(queue.users).sort((a, b) => b.maxTripLength - a.maxTripLength);
+				const sortedUsers = Object.values(queue.users).sort(
+					(a, b) =>
+						b.maxTripLength(Activity.GroupMonsterKilling) - a.maxTripLength(Activity.GroupMonsterKilling)
+				);
 				// Remove invalid users
 				for (const user of sortedUsers) {
 					const { allowed, reasons } = await this.validateUserReqs(user, monster);
@@ -335,17 +344,20 @@ export default class extends BotCommand {
 				}
 
 				// TODO : Add custom monsters from custom commands (nightmare, raids, etc)
-				await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>({
+				if (!monster.result) {
+					monster.result = {} as GroupMonsterActivityTaskOptions;
+				}
+				monster.result = <typeof monster.result>{
 					monsterID: monster.id,
 					userID: leader.id,
 					channelID: this.DEFAULT_MASS_CHANNEL,
 					quantity,
 					duration,
-					type: Activity.GroupMonsterKilling,
+					type: monster.result.type || Activity.GroupMonsterKilling,
 					leader: leader.id,
 					users: finalUsers.map(u => u.id)
-					// lfg: channelsToSend
-				});
+				};
+				await addSubTaskToActivityTask<typeof monster.result>(monster.result);
 
 				for (const user of finalUsers) {
 					// await user.incrementMinionDailyDuration(duration);
@@ -401,6 +413,7 @@ export default class extends BotCommand {
 		}
 	}
 
+	@forceMainServer
 	@ironsCantUse
 	async run(msg: KlasaMessage) {
 		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';

@@ -8,7 +8,7 @@ import { coxLog, metamorphPets } from '../../../lib/data/collectionLog';
 import { createTeam } from '../../../lib/data/cox';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { RaidsOptions } from '../../../lib/types/minions';
+import { RaidsTaskOptions } from '../../../lib/types/minions';
 import { addBanks, filterBankFromArrayOfItems, roll } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import itemID from '../../../lib/util/itemID';
@@ -23,7 +23,7 @@ const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane p
 const purpleItems = [...Object.values(coxLog), ...metamorphPets].flat(2).filter(i => !notPurple.includes(i));
 
 export default class extends Task {
-	async run({ channelID, users, challengeMode, duration, leader }: RaidsOptions) {
+	async run({ channelID, users, challengeMode, duration, leader }: RaidsTaskOptions) {
 		const allUsers = await Promise.all(users.map(async u => this.client.users.fetch(u)));
 		const team = await createTeam(allUsers, challengeMode);
 

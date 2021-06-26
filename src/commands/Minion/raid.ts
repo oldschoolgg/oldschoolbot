@@ -17,7 +17,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
-import { RaidsOptions } from '../../lib/types/minions';
+import { RaidsTaskOptions } from '../../lib/types/minions';
 import { addBanks, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
@@ -229,7 +229,7 @@ export default class extends BotCommand {
 			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CoxCost), totalCost.bank])
 		);
 
-		await addSubTaskToActivityTask<RaidsOptions>({
+		await addSubTaskToActivityTask<RaidsTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,

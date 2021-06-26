@@ -77,7 +77,7 @@ import {
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
-	RaidsOptions,
+	RaidsTaskOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
@@ -525,7 +525,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Raids: {
-				const data = currentTask as RaidsOptions;
+				const data = currentTask as RaidsTaskOptions;
 				return `${this.minionName} is currently doing the Chamber's of Xeric${
 					data.challengeMode ? ' in Challenge Mode' : ''
 				}, ${

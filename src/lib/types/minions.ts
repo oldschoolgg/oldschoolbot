@@ -11,6 +11,7 @@ export interface ActivityTaskOptions {
 	id: string;
 	finishDate: number;
 	channelID: string;
+	lookingForGroup?: any;
 }
 
 export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
@@ -284,7 +285,7 @@ export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOpti
 	users: string[];
 }
 
-export interface RaidsOptions extends ActivityTaskOptions {
+export interface RaidsTaskOptions extends ActivityTaskOptions {
 	leader: string;
 	users: string[];
 	challengeMode: boolean;
@@ -306,7 +307,7 @@ export type ActivityTaskData =
 	| BlastFurnaceActivityTaskOptions
 	| WoodcuttingActivityTaskOptions
 	| CollectingOptions
-	| RaidsOptions
+	| RaidsTaskOptions
 	| MinigameActivityTaskOptions
 	| GauntletOptions
 	| SoulWarsOptions
