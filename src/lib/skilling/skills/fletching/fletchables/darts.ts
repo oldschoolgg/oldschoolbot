@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../../../util';
+import { Bank } from 'oldschooljs';
+
 import itemID from '../../../../util/itemID';
 import { Fletchable } from '../../../types';
 
@@ -8,7 +9,7 @@ const Darts: Fletchable[] = [
 		id: itemID('Bronze dart'),
 		level: 10,
 		xp: 1.8,
-		inputItems: resolveNameBank({ 'Bronze dart tip': 1, Feather: 1 }),
+		inputItems: new Bank({ 'Bronze dart tip': 1, Feather: 1 }),
 		tickRate: 0.08
 	},
 	{
@@ -16,7 +17,7 @@ const Darts: Fletchable[] = [
 		id: itemID('Iron dart'),
 		level: 22,
 		xp: 3.8,
-		inputItems: resolveNameBank({ 'Iron dart tip': 1, Feather: 1 }),
+		inputItems: new Bank({ 'Iron dart tip': 1, Feather: 1 }),
 		tickRate: 0.08
 	},
 	{
@@ -24,7 +25,7 @@ const Darts: Fletchable[] = [
 		id: itemID('Steel dart'),
 		level: 37,
 		xp: 7.5,
-		inputItems: resolveNameBank({ 'Steel dart tip': 1, Feather: 1 }),
+		inputItems: new Bank({ 'Steel dart tip': 1, Feather: 1 }),
 		tickRate: 0.08
 	},
 	{
@@ -32,7 +33,7 @@ const Darts: Fletchable[] = [
 		id: itemID('Mithril dart'),
 		level: 52,
 		xp: 11.2,
-		inputItems: resolveNameBank({ 'Mithril dart tip': 1, Feather: 1 }),
+		inputItems: new Bank({ 'Mithril dart tip': 1, Feather: 1 }),
 		tickRate: 0.08
 	},
 	{
@@ -40,7 +41,7 @@ const Darts: Fletchable[] = [
 		id: itemID('Adamant dart'),
 		level: 67,
 		xp: 15,
-		inputItems: resolveNameBank({ 'Adamant dart tip': 1, Feather: 1 }),
+		inputItems: new Bank({ 'Adamant dart tip': 1, Feather: 1 }),
 		tickRate: 0.08
 	},
 	{
@@ -48,7 +49,7 @@ const Darts: Fletchable[] = [
 		id: itemID('Rune dart'),
 		level: 81,
 		xp: 18.8,
-		inputItems: resolveNameBank({ 'Rune dart tip': 1, Feather: 1 }),
+		inputItems: new Bank({ 'Rune dart tip': 1, Feather: 1 }),
 		tickRate: 0.08
 	},
 	{
@@ -56,7 +57,7 @@ const Darts: Fletchable[] = [
 		id: itemID('Dragon dart'),
 		level: 95,
 		xp: 25,
-		inputItems: resolveNameBank({ 'Dragon dart tip': 1, Feather: 1 }),
+		inputItems: new Bank({ 'Dragon dart tip': 1, Feather: 1 }),
 		tickRate: 0.08
 	}
 ];

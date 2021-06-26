@@ -1,7 +1,9 @@
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { Gear } from '../structures/Gear';
+
 export type UserFullGearSetup = {
-	[key in GearSetupTypes]: GearSetup;
+	[key in GearSetupTypes]: Gear;
 };
 
 export enum GearSetupTypes {
@@ -11,6 +13,7 @@ export enum GearSetupTypes {
 	Misc = 'misc',
 	Skilling = 'skilling'
 }
+export type GearSetupType = 'melee' | 'mage' | 'range' | 'misc' | 'skilling';
 
 export enum GearStat {
 	AttackStab = 'attack_stab',
@@ -69,8 +72,10 @@ export type DefenceGearStat =
 	| GearStat.DefenceStab
 	| GearStat.DefenceCrush;
 
-export type OtherGearStat =
-	| GearStat.MeleeStrength
-	| GearStat.RangedStrength
-	| GearStat.MagicDamage
-	| GearStat.Prayer;
+export type OtherGearStat = GearStat.MeleeStrength | GearStat.RangedStrength | GearStat.MagicDamage | GearStat.Prayer;
+
+export type GearRequired = Partial<
+	{
+		[key in EquipmentSlot]: number[];
+	}
+>;

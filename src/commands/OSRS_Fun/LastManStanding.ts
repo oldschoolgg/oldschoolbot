@@ -1,32 +1,30 @@
 import { chunk, sleep } from '@klasa/utils';
-import { Command, CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
-import LastManStandingUsage, {
-	LMS_FINAL,
-	LMS_PREP,
-	LMS_ROUND
-} from '../../lib/LastManStandingUsage';
+import { BotCommand } from '../../lib/structures/BotCommand';
+import LastManStandingUsage, { LMS_FINAL, LMS_PREP, LMS_ROUND } from '../../lib/structures/LastManStandingUsage';
 import { cleanMentions } from '../../lib/util';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public readonly playing: Set<string> = new Set();
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['lms'],
 			requiredPermissions: ['READ_MESSAGE_HISTORY'],
-			cooldown: 1,
+			cooldown: 5,
+			oneAtTime: true,
 			description: 'Simulates a game of last man standing',
 			usage: '[contestants:string]',
 			usageDelim: '',
-			flagSupport: true
+			flagSupport: true,
+			categoryFlags: ['fun', 'simulation'],
+			examples: ['+lms', '+lms Mod Ash, Mod Mark, Mod Huskyy']
 		});
 	}
 
 	async run(message: KlasaMessage, [contestants]: [string | undefined]): Promise<KlasaMessage> {
 		let filtered = new Set<string>();
-		const splitContestants = contestants
-			? cleanMentions(message.guild, contestants).split(',')
-			: [];
+		const splitContestants = contestants ? cleanMentions(message.guild, contestants).split(',') : [];
 		// Autofill using authors from the last 100 messages, if none are given to the command
 		if (contestants === 'auto') {
 			const messages = await message.channel.messages.fetch({ limit: 100 });
@@ -46,7 +44,7 @@ export default class extends Command {
 			}
 
 			if (filtered.size > 48) {
-				throw `I am sorry but the amount of players can be no greater than 48.`;
+				throw 'I am sorry but the amount of players can be no greater than 48.';
 			}
 		}
 
@@ -96,11 +94,7 @@ export default class extends Command {
 	}
 
 	private buildTexts(game: LastManStandingGame, results: string[], deaths: string[]) {
-		const header = game.prep
-			? 'Preparation'
-			: game.final
-			? `Finals, Round: ${game.round}`
-			: `Round: ${game.round}`;
+		const header = game.prep ? 'Preparation' : game.final ? `Finals, Round: ${game.round}` : `Round: ${game.round}`;
 		const death = deaths.length
 			? `${`**${deaths.length} new gravestone${
 					deaths.length === 1 ? ' litters' : 's litter'
@@ -109,17 +103,14 @@ export default class extends Command {
 		const panels = chunk(results, 5);
 
 		const texts = panels.map(
-			panel =>
-				`**Last Man Standing ${header}:**\n\n${panel.map(text => `- ${text}`).join('\n')}`
+			panel => `**Last Man Standing ${header}:**\n\n${panel.map(text => `- ${text}`).join('\n')}`
 		);
 		if (deaths.length) texts.push(`${death}`);
 		return texts;
 	}
 
 	private pick(events: readonly LastManStandingUsage[], contestants: number, maxDeaths: number) {
-		events = events.filter(
-			event => event.contestants <= contestants && event.deaths.size <= maxDeaths
-		);
+		events = events.filter(event => event.contestants <= contestants && event.deaths.size <= maxDeaths);
 		return events[Math.floor(Math.random() * events.length)];
 	}
 

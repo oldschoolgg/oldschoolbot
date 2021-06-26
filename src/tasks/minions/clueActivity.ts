@@ -6,10 +6,10 @@ import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ clueID, userID, channelID, quantity, duration }: ClueActivityTaskOptions) {
+	async run(data: ClueActivityTaskOptions) {
+		const { clueID, userID, channelID, quantity } = data;
 		const clueTier = clueTiers.find(mon => mon.id === clueID);
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 
 		const logInfo = `ClueID[${clueID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
@@ -18,9 +18,9 @@ export default class extends Task {
 			return;
 		}
 
-		const str = `${user}, ${user.minionName} finished completing ${quantity} ${
-			clueTier.name
-		} clues. ${user.minionName} carefully places the reward casket${
+		const str = `${user}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${
+			user.minionName
+		} carefully places the reward casket${
 			quantity > 1 ? 's' : ''
 		} in your bank. You can open this casket using \`+open ${clueTier.name}\``;
 
@@ -32,6 +32,6 @@ export default class extends Task {
 			`${user.username}[${user.id}] received ${quantity} ${clueTier.name} Clue Caskets.`
 		);
 
-		handleTripFinish(this.client, user, channelID, str);
+		handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, loot);
 	}
 }

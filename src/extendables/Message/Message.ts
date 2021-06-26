@@ -8,7 +8,6 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [Message] });
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2784
 	get cmdPrefix(this: KlasaMessage) {
 		return this.guild ? this.guild.settings.get('prefix') : '+';
@@ -29,11 +28,15 @@ export default class extends Extendable {
 		// Remove all reactions if the user has permissions to do so
 		if (
 			this.guild &&
-			(this.channel as TextChannel)
-				.permissionsFor(this.guild.me!)!
-				.has(Permissions.FLAGS.MANAGE_MESSAGES)
+			(this.channel as TextChannel).permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.MANAGE_MESSAGES)
 		) {
 			this.reactions.removeAll().catch(noOp);
 		}
+	}
+}
+
+declare module 'discord.js' {
+	export interface Message {
+		sendLarge(content: string, fileName?: string, tooLong?: string): Promise<KlasaMessage>;
 	}
 }

@@ -1,7 +1,17 @@
-import { Command, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
-export default class extends Command {
+import { BotCommand } from '../../lib/structures/BotCommand';
+
+export default class extends BotCommand {
+	public constructor(store: CommandStore, file: string[], directory: string) {
+		super(store, file, directory, {
+			description: 'Shows the link to the help page for old school bot',
+			examples: ['+help'],
+			categoryFlags: ['utility']
+		});
+	}
+
 	async run(msg: KlasaMessage) {
-		return msg.send(`https://www.oldschool.gg/oldschoolbot`);
+		return msg.send('https://www.oldschool.gg/oldschoolbot');
 	}
 }

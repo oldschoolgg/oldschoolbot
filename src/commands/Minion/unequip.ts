@@ -2,14 +2,13 @@ import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { BotCommand } from '../../lib/BotCommand';
-import { GearTypes } from '../../lib/gear';
+import { GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
-import readableGearTypeName from '../../lib/gear/functions/readableGearTypeName';
-import resolveGearTypeSetting from '../../lib/gear/functions/resolveGearTypeSetting';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
+import { Gear } from '../../lib/structures/Gear';
+import { toTitleCase } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -18,26 +17,26 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<melee|mage|range|skilling|misc> (item:...item)',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['minion'],
+			description: 'Unequips items from one of your gear setups.',
+			examples: ['+unequip range Twisted bow', '+unequip melee Abyssal whip']
 		});
 	}
 
 	@requiresMinion
-	async run(
-		msg: KlasaMessage,
-		[gearType, itemArray]: [GearTypes.GearSetupTypes, Item[]]
-	): Promise<KlasaMessage> {
+	async run(msg: KlasaMessage, [gearType, itemArray]: [GearSetupTypes, Item[]]): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
-			throw `${msg.author.minionName} is currently out on a trip, so you can't change their gear!`;
+			return msg.send(`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`);
 		}
 
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
-		const currentEquippedGear = msg.author.settings.get(gearTypeSetting);
+		const currentEquippedGear = msg.author.getGear(gearType);
 
-		const itemToUnequip = itemArray.find(i => hasItemEquipped(i.id, currentEquippedGear));
+		const itemToUnequip = itemArray.find(i => currentEquippedGear.hasEquipped([i.id]));
 
 		if (!itemToUnequip) {
-			throw `You don't have this item equipped!`;
+			return msg.send("You don't have this item equipped!");
 		}
 
 		// it thinks equipment can be null somehow but hasItemEquipped already checks that
@@ -54,15 +53,13 @@ export default class extends BotCommand {
 		const image = await generateGearImage(
 			this.client,
 			msg.author,
-			msg.author.settings.get(resolveGearTypeSetting(gearType)),
+			new Gear(newGear),
 			gearType,
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);
 
 		return msg.send(
-			`You unequipped ${itemToUnequip.name} from your ${readableGearTypeName(
-				gearType
-			)} setup.`,
+			`You unequipped ${itemToUnequip.name} from your ${toTitleCase(gearType)} setup.`,
 			new MessageAttachment(image, 'osbot.png')
 		);
 	}

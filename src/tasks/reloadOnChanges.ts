@@ -20,21 +20,23 @@ export default class extends Task {
 
 		for (const module of Object.keys(require.cache)) {
 			if (!module.includes(nodeModules) && extname(module) !== '.node') {
+				if (module.includes('.entity.js')) continue;
+				if (module.includes(`${sep}typeorm${sep}`)) continue;
+				if (module.includes('OldSchoolBotClient')) continue;
+				if (module.includes(`dist${sep}index`)) continue;
 				delete require.cache[module];
 			}
 		}
 
-		let log;
+		let log = '';
 		const reload = this.client.commands.get('reload');
 		if (!reload) return;
 		if (piece) {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
+			// @ts-expect-error Running command with fake message object
 			await reload.run({ sendLocale: () => null, sendMessage: () => null }, [piece]);
 			log = `Reloaded it in ${timer}`;
 		} else {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
+			// @ts-expect-error Running command with fake message object
 			await reload.everything({
 				sendLocale: () => null,
 				sendMessage: () => null

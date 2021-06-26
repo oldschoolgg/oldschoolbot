@@ -2,8 +2,7 @@ import { calcWhatPercent } from 'e';
 import { KlasaUser } from 'klasa';
 
 import { NIGHTMARES_HP, ZAM_HASTA_CRUSH } from '../constants';
-import { maxOtherStats } from '../gear/data/maxGearStats';
-import { GearSetupTypes } from '../gear/types';
+import { maxOtherStats } from '../gear';
 import { NightmareMonster } from '../minions/data/killableMonsters';
 import { UserSettings } from '../settings/types/UserSettings';
 
@@ -23,12 +22,10 @@ export function getNightmareGearStats(
 	string
 ] {
 	const kc = user.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 1;
-	const weapon = user.equippedWeapon(GearSetupTypes.Melee);
-	const gearStats = user.setupStats(GearSetupTypes.Melee);
-	const percentMeleeStrength = calcWhatPercent(
-		gearStats.melee_strength,
-		maxOtherStats.melee_strength
-	);
+	const gear = user.getGear('melee');
+	const weapon = gear.equippedWeapon();
+	const gearStats = gear.stats;
+	const percentMeleeStrength = calcWhatPercent(gearStats.melee_strength, maxOtherStats.melee_strength);
 	const attackCrushStat = weapon?.equipment?.attack_crush ?? 0;
 	const percentWeaponAttackCrush = Math.min(calcWhatPercent(attackCrushStat, 95), 100);
 	const totalGearPercent = Math.min((percentMeleeStrength + percentWeaponAttackCrush) / 2, 100);
@@ -61,11 +58,11 @@ export function getNightmareGearStats(
 		damageDone *= 0.8;
 	}
 
-	const debugString = `\n**${user.username}:** DamageDone[${Math.floor(
-		damageDone
-	)}HP] DeathChance[${Math.floor(percentChanceOfDeath)}%] WeaponStrength[${Math.floor(
-		percentWeaponAttackCrush
-	)}%] GearStrength[${Math.floor(percentMeleeStrength)}%] TotalGear[${totalGearPercent}%]\n`;
+	const debugString = `\n**${user.username}:** DamageDone[${Math.floor(damageDone)}HP] DeathChance[${Math.floor(
+		percentChanceOfDeath
+	)}%] WeaponStrength[${Math.floor(percentWeaponAttackCrush)}%] GearStrength[${Math.floor(
+		percentMeleeStrength
+	)}%] TotalGear[${totalGearPercent}%]\n`;
 
 	return [
 		{

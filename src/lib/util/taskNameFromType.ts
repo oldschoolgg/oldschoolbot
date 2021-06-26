@@ -42,7 +42,79 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.WintertodtActivity;
 		case Activity.Alching:
 			return Tasks.AlchingActivity;
+		case Activity.Herblore:
+			return Tasks.HerbloreActivity;
 		case Activity.Nightmare:
 			return Tasks.NightmareActivity;
+		case Activity.AnimatedArmour:
+			return Tasks.AnimatedArmourActivity;
+		case Activity.Cyclops:
+			return Tasks.CyclopsActivity;
+		case Activity.Sawmill:
+			return Tasks.SawmillActivity;
+		case Activity.Sepulchre:
+			return Tasks.SepulchreActivity;
+		case Activity.Plunder:
+			return Tasks.PlunderActivity;
+		case Activity.FishingTrawler:
+			return Tasks.FishingTrawler;
+		case Activity.Zalcano:
+			return Tasks.ZalcanoActivity;
+		case Activity.Pickpocket:
+			return Tasks.PickpocketActivity;
+		case Activity.Farming:
+			return Tasks.FarmingActivity;
+		case Activity.TitheFarm:
+			return Tasks.TitheFarmActivity;
+		case Activity.BarbarianAssault:
+			return Tasks.BarbarianAssault;
+		case Activity.AgilityArena:
+			return Tasks.AgilityArena;
+		case Activity.ChampionsChallenge:
+			return Tasks.ChampionsChallenge;
+		case Activity.Hunter:
+			return Tasks.HunterActivity;
+		case Activity.Birdhouse:
+			return Tasks.BirdhouseActivity;
+		case Activity.AerialFishing:
+			return Tasks.AerialFishingActivity;
+		case Activity.Construction:
+			return Tasks.ConstructionActivity;
+		case Activity.MahoganyHomes:
+			return Tasks.MahoganyHomes;
+		case Activity.Enchanting:
+			return Tasks.Enchanting;
+		case Activity.Casting:
+			return Tasks.Casting;
+		case Activity.GloryCharging:
+			return Tasks.GloryCharging;
+		case Activity.WealthCharging:
+			return Tasks.WealthCharging;
+		case Activity.GnomeRestaurant:
+			return Tasks.GnomeRestaurant;
+		case Activity.SoulWars:
+			return Tasks.SoulWars;
+		case Activity.RoguesDenMaze:
+			return Tasks.RoguesDenMaze;
+		case Activity.Gauntlet:
+			return Tasks.Gauntlet;
+		case Activity.CastleWars:
+			return Tasks.CastleWars;
+		case Activity.MageArena:
+			return Tasks.MageArena;
+		case Activity.Raids:
+			return Tasks.Raids;
+		case Activity.Collecting:
+			return Tasks.Collecting;
+		case Activity.MageTrainingArena:
+			return Tasks.MageTrainingArena;
+		case Activity.BlastFurnace:
+			return Tasks.BlastFurnaceActivity;
+		case Activity.MageArena2:
+			return Tasks.MageArena2;
+		case Activity.BigChompyBirdHunting:
+			return Tasks.BigChompyBirdHunting;
+		case Activity.DarkAltar:
+			return Tasks.DarkAltar;
 	}
 }

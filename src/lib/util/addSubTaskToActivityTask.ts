@@ -1,44 +1,42 @@
-import { Client } from 'discord.js';
-
-import { Activity, Tasks } from '../constants';
-import { GroupMonsterActivityTaskOptions } from '../minions/types';
+import { getActivityOfUser } from '../settings/settings';
+import { ActivityTable } from '../typeorm/ActivityTable.entity';
 import { ActivityTaskOptions } from '../types/minions';
-import { uuid } from '../util';
+import { isGroupActivity } from '../util';
 
-export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
-	client: Client,
-	taskName: Tasks,
-	subTaskToAdd: Omit<T, 'finishDate' | 'id'>
+export default async function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
+	taskToAdd: Omit<T, 'finishDate' | 'id'>
 ) {
-	const task = client.schedule.tasks.find(_task => _task.taskName === taskName);
-
-	if (!task) throw `Missing activity task: ${taskName}.`;
-	if (
-		task.data.subTasks.some((subTask: ActivityTaskOptions) => {
-			if (subTask.userID === subTaskToAdd.userID) return true;
-			if (
-				subTask.type === Activity.GroupMonsterKilling &&
-				(subTask as GroupMonsterActivityTaskOptions).users.includes(subTaskToAdd.userID)
-			) {
-				return true;
-			}
-		})
-	) {
-		throw `That user is busy, so they can't do this minion activity.`;
+	const usersTask = getActivityOfUser(taskToAdd.userID);
+	if (usersTask) {
+		throw `That user is busy, so they can't do this minion activity. They have a ${usersTask.type} activity still ongoing`;
 	}
+	let duration = Math.floor(taskToAdd.duration);
 
-	const newSubtask: ActivityTaskOptions = {
-		...subTaskToAdd,
-		finishDate: Date.now() + subTaskToAdd.duration,
-		id: uuid()
+	const finishDate = new Date(Date.now() + duration);
+
+	let __newData: Partial<ActivityTaskOptions> = { ...taskToAdd };
+	delete __newData.type;
+	delete __newData.userID;
+	delete __newData.id;
+	delete __newData.channelID;
+	delete __newData.duration;
+
+	let newData: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelID' | 'userID' | 'duration'> = {
+		...__newData
 	};
 
-	return task.update({
-		data: {
-			...task.data,
-			subTasks: [...task.data.subTasks, newSubtask].sort(
-				(a, b) => a.finishDate - b.finishDate
-			)
-		}
-	});
+	const activity = new ActivityTable();
+	activity.userID = taskToAdd.userID;
+	activity.startDate = new Date();
+	activity.finishDate = finishDate;
+	activity.completed = false;
+	activity.type = taskToAdd.type;
+	activity.data = newData;
+	activity.groupActivity = isGroupActivity(taskToAdd);
+	activity.channelID = taskToAdd.channelID;
+	activity.duration = duration;
+
+	activity.activitySync();
+
+	await activity.save();
 }

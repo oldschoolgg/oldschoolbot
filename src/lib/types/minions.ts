@@ -1,6 +1,8 @@
-import { Activity, Tasks } from '../constants';
-import { MinigameIDsEnum } from '../minions/data/minigames';
-import { GroupMonsterActivityTaskOptions } from '../minions/types';
+import { MinigameKey } from '../../extendables/User/Minigame';
+import { Peak } from '../../tasks/WildernessPeakInterval';
+import { Activity } from '../constants';
+import { IPatchData } from '../minions/farming/types';
+import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
 export interface ActivityTaskOptions {
 	type: Activity;
@@ -11,9 +13,33 @@ export interface ActivityTaskOptions {
 	channelID: string;
 }
 
+export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
+	runeID: number;
+	channelID: string;
+	essenceQuantity: number;
+}
+
+export interface GloryChargingActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
+export interface WealthChargingActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
+export interface DarkAltarOptions extends ActivityTaskOptions {
+	quantity: number;
+	hasElite: boolean;
+	rune: 'blood' | 'soul';
+}
+
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	courseID: string;
 	quantity: number;
+	alch: {
+		itemID: number;
+		quantity: number;
+	} | null;
 }
 
 export interface CookingActivityTaskOptions extends ActivityTaskOptions {
@@ -21,9 +47,17 @@ export interface CookingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {
+	objectID: number;
+	quantity: number;
+}
+
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	monsterID: number;
 	quantity: number;
+	usingCannon?: boolean;
+	cannonMulti?: boolean;
+	burstOrBarrage?: number;
 }
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
@@ -71,6 +105,23 @@ export interface FletchingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface EnchantingActivityTaskOptions extends ActivityTaskOptions {
+	itemID: number;
+	quantity: number;
+}
+
+export interface CastingActivityTaskOptions extends ActivityTaskOptions {
+	spellID: number;
+	quantity: number;
+}
+export interface PickpocketActivityTaskOptions extends ActivityTaskOptions {
+	monsterID: number;
+	quantity: number;
+	xpReceived: number;
+	successfulQuantity: number;
+	damageTaken: number;
+}
+
 export interface BuryingActivityTaskOptions extends ActivityTaskOptions {
 	boneID: number;
 	quantity: number;
@@ -81,34 +132,116 @@ export interface OfferingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface CyclopsActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
+export interface AnimatedArmourActivityTaskOptions extends ActivityTaskOptions {
+	armourID: string;
+	quantity: number;
+}
+
+export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
+	mixableID: number;
+	channelID: string;
+	quantity: number;
+	zahur: boolean;
+}
+
+export interface HunterActivityTaskOptions extends ActivityTaskOptions {
+	creatureName: string;
+	channelID: string;
+	quantity: number;
+	usingHuntPotion: boolean;
+	wildyPeak: Peak | null;
+}
+
 export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
 	itemID: number;
 	quantity: number;
 	alchValue: number;
 }
 
-export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
-
-export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
-	minigameID: MinigameIDsEnum;
-	quantity: number;
-}
-
-export interface FightCavesActivityTaskOptions extends MinigameActivityTaskOptions {
+export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
 	jadDeathChance: number;
 	preJadDeathChance: number;
 	preJadDeathTime: number | null;
+	quantity: number;
 }
 
-export interface NightmareActivityTaskOptions extends MinigameActivityTaskOptions {
+export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
+
+export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
+	plantsName: string | null;
+	channelID: string;
+	quantity: number;
+	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null;
+	payment?: boolean;
+	patchType: IPatchData;
+	getPatchType: string;
+	planting: boolean;
+	currentDate: number;
+}
+
+export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
+	birdhouseName: string | null;
+	channelID: string;
+	placing: boolean;
+	gotCraft: boolean;
+	birdhouseData: BirdhouseData;
+	currentDate: number;
+}
+
+export interface AerialFishingActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
+export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
+	minigameID: MinigameKey;
+	quantity: number;
+}
+
+export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOptions {
+	xp: number;
+	quantity: number;
+	points: number;
+}
+
+export interface FishingTrawlerActivityTaskOptions extends MinigameActivityTaskOptions {}
+
+export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
 	leader: string;
 	users: string[];
-	lfg?: false | Record<string, string[]>;
+	quantity: number;
 }
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 }
+
+export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOptions {}
+
+export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOptions {
+	floors: number[];
+}
+
+export interface PlunderActivityTaskOptions extends MinigameActivityTaskOptions {
+	rooms: number[];
+}
+
+export interface ZalcanoActivityTaskOptions extends ActivityTaskOptions {
+	isMVP: boolean;
+	performance: number;
+	quantity: number;
+}
+
+export interface BarbarianAssaultActivityTaskOptions extends MinigameActivityTaskOptions {
+	leader: string;
+	users: string[];
+	totalLevel: number;
+}
+
+export interface AgilityArenaActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
@@ -122,35 +255,68 @@ export interface SkillingTickerTaskData {
 	subTasks: ActivityTaskOptions[];
 }
 
-export interface MinigameTickerTaskData {
-	subTasks: (FightCavesActivityTaskOptions | WintertodtActivityTaskOptions)[];
+export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
+	plankID: number;
+	plankQuantity: number;
 }
 
-export type TickerTaskData =
-	| MonsterKillingTickerTaskData
-	| ClueTickerTaskData
-	| SkillingTickerTaskData
-	| MinigameTickerTaskData;
+export interface GnomeRestaurantActivityTaskOptions extends MinigameActivityTaskOptions {
+	gloriesRemoved: number;
+}
 
-export type MinionActivityTask =
-	| Tasks.CraftingActivity
-	| Tasks.AgilityActivity
-	| Tasks.CookingActivity
-	| Tasks.MonsterActivity
-	| Tasks.GroupMonsterActivity
-	| Tasks.ClueActivity
-	| Tasks.FishingActivity
-	| Tasks.MiningActivity
-	| Tasks.SmeltingActivity
-	| Tasks.SmithingActivity
-	| Tasks.WoodcuttingActivity
-	| Tasks.RunecraftActivity
-	| Tasks.FiremakingActivity
-	| Tasks.QuestingActivity
-	| Tasks.BuryingActivity
-	| Tasks.OfferingActivity
-	| Tasks.FightCavesActivity
-	| Tasks.FletchingActivity
-	| Tasks.WintertodtActivity
-	| Tasks.AlchingActivity
-	| Tasks.NightmareActivity;
+export interface SoulWarsOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	quantity: number;
+}
+
+export interface RoguesDenMazeTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+}
+
+export interface GauntletOptions extends ActivityTaskOptions {
+	corrupted: boolean;
+	quantity: number;
+}
+
+export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
+	leader: string;
+	users: string[];
+}
+
+export interface RaidsOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	challengeMode: boolean;
+}
+
+export interface CollectingOptions extends ActivityTaskOptions {
+	collectableID: number;
+	quantity: number;
+}
+
+export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
+	barID: number;
+	quantity: number;
+}
+
+export type ActivityTaskData =
+	| ActivityTaskOptions
+	| MonsterActivityTaskOptions
+	| BlastFurnaceActivityTaskOptions
+	| WoodcuttingActivityTaskOptions
+	| CollectingOptions
+	| RaidsOptions
+	| MinigameActivityTaskOptions
+	| GauntletOptions
+	| SoulWarsOptions
+	| CastingActivityTaskOptions
+	| EnchantingActivityTaskOptions
+	| ConstructionActivityTaskOptions
+	| HunterActivityTaskOptions
+	| ZalcanoActivityTaskOptions
+	| SawmillActivityTaskOptions
+	| FarmingActivityTaskOptions
+	| HerbloreActivityTaskOptions
+	| FletchingActivityTaskOptions
+	| RunecraftActivityTaskOptions;

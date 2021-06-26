@@ -1,7 +1,7 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Message, MessageReaction } from 'discord.js';
+import { debounce } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
-import { debounce } from 'lodash';
 
 import { ReactionEmoji } from '../../lib/constants';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
@@ -25,9 +25,9 @@ async function _setup(
 	const confirmMessage = (await msg.channel.send(getMessageContent())) as KlasaMessage;
 	async function addEmojis() {
 		await confirmMessage.react(ReactionEmoji.Join);
-		await sleep(750);
+		await sleep(50);
 		await confirmMessage.react(ReactionEmoji.Stop);
-		await sleep(750);
+		await sleep(50);
 		await confirmMessage.react(ReactionEmoji.Start);
 	}
 
@@ -53,7 +53,7 @@ async function _setup(
 				confirmMessage,
 				(reaction: MessageReaction, user: KlasaUser) => {
 					if (
-						user.isIronman ||
+						(!options.ironmanAllowed && user.isIronman) ||
 						user.bot ||
 						user.minionIsBusy ||
 						!reaction.emoji.id ||
@@ -82,11 +82,9 @@ async function _setup(
 						reaction.users.remove(user);
 					}
 
-					return ([
-						ReactionEmoji.Join,
-						ReactionEmoji.Stop,
-						ReactionEmoji.Start
-					] as string[]).includes(reaction.emoji.id);
+					return ([ReactionEmoji.Join, ReactionEmoji.Stop, ReactionEmoji.Start] as string[]).includes(
+						reaction.emoji.id
+					);
 				},
 				{
 					time: 120_000,
@@ -120,15 +118,15 @@ async function _setup(
 							return;
 						}
 
-						// +1 because of leader
-						if (usersWhoConfirmed.length >= options.maxSize + 1) {
+						// Add the user
+						usersWhoConfirmed.push(user);
+						updateUsersIn();
+
+						if (usersWhoConfirmed.length >= options.maxSize) {
 							collector.stop('everyoneJoin');
 							break;
 						}
 
-						// Add the user
-						usersWhoConfirmed.push(user);
-						updateUsersIn();
 						break;
 					}
 
@@ -151,12 +149,15 @@ async function _setup(
 						}
 						break;
 					}
+
+					default:
+						break;
 				}
 			});
 
 			collector.once('end', () => {
 				confirmMessage.removeAllReactions();
-				startTrip();
+				setTimeout(() => startTrip(), 750);
 			});
 		});
 

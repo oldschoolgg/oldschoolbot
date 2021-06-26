@@ -1,5 +1,4 @@
 import { Emoji, Time } from '../../constants';
-import { ActivityTaskOptions } from '../../types/minions';
 import itemID from '../../util/itemID';
 import { Rune, SkillsEnum } from '../types';
 
@@ -72,6 +71,17 @@ const Runes: Rune[] = [
 			[14, 1],
 			[35, 2],
 			[70, 3]
+		],
+		tripLength: Time.Minute
+	},
+	{
+		xp: 7.5,
+		id: itemID('Body rune'),
+		name: 'Body rune',
+		levels: [
+			[20, 1],
+			[46, 2],
+			[92, 3]
 		],
 		tripLength: Time.Minute
 	},
@@ -172,19 +182,14 @@ const RCPouches = [
 	}
 ];
 
-export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
-	runeID: number;
-	channelID: string;
-	essenceQuantity: number;
-}
-
 const Runecraft = {
 	aliases: ['runecraft', 'runecrafting'],
 	Runes,
 	id: SkillsEnum.Runecraft,
 	emoji: Emoji.Runecraft,
 	timePerInventory: Time.Minute,
-	pouches: RCPouches
+	pouches: RCPouches,
+	name: 'Runecraft'
 };
 
 export default Runecraft;

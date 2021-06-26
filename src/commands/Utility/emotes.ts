@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 const servers = `
 https://discord.gg/Tc3cdbc
@@ -16,8 +16,10 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['emoteservers'],
-			description: 'Shows all the emote servers that the bot uses.',
-			requiredPermissions: ['EMBED_LINKS']
+			description: 'Shows the invites to all the OSRS Emoji discord servers.',
+			examples: ['+emotes'],
+			requiredPermissions: ['EMBED_LINKS'],
+			categoryFlags: ['utility']
 		});
 	}
 

@@ -1,38 +1,44 @@
-import { Image } from 'canvas';
-import { Client, Guild } from 'discord.js';
-import { KlasaClient, ScheduledTask, util } from 'klasa';
+import crypto from 'crypto';
+import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
+import { objectEntries, randInt, shuffleArr } from 'e';
+import { KlasaClient, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
+import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer, Time } from './constants';
+import { GearSetupTypes } from './gear/types';
+import { ArrayItemsResolved, ItemTuple, Skills } from './types';
+import { GroupMonsterActivityTaskOptions } from './types/minions';
+import itemID from './util/itemID';
+import resolveItems from './util/resolveItems';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
 
-import { Events, Tasks } from './constants';
-import { channelIsSendable } from './util/channelIsSendable';
-
-export * from 'oldschooljs/dist/util/index';
 export { Util } from 'discord.js';
-export { v4 as uuid } from 'uuid';
+export * from 'oldschooljs/dist/util/index';
 
 const zeroWidthSpace = '\u200b';
 
-export function cleanMentions(guild: Guild | null, input: string) {
+export function cleanMentions(guild: Guild | null, input: string, showAt = true) {
+	const at = showAt ? '@' : '';
 	return input
 		.replace(/@(here|everyone)/g, `@${zeroWidthSpace}$1`)
 		.replace(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
 			switch (type) {
 				case '@':
 				case '@!': {
-					const tag = guild?.client.users.get(id);
-					return tag ? `@${tag.username}` : `<${type}${zeroWidthSpace}${id}>`;
+					const tag = guild?.client.users.cache.get(id);
+					return tag ? `${at}${tag.username}` : `<${type}${zeroWidthSpace}${id}>`;
 				}
 				case '@&': {
-					const role = guild?.roles.get(id);
-					return role ? `@${role.name}` : match;
+					const role = guild?.roles.cache.get(id);
+					return role ? `${at}${role.name}` : match;
 				}
 				case '#': {
-					const channel = guild?.channels.get(id);
+					const channel = guild?.channels.cache.get(id);
 					return channel ? `#${channel.name}` : `<${type}${zeroWidthSpace}${id}>`;
 				}
 				default:
@@ -62,26 +68,8 @@ export function formatItemStackQuantity(quantity: number) {
 	return quantity.toString();
 }
 
-export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
-	return new Promise((resolve, reject) => {
-		const canvasImage = new Image();
-
-		canvasImage.onload = () => resolve(canvasImage);
-		canvasImage.onerror = () => reject(new Error('Failed to load image.'));
-		canvasImage.src = imageBuffer;
-	});
-}
-
 export function randomItemFromArray<T>(array: T[]): T {
 	return array[Math.floor(Math.random() * array.length)];
-}
-
-export function chunkObject(obj: { [key: string]: any }, limit: number) {
-	const chunkedObjects = [];
-	for (const chunk of util.chunk(Object.entries(obj), limit)) {
-		chunkedObjects.push(Object.fromEntries(chunk));
-	}
-	return chunkedObjects;
 }
 
 export function toTitleCase(str: string) {
@@ -96,8 +84,8 @@ export function cleanString(str: string) {
 	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-export function noOp(any: any): undefined {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function noOp(_any: any) {
 	return undefined;
 }
 
@@ -123,19 +111,9 @@ export function formatDuration(ms: number) {
 		minute: Math.floor(ms / 60000) % 60,
 		second: Math.floor(ms / 1000) % 60
 	};
-	return Object.entries(time)
-		.filter(val => val[1] !== 0)
-		.map(([key, val]) => `${val} ${key}${val === 1 ? '' : 's'}`)
-		.join(', ');
-}
-
-export function activityTaskFilter(task: ScheduledTask) {
-	return ([
-		Tasks.ClueTicker,
-		Tasks.MonsterKillingTicker,
-		Tasks.SkillingTicker,
-		Tasks.MinigameTicker
-	] as string[]).includes(task.taskName);
+	let nums = Object.entries(time).filter(val => val[1] !== 0);
+	if (nums.length === 0) return '1 second';
+	return nums.map(([key, val]) => `${val} ${key}${val === 1 ? '' : 's'}`).join(', ');
 }
 
 export function inlineCodeblock(input: string) {
@@ -272,12 +250,6 @@ export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
 	return Promise.all(ids.map(id => client.users.fetch(id)));
 }
 
-export async function queuedMessageSend(client: KlasaClient, channelID: string, str: string) {
-	const channel = client.channels.get(channelID);
-	if (!channelIsSendable(channel)) return;
-	client.queuePromise(() => channel.send(str, { split: true }));
-}
-
 const rawEmojiRegex = emojiRegex();
 
 export function stripEmojis(str: string) {
@@ -289,14 +261,240 @@ export function round(value = 1, precision = 1) {
 	return Math.round(value * multiplier) / multiplier;
 }
 
-export function entries<T extends {}>(obj: T) {
-	return Object.entries(obj) as [keyof T, T[keyof T]][];
+export const anglerBoosts = [
+	[itemID('Angler hat'), 0.4],
+	[itemID('Angler top'), 0.8],
+	[itemID('Angler waders'), 0.6],
+	[itemID('Angler boots'), 0.2]
+];
+
+export function anglerBoostPercent(user: KlasaUser) {
+	const skillingSetup = user.getGear('skilling');
+	let amountEquipped = 0;
+	let boostPercent = 0;
+	for (const [id, percent] of anglerBoosts) {
+		if (skillingSetup.hasEquipped([id])) {
+			boostPercent += percent;
+			amountEquipped++;
+		}
+	}
+	if (amountEquipped === 4) {
+		boostPercent += 0.5;
+	}
+	return round(boostPercent, 1);
 }
 
-export function values<T extends {}>(obj: T) {
-	return Object.values(obj) as T[keyof T][];
+const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
+
+export function rogueOutfitPercentBonus(user: KlasaUser): number {
+	const skillingSetup = user.getGear('skilling');
+	let amountEquipped = 0;
+	for (const id of rogueOutfit) {
+		if (skillingSetup.hasEquipped([id])) {
+			amountEquipped++;
+		}
+	}
+	return amountEquipped * 20;
 }
 
-export function keys<T extends {}>(obj: T) {
-	return Object.keys(obj) as (keyof T)[];
+export function rollRogueOutfitDoubleLoot(user: KlasaUser): boolean {
+	return randInt(1, 100) <= rogueOutfitPercentBonus(user);
+}
+
+export function generateContinuationChar(user: KlasaUser) {
+	const baseChar =
+		user.perkTier > PerkTier.One
+			? 'y'
+			: Date.now() - user.createdTimestamp < Time.Month * 6
+			? shuffleArr(continuationChars).slice(0, randInt(1, 2)).join('')
+			: randomItemFromArray(continuationChars);
+
+	return `${shuffleArr(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffleArr(CENA_CHARS)
+		.slice(0, randInt(1, 2))
+		.join('')}`;
+}
+
+export function isValidGearSetup(str: string): str is GearSetupTypes {
+	return ['melee', 'mage', 'range', 'skilling', 'misc'].includes(str);
+}
+
+/**
+ * Adds random variation to a number. For example, if you pass 10%, it can at most lower the value by 10%,
+ * or increase it by 10%, and everything in between.
+ * @param value The value to add variation too.
+ * @param percentage The max percentage to fluctuate the value by, in both negative/positive.
+ */
+export function randomVariation(value: number, percentage: number) {
+	const lowerLimit = value * (1 - percentage / 100);
+	const upperLimit = value * (1 + percentage / 100);
+	return randFloat(lowerLimit, upperLimit);
+}
+
+export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
+	return 'users' in data;
+}
+
+export function sha256Hash(x: string) {
+	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
+}
+
+export function countSkillsAtleast99(user: KlasaUser) {
+	const skills = (user.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>;
+	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
+}
+
+export function getSupportGuild(client: Client) {
+	const guild = client.guilds.cache.get(SupportServer);
+	if (!guild) throw "Can't find support guild.";
+	return guild;
+}
+
+export function normal(mu = 0, sigma = 1, nsamples = 6) {
+	let run_total = 0;
+
+	for (let i = 0; i < nsamples; i++) {
+		run_total += Math.random();
+	}
+
+	return (sigma * (run_total - nsamples / 2)) / (nsamples / 2) + mu;
+}
+
+/**
+ * Checks if the bot can send a message to a channel object.
+ * @param channel The channel to check if the bot can send a message to.
+ */
+export function channelIsSendable(channel: Channel | undefined): channel is TextChannel {
+	if (!channel || (!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) || !channel.postable) {
+		return false;
+	}
+
+	return true;
+}
+export function calcCombatLevel(skills: Skills) {
+	const defence = skills.defence ? convertXPtoLVL(skills.defence) : 1;
+	const ranged = skills.ranged ? convertXPtoLVL(skills.ranged) : 1;
+	const hitpoints = skills.hitpoints ? convertXPtoLVL(skills.hitpoints) : 1;
+	const magic = skills.magic ? convertXPtoLVL(skills.magic) : 1;
+	const prayer = skills.prayer ? convertXPtoLVL(skills.prayer) : 1;
+	const attack = skills.attack ? convertXPtoLVL(skills.attack) : 1;
+	const strength = skills.strength ? convertXPtoLVL(skills.strength) : 1;
+
+	const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
+	const melee = 0.325 * (attack + strength);
+	const range = 0.325 * (Math.floor(ranged / 2) + ranged);
+	const mage = 0.325 * (Math.floor(magic / 2) + magic);
+	return Math.floor(base + Math.max(melee, range, mage));
+}
+export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
+	for (const [skillName, level] of objectEntries(requirements)) {
+		if ((skillName as string) === 'combat') {
+			if (calcCombatLevel(skills) < level!) return false;
+		} else {
+			const xpHas = skills[skillName];
+			const levelHas = convertXPtoLVL(xpHas ?? 1);
+			if (levelHas < level!) return false;
+		}
+	}
+	return true;
+}
+
+export function formatItemReqs(items: ArrayItemsResolved) {
+	const str = [];
+	for (const item of items) {
+		if (Array.isArray(item)) {
+			str.push(item.map(itemNameFromID).join(' OR '));
+		} else {
+			str.push(itemNameFromID(item));
+		}
+	}
+	return str.join(', ');
+}
+
+export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {
+	let arr = [];
+	for (const [name, num] of objectEntries(reqs)) {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		arr.push(`${emojis ? ` ${skillEmoji[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
+	}
+	return arr.join(', ');
+}
+
+export function formatItemBoosts(items: ItemBank[]) {
+	const str = [];
+	for (const itemSet of items) {
+		const itemEntries = Object.entries(itemSet);
+		const multiple = itemEntries.length > 1;
+		const bonusStr = [];
+
+		for (const [itemID, boostAmount] of itemEntries) {
+			bonusStr.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+		}
+
+		if (multiple) {
+			str.push(`(${bonusStr.join(' OR ')})`);
+		} else {
+			str.push(bonusStr.join(''));
+		}
+	}
+	return str.join(', ');
+}
+
+export function filterItemTupleByQuery(query: string, items: ItemTuple[]) {
+	const filtered: ItemTuple[] = [];
+
+	for (const item of items) {
+		if (cleanString(Items.get(item[0])!.name).includes(cleanString(query))) {
+			filtered.push(item);
+		}
+	}
+
+	return filtered;
+}
+
+/**
+ * Given a list of items, and a bank, it will return a new bank with all items not
+ * in the filter removed from the bank.
+ * @param itemFilter The array of item IDs to use as the filter.
+ * @param bank The bank to filter items from.
+ */
+export function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank): ItemBank {
+	const returnBank: ItemBank = {};
+	const bankKeys = Object.keys(bank);
+
+	// If there are no items in the filter or bank, just return an empty bank.
+	if (itemFilter.length === 0 || bankKeys.length === 0) return returnBank;
+
+	// For every item in the filter, if its in the bank, add it to the return bank.
+	for (const itemID of itemFilter) {
+		if (bank[itemID]) returnBank[itemID] = bank[itemID];
+	}
+
+	return returnBank;
+}
+
+export function updateBankSetting(client: KlasaClient, setting: string, bankToAdd: Bank | ItemBank) {
+	const current = new Bank(client.settings.get(setting) as ItemBank);
+	const newBank = current.add(bankToAdd);
+	return client.settings.update(setting, newBank.bank);
+}
+
+export function updateGPTrackSetting(client: KlasaClient, setting: string, amount: number) {
+	const current = client.settings.get(setting) as number;
+	const newValue = current + amount;
+	return client.settings.update(setting, newValue);
+}
+
+export function textEffect(str: string, effect: 'none' | 'strikethrough') {
+	let wrap = '';
+
+	if (effect === 'strikethrough') {
+		wrap = '~~';
+	}
+	return `${wrap}${str.replace(/~/g, '')}${wrap}`;
+}
+
+export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
+	const active: any[] = user.settings.get(key) as any[];
+	return user.settings.update(key, active);
 }

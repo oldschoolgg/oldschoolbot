@@ -1,11 +1,44 @@
 import { DMChannel, MessageAttachment, Permissions, TextChannel } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 
+import { bankImageCache } from '../lib/constants';
 import { ItemBank } from './../lib/types/index';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [TextChannel, DMChannel] });
+	}
+
+	// @ts-ignore 2784
+	get attachable(this: TextChannel) {
+		return (
+			!this.guild ||
+			(this.postable && this.permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.ATTACH_FILES, false))
+		);
+	}
+
+	// @ts-ignore 2784
+	get embedable(this: TextChannel) {
+		return (
+			!this.guild ||
+			(this.postable && this.permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.EMBED_LINKS, false))
+		);
+	}
+
+	// @ts-ignore 2784
+	get postable(this: TextChannel) {
+		return (
+			!this.guild ||
+			this.permissionsFor(this.guild.me!)!.has(
+				[Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES],
+				false
+			)
+		);
+	}
+
+	// @ts-ignore 2784
+	get readable(this: TextChannel) {
+		return !this.guild || this.permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.VIEW_CHANNEL, false);
 	}
 
 	async sendBankImage(
@@ -16,7 +49,8 @@ export default class extends Extendable {
 			title,
 			background,
 			flags,
-			user
+			user,
+			cl
 		}: {
 			bank: ItemBank;
 			content?: string;
@@ -24,20 +58,30 @@ export default class extends Extendable {
 			background?: number;
 			flags?: Record<string, string>;
 			user?: KlasaUser;
+			cl?: ItemBank;
 		}
 	) {
-		const image = await this.client.tasks
+		const { image, cacheKey, isTransparent } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(bank, title, true, { background: background ?? 1, ...flags }, user);
-		return this.send(content, new MessageAttachment(image));
-	}
+			.generateBankImage(bank, title, true, { background: background ?? 1, ...flags }, user, cl);
 
-	assertCanManageMessages(this: TextChannel): void {
-		const canManage =
-			this.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.MANAGE_MESSAGES) || false;
-
-		if (!canManage) {
-			throw `I need the **Manage Messages** permission to perform this action. Please give me this permission and try again.`;
+		let cached = bankImageCache.get(cacheKey);
+		if (cached) {
+			console.log('Using cached bank image');
 		}
+
+		if (cached && content) {
+			content += `\n${cached}`;
+		}
+		const sent = await this.send(
+			content ?? cached,
+			image && !cached ? new MessageAttachment(image!, isTransparent ? 'bank.png' : 'bank.jpg') : {}
+		);
+
+		const url = sent.attachments.first()?.proxyURL;
+		if (url) {
+			bankImageCache.set(cacheKey, url);
+		}
+		return sent;
 	}
 }

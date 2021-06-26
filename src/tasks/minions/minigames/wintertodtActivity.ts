@@ -1,19 +1,16 @@
-import { MessageAttachment } from 'discord.js';
+import { randInt } from 'e';
 import { Task } from 'klasa';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events } from '../../../lib/constants';
-import hasArrayOfItemsEquipped from '../../../lib/gear/functions/hasArrayOfItemsEquipped';
-import { MinigameIDsEnum } from '../../../lib/minions/data/minigames';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, bankHasItem, noOp } from '../../../lib/util';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
+import { addBanks, bankHasItem, channelIsSendable, noOp } from '../../../lib/util';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
 const PointsTable = new SimpleTable<number>()
@@ -40,9 +37,9 @@ const PointsTable = new SimpleTable<number>()
 	.add(850);
 
 export default class extends Task {
-	async run({ userID, channelID, quantity, duration }: WintertodtActivityTaskOptions) {
+	async run(data: WintertodtActivityTaskOptions) {
+		const { userID, channelID, quantity } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const channel = await this.client.channels.fetch(channelID).catch(noOp);
 
@@ -58,7 +55,7 @@ export default class extends Task {
 				loot,
 				WintertodtCrate.open({
 					points,
-					itemsOwned: addBanks([user.allItemsOwned(), loot]),
+					itemsOwned: addBanks([user.allItemsOwned().bank, loot]),
 					skills: user.rawSkills
 				})
 			]);
@@ -75,11 +72,9 @@ export default class extends Task {
 				Events.ServerNotification,
 				`${Emoji.Phoenix} **${user.username}'s** minion, ${
 					user.minionName
-				}, just received a Phoenix! Their Wintertodt KC is ${user.getMinigameScore(
-					MinigameIDsEnum.Wintertodt
-				) + quantity}, and their Firemaking level is ${user.skillLevel(
-					SkillsEnum.Firemaking
-				)}.`
+				}, just received a Phoenix! Their Wintertodt KC is ${
+					(await user.getMinigameScore('Wintertodt')) + quantity
+				}, and their Firemaking level is ${user.skillLevel(SkillsEnum.Firemaking)}.`
 			);
 		}
 
@@ -91,16 +86,24 @@ export default class extends Task {
 		const numberOfRoots = Math.floor((totalPoints - 50 * quantity) / 10);
 		const fmLvl = user.skillLevel(SkillsEnum.Firemaking);
 		const wcLvl = user.skillLevel(SkillsEnum.Woodcutting);
+		const conLevel = user.skillLevel(SkillsEnum.Construction);
 
 		let fmXpToGive = Math.floor(fmLvl * 100 * quantity + numberOfRoots * (fmLvl * 3));
 		let fmBonusXP = 0;
 		const wcXpToGive = Math.floor(numberOfRoots * (wcLvl * 0.3));
+		const constructionXPPerBrazier = conLevel * 4;
+		let numberOfBraziers = 0;
+		for (let i = 0; i < quantity; i++) {
+			numberOfBraziers += randInt(1, 7);
+		}
+		const conXP = numberOfBraziers * constructionXPPerBrazier;
+		user.addXP({ skillName: SkillsEnum.Construction, amount: conXP });
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
-			hasArrayOfItemsEquipped(
+			user.getGear('skilling').hasEquipped(
 				Object.keys(Firemaking.pyromancerItems).map(i => parseInt(i)),
-				user.settings.get(UserSettings.Gear.Skilling)
+				true
 			)
 		) {
 			const amountToAdd = Math.floor(fmXpToGive * (2.5 / 100));
@@ -117,16 +120,16 @@ export default class extends Task {
 			}
 		}
 
-		await user.addXP(SkillsEnum.Woodcutting, wcXpToGive);
-		await user.addXP(SkillsEnum.Firemaking, fmXpToGive);
+		await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive });
+		await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive });
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		await user.addItemsToBank(loot, true);
-		user.incrementMinigameScore(MinigameIDsEnum.Wintertodt, quantity);
+		user.incrementMinigameScore('Wintertodt', quantity);
 
-		const image = await this.client.tasks.get('bankImage')!.generateBankImage(
+		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
 			loot,
-			``,
+			'',
 			true,
 			{
 				showNewCL: 1
@@ -136,9 +139,9 @@ export default class extends Task {
 
 		if (!channelIsSendable(channel)) return;
 
-		let output = `${user} ${
+		let output = `${user}, ${
 			user.minionName
-		} finished subdueing Wintertodt ${quantity}x times. You got ${fmXpToGive.toLocaleString()} Firemaking XP and ${wcXpToGive.toLocaleString()} Woodcutting XP, you cut ${numberOfRoots}x Bruma roots.`;
+		} finished subduing Wintertodt ${quantity}x times. You got ${fmXpToGive.toLocaleString()} Firemaking XP, ${wcXpToGive.toLocaleString()} Woodcutting XP and ${conXP.toLocaleString()} Construction XP, you cut ${numberOfRoots}x Bruma roots.`;
 
 		if (fmBonusXP > 0) {
 			output += `\n\n**Firemaking Bonus XP:** ${fmBonusXP.toLocaleString()}`;
@@ -148,6 +151,18 @@ export default class extends Task {
 			output += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
 		}
 
-		return channel.send(output, new MessageAttachment(image));
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			output,
+			res => {
+				user.log('continued trip of wintertodt');
+				return this.client.commands.get('wintertodt')!.run(res, []);
+			},
+			image!,
+			data,
+			loot
+		);
 	}
 }

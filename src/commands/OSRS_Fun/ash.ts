@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 const links = [
 	'http://i.imgur.com/d88EtsT.gifv',
@@ -28,7 +28,9 @@ const links = [
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Shows a random gif of Mod Ash.'
+			description: 'Shows a random gif of Mod Ash.',
+			examples: ['+ash'],
+			categoryFlags: ['fun']
 		});
 	}
 

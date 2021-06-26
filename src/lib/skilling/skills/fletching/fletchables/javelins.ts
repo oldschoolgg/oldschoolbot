@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../../../util';
+import { Bank } from 'oldschooljs';
+
 import itemID from '../../../../util/itemID';
 import { Fletchable } from '../../../types';
 
@@ -8,7 +9,7 @@ const Javelins: Fletchable[] = [
 		id: itemID('Bronze javelin'),
 		level: 3,
 		xp: 1,
-		inputItems: resolveNameBank({ 'Bronze javelin heads': 1, 'Javelin shaft': 1 }),
+		inputItems: new Bank({ 'Bronze javelin heads': 1, 'Javelin shaft': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -16,7 +17,7 @@ const Javelins: Fletchable[] = [
 		id: itemID('Iron javelin'),
 		level: 17,
 		xp: 2,
-		inputItems: resolveNameBank({ 'Iron javelin heads': 1, 'Javelin shaft': 1 }),
+		inputItems: new Bank({ 'Iron javelin heads': 1, 'Javelin shaft': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -24,7 +25,7 @@ const Javelins: Fletchable[] = [
 		id: itemID('Steel javelin'),
 		level: 32,
 		xp: 5,
-		inputItems: resolveNameBank({ 'Steel javelin heads': 1, 'Javelin shaft': 1 }),
+		inputItems: new Bank({ 'Steel javelin heads': 1, 'Javelin shaft': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -32,7 +33,7 @@ const Javelins: Fletchable[] = [
 		id: itemID('Mithril javelin'),
 		level: 47,
 		xp: 8,
-		inputItems: resolveNameBank({ 'Mithril javelin heads': 1, 'Javelin shaft': 1 }),
+		inputItems: new Bank({ 'Mithril javelin heads': 1, 'Javelin shaft': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -40,7 +41,7 @@ const Javelins: Fletchable[] = [
 		id: itemID('Adamant javelin'),
 		level: 62,
 		xp: 10,
-		inputItems: resolveNameBank({ 'Adamant javelin heads': 1, 'Javelin shaft': 1 }),
+		inputItems: new Bank({ 'Adamant javelin heads': 1, 'Javelin shaft': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -48,7 +49,7 @@ const Javelins: Fletchable[] = [
 		id: itemID('Rune javelin'),
 		level: 77,
 		xp: 12.4,
-		inputItems: resolveNameBank({ 'Rune javelin heads': 1, 'Javelin shaft': 1 }),
+		inputItems: new Bank({ 'Rune javelin heads': 1, 'Javelin shaft': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -56,7 +57,7 @@ const Javelins: Fletchable[] = [
 		id: itemID('Amethyst javelin'),
 		level: 84,
 		xp: 13.5,
-		inputItems: resolveNameBank({ 'Amethyst javelin heads': 1, 'Javelin shaft': 1 }),
+		inputItems: new Bank({ 'Amethyst javelin heads': 1, 'Javelin shaft': 1 }),
 		tickRate: 0.13
 	},
 	{
@@ -64,7 +65,7 @@ const Javelins: Fletchable[] = [
 		id: itemID('Dragon javelin'),
 		level: 92,
 		xp: 15,
-		inputItems: resolveNameBank({ 'Dragon javelin heads': 1, 'Javelin shaft': 1 }),
+		inputItems: new Bank({ 'Dragon javelin heads': 1, 'Javelin shaft': 1 }),
 		tickRate: 0.13
 	}
 ];

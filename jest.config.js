@@ -4,5 +4,23 @@ module.exports = {
 	preset: 'ts-jest',
 	testEnvironment: 'node',
 	testRunner: 'jest-circus/runner',
-	testMatch: ['<rootDir>/tests/**/*.test.ts']
+	testMatch: ['<rootDir>/tests/**/*.test.ts'],
+	globals: {
+		'ts-jest': {
+			tsconfig: '<rootDir>/tests/tsconfig.json'
+		}
+	},
+	setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
+	collectCoverageFrom: [
+		"./src/lib/structures/Gear.ts",
+		"./src/lib/util/parseStringBank.ts"
+	],
+	coverageThreshold: {
+    	global: {
+			branches: 90,
+			functions: 90,
+			lines: 90,
+			statements: 90,
+   		},
+ 	},
 };

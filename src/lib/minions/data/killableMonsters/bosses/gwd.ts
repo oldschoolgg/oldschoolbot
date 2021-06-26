@@ -1,7 +1,9 @@
 import { Monsters } from 'oldschooljs';
 
-import { bosses } from '../../../../collectionLog';
 import { Time } from '../../../../constants';
+import { bosses } from '../../../../data/collectionLog';
+import { GearSetupTypes, GearStat } from '../../../../gear';
+import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
@@ -15,19 +17,29 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.GeneralGraardor,
 		emoji: '<:Pet_general_graardor:324127377376673792>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		notifyDrops: resolveItems(['Pet general graardor']),
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon warhammer')]: 10,
+				[itemID('Bandos godsword')]: 5
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
-			prayer: 43
+			prayer: 43,
+			strength: 70
 		},
-		uniques: [...resolveItems(['Rune sword']), ...bosses.Bandos, ...bosses.Shards]
+		uniques: [...resolveItems(['Rune sword']), ...bosses.Bandos, ...bosses.Shards],
+		defaultAttackStyles: [SkillsEnum.Attack],
+		customMonsterHP: 656,
+		combatXpMultiplier: 1.126,
+		healAmountNeeded: 20 * 5,
+		attackStyleToUse: GearSetupTypes.Melee,
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.CommanderZilyana.id,
@@ -37,14 +49,20 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.CommanderZilyana,
 		emoji: '<:Pet_zilyana:324127378248957952>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		notifyDrops: resolveItems(['Pet zilyana']),
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Ranger boots')]: 5,
-			[itemID('Armadyl crossbow')]: 5
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Ranger boots')]: 3,
+				[itemID('Pegasian boots')]: 5
+			},
+			{
+				[itemID('Armadyl crossbow')]: 5,
+				[itemID('Twisted bow')]: 10
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
@@ -55,7 +73,13 @@ const killableBosses: KillableMonster[] = [
 		itemsRequired: deepResolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
-		])
+		]),
+		defaultAttackStyles: [SkillsEnum.Ranged],
+		customMonsterHP: 723,
+		combatXpMultiplier: 1.132,
+		healAmountNeeded: 18 * 4,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.Kreearra.id,
@@ -65,23 +89,34 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.Kreearra,
 		emoji: '<:Pet_kreearra:324127377305239555>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		notifyDrops: resolveItems(["Pet kree'arra"]),
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Armadyl crossbow')]: 5
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Armadyl crossbow')]: 5,
+				[itemID('Twisted bow')]: 10
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
-			prayer: 43
+			prayer: 40,
+			ranged: 70
 		},
 		uniques: [...bosses.Arma, ...bosses.Shards],
 		itemsRequired: deepResolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
-		])
+		]),
+		defaultAttackStyles: [SkillsEnum.Ranged],
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
+		customMonsterHP: 641,
+		combatXpMultiplier: 1.159,
+		healAmountNeeded: 18 * 4,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -91,23 +126,37 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.KrilTsutsaroth,
 		emoji: '<:Pet_kril_tsutsaroth:324127377527406594>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		notifyDrops: resolveItems(["Pet k'ril tsutsaroth"]),
 		qpRequired: 75,
-		itemInBankBoosts: {
-			[itemID('Dragon warhammer')]: 10
-		},
+		itemInBankBoosts: [
+			{
+				[itemID('Dragon warhammer')]: 10,
+				[itemID('Bandos godsword')]: 5,
+				[itemID('Dragon claws')]: 3
+			},
+			{
+				[itemID('Arclight')]: 9
+			}
+		],
 		groupKillable: true,
 		respawnTime: Time.Minute * 1.5,
 		levelRequirements: {
-			prayer: 43
+			prayer: 43,
+			hitpoints: 70
 		},
 		uniques: [...bosses.Zammy, ...bosses.Shards],
 		itemsRequired: deepResolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
-		])
+		]),
+		defaultAttackStyles: [SkillsEnum.Attack],
+		customMonsterHP: 708,
+		combatXpMultiplier: 1.135,
+		healAmountNeeded: 20 * 3,
+		attackStyleToUse: GearSetupTypes.Range,
+		attackStylesUsed: [GearStat.AttackMagic]
 	}
 ];
 

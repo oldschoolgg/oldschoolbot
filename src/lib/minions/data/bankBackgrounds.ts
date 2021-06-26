@@ -1,4 +1,4 @@
-import { PerkTier } from '../../constants';
+import { BitField, PerkTier } from '../../constants';
 import { resolveNameBank } from '../../util';
 import { BankBackground } from '../types';
 
@@ -11,7 +11,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 2,
-		name: 'Morytania',
+		name: 'Swampman',
 		image: null,
 		available: false
 	},
@@ -21,7 +21,7 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 100_000_000
+		gpCost: 10_000_000
 	},
 	{
 		id: 4,
@@ -31,9 +31,11 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 5,
-		name: 'Draynor Manor',
+		name: 'Edgeville',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
 		id: 6,
@@ -41,7 +43,7 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Six,
-		gpCost: 100_000_000
+		gpCost: 10_000_000
 	},
 	{
 		id: 7,
@@ -89,11 +91,13 @@ const backgroundImages: BankBackground[] = [
 			'Spectral sigil': 1,
 			'Arcane sigil': 1,
 			'Elysian sigil': 1,
-			'Pet dark core': 1
+			'Pet dark core': 1,
+			'Jar of spirits': 1
 		}),
 		itemCost: resolveNameBank({
 			'Spectral spirit shield': 1,
-			'Arcane spirit shield': 1
+			'Arcane spirit shield': 1,
+			'Elysian spirit shield': 1
 		}),
 		gpCost: 100_000_000
 	},
@@ -127,6 +131,11 @@ const backgroundImages: BankBackground[] = [
 			'Harmonised orb': 1,
 			'Volatile orb': 1
 		}),
+		itemCost: resolveNameBank({
+			'Eldritch orb': 1,
+			'Harmonised orb': 1,
+			'Volatile orb': 1
+		}),
 		gpCost: 100_000_000
 	},
 	{
@@ -135,7 +144,120 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
+	},
+	{
+		id: 12,
+		name: 'Morytania',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Five,
+		gpCost: 10_000_000
+	},
+	{
+		id: 13,
+		name: 'Grass',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
+	},
+	{
+		id: 14,
+		name: 'CoX',
+		image: null,
+		available: true,
+		bitfield: BitField.HasPermanentEventBackgrounds
+	},
+	{
+		id: 15,
+		name: 'OSB',
+		image: null,
+		available: true,
+		bitfield: BitField.HasPermanentEventBackgrounds
+	},
+	{
+		id: 16,
+		name: 'Wilderness',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		collectionLogItemsNeeded: resolveNameBank({
+			'Dragon pickaxe': 1,
+			'Dragon med helm': 1,
+			'Kbd heads': 1,
+			'Draconic visage': 1,
+			'Prince black dragon': 1,
+			'Dragon 2h sword': 1,
+			'Pet chaos elemental': 1,
+			'Malediction shard 1': 1,
+			'Odium shard 1': 1,
+			'Malediction shard 2': 1,
+			'Odium shard 2': 1,
+			Fedora: 1,
+			'Malediction shard 3': 1,
+			'Odium shard 3': 1,
+			"Scorpia's offspring": 1,
+			'Treasonous ring': 1,
+			'Venenatis spiderling': 1,
+			'Tyrannical ring': 1,
+			'Callisto cub': 1,
+			'Ring of the gods': 1,
+			"Vet'ion jr.": 1
+		}),
+		itemCost: resolveNameBank({
+			'Dragon pickaxe': 1,
+			'Dragon med helm': 1,
+			'Draconic visage': 1,
+			'Dragon 2h sword': 1,
+			'Odium ward ': 1,
+			'Malediction ward': 1,
+			'Treasonous ring': 1,
+			'Tyrannical ring': 1,
+			'Ring of the gods': 1
+		}),
 		gpCost: 100_000_000
+	},
+	{
+		id: 17,
+		name: 'Grand Exchange',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 2_147_483_647,
+		sacValueRequired: 2_147_483_647
+	},
+	{
+		id: 18,
+		name: 'Falador Park',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		collectionLogItemsNeeded: resolveNameBank({
+			Tangleroot: 1
+		}),
+		gpCost: 100_000_000,
+		skillsNeeded: {
+			farming: 99
+		}
+	},
+	{
+		id: 19,
+		name: 'Pets',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true
+	},
+	{
+		id: 20,
+		name: 'Transparent',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true
 	}
 ];
 

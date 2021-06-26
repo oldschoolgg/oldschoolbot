@@ -1,4 +1,8 @@
+import { Bank } from 'oldschooljs';
+import LootTable from 'oldschooljs/dist/structures/LootTable';
+
 import { Emoji } from '../constants';
+import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
 
 export enum SkillsEnum {
@@ -15,7 +19,16 @@ export enum SkillsEnum {
 	Fletching = 'fletching',
 	Farming = 'farming',
 	Herblore = 'herblore',
-	Thieving = 'thieving'
+	Thieving = 'thieving',
+	Hunter = 'hunter',
+	Construction = 'construction',
+	Magic = 'magic',
+	Attack = 'attack',
+	Strength = 'strength',
+	Defence = 'defence',
+	Ranged = 'ranged',
+	Hitpoints = 'hitpoints',
+	Slayer = 'slayer'
 }
 
 export interface Ore {
@@ -53,7 +66,7 @@ export interface Fish {
 	xp: number;
 	id: number;
 	name: string;
-	petChance: number;
+	petChance?: number;
 	timePerFish: number;
 	bait?: number;
 	qpRequired?: number;
@@ -94,12 +107,6 @@ export interface Cookable {
 	burntCookable: number;
 }
 
-export interface Eatable {
-	name: string;
-	id: number;
-	healAmount: number;
-}
-
 export interface Bar {
 	level: number;
 	xp: number;
@@ -110,6 +117,15 @@ export interface Bar {
 	 * Chance that the ore will fail to smelt (i.e iron), out of 100
 	 */
 	chanceOfFail: number;
+}
+
+export interface BlastableBar {
+	level: number;
+	xp: number;
+	id: number;
+	name: string;
+	inputOres: Bank;
+	timeToUse: number;
 }
 
 export interface SmithedItem {
@@ -127,8 +143,10 @@ export interface Craftable {
 	id: number;
 	level: number;
 	xp: number;
-	inputItems: ItemBank;
+	inputItems: Bank;
 	tickRate: number;
+	crushChance?: number[];
+	bankChest?: boolean;
 }
 
 export interface Fletchable {
@@ -136,9 +154,25 @@ export interface Fletchable {
 	id: number;
 	level: number;
 	xp: number;
-	inputItems: ItemBank;
+	inputItems: Bank;
 	tickRate: number;
 	outputMultiple?: number;
+	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
+}
+
+export interface Mixable {
+	name: string;
+	aliases: string[];
+	id: number;
+	level: number;
+	xp: number;
+	inputItems: ItemBank;
+	tickRate: number;
+	bankTimePerPotion: number;
+	outputMultiple?: number;
+	zahur?: boolean;
+	wesley?: boolean;
+	qpRequired?: number;
 }
 
 export interface Bone {
@@ -158,4 +192,86 @@ export interface Skill {
 	aliases: string[];
 	id: SkillsEnum;
 	emoji: Emoji;
+	name: string;
+}
+
+export interface Plankable {
+	name: string;
+	inputItem: number;
+	outputItem: number;
+	gpCost: number;
+}
+
+export interface Plant {
+	level: number;
+	plantXp: number;
+	checkXp: number;
+	harvestXp: number;
+	name: string;
+	inputItems: ItemBank;
+	aliases: string[];
+	outputCrop?: number;
+	outputLogs?: number;
+	outputRoots?: number;
+	treeWoodcuttingLevel?: number;
+	fixedOutputAmount?: number;
+	variableYield?: boolean;
+	variableOutputAmount?: [string | null, number, number][];
+	woodcuttingXp?: number;
+	needsChopForHarvest: boolean;
+	fixedOutput: boolean;
+	givesLogs: boolean;
+	givesCrops: boolean;
+	petChance: number;
+	seedType: string;
+	growthTime: number;
+	numOfStages: number;
+	chance1: number;
+	chance99: number;
+	chanceOfDeath: number;
+	protectionPayment?: ItemBank;
+	defaultNumOfPatches: number;
+	canPayFarmer: boolean;
+	canCompostPatch: boolean;
+	canCompostandPay: boolean;
+	additionalPatchesByQP: number[][];
+	additionalPatchesByFarmLvl: number[][];
+	timePerPatchTravel: number;
+	timePerHarvest: number;
+}
+
+export enum HunterTechniqueEnum {
+	AerialFishing = 'aerial fishing',
+	BirdSnaring = 'bird snaring',
+	BoxTrapping = 'box trapping',
+	ButterflyNetting = 'butterfly netting',
+	DeadfallTrapping = 'deadfall trapping',
+	Falconry = 'falconry',
+	MagicBoxTrapping = 'magic box trapping',
+	NetTrapping = 'net trapping',
+	PitfallTrapping = 'pitfall trapping',
+	RabbitSnaring = 'rabbit snaring',
+	Tracking = 'tracking'
+}
+
+export interface Creature {
+	name: string;
+	id: number;
+	aliases: string[];
+	level: number;
+	hunterXP: number;
+	fishLvl?: number;
+	fishingXP?: number;
+	itemsRequired?: Bank;
+	itemsConsumed?: Bank;
+	table: LootTable;
+	huntTechnique: HunterTechniqueEnum;
+	multiTraps?: boolean;
+	wildy?: boolean;
+	prayerLvl?: number;
+	herbloreLvl?: number;
+	catchTime: number;
+	qpRequired?: number;
+	slope: number;
+	intercept: number;
 }

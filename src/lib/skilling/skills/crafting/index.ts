@@ -1,12 +1,13 @@
 import { Emoji } from '../../../constants';
 import { SkillsEnum } from '../../types';
-import craftables from './craftables/index';
+import { Craftables } from './craftables/index';
 
 const Crafting = {
 	aliases: ['craft', 'crafting'],
-	Craftables: craftables,
+	Craftables,
 	id: SkillsEnum.Crafting,
-	emoji: Emoji.Crafting
+	emoji: Emoji.Crafting,
+	name: 'Crafting'
 };
 
 export default Crafting;

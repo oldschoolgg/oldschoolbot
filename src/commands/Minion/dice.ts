@@ -2,58 +2,50 @@ import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Util } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
-import { Color, Emoji, Events, Image } from '../../lib/constants';
+import { Color, Emoji, Image } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { rand } from '../../lib/util';
+import { BotCommand } from '../../lib/structures/BotCommand';
+import { rand, updateGPTrackSetting } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Simulates dice rolls from Runescape.',
+			description: 'Allows you to simulate dice rolls, or dice your bot GP.',
 			usage: '[amount:int{1}]',
 			requiredPermissions: ['EMBED_LINKS'],
-			oneAtTime: true
+			oneAtTime: true,
+			categoryFlags: ['minion', 'utility'],
+			examples: ['+dice', '+dice 1m']
 		});
 	}
 
 	async run(msg: KlasaMessage, [amount]: [number]) {
 		const roll = rand(1, 100);
 
-		const embed = new MessageEmbed()
-			.setColor(Color.Orange)
-			.setThumbnail(Image.DiceBag)
-			.setTitle('Dice Roll');
+		const embed = new MessageEmbed().setColor(Color.Orange).setThumbnail(Image.DiceBag).setTitle('Dice Roll');
 
 		if (!amount) {
 			embed.setDescription(`You rolled **${roll}** on the percentile dice.`);
 		} else {
-			if (msg.author.isIronman) throw `You're an ironman and you cant play dice.`;
+			if (msg.author.isIronman) return msg.send("You're an ironman and you cant play dice.");
 
-			if (amount > 2_000_000_000) {
-				throw `You can only dice up to 2bil at a time!`;
+			if (amount > 500_000_000) {
+				return msg.send('You can only dice up to 500m at a time!');
 			}
 
-			if (amount < 200_000) {
-				throw `You have to dice atleast 200k.`;
+			if (amount < 1_000_000) {
+				return msg.send('You have to dice atleast 1,000,000.');
 			}
 
 			await msg.author.settings.sync(true);
 			const gp = msg.author.settings.get(UserSettings.GP);
-			if (amount > gp) throw "You don't have enough GP.";
+			if (amount > gp) return msg.send("You don't have enough GP.");
 			const won = roll >= 55;
-			let amountToAdd = won ? gp + amount : gp - amount;
-			if (roll === 73) amountToAdd += amount > 100 ? amount * 0.2 : amount + 73;
+			let amountToAdd = won ? amount : -amount;
 
-			await msg.author.settings.update(UserSettings.GP, amountToAdd);
-
-			const dicingBank = this.client.settings.get(ClientSettings.EconomyStats.DicingBank);
-			const dividedAmount = (won ? -amount : amount) / 1_000_000;
-			this.client.settings.update(
-				ClientSettings.EconomyStats.DicingBank,
-				Math.floor(dicingBank + Math.round(dividedAmount * 100) / 100)
-			);
+			await msg.author.addGP(amountToAdd);
+			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceDice, amountToAdd);
 
 			if (won) {
 				const wins = msg.author.settings.get(UserSettings.Stats.DiceWins);
@@ -66,17 +58,8 @@ export default class extends BotCommand {
 			embed.setDescription(
 				`${msg.author.username} rolled **${roll}** on the percentile dice, and you ${
 					won ? 'won' : 'lost'
-				} ${Util.toKMB(amountToAdd - gp)} GP. ${roll === 73 ? Emoji.Bpaptu : ''}`
+				} ${Util.toKMB(amountToAdd)} GP. ${roll === 73 ? Emoji.Bpaptu : ''}`
 			);
-
-			if (amount >= 1_000_000_000) {
-				this.client.emit(
-					Events.ServerNotification,
-					`${Emoji.Dice} **${msg.author.username}** just diced **${Util.toKMB(
-						amount
-					)}** and ${won ? 'won' : 'lost'}.`
-				);
-			}
 		}
 
 		return msg.send({ embed });

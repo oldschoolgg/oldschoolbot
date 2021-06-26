@@ -1,15 +1,15 @@
-import { MessageEmbed, TextChannel } from 'discord.js';
+import { MessageEmbed, Permissions, TextChannel } from 'discord.js';
 import he from 'he';
 import { Event, EventStore } from 'klasa';
 import Twit from 'twit';
 
 import { twitterAppConfig } from '../config';
+import { sendToChannelID } from '../lib/util/webhook';
 
 const ALL_TWITTERS = [
 	/* OSRS Streamers/Youtubers */
 	'940563176', // SoupRS
 	'184349515', // MmorpgCP
-	'557647030', // Skiddler
 	'525302599', // Sick_Nerd
 	'3187663593', // WooxSolo
 	'2169865003', // RSAlfierules
@@ -27,7 +27,6 @@ const ALL_TWITTERS = [
 	'803844588100325376', // ZuluOnly
 	'709141790503211008', // LakeOSRS,
 	'868269438394675201', // SettledRS
-	'786858980400390144', // Wolf
 	/* OSRS Jagex Mods */
 	'2726160938', // JagexCurse
 	'3362141061', // JagexKieren
@@ -37,6 +36,7 @@ const ALL_TWITTERS = [
 	'2279036881', // JagexJohnC
 	'1205666185', // OldSchoolRS
 	'1712662364', // JagexAsh
+	'1463868458', // JagexTyran
 	'794223611297091584', // JagexLottie
 	'734716002831900672', // JagexWest
 	'824932930787094528', // JagexLenny
@@ -57,6 +57,7 @@ const ALL_TWITTERS = [
 	'1265387982942601218', // JagexMack
 	'1179378854848270336', // JagexHalo
 	'1264954264528605184', // JagexElena
+	'1275458567412150272', // JagexSquid
 	/* HCIM Deaths */
 	'797859891373371392', // HCIM_Deaths
 	/* Hexis */
@@ -72,6 +73,7 @@ const JMOD_TWITTERS = [
 	'2279036881',
 	'1712662364',
 	'2726160938',
+	'1463868458',
 	'824932930787094528',
 	'740546260533383168',
 	'998580261137911808',
@@ -91,16 +93,15 @@ const JMOD_TWITTERS = [
 	'1247105690008793089',
 	'1265387982942601218',
 	'1179378854848270336',
-	'1264954264528605184'
+	'1264954264528605184',
+	'1275458567412150272'
 ];
 
 const STREAMER_TWITTERS = [
-	'786858980400390144',
 	'3589736181',
 	'1894180640',
 	'184349515',
 	'2307540361',
-	'557647030',
 	'525302599',
 	'3187663593',
 	'2169865003',
@@ -135,7 +136,6 @@ interface Tweet {
 export default class extends Event {
 	public constructor(store: EventStore, file: string[], directory: string) {
 		super(store, file, directory, { once: true, event: 'klasaReady' });
-		this.enabled = this.client.production;
 	}
 
 	async init() {
@@ -194,7 +194,7 @@ export default class extends Event {
 			.setAuthor(name, undefined, authorURL)
 			.setImage(image);
 
-		let key: string;
+		let key: string = '';
 		if (JMOD_TWITTERS.includes(id)) key = 'tweetchannel';
 		else if (STREAMER_TWITTERS.includes(id)) key = 'streamertweets';
 		else if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
@@ -202,19 +202,23 @@ export default class extends Event {
 		else return;
 
 		if (key === 'hexis') {
-			return (this.client.channels.get(HEXIS_CHANNEL) as TextChannel)!
+			return (this.client.channels.cache.get(HEXIS_CHANNEL) as TextChannel)!
 				.send(`<${url}>`, { embed })
 				.catch(() => null);
 		}
 
-		this.client.guilds
+		this.client.guilds.cache
 			.filter(guild => Boolean(guild.settings.get(key as string)))
 			.map(guild => {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-				// @ts-ignore
-				const channel = guild.channels.get(guild.settings.get(key));
-				if (channel && channel instanceof TextChannel && channel.postable) {
-					channel.send(`<${url}>`, { embed }).catch(() => null);
+				const channel = guild.channels.cache.get(guild.settings.get(key) as string);
+				if (
+					channel &&
+					channel instanceof TextChannel &&
+					channel.postable &&
+					channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.EMBED_LINKS) &&
+					channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.SEND_MESSAGES)
+				) {
+					sendToChannelID(this.client, channel.id, { content: `<${url}>`, embed });
 				}
 			});
 	}

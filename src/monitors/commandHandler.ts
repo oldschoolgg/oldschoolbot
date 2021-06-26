@@ -59,55 +59,27 @@ export default class extends Monitor {
 				this.client.oneCommandAtATimeCache.add(message.author.id);
 			}
 			try {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 				// @ts-ignore 2341
 				await message.prompter!.run();
 				try {
-					const subcommand = message.command!.subcommands
-						? message.params.shift()
-						: undefined;
+					const subcommand = message.command!.subcommands ? message.params.shift() : undefined;
 
 					const commandRun = subcommand
-						? // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-						  // @ts-ignore 7053
+						? // @ts-ignore 7053
 						  message.command![subcommand](message, message.params)
 						: message.command!.run(message, message.params);
 					timer.stop();
 					const response = await commandRun;
-					floatPromise(
-						this,
-						this.client.finalizers.run(message, message.command!, response, timer)
-					);
-					this.client.emit(
-						'commandSuccess',
-						message,
-						message.command,
-						message.params,
-						response
-					);
+					floatPromise(this, this.client.finalizers.run(message, message.command!, response, timer));
+					this.client.emit('commandSuccess', message, message.command, message.params, response);
 				} catch (error) {
-					this.client.emit(
-						'commandError',
-						message,
-						message.command,
-						message.params,
-						error
-					);
+					this.client.emit('commandError', message, message.command, message.params, error);
 				}
 			} catch (argumentError) {
-				this.client.emit(
-					'argumentError',
-					message,
-					message.command,
-					message.params,
-					argumentError
-				);
+				this.client.emit('argumentError', message, message.command, message.params, argumentError);
 			} finally {
 				if (message.command!.oneAtTime) {
-					setTimeout(
-						() => this.client.oneCommandAtATimeCache.delete(message.author.id),
-						1500
-					);
+					setTimeout(() => this.client.oneCommandAtATimeCache.delete(message.author.id), 1500);
 				}
 			}
 		} catch (response) {

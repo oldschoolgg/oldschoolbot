@@ -1,15 +1,8 @@
-import { Items } from 'oldschooljs';
-
 import ItemArgument from '../src/arguments/item';
-import { initItemAliases } from '../src/lib/itemAliases';
 import getOSItem from '../src/lib/util/getOSItem';
 import { mockArgument } from './utils';
 
 describe('Item Alias', () => {
-	beforeAll(async () => {
-		await Items.fetchAll();
-		initItemAliases();
-	});
 	test('itemArg parameter', () => {
 		const itemArg = mockArgument(ItemArgument);
 		const expectedResults = [
@@ -25,12 +18,14 @@ describe('Item Alias', () => {
 					getOSItem(13630), // Duplicate Graceful cape (Hosidius)
 					getOSItem(13670), // Duplicate Graceful cape (Kourend)
 					getOSItem(21066), // Duplicate Graceful cape (Agility Arena)
-					getOSItem(24748) // Duplicate Graceful cape (Hallowed Sepulchre)
+					getOSItem(24748), // Duplicate Graceful cape (Hallowed Sepulchre)
+					getOSItem(25074) // Duplicate Graceful cape (Trailblazer)
 				]
 			],
 			['Black graceful cape', [getOSItem(24746)]],
-			['Hallowed graceful cape', [getOSItem(24746)]],
-			[24746, [getOSItem(24746)]]
+			['Dark graceful cape', [getOSItem(24746)]],
+			[24746, [getOSItem(24746)]],
+			['Mythical cape', [getOSItem(22114)]]
 		];
 		for (const [input, output] of expectedResults) {
 			expect(itemArg.run(input)).resolves.toEqual(output);

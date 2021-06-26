@@ -1,12 +1,11 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks } from '../../lib/constants';
-import hasGracefulEquipped from '../../lib/gear/functions/hasGracefulEquipped';
+import { Activity } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import reducedClueTime from '../../lib/minions/functions/reducedClueTime';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -18,14 +17,17 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [name:...string]',
-			usageDelim: ' '
+			usageDelim: ' ',
+			categoryFlags: ['minion', 'minigame'],
+			description: 'Sends your minion to complete a clue scroll.',
+			examples: ['+mclue easy']
 		});
 	}
 
-	invalidClue(msg: KlasaMessage) {
-		return `That isn't a valid clue tier, the valid tiers are: ${ClueTiers.map(
-			tier => tier.name
-		).join(', ')}. For example, \`${msg.cmdPrefix}minion clue 1 easy\``;
+	invalidClue(msg: KlasaMessage): string {
+		return `That isn't a valid clue tier, the valid tiers are: ${ClueTiers.map(tier => tier.name).join(
+			', '
+		)}. For example, \`${msg.cmdPrefix}minion clue 1 easy\``;
 	}
 
 	@requiresMinion
@@ -38,11 +40,11 @@ export default class extends BotCommand {
 			quantity = 1;
 		}
 
-		if (!tierName) throw this.invalidClue(msg);
+		if (!tierName) return msg.send(this.invalidClue(msg));
 
 		const clueTier = ClueTiers.find(tier => stringMatches(tier.name, tierName));
 
-		if (!clueTier) throw this.invalidClue(msg);
+		if (!clueTier) return msg.send(this.invalidClue(msg));
 
 		const boosts = [];
 
@@ -55,19 +57,23 @@ export default class extends BotCommand {
 
 		let duration = timeToFinish * quantity;
 
-		if (duration > msg.author.maxTripLength) {
-			throw `${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
-				msg.author.maxTripLength
-			)}, try a lower quantity. The highest amount you can do for ${
-				clueTier.name
-			} is ${Math.floor(msg.author.maxTripLength / timeToFinish)}.`;
+		const maxTripLength = msg.author.maxTripLength(Activity.ClueCompletion);
+
+		if (duration > maxTripLength) {
+			return msg.send(
+				`${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
+					maxTripLength
+				)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${Math.floor(
+					maxTripLength / timeToFinish
+				)}.`
+			);
 		}
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		const numOfScrolls = bank[clueTier.scrollID];
 
 		if (!numOfScrolls || numOfScrolls < quantity) {
-			throw `You don't have ${quantity} ${clueTier.name} clue scrolls.`;
+			return msg.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
 		}
 
 		await msg.author.removeItemFromBank(clueTier.scrollID, quantity);
@@ -75,17 +81,22 @@ export default class extends BotCommand {
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
-		if (hasGracefulEquipped(msg.author.settings.get(UserSettings.Gear.Skilling))) {
-			boosts.push(`10% for Graceful`);
+		if (msg.author.hasGracefulEquipped()) {
+			boosts.push('10% for Graceful');
 			duration *= 0.9;
 		}
 
 		if (isWeekend()) {
-			boosts.push(`10% for Weekend`);
+			boosts.push('10% for Weekend');
 			duration *= 0.9;
 		}
 
-		await addSubTaskToActivityTask<ClueActivityTaskOptions>(this.client, Tasks.ClueTicker, {
+		if (msg.author.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
+			boosts.push('10% for Achievement diary cape');
+			duration *= 0.9;
+		}
+
+		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			clueID: clueTier.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,

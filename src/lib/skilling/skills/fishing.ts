@@ -27,10 +27,8 @@ const fishes: Fish[] = [
 		xp: 20,
 		id: itemID('Raw karambwanji'),
 		name: 'Karambwanji',
-		petChance: 443_697,
 		qpRequired: 15,
-		timePerFish: 3.6,
-		clueScrollChance: 443_697
+		timePerFish: 3.6
 	},
 	{
 		level: 10,
@@ -215,7 +213,8 @@ const Fishing = {
 	Fishes: fishes,
 	id: SkillsEnum.Fishing,
 	emoji: Emoji.Fishing,
-	anglerItems
+	anglerItems,
+	name: 'Fishing'
 };
 
 export default Fishing;

@@ -1,4 +1,7 @@
+import PQueue from 'p-queue';
 import { join } from 'path';
+
+import { SkillsEnum } from './skilling/types';
 
 export const enum Time {
 	Millisecond = 1,
@@ -13,9 +16,12 @@ export const enum Time {
 export const enum Channel {
 	Notifications = '469523207691436042',
 	ErrorLogs = '665678499578904596',
-	Suggestions = '668441710703149074',
 	GrandExchange = '682996313209831435',
-	Developers = '648196527294251020'
+	Developers = '648196527294251020',
+	BlacklistLogs = '782459317218967602',
+	EconomyLogs = '802029843712573510',
+	NewSponsors = '806744016309714966',
+	SupportChannel = '668073484731154462'
 }
 
 export const enum Roles {
@@ -25,7 +31,14 @@ export const enum Roles {
 	PatronTier1 = '678970545789730826',
 	PatronTier2 = '678967943979204608',
 	PatronTier3 = '687408140832342043',
-	Patron = '679620175838183424'
+	Patron = '679620175838183424',
+	// Status Roles
+	TopSkiller = '795266465329709076',
+	TopCollector = '795271210141351947',
+	TopSacrificer = '795933981715464192',
+	TopMinigamer = '832798997033779220',
+	TopClueHunter = '839135887467610123',
+	TopSlayer = '856080958247010324'
 }
 
 export const enum Emoji {
@@ -35,9 +48,9 @@ export const enum Emoji {
 	Bpaptu = '<:bpaptu:660333438292983818>',
 	Diamond = '💎',
 	Dice = '<:dice:660128887111548957>',
-	Minion = '<:minion:660517408968146946>',
 	Fireworks = '🎆',
 	Tick = '✅',
+	RedX = '❌',
 	Search = '🔎',
 	FancyLoveheart = '💝',
 	Gift = '🎁',
@@ -60,10 +73,12 @@ export const enum Emoji {
 	Woodcutting = '<:woodcutting:630911040099450892>',
 	Runecraft = '<:runecraft:630911040435257364>',
 	Prayer = '<:prayer:630911040426868746>',
+	Construction = '<:construction:630911040493715476>',
 	Diango = '<:diangoChatHead:678146375300415508>',
 	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>',
 	QuestIcon = '<:questIcon:690191385907036179>',
+	MinigameIcon = '<:minigameIcon:630400565070921761>',
 	Warning = '⚠️',
 	Ironman = '<:ironman:626647335900020746>',
 	Firemaking = '<:firemaking:630911040175210518>',
@@ -74,8 +89,47 @@ export const enum Emoji {
 	Phoenix = '<:Phoenix:324127378223792129>',
 	AnimatedFireCape = '<a:FireCape:394692985184583690>',
 	Fletching = '<:fletching:630911040544309258>',
-	Purple = '🟪'
+	Farming = '<:farming:630911040355565599>',
+	Tangleroot = '<:tangleroot:324127378978635778>',
+	Herblore = '<:herblore:630911040535658496>',
+	Purple = '🟪',
+	Green = '🟩',
+	Blue = '🟦',
+	Thieving = '<:thieving:630910829352452123>',
+	Hunter = '<:hunter:630911040166559784>',
+	Ely = '<:ely:784453586033049630>',
+	Timer = '<:ehpclock:352323705210142721>',
+	ChristmasCracker = '<:cracker:785389969962958858>',
+	SantaHat = '<:santaHat:785874868905181195>',
+	RottenPotato = '<:rottenPotato:791498767051915275>',
+	Magic = '<:magic:630911040334331917>',
+	Hitpoints = '<:hitpoints:630911040460292108>',
+	Strength = '<:strength:630911040481263617>',
+	Attack = '<:attack:630911039969427467>',
+	Defence = '<:defence:630911040393052180>',
+	Ranged = '<:ranged:630911040258834473>',
+	Gear = '<:gear:835314891950129202>',
+	Slayer = '<:slayer:630911040560824330>',
+	// Badges,
+	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
+	GreenGem = '<:greenGem:778418736495067166>',
+	PinkGem = '<:pinkGem:778418736276963349>',
+	OrangeGem = '<:orangeGem:778418736474095616>',
+	Minion = '<:minion:778418736180494347>',
+	Spanner = '<:spanner:778418736621158410>',
+	DoubleSpanner = '<:doubleSpanner:778418736327688194>',
+	Hammer = '<:hammer:778418736595206184>',
+	Bug = '<:bug:778418736330833951>',
+	Trophy = '<:goldTrophy:778418736561782794>',
+	Crab = '<:crab:778418736432021505>',
+	Skiller = '<:skiller:802136963775463435>',
+	Incinerator = '<:incinerator:802136963674275882>',
+	CollectionLog = '<:collectionLog:802136964027121684>',
+	Minigames = '<:minigameIcon:630400565070921761>',
+	Skull = '<:Skull:802136963926065165>',
+	CombatSword = '<:combat:802136963956080650>'
 }
+
 export const enum ReactionEmoji {
 	Join = '705971600956194907',
 	Stop = '705972260950769669',
@@ -109,18 +163,50 @@ export const enum Tasks {
 	BuryingActivity = 'buryingActivity',
 	OfferingActivity = 'offeringActivity',
 	FletchingActivity = 'fletchingActivity',
+	FarmingActivity = 'farmingActivity',
+	HerbloreActivity = 'herbloreActivity',
+	HunterActivity = 'hunterActivity',
+	ConstructionActivity = 'constructionActivity',
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
 	AlchingActivity = 'alchingActivity',
 	NightmareActivity = 'nightmareActivity',
-	MonsterKillingTicker = 'monsterKillingTicker',
-	ClueTicker = 'clueTicker',
-	SkillingTicker = 'skillingTicker',
-	MinigameTicker = 'minigameTicker'
+	AnimatedArmourActivity = 'animatedArmourActivity',
+	CyclopsActivity = 'cyclopsActivity',
+	SepulchreActivity = 'sepulchreActivity',
+	PlunderActivity = 'plunderActivity',
+	FishingTrawler = 'trawlerActivity',
+	ZalcanoActivity = 'zalcanoActivity',
+	SawmillActivity = 'sawmillActivity',
+	PickpocketActivity = 'pickpocketActivity',
+	Enchanting = 'enchantingActivity',
+	Casting = 'castingActivity',
+	GloryCharging = 'gloryChargingActivity',
+	WealthCharging = 'wealthChargingActivity',
+	TitheFarmActivity = 'titheFarmActivity',
+	BarbarianAssault = 'barbarianAssaultActivity',
+	AgilityArena = 'agilityArenaActivity',
+	ChampionsChallenge = 'championsChallengeActivity',
+	BirdhouseActivity = 'birdhouseActivity',
+	AerialFishingActivity = 'aerialFishingActivity',
+	MahoganyHomes = 'mahoganyHomesActivity',
+	GnomeRestaurant = 'gnomeRestaurantActivity',
+	SoulWars = 'soulWarsActivity',
+	RoguesDenMaze = 'roguesDenMazeActivity',
+	Gauntlet = 'gauntletActivity',
+	CastleWars = 'castleWarsActivity',
+	MageArena = 'mageArenaActivity',
+	Raids = 'raidsActivity',
+	Collecting = 'collectingActivity',
+	MageTrainingArena = 'mageTrainingArenaActivity',
+	BlastFurnaceActivity = 'blastFurnaceActivity',
+	MageArena2 = 'mageArena2Activity',
+	BigChompyBirdHunting = 'chompyHuntActivity',
+	DarkAltar = 'darkAltarActivity'
 }
 
-export const enum Activity {
+export enum Activity {
 	Agility = 'Agility',
 	Cooking = 'Cooking',
 	MonsterKilling = 'MonsterKilling',
@@ -139,9 +225,52 @@ export const enum Activity {
 	Offering = 'Offering',
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
+	TitheFarm = 'TitheFarm',
 	Fletching = 'Fletching',
+	Pickpocket = 'Pickpocket',
+	Herblore = 'Herblore',
+	Hunter = 'Hunter',
+	Birdhouse = 'Birdhouse',
 	Alching = 'Alching',
-	Nightmare = 'Nightmare'
+	AnimatedArmour = 'AnimatedArmour',
+	Cyclops = 'Cyclops',
+	Sawmill = 'Sawmill',
+	Nightmare = 'Nightmare',
+	Sepulchre = 'Sepulchre',
+	Plunder = 'Plunder',
+	FishingTrawler = 'FishingTrawler',
+	Zalcano = 'Zalcano',
+	Farming = 'Farming',
+	Construction = 'Construction',
+	Enchanting = 'Enchanting',
+	Casting = 'Casting',
+	GloryCharging = 'GloryCharging',
+	WealthCharging = 'WealthCharging',
+	BarbarianAssault = 'BarbarianAssault',
+	AgilityArena = 'AgilityArena',
+	ChampionsChallenge = 'ChampionsChallenge',
+	AerialFishing = 'AerialFishing',
+	MahoganyHomes = 'MahoganyHomes',
+	GnomeRestaurant = 'GnomeRestaurant',
+	SoulWars = 'SoulWars',
+	RoguesDenMaze = 'RoguesDenMaze',
+	Gauntlet = 'Gauntlet',
+	CastleWars = 'CastleWars',
+	MageArena = 'MageArena',
+	Raids = 'Raids',
+	Collecting = 'Collecting',
+	MageTrainingArena = 'MageTrainingArena',
+	BlastFurnace = 'BlastFurnace',
+	MageArena2 = 'MageArena2',
+	BigChompyBirdHunting = 'BigChompyBirdHunting',
+	DarkAltar = 'DarkAltar'
+}
+
+export enum ActivityGroup {
+	Skilling = 'Skilling',
+	Clue = 'Clue',
+	Monster = 'Monster',
+	Minigame = 'Minigame'
 }
 
 export const enum Events {
@@ -152,7 +281,8 @@ export const enum Events {
 	Warn = 'warn',
 	Wtf = 'wtf',
 	ServerNotification = 'serverNotification',
-	SkillLevelUp = 'skillLevelUp'
+	SkillLevelUp = 'skillLevelUp',
+	EconomyLog = 'economyLog'
 }
 
 export const enum BadgesEnum {
@@ -208,8 +338,33 @@ export const enum BitField {
 	IsPatronTier4 = 5,
 	IsPatronTier5 = 6,
 	isModerator = 7,
-	isContributor = 8
+	isContributor = 8,
+	BypassAgeRestriction = 9,
+	HasHosidiusWallkit = 10,
+	HasPermanentEventBackgrounds = 11,
+	HasPermanentTierOne = 12,
+	DisabledRandomEvents = 13,
+	PermanentIronman = 14
 }
+
+interface BitFieldData {
+	name: string;
+}
+
+export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
+	[BitField.IsPatronTier1]: { name: 'Tier 1 Patron' },
+	[BitField.IsPatronTier2]: { name: 'Tier 2 Patron' },
+	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron' },
+	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron' },
+	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron' },
+	[BitField.isModerator]: { name: 'Moderator' },
+	[BitField.isContributor]: { name: 'Contributor' },
+	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction' },
+	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' },
+	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
+	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
+	[BitField.PermanentIronman]: { name: 'Permanent Ironman' }
+} as const;
 
 export const enum PatronTierID {
 	One = '4608201',
@@ -219,11 +374,77 @@ export const enum PatronTierID {
 	Five = '5262216'
 }
 
-export const MAX_QP = 277;
+export const badges: { [key: number]: string } = {
+	0: Emoji.Spanner,
+	1: Emoji.PinkGem,
+	2: Emoji.Crab,
+	3: Emoji.BigOrangeGem,
+	4: Emoji.Hammer,
+	5: Emoji.GreenGem,
+	6: Emoji.Bug,
+	7: Emoji.Trophy,
+	8: Emoji.Incinerator,
+	9: Emoji.Skiller,
+	10: Emoji.CollectionLog,
+	11: Emoji.MinigameIcon
+};
+
+export const MAX_QP = 280;
 
 export const MIMIC_MONSTER_ID = 23184;
 
 export const continuationChars = 'abdefghjkmnopqrstuvwxyz123456789'.split('');
-
+export const CENA_CHARS = ['​', '‎', '‍'];
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
+export const MAX_INT_JAVA = 2_147_483_647;
+export const TWEETS_RATELIMITING =
+	'Tweets in Old School Bot can only be enabled in servers with more than 20 members, or by Tier 3 Patrons - this is due to ratelimiting issues.' +
+	'You can consider checking tweets in another server, or becoming a patron. Apologies for the inconvenience.';
+export const HERBIBOAR_ID = 36;
+export const RAZOR_KEBBIT_ID = 35;
+export const BLACK_CHIN_ID = 9;
+export const ZALCANO_ID = 9049;
+export const NIGHTMARE_ID = 9415;
+
+/**
+ * Map<user_id, PromiseQueue>
+ */
+export const userQueues: Map<string, PQueue> = new Map();
+
+export const bankImageCache = new Map<string, string>();
+
+export const skillEmoji = {
+	runecraft: '<:runecraft:630911040435257364>',
+	firemaking: '<:firemaking:630911040175210518>',
+	thieving: '<:thieving:630910829352452123>',
+	mining: '<:mining:630911040128811010>',
+	ranged: '<:ranged:630911040258834473>',
+	construction: '<:construction:630911040493715476>',
+	smithing: '<:smithing:630911040452034590>',
+	herblore: '<:herblore:630911040535658496>',
+	attack: '<:attack:630911039969427467>',
+	strength: '<:strength:630911040481263617>',
+	defence: '<:defence:630911040393052180>',
+	fishing: '<:fishing:630911040091193356>',
+	hitpoints: '<:hitpoints:630911040460292108>',
+	total: '<:xp:630911040510623745>',
+	overall: '<:xp:630911040510623745>',
+	magic: '<:magic:630911040334331917>',
+	crafting: '<:crafting:630911040460161047>',
+	agility: '<:agility:630911040355565568>',
+	fletching: '<:fletching:630911040544309258>',
+	cooking: '<:cooking:630911040426868756>',
+	farming: '<:farming:630911040355565599>',
+	slayer: '<:slayer:630911040560824330>',
+	prayer: '<:prayer:630911040426868746>',
+	woodcutting: '<:woodcutting:630911040099450892>',
+	hunter: '<:hunter:630911040166559784>',
+	cml: '<:CrystalMathLabs:364657225249062912>',
+	clock: '<:ehpclock:352323705210142721>',
+	combat: '<:combat:802136963956080650>'
+};
+
+export const LEVEL_99_XP = 13_034_431;
+export const MAX_LEVEL = 99;
+export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;

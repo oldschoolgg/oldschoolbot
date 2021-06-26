@@ -2,10 +2,10 @@ import { User } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Util } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Emoji, Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { noOp, sleep } from '../../lib/util';
 
 const options = {
@@ -17,13 +17,15 @@ const options = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Simulates dueling another player.',
+			description: 'Simulates dueling another player, or allows you to duel another player for their bot GP.',
 			usage: '<user:user|user:str> [amount:int{10000}]',
 			usageDelim: ' ',
 			cooldown: 5,
 			oneAtTime: true,
 			altProtection: true,
-			ironCantUse: true
+			ironCantUse: true,
+			examples: ['+duel @Magnaboy', '+duel @Magnaboy 1m'],
+			categoryFlags: ['minion', 'utility']
 		});
 	}
 
@@ -35,18 +37,18 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [user, amount]: [KlasaUser, number]) {
 		if (!amount) {
 			return msg.send(
-				`${
-					Math.random() >= 0.5 ? msg.author.username : user.username
-				} won the duel with ${Math.floor(Math.random() * 30 + 1)} HP remaining.`
+				`${Math.random() >= 0.5 ? msg.author.username : user.username} won the duel with ${Math.floor(
+					Math.random() * 30 + 1
+				)} HP remaining.`
 			);
 		}
 
-		if (msg.author.isIronman) throw `You can't duel someone as an ironman.`;
-		if (user.isIronman) throw `You can't duel someone as an ironman.`;
-		if (!(user instanceof User)) throw `You didn't mention a user to duel.`;
-		if (user.id === msg.author.id) throw `You cant duel yourself.`;
-		if (user.bot) throw `You cant duel a bot.`;
-		if (user.isBusy) throw `That user is busy right now.`;
+		if (msg.author.isIronman) return msg.send("You can't duel someone as an ironman.");
+		if (user.isIronman) return msg.send("You can't duel someone as an ironman.");
+		if (!(user instanceof User)) return msg.send("You didn't mention a user to duel.");
+		if (user.id === msg.author.id) return msg.send('You cant duel yourself.');
+		if (user.bot) return msg.send('You cant duel a bot.');
+		if (user.isBusy) return msg.send('That user is busy right now.');
 
 		user.toggleBusy(true);
 		msg.author.toggleBusy(true);
@@ -64,7 +66,7 @@ export default class extends BotCommand {
 		}
 
 		if (!(await this.checkBal(user, amount))) {
-			return msg.send('That person doesnt have enough GP to duel that much.');
+			return msg.send("That person doesn't have enough GP to duel that much.");
 		}
 
 		const duelMsg = await msg.channel.send(
@@ -77,7 +79,7 @@ export default class extends BotCommand {
 				options
 			);
 		} catch (err) {
-			return duelMsg.edit(`The user didn't accept the duel.`);
+			return duelMsg.edit("The user didn't accept the duel.");
 		}
 
 		if (!(await this.checkBal(msg.author, amount)) || !(await this.checkBal(user, amount))) {
@@ -87,19 +89,15 @@ export default class extends BotCommand {
 		await msg.author.removeGP(amount);
 		await user.removeGP(amount);
 
-		await duelMsg
-			.edit(`${user.username} accepted the duel. You both enter the duel arena...`)
-			.catch(noOp);
+		await duelMsg.edit(`${user.username} accepted the duel. You both enter the duel arena...`).catch(noOp);
 
 		await sleep(2000);
-		await duelMsg
-			.edit(`${user.username} and ${msg.author.username} begin fighting...`)
-			.catch(noOp);
+		await duelMsg.edit(`${user.username} and ${msg.author.username} begin fighting...`).catch(noOp);
 
 		const [winner, loser] = Math.random() > 0.5 ? [user, msg.author] : [msg.author, user];
 
 		await sleep(2000);
-		await duelMsg.edit(`The fight is almost over...`).catch(noOp);
+		await duelMsg.edit('The fight is almost over...').catch(noOp);
 		await sleep(2000);
 
 		const winningAmount = amount * 2;
@@ -123,20 +121,19 @@ export default class extends BotCommand {
 		if (amount >= 1_000_000_000) {
 			this.client.emit(
 				Events.ServerNotification,
-				`${Emoji.MoneyBag} **${winner.username}** just won a **${Util.toKMB(
-					winningAmount
-				)}** GP duel against ${loser.username}.`
+				`${Emoji.MoneyBag} **${winner.username}** just won a **${Util.toKMB(winningAmount)}** GP duel against ${
+					loser.username
+				}.`
 			);
 		}
 
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		// @ts-ignore
-		const gpImage = this.client.commands.get('bank').generateImage(winningAmount);
+		this.client.emit(
+			Events.EconomyLog,
+			`${winner.sanitizedName} won ${winningAmount} GP in a duel with ${loser.sanitizedName}.`
+		);
+
 		return msg.channel.send(
-			`Congratulations ${winner.username}! You won ${Util.toKMB(
-				winningAmount
-			)}, and paid ${Util.toKMB(tax)} tax.`,
-			gpImage
+			`Congratulations ${winner.username}! You won ${Util.toKMB(winningAmount)}, and paid ${Util.toKMB(tax)} tax.`
 		);
 	}
 }

@@ -1,9 +1,17 @@
 import * as fs from 'fs';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-if (!fs.existsSync('./resources/trivia-questions.json')) {
+import { COINS_ID, Emoji, SupportServer, Time } from '../../lib/constants';
+import pets from '../../lib/data/pets';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import dailyRoll from '../../lib/simulation/dailyTable';
+import { BotCommand } from '../../lib/structures/BotCommand';
+import { formatDuration, isWeekend, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
+
+if (!fs.existsSync('./src/lib/resources/trivia-questions.json')) {
 	fs.writeFileSync(
-		'./resources/trivia-questions.json',
+		'./src/lib/resources/trivia-questions.json',
 		JSON.stringify(
 			{
 				triviaQuestions: []
@@ -12,20 +20,10 @@ if (!fs.existsSync('./resources/trivia-questions.json')) {
 			4
 		)
 	);
-	console.log(`Created empty trivia questions file at ./resources/trivia-questions.json`);
+	console.log('Created empty trivia questions file at ./src/lib/resources/trivia-questions.json');
 }
 
-const { triviaQuestions } = JSON.parse(
-	fs.readFileSync('./resources/trivia-questions.json').toString()
-);
-
-import { BotCommand } from '../../lib/BotCommand';
-import { COINS_ID, Emoji, SupportServer, Time } from '../../lib/constants';
-import pets from '../../lib/pets';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import dailyRoll from '../../lib/simulation/dailyTable';
-import { formatDuration, isWeekend, roll, stringMatches } from '../../lib/util';
+const { triviaQuestions } = JSON.parse(fs.readFileSync('./src/lib/resources/trivia-questions.json').toString());
 
 const options = {
 	max: 1,
@@ -38,7 +36,11 @@ export default class DailyCommand extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
-			cooldown: 5
+			cooldown: 5,
+			categoryFlags: ['minion'],
+			examples: ['+daily'],
+			description:
+				'Allows you to answer a trivia question twice daily for some small amount of GP and random items from Diangos store.'
 		});
 	}
 
@@ -52,18 +54,14 @@ export default class DailyCommand extends BotCommand {
 		if (difference < Time.Hour * 12) {
 			const duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 12));
 
-			return msg.send(
-				`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`
-			);
+			return msg.send(`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`);
 		}
 
 		await msg.author.settings.update(UserSettings.LastDailyTimestamp, currentDate);
 
 		const trivia = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
 
-		await msg.channel.send(
-			`**${Emoji.Diango} Diango asks ${msg.author.username}...** ${trivia.q}`
-		);
+		await msg.channel.send(`**${Emoji.Diango} Diango asks ${msg.author.username}...** ${trivia.q}`);
 		try {
 			const collected = await msg.channel.awaitMessages(
 				answer =>
@@ -82,10 +80,10 @@ export default class DailyCommand extends BotCommand {
 	async reward(msg: KlasaMessage, triviaCorrect: boolean) {
 		const user = msg.author;
 		if (Date.now() - user.createdTimestamp < Time.Month) {
-			user.log(`[NAC-DAILY]`);
+			user.log('[NAC-DAILY]');
 		}
 
-		const guild = this.client.guilds.get(SupportServer);
+		const guild = this.client.guilds.cache.get(SupportServer);
 		if (!guild) return;
 		const member = await guild.members.fetch(user).catch(() => null);
 
@@ -138,9 +136,7 @@ export default class DailyCommand extends BotCommand {
 			? "I've picked you some random items as a reward..."
 			: 'Even though you got it wrong, heres a little reward...';
 
-		let dmStr = `${bonuses.join('')} **${
-			Emoji.Diango
-		} Diango says..** That's ${correct}! ${reward}\n`;
+		let dmStr = `${bonuses.join('')} **${Emoji.Diango} Diango says..** That's ${correct}! ${reward}\n`;
 
 		if (triviaCorrect && roll(13)) {
 			const pet = pets[Math.floor(Math.random() * pets.length)];
@@ -157,14 +153,7 @@ export default class DailyCommand extends BotCommand {
 		}
 
 		if (loot[COINS_ID] > 0) {
-			const dailiesAmount = this.client.settings.get(
-				ClientSettings.EconomyStats.DailiesAmount
-			);
-			const dividedAmount = loot[COINS_ID] / 1_000_000;
-			this.client.settings.update(
-				ClientSettings.EconomyStats.DailiesAmount,
-				Math.floor(dailiesAmount + Math.round(dividedAmount * 100) / 100)
-			);
+			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceDaily, loot[COINS_ID]);
 		}
 
 		await user.addItemsToBank(loot, true);

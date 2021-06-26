@@ -1,27 +1,27 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { addBanks, bankHasAllItemsFromBank, removeBankFromBank } from 'oldschooljs/dist/util';
 
-import { BotCommand } from '../../lib/BotCommand';
-import TokkulShopItem from '../../lib/buyables/tokkulBuyables';
 import { Time } from '../../lib/constants';
+import TokkulShopItem from '../../lib/data/buyables/tokkulBuyables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { ItemBank } from '../../lib/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
-import itemID from '../../lib/util/itemID';
 
 const { TzTokJad } = Monsters;
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<buy|sell> [quantity:integer{1}] <item:...string>',
+			usage: '<buy|sell> [quantity:integer{1,2147483647}] <item:...string>',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true,
-			aliases: ['tks']
+			aliases: ['tks'],
+			categoryFlags: ['minion'],
+			description: 'Allows you to buy and sell items to the Tzhaar Tokkul shop.',
+			examples: ['+tks buy Obsidian platebody', '+tks sell 5k Chaos rune']
 		});
 	}
 
@@ -38,15 +38,13 @@ export default class extends BotCommand {
 
 		if (!shopInventory) {
 			return msg.send(
-				`I don't recognize that item JalYt, here are my wares: ${TokkulShopItem.map(
-					item => {
-						return item.name;
-					}
-				).join(', ')}.`
+				`I don't recognize that item JalYt, here are my wares: ${TokkulShopItem.map(item => {
+					return item.name;
+				}).join(', ')}.`
 			);
 		}
 
-		if (shopInventory.requireFireCape && msg.author.getKC(TzTokJad) < 1) {
+		if (shopInventory.requireFireCape && msg.author.getKC(TzTokJad.id) < 1) {
 			return msg.send(
 				`You are not worthy JalYt. Before you can ${type} an ${shopInventory.name}, you need to have defeated the might TzTok-Jad!`
 			);
@@ -54,42 +52,40 @@ export default class extends BotCommand {
 
 		if (!shopInventory.tokkulCost && type === 'buy') {
 			return msg.send(
-				`I am sorry JalYt, but I can't sell you that. Here are the items I can sell: ${TokkulShopItem.map(
-					item => {
-						if (item.tokkulReturn) return item.name;
-					}
-				).join(', ')}.`
+				`I am sorry JalYt, but I can't sell you that. Here are the items I can sell: ${TokkulShopItem.filter(
+					item => item.tokkulCost
+				)
+					.map(item => item.name)
+					.join(', ')}.`
 			);
+		}
+
+		if (type === 'sell' && msg.author.numItemsInBankSync(shopInventory.inputItem) === 0) {
+			return msg.send(`I am sorry JalYt. You don't have any **${shopInventory.name}** to sell me.`);
 		}
 
 		if (quantity === undefined) {
 			quantity = type === 'sell' ? userBank[shopInventory.inputItem] : 1;
 		}
 
-		let outItems: ItemBank;
-		let inItems: ItemBank;
-		let itemString: string;
-		let inItemString: string;
+		let outItems = new Bank();
+		let inItems = new Bank();
 		if (type === 'buy') {
-			outItems = { [itemID('Tokkul')]: quantity * shopInventory.tokkulCost! };
-			inItems = { [shopInventory.inputItem]: quantity };
-			itemString = await createReadableItemListFromBank(this.client, outItems);
-			inItemString = await createReadableItemListFromBank(this.client, inItems);
+			inItems.add({ Tokkul: quantity * shopInventory.tokkulCost! });
+			outItems.add({ [shopInventory.inputItem]: quantity });
 		} else {
-			outItems = { [shopInventory.inputItem]: quantity };
-			inItems = { [itemID('Tokkul')]: quantity * shopInventory.tokkulReturn };
-			itemString = await createReadableItemListFromBank(this.client, inItems);
-			inItemString = await createReadableItemListFromBank(this.client, outItems);
+			inItems.add({ [shopInventory.inputItem]: quantity });
+			outItems.add({ Tokkul: quantity * shopInventory.tokkulReturn });
 		}
 
-		if (!bankHasAllItemsFromBank(userBank, outItems)) {
+		if (!bankHasAllItemsFromBank(userBank, inItems.bank)) {
 			if (type === 'buy') {
 				return msg.send(
-					`I am sorry JalYt, but you don't have enough tokkul for that. You need **${itemString}** to buy **${inItemString}**.`
+					`I am sorry JalYt, but you don't have enough tokkul for that. You need **${inItems}** to buy **${outItems}**.`
 				);
 			}
 			return msg.send(
-				`I am sorry JalYt, but you don't have enough items for that. You need **${itemString}** to sell for **${inItemString}**.`
+				`I am sorry JalYt, but you don't have enough items for that. You need **${inItems}** to sell for **${outItems}**.`
 			);
 		}
 
@@ -97,15 +93,13 @@ export default class extends BotCommand {
 			const sellMsg = await msg.channel.send(
 				`${msg.author}, JalYt, say \`confirm\` to confirm that you want to ${
 					type === 'buy' ? 'buy' : 'sell'
-				} **${inItemString}** for **${itemString}**.`
+				} **${inItems}** for **${outItems}**.`
 			);
 
 			// Confirm the user wants to buy
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 					{
 						max: 1,
 						time: Time.Second * 15,
@@ -113,19 +107,15 @@ export default class extends BotCommand {
 					}
 				);
 			} catch (err) {
-				return sellMsg.edit(
-					`Cancelling ${type === 'buy' ? 'purchase' : 'sale'} of **${inItemString}**.`
-				);
+				return sellMsg.edit(`Cancelling ${type === 'buy' ? 'purchase' : 'sale'} of **${outItems}**.`);
 			}
 		}
 
 		await msg.author.settings.update(
 			UserSettings.Bank,
-			addBanks([inItems, removeBankFromBank(userBank, outItems)])
+			addBanks([outItems.bank, removeBankFromBank(userBank, inItems.bank)])
 		);
 
-		return msg.send(
-			`You ${type === 'buy' ? 'bought' : 'sold'} **${inItemString}** for **${itemString}**.`
-		);
+		return msg.send(`You ${type === 'buy' ? 'bought' : 'sold'} **${outItems}** for **${inItems}**.`);
 	}
 }

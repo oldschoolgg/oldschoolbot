@@ -1,8 +1,9 @@
 import { Command, CommandStore, KlasaMessage } from 'klasa';
 
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
-export default class extends Command {
+export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			runIn: ['text'],
@@ -10,31 +11,32 @@ export default class extends Command {
 			subcommands: true,
 			usage: '<enable|disable> <command:cmd>',
 			usageDelim: ' ',
-			permissionLevel: 7
+			permissionLevel: 7,
+			description: 'Allows you to enable or disable commands in your server.',
+			examples: ['+cmd enable casket', '+cmd disable casket'],
+			categoryFlags: ['settings']
 		});
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2416
 	async enable(msg: KlasaMessage, [command]: [Command]) {
 		if (!msg.guild!.settings.get(GuildSettings.DisabledCommands).includes(command.name)) {
-			return msg.sendLocale('CMD_ISNT_DISABLED');
+			return msg.send("That command isn't disabled.");
 		}
 		await msg.guild!.settings.update('disabledCommands', command.name, {
 			arrayAction: 'remove'
 		});
-		return msg.sendLocale('CMD_ENABLED', [command.name]);
+		return msg.send(`Successfully enabled the \`${command.name}\` command.`);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 	// @ts-ignore 2416
 	async disable(msg: KlasaMessage, [command]: [Command]) {
 		if (msg.guild!.settings.get(GuildSettings.DisabledCommands).includes(command.name)) {
-			return msg.sendLocale('CMD_ALREADY_DISABLED');
+			return msg.send('That command is already disabled.');
 		}
 		await msg.guild!.settings.update(GuildSettings.DisabledCommands, command.name, {
 			arrayAction: 'add'
 		});
-		return msg.sendLocale('CMD_DISABLED', [command.name]);
+		return msg.send(`Successfully disabled the \`${command.name}\` command.`);
 	}
 }

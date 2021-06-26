@@ -10,7 +10,6 @@ export interface SettingsEntry {
 	id: string;
 	RSN?: string;
 	GP?: number;
-	autoupdate?: boolean;
 	badges?: string[];
 	bank?: ItemBank;
 	clueScores?: ItemBank;
@@ -20,30 +19,11 @@ export interface SettingsEntry {
 	pets?: number[];
 	lastDailyTimestamp?: number;
 	bitfield?: number[];
-	totalCommandsUsed?: number;
 	minion?: {
 		name?: string;
 		hasBought: boolean;
 		ironman: boolean;
 	};
-}
-
-export interface Pet {
-	id: number;
-	emoji: string;
-	chance: number;
-	name: string;
-	type: string;
-	altNames: string[];
-	bossKeys?: string[];
-	finish?(): number;
-	formatFinish(num: number): string;
-}
-
-export interface KillWorkerOptions {
-	bossName: string;
-	quantity: number;
-	limit: number;
 }
 
 export interface CachedItemPrice {
@@ -53,28 +33,6 @@ export interface CachedItemPrice {
 
 export interface ItemPriceCache {
 	[key: string]: CachedItemPrice;
-}
-
-export interface OSRSPoll {
-	title: string;
-	description: string;
-	questions: PollQuestion[];
-}
-
-export interface PollQuestion {
-	question: string;
-	votes: PollVotes;
-}
-
-export interface PollVotes {
-	Yes: string;
-	No: string;
-	'Skip question': string;
-}
-
-export interface PetRecords {
-	highest: ItemBank;
-	lowest: ItemBank;
 }
 
 export interface JMod {
@@ -112,11 +70,6 @@ export type TwitterAppConfig = null | {
 	access_token_secret: string;
 };
 
-export type MongoDBConfig = null | {
-	dbUrl: string;
-	dbName: string;
-};
-
 export type PatreonConfig = null | {
 	campaignID: number;
 	token: string;
@@ -144,6 +97,7 @@ export interface MakePartyOptions {
 	minSize: number;
 	leader: KlasaUser;
 	message: string;
+	ironmanAllowed: boolean;
 	usersAllowed?: string[];
 	party?: boolean;
 	customDenier?(user: KlasaUser): [boolean, string] | [boolean];
@@ -154,3 +108,14 @@ export type Skills = Partial<
 		[key in SkillsEnum]: number;
 	}
 >;
+
+export type CategoryFlag =
+	| 'minion'
+	| 'settings'
+	| 'patron'
+	| 'skilling'
+	| 'pvm'
+	| 'minigame'
+	| 'utility'
+	| 'fun'
+	| 'simulation';

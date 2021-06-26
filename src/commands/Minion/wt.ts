@@ -1,48 +1,16 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
-import { Eatables } from '../../lib/eatables';
-import hasItemEquipped from '../../lib/gear/functions/hasItemEquipped';
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
+import { Activity, Time } from '../../lib/constants';
+import { Eatables } from '../../lib/data/eatables';
+import { warmGear } from '../../lib/data/filterables';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
-import {
-	addItemToBank,
-	bankHasItem,
-	calcWhatPercent,
-	formatDuration,
-	reduceNumByPercent
-} from '../../lib/util';
+import { addItemToBank, bankHasItem, calcWhatPercent, formatDuration, reduceNumByPercent } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import resolveItems from '../../lib/util/resolveItems';
-
-export const warmGear = resolveItems([
-	'Staff of fire',
-	'Fire battlestaff',
-	'Lava battlestaff',
-	'Steam battlestaff',
-	'Smoke battlestaff',
-	'Mystic fire staff',
-	'Mystic lava staff',
-	'Mystic steam staff',
-	'Mystic smoke staff',
-	'Infernal axe',
-	'Infernal pickaxe',
-	'Bruma torch',
-	'Tome of fire',
-	'Pyromancer hood',
-	'Pyromancer garb',
-	'Pyromancer robe',
-	'Pyromancer boots',
-	'Warm gloves',
-	'Fire cape',
-	'Firemaking cape(t)',
-	'Firemaking cape'
-]) as number[];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -50,7 +18,10 @@ export default class extends BotCommand {
 			aliases: ['wintertodt'],
 			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ATTACH_FILES']
+			requiredPermissions: ['ATTACH_FILES'],
+			categoryFlags: ['minion', 'skilling', 'minigame'],
+			description: 'Sends your minion to fight the Wintertodt. Requires food and warm items.',
+			examples: ['+wt']
 		});
 	}
 
@@ -60,7 +31,7 @@ export default class extends BotCommand {
 		const fmLevel = msg.author.skillLevel(SkillsEnum.Firemaking);
 		const wcLevel = msg.author.skillLevel(SkillsEnum.Woodcutting);
 		if (fmLevel < 50) {
-			throw `You need 50 Firemaking to have a chance at defeating the Wintertodt.`;
+			return msg.send('You need 50 Firemaking to have a chance at defeating the Wintertodt.');
 		}
 
 		const messages = [];
@@ -77,7 +48,7 @@ export default class extends BotCommand {
 		let warmGearAmount = 0;
 
 		for (const piece of warmGear) {
-			if (hasItemEquipped(piece, msg.author.settings.get(UserSettings.Gear.Skilling))) {
+			if (msg.author.getGear('skilling').hasEquipped([piece])) {
 				warmGearAmount++;
 			}
 			if (warmGearAmount > 4) break;
@@ -95,16 +66,18 @@ export default class extends BotCommand {
 			);
 		}
 
-		const quantity = Math.floor(msg.author.maxTripLength / durationPerTodt);
+		const quantity = Math.floor(msg.author.maxTripLength(Activity.Wintertodt) / durationPerTodt);
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		for (const food of Eatables) {
 			const amountNeeded = Math.ceil(healAmountNeeded / food.healAmount) * quantity;
 			if (!bankHasItem(bank, food.id, amountNeeded)) {
 				if (Eatables.indexOf(food) === Eatables.length - 1) {
-					throw `You don't have enough food to do Wintertodt! You can use these food items: ${Eatables.map(
-						i => i.name
-					).join(', ')}.`;
+					return msg.send(
+						`You don't have enough food to do Wintertodt! You can use these food items: ${Eatables.map(
+							i => i.name
+						).join(', ')}.`
+					);
 				}
 				continue;
 			}
@@ -127,18 +100,14 @@ export default class extends BotCommand {
 
 		const duration = durationPerTodt * quantity;
 
-		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>(
-			this.client,
-			Tasks.MinigameTicker,
-			{
-				minigameID: MinigameIDsEnum.Wintertodt,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: Activity.Wintertodt
-			}
-		);
+		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>({
+			minigameID: 'Wintertodt',
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: Activity.Wintertodt
+		});
 
 		return msg.send(
 			`${

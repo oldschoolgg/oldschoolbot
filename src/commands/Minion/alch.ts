@@ -1,28 +1,17 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Util } from 'oldschooljs';
+import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Tasks, Time } from '../../lib/constants';
-import { minionNotBusy } from '../../lib/minions/decorators';
+import { Activity, Time } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	bankHasAllItemsFromBank,
-	formatDuration,
-	itemID,
-	removeBankFromBank,
-	resolveNameBank
-} from '../../lib/util';
+import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import resolveItems from '../../lib/util/resolveItems';
-
-const options = {
-	max: 1,
-	time: 10_000,
-	errors: ['time']
-};
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',
@@ -37,44 +26,44 @@ const unlimitedFireRuneProviders = resolveItems([
 	'Tome of fire'
 ]);
 
-const unalchables = [itemID('Nature rune'), itemID('Fire rune')];
-
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
 			usage: '[quantity:int{1}] <item:...item>',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			description: 'Allows you to send your minion to alch items from your bank',
+			examples: ['+alch 12 dragon scimitar', '+alch pumpkin'],
+			categoryFlags: ['minion', 'skilling']
 		});
 	}
 
 	@minionNotBusy
+	@requiresMinion
 	async run(msg: KlasaMessage, [quantity = null, item]: [number | null, Item[]]) {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const osItem = item.find(i => userBank[i.id] && i.highalch && i.tradeable);
 		if (!osItem) {
-			throw `You don't have any of this item to alch.`;
+			return msg.send("You don't have any of this item to alch.");
 		}
 
-		if (unalchables.some(item => item === osItem.id)) {
-			throw `This item cannot be alched.`;
+		if (msg.author.skillLevel(SkillsEnum.Magic) < 55) {
+			return msg.send('You need level 55 Magic to cast High Alchemy');
 		}
 
 		// 5 tick action
 		const timePerAlch = Time.Second * 3;
+		const maxTripLength = msg.author.maxTripLength(Activity.Alching);
 
-		const maxCasts = Math.min(
-			Math.floor(msg.author.maxTripLength / timePerAlch),
-			userBank[osItem.id]
-		);
+		const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank[osItem.id]);
 
 		if (!quantity) {
 			quantity = maxCasts;
 		}
 
-		if (quantity * timePerAlch > msg.author.maxTripLength) {
-			throw `The max number of alchs you can do is ${maxCasts}!`;
+		if (quantity * timePerAlch > maxTripLength) {
+			return msg.send(`The max number of alchs you can do is ${maxCasts}!`);
 		}
 
 		const duration = quantity * timePerAlch;
@@ -88,61 +77,49 @@ export default class extends BotCommand {
 		}
 
 		const alchValue = quantity * osItem.highalch;
-
-		const consumedItems = resolveNameBank({
+		const consumedItems = new Bank({
 			...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
-			'Nature rune': quantity,
-			[osItem.name]: quantity
+			'Nature rune': quantity
 		});
+		consumedItems.add(osItem.id, quantity);
 
-		const consumedItemsString = await createReadableItemListFromBank(
-			this.client,
-			consumedItems
-		);
-
-		if (!bankHasAllItemsFromBank(userBank, consumedItems)) {
-			throw `You don't have the required items, you need ${consumedItemsString}`;
+		if (!msg.author.owns(consumedItems)) {
+			return msg.send(`You don't have the required items, you need ${consumedItems}`);
 		}
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 			const alchMessage = await msg.channel.send(
 				`${msg.author}, say \`confirm\` to alch ${quantity} ${osItem.name} (${Util.toKMB(
 					alchValue
-				)}). This will take approximately ${formatDuration(
-					duration
-				)}, and consume ${quantity}x Nature runes.`
+				)}). This will take approximately ${formatDuration(duration)}, and consume ${quantity}x Nature runes.`
 			);
 
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
-					options
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+					{
+						max: 1,
+						time: 10_000,
+						errors: ['time']
+					}
 				);
 			} catch (err) {
 				return alchMessage.edit(`Cancelling alch of ${quantity}x ${osItem.name}.`);
 			}
 		}
 
-		await msg.author.settings.update(
-			UserSettings.Bank,
-			removeBankFromBank(userBank, consumedItems)
-		);
+		await msg.author.removeItemsFromBank(consumedItems);
+		await updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, consumedItems);
 
-		await addSubTaskToActivityTask<AlchingActivityTaskOptions>(
-			this.client,
-			Tasks.SkillingTicker,
-			{
-				itemID: osItem.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				alchValue,
-				type: Activity.Alching
-			}
-		);
+		await addSubTaskToActivityTask<AlchingActivityTaskOptions>({
+			itemID: osItem.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			alchValue,
+			type: Activity.Alching
+		});
 
 		msg.author.log(`alched Quantity[${quantity}] ItemID[${osItem.id}] for ${alchValue}`);
 

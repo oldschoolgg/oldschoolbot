@@ -1,85 +1,55 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
-import {
-	addLFGLoot,
-	addLFGNoDrops,
-	prepareLFGMessage,
-	sendLFGMessages
-} from '../../commands/Minion/lfg';
 import { Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
-import { GroupMonsterActivityTaskOptions } from '../../lib/minions/types';
-import { ItemBank } from '../../lib/types';
-import { addBanks, noOp, queuedMessageSend, randomItemFromArray } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
+import { noOp, randomItemFromArray } from '../../lib/util';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({
-		monsterID,
-		channelID,
-		quantity,
-		users,
-		leader,
-		lfg
-	}: GroupMonsterActivityTaskOptions) {
+	async run(data: GroupMonsterActivityTaskOptions) {
+		const { monsterID, channelID, quantity, users, leader, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
-		const teamsLoot: { [key: string]: ItemBank } = {};
+		const teamsLoot: { [key: string]: Bank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
 		for (let i = 0; i < quantity; i++) {
-			const loot = monster.table.kill(1);
+			const loot = monster.table.kill(1, {});
 			const userWhoGetsLoot = randomItemFromArray(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
-			teamsLoot[userWhoGetsLoot] = addBanks([currentLoot ?? {}, loot]);
-			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot])
-				? ++kcAmounts[userWhoGetsLoot]
-				: 1;
+			teamsLoot[userWhoGetsLoot] = loot.add(currentLoot);
+			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot]) ? ++kcAmounts[userWhoGetsLoot] : 1;
 		}
 
 		const leaderUser = await this.client.users.fetch(leader);
 
-		let resultStr = '';
-		let resultStrLfg: Record<string, string> = {};
-		if (lfg) {
-			resultStrLfg = prepareLFGMessage(monster.name, quantity, lfg);
-		} else {
-			resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
-		}
+		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
+		const totalLoot = new Bank();
 
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
-
+			await addMonsterXP(user, {
+				monsterID,
+				quantity: Math.ceil(quantity / users.length),
+				duration,
+				isOnTask: false,
+				taskQuantity: null
+			});
+			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
-			const purple = Object.keys(loot).some(itemID =>
-				isImportantItemForMonster(parseInt(itemID), monster)
-			);
+			const purple = Object.keys(loot).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));
 
-			// Add LFG loot
-			if (lfg) {
-				resultStrLfg = addLFGLoot(
-					resultStrLfg,
-					purple,
-					user,
-					await createReadableItemListFromBank(this.client, loot),
-					lfg
-				);
-			} else {
-				// Add normal loot
-				resultStr += `${
-					purple ? Emoji.Purple : ''
-				} **${user} received:** ||${await createReadableItemListFromBank(
-					this.client,
-					loot
-				)}||\n`;
-			}
+			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;
 
-			announceLoot(this.client, leaderUser, monster, quantity, loot, {
+			announceLoot(this.client, leaderUser, monster, loot.bank, {
 				leader: leaderUser,
 				lootRecipient: user,
 				size: users.length
@@ -88,23 +58,9 @@ export default class extends Task {
 
 		const usersWithoutLoot = users.filter(id => !teamsLoot[id]);
 		if (usersWithoutLoot.length > 0) {
-			if (lfg) {
-				resultStrLfg = await addLFGNoDrops(
-					resultStrLfg,
-					this.client,
-					usersWithoutLoot,
-					lfg
-				);
-			} else {
-				resultStr += `${usersWithoutLoot
-					.map(id => `<@${id}>`)
-					.join(', ')} - Got no loot, sad!`;
-			}
+			resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
 		}
-		if (lfg) {
-			await sendLFGMessages(resultStrLfg, this.client, lfg);
-		} else {
-			await queuedMessageSend(this.client, channelID, resultStr);
-		}
+
+		handleTripFinish(this.client, leaderUser, channelID, resultStr, undefined, undefined, data, totalLoot.bank);
 	}
 }

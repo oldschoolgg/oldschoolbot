@@ -2,6 +2,7 @@ import { SnowflakeUtil } from 'discord.js';
 import { Colors, Task, TaskStore } from 'klasa';
 
 import { Time } from '../lib/constants';
+import PostgresProvider from '../providers/postgres';
 
 const THRESHOLD = Time.Minute * 30;
 
@@ -28,10 +29,8 @@ export default class MemorySweeper extends Task {
 	}
 
 	async run() {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-		// @ts-ignore
-		const queryRes = await this.client.providers!.default!.runAll(
-			`SELECT ARRAY(SELECT "id" FROM users WHERE "badges"::text <> '{}'::text OR "bank"::text <> '{}'::text OR "minion.hasBought" = true); `
+		const queryRes = await (this.client.providers.default as PostgresProvider).runAll(
+			'SELECT ARRAY(SELECT "id" FROM users WHERE "badges"::text <> \'{}\'::text OR "bank"::text <> \'{}\'::text OR "minion.hasBought" = true); '
 		);
 
 		const shouldCacheUsers: Set<string> = new Set(queryRes[0].array);
@@ -43,35 +42,35 @@ export default class MemorySweeper extends Task {
 		let users = 0;
 
 		// Per-Guild sweeper
-		for (const guild of this.client.guilds.values()) {
+		for (const guild of this.client.guilds.cache.values()) {
 			// Don't wipe the Old School Bot guild
 			if (guild.id === '342983479501389826') continue;
 
 			// Clear presences
-			presences += guild.presences.size;
-			guild.presences.clear();
+			presences += guild.presences.cache.size;
+			guild.presences.cache.clear();
 
 			// Clear members that haven't send a message in the last 30 minutes
 			const { me } = guild;
-			for (const [id, member] of guild.members) {
+			for (const [id, member] of guild.members.cache) {
 				if (shouldCacheUsers.has(member.user.id)) continue;
 				if (member === me) continue;
 				if (member.lastMessageID && member.lastMessageID > this.OLD_SNOWFLAKE) continue;
 				guildMembers++;
 				voiceStates++;
-				guild.voiceStates.delete(id);
-				guild.members.delete(id);
+				guild.voiceStates.cache.delete(id);
+				guild.members.cache.delete(id);
 			}
 
 			// Clear emojis
-			emojis += guild.emojis.size;
-			guild.emojis.clear();
+			emojis += guild.emojis.cache.size;
+			guild.emojis.cache.clear();
 		}
 
 		// Per-User sweeper
-		for (const user of this.client.users.values()) {
+		for (const user of this.client.users.cache.values()) {
 			if (shouldCacheUsers.has(user.id)) continue;
-			this.client.users.delete(user.id);
+			this.client.users.cache.delete(user.id);
 			users++;
 		}
 

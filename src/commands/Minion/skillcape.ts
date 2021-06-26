@@ -1,13 +1,13 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
-import { BotCommand } from '../../lib/BotCommand';
 import { Time } from '../../lib/constants';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skillcapes from '../../lib/skilling/skillcapes';
-import { convertXPtoLVL, stringMatches, toTitleCase } from '../../lib/util';
-import countSkillsAtleast99 from '../../lib/util/countSkillsAtleast99';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { BotCommand } from '../../lib/structures/BotCommand';
+import { convertXPtoLVL, countSkillsAtleast99, stringMatches, toTitleCase } from '../../lib/util';
 
 const skillCapeCost = 99_000;
 
@@ -17,7 +17,10 @@ export default class extends BotCommand {
 			usage: '<skillname:string>',
 			oneAtTime: true,
 			cooldown: 5,
-			altProtection: true
+			altProtection: true,
+			categoryFlags: ['minion'],
+			description: 'Purchases skillcapes from the bot, you can buy untrimmed capes if its your first 99.',
+			examples: ['+skillcape mining']
 		});
 	}
 
@@ -26,31 +29,26 @@ export default class extends BotCommand {
 
 		await msg.author.settings.sync(true);
 		const GP = msg.author.settings.get(UserSettings.GP);
-		if (GP < skillCapeCost) throw `You don't have enough GP to buy a skill cape.`;
+		if (GP < skillCapeCost) return msg.send("You don't have enough GP to buy a skill cape.");
 
 		const capeObject = Skillcapes.find(cape => stringMatches(cape.skill, skillName));
-		if (!capeObject) throw `That's not a valid skill.`;
+		if (!capeObject) return msg.send("That's not a valid skill.");
 
-		const levelInSkill = convertXPtoLVL(
-			msg.author.settings.get(`skills.${skillName}`) as number
-		);
+		const levelInSkill = convertXPtoLVL(msg.author.settings.get(`skills.${skillName}`) as number);
 
-		if (levelInSkill < 99)
-			throw `Your ${toTitleCase(
-				skillName
-			)} level is less than 99! You can't buy a skill cape, noob.`;
+		if (levelInSkill < 99) {
+			return msg.send(`Your ${toTitleCase(skillName)} level is less than 99! You can't buy a skill cape, noob.`);
+		}
 
 		const itemsToPurchase =
 			countSkillsAtleast99(msg.author) > 1
 				? { [capeObject.hood]: 1, [capeObject.trimmed]: 1 }
 				: { [capeObject.hood]: 1, [capeObject.untrimmed]: 1 };
 
-		const itemString = await createReadableItemListFromBank(this.client, itemsToPurchase);
+		const itemString = new Bank(itemsToPurchase).toString();
 
 		const sellMsg = await msg.channel.send(
-			`${
-				msg.author
-			}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${toKMB(
+			`${msg.author}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${toKMB(
 				skillCapeCost
 			)}.`
 		);
@@ -58,8 +56,7 @@ export default class extends BotCommand {
 		// Confirm the user wants to buy
 		try {
 			await msg.channel.awaitMessages(
-				_msg =>
-					_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+				_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 				{
 					max: 1,
 					time: Time.Second * 15,
@@ -67,13 +64,15 @@ export default class extends BotCommand {
 				}
 			);
 		} catch (err) {
-			return sellMsg.edit(
-				`Cancelling purchase of ${toTitleCase(capeObject.skill)} skill cape.`
-			);
+			return sellMsg.edit(`Cancelling purchase of ${toTitleCase(capeObject.skill)} skill cape.`);
 		}
 
 		await msg.author.removeGP(skillCapeCost);
 		await msg.author.addItemsToBank(itemsToPurchase, true);
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.BuyCostBank,
+			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add('Coins', skillCapeCost).bank
+		);
 
 		return msg.send(`You purchased ${itemString} for ${toKMB(skillCapeCost)}.`);
 	}

@@ -1,42 +1,55 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
-import Crafting from '../../lib/skilling/skills/crafting';
+import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
+import { randFloat } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run({ craftableID, quantity, userID, channelID, duration }: CraftingActivityTaskOptions) {
+	async run(data: CraftingActivityTaskOptions) {
+		const { craftableID, quantity, userID, channelID } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Crafting);
+		const item = Craftables.find(craft => craft.id === craftableID)!;
 
-		const Craft = Crafting.Craftables.find(craft => craft.id === craftableID);
+		let xpReceived = quantity * item.xp;
+		const loot = new Bank();
 
-		if (!Craft) return;
-
-		const xpReceived = quantity * Craft.xp;
-
-		await user.addXP(SkillsEnum.Crafting, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Crafting);
-
-		let str = `${user}, ${user.minionName} finished crafting ${quantity} ${
-			Craft.name
-		}, you also received ${xpReceived.toLocaleString()} XP.`;
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Crafting level is now ${newLevel}!`;
+		let crushed = 0;
+		if (item.crushChance) {
+			for (let i = 0; i < quantity; i++) {
+				if (randFloat(0, 1) > (currentLevel - 1) * item.crushChance[0] + item.crushChance[1]) {
+					crushed++;
+				}
+			}
+			// crushing a gem only gives 25% exp
+			xpReceived -= 0.75 * crushed * item.xp;
+			loot.add('crushed gem', crushed);
 		}
+		loot.add(item.id, quantity - crushed);
 
-		const loot = {
-			[Craft.id]: quantity
-		};
+		const xpRes = await user.addXP({ skillName: SkillsEnum.Crafting, amount: xpReceived });
 
-		await user.addItemsToBank(loot, true);
+		let str = `${user}, ${user.minionName} finished crafting ${quantity} ${item.name}, ${
+			crushed ? `crushing ${crushed} of them` : ''
+		}. ${xpRes}`;
 
-		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${quantity}x ${Craft.name}[${Craft.id}]`);
-			return this.client.commands.get('craft')!.run(res, [quantity, Craft.name]);
-		});
+		await user.addItemsToBank(loot.values(), true);
+
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${item.name}`);
+				return this.client.commands.get('craft')!.run(res, [quantity, item.name]);
+			},
+			undefined,
+			data,
+			loot.bank
+		);
 	}
 }

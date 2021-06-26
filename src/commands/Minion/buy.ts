@@ -1,12 +1,21 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
+import { table } from 'table';
 
-import { BotCommand } from '../../lib/BotCommand';
-import Buyables from '../../lib/buyables/buyables';
+import { Minigames } from '../../extendables/User/Minigame';
 import { Time } from '../../lib/constants';
+import Buyables from '../../lib/data/buyables/buyables';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { multiplyBank, stringMatches, toTitleCase } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { BotCommand } from '../../lib/structures/BotCommand';
+import {
+	bankHasAllItemsFromBank,
+	multiplyBank,
+	removeBankFromBank,
+	skillsMeetRequirements,
+	stringMatches
+} from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -15,7 +24,10 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
-			altProtection: true
+			altProtection: true,
+			categoryFlags: ['minion'],
+			description: 'Allows you to purchase certain store/quest items from the bot.',
+			examples: ['+buy barrows gloves', '+buy 1000 jug of water']
 		});
 	}
 
@@ -27,40 +39,93 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			throw `I don't recognize that item, the items you can buy are: ${Buyables.map(
-				item => item.name
-			).join(', ')}.`;
+			const normalTable = table([
+				['Name', 'GP Cost', 'Item Cost'],
+				...Buyables.map(i => [i.name, i.gpCost || 0, new Bank(i.itemCost).toString()])
+			]);
+			return msg.channel.sendFile(
+				Buffer.from(normalTable),
+				'Buyables.txt',
+				'Here is a table of all buyable items.'
+			);
+		}
+
+		if (buyable.customReq) {
+			const [hasCustomReq, reason] = await buyable.customReq(msg.author);
+			if (!hasCustomReq) {
+				return msg.channel.send(reason!);
+			}
+		}
+
+		if (buyable.qpRequired) {
+			const QP = msg.author.settings.get(UserSettings.QP);
+			if (QP < buyable.qpRequired) {
+				return msg.send(`You need ${buyable.qpRequired} QP to purchase this item.`);
+			}
+		}
+
+		if (buyable.skillsNeeded && !skillsMeetRequirements(msg.author.rawSkills, buyable.skillsNeeded)) {
+			return msg.send("You don't have the required stats to buy this item.");
+		}
+
+		if (buyable.minigameScoreReq) {
+			const [key, req] = buyable.minigameScoreReq;
+			const kc = await msg.author.getMinigameScore(key);
+			if (kc < req) {
+				return msg.channel.send(
+					`You need ${req} KC in ${
+						Minigames.find(i => i.key === key)!.name
+					} to buy this, you only have ${kc} KC.`
+				);
+			}
 		}
 
 		await msg.author.settings.sync(true);
-		const GP = msg.author.settings.get(UserSettings.GP);
-		const GPCost = buyable.gpCost * quantity;
-		if (GP < GPCost) {
-			throw `You need ${toKMB(GPCost)} GP to purchase this item.`;
-		}
-		const QP = msg.author.settings.get(UserSettings.QP);
-		if (QP < buyable.qpRequired) {
-			throw `You need ${buyable.qpRequired} QP to purchase this item.`;
-		}
+		const userBank = msg.author.settings.get(UserSettings.Bank);
 
-		const outItems = multiplyBank(buyable.outputItems, quantity);
-		const itemString = await createReadableItemListFromBank(this.client, outItems);
-
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const sellMsg = await msg.channel.send(
-				`${
-					msg.author
-				}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${toKMB(
-					GPCost
+		if (buyable.itemCost && !bankHasAllItemsFromBank(userBank, multiplyBank(buyable.itemCost, quantity))) {
+			return msg.send(
+				`You don't have the required items to purchase this. You need: ${new Bank(
+					multiplyBank(buyable.itemCost, quantity)
 				)}.`
 			);
+		}
 
-			// Confirm the user wants to buy
+		const GP = msg.author.settings.get(UserSettings.GP);
+		const totalGPCost = (buyable.gpCost ?? 0) * quantity;
+
+		if (buyable.gpCost && msg.author.settings.get(UserSettings.GP) < totalGPCost) {
+			return msg.send(`You need ${totalGPCost.toLocaleString()} GP to purchase this item.`);
+		}
+
+		let output =
+			buyable.outputItems === undefined
+				? new Bank().add(buyable.name).bank
+				: buyable.outputItems instanceof Bank
+				? buyable.outputItems.bank
+				: buyable.outputItems;
+		const outItems = multiplyBank(output, quantity);
+		const itemString = new Bank(outItems).toString();
+
+		// Start building a string to show to the user.
+		let str = `${msg.author}, say \`confirm\` to confirm that you want to buy **${itemString}** for: `;
+
+		// If theres an item cost or GP cost, add it to the string to show users the cost.
+		if (buyable.itemCost) {
+			str += new Bank(multiplyBank(buyable.itemCost, quantity)).toString();
+			if (buyable.gpCost) {
+				str += `, ${totalGPCost.toLocaleString()} GP.`;
+			}
+		} else if (buyable.gpCost) {
+			str += `${totalGPCost.toLocaleString()} GP.`;
+		}
+
+		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
+			const sellMsg = await msg.channel.send(str);
+
 			try {
 				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
 					{
 						max: 1,
 						time: Time.Second * 15,
@@ -68,15 +133,36 @@ export default class extends BotCommand {
 					}
 				);
 			} catch (err) {
-				return sellMsg.edit(
-					`Cancelling purchase of ${quantity} ${toTitleCase(buyable.name)}.`
-				);
+				return sellMsg.edit('Cancelling purchase.');
 			}
 		}
 
-		await msg.author.removeGP(GPCost);
+		const econBankChanges = new Bank();
+
+		await msg.author.settings.sync(true);
+		if (buyable.itemCost) {
+			econBankChanges.add(multiplyBank(buyable.itemCost, quantity));
+			await msg.author.settings.update(
+				UserSettings.Bank,
+				removeBankFromBank(msg.author.settings.get(UserSettings.Bank), multiplyBank(buyable.itemCost, quantity))
+			);
+		}
+
+		if (buyable.gpCost) {
+			if (GP < totalGPCost) {
+				return msg.send(`You need ${toKMB(totalGPCost)} GP to purchase this item.`);
+			}
+			econBankChanges.add('Coins', totalGPCost);
+			await msg.author.removeGP(totalGPCost);
+		}
+
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.BuyCostBank,
+			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add(econBankChanges).bank
+		);
+
 		await msg.author.addItemsToBank(outItems, true);
 
-		return msg.send(`You purchased ${itemString} for ${toKMB(GPCost)}.`);
+		return msg.send(`You purchased ${quantity > 1 ? `${quantity}x` : '1x'} ${buyable.name}.`);
 	}
 }

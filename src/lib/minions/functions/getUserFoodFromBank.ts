@@ -1,7 +1,7 @@
 import { addBanks } from 'oldschooljs/dist/util';
 import { O } from 'ts-toolbelt';
 
-import { Eatables } from '../../eatables';
+import { Eatables } from '../../data/eatables';
 import { ItemBank } from '../../types';
 
 export default function getUserFoodFromBank(

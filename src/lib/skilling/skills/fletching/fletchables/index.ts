@@ -7,11 +7,12 @@ import Darts from './darts';
 import Javelins from './javelins';
 import Shafts from './shafts';
 import Shields from './shields';
+import Slayer from './slayer';
 import TippedBolts from './tippedBolts';
 import TippedDragonBolts from './tippedDragonBolts';
 import Tips from './tips';
 
-const fletchables: Fletchable[] = [
+export const Fletchables: Fletchable[] = [
 	...Bows,
 	...Shafts,
 	...Shields,
@@ -22,7 +23,6 @@ const fletchables: Fletchable[] = [
 	...TippedBolts,
 	...Javelins,
 	...Darts,
-	...Crossbows
+	...Crossbows,
+	...Slayer
 ];
-
-export default fletchables;

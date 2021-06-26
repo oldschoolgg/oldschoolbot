@@ -1,60 +1,49 @@
+import { Time } from 'e';
 import { Task } from 'klasa';
-import PgBoss from 'pg-boss';
-import { createConnection } from 'typeorm';
+import { MoreThan } from 'typeorm';
 
-import { providerConfig } from '../config';
-import { Tasks } from '../lib/constants';
+import { ActivityGroup } from '../lib/constants';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
-import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable';
-import { TickerTaskData } from '../lib/types/minions';
-import { activityTaskFilter } from '../lib/util';
-
-const { port, user, password, database } = providerConfig!.postgres!;
+import { ActivityTable } from '../lib/typeorm/ActivityTable.entity';
+import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable.entity';
+import { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
+import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
 
 export default class extends Task {
 	async init() {
-		if (this.client.orm) return;
-		this.client.orm = await createConnection({
-			type: 'postgres',
-			host: 'localhost',
-			port,
-			username: user,
-			password,
-			database,
-			entities: [AnalyticsTable],
-			synchronize: true
-		});
-
-		const boss = new PgBoss({ ...providerConfig?.postgres });
-		boss.on('error', error => console.error(error));
-		await boss.start();
-		await boss.schedule('analytics', `*/20 * * * *`);
-		await boss.subscribe('analytics', async job => {
-			await this.analyticsTick();
-			job.done();
-		});
+		if (this.client.analyticsInterval) {
+			clearInterval(this.client.analyticsInterval);
+		}
+		this.client.analyticsInterval = setInterval(this.analyticsTick.bind(this), Time.Minute * 5);
 	}
 
 	async run() {
 		this.analyticsTick();
 	}
 
-	calculateMinionTaskCounts() {
-		const minionTaskCounts = {
-			[Tasks.ClueTicker]: 0,
-			[Tasks.MinigameTicker]: 0,
-			[Tasks.MonsterKillingTicker]: 0,
-			[Tasks.SkillingTicker]: 0
+	async calculateMinionTaskCounts() {
+		const minionTaskCounts: Record<ActivityGroup, number> = {
+			[ActivityGroup.Clue]: 0,
+			[ActivityGroup.Minigame]: 0,
+			[ActivityGroup.Monster]: 0,
+			[ActivityGroup.Skilling]: 0
 		};
-		for (const task of this.client.schedule.tasks.filter(activityTaskFilter)) {
-			const taskData = task.data as TickerTaskData;
-			const taskName = task.taskName as
-				| Tasks.ClueTicker
-				| Tasks.MinigameTicker
-				| Tasks.MonsterKillingTicker
-				| Tasks.SkillingTicker;
 
-			minionTaskCounts[taskName] = taskData.subTasks.length;
+		const currentTasks = await ActivityTable.find({
+			where: {
+				completed: false,
+				finishDate: MoreThan('now()')
+			}
+		});
+
+		for (const task of currentTasks) {
+			const group = taskGroupFromActivity(task.type);
+
+			if (task.groupActivity) {
+				minionTaskCounts[group] += (task.data as GroupMonsterActivityTaskOptions).users.length;
+			} else {
+				minionTaskCounts[group] += 1;
+			}
 		}
 		return minionTaskCounts;
 	}
@@ -71,25 +60,25 @@ export default class extends Task {
 		const [numberOfMinions, totalSacrificed, numberOfIronmen, totalGP, totalXP] = (
 			await Promise.all(
 				[
-					`SELECT COUNT(*) FROM users WHERE "minion.hasBought" = true;`,
-					`SELECT SUM ("sacrificedValue") AS count FROM users;`,
-					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;`,
-					`SELECT SUM ("GP") AS count FROM users;`,
+					'SELECT COUNT(*) FROM users WHERE "minion.hasBought" = true;',
+					'SELECT SUM ("sacrificedValue") AS count FROM users;',
+					'SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;',
+					'SELECT SUM ("GP") AS count FROM users;',
 					this.generateTotalXPQuery()
 				].map(query => this.client.query(query))
 			)
 		).map((result: any) => parseInt(result[0].count)) as number[];
 
-		const taskCounts = this.calculateMinionTaskCounts();
+		const taskCounts = await this.calculateMinionTaskCounts();
 
 		await AnalyticsTable.insert({
-			guildsCount: this.client.guilds.size,
-			membersCount: this.client.guilds.reduce((acc, curr) => (acc += curr.memberCount), 0),
+			guildsCount: this.client.guilds.cache.size,
+			membersCount: this.client.guilds.cache.reduce((acc, curr) => (acc += curr.memberCount), 0),
 			timestamp: Math.floor(Date.now() / 1000),
-			clueTasksCount: taskCounts.clueTicker,
-			minigameTasksCount: taskCounts.minigameTicker,
-			monsterTasksCount: taskCounts.monsterKillingTicker,
-			skillingTasksCount: taskCounts.skillingTicker,
+			clueTasksCount: taskCounts.Clue,
+			minigameTasksCount: taskCounts.Minigame,
+			monsterTasksCount: taskCounts.Monster,
+			skillingTasksCount: taskCounts.Skilling,
 			ironMinionsCount: numberOfIronmen,
 			minionsCount: numberOfMinions,
 			totalSacrificed,
@@ -97,7 +86,14 @@ export default class extends Task {
 			totalXP,
 			dicingBank: this.client.settings.get(ClientSettings.EconomyStats.DicingBank),
 			duelTaxBank: this.client.settings.get(ClientSettings.EconomyStats.DuelTaxBank),
-			dailiesAmount: this.client.settings.get(ClientSettings.EconomyStats.DailiesAmount)
+			dailiesAmount: this.client.settings.get(ClientSettings.EconomyStats.DailiesAmount),
+			gpAlching: this.client.settings.get(ClientSettings.EconomyStats.GPSourceAlching),
+			gpPvm: this.client.settings.get(ClientSettings.EconomyStats.GPSourcePVMLoot),
+			gpSellingItems: this.client.settings.get(ClientSettings.EconomyStats.GPSourceSellingItems),
+			gpPickpocket: this.client.settings.get(ClientSettings.EconomyStats.GPSourcePickpocket),
+			gpOpen: this.client.settings.get(ClientSettings.EconomyStats.GPSourceOpen),
+			gpDice: this.client.settings.get(ClientSettings.EconomyStats.GPSourceDice),
+			gpDaily: this.client.settings.get(ClientSettings.EconomyStats.GPSourceDaily)
 		});
 	}
 }

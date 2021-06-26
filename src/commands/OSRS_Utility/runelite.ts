@@ -1,14 +1,15 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['rl'],
 			description: 'Shows information on RuneLite',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissions: ['EMBED_LINKS'],
+			examples: ['+runelite']
 		});
 	}
 
@@ -29,7 +30,7 @@ https://runelite.net/`
 			.addField('Open Source', 'https://github.com/runelite/runelite', true)
 			.addField('Lightweight & fast', 'No lag, little memory usage', true)
 			.addField('Many Features', 'https://runelite.net/features', true)
-			.setFooter(`*Use of any 3rd party client is at your own risk.`);
+			.setFooter('*Use of any 3rd party client is at your own risk.');
 
 		return msg.send({ embed });
 	}

@@ -1,9 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
-import { BotCommand } from '../../lib/BotCommand';
 import decantPotionFromBank from '../../lib/minions/functions/decantPotionFromBank';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import createReadableItemListFromTuple from '../../lib/util/createReadableItemListFromTuple';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -11,7 +11,10 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '[dose:int{1,4}] <itemname:...string>',
 			usageDelim: ' ',
-			oneAtTime: true
+			oneAtTime: true,
+			description: 'Allows you to decant potions into 4-doses, or any dosage.',
+			examples: ['+decant prayer potion'],
+			categoryFlags: ['minion']
 		});
 	}
 
@@ -19,20 +22,22 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
-		const { potionsToAdd, sumOfPots, potionName, finalUserBank } = decantPotionFromBank(
-			userBank,
-			itemName,
-			dose
-		);
-
-		const resultString = await createReadableItemListFromTuple(this.client, potionsToAdd);
+		const { potionsToAdd, sumOfPots, potionName, finalUserBank } = decantPotionFromBank(userBank, itemName, dose);
 
 		await msg.author.settings.update(UserSettings.Bank, finalUserBank);
 
+		if (
+			msg.author.hasItemEquippedAnywhere(['Iron dagger', 'Bronze arrow'], true) &&
+			!msg.author.hasItemEquippedOrInBank('Clue hunter gloves')
+		) {
+			await msg.author.addItemsToBank(new Bank({ 'Clue hunter gloves': 1 }), true);
+			msg.send('\n\nWhile decanting some potions, you find a pair of gloves on the floor and pick them up.');
+		}
+
 		return msg.send(
-			`You decanted **${sumOfPots}x ${potionName}${
-				sumOfPots > 0 ? 's' : ''
-			}** into **${resultString}**.`
+			`You decanted **${sumOfPots}x ${potionName}${sumOfPots > 0 ? 's' : ''}** into **${new Bank(
+				potionsToAdd
+			)}**.`
 		);
 	}
 }

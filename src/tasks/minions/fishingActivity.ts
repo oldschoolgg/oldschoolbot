@@ -1,56 +1,56 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
-import hasArrayOfItemsEquipped from '../../lib/gear/functions/hasArrayOfItemsEquipped';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
+import { anglerBoostPercent, calcPercentOfNum, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
-	async run({ fishID, quantity, userID, channelID, duration }: FishingActivityTaskOptions) {
+	async run(data: FishingActivityTaskOptions) {
+		let { fishID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		const currentAgilityLevel = user.skillLevel(SkillsEnum.Agility);
 
-		const fish = Fishing.Fishes.find(fish => fish.id === fishID);
-		if (!fish) return;
+		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
 
 		let xpReceived = 0;
 		let leapingSturgeon = 0;
 		let leapingSalmon = 0;
 		let leapingTrout = 0;
 		let agilityXpReceived = 0;
+		let strengthXpReceived = 0;
 		if (fish.name === 'Barbarian fishing') {
 			for (let i = 0; i < quantity; i++) {
 				if (
 					roll(255 / (8 + Math.floor(0.5714 * user.skillLevel(SkillsEnum.Fishing)))) &&
 					user.skillLevel(SkillsEnum.Fishing) >= 70 &&
-					user.skillLevel(SkillsEnum.Agility) >= 45
+					user.skillLevel(SkillsEnum.Agility) >= 45 &&
+					user.skillLevel(SkillsEnum.Strength) >= 45
 				) {
 					xpReceived += 80;
-					agilityXpReceived += 7;
 					leapingSturgeon += 1;
+					agilityXpReceived += 7;
+					strengthXpReceived += 7;
 				} else if (
 					roll(255 / (16 + Math.floor(0.8616 * user.skillLevel(SkillsEnum.Fishing)))) &&
 					user.skillLevel(SkillsEnum.Fishing) >= 58 &&
-					user.skillLevel(SkillsEnum.Agility) >= 30
+					user.skillLevel(SkillsEnum.Agility) >= 30 &&
+					user.skillLevel(SkillsEnum.Strength) >= 30
 				) {
 					xpReceived += 70;
 					leapingSalmon += 1;
 					agilityXpReceived += 6;
-				} else if (
-					roll(255 / (32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing))))
-				) {
+					strengthXpReceived += 6;
+				} else if (roll(255 / (32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing))))) {
 					xpReceived += 50;
 					leapingTrout += 1;
 					agilityXpReceived += 5;
+					strengthXpReceived += 5;
 				}
 			}
 		} else {
@@ -60,9 +60,9 @@ export default class extends Task {
 
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		if (
-			hasArrayOfItemsEquipped(
+			user.getGear('skilling').hasEquipped(
 				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
-				user.settings.get(UserSettings.Gear.Skilling)
+				true
 			)
 		) {
 			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
@@ -79,88 +79,93 @@ export default class extends Task {
 			}
 		}
 
-		await user.addXP(SkillsEnum.Fishing, xpReceived);
-		await user.addXP(SkillsEnum.Agility, agilityXpReceived);
+		let xpRes = await user.addXP({
+			skillName: SkillsEnum.Fishing,
+			amount: xpReceived,
+			duration
+		});
+		xpRes +=
+			agilityXpReceived > 0
+				? await user.addXP({
+						skillName: SkillsEnum.Agility,
+						amount: agilityXpReceived,
+						duration
+				  })
+				: '';
+		xpRes +=
+			strengthXpReceived > 0
+				? await user.addXP({
+						skillName: SkillsEnum.Strength,
+						amount: strengthXpReceived,
+						duration
+				  })
+				: '';
 
-		const newLevel = user.skillLevel(SkillsEnum.Fishing);
-		const newAgilityLevel = user.skillLevel(SkillsEnum.Agility);
-
-		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${
-			fish.name
-		}, you also received ${xpReceived.toLocaleString()} XP. ${
-			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
-		}
+		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;
 
 		if (fish.id === itemID('Raw karambwanji')) {
 			quantity *= 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
 		}
-		let loot = {
+		let loot = new Bank({
 			[fish.id]: quantity
-		};
+		});
 
 		// Add clue scrolls
 		if (fish.clueScrollChance) {
-			loot = addSkillingClueToLoot(
-				user,
-				SkillsEnum.Fishing,
-				quantity,
-				fish.clueScrollChance,
-				loot
-			);
+			addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, fish.clueScrollChance, loot);
 		}
 
 		// Add barbarian fish to loot
 		if (fish.name === 'Barbarian fishing') {
-			loot[fish.id] = 0;
-			loot[itemID('Leaping sturgeon')] = leapingSturgeon;
-			loot[itemID('Leaping salmon')] = leapingSalmon;
-			loot[itemID('Leaping trout')] = leapingTrout;
+			loot.bank[fish.id] = 0;
+			loot.add('Leaping sturgeon', leapingSturgeon);
+			loot.add('Leaping salmon', leapingSalmon);
+			loot.add('Leaping trout', leapingTrout);
 		}
 
-		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
-		if (fish.name === 'Barbarian fishing') {
-			str = `${user}, ${user.minionName} finished fishing ${quantity} ${
-				fish.name
-			}, you also received ${xpReceived.toLocaleString()} fishing XP and ${agilityXpReceived.toLocaleString()} Agility XP.
-\n\nYou received: ${leapingSturgeon}x Leaping sturgeon, ${leapingSalmon}x Leaping salmon, and ${leapingTrout}x Leaping trout.`;
-			if (newLevel > currentLevel) {
-				str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
-			}
-			if (newAgilityLevel > currentAgilityLevel) {
-				str += `\n\n${user.minionName}'s Agility level is now ${newAgilityLevel}!`;
-			}
+		const xpBonusPercent = anglerBoostPercent(user);
+		if (xpBonusPercent > 0) {
+			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, xpReceived));
 		}
+
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
 		// Roll for pet
-		if (
-			fish.petChance &&
-			roll((fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25) / quantity)
-		) {
-			loot[itemID('Heron')] = 1;
-			str += `\nYou have a funny feeling you're being followed...`;
+		if (fish.petChance && roll((fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25) / quantity)) {
+			loot.add('Heron');
+			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Fishing} **${user.username}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${currentLevel} Fishing!`
 			);
 		}
 
-		// Roll for big fish
-		if (fish.bigFish && roll(fish.bigFishRate! / quantity)) {
-			loot[fish.bigFish] = 1;
+		if (fish.bigFishRate && fish.bigFish) {
+			for (let i = 0; i < quantity; i++) {
+				if (roll(fish.bigFishRate)) {
+					loot.add(fish.bigFish);
+				}
+			}
 		}
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, res => {
-			user.log(`continued trip of ${quantity}x ${fish.name}[${fish.id}]`);
-			return this.client.commands.get('fish')!.run(res, [quantity, fish.name]);
-		});
+		str += `\n\nYou received: ${loot}.`;
+
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${quantity}x ${fish.name}[${fish.id}]`);
+				return this.client.commands.get('fish')!.run(res, [quantity, fish.name]);
+			},
+			undefined,
+			data,
+			loot.bank
+		);
 	}
 }

@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 const servers = `
 [Old School RuneScape](https://discord.gg/gbfNeqd)
@@ -27,7 +27,9 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			aliases: ['servers', 'communities', 'community'],
 			description: 'Shows some community servers related to OSRS.',
-			requiredPermissions: ['EMBED_LINKS']
+			examples: ['+servers'],
+			requiredPermissions: ['EMBED_LINKS'],
+			categoryFlags: ['utility']
 		});
 	}
 

@@ -74,6 +74,78 @@ const Skillcapes: Skillcape[] = [
 		hood: itemID('Fletching hood'),
 		untrimmed: itemID('Fletching cape'),
 		trimmed: itemID('Fletching cape(t)')
+	},
+	{
+		skill: SkillsEnum.Thieving,
+		hood: itemID('Thieving hood'),
+		untrimmed: itemID('Thieving cape'),
+		trimmed: itemID('Thieving cape(t)')
+	},
+	{
+		skill: SkillsEnum.Farming,
+		hood: itemID('Farming hood'),
+		untrimmed: itemID('Farming cape'),
+		trimmed: itemID('Farming cape(t)')
+	},
+	{
+		skill: SkillsEnum.Herblore,
+		hood: itemID('Herblore hood'),
+		untrimmed: itemID('Herblore cape'),
+		trimmed: itemID('Herblore cape(t)')
+	},
+	{
+		skill: SkillsEnum.Hunter,
+		hood: itemID('Hunter hood'),
+		untrimmed: itemID('Hunter cape'),
+		trimmed: itemID('Hunter cape(t)')
+	},
+	{
+		skill: SkillsEnum.Construction,
+		hood: itemID('Construct. hood'),
+		untrimmed: itemID('Construct. cape'),
+		trimmed: itemID('Construct. cape(t)')
+	},
+	{
+		skill: SkillsEnum.Magic,
+		hood: itemID('Magic hood'),
+		untrimmed: itemID('Magic cape'),
+		trimmed: itemID('Magic cape(t)')
+	},
+	{
+		skill: SkillsEnum.Attack,
+		hood: itemID('Attack hood'),
+		untrimmed: itemID('Attack cape'),
+		trimmed: itemID('Attack cape(t)')
+	},
+	{
+		skill: SkillsEnum.Strength,
+		hood: itemID('Strength hood'),
+		untrimmed: itemID('Strength cape'),
+		trimmed: itemID('Strength cape(t)')
+	},
+	{
+		skill: SkillsEnum.Defence,
+		hood: itemID('Defence hood'),
+		untrimmed: itemID('Defence cape'),
+		trimmed: itemID('Defence cape(t)')
+	},
+	{
+		skill: SkillsEnum.Ranged,
+		hood: itemID('Ranging hood'),
+		untrimmed: itemID('Ranging cape'),
+		trimmed: itemID('Ranging cape(t)')
+	},
+	{
+		skill: SkillsEnum.Hitpoints,
+		hood: itemID('Hitpoints hood'),
+		untrimmed: itemID('Hitpoints cape'),
+		trimmed: itemID('Hitpoints cape(t)')
+	},
+	{
+		skill: SkillsEnum.Slayer,
+		hood: itemID('Slayer hood'),
+		untrimmed: itemID('Slayer cape'),
+		trimmed: itemID('Slayer cape(t)')
 	}
 ];
 
