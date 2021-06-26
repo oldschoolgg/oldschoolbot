@@ -48,8 +48,8 @@ const hammyFailMessages = [
 const hammyDoubleMessages = [
 	`${Emoji.MoneyBag} Hammy took your {item} and diced it...\n\nHe won, and actually brought you the profit! ${Emoji.Joy}`,
 	'You feed your {item} to Hammy and he hides it in his cheeks. You go to pull it out and find it doubled. How did that happen?',
-	`You give your {item} to Hammy while he's on his hamster wheel. When he stops and the dust settles, you realize there are now two.`,
-	`Hammy takes your {item} while you aren't looking and runs to the casino. He comes back rich and hands you an extra {item} for your trouble.`
+	"You give your {item} to Hammy while he's on his hamster wheel. When he stops and the dust settles, you realize there are now two.",
+	"Hammy takes your {item} while you aren't looking and runs to the casino. He comes back rich and hands you an extra {item} for your trouble."
 ];
 
 export default class extends BotCommand {
@@ -68,7 +68,7 @@ export default class extends BotCommand {
 		if (msg.flagArgs.help) {
 			return msg.send(
 				`Usage:\n\n\`${msg.cmdPrefix}hammy --warnings [--enable/--disable]\` ` +
-					`Show/enable/disable confirmation\n` +
+					'Show/enable/disable confirmation\n' +
 					`\`${msg.cmdPrefix}hammy Dragon warhammer --cf\` Feeds item to Hammy without confirmation`
 			);
 		}
@@ -85,30 +85,21 @@ export default class extends BotCommand {
 				nextBool = false;
 			} else {
 				return msg.send(
-					`Hammy's feed warnings are ${
-						!hammyFeedWarningDisabled ? 'enabled' : 'disabled'
-					} for you.\n\n` +
+					`Hammy's feed warnings are ${!hammyFeedWarningDisabled ? 'enabled' : 'disabled'} for you.\n\n` +
 						`Use \`${msg.cmdPrefix}hammy --warnings [--enable/--disable]\` to change this`
 				);
 			}
 			if (hammyFeedWarningDisabled === nextBool) {
 				return msg.send(
-					`Hammy's feed warnings are already ${
-						!hammyFeedWarningDisabled ? 'enabled' : 'disabled'
-					} for you.`
+					`Hammy's feed warnings are already ${!hammyFeedWarningDisabled ? 'enabled' : 'disabled'} for you.`
 				);
 			}
-			await msg.author.settings.update(
-				UserSettings.BitField,
-				BitField.DisabledHammyFeedConfirm
-			);
-			return msg.send(
-				`Hammy's feed warnings are now ${!nextBool ? 'enabled' : 'disabled'} for you.`
-			);
+			await msg.author.settings.update(UserSettings.BitField, BitField.DisabledHammyFeedConfirm);
+			return msg.send(`Hammy's feed warnings are now ${!nextBool ? 'enabled' : 'disabled'} for you.`);
 		}
 
 		if (firstItemStr === undefined) {
-			return msg.send(`Item name is a required argument.`);
+			return msg.send('Item name is a required argument.');
 		}
 
 		// Start the actually Hammy code
@@ -119,15 +110,10 @@ export default class extends BotCommand {
 			return msg.send(`You don't have a ${firstItem.name}.`);
 		}
 		if (!bank.has(itemID('Hammy')) && msg.author.equippedPet() !== itemID('Hammy')) {
-			return msg.send(`You don't have a Hammy, so how could you feed it?`);
+			return msg.send("You don't have a Hammy, so how could you feed it?");
 		}
 
-		if (
-			!hammyFeedWarningDisabled &&
-			!msg.flagArgs.confirm &&
-			!msg.flagArgs.cf &&
-			!msg.flagArgs.yes
-		) {
+		if (!hammyFeedWarningDisabled && !msg.flagArgs.confirm && !msg.flagArgs.cf && !msg.flagArgs.yes) {
 			const dropMsg = await msg.channel.send(
 				`${msg.author}, are you sure you want to give ${firstItem.name} to Hammy? You probably won't get it back... Type \`confirm\` to confirm.`
 			);

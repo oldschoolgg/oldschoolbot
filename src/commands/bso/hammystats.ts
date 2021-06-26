@@ -19,7 +19,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [statsType]: [string]) {
 		if (msg.flagArgs.help || statsType === 'help') {
 			return msg.send(
-				`Usage:\n\n` +
+				'Usage:\n\n' +
 					`\`${msg.cmdPrefix}hammystats [overall/destroyed/doubled/spared]\` Show Hammy's economy stats`
 			);
 		}
@@ -27,21 +27,21 @@ export default class extends BotCommand {
 		if (statsType === 'destroyed') {
 			return msg.channel.sendBankImage({
 				bank: this.client.settings.get(ClientSettings.EconomyStats.HammyDestroyed),
-				title: `All items Hammys have destroyed:`,
+				title: 'All items Hammys have destroyed:',
 				flags: msg.flagArgs
 			});
 		}
 		if (statsType === 'doubled') {
 			return msg.channel.sendBankImage({
 				bank: this.client.settings.get(ClientSettings.EconomyStats.HammyDoubled),
-				title: `All items Hammys have doubled:`,
+				title: 'All items Hammys have doubled:',
 				flags: msg.flagArgs
 			});
 		}
 		if (statsType === 'spared') {
 			return msg.channel.sendBankImage({
 				bank: this.client.settings.get(ClientSettings.EconomyStats.HammySpared),
-				title: `All items Hammys have spared:`,
+				title: 'All items Hammys have spared:',
 				flags: msg.flagArgs
 			});
 		}
@@ -57,7 +57,7 @@ export default class extends BotCommand {
 		);
 
 		return msg.send(
-			`Overall Hammy economy stats:\n\n` +
+			'Overall Hammy economy stats:\n\n' +
 				`Total items destroyed: ${ctDestroyed}\n` +
 				`Total items doubled: ${ctDoubled}\n` +
 				`Total items spared: ${ctSpared}`
