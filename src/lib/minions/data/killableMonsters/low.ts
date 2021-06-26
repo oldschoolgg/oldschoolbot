@@ -4,7 +4,7 @@ import { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Time } from '../../../constants';
-import { GearSetupTypes, GearStat } from '../../../gear/types';
+import { GearStat } from '../../../gear/types';
 import { RuneTable } from '../../../simulation/seedTable';
 import { makeKillTable } from '../../../util/setCustomMonster';
 import { KillableMonster } from '../../types';
@@ -76,7 +76,7 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		respawnTime: Time.Second * 30,
 		healAmountNeeded: 20,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	}
 ];

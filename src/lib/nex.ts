@@ -70,7 +70,7 @@ export const NexMonster: KillableMonster = {
 		prayer: 95
 	},
 	healAmountNeeded: 120 * 20,
-	attackStyleToUse: GearSetupTypes.Range,
+	attackStyleToUse: GearStat.AttackRanged,
 	attackStylesUsed: [GearStat.AttackRanged],
 	minimumGearRequirements: {
 		[GearSetupTypes.Range]: {

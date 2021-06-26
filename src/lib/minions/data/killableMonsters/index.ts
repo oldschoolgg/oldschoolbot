@@ -190,7 +190,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		difficultyRating: 0,
 		qpRequired: 0,
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultAttackStyles: [SkillsEnum.Attack],
+		attackStyleToUse: GearStat.AttackSlash
 	},
 	{
 		id: Monsters.Guard.id,
@@ -230,7 +231,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 7,
 		qpRequired: 0,
 		healAmountNeeded: 20 * 20,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
 		minimumGearRequirements: {
 			[GearSetupTypes.Range]: {
@@ -265,7 +266,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 9,
 		qpRequired: 999,
 		healAmountNeeded: 20 * 25,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
 		minimumGearRequirements: {
 			[GearSetupTypes.Melee]: {
@@ -349,7 +350,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 9,
 		qpRequired: 100,
 		healAmountNeeded: 10_000 * 25,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash],
 		respawnTime: Time.Second * 20
 	},
@@ -367,7 +368,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 9,
 		qpRequired: 100,
 		healAmountNeeded: 60 * 25,
-		attackStyleToUse: GearSetupTypes.Mage,
+		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
 		respawnTime: Time.Second * 40,
 		minimumGearRequirements: {

@@ -60,7 +60,7 @@ export const KalphiteKingMonster: KillableMonster = {
 		defence: 90
 	},
 	healAmountNeeded: 120 * 20,
-	attackStyleToUse: GearSetupTypes.Melee,
+	attackStyleToUse: GearStat.AttackCrush,
 	attackStylesUsed: [GearStat.AttackCrush],
 	minimumGearRequirements: {
 		[GearSetupTypes.Melee]: {
