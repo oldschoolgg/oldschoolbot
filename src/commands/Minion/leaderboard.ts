@@ -353,7 +353,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 FROM users
 ${msg.flagArgs.im ? 'WHERE "minion.ironman" = true' : ''}
 ORDER BY totalxp
-DESC LIMIT 500;`
+DESC LIMIT 100;`
 			);
 			overallUsers = res
 				.map(user => {
