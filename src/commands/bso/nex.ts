@@ -254,7 +254,7 @@ export default class extends BotCommand {
 				healAmountNeeded /= (users.length + 1) / 1.5;
 			}
 
-			const brewsNeeded = Math.max(4, Math.ceil(healAmountNeeded / 16) * quantity);
+			const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
 			const restoresNeeded = Math.ceil(brewsNeeded / 3);
 			if (
 				!user.bank().has(
