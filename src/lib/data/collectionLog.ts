@@ -1586,7 +1586,15 @@ export const miscLog: CollectionLogData = {
 	]),
 	Tzhaar: resolveItems(['Fire cape']),
 	evilChickenOutfit,
-	other: resolveItems(['Amulet of eternal glory', 'Crystal grail'])
+	other: resolveItems(['Amulet of eternal glory', 'Crystal grail']),
+	dragonstoneArmour: resolveItems([
+		'Dragonstone full helm',
+		'Dragonstone platebody',
+		'Dragonstone platelegs',
+		'Dragonstone gauntlets',
+		'Dragonstone boots',
+		'Enhanced crystal key'
+	])	
 };
 
 export const slayerLog: CollectionLogData = {
