@@ -2,24 +2,22 @@ import { MessageEmbed } from 'discord.js';
 import { sleep } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser, TaskOptions } from 'klasa';
 
-import { BotCommand } from '../../lib/BotCommand';
-import { Activity, Color, Emoji, Events, SupportServer, Tasks, Time } from '../../lib/constants';
-import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import { Activity, Color, Emoji, Events, SupportServer, Time } from '../../lib/constants';
+import { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import ironsCantUse from '../../lib/minions/decorators/ironsCantUse';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
-import { GroupMonsterActivityTaskOptions, KillableMonster } from '../../lib/minions/types';
+import { KillableMonster } from '../../lib/minions/types';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
-import { formatDuration, noOp, queuedMessageSend, stringMatches } from '../../lib/util';
+import { channelIsSendable, formatDuration, noOp, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
-import { channelIsSendable } from '../../lib/util/channelIsSendable';
 // eslint-disable-next-line no-undef
 import Timeout = NodeJS.Timeout;
 import { Monsters } from 'oldschooljs';
 
-import { MinigameIDsEnum } from '../../lib/minions/data/minigames';
 import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
-import { MinigameActivityTaskOptions } from '../../lib/types/minions';
+import { BotCommand } from '../../lib/structures/BotCommand';
+import { ActivityTaskOptions, GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 
 interface UserSentFrom {
 	guild: string | undefined;
@@ -36,7 +34,7 @@ interface LFGMonster {
 }
 
 interface MonterCustomProperties {
-	taskName?: Tasks;
+	taskName?: ActivityTaskOptions;
 	activityName?: Activity;
 	uniqueID?: number;
 	taskOptions?: TaskOptions;
@@ -46,7 +44,7 @@ interface MonterCustomProperties {
 }
 
 interface AllowedMonsters extends KillableMonster, MonterCustomProperties {
-	calcDurQty?: (users: KlasaUser[]) => [number, number, number];
+	calcDurQty?: (users: KlasaUser[]) => Promise<[number, number, number, string[]]>;
 }
 
 export function prepareLFGMessage(
@@ -57,9 +55,7 @@ export function prepareLFGMessage(
 	const toReturn: Record<string, string> = {};
 	if (!channels) return toReturn;
 	for (const channel of Object.keys(channels)) {
-		toReturn[
-			channel
-		] = `LFG mass of ${qty}x ${activityName} has returned! Here are the spoils:\n\n`;
+		toReturn[channel] = `LFG mass of ${qty}x ${activityName} has returned! Here are the spoils:\n\n`;
 	}
 	return toReturn;
 }
@@ -119,9 +115,9 @@ export async function sendLFGMessages(
 ) {
 	if (!channels) return false;
 	for (const _channel of Object.keys(channels)) {
-		const channel = client.channels.get(_channel);
+		const channel = client.channels.cache.get(_channel);
 		if (channelIsSendable(channel)) {
-			await queuedMessageSend(client, channel.id, lootString[_channel]);
+			await channel.send(lootString[_channel]);
 		}
 	}
 	return lootString;
@@ -129,10 +125,10 @@ export async function sendLFGMessages(
 
 export default class extends BotCommand {
 	LFGList: Record<number, LFGMonster> = {};
-	MIN_USERS = 20;
-	MAX_USERS = 50;
-	WAIT_TIME = 2 * Time.Minute;
-	DEFAULT_MASS_CHANNEL = '755074115978657894'; // #testing-2
+	MIN_USERS = 1;
+	MAX_USERS = 2;
+	WAIT_TIME = Number(Time.Minute);
+	DEFAULT_MASS_CHANNEL = '858141860900110366'; // #testing-2
 
 	override: Record<number, MonterCustomProperties> = {
 		[Monsters.KrilTsutsaroth.id]: {
@@ -151,33 +147,24 @@ export default class extends BotCommand {
 			thumbnail: 'https://oldschool.runescape.wiki/images/5/5c/Corporeal_Beast.png'
 		},
 		[NightmareMonster.id]: {
-			thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
-			taskName: Tasks.MinigameTicker,
-			activityName: Activity.Nightmare,
-			uniqueID: MinigameIDsEnum.Nightmare,
-			minQueueSize: 2,
-			maxQueueSize: 10
+			thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png'
 		}
 	};
 
 	allowedMonsters: AllowedMonsters[] = [
-		...killableMonsters
-			.filter(m => m.groupKillable)
+		...effectiveMonsters
+			.filter(m => {
+				if ('groupKillable' in m) {
+					return m.groupKillable === true;
+				}
+				return false;
+			})
 			.map(m => {
 				if (this.override[m.id]) {
 					m = { ...m, ...this.override[m.id] };
 				}
-				return m;
-			}),
-		{
-			...NightmareMonster,
-			calcDurQty: (users: KlasaUser[]) => {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-				// @ts-ignore
-				return this.client.commands.get('nightmare')!.getQtyDurationPerKillTime(users);
-			},
-			...this.override[NightmareMonster.id]
-		}
+				return <KillableMonster>m;
+			})
 	];
 
 	twoMinutesCheck: Record<number, Timeout | null> = {};
@@ -196,15 +183,15 @@ export default class extends BotCommand {
 	async validateUserReqs(user: KlasaUser, monster: KillableMonster) {
 		const reasons: string[] = [];
 		if (!user.hasMinion) {
-			reasons.push(`You don't have a minion.`);
+			reasons.push("You don't have a minion.");
 		}
 
 		if (user.minionIsBusy) {
-			reasons.push(`You are busy right now and can't join!`);
+			reasons.push("You are busy right now and can't join!");
 		}
 
 		if (user.isIronman) {
-			reasons.push(`You are an ironman! LFG is not for you.`);
+			reasons.push('You are an ironman! LFG is not for you.');
 		}
 
 		const [hasReqs, reason] = user.hasMonsterRequirements(monster);
@@ -213,8 +200,9 @@ export default class extends BotCommand {
 		}
 
 		if (!hasEnoughFoodForMonster(monster, user, 2)) {
-			throw `You don't have enough food. You need at least ${monster.healAmountNeeded! *
-				2} HP in food to participate.`;
+			throw `You don't have enough food. You need at least ${
+				monster.healAmountNeeded! * 2
+			} HP in food to participate.`;
 		}
 		return {
 			allowed: reasons.length <= 0,
@@ -234,8 +222,7 @@ export default class extends BotCommand {
 			delete this.LFGList[queueID].userSentFrom[user.id];
 			if (
 				cancelTimeout &&
-				Object.values(this.LFGList[queueID].users).length <
-					(monster?.minQueueSize ?? this.MIN_USERS)
+				Object.values(this.LFGList[queueID].users).length < (monster?.minQueueSize ?? this.MIN_USERS)
 			) {
 				clearTimeout(queueID);
 			}
@@ -259,10 +246,7 @@ export default class extends BotCommand {
 		const queue = this.LFGList[monster.id];
 		let doNotClear = false;
 		// Check if we can start
-		if (
-			Object.values(queue.users).length >= (monster.minQueueSize ?? this.MIN_USERS) ||
-			skipChecks
-		) {
+		if (Object.values(queue.users).length >= (monster.minQueueSize ?? this.MIN_USERS) || skipChecks) {
 			// If users >= MAX_USERS (should never be higher), remove the timeout check and it now
 			if (Object.values(queue.users).length >= (monster.maxQueueSize ?? this.MAX_USERS)) {
 				if (this.twoMinutesCheck[monster.id] !== null) {
@@ -273,10 +257,7 @@ export default class extends BotCommand {
 					Events.Log,
 					`Starting LFG [${monster.id}] ${this.WAIT_TIME.toLocaleString()}ms countdown`
 				);
-				this.twoMinutesCheck[monster.id] = setTimeout(
-					() => this.handleStart(monster, true),
-					this.WAIT_TIME
-				);
+				this.twoMinutesCheck[monster.id] = setTimeout(() => this.handleStart(monster, true), this.WAIT_TIME);
 				queue.startDate = new Date(Date.now() + this.WAIT_TIME);
 				return;
 			} else if (!skipChecks) {
@@ -292,9 +273,10 @@ export default class extends BotCommand {
 				// Init some vars
 				const finalUsers: KlasaUser[] = [];
 				// Sort users by maxTripLength to use that as the base for this LFG
-				const sortedUsers = Object.values(queue.users).sort(
-					(a, b) => b.maxTripLength - a.maxTripLength
-				);
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				// eslint-disable-next-line @typescript-eslint/unbound-method
+				const sortedUsers = Object.values(queue.users).sort((a, b) => b.maxTripLength - a.maxTripLength);
 				// Remove invalid users
 				for (const user of sortedUsers) {
 					const { allowed, reasons } = await this.validateUserReqs(user, monster);
@@ -305,21 +287,16 @@ export default class extends BotCommand {
 						await user.send(
 							`You were removed from the **${
 								monster.name
-							} LFG** as it was about to start due to the following reasons:\n - ${reasons.join(
-								'\n - '
-							)}`
+							} LFG** as it was about to start due to the following reasons:\n - ${reasons.join('\n - ')}`
 						);
 						await sleep(250);
 					}
 				}
 
 				// Detect if there are any person left
-				if (finalUsers.length < (monster.minQueueSize ? monster.minQueueSize : 2)) {
+				if (finalUsers.length < (monster.minQueueSize ? monster.minQueueSize : this.MIN_USERS)) {
 					doNotClear = true;
-					this.client.emit(
-						Events.Log,
-						`LFG Canceled [${monster.id}] Not enough users left after validation`
-					);
+					this.client.emit(Events.Log, `LFG Canceled [${monster.id}] Not enough users left after validation`);
 					return;
 				}
 
@@ -327,8 +304,8 @@ export default class extends BotCommand {
 				const leader = finalUsers[0];
 
 				const [quantity, duration, perKillTime] = monster.calcDurQty
-					? monster.calcDurQty(finalUsers)
-					: calcDurQty(finalUsers, monster, undefined);
+					? await monster.calcDurQty(finalUsers)
+					: await calcDurQty(finalUsers, monster, undefined);
 
 				const guilds: Record<string, string> = {};
 				const channelsToSend: Record<string, string[]> = {};
@@ -337,7 +314,7 @@ export default class extends BotCommand {
 					// Verifying channels to send
 					const { channel } = this.LFGList[monster.id].userSentFrom[user.id];
 					const { guild } = this.LFGList[monster.id].userSentFrom[user.id];
-					let toSendChannel;
+					let toSendChannel = null;
 					// Limits 1 message per server
 					// Not guild means DM
 					if (!guild) {
@@ -357,53 +334,25 @@ export default class extends BotCommand {
 					channelsToSend[toSendChannel].push(user.id);
 				}
 
-				if (
-					monster.taskName &&
-					monster.activityName &&
-					monster.uniqueID &&
-					monster.taskName === Tasks.MinigameTicker
-				) {
-					await addSubTaskToActivityTask<MinigameActivityTaskOptions>(
-						this.client,
-						monster.taskName,
-						{
-							userID: leader.id,
-							channelID: this.DEFAULT_MASS_CHANNEL,
-							quantity,
-							duration,
-							type: monster.activityName,
-							// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-							// @ts-ignore
-							leader: leader.id,
-							users: finalUsers.map(u => u.id),
-							minigameID: monster.uniqueID,
-							lfg: channelsToSend
-						}
-					);
-				} else {
-					await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>(
-						this.client,
-						Tasks.MonsterKillingTicker,
-						{
-							monsterID: monster.id,
-							userID: leader.id,
-							channelID: this.DEFAULT_MASS_CHANNEL,
-							quantity,
-							duration,
-							type: Activity.GroupMonsterKilling,
-							leader: leader.id,
-							users: finalUsers.map(u => u.id),
-							lfg: channelsToSend
-						}
-					);
-				}
+				// TODO : Add custom monsters from custom commands (nightmare, raids, etc)
+				await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>({
+					monsterID: monster.id,
+					userID: leader.id,
+					channelID: this.DEFAULT_MASS_CHANNEL,
+					quantity,
+					duration,
+					type: Activity.GroupMonsterKilling,
+					leader: leader.id,
+					users: finalUsers.map(u => u.id)
+					// lfg: channelsToSend
+				});
 
 				for (const user of finalUsers) {
-					await user.incrementMinionDailyDuration(duration);
+					// await user.incrementMinionDailyDuration(duration);
 					this.removeUserFromAllQueues(user);
 				}
 
-				const endDate = new Date(Date.now() + duration);
+				const endDate = new Date(Date.now() + Number(duration));
 				const embed = new MessageEmbed()
 					.setColor('#ec3f3f')
 					.setTitle(`${monster.name} LFG Mass has started!`)
@@ -411,23 +360,18 @@ export default class extends BotCommand {
 					.addField('Quantity being killed', quantity.toLocaleString(), true)
 					.addField(
 						'Returning time',
-						`${String(endDate.getDate()).padStart(2, '0')}/${String(
-							endDate.getMonth() + 1
-						).padStart(2, '0')}/${String(endDate.getFullYear()).padStart(
-							4,
+						`${String(endDate.getDate()).padStart(2, '0')}/${String(endDate.getMonth() + 1).padStart(
+							2,
 							'0'
-						)} ${String(endDate.getHours()).padStart(2, '0')}:${String(
-							endDate.getMinutes()
-						).padStart(2, '0')}`,
+						)}/${String(endDate.getFullYear()).padStart(4, '0')} ${String(endDate.getHours()).padStart(
+							2,
+							'0'
+						)}:${String(endDate.getMinutes()).padStart(2, '0')}`,
 						true
 					)
 					.addField('Time per kill', formatDuration(perKillTime), true)
 					.addField('Original time per kill', formatDuration(monster.timeToFinish), true)
-					.addField(
-						'Kills per player',
-						`${(quantity / finalUsers.length).toFixed(2)}~`,
-						true
-					)
+					.addField('Kills per player', `${(quantity / finalUsers.length).toFixed(2)}~`, true)
 					.addField('Users: ', finalUsers.map(u => u.username).join(', '));
 
 				if (this.override[monster.id] && this.override[monster.id].thumbnail) {
@@ -435,7 +379,7 @@ export default class extends BotCommand {
 				}
 
 				for (const _channel of [...Object.keys(channelsToSend)]) {
-					const channel = this.client.channels.get(_channel);
+					const channel = this.client.channels.cache.get(_channel);
 					if (channelIsSendable(channel)) {
 						await channel.sendEmbed(embed);
 						await sleep(250);
@@ -462,44 +406,35 @@ export default class extends BotCommand {
 		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';
 		const embed = new MessageEmbed()
 			.setColor(Color.Orange)
-			.setTitle(`Currently open LFG!`)
+			.setTitle('Currently open LFG!')
 			.setDescription(
-				`Below is a description of all monsters that can be killed in groups and how many users are on the queue.` +
-					`\nEach queue has a minimum and maximum queue size.` +
+				'Below is a description of all monsters that can be killed in groups and how many users are on the queue.' +
+					'\nEach queue has a minimum and maximum queue size.' +
 					`\nWhen the queue reaches the minimum size, it'll wait ${formatDuration(
 						this.WAIT_TIME
 					)} before starting.` +
-					`\n**WARNING**: Do not be busy when the activity is about to start or you'll be removed from it!`
+					"\n**WARNING**: Do not be busy when the activity is about to start or you'll be removed from it!"
 			)
 			.setTimestamp();
 		for (const _monster of this.allowedMonsters) {
-			const smallestAlias =
-				_monster.aliases.sort((a, b) => a.length - b.length)[0] ?? _monster.name;
-			const joined =
-				this.LFGList[_monster.id] && this.LFGList[_monster.id].users[msg.author.id];
-			const title = _monster.name + (joined ? ` [JOINED]` : ``);
+			const smallestAlias = _monster.aliases.sort((a, b) => a.length - b.length)[0] ?? _monster.name;
+			const joined = this.LFGList[_monster.id] && this.LFGList[_monster.id].users[msg.author.id];
+			const title = _monster.name + (joined ? ' [JOINED]' : '');
 			embed.addField(
 				title,
-				`On queue: ${
-					this.LFGList[_monster.id]
-						? Object.values(this.LFGList[_monster.id]?.users).length
-						: 0
-				}` +
+				`On queue: ${this.LFGList[_monster.id] ? Object.values(this.LFGList[_monster.id]?.users).length : 0}` +
 					`\n\`${prefix}lfg ${joined ? 'leave' : 'join'} ${smallestAlias}\`` +
 					`\nStarts in: ${this.getTimeLeft(
 						this.LFGList[_monster.id] ? this.LFGList[_monster.id].startDate : undefined
 					)}` +
-					`\nMin/Max users: ${_monster.minQueueSize ??
-						this.MIN_USERS}/${_monster.maxQueueSize ?? this.MAX_USERS}`,
+					`\nMin/Max users: ${_monster.minQueueSize ?? this.MIN_USERS}/${
+						_monster.maxQueueSize ?? this.MAX_USERS
+					}`,
 				true
 			);
 		}
-		for (
-			let i = 0;
-			i < Math.ceil(this.allowedMonsters.length / 3) * 3 - this.allowedMonsters.length;
-			i++
-		) {
-			embed.addBlankField(true);
+		for (let i = 0; i < Math.ceil(this.allowedMonsters.length / 3) * 3 - this.allowedMonsters.length; i++) {
+			embed.addField('\u200b', '\u200b');
 		}
 		await msg.channel.send(embed);
 	}
@@ -508,15 +443,11 @@ export default class extends BotCommand {
 	async join(msg: KlasaMessage, [monster = '']: [string]) {
 		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';
 		const groupKillMonster = this.allowedMonsters.find(
-			m =>
-				stringMatches(m.name, monster) ||
-				(m.aliases && m.aliases.some(a => stringMatches(a, monster)))
+			m => stringMatches(m.name, monster) || (m.aliases && m.aliases.some(a => stringMatches(a, monster)))
 		);
 
 		if (!groupKillMonster) {
-			return msg.channel.send(
-				`This is not a LFG monster. Run \`${prefix}lfg\` for more information.`
-			);
+			return msg.channel.send(`This is not a LFG monster. Run \`${prefix}lfg\` for more information.`);
 		}
 
 		if (!this.LFGList[groupKillMonster.id]) {
@@ -530,28 +461,24 @@ export default class extends BotCommand {
 
 		if (this.LFGList[groupKillMonster.id].locked) {
 			return msg.channel.send(
-				`You can' join this mass at this moment as it is already starting Try again in a few moments.`
+				"You can' join this mass at this moment as it is already starting Try again in a few moments."
 			);
 		}
 
 		if (this.LFGList[groupKillMonster.id].users[msg.author.id]) {
-			return msg.channel.send(`You are already on this LFG.`);
+			return msg.channel.send('You are already on this LFG.');
 		}
 
 		// Validate if user can actually join this LFG
 		const { allowed, reasons } = await this.validateUserReqs(msg.author, groupKillMonster);
 		if (!allowed) {
-			if (!channelIsSendable(msg.author.dmChannel)) {
+			if (!channelIsSendable(msg.author.dmChannel!)) {
 				return msg.channel.send(
-					`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${reasons.join(
-						'\n - '
-					)}`
+					`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${reasons.join('\n - ')}`
 				);
 			}
 			return msg.author.send(
-				`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${reasons.join(
-					'\n - '
-				)}`
+				`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${reasons.join('\n - ')}`
 			);
 		}
 
@@ -578,30 +505,24 @@ export default class extends BotCommand {
 	async leave(msg: KlasaMessage, [monster = '']: [string]) {
 		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';
 		const groupKillMonster = this.allowedMonsters.find(
-			m =>
-				stringMatches(m.name, monster) ||
-				(m.aliases && m.aliases.some(a => stringMatches(a, monster)))
+			m => stringMatches(m.name, monster) || (m.aliases && m.aliases.some(a => stringMatches(a, monster)))
 		);
 
 		if (!groupKillMonster) {
 			// Allows the user to leave all queues
 			if (monster === 'all') {
 				this.removeUserFromAllQueues(msg.author);
-				return msg.channel.send(`You left all PFG queues.`);
+				return msg.channel.send('You left all LFG queues.');
 			}
-			return msg.channel.send(
-				`This is not a LFG monster. Run \`${prefix}lfg\` for more information.`
-			);
+			return msg.channel.send(`This is not a LFG monster. Run \`${prefix}lfg\` for more information.`);
 		}
 
-		const user = this.LFGList[groupKillMonster.id]
-			? this.LFGList[groupKillMonster.id].users[msg.author.id]
-			: false;
+		const user = this.LFGList[groupKillMonster.id] ? this.LFGList[groupKillMonster.id].users[msg.author.id] : false;
 		if (user) {
 			this.removeUserFromQueue(msg.author, groupKillMonster.id, true);
 			await msg.channel.send(`You left the ${groupKillMonster.name} LFG.`);
 		} else {
-			return msg.channel.send(`You are not in this LFG group!`);
+			return msg.channel.send('You are not in this LFG group!');
 		}
 	}
 }
