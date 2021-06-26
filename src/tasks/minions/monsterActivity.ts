@@ -84,6 +84,8 @@ export default class extends Task {
 			str += '\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.';
 		}
 
+		let thisTripFinishesTask = false;
+
 		if (isOnTask) {
 			const effectiveSlayed =
 				monsterID === Monsters.KrilTsutsaroth.id &&
@@ -98,7 +100,7 @@ export default class extends Task {
 
 			const quantityLeft = Math.max(0, usersTask.currentTask!.quantityRemaining - effectiveSlayed);
 
-			const thisTripFinishesTask = quantityLeft === 0;
+			thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {
 				const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
 				await user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
@@ -140,14 +142,16 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of killing ${monster.name}`);
-				let method = 'none';
-				if (usingCannon) method = 'cannon';
-				else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
-				else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
-				return this.client.commands.get('k')!.run(res, [quantity, monster.name, method]);
-			},
+			isOnTask && thisTripFinishesTask
+				? undefined
+				: res => {
+						user.log(`continued trip of killing ${monster.name}`);
+						let method = 'none';
+						if (usingCannon) method = 'cannon';
+						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
+						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
+						return this.client.commands.get('k')!.run(res, [quantity, monster.name, method]);
+				  },
 			image!,
 			data,
 			itemsAdded
