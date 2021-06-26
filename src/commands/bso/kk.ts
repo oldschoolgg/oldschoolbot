@@ -35,7 +35,7 @@ function calcFood(user: KlasaUser, teamSize: number, quantity: number) {
 	else if (kc > 10) healAmountNeeded *= 0.8;
 	else if (kc > 5) healAmountNeeded *= 0.9;
 	healAmountNeeded /= (teamSize + 1) / 1.5;
-	let brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
+	let brewsNeeded = Math.max(4, Math.ceil(healAmountNeeded / 16) * quantity);
 	if (teamSize === 1) brewsNeeded += 2;
 	const restoresNeeded = Math.ceil(brewsNeeded / 3);
 	const items = new Bank({
