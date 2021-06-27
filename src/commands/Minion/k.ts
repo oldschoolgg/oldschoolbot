@@ -344,6 +344,7 @@ export default class extends BotCommand {
 		}
 
 		// Check consumables: (hope this forEach is ok :) )
+		const totalEconomyCost = new Bank();
 		const lootToRemove = new Bank();
 		let pvmCost = false;
 		consumableCosts.forEach(cc => {
@@ -442,7 +443,9 @@ export default class extends BotCommand {
 		}
 
 		if (hasBlessing && prayerPotsNeeded) {
-			await msg.author.removeItemFromBank(itemID('Prayer potion(4)'), prayerPotsNeeded);
+			const prayerPotsBank = new Bank().add('Prayer potion(4)', prayerPotsNeeded);
+			totalEconomyCost.add(prayerPotsBank);
+			await msg.author.removeItemsFromBank(prayerPotsBank);
 		}
 
 		const rangeSetup = { ...msg.author.getGear('range') };
@@ -465,7 +468,8 @@ export default class extends BotCommand {
 				'You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.'
 			);
 		}
-		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
+		totalEconomyCost.add(lootToRemove);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, totalEconomyCost);
 		await msg.author.removeItemsFromBank(lootToRemove);
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
