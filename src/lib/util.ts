@@ -315,7 +315,7 @@ export function generateContinuationChar(user: KlasaUser) {
 }
 
 export function isValidGearSetup(str: string): str is GearSetupTypes {
-	return ['melee', 'mage', 'range', 'skilling', 'misc'].includes(str);
+	return ['melee', 'mage', 'range', 'skilling', 'misc', 'wildy'].includes(str);
 }
 
 /**

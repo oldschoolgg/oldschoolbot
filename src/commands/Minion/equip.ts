@@ -15,7 +15,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<melee|mage|range|skilling|misc> [quantity:integer{1}] (item:...item)',
+			usage: '<melee|mage|range|skilling|misc|wildy> [quantity:integer{1}] (item:...item)',
 			usageDelim: ' ',
 			description: 'Equips an item to one of your gear setups. (melee/range/range/skilling/misc)',
 			examples: ['+equip skilling graceful hood', '+equip melee bandos godsword', '+equip mage staff of fire'],

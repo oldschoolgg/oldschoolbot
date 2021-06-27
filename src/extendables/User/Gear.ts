@@ -19,12 +19,14 @@ export default class extends Extendable {
 		const misc = this.getGear('misc');
 		const mage = this.getGear('mage');
 		const skilling = this.getGear('skilling');
+		const wildy = this.getGear('wildy');
 		return {
 			melee,
 			range,
 			misc,
 			skilling,
-			mage
+			mage,
+			wildy
 		};
 	}
 
