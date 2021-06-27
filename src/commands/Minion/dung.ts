@@ -102,6 +102,10 @@ const dungBuyables = [
 		cost: 400_000
 	},
 	{
+		item: getOSItem('Scroll of proficiency'),
+		cost: 900_000
+	},
+	{
 		item: getOSItem('Frosty'),
 		cost: 2_000_000
 	},
