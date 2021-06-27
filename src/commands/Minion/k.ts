@@ -342,7 +342,7 @@ export default class extends BotCommand {
 		// Check food
 		let foodStr: undefined | string = undefined;
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
-			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
+			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author, burstOrBarrage > 0);
 			messages = messages.concat(foodMessages);
 
 			let gearToCheck = GearSetupTypes.Melee;

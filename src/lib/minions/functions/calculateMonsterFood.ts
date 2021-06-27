@@ -10,7 +10,8 @@ const { floor, max } = Math;
 
 export default function calculateMonsterFood(
 	monster: O.Readonly<KillableMonster>,
-	user: O.Readonly<KlasaUser>
+	user: O.Readonly<KlasaUser>,
+	burstOrBarrage: boolean = false
 ): [number, string[]] {
 	const messages: string[] = [];
 	let { healAmountNeeded, attackStyleToUse, attackStylesUsed } = monster;
@@ -32,6 +33,11 @@ export default function calculateMonsterFood(
 			break;
 		default:
 			break;
+	}
+
+	if (burstOrBarrage) {
+		attackStyleToUse = GearStat.AttackMagic;
+		gearToCheck = GearSetupTypes.Mage;
 	}
 
 	const gear = user.getGear(gearToCheck);
@@ -60,14 +66,25 @@ export default function calculateMonsterFood(
 		messages.push(`Your ${inverseStyle} bonus is ${percent}% of the best (${usersStyle} out of ${maxStyle})`);
 		totalPercentOfGearLevel += percent;
 	}
+	totalPercentOfGearLevel *= 0.5;
+	const usersStyleOff = gearStats[attackStyleToUse];
+	const maxStyleOff = maxOffenceStats[attackStyleToUse];
+	const offPercent = floor(calcWhatPercent(usersStyleOff, maxStyleOff) * 0.75);
+	messages.push(
+		`Your ${attackStyleToUse} bonus is ${offPercent}% of the best (${usersStyleOff} out of ${maxStyleOff})`
+	);
+	totalOffensivePercent = offPercent;
 
-	totalOffensivePercent = floor(calcWhatPercent(gearStats[attackStyleToUse], maxOffenceStats[attackStyleToUse]));
-	totalOffensivePercent += floor(calcWhatPercent(gearStats[strengthStat], maxOtherStats[strengthStat]) / 2);
+	const maxUserStr = gearStats[strengthStat];
+	const maxStr = maxOtherStats[strengthStat];
+	const strPercent = floor(calcWhatPercent(maxUserStr, maxStr));
+	messages.push(`Your ${strengthStat} bonus is ${strPercent}% of the best (${maxUserStr} out of ${maxStr})`);
+	totalOffensivePercent += strPercent / 2;
 
-	// Get average of all defensive%'s and limit it to a cap of 95
-	totalPercentOfGearLevel = Math.min(floor(max(0, totalPercentOfGearLevel / attackStylesUsed.length)), 95);
-	// Floor at 0 and cap at 95
-	totalOffensivePercent = Math.min(floor(max(0, totalOffensivePercent)), 95);
+	// Get average of all defensive%'s and limit it to a cap of 50
+	totalPercentOfGearLevel = Math.min(floor(max(0, totalPercentOfGearLevel / attackStylesUsed.length)), 50);
+	// Floor at 0 and cap at 75
+	totalOffensivePercent = Math.min(floor(max(0, totalOffensivePercent)), 75);
 
 	messages.push(`You use ${floor(totalPercentOfGearLevel)}% less food because of your defensive stats.`);
 	healAmountNeeded = reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel);
