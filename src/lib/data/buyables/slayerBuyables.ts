@@ -100,12 +100,5 @@ export const slayerBuyables: Buyable[] = [
 			'Antipoison(4)': 1
 		}),
 		gpCost: 10_000
-	},
-	{
-		name: 'Antipoison',
-		outputItems: resolveNameBank({
-			'Antipoison(4)': 1
-		}),
-		gpCost: 10_000
 	}
 ];

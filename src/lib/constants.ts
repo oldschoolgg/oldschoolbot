@@ -411,7 +411,7 @@ export const MAX_QP = 5000;
 
 export const MIMIC_MONSTER_ID = 23184;
 
-export const continuationChars = 'abdefghjkmnopqrstuvwxyz123456789'.split('');
+export const continuationChars = 'abdefghjkmnoprstuvwxyz123456789'.split('');
 export const CENA_CHARS = ['​', '‎', '‍'];
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
