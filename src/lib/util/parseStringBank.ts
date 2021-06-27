@@ -1,10 +1,11 @@
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
+import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { fromKMB } from 'oldschooljs/dist/util';
 
 import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
-import { stringMatches } from '../util';
+import { cleanString, stringMatches } from '../util';
 
 const { floor, max, min } = Math;
 
@@ -38,7 +39,11 @@ export function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 		const item = Items.get(nameAsInt);
 		if (item) osItems.push(item);
 	} else {
-		osItems = Array.from(Items.filter(i => stringMatches(i.name, parsedName)).values());
+		osItems = Array.from(
+			Items.filter(
+				i => itemNameMap.get(cleanString(parsedName)) === i.id || stringMatches(i.name, parsedName)
+			).values()
+		);
 	}
 	if (osItems.length === 0) return [];
 
