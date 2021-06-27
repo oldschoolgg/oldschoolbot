@@ -8,6 +8,13 @@ import getOSItem from '../lib/util/getOSItem';
 
 export default class extends Argument {
 	async run(itemName = ''): Promise<Item[]> {
+		if (typeof itemName === 'number') {
+			let items: Item[] = [];
+			const item = getOSItem(itemName);
+			if (item) items.push(item);
+			return items;
+		}
+
 		itemName = itemName.trim();
 		if (!itemName) return [];
 
