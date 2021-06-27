@@ -2,6 +2,7 @@ import { randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Misc, Openables } from 'oldschooljs';
 import Openable from 'oldschooljs/dist/structures/Openable';
+import Items from 'oldschooljs/dist/structures/Items';
 
 import { COINS_ID, Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import { cluesRares } from '../../lib/data/collectionLog';
@@ -11,7 +12,7 @@ import { ClueTier } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
+import { addBanks, itemNameFromID, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 
@@ -20,7 +21,7 @@ const itemsToNotifyOf = Object.values(cluesRares)
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
 	.concat([itemID('Bloodhound')]);
 
-const allOpenables = [...Openables.map(i => i.id), ...ClueTiers.map(i => i.id), ...botOpenables.map(i => i.itemID)];
+const allOpenables = [...Openables.map(i => i.name), ...ClueTiers.map(i => i.name), ...botOpenables.map(i => i.name)];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -37,7 +38,7 @@ export default class extends BotCommand {
 	}
 
 	async showAvailable(msg: KlasaMessage) {
-		const available = msg.author.bank().filter(i => allOpenables.includes(i.id));
+		const available = msg.author.bank().filter(i => allOpenables.includes(i.name));
 
 		if (available.length === 0) {
 			return 'You have no openable items.';
@@ -47,22 +48,58 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [quantity = 1, name]: [number, string | undefined]) {
-		if (!name) {
+		if (!name && msg.flagArgs.any === undefined && msg.flagArgs.all === undefined) {
 			return msg.send(await this.showAvailable(msg));
 		}
 
+		if (msg.flagArgs.any !== undefined) {
+			return this.any(msg);			
+		}
+		if (msg.flagArgs.all !== undefined) {
+			return this.all(msg);
+		}
+		
 		await msg.author.settings.sync(true);
-		const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === name.toLowerCase());
+		const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === name!.toLowerCase());
 		if (clue) {
 			return this.clueOpen(msg, quantity, clue);
 		}
 
-		const osjsOpenable = Openables.find(openable => openable.aliases.some(alias => stringMatches(alias, name)));
+		const osjsOpenable = Openables.find(openable => openable.aliases.some(alias => stringMatches(alias, name!)));
 		if (osjsOpenable) {
 			return this.osjsOpenablesOpen(msg, quantity, osjsOpenable);
 		}
 
-		return this.botOpenablesOpen(msg, quantity, name);
+		return this.botOpenablesOpen(msg, quantity, name!);
+	}
+
+	async all(msg: KlasaMessage) {
+		return msg.send("Open all is currently not supported.")
+	}
+
+	async any(msg: KlasaMessage) {
+		const userBank = msg.author.bank()
+
+		for (const item of allOpenables) {
+			const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === item.toLowerCase());
+			if (clue && userBank.has(clue.id)) {
+				return this.clueOpen(msg, userBank.amount(clue.id), clue);
+			}
+			const osjsOpenable = Openables.find(openable => openable.aliases.some(alias => stringMatches(alias, item)));
+			if (osjsOpenable && userBank.has(osjsOpenable.id)) {
+				return this.osjsOpenablesOpen(msg, userBank.amount(osjsOpenable.id), osjsOpenable);
+			}
+			const itemID = Items.get(item)?.id;
+			if (itemID && userBank.has(itemID)) {
+				const itemName = itemNameFromID(itemID);
+
+				if (itemName === undefined) {
+					return msg.send(itemID + " has no name")
+				}
+				return this.botOpenablesOpen(msg, userBank.amount(itemID), itemName);
+			}
+		}
+			return msg.send('You have no openable items.');
 	}
 
 	async clueOpen(msg: KlasaMessage, quantity: number, clueTier: ClueTier) {
