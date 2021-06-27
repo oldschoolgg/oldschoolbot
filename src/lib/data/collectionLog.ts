@@ -1582,11 +1582,17 @@ export const miscLog: CollectionLogData = {
 		'Book of darkness',
 		'Book of law'
 	]),
-	MA1: resolveItems(['Saradomin cape', 'Zamorak cape', 'Guthix cape']),
-	MA2: resolveItems(['Imbued saradomin cape', 'Imbued zamorak cape', 'Imbued guthix cape']),
-	Tzhaar: resolveItems(['Fire cape']),
+	MA1: resolveItems([
+		'Saradomin cape',
+		'Zamorak cape',
+		'Guthix cape',
+		'Imbued saradomin cape',
+		'Imbued zamorak cape',
+		'Imbued guthix cape'
+	]),
 	evilChickenOutfit,
 	other: resolveItems(['Amulet of eternal glory', 'Crystal grail']),
+	Tzhaar: resolveItems(['Fire cape']),
 	'Lizardman shaman': resolveItems(['Dragon warhammer'])
 };
 
