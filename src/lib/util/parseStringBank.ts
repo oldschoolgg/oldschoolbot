@@ -19,7 +19,7 @@ export function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 		return parseQuantityAndItem(split.join(' '));
 	}
 
-	let [potentialQty, ...potentialName] = split;
+	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
 
 	// Fix for 3rd age items
 	if (potentialQty === '3rd') potentialQty = '';

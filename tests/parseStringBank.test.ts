@@ -20,6 +20,7 @@ describe('Bank Parsers', () => {
 		expect(pQI('1 1 twisted bow')).toEqual([[get('Twisted bow')], 1]);
 		const runePlate = get('Rune platebody')!;
 		expect(pQI(`1 100 ${runePlate.id}`)).toEqual([[runePlate], 1]);
+		expect(pQI(`${runePlate.id}`)).toEqual([[runePlate], 0]);
 		expect(pQI('1 1 Dragonfire ward')).toEqual([[get(22002), get(22003)], 1]);
 	});
 
@@ -181,14 +182,18 @@ describe('Bank Parsers', () => {
 	});
 
 	test('parseBank - extra number', async () => {
-		const bank = new Bank().add('Coal', 5).add('3rd age platebody', 100);
+		const bank = new Bank().add('Coal', 5).add('3rd age platebody', 100).add('Egg', 3);
 		const res = parseBank({
 			inputBank: bank,
 			flags: {},
-			inputStr: '1 5 coal, 3 100 3rd age platebody'
+			inputStr: `1 5 coal, 3 100 3rd age platebody,${get('Egg').id}`
 		});
-		expect(res.length).toEqual(2);
+		expect(res.length).toEqual(3);
 		expect(res.amount('Coal')).toEqual(1);
 		expect(res.amount('3rd age platebody')).toEqual(3);
+		expect(res.amount('Egg')).toEqual(3);
+
+		const other = parseBank({ inputBank: bank, inputStr: get('Egg').id.toString() });
+		expect(other.amount('Egg')).toEqual(3);
 	});
 });
