@@ -13,7 +13,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			oneAtTime: true,
 			description: 'Simulate killing OSRS monsters and shows the loot.',
-			usage: '<quantity:int{1}> <BossName:...str>',
+			usage: '<quantity:int{1}> <BossName:...str> [inCatacombs:boolean]',
 			usageDelim: ' ',
 			requiredPermissions: ['ATTACH_FILES'],
 			examples: ['+kill 100 vorkath', 'kill 100k bandos'],
@@ -59,7 +59,8 @@ export default class extends BotCommand {
 		const result = await Workers.kill({
 			quantity,
 			bossName,
-			limit: this.determineKillLimit(msg.author)
+			limit: this.determineKillLimit(msg.author),
+			inCatacombs: msg.flagArgs.cannon === undefined ? true : false
 		});
 
 		if (typeof result === 'string') {
