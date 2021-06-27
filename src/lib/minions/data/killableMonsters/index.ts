@@ -231,7 +231,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 7,
 		qpRequired: 0,
 		healAmountNeeded: 20 * 20,
-		attackStyleToUse: GearStat.AttackMagic,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic],
 		minimumGearRequirements: {
 			[GearSetupTypes.Range]: {
