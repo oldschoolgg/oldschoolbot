@@ -201,7 +201,7 @@ describe('Bank Parsers', () => {
 		const bank = new Bank().add('Steel arrow').add('Bones').add('Coal', 500).add('Clue scroll (easy)');
 		expect(parseBank({ inputBank: bank, inputStr: '1 Portrait' }).toString()).toEqual('No items');
 		expect(parseBank({ inputBank: bank, inputStr: '1 666' }).toString()).toEqual('No items');
-		expect(parseBank({ inputBank: bank, inputStr: '5 Coal' }).toString()).toEqual('5x Coal');
+		expect(parseBank({ inputBank: bank, inputStr: '526' }).toString()).toEqual('1x Bones');
 		expect(parseBank({ inputBank: bank, inputStr: '0 Coal' }).toString()).toEqual('500x Coal');
 	});
 });
