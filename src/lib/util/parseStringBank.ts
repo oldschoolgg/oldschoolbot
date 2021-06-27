@@ -12,7 +12,7 @@ function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 	const split = str.split(' ');
 
 	// If we're passed 2 numbers in a row, e.g. '1 1 coal', remove that number and recurse back.
-	if (!isNaN(Number(split[1]))) {
+	if (split.length > 2 && !isNaN(Number(split[1]))) {
 		split.splice(1, 1);
 		return parseQuantityAndItem(split.join(' '));
 	}
@@ -24,7 +24,20 @@ function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 	// Can return number, NaN or undefined. We want it to be only number or undefined.
 	if (isNaN(parsedQty)) parsedQty = undefined;
 	const parsedName = parsedQty === undefined ? str : potentialName.join('');
-	let osItems: Item[] = Array.from(Items.filter(i => stringMatches(i.name, parsedName)).values());
+	const nameAsInt = Number(parsedName);
+
+	let osItems: Item[] = [];
+
+	if (!isNaN(nameAsInt)) {
+		const item = Items.get(nameAsInt);
+		if (item) {
+			osItems.push(item);
+		}
+	} else {
+		osItems = Array.from(
+			Items.filter(i => stringMatches(i.name, parsedName) || stringMatches(i.id.toString(), parsedName)).values()
+		);
+	}
 
 	let quantity = parsedQty ?? 0;
 	if (quantity < 0) quantity = 0;
