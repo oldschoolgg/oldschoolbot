@@ -192,7 +192,7 @@ describe('Bank Parsers', () => {
 	test('parseStringBank - item ids', async () => {
 		const twistedBow = Items.get('Twisted bow')!;
 		const runePlate = Items.get('Rune platebody')!;
-		const result = parseStringBank(`1 ${twistedBow.id}, 1 100 ${runePlate.id}`);
+		const result = parseStringBank(`1 1 ${twistedBow.id}, 1 100 ${runePlate.id}`);
 		expect(result).toEqual([
 			[twistedBow, 1],
 			[runePlate, 1]
