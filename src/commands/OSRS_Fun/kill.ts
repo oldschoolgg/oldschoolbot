@@ -1,9 +1,11 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { toTitleCase } from '../../lib/util';
+import { stringMatches, toTitleCase } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { Workers } from '../../lib/workers';
 
@@ -13,7 +15,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			oneAtTime: true,
 			description: 'Simulate killing OSRS monsters and shows the loot.',
-			usage: '<quantity:int{1}> <BossName:...str> [inCatacombs:boolean]',
+			usage: '<quantity:int{1}> <BossName:...str>',
 			usageDelim: ' ',
 			requiredPermissions: ['ATTACH_FILES'],
 			examples: ['+kill 100 vorkath', 'kill 100k bandos'],
@@ -56,11 +58,16 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [quantity, bossName]: [number, string]) {
+		const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, bossName)));
+		const killableInCatacombs =
+			msg.flagArgs.catacombs !== undefined &&
+			killableMonsters.find(m => m.id === osjsMonster?.id)?.existsInCatacombs;
 		const result = await Workers.kill({
 			quantity,
 			bossName,
 			limit: this.determineKillLimit(msg.author),
-			inCatacombs: msg.flagArgs.cannon === undefined ? true : false
+			catacombs: killableInCatacombs !== undefined && killableInCatacombs,
+			onTask: msg.flagArgs.ontask === undefined ? false : true
 		});
 
 		if (typeof result === 'string') {
