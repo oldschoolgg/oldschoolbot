@@ -1,26 +1,30 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Bank } from 'oldschooljs';
 
 import getOSItem from '../src/lib/util/getOSItem';
-import { parseBank, parseStringBank } from '../src/lib/util/parseStringBank';
+import { parseBank, parseQuantityAndItem, parseStringBank } from '../src/lib/util/parseStringBank';
 
 const psb = parseStringBank;
 const get = getOSItem;
+const pQI = parseQuantityAndItem;
 
 describe('Bank Parsers', () => {
+	test('parseQuantityAndItem', () => {
+		expect(pQI('')).toEqual([]);
+		expect(pQI(' ,,, ')).toEqual([]);
+		expect(pQI('1.5k twisted bow')).toEqual([[get('Twisted bow')], 1500]);
+		expect(pQI('1m twisted bow')).toEqual([[get('Twisted bow')], 1_000_000]);
+		expect(pQI('20 twisted bow')).toEqual([[get('Twisted bow')], 20]);
+		expect(pQI('0 twisted bow')).toEqual([[get('Twisted bow')], 0]);
+		expect(pQI('twisted bow')).toEqual([[get('Twisted bow')], 0]);
+		expect(pQI('1 1 twisted bow')).toEqual([[get('Twisted bow')], 1]);
+		const runePlate = get('Rune platebody')!;
+		expect(pQI(`1 100 ${runePlate.id}`)).toEqual([[runePlate], 1]);
+		expect(pQI(`${runePlate.id}`)).toEqual([[runePlate], 0]);
+		expect(pQI('1 1 Dragonfire ward')).toEqual([[get(22002), get(22003)], 1]);
+	});
+
 	test('parseStringBank', async () => {
-		const quantities = [
-			['5k', 5000],
-			['1.5k', 1500],
-			['1m', 1_000_000],
-			['20', 20],
-			['0', 0],
-			['', 0]
-		];
-
-		for (const [input, output] of quantities) {
-			expect(psb(`${input} twisted bow`)).toEqual([[get('Twisted bow'), output]]);
-		}
-
 		const output = psb(' 1 twisted bow, coal,  5k egg,  1b trout ');
 		const expected = [
 			[get('Twisted bow'), 1],
@@ -178,14 +182,18 @@ describe('Bank Parsers', () => {
 	});
 
 	test('parseBank - extra number', async () => {
-		const bank = new Bank().add('Coal', 5).add('3rd age platebody', 100);
+		const bank = new Bank().add('Coal', 5).add('3rd age platebody', 100).add('Egg', 3);
 		const res = parseBank({
 			inputBank: bank,
 			flags: {},
-			inputStr: '1 5 coal, 3 100 3rd age platebody'
+			inputStr: `1 5 coal, 3 100 3rd age platebody,${get('Egg').id}`
 		});
-		expect(res.length).toEqual(2);
+		expect(res.length).toEqual(3);
 		expect(res.amount('Coal')).toEqual(1);
 		expect(res.amount('3rd age platebody')).toEqual(3);
+		expect(res.amount('Egg')).toEqual(3);
+
+		const other = parseBank({ inputBank: bank, inputStr: get('Egg').id.toString() });
+		expect(other.amount('Egg')).toEqual(3);
 	});
 });
