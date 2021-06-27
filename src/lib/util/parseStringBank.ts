@@ -6,43 +6,41 @@ import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
 import { stringMatches } from '../util';
 
-function parseQuantityAndItem(str = ''): [Item[], number] | [] {
+const { floor, max, min } = Math;
+
+export function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 	str = str.trim();
 	if (!str) return [];
 	const split = str.split(' ');
 
 	// If we're passed 2 numbers in a row, e.g. '1 1 coal', remove that number and recurse back.
-	if (split.length > 2 && !isNaN(Number(split[1]))) {
+	if (!isNaN(Number(split[1])) && split.length > 2) {
 		split.splice(1, 1);
 		return parseQuantityAndItem(split.join(' '));
 	}
 
 	let [potentialQty, ...potentialName] = split;
+
 	// Fix for 3rd age items
 	if (potentialQty === '3rd') potentialQty = '';
-	let parsedQty: number | undefined = fromKMB(potentialQty);
-	// Can return number, NaN or undefined. We want it to be only number or undefined.
-	if (isNaN(parsedQty)) parsedQty = undefined;
-	const parsedName = parsedQty === undefined ? str : potentialName.join('');
-	const nameAsInt = Number(parsedName);
+
+	let parsedQty: number | null = fromKMB(potentialQty);
+	if (isNaN(parsedQty)) parsedQty = null;
+
+	const parsedName = parsedQty === null ? str : potentialName.join(' ');
 
 	let osItems: Item[] = [];
 
+	const nameAsInt = Number(parsedName);
 	if (!isNaN(nameAsInt)) {
 		const item = Items.get(nameAsInt);
-		if (item) {
-			osItems.push(item);
-		}
+		if (item) osItems.push(item);
 	} else {
-		osItems = Array.from(
-			Items.filter(i => stringMatches(i.name, parsedName) || stringMatches(i.id.toString(), parsedName)).values()
-		);
+		osItems = Array.from(Items.filter(i => stringMatches(i.name, parsedName)).values());
 	}
+	if (osItems.length === 0) return [];
 
-	let quantity = parsedQty ?? 0;
-	if (quantity < 0) quantity = 0;
-
-	quantity = Math.floor(Math.min(MAX_INT_JAVA, quantity));
+	let quantity = floor(min(MAX_INT_JAVA, max(0, parsedQty ?? 0)));
 
 	return [osItems, quantity];
 }
