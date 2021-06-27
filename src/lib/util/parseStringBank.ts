@@ -11,6 +11,8 @@ const { floor, max, min } = Math;
 export function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 	str = str.trim();
 	if (!str) return [];
+	// Make it so itemIDs aren't interpreted as quantities
+	if (str.match(/^[0-9]+$/)) str = `0 ${str}`;
 	const split = str.split(' ');
 
 	// If we're passed 2 numbers in a row, e.g. '1 1 coal', remove that number and recurse back.
@@ -80,7 +82,7 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 		for (const [item, quantity] of strItems) {
 			_bank.add(
 				item.id,
-				!quantity ? inputBank.amount(item.id) : Math.max(1, Math.min(quantity, inputBank.amount(item.id)))
+				!quantity ? inputBank.amount(item.id) : Math.max(0, Math.min(quantity, inputBank.amount(item.id)))
 			);
 		}
 		return _bank;
