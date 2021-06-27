@@ -345,7 +345,6 @@ export const bosses: CollectionLogData = {
 		'Jar of sand',
 		'Kalphite princess'
 	]),
-	'Lizardman shaman': resolveItems(['Dragon warhammer']),
 	Callisto: resolveItems(['Dragon pickaxe', 'Dragon 2h sword', 'Tyrannical ring', 'Callisto cub']),
 	Venenatis: resolveItems(['Dragon pickaxe', 'Dragon 2h sword', 'Treasonous ring', 'Venenatis spiderling']),
 	Vetion: resolveItems(['Dragon pickaxe', 'Dragon 2h sword', 'Ring of the gods', "Vet'ion jr."]),
@@ -1585,7 +1584,8 @@ export const miscLog: CollectionLogData = {
 	]),
 	Tzhaar: resolveItems(['Fire cape']),
 	evilChickenOutfit,
-	other: resolveItems(['Amulet of eternal glory', 'Crystal grail'])
+	other: resolveItems(['Amulet of eternal glory', 'Crystal grail']),
+	'Lizardman shaman': resolveItems(['Dragon warhammer'])
 };
 
 export const slayerLog: CollectionLogData = {
