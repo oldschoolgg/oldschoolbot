@@ -1,7 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 
-import { GearSetupTypes, GearStat, maxDefenceStats, maxOffenceStats } from '../../gear';
+import { GearSetupTypes, GearStat, maxDefenceStats, maxOffenceStats, maxOtherStats } from '../../gear';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
 import { calcWhatPercent, reduceNumByPercent } from '../../util';
 import { KillableMonster } from '../types';
@@ -34,7 +34,19 @@ export default function calculateMonsterFood(
 			break;
 	}
 
-	const gearStats = user.getGear(gearToCheck).stats;
+	const gear = user.getGear(gearToCheck);
+	const gearStats = gear.stats;
+
+	if (gearToCheck === GearSetupTypes.Melee) {
+		attackStyleToUse = GearStat[gear.getHighestMeleeStat()];
+	}
+
+	const strengthStat =
+		gearToCheck === GearSetupTypes.Melee
+			? GearStat.MeleeStrength
+			: gearToCheck === GearSetupTypes.Range
+			? GearStat.RangedStrength
+			: GearStat.MagicDamage;
 
 	let totalPercentOfGearLevel = 0;
 	let totalOffensivePercent = 0;
@@ -50,6 +62,7 @@ export default function calculateMonsterFood(
 	}
 
 	totalOffensivePercent = floor(calcWhatPercent(gearStats[attackStyleToUse], maxOffenceStats[attackStyleToUse]));
+	totalOffensivePercent += floor(calcWhatPercent(gearStats[strengthStat], maxOtherStats[strengthStat]) / 2);
 
 	// Get average of all defensive%'s and limit it to a cap of 95
 	totalPercentOfGearLevel = Math.min(floor(max(0, totalPercentOfGearLevel / attackStylesUsed.length)), 95);
@@ -57,7 +70,7 @@ export default function calculateMonsterFood(
 	totalOffensivePercent = Math.min(floor(max(0, totalOffensivePercent)), 95);
 
 	messages.push(`You use ${floor(totalPercentOfGearLevel)}% less food because of your defensive stats.`);
-	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel));
+	healAmountNeeded = reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel);
 	messages.push(`You use ${floor(totalOffensivePercent)}% less food because of your offensive stats.`);
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalOffensivePercent));
 

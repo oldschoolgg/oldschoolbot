@@ -144,6 +144,14 @@ export class Gear {
 		return sum;
 	}
 
+	getHighestMeleeStat() {
+		return this.stats.attack_stab >= this.stats.attack_slash && this.stats.attack_stab >= this.stats.attack_crush
+			? 'AttackStab'
+			: this.stats.attack_slash >= this.stats.attack_crush
+			? 'AttackSlash'
+			: 'AttackCrush';
+	}
+
 	meetsStatRequirements(gearRequirements: GearRequirement): [false, keyof GearStats, number] | [true, null, null] {
 		const keys = objectKeys(this.stats as Record<keyof GearStats, number>);
 		for (const key of keys) {
