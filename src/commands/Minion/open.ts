@@ -274,13 +274,11 @@ export default class extends BotCommand {
 		let actualQuantity = quantity;
 
 		if (msg.flagArgs.master !== undefined) {
-			console.log('Master flag active');
 			for (let i = 0; i < quantity; i++) {
 				const newLoot = new Bank().add(clueTier.table.open());
 				loot.add(newLoot);
 
 				if (newLoot.has(19835)) {
-					console.log('Found master');
 					actualQuantity = i + 1;
 					break;
 				}
