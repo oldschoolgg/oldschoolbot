@@ -238,7 +238,7 @@ export default class extends Task {
 				}
 
 				if (plantToHarvest.name === 'Limpwurt') {
-					harvestXp = plantToHarvest.harvestXp;
+					harvestXp = plantToHarvest.harvestXp * alivePlants;
 				} else {
 					harvestXp = cropYield * plantToHarvest.harvestXp;
 				}
