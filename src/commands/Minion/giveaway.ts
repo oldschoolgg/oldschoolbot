@@ -19,7 +19,8 @@ export default class extends BotCommand {
 			examples: ['+giveaway 5m Twisted bow, 20 Shark'],
 			categoryFlags: ['minion', 'utility'],
 			oneAtTime: true,
-			aliases: ['gstart', 'g']
+			aliases: ['gstart', 'g'],
+			requiredPermissions: ['ADD_REACTIONS']
 		});
 	}
 

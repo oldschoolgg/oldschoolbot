@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { GearSetupTypes, GearStat } from '../../../gear';
+import { GearStat } from '../../../gear';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
@@ -20,7 +20,7 @@ export const konarMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 205,
 		healAmountNeeded: 20 * 5,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	},
 	{
@@ -35,7 +35,7 @@ export const konarMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 15,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -53,7 +53,7 @@ export const konarMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
 		healAmountNeeded: 85,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -72,7 +72,7 @@ export const konarMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.NightBeast,
 		healAmountNeeded: 20 * 3,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic],
 		canCannon: true,
 		cannonMulti: false,
@@ -95,7 +95,7 @@ export const konarMonsters: KillableMonster[] = [
 
 		superior: Monsters.GuardianDrake,
 		healAmountNeeded: 70,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: false,
@@ -118,7 +118,7 @@ export const konarMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.ColossalHydra,
 		healAmountNeeded: 20 * 5,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
 		canCannon: true
 	},
@@ -152,7 +152,7 @@ export const konarMonsters: KillableMonster[] = [
 			slayer: 95
 		},
 		healAmountNeeded: 20 * 22,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	},
 	{
@@ -168,7 +168,7 @@ export const konarMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Dragon full helm']),
 		qpRequired: 0,
 		healAmountNeeded: 85,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	},
 	{
@@ -183,7 +183,7 @@ export const konarMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
 		healAmountNeeded: 26,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: false,
 		cannonMulti: false,
@@ -202,7 +202,7 @@ export const konarMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Dragon metal lump', 'Draconic visage']),
 		qpRequired: 205,
 		healAmountNeeded: 20 * 6,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	},
 	{
@@ -228,7 +228,7 @@ export const konarMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 16,
-		attackStyleToUse: GearSetupTypes.Mage,
+		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
 		canCannon: true,
 		cannonMulti: true,
@@ -272,7 +272,7 @@ export const konarMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 20 * 5,
-		attackStyleToUse: GearSetupTypes.Mage,
+		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
@@ -287,7 +287,7 @@ export const konarMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Mist battlestaff']),
 		qpRequired: 0,
 		healAmountNeeded: 38,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: false,

@@ -68,9 +68,9 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 	},
 	{
 		monsterID: Monsters.AberrantSpectre.id,
-		efficientName: Monsters.DeviantSpectre.name,
-		efficientMonster: Monsters.DeviantSpectre.id,
-		efficientMethod: AutoSlayMethod.None
+		efficientName: Monsters.AberrantSpectre.name,
+		efficientMonster: Monsters.AberrantSpectre.id,
+		efficientMethod: AutoSlayMethod.Cannon
 	},
 	{
 		monsterID: Monsters.MountainTroll.id,
