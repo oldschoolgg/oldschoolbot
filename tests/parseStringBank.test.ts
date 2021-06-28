@@ -206,9 +206,9 @@ describe('Bank Parsers', () => {
 	});
 
 	test('parseBank - check item aliases', async () => {
-		const bank = new Bank().add('Arceuus graceful top', 30).add('Bones');
-		expect(parseBank({ inputBank: bank, inputStr: 'pUrPle gRaceful top' }).toString()).toEqual(
-			'30x Arceuus graceful top'
+		const bank = new Bank().add('Arceuus graceful top', 30).add('Bones').add('Tradeable mystery box');
+		expect(parseBank({ inputBank: bank, inputStr: 'pUrPle gRaceful top, 5 tmb' }).toString()).toEqual(
+			'30x Arceuus graceful top, 1x Tradeable Mystery Box'
 		);
 	});
 });
