@@ -18,7 +18,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [items]: [Item[] | undefined]) {
 		const currentFavorites = msg.author.settings.get(UserSettings.FavoriteAlchables);
 
-		if (!items) {
+		if (!items || items.length === 0) {
 			const currentFavorites = msg.author.settings.get(UserSettings.FavoriteAlchables);
 			if (currentFavorites.length === 0) {
 				return msg.send('You have no favorited alchable items.');
