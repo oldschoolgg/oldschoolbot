@@ -171,23 +171,21 @@ export default class extends Task {
 			const channel = this.client.channels.cache.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
-			channel.send(str);
-
-			if (autoFarmed) {
-				handleTripFinish(
-					this.client,
-					user,
-					channelID,
-					'',
-					res => {
-						user.log('continued trip of autofarming');
-						return this.client.commands.get('autofarm')!.run(res, []);
-					},
-					undefined,
-					data,
-					null
-				);
-			}
+			handleTripFinish(
+				this.client,
+				user,
+				channelID,
+				str,
+				autoFarmed
+					? res => {
+							user.log('continued trip of autofarming');
+							return this.client.commands.get('autofarm')!.run(res, []);
+					  }
+					: undefined,
+				undefined,
+				data,
+				null
+			);
 		} else if (patchType.patchPlanted) {
 			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted);
 			if (!plantToHarvest) return;
@@ -455,7 +453,6 @@ export default class extends Task {
 			const channel = this.client.channels.cache.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
-			channel.send(infoStr.join('\n'));
 			if (janeMessage) {
 				return channel.send(
 					await chatHeadImage({
@@ -465,21 +462,22 @@ export default class extends Task {
 						head: 'jane'
 					})
 				);
-			} else if (autoFarmed) {
-				handleTripFinish(
-					this.client,
-					user,
-					channelID,
-					'',
-					res => {
-						user.log('continued trip of autofarming');
-						return this.client.commands.get('autofarm')!.run(res, []);
-					},
-					undefined,
-					data,
-					null
-				);
 			}
+			handleTripFinish(
+				this.client,
+				user,
+				channelID,
+				infoStr.join('\n'),
+				autoFarmed
+					? res => {
+							user.log('continued trip of autofarming');
+							return this.client.commands.get('autofarm')!.run(res, []);
+					  }
+					: undefined,
+				undefined,
+				data,
+				null
+			);
 		}
 	}
 }
