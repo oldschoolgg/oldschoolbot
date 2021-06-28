@@ -221,7 +221,7 @@ const source: [string, (string | number)[]][] = [
 		]
 	],
 	['Attack cape', ['Max cape', 'Attack cape(t)']],
-  ['Ivandis flail', ['Blisterwood flail']]
+	['Ivandis flail', ['Blisterwood flail']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
