@@ -35,7 +35,7 @@ export default class POHCommand extends BotCommand {
 			description: 'Allows you to access and build in your POH.',
 			examples: ['+poh build demonic throne', '+poh', '+poh items', '+poh destroy demonic throne'],
 			subcommands: true,
-			usage: '[build|destroy|items|mountItem|wallkit] [input:...str]',
+			usage: '[build|destroy|items|mountItem|wallkit|list] [input:...str]',
 			usageDelim: ' '
 		});
 	}
@@ -83,6 +83,18 @@ export default class POHCommand extends BotCommand {
 		let str = 'POH Buildable Objects\n';
 		for (const [key, arr] of Object.entries(GroupedPohObjects)) {
 			str += `**${key}:** ${arr.map(i => i.name).join(', ')}\n`;
+		}
+		return msg.send(str, { split: true });
+	}
+
+	async list(msg: KlasaMessage) {
+		let str = 'Currently built POH Objects\n';
+		const poh = await msg.author.getPOH();
+
+		for (const object of Object.values(PoHObjects)) {
+			if (poh[object.slot]! > 0 && poh[object.slot] === object.id) {
+				str += `**${object.slot.replace(/\b\S/g, t => t.toUpperCase())}:** ${object.name}\n`;
+			}
 		}
 		return msg.send(str, { split: true });
 	}
