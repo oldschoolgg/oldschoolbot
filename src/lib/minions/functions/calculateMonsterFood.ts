@@ -3,7 +3,7 @@ import { O } from 'ts-toolbelt';
 
 import { GearSetupTypes, GearStat, maxDefenceStats, maxOffenceStats } from '../../gear';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
-import { calcWhatPercent, itemID, reduceNumByPercent } from '../../util';
+import { calcWhatPercent, reduceNumByPercent } from '../../util';
 import killableMonsters from '../data/killableMonsters';
 import { KillableMonster } from '../types';
 
@@ -66,7 +66,7 @@ export default function calculateMonsterFood(
 	messages.push(`You use ${floor(totalOffensivePercent)}% less food because of your offensive stats.`);
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalOffensivePercent));
 
-	const hasAbyssalCape = user.hasItemEquippedAnywhere(itemID('Abyssal cape'));
+	const hasAbyssalCape = user.hasItemEquippedAnywhere('Abyssal cape');
 	if (hasAbyssalCape) {
 		healAmountNeeded = Math.floor(healAmountNeeded * 0.5);
 	}
