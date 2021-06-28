@@ -3,7 +3,7 @@ import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { collectionLogTypes } from '../../lib/data/collectionLog';
+import { bosses, collectionLogTypes } from '../../lib/data/collectionLog';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -47,12 +47,17 @@ Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 			);
 		}
 
-		const items = Array.from(
+		let items = Array.from(
 			new Set(Object.values(type?.items ?? Monsters.get(monster!.id)!.allItems!).flat(100))
 		) as number[];
 		const log = msg.author.settings.get(UserSettings.CollectionLogBank);
 		const num = items.filter(item => log[item] > 0).length;
 		const { name } = type || monster!;
+
+		if (stringMatches('abyssal sire', name)) {
+			items.unshift(...bosses['Abyssal Sire']);
+			items = [...new Set(items)];
+		}
 
 		const chunkedMonsterItems: Record<number, number[]> = {};
 		let i = 0;
