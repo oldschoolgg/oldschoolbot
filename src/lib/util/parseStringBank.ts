@@ -1,16 +1,19 @@
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
+import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { fromKMB } from 'oldschooljs/dist/util';
 
 import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
-import { stringMatches } from '../util';
+import { cleanString, stringMatches } from '../util';
 
 const { floor, max, min } = Math;
 
 export function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 	str = str.trim();
 	if (!str) return [];
+	// Make it so itemIDs aren't interpreted as quantities
+	if (str.match(/^[0-9]+$/)) str = `0 ${str}`;
 	const split = str.split(' ');
 
 	// If we're passed 2 numbers in a row, e.g. '1 1 coal', remove that number and recurse back.
@@ -36,7 +39,11 @@ export function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 		const item = Items.get(nameAsInt);
 		if (item) osItems.push(item);
 	} else {
-		osItems = Array.from(Items.filter(i => stringMatches(i.name, parsedName)).values());
+		osItems = Array.from(
+			Items.filter(
+				i => itemNameMap.get(cleanString(parsedName)) === i.id || stringMatches(i.name, parsedName)
+			).values()
+		);
 	}
 	if (osItems.length === 0) return [];
 
@@ -80,7 +87,7 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 		for (const [item, quantity] of strItems) {
 			_bank.add(
 				item.id,
-				!quantity ? inputBank.amount(item.id) : Math.max(1, Math.min(quantity, inputBank.amount(item.id)))
+				!quantity ? inputBank.amount(item.id) : Math.max(0, Math.min(quantity, inputBank.amount(item.id)))
 			);
 		}
 		return _bank;
