@@ -102,6 +102,12 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 30,
 		table: Monsters.FeralVampyre,
 		wildy: false,
+		itemInBankBoosts: [
+			{
+				[itemID('Ivandis flail')]: 12,
+				[itemID('Blisterwood flail')]: 15
+			}
+		],
 
 		difficultyRating: 2,
 		qpRequired: 1
@@ -410,6 +416,12 @@ export const mazchnaMonsters: KillableMonster[] = [
 		table: Monsters.VampyreJuvinate,
 
 		wildy: false,
+		itemInBankBoosts: [
+			{
+				[itemID('Ivandis flail')]: 12,
+				[itemID('Blisterwood flail')]: 15
+			}
+		],
 
 		difficultyRating: 2,
 		qpRequired: 1
@@ -422,6 +434,12 @@ export const mazchnaMonsters: KillableMonster[] = [
 		table: Monsters.Vyrewatch,
 
 		wildy: false,
+		itemInBankBoosts: [
+			{
+				[itemID('Ivandis flail')]: 12,
+				[itemID('Blisterwood flail')]: 15
+			}
+		],
 
 		difficultyRating: 4,
 		qpRequired: 0,
@@ -439,7 +457,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 		itemInBankBoosts: [
 			{
-				[itemID('Ivandis flail')]: 12
+				[itemID('Ivandis flail')]: 12,
+				[itemID('Blisterwood flail')]: 15
 			}
 		],
 		difficultyRating: 5,

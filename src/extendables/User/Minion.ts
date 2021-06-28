@@ -573,6 +573,9 @@ export default class extends Extendable {
 					data.rune
 				)} runes at the Dark Altar. ${formattedDuration}`;
 			}
+			case Activity.Trekking: {
+				return `${this.minionName} is currently Temple Trekking. ${formattedDuration}`;
+			}
 		}
 	}
 
