@@ -196,4 +196,19 @@ describe('Bank Parsers', () => {
 		const other = parseBank({ inputBank: bank, inputStr: get('Egg').id.toString() });
 		expect(other.amount('Egg')).toEqual(3);
 	});
+
+	test('parseBank - look for nonexistent items', async () => {
+		const bank = new Bank().add('Steel arrow').add('Bones').add('Coal', 500).add('Clue scroll (easy)');
+		expect(parseBank({ inputBank: bank, inputStr: '1 Portrait' }).toString()).toEqual('No items');
+		expect(parseBank({ inputBank: bank, inputStr: '1 666' }).toString()).toEqual('No items');
+		expect(parseBank({ inputBank: bank, inputStr: '526' }).toString()).toEqual('1x Bones');
+		expect(parseBank({ inputBank: bank, inputStr: '0 cOaL' }).toString()).toEqual('500x Coal');
+	});
+
+	test('parseBank - check item aliases', async () => {
+		const bank = new Bank().add('Arceuus graceful top', 30).add('Bones');
+		expect(parseBank({ inputBank: bank, inputStr: 'pUrPle gRaceful top' }).toString()).toEqual(
+			'30x Arceuus graceful top'
+		);
+	});
 });
