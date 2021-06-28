@@ -33,7 +33,7 @@ export function alching(user: KlasaUser, tripLength: number) {
 		.get(UserSettings.FavoriteAlchables)
 		.filter(id => bank.has(id))
 		.map(getOSItem)
-		.filter(i => i.highalch > 0)
+		.filter(i => i.tradeable_on_ge && i.highalch > 0)
 		.sort((a, b) => b.highalch - a.highalch);
 
 	if (favAlchables.length === 0) {
