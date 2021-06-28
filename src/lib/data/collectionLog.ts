@@ -1648,7 +1648,6 @@ export const slayerLog: CollectionLogData = {
 		'Brimstone key'
 	]),
 	Misc1: resolveItems([
-		'Dragon boots',
 		'Dragon platelegs',
 		'Dragon plateskirt',
 		'Dragon full helm',
