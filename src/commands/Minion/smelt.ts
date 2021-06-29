@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -9,7 +10,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, formatDuration, itemID, itemNameFromID, removeItemFromBank, stringMatches } from '../../lib/util';
+import { bankHasItem, formatDuration, itemID, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -83,13 +84,15 @@ export default class extends BotCommand {
 
 		// Remove the ores from their bank.
 		let newBank: ItemBank = { ...userBank };
+		let costBank = new Bank();
 		for (const [oreID, qty] of requiredOres) {
 			if (newBank[parseInt(oreID)] < qty) {
 				this.client.wtf(new Error(`${msg.author.sanitizedName} had insufficient ores to be removed.`));
 				return;
 			}
-			newBank = removeItemFromBank(newBank, parseInt(oreID), qty * quantity);
+			costBank.add(parseInt(oreID), qty * quantity);
 		}
+		await msg.author.removeItemsFromBank(costBank);
 
 		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>({
 			barID: bar.id,
@@ -99,7 +102,6 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Smelting
 		});
-		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		let goldGauntletMessage = '';
 		if (bar.id === itemID('Gold bar') && msg.author.hasItemEquippedAnywhere(itemID('Goldsmith gauntlets'))) {

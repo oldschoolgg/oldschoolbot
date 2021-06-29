@@ -13,7 +13,6 @@ import {
 	bankHasAllItemsFromBank,
 	formatSkillRequirements,
 	multiplyBank,
-	removeBankFromBank,
 	skillsMeetRequirements,
 	stringMatches
 } from '../../lib/util';
@@ -126,31 +125,25 @@ export default class extends BotCommand {
 
 		await msg.confirm(str);
 
-		const econBankChanges = new Bank();
+		const costBank = new Bank();
 
 		await msg.author.settings.sync(true);
 		if (buyable.itemCost) {
-			econBankChanges.add(multiplyBank(buyable.itemCost, quantity));
-			await msg.author.settings.update(
-				UserSettings.Bank,
-				removeBankFromBank(msg.author.settings.get(UserSettings.Bank), multiplyBank(buyable.itemCost, quantity))
-			);
+			costBank.add(multiplyBank(buyable.itemCost, quantity));
 		}
 
 		if (buyable.gpCost) {
 			if (GP < totalGPCost) {
 				return msg.channel.send(`You need ${toKMB(totalGPCost)} GP to purchase this item.`);
 			}
-			econBankChanges.add('Coins', totalGPCost);
-			await msg.author.removeGP(totalGPCost);
+			costBank.add('Coins', totalGPCost);
 		}
 
+		await msg.author.exchangeItemsFromBank({ costBank, lootBank: outItems, collectionLog: true });
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.BuyCostBank,
-			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add(econBankChanges).bank
+			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add(costBank).bank
 		);
-
-		await msg.author.addItemsToBank(outItems, true);
 
 		return msg.channel.send(`You purchased ${quantity > 1 ? `${quantity}x` : '1x'} ${buyable.name}.`);
 	}

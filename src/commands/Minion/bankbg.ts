@@ -9,7 +9,6 @@ import {
 	addBanks,
 	bankHasAllItemsFromBank,
 	formatSkillRequirements,
-	removeBankFromBank,
 	skillsMeetRequirements,
 	stringMatches,
 	toKMB
@@ -153,10 +152,7 @@ export default class extends BotCommand {
 			await msg.confirm(str);
 
 			if (selectedImage.itemCost) {
-				await msg.author.settings.update(
-					UserSettings.Bank,
-					removeBankFromBank(userBank, selectedImage.itemCost)
-				);
+				await msg.author.removeItemsFromBank(selectedImage.itemCost);
 			}
 
 			if (selectedImage.gpCost) {

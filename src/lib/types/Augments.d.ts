@@ -14,7 +14,7 @@ import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
 import { GearSetup } from '../gear';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
-import { AddXpParams, KillableMonster } from '../minions/types';
+import { AddXpParams, ExchangeItemsFromBankOptions, KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
@@ -143,6 +143,9 @@ declare module 'discord.js' {
 		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
 		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
 		removeItemFromBank(itemID: number, numberToRemove?: number): Promise<SettingsUpdateResult>;
+		exchangeItemsFromBank(options: ExchangeItemsFromBankOptions): Promise<SettingsUpdateResult>;
+		petEquip(petID: number): Promise<SettingsUpdateResult>;
+		petUnequip(): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 
 		incrementOpenableScore(openableID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;

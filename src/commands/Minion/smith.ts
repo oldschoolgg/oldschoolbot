@@ -1,6 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -9,7 +10,7 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, formatDuration, itemNameFromID, removeItemFromBank, stringMatches } from '../../lib/util';
+import { bankHasItem, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -86,17 +87,22 @@ export default class extends BotCommand {
 
 		// Check the user has the required bars to smith these itemss.
 		// Multiplying the bars required by the quantity of items.
+		let curMin = Infinity;
 		const requiredBars: [string, number][] = Object.entries(smithedItem.inputBars);
 		for (const [barID, qty] of requiredBars) {
 			if (!bankHasItem(userBank, parseInt(barID), qty * quantity)) {
-				return msg.channel.send(
-					`You don't have enough ${itemNameFromID(parseInt(barID))}'s to smith ${quantity}x ${
-						smithedItem.name
-					}, you need atleast ${qty}.`
-				);
+				let itemQty = userBank[parseInt(barID)] ?? 0;
+				if (Math.floor(itemQty / qty) < curMin) curMin = Math.floor(itemQty / qty);
+				if (curMin === 0) {
+					return msg.channel.send(
+						`You don't have enough ${itemNameFromID(parseInt(barID))}'s to smith ${quantity}x ${
+							smithedItem.name
+						}, you need atleast ${qty}.`
+					);
+				}
 			}
 		}
-
+		quantity = curMin;
 		const duration = quantity * timeToSmithSingleBar;
 		if (duration > maxTripLength) {
 			return msg.channel.send(
@@ -111,12 +117,14 @@ export default class extends BotCommand {
 		// Remove the bars from their bank.
 		let usedbars = 0;
 		let newBank = { ...userBank };
+		let costBank = new Bank();
 		for (const [barID, qty] of requiredBars) {
 			if (newBank[parseInt(barID)] < qty) {
 				this.client.wtf(new Error(`${msg.author.sanitizedName} had insufficient bars to be removed.`));
 				return;
 			}
-			newBank = removeItemFromBank(newBank, parseInt(barID), qty * quantity);
+			costBank.add(parseInt(barID), qty * quantity);
+			await msg.author.removeItemsFromBank(costBank);
 			usedbars = qty * quantity;
 		}
 
@@ -128,7 +136,6 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Smithing
 		});
-		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		return msg.channel.send(
 			`${msg.author.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${

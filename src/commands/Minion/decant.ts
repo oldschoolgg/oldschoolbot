@@ -22,10 +22,9 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
-		const { potionsToAdd, sumOfPots, potionName, finalUserBank } = decantPotionFromBank(userBank, itemName, dose);
+		const { potionsToAdd, potionsToRemove, sumOfPots, potionName } = decantPotionFromBank(userBank, itemName, dose);
 
-		await msg.author.settings.update(UserSettings.Bank, finalUserBank);
-
+		await msg.author.exchangeItemsFromBank({ costBank: potionsToRemove, lootBank: potionsToAdd });
 		if (
 			msg.author.hasItemEquippedAnywhere(['Iron dagger', 'Bronze arrow'], true) &&
 			!msg.author.hasItemEquippedOrInBank('Clue hunter gloves')

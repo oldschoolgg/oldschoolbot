@@ -151,25 +151,27 @@ export default class extends BotCommand {
 	}
 
 	async buy(msg: KlasaMessage, [input = '']: [string]) {
+		const balance = msg.author.settings.get(UserSettings.HonourPoints);
 		const buyable = BarbBuyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
 			return msg.channel.send(
-				`Here are the items you can buy: \n\n${BarbBuyables.map(
+				`You have ${balance} Honour Points. Here are the items you can buy: \n\n${BarbBuyables.map(
 					i => `**${i.item.name}:** ${i.cost} points`
 				).join('\n')}.`
 			);
 		}
 
 		const { item, cost } = buyable;
-		const balance = msg.author.settings.get(UserSettings.HonourPoints);
 		if (balance < cost) {
 			return msg.channel.send(
 				`You don't have enough Honour Points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`
 			);
 		}
 
-		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost);
-		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
+		await Promise.all([
+			msg.author.settings.update(UserSettings.HonourPoints, balance - cost),
+			msg.author.addItemsToBank({ [item.id]: 1 }, true)
+		]);
 
 		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Honour Points.`);
 	}
@@ -190,7 +192,6 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost);
 		const loot = new Bank().add(table.roll());
 		if (loot.has('Pet penance queen')) {
 			const gamblesDone = msg.author.settings.get(UserSettings.HighGambles) + 1;
@@ -211,11 +212,11 @@ export default class extends BotCommand {
 				)} High gamble! They are the ${formatOrdinal(countUsersHas)} to it.`
 			);
 		}
-		await msg.author.addItemsToBank(loot.bank, true);
-		await msg.author.settings.update(
-			UserSettings.HighGambles,
-			msg.author.settings.get(UserSettings.HighGambles) + 1
-		);
+		await Promise.all([
+			msg.author.settings.update(UserSettings.HonourPoints, balance - cost),
+			msg.author.addItemsToBank(loot.bank, true),
+			msg.author.settings.update(UserSettings.HighGambles, msg.author.settings.get(UserSettings.HighGambles) + 1)
+		]);
 		return msg.channel.send(`You spent ${cost} Honour Points for a ${name} Gamble, and received... ${loot}.`);
 	}
 

@@ -66,14 +66,16 @@ export default class extends BotCommand {
 			return msg.channel.send(`You don't have enough ${moleItem.name} to exchange!`);
 		}
 
-		await msg.author.removeItemFromBank(moleItem.inputItem, quantity);
-
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
 			loot.add(NestBoxes.roll());
 		}
-
-		await msg.author.addItemsToBank(loot.values(), true);
+		// Remove mole parts and give loot
+		await msg.author.exchangeItemsFromBank({
+			costBank: { [moleItem.inputItem]: quantity },
+			lootBank: loot,
+			collectionLog: true
+		});
 
 		return msg.channel.send(`You exchanged ${quantity}x ${moleItem.name} and received: ${loot}.`);
 	}

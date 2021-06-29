@@ -150,8 +150,12 @@ export default class extends BotCommand {
 			`${user}, please confirm that you want to use ${quantity} ${type} reward tokens to buy sets of ${specifiedItem.name}.`
 		);
 
-		if (outItems.length > 0) await user.addItemsToBank(outItems);
-		await user.removeItemsFromBank(inItems);
+		// Remove tokens and give loot:
+		await user.exchangeItemsFromBank({
+			costBank: inItems,
+			lootBank: outItems,
+			collectionLog: true
+		});
 
 		let ret = `You redeemed **${inItems}** for `;
 		if (outItems.length > 0) {

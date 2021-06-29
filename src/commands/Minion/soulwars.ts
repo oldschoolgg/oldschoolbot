@@ -264,8 +264,12 @@ export default class extends BotCommand {
 			return msg.channel.send(`You don't have a ${item.input.name}.`);
 		}
 		await msg.author.settings.update(UserSettings.ZealTokens, bal - item.tokens);
-		await msg.author.removeItemsFromBank({ [item.input.id]: 1 });
-		await msg.author.addItemsToBank({ [item.output.id]: 1 }, true);
+		// Swap ring for imbued version in bank:
+		await msg.author.exchangeItemsFromBank({
+			costBank: { [item.input.id]: 1 },
+			lootBank: { [item.output.id]: 1 },
+			collectionLog: true
+		});
 		return msg.channel.send(
 			`Added 1x ${item.output.name} to your bank, removed ${item.tokens}x Zeal Tokens and 1x ${item.input.name}.`
 		);

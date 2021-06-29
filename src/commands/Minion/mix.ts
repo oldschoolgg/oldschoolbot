@@ -1,6 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -10,15 +11,7 @@ import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import {
-	addBanks,
-	bankHasItem,
-	formatDuration,
-	itemNameFromID,
-	multiplyBank,
-	removeItemFromBank,
-	stringMatches
-} from '../../lib/util';
+import { addBanks, bankHasItem, formatDuration, itemNameFromID, multiplyBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -117,8 +110,8 @@ export default class extends BotCommand {
 					quantity = Math.min(quantity, Math.floor(userGP / qty));
 					continue;
 				}
-				const itemsOwned = userBank[parseInt(itemID)];
-				if (itemsOwned < qty) {
+				const itemsOwned = userBank[id];
+				if (!itemsOwned || itemsOwned < qty) {
 					return msg.channel.send(`You dont have enough ${itemNameFromID(parseInt(itemID))}.`);
 				}
 				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
@@ -151,15 +144,15 @@ export default class extends BotCommand {
 			}
 		}
 		// Remove the required items from their bank.
-		let newBank = { ...userBank };
+		let costBank = new Bank();
 		for (const [itemID, qty] of requiredItems) {
 			if (parseInt(itemID) === 995) {
 				await msg.author.removeGP(qty * quantity);
 				continue;
 			}
-			newBank = removeItemFromBank(newBank, parseInt(itemID), qty * quantity);
+			costBank.add(parseInt(itemID), qty * quantity);
 		}
-		await msg.author.settings.update(UserSettings.Bank, newBank);
+		await msg.author.removeItemsFromBank(costBank);
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.HerbloreCostBank,

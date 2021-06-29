@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addItemToBank, itemNameFromID } from '../../lib/util';
+import { itemNameFromID } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -22,10 +22,7 @@ export default class extends BotCommand {
 		const equippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
 		if (!equippedPet) return msg.channel.send("You don't have a pet equipped.");
 
-		await msg.author.settings.update([
-			[UserSettings.Minion.EquippedPet, null],
-			[UserSettings.Bank, addItemToBank(msg.author.settings.get(UserSettings.Bank), equippedPet)]
-		]);
+		await msg.author.petUnequip();
 
 		msg.author.log(`unequipping ${itemNameFromID(equippedPet)}[${equippedPet}]`);
 
