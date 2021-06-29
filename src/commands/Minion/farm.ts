@@ -13,14 +13,7 @@ import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	bankHasItem,
-	formatDuration,
-	itemNameFromID,
-	removeItemFromBank,
-	stringMatches,
-	updateBankSetting
-} from '../../lib/util';
+import { bankHasItem, formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
@@ -204,8 +197,7 @@ export default class extends BotCommand {
 			}.`;
 		}
 
-		let newBank = { ...userBank };
-		let econBank = new Bank();
+		let costBank = new Bank();
 		const requiredSeeds: [string, number][] = Object.entries(plants.inputItems);
 		for (const [seedID, qty] of requiredSeeds) {
 			if (!bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
@@ -215,11 +207,9 @@ export default class extends BotCommand {
 					throw `You don't have enough ${itemNameFromID(parseInt(seedID))}s.`;
 				}
 			}
-			newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
-			econBank.add(parseInt(seedID), qty * quantity);
+			costBank.add(parseInt(seedID), qty * quantity);
 		}
 
-		let paymentBank = { ...newBank };
 		let canPay = false;
 		if (payment) {
 			if (!plants.protectionPayment) return;
@@ -236,14 +226,12 @@ export default class extends BotCommand {
 					}
 					break;
 				}
-				paymentBank = removeItemFromBank(paymentBank, parseInt(paymentID), qty * quantity);
-				econBank.add(parseInt(paymentID), qty * quantity);
+				costBank.add(parseInt(paymentID), qty * quantity);
 				canPay = true;
 			}
 		}
 
 		if (canPay) {
-			newBank = paymentBank;
 			infoStr.push('You are paying a nearby farmer to look after your patches.');
 		} else if (!canPay && msg.author.settings.get(UserSettings.Minion.DefaultPay) && plants.canPayFarmer) {
 			infoStr.push('You did not have enough payment to automatically pay for crop protection.');
@@ -269,13 +257,12 @@ export default class extends BotCommand {
 		}
 
 		if (upgradeType !== null) {
-			econBank.add(itemID(upgradeType), quantity);
-			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
+			costBank.add(itemID(upgradeType), quantity);
 		}
 
-		await msg.author.settings.update(UserSettings.Bank, newBank);
+		await msg.author.removeItemsFromBank(costBank);
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.FarmingCostBank, econBank);
+		await updateBankSetting(this.client, ClientSettings.EconomyStats.FarmingCostBank, costBank);
 		// If user does not have something already planted, just plant the new seeds.
 		if (!patchType.patchPlanted) {
 			infoStr.unshift(`${msg.author.minionName} is now planting ${quantity}x ${plants.name}.`);

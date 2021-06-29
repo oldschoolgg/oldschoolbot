@@ -9,14 +9,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {
-	addBanks,
-	bankHasAllItemsFromBank,
-	itemNameFromID,
-	multiplyBank,
-	removeBankFromBank,
-	stringMatches
-} from '../../lib/util';
+import { bankHasAllItemsFromBank, itemNameFromID, multiplyBank, stringMatches } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -134,10 +127,7 @@ export default class extends BotCommand {
 			}.`
 		);
 
-		await msg.author.settings.update(
-			UserSettings.Bank,
-			addBanks([outItems, removeBankFromBank(userBank, inItems)])
-		);
+		await msg.author.exchangeItemsFromBank({ lootBank: outItems, costBank: inItems });
 
 		if (createableItem.GPCost) {
 			await msg.author.removeGP(createableItem.GPCost);

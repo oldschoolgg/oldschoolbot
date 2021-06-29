@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
-import { addBanks, bankHasAllItemsFromBank, removeBankFromBank } from 'oldschooljs/dist/util';
+import { bankHasAllItemsFromBank } from 'oldschooljs/dist/util';
 
 import TokkulShopItem from '../../lib/data/buyables/tokkulBuyables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -100,10 +100,7 @@ export default class extends BotCommand {
 			} **${items}** for **${tokkul}**.`
 		);
 
-		await msg.author.settings.update(
-			UserSettings.Bank,
-			addBanks([outItems.bank, removeBankFromBank(userBank, inItems.bank)])
-		);
+		await msg.author.exchangeItemsFromBank({ lootBank: outItems, costBank: inItems, collectionLog: true });
 
 		return msg.channel.send(`You ${type === 'buy' ? 'bought' : 'sold'} **${items}** for **${tokkul}**.`);
 	}

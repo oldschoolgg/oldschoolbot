@@ -19,8 +19,7 @@ import {
 	formatDuration,
 	percentChance,
 	rand,
-	reduceNumByPercent,
-	removeBankFromBank
+	reduceNumByPercent
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
@@ -142,9 +141,7 @@ export default class extends BotCommand {
 		const diedPreJad = percentChance(preJadDeathChance);
 		const preJadDeathTime = diedPreJad ? rand(Time.Minute * 20, duration) : null;
 
-		const bank = msg.author.settings.get(UserSettings.Bank);
-		const newBank = removeBankFromBank(bank, fightCavesSupplies);
-		await msg.author.settings.update(UserSettings.Bank, newBank);
+		await msg.author.removeItemsFromBank(fightCavesSupplies);
 
 		// Add slayer
 		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);

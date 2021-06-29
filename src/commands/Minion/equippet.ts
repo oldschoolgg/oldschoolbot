@@ -5,7 +5,6 @@ import { metamorphPets, pets } from '../../lib/data/collectionLog';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { removeItemFromBank } from '../../lib/util';
 
 const allPetIDs = [...Object.values(pets), ...metamorphPets].flat(Infinity);
 
@@ -36,10 +35,7 @@ export default class extends BotCommand {
 			await this.client.commands.get('unequippet')?.run(msg, []);
 		}
 
-		await msg.author.settings.update([
-			[UserSettings.Minion.EquippedPet, petItem.id],
-			[UserSettings.Bank, removeItemFromBank(msg.author.settings.get(UserSettings.Bank), petItem.id)]
-		]);
+		await msg.author.petEquip(petItem.id);
 
 		msg.author.log(`equipping ${petItem.name}[${petItem.id}]`);
 

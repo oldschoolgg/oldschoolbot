@@ -69,7 +69,7 @@ export default class POHCommand extends BotCommand {
 		if (selectedKit.bitfield && !bitfield.includes(BitField.HasHosidiusWallkit)) {
 			if (selectedKit.imageID === 2 && userBank.has('Hosidius blueprints')) {
 				await msg.author.removeItemFromBank(itemID('Hosidius blueprints'));
-				msg.author.settings.update(UserSettings.BitField, selectedKit.bitfield);
+				await msg.author.settings.update(UserSettings.BitField, selectedKit.bitfield);
 			} else {
 				return msg.channel.send(`You haven't unlocked the ${selectedKit.name} wallkit!`);
 			}
@@ -178,6 +178,8 @@ export default class POHCommand extends BotCommand {
 		}
 
 		const userBank = msg.author.bank();
+		let costBank = new Bank();
+		let lootBank = new Bank();
 		if (!userBank.has(item.id)) {
 			return msg.channel.send(`You don't have 1x ${item.name}.`);
 		}
@@ -186,11 +188,11 @@ export default class POHCommand extends BotCommand {
 		}
 		const currItem = poh.mountedItem === 1112 ? null : poh.mountedItem;
 
-		userBank.remove(item.id);
+		costBank.add(item.id);
 		if (currItem) {
-			userBank.add(item.id);
+			lootBank.add(item.id);
 		}
-		await msg.author.settings.update(UserSettings.Bank, userBank.bank);
+		await msg.author.exchangeItemsFromBank({ costBank, lootBank });
 		poh.mountedItem = item.id;
 		await poh.save();
 		return msg.channel.send({

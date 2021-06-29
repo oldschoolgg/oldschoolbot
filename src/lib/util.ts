@@ -509,3 +509,11 @@ export function isValidNickname(str?: string) {
 		stripEmojis(str).length !== str.length
 	);
 }
+
+export function removeZeroQtyFromBank(_bank: Bank | ItemBank): ItemBank {
+	const bank = _bank instanceof Bank ? _bank.bank : _bank;
+	for (const [itemID, qty] of Object.entries(bank)) {
+		if (qty === 0) delete bank[itemID];
+	}
+	return bank;
+}
