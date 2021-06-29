@@ -119,6 +119,9 @@ export default class extends BotCommand {
 			return msg.channel.send(`You can't kill ${monster.name}, because you're not on a slayer task.`);
 		}
 
+		// If monster requires a minimum kc (ie. group monsters) use that.
+		if (monster.minimumKC && quantity && quantity < monster.minimumKC) quantity = monster.minimumKC;
+
 		// Set chosen boost based on priority:
 		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
 		const boostChoice = determineBoostChoice({
