@@ -137,31 +137,38 @@ export default class extends BotCommand {
 
 			// If theres an item cost or GP cost, add it to the string to show users the cost.
 			if (selectedImage.itemCost) {
-				str += new Bank(selectedImage.itemCost).toString();
-				if (selectedImage.gpCost) {
-					str += `, ${selectedImage.gpCost.toLocaleString()} GP.`;
-				}
-			} else if (selectedImage.gpCost) {
-				str += `${selectedImage.gpCost.toLocaleString()} GP.`;
-			}
+			if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
+				// Start building a string to show to the user.
+				let str = `${msg.author}, say \`confirm\` to confirm that you want to buy the **${selectedImage.name}** bank background for: `;
 
-			str +=
-				" **Note:** You'll have to pay this cost again if you switch to another background and want this one again.";
-
-			const confirmMsg = await msg.channel.send(str);
-
-			// Confirm the user wants to buy the bg
-			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 15,
-						errors: ['time']
+				// If theres an item cost or GP cost, add it to the string to show users the cost.
+				if (selectedImage.itemCost) {
+					str += new Bank(selectedImage.itemCost).toString();
+					if (selectedImage.gpCost) {
+						str += `, ${selectedImage.gpCost.toLocaleString()} GP.`;
 					}
-				);
-			} catch (err) {
-				return confirmMsg.edit('Cancelling purchase.');
+				} else if (selectedImage.gpCost) {
+					str += `${selectedImage.gpCost.toLocaleString()} GP.`;
+				}
+
+				str +=
+					" **Note:** You'll have to pay this cost again if you switch to another background and want this one again.";
+
+				const confirmMsg = await msg.channel.send(str);
+
+				// Confirm the user wants to buy the bg
+				try {
+					await msg.channel.awaitMessages(
+						_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+						{
+							max: 1,
+							time: Time.Second * 15,
+							errors: ['time']
+						}
+					);
+				} catch (err) {
+					return confirmMsg.edit('Cancelling purchase.');
+				}
 			}
 
 			if (selectedImage.itemCost) {

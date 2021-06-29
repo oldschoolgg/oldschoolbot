@@ -47,24 +47,26 @@ export default class extends BotCommand {
 
 		const itemString = new Bank(itemsToPurchase).toString();
 
-		const sellMsg = await msg.channel.send(
-			`${msg.author}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${toKMB(
-				skillCapeCost
-			)}.`
-		);
-
-		// Confirm the user wants to buy
-		try {
-			await msg.channel.awaitMessages(
-				_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-				{
-					max: 1,
-					time: Time.Second * 15,
-					errors: ['time']
-				}
+		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
+			const sellMsg = await msg.channel.send(
+				`${msg.author}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${toKMB(
+					skillCapeCost
+				)}.`
 			);
-		} catch (err) {
-			return sellMsg.edit(`Cancelling purchase of ${toTitleCase(capeObject.skill)} skill cape.`);
+
+			// Confirm the user wants to buy
+			try {
+				await msg.channel.awaitMessages(
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+					{
+						max: 1,
+						time: Time.Second * 15,
+						errors: ['time']
+					}
+				);
+			} catch (err) {
+				return sellMsg.edit(`Cancelling purchase of ${toTitleCase(capeObject.skill)} skill cape.`);
+			}
 		}
 
 		await msg.author.removeGP(skillCapeCost);
