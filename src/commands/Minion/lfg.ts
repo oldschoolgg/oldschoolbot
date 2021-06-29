@@ -1,24 +1,22 @@
 import { MessageEmbed } from 'discord.js';
-import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { Activity, Color, Emoji, Events, SupportServer, Time } from '../../lib/constants';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { Activity, Color, Events, SupportServer, Time } from '../../lib/constants';
+import Default from '../../lib/lfg/Default';
+import LfgInterface from '../../lib/lfg/LfgInterface';
+import { getMonster } from '../../lib/lfg/LfgUtils';
+import { requiresMinion } from '../../lib/minions/decorators';
 import forceMainServer from '../../lib/minions/decorators/forceMainServer';
 import ironsCantUse from '../../lib/minions/decorators/ironsCantUse';
 import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
-import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../lib/minions/types';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { channelIsSendable, formatDuration, noOp, sleep, stringMatches } from '../../lib/util';
-
-import Timeout = NodeJS.Timeout;
-import Default from '../../lib/lfg/Default';
-import LfgInterface from '../../lib/lfg/LfgInterface';
-import { requiresMinion } from '../../lib/minions/decorators';
 import { LfgActivityTaskOptions } from '../../lib/types/minions';
+import { channelIsSendable, formatDuration, sleep, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import Timeout = NodeJS.Timeout;
 
 interface UserSentFrom {
 	guild: string | undefined;
@@ -46,88 +44,12 @@ export interface QueueProperties {
 	maxQueueSize: number;
 }
 
-export function prepareLFGMessage(
-	activityName: string,
-	qty: number,
-	channels: Record<string, string[]> | false | undefined
-) {
-	const toReturn: Record<string, string> = {};
-	if (!channels) return toReturn;
-	for (const channel of Object.keys(channels)) {
-		toReturn[channel] = `LFG mass of ${qty}x ${activityName} has returned! Here are the spoils:\n\n`;
-	}
-	return toReturn;
-}
-
-export function addLFGLoot(
-	lootString: Record<string, string>,
-	isPurple: boolean,
-	user: KlasaUser,
-	readableList: string,
-	channels: Record<string, string[]> | false | undefined
-) {
-	if (!channels) return lootString;
-	for (const channel of Object.entries(channels)) {
-		lootString[channel[0]] += `${isPurple ? Emoji.Purple : ''} **${
-			channel[1].includes(user.id) ? user : user.username
-		} received:** ||${readableList}||\n`;
-	}
-	return lootString;
-}
-
-export function addLFGText(
-	lootString: Record<string, string>,
-	text: string,
-	channels: Record<string, string[]> | false | undefined
-) {
-	if (!channels) return lootString;
-	for (const channel of Object.entries(channels)) {
-		lootString[channel[0]] += text;
-	}
-	return lootString;
-}
-
-export async function addLFGNoDrops(
-	lootString: Record<string, string>,
-	client: KlasaClient,
-	users: string[],
-	channels: Record<string, string[]> | false | undefined
-) {
-	if (!channels) return lootString;
-	const klasaUsers: KlasaUser[] = [];
-	for (const u of users) {
-		const _u = await client.users.fetch(u).catch(noOp);
-		if (_u) klasaUsers.push(_u);
-	}
-	for (const channel of Object.entries(channels)) {
-		lootString[channel[0]] += `${klasaUsers
-			.map(user => (channel[1].includes(user.id) ? `<@${user.id}>` : user.username))
-			.join(', ')} - Got no loot, sad!`;
-	}
-	return lootString;
-}
-
-export async function sendLFGMessages(
-	lootString: Record<string, string>,
-	client: KlasaClient,
-	channels: Record<string, string[]> | false | undefined
-) {
-	if (!channels) return false;
-	for (const _channel of Object.keys(channels)) {
-		const channel = client.channels.cache.get(_channel);
-		if (channelIsSendable(channel)) {
-			await channel.send(lootString[_channel]);
-		}
-	}
-	return lootString;
-}
-
-function getMonster(monsterId: number): KillableMonster {
-	return <KillableMonster>effectiveMonsters.find(m => m.id === monsterId);
-}
-
 const MIN_USERS = 1;
-const MAX_USERS = 20;
+const MAX_USERS = 2;
+const QUEUE_LIST: Record<number, QueueState> = {};
+const WAIT_TIME = 10 * Time.Second;
+const DEFAULT_MASS_CHANNEL = '858141860900110366'; // #testing-2
+const QUEUE_AUTO_START: Record<number, Timeout | null> = {};
 
 export const availableQueues: QueueProperties[] = [
 	{
@@ -139,51 +61,47 @@ export const availableQueues: QueueProperties[] = [
 		monster: getMonster(Monsters.KrilTsutsaroth.id),
 		minQueueSize: MIN_USERS,
 		maxQueueSize: MAX_USERS
+	},
+	{
+		uniqueID: 2,
+		name: Monsters.GeneralGraardor.name,
+		aliases: Monsters.GeneralGraardor.aliases,
+		lfgClass: new Default(),
+		thumbnail: 'https://oldschool.runescape.wiki/images/b/b8/General_Graardor.png',
+		monster: getMonster(Monsters.GeneralGraardor.id),
+		minQueueSize: MIN_USERS,
+		maxQueueSize: MAX_USERS
+	},
+	{
+		uniqueID: 3,
+		name: Monsters.Kreearra.name,
+		aliases: Monsters.Kreearra.aliases,
+		lfgClass: new Default(),
+		thumbnail: 'https://oldschool.runescape.wiki/images/f/fd/Kree%27arra.png',
+		monster: getMonster(Monsters.Kreearra.id),
+		minQueueSize: MIN_USERS,
+		maxQueueSize: MAX_USERS
+	},
+	{
+		uniqueID: 4,
+		name: Monsters.CommanderZilyana.name,
+		aliases: Monsters.CommanderZilyana.aliases,
+		lfgClass: new Default(),
+		thumbnail: 'https://oldschool.runescape.wiki/images/f/fb/Commander_Zilyana.png',
+		monster: getMonster(Monsters.CommanderZilyana.id),
+		minQueueSize: MIN_USERS,
+		maxQueueSize: MAX_USERS
+	},
+	{
+		uniqueID: 5,
+		name: Monsters.CorporealBeast.name,
+		aliases: Monsters.CorporealBeast.aliases,
+		lfgClass: new Default(),
+		thumbnail: 'https://oldschool.runescape.wiki/images/5/5c/Corporeal_Beast.png',
+		monster: getMonster(Monsters.CorporealBeast.id),
+		minQueueSize: MIN_USERS,
+		maxQueueSize: MAX_USERS
 	}
-	// {
-	// 	uniqueID: 2,
-	// 	name: Monsters.GeneralGraardor.name,
-	// 	aliases: Monsters.GeneralGraardor.aliases,
-	// 	lfgClass: new Default(),
-	// 	command: this.client.commands.get('groupkill')!,
-	// 	thumbnail: 'https://oldschool.runescape.wiki/images/b/b8/General_Graardor.png',
-	// 	monster: getMonster(Monsters.GeneralGraardor.id),
-	// 	minQueueSize: this.MIN_USERS,
-	// 	maxQueueSize: this.MAX_USERS
-	// },
-	// {
-	// 	uniqueID: 3,
-	// 	name: Monsters.Kreearra.name,
-	// 	aliases: Monsters.Kreearra.aliases,
-	// 	lfgClass: new Default(),
-	// 	command: this.client.commands.get('groupkill')!,
-	// 	thumbnail: 'https://oldschool.runescape.wiki/images/f/fd/Kree%27arra.png',
-	// 	monster: getMonster(Monsters.Kreearra.id),
-	// 	minQueueSize: this.MIN_USERS,
-	// 	maxQueueSize: this.MAX_USERS
-	// },
-	// {
-	// 	uniqueID: 4,
-	// 	name: Monsters.CommanderZilyana.name,
-	// 	aliases: Monsters.CommanderZilyana.aliases,
-	// 	lfgClass: new Default(),
-	// 	command: this.client.commands.get('groupkill')!,
-	// 	thumbnail: 'https://oldschool.runescape.wiki/images/f/fb/Commander_Zilyana.png',
-	// 	monster: getMonster(Monsters.CommanderZilyana.id),
-	// 	minQueueSize: this.MIN_USERS,
-	// 	maxQueueSize: this.MAX_USERS
-	// },
-	// {
-	// 	uniqueID: 5,
-	// 	name: Monsters.CorporealBeast.name,
-	// 	aliases: Monsters.CorporealBeast.aliases,
-	// 	lfgClass: new Default(),
-	// 	command: this.client.commands.get('groupkill')!,
-	// 	thumbnail: 'https://oldschool.runescape.wiki/images/5/5c/Corporeal_Beast.png',
-	// 	monster: getMonster(Monsters.CorporealBeast.id),
-	// 	minQueueSize: this.MIN_USERS,
-	// 	maxQueueSize: this.MAX_USERS
-	// },
 	// {
 	// 	uniqueID: 6,
 	// 	name: NightmareMonster.name,
@@ -230,10 +148,6 @@ export const availableQueues: QueueProperties[] = [
 ];
 
 export default class extends BotCommand {
-	QueueList: Record<number, QueueState> = {};
-	WAIT_TIME = 10 * Time.Second;
-	DEFAULT_MASS_CHANNEL = '858141860900110366'; // #testing-2
-	twoMinutesCheck: Record<number, Timeout | null> = {};
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[join|leave] [name:...string]',
@@ -245,50 +159,20 @@ export default class extends BotCommand {
 		this.enabled = !this.client.production;
 	}
 
-	async validateUserReqs(user: KlasaUser, monster: KillableMonster) {
-		const reasons: string[] = [];
-		if (!user.hasMinion) {
-			reasons.push("You don't have a minion.");
-		}
-
-		if (user.minionIsBusy) {
-			reasons.push("You are busy right now and can't join!");
-		}
-
-		if (user.isIronman) {
-			reasons.push('You are an ironman! LFG is not for you.');
-		}
-
-		const [hasReqs, reason] = user.hasMonsterRequirements(monster);
-		if (!hasReqs) {
-			reasons.push(`${reason}`);
-		}
-
-		if (!hasEnoughFoodForMonster(monster, user, 2)) {
-			throw `You don't have enough food. You need at least ${
-				monster.healAmountNeeded! * 2
-			} HP in food to participate.`;
-		}
-		return {
-			allowed: reasons.length <= 0,
-			reasons
-		};
-	}
-
 	getTimeLeft(date: Date | undefined) {
 		if (!date) return '-';
 		return formatDuration(Date.now() - date.getTime());
 	}
 
 	removeUserFromQueue(user: KlasaUser, queueID: number, cancelTimeout = false) {
-		if (this.QueueList[queueID]) {
+		if (QUEUE_LIST[queueID]) {
 			const selectedQueue = availableQueues.find(m => m.uniqueID === queueID);
 			if (selectedQueue) {
-				delete this.QueueList[queueID].users[user.id];
-				delete this.QueueList[queueID].userSentFrom[user.id];
+				delete QUEUE_LIST[queueID].users[user.id];
+				delete QUEUE_LIST[queueID].userSentFrom[user.id];
 				if (
 					cancelTimeout &&
-					Object.values(this.QueueList[queueID].users).length < (selectedQueue.minQueueSize ?? MIN_USERS)
+					Object.values(QUEUE_LIST[queueID].users).length < (selectedQueue.minQueueSize ?? MIN_USERS)
 				) {
 					clearTimeout(queueID);
 				}
@@ -297,7 +181,7 @@ export default class extends BotCommand {
 	}
 
 	removeUserFromAllQueues(user: KlasaUser) {
-		for (const [id, data] of Object.entries(this.QueueList)) {
+		for (const [id, data] of Object.entries(QUEUE_LIST)) {
 			if (data && data.users[user.id]) {
 				this.removeUserFromQueue(user, Number(id));
 			}
@@ -305,30 +189,30 @@ export default class extends BotCommand {
 	}
 
 	clearTimeout(id: number) {
-		clearTimeout(this.twoMinutesCheck[id]!);
-		this.twoMinutesCheck[id] = null;
+		clearTimeout(QUEUE_AUTO_START[id]!);
+		QUEUE_AUTO_START[id] = null;
 	}
 
 	async handleStart(selectedQueue: QueueProperties, skipChecks = false) {
-		const queue = this.QueueList[selectedQueue.uniqueID];
+		const queue = QUEUE_LIST[selectedQueue.uniqueID];
 		let doNotClear = false;
 		// Check if we can start
 		if (Object.values(queue.users).length >= (selectedQueue.minQueueSize ?? MIN_USERS) || skipChecks) {
 			// If users >= MAX_USERS (should never be higher), remove the timeout check and it now
 			if (Object.values(queue.users).length >= (selectedQueue.maxQueueSize ?? MAX_USERS)) {
-				if (this.twoMinutesCheck[selectedQueue.uniqueID] !== null) {
+				if (QUEUE_AUTO_START[selectedQueue.uniqueID] !== null) {
 					this.clearTimeout(selectedQueue.uniqueID);
 				}
-			} else if (!this.twoMinutesCheck[selectedQueue.uniqueID]) {
+			} else if (!QUEUE_AUTO_START[selectedQueue.uniqueID]) {
 				this.client.emit(
 					Events.Log,
-					`Starting LFG [${selectedQueue.uniqueID}] ${this.WAIT_TIME.toLocaleString()}ms countdown`
+					`Starting LFG [${selectedQueue.uniqueID}] ${WAIT_TIME.toLocaleString()}ms countdown`
 				);
-				this.twoMinutesCheck[selectedQueue.uniqueID] = setTimeout(
+				QUEUE_AUTO_START[selectedQueue.uniqueID] = setTimeout(
 					() => this.handleStart(selectedQueue, true),
-					this.WAIT_TIME
+					WAIT_TIME
 				);
-				queue.startDate = new Date(Date.now() + this.WAIT_TIME);
+				queue.startDate = new Date(Date.now() + WAIT_TIME);
 				return;
 			} else if (!skipChecks) {
 				return;
@@ -339,7 +223,7 @@ export default class extends BotCommand {
 					Events.Log,
 					`Locking LFG [${selectedQueue.uniqueID}] usersLength[${Object.values(queue.users).length}]`
 				);
-				this.QueueList[selectedQueue.uniqueID].locked = true;
+				QUEUE_LIST[selectedQueue.uniqueID].locked = true;
 				// Init some vars
 				const finalUsers: KlasaUser[] = [];
 				// Sort users by maxTripLength to use that as the base for this LFG
@@ -348,9 +232,21 @@ export default class extends BotCommand {
 						b.maxTripLength(selectedQueue.lfgClass.activity.type) -
 						a.maxTripLength(selectedQueue.lfgClass.activity.type)
 				);
+
+				// Get number of activities this trip could start with (if no one is removed from the queue)
+				let [validationQuantity] = await selectedQueue.lfgClass.calculateDurationAndActivitiesPerTrip(
+					sortedUsers,
+					selectedQueue
+				);
+
 				// Remove invalid users
 				for (const user of sortedUsers) {
-					const errors = await selectedQueue.lfgClass.checkUserRequirements(user, 2, selectedQueue);
+					const errors = await selectedQueue.lfgClass.checkUserRequirements(
+						user,
+						validationQuantity,
+						sortedUsers.length,
+						selectedQueue
+					);
 					if (errors.length === 0) {
 						finalUsers.push(user);
 					} else {
@@ -376,22 +272,35 @@ export default class extends BotCommand {
 
 				// Get the leader for the LFG
 				const leader = finalUsers[0];
+
+				// Now, calculate the final values for this trip
 				const [activitiesThisTrip, durationOfTrip, timePerActivity] =
 					await selectedQueue.lfgClass.calculateDurationAndActivitiesPerTrip(finalUsers, selectedQueue);
 
-				await selectedQueue.lfgClass.getItemToRemoveFromBank({
-					users: finalUsers,
-					quantity: activitiesThisTrip,
-					queue: selectedQueue
-				});
+				// Remove the required items from the users
+				// You have to make sure this is checked on the checkUserRequirements so no errors happens here
+				try {
+					await selectedQueue.lfgClass.getItemToRemoveFromBank(
+						finalUsers,
+						activitiesThisTrip,
+						this.client,
+						selectedQueue
+					);
+				} catch (e) {
+					this.client.emit(
+						Events.Log,
+						`LFG Canceled [${selectedQueue.uniqueID}] Error removing required items from users \n --- Make sure the checkUserRequirements is validating the required items \n --- Failing to do so will most likely result in item loss (food, pots, whatever is checked)!`
+					);
+					return;
+				}
 
 				const guilds: Record<string, string> = {};
 				const channelsToSend: Record<string, string[]> = {};
-				channelsToSend[this.DEFAULT_MASS_CHANNEL] = [];
+				channelsToSend[DEFAULT_MASS_CHANNEL] = [];
 				for (const user of finalUsers) {
 					// Verifying channels to send
-					const { channel } = this.QueueList[selectedQueue.uniqueID].userSentFrom[user.id];
-					const { guild } = this.QueueList[selectedQueue.uniqueID].userSentFrom[user.id];
+					const { channel } = QUEUE_LIST[selectedQueue.uniqueID].userSentFrom[user.id];
+					const { guild } = QUEUE_LIST[selectedQueue.uniqueID].userSentFrom[user.id];
 					let toSendChannel = null;
 					// Limits 1 message per server
 					// Not guild means DM
@@ -402,7 +311,7 @@ export default class extends BotCommand {
 					} else {
 						// If sent on the support server, forces the result to be on the mass channel
 						if (guild === SupportServer) {
-							guilds[guild] = this.DEFAULT_MASS_CHANNEL;
+							guilds[guild] = DEFAULT_MASS_CHANNEL;
 						} else {
 							guilds[guild] = channel;
 						}
@@ -415,16 +324,16 @@ export default class extends BotCommand {
 				await addSubTaskToActivityTask(<LfgActivityTaskOptions>{
 					queueId: selectedQueue.uniqueID,
 					userID: leader.id,
-					channelID: this.DEFAULT_MASS_CHANNEL,
+					channelID: DEFAULT_MASS_CHANNEL,
 					quantity: activitiesThisTrip,
 					duration: durationOfTrip,
 					type: Activity.Lfg,
 					leader: leader.id,
-					users: finalUsers.map(u => u.id)
+					users: finalUsers.map(u => u.id),
+					channels: channelsToSend
 				});
 
-				for (const user of finalUsers) {
-					// await user.incrementMinionDailyDuration(duration);
+				for (const user of sortedUsers) {
 					this.removeUserFromAllQueues(user);
 				}
 
@@ -466,13 +375,13 @@ export default class extends BotCommand {
 				this.clearTimeout(selectedQueue.uniqueID);
 				// Allows canceled mass to keep the user here
 				if (!doNotClear) {
-					this.QueueList[selectedQueue.uniqueID].users = {};
-					this.QueueList[selectedQueue.uniqueID].userSentFrom = {};
+					QUEUE_LIST[selectedQueue.uniqueID].users = {};
+					QUEUE_LIST[selectedQueue.uniqueID].userSentFrom = {};
 				}
-				this.QueueList[selectedQueue.uniqueID].locked = false;
-				this.QueueList[selectedQueue.uniqueID].lastUserJoinDate = undefined;
-				this.QueueList[selectedQueue.uniqueID].firstUserJoinDate = undefined;
-				this.QueueList[selectedQueue.uniqueID].startDate = undefined;
+				QUEUE_LIST[selectedQueue.uniqueID].locked = false;
+				QUEUE_LIST[selectedQueue.uniqueID].lastUserJoinDate = undefined;
+				QUEUE_LIST[selectedQueue.uniqueID].firstUserJoinDate = undefined;
+				QUEUE_LIST[selectedQueue.uniqueID].startDate = undefined;
 			}
 		}
 	}
@@ -490,22 +399,22 @@ export default class extends BotCommand {
 				'Below is a description of all queues that can be done in groups and how many users are on the queue.' +
 					'\nEach queue has a minimum and maximum size.' +
 					`\nWhen the queue reaches the minimum size, it'll wait ${formatDuration(
-						this.WAIT_TIME
+						WAIT_TIME
 					)} before starting.` +
 					"\n**WARNING**: Do not be busy when the activity is about to start or you'll be removed from it!"
 			);
 		for (const _queue of availableQueues) {
 			const smallestAlias = _queue.aliases.sort((a, b) => a.length - b.length)[0] ?? _queue.name;
-			const joined = this.QueueList[_queue.uniqueID] && this.QueueList[_queue.uniqueID].users[msg.author.id];
+			const joined = QUEUE_LIST[_queue.uniqueID] && QUEUE_LIST[_queue.uniqueID].users[msg.author.id];
 			const title = _queue.name + (joined ? ' [JOINED]' : '');
 			embed.addField(
 				title,
 				`On queue: ${
-					this.QueueList[_queue.uniqueID] ? Object.values(this.QueueList[_queue.uniqueID].users).length : 0
+					QUEUE_LIST[_queue.uniqueID] ? Object.values(QUEUE_LIST[_queue.uniqueID].users).length : 0
 				}` +
 					`\n\`${prefix}lfg ${joined ? 'leave' : 'join'} ${smallestAlias}\`` +
 					`\nStarts in: ${this.getTimeLeft(
-						this.QueueList[_queue.uniqueID] ? this.QueueList[_queue.uniqueID].startDate : undefined
+						QUEUE_LIST[_queue.uniqueID] ? QUEUE_LIST[_queue.uniqueID].startDate : undefined
 					)}` +
 					`\nMin/Max users: ${_queue.minQueueSize ?? MIN_USERS}/${_queue.maxQueueSize ?? MAX_USERS}`,
 				true
@@ -533,31 +442,41 @@ export default class extends BotCommand {
 			return msg.channel.send(`This is not a LFG monster. Run \`${prefix}lfg\` for more information.`);
 		}
 
-		if (!this.QueueList[selectedQueue.uniqueID]) {
+		if (!QUEUE_LIST[selectedQueue.uniqueID]) {
 			// Init
-			this.QueueList[selectedQueue.uniqueID] = {
+			QUEUE_LIST[selectedQueue.uniqueID] = {
 				locked: false,
 				users: {},
 				userSentFrom: {}
 			};
 		}
 
-		if (this.QueueList[selectedQueue.uniqueID].locked) {
+		if (QUEUE_LIST[selectedQueue.uniqueID].locked) {
 			return msg.channel.send(
 				"You can' join this mass at this moment as it is already starting Try again in a few moments."
 			);
 		}
 
-		if (this.QueueList[selectedQueue.uniqueID].users[msg.author.id]) {
+		if (QUEUE_LIST[selectedQueue.uniqueID].users[msg.author.id]) {
 			return msg.channel.send('You are already on this LFG.');
 		}
 
 		// Validate if user can actually join this LFG
+		// Creates a tempUser so it can add the current users in the queue + the user trying to join
+		const TempUsers = Object.values(QUEUE_LIST[selectedQueue.uniqueID].users);
+		TempUsers.push(msg.author);
+		let [activitiesThisTrip] = await selectedQueue.lfgClass.calculateDurationAndActivitiesPerTrip(
+			TempUsers,
+			selectedQueue
+		);
+		const errors = selectedQueue.lfgClass.checkUserRequirements(
+			msg.author,
+			activitiesThisTrip,
+			TempUsers.length,
+			selectedQueue
+		);
 
-		// TODO create some sort of standard for all group activities to follow so the requirements
-		//  can be validated
-		const errors = selectedQueue.lfgClass.checkUserRequirements(msg.author, 2, selectedQueue);
-		if (errors.length > 1) {
+		if (errors.length > 0) {
 			if (!channelIsSendable(msg.author.dmChannel!)) {
 				return msg.channel.send(
 					`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${errors.join('\n')}`
@@ -569,14 +488,14 @@ export default class extends BotCommand {
 		}
 
 		// If no users, set the join dates
-		if (Object.values(this.QueueList[selectedQueue.uniqueID].users).length === 0) {
-			this.QueueList[selectedQueue.uniqueID].firstUserJoinDate = new Date();
-			this.QueueList[selectedQueue.uniqueID].lastUserJoinDate = new Date();
+		if (Object.values(QUEUE_LIST[selectedQueue.uniqueID].users).length === 0) {
+			QUEUE_LIST[selectedQueue.uniqueID].firstUserJoinDate = new Date();
+			QUEUE_LIST[selectedQueue.uniqueID].lastUserJoinDate = new Date();
 		}
 
 		// Add user
-		this.QueueList[selectedQueue.uniqueID].users[msg.author.id] = msg.author;
-		this.QueueList[selectedQueue.uniqueID].userSentFrom[msg.author.id] = {
+		QUEUE_LIST[selectedQueue.uniqueID].users[msg.author.id] = msg.author;
+		QUEUE_LIST[selectedQueue.uniqueID].userSentFrom[msg.author.id] = {
 			channel: msg.channel.id,
 			guild: msg.guild?.id
 		};
@@ -606,8 +525,8 @@ export default class extends BotCommand {
 			return msg.channel.send(`This is not a LFG valid queue. Run \`${prefix}lfg\` for more information.`);
 		}
 
-		const user = this.QueueList[selectedQueue.uniqueID]
-			? this.QueueList[selectedQueue.uniqueID].users[msg.author.id]
+		const user = QUEUE_LIST[selectedQueue.uniqueID]
+			? QUEUE_LIST[selectedQueue.uniqueID].users[msg.author.id]
 			: false;
 		if (user) {
 			this.removeUserFromQueue(msg.author, selectedQueue.uniqueID, true);

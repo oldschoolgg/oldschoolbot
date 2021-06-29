@@ -308,6 +308,7 @@ export interface LfgActivityTaskOptions extends ActivityTaskOptions {
 	users: string[];
 	leader: string;
 	duration: number;
+	channels: Record<string, string[]>;
 }
 
 export type ActivityTaskData =

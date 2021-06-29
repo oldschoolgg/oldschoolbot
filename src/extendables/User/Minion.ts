@@ -6,6 +6,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
+import { availableQueues } from '../../commands/Minion/lfg';
 import {
 	Activity,
 	Emoji,
@@ -72,6 +73,7 @@ import {
 	GroupMonsterActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
+	LfgActivityTaskOptions,
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
@@ -571,7 +573,65 @@ export default class extends Extendable {
 					data.rune
 				)} runes at the Dark Altar. ${formattedDuration}`;
 			}
+
+			case Activity.Lfg: {
+				const data = currentTask as LfgActivityTaskOptions;
+				const queue = availableQueues.find(q => q.uniqueID === data.queueId);
+				const lfgType = queue!.monster ? 'killing' : 'playing';
+				return `${this.minionName} is currently on a LFG group ${lfgType} **${queue!.name}** with a party of ${
+					data.users.length
+				}.  ${formattedDuration}`;
+			}
 		}
+	}
+
+	// @ts-ignore 2784
+	public get hasMinion(this: User) {
+		return this.settings.get(UserSettings.Minion.HasBought);
+	}
+
+	// @ts-ignore 2784
+	public get minionIsBusy(this: User): boolean {
+		const usersTask = getActivityOfUser(this.id);
+		return Boolean(usersTask);
+	}
+
+	// @ts-ignore 2784
+	public get minionName(this: User): string {
+		const name = this.settings.get(UserSettings.Minion.Name);
+		const prefix = this.settings.get(UserSettings.Minion.Ironman) ? Emoji.Ironman : '';
+
+		const icon = this.settings.get(UserSettings.Minion.Icon) ?? Emoji.Minion;
+
+		return name ? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${icon} Your minion`;
+	}
+
+	// @ts-ignore 2784
+	get isBusy(this: User) {
+		const client = this.client as KlasaClient;
+		return client.oneCommandAtATimeCache.has(this.id) || client.secondaryUserBusyCache.has(this.id);
+	}
+
+	// @ts-ignore 2784
+	public get isIronman(this: User) {
+		return this.settings.get(UserSettings.Minion.Ironman);
+	}
+
+	// @ts-ignore 2784
+	public get combatLevel(this: User): number {
+		const defence = this.skillLevel(SkillsEnum.Defence);
+		const ranged = this.skillLevel(SkillsEnum.Ranged);
+		const hitpoints = this.skillLevel(SkillsEnum.Hitpoints);
+		const magic = this.skillLevel(SkillsEnum.Magic);
+		const prayer = this.skillLevel(SkillsEnum.Prayer);
+		const attack = this.skillLevel(SkillsEnum.Attack);
+		const strength = this.skillLevel(SkillsEnum.Strength);
+
+		const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
+		const melee = 0.325 * (attack + strength);
+		const range = 0.325 * (Math.floor(ranged / 2) + ranged);
+		const mage = 0.325 * (Math.floor(magic / 2) + magic);
+		return Math.floor(base + Math.max(melee, range, mage));
 	}
 
 	getKC(this: KlasaUser, id: number) {
@@ -607,11 +667,6 @@ export default class extends Extendable {
 
 	getCreatureScore(this: KlasaUser, creature: Creature) {
 		return this.settings.get(UserSettings.CreatureScores)[creature.id] ?? 0;
-	}
-
-	// @ts-ignore 2784
-	public get hasMinion(this: User) {
-		return this.settings.get(UserSettings.Minion.HasBought);
 	}
 
 	// @ts-ignore 2784
@@ -658,28 +713,12 @@ export default class extends Extendable {
 		return max;
 	}
 
-	// @ts-ignore 2784
-	public get minionIsBusy(this: User): boolean {
-		const usersTask = getActivityOfUser(this.id);
-		return Boolean(usersTask);
-	}
-
 	public hasGracefulEquipped(this: User) {
 		const rawGear = this.rawGear();
 		for (const i of Object.values(rawGear)) {
 			if (hasGracefulEquipped(i)) return true;
 		}
 		return false;
-	}
-
-	// @ts-ignore 2784
-	public get minionName(this: User): string {
-		const name = this.settings.get(UserSettings.Minion.Name);
-		const prefix = this.settings.get(UserSettings.Minion.Ironman) ? Emoji.Ironman : '';
-
-		const icon = this.settings.get(UserSettings.Minion.Icon) ?? Emoji.Minion;
-
-		return name ? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${icon} Your minion`;
 	}
 
 	public async addXP(this: User, params: AddXpParams): Promise<string> {
@@ -786,12 +825,6 @@ export default class extends Extendable {
 		return totalLevel;
 	}
 
-	// @ts-ignore 2784
-	get isBusy(this: User) {
-		const client = this.client as KlasaClient;
-		return client.oneCommandAtATimeCache.has(this.id) || client.secondaryUserBusyCache.has(this.id);
-	}
-
 	/**
 	 * Toggle whether this user is busy or not, this adds another layer of locking the user
 	 * from economy actions.
@@ -822,11 +855,6 @@ export default class extends Extendable {
 
 		this.log(`had ${newQP} QP added. Before[${currentQP}] New[${newQP}]`);
 		return this.settings.update(UserSettings.QP, newQP);
-	}
-
-	// @ts-ignore 2784
-	public get isIronman(this: User) {
-		return this.settings.get(UserSettings.Minion.Ironman);
 	}
 
 	public async incrementMonsterScore(this: User, monsterID: number, amountToAdd = 1) {
@@ -914,22 +942,5 @@ export default class extends Extendable {
 			return [false, formatSkillRequirements(reqs)];
 		}
 		return [true, null];
-	}
-
-	// @ts-ignore 2784
-	public get combatLevel(this: User): number {
-		const defence = this.skillLevel(SkillsEnum.Defence);
-		const ranged = this.skillLevel(SkillsEnum.Ranged);
-		const hitpoints = this.skillLevel(SkillsEnum.Hitpoints);
-		const magic = this.skillLevel(SkillsEnum.Magic);
-		const prayer = this.skillLevel(SkillsEnum.Prayer);
-		const attack = this.skillLevel(SkillsEnum.Attack);
-		const strength = this.skillLevel(SkillsEnum.Strength);
-
-		const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
-		const melee = 0.325 * (attack + strength);
-		const range = 0.325 * (Math.floor(ranged / 2) + ranged);
-		const mage = 0.325 * (Math.floor(magic / 2) + magic);
-		return Math.floor(base + Math.max(melee, range, mage));
 	}
 }

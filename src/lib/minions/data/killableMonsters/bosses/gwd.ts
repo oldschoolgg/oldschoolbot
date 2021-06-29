@@ -154,7 +154,7 @@ const killableBosses: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 708,
 		combatXpMultiplier: 1.135,
-		healAmountNeeded: 20 * 3,
+		healAmountNeeded: 0 * 3,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic]
 	}
