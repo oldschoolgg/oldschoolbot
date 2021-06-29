@@ -79,10 +79,6 @@ export default class extends BotCommand {
 	}
 
 	async all(msg: KlasaMessage) {
-		if (1 > 2) {
-			return msg.send('Open all is currently not supported.');
-		}
-
 		const userBank = await msg.author.bank();
 		let ownedOpenables: { openID: number; amount: number; type: 'clue' | 'osjsOpenable' | 'item' }[] = [];
 
@@ -127,12 +123,17 @@ export default class extends BotCommand {
 		let openablesOpened = new Map();
 		let mimicNumber = 0;
 		let totalOpens = 0;
+		let masterFound = false;
 
 		for (let openable of uniqueOpenables) {
 			switch (openable.type) {
 				case 'clue': {
+					if (masterFound) break;
 					const clue = ClueTiers.find(_tier => _tier.id === openable.openID);
 					const clueValues = await this.getClueOpenablesValues(msg, openable.amount, clue!);
+					if (openable.amount !== clueValues.actualQuantity) {
+						masterFound = true;
+					}
 					cluesOpened.set(clueValues.clueTier.id, clueValues.actualQuantity);
 					mimicNumber += clueValues.mimicNumber;
 					loot.add(clueValues.loot);

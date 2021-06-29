@@ -4,10 +4,11 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Emoji } from '../../lib/constants';
 import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
+import botOpenables from '../../lib/data/openables';
+import ClueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
-import { itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
 const gearSpawns = [
@@ -29,8 +30,8 @@ const gearSpawns = [
 ];
 
 const openablesBank = new Bank();
-for (const i of Openables.values()) {
-	openablesBank.add(i.id, 100);
+for (const i of [...Openables.map(i => i.id), ...ClueTiers.map(i => i.id), ...botOpenables.map(i => i.itemID)]) {
+	openablesBank.add(i, 100);
 }
 
 export default class extends BotCommand {
@@ -69,9 +70,11 @@ export default class extends BotCommand {
 		if (msg.flagArgs.openables) {
 			await msg.author.addItemsToBank(openablesBank);
 			return msg.channel.send(
-				`Gave you 100x of every openable item, which is: ${Openables.map(i => i.id)
-					.map(itemNameFromID)
-					.join(', ')}.`
+				`Gave you 100x of every openable item, which is: ${[
+					...Openables.map(i => i.name),
+					...ClueTiers.map(i => i.name),
+					...botOpenables.map(i => i.name)
+				].join(', ')}.`
 			);
 		}
 
