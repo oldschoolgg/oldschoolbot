@@ -88,7 +88,9 @@ export default class extends BotCommand {
 				ownedOpenables.push({ openID: clue.id, amount: userBank.amount(clue.id), type: 'clue' });
 				continue;
 			}
-			const osjsOpenable = Openables.find(openable => openable.aliases.some(alias => stringMatches(alias, item)));
+			const osjsOpenable = Openables.find(openable =>
+				openable.aliases.concat([openable.name]).some(alias => stringMatches(alias, item))
+			);
 			if (osjsOpenable && userBank.has(osjsOpenable.id)) {
 				ownedOpenables.push({
 					openID: osjsOpenable.id,
