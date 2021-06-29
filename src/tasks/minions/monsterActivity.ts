@@ -64,6 +64,19 @@ export default class extends Task {
 			superiorCount: newSuperiorCount
 		});
 
+		if (monster.isGroupMonster && monster.groupMonsters) {
+			const groupQty = monster.groupMonsters.length;
+			const groupExtraQty = quantity % groupQty;
+			const groupIndividualQty = (quantity - groupExtraQty) / groupQty;
+
+			for (let i = 0; i < groupQty; i++) {
+				await user.incrementMonsterScore(
+					monster.groupMonsters[i].id,
+					groupIndividualQty + (i < groupExtraQty ? 1 : 0)
+				);
+			}
+		}
+
 		announceLoot(this.client, user, monster, loot.bank);
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
