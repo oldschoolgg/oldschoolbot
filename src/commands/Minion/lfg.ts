@@ -1,10 +1,9 @@
 import { MessageEmbed } from 'discord.js';
-import { sleep } from 'e';
-import { Command, CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import { Activity, Color, Emoji, Events, SupportServer, Time } from '../../lib/constants';
-import { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import forceMainServer from '../../lib/minions/decorators/forceMainServer';
 import ironsCantUse from '../../lib/minions/decorators/ironsCantUse';
 import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
@@ -12,15 +11,14 @@ import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodFo
 import { KillableMonster } from '../../lib/minions/types';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {
-	GroupMonsterActivityTaskOptions,
-	NightmareActivityTaskOptions,
-	RaidsTaskOptions
-} from '../../lib/types/minions';
-import { channelIsSendable, formatDuration, noOp, stringMatches } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { channelIsSendable, formatDuration, noOp, sleep, stringMatches } from '../../lib/util';
+
 import Timeout = NodeJS.Timeout;
+import Default from '../../lib/lfg/Default';
+import LfgInterface from '../../lib/lfg/LfgInterface';
 import { requiresMinion } from '../../lib/minions/decorators';
+import { LfgActivityTaskOptions } from '../../lib/types/minions';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 interface UserSentFrom {
 	guild: string | undefined;
@@ -36,12 +34,11 @@ interface QueueState {
 	startDate?: Date;
 }
 
-interface QueueProperties {
+export interface QueueProperties {
 	uniqueID: number;
 	name: string;
 	aliases: string[];
-	activeTaskType: GroupMonsterActivityTaskOptions | NightmareActivityTaskOptions | RaidsTaskOptions;
-	command: Command;
+	lfgClass: LfgInterface;
 	extraParams?: Record<string, any>;
 	thumbnail: string;
 	monster?: KillableMonster;
@@ -129,116 +126,114 @@ function getMonster(monsterId: number): KillableMonster {
 	return <KillableMonster>effectiveMonsters.find(m => m.id === monsterId);
 }
 
+const MIN_USERS = 1;
+const MAX_USERS = 20;
+
+export const availableQueues: QueueProperties[] = [
+	{
+		uniqueID: 1,
+		name: Monsters.KrilTsutsaroth.name,
+		aliases: Monsters.KrilTsutsaroth.aliases,
+		lfgClass: new Default(),
+		thumbnail: 'https://oldschool.runescape.wiki/images/2/2f/K%27ril_Tsutsaroth.png',
+		monster: getMonster(Monsters.KrilTsutsaroth.id),
+		minQueueSize: MIN_USERS,
+		maxQueueSize: MAX_USERS
+	}
+	// {
+	// 	uniqueID: 2,
+	// 	name: Monsters.GeneralGraardor.name,
+	// 	aliases: Monsters.GeneralGraardor.aliases,
+	// 	lfgClass: new Default(),
+	// 	command: this.client.commands.get('groupkill')!,
+	// 	thumbnail: 'https://oldschool.runescape.wiki/images/b/b8/General_Graardor.png',
+	// 	monster: getMonster(Monsters.GeneralGraardor.id),
+	// 	minQueueSize: this.MIN_USERS,
+	// 	maxQueueSize: this.MAX_USERS
+	// },
+	// {
+	// 	uniqueID: 3,
+	// 	name: Monsters.Kreearra.name,
+	// 	aliases: Monsters.Kreearra.aliases,
+	// 	lfgClass: new Default(),
+	// 	command: this.client.commands.get('groupkill')!,
+	// 	thumbnail: 'https://oldschool.runescape.wiki/images/f/fd/Kree%27arra.png',
+	// 	monster: getMonster(Monsters.Kreearra.id),
+	// 	minQueueSize: this.MIN_USERS,
+	// 	maxQueueSize: this.MAX_USERS
+	// },
+	// {
+	// 	uniqueID: 4,
+	// 	name: Monsters.CommanderZilyana.name,
+	// 	aliases: Monsters.CommanderZilyana.aliases,
+	// 	lfgClass: new Default(),
+	// 	command: this.client.commands.get('groupkill')!,
+	// 	thumbnail: 'https://oldschool.runescape.wiki/images/f/fb/Commander_Zilyana.png',
+	// 	monster: getMonster(Monsters.CommanderZilyana.id),
+	// 	minQueueSize: this.MIN_USERS,
+	// 	maxQueueSize: this.MAX_USERS
+	// },
+	// {
+	// 	uniqueID: 5,
+	// 	name: Monsters.CorporealBeast.name,
+	// 	aliases: Monsters.CorporealBeast.aliases,
+	// 	lfgClass: new Default(),
+	// 	command: this.client.commands.get('groupkill')!,
+	// 	thumbnail: 'https://oldschool.runescape.wiki/images/5/5c/Corporeal_Beast.png',
+	// 	monster: getMonster(Monsters.CorporealBeast.id),
+	// 	minQueueSize: this.MIN_USERS,
+	// 	maxQueueSize: this.MAX_USERS
+	// },
+	// {
+	// 	uniqueID: 6,
+	// 	name: NightmareMonster.name,
+	// 	aliases: NightmareMonster.aliases,
+	// 	lfgClass: new Nightmare(),
+	// 	command: this.client.commands.get('nightmare')!,
+	// 	thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
+	// 	monster: getMonster(NightmareMonster.id),
+	// 	minQueueSize: this.MIN_USERS,
+	// 	maxQueueSize: this.MAX_USERS
+	// },
+	// {
+	// 	uniqueID: 7,
+	// 	name: `${NightmareMonster.name} Small Team`,
+	// 	aliases: ['nightmare small'],
+	// 	lfgClass: new Nightmare(),
+	// 	command: this.client.commands.get('nightmare')!,
+	// 	thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
+	// 	monster: getMonster(NightmareMonster.id),
+	// 	minQueueSize: 1,
+	// 	maxQueueSize: 5
+	// },
+	// {
+	// 	uniqueID: 8,
+	// 	name: 'The Chambers of Xeric',
+	// 	aliases: ['raids', 'chambers of xeric', 'the chambers of xeric', 'olm', 'raid1', 'cox'],
+	// 	lfgClass: new ChambersOfXeric(),
+	// 	command: this.client.commands.get('raid')!,
+	// 	thumbnail: 'https://oldschool.runescape.wiki/images/0/04/Chambers_of_Xeric_logo.png?34a98',
+	// 	minQueueSize: 1,
+	// 	maxQueueSize: 50
+	// },
+	// {
+	// 	uniqueID: 9,
+	// 	name: 'The Chambers of Xeric (CM)',
+	// 	aliases: ['raids cm', 'chambers of xeric cm', 'the chambers of xeric cm', 'olm cm', 'raid1 cm', 'cox cm'],
+	// 	lfgClass: new ChambersOfXeric(),
+	// 	command: this.client.commands.get('raid')!,
+	// 	extraParams: { challengeMode: true },
+	// 	thumbnail: 'https://oldschool.runescape.wiki/images/0/04/Chambers_of_Xeric_logo.png?34a98',
+	// 	minQueueSize: 1,
+	// 	maxQueueSize: 50
+	// }
+];
+
 export default class extends BotCommand {
 	QueueList: Record<number, QueueState> = {};
-	MIN_USERS = 1;
-	MAX_USERS = 20;
 	WAIT_TIME = 10 * Time.Second;
 	DEFAULT_MASS_CHANNEL = '858141860900110366'; // #testing-2
-
-	availableQueues: QueueProperties[] = [
-		{
-			uniqueID: 1,
-			name: Monsters.KrilTsutsaroth.name,
-			aliases: Monsters.KrilTsutsaroth.aliases,
-			activeTaskType: <GroupMonsterActivityTaskOptions>{ type: Activity.GroupMonsterKilling },
-			command: this.client.commands.get('groupkill')!,
-			thumbnail: 'https://oldschool.runescape.wiki/images/2/2f/K%27ril_Tsutsaroth.png',
-			monster: getMonster(Monsters.KrilTsutsaroth.id),
-			minQueueSize: this.MIN_USERS,
-			maxQueueSize: this.MAX_USERS
-		},
-		{
-			uniqueID: 2,
-			name: Monsters.GeneralGraardor.name,
-			aliases: Monsters.GeneralGraardor.aliases,
-			activeTaskType: <GroupMonsterActivityTaskOptions>{ type: Activity.GroupMonsterKilling },
-			command: this.client.commands.get('groupkill')!,
-			thumbnail: 'https://oldschool.runescape.wiki/images/b/b8/General_Graardor.png',
-			monster: getMonster(Monsters.GeneralGraardor.id),
-			minQueueSize: this.MIN_USERS,
-			maxQueueSize: this.MAX_USERS
-		},
-		{
-			uniqueID: 3,
-			name: Monsters.Kreearra.name,
-			aliases: Monsters.Kreearra.aliases,
-			activeTaskType: <GroupMonsterActivityTaskOptions>{ type: Activity.GroupMonsterKilling },
-			command: this.client.commands.get('groupkill')!,
-			thumbnail: 'https://oldschool.runescape.wiki/images/f/fd/Kree%27arra.png',
-			monster: getMonster(Monsters.Kreearra.id),
-			minQueueSize: this.MIN_USERS,
-			maxQueueSize: this.MAX_USERS
-		},
-		{
-			uniqueID: 4,
-			name: Monsters.CommanderZilyana.name,
-			aliases: Monsters.CommanderZilyana.aliases,
-			activeTaskType: <GroupMonsterActivityTaskOptions>{ type: Activity.GroupMonsterKilling },
-			command: this.client.commands.get('groupkill')!,
-			thumbnail: 'https://oldschool.runescape.wiki/images/f/fb/Commander_Zilyana.png',
-			monster: getMonster(Monsters.CommanderZilyana.id),
-			minQueueSize: this.MIN_USERS,
-			maxQueueSize: this.MAX_USERS
-		},
-		{
-			uniqueID: 5,
-			name: Monsters.CorporealBeast.name,
-			aliases: Monsters.CorporealBeast.aliases,
-			activeTaskType: <GroupMonsterActivityTaskOptions>{ type: Activity.GroupMonsterKilling },
-			command: this.client.commands.get('groupkill')!,
-			thumbnail: 'https://oldschool.runescape.wiki/images/5/5c/Corporeal_Beast.png',
-			monster: getMonster(Monsters.CorporealBeast.id),
-			minQueueSize: this.MIN_USERS,
-			maxQueueSize: this.MAX_USERS
-		},
-		{
-			uniqueID: 6,
-			name: NightmareMonster.name,
-			aliases: NightmareMonster.aliases,
-			activeTaskType: <NightmareActivityTaskOptions>{ type: Activity.Nightmare },
-			command: this.client.commands.get('nightmare')!,
-			thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
-			monster: getMonster(NightmareMonster.id),
-			minQueueSize: this.MIN_USERS,
-			maxQueueSize: this.MAX_USERS
-		},
-		{
-			uniqueID: 7,
-			name: `${NightmareMonster.name} Small Team`,
-			aliases: ['nightmare small'],
-			activeTaskType: <NightmareActivityTaskOptions>{ type: Activity.Nightmare },
-			command: this.client.commands.get('nightmare')!,
-			thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
-			monster: getMonster(NightmareMonster.id),
-			minQueueSize: 1,
-			maxQueueSize: 5
-		},
-		{
-			uniqueID: 8,
-			name: 'The Chambers of Xeric',
-			aliases: ['raids', 'chambers of xeric', 'the chambers of xeric', 'olm', 'raid1', 'cox'],
-			activeTaskType: <RaidsTaskOptions>{ type: Activity.Raids },
-			command: this.client.commands.get('raid')!,
-			thumbnail: 'https://oldschool.runescape.wiki/images/0/04/Chambers_of_Xeric_logo.png?34a98',
-			minQueueSize: 1,
-			maxQueueSize: 50
-		},
-		{
-			uniqueID: 9,
-			name: 'The Chambers of Xeric (CM)',
-			aliases: ['raids cm', 'chambers of xeric cm', 'the chambers of xeric cm', 'olm cm', 'raid1 cm', 'cox cm'],
-			activeTaskType: <RaidsTaskOptions>{ type: Activity.Raids },
-			command: this.client.commands.get('raid')!,
-			extraParams: { challengeMode: true },
-			thumbnail: 'https://oldschool.runescape.wiki/images/0/04/Chambers_of_Xeric_logo.png?34a98',
-			minQueueSize: 1,
-			maxQueueSize: 50
-		}
-	];
-
 	twoMinutesCheck: Record<number, Timeout | null> = {};
-
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[join|leave] [name:...string]',
@@ -287,13 +282,13 @@ export default class extends BotCommand {
 
 	removeUserFromQueue(user: KlasaUser, queueID: number, cancelTimeout = false) {
 		if (this.QueueList[queueID]) {
-			const selectedQueue = this.availableQueues.find(m => m.uniqueID === queueID);
+			const selectedQueue = availableQueues.find(m => m.uniqueID === queueID);
 			if (selectedQueue) {
 				delete this.QueueList[queueID].users[user.id];
 				delete this.QueueList[queueID].userSentFrom[user.id];
 				if (
 					cancelTimeout &&
-					Object.values(this.QueueList[queueID].users).length < (selectedQueue.minQueueSize ?? this.MIN_USERS)
+					Object.values(this.QueueList[queueID].users).length < (selectedQueue.minQueueSize ?? MIN_USERS)
 				) {
 					clearTimeout(queueID);
 				}
@@ -318,9 +313,9 @@ export default class extends BotCommand {
 		const queue = this.QueueList[selectedQueue.uniqueID];
 		let doNotClear = false;
 		// Check if we can start
-		if (Object.values(queue.users).length >= (selectedQueue.minQueueSize ?? this.MIN_USERS) || skipChecks) {
+		if (Object.values(queue.users).length >= (selectedQueue.minQueueSize ?? MIN_USERS) || skipChecks) {
 			// If users >= MAX_USERS (should never be higher), remove the timeout check and it now
-			if (Object.values(queue.users).length >= (selectedQueue.maxQueueSize ?? this.MAX_USERS)) {
+			if (Object.values(queue.users).length >= (selectedQueue.maxQueueSize ?? MAX_USERS)) {
 				if (this.twoMinutesCheck[selectedQueue.uniqueID] !== null) {
 					this.clearTimeout(selectedQueue.uniqueID);
 				}
@@ -350,29 +345,27 @@ export default class extends BotCommand {
 				// Sort users by maxTripLength to use that as the base for this LFG
 				const sortedUsers = Object.values(queue.users).sort(
 					(a, b) =>
-						b.maxTripLength(selectedQueue.activeTaskType.type) -
-						a.maxTripLength(selectedQueue.activeTaskType.type)
+						b.maxTripLength(selectedQueue.lfgClass.activity.type) -
+						a.maxTripLength(selectedQueue.lfgClass.activity.type)
 				);
 				// Remove invalid users
 				for (const user of sortedUsers) {
-					// TODO create some sort of standard for all group activities to follow so the requirements
-					//  can be validated
-					const { allowed, reasons } = await this.validateUserReqs(user, selectedQueue.monster!);
-					if (allowed) {
+					const errors = await selectedQueue.lfgClass.checkUserRequirements(user, 2, selectedQueue);
+					if (errors.length === 0) {
 						finalUsers.push(user);
 					} else {
 						this.removeUserFromAllQueues(user);
 						await user.send(
 							`You were removed from the **${
 								selectedQueue.name
-							} LFG** as it was about to start due to the following reasons:\n - ${reasons.join('\n - ')}`
+							} LFG** as it was about to start due to the following reasons:\n - ${errors.join('\n - ')}`
 						);
 						await sleep(250);
 					}
 				}
 
 				// Detect if there are any person left
-				if (finalUsers.length < (selectedQueue.minQueueSize ? selectedQueue.minQueueSize : this.MIN_USERS)) {
+				if (finalUsers.length < (selectedQueue.minQueueSize ? selectedQueue.minQueueSize : MIN_USERS)) {
 					doNotClear = true;
 					this.client.emit(
 						Events.Log,
@@ -383,24 +376,13 @@ export default class extends BotCommand {
 
 				// Get the leader for the LFG
 				const leader = finalUsers[0];
+				const [activitiesThisTrip, durationOfTrip, timePerActivity] =
+					await selectedQueue.lfgClass.calculateDurationAndActivitiesPerTrip(finalUsers, selectedQueue);
 
-				// TODO create some sort of standard for all group activities to follow so we can easily calculate the
-				//  number of activities during this trip, the duration and time per activity
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				const [activitiesThisTrip, durationOfTrip, timePerActivity] = await selectedQueue.command.calcDurQty({
+				await selectedQueue.lfgClass.getItemToRemoveFromBank({
 					users: finalUsers,
-					quantity: undefined,
-					lookingForGroup: selectedQueue
-				});
-
-				// Remove required items from everyone
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				await selectedQueue.command.removeItems({
-					users: finalUsers,
-					quantity: undefined,
-					lookingForGroup: selectedQueue
+					quantity: activitiesThisTrip,
+					queue: selectedQueue
 				});
 
 				const guilds: Record<string, string> = {};
@@ -430,16 +412,15 @@ export default class extends BotCommand {
 					channelsToSend[toSendChannel].push(user.id);
 				}
 
-				await addSubTaskToActivityTask(<typeof selectedQueue.activeTaskType>{
-					monsterID: selectedQueue.uniqueID,
+				await addSubTaskToActivityTask(<LfgActivityTaskOptions>{
+					queueId: selectedQueue.uniqueID,
 					userID: leader.id,
 					channelID: this.DEFAULT_MASS_CHANNEL,
 					quantity: activitiesThisTrip,
 					duration: durationOfTrip,
-					type: selectedQueue.activeTaskType.type || Activity.GroupMonsterKilling,
+					type: Activity.Lfg,
 					leader: leader.id,
-					users: finalUsers.map(u => u.id),
-					lookingForGroup: channelsToSend
+					users: finalUsers.map(u => u.id)
 				});
 
 				for (const user of finalUsers) {
@@ -513,7 +494,7 @@ export default class extends BotCommand {
 					)} before starting.` +
 					"\n**WARNING**: Do not be busy when the activity is about to start or you'll be removed from it!"
 			);
-		for (const _queue of this.availableQueues) {
+		for (const _queue of availableQueues) {
 			const smallestAlias = _queue.aliases.sort((a, b) => a.length - b.length)[0] ?? _queue.name;
 			const joined = this.QueueList[_queue.uniqueID] && this.QueueList[_queue.uniqueID].users[msg.author.id];
 			const title = _queue.name + (joined ? ' [JOINED]' : '');
@@ -526,13 +507,11 @@ export default class extends BotCommand {
 					`\nStarts in: ${this.getTimeLeft(
 						this.QueueList[_queue.uniqueID] ? this.QueueList[_queue.uniqueID].startDate : undefined
 					)}` +
-					`\nMin/Max users: ${_queue.minQueueSize ?? this.MIN_USERS}/${
-						_queue.maxQueueSize ?? this.MAX_USERS
-					}`,
+					`\nMin/Max users: ${_queue.minQueueSize ?? MIN_USERS}/${_queue.maxQueueSize ?? MAX_USERS}`,
 				true
 			);
 		}
-		for (let i = 0; i < Math.ceil(this.availableQueues.length / 3) * 3 - this.availableQueues.length; i++) {
+		for (let i = 0; i < Math.ceil(availableQueues.length / 3) * 3 - availableQueues.length; i++) {
 			embed.addField('\u200b', '\u200b', true);
 		}
 		// large footer to allow max embeed size
@@ -546,7 +525,7 @@ export default class extends BotCommand {
 	@ironsCantUse
 	async join(msg: KlasaMessage, [queue = '']: [string]) {
 		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';
-		const selectedQueue = this.availableQueues.find(
+		const selectedQueue = availableQueues.find(
 			m => stringMatches(m.name, queue) || (m.aliases && m.aliases.some(a => stringMatches(a, queue)))
 		);
 
@@ -577,20 +556,16 @@ export default class extends BotCommand {
 
 		// TODO create some sort of standard for all group activities to follow so the requirements
 		//  can be validated
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		const { allowed, reasons } = selectedQueue.command.checkReqs({
-			users: [msg.author],
-			lookingForGroup: selectedQueue,
-			quantity: 2
-		});
-		if (!allowed) {
+		const errors = selectedQueue.lfgClass.checkUserRequirements(msg.author, 2, selectedQueue);
+		if (errors.length > 1) {
 			if (!channelIsSendable(msg.author.dmChannel!)) {
 				return msg.channel.send(
-					`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${reasons}`
+					`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${errors.join('\n')}`
 				);
 			}
-			return msg.author.send(`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${reasons}`);
+			return msg.author.send(
+				`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${errors.join('\n')}`
+			);
 		}
 
 		// If no users, set the join dates
@@ -618,7 +593,7 @@ export default class extends BotCommand {
 	@ironsCantUse
 	async leave(msg: KlasaMessage, [queue = '']: [string]) {
 		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';
-		const selectedQueue = this.availableQueues.find(
+		const selectedQueue = availableQueues.find(
 			m => stringMatches(m.name, queue) || (m.aliases && m.aliases.some(a => stringMatches(a, queue)))
 		);
 

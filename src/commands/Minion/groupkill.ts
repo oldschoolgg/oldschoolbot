@@ -31,78 +31,34 @@ export default class extends BotCommand {
 		});
 	}
 
-	checkReqs(params: Record<string, any>) {
-		let monster: KillableMonster = params.lookingForGroup ? params.lookingForGroup.monster : params.monster;
-		let users = <KlasaUser[]>params.users;
-		let quantity = <number>params.quantity;
-		let returnMessage: string[] = [];
+	checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number) {
 		// Check if every user has the requirements for this monster.
 		for (const user of users) {
 			if (!user.hasMinion) {
-				returnMessage.push(`${user.username} doesn't have a minion, so they can't join!`);
+				throw `${user.username} doesn't have a minion, so they can't join!`;
 			}
 
 			if (user.minionIsBusy) {
-				returnMessage.push(`${user.username} is busy right now and can't join!`);
+				throw `${user.username} is busy right now and can't join!`;
 			}
 
 			if (user.isIronman) {
-				returnMessage.push(`${user.username} is an ironman, so they can't join!`);
+				throw `${user.username} is an ironman, so they can't join!`;
 			}
 
 			const [hasReqs, reason] = user.hasMonsterRequirements(monster);
 			if (!hasReqs) {
-				returnMessage.push(`${user.username} doesn't have the requirements for this monster: ${reason}`);
+				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
 			}
 
 			if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
-				returnMessage.push(
-					`${
-						users.length === 1 ? "You don't" : `${user.username} doesn't`
-					} have enough food. You need at least ${monster!.healAmountNeeded! * quantity} HP in food to ${
-						users.length === 1 ? 'start the mass' : 'enter the mass'
-					}.`
-				);
-			}
-
-			if (params.throw === true && returnMessage.length > 0) {
-				throw `${returnMessage.join('\n')}`;
-			} else if (users.length === 1) {
-				if (returnMessage.length > 0) {
-					return { allowed: false, reasons: returnMessage.join('\n') };
-				}
-				return { allowed: true };
+				throw `${
+					users.length === 1 ? "You don't" : `${user.username} doesn't`
+				} have enough food. You need at least ${monster!.healAmountNeeded! * quantity} HP in food to ${
+					users.length === 1 ? 'start the mass' : 'enter the mass'
+				}.`;
 			}
 		}
-	}
-
-	// Remove the necessary items from the users before starting the trip
-	async removeItems(params: Record<string, any>) {
-		let monster: KillableMonster = params.lookingForGroup ? params.lookingForGroup.monster : params.monster;
-		let users = <KlasaUser[]>params.users;
-		let numberOfKills: number = params.quantity;
-
-		if (monster.healAmountNeeded) {
-			for (const user of users) {
-				const [healAmountNeeded] = calculateMonsterFood(monster, user);
-				await removeFoodFromUser({
-					client: this.client,
-					user,
-					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * numberOfKills,
-					healPerAction: Math.ceil(healAmountNeeded / numberOfKills),
-					activityName: monster.name,
-					attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
-				});
-			}
-		}
-	}
-
-	async calcDurQty(params: Record<string, any>): Promise<[number, number, number, string[]]> {
-		return calcDurQty(
-			params.users,
-			params.lookingForGroup ? params.lookingForGroup.monster : params.monster,
-			params.quantity
-		);
 	}
 
 	@minionNotBusy
@@ -113,7 +69,7 @@ export default class extends BotCommand {
 		if (!monster) throw "That monster doesn't exist!";
 		if (!monster.groupKillable) throw "This monster can't be killed in groups!";
 
-		this.checkReqs({ users: [msg.author], monster, quantity: 2, throw: true });
+		this.checkReqs([msg.author], monster, 2);
 
 		const maximumSize = 50;
 
@@ -128,17 +84,60 @@ export default class extends BotCommand {
 				maximumSizeForParty ?? maximumSize
 			}.`,
 			customDenier: user => {
-				const reqs = this.checkReqs({ users: [user], monster, quantity: 2 });
-				if (reqs!.reasons) {
-					return [true, reqs!.reasons];
+				if (!user.hasMinion) {
+					return [true, "you don't have a minion."];
 				}
+				if (user.minionIsBusy) {
+					return [true, 'your minion is busy.'];
+				}
+				const [hasReqs, reason] = user.hasMonsterRequirements(monster);
+				if (!hasReqs) {
+					return [true, `you don't have the requirements for this monster; ${reason}`];
+				}
+
+				if (1 > 2 && monster.healAmountNeeded) {
+					try {
+						calculateMonsterFood(monster, user);
+					} catch (err) {
+						return [true, err];
+					}
+
+					// Ensure people have enough food for at least 2 full KC
+					// This makes it so the users will always have enough food for any amount of KC
+					if (1 > 2 && !hasEnoughFoodForMonster(monster, user, 2)) {
+						return [
+							true,
+							`You don't have enough food. You need at least ${
+								monster.healAmountNeeded * 2
+							} HP in food to enter the mass.`
+						];
+					}
+				}
+
 				return [false];
 			}
 		};
+
 		const users = await msg.makePartyAwaiter(partyOptions);
-		const [quantity, duration, perKillTime, boostMsgs] = await this.calcDurQty({ users, monster });
-		this.checkReqs({ users, monster, quantity, throw: true });
-		await this.removeItems({ users, monster, quantity });
+
+		const [quantity, duration, perKillTime, boostMsgs] = await calcDurQty(users, monster, undefined);
+
+		this.checkReqs(users, monster, quantity);
+
+		if (1 > 2 && monster.healAmountNeeded) {
+			for (const user of users) {
+				const [healAmountNeeded] = calculateMonsterFood(monster, user);
+				await removeFoodFromUser({
+					client: this.client,
+					user,
+					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
+					healPerAction: Math.ceil(healAmountNeeded / quantity),
+					activityName: monster.name,
+					attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
+				});
+			}
+		}
+
 		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>({
 			monsterID: monster.id,
 			userID: msg.author.id,

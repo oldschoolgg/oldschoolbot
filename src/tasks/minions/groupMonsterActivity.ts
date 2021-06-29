@@ -1,7 +1,6 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { addLFGLoot, addLFGNoDrops, prepareLFGMessage } from '../../commands/Minion/lfg';
 import { Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -29,15 +28,7 @@ export default class extends Task {
 
 		const leaderUser = await this.client.users.fetch(leader);
 
-		let resultStr = '';
-		let resultStrLfg: Record<string, string> = {};
-
-		if (data.lookingForGroup) {
-			resultStrLfg = prepareLFGMessage(monster.name, quantity, data.lookingForGroup);
-		} else {
-			resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
-		}
-
+		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
 		const totalLoot = new Bank();
 
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
@@ -56,14 +47,6 @@ export default class extends Task {
 			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
 			const purple = Object.keys(loot).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));
 
-			// Add LFG loot
-			if (data.lookingForGroup) {
-				resultStrLfg = addLFGLoot(resultStrLfg, purple, user, loot.toString(), data.lookingForGroup);
-			} else {
-				// Add normal loot
-				resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;
-			}
-
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;
 
 			announceLoot(this.client, leaderUser, monster, loot.bank, {
@@ -75,33 +58,9 @@ export default class extends Task {
 
 		const usersWithoutLoot = users.filter(id => !teamsLoot[id]);
 		if (usersWithoutLoot.length > 0) {
-			if (data.lookingForGroup) {
-				resultStrLfg = await addLFGNoDrops(resultStrLfg, this.client, usersWithoutLoot, data.lookingForGroup);
-			} else {
-				resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
-			}
+			resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
 		}
 
-		// if (data.lookingForGroup) {
-		// 	await sendLFGMessages(resultStrLfg, this.client, data.lookingForGroup);
-		// } else {
-		// 	await queuedMessageSend(this.client, channelID, resultStr);
-		// }
-		//
-		// const usersWithoutLoot = users.filter(id => !teamsLoot[id]);
-		// if (usersWithoutLoot.length > 0) {
-		// 	resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
-		// }
-
-		handleTripFinish(
-			this.client,
-			leaderUser,
-			channelID,
-			data.lookingForGroup ? resultStrLfg : resultStr,
-			undefined,
-			undefined,
-			data,
-			totalLoot.bank
-		);
+		handleTripFinish(this.client, leaderUser, channelID, resultStr, undefined, undefined, data, totalLoot.bank);
 	}
 }

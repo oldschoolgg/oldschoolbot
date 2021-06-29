@@ -301,6 +301,15 @@ export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface LfgActivityTaskOptions extends ActivityTaskOptions {
+	queueId: number;
+	channelID: string;
+	quantity: number;
+	users: string[];
+	leader: string;
+	duration: number;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions
@@ -320,4 +329,5 @@ export type ActivityTaskData =
 	| FarmingActivityTaskOptions
 	| HerbloreActivityTaskOptions
 	| FletchingActivityTaskOptions
-	| RunecraftActivityTaskOptions;
+	| RunecraftActivityTaskOptions
+	| LfgActivityTaskOptions;

@@ -1,8 +1,8 @@
+import { objectKeys } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
-import { GearSetupTypes } from '../../lib/gear/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -59,36 +59,140 @@ export default class extends BotCommand {
 		});
 	}
 
-	checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number) {
+	checkReqs(params: Record<string, any>) {
+		let monster: KillableMonster = params.lookingForGroup ? params.lookingForGroup.monster : params.monster;
+		let users = <KlasaUser[]>params.users;
+		let quantity = <number>params.quantity;
+		let returnMessage: string[] = [];
 		// Check if every user has the requirements for this monster.
 		for (const user of users) {
 			if (!user.hasMinion) {
-				throw `${user.username} doesn't have a minion, so they can't join!`;
+				returnMessage.push(`${user.username} doesn't have a minion, so they can't join!`);
 			}
 
 			if (user.minionIsBusy) {
-				throw `${user.username} is busy right now and can't join!`;
+				returnMessage.push(`${user.username} is busy right now and can't join!`);
+			}
+
+			if (user.isIronman) {
+				returnMessage.push(`${user.username} is an ironman, so they can't join!`);
 			}
 
 			const [hasReqs, reason] = user.hasMonsterRequirements(monster);
 			if (!hasReqs) {
-				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
+				returnMessage.push(`${user.username} doesn't have the requirements for this monster: ${reason}`);
 			}
 
-			if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
-				throw `${
-					users.length === 1 ? "You don't" : `${user.username} doesn't`
-				} have enough food. You need at least ${monster.healAmountNeeded! * quantity} HP in food to ${
-					users.length === 1 ? 'start the mass' : 'enter the mass'
-				}.`;
+			if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
+				returnMessage.push(
+					`${
+						users.length === 1 ? "You don't" : `${user.username} doesn't`
+					} have enough food. You need at least ${monster!.healAmountNeeded! * quantity} HP in food to ${
+						users.length === 1 ? 'start the mass' : 'enter the mass'
+					}.`
+				);
+			}
+
+			if (params.throw === true && returnMessage.length > 0) {
+				throw `${returnMessage.join('\n')}`;
+			} else if (users.length === 1) {
+				if (returnMessage.length > 0) {
+					return { allowed: false, reasons: returnMessage.join('\n') };
+				}
+				return { allowed: true };
 			}
 		}
+	}
+
+	// Remove the necessary items from the users before starting the trip
+	async removeItems(params: Record<string, any>) {
+		let monster: KillableMonster = params.lookingForGroup ? params.lookingForGroup.monster : params.monster;
+		let users = <KlasaUser[]>params.users;
+		let numberOfKills: number = params.quantity;
+
+		if (monster.healAmountNeeded) {
+			const totalCost = new Bank();
+			for (const user of users) {
+				const [healAmountNeeded] = calculateMonsterFood(monster, user);
+				const [, foodRemoved] = await removeFoodFromUser({
+					client: this.client,
+					user,
+					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * numberOfKills,
+					healPerAction: Math.ceil(healAmountNeeded / numberOfKills),
+					activityName: monster.name,
+					attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
+				});
+				totalCost.add(foodRemoved);
+			}
+			await updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, totalCost);
+		}
+	}
+
+	async calcDurQty(params: Record<string, any>): Promise<[number, number, number, string[]]> {
+		let monster: KillableMonster = params.lookingForGroup ? params.lookingForGroup.monster : params.monster;
+		let users = <KlasaUser[]>params.users;
+		let effectiveTime = monster.timeToFinish;
+		for (const user of users) {
+			const [data] = getNightmareGearStats(
+				user,
+				users.map(u => u.id)
+			);
+
+			// Special inquisitor outfit damage boost
+			const meleeGear = user.getGear('melee');
+			if (meleeGear.hasEquipped(inquisitorItems, true)) {
+				effectiveTime *= users.length === 1 ? 0.9 : 0.97;
+			} else {
+				for (const inqItem of inquisitorItems) {
+					if (meleeGear.hasEquipped([inqItem])) {
+						effectiveTime *= users.length === 1 ? 0.98 : 0.995;
+					}
+				}
+			}
+
+			// Increase duration for each bad weapon.
+			if (data.attackCrushStat < ZAM_HASTA_CRUSH) {
+				effectiveTime *= 1.05;
+			}
+
+			// Increase duration for lower melee-strength gear.
+			if (data.percentMeleeStrength < 40) {
+				effectiveTime *= 1.06;
+			} else if (data.percentMeleeStrength < 50) {
+				effectiveTime *= 1.03;
+			} else if (data.percentMeleeStrength < 60) {
+				effectiveTime *= 1.02;
+			}
+
+			// Increase duration for lower KC.
+			if (data.kc < 10) {
+				effectiveTime *= 1.15;
+			} else if (data.kc < 25) {
+				effectiveTime *= 1.05;
+			} else if (data.kc < 50) {
+				effectiveTime *= 1.02;
+			} else if (data.kc < 100) {
+				effectiveTime *= 0.98;
+			} else {
+				effectiveTime *= 0.96;
+			}
+		}
+
+		let [quantity, duration, perKillTime, messages] = await calcDurQty(
+			users,
+			{ ...NightmareMonster, timeToFinish: effectiveTime },
+			undefined,
+			Time.Minute * 5,
+			Time.Minute * 30
+		);
+		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
+		return [quantity, duration, perKillTime, messages];
 	}
 
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [type, maximumSizeForParty]: ['mass' | 'solo', number]) {
-		this.checkReqs([msg.author], NightmareMonster, 2);
+		this.checkReqs({ users: [msg.author], monster: NightmareMonster, quantity: 2, throw: true });
 
 		const maximumSize = 10;
 
@@ -138,83 +242,12 @@ export default class extends BotCommand {
 		};
 
 		const users = type === 'mass' ? await msg.makePartyAwaiter(partyOptions) : [msg.author];
-
-		let effectiveTime = NightmareMonster.timeToFinish;
-		for (const user of users) {
-			const [data] = getNightmareGearStats(
-				user,
-				users.map(u => u.id)
-			);
-
-			// Special inquisitor outfit damage boost
-			const meleeGear = user.getGear('melee');
-			if (meleeGear.hasEquipped(inquisitorItems, true)) {
-				effectiveTime *= users.length === 1 ? 0.9 : 0.97;
-			} else {
-				for (const inqItem of inquisitorItems) {
-					if (meleeGear.hasEquipped([inqItem])) {
-						effectiveTime *= users.length === 1 ? 0.98 : 0.995;
-					}
-				}
-			}
-
-			// Increase duration for each bad weapon.
-			if (data.attackCrushStat < ZAM_HASTA_CRUSH) {
-				effectiveTime *= 1.05;
-			}
-
-			// Increase duration for lower melee-strength gear.
-			if (data.percentMeleeStrength < 40) {
-				effectiveTime *= 1.06;
-			} else if (data.percentMeleeStrength < 50) {
-				effectiveTime *= 1.03;
-			} else if (data.percentMeleeStrength < 60) {
-				effectiveTime *= 1.02;
-			}
-
-			// Increase duration for lower KC.
-			if (data.kc < 10) {
-				effectiveTime *= 1.15;
-			} else if (data.kc < 25) {
-				effectiveTime *= 1.05;
-			} else if (data.kc < 50) {
-				effectiveTime *= 1.02;
-			} else if (data.kc < 100) {
-				effectiveTime *= 0.98;
-			} else {
-				effectiveTime *= 0.96;
-			}
-		}
-
-		let [quantity, duration, perKillTime] = await calcDurQty(
+		const [quantity, duration, perKillTime] = await this.calcDurQty({
 			users,
-			{ ...NightmareMonster, timeToFinish: effectiveTime },
-			undefined,
-			Time.Minute * 5,
-			Time.Minute * 30
-		);
-		this.checkReqs(users, NightmareMonster, quantity);
-
-		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
-
-		const totalCost = new Bank();
-		if (NightmareMonster.healAmountNeeded) {
-			for (const user of users) {
-				const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
-				const [, foodRemoved] = await removeFoodFromUser({
-					client: this.client,
-					user,
-					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
-					healPerAction: Math.ceil(healAmountNeeded / quantity),
-					activityName: NightmareMonster.name,
-					attackStylesUsed: [GearSetupTypes.Melee]
-				});
-				totalCost.add(foodRemoved);
-			}
-		}
-
-		await updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, totalCost);
-
+			monster: NightmareMonster
+		});
+		this.checkReqs({ users, monster: NightmareMonster, quantity, throw: true });
+		await this.removeItems({ users, monster: NightmareMonster, quantity });
 		await addSubTaskToActivityTask<NightmareActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
