@@ -34,21 +34,3 @@ export default function setMonsterGroup(options: SetMonsterGroupOptions) {
 		id: options.id
 	});
 }
-/*
-export default function oldsetMonsterGroup(
-	id: number,
-	name: string,
-	tables: LootTable[],
-	baseItem: Monster,
-	newItemData?: Partial<Monster>
-) {
-	Monsters.set(id, {
-		...baseItem,
-		...newItemData,
-		name,
-		id,
-		kill: makeGropupMonsterKillTable(tables),
-		allItems: tables.flatMap(t => t.allItems)
-	});
-}
-*/
