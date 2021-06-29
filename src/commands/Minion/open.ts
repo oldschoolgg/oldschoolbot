@@ -163,19 +163,19 @@ export default class extends BotCommand {
 		}
 
 		for (let clueType of cluesOpened) {
-			msg.author.incrementClueScore(clueType[0], clueType[1]);
+			await msg.author.incrementClueScore(clueType[0], clueType[1]);
 		}
 
 		if (mimicNumber > 0) {
-			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
+			await msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 		}
 
 		for (let openableType of openablesOpened) {
-			msg.author.incrementOpenableScore(openableType[0], openableType[1]);
+			await msg.author.incrementOpenableScore(openableType[0], openableType[1]);
 		}
 
 		if (typeof loot.bank[COINS_ID] === 'number') {
-			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot.bank[COINS_ID]);
+			await updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot.bank[COINS_ID]);
 		}
 		if (loot.has("Lil' creator")) {
 			this.client.emit(
