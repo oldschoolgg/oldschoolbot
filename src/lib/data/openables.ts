@@ -2,8 +2,6 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Emoji } from '../constants';
 import BirthdayPresentTable from '../simulation/birthdayPresent';
-import CasketTable from '../simulation/casket';
-import CrystalChestTable from '../simulation/crystalChest';
 import itemID from '../util/itemID';
 
 interface Openable {
@@ -67,20 +65,6 @@ const Openables: Openable[] = [
 		aliases: ['present', 'birthday present'],
 		table: BirthdayPresentTable,
 		emoji: Emoji.BirthdayPresent
-	},
-	{
-		name: 'Casket',
-		itemID: 405,
-		aliases: ['casket'],
-		table: CasketTable,
-		emoji: Emoji.Casket
-	},
-	{
-		name: 'Crystal chest',
-		itemID: 989,
-		aliases: ['crystal chest'],
-		table: CrystalChestTable,
-		emoji: Emoji.Casket
 	},
 	{
 		name: 'Builders supply crate',
