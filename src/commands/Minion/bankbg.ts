@@ -132,11 +132,6 @@ export default class extends BotCommand {
 				return msg.send(`You need ${selectedImage.gpCost.toLocaleString()} GP to purchase this background.`);
 			}
 
-			// Start building a string to show to the user.
-			let str = `${msg.author}, say \`confirm\` to confirm that you want to buy the **${selectedImage.name}** bank background for: `;
-
-			// If theres an item cost or GP cost, add it to the string to show users the cost.
-			if (selectedImage.itemCost) {
 			if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 				// Start building a string to show to the user.
 				let str = `${msg.author}, say \`confirm\` to confirm that you want to buy the **${selectedImage.name}** bank background for: `;
