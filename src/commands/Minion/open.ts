@@ -81,17 +81,18 @@ export default class extends BotCommand {
 	async all(msg: KlasaMessage) {
 		const userBank = await msg.author.bank();
 		let ownedOpenables: { openID: number; amount: number; type: 'clue' | 'osjsOpenable' | 'item' }[] = [];
+		const userFavs = msg.author.settings.get(UserSettings.FavoriteItems);
 
 		for (const item of [...new Set(allOpenablesNames)]) {
 			const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === item.toLowerCase());
-			if (clue && userBank.has(clue.id)) {
+			if (clue && userBank.has(clue.id) && !userFavs.includes(clue.id)) {
 				ownedOpenables.push({ openID: clue.id, amount: userBank.amount(clue.id), type: 'clue' });
 				continue;
 			}
 			const osjsOpenable = Openables.find(openable =>
 				openable.aliases.concat([openable.name]).some(alias => stringMatches(alias, item))
 			);
-			if (osjsOpenable && userBank.has(osjsOpenable.id)) {
+			if (osjsOpenable && userBank.has(osjsOpenable.id) && !userFavs.includes(osjsOpenable.id)) {
 				ownedOpenables.push({
 					openID: osjsOpenable.id,
 					amount: userBank.amount(osjsOpenable.id),
@@ -100,7 +101,7 @@ export default class extends BotCommand {
 				continue;
 			}
 			const itemID = Items.get(item)?.id;
-			if (itemID && userBank.has(itemID)) {
+			if (itemID && userBank.has(itemID) && !userFavs.includes(itemID)) {
 				const itemName = itemNameFromID(itemID);
 
 				if (itemName === undefined) {
@@ -116,8 +117,6 @@ export default class extends BotCommand {
 		if (uniqueOpenables.length === 0) {
 			return msg.send("You don't own any openables.");
 		}
-
-		msg.send('Opening all openables, this may take a moment');
 
 		let loot = new Bank();
 		let openablesUsed = new Bank();
