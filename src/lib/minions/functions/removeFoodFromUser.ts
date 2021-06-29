@@ -1,7 +1,7 @@
 import { objectEntries } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { addBanks, itemID, removeBankFromBank } from 'oldschooljs/dist/util';
+import { addBanks, itemID } from 'oldschooljs/dist/util';
 
 import { Emoji } from '../../constants';
 import { Eatables } from '../../data/eatables';
@@ -52,7 +52,9 @@ export default async function removeFoodFromUser({
 			i => i.name
 		).join(', ')}.`;
 	} else {
-		await user.queueFn(() => user.settings.update(UserSettings.Bank, removeBankFromBank(userBank, foodToRemove)));
+		await user.queueFn(async _user => {
+			await _user.removeItemsFromBank(foodToRemove);
+		});
 		await client.settings.update(
 			ClientSettings.EconomyStats.PVMCost,
 			addBanks([client.settings.get(ClientSettings.EconomyStats.PVMCost), foodToRemove])

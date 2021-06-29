@@ -159,31 +159,33 @@ export default class extends Extendable {
 	}
 
 	public async removeItemsFromBank(this: User, _itemBank: O.Readonly<ItemBank>) {
-		const itemBank = _itemBank instanceof Bank ? { ..._itemBank.bank } : _itemBank;
+		return this.queueFn(async user => {
+			const itemBank = _itemBank instanceof Bank ? { ..._itemBank.bank } : _itemBank;
 
-		await this.settings.sync(true);
+			await user.settings.sync(true);
 
-		const currentBank = this.settings.get(UserSettings.Bank);
-		const GP = this.settings.get(UserSettings.GP);
-		if (!bankHasAllItemsFromBank({ ...currentBank, 995: GP }, itemBank)) {
-			throw new Error(
-				`Tried to remove ${new Bank(itemBank)} from ${
-					this.username
-				} but failed because they don't own all these items.`
-			);
-		}
+			const currentBank = user.settings.get(UserSettings.Bank);
+			const GP = user.settings.get(UserSettings.GP);
+			if (!bankHasAllItemsFromBank({ ...currentBank, 995: GP }, itemBank)) {
+				throw new Error(
+					`Tried to remove ${new Bank(itemBank)} from ${
+						user.username
+					} but failed because they don't own all these items.`
+				);
+			}
 
-		const items = {
-			...itemBank
-		};
+			const items = {
+				...itemBank
+			};
 
-		if (items[995]) {
-			await this.removeGP(items[995]);
-			delete items[995];
-		}
+			if (items[995]) {
+				await user.removeGP(items[995]);
+				delete items[995];
+			}
 
-		this.log(`Had items removed from bank - ${JSON.stringify(items)}`);
-		return this.queueFn(() => this.settings.update(UserSettings.Bank, removeBankFromBank(currentBank, items)));
+			user.log(`Had items removed from bank - ${JSON.stringify(items)}`);
+			return user.settings.update(UserSettings.Bank, removeBankFromBank(currentBank, items));
+		});
 	}
 
 	public async hasItem(this: User, itemID: number, amount = 1, sync = true) {
