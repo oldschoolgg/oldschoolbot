@@ -26,24 +26,25 @@ export default class extends BotCommand {
 
 		if (capesOwned < 1) return msg.send('You have no Fire capes to gamble!');
 
-		const sellMsg = await msg.channel.send(
-			'Are you sure you want to gamble a Fire cape for a chance at the Tzrek-Jad pet? Say `confirm` to confirm.'
-		);
-
-		// Confirm the seller wants to sell
-		try {
-			await msg.channel.awaitMessages(
-				_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-				{
-					max: 1,
-					time: 20_000,
-					errors: ['time']
-				}
+		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
+			const sellMsg = await msg.channel.send(
+				'Are you sure you want to gamble a Fire cape for a chance at the Tzrek-Jad pet? Say `confirm` to confirm.'
 			);
-		} catch (err) {
-			return sellMsg.edit('Cancelling Fire cape gamble.');
-		}
 
+			// Confirm the seller wants to sell
+			try {
+				await msg.channel.awaitMessages(
+					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+					{
+						max: 1,
+						time: 20_000,
+						errors: ['time']
+					}
+				);
+			} catch (err) {
+				return sellMsg.edit('Cancelling Fire cape gamble.');
+			}
+		}
 		const newSacrificedCount = msg.author.settings.get(UserSettings.Stats.FireCapesSacrificed) + 1;
 		await msg.author.removeItemFromBank(itemID('Fire cape'));
 		await msg.author.settings.update(UserSettings.Stats.FireCapesSacrificed, newSacrificedCount);
