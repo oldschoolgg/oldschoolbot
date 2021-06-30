@@ -1647,7 +1647,8 @@ export const dungeoneeringLog: CollectionLogData = {
 		'Scroll of teleportation',
 		'Scroll of farming',
 		'Scroll of proficiency',
-		'Scroll of mystery'
+		'Scroll of mystery',
+		'Scroll of longevity'
 	]),
 
 	Other: resolveItems(['Frosty', 'Gorajan shards', 'Amulet of zealots', 'Herbicide']),
