@@ -1,5 +1,4 @@
 import { User } from 'discord.js';
-import { randInt, sleep } from 'e';
 import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { O } from 'ts-toolbelt';
@@ -95,7 +94,6 @@ export default class extends Extendable {
 		collectionLog = false
 	): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }> {
 		return this.queueFn(async user => {
-			await sleep(1000);
 			const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
 			await this.settings.sync(true);
 
@@ -154,7 +152,6 @@ export default class extends Extendable {
 
 	public async removeItemsFromBank(this: User, _itemBank: O.Readonly<ItemBank>) {
 		return this.queueFn(async user => {
-			await sleep(randInt(100, 2000));
 			const itemBank = _itemBank instanceof Bank ? { ..._itemBank.bank } : _itemBank;
 
 			await user.settings.sync(true);
