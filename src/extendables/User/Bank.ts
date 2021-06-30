@@ -1,4 +1,5 @@
 import { User } from 'discord.js';
+import { randInt, sleep } from 'e';
 import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { O } from 'ts-toolbelt';
@@ -8,7 +9,7 @@ import { similarItems } from '../../lib/data/similarItems';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
-import { addBanks, bankHasAllItemsFromBank, removeBankFromBank, removeItemFromBank } from '../../lib/util';
+import { bankHasAllItemsFromBank, removeBankFromBank, removeItemFromBank } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
 
 export interface GetUserBankOptions {
@@ -93,54 +94,47 @@ export default class extends Extendable {
 		inputItems: ItemBank | Bank,
 		collectionLog = false
 	): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }> {
-		const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
-		await this.settings.sync(true);
+		return this.queueFn(async user => {
+			await sleep(1000);
+			const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
+			await this.settings.sync(true);
 
-		const previousCL = this.settings.get(UserSettings.CollectionLogBank);
+			const previousCL = user.settings.get(UserSettings.CollectionLogBank);
 
-		for (const { scrollID } of clueTiers) {
-			// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
-			if (!_items[scrollID]) continue;
-			const alreadyHasThisScroll = this.settings.get(UserSettings.Bank)[scrollID];
-			if (alreadyHasThisScroll) {
-				// If they already have this scroll in their bank, delete it from the loot.
-				delete _items[scrollID];
-			} else {
-				// If they dont have it in their bank, reset the amount to 1 incase they got more than 1 of the clue.
-				_items[scrollID] = 1;
+			for (const { scrollID } of clueTiers) {
+				// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
+				if (!_items[scrollID]) continue;
+				const alreadyHasThisScroll = user.settings.get(UserSettings.Bank)[scrollID];
+				if (alreadyHasThisScroll) {
+					// If they already have this scroll in their bank, delete it from the loot.
+					delete _items[scrollID];
+				} else {
+					// If they dont have it in their bank, reset the amount to 1 incase they got more than 1 of the clue.
+					_items[scrollID] = 1;
+				}
 			}
-		}
 
-		const items = {
-			..._items
-		};
+			const items = {
+				..._items
+			};
 
-		if (collectionLog) {
-			await this.addItemsToCollectionLog(items);
-		}
+			if (collectionLog) {
+				await user.addItemsToCollectionLog(items);
+			}
 
-		if (items[995]) {
-			await this.addGP(items[995]);
-			delete items[995];
-		}
+			if (items[995]) {
+				await user.addGP(items[995]);
+				delete items[995];
+			}
 
-		this.log(`Had items added to bank - ${JSON.stringify(items)}`);
-		await this.queueFn(() =>
-			this.settings.update(
-				UserSettings.Bank,
-				addBanks([
-					items,
-					{
-						...this.settings.get(UserSettings.Bank)
-					}
-				])
-			)
-		);
+			this.log(`Had items added to bank - ${JSON.stringify(items)}`);
+			await this.settings.update(UserSettings.Bank, user.bank().add(items).bank);
 
-		return {
-			previousCL,
-			itemsAdded: _items
-		};
+			return {
+				previousCL,
+				itemsAdded: _items
+			};
+		});
 	}
 
 	public async removeItemFromBank(this: User, itemID: number, amountToRemove = 1) {
@@ -160,6 +154,7 @@ export default class extends Extendable {
 
 	public async removeItemsFromBank(this: User, _itemBank: O.Readonly<ItemBank>) {
 		return this.queueFn(async user => {
+			await sleep(randInt(100, 2000));
 			const itemBank = _itemBank instanceof Bank ? { ..._itemBank.bank } : _itemBank;
 
 			await user.settings.sync(true);
