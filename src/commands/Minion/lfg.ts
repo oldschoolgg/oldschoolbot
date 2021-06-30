@@ -597,9 +597,7 @@ export default class extends BotCommand {
 	async check(msg: KlasaMessage, [queue = '']: [string]) {
 		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';
 		const selectedQueue = availableQueues.find(
-			m =>
-				!m.creator &&
-				(stringMatches(m.name, queue) || (m.aliases && m.aliases.some(a => stringMatches(a, queue))))
+			m => stringMatches(m.name, queue) || (m.aliases && m.aliases.some(a => stringMatches(a, queue)))
 		);
 		if (!selectedQueue) {
 			return msg.channel.send(

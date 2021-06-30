@@ -3,7 +3,7 @@ import { BaseEntity, Column, Entity, getConnection, Index, PrimaryColumn, Primar
 import { client } from '../..';
 import { Activity } from '../constants';
 import { minionActivityCache } from '../settings/settings';
-import { ActivityTaskData, ActivityTaskOptions, LfgActivityTaskOptions } from '../types/minions';
+import { ActivityTaskData, ActivityTaskOptions, GroupMonsterActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
 
@@ -55,7 +55,7 @@ export class ActivityTable extends BaseEntity {
 
 	public getUsers(): string[] {
 		if (this.groupActivity) {
-			return (this.data as LfgActivityTaskOptions).users;
+			return (this.data as GroupMonsterActivityTaskOptions).users;
 		}
 		return [this.userID];
 	}
