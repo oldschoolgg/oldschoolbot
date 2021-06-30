@@ -109,7 +109,7 @@ export default class extends Extendable {
 
 	public async queueFn(this: User, fn: (user: KlasaUser) => Promise<void>) {
 		const queue = this.getUpdateQueue();
-		await queue.add(() => fn(this));
+		return queue.add(() => fn(this));
 	}
 
 	// @ts-ignore 2784

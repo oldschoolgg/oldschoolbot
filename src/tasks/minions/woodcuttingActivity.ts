@@ -86,6 +86,23 @@ export default class extends Task {
 					)} Woodcutting!`
 				);
 			}
+			if (bonusXP > 0) {
+				str += `. **Bonus XP:** ${bonusXP.toLocaleString()}`;
+			}
+
+			// Roll for pet
+			if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
+				loot.add('Beaver');
+				str += "\nYou have a funny feeling you're being followed...";
+				this.client.emit(
+					Events.ServerNotification,
+					`${Emoji.Woodcutting} **${user.username}'s** minion, ${
+						user.minionName
+					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
+						SkillsEnum.Woodcutting
+					)} Woodcutting!`
+				);
+			}
 
 			await user.addItemsToBank(loot, true);
 
