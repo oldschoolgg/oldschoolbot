@@ -683,10 +683,10 @@
   resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.5.0.tgz#8ab8001219668e3a9db65e13d7305aec3b838e9b"
   integrity sha512-lgWjTsy9Dsl21zy4mAzZcftOhijWVq2Gok/aFfS8f3Jue5DC7jSTlJoyEypo9ihbLXHpl8ceIUlRPkMiXcaxIw==
 
-"@sapphire/utilities@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.6.0.tgz#6cd53c5034dc62c2429d9ee53649fbaf1a5ac5b0"
-  integrity sha512-xEoV/yFXRlvEbZbK9iPEBr5L8tQLYAjHluJ5MJiyiWx4i8khLe4tE7Tb/Zu/IR/a3lI2iRWfqqWBMA8sxiPTig==
+"@sapphire/utilities@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.6.1.tgz#33b2c9b10f78b7466869f39c8739050909f977f3"
+  integrity sha512-aOfw3yPuy51GxgyMHIHeLSaw4bN8+we2VSsojmX4HBLV687emy70AzPm98c2D8oOf6EqYzW9i1g8Rfbbh1ANqQ==
 
 "@sentry/apm@5.20.1":
   version "5.20.1"
@@ -3991,9 +3991,9 @@ klasa-decorators@^0.0.1:
   resolved "https://registry.yarnpkg.com/klasa-decorators/-/klasa-decorators-0.0.1.tgz#c4bcc7dd2b78814b4f625e611f82790ec6061d52"
   integrity sha512-uCoMz750Lnp0dM8VC787hnRrF9wqWfUrjT7dp+8ihqp6xmtX8ZSXoeK08WJgAhEdEdIDsUG+VMXi9gcG54EZMA==
 
-"klasa@github:gc/klasa#d21b7f28f2488e145828850f7941e0f76661b7ee":
+"klasa@github:gc/klasa#96b9875b7cb0050d9213aa9d7e8f37761ecce57d":
   version "0.5.0-dev"
-  resolved "https://codeload.github.com/gc/klasa/tar.gz/d21b7f28f2488e145828850f7941e0f76661b7ee"
+  resolved "https://codeload.github.com/gc/klasa/tar.gz/96b9875b7cb0050d9213aa9d7e8f37761ecce57d"
   dependencies:
     "@klasa/querybuilder" "^0.0.1"
     "@klasa/settings-gateway" "^0.0.10"

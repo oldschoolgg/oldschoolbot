@@ -297,7 +297,8 @@ const source: [string, (string | number)[]][] = [
 	['Pernix chaps', ['Gorajan archer legs']],
 	['Pernix gloves', ['Gorajan archer gloves']],
 	['Pernix boots', ['Gorajan archer boots']],
-	['Abyssal cape', ['Vasa cloak']]
+	['Abyssal cape', ['Vasa cloak']],
+	['Ivandis flail', ['Blisterwood flail']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
