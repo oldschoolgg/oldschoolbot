@@ -178,7 +178,7 @@ declare module 'discord.js' {
 		/**
 		 * Queue a function to run on a per-user queue.
 		 */
-		queueFn(fn: (...args: any[]) => Promise<any>): Promise<void>;
+		queueFn(fn: (user: KlasaUser) => Promise<T>): Promise<T>;
 		bank(options?: GetUserBankOptions): Bank;
 		getPOH(): Promise<PoHTable>;
 		getGear(gearType: GearSetupType): Gear;
