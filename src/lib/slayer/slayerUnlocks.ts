@@ -78,7 +78,8 @@ export enum SlayerTaskUnlocksEnum {
 	HerbSack,
 	RunePouch,
 	DoubleTrouble,
-	BroaderFletching
+	BroaderFletching,
+	SizeMatters
 }
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	{
@@ -525,5 +526,13 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 300,
 		canBeRemoved: false,
 		aliases: ['broad bolts', 'broads', 'broad arrows', 'fletching', 'broad fletching']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.SizeMatters,
+		name: 'Size Matters',
+		desc: 'Makes all tasks have double quantity',
+		slayerPointCost: 1500,
+		canBeRemoved: true,
+		aliases: ['size matters']
 	}
 ];

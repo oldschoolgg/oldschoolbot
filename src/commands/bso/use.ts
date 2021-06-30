@@ -20,6 +20,20 @@ const usables = [
 				'You have used your Scroll of farming - you feel your Farming skills have improved and are now able to use more Farming patches.'
 			);
 		}
+	},
+	{
+		item: getOSItem('Scroll of longevity'),
+		run: async (msg: KlasaMessage) => {
+			const bits = msg.author.bitfield;
+			if (bits.includes(BitField.HasScrollOfLongevity)) {
+				return msg.channel.send('You have already unlocked the Scroll of longevity.');
+			}
+			await msg.author.removeItemsFromBank(new Bank().add('Scroll of longevity'));
+			await msg.author.settings.update(UserSettings.BitField, BitField.HasScrollOfLongevity);
+			return msg.channel.send(
+				'You have used your Scroll of longevity - your future slayer tasks will always have 2x more quantity.'
+			);
+		}
 	}
 ];
 

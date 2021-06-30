@@ -1560,3 +1560,13 @@ setCustomItem(
 	},
 	50_000_000
 );
+
+setCustomItem(
+	50_035,
+	'Scroll of longevity',
+	'Fire rune',
+	{
+		highalch: 100_000
+	},
+	100_000
+);

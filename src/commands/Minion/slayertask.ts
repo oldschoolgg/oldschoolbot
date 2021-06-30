@@ -257,6 +257,9 @@ export default class extends BotCommand {
 				` has assigned you to kill ${
 					newSlayerTask.currentTask.quantity
 				}x ${commonName}${this.getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
+			if (newSlayerTask.messages.length > 0) {
+				returnMessage += `\n\n**Messages:** ${newSlayerTask.messages.join(', ')}.`;
+			}
 			return this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
 		}
 
@@ -333,6 +336,9 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 		returnMessage = `${slayerMaster.name} has assigned you to kill ${
 			newSlayerTask.currentTask.quantity
 		}x ${commonName}${this.getAlternateMonsterList(newSlayerTask.assignedTask)}.${updateMsg}`;
+		if (newSlayerTask.messages.length > 0) {
+			returnMessage += `\n\n**Messages:** ${newSlayerTask.messages.join(', ')}.`;
+		}
 		return this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
 	}
 }

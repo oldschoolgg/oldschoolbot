@@ -4,6 +4,7 @@ import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { MoreThan } from 'typeorm';
 
+import { BitField } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { DetermineBoostParams } from '../minions/types';
 import { getNewUser } from '../settings/settings';
@@ -153,11 +154,12 @@ export function userCanUseTask(
 }
 
 export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
+	const unlocks = _user.settings.get(UserSettings.Slayer.SlayerUnlocks);
 	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master, false));
 	let bossTask = false;
 	if (
-		_user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.LikeABoss) &&
+		unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) &&
 		(master.name.toLowerCase() === 'konar quo maten' ||
 			master.name.toLowerCase() === 'duradel' ||
 			master.name.toLowerCase() === 'nieve' ||
@@ -181,9 +183,20 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 
 	const newUser = await getNewUser(_user.id);
 
+	let messages: string[] = [];
+	let quantity = randInt(assignedTask!.amount[0], assignedTask!.amount[1]);
+	if (unlocks.includes(SlayerTaskUnlocksEnum.SizeMatters)) {
+		quantity *= 2;
+		messages.push('2x qty for unlock');
+	}
+	if (_user.bitfield.includes(BitField.HasScrollOfLongevity)) {
+		quantity *= 2;
+		messages.push('2x qty for scroll of longevity');
+	}
+
 	const currentTask = new SlayerTaskTable();
 	currentTask.user = newUser;
-	currentTask.quantity = randInt(assignedTask!.amount[0], assignedTask!.amount[1]);
+	currentTask.quantity = quantity;
 	currentTask.quantityRemaining = currentTask.quantity;
 	currentTask.slayerMasterID = master.id;
 	currentTask.monsterID = assignedTask!.monster.id;
@@ -191,7 +204,7 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 	await currentTask.save();
 	await _user.settings.update(UserSettings.Slayer.LastTask, assignedTask!.monster.id);
 
-	return { currentTask, assignedTask };
+	return { currentTask, assignedTask, messages };
 }
 
 export function calcMaxBlockedTasks(qps: number) {
