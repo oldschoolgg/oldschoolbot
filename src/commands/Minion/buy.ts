@@ -11,6 +11,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	bankHasAllItemsFromBank,
+	formatSkillRequirements,
 	multiplyBank,
 	removeBankFromBank,
 	skillsMeetRequirements,
@@ -65,7 +66,11 @@ export default class extends BotCommand {
 		}
 
 		if (buyable.skillsNeeded && !skillsMeetRequirements(msg.author.rawSkills, buyable.skillsNeeded)) {
-			return msg.send("You don't have the required stats to buy this item.");
+			return msg.send(
+				`You don't have the required stats to buy this item. You need ${formatSkillRequirements(
+					buyable.skillsNeeded
+				)}.`
+			);
 		}
 
 		if (buyable.minigameScoreReq) {
