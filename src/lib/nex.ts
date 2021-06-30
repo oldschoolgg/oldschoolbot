@@ -56,7 +56,7 @@ export const NexMonster: KillableMonster = {
 				.add('Magic seed', 5)
 				.tertiary(1500, 'Ancient emblem')
 				.tertiary(5, 'Tradeable mystery box')
-				.tertiary(90, 'Clue scroll (grandmaster)')
+				.tertiary(20, 'Clue scroll (grandmaster)')
 				.tertiary(3000, 'Bloodsoaked feather')
 		)
 	},
