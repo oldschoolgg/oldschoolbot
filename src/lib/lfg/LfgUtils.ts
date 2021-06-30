@@ -20,7 +20,9 @@ export function prepareLFGMessage(
 	const toReturn: Record<string, string> = {};
 	if (!channels) return toReturn;
 	for (const channel of Object.keys(channels)) {
-		toReturn[channel] = `LFG mass of ${qty}x ${activityName} has returned! Here are the spoils:\n\n`;
+		toReturn[channel] = `LFG activity of ${
+			qty > 1 ? `${qty}x ` : ''
+		}**${activityName}** has returned! Here are the spoils:\n\n`;
 	}
 	return toReturn;
 }

@@ -8,6 +8,7 @@ export default class extends Task {
 	async run(data: LfgActivityTaskOptions) {
 		const { queueId } = data;
 		const lfgQueue = availableQueues.find(queue => queue.uniqueID === queueId)!;
+
 		let extra = lfgQueue.extraParams;
 
 		// Add extra params to the activity
@@ -31,16 +32,5 @@ export default class extends Task {
 		lootString = addLFGText(lootString, extraMessage, data.channels);
 
 		await sendLFGMessages(lootString, this.client, data.channels);
-
-		// handleTripFinish(
-		// 	this.client,
-		// 	leaderUser,
-		// 	data.channelID,
-		// 	resultStr,
-		// 	undefined,
-		// 	undefined,
-		// 	data,
-		// 	totalLoot.bank
-		// );
 	}
 }

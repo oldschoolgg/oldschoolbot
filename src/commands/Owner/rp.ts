@@ -26,7 +26,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [cmd, input, str]: [string, KlasaUser | string | undefined, string | undefined]) {
-		if (msg.guild!.id !== '858140841809936434') return null;
+		if (msg.guild!.id !== '342983479501389826') return null;
 
 		switch (cmd.toLowerCase()) {
 			case 'hasequipped': {
@@ -212,7 +212,7 @@ ${
 				if (
 					!bit ||
 					!(BitFieldData as any)[bit] ||
-					// [7, 8].includes(bit) ||
+					[7, 8].includes(bit) ||
 					(action !== 'add' && action !== 'remove')
 				) {
 					return msg.send('Invalid bitfield.');

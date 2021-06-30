@@ -25,7 +25,7 @@ export async function handleTripFinish(
 	client: KlasaClient,
 	user: KlasaUser,
 	channelID: string,
-	message: string | Record<string, string>,
+	message: string,
 	onContinue: undefined | ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
@@ -63,7 +63,7 @@ export async function handleTripFinish(
 
 	const channel = client.channels.cache.get(channelID);
 
-	sendToChannelID(client, channelID, { content: <string>message, image: attachable }).then(() => {
+	sendToChannelID(client, channelID, { content: message, image: attachable }).then(() => {
 		const minutes = Math.min(30, data.duration / Time.Minute);
 		const randomEventChance = 60 - minutes;
 		if (

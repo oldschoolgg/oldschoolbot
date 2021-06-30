@@ -2,7 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { Activity, Color, Events, SupportServer, Time } from '../../lib/constants';
+import { Activity, Color, Emoji, Events, SupportServer, Time } from '../../lib/constants';
 import ChambersOfXeric from '../../lib/lfg/ChambersOfXeric';
 import Default from '../../lib/lfg/Default';
 import LfgInterface from '../../lib/lfg/LfgInterface';
@@ -10,8 +10,6 @@ import { getMonster, sendLFGErrorMessage } from '../../lib/lfg/LfgUtils';
 import Nightmare from '../../lib/lfg/Nightmare';
 import { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
-import ironsCantUse from '../../lib/minions/decorators/ironsCantUse';
-import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
 import { KillableMonster } from '../../lib/minions/types';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -46,16 +44,19 @@ export interface QueueProperties {
 	monster?: KillableMonster;
 	minQueueSize: number;
 	maxQueueSize: number;
-	private?: boolean;
 	allowSolo: boolean;
+	allowPrivate: boolean;
+	creator?: KlasaUser;
+	privateUniqueID?: number;
 }
 
 const MIN_USERS = 2;
-const MAX_USERS = 2;
+const MAX_USERS = 50;
 const QUEUE_LIST: Record<number, QueueState> = {};
-const WAIT_TIME = 10 * Time.Second;
+const WAIT_TIME = 2 * Time.Second;
 const DEFAULT_MASS_CHANNEL = '858141860900110366'; // #testing-2
 const QUEUE_AUTO_START: Record<number, Timeout | null> = {};
+const LFGSOLO_CMD = 'lfgsolo';
 
 export const availableQueues: QueueProperties[] = [
 	{
@@ -67,7 +68,8 @@ export const availableQueues: QueueProperties[] = [
 		monster: getMonster(Monsters.KrilTsutsaroth.id),
 		minQueueSize: MIN_USERS,
 		maxQueueSize: MAX_USERS,
-		allowSolo: true
+		allowSolo: true,
+		allowPrivate: true
 	},
 	{
 		uniqueID: 2,
@@ -78,7 +80,8 @@ export const availableQueues: QueueProperties[] = [
 		monster: getMonster(Monsters.GeneralGraardor.id),
 		minQueueSize: MIN_USERS,
 		maxQueueSize: MAX_USERS,
-		allowSolo: true
+		allowSolo: true,
+		allowPrivate: true
 	},
 	{
 		uniqueID: 3,
@@ -89,7 +92,8 @@ export const availableQueues: QueueProperties[] = [
 		monster: getMonster(Monsters.Kreearra.id),
 		minQueueSize: MIN_USERS,
 		maxQueueSize: MAX_USERS,
-		allowSolo: true
+		allowSolo: true,
+		allowPrivate: true
 	},
 	{
 		uniqueID: 4,
@@ -100,7 +104,8 @@ export const availableQueues: QueueProperties[] = [
 		monster: getMonster(Monsters.CommanderZilyana.id),
 		minQueueSize: MIN_USERS,
 		maxQueueSize: MAX_USERS,
-		allowSolo: true
+		allowSolo: true,
+		allowPrivate: true
 	},
 	{
 		uniqueID: 5,
@@ -111,7 +116,8 @@ export const availableQueues: QueueProperties[] = [
 		monster: getMonster(Monsters.CorporealBeast.id),
 		minQueueSize: MIN_USERS,
 		maxQueueSize: MAX_USERS,
-		allowSolo: true
+		allowSolo: true,
+		allowPrivate: true
 	},
 	{
 		uniqueID: 6,
@@ -120,9 +126,10 @@ export const availableQueues: QueueProperties[] = [
 		lfgClass: new Nightmare(),
 		thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
 		monster: getMonster(NightmareMonster.id),
-		minQueueSize: 1,
+		minQueueSize: 5,
 		maxQueueSize: 10,
-		allowSolo: true
+		allowSolo: true,
+		allowPrivate: true
 	},
 	{
 		uniqueID: 7,
@@ -131,9 +138,10 @@ export const availableQueues: QueueProperties[] = [
 		lfgClass: new Nightmare(),
 		thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
 		monster: getMonster(NightmareMonster.id),
-		minQueueSize: 1,
+		minQueueSize: 3,
 		maxQueueSize: 5,
-		allowSolo: false
+		allowSolo: false,
+		allowPrivate: true
 	},
 	{
 		uniqueID: 8,
@@ -142,9 +150,10 @@ export const availableQueues: QueueProperties[] = [
 		lfgClass: new ChambersOfXeric(),
 		extraParams: { isChallengeMode: false },
 		thumbnail: 'https://oldschool.runescape.wiki/images/0/04/Chambers_of_Xeric_logo.png?34a98',
-		minQueueSize: 1,
+		minQueueSize: 2,
 		maxQueueSize: 15,
-		allowSolo: true
+		allowSolo: true,
+		allowPrivate: true
 	},
 	{
 		uniqueID: 9,
@@ -153,17 +162,18 @@ export const availableQueues: QueueProperties[] = [
 		lfgClass: new ChambersOfXeric(),
 		extraParams: { isChallengeMode: true },
 		thumbnail: 'https://imgur.com/Y3HroYR.png',
-		minQueueSize: 1,
+		minQueueSize: 2,
 		maxQueueSize: 15,
-		allowSolo: true
+		allowSolo: true,
+		allowPrivate: true
 	}
 ];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[join|leave] [name:...string]',
-			aliases: ['lfgsolo'],
+			usage: '[join|leave|help|check|create|disband] [name:...string]',
+			aliases: [LFGSOLO_CMD],
 			cooldown: 1,
 			oneAtTime: true,
 			usageDelim: ' ',
@@ -189,6 +199,12 @@ export default class extends BotCommand {
 				) {
 					clearTimeout(queueID);
 				}
+				if (Object.keys(QUEUE_LIST[queueID].users).length === 0 || selectedQueue.creator) {
+					delete QUEUE_LIST[queueID];
+					if (selectedQueue.creator) {
+						availableQueues.splice(availableQueues.indexOf(selectedQueue), 1);
+					}
+				}
 			}
 		}
 	}
@@ -204,6 +220,45 @@ export default class extends BotCommand {
 	clearTimeout(id: number) {
 		clearTimeout(QUEUE_AUTO_START[id]!);
 		QUEUE_AUTO_START[id] = null;
+	}
+
+	async userHasReqToJoin(user: KlasaUser, queueID: number, solo?: boolean) {
+		let selectedQueue = availableQueues.find(q => q.uniqueID === queueID);
+		let party = <KlasaUser[]>[];
+		if (!solo) solo = false;
+		if (QUEUE_LIST[queueID]) {
+			selectedQueue = QUEUE_LIST[queueID].queueBase;
+			party = Object.values(QUEUE_LIST[queueID].users);
+			solo = QUEUE_LIST[queueID].soloStart;
+		}
+		// Creates a tempUser so it can add the current users in the queue + the user trying to join
+		party.push(user);
+		let [activitiesThisTrip] = await selectedQueue!.lfgClass.calculateDurationAndActivitiesPerTrip({
+			party,
+			queue: selectedQueue!
+		});
+		return [
+			await selectedQueue!.lfgClass.checkUserRequirements({
+				solo,
+				user,
+				party,
+				queue: selectedQueue!,
+				quantity: activitiesThisTrip
+			}),
+			await selectedQueue!.lfgClass.checkTeamRequirements({
+				quantity: activitiesThisTrip,
+				solo,
+				party,
+				queue: selectedQueue
+			})
+		];
+	}
+
+	async messageUser(msg: KlasaMessage, user: KlasaUser, message: string) {
+		if (!channelIsSendable(user.dmChannel!)) {
+			return msg.channel.send(message);
+		}
+		return user.send(message);
 	}
 
 	async handleStart(queueID: number, skipChecks = false) {
@@ -300,29 +355,21 @@ export default class extends BotCommand {
 				}
 
 				// Prepare channels to send queue messages
-				const guilds: Record<string, string> = {};
 				channelsToSend[DEFAULT_MASS_CHANNEL] = [];
 				for (const user of finalUsers) {
 					// Verifying channels to send
-					const { channel } = queue.userSentFrom[user.id];
-					const { guild } = queue.userSentFrom[user.id];
+					const { channel, guild } = queue.userSentFrom[user.id];
 					let toSendChannel = null;
-					// Limits 1 message per server
 					// Not guild means DM
-					if (!guild) {
-						toSendChannel = channel;
-					} else if (guilds[guild]) {
-						toSendChannel = guilds[guild];
+					if (guild && guild === SupportServer) {
+						toSendChannel = DEFAULT_MASS_CHANNEL;
 					} else {
-						// If sent on the support server, forces the result to be on the mass channel
-						if (guild === SupportServer) {
-							guilds[guild] = DEFAULT_MASS_CHANNEL;
-						} else {
-							guilds[guild] = channel;
-						}
 						toSendChannel = channel;
 					}
-					if (!channelsToSend[toSendChannel]) channelsToSend[toSendChannel] = [];
+
+					if (channelsToSend[toSendChannel] === undefined) {
+						channelsToSend[toSendChannel] = [];
+					}
 					channelsToSend[toSendChannel].push(user.id);
 				}
 
@@ -355,17 +402,27 @@ export default class extends BotCommand {
 						Events.Log,
 						`LFG Canceled [${queueID}] This team doesnt have the necessary requirements to start this LFG.`
 					);
-					await sendLFGErrorMessage(
-						`The queue **${
-							selectedQueue.name
-						}** was cancelled because no one has the necessary requirements for it.${
-							doNotClear
-								? ' Waiting for someone with the requirements to join to start.'
-								: ' You must join the queue again.'
-						}`,
-						this.client,
-						channelsToSend
-					);
+					if (queue.soloStart) {
+						await sendLFGErrorMessage(
+							`:RSSad:\nYou do not meet one or more requisites to start this LFG activity:\n - ${teamRequirements.join(
+								'\n - '
+							)}`,
+							this.client,
+							channelsToSend
+						);
+					} else {
+						await sendLFGErrorMessage(
+							`The queue **${
+								selectedQueue.name
+							}** was cancelled because no one has the necessary requirements for it.${
+								doNotClear
+									? ' Waiting for someone with the requirements to join to start.'
+									: ' You must join the queue again.'
+							}`,
+							this.client,
+							channelsToSend
+						);
+					}
 					return;
 				}
 
@@ -382,13 +439,12 @@ export default class extends BotCommand {
 						queue: selectedQueue
 					});
 				} catch (e) {
-					console.log(e);
 					this.client.emit(Events.Log, `LFG Canceled [${queueID}] Error removing required items from users`);
 					return;
 				}
 
 				await addSubTaskToActivityTask(<LfgActivityTaskOptions>{
-					queueId: selectedQueue.uniqueID,
+					queueId: selectedQueue.creator ? selectedQueue.privateUniqueID : selectedQueue.uniqueID,
 					userID: leader.id,
 					channelID: DEFAULT_MASS_CHANNEL,
 					quantity: activitiesThisTrip,
@@ -463,30 +519,20 @@ export default class extends BotCommand {
 		}
 	}
 
-	// @forceMainServer
-	@minionNotBusy
 	@requiresMinion
-	@ironsCantUse
-	async run(msg: KlasaMessage) {
+	async run(msg: KlasaMessage, [queue = '']) {
 		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';
-		const embed = new MessageEmbed()
-			.setColor(Color.Orange)
-			.setTitle('Looking for Group Activities')
-			.setDescription(
-				'Below is a description of all activities that can be done in groups and how many users are waitining for it to start.' +
-					' Each queue has a minimum and maximum size.' +
-					` When the queue reaches the minimum size, it'll wait ${formatDuration(
-						WAIT_TIME
-					)} before starting.\nIf it reaches the maximum size, it'll start instantly.\n\n You can ` +
-					`use \`${prefix}lfg join name/alias_of_the_activity\` to join the activity queue. You can ` +
-					`also use \`${prefix}lfgsolo join name/alias_of_the_activity\` to start an activity alone, if the activity allows that.` +
-					"\n\n**WARNING**: Do not be busy when the activity is about to start or you'll be " +
-					'removed from it and the queue will start without you.\n'
-			);
+		const embed = new MessageEmbed().setColor(Color.Orange).setTitle('Looking for Group Activities');
+		if (msg.commandText === LFGSOLO_CMD && queue) {
+			return this.join(msg, [queue]);
+		}
 		for (const _queue of availableQueues) {
+			// Do not display private queues
+			if (_queue.creator) continue;
 			const smallestAlias = _queue.aliases.sort((a, b) => a.length - b.length)[0] ?? _queue.name;
 			const joined = QUEUE_LIST[_queue.uniqueID] && QUEUE_LIST[_queue.uniqueID].users[msg.author.id];
 			const title = _queue.name + (joined ? ' [JOINED]' : '');
+			const errors = await this.userHasReqToJoin(msg.author, _queue.uniqueID, msg.commandText === LFGSOLO_CMD);
 			embed.addField(
 				title,
 				`Waiting: ${
@@ -497,22 +543,154 @@ export default class extends BotCommand {
 						QUEUE_LIST[_queue.uniqueID] ? QUEUE_LIST[_queue.uniqueID].startDate : undefined
 					)}` +
 					`\nMin/Max users: ${_queue.minQueueSize ?? MIN_USERS}/${_queue.maxQueueSize ?? MAX_USERS}` +
-					`\nSoloable: ${_queue.allowSolo ? 'Yes' : 'No'}`,
+					`\nSoloable: ${_queue.allowSolo ? 'Yes' : Emoji.RedX}` +
+					`\nMeet Requirements: ${
+						errors[0].length === 0 ? (errors[1].length === 0 ? 'Yes' : Emoji.Warning) : Emoji.RedX
+					}`,
 				true
 			);
 		}
 		for (let i = 0; i < Math.ceil(availableQueues.length / 3) * 3 - availableQueues.length; i++) {
 			embed.addField('\u200b', '\u200b', true);
 		}
+		embed
+			.addField(
+				'\u200B',
+				`Run \`${prefix}lfg help\` for more information.${'\u3000'.repeat(200 /* any big number works too*/)}`
+			)
+			.setTimestamp();
+		// large footer to allow max embeed size
+		await msg.channel.send(embed);
+	}
+
+	@requiresMinion
+	async help(msg: KlasaMessage) {
+		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';
+		const embed = new MessageEmbed()
+			.setColor(Color.Orange)
+			.setTitle('Looking for Group Activities')
+			.setDescription(
+				`If you run \`${prefix}lfg\`, you'll get a description of all queues/activities that can be done in groups and ` +
+					'how many users are waitining for it to start.' +
+					' Each queue has a minimum and maximum size.' +
+					` When the queue reaches the minimum size, it'll wait ${formatDuration(
+						WAIT_TIME
+					)} before starting. If it reaches the maximum size, it'll start instantly.\n\n You can ` +
+					`use \`${prefix}lfg join name/alias_of_the_activity\` to join the activity queue. You can ` +
+					`also use \`${prefix}lfgsolo name/alias_of_the_activity\` to start an activity alone, if the activity allows that.` +
+					"\n\n**WARNING**: Do not be busy when the activity is about to start or you'll be " +
+					'removed from it and the queue will start without you.\n\n' +
+					`You can use \`${prefix}(lfg/lfgsolo) check name/alias_of_the_activity\` to verify if you have all the requirements the activity.` +
+					"If not, it'll DM you (or shown on the channel if you have DMs off), the requirements you are missing." +
+					`\n\nIf the activity \`Meet Requirements\` has this icon ${Emoji.RedX}, it means you dont have all ` +
+					`the requirements to join the activity. If it has this icon ${Emoji.Warning}, it means you have all ` +
+					'the necessary requirements to join the activity, but not not all the team requirements. The ' +
+					'activity will not start until someone with those requires joins.' +
+					`\n\nIf \`Soloable\` has this icon ${Emoji.RedX}, it means this activity can not be soloed.`
+			);
 		// large footer to allow max embeed size
 		embed.setFooter(`${'\u3000'.repeat(200 /* any big number works too*/)}`);
 		await msg.channel.send(embed);
 	}
 
-	// @forceMainServer
-	@minionNotBusy
 	@requiresMinion
-	@ironsCantUse
+	async check(msg: KlasaMessage, [queue = '']: [string]) {
+		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';
+		const selectedQueue = availableQueues.find(
+			m =>
+				!m.creator &&
+				(stringMatches(m.name, queue) || (m.aliases && m.aliases.some(a => stringMatches(a, queue))))
+		);
+		if (!selectedQueue) {
+			return msg.channel.send(
+				`This is not a valid LFG activity. Check \`${prefix}lfg\` for all available activities.`
+			);
+		}
+		const solo = msg.commandText === LFGSOLO_CMD;
+		const errors = await this.userHasReqToJoin(msg.author, selectedQueue.uniqueID, solo);
+		if (solo) {
+			errors[0] = errors[0].concat(errors[1]);
+		}
+		let returnMessage = '';
+		if (errors[0].length > 0) {
+			returnMessage += `You do not meet one or more requisites to join this LFG:\n - ${errors[0].join('\n - ')}`;
+		}
+		if (!solo && errors[1].length > 0) {
+			returnMessage += `\n\nAs a team requirement, you do not meet one or more requisites for this LFG, but you still **can** join it:\n - ${errors[1].join(
+				'\n - '
+			)}`;
+		}
+		if (returnMessage) {
+			return this.messageUser(msg, msg.author, returnMessage);
+		}
+		return this.messageUser(msg, msg.author, `${Emoji.Happy}\nYou meet all the requirements for this activity.`);
+	}
+
+	@requiresMinion
+	async create(msg: KlasaMessage, [queue = '']: [string]) {
+		const { min, max } = msg.flagArgs;
+		if (msg.commandText === LFGSOLO_CMD) {
+			return msg.channel.send("You can't create a private solo activity.");
+		}
+		const uid = `999${msg.author.id}`;
+		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';
+		// Check is user already has a queue created
+		if (Boolean(availableQueues.find(m => m.creator === msg.author))) {
+			return msg.channel.send(
+				`You can only have one private queue craeted. Use \`${prefix}lfg disband\` to start a new queue.`
+			);
+		}
+		// Select the activity the user wants to create
+		const selectedQueue = availableQueues.find(
+			m =>
+				!m.creator &&
+				m.allowPrivate &&
+				(stringMatches(m.name, queue) || (m.aliases && m.aliases.some(a => stringMatches(a, queue))))
+		);
+		if (!selectedQueue) {
+			return msg.channel.send(
+				`This is not a valid LFG activity. Check \`${prefix}lfg\` for all available activities.`
+			);
+		}
+		// Check if the user can actually create this activity
+		const errors = await this.userHasReqToJoin(msg.author, selectedQueue.uniqueID, false);
+		let returnMessage = '';
+		if (errors[0].length > 0) {
+			returnMessage += `You do not meet one or more requisites to create this private LFG:\n - ${errors[0].join(
+				'\n - '
+			)}`;
+		}
+		if (returnMessage) {
+			return this.messageUser(msg, msg.author, returnMessage);
+		}
+		availableQueues.push({
+			creator: msg.author,
+			uniqueID: Number(uid),
+			name: `${msg.author.username}\'s Private ${selectedQueue.name}`,
+			aliases: [msg.author.tag, msg.author.id],
+			allowSolo: false,
+			monster: selectedQueue.monster,
+			minQueueSize: min ? Number(min) : MIN_USERS,
+			maxQueueSize: max ? Number(max) : MAX_USERS,
+			lfgClass: selectedQueue.lfgClass,
+			thumbnail: selectedQueue.thumbnail,
+			extraParams: selectedQueue.extraParams,
+			privateUniqueID: selectedQueue.uniqueID,
+			allowPrivate: false
+		});
+
+		await msg.channel.send(
+			`You created private LFG activity queue ${
+				selectedQueue.name
+			}. People can join the queue typing \`${prefix}lfg join ${
+				selectedQueue.aliases[0] ?? selectedQueue.name
+			}\`. You can disband this queue by issuing \`${prefix}lfg disband\`.`
+		);
+
+		return this.join(msg, [`${msg.author.id}`]);
+	}
+
+	@requiresMinion
 	async join(msg: KlasaMessage, [queue = '']: [string]) {
 		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';
 		const selectedQueue = availableQueues.find(
@@ -520,12 +698,12 @@ export default class extends BotCommand {
 		);
 
 		if (!selectedQueue) {
-			return msg.channel.send(`This is not a LFG monster. Run \`${prefix}lfg\` for more information.`);
+			return msg.channel.send(`This is not a valid LFG activity. Run \`${prefix}lfg\` for more information.`);
 		}
 
 		let skipChecks = false;
 		let queueID = selectedQueue.uniqueID;
-		if (msg.commandText === 'lfgsolo') {
+		if (msg.commandText === LFGSOLO_CMD) {
 			if (selectedQueue.allowSolo) {
 				queueID = Number(msg.author.id);
 				skipChecks = true;
@@ -556,28 +734,11 @@ export default class extends BotCommand {
 		}
 
 		// Validate if user can actually join this LFG
-		// Creates a tempUser so it can add the current users in the queue + the user trying to join
-		const TempUsers = Object.values(QUEUE_LIST[queueID].users);
-		TempUsers.push(msg.author);
-		let [activitiesThisTrip] = await selectedQueue.lfgClass.calculateDurationAndActivitiesPerTrip({
-			party: TempUsers,
-			queue: selectedQueue
-		});
-		const errors = await selectedQueue.lfgClass.checkUserRequirements({
-			solo: QUEUE_LIST[queueID].soloStart,
-			user: msg.author,
-			party: TempUsers,
-			queue: selectedQueue,
-			quantity: activitiesThisTrip
-		});
-
-		if (errors.length > 0) {
-			if (!channelIsSendable(msg.author.dmChannel!)) {
-				return msg.channel.send(
-					`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${errors.join('\n - ')}`
-				);
-			}
-			return msg.author.send(
+		const errors = await this.userHasReqToJoin(msg.author, queueID);
+		if (errors[0].length > 0) {
+			await this.messageUser(
+				msg,
+				msg.author,
 				`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${errors.join('\n - ')}`
 			);
 		}
@@ -595,17 +756,19 @@ export default class extends BotCommand {
 			guild: msg.guild?.id
 		};
 
-		await msg.channel.send(
-			`You joined the ${selectedQueue.name} LFG. To leave, type \`${prefix}lfg leave ${queue}\` or \`${prefix}lfg leave all\``
-		);
+		// Dont display this message for solos
+		if (!QUEUE_LIST[queueID].soloStart && selectedQueue.creator !== msg.author) {
+			await msg.channel.send(
+				`You joined the ${selectedQueue.name} LFG. To leave, type \`${prefix}lfg leave ${
+					selectedQueue.aliases[0] ?? selectedQueue.name
+				}\` or \`${prefix}lfg leave all\``
+			);
+		}
 
 		return this.handleStart(queueID);
 	}
 
-	// @forceMainServer
-	@minionNotBusy
 	@requiresMinion
-	@ironsCantUse
 	async leave(msg: KlasaMessage, [queue = '']: [string]) {
 		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';
 		const selectedQueue = availableQueues.find(
@@ -630,5 +793,15 @@ export default class extends BotCommand {
 		} else {
 			return msg.channel.send('You are not in this LFG group!');
 		}
+	}
+
+	@requiresMinion
+	async disband(msg: KlasaMessage) {
+		const selectedQueue = availableQueues.find(m => m.creator && m.creator === msg.author);
+		if (!selectedQueue) {
+			return msg.channel.send("This private activity does not exists or you don't own it.");
+		}
+		this.removeUserFromQueue(msg.author, selectedQueue.uniqueID, true);
+		return msg.channel.send('You disbanded your group!');
 	}
 }

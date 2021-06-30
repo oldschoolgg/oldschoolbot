@@ -66,7 +66,7 @@ export default class extends BotCommand {
 			const data = currentTask as RaidsTaskOptions;
 			if (data.users.length > 1) {
 				return msg.send(
-					`${msg.author.minionName} is currently doing the Chamber's of Xeric, they cannot leave their team!`
+					`${msg.author.minionName} is currently doing the Chambers of Xeric, they cannot leave their team!`
 				);
 			}
 		}

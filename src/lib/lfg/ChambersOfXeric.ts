@@ -167,7 +167,7 @@ export default class implements LfgInterface {
 			returnMessage.push("You are busy right now and can't join this raid!");
 		}
 		if (!hasMinRaidsRequirements(user)) {
-			returnMessage.push("You don't meet the stat requirements to do the Chamber's of Xeric");
+			returnMessage.push("You don't meet the stat requirements to do the Chambers of Xeric");
 		}
 
 		if (!user.owns(minimumCoxSuppliesNeeded)) {
@@ -178,7 +178,7 @@ export default class implements LfgInterface {
 
 		const { total } = calculateUserGearPercents(user);
 		if (total < 20) {
-			returnMessage.push("Your gear is terrible! You do not stand a chance in the Chamber's of Xeric");
+			returnMessage.push('Your gear is terrible! You do not stand a chance in the Chambers of Xeric');
 		}
 
 		if (
@@ -188,24 +188,24 @@ export default class implements LfgInterface {
 			!solo
 		) {
 			returnMessage.push(
-				"You need either a Dragon hunter crossbow or Twisted bow to attempt Challenge Mode Chamber's of Xeric."
+				'You need either a Dragon hunter crossbow or Twisted bow to attempt Challenge Mode Chambers of Xeric.'
 			);
 		}
 		const kc = await user.getMinigameScore('Raids');
-		if (solo && party!.length === 1) {
+		if (solo && party.length === 1) {
 			if (!queue!.extraParams!.isChallengeMode && kc < 50) {
 				returnMessage.push(
-					"You need atleast 50 Normal Chamber's of Xeric KC before you can attempt a solo Chambers of Xeric."
+					'You need atleast 50 Normal Chambers of Xeric KC before you can attempt a solo Chambers of Xeric.'
 				);
 			}
 			if (queue!.extraParams!.isChallengeMode && kc < 200) {
 				returnMessage.push(
-					"You need atleast 200 Normal Chamber's of Xeric KC before you can attempt a solo Challenge Mode Chamber's of Xeric."
+					'You need atleast 200 Normal Chambers of Xeric KC before you can attempt a solo Challenge Mode Chambers of Xeric.'
 				);
 			}
 			if (!user.hasItemEquippedOrInBank('Twisted bow')) {
 				returnMessage.push(
-					"You don't own a Twisted bow, which is required for solo Challenge Mode Chamber's of Xeric."
+					"You don't own a Twisted bow, which is required for solo Challenge Mode Chambers of Xeric."
 				);
 			}
 		}

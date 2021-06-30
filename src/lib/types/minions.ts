@@ -11,7 +11,6 @@ export interface ActivityTaskOptions {
 	id: string;
 	finishDate: number;
 	channelID: string;
-	lookingForGroup?: any;
 }
 
 export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
