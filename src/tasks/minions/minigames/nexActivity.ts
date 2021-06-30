@@ -76,6 +76,7 @@ export default class extends Task {
 		const leaderUser = await this.client.users.fetch(userID);
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NexMonster.name}!\n\n`;
 		const totalLoot = new Bank();
+
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
@@ -134,9 +135,9 @@ export default class extends Task {
 			if (!channelIsSendable(channel)) return;
 
 			if (!kcAmounts[userID]) {
-				channel.send(
-					`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill Nex, they apologize and promise to try harder next time.`
-				);
+				sendToChannelID(this.client, channelID, {
+					content: `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill Nex, they apologize and promise to try harder next time.`
+				});
 			} else {
 				channel.sendBankImage({
 					bank: teamsLoot[userID],

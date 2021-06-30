@@ -3,7 +3,6 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { production } from '../../../config';
 import { Emoji } from '../../../lib/constants';
 import { KalphiteKingMonster } from '../../../lib/kalphiteking';
 import { addMonsterXP } from '../../../lib/minions/functions';
@@ -14,7 +13,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, channelIsSendable, noOp, updateBankSetting } from '../../../lib/util';
+import { addBanks, noOp, updateBankSetting } from '../../../lib/util';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -142,56 +141,49 @@ export default class extends Task {
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
 
-		let debug = production ? '' : `\`\`\`\n${JSON.stringify([parsedUsers, deaths], null, 4)}\n\`\`\``;
-
 		if (users.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
 				sendToChannelID(this.client, channelID, {
 					content: `${users
 						.map(id => `<@${id}>`)
-						.join(' ')} Your team all died, and failed to defeat the Kalphite King. ${debug}`
+						.join(' ')} Your team all died, and failed to defeat the Kalphite King.`
 				});
 			} else {
-				sendToChannelID(this.client, channelID, { content: resultStr + debug });
+				sendToChannelID(this.client, channelID, { content: resultStr });
 			}
+		} else if (!kcAmounts[userID]) {
+			sendToChannelID(this.client, channelID, {
+				content: `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`
+			});
 		} else {
-			const channel = this.client.channels.cache.get(channelID);
-			if (!channelIsSendable(channel)) return;
-
-			if (!kcAmounts[userID]) {
-				channel.send(
-					`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`
-				);
-			} else {
-				const { image } = await this.client.tasks
-					.get('bankImage')!
-					.generateBankImage(
-						soloItemsAdded!,
-						`Loot From ${quantity} Kalphite King:`,
-						true,
-						{ showNewCL: 1 },
-						leaderUser,
-						soloPrevCl!
-					);
-
-				handleTripFinish(
-					this.client,
+			const { image } = await this.client.tasks
+				.get('bankImage')!
+				.generateBankImage(
+					soloItemsAdded!,
+					`Loot From ${quantity} Kalphite King:`,
+					true,
+					{ showNewCL: 1 },
 					leaderUser,
-					channelID,
-					`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
-						KalphiteKingMonster.name
-					}, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${
-						(leaderUser.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0) + quantity
-					}.\n\n${soloXP}`,
-					res => {
-						leaderUser.log('continued kk');
-						return this.client.commands.get('kk')!.run(res, ['solo']);
-					},
-					image!,
-					data,
-					soloItemsAdded
+					soloPrevCl!
 				);
-			}
+
+			handleTripFinish(
+				this.client,
+				leaderUser,
+				channelID,
+				`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
+					KalphiteKingMonster.name
+				}, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${
+					(leaderUser.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0) + quantity
+				}.\n\n${soloXP}`,
+				res => {
+					leaderUser.log('continued kk');
+					return this.client.commands.get('kk')!.run(res, ['solo']);
+				},
+				image!,
+				data,
+				soloItemsAdded
+			);
 		}
 	}
 }
