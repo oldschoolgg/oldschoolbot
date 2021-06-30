@@ -130,7 +130,7 @@ export async function handleTripFinish(
 	}
 
 	if (user.usingPet('Voidling')) {
-		const alchResult = alching(user, data.duration);
+		const alchResult = alching(user, data.duration, true);
 		if (alchResult !== null) {
 			if (!user.owns(alchResult.bankToRemove)) {
 				message += `\Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`;

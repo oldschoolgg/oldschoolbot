@@ -26,7 +26,7 @@ const unlimitedFireRuneProviders = [
 	'Tome of fire'
 ];
 
-export function alching(user: KlasaUser, tripLength: number) {
+export function alching(user: KlasaUser, tripLength: number, isUsingVoidling: boolean) {
 	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const bank = user.bank();
 	const favAlchables = user.settings
@@ -49,6 +49,9 @@ export function alching(user: KlasaUser, tripLength: number) {
 	const hasInfiniteFireRunes = user.hasItemEquippedAnywhere(unlimitedFireRuneProviders);
 
 	let maxCasts = Math.floor(tripLength / (Time.Second * (3 + 10)));
+	if (isUsingVoidling) {
+		maxCasts *= 3;
+	}
 	maxCasts = Math.min(alchItemQty, maxCasts);
 	maxCasts = Math.min(nats, maxCasts);
 	if (!hasInfiniteFireRunes) {
@@ -129,7 +132,7 @@ export default class extends BotCommand {
 			course.name
 		} laps, it'll take around ${formatDuration(duration)} to finish.`;
 
-		const alchResult = alching(msg.author, duration);
+		const alchResult = alching(msg.author, duration, true);
 		if (alchResult !== null) {
 			if (course.name === 'Ape Atoll Agility Course') {
 				return msg.channel.send("<:karamjanMonkey:739460740871749742> Monkey's can't alch!");
