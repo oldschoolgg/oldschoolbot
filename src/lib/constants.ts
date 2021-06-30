@@ -204,6 +204,7 @@ export const enum Tasks {
 	MageArena2 = 'mageArena2Activity',
 	BigChompyBirdHunting = 'chompyHuntActivity',
 	DarkAltar = 'darkAltarActivity',
+	TrekkingActivity = 'templeTrekkingActivity',
 	Lfg = 'lfgActivity'
 }
 
@@ -265,6 +266,7 @@ export enum Activity {
 	MageArena2 = 'MageArena2',
 	BigChompyBirdHunting = 'BigChompyBirdHunting',
 	DarkAltar = 'DarkAltar',
+	Trekking = 'Trekking',
 	Lfg = 'Lfg'
 }
 
@@ -395,7 +397,7 @@ export const MAX_QP = 280;
 
 export const MIMIC_MONSTER_ID = 23184;
 
-export const continuationChars = 'abdefghjkmnopqrstuvwxyz123456789'.split('');
+export const continuationChars = 'abdefghjkmnoprstuvwxyz123456789'.split('');
 export const CENA_CHARS = ['​', '‎', '‍'];
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;

@@ -57,9 +57,5 @@ export const slayerBuyables: Buyable[] = [
 	{
 		name: 'Antipoison(4)',
 		gpCost: 10_000
-	},
-	{
-		name: 'Antipoison',
-		gpCost: 10_000
 	}
 ];
