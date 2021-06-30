@@ -1,7 +1,13 @@
 import { Task } from 'klasa';
 
-import { availableQueues } from '../../commands/Minion/lfg';
-import { addLFGLoot, addLFGNoDrops, addLFGText, prepareLFGMessage, sendLFGMessages } from '../../lib/lfg/LfgUtils';
+import {
+	addLFGLoot,
+	addLFGNoDrops,
+	addLFGText,
+	availableQueues,
+	prepareLFGMessage,
+	sendLFGMessages
+} from '../../lib/lfg/LfgUtils';
 import { LfgActivityTaskOptions } from '../../lib/types/minions';
 
 export default class extends Task {

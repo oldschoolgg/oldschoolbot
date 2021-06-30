@@ -1,179 +1,28 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Monsters } from 'oldschooljs';
 
 import { Activity, Color, Emoji, Events, SupportServer, Time } from '../../lib/constants';
-import ChambersOfXeric from '../../lib/lfg/ChambersOfXeric';
-import Default from '../../lib/lfg/Default';
-import LfgInterface from '../../lib/lfg/LfgInterface';
-import { getMonster, sendLFGErrorMessage } from '../../lib/lfg/LfgUtils';
-import Nightmare from '../../lib/lfg/Nightmare';
-import { NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import { availableQueues, LFG_MAX_USERS, LFG_MIN_USERS, sendLFGErrorMessage } from '../../lib/lfg/LfgUtils';
 import { requiresMinion } from '../../lib/minions/decorators';
-import { KillableMonster } from '../../lib/minions/types';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { LfgActivityTaskOptions } from '../../lib/types/minions';
 import { channelIsSendable, formatDuration, sleep, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Timeout = NodeJS.Timeout;
+import { LfgQueueState } from '../../lib/lfg/LfgInterface';
 
-interface UserSentFrom {
-	guild: string | undefined;
-	channel: string;
-}
-
-interface QueueState {
-	locked: boolean;
-	users: Record<string, KlasaUser>;
-	userSentFrom: Record<string, UserSentFrom>;
-	firstUserJoinDate?: Date;
-	lastUserJoinDate?: Date;
-	startDate?: Date;
-	queueBase: QueueProperties;
-	soloStart: boolean;
-}
-
-export interface QueueProperties {
-	uniqueID: number;
-	name: string;
-	aliases: string[];
-	lfgClass: LfgInterface;
-	extraParams?: Record<string, any>;
-	thumbnail: string;
-	monster?: KillableMonster;
-	minQueueSize: number;
-	maxQueueSize: number;
-	allowSolo: boolean;
-	allowPrivate: boolean;
-	creator?: KlasaUser;
-	privateUniqueID?: number;
-}
-
-const MIN_USERS = 2;
-const MAX_USERS = 50;
-const QUEUE_LIST: Record<number, QueueState> = {};
-const WAIT_TIME = 2 * Time.Second;
+const QUEUE_LIST: Record<number, LfgQueueState> = {};
+const WAIT_TIME = 120 * Time.Second;
 const DEFAULT_MASS_CHANNEL = '858141860900110366'; // #testing-2
 const QUEUE_AUTO_START: Record<number, Timeout | null> = {};
 const LFGSOLO_CMD = 'lfgsolo';
-
-export const availableQueues: QueueProperties[] = [
-	{
-		uniqueID: 1,
-		name: Monsters.KrilTsutsaroth.name,
-		aliases: Monsters.KrilTsutsaroth.aliases,
-		lfgClass: new Default(),
-		thumbnail: 'https://oldschool.runescape.wiki/images/2/2f/K%27ril_Tsutsaroth.png',
-		monster: getMonster(Monsters.KrilTsutsaroth.id),
-		minQueueSize: MIN_USERS,
-		maxQueueSize: MAX_USERS,
-		allowSolo: true,
-		allowPrivate: true
-	},
-	{
-		uniqueID: 2,
-		name: Monsters.GeneralGraardor.name,
-		aliases: Monsters.GeneralGraardor.aliases,
-		lfgClass: new Default(),
-		thumbnail: 'https://oldschool.runescape.wiki/images/b/b8/General_Graardor.png',
-		monster: getMonster(Monsters.GeneralGraardor.id),
-		minQueueSize: MIN_USERS,
-		maxQueueSize: MAX_USERS,
-		allowSolo: true,
-		allowPrivate: true
-	},
-	{
-		uniqueID: 3,
-		name: Monsters.Kreearra.name,
-		aliases: Monsters.Kreearra.aliases,
-		lfgClass: new Default(),
-		thumbnail: 'https://oldschool.runescape.wiki/images/f/fd/Kree%27arra.png',
-		monster: getMonster(Monsters.Kreearra.id),
-		minQueueSize: MIN_USERS,
-		maxQueueSize: MAX_USERS,
-		allowSolo: true,
-		allowPrivate: true
-	},
-	{
-		uniqueID: 4,
-		name: Monsters.CommanderZilyana.name,
-		aliases: Monsters.CommanderZilyana.aliases,
-		lfgClass: new Default(),
-		thumbnail: 'https://oldschool.runescape.wiki/images/f/fb/Commander_Zilyana.png',
-		monster: getMonster(Monsters.CommanderZilyana.id),
-		minQueueSize: MIN_USERS,
-		maxQueueSize: MAX_USERS,
-		allowSolo: true,
-		allowPrivate: true
-	},
-	{
-		uniqueID: 5,
-		name: Monsters.CorporealBeast.name,
-		aliases: Monsters.CorporealBeast.aliases,
-		lfgClass: new Default(),
-		thumbnail: 'https://oldschool.runescape.wiki/images/5/5c/Corporeal_Beast.png',
-		monster: getMonster(Monsters.CorporealBeast.id),
-		minQueueSize: MIN_USERS,
-		maxQueueSize: MAX_USERS,
-		allowSolo: true,
-		allowPrivate: true
-	},
-	{
-		uniqueID: 6,
-		name: NightmareMonster.name,
-		aliases: NightmareMonster.aliases,
-		lfgClass: new Nightmare(),
-		thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
-		monster: getMonster(NightmareMonster.id),
-		minQueueSize: 5,
-		maxQueueSize: 10,
-		allowSolo: true,
-		allowPrivate: true
-	},
-	{
-		uniqueID: 7,
-		name: `${NightmareMonster.name} (Small)`,
-		aliases: ['nightmare small'],
-		lfgClass: new Nightmare(),
-		thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
-		monster: getMonster(NightmareMonster.id),
-		minQueueSize: 3,
-		maxQueueSize: 5,
-		allowSolo: false,
-		allowPrivate: true
-	},
-	{
-		uniqueID: 8,
-		name: 'The Chambers of Xeric',
-		aliases: ['raids', 'chambers of xeric', 'the chambers of xeric', 'raid1', 'cox'],
-		lfgClass: new ChambersOfXeric(),
-		extraParams: { isChallengeMode: false },
-		thumbnail: 'https://oldschool.runescape.wiki/images/0/04/Chambers_of_Xeric_logo.png?34a98',
-		minQueueSize: 2,
-		maxQueueSize: 15,
-		allowSolo: true,
-		allowPrivate: true
-	},
-	{
-		uniqueID: 9,
-		name: 'The Chambers of Xeric (CM)',
-		aliases: ['raids cm', 'chambers of xeric cm', 'the chambers of xeric cm', 'raid1 cm', 'cox cm'],
-		lfgClass: new ChambersOfXeric(),
-		extraParams: { isChallengeMode: true },
-		thumbnail: 'https://imgur.com/Y3HroYR.png',
-		minQueueSize: 2,
-		maxQueueSize: 15,
-		allowSolo: true,
-		allowPrivate: true
-	}
-];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[join|leave|help|check|create|disband] [name:...string]',
-			aliases: [LFGSOLO_CMD],
+			aliases: ['lfgsolo'],
 			cooldown: 1,
 			oneAtTime: true,
 			usageDelim: ' ',
@@ -195,7 +44,7 @@ export default class extends BotCommand {
 				delete QUEUE_LIST[queueID].userSentFrom[user.id];
 				if (
 					cancelTimeout &&
-					Object.values(QUEUE_LIST[queueID].users).length < (selectedQueue.minQueueSize ?? MIN_USERS)
+					Object.values(QUEUE_LIST[queueID].users).length < (selectedQueue.minQueueSize ?? LFG_MIN_USERS)
 				) {
 					clearTimeout(queueID);
 				}
@@ -268,14 +117,14 @@ export default class extends BotCommand {
 		const channelsToSend: Record<string, string[]> = {};
 		// Check if we can start
 		if (
-			Object.values(queue.users).length >= (selectedQueue.minQueueSize ?? MIN_USERS) ||
+			Object.values(queue.users).length >= (selectedQueue.minQueueSize ?? LFG_MIN_USERS) ||
 			skipChecks ||
 			queue.soloStart
 		) {
 			// Skip queue checks for solo content
 			if (!queue.soloStart) {
-				// If users >= MAX_USERS (should never be higher), remove the timeout check and it now
-				if (Object.values(queue.users).length >= (selectedQueue.maxQueueSize ?? MAX_USERS)) {
+				// If users >= LFG_MAX_USERS (should never be higher), remove the timeout check and it now
+				if (Object.values(queue.users).length >= (selectedQueue.maxQueueSize ?? LFG_MAX_USERS)) {
 					if (QUEUE_AUTO_START[queueID] !== null) {
 						this.clearTimeout(queueID);
 					}
@@ -347,7 +196,7 @@ export default class extends BotCommand {
 				// Detect if there are any person left
 				if (
 					finalUsers.length <
-					(queue.soloStart ? 1 : selectedQueue.minQueueSize ? selectedQueue.minQueueSize : MIN_USERS)
+					(queue.soloStart ? 1 : selectedQueue.minQueueSize ? selectedQueue.minQueueSize : LFG_MIN_USERS)
 				) {
 					doNotClear = true;
 					this.client.emit(Events.Log, `LFG Canceled [${queueID}] Not enough users left after validation`);
@@ -542,7 +391,7 @@ export default class extends BotCommand {
 					`\nStarts in: ${this.getTimeLeft(
 						QUEUE_LIST[_queue.uniqueID] ? QUEUE_LIST[_queue.uniqueID].startDate : undefined
 					)}` +
-					`\nMin/Max users: ${_queue.minQueueSize ?? MIN_USERS}/${_queue.maxQueueSize ?? MAX_USERS}` +
+					`\nMin/Max users: ${_queue.minQueueSize ?? LFG_MIN_USERS}/${_queue.maxQueueSize ?? LFG_MAX_USERS}` +
 					`\nSoloable: ${_queue.allowSolo ? 'Yes' : Emoji.RedX}` +
 					`\nMeet Requirements: ${
 						errors[0].length === 0 ? (errors[1].length === 0 ? 'Yes' : Emoji.Warning) : Emoji.RedX
@@ -669,8 +518,8 @@ export default class extends BotCommand {
 			aliases: [msg.author.tag, msg.author.id],
 			allowSolo: false,
 			monster: selectedQueue.monster,
-			minQueueSize: min ? Number(min) : MIN_USERS,
-			maxQueueSize: max ? Number(max) : MAX_USERS,
+			minQueueSize: min ? Number(min) : LFG_MIN_USERS,
+			maxQueueSize: max ? Number(max) : LFG_MAX_USERS,
 			lfgClass: selectedQueue.lfgClass,
 			thumbnail: selectedQueue.thumbnail,
 			extraParams: selectedQueue.extraParams,

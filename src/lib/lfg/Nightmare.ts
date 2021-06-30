@@ -19,9 +19,9 @@ import LfgInterface, {
 	LfgCalculateDurationAndActivitiesPerTrip,
 	LfgCheckUserRequirements,
 	LfgGetItemToRemoveFromBank,
-	LfgHandleTripFinish
+	LfgHandleTripFinish,
+	lfgReturnMessageInterface
 } from './LfgInterface';
-import { lfgReturnMessageInterface } from './LfgUtils';
 
 const inquisitorItems = resolveItems([
 	"Inquisitor's great helm",

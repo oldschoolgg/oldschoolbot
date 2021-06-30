@@ -1,16 +1,128 @@
 import { KlasaClient, KlasaUser } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { Monsters } from 'oldschooljs';
 
 import { Emoji } from '../constants';
-import { effectiveMonsters } from '../minions/data/killableMonsters';
+import { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
 import { KillableMonster } from '../minions/types';
 import { channelIsSendable, noOp } from '../util';
+import ChambersOfXeric from './ChambersOfXeric';
+import Default from './Default';
+import { LfgQueueProperties } from './LfgInterface';
+import Nightmare from './Nightmare';
 
-export interface lfgReturnMessageInterface {
-	user: KlasaUser;
-	emoji: Emoji | false;
-	lootedItems: Bank;
-}
+export const LFG_MIN_USERS = 2;
+export const LFG_MAX_USERS = 50;
+
+export const availableQueues: LfgQueueProperties[] = [
+	{
+		uniqueID: 1,
+		name: Monsters.KrilTsutsaroth.name,
+		aliases: Monsters.KrilTsutsaroth.aliases,
+		lfgClass: new Default(),
+		thumbnail: 'https://oldschool.runescape.wiki/images/2/2f/K%27ril_Tsutsaroth.png',
+		monster: getMonster(Monsters.KrilTsutsaroth.id),
+		minQueueSize: LFG_MIN_USERS,
+		maxQueueSize: LFG_MAX_USERS,
+		allowSolo: true,
+		allowPrivate: true
+	},
+	{
+		uniqueID: 2,
+		name: Monsters.GeneralGraardor.name,
+		aliases: Monsters.GeneralGraardor.aliases,
+		lfgClass: new Default(),
+		thumbnail: 'https://oldschool.runescape.wiki/images/b/b8/General_Graardor.png',
+		monster: getMonster(Monsters.GeneralGraardor.id),
+		minQueueSize: LFG_MIN_USERS,
+		maxQueueSize: LFG_MAX_USERS,
+		allowSolo: true,
+		allowPrivate: true
+	},
+	{
+		uniqueID: 3,
+		name: Monsters.Kreearra.name,
+		aliases: Monsters.Kreearra.aliases,
+		lfgClass: new Default(),
+		thumbnail: 'https://oldschool.runescape.wiki/images/f/fd/Kree%27arra.png',
+		monster: getMonster(Monsters.Kreearra.id),
+		minQueueSize: LFG_MIN_USERS,
+		maxQueueSize: LFG_MAX_USERS,
+		allowSolo: true,
+		allowPrivate: true
+	},
+	{
+		uniqueID: 4,
+		name: Monsters.CommanderZilyana.name,
+		aliases: Monsters.CommanderZilyana.aliases,
+		lfgClass: new Default(),
+		thumbnail: 'https://oldschool.runescape.wiki/images/f/fb/Commander_Zilyana.png',
+		monster: getMonster(Monsters.CommanderZilyana.id),
+		minQueueSize: LFG_MIN_USERS,
+		maxQueueSize: LFG_MAX_USERS,
+		allowSolo: true,
+		allowPrivate: true
+	},
+	{
+		uniqueID: 5,
+		name: Monsters.CorporealBeast.name,
+		aliases: Monsters.CorporealBeast.aliases,
+		lfgClass: new Default(),
+		thumbnail: 'https://oldschool.runescape.wiki/images/5/5c/Corporeal_Beast.png',
+		monster: getMonster(Monsters.CorporealBeast.id),
+		minQueueSize: LFG_MIN_USERS,
+		maxQueueSize: LFG_MAX_USERS,
+		allowSolo: true,
+		allowPrivate: true
+	},
+	{
+		uniqueID: 6,
+		name: NightmareMonster.name,
+		aliases: NightmareMonster.aliases,
+		lfgClass: new Nightmare(),
+		thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
+		monster: getMonster(NightmareMonster.id),
+		minQueueSize: 5,
+		maxQueueSize: 10,
+		allowSolo: true,
+		allowPrivate: true
+	},
+	{
+		uniqueID: 7,
+		name: `${NightmareMonster.name} (Small)`,
+		aliases: ['nightmare small'],
+		lfgClass: new Nightmare(),
+		thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
+		monster: getMonster(NightmareMonster.id),
+		minQueueSize: 3,
+		maxQueueSize: 5,
+		allowSolo: false,
+		allowPrivate: true
+	},
+	{
+		uniqueID: 8,
+		name: 'The Chambers of Xeric',
+		aliases: ['raids', 'chambers of xeric', 'the chambers of xeric', 'raid1', 'cox'],
+		lfgClass: new ChambersOfXeric(),
+		extraParams: { isChallengeMode: false },
+		thumbnail: 'https://oldschool.runescape.wiki/images/0/04/Chambers_of_Xeric_logo.png?34a98',
+		minQueueSize: 2,
+		maxQueueSize: 15,
+		allowSolo: true,
+		allowPrivate: true
+	},
+	{
+		uniqueID: 9,
+		name: 'The Chambers of Xeric (CM)',
+		aliases: ['raids cm', 'chambers of xeric cm', 'the chambers of xeric cm', 'raid1 cm', 'cox cm'],
+		lfgClass: new ChambersOfXeric(),
+		extraParams: { isChallengeMode: true },
+		thumbnail: 'https://imgur.com/Y3HroYR.png',
+		minQueueSize: 2,
+		maxQueueSize: 15,
+		allowSolo: true,
+		allowPrivate: true
+	}
+];
 
 export function prepareLFGMessage(
 	activityName: string,

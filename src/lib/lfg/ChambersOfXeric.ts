@@ -25,9 +25,9 @@ import LfgInterface, {
 	LfgCheckTeamRequirements,
 	LfgCheckUserRequirements,
 	LfgGetItemToRemoveFromBank,
-	LfgHandleTripFinish
+	LfgHandleTripFinish,
+	lfgReturnMessageInterface
 } from './LfgInterface';
-import { lfgReturnMessageInterface } from './LfgUtils';
 
 export default class implements LfgInterface {
 	activity: ActivityTaskOptions = <RaidsTaskOptions>{ type: Activity.Raids };

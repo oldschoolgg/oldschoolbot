@@ -1,26 +1,27 @@
 import { KlasaClient, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 
-import { QueueProperties } from '../../commands/Minion/lfg';
+import { Emoji } from '../constants';
+import { KillableMonster } from '../minions/types';
 import { ActivityTaskOptions } from '../types/minions';
-import { lfgReturnMessageInterface } from './LfgUtils';
 
 export interface LfgGetItemToRemoveFromBank {
 	solo: boolean;
 	party: KlasaUser[];
 	client: KlasaClient;
 	quantity: number;
-	queue: QueueProperties;
+	queue: LfgQueueProperties;
 }
 
 export interface LfgHandleTripFinish {
 	data: ActivityTaskOptions;
 	client: KlasaClient;
-	queue: QueueProperties;
+	queue: LfgQueueProperties;
 }
 
 export interface LfgCalculateDurationAndActivitiesPerTrip {
 	party: KlasaUser[];
-	queue: QueueProperties;
+	queue: LfgQueueProperties;
 	quantity?: number;
 }
 
@@ -28,15 +29,53 @@ export interface LfgCheckUserRequirements {
 	solo: boolean;
 	user: KlasaUser;
 	party: KlasaUser[];
-	queue: QueueProperties;
+	queue: LfgQueueProperties;
 	quantity: number;
 }
 
 export interface LfgCheckTeamRequirements {
 	solo?: boolean;
 	party?: KlasaUser[];
-	queue?: QueueProperties;
+	queue?: LfgQueueProperties;
 	quantity?: number;
+}
+
+export interface LfgUserSentFrom {
+	guild: string | undefined;
+	channel: string;
+}
+
+export interface LfgQueueState {
+	locked: boolean;
+	users: Record<string, KlasaUser>;
+	userSentFrom: Record<string, LfgUserSentFrom>;
+	firstUserJoinDate?: Date;
+	lastUserJoinDate?: Date;
+	startDate?: Date;
+	queueBase: LfgQueueProperties;
+	soloStart: boolean;
+}
+
+export interface LfgQueueProperties {
+	uniqueID: number;
+	name: string;
+	aliases: string[];
+	lfgClass: LfgInterface;
+	extraParams?: Record<string, any>;
+	thumbnail: string;
+	monster?: KillableMonster;
+	minQueueSize: number;
+	maxQueueSize: number;
+	allowSolo: boolean;
+	allowPrivate: boolean;
+	creator?: KlasaUser;
+	privateUniqueID?: number;
+}
+
+export interface lfgReturnMessageInterface {
+	user: KlasaUser;
+	emoji: Emoji | false;
+	lootedItems: Bank;
 }
 
 export default interface LfgInterface {

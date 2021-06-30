@@ -6,7 +6,6 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
-import { availableQueues } from '../../commands/Minion/lfg';
 import {
 	Activity,
 	Emoji,
@@ -21,6 +20,7 @@ import {
 } from '../../lib/constants';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
+import { availableQueues } from '../../lib/lfg/LfgUtils';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';

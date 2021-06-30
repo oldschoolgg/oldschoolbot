@@ -15,9 +15,9 @@ import LfgInterface, {
 	LfgCalculateDurationAndActivitiesPerTrip,
 	LfgCheckUserRequirements,
 	LfgGetItemToRemoveFromBank,
-	LfgHandleTripFinish
+	LfgHandleTripFinish,
+	lfgReturnMessageInterface
 } from './LfgInterface';
-import { lfgReturnMessageInterface } from './LfgUtils';
 
 export default class implements LfgInterface {
 	activity: ActivityTaskOptions = <GroupMonsterActivityTaskOptions>{ type: Activity.GroupMonsterKilling };
