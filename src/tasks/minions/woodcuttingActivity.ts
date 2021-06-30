@@ -70,9 +70,6 @@ export default class extends Task {
 					'<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.';
 			}
 		}
-		if (bonusXP > 0) {
-			str += `. **Bonus XP:** ${bonusXP.toLocaleString()}`;
-		}
 
 		// Roll for pet
 		if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
