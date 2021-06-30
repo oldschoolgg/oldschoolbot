@@ -663,7 +663,8 @@ export default class extends BotCommand {
 		if (returnMessage) {
 			return this.messageUser(msg, msg.author, returnMessage);
 		}
-		availableQueues.push({
+
+		const newPrivateQueue = {
 			creator: msg.author,
 			uniqueID: Number(uid),
 			name: `${msg.author.username}\'s Private ${selectedQueue.name}`,
@@ -677,13 +678,14 @@ export default class extends BotCommand {
 			extraParams: selectedQueue.extraParams,
 			privateUniqueID: selectedQueue.uniqueID,
 			allowPrivate: false
-		});
+		};
+		availableQueues.push(newPrivateQueue);
 
 		await msg.channel.send(
 			`You created private LFG activity queue ${
-				selectedQueue.name
+				newPrivateQueue.name
 			}. People can join the queue typing \`${prefix}lfg join ${
-				selectedQueue.aliases[0] ?? selectedQueue.name
+				newPrivateQueue.aliases[0] ?? newPrivateQueue.name
 			}\`. You can disband this queue by issuing \`${prefix}lfg disband\`.`
 		);
 
