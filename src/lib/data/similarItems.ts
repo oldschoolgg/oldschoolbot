@@ -220,7 +220,8 @@ const source: [string, (string | number)[]][] = [
 			'Mystic mud staff'
 		]
 	],
-	['Attack cape', ['Max cape', 'Attack cape(t)']]
+	['Attack cape', ['Max cape', 'Attack cape(t)']],
+	['Ivandis flail', ['Blisterwood flail']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
