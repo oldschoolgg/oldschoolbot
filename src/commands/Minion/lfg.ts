@@ -3,11 +3,13 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import { Activity, Color, Events, SupportServer, Time } from '../../lib/constants';
+import ChambersOfXeric from '../../lib/lfg/ChambersOfXeric';
 import Default from '../../lib/lfg/Default';
 import LfgInterface from '../../lib/lfg/LfgInterface';
-import { getMonster } from '../../lib/lfg/LfgUtils';
+import { getMonster, sendLFGErrorMessage } from '../../lib/lfg/LfgUtils';
+import Nightmare from '../../lib/lfg/Nightmare';
+import { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
-import forceMainServer from '../../lib/minions/decorators/forceMainServer';
 import ironsCantUse from '../../lib/minions/decorators/ironsCantUse';
 import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
 import { KillableMonster } from '../../lib/minions/types';
@@ -30,6 +32,8 @@ interface QueueState {
 	firstUserJoinDate?: Date;
 	lastUserJoinDate?: Date;
 	startDate?: Date;
+	queueBase: QueueProperties;
+	soloStart: boolean;
 }
 
 export interface QueueProperties {
@@ -42,9 +46,11 @@ export interface QueueProperties {
 	monster?: KillableMonster;
 	minQueueSize: number;
 	maxQueueSize: number;
+	private?: boolean;
+	allowSolo: boolean;
 }
 
-const MIN_USERS = 1;
+const MIN_USERS = 2;
 const MAX_USERS = 2;
 const QUEUE_LIST: Record<number, QueueState> = {};
 const WAIT_TIME = 10 * Time.Second;
@@ -60,7 +66,8 @@ export const availableQueues: QueueProperties[] = [
 		thumbnail: 'https://oldschool.runescape.wiki/images/2/2f/K%27ril_Tsutsaroth.png',
 		monster: getMonster(Monsters.KrilTsutsaroth.id),
 		minQueueSize: MIN_USERS,
-		maxQueueSize: MAX_USERS
+		maxQueueSize: MAX_USERS,
+		allowSolo: true
 	},
 	{
 		uniqueID: 2,
@@ -70,7 +77,8 @@ export const availableQueues: QueueProperties[] = [
 		thumbnail: 'https://oldschool.runescape.wiki/images/b/b8/General_Graardor.png',
 		monster: getMonster(Monsters.GeneralGraardor.id),
 		minQueueSize: MIN_USERS,
-		maxQueueSize: MAX_USERS
+		maxQueueSize: MAX_USERS,
+		allowSolo: true
 	},
 	{
 		uniqueID: 3,
@@ -80,7 +88,8 @@ export const availableQueues: QueueProperties[] = [
 		thumbnail: 'https://oldschool.runescape.wiki/images/f/fd/Kree%27arra.png',
 		monster: getMonster(Monsters.Kreearra.id),
 		minQueueSize: MIN_USERS,
-		maxQueueSize: MAX_USERS
+		maxQueueSize: MAX_USERS,
+		allowSolo: true
 	},
 	{
 		uniqueID: 4,
@@ -90,7 +99,8 @@ export const availableQueues: QueueProperties[] = [
 		thumbnail: 'https://oldschool.runescape.wiki/images/f/fb/Commander_Zilyana.png',
 		monster: getMonster(Monsters.CommanderZilyana.id),
 		minQueueSize: MIN_USERS,
-		maxQueueSize: MAX_USERS
+		maxQueueSize: MAX_USERS,
+		allowSolo: true
 	},
 	{
 		uniqueID: 5,
@@ -100,57 +110,60 @@ export const availableQueues: QueueProperties[] = [
 		thumbnail: 'https://oldschool.runescape.wiki/images/5/5c/Corporeal_Beast.png',
 		monster: getMonster(Monsters.CorporealBeast.id),
 		minQueueSize: MIN_USERS,
-		maxQueueSize: MAX_USERS
+		maxQueueSize: MAX_USERS,
+		allowSolo: true
+	},
+	{
+		uniqueID: 6,
+		name: NightmareMonster.name,
+		aliases: NightmareMonster.aliases,
+		lfgClass: new Nightmare(),
+		thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
+		monster: getMonster(NightmareMonster.id),
+		minQueueSize: 1,
+		maxQueueSize: 10,
+		allowSolo: true
+	},
+	{
+		uniqueID: 7,
+		name: `${NightmareMonster.name} (Small)`,
+		aliases: ['nightmare small'],
+		lfgClass: new Nightmare(),
+		thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
+		monster: getMonster(NightmareMonster.id),
+		minQueueSize: 1,
+		maxQueueSize: 5,
+		allowSolo: false
+	},
+	{
+		uniqueID: 8,
+		name: 'The Chambers of Xeric',
+		aliases: ['raids', 'chambers of xeric', 'the chambers of xeric', 'raid1', 'cox'],
+		lfgClass: new ChambersOfXeric(),
+		extraParams: { isChallengeMode: false },
+		thumbnail: 'https://oldschool.runescape.wiki/images/0/04/Chambers_of_Xeric_logo.png?34a98',
+		minQueueSize: 1,
+		maxQueueSize: 15,
+		allowSolo: true
+	},
+	{
+		uniqueID: 9,
+		name: 'The Chambers of Xeric (CM)',
+		aliases: ['raids cm', 'chambers of xeric cm', 'the chambers of xeric cm', 'raid1 cm', 'cox cm'],
+		lfgClass: new ChambersOfXeric(),
+		extraParams: { isChallengeMode: true },
+		thumbnail: 'https://imgur.com/Y3HroYR.png',
+		minQueueSize: 1,
+		maxQueueSize: 15,
+		allowSolo: true
 	}
-	// {
-	// 	uniqueID: 6,
-	// 	name: NightmareMonster.name,
-	// 	aliases: NightmareMonster.aliases,
-	// 	lfgClass: new Nightmare(),
-	// 	command: this.client.commands.get('nightmare')!,
-	// 	thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
-	// 	monster: getMonster(NightmareMonster.id),
-	// 	minQueueSize: this.MIN_USERS,
-	// 	maxQueueSize: this.MAX_USERS
-	// },
-	// {
-	// 	uniqueID: 7,
-	// 	name: `${NightmareMonster.name} Small Team`,
-	// 	aliases: ['nightmare small'],
-	// 	lfgClass: new Nightmare(),
-	// 	command: this.client.commands.get('nightmare')!,
-	// 	thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
-	// 	monster: getMonster(NightmareMonster.id),
-	// 	minQueueSize: 1,
-	// 	maxQueueSize: 5
-	// },
-	// {
-	// 	uniqueID: 8,
-	// 	name: 'The Chambers of Xeric',
-	// 	aliases: ['raids', 'chambers of xeric', 'the chambers of xeric', 'olm', 'raid1', 'cox'],
-	// 	lfgClass: new ChambersOfXeric(),
-	// 	command: this.client.commands.get('raid')!,
-	// 	thumbnail: 'https://oldschool.runescape.wiki/images/0/04/Chambers_of_Xeric_logo.png?34a98',
-	// 	minQueueSize: 1,
-	// 	maxQueueSize: 50
-	// },
-	// {
-	// 	uniqueID: 9,
-	// 	name: 'The Chambers of Xeric (CM)',
-	// 	aliases: ['raids cm', 'chambers of xeric cm', 'the chambers of xeric cm', 'olm cm', 'raid1 cm', 'cox cm'],
-	// 	lfgClass: new ChambersOfXeric(),
-	// 	command: this.client.commands.get('raid')!,
-	// 	extraParams: { challengeMode: true },
-	// 	thumbnail: 'https://oldschool.runescape.wiki/images/0/04/Chambers_of_Xeric_logo.png?34a98',
-	// 	minQueueSize: 1,
-	// 	maxQueueSize: 50
-	// }
 ];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[join|leave] [name:...string]',
+			aliases: ['lfgsolo'],
 			cooldown: 1,
 			oneAtTime: true,
 			usageDelim: ' ',
@@ -166,7 +179,7 @@ export default class extends BotCommand {
 
 	removeUserFromQueue(user: KlasaUser, queueID: number, cancelTimeout = false) {
 		if (QUEUE_LIST[queueID]) {
-			const selectedQueue = availableQueues.find(m => m.uniqueID === queueID);
+			const selectedQueue = QUEUE_LIST[queueID].queueBase;
 			if (selectedQueue) {
 				delete QUEUE_LIST[queueID].users[user.id];
 				delete QUEUE_LIST[queueID].userSentFrom[user.id];
@@ -193,37 +206,52 @@ export default class extends BotCommand {
 		QUEUE_AUTO_START[id] = null;
 	}
 
-	async handleStart(selectedQueue: QueueProperties, skipChecks = false) {
-		const queue = QUEUE_LIST[selectedQueue.uniqueID];
+	async handleStart(queueID: number, skipChecks = false) {
+		const queue = QUEUE_LIST[queueID];
+		const selectedQueue = queue.queueBase;
 		let doNotClear = false;
+		const channelsToSend: Record<string, string[]> = {};
 		// Check if we can start
-		if (Object.values(queue.users).length >= (selectedQueue.minQueueSize ?? MIN_USERS) || skipChecks) {
-			// If users >= MAX_USERS (should never be higher), remove the timeout check and it now
-			if (Object.values(queue.users).length >= (selectedQueue.maxQueueSize ?? MAX_USERS)) {
-				if (QUEUE_AUTO_START[selectedQueue.uniqueID] !== null) {
-					this.clearTimeout(selectedQueue.uniqueID);
+		if (
+			Object.values(queue.users).length >= (selectedQueue.minQueueSize ?? MIN_USERS) ||
+			skipChecks ||
+			queue.soloStart
+		) {
+			// Skip queue checks for solo content
+			if (!queue.soloStart) {
+				// If users >= MAX_USERS (should never be higher), remove the timeout check and it now
+				if (Object.values(queue.users).length >= (selectedQueue.maxQueueSize ?? MAX_USERS)) {
+					if (QUEUE_AUTO_START[queueID] !== null) {
+						this.clearTimeout(queueID);
+					}
+				} else if (!QUEUE_AUTO_START[queueID]) {
+					this.client.emit(Events.Log, `Starting LFG [${queueID}] ${WAIT_TIME.toLocaleString()}ms countdown`);
+					QUEUE_AUTO_START[queueID] = setTimeout(() => this.handleStart(queueID, true), WAIT_TIME);
+					queue.startDate = new Date(Date.now() + WAIT_TIME);
+					return;
+				} else if (!skipChecks) {
+					return;
 				}
-			} else if (!QUEUE_AUTO_START[selectedQueue.uniqueID]) {
-				this.client.emit(
-					Events.Log,
-					`Starting LFG [${selectedQueue.uniqueID}] ${WAIT_TIME.toLocaleString()}ms countdown`
-				);
-				QUEUE_AUTO_START[selectedQueue.uniqueID] = setTimeout(
-					() => this.handleStart(selectedQueue, true),
-					WAIT_TIME
-				);
-				queue.startDate = new Date(Date.now() + WAIT_TIME);
-				return;
-			} else if (!skipChecks) {
-				return;
 			}
 			try {
 				// Locks the LFG until all the preparations are done
 				this.client.emit(
 					Events.Log,
-					`Locking LFG [${selectedQueue.uniqueID}] usersLength[${Object.values(queue.users).length}]`
+					`Locking LFG [${queueID}] usersLength[${Object.values(queue.users).length}]`
 				);
-				QUEUE_LIST[selectedQueue.uniqueID].locked = true;
+				queue.locked = true;
+
+				// Checking is there any user on the queue (in case everyone left or started on another queue)
+				if (Object.values(queue.users).length === 0) {
+					this.client.emit(
+						Events.Log,
+						`Cancellin LFG [${queueID}] usersLength[${
+							Object.values(queue.users).length
+						}] No users left on queue`
+					);
+					return;
+				}
+
 				// Init some vars
 				const finalUsers: KlasaUser[] = [];
 				// Sort users by maxTripLength to use that as the base for this LFG
@@ -234,19 +262,20 @@ export default class extends BotCommand {
 				);
 
 				// Get number of activities this trip could start with (if no one is removed from the queue)
-				let [validationQuantity] = await selectedQueue.lfgClass.calculateDurationAndActivitiesPerTrip(
-					sortedUsers,
-					selectedQueue
-				);
+				let [validationQuantity] = await selectedQueue.lfgClass.calculateDurationAndActivitiesPerTrip({
+					party: sortedUsers,
+					queue: selectedQueue
+				});
 
 				// Remove invalid users
 				for (const user of sortedUsers) {
-					const errors = await selectedQueue.lfgClass.checkUserRequirements(
+					const errors = await selectedQueue.lfgClass.checkUserRequirements({
+						solo: queue.soloStart,
 						user,
-						validationQuantity,
-						sortedUsers.length,
-						selectedQueue
-					);
+						party: sortedUsers,
+						queue: selectedQueue,
+						quantity: validationQuantity
+					});
 					if (errors.length === 0) {
 						finalUsers.push(user);
 					} else {
@@ -261,46 +290,22 @@ export default class extends BotCommand {
 				}
 
 				// Detect if there are any person left
-				if (finalUsers.length < (selectedQueue.minQueueSize ? selectedQueue.minQueueSize : MIN_USERS)) {
+				if (
+					finalUsers.length <
+					(queue.soloStart ? 1 : selectedQueue.minQueueSize ? selectedQueue.minQueueSize : MIN_USERS)
+				) {
 					doNotClear = true;
-					this.client.emit(
-						Events.Log,
-						`LFG Canceled [${selectedQueue.uniqueID}] Not enough users left after validation`
-					);
+					this.client.emit(Events.Log, `LFG Canceled [${queueID}] Not enough users left after validation`);
 					return;
 				}
 
-				// Get the leader for the LFG
-				const leader = finalUsers[0];
-
-				// Now, calculate the final values for this trip
-				const [activitiesThisTrip, durationOfTrip, timePerActivity] =
-					await selectedQueue.lfgClass.calculateDurationAndActivitiesPerTrip(finalUsers, selectedQueue);
-
-				// Remove the required items from the users
-				// You have to make sure this is checked on the checkUserRequirements so no errors happens here
-				try {
-					await selectedQueue.lfgClass.getItemToRemoveFromBank(
-						finalUsers,
-						activitiesThisTrip,
-						this.client,
-						selectedQueue
-					);
-				} catch (e) {
-					this.client.emit(
-						Events.Log,
-						`LFG Canceled [${selectedQueue.uniqueID}] Error removing required items from users \n --- Make sure the checkUserRequirements is validating the required items \n --- Failing to do so will most likely result in item loss (food, pots, whatever is checked)!`
-					);
-					return;
-				}
-
+				// Prepare channels to send queue messages
 				const guilds: Record<string, string> = {};
-				const channelsToSend: Record<string, string[]> = {};
 				channelsToSend[DEFAULT_MASS_CHANNEL] = [];
 				for (const user of finalUsers) {
 					// Verifying channels to send
-					const { channel } = QUEUE_LIST[selectedQueue.uniqueID].userSentFrom[user.id];
-					const { guild } = QUEUE_LIST[selectedQueue.uniqueID].userSentFrom[user.id];
+					const { channel } = queue.userSentFrom[user.id];
+					const { guild } = queue.userSentFrom[user.id];
 					let toSendChannel = null;
 					// Limits 1 message per server
 					// Not guild means DM
@@ -321,6 +326,67 @@ export default class extends BotCommand {
 					channelsToSend[toSendChannel].push(user.id);
 				}
 
+				// Get the leader for the LFG
+				const leader = finalUsers[0];
+
+				// Now, calculate the final values for this trip
+				const [activitiesThisTrip, durationOfTrip, timePerActivity, extraMessages] =
+					await selectedQueue.lfgClass.calculateDurationAndActivitiesPerTrip({
+						party: finalUsers,
+						queue: selectedQueue
+					});
+
+				// Check if this team os users meet all the requirements for this activity
+				const teamRequirements = selectedQueue.lfgClass.checkTeamRequirements({
+					quantity: activitiesThisTrip,
+					solo: queue.soloStart,
+					party: finalUsers,
+					queue: selectedQueue
+				});
+				if (teamRequirements && teamRequirements.length > 0) {
+					// still allows for other users to join if not at the max size
+					if (
+						finalUsers.length < selectedQueue.maxQueueSize &&
+						finalUsers.length > selectedQueue.minQueueSize
+					) {
+						doNotClear = true;
+					}
+					this.client.emit(
+						Events.Log,
+						`LFG Canceled [${queueID}] This team doesnt have the necessary requirements to start this LFG.`
+					);
+					await sendLFGErrorMessage(
+						`The queue **${
+							selectedQueue.name
+						}** was cancelled because no one has the necessary requirements for it.${
+							doNotClear
+								? ' Waiting for someone with the requirements to join to start.'
+								: ' You must join the queue again.'
+						}`,
+						this.client,
+						channelsToSend
+					);
+					return;
+				}
+
+				// Remove the required items from the users
+				// You have to make sure this is checked on the checkUserRequirements so no errors happens here
+				// --- Make sure the checkUserRequirements is validating the required items
+				// --- Failing to do so will most likely result in item loss (food, pots, whatever is checked)!
+				try {
+					await selectedQueue.lfgClass.getItemToRemoveFromBank({
+						solo: queue.soloStart,
+						party: finalUsers,
+						quantity: activitiesThisTrip,
+						client: this.client,
+						queue: selectedQueue
+					});
+				} catch (e) {
+					console.log(e);
+					this.client.emit(Events.Log, `LFG Canceled [${queueID}] Error removing required items from users`);
+					return;
+				}
+
 				await addSubTaskToActivityTask(<LfgActivityTaskOptions>{
 					queueId: selectedQueue.uniqueID,
 					userID: leader.id,
@@ -338,26 +404,33 @@ export default class extends BotCommand {
 				}
 
 				const endDate = new Date(Date.now() + Number(durationOfTrip));
-				const embed = new MessageEmbed()
-					.setColor('#ec3f3f')
-					.setTitle(`${selectedQueue.name} LFG Mass has started!`)
-					.addField('Duration', formatDuration(durationOfTrip), true)
-					.addField('Quantity being killed', activitiesThisTrip.toLocaleString(), true)
-					.addField(
-						'Returning time',
-						`${String(endDate.getDate()).padStart(2, '0')}/${String(endDate.getMonth() + 1).padStart(
-							2,
-							'0'
-						)}/${String(endDate.getFullYear()).padStart(4, '0')} ${String(endDate.getHours()).padStart(
-							2,
-							'0'
-						)}:${String(endDate.getMinutes()).padStart(2, '0')}`,
-						true
-					)
-					.addField('Time per kill', formatDuration(timePerActivity), true)
-					.addField('Original time per kill', formatDuration(selectedQueue.monster!.timeToFinish), true)
-					.addField('Kills per player', `${(activitiesThisTrip / finalUsers.length).toFixed(2)}~`, true)
-					.addField('Users: ', finalUsers.map(u => u.username).join(', '));
+				const embed = new MessageEmbed().setColor('#ec3f3f');
+				embed.setTitle(`${selectedQueue.name} LFG has started!`);
+
+				embed.addField('Duration', formatDuration(durationOfTrip), true);
+				embed.addField(
+					'Returning time',
+					`${String(endDate.getDate()).padStart(2, '0')}/${String(endDate.getMonth() + 1).padStart(
+						2,
+						'0'
+					)}/${String(endDate.getFullYear()).padStart(4, '0')} ${String(endDate.getHours()).padStart(
+						2,
+						'0'
+					)}:${String(endDate.getMinutes()).padStart(2, '0')}`,
+					true
+				);
+
+				if (selectedQueue.monster) {
+					embed.addField('Quantity being killed', activitiesThisTrip.toLocaleString(), true);
+					embed.addField('Time per kill', formatDuration(timePerActivity), true);
+					embed.addField('Original time per kill', formatDuration(selectedQueue.monster!.timeToFinish), true);
+					embed.addField('Kills per player', `${(activitiesThisTrip / finalUsers.length).toFixed(2)}~`, true);
+				}
+				embed.addField('Users: ', finalUsers.map(u => u.username).join(', '));
+
+				if (extraMessages.length > 0) {
+					embed.addField('Extra', extraMessages.join(', '));
+				}
 
 				if (selectedQueue.thumbnail) {
 					embed.setThumbnail(selectedQueue.thumbnail);
@@ -371,22 +444,26 @@ export default class extends BotCommand {
 					}
 				}
 			} finally {
-				this.client.emit(Events.Log, `Unlocking LFG [${selectedQueue.uniqueID}]`);
-				this.clearTimeout(selectedQueue.uniqueID);
-				// Allows canceled mass to keep the user here
-				if (!doNotClear) {
-					QUEUE_LIST[selectedQueue.uniqueID].users = {};
-					QUEUE_LIST[selectedQueue.uniqueID].userSentFrom = {};
+				this.client.emit(Events.Log, `Unlocking LFG [${queueID}]`);
+				this.clearTimeout(queueID);
+				if (queue.soloStart) {
+					delete QUEUE_LIST[queueID];
+				} else {
+					// Allows canceled mass to keep the user here
+					if (!doNotClear) {
+						queue.users = {};
+						queue.userSentFrom = {};
+					}
+					queue.locked = false;
+					queue.lastUserJoinDate = undefined;
+					queue.firstUserJoinDate = undefined;
+					queue.startDate = undefined;
 				}
-				QUEUE_LIST[selectedQueue.uniqueID].locked = false;
-				QUEUE_LIST[selectedQueue.uniqueID].lastUserJoinDate = undefined;
-				QUEUE_LIST[selectedQueue.uniqueID].firstUserJoinDate = undefined;
-				QUEUE_LIST[selectedQueue.uniqueID].startDate = undefined;
 			}
 		}
 	}
 
-	@forceMainServer
+	// @forceMainServer
 	@minionNotBusy
 	@requiresMinion
 	@ironsCantUse
@@ -394,14 +471,17 @@ export default class extends BotCommand {
 		const prefix = msg.guild ? msg.guild.settings.get(GuildSettings.Prefix) : '=';
 		const embed = new MessageEmbed()
 			.setColor(Color.Orange)
-			.setTitle('Currently open LFG!')
+			.setTitle('Looking for Group Activities')
 			.setDescription(
-				'Below is a description of all queues that can be done in groups and how many users are on the queue.' +
-					'\nEach queue has a minimum and maximum size.' +
-					`\nWhen the queue reaches the minimum size, it'll wait ${formatDuration(
+				'Below is a description of all activities that can be done in groups and how many users are waitining for it to start.' +
+					' Each queue has a minimum and maximum size.' +
+					` When the queue reaches the minimum size, it'll wait ${formatDuration(
 						WAIT_TIME
-					)} before starting.` +
-					"\n**WARNING**: Do not be busy when the activity is about to start or you'll be removed from it!"
+					)} before starting.\nIf it reaches the maximum size, it'll start instantly.\n\n You can ` +
+					`use \`${prefix}lfg join name/alias_of_the_activity\` to join the activity queue. You can ` +
+					`also use \`${prefix}lfgsolo join name/alias_of_the_activity\` to start an activity alone, if the activity allows that.` +
+					"\n\n**WARNING**: Do not be busy when the activity is about to start or you'll be " +
+					'removed from it and the queue will start without you.\n'
 			);
 		for (const _queue of availableQueues) {
 			const smallestAlias = _queue.aliases.sort((a, b) => a.length - b.length)[0] ?? _queue.name;
@@ -409,14 +489,15 @@ export default class extends BotCommand {
 			const title = _queue.name + (joined ? ' [JOINED]' : '');
 			embed.addField(
 				title,
-				`On queue: ${
+				`Waiting: ${
 					QUEUE_LIST[_queue.uniqueID] ? Object.values(QUEUE_LIST[_queue.uniqueID].users).length : 0
 				}` +
-					`\n\`${prefix}lfg ${joined ? 'leave' : 'join'} ${smallestAlias}\`` +
+					`\n\`${smallestAlias}\`` +
 					`\nStarts in: ${this.getTimeLeft(
 						QUEUE_LIST[_queue.uniqueID] ? QUEUE_LIST[_queue.uniqueID].startDate : undefined
 					)}` +
-					`\nMin/Max users: ${_queue.minQueueSize ?? MIN_USERS}/${_queue.maxQueueSize ?? MAX_USERS}`,
+					`\nMin/Max users: ${_queue.minQueueSize ?? MIN_USERS}/${_queue.maxQueueSize ?? MAX_USERS}` +
+					`\nSoloable: ${_queue.allowSolo ? 'Yes' : 'No'}`,
 				true
 			);
 		}
@@ -428,7 +509,7 @@ export default class extends BotCommand {
 		await msg.channel.send(embed);
 	}
 
-	@forceMainServer
+	// @forceMainServer
 	@minionNotBusy
 	@requiresMinion
 	@ironsCantUse
@@ -442,60 +523,74 @@ export default class extends BotCommand {
 			return msg.channel.send(`This is not a LFG monster. Run \`${prefix}lfg\` for more information.`);
 		}
 
-		if (!QUEUE_LIST[selectedQueue.uniqueID]) {
+		let skipChecks = false;
+		let queueID = selectedQueue.uniqueID;
+		if (msg.commandText === 'lfgsolo') {
+			if (selectedQueue.allowSolo) {
+				queueID = Number(msg.author.id);
+				skipChecks = true;
+			} else {
+				return msg.channel.send("You can't solo this LFG activity.");
+			}
+		}
+
+		if (!QUEUE_LIST[queueID]) {
 			// Init
-			QUEUE_LIST[selectedQueue.uniqueID] = {
+			QUEUE_LIST[queueID] = {
 				locked: false,
 				users: {},
-				userSentFrom: {}
+				userSentFrom: {},
+				queueBase: selectedQueue,
+				soloStart: skipChecks
 			};
 		}
 
-		if (QUEUE_LIST[selectedQueue.uniqueID].locked) {
+		if (QUEUE_LIST[queueID].locked) {
 			return msg.channel.send(
-				"You can' join this mass at this moment as it is already starting Try again in a few moments."
+				"You can't join this LFG at this moment as it is already starting Try again in a few moments."
 			);
 		}
 
-		if (QUEUE_LIST[selectedQueue.uniqueID].users[msg.author.id]) {
+		if (QUEUE_LIST[queueID].users[msg.author.id]) {
 			return msg.channel.send('You are already on this LFG.');
 		}
 
 		// Validate if user can actually join this LFG
 		// Creates a tempUser so it can add the current users in the queue + the user trying to join
-		const TempUsers = Object.values(QUEUE_LIST[selectedQueue.uniqueID].users);
+		const TempUsers = Object.values(QUEUE_LIST[queueID].users);
 		TempUsers.push(msg.author);
-		let [activitiesThisTrip] = await selectedQueue.lfgClass.calculateDurationAndActivitiesPerTrip(
-			TempUsers,
-			selectedQueue
-		);
-		const errors = selectedQueue.lfgClass.checkUserRequirements(
-			msg.author,
-			activitiesThisTrip,
-			TempUsers.length,
-			selectedQueue
-		);
+		let [activitiesThisTrip] = await selectedQueue.lfgClass.calculateDurationAndActivitiesPerTrip({
+			party: TempUsers,
+			queue: selectedQueue
+		});
+		const errors = await selectedQueue.lfgClass.checkUserRequirements({
+			solo: QUEUE_LIST[queueID].soloStart,
+			user: msg.author,
+			party: TempUsers,
+			queue: selectedQueue,
+			quantity: activitiesThisTrip
+		});
 
 		if (errors.length > 0) {
 			if (!channelIsSendable(msg.author.dmChannel!)) {
 				return msg.channel.send(
-					`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${errors.join('\n')}`
+					`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${errors.join('\n - ')}`
 				);
 			}
 			return msg.author.send(
-				`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${errors.join('\n')}`
+				`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${errors.join('\n - ')}`
 			);
 		}
 
 		// If no users, set the join dates
-		if (Object.values(QUEUE_LIST[selectedQueue.uniqueID].users).length === 0) {
-			QUEUE_LIST[selectedQueue.uniqueID].firstUserJoinDate = new Date();
-			QUEUE_LIST[selectedQueue.uniqueID].lastUserJoinDate = new Date();
+		if (Object.values(QUEUE_LIST[queueID].users).length === 0) {
+			QUEUE_LIST[queueID].firstUserJoinDate = new Date();
+			QUEUE_LIST[queueID].lastUserJoinDate = new Date();
 		}
 
 		// Add user
-		QUEUE_LIST[selectedQueue.uniqueID].users[msg.author.id] = msg.author;
-		QUEUE_LIST[selectedQueue.uniqueID].userSentFrom[msg.author.id] = {
+		QUEUE_LIST[queueID].users[msg.author.id] = msg.author;
+		QUEUE_LIST[queueID].userSentFrom[msg.author.id] = {
 			channel: msg.channel.id,
 			guild: msg.guild?.id
 		};
@@ -503,10 +598,11 @@ export default class extends BotCommand {
 		await msg.channel.send(
 			`You joined the ${selectedQueue.name} LFG. To leave, type \`${prefix}lfg leave ${queue}\` or \`${prefix}lfg leave all\``
 		);
-		return this.handleStart(selectedQueue);
+
+		return this.handleStart(queueID);
 	}
 
-	@forceMainServer
+	// @forceMainServer
 	@minionNotBusy
 	@requiresMinion
 	@ironsCantUse

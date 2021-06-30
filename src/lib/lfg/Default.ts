@@ -1,30 +1,30 @@
 import { objectKeys } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { availableQueues, QueueProperties } from '../../commands/Minion/lfg';
-import { Activity } from '../constants';
+import { Activity, Emoji } from '../constants';
 import killableMonsters from '../minions/data/killableMonsters';
 import { addMonsterXP, calculateMonsterFood } from '../minions/functions';
 import announceLoot from '../minions/functions/announceLoot';
 import hasEnoughFoodForMonster from '../minions/functions/hasEnoughFoodForMonster';
 import isImportantItemForMonster from '../minions/functions/isImportantItemForMonster';
 import removeFoodFromUser from '../minions/functions/removeFoodFromUser';
-import { ActivityTaskOptions, GroupMonsterActivityTaskOptions, LfgActivityTaskOptions } from '../types/minions';
+import { ActivityTaskOptions, GroupMonsterActivityTaskOptions } from '../types/minions';
 import { noOp, randomItemFromArray } from '../util';
 import calcDurQty from '../util/calcMassDurationQuantity';
-import LfgInterface from './LfgInterface';
+import LfgInterface, {
+	LfgCalculateDurationAndActivitiesPerTrip,
+	LfgCheckUserRequirements,
+	LfgGetItemToRemoveFromBank,
+	LfgHandleTripFinish
+} from './LfgInterface';
 import { lfgReturnMessageInterface } from './LfgUtils';
 
 export default class implements LfgInterface {
 	activity: ActivityTaskOptions = <GroupMonsterActivityTaskOptions>{ type: Activity.GroupMonsterKilling };
 
-	async HandleTripFinish(
-		data: LfgActivityTaskOptions,
-		client: KlasaClient
-	): Promise<[lfgReturnMessageInterface[], string[], string]> {
-		const { quantity, users, leader, duration } = data;
-		const queue = availableQueues.find(queue => queue.uniqueID === data.queueId)!;
+	async HandleTripFinish(params: LfgHandleTripFinish): Promise<[lfgReturnMessageInterface[], string[], string]> {
+		const { quantity, users, leader, duration } = <GroupMonsterActivityTaskOptions>params.data;
+		const { queue, client } = params;
 		const monsterID = queue.monster!.id;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
@@ -62,7 +62,7 @@ export default class implements LfgInterface {
 			}
 			const purple = Object.keys(loot).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));
 
-			usersWithLoot.push({ user, hasPurple: purple, lootedItems: loot });
+			usersWithLoot.push({ user, emoji: purple ? Emoji.Purple : false, lootedItems: loot });
 
 			await announceLoot(client, leaderUser, monster, loot.bank, {
 				leader: leaderUser,
@@ -77,33 +77,32 @@ export default class implements LfgInterface {
 	}
 
 	async calculateDurationAndActivitiesPerTrip(
-		users: KlasaUser[],
-		queue: QueueProperties
+		params: LfgCalculateDurationAndActivitiesPerTrip
 	): Promise<[number, number, number, string[]]> {
-		return calcDurQty(users, queue.monster!, undefined);
+		return calcDurQty(params.party, params.queue.monster!, params.quantity);
 	}
 
-	checkUserRequirements(user: KlasaUser, quantity: number, partySize: number, queue: QueueProperties): any {
+	async checkUserRequirements(params: LfgCheckUserRequirements): Promise<string[]> {
 		let returnMessage: string[] = [];
 
-		if (user.minionIsBusy) {
+		if (params.user.minionIsBusy) {
 			returnMessage.push("You are busy right now and can't join this queue!");
 		}
 
-		if (user.isIronman) {
+		if (params.user.isIronman) {
 			returnMessage.push("As an ironman, you can't join mass groups.");
 		}
 
-		const [hasReqs, reason] = user.hasMonsterRequirements(queue.monster!);
+		const [hasReqs, reason] = params.user.hasMonsterRequirements(params.queue.monster!);
 		if (!hasReqs) {
 			returnMessage.push(`You don't meet the requirements for this monster: ${reason}`);
 		}
 
-		if (!hasEnoughFoodForMonster(queue.monster!, user, quantity, partySize)) {
-			const [healAmountNeeded] = calculateMonsterFood(queue.monster!, user);
+		if (!hasEnoughFoodForMonster(params.queue.monster!, params.user, params.quantity, params.party.length)) {
+			const [healAmountNeeded] = calculateMonsterFood(params.queue.monster!, params.user);
 			returnMessage.push(
 				`You don't have enough food. You need at least ${
-					healAmountNeeded! * quantity
+					healAmountNeeded! * params.quantity
 				} HP in food to join this queue.`
 			);
 		}
@@ -111,26 +110,24 @@ export default class implements LfgInterface {
 		return returnMessage;
 	}
 
-	async getItemToRemoveFromBank(
-		users: KlasaUser[],
-		numberOfKills: number,
-		client: KlasaClient,
-		queue: QueueProperties
-	) {
-		const monsterID = queue.monster!.id;
-		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+	async getItemToRemoveFromBank(params: LfgGetItemToRemoveFromBank) {
+		const monster = killableMonsters.find(mon => mon.id === params.queue.monster!.id)!;
 		if (monster.healAmountNeeded) {
-			for (const user of users) {
+			for (const user of params.party) {
 				const [healAmountNeeded] = calculateMonsterFood(monster, user);
 				await removeFoodFromUser({
-					client,
+					client: params.client,
 					user,
-					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * numberOfKills,
-					healPerAction: Math.ceil(healAmountNeeded / numberOfKills),
+					totalHealingNeeded: Math.ceil(healAmountNeeded / params.party.length) * params.quantity,
+					healPerAction: Math.ceil(healAmountNeeded / params.quantity),
 					activityName: monster.name,
 					attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
 				});
 			}
 		}
+	}
+
+	checkTeamRequirements(): string[] {
+		return [];
 	}
 }

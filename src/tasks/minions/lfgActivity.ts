@@ -18,13 +18,14 @@ export default class extends Task {
 
 		let lootString = prepareLFGMessage(lfgQueue.name, data.quantity, data.channels);
 
-		const [usersWithLoot, usersWithoutLoot, extraMessage] = await lfgQueue.lfgClass.HandleTripFinish(
-			handleData,
-			this.client
-		);
+		const [usersWithLoot, usersWithoutLoot, extraMessage] = await lfgQueue.lfgClass.HandleTripFinish({
+			data: handleData,
+			client: this.client,
+			queue: lfgQueue
+		});
 
 		usersWithLoot.forEach(e => {
-			lootString = addLFGLoot(lootString, e.hasPurple, e.user, e.lootedItems.toString(), data.channels);
+			lootString = addLFGLoot(lootString, e.emoji, e.user, e.lootedItems.toString(), data.channels);
 		});
 		lootString = await addLFGNoDrops(lootString, this.client, usersWithoutLoot, data.channels);
 		lootString = addLFGText(lootString, extraMessage, data.channels);

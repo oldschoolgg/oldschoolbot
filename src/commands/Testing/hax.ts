@@ -29,6 +29,12 @@ export default class extends BotCommand {
 
 		const bank = new Bank(loot);
 
+		// Potions
+		bank.add('Saradomin Brew(4)', 10000);
+		bank.add('Super restore(4)', 10000);
+		bank.add('Stamina potion(4)', 10000);
+		bank.add('Prayer potion(4)', 10000);
+
 		// Required and BiS items
 		let itemsToAdd = new Set([
 			'Zamorakian spear',

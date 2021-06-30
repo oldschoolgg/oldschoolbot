@@ -8,7 +8,7 @@ import { channelIsSendable, noOp } from '../util';
 
 export interface lfgReturnMessageInterface {
 	user: KlasaUser;
-	hasPurple: boolean;
+	emoji: Emoji | false;
 	lootedItems: Bank;
 }
 
@@ -27,14 +27,14 @@ export function prepareLFGMessage(
 
 export function addLFGLoot(
 	lootString: Record<string, string>,
-	isPurple: boolean,
+	emoji: Emoji | false,
 	user: KlasaUser,
 	readableList: string,
 	channels: Record<string, string[]> | false | undefined
 ) {
 	if (!channels) return lootString;
 	for (const channel of Object.entries(channels)) {
-		lootString[channel[0]] += `${isPurple ? Emoji.Purple : ''} **${
+		lootString[channel[0]] += `${emoji ? emoji : ''} **${
 			channel[1].includes(user.id) ? user : user.username
 		} received:** ||${readableList}||\n`;
 	}
@@ -87,6 +87,20 @@ export async function sendLFGMessages(
 		}
 	}
 	return lootString;
+}
+
+export async function sendLFGErrorMessage(
+	message: string,
+	client: KlasaClient,
+	channels: Record<string, string[]> | false | undefined
+) {
+	if (!channels) return false;
+	for (const _channel of Object.keys(channels)) {
+		const channel = client.channels.cache.get(_channel);
+		if (channelIsSendable(channel)) {
+			await channel.send(message);
+		}
+	}
 }
 
 export function getMonster(monsterId: number): KillableMonster {
