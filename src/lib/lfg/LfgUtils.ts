@@ -96,7 +96,7 @@ export const availableQueues: LfgQueueProperties[] = [
 		minQueueSize: 3,
 		maxQueueSize: 5,
 		allowSolo: false,
-		allowPrivate: true
+		allowPrivate: false
 	},
 	{
 		uniqueID: 8,

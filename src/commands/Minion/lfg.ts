@@ -1,7 +1,8 @@
-import { MessageEmbed } from 'discord.js';
+import { DMChannel, MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Color, Emoji, Events, SupportServer, Time } from '../../lib/constants';
+import { LfgQueueState } from '../../lib/lfg/LfgInterface';
 import { availableQueues, LFG_MAX_USERS, LFG_MIN_USERS, sendLFGErrorMessage } from '../../lib/lfg/LfgUtils';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
@@ -10,7 +11,6 @@ import { LfgActivityTaskOptions } from '../../lib/types/minions';
 import { channelIsSendable, formatDuration, sleep, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import Timeout = NodeJS.Timeout;
-import { LfgQueueState } from '../../lib/lfg/LfgInterface';
 
 const QUEUE_LIST: Record<number, LfgQueueState> = {};
 const WAIT_TIME = 120 * Time.Second;
@@ -22,7 +22,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[join|leave|help|check|create|disband] [name:...string]',
-			aliases: ['lfgsolo'],
+			aliases: [LFGSOLO_CMD],
 			cooldown: 1,
 			oneAtTime: true,
 			usageDelim: ' ',
@@ -103,11 +103,14 @@ export default class extends BotCommand {
 		];
 	}
 
-	async messageUser(msg: KlasaMessage, user: KlasaUser, message: string) {
-		if (!channelIsSendable(user.dmChannel!)) {
+	async messageUser(msg: KlasaMessage, message: string | MessageEmbed) {
+		if (!channelIsSendable(msg.author.dmChannel!)) {
 			return msg.channel.send(message);
 		}
-		return user.send(message);
+		if (!(msg.channel instanceof DMChannel)) {
+			await msg.channel.send(`${msg.author.tag}, check your private messages.`);
+		}
+		await msg.author.send(message);
 	}
 
 	async handleStart(queueID: number, skipChecks = false) {
@@ -253,7 +256,9 @@ export default class extends BotCommand {
 					);
 					if (queue.soloStart) {
 						await sendLFGErrorMessage(
-							`:RSSad:\nYou do not meet one or more requisites to start this LFG activity:\n - ${teamRequirements.join(
+							`${
+								Emoji.RedX
+							} You do not meet one or more requisites to start this LFG activity:\n - ${teamRequirements.join(
 								'\n - '
 							)}`,
 							this.client,
@@ -261,7 +266,7 @@ export default class extends BotCommand {
 						);
 					} else {
 						await sendLFGErrorMessage(
-							`The queue **${
+							`${Emoji.Warning} The queue **${
 								selectedQueue.name
 							}** was cancelled because no one has the necessary requirements for it.${
 								doNotClear
@@ -395,7 +400,8 @@ export default class extends BotCommand {
 					`\nSoloable: ${_queue.allowSolo ? 'Yes' : Emoji.RedX}` +
 					`\nMeet Requirements: ${
 						errors[0].length === 0 ? (errors[1].length === 0 ? 'Yes' : Emoji.Warning) : Emoji.RedX
-					}`,
+					}` +
+					`\nAllow Private: ${_queue.allowPrivate ? 'Yes' : Emoji.RedX}`,
 				true
 			);
 		}
@@ -409,7 +415,7 @@ export default class extends BotCommand {
 			)
 			.setTimestamp();
 		// large footer to allow max embeed size
-		await msg.channel.send(embed);
+		return this.messageUser(msg, embed);
 	}
 
 	@requiresMinion
@@ -419,27 +425,33 @@ export default class extends BotCommand {
 			.setColor(Color.Orange)
 			.setTitle('Looking for Group Activities')
 			.setDescription(
-				`If you run \`${prefix}lfg\`, you'll get a description of all queues/activities that can be done in groups and ` +
+				`If you run \`${prefix}lfg\`, you'll get a description of all activities that can be done in groups and ` +
 					'how many users are waitining for it to start.' +
-					' Each queue has a minimum and maximum size.' +
-					` When the queue reaches the minimum size, it'll wait ${formatDuration(
+					' Each activity has a minimum and maximum size.' +
+					` When the activity reaches the minimum size, it'll wait ${formatDuration(
 						WAIT_TIME
 					)} before starting. If it reaches the maximum size, it'll start instantly.\n\n You can ` +
-					`use \`${prefix}lfg join name/alias_of_the_activity\` to join the activity queue. You can ` +
-					`also use \`${prefix}lfgsolo name/alias_of_the_activity\` to start an activity alone, if the activity allows that.` +
-					"\n\n**WARNING**: Do not be busy when the activity is about to start or you'll be " +
-					'removed from it and the queue will start without you.\n\n' +
-					`You can use \`${prefix}(lfg/lfgsolo) check name/alias_of_the_activity\` to verify if you have all the requirements the activity.` +
+					`use \`${prefix}lfg join name\` to join the activity. You can ` +
+					`also use \`${prefix}${LFGSOLO_CMD} name\` to start an activity alone, if the activity allows that.` +
+					`\n\n**${Emoji.Warning} WARNING**\n\nDo not be busy when the activity is about to start or you'll be ` +
+					'removed from it and the activity will start without you.\n\n' +
+					`You can use \`${prefix}lfg/${LFGSOLO_CMD} check name\` to verify if you have all the requirements the activity. ` +
 					"If not, it'll DM you (or shown on the channel if you have DMs off), the requirements you are missing." +
-					`\n\nIf the activity \`Meet Requirements\` has this icon ${Emoji.RedX}, it means you dont have all ` +
+					`\n\n**PRIVATE ACTIVITIES**\n\nYou can start private activities by doing \`${prefix}lfg create name\`. You'll be able` +
+					` to create private activities of any of the activities shown in \`${prefix}lfg\` that has \`Allow Private\` as yes. ` +
+					'Private activity will still obey the same time settings as a normal activity, when reaching the minimimum users.\n\n' +
+					`You can disband your private activity by issuing \`${prefix}lfg disband\` or by leaving your own activity ` +
+					`issuing \`${prefix}lfg leave name\` or issuing \`${prefix}lfg leave all\`` +
+					`\n\n**ICONS AND THEIR MEANINGS**\n\nIf the activity \`Meet Requirements\` has this icon ${Emoji.RedX}, it means you dont have all ` +
 					`the requirements to join the activity. If it has this icon ${Emoji.Warning}, it means you have all ` +
 					'the necessary requirements to join the activity, but not not all the team requirements. The ' +
 					'activity will not start until someone with those requires joins.' +
-					`\n\nIf \`Soloable\` has this icon ${Emoji.RedX}, it means this activity can not be soloed.`
+					`\n\nIf \`Soloable\` has this icon ${Emoji.RedX}, it means this activity can not be soloed.` +
+					`\n\nIf \`Allow Private\` has this icon ${Emoji.RedX}, it means that you can not be privately done.`
 			);
 		// large footer to allow max embeed size
-		embed.setFooter(`${'\u3000'.repeat(200 /* any big number works too*/)}`);
-		await msg.channel.send(embed);
+		embed.setFooter(`${'\u3000'.repeat(200)}`);
+		await this.messageUser(msg, embed);
 	}
 
 	@requiresMinion
@@ -460,17 +472,21 @@ export default class extends BotCommand {
 		}
 		let returnMessage = '';
 		if (errors[0].length > 0) {
-			returnMessage += `You do not meet one or more requisites to join this LFG:\n - ${errors[0].join('\n - ')}`;
+			returnMessage += `${
+				Emoji.RedX
+			} You do not meet one or more requisites to join this LFG:\n - ${errors[0].join('\n - ')}`;
 		}
 		if (!solo && errors[1].length > 0) {
-			returnMessage += `\n\nAs a team requirement, you do not meet one or more requisites for this LFG, but you still **can** join it:\n - ${errors[1].join(
+			returnMessage += `\n\n${
+				Emoji.Warning
+			} As a team requirement, you do not meet one or more requisites for this LFG, **but you still can join it**:\n - ${errors[1].join(
 				'\n - '
 			)}`;
 		}
 		if (returnMessage) {
-			return this.messageUser(msg, msg.author, returnMessage);
+			return this.messageUser(msg, returnMessage);
 		}
-		return this.messageUser(msg, msg.author, `${Emoji.Happy}\nYou meet all the requirements for this activity.`);
+		return this.messageUser(msg, `${Emoji.Happy}\nYou meet all the requirements for this activity.`);
 	}
 
 	@requiresMinion
@@ -503,12 +519,12 @@ export default class extends BotCommand {
 		const errors = await this.userHasReqToJoin(msg.author, selectedQueue.uniqueID, false);
 		let returnMessage = '';
 		if (errors[0].length > 0) {
-			returnMessage += `You do not meet one or more requisites to create this private LFG:\n - ${errors[0].join(
-				'\n - '
-			)}`;
+			returnMessage += `${
+				Emoji.RedX
+			} You do not meet one or more requisites to create this private LFG:\n - ${errors[0].join('\n - ')}`;
 		}
 		if (returnMessage) {
-			return this.messageUser(msg, msg.author, returnMessage);
+			return this.messageUser(msg, returnMessage);
 		}
 
 		const newPrivateQueue = {
@@ -587,8 +603,7 @@ export default class extends BotCommand {
 		if (errors[0].length > 0) {
 			await this.messageUser(
 				msg,
-				msg.author,
-				`:RSSad:\nYou do not meet one or more requisites to join this LFG:\n - ${errors.join('\n - ')}`
+				`${Emoji.RedX} You do not meet one or more requisites to join this LFG:\n - ${errors.join('\n - ')}`
 			);
 		}
 
