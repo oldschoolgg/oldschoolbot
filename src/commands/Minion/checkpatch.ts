@@ -46,9 +46,7 @@ export default class extends BotCommand {
 				const { lastPlanted } = patch;
 				const plant = Farming.Plants.find(plants =>
 					plants.aliases.some(
-						alias =>
-							stringMatches(alias, lastPlanted) ||
-							(stringMatches(alias.split(' ')[0], lastPlanted) && alias.split(' ')[0] !== 'potato')
+						alias => stringMatches(alias, lastPlanted) || stringMatches(alias.split(' ')[0], lastPlanted)
 					)
 				);
 
