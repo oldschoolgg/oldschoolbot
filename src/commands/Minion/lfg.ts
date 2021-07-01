@@ -57,6 +57,7 @@ export default class extends BotCommand {
 					clearTimeout(queueID);
 				}
 				if (Object.keys(QUEUE_LIST[queueID].users).length === 0 || selectedQueue.creator) {
+					this.clearTimeout(queueID);
 					delete QUEUE_LIST[queueID];
 					if (selectedQueue.creator) {
 						availableQueues.splice(availableQueues.indexOf(selectedQueue), 1);
@@ -144,17 +145,14 @@ export default class extends BotCommand {
 			QUEUE_AUTO_START[queueID] = setTimeout(() => this.handleStart(queueID, false), Time.Second);
 			this.client.emit(
 				Events.Log,
-				`LFG Lock - Posponing [${queueID}] as another queue is being handled at the moment`
+				`LFG Lock - Postponing [${queueID}] as another queue is being handled at the moment`
 			);
 			return;
 		}
 		const queue = QUEUE_LIST[queueID];
 		// If queue doesnt exists, it means it was already started
 		if (!queue) {
-			this.client.emit(
-				Events.Log,
-				`LFG Queue [${queueID}] does not exists. Probably happened because due to heavy concurrency and heavy bot lag. Should never enter here`
-			);
+			this.client.emit(Events.Log, `LFG Queue [${queueID}] does not exists anymore as everyone left it.`);
 			return;
 		}
 		const selectedQueue = queue.queueBase;
@@ -431,6 +429,8 @@ export default class extends BotCommand {
 					queue.startDate = undefined;
 				}
 			}
+		} else {
+			this.client.emit(Events.Log, `LFG [${queueID}] cannot start yet. Still waitning for timeout or max users.`);
 		}
 	}
 
@@ -747,7 +747,7 @@ export default class extends BotCommand {
 			}
 
 			if (QUEUE_LIST[queueID].users[msg.author.id]) {
-				return returnMessage('You are already on this LFG.');
+				return returnMessage(`You already joined the **${selectedQueue.name}** LFG.`);
 			}
 
 			// Validate if user can actually join this LFG
