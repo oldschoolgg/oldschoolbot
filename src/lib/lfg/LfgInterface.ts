@@ -86,6 +86,7 @@ export interface LfgQueueProperties {
 	allowPrivate: boolean;
 	creator?: KlasaUser;
 	privateUniqueID?: number;
+	cooldown?: number;
 }
 
 export interface lfgReturnMessageInterface {

@@ -1,7 +1,7 @@
 import { KlasaClient, KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { Emoji } from '../constants';
+import { Emoji, Time } from '../constants';
 import { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
 import { KillableMonster } from '../minions/types';
 import { channelIsSendable, noOp } from '../util';
@@ -13,7 +13,8 @@ import SoulWars from './activities/SoulWars';
 import { LfgQueueProperties } from './LfgInterface';
 
 export const LFG_MIN_USERS = 2;
-export const LFG_MAX_USERS = 50;
+export const LFG_MAX_USERS = 2;
+export const LFG_WAIT_TIME = 30 * Time.Second;
 
 export const availableQueues: LfgQueueProperties[] = [
 	{
@@ -21,7 +22,7 @@ export const availableQueues: LfgQueueProperties[] = [
 		name: Monsters.KrilTsutsaroth.name,
 		aliases: Monsters.KrilTsutsaroth.aliases,
 		lfgClass: new Default(),
-		thumbnail: 'https://oldschool.runescape.wiki/images/2/2f/K%27ril_Tsutsaroth.png',
+		thumbnail: 'https://imgur.com/xlLoBwD.png',
 		monster: getMonster(Monsters.KrilTsutsaroth.id),
 		minQueueSize: LFG_MIN_USERS,
 		maxQueueSize: LFG_MAX_USERS,
@@ -33,7 +34,7 @@ export const availableQueues: LfgQueueProperties[] = [
 		name: Monsters.GeneralGraardor.name,
 		aliases: Monsters.GeneralGraardor.aliases,
 		lfgClass: new Default(),
-		thumbnail: 'https://oldschool.runescape.wiki/images/b/b8/General_Graardor.png',
+		thumbnail: 'https://imgur.com/l9mG0UH.png',
 		monster: getMonster(Monsters.GeneralGraardor.id),
 		minQueueSize: LFG_MIN_USERS,
 		maxQueueSize: LFG_MAX_USERS,
@@ -45,7 +46,7 @@ export const availableQueues: LfgQueueProperties[] = [
 		name: Monsters.Kreearra.name,
 		aliases: Monsters.Kreearra.aliases,
 		lfgClass: new Default(),
-		thumbnail: 'https://oldschool.runescape.wiki/images/f/fd/Kree%27arra.png',
+		thumbnail: 'https://imgur.com/149XEBt.png',
 		monster: getMonster(Monsters.Kreearra.id),
 		minQueueSize: LFG_MIN_USERS,
 		maxQueueSize: LFG_MAX_USERS,
@@ -57,7 +58,7 @@ export const availableQueues: LfgQueueProperties[] = [
 		name: Monsters.CommanderZilyana.name,
 		aliases: Monsters.CommanderZilyana.aliases,
 		lfgClass: new Default(),
-		thumbnail: 'https://oldschool.runescape.wiki/images/f/fb/Commander_Zilyana.png',
+		thumbnail: 'https://imgur.com/rrBerRu.png',
 		monster: getMonster(Monsters.CommanderZilyana.id),
 		minQueueSize: LFG_MIN_USERS,
 		maxQueueSize: LFG_MAX_USERS,
@@ -69,7 +70,7 @@ export const availableQueues: LfgQueueProperties[] = [
 		name: Monsters.CorporealBeast.name,
 		aliases: Monsters.CorporealBeast.aliases,
 		lfgClass: new Default(),
-		thumbnail: 'https://oldschool.runescape.wiki/images/5/5c/Corporeal_Beast.png',
+		thumbnail: 'https://imgur.com/VgT5KjT.png',
 		monster: getMonster(Monsters.CorporealBeast.id),
 		minQueueSize: LFG_MIN_USERS,
 		maxQueueSize: LFG_MAX_USERS,
@@ -81,7 +82,7 @@ export const availableQueues: LfgQueueProperties[] = [
 		name: NightmareMonster.name,
 		aliases: NightmareMonster.aliases,
 		lfgClass: new Nightmare(),
-		thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
+		thumbnail: 'https://imgur.com/6lnQKY6.png',
 		monster: getMonster(NightmareMonster.id),
 		minQueueSize: 2,
 		maxQueueSize: 10,
@@ -93,7 +94,7 @@ export const availableQueues: LfgQueueProperties[] = [
 		name: `${NightmareMonster.name} (Small)`,
 		aliases: ['nightmare small'],
 		lfgClass: new Nightmare(),
-		thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
+		thumbnail: 'https://imgur.com/6lnQKY6.png',
 		monster: getMonster(NightmareMonster.id),
 		minQueueSize: 2,
 		maxQueueSize: 5,
@@ -106,7 +107,7 @@ export const availableQueues: LfgQueueProperties[] = [
 		aliases: ['raids', 'chambers of xeric', 'the chambers of xeric', 'raid1', 'cox'],
 		lfgClass: new ChambersOfXeric(),
 		extraParams: { isChallengeMode: false },
-		thumbnail: 'https://oldschool.runescape.wiki/images/0/04/Chambers_of_Xeric_logo.png?34a98',
+		thumbnail: 'https://imgur.com/hTQgPxt.png',
 		minQueueSize: 2,
 		maxQueueSize: 15,
 		allowSolo: true,
@@ -118,7 +119,7 @@ export const availableQueues: LfgQueueProperties[] = [
 		aliases: ['raids cm', 'chambers of xeric cm', 'the chambers of xeric cm', 'raid1 cm', 'cox cm'],
 		lfgClass: new ChambersOfXeric(),
 		extraParams: { isChallengeMode: true },
-		thumbnail: 'https://imgur.com/Y3HroYR.png',
+		thumbnail: 'https://imgur.com/X8KqxcB.png',
 		minQueueSize: 2,
 		maxQueueSize: 15,
 		allowSolo: true,
@@ -129,22 +130,24 @@ export const availableQueues: LfgQueueProperties[] = [
 		name: 'Soul Wars',
 		aliases: ['sw'],
 		lfgClass: new SoulWars(),
-		thumbnail: 'https://imgur.com/zVtat82.png',
+		thumbnail: 'https://imgur.com/rOTjdfO.png',
 		minQueueSize: 2,
 		maxQueueSize: 99,
 		allowSolo: true,
-		allowPrivate: true
+		allowPrivate: true,
+		cooldown: 10 * Time.Second
 	},
 	{
 		uniqueID: 11,
 		name: 'Barbarian Assault',
 		aliases: ['ba'],
 		lfgClass: new BarbarianAssault(),
-		thumbnail: 'https://imgur.com/QavlMiI.png',
+		thumbnail: 'https://imgur.com/380Yp1N.png',
 		minQueueSize: 2,
 		maxQueueSize: 4,
 		allowSolo: true,
-		allowPrivate: true
+		allowPrivate: true,
+		cooldown: 30 * Time.Second
 	}
 ];
 

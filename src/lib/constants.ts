@@ -141,7 +141,38 @@ export const enum Image {
 }
 
 export const enum Color {
-	Orange = 16098851
+	// Base Colors
+	Aqua = 1752220,
+	DarkAqua = 1146986,
+	Green = 3066993,
+	DarkGreen = 2067276,
+	Blue = 3447003,
+	DarkBlue = 2123412,
+	Purple = 10181046,
+	DarkPurple = 7419530,
+	LuminousVividPink = 15277667,
+	DarkVividPink = 11342935,
+	Gold = 15844367,
+	DarkGold = 12745742,
+	Orange = 15105570,
+	DarkOrange = 11027200,
+	Red = 15158332,
+	DarkRed = 10038562,
+	Grey = 9807270,
+	DarkGrey = 9936031,
+	DarkerGrey = 8359053,
+	LightGrey = 12370112,
+	Navy = 3426654,
+	DarkNavy = 2899536,
+	Yellow = 16776960,
+	// Discord Colors
+	DiscordBlurple = 5793266,
+	DiscordGreen = 5763719,
+	DiscordYellow = 16705372,
+	DiscordFuschia = 15418782,
+	DiscordRed = 15548997,
+	DiscordWhite = 16777215,
+	DiscordBlack = 2303786
 }
 
 export const SupportServer = '342983479501389826';

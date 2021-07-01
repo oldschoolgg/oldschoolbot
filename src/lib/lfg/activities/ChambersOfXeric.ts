@@ -195,15 +195,17 @@ export default class implements LfgInterface {
 			);
 		}
 		const kc = await user.getMinigameScore('Raids');
+
+		if (queue!.extraParams!.isChallengeMode && kc < 200) {
+			returnMessage.push(
+				'You need atleast 200 Normal Chambers of Xeric KC before you can attempt Challenge Mode Chambers of Xeric.'
+			);
+		}
+
 		if (solo && party.length === 1) {
 			if (!queue!.extraParams!.isChallengeMode && kc < 50) {
 				returnMessage.push(
 					'You need atleast 50 Normal Chambers of Xeric KC before you can attempt a solo Chambers of Xeric.'
-				);
-			}
-			if (queue!.extraParams!.isChallengeMode && kc < 200) {
-				returnMessage.push(
-					'You need atleast 200 Normal Chambers of Xeric KC before you can attempt a solo Challenge Mode Chambers of Xeric.'
 				);
 			}
 			if (!user.hasItemEquippedOrInBank('Twisted bow')) {
