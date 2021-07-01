@@ -19,10 +19,25 @@ export interface LfgHandleTripFinish {
 	queue: LfgQueueProperties;
 }
 
+export interface LfgHandleTripFinishReturn {
+	usersWithLoot: lfgReturnMessageInterface[];
+	usersWithoutLoot?: string[];
+	extraMessage?: string | string[];
+}
+
 export interface LfgCalculateDurationAndActivitiesPerTrip {
+	leader: KlasaUser;
 	party: KlasaUser[];
 	queue: LfgQueueProperties;
 	quantity?: number;
+}
+
+export interface LfgCalculateDurationAndActivitiesPerTripReturn {
+	activitiesThisTrip: number;
+	durationOfTrip: number;
+	timePerActivity?: number;
+	extraMessages?: string[];
+	extras?: Record<string, any>;
 }
 
 export interface LfgCheckUserRequirements {
@@ -75,15 +90,16 @@ export interface LfgQueueProperties {
 export interface lfgReturnMessageInterface {
 	user: KlasaUser;
 	emoji: Emoji | false;
-	lootedItems: Bank;
+	lootedItems: Bank | string;
+	spoiler?: boolean;
 }
 
 export default interface LfgInterface {
 	activity: ActivityTaskOptions;
-	HandleTripFinish(params: LfgHandleTripFinish): Promise<[lfgReturnMessageInterface[], string[], string]>;
+	HandleTripFinish(params: LfgHandleTripFinish): Promise<LfgHandleTripFinishReturn>;
 	calculateDurationAndActivitiesPerTrip(
 		params: LfgCalculateDurationAndActivitiesPerTrip
-	): Promise<[number, number, number, string[]]>;
+	): Promise<LfgCalculateDurationAndActivitiesPerTripReturn>;
 	checkUserRequirements(params: LfgCheckUserRequirements): Promise<string[]>;
 	getItemToRemoveFromBank(params: LfgGetItemToRemoveFromBank): void;
 	checkTeamRequirements(params: LfgCheckTeamRequirements): string[];

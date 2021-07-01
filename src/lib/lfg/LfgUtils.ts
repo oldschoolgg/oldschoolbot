@@ -5,10 +5,12 @@ import { Emoji } from '../constants';
 import { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
 import { KillableMonster } from '../minions/types';
 import { channelIsSendable, noOp } from '../util';
-import ChambersOfXeric from './ChambersOfXeric';
-import Default from './Default';
+import BarbarianAssault from './activities/BarbarianAssault';
+import ChambersOfXeric from './activities/ChambersOfXeric';
+import Default from './activities/Default';
+import Nightmare from './activities/Nightmare';
+import SoulWars from './activities/SoulWars';
 import { LfgQueueProperties } from './LfgInterface';
-import Nightmare from './Nightmare';
 
 export const LFG_MIN_USERS = 2;
 export const LFG_MAX_USERS = 50;
@@ -81,7 +83,7 @@ export const availableQueues: LfgQueueProperties[] = [
 		lfgClass: new Nightmare(),
 		thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
 		monster: getMonster(NightmareMonster.id),
-		minQueueSize: 5,
+		minQueueSize: 2,
 		maxQueueSize: 10,
 		allowSolo: true,
 		allowPrivate: true
@@ -93,7 +95,7 @@ export const availableQueues: LfgQueueProperties[] = [
 		lfgClass: new Nightmare(),
 		thumbnail: 'https://oldschool.runescape.wiki/images/7/7d/The_Nightmare.png',
 		monster: getMonster(NightmareMonster.id),
-		minQueueSize: 3,
+		minQueueSize: 2,
 		maxQueueSize: 5,
 		allowSolo: false,
 		allowPrivate: false
@@ -121,6 +123,28 @@ export const availableQueues: LfgQueueProperties[] = [
 		maxQueueSize: 15,
 		allowSolo: true,
 		allowPrivate: true
+	},
+	{
+		uniqueID: 10,
+		name: 'Soul Wars',
+		aliases: ['sw'],
+		lfgClass: new SoulWars(),
+		thumbnail: 'https://imgur.com/zVtat82.png',
+		minQueueSize: 2,
+		maxQueueSize: 99,
+		allowSolo: true,
+		allowPrivate: true
+	},
+	{
+		uniqueID: 11,
+		name: 'Barbarian Assault',
+		aliases: ['ba'],
+		lfgClass: new BarbarianAssault(),
+		thumbnail: 'https://imgur.com/QavlMiI.png',
+		minQueueSize: 2,
+		maxQueueSize: 4,
+		allowSolo: true,
+		allowPrivate: true
 	}
 ];
 
@@ -144,25 +168,30 @@ export function addLFGLoot(
 	emoji: Emoji | false,
 	user: KlasaUser,
 	readableList: string,
+	spoiler: boolean,
 	channels: Record<string, string[]> | false | undefined
 ) {
+	const spoilerTags = spoiler ? '||' : '';
 	if (!channels) return lootString;
 	for (const channel of Object.entries(channels)) {
 		lootString[channel[0]] += `${emoji ? emoji : ''} **${
 			channel[1].includes(user.id) ? user : user.username
-		} received:** ||${readableList}||\n`;
+		} received:** ${spoilerTags}${readableList}${spoilerTags}\n`;
 	}
 	return lootString;
 }
 
 export function addLFGText(
 	lootString: Record<string, string>,
-	text: string,
+	text: string | string[],
 	channels: Record<string, string[]> | false | undefined
 ) {
 	if (!channels) return lootString;
+	if (Array.isArray(text)) {
+		text = text.join('\n');
+	}
 	for (const channel of Object.entries(channels)) {
-		lootString[channel[0]] += text;
+		lootString[channel[0]] += `\n${text}`;
 	}
 	return lootString;
 }

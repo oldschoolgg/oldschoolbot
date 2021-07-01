@@ -2,8 +2,8 @@ import { calcWhatPercent, noOp, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
-import { Activity, Emoji, Events } from '../constants';
-import { coxLog, metamorphPets } from '../data/collectionLog';
+import { Activity, Emoji, Events } from '../../constants';
+import { coxLog, metamorphPets } from '../../data/collectionLog';
 import {
 	calcCoxDuration,
 	calcCoxInput,
@@ -11,23 +11,25 @@ import {
 	createTeam,
 	hasMinRaidsRequirements,
 	minimumCoxSuppliesNeeded
-} from '../data/cox';
-import { ClientSettings } from '../settings/types/ClientSettings';
-import { UserSettings } from '../settings/types/UserSettings';
-import { SkillsEnum } from '../skilling/types';
-import { ActivityTaskOptions, GroupMonsterActivityTaskOptions, RaidsTaskOptions } from '../types/minions';
-import { addBanks, filterBankFromArrayOfItems, roll } from '../util';
-import { formatOrdinal } from '../util/formatOrdinal';
-import itemID from '../util/itemID';
-import resolveItems from '../util/resolveItems';
+} from '../../data/cox';
+import { ClientSettings } from '../../settings/types/ClientSettings';
+import { UserSettings } from '../../settings/types/UserSettings';
+import { SkillsEnum } from '../../skilling/types';
+import { ActivityTaskOptions, GroupMonsterActivityTaskOptions, RaidsTaskOptions } from '../../types/minions';
+import { addBanks, filterBankFromArrayOfItems, roll } from '../../util';
+import { formatOrdinal } from '../../util/formatOrdinal';
+import itemID from '../../util/itemID';
+import resolveItems from '../../util/resolveItems';
 import LfgInterface, {
 	LfgCalculateDurationAndActivitiesPerTrip,
+	LfgCalculateDurationAndActivitiesPerTripReturn,
 	LfgCheckTeamRequirements,
 	LfgCheckUserRequirements,
 	LfgGetItemToRemoveFromBank,
 	LfgHandleTripFinish,
+	LfgHandleTripFinishReturn,
 	lfgReturnMessageInterface
-} from './LfgInterface';
+} from '../LfgInterface';
 
 export default class implements LfgInterface {
 	activity: ActivityTaskOptions = <RaidsTaskOptions>{ type: Activity.Raids };
@@ -38,12 +40,12 @@ export default class implements LfgInterface {
 	purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
 	purpleItems = [...Object.values(coxLog), ...metamorphPets].flat(2).filter(i => !this.notPurple.includes(i));
 
-	async HandleTripFinish(params: LfgHandleTripFinish): Promise<[lfgReturnMessageInterface[], string[], string]> {
+	async HandleTripFinish(params: LfgHandleTripFinish): Promise<LfgHandleTripFinishReturn> {
 		const { users, duration } = <GroupMonsterActivityTaskOptions>params.data;
 		const { queue, client } = params;
 
 		const challengeMode = queue.extraParams!.isChallengeMode ?? false;
-		let extraMessage = '';
+		let extraMessage = [];
 
 		const allUsers = await Promise.all(users.map(async u => client.users.fetch(u)));
 		const team = await createTeam(allUsers, challengeMode);
@@ -124,21 +126,22 @@ export default class implements LfgInterface {
 			usersWithLoot.push({ user, emoji: emote, lootedItems: userLoot });
 
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
-			extraMessage += `\n${deathStr} **${user.username}** (${personalPoints?.toLocaleString()} pts, ${
-				Emoji.Skull
-			}${deathChance.toFixed(0)}%)`;
+			extraMessage.push(
+				`${deathStr} **${user.username}** (${personalPoints?.toLocaleString()} pts, ${
+					Emoji.Skull
+				}${deathChance.toFixed(0)}%)`
+			);
 			await user.addItemsToBank(userLoot, true);
 		}
 
-		extraMessage += `\nThe total amount of points your team got is: ${totalPoints.toLocaleString()}`;
+		extraMessage.push(`The total amount of points your team got is: ${totalPoints.toLocaleString()}`);
 
-		const usersWithoutLoot = <string[]>[];
-		return [usersWithLoot, usersWithoutLoot, extraMessage];
+		return { usersWithLoot, extraMessage };
 	}
 
 	async calculateDurationAndActivitiesPerTrip(
 		params: LfgCalculateDurationAndActivitiesPerTrip
-	): Promise<[number, number, number, string[]]> {
+	): Promise<LfgCalculateDurationAndActivitiesPerTripReturn> {
 		const { party, queue } = params;
 		const { duration, totalReduction, reductions } = await calcCoxDuration(
 			party,
@@ -154,7 +157,7 @@ export default class implements LfgInterface {
 				).toFixed(1)}%)`
 			);
 		});
-		return [1, duration, duration, returnMessage];
+		return { activitiesThisTrip: 1, durationOfTrip: duration, extraMessages: returnMessage };
 	}
 
 	checkUserRequirements = async (params: LfgCheckUserRequirements): Promise<string[]> => {

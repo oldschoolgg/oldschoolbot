@@ -1,28 +1,30 @@
 import { objectKeys } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji } from '../constants';
-import killableMonsters from '../minions/data/killableMonsters';
-import { addMonsterXP, calculateMonsterFood } from '../minions/functions';
-import announceLoot from '../minions/functions/announceLoot';
-import hasEnoughFoodForMonster from '../minions/functions/hasEnoughFoodForMonster';
-import isImportantItemForMonster from '../minions/functions/isImportantItemForMonster';
-import removeFoodFromUser from '../minions/functions/removeFoodFromUser';
-import { ActivityTaskOptions, GroupMonsterActivityTaskOptions } from '../types/minions';
-import { noOp, randomItemFromArray } from '../util';
-import calcDurQty from '../util/calcMassDurationQuantity';
+import { Activity, Emoji } from '../../constants';
+import killableMonsters from '../../minions/data/killableMonsters';
+import { addMonsterXP, calculateMonsterFood } from '../../minions/functions';
+import announceLoot from '../../minions/functions/announceLoot';
+import hasEnoughFoodForMonster from '../../minions/functions/hasEnoughFoodForMonster';
+import isImportantItemForMonster from '../../minions/functions/isImportantItemForMonster';
+import removeFoodFromUser from '../../minions/functions/removeFoodFromUser';
+import { ActivityTaskOptions, GroupMonsterActivityTaskOptions } from '../../types/minions';
+import { noOp, randomItemFromArray } from '../../util';
+import calcDurQty from '../../util/calcMassDurationQuantity';
 import LfgInterface, {
 	LfgCalculateDurationAndActivitiesPerTrip,
+	LfgCalculateDurationAndActivitiesPerTripReturn,
 	LfgCheckUserRequirements,
 	LfgGetItemToRemoveFromBank,
 	LfgHandleTripFinish,
+	LfgHandleTripFinishReturn,
 	lfgReturnMessageInterface
-} from './LfgInterface';
+} from '../LfgInterface';
 
 export default class implements LfgInterface {
 	activity: ActivityTaskOptions = <GroupMonsterActivityTaskOptions>{ type: Activity.GroupMonsterKilling };
 
-	async HandleTripFinish(params: LfgHandleTripFinish): Promise<[lfgReturnMessageInterface[], string[], string]> {
+	async HandleTripFinish(params: LfgHandleTripFinish): Promise<LfgHandleTripFinishReturn> {
 		const { quantity, users, leader, duration } = <GroupMonsterActivityTaskOptions>params.data;
 		const { queue, client } = params;
 		const monsterID = queue.monster!.id;
@@ -42,7 +44,6 @@ export default class implements LfgInterface {
 		const leaderUser = await client.users.fetch(leader);
 
 		let usersWithLoot: lfgReturnMessageInterface[] = [];
-		let extraMessage = '';
 
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await client.users.fetch(userID).catch(noOp);
@@ -73,13 +74,19 @@ export default class implements LfgInterface {
 
 		const usersWithoutLoot = users.filter(id => !teamsLoot[id]);
 
-		return [usersWithLoot, usersWithoutLoot, extraMessage];
+		return { usersWithLoot, usersWithoutLoot };
 	}
 
 	async calculateDurationAndActivitiesPerTrip(
 		params: LfgCalculateDurationAndActivitiesPerTrip
-	): Promise<[number, number, number, string[]]> {
-		return calcDurQty(params.party, params.queue.monster!, params.quantity);
+	): Promise<LfgCalculateDurationAndActivitiesPerTripReturn> {
+		const calcDur = await calcDurQty(params.party, params.queue.monster!, params.quantity);
+		return {
+			activitiesThisTrip: calcDur[0],
+			durationOfTrip: calcDur[1],
+			timePerActivity: calcDur[2],
+			extraMessages: calcDur[3]
+		};
 	}
 
 	async checkUserRequirements(params: LfgCheckUserRequirements): Promise<string[]> {

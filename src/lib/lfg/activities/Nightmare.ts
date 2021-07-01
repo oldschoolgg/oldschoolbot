@@ -1,27 +1,33 @@
 import { objectKeys, percentChance } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
-import { Activity, Emoji, NIGHTMARE_ID, Time, ZAM_HASTA_CRUSH } from '../constants';
-import { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
-import { addMonsterXP, calculateMonsterFood } from '../minions/functions';
-import announceLoot from '../minions/functions/announceLoot';
-import hasEnoughFoodForMonster from '../minions/functions/hasEnoughFoodForMonster';
-import isImportantItemForMonster from '../minions/functions/isImportantItemForMonster';
-import removeFoodFromUser from '../minions/functions/removeFoodFromUser';
-import { KillableMonster } from '../minions/types';
-import { ItemBank } from '../types';
-import { ActivityTaskOptions, GroupMonsterActivityTaskOptions, NightmareActivityTaskOptions } from '../types/minions';
-import { addBanks, noOp, randomVariation } from '../util';
-import calcDurQty from '../util/calcMassDurationQuantity';
-import { getNightmareGearStats } from '../util/getNightmareGearStats';
-import resolveItems from '../util/resolveItems';
+import { Activity, Emoji, NIGHTMARE_ID, Time, ZAM_HASTA_CRUSH } from '../../constants';
+import { effectiveMonsters, NightmareMonster } from '../../minions/data/killableMonsters';
+import { addMonsterXP, calculateMonsterFood } from '../../minions/functions';
+import announceLoot from '../../minions/functions/announceLoot';
+import hasEnoughFoodForMonster from '../../minions/functions/hasEnoughFoodForMonster';
+import isImportantItemForMonster from '../../minions/functions/isImportantItemForMonster';
+import removeFoodFromUser from '../../minions/functions/removeFoodFromUser';
+import { KillableMonster } from '../../minions/types';
+import { ItemBank } from '../../types';
+import {
+	ActivityTaskOptions,
+	GroupMonsterActivityTaskOptions,
+	NightmareActivityTaskOptions
+} from '../../types/minions';
+import { addBanks, noOp, randomVariation } from '../../util';
+import calcDurQty from '../../util/calcMassDurationQuantity';
+import { getNightmareGearStats } from '../../util/getNightmareGearStats';
+import resolveItems from '../../util/resolveItems';
 import LfgInterface, {
 	LfgCalculateDurationAndActivitiesPerTrip,
+	LfgCalculateDurationAndActivitiesPerTripReturn,
 	LfgCheckUserRequirements,
 	LfgGetItemToRemoveFromBank,
 	LfgHandleTripFinish,
+	LfgHandleTripFinishReturn,
 	lfgReturnMessageInterface
-} from './LfgInterface';
+} from '../LfgInterface';
 
 const inquisitorItems = resolveItems([
 	"Inquisitor's great helm",
@@ -39,9 +45,9 @@ interface NightmareUser {
 export default class implements LfgInterface {
 	activity: ActivityTaskOptions = <GroupMonsterActivityTaskOptions>{ type: Activity.GroupMonsterKilling };
 
-	async HandleTripFinish(params: LfgHandleTripFinish): Promise<[lfgReturnMessageInterface[], string[], string]> {
+	async HandleTripFinish(params: LfgHandleTripFinish): Promise<LfgHandleTripFinishReturn> {
 		let usersWithLoot: lfgReturnMessageInterface[] = [];
-		let extraMessage = '';
+		let extraMessage = [];
 
 		const { leader, users, quantity, duration } = <NightmareActivityTaskOptions>params.data;
 		const { client } = params;
@@ -122,12 +128,12 @@ export default class implements LfgInterface {
 				if (!user) continue;
 				deaths.push(`**${user.username}**: ${qty}x`);
 			}
-			extraMessage += `\n**Deaths**: ${deaths.join(', ')}.`;
+			extraMessage.push(`**Deaths**: ${deaths.join(', ')}.`);
 		}
 
 		const usersWithoutLoot = users.filter(id => !teamsLoot[id]);
 
-		return [usersWithLoot, usersWithoutLoot, extraMessage];
+		return { usersWithLoot, usersWithoutLoot, extraMessage };
 	}
 
 	async checkUserRequirements(params: LfgCheckUserRequirements): Promise<string[]> {
@@ -156,7 +162,7 @@ export default class implements LfgInterface {
 
 	async calculateDurationAndActivitiesPerTrip(
 		params: LfgCalculateDurationAndActivitiesPerTrip
-	): Promise<[number, number, number, string[]]> {
+	): Promise<LfgCalculateDurationAndActivitiesPerTripReturn> {
 		const { queue, party } = params;
 
 		let effectiveTime = queue.monster!.timeToFinish;
@@ -216,7 +222,12 @@ export default class implements LfgInterface {
 		);
 		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
 
-		return [quantity, duration, perKillTime, messages];
+		return {
+			activitiesThisTrip: quantity,
+			durationOfTrip: duration,
+			timePerActivity: perKillTime,
+			extraMessages: messages
+		};
 	}
 
 	async getItemToRemoveFromBank(params: LfgGetItemToRemoveFromBank) {

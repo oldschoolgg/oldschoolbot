@@ -16,7 +16,7 @@ const QUEUE_LIST: Record<number, LfgQueueState> = {};
 const WAIT_TIME = 120 * Time.Second;
 const DEFAULT_MASS_CHANNEL = '858141860900110366'; // #testing-2
 const QUEUE_AUTO_START: Record<number, Timeout | null> = {};
-const LFGSOLO_CMD = 'lfgsolo';
+const LFGSOLO_CMD = 'solo';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -82,7 +82,8 @@ export default class extends BotCommand {
 		}
 		// Creates a tempUser so it can add the current users in the queue + the user trying to join
 		party.push(user);
-		let [activitiesThisTrip] = await selectedQueue!.lfgClass.calculateDurationAndActivitiesPerTrip({
+		let { activitiesThisTrip } = await selectedQueue!.lfgClass.calculateDurationAndActivitiesPerTrip({
+			leader: user,
 			party,
 			queue: selectedQueue!
 		});
@@ -169,7 +170,8 @@ export default class extends BotCommand {
 				);
 
 				// Get number of activities this trip could start with (if no one is removed from the queue)
-				let [validationQuantity] = await selectedQueue.lfgClass.calculateDurationAndActivitiesPerTrip({
+				const firstChecks = await selectedQueue.lfgClass.calculateDurationAndActivitiesPerTrip({
+					leader: sortedUsers[0],
 					party: sortedUsers,
 					queue: selectedQueue
 				});
@@ -181,7 +183,7 @@ export default class extends BotCommand {
 						user,
 						party: sortedUsers,
 						queue: selectedQueue,
-						quantity: validationQuantity
+						quantity: firstChecks.activitiesThisTrip
 					});
 					if (errors.length === 0) {
 						finalUsers.push(user);
@@ -229,11 +231,15 @@ export default class extends BotCommand {
 				const leader = finalUsers[0];
 
 				// Now, calculate the final values for this trip
-				const [activitiesThisTrip, durationOfTrip, timePerActivity, extraMessages] =
+				let { activitiesThisTrip, durationOfTrip, timePerActivity, extraMessages, extras } =
 					await selectedQueue.lfgClass.calculateDurationAndActivitiesPerTrip({
+						leader,
 						party: finalUsers,
 						queue: selectedQueue
 					});
+
+				if (!extraMessages) extraMessages = [];
+				if (!timePerActivity) timePerActivity = durationOfTrip;
 
 				// Check if this team os users meet all the requirements for this activity
 				const teamRequirements = selectedQueue.lfgClass.checkTeamRequirements({
@@ -306,7 +312,8 @@ export default class extends BotCommand {
 					type: Activity.Lfg,
 					leader: leader.id,
 					users: finalUsers.map(u => u.id),
-					channels: channelsToSend
+					channels: channelsToSend,
+					extras
 				});
 
 				for (const user of sortedUsers) {
