@@ -1,4 +1,4 @@
-import { Task } from 'klasa';
+import { KlasaMessage, Task } from 'klasa';
 
 import MahoganyHomesCommand from '../../../commands/Minion/mahoganyhomes';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -42,7 +42,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued trip of mahogany homes');
-				return (this.client.commands.get('mh') as MahoganyHomesCommand).build(res);
+				return (this.client.commands.get('mh') as MahoganyHomesCommand).build(res) as Promise<KlasaMessage>;
 			},
 			undefined,
 			data,
