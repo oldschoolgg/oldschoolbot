@@ -1,4 +1,4 @@
-import { DMChannel, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Color, Emoji, Events, SupportServer, Time } from '../../lib/constants';
@@ -105,13 +105,12 @@ export default class extends BotCommand {
 	}
 
 	async messageUser(msg: KlasaMessage, message: string | MessageEmbed) {
-		if (!channelIsSendable(msg.author.dmChannel!)) {
-			return msg.channel.send(message);
-		}
-		if (!(msg.channel instanceof DMChannel)) {
+		try {
+			await msg.author.send(message);
 			await msg.channel.send(`${msg.author.tag}, check your private messages.`);
+		} catch (e) {
+			await msg.channel.send(message);
 		}
-		await msg.author.send(message);
 	}
 
 	async handleStart(queueID: number, skipChecks = false) {
