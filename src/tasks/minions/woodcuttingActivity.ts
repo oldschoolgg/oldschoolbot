@@ -67,7 +67,7 @@ export default class extends Task {
 			if (roll(Math.floor(4000 / minutes))) {
 				loot.add('Peky');
 				str +=
-					'<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.';
+					'\n<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.';
 			}
 		}
 
