@@ -101,7 +101,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.flagArgs.monsters) {
-			return msg.channel.send(new MessageAttachment(Buffer.from(validMonsters), 'validMonsters.txt'));
+			return msg.channel.send({
+				files: [new MessageAttachment(Buffer.from(validMonsters), 'validMonsters.txt')]
+			});
 		}
 		if (!name) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 		const monster = findMonster(name);

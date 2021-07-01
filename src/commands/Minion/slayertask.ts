@@ -120,14 +120,12 @@ export default class extends BotCommand {
 						'in the future.\n\nType **confirm** to unblock.'
 				);
 				try {
-					await msg.channel.awaitMessages(
-						_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-						{
-							max: 1,
-							time: 10_000,
-							errors: ['time']
-						}
-					);
+					await msg.channel.awaitMessages({
+						max: 1,
+						time: 10_000,
+						errors: ['time'],
+						filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+					});
 				} catch (err) {
 					return alchMessage.edit(`Not unblocking ${osjsMonster.name}.`);
 				}
@@ -170,14 +168,12 @@ export default class extends BotCommand {
 				);
 
 				try {
-					await msg.channel.awaitMessages(
-						_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-						{
-							max: 1,
-							time: 10_000,
-							errors: ['time']
-						}
-					);
+					await msg.channel.awaitMessages({
+						max: 1,
+						time: 10_000,
+						errors: ['time'],
+						filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+					});
 				} catch (err) {
 					return alchMessage.edit(`Not ${toBlock ? 'blocking' : 'skipping'} slayer task.`);
 				}
@@ -233,14 +229,12 @@ export default class extends BotCommand {
 				);
 
 				try {
-					await msg.channel.awaitMessages(
-						_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-						{
-							max: 1,
-							time: 10_000,
-							errors: ['time']
-						}
-					);
+					await msg.channel.awaitMessages({
+						max: 1,
+						time: 10_000,
+						errors: ['time'],
+						filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+					});
 				} catch (err) {
 					return alchMessage.edit('Not cancelling slayer task.');
 				}

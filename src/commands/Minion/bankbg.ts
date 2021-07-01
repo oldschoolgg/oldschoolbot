@@ -152,14 +152,12 @@ export default class extends BotCommand {
 
 			// Confirm the user wants to buy the bg
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 15,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+					max: 1,
+					time: Time.Second * 15,
+					errors: ['time']
+				});
 			} catch (err) {
 				return confirmMsg.edit('Cancelling purchase.');
 			}

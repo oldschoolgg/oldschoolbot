@@ -26,7 +26,7 @@ export default class extends BotCommand {
 			.setFooter(`Old School RuneScape World ${world.number}`, 'https://i.imgur.com/fVakfwp.png')
 			.addField('Access', world.members ? 'Members' : 'Free to Play', true)
 			.addField('Location', world.location, true)
-			.addField('Players', world.players, true)
+			.addField('Players', world.players.toString(), true)
 			.addField('Activity', world.activity, true);
 
 		return msg.send({ embed });

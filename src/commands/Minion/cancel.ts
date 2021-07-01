@@ -74,10 +74,10 @@ export default class extends BotCommand {
 
 		if (!msg.flagArgs.cf) {
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					options
-				);
+				await msg.channel.awaitMessages({
+					...options,
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return cancelMsg.edit('Halting cancellation of minion task.');
 			}

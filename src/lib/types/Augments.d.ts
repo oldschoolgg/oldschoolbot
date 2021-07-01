@@ -21,6 +21,16 @@ import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
+type SendBankImageFn = (options: {
+	bank: ItemBank;
+	content?: string;
+	title?: string;
+	background?: number;
+	flags?: Record<string, string | number>;
+	user?: KlasaUser;
+	cl?: ItemBank;
+}) => Promise<KlasaMessage>;
+
 declare module 'klasa' {
 	interface KlasaClient {
 		orm: Connection;
@@ -42,6 +52,7 @@ declare module 'klasa' {
 		giveawayTicker: NodeJS.Timeout;
 		analyticsInterval: NodeJS.Timeout;
 		metricsInterval: NodeJS.Timeout;
+		options: KlasaClientOptions;
 	}
 
 	interface Command {
@@ -83,7 +94,15 @@ declare module 'klasa' {
 	}
 }
 
+declare module 'discord-api-types/v8' {
+	type Snowflake = string;
+	type ColorResolvable = string;
+	type HexColorString = string;
+}
+
 declare module 'discord.js' {
+	type HexColorString = string;
+	type ColorResolvable = string;
 	interface Client {
 		public query<T>(query: string): Promise<T>;
 	}
@@ -224,27 +243,21 @@ declare module 'discord.js' {
 	}
 
 	interface TextChannel {
-		sendBankImage(options: {
-			bank: ItemBank;
-			content?: string;
-			title?: string;
-			background?: number;
-			flags?: Record<string, string | number>;
-			user?: KlasaUser;
-			cl?: ItemBank;
-		}): Promise<KlasaMessage>;
+		sendBankImage: SendBankImageFn;
+		__triviaQuestionsDone: any;
+	}
+
+	interface Newshannel {
+		sendBankImage: SendBankImageFn;
+		__triviaQuestionsDone: any;
+	}
+	interface ThreadChannel {
+		sendBankImage: SendBankImageFn;
 		__triviaQuestionsDone: any;
 	}
 
 	interface DMChannel {
-		sendBankImage(options: {
-			bank: ItemBank;
-			content?: string;
-			title?: string;
-			background?: number;
-			flags?: Record<string, string | number>;
-			user?: KlasaUser;
-		}): Promise<KlasaMessage>;
+		sendBankImage: SendBankImageFn;
 		__triviaQuestionsDone: any;
 	}
 

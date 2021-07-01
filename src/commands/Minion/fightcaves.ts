@@ -123,7 +123,7 @@ export default class extends BotCommand {
 			await this.checkGear(msg.author);
 		} catch (err) {
 			if (typeof err === 'string') {
-				return msg.channel.send(await chatHeadImage({ content: err, head: 'mejJal' }));
+				return msg.channel.send({ files: [await chatHeadImage({ content: err, head: 'mejJal' })] });
 			}
 			throw err;
 		}

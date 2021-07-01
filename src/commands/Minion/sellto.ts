@@ -80,10 +80,10 @@ export default class extends BotCommand {
 
 			// Confirm the seller wants to sell
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					options
-				);
+				await msg.channel.awaitMessages({
+					...options,
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return sellMsg.edit(`Cancelling sale of ${bankToSell}.`);
 			}
@@ -97,10 +97,10 @@ export default class extends BotCommand {
 		);
 
 		try {
-			await msg.channel.awaitMessages(
-				_msg => _msg.author.id === buyerMember.user.id && _msg.content.toLowerCase() === 'buy',
-				options
-			);
+			await msg.channel.awaitMessages({
+				...options,
+				filter: _msg => _msg.author.id === buyerMember.user.id && _msg.content.toLowerCase() === 'buy'
+			});
 		} catch (err) {
 			buyerConfirmationMsg.edit(`Cancelling sale of ${bankStr}.`);
 			return msg.channel.send(`Cancelling sale of ${bankStr}.`);

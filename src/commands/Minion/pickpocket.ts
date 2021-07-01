@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -58,7 +59,7 @@ export default class extends BotCommand {
 				}
 				str += '\n\n\n';
 			}
-			return msg.channel.sendFile(Buffer.from(str), 'output.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(str), 'output.txt')] });
 		}
 
 		if (typeof quantity === 'string') {

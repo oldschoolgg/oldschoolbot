@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { table } from 'table';
 
@@ -35,7 +36,7 @@ export default class extends BotCommand {
 				['Item Name', 'Lvl', 'XP', 'Items Required'],
 				...Fletching.Fletchables.map(i => [i.name, `${i.level}`, `${i.xp}`, `${i.inputItems}`])
 			]);
-			return msg.channel.sendFile(Buffer.from(normalTable), 'Fletchables.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(normalTable), 'Fletchables.txt')] });
 		}
 
 		if (typeof quantity === 'string') {

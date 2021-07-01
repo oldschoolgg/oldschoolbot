@@ -74,10 +74,10 @@ export default class extends BotCommand {
 		);
 
 		try {
-			await msg.channel.awaitMessages(
-				_msg => _msg.author.id === user.id && _msg.content.toLowerCase() === 'fight',
-				options
-			);
+			await msg.channel.awaitMessages({
+				...options,
+				filter: _msg => _msg.author.id === user.id && _msg.content.toLowerCase() === 'fight'
+			});
 		} catch (err) {
 			return duelMsg.edit("The user didn't accept the duel.");
 		}

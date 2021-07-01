@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
@@ -30,17 +31,21 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity, craftName = '']: [null | number | string, string]) {
 		if (msg.flagArgs.items) {
-			return msg.channel.sendFile(
-				Buffer.from(
-					Crafting.Craftables.map(
-						item =>
-							`${item.name} - lvl ${item.level} : ${Object.entries(item.inputItems)
-								.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
-								.join(', ')}`
-					).join('\n')
-				),
-				'Available crafting items.txt'
-			);
+			return msg.channel.send({
+				files: [
+					new MessageAttachment(
+						Buffer.from(
+							Crafting.Craftables.map(
+								item =>
+									`${item.name} - lvl ${item.level} : ${Object.entries(item.inputItems)
+										.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
+										.join(', ')}`
+							).join('\n')
+						),
+						'Available crafting items.txt'
+					)
+				]
+			});
 		}
 
 		if (typeof quantity === 'string') {

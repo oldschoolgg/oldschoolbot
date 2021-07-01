@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -44,7 +45,7 @@ export default class extends BotCommand {
 				}
 				str += '\n\n\n';
 			}
-			return msg.channel.sendFile(Buffer.from(str), 'construction-xpxhr.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(str), 'construction-xpxhr.txt')] });
 		}
 
 		if (typeof quantity === 'string') {

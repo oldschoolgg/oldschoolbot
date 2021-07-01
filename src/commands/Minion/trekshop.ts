@@ -154,14 +154,12 @@ export default class extends BotCommand {
 
 			// Confirm the user wants to buy
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === user.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 15,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					max: 1,
+					time: Time.Second * 15,
+					errors: ['time'],
+					filter: _msg => _msg.author.id === user.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return sellMsg.edit(`Cancelling purchase of ${quantity} sets of ${toTitleCase(specifiedItem.name)}.`);
 			}

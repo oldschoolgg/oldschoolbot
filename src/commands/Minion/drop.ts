@@ -46,10 +46,10 @@ export default class extends BotCommand {
 			);
 
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'drop',
-					options
-				);
+				await msg.channel.awaitMessages({
+					...options,
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'drop'
+				});
 			} catch (err) {
 				return dropMsg.edit(`Cancelling drop of ${quantity}x ${osItem.name}.`);
 			}

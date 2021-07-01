@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -63,16 +64,22 @@ export default class extends BotCommand {
 				}
 				str += '\n\n\n';
 			}
-			return msg.channel.sendFile(Buffer.from(str), 'hunterXPHR.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(str), 'hunterXPHR.txt')] });
 		}
 
 		if (msg.flagArgs.creatures) {
-			return msg.channel.sendFile(
-				Buffer.from(
-					Hunter.Creatures.map(creature => `${creature.name} - lvl required: ${creature.level}`).join('\n')
-				),
-				'Available Creatures.txt'
-			);
+			return msg.channel.send({
+				files: [
+					new MessageAttachment(
+						Buffer.from(
+							Hunter.Creatures.map(creature => `${creature.name} - lvl required: ${creature.level}`).join(
+								'\n'
+							)
+						),
+						'Available Creatures.txt'
+					)
+				]
+			});
 		}
 
 		await msg.author.settings.sync(true);

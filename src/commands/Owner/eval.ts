@@ -34,18 +34,14 @@ export default class extends BotCommand {
 		// Handle too-long-messages
 		if (output.length > 2000) {
 			if (message.guild && message.channel.attachable) {
-				return message.channel.sendFile(
-					Buffer.from(result),
-					'output.txt',
-					message.language.get('COMMAND_EVAL_SENDFILE', time, footer)
-				);
+				return message.channel.send({ files: [new MessageAttachment(Buffer.from(result), 'output.txt')] });
 			}
 			this.client.emit('log', result);
-			return message.sendLocale('COMMAND_EVAL_SENDCONSOLE', [time, footer]);
+			return;
 		}
 
 		// If it's a message that can be sent correctly, send it
-		return message.sendMessage(output);
+		return message.channel.send(output);
 	}
 
 	// Eval the input
@@ -91,7 +87,7 @@ export default class extends BotCommand {
 		}
 
 		if (Buffer.isBuffer(result)) {
-			msg.channel.send(new MessageAttachment(result));
+			msg.channel.send({ files: [new MessageAttachment(result)] });
 			return;
 		}
 

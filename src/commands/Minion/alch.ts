@@ -95,14 +95,12 @@ export default class extends BotCommand {
 			);
 
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: 10_000,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+					max: 1,
+					time: 10_000,
+					errors: ['time']
+				});
 			} catch (err) {
 				return alchMessage.edit(`Cancelling alch of ${quantity}x ${osItem.name}.`);
 			}

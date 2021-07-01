@@ -86,15 +86,12 @@ export async function handleTripFinish(
 	}
 
 	if (!channelIsSendable(channel)) return;
-	const collector = new MessageCollector(
-		channel,
-		(mes: Message) =>
+	const collector = new MessageCollector(channel, {
+		filter: (mes: Message) =>
 			mes.author === user && (mes.content.toLowerCase() === 'c' || stringMatches(mes.content, continuationChar)),
-		{
-			time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
-			max: 1
-		}
-	);
+		time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
+		max: 1
+	});
 
 	collectors.set(user.id, collector);
 

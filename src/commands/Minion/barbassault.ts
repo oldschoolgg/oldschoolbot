@@ -298,8 +298,6 @@ export default class extends BotCommand {
 			totalLevel
 		});
 
-		return msg.channel.send(str, {
-			split: true
-		});
+		return msg.channel.send(str);
 	}
 }

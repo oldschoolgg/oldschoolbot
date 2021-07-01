@@ -112,14 +112,13 @@ export default class MinionCommand extends BotCommand {
 Please say \`permanent\` to confirm.`
 				);
 				try {
-					await msg.channel.awaitMessages(
-						answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'permanent',
-						{
-							max: 1,
-							time: 15_000,
-							errors: ['time']
-						}
-					);
+					await msg.channel.awaitMessages({
+						max: 1,
+						time: 15_000,
+						errors: ['time'],
+						filter: answer =>
+							answer.author.id === msg.author.id && answer.content.toLowerCase() === 'permanent'
+					});
 					await msg.author.settings.update(UserSettings.BitField, BitField.PermanentIronman);
 					return msg.send('You are now a **permanent** Ironman. Enjoy!');
 				} catch (err) {
@@ -131,14 +130,12 @@ Please say \`permanent\` to confirm.`
 				'Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again. Please say `deiron` to confirm.'
 			);
 			try {
-				await msg.channel.awaitMessages(
-					answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'deiron',
-					{
-						max: 1,
-						time: 15000,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					max: 1,
+					time: 15000,
+					errors: ['time'],
+					filter: answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'deiron'
+				});
 				await msg.author.settings.update(UserSettings.Minion.Ironman, false);
 				return msg.send('You are no longer an ironman.');
 			} catch (err) {
@@ -171,14 +168,12 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		);
 
 		try {
-			await msg.channel.awaitMessages(
-				answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'confirm',
-				{
-					max: 1,
-					time: 15000,
-					errors: ['time']
-				}
-			);
+			await msg.channel.awaitMessages({
+				max: 1,
+				time: 15000,
+				errors: ['time'],
+				filter: answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'confirm'
+			});
 
 			msg.author.log(
 				`just became an ironman, previous settings: ${JSON.stringify(msg.author.settings.toJSON())}`
@@ -320,14 +315,12 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		);
 
 		try {
-			await msg.channel.awaitMessages(
-				answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'yes',
-				{
-					max: 1,
-					time: 15000,
-					errors: ['time']
-				}
-			);
+			await msg.channel.awaitMessages({
+				max: 1,
+				time: 15000,
+				errors: ['time'],
+				filter: answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'yes'
+			});
 			const response = await msg.channel.send(`${Emoji.Search} Finding the right minion for you...`);
 
 			await sleep(3000);

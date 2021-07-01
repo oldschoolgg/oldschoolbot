@@ -63,7 +63,10 @@ export default class extends BotCommand {
 					Buffer.from(textBank.join('\n')),
 					`${msg.author.username}s_Bank.txt`
 				);
-				return msg.channel.send('Here is your entire bank in txt file format.', attachment);
+				return msg.channel.send({
+					content: 'Here is your entire bank in txt file format.',
+					files: [attachment]
+				});
 			}
 
 			const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));

@@ -61,14 +61,18 @@ ${
 				]).toString();
 				const { items } = await fetch(searchURL).then(res => res.json());
 				if (items.length === 0) return msg.channel.send('No results found.');
-				return msg.channel.send(
-					new MessageEmbed().setTitle(`${items.length} Github issues found from your search`).setDescription(
-						items
-							.slice(0, 10)
-							.map((i: any, index: number) => `${index + 1}. [${i.title}](${i.html_url})`)
-							.join('\n')
-					)
-				);
+				return msg.channel.send({
+					embeds: [
+						new MessageEmbed()
+							.setTitle(`${items.length} Github issues found from your search`)
+							.setDescription(
+								items
+									.slice(0, 10)
+									.map((i: any, index: number) => `${index + 1}. [${i.title}](${i.html_url})`)
+									.join('\n')
+							)
+					]
+				});
 			}
 		}
 

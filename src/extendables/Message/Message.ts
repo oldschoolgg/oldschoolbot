@@ -1,4 +1,4 @@
-import { Message, Permissions, TextChannel } from 'discord.js';
+import { Message, MessageAttachment, Permissions, TextChannel } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
 
 import { noOp } from '../../lib/util';
@@ -21,7 +21,10 @@ export default class extends Extendable {
 	) {
 		if (content.length <= 2000 && !this.flagArgs.file) return this.send(content);
 
-		return this.channel.sendFile(Buffer.from(content), fileName, messageTooLong);
+		return this.channel.send({
+			files: [new MessageAttachment(Buffer.from(content), fileName)],
+			content: messageTooLong
+		});
 	}
 
 	removeAllReactions(this: KlasaMessage) {

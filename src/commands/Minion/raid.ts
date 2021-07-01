@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -77,7 +78,7 @@ export default class extends BotCommand {
 					})
 				))
 			]);
-			return msg.channel.sendFile(Buffer.from(normalTable), 'cox-sim.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(normalTable), 'cox-sim.txt')] });
 		}
 
 		if (!type) {
@@ -253,8 +254,6 @@ export default class extends BotCommand {
 
 		str += ` \n\n${debugStr}`;
 
-		return msg.channel.send(str, {
-			split: true
-		});
+		return msg.channel.send(str);
 	}
 }

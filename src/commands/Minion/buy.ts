@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
@@ -43,11 +44,10 @@ export default class extends BotCommand {
 				['Name', 'GP Cost', 'Item Cost'],
 				...Buyables.map(i => [i.name, i.gpCost || 0, new Bank(i.itemCost).toString()])
 			]);
-			return msg.channel.sendFile(
-				Buffer.from(normalTable),
-				'Buyables.txt',
-				'Here is a table of all buyable items.'
-			);
+			return msg.channel.send({
+				content: 'Here is a table of all buyable items.',
+				files: [new MessageAttachment(Buffer.from(normalTable), 'Buyables.txt')]
+			});
 		}
 
 		if (buyable.customReq) {
@@ -124,14 +124,12 @@ export default class extends BotCommand {
 			const sellMsg = await msg.channel.send(str);
 
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 15,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+					max: 1,
+					time: Time.Second * 15,
+					errors: ['time']
+				});
 			} catch (err) {
 				return sellMsg.edit('Cancelling purchase.');
 			}

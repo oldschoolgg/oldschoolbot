@@ -20,7 +20,7 @@ export default class extends BotCommand {
 			.setColor(16098851)
 			.setThumbnail(guild.iconURL()!)
 			.setAuthor(guild!.name)
-			.addField('Total Members', guild!.memberCount, true)
+			.addField('Total Members', guild!.memberCount.toString(), true)
 			.addField('Server Creation Date', guild.createdAt.toLocaleDateString(), true)
 			.addField('Bot Prefix', guild.settings.get(GuildSettings.Prefix), true);
 

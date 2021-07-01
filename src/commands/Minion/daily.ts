@@ -63,13 +63,13 @@ export default class DailyCommand extends BotCommand {
 
 		await msg.channel.send(`**${Emoji.Diango} Diango asks ${msg.author.username}...** ${trivia.q}`);
 		try {
-			const collected = await msg.channel.awaitMessages(
-				answer =>
+			const collected = await msg.channel.awaitMessages({
+				...options,
+				filter: answer =>
 					answer.author.id === msg.author.id &&
 					answer.content &&
-					trivia.a.some((_ans: string) => stringMatches(_ans, answer.content)),
-				options
-			);
+					trivia.a.some((_ans: string) => stringMatches(_ans, answer.content))
+			});
 			const winner = collected.first();
 			if (winner) return this.reward(msg, true);
 		} catch (err) {

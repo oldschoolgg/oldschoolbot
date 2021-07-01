@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { table } from 'table';
 
@@ -45,7 +46,7 @@ export default class extends BotCommand {
 					).toLocaleString()}`
 				])
 			]);
-			return msg.channel.sendFile(Buffer.from(tableStr), 'enchantables.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(tableStr), 'enchantables.txt')] });
 		}
 
 		if (typeof quantity === 'string') {

@@ -46,10 +46,10 @@ export default class extends BotCommand {
 				Buffer.from(`${title}\n${str}`),
 				`${msg.author.username}s-GearPresets.txt`
 			);
-			return msg.channel.send('Here are your gear presets...', attachment);
+			return msg.channel.send({ content: 'Here are your gear presets...', files: [attachment] });
 		}
 		const embed = new MessageEmbed().setColor(Color.Orange).setTitle(title).setDescription(str);
-		return msg.channel.send(embed);
+		return msg.channel.send({ embeds: [embed] });
 	}
 
 	async equip(msg: KlasaMessage, [name, setup]: [string, string]) {

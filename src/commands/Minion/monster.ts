@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
@@ -27,11 +28,15 @@ export default class MinionCommand extends BotCommand {
 		const monster = findMonster(name);
 
 		if (!monster) {
-			return msg.channel.sendFile(
-				Buffer.from(killableMonsters.map(mon => mon.name).join('\n')),
-				'killableMonsters.txt',
-				"That's not a valid monster to kill. See attached file for list of killable monsters."
-			);
+			return msg.channel.send({
+				content: "That's not a valid monster to kill. See attached file for list of killable monsters.",
+				files: [
+					new MessageAttachment(
+						Buffer.from(killableMonsters.map(mon => mon.name).join('\n')),
+						'killableMonsters.txt'
+					)
+				]
+			});
 		}
 
 		const userKc = msg.author.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;

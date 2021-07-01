@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { objectEntries, randArrItem, randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -175,7 +176,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 				}
 				str += '\n\n\n';
 			}
-			return msg.channel.sendFile(Buffer.from(str), 'construction-xpxhr.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(str), 'construction-xpxhr.txt')] });
 		}
 
 		const conLevel = msg.author.skillLevel(SkillsEnum.Construction);

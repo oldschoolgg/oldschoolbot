@@ -53,19 +53,21 @@ export default class extends Event {
 			// If in development, send the error to the developers DM.
 			const channel = await (this.client.owners.values().next().value as User).createDM();
 
-			channel.send(
-				new MessageEmbed()
-					.setDescription(output)
-					.setColor(0xfc1020)
-					.setAuthor(
-						message.author.tag,
-						message.author.displayAvatarURL({
-							size: 64
-						}),
-						message.url
-					)
-					.setTimestamp()
-			);
+			channel.send({
+				embeds: [
+					new MessageEmbed()
+						.setDescription(output)
+						.setColor(0xfc1020)
+						.setAuthor(
+							message.author.tag,
+							message.author.displayAvatarURL({
+								size: 64
+							}),
+							message.url
+						)
+						.setTimestamp()
+				]
+			});
 		}
 	}
 }
