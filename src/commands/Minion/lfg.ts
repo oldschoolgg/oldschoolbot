@@ -21,7 +21,7 @@ const LFGSOLO_CMD = 'solo';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[join|leave|help|check|create|disband] [name:...string]',
+			usage: '[join|leave|help|check|create|disband|start] [name:...string]',
 			aliases: [LFGSOLO_CMD],
 			cooldown: 1,
 			oneAtTime: true,
@@ -126,7 +126,7 @@ export default class extends BotCommand {
 			queue.soloStart
 		) {
 			// Skip queue checks for solo content
-			if (!queue.soloStart) {
+			if (!queue.soloStart && !queue.forceStart) {
 				// If users >= LFG_MAX_USERS (should never be higher), remove the timeout check and it now
 				if (Object.values(queue.users).length >= (selectedQueue.maxQueueSize ?? LFG_MAX_USERS)) {
 					if (QUEUE_AUTO_START[queueID] !== null) {
@@ -498,7 +498,8 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async create(msg: KlasaMessage, [queue = '']: [string]) {
-		const { min, max } = msg.flagArgs;
+		let { min, max } = msg.flagArgs;
+
 		if (msg.commandText === LFGSOLO_CMD) {
 			return msg.channel.send("You can't create a private solo activity.");
 		}
@@ -534,6 +535,18 @@ export default class extends BotCommand {
 			return this.messageUser(msg, returnMessage);
 		}
 
+		// Detect if min/max queue sizes are correctly set
+		if (!min) {
+			min = String(selectedQueue.minQueueSize);
+		} else if (Number(min) < selectedQueue.minQueueSize) {
+			return msg.channel.send(`You can't set the minimum amount of users below ${selectedQueue.minQueueSize}`);
+		}
+		if (!max) {
+			max = String(selectedQueue.maxQueueSize);
+		} else if (Number(max) < selectedQueue.maxQueueSize) {
+			return msg.channel.send(`You can't set the maximum amount of users above ${selectedQueue.maxQueueSize}`);
+		}
+
 		const newPrivateQueue = {
 			creator: msg.author,
 			uniqueID: Number(uid),
@@ -541,8 +554,8 @@ export default class extends BotCommand {
 			aliases: [msg.author.tag, msg.author.id],
 			allowSolo: false,
 			monster: selectedQueue.monster,
-			minQueueSize: min ? Number(min) : LFG_MIN_USERS,
-			maxQueueSize: max ? Number(max) : LFG_MAX_USERS,
+			minQueueSize: Number(min),
+			maxQueueSize: Number(max),
 			lfgClass: selectedQueue.lfgClass,
 			thumbnail: selectedQueue.thumbnail,
 			extraParams: selectedQueue.extraParams,
@@ -670,9 +683,23 @@ export default class extends BotCommand {
 	async disband(msg: KlasaMessage) {
 		const selectedQueue = availableQueues.find(m => m.creator && m.creator === msg.author);
 		if (!selectedQueue) {
-			return msg.channel.send("This private activity does not exists or you don't own it.");
+			return msg.channel.send('You dont have any private activity to disband.');
 		}
 		this.removeUserFromQueue(msg.author, selectedQueue.uniqueID, true);
 		return msg.channel.send('You disbanded your group!');
+	}
+
+	@requiresMinion
+	async start(msg: KlasaMessage) {
+		const selectedQueue = availableQueues.find(m => m.creator && m.creator === msg.author);
+		if (!selectedQueue) {
+			return msg.channel.send('You dont have any private activity to start.');
+		}
+		const queueID = Number(`999${msg.author.id}`);
+		if (Object.values(QUEUE_LIST[queueID].users).length < selectedQueue.minQueueSize) {
+			return msg.channel.send("You can't start the activity without the minimum amount of users required.");
+		}
+		QUEUE_LIST[queueID].forceStart = true;
+		await this.handleStart(queueID, true);
 	}
 }

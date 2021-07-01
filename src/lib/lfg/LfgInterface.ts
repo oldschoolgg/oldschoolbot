@@ -69,6 +69,7 @@ export interface LfgQueueState {
 	startDate?: Date;
 	queueBase: LfgQueueProperties;
 	soloStart: boolean;
+	forceStart?: boolean;
 }
 
 export interface LfgQueueProperties {
