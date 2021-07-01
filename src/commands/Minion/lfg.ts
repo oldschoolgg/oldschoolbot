@@ -107,7 +107,10 @@ export default class extends BotCommand {
 	async messageUser(msg: KlasaMessage, message: string | MessageEmbed) {
 		try {
 			await msg.author.send(message);
-			await msg.channel.send(`${msg.author.tag}, check your private messages.`);
+			// Check if the channel sent are the dms
+			if (msg.author.dmChannel?.id !== msg.channel.id) {
+				await msg.channel.send(`${msg.author.tag}, check your private messages.`);
+			}
 		} catch (e) {
 			await msg.channel.send(message);
 		}
@@ -445,7 +448,8 @@ export default class extends BotCommand {
 					"If not, it'll DM you (or shown on the channel if you have DMs off), the requirements you are missing." +
 					`\n\n**PRIVATE ACTIVITIES**\n\nYou can start private activities by doing \`${prefix}lfg create name\`. You'll be able` +
 					` to create private activities of any of the activities shown in \`${prefix}lfg\` that has \`Allow Private\` as yes. ` +
-					'Private activity will still obey the same time settings as a normal activity, when reaching the minimimum users.\n\n' +
+					'Private activity will still obey the same time settings as a normal activity, when reaching the minimimum users. ' +
+					`\n\nYou can force the start by running \`${prefix}lfg start\` as long the number of people joined are above or equal than the minumum set for the activity.\n\n` +
 					`You can disband your private activity by issuing \`${prefix}lfg disband\` or by leaving your own activity ` +
 					`issuing \`${prefix}lfg leave name\` or issuing \`${prefix}lfg leave all\`` +
 					`\n\n**ICONS AND THEIR MEANINGS**\n\nIf the activity \`Meet Requirements\` has this icon ${Emoji.RedX}, it means you dont have all ` +
