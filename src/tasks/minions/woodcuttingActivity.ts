@@ -67,58 +67,41 @@ export default class extends Task {
 			if (roll(Math.floor(4000 / minutes))) {
 				loot.add('Peky');
 				str +=
-					'<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.';
+					'\n<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.';
 			}
-			if (bonusXP > 0) {
-				str += `. **Bonus XP:** ${bonusXP.toLocaleString()}`;
-			}
+		}
 
-			// Roll for pet
-			if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
-				loot.add('Beaver');
-				str += "\nYou have a funny feeling you're being followed...";
-				this.client.emit(
-					Events.ServerNotification,
-					`${Emoji.Woodcutting} **${user.username}'s** minion, ${
-						user.minionName
-					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
-						SkillsEnum.Woodcutting
-					)} Woodcutting!`
-				);
-			}
-			if (bonusXP > 0) {
-				str += `. **Bonus XP:** ${bonusXP.toLocaleString()}`;
-			}
-
-			// Roll for pet
-			if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
-				loot.add('Beaver');
-				str += "\nYou have a funny feeling you're being followed...";
-				this.client.emit(
-					Events.ServerNotification,
-					`${Emoji.Woodcutting} **${user.username}'s** minion, ${
-						user.minionName
-					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
-						SkillsEnum.Woodcutting
-					)} Woodcutting!`
-				);
-			}
-
-			await user.addItemsToBank(loot, true);
-
-			handleTripFinish(
-				this.client,
-				user,
-				channelID,
-				str,
-				res => {
-					user.log(`continued trip of ${quantity}x ${log.name}[${log.id}]`);
-					return this.client.commands.get('chop')!.run(res, [quantity, log.name]);
-				},
-				undefined,
-				data,
-				loot.bank
+		// Roll for pet
+		if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
+			loot.add('Beaver');
+			str += "\nYou have a funny feeling you're being followed...";
+			this.client.emit(
+				Events.ServerNotification,
+				`${Emoji.Woodcutting} **${user.username}'s** minion, ${
+					user.minionName
+				}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
+					SkillsEnum.Woodcutting
+				)} Woodcutting!`
 			);
 		}
+		if (bonusXP > 0) {
+			str += `. **Bonus XP:** ${bonusXP.toLocaleString()}`;
+		}
+
+		await user.addItemsToBank(loot, true);
+
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of ${quantity}x ${log.name}[${log.id}]`);
+				return this.client.commands.get('chop')!.run(res, [quantity, log.name]);
+			},
+			undefined,
+			data,
+			loot.bank
+		);
 	}
 }
