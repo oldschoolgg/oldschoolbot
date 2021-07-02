@@ -6,6 +6,7 @@ import { table } from 'table';
 
 import { Activity } from '../constants';
 import { GearSetupTypes, GearStats } from '../gear';
+import { Ignecarus } from '../minions/data/killableMonsters/custom/Ignecarus';
 import { Skills } from '../types';
 import { NewBossOptions } from '../types/minions';
 import { formatDuration, formatSkillRequirements, updateBankSetting } from '../util';
@@ -107,7 +108,7 @@ interface BossOptions {
 	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
 	gearSetup: GearSetupTypes;
-	itemCost?: (user: KlasaUser) => Promise<Bank>;
+	itemCost?: (user: KlasaUser, baseFood: Bank) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
 	food: Bank | ((user: KlasaUser) => Bank);
 	settingsKeys: [string, string];
@@ -119,6 +120,7 @@ interface BossOptions {
 	solo: boolean;
 	canDie: boolean;
 	kcLearningCap?: number;
+	customDeathChance?: (user: KlasaUser, deathChance: number) => number;
 }
 
 export interface BossUser {
@@ -137,7 +139,7 @@ export class BossInstance {
 	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
 	gearSetup: GearSetupTypes;
-	itemCost?: (user: KlasaUser) => Promise<Bank>;
+	itemCost?: (user: KlasaUser, baseFood: Bank) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
 	food: Bank | ((user: KlasaUser) => Bank);
 	bossUsers: BossUser[] = [];
@@ -154,6 +156,7 @@ export class BossInstance {
 	solo: boolean;
 	canDie: boolean;
 	kcLearningCap: number;
+	customDeathChance: null | ((user: KlasaUser, deathChance: number) => number);
 
 	constructor(options: BossOptions) {
 		this.baseDuration = options.baseDuration;
@@ -175,13 +178,13 @@ export class BossInstance {
 		this.solo = options.solo;
 		this.canDie = options.canDie;
 		this.kcLearningCap = options.kcLearningCap ?? 250;
-		this.massText = [
-			options.massText,
-			'\n',
-			`**Item Boosts:** ${this.itemBoosts.map(i => `${i[0]}: ${i[1]}%`).join(', ')}`,
-			`**BiS Gear:** ${this.bisGear}`,
-			`**Skill Reqs:** ${formatSkillRequirements(this.skillRequirements)}`
-		].join('\n');
+		this.customDeathChance = options.customDeathChance ?? null;
+		let massText = [options.massText, '\n', `**Skill Reqs:** ${formatSkillRequirements(this.skillRequirements)}`];
+		if (this.id !== Ignecarus.id) {
+			massText.push(`**Item Boosts:** ${this.itemBoosts.map(i => `${i[0]}: ${i[1]}%`).join(', ')}`);
+			massText.push(`**BiS Gear:** ${this.bisGear}`);
+		}
+		this.massText = massText.join('\n');
 	}
 
 	async validateTeam() {
@@ -244,8 +247,9 @@ export class BossInstance {
 	async calcFoodForUser(user: KlasaUser, solo = false) {
 		const kc = user.getKC(this.id);
 		const itemsToRemove = calcFood(solo, kc);
-		const itemCost = this.itemCost && (await this.itemCost(user));
-		if (itemCost) itemsToRemove.add(itemCost);
+		if (this.itemCost) {
+			return this.itemCost(user, itemsToRemove);
+		}
 		return itemsToRemove;
 	}
 
@@ -301,6 +305,7 @@ export class BossInstance {
 			let deathChance = this.canDie
 				? Math.max(0, reduceNumByPercent(55, kcBoostPercent * 2.4 + gearBoostPercent)) + randFloat(4.5, 5.5)
 				: 0;
+			if (this.customDeathChance) deathChance = this.customDeathChance(user, deathChance);
 			debugStr.push(`**Death**[${deathChance.toFixed(2)}%]`);
 
 			// Apply a percentage of maxReduction based on the percent of total boosts.
@@ -346,7 +351,7 @@ export class BossInstance {
 			duration: this.duration,
 			type: this.activity,
 			users: this.users!.map(u => u.id),
-			bossUsers: this.bossUsers.map(u => ({ ...u, user: u.user.id }))
+			bossUsers: this.bossUsers.map(u => ({ ...u, itemsToRemove: u.itemsToRemove.bank, user: u.user.id }))
 		});
 		return {
 			bossUsers: this.bossUsers

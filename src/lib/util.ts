@@ -518,3 +518,14 @@ export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<Se
 	const active: any[] = user.settings.get(key) as any[];
 	return user.settings.update(key, active);
 }
+
+function gaussianRand() {
+	let rand = 0;
+	for (let i = 0; i < 3; i += 1) {
+		rand += Math.random();
+	}
+	return rand / 3;
+}
+export function gaussianRandom(min: number, max: number) {
+	return Math.floor(min + gaussianRand() * (max - min + 1));
+}

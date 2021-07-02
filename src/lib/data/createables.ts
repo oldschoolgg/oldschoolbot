@@ -4672,6 +4672,20 @@ const Createables: Createable[] = [
 			magic: 105
 		}
 	},
+	{
+		name: 'Ignis ring(i)',
+		inputItems: resolveNameBank({
+			'Ignis ring': 1,
+			'Magus scroll': 1
+		}),
+		outputItems: {
+			[itemID('Ignis ring(i)')]: 1
+		},
+		requiredSkills: {
+			crafting: 120,
+			magic: 105
+		}
+	},
 	...chaoticCreatables,
 	...twistedAncestral,
 	...metamorphPetCreatables,

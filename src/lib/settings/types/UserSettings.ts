@@ -9,6 +9,7 @@ import { CompostTier, FarmingContract, FarmingPatchTypes } from '../../minions/f
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
+import { Nursery } from '../../tames';
 import { ItemBank } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
@@ -156,4 +157,7 @@ export namespace UserSettings {
 		export const Mushroom = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Mushroom}`);
 		export const Belladonna = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Belladonna}`);
 	}
+
+	export const Nursery = T<Nursery | null>('nursery');
+	export const SelectedTame = T<number | null>('selected_tame');
 }

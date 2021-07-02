@@ -44,8 +44,8 @@ export default class extends Task {
 			amount: xpReceived
 		});
 
-		let str = `${user}, ${user.minionName} finished crafting ${quantity} ${item.name}, ${
-			crushed ? `crushing ${crushed} of them` : ''
+		let str = `${user}, ${user.minionName} finished crafting ${quantity} ${item.name}${
+			crushed ? `, crushing ${crushed} of them` : ''
 		}. ${xpRes}`;
 
 		if (hasScroll) {

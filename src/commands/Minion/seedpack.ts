@@ -84,7 +84,7 @@ export const HighSeedPackTable = new LootTable()
 function openSeedPack(seedTier: number): ItemBank {
 	const loot = new Bank();
 
-	const tempTable = new LootTable();
+	const tempTable = new LootTable().tertiary(3, 'Athelas seed');
 
 	// Roll amount variables
 	let high = 0;
