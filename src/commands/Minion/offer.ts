@@ -7,7 +7,7 @@ import { evilChickenOutfit } from '../../lib/data/collectionLog';
 import { Offerables } from '../../lib/data/offerData';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { birdsNestID, treeSeedsNest, wysonSeedsNest } from '../../lib/simulation/birdsNest';
+import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
@@ -107,7 +107,7 @@ export default class extends BotCommand {
 					loot.add(randArrItem(evilChickenOutfit));
 				} else {
 					loot.add(birdsNestID);
-					loot.add(roll(2) ? treeSeedsNest.roll() : wysonSeedsNest.roll());
+					loot.add(treeSeedsNest.roll());
 				}
 			}
 
