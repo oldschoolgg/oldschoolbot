@@ -72,7 +72,7 @@ export default class implements LfgInterface {
 			usersWithLoot.push({
 				user,
 				emoji: false,
-				lootedItems: `${totalPoints} points. ${extraPoints}`,
+				lootedItems: `${totalPoints}x points. ${extraPoints}`,
 				spoiler: false
 			});
 		}

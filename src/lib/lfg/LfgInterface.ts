@@ -3,7 +3,16 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../constants';
 import { KillableMonster } from '../minions/types';
+import { ItemBank } from '../types';
 import { ActivityTaskOptions } from '../types/minions';
+
+export interface LfgStats {
+	queueID: number;
+	users: number;
+	timesUsed: number;
+	thingsKilledDone: number;
+	lootObtained: ItemBank;
+}
 
 export interface LfgGetItemToRemoveFromBank {
 	solo: boolean;

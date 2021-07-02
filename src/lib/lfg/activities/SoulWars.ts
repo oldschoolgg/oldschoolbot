@@ -48,7 +48,7 @@ export default class implements LfgInterface {
 			}
 			await user.settings.update(UserSettings.ZealTokens, user.settings.get(UserSettings.ZealTokens) + points);
 			user.incrementMinigameScore('SoulWars', quantity);
-			usersWithLoot.push({ user, emoji: false, lootedItems: `${points}x Zeal Tokens.`, spoiler: false });
+			usersWithLoot.push({ user, emoji: false, lootedItems: `${points}x Zeal Tokens`, spoiler: false });
 		}
 		return { usersWithLoot };
 	}

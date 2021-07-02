@@ -1,5 +1,6 @@
-import { MessageEmbed } from 'discord.js';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { getConnection } from 'typeorm';
 
 import { Activity, Color, Emoji, Events, SupportServer, Time } from '../../lib/constants';
@@ -14,9 +15,11 @@ import {
 import { requiresMinion } from '../../lib/minions/decorators';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { LfgStatusTable } from '../../lib/typeorm/LfgStatusTable.entity';
 import { LfgActivityTaskOptions } from '../../lib/types/minions';
 import { channelIsSendable, formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import getOSItem from '../../lib/util/getOSItem';
 import { strtr } from '../../lib/util/strtr';
 import Timeout = NodeJS.Timeout;
 
@@ -259,7 +262,9 @@ export default class extends BotCommand {
 				}
 
 				// Prepare channels to send queue messages
-				channelsToSend[DEFAULT_MASS_CHANNEL] = [];
+				if (!queue.soloStart) {
+					channelsToSend[DEFAULT_MASS_CHANNEL] = [];
+				}
 				for (const user of finalUsers) {
 					// Verifying channels to send
 					const { channel, guild } = queue.userSentFrom[user.id];
@@ -482,6 +487,9 @@ export default class extends BotCommand {
 				`This is not a valid LFG activity. Check \`${this.prefix(msg)}lfg\` for all available activities.`
 			);
 		}
+
+		const lfgStats = await LfgStatusTable.findOne(selectedQueue.uniqueID);
+
 		const joined = QUEUE_LIST[selectedQueue.uniqueID] && QUEUE_LIST[selectedQueue.uniqueID].users[msg.author.id];
 		const errors = await this.userHasReqToJoin(msg.author, selectedQueue.uniqueID, msg.commandText === LFGSOLO_CMD);
 		const embed = new MessageEmbed();
@@ -517,17 +525,47 @@ export default class extends BotCommand {
 		}
 
 		if (selectedQueue.thumbnail) {
-			embed.setThumbnail(selectedQueue.thumbnail);
+			// embed.setThumbnail(selectedQueue.thumbnail);
 		}
 
-		embed
-			.addField(
+		embed.addField('\u200B', '**Some All Time Statistics for this Activity**');
+		embed.addField('Total users', lfgStats?.usersServed ?? 0, true);
+		embed.addField(
+			`${selectedQueue.monster ? 'Times Killed' : 'Number of Trips'}`,
+			lfgStats?.qtyKilledDone ?? 0,
+			true
+		);
+		embed.addField('Times Sent', lfgStats?.timesSent ?? 0, true);
+
+		// Check if loot is items of custom stuff (like points, tokens, etc)
+		if (lfgStats?.lootObtained && Object.keys(lfgStats?.lootObtained).length > 0) {
+			let validItems = new Bank();
+			let invalidItems: string[] = [];
+			Object.entries(lfgStats!.lootObtained).map(item => {
+				try {
+					let { id } = getOSItem(item[0]);
+					validItems.add(id, item[1]);
+				} catch (e) {
+					invalidItems.push(`${item[1]}x ${item[0]}`);
+				}
+			});
+			embed.addField(
 				'\u200B',
-				`Run \`${this.prefix(msg)}lfg help\` for more information.${'\u3000'.repeat(
-					200 /* any big number works too*/
-				)}`
-			)
-			.setTimestamp();
+				`**Total drops this activity generated**${
+					invalidItems.length > 0 ? `\n${invalidItems.join(', ')}` : '\u200B'
+				}`,
+				false
+			);
+			if (validItems.items().length !== 0) {
+				const { image } = await this.client.tasks
+					.get('bankImage')!
+					.generateBankImage(validItems.bank, `${selectedQueue.name} All Time Drops`, true);
+				const attachment = new MessageAttachment(image!, 'queue_drops.png');
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				embed.attachFiles(attachment).setImage('attachment://queue_drops.png');
+			}
+		}
 
 		return this.messageUser(msg, embed);
 	}
@@ -870,12 +908,23 @@ export default class extends BotCommand {
 
 		const embed = new MessageEmbed().setColor(Color.DarkNavy).setTitle('Looking for Group Activities | Stats');
 
+		const lfgStatsData = await LfgStatusTable.find();
+
 		Object.values(availableQueues).map(queue => {
+			const dataQueue = lfgStatsData.find(d => d.id === queue.uniqueID);
 			embed.addField(
 				queue.name,
-				`Total Users: ${runningActivities[queue.uniqueID]?.users ?? 0}\n${
-					queue.monster ? 'Killing' : 'Running'
-				}: ${runningActivities[queue.uniqueID]?.killed ?? 0}`,
+				`Users now: ${runningActivities[queue.uniqueID]?.users ?? 0}\n` +
+					`${queue.monster ? 'Killing' : 'Running'} now: ${
+						runningActivities[queue.uniqueID]?.killed ?? 0
+					}\n` +
+					`[All Time] Sent: ${dataQueue?.timesSent ?? 0}\n` +
+					`[All Time] Users: ${dataQueue?.usersServed ?? 0}\n` +
+					`${
+						queue.monster
+							? `[All Time] Kills: ${dataQueue?.qtyKilledDone ?? 0}`
+							: `[All Time] Runs: ${dataQueue?.qtyKilledDone ?? 0}`
+					}`,
 				true
 			);
 		});
