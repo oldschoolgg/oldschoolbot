@@ -153,7 +153,7 @@ ${
 			case 'roles': {
 				msg.channel.send('Running roles task...');
 				const result = await this.client.tasks.get('roles')?.run();
-				return msg.channel.send(result);
+				return msg.channel.send(result as string);
 			}
 			case 'canceltask': {
 				if (!input || !(input instanceof KlasaUser)) return;

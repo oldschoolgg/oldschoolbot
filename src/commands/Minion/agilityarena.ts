@@ -88,12 +88,14 @@ export default class extends BotCommand {
 		const duration = msg.author.maxTripLength(Activity.AgilityArena);
 
 		if (!msg.author.hasGracefulEquipped()) {
-			return msg.channel.send(
-				await chatHeadImage({
-					content: 'Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!',
-					head: 'izzy'
-				})
-			);
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content: 'Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!',
+						head: 'izzy'
+					})
+				]
+			});
 		}
 
 		const boosts = [];
@@ -143,12 +145,14 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 		const bank = new Bank(msg.author.settings.get(UserSettings.Bank));
 		const amountTicketsHas = bank.amount('Agility arena ticket');
 		if (amountTicketsHas === 0) {
-			return msg.channel.send(
-				await chatHeadImage({
-					content: "Are ye serious! You have no tickets, you can't buy anythin!",
-					head: 'izzy'
-				})
-			);
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content: "Are ye serious! You have no tickets, you can't buy anythin!",
+						head: 'izzy'
+					})
+				]
+			});
 		}
 
 		if (buyable) {
@@ -192,21 +196,25 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 		if (input === 'recolor') {
 			let cost = 250;
 			if (!bank.has(plainGraceful)) {
-				return msg.channel.send(
-					await chatHeadImage({
-						content: "Ye don't have a full set of Graceful in your bank for me to recolor!",
-						head: 'izzy'
-					})
-				);
+				return msg.channel.send({
+					files: [
+						await chatHeadImage({
+							content: "Ye don't have a full set of Graceful in your bank for me to recolor!",
+							head: 'izzy'
+						})
+					]
+				});
 			}
 
 			if (amountTicketsHas < cost) {
-				return msg.channel.send(
-					await chatHeadImage({
-						content: `Ye don't have enough tickets, I charge ${cost} tickets for a recoloring.`,
-						head: 'izzy'
-					})
-				);
+				return msg.channel.send({
+					files: [
+						await chatHeadImage({
+							content: `Ye don't have enough tickets, I charge ${cost} tickets for a recoloring.`,
+							head: 'izzy'
+						})
+					]
+				});
 			}
 			bank.remove('Agility arena ticket', cost);
 			bank.remove(plainGraceful);
@@ -215,12 +223,14 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			await msg.author.addItemsToCollectionLog({
 				...brimhavenGraceful
 			});
-			return msg.channel.send(
-				await chatHeadImage({
-					content: "I've recolored ye Graceful set, and taken your tickets!",
-					head: 'izzy'
-				})
-			);
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content: "I've recolored ye Graceful set, and taken your tickets!",
+						head: 'izzy'
+					})
+				]
+			});
 		}
 	}
 }

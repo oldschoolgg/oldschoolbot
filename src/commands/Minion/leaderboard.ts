@@ -517,7 +517,7 @@ LIMIT 50;
 	}
 
 	async doMenu(msg: KlasaMessage, pages: string[], title: string) {
-		const loadingMsg = await msg.channel.send(new MessageEmbed().setDescription('Loading...'));
+		const loadingMsg = await msg.channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
 
 		const display = new UserRichDisplay();
 		display.setFooterPrefix('Page ');

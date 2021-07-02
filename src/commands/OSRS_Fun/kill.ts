@@ -83,6 +83,6 @@ export default class extends BotCommand {
 				msg.flagArgs
 			);
 
-		return msg.channel.send(new MessageAttachment(image!, 'osbot.png'));
+		return msg.channel.send({ files: [new MessageAttachment(image!, 'osbot.png')] });
 	}
 }

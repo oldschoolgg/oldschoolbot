@@ -307,7 +307,7 @@ export default class extends BotCommand {
 
 		// If user does not have something already placed.
 		if (!previousBirdhouseTraps.birdhousePlaced) {
-			return msg.channel.send`There is no placed birdhouses to collect from!`;
+			return msg.channel.send('There is no placed birdhouses to collect from!');
 		}
 		returnMessageStr = `${
 			msg.author.minionName

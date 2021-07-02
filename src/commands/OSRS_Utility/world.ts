@@ -29,6 +29,6 @@ export default class extends BotCommand {
 			.addField('Players', world.players.toString(), true)
 			.addField('Activity', world.activity, true);
 
-		return msg.channel.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

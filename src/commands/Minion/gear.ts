@@ -35,7 +35,7 @@ export default class extends BotCommand {
 				return msg.channel.send('No items found.');
 			}
 
-			const loadingMsg = await msg.channel.send(new MessageEmbed().setDescription('Loading...'));
+			const loadingMsg = await msg.channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
 			const display = new UserRichDisplay();
 			display.setFooterPrefix('Page ');
 
@@ -62,6 +62,6 @@ export default class extends BotCommand {
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);
 
-		return msg.channel.send(new MessageAttachment(image, 'osbot.png'));
+		return msg.channel.send({ files: [new MessageAttachment(image, 'osbot.png')] });
 	}
 }

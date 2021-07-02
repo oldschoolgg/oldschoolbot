@@ -229,8 +229,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 	@requiresMinion
 	async stats(msg: KlasaMessage) {
-		const embed = await minionStatsEmbed(msg.author);
-		return msg.channel.send(embed);
+		return msg.channel.send({ embeds: [await minionStatsEmbed(msg.author)] });
 	}
 
 	@requiresMinion
@@ -263,7 +262,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			);
 		}
 
-		return msg.channel.send(embed);
+		return msg.channel.send({ embeds: [embed] });
 	}
 
 	@requiresMinion

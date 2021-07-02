@@ -43,7 +43,7 @@ export default class POHCommand extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		const poh = await msg.author.getPOH();
-		return msg.channel.send(await this.genImage(poh));
+		return msg.channel.send({ files: [await this.genImage(poh)] });
 	}
 
 	@requiresMinion
@@ -107,7 +107,7 @@ export default class POHCommand extends BotCommand {
 		const poh = await msg.author.getPOH();
 
 		if (!name) {
-			return msg.channel.send(await this.genImage(poh, true));
+			return msg.channel.send({ files: [await this.genImage(poh, true)] });
 		}
 
 		const obj = PoHObjects.find(i => stringMatches(i.name, name));
@@ -178,7 +178,7 @@ export default class POHCommand extends BotCommand {
 		}
 		const poh = await msg.author.getPOH();
 		if (!name) {
-			return msg.channel.send(await this.genImage(poh, true));
+			return msg.channel.send({ files: [await this.genImage(poh, true)] });
 		}
 
 		if (poh.mountedItem === null) {

@@ -62,6 +62,6 @@ export default class extends BotCommand {
 			);
 		}
 
-		return msg.channel.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

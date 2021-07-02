@@ -146,21 +146,25 @@ export default class extends BotCommand {
 		const bank = msg.author.bank();
 		const amountPearlsHas = bank.amount('Molch pearl');
 		if (amountPearlsHas === 0) {
-			return msg.channel.send(
-				await chatHeadImage({
-					content:
-						'You have no Molch pearls, but here is a joke... \nWhere do fish keep their money? \nIn a riverbank. Hehe!',
-					head: 'alry'
-				})
-			);
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content:
+							'You have no Molch pearls, but here is a joke... \nWhere do fish keep their money? \nIn a riverbank. Hehe!',
+						head: 'alry'
+					})
+				]
+			});
 		}
 		if (amountPearlsHas < buyable.cost) {
-			return msg.channel.send(
-				await chatHeadImage({
-					content: "You don't have enough Molch pearls.",
-					head: 'alry'
-				})
-			);
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content: "You don't have enough Molch pearls.",
+						head: 'alry'
+					})
+				]
+			});
 		}
 		await msg.author.removeItemFromBank(itemID('Molch pearl'), buyable.cost);
 		await msg.author.addItemsToBank({ [buyable.item.id]: 1 }, true);
@@ -184,12 +188,14 @@ export default class extends BotCommand {
 		const bank = msg.author.bank();
 		const amount = bank.amount(sellable.item.name);
 		if (amount < 1) {
-			return msg.channel.send(
-				await chatHeadImage({
-					content: `You have no ${sellable.item.name}.`,
-					head: 'alry'
-				})
-			);
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content: `You have no ${sellable.item.name}.`,
+						head: 'alry'
+					})
+				]
+			});
 		}
 		await msg.author.removeItemFromBank(sellable.item.id, 1);
 		await msg.author.addItemsToBank({ [itemID('Molch pearl')]: sellable.cost }, true);

@@ -62,6 +62,6 @@ export default class extends BotCommand {
 				)
 		);
 
-		return msg.channel.send(attachment);
+		return msg.channel.send({ files: [attachment] });
 	}
 }

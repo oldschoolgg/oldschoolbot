@@ -69,7 +69,7 @@ export default class extends BotCommand {
 				});
 			}
 
-			const loadingMsg = await msg.channel.send(new MessageEmbed().setDescription('Loading...'));
+			const loadingMsg = await msg.channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
 			const display = new UserRichDisplay();
 			display.setFooterPrefix('Page ');
 

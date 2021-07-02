@@ -2126,7 +2126,7 @@ ${lootMSG}`);
 					}
 					petsRecieved.push(kcpet.toLocaleString());
 				});
-				return msg.channel.send(await getAllPetsEmbed(petsRecieved));
+				return msg.channel.send({ embeds: [await getAllPetsEmbed(petsRecieved)] });
 			}
 			default:
 				return msg.channel.send("I don't have that monster!");

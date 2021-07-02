@@ -1,6 +1,6 @@
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import {} from 'node:process';
 import { Bank, Player } from 'oldschooljs';

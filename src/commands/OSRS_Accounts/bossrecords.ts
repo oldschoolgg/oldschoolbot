@@ -55,7 +55,7 @@ export default class extends BotCommand {
 			return msg.channel.send('You have no boss records!. Try logging into the game, and logging out.');
 		}
 
-		const loadingMsg = msg.channel.send(new MessageEmbed().setDescription('Loading...'));
+		const loadingMsg = msg.channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
 
 		const display = new RichDisplay();
 		display.setFooterPrefix('Page ');

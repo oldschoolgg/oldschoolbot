@@ -34,7 +34,7 @@ export default class extends BotCommand {
 
 			player.skills.overall.xp = 299791913 - totalXP;
 			const embed = this.getStatsEmbed(username, 7981338, player, 'xp', false);
-			return msg.channel.send({ embed });
+			return msg.channel.send({ embeds: [embed] });
 		} catch (err) {
 			return msg.channel.send(err.message);
 		}

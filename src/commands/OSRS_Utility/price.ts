@@ -28,6 +28,6 @@ export default class extends BotCommand {
 			)
 			.setDescription(`${priceOfItem.toLocaleString()} (${Util.toKMB(priceOfItem)})`);
 
-		return msg.channel.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

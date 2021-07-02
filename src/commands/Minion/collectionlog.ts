@@ -84,7 +84,7 @@ Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 		const [kcName, kcAmount] = await msg.author.getKCByName(name);
 
 		if (!kcName) {
-			return msg.channel.send(attachment);
+			return msg.channel.send({ files: [attachment] });
 		}
 
 		return msg.channel.send({ content: `Your ${kcName} KC is: ${kcAmount}.`, files: [attachment] });

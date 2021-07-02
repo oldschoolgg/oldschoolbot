@@ -76,6 +76,6 @@ export default class extends BotCommand {
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(loot.bank, title);
 
-		return msg.channel.send(new MessageAttachment(image!, 'osbot.png'));
+		return msg.channel.send({ files: [new MessageAttachment(image!, 'osbot.png')] });
 	}
 }
