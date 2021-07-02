@@ -744,7 +744,7 @@ export default class extends Extendable {
 
 		const newXP = Math.min(200_000_000, currentXP + params.amount);
 		const totalXPAdded = newXP - currentXP;
-		const newLevel = convertXPtoLVL(newXP);
+		const newLevel = convertXPtoLVL(Math.floor(newXP));
 
 		if (totalXPAdded > 0) {
 			XPGainsTable.insert({
