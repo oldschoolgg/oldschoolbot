@@ -510,8 +510,8 @@ export default class extends BotCommand {
 		);
 		embed.addField('Minimum users to start', selectedQueue.minQueueSize, true);
 		embed.addField('Maximum users to instantly start', selectedQueue.maxQueueSize, true);
-		embed.addField('Soloable', selectedQueue.allowSolo ? 'Yes' : Emoji.RedX, true);
-		embed.addField('Allows private instances', selectedQueue.allowPrivate ? 'Yes' : Emoji.RedX, true);
+		embed.addField('Soloable', selectedQueue.allowSolo ? 'Yes' : 'No', true);
+		embed.addField('Allows private instances', selectedQueue.allowPrivate ? 'Yes' : 'No', true);
 		embed.addField(
 			'Meet all requirements',
 			errors[0].length === 0 ? (errors[1].length === 0 ? 'Yes' : 'Partially') : 'No',
@@ -582,12 +582,17 @@ export default class extends BotCommand {
 						"size. When the activity reaches the minimum size, it'll wait {duration} before starting, unless " +
 						"a different time is defined on the activity. If it reaches the maximum size, it'll start instantly." +
 						'\n\n' +
-						'You can use `{prefix}lfg [join] name|alias` to join the activity. You can also use `{prefix}{solo} name|alias` ' +
-						'to start an activity alone, if the activity allows that.' +
+						'You can use `{prefix}lfg [join] name|alias[,name2|alias2,name3|alias3,...]` to join the activity. ' +
+						'You can also use `{prefix}{solo} name|alias` to start an activity alone, if the activity allows that.' +
 						'\n\n' +
 						'You can use `{prefix}lfg info name|alias` to show all the information about that activity, like ' +
 						'all its aliases, people waiting for it to start, if it is soloable or allows private instances to ' +
-						'be created and if you meet all the requirements. If not, the requirements you are missing will be shown.' +
+						'be created and if you meet all the requirements. If not, the requirements you are missing will be shown. ' +
+						'It will also show statistics about the activitie like, how many times it was done, how many users it served ' +
+						'how many monsters or runs it killed/had and the total loot it generated in its lifetime!' +
+						'\n\n' +
+						'You can use `{prefix}lfg stats [--more]` to check how many activities are running and when they will be back. ' +
+						'If you add the `--more` flag, it will show some all time data about all activities too.' +
 						'\n\n' +
 						'**WARNING**' +
 						'\n\n' +
@@ -616,10 +621,12 @@ export default class extends BotCommand {
 						'`{prefix}lfg` - Shows all the available activities, their lowest alias for quick join and the ' +
 						'amount of users awaiting for it to start;\n' +
 						'`{prefix}lfg nightmare` - Joins the nightmare group activity;\n' +
+						'`{prefix}lfg join bandos,kree,kril,sara,corp` - Joins Bandos, Zamorak, Saradomin and Armadyl GWD group activity;\n' +
 						'`{prefix}{solo} cox` - Starts the Chambers of Xerics as a solo activity;\n' +
 						'`{prefix}lfg info coxcm` - Shows information about the Chambers of Xerics - Challenge Mode;\n' +
 						'`{prefix}lfg stats` - Shows informations about the activities currently being done, as ' +
 						'numbers of players, when they will be arriving and etc;\n' +
+						'`{prefix}lfg stats --more` - Same as above, buth with extra information about all activities;\n' +
 						'`{prefix}lfg create corp --min=10` - Create a private Corporeal Beast activity for others to ' +
 						'join with a minimum user limit of 10;\n' +
 						'`{prefix}lfg start` Will force start your private activity;\n' +
@@ -850,10 +857,9 @@ export default class extends BotCommand {
 			: false;
 		if (user) {
 			this.removeUserFromQueue(msg.author, selectedQueue.uniqueID, true);
-			await msg.channel.send(`You left the ${selectedQueue.name} LFG.`);
-		} else {
-			return msg.channel.send('You are not in this LFG group!');
+			return msg.channel.send(`You left the ${selectedQueue.name} LFG.`);
 		}
+		return msg.channel.send('You are not in this LFG group!');
 	}
 
 	@requiresMinion
@@ -898,8 +904,22 @@ export default class extends BotCommand {
 		);
 		lfgACtivities = lfgACtivities.filter(m => m.data.users.length > 1);
 
+		if (!msg.flagArgs.more && Object.values(lfgACtivities).length === 0) {
+			return msg.channel.send('No LFG activities are running at the moment.');
+		}
+
 		const runningActivities: Record<number, any> = {};
+		let runningText: string[] = [];
+		const now = Date.now();
 		Object.values(lfgACtivities).forEach(lfg => {
+			const activity = availableQueues.find(a => a.uniqueID === lfg.data.queueId)!;
+			runningText.push(
+				`${lfg.data.quantity > 1 ? `${lfg.data.quantity}x ` : ''}${activity.name} with ${
+					lfg.data.users.length
+				} player${lfg.data.users.length > 1 ? 's' : ''} will return in ${formatDuration(
+					lfg.finish_date.getTime() - now
+				)}.`
+			);
 			runningActivities[lfg.data.queueId] = {
 				users: Number(runningActivities[lfg.data.queueId]?.users ?? 0) + Number(lfg.data.users.length),
 				killed: Number(runningActivities[lfg.data.queueId]?.killed ?? 0) + Number(lfg.data.quantity)
@@ -908,31 +928,34 @@ export default class extends BotCommand {
 
 		const embed = new MessageEmbed().setColor(Color.DarkNavy).setTitle('Looking for Group Activities | Stats');
 
-		const lfgStatsData = await LfgStatusTable.find();
-
-		Object.values(availableQueues).forEach(queue => {
-			const dataQueue = lfgStatsData.find(d => d.id === queue.uniqueID);
-			embed.addField(
-				queue.name,
-				`Users now: ${runningActivities[queue.uniqueID]?.users ?? 0}\n` +
-					`${queue.monster ? 'Killing' : 'Running'} now: ${
-						runningActivities[queue.uniqueID]?.killed ?? 0
-					}\n` +
-					`[All Time] Sent: ${dataQueue?.timesSent ?? 0}\n` +
-					`[All Time] Users: ${dataQueue?.usersServed ?? 0}\n` +
-					`${
-						queue.monster
-							? `[All Time] Kills: ${dataQueue?.qtyKilledDone ?? 0}`
-							: `[All Time] Runs: ${dataQueue?.qtyKilledDone ?? 0}`
-					}`,
-				true
-			);
-		});
-
-		for (let i = 0; i < Math.ceil(availableQueues.length / 3) * 3 - availableQueues.length; i++) {
-			embed.addField('\u200b', '\u200b', true);
+		if (runningText.length > 0) {
+			embed.addField('The following activities are running', runningText.join('\n'));
 		}
+		if (msg.flagArgs.more) {
+			const lfgStatsData = await LfgStatusTable.find();
+			Object.values(availableQueues).forEach(queue => {
+				const dataQueue = lfgStatsData.find(d => d.id === queue.uniqueID);
+				embed.addField(
+					queue.name,
+					`Users now: ${runningActivities[queue.uniqueID]?.users ?? 0}\n` +
+						`${queue.monster ? 'Killing' : 'Running'} now: ${
+							runningActivities[queue.uniqueID]?.killed ?? 0
+						}\n` +
+						`[All Time] Sent: ${dataQueue?.timesSent ?? 0}\n` +
+						`[All Time] Users: ${dataQueue?.usersServed ?? 0}\n` +
+						`${
+							queue.monster
+								? `[All Time] Kills: ${dataQueue?.qtyKilledDone ?? 0}`
+								: `[All Time] Runs: ${dataQueue?.qtyKilledDone ?? 0}`
+						}`,
+					true
+				);
+			});
 
+			for (let i = 0; i < Math.ceil(availableQueues.length / 3) * 3 - availableQueues.length; i++) {
+				embed.addField('\u200b', '\u200b', true);
+			}
+		}
 		embed
 			.addField(
 				'\u200B',
@@ -942,6 +965,9 @@ export default class extends BotCommand {
 			)
 			.setTimestamp();
 
-		return this.messageUser(msg, embed);
+		if (msg.flagArgs.more) {
+			return this.messageUser(msg, embed);
+		}
+		return msg.channel.send(embed);
 	}
 }

@@ -92,7 +92,7 @@ export const availableQueues: LfgQueueProperties[] = [
 	{
 		uniqueID: 7,
 		name: `${NightmareMonster.name} (Small)`,
-		aliases: ['nightmare small'],
+		aliases: ['nightmare small', 'nms', 'nm small'],
 		lfgClass: new Nightmare(),
 		thumbnail: 'https://imgur.com/6lnQKY6.png',
 		monster: getMonster(NightmareMonster.id),

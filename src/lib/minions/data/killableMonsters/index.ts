@@ -270,7 +270,7 @@ const killableMonsters: KillableMonster[] = [
 export const NightmareMonster: KillableMonster = {
 	id: 9415,
 	name: 'The Nightmare',
-	aliases: ['nightmare', 'the nightmare'],
+	aliases: ['nightmare', 'the nightmare', 'nm'],
 	timeToFinish: Time.Minute * 25,
 	table: Monsters.GeneralGraardor,
 	emoji: '<:Little_nightmare:758149284952014928>',

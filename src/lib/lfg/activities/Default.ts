@@ -61,7 +61,7 @@ export default class implements LfgInterface {
 			if (kcAmounts[user.id]) {
 				await user.incrementMonsterScore(monsterID, kcAmounts[user.id]);
 			}
-			const purple = Object.keys(loot).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));
+			const purple = Object.keys(loot.bank).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));
 
 			usersWithLoot.push({ user, emoji: purple ? Emoji.Purple : false, lootedItems: loot });
 
