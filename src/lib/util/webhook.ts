@@ -80,7 +80,7 @@ export async function sendToChannelID(
 				await channel.send({
 					content: data.content,
 					files,
-					embeds: data.embed ? [data.embed] : undefined
+					embeds
 				});
 			} catch (err: any) {
 				const error = err as Error;
@@ -90,7 +90,11 @@ export async function sendToChannelID(
 				}
 			}
 		} else {
-			await channel.send({ content: data.content, files, embeds: [] });
+			await channel.send({
+				content: data.content,
+				files,
+				embeds
+			});
 		}
 	});
 }
