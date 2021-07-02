@@ -96,13 +96,9 @@ declare module 'klasa' {
 
 declare module 'discord-api-types/v8' {
 	type Snowflake = string;
-	type ColorResolvable = string;
-	type HexColorString = string;
 }
 
 declare module 'discord.js' {
-	type HexColorString = string;
-	type ColorResolvable = string;
 	interface Client {
 		public query<T>(query: string): Promise<T>;
 	}

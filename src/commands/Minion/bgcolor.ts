@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { HexColorString, MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { PerkTier } from '../../lib/constants';
@@ -33,9 +33,7 @@ export default class extends BotCommand {
 			}
 			return msg.channel.send({
 				embeds: [
-					embed
-						.setColor(currentColor as any)
-						.setDescription(`Your current background color is \`${currentColor}\`.`)
+					embed.setColor(currentColor).setDescription(`Your current background color is \`${currentColor}\`.`)
 				]
 			});
 		}
@@ -49,7 +47,7 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.BankBackgroundHex, hex);
 
 		return msg.channel.send({
-			embeds: [embed.setColor(hex as any).setDescription(`Your background color is now \`${hex}\``)]
+			embeds: [embed.setColor(hex as HexColorString).setDescription(`Your background color is now \`${hex}\``)]
 		});
 	}
 }

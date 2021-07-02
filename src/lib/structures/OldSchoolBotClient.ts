@@ -23,7 +23,6 @@ import('../settings/schemas/GuildSchema');
 import('../settings/schemas/ClientSchema');
 
 export class OldSchoolBotClient extends Client {
-	[x: string]: any;
 	public oneCommandAtATimeCache = new Set<string>();
 	public secondaryUserBusyCache = new Set<string>();
 	public piscinaPool = piscinaPool;
