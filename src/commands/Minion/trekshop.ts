@@ -31,7 +31,7 @@ export default class extends BotCommand {
 		const userBank = user.bank();
 
 		if (name === undefined) {
-			return msg.send(
+			return msg.channel.send(
 				`Item is required. Possible items: ${TrekShopItems.map(item => {
 					return item.name;
 				}).join(', ')}.`
@@ -45,7 +45,7 @@ export default class extends BotCommand {
 		);
 
 		if (!specifiedItem) {
-			return msg.send(
+			return msg.channel.send(
 				`Item not recognized. Possible items: ${TrekShopItems.map(item => {
 					return item.name;
 				}).join(', ')}.`
@@ -62,7 +62,7 @@ export default class extends BotCommand {
 		}
 
 		if (quantity === 0) {
-			return msg.send("You don't have enough reward tokens for that.");
+			return msg.channel.send("You don't have enough reward tokens for that.");
 		}
 
 		let outItems = new Bank();
@@ -144,7 +144,7 @@ export default class extends BotCommand {
 		}
 
 		if (!userBank.has(inItems.bank)) {
-			return msg.send("You don't have enough reward tokens for that.");
+			return msg.channel.send("You don't have enough reward tokens for that.");
 		}
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
@@ -177,6 +177,6 @@ export default class extends BotCommand {
 
 		ret += (await Promise.all(outXP.filter(xp => xp.amount > 0).map(xp => user.addXP(xp)))).join(', ');
 
-		return msg.send(`${ret}.`);
+		return msg.channel.send(`${ret}.`);
 	}
 }

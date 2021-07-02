@@ -68,7 +68,7 @@ export default class extends BotCommand {
 
 		const arrayOfNames = names.split(' ');
 
-		if (arrayOfNames.length > 5) return msg.send("You can't have more than 5 members in a raid team.");
+		if (arrayOfNames.length > 5) return msg.channel.send("You can't have more than 5 members in a raid team.");
 
 		const team = arrayOfNames.map(member => ({
 			id: member,
@@ -95,6 +95,6 @@ export default class extends BotCommand {
 			result += `**${memberID}** received: ${new Bank(filterBankFromArrayOfItems(itemsToShow, lootBank))}\n`;
 		}
 
-		return msg.send(result);
+		return msg.channel.send(result);
 	}
 }

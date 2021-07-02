@@ -111,6 +111,6 @@ export default class MinionCommand extends BotCommand {
 			)}) to finish.\n`
 		);
 
-		return msg.send(str.join('\n'));
+		return msg.channel.send(str.join('\n'));
 	}
 }

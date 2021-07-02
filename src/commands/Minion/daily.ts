@@ -54,7 +54,7 @@ export default class DailyCommand extends BotCommand {
 		if (difference < Time.Hour * 12) {
 			const duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 12));
 
-			return msg.send(`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`);
+			return msg.channel.send(`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`);
 		}
 
 		await msg.author.settings.update(UserSettings.LastDailyTimestamp, currentDate);

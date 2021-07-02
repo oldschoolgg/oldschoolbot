@@ -24,6 +24,6 @@ export default class extends BotCommand {
 			.addField('Server Creation Date', guild.createdAt.toLocaleDateString(), true)
 			.addField('Bot Prefix', guild.settings.get(GuildSettings.Prefix), true);
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

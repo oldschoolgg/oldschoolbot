@@ -37,7 +37,7 @@ export default class extends BotCommand {
 		const spell = Castables.find(spell => stringMatches(spell.name, name));
 
 		if (!spell) {
-			return msg.send(
+			return msg.channel.send(
 				`That is not a valid spell to cast, the spells you can cast are: ${Castables.map(i => i.name).join(
 					', '
 				)}.`
@@ -45,15 +45,15 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) < spell.level) {
-			return msg.send(`${msg.author.minionName} needs ${spell.level} Magic to cast ${spell.name}.`);
+			return msg.channel.send(`${msg.author.minionName} needs ${spell.level} Magic to cast ${spell.name}.`);
 		}
 
 		if (spell.craftLevel && msg.author.skillLevel(SkillsEnum.Crafting) < spell.craftLevel) {
-			return msg.send(`${msg.author.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`);
+			return msg.channel.send(`${msg.author.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`);
 		}
 
 		if (spell.qpRequired && msg.author.settings.get(UserSettings.QP) < spell.qpRequired) {
-			return msg.send(`${msg.author.minionName} needs ${spell.qpRequired} QP to cast ${spell.name}.`);
+			return msg.channel.send(`${msg.author.minionName} needs ${spell.qpRequired} QP to cast ${spell.name}.`);
 		}
 
 		await msg.author.settings.sync(true);
@@ -73,7 +73,7 @@ export default class extends BotCommand {
 		const duration = quantity * timeToEnchantTen;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${spell.name}s you can cast is ${Math.floor(
@@ -83,7 +83,7 @@ export default class extends BotCommand {
 		}
 		const cost = determineRunes(msg.author, spell.input.clone().multiply(quantity));
 		if (!userBank.has(cost.bank)) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have the materials needed to cast ${quantity}x ${spell.name}, you need ${
 					spell.input
 				}, you're missing **${cost.clone().remove(userBank)}** (Cost: ${cost}).`
@@ -96,7 +96,7 @@ export default class extends BotCommand {
 		if (spell.gpCost) {
 			gpCost = spell.gpCost * quantity;
 			if (gpCost > userGP) {
-				return msg.send(`You need ${gpCost} GP to create ${quantity} planks.`);
+				return msg.channel.send(`You need ${gpCost} GP to create ${quantity} planks.`);
 			}
 			await msg.author.removeGP(gpCost);
 		}
@@ -127,7 +127,7 @@ export default class extends BotCommand {
 			).toLocaleString()} Crafting XP/Hr**`;
 		}
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDuration(
 				duration
 			)} to finish. Removed ${cost}${

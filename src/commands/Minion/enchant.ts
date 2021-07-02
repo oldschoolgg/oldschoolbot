@@ -59,7 +59,7 @@ export default class extends BotCommand {
 		);
 
 		if (!enchantable) {
-			return msg.send(
+			return msg.channel.send(
 				`That is not a valid item to enchant, the items you can enchant are: ${Enchantables.map(
 					i => i.name
 				).join(', ')}.`
@@ -67,7 +67,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) < enchantable.level) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${enchantable.level} Magic to enchant ${enchantable.name}.`
 			);
 		}
@@ -87,7 +87,7 @@ export default class extends BotCommand {
 		const duration = quantity * timeToEnchantTen;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${enchantable.name}s you can enchant is ${Math.floor(
@@ -99,7 +99,7 @@ export default class extends BotCommand {
 		const cost = determineRunes(msg.author, enchantable.input.clone().multiply(quantity));
 
 		if (!userBank.has(cost.bank)) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have the materials needed to enchant ${quantity}x ${enchantable.name}, you need ${
 					enchantable.input
 				}, you're missing **${cost.clone().remove(userBank)}**.`
@@ -124,7 +124,7 @@ export default class extends BotCommand {
 			((enchantable.xp * quantity) / (duration / Time.Minute)) * 60
 		).toLocaleString()} XP/Hr`;
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now enchanting ${quantity}x ${
 				enchantable.name
 			}, it'll take around ${formatDuration(duration)} to finish. Removed ${cost} from your bank. ${xpHr}`

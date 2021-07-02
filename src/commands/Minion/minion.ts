@@ -38,7 +38,7 @@ async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
 		const command = msg.client.commands.get(name)!;
 		await command!.run(msg, args);
 	} catch (err) {
-		msg.send(typeof err === 'string' ? err : err.message);
+		msg.channel.send(typeof err === 'string' ? err : err.message);
 	}
 }
 
@@ -58,7 +58,7 @@ export default class MinionCommand extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		return msg.send(msg.author.minionStatus);
+		return msg.channel.send(msg.author.minionStatus);
 	}
 
 	@requiresMinion
@@ -77,13 +77,13 @@ export default class MinionCommand extends BotCommand {
 			const xpToLevel = convertLVLtoXP(level + 1) - currentXP;
 			str += ` ${xpToLevel.toLocaleString()} XP away from level ${level + 1}`;
 		}
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 
 	@requiresMinion
 	async seticon(msg: KlasaMessage, [icon]: [string]) {
 		if (msg.author.perkTier < PerkTier.Six) {
-			return msg.send("You need to be a Tier 5 Patron to change your minion's icon to a custom icon.");
+			return msg.channel.send("You need to be a Tier 5 Patron to change your minion's icon to a custom icon.");
 		}
 
 		const res = FormattedCustomEmoji.exec(icon);
@@ -92,7 +92,7 @@ export default class MinionCommand extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.Minion.Icon, res[0]);
 
-		return msg.send(`Changed your minion icon to ${res}.`);
+		return msg.channel.send(`Changed your minion icon to ${res}.`);
 	}
 
 	@requiresMinion
@@ -120,13 +120,13 @@ Please say \`permanent\` to confirm.`
 							answer.author.id === msg.author.id && answer.content.toLowerCase() === 'permanent'
 					});
 					await msg.author.settings.update(UserSettings.BitField, BitField.PermanentIronman);
-					return msg.send('You are now a **permanent** Ironman. Enjoy!');
+					return msg.channel.send('You are now a **permanent** Ironman. Enjoy!');
 				} catch (err) {
 					return msg.channel.send('Cancelled.');
 				}
 			}
 
-			await msg.send(
+			await msg.channel.send(
 				'Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again. Please say `deiron` to confirm.'
 			);
 			try {
@@ -137,7 +137,7 @@ Please say \`permanent\` to confirm.`
 					filter: answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'deiron'
 				});
 				await msg.author.settings.update(UserSettings.Minion.Ironman, false);
-				return msg.send('You are no longer an ironman.');
+				return msg.channel.send('You are no longer an ironman.');
 			} catch (err) {
 				return msg.channel.send('Cancelled de-ironning.');
 			}
@@ -152,7 +152,7 @@ Please say \`permanent\` to confirm.`
 			return msg.channel.send("You can't become an ironman because you have active giveaways.");
 		}
 
-		await msg.send(
+		await msg.channel.send(
 			`Are you sure you want to start over and play as an ironman?
 
 :warning: **Read the following text before confirming. This is your only warning. ** :warning:
@@ -215,7 +215,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				[UserSettings.Minion.Ironman, true],
 				[UserSettings.Minion.HasBought, true]
 			]);
-			return msg.send('You are now an ironman.');
+			return msg.channel.send('You are now an ironman.');
 		} catch (err) {
 			return msg.channel.send('Cancelled ironman swap.');
 		}
@@ -224,13 +224,13 @@ Type \`confirm\` if you understand the above information, and want to become an 
 	@requiresMinion
 	@minionNotBusy
 	async pat(msg: KlasaMessage) {
-		return msg.send(randomPatMessage(msg.author.minionName));
+		return msg.channel.send(randomPatMessage(msg.author.minionName));
 	}
 
 	@requiresMinion
 	async stats(msg: KlasaMessage) {
 		const embed = await minionStatsEmbed(msg.author);
-		return msg.send(embed);
+		return msg.channel.send(embed);
 	}
 
 	@requiresMinion
@@ -263,12 +263,12 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			);
 		}
 
-		return msg.send(embed);
+		return msg.channel.send(embed);
 	}
 
 	@requiresMinion
 	async qp(msg: KlasaMessage) {
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName}'s Quest Point count is: ${msg.author.settings.get(UserSettings.QP)}.`
 		);
 	}
@@ -283,7 +283,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			const clue = clueTiers.find(c => c.id === parseInt(clueID));
 			res += `**${clue!.name}**: ${clueScore}\n`;
 		}
-		return msg.send(res);
+		return msg.channel.send(res);
 	}
 
 	async buy(msg: KlasaMessage) {
@@ -310,7 +310,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			throw `You can't afford to buy a minion! You need ${Util.toKMB(cost)}`;
 		}
 
-		await msg.send(
+		await msg.channel.send(
 			`Are you sure you want to spend ${Util.toKMB(cost)} on buying a minion? Please say \`yes\` to confirm.`
 		);
 
@@ -355,11 +355,11 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			name.length > 30 ||
 			['\n', '`', '@', '<', ':'].some(char => name.includes(char))
 		) {
-			return msg.send("That's not a valid name for your minion.");
+			return msg.channel.send("That's not a valid name for your minion.");
 		}
 
 		await msg.author.settings.update(UserSettings.Minion.Name, name);
-		return msg.send(`Renamed your minion to ${msg.author.minionName}.`);
+		return msg.channel.send(`Renamed your minion to ${msg.author.minionName}.`);
 	}
 
 	async fish(msg: KlasaMessage, [quantity, fishName]: [number, string]) {

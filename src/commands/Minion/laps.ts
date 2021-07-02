@@ -96,17 +96,17 @@ export default class extends BotCommand {
 		const course = Agility.Courses.find(course => course.aliases.some(alias => stringMatches(alias, name)));
 
 		if (!course) {
-			return msg.send(
+			return msg.channel.send(
 				`Thats not a valid course. Valid courses are ${Agility.Courses.map(course => course.name).join(', ')}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Agility) < course.level) {
-			return msg.send(`${msg.author.minionName} needs ${course.level} agility to train at ${course.name}.`);
+			return msg.channel.send(`${msg.author.minionName} needs ${course.level} agility to train at ${course.name}.`);
 		}
 
 		if (course.qpRequired && msg.author.settings.get(UserSettings.QP) < course.qpRequired) {
-			return msg.send(`You need atleast ${course.qpRequired} Quest Points to do this course.`);
+			return msg.channel.send(`You need atleast ${course.qpRequired} Quest Points to do this course.`);
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Agility);
@@ -119,7 +119,7 @@ export default class extends BotCommand {
 		const duration = quantity * timePerLap;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${course.name} laps you can do is ${Math.floor(
@@ -158,6 +158,6 @@ export default class extends BotCommand {
 					  }
 		});
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

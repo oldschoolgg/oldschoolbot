@@ -56,13 +56,13 @@ export default class extends BotCommand {
 		const craftable = Crafting.Craftables.find(item => stringMatches(item.name, craftName));
 
 		if (!craftable) {
-			return msg.send(
+			return msg.channel.send(
 				`That is not a valid craftable item, to see the items available do \`${msg.cmdPrefix}craft --items\``
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Crafting) < craftable.level) {
-			return msg.send(`${msg.author.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`);
+			return msg.channel.send(`${msg.author.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`);
 		}
 
 		await msg.author.settings.sync(true);
@@ -86,7 +86,7 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToCraftSingleItem;
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${craftable.name}s you can craft is ${Math.floor(
@@ -99,7 +99,7 @@ export default class extends BotCommand {
 
 		// Check the user has all the required items to craft.
 		if (!userBank.has(itemsNeeded.bank)) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough items. For ${quantity}x ${craftable.name}, you're missing **${itemsNeeded
 					.clone()
 					.remove(userBank)}**.`
@@ -119,7 +119,7 @@ export default class extends BotCommand {
 			type: Activity.Crafting
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now crafting ${quantity}x ${
 				craftable.name
 			}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`

@@ -42,7 +42,9 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued trip of mahogany homes');
-				return (this.client.commands.get('mh') as MahoganyHomesCommand).build(res) as Promise<KlasaMessage>;
+				return (this.client.commands.get('mh') as unknown as MahoganyHomesCommand).build(
+					res
+				) as Promise<KlasaMessage>;
 			},
 			undefined,
 			data,

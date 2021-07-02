@@ -21,7 +21,7 @@ export default class extends BotCommand {
 		const cleanName = cleanString(petName);
 
 		const pet = pets.find(_pet => cleanString(_pet.name) === cleanName || _pet.altNames.includes(cleanName));
-		if (!pet) return msg.send("I don't recognize that pet!");
+		if (!pet) return msg.channel.send("I don't recognize that pet!");
 
 		let count = 0;
 		let hasPet = false;
@@ -30,6 +30,6 @@ export default class extends BotCommand {
 			if (roll(pet.chance)) hasPet = true;
 		}
 
-		return msg.send(pet.formatFinish(count));
+		return msg.channel.send(pet.formatFinish(count));
 	}
 }

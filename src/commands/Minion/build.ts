@@ -59,7 +59,7 @@ export default class extends BotCommand {
 		);
 
 		if (!object) {
-			return msg.send(
+			return msg.channel.send(
 				`Thats not a valid object to build. Valid objects are ${Constructables.map(object => object.name).join(
 					', '
 				)}.`
@@ -67,7 +67,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Construction) < object.level) {
-			return msg.send(`${msg.author.minionName} needs ${object.level} Construction to create a ${object.name}.`);
+			return msg.channel.send(`${msg.author.minionName} needs ${object.level} Construction to create a ${object.name}.`);
 		}
 
 		let timeToBuildSingleObject = object.ticks * 300;
@@ -87,7 +87,7 @@ export default class extends BotCommand {
 		}
 
 		if (planksHas < planksQtyCost * quantity) {
-			return msg.send(`You don't have enough ${itemNameFromID(plank)} to make ${quantity}x ${object.name}.`);
+			return msg.channel.send(`You don't have enough ${itemNameFromID(plank)} to make ${quantity}x ${object.name}.`);
 		}
 
 		const totalPlanksNeeded = planksQtyCost * quantity;
@@ -98,7 +98,7 @@ export default class extends BotCommand {
 		const duration = quantity * timeToBuildSingleObject;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)} minutes, try a lower quantity. The highest amount of ${object.name}s you can build is ${Math.floor(
@@ -109,7 +109,7 @@ export default class extends BotCommand {
 
 		const gpNeeded = Math.floor(10_000 * (invsPerTrip / 8));
 		if (msg.author.settings.get(UserSettings.GP) < gpNeeded) {
-			return msg.send("You don't have enough GP to pay your Butler.");
+			return msg.channel.send("You don't have enough GP to pay your Butler.");
 		}
 		await msg.author.removeGP(gpNeeded);
 		await msg.author.removeItemFromBank(plank, totalPlanksNeeded);
@@ -132,7 +132,7 @@ export default class extends BotCommand {
 
 		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now constructing ${quantity}x ${
 				object.name
 			}, it'll take around ${formatDuration(duration)} to finish. Removed ${totalPlanksNeeded}x ${itemNameFromID(

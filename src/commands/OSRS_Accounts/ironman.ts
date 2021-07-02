@@ -21,9 +21,9 @@ export default class extends BotCommand {
 		try {
 			const player = await Hiscores.fetch(username, { type: AccountType.Ironman });
 			const embed = this.getStatsEmbed(username, 5460819, player);
-			return msg.send({ embed });
+			return msg.channel.send({ embed });
 		} catch (err) {
-			return msg.send(err.message);
+			return msg.channel.send(err.message);
 		}
 	}
 }

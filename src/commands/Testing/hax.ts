@@ -33,7 +33,7 @@ export default class extends BotCommand {
 		poh.pool = 29241;
 		await poh.save();
 		msg.author.addItemsToBank(bank.bank);
-		return msg.send(
+		return msg.channel.send(
 			`Gave you 99 in all skills, 1b GP, ${MAX_QP} QP, and 1k of all eatable foods. **Gave your POH an ornate rejuve pool**`
 		);
 	}

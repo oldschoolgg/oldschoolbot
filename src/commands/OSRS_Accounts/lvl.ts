@@ -40,9 +40,9 @@ export default class extends BotCommand {
 				str += ` **${(200000000 - res.xp).toLocaleString()}** XP away from **200m**.`;
 			}
 
-			return msg.send(str);
+			return msg.channel.send(str);
 		} catch (err) {
-			return msg.send(err.message);
+			return msg.channel.send(err.message);
 		}
 	}
 }

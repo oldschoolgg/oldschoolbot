@@ -2,6 +2,7 @@ import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageEmbed } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
+import {} from 'node:process';
 import { Bank, Player } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { CommentStream, SubmissionStream } from 'snoostorm';
@@ -98,7 +99,27 @@ declare module 'discord-api-types/v8' {
 	type Snowflake = string;
 }
 
+type KlasaSend = (input: string | MessagePayload | MessageOptions) => Promise<KlasaMessage>;
+
 declare module 'discord.js' {
+	interface TextBasedChannel {
+		send: KlasaSend;
+	}
+	interface TextChannel {
+		send: KlasaSend;
+	}
+	interface DMChannel {
+		send: KlasaSend;
+	}
+	interface ThreadChannel {
+		send: KlasaSend;
+	}
+	interface NewsChannel {
+		send: KlasaSend;
+	}
+	interface PartialTextBasedChannelFields {
+		send: KlasaSend;
+	}
 	interface Client {
 		public query<T>(query: string): Promise<T>;
 	}

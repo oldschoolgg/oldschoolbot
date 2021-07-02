@@ -88,7 +88,7 @@ export default class extends BotCommand {
 		const duration = msg.author.maxTripLength(Activity.AgilityArena);
 
 		if (!msg.author.hasGracefulEquipped()) {
-			return msg.send(
+			return msg.channel.send(
 				await chatHeadImage({
 					content: 'Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!',
 					head: 'izzy'
@@ -117,7 +117,7 @@ export default class extends BotCommand {
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 
 	async buy(msg: KlasaMessage, [input = '', qty = 1]: [string | undefined, number | undefined]) {
@@ -126,7 +126,7 @@ export default class extends BotCommand {
 		);
 		const isNotValid = !buyable && !['recolor', 'xp'].includes(input);
 		if (isNotValid) {
-			return msg.send(
+			return msg.channel.send(
 				`Here are the items you can buy from the Brimhaven Agility Arena Ticket Exchange: \n\n${buyables
 					.map(i => `**${i.item.name}:** ${i.cost} tickets`)
 					.join('\n')}.
@@ -143,7 +143,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 		const bank = new Bank(msg.author.settings.get(UserSettings.Bank));
 		const amountTicketsHas = bank.amount('Agility arena ticket');
 		if (amountTicketsHas === 0) {
-			return msg.send(
+			return msg.channel.send(
 				await chatHeadImage({
 					content: "Are ye serious! You have no tickets, you can't buy anythin!",
 					head: 'izzy'
@@ -154,22 +154,22 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 		if (buyable) {
 			const cost = qty * buyable.cost;
 			if (amountTicketsHas < cost) {
-				return msg.send("You don't have enough Agility arena tickets.");
+				return msg.channel.send("You don't have enough Agility arena tickets.");
 			}
 			await msg.author.removeItemFromBank(itemID('Agility arena ticket'), cost);
 			await msg.author.addItemsToBank({ [buyable.item.id]: qty }, true);
-			return msg.send(`Successfully purchased ${qty}x ${buyable.item.name} for ${cost}x Agility arena tickets.`);
+			return msg.channel.send(`Successfully purchased ${qty}x ${buyable.item.name} for ${cost}x Agility arena tickets.`);
 		}
 		if (input === 'xp') {
 			if (!(qty in ticketQuantities)) {
-				return msg.send(
+				return msg.channel.send(
 					`You can only redeem tickets for XP at the following quantities: ${Object.values(
 						ticketQuantities
 					).join(', ')}.`
 				);
 			}
 			if (amountTicketsHas < qty) {
-				return msg.send("You don't have enough Agility arena tickets.");
+				return msg.channel.send("You don't have enough Agility arena tickets.");
 			}
 			const [hasKaramjaMed] = await userhasDiaryTier(msg.author, KaramjaDiary.medium);
 			const xpToGive = determineXPFromTickets(qty, msg.author, hasKaramjaMed);
@@ -184,13 +184,13 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			if (hasKaramjaMed) {
 				str += '\n\nYou received 10% extra XP for the Karamja Medium Diary.';
 			}
-			return msg.send(str);
+			return msg.channel.send(str);
 		}
 
 		if (input === 'recolor') {
 			let cost = 250;
 			if (!bank.has(plainGraceful)) {
-				return msg.send(
+				return msg.channel.send(
 					await chatHeadImage({
 						content: "Ye don't have a full set of Graceful in your bank for me to recolor!",
 						head: 'izzy'
@@ -199,7 +199,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			}
 
 			if (amountTicketsHas < cost) {
-				return msg.send(
+				return msg.channel.send(
 					await chatHeadImage({
 						content: `Ye don't have enough tickets, I charge ${cost} tickets for a recoloring.`,
 						head: 'izzy'
@@ -213,7 +213,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			await msg.author.addItemsToCollectionLog({
 				...brimhavenGraceful
 			});
-			return msg.send(
+			return msg.channel.send(
 				await chatHeadImage({
 					content: "I've recolored ye Graceful set, and taken your tickets!",
 					head: 'izzy'

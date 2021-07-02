@@ -47,7 +47,7 @@ export default class extends BotCommand {
 		const fletchable = Fletching.Fletchables.find(item => stringMatches(item.name, fletchName));
 
 		if (!fletchable) {
-			return msg.send(
+			return msg.channel.send(
 				`That is not a valid fletchable item, to see the items available do \`${msg.cmdPrefix}fletch --items\``
 			);
 		}
@@ -57,7 +57,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Fletching) < fletchable.level) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${fletchable.level} Fletching to fletch ${fletchable.name}.`
 			);
 		}
@@ -93,7 +93,7 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToFletchSingleItem;
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${fletchable.name}s you can fletch is ${Math.floor(
@@ -104,7 +104,7 @@ export default class extends BotCommand {
 
 		const itemsNeeded = fletchable.inputItems.clone().multiply(quantity);
 		if (!userBank.has(itemsNeeded.bank)) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough items. For ${quantity}x ${fletchable.name}, you're missing **${itemsNeeded
 					.clone()
 					.remove(userBank)}**.`
@@ -122,7 +122,7 @@ export default class extends BotCommand {
 			type: Activity.Fletching
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now Fletching ${quantity}${sets} ${
 				fletchable.name
 			}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`

@@ -136,7 +136,7 @@ export default class extends BotCommand {
 
 		await msg.author.addItemsToBank({ [buyable.item!]: 1 }, true);
 
-		return msg.send(`You bought ${toTitleCase(buyable.name)} for ${slayerPointCost} Slayer points.`);
+		return msg.channel.send(`You bought ${toTitleCase(buyable.name)} for ${slayerPointCost} Slayer points.`);
 	}
 
 	async unlock(msg: KlasaMessage, [buyableName = '']: [string]) {
@@ -217,7 +217,7 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks, buyable.id);
 
-		return msg.send(`You unlocked ${toTitleCase(buyable.name)} for ${slayerPointCost} Slayer points.`);
+		return msg.channel.send(`You unlocked ${toTitleCase(buyable.name)} for ${slayerPointCost} Slayer points.`);
 	}
 
 	async lock(msg: KlasaMessage, [toLockName = '']: [string]) {
@@ -281,6 +281,6 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks, buyable.id);
 
-		return msg.send(`You re-locked ${removeMsg}.`);
+		return msg.channel.send(`You re-locked ${removeMsg}.`);
 	}
 }

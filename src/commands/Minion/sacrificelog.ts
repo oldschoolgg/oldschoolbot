@@ -31,7 +31,7 @@ export default class extends BotCommand {
 		const type = slicedCollectionLogTypes.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
 
 		if (!type && !monster) {
-			return msg.send(
+			return msg.channel.send(
 				`That's not a valid collection log type. The valid types are: ${slicedCollectionLogTypes
 					.map(type => type.name)
 					.join(', ')}`
@@ -62,6 +62,6 @@ export default class extends BotCommand {
 				)
 		);
 
-		return msg.send(attachment);
+		return msg.channel.send(attachment);
 	}
 }

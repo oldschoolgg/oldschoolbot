@@ -9,6 +9,7 @@ export const clientOptions: KlasaClientOptions = {
 	messageCacheMaxSize: 200,
 	messageCacheLifetime: 120,
 	messageSweepInterval: 120,
+	owners: ['157797566833098752'],
 	// disableEveryone: true,
 	shards: 'auto',
 	http: {

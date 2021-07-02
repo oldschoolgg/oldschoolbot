@@ -70,7 +70,7 @@ export default class extends BotCommand {
 		const pickpocketable = Pickpocketables.find(npc => stringMatches(npc.name, name));
 
 		if (!pickpocketable) {
-			return msg.send(
+			return msg.channel.send(
 				`That is not a valid NPC to pickpocket, try pickpocketing one of the following: ${Pickpocketables.map(
 					npc => npc.name
 				).join(', ')}.`
@@ -78,7 +78,7 @@ export default class extends BotCommand {
 		}
 
 		if (pickpocketable.qpRequired && msg.author.settings.get(UserSettings.QP) < pickpocketable.qpRequired) {
-			return msg.send(
+			return msg.channel.send(
 				`You need atleast **${pickpocketable.qpRequired}** QP to pickpocket a ${pickpocketable.name}.`
 			);
 		}
@@ -87,11 +87,11 @@ export default class extends BotCommand {
 			pickpocketable.itemsRequired &&
 			!bankHasAllItemsFromBank(msg.author.allItemsOwned().bank, pickpocketable.itemsRequired)
 		) {
-			return msg.send(`You need these items to pickpocket this NPC: ${new Bank(pickpocketable.itemsRequired)}.`);
+			return msg.channel.send(`You need these items to pickpocket this NPC: ${new Bank(pickpocketable.itemsRequired)}.`);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Thieving) < pickpocketable.level) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${pickpocketable.level} Thieving to pickpocket a ${pickpocketable.name}.`
 			);
 		}
@@ -108,7 +108,7 @@ export default class extends BotCommand {
 		const duration = quantity * timeToPickpocket;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of times you can pickpocket a ${
@@ -170,6 +170,6 @@ export default class extends BotCommand {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

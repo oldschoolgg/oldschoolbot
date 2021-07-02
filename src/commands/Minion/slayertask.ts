@@ -155,7 +155,7 @@ export default class extends BotCommand {
 			}
 			let slayerPoints = msg.author.settings.get(UserSettings.Slayer.SlayerPoints) ?? 0;
 			if (slayerPoints < (toBlock ? 100 : 30)) {
-				return msg.send(
+				return msg.channel.send(
 					`You need ${toBlock ? 100 : 30} points to ${toBlock ? 'block' : 'cancel'},` +
 						` you only have: ${slayerPoints}`
 				);
@@ -184,7 +184,7 @@ export default class extends BotCommand {
 			currentTask!.quantityRemaining = 0;
 			currentTask!.skipped = true;
 			currentTask!.save();
-			return msg.send(
+			return msg.channel.send(
 				`Your task has been ${toBlock ? 'blocked' : 'skipped'}. You have ${slayerPoints} slayer points.`
 			);
 		}
@@ -220,7 +220,7 @@ export default class extends BotCommand {
 		// Special handling for Turael skip
 		if (currentTask && input && slayerMaster && slayerMaster.name === 'Turael') {
 			if (slayerMaster.tasks.find(t => t.monster.id === currentTask.monsterID)) {
-				return msg.send('You cannot skip this task because Turael assigns it.');
+				return msg.channel.send('You cannot skip this task because Turael assigns it.');
 			}
 			if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
 				const alchMessage = await msg.channel.send(

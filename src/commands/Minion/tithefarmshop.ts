@@ -75,6 +75,6 @@ export default class extends BotCommand {
 
 		await msg.author.addItemsToBank(outItems, true);
 
-		return msg.send(`You purchased ${itemString} for ${titheFarmPointsCost} Tithe Farm points.`);
+		return msg.channel.send(`You purchased ${itemString} for ${titheFarmPointsCost} Tithe Farm points.`);
 	}
 }

@@ -59,7 +59,7 @@ export default class extends BotCommand {
 		}
 
 		if (!cropToCompost) {
-			return msg.send(
+			return msg.channel.send(
 				`You need to select a crop to compost. The crops you can compost are: ${SuperCompostables.join(', ')}.`
 			);
 		}
@@ -67,7 +67,7 @@ export default class extends BotCommand {
 		const superCompostableCrop = SuperCompostables.find(crop => stringMatches(crop, cropToCompost));
 
 		if (!superCompostableCrop) {
-			return msg.send(
+			return msg.channel.send(
 				`That's not a valid crop to compost. The crops you can compost are: ${SuperCompostables.join(', ')}.`
 			);
 		}
@@ -77,11 +77,11 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			quantity = msg.author.numItemsInBankSync(itemID(superCompostableCrop));
 		} else if (!bankHasItem(userBank, itemID(superCompostableCrop), quantity)) {
-			return msg.send(`You do not have enough ${superCompostableCrop} to compost for the quantity specified`);
+			return msg.channel.send(`You do not have enough ${superCompostableCrop} to compost for the quantity specified`);
 		}
 
 		if (quantity === 0) {
-			return msg.send(`You have no ${superCompostableCrop} to compost!`);
+			return msg.channel.send(`You have no ${superCompostableCrop} to compost!`);
 		}
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
@@ -107,7 +107,7 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		return msg.send(
+		return msg.channel.send(
 			`You've composted ${quantity}x ${superCompostableCrop} and received ${quantity}x Supercompost in return.`
 		);
 	}

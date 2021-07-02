@@ -20,9 +20,9 @@ export default class extends BotCommand {
 		try {
 			const player = await Hiscores.fetch(username, { type: AccountType.Deadman });
 			const embed = this.getStatsEmbed(username, 11995146, player);
-			return msg.send({ embed });
+			return msg.channel.send({ embed });
 		} catch (err) {
-			return msg.send(err.message);
+			return msg.channel.send(err.message);
 		}
 	}
 }

@@ -178,18 +178,20 @@ export default class extends BotCommand {
 
 		const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 
-		return msg.send(
-			`**Duration:** ${formatDuration(duration)} (${(duration / 1000 / 60).toFixed(2)} minutes)
+		return msg.channel.send({
+			content: `**Duration:** ${formatDuration(duration)} (${(duration / 1000 / 60).toFixed(2)} minutes)
 **Boosts:** ${debugStr}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
 **Jad KC:** ${jadKC}
 **Attempts:** ${attempts}
 
 **Removed from your bank:** ${new Bank(fightCavesSupplies)}`,
-			await chatHeadImage({
-				content: `You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`,
-				head: 'mejJal'
-			})
-		);
+			files: [
+				await chatHeadImage({
+					content: `You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`,
+					head: 'mejJal'
+				})
+			]
+		});
 	}
 }

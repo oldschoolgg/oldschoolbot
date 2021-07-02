@@ -60,12 +60,12 @@ export default class extends BotCommand {
 		if (buyable.qpRequired) {
 			const QP = msg.author.settings.get(UserSettings.QP);
 			if (QP < buyable.qpRequired) {
-				return msg.send(`You need ${buyable.qpRequired} QP to purchase this item.`);
+				return msg.channel.send(`You need ${buyable.qpRequired} QP to purchase this item.`);
 			}
 		}
 
 		if (buyable.skillsNeeded && !skillsMeetRequirements(msg.author.rawSkills, buyable.skillsNeeded)) {
-			return msg.send("You don't have the required stats to buy this item.");
+			return msg.channel.send("You don't have the required stats to buy this item.");
 		}
 
 		if (buyable.minigameScoreReq) {
@@ -84,7 +84,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		if (buyable.itemCost && !bankHasAllItemsFromBank(userBank, multiplyBank(buyable.itemCost, quantity))) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have the required items to purchase this. You need: ${new Bank(
 					multiplyBank(buyable.itemCost, quantity)
 				)}.`
@@ -95,7 +95,7 @@ export default class extends BotCommand {
 		const totalGPCost = (buyable.gpCost ?? 0) * quantity;
 
 		if (buyable.gpCost && msg.author.settings.get(UserSettings.GP) < totalGPCost) {
-			return msg.send(`You need ${totalGPCost.toLocaleString()} GP to purchase this item.`);
+			return msg.channel.send(`You need ${totalGPCost.toLocaleString()} GP to purchase this item.`);
 		}
 
 		let output =
@@ -148,7 +148,7 @@ export default class extends BotCommand {
 
 		if (buyable.gpCost) {
 			if (GP < totalGPCost) {
-				return msg.send(`You need ${toKMB(totalGPCost)} GP to purchase this item.`);
+				return msg.channel.send(`You need ${toKMB(totalGPCost)} GP to purchase this item.`);
 			}
 			econBankChanges.add('Coins', totalGPCost);
 			await msg.author.removeGP(totalGPCost);
@@ -161,6 +161,6 @@ export default class extends BotCommand {
 
 		await msg.author.addItemsToBank(outItems, true);
 
-		return msg.send(`You purchased ${quantity > 1 ? `${quantity}x` : '1x'} ${buyable.name}.`);
+		return msg.channel.send(`You purchased ${quantity > 1 ? `${quantity}x` : '1x'} ${buyable.name}.`);
 	}
 }

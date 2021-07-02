@@ -24,7 +24,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const capesOwned = await msg.author.numberOfItemInBank(itemID('Fire cape'), true);
 
-		if (capesOwned < 1) return msg.send('You have no Fire capes to gamble!');
+		if (capesOwned < 1) return msg.channel.send('You have no Fire capes to gamble!');
 
 		const sellMsg = await msg.channel.send(
 			'Are you sure you want to gamble a Fire cape for a chance at the Tzrek-Jad pet? Say `confirm` to confirm.'

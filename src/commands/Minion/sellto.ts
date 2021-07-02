@@ -108,7 +108,7 @@ export default class extends BotCommand {
 
 		try {
 			if (buyerMember.user.settings.get(UserSettings.GP) < price || !msg.author.bank().fits(bankToSell)) {
-				return msg.send('One of you lacks the required GP or items to make this trade.');
+				return msg.channel.send('One of you lacks the required GP or items to make this trade.');
 			}
 
 			await buyerMember.user.removeGP(price);
@@ -118,7 +118,7 @@ export default class extends BotCommand {
 			await buyerMember.user.addItemsToBank(bankToSell.bank);
 		} catch (err) {
 			this.client.emit(Events.Wtf, err);
-			return msg.send('Fatal error occurred. Please seek help in the support server.');
+			return msg.channel.send('Fatal error occurred. Please seek help in the support server.');
 		}
 
 		this.client.emit(
@@ -130,6 +130,6 @@ export default class extends BotCommand {
 
 		msg.author.log(`sold ${bankStr} to ${buyerMember.user.sanitizedName} for ${price}`);
 
-		return msg.send(`Sale of ${bankStr} complete!`);
+		return msg.channel.send(`Sale of ${bankStr} complete!`);
 	}
 }

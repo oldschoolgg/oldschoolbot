@@ -205,24 +205,24 @@ export default class extends BotCommand {
 		let burstOrBarrage = 0;
 		const hasCannon = msg.author.owns(CombatCannonItemBank);
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !monster!.canBarrage) {
-			return msg.send(`${monster!.name} cannot be barraged or burst.`);
+			return msg.channel.send(`${monster!.name} cannot be barraged or burst.`);
 		}
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !attackStyles.includes(SkillsEnum.Magic)) {
-			return msg.send("You can only barrage/burst when you're using magic!");
+			return msg.channel.send("You can only barrage/burst when you're using magic!");
 		}
 		if (msg.flagArgs.cannon && !hasCannon) {
-			return msg.send("You don't own a Dwarf multicannon, so how could you use one?");
+			return msg.channel.send("You don't own a Dwarf multicannon, so how could you use one?");
 		}
 		if (msg.flagArgs.cannon && !monster!.canCannon) {
-			return msg.send(`${monster!.name} cannot be killed with a cannon.`);
+			return msg.channel.send(`${monster!.name} cannot be killed with a cannon.`);
 		}
 		if (boostChoice === 'barrage' && msg.author.skillLevel(SkillsEnum.Magic) < 94) {
-			return msg.send(
+			return msg.channel.send(
 				`You need 94 Magic to use Ice Barrage. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`
 			);
 		}
 		if (boostChoice === 'burst' && msg.author.skillLevel(SkillsEnum.Magic) < 70) {
-			return msg.send(`You need 70 Magic to use Ice Burst. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`);
+			return msg.channel.send(`You need 70 Magic to use Ice Burst. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`);
 		}
 
 		if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
@@ -279,7 +279,7 @@ export default class extends BotCommand {
 		quantity = Math.max(1, quantity);
 		let duration = timeToFinish * quantity;
 		if (quantity > 1 && duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${minionName} can't go on PvM trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(
@@ -418,6 +418,6 @@ export default class extends BotCommand {
 			response += `\n**Messages:** ${messages.join('\n')}.`;
 		}
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

@@ -26,7 +26,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [inputType]: [string]) {
 		if (!inputType) {
 			const { percent, notOwned } = msg.author.completion();
-			return msg.send(
+			return msg.channel.send(
 				`You have **${percent.toFixed(2)}%** Collection Log Completion.
 				
 Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
@@ -44,7 +44,7 @@ Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 		);
 
 		if (!type && !monster) {
-			return msg.send(
+			return msg.channel.send(
 				`That's not a valid collection log type. The valid types are: ${slicedCollectionLogTypes
 					.map(type => type.name)
 					.join(', ')}`
@@ -84,9 +84,9 @@ Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 		const [kcName, kcAmount] = await msg.author.getKCByName(name);
 
 		if (!kcName) {
-			return msg.send(attachment);
+			return msg.channel.send(attachment);
 		}
 
-		return msg.send(`Your ${kcName} KC is: ${kcAmount}.`, attachment);
+		return msg.channel.send({ content: `Your ${kcName} KC is: ${kcAmount}.`, files: [attachment] });
 	}
 }

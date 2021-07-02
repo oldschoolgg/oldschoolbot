@@ -81,7 +81,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		return msg.send(
+		return msg.channel.send(
 			`You sacrificed ${bankToSac}, with a value of ${amount.toLocaleString()} GP. Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`
 		);
 	}

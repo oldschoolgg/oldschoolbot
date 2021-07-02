@@ -36,6 +36,6 @@ export default class extends BotCommand {
 		ctx.fillStyle = '#00ffff';
 		ctx.fillText(`From ${username}: ${message}`, 5, 97);
 
-		return msg.send(new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`));
+		return msg.channel.send(new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`));
 	}
 }

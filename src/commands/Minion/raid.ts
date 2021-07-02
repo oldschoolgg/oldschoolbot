@@ -134,7 +134,7 @@ export default class extends BotCommand {
 		}
 
 		if (type !== 'mass' && type !== 'solo') {
-			return msg.send("Specify your team setup for Chamber's of Xeric, either solo or mass.");
+			return msg.channel.send("Specify your team setup for Chamber's of Xeric, either solo or mass.");
 		}
 
 		const isChallengeMode = Boolean(msg.flagArgs.cm);

@@ -162,6 +162,6 @@ export default class extends BotCommand {
 
 		if (!createableItem.noCl) await msg.author.addItemsToCollectionLog(outItems);
 
-		return msg.send(`You created ${outputItemsString}.`);
+		return msg.channel.send(`You created ${outputItemsString}.`);
 	}
 }
