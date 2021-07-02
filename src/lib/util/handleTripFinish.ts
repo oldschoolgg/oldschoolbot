@@ -76,7 +76,7 @@ export async function handleTripFinish(
 		}
 	});
 
-	if (!onContinue) return;
+	if (!onContinue && !clueReceived) return;
 
 	const existingCollector = collectors.get(user.id);
 
@@ -109,7 +109,7 @@ export async function handleTripFinish(
 			if (mes.content.toLowerCase() === 'c' && clueReceived && perkTier > PerkTier.One) {
 				(client.commands.get('minion') as MinionCommand).clue(mes, [1, clueReceived.name]);
 				return;
-			} else if (stringMatches(mes.content, continuationChar)) {
+			} else if (onContinue && stringMatches(mes.content, continuationChar)) {
 				await onContinue(mes).catch(err => {
 					channel.send(err);
 				});
