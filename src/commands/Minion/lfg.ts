@@ -538,10 +538,10 @@ export default class extends BotCommand {
 		embed.addField('Times Sent', lfgStats?.timesSent ?? 0, true);
 
 		// Check if loot is items of custom stuff (like points, tokens, etc)
-		if (lfgStats?.lootObtained && Object.keys(lfgStats?.lootObtained).length > 0) {
+		if (lfgStats && lfgStats.lootObtained && Object.keys(lfgStats.lootObtained).length > 0) {
 			let validItems = new Bank();
 			let invalidItems: string[] = [];
-			Object.entries(lfgStats!.lootObtained).map(item => {
+			Object.entries(lfgStats!.lootObtained).forEach(item => {
 				try {
 					let { id } = getOSItem(item[0]);
 					validItems.add(id, item[1]);
@@ -899,7 +899,7 @@ export default class extends BotCommand {
 		lfgACtivities = lfgACtivities.filter(m => m.data.users.length > 1);
 
 		const runningActivities: Record<number, any> = {};
-		Object.values(lfgACtivities).map(lfg => {
+		Object.values(lfgACtivities).forEach(lfg => {
 			runningActivities[lfg.data.queueId] = {
 				users: Number(runningActivities[lfg.data.queueId]?.users ?? 0) + Number(lfg.data.users.length),
 				killed: Number(runningActivities[lfg.data.queueId]?.killed ?? 0) + Number(lfg.data.quantity)
@@ -910,7 +910,7 @@ export default class extends BotCommand {
 
 		const lfgStatsData = await LfgStatusTable.find();
 
-		Object.values(availableQueues).map(queue => {
+		Object.values(availableQueues).forEach(queue => {
 			const dataQueue = lfgStatsData.find(d => d.id === queue.uniqueID);
 			embed.addField(
 				queue.name,
