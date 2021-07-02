@@ -68,7 +68,9 @@ export default class extends BotCommand {
 	async sacrificed(msg: KlasaMessage) {
 		const result = await this._query('SELECT SUM ("sacrificedValue") AS total FROM users;');
 
-		return msg.channel.send(`There has been ${parseInt(result[0].total).toLocaleString()} GP worth of items sacrificed!`);
+		return msg.channel.send(
+			`There has been ${parseInt(result[0].total).toLocaleString()} GP worth of items sacrificed!`
+		);
 	}
 
 	async bankbg(msg: KlasaMessage) {

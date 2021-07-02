@@ -222,7 +222,9 @@ export default class extends BotCommand {
 			);
 		}
 		if (boostChoice === 'burst' && msg.author.skillLevel(SkillsEnum.Magic) < 70) {
-			return msg.channel.send(`You need 70 Magic to use Ice Burst. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`);
+			return msg.channel.send(
+				`You need 70 Magic to use Ice Burst. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`
+			);
 		}
 
 		if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {

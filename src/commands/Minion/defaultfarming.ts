@@ -69,7 +69,9 @@ export default class extends BotCommand {
 		if (currentCompostTier !== newCompostTier) {
 			await msg.author.settings.update(UserSettings.Minion.DefaultCompostToUse, newCompostTier);
 
-			return msg.channel.send(`Your minion will now automatically use ${newCompostTier} for farming, if you have any.`);
+			return msg.channel.send(
+				`Your minion will now automatically use ${newCompostTier} for farming, if you have any.`
+			);
 		}
 		return msg.channel.send('You are already automatically using this type of compost.');
 	}
@@ -80,7 +82,9 @@ export default class extends BotCommand {
 		if (trueOrFalse === 'enable') {
 			await msg.author.settings.update(UserSettings.Minion.DefaultPay, true);
 
-			return msg.channel.send('Your minion will now automatically pay for farming, if you have the payment needed.');
+			return msg.channel.send(
+				'Your minion will now automatically pay for farming, if you have the payment needed.'
+			);
 		} else if (trueOrFalse === 'disable') {
 			await msg.author.settings.update(UserSettings.Minion.DefaultPay, false);
 

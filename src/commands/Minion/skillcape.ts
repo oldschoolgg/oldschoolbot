@@ -37,7 +37,9 @@ export default class extends BotCommand {
 		const levelInSkill = convertXPtoLVL(msg.author.settings.get(`skills.${skillName}`) as number);
 
 		if (levelInSkill < 99) {
-			return msg.channel.send(`Your ${toTitleCase(skillName)} level is less than 99! You can't buy a skill cape, noob.`);
+			return msg.channel.send(
+				`Your ${toTitleCase(skillName)} level is less than 99! You can't buy a skill cape, noob.`
+			);
 		}
 
 		const itemsToPurchase =

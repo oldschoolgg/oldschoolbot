@@ -109,7 +109,9 @@ export default class extends BotCommand {
 		}
 
 		if (minLevel !== undefined && msg.author.combatLevel < minLevel) {
-			return msg.channel.send(`You need to be at least combat level ${minLevel} for ${difficulty} Temple Trekking.`);
+			return msg.channel.send(
+				`You need to be at least combat level ${minLevel} for ${difficulty} Temple Trekking.`
+			);
 		}
 
 		let tripTime = tier.time;

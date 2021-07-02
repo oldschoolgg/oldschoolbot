@@ -49,7 +49,9 @@ export default class extends BotCommand {
 		const quantityPerEssence = calcMaxRCQuantity(rune, msg.author);
 
 		if (quantityPerEssence === 0) {
-			return msg.channel.send(`${msg.author.minionName} needs ${rune.levels[0][0]} Runecraft to create ${rune.name}s.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${rune.levels[0][0]} Runecraft to create ${rune.name}s.`
+			);
 		}
 
 		if (rune.qpRequired && msg.author.settings.get(UserSettings.QP) < rune.qpRequired) {

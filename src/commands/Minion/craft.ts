@@ -62,7 +62,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Crafting) < craftable.level) {
-			return msg.channel.send(`${msg.author.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`
+			);
 		}
 
 		await msg.author.settings.sync(true);

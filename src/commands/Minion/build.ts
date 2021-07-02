@@ -67,7 +67,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Construction) < object.level) {
-			return msg.channel.send(`${msg.author.minionName} needs ${object.level} Construction to create a ${object.name}.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${object.level} Construction to create a ${object.name}.`
+			);
 		}
 
 		let timeToBuildSingleObject = object.ticks * 300;
@@ -87,7 +89,9 @@ export default class extends BotCommand {
 		}
 
 		if (planksHas < planksQtyCost * quantity) {
-			return msg.channel.send(`You don't have enough ${itemNameFromID(plank)} to make ${quantity}x ${object.name}.`);
+			return msg.channel.send(
+				`You don't have enough ${itemNameFromID(plank)} to make ${quantity}x ${object.name}.`
+			);
 		}
 
 		const totalPlanksNeeded = planksQtyCost * quantity;

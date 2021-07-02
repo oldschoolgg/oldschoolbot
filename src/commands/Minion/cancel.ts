@@ -55,7 +55,9 @@ export default class extends BotCommand {
 		}
 
 		if (currentTask.type === Activity.SoulWars) {
-			return msg.channel.send(`${msg.author.minionName} is currently doing Soul Wars, and cant leave their team!`);
+			return msg.channel.send(
+				`${msg.author.minionName} is currently doing Soul Wars, and cant leave their team!`
+			);
 		}
 
 		if (currentTask.type === Activity.Raids) {

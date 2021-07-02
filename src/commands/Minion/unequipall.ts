@@ -23,7 +23,9 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [gearType]: [GearSetupTypes]): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
-			return msg.channel.send(`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`);
+			return msg.channel.send(
+				`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`
+			);
 		}
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
 		const currentEquippedGear = msg.author.getGear(gearType);

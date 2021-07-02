@@ -144,7 +144,9 @@ export default class extends BotCommand {
 			}
 			await msg.author.settings.update(UserSettings.HonourPoints, points - level.cost);
 			await msg.author.settings.update(UserSettings.HonourLevel, currentLevel + 1);
-			return msg.channel.send(`You've spent ${level.cost} Honour points to level up to Honour level ${level.level}!`);
+			return msg.channel.send(
+				`You've spent ${level.cost} Honour points to level up to Honour level ${level.level}!`
+			);
 		}
 	}
 

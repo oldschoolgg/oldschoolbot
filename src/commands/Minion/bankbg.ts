@@ -129,7 +129,9 @@ export default class extends BotCommand {
 
 			// Ensure they have the required GP.
 			if (selectedImage.gpCost && msg.author.settings.get(UserSettings.GP) < selectedImage.gpCost) {
-				return msg.channel.send(`You need ${selectedImage.gpCost.toLocaleString()} GP to purchase this background.`);
+				return msg.channel.send(
+					`You need ${selectedImage.gpCost.toLocaleString()} GP to purchase this background.`
+				);
 			}
 
 			// Start building a string to show to the user.

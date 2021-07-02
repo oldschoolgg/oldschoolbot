@@ -140,7 +140,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Hunter) < birdhouse.huntLvl) {
-			return msg.channel.send(`${msg.author.minionName} needs ${birdhouse.huntLvl} Hunter to place ${birdhouse.name}.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${birdhouse.huntLvl} Hunter to place ${birdhouse.name}.`
+			);
 		}
 
 		if (questPoints < birdhouse.qpRequired) {

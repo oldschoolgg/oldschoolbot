@@ -114,15 +114,21 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0) < creature.level) {
-			return msg.channel.send(`${msg.author.minionName} needs ${creature.level} Hunter to hunt ${creature.name}.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${creature.level} Hunter to hunt ${creature.name}.`
+			);
 		}
 
 		if (creature.qpRequired && userQP < creature.qpRequired) {
-			return msg.channel.send(`${msg.author.minionName} needs ${creature.qpRequired} QP to hunt ${creature.name}.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${creature.qpRequired} QP to hunt ${creature.name}.`
+			);
 		}
 
 		if (creature.prayerLvl && msg.author.skillLevel(SkillsEnum.Prayer) < creature.prayerLvl) {
-			return msg.channel.send(`${msg.author.minionName} needs ${creature.prayerLvl} Prayer to hunt ${creature.name}.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${creature.prayerLvl} Prayer to hunt ${creature.name}.`
+			);
 		}
 
 		if (creature.herbloreLvl && msg.author.skillLevel(SkillsEnum.Herblore) < creature.herbloreLvl) {

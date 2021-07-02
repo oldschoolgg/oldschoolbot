@@ -77,7 +77,9 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			quantity = msg.author.numItemsInBankSync(itemID(superCompostableCrop));
 		} else if (!bankHasItem(userBank, itemID(superCompostableCrop), quantity)) {
-			return msg.channel.send(`You do not have enough ${superCompostableCrop} to compost for the quantity specified`);
+			return msg.channel.send(
+				`You do not have enough ${superCompostableCrop} to compost for the quantity specified`
+			);
 		}
 
 		if (quantity === 0) {

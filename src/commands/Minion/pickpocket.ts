@@ -87,7 +87,9 @@ export default class extends BotCommand {
 			pickpocketable.itemsRequired &&
 			!bankHasAllItemsFromBank(msg.author.allItemsOwned().bank, pickpocketable.itemsRequired)
 		) {
-			return msg.channel.send(`You need these items to pickpocket this NPC: ${new Bank(pickpocketable.itemsRequired)}.`);
+			return msg.channel.send(
+				`You need these items to pickpocket this NPC: ${new Bank(pickpocketable.itemsRequired)}.`
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Thieving) < pickpocketable.level) {

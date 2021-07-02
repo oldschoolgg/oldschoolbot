@@ -48,7 +48,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Cooking) < cookable.level) {
-			return msg.channel.send(`${msg.author.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`
+			);
 		}
 
 		// Based off catherby fish/hr rates

@@ -102,7 +102,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Agility) < course.level) {
-			return msg.channel.send(`${msg.author.minionName} needs ${course.level} agility to train at ${course.name}.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${course.level} agility to train at ${course.name}.`
+			);
 		}
 
 		if (course.qpRequired && msg.author.settings.get(UserSettings.QP) < course.qpRequired) {

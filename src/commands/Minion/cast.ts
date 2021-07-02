@@ -49,7 +49,9 @@ export default class extends BotCommand {
 		}
 
 		if (spell.craftLevel && msg.author.skillLevel(SkillsEnum.Crafting) < spell.craftLevel) {
-			return msg.channel.send(`${msg.author.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`
+			);
 		}
 
 		if (spell.qpRequired && msg.author.settings.get(UserSettings.QP) < spell.qpRequired) {

@@ -158,7 +158,9 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			}
 			await msg.author.removeItemFromBank(itemID('Agility arena ticket'), cost);
 			await msg.author.addItemsToBank({ [buyable.item.id]: qty }, true);
-			return msg.channel.send(`Successfully purchased ${qty}x ${buyable.item.name} for ${cost}x Agility arena tickets.`);
+			return msg.channel.send(
+				`Successfully purchased ${qty}x ${buyable.item.name} for ${cost}x Agility arena tickets.`
+			);
 		}
 		if (input === 'xp') {
 			if (!(qty in ticketQuantities)) {
