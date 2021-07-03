@@ -8,6 +8,7 @@ import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
+import { Ignecarus } from '../data/killableMonsters/custom/Ignecarus';
 import KingGoldemar from '../data/killableMonsters/custom/KingGoldemar';
 import SeaKraken from '../data/killableMonsters/custom/SeaKraken';
 import { VasaMagus } from '../data/killableMonsters/custom/VasaMagus';
@@ -30,7 +31,8 @@ const miscHpMap: Record<number, number> = {
 	[KingGoldemar.id]: 10_000,
 	[VasaMagus.id]: 3900,
 	[KalphiteKingMonster.id]: 5300,
-	[SeaKraken.id]: 3900
+	[SeaKraken.id]: 3900,
+	[Ignecarus.id]: 10_000
 };
 
 function meleeOnly(user: KlasaUser): AttackStyles[] {

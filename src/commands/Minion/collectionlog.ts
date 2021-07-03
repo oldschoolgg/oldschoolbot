@@ -40,7 +40,7 @@ Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 			_type => stringMatches(_type.name, inputType) || _type.aliases.some(name => stringMatches(name, inputType))
 		);
 
-		if (!type && !monster) {
+		if ((!type && !monster) || (monster && stringMatches(monster.name, 'ignecarus'))) {
 			return msg.send(
 				`That's not a valid collection log type. The valid types are: ${slicedCollectionLogTypes
 					.map(type => type.name)

@@ -6,6 +6,7 @@ import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
+import { TamesTable } from '../../lib/typeorm/TamesTable.entity';
 import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
 
 export default class extends BotCommand {
@@ -70,6 +71,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 				await MinigameTable.delete({ userID: msg.author.id });
 				await ActivityTable.delete({ userID: msg.author.id });
 				await XPGainsTable.delete({ userID: msg.author.id });
+				await TamesTable.delete({ userID: msg.author.id });
 			} catch (_) {}
 
 			await msg.author.settings.update([

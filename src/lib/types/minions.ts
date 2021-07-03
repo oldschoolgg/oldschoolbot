@@ -1,3 +1,4 @@
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { MinigameKey } from '../../extendables/User/Minigame';
@@ -217,8 +218,9 @@ export interface BossActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-interface StoredBossUser extends Omit<BossUser, 'user'> {
+interface StoredBossUser extends Omit<BossUser, 'user' | 'itemsToRemove'> {
 	user: string;
+	itemsToRemove: ItemBank;
 }
 
 export interface NewBossOptions extends ActivityTaskOptions {
