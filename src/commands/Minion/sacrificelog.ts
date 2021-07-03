@@ -48,7 +48,7 @@ export default class extends BotCommand {
 		const num = items.filter(item => log[item] > 0).length;
 
 		if (inputType === '') {
-			return msg.send(
+			return msg.channel.send(
 				`You have ${num}/${items.length} (${calcWhatPercent(num, items.length).toFixed(
 					2
 				)}%) Sacrifice Log Completion.`

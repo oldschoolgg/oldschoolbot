@@ -33,7 +33,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [inputType]: [string]) {
 		if (!inputType) {
 			const { percent, notOwned, owned } = msg.author.completion();
-			return msg.send(
+			return msg.channel.send(
 				`You have ${owned.length}/${allCollectionLogItems.length} (${percent.toFixed(
 					2
 				)}%) Collection Log Completion.
