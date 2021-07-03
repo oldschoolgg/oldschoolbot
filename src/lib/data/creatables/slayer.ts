@@ -32,7 +32,7 @@ export const slayerCreatables: Createable[] = [
 		GPCost: 0
 	},
 	{
-		name: 'Revert hydra leather',
+		name: 'Hydra leather',
 		inputItems: resolveNameBank({
 			'Ferocious gloves': 1
 		}),
