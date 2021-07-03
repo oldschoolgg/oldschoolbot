@@ -940,10 +940,10 @@
   dependencies:
     table "*"
 
-"@types/twit@^2.2.29":
-  version "2.2.29"
-  resolved "https://registry.yarnpkg.com/@types/twit/-/twit-2.2.29.tgz#b46ff77d38251c0e0a58d39f5de7a971d191c3b0"
-  integrity sha512-ERhd8NTq1nW4/kQTdxKcS0QofOLnogM8U3LpL1rEtr/cDonaSMGh1+9NUEmBKjbSNqxh4UPBhM1rMHb8VEwUdg==
+"@types/twit@^2.2.30":
+  version "2.2.30"
+  resolved "https://registry.yarnpkg.com/@types/twit/-/twit-2.2.30.tgz#2acace6fb1c731f0c92944614305c2667fd391ec"
+  integrity sha512-u9rm+K/vX/A4zSJZ0e3XHyi344/vcRqhj4j/6oHlF8UuuKlytlXrArJbc+jMtT0Q5AQZap7TdEZueQ2sggdRvA==
   dependencies:
     "@types/geojson" "*"
     "@types/node" "*"
