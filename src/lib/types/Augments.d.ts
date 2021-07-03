@@ -119,7 +119,12 @@ declare module 'discord.js' {
 	}
 	interface PartialTextBasedChannelFields {
 		send: KlasaSend;
+		readonly attachable: boolean;
+		readonly embedable: boolean;
+		readonly postable: boolean;
+		readonly readable: boolean;
 	}
+
 	interface Client {
 		public query<T>(query: string): Promise<T>;
 	}

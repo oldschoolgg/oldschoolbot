@@ -134,11 +134,12 @@ export default class extends BotCommand {
 			course.name
 		} laps, it'll take around ${formatDuration(duration)} to finish.`;
 
-		const alchResult = alching(msg, duration);
-		if (alchResult !== null && course.name === 'Ape Atoll Agility Course') {
+		const alchResult = course.name === 'Ape Atoll Agility Course' ? null : alching(msg, duration);
+		if (alchResult !== null) {
 			if (!msg.author.owns(alchResult.bankToRemove)) {
 				return msg.channel.send(`You don't own ${alchResult.bankToRemove}.`);
 			}
+
 			await msg.author.removeItemsFromBank(alchResult.bankToRemove);
 			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
 			updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);

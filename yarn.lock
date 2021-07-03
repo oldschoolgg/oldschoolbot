@@ -4018,7 +4018,7 @@ klasa-decorators@^0.0.1:
 
 "klasa@github:gc/klasa#djs_update":
   version "0.5.0-dev"
-  resolved "https://codeload.github.com/gc/klasa/tar.gz/4e9a4fbb1e80ced32fbf6b363d0ff268dd66d414"
+  resolved "https://codeload.github.com/gc/klasa/tar.gz/dfa8cb3738d712eb847edc93f32ace68e1e3720f"
   dependencies:
     "@klasa/querybuilder" "^0.0.1"
     "@klasa/settings-gateway" "^0.0.10"

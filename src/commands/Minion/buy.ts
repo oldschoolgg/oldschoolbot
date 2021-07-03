@@ -66,7 +66,7 @@ export default class extends BotCommand {
 		}
 
 		if (buyable.skillsNeeded && !skillsMeetRequirements(msg.author.rawSkills, buyable.skillsNeeded)) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have the required stats to buy this item. You need ${formatSkillRequirements(
 					buyable.skillsNeeded
 				)}.`

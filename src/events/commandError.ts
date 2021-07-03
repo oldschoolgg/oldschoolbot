@@ -20,7 +20,7 @@ export default class extends Event {
 
 		if (error.name === 'AbortError') {
 			try {
-				return await message.send(
+				return await message.channel.send(
 					'Oops! I had a network issue trying to respond to your command. Please try again.'
 				);
 			} catch (_) {}

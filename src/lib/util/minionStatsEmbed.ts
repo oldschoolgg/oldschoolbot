@@ -46,21 +46,21 @@ export async function minionStatsEmbed(user: KlasaUser) {
 			'\u200b',
 			['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
 				.map(skillCell)
-				.join(''),
+				.join('\n'),
 			true
 		)
 		.addField(
 			'\u200b',
 			['hitpoints', 'agility', 'herblore', 'thieving', 'crafting', 'fletching', 'slayer', 'hunter']
 				.map(skillCell)
-				.join(''),
+				.join('\n'),
 			true
 		)
 		.addField(
 			'\u200b',
 			['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall']
 				.map(skillCell)
-				.join(''),
+				.join('\n'),
 			true
 		);
 
@@ -90,7 +90,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 					}
 					return `**${toTitleCase(clueTier.name)}:** ${qty.toLocaleString()}`;
 				})
-				.join(''),
+				.join('\n'),
 			true
 		);
 	}
@@ -103,7 +103,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 				.map(minigame => {
 					return `**${toTitleCase(minigame.minigame.name)}:** ${minigame.score.toLocaleString()}`;
 				})
-				.join(''),
+				.join('\n'),
 			true
 		);
 	}
@@ -158,7 +158,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 			.map(([name, text]) => {
 				return `**${name}:** ${text}`;
 			})
-			.join(''),
+			.join('\n'),
 		true
 	);
 

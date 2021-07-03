@@ -19,7 +19,7 @@ export default class extends Extendable {
 		fileName = 'large-response.txt',
 		messageTooLong = 'Response was too long, please see text file.'
 	) {
-		if (content.length <= 2000 && !this.flagArgs.file) return this.send(content);
+		if (content.length <= 2000 && !this.flagArgs.file) return this.channel.send(content);
 
 		return this.channel.send({
 			files: [new MessageAttachment(Buffer.from(content), fileName)],

@@ -30,21 +30,21 @@ export default class GetStatsEmbed extends Extendable {
 				'\u200b',
 				['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
 					.map(skillCell)
-					.join(''),
+					.join('\n'),
 				true
 			)
 			.addField(
 				'\u200b',
 				['hitpoints', 'agility', 'herblore', 'thieving', 'crafting', 'fletching', 'slayer', 'hunter']
 					.map(skillCell)
-					.join(''),
+					.join('\n'),
 				true
 			)
 			.addField(
 				'\u200b',
 				['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall']
 					.map(skillCell)
-					.join(''),
+					.join('\n'),
 				true
 			);
 
@@ -74,7 +74,7 @@ export default class GetStatsEmbed extends Extendable {
 							tier =>
 								`**${toTitleCase(tier)}:** ${clues[tier as keyof CluesScore].score.toLocaleString()}`
 						)
-						.join(''),
+						.join('\n'),
 					true
 				);
 		}
