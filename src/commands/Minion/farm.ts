@@ -224,7 +224,7 @@ export default class extends BotCommand {
 				if (!bankHasItem(userBank, parseInt(paymentID), qty * quantity)) {
 					canPay = false;
 					if (msg.flagArgs.pay) {
-						return msg.send(
+						return msg.channel.send(
 							`You don't have enough ${itemNameFromID(
 								parseInt(paymentID)
 							)} to make payments to nearby farmers.`
@@ -321,7 +321,7 @@ export default class extends BotCommand {
 			type: Activity.Farming
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${infoStr.join(' ')}\n\nIt'll take around ${formatDuration(duration)} to finish.\n\n${
 				boostStr.length > 0 ? '**Boosts**: ' : ''
 			}${boostStr.join(', ')}`

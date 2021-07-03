@@ -57,7 +57,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [rune = 'blood']: ['soul' | 'blood']) {
 		const [hasSkillReqs, neededReqs] = msg.author.hasSkillReqs(skillReqs);
 		if (!hasSkillReqs) {
-			return msg.send(
+			return msg.channel.send(
 				`You can't craft Blood runes at the Dark Altar, because you don't have these required stats: ${neededReqs}.`
 			);
 		}
@@ -112,6 +112,6 @@ export default class extends BotCommand {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

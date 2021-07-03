@@ -41,7 +41,7 @@ export default class extends BotCommand {
 		);
 
 		if (!plank) {
-			return msg.send(
+			return msg.channel.send(
 				`Thats not a valid plank to make. Valid planks are **${Planks.map(plank => plank.name).join(', ')}**.`
 			);
 		}
@@ -70,20 +70,20 @@ export default class extends BotCommand {
 		}
 
 		if (quantity === 0) {
-			return msg.send(`You don't have any ${itemNameFromID(plank.inputItem)}.`);
+			return msg.channel.send(`You don't have any ${itemNameFromID(plank.inputItem)}.`);
 		}
 
 		const GP = msg.author.settings.get(UserSettings.GP);
 		let cost = plank!.gpCost * quantity;
 
 		if (GP < cost) {
-			return msg.send(`You need ${toKMB(cost)} GP to create ${quantity} planks.`);
+			return msg.channel.send(`You need ${toKMB(cost)} GP to create ${quantity} planks.`);
 		}
 
 		const duration = quantity * timePerPlank;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of planks you can make is ${Math.floor(
@@ -121,6 +121,6 @@ export default class extends BotCommand {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

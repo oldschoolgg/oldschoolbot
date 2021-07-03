@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { table } from 'table';
@@ -143,6 +144,8 @@ export default class extends BotCommand {
 				});
 			});
 		});
-		return msg.channel.sendFile(Buffer.from(table(simTable)), 'slayerMonsterSim.txt');
+		return msg.channel.send({
+			files: [new MessageAttachment(Buffer.from(table(simTable)), 'slayerMonsterSim.txt')]
+		});
 	}
 }

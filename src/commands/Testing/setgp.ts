@@ -15,6 +15,6 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [gp]: [number]) {
 		await msg.author.settings.update(UserSettings.GP, gp);
-		return msg.send(`Your cash stack is now ${toKMB(gp)}`);
+		return msg.channel.send(`Your cash stack is now ${toKMB(gp)}`);
 	}
 }

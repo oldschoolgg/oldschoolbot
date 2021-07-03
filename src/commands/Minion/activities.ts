@@ -24,7 +24,7 @@ export default class extends BotCommand {
 			}
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`**Your last 10 activities:**\n
 ${res
 	.slice(0, 10)

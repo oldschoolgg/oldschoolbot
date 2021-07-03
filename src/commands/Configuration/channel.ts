@@ -20,20 +20,20 @@ export default class extends BotCommand {
 		const isDisabled = msg.guild?.settings.get(GuildSettings.StaffOnlyChannels).includes(msg.channel.id);
 
 		if (input === 'disable') {
-			if (isDisabled) return msg.send('This channel is already disabled.');
+			if (isDisabled) return msg.channel.send('This channel is already disabled.');
 
 			await msg.guild!.settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
 				arrayAction: 'add'
 			});
 
-			return msg.send('Channel disabled. Staff of this server can still use commands in this channel.');
+			return msg.channel.send('Channel disabled. Staff of this server can still use commands in this channel.');
 		}
-		if (!isDisabled) return msg.send('This channel is already enabled.');
+		if (!isDisabled) return msg.channel.send('This channel is already enabled.');
 
 		await msg.guild!.settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
 			arrayAction: 'remove'
 		});
 
-		return msg.send('Channel enabled. Anyone can use commands in this channel now.');
+		return msg.channel.send('Channel enabled. Anyone can use commands in this channel now.');
 	}
 }

@@ -15,37 +15,37 @@ export default class extends BotCommand {
 	}
 
 	async run(message: KlasaMessage, [code]: [string]) {
-		if (!this.client.owners.has(message.author)) return null;
-		const res = await this.eval(message, code);
-		if (res === undefined) return;
-		const { success, result, time, type } = res;
-		if (typeof result !== 'string') return null;
+		try {
+			if (!this.client.owners.has(message.author)) return null;
+			const res = await this.eval(message, code);
+			if (res === undefined) return;
+			const { success, result, time, type } = res;
+			if (typeof result !== 'string') return null;
 
-		const footer = util.codeBlock('ts', type);
-		const output = message.language.get(
-			success ? 'COMMAND_EVAL_OUTPUT' : 'COMMAND_EVAL_ERROR',
-			time,
-			util.codeBlock('js', result),
-			footer
-		);
+			const footer = util.codeBlock('ts', type);
+			const output = message.language.get(
+				success ? 'COMMAND_EVAL_OUTPUT' : 'COMMAND_EVAL_ERROR',
+				time,
+				util.codeBlock('js', result),
+				footer
+			);
 
-		if ('silent' in message.flagArgs) return null;
+			if ('silent' in message.flagArgs) return null;
 
-		// Handle too-long-messages
-		if (output.length > 2000) {
-			if (message.guild && message.channel.attachable) {
-				return message.channel.sendFile(
-					Buffer.from(result),
-					'output.txt',
-					message.language.get('COMMAND_EVAL_SENDFILE', time, footer)
-				);
+			// Handle too-long-messages
+			if (output.length > 2000) {
+				if (message.guild && message.channel.attachable) {
+					return message.channel.send({ files: [new MessageAttachment(Buffer.from(result), 'output.txt')] });
+				}
+				this.client.emit('log', result);
+				return;
 			}
-			this.client.emit('log', result);
-			return message.sendLocale('COMMAND_EVAL_SENDCONSOLE', [time, footer]);
-		}
 
-		// If it's a message that can be sent correctly, send it
-		return message.sendMessage(output);
+			// If it's a message that can be sent correctly, send it
+			return message.channel.send(output);
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 	// Eval the input
@@ -91,7 +91,7 @@ export default class extends BotCommand {
 		}
 
 		if (Buffer.isBuffer(result)) {
-			msg.channel.send(new MessageAttachment(result));
+			msg.channel.send({ files: [new MessageAttachment(result)] });
 			return;
 		}
 

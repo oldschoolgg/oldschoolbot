@@ -28,19 +28,19 @@ export default class extends BotCommand {
 		if (!amount) {
 			embed.setDescription(`You rolled **${roll}** on the percentile dice.`);
 		} else {
-			if (msg.author.isIronman) return msg.send("You're an ironman and you cant play dice.");
+			if (msg.author.isIronman) return msg.channel.send("You're an ironman and you cant play dice.");
 
 			if (amount > 500_000_000) {
-				return msg.send('You can only dice up to 500m at a time!');
+				return msg.channel.send('You can only dice up to 500m at a time!');
 			}
 
 			if (amount < 1_000_000) {
-				return msg.send('You have to dice atleast 1,000,000.');
+				return msg.channel.send('You have to dice atleast 1,000,000.');
 			}
 
 			await msg.author.settings.sync(true);
 			const gp = msg.author.settings.get(UserSettings.GP);
-			if (amount > gp) return msg.send("You don't have enough GP.");
+			if (amount > gp) return msg.channel.send("You don't have enough GP.");
 			const won = roll >= 55;
 			let amountToAdd = won ? amount : -amount;
 
@@ -62,6 +62,6 @@ export default class extends BotCommand {
 			);
 		}
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

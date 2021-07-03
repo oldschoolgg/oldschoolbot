@@ -162,12 +162,12 @@ export default class extends BotCommand {
 		if (bankHasItem(userBank, itemID('Seed pack'), 1)) {
 			loot.add(openSeedPack(plantTier));
 		} else {
-			return msg.send('You have no seed packs to open!');
+			return msg.channel.send('You have no seed packs to open!');
 		}
 
 		await msg.author.removeItemFromBank(itemID('Seed pack'), 1);
 		await msg.author.addItemsToBank(loot.bank, true);
 
-		return msg.send(`You opened a seed pack and received: ${loot}.`);
+		return msg.channel.send(`You opened a seed pack and received: ${loot}.`);
 	}
 }
