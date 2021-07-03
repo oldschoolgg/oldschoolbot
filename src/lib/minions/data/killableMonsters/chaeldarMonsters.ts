@@ -12,7 +12,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.AncientZygomite.id,
 		name: Monsters.AncientZygomite.name,
 		aliases: Monsters.AncientZygomite.aliases,
-		timeToFinish: Time.Second * 15,
+		timeToFinish: Time.Second * 25,
 		table: Monsters.AncientZygomite,
 
 		wildy: false,
@@ -439,7 +439,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.Zygomite.id,
 		name: Monsters.Zygomite.name,
 		aliases: Monsters.Zygomite.aliases,
-		timeToFinish: Time.Second * 25,
+		timeToFinish: Time.Second * 15,
 		table: Monsters.Zygomite,
 		wildy: false,
 
