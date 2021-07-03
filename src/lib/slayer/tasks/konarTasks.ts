@@ -306,6 +306,21 @@ export const konarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
+		monster: Monsters.BlackDragon,
+		amount: [10, 15],
+		weight: 6,
+		monsters: [
+			Monsters.BlackDragon.id,
+			Monsters.BabyBlackDragon.id,
+			Monsters.BrutalBlackDragon.id,
+			Monsters.KingBlackDragon.id
+		],
+		slayerLevel: 77,
+		combatLevel: 80,
+		questPoints: 34,
+		unlocked: true
+	},
+	{
 		monster: Monsters.SkeletalWyvern,
 		amount: [5, 12],
 		weight: 5,
