@@ -81,8 +81,6 @@ export default class extends BotCommand {
 			finalStr += emptyEmoji + emptyContentStr;
 		}
 
-		return msg.send(finalStr, {
-			split: true
-		});
+		return msg.channel.send(finalStr);
 	}
 }

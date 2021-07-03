@@ -363,7 +363,7 @@ export function normal(mu = 0, sigma = 1, nsamples = 6) {
  * Checks if the bot can send a message to a channel object.
  * @param channel The channel to check if the bot can send a message to.
  */
-export function channelIsSendable(channel: Channel | undefined): channel is TextChannel {
+export function channelIsSendable(channel: Channel | undefined | null): channel is TextChannel {
 	if (!channel || (!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) || !channel.postable) {
 		return false;
 	}

@@ -108,7 +108,7 @@ export default class extends BotCommand {
 
 		let duration = collectable.duration * quantity;
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on a trip longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount you can do for ${collectable.item.name} is ${Math.floor(
@@ -137,7 +137,7 @@ export default class extends BotCommand {
 			type: Activity.Collecting
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now collecting ${quantity * collectable.quantity}x ${
 				collectable.item.name
 			}, it'll take around ${formatDuration(duration)} to finish.

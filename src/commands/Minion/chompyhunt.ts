@@ -129,6 +129,6 @@ export default class extends BotCommand {
 			str += `\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

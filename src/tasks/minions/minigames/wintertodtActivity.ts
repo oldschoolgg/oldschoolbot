@@ -9,7 +9,7 @@ import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, bankHasItem, channelIsSendable, noOp } from '../../../lib/util';
+import { addBanks, bankHasItem, channelIsSendable } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
@@ -41,7 +41,7 @@ export default class extends Task {
 		const { userID, channelID, quantity } = data;
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
-		const channel = await this.client.channels.fetch(channelID).catch(noOp);
+		const channel = await this.client.channels.fetch(channelID);
 
 		let loot: ItemBank = {};
 

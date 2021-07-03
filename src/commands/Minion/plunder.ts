@@ -27,7 +27,7 @@ export default class extends BotCommand {
 		const thievingLevel = msg.author.skillLevel(SkillsEnum.Thieving);
 		const minLevel = plunderRooms[0].thievingLevel;
 		if (thievingLevel < minLevel) {
-			return msg.send(`You need atleast level ${minLevel} Thieving to do the Pyramid Plunder.`);
+			return msg.channel.send(`You need atleast level ${minLevel} Thieving to do the Pyramid Plunder.`);
 		}
 
 		const completableRooms = plunderRooms.filter(room => thievingLevel >= room.thievingLevel);
@@ -82,6 +82,6 @@ export default class extends BotCommand {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

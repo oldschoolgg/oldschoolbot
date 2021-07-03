@@ -57,7 +57,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`To fight Zalcano, you need: ${reason}.`);
 		}
 		if (msg.author.settings.get(UserSettings.QP) < 150) {
-			return msg.send('To fight Zalcano, you need 150 QP.');
+			return msg.channel.send('To fight Zalcano, you need 150 QP.');
 		}
 
 		const kc = msg.author.getKC(ZALCANO_ID);
@@ -105,7 +105,7 @@ export default class extends BotCommand {
 			isMVP: percentChance(80)
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${
 				msg.author.minionName
 			} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDuration(

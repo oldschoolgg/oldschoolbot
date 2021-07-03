@@ -12,6 +12,6 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.send('Support Server: http://support.oldschool.gg');
+		return msg.channel.send('Support Server: http://support.oldschool.gg');
 	}
 }

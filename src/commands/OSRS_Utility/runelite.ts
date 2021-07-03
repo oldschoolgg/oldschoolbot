@@ -32,6 +32,6 @@ https://runelite.net/`
 			.addField('Many Features', 'https://runelite.net/features', true)
 			.setFooter('*Use of any 3rd party client is at your own risk.');
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

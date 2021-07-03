@@ -19,7 +19,7 @@ export default class extends BotCommand {
 		const average = totalCount / Worlds.size;
 		const highest = sortedWorlds.first();
 
-		return msg.send(`
+		return msg.channel.send(`
 **Total players on OSRS**: ${totalCount.toLocaleString()}
 
 **Average per world:** ${average.toFixed(2)}

@@ -54,7 +54,7 @@ export default class extends Event {
 						await message.delete();
 					}
 				}
-				const res = await channel.send(embed);
+				const res = await channel.send({ embeds: [embed] });
 				lastMessageID = res.id;
 			} catch (_) {}
 		}, Number(Time.Minute * 15));

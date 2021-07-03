@@ -19,7 +19,7 @@ export const staging = false;
 export const redditAppConfig: RedditAppConfig = null;
 export const twitterAppConfig: TwitterAppConfig = null;
 export const patreonConfig: PatreonConfig = null;
-export const customClientOptions: KlasaClientOptions = {
+export const customClientOptions: Partial<KlasaClientOptions> = {
 	prefix: '-'
 };
 export const SENTRY_DSN: string | null = null;

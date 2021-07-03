@@ -79,7 +79,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [skillLevel, petName]: [number, keyof typeof petRates]) {
-		return msg.send(this.rate(petRates[petName], skillLevel));
+		return msg.channel.send(this.rate(petRates[petName], skillLevel));
 	}
 
 	rate(obj: typeof petRates[keyof typeof petRates], lvl: number) {

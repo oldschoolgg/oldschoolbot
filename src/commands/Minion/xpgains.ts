@@ -52,6 +52,6 @@ LIMIT 10;`
 					.join('\n')
 			);
 
-		return msg.send(embed);
+		return msg.channel.send({ embeds: [embed] });
 	}
 }
