@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { chunk } from 'e';
+import { chunk, uniqueArr } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
@@ -9,7 +9,14 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID, stringMatches } from '../../lib/util';
 
-const slicedCollectionLogTypes = collectionLogTypes.slice(0, collectionLogTypes.length - 1);
+const slicedCollectionLogTypes = collectionLogTypes.filter(i => i.name !== 'Overall');
+
+const allCollectionLogItems = uniqueArr(
+	collectionLogTypes
+		.filter(i => !['Holiday', 'Diango', 'Overall', 'Capes', 'Clue Hunter'].includes(i.name))
+		.map(i => Object.values(i.items))
+		.flat(Infinity) as number[]
+);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -25,9 +32,11 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [inputType]: [string]) {
 		if (!inputType) {
-			const { percent, notOwned } = msg.author.completion();
-			return msg.channel.send(
-				`You have **${percent.toFixed(2)}%** Collection Log Completion.
+			const { percent, notOwned, owned } = msg.author.completion();
+			return msg.send(
+				`You have ${owned.length}/${allCollectionLogItems.length} (${percent.toFixed(
+					2
+				)}%) Collection Log Completion.
 				
 Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 			);
