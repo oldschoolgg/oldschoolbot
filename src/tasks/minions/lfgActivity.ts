@@ -53,7 +53,7 @@ export default class extends Task {
 						.join(', ');
 					totalLoot = mergeLoot(totalLoot, e.lootedNonItems);
 				}
-				if (e.lootedItems && e.lootedItems?.items().length > 0) {
+				if (e.lootedItems && e.lootedItems.items().length > 0) {
 					lootObtainedString += (lootObtainedString ? ', ' : '') + e.lootedItems.toString();
 					totalLoot = mergeLoot(totalLoot, e.lootedItems.bank);
 				}

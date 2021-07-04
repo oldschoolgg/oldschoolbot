@@ -261,7 +261,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 						}
 						const mon = effectiveMonsters.find(m => m.id === parseInt(monID));
 						if (!mon) return `**${Monsters.get(parseInt(monID))?.name}:** ${monKC}`;
-						return `${(mon as any)?.emoji ?? ''}**${mon!.name}**: ${monKC}`;
+						return `${mon?.emoji ?? ''}**${mon.name}**: ${monKC}`;
 					})
 					.join('\n'),
 				true
