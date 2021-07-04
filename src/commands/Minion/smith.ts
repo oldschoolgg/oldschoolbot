@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
@@ -28,17 +29,21 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity, smithableItem = '']: [null | number | string, string]) {
 		if (msg.flagArgs.items) {
-			return msg.channel.sendFile(
-				Buffer.from(
-					Smithing.SmithableItems.map(
-						item =>
-							`${item.name} - lvl ${item.level} : ${Object.entries(item.inputBars)
-								.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
-								.join(', ')}`
-					).join('\n')
-				),
-				'Available Smithing items.txt'
-			);
+			return msg.channel.send({
+				files: [
+					new MessageAttachment(
+						Buffer.from(
+							Smithing.SmithableItems.map(
+								item =>
+									`${item.name} - lvl ${item.level} : ${Object.entries(item.inputBars)
+										.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
+										.join(', ')}`
+							).join('\n')
+						),
+						'Available Smithing items.txt'
+					)
+				]
+			});
 		}
 
 		if (typeof quantity === 'string') {
@@ -51,13 +56,13 @@ export default class extends BotCommand {
 		);
 
 		if (!smithedItem) {
-			return msg.send(
+			return msg.channel.send(
 				`That is not a valid item to smith, to see the items availible do \`${msg.cmdPrefix}smith --items\``
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`
 			);
 		}
@@ -83,7 +88,7 @@ export default class extends BotCommand {
 		const requiredBars: [string, number][] = Object.entries(smithedItem.inputBars);
 		for (const [barID, qty] of requiredBars) {
 			if (!bankHasItem(userBank, parseInt(barID), qty * quantity)) {
-				return msg.send(
+				return msg.channel.send(
 					`You don't have enough ${itemNameFromID(parseInt(barID))}'s to smith ${quantity}x ${
 						smithedItem.name
 					}, you need atleast ${qty}.`
@@ -93,7 +98,7 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToSmithSingleBar;
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${smithedItem.name}s you can smith is ${Math.floor(
@@ -124,7 +129,7 @@ export default class extends BotCommand {
 		});
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
 				smithedItem.name
 			}, using ${usedbars} bars, it'll take around ${formatDuration(duration)} to finish.`

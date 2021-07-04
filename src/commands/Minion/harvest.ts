@@ -169,6 +169,6 @@ export default class extends BotCommand {
 			type: Activity.Farming
 		});
 
-		return msg.send(returnMessageStr);
+		return msg.channel.send(returnMessageStr);
 	}
 }

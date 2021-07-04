@@ -43,20 +43,20 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [buyerMember]: [GuildMember]) {
 		if (buyerMember.user.isIronman) {
-			return msg.send('That person is an ironman, they stand alone.');
+			return msg.channel.send('That person is an ironman, they stand alone.');
 		}
 		if (buyerMember.user.id === msg.author.id || buyerMember.user.bot) {
-			return msg.send('You cant use a cracker on yourself, or a bot.');
+			return msg.channel.send('You cant use a cracker on yourself, or a bot.');
 		}
 
 		if (buyerMember.user.isBusy) {
-			return msg.send('That user is busy right now.');
+			return msg.channel.send('That user is busy right now.');
 		}
 
 		await Promise.all([buyerMember.user.settings.sync(true), msg.author.settings.sync(true)]);
 		const bank = new Bank(msg.author.settings.get(UserSettings.Bank));
 		if (!bank.has('Christmas cracker')) {
-			return msg.send("You don't have any Christmas crackers.");
+			return msg.channel.send("You don't have any Christmas crackers.");
 		}
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
@@ -66,14 +66,12 @@ export default class extends BotCommand {
 
 			// Confirm the seller wants to sell
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: 20000,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					max: 1,
+					time: 20000,
+					errors: ['time'],
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return sellMsg.edit('Cancelling cracker pull.');
 			}
@@ -86,7 +84,7 @@ export default class extends BotCommand {
 		await winner.addItemsToBank(winnerLoot, true);
 		await loser.addItemsToBank(loserLoot, true);
 
-		return msg.send(
+		return msg.channel.send(
 			cleanMentions(
 				msg.guild!,
 				`${Emoji.ChristmasCracker} ${msg.author} pulled a Christmas cracker with ${buyerMember} and....\n\n ${winner} received a ${winnerLoot}, ${loser} received a ${loserLoot}.`,

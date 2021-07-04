@@ -438,14 +438,16 @@ export default class extends Task {
 
 			channel.send(infoStr.join('\n'));
 			if (janeMessage) {
-				return channel.send(
-					await chatHeadImage({
-						content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
-							contractsCompleted + 1
-						} farming contracts.`,
-						head: 'jane'
-					})
-				);
+				return channel.send({
+					embeds: [
+						await chatHeadImage({
+							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+								contractsCompleted + 1
+							} farming contracts.`,
+							head: 'jane'
+						})
+					]
+				});
 			}
 		}
 	}

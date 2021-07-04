@@ -26,6 +26,6 @@ export default class extends BotCommand {
 		entity[minigame.key] = kc;
 		await entity.save();
 
-		return msg.send(`Set your ${minigame.name} kc to ${kc}.`);
+		return msg.channel.send(`Set your ${minigame.name} kc to ${kc}.`);
 	}
 }

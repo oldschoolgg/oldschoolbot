@@ -101,7 +101,7 @@ export default class extends BotCommand {
 
 			str += `${thisStr}\n`;
 		}
-		return msg.channel.send(str, { split: true });
+		return msg.channel.send(str);
 	}
 
 	async claim(msg: KlasaMessage, [input = '']: [string | undefined]) {

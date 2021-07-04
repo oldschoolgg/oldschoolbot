@@ -54,7 +54,7 @@ export default class extends BotCommand {
 			.addField('You can complete:', canComplete, true)
 			.setFooter('✶Boostable');
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 
 	check(skills: SkillsScore, diary: typeof diaryRequirements[keyof typeof diaryRequirements]) {

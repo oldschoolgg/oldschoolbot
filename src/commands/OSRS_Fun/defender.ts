@@ -34,7 +34,7 @@ export default class extends BotCommand {
 			}
 			DKC++;
 		}
-		return msg.send(
+		return msg.channel.send(
 			`You had to kill ${KC} Cyclops to get up to a Rune Defender, and then another ${DKC} for the Dragon Defender.`
 		);
 	}

@@ -29,6 +29,6 @@ export default class extends BotCommand {
 			}
 		}
 		const image = await generateGearImage(this.client, msg.author, new Gear(gear), null, null);
-		return msg.send(new MessageAttachment(image, 'osbot.png'));
+		return msg.channel.send({ files: [new MessageAttachment(image, 'osbot.png')] });
 	}
 }

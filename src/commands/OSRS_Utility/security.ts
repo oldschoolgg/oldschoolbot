@@ -11,7 +11,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.send(`
+		return msg.channel.send(`
 View the official account security guidelines by Jagex here: <https://www.runescape.com/oldschool/security>
 
 1. **Setup Authenticator (2FA) on your account.**

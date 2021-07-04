@@ -29,7 +29,9 @@ export default class extends BotCommand {
 		[gearType, quantity = 1, itemArray]: [GearSetupTypes, number, Item[]]
 	): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
-			return msg.send(`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`);
+			return msg.channel.send(
+				`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`
+			);
 		}
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
 
@@ -37,7 +39,7 @@ export default class extends BotCommand {
 		const itemToEquip = itemArray.find(i => userBank[i.id] >= quantity && i.equipable_by_player && i.equipment);
 
 		if (!itemToEquip) {
-			return msg.send("You don't have enough of this item to equip, or its not equippable.");
+			return msg.channel.send("You don't have enough of this item to equip, or its not equippable.");
 		}
 
 		const { slot } = itemToEquip.equipment!;
@@ -50,7 +52,7 @@ export default class extends BotCommand {
 			slot === EquipmentSlot.TwoHanded &&
 			(currentEquippedGear[EquipmentSlot.Weapon] || currentEquippedGear[EquipmentSlot.Shield])
 		) {
-			return msg.send(
+			return msg.channel.send(
 				"You can't equip this two-handed item because you have items equipped in your weapon/shield slots."
 			);
 		}
@@ -59,18 +61,18 @@ export default class extends BotCommand {
 			[EquipmentSlot.Weapon, EquipmentSlot.Shield, EquipmentSlot.TwoHanded].includes(slot) &&
 			currentEquippedGear[EquipmentSlot.TwoHanded]
 		) {
-			return msg.send(
+			return msg.channel.send(
 				"You can't equip this weapon or shield, because you have a 2H weapon equipped, and need to unequip it first."
 			);
 		}
 
 		if (!itemToEquip.stackable && quantity > 1) {
-			return msg.send("You can't equip more than 1 of this item at once, as it isn't stackable!");
+			return msg.channel.send("You can't equip more than 1 of this item at once, as it isn't stackable!");
 		}
 
 		if (itemToEquip.equipment?.requirements) {
 			if (!skillsMeetRequirements(msg.author.rawSkills, itemToEquip.equipment.requirements)) {
-				return msg.send(
+				return msg.channel.send(
 					`You can't equip a ${
 						itemToEquip.name
 					} because you don't have the required stats: ${formatSkillRequirements(
@@ -120,9 +122,9 @@ export default class extends BotCommand {
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);
 
-		return msg.send(
-			`You equipped ${itemToEquip.name} in your ${toTitleCase(gearType)} setup.`,
-			new MessageAttachment(image, 'osbot.png')
-		);
+		return msg.channel.send({
+			content: `You equipped ${itemToEquip.name} in your ${toTitleCase(gearType)} setup.`,
+			files: [new MessageAttachment(image, 'osbot.png')]
+		});
 	}
 }

@@ -44,21 +44,23 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		.setTitle(`${badgesStr}${user.minionName}`)
 		.addField(
 			'\u200b',
-			['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction'].map(skillCell),
+			['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
+				.map(skillCell)
+				.join('\n'),
 			true
 		)
 		.addField(
 			'\u200b',
-			['hitpoints', 'agility', 'herblore', 'thieving', 'crafting', 'fletching', 'slayer', 'hunter'].map(
-				skillCell
-			),
+			['hitpoints', 'agility', 'herblore', 'thieving', 'crafting', 'fletching', 'slayer', 'hunter']
+				.map(skillCell)
+				.join('\n'),
 			true
 		)
 		.addField(
 			'\u200b',
-			['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall'].map(
-				skillCell
-			),
+			['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall']
+				.map(skillCell)
+				.join('\n'),
 			true
 		);
 
@@ -79,14 +81,16 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	if (clueEntries.length > 0) {
 		embed.addField(
 			'<:Clue_scroll:365003979840552960> Clue Scores',
-			clueEntries.map(([id, qty]) => {
-				const clueTier = ClueTiers.find(t => t.id === parseInt(id));
-				if (!clueTier) {
-					console.error(`No clueTier: ${id}`);
-					return;
-				}
-				return `**${toTitleCase(clueTier.name)}:** ${qty.toLocaleString()}`;
-			}),
+			clueEntries
+				.map(([id, qty]) => {
+					const clueTier = ClueTiers.find(t => t.id === parseInt(id));
+					if (!clueTier) {
+						console.error(`No clueTier: ${id}`);
+						return;
+					}
+					return `**${toTitleCase(clueTier.name)}:** ${qty.toLocaleString()}`;
+				})
+				.join('\n'),
 			true
 		);
 	}
@@ -94,9 +98,12 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	if (minigameScores.length > 0) {
 		embed.addField(
 			'<:minigameIcon:630400565070921761> Minigames',
-			minigameScores.slice(0, 4).map(minigame => {
-				return `**${toTitleCase(minigame.minigame.name)}:** ${minigame.score.toLocaleString()}`;
-			}),
+			minigameScores
+				.slice(0, 4)
+				.map(minigame => {
+					return `**${toTitleCase(minigame.minigame.name)}:** ${minigame.score.toLocaleString()}`;
+				})
+				.join('\n'),
 			true
 		);
 	}
@@ -150,7 +157,8 @@ export async function minionStatsEmbed(user: KlasaUser) {
 			.slice(0, 4)
 			.map(([name, text]) => {
 				return `**${name}:** ${text}`;
-			}),
+			})
+			.join('\n'),
 		true
 	);
 

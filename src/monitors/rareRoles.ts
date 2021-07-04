@@ -55,7 +55,7 @@ export default class extends Monitor {
 			if (roll(chance / 10)) {
 				if (msg.member?.roles.cache.has(roleID)) continue;
 				if (!this.client.production) {
-					return msg.send(`${msg.author}, you would've gotten the **${name}** role.`);
+					return msg.channel.send(`${msg.author}, you would've gotten the **${name}** role.`);
 				}
 				msg.member?.roles.add(roleID);
 				msg.react(Emoji.Gift);

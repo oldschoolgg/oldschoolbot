@@ -28,17 +28,17 @@ export default class extends BotCommand {
 		const currentTask = getActivityOfUser(msg.author.id) as any;
 
 		if (!currentTask) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} isn't doing anything at the moment, so there's nothing to cancel.`
 			);
 		}
 
 		if (currentTask.type === Activity.Lfg) {
-			return msg.send(`${msg.author.minionName} is in a group trip, their team wouldn't like it if they left!`);
+			return msg.channel.send(`${msg.author.minionName} is in a group trip, their team wouldn't like it if they left!`);
 		}
 
 		if (currentTask.type === Activity.GroupMonsterKilling) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`
 			);
 		}
@@ -46,27 +46,29 @@ export default class extends BotCommand {
 		if (currentTask.type === Activity.Nightmare) {
 			const data = currentTask as NightmareActivityTaskOptions;
 			if (data.users.length > 1) {
-				return msg.send(
+				return msg.channel.send(
 					`${msg.author.minionName} is fighting the Nightmare with a team, they cant leave their team!`
 				);
 			}
 		}
 
 		if (currentTask.type === Activity.BarbarianAssault) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} is currently doing Barbarian Assault, and cant leave their team!`
 			);
 		}
 
 		if (currentTask.type === Activity.SoulWars) {
-			return msg.send(`${msg.author.minionName} is currently doing Soul Wars, and cant leave their team!`);
+			return msg.channel.send(
+				`${msg.author.minionName} is currently doing Soul Wars, and cant leave their team!`
+			);
 		}
 
 		if (currentTask.type === Activity.Raids) {
 			const data = currentTask as RaidsTaskOptions;
 			if (data.users.length > 1) {
-				return msg.send(
-					`${msg.author.minionName} is currently doing the Chambers of Xeric, they cannot leave their team!`
+				return msg.channel.send(
+					`${msg.author.minionName} is currently doing the Chamber's of Xeric, they cannot leave their team!`
 				);
 			}
 		}
@@ -78,10 +80,10 @@ export default class extends BotCommand {
 
 		if (!msg.flagArgs.cf) {
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					options
-				);
+				await msg.channel.awaitMessages({
+					...options,
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return cancelMsg.edit('Halting cancellation of minion task.');
 			}
@@ -89,6 +91,6 @@ export default class extends BotCommand {
 
 		await cancelTask(msg.author.id);
 
-		return msg.send(`${msg.author.minionName}'s trip was cancelled, and they're now available.`);
+		return msg.channel.send(`${msg.author.minionName}'s trip was cancelled, and they're now available.`);
 	}
 }

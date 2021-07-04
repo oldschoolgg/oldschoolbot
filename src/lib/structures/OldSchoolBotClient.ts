@@ -46,7 +46,6 @@ export class OldSchoolBotClient extends Client {
 		});
 
 		await syncActivityCache();
-
 		return super.login(token);
 	}
 }
