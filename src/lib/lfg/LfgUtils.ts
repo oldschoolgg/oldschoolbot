@@ -4,13 +4,14 @@ import { Monsters } from 'oldschooljs';
 import { Emoji, Time } from '../constants';
 import { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
 import { KillableMonster } from '../minions/types';
+import { ClientSettings } from '../settings/types/ClientSettings';
 import { channelIsSendable, noOp } from '../util';
 import BarbarianAssault from './activities/BarbarianAssault';
 import ChambersOfXeric from './activities/ChambersOfXeric';
 import Default from './activities/Default';
 import Nightmare from './activities/Nightmare';
 import SoulWars from './activities/SoulWars';
-import { LfgQueueProperties } from './LfgInterface';
+import { LfgCategories, LfgQueueProperties } from './LfgInterface';
 
 export const LFG_MIN_USERS = 2;
 export const LFG_MAX_USERS = 2;
@@ -27,7 +28,9 @@ export const availableQueues: LfgQueueProperties[] = [
 		minQueueSize: LFG_MIN_USERS,
 		maxQueueSize: LFG_MAX_USERS,
 		allowSolo: true,
-		allowPrivate: true
+		allowPrivate: true,
+		queueEconomyCost: [ClientSettings.EconomyStats.PVMCost],
+		category: LfgCategories.PvM
 	},
 	{
 		uniqueID: 2,
@@ -39,7 +42,9 @@ export const availableQueues: LfgQueueProperties[] = [
 		minQueueSize: LFG_MIN_USERS,
 		maxQueueSize: LFG_MAX_USERS,
 		allowSolo: true,
-		allowPrivate: true
+		allowPrivate: true,
+		queueEconomyCost: [ClientSettings.EconomyStats.PVMCost],
+		category: LfgCategories.PvM
 	},
 	{
 		uniqueID: 3,
@@ -51,7 +56,9 @@ export const availableQueues: LfgQueueProperties[] = [
 		minQueueSize: LFG_MIN_USERS,
 		maxQueueSize: LFG_MAX_USERS,
 		allowSolo: true,
-		allowPrivate: true
+		allowPrivate: true,
+		queueEconomyCost: [ClientSettings.EconomyStats.PVMCost],
+		category: LfgCategories.PvM
 	},
 	{
 		uniqueID: 4,
@@ -63,7 +70,9 @@ export const availableQueues: LfgQueueProperties[] = [
 		minQueueSize: LFG_MIN_USERS,
 		maxQueueSize: LFG_MAX_USERS,
 		allowSolo: true,
-		allowPrivate: true
+		allowPrivate: true,
+		queueEconomyCost: [ClientSettings.EconomyStats.PVMCost],
+		category: LfgCategories.PvM
 	},
 	{
 		uniqueID: 5,
@@ -75,7 +84,9 @@ export const availableQueues: LfgQueueProperties[] = [
 		minQueueSize: LFG_MIN_USERS,
 		maxQueueSize: LFG_MAX_USERS,
 		allowSolo: true,
-		allowPrivate: true
+		allowPrivate: true,
+		queueEconomyCost: [ClientSettings.EconomyStats.PVMCost],
+		category: LfgCategories.PvM
 	},
 	{
 		uniqueID: 6,
@@ -87,7 +98,9 @@ export const availableQueues: LfgQueueProperties[] = [
 		minQueueSize: 2,
 		maxQueueSize: 10,
 		allowSolo: true,
-		allowPrivate: true
+		allowPrivate: true,
+		queueEconomyCost: [ClientSettings.EconomyStats.PVMCost],
+		category: LfgCategories.PvM
 	},
 	{
 		uniqueID: 7,
@@ -99,7 +112,9 @@ export const availableQueues: LfgQueueProperties[] = [
 		minQueueSize: 2,
 		maxQueueSize: 5,
 		allowSolo: false,
-		allowPrivate: false
+		allowPrivate: false,
+		queueEconomyCost: [ClientSettings.EconomyStats.PVMCost],
+		category: LfgCategories.PvM
 	},
 	{
 		uniqueID: 8,
@@ -111,7 +126,9 @@ export const availableQueues: LfgQueueProperties[] = [
 		minQueueSize: 2,
 		maxQueueSize: 15,
 		allowSolo: true,
-		allowPrivate: true
+		allowPrivate: true,
+		queueEconomyCost: [ClientSettings.EconomyStats.PVMCost, ClientSettings.EconomyStats.CoxCost],
+		category: LfgCategories.PvM
 	},
 	{
 		uniqueID: 9,
@@ -123,7 +140,9 @@ export const availableQueues: LfgQueueProperties[] = [
 		minQueueSize: 2,
 		maxQueueSize: 15,
 		allowSolo: true,
-		allowPrivate: true
+		allowPrivate: true,
+		queueEconomyCost: [ClientSettings.EconomyStats.PVMCost, ClientSettings.EconomyStats.CoxCost],
+		category: LfgCategories.PvM
 	},
 	{
 		uniqueID: 10,
@@ -135,7 +154,8 @@ export const availableQueues: LfgQueueProperties[] = [
 		maxQueueSize: 99,
 		allowSolo: true,
 		allowPrivate: true,
-		cooldown: 10 * Time.Second
+		cooldown: 10 * Time.Second,
+		category: LfgCategories.Minigame
 	},
 	{
 		uniqueID: 11,
@@ -147,7 +167,8 @@ export const availableQueues: LfgQueueProperties[] = [
 		maxQueueSize: 4,
 		allowSolo: true,
 		allowPrivate: true,
-		cooldown: 30 * Time.Second
+		cooldown: 30 * Time.Second,
+		category: LfgCategories.Minigame
 	}
 ];
 
@@ -250,5 +271,5 @@ export async function sendLFGErrorMessage(
 }
 
 export function getMonster(monsterId: number): KillableMonster {
-	return <KillableMonster>effectiveMonsters.find(m => m.id === monsterId);
+	return <KillableMonster>effectiveMonsters.find(m => m.id === monsterId)!;
 }

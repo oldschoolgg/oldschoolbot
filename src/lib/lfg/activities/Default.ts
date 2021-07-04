@@ -117,21 +117,23 @@ export default class implements LfgInterface {
 		return returnMessage;
 	}
 
-	async getItemToRemoveFromBank(params: LfgGetItemToRemoveFromBank) {
-		const monster = killableMonsters.find(mon => mon.id === params.queue.monster!.id)!;
+	async getItemToRemoveFromBank(params: LfgGetItemToRemoveFromBank): Promise<Bank> {
+		const totalLoot = new Bank();
+		const monster = params.queue.monster!;
 		if (monster.healAmountNeeded) {
-			for (const user of params.party) {
-				const [healAmountNeeded] = calculateMonsterFood(monster, user);
-				await removeFoodFromUser({
-					client: params.client,
-					user,
-					totalHealingNeeded: Math.ceil(healAmountNeeded / params.party.length) * params.quantity,
-					healPerAction: Math.ceil(healAmountNeeded / params.quantity),
-					activityName: monster.name,
-					attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
-				});
-			}
+			const [healAmountNeeded] = calculateMonsterFood(monster, params.user);
+			const [, lootToRemove] = await removeFoodFromUser({
+				client: params.client!,
+				user: params.user,
+				totalHealingNeeded: Math.ceil(healAmountNeeded / params.party.length) * params.quantity,
+				healPerAction: Math.ceil(healAmountNeeded / params.quantity),
+				activityName: monster.name,
+				attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {}),
+				dryRun: true
+			});
+			totalLoot.add(lootToRemove);
 		}
+		return totalLoot;
 	}
 
 	checkTeamRequirements(): string[] {

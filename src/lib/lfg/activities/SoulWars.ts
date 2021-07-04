@@ -1,4 +1,5 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../constants';
 import { UserSettings } from '../../settings/types/UserSettings';
@@ -47,8 +48,8 @@ export default class implements LfgInterface {
 				points += this.calcPoints();
 			}
 			await user.settings.update(UserSettings.ZealTokens, user.settings.get(UserSettings.ZealTokens) + points);
-			user.incrementMinigameScore('SoulWars', quantity);
-			usersWithLoot.push({ user, emoji: false, lootedItems: `${points}x Zeal Tokens`, spoiler: false });
+			await user.incrementMinigameScore('SoulWars', quantity);
+			usersWithLoot.push({ user, emoji: false, lootedNonItems: { 'Zeal Tokens': points }, spoiler: false });
 		}
 		return { usersWithLoot };
 	}
@@ -76,7 +77,9 @@ export default class implements LfgInterface {
 		return returnMessage;
 	}
 
-	async getItemToRemoveFromBank() {}
+	async getItemToRemoveFromBank(): Promise<Bank> {
+		return new Bank();
+	}
 
 	checkTeamRequirements(): string[] {
 		return [];

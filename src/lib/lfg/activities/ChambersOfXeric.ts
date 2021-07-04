@@ -12,11 +12,10 @@ import {
 	hasMinRaidsRequirements,
 	minimumCoxSuppliesNeeded
 } from '../../data/cox';
-import { ClientSettings } from '../../settings/types/ClientSettings';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { SkillsEnum } from '../../skilling/types';
 import { ActivityTaskOptions, GroupMonsterActivityTaskOptions, RaidsTaskOptions } from '../../types/minions';
-import { addBanks, filterBankFromArrayOfItems, roll } from '../../util';
+import { filterBankFromArrayOfItems, roll } from '../../util';
 import { formatOrdinal } from '../../util/formatOrdinal';
 import itemID from '../../util/itemID';
 import resolveItems from '../../util/resolveItems';
@@ -218,19 +217,8 @@ export default class implements LfgInterface {
 		return returnMessage;
 	};
 
-	async getItemToRemoveFromBank(params: LfgGetItemToRemoveFromBank) {
-		const totalCost = new Bank();
-		await Promise.all(
-			params.party.map(async u => {
-				const supplies = await calcCoxInput(u, params.solo);
-				await u.removeItemsFromBank(supplies);
-				totalCost.add(supplies);
-			})
-		);
-		await params.client.settings.update(
-			ClientSettings.EconomyStats.CoxCost,
-			addBanks([params.client.settings.get(ClientSettings.EconomyStats.CoxCost), totalCost.bank])
-		);
+	async getItemToRemoveFromBank(params: LfgGetItemToRemoveFromBank): Promise<Bank> {
+		return calcCoxInput(params.user, params.solo);
 	}
 
 	checkTeamRequirements(params: LfgCheckTeamRequirements): string[] {

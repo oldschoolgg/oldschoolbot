@@ -1,14 +1,11 @@
-import { objectKeys, percentChance } from 'e';
+import { percentChance } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
 import { Activity, Emoji, NIGHTMARE_ID, Time, ZAM_HASTA_CRUSH } from '../../constants';
-import { effectiveMonsters, NightmareMonster } from '../../minions/data/killableMonsters';
 import { addMonsterXP, calculateMonsterFood } from '../../minions/functions';
 import announceLoot from '../../minions/functions/announceLoot';
 import hasEnoughFoodForMonster from '../../minions/functions/hasEnoughFoodForMonster';
 import isImportantItemForMonster from '../../minions/functions/isImportantItemForMonster';
-import removeFoodFromUser from '../../minions/functions/removeFoodFromUser';
-import { KillableMonster } from '../../minions/types';
 import { ItemBank } from '../../types';
 import {
 	ActivityTaskOptions,
@@ -28,6 +25,7 @@ import LfgInterface, {
 	LfgHandleTripFinishReturn,
 	lfgReturnMessageInterface
 } from '../LfgInterface';
+import Default from './Default';
 
 const inquisitorItems = resolveItems([
 	"Inquisitor's great helm",
@@ -42,7 +40,7 @@ interface NightmareUser {
 	damageDone: number;
 }
 
-export default class implements LfgInterface {
+export default class extends Default implements LfgInterface {
 	activity: ActivityTaskOptions = <GroupMonsterActivityTaskOptions>{ type: Activity.GroupMonsterKilling };
 
 	async HandleTripFinish(params: LfgHandleTripFinish): Promise<LfgHandleTripFinishReturn> {
@@ -107,12 +105,12 @@ export default class implements LfgInterface {
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
-			if (kcToAdd) await user.incrementMonsterScore(NightmareMonster.id, kcToAdd);
+			if (kcToAdd) await user.incrementMonsterScore(params.queue.monster!.id, kcToAdd);
 			const purple = Object.keys(loot).some(itemID =>
-				isImportantItemForMonster(parseInt(itemID), NightmareMonster)
+				isImportantItemForMonster(parseInt(itemID), params.queue.monster!)
 			);
 			usersWithLoot.push({ user, emoji: purple ? Emoji.Purple : false, lootedItems: new Bank(loot) });
-			announceLoot(client, leaderUser, NightmareMonster, loot, {
+			announceLoot(client, leaderUser, params.queue.monster!, loot, {
 				leader: leaderUser,
 				lootRecipient: user,
 				size: users.length
@@ -215,12 +213,12 @@ export default class implements LfgInterface {
 
 		let [quantity, duration, perKillTime, messages] = await calcDurQty(
 			party,
-			{ ...NightmareMonster, timeToFinish: effectiveTime },
+			{ ...params.queue.monster!, timeToFinish: effectiveTime },
 			undefined,
 			Time.Minute * 5,
 			Time.Minute * 30
 		);
-		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
+		duration = quantity * perKillTime - params.queue.monster!.respawnTime!;
 
 		return {
 			activitiesThisTrip: quantity,
@@ -230,21 +228,8 @@ export default class implements LfgInterface {
 		};
 	}
 
-	async getItemToRemoveFromBank(params: LfgGetItemToRemoveFromBank) {
-		const monster = <KillableMonster>effectiveMonsters.find(mon => mon.id === params.queue.monster!.id)!;
-		if (monster.healAmountNeeded) {
-			for (const user of params.party) {
-				const [healAmountNeeded] = calculateMonsterFood(monster, user);
-				await removeFoodFromUser({
-					client: params.client,
-					user,
-					totalHealingNeeded: Math.ceil(healAmountNeeded / params.party.length) * params.quantity,
-					healPerAction: Math.ceil(healAmountNeeded / params.quantity),
-					activityName: monster.name,
-					attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
-				});
-			}
-		}
+	async getItemToRemoveFromBank(params: LfgGetItemToRemoveFromBank): Promise<Bank> {
+		return super.getItemToRemoveFromBank(params);
 	}
 
 	checkTeamRequirements(): string[] {

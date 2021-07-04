@@ -1,4 +1,5 @@
 import { increaseNumByPercent, randArrItem, randInt } from 'e';
+import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
 import { Activity, Time } from '../../constants';
@@ -54,17 +55,16 @@ export default class implements LfgInterface {
 		);
 
 		for (const id of users) {
-			let extraPoints = '';
 			const user = await client.users.fetch(id).catch(noOp);
 			if (!user) continue;
 			let pts = basePoints + randInt(-3, 3);
 			const [hasDiary] = await userhasDiaryTier(user, KandarinDiary.hard);
 			if (hasDiary) {
 				pts *= 1.1;
-				extraPoints = 'You received 10% extra pts for kandarin hard diary.';
+				extraMessage.push(`${user.username} receives 10% extra pts for kandarin hard diary.`);
 			}
 			let totalPoints = Math.floor(pts * quantity);
-			user.incrementMinigameScore('BarbarianAssault', quantity);
+			await user.incrementMinigameScore('BarbarianAssault', quantity);
 			await user.settings.update(
 				UserSettings.HonourPoints,
 				user.settings.get(UserSettings.HonourPoints) + totalPoints
@@ -72,7 +72,7 @@ export default class implements LfgInterface {
 			usersWithLoot.push({
 				user,
 				emoji: false,
-				lootedItems: `${totalPoints}x points. ${extraPoints}`,
+				lootedNonItems: { 'Honour points': totalPoints },
 				spoiler: false
 			});
 		}
@@ -149,7 +149,9 @@ export default class implements LfgInterface {
 		return returnMessage;
 	}
 
-	async getItemToRemoveFromBank() {}
+	async getItemToRemoveFromBank(): Promise<Bank> {
+		return new Bank();
+	}
 
 	checkTeamRequirements(): string[] {
 		return [];

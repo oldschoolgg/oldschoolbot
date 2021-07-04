@@ -17,15 +17,15 @@ import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { LfgStatusTable } from '../../lib/typeorm/LfgStatusTable.entity';
 import { LfgActivityTaskOptions } from '../../lib/types/minions';
-import { channelIsSendable, formatDuration, stringMatches } from '../../lib/util';
+import { channelIsSendable, formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 import { strtr } from '../../lib/util/strtr';
 import Timeout = NodeJS.Timeout;
 
 const QUEUE_LIST: Record<number, LfgQueueState> = {};
-const DEFAULT_MASS_CHANNEL = /* '858141860900110366' || */ '755074115978657894';
-const DEFAULT_MASS_SERVER = /* '858140841809936434' || */ SupportServer;
+const DEFAULT_MASS_CHANNEL = '858141860900110366' || /**/ '755074115978657894';
+const DEFAULT_MASS_SERVER = '858140841809936434' || /**/ SupportServer;
 const QUEUE_AUTO_START: Record<number, Timeout | null> = {};
 const LFGSOLO_CMD = 'solo';
 
@@ -341,21 +341,52 @@ export default class extends BotCommand {
 					return;
 				}
 
-				// Remove the required items from the users
-				// You have to make sure this is checked on the checkUserRequirements so no errors happens here
-				// --- Make sure the checkUserRequirements is validating the required items
-				// --- Failing to do so will most likely result in item loss (food, pots, whatever is checked)!
+				// Remove required items from users
+				let failSafe: Record<string, Bank> = {};
+				let itemsRemoved = [];
 				try {
-					await selectedQueue.lfgClass.getItemToRemoveFromBank({
-						solo: queue.soloStart,
-						party: finalUsers,
-						quantity: activitiesThisTrip,
-						client: this.client,
-						queue: selectedQueue
-					});
+					for (const user of finalUsers) {
+						const lootRemovedCost: Bank = new Bank();
+						try {
+							this.client.oneCommandAtATimeCache.add(user.id);
+							const itemsToRemove = await selectedQueue.lfgClass.getItemToRemoveFromBank({
+								solo: queue.soloStart,
+								user,
+								party: finalUsers,
+								quantity: activitiesThisTrip,
+								queue: selectedQueue
+							});
+							await user.removeItemsFromBank(itemsToRemove);
+							lootRemovedCost.add(itemsToRemove);
+							failSafe[user.id] = itemsToRemove;
+							itemsRemoved.push(`**${user.username}**: ${itemsToRemove}`);
+						} finally {
+							this.client.oneCommandAtATimeCache.delete(user.id);
+						}
+						if (selectedQueue.queueEconomyCost) {
+							await selectedQueue.queueEconomyCost.map(async c => {
+								return updateBankSetting(this.client, c, lootRemovedCost);
+							});
+						}
+					}
 				} catch (e) {
-					this.client.emit(Events.Log, `LFG Canceled [${queueID}] Error removing required items from users`);
-					return;
+					// In case something terrible happened, let's give the items removed back to the players
+					// before ending the activity
+					console.log(e);
+					this.client.emit(
+						Events.Log,
+						`Critical LFG Error [${queueID}] Could not remove items from everyone after all checks - Returning removed items to players affected and ending activity`
+					);
+					for (const user of finalUsers) {
+						if (failSafe[user.id]) {
+							await user.addItemsToBank(failSafe[user.id]);
+						}
+					}
+					return sendLFGErrorMessage(
+						`${Emoji.Warning} The queue **${selectedQueue.name}** was cancelled due to a critical error. Please, contact the Support Server for more information.`,
+						this.client,
+						channelsToSend
+					);
 				}
 
 				await addSubTaskToActivityTask(<LfgActivityTaskOptions>{
@@ -373,7 +404,7 @@ export default class extends BotCommand {
 
 				this.client.emit(Events.Log, `LFG [${queueID}] has started`);
 
-				for (const user of sortedUsers) {
+				for (const user of finalUsers) {
 					this.removeUserFromAllQueues(user);
 				}
 
@@ -394,16 +425,26 @@ export default class extends BotCommand {
 					true
 				);
 
-				if (selectedQueue.monster) {
+				if (selectedQueue.monster && activitiesThisTrip > 1) {
 					embed.addField('Quantity being killed', activitiesThisTrip.toLocaleString(), true);
 					embed.addField('Time per kill', formatDuration(timePerActivity), true);
-					embed.addField('Original time per kill', formatDuration(selectedQueue.monster!.timeToFinish), true);
+					if (selectedQueue.monster!.timeToFinish) {
+						embed.addField(
+							'Original time per kill',
+							formatDuration(selectedQueue.monster!.timeToFinish),
+							true
+						);
+					}
 					embed.addField('Kills per player', `${(activitiesThisTrip / finalUsers.length).toFixed(2)}~`, true);
 				}
 				embed.addField('Users: ', finalUsers.map(u => u.username).join(', '));
 
 				if (extraMessages.length > 0) {
 					embed.addField('Extra', extraMessages.join(', '));
+				}
+
+				if (itemsRemoved.length > 0) {
+					embed.addField('Items Removed', itemsRemoved.join(', '));
 				}
 
 				if (selectedQueue.thumbnail) {
@@ -444,37 +485,26 @@ export default class extends BotCommand {
 		if (queue) {
 			return this.join(msg, [queue]);
 		}
-		const embed = new MessageEmbed().setColor(Color.DiscordWhite).setTitle('Looking for Group Activities');
+		let returnMessageByCategory: Record<string, string> = {};
 		for (const _queue of availableQueues) {
 			// Do not display private queues
 			if (_queue.creator) continue;
 			const smallestAlias = _queue.aliases.sort((a, b) => a.length - b.length)[0] ?? _queue.name;
 			const joined =
-				QUEUE_LIST[_queue.uniqueID] && QUEUE_LIST[_queue.uniqueID].users[msg.author.id]
-					? '\n**[JOINED]**'
-					: '\n\u200b';
-			const title = _queue.name;
-			embed.addField(
-				`${title}`,
-				`Waiting: ${
-					QUEUE_LIST[_queue.uniqueID] ? Object.values(QUEUE_LIST[_queue.uniqueID].users).length : 0
-				}\nAlias: \`${smallestAlias}\`${joined}`,
-				true
-			);
+				QUEUE_LIST[_queue.uniqueID] && QUEUE_LIST[_queue.uniqueID].users[msg.author.id] ? ' / Joined' : '';
+			returnMessageByCategory[_queue.category] = `${returnMessageByCategory[_queue.category] ?? ''}**${
+				_queue.name
+			}${joined}** - ${
+				_queue.extraParams?.joinBestQueue === true
+					? ''
+					: `On Queue: ${
+							QUEUE_LIST[_queue.uniqueID] ? Object.values(QUEUE_LIST[_queue.uniqueID].users).length : 0
+					  }, `
+			}Alias: \`${smallestAlias}\`\n`;
 		}
-		for (let i = 0; i < Math.ceil(availableQueues.length / 3) * 3 - availableQueues.length; i++) {
-			embed.addField('\u200b', '\u200b', true);
-		}
-		embed
-			.addField(
-				'\u200B',
-				`Run \`${this.prefix(msg)}lfg help\` for more information.${'\u3000'.repeat(
-					200 /* any big number works too*/
-				)}`
-			)
-			.setTimestamp();
-		// large footer to allow max embeed size
-		return this.messageUser(msg, embed);
+		let returnStr = '\u200B\n';
+		Object.entries(returnMessageByCategory).map(s => (returnStr += `**${s[0]}**\n\n${s[1]}\n`));
+		return this.messageUser(msg, returnStr);
 	}
 
 	@requiresMinion
@@ -501,19 +531,12 @@ export default class extends BotCommand {
 			`${formatDuration(selectedQueue.cooldown ?? LFG_WAIT_TIME)}`,
 			true
 		);
-		embed.addField(
-			'Time till activity is sent',
-			QUEUE_LIST[selectedQueue.uniqueID]
-				? this.getTimeLeft(QUEUE_LIST[selectedQueue.uniqueID].startDate)
-				: 'Not enough users joined',
-			true
-		);
 		embed.addField('Minimum users to start', selectedQueue.minQueueSize, true);
 		embed.addField('Maximum users to instantly start', selectedQueue.maxQueueSize, true);
-		embed.addField('Soloable', selectedQueue.allowSolo ? 'Yes' : 'No', true);
-		embed.addField('Allows private instances', selectedQueue.allowPrivate ? 'Yes' : 'No', true);
+		embed.addField('Soloable?', selectedQueue.allowSolo ? 'Yes' : 'No', true);
+		embed.addField('Allows private?', selectedQueue.allowPrivate ? 'Yes' : 'No', true);
 		embed.addField(
-			'Meet all requirements',
+			'Meet requirements?',
 			errors[0].length === 0 ? (errors[1].length === 0 ? 'Yes' : 'Partially') : 'No',
 			true
 		);
@@ -546,7 +569,7 @@ export default class extends BotCommand {
 					let { id } = getOSItem(item[0]);
 					validItems.add(id, item[1]);
 				} catch (e) {
-					invalidItems.push(`${item[1]}x ${item[0]}`);
+					invalidItems.push(`${item[1].toLocaleString()}x ${item[0]}`);
 				}
 			});
 			embed.addField(
@@ -716,7 +739,8 @@ export default class extends BotCommand {
 			extraParams: selectedQueue.extraParams,
 			privateUniqueID: selectedQueue.uniqueID,
 			allowPrivate: false,
-			cooldown: Number(cooldown)
+			cooldown: Number(cooldown),
+			category: selectedQueue.category
 		};
 		availableQueues.push(newPrivateQueue);
 
@@ -752,7 +776,7 @@ export default class extends BotCommand {
 				: msg.channel.send(resultMessage, { split: true });
 		}
 
-		const selectedQueue = availableQueues.find(
+		let selectedQueue = availableQueues.find(
 			m => stringMatches(m.name, queue) || (m.aliases && m.aliases.some(a => stringMatches(a, queue)))
 		);
 
@@ -760,6 +784,13 @@ export default class extends BotCommand {
 			return returnMessage(
 				`This is not a valid LFG activity. Run \`${this.prefix(msg)}lfg\` for more information.`
 			);
+		}
+
+		// Check if this queue calculates the best user queue
+		if (selectedQueue.extraParams?.joinBestQueue && selectedQueue.lfgClass.returnBestQueueForUser) {
+			selectedQueue = availableQueues.find(
+				q => q.uniqueID === selectedQueue!.lfgClass.returnBestQueueForUser!(msg.author)
+			)!;
 		}
 
 		let skipChecks = false;
@@ -804,7 +835,6 @@ export default class extends BotCommand {
 					}** LFG:\n - ${errors[0].join('\n - ')}`
 				);
 			}
-
 			try {
 				// If no users, set the join dates
 				if (Object.values(QUEUE_LIST[queueID].users).length === 0) {
@@ -831,6 +861,7 @@ export default class extends BotCommand {
 				await this.handleStart(queueID);
 			}
 		} catch (e) {
+			console.log(e);
 			return returnMessage(`It was not possible to join ${selectedQueue.name} at this time. Try again.`);
 		}
 	}

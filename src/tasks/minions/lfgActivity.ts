@@ -43,23 +43,31 @@ export default class extends Task {
 
 		let totalLoot: Record<string, number> = {};
 
-		usersWithLoot.forEach(e => {
-			if (typeof e.lootedItems === 'string') {
-				const validString = e.lootedItems.split('.')[0] ?? '';
-				const [qty, item] = validString.split('x').map(s => s.trim());
-				totalLoot = mergeLoot(totalLoot, { [item]: Number(qty) });
-			} else {
-				totalLoot = mergeLoot(totalLoot, e.lootedItems.bank);
-			}
-			lootString = addLFGLoot(
-				lootString,
-				e.emoji,
-				e.user,
-				e.lootedItems.toString(),
-				e.spoiler ?? true,
-				data.channels
-			);
-		});
+		if (usersWithLoot) {
+			usersWithLoot.forEach(e => {
+				let lootObtainedString = '';
+
+				if (e.lootedNonItems) {
+					lootObtainedString += Object.entries(e.lootedNonItems)
+						.map(loot => `${loot[1].toLocaleString()}x ${loot[0]}`)
+						.join(', ');
+					totalLoot = mergeLoot(totalLoot, e.lootedNonItems);
+				}
+				if (e.lootedItems && e.lootedItems?.items().length > 0) {
+					lootObtainedString += (lootObtainedString ? ', ' : '') + e.lootedItems.toString();
+					totalLoot = mergeLoot(totalLoot, e.lootedItems.bank);
+				}
+
+				lootString = addLFGLoot(
+					lootString,
+					e.emoji,
+					e.user,
+					lootObtainedString,
+					e.spoiler ?? true,
+					data.channels
+				);
+			});
+		}
 
 		if (usersWithoutLoot) {
 			lootString = await addLFGNoDrops(lootString, this.client, usersWithoutLoot, data.channels);
