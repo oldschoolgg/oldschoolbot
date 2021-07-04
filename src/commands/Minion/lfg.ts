@@ -137,11 +137,7 @@ export default class extends BotCommand {
 				await msg.channel.send(`${msg.author.tag}, check your private messages.`);
 			}
 		} catch (e) {
-			if (message instanceof MessageEmbed) {
-				await msg.channel.send(toSend);
-			} else {
-				await msg.channel.send(toSend);
-			}
+			await msg.channel.send(toSend);
 		}
 	}
 
