@@ -41,6 +41,6 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.addItemsToBank(dksBank.bank);
-		return msg.send(`Gave you gear for Dagannoth Kings.${msg.flagArgs.max ? ' Including max boosts' : ''}`);
+		return msg.channel.send(`Gave you gear for Dagannoth Kings.${msg.flagArgs.max ? ' Including max boosts' : ''}`);
 	}
 }
