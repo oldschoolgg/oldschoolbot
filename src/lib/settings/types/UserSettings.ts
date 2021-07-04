@@ -23,6 +23,7 @@ export namespace UserSettings {
 	export const QP = T<number>('QP');
 	export const Bank = T<O.Readonly<ItemBank>>('bank');
 	export const BankBackground = T<number>('bankBackground');
+	export const UnlockedBankBackgrounds = T<readonly number[]>('bankbgs_unlocked');
 	export const Pets = T<O.Readonly<ItemBank>>('pets');
 	export const CollectionLogBank = T<O.Readonly<ItemBank>>('collectionLogBank');
 	export const MonsterScores = T<O.Readonly<ItemBank>>('monsterScores');

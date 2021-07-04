@@ -2,7 +2,7 @@ import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Emoji } from '../../lib/constants';
+import { BitField, Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
@@ -24,6 +24,12 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [pageNumberOrItemName]: [number | string | undefined]) {
 		await msg.author.settings.sync(true);
 		const baseBank = msg.author.bank({ withGP: true });
+
+		if (msg.flagArgs.smallbank) {
+			const currentStatus = msg.author.settings.get(UserSettings.BitField).includes(BitField.AllwaysSmallBank);
+			await msg.author.settings.update(UserSettings.BitField, BitField.AllwaysSmallBank);
+			return msg.channel.send(`Small Banks are now ${currentStatus ? 'disabled' : 'enabled'} for you.`);
+		}
 
 		if (baseBank.length === 0) {
 			return msg.channel.send(
