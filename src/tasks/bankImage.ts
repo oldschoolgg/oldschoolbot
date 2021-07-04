@@ -429,8 +429,8 @@ export default class BankImageTask extends Task {
 				continue;
 			}
 
-			const itemHeight = compact ? itemImage.height : itemImage.height;
-			const itemWidth = compact ? itemImage.width : itemImage.width;
+			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
+			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
 
 			ctx.drawImage(
 				itemImage,
