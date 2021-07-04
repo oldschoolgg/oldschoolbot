@@ -1,4 +1,4 @@
-import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { MessageAttachment, MessageEmbed, MessageOptions } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { getConnection } from 'typeorm';
@@ -120,22 +120,27 @@ export default class extends BotCommand {
 		];
 	}
 
-	async messageUser(msg: KlasaMessage, message: string | MessageEmbed) {
+	async messageUser(msg: KlasaMessage, message: string | MessageEmbed, file?: MessageAttachment | undefined) {
+		let toSend: MessageOptions = {};
+		if (message instanceof MessageEmbed) {
+			toSend = { embeds: [message] };
+		} else {
+			toSend = { content: message };
+		}
+		if (file) {
+			toSend.files = [file];
+		}
 		try {
-			if (message instanceof MessageEmbed) {
-				await msg.author.send(message);
-			} else {
-				await msg.author.send(message, { split: true });
-			}
+			await msg.author.send(toSend);
 			// Check if the channel sent are the dms
 			if (msg.author.dmChannel?.id !== msg.channel.id) {
 				await msg.channel.send(`${msg.author.tag}, check your private messages.`);
 			}
 		} catch (e) {
 			if (message instanceof MessageEmbed) {
-				await msg.channel.send(message);
+				await msg.channel.send(toSend);
 			} else {
-				await msg.channel.send(message, { split: true });
+				await msg.channel.send(toSend);
 			}
 		}
 	}
@@ -454,7 +459,7 @@ export default class extends BotCommand {
 				for (const _channel of [...Object.keys(channelsToSend)]) {
 					const channel = this.client.channels.cache.get(_channel);
 					if (channelIsSendable(channel)) {
-						await channel.sendEmbed(embed);
+						await channel.send({ embeds: [embed] });
 					}
 				}
 			} finally {
@@ -531,8 +536,8 @@ export default class extends BotCommand {
 			`${formatDuration(selectedQueue.cooldown ?? LFG_WAIT_TIME)}`,
 			true
 		);
-		embed.addField('Minimum users to start', selectedQueue.minQueueSize, true);
-		embed.addField('Maximum users to instantly start', selectedQueue.maxQueueSize, true);
+		embed.addField('Minimum users to start', `${selectedQueue.minQueueSize}`, true);
+		embed.addField('Maximum users to instantly start', `${selectedQueue.maxQueueSize}`, true);
 		embed.addField('Soloable?', selectedQueue.allowSolo ? 'Yes' : 'No', true);
 		embed.addField('Allows private?', selectedQueue.allowPrivate ? 'Yes' : 'No', true);
 		embed.addField(
@@ -552,13 +557,15 @@ export default class extends BotCommand {
 		}
 
 		embed.addField('\u200B', '**Some All Time Statistics for this Activity**');
-		embed.addField('Total users', lfgStats?.usersServed ?? 0, true);
+		embed.addField('Total users', `${lfgStats?.usersServed ?? 0}`, true);
 		embed.addField(
 			`${selectedQueue.monster ? 'Times Killed' : 'Number of Trips'}`,
-			lfgStats?.qtyKilledDone ?? 0,
+			`${lfgStats?.qtyKilledDone ?? 0}`,
 			true
 		);
-		embed.addField('Times Sent', lfgStats?.timesSent ?? 0, true);
+		embed.addField('Times Sent', `${lfgStats?.timesSent ?? 0}`, true);
+
+		let attachment = undefined;
 
 		// Check if loot is items of custom stuff (like points, tokens, etc)
 		if (lfgStats && lfgStats.lootObtained && Object.keys(lfgStats.lootObtained).length > 0) {
@@ -583,14 +590,12 @@ export default class extends BotCommand {
 				const { image } = await this.client.tasks
 					.get('bankImage')!
 					.generateBankImage(validItems.bank, `${selectedQueue.name} All Time Drops`, true);
-				const attachment = new MessageAttachment(image!, 'queue_drops.png');
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				embed.attachFiles(attachment).setImage('attachment://queue_drops.png');
+				attachment = new MessageAttachment(image!, 'queue_drops.png');
+				embed.setImage('attachment://queue_drops.png');
 			}
 		}
 
-		return this.messageUser(msg, embed);
+		return this.messageUser(msg, embed, attachment);
 	}
 
 	@requiresMinion
@@ -771,9 +776,7 @@ export default class extends BotCommand {
 				})
 			);
 			const resultMessage = `\u200b\n${messages.join('\n\n')}`;
-			return resultMessage.length > 100
-				? this.messageUser(msg, resultMessage)
-				: msg.channel.send(resultMessage, { split: true });
+			return resultMessage.length > 100 ? this.messageUser(msg, resultMessage) : msg.channel.send(resultMessage);
 		}
 
 		let selectedQueue = availableQueues.find(
@@ -999,6 +1002,6 @@ export default class extends BotCommand {
 		if (msg.flagArgs.more) {
 			return this.messageUser(msg, embed);
 		}
-		return msg.channel.send(embed);
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

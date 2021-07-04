@@ -4,7 +4,7 @@ import { Activity } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { cancelTask, getActivityOfUser } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { NightmareActivityTaskOptions, RaidsTaskOptions } from './../../lib/types/minions';
+import { NightmareActivityTaskOptions, RaidsTaskOptions } from '../../lib/types/minions';
 
 const options = {
 	max: 1,
@@ -34,7 +34,9 @@ export default class extends BotCommand {
 		}
 
 		if (currentTask.type === Activity.Lfg) {
-			return msg.channel.send(`${msg.author.minionName} is in a group trip, their team wouldn't like it if they left!`);
+			return msg.channel.send(
+				`${msg.author.minionName} is in a group trip, their team wouldn't like it if they left!`
+			);
 		}
 
 		if (currentTask.type === Activity.GroupMonsterKilling) {
