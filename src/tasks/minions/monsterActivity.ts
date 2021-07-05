@@ -69,7 +69,9 @@ export default class extends Task {
 			inCatacombs: isInCatacombs
 		};
 		const loot = (monster as KillableMonster).table.kill(Math.ceil(quantity * abyssalBonus), killOptions);
-		loot.multiply(2);
+		if (!abyssalBonus) {
+			loot.multiply(2);
+		}
 		const newSuperiorCount = loot.bank[420];
 		const xpRes = await addMonsterXP(user, {
 			monsterID,
@@ -160,6 +162,8 @@ export default class extends Task {
 
 		if (abyssalBonus > 1) {
 			str += '\n\nOri has used the abyss to transmute you +25% bonus loot!';
+		} else {
+			str += '\n\n**Double Loot**';
 		}
 
 		announceLoot(this.client, user, monster, loot.bank);
