@@ -98,7 +98,7 @@ async function _setup(
 
 			function startTrip() {
 				if (usersWhoConfirmed.length < options.minSize) {
-					reject(`Not enough people joined your ${options.party ? 'party' : 'mass'}!`);
+					reject(`${msg.author} Not enough people joined your ${options.party ? 'party' : 'mass'}!`);
 					return;
 				}
 
