@@ -334,6 +334,8 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 			l.id !== itemID("Hydra's fang") &&
 			l.id !== itemID("Hydra's heart") &&
 			l.id !== itemID('Dark totem base') &&
+			l.id !== itemID('Dark totem middle') &&
+			l.id !== itemID('Dark totem top') &&
 			l.id !== itemID('Bludgeon claw')
 		);
 	}, true);

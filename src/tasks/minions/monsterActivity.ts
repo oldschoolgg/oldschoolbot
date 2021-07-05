@@ -15,6 +15,7 @@ import {
 	getUsersCurrentSlayerInfo
 } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -48,9 +49,20 @@ export default class extends Task {
 			hasSuperiors: superiorTable,
 			inCatacombs: isInCatacombs
 		};
-		const loot = monster.table.kill(quantity, killOptions);
 
-		const newSuperiorCount = loot.bank[420];
+		// Calculate superiors and assign loot.
+		let newSuperiorCount = 0;
+		if (superiorTable && isOnTask) {
+			for (let i = 0; i < quantity; i++) if (roll(200)) newSuperiorCount++;
+		}
+		// Regular loot
+		const loot = monster.table.kill(quantity - newSuperiorCount, killOptions);
+		if (newSuperiorCount) {
+			// Superior loot and totems if in catacombs
+			loot.add(superiorTable!.kill(newSuperiorCount));
+			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
+		}
+
 		const xpRes = await addMonsterXP(user, {
 			monsterID,
 			quantity,
