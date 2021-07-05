@@ -29,7 +29,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[quantity:int{1}|name:...string] [plantName:...string]',
+			usage: '[quantity:int{1}|name:...string] [plantName:...string] [autoFarmed:...boolean]',
 			aliases: ['plant'],
 			usageDelim: ' ',
 			description: 'Allows a player to plant or harvest and replant seeds for farming.',
@@ -40,7 +40,7 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage, [quantity, plantName = '']: [null | number | string, string]) {
+	async run(msg: KlasaMessage, [quantity, plantName = '', autoFarmed]: [null | number | string, string, boolean]) {
 		if (msg.flagArgs.plants) {
 			return returnListOfPlants(msg);
 		}
@@ -58,6 +58,9 @@ export default class extends BotCommand {
 		const boostStr: string[] = [];
 
 		if (typeof quantity === 'string') {
+			if (typeof plantName === 'boolean') {
+				autoFarmed = plantName;
+			}
 			plantName = quantity;
 			quantity = null;
 		}
@@ -318,7 +321,8 @@ export default class extends BotCommand {
 			planting: true,
 			duration,
 			currentDate,
-			type: Activity.Farming
+			type: Activity.Farming,
+			autoFarmed
 		});
 
 		return msg.channel.send(

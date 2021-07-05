@@ -13,22 +13,25 @@ import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, channelIsSendable, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
-	async run({
-		plantsName,
-		patchType,
-		getPatchType,
-		quantity,
-		upgradeType,
-		payment,
-		userID,
-		channelID,
-		planting,
-		duration,
-		currentDate
-	}: FarmingActivityTaskOptions) {
+	async run(data: FarmingActivityTaskOptions) {
+		const {
+			plantsName,
+			patchType,
+			getPatchType,
+			quantity,
+			upgradeType,
+			payment,
+			userID,
+			channelID,
+			planting,
+			duration,
+			currentDate,
+			autoFarmed
+		} = data;
 		const user = await this.client.users.fetch(userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
 		const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
@@ -168,7 +171,21 @@ export default class extends Task {
 			const channel = this.client.channels.cache.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
-			channel.send(str);
+			handleTripFinish(
+				this.client,
+				user,
+				channelID,
+				str,
+				autoFarmed
+					? res => {
+							user.log('continued trip of autofarming');
+							return this.client.commands.get('autofarm')!.run(res, []);
+					  }
+					: undefined,
+				undefined,
+				data,
+				null
+			);
 		} else if (patchType.patchPlanted) {
 			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted);
 			if (!plantToHarvest) return;
@@ -436,7 +453,6 @@ export default class extends Task {
 			const channel = this.client.channels.cache.get(channelID);
 			if (!channelIsSendable(channel)) return;
 
-			channel.send(infoStr.join('\n'));
 			if (janeMessage) {
 				return channel.send({
 					embeds: [
@@ -449,6 +465,21 @@ export default class extends Task {
 					]
 				});
 			}
+			handleTripFinish(
+				this.client,
+				user,
+				channelID,
+				infoStr.join('\n'),
+				autoFarmed
+					? res => {
+							user.log('continued trip of autofarming');
+							return this.client.commands.get('autofarm')!.run(res, []);
+					  }
+					: undefined,
+				undefined,
+				data,
+				null
+			);
 		}
 	}
 }
