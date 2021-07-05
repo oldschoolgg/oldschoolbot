@@ -51,7 +51,7 @@ export const tameSpecies: Species[] = [
 		artisanLevelRange: [1, 10],
 		supportLevelRange: [1, 10],
 		gathererLevelRange: [1, 10],
-		hatchTime: Time.Minute,
+		hatchTime: Time.Hour * 18.5,
 		egg: getOSItem(48_210),
 		emoji: '<:dragonEgg:858948148641660948>'
 	}

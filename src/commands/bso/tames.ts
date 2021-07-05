@@ -1,15 +1,51 @@
 import { calcWhatPercent, increaseNumByPercent } from 'e';
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Time } from '../../lib/constants';
+import { Eatables } from '../../lib/data/eatables';
 import { requiresMinion } from '../../lib/minions/decorators';
+import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { getUsersTame } from '../../lib/tames';
 import { TameActivityTable } from '../../lib/typeorm/TameActivityTable.entity';
 import { TameGrowthStage, TamesTable } from '../../lib/typeorm/TamesTable.entity';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import findMonster from '../../lib/util/findMonster';
+
+export async function removeRawFood({
+	client,
+	user,
+	totalHealingNeeded,
+	healPerAction,
+	raw = false
+}: {
+	client: KlasaClient;
+	user: KlasaUser;
+	totalHealingNeeded: number;
+	healPerAction: number;
+	raw?: boolean;
+}): Promise<[string, ItemBank]> {
+	await user.settings.sync(true);
+
+	const foodToRemove = getUserFoodFromBank(user, totalHealingNeeded, raw);
+	if (!foodToRemove) {
+		throw `You don't have enough Raw food to feed your tame in this trip. You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.filter(
+			i => i.raw
+		)
+			.map(i => itemNameFromID(i.raw!))
+			.join(', ')}.`;
+	} else {
+		await user.removeItemsFromBank(foodToRemove);
+
+		updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, foodToRemove);
+
+		return [`${new Bank(foodToRemove)} from ${user.username}`, foodToRemove];
+	}
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -115,6 +151,13 @@ ${allTames
 		if (quantity < 1) {
 			return msg.channel.send("Your tame can't kill this monster fast enough.");
 		}
+		const [foodStr] = await removeRawFood({
+			client: this.client,
+			totalHealingNeeded: (monster.healAmountNeeded ?? 1) * quantity,
+			healPerAction: monster.healAmountNeeded ?? 1,
+			raw: true,
+			user: msg.author
+		});
 		const duration = Math.floor(quantity * speed);
 
 		const activity = new TameActivityTable();
@@ -136,7 +179,7 @@ ${allTames
 		return msg.channel.send(
 			`${selectedTame.name} is now killing ${quantity}x ${monster.name}. The trip will take ${formatDuration(
 				duration
-			)}.`
+			)}.\n\nRemoved ${foodStr}`
 		);
 	}
 }
