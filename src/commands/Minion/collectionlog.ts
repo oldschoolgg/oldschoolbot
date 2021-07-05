@@ -64,13 +64,16 @@ Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 			new Set(Object.values(type?.items ?? Monsters.get(monster!.id)!.allItems!).flat(100))
 		) as number[];
 		const log = msg.author.settings.get(UserSettings.CollectionLogBank);
-		const num = items.filter(item => log[item] > 0).length;
 		const { name } = type || monster!;
 
+		// Add Sire uniques that come from Unsired.
 		if (stringMatches('abyssal sire', name)) {
 			items.unshift(...bosses['Abyssal Sire']);
 			items = [...new Set(items)];
 		}
+
+		// Count number of items the player owns in CL.
+		const num = items.filter(item => log[item] > 0).length;
 
 		const chunkedMonsterItems: Record<number, number[]> = {};
 		let i = 0;
