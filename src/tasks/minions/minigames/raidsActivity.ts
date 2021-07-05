@@ -92,7 +92,6 @@ export default class extends Task {
 			if (roll(2000)) {
 				userLoot.add('Steve');
 			}
-			userLoot.multiply(2);
 			totalLoot.add(userLoot);
 
 			const items = userLoot.items();

@@ -69,7 +69,7 @@ export default class extends Task {
 			inCatacombs: isInCatacombs
 		};
 		const loot = (monster as KillableMonster).table.kill(Math.ceil(quantity * abyssalBonus), killOptions);
-		if (!abyssalBonus) {
+		if (!user.usingPet('Ori')) {
 			loot.multiply(2);
 		}
 		const newSuperiorCount = loot.bank[420];
