@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { GearSetupTypes, GearStat } from '../../../gear';
+import { GearStat } from '../../../gear';
 import { SkillsEnum } from '../../../skilling/types';
 import { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
@@ -284,7 +284,7 @@ export const turaelMonsters: KillableMonster[] = [
 			slayer: 69
 		},
 		healAmountNeeded: 20 * 5,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackSlash, GearStat.AttackRanged]
 	},
 	{
@@ -304,7 +304,7 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		healAmountNeeded: 11,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -321,7 +321,7 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		healAmountNeeded: 11,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -382,7 +382,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 15,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -425,7 +425,7 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		healAmountNeeded: 16,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
@@ -517,7 +517,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 8,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
@@ -531,7 +531,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 26,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		cannonMulti: true
@@ -550,7 +550,7 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		healAmountNeeded: 10,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -564,7 +564,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 22,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -581,7 +581,7 @@ export const turaelMonsters: KillableMonster[] = [
 		canCannon: true,
 		cannonMulti: true,
 		healAmountNeeded: 40,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canBarrage: false
 	},
@@ -597,7 +597,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 18,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		cannonMulti: true,
@@ -618,7 +618,7 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: true,
 		canBarrage: false,
 		healAmountNeeded: 12,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -633,7 +633,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 14,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -650,7 +650,7 @@ export const turaelMonsters: KillableMonster[] = [
 			slayer: 22
 		},
 		healAmountNeeded: 16,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -666,7 +666,7 @@ export const turaelMonsters: KillableMonster[] = [
 		itemsRequired: deepResolveItems([['Trident of the seas', 'Trident of the swamp', 'Brine sabre']]),
 		qpRequired: 10,
 		healAmountNeeded: 22,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab]
 	},
 	{
@@ -684,7 +684,7 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: true,
 		canBarrage: false,
 		healAmountNeeded: 9,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -714,7 +714,7 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 20,
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
 		healAmountNeeded: 18,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged]
 	},
 	{
@@ -729,7 +729,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 20,
 		healAmountNeeded: 50,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -744,7 +744,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 20,
 		healAmountNeeded: 17,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -762,7 +762,7 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		healAmountNeeded: 16,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -789,7 +789,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 11,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -804,7 +804,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 11,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -846,7 +846,7 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		healAmountNeeded: 8,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -878,7 +878,7 @@ export const turaelMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 14,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -897,7 +897,7 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		healAmountNeeded: 11,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -912,7 +912,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 13,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -927,7 +927,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 14,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
@@ -942,7 +942,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 5,
 		healAmountNeeded: 32,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -959,7 +959,7 @@ export const turaelMonsters: KillableMonster[] = [
 			slayer: 22
 		},
 		healAmountNeeded: 9,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -993,7 +993,7 @@ export const turaelMonsters: KillableMonster[] = [
 		},
 		canCannon: true,
 		healAmountNeeded: 18,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1008,7 +1008,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 18,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1025,7 +1025,7 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		healAmountNeeded: 13,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1052,7 +1052,7 @@ export const turaelMonsters: KillableMonster[] = [
 			slayer: 69
 		},
 		healAmountNeeded: 65,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackSlash, GearStat.AttackRanged]
 	},
 	{
@@ -1066,7 +1066,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 1,
 		healAmountNeeded: 15,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1085,7 +1085,7 @@ export const turaelMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.ScreamingTwistedBanshee,
 		healAmountNeeded: 25,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1110,7 +1110,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 48,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
 	},
 	{
@@ -1124,7 +1124,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 16,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -1141,7 +1141,7 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: true,
 		canBarrage: false,
 		healAmountNeeded: 16,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1158,7 +1158,7 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		healAmountNeeded: 16,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1175,7 +1175,7 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: true,
 		canBarrage: false,
 		healAmountNeeded: 12,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1189,7 +1189,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 5,
 		healAmountNeeded: 28,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1206,7 +1206,7 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		healAmountNeeded: 9,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -1220,7 +1220,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 1,
 		qpRequired: 32,
 		healAmountNeeded: 6,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	}
 ];

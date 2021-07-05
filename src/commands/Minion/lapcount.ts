@@ -23,11 +23,11 @@ export default class extends BotCommand {
 		]);
 		const sepulchreCount = await msg.author.getMinigameScore('Sepulchre');
 		if (sepulchreCount === 0 && entries.length === 0) {
-			return msg.send("You haven't done any laps yet! Sad.");
+			return msg.channel.send("You haven't done any laps yet! Sad.");
 		}
 		const data = `${entries
 			.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)
 			.join('\n')}\n**Hallowed Sepulchre:** ${await sepulchreCount}`;
-		return msg.send(data);
+		return msg.channel.send(data);
 	}
 }

@@ -224,7 +224,7 @@ export default class extends BotCommand {
 		}
 		const bank = msg.author.bank();
 		if (!bank.has(item.input.id)) {
-			return msg.send(`You don't have a ${item.input.name}.`);
+			return msg.channel.send(`You don't have a ${item.input.name}.`);
 		}
 		await msg.author.settings.update(UserSettings.ZealTokens, bal - item.tokens);
 		await msg.author.removeItemsFromBank({ [item.input.id]: 1 });

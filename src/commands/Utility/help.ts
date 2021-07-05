@@ -12,6 +12,6 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.send('https://www.oldschool.gg/oldschoolbot');
+		return msg.channel.send('https://www.oldschool.gg/oldschoolbot');
 	}
 }

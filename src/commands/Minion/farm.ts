@@ -66,7 +66,7 @@ export default class extends BotCommand {
 		}
 
 		const plants =
-			Farming.Plants.find(plants => plants.name.toLowerCase() === plantName.toLowerCase()) ??
+			Farming.Plants.find(plants => stringMatches(plants.name, plantName)) ??
 			Farming.Plants.find(plants =>
 				plants.aliases.some(
 					alias => stringMatches(alias, plantName) || stringMatches(alias.split(' ')[0], plantName)
@@ -227,7 +227,7 @@ export default class extends BotCommand {
 				if (!bankHasItem(userBank, parseInt(paymentID), qty * quantity)) {
 					canPay = false;
 					if (msg.flagArgs.pay) {
-						return msg.send(
+						return msg.channel.send(
 							`You don't have enough ${itemNameFromID(
 								parseInt(paymentID)
 							)} to make payments to nearby farmers.`
@@ -325,7 +325,7 @@ export default class extends BotCommand {
 			autoFarmed
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${infoStr.join(' ')}\n\nIt'll take around ${formatDuration(duration)} to finish.\n\n${
 				boostStr.length > 0 ? '**Boosts**: ' : ''
 			}${boostStr.join(', ')}`

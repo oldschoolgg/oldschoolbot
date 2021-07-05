@@ -19,7 +19,8 @@ export default class extends BotCommand {
 			examples: ['+giveaway 5m Twisted bow, 20 Shark'],
 			categoryFlags: ['minion', 'utility'],
 			oneAtTime: true,
-			aliases: ['gstart', 'g']
+			aliases: ['gstart', 'g'],
+			requiredPermissions: ['ADD_REACTIONS']
 		});
 	}
 
@@ -36,11 +37,11 @@ export default class extends BotCommand {
 		}
 
 		if (!msg.guild) {
-			return msg.send('You cannot make a giveaway outside a server.');
+			return msg.channel.send('You cannot make a giveaway outside a server.');
 		}
 
 		if (!msg.author.bank().fits(bank)) {
-			return msg.send("You don't own those items.");
+			return msg.channel.send("You don't own those items.");
 		}
 
 		await msg.confirm(
@@ -50,7 +51,7 @@ export default class extends BotCommand {
 		const duration = new Duration(string);
 		const ms = duration.offset;
 		if (!ms || ms > Time.Day * 7 || ms < Time.Second * 5) {
-			return msg.send('Your giveaway cannot last longer than 7 days, or be faster than 5 seconds.');
+			return msg.channel.send('Your giveaway cannot last longer than 7 days, or be faster than 5 seconds.');
 		}
 
 		const reaction = msg.guild.emojis.cache.random();

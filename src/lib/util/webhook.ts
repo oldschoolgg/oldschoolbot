@@ -51,6 +51,11 @@ export async function resolveChannel(
 	}
 }
 
+async function deleteWebhook(channelID: string) {
+	webhookCache.delete(channelID);
+	await WebhookTable.delete({ channelID });
+}
+
 const queue = new PQueue({ concurrency: 10 });
 
 export async function sendToChannelID(
@@ -68,13 +73,28 @@ export async function sendToChannelID(
 
 		client.emit('log', `Sending to channelID[${channelID}].`);
 		let files = data.image ? [data.image] : undefined;
+		let embeds = [];
+		if (data.embed) embeds.push(data.embed);
 		if (channel instanceof WebhookClient) {
-			return channel.send(data.content, {
+			try {
+				await channel.send({
+					content: data.content,
+					files,
+					embeds
+				});
+			} catch (err: any) {
+				const error = err as Error;
+				if (error.message === 'Unknown Webhook') {
+					await deleteWebhook(channelID);
+					await sendToChannelID(client, channelID, data);
+				}
+			}
+		} else {
+			await channel.send({
+				content: data.content,
 				files,
-				embeds: data.embed ? [data.embed] : undefined,
-				split: true
+				embeds
 			});
 		}
-		return channel.send(data.content, { files, embed: data.embed, split: true });
 	});
 }

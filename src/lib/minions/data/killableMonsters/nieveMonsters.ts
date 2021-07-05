@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { GearSetupTypes, GearStat } from '../../../gear';
+import { GearStat } from '../../../gear';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
@@ -18,7 +18,7 @@ export const nieveMonsters: KillableMonster[] = [
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 20,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: false,
@@ -37,7 +37,7 @@ export const nieveMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
 		healAmountNeeded: 20 * 2,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: false,
@@ -67,7 +67,7 @@ export const nieveMonsters: KillableMonster[] = [
 			slayer: 77
 		},
 		healAmountNeeded: 20 * 4,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -82,7 +82,7 @@ export const nieveMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 21,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: true,
@@ -100,7 +100,7 @@ export const nieveMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 18,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic],
 		canCannon: true,
 		cannonMulti: true,
@@ -124,7 +124,7 @@ export const nieveMonsters: KillableMonster[] = [
 			prayer: 43
 		},
 		healAmountNeeded: 45,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: false,
@@ -141,7 +141,7 @@ export const nieveMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 20,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackMagic],
 		canCannon: true,
 		cannonMulti: true,

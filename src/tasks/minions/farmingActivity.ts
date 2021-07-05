@@ -255,7 +255,7 @@ export default class extends Task {
 				}
 
 				if (plantToHarvest.name === 'Limpwurt') {
-					harvestXp = plantToHarvest.harvestXp;
+					harvestXp = plantToHarvest.harvestXp * alivePlants;
 				} else {
 					harvestXp = cropYield * plantToHarvest.harvestXp;
 				}
@@ -454,14 +454,16 @@ export default class extends Task {
 			if (!channelIsSendable(channel)) return;
 
 			if (janeMessage) {
-				return channel.send(
-					await chatHeadImage({
-						content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
-							contractsCompleted + 1
-						} farming contracts.`,
-						head: 'jane'
-					})
-				);
+				return channel.send({
+					embeds: [
+						await chatHeadImage({
+							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+								contractsCompleted + 1
+							} farming contracts.`,
+							head: 'jane'
+						})
+					]
+				});
 			}
 			handleTripFinish(
 				this.client,

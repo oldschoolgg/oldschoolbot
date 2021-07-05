@@ -18,9 +18,9 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [username]: [string]) {
 		try {
 			const player = await Hiscores.fetch(username);
-			return msg.send(`${username}'s Combat Level is **${player.combatLevel}**.`);
+			return msg.channel.send(`${username}'s Combat Level is **${player.combatLevel}**.`);
 		} catch (err) {
-			return msg.send(err.message);
+			return msg.channel.send(err.message);
 		}
 	}
 }

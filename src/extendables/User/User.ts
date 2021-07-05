@@ -1,6 +1,6 @@
 import { User } from 'discord.js';
 import { objectEntries } from 'e';
-import { Extendable, ExtendableStore, KlasaClient, SettingsFolder } from 'klasa';
+import { Extendable, ExtendableStore, KlasaClient, KlasaUser, SettingsFolder } from 'klasa';
 import PromiseQueue from 'p-queue';
 
 import { Events, PerkTier, userQueues } from '../../lib/constants';
@@ -107,9 +107,9 @@ export default class extends Extendable {
 		return currentQueue;
 	}
 
-	public async queueFn(this: User, fn: (...args: any[]) => Promise<any>) {
+	public async queueFn(this: User, fn: (user: KlasaUser) => Promise<void>) {
 		const queue = this.getUpdateQueue();
-		await queue.add(fn);
+		return queue.add(() => fn(this));
 	}
 
 	// @ts-ignore 2784

@@ -18,7 +18,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		const [message, feed] = await Promise.all([
-			msg.send('Loading...'),
+			msg.channel.send('Loading...'),
 			parser.parseURL('http://services.runescape.com/m=news/latest_news.rss?oldschool=true')
 		]);
 		const display = new RichDisplay();

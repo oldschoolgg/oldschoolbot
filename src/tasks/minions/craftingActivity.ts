@@ -32,8 +32,8 @@ export default class extends Task {
 
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Crafting, amount: xpReceived });
 
-		let str = `${user}, ${user.minionName} finished crafting ${quantity} ${item.name}, ${
-			crushed ? `crushing ${crushed} of them` : ''
+		let str = `${user}, ${user.minionName} finished crafting ${quantity} ${item.name}${
+			crushed ? `, crushing ${crushed} of them` : ''
 		}. ${xpRes}`;
 
 		await user.addItemsToBank(loot.values(), true);

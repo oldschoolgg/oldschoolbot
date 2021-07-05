@@ -6,25 +6,23 @@ import permissionLevels from './permissionLevels';
 
 export const clientOptions: KlasaClientOptions = {
 	/* Discord.js Options */
-	fetchAllMembers: false,
 	messageCacheMaxSize: 200,
 	messageCacheLifetime: 120,
 	messageSweepInterval: 120,
+	owners: ['157797566833098752'],
 	// disableEveryone: true,
 	shards: 'auto',
-	ws: {
-		intents: new Intents([
-			'GUILDS',
-			'GUILD_MEMBERS',
-			'GUILD_MESSAGES',
-			'GUILD_MESSAGE_REACTIONS',
-			'DIRECT_MESSAGES',
-			'DIRECT_MESSAGE_REACTIONS'
-		]).bitfield
-	},
 	http: {
 		api: 'https://discord.com/api'
 	},
+	intents: new Intents([
+		'GUILDS',
+		'GUILD_MEMBERS',
+		'GUILD_MESSAGES',
+		'GUILD_MESSAGE_REACTIONS',
+		'DIRECT_MESSAGES',
+		'DIRECT_MESSAGE_REACTIONS'
+	]),
 	/* Klasa Options */
 	createPiecesFolders: false,
 	prefix: '+',

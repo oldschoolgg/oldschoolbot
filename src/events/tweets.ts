@@ -203,7 +203,7 @@ export default class extends Event {
 
 		if (key === 'hexis') {
 			return (this.client.channels.cache.get(HEXIS_CHANNEL) as TextChannel)!
-				.send(`<${url}>`, { embed })
+				.send({ content: `<${url}>`, embeds: [embed] })
 				.catch(() => null);
 		}
 
