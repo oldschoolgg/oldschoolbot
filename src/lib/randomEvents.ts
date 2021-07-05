@@ -191,16 +191,19 @@ export async function triggerRandomEvent(ch: TextChannel, user: KlasaUser) {
 	switch (roll) {
 		case 1: {
 			const randTrivia = randArrItem(triviaQuestions);
-			await ch.send(
-				embed.setDescription(
-					`${user}, you've encountered the ${event.name} random event! To complete this event, answer this trivia question... ${randTrivia.q}`
-				)
-			);
+			await ch.send({
+				embeds: [
+					embed.setDescription(
+						`${user}, you've encountered the ${event.name} random event! To complete this event, answer this trivia question... ${randTrivia.q}`
+					)
+				]
+			});
 			try {
-				await ch.awaitMessages(
-					answer => answer.author.id === user.id && randTrivia.a.includes(answer.content.toLowerCase()),
-					options
-				);
+				await ch.awaitMessages({
+					...options,
+					filter: answer =>
+						answer.author.id === user.id && randTrivia.a.includes(answer.content.toLowerCase())
+				});
 				finalizeEvent(event, user, ch);
 				return;
 			} catch (err) {
@@ -215,12 +218,12 @@ export async function triggerRandomEvent(ch: TextChannel, user: KlasaUser) {
 				.setImage(
 					'https://cdn.discordapp.com/attachments/357422607982919680/801688145120067624/Certer_random_event.png'
 				);
-			await ch.send(embed);
+			await ch.send({ embeds: [embed] });
 			try {
-				await ch.awaitMessages(
-					answer => answer.author.id === user.id && answer.content.toLowerCase() === 'a',
-					options
-				);
+				await ch.awaitMessages({
+					...options,
+					filter: answer => answer.author.id === user.id && answer.content.toLowerCase() === 'a'
+				});
 				finalizeEvent(event, user, ch);
 				return;
 			} catch (err) {
@@ -233,12 +236,12 @@ export async function triggerRandomEvent(ch: TextChannel, user: KlasaUser) {
 				.setDescription(
 					`${user}, you've encountered the ${event.name} random event! To complete this event, specify the letter corresponding to the answer in this image:`
 				);
-			await ch.send(embed);
+			await ch.send({ embeds: [embed] });
 			try {
-				await ch.awaitMessages(
-					answer => answer.author.id === user.id && answer.content.toLowerCase() === 'a',
-					options
-				);
+				await ch.awaitMessages({
+					...options,
+					filter: answer => answer.author.id === user.id && answer.content.toLowerCase() === 'a'
+				});
 				finalizeEvent(event, user, ch);
 				return;
 			} catch (err) {
@@ -246,13 +249,15 @@ export async function triggerRandomEvent(ch: TextChannel, user: KlasaUser) {
 			}
 		}
 		case 4: {
-			const message = await ch.send(
-				embed.setDescription(
-					`${user}, you've encountered the ${event.name} random event! To complete this event, reaction to this message with any emoji.`
-				)
-			);
+			const message = await ch.send({
+				embeds: [
+					embed.setDescription(
+						`${user}, you've encountered the ${event.name} random event! To complete this event, reaction to this message with any emoji.`
+					)
+				]
+			});
 			try {
-				await message.awaitReactions((_, _user) => user.id === _user.id, options);
+				await message.awaitReactions({ ...options, filter: (_, _user) => user.id === _user.id });
 				finalizeEvent(event, user, ch);
 				return;
 			} catch (err) {

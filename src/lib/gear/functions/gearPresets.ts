@@ -194,5 +194,23 @@ export const globalPresets = [
 		Ring: null,
 		Ammo: null,
 		AmmoQuantity: null
+	},
+
+	{
+		name: 'lumberjack',
+		userID: '123',
+		Head: itemID('Lumberjack hat'),
+		Neck: null,
+		Body: itemID('Lumberjack top'),
+		Legs: itemID('Lumberjack legs'),
+		Cape: null,
+		TwoHanded: null,
+		Hands: null,
+		Feet: itemID('Lumberjack boots'),
+		Shield: null,
+		Weapon: null,
+		Ring: null,
+		Ammo: null,
+		AmmoQuantity: null
 	}
 ];

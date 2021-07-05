@@ -40,11 +40,11 @@ export default class extends BotCommand {
 			quantity = 1;
 		}
 
-		if (!tierName) return msg.send(this.invalidClue(msg));
+		if (!tierName) return msg.channel.send(this.invalidClue(msg));
 
 		const clueTier = ClueTiers.find(tier => stringMatches(tier.name, tierName));
 
-		if (!clueTier) return msg.send(this.invalidClue(msg));
+		if (!clueTier) return msg.channel.send(this.invalidClue(msg));
 
 		const boosts = [];
 
@@ -60,7 +60,7 @@ export default class extends BotCommand {
 		const maxTripLength = msg.author.maxTripLength(Activity.ClueCompletion);
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${Math.floor(
@@ -73,7 +73,7 @@ export default class extends BotCommand {
 		const numOfScrolls = bank[clueTier.scrollID];
 
 		if (!numOfScrolls || numOfScrolls < quantity) {
-			return msg.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
+			return msg.channel.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
 		}
 
 		await msg.author.removeItemFromBank(clueTier.scrollID, quantity);
@@ -104,7 +104,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.ClueCompletion
 		});
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now completing ${quantity}x ${
 				clueTier.name
 			} clues, it'll take around ${formatDuration(duration)} to finish.${

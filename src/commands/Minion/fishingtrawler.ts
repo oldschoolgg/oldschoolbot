@@ -26,7 +26,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		if (msg.author.skillLevel(SkillsEnum.Fishing) < 15) {
-			return msg.send('You need atleast level 15 Fishing to do the Fishing Trawler.');
+			return msg.channel.send('You need atleast level 15 Fishing to do the Fishing Trawler.');
 		}
 
 		const tripsDone = await msg.author.getMinigameScore('FishingTrawler');
@@ -48,7 +48,7 @@ export default class extends BotCommand {
 			duration
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${
 				msg.author.minionName
 			} is now doing ${quantity}x Fishing Trawler trips, it will take around ${formatDuration(

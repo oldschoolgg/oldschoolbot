@@ -28,6 +28,6 @@ export default class extends BotCommand {
 			.addField('Discord Join Date', user.createdAt.toLocaleDateString(), true)
 			.addField('Server Join Date', member.joinedAt!.toLocaleDateString(), true);
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

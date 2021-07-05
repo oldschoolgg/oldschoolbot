@@ -23,7 +23,9 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [gearType]: [GearSetupTypes]): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
-			return msg.send(`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`);
+			return msg.channel.send(
+				`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`
+			);
 		}
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
 		const currentEquippedGear = msg.author.getGear(gearType);
@@ -34,12 +36,12 @@ export default class extends BotCommand {
 			refund.add(val.item, val.quantity);
 		}
 		if (refund.length === 0) {
-			return msg.send(`You have no items in your ${toTitleCase(gearType)} setup.`);
+			return msg.channel.send(`You have no items in your ${toTitleCase(gearType)} setup.`);
 		}
 
 		await msg.author.settings.update(gearTypeSetting, defaultGear);
 
 		await msg.author.addItemsToBank(refund.bank);
-		return msg.send(`You unequipped all items (${refund}) from your ${toTitleCase(gearType)} setup.`);
+		return msg.channel.send(`You unequipped all items (${refund}) from your ${toTitleCase(gearType)} setup.`);
 	}
 }

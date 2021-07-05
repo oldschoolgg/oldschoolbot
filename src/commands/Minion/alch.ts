@@ -54,11 +54,11 @@ export default class extends BotCommand {
 			.sort((a, b) => b.highalch - a.highalch);
 
 		if (!osItem && !favAlchs) {
-			return msg.send("You don't have any of that item to alch.");
+			return msg.channel.send("You don't have any of that item to alch.");
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) < 55) {
-			return msg.send('You need level 55 Magic to cast High Alchemy');
+			return msg.channel.send('You need level 55 Magic to cast High Alchemy');
 		}
 
 		if (!osItem) {
@@ -76,7 +76,7 @@ export default class extends BotCommand {
 		}
 
 		if (quantity * timePerAlch > maxTripLength) {
-			return msg.send(`The max number of alchs you can do is ${maxCasts}!`);
+			return msg.channel.send(`The max number of alchs you can do is ${maxCasts}!`);
 		}
 
 		const duration = quantity * timePerAlch;
@@ -97,7 +97,7 @@ export default class extends BotCommand {
 		consumedItems.add(osItem.id, quantity);
 
 		if (!msg.author.owns(consumedItems)) {
-			return msg.send(`You don't have the required items, you need ${consumedItems}`);
+			return msg.channel.send(`You don't have the required items, you need ${consumedItems}`);
 		}
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
@@ -108,14 +108,12 @@ export default class extends BotCommand {
 			);
 
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: 10_000,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+					max: 1,
+					time: 10_000,
+					errors: ['time']
+				});
 			} catch (err) {
 				return alchMessage.edit(`Cancelling alch of ${quantity}x ${osItem.name}.`);
 			}
@@ -140,6 +138,6 @@ export default class extends BotCommand {
 			osItem.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

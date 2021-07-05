@@ -181,6 +181,7 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	getPatchType: string;
 	planting: boolean;
 	currentDate: number;
+	autoFarmed: boolean;
 }
 
 export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
@@ -242,6 +243,10 @@ export interface BarbarianAssaultActivityTaskOptions extends MinigameActivityTas
 }
 
 export interface AgilityArenaActivityTaskOptions extends MinigameActivityTaskOptions {}
+
+export interface TempleTrekkingActivityTaskOptions extends MinigameActivityTaskOptions {
+	difficulty: string;
+}
 
 export interface MonsterKillingTickerTaskData {
 	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
@@ -319,4 +324,5 @@ export type ActivityTaskData =
 	| FarmingActivityTaskOptions
 	| HerbloreActivityTaskOptions
 	| FletchingActivityTaskOptions
-	| RunecraftActivityTaskOptions;
+	| RunecraftActivityTaskOptions
+	| TempleTrekkingActivityTaskOptions;

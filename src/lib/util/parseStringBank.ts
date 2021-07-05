@@ -1,35 +1,53 @@
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
+import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { fromKMB } from 'oldschooljs/dist/util';
 
 import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
-import { stringMatches } from '../util';
+import { cleanString, stringMatches } from '../util';
 
-function parseQuantityAndItem(str = ''): [Item[], number] | [] {
+const { floor, max, min } = Math;
+
+export function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 	str = str.trim();
 	if (!str) return [];
+	// Make it so itemIDs aren't interpreted as quantities
+	if (str.match(/^[0-9]+$/)) str = `0 ${str}`;
 	const split = str.split(' ');
 
 	// If we're passed 2 numbers in a row, e.g. '1 1 coal', remove that number and recurse back.
-	if (!isNaN(Number(split[1]))) {
+	if (!isNaN(Number(split[1])) && split.length > 2) {
 		split.splice(1, 1);
 		return parseQuantityAndItem(split.join(' '));
 	}
 
-	let [potentialQty, ...potentialName] = split;
+	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
+
 	// Fix for 3rd age items
 	if (potentialQty === '3rd') potentialQty = '';
-	let parsedQty: number | undefined = fromKMB(potentialQty);
-	// Can return number, NaN or undefined. We want it to be only number or undefined.
-	if (isNaN(parsedQty)) parsedQty = undefined;
-	const parsedName = parsedQty === undefined ? str : potentialName.join('');
-	let osItems: Item[] = Array.from(Items.filter(i => stringMatches(i.name, parsedName)).values());
 
-	let quantity = parsedQty ?? 0;
-	if (quantity < 0) quantity = 0;
+	let parsedQty: number | null = fromKMB(potentialQty);
+	if (isNaN(parsedQty)) parsedQty = null;
 
-	quantity = Math.floor(Math.min(MAX_INT_JAVA, quantity));
+	const parsedName = parsedQty === null ? str : potentialName.join(' ');
+
+	let osItems: Item[] = [];
+
+	const nameAsInt = Number(parsedName);
+	if (!isNaN(nameAsInt)) {
+		const item = Items.get(nameAsInt);
+		if (item) osItems.push(item);
+	} else {
+		osItems = Array.from(
+			Items.filter(
+				i => itemNameMap.get(cleanString(parsedName)) === i.id || stringMatches(i.name, parsedName)
+			).values()
+		);
+	}
+	if (osItems.length === 0) return [];
+
+	let quantity = floor(min(MAX_INT_JAVA, max(0, parsedQty ?? 0)));
 
 	return [osItems, quantity];
 }
@@ -69,7 +87,7 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 		for (const [item, quantity] of strItems) {
 			_bank.add(
 				item.id,
-				!quantity ? inputBank.amount(item.id) : Math.max(1, Math.min(quantity, inputBank.amount(item.id)))
+				!quantity ? inputBank.amount(item.id) : Math.max(0, Math.min(quantity, inputBank.amount(item.id)))
 			);
 		}
 		return _bank;
