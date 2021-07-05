@@ -84,6 +84,7 @@ export default class extends Task {
 				isOnTask: false,
 				taskQuantity: null
 			});
+			loot = multiplyBank(loot, 2);
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];

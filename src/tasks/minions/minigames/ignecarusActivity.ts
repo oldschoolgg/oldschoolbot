@@ -62,6 +62,7 @@ export default class extends Task {
 		const totalLoot = new Bank();
 		for (const { user } of bossUsers.filter(u => !deaths.includes(u.user))) {
 			const loot = new Bank().add(IgnecarusLootTable.roll());
+			loot.multiply(2);
 			totalLoot.add(loot);
 			await addMonsterXP(user, {
 				monsterID: Ignecarus.id,

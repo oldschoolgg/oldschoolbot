@@ -1616,6 +1616,45 @@ setCustomItem(
 	6000
 );
 /**
+ * Independence Box
+ */
+setCustomItem(
+	48_211,
+	'Independence box',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(
+	48_212,
+	'Fireworks',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(
+	48_213,
+	'Liber tea',
+	'Rune sword',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(
+	48_214,
+	"Sam's hat",
+	'Rune full helm',
+	{
+		highalch: 3000
+	},
+	6000
+);
+/**
  * Misc Items
  *
  * 50_000 - 60_000

@@ -71,6 +71,7 @@ export default class extends Task {
 			if (dwwhRecipient === user) {
 				loot.add('Broken dwarven warhammer');
 			}
+			loot.multiply(2);
 			totalLoot.add(loot);
 			await addMonsterXP(user, {
 				monsterID: KingGoldemar.id,
