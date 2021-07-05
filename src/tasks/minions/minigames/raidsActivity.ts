@@ -109,14 +109,12 @@ export default class extends Task {
 			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CoxLoot), totalLoot.bank])
 		);
 
-		sendToChannelID(this.client, channelID, { content: resultMessage });
-
 		if (allUsers.length === 1) {
 			handleTripFinish(
 				this.client,
 				allUsers[0],
 				channelID,
-				'',
+				resultMessage,
 				res => {
 					const flags: Record<string, string> = challengeMode ? { cm: 'cm' } : {};
 
@@ -134,6 +132,8 @@ export default class extends Task {
 				data,
 				null
 			);
+		} else {
+			sendToChannelID(this.client, channelID, { content: resultMessage });
 		}
 	}
 }
