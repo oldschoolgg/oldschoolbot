@@ -9,34 +9,31 @@ export default class extends BotCommand {
 			runIn: ['text'],
 			permissionLevel: 6,
 			usage: '<disable|enable>',
-			description: `Allows you to disable/enable the bot in a channel. If a channel is disabled, only staff of your server can use it in the channel.`,
+			description:
+				'Allows you to disable/enable the bot in a channel. If a channel is disabled, only staff of your server can use it in the channel.',
 			examples: ['+channel enable', '+channel disable'],
 			categoryFlags: ['settings']
 		});
 	}
 
 	async run(msg: KlasaMessage, [input]: [string]) {
-		const isDisabled = msg.guild?.settings
-			.get(GuildSettings.StaffOnlyChannels)
-			.includes(msg.channel.id);
+		const isDisabled = msg.guild?.settings.get(GuildSettings.StaffOnlyChannels).includes(msg.channel.id);
 
 		if (input === 'disable') {
-			if (isDisabled) return msg.send(`This channel is already disabled.`);
+			if (isDisabled) return msg.channel.send('This channel is already disabled.');
 
 			await msg.guild!.settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
 				arrayAction: 'add'
 			});
 
-			return msg.send(
-				'Channel disabled. Staff of this server can still use commands in this channel.'
-			);
+			return msg.channel.send('Channel disabled. Staff of this server can still use commands in this channel.');
 		}
-		if (!isDisabled) return msg.send(`This channel is already enabled.`);
+		if (!isDisabled) return msg.channel.send('This channel is already enabled.');
 
 		await msg.guild!.settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
 			arrayAction: 'remove'
 		});
 
-		return msg.send('Channel enabled. Anyone can use commands in this channel now.');
+		return msg.channel.send('Channel enabled. Anyone can use commands in this channel now.');
 	}
 }

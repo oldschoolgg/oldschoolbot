@@ -46,7 +46,13 @@ export default class extends Monitor {
 			}
 		}
 		const prefix = message.guildSettings.get(GuildSettings.Prefix);
-		return message.sendLocale('PREFIX_REMINDER', [prefix.length ? prefix : undefined]);
+		return message.channel.send(
+			`The prefix${
+				Array.isArray(prefix)
+					? `es for this guild are: ${prefix.map(pre => `\`${pre}\``).join(', ')}`
+					: ` in this guild is set to: \`${prefix}\``
+			}`
+		);
 	}
 
 	public async runCommand(message: KlasaMessage) {
@@ -62,9 +68,7 @@ export default class extends Monitor {
 				// @ts-ignore 2341
 				await message.prompter!.run();
 				try {
-					const subcommand = message.command!.subcommands
-						? message.params.shift()
-						: undefined;
+					const subcommand = message.command!.subcommands ? message.params.shift() : undefined;
 
 					const commandRun = subcommand
 						? // @ts-ignore 7053
@@ -72,40 +76,16 @@ export default class extends Monitor {
 						: message.command!.run(message, message.params);
 					timer.stop();
 					const response = await commandRun;
-					floatPromise(
-						this,
-						this.client.finalizers.run(message, message.command!, response, timer)
-					);
-					this.client.emit(
-						'commandSuccess',
-						message,
-						message.command,
-						message.params,
-						response
-					);
+					floatPromise(this, this.client.finalizers.run(message, message.command!, response, timer));
+					this.client.emit('commandSuccess', message, message.command, message.params, response);
 				} catch (error) {
-					this.client.emit(
-						'commandError',
-						message,
-						message.command,
-						message.params,
-						error
-					);
+					this.client.emit('commandError', message, message.command, message.params, error);
 				}
 			} catch (argumentError) {
-				this.client.emit(
-					'argumentError',
-					message,
-					message.command,
-					message.params,
-					argumentError
-				);
+				this.client.emit('argumentError', message, message.command, message.params, argumentError);
 			} finally {
 				if (message.command!.oneAtTime) {
-					setTimeout(
-						() => this.client.oneCommandAtATimeCache.delete(message.author.id),
-						1500
-					);
+					setTimeout(() => this.client.oneCommandAtATimeCache.delete(message.author.id), 1500);
 				}
 			}
 		} catch (response) {

@@ -12,7 +12,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.send(`Old School Bot is an open-source Discord Bot based on Old School RuneScape.
+		return msg.channel.send(`Old School Bot is an open-source Discord Bot based on Old School RuneScape.
 
 	- Website: https://www.oldschool.gg/oldschoolbot/
 

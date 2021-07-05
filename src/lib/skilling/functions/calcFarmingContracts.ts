@@ -79,10 +79,7 @@ const hardPlants: PlantsList = [
 	[90, 'Redwood tree', 5]
 ];
 
-export function getPlantToGrow(
-	user: KlasaUser,
-	contractLevel: 'easy' | 'medium' | 'hard'
-): [string, PlantTier] {
+export function getPlantToGrow(user: KlasaUser, contractLevel: 'easy' | 'medium' | 'hard'): [string, PlantTier] {
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
 	let contractType: PlantsList = [];
 	if (contractLevel === 'easy') contractType = easyPlants;

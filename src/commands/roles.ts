@@ -45,12 +45,7 @@ export default class extends BotCommand {
 			!msg.guild ||
 			msg.guild.id !== SupportServer ||
 			!role ||
-			[
-				'342983479501389826',
-				Roles.Moderator,
-				'590527706974781470',
-				'346238402737340416'
-			].includes(role.id) ||
+			['342983479501389826', Roles.Moderator, '590527706974781470', '346238402737340416'].includes(role.id) ||
 			!msg.member ||
 			!msg.member!.roles.cache.has(Roles.Moderator)
 		) {
@@ -73,6 +68,6 @@ export default class extends BotCommand {
 		const entity = await PingableRolesTable.findOne({ roleID: role.id });
 		if (!entity) return;
 		await entity.remove();
-		return msg.channel.send(`Deleted.`);
+		return msg.channel.send('Deleted.');
 	}
 }

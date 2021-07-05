@@ -1,9 +1,14 @@
+import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
+import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
 import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
 import { metamorphPets } from './collectionLog';
+import { capeCreatables } from './creatables/capes';
+import { ornamentKits } from './creatables/ornaments';
+import { slayerCreatables } from './creatables/slayer';
 
-interface Createable {
+export interface Createable {
 	name: string;
 	outputItems: ItemBank;
 	inputItems: ItemBank;
@@ -13,6 +18,7 @@ interface Createable {
 	noCl?: boolean;
 	GPCost?: number;
 	cantBeInCL?: boolean;
+	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 }
 
 const metamorphPetCreatables: Createable[] = metamorphPets.map(pet => ({
@@ -154,189 +160,6 @@ const crystalTools: Createable[] = [
 		},
 		requiredSkills: { smithing: 80, crafting: 80 },
 		QPRequired: 150
-	}
-];
-
-const ornamentKits: Createable[] = [
-	{
-		name: 'Dragon defender (t)',
-		inputItems: resolveNameBank({ 'Dragon defender': 1, 'Dragon defender ornament kit': 1 }),
-		outputItems: resolveNameBank({ 'Dragon defender (t)': 1 })
-	},
-	{
-		name: 'Dragon defender',
-		inputItems: resolveNameBank({ 'Dragon defender (t)': 1 }),
-		outputItems: resolveNameBank({ 'Dragon defender': 1, 'Dragon defender ornament kit': 1 }),
-		noCl: true
-	},
-	{
-		name: 'Rune defender (t)',
-		inputItems: resolveNameBank({ 'Rune defender': 1, 'Rune defender ornament kit': 1 }),
-		outputItems: resolveNameBank({ 'Rune defender (t)': 1 })
-	},
-	{
-		name: 'Rune defender',
-		inputItems: resolveNameBank({ 'Rune defender (t)': 1 }),
-		outputItems: resolveNameBank({ 'Rune defender': 1, 'Rune defender ornament kit': 1 }),
-		noCl: true
-	},
-	{
-		name: 'Dragon pickaxe (or)',
-		inputItems: resolveNameBank({ 'Dragon pickaxe': 1, 'Zalcano shard': 1 }),
-		outputItems: resolveNameBank({ 'Dragon pickaxe (or)': 1 })
-	},
-	{
-		name: 'Dragon pickaxe',
-		inputItems: resolveNameBank({ 'Dragon pickaxe (or)': 1 }),
-		outputItems: resolveNameBank({ 'Dragon pickaxe': 1, 'Zalcano shard': 1 }),
-		noCl: true
-	},
-	{
-		name: 'Dragon sq shield (g)',
-		inputItems: resolveNameBank({ 'Dragon sq shield ornament kit': 1, 'Dragon sq shield': 1 }),
-		outputItems: resolveNameBank({ 'Dragon sq shield (g)': 1 })
-	},
-	{
-		name: 'Revert dragon sq shield',
-		inputItems: resolveNameBank({ 'Dragon sq shield (g)': 1 }),
-		outputItems: resolveNameBank({ 'Dragon sq shield ornament kit': 1, 'Dragon sq shield': 1 }),
-		noCl: true
-	},
-	{
-		name: 'Dragon platelegs (g)',
-		inputItems: resolveNameBank({ 'Dragon platelegs': 1, 'Dragon legs/skirt ornament kit': 1 }),
-		outputItems: resolveNameBank({ 'Dragon platelegs (g)': 1 })
-	},
-	{
-		name: 'Dragon platelegs',
-		inputItems: resolveNameBank({ 'Dragon platelegs (g)': 1 }),
-		outputItems: resolveNameBank({
-			'Dragon platelegs': 1,
-			'Dragon legs/skirt ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Dragon plateskirt (g)',
-		inputItems: resolveNameBank({
-			'Dragon plateskirt': 1,
-			'Dragon legs/skirt ornament kit': 1
-		}),
-		outputItems: resolveNameBank({ 'Dragon plateskirt (g)': 1 })
-	},
-	{
-		name: 'Dragon plateskirt',
-		inputItems: resolveNameBank({ 'Dragon plateskirt (g)': 1 }),
-		outputItems: resolveNameBank({
-			'Dragon plateskirt': 1,
-			'Dragon legs/skirt ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Dragon chainbody (g)',
-		inputItems: resolveNameBank({
-			'Dragon chainbody': 1,
-			'Dragon chainbody ornament kit': 1
-		}),
-		outputItems: resolveNameBank({ 'Dragon chainbody (g)': 1 })
-	},
-	{
-		name: 'Dragon chainbody',
-		inputItems: resolveNameBank({ 'Dragon chainbody (g)': 1 }),
-		outputItems: resolveNameBank({
-			'Dragon chainbody': 1,
-			'Dragon chainbody ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Amulet of fury (or)',
-		inputItems: resolveNameBank({ 'Amulet of fury': 1, 'Fury ornament kit': 1 }),
-		outputItems: resolveNameBank({
-			'Amulet of fury (or)': 1
-		})
-	},
-	{
-		name: 'Amulet of fury',
-		inputItems: resolveNameBank({
-			'Amulet of fury (or)': 1
-		}),
-		outputItems: resolveNameBank({ 'Amulet of fury': 1, 'Fury ornament kit': 1 }),
-		noCl: true
-	},
-	// Godswords
-	{
-		name: 'Zamorak godsword (or)',
-		inputItems: resolveNameBank({ 'Zamorak godsword': 1, 'Zamorak godsword ornament kit': 1 }),
-		outputItems: resolveNameBank({
-			'Zamorak godsword (or)': 1
-		})
-	},
-	{
-		name: 'Revert zamorak godsword',
-		inputItems: resolveNameBank({
-			'Zamorak godsword (or)': 1
-		}),
-		outputItems: resolveNameBank({ 'Zamorak godsword': 1, 'Zamorak godsword ornament kit': 1 }),
-		noCl: true
-	},
-	{
-		name: 'Bandos godsword (or)',
-		inputItems: resolveNameBank({ 'Bandos godsword': 1, 'Bandos godsword ornament kit': 1 }),
-		outputItems: resolveNameBank({
-			'Bandos godsword (or)': 1
-		})
-	},
-	{
-		name: 'Revert bandos godsword',
-		inputItems: resolveNameBank({
-			'Bandos godsword (or)': 1
-		}),
-		outputItems: resolveNameBank({ 'Bandos godsword': 1, 'Bandos godsword ornament kit': 1 }),
-		noCl: true
-	},
-	{
-		name: 'Saradomin godsword (or)',
-		inputItems: resolveNameBank({
-			'Saradomin godsword': 1,
-			'Saradomin godsword ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Saradomin godsword (or)': 1
-		})
-	},
-	{
-		name: 'Revert saradomin godsword',
-		inputItems: resolveNameBank({
-			'Saradomin godsword (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Saradomin godsword': 1,
-			'Saradomin godsword ornament kit': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Armadyl godsword (or)',
-		inputItems: resolveNameBank({
-			'Armadyl godsword': 1,
-			'Armadyl godsword ornament kit': 1
-		}),
-		outputItems: resolveNameBank({
-			'Armadyl godsword (or)': 1
-		})
-	},
-	{
-		name: 'Revert Armadyl godsword',
-		inputItems: resolveNameBank({
-			'Armadyl godsword (or)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Armadyl godsword': 1,
-			'Armadyl godsword ornament kit': 1
-		}),
-		noCl: true
 	}
 ];
 
@@ -1367,22 +1190,22 @@ const Createables: Createable[] = [
 		})
 	},
 	{
-		name: `Zamorak's grapes`,
+		name: "Zamorak's grapes",
 		inputItems: resolveNameBank({
 			Grapes: 1,
 			"Bologa's blessing": 1
 		}),
 		outputItems: {
-			[itemID(`Zamorak's grapes`)]: 1
+			[itemID("Zamorak's grapes")]: 1
 		}
 	},
 	{
-		name: `Toad's legs`,
+		name: "Toad's legs",
 		inputItems: resolveNameBank({
 			'Swamp toad': 1
 		}),
 		outputItems: {
-			[itemID(`Toad's legs`)]: 1
+			[itemID("Toad's legs")]: 1
 		}
 	},
 	{
@@ -1449,11 +1272,381 @@ const Createables: Createable[] = [
 		},
 		noCl: true
 	},
+	{
+		name: 'Ivandis Flail',
+		inputItems: {
+			[itemID('Silver sickle')]: 1,
+			[itemID('Emerald')]: 1
+		},
+		outputItems: {
+			[itemID('Ivandis flail')]: 1
+		},
+		QPRequired: 75,
+		requiredSkills: ivandisRequirements
+	},
+	{
+		name: 'Blisterwood Flail',
+		inputItems: {
+			[itemID('Ivandis flail')]: 1,
+			[itemID('Ruby')]: 1
+		},
+		outputItems: {
+			[itemID('Blisterwood flail')]: 1
+		},
+		QPRequired: 125,
+		requiredSkills: blisterwoodRequirements
+	},
+	{
+		name: 'Revert red decorative full helm',
+		inputItems: {
+			[itemID('Red decorative full helm')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 5
+		}
+	},
+
+	{
+		name: 'Revert red decorative helm',
+		inputItems: {
+			[itemID('Red decorative helm')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 4
+		}
+	},
+	{
+		name: 'Revert red decorative body',
+		inputItems: {
+			[itemID('Red decorative body')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 8
+		}
+	},
+	{
+		name: 'Revert red decorative legs',
+		inputItems: {
+			[itemID('Red decorative legs')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 6
+		}
+	},
+	{
+		name: 'Revert red decorative skirt',
+		inputItems: {
+			[itemID('Red decorative skirt')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 6
+		}
+	},
+	{
+		name: 'Revert red decorative boots',
+		inputItems: {
+			[itemID('Red decorative boots')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 4
+		}
+	},
+	{
+		name: 'Revert red decorative shield',
+		inputItems: {
+			[itemID('Red decorative shield')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 6
+		}
+	},
+	{
+		name: 'Revert red decorative sword',
+		inputItems: {
+			[itemID('Red decorative sword')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 5
+		}
+	},
+	{
+		name: 'Revert white decorative full helm',
+		inputItems: {
+			[itemID('White decorative full helm')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 50
+		}
+	},
+	{
+		name: 'Revert white decorative helm',
+		inputItems: {
+			[itemID('White decorative helm')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 40
+		}
+	},
+	{
+		name: 'Revert white decorative body',
+		inputItems: {
+			[itemID('White decorative body')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 80
+		}
+	},
+	{
+		name: 'Revert white decorative legs',
+		inputItems: {
+			[itemID('White decorative legs')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 60
+		}
+	},
+	{
+		name: 'Revert white decorative skirt',
+		inputItems: {
+			[itemID('White decorative skirt')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 60
+		}
+	},
+	{
+		name: 'Revert white decorative boots',
+		inputItems: {
+			[itemID('White decorative boots')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 40
+		}
+	},
+	{
+		name: 'Revert white decorative shield',
+		inputItems: {
+			[itemID('White decorative shield')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 60
+		}
+	},
+	{
+		name: 'Revert white decorative sword',
+		inputItems: {
+			[itemID('White decorative sword')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 50
+		}
+	},
+	{
+		name: 'Revert gold decorative full helm',
+		inputItems: {
+			[itemID('Gold decorative full helm')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 500
+		}
+	},
+	{
+		name: 'Revert gold decorative helm',
+		inputItems: {
+			[itemID('Gold decorative helm')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 400
+		}
+	},
+	{
+		name: 'Revert gold decorative body',
+		inputItems: {
+			[itemID('Gold decorative body')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 800
+		}
+	},
+	{
+		name: 'Revert gold decorative legs',
+		inputItems: {
+			[itemID('Gold decorative legs')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 600
+		}
+	},
+	{
+		name: 'Revert gold decorative skirt',
+		inputItems: {
+			[itemID('Gold decorative skirt')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 600
+		}
+	},
+	{
+		name: 'Revert gold decorative boots',
+		inputItems: {
+			[itemID('Gold decorative boots')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 400
+		}
+	},
+	{
+		name: 'Revert gold decorative shield',
+		inputItems: {
+			[itemID('Gold decorative shield')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 600
+		}
+	},
+	{
+		name: 'Revert gold decorative sword',
+		inputItems: {
+			[itemID('Gold decorative sword')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 500
+		}
+	},
+	{
+		name: 'Revert zamorak castlewars hood',
+		inputItems: {
+			[itemID('Zamorak castlewars hood')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 10
+		}
+	},
+	{
+		name: 'Revert zamorak castlewars cloak',
+		inputItems: {
+			[itemID('Zamorak castlewars cloak')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 10
+		}
+	},
+	{
+		name: 'Revert saradomin castlewars hood',
+		inputItems: {
+			[itemID('Saradomin castlewars hood')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 10
+		}
+	},
+	{
+		name: 'Revert saradomin banner',
+		inputItems: {
+			[itemID('Saradomin banner')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 100
+		}
+	},
+	{
+		name: 'Revert zamorak banner',
+		inputItems: {
+			[itemID('Zamorak banner')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 100
+		}
+	},
+	{
+		name: 'Revert decorative magic hat',
+		inputItems: {
+			[itemID('Decorative magic hat')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 20
+		}
+	},
+	{
+		name: 'Revert decorative magic top',
+		inputItems: {
+			[itemID('Decorative magic top')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 40
+		}
+	},
+	{
+		name: 'Revert decorative magic robe',
+		inputItems: {
+			[itemID('Decorative magic robe')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 30
+		}
+	},
+	{
+		name: 'Revert decorative ranged top',
+		inputItems: {
+			[itemID('Decorative ranged top')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 40
+		}
+	},
+
+	{
+		name: 'Revert decorative ranged legs',
+		inputItems: {
+			[itemID('Decorative ranged legs')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 30
+		}
+	},
+	{
+		name: 'Revert decorative quiver',
+		inputItems: {
+			[itemID('Decorative quiver')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 40
+		}
+	},
+	{
+		name: 'Revert saradomin halo',
+		inputItems: {
+			[itemID('Saradomin halo')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 75
+		}
+	},
+	{
+		name: 'Revert zamorak halo',
+		inputItems: {
+			[itemID('Zamorak halo')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 75
+		}
+	},
+	{
+		name: 'Revert guthix halo',
+		inputItems: {
+			[itemID('Guthix halo')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 75
+		}
+	},
 	...crystalTools,
 	...ornamentKits,
 	...hunterClothing,
 	...twistedAncestral,
-	...metamorphPetCreatables
+	...metamorphPetCreatables,
+	...slayerCreatables,
+	...capeCreatables
 ];
 
 export default Createables;

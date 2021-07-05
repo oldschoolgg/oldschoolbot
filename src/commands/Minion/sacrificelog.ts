@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { chunk } from 'e';
+import { calcWhatPercent, chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
@@ -9,7 +9,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 
-const slicedCollectionLogTypes = collectionLogTypes.slice(1);
+const slicedCollectionLogTypes = collectionLogTypes.filter(i => i.name !== 'Overall');
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -18,25 +18,23 @@ export default class extends BotCommand {
 			aliases: ['sl'],
 			usage: '[type:string]',
 			categoryFlags: ['minion'],
-			description:
-				"The same thing as the collection log, except sourced from the items you've sacrificed.",
+			description: "The same thing as the collection log, except sourced from the items you've sacrificed.",
 			examples: ['+sacrificelog boss', '+sl skilling']
 		});
 	}
 
-	async run(msg: KlasaMessage, [inputType = 'all']) {
+	async run(msg: KlasaMessage, [inputType = '']) {
 		await msg.author.settings.sync(true);
 
-		const monster = killableMonsters.find(_type =>
-			_type.aliases.some(name => stringMatches(name, inputType))
-		);
+		const monster = killableMonsters.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
 
-		const type = slicedCollectionLogTypes.find(_type =>
-			_type.aliases.some(name => stringMatches(name, inputType))
-		);
+		const type =
+			inputType === ''
+				? collectionLogTypes.find(i => i.name === 'Overall')
+				: slicedCollectionLogTypes.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
 
 		if (!type && !monster) {
-			return msg.send(
+			return msg.channel.send(
 				`That's not a valid collection log type. The valid types are: ${slicedCollectionLogTypes
 					.map(type => type.name)
 					.join(', ')}`
@@ -48,6 +46,14 @@ export default class extends BotCommand {
 		) as number[];
 		const log = msg.author.settings.get(UserSettings.SacrificedBank);
 		const num = items.filter(item => log[item] > 0).length;
+
+		if (inputType === '') {
+			return msg.channel.send(
+				`You have ${num}/${items.length} (${calcWhatPercent(num, items.length).toFixed(
+					2
+				)}%) Sacrifice Log Completion.`
+			);
+		}
 
 		const chunkedMonsterItems: Record<number, number[]> = {};
 		let i = 0;
@@ -62,13 +68,11 @@ export default class extends BotCommand {
 				.get('bankImage')!
 				.generateCollectionLogImage(
 					log,
-					`${msg.author.username}'s ${(type || monster!).name} Sacrifice Log (${num}/${
-						items.length
-					})`,
+					`${msg.author.username}'s ${(type || monster!).name} Sacrifice Log (${num}/${items.length})`,
 					monster ? { ...monster, items: chunkedMonsterItems } : type
 				)
 		);
 
-		return msg.send(attachment);
+		return msg.channel.send({ files: [attachment] });
 	}
 }

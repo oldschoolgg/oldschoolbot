@@ -15,7 +15,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			description: "Show's who has the highest XP gains for a given time period.",
 			categoryFlags: ['minion', 'utility'],
-			examples: ['+xpgains day smithing', `+xpgains week`],
+			examples: ['+xpgains day smithing', '+xpgains week'],
 			aliases: ['log'],
 			usage: '<day|week> [skill:str]',
 			usageDelim: ' ',
@@ -41,24 +41,17 @@ LIMIT 10;`
 		);
 
 		if (res.length === 0) {
-			return msg.channel.send(`No results found.`);
+			return msg.channel.send('No results found.');
 		}
 
 		const embed = new MessageEmbed()
-			.setTitle(
-				`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`
-			)
+			.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
 			.setDescription(
 				res
-					.map(
-						(i: any) =>
-							`**${i.username ?? 'Unknown'}** ${Number(
-								i.total_xp
-							).toLocaleString()} XP`
-					)
+					.map((i: any) => `**${i.username ?? 'Unknown'}** ${Number(i.total_xp).toLocaleString()} XP`)
 					.join('\n')
 			);
 
-		return msg.send(embed);
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

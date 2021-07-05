@@ -1,17 +1,20 @@
 import { Image } from 'canvas';
-import { Bank } from 'oldschooljs';
+import { KlasaMessage } from 'klasa';
+import { Bank, MonsterKillOptions } from 'oldschooljs';
 import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
 import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
 import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
+import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import { BitField, PerkTier } from '../constants';
 import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
-import { LevelRequirements } from '../skilling/types';
+import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
+import { CombatOptionsEnum } from './data/combatConstants';
 import { AttackStyles } from './functions';
 
 export interface BankBackground {
@@ -54,14 +57,14 @@ export interface KillableMonster {
 	aliases: string[];
 	timeToFinish: number;
 	table: {
-		kill(quantity: number): ItemBank;
+		kill(quantity: number, options: MonsterKillOptions): Bank;
 	};
-	emoji: string;
+	emoji?: string;
 	wildy: boolean;
-	canBeKilled: boolean;
 	difficultyRating: number;
 	itemsRequired?: ArrayItemsResolved;
 	notifyDrops?: ArrayItemsResolved;
+	existsInCatacombs?: boolean;
 	qpRequired: number;
 
 	/**
@@ -73,7 +76,7 @@ export interface KillableMonster {
 	/**
 	 * Whether or not this monster can be groupkilled.
 	 */
-	groupKillable?: true;
+	groupKillable?: boolean;
 	respawnTime?: number;
 	levelRequirements?: LevelRequirements;
 	uniques?: ArrayItemsResolved;
@@ -81,7 +84,7 @@ export interface KillableMonster {
 	 * How much healing (health points restored) is needed per kill.
 	 */
 	healAmountNeeded?: number;
-	attackStyleToUse?: GearSetupTypes;
+	attackStyleToUse?: OffenceGearStat;
 	attackStylesUsed?: OffenceGearStat[];
 	/**
 	 * The minimum *required* gear stats to fight this monster.
@@ -96,4 +99,55 @@ export interface KillableMonster {
 	customMonsterHP?: number;
 	combatXpMultiplier?: number;
 	itemCost?: Bank;
+	superior?: SimpleMonster;
+	slayerOnly?: boolean;
+	canBarrage?: boolean;
+	canCannon?: boolean;
+	cannonMulti?: boolean;
+}
+/*
+ * Monsters will have an array of Consumables
+ * Math.ceil(duration / Time.Minute * qtyPerMinute)
+ * Or quantity * qtyPerKill.
+ */
+export interface Consumable {
+	itemCost: Bank;
+	qtyPerMinute?: number;
+	qtyPerKill?: number;
+	// For staff of the dead / kodai
+	isRuneCost?: boolean;
+}
+
+export interface AddXpParams {
+	skillName: SkillsEnum;
+	amount: number;
+	duration?: number;
+	multiplier?: boolean;
+	minimal?: boolean;
+}
+
+export interface AddMonsterXpParams {
+	monsterID: number;
+	quantity: number;
+	duration: number;
+	isOnTask: boolean;
+	taskQuantity: number | null;
+	minimal?: boolean;
+	usingCannon?: boolean;
+	cannonMulti?: boolean;
+	burstOrBarrage?: number;
+	superiorCount?: number;
+}
+
+export interface DetermineBoostParams {
+	cbOpts: CombatOptionsEnum[];
+	msg: KlasaMessage;
+	monster: KillableMonster;
+	method?: string | null;
+	isOnTask?: boolean;
+}
+
+export interface ResolveAttackStylesParams {
+	monsterID: number;
+	boostMethod?: string;
 }

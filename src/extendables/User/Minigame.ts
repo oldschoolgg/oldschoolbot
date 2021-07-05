@@ -108,6 +108,16 @@ export const Minigames: Minigame[] = [
 		name: 'Magic Training Arena',
 		key: 'MagicTrainingArena',
 		column: 'magic_training_arena'
+	},
+	{
+		name: 'Big Chompy Bird Hunting',
+		key: 'BigChompyBirdHunting',
+		column: 'big_chompy_bird_hunting'
+	},
+	{
+		name: 'Temple Trekking',
+		key: 'TempleTrekking',
+		column: 'temple_trekking'
 	}
 ];
 

@@ -21,15 +21,15 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	const totalLevel = user.totalLevel();
 	const skillCell = (skill: string) => {
 		if (skill === 'overall') {
-			return `${
-				skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore
-			} ${totalLevel}`;
+			return `${skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore} ${totalLevel}\n${
+				skillEmoji.combat
+			} ${user.combatLevel}`;
 		}
 
 		const skillXP = rawSkills[skill as keyof Skills] ?? 1;
-		return `${
-			skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore
-		} ${convertXPtoLVL(skillXP).toLocaleString()} (${toKMB(skillXP)})`;
+		return `${skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore} ${convertXPtoLVL(
+			skillXP
+		).toLocaleString()} (${toKMB(skillXP)})`;
 	};
 
 	const clueEntries = Object.entries(user.settings.get(UserSettings.ClueScores));
@@ -44,44 +44,23 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		.setTitle(`${badgesStr}${user.minionName}`)
 		.addField(
 			'\u200b',
-			[
-				'attack',
-				'strength',
-				'defence',
-				'ranged',
-				'prayer',
-				'magic',
-				'runecraft',
-				'construction'
-			].map(skillCell),
+			['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
+				.map(skillCell)
+				.join('\n'),
 			true
 		)
 		.addField(
 			'\u200b',
-			[
-				'hitpoints',
-				'agility',
-				'herblore',
-				'thieving',
-				'crafting',
-				'fletching',
-				'slayer',
-				'hunter'
-			].map(skillCell),
+			['hitpoints', 'agility', 'herblore', 'thieving', 'crafting', 'fletching', 'slayer', 'hunter']
+				.map(skillCell)
+				.join('\n'),
 			true
 		)
 		.addField(
 			'\u200b',
-			[
-				'mining',
-				'smithing',
-				'fishing',
-				'cooking',
-				'firemaking',
-				'woodcutting',
-				'farming',
-				'overall'
-			].map(skillCell),
+			['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall']
+				.map(skillCell)
+				.join('\n'),
 			true
 		);
 
@@ -102,14 +81,16 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	if (clueEntries.length > 0) {
 		embed.addField(
 			'<:Clue_scroll:365003979840552960> Clue Scores',
-			clueEntries.map(([id, qty]) => {
-				const clueTier = ClueTiers.find(t => t.id === parseInt(id));
-				if (!clueTier) {
-					console.error(`No clueTier: ${id}`);
-					return;
-				}
-				return `**${toTitleCase(clueTier.name)}:** ${qty.toLocaleString()}`;
-			}),
+			clueEntries
+				.map(([id, qty]) => {
+					const clueTier = ClueTiers.find(t => t.id === parseInt(id));
+					if (!clueTier) {
+						console.error(`No clueTier: ${id}`);
+						return;
+					}
+					return `**${toTitleCase(clueTier.name)}:** ${qty.toLocaleString()}`;
+				})
+				.join('\n'),
 			true
 		);
 	}
@@ -117,11 +98,12 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	if (minigameScores.length > 0) {
 		embed.addField(
 			'<:minigameIcon:630400565070921761> Minigames',
-			minigameScores.slice(0, 4).map(minigame => {
-				return `**${toTitleCase(
-					minigame.minigame.name
-				)}:** ${minigame.score.toLocaleString()}`;
-			}),
+			minigameScores
+				.slice(0, 4)
+				.map(minigame => {
+					return `**${toTitleCase(minigame.minigame.name)}:** ${minigame.score.toLocaleString()}`;
+				})
+				.join('\n'),
 			true
 		);
 	}
@@ -140,18 +122,14 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		['Sacrificed', toKMB(user.settings.get(UserSettings.SacrificedValue))]
 	];
 
-	const lapCounts = Object.entries(user.settings.get(UserSettings.LapsScores)).sort(
-		(a, b) => a[1] - b[1]
-	);
+	const lapCounts = Object.entries(user.settings.get(UserSettings.LapsScores)).sort((a, b) => a[1] - b[1]);
 	if (lapCounts.length > 0) {
 		const [id, score] = lapCounts[0];
 		const res = courses.find(c => c.id === parseInt(id))!;
 		otherStats.push([`${res.name} Laps`, score]);
 	}
 
-	const monsterScores = Object.entries(user.settings.get(UserSettings.MonsterScores)).sort(
-		(a, b) => a[1] - b[1]
-	);
+	const monsterScores = Object.entries(user.settings.get(UserSettings.MonsterScores)).sort((a, b) => a[1] - b[1]);
 	if (monsterScores.length > 0) {
 		const [id, score] = monsterScores[0];
 		const res = effectiveMonsters.find(c => c.id === parseInt(id))!;
@@ -162,9 +140,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		}
 	}
 
-	const hunterScores = Object.entries(user.settings.get(UserSettings.CreatureScores)).sort(
-		(a, b) => a[1] - b[1]
-	);
+	const hunterScores = Object.entries(user.settings.get(UserSettings.CreatureScores)).sort((a, b) => a[1] - b[1]);
 	if (hunterScores.length > 0) {
 		const [id, score] = hunterScores[0];
 		const res = creatures.find(c => c.id === parseInt(id))!;
@@ -181,7 +157,8 @@ export async function minionStatsEmbed(user: KlasaUser) {
 			.slice(0, 4)
 			.map(([name, text]) => {
 				return `**${name}:** ${text}`;
-			}),
+			})
+			.join('\n'),
 		true
 	);
 

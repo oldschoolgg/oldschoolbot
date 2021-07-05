@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-namespace */
+import { HexColorString } from 'discord.js';
 import { O } from 'ts-toolbelt';
 
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
+import { CombatOptionsEnum } from '../../minions/data/combatConstants';
 import { PatchTypes } from '../../minions/farming';
 import { CompostTier, FarmingContract, FarmingPatchTypes } from '../../minions/farming/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
+import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import { ItemBank } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
@@ -44,7 +47,21 @@ export namespace UserSettings {
 	export const AttackStyle = T<readonly SkillsEnum[]>('attack_style');
 	export const TotalCoxPoints = T<number>('total_cox_points');
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
-	export const BankBackgroundHex = T<string | null>('bank_bg_hex');
+	export const BankBackgroundHex = T<HexColorString | null>('bank_bg_hex');
+	export const CombatOptions = T<readonly CombatOptionsEnum[]>('combat_options');
+
+	export namespace Slayer {
+		export const SlayerPoints = T<number>('slayer.points');
+		export const TaskStreak = T<number>('slayer.task_streak');
+		export const RememberSlayerMaster = T<string | null>('slayer.remember_master');
+		export const SuperiorCount = T<number>('slayer.superior_count');
+		export const SlayerUnlocks = T<readonly SlayerTaskUnlocksEnum[]>('slayer.unlocks');
+		export const BlockedTasks = T<readonly number[]>('slayer.blocked_ids');
+		export const AutoslayOptions = T<readonly number[]>('slayer.autoslay_options');
+		export const LastTask = T<number>('slayer.last_task');
+		export const UnsiredOffered = T<number>('slayer.unsired_offered');
+		export const ChewedBonesOffered = T<number>('slayer.chewed_offered');
+	}
 
 	export namespace Stats {
 		export const Deaths = T<number>('stats.deaths');
@@ -97,57 +114,36 @@ export namespace UserSettings {
 		export const Defence = T<number>(`skills.${SkillsEnum.Defence}`);
 		export const Ranged = T<number>(`skills.${SkillsEnum.Ranged}`);
 		export const Hitpoints = T<number>(`skills.${SkillsEnum.Hitpoints}`);
+		export const Slayer = T<number>(`skills.${SkillsEnum.Slayer}`);
 	}
 
 	export namespace Gear {
-		export const Melee = T<GearSetup | null>(`gear.melee`);
-		export const Range = T<GearSetup | null>(`gear.range`);
-		export const Mage = T<GearSetup | null>(`gear.mage`);
-		export const Misc = T<GearSetup | null>(`gear.misc`);
-		export const Skilling = T<GearSetup | null>(`gear.skilling`);
+		export const Melee = T<GearSetup | null>('gear.melee');
+		export const Range = T<GearSetup | null>('gear.range');
+		export const Mage = T<GearSetup | null>('gear.mage');
+		export const Misc = T<GearSetup | null>('gear.misc');
+		export const Skilling = T<GearSetup | null>('gear.skilling');
 	}
 
 	export namespace FarmingPatches {
 		export const Herb = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Herb}`);
-		export const FruitTree = T<PatchTypes.PatchData>(
-			`farmingPatches.${FarmingPatchTypes.FruitTree}`
-		);
+		export const FruitTree = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.FruitTree}`);
 		export const Tree = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Tree}`);
-		export const Allotment = T<PatchTypes.PatchData>(
-			`farmingPatches.${FarmingPatchTypes.Allotment}`
-		);
+		export const Allotment = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Allotment}`);
 		export const Hops = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Hops}`);
 		export const Cactus = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Cactus}`);
 		export const Bush = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Bush}`);
 		export const Spirit = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Spirit}`);
-		export const Hardwood = T<PatchTypes.PatchData>(
-			`farmingPatches.${FarmingPatchTypes.Hardwood}`
-		);
-		export const Seaweed = T<PatchTypes.PatchData>(
-			`farmingPatches.${FarmingPatchTypes.Seaweed}`
-		);
+		export const Hardwood = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Hardwood}`);
+		export const Seaweed = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Seaweed}`);
 		export const Vine = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Vine}`);
-		export const Calquat = T<PatchTypes.PatchData>(
-			`farmingPatches.${FarmingPatchTypes.Calquat}`
-		);
-		export const Redwood = T<PatchTypes.PatchData>(
-			`farmingPatches.${FarmingPatchTypes.Redwood}`
-		);
-		export const Crystal = T<PatchTypes.PatchData>(
-			`farmingPatches.${FarmingPatchTypes.Crystal}`
-		);
-		export const Celastrus = T<PatchTypes.PatchData>(
-			`farmingPatches.${FarmingPatchTypes.Celastrus}`
-		);
-		export const Hespori = T<PatchTypes.PatchData>(
-			`farmingPatches.${FarmingPatchTypes.Hespori}`
-		);
+		export const Calquat = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Calquat}`);
+		export const Redwood = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Redwood}`);
+		export const Crystal = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Crystal}`);
+		export const Celastrus = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Celastrus}`);
+		export const Hespori = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Hespori}`);
 		export const Flower = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Flower}`);
-		export const Mushroom = T<PatchTypes.PatchData>(
-			`farmingPatches.${FarmingPatchTypes.Mushroom}`
-		);
-		export const Belladonna = T<PatchTypes.PatchData>(
-			`farmingPatches.${FarmingPatchTypes.Belladonna}`
-		);
+		export const Mushroom = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Mushroom}`);
+		export const Belladonna = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Belladonna}`);
 	}
 }

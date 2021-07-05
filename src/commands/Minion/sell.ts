@@ -25,7 +25,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [[bankToSell, totalPrice]]: [[Bank, number]]) {
-		if (msg.author.isIronman) return msg.send(`Iron players can't sell items.`);
+		if (msg.author.isIronman) return msg.channel.send("Iron players can't sell items.");
 		totalPrice = Math.floor(totalPrice * 0.8);
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
@@ -38,37 +38,28 @@ export default class extends BotCommand {
 			);
 
 			try {
-				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
-					options
-				);
+				await msg.channel.awaitMessages({
+					...options,
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
-				return sellMsg.edit(`Cancelling sale.`);
+				return sellMsg.edit('Cancelling sale.');
 			}
 		}
 
 		const tax = Math.ceil((totalPrice / 0.8) * 0.2);
 
-		await Promise.all([
-			msg.author.removeItemsFromBank(bankToSell.bank),
-			msg.author.addGP(totalPrice)
-		]);
+		await Promise.all([msg.author.removeItemsFromBank(bankToSell.bank), msg.author.addGP(totalPrice)]);
 
-		updateGPTrackSetting(
-			this.client,
-			ClientSettings.EconomyStats.GPSourceSellingItems,
-			totalPrice
-		);
+		updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceSellingItems, totalPrice);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank);
 
 		msg.author.log(`sold ${JSON.stringify(bankToSell.bank)} for ${totalPrice}`);
 
-		return msg.send(
-			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${Util.toKMB(
-				totalPrice
-			)})**. Tax: ${Util.toKMB(tax)}`
+		return msg.channel.send(
+			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${Util.toKMB(totalPrice)})**. Tax: ${Util.toKMB(
+				tax
+			)}`
 		);
 	}
 }

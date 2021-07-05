@@ -11,7 +11,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.send(`
+		return msg.channel.send(`
 <:OldSchoolRS:418691700068843521> **Official Client:** Fast, Stable, Light.
 <http://www.runescape.com/oldschool/download>
 

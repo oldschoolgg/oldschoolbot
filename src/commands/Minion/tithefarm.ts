@@ -25,15 +25,10 @@ export default class extends BotCommand {
 
 		// Reduce time based on tithe farm completions
 		const titheFarmsCompleted = user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
-		const percentIncreaseFromCompletions =
-			Math.floor(Math.min(50, titheFarmsCompleted) / 2) / 100;
+		const percentIncreaseFromCompletions = Math.floor(Math.min(50, titheFarmsCompleted) / 2) / 100;
 		baseTime = Math.floor(baseTime * (1 - percentIncreaseFromCompletions));
 		Math.floor(percentIncreaseFromCompletions * 100) > 0
-			? boostStr.push(
-					`${Math.floor(
-						percentIncreaseFromCompletions * 100
-					)}% from Tithe Farms completed`
-			  )
+			? boostStr.push(`${Math.floor(percentIncreaseFromCompletions * 100)}% from Tithe Farms completed`)
 			: boostStr.push('');
 
 		// Reduce time if user has graceful equipped
@@ -54,7 +49,7 @@ export default class extends BotCommand {
 		const titheFarmPoints = msg.author.settings.get(UserSettings.Stats.TitheFarmPoints);
 
 		if (msg.flagArgs.points) {
-			return msg.send(`You have ${titheFarmPoints} Tithe Farm points.`);
+			return msg.channel.send(`You have ${titheFarmPoints} Tithe Farm points.`);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Farming) < 34) {
@@ -63,7 +58,7 @@ export default class extends BotCommand {
 
 		const [duration, boostStr] = this.determineDuration(msg.author);
 
-		await addSubTaskToActivityTask<TitheFarmActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<TitheFarmActivityTaskOptions>({
 			minigameID: 'TitheFarm',
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -72,12 +67,10 @@ export default class extends BotCommand {
 			type: Activity.TitheFarm
 		});
 
-		return msg.send(
-			`Your minion is off completing a round of the ${
-				Emoji.MinigameIcon
-			} Tithe Farm. It'll take ${formatDuration(duration)} to finish.\n\n${
-				boostStr.length > 0 ? `**Boosts:** ` : ``
-			}${boostStr.join(', ')}`
+		return msg.channel.send(
+			`Your minion is off completing a round of the ${Emoji.MinigameIcon} Tithe Farm. It'll take ${formatDuration(
+				duration
+			)} to finish.\n\n${boostStr.length > 0 ? '**Boosts:** ' : ''}${boostStr.join(', ')}`
 		);
 	}
 }

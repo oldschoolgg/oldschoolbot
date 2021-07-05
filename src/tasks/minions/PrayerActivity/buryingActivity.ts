@@ -20,7 +20,7 @@ export default class extends Task {
 		const XPMod = 1;
 		const xpReceived = quantity * bone.xp * XPMod;
 
-		await user.addXP(SkillsEnum.Prayer, xpReceived);
+		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived });
 		const newLevel = user.skillLevel(SkillsEnum.Prayer);
 
 		let str = `${user}, ${user.minionName} finished burying ${quantity} ${
@@ -37,11 +37,8 @@ export default class extends Task {
 			user.hasItemEquippedAnywhere('Iron med helm') &&
 			!user.hasItemEquippedOrInBank('Clue hunter garb')
 		) {
-			await user.addItemsToBank(
-				new Bank({ 'Clue hunter garb': 1, 'Clue hunter trousers': 1 }),
-				true
-			);
-			str += `\n\nWhile digging a hole to bury bones in, you find a garb and pair of trousers.`;
+			await user.addItemsToBank(new Bank({ 'Clue hunter garb': 1, 'Clue hunter trousers': 1 }), true);
+			str += '\n\nWhile digging a hole to bury bones in, you find a garb and pair of trousers.';
 		}
 
 		handleTripFinish(

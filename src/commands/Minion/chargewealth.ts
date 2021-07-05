@@ -47,7 +47,7 @@ export default class extends BotCommand {
 
 		const amountHas = userBank.amount('Ring of wealth');
 		if (amountHas < wealthInventorySize) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough Rings of wealth to recharge. Your minion does trips of ${wealthInventorySize}x rings of wealth.`
 			);
 		}
@@ -61,10 +61,7 @@ export default class extends BotCommand {
 
 		const maxTripLength = msg.author.maxTripLength(Activity.WealthCharging);
 
-		const max = Math.min(
-			amountHas / wealthInventorySize,
-			Math.floor(maxTripLength / invDuration)
-		);
+		const max = Math.min(amountHas / wealthInventorySize, Math.floor(maxTripLength / invDuration));
 		if (quantity === undefined) {
 			quantity = Math.floor(max);
 		}
@@ -72,7 +69,7 @@ export default class extends BotCommand {
 		const duration = quantity * invDuration;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of inventories of rings of wealth you can recharge is ${Math.floor(
@@ -83,10 +80,10 @@ export default class extends BotCommand {
 		const quantityWealths = wealthInventorySize * quantity;
 
 		if (userBank.amount('Ring of wealth') < quantityWealths) {
-			return msg.send(`You don't have enough Rings of wealth, ${quantityWealths} required.`);
+			return msg.channel.send(`You don't have enough Rings of wealth, ${quantityWealths} required.`);
 		}
 
-		await addSubTaskToActivityTask<WealthChargingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<WealthChargingActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -96,7 +93,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(itemID('Ring of wealth'), quantityWealths);
 
-		return msg.send(
+		return msg.channel.send(
 			`${
 				msg.author.minionName
 			} is now charging ${quantityWealths} Rings of wealth, doing ${wealthInventorySize} Rings of wealth in ${quantity} trips, it'll take around ${formatDuration(

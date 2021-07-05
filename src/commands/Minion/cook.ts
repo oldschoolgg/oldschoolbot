@@ -36,12 +36,11 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const cookable = Cooking.Cookables.find(
 			cookable =>
-				stringMatches(cookable.name, cookableName) ||
-				stringMatches(cookable.name.split(' ')[0], cookableName)
+				stringMatches(cookable.name, cookableName) || stringMatches(cookable.name.split(' ')[0], cookableName)
 		);
 
 		if (!cookable) {
-			return msg.send(
+			return msg.channel.send(
 				`Thats not a valid item to cook. Valid cookables are ${Cooking.Cookables.map(
 					cookable => cookable.name
 				).join(', ')}.`
@@ -49,7 +48,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Cooking) < cookable.level) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`
 			);
 		}
@@ -74,24 +73,24 @@ export default class extends BotCommand {
 		const totalCost = inputCost.clone().multiply(quantity);
 
 		if (!userBank.fits(totalCost)) {
-			return msg.send(`You don't have enough items. You need: ${inputCost}.`);
+			return msg.channel.send(`You don't have enough items. You need: ${inputCost}.`);
 		}
 
 		const duration = quantity * timeToCookSingleCookable;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)} minutes, try a lower quantity. The highest amount of ${
-					cookable.name
-				}s you can cook is ${Math.floor(maxTripLength / timeToCookSingleCookable)}.`
+				)} minutes, try a lower quantity. The highest amount of ${cookable.name}s you can cook is ${Math.floor(
+					maxTripLength / timeToCookSingleCookable
+				)}.`
 			);
 		}
 
 		await msg.author.removeItemsFromBank(totalCost);
 
-		await addSubTaskToActivityTask<CookingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<CookingActivityTaskOptions>({
 			cookableID: cookable.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -100,10 +99,10 @@ export default class extends BotCommand {
 			type: Activity.Cooking
 		});
 
-		return msg.send(
-			`${msg.author.minionName} is now cooking ${quantity}x ${
-				cookable.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
+		return msg.channel.send(
+			`${msg.author.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDuration(
+				duration
+			)} to finish.`
 		);
 	}
 }

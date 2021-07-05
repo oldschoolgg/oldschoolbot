@@ -1,13 +1,13 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { pets } from '../../lib/data/collectionLog';
+import { metamorphPets, pets } from '../../lib/data/collectionLog';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { removeItemFromBank } from '../../lib/util';
 
-const allPetIDs = Object.values(pets).flat(Infinity);
+const allPetIDs = [...Object.values(pets), ...metamorphPets].flat(Infinity);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -16,8 +16,9 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '(item:...item)',
+			aliases: ['ep'],
 			description: 'Equips a pet, like dropping it on the floor ingame.',
-			examples: ['+equippet smolcano'],
+			examples: ['+equippet smolcano', '+ep smolcano'],
 			categoryFlags: ['minion']
 		});
 	}
@@ -27,7 +28,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const petItem = itemArray.find(i => userBank[i.id] && allPetIDs.includes(i.id));
 		if (!petItem) {
-			return msg.send(`That's not a pet, or you do not own this pet.`);
+			return msg.channel.send("That's not a pet, or you do not own this pet.");
 		}
 
 		const currentlyEquippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
@@ -37,15 +38,12 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update([
 			[UserSettings.Minion.EquippedPet, petItem.id],
-			[
-				UserSettings.Bank,
-				removeItemFromBank(msg.author.settings.get(UserSettings.Bank), petItem.id)
-			]
+			[UserSettings.Bank, removeItemFromBank(msg.author.settings.get(UserSettings.Bank), petItem.id)]
 		]);
 
 		msg.author.log(`equipping ${petItem.name}[${petItem.id}]`);
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} takes their ${petItem.name} from their bank, and puts it down to follow them.`
 		);
 	}

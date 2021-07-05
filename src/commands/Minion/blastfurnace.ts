@@ -52,12 +52,11 @@ export default class extends BotCommand {
 		}
 
 		const bar = Smithing.BlastableBars.find(
-			bar =>
-				stringMatches(bar.name, barName) || stringMatches(bar.name.split(' ')[0], barName)
+			bar => stringMatches(bar.name, barName) || stringMatches(bar.name.split(' ')[0], barName)
 		);
 
 		if (!skillsMeetRequirements(msg.author.rawSkills, requiredSkills)) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have the required stats to use the Blast Furnace, you need: ${formatSkillRequirements(
 					requiredSkills
 				)}.`
@@ -65,17 +64,15 @@ export default class extends BotCommand {
 		}
 
 		if (!bar) {
-			return msg.send(
-				`Thats not a valid bar to smelt. Valid bars are ${Smithing.BlastableBars.map(
-					bar => bar.name
-				).join(', ')}.`
+			return msg.channel.send(
+				`Thats not a valid bar to smelt. Valid bars are ${Smithing.BlastableBars.map(bar => bar.name).join(
+					', '
+				)}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < bar.level) {
-			return msg.send(
-				`${msg.author.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`
-			);
+			return msg.channel.send(`${msg.author.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`);
 		}
 
 		let timeToSmithSingleBar = bar.timeToUse + Time.Second / 10;
@@ -89,13 +86,13 @@ export default class extends BotCommand {
 				bar.id === itemID('Adamantite Bar') ||
 				bar.id === itemID('Runite Bar'))
 		) {
-			coalbag = `\n\n**Boosts:** 60% speed boost for coal bag.`;
+			coalbag = '\n\n**Boosts:** 60% speed boost for coal bag.';
 			timeToSmithSingleBar *= 0.625;
 		}
 		let graceful = '';
 		if (!msg.author.hasGracefulEquipped()) {
 			timeToSmithSingleBar *= 1.075;
-			graceful = `\n-7.5% time penalty for not having graceful equipped.`;
+			graceful = '\n-7.5% time penalty for not having graceful equipped.';
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
@@ -112,22 +109,22 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToSmithSingleBar;
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					bar.name
-				}s you can smelt is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`
+				)}, try a lower quantity. The highest amount of ${bar.name}s you can smelt is ${Math.floor(
+					maxTripLength / timeToSmithSingleBar
+				)}.`
 			);
 		}
 
 		// Check the user has the required ores to smith these bars.
 		const itemsNeeded = bar.inputOres.clone().multiply(quantity);
 		if (!userBank.has(itemsNeeded.bank)) {
-			return msg.send(
-				`You don't have enough items. For ${quantity}x ${
-					bar.name
-				}, you're missing **${itemsNeeded.clone().remove(userBank)}**.`
+			return msg.channel.send(
+				`You don't have enough items. For ${quantity}x ${bar.name}, you're missing **${itemsNeeded
+					.clone()
+					.remove(userBank)}**.`
 			);
 		}
 
@@ -136,19 +133,15 @@ export default class extends BotCommand {
 		const coinsToRemove = Math.floor(gpPerHour * (duration / Time.Hour));
 		const gp = msg.author.settings.get(UserSettings.GP);
 		if (gp < coinsToRemove) {
-			return msg.send(`You need atleast ${coinsToRemove} GP to work at the Blast Furnace.`);
+			return msg.channel.send(`You need atleast ${coinsToRemove} GP to work at the Blast Furnace.`);
 		}
 
 		itemsNeeded.add('Coins', coinsToRemove);
 
 		await msg.author.removeItemsFromBank(itemsNeeded);
-		updateBankSetting(
-			this.client,
-			ClientSettings.EconomyStats.BlastFurnaceCostBank,
-			itemsNeeded
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.BlastFurnaceCostBank, itemsNeeded);
 
-		await addSubTaskToActivityTask<BlastFurnaceActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<BlastFurnaceActivityTaskOptions>({
 			barID: bar.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -157,20 +150,15 @@ export default class extends BotCommand {
 			type: Activity.BlastFurnace
 		});
 
-		let goldGauntletMessage = ``;
-		if (
-			bar.id === itemID('Gold bar') &&
-			msg.author.hasItemEquippedOrInBank(itemID('Goldsmith gauntlets'))
-		) {
-			goldGauntletMessage = `\n\n**Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.`;
+		let goldGauntletMessage = '';
+		if (bar.id === itemID('Gold bar') && msg.author.hasItemEquippedOrInBank(itemID('Goldsmith gauntlets'))) {
+			goldGauntletMessage = '\n\n**Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.';
 		}
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now smelting ${quantity}x ${
 				bar.name
-			} at the Blast Furnace, it'll take around ${formatDuration(
-				duration
-			)} to finish. You paid ${toKMB(
+			} at the Blast Furnace, it'll take around ${formatDuration(duration)} to finish. You paid ${toKMB(
 				coinsToRemove
 			)} GP to use the Blast Furnace.${goldGauntletMessage}${coalbag}${graceful}`
 		);

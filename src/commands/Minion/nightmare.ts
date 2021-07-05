@@ -2,7 +2,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji, Time } from '../../lib/constants';
-import { hasArrayOfItemsEquipped, hasItemEquipped } from '../../lib/gear';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -26,13 +25,13 @@ function soloMessage(user: KlasaUser, duration: number, quantity: number) {
 	const kc = user.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 0;
 	let str = `${user.minionName} is now off to kill The Nightmare ${quantity} times.`;
 	if (kc < 5) {
-		str += ` They are terrified to face The Nightmare, and set off to fight it with great fear.`;
+		str += ' They are terrified to face The Nightmare, and set off to fight it with great fear.';
 	} else if (kc < 10) {
-		str += ` They are scared to face The Nightmare, but set off with great courage.`;
+		str += ' They are scared to face The Nightmare, but set off with great courage.';
 	} else if (kc < 50) {
-		str += ` They are confident in killing The Nightmare, and prepared for battle.`;
+		str += ' They are confident in killing The Nightmare, and prepared for battle.';
 	} else {
-		str += ` They are not scared of The Nightmare anymore, and ready to fight!`;
+		str += ' They are not scared of The Nightmare anymore, and ready to fight!';
 	}
 
 	return `${str} The trip will take approximately ${formatDuration(duration)}.`;
@@ -78,10 +77,10 @@ export default class extends BotCommand {
 
 			if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 				throw `${
-					users.length === 1 ? `You don't` : `${user.username} doesn't`
-				} have enough food. You need at least ${
-					monster.healAmountNeeded! * quantity
-				} HP in food to ${users.length === 1 ? 'start the mass' : 'enter the mass'}.`;
+					users.length === 1 ? "You don't" : `${user.username} doesn't`
+				} have enough food. You need at least ${monster.healAmountNeeded! * quantity} HP in food to ${
+					users.length === 1 ? 'start the mass' : 'enter the mass'
+				}.`;
 			}
 		}
 	}
@@ -98,9 +97,7 @@ export default class extends BotCommand {
 			minSize: 2,
 			maxSize: (maximumSizeForParty ?? maximumSize) - 1,
 			ironmanAllowed: true,
-			message: `${msg.author.username} is doing a ${
-				NightmareMonster.name
-			} mass! Anyone can click the ${
+			message: `${msg.author.username} is doing a ${NightmareMonster.name} mass! Anyone can click the ${
 				Emoji.Join
 			} reaction to join, click it again to leave. The maximum size for this mass is ${
 				maximumSizeForParty ?? maximumSize
@@ -151,11 +148,11 @@ export default class extends BotCommand {
 
 			// Special inquisitor outfit damage boost
 			const meleeGear = user.getGear('melee');
-			if (hasArrayOfItemsEquipped(inquisitorItems, meleeGear)) {
+			if (meleeGear.hasEquipped(inquisitorItems, true)) {
 				effectiveTime *= users.length === 1 ? 0.9 : 0.97;
 			} else {
 				for (const inqItem of inquisitorItems) {
-					if (hasItemEquipped(inqItem, meleeGear)) {
+					if (meleeGear.hasEquipped([inqItem])) {
 						effectiveTime *= users.length === 1 ? 0.98 : 0.995;
 					}
 				}
@@ -218,7 +215,7 @@ export default class extends BotCommand {
 
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, totalCost);
 
-		await addSubTaskToActivityTask<NightmareActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<NightmareActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -239,8 +236,6 @@ export default class extends BotCommand {
 						NightmareMonster.timeToFinish
 				  )} - the total trip will take ${formatDuration(duration)}.`;
 
-		return msg.channel.send(str, {
-			split: true
-		});
+		return msg.channel.send(str);
 	}
 }

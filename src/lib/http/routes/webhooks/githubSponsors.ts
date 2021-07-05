@@ -11,10 +11,7 @@ const githubSponsors = (server: FastifyServer) =>
 		method: 'POST',
 		url: '/webhooks/github_sponsors',
 		async handler(request, reply) {
-			const isVerified = verifyGithubSecret(
-				JSON.stringify(request.body),
-				request.headers['x-hub-signature']
-			);
+			const isVerified = verifyGithubSecret(JSON.stringify(request.body), request.headers['x-hub-signature']);
 			if (!isVerified) {
 				throw reply.badRequest();
 			}
@@ -25,15 +22,10 @@ const githubSponsors = (server: FastifyServer) =>
 				case 'created': {
 					const tier = parseStrToTier(data.sponsorship.tier.name);
 					sendToChannelID(client, Channel.NewSponsors, {
-						content: `${data.sender.login}[${data.sender.id}] became a Tier ${
-							tier - 1
-						} sponsor.`
+						content: `${data.sender.login}[${data.sender.id}] became a Tier ${tier - 1} sponsor.`
 					});
 					if (user) {
-						await (client.tasks.get('patreon') as PatreonTask)!.givePerks(
-							user.id,
-							tier
-						);
+						await (client.tasks.get('patreon') as PatreonTask)!.givePerks(user.id, tier);
 					}
 					break;
 				}
@@ -42,16 +34,12 @@ const githubSponsors = (server: FastifyServer) =>
 					const from = parseStrToTier(data.changes!.tier.from.name);
 					const to = parseStrToTier(data.sponsorship.tier.name);
 					sendToChannelID(client, Channel.NewSponsors, {
-						content: `${data.sender.login}[${
-							data.sender.id
-						}] changed their sponsorship from Tier ${from - 1} to Tier ${to - 1}.`
+						content: `${data.sender.login}[${data.sender.id}] changed their sponsorship from Tier ${
+							from - 1
+						} to Tier ${to - 1}.`
 					});
 					if (user) {
-						await (client.tasks.get('patreon') as PatreonTask)!.changeTier(
-							user.id,
-							from,
-							to
-						);
+						await (client.tasks.get('patreon') as PatreonTask)!.changeTier(user.id, from, to);
 					}
 					break;
 				}
@@ -64,9 +52,7 @@ const githubSponsors = (server: FastifyServer) =>
 						content: `${data.sender.login}[${data.sender.id}] cancelled being a Tier ${
 							parseStrToTier(data.sponsorship.tier.name) - 1
 						} sponsor. ${
-							user
-								? 'Removing perks.'
-								: "Cant remove perks because couldn't find discord user."
+							user ? 'Removing perks.' : "Cant remove perks because couldn't find discord user."
 						}`
 					});
 

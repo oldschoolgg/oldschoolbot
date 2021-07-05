@@ -4,7 +4,7 @@ import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const pitfallTrappingCreatures: Creature[] = [
 	{
-		name: `Spined larupia`,
+		name: 'Spined larupia',
 		id: 27,
 		aliases: ['spined larupia'],
 		level: 31,
@@ -17,7 +17,7 @@ const pitfallTrappingCreatures: Creature[] = [
 		intercept: 15
 	},
 	{
-		name: `Horned graahk`,
+		name: 'Horned graahk',
 		id: 28,
 		aliases: ['horned graahk'],
 		level: 41,
@@ -30,7 +30,7 @@ const pitfallTrappingCreatures: Creature[] = [
 		intercept: 15
 	},
 	{
-		name: `Sabre-toothed kyatt`,
+		name: 'Sabre-toothed kyatt',
 		id: 29,
 		aliases: ['sabre-toothed kyatt'],
 		level: 55,

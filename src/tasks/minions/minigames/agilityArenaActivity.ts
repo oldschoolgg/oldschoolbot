@@ -1,20 +1,11 @@
 import { Task } from 'klasa';
 
-import {
-	determineXPFromTickets,
-	hasKaramjaEliteDiary
-} from '../../../commands/Minion/agilityarena';
+import { determineXPFromTickets } from '../../../commands/Minion/agilityarena';
 import { Time } from '../../../lib/constants';
-import { roll } from '../../../lib/data/monsters/raids';
+import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	calcWhatPercent,
-	formatDuration,
-	itemID,
-	randomVariation,
-	reduceNumByPercent
-} from '../../../lib/util';
+import { calcWhatPercent, formatDuration, itemID, randomVariation, reduceNumByPercent, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -33,7 +24,8 @@ export default class extends Task {
 
 		// 10% bonus tickets for karamja med
 		let bonusTickets = 0;
-		if (hasKaramjaEliteDiary(user)) {
+		const [hasKaramjaElite] = await userhasDiaryTier(user, KaramjaDiary.elite);
+		if (hasKaramjaElite) {
 			for (let i = 0; i < ticketsReceived; i++) {
 				if (roll(10)) bonusTickets++;
 			}
@@ -42,12 +34,10 @@ export default class extends Task {
 
 		user.incrementMinigameScore('AgilityArena', ticketsReceived);
 
-		await user.addXP(SkillsEnum.Agility, agilityXP);
+		await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP });
 		const nextLevel = user.skillLevel(SkillsEnum.Agility);
 
-		let str = `${user}, ${
-			user.minionName
-		} finished doing the Brimhaven Agility Arena for ${formatDuration(
+		let str = `${user}, ${user.minionName} finished doing the Brimhaven Agility Arena for ${formatDuration(
 			duration
 		)}, you received ${Math.floor(
 			agilityXP
@@ -61,7 +51,7 @@ export default class extends Task {
 			str += `\nYou received ${bonusTickets} bonus tickets for the Karamja Medium Diary.`;
 		}
 
-		let xpFromTickets = determineXPFromTickets(ticketsReceived, user);
+		let xpFromTickets = determineXPFromTickets(ticketsReceived, user, hasKaramjaElite);
 		const xpFromTrip = xpFromTickets + agilityXP;
 		str += `\n${(
 			(xpFromTrip / (duration / Time.Minute)) *
@@ -75,7 +65,7 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued trip of agility arena`);
+				user.log('continued trip of agility arena');
 				return this.client.commands.get('agilityarena')!.run(res, []);
 			},
 			undefined,

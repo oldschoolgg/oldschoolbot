@@ -4,9 +4,10 @@ import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
-import Runecraft, { RunecraftActivityTaskOptions } from '../../lib/skilling/skills/runecraft';
+import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
@@ -36,28 +37,25 @@ export default class extends BotCommand {
 		if (name.endsWith('s') || name.endsWith('S')) name = name.slice(0, name.length - 1);
 
 		const rune = Runecraft.Runes.find(
-			_rune =>
-				stringMatches(_rune.name, name) || stringMatches(_rune.name.split(' ')[0], name)
+			_rune => stringMatches(_rune.name, name) || stringMatches(_rune.name.split(' ')[0], name)
 		);
 
 		if (!rune) {
-			return msg.send(
-				`Thats not a valid rune. Valid rune are ${Runecraft.Runes.map(
-					_rune => _rune.name
-				).join(', ')}.`
+			return msg.channel.send(
+				`Thats not a valid rune. Valid rune are ${Runecraft.Runes.map(_rune => _rune.name).join(', ')}.`
 			);
 		}
 
 		const quantityPerEssence = calcMaxRCQuantity(rune, msg.author);
 
 		if (quantityPerEssence === 0) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${rune.levels[0][0]} Runecraft to create ${rune.name}s.`
 			);
 		}
 
 		if (rune.qpRequired && msg.author.settings.get(UserSettings.QP) < rune.qpRequired) {
-			return msg.send(`You need ${rune.qpRequired} QP to craft this rune.`);
+			return msg.channel.send(`You need ${rune.qpRequired} QP to craft this rune.`);
 		}
 
 		const numEssenceOwned = await msg.author.numberOfItemInBank(itemID('Pure essence'));
@@ -66,15 +64,15 @@ export default class extends BotCommand {
 		const boosts = [];
 		if (msg.author.hasGracefulEquipped()) {
 			tripLength -= rune.tripLength * 0.1;
-			boosts.push(`10% for Graceful`);
+			boosts.push('10% for Graceful');
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Agility) >= 90) {
 			tripLength -= rune.tripLength * 0.1;
-			boosts.push(`10% for 90+ Agility`);
+			boosts.push('10% for 90+ Agility');
 		} else if (msg.author.skillLevel(SkillsEnum.Agility) >= 60) {
 			tripLength -= rune.tripLength * 0.05;
-			boosts.push(`5% for 60+ Agility`);
+			boosts.push('5% for 60+ Agility');
 		}
 
 		let inventorySize = 28;
@@ -101,7 +99,7 @@ export default class extends BotCommand {
 		}
 
 		if (numEssenceOwned === 0 || quantity === 0 || numEssenceOwned < quantity) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players (\`${msg.cmdPrefix}ge\`).`
 			);
 		}
@@ -110,18 +108,16 @@ export default class extends BotCommand {
 		const duration = numberOfInventories * tripLength;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					rune.name
-				} you can craft is ${Math.floor(maxCanDo)}.`
+				)}, try a lower quantity. The highest amount of ${rune.name} you can craft is ${Math.floor(maxCanDo)}.`
 			);
 		}
 
 		await msg.author.removeItemFromBank(itemID('Pure essence'), quantity);
 
-		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
 			runeID: rune.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -138,6 +134,6 @@ export default class extends BotCommand {
 			quantityPerEssence * quantity
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

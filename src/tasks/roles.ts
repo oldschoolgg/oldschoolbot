@@ -18,17 +18,31 @@ const minigames = [
 	'soul_wars',
 	'castle_wars',
 	'raids',
-	'raids_challenge_mode'
+	'raids_challenge_mode',
+	'big_chompy_bird_hunting'
 ];
 
-const collections = ['Pets', 'Skilling', 'Clue all', 'Boss', 'Minigames', 'Chambers of Xeric'];
+const collections = ['Overall', 'Pets', 'Skilling', 'Clue all', 'Boss', 'Minigames', 'Chambers of Xeric', 'Slayer'];
 
-async function addRoles(
-	g: Guild,
-	users: string[],
-	role: Roles,
-	badge: number | null
-): Promise<string> {
+const mostSlayerPointsQuery = `SELECT id 
+FROM users
+WHERE "slayer.points" > 50
+ORDER BY "slayer.points" DESC
+LIMIT 1;`;
+
+const longerSlayerTaskStreakQuery = `SELECT id 
+FROM users
+WHERE "slayer.task_streak" > 20
+ORDER BY "slayer.task_streak" DESC
+LIMIT 1;`;
+
+const mostSlayerTasksDoneQuery = `SELECT user_id as id
+FROM slayer_tasks
+GROUP BY user_id
+ORDER BY count(user_id) DESC
+LIMIT 1;`;
+
+async function addRoles(g: Guild, users: string[], role: Roles, badge: number | null): Promise<string> {
 	let added: string[] = [];
 	let removed: string[] = [];
 	const roleName = g.roles.cache.get(role)!.name!;
@@ -47,6 +61,7 @@ async function addRoles(
 
 		if (users.includes(mem.user.id)) {
 			if (production && !mem.roles.cache.has(role)) {
+				added.push(mem.user.username);
 				await mem.roles.add(role);
 			}
 			if (badge && !mem.user.settings.get(UserSettings.Badges).includes(badge)) {
@@ -54,13 +69,21 @@ async function addRoles(
 					arrayAction: 'add'
 				});
 			}
-			added.push(mem.user.username);
 		}
 	}
-	return `
-Added ${roleName} to: ${added.join(', ')}.
-Removed ${roleName} from: ${removed.join(', ')}.
-`;
+	let str = `**${roleName}**`;
+	if (added.length > 0) {
+		str += `\nAdded to: ${added.join(', ')}.`;
+	}
+	if (removed.length > 0) {
+		str += `\nRemoved from: ${removed.join(', ')}.`;
+	}
+	if (added.length || removed.length) {
+		str += '\n\n';
+	} else {
+		return '';
+	}
+	return str;
 }
 
 export default class extends Task {
@@ -70,62 +93,67 @@ export default class extends Task {
 		await g.members.fetch();
 		const skillVals = Object.values(Skills);
 
+		let result = '';
+		// eslint-disable-next-line @typescript-eslint/unbound-method
+		const q = <T>(str: string) => this.client.query<T>(str);
+
 		// Top Skillers
-		const topSkillers = (
-			await Promise.all([
-				...skillVals.map(s =>
-					this.client.query<
+		async function topSkillers() {
+			const topSkillers = (
+				await Promise.all([
+					...skillVals.map(s =>
+						q<
+							{
+								id: string;
+								xp: string;
+							}[]
+						>(`SELECT id, "skills.${s.id}" as xp FROM users ORDER BY xp DESC LIMIT 1;`)
+					),
+					q<
 						{
 							id: string;
-							xp: string;
 						}[]
-					>(`SELECT id, "skills.${s.id}" as xp FROM users ORDER BY xp DESC LIMIT 1;`)
-				),
-				this.client.query<
-					{
-						id: string;
-					}[]
-				>(
+					>(
+						`SELECT id,  ${skillVals.map(s => `"skills.${s.id}"`)}, ${skillVals
+							.map(s => `"skills.${s.id}"`)
+							.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 1;`
+					)
+				])
+			).map(i => i[0].id);
+
+			// Rank 1 Total Level
+			const rankOneTotal = (
+				await q<SkillUser[]>(
 					`SELECT id,  ${skillVals.map(s => `"skills.${s.id}"`)}, ${skillVals
 						.map(s => `"skills.${s.id}"`)
-						.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 1;`
+						.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 200;`
 				)
-			])
-		).map(i => i[0].id);
-
-		// Rank 1 Total Level
-		const rankOneTotal = (
-			await this.client.query<SkillUser[]>(
-				`SELECT id,  ${skillVals.map(s => `"skills.${s.id}"`)}, ${skillVals
-					.map(s => `"skills.${s.id}"`)
-					.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 200;`
 			)
-		)
-			.map(u => {
-				let totalLevel = 0;
-				for (const skill of skillVals) {
-					totalLevel += convertXPtoLVL(
-						Number(u[`skills.${skill.id}` as keyof SkillUser]) as any
-					);
-				}
-				return {
-					id: u.id,
-					totalLevel
-				};
-			})
-			.sort((a, b) => b.totalLevel - a.totalLevel)[0];
-		topSkillers.push(rankOneTotal.id);
+				.map(u => {
+					let totalLevel = 0;
+					for (const skill of skillVals) {
+						totalLevel += convertXPtoLVL(Number(u[`skills.${skill.id}` as keyof SkillUser]) as any);
+					}
+					return {
+						id: u.id,
+						totalLevel
+					};
+				})
+				.sort((a, b) => b.totalLevel - a.totalLevel)[0];
+			topSkillers.push(rankOneTotal.id);
 
-		let result = await addRoles(g, topSkillers, Roles.TopSkiller, 9);
+			result += await addRoles(g!, topSkillers, Roles.TopSkiller, 9);
+		}
 
 		// Top Collectors
-		const topCollectors = await Promise.all(
-			collections.map(async clName => {
-				const type = collectionLogTypes.find(t => t.name === clName)!;
-				const items = Object.values(type.items).flat(Infinity) as number[];
-				const users = (
-					await this.client.orm.query(
-						`
+		async function topCollector() {
+			const topCollectors = await Promise.all(
+				collections.map(async clName => {
+					const type = collectionLogTypes.find(t => t.name === clName)!;
+					const items = Object.values(type.items).flat(Infinity) as number[];
+					const users = (
+						await q<any>(
+							`
 SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 				  FROM (
   SELECT ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank")) "cl_keys",
@@ -139,63 +167,89 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 			ORDER BY qty DESC
 			LIMIT 1;
 `
-					)
-				).filter((i: any) => i.qty > 0) as CLUser[];
+						)
+					).filter((i: any) => i.qty > 0) as CLUser[];
 
-				return users[0].id;
-			})
-		);
+					return users?.[0]?.id;
+				})
+			);
 
-		result += await addRoles(g, topCollectors, Roles.TopCollector, 10);
+			result += await addRoles(g!, topCollectors, Roles.TopCollector, 10);
+		}
 
 		// Top sacrificers
-		let topSacrificers = [];
-		const mostValue = await this.client.query<SkillUser[]>(
-			`SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 3;`
-		);
-		for (const u of mostValue) topSacrificers.push(u.id);
-		const mostUniques = await this.client.query<
-			SkillUser[]
-		>(`SELECT u.id, u.sacbanklength FROM (
+		async function topSacrificers() {
+			let topSacrificers = [];
+			const mostValue = await q<SkillUser[]>('SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 3;');
+			for (const u of mostValue) topSacrificers.push(u.id);
+			const mostUniques = await q<SkillUser[]>(`SELECT u.id, u.sacbanklength FROM (
   SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
-		topSacrificers.push(mostUniques[0].id);
+			topSacrificers.push(mostUniques[0].id);
 
-		result += await addRoles(g, topSacrificers, Roles.TopSacrificer, 8);
+			result += await addRoles(g!, topSacrificers, Roles.TopSacrificer, 8);
+		}
 
 		// Top minigamers
-		let topMinigamers = (
-			await Promise.all(
-				minigames.map(m =>
-					this.client.query(
-						`SELECT user_id 
+		async function topMinigamers() {
+			let topMinigamers = (
+				await Promise.all(
+					minigames.map(m =>
+						q(
+							`SELECT user_id 
 FROM minigames
 ORDER BY ${m} DESC
 LIMIT 1;`
+						)
 					)
 				)
-			)
-		).map((i: any) => i[0].user_id);
+			).map((i: any) => i[0].user_id);
 
-		result += await addRoles(g, topMinigamers, Roles.TopMinigamer, 11);
+			result += await addRoles(g!, topMinigamers, Roles.TopMinigamer, 11);
+		}
 
 		// Top clue hunters
-		let topClueHunters = (
-			await Promise.all(
-				ClueTiers.map(t =>
-					this.client.query(
-						`SELECT id, ("clueScores"->>'${t.id}')::int as qty
+		async function topClueHunters() {
+			let topClueHunters = (
+				await Promise.all(
+					ClueTiers.map(t =>
+						q(
+							`SELECT id, ("clueScores"->>'${t.id}')::int as qty
 FROM users
 WHERE "clueScores"->>'${t.id}' IS NOT NULL
 ORDER BY qty DESC 
 LIMIT 1;`
+						)
 					)
 				)
-			)
-		).map((i: any) => i[0].id);
+			).map((i: any) => i[0].id);
 
-		result += await addRoles(g, topClueHunters, Roles.TopeClueHunter, null);
+			result += await addRoles(g!, topClueHunters, Roles.TopClueHunter, null);
+		}
+
+		// Top slayers
+		async function slayer() {
+			let topSlayers = (
+				await Promise.all(
+					[mostSlayerPointsQuery, longerSlayerTaskStreakQuery, mostSlayerTasksDoneQuery].map(query =>
+						q(query)
+					)
+				)
+			).map((i: any) => i[0].id);
+
+			result += await addRoles(g!, topSlayers, Roles.TopSlayer, null);
+		}
+
+		await Promise.all(
+			[slayer, topClueHunters, topMinigamers, topSacrificers, topCollector, topSkillers].map(async fn => {
+				try {
+					await fn();
+				} catch (err) {
+					console.error(err);
+				}
+			})
+		);
 
 		return result;
 	}

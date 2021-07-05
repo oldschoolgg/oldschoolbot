@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -77,7 +78,7 @@ export default class extends BotCommand {
 					})
 				))
 			]);
-			return msg.channel.sendFile(Buffer.from(normalTable), `cox-sim.txt`);
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(normalTable), 'cox-sim.txt')] });
 		}
 
 		if (!type) {
@@ -96,8 +97,7 @@ export default class extends BotCommand {
 			const normalTeam = await calcCoxDuration(Array(2).fill(msg.author), false);
 			const cmSolo = await calcCoxDuration([msg.author], true);
 			const cmTeam = await calcCoxDuration(Array(2).fill(msg.author), true);
-			return msg.channel
-				.send(`<:Twisted_bow:403018312402862081> Chamber's of Xeric <:Olmlet:324127376873357316>
+			return msg.channel.send(`<:Twisted_bow:403018312402862081> Chamber's of Xeric <:Olmlet:324127376873357316>
 **Normal:** ${normal} KC (Solo ${Emoji.CombatSword} ${calcWhatPercent(
 				normalSolo.reductions[msg.author.id],
 				normalSolo.totalReduction
@@ -114,52 +114,41 @@ export default class extends BotCommand {
 			).toFixed(1)})
 **Total Points:** ${totalPoints}
 **Total Uniques:** ${totalUniques} ${
-				totalUniques > 0
-					? `(1 unique per ${Math.floor(
-							totalPoints / totalUniques
-					  ).toLocaleString()} pts)`
-					: ''
+				totalUniques > 0 ? `(1 unique per ${Math.floor(totalPoints / totalUniques).toLocaleString()} pts)` : ''
 			}
 **Gear Score:** ${Emoji.Gear}${total.toFixed(1)}%`);
 		}
 
 		if (type === 'gear') {
 			const { melee, range, mage, total } = calculateUserGearPercents(msg.author);
-			return msg.channel
-				.send(`**Melee Gear Score:** <:Elder_maul:403018312247803906> ${melee.toFixed(1)}%
+			return msg.channel.send(`**Melee Gear Score:** <:Elder_maul:403018312247803906> ${melee.toFixed(1)}%
 **Range Gear Score:** <:Twisted_bow:403018312402862081> ${range.toFixed(1)}%
 **Mage Gear Score:** <:Kodai_insignia:403018312264712193> ${mage.toFixed(1)}%
 **Total Gear Score:** ${Emoji.Gear} ${total.toFixed(1)}%
-**Death Chance Solo:** ${Emoji.Skull} ${(
-				await createTeam([msg.author], false)
-			)[0].deathChance.toFixed(1)}%, CM ${Emoji.Skull} ${(
-				await createTeam([msg.author], true)
-			)[0].deathChance.toFixed(1)}%
-**Death Chance Team:** ${Emoji.Skull} ${(
-				await createTeam(Array(2).fill(msg.author), false)
-			)[0].deathChance.toFixed(1)}%, CM ${Emoji.Skull} ${(
-				await createTeam(Array(2).fill(msg.author), true)
-			)[0].deathChance.toFixed(1)}%`);
+**Death Chance Solo:** ${Emoji.Skull} ${(await createTeam([msg.author], false))[0].deathChance.toFixed(1)}%, CM ${
+				Emoji.Skull
+			} ${(await createTeam([msg.author], true))[0].deathChance.toFixed(1)}%
+**Death Chance Team:** ${Emoji.Skull} ${(await createTeam(Array(2).fill(msg.author), false))[0].deathChance.toFixed(
+				1
+			)}%, CM ${Emoji.Skull} ${(await createTeam(Array(2).fill(msg.author), true))[0].deathChance.toFixed(1)}%`);
 		}
 
 		if (type !== 'mass' && type !== 'solo') {
-			return msg.send(`Specify your team setup for Chamber's of Xeric, either solo or mass.`);
+			return msg.channel.send("Specify your team setup for Chamber's of Xeric, either solo or mass.");
 		}
 
 		const isChallengeMode = Boolean(msg.flagArgs.cm);
 
-		const userKC = await msg.author.getMinigameScore(
-			isChallengeMode ? 'RaidsChallengeMode' : 'Raids'
-		);
+		const userKC = await msg.author.getMinigameScore(isChallengeMode ? 'RaidsChallengeMode' : 'Raids');
 		if (!isChallengeMode && userKC < 50 && type === 'solo') {
-			return msg.channel.send(`You need atleast 50 KC before you can attempt a solo raid.`);
+			return msg.channel.send('You need atleast 50 KC before you can attempt a solo raid.');
 		}
 
 		if (isChallengeMode) {
 			const normalKC = await msg.author.getMinigameScore('Raids');
 			if (normalKC < 200) {
 				return msg.channel.send(
-					`You need atleast 200 completions of the Chamber's of Xeric before you can attempt Challenge Mode.`
+					"You need atleast 200 completions of the Chamber's of Xeric before you can attempt Challenge Mode."
 				);
 			}
 		}
@@ -178,7 +167,7 @@ export default class extends BotCommand {
 					return [true, 'your minion is busy.'];
 				}
 				if (!hasMinRaidsRequirements(user)) {
-					return [true, `You meet the stat requirements to do the Chamber's of Xeric.`];
+					return [true, "You meet the stat requirements to do the Chamber's of Xeric."];
 				}
 
 				if (!user.owns(minimumCoxSuppliesNeeded)) {
@@ -190,10 +179,7 @@ export default class extends BotCommand {
 
 				const { total } = calculateUserGearPercents(user);
 				if (total < 20) {
-					return [
-						true,
-						`Your gear is terrible! You do not stand a chance in the Chamber's of Xeric`
-					];
+					return [true, "Your gear is terrible! You do not stand a chance in the Chamber's of Xeric"];
 				}
 
 				if (
@@ -212,21 +198,14 @@ export default class extends BotCommand {
 		};
 
 		const users =
-			type === 'mass'
-				? (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy)
-				: [msg.author];
+			type === 'mass' ? (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy) : [msg.author];
 
 		const teamCheckFailure = await checkCoxTeam(users, isChallengeMode);
 		if (teamCheckFailure) {
-			return msg.channel.send(
-				`Your mass failed to start because of this reason: ${teamCheckFailure}`
-			);
+			return msg.channel.send(`Your mass failed to start because of this reason: ${teamCheckFailure}`);
 		}
 
-		const { duration, totalReduction, reductions } = await calcCoxDuration(
-			users,
-			isChallengeMode
-		);
+		const { duration, totalReduction, reductions } = await calcCoxDuration(users, isChallengeMode);
 
 		let debugStr = '';
 		const isSolo = users.length === 1;
@@ -239,23 +218,19 @@ export default class extends BotCommand {
 				await u.removeItemsFromBank(supplies);
 				totalCost.add(supplies);
 				const { total } = calculateUserGearPercents(u);
-				debugStr += `${u.username} (${Emoji.Gear}${total.toFixed(1)}% ${
-					Emoji.CombatSword
-				} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(
-					1
-				)}%) used ${supplies}\n`;
+				debugStr += `${u.username} (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword} ${calcWhatPercent(
+					reductions[u.id],
+					totalReduction
+				).toFixed(1)}%) used ${supplies}\n`;
 			})
 		);
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.CoxCost,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.CoxCost),
-				totalCost.bank
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CoxCost), totalCost.bank])
 		);
 
-		await addSubTaskToActivityTask<RaidsOptions>(this.client, {
+		await addSubTaskToActivityTask<RaidsOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
@@ -268,9 +243,7 @@ export default class extends BotCommand {
 		let str = isSolo
 			? `${
 					msg.author.minionName
-			  } is now doing a Chamber's of Xeric raid. The total trip will take ${formatDuration(
-					duration
-			  )}.`
+			  } is now doing a Chamber's of Xeric raid. The total trip will take ${formatDuration(duration)}.`
 			: `${partyOptions.leader.username}'s party (${users
 					.map(u => u.username)
 					.join(
@@ -281,8 +254,6 @@ export default class extends BotCommand {
 
 		str += ` \n\n${debugStr}`;
 
-		return msg.channel.send(str, {
-			split: true
-		});
+		return msg.channel.send(str);
 	}
 }

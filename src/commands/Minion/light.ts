@@ -33,22 +33,19 @@ export default class extends BotCommand {
 		}
 
 		const log = Firemaking.Burnables.find(
-			log =>
-				stringMatches(log.name, logName) || stringMatches(log.name.split(' ')[0], logName)
+			log => stringMatches(log.name, logName) || stringMatches(log.name.split(' ')[0], logName)
 		);
 
 		if (!log) {
-			return msg.send(
-				`That's not a valid log to light. Valid logs are ${Firemaking.Burnables.map(
-					log => log.name
-				).join(', ')}.`
+			return msg.channel.send(
+				`That's not a valid log to light. Valid logs are ${Firemaking.Burnables.map(log => log.name).join(
+					', '
+				)}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Firemaking) < log.level) {
-			return msg.send(
-				`${msg.author.minionName} needs ${log.level} Firemaking to light ${log.name}.`
-			);
+			return msg.channel.send(`${msg.author.minionName} needs ${log.level} Firemaking to light ${log.name}.`);
 		}
 
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
@@ -60,37 +57,34 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			const amountOfLogsOwned = msg.author.settings.get(UserSettings.Bank)[log.inputLogs];
 			if (!amountOfLogsOwned || amountOfLogsOwned === 0) {
-				return msg.send(`You have no ${log.name}.`);
+				return msg.channel.send(`You have no ${log.name}.`);
 			}
-			quantity = Math.min(
-				Math.floor(maxTripLength / timeToLightSingleLog),
-				amountOfLogsOwned
-			);
+			quantity = Math.min(Math.floor(maxTripLength / timeToLightSingleLog), amountOfLogsOwned);
 		}
 
 		// Check the user has the required logs to light.
 		// Multiplying the logs required by the quantity of ashes.
 		const hasRequiredLogs = await msg.author.hasItem(log.inputLogs, quantity);
 		if (!hasRequiredLogs) {
-			return msg.send(`You dont have ${quantity}x ${log.name}.`);
+			return msg.channel.send(`You dont have ${quantity}x ${log.name}.`);
 		}
 
 		const duration = quantity * timeToLightSingleLog;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					log.name
-				}s you can light is ${Math.floor(maxTripLength / timeToLightSingleLog)}.`
+				)}, try a lower quantity. The highest amount of ${log.name}s you can light is ${Math.floor(
+					maxTripLength / timeToLightSingleLog
+				)}.`
 			);
 		}
 
 		// Remove the logs from their bank.
 		await msg.author.removeItemFromBank(log.inputLogs, quantity);
 
-		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>({
 			burnableID: log.inputLogs,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -99,10 +93,10 @@ export default class extends BotCommand {
 			type: Activity.Firemaking
 		});
 
-		return msg.send(
-			`${msg.author.minionName} is now lighting ${quantity}x ${
-				log.name
-			}, it'll take around ${formatDuration(duration)} to finish.`
+		return msg.channel.send(
+			`${msg.author.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatDuration(
+				duration
+			)} to finish.`
 		);
 	}
 }

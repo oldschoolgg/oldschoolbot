@@ -22,9 +22,7 @@ describe('util', () => {
 		expect(getUserFoodFromBank({ [itemID('Shark')]: 100 }, 500)).toStrictEqual({
 			[itemID('Shark')]: 25
 		});
-		expect(
-			getUserFoodFromBank({ [itemID('Shark')]: 30, [itemID('Tuna')]: 20 }, 750)
-		).toStrictEqual({
+		expect(getUserFoodFromBank({ [itemID('Shark')]: 30, [itemID('Tuna')]: 20 }, 750)).toStrictEqual({
 			[itemID('Tuna')]: 20,
 			[itemID('Shark')]: 28
 		});

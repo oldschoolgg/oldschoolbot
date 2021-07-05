@@ -24,14 +24,7 @@ interface Birdhouse {
 const birdhouses: Birdhouse[] = [
 	{
 		name: 'Bird house',
-		aliases: [
-			'regular',
-			'normal',
-			'bird house',
-			'normal bird house',
-			'regular bird house',
-			'logs'
-		],
+		aliases: ['regular', 'normal', 'bird house', 'normal bird house', 'regular bird house', 'logs'],
 		huntLvl: 5,
 		huntXP: 280,
 		craftLvl: 5,

@@ -19,8 +19,7 @@ export default class extends BotCommand {
 			cooldown: 5,
 			altProtection: true,
 			categoryFlags: ['minion'],
-			description:
-				'Purchases skillcapes from the bot, you can buy untrimmed capes if its your first 99.',
+			description: 'Purchases skillcapes from the bot, you can buy untrimmed capes if its your first 99.',
 			examples: ['+skillcape mining']
 		});
 	}
@@ -30,20 +29,16 @@ export default class extends BotCommand {
 
 		await msg.author.settings.sync(true);
 		const GP = msg.author.settings.get(UserSettings.GP);
-		if (GP < skillCapeCost) return msg.send(`You don't have enough GP to buy a skill cape.`);
+		if (GP < skillCapeCost) return msg.channel.send("You don't have enough GP to buy a skill cape.");
 
 		const capeObject = Skillcapes.find(cape => stringMatches(cape.skill, skillName));
-		if (!capeObject) return msg.send(`That's not a valid skill.`);
+		if (!capeObject) return msg.channel.send("That's not a valid skill.");
 
-		const levelInSkill = convertXPtoLVL(
-			msg.author.settings.get(`skills.${skillName}`) as number
-		);
+		const levelInSkill = convertXPtoLVL(msg.author.settings.get(`skills.${skillName}`) as number);
 
 		if (levelInSkill < 99) {
-			return msg.send(
-				`Your ${toTitleCase(
-					skillName
-				)} level is less than 99! You can't buy a skill cape, noob.`
+			return msg.channel.send(
+				`Your ${toTitleCase(skillName)} level is less than 99! You can't buy a skill cape, noob.`
 			);
 		}
 
@@ -55,40 +50,30 @@ export default class extends BotCommand {
 		const itemString = new Bank(itemsToPurchase).toString();
 
 		const sellMsg = await msg.channel.send(
-			`${
-				msg.author
-			}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${toKMB(
+			`${msg.author}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${toKMB(
 				skillCapeCost
 			)}.`
 		);
 
 		// Confirm the user wants to buy
 		try {
-			await msg.channel.awaitMessages(
-				_msg =>
-					_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-				{
-					max: 1,
-					time: Time.Second * 15,
-					errors: ['time']
-				}
-			);
+			await msg.channel.awaitMessages({
+				max: 1,
+				time: Time.Second * 15,
+				errors: ['time'],
+				filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+			});
 		} catch (err) {
-			return sellMsg.edit(
-				`Cancelling purchase of ${toTitleCase(capeObject.skill)} skill cape.`
-			);
+			return sellMsg.edit(`Cancelling purchase of ${toTitleCase(capeObject.skill)} skill cape.`);
 		}
 
 		await msg.author.removeGP(skillCapeCost);
 		await msg.author.addItemsToBank(itemsToPurchase, true);
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.BuyCostBank,
-			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add(
-				'Coins',
-				skillCapeCost
-			).bank
+			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add('Coins', skillCapeCost).bank
 		);
 
-		return msg.send(`You purchased ${itemString} for ${toKMB(skillCapeCost)}.`);
+		return msg.channel.send(`You purchased ${itemString} for ${toKMB(skillCapeCost)}.`);
 	}
 }

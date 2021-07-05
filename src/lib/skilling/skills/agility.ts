@@ -5,12 +5,7 @@ export const courses: Course[] = [
 	{
 		id: 1,
 		name: 'Gnome Stronghold Agility Course',
-		aliases: [
-			'gnome',
-			'gnome stronghold',
-			'gnome stronghold agility',
-			'gnome stronghold agility course'
-		],
+		aliases: ['gnome', 'gnome stronghold', 'gnome stronghold agility', 'gnome stronghold agility course'],
 		level: 1,
 		xp: 88,
 		lapTime: 34,
@@ -19,12 +14,7 @@ export const courses: Course[] = [
 	{
 		id: 2,
 		name: 'Draynor Village Rooftop Course',
-		aliases: [
-			'draynor',
-			'draynor village',
-			'draynor village rooftop',
-			'draynor village rooftop course'
-		],
+		aliases: ['draynor', 'draynor village', 'draynor village rooftop', 'draynor village rooftop course'],
 		level: 10,
 		xp: 120,
 		marksPer60: 12,
@@ -84,13 +74,8 @@ export const courses: Course[] = [
 	},
 	{
 		id: 8,
-		name: `Seers' Village Rooftop Course`,
-		aliases: [
-			'seers',
-			'seers village',
-			'seers village rooftop',
-			'seers village rooftop course'
-		],
+		name: "Seers' Village Rooftop Course",
+		aliases: ['seers', 'seers village', 'seers village rooftop', 'seers village rooftop course'],
 		level: 60,
 		xp: 570,
 		marksPer60: 12,

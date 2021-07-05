@@ -3,14 +3,13 @@ import { Task } from 'klasa';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { hasArrayOfItemsEquipped } from '../../../lib/gear';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, bankHasItem, channelIsSendable, noOp } from '../../../lib/util';
+import { addBanks, bankHasItem, channelIsSendable } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
@@ -42,7 +41,7 @@ export default class extends Task {
 		const { userID, channelID, quantity } = data;
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
-		const channel = await this.client.channels.fetch(channelID).catch(noOp);
+		const channel = await this.client.channels.fetch(channelID);
 
 		let loot: ItemBank = {};
 
@@ -98,13 +97,13 @@ export default class extends Task {
 			numberOfBraziers += randInt(1, 7);
 		}
 		const conXP = numberOfBraziers * constructionXPPerBrazier;
-		user.addXP(SkillsEnum.Construction, conXP);
+		user.addXP({ skillName: SkillsEnum.Construction, amount: conXP });
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
-			hasArrayOfItemsEquipped(
+			user.getGear('skilling').hasEquipped(
 				Object.keys(Firemaking.pyromancerItems).map(i => parseInt(i)),
-				user.getGear('skilling')
+				true
 			)
 		) {
 			const amountToAdd = Math.floor(fmXpToGive * (2.5 / 100));
@@ -121,8 +120,8 @@ export default class extends Task {
 			}
 		}
 
-		await user.addXP(SkillsEnum.Woodcutting, wcXpToGive);
-		await user.addXP(SkillsEnum.Firemaking, fmXpToGive);
+		await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive });
+		await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive });
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		await user.addItemsToBank(loot, true);
@@ -130,7 +129,7 @@ export default class extends Task {
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
 			loot,
-			``,
+			'',
 			true,
 			{
 				showNewCL: 1
@@ -158,7 +157,7 @@ export default class extends Task {
 			channelID,
 			output,
 			res => {
-				user.log(`continued trip of wintertodt`);
+				user.log('continued trip of wintertodt');
 				return this.client.commands.get('wintertodt')!.run(res, []);
 			},
 			image!,

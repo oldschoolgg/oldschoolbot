@@ -37,23 +37,21 @@ export default class extends BotCommand {
 		);
 
 		if (!shopInventory) {
-			return msg.send(
-				`I don't recognize that item JalYt, here are my wares: ${TokkulShopItem.map(
-					item => {
-						return item.name;
-					}
-				).join(', ')}.`
+			return msg.channel.send(
+				`I don't recognize that item JalYt, here are my wares: ${TokkulShopItem.map(item => {
+					return item.name;
+				}).join(', ')}.`
 			);
 		}
 
 		if (shopInventory.requireFireCape && msg.author.getKC(TzTokJad.id) < 1) {
-			return msg.send(
+			return msg.channel.send(
 				`You are not worthy JalYt. Before you can ${type} an ${shopInventory.name}, you need to have defeated the might TzTok-Jad!`
 			);
 		}
 
 		if (!shopInventory.tokkulCost && type === 'buy') {
-			return msg.send(
+			return msg.channel.send(
 				`I am sorry JalYt, but I can't sell you that. Here are the items I can sell: ${TokkulShopItem.filter(
 					item => item.tokkulCost
 				)
@@ -63,9 +61,7 @@ export default class extends BotCommand {
 		}
 
 		if (type === 'sell' && msg.author.numItemsInBankSync(shopInventory.inputItem) === 0) {
-			return msg.send(
-				`I am sorry JalYt. You don't have any **${shopInventory.name}** to sell me.`
-			);
+			return msg.channel.send(`I am sorry JalYt. You don't have any **${shopInventory.name}** to sell me.`);
 		}
 
 		if (quantity === undefined) {
@@ -82,14 +78,20 @@ export default class extends BotCommand {
 			outItems.add({ Tokkul: quantity * shopInventory.tokkulReturn });
 		}
 
+		// Buy: inItems = tokkul, outItems = item
+		// Sell: inItems = item, outItems = tokkul
+
+		const tokkul = type === 'buy' ? inItems : outItems;
+		const items = type === 'buy' ? outItems : inItems;
+
 		if (!bankHasAllItemsFromBank(userBank, inItems.bank)) {
 			if (type === 'buy') {
-				return msg.send(
-					`I am sorry JalYt, but you don't have enough tokkul for that. You need **${inItems}** to buy **${outItems}**.`
+				return msg.channel.send(
+					`I am sorry JalYt, but you don't have enough tokkul for that. You need **${tokkul}** to buy **${items}**.`
 				);
 			}
-			return msg.send(
-				`I am sorry JalYt, but you don't have enough items for that. You need **${inItems}** to sell for **${outItems}**.`
+			return msg.channel.send(
+				`I am sorry JalYt, but you don't have enough items for that. You need **${items}** to sell for **${tokkul}**.`
 			);
 		}
 
@@ -97,25 +99,19 @@ export default class extends BotCommand {
 			const sellMsg = await msg.channel.send(
 				`${msg.author}, JalYt, say \`confirm\` to confirm that you want to ${
 					type === 'buy' ? 'buy' : 'sell'
-				} **${inItems}** for **${outItems}**.`
+				} **${items}** for **${tokkul}**.`
 			);
 
 			// Confirm the user wants to buy
 			try {
-				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 15,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					max: 1,
+					time: Time.Second * 15,
+					errors: ['time'],
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
-				return sellMsg.edit(
-					`Cancelling ${type === 'buy' ? 'purchase' : 'sale'} of **${outItems}**.`
-				);
+				return sellMsg.edit(`Cancelling ${type === 'buy' ? 'purchase' : 'sale'} of **${items}**.`);
 			}
 		}
 
@@ -124,8 +120,6 @@ export default class extends BotCommand {
 			addBanks([outItems.bank, removeBankFromBank(userBank, inItems.bank)])
 		);
 
-		return msg.send(
-			`You ${type === 'buy' ? 'bought' : 'sold'} **${outItems}** for **${inItems}**.`
-		);
+		return msg.channel.send(`You ${type === 'buy' ? 'bought' : 'sold'} **${items}** for **${tokkul}**.`);
 	}
 }

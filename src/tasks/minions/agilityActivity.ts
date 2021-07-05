@@ -1,8 +1,9 @@
-import { randInt, roll } from 'e';
+import { increaseNumByPercent, randInt, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji, Events, Time } from '../../lib/constants';
+import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
@@ -23,10 +24,7 @@ export default class extends Task {
 		// Calculate failed laps
 		let lapsFailed = 0;
 		for (let t = 0; t < quantity; t++) {
-			if (
-				randInt(1, 100) >
-				(100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)
-			) {
+			if (randInt(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
 				lapsFailed += 1;
 			}
 		}
@@ -46,18 +44,24 @@ export default class extends Task {
 			totalMarks = Math.ceil(totalMarks / 5);
 		}
 
+		const [hasFallyElite] = await userhasDiaryTier(user, FaladorDiary.elite);
+		const diaryBonus = hasFallyElite && course.name === 'Ardougne Rooftop Course';
+		if (diaryBonus) {
+			totalMarks = Math.floor(increaseNumByPercent(totalMarks, 25));
+		}
+
 		const xpReceived = (quantity - lapsFailed / 2) * course.xp;
 
 		await user.settings.update(
 			UserSettings.LapsScores,
-			addItemToBank(
-				user.settings.get(UserSettings.LapsScores),
-				course.id,
-				quantity - lapsFailed
-			)
+			addItemToBank(user.settings.get(UserSettings.LapsScores), course.id, quantity - lapsFailed)
 		);
 
-		let xpRes = await user.addXP(SkillsEnum.Agility, xpReceived, duration);
+		let xpRes = await user.addXP({
+			skillName: SkillsEnum.Agility,
+			amount: xpReceived,
+			duration
+		});
 
 		const loot = new Bank({
 			'Mark of grace': totalMarks
@@ -67,11 +71,19 @@ export default class extends Task {
 			const alchedItem = getOSItem(alch.itemID);
 			const alchGP = alchedItem.highalch * alch.quantity;
 			loot.add('Coins', alchGP);
-			xpRes += ` ${await user.addXP(SkillsEnum.Magic, alch.quantity * 65, duration)}`;
+			xpRes += ` ${await user.addXP({
+				skillName: SkillsEnum.Magic,
+				amount: alch.quantity * 65,
+				duration
+			})}`;
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
 		}
 
-		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}.\n${xpRes}`;
+		let str = `${user}, ${user.minionName} finished ${quantity} ${
+			course.name
+		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot} ${
+			diaryBonus ? '(2x bonus Marks for Ardougne Elite diary)' : ''
+		}.\n${xpRes}`;
 
 		if (course.id === 6) {
 			const currentLapCount = user.settings.get(UserSettings.LapsScores)[course.id];
@@ -85,12 +97,9 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		if (
-			course.petChance &&
-			roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)
-		) {
+		if (course.petChance && roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)) {
 			loot.add('Giant squirrel');
-			str += `\nYou have a funny feeling you're being followed...`;
+			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`

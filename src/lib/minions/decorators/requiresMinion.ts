@@ -9,9 +9,7 @@ const requiresMinion = createFunctionInhibitor(
 		return msg.author.hasMinion;
 	},
 	(msg: KlasaMessage) => {
-		msg.channel.send(
-			`You don't have a minion yet. You can buy one by typing \`${msg.cmdPrefix}minion buy\`.`
-		);
+		msg.channel.send(`You don't have a minion yet. You can buy one by typing \`${msg.cmdPrefix}minion buy\`.`);
 	}
 );
 

@@ -6,10 +6,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {
-	AnimatedArmourActivityTaskOptions,
-	CyclopsActivityTaskOptions
-} from '../../lib/types/minions';
+import { AnimatedArmourActivityTaskOptions, CyclopsActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import resolveItems from '../../lib/util/resolveItems';
@@ -55,17 +52,14 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	@minionNotBusy
-	async run(
-		msg: KlasaMessage,
-		[quantity = null, minigame]: [null | number, 'tokens' | 'cyclops']
-	) {
+	async run(msg: KlasaMessage, [quantity = null, minigame]: [null | number, 'tokens' | 'cyclops']) {
 		await msg.author.settings.sync(true);
 
 		const atkLvl = msg.author.skillLevel(SkillsEnum.Attack);
 		const strLvl = msg.author.skillLevel(SkillsEnum.Strength);
 		if (atkLvl + strLvl < 130 && atkLvl !== 99 && strLvl !== 99) {
-			return msg.send(
-				`To enter the Warrior's Guild, your Attack and Strength levels must add up to atleast 130, or you must have level 99 in either.`
+			return msg.channel.send(
+				"To enter the Warrior's Guild, your Attack and Strength levels must add up to atleast 130, or you must have level 99 in either."
 			);
 		}
 
@@ -76,7 +70,7 @@ export default class extends BotCommand {
 
 			const armorSet = Armours.find(set => userBank.has(set.items));
 			if (!armorSet) {
-				return msg.send(
+				return msg.channel.send(
 					`You don't have any armor sets to use for getting tokens! Get a full helm, platebody and platelegs of one of the following: ${Armours.map(
 						t => t.name
 					).join(', ')}.`
@@ -90,7 +84,7 @@ export default class extends BotCommand {
 			const duration = armorSet.timeToFinish * quantity;
 
 			if (duration > maxTripLength) {
-				return msg.send(
+				return msg.channel.send(
 					`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 						maxTripLength
 					)}, try a lower quantity. The highest amount of animated ${
@@ -99,7 +93,7 @@ export default class extends BotCommand {
 				);
 			}
 
-			await addSubTaskToActivityTask<AnimatedArmourActivityTaskOptions>(this.client, {
+			await addSubTaskToActivityTask<AnimatedArmourActivityTaskOptions>({
 				armourID: armorSet.name,
 				userID: msg.author.id,
 				channelID: msg.channel.id,
@@ -112,29 +106,30 @@ export default class extends BotCommand {
 				armorSet.name
 			} armour, it'll take around ${formatDuration(duration)} to finish.`;
 
-			return msg.send(response);
+			return msg.channel.send(response);
 		}
 
 		if (minigame === 'cyclops') {
+			const hasAttackCape = msg.author.getGear('melee').hasEquipped('Attack cape');
 			const maxTripLength = msg.author.maxTripLength(Activity.Cyclops);
 			// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 			const amountTokens = userBank.amount('Warrior guild token');
-			if (amountTokens < 100) {
-				return msg.send(`You need atleast 100 Warriors guild tokens to kill Cyclops.`);
+			if (!hasAttackCape && amountTokens < 100) {
+				return msg.channel.send('You need atleast 100 Warriors guild tokens to kill Cyclops.');
 			}
 			// If no quantity provided, set it to the max.
 			if (quantity === null) {
-				const maxTokensTripLength = Math.floor((amountTokens - 10) / 10) * Time.Minute;
+				const maxTokensTripLength =
+					Math.floor((hasAttackCape ? 100_000 : amountTokens - 10) / 10) * Time.Minute;
 				quantity = Math.floor(
-					(maxTokensTripLength > maxTripLength ? maxTripLength : maxTokensTripLength) /
-						(Time.Second * 30)
+					(maxTokensTripLength > maxTripLength ? maxTripLength : maxTokensTripLength) / (Time.Second * 30)
 				);
 			}
 
 			const duration = Time.Second * 30 * quantity;
 
 			if (duration > maxTripLength) {
-				return msg.send(
+				return msg.channel.send(
 					`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 						maxTripLength
 					)}, try a lower quantity. The highest amount of cyclopes that can be killed is ${Math.floor(
@@ -145,8 +140,8 @@ export default class extends BotCommand {
 
 			const tokensToSpend = Math.floor((duration / Time.Minute) * 10 + 10);
 
-			if (amountTokens < tokensToSpend) {
-				return msg.send(
+			if (!hasAttackCape && amountTokens < tokensToSpend) {
+				return msg.channel.send(
 					`You don't have enough Warrior guild tokens to kill cyclopes for ${formatDuration(
 						duration
 					)}, try a lower quantity. You need atleast ${Math.floor(
@@ -155,7 +150,7 @@ export default class extends BotCommand {
 				);
 			}
 
-			await addSubTaskToActivityTask<CyclopsActivityTaskOptions>(this.client, {
+			await addSubTaskToActivityTask<CyclopsActivityTaskOptions>({
 				userID: msg.author.id,
 				channelID: msg.channel.id,
 				quantity,
@@ -165,13 +160,17 @@ export default class extends BotCommand {
 
 			let response = `${
 				msg.author.minionName
-			} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDuration(
-				duration
-			)} to finish. Removed ${tokensToSpend} Warrior guild tokens from your bank.`;
+			} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDuration(duration)} to finish. ${
+				hasAttackCape
+					? 'You used no warrior guild tokens because you have an Attack cape.'
+					: `Removed ${tokensToSpend} Warrior guild tokens from your bank.`
+			}`;
 
-			await msg.author.removeItemFromBank(itemID('Warrior guild token'), tokensToSpend);
+			if (!hasAttackCape) {
+				await msg.author.removeItemFromBank(itemID('Warrior guild token'), tokensToSpend);
+			}
 
-			return msg.send(response);
+			return msg.channel.send(response);
 		}
 	}
 }

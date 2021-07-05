@@ -34,7 +34,7 @@ export default class extends BotCommand {
 		const itemsToRemove = new Bank();
 		const gp = msg.author.settings.get(UserSettings.GP);
 		if (gp < 5000) {
-			return msg.send(`You need atleast 5k GP to work at the Gnome Restaurant.`);
+			return msg.channel.send('You need atleast 5k GP to work at the Gnome Restaurant.');
 		}
 		itemsToRemove.add('Coins', 5000);
 
@@ -49,12 +49,12 @@ export default class extends BotCommand {
 
 		if (msg.author.hasGracefulEquipped()) {
 			deliveryLength = reduceNumByPercent(deliveryLength, 25);
-			boosts.push(`25% for Graceful`);
+			boosts.push('25% for Graceful');
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) >= 66) {
 			deliveryLength = reduceNumByPercent(deliveryLength, 25);
-			boosts.push(`25% for 66 Magic (teleports)`);
+			boosts.push('25% for 66 Magic (teleports)');
 		}
 
 		const bank = msg.author.bank();
@@ -62,11 +62,11 @@ export default class extends BotCommand {
 			case 1: {
 				if (msg.author.hasItemEquippedOrInBank('Amulet of eternal glory')) {
 					deliveryLength = reduceNumByPercent(deliveryLength, 20);
-					boosts.push(`20% for Amulet of eternal glory`);
+					boosts.push('20% for Amulet of eternal glory');
 				} else if (bank.has('Amulet of glory(6)')) {
 					itemsToRemove.add('Amulet of glory(6)');
 					deliveryLength = reduceNumByPercent(deliveryLength, 20);
-					boosts.push(`20% for Amulet of glory(6)`);
+					boosts.push('20% for Amulet of glory(6)');
 				}
 				break;
 			}
@@ -74,7 +74,7 @@ export default class extends BotCommand {
 				if (bank.has('Ring of dueling(8)')) {
 					itemsToRemove.add('Ring of dueling(8)');
 					deliveryLength = reduceNumByPercent(deliveryLength, 20);
-					boosts.push(`20% for Ring of dueling(8)`);
+					boosts.push('20% for Ring of dueling(8)');
 				}
 				break;
 			}
@@ -82,15 +82,13 @@ export default class extends BotCommand {
 				if (bank.has('Games necklace(8)')) {
 					itemsToRemove.add('Games necklace(8)');
 					deliveryLength = reduceNumByPercent(deliveryLength, 20);
-					boosts.push(`20% boost for Games necklace(8)`);
+					boosts.push('20% boost for Games necklace(8)');
 				}
 				break;
 			}
 		}
 
-		const quantity = Math.floor(
-			msg.author.maxTripLength(Activity.GnomeRestaurant) / deliveryLength
-		);
+		const quantity = Math.floor(msg.author.maxTripLength(Activity.GnomeRestaurant) / deliveryLength);
 		const duration = randomVariation(deliveryLength * quantity, 5);
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) >= 66) {
@@ -109,7 +107,7 @@ export default class extends BotCommand {
 				itemsToRemove.bank
 			])
 		);
-		await addSubTaskToActivityTask<GnomeRestaurantActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<GnomeRestaurantActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
@@ -119,15 +117,13 @@ export default class extends BotCommand {
 			gloriesRemoved: itemsToRemove.amount('Amulet of glory(6)')
 		});
 
-		let str = `${
-			msg.author.minionName
-		} is now working at the Gnome Restaurant for ${formatDuration(
+		let str = `${msg.author.minionName} is now working at the Gnome Restaurant for ${formatDuration(
 			duration
 		)}. Removed ${itemsToRemove} from your bank.`;
 
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

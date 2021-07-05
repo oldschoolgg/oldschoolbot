@@ -1,10 +1,14 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { table } from 'table';
 
 import { Activity, Time } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
+import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
@@ -30,14 +34,9 @@ export default class extends BotCommand {
 		if (msg.flagArgs.items) {
 			const normalTable = table([
 				['Item Name', 'Lvl', 'XP', 'Items Required'],
-				...Fletching.Fletchables.map(i => [
-					i.name,
-					`${i.level}`,
-					`${i.xp}`,
-					`${i.inputItems}`
-				])
+				...Fletching.Fletchables.map(i => [i.name, `${i.level}`, `${i.xp}`, `${i.inputItems}`])
 			]);
-			return msg.channel.sendFile(Buffer.from(normalTable), `Fletchables.txt`);
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(normalTable), 'Fletchables.txt')] });
 		}
 
 		if (typeof quantity === 'string') {
@@ -48,7 +47,7 @@ export default class extends BotCommand {
 		const fletchable = Fletching.Fletchables.find(item => stringMatches(item.name, fletchName));
 
 		if (!fletchable) {
-			return msg.send(
+			return msg.channel.send(
 				`That is not a valid fletchable item, to see the items available do \`${msg.cmdPrefix}fletch --items\``
 			);
 		}
@@ -58,9 +57,21 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Fletching) < fletchable.level) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${fletchable.level} Fletching to fletch ${fletchable.name}.`
 			);
+		}
+
+		if (fletchable.requiredSlayerUnlocks) {
+			let mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
+
+			const { success, errors } = hasSlayerUnlock(
+				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
+				fletchable.requiredSlayerUnlocks
+			);
+			if (!success) {
+				throw `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
+			}
 		}
 
 		await msg.author.settings.sync(true);
@@ -82,27 +93,27 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToFletchSingleItem;
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					fletchable.name
-				}s you can fletch is ${Math.floor(maxTripLength / timeToFletchSingleItem)}.`
+				)}, try a lower quantity. The highest amount of ${fletchable.name}s you can fletch is ${Math.floor(
+					maxTripLength / timeToFletchSingleItem
+				)}.`
 			);
 		}
 
 		const itemsNeeded = fletchable.inputItems.clone().multiply(quantity);
 		if (!userBank.has(itemsNeeded.bank)) {
-			return msg.send(
-				`You don't have enough items. For ${quantity}x ${
-					fletchable.name
-				}, you're missing **${itemsNeeded.clone().remove(userBank)}**.`
+			return msg.channel.send(
+				`You don't have enough items. For ${quantity}x ${fletchable.name}, you're missing **${itemsNeeded
+					.clone()
+					.remove(userBank)}**.`
 			);
 		}
 
 		await msg.author.removeItemsFromBank(itemsNeeded);
 
-		await addSubTaskToActivityTask<FletchingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<FletchingActivityTaskOptions>({
 			fletchableName: fletchable.name,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -111,12 +122,10 @@ export default class extends BotCommand {
 			type: Activity.Fletching
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now Fletching ${quantity}${sets} ${
 				fletchable.name
-			}, it'll take around ${formatDuration(
-				duration
-			)} to finish. Removed ${itemsNeeded} from your bank.`
+			}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`
 		);
 	}
 }

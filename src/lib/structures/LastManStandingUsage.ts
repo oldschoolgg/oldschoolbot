@@ -9,9 +9,7 @@ export default class LastManStandingUsage {
 	}
 
 	public display(...values: string[]) {
-		return this.parts
-			.map(part => (typeof part === 'number' ? `**${values[part]}**` : part))
-			.join('');
+		return this.parts.map(part => (typeof part === 'number' ? `**${values[part]}**` : part)).join('');
 	}
 
 	public parse(usage: string): void {

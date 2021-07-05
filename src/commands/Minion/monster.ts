@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Time } from '../../lib/constants';
@@ -7,13 +8,8 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import findMonster, {
-	calcWhatPercent,
-	formatDuration,
-	formatItemBoosts,
-	formatItemReqs,
-	itemNameFromID
-} from '../../lib/util';
+import { calcWhatPercent, formatDuration, formatItemBoosts, formatItemReqs, itemNameFromID } from '../../lib/util';
+import findMonster from '../../lib/util/findMonster';
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -32,11 +28,15 @@ export default class MinionCommand extends BotCommand {
 		const monster = findMonster(name);
 
 		if (!monster) {
-			return msg.send(
-				`Thats not a valid monster to kill. Valid monsters are ${killableMonsters
-					.map(mon => mon.name)
-					.join(', ')}.`
-			);
+			return msg.channel.send({
+				content: "That's not a valid monster to kill. See attached file for list of killable monsters.",
+				files: [
+					new MessageAttachment(
+						Buffer.from(killableMonsters.map(mon => mon.name).join('\n')),
+						'killableMonsters.txt'
+					)
+				]
+			});
 		}
 
 		const userKc = msg.author.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
@@ -44,24 +44,18 @@ export default class MinionCommand extends BotCommand {
 
 		const ownedBoostItems = [];
 		let totalItemBoost = 0;
-		for (const [itemID, boostAmount] of Object.entries(
-			msg.author.resolveAvailableItemBoosts(monster)
-		)) {
+		for (const [itemID, boostAmount] of Object.entries(msg.author.resolveAvailableItemBoosts(monster))) {
 			timeToFinish *= (100 - boostAmount) / 100;
 			totalItemBoost += boostAmount;
 			ownedBoostItems.push(itemNameFromID(parseInt(itemID)));
 		}
-		const maxCanKill = Math.floor(
-			msg.author.maxTripLength(Activity.MonsterKilling) / timeToFinish
-		);
+		const maxCanKill = Math.floor(msg.author.maxTripLength(Activity.MonsterKilling) / timeToFinish);
 
 		const QP = msg.author.settings.get(UserSettings.QP);
 
 		const str = [];
 		if (monster.qpRequired) {
-			str.push(
-				`${monster.name} requires **${monster.qpRequired}qp** to kill, and you have ${QP}qp.\n`
-			);
+			str.push(`${monster.name} requires **${monster.qpRequired}qp** to kill, and you have ${QP}qp.\n`);
 		}
 		if (monster.itemsRequired && monster.itemsRequired.length > 0) {
 			str.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}\n`);
@@ -80,17 +74,11 @@ export default class MinionCommand extends BotCommand {
 		if (monster.itemInBankBoosts) {
 			str.push(`**Boosts:** ${formatItemBoosts(monster.itemInBankBoosts)}.\n`);
 			if (totalItemBoost) {
-				str.push(
-					`You own ${ownedBoostItems.join(
-						', '
-					)} for a total boost of **${totalItemBoost}**%.\n`
-				);
+				str.push(`You own ${ownedBoostItems.join(', ')} for a total boost of **${totalItemBoost}**%.\n`);
 			}
 		}
 
-		str.push(
-			`The normal time to kill ${monster.name} is ${formatDuration(monster.timeToFinish)}.`
-		);
+		str.push(`The normal time to kill ${monster.name} is ${formatDuration(monster.timeToFinish)}.`);
 
 		const kcForOnePercent = Math.ceil((Time.Hour * 5) / monster.timeToFinish);
 		str.push(
@@ -101,11 +89,7 @@ export default class MinionCommand extends BotCommand {
 
 		str.push(`You currently recieve a ${percentReduced}% boost with your ${userKc}kc.\n`);
 
-		str.push(
-			`**Maximum Trip Length:** ${formatDuration(
-				msg.author.maxTripLength(Activity.MonsterKilling)
-			)}.\n`
-		);
+		str.push(`**Maximum Trip Length:** ${formatDuration(msg.author.maxTripLength(Activity.MonsterKilling))}.\n`);
 
 		str.push(
 			`This means the most you can kill with your current item and KC boosts is ${maxCanKill} (${formatDuration(
@@ -122,11 +106,11 @@ export default class MinionCommand extends BotCommand {
 		);
 
 		str.push(
-			`If the Weekend boost is active, it takes: (${formatDuration(
-				min * 0.9
-			)}) to (${formatDuration(max * 0.9)}) to finish.\n`
+			`If the Weekend boost is active, it takes: (${formatDuration(min * 0.9)}) to (${formatDuration(
+				max * 0.9
+			)}) to finish.\n`
 		);
 
-		return msg.send(str.join('\n'));
+		return msg.channel.send(str.join('\n'));
 	}
 }

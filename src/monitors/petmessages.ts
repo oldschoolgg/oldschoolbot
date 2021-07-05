@@ -32,13 +32,9 @@ export default class extends Monitor {
 			await msg.author.settings.update(UserSettings.Pets, { ...newUserPets });
 			if (!channelIsSendable(msg.channel)) return;
 			if (userPets[pet.id] > 1) {
-				msg.channel.send(
-					`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`
-				);
+				msg.channel.send(`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`);
 			} else {
-				msg.channel.send(`You have a funny feeling like you’re being followed, ${
-					msg.author
-				} ${pet.emoji}
+				msg.channel.send(`You have a funny feeling like you’re being followed, ${msg.author} ${pet.emoji}
 Type \`${msg.guild.settings.get(GuildSettings.Prefix)}mypets\` to see your pets.`);
 			}
 		}

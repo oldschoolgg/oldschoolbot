@@ -18,12 +18,12 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [items]: [Item[] | undefined]) {
 		const currentFavorites = msg.author.settings.get(UserSettings.FavoriteAlchables);
 
-		if (!items) {
+		if (!items || items.length === 0) {
 			const currentFavorites = msg.author.settings.get(UserSettings.FavoriteAlchables);
 			if (currentFavorites.length === 0) {
-				return msg.send(`You have no favorited alchable items.`);
+				return msg.channel.send('You have no favorited alchable items.');
 			}
-			return msg.send(
+			return msg.channel.send(
 				`Your current favorite alchable items are: ${currentFavorites
 					.map(id => itemNameFromID(id))
 					.join(', ')}.`
@@ -33,20 +33,20 @@ export default class extends BotCommand {
 		const [item] = items;
 
 		if (!item.highalch) {
-			return msg.channel.send(`That item isn't alchable.`);
+			return msg.channel.send("That item isn't alchable.");
 		}
 
 		if (currentFavorites.includes(item.id)) {
 			await msg.author.settings.update(UserSettings.FavoriteAlchables, item.id, {
 				arrayAction: ArrayActions.Remove
 			});
-			return msg.send(`Removed ${item.name} from your favorite alchable items.`);
+			return msg.channel.send(`Removed ${item.name} from your favorite alchable items.`);
 		}
 
 		await msg.author.settings.update(UserSettings.FavoriteAlchables, item.id, {
 			arrayAction: ArrayActions.Add
 		});
 
-		return msg.send(`Added ${item.name} to your favorite alchable items.`);
+		return msg.channel.send(`Added ${item.name} to your favorite alchable items.`);
 	}
 }

@@ -7,14 +7,7 @@ import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	calcPercentOfNum,
-	formatDuration,
-	itemID,
-	itemNameFromID,
-	rand,
-	stringMatches
-} from '../../lib/util';
+import { calcPercentOfNum, formatDuration, itemID, itemNameFromID, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -44,45 +37,38 @@ export default class extends BotCommand {
 		);
 
 		if (!fish) {
-			return msg.send(
-				`Thats not a valid fish to catch. Valid fishes are ${Fishing.Fishes.map(
-					fish => fish.name
-				).join(', ')}.`
+			return msg.channel.send(
+				`Thats not a valid fish to catch. Valid fishes are ${Fishing.Fishes.map(fish => fish.name).join(', ')}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Fishing) < fish.level) {
-			return msg.send(
-				`${msg.author.minionName} needs ${fish.level} Fishing to fish ${fish.name}.`
-			);
+			return msg.channel.send(`${msg.author.minionName} needs ${fish.level} Fishing to fish ${fish.name}.`);
 		}
 
 		if (fish.qpRequired) {
 			if (msg.author.settings.get(UserSettings.QP) < fish.qpRequired) {
-				return msg.send(`You need ${fish.qpRequired} qp to catch those!`);
+				return msg.channel.send(`You need ${fish.qpRequired} qp to catch those!`);
 			}
 		}
 
 		if (
 			fish.name === 'Barbarian fishing' &&
-			(msg.author.skillLevel(SkillsEnum.Agility) < 15 ||
-				msg.author.skillLevel(SkillsEnum.Strength) < 15)
+			(msg.author.skillLevel(SkillsEnum.Agility) < 15 || msg.author.skillLevel(SkillsEnum.Strength) < 15)
 		) {
-			return msg.send(`You need at least 15 Agility and Strength to do Barbarian Fishing.`);
+			return msg.channel.send('You need at least 15 Agility and Strength to do Barbarian Fishing.');
 		}
 
 		// If no quantity provided, set it to the max.
 		let scaledTimePerFish =
-			Time.Second *
-			fish.timePerFish *
-			(1 + (100 - msg.author.skillLevel(SkillsEnum.Fishing)) / 100);
+			Time.Second * fish.timePerFish * (1 + (100 - msg.author.skillLevel(SkillsEnum.Fishing)) / 100);
 
 		const boosts = [];
 		switch (fish.bait) {
 			case itemID('Fishing bait'):
 				if (msg.author.hasItemEquippedAnywhere(itemID('Pearl fishing rod'))) {
 					scaledTimePerFish *= 0.95;
-					boosts.push(`5% for Pearl fishing rod`);
+					boosts.push('5% for Pearl fishing rod');
 				}
 				break;
 			case itemID('Feather'):
@@ -91,19 +77,19 @@ export default class extends BotCommand {
 					msg.author.hasItemEquippedAnywhere(itemID('Pearl barbarian rod'))
 				) {
 					scaledTimePerFish *= 0.95;
-					boosts.push(`5% for Pearl barbarian rod`);
+					boosts.push('5% for Pearl barbarian rod');
 				} else if (
 					msg.author.hasItemEquippedAnywhere(itemID('Pearl fly fishing rod')) &&
 					fish.name !== 'Barbarian fishing'
 				) {
 					scaledTimePerFish *= 0.95;
-					boosts.push(`5% for Pearl fly fishing rod`);
+					boosts.push('5% for Pearl fly fishing rod');
 				}
 				break;
 			default:
 				if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
 					scaledTimePerFish *= 0.95;
-					boosts.push(`5% for Crystal harpoon`);
+					boosts.push('5% for Crystal harpoon');
 				}
 				break;
 		}
@@ -117,19 +103,19 @@ export default class extends BotCommand {
 		let duration = quantity * scaledTimePerFish;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					fish.name
-				} you can fish is ${Math.floor(maxTripLength / scaledTimePerFish)}.`
+				)}, try a lower quantity. The highest amount of ${fish.name} you can fish is ${Math.floor(
+					maxTripLength / scaledTimePerFish
+				)}.`
 			);
 		}
 
 		if (fish.bait) {
 			const hasBait = await msg.author.hasItem(fish.bait, quantity);
 			if (!hasBait) {
-				return msg.send(`You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`);
+				return msg.channel.send(`You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`);
 			}
 		}
 
@@ -141,7 +127,7 @@ export default class extends BotCommand {
 			await msg.author.removeItemFromBank(fish.bait, quantity);
 		}
 
-		await addSubTaskToActivityTask<FishingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<FishingActivityTaskOptions>({
 			fishID: fish.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -158,6 +144,6 @@ export default class extends BotCommand {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

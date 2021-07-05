@@ -19,11 +19,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Banana'),
 		name: 'Bones to Bananas',
-		input: new Bank()
-			.add('Bones', 25)
-			.add('Earth rune', 2)
-			.add('Water rune', 2)
-			.add('Nature rune', 1),
+		input: new Bank().add('Bones', 25).add('Earth rune', 2).add('Water rune', 2).add('Nature rune', 1),
 		output: new Bank().add('Banana', 25),
 		xp: 25,
 		level: 15,
@@ -68,11 +64,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Bow string'),
 		name: 'Spin Flax',
-		input: new Bank()
-			.add('Astral rune', 1)
-			.add('Nature rune', 2)
-			.add('Air rune', 5)
-			.add('Flax', 5),
+		input: new Bank().add('Astral rune', 1).add('Nature rune', 2).add('Air rune', 5).add('Flax', 5),
 		output: new Bank().add('Bow string', 5),
 		xp: 75,
 		level: 76,
@@ -84,11 +76,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Green dragon leather'),
 		name: 'Tan Green Dragon Leather',
-		input: new Bank()
-			.add('Astral rune', 2)
-			.add('Nature rune', 1)
-			.add('Fire rune', 5)
-			.add('Green dragonhide', 5),
+		input: new Bank().add('Astral rune', 2).add('Nature rune', 1).add('Fire rune', 5).add('Green dragonhide', 5),
 		output: new Bank().add('Green dragon leather', 5),
 		xp: 81,
 		level: 78,
@@ -98,11 +86,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Blue dragon leather'),
 		name: 'Tan Blue Dragon Leather',
-		input: new Bank()
-			.add('Astral rune', 2)
-			.add('Nature rune', 1)
-			.add('Fire rune', 5)
-			.add('Blue dragonhide', 5),
+		input: new Bank().add('Astral rune', 2).add('Nature rune', 1).add('Fire rune', 5).add('Blue dragonhide', 5),
 		output: new Bank().add('Blue dragon leather', 5),
 		xp: 81,
 		level: 78,
@@ -112,11 +96,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Red Dragon Leather'),
 		name: 'Tan Red Dragon Leather',
-		input: new Bank()
-			.add('Astral rune', 2)
-			.add('Nature rune', 1)
-			.add('Fire rune', 5)
-			.add('Red dragonhide', 5),
+		input: new Bank().add('Astral rune', 2).add('Nature rune', 1).add('Fire rune', 5).add('Red dragonhide', 5),
 		output: new Bank().add('Red dragon leather', 5),
 		xp: 81,
 		level: 78,
@@ -126,11 +106,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Black dragon leather'),
 		name: 'Tan Black Dragon Leather',
-		input: new Bank()
-			.add('Astral rune', 2)
-			.add('Nature rune', 1)
-			.add('Fire rune', 5)
-			.add('Black dragonhide', 5),
+		input: new Bank().add('Astral rune', 2).add('Nature rune', 1).add('Fire rune', 5).add('Black dragonhide', 5),
 		output: new Bank().add('Black Dragon Leather', 5),
 		xp: 81,
 		level: 78,
@@ -140,11 +116,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Gold amulet'),
 		name: 'String Gold',
-		input: new Bank()
-			.add('Astral rune', 2)
-			.add('Water rune', 5)
-			.add('Earth rune', 10)
-			.add('Gold amulet (u)', 1),
+		input: new Bank().add('Astral rune', 2).add('Water rune', 5).add('Earth rune', 10).add('Gold amulet (u)', 1),
 		output: new Bank().add('Gold amulet', 1),
 		xp: 83,
 		level: 80,
@@ -172,11 +144,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Emerald amulet'),
 		name: 'String Emerald',
-		input: new Bank()
-			.add('Astral rune', 2)
-			.add('Water rune', 5)
-			.add('Earth rune', 10)
-			.add('Emerald amulet (u)', 1),
+		input: new Bank().add('Astral rune', 2).add('Water rune', 5).add('Earth rune', 10).add('Emerald amulet (u)', 1),
 		output: new Bank().add('Emerald amulet', 1),
 		xp: 83,
 		level: 80,
@@ -188,11 +156,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Ruby amulet'),
 		name: 'String Ruby',
-		input: new Bank()
-			.add('Astral rune', 2)
-			.add('Water rune', 5)
-			.add('Earth rune', 10)
-			.add('Ruby amulet (u)', 1),
+		input: new Bank().add('Astral rune', 2).add('Water rune', 5).add('Earth rune', 10).add('Ruby amulet (u)', 1),
 		output: new Bank().add('Ruby amulet', 1),
 		xp: 83,
 		level: 80,
@@ -204,11 +168,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Diamond amulet'),
 		name: 'String Diamond',
-		input: new Bank()
-			.add('Astral rune', 2)
-			.add('Water rune', 5)
-			.add('Earth rune', 10)
-			.add('Diamond amulet (u)', 1),
+		input: new Bank().add('Astral rune', 2).add('Water rune', 5).add('Earth rune', 10).add('Diamond amulet (u)', 1),
 		output: new Bank().add('Diamond amulet', 1),
 		xp: 83,
 		level: 80,
@@ -236,11 +196,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Onyx amulet'),
 		name: 'String Onyx',
-		input: new Bank()
-			.add('Astral rune', 2)
-			.add('Water rune', 5)
-			.add('Earth rune', 10)
-			.add('Onyx amulet (u)', 1),
+		input: new Bank().add('Astral rune', 2).add('Water rune', 5).add('Earth rune', 10).add('Onyx amulet (u)', 1),
 		output: new Bank().add('Onyx amulet', 1),
 		xp: 83,
 		level: 80,
@@ -252,11 +208,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Plank'),
 		name: 'Plank Make Logs',
-		input: new Bank()
-			.add('Astral rune', 2)
-			.add('Nature rune', 1)
-			.add('Earth rune', 15)
-			.add('Logs', 1),
+		input: new Bank().add('Astral rune', 2).add('Nature rune', 1).add('Earth rune', 15).add('Logs', 1),
 		output: new Bank().add('Plank', 1),
 		xp: 90,
 		level: 86,
@@ -267,11 +219,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Oak plank'),
 		name: 'Plank Make Oak',
-		input: new Bank()
-			.add('Astral rune', 2)
-			.add('Nature rune', 1)
-			.add('Earth rune', 15)
-			.add('Oak logs', 1),
+		input: new Bank().add('Astral rune', 2).add('Nature rune', 1).add('Earth rune', 15).add('Oak logs', 1),
 		output: new Bank().add('Oak Plank', 1),
 		xp: 90,
 		level: 86,
@@ -282,11 +230,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Teak plank'),
 		name: 'Plank Make Teak',
-		input: new Bank()
-			.add('Astral rune', 2)
-			.add('Nature rune', 1)
-			.add('Earth rune', 15)
-			.add('Teak logs', 1),
+		input: new Bank().add('Astral rune', 2).add('Nature rune', 1).add('Earth rune', 15).add('Teak logs', 1),
 		output: new Bank().add('Teak plank', 1),
 		xp: 90,
 		level: 86,
@@ -297,11 +241,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Mahogany plank'),
 		name: 'Plank Make Mahogany',
-		input: new Bank()
-			.add('Astral rune', 2)
-			.add('Nature rune', 1)
-			.add('Earth rune', 15)
-			.add('Mahogany logs', 1),
+		input: new Bank().add('Astral rune', 2).add('Nature rune', 1).add('Earth rune', 15).add('Mahogany logs', 1),
 		output: new Bank().add('Mahogany plank', 1),
 		xp: 90,
 		level: 86,
@@ -312,11 +252,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Amulet of glory (4)'),
 		name: 'Recharge Glory',
-		input: new Bank()
-			.add('Astral rune', 1)
-			.add('Water rune', 4)
-			.add('Soul rune', 1)
-			.add('Amulet of glory', 25),
+		input: new Bank().add('Astral rune', 1).add('Water rune', 4).add('Soul rune', 1).add('Amulet of glory', 25),
 		output: new Bank().add('Amulet of glory (4)', 25),
 		xp: 97.5,
 		level: 89,
@@ -326,11 +262,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Combat bracelet (4)'),
 		name: 'Recharge Combat Bracelet',
-		input: new Bank()
-			.add('Astral rune', 1)
-			.add('Water rune', 4)
-			.add('Soul rune', 1)
-			.add('Combat bracelet', 25),
+		input: new Bank().add('Astral rune', 1).add('Water rune', 4).add('Soul rune', 1).add('Combat bracelet', 25),
 		output: new Bank().add('Combat bracelet (4)', 25),
 		xp: 97.5,
 		level: 89,
@@ -340,15 +272,62 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Skills necklace (4)'),
 		name: 'Recharge Skills Necklace',
-		input: new Bank()
-			.add('Astral rune', 1)
-			.add('Water rune', 4)
-			.add('Soul rune', 1)
-			.add('Skills necklace', 25),
+		input: new Bank().add('Astral rune', 1).add('Water rune', 4).add('Soul rune', 1).add('Skills necklace', 25),
 		output: new Bank().add('Skills necklace (4)', 25),
 		xp: 97.5,
 		level: 89,
 		ticks: 3,
 		qpRequired: 50
+	},
+	{
+		id: itemID('Giant seaweed'),
+		name: 'Superglass make giant seaweed',
+		input: new Bank()
+			.add('Astral rune', 2)
+			.add('Fire rune', 6)
+			.add('Air rune', 10)
+			.add('Bucket of sand', 18)
+			.add('Giant seaweed', 3),
+		output: new Bank().add('Molten glass', 29),
+		xp: 78,
+		level: 77,
+		ticks: 12,
+		qpRequired: 50,
+		craftXp: 180,
+		craftLevel: 61
+	},
+	{
+		id: itemID('Seaweed'),
+		name: 'Superglass make seaweed',
+		input: new Bank()
+			.add('Astral rune', 2)
+			.add('Fire rune', 6)
+			.add('Air rune', 10)
+			.add('Bucket of sand', 13)
+			.add('Seaweed', 13),
+		output: new Bank().add('Molten glass', 17),
+		xp: 78,
+		level: 77,
+		ticks: 12,
+		qpRequired: 50,
+		craftXp: 130,
+		craftLevel: 61
+	},
+	{
+		id: itemID('Soda ash'),
+		name: 'Superglass make soda ash',
+		input: new Bank()
+			.add('Astral rune', 2)
+			.add('Fire rune', 6)
+			.add('Air rune', 10)
+			.add('Bucket of sand', 13)
+			.add('Soda ash', 13),
+		output: new Bank().add('Molten glass', 17),
+		xp: 78,
+		level: 77,
+		ticks: 12,
+		qpRequired: 50,
+		craftXp: 130,
+		craftLevel: 61
 	}
 ];

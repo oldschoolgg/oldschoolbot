@@ -1,4 +1,4 @@
-import { DMChannel, MessageAttachment, Permissions, TextChannel } from 'discord.js';
+import { DMChannel, MessageAttachment, MessageOptions, Permissions, TextChannel } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 
 import { bankImageCache } from '../lib/constants';
@@ -13,8 +13,7 @@ export default class extends Extendable {
 	get attachable(this: TextChannel) {
 		return (
 			!this.guild ||
-			(this.postable &&
-				this.permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.ATTACH_FILES, false))
+			(this.postable && this.permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.ATTACH_FILES, false))
 		);
 	}
 
@@ -22,8 +21,7 @@ export default class extends Extendable {
 	get embedable(this: TextChannel) {
 		return (
 			!this.guild ||
-			(this.postable &&
-				this.permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.EMBED_LINKS, false))
+			(this.postable && this.permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.EMBED_LINKS, false))
 		);
 	}
 
@@ -40,10 +38,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	get readable(this: TextChannel) {
-		return (
-			!this.guild ||
-			this.permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.VIEW_CHANNEL, false)
-		);
+		return !this.guild || this.permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.VIEW_CHANNEL, false);
 	}
 
 	async sendBankImage(
@@ -68,14 +63,7 @@ export default class extends Extendable {
 	) {
 		const { image, cacheKey, isTransparent } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(
-				bank,
-				title,
-				true,
-				{ background: background ?? 1, ...flags },
-				user,
-				cl
-			);
+			.generateBankImage(bank, title, true, { background: background ?? 1, ...flags }, user, cl);
 
 		let cached = bankImageCache.get(cacheKey);
 		if (cached) {
@@ -85,12 +73,12 @@ export default class extends Extendable {
 		if (cached && content) {
 			content += `\n${cached}`;
 		}
-		const sent = await this.send(
-			content ?? cached,
-			image && !cached
-				? new MessageAttachment(image!, isTransparent ? `bank.png` : 'bank.jpg')
-				: {}
-		);
+		let options: MessageOptions = { content: content ?? cached };
+
+		if (image && !cached) {
+			options.files = [new MessageAttachment(image!, isTransparent ? 'bank.png' : 'bank.jpg')];
+		}
+		const sent = await this.send(options);
 
 		const url = sent.attachments.first()?.proxyURL;
 		if (url) {

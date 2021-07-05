@@ -1,6 +1,8 @@
 import PQueue from 'p-queue';
 import { join } from 'path';
 
+import { SkillsEnum } from './skilling/types';
+
 export const enum Time {
 	Millisecond = 1,
 	Second = 1000,
@@ -35,7 +37,8 @@ export const enum Roles {
 	TopCollector = '795271210141351947',
 	TopSacrificer = '795933981715464192',
 	TopMinigamer = '832798997033779220',
-	TopeClueHunter = '839135887467610123'
+	TopClueHunter = '839135887467610123',
+	TopSlayer = '856080958247010324'
 }
 
 export const enum Emoji {
@@ -106,6 +109,7 @@ export const enum Emoji {
 	Defence = '<:defence:630911040393052180>',
 	Ranged = '<:ranged:630911040258834473>',
 	Gear = '<:gear:835314891950129202>',
+	Slayer = '<:slayer:630911040560824330>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -197,7 +201,10 @@ export const enum Tasks {
 	Collecting = 'collectingActivity',
 	MageTrainingArena = 'mageTrainingArenaActivity',
 	BlastFurnaceActivity = 'blastFurnaceActivity',
-	MageArena2 = 'mageArena2Activity'
+	MageArena2 = 'mageArena2Activity',
+	BigChompyBirdHunting = 'chompyHuntActivity',
+	DarkAltar = 'darkAltarActivity',
+	TrekkingActivity = 'templeTrekkingActivity'
 }
 
 export enum Activity {
@@ -255,7 +262,10 @@ export enum Activity {
 	Collecting = 'Collecting',
 	MageTrainingArena = 'MageTrainingArena',
 	BlastFurnace = 'BlastFurnace',
-	MageArena2 = 'MageArena2'
+	MageArena2 = 'MageArena2',
+	BigChompyBirdHunting = 'BigChompyBirdHunting',
+	DarkAltar = 'DarkAltar',
+	Trekking = 'Trekking'
 }
 
 export enum ActivityGroup {
@@ -385,14 +395,14 @@ export const MAX_QP = 280;
 
 export const MIMIC_MONSTER_ID = 23184;
 
-export const continuationChars = 'abdefghjkmnopqrstuvwxyz123456789'.split('');
+export const continuationChars = 'abdefghjkmnoprstuvwxyz123456789'.split('');
 export const CENA_CHARS = ['​', '‎', '‍'];
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
 export const MAX_INT_JAVA = 2_147_483_647;
 export const TWEETS_RATELIMITING =
-	`Tweets in Old School Bot can only be enabled in servers with more than 20 members, or by Tier 3 Patrons - this is due to ratelimiting issues.` +
-	`You can consider checking tweets in another server, or becoming a patron. Apologies for the inconvenience.`;
+	'Tweets in Old School Bot can only be enabled in servers with more than 20 members, or by Tier 3 Patrons - this is due to ratelimiting issues.' +
+	'You can consider checking tweets in another server, or becoming a patron. Apologies for the inconvenience.';
 export const HERBIBOAR_ID = 36;
 export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;
@@ -433,5 +443,10 @@ export const skillEmoji = {
 	woodcutting: '<:woodcutting:630911040099450892>',
 	hunter: '<:hunter:630911040166559784>',
 	cml: '<:CrystalMathLabs:364657225249062912>',
-	clock: '<:ehpclock:352323705210142721>'
+	clock: '<:ehpclock:352323705210142721>',
+	combat: '<:combat:802136963956080650>'
 };
+
+export const LEVEL_99_XP = 13_034_431;
+export const MAX_LEVEL = 99;
+export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;

@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { table } from 'table';
 
@@ -45,7 +46,7 @@ export default class extends BotCommand {
 					).toLocaleString()}`
 				])
 			]);
-			return msg.channel.sendFile(Buffer.from(tableStr), 'enchantables.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(tableStr), 'enchantables.txt')] });
 		}
 
 		if (typeof quantity === 'string') {
@@ -58,7 +59,7 @@ export default class extends BotCommand {
 		);
 
 		if (!enchantable) {
-			return msg.send(
+			return msg.channel.send(
 				`That is not a valid item to enchant, the items you can enchant are: ${Enchantables.map(
 					i => i.name
 				).join(', ')}.`
@@ -66,7 +67,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) < enchantable.level) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${enchantable.level} Magic to enchant ${enchantable.name}.`
 			);
 		}
@@ -86,36 +87,31 @@ export default class extends BotCommand {
 		const duration = quantity * timeToEnchantTen;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					enchantable.name
-				}s you can enchant is ${Math.floor(maxTripLength / timeToEnchantTen)}.`
+				)}, try a lower quantity. The highest amount of ${enchantable.name}s you can enchant is ${Math.floor(
+					maxTripLength / timeToEnchantTen
+				)}.`
 			);
 		}
 
 		const cost = determineRunes(msg.author, enchantable.input.clone().multiply(quantity));
 
 		if (!userBank.has(cost.bank)) {
-			return msg.send(
-				`You don't have the materials needed to enchant ${quantity}x ${
-					enchantable.name
-				}, you need ${enchantable.input}, you're missing **${cost
-					.clone()
-					.remove(userBank)}**.`
+			return msg.channel.send(
+				`You don't have the materials needed to enchant ${quantity}x ${enchantable.name}, you need ${
+					enchantable.input
+				}, you're missing **${cost.clone().remove(userBank)}**.`
 			);
 		}
 		await msg.author.removeItemsFromBank(cost.bank);
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.MagicCostBank,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.MagicCostBank),
-				cost.bank
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.MagicCostBank), cost.bank])
 		);
 
-		await addSubTaskToActivityTask<EnchantingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<EnchantingActivityTaskOptions>({
 			itemID: enchantable.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -128,12 +124,10 @@ export default class extends BotCommand {
 			((enchantable.xp * quantity) / (duration / Time.Minute)) * 60
 		).toLocaleString()} XP/Hr`;
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now enchanting ${quantity}x ${
 				enchantable.name
-			}, it'll take around ${formatDuration(
-				duration
-			)} to finish. Removed ${cost} from your bank. ${xpHr}`
+			}, it'll take around ${formatDuration(duration)} to finish. Removed ${cost} from your bank. ${xpHr}`
 		);
 	}
 }

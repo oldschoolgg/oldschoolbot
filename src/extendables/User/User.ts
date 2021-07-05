@@ -1,6 +1,6 @@
 import { User } from 'discord.js';
 import { objectEntries } from 'e';
-import { Extendable, ExtendableStore, KlasaClient, SettingsFolder } from 'klasa';
+import { Extendable, ExtendableStore, KlasaClient, KlasaUser, SettingsFolder } from 'klasa';
 import PromiseQueue from 'p-queue';
 
 import { Events, PerkTier, userQueues } from '../../lib/constants';
@@ -40,17 +40,12 @@ export default class extends Extendable {
 			for (const item of monster.itemsRequired) {
 				if (Array.isArray(item)) {
 					if (!item.some(itemReq => this.hasItemEquippedOrInBank(itemReq as number))) {
-						return [
-							false,
-							`You need these items to kill ${monster.name}: ${itemsRequiredStr}`
-						];
+						return [false, `You need these items to kill ${monster.name}: ${itemsRequiredStr}`];
 					}
 				} else if (!this.hasItemEquippedOrInBank(item)) {
 					return [
 						false,
-						`You need ${itemsRequiredStr} to kill ${
-							monster.name
-						}. You're missing ${itemNameFromID(item)}.`
+						`You need ${itemsRequiredStr} to kill ${monster.name}. You're missing ${itemNameFromID(item)}.`
 					];
 				}
 			}
@@ -59,10 +54,7 @@ export default class extends Extendable {
 		if (monster.levelRequirements) {
 			const [hasReqs, str] = this.hasSkillReqs(monster.levelRequirements);
 			if (!hasReqs) {
-				return [
-					false,
-					`You don't meet the skill requirements to kill ${monster.name}, you need: ${str}.`
-				];
+				return [false, `You don't meet the skill requirements to kill ${monster.name}, you need: ${str}.`];
 			}
 		}
 
@@ -70,15 +62,11 @@ export default class extends Extendable {
 			for (const [setup, requirements] of objectEntries(monster.minimumGearRequirements)) {
 				const gear = this.getGear(setup);
 				if (setup && requirements) {
-					const [meetsRequirements, unmetKey, has] = gear.meetsStatRequirements(
-						requirements
-					);
+					const [meetsRequirements, unmetKey, has] = gear.meetsStatRequirements(requirements);
 					if (!meetsRequirements) {
 						return [
 							false,
-							`You don't have the requirements to kill ${
-								monster.name
-							}! Your ${readableStatName(
+							`You don't have the requirements to kill ${monster.name}! Your ${readableStatName(
 								unmetKey!
 							)} stat in your ${setup} setup is ${has}, but you need atleast ${
 								monster.minimumGearRequirements[setup]![unmetKey!]
@@ -119,9 +107,9 @@ export default class extends Extendable {
 		return currentQueue;
 	}
 
-	public async queueFn(this: User, fn: (...args: any[]) => Promise<any>) {
+	public async queueFn(this: User, fn: (user: KlasaUser) => Promise<void>) {
 		const queue = this.getUpdateQueue();
-		await queue.add(fn);
+		return queue.add(() => fn(this));
 	}
 
 	// @ts-ignore 2784

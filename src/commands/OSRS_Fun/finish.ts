@@ -1,10 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import alchemicalHydra from '../../lib/data/monsters/alchemicalHydra';
-import hespori from '../../lib/data/monsters/hespori';
-import raids from '../../lib/data/monsters/raids';
-import tob from '../../lib/data/monsters/tob';
 import pets from '../../lib/data/pets';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { roll } from '../../lib/util';
@@ -41,6 +37,80 @@ const BARROWS_ITEMS = [
 	'<:Ahrims_robeskirt:403038864350117888>',
 	'<:Ahrims_hood:403038864362438666>'
 ];
+
+function hesporiFinish() {
+	const lootMSG = [];
+	const loot: string[] = [];
+	let kc = 0;
+	while (loot.length < 1) {
+		kc++;
+		if (!loot.includes('BCB') && roll(35)) {
+			loot.push('BCB');
+			lootMSG.push(
+				`**Bottomless Compost Bucket:** ${kc.toLocaleString()} KC <:Bottomless_compost_bucket:545978484078411777>`
+			);
+		}
+	}
+	return [kc, lootMSG.join('\n')];
+}
+
+function hydraFinish() {
+	const lootMSG = [];
+	const loot: any[] = [];
+	let kc = 0;
+	let RP = 0;
+	while (loot.length !== 9) {
+		kc++;
+		if (!loot.includes('PET') && roll(3000)) {
+			loot.push('PET');
+			lootMSG.push(`**Ikkle hydra:** ${kc.toLocaleString()} KC <:Ikkle_hydra:534941897228156948>`);
+		}
+		if (!loot.includes('JOC') && roll(2000)) {
+			loot.push('JOC');
+			lootMSG.push(`**Jar of chemicals:** ${kc.toLocaleString()} KC <:Jar_of_chemicals:545975448547622912>`);
+		}
+		if (!loot.includes('HC') && roll(1000)) {
+			loot.push('HC');
+			lootMSG.push(`**Hydra's claw:** ${kc.toLocaleString()} KC <:Hydras_claw:545975448178262057>`);
+		}
+		if (!loot.includes('HL') && roll(512)) {
+			loot.push('HL');
+			lootMSG.push(`**Hydra leather:** ${kc.toLocaleString()} KC <:Hydra_leather:545975447973003267>`);
+		}
+		if (!loot.includes('HT') && roll(512)) {
+			loot.push('HT');
+			lootMSG.push(`**Hydra tail:** ${kc.toLocaleString()} KC <:Hydratail:545976358506070016>`);
+		}
+		if (!loot.includes('HHeads') && roll(256)) {
+			loot.push('HHeads');
+			lootMSG.push(
+				`**Alchemical hydra heads:** ${kc.toLocaleString()} KC <:Alchemical_hydra_heads:545975448153227267>`
+			);
+		}
+		if (roll(180)) {
+			let LOCK = false;
+			if (!loot.includes('HE') && RP === 0) {
+				loot.push('HE');
+				lootMSG.push(`**Hydra's eye:** ${kc.toLocaleString()} KC <:Hydras_eye:545975448358748211>`);
+				RP++;
+				LOCK = true;
+			}
+			if (!loot.includes('HF') && !LOCK) {
+				loot.push('HF');
+				lootMSG.push(`**Hydra's fang:** ${kc.toLocaleString()} KC <:Hydras_fang:545975448580915210>`);
+				RP++;
+				LOCK = true;
+			}
+			if (!loot.includes('HH') && !LOCK) {
+				loot.push('HH');
+				lootMSG.push(`**Hydra's heart:** ${kc.toLocaleString()} KC <:Hydras_heart:545975448493096960>`);
+				RP++;
+				LOCK = true;
+			}
+		}
+	}
+	return [kc, lootMSG.join('\n'), '<:Ikkle_hydra:534941897228156948>'];
+}
 
 async function getAllPetsEmbed(petsRecieved: string[]) {
 	const embed = new MessageEmbed()
@@ -131,11 +201,6 @@ export default class extends BotCommand {
 		const duplicates: string[] = [];
 
 		switch (BossName.replace(/\W/g, '').toUpperCase()) {
-			case 'RAIDS2':
-			case 'THEATREOFBLOOD':
-			case 'TOB': {
-				return msg.send(tob.finish());
-			}
 			case 'MOLE':
 			case 'GIANTMOLE': {
 				const lootMSG = [];
@@ -148,14 +213,12 @@ export default class extends BotCommand {
 					ms += Math.floor(Math.random() * 2) + 1;
 					if (!loot.includes('PET') && roll(3000)) {
 						loot.push('PET');
-						lootMSG.push(
-							`**Baby Mole:** ${kc.toLocaleString()} KC <:Baby_mole:324127375858204672>`
-						);
+						lootMSG.push(`**Baby Mole:** ${kc.toLocaleString()} KC <:Baby_mole:324127375858204672>`);
 					}
 					if (rollX(5, 64)) yl++;
 				}
 				yl *= 100;
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Giant Mole <:Baby_mole:324127375858204672>
 
 ${lootMSG.join(
@@ -189,9 +252,7 @@ ${lootMSG.join(
 						const randomRoll = Math.floor(Math.random() * 2) + 1;
 						if (!loot.includes('KBDH') && randomRoll === 1) {
 							loot.push('KBDH');
-							lootMSG.push(
-								`**Kbd heads:** ${kc.toLocaleString()} KC <:Kbd_heads:409997161393160192>`
-							);
+							lootMSG.push(`**Kbd heads:** ${kc.toLocaleString()} KC <:Kbd_heads:409997161393160192>`);
 						}
 						if (!loot.includes('DM') && randomRoll === 2) {
 							loot.push('DM');
@@ -201,7 +262,7 @@ ${lootMSG.join(
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish King Black Dragon <:Kbd_heads:409997161393160192>
 
 ${lootMSG.join('\n')}`);
@@ -327,7 +388,7 @@ ${lootMSG.join('\n')}`);
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${rexKC.toLocaleString()}** Rex kills, **${supKC.toLocaleString()}** Supreme kills, **${primeKC.toLocaleString()}** Prime kills to finish the Dagannoth Kings
 
 ${lootMSG.join('\n')}`);
@@ -360,12 +421,10 @@ ${lootMSG.join('\n')}`);
 					}
 					if (!loot.includes('DA') && roll(128)) {
 						loot.push('DA');
-						lootMSG.push(
-							`**Dragon Axe:** ${kc.toLocaleString()} KC <:Dragon_axe:405265921309933588>`
-						);
+						lootMSG.push(`**Dragon Axe:** ${kc.toLocaleString()} KC <:Dragon_axe:405265921309933588>`);
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Dagannoth Rex <:Pet_dagannoth_rex:324127377091330049>
 
 ${lootMSG.join('\n')}`);
@@ -385,9 +444,7 @@ ${lootMSG.join('\n')}`);
 						const randomRoll = Math.floor(Math.random() * 2) + 1;
 						if (!loot.includes('SC') && randomRoll === 1) {
 							loot.push('SC');
-							lootMSG.push(
-								`**Seercull:** ${kc.toLocaleString()} KC <:Seercull:456174387633324042>`
-							);
+							lootMSG.push(`**Seercull:** ${kc.toLocaleString()} KC <:Seercull:456174387633324042>`);
 						}
 						if (!loot.includes('AR') && randomRoll === 2) {
 							loot.push('AR');
@@ -398,12 +455,10 @@ ${lootMSG.join('\n')}`);
 					}
 					if (!loot.includes('DA') && roll(128)) {
 						loot.push('DA');
-						lootMSG.push(
-							`**Dragon Axe:** ${kc.toLocaleString()} KC <:Dragon_axe:405265921309933588>`
-						);
+						lootMSG.push(`**Dragon Axe:** ${kc.toLocaleString()} KC <:Dragon_axe:405265921309933588>`);
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Dagannoth Supreme <:Pet_dagannoth_supreme:324127377066164245>
 
 ${lootMSG.join('\n')}`);
@@ -429,19 +484,15 @@ ${lootMSG.join('\n')}`);
 						}
 						if (!loot.includes('SR') && randomRoll === 2) {
 							loot.push('SR');
-							lootMSG.push(
-								`**Seers Ring:** ${kc.toLocaleString()} KC <:Seers_ring:456175344723034122>`
-							);
+							lootMSG.push(`**Seers Ring:** ${kc.toLocaleString()} KC <:Seers_ring:456175344723034122>`);
 						}
 					}
 					if (!loot.includes('DA') && roll(128)) {
 						loot.push('DA');
-						lootMSG.push(
-							`**Dragon Axe:** ${kc.toLocaleString()} KC <:Dragon_axe:405265921309933588>`
-						);
+						lootMSG.push(`**Dragon Axe:** ${kc.toLocaleString()} KC <:Dragon_axe:405265921309933588>`);
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Dagannoth Prime <:Pet_dagannoth_prime:324127376877289474>
 
 ${lootMSG.join('\n')}
@@ -471,7 +522,7 @@ ${lootMSG.join('\n')}
 						);
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Chaos Elemental <:Pet_chaos_elemental:324127377070227456>
 
 ${lootMSG.join('\n')}
@@ -490,9 +541,7 @@ ${lootMSG.join('\n')}
 					}
 					if (!loot.includes('JS') && roll(2000)) {
 						loot.push('JS');
-						lootMSG.push(
-							`**Jar of sand:** ${kc.toLocaleString()} KC <:Jar_of_sand:405249792839647232>`
-						);
+						lootMSG.push(`**Jar of sand:** ${kc.toLocaleString()} KC <:Jar_of_sand:405249792839647232>`);
 					}
 					if (roll(64)) {
 						const randomRoll = Math.floor(Math.random() * 2) + 1;
@@ -504,9 +553,7 @@ ${lootMSG.join('\n')}
 						}
 						if (!loot.includes('KQH') && randomRoll === 2) {
 							loot.push('KQH');
-							lootMSG.push(
-								`**Kq head:** ${kc.toLocaleString()} KC <:Kq_head:405249792567148545>`
-							);
+							lootMSG.push(`**Kq head:** ${kc.toLocaleString()} KC <:Kq_head:405249792567148545>`);
 						}
 					}
 					if (!loot.includes('D2H') && roll(256)) {
@@ -516,7 +563,7 @@ ${lootMSG.join('\n')}
 						);
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Kalphite Queen <:Kalphite_princess_2nd_form:324127376915300352>
 
 ${lootMSG.join('\n')}`);
@@ -535,9 +582,7 @@ ${lootMSG.join('\n')}`);
 					}
 					if (!loot.includes('BH') && roll(508)) {
 						loot.push('BH');
-						lootMSG.push(
-							`**Bandos Hilt:** ${kc.toLocaleString()} KC <:Bandos_hilt:403047909072830464>`
-						);
+						lootMSG.push(`**Bandos Hilt:** ${kc.toLocaleString()} KC <:Bandos_hilt:403047909072830464>`);
 					}
 					if (roll(128)) {
 						const randomRoll = Math.floor(Math.random() * 3) + 1;
@@ -625,7 +670,7 @@ ${lootMSG.join('\n')}`);
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Bandos <:General_Graardor:437553427468255234>
 
 ${lootMSG.join('\n')}`);
@@ -639,15 +684,11 @@ ${lootMSG.join('\n')}`);
 					kc++;
 					if (!loot.includes('PET') && roll(5000)) {
 						loot.push('PET');
-						lootMSG.push(
-							`**Pet Kree'arra:** ${kc.toLocaleString()} KC <:Pet_kreearra:324127377305239555>`
-						);
+						lootMSG.push(`**Pet Kree'arra:** ${kc.toLocaleString()} KC <:Pet_kreearra:324127377305239555>`);
 					}
 					if (!loot.includes('AHilt') && roll(508)) {
 						loot.push('AHilt');
-						lootMSG.push(
-							`**Armadyl Hilt:** ${kc.toLocaleString()} KC <:Armadyl_hilt:405262588503523328>`
-						);
+						lootMSG.push(`**Armadyl Hilt:** ${kc.toLocaleString()} KC <:Armadyl_hilt:405262588503523328>`);
 					}
 					if (roll(128)) {
 						const randomRoll = Math.floor(Math.random() * 3) + 1;
@@ -735,7 +776,7 @@ ${lootMSG.join('\n')}`);
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Armadyl <:Pet_kreearra:324127377305239555>
 
 ${lootMSG.join('\n')}`);
@@ -833,7 +874,7 @@ ${lootMSG.join('\n')}`);
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Zamorak <:Pet_kril_tsutsaroth:324127377527406594>
 
 ${lootMSG.join('\n')}`);
@@ -848,9 +889,7 @@ ${lootMSG.join('\n')}`);
 					kc++;
 					if (!loot.includes('PET') && roll(5000)) {
 						loot.push('PET');
-						lootMSG.push(
-							`**Pet Zilyana:** ${kc.toLocaleString()} KC <:Pet_zilyana:324127378248957952>`
-						);
+						lootMSG.push(`**Pet Zilyana:** ${kc.toLocaleString()} KC <:Pet_zilyana:324127378248957952>`);
 					}
 					if (roll(256)) {
 						const randomRoll = Math.floor(Math.random() * 2) + 1;
@@ -929,7 +968,7 @@ ${lootMSG.join('\n')}`);
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Saradomin <:Pet_zilyana:324127378248957952>
 
 ${lootMSG.join('\n')}`);
@@ -1000,7 +1039,7 @@ ${lootMSG.join('\n')}`);
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Corporeal Beast <:Corporeal_Beast:429333974968434702>
 
 ${lootMSG.join('\n')}
@@ -1021,9 +1060,7 @@ ${lootMSG.join('\n')}
 					}
 					if (!loot.includes('JS') && roll(3000)) {
 						loot.push('JS');
-						lootMSG.push(
-							`**Jar of swamp:** ${kc.toLocaleString()} KC <:Jar_of_swamp:403059673588170776>`
-						);
+						lootMSG.push(`**Jar of swamp:** ${kc.toLocaleString()} KC <:Jar_of_swamp:403059673588170776>`);
 					}
 					if (roll(3277)) {
 						const randomRoll = Math.floor(Math.random() * 2) + 1;
@@ -1050,9 +1087,7 @@ ${lootMSG.join('\n')}
 						}
 						if (!loot.includes('MF') && randomRoll === 2) {
 							loot.push('MF');
-							lootMSG.push(
-								`**Magic Fang:** ${kc.toLocaleString()} KC <:Magic_fang:403059673563004928>`
-							);
+							lootMSG.push(`**Magic Fang:** ${kc.toLocaleString()} KC <:Magic_fang:403059673563004928>`);
 						}
 						if (!loot.includes('SV') && randomRoll === 3) {
 							loot.push('SV');
@@ -1062,15 +1097,13 @@ ${lootMSG.join('\n')}
 						}
 						if (!loot.includes('UO') && randomRoll === 4) {
 							loot.push('UO');
-							lootMSG.push(
-								`**Uncut Onyx:** ${kc.toLocaleString()} KC <:Uncut_onyx:403059676402679808>`
-							);
+							lootMSG.push(`**Uncut Onyx:** ${kc.toLocaleString()} KC <:Uncut_onyx:403059676402679808>`);
 						}
 					}
 					// This drop rate isn't confirmed, but estimated rate from https://tinyurl.com/yaugejo2
 					if (rollX(5, 128)) zs += 500;
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Zulrah <:Pet_snakeling:324127377816944642>
 
 ${lootMSG.join('\n')}\n\nYou also received **${zs.toLocaleString()}** Zulrah Scales!`);
@@ -1085,15 +1118,11 @@ ${lootMSG.join('\n')}\n\nYou also received **${zs.toLocaleString()}** Zulrah Sca
 					kc++;
 					if (!loot.includes('DA') && roll(5000)) {
 						loot.push('DA');
-						lootMSG.push(
-							`**Dragon Axe:** ${kc.toLocaleString()} KC <:Dragon_axe:405265921309933588>`
-						);
+						lootMSG.push(`**Dragon Axe:** ${kc.toLocaleString()} KC <:Dragon_axe:405265921309933588>`);
 					}
 					if (!loot.includes('PET') && roll(2500)) {
 						loot.push('PET');
-						lootMSG.push(
-							`**Phoenix:** ${kc.toLocaleString()} KC <:Phoenix:324127378223792129>`
-						);
+						lootMSG.push(`**Phoenix:** ${kc.toLocaleString()} KC <:Phoenix:324127378223792129>`);
 					}
 					if (!loot.includes('TF') && roll(500)) {
 						loot.push('TF');
@@ -1103,15 +1132,11 @@ ${lootMSG.join('\n')}\n\nYou also received **${zs.toLocaleString()}** Zulrah Sca
 					}
 					if (!loot.includes('WG') && roll(75)) {
 						loot.push('WG');
-						lootMSG.push(
-							`**Warm Gloves:** ${kc.toLocaleString()} KC <:Warm_gloves:405265922396258334>`
-						);
+						lootMSG.push(`**Warm Gloves:** ${kc.toLocaleString()} KC <:Warm_gloves:405265922396258334>`);
 					}
 					if (!loot.includes('BT') && roll(75)) {
 						loot.push('BT');
-						lootMSG.push(
-							`**Bruma Torch:** ${kc.toLocaleString()} KC <:Bruma_torch:421038270823006218>`
-						);
+						lootMSG.push(`**Bruma Torch:** ${kc.toLocaleString()} KC <:Bruma_torch:421038270823006218>`);
 					}
 					if (roll(75)) {
 						let LOCK = false;
@@ -1149,53 +1174,11 @@ ${lootMSG.join('\n')}\n\nYou also received **${zs.toLocaleString()}** Zulrah Sca
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Wintertodt <:Phoenix:324127378223792129>
 
 ${lootMSG.join('\n')}`);
 			}
-			case 'RAIDS':
-			case 'OLM':
-			case 'RAIDS1':
-			case 'COX':
-			case 'CHAMBERSOFXERIC':
-				// eslint-disable-next-line no-case-declarations
-				const theDrops = new Map();
-				while (theDrops.size < 13) {
-					kc++;
-					if (!roll(25)) continue;
-					const dropRecieved = raids.determineItem()!;
-					if (roll(65)) {
-						if (!theDrops.has(raids.drops.pet.shortName)) {
-							theDrops.set(raids.drops.pet.shortName, {
-								theKC: `**${raids.drops.pet.name}:** ${kc} KC ${raids.drops.pet.emoji} with ${dropRecieved.emoji}`,
-								dup: 0
-							});
-						} else {
-							theDrops.get(raids.drops.pet.shortName).theKC += ` ${
-								dropRecieved!.emoji
-							}`;
-							theDrops.get(raids.drops.pet.shortName).dup++;
-						}
-					}
-
-					if (!theDrops.has(dropRecieved.shortName)) {
-						theDrops.set(dropRecieved.shortName, {
-							theKC: `**${dropRecieved.name}** ${kc} KC ${dropRecieved.emoji}`,
-							dup: 0
-						});
-					} else {
-						theDrops.get(dropRecieved.shortName).dup++;
-					}
-				}
-
-				theDrops.forEach(value => loot.push(`${value.theKC} ${value.dup} duplicates`));
-				return msg.send(
-					`It took you **${kc.toLocaleString()}** kills to finish the Chambers of Xeric <:Olmlet:324127376873357316> ${loot.join(
-						'\n'
-					)}`
-				);
-			// end of chambers of xeric finish command
 			case 'VORKATH': {
 				const lootMSG = [];
 				let vh = 0;
@@ -1217,9 +1200,7 @@ ${lootMSG.join('\n')}`);
 						}
 						if (!loot.includes('PET') && randomRoll === 2) {
 							loot.push('PET');
-							lootMSG.push(
-								`**Vorki:** ${kc.toLocaleString()} KC <:Vorki:400713309252222977>`
-							);
+							lootMSG.push(`**Vorki:** ${kc.toLocaleString()} KC <:Vorki:400713309252222977>`);
 						}
 					}
 					if (roll(2500)) {
@@ -1256,7 +1237,7 @@ ${lootMSG.join('\n')}`);
 						vh++;
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Vorkath <:Vorki:400713309252222977>
 
 ${lootMSG.join('\n')}
@@ -1271,7 +1252,7 @@ You also received **${vh.toLocaleString()}** Vorkath Heads!`);
 						loot.push('HGC');
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 					You received **Hill Giant Club** on **${kc.toLocaleString()}** KC to finish Obor! <:Hill_giant_club:421045456194240523>
 					`);
 			}
@@ -1283,7 +1264,7 @@ You also received **${vh.toLocaleString()}** Vorkath Heads!`);
 						loot.push('BE');
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 You received **Bryophyta's Essence** on **${kc.toLocaleString()}** KC to finish Bryophyta! <:Bryophytas_essence:455835859799769108>
 `);
 			}
@@ -1307,7 +1288,7 @@ You received **Bryophyta's Essence** on **${kc.toLocaleString()}** KC to finish 
 						);
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Lizardman Shamans <:Lizardman_shaman:456176702167449612>
 
 ${lootMSG.join('\n')}`);
@@ -1322,21 +1303,15 @@ ${lootMSG.join('\n')}`);
 					kc++;
 					if (!loot.includes('MT') && roll(1500)) {
 						loot.push('MT');
-						lootMSG.push(
-							`**Monkey Tail:** ${kc.toLocaleString()} KC <:Monkey_tail:405245077670068225>`
-						);
+						lootMSG.push(`**Monkey Tail:** ${kc.toLocaleString()} KC <:Monkey_tail:405245077670068225>`);
 					}
 					if (!loot.includes('HF') && roll(1500)) {
 						loot.push('HF');
-						lootMSG.push(
-							`**Heavy Frame:** ${kc.toLocaleString()} KC <:Heavy_frame:405245077754216448>`
-						);
+						lootMSG.push(`**Heavy Frame:** ${kc.toLocaleString()} KC <:Heavy_frame:405245077754216448>`);
 					}
 					if (!loot.includes('LF') && roll(750)) {
 						loot.push('LF');
-						lootMSG.push(
-							`**Light Frame:** ${kc.toLocaleString()} KC <:Light_frame:405245077808742400>`
-						);
+						lootMSG.push(`**Light Frame:** ${kc.toLocaleString()} KC <:Light_frame:405245077808742400>`);
 					}
 					if (roll(250)) {
 						const randomRoll = Math.floor(Math.random() * 2) + 1;
@@ -1380,7 +1355,7 @@ ${lootMSG.join('\n')}`);
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Demonic Gorillas <:Demonic_gorilla:456176858178912266>
 
 ${lootMSG.join('\n')}`);
@@ -1397,26 +1372,20 @@ ${lootMSG.join('\n')}`);
 					}
 					if (!loot.includes('UO') && roll(1000)) {
 						loot.push('UO');
-						lootMSG.push(
-							`**Uncut Onyx:** ${kc.toLocaleString()} KC <:Uncut_onyx:403059676402679808>`
-						);
+						lootMSG.push(`**Uncut Onyx:** ${kc.toLocaleString()} KC <:Uncut_onyx:403059676402679808>`);
 					}
 					if (!loot.includes('PET') && roll(65)) {
 						loot.push('PET');
-						lootMSG.push(
-							`**Skotos:** ${kc.toLocaleString()} KC <:Skotos:324127378890817546>`
-						);
+						lootMSG.push(`**Skotos:** ${kc.toLocaleString()} KC <:Skotos:324127378890817546>`);
 					}
 					if (!loot.includes('DC') && roll(25)) {
 						loot.push('DC');
-						lootMSG.push(
-							`**Dark Claw:** ${kc.toLocaleString()} KC <:Dark_claw:417703739218984960>`
-						);
+						lootMSG.push(`**Dark Claw:** ${kc.toLocaleString()} KC <:Dark_claw:417703739218984960>`);
 					}
 				}
 				const SE = kc * 64114;
 				// AVG Slay XP = https://tinyurl.com/y8hbcdca
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Skotizo <:Skotos:324127378890817546>
 
 ${lootMSG.join('\n')}\n\nYou also gained **${SE.toLocaleString()}** Slayer XP!`);
@@ -1448,7 +1417,7 @@ ${lootMSG.join('\n')}\n\nYou also gained **${SE.toLocaleString()}** Slayer XP!`)
 					}
 					if (rollX(12, 175)) unidFoss++;
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Ancient Wyverns <:Ancient_Wyvern:506330720558383124>
 
 ${lootMSG.join('\n')}\n\nYou also received **${unidFoss.toLocaleString()}** Unidentified Fossils!`);
@@ -1489,7 +1458,7 @@ ${lootMSG.join('\n')}\n\nYou also received **${unidFoss.toLocaleString()}** Unid
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Mithril Dragons <:Mithril_dragon:456177739339399168>
 
 ${lootMSG.join(
@@ -1517,12 +1486,10 @@ ${lootMSG.join(
 					}
 					if (!loot.includes('DL') && roll(1000)) {
 						loot.push('DL');
-						lootMSG.push(
-							`**Dragon Limbs:** ${kc.toLocaleString()} KC <:Dragon_limbs:456178390928588800>`
-						);
+						lootMSG.push(`**Dragon Limbs:** ${kc.toLocaleString()} KC <:Dragon_limbs:456178390928588800>`);
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Adamant Dragons <:Adamant_dragon:456178397941334016>
 
 ${lootMSG.join('\n')}`);
@@ -1546,12 +1513,10 @@ ${lootMSG.join('\n')}`);
 					}
 					if (!loot.includes('DL') && roll(800)) {
 						loot.push('DL');
-						lootMSG.push(
-							`**Dragon Limbs:** ${kc.toLocaleString()} KC <:Dragon_limbs:456178390928588800>`
-						);
+						lootMSG.push(`**Dragon Limbs:** ${kc.toLocaleString()} KC <:Dragon_limbs:456178390928588800>`);
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Rune Dragons <:Rune_dragon:456178949483921430>
 
 ${lootMSG.join('\n')}`);
@@ -1562,9 +1527,7 @@ ${lootMSG.join('\n')}`);
 					kc++;
 					if (!loot.includes('PET') && roll(2000)) {
 						loot.push('PET');
-						lootMSG.push(
-							`**Vet'ion Jr:** ${kc.toLocaleString()} KC <:Vetion_jr:324127378999738369>`
-						);
+						lootMSG.push(`**Vet'ion Jr:** ${kc.toLocaleString()} KC <:Vetion_jr:324127378999738369>`);
 					}
 					if (!loot.includes('ROTG') && roll(512)) {
 						loot.push('ROTG');
@@ -1585,7 +1548,7 @@ ${lootMSG.join('\n')}`);
 						);
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Vet'ion <:Vetion_jr:324127378999738369>
 
 ${lootMSG.join('\n')}`);
@@ -1619,7 +1582,7 @@ ${lootMSG.join('\n')}`);
 						);
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Venenatis <:Venenatis_spiderling:324127379092144129>
 
 ${lootMSG.join('\n')}`);
@@ -1630,9 +1593,7 @@ ${lootMSG.join('\n')}`);
 					kc++;
 					if (!loot.includes('PET') && roll(2000)) {
 						loot.push('PET');
-						lootMSG.push(
-							`**Callisto Cub:** ${kc.toLocaleString()} KC <:Callisto_cub:324127376273440768>`
-						);
+						lootMSG.push(`**Callisto Cub:** ${kc.toLocaleString()} KC <:Callisto_cub:324127376273440768>`);
 					}
 					if (!loot.includes('TR') && roll(512)) {
 						loot.push('TR');
@@ -1653,7 +1614,7 @@ ${lootMSG.join('\n')}`);
 						);
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Callisto <:Callisto_cub:324127376273440768>
 
 ${lootMSG.join('\n')}`);
@@ -1667,9 +1628,7 @@ ${lootMSG.join('\n')}`);
 						const randomRoll = Math.floor(Math.random() * 3) + 1;
 						if (!loot.includes('FD') && randomRoll === 1) {
 							loot.push('FD');
-							lootMSG.push(
-								`**Fedora:** ${kc.toLocaleString()} KC <:Fedora:456179157303427092>`
-							);
+							lootMSG.push(`**Fedora:** ${kc.toLocaleString()} KC <:Fedora:456179157303427092>`);
 						}
 						if (!loot.includes('OS2') && randomRoll === 2) {
 							loot.push('OS2');
@@ -1685,7 +1644,7 @@ ${lootMSG.join('\n')}`);
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Crazy Archaeologist <:Crazy_archaeologist:456180487287996419>
 
 ${lootMSG.join('\n')}`);
@@ -1716,7 +1675,7 @@ ${lootMSG.join('\n')}`);
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Scorpia <:Scorpias_offspring:324127378773377024>
 
 ${lootMSG.join('\n')}`);
@@ -1747,7 +1706,7 @@ ${lootMSG.join('\n')}`);
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Chaos Fanatic <:Pet_chaos_elemental:324127377070227456>
 
 ${lootMSG.join('\n')}`);
@@ -1763,15 +1722,11 @@ ${lootMSG.join('\n')}`);
 					gd += Math.floor((Math.random() + 1) * 50);
 					if (!loot.includes('JS') && roll(5000)) {
 						loot.push('JS');
-						lootMSG.push(
-							`**Jar of stone:** ${kc.toLocaleString()} KC <:Jar_of_stone:409989715928809473>`
-						);
+						lootMSG.push(`**Jar of stone:** ${kc.toLocaleString()} KC <:Jar_of_stone:409989715928809473>`);
 					}
 					if (!loot.includes('PET') && roll(3000)) {
 						loot.push('PET');
-						lootMSG.push(
-							`**Noon/Midnight:** ${kc.toLocaleString()} KC <:Noon:379595337234382848>`
-						);
+						lootMSG.push(`**Noon/Midnight:** ${kc.toLocaleString()} KC <:Noon:379595337234382848>`);
 					}
 					if (!loot.includes('BTC') && roll(1000)) {
 						loot.push('BTC');
@@ -1801,7 +1756,7 @@ ${lootMSG.join('\n')}`);
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish the Grotesque Guardians <:Noon:379595337234382848>
 
 ${lootMSG.join('\n')}
@@ -1935,12 +1890,7 @@ You also received **${gd.toLocaleString()}** Granite Dust!`);
 									}
 								}
 							}
-							if (
-								bpc === 0 &&
-								!loot.includes('BC') &&
-								!loot.includes('BA') &&
-								!loot.includes('BS')
-							) {
+							if (bpc === 0 && !loot.includes('BC') && !loot.includes('BA') && !loot.includes('BS')) {
 								const bludgRoll = Math.floor(Math.random() * 3) + 1;
 								bpc++;
 								if (bludgRoll === 1) {
@@ -1965,7 +1915,7 @@ You also received **${gd.toLocaleString()}** Granite Dust!`);
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Abyssal Sire <:Abyssal_orphan:324127375774449664>
 
 ${lootMSG.join('\n')}
@@ -1978,15 +1928,11 @@ You also received **${uns.toLocaleString()}** Unsireds!`);
 					kc++;
 					if (!loot.includes('JD') && roll(1000)) {
 						loot.push('JD');
-						lootMSG.push(
-							`**Jar of dirt:** ${kc.toLocaleString()} KC <:Jar_of_dirt:421042619473199106>`
-						);
+						lootMSG.push(`**Jar of dirt:** ${kc.toLocaleString()} KC <:Jar_of_dirt:421042619473199106>`);
 					}
 					if (!loot.includes('PET') && roll(3000)) {
 						loot.push('PET');
-						lootMSG.push(
-							`**Pet Kraken:** ${kc.toLocaleString()} KC <:Pet_kraken:324127377477206016>`
-						);
+						lootMSG.push(`**Pet Kraken:** ${kc.toLocaleString()} KC <:Pet_kraken:324127377477206016>`);
 					}
 					if (!loot.includes('KT') && roll(300)) {
 						loot.push('KT');
@@ -2001,7 +1947,7 @@ You also received **${uns.toLocaleString()}** Unsireds!`);
 						);
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Kraken <:Pet_kraken:324127377477206016>
 
 ${lootMSG.join('\n')}`);
@@ -2013,15 +1959,11 @@ ${lootMSG.join('\n')}`);
 					kc++;
 					if (!loot.includes('JS') && roll(2000)) {
 						loot.push('JS');
-						lootMSG.push(
-							`**Jar of souls:** ${kc.toLocaleString()} KC <:Jar_of_souls:403383744771391490>`
-						);
+						lootMSG.push(`**Jar of souls:** ${kc.toLocaleString()} KC <:Jar_of_souls:403383744771391490>`);
 					}
 					if (!loot.includes('PET') && roll(3000)) {
 						loot.push('PET');
-						lootMSG.push(
-							`**Hellpuppy:** ${kc.toLocaleString()} KC <:Hellpuppy:324127376185491458>`
-						);
+						lootMSG.push(`**Hellpuppy:** ${kc.toLocaleString()} KC <:Hellpuppy:324127376185491458>`);
 					}
 					if (roll(128)) {
 						const randomRoll = Math.floor(Math.random() * 4) + 1;
@@ -2051,7 +1993,7 @@ ${lootMSG.join('\n')}`);
 						}
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Cerberus <:Hellpuppy:324127376185491458>
 
 ${lootMSG.join('\n')}`);
@@ -2086,7 +2028,7 @@ ${lootMSG.join('\n')}`);
 						);
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Thermonuclear Smoke Devil <:Pet_smoke_devil:324127377493852162>
 
 ${lootMSG.join('\n')}`);
@@ -2095,15 +2037,14 @@ ${lootMSG.join('\n')}`);
 				while (loot.length < 24) {
 					kc++;
 					if (roll(17)) {
-						const drop =
-							BARROWS_ITEMS[Math.floor(Math.random() * BARROWS_ITEMS.length)];
+						const drop = BARROWS_ITEMS[Math.floor(Math.random() * BARROWS_ITEMS.length)];
 						if (loot.includes(drop)) {
 							continue;
 						}
 						loot.push(drop);
 					}
 				}
-				return msg.send(
+				return msg.channel.send(
 					`It took you ${kc.toLocaleString()} Barrows Chests to get all the Barrows Pieces. You also got ${duplicates} duplicate items.`
 				);
 			}
@@ -2114,11 +2055,9 @@ ${lootMSG.join('\n')}`);
 			case 'HYDRAS':
 			case 'HYDRA':
 			case 'HYDRABOSS': {
-				const [kc, lootMSG, emote] = alchemicalHydra.finish();
-				return msg.send(`
+				const [kc, lootMSG, emote] = hydraFinish();
+				return msg.channel.send(`
 It took you **${kc}** kills to finish Alchemical Hydra ${emote}
-
-
 
 ${lootMSG}`);
 			}
@@ -2154,9 +2093,7 @@ ${lootMSG}`);
 					}
 					if (!loot.includes('TB') && roll(400)) {
 						loot.push('TB');
-						lootMSG.push(
-							`**Tackle Box:** ${kc.toLocaleString()} Permits <:Tackle_box:846871523524345866>`
-						);
+						lootMSG.push(`**Tackle Box:** ${kc.toLocaleString()} Permits <:Tackle_box:846871523524345866>`);
 					}
 					if (!loot.includes('BH') && roll(1600)) {
 						loot.push('BH');
@@ -2165,15 +2102,15 @@ ${lootMSG}`);
 						);
 					}
 				}
-				return msg.send(`
+				return msg.channel.send(`
 	It took you **${kc.toLocaleString()}** Permits to finish Tempoross <:TinyTempor:824483631694217277>
 
 ${lootMSG.join('\n')}`);
 			}
 			case 'HESPORIS':
 			case 'HESPORI': {
-				const [kc, lootMSG] = hespori.finish();
-				return msg.send(`
+				const [kc, lootMSG] = hesporiFinish();
+				return msg.channel.send(`
 It took you **${kc}** kills to finish Hespori!
 
 ${lootMSG}`);
@@ -2189,10 +2126,10 @@ ${lootMSG}`);
 					}
 					petsRecieved.push(kcpet.toLocaleString());
 				});
-				return msg.send(await getAllPetsEmbed(petsRecieved));
+				return msg.channel.send({ embeds: [await getAllPetsEmbed(petsRecieved)] });
 			}
 			default:
-				return msg.send("I don't have that monster!");
+				return msg.channel.send("I don't have that monster!");
 		}
 	}
 }

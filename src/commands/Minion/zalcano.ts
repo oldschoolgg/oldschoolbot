@@ -15,9 +15,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 const skillRequirements: Skills = {
 	mining: 70,
 	smithing: 70,
-	cooking: 70,
 	farming: 70,
-	fishing: 70,
 	woodcutting: 70,
 	agility: 70,
 	herblore: 70,
@@ -57,7 +55,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`To fight Zalcano, you need: ${reason}.`);
 		}
 		if (msg.author.settings.get(UserSettings.QP) < 150) {
-			return msg.send(`To fight Zalcano, you need 150 QP.`);
+			return msg.channel.send('To fight Zalcano, you need 150 QP.');
 		}
 
 		const kc = msg.author.getKC(ZALCANO_ID);
@@ -68,15 +66,14 @@ export default class extends BotCommand {
 		baseTime = reduceNumByPercent(baseTime, kcLearned / 6);
 		boosts.push(`${(kcLearned / 6).toFixed(2)}% boost for experience`);
 
-		const skillPercentage =
-			msg.author.skillLevel(SkillsEnum.Mining) + msg.author.skillLevel(SkillsEnum.Smithing);
+		const skillPercentage = msg.author.skillLevel(SkillsEnum.Mining) + msg.author.skillLevel(SkillsEnum.Smithing);
 
 		baseTime = reduceNumByPercent(baseTime, skillPercentage / 40);
 		boosts.push(`${skillPercentage / 40}% boost for levels`);
 
 		if (!msg.author.hasGracefulEquipped()) {
 			baseTime *= 1.15;
-			boosts.push(`-15% time penalty for not having graceful equipped`);
+			boosts.push('-15% time penalty for not having graceful equipped');
 		}
 
 		let healAmountNeeded = 7 * 12;
@@ -96,7 +93,7 @@ export default class extends BotCommand {
 			attackStylesUsed: []
 		});
 
-		await addSubTaskToActivityTask<ZalcanoActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<ZalcanoActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -106,14 +103,12 @@ export default class extends BotCommand {
 			isMVP: percentChance(80)
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${
 				msg.author.minionName
 			} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDuration(
 				duration
-			)}. (${formatDuration(
-				baseTime
-			)} per kill). Removed ${food}.\n\n**Boosts:** ${boosts.join(', ')}.`
+			)}. (${formatDuration(baseTime)} per kill). Removed ${food}.\n\n**Boosts:** ${boosts.join(', ')}.`
 		);
 	}
 }

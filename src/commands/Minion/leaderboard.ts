@@ -112,8 +112,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage:
-				'[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame] [name:...string]',
+			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -149,7 +148,7 @@ export default class extends BotCommand {
 		}
 
 		const arrayOfUsers: { badges: number[]; id: string; ironman: boolean }[] = await this.query(
-			`SELECT "badges", "id", "minion.ironman" as "ironman" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0 OR "minion.ironman" = true;`,
+			'SELECT "badges", "id", "minion.ironman" as "ironman" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0 OR "minion.ironman" = true;',
 			false
 		);
 
@@ -178,9 +177,7 @@ export default class extends BotCommand {
 
 	async gp(msg: KlasaMessage) {
 		const users = (
-			await this.query(
-				`SELECT "id", "GP" FROM users WHERE "GP" > 1000000 ORDER BY "GP" DESC LIMIT 500;`
-			)
+			await this.query('SELECT "id", "GP" FROM users WHERE "GP" > 1000000 ORDER BY "GP" DESC LIMIT 500;')
 		).map((res: any) => ({ ...res, GP: parseInt(res.GP) })) as GPUser[];
 
 		this.doMenu(
@@ -188,12 +185,7 @@ export default class extends BotCommand {
 			util
 				.chunk(users, 10)
 				.map(subList =>
-					subList
-						.map(
-							({ id, GP }) =>
-								`**${this.getUsername(id)}** has ${GP.toLocaleString()} GP `
-						)
-						.join('\n')
+					subList.map(({ id, GP }) => `**${this.getUsername(id)}** has ${GP.toLocaleString()} GP `).join('\n')
 				),
 			'GP Leaderboard'
 		);
@@ -218,10 +210,7 @@ DESC LIMIT 2000;`
 				.map(subList =>
 					subList
 						.map(
-							({ id, amount }) =>
-								`**${this.getUsername(
-									id
-								)}** sacrificed ${amount.toLocaleString()} GP `
+							({ id, amount }) => `**${this.getUsername(id)}** sacrificed ${amount.toLocaleString()} GP `
 						)
 						.join('\n')
 				),
@@ -234,9 +223,7 @@ DESC LIMIT 2000;`
 
 		if (Date.now() - this.qpLeaderboard.lastUpdated > CACHE_TIME) {
 			this.qpLeaderboard.list = (
-				await this.query(
-					`SELECT "id", "QP" FROM users WHERE "QP" > 0 ORDER BY "QP" DESC LIMIT 2000;`
-				)
+				await this.query('SELECT "id", "QP" FROM users WHERE "QP" > 0 ORDER BY "QP" DESC LIMIT 2000;')
 			).map((res: any) => ({ ...res, GP: parseInt(res.GP) }));
 			this.qpLeaderboard.lastUpdated = Date.now();
 		}
@@ -252,12 +239,7 @@ DESC LIMIT 2000;`
 			util
 				.chunk(list, 10)
 				.map(subList =>
-					subList
-						.map(
-							({ id, QP }) =>
-								`**${this.getUsername(id)}** has ${QP.toLocaleString()} QP`
-						)
-						.join('\n')
+					subList.map(({ id, QP }) => `**${this.getUsername(id)}** has ${QP.toLocaleString()} QP`).join('\n')
 				),
 			'QP Leaderboard'
 		);
@@ -269,7 +251,7 @@ DESC LIMIT 2000;`
 		if (Date.now() - this.petLeaderboard.lastUpdated > CACHE_TIME) {
 			this.petLeaderboard.list = await this.query(
 				`SELECT u.id, u.petcount FROM (
-  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS(pets)) petcount, id FROM users
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS(pets)) petcount, id FROM users
 ) u
 ORDER BY u.petcount DESC LIMIT 2000;`
 			);
@@ -288,10 +270,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 				.chunk(list, 10)
 				.map(subList =>
 					subList
-						.map(
-							({ id, petcount }) =>
-								`**${this.getUsername(id)}** has ${petcount.toLocaleString()} pets `
-						)
+						.map(({ id, petcount }) => `**${this.getUsername(id)}** has ${petcount.toLocaleString()} pets `)
 						.join('\n')
 				),
 			'Pet Leaderboard'
@@ -301,10 +280,8 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 	async minigame(msg: KlasaMessage, [name = '']: [string]) {
 		const minigame = Minigames.find(m => stringMatches(m.name, name));
 		if (!minigame) {
-			return msg.send(
-				`That's not a valid minigame. Valid minigames are: ${Minigames.map(
-					m => m.name
-				).join(', ')}.`
+			return msg.channel.send(
+				`That's not a valid minigame. Valid minigames are: ${Minigames.map(m => m.name).join(', ')}.`
 			);
 		}
 
@@ -319,31 +296,23 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			msg,
 			util
 				.chunk(res, 10)
-				.map(subList =>
-					subList
-						.map(u => `**${this.getUsername(u.userID)}:** ${u[minigame.key]}`)
-						.join('\n')
-				),
+				.map(subList => subList.map(u => `**${this.getUsername(u.userID)}:** ${u[minigame.key]}`).join('\n')),
 			`${minigame.name} Leaderboard`
 		);
 	}
 
 	async kc(msg: KlasaMessage, [name = '']: [string]) {
 		const monster = effectiveMonsters.find(
-			mon =>
-				stringMatches(mon.name, name) ||
-				mon.aliases.some(alias => stringMatches(alias, name))
+			mon => stringMatches(mon.name, name) || mon.aliases.some(alias => stringMatches(alias, name))
 		);
 		if (!monster) {
-			return msg.send(`That's not a valid monster!`);
+			return msg.channel.send("That's not a valid monster!");
 		}
 
 		let key = 'monsterScores' as const;
 		let entityID = monster.id;
 		let list = (
-			await this.query(
-				`SELECT id, "${key}" FROM users WHERE CAST ("${key}"->>'${entityID}' AS INTEGER) > 5;`
-			)
+			await this.query(`SELECT id, "${key}" FROM users WHERE CAST ("${key}"->>'${entityID}' AS INTEGER) > 5;`)
 		)
 			.filter(user => typeof user[key][entityID] === 'number')
 			.sort((a: KCUser, b: KCUser) => {
@@ -362,9 +331,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			util
 				.chunk(list, 10)
 				.map(subList =>
-					subList
-						.map(user => `**${this.getUsername(user.id)}:** ${user[key][entityID]} KC`)
-						.join('\n')
+					subList.map(user => `**${this.getUsername(user.id)}:** ${user[key][entityID]} KC`).join('\n')
 				),
 			`KC Leaderboard for ${monster.name}`
 		);
@@ -376,9 +343,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 		const skillsVals = Object.values(Skills);
 
-		const skill = skillsVals.find(_skill =>
-			_skill.aliases.some(name => stringMatches(name, inputSkill))
-		);
+		const skill = skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, inputSkill)));
 
 		if (inputSkill === 'overall') {
 			res = await this.query(
@@ -388,15 +353,13 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 FROM users
 ${msg.flagArgs.im ? 'WHERE "minion.ironman" = true' : ''}
 ORDER BY totalxp
-DESC LIMIT 500;`
+DESC LIMIT 100;`
 			);
 			overallUsers = res
 				.map(user => {
 					let totalLevel = 0;
 					for (const skill of skillsVals) {
-						totalLevel += convertXPtoLVL(
-							Number(user[`skills.${skill.id}` as keyof SkillUser]) as any
-						);
+						totalLevel += convertXPtoLVL(Number(user[`skills.${skill.id}` as keyof SkillUser]) as any);
 					}
 					return {
 						id: user.id,
@@ -408,7 +371,7 @@ DESC LIMIT 500;`
 				.sort((a, b) => b.totalLevel - a.totalLevel);
 		} else {
 			if (!skill) {
-				return msg.send(`That's not a valid skill.`);
+				return msg.channel.send("That's not a valid skill.");
 			}
 
 			res = await this.query(
@@ -438,7 +401,7 @@ DESC LIMIT 500;`
 						})
 						.join('\n')
 				),
-				`Overall Leaderboard`
+				'Overall Leaderboard'
 			);
 			return;
 		}
@@ -451,9 +414,9 @@ DESC LIMIT 500;`
 						const objKey = `skills.${skill?.id}` as keyof SkillUser;
 						const skillXP = Number(obj[objKey] ?? 0);
 
-						return `**${this.getUsername(
-							obj.id
-						)}:** ${skillXP.toLocaleString()} xp (${convertXPtoLVL(skillXP)})`;
+						return `**${this.getUsername(obj.id)}:** ${skillXP.toLocaleString()} xp (${convertXPtoLVL(
+							skillXP
+						)})`;
 					})
 					.join('\n')
 			),
@@ -462,12 +425,10 @@ DESC LIMIT 500;`
 	}
 
 	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
-		const type = collectionLogTypes.find(_type =>
-			_type.aliases.some(name => stringMatches(name, inputType))
-		);
+		const type = collectionLogTypes.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
 
 		if (!type) {
-			return msg.send(
+			return msg.channel.send(
 				`That's not a valid collection log type. The valid types are: ${collectionLogTypes
 					.map(type => type.name)
 					.join(', ')}`
@@ -497,26 +458,22 @@ LIMIT 50;
 		).filter((i: any) => i.qty > 0) as CLUser[];
 
 		if (users.length === 0) {
-			return msg.channel.send(`No users found.`);
+			return msg.channel.send('No users found.');
 		}
 
 		this.doMenu(
 			msg,
 			util
 				.chunk(users, 10)
-				.map(subList =>
-					subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')
-				),
+				.map(subList => subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')),
 			`${type.name} Collection Log Leaderboard`
 		);
 	}
 
 	async laps(msg: KlasaMessage, [courseName = '']: [string]) {
-		const course = Agility.Courses.find(course =>
-			course.aliases.some(alias => stringMatches(alias, courseName))
-		);
+		const course = Agility.Courses.find(course => course.aliases.some(alias => stringMatches(alias, courseName)));
 
-		if (!course) return msg.send(`Thats not a valid agility course.`);
+		if (!course) return msg.channel.send('Thats not a valid agility course.');
 
 		const data: { id: string; lapCount: number }[] = await this.query(
 			`SELECT id, "lapsScores"->>'${course.id}' as "lapCount" FROM users WHERE "lapsScores"->>'${course.id}' IS NOT NULL ORDER BY ("lapsScores"->>'${course.id}')::int DESC LIMIT 50;`
@@ -527,9 +484,7 @@ LIMIT 50;
 			util
 				.chunk(data, 10)
 				.map(subList =>
-					subList
-						.map(({ id, lapCount }) => `**${this.getUsername(id)}:** ${lapCount} Laps`)
-						.join('\n')
+					subList.map(({ id, lapCount }) => `**${this.getUsername(id)}:** ${lapCount} Laps`).join('\n')
 				),
 			`${course.name} Laps Leaderboard`
 		);
@@ -538,13 +493,11 @@ LIMIT 50;
 	async creatures(msg: KlasaMessage, [creatureName = '']: [string]) {
 		const creature = Hunter.Creatures.find(creature =>
 			creature.aliases.some(
-				alias =>
-					stringMatches(alias, creatureName) ||
-					stringMatches(alias.split(' ')[0], creatureName)
+				alias => stringMatches(alias, creatureName) || stringMatches(alias.split(' ')[0], creatureName)
 			)
 		);
 
-		if (!creature) return msg.send(`Thats not a valid creature.`);
+		if (!creature) return msg.channel.send('Thats not a valid creature.');
 
 		const data: { id: string; creatureCount: number }[] = await this.query(
 			`SELECT id, "creatureScores"->>'${creature.id}' as "creatureCount" FROM users WHERE "creatureScores"->>'${creature.id}' IS NOT NULL ORDER BY ("creatureScores"->>'${creature.id}')::int DESC LIMIT 50;`
@@ -556,10 +509,7 @@ LIMIT 50;
 				.chunk(data, 10)
 				.map(subList =>
 					subList
-						.map(
-							({ id, creatureCount }) =>
-								`**${this.getUsername(id)}:** ${creatureCount} caught`
-						)
+						.map(({ id, creatureCount }) => `**${this.getUsername(id)}:** ${creatureCount} caught`)
 						.join('\n')
 				),
 			`Catch Leaderboard for ${creature.name}`
@@ -567,10 +517,10 @@ LIMIT 50;
 	}
 
 	async doMenu(msg: KlasaMessage, pages: string[], title: string) {
-		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
+		const loadingMsg = await msg.channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
 
 		const display = new UserRichDisplay();
-		display.setFooterPrefix(`Page `);
+		display.setFooterPrefix('Page ');
 
 		for (const page of pages) {
 			display.addPage(new MessageEmbed().setTitle(title).setDescription(page));

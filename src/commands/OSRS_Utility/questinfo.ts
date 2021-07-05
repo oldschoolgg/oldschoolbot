@@ -94,14 +94,14 @@ export default class extends BotCommand {
 		const quest = cleanString(questName);
 
 		if (quests[quest]) {
-			return msg.send(this.questInfo(quests[quest]));
+			return msg.channel.send({ embeds: [this.questInfo(quests[quest])] });
 		}
 
 		if (alternativeNameMap[quest]) {
-			return msg.send(this.questInfo(quests[alternativeNameMap[quest]]));
+			return msg.channel.send({ embeds: [this.questInfo(quests[alternativeNameMap[quest]])] });
 		}
 
-		return msg.send("I don't have that quest, sorry!");
+		return msg.channel.send("I don't have that quest, sorry!");
 	}
 
 	questInfo(quest: Quest) {
@@ -114,10 +114,6 @@ export default class extends BotCommand {
 			.addField('**Length**', quest.length, true)
 			.addField('Requirements', quest.requirements.join('\n'), true)
 			.addField('Rewards', quest.rewards.join('\n'), true)
-			.addField(
-				'Trivia',
-				quest.trivia[Math.floor(Math.random() * quest.trivia.length)],
-				true
-			);
+			.addField('Trivia', quest.trivia[Math.floor(Math.random() * quest.trivia.length)], true);
 	}
 }

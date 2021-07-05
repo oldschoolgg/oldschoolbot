@@ -1,9 +1,10 @@
+import itemID from '../util/itemID';
+
 export interface Eatable {
 	name: string;
 	id: number;
 	healAmount: number;
 }
-import itemID from '../util/itemID';
 
 export const Eatables: Eatable[] = [
 	{
