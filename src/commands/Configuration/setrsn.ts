@@ -8,8 +8,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[rsn:str{1,12}]',
-			description:
-				'Allows you to set your runescape username, to be automatically used in commands.',
+			description: 'Allows you to set your runescape username, to be automatically used in commands.',
 			examples: ['+setrsn Zezima'],
 			categoryFlags: ['settings']
 		});
@@ -19,32 +18,30 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const RSN = msg.author.settings.get(UserSettings.RSN);
 		if (!newRSN && RSN) {
-			return msg.send(
-				`Your current RSN is: \`${msg.author.settings.get(UserSettings.RSN)}\``
-			);
+			return msg.channel.send(`Your current RSN is: \`${msg.author.settings.get(UserSettings.RSN)}\``);
 		}
 
 		if (!newRSN && !RSN) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have an RSN set. You can set one like this: \`${msg.cmdPrefix}setrsn <username>\``
 			);
 		}
 
 		newRSN = newRSN.toLowerCase();
 		if (!newRSN.match('^[A-Za-z0-9]{1}[A-Za-z0-9 -_\u00A0]{0,11}$')) {
-			return msg.send('That username is not valid.');
+			return msg.channel.send('That username is not valid.');
 		}
 
 		if (RSN === newRSN) {
-			return msg.send(`Your RSN is already set to \`${RSN}\``);
+			return msg.channel.send(`Your RSN is already set to \`${RSN}\``);
 		}
 
 		if (RSN !== null) {
 			await msg.author.settings.update(UserSettings.RSN, newRSN);
-			msg.send(`Changed your RSN from \`${RSN}\` to \`${newRSN}\``);
+			msg.channel.send(`Changed your RSN from \`${RSN}\` to \`${newRSN}\``);
 		} else {
 			await msg.author.settings.update(UserSettings.RSN, newRSN);
-			msg.send(`Your RSN has been set to: \`${newRSN}\`.`);
+			msg.channel.send(`Your RSN has been set to: \`${newRSN}\`.`);
 		}
 
 		// If this user has the booster badge, cache their new username.

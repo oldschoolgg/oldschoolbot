@@ -11,25 +11,25 @@ import { itemNameFromID, toTitleCase } from '../../lib/util';
 export const XPLamps = [
 	{
 		itemID: 11137,
-		amount: 20_000,
+		amount: 2500,
 		name: 'Antique lamp 1',
 		minimumLevel: 1
 	},
 	{
 		itemID: 11139,
-		amount: 50_000,
+		amount: 7500,
 		name: 'Antique lamp 2',
 		minimumLevel: 30
 	},
 	{
 		itemID: 11141,
-		amount: 100_000,
+		amount: 15_000,
 		name: 'Antique lamp 3',
 		minimumLevel: 40
 	},
 	{
 		itemID: 11185,
-		amount: 1_000_000,
+		amount: 50_000,
 		name: 'Antique lamp 4',
 		minimumLevel: 70
 	}
@@ -40,23 +40,30 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '<item:item> <skill:string>',
 			usageDelim: ',',
-			examples: ['+lamp antique lamp 4, construction']
+			examples: ['+lamp antique lamp 4, construction'],
+			description: 'Allows you to use a XP lamp on a skill.'
 		});
 	}
 
 	async run(msg: KlasaMessage, [[item], skillName]: [Item[], string]) {
 		const lamp = XPLamps.find(lamp => lamp.itemID === item.id);
 		if (!lamp) {
-			return msg.send(`That's not a valid XP Lamp.`);
+			return msg.channel.send("That's not a valid XP Lamp.");
 		}
 
 		skillName = skillName.toLowerCase();
 
 		const isValidSkill = Object.values(Skills).some(skill => skill.id === skillName);
 		if (!isValidSkill) {
-			return msg.send(`That's not a valid skill.`);
+			return msg.channel.send("That's not a valid skill.");
 		}
 		const skill = skillName as SkillsEnum;
+
+		if (skill === SkillsEnum.Slayer) {
+			return msg.channel.send(
+				'A magical force prevents you from using the lamp on Slayer, perhaps you should wait a few weeks.'
+			);
+		}
 
 		if (msg.author.skillLevel(skill) < lamp.minimumLevel) {
 			return msg.channel.send(
@@ -65,7 +72,7 @@ export default class extends BotCommand {
 		}
 		const bank = new Bank(msg.author.settings.get(UserSettings.Bank));
 		if (bank.amount(lamp.itemID) === 0) {
-			return msg.send(`You don't have any ${lamp.name} lamps!`);
+			return msg.channel.send(`You don't have any ${lamp.name} lamps!`);
 		}
 
 		await msg.author.addXP({
@@ -76,10 +83,8 @@ export default class extends BotCommand {
 		});
 		await msg.author.removeItemFromBank(lamp.itemID);
 
-		return msg.send(
-			`Added ${lamp.amount.toLocaleString()} ${toTitleCase(
-				skill
-			)} XP from your ${itemNameFromID(lamp.itemID)}.`
+		return msg.channel.send(
+			`Added ${lamp.amount.toLocaleString()} ${toTitleCase(skill)} XP from your ${itemNameFromID(lamp.itemID)}.`
 		);
 	}
 }

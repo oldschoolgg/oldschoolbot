@@ -22,7 +22,7 @@ export default class extends Task {
 			if (!module.includes(nodeModules) && extname(module) !== '.node') {
 				if (module.includes('.entity.js')) continue;
 				if (module.includes(`${sep}typeorm${sep}`)) continue;
-				if (module.includes(`OldSchoolBotClient`)) continue;
+				if (module.includes('OldSchoolBotClient')) continue;
 				if (module.includes(`dist${sep}index`)) continue;
 				delete require.cache[module];
 			}
@@ -33,14 +33,11 @@ export default class extends Task {
 		if (!reload) return;
 		if (piece) {
 			// @ts-expect-error Running command with fake message object
-			await reload.run({ sendLocale: () => null, sendMessage: () => null }, [piece]);
+			await reload.run({ channel: { send: () => null } }, [piece]);
 			log = `Reloaded it in ${timer}`;
 		} else {
 			// @ts-expect-error Running command with fake message object
-			await reload.everything({
-				sendLocale: () => null,
-				sendMessage: () => null
-			});
+			await reload.everything({ channel: { send: () => null } });
 			log = `Reloaded everything in ${timer}.`;
 		}
 

@@ -25,9 +25,9 @@ export default class extends BotCommand {
 	}
 
 	invalidClue(msg: KlasaMessage): string {
-		return `That isn't a valid clue tier, the valid tiers are: ${ClueTiers.map(
-			tier => tier.name
-		).join(', ')}. For example, \`${msg.cmdPrefix}minion clue 1 easy\``;
+		return `That isn't a valid clue tier, the valid tiers are: ${ClueTiers.map(tier => tier.name).join(
+			', '
+		)}. For example, \`${msg.cmdPrefix}minion clue 1 easy\``;
 	}
 
 	@requiresMinion
@@ -40,11 +40,11 @@ export default class extends BotCommand {
 			quantity = 1;
 		}
 
-		if (!tierName) return msg.send(this.invalidClue(msg));
+		if (!tierName) return msg.channel.send(this.invalidClue(msg));
 
 		const clueTier = ClueTiers.find(tier => stringMatches(tier.name, tierName));
 
-		if (!clueTier) return msg.send(this.invalidClue(msg));
+		if (!clueTier) return msg.channel.send(this.invalidClue(msg));
 
 		const boosts = [];
 
@@ -60,12 +60,12 @@ export default class extends BotCommand {
 		const maxTripLength = msg.author.maxTripLength(Activity.ClueCompletion);
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${
-					clueTier.name
-				} is ${Math.floor(maxTripLength / timeToFinish)}.`
+				)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${Math.floor(
+					maxTripLength / timeToFinish
+				)}.`
 			);
 		}
 
@@ -73,7 +73,7 @@ export default class extends BotCommand {
 		const numOfScrolls = bank[clueTier.scrollID];
 
 		if (!numOfScrolls || numOfScrolls < quantity) {
-			return msg.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
+			return msg.channel.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
 		}
 
 		await msg.author.removeItemFromBank(clueTier.scrollID, quantity);
@@ -82,26 +82,21 @@ export default class extends BotCommand {
 		duration += (randomAddedDuration * duration) / 100;
 
 		if (msg.author.hasGracefulEquipped()) {
-			boosts.push(`10% for Graceful`);
+			boosts.push('10% for Graceful');
 			duration *= 0.9;
 		}
 
 		if (isWeekend()) {
-			boosts.push(`10% for Weekend`);
+			boosts.push('10% for Weekend');
 			duration *= 0.9;
 		}
 
-		if (
-			msg.author.hasItemEquippedAnywhere(
-				['Achievement diary cape', 'Achievement diary cape(t)'],
-				false
-			)
-		) {
-			boosts.push(`10% for Achievement diary cape`);
+		if (msg.author.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
+			boosts.push('10% for Achievement diary cape');
 			duration *= 0.9;
 		}
 
-		await addSubTaskToActivityTask<ClueActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			clueID: clueTier.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -109,7 +104,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.ClueCompletion
 		});
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now completing ${quantity}x ${
 				clueTier.name
 			} clues, it'll take around ${formatDuration(duration)} to finish.${

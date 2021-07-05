@@ -7,8 +7,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description:
-				'View the virtual pets you have, which are not the pets in your bank or from your minion.',
+			description: 'View the virtual pets you have, which are not the pets in your bank or from your minion.',
 			cooldown: 3,
 			examples: ['+mypets'],
 			categoryFlags: ['utility']
@@ -19,7 +18,7 @@ export default class extends BotCommand {
 		const userPets = msg.author.settings.get(UserSettings.Pets);
 		const keys = Object.keys(userPets);
 		if (keys.length === 0) {
-			return msg.send(`You have no pets yet.
+			return msg.channel.send(`You have no pets yet.
 
 You can get pets by talking in a server which has petmessages enabled. (\`${msg.cmdPrefix}petmessages enable\`)`);
 		}
@@ -31,6 +30,6 @@ You can get pets by talking in a server which has petmessages enabled. (\`${msg.
 			formatted.push(`${pet.emoji} ${pet.name}: ${userPets[id]}`);
 		}
 
-		return msg.send(formatted.join('\n'), { split: true });
+		return msg.channel.send(formatted.join('\n'));
 	}
 }

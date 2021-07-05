@@ -19,57 +19,32 @@ export default class GetStatsEmbed extends Extendable {
 		showExtra = true
 	) {
 		const skillCell = (skill: string) =>
-			`${skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore} ${skills[
-				skill as keyof SkillsScore
-			][key].toLocaleString()}`;
+			`${skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore} ${skills[skill as keyof SkillsScore][
+				key
+			].toLocaleString()}`;
 
 		const embed = new MessageEmbed()
 			.setColor(color)
-			.setTitle(
-				`${this.client._badgeCache.get(username.toLowerCase()) || ''} ${toTitleCase(
-					username
-				)}`
-			)
+			.setTitle(`${this.client._badgeCache.get(username.toLowerCase()) || ''} ${toTitleCase(username)}`)
 			.addField(
 				'\u200b',
-				[
-					'attack',
-					'strength',
-					'defence',
-					'ranged',
-					'prayer',
-					'magic',
-					'runecraft',
-					'construction'
-				].map(skillCell),
+				['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
+					.map(skillCell)
+					.join('\n'),
 				true
 			)
 			.addField(
 				'\u200b',
-				[
-					'hitpoints',
-					'agility',
-					'herblore',
-					'thieving',
-					'crafting',
-					'fletching',
-					'slayer',
-					'hunter'
-				].map(skillCell),
+				['hitpoints', 'agility', 'herblore', 'thieving', 'crafting', 'fletching', 'slayer', 'hunter']
+					.map(skillCell)
+					.join('\n'),
 				true
 			)
 			.addField(
 				'\u200b',
-				[
-					'mining',
-					'smithing',
-					'fishing',
-					'cooking',
-					'firemaking',
-					'woodcutting',
-					'farming',
-					'overall'
-				].map(skillCell),
+				['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall']
+					.map(skillCell)
+					.join('\n'),
 				true
 			);
 
@@ -84,7 +59,7 @@ export default class GetStatsEmbed extends Extendable {
 					true
 				)
 				.addField(
-					`<:minigame_icon:630400565070921761> Minigame Scores`,
+					'<:minigame_icon:630400565070921761> Minigame Scores',
 					`**BH:** ${minigames.bountyHunter.score.toLocaleString()}
 **BH-Rogue:** ${minigames.bountyHunterRogue.score.toLocaleString()}
 **LMS:** ${minigames.LMS.score.toLocaleString()}
@@ -97,10 +72,9 @@ export default class GetStatsEmbed extends Extendable {
 						.slice(1)
 						.map(
 							tier =>
-								`**${toTitleCase(tier)}:** ${clues[
-									tier as keyof CluesScore
-								].score.toLocaleString()}`
-						),
+								`**${toTitleCase(tier)}:** ${clues[tier as keyof CluesScore].score.toLocaleString()}`
+						)
+						.join('\n'),
 					true
 				);
 		}

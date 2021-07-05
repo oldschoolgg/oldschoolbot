@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -26,7 +27,7 @@ export default class extends BotCommand {
 			usage: '[quantity:int{1}|name:...string] [creatureName:...string]',
 			aliases: ['catch', 'trap'],
 			usageDelim: ' ',
-			description: `Allows a player to hunt different creatures for hunter.`,
+			description: 'Allows a player to hunt different creatures for hunter.',
 			examples: ['+hunt 5 herbiboar'],
 			categoryFlags: ['minion', 'skilling']
 		});
@@ -51,9 +52,7 @@ export default class extends BotCommand {
 						creature,
 						90_000 /
 							((creature.catchTime *
-								(creature.huntTechnique === HunterTechniqueEnum.Tracking
-									? 0.8
-									: 0.9) *
+								(creature.huntTechnique === HunterTechniqueEnum.Tracking ? 0.8 : 0.9) *
 								(creature.id === HERBIBOAR_ID ? 0.8 : 1) *
 								(creature.wildy ? 1 : 0.95)) /
 								traps)
@@ -65,18 +64,22 @@ export default class extends BotCommand {
 				}
 				str += '\n\n\n';
 			}
-			return msg.channel.sendFile(Buffer.from(str), 'hunterXPHR.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(str), 'hunterXPHR.txt')] });
 		}
 
 		if (msg.flagArgs.creatures) {
-			return msg.channel.sendFile(
-				Buffer.from(
-					Hunter.Creatures.map(
-						creature => `${creature.name} - lvl required: ${creature.level}`
-					).join('\n')
-				),
-				`Available Creatures.txt`
-			);
+			return msg.channel.send({
+				files: [
+					new MessageAttachment(
+						Buffer.from(
+							Hunter.Creatures.map(creature => `${creature.name} - lvl required: ${creature.level}`).join(
+								'\n'
+							)
+						),
+						'Available Creatures.txt'
+					)
+				]
+			});
 		}
 
 		await msg.author.settings.sync(true);
@@ -87,12 +90,7 @@ export default class extends BotCommand {
 		let usingHuntPotion = false;
 		let wildyScore = 0;
 
-		if (
-			msg.flagArgs.pot ||
-			msg.flagArgs.potion ||
-			msg.flagArgs.huntpotion ||
-			msg.flagArgs.hunterpotion
-		) {
+		if (msg.flagArgs.pot || msg.flagArgs.potion || msg.flagArgs.huntpotion || msg.flagArgs.hunterpotion) {
 			usingHuntPotion = true;
 		}
 
@@ -103,63 +101,52 @@ export default class extends BotCommand {
 
 		const creature = Hunter.Creatures.find(creature =>
 			creature.aliases.some(
-				alias =>
-					stringMatches(alias, creatureName) ||
-					stringMatches(alias.split(' ')[0], creatureName)
+				alias => stringMatches(alias, creatureName) || stringMatches(alias.split(' ')[0], creatureName)
 			)
 		);
 
 		if (!creature) {
-			return msg.send(
+			return msg.channel.send(
 				`That's not a valid creature to hunt. Valid creatures are ${Hunter.Creatures.map(
 					creature => creature.name
-				).join(', ')}. *For more information about creatures write \`${
-					msg.cmdPrefix
-				}hunt --creatures\`.*`
+				).join(', ')}. *For more information about creatures write \`${msg.cmdPrefix}hunt --creatures\`.*`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0) < creature.level) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${creature.level} Hunter to hunt ${creature.name}.`
 			);
 		}
 
 		if (creature.qpRequired && userQP < creature.qpRequired) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${creature.qpRequired} QP to hunt ${creature.name}.`
 			);
 		}
 
 		if (creature.prayerLvl && msg.author.skillLevel(SkillsEnum.Prayer) < creature.prayerLvl) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${creature.prayerLvl} Prayer to hunt ${creature.name}.`
 			);
 		}
 
-		if (
-			creature.herbloreLvl &&
-			msg.author.skillLevel(SkillsEnum.Herblore) < creature.herbloreLvl
-		) {
-			return msg.send(
+		if (creature.herbloreLvl && msg.author.skillLevel(SkillsEnum.Herblore) < creature.herbloreLvl) {
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${creature.herbloreLvl} Herblore to hunt ${creature.name}.`
 			);
 		}
 
 		if (creature.multiTraps) {
 			traps +=
-				Math.min(
-					Math.floor(
-						(msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0)) / 20
-					),
-					5
-				) + (creature.wildy ? 1 : 0);
+				Math.min(Math.floor((msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0)) / 20), 5) +
+				(creature.wildy ? 1 : 0);
 		}
 
 		if (creature.itemsRequired) {
 			for (const [item, quantity] of creature.itemsRequired.items()) {
 				if (userBank.amount(item.name) < quantity * traps) {
-					return msg.send(
+					return msg.channel.send(
 						`You don't have ${traps}x ${item.name}, hunter tools can be bought using \`${msg.cmdPrefix}buy\`.`
 					);
 				}
@@ -180,8 +167,7 @@ export default class extends BotCommand {
 
 		catchTime *= (100 - percentReduced) / 100;
 
-		if (percentReduced >= 1)
-			boosts.push(`${percentReduced}% for being experienced hunting this creature`);
+		if (percentReduced >= 1) boosts.push(`${percentReduced}% for being experienced hunting this creature`);
 
 		// Reduce time by 5% if user has graceful equipped
 		if (!creature.wildy && msg.author.hasGracefulEquipped()) {
@@ -193,15 +179,12 @@ export default class extends BotCommand {
 			const [bol, reason, score] = hasWildyHuntGearEquipped(msg.author.getGear('misc'));
 			wildyScore = score;
 			if (!bol) {
-				return msg.send(
+				return msg.channel.send(
 					`To hunt ${creature.name} in the wilderness you need to meet the following requirment: ${reason} To check current equipped gear in misc write \`${msg.cmdPrefix}gear misc\`.`
 				);
 			}
-			if (
-				userBank.amount(itemID('Saradomin brew(4)')) < 10 ||
-				userBank.amount(itemID('Super restore(4)')) < 5
-			) {
-				return msg.send(
+			if (userBank.amount(itemID('Saradomin brew(4)')) < 10 || userBank.amount(itemID('Super restore(4)')) < 5) {
+				return msg.channel.send(
 					`To hunt ${creature.name} in the wilderness you need to have 10x Saradomin brew(4) and 5x Super restore(4) for safety.`
 				);
 			}
@@ -217,12 +200,10 @@ export default class extends BotCommand {
 		let duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					creature.name
-				} you can hunt is ${Math.floor(
+				)}, try a lower quantity. The highest amount of ${creature.name} you can hunt is ${Math.floor(
 					maxTripLength / ((catchTime * Time.Second) / traps)
 				)}.`
 			);
@@ -237,7 +218,7 @@ export default class extends BotCommand {
 						quantity = Math.floor(userBank.amount(item.id) / qty);
 						duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
 					} else {
-						return msg.send(`You don't have enough ${item.name}s.`);
+						return msg.channel.send(`You don't have enough ${item.name}s.`);
 					}
 				}
 				removeBank.add(item.id, qty * quantity);
@@ -251,10 +232,7 @@ export default class extends BotCommand {
 					? Math.round(duration / (9 * Time.Minute))
 					: Math.round(duration / (18 * Time.Minute));
 
-			if (
-				!msg.flagArgs.ns &&
-				bankHasItem(userBank.bank, itemID('Stamina potion(4)'), staminaPotionQuantity)
-			) {
+			if (!msg.flagArgs.ns && bankHasItem(userBank.bank, itemID('Stamina potion(4)'), staminaPotionQuantity)) {
 				removeBank.add(itemID('Stamina potion(4)'), staminaPotionQuantity);
 				boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4)`);
 				duration *= 0.8;
@@ -264,14 +242,12 @@ export default class extends BotCommand {
 		if (usingHuntPotion) {
 			const hunterPotionQuantity = Math.round(duration / (8 * Time.Minute));
 			if (!bankHasItem(userBank.bank, itemID('Hunter potion(4)'), hunterPotionQuantity)) {
-				return msg.send(
+				return msg.channel.send(
 					`You need ${hunterPotionQuantity}x Hunter potion(4) to boost your level for the whole trip, try a lower quantity or make/buy more potions.`
 				);
 			}
 			removeBank.add(itemID('Hunter potion(4)'), hunterPotionQuantity);
-			boosts.push(
-				`+2 hunter level for using ${hunterPotionQuantity}x Hunter potion(4) every 2nd minute.`
-			);
+			boosts.push(`+2 hunter level for using ${hunterPotionQuantity}x Hunter potion(4) every 2nd minute.`);
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.HunterCost, removeBank);
@@ -296,7 +272,7 @@ export default class extends BotCommand {
 			}cancel\` the activity.`;
 		}
 
-		await addSubTaskToActivityTask<HunterActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<HunterActivityTaskOptions>({
 			creatureName: creature.name,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -319,6 +295,6 @@ export default class extends BotCommand {
 			response += `\n\n${wildyStr}`;
 		}
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

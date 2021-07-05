@@ -23,6 +23,9 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Barrows,
 		amount: [1, 6],
 		weight: 1,
+		levelRequirements: {
+			prayer: 43
+		},
 		monsters: [Monsters.Barrows.id],
 		isBoss: true
 	},
@@ -37,6 +40,9 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Cerberus,
 		amount: [3, 35],
 		weight: 1,
+		levelRequirements: {
+			prayer: 43
+		},
 		monsters: [Monsters.Cerberus.id],
 		slayerLevel: 91,
 		isBoss: true
@@ -59,6 +65,10 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CommanderZilyana,
 		amount: [3, 35],
 		weight: 1,
+		levelRequirements: {
+			agility: 70,
+			prayer: 43
+		},
 		monsters: [Monsters.CommanderZilyana.id],
 		isBoss: true
 	},
@@ -73,6 +83,9 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.DagannothPrime,
 		amount: [3, 35],
 		weight: 1,
+		levelRequirements: {
+			prayer: 43
+		},
 		monsters: [Monsters.DagannothPrime.id],
 		isBoss: true
 	},
@@ -80,6 +93,9 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.DagannothSupreme,
 		amount: [3, 35],
 		weight: 1,
+		levelRequirements: {
+			prayer: 43
+		},
 		monsters: [Monsters.DagannothSupreme.id],
 		isBoss: true
 	},
@@ -87,6 +103,9 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.DagannothRex,
 		amount: [3, 35],
 		weight: 1,
+		levelRequirements: {
+			prayer: 43
+		},
 		monsters: [Monsters.DagannothRex.id],
 		isBoss: true
 	},
@@ -94,6 +113,10 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GeneralGraardor,
 		amount: [3, 35],
 		weight: 1,
+		levelRequirements: {
+			strength: 70,
+			prayer: 43
+		},
 		monsters: [Monsters.GeneralGraardor.id],
 		isBoss: true
 	},
@@ -101,6 +124,9 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GiantMole,
 		amount: [3, 35],
 		weight: 1,
+		levelRequirements: {
+			prayer: 43
+		},
 		monsters: [Monsters.GiantMole.id],
 		isBoss: true
 	},
@@ -116,6 +142,10 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.KrilTsutsaroth,
 		amount: [3, 35],
 		weight: 1,
+		levelRequirements: {
+			hitpoints: 70,
+			prayer: 43
+		},
 		monsters: [Monsters.KrilTsutsaroth.id],
 		isBoss: true
 	},
@@ -123,6 +153,9 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.KalphiteQueen,
 		amount: [3, 35],
 		weight: 1,
+		levelRequirements: {
+			prayer: 43
+		},
 		monsters: [Monsters.KalphiteQueen.id],
 		isBoss: true
 	},
@@ -145,6 +178,10 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Kreearra,
 		amount: [3, 35],
 		weight: 1,
+		levelRequirements: {
+			ranged: 70,
+			prayer: 40
+		},
 		monsters: [Monsters.Kreearra.id],
 		isBoss: true
 	},
@@ -152,6 +189,9 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Sarachnis,
 		amount: [3, 35],
 		weight: 1,
+		levelRequirements: {
+			prayer: 43
+		},
 		monsters: [Monsters.Sarachnis.id],
 		isBoss: true
 	},
@@ -188,6 +228,10 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Vorkath,
 		amount: [3, 35],
 		weight: 1,
+		levelRequirements: {
+			prayer: 43
+		},
+		questPoints: 205,
 		monsters: [Monsters.Vorkath.id],
 		isBoss: true
 	},
@@ -195,6 +239,10 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Zulrah,
 		amount: [3, 15],
 		weight: 1,
+		levelRequirements: {
+			prayer: 43
+		},
+		questPoints: 75,
 		monsters: [Monsters.Zulrah.id],
 		isBoss: true
 	}

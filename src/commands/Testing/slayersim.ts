@@ -1,14 +1,10 @@
+import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { table } from 'table';
 
 import { Time } from '../../lib/constants';
-import {
-	boostCannon,
-	boostCannonMulti,
-	boostIceBarrage,
-	boostIceBurst
-} from '../../lib/minions/data/combatConstants';
+import { boostCannon, boostCannonMulti, boostIceBarrage, boostIceBurst } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
@@ -18,11 +14,7 @@ import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addArrayOfNumbers } from '../../lib/util';
 
-function applySkillBoostJr(
-	user: KlasaUser,
-	duration: number,
-	styles: AttackStyles[]
-): [number, string] {
+function applySkillBoostJr(user: KlasaUser, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
 
 	let newDuration = duration;
@@ -84,16 +76,14 @@ export default class extends BotCommand {
 		slayerMasters.forEach(master => {
 			master.tasks.forEach(task => {
 				task.monsters.forEach(tmon => {
-					const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, tmon);
+					const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, {
+						monsterID: tmon
+					});
 					const kMonster = killableMonsters.find(km => {
 						return km.id === tmon;
 					});
 					let [killTime, percentReduced] = reducedTimeFromKC(kMonster!, 1000000);
-					const [newDuration, boostMsg] = applySkillBoostJr(
-						msg.author,
-						killTime,
-						attackStyles
-					);
+					const [newDuration, boostMsg] = applySkillBoostJr(msg.author, killTime, attackStyles);
 					const mSlayerXP = osjsMon?.data?.hitpoints
 						? osjsMon!.data!.slayerXP
 							? osjsMon!.data!.slayerXP
@@ -133,8 +123,7 @@ export default class extends BotCommand {
 					let slayerXpPerHour = '';
 					slayerXpPerHour = (killsPerHour * mSlayerXP).toLocaleString();
 
-					const foodPerHour =
-						calculateMonsterFood(kMonster!, msg.author)[0] * killsPerHour;
+					const foodPerHour = calculateMonsterFood(kMonster!, msg.author)[0] * killsPerHour;
 					simTable.push([
 						master!.name,
 						kMonster!.name,
@@ -155,6 +144,8 @@ export default class extends BotCommand {
 				});
 			});
 		});
-		return msg.channel.sendFile(Buffer.from(table(simTable)), `slayerMonsterSim.txt`);
+		return msg.channel.send({
+			files: [new MessageAttachment(Buffer.from(table(simTable)), 'slayerMonsterSim.txt')]
+		});
 	}
 }

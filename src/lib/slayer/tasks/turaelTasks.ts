@@ -82,7 +82,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Cow,
 		amount: [15, 50],
 		weight: 8,
-		monsters: [Monsters.Cow.id, Monsters.CowCalf.id, Monsters.UndeadCow.id],
+		monsters: [Monsters.Cow.id, Monsters.CowCalf.id],
 		combatLevel: 5,
 		unlocked: true
 	},
@@ -107,12 +107,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Dwarf,
 		amount: [15, 50],
 		weight: 7,
-		monsters: [
-			Monsters.Dwarf.id,
-			Monsters.BlackGuard.id,
-			Monsters.ChaosDwarf.id,
-			Monsters.DwarfGangMember.id
-		],
+		monsters: [Monsters.Dwarf.id, Monsters.BlackGuard.id, Monsters.ChaosDwarf.id, Monsters.DwarfGangMember.id],
 		combatLevel: 6,
 		unlocked: true
 	},
@@ -128,7 +123,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Goblin,
 		amount: [15, 50],
 		weight: 7,
-		monsters: [Monsters.Goblin.id, Monsters.CaveGoblinGuard.id, Monsters.GeneralGraardor.id],
+		monsters: [Monsters.Goblin.id, Monsters.CaveGoblinGuard.id],
 		unlocked: true
 	},
 	{
@@ -156,12 +151,7 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Lizard,
 		amount: [15, 50],
 		weight: 8,
-		monsters: [
-			Monsters.Lizard.id,
-			Monsters.SmallLizard.id,
-			Monsters.DesertLizard.id,
-			Monsters.SulphurLizard.id
-		],
+		monsters: [Monsters.Lizard.id, Monsters.SmallLizard.id, Monsters.DesertLizard.id, Monsters.SulphurLizard.id],
 		slayerLevel: 22,
 		unlocked: true
 	},
@@ -268,7 +258,6 @@ export const turaelTasks: AssignableSlayerTask[] = [
 			Monsters.Zombie.id,
 			Monsters.MonkeyZombie.id,
 			Monsters.UndeadChicken.id,
-			Monsters.UndeadCow.id,
 			Monsters.UndeadDruid.id,
 			Monsters.UndeadOne.id,
 			Monsters.ZombieRat.id,

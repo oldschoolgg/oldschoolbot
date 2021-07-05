@@ -24,9 +24,7 @@ export default class extends BotCommand {
 		msg.author.settings.update(UserSettings.GP, 1_000_000_000);
 		msg.author.settings.update(UserSettings.QP, MAX_QP);
 		msg.author.settings.update(UserSettings.Slayer.SlayerPoints, 100000);
-		const loot: Record<string, number> = Object.fromEntries(
-			Eatables.map(({ id }) => [id, 1000])
-		);
+		const loot: Record<string, number> = Object.fromEntries(Eatables.map(({ id }) => [id, 1000]));
 		const bank = new Bank(loot);
 		bank.add('Zamorakian spear');
 		bank.add('Dragon warhammer');
@@ -35,7 +33,7 @@ export default class extends BotCommand {
 		poh.pool = 29241;
 		await poh.save();
 		msg.author.addItemsToBank(bank.bank);
-		return msg.send(
+		return msg.channel.send(
 			`Gave you 99 in all skills, 1b GP, ${MAX_QP} QP, and 1k of all eatable foods. **Gave your POH an ornate rejuve pool**`
 		);
 	}

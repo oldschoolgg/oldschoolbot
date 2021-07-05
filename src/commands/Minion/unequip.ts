@@ -1,8 +1,7 @@
-import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { GearSetupTypes, hasItemEquipped, resolveGearTypeSetting } from '../../lib/gear';
+import { GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -25,12 +24,9 @@ export default class extends BotCommand {
 	}
 
 	@requiresMinion
-	async run(
-		msg: KlasaMessage,
-		[gearType, itemArray]: [GearSetupTypes, Item[]]
-	): Promise<KlasaMessage> {
+	async run(msg: KlasaMessage, [gearType, itemArray]: [GearSetupTypes, Item[]]): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`
 			);
 		}
@@ -38,10 +34,10 @@ export default class extends BotCommand {
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
 		const currentEquippedGear = msg.author.getGear(gearType);
 
-		const itemToUnequip = itemArray.find(i => hasItemEquipped(i.id, currentEquippedGear));
+		const itemToUnequip = itemArray.find(i => currentEquippedGear.hasEquipped([i.id]));
 
 		if (!itemToUnequip) {
-			return msg.send(`You don't have this item equipped!`);
+			return msg.channel.send("You don't have this item equipped!");
 		}
 
 		// it thinks equipment can be null somehow but hasItemEquipped already checks that
@@ -63,9 +59,9 @@ export default class extends BotCommand {
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);
 
-		return msg.send(
-			`You unequipped ${itemToUnequip.name} from your ${toTitleCase(gearType)} setup.`,
-			new MessageAttachment(image, 'osbot.png')
-		);
+		return msg.channel.send({
+			content: `You unequipped ${itemToUnequip.name} from your ${toTitleCase(gearType)} setup.`,
+			files: [image]
+		});
 	}
 }

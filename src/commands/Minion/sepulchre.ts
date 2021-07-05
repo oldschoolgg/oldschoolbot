@@ -27,20 +27,14 @@ export default class extends BotCommand {
 		const agilityLevel = msg.author.skillLevel(SkillsEnum.Agility);
 		const minLevel = sepulchreFloors[0].agilityLevel;
 		if (agilityLevel < minLevel) {
-			return msg.send(
-				`You need atleast level ${minLevel} Agility to do the Hallowed Sepulchre.`
-			);
+			return msg.channel.send(`You need atleast level ${minLevel} Agility to do the Hallowed Sepulchre.`);
 		}
 
 		if (!msg.author.hasGracefulEquipped()) {
-			return msg.send(
-				`You need Graceful equipped in your Skilling setup to do the Hallowed Sepulchre.`
-			);
+			return msg.channel.send('You need Graceful equipped in your Skilling setup to do the Hallowed Sepulchre.');
 		}
 
-		const completableFloors = sepulchreFloors.filter(
-			floor => agilityLevel >= floor.agilityLevel
-		);
+		const completableFloors = sepulchreFloors.filter(floor => agilityLevel >= floor.agilityLevel);
 		let lapLength = addArrayOfNumbers(completableFloors.map(floor => floor.time));
 
 		const boosts = [];
@@ -64,7 +58,7 @@ export default class extends BotCommand {
 		const maxLaps = Math.floor(msg.author.maxTripLength(Activity.Sepulchre) / lapLength);
 		const tripLength = maxLaps * lapLength;
 
-		await addSubTaskToActivityTask<SepulchreActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<SepulchreActivityTaskOptions>({
 			floors: completableFloors.map(fl => fl.number),
 			quantity: maxLaps,
 			userID: msg.author.id,
@@ -78,16 +72,14 @@ export default class extends BotCommand {
 			msg.author.minionName
 		} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
 			completableFloors[0].number
-		}-${
-			completableFloors[completableFloors.length - 1].number
-		}, the trip will take ${formatDuration(tripLength)}, with each lap taking ${formatDuration(
-			lapLength
-		)}.`;
+		}-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatDuration(
+			tripLength
+		)}, with each lap taking ${formatDuration(lapLength)}.`;
 
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

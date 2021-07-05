@@ -91,12 +91,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Lizard,
 		amount: [40, 70],
 		weight: 8,
-		monsters: [
-			Monsters.Lizard.id,
-			Monsters.SmallLizard.id,
-			Monsters.DesertLizard.id,
-			Monsters.SulphurLizard.id
-		],
+		monsters: [Monsters.Lizard.id, Monsters.SmallLizard.id, Monsters.DesertLizard.id, Monsters.SulphurLizard.id],
 		slayerLevel: 22,
 		unlocked: true
 	},
@@ -306,7 +301,6 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 			Monsters.Zombie.id,
 			Monsters.MonkeyZombie.id,
 			Monsters.UndeadChicken.id,
-			Monsters.UndeadCow.id,
 			Monsters.UndeadDruid.id,
 			Monsters.UndeadOne.id,
 			Monsters.ZombieRat.id,

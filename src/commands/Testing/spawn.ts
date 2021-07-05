@@ -8,6 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { itemNameFromID } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 
 const gearSpawns = [
 	{
@@ -62,7 +63,7 @@ export default class extends BotCommand {
 				t.add(Items.random().id);
 			}
 			await msg.author.addItemsToBank(t);
-			return msg.channel.send(`Added 50 random items to your bank.`);
+			return msg.channel.send('Added 50 random items to your bank.');
 		}
 
 		if (msg.flagArgs.openables) {
@@ -74,6 +75,12 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (msg.flagArgs.id) {
+			const item = getOSItem(Number(msg.flagArgs.id));
+			await msg.author.addItemsToBank({ [item.id]: 1 });
+			return msg.channel.send(`Gave you the item with the id of ${item.id} (${item.name})`);
+		}
+
 		if (!itemArray) return;
 
 		if (msg.flagArgs.all) {
@@ -82,7 +89,7 @@ export default class extends BotCommand {
 				items[item.id] = qty;
 			}
 			await msg.author.addItemsToBank(items);
-			return msg.send(`Gave you ${new Bank(items)}.`);
+			return msg.channel.send(`Gave you ${new Bank(items)}.`);
 		}
 
 		const osItem = itemArray[0];
@@ -92,13 +99,13 @@ export default class extends BotCommand {
 			if (msg.flagArgs[setup]) {
 				try {
 					await this.client.commands.get('equip')!.run(msg, [setup, 1, [osItem]]);
-					return msg.send(`Equipped 1x ${osItem.name} to your ${setup} setup.`);
+					return msg.channel.send(`Equipped 1x ${osItem.name} to your ${setup} setup.`);
 				} catch (err) {
-					return msg.send(`Failed to equip item. Equip it yourself ${Emoji.PeepoNoob}`);
+					return msg.channel.send(`Failed to equip item. Equip it yourself ${Emoji.PeepoNoob}`);
 				}
 			}
 		}
 
-		return msg.send(`Gave you ${qty}x ${osItem.name}.`);
+		return msg.channel.send(`Gave you ${qty}x ${osItem.name}.`);
 	}
 }

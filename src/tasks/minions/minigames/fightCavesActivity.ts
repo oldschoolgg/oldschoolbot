@@ -8,13 +8,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	calcPercentOfNum,
-	calcWhatPercent,
-	formatDuration,
-	percentChance,
-	rand
-} from '../../../lib/util';
+import { calcPercentOfNum, calcWhatPercent, formatDuration, percentChance, rand } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -47,7 +41,7 @@ export default class extends Task {
 		if (preJadDeathTime) {
 			let slayerMsg = '';
 			if (isOnTask) {
-				slayerMsg = ' Task cancelled.';
+				slayerMsg = ' **Task cancelled.**';
 				usersTask.currentTask!.quantityRemaining = 0;
 				usersTask.currentTask!.skipped = true;
 				await usersTask.currentTask!.save();
@@ -74,7 +68,7 @@ export default class extends Task {
 					preJadDeathTime
 				)} into your attempt.${slayerMsg} The following supplies were refunded back into your bank: ${itemLootBank}.`,
 				res => {
-					user.log(`continued trip of fightcaves`);
+					user.log('continued trip of fightcaves');
 					return this.client.commands.get('fightcaves')!.run(res, []);
 				},
 				await chatHeadImage({
@@ -89,7 +83,7 @@ export default class extends Task {
 		if (diedToJad) {
 			let slayerMsg = '';
 			if (isOnTask) {
-				slayerMsg = ' Task cancelled.';
+				slayerMsg = ' **Task cancelled.**';
 				usersTask.currentTask!.quantityRemaining = 0;
 				usersTask.currentTask!.skipped = true;
 				await usersTask.currentTask!.save();
@@ -101,13 +95,13 @@ export default class extends Task {
 				this.client,
 				user,
 				channelID,
-				`${user}`,
+				`${user}${slayerMsg}`,
 				res => {
-					user.log(`continued trip of fightcaves`);
+					user.log('continued trip of fightcaves');
 					return this.client.commands.get('fightcaves')!.run(res, []);
 				},
 				await chatHeadImage({
-					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.${slayerMsg}`,
+					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
 					head: 'mejJal'
 				}),
 				data,
@@ -116,16 +110,14 @@ export default class extends Task {
 		}
 
 		await user.incrementMonsterScore(Monsters.TzTokJad.id);
-		const loot = Monsters.TzTokJad.kill();
+		const loot = Monsters.TzTokJad.kill(1, { onSlayerTask: isOnTask });
 
 		if (loot.has('Tzrek-jad')) {
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}** just received their ${formatOrdinal(
-					user.getCL(TzrekJadPet) + 1
-				)} ${Emoji.TzRekJad} TzRek-jad pet by killing TzTok-Jad, on their ${formatOrdinal(
-					user.getKC(TzTokJad.id)
-				)} kill!`
+				`**${user.username}** just received their ${formatOrdinal(user.getCL(TzrekJadPet) + 1)} ${
+					Emoji.TzRekJad
+				} TzRek-jad pet by killing TzTok-Jad, on their ${formatOrdinal(user.getKC(TzTokJad.id))} kill!`
 			);
 		}
 
@@ -164,7 +156,7 @@ export default class extends Task {
 			channelID,
 			`${user}${slayerMsg}`,
 			res => {
-				user.log(`continued trip of fightcaves`);
+				user.log('continued trip of fightcaves');
 				return this.client.commands.get('fightcaves')!.run(res, []);
 			},
 			await chatHeadImage({

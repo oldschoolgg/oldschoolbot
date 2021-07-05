@@ -27,11 +27,7 @@ export const beekeeperOutfit = resolveItems([
 
 export const camoOutfit = resolveItems(['Camo helmet', 'Camo top', 'Camo bottoms']);
 
-export const lederhosenOutfit = resolveItems([
-	'Lederhosen hat',
-	'Lederhosen top',
-	'Lederhosen shorts'
-]);
+export const lederhosenOutfit = resolveItems(['Lederhosen hat', 'Lederhosen top', 'Lederhosen shorts']);
 
 export const zombieOutfit = resolveItems([
 	'Zombie mask',
@@ -41,13 +37,7 @@ export const zombieOutfit = resolveItems([
 	'Zombie boots'
 ]);
 
-export const mimeOutfit = resolveItems([
-	'Mime mask',
-	'Mime top',
-	'Mime legs',
-	'Mime gloves',
-	'Mime boots'
-]);
+export const mimeOutfit = resolveItems(['Mime mask', 'Mime top', 'Mime legs', 'Mime gloves', 'Mime boots']);
 
 export const RandomEvents: RandomEvent[] = [
 	{
@@ -146,8 +136,7 @@ const cache = new Map<string, number>();
 
 let triviaQuestions: { q: string; a: string[] }[] = [
 	{
-		q:
-			'Out of Iron Ore and Coal, which is more likely to give Unidentified minerals in the mining guild?',
+		q: 'Out of Iron Ore and Coal, which is more likely to give Unidentified minerals in the mining guild?',
 		a: ['coal']
 	}
 ];
@@ -196,26 +185,25 @@ export async function triggerRandomEvent(ch: TextChannel, user: KlasaUser) {
 	user.log(`getting ${event.name} random event.`);
 
 	const embed = new MessageEmbed().setFooter(
-		`Use \`${ch.guild.settings.get(
-			GuildSettings.Prefix
-		)}randomevents disable\` to disable random events.`
+		`Use \`${ch.guild.settings.get(GuildSettings.Prefix)}randomevents disable\` to disable random events.`
 	);
 
 	switch (roll) {
 		case 1: {
 			const randTrivia = randArrItem(triviaQuestions);
-			await ch.send(
-				embed.setDescription(
-					`${user}, you've encountered the ${event.name} random event! To complete this event, answer this trivia question... ${randTrivia.q}`
-				)
-			);
+			await ch.send({
+				embeds: [
+					embed.setDescription(
+						`${user}, you've encountered the ${event.name} random event! To complete this event, answer this trivia question... ${randTrivia.q}`
+					)
+				]
+			});
 			try {
-				await ch.awaitMessages(
-					answer =>
-						answer.author.id === user.id &&
-						randTrivia.a.includes(answer.content.toLowerCase()),
-					options
-				);
+				await ch.awaitMessages({
+					...options,
+					filter: answer =>
+						answer.author.id === user.id && randTrivia.a.includes(answer.content.toLowerCase())
+				});
 				finalizeEvent(event, user, ch);
 				return;
 			} catch (err) {
@@ -230,50 +218,50 @@ export async function triggerRandomEvent(ch: TextChannel, user: KlasaUser) {
 				.setImage(
 					'https://cdn.discordapp.com/attachments/357422607982919680/801688145120067624/Certer_random_event.png'
 				);
-			await ch.send(embed);
+			await ch.send({ embeds: [embed] });
 			try {
-				await ch.awaitMessages(
-					answer => answer.author.id === user.id && answer.content.toLowerCase() === 'a',
-					options
-				);
+				await ch.awaitMessages({
+					...options,
+					filter: answer => answer.author.id === user.id && answer.content.toLowerCase() === 'a'
+				});
 				finalizeEvent(event, user, ch);
 				return;
 			} catch (err) {
-				return ch.send(`You didn't give the right answer - random event failed!`);
+				return ch.send("You didn't give the right answer - random event failed!");
 			}
 		}
 		case 3: {
 			embed
-				.setImage(
-					'https://cdn.discordapp.com/attachments/342983479501389826/807737932072747018/nmgilesre.gif'
-				)
+				.setImage('https://cdn.discordapp.com/attachments/342983479501389826/807737932072747018/nmgilesre.gif')
 				.setDescription(
 					`${user}, you've encountered the ${event.name} random event! To complete this event, specify the letter corresponding to the answer in this image:`
 				);
-			await ch.send(embed);
+			await ch.send({ embeds: [embed] });
 			try {
-				await ch.awaitMessages(
-					answer => answer.author.id === user.id && answer.content.toLowerCase() === 'a',
-					options
-				);
+				await ch.awaitMessages({
+					...options,
+					filter: answer => answer.author.id === user.id && answer.content.toLowerCase() === 'a'
+				});
 				finalizeEvent(event, user, ch);
 				return;
 			} catch (err) {
-				return ch.send(`You didn't give the right answer - random event failed!`);
+				return ch.send("You didn't give the right answer - random event failed!");
 			}
 		}
 		case 4: {
-			const message = await ch.send(
-				embed.setDescription(
-					`${user}, you've encountered the ${event.name} random event! To complete this event, reaction to this message with any emoji.`
-				)
-			);
+			const message = await ch.send({
+				embeds: [
+					embed.setDescription(
+						`${user}, you've encountered the ${event.name} random event! To complete this event, reaction to this message with any emoji.`
+					)
+				]
+			});
 			try {
-				await message.awaitReactions((_, _user) => user.id === _user.id, options);
+				await message.awaitReactions({ ...options, filter: (_, _user) => user.id === _user.id });
 				finalizeEvent(event, user, ch);
 				return;
 			} catch (err) {
-				return ch.send(`You didn't react - you failed the random event!`);
+				return ch.send("You didn't react - you failed the random event!");
 			}
 		}
 		default: {

@@ -23,11 +23,7 @@ export default class extends Task {
 			stopBurningLvl = cookable.stopBurnAt;
 		}
 
-		burnedAmount = calcBurntCookables(
-			quantity,
-			stopBurningLvl,
-			user.skillLevel(SkillsEnum.Cooking)
-		);
+		burnedAmount = calcBurntCookables(quantity, stopBurningLvl, user.skillLevel(SkillsEnum.Cooking));
 
 		const xpReceived = (quantity - burnedAmount) * cookable.xp;
 

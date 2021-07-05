@@ -64,13 +64,13 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage) {
 		if (msg.author.settings.get(UserSettings.QP) < 10) {
-			return msg.channel.send(`You need atleast 10 QP to hunt Chompy birds.`);
+			return msg.channel.send('You need atleast 10 QP to hunt Chompy birds.');
 		}
 
 		const rangeGear = msg.author.getGear('range');
 		if (!rangeGear.hasEquipped('Ogre bow')) {
 			return msg.channel.send(
-				`You need an Ogre bow equipped in your range outfit, and Ogre arrows to hunt Chompy birds!`
+				'You need an Ogre bow equipped in your range outfit, and Ogre arrows to hunt Chompy birds!'
 			);
 		}
 
@@ -80,7 +80,7 @@ export default class extends BotCommand {
 		let quantity = Math.floor((baseChompyPerHour / Time.Hour) * tripLength);
 		for (const [diary, boost] of diaryBoosts) {
 			const [hasDiary] = await userhasDiaryTier(msg.author, diary);
-			if (1 || hasDiary) {
+			if (hasDiary) {
 				let bonus = 0;
 				for (let i = 0; i < quantity; i++) {
 					if (percentChance(boost)) {
@@ -112,7 +112,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemsFromBank(cost);
 
-		await addSubTaskToActivityTask<MinigameActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration: tripLength,
@@ -121,9 +121,7 @@ export default class extends BotCommand {
 			minigameID: 'BigChompyBirdHunting'
 		});
 
-		let str = `${
-			msg.author.minionName
-		} is now hunting Big Chompy's! The trip will take ${formatDuration(
+		let str = `${msg.author.minionName} is now hunting Big Chompy's! The trip will take ${formatDuration(
 			tripLength
 		)}. Removed ${cost} from your bank.`;
 
@@ -131,6 +129,6 @@ export default class extends BotCommand {
 			str += `\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

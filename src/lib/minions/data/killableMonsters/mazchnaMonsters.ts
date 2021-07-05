@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { GearSetupTypes, GearStat } from '../../../gear';
+import { GearStat } from '../../../gear';
 import itemID from '../../../util/itemID';
 import resolveItems from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
@@ -14,7 +14,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 25,
 		table: Monsters.AsynShade,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		qpRequired: 4,
 		itemInBankBoosts: [
@@ -31,11 +31,11 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 14,
 		table: Monsters.Catablepon,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 10,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab],
 		canCannon: true,
 		cannonMulti: false,
@@ -48,7 +48,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 14,
 		table: Monsters.Cockatrice,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		levelRequirements: {
@@ -57,7 +57,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 
 		superior: Monsters.Cockathrice,
 		healAmountNeeded: 12,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -67,12 +67,12 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 35,
 		table: Monsters.Cyclops,
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 24,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -82,14 +82,14 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 25,
 		table: Monsters.EarthWarrior,
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		levelRequirements: {
 			agility: 15
 		},
 		healAmountNeeded: 14,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		cannonMulti: false,
@@ -102,7 +102,13 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 30,
 		table: Monsters.FeralVampyre,
 		wildy: false,
-		canBeKilled: true,
+		itemInBankBoosts: [
+			{
+				[itemID('Ivandis flail')]: 12,
+				[itemID('Blisterwood flail')]: 15
+			}
+		],
+
 		difficultyRating: 2,
 		qpRequired: 1
 	},
@@ -113,7 +119,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 30,
 		table: Monsters.FiyrShade,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 4,
 		itemInBankBoosts: [
@@ -130,7 +136,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 20,
 		table: Monsters.FleshCrawler,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
@@ -144,7 +150,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 20,
 		table: Monsters.Ghoul,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 1,
 		canCannon: true,
@@ -156,15 +162,15 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.HillGiant.id,
 		name: Monsters.HillGiant.name,
 		aliases: Monsters.HillGiant.aliases,
-		timeToFinish: Time.Second * 24,
+		timeToFinish: Time.Second * 10,
 		table: Monsters.HillGiant,
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 13,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		cannonMulti: false,
@@ -177,14 +183,14 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 65,
 		table: Monsters.Obor,
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: false,
 		difficultyRating: 3,
 		qpRequired: 0,
 		itemsRequired: resolveItems(['Giant key']),
 		itemCost: new Bank().add('Giant key', 1),
 		healAmountNeeded: 20 * 5,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
 	},
 	{
@@ -194,11 +200,11 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 27,
 		table: Monsters.Hobgoblin,
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 0,
 		healAmountNeeded: 14,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		cannonMulti: false,
@@ -211,11 +217,11 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 28,
 		table: Monsters.IceWarrior,
 		wildy: true,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 17,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canCannon: true,
 		cannonMulti: false,
@@ -228,14 +234,14 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 20,
 		table: Monsters.Killerwatt,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 1,
 		qpRequired: 4,
 		levelRequirements: {
 			slayer: 37
 		},
 		healAmountNeeded: 16,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
 	},
 	{
@@ -245,7 +251,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 15,
 		table: Monsters.LoarShade,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 4,
 		itemInBankBoosts: [
@@ -262,7 +268,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 25,
 		table: Monsters.Mogre,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		levelRequirements: {
@@ -280,7 +286,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		table: Monsters.PhrinShade,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 4,
 		itemInBankBoosts: [
@@ -298,7 +304,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		table: Monsters.UriumShade,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 6,
 		qpRequired: 4,
 		itemInBankBoosts: [
@@ -316,7 +322,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		table: Monsters.Pyrefiend,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		levelRequirements: {
@@ -324,7 +330,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.FlamingPyrelord,
 		healAmountNeeded: 8,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
@@ -335,15 +341,15 @@ export const mazchnaMonsters: KillableMonster[] = [
 		table: Monsters.Pyrelord,
 
 		wildy: false,
-		canBeKilled: true,
-		difficultyRating: 2,
+
+		difficultyRating: 3,
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 30
 		},
 		superior: Monsters.FlamingPyrelord,
 		healAmountNeeded: 15,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
@@ -354,7 +360,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		table: Monsters.RiylShade,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 4,
 		itemInBankBoosts: [
@@ -372,7 +378,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		table: Monsters.Rockslug,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		levelRequirements: {
@@ -380,7 +386,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.GiantRockslug,
 		healAmountNeeded: 12,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
@@ -391,7 +397,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		table: Monsters.Shade,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 3,
 		qpRequired: 0,
@@ -410,7 +416,13 @@ export const mazchnaMonsters: KillableMonster[] = [
 		table: Monsters.VampyreJuvinate,
 
 		wildy: false,
-		canBeKilled: true,
+		itemInBankBoosts: [
+			{
+				[itemID('Ivandis flail')]: 12,
+				[itemID('Blisterwood flail')]: 15
+			}
+		],
+
 		difficultyRating: 2,
 		qpRequired: 1
 	},
@@ -422,26 +434,37 @@ export const mazchnaMonsters: KillableMonster[] = [
 		table: Monsters.Vyrewatch,
 
 		wildy: false,
-		canBeKilled: true,
+		itemInBankBoosts: [
+			{
+				[itemID('Ivandis flail')]: 12,
+				[itemID('Blisterwood flail')]: 15
+			}
+		],
+
 		difficultyRating: 4,
 		qpRequired: 0,
 		healAmountNeeded: 28,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.VyrewatchSentinel.id,
 		name: Monsters.VyrewatchSentinel.name,
 		aliases: Monsters.VyrewatchSentinel.aliases,
-		timeToFinish: Time.Second * 60,
+		timeToFinish: Time.Second * 30,
 		table: Monsters.VyrewatchSentinel,
 
 		wildy: false,
-		canBeKilled: true,
+		itemInBankBoosts: [
+			{
+				[itemID('Ivandis flail')]: 12,
+				[itemID('Blisterwood flail')]: 15
+			}
+		],
 		difficultyRating: 5,
 		qpRequired: 0,
-		healAmountNeeded: 75,
-		attackStyleToUse: GearSetupTypes.Melee,
+		healAmountNeeded: 40,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -451,7 +474,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 35,
 		table: Monsters.WallBeast,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		levelRequirements: {

@@ -29,15 +29,12 @@ export default class extends Task {
 			collectable.item.name
 		}. (${Math.round((totalQuantity / (duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
 		if (moryHardBoost) {
-			str += `\n\n**Boosts:** 2x for Morytania Hard diary`;
+			str += '\n\n**Boosts:** 2x for Morytania Hard diary';
 		}
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.CollectingLoot,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.CollectingLoot),
-				loot.bank
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingLoot), loot.bank])
 		);
 
 		handleTripFinish(
@@ -47,9 +44,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of collecting ${collectable.item.name}`);
-				return this.client.commands
-					.get('collect')!
-					.run(res, [quantity, collectable.item.name]);
+				return this.client.commands.get('collect')!.run(res, [quantity, collectable.item.name]);
 			},
 			undefined,
 			data,

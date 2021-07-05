@@ -31,10 +31,7 @@ interface Diary {
 	elite: DiaryTier;
 }
 
-export async function userhasDiaryTier(
-	user: KlasaUser,
-	tier: DiaryTier
-): Promise<[true] | [false, string]> {
+export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promise<[true] | [false, string]> {
 	const [hasSkillReqs, reason] = user.hasSkillReqs(tier.skillReqs);
 	if (!hasSkillReqs) {
 		return [false, `you don't have these stats: ${reason!}`];
@@ -52,12 +49,7 @@ export async function userhasDiaryTier(
 		const cl = new Bank(user.settings.get(UserSettings.CollectionLogBank));
 		const unownedItems = tier.collectionLogReqs.filter(i => !cl.has(i));
 		if (unownedItems.length > 0) {
-			return [
-				false,
-				`you don't have ${unownedItems
-					.map(itemNameFromID)
-					.join(', ')} in your collection log`
-			];
+			return [false, `you don't have ${unownedItems.map(itemNameFromID).join(', ')} in your collection log`];
 		}
 	}
 
@@ -85,7 +77,7 @@ export async function userhasDiaryTier(
 		for (const [name, score] of entries) {
 			const course = courses.find(c => c.name === name)!;
 
-			if (userLaps[course.id] || userLaps[course.id] < score) {
+			if (!userLaps[course.id] || userLaps[course.id] < score) {
 				return [false, `you don't have ${score} laps at ${course.name}`];
 			}
 		}
@@ -97,10 +89,7 @@ export async function userhasDiaryTier(
 		for (const [name, score] of entries) {
 			const mon = Monsters.find(mon => mon.name === name)!;
 			if (!userScores[mon.id] || userScores[mon.id] < score) {
-				return [
-					false,
-					`you don't have ${score} ${mon.name} KC, you have ${userScores[mon.id] ?? 0} KC`
-				];
+				return [false, `you don't have ${score} ${mon.name} KC, you have ${userScores[mon.id] ?? 0} KC`];
 			}
 		}
 	}
@@ -172,12 +161,7 @@ export const WesternProv: Diary = {
 			thieving: 75,
 			woodcutting: 50
 		},
-		collectionLogReqs: resolveItems([
-			'Raw monkfish',
-			'Dashing kebbit fur',
-			'Mahogany logs',
-			'Adamantite ore'
-		]),
+		collectionLogReqs: resolveItems(['Raw monkfish', 'Dashing kebbit fur', 'Mahogany logs', 'Adamantite ore']),
 		lapsReqs: {
 			'Ape Atoll Agility Course': 1
 		},
@@ -206,12 +190,7 @@ export const WesternProv: Diary = {
 			strength: 42,
 			thieving: 85
 		},
-		collectionLogReqs: resolveItems([
-			'Magic longbow',
-			'Void knight top',
-			'Void knight robe',
-			'Void knight gloves'
-		]),
+		collectionLogReqs: resolveItems(['Magic longbow', 'Void knight top', 'Void knight robe', 'Void knight gloves']),
 		monsterScores: {
 			'Thermonuclear smoke devil': 1
 		},
@@ -640,7 +619,7 @@ export const KandarinDiary: Diary = {
 		customReq: async user => {
 			const honourLevel = user.settings.get(UserSettings.HonourLevel);
 			if (honourLevel < 5) {
-				return [false, `your Barbarian Assault Honour Level is less than 5`];
+				return [false, 'your Barbarian Assault Honour Level is less than 5'];
 			}
 			return [true];
 		}
@@ -656,7 +635,7 @@ export const KaramjaDiary: Diary = {
 			agility: 15,
 			mining: 40
 		},
-		collectionLogReqs: resolveItems(['Gold ore', 'Fire cape']),
+		collectionLogReqs: resolveItems(['Gold ore']),
 		monsterScores: {
 			Jogre: 1
 		}
@@ -704,13 +683,7 @@ export const KaramjaDiary: Diary = {
 			herblore: 87,
 			runecraft: 91
 		},
-		collectionLogReqs: resolveItems([
-			'Nature rune',
-			'Fire cape',
-			'Coconut',
-			'Calquat fruit',
-			'Anti-venom(4)'
-		])
+		collectionLogReqs: resolveItems(['Nature rune', 'Fire cape', 'Coconut', 'Calquat fruit', 'Anti-venom(4)'])
 	}
 };
 
@@ -720,6 +693,18 @@ export const KourendKebosDiary: Diary = {
 		name: 'Easy',
 		item: getOSItem("Rada's blessing 1"),
 		skillReqs: {
+			construction: 25,
+			fishing: 20,
+			herblore: 12,
+			mining: 15,
+			thieving: 25
+		},
+		collectionLogReqs: resolveItems(['Iron ore', 'Raw trout', 'Strength potion(3)'])
+	},
+	medium: {
+		name: 'Medium',
+		item: getOSItem("Rada's blessing 2"),
+		skillReqs: {
 			agility: 49,
 			crafting: 30,
 			farming: 45,
@@ -728,18 +713,6 @@ export const KourendKebosDiary: Diary = {
 			hunter: 53,
 			mining: 42,
 			woodcutting: 50
-		},
-		collectionLogReqs: resolveItems(['Iron ore', 'Raw trout', 'Strength potion(3)'])
-	},
-	medium: {
-		name: 'Medium',
-		item: getOSItem("Rada's blessing 2"),
-		skillReqs: {
-			construction: 25,
-			fishing: 20,
-			herblore: 12,
-			mining: 15,
-			thieving: 25
 		},
 		minigameReqs: {
 			Wintertodt: 1
@@ -777,14 +750,9 @@ export const KourendKebosDiary: Diary = {
 			mining: 38,
 			runecraft: 77,
 			slayer: 95,
-			woodcutting: 95
+			woodcutting: 90
 		},
-		collectionLogReqs: resolveItems([
-			'Blood rune',
-			'Redwood logs',
-			'Dark totem',
-			'Raw anglerfish'
-		]),
+		collectionLogReqs: resolveItems(['Blood rune', 'Redwood logs', 'Dark totem', 'Raw anglerfish']),
 		monsterScores: {
 			Hydra: 1
 		},
@@ -1004,12 +972,7 @@ export const VarrockDiary: Diary = {
 			runecraft: 78,
 			smithing: 89
 		},
-		collectionLogReqs: resolveItems([
-			'Super combat potion(4)',
-			'Mahogany plank',
-			'Rune dart',
-			'Earth rune'
-		])
+		collectionLogReqs: resolveItems(['Super combat potion(4)', 'Mahogany plank', 'Rune dart', 'Earth rune'])
 	}
 };
 
@@ -1084,12 +1047,7 @@ export const WildernessDiary: Diary = {
 			thieving: 84,
 			woodcutting: 75
 		},
-		collectionLogReqs: resolveItems([
-			'Rune scimitar',
-			'Raw dark crab',
-			'Dark crab',
-			'Magic logs'
-		]),
+		collectionLogReqs: resolveItems(['Rune scimitar', 'Raw dark crab', 'Dark crab', 'Magic logs']),
 		monsterScores: {
 			Callisto: 1,
 			Venenatis: 1,

@@ -19,15 +19,13 @@ export default class extends BotCommand {
 		const minigame = Minigames.find(m => stringMatches(m.key, name));
 		if (!minigame) {
 			return msg.channel.send(
-				`That's not a valid minigame. The valid minigames are: ${Minigames.map(
-					m => m.key
-				).join(', ')}.`
+				`That's not a valid minigame. The valid minigames are: ${Minigames.map(m => m.key).join(', ')}.`
 			);
 		}
 		const entity = await getMinigameEntity(msg.author.id);
 		entity[minigame.key] = kc;
 		await entity.save();
 
-		return msg.send(`Set your ${minigame.name} kc to ${kc}.`);
+		return msg.channel.send(`Set your ${minigame.name} kc to ${kc}.`);
 	}
 }

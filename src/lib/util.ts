@@ -1,35 +1,24 @@
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
 import { objectEntries, randInt, shuffleArr } from 'e';
-import { KlasaClient, KlasaUser, SettingsFolder, util } from 'klasa';
+import { KlasaClient, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const emojiRegex = require('emoji-regex');
-
-import {
-	CENA_CHARS,
-	continuationChars,
-	Events,
-	PerkTier,
-	skillEmoji,
-	SupportServer,
-	Time
-} from './constants';
-import { hasItemEquipped } from './gear';
+import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer, Time } from './constants';
 import { GearSetupTypes } from './gear/types';
-import killableMonsters from './minions/data/killableMonsters';
-import { KillableMonster } from './minions/types';
 import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 
-export * from 'oldschooljs/dist/util/index';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const emojiRegex = require('emoji-regex');
+
 export { Util } from 'discord.js';
+export * from 'oldschooljs/dist/util/index';
 
 const zeroWidthSpace = '\u200b';
 
@@ -284,7 +273,7 @@ export function anglerBoostPercent(user: KlasaUser) {
 	let amountEquipped = 0;
 	let boostPercent = 0;
 	for (const [id, percent] of anglerBoosts) {
-		if (hasItemEquipped(id, skillingSetup)) {
+		if (skillingSetup.hasEquipped([id])) {
 			boostPercent += percent;
 			amountEquipped++;
 		}
@@ -295,19 +284,13 @@ export function anglerBoostPercent(user: KlasaUser) {
 	return round(boostPercent, 1);
 }
 
-const rogueOutfit = resolveItems([
-	'Rogue mask',
-	'Rogue top',
-	'Rogue trousers',
-	'Rogue gloves',
-	'Rogue boots'
-]);
+const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
 
 export function rogueOutfitPercentBonus(user: KlasaUser): number {
 	const skillingSetup = user.getGear('skilling');
 	let amountEquipped = 0;
 	for (const id of rogueOutfit) {
-		if (hasItemEquipped(id, skillingSetup)) {
+		if (skillingSetup.hasEquipped([id])) {
 			amountEquipped++;
 		}
 	}
@@ -326,9 +309,7 @@ export function generateContinuationChar(user: KlasaUser) {
 			? shuffleArr(continuationChars).slice(0, randInt(1, 2)).join('')
 			: randomItemFromArray(continuationChars);
 
-	return `${shuffleArr(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffleArr(
-		CENA_CHARS
-	)
+	return `${shuffleArr(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffleArr(CENA_CHARS)
 		.slice(0, randInt(1, 2))
 		.join('')}`;
 }
@@ -358,16 +339,13 @@ export function sha256Hash(x: string) {
 }
 
 export function countSkillsAtleast99(user: KlasaUser) {
-	const skills = (user.settings.get('skills') as SettingsFolder).toJSON() as Record<
-		string,
-		number
-	>;
+	const skills = (user.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>;
 	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
 }
 
 export function getSupportGuild(client: Client) {
 	const guild = client.guilds.cache.get(SupportServer);
-	if (!guild) throw `Can't find support guild.`;
+	if (!guild) throw "Can't find support guild.";
 	return guild;
 }
 
@@ -385,12 +363,8 @@ export function normal(mu = 0, sigma = 1, nsamples = 6) {
  * Checks if the bot can send a message to a channel object.
  * @param channel The channel to check if the bot can send a message to.
  */
-export function channelIsSendable(channel: Channel | undefined): channel is TextChannel {
-	if (
-		!channel ||
-		(!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) ||
-		!channel.postable
-	) {
+export function channelIsSendable(channel: Channel | undefined | null): channel is TextChannel {
+	if (!channel || (!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) || !channel.postable) {
 		return false;
 	}
 
@@ -422,13 +396,6 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 		}
 	}
 	return true;
-}
-
-export default function findMonster(str: string): KillableMonster | undefined {
-	const mon = killableMonsters.find(
-		mon => stringMatches(mon.name, str) || mon.aliases.some(alias => stringMatches(alias, str))
-	);
-	return mon;
 }
 
 export function formatItemReqs(items: ArrayItemsResolved) {
@@ -506,11 +473,7 @@ export function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank)
 	return returnBank;
 }
 
-export function updateBankSetting(
-	client: KlasaClient,
-	setting: string,
-	bankToAdd: Bank | ItemBank
-) {
+export function updateBankSetting(client: KlasaClient, setting: string, bankToAdd: Bank | ItemBank) {
 	const current = new Bank(client.settings.get(setting) as ItemBank);
 	const newBank = current.add(bankToAdd);
 	return client.settings.update(setting, newBank.bank);
@@ -529,4 +492,9 @@ export function textEffect(str: string, effect: 'none' | 'strikethrough') {
 		wrap = '~~';
 	}
 	return `${wrap}${str.replace(/~/g, '')}${wrap}`;
+}
+
+export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
+	const active: any[] = user.settings.get(key) as any[];
+	return user.settings.update(key, active);
 }

@@ -5,13 +5,8 @@ import * as fs from 'fs';
 import { Task } from 'klasa';
 import path from 'path';
 
-import {
-	DUNGEON_FLOOR_Y,
-	GROUND_FLOOR_Y,
-	HOUSE_WIDTH,
-	Placeholders,
-	TOP_FLOOR_Y
-} from '../lib/poh';
+import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '../lib/poh';
+import { getActivityOfUser } from '../lib/settings/settings';
 import { PoHTable } from '../lib/typeorm/PoHTable.entity';
 import { canvasImageFromBuffer } from '../lib/util/canvasUtil';
 
@@ -105,13 +100,7 @@ export default class PoHImage extends Task {
 						const image = await this.client.tasks.get('bankImage')!.getItemImage(id, 1);
 						const h = image.height * 0.8;
 						const w = image.width * 0.8;
-						ctx.drawImage(
-							image,
-							mX + (mount.width - w) / 2,
-							mY + (mount.height - h) / 2,
-							w,
-							h
-						);
+						ctx.drawImage(image, mX + (mount.width - w) / 2, mY + (mount.height - h) / 2, w, h);
 					}
 
 					continue;
@@ -123,7 +112,7 @@ export default class PoHImage extends Task {
 				ctx.drawImage(image, x - width / 2, y - height, width, height);
 			}
 		}
-		const activity = this.client.getActivityOfUser(poh.userID);
+		const activity = getActivityOfUser(poh.userID);
 		if (!activity) {
 			const image = this.imageCache.get(11)!;
 			const [x, y] = this.randMinionCoords();

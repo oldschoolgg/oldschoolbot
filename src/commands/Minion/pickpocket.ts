@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -54,13 +55,11 @@ export default class extends BotCommand {
 					results.push([npc.name, round(xpReceived, 2) / 5, damageTaken / 5]);
 				}
 				for (const [name, xp, damageTaken] of results.sort((a, b) => a[1] - b[1])) {
-					str += `\n${name} ${xp.toLocaleString()} XP/HR and ${
-						damageTaken / 20
-					} Sharks/hr`;
+					str += `\n${name} ${xp.toLocaleString()} XP/HR and ${damageTaken / 20} Sharks/hr`;
 				}
 				str += '\n\n\n';
 			}
-			return msg.channel.sendFile(Buffer.from(str), 'output.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(str), 'output.txt')] });
 		}
 
 		if (typeof quantity === 'string') {
@@ -71,18 +70,15 @@ export default class extends BotCommand {
 		const pickpocketable = Pickpocketables.find(npc => stringMatches(npc.name, name));
 
 		if (!pickpocketable) {
-			return msg.send(
+			return msg.channel.send(
 				`That is not a valid NPC to pickpocket, try pickpocketing one of the following: ${Pickpocketables.map(
 					npc => npc.name
 				).join(', ')}.`
 			);
 		}
 
-		if (
-			pickpocketable.qpRequired &&
-			msg.author.settings.get(UserSettings.QP) < pickpocketable.qpRequired
-		) {
-			return msg.send(
+		if (pickpocketable.qpRequired && msg.author.settings.get(UserSettings.QP) < pickpocketable.qpRequired) {
+			return msg.channel.send(
 				`You need atleast **${pickpocketable.qpRequired}** QP to pickpocket a ${pickpocketable.name}.`
 			);
 		}
@@ -91,15 +87,13 @@ export default class extends BotCommand {
 			pickpocketable.itemsRequired &&
 			!bankHasAllItemsFromBank(msg.author.allItemsOwned().bank, pickpocketable.itemsRequired)
 		) {
-			return msg.send(
-				`You need these items to pickpocket this NPC: ${new Bank(
-					pickpocketable.itemsRequired
-				)}.`
+			return msg.channel.send(
+				`You need these items to pickpocket this NPC: ${new Bank(pickpocketable.itemsRequired)}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Thieving) < pickpocketable.level) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${pickpocketable.level} Thieving to pickpocket a ${pickpocketable.name}.`
 			);
 		}
@@ -116,7 +110,7 @@ export default class extends BotCommand {
 		const duration = quantity * timeToPickpocket;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of times you can pickpocket a ${
@@ -129,7 +123,7 @@ export default class extends BotCommand {
 
 		const [hasArdyHard] = await userhasDiaryTier(msg.author, ArdougneDiary.hard);
 		if (hasArdyHard) {
-			boosts.push(`+10% chance of success from Ardougne Hard diary`);
+			boosts.push('+10% chance of success from Ardougne Hard diary');
 		}
 
 		const [successfulQuantity, damageTaken, xpReceived] = calcLootXPPickpocketing(
@@ -150,22 +144,15 @@ export default class extends BotCommand {
 		});
 
 		if (rogueOutfitPercentBonus(msg.author) > 0) {
-			boosts.push(
-				`${rogueOutfitPercentBonus(
-					msg.author
-				)}% chance of x2 loot due to rogue outfit equipped`
-			);
+			boosts.push(`${rogueOutfitPercentBonus(msg.author)}% chance of x2 loot due to rogue outfit equipped`);
 		}
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.ThievingCost,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.ThievingCost),
-				foodRemoved
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.ThievingCost), foodRemoved])
 		);
 
-		await addSubTaskToActivityTask<PickpocketActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<PickpocketActivityTaskOptions>({
 			monsterID: pickpocketable.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -179,14 +166,12 @@ export default class extends BotCommand {
 
 		let str = `${msg.author.minionName} is now going to pickpocket a ${
 			pickpocketable.name
-		} ${quantity}x times, it'll take around ${formatDuration(
-			duration
-		)} to finish. Removed ${foodString}`;
+		} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish. Removed ${foodString}`;
 
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

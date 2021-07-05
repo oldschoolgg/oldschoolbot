@@ -42,7 +42,7 @@ export default class extends BotCommand {
 
 	determineDuration(user: KlasaUser): [number, string] {
 		let baseTime = Time.Hour * 2;
-
+		const gear = user.getGear('range');
 		let debugStr = '';
 
 		// Reduce time based on KC
@@ -52,10 +52,14 @@ export default class extends BotCommand {
 		debugStr += `${percentIncreaseFromKC}% from KC`;
 
 		// Reduce time based on Gear
-		const usersRangeStats = user.getGear('range').stats;
-		const percentIncreaseFromRangeStats =
-			Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
+		const usersRangeStats = gear.stats;
+		const percentIncreaseFromRangeStats = Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromRangeStats);
+
+		if (gear.hasEquipped('Twisted bow')) {
+			debugStr += ', 15% from Twisted bow';
+			baseTime = reduceNumByPercent(baseTime, 15);
+		}
 
 		debugStr += `, ${percentIncreaseFromRangeStats}% from Gear`;
 
@@ -93,11 +97,11 @@ export default class extends BotCommand {
 			!equippedWeapon.weapon ||
 			!['crossbow', 'bow'].includes(equippedWeapon.weapon.weapon_type)
 		) {
-			throw `JalYt, you not wearing ranged weapon?! TzTok-Jad stomp you to death if you get close, come back with range weapon.`;
+			throw 'JalYt, you not wearing ranged weapon?! TzTok-Jad stomp you to death if you get close, come back with range weapon.';
 		}
 
 		if (usersRangeStats.attack_ranged < 160) {
-			throw `JalYt, your ranged gear not strong enough! You die very quickly with your bad gear, come back with better range gear.`;
+			throw 'JalYt, your ranged gear not strong enough! You die very quickly with your bad gear, come back with better range gear.';
 		}
 
 		if (!bankHasAllItemsFromBank(user.settings.get(UserSettings.Bank), fightCavesSupplies)) {
@@ -107,7 +111,7 @@ export default class extends BotCommand {
 		}
 
 		if (user.skillLevel(SkillsEnum.Prayer) < 43) {
-			throw `JalYt, come back when you have atleast 43 Prayer, TzTok-Jad annihilate you without protection from gods.`;
+			throw 'JalYt, come back when you have atleast 43 Prayer, TzTok-Jad annihilate you without protection from gods.';
 		}
 	}
 
@@ -119,7 +123,7 @@ export default class extends BotCommand {
 			await this.checkGear(msg.author);
 		} catch (err) {
 			if (typeof err === 'string') {
-				return msg.channel.send(await chatHeadImage({ content: err, head: 'mejJal' }));
+				return msg.channel.send({ files: [await chatHeadImage({ content: err, head: 'mejJal' })] });
 			}
 			throw err;
 		}
@@ -150,18 +154,12 @@ export default class extends BotCommand {
 			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
 
 		// 15% boost for on task
-		if (
-			isOnTask &&
-			msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Black mask (i)')))
-		) {
+		if (isOnTask && msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Black mask (i)')))) {
 			duration *= 0.85;
-			debugStr =
-				debugStr === ''
-					? '15% on Task with Black mask (i)'
-					: ', 15% on Task with Black mask (i)';
+			debugStr = debugStr === '' ? '15% on Task with Black mask (i)' : ', 15% on Task with Black mask (i)';
 		}
 
-		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity: 1,
@@ -175,31 +173,25 @@ export default class extends BotCommand {
 		// Track this food cost in Economy Stats
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.FightCavesCost,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.FightCavesCost),
-				fightCavesSupplies
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.FightCavesCost), fightCavesSupplies])
 		);
 
-		const totalDeathChance = (
-			((100 - preJadDeathChance) * (100 - jadDeathChance)) /
-			100
-		).toFixed(1);
+		const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 
-		return msg.send(
-			`**Duration:** ${formatDuration(duration)} (${(duration / 1000 / 60).toFixed(
-				2
-			)} minutes)
+		return msg.channel.send({
+			content: `**Duration:** ${formatDuration(duration)} (${(duration / 1000 / 60).toFixed(2)} minutes)
 **Boosts:** ${debugStr}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
 **Jad KC:** ${jadKC}
 **Attempts:** ${attempts}
 
 **Removed from your bank:** ${new Bank(fightCavesSupplies)}`,
-			await chatHeadImage({
-				content: `You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`,
-				head: 'mejJal'
-			})
-		);
+			files: [
+				await chatHeadImage({
+					content: `You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`,
+					head: 'mejJal'
+				})
+			]
+		});
 	}
 }

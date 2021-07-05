@@ -39,22 +39,20 @@ export default class extends BotCommand {
 	}
 
 	async servers(msg: KlasaMessage) {
-		return msg.send(`Old School Bot is in ${this.client.guilds.cache.size} servers.`);
+		return msg.channel.send(`Old School Bot is in ${this.client.guilds.cache.size} servers.`);
 	}
 
 	async minions(msg: KlasaMessage) {
-		const result = await this._query(
-			`SELECT COUNT(*) FROM users WHERE "minion.hasBought" = true;`
-		);
+		const result = await this._query('SELECT COUNT(*) FROM users WHERE "minion.hasBought" = true;');
 
-		return msg.send(`There are ${result[0].count.toLocaleString()} minions!`);
+		return msg.channel.send(`There are ${result[0].count.toLocaleString()} minions!`);
 	}
 
 	async icons(msg: KlasaMessage) {
 		const result: { icon: string | null; qty: number }[] = await this._query(
-			`SELECT "minion.icon" as icon, COUNT(*) as qty FROM users WHERE "minion.icon" is not null group by "minion.icon" order by qty asc;`
+			'SELECT "minion.icon" as icon, COUNT(*) as qty FROM users WHERE "minion.icon" is not null group by "minion.icon" order by qty asc;'
 		);
-		return msg.send(
+		return msg.channel.send(
 			`**Current minion tiers and their number of users:**\n${Object.values(result)
 				.map(row => `${row.icon ?? '<:minion:763743627092164658>'} : ${row.qty}`)
 				.join('\n')}`
@@ -62,20 +60,16 @@ export default class extends BotCommand {
 	}
 
 	async ironmen(msg: KlasaMessage) {
-		const result = await this._query(
-			`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;`
-		);
+		const result = await this._query('SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;');
 
-		return msg.send(`There are ${parseInt(result[0].count).toLocaleString()} ironman minions!`);
+		return msg.channel.send(`There are ${parseInt(result[0].count).toLocaleString()} ironman minions!`);
 	}
 
 	async sacrificed(msg: KlasaMessage) {
-		const result = await this._query(`SELECT SUM ("sacrificedValue") AS total FROM users;`);
+		const result = await this._query('SELECT SUM ("sacrificedValue") AS total FROM users;');
 
-		return msg.send(
-			`There has been ${parseInt(
-				result[0].total
-			).toLocaleString()} GP worth of items sacrificed!`
+		return msg.channel.send(
+			`There has been ${parseInt(result[0].total).toLocaleString()} GP worth of items sacrificed!`
 		);
 	}
 
@@ -85,13 +79,11 @@ FROM users
 WHERE "bankBackground" <> 1
 GROUP BY "bankBackground";`);
 
-		return msg.send(
+		return msg.channel.send(
 			result
 				.map(
 					res =>
-						`**${backgroundImages[res.bankBackground - 1].name}:** ${parseInt(
-							res.count
-						).toLocaleString()}`
+						`**${backgroundImages[res.bankBackground - 1].name}:** ${parseInt(res.count).toLocaleString()}`
 				)
 				.join('\n')
 		);
@@ -101,7 +93,7 @@ GROUP BY "bankBackground";`);
 		const totalBank: { [key: string]: number } = {};
 
 		const res: any = await this._query(
-			`SELECT ARRAY(SELECT "monsterScores" FROM users WHERE "monsterScores"::text <> '{}'::text);`
+			'SELECT ARRAY(SELECT "monsterScores" FROM users WHERE "monsterScores"::text <> \'{}\'::text);'
 		);
 
 		const banks: ItemBank[] = res[0].array;
@@ -113,7 +105,7 @@ GROUP BY "bankBackground";`);
 			}
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			Object.entries(totalBank)
 				.sort(([, qty1], [, qty2]) => qty2 - qty1)
 				.map(([monID, qty]) => {
@@ -127,7 +119,7 @@ GROUP BY "bankBackground";`);
 		const totalBank: { [key: string]: number } = {};
 
 		const res: any = await this._query(
-			`SELECT ARRAY(SELECT "clueScores" FROM users WHERE "clueScores"::text <> '{}'::text);`
+			'SELECT ARRAY(SELECT "clueScores" FROM users WHERE "clueScores"::text <> \'{}\'::text);'
 		);
 
 		const banks: ItemBank[] = res[0].array;
@@ -139,13 +131,11 @@ GROUP BY "bankBackground";`);
 			}
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			Object.entries(totalBank)
 				.map(
 					([clueID, qty]) =>
-						`**${
-							ClueTiers.find(t => t.id === parseInt(clueID))?.name
-						}:** ${qty.toLocaleString()}`
+						`**${ClueTiers.find(t => t.id === parseInt(clueID))?.name}:** ${qty.toLocaleString()}`
 				)
 				.join('\n')
 		);

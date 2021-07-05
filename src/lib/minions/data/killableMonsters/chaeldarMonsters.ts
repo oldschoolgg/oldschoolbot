@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { GearSetupTypes, GearStat } from '../../../gear';
+import { GearStat } from '../../../gear';
 import { SkillsEnum } from '../../../skilling/types';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
@@ -12,18 +12,17 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.AncientZygomite.id,
 		name: Monsters.AncientZygomite.name,
 		aliases: Monsters.AncientZygomite.aliases,
-		timeToFinish: Time.Second * 40,
+		timeToFinish: Time.Second * 25,
 		table: Monsters.AncientZygomite,
 
 		wildy: false,
-		canBeKilled: true,
 		difficultyRating: 3,
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 57
 		},
 		healAmountNeeded: 16,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged]
 	},
 	{
@@ -34,12 +33,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.Aviansie,
 
 		wildy: false,
-		canBeKilled: true,
 		difficultyRating: 4,
 		qpRequired: 0,
-		levelRequirements: {
-			agility: 60
-		},
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
 		healAmountNeeded: 24
@@ -48,10 +43,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.BlackDemon.id,
 		name: Monsters.BlackDemon.name,
 		aliases: Monsters.BlackDemon.aliases,
-		timeToFinish: Time.Second * 40,
+		timeToFinish: Time.Second * 36,
 		table: Monsters.BlackDemon,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		existsInCatacombs: true,
 		qpRequired: 0,
@@ -64,7 +59,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 30,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		// Even if no multi, can safespot for same effect
@@ -78,7 +73,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 16,
 		table: Monsters.CaveHorror,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
@@ -89,8 +84,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 58
 		},
 		superior: Monsters.CaveAbomination,
-		healAmountNeeded: 20,
-		attackStyleToUse: GearSetupTypes.Range,
+		healAmountNeeded: 11,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic],
 		canCannon: true,
 		cannonMulti: false,
@@ -103,7 +98,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 35,
 		table: Monsters.CaveKraken,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		qpRequired: 0,
 		levelRequirements: {
@@ -113,7 +108,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Magic],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
 		healAmountNeeded: 20,
-		attackStyleToUse: GearSetupTypes.Mage,
+		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
@@ -123,23 +118,17 @@ export const chaeldarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 117,
 		table: Monsters.FossilIslandWyvernAncient,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
-			[
-				'Elemental shield',
-				'Mind shield',
-				'Dragonfire shield',
-				'Dragonfire ward',
-				'Ancient wyvern shield'
-			]
+			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
 		qpRequired: 2,
 		levelRequirements: {
 			slayer: 82
 		},
 		healAmountNeeded: 20 * 4,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged]
 	},
 	{
@@ -150,23 +139,17 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.FossilIslandWyvernLongTailed,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
-			[
-				'Elemental shield',
-				'Mind shield',
-				'Dragonfire shield',
-				'Dragonfire ward',
-				'Ancient wyvern shield'
-			]
+			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
 		qpRequired: 2,
 		levelRequirements: {
 			slayer: 66
 		},
 		healAmountNeeded: 20 * 2,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -177,23 +160,17 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.FossilIslandWyvernSpitting,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
-			[
-				'Elemental shield',
-				'Mind shield',
-				'Dragonfire shield',
-				'Dragonfire ward',
-				'Ancient wyvern shield'
-			]
+			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
 		qpRequired: 2,
 		levelRequirements: {
 			slayer: 66
 		},
 		healAmountNeeded: 45,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged]
 	},
 	{
@@ -204,23 +181,17 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.FossilIslandWyvernTaloned,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
-			[
-				'Elemental shield',
-				'Mind shield',
-				'Dragonfire shield',
-				'Dragonfire ward',
-				'Ancient wyvern shield'
-			]
+			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
 		qpRequired: 2,
 		levelRequirements: {
 			slayer: 66
 		},
 		healAmountNeeded: 50,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged]
 	},
 	{
@@ -231,7 +202,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.GreaterDemon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 2,
 		qpRequired: 0,
@@ -244,7 +215,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 18,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: true,
@@ -254,18 +225,18 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.IronDragon.id,
 		name: Monsters.IronDragon.name,
 		aliases: Monsters.IronDragon.aliases,
-		timeToFinish: Time.Second * 23,
+		timeToFinish: Time.Second * 92,
 		table: Monsters.IronDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
 		healAmountNeeded: 35,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: false,
@@ -279,7 +250,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.Kraken,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			[
@@ -312,22 +283,22 @@ export const chaeldarMonsters: KillableMonster[] = [
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
 		slayerOnly: true,
 		healAmountNeeded: 20 * 7,
-		attackStyleToUse: GearSetupTypes.Mage,
+		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.Lizardman.id,
 		name: Monsters.Lizardman.name,
 		aliases: Monsters.Lizardman.aliases,
-		timeToFinish: Time.Second * 11,
+		timeToFinish: Time.Second * 13,
 		table: Monsters.Lizardman,
 		emoji: '<:Xerics_talisman_inert:456176488669249539>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 30,
 		healAmountNeeded: 14,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: true,
@@ -337,15 +308,15 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.LizardmanBrute.id,
 		name: Monsters.LizardmanBrute.name,
 		aliases: Monsters.LizardmanBrute.aliases,
-		timeToFinish: Time.Second * 30,
+		timeToFinish: Time.Second * 16,
 		table: Monsters.LizardmanBrute,
 		emoji: '<:Xerics_talisman_inert:456176488669249539>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 30,
 		healAmountNeeded: 16,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: true,
@@ -359,16 +330,10 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.LizardmanShaman,
 		emoji: '<:Dragon_warhammer:405998717154623488>',
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
-			[
-				"Karil's crossbow",
-				'Rune crossbow',
-				'Armadyl crossbow',
-				'Toxic blowpipe',
-				'Toxic blowpipe (empty)'
-			]
+			["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow', 'Toxic blowpipe', 'Toxic blowpipe (empty)']
 		]),
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,
@@ -387,54 +352,24 @@ export const chaeldarMonsters: KillableMonster[] = [
 		},
 		healAmountNeeded: 20 * 2,
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false
 	},
 	{
-		id: Monsters.Porazdir.id,
-		name: Monsters.Porazdir.name,
-		aliases: Monsters.Porazdir.aliases,
-		timeToFinish: Time.Minute * 13,
-		table: Monsters.Porazdir,
-
-		wildy: false,
-		canBeKilled: false,
-		difficultyRating: 5,
-		itemsRequired: deepResolveItems([
-			[
-				'Zamorak staff',
-				'Staff of the dead',
-				'Toxic staff (uncharged)',
-				'Toxic staff of the dead'
-			]
-		]),
-		qpRequired: 0,
-		healAmountNeeded: 20 * 25,
-		attackStyleToUse: GearSetupTypes.Mage,
-		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged]
-	},
-	{
 		id: Monsters.SkeletalWyvern.id,
 		name: Monsters.SkeletalWyvern.name,
 		aliases: Monsters.SkeletalWyvern.aliases,
-		timeToFinish: Time.Second * 88,
+		timeToFinish: Time.Second * 84,
 		table: Monsters.SkeletalWyvern,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
-			[
-				'Elemental shield',
-				'Mind shield',
-				'Dragonfire shield',
-				'Dragonfire ward',
-				'Ancient wyvern shield'
-			]
+			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
 		]),
 		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
@@ -442,7 +377,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 72
 		},
 		healAmountNeeded: 20 * 3,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged]
 	},
 	{
@@ -453,7 +388,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.Skotizo,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 0,
 		itemsRequired: resolveItems(['Dark totem']),
 		notifyDrops: resolveItems(['Jar of darkness', 'Skotos']),
@@ -466,7 +401,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		],
 		itemCost: new Bank().add('Dark totem', 1),
 		healAmountNeeded: 20 * 15,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic]
 	},
 	{
@@ -477,7 +412,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.TzHaarKet,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0
 	},
@@ -485,11 +420,11 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.Wyrm.id,
 		name: Monsters.Wyrm.name,
 		aliases: Monsters.Wyrm.aliases,
-		timeToFinish: Time.Second * 24,
+		timeToFinish: Time.Second * 27,
 		table: Monsters.Wyrm,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		levelRequirements: {
@@ -497,24 +432,24 @@ export const chaeldarMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.ShadowWyrm,
 		healAmountNeeded: 15,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic]
 	},
 	{
 		id: Monsters.Zygomite.id,
 		name: Monsters.Zygomite.name,
 		aliases: Monsters.Zygomite.aliases,
-		timeToFinish: Time.Second * 25,
+		timeToFinish: Time.Second * 15,
 		table: Monsters.Zygomite,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 3,
 		levelRequirements: {
 			slayer: 57
 		},
 		healAmountNeeded: 14,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic]
 	}
 ];

@@ -29,7 +29,8 @@ export enum CombatOptionsEnum {
 export enum SlayerActivityConstants {
 	None,
 	IceBarrage,
-	IceBurst
+	IceBurst,
+	Cannon
 }
 export const CombatCannonItemBank = {
 	[itemID('Cannon barrels')]: 1,
@@ -55,13 +56,7 @@ export const CombatOptionsArray: CombatOptionsDesc[] = [
 		id: CombatOptionsEnum.AlwaysIceBarrage,
 		name: 'Always Ice Barrage',
 		desc: 'Use Ice barrage whenever possible',
-		aliases: [
-			'always barrage',
-			'alwaysicebarrage',
-			'always ice barrage',
-			'barrage',
-			'ice barrage'
-		]
+		aliases: ['always barrage', 'alwaysicebarrage', 'always ice barrage', 'barrage', 'ice barrage']
 	}
 ];
 
@@ -71,14 +66,16 @@ export const cannonSingleConsumables: Consumable = {
 };
 export const cannonMultiConsumables: Consumable = {
 	itemCost: new Bank().add('Cannonball', 1),
-	qtyPerMinute: 60
+	qtyPerMinute: 50
 };
 // 20% less than always casting to lure.
 export const iceBarrageConsumables: Consumable = {
 	itemCost: new Bank().add('Water rune', 6).add('Blood rune', 2).add('Death rune', 4),
-	qtyPerMinute: 16
+	qtyPerMinute: 16,
+	isRuneCost: true
 };
 export const iceBurstConsumables: Consumable = {
-	itemCost: new Bank().add('Water rune', 2).add('Chaos rune', 4).add('Death rune', 4),
-	qtyPerMinute: 16
+	itemCost: new Bank().add('Water rune', 4).add('Chaos rune', 4).add('Death rune', 2),
+	qtyPerMinute: 16,
+	isRuneCost: true
 };

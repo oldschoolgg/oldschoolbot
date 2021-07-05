@@ -23,37 +23,29 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [amount]: [number]) {
 		const roll = rand(1, 100);
 
-		const embed = new MessageEmbed()
-			.setColor(Color.Orange)
-			.setThumbnail(Image.DiceBag)
-			.setTitle('Dice Roll');
+		const embed = new MessageEmbed().setColor(Color.Orange).setThumbnail(Image.DiceBag).setTitle('Dice Roll');
 
 		if (!amount) {
 			embed.setDescription(`You rolled **${roll}** on the percentile dice.`);
 		} else {
-			if (msg.author.isIronman) return msg.send(`You're an ironman and you cant play dice.`);
+			if (msg.author.isIronman) return msg.channel.send("You're an ironman and you cant play dice.");
 
 			if (amount > 500_000_000) {
-				return msg.send(`You can only dice up to 500m at a time!`);
+				return msg.channel.send('You can only dice up to 500m at a time!');
 			}
 
-			if (amount < 200_000) {
-				return msg.send(`You have to dice atleast 200k.`);
+			if (amount < 1_000_000) {
+				return msg.channel.send('You have to dice atleast 1,000,000.');
 			}
 
 			await msg.author.settings.sync(true);
 			const gp = msg.author.settings.get(UserSettings.GP);
-			if (amount > gp) return msg.send("You don't have enough GP.");
+			if (amount > gp) return msg.channel.send("You don't have enough GP.");
 			const won = roll >= 55;
 			let amountToAdd = won ? amount : -amount;
-			if (roll === 73) amountToAdd += amount > 100 ? amount * 0.2 : amount + 73;
 
 			await msg.author.addGP(amountToAdd);
-			updateGPTrackSetting(
-				this.client,
-				ClientSettings.EconomyStats.GPSourceDice,
-				amountToAdd
-			);
+			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceDice, amountToAdd);
 
 			if (won) {
 				const wins = msg.author.settings.get(UserSettings.Stats.DiceWins);
@@ -70,6 +62,6 @@ export default class extends BotCommand {
 			);
 		}
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

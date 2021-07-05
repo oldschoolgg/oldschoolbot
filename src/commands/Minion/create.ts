@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
@@ -26,13 +27,8 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true,
-			description:
-				'Allows you to create items, like godswords or spirit shields - and pack barrows armor sets.',
-			examples: [
-				'+create armadyl godsword',
-				'+create elysian spirit shield',
-				'+create dharoks armour set'
-			],
+			description: 'Allows you to create items, like godswords or spirit shields - and pack barrows armor sets.',
+			examples: ['+create armadyl godsword', '+create elysian spirit shield', '+create dharoks armour set'],
 			categoryFlags: ['minion']
 		});
 	}
@@ -57,24 +53,21 @@ export default class extends BotCommand {
 					`${i.QPRequired ?? ''}`
 				])
 			]);
-			return msg.channel.sendFile(Buffer.from(creatableTable), `Creatables.txt`);
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(creatableTable), 'Creatables.txt')] });
 		}
 		if (itemName === undefined) {
-			throw `Item name is a required argument.`;
+			throw 'Item name is a required argument.';
 		}
 		itemName = itemName.toLowerCase();
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
-		if (!createableItem) throw `That's not a valid item you can create.`;
+		if (!createableItem) throw "That's not a valid item you can create.";
 
 		if (!quantity || createableItem.cantHaveItems) {
 			quantity = 1;
 		}
 
-		if (
-			createableItem.QPRequired &&
-			msg.author.settings.get(UserSettings.QP) < createableItem.QPRequired
-		) {
+		if (createableItem.QPRequired && msg.author.settings.get(UserSettings.QP) < createableItem.QPRequired) {
 			throw `You need ${createableItem.QPRequired} QP to create this item.`;
 		}
 
@@ -97,21 +90,14 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (
-			createableItem.GPCost &&
-			msg.author.settings.get(UserSettings.GP) < createableItem.GPCost * quantity
-		) {
+		if (createableItem.GPCost && msg.author.settings.get(UserSettings.GP) < createableItem.GPCost * quantity) {
 			throw `You need ${createableItem.GPCost.toLocaleString()} coins to create this item.`;
 		}
 
 		if (createableItem.cantBeInCL) {
 			const cl = new Bank(msg.author.settings.get(UserSettings.CollectionLogBank));
-			if (
-				Object.keys(createableItem.outputItems).some(
-					itemID => cl.amount(Number(itemID)) > 0
-				)
-			) {
-				return msg.channel.send(`You can only create this item once!`);
+			if (Object.keys(createableItem.outputItems).some(itemID => cl.amount(Number(itemID)) > 0)) {
+				return msg.channel.send('You can only create this item once!');
 			}
 		}
 
@@ -127,9 +113,7 @@ export default class extends BotCommand {
 		// Ensure they have the required items to create the item.
 		if (!bankHasAllItemsFromBank(userBank, inItems)) {
 			throw `You don't have the required items to create this item. You need: ${inputItemsString}${
-				createableItem.GPCost
-					? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP`
-					: ''
+				createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
 			}.`;
 		}
 
@@ -150,26 +134,20 @@ export default class extends BotCommand {
 				`${
 					msg.author
 				}, say \`confirm\` to confirm that you want to create **${outputItemsString}** using ${inputItemsString}${
-					createableItem.GPCost
-						? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP`
-						: ''
+					createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
 				}.`
 			);
 
 			// Confirm the user wants to create the item(s)
 			try {
-				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 15,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+					max: 1,
+					time: Time.Second * 15,
+					errors: ['time']
+				});
 			} catch (err) {
-				return sellMsg.edit(`Cancelling item creation.`);
+				return sellMsg.edit('Cancelling item creation.');
 			}
 		}
 
@@ -184,6 +162,6 @@ export default class extends BotCommand {
 
 		if (!createableItem.noCl) await msg.author.addItemsToCollectionLog(outItems);
 
-		return msg.send(`You created ${outputItemsString}.`);
+		return msg.channel.send(`You created ${outputItemsString}.`);
 	}
 }

@@ -15,8 +15,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage:
-				'<melee|mage|range> <attack|defence> <crush|slash|stab|ranged|magic> [prayer|strength]',
+			usage: '<melee|mage|range> <attack|defence> <crush|slash|stab|ranged|magic> [prayer|strength]',
 			usageDelim: ' ',
 			aliases: ['aep', 'aequip'],
 			description:
@@ -39,6 +38,7 @@ export default class extends BotCommand {
 				msg.author.settings.get(UserSettings.Bank),
 				msg.author.getGear(gearType),
 				gearType,
+				msg.author.rawSkills,
 				type,
 				style,
 				extra
@@ -54,9 +54,9 @@ export default class extends BotCommand {
 			gearType,
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);
-		return msg.send(
-			`You auto-equipped your best ${style} stat gear for ${type} in your ${gearType} preset.`,
-			new MessageAttachment(image, 'osbot.png')
-		);
+		return msg.channel.send({
+			content: `You auto-equipped your best ${style} stat gear for ${type} in your ${gearType} preset.`,
+			files: [new MessageAttachment(image, 'osbot.png')]
+		});
 	}
 }

@@ -234,11 +234,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.GreenDragon,
 		amount: [40, 80],
 		weight: 6,
-		monsters: [
-			Monsters.GreenDragon.id,
-			Monsters.BabyGreenDragon.id,
-			Monsters.BrutalGreenDragon.id
-		],
+		monsters: [Monsters.GreenDragon.id, Monsters.BabyGreenDragon.id, Monsters.BrutalGreenDragon.id],
 		combatLevel: 52,
 		questPoints: 34,
 		unlocked: true
@@ -250,6 +246,10 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		monsters: [Monsters.HarpieBugSwarm.id],
 		combatLevel: 45,
 		slayerLevel: 33,
+		levelRequirements: {
+			firemaking: 33,
+			slayer: 33
+		},
 		unlocked: true
 	},
 	{
@@ -356,12 +356,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Lizard,
 		amount: [60, 120],
 		weight: 7,
-		monsters: [
-			Monsters.Lizard.id,
-			Monsters.SmallLizard.id,
-			Monsters.DesertLizard.id,
-			Monsters.SulphurLizard.id
-		],
+		monsters: [Monsters.Lizard.id, Monsters.SmallLizard.id, Monsters.DesertLizard.id, Monsters.SulphurLizard.id],
 		slayerLevel: 22,
 		unlocked: true
 	},
@@ -481,17 +476,31 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
+		monster: Monsters.SpiritualMage,
+		amount: [110, 170],
+
+		weight: 12,
+		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
+		levelRequirements: {
+			slayer: 60
+		},
+		combatLevel: 60,
+		slayerLevel: 63,
+		questPoints: 3,
+		unlocked: true,
+		dontAssign: true
+	},
+	{
 		monster: Monsters.SpiritualRanger,
 		amount: [60, 120],
 		weight: 8,
-		monsters: [
-			Monsters.SpiritualRanger.id,
-			Monsters.SpiritualWarrior.id,
-			Monsters.SpiritualMage.id
-		],
+		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
+		levelRequirements: {
+			slayer: 60
+		},
 		combatLevel: 60,
 		slayerLevel: 63,
-		questPoints: 1,
+		questPoints: 3,
 		unlocked: true
 	},
 	{

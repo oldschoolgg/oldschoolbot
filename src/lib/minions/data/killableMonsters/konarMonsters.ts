@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { GearSetupTypes, GearStat } from '../../../gear';
+import { GearStat } from '../../../gear';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
@@ -11,16 +11,16 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.AdamantDragon.id,
 		name: Monsters.AdamantDragon.name,
 		aliases: Monsters.AdamantDragon.aliases,
-		timeToFinish: Time.Second * 144,
+		timeToFinish: Time.Second * 80,
 		table: Monsters.AdamantDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 205,
 		healAmountNeeded: 20 * 5,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	},
 	{
@@ -31,11 +31,11 @@ export const konarMonsters: KillableMonster[] = [
 		table: Monsters.BabyRedDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 15,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -46,14 +46,14 @@ export const konarMonsters: KillableMonster[] = [
 		table: Monsters.BrutalRedDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
 		qpRequired: 0,
 		healAmountNeeded: 85,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -64,7 +64,7 @@ export const konarMonsters: KillableMonster[] = [
 		table: Monsters.DarkBeast,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 5,
 		qpRequired: 0,
 		levelRequirements: {
@@ -72,7 +72,7 @@ export const konarMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.NightBeast,
 		healAmountNeeded: 20 * 3,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic],
 		canCannon: true,
 		cannonMulti: false,
@@ -82,11 +82,11 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.Drake.id,
 		name: Monsters.Drake.name,
 		aliases: Monsters.Drake.aliases,
-		timeToFinish: Time.Second * 54,
+		timeToFinish: Time.Second * 49,
 		table: Monsters.Drake,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		levelRequirements: {
@@ -95,7 +95,7 @@ export const konarMonsters: KillableMonster[] = [
 
 		superior: Monsters.GuardianDrake,
 		healAmountNeeded: 70,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: false,
@@ -108,7 +108,7 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 110,
 		table: Monsters.Hydra,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems(['Antidote++(4)']),
 		notifyDrops: resolveItems(['Hydra tail']),
@@ -118,7 +118,7 @@ export const konarMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.ColossalHydra,
 		healAmountNeeded: 20 * 5,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
 		canCannon: true
 	},
@@ -129,16 +129,10 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 240,
 		table: Monsters.AlchemicalHydra,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems(['Antidote++(4)']),
-		notifyDrops: resolveItems([
-			'Hydra leather',
-			'Hydra tail',
-			"Hydra's claw",
-			'Ikkle hydra',
-			'Jar of chemicals'
-		]),
+		notifyDrops: resolveItems(['Hydra leather', 'Hydra tail', "Hydra's claw", 'Ikkle hydra', 'Jar of chemicals']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -158,7 +152,7 @@ export const konarMonsters: KillableMonster[] = [
 			slayer: 95
 		},
 		healAmountNeeded: 20 * 22,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	},
 	{
@@ -168,13 +162,13 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 54,
 		table: Monsters.MithrilDragon,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Dragon full helm']),
 		qpRequired: 0,
 		healAmountNeeded: 85,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	},
 	{
@@ -184,12 +178,12 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 27,
 		table: Monsters.RedDragon,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
 		healAmountNeeded: 26,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: false,
 		cannonMulti: false,
@@ -202,13 +196,13 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 100,
 		table: Monsters.RuneDragon,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Dragon metal lump', 'Draconic visage']),
 		qpRequired: 205,
 		healAmountNeeded: 20 * 6,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged]
 	},
 	{
@@ -218,7 +212,7 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 17,
 		table: Monsters.SmokeDevil,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		notifyDrops: resolveItems(['Dragon chainbody']),
 		qpRequired: 0,
@@ -234,7 +228,7 @@ export const konarMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 16,
-		attackStyleToUse: GearSetupTypes.Mage,
+		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
 		canCannon: true,
 		cannonMulti: true,
@@ -247,7 +241,7 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 78,
 		table: Monsters.ThermonuclearSmokeDevil,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		notifyDrops: resolveItems(['Dragon chainbody', 'Smoke Battlestaff', 'Pet smoke devil']),
 		qpRequired: 0,
@@ -278,7 +272,7 @@ export const konarMonsters: KillableMonster[] = [
 			}
 		],
 		healAmountNeeded: 20 * 5,
-		attackStyleToUse: GearSetupTypes.Mage,
+		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
@@ -288,12 +282,12 @@ export const konarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 40,
 		table: Monsters.Waterfiend,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Mist battlestaff']),
 		qpRequired: 0,
 		healAmountNeeded: 38,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: false,

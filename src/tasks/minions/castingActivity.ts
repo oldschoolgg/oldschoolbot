@@ -21,7 +21,7 @@ export default class extends Task {
 		});
 
 		let craftXpReceived = 0;
-		let craftXpRes = ``;
+		let craftXpRes = '';
 		if (spell.craftXp) {
 			craftXpReceived = spell.craftXp * quantity;
 
@@ -40,9 +40,9 @@ export default class extends Task {
 			await user.addItemsToBank(loot.bank, true);
 		}
 
-		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${
-			spell.name
-		}, you received ${loot ?? 'no items'}. ${xpRes} ${craftXpRes}`;
+		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${spell.name}, you received ${
+			loot ?? 'no items'
+		}. ${xpRes} ${craftXpRes}`;
 
 		handleTripFinish(
 			this.client,

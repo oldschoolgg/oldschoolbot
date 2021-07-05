@@ -62,14 +62,13 @@ export default class extends BotCommand {
 		if (amount > limit) {
 			return (
 				`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! ` +
-				`*You can increase your limit by becoming a patron at <https://www.patreon.com/oldschoolbot>.`
+				'*You can increase your limit by becoming a patron at <https://www.patreon.com/oldschoolbot>.'
 			);
 		}
 
 		const arrayOfNames = names.split(' ');
 
-		if (arrayOfNames.length > 5)
-			return msg.send(`You can't have more than 5 members in a raid team.`);
+		if (arrayOfNames.length > 5) return msg.channel.send("You can't have more than 5 members in a raid team.");
 
 		const team = arrayOfNames.map(member => ({
 			id: member,
@@ -91,15 +90,11 @@ export default class extends BotCommand {
 			}
 		}
 
-		let result = `In a group raid with ${team.length} users with ${Util.toKMB(
-			points
-		)} points each...\n`;
+		let result = `In a group raid with ${team.length} users with ${Util.toKMB(points)} points each...\n`;
 		for (const [memberID, lootBank] of Object.entries(loot)) {
-			result += `**${memberID}** received: ${new Bank(
-				filterBankFromArrayOfItems(itemsToShow, lootBank)
-			)}\n`;
+			result += `**${memberID}** received: ${new Bank(filterBankFromArrayOfItems(itemsToShow, lootBank))}\n`;
 		}
 
-		return msg.send(result);
+		return msg.channel.send(result);
 	}
 }

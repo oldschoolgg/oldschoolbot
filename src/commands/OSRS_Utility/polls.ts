@@ -11,6 +11,6 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.send('https://secure.runescape.com/m=poll/oldschool/');
+		return msg.channel.send('https://secure.runescape.com/m=poll/oldschool/');
 	}
 }

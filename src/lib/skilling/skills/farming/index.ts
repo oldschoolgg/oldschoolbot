@@ -18,17 +18,17 @@ export const plants: Plant[] = [
 ];
 
 const maleFarmerItems: { [key: number]: number } = {
-	[itemID(`Farmer's strawhat`)]: 0.4,
-	[itemID(`Farmer's jacket`)]: 0.8,
-	[itemID(`Farmer's boro trousers`)]: 0.6,
-	[itemID(`Farmer's boots`)]: 0.2
+	[itemID("Farmer's strawhat")]: 0.4,
+	[itemID("Farmer's jacket")]: 0.8,
+	[itemID("Farmer's boro trousers")]: 0.6,
+	[itemID("Farmer's boots")]: 0.2
 };
 
 const femaleFarmerItems: { [key: number]: number } = {
-	[itemID(`Farmer's strawhat`)]: 0.4,
-	[itemID(`Farmer's shirt`)]: 0.8,
-	[itemID(`Farmer's boro trousers`)]: 0.6,
-	[itemID(`Farmer's boots`)]: 0.2
+	[itemID("Farmer's strawhat")]: 0.4,
+	[itemID("Farmer's shirt")]: 0.8,
+	[itemID("Farmer's boro trousers")]: 0.6,
+	[itemID("Farmer's boots")]: 0.2
 };
 
 const Farming = {

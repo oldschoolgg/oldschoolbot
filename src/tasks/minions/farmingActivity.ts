@@ -60,7 +60,7 @@ export default class extends Task {
 
 		if (
 			bankHasItem(userBank, itemID('Magic secateurs')) ||
-			user.hasItemEquippedAnywhere(itemID(`Magic secateurs`))
+			user.hasItemEquippedAnywhere(itemID('Magic secateurs'))
 		) {
 			baseBonus += 0.1;
 		}
@@ -68,8 +68,8 @@ export default class extends Task {
 		if (
 			bankHasItem(userBank, itemID('Farming cape')) ||
 			bankHasItem(userBank, itemID('Farming cape(t)')) ||
-			user.hasItemEquippedAnywhere(itemID(`Farming cape`)) ||
-			user.hasItemEquippedAnywhere(itemID(`Farming cape(t)`))
+			user.hasItemEquippedAnywhere(itemID('Farming cape')) ||
+			user.hasItemEquippedAnywhere(itemID('Farming cape(t)'))
 		) {
 			baseBonus += 0.05;
 		}
@@ -94,22 +94,19 @@ export default class extends Task {
 		if (patchType.lastPayment) chanceOfDeathReduction = 0;
 
 		// check bank for farmer's items
-		if (user.hasItemEquippedOrInBank(`Farmer's strawhat`)) {
+		if (user.hasItemEquippedOrInBank("Farmer's strawhat")) {
 			bonusXpMultiplier += 0.004;
 			farmersPiecesCheck++;
 		}
-		if (
-			user.hasItemEquippedOrInBank(`Farmer's jacket`) ||
-			user.hasItemEquippedOrInBank(`Farmer's shirt`)
-		) {
+		if (user.hasItemEquippedOrInBank("Farmer's jacket") || user.hasItemEquippedOrInBank("Farmer's shirt")) {
 			bonusXpMultiplier += 0.008;
 			farmersPiecesCheck++;
 		}
-		if (user.hasItemEquippedOrInBank(`Farmer's boro trousers`)) {
+		if (user.hasItemEquippedOrInBank("Farmer's boro trousers")) {
 			bonusXpMultiplier += 0.006;
 			farmersPiecesCheck++;
 		}
-		if (user.hasItemEquippedOrInBank(`Farmer's boots`)) {
+		if (user.hasItemEquippedOrInBank("Farmer's boots")) {
 			bonusXpMultiplier += 0.002;
 			farmersPiecesCheck++;
 		}
@@ -127,9 +124,7 @@ export default class extends Task {
 
 			loot[itemID('Weeds')] = quantity * 3;
 
-			let str = `${user}, ${
-				user.minionName
-			} finished raking ${quantity} patches and planting ${quantity}x ${
+			let str = `${user}, ${user.minionName} finished raking ${quantity} patches and planting ${quantity}x ${
 				plant.name
 			}.\n\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking for a total of ${farmingXpReceived.toLocaleString()} Farming XP.`;
 
@@ -154,9 +149,7 @@ export default class extends Task {
 
 			await this.client.settings.update(
 				ClientSettings.EconomyStats.FarmingLootBank,
-				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(
-					loot
-				).bank
+				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(loot).bank
 			);
 			await user.addItemsToBank(loot, true);
 			const updatePatches: PatchTypes.PatchData = {
@@ -177,9 +170,7 @@ export default class extends Task {
 
 			channel.send(str);
 		} else if (patchType.patchPlanted) {
-			const plantToHarvest = Farming.Plants.find(
-				plant => plant.name === patchType.lastPlanted
-			);
+			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted);
 			if (!plantToHarvest) return;
 			if (!plant) return;
 
@@ -187,10 +178,7 @@ export default class extends Task {
 			for (let i = 0; i < patchType.lastQuantity; i++) {
 				for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
 					const deathRoll = Math.random();
-					if (
-						deathRoll <
-						Math.floor(plantToHarvest.chanceOfDeath * chanceOfDeathReduction) / 128
-					) {
+					if (deathRoll < Math.floor(plantToHarvest.chanceOfDeath * chanceOfDeathReduction) / 128) {
 						quantityDead += 1;
 						break;
 					}
@@ -250,7 +238,7 @@ export default class extends Task {
 				}
 
 				if (plantToHarvest.name === 'Limpwurt') {
-					harvestXp = plantToHarvest.harvestXp;
+					harvestXp = plantToHarvest.harvestXp * alivePlants;
 				} else {
 					harvestXp = cropYield * plantToHarvest.harvestXp;
 				}
@@ -263,10 +251,7 @@ export default class extends Task {
 				} else {
 					await user.settings.sync(true);
 					const GP = user.settings.get(UserSettings.GP);
-					const gpToCutTree =
-						plantToHarvest.seedType === 'redwood'
-							? 2000 * alivePlants
-							: 200 * alivePlants;
+					const gpToCutTree = plantToHarvest.seedType === 'redwood' ? 2000 * alivePlants : 200 * alivePlants;
 					if (GP < gpToCutTree) {
 						throw `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`;
 					} else {
@@ -348,9 +333,7 @@ export default class extends Task {
 			}
 
 			if (newWoodcuttingLevel > currentWoodcuttingLevel) {
-				infoStr.push(
-					`\n\n${user.minionName}'s Woodcutting level is now ${newWoodcuttingLevel}!`
-				);
+				infoStr.push(`\n\n${user.minionName}'s Woodcutting level is now ${newWoodcuttingLevel}!`);
 			}
 
 			let tangleroot = false;
@@ -367,10 +350,7 @@ export default class extends Task {
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
 				alivePlants > 0 &&
-				roll(
-					(plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) /
-						alivePlants
-				)
+				roll((plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) / alivePlants)
 			) {
 				loot[itemID('Tangleroot')] = 1;
 				tangleroot = true;
@@ -388,7 +368,7 @@ export default class extends Task {
 
 			if (tangleroot) {
 				infoStr.push('\n```diff');
-				infoStr.push(`\n- You have a funny feeling you're being followed...`);
+				infoStr.push("\n- You have a funny feeling you're being followed...");
 				infoStr.push('```');
 				this.client.emit(
 					Events.ServerNotification,
@@ -418,8 +398,7 @@ export default class extends Task {
 
 			await user.settings.update(getPatchType, updatePatches);
 
-			const currentContract =
-				user.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
+			const currentContract = user.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
 
 			const { contractsCompleted } = currentContract;
 
@@ -444,20 +423,14 @@ export default class extends Task {
 			}
 
 			if (!planting) {
-				infoStr.push(
-					`\nThe patches have been cleared. They are ready to have new seeds planted.`
-				);
+				infoStr.push('\nThe patches have been cleared. They are ready to have new seeds planted.');
 			} else {
-				infoStr.push(
-					`\n${user.minionName} tells you to come back after your plants have finished growing!`
-				);
+				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
 			}
 
 			await this.client.settings.update(
 				ClientSettings.EconomyStats.FarmingLootBank,
-				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(
-					loot
-				).bank
+				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(loot).bank
 			);
 			await user.addItemsToBank(loot, true);
 			const channel = this.client.channels.cache.get(channelID);
@@ -465,14 +438,16 @@ export default class extends Task {
 
 			channel.send(infoStr.join('\n'));
 			if (janeMessage) {
-				return channel.send(
-					await chatHeadImage({
-						content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
-							contractsCompleted + 1
-						} farming contracts.`,
-						head: 'jane'
-					})
-				);
+				return channel.send({
+					embeds: [
+						await chatHeadImage({
+							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+								contractsCompleted + 1
+							} farming contracts.`,
+							head: 'jane'
+						})
+					]
+				});
 			}
 		}
 	}

@@ -79,9 +79,7 @@ export default class extends BotCommand {
 			filterLootReplace(msg.author.allItemsOwned(), loot);
 			const { previousCL } = await msg.author.addItemsToBank(loot.values(), true);
 			if (whichOfferable.economyCounter) {
-				const oldValue: number = msg.author.settings.get(
-					whichOfferable.economyCounter
-				) as number;
+				const oldValue: number = msg.author.settings.get(whichOfferable.economyCounter) as number;
 				if (typeof quantity !== 'number') quantity = parseInt(quantity);
 				msg.author.settings.update(whichOfferable.economyCounter, oldValue + quantity);
 			}
@@ -99,7 +97,7 @@ export default class extends BotCommand {
 		if (egg) {
 			const quantityOwned = userBank.amount(egg.id);
 			if (quantityOwned === 0) {
-				return msg.channel.send(`You don't own any of these eggs.`);
+				return msg.channel.send("You don't own any of these eggs.");
 			}
 			if (!quantity) quantity = quantityOwned;
 			await msg.author.removeItemsFromBank({ [egg.id]: quantity });
@@ -126,19 +124,15 @@ export default class extends BotCommand {
 		const specialBone = specialBones.find(bone => stringMatches(bone.item.name, boneName));
 		if (specialBone) {
 			if (msg.author.settings.get(UserSettings.QP) < 8) {
-				return msg.send(`You need atleast 8 QP to offer long/curved bones for XP.`);
+				return msg.channel.send('You need atleast 8 QP to offer long/curved bones for XP.');
 			}
 			if (msg.author.skillLevel(SkillsEnum.Construction) < 30) {
-				return msg.send(
-					`You need atleast level 30 Construction to offer long/curved bones for XP.`
-				);
+				return msg.channel.send('You need atleast level 30 Construction to offer long/curved bones for XP.');
 			}
 			const amountHas = userBank.amount(specialBone.item.id);
 			if (quantity === null) quantity = Math.max(amountHas, 1);
 			if (amountHas < quantity) {
-				return msg.send(
-					`You don't have ${quantity}x ${specialBone.item.name}, you have ${amountHas}.`
-				);
+				return msg.channel.send(`You don't have ${quantity}x ${specialBone.item.name}, you have ${amountHas}.`);
 			}
 			const xp = quantity * specialBone.xp;
 			await Promise.all([
@@ -148,7 +142,7 @@ export default class extends BotCommand {
 				}),
 				msg.author.removeItemFromBank(specialBone.item.id, quantity)
 			]);
-			return msg.send(
+			return msg.channel.send(
 				`You handed over ${quantity} ${specialBone.item.name}${
 					quantity > 1 ? "'s" : ''
 				} to Barlak and received ${xp} Construction XP.`
@@ -158,29 +152,23 @@ export default class extends BotCommand {
 		const speedMod = 4.8;
 
 		const bone = Prayer.Bones.find(
-			bone =>
-				stringMatches(bone.name, boneName) ||
-				stringMatches(bone.name.split(' ')[0], boneName)
+			bone => stringMatches(bone.name, boneName) || stringMatches(bone.name.split(' ')[0], boneName)
 		);
 
 		if (!bone) {
-			return msg.send(
-				`That's not a valid bone to offer. Valid bones are ${Prayer.Bones.map(
-					bone => bone.name
-				).join(', ')}.`
+			return msg.channel.send(
+				`That's not a valid bone to offer. Valid bones are ${Prayer.Bones.map(bone => bone.name).join(', ')}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Prayer) < bone.level) {
-			return msg.send(
-				`${msg.author.minionName} needs ${bone.level} Prayer to offer ${bone.name}.`
-			);
+			return msg.channel.send(`${msg.author.minionName} needs ${bone.level} Prayer to offer ${bone.name}.`);
 		}
 
 		const timeToBuryABone = speedMod * (Time.Second * 1.2 + Time.Second / 4);
 
 		const amountOfThisBone = userBank.amount(bone.inputId);
-		if (!amountOfThisBone) return msg.send(`You have no ${bone.name}.`);
+		if (!amountOfThisBone) return msg.channel.send(`You have no ${bone.name}.`);
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Offering);
 
@@ -191,24 +179,24 @@ export default class extends BotCommand {
 
 		// Check the user has the required bones to bury.
 		if (amountOfThisBone < quantity) {
-			return msg.send(`You dont have ${quantity}x ${bone.name}.`);
+			return msg.channel.send(`You dont have ${quantity}x ${bone.name}.`);
 		}
 
 		const duration = quantity * timeToBuryABone;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${
-					bone.name
-				}s you can bury is ${Math.floor(maxTripLength / timeToBuryABone)}.`
+				)}, try a lower quantity. The highest amount of ${bone.name}s you can bury is ${Math.floor(
+					maxTripLength / timeToBuryABone
+				)}.`
 			);
 		}
 
 		await msg.author.removeItemFromBank(bone.inputId, quantity);
 
-		await addSubTaskToActivityTask<OfferingActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<OfferingActivityTaskOptions>({
 			boneID: bone.inputId,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -216,7 +204,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Offering
 		});
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now offering ${quantity}x ${
 				bone.name
 			} at the Chaos altar, it'll take around ${formatDuration(duration)} to finish.`

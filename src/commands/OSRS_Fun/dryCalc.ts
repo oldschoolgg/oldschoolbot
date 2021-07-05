@@ -7,8 +7,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			description:
-				'Calculates the drop chance of getting an item within a set amount of rolls.',
+			description: 'Calculates the drop chance of getting an item within a set amount of rolls.',
 			usage: '<dropRate:int{1,10000000}> <rolls:int{1,1000000}>',
 			usageDelim: ' ',
 			categoryFlags: ['fun', 'simulation'],
@@ -30,6 +29,6 @@ export default class extends BotCommand {
 			2
 		)}%** chance of receiving atleast one drop.`;
 
-		return msg.send(output);
+		return msg.channel.send(output);
 	}
 }

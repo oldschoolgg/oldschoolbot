@@ -24,34 +24,27 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const capesOwned = await msg.author.numberOfItemInBank(itemID('Fire cape'), true);
 
-		if (capesOwned < 1) return msg.send(`You have no Fire capes to gamble!`);
+		if (capesOwned < 1) return msg.channel.send('You have no Fire capes to gamble!');
 
 		const sellMsg = await msg.channel.send(
-			`Are you sure you want to gamble a Fire cape for a chance at the Tzrek-Jad pet? Say \`confirm\` to confirm.`
+			'Are you sure you want to gamble a Fire cape for a chance at the Tzrek-Jad pet? Say `confirm` to confirm.'
 		);
 
 		// Confirm the seller wants to sell
 		try {
-			await msg.channel.awaitMessages(
-				_msg =>
-					_msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-				{
-					max: 1,
-					time: 20_000,
-					errors: ['time']
-				}
-			);
+			await msg.channel.awaitMessages({
+				filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+				max: 1,
+				time: 20_000,
+				errors: ['time']
+			});
 		} catch (err) {
-			return sellMsg.edit(`Cancelling Fire cape gamble.`);
+			return sellMsg.edit('Cancelling Fire cape gamble.');
 		}
 
-		const newSacrificedCount =
-			msg.author.settings.get(UserSettings.Stats.FireCapesSacrificed) + 1;
+		const newSacrificedCount = msg.author.settings.get(UserSettings.Stats.FireCapesSacrificed) + 1;
 		await msg.author.removeItemFromBank(itemID('Fire cape'));
-		await msg.author.settings.update(
-			UserSettings.Stats.FireCapesSacrificed,
-			newSacrificedCount
-		);
+		await msg.author.settings.update(UserSettings.Stats.FireCapesSacrificed, newSacrificedCount);
 
 		if (roll(200)) {
 			await msg.author.addItemsToBank({ [itemID('Tzrek-Jad')]: 1 }, true);
@@ -59,27 +52,29 @@ export default class extends BotCommand {
 				Events.ServerNotification,
 				`**${msg.author.username}'s** just received their ${formatOrdinal(
 					msg.author.getCL(itemID('Tzrek-Jad')) + 1
-				)} ${
-					Emoji.TzRekJad
-				} TzRek-jad pet by sacrificing a Fire cape for the ${formatOrdinal(
+				)} ${Emoji.TzRekJad} TzRek-jad pet by sacrificing a Fire cape for the ${formatOrdinal(
 					newSacrificedCount
 				)} time!`
 			);
-			return msg.channel.send(
-				await chatHeadImage({
-					content: 'You lucky. Better train him good else TzTok-Jad find you, JalYt.',
-					head: 'mejJal'
-				})
-			);
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content: 'You lucky. Better train him good else TzTok-Jad find you, JalYt.',
+						head: 'mejJal'
+					})
+				]
+			});
 		}
 
-		return msg.channel.send(
-			await chatHeadImage({
-				content: `You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(
-					newSacrificedCount
-				)} time you gamble cape.`,
-				head: 'mejJal'
-			})
-		);
+		return msg.channel.send({
+			files: [
+				await chatHeadImage({
+					content: `You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(
+						newSacrificedCount
+					)} time you gamble cape.`,
+					head: 'mejJal'
+				})
+			]
+		});
 	}
 }

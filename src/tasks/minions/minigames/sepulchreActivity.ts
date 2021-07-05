@@ -41,21 +41,13 @@ export default class extends Task {
 		await user.addItemsToBank(loot.bank, true);
 		const xpStr = await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP });
 
-		let str = `${user}, ${
-			user.minionName
-		} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${floors[0]}-${
-			floors[floors.length - 1]
-		}), and opened ${numCoffinsOpened}x coffins.\n\n${xpStr}`;
+		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
+			floors[0]
+		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpStr}`;
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(
-				loot.bank,
-				`Loot From ${quantity}x Hallowed Sepulchre:`,
-				true,
-				{ showNewCL: 1 },
-				user
-			);
+			.generateBankImage(loot.bank, `Loot From ${quantity}x Hallowed Sepulchre:`, true, { showNewCL: 1 }, user);
 
 		handleTripFinish(
 			this.client,

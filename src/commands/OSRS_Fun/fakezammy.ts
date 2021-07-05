@@ -37,23 +37,17 @@ export default class extends BotCommand {
 
 		ctx.fillText("Your K'ril Tsutsaroth kill count is: ", 11, 10);
 		ctx.fillStyle = '#ff0000';
-		ctx.fillText(
-			kc.toString(),
-			12 + ctx.measureText("Your K'ril Tsutsaroth kill count is: ").width,
-			10
-		);
+		ctx.fillText(kc.toString(), 12 + ctx.measureText("Your K'ril Tsutsaroth kill count is: ").width, 10);
 
 		ctx.fillStyle = '#ff0000';
-		ctx.fillText(`You have a funny feeling like you're being followed.`, 11, 25);
+		ctx.fillText("You have a funny feeling like you're being followed.", 11, 25);
 
 		ctx.fillStyle = '#005f00';
 		ctx.fillText(`${username} received a drop: Pet k'ril tsutsaroth`, 11, 40);
 
 		ctx.fillStyle = '#005f00';
 		ctx.fillText(
-			`${username} received a drop: ${
-				Math.random() > 0.5 ? 'Zamorak hilt' : 'Staff of the dead'
-			}`,
+			`${username} received a drop: ${Math.random() > 0.5 ? 'Zamorak hilt' : 'Staff of the dead'}`,
 			11,
 			54
 		);
@@ -65,8 +59,8 @@ export default class extends BotCommand {
 		ctx.fillStyle = '#0000ff';
 		ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
 
-		return msg.send(
-			new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`)
-		);
+		return msg.channel.send({
+			files: [new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`)]
+		});
 	}
 }

@@ -29,17 +29,15 @@ export default class extends BotCommand {
 
 			for (const gearItem of Object.values(gear.raw())) {
 				if (!gearItem) continue;
-				textBank.push(
-					`${getOSItem(gearItem.item).name}: ${gearItem.quantity.toLocaleString()}`
-				);
+				textBank.push(`${getOSItem(gearItem.item).name}: ${gearItem.quantity.toLocaleString()}`);
 			}
 			if (textBank.length === 0) {
-				return msg.send(`No items found.`);
+				return msg.channel.send('No items found.');
 			}
 
-			const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
+			const loadingMsg = await msg.channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
 			const display = new UserRichDisplay();
-			display.setFooterPrefix(`Page `);
+			display.setFooterPrefix('Page ');
 
 			for (const page of chunk(textBank, 12)) {
 				display.addPage(
@@ -64,6 +62,6 @@ export default class extends BotCommand {
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);
 
-		return msg.send(new MessageAttachment(image, 'osbot.png'));
+		return msg.channel.send({ files: [new MessageAttachment(image, 'osbot.png')] });
 	}
 }

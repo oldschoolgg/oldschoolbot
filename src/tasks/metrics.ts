@@ -9,10 +9,7 @@ export default class extends Task {
 		if (this.client.metricsInterval) {
 			clearInterval(this.client.metricsInterval);
 		}
-		this.client.metricsInterval = setInterval(
-			this.analyticsTick.bind(this),
-			Number(Time.Minute)
-		);
+		this.client.metricsInterval = setInterval(this.analyticsTick.bind(this), Number(Time.Minute));
 	}
 
 	async run() {

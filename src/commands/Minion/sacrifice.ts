@@ -32,26 +32,19 @@ export default class extends BotCommand {
 			);
 
 			try {
-				await msg.channel.awaitMessages(
-					_msg =>
-						_msg.author.id === msg.author.id &&
-						_msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: 10000,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					max: 1,
+					time: 10000,
+					errors: ['time'],
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return sellMsg.edit(`Cancelling sacrifice of ${bankToSac}.`);
 			}
 		}
 
 		if (totalPrice > 200_000_000) {
-			this.client.emit(
-				Events.ServerNotification,
-				`${msg.author.username} just sacrificed ${bankToSac}!`
-			);
+			this.client.emit(Events.ServerNotification, `${msg.author.username} just sacrificed ${bankToSac}!`);
 		}
 
 		const newValue = msg.author.settings.get(UserSettings.SacrificedValue) + totalPrice;
@@ -65,10 +58,7 @@ export default class extends BotCommand {
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.SacrificedBank,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.SacrificedBank),
-				bankToSac.bank
-			])
+			addBanks([this.client.settings.get(ClientSettings.EconomyStats.SacrificedBank), bankToSac.bank])
 		);
 
 		msg.author.log(`sacrificed ${bankToSac} for ${totalPrice}`);
@@ -89,7 +79,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		return msg.send(
+		return msg.channel.send(
 			`You sacrificed ${bankToSac}, with a value of ${totalPrice.toLocaleString()}gp (${Util.toKMB(
 				totalPrice
 			)}). Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`

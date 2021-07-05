@@ -1,16 +1,9 @@
-import {
-	BaseEntity,
-	Column,
-	Entity,
-	getConnection,
-	Index,
-	PrimaryColumn,
-	PrimaryGeneratedColumn
-} from 'typeorm';
+import { BaseEntity, Column, Entity, getConnection, Index, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { client } from '../..';
 import { Activity } from '../constants';
-import { ActivityTaskOptions, GroupMonsterActivityTaskOptions } from '../types/minions';
+import { minionActivityCache } from '../settings/settings';
+import { ActivityTaskData, ActivityTaskOptions, GroupMonsterActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
 
@@ -46,16 +39,16 @@ export class ActivityTable extends BaseEntity {
 	public channelID!: string;
 
 	@Column('json', { name: 'data', nullable: false })
-	public data!: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelID' | 'userID'>;
+	public data!: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelID' | 'userID' | 'duration'>;
 
-	public get taskData() {
+	public get taskData(): ActivityTaskData {
 		return {
 			...this.data,
 			type: this.type,
 			userID: this.userID,
 			channelID: this.channelID,
 			duration: this.duration,
-			finishDate: this.finishDate,
+			finishDate: this.finishDate.getTime(),
 			id: this.id
 		};
 	}
@@ -67,18 +60,36 @@ export class ActivityTable extends BaseEntity {
 		return [this.userID];
 	}
 
+	public activitySync() {
+		const users = isGroupActivity(this.data) ? this.data.users : [this.userID];
+
+		for (const user of users) {
+			minionActivityCache.set(user, this.taskData);
+		}
+	}
+
+	public freeUsers() {
+		const users = isGroupActivity(this.data) ? this.data.users : [this.userID];
+		for (const user of users) {
+			minionActivityCache.delete(user);
+		}
+	}
+
 	public async complete() {
 		if (this.completed) {
-			throw new Error(`Tried to complete an already completed task.`);
+			this.freeUsers();
+			throw new Error('Tried to complete an already completed task.');
 		}
 
 		const taskName = taskNameFromType(this.type);
 		const task = client.tasks.get(taskName);
 
 		if (!task) {
-			throw new Error(`Missing task`);
+			this.freeUsers();
+			throw new Error('Missing task');
 		}
 
+		client.oneCommandAtATimeCache.add(this.userID);
 		try {
 			await getConnection()
 				.createQueryBuilder()
@@ -86,16 +97,12 @@ export class ActivityTable extends BaseEntity {
 				.set({ completed: true })
 				.where('id = :id', { id: this.id })
 				.execute();
-			client.oneCommandAtATimeCache.add(this.userID);
 			await task.run(this.taskData);
 		} catch (err) {
 			console.error(err);
 		} finally {
 			client.oneCommandAtATimeCache.delete(this.userID);
-			const users = isGroupActivity(this.data) ? this.data.users : [this.userID];
-			for (const user of users) {
-				client.minionActivityCache.delete(user);
-			}
+			this.freeUsers();
 		}
 	}
 }

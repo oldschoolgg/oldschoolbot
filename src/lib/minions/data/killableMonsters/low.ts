@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { Time } from '../../../constants';
-import { GearSetupTypes, GearStat } from '../../../gear/types';
+import { GearStat } from '../../../gear/types';
 import { KillableMonster } from '../../types';
 
 const killableMonsters: KillableMonster[] = [
@@ -12,7 +12,6 @@ const killableMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 13,
 		table: Monsters.Imp,
 		wildy: false,
-		canBeKilled: false,
 		difficultyRating: 5,
 		qpRequired: 0
 	},
@@ -22,14 +21,12 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Jogre.aliases,
 		timeToFinish: Time.Second * 19.5,
 		table: Monsters.Jogre,
-
 		wildy: false,
-		canBeKilled: false,
 		difficultyRating: 1,
 		qpRequired: 0,
 		respawnTime: Time.Second * 1.5,
 		healAmountNeeded: 14,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -38,14 +35,12 @@ const killableMonsters: KillableMonster[] = [
 		aliases: Monsters.Unicorn.aliases,
 		timeToFinish: Time.Second * 15.5,
 		table: Monsters.Unicorn,
-
 		wildy: false,
-		canBeKilled: false,
 		difficultyRating: 1,
 		qpRequired: 0,
 		respawnTime: Time.Second * 10,
 		healAmountNeeded: 8,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	}
 ];

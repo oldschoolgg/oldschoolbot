@@ -342,12 +342,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Lizard,
 		amount: [110, 170],
 		weight: 5,
-		monsters: [
-			Monsters.Lizard.id,
-			Monsters.SmallLizard.id,
-			Monsters.DesertLizard.id,
-			Monsters.SulphurLizard.id
-		],
+		monsters: [Monsters.Lizard.id, Monsters.SmallLizard.id, Monsters.DesertLizard.id, Monsters.SulphurLizard.id],
 		slayerLevel: 22,
 		unlocked: true
 	},
@@ -429,18 +424,32 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
+		monster: Monsters.SpiritualMage,
+		amount: [110, 170],
+
+		weight: 12,
+		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
+		levelRequirements: {
+			slayer: 60
+		},
+		combatLevel: 60,
+		slayerLevel: 63,
+		questPoints: 3,
+		unlocked: true,
+		dontAssign: true
+	},
+	{
 		monster: Monsters.SpiritualRanger,
 		amount: [110, 170],
 
 		weight: 12,
-		monsters: [
-			Monsters.SpiritualRanger.id,
-			Monsters.SpiritualWarrior.id,
-			Monsters.SpiritualMage.id
-		],
+		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
+		levelRequirements: {
+			slayer: 60
+		},
 		combatLevel: 60,
 		slayerLevel: 63,
-		questPoints: 1,
+		questPoints: 3,
 		unlocked: true
 	},
 	{

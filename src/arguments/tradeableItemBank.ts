@@ -20,7 +20,7 @@ export default class TradeableItemBankArgument extends Argument {
 
 	async run(arg: string, _: Possible, msg: KlasaMessage): Promise<TradeableItemBankArgumentType> {
 		await msg.author.settings.sync(true);
-		let items: [Item, number][] = parseStringBank(arg);
+		let items: [Item, number | undefined][] = parseStringBank(arg);
 
 		let bank = new Bank();
 
@@ -31,7 +31,7 @@ export default class TradeableItemBankArgument extends Argument {
 		let parsedQtyOverride = parseInt(msg.flagArgs.qty);
 		const qtyOverride: number | null = isNaN(parsedQtyOverride) ? null : parsedQtyOverride;
 		if (qtyOverride !== null && (qtyOverride < 1 || qtyOverride > MAX_INT_JAVA)) {
-			throw `The quantity override you gave was too low, or too high.`;
+			throw 'The quantity override you gave was too low, or too high.';
 		}
 
 		// Adds every non-favorited item
@@ -49,9 +49,7 @@ export default class TradeableItemBankArgument extends Argument {
 
 		// Add filterables
 		for (const flag of Object.keys(msg.flagArgs)) {
-			const matching = filterableTypes.find(type =>
-				type.aliases.some(alias => stringMatches(alias, flag))
-			);
+			const matching = filterableTypes.find(type => type.aliases.some(alias => stringMatches(alias, flag)));
 			if (matching) {
 				for (const item of matching.items) {
 					items.push([getOSItem(item), qtyOverride ?? 0]);
@@ -61,12 +59,7 @@ export default class TradeableItemBankArgument extends Argument {
 
 		const { search } = msg.flagArgs;
 		if (search) {
-			items = [
-				...items,
-				...userBank
-					.items()
-					.filter(i => i[0].name.toLowerCase().includes(search.toLowerCase()))
-			];
+			items = [...items, ...userBank.items().filter(i => i[0].name.toLowerCase().includes(search.toLowerCase()))];
 		}
 
 		if (items.length === 0) {
@@ -76,10 +69,7 @@ export default class TradeableItemBankArgument extends Argument {
 		let totalPrice = 0;
 		for (const [item, _qty] of items) {
 			if (bank.length === 70) break;
-			const qty = Math.max(
-				1,
-				qtyOverride ?? (_qty === 0 ? Math.max(1, userBank.amount(item.id)) : _qty)
-			);
+			const qty = Math.max(1, qtyOverride ?? (!_qty ? Math.max(1, userBank.amount(item.id)) : _qty));
 
 			if (itemIsTradeable(item.id) && userBank.amount(item.id) >= qty) {
 				bank.add(item.id, qty);
@@ -90,7 +80,7 @@ export default class TradeableItemBankArgument extends Argument {
 		}
 		const keys = Object.keys(bank.bank);
 		if (keys.length === 0) {
-			throw `You don't have enough of the items you provided, or none of them are tradeable.`;
+			throw "You don't have enough of the items you provided, or none of them are tradeable.";
 		}
 		if (!userBank.fits(bank)) {
 			throw "User bank doesn't have all items in the target bank";

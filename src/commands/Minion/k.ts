@@ -5,6 +5,8 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Activity, Time } from '../../lib/constants';
+import { getSimilarItems } from '../../lib/data/similarItems';
+import { GearSetupTypes, GearStat } from '../../lib/gear';
 import {
 	boostCannon,
 	boostCannonMulti,
@@ -33,7 +35,7 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import findMonster, {
+import {
 	addArrayOfNumbers,
 	formatDuration,
 	isWeekend,
@@ -43,20 +45,17 @@ import findMonster, {
 	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import findMonster from '../../lib/util/findMonster';
 import itemID from '../../lib/util/itemID';
 
-const validMonsters = killableMonsters.map(mon => mon.name).join(`\n`);
+const validMonsters = killableMonsters.map(mon => mon.name).join('\n');
 const invalidMonsterMsg = (prefix: string) =>
 	`That isn't a valid monster.\n\nFor example, \`${prefix}minion kill 5 zulrah\`` +
 	`\n\nTry: \`${prefix}k --monsters\` for a list of killable monsters.`;
 
 const { floor } = Math;
 
-function applySkillBoost(
-	user: KlasaUser,
-	duration: number,
-	styles: AttackStyles[]
-): [number, string] {
+function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
 
 	let newDuration = duration;
@@ -90,10 +89,7 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	@minionNotBusy
-	async run(
-		msg: KlasaMessage,
-		[quantity, name = '', method = '']: [null | number | string, string, string]
-	) {
+	async run(msg: KlasaMessage, [quantity, name = '', method = '']: [null | number | string, string, string]) {
 		const { minionName } = msg.author;
 
 		const boosts = [];
@@ -105,9 +101,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.flagArgs.monsters) {
-			return msg.channel.send(
-				new MessageAttachment(Buffer.from(validMonsters), 'validMonsters.txt')
-			);
+			return msg.channel.send({
+				files: [new MessageAttachment(Buffer.from(validMonsters), 'validMonsters.txt')]
+			});
 		}
 		if (!name) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 		const monster = findMonster(name);
@@ -120,21 +116,29 @@ export default class extends BotCommand {
 			usersTask.assignedTask.monsters.includes(monster.id);
 
 		if (monster.slayerOnly && !isOnTask) {
-			return msg.channel.send(
-				`You can't kill ${monster.name}, because you're not on a slayer task.`
-			);
+			return msg.channel.send(`You can't kill ${monster.name}, because you're not on a slayer task.`);
 		}
+
+		// Set chosen boost based on priority:
+		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
+		const boostChoice = determineBoostChoice({
+			cbOpts: myCBOpts as CombatOptionsEnum[],
+			msg,
+			monster,
+			method: method ?? 'none',
+			isOnTask
+		});
 
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;
 
-		let [timeToFinish, percentReduced] = reducedTimeFromKC(
-			monster,
-			msg.author.getKC(monster.id)
-		);
+		let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, msg.author.getKC(monster.id));
 
-		const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, monster.id);
+		const [, osjsMon, attackStyles] = resolveAttackStyles(msg.author, {
+			monsterID: monster.id,
+			boostMethod: boostChoice
+		});
 		const [newTime, skillBoostMsg] = applySkillBoost(msg.author, timeToFinish, attackStyles);
 
 		timeToFinish = newTime;
@@ -143,28 +147,20 @@ export default class extends BotCommand {
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
 
 		if (monster.pohBoosts) {
-			const [boostPercent, messages] = calcPOHBoosts(
-				await msg.author.getPOH(),
-				monster.pohBoosts
-			);
+			const [boostPercent, messages] = calcPOHBoosts(await msg.author.getPOH(), monster.pohBoosts);
 			if (boostPercent > 0) {
 				timeToFinish = reduceNumByPercent(timeToFinish, boostPercent);
 				boosts.push(messages.join(' + '));
 			}
 		}
 
-		for (const [itemID, boostAmount] of Object.entries(
-			msg.author.resolveAvailableItemBoosts(monster)
-		)) {
+		for (const [itemID, boostAmount] of Object.entries(msg.author.resolveAvailableItemBoosts(monster))) {
 			timeToFinish *= (100 - boostAmount) / 100;
 			boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 		}
 
 		// Removed vorkath because he has a special boost.
-		if (
-			monster.name.toLowerCase() !== 'vorkath' &&
-			osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)
-		) {
+		if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
 			if (
 				msg.author.hasItemEquippedOrInBank('Dragon hunter lance') &&
 				!attackStyles.includes(SkillsEnum.Ranged) &&
@@ -180,29 +176,28 @@ export default class extends BotCommand {
 				boosts.push('15% for Dragon hunter crossbow');
 			}
 		}
-		// Add 15% slayer boost on task if they have black mask or similar
-		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-			if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask (i)'))) {
+
+		// Black mask and salve don't stack.
+		const salveBoost = boosts.join('').toLowerCase().includes('salve amulet');
+		if (!salveBoost) {
+			// Add 15% slayer boost on task if they have black mask or similar
+			if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
+				if (isOnTask && msg.author.hasItemEquippedOrInBank('Black mask (i)')) {
+					timeToFinish = reduceNumByPercent(timeToFinish, 15);
+					boosts.push('15% for Black mask (i) on non-melee task');
+				}
+			} else if (
+				isOnTask &&
+				(msg.author.hasItemEquippedOrInBank('Black mask') ||
+					msg.author.hasItemEquippedOrInBank('Black mask (i)'))
+			) {
 				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				boosts.push('15% for Black mask (i) on non-melee task');
+				boosts.push('15% for Black mask on melee task');
 			}
-		} else if (isOnTask && msg.author.hasItemEquippedOrInBank(itemID('Black mask'))) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push('15% for Black mask on melee task');
 		}
 
 		// Initialize consumable costs before any are calculated.
 		const consumableCosts: Consumable[] = [];
-
-		// Set chosen boost based on priority:
-		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
-		const boostChoice = determineBoostChoice(
-			myCBOpts as CombatOptionsEnum[],
-			attackStyles,
-			msg,
-			monster,
-			method ?? 'none'
-		);
 
 		// Calculate Cannon and Barrage boosts + costs:
 		let usingCannon = false;
@@ -210,35 +205,34 @@ export default class extends BotCommand {
 		let burstOrBarrage = 0;
 		const hasCannon = msg.author.owns(CombatCannonItemBank);
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !monster!.canBarrage) {
-			return msg.send(`${monster!.name} cannot be barraged or bursted.`);
+			return msg.channel.send(`${monster!.name} cannot be barraged or burst.`);
 		}
-		if (
-			(msg.flagArgs.burst || msg.flagArgs.barrage) &&
-			!attackStyles.includes(SkillsEnum.Magic)
-		) {
-			return msg.send(`You can only barrage/burst when you're using magic!`);
+		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !attackStyles.includes(SkillsEnum.Magic)) {
+			return msg.channel.send("You can only barrage/burst when you're using magic!");
 		}
 		if (msg.flagArgs.cannon && !hasCannon) {
-			return msg.send(`You don't own a Dwarf multicannon, so how could you use one?`);
+			return msg.channel.send("You don't own a Dwarf multicannon, so how could you use one?");
 		}
 		if (msg.flagArgs.cannon && !monster!.canCannon) {
-			return msg.send(`${monster!.name} cannot be killed with a cannon.`);
+			return msg.channel.send(`${monster!.name} cannot be killed with a cannon.`);
+		}
+		if (boostChoice === 'barrage' && msg.author.skillLevel(SkillsEnum.Magic) < 94) {
+			return msg.channel.send(
+				`You need 94 Magic to use Ice Barrage. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`
+			);
+		}
+		if (boostChoice === 'burst' && msg.author.skillLevel(SkillsEnum.Magic) < 70) {
+			return msg.channel.send(
+				`You need 70 Magic to use Ice Burst. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`
+			);
 		}
 
-		if (
-			boostChoice === 'barrage' &&
-			attackStyles.includes(SkillsEnum.Magic) &&
-			monster!.canBarrage
-		) {
+		if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 			consumableCosts.push(iceBarrageConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
 			boosts.push(`${boostIceBarrage}% for Ice Barrage`);
 			burstOrBarrage = SlayerActivityConstants.IceBarrage;
-		} else if (
-			boostChoice === 'burst' &&
-			attackStyles.includes(SkillsEnum.Magic) &&
-			monster!.canBarrage
-		) {
+		} else if (boostChoice === 'burst' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 			consumableCosts.push(iceBurstConsumables);
 			timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst);
 			boosts.push(`${boostIceBurst}% for Ice Burst`);
@@ -277,9 +271,7 @@ export default class extends BotCommand {
 				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 4);
 			} else if (
 				monster.id === Monsters.GrotesqueGuardians.id &&
-				msg.author.settings
-					.get(UserSettings.Slayer.SlayerUnlocks)
-					.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+				msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.DoubleTrouble)
 			) {
 				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
 			}
@@ -289,12 +281,12 @@ export default class extends BotCommand {
 		quantity = Math.max(1, quantity);
 		let duration = timeToFinish * quantity;
 		if (quantity > 1 && duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${minionName} can't go on PvM trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${
-					monster.name
-				} is ${floor(maxTripLength / timeToFinish)}.`
+				)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(
+					maxTripLength / timeToFinish
+				)}.`
 			);
 		}
 
@@ -314,18 +306,18 @@ export default class extends BotCommand {
 			let itemMultiple = cc!.qtyPerKill ?? cc!.qtyPerMinute ?? null;
 
 			if (itemMultiple && typeof itemMultiple === 'number') {
-				// Free casts for kodai + sotd
-				if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
-					itemMultiple = Math.ceil(0.85 * itemMultiple);
-				} else if (msg.author.hasItemEquippedAnywhere('Staff of the dead')) {
-					itemMultiple = Math.ceil((6 / 7) * itemMultiple);
+				if (cc.isRuneCost) {
+					// Free casts for kodai + sotd
+					if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
+						itemMultiple = Math.ceil(0.85 * itemMultiple);
+					} else if (msg.author.hasItemEquippedAnywhere('Staff of the dead')) {
+						itemMultiple = Math.ceil((6 / 7) * itemMultiple);
+					}
 				}
 				const itemCost = cc!.qtyPerKill
 					? cc!.itemCost.clone().multiply(itemMultiple)
 					: cc!.qtyPerMinute
-					? cc!.itemCost
-							.clone()
-							.multiply(Math.ceil((duration / Time.Minute) * itemMultiple))
+					? cc!.itemCost.clone().multiply(Math.ceil((duration / Time.Minute) * itemMultiple))
 					: null;
 				if (itemCost) {
 					pvmCost = true;
@@ -334,8 +326,8 @@ export default class extends BotCommand {
 			}
 		});
 
-		if (msg.author.hasItemEquippedAnywhere('Staff of water')) {
-			lootToRemove.remove('Water rune');
+		if (msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Staff of water')))) {
+			lootToRemove.remove('Water rune', lootToRemove.amount('Water rune'));
 		}
 
 		const itemCost = monster.itemCost ? monster.itemCost.clone().multiply(quantity) : null;
@@ -357,6 +349,19 @@ export default class extends BotCommand {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
 
+			let gearToCheck = GearSetupTypes.Melee;
+
+			switch (monster.attackStyleToUse) {
+				case GearStat.AttackMagic:
+					gearToCheck = GearSetupTypes.Mage;
+					break;
+				case GearStat.AttackRanged:
+					gearToCheck = GearSetupTypes.Range;
+					break;
+				default:
+					break;
+			}
+
 			const [result] = await removeFoodFromUser({
 				client: this.client,
 				user: msg.author,
@@ -365,7 +370,7 @@ export default class extends BotCommand {
 				activityName: monster.name,
 				attackStylesUsed: removeDuplicatesFromArray([
 					...objectKeys(monster.minimumGearRequirements ?? {}),
-					monster.attackStyleToUse
+					gearToCheck
 				]),
 				learningPercentage: percentReduced
 			});
@@ -377,14 +382,14 @@ export default class extends BotCommand {
 		duration = randomVariation(duration, 3);
 
 		if (isWeekend()) {
-			boosts.push(`10% for Weekend`);
+			boosts.push('10% for Weekend');
 			duration *= 0.9;
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
 		await msg.author.removeItemsFromBank(lootToRemove);
 
-		await addSubTaskToActivityTask<MonsterActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
 			monsterID: monster.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
@@ -395,9 +400,7 @@ export default class extends BotCommand {
 			cannonMulti,
 			burstOrBarrage
 		});
-		let response = `${minionName} is now killing ${quantity}x ${
-			monster.name
-		}, it'll take around ${formatDuration(
+		let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 			duration
 		)} to finish. Attack styles used: ${attackStyles.join(', ')}.`;
 
@@ -406,7 +409,7 @@ export default class extends BotCommand {
 		}
 
 		if (foodStr) {
-			response += ` Removed ${foodStr}.\n`;
+			response += ` Removed ${foodStr}\n`;
 		}
 
 		if (boosts.length > 0) {
@@ -417,6 +420,6 @@ export default class extends BotCommand {
 			response += `\n**Messages:** ${messages.join('\n')}.`;
 		}
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

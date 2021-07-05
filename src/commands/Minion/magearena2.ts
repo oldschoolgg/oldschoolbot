@@ -29,12 +29,10 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage) {
 		if (msg.author.skillLevel(SkillsEnum.Magic) < 75) {
-			return msg.channel.send(`You need level 75 Magic to do the Mage Arena II.`);
+			return msg.channel.send('You need level 75 Magic to do the Mage Arena II.');
 		}
 		if (!msg.author.collectionLog[itemID('Saradomin cape')]) {
-			return msg.channel.send(
-				`You need to have completed Mage Arena I before doing part II.`
-			);
+			return msg.channel.send('You need to have completed Mage Arena I before doing part II.');
 		}
 		const duration = randomVariation(Time.Minute * 25, 3);
 
@@ -68,17 +66,15 @@ export default class extends BotCommand {
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.MageArenaCost, totalCost);
 
-		await addSubTaskToActivityTask<ActivityTaskOptions>(this.client, {
+		await addSubTaskToActivityTask<ActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
 			type: Activity.MageArena2
 		});
 
-		return msg.send(
-			`${
-				msg.author.minionName
-			} is now doing the Mage Arena II, it will take approximately ${formatDuration(
+		return msg.channel.send(
+			`${msg.author.minionName} is now doing the Mage Arena II, it will take approximately ${formatDuration(
 				duration
 			)}. Removed ${totalCost} from your bank.`
 		);

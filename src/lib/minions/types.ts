@@ -1,4 +1,5 @@
 import { Image } from 'canvas';
+import { KlasaMessage } from 'klasa';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
@@ -13,6 +14,7 @@ import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
+import { CombatOptionsEnum } from './data/combatConstants';
 import { AttackStyles } from './functions';
 
 export interface BankBackground {
@@ -59,7 +61,6 @@ export interface KillableMonster {
 	};
 	emoji?: string;
 	wildy: boolean;
-	canBeKilled: boolean;
 	difficultyRating: number;
 	itemsRequired?: ArrayItemsResolved;
 	notifyDrops?: ArrayItemsResolved;
@@ -83,7 +84,7 @@ export interface KillableMonster {
 	 * How much healing (health points restored) is needed per kill.
 	 */
 	healAmountNeeded?: number;
-	attackStyleToUse?: GearSetupTypes;
+	attackStyleToUse?: OffenceGearStat;
 	attackStylesUsed?: OffenceGearStat[];
 	/**
 	 * The minimum *required* gear stats to fight this monster.
@@ -113,6 +114,8 @@ export interface Consumable {
 	itemCost: Bank;
 	qtyPerMinute?: number;
 	qtyPerKill?: number;
+	// For staff of the dead / kodai
+	isRuneCost?: boolean;
 }
 
 export interface AddXpParams {
@@ -132,4 +135,19 @@ export interface AddMonsterXpParams {
 	minimal?: boolean;
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
+	burstOrBarrage?: number;
+	superiorCount?: number;
+}
+
+export interface DetermineBoostParams {
+	cbOpts: CombatOptionsEnum[];
+	msg: KlasaMessage;
+	monster: KillableMonster;
+	method?: string | null;
+	isOnTask?: boolean;
+}
+
+export interface ResolveAttackStylesParams {
+	monsterID: number;
+	boostMethod?: string;
 }

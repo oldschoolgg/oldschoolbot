@@ -13,11 +13,7 @@ export default class extends Task {
 		const { channelID, quantity, userID } = data;
 		const user = await this.client.users.fetch(userID);
 
-		const { newScore, previousScore } = await incrementMinigameScore(
-			userID,
-			'BigChompyBirdHunting',
-			quantity
-		);
+		const { newScore, previousScore } = await incrementMinigameScore(userID, 'BigChompyBirdHunting', quantity);
 
 		const loot = new Bank();
 
@@ -46,7 +42,7 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued chompy hunting`);
+				user.log('continued chompy hunting');
 				return this.client.commands.get('chompyhunt')!.run(res, []);
 			},
 			undefined,

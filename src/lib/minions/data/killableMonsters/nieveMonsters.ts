@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { GearSetupTypes, GearStat } from '../../../gear';
+import { GearStat } from '../../../gear';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
@@ -14,11 +14,11 @@ export const nieveMonsters: KillableMonster[] = [
 		table: Monsters.BabyBlackDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 2,
 		qpRequired: 0,
 		healAmountNeeded: 20,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: false,
@@ -32,12 +32,12 @@ export const nieveMonsters: KillableMonster[] = [
 		table: Monsters.BlackDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		qpRequired: 0,
 		healAmountNeeded: 20 * 2,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: false,
@@ -51,7 +51,7 @@ export const nieveMonsters: KillableMonster[] = [
 		table: Monsters.BrutalBlackDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
@@ -67,7 +67,7 @@ export const nieveMonsters: KillableMonster[] = [
 			slayer: 77
 		},
 		healAmountNeeded: 20 * 4,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -78,11 +78,11 @@ export const nieveMonsters: KillableMonster[] = [
 		table: Monsters.LocustRider,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 21,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackRanged],
 		canCannon: true,
 		cannonMulti: true,
@@ -96,11 +96,11 @@ export const nieveMonsters: KillableMonster[] = [
 		table: Monsters.ScarabMage,
 
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 18,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic],
 		canCannon: true,
 		cannonMulti: true,
@@ -114,7 +114,7 @@ export const nieveMonsters: KillableMonster[] = [
 		table: Monsters.SteelDragon,
 
 		wildy: false,
-		canBeKilled: true,
+
 		existsInCatacombs: true,
 		difficultyRating: 3,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
@@ -124,7 +124,7 @@ export const nieveMonsters: KillableMonster[] = [
 			prayer: 43
 		},
 		healAmountNeeded: 45,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: false,
@@ -134,14 +134,14 @@ export const nieveMonsters: KillableMonster[] = [
 		id: Monsters.Suqah.id,
 		name: Monsters.Suqah.name,
 		aliases: Monsters.Suqah.aliases,
-		timeToFinish: Time.Second * 21,
+		timeToFinish: Time.Second * 23,
 		table: Monsters.Suqah,
 		wildy: false,
-		canBeKilled: true,
+
 		difficultyRating: 3,
 		qpRequired: 0,
 		healAmountNeeded: 20,
-		attackStyleToUse: GearSetupTypes.Melee,
+		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackMagic],
 		canCannon: true,
 		cannonMulti: true,
