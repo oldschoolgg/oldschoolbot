@@ -205,8 +205,8 @@ export default class extends BotCommand {
 			return msg.channel.send(str);
 		}
 
-		return msg.send(
-			`Commands: +sw solo|mass|buy|imbue. Current SW points: ${msg.author.settings.get(UserSettings.ZealTokens)}`
+		return msg.channel.send(
+			`Commands: +sw solo/mass/buy/imbue. Current SW points: ${msg.author.settings.get(UserSettings.ZealTokens)}`
 		);
 	}
 

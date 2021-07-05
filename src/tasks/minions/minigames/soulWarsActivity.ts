@@ -43,15 +43,13 @@ export default class extends Task {
 			user.incrementMinigameScore('SoulWars', quantity);
 			str += `${user} received ${points}x Zeal Tokens.`;
 		}
-		console.log(users.length);
-		sendToChannelID(this.client, channelID, { content: str });
 
 		if (users.length === 1) {
 			handleTripFinish(
 				this.client,
 				leaderUser,
 				channelID,
-				'',
+				str,
 				res => {
 					leaderUser.log('continued trip of killing soul wars}');
 					return this.client.commands.get('sw')!.run(res, ['solo']);
@@ -60,6 +58,8 @@ export default class extends Task {
 				data,
 				null
 			);
+		} else {
+			sendToChannelID(this.client, channelID, { content: str });
 		}
 	}
 }
