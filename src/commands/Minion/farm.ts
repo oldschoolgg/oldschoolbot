@@ -63,7 +63,7 @@ export default class extends BotCommand {
 		}
 
 		const plants =
-			Farming.Plants.find(plants => plants.name.toLowerCase() === plantName.toLowerCase()) ??
+			Farming.Plants.find(plants => stringMatches(plants.name, plantName)) ??
 			Farming.Plants.find(plants =>
 				plants.aliases.some(
 					alias => stringMatches(alias, plantName) || stringMatches(alias.split(' ')[0], plantName)
