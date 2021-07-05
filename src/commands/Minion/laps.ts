@@ -12,6 +12,8 @@ import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
+import itemID from '../../lib/util/itemID';
+import { GlobetrottlerOutfit } from './mclue';
 
 const unlimitedFireRuneProviders = [
 	'Staff of fire',
@@ -25,6 +27,15 @@ const unlimitedFireRuneProviders = [
 	'Mystic smoke staff',
 	'Tome of fire'
 ];
+
+const globetrotterTickets = new Bank({
+	'Globetrotter message (beginner)': 1,
+	'Globetrotter message (easy)': 1,
+	'Globetrotter message (medium)': 1,
+	'Globetrotter message (hard)': 1,
+	'Globetrotter message (elite)': 1,
+	'Globetrotter message (master)': 1
+});
 
 export function alching(user: KlasaUser, tripLength: number, isUsingVoidling: boolean) {
 	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
@@ -101,12 +112,80 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (msg.author.skillLevel(SkillsEnum.Agility) < course.level) {
-			return msg.send(`${msg.author.minionName} needs ${course.level} agility to train at ${course.name}.`);
-		}
+		const itemsToRemove = new Bank();
+		let ticket = undefined;
+		let challengeStr = '';
+		let challengeMode = false;
 
-		if (course.qpRequired && msg.author.settings.get(UserSettings.QP) < course.qpRequired) {
-			return msg.send(`You need atleast ${course.qpRequired} Quest Points to do this course.`);
+		// Some validations for the gielinor challenge
+		if (course.name === 'Gielinor Challenge Course') {
+			// If the user doesnt have all the pieces, a few more checks are required
+			let successfulLaps = msg.author.settings.get(UserSettings.LapsScores)[course.id] ?? 0;
+			challengeMode = !new Bank(msg.author.collectionLog).has(GlobetrottlerOutfit);
+			if (challengeMode) {
+				if (
+					!msg.author.hasSkillReqs({
+						agility: 120,
+						thieving: 120,
+						strength: 120,
+						prayer: 120,
+						defence: 120,
+						firemaking: 120,
+						construction: 120,
+						woodcutting: 120,
+						mining: 120
+					})
+				) {
+					return msg.channel.send(
+						'You knocks on the course entrance, but no one answers. Maybe you are not worthy enough for the challenge?'
+					);
+				}
+				ticket = globetrotterTickets.items().find(t => (msg.author.bank().has(t[0].id) ? t[0] : false));
+				if (!ticket) {
+					if (successfulLaps > 0) {
+						return msg.channel.send(
+							"You knock on the course entrance... The gatekeeper answers and extends its hands... You forgot the entrance ticket. The gatekeeper doesn't get fooled by your attempts and tells you to come back when you have a ticket."
+						);
+					}
+					return msg.channel.send(
+						"As you knocks on the course entrance... Someone answers, but they don't say anything. You feel the gatekeeper gaze and somehow you know, you are missing something. What could be?"
+					);
+				}
+				itemsToRemove.add(ticket[0].id);
+			} else {
+				successfulLaps = 1;
+			}
+			// The requirements increases every time the challenge is beaten.
+			const requiredBank = new Bank({
+				[itemID('Stamina potion(4)')]: Math.max(4, 4 * successfulLaps),
+				[itemID('Saradomin brew(4)')]: Math.max(15, 15 * successfulLaps),
+				[itemID('Super restore(4)')]: Math.max(5, 5 * successfulLaps)
+			});
+			if (!msg.author.bank().has(requiredBank.bank)) {
+				return msg.channel.send(
+					`As you prepare for the challenge ahead, you notice it will probably be much harder than it seems. Maybe you should bring more supplies, like ${requiredBank.remove(
+						msg.author.bank()
+					)}.`
+				);
+			}
+			itemsToRemove.add(requiredBank.bank);
+			challengeStr = `${
+				challengeMode
+					? successfulLaps > 0
+						? `As you have completed the challenge ${successfulLaps} times before, the gatekeeper increases its difficulty!`
+						: "The gatekeeper takes easy on you, as you have never completed the challenge before, but it still won't be easy!"
+					: 'The gatekeeper notices your achievements and bows to you. You feel like you can do the challenge without expending too many resources.'
+			}`;
+		} else {
+			if (msg.author.skillLevel(SkillsEnum.Agility) < course.level) {
+				return msg.channel.send(
+					`${msg.author.minionName} needs ${course.level} agility to train at ${course.name}.`
+				);
+			}
+
+			if (course.qpRequired && msg.author.settings.get(UserSettings.QP) < course.qpRequired) {
+				return msg.channel.send(`You need atleast ${course.qpRequired} Quest Points to do this course.`);
+			}
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Agility);
@@ -119,7 +198,7 @@ export default class extends BotCommand {
 		const duration = quantity * timePerLap;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${course.name} laps you can do is ${Math.floor(
@@ -130,17 +209,29 @@ export default class extends BotCommand {
 
 		let response = `${msg.author.minionName} is now doing ${quantity}x ${
 			course.name
-		} laps, it'll take around ${formatDuration(duration)} to finish.`;
+		} laps, it'll take around ${formatDuration(duration)} to finish. ${challengeStr}`.trim();
 
-		const alchResult = alching(msg.author, duration, true);
-		if (alchResult !== null && course.name === 'Ape Atoll Agility Course') {
-			if (!msg.author.owns(alchResult.bankToRemove)) {
-				return msg.channel.send(`You don't own ${alchResult.bankToRemove}.`);
+		let alchResult = null;
+		if (!challengeMode) {
+			alchResult = alching(msg.author, duration, true);
+			if (alchResult !== null && course.name === 'Ape Atoll Agility Course') {
+				if (!msg.author.owns(alchResult.bankToRemove)) {
+					return msg.channel.send(`You don't own ${alchResult.bankToRemove}.`);
+				}
+				itemsToRemove.add(alchResult.bankToRemove.bank);
+				response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
+				await updateBankSetting(
+					this.client,
+					ClientSettings.EconomyStats.MagicCostBank,
+					alchResult.bankToRemove
+				);
 			}
-			await msg.author.removeItemsFromBank(alchResult.bankToRemove);
-			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
-			updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
+		} else {
+			response +=
+				' You focus as hard as possible to complete the Gielinor Challenge and for that, you will not be alching items for this trip.';
 		}
+
+		await msg.author.removeItemsFromBank(itemsToRemove);
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({
 			courseID: course.name,
@@ -155,9 +246,10 @@ export default class extends BotCommand {
 					: {
 							itemID: alchResult.itemToAlch.id,
 							quantity: alchResult.maxCasts
-					  }
+					  },
+			ticketID: ticket ? ticket[0].id : undefined
 		});
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

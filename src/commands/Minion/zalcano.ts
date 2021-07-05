@@ -78,7 +78,11 @@ export default class extends BotCommand {
 			boosts.push('2x boost for Obis');
 		}
 
-		if (!msg.author.hasGracefulEquipped()) {
+		// Reduce time if user has graceful/globetrotter equipped
+		if (msg.author.hasGlobetrotterEquipped()) {
+			boosts.push('15% for having the Globetrotter Outfit');
+			baseTime *= 0.85;
+		} else if (!msg.author.hasGracefulEquipped()) {
 			baseTime *= 1.15;
 			boosts.push('-15% time penalty for not having graceful equipped');
 		}

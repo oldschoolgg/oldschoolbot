@@ -129,7 +129,11 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (!msg.author.hasGracefulEquipped()) {
+		// Reduce time if user has graceful/globetrotter equipped
+		if (msg.author.hasGlobetrotterEquipped()) {
+			boosts.push('15% for having the Globetrotter Outfit');
+			tripTime *= 0.85;
+		} else if (!msg.author.hasGracefulEquipped()) {
 			boosts.push('-15% for not having graceful equipped anywhere');
 			tripTime *= 1.15;
 		}

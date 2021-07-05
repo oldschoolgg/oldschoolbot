@@ -82,7 +82,10 @@ export default class extends BotCommand {
 			timePerRune = reduceNumByPercent(timePerRune, mediumDiaryBoost);
 		}
 
-		if (!msg.author.hasGracefulEquipped()) {
+		if (msg.author.hasGlobetrotterEquipped()) {
+			boosts.push(`${gracefulPenalty}% faster for havint the Globetrotter Outfit`);
+			timePerRune = reduceNumByPercent(timePerRune, gracefulPenalty);
+		} else if (!msg.author.hasGracefulEquipped()) {
 			boosts.push(`${gracefulPenalty}% slower for no Graceful`);
 			timePerRune = increaseNumByPercent(timePerRune, gracefulPenalty);
 		}

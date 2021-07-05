@@ -9,7 +9,7 @@ import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, PerkTier, skillEmoji, Time } from '../../lib/constants';
 import { onMax } from '../../lib/events';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
+import { hasGlobetrotterEquipped, hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
@@ -710,6 +710,14 @@ export default class extends Extendable {
 		const rawGear = this.rawGear();
 		for (const i of Object.values(rawGear)) {
 			if (hasGracefulEquipped(i)) return true;
+		}
+		return false;
+	}
+
+	public hasGlobetrotterEquipped(this: User) {
+		const rawGear = this.rawGear();
+		for (const i of Object.values(rawGear)) {
+			if (hasGlobetrotterEquipped(i)) return true;
 		}
 		return false;
 	}

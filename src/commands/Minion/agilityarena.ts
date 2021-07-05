@@ -87,7 +87,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const duration = msg.author.maxTripLength(Activity.AgilityArena);
 
-		if (!msg.author.hasGracefulEquipped()) {
+		if (!msg.author.hasGracefulEquipped() && !msg.author.hasGlobetrotterEquipped()) {
 			return msg.send(
 				await chatHeadImage({
 					content: 'Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!',

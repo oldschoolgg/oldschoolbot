@@ -1,28 +1,48 @@
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity } from '../../lib/constants';
+import { GearSetupType } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import reducedClueTime from '../../lib/minions/functions/reducedClueTime';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { Gear } from '../../lib/structures/Gear';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import resolveItems from '../../lib/util/resolveItems';
 
-export function hasClueHunterEquipped(setup: Gear) {
-	return setup.hasEquipped(
-		[
-			'Helm of raedwald',
-			'Clue hunter garb',
-			'Clue hunter trousers',
-			'Clue hunter boots',
-			'Clue hunter gloves',
-			'Clue hunter cloak'
-		],
-		true
-	);
+export const ClueHunterOutfit = resolveItems([
+	'Helm of raedwald',
+	'Clue hunter garb',
+	'Clue hunter trousers',
+	'Clue hunter boots',
+	'Clue hunter gloves',
+	'Clue hunter cloak'
+]);
+
+export const GlobetrottlerOutfit = resolveItems([
+	'Globetrotter headress',
+	'Globetrotter top',
+	'Globetrotter legs',
+	'Globetrotter boots',
+	'Globetrotter gloves',
+	'Globetrotter backpack'
+]);
+
+export function hasClueHunterEquipped(user: KlasaUser, setup: GearSetupType) {
+	const gearSetup = user.getGear(setup);
+	for (const [index, value] of ClueHunterOutfit.entries()) {
+		// If the CHO exists, we check if the user has either of them equipped
+		if (user.hasItemEquippedOrInBank(value)) {
+			if (!gearSetup.hasEquipped([value, GlobetrottlerOutfit[index]])) {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	return true;
 }
 
 export default class extends BotCommand {
@@ -81,9 +101,30 @@ export default class extends BotCommand {
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);
 
-		if (hasClueHunterEquipped(msg.author.getGear('skilling'))) {
+		let globetrotterReduction = 0;
+		GlobetrottlerOutfit.forEach(item => {
+			globetrotterReduction += msg.author.hasItemEquippedAnywhere(item) ? 0.05 : 0;
+		});
+
+		// Apply reduction for having the Globetrottler outfit equipped
+		if (globetrotterReduction > 0) {
+			const reductionPercent = globetrotterReduction === 0.3 ? 0.55 : globetrotterReduction;
+			timeToFinish *= 1 - reductionPercent;
+			boosts.push(
+				`${Math.floor(reductionPercent * 100)}% Boost for having ${
+					globetrotterReduction === 0.3
+						? 'the Globetrotter outfit equipped'
+						: `${Math.floor(globetrotterReduction / 0.05)}x pieces of the Globetrotter outfit equipped.`
+				}`
+			);
+		}
+
+		// Check for the clue hunter + globetrotter compatibility (globetrotter can act as clue hunter, as long the user
+		// have the clue hunter outfit in the bank and vice-versa
+
+		if (hasClueHunterEquipped(msg.author, 'skilling')) {
 			timeToFinish /= 2;
-			boosts.push('2x Boost for Clue hunter outfit');
+			boosts.push('50% Boost for Clue hunter outfit');
 		}
 
 		let duration = timeToFinish * quantity;
@@ -112,7 +153,7 @@ export default class extends BotCommand {
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
-		if (msg.author.hasGracefulEquipped()) {
+		if (globetrotterReduction < 0.1 && msg.author.hasGracefulEquipped()) {
 			boosts.push('10% for Graceful');
 			duration *= 0.9;
 		}
@@ -122,7 +163,14 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (msg.author.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
+		if (
+			// Has the achievement cape equipped
+			msg.author.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false) ||
+			// Or has the achievement cape in the bank/equipped and have the Globbletrotter backpack equipped
+			((msg.author.hasItemEquippedOrInBank('Achievement diary cape') ||
+				msg.author.hasItemEquippedOrInBank('Achievement diary cape(t)')) &&
+				msg.author.hasItemEquippedAnywhere('Globetrotter backpack', false))
+		) {
 			boosts.push('10% for Achievement diary cape');
 			duration *= 0.9;
 		}

@@ -43,6 +43,7 @@ export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 		itemID: number;
 		quantity: number;
 	} | null;
+	ticketID?: number;
 }
 
 export interface CookingActivityTaskOptions extends ActivityTaskOptions {

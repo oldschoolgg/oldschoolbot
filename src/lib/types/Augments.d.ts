@@ -202,6 +202,7 @@ declare module 'discord.js' {
 		 * Returns true if the user has full Graceful equipped in any setup.
 		 */
 		hasGracefulEquipped(): boolean;
+		hasGlobetrotterEquipped(): boolean;
 		hasSkillReqs(reqs: Skills): [boolean, string | null];
 		perkTier: PerkTier;
 		/**

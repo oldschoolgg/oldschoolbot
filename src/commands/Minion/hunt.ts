@@ -166,9 +166,14 @@ export default class extends BotCommand {
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for being experienced hunting this creature`);
 
 		// Reduce time by 5% if user has graceful equipped
-		if (!creature.wildy && msg.author.hasGracefulEquipped()) {
-			boosts.push('5% boost for using Graceful');
-			catchTime *= 0.95;
+		if (!creature.wildy) {
+			if (msg.author.hasGlobetrotterEquipped()) {
+				boosts.push('10% boost for using Globetrotter Outfit');
+				catchTime *= 0.9;
+			} else if (msg.author.hasGracefulEquipped()) {
+				boosts.push('5% boost for using Graceful');
+				catchTime *= 0.95;
+			}
 		}
 
 		// Reduce time by 5% if user has graceful equipped

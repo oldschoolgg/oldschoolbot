@@ -101,8 +101,11 @@ export default class extends BotCommand {
 		// 1.5 mins per patch --> ex: 10 patches = 15 mins
 		let duration = patchType.lastQuantity * (timePerPatchTravel + timePerPatchHarvest);
 
-		// Reduce time if user has graceful equipped
-		if (msg.author.hasGracefulEquipped()) {
+		// Reduce time if user has graceful/globetrotter equipped
+		if (msg.author.hasGlobetrotterEquipped()) {
+			boostStr.push('20% time for having the Globetrotter Outfit');
+			duration *= 0.8;
+		} else if (msg.author.hasGracefulEquipped()) {
 			boostStr.push('10% time for Graceful');
 			duration *= 0.9;
 		}

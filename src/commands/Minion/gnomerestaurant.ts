@@ -47,7 +47,11 @@ export default class extends BotCommand {
 			boosts.push(`${scoreBoost}% boost for experience in the minigame`);
 		}
 
-		if (msg.author.hasGracefulEquipped()) {
+		// Reduce time if user has graceful/globetrotter equipped
+		if (msg.author.hasGlobetrotterEquipped()) {
+			deliveryLength = reduceNumByPercent(deliveryLength, 50);
+			boosts.push('50% for having the Globetrotter Outfit');
+		} else if (msg.author.hasGracefulEquipped()) {
 			deliveryLength = reduceNumByPercent(deliveryLength, 25);
 			boosts.push('25% for Graceful');
 		}

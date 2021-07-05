@@ -120,6 +120,16 @@ export const courses: Course[] = [
 		xp: 540,
 		lapTime: 65.6,
 		petChance: 9_979
+	},
+	{
+		id: 13,
+		name: 'Gielinor Challenge Course',
+		aliases: ['gcc', 'gielinor', 'gielinor course', 'challenge'],
+		level: 120,
+		xp: 100_000,
+		lapTime: 1800,
+		marksPer60: 220,
+		petChance: 5_000
 	}
 ];
 

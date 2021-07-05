@@ -1251,6 +1251,164 @@ setCustomItem(
 setCustomItem(41_085, 'Tattered robes of Vasa', 'Coal', {}, 1_000_000);
 
 /**
+ * START CLUE OUTFIT ---------------------------------------------------------------------------------------------------
+ */
+const globetrotterReqs = {
+	agility: 120,
+	thieving: 120,
+	strength: 120,
+	prayer: 120,
+	defence: 120,
+	firemaking: 120,
+	construction: 120,
+	woodcutting: 120,
+	mining: 120,
+	magic: 120,
+	ranged: 120
+};
+const globetrotterTicketExamine =
+	'You carefully read the paper, without trying to torn it appart more than it already is. It says: "For the best of ' +
+	'the best, come face the greatest challenge of all. Only the strongest, agile and skilful will be able to conclude ' +
+	'this challenge!". As you finish reading it, a flash blinds you momentarily and you start having a vision. You see' +
+	'someone jumping around some poles. He then quickly fires some arrows and a powerful spell towards the sky. You can see a star ' +
+	'shining and the projectiles starts coming down. The mysterious stranger quickly deflects it, using an old shield. ' +
+	'The stranger than walks towards a rock and punch it as hard as it can and a very sharp piece of stone comes out of it. ' +
+	'He takes it and throw at a nearby rock, chopping it down. He makes a very cozy fire with that and pulls some strange box ' +
+	'from... Where did that box come from? And before you could think, he unlocks it with some sort of magic lockpick and takes out a hammer. ' +
+	'He takes the hammer and skillfully makes the most perfect bench you ever seen. He lays down and rest. The vision starts ' +
+	'to fade and you fell more confused than ever before. Was this a hint of some sort? What an odd message and ' +
+	'what mysteries does it hold?';
+setCustomItem(
+	41_086,
+	'Globetrotter headress',
+	'Graceful hood',
+	{
+		equipment: {
+			...getOSItem('Graceful hood').equipment!,
+			requirements: globetrotterReqs
+		}
+	},
+	0
+);
+setCustomItem(
+	41_087,
+	'Globetrotter top',
+	'Graceful top',
+	{
+		equipment: {
+			...getOSItem('Graceful top').equipment!,
+			requirements: globetrotterReqs
+		}
+	},
+	0
+);
+setCustomItem(
+	41_088,
+	'Globetrotter legs',
+	'Graceful legs',
+	{
+		equipment: {
+			...getOSItem('Graceful legs').equipment!,
+			requirements: globetrotterReqs
+		}
+	},
+	0
+);
+setCustomItem(
+	41_089,
+	'Globetrotter gloves',
+	'Graceful gloves',
+	{
+		equipment: {
+			...getOSItem('Graceful gloves').equipment!,
+			requirements: globetrotterReqs
+		}
+	},
+	0
+);
+setCustomItem(
+	41_090,
+	'Globetrotter boots',
+	'Graceful boots',
+	{
+		equipment: {
+			...getOSItem('Graceful boots').equipment!,
+			requirements: globetrotterReqs
+		}
+	},
+	0
+);
+setCustomItem(
+	41_091,
+	'Globetrotter backpack',
+	'Graceful cape',
+	{
+		equipment: {
+			...getOSItem('Graceful cape').equipment!,
+			requirements: globetrotterReqs
+		}
+	},
+	0
+);
+setCustomItem(
+	41_092,
+	'Globetrotter message (beginner)',
+	'Coal',
+	{
+		examine: globetrotterTicketExamine
+	},
+	0
+);
+setCustomItem(
+	41_093,
+	'Globetrotter message (easy)',
+	'Coal',
+	{
+		examine: globetrotterTicketExamine
+	},
+	0
+);
+setCustomItem(
+	41_094,
+	'Globetrotter message (medium)',
+	'Coal',
+	{
+		examine: globetrotterTicketExamine
+	},
+	0
+);
+setCustomItem(
+	41_095,
+	'Globetrotter message (hard)',
+	'Coal',
+	{
+		examine: globetrotterTicketExamine
+	},
+	0
+);
+setCustomItem(
+	41_096,
+	'Globetrotter message (elite)',
+	'Coal',
+	{
+		examine: globetrotterTicketExamine
+	},
+	0
+);
+setCustomItem(
+	41_097,
+	'Globetrotter message (master)',
+	'Coal',
+	{
+		examine: globetrotterTicketExamine
+	},
+	0
+);
+/**
+ * END CLUE OUTFIT =====================================================================================================
+ */
+
+/**
  *
  * Dungeoneering
  *

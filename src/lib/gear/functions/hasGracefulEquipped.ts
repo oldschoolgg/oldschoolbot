@@ -10,7 +10,8 @@ export const gracefulHoods = [
 	'Kourend graceful hood',
 	'Brimhaven graceful hood',
 	'Dark graceful hood',
-	'Trailblazer graceful hood'
+	'Trailblazer graceful hood',
+	'Globetrotter headress'
 ];
 
 export const gracefulTops = [
@@ -23,7 +24,8 @@ export const gracefulTops = [
 	'Kourend graceful top',
 	'Brimhaven graceful top',
 	'Dark graceful top',
-	'Trailblazer graceful top'
+	'Trailblazer graceful top',
+	'Globetrotter top'
 ];
 
 export const gracefulLegs = [
@@ -36,7 +38,8 @@ export const gracefulLegs = [
 	'Kourend graceful legs',
 	'Brimhaven graceful legs',
 	'Dark graceful legs',
-	'Trailblazer graceful legs'
+	'Trailblazer graceful legs',
+	'Globetrotter legs'
 ];
 
 export const gracefulFeet = [
@@ -49,7 +52,8 @@ export const gracefulFeet = [
 	'Kourend graceful boots',
 	'Brimhaven graceful boots',
 	'Dark graceful boots',
-	'Trailblazer graceful boots'
+	'Trailblazer graceful boots',
+	'Globetrotter boots'
 ];
 
 export const gracefulHands = [
@@ -62,7 +66,8 @@ export const gracefulHands = [
 	'Kourend graceful gloves',
 	'Brimhaven graceful gloves',
 	'Dark graceful gloves',
-	'Trailblazer graceful gloves'
+	'Trailblazer graceful gloves',
+	'Globetrotter gloves'
 ];
 
 export const gracefulCapes = [
@@ -78,12 +83,27 @@ export const gracefulCapes = [
 	'Trailblazer graceful cape',
 	'Agility cape',
 	'Agility cape (t)',
-	'Max cape'
+	'Max cape',
+	'Globetrotter backpack'
 ];
 
 export function hasGracefulEquipped(setup: Gear) {
 	return setup.hasEquipped(
 		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful boots', 'Graceful cape'],
+		true
+	);
+}
+
+export function hasGlobetrotterEquipped(setup: Gear) {
+	return setup.hasEquipped(
+		[
+			'Globetrotter headress',
+			'Globetrotter  top',
+			'Globetrotter  legs',
+			'Globetrotter  boots',
+			'Globetrotter  boots',
+			'Globetrotter backpack'
+		],
 		true
 	);
 }

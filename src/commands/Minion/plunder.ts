@@ -36,7 +36,10 @@ export default class extends BotCommand {
 
 		const boosts = [];
 
-		if (!msg.author.hasGracefulEquipped()) {
+		if (msg.author.hasGlobetrotterEquipped()) {
+			plunderTime *= 0.925;
+			boosts.push('7.5% faster time for having the Globetrotter Outfit equipped');
+		} else if (!msg.author.hasGracefulEquipped()) {
 			plunderTime *= 1.075;
 			boosts.push('-7.5% time penalty for not having graceful equipped');
 		}

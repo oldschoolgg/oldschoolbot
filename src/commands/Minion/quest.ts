@@ -33,7 +33,11 @@ export default class extends BotCommand {
 
 		let duration = Time.Minute * 30;
 
-		if (msg.author.hasGracefulEquipped()) {
+		// Reduce time if user has graceful/globetrotter equipped
+		if (msg.author.hasGlobetrotterEquipped()) {
+			boosts.push('20% for having the Globetrotter Outfit');
+			duration *= 0.8;
+		} else if (msg.author.hasGracefulEquipped()) {
 			duration *= 0.9;
 			boosts.push('10% for Graceful');
 		}

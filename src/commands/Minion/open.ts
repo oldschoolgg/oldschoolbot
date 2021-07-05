@@ -83,7 +83,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(clueTier.id, quantity);
 
-		const hasCHEquipped = hasClueHunterEquipped(msg.author.getGear('skilling'));
+		const hasCHEquipped = hasClueHunterEquipped(msg.author, 'skilling');
 
 		let extraClueRolls = 0;
 		let loot: ItemBank = {};

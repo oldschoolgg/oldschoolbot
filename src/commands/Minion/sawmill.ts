@@ -48,7 +48,11 @@ export default class extends BotCommand {
 		const boosts = [];
 		let timePerPlank = (Time.Second * 37) / 27;
 
-		if (msg.author.hasGracefulEquipped()) {
+		// Reduce time if user has graceful/globetrotter equipped
+		if (msg.author.hasGlobetrotterEquipped()) {
+			boosts.push('20% for having the Globetrotter Outfit');
+			timePerPlank *= 0.8;
+		} else if (msg.author.hasGracefulEquipped()) {
 			timePerPlank *= 0.9;
 			boosts.push('10% for Graceful');
 		}

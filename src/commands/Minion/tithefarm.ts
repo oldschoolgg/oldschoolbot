@@ -31,8 +31,11 @@ export default class extends BotCommand {
 			? boostStr.push(`${Math.floor(percentIncreaseFromCompletions * 100)}% from Tithe Farms completed`)
 			: boostStr.push('');
 
-		// Reduce time if user has graceful equipped
-		if (user.hasGracefulEquipped()) {
+		// Reduce time if user has graceful/globetrotter equipped
+		if (user.hasGlobetrotterEquipped()) {
+			boostStr.push('20% for having the Globetrotter Outfit');
+			nonGracefulTimeAddition = -(Time.Second * 123);
+		} else if (user.hasGracefulEquipped()) {
 			nonGracefulTimeAddition = 0;
 			boostStr.push('10% from graceful outfit');
 		}
