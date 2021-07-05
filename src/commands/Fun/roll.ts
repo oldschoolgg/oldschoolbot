@@ -14,6 +14,6 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [max = 100]: [number]) {
-		return msg.send(randInt(1, max));
+		return msg.channel.send(randInt(1, max).toString());
 	}
 }

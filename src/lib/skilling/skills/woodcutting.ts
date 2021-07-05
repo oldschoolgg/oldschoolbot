@@ -1,4 +1,5 @@
 import { Emoji } from '../../constants';
+import itemID from '../../util/itemID';
 import { Log, SkillsEnum } from '../types';
 
 const logs: Log[] = [
@@ -142,12 +143,20 @@ const logs: Log[] = [
 	}
 ];
 
+const lumberjackItems: { [key: number]: number } = {
+	[itemID('Lumberjack hat')]: 0.4,
+	[itemID('Lumberjack top')]: 0.8,
+	[itemID('Lumberjack legs')]: 0.6,
+	[itemID('Lumberjack boots')]: 0.2
+};
+
 const Woodcutting = {
 	aliases: ['wc', 'woodcutting'],
 	Logs: logs,
 	id: SkillsEnum.Woodcutting,
 	emoji: Emoji.Woodcutting,
-	name: 'Woodcutting'
+	name: 'Woodcutting',
+	lumberjackItems
 };
 
 export default Woodcutting;

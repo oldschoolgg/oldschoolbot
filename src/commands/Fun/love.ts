@@ -14,6 +14,6 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [name]: [string]) {
-		return msg.send(`${cleanMentions(msg.guild, name)} loves you ${Math.floor(Math.random() * 100) + 1}%!`);
+		return msg.channel.send(`${cleanMentions(msg.guild, name)} loves you ${Math.floor(Math.random() * 100) + 1}%!`);
 	}
 }

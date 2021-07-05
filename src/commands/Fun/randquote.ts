@@ -33,8 +33,8 @@ export default class extends BotCommand {
 			const embed = new MessageEmbed()
 				.setDescription(message.content)
 				.setAuthor(message.author.username, message.author.displayAvatarURL());
-			return msg.send({ embed });
+			return msg.channel.send({ embeds: [embed] });
 		}
-		return msg.send('Could not find a quote.');
+		return msg.channel.send('Could not find a quote.');
 	}
 }

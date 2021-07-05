@@ -34,7 +34,7 @@ export default class extends BotCommand {
 		const itemsToRemove = new Bank();
 		const gp = msg.author.settings.get(UserSettings.GP);
 		if (gp < 5000) {
-			return msg.send('You need atleast 5k GP to work at the Gnome Restaurant.');
+			return msg.channel.send('You need atleast 5k GP to work at the Gnome Restaurant.');
 		}
 		itemsToRemove.add('Coins', 5000);
 
@@ -124,6 +124,6 @@ export default class extends BotCommand {
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

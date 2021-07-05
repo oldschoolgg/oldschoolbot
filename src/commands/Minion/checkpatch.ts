@@ -44,11 +44,7 @@ export default class extends BotCommand {
 
 			if (patch.lastPlanted) {
 				const { lastPlanted } = patch;
-				const plant = Farming.Plants.find(plants =>
-					plants.aliases.some(
-						alias => stringMatches(alias, lastPlanted) || stringMatches(alias.split(' ')[0], lastPlanted)
-					)
-				);
+				const plant = Farming.Plants.find(plants => stringMatches(plants.name, lastPlanted));
 
 				if (!plant) {
 					this.client.wtf(new Error(`${msg.author.sanitizedName}'s patch had no plant found in it.`));
@@ -81,8 +77,6 @@ export default class extends BotCommand {
 			finalStr += emptyEmoji + emptyContentStr;
 		}
 
-		return msg.send(finalStr, {
-			split: true
-		});
+		return msg.channel.send(finalStr);
 	}
 }

@@ -70,7 +70,7 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43
 		},
 		healAmountNeeded: 20 * 10,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
 		defaultAttackStyles: [SkillsEnum.Ranged]
 	},
@@ -115,7 +115,7 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43
 		},
 		healAmountNeeded: 20 * 7,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic],
 		minimumGearRequirements: {
 			[GearSetupTypes.Mage]: {

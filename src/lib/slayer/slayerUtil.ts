@@ -10,7 +10,7 @@ import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
-import { addBanks, roll, skillsMeetRequirements } from '../util';
+import { addBanks, bankHasItem, roll, skillsMeetRequirements } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { slayerMasters } from './slayerMasters';
@@ -128,6 +128,7 @@ export function userCanUseTask(
 	// Slayer unlock restrictions:
 	const lmon = task.monster.name.toLowerCase();
 	const lmast = master.name.toLowerCase();
+	if (lmon === 'grotesque guardians' && !bankHasItem(user.bank().bank, itemID('Brittle key'))) return false;
 	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped)) return false;
 	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed)) return false;
 	if (lmon === 'mithril dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.IHopeYouMithMe)) return false;

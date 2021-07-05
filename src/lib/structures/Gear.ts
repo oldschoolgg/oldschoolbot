@@ -102,8 +102,28 @@ export class Gear {
 
 	hasEquipped(_items: string | (string | number)[], every = false, includeSimilar = true) {
 		const items = resolveItems(_items);
-		const allItems = this.allItems(includeSimilar);
-		return items[every ? 'every' : 'some'](i => allItems.includes(i));
+		const allItems = this.allItems();
+		if (!includeSimilar) {
+			return items[every ? 'every' : 'some'](i => allItems.includes(i));
+		} else if (every) {
+			// similar = true, every = true
+			const targetCount = items.length;
+			let currentCount = 0;
+			for (const i of [...items]) {
+				const similarItems = getSimilarItems(i);
+				if (similarItems.length) {
+					if (similarItems.some(si => allItems.includes(si))) currentCount++;
+				} else if (allItems.includes(i)) currentCount++;
+			}
+			return currentCount === targetCount;
+		}
+		// similar = true, every = false
+		for (const i of [...items]) {
+			const similarItems = getSimilarItems(i) ?? [i];
+			if (similarItems.some(si => allItems.includes(si))) return true;
+			else if (allItems.includes(i)) return true;
+		}
+		return false;
 	}
 
 	equippedWeapon(): Item | null {

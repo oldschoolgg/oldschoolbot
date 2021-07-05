@@ -1,3 +1,4 @@
+import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
 import { itemNameFromID, resolveNameBank } from '../util';
@@ -1270,6 +1271,30 @@ const Createables: Createable[] = [
 			[itemID('Sagacious spectacles')]: 1
 		},
 		noCl: true
+	},
+	{
+		name: 'Ivandis Flail',
+		inputItems: {
+			[itemID('Silver sickle')]: 1,
+			[itemID('Emerald')]: 1
+		},
+		outputItems: {
+			[itemID('Ivandis flail')]: 1
+		},
+		QPRequired: 75,
+		requiredSkills: ivandisRequirements
+	},
+	{
+		name: 'Blisterwood Flail',
+		inputItems: {
+			[itemID('Ivandis flail')]: 1,
+			[itemID('Ruby')]: 1
+		},
+		outputItems: {
+			[itemID('Blisterwood flail')]: 1
+		},
+		QPRequired: 125,
+		requiredSkills: blisterwoodRequirements
 	},
 	{
 		name: 'Revert red decorative full helm',

@@ -26,7 +26,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const bank = msg.author.bank();
 		if (!bank.has(championScrolls)) {
-			return msg.send(
+			return msg.channel.send(
 				"You don't have a set of Champion Scrolls to do the Champion's Challenge! You need 1 of each."
 			);
 		}
@@ -41,7 +41,7 @@ export default class extends BotCommand {
 			minigameID: 'ChampionsChallenge'
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now doing the Champion's Challenge! Removed 1x of every Champion scroll from your bank.`
 		);
 	}
