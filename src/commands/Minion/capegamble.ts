@@ -24,7 +24,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const capesOwned = await msg.author.numberOfItemInBank(itemID('Fire cape'), true);
 
-		if (capesOwned < 1) return msg.send('You have no Fire capes to gamble!');
+		if (capesOwned < 1) return msg.channel.send('You have no Fire capes to gamble!');
 
 		const sellMsg = await msg.channel.send(
 			'Are you sure you want to gamble a Fire cape for a chance at the Tzrek-Jad pet? Say `confirm` to confirm.'
@@ -32,14 +32,12 @@ export default class extends BotCommand {
 
 		// Confirm the seller wants to sell
 		try {
-			await msg.channel.awaitMessages(
-				_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-				{
-					max: 1,
-					time: 20_000,
-					errors: ['time']
-				}
-			);
+			await msg.channel.awaitMessages({
+				filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+				max: 1,
+				time: 20_000,
+				errors: ['time']
+			});
 		} catch (err) {
 			return sellMsg.edit('Cancelling Fire cape gamble.');
 		}
@@ -58,21 +56,25 @@ export default class extends BotCommand {
 					newSacrificedCount
 				)} time!`
 			);
-			return msg.channel.send(
-				await chatHeadImage({
-					content: 'You lucky. Better train him good else TzTok-Jad find you, JalYt.',
-					head: 'mejJal'
-				})
-			);
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content: 'You lucky. Better train him good else TzTok-Jad find you, JalYt.',
+						head: 'mejJal'
+					})
+				]
+			});
 		}
 
-		return msg.channel.send(
-			await chatHeadImage({
-				content: `You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(
-					newSacrificedCount
-				)} time you gamble cape.`,
-				head: 'mejJal'
-			})
-		);
+		return msg.channel.send({
+			files: [
+				await chatHeadImage({
+					content: `You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(
+						newSacrificedCount
+					)} time you gamble cape.`,
+					head: 'mejJal'
+				})
+			]
+		});
 	}
 }

@@ -75,5 +75,5 @@ export function returnListOfPlants(msg: KlasaMessage) {
 		),
 		'Farming Plants.txt'
 	);
-	return msg.channel.send(attachment);
+	return msg.channel.send({ files: [attachment] });
 }

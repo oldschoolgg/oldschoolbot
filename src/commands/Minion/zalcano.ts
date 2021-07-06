@@ -15,9 +15,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 const skillRequirements: Skills = {
 	mining: 70,
 	smithing: 70,
-	cooking: 70,
 	farming: 70,
-	fishing: 70,
 	woodcutting: 70,
 	agility: 70,
 	herblore: 70,
@@ -57,7 +55,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`To fight Zalcano, you need: ${reason}.`);
 		}
 		if (msg.author.settings.get(UserSettings.QP) < 150) {
-			return msg.send('To fight Zalcano, you need 150 QP.');
+			return msg.channel.send('To fight Zalcano, you need 150 QP.');
 		}
 
 		const kc = msg.author.getKC(ZALCANO_ID);
@@ -110,7 +108,7 @@ export default class extends BotCommand {
 			isMVP: percentChance(80)
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${
 				msg.author.minionName
 			} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDuration(

@@ -166,12 +166,12 @@ export default class extends BotCommand {
 				loot.add('Mysterious seed', randInt(1, 3));
 			}
 		} else {
-			return msg.send('You have no seed packs to open!');
+			return msg.channel.send('You have no seed packs to open!');
 		}
 
 		await msg.author.removeItemFromBank(itemID('Seed pack'), 1);
 		await msg.author.addItemsToBank(loot.bank, true);
 
-		return msg.send(`You opened a seed pack and received: ${loot}.`);
+		return msg.channel.send(`You opened a seed pack and received: ${loot}.`);
 	}
 }

@@ -110,13 +110,13 @@ export default class extends BotCommand {
 		);
 
 		if (!ore) {
-			return msg.send(
+			return msg.channel.send(
 				`Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Mining) < ore.level) {
-			return msg.send(`${msg.author.minionName} needs ${ore.level} Mining to mine ${ore.name}.`);
+			return msg.channel.send(`${msg.author.minionName} needs ${ore.level} Mining to mine ${ore.name}.`);
 		}
 
 		// Calculate the time it takes to mine a single ore of this type, at this persons level.
@@ -164,7 +164,7 @@ export default class extends BotCommand {
 		const duration = quantity * timeToMine;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${ore.name} you can mine is ${Math.floor(
@@ -194,6 +194,6 @@ export default class extends BotCommand {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

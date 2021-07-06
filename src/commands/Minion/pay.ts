@@ -35,6 +35,6 @@ export default class extends BotCommand {
 
 		this.client.emit(Events.EconomyLog, `${msg.author.sanitizedName} paid ${amount} GP to ${user.sanitizedName}.`);
 
-		return msg.send(`You sent ${amount.toLocaleString()} GP to ${user}.`);
+		return msg.channel.send(`You sent ${amount.toLocaleString()} GP to ${user}.`);
 	}
 }

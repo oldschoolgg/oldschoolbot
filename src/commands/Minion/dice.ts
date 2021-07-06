@@ -29,15 +29,15 @@ export default class extends BotCommand {
 		if (!amount) {
 			embed.setDescription(`You rolled **${roll}** on the percentile dice.`);
 		} else {
-			if (msg.author.isIronman) return msg.send("You're an ironman and you cant play dice.");
+			if (msg.author.isIronman) return msg.channel.send("You're an ironman and you cant play dice.");
 
 			if (amount < 20_000_000 || amount > 10_000_000_000) {
-				return msg.send('You must dice atleast 20m and less than 10b.');
+				return msg.channel.send('You must dice atleast 20m and less than 10b.');
 			}
 
 			await msg.author.settings.sync(true);
 			const gp = msg.author.settings.get(UserSettings.GP);
-			if (amount > gp) return msg.send("You don't have enough GP.");
+			if (amount > gp) return msg.channel.send("You don't have enough GP.");
 			const won = roll >= 55;
 			let amountToAdd = won ? amount : -amount;
 
@@ -54,7 +54,7 @@ export default class extends BotCommand {
 
 			if (amount >= 100_000_000 && won && percentChance(3)) {
 				await msg.author.addItemsToBank(new Bank().add('Gamblers bag'), true);
-				return msg.send(
+				return msg.channel.send(
 					`${msg.author.username} rolled **${roll}** on the percentile dice, and you won ${Util.toKMB(
 						amountToAdd
 					)} GP.\n\nYou received a **Gamblers Bag**.`
@@ -68,6 +68,6 @@ export default class extends BotCommand {
 			);
 		}
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

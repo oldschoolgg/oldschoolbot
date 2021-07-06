@@ -39,7 +39,7 @@ export default class extends BotCommand {
 			totalPrice += sellPriceOfItem(item) * qty;
 		}
 
-		if (msg.author.isIronman) return msg.send("Iron players can't sell items.");
+		if (msg.author.isIronman) return msg.channel.send("Iron players can't sell items.");
 		const hasSkipper =
 			msg.author.equippedPet() === itemID('Skipper') || msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
 		const tax = hasSkipper ? 0 : Math.ceil((totalPrice / 0.8) * 0.2);
@@ -55,17 +55,17 @@ export default class extends BotCommand {
 			);
 
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					options
-				);
+				await msg.channel.awaitMessages({
+					...options,
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return sellMsg.edit('Cancelling sale.');
 			}
 		}
 
 		if (bankToSell.has('Coins')) {
-			return msg.send('You cant sell coins.');
+			return msg.channel.send('You cant sell coins.');
 		}
 
 		await Promise.all([msg.author.removeItemsFromBank(bankToSell.bank), msg.author.addGP(totalPrice)]);
@@ -75,7 +75,7 @@ export default class extends BotCommand {
 
 		msg.author.log(`sold ${JSON.stringify(bankToSell.bank)} for ${totalPrice}`);
 
-		return msg.send(
+		return msg.channel.send(
 			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}** GP (${Util.toKMB(
 				totalPrice
 			)}).  Tax: ${tax.toLocaleString()} ${

@@ -1,7 +1,8 @@
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
+import {} from 'node:process';
 import { Bank, Player } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { CommentStream, SubmissionStream } from 'snoostorm';
@@ -20,6 +21,16 @@ import { Gear } from '../structures/Gear';
 import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
 import { ItemBank, MakePartyOptions, Skills } from '.';
+
+type SendBankImageFn = (options: {
+	bank: ItemBank;
+	content?: string;
+	title?: string;
+	background?: number;
+	flags?: Record<string, string | number>;
+	user?: KlasaUser;
+	cl?: ItemBank;
+}) => Promise<KlasaMessage>;
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -42,6 +53,7 @@ declare module 'klasa' {
 		giveawayTicker: NodeJS.Timeout;
 		analyticsInterval: NodeJS.Timeout;
 		metricsInterval: NodeJS.Timeout;
+		options: KlasaClientOptions;
 	}
 
 	interface Command {
@@ -84,7 +96,36 @@ declare module 'klasa' {
 	}
 }
 
+declare module 'discord-api-types/v8' {
+	type Snowflake = string;
+}
+
+type KlasaSend = (input: string | MessagePayload | MessageOptions) => Promise<KlasaMessage>;
+
 declare module 'discord.js' {
+	interface TextBasedChannel {
+		send: KlasaSend;
+	}
+	interface TextChannel {
+		send: KlasaSend;
+	}
+	interface DMChannel {
+		send: KlasaSend;
+	}
+	interface ThreadChannel {
+		send: KlasaSend;
+	}
+	interface NewsChannel {
+		send: KlasaSend;
+	}
+	interface PartialTextBasedChannelFields {
+		send: KlasaSend;
+		readonly attachable: boolean;
+		readonly embedable: boolean;
+		readonly postable: boolean;
+		readonly readable: boolean;
+	}
+
 	interface Client {
 		public query<T>(query: string): Promise<T>;
 	}
@@ -227,27 +268,21 @@ declare module 'discord.js' {
 	}
 
 	interface TextChannel {
-		sendBankImage(options: {
-			bank: ItemBank;
-			content?: string;
-			title?: string;
-			background?: number;
-			flags?: Record<string, string | number>;
-			user?: KlasaUser;
-			cl?: ItemBank;
-		}): Promise<KlasaMessage>;
+		sendBankImage: SendBankImageFn;
+		__triviaQuestionsDone: any;
+	}
+
+	interface Newshannel {
+		sendBankImage: SendBankImageFn;
+		__triviaQuestionsDone: any;
+	}
+	interface ThreadChannel {
+		sendBankImage: SendBankImageFn;
 		__triviaQuestionsDone: any;
 	}
 
 	interface DMChannel {
-		sendBankImage(options: {
-			bank: ItemBank;
-			content?: string;
-			title?: string;
-			background?: number;
-			flags?: Record<string, string | number>;
-			user?: KlasaUser;
-		}): Promise<KlasaMessage>;
+		sendBankImage: SendBankImageFn;
 		__triviaQuestionsDone: any;
 	}
 

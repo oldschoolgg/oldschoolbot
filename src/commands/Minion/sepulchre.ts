@@ -27,11 +27,11 @@ export default class extends BotCommand {
 		const agilityLevel = msg.author.skillLevel(SkillsEnum.Agility);
 		const minLevel = sepulchreFloors[0].agilityLevel;
 		if (agilityLevel < minLevel) {
-			return msg.send(`You need atleast level ${minLevel} Agility to do the Hallowed Sepulchre.`);
+			return msg.channel.send(`You need atleast level ${minLevel} Agility to do the Hallowed Sepulchre.`);
 		}
 
 		if (!msg.author.hasGracefulEquipped()) {
-			return msg.send('You need Graceful equipped in your Skilling setup to do the Hallowed Sepulchre.');
+			return msg.channel.send('You need Graceful equipped in your Skilling setup to do the Hallowed Sepulchre.');
 		}
 
 		const completableFloors = sepulchreFloors.filter(floor => agilityLevel >= floor.agilityLevel);
@@ -87,6 +87,6 @@ export default class extends BotCommand {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

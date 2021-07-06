@@ -38,7 +38,7 @@ export default class extends BotCommand {
 		});
 
 		if (bankToSell.items().some(i => i[0].id >= 40_000 && i[0].id <= 45_000)) {
-			return msg.send("You can't add that item to the lottery.");
+			return msg.channel.send("You can't add that item to the lottery.");
 		}
 
 		if (bankToSell.amount('Lottery ticket')) {
@@ -47,11 +47,11 @@ export default class extends BotCommand {
 		if (bankToSell.amount('Bank lottery ticket')) {
 			bankToSell.remove('Bank lottery ticket', bankToSell.amount('Bank lottery ticket'));
 		}
-		if (bankToSell.length === 0) return msg.send('wtf');
+		if (bankToSell.length === 0) return msg.channel.send('wtf');
 		let amountOfTickets = Math.floor(totalPrice / 10_000_000);
 
 		if (amountOfTickets < 5) {
-			return msg.send("Those items aren't worth enough.");
+			return msg.channel.send("Those items aren't worth enough.");
 		}
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
@@ -60,10 +60,10 @@ export default class extends BotCommand {
 			);
 
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					options
-				);
+				await msg.channel.awaitMessages({
+					...options,
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return sellMsg.edit('Cancelling bank lottery sacrifice.');
 			}
@@ -84,7 +84,7 @@ export default class extends BotCommand {
 			addBanks([this.client.settings.get(ClientSettings.BankLottery), bankToSell.bank])
 		);
 
-		return msg.send(
+		return msg.channel.send(
 			`You commited ${bankToSell} to the bank lottery, and received ${amountOfTickets}x bank lottery tickets.`
 		);
 	}

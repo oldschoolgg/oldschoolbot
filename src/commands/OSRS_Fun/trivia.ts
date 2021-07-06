@@ -36,12 +36,13 @@ export default class extends BotCommand {
 
 		const [item, index] = this.findNewTrivia(msg.channel.__triviaQuestionsDone);
 		msg.channel.__triviaQuestionsDone.push(index);
-		await msg.send(item.q);
+		await msg.channel.send(item.q);
 		try {
-			const collected = await msg.channel.awaitMessages(answer => item.a.includes(answer.content.toLowerCase()), {
+			const collected = await msg.channel.awaitMessages({
 				max: 1,
 				time: 30000,
-				errors: ['time']
+				errors: ['time'],
+				filter: answer => item.a.includes(answer.content.toLowerCase())
 			});
 			const winner = collected.first()!;
 			return msg.channel.send(

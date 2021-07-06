@@ -17,9 +17,9 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [prefix]: [string]) {
 		if (!prefix) {
-			return msg.send(`The current prefix for your guild is: \`${msg.cmdPrefix}\``);
+			return msg.channel.send(`The current prefix for your guild is: \`${msg.cmdPrefix}\``);
 		}
 		await msg.guild!.settings.update(GuildSettings.Prefix, prefix);
-		return msg.send(`Changed Command Prefix for ${msg.guild!.name} to \`${prefix}\``);
+		return msg.channel.send(`Changed Command Prefix for ${msg.guild!.name} to \`${prefix}\``);
 	}
 }

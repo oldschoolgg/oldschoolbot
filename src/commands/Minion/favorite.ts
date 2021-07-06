@@ -19,7 +19,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [items]: [Item[] | undefined]) {
 		if (msg.flagArgs.clear) {
 			await msg.author.settings.reset(UserSettings.FavoriteItems);
-			return msg.send('Reset your favorite items.');
+			return msg.channel.send('Reset your favorite items.');
 		}
 
 		const currentFavorites = msg.author.settings.get(UserSettings.FavoriteItems);
@@ -27,7 +27,7 @@ export default class extends BotCommand {
 		if (!items) {
 			const currentFavorites = msg.author.settings.get(UserSettings.FavoriteItems);
 			if (currentFavorites.length === 0) {
-				return msg.send('You have no favorited items.');
+				return msg.channel.send('You have no favorited items.');
 			}
 			let b = new Bank();
 			for (const id of currentFavorites) {
@@ -45,17 +45,17 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.FavoriteItems, item.id, {
 				arrayAction: ArrayActions.Remove
 			});
-			return msg.send(`Removed ${item.name} from your favorite items.`);
+			return msg.channel.send(`Removed ${item.name} from your favorite items.`);
 		}
 
 		if (currentFavorites.length >= 100) {
-			return msg.send('You cant favorite anymore items.');
+			return msg.channel.send('You cant favorite anymore items.');
 		}
 
 		await msg.author.settings.update(UserSettings.FavoriteItems, item.id, {
 			arrayAction: ArrayActions.Add
 		});
 
-		return msg.send(`Added ${item.name} to your favorite items.`);
+		return msg.channel.send(`Added ${item.name} to your favorite items.`);
 	}
 }

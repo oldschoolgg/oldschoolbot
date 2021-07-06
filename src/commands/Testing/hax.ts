@@ -78,7 +78,7 @@ export default class extends BotCommand {
 				weapon: null
 			});
 		}
-		return msg.send(
+		return msg.channel.send(
 			`Gave you 99 in all skills, 1b GP, ${MAX_QP} QP, and 1k of all eatable foods. **Gave your POH an ornate rejuve pool**`
 		);
 	}

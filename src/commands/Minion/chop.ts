@@ -78,7 +78,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Woodcutting) < log.level) {
-			return msg.send(`${msg.author.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`);
+			return msg.channel.send(`${msg.author.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`);
 		}
 
 		const QP = msg.author.settings.get(UserSettings.QP);
@@ -146,6 +146,6 @@ export default class extends BotCommand {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

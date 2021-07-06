@@ -22,26 +22,26 @@ export default class extends BotCommand {
 
 	async on(msg: KlasaMessage) {
 		if (msg.guild!.memberCount < 20 && getUsersPerkTier(msg.author) < PerkTier.Four) {
-			return msg.send(TWEETS_RATELIMITING);
+			return msg.channel.send(TWEETS_RATELIMITING);
 		}
 		if (msg.guild!.settings.get(GuildSettings.HCIMDeaths) === msg.channel.id) {
-			return msg.send('HCIM Death Tweets are already enabled in this channel.');
+			return msg.channel.send('HCIM Death Tweets are already enabled in this channel.');
 		}
 		if (msg.guild!.settings.get(GuildSettings.HCIMDeaths)) {
 			await msg.guild!.settings.update(GuildSettings.HCIMDeaths, msg.channel);
-			return msg.send(
+			return msg.channel.send(
 				"HCIM Death Tweets are already enabled in another channel, but I've switched them to use this channel."
 			);
 		}
 		await msg.guild!.settings.update(GuildSettings.HCIMDeaths, msg.channel);
-		return msg.send('Enabled HCIM Death Tweets in this channel.');
+		return msg.channel.send('Enabled HCIM Death Tweets in this channel.');
 	}
 
 	async off(msg: KlasaMessage) {
 		if (!msg.guild!.settings.get(GuildSettings.HCIMDeaths)) {
-			return msg.send("HCIM Death Tweets aren't enabled, so you can't disable them.");
+			return msg.channel.send("HCIM Death Tweets aren't enabled, so you can't disable them.");
 		}
 		await msg.guild!.settings.reset(GuildSettings.HCIMDeaths);
-		return msg.send('Disabled HCIM Death Tweets in this channel.');
+		return msg.channel.send('Disabled HCIM Death Tweets in this channel.');
 	}
 }

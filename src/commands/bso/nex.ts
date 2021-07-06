@@ -61,13 +61,13 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [type]: [string | undefined]) {
 		const userBank = msg.author.bank();
 		if (!userBank.has('Frozen key')) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} attempts to enter the Ancient Prison to fight Nex, but finds a giant frozen, metal door blocking their way.`
 			);
 		}
 
 		if (!type || (type !== 'mass' && type !== 'solo')) {
-			return msg.send('Specify your team setup for Nex, either solo or mass.');
+			return msg.channel.send('Specify your team setup for Nex, either solo or mass.');
 		}
 
 		this.checkReqs([msg.author], NexMonster, 2);
@@ -319,8 +319,6 @@ export default class extends BotCommand {
 
 		str += ` \n\n${debugStr}`;
 
-		return msg.channel.send(str, {
-			split: true
-		});
+		return msg.channel.send(str);
 	}
 }

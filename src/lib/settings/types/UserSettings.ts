@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
+import { HexColorString } from 'discord.js';
 import { O } from 'ts-toolbelt';
 
 import { BitField } from '../../constants';
@@ -56,7 +57,7 @@ export namespace UserSettings {
 	export const ItemContractStreak = T<number>('item_contract_streak');
 	export const OuraniaTokens = T<number>('ourania_tokens');
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
-	export const BankBackgroundHex = T<string | null>('bank_bg_hex');
+	export const BankBackgroundHex = T<HexColorString | null>('bank_bg_hex');
 	export const CombatOptions = T<readonly CombatOptionsEnum[]>('combat_options');
 
 	export namespace Slayer {

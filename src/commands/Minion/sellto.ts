@@ -47,7 +47,7 @@ export default class extends BotCommand {
 			throw 'That user is busy right now.';
 		}
 		if (bankToSell.items().some(i => i[0].id >= 40_000 && i[0].id <= 45_000)) {
-			return msg.send('You are trying to sell unsellable items.');
+			return msg.channel.send('You are trying to sell unsellable items.');
 		}
 
 		await Promise.all([buyerMember.user.settings.sync(true), msg.author.settings.sync(true)]);
@@ -84,10 +84,10 @@ export default class extends BotCommand {
 
 			// Confirm the seller wants to sell
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					options
-				);
+				await msg.channel.awaitMessages({
+					...options,
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return sellMsg.edit(`Cancelling sale of ${bankToSell}.`);
 			}
@@ -101,10 +101,10 @@ export default class extends BotCommand {
 		);
 
 		try {
-			await msg.channel.awaitMessages(
-				_msg => _msg.author.id === buyerMember.user.id && _msg.content.toLowerCase() === 'buy',
-				options
-			);
+			await msg.channel.awaitMessages({
+				...options,
+				filter: _msg => _msg.author.id === buyerMember.user.id && _msg.content.toLowerCase() === 'buy'
+			});
 		} catch (err) {
 			buyerConfirmationMsg.edit(`Cancelling sale of ${bankStr}.`);
 			return msg.channel.send(`Cancelling sale of ${bankStr}.`);
@@ -112,7 +112,7 @@ export default class extends BotCommand {
 
 		try {
 			if (buyerMember.user.settings.get(UserSettings.GP) < price || !msg.author.bank().fits(bankToSell)) {
-				return msg.send('One of you lacks the required GP or items to make this trade.');
+				return msg.channel.send('One of you lacks the required GP or items to make this trade.');
 			}
 
 			await buyerMember.user.removeGP(price);
@@ -122,7 +122,7 @@ export default class extends BotCommand {
 			await buyerMember.user.addItemsToBank(bankToSell.bank);
 		} catch (err) {
 			this.client.emit(Events.Wtf, err);
-			return msg.send('Fatal error occurred. Please seek help in the support server.');
+			return msg.channel.send('Fatal error occurred. Please seek help in the support server.');
 		}
 
 		this.client.emit(
@@ -134,6 +134,6 @@ export default class extends BotCommand {
 
 		msg.author.log(`sold ${bankStr} to ${buyerMember.user.sanitizedName} for ${price}`);
 
-		return msg.send(`Sale of ${bankStr} complete!`);
+		return msg.channel.send(`Sale of ${bankStr} complete!`);
 	}
 }
