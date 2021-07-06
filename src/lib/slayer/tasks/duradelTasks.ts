@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 import { KalphiteKingMonster } from '../../kalphiteking';
 import AbyssalDragon from '../../minions/data/killableMonsters/custom/AbyssalDragon';
 import SeaKraken from '../../minions/data/killableMonsters/custom/SeaKraken';
+import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 
@@ -12,6 +13,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [130, 200],
 		weight: 7,
 		monsters: [Monsters.AberrantSpectre.id, Monsters.DeviantSpectre.id],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.SmellYaLater,
 		combatLevel: 65,
 		slayerLevel: 60,
 		questPoints: 1,
@@ -22,6 +25,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [130, 200],
 		weight: 12,
 		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, AbyssalDragon.id],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.AugmentMyAbbies,
 		combatLevel: 85,
 		slayerLevel: 85,
 		questPoints: 1,
@@ -32,6 +37,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [4, 9],
 		weight: 2,
 		monsters: [Monsters.AdamantDragon.id],
+		extendedAmount: [20, 30],
+		extendedUnlockId: SlayerTaskUnlocksEnum.AdamindSomeMore,
 		questPoints: 205,
 		unlocked: true
 	},
@@ -40,6 +47,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [50, 80],
 		weight: 5,
 		monsters: [Monsters.Ankou.id],
+		extendedAmount: [90, 150],
+		extendedUnlockId: SlayerTaskUnlocksEnum.AnkouVeryMuch,
 		combatLevel: 40,
 		unlocked: true
 	},
@@ -48,6 +57,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [120, 200],
 		weight: 8,
 		monsters: [Monsters.Aviansie.id, Monsters.Kreearra.id],
+		extendedAmount: [130, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.BirdsOfAFeather,
 		unlocked: false
 	},
 	{
@@ -55,6 +66,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [130, 200],
 		weight: 7,
 		monsters: [Monsters.Basilisk.id, Monsters.BasiliskKnight.id],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.Basilonger,
 		combatLevel: 40,
 		slayerLevel: 40,
 		unlocked: false
@@ -64,6 +77,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [130, 200],
 		weight: 8,
 		monsters: [Monsters.BlackDemon.id, Monsters.DemonicGorilla.id, Monsters.Skotizo.id],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.ItsDarkInHere,
 		combatLevel: 80,
 		unlocked: true
 	},
@@ -77,6 +92,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 			Monsters.BrutalBlackDragon.id,
 			Monsters.KingBlackDragon.id
 		],
+		extendedAmount: [40, 60],
+		extendedUnlockId: SlayerTaskUnlocksEnum.FireAndDarkness,
 		slayerLevel: 77,
 		combatLevel: 80,
 		questPoints: 34,
@@ -87,6 +104,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [130, 200],
 		weight: 8,
 		monsters: [Monsters.Bloodveld.id, Monsters.MutatedBloodveld.id],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.BleedMeDry,
 		combatLevel: 50,
 		slayerLevel: 50,
 		questPoints: 1,
@@ -111,6 +130,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [130, 200],
 		weight: 4,
 		monsters: [Monsters.CaveHorror.id],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.Horrorific,
 		combatLevel: 85,
 		slayerLevel: 58,
 		questPoints: 11,
@@ -121,6 +142,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [100, 120],
 		weight: 9,
 		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id, SeaKraken.id],
+		extendedAmount: [150, 200],
+		extendedUnlockId: SlayerTaskUnlocksEnum.KrackOn,
 		combatLevel: 80,
 		slayerLevel: 87,
 		unlocked: true
@@ -146,6 +169,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [10, 20],
 		weight: 11,
 		monsters: [Monsters.DarkBeast.id],
+		extendedAmount: [100, 150],
+		extendedUnlockId: SlayerTaskUnlocksEnum.NeedMoreDarkness,
 		combatLevel: 90,
 		slayerLevel: 90,
 		questPoints: 24,
@@ -164,6 +189,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [130, 200],
 		weight: 5,
 		monsters: [Monsters.DustDevil.id],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.ToDustYouShallReturn,
 		combatLevel: 70,
 		slayerLevel: 65,
 		questPoints: 12,
@@ -202,6 +229,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 			Monsters.FossilIslandWyvernSpitting.id,
 			Monsters.FossilIslandWyvernTaloned.id
 		],
+		extendedAmount: [55, 75],
+		extendedUnlockId: SlayerTaskUnlocksEnum.WyverNotherTwo,
 		combatLevel: 60,
 		slayerLevel: 66,
 		questPoints: 3,
@@ -213,6 +242,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 
 		weight: 8,
 		monsters: [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.GetSmashed,
 		combatLevel: 80,
 		slayerLevel: 75,
 		questPoints: 1,
@@ -223,6 +254,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [130, 200],
 		weight: 9,
 		monsters: [Monsters.GreaterDemon.id, Monsters.KrilTsutsaroth.id, Monsters.Skotizo.id],
+		extendedAmount: [150, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.GreaterChallenge,
 		combatLevel: 70,
 		unlocked: true
 	},
@@ -239,6 +272,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [40, 60],
 		weight: 5,
 		monsters: [Monsters.IronDragon.id],
+		extendedAmount: [60, 100],
+		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
 		combatLevel: 80,
 		questPoints: 34,
 		unlocked: true
@@ -278,6 +313,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [5, 10],
 		weight: 9,
 		monsters: [Monsters.MithrilDragon.id],
+		extendedAmount: [20, 40],
+		extendedUnlockId: SlayerTaskUnlocksEnum.IReallyMithYou,
 		unlocked: false
 	},
 	{
@@ -295,6 +332,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [110, 200],
 		weight: 9,
 		monsters: [Monsters.Nechryael.id, Monsters.GreaterNechryael.id],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.NechsPlease,
 		combatLevel: 85,
 		slayerLevel: 80,
 		questPoints: 1,
@@ -313,6 +352,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [3, 8],
 		weight: 2,
 		monsters: [Monsters.RuneDragon.id],
+		extendedAmount: [30, 60],
+		extendedUnlockId: SlayerTaskUnlocksEnum.RUUUUUNE,
 		questPoints: 205,
 		unlocked: true
 	},
@@ -321,6 +362,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [20, 40],
 		weight: 7,
 		monsters: [Monsters.SkeletalWyvern.id],
+		extendedAmount: [50, 70],
+		extendedUnlockId: SlayerTaskUnlocksEnum.WyverNotherOne,
 		combatLevel: 70,
 		slayerLevel: 72,
 		questPoints: 1,
@@ -341,6 +384,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 
 		weight: 12,
 		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
+		extendedAmount: [180, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.SpiritualFervour,
 		levelRequirements: {
 			slayer: 60
 		},
@@ -355,6 +400,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [130, 200],
 		weight: 7,
 		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
+		extendedAmount: [180, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.SpiritualFervour,
 		levelRequirements: {
 			slayer: 60
 		},
@@ -368,6 +415,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [10, 20],
 		weight: 7,
 		monsters: [Monsters.SteelDragon.id],
+		extendedAmount: [40, 60],
+		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
 		combatLevel: 85,
 		questPoints: 34,
 		unlocked: true
@@ -377,6 +426,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [60, 90],
 		weight: 8,
 		monsters: [Monsters.Suqah.id],
+		extendedAmount: [180, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.SuqANotherOne,
 		combatLevel: 85,
 		questPoints: 12,
 		unlocked: true
@@ -406,6 +457,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 			Monsters.Vyrewatch.id,
 			Monsters.VyrewatchSentinel.id
 		],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.MoreAtStake,
 		combatLevel: 35,
 		questPoints: 1,
 		unlocked: false

@@ -72,10 +72,10 @@ export default class extends BotCommand {
 			);
 
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					options
-				);
+				await msg.channel.awaitMessages({
+					...options,
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return dropMsg.edit(
 					`You decide it's not worth risking your ${firstItem.name}, leaving Hammy to fend for himself.`
@@ -84,22 +84,22 @@ export default class extends BotCommand {
 		}
 
 		if (!bank.has(firstItem.id)) {
-			return msg.send(`You don't have a ${firstItem.name}.`);
+			return msg.channel.send(`You don't have a ${firstItem.name}.`);
 		}
 		if (!bank.has(itemID('Hammy'))) {
-			return msg.send("You don't have a Hammy, so how could you feed it?");
+			return msg.channel.send("You don't have a Hammy, so how could you feed it?");
 		}
 
 		if (roll(chanceToDouble)) {
 			let loot = new Bank();
 			loot.add(firstItem.id);
 			await msg.author.addItemsToBank(loot, false);
-			return msg.send(randArrItem(hammyDoubleMessages).replace(/\{item\}/g, firstItem.name));
+			return msg.channel.send(randArrItem(hammyDoubleMessages).replace(/\{item\}/g, firstItem.name));
 		}
 		if (roll(chanceToSave)) {
-			return msg.send(randArrItem(hammyFailMessages).replace(/\{item\}/g, firstItem.name));
+			return msg.channel.send(randArrItem(hammyFailMessages).replace(/\{item\}/g, firstItem.name));
 		}
 		await msg.author.removeItemFromBank(firstItem.id);
-		return msg.send(randArrItem(hammyMessages).replace(/\{item\}/g, firstItem.name));
+		return msg.channel.send(randArrItem(hammyMessages).replace(/\{item\}/g, firstItem.name));
 	}
 }

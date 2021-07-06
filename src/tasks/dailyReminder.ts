@@ -1,8 +1,8 @@
+import { Time } from 'e';
 import { Task } from 'klasa';
 
 import { production } from '../config';
 import { client } from '../index';
-import { Time } from '../lib/constants';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { noOp } from '../lib/util';
 

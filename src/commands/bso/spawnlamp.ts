@@ -28,7 +28,7 @@ export default class extends BotCommand {
 		}
 
 		if (!msg.guild || msg.guild.id !== '342983479501389826') {
-			return msg.send('You can only do this in the Oldschool.gg server.');
+			return msg.channel.send('You can only do this in the Oldschool.gg server.');
 		}
 
 		if (
@@ -36,7 +36,7 @@ export default class extends BotCommand {
 				msg.channel.id
 			)
 		) {
-			return msg.send("You can't use spawnlamp in this channel.");
+			return msg.channel.send("You can't use spawnlamp in this channel.");
 		}
 
 		const currentDate = Date.now();
@@ -51,7 +51,7 @@ export default class extends BotCommand {
 
 		if (difference < cooldown && !['157797566833098752', '242043489611808769'].includes(msg.author.id)) {
 			const duration = formatDuration(Date.now() - (lastDate + cooldown));
-			return msg.send(`You can spawn another lamp in ${duration}.`);
+			return msg.channel.send(`You can spawn another lamp in ${duration}.`);
 		}
 		await msg.author.settings.update(UserSettings.LastSpawnLamp, currentDate);
 
@@ -63,17 +63,15 @@ export default class extends BotCommand {
 			.setThumbnail('https://static.runelite.net/cache/item/icon/11157.png')
 			.setTitle(`Answer me this, for a random XP Lamp! What level would you be at with ${xp} XP?`);
 
-		await msg.channel.send(embed);
+		await msg.channel.send({ embeds: [embed] });
 
 		try {
-			const collected = await msg.channel.awaitMessages(
-				_msg => _msg.content === level.toString() && !_msg.author.isIronman,
-				{
-					max: 1,
-					time: 14_000,
-					errors: ['time']
-				}
-			);
+			const collected = await msg.channel.awaitMessages({
+				max: 1,
+				time: 14_000,
+				errors: ['time'],
+				filter: _msg => _msg.content === level.toString() && !_msg.author.isIronman
+			});
 
 			const col = collected.first();
 			if (!col) return;

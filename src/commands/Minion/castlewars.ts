@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { getMinigameEntity } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -26,7 +27,7 @@ export default class CastleWarsCommand extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const bank = msg.author.bank();
 		const kc = await getMinigameEntity(msg.author.id);
-		return msg.send(`You have **${bank.amount('Castle wars ticket')}** Castle wars tickets.
+		return msg.channel.send(`You have **${bank.amount('Castle wars ticket')}** Castle wars tickets.
 You have played ${kc.CastleWars} Castle Wars games.`);
 	}
 
@@ -46,7 +47,7 @@ You have played ${kc.CastleWars} Castle Wars games.`);
 			minigameID: 'CastleWars'
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${
 				msg.author.minionName
 			} is now doing ${quantity} games of Castle Wars. The trip will take around ${formatDuration(duration)}.`

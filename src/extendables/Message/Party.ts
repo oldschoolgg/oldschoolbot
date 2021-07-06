@@ -49,9 +49,11 @@ async function _setup(
 
 	const reactionAwaiter = () =>
 		new Promise<KlasaUser[]>(async (resolve, reject) => {
-			const collector = new CustomReactionCollector(
-				confirmMessage,
-				(reaction: MessageReaction, user: KlasaUser) => {
+			const collector = new CustomReactionCollector(confirmMessage, {
+				time: 120_000,
+				max: options.maxSize,
+				dispose: true,
+				filter: (reaction: MessageReaction, user: KlasaUser) => {
 					if (
 						(!options.ironmanAllowed && user.isIronman) ||
 						user.bot ||
@@ -81,13 +83,8 @@ async function _setup(
 					return ([ReactionEmoji.Join, ReactionEmoji.Stop, ReactionEmoji.Start] as string[]).includes(
 						reaction.emoji.id
 					);
-				},
-				{
-					time: 120_000,
-					max: options.maxSize,
-					dispose: true
 				}
-			);
+			});
 
 			collector.on('remove', (reaction: MessageReaction, user: KlasaUser) => {
 				if (!usersWhoConfirmed.includes(user)) return false;
@@ -97,7 +94,7 @@ async function _setup(
 
 			function startTrip() {
 				if (usersWhoConfirmed.length < options.minSize) {
-					reject('Not enough people joined your mass!');
+					reject(`${msg.author} Not enough people joined your mass!`);
 					return;
 				}
 

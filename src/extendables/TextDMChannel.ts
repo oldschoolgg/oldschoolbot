@@ -1,4 +1,4 @@
-import { DMChannel, MessageAttachment, Permissions, TextChannel } from 'discord.js';
+import { DMChannel, MessageAttachment, MessageOptions, Permissions, TextChannel } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 
 import { bankImageCache } from '../lib/constants';
@@ -73,10 +73,12 @@ export default class extends Extendable {
 		if (cached && content) {
 			content += `\n${cached}`;
 		}
-		const sent = await this.send(
-			content ?? cached,
-			image && !cached ? new MessageAttachment(image!, isTransparent ? 'bank.png' : 'bank.jpg') : {}
-		);
+		let options: MessageOptions = { content: content ?? cached };
+
+		if (image && !cached) {
+			options.files = [new MessageAttachment(image!, isTransparent ? 'bank.png' : 'bank.jpg')];
+		}
+		const sent = await this.send(options);
 
 		const url = sent.attachments.first()?.proxyURL;
 		if (url) {

@@ -30,6 +30,6 @@ export default class extends BotCommand {
 			.setThumbnail(this.client?.user?.displayAvatarURL() || '')
 			.setDescription(servers);
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

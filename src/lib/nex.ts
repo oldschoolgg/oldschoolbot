@@ -1,7 +1,7 @@
+import { Time } from 'e';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { Time } from './constants';
 import { GearSetupTypes, GearStat } from './gear/types';
 import { KillableMonster } from './minions/types';
 import resolveItems from './util/resolveItems';

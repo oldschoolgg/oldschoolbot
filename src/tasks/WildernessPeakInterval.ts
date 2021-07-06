@@ -1,7 +1,6 @@
-import { shuffleArr } from 'e';
+import { shuffleArr, Time } from 'e';
 import { Task } from 'klasa';
 
-import { Time } from '../lib/constants';
 import { rand } from '../lib/util';
 
 export const enum PeakTier {

@@ -1,8 +1,8 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
@@ -30,7 +30,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[quantity:int{1}|name:...string] [plantName:...string]',
+			usage: '[quantity:int{1}|name:...string] [plantName:...string] [autoFarmed:...boolean]',
 			aliases: ['plant'],
 			usageDelim: ' ',
 			description: 'Allows a player to plant or harvest and replant seeds for farming.',
@@ -41,7 +41,7 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage, [quantity, plantName = '']: [null | number | string, string]) {
+	async run(msg: KlasaMessage, [quantity, plantName = '', autoFarmed]: [null | number | string, string, boolean]) {
 		if (msg.flagArgs.plants) {
 			return returnListOfPlants(msg);
 		}
@@ -59,12 +59,15 @@ export default class extends BotCommand {
 		const boostStr: string[] = [];
 
 		if (typeof quantity === 'string') {
+			if (typeof plantName === 'boolean') {
+				autoFarmed = plantName;
+			}
 			plantName = quantity;
 			quantity = null;
 		}
 
 		const plants =
-			Farming.Plants.find(plants => plants.name.toLowerCase() === plantName.toLowerCase()) ??
+			Farming.Plants.find(plants => stringMatches(plants.name, plantName)) ??
 			Farming.Plants.find(plants =>
 				plants.aliases.some(
 					alias => stringMatches(alias, plantName) || stringMatches(alias.split(' ')[0], plantName)
@@ -234,7 +237,7 @@ export default class extends BotCommand {
 				if (!bankHasItem(userBank, parseInt(paymentID), qty * quantity)) {
 					canPay = false;
 					if (msg.flagArgs.pay) {
-						return msg.send(
+						return msg.channel.send(
 							`You don't have enough ${itemNameFromID(
 								parseInt(paymentID)
 							)} to make payments to nearby farmers.`
@@ -328,10 +331,11 @@ export default class extends BotCommand {
 			planting: true,
 			duration,
 			currentDate,
-			type: Activity.Farming
+			type: Activity.Farming,
+			autoFarmed
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${infoStr.join(' ')}\n\nIt'll take around ${formatDuration(duration)} to finish.\n\n${
 				boostStr.length > 0 ? '**Boosts**: ' : ''
 			}${boostStr.join(', ')}`

@@ -1,10 +1,10 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageEmbed } from 'discord.js';
-import { chunk, sleep } from 'e';
+import { chunk, sleep, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters, Util } from 'oldschooljs';
 
-import { Color, Emoji, MAX_LEVEL, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
+import { Color, Emoji, MAX_LEVEL, MIMIC_MONSTER_ID, PerkTier } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -31,7 +31,7 @@ async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
 		const command = msg.client.commands.get(name)!;
 		await command!.run(msg, args);
 	} catch (err) {
-		msg.send(typeof err === 'string' ? err : err.message);
+		msg.channel.send(typeof err === 'string' ? err : err.message);
 	}
 }
 
@@ -51,7 +51,7 @@ export default class MinionCommand extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		return msg.send(msg.author.minionStatus);
+		return msg.channel.send(msg.author.minionStatus);
 	}
 
 	@requiresMinion
@@ -70,13 +70,13 @@ export default class MinionCommand extends BotCommand {
 			const xpToLevel = convertLVLtoXP(level + 1) - currentXP;
 			str += ` ${xpToLevel.toLocaleString()} XP away from level ${level + 1}`;
 		}
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 
 	@requiresMinion
 	async seticon(msg: KlasaMessage, [icon]: [string]) {
 		if (msg.author.perkTier < PerkTier.Six) {
-			return msg.send("You need to be a Tier 5 Patron to change your minion's icon to a custom icon.");
+			return msg.channel.send("You need to be a Tier 5 Patron to change your minion's icon to a custom icon.");
 		}
 
 		const res = FormattedCustomEmoji.exec(icon);
@@ -85,17 +85,16 @@ export default class MinionCommand extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.Minion.Icon, res[0]);
 
-		return msg.send(`Changed your minion icon to ${res}.`);
+		return msg.channel.send(`Changed your minion icon to ${res}.`);
 	}
 
 	async pat(msg: KlasaMessage) {
-		return msg.send(randomPatMessage(msg.author.minionName));
+		return msg.channel.send(randomPatMessage(msg.author.minionName));
 	}
 
 	@requiresMinion
 	async stats(msg: KlasaMessage) {
-		const embed = await minionStatsEmbed(msg.author);
-		return msg.send(embed);
+		return msg.channel.send({ embeds: [await minionStatsEmbed(msg.author)] });
 	}
 
 	@requiresMinion
@@ -128,12 +127,12 @@ export default class MinionCommand extends BotCommand {
 			);
 		}
 
-		return msg.send(embed);
+		return msg.channel.send({ embeds: [embed] });
 	}
 
 	@requiresMinion
 	async qp(msg: KlasaMessage) {
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName}'s Quest Point count is: ${msg.author.settings.get(UserSettings.QP)}.`
 		);
 	}
@@ -148,7 +147,7 @@ export default class MinionCommand extends BotCommand {
 			const clue = clueTiers.find(c => c.id === parseInt(clueID));
 			res += `**${clue!.name}**: ${clueScore}\n`;
 		}
-		return msg.send(res);
+		return msg.channel.send(res);
 	}
 
 	async buy(msg: KlasaMessage) {
@@ -189,19 +188,17 @@ export default class MinionCommand extends BotCommand {
 			throw `You can't afford to buy a minion! You need ${Util.toKMB(cost)}`;
 		}
 
-		await msg.send(
+		await msg.channel.send(
 			`Are you sure you want to spend ${Util.toKMB(cost)} on buying a minion? Please say \`yes\` to confirm.`
 		);
 
 		try {
-			await msg.channel.awaitMessages(
-				answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'yes',
-				{
-					max: 1,
-					time: 15000,
-					errors: ['time']
-				}
-			);
+			await msg.channel.awaitMessages({
+				max: 1,
+				time: 15000,
+				errors: ['time'],
+				filter: answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'yes'
+			});
 			const response = await msg.channel.send(`${Emoji.Search} Finding the right minion for you...`);
 
 			await sleep(3000);
@@ -236,11 +233,11 @@ export default class MinionCommand extends BotCommand {
 			name.length > 30 ||
 			['\n', '`', '@', '<', ':'].some(char => name.includes(char))
 		) {
-			return msg.send("That's not a valid name for your minion.");
+			return msg.channel.send("That's not a valid name for your minion.");
 		}
 
 		await msg.author.settings.update(UserSettings.Minion.Name, name);
-		return msg.send(`Renamed your minion to ${msg.author.minionName}.`);
+		return msg.channel.send(`Renamed your minion to ${msg.author.minionName}.`);
 	}
 
 	async fish(msg: KlasaMessage, [quantity, fishName]: [number, string]) {

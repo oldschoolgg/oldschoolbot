@@ -1,7 +1,9 @@
+import { MessageAttachment } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -45,7 +47,7 @@ export default class extends BotCommand {
 				}
 				str += '\n\n\n';
 			}
-			return msg.channel.sendFile(Buffer.from(str), 'construction-xpxhr.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(str), 'construction-xpxhr.txt')] });
 		}
 
 		if (typeof quantity === 'string') {
@@ -59,7 +61,7 @@ export default class extends BotCommand {
 		);
 
 		if (!object) {
-			return msg.send(
+			return msg.channel.send(
 				`Thats not a valid object to build. Valid objects are ${Constructables.map(object => object.name).join(
 					', '
 				)}.`
@@ -67,7 +69,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Construction) < object.level) {
-			return msg.send(`${msg.author.minionName} needs ${object.level} Construction to create a ${object.name}.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${object.level} Construction to create a ${object.name}.`
+			);
 		}
 
 		let timeToBuildSingleObject = object.ticks * 300;
@@ -87,7 +91,9 @@ export default class extends BotCommand {
 		}
 
 		if (planksHas < planksQtyCost * quantity) {
-			return msg.send(`You don't have enough ${itemNameFromID(plank)} to make ${quantity}x ${object.name}.`);
+			return msg.channel.send(
+				`You don't have enough ${itemNameFromID(plank)} to make ${quantity}x ${object.name}.`
+			);
 		}
 
 		let totalPlanksNeeded = planksQtyCost * quantity;
@@ -103,7 +109,7 @@ export default class extends BotCommand {
 		const duration = quantity * timeToBuildSingleObject;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)} minutes, try a lower quantity. The highest amount of ${object.name}s you can build is ${Math.floor(
@@ -114,7 +120,7 @@ export default class extends BotCommand {
 
 		const gpNeeded = Math.floor(10_000 * (invsPerTrip / 8));
 		if (msg.author.settings.get(UserSettings.GP) < gpNeeded) {
-			return msg.send("You don't have enough GP to pay your Butler.");
+			return msg.channel.send("You don't have enough GP to pay your Butler.");
 		}
 		await msg.author.removeGP(gpNeeded);
 		await msg.author.removeItemFromBank(plank, totalPlanksNeeded);
@@ -148,6 +154,6 @@ You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} invent
 		if (hasScroll) {
 			str += '\nYour Scroll of proficiency allows you to save 15% of your planks.';
 		}
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

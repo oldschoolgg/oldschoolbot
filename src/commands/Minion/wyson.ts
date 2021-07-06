@@ -49,7 +49,7 @@ export default class extends BotCommand {
 		);
 
 		if (!moleItem) {
-			return msg.send(
+			return msg.channel.send(
 				`I don't exchange that item. I exchange the following: ${MolePartItems.map(item => {
 					return item.name;
 				}).join(', ')}.`
@@ -63,7 +63,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 
 		if (msg.author.numItemsInBankSync(moleItem.inputItem) < quantity) {
-			return msg.send(`You don't have enough ${moleItem.name} to exchange!`);
+			return msg.channel.send(`You don't have enough ${moleItem.name} to exchange!`);
 		}
 
 		await msg.author.removeItemFromBank(moleItem.inputItem, quantity);
@@ -75,6 +75,6 @@ export default class extends BotCommand {
 
 		await msg.author.addItemsToBank(loot.values(), true);
 
-		return msg.send(`You exchanged ${quantity}x ${moleItem.name} and received: ${loot}.`);
+		return msg.channel.send(`You exchanged ${quantity}x ${moleItem.name} and received: ${loot}.`);
 	}
 }

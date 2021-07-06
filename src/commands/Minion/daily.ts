@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import * as fs from 'fs';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { COINS_ID, Emoji, SupportServer, Time } from '../../lib/constants';
+import { COINS_ID, Emoji, SupportServer } from '../../lib/constants';
 import pets from '../../lib/data/pets';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -56,7 +57,7 @@ export default class DailyCommand extends BotCommand {
 			if (msg.author.settings.get('troll')) {
 				duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * rand(0, 500)));
 			}
-			return msg.send(`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`);
+			return msg.channel.send(`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`);
 		}
 
 		await msg.author.settings.update(UserSettings.LastDailyTimestamp, currentDate);
@@ -67,13 +68,13 @@ export default class DailyCommand extends BotCommand {
 
 		await msg.channel.send(`**${Emoji.Diango} Diango asks ${msg.author.username}...** ${question}`);
 		try {
-			const collected = await msg.channel.awaitMessages(
-				answer =>
+			const collected = await msg.channel.awaitMessages({
+				...options,
+				filter: answer =>
 					answer.author.id === msg.author.id &&
 					answer.content &&
-					trivia.a.some((_ans: string) => stringMatches(_ans, answer.content)),
-				options
-			);
+					trivia.a.some((_ans: string) => stringMatches(_ans, answer.content))
+			});
 			const winner = collected.first();
 			if (winner) return this.reward(msg, true);
 		} catch (err) {

@@ -1,9 +1,10 @@
 import { MessageEmbed } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { IsNull, Not } from 'typeorm';
 
 import { Minigames } from '../../extendables/User/Minigame';
-import { badges, Emoji, Time } from '../../lib/constants';
+import { badges, Emoji } from '../../lib/constants';
 import { collectionLogTypes } from '../../lib/data/collectionLog';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
@@ -280,7 +281,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 	async minigame(msg: KlasaMessage, [name = '']: [string]) {
 		const minigame = Minigames.find(m => stringMatches(m.name, name));
 		if (!minigame) {
-			return msg.send(
+			return msg.channel.send(
 				`That's not a valid minigame. Valid minigames are: ${Minigames.map(m => m.name).join(', ')}.`
 			);
 		}
@@ -306,7 +307,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			mon => stringMatches(mon.name, name) || mon.aliases.some(alias => stringMatches(alias, name))
 		);
 		if (!monster) {
-			return msg.send("That's not a valid monster!");
+			return msg.channel.send("That's not a valid monster!");
 		}
 
 		let key = 'monsterScores' as const;
@@ -367,7 +368,7 @@ DESC LIMIT 100;`
 				.sort((a, b) => b.totalLevel - a.totalLevel);
 		} else {
 			if (!skill) {
-				return msg.send("That's not a valid skill.");
+				return msg.channel.send("That's not a valid skill.");
 			}
 
 			res = await this.query(
@@ -442,7 +443,7 @@ LIMIT 50;
 		const type = collectionLogTypes.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
 
 		if (!type) {
-			return msg.send(
+			return msg.channel.send(
 				`That's not a valid collection log type. The valid types are: ${collectionLogTypes
 					.map(type => type.name)
 					.join(', ')}`
@@ -487,7 +488,7 @@ LIMIT 50;
 	async laps(msg: KlasaMessage, [courseName = '']: [string]) {
 		const course = Agility.Courses.find(course => course.aliases.some(alias => stringMatches(alias, courseName)));
 
-		if (!course) return msg.send('Thats not a valid agility course.');
+		if (!course) return msg.channel.send('Thats not a valid agility course.');
 
 		const data: { id: string; lapCount: number }[] = await this.query(
 			`SELECT id, "lapsScores"->>'${course.id}' as "lapCount" FROM users WHERE "lapsScores"->>'${course.id}' IS NOT NULL ORDER BY ("lapsScores"->>'${course.id}')::int DESC LIMIT 50;`
@@ -511,7 +512,7 @@ LIMIT 50;
 			)
 		);
 
-		if (!creature) return msg.send('Thats not a valid creature.');
+		if (!creature) return msg.channel.send('Thats not a valid creature.');
 
 		const data: { id: string; creatureCount: number }[] = await this.query(
 			`SELECT id, "creatureScores"->>'${creature.id}' as "creatureCount" FROM users WHERE "creatureScores"->>'${creature.id}' IS NOT NULL ORDER BY ("creatureScores"->>'${creature.id}')::int DESC LIMIT 50;`
@@ -531,7 +532,7 @@ LIMIT 50;
 	}
 
 	async doMenu(msg: KlasaMessage, pages: string[], title: string) {
-		const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
+		const loadingMsg = await msg.channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
 
 		const display = new UserRichDisplay();
 		display.setFooterPrefix('Page ');

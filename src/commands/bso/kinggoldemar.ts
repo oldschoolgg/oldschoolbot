@@ -1,8 +1,9 @@
 import { MessageEmbed, TextChannel } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji, Time } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { GearSetupTypes } from '../../lib/gear/types';
 import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/KingGoldemar';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -75,7 +76,7 @@ export default class extends BotCommand {
 		});
 		try {
 			if (msg.flagArgs.s1mulat3) {
-				return msg.channel.send(await instance.simulate());
+				return msg.channel.send({ files: [await instance.simulate()] });
 			}
 			const { bossUsers } = await instance.start();
 			const embed = new MessageEmbed()
@@ -93,7 +94,7 @@ ${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
 					'https://cdn.discordapp.com/attachments/357422607982919680/841789326648016896/Untitled-2.png'
 				);
 
-			return msg.channel.send(embed);
+			return msg.channel.send({ embeds: [embed] });
 		} catch (err) {
 			return msg.channel.send(`The mass failed to start for this reason: ${err.message}.`);
 		}

@@ -1,7 +1,7 @@
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { Activity, Emoji, Time } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -172,7 +172,7 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		return msg.send(
+		return msg.channel.send(
 			`<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${msg.author.settings
 				.get(UserSettings.DungeoneeringTokens)
 				.toLocaleString()}
@@ -184,7 +184,7 @@ export default class extends BotCommand {
 		if (typeof input === 'number') input = '';
 		const buyable = dungBuyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
-			return msg.send(
+			return msg.channel.send(
 				`That isn't a buyable item. Here are the items you can buy: \n\n${dungBuyables
 					.map(i => `**${i.item.name}:** ${i.cost.toLocaleString()} tokens`)
 					.join('\n')}.`
@@ -194,7 +194,7 @@ export default class extends BotCommand {
 		const { item, cost } = buyable;
 		const balance = msg.author.settings.get(UserSettings.DungeoneeringTokens);
 		if (balance < cost) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough Dungeoneering tokens to buy the ${
 					item.name
 				}. You need ${cost.toLocaleString()}, but you have only ${balance.toLocaleString()}.`
@@ -204,7 +204,9 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.DungeoneeringTokens, balance - cost);
 		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
 
-		return msg.send(`Successfully purchased 1x ${item.name} for ${cost.toLocaleString()} Dungeoneering tokens.`);
+		return msg.channel.send(
+			`Successfully purchased 1x ${item.name} for ${cost.toLocaleString()} Dungeoneering tokens.`
+		);
 	}
 
 	@minionNotBusy
@@ -347,8 +349,6 @@ export default class extends BotCommand {
 			floor: floorToDo
 		});
 
-		return msg.channel.send(str, {
-			split: true
-		});
+		return msg.channel.send(str);
 	}
 }

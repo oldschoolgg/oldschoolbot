@@ -1,10 +1,9 @@
 import { MessageEmbed } from 'discord.js';
-import { randArrItem } from 'e';
+import { randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Time } from '../../lib/constants';
 import { allMbTables, MysteryBoxes } from '../../lib/data/openables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -66,38 +65,40 @@ export default class DailyCommand extends BotCommand {
 		);
 
 		if (difference < eightHours) {
-			return msg.send(
+			return msg.channel.send(
 				`You have no item contract available at the moment. Come back in ${durationRemaining}. ${total}`
 			);
 		}
 
 		if (str === 'skip') {
 			if (difference < eightHours) {
-				return msg.channel.send(
-					embed.setDescription(
-						`Your current contract is a ${currentItem.name} (Id: ${currentItem.id}), you can't skip it yet, you need to wait ${durationRemaining}. ${total}`
-					)
-				);
+				return msg.channel.send({
+					embeds: [
+						embed.setDescription(
+							`Your current contract is a ${currentItem.name} (Id: ${currentItem.id}), you can't skip it yet, you need to wait ${durationRemaining}. ${total}`
+						)
+					]
+				});
 			}
 
 			if (!msg.flagArgs.confirm && !msg.flagArgs.cf && !msg.flagArgs.yes) {
-				const sellMsg = await msg.channel.send(
-					embed.setDescription(
-						`Are you sure you want to skip your item contract? You won't be able to get another contract for ${formatDuration(
-							eightHours / 2
-						)}. Say \`y\` to confirm.`
-					)
-				);
+				const sellMsg = await msg.channel.send({
+					embeds: [
+						embed.setDescription(
+							`Are you sure you want to skip your item contract? You won't be able to get another contract for ${formatDuration(
+								eightHours / 2
+							)}. Say \`y\` to confirm.`
+						)
+					]
+				});
 
 				try {
-					await msg.channel.awaitMessages(
-						_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'y',
-						{
-							max: 1,
-							time: 13_000,
-							errors: ['time']
-						}
-					);
+					await msg.channel.awaitMessages({
+						max: 1,
+						time: 13_000,
+						errors: ['time'],
+						filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'y'
+					});
 				} catch (err) {
 					return sellMsg.edit('Cancelled.');
 				}
@@ -119,25 +120,25 @@ export default class DailyCommand extends BotCommand {
 			embed.setDescription(
 				`Your current contract is a ${currentItem.name} (Id: ${currentItem.id}), go get one!${total}`
 			);
-			return msg.channel.send(embed);
+			return msg.channel.send({ embeds: [embed] });
 		}
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-			const sellMsg = await msg.channel.send(
-				embed.setDescription(
-					`Are you sure you want to hand over 1x ${currentItem.name} to complete your item contract? Say \`y\` to confirm.`
-				)
-			);
+			const sellMsg = await msg.channel.send({
+				embeds: [
+					embed.setDescription(
+						`Are you sure you want to hand over 1x ${currentItem.name} to complete your item contract? Say \`y\` to confirm.`
+					)
+				]
+			});
 
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'y',
-					{
-						max: 1,
-						time: 13_000,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					max: 1,
+					time: 13_000,
+					errors: ['time'],
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'y'
+				});
 			} catch (err) {
 				return sellMsg.edit('Cancelled.');
 			}
@@ -188,6 +189,6 @@ export default class DailyCommand extends BotCommand {
 		if (gotBonus.length > 0) {
 			res += `\n\n${gotBonus}`;
 		}
-		return msg.channel.send(embed.setDescription(res));
+		return msg.channel.send({ embeds: [embed.setDescription(res)] });
 	}
 }

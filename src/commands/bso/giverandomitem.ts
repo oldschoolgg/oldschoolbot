@@ -32,10 +32,10 @@ export default class extends BotCommand {
 			);
 
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'yes',
-					options
-				);
+				await msg.channel.awaitMessages({
+					...options,
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'yes'
+				});
 			} catch (err) {
 				return sellMsg.edit('Cancelling.');
 			}
@@ -44,14 +44,16 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const bank = msg.author.bank();
 		const item = bank.random();
-		if (!item) return msg.send('No items found.');
+		if (!item) return msg.channel.send('No items found.');
 		if (item.id >= 40_000 && item.id <= 45_000) {
-			return msg.send(`You can't give away your ${itemNameFromID(item.id)}!`);
+			return msg.channel.send(`You can't give away your ${itemNameFromID(item.id)}!`);
 		}
-		if (!item) return msg.send('You have no items!');
+		if (!item) return msg.channel.send('You have no items!');
 		await msg.author.removeItemFromBank(item.id, item.qty);
 		await user.addItemsToBank({ [item.id]: item.qty });
 
-		return msg.send(`You gave ${item.qty.toLocaleString()}x ${itemNameFromID(item.id)} to ${user.username}.`);
+		return msg.channel.send(
+			`You gave ${item.qty.toLocaleString()}x ${itemNameFromID(item.id)} to ${user.username}.`
+		);
 	}
 }

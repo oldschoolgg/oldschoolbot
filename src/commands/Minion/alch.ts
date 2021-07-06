@@ -1,8 +1,9 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -45,11 +46,11 @@ export default class extends BotCommand {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const osItem = item.find(i => userBank[i.id] && i.highalch && i.tradeable);
 		if (!osItem) {
-			return msg.send("You don't have any of this item to alch.");
+			return msg.channel.send("You don't have any of this item to alch.");
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) < 55) {
-			return msg.send('You need level 55 Magic to cast High Alchemy');
+			return msg.channel.send('You need level 55 Magic to cast High Alchemy');
 		}
 
 		const timePerAlch = Time.Second * 1.5;
@@ -62,7 +63,7 @@ export default class extends BotCommand {
 		}
 
 		if (quantity * timePerAlch > maxTripLength) {
-			return msg.send(`The max number of alchs you can do is ${maxCasts}!`);
+			return msg.channel.send(`The max number of alchs you can do is ${maxCasts}!`);
 		}
 
 		let duration = quantity * timePerAlch;
@@ -91,7 +92,7 @@ export default class extends BotCommand {
 		consumedItems.add(osItem.id, quantity);
 
 		if (!msg.author.owns(consumedItems)) {
-			return msg.send(`You don't have the required items, you need ${consumedItems}`);
+			return msg.channel.send(`You don't have the required items, you need ${consumedItems}`);
 		}
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
@@ -102,14 +103,12 @@ export default class extends BotCommand {
 			);
 
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: 10_000,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+					max: 1,
+					time: 10_000,
+					errors: ['time']
+				});
 			} catch (err) {
 				return alchMessage.edit(`Cancelling alch of ${quantity}x ${osItem.name}.`);
 			}
@@ -134,6 +133,6 @@ export default class extends BotCommand {
 			osItem.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

@@ -1,4 +1,5 @@
 import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
+import { Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -6,7 +7,7 @@ import { toKMB } from 'oldschooljs/dist/util';
 
 import { alching } from '../../commands/Minion/laps';
 import MinionCommand from '../../commands/Minion/minion';
-import { Activity, BitField, COINS_ID, Emoji, PerkTier, Time } from '../constants';
+import { Activity, BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { getRandomMysteryBox } from '../data/openables';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
@@ -181,15 +182,12 @@ export async function handleTripFinish(
 	}
 
 	if (!channelIsSendable(channel)) return;
-	const collector = new MessageCollector(
-		channel,
-		(mes: Message) =>
+	const collector = new MessageCollector(channel, {
+		filter: (mes: Message) =>
 			mes.author === user && (mes.content.toLowerCase() === 'c' || stringMatches(mes.content, continuationChar)),
-		{
-			time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
-			max: 1
-		}
-	);
+		time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
+		max: 1
+	});
 
 	collectors.set(user.id, collector);
 
@@ -202,7 +200,7 @@ export async function handleTripFinish(
 		client.oneCommandAtATimeCache.add(mes.author.id);
 		try {
 			if (mes.content.toLowerCase() === 'c' && clueReceived && perkTier > PerkTier.One) {
-				(client.commands.get('minion') as MinionCommand).clue(mes, [1, clueReceived.name]);
+				(client.commands.get('minion') as unknown as MinionCommand).clue(mes, [1, clueReceived.name]);
 				return;
 			} else if (onContinue && stringMatches(mes.content, continuationChar)) {
 				await onContinue(mes).catch(err => {

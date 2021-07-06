@@ -1,7 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Time } from '../../lib/constants';
 import TrekShopItems, { TrekExperience } from '../../lib/data/buyables/trekBuyables';
 import { rewardTokens } from '../../lib/minions/data/templeTrekking';
 import { AddXpParams } from '../../lib/minions/types';
@@ -31,7 +31,7 @@ export default class extends BotCommand {
 		const userBank = user.bank();
 
 		if (name === undefined) {
-			return msg.send(
+			return msg.channel.send(
 				`Item is required. Possible items: ${TrekShopItems.map(item => {
 					return item.name;
 				}).join(', ')}.`
@@ -45,7 +45,7 @@ export default class extends BotCommand {
 		);
 
 		if (!specifiedItem) {
-			return msg.send(
+			return msg.channel.send(
 				`Item not recognized. Possible items: ${TrekShopItems.map(item => {
 					return item.name;
 				}).join(', ')}.`
@@ -62,7 +62,7 @@ export default class extends BotCommand {
 		}
 
 		if (quantity === 0) {
-			return msg.send("You don't have enough reward tokens for that.");
+			return msg.channel.send("You don't have enough reward tokens for that.");
 		}
 
 		let outItems = new Bank();
@@ -144,7 +144,7 @@ export default class extends BotCommand {
 		}
 
 		if (!userBank.has(inItems.bank)) {
-			return msg.send("You don't have enough reward tokens for that.");
+			return msg.channel.send("You don't have enough reward tokens for that.");
 		}
 
 		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
@@ -154,14 +154,12 @@ export default class extends BotCommand {
 
 			// Confirm the user wants to buy
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === user.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 15,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					max: 1,
+					time: Time.Second * 15,
+					errors: ['time'],
+					filter: _msg => _msg.author.id === user.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return sellMsg.edit(`Cancelling purchase of ${quantity} sets of ${toTitleCase(specifiedItem.name)}.`);
 			}
@@ -179,6 +177,6 @@ export default class extends BotCommand {
 
 		ret += (await Promise.all(outXP.filter(xp => xp.amount > 0).map(xp => user.addXP(xp)))).join(', ');
 
-		return msg.send(`${ret}.`);
+		return msg.channel.send(`${ret}.`);
 	}
 }

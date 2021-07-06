@@ -91,7 +91,7 @@ export default class extends BotCommand {
 				items[item.id] = qty;
 			}
 			await msg.author.addItemsToBank(items);
-			return msg.send(`Gave you ${new Bank(items)}.`);
+			return msg.channel.send(`Gave you ${new Bank(items)}.`);
 		}
 
 		const osItem = itemArray[0];
@@ -101,13 +101,13 @@ export default class extends BotCommand {
 			if (msg.flagArgs[setup]) {
 				try {
 					await this.client.commands.get('equip')!.run(msg, [setup, 1, [osItem]]);
-					return msg.send(`Equipped 1x ${osItem.name} to your ${setup} setup.`);
+					return msg.channel.send(`Equipped 1x ${osItem.name} to your ${setup} setup.`);
 				} catch (err) {
-					return msg.send(`Failed to equip item. Equip it yourself ${Emoji.PeepoNoob}`);
+					return msg.channel.send(`Failed to equip item. Equip it yourself ${Emoji.PeepoNoob}`);
 				}
 			}
 		}
 
-		return msg.send(`Gave you ${qty}x ${osItem.name}.`);
+		return msg.channel.send(`Gave you ${qty}x ${osItem.name}.`);
 	}
 }

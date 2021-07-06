@@ -29,6 +29,6 @@ export default class extends BotCommand {
 			2
 		)}%** chance of receiving atleast one drop.`;
 
-		return msg.send(output);
+		return msg.channel.send(output);
 	}
 }

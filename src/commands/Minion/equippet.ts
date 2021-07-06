@@ -68,7 +68,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const petItem = itemArray.find(i => userBank[i.id] && allPetIDs.includes(i.id));
 		if (!petItem) {
-			return msg.send("That's not a pet, or you do not own this pet.");
+			return msg.channel.send("That's not a pet, or you do not own this pet.");
 		}
 
 		const currentlyEquippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
@@ -83,6 +83,6 @@ export default class extends BotCommand {
 
 		msg.author.log(`equipping ${petItem.name}[${petItem.id}]`);
 
-		return msg.send(`${msg.author.minionName} has equipped a ${petItem.name}!`);
+		return msg.channel.send(`${msg.author.minionName} has equipped a ${petItem.name}!`);
 	}
 }

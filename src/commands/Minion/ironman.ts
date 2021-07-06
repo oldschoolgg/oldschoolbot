@@ -21,11 +21,11 @@ export default class extends BotCommand {
 		 * If the user is an ironman already, lets ask them if they want to de-iron.
 		 */
 		if (msg.author.isIronman) {
-			return msg.send("You're already an ironman.");
+			return msg.channel.send("You're already an ironman.");
 		}
 
 		if (msg.author.minionIsBusy) {
-			return msg.send('Your minion is still on a trip.');
+			return msg.channel.send('Your minion is still on a trip.');
 		}
 
 		const existingGiveaways = await GiveawayTable.find({
@@ -37,7 +37,7 @@ export default class extends BotCommand {
 			return msg.channel.send("You can't become an ironman because you have active giveaways.");
 		}
 
-		await msg.send(
+		await msg.channel.send(
 			`Are you sure you want to start over and play as an ironman?
 :warning: **Read the following text before confirming. This is your only warning. ** :warning:
 The following things will be COMPLETELY reset/wiped from your account, with no chance of being recovered: Your entire bank, collection log, GP/Coins, QP/Quest Points, Clue Scores, Monster Scores, all XP. If you type \`confirm\`, they will all be wiped.
@@ -50,14 +50,12 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		);
 
 		try {
-			await msg.channel.awaitMessages(
-				answer => answer.author.id === msg.author.id && answer.content === 'confirm permanent ironman',
-				{
-					max: 1,
-					time: 15000,
-					errors: ['time']
-				}
-			);
+			await msg.channel.awaitMessages({
+				max: 1,
+				time: 15000,
+				errors: ['time'],
+				filter: answer => answer.author.id === msg.author.id && answer.content === 'confirm permanent ironman'
+			});
 
 			msg.author.log(
 				`just became an ironman, previous settings: ${JSON.stringify(msg.author.settings.toJSON())}`
@@ -76,7 +74,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 				[UserSettings.Minion.Ironman, true],
 				[UserSettings.Minion.HasBought, true]
 			]);
-			return msg.send('You are now an ironman.');
+			return msg.channel.send('You are now an ironman.');
 		} catch (err) {
 			return msg.channel.send('Cancelled ironman swap.');
 		}

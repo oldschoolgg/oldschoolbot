@@ -1,12 +1,12 @@
 import { MessageEmbed } from 'discord.js';
-import { randArrItem, shuffleArr } from 'e';
+import { randArrItem, shuffleArr, Time } from 'e';
 import he from 'he';
 import { KlasaMessage, KlasaUser, Monitor, MonitorStore } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 
 import { production } from '../config';
-import { Color, SupportServer, Time } from '../lib/constants';
+import { Color, SupportServer } from '../lib/constants';
 import { getRandomMysteryBox } from '../lib/data/openables';
 import { roll, stringMatches } from '../lib/util';
 
@@ -24,13 +24,14 @@ export async function triviaChallenge(msg: KlasaMessage): Promise<KlasaUser | nu
 		.setTitle('Answer this for a reward!')
 		.setDescription(`${he.decode(question)}\n\nPossible answers: ${allAnswers.join(', ')}`);
 
-	await msg.channel.send(embed);
+	await msg.channel.send({ embeds: [embed] });
 
 	try {
-		const collected = await msg.channel.awaitMessages(_msg => stringMatches(_msg.content, correct_answer), {
+		const collected = await msg.channel.awaitMessages({
 			max: 1,
 			time: 14_000,
-			errors: ['time']
+			errors: ['time'],
+			filter: _msg => stringMatches(_msg.content, correct_answer)
 		});
 
 		const winner = collected.first()?.author;
@@ -52,13 +53,14 @@ export async function itemChallenge(msg: KlasaMessage): Promise<KlasaUser | null
 		.setColor(Color.Orange)
 		.setTitle('Answer this for a reward!')
 		.setDescription(`Unscramble this item name for a reward: ${scrambed}`);
-	await msg.channel.send(embed);
+	await msg.channel.send({ embeds: [embed] });
 
 	try {
-		const collected = await msg.channel.awaitMessages(_msg => stringMatches(_msg.content, randomItem.name), {
+		const collected = await msg.channel.awaitMessages({
 			max: 1,
 			time: 14_000,
-			errors: ['time']
+			errors: ['time'],
+			filter: _msg => stringMatches(_msg.content, randomItem.name)
 		});
 
 		const winner = collected.first()?.author;
@@ -74,12 +76,13 @@ export async function reactChallenge(msg: KlasaMessage): Promise<KlasaUser | nul
 		.setColor(Color.Orange)
 		.setTitle('Answer this for a reward!')
 		.setDescription('React to this message with any emoji for a reward!');
-	const message = await msg.channel.send(embed);
+	const message = await msg.channel.send({ embeds: [embed] });
 	try {
-		const collected = await message.awaitReactions(() => true, {
+		const collected = await message.awaitReactions({
 			max: 1,
 			time: 30_000,
-			errors: ['time']
+			errors: ['time'],
+			filter: () => true
 		});
 		const winner = collected.first()?.users.cache.first();
 		return winner ?? null;

@@ -14,14 +14,12 @@ export default class extends Extendable {
 		);
 
 		try {
-			await this.channel.awaitMessages(
-				_msg => _msg.author.id === this.author.id && _msg.content.toLowerCase() === 'confirm',
-				{
-					max: 1,
-					time: 20_000,
-					errors: ['time']
-				}
-			);
+			await this.channel.awaitMessages({
+				max: 1,
+				time: 20_000,
+				errors: ['time'],
+				filter: _msg => _msg.author.id === this.author.id && _msg.content.toLowerCase() === 'confirm'
+			});
 		} catch (err) {
 			sellMsg.edit('User did not confirm in time.');
 			throw 'User did not confirm in time.';

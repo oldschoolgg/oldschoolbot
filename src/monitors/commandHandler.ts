@@ -50,7 +50,13 @@ export default class extends Monitor {
 			}
 		}
 		const prefix = message.guildSettings.get(GuildSettings.Prefix);
-		return message.sendLocale('PREFIX_REMINDER', [prefix.length ? prefix : undefined]);
+		return message.channel.send(
+			`The prefix${
+				Array.isArray(prefix)
+					? `es for this guild are: ${prefix.map(pre => `\`${pre}\``).join(', ')}`
+					: ` in this guild is set to: \`${prefix}\``
+			}`
+		);
 	}
 
 	public async runCommand(message: KlasaMessage) {

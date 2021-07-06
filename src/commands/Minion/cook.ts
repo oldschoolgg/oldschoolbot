@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -40,7 +41,7 @@ export default class extends BotCommand {
 		);
 
 		if (!cookable) {
-			return msg.send(
+			return msg.channel.send(
 				`Thats not a valid item to cook. Valid cookables are ${Cooking.Cookables.map(
 					cookable => cookable.name
 				).join(', ')}.`
@@ -48,7 +49,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Cooking) < cookable.level) {
-			return msg.send(`${msg.author.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`
+			);
 		}
 
 		const hasRemy = msg.author.equippedPet() === itemID('Remy');
@@ -79,13 +82,13 @@ export default class extends BotCommand {
 		const totalCost = inputCost.clone().multiply(quantity);
 
 		if (!userBank.fits(totalCost)) {
-			return msg.send(`You don't have enough items. You need: ${inputCost}.`);
+			return msg.channel.send(`You don't have enough items. You need: ${inputCost}.`);
 		}
 
 		const duration = quantity * timeToCookSingleCookable;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)} minutes, try a lower quantity. The highest amount of ${cookable.name}s you can cook is ${Math.floor(
@@ -105,7 +108,7 @@ export default class extends BotCommand {
 			type: Activity.Cooking
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDuration(
 				duration
 			)} to finish. ${

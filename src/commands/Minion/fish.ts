@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
@@ -40,18 +41,18 @@ export default class extends BotCommand {
 		);
 
 		if (!fish) {
-			return msg.send(
+			return msg.channel.send(
 				`Thats not a valid fish to catch. Valid fishes are ${Fishing.Fishes.map(fish => fish.name).join(', ')}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Fishing) < fish.level) {
-			return msg.send(`${msg.author.minionName} needs ${fish.level} Fishing to fish ${fish.name}.`);
+			return msg.channel.send(`${msg.author.minionName} needs ${fish.level} Fishing to fish ${fish.name}.`);
 		}
 
 		if (fish.qpRequired) {
 			if (msg.author.settings.get(UserSettings.QP) < fish.qpRequired) {
-				return msg.send(`You need ${fish.qpRequired} qp to catch those!`);
+				return msg.channel.send(`You need ${fish.qpRequired} qp to catch those!`);
 			}
 		}
 
@@ -59,7 +60,7 @@ export default class extends BotCommand {
 			fish.name === 'Barbarian fishing' &&
 			(msg.author.skillLevel(SkillsEnum.Agility) < 15 || msg.author.skillLevel(SkillsEnum.Strength) < 15)
 		) {
-			return msg.send('You need at least 15 Agility and Strength to do Barbarian Fishing.');
+			return msg.channel.send('You need at least 15 Agility and Strength to do Barbarian Fishing.');
 		}
 
 		// If no quantity provided, set it to the max.
@@ -112,7 +113,7 @@ export default class extends BotCommand {
 		let duration = quantity * scaledTimePerFish;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${fish.name} you can fish is ${Math.floor(
@@ -124,7 +125,7 @@ export default class extends BotCommand {
 		if (fish.bait) {
 			const hasBait = await msg.author.hasItem(fish.bait, quantity);
 			if (!hasBait) {
-				return msg.send(`You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`);
+				return msg.channel.send(`You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`);
 			}
 		}
 
@@ -157,6 +158,6 @@ export default class extends BotCommand {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

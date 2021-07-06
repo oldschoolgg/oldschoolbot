@@ -37,19 +37,19 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [user, amount]: [KlasaUser, number]) {
 		if (!amount) {
-			return msg.send(
+			return msg.channel.send(
 				`${Math.random() >= 0.5 ? msg.author.username : user.username} won the duel with ${Math.floor(
 					Math.random() * 30 + 1
 				)} HP remaining.`
 			);
 		}
 
-		if (msg.author.isIronman) return msg.send("You can't duel someone as an ironman.");
-		if (user.isIronman) return msg.send("You can't duel someone as an ironman.");
-		if (!(user instanceof User)) return msg.send("You didn't mention a user to duel.");
-		if (user.id === msg.author.id) return msg.send('You cant duel yourself.');
-		if (user.bot) return msg.send('You cant duel a bot.');
-		if (user.isBusy) return msg.send('That user is busy right now.');
+		if (msg.author.isIronman) return msg.channel.send("You can't duel someone as an ironman.");
+		if (user.isIronman) return msg.channel.send("You can't duel someone as an ironman.");
+		if (!(user instanceof User)) return msg.channel.send("You didn't mention a user to duel.");
+		if (user.id === msg.author.id) return msg.channel.send('You cant duel yourself.');
+		if (user.bot) return msg.channel.send('You cant duel a bot.');
+		if (user.isBusy) return msg.channel.send('That user is busy right now.');
 		if (this.client.settings.get(ClientSettings.UserBlacklist).includes(user.id)) {
 			return;
 		}
@@ -66,11 +66,11 @@ export default class extends BotCommand {
 
 	async game(msg: KlasaMessage, user: KlasaUser, amount: number) {
 		if (!(await this.checkBal(msg.author, amount))) {
-			return msg.send('You dont have have enough GP to duel that much.');
+			return msg.channel.send('You dont have have enough GP to duel that much.');
 		}
 
 		if (!(await this.checkBal(user, amount))) {
-			return msg.send("That person doesn't have enough GP to duel that much.");
+			return msg.channel.send("That person doesn't have enough GP to duel that much.");
 		}
 
 		const duelMsg = await msg.channel.send(
@@ -78,16 +78,16 @@ export default class extends BotCommand {
 		);
 
 		try {
-			await msg.channel.awaitMessages(
-				_msg => _msg.author.id === user.id && _msg.content.toLowerCase() === 'fight',
-				options
-			);
+			await msg.channel.awaitMessages({
+				...options,
+				filter: _msg => _msg.author.id === user.id && _msg.content.toLowerCase() === 'fight'
+			});
 		} catch (err) {
 			return duelMsg.edit("The user didn't accept the duel.");
 		}
 
 		if (!(await this.checkBal(msg.author, amount)) || !(await this.checkBal(user, amount))) {
-			return msg.send(Emoji.Bpaptu);
+			return msg.channel.send(Emoji.Bpaptu);
 		}
 
 		await msg.author.removeGP(amount);

@@ -1,10 +1,11 @@
+import { MessageAttachment } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import { table } from 'table';
 
 import { Minigames } from '../../extendables/User/Minigame';
-import { Time } from '../../lib/constants';
 import Buyables from '../../lib/data/buyables/buyables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -44,15 +45,14 @@ export default class extends BotCommand {
 				['Name', 'GP Cost', 'Item Cost'],
 				...Buyables.map(i => [i.name, i.gpCost || 0, new Bank(i.itemCost).toString()])
 			]);
-			return msg.channel.sendFile(
-				Buffer.from(normalTable),
-				'Buyables.txt',
-				'Here is a table of all buyable items.'
-			);
+			return msg.channel.send({
+				content: 'Here is a table of all buyable items.',
+				files: [new MessageAttachment(Buffer.from(normalTable), 'Buyables.txt')]
+			});
 		}
 
 		if (buyable.name === 'Bank lottery ticket' && msg.author.isIronman) {
-			return msg.send('Ironmen cant buy this.');
+			return msg.channel.send('Ironmen cant buy this.');
 		}
 
 		if (buyable.customReq) {
@@ -65,12 +65,12 @@ export default class extends BotCommand {
 		if (buyable.qpRequired) {
 			const QP = msg.author.settings.get(UserSettings.QP);
 			if (QP < buyable.qpRequired) {
-				return msg.send(`You need ${buyable.qpRequired} QP to purchase this item.`);
+				return msg.channel.send(`You need ${buyable.qpRequired} QP to purchase this item.`);
 			}
 		}
 
 		if (buyable.skillsNeeded && !skillsMeetRequirements(msg.author.rawSkills, buyable.skillsNeeded)) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have the required stats to buy this item. You need ${formatSkillRequirements(
 					buyable.skillsNeeded
 				)}.`
@@ -93,7 +93,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		if (buyable.itemCost && !bankHasAllItemsFromBank(userBank, multiplyBank(buyable.itemCost, quantity))) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have the required items to purchase this. You need: ${new Bank(
 					multiplyBank(buyable.itemCost, quantity)
 				)}.`
@@ -104,7 +104,7 @@ export default class extends BotCommand {
 		const totalGPCost = (buyable.gpCost ?? 0) * quantity;
 
 		if (buyable.gpCost && msg.author.settings.get(UserSettings.GP) < totalGPCost) {
-			return msg.send(`You need ${totalGPCost.toLocaleString()} GP to purchase this item.`);
+			return msg.channel.send(`You need ${totalGPCost.toLocaleString()} GP to purchase this item.`);
 		}
 
 		let output =
@@ -133,14 +133,12 @@ export default class extends BotCommand {
 			const sellMsg = await msg.channel.send(str);
 
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 15,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
+					max: 1,
+					time: Time.Second * 15,
+					errors: ['time']
+				});
 			} catch (err) {
 				return sellMsg.edit('Cancelling purchase.');
 			}
@@ -159,7 +157,7 @@ export default class extends BotCommand {
 
 		if (buyable.gpCost) {
 			if (GP < totalGPCost) {
-				return msg.send(`You need ${toKMB(totalGPCost)} GP to purchase this item.`);
+				return msg.channel.send(`You need ${toKMB(totalGPCost)} GP to purchase this item.`);
 			}
 			econBankChanges.add('Coins', totalGPCost);
 			await msg.author.removeGP(totalGPCost);
@@ -179,6 +177,6 @@ export default class extends BotCommand {
 
 		await msg.author.addItemsToBank(outItems, true);
 
-		return msg.send(`You purchased ${quantity > 1 ? `${quantity}x` : '1x'} ${buyable.name}.`);
+		return msg.channel.send(`You purchased ${quantity > 1 ? `${quantity}x` : '1x'} ${buyable.name}.`);
 	}
 }

@@ -13,7 +13,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.send(
+		return msg.channel.send(
 			randomItemFromArray([
 				'Yes.',
 				'Definitely.',

@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { PerkTier, Time } from '../../lib/constants';
+import { PerkTier } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -25,7 +26,7 @@ export default class extends BotCommand {
 
 		if (difference < Time.Hour * 24 && msg.author.id !== '157797566833098752') {
 			const duration = formatDuration(Date.now() - (lastDate + Time.Hour * 24));
-			return msg.send(`You can give another box in ${duration}.`);
+			return msg.channel.send(`You can give another box in ${duration}.`);
 		}
 		await msg.author.settings.update(UserSettings.LastGivenBox, currentDate);
 

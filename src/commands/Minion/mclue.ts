@@ -1,10 +1,11 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity } from '../../lib/constants';
 import { GearSetupType } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import reducedClueTime from '../../lib/minions/functions/reducedClueTime';
+import { ClueTier } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
@@ -45,6 +46,15 @@ export function hasClueHunterEquipped(user: KlasaUser, setup: GearSetupType) {
 	return true;
 }
 
+function reducedClueTime(clueTier: ClueTier, score: number) {
+	// Every 3 hours become 1% better to a cap of 10%
+	const percentReduced = Math.min(Math.floor(score / ((Time.Hour * 3) / clueTier.timeToFinish)), 10);
+	const amountReduced = (clueTier.timeToFinish * percentReduced) / 100;
+	const reducedTime = clueTier.timeToFinish - amountReduced;
+
+	return [reducedTime, percentReduced];
+}
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -75,11 +85,11 @@ export default class extends BotCommand {
 			quantity = 1;
 		}
 
-		if (!tierName) return msg.send(this.invalidClue(msg));
+		if (!tierName) return msg.channel.send(this.invalidClue(msg));
 
 		const clueTier = ClueTiers.find(tier => stringMatches(tier.name, tierName));
 
-		if (!clueTier) return msg.send(this.invalidClue(msg));
+		if (!clueTier) return msg.channel.send(this.invalidClue(msg));
 
 		const boosts = [];
 
@@ -88,7 +98,7 @@ export default class extends BotCommand {
 			(msg.author.settings.get(UserSettings.ClueScores)[19836] === undefined ||
 				msg.author.settings.get(UserSettings.ClueScores)[19836] < 100)
 		) {
-			return msg.send("You aren't experienced enough to complete a Grandmaster clue.");
+			return msg.channel.send("You aren't experienced enough to complete a Grandmaster clue.");
 		}
 
 		let [timeToFinish, percentReduced] = reducedClueTime(
@@ -132,7 +142,7 @@ export default class extends BotCommand {
 		const maxTripLength = msg.author.maxTripLength(Activity.ClueCompletion);
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${Math.floor(
@@ -145,7 +155,7 @@ export default class extends BotCommand {
 		const numOfScrolls = bank[clueTier.scrollID];
 
 		if (!numOfScrolls || numOfScrolls < quantity) {
-			return msg.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
+			return msg.channel.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
 		}
 
 		await msg.author.removeItemFromBank(clueTier.scrollID, quantity);
@@ -183,7 +193,7 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.ClueCompletion
 		});
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now completing ${quantity}x ${
 				clueTier.name
 			} clues, it'll take around ${formatDuration(duration)} to finish.${

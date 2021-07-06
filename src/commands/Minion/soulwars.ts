@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Emoji, Time } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -224,7 +225,7 @@ export default class extends BotCommand {
 		}
 		const bank = msg.author.bank();
 		if (!bank.has(item.input.id)) {
-			return msg.send(`You don't have a ${item.input.name}.`);
+			return msg.channel.send(`You don't have a ${item.input.name}.`);
 		}
 		await msg.author.settings.update(UserSettings.ZealTokens, bal - item.tokens);
 		await msg.author.removeItemsFromBank({ [item.input.id]: 1 });

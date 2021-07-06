@@ -1,4 +1,4 @@
-import { Task } from 'klasa';
+import { KlasaMessage, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -31,7 +31,9 @@ export default class extends Task {
 			`<@${userID}>, ${minionName} finished ${quantity}x Castle Wars games and received ${loot}.`,
 			res => {
 				user.log('continued castle wars');
-				return (this.client.commands.get('castlewars') as CastleWarsCommand)!.play(res);
+				return (this.client.commands.get('castlewars') as unknown as CastleWarsCommand)!.play(
+					res
+				) as Promise<KlasaMessage>;
 			},
 			undefined,
 			data,

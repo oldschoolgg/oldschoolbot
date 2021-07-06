@@ -52,7 +52,7 @@ export default class extends BotCommand {
 			return msg.channel.send(str);
 		}
 
-		return msg.send(
+		return msg.channel.send(
 			[
 				`You have ${brokenBank.length} broken items in your bank. `,
 				`You have ${brokenBank.length} broken items in your favorites. `,

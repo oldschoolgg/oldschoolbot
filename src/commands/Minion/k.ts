@@ -1,10 +1,10 @@
 import { MessageAttachment } from 'discord.js';
-import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round } from 'e';
+import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { GearSetupTypes, GearStat } from '../../lib/gear';
 import {
@@ -101,7 +101,9 @@ export default class extends BotCommand {
 		}
 
 		if (msg.flagArgs.monsters) {
-			return msg.channel.send(new MessageAttachment(Buffer.from(validMonsters), 'validMonsters.txt'));
+			return msg.channel.send({
+				files: [new MessageAttachment(Buffer.from(validMonsters), 'validMonsters.txt')]
+			});
 		}
 		if (!name) return msg.channel.send(invalidMonsterMsg(msg.cmdPrefix));
 		const monster = findMonster(name);
@@ -217,27 +219,29 @@ export default class extends BotCommand {
 		let burstOrBarrage = 0;
 		const hasCannon = msg.author.owns(CombatCannonItemBank);
 		if (!isOnTask && (msg.flagArgs.burst || msg.flagArgs.barrage || msg.flagArgs.cannon)) {
-			return msg.send('You can only burst/barrage/cannon while on task in BSO.');
+			return msg.channel.send('You can only burst/barrage/cannon while on task in BSO.');
 		}
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !monster!.canBarrage) {
-			return msg.send(`${monster!.name} cannot be barraged or burst.`);
+			return msg.channel.send(`${monster!.name} cannot be barraged or burst.`);
 		}
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !attackStyles.includes(SkillsEnum.Magic)) {
-			return msg.send("You can only barrage/burst when you're using magic!");
+			return msg.channel.send("You can only barrage/burst when you're using magic!");
 		}
 		if (msg.flagArgs.cannon && !hasCannon) {
-			return msg.send("You don't own a Dwarf multicannon, so how could you use one?");
+			return msg.channel.send("You don't own a Dwarf multicannon, so how could you use one?");
 		}
 		if (msg.flagArgs.cannon && !monster!.canCannon) {
-			return msg.send(`${monster!.name} cannot be killed with a cannon.`);
+			return msg.channel.send(`${monster!.name} cannot be killed with a cannon.`);
 		}
 		if (boostChoice === 'barrage' && msg.author.skillLevel(SkillsEnum.Magic) < 94) {
-			return msg.send(
+			return msg.channel.send(
 				`You need 94 Magic to use Ice Barrage. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`
 			);
 		}
 		if (boostChoice === 'burst' && msg.author.skillLevel(SkillsEnum.Magic) < 70) {
-			return msg.send(`You need 70 Magic to use Ice Burst. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`);
+			return msg.channel.send(
+				`You need 70 Magic to use Ice Burst. You have ${msg.author.skillLevel(SkillsEnum.Magic)}`
+			);
 		}
 
 		if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
@@ -319,13 +323,13 @@ export default class extends BotCommand {
 		prayerPotsNeeded = Math.max(1, prayerPotsNeeded);
 		if (hasBlessing) {
 			if (prayerPots < prayerPotsNeeded) {
-				return msg.send("You don't have enough Prayer potion(4)'s to power your Dwarven blessing.");
+				return msg.channel.send("You don't have enough Prayer potion(4)'s to power your Dwarven blessing.");
 			}
 		}
 
 		quantity = Math.max(1, quantity);
 		if (quantity > 1 && duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${minionName} can't go on PvM trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(
@@ -485,7 +489,7 @@ export default class extends BotCommand {
 		});
 
 		if (usedDart) {
-			return msg.send(
+			return msg.channel.send(
 				`<:deathtouched_dart:822674661967265843> ${msg.author.minionName} used a **Deathtouched dart**.`
 			);
 		}
@@ -514,6 +518,6 @@ export default class extends BotCommand {
 			response += `\n**Messages:** ${messages.join('\n')}.`;
 		}
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

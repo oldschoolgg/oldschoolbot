@@ -1,6 +1,8 @@
+import { MessageAttachment } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -35,17 +37,21 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity, mixName = '']: [null | number | string, string]) {
 		if (msg.flagArgs.items) {
-			return msg.channel.sendFile(
-				Buffer.from(
-					Herblore.Mixables.map(
-						item =>
-							`${item.name} - lvl ${item.level} : ${Object.entries(item.inputItems)
-								.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
-								.join(', ')}`
-					).join('\n')
-				),
-				'Available Herblore potions and items.txt'
-			);
+			return msg.channel.send({
+				files: [
+					new MessageAttachment(
+						Buffer.from(
+							Herblore.Mixables.map(
+								item =>
+									`${item.name} - lvl ${item.level} : ${Object.entries(item.inputItems)
+										.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
+										.join(', ')}`
+							).join('\n')
+						),
+						'Available Herblore potions and items.txt'
+					)
+				]
+			});
 		}
 
 		if (typeof quantity === 'string') {
@@ -55,19 +61,19 @@ export default class extends BotCommand {
 		const mixableItem = Herblore.Mixables.find(item => item.aliases.some(alias => stringMatches(alias, mixName)));
 
 		if (!mixableItem) {
-			return msg.send(
+			return msg.channel.send(
 				`That is not a valid mixable item, to see the items available do \`${msg.cmdPrefix}mix --items\``
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Herblore) < mixableItem.level) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${mixableItem.level} Herblore to make ${mixableItem.name}.`
 			);
 		}
 
 		if (mixableItem.qpRequired && msg.author.settings.get(UserSettings.QP) < mixableItem.qpRequired) {
-			return msg.send(`You need atleast **${mixableItem.qpRequired}** QP to make ${mixableItem.name}.`);
+			return msg.channel.send(`You need atleast **${mixableItem.qpRequired}** QP to make ${mixableItem.name}.`);
 		}
 
 		let sets = 'x';
@@ -106,14 +112,14 @@ export default class extends BotCommand {
 				if (id === 995) {
 					const userGP = msg.author.settings.get(UserSettings.GP);
 					if (userGP < qty) {
-						return msg.send('You do not have enough GP.');
+						return msg.channel.send('You do not have enough GP.');
 					}
 					quantity = Math.min(quantity, Math.floor(userGP / qty));
 					continue;
 				}
 				const itemsOwned = userBank[parseInt(itemID)];
 				if (itemsOwned < qty) {
-					return msg.send(`You dont have enough ${itemNameFromID(parseInt(itemID))}.`);
+					return msg.channel.send(`You dont have enough ${itemNameFromID(parseInt(itemID))}.`);
 				}
 				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
 			}
@@ -122,7 +128,7 @@ export default class extends BotCommand {
 		const duration = quantity * timeToMixSingleItem;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${mixableItem.name}s you can make is ${Math.floor(
@@ -136,12 +142,12 @@ export default class extends BotCommand {
 			if (id === 995) {
 				const userGP = msg.author.settings.get(UserSettings.GP);
 				if (userGP < qty * quantity) {
-					return msg.send(`You don't have enough ${itemNameFromID(id)}.`);
+					return msg.channel.send(`You don't have enough ${itemNameFromID(id)}.`);
 				}
 				continue;
 			}
 			if (!bankHasItem(userBank, id, qty * quantity)) {
-				return msg.send(`You don't have enough ${itemNameFromID(id)}.`);
+				return msg.channel.send(`You don't have enough ${itemNameFromID(id)}.`);
 			}
 		}
 		// Remove the required items from their bank.
@@ -173,7 +179,7 @@ export default class extends BotCommand {
 			type: Activity.Herblore
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} ${cost} Making ${quantity} ${sets} ${
 				mixableItem.name
 			}, it'll take around ${formatDuration(duration)} to finish.`

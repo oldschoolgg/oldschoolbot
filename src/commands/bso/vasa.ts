@@ -1,9 +1,9 @@
 import { MessageEmbed, TextChannel } from 'discord.js';
-import { randInt } from 'e';
+import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji, Time } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/VasaMagus';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -71,7 +71,7 @@ export default class extends BotCommand {
 		});
 		try {
 			if (msg.flagArgs.s1mulat3) {
-				return msg.channel.send(await instance.simulate());
+				return msg.channel.send({ files: [await instance.simulate()] });
 			}
 			const { bossUsers } = await instance.start();
 			const embed = new MessageEmbed().setDescription(
@@ -81,7 +81,7 @@ ${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
 `
 			);
 
-			return msg.channel.send(embed);
+			return msg.channel.send({ embeds: [embed] });
 		} catch (err) {
 			return msg.channel.send(`The mass failed to start for this reason: ${err.message}.`);
 		}

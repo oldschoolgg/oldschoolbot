@@ -1,8 +1,9 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
-import { Channel, Time } from '../../lib/constants';
+import { Channel } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skillcapes, { MasterSkillcapes } from '../../lib/skilling/skillcapes';
@@ -34,12 +35,12 @@ export default class extends BotCommand {
 		if (skillName.includes('master')) {
 			const cost = 1_000_000_000;
 			const masterCape = MasterSkillcapes.find(cape => stringMatches(cape.item.name, skillName));
-			if (!masterCape) return msg.send("That's not a valid master cape.");
+			if (!masterCape) return msg.channel.send("That's not a valid master cape.");
 			if ((msg.author.settings.get(`skills.${masterCape.skill}`) as number) < 500_000_000) {
-				return msg.send('You need 500m XP in a skill to buy the master cape for it.');
+				return msg.channel.send('You need 500m XP in a skill to buy the master cape for it.');
 			}
 			if (GP < cost) {
-				return msg.send(`You need ${toKMB(cost)} GP to purchase a master skill cape.`);
+				return msg.channel.send(`You need ${toKMB(cost)} GP to purchase a master skill cape.`);
 			}
 			const sellMsg = await msg.channel.send(
 				`${msg.author}, say \`confirm\` to confirm that you want to purchase a ${
@@ -49,14 +50,12 @@ export default class extends BotCommand {
 
 			// Confirm the user wants to buy
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 15,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					max: 1,
+					time: Time.Second * 15,
+					errors: ['time'],
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return sellMsg.edit('Cancelling purchase.');
 			}
@@ -72,18 +71,20 @@ export default class extends BotCommand {
 				content: `${cleanMentions(null, msg.author.username)} just purchased a ${masterCape.item.name}!`
 			});
 
-			return msg.send(`You purchased 1x ${masterCape.item.name} for ${toKMB(cost)}.`);
+			return msg.channel.send(`You purchased 1x ${masterCape.item.name} for ${toKMB(cost)}.`);
 		}
 
-		if (GP < skillCapeCost) return msg.send("You don't have enough GP to buy a skill cape.");
+		if (GP < skillCapeCost) return msg.channel.send("You don't have enough GP to buy a skill cape.");
 
 		const capeObject = Skillcapes.find(cape => stringMatches(cape.skill, skillName));
-		if (!capeObject) return msg.send("That's not a valid skill.");
+		if (!capeObject) return msg.channel.send("That's not a valid skill.");
 
 		const levelInSkill = convertXPtoLVL(msg.author.settings.get(`skills.${skillName}`) as number);
 
 		if (levelInSkill < 99) {
-			return msg.send(`Your ${toTitleCase(skillName)} level is less than 99! You can't buy a skill cape, noob.`);
+			return msg.channel.send(
+				`Your ${toTitleCase(skillName)} level is less than 99! You can't buy a skill cape, noob.`
+			);
 		}
 
 		const itemsToPurchase =
@@ -101,14 +102,12 @@ export default class extends BotCommand {
 
 		// Confirm the user wants to buy
 		try {
-			await msg.channel.awaitMessages(
-				_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-				{
-					max: 1,
-					time: Time.Second * 15,
-					errors: ['time']
-				}
-			);
+			await msg.channel.awaitMessages({
+				max: 1,
+				time: Time.Second * 15,
+				errors: ['time'],
+				filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+			});
 		} catch (err) {
 			return sellMsg.edit(`Cancelling purchase of ${toTitleCase(capeObject.skill)} skill cape.`);
 		}
@@ -120,6 +119,6 @@ export default class extends BotCommand {
 			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add('Coins', skillCapeCost).bank
 		);
 
-		return msg.send(`You purchased ${itemString} for ${toKMB(skillCapeCost)}.`);
+		return msg.channel.send(`You purchased ${itemString} for ${toKMB(skillCapeCost)}.`);
 	}
 }

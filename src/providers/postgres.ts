@@ -62,7 +62,7 @@ export default class extends SQLProvider {
 				idleTimeoutMillis: 30000,
 				connectionTimeoutMillis: 0
 			},
-			this.client.options.providers.postgres
+			this.client.options.providers!.postgres
 		);
 
 		this.pgsql = new Pool(poolOptions);

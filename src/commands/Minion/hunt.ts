@@ -1,7 +1,9 @@
+import { MessageAttachment } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -63,16 +65,22 @@ export default class extends BotCommand {
 				}
 				str += '\n\n\n';
 			}
-			return msg.channel.sendFile(Buffer.from(str), 'hunterXPHR.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(str), 'hunterXPHR.txt')] });
 		}
 
 		if (msg.flagArgs.creatures) {
-			return msg.channel.sendFile(
-				Buffer.from(
-					Hunter.Creatures.map(creature => `${creature.name} - lvl required: ${creature.level}`).join('\n')
-				),
-				'Available Creatures.txt'
-			);
+			return msg.channel.send({
+				files: [
+					new MessageAttachment(
+						Buffer.from(
+							Hunter.Creatures.map(creature => `${creature.name} - lvl required: ${creature.level}`).join(
+								'\n'
+							)
+						),
+						'Available Creatures.txt'
+					)
+				]
+			});
 		}
 
 		await msg.author.settings.sync(true);
@@ -99,7 +107,7 @@ export default class extends BotCommand {
 		);
 
 		if (!creature) {
-			return msg.send(
+			return msg.channel.send(
 				`That's not a valid creature to hunt. Valid creatures are ${Hunter.Creatures.map(
 					creature => creature.name
 				).join(', ')}. *For more information about creatures write \`${msg.cmdPrefix}hunt --creatures\`.*`
@@ -112,23 +120,29 @@ export default class extends BotCommand {
 				msg.author.skillLevel(SkillsEnum.Agility) < 99 ||
 				msg.author.skillLevel(SkillsEnum.Fishing) < 99)
 		) {
-			return msg.send("You need level 120 Hunter, 99 Agility, 99 Fishing to hunt Sand Gecko's.");
+			return msg.channel.send("You need level 120 Hunter, 99 Agility, 99 Fishing to hunt Sand Gecko's.");
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0) < creature.level) {
-			return msg.send(`${msg.author.minionName} needs ${creature.level} Hunter to hunt ${creature.name}.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${creature.level} Hunter to hunt ${creature.name}.`
+			);
 		}
 
 		if (creature.qpRequired && userQP < creature.qpRequired) {
-			return msg.send(`${msg.author.minionName} needs ${creature.qpRequired} QP to hunt ${creature.name}.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${creature.qpRequired} QP to hunt ${creature.name}.`
+			);
 		}
 
 		if (creature.prayerLvl && msg.author.skillLevel(SkillsEnum.Prayer) < creature.prayerLvl) {
-			return msg.send(`${msg.author.minionName} needs ${creature.prayerLvl} Prayer to hunt ${creature.name}.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${creature.prayerLvl} Prayer to hunt ${creature.name}.`
+			);
 		}
 
 		if (creature.herbloreLvl && msg.author.skillLevel(SkillsEnum.Herblore) < creature.herbloreLvl) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${creature.herbloreLvl} Herblore to hunt ${creature.name}.`
 			);
 		}
@@ -142,7 +156,7 @@ export default class extends BotCommand {
 		if (creature.itemsRequired) {
 			for (const [item, quantity] of creature.itemsRequired.items()) {
 				if (userBank.amount(item.name) < quantity * traps) {
-					return msg.send(
+					return msg.channel.send(
 						`You don't have ${traps}x ${item.name}, hunter tools can be bought using \`${msg.cmdPrefix}buy\`.`
 					);
 				}
@@ -186,12 +200,12 @@ export default class extends BotCommand {
 			const [bol, reason, score] = hasWildyHuntGearEquipped(msg.author.getGear('misc'));
 			wildyScore = score;
 			if (!bol) {
-				return msg.send(
+				return msg.channel.send(
 					`To hunt ${creature.name} in the wilderness you need to meet the following requirment: ${reason} To check current equipped gear in misc write \`${msg.cmdPrefix}gear misc\`.`
 				);
 			}
 			if (userBank.amount(itemID('Saradomin brew(4)')) < 10 || userBank.amount(itemID('Super restore(4)')) < 5) {
-				return msg.send(
+				return msg.channel.send(
 					`To hunt ${creature.name} in the wilderness you need to have 10x Saradomin brew(4) and 5x Super restore(4) for safety.`
 				);
 			}
@@ -207,7 +221,7 @@ export default class extends BotCommand {
 		let duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${creature.name} you can hunt is ${Math.floor(
@@ -225,7 +239,7 @@ export default class extends BotCommand {
 						quantity = Math.floor(userBank.amount(item.id) / qty);
 						duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
 					} else {
-						return msg.send(`You don't have enough ${item.name}s.`);
+						return msg.channel.send(`You don't have enough ${item.name}s.`);
 					}
 				}
 				removeBank.add(item.id, qty * quantity);
@@ -249,7 +263,7 @@ export default class extends BotCommand {
 		if (usingHuntPotion) {
 			const hunterPotionQuantity = Math.round(duration / (8 * Time.Minute));
 			if (!bankHasItem(userBank.bank, itemID('Hunter potion(4)'), hunterPotionQuantity)) {
-				return msg.send(
+				return msg.channel.send(
 					`You need ${hunterPotionQuantity}x Hunter potion(4) to boost your level for the whole trip, try a lower quantity or make/buy more potions.`
 				);
 			}
@@ -302,6 +316,6 @@ export default class extends BotCommand {
 			response += `\n\n${wildyStr}`;
 		}
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

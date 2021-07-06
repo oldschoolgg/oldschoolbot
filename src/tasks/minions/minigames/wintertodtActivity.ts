@@ -1,14 +1,14 @@
-import { randInt } from 'e';
+import { randInt, Time } from 'e';
 import { Task } from 'klasa';
 
-import { Emoji, Events, Time } from '../../../lib/constants';
+import { Emoji, Events } from '../../../lib/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, bankHasItem, channelIsSendable, multiplyBank, noOp, rand, roll } from '../../../lib/util';
+import { addBanks, bankHasItem, channelIsSendable, multiplyBank, rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
@@ -17,7 +17,7 @@ export default class extends Task {
 		const { userID, channelID, quantity, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
-		const channel = await this.client.channels.fetch(channelID).catch(noOp);
+		const channel = await this.client.channels.fetch(channelID);
 
 		let loot: ItemBank = {};
 

@@ -1,8 +1,8 @@
-import { randInt } from 'e';
+import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { getMinigameEntity } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -57,7 +57,7 @@ export default class ODSCommand extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		const minigames = await getMinigameEntity(msg.author.id);
-		return msg.send(`**Ourania Delivery Service** (ODS)
+		return msg.channel.send(`**Ourania Delivery Service** (ODS)
 
 **Deliveries done:** ${minigames.OuraniaDeliveryService}
 **Ourania Tokens:** ${msg.author.settings.get(UserSettings.OuraniaTokens)}`);
@@ -66,7 +66,7 @@ export default class ODSCommand extends BotCommand {
 	async buy(msg: KlasaMessage, [input = '']: [string]) {
 		const buyable = OuraniaBuyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
-			return msg.send(
+			return msg.channel.send(
 				`Here are the items you can buy: \n\n${OuraniaBuyables.map(
 					i => `**${i.item.name}:** ${i.cost} points`
 				).join('\n')}.`
@@ -76,7 +76,7 @@ export default class ODSCommand extends BotCommand {
 		const { item, cost } = buyable;
 		const balance = msg.author.settings.get(UserSettings.OuraniaTokens);
 		if (balance < cost) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough Ourania Tokens to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`
 			);
 		}
@@ -84,7 +84,7 @@ export default class ODSCommand extends BotCommand {
 		await msg.author.settings.update(UserSettings.OuraniaTokens, balance - cost);
 		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
 
-		return msg.send(`Successfully purchased 1x ${item.name} for ${cost} Ourania Tokens.`);
+		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Ourania Tokens.`);
 	}
 
 	@minionNotBusy

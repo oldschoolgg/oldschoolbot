@@ -35,6 +35,6 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.send(links[Math.floor(Math.random() * links.length)]);
+		return msg.channel.send(links[Math.floor(Math.random() * links.length)]);
 	}
 }

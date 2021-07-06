@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -38,13 +39,13 @@ export default class extends BotCommand {
 		);
 
 		if (!bar) {
-			return msg.send(
+			return msg.channel.send(
 				`Thats not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(bar => bar.name).join(', ')}.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < bar.level) {
-			return msg.send(`${msg.author.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`);
+			return msg.channel.send(`${msg.author.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`);
 		}
 
 		// All bars take 2.4s to smith, add on quarter of a second to account for banking/etc.
@@ -68,13 +69,13 @@ export default class extends BotCommand {
 		const requiredOres: [string, number][] = Object.entries(bar.inputOres);
 		for (const [oreID, qty] of requiredOres) {
 			if (!bankHasItem(userBank, parseInt(oreID), qty * quantity)) {
-				return msg.send(`You don't have enough ${itemNameFromID(parseInt(oreID))}.`);
+				return msg.channel.send(`You don't have enough ${itemNameFromID(parseInt(oreID))}.`);
 			}
 		}
 
 		const duration = quantity * timeToSmithSingleBar;
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${bar.name}s you can smelt is ${Math.floor(
@@ -114,7 +115,7 @@ export default class extends BotCommand {
 			goldGauntletMessage = '\n\n**Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.';
 		}
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now smelting ${quantity}x ${bar.name}, it'll take around ${formatDuration(
 				duration
 			)} to finish.${goldGauntletMessage}`

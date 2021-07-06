@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
@@ -61,14 +61,18 @@ ${
 				]).toString();
 				const { items } = await fetch(searchURL).then(res => res.json());
 				if (items.length === 0) return msg.channel.send('No results found.');
-				return msg.channel.send(
-					new MessageEmbed().setTitle(`${items.length} Github issues found from your search`).setDescription(
-						items
-							.slice(0, 10)
-							.map((i: any, index: number) => `${index + 1}. [${i.title}](${i.html_url})`)
-							.join('\n')
-					)
-				);
+				return msg.channel.send({
+					embeds: [
+						new MessageEmbed()
+							.setTitle(`${items.length} Github issues found from your search`)
+							.setDescription(
+								items
+									.slice(0, 10)
+									.map((i: any, index: number) => `${index + 1}. [${i.title}](${i.html_url})`)
+									.join('\n')
+							)
+					]
+				});
 			}
 		}
 
@@ -86,12 +90,12 @@ ${
 				if (!input || !(input instanceof KlasaUser)) return;
 				await input.settings.sync(true);
 				if (input.settings.get(UserSettings.BitField).includes(BitField.BypassAgeRestriction)) {
-					return msg.send('This user is already bypassed.');
+					return msg.channel.send('This user is already bypassed.');
 				}
 				await input.settings.update(UserSettings.BitField, BitField.BypassAgeRestriction, {
 					arrayAction: 'add'
 				});
-				return msg.send(`${Emoji.RottenPotato} Bypassed age restriction for ${input.username}.`);
+				return msg.channel.send(`${Emoji.RottenPotato} Bypassed age restriction for ${input.username}.`);
 			}
 			case 'gptrack': {
 				return msg.channel.send(`
@@ -129,7 +133,7 @@ ${
 
 				const userBadges = input.settings.get(UserSettings.Badges).map(i => badges[i]);
 				const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(input.id);
-				return msg.send(
+				return msg.channel.send(
 					`**${input.username}**
 **Bitfields:** ${bitfields}
 **Badges:** ${userBadges}
@@ -151,7 +155,7 @@ ${
 			case 'roles': {
 				msg.channel.send('Running roles task...');
 				const result = await this.client.tasks.get('roles')?.run();
-				return msg.send(result);
+				return msg.channel.send(result as string);
 			}
 			case 'canceltask': {
 				if (!input || !(input instanceof KlasaUser)) return;
@@ -169,19 +173,19 @@ ${
 					.then(res => res.json())
 					.catch(() => null);
 				if (!res || !res.id) {
-					return msg.send('Could not find user in github API. Is the username written properly?');
+					return msg.channel.send('Could not find user in github API. Is the username written properly?');
 				}
 				const alreadyHasName = await this.client.query<{ github_id: string }[]>(
 					`SELECT github_id FROM users WHERE github_id = '${res.id}'`
 				);
 				if (alreadyHasName.length > 0) {
-					return msg.send('Someone already has this Github account connected.');
+					return msg.channel.send('Someone already has this Github account connected.');
 				}
 				await input.settings.update(UserSettings.GithubID, parseInt(res.id));
 				if (!msg.flagArgs.nosync) {
 					await (this.client.tasks.get('patreon') as PatreonTask).syncGithub();
 				}
-				return msg.send(`Set ${res.login}[${res.id}] as ${input.username}'s Github account.`);
+				return msg.channel.send(`Set ${res.login}[${res.id}] as ${input.username}'s Github account.`);
 			}
 			case 'giveperm': {
 				if (!input || !(input instanceof KlasaUser)) return;
@@ -202,7 +206,7 @@ ${
 
 			case 'bf': {
 				if (!input || !str || !(input instanceof KlasaUser)) {
-					return msg.send(
+					return msg.channel.send(
 						Object.entries(BitFieldData)
 							.map(entry => `**${entry[0]}:** ${entry[1]?.name}`)
 							.join('\n')
@@ -217,19 +221,19 @@ ${
 					[7, 8].includes(bit) ||
 					(action !== 'add' && action !== 'remove')
 				) {
-					return msg.send('Invalid bitfield.');
+					return msg.channel.send('Invalid bitfield.');
 				}
 
 				let newBits = [...input.settings.get(UserSettings.BitField)];
 
 				if (action === 'add') {
 					if (newBits.includes(bit)) {
-						return msg.send("Already has this bit, so can't add.");
+						return msg.channel.send("Already has this bit, so can't add.");
 					}
 					newBits.push(bit);
 				} else {
 					if (!newBits.includes(bit)) {
-						return msg.send("Doesn't have this bit, so can't remove.");
+						return msg.channel.send("Doesn't have this bit, so can't remove.");
 					}
 					newBits = newBits.filter(i => i !== bit);
 				}
@@ -247,7 +251,7 @@ ${
 
 			case 'badges': {
 				if (!input || !str || !(input instanceof KlasaUser)) {
-					return msg.send(
+					return msg.channel.send(
 						Object.entries(badges)
 							.map(entry => `**${entry[1]}:** ${entry[0]}`)
 							.join('\n')
@@ -260,19 +264,19 @@ ${
 				const badge = Number(_badge);
 
 				if (!badgesKeys.includes(_badge) || (action !== 'add' && action !== 'remove')) {
-					return msg.send('Invalid badge.');
+					return msg.channel.send('Invalid badge.');
 				}
 
 				let newBadges = [...input.settings.get(UserSettings.Badges)];
 
 				if (action === 'add') {
 					if (newBadges.includes(badge)) {
-						return msg.send("Already has this badge, so can't add.");
+						return msg.channel.send("Already has this badge, so can't add.");
 					}
 					newBadges.push(badge);
 				} else {
 					if (!newBadges.includes(badge)) {
-						return msg.send("Doesn't have this badge, so can't remove.");
+						return msg.channel.send("Doesn't have this badge, so can't remove.");
 					}
 					newBadges = newBadges.filter(i => i !== badge);
 				}
@@ -296,7 +300,7 @@ GROUP BY user_id, "new_user"."username"
 ORDER BY num DESC
 LIMIT 10;
 `);
-				return msg.send(
+				return msg.channel.send(
 					`Most Active Users in past 48h\n${res
 						.map((i, ind) => `${ind + 1} ${i.username}: ${formatDuration(i.num)}`)
 						.join('\n')}`
@@ -314,7 +318,9 @@ LIMIT 10;
 		switch (cmd.toLowerCase()) {
 			case 'debugpatreon': {
 				const result = await (this.client.tasks.get('patreon') as PatreonTask).fetchPatrons();
-				return msg.sendLarge(JSON.stringify(result, null, 4));
+				return msg.channel.send({
+					files: [new MessageAttachment(Buffer.from(JSON.stringify(result, null, 4)), 'patreon.txt')]
+				});
 			}
 		}
 	}

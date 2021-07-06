@@ -71,31 +71,32 @@ export class Mass {
 			};
 			const collector = new CustomReactionCollector(
 				this.message!,
-				(reaction: MessageReaction, user: KlasaUser) => {
-					if (
-						!isActionEmoji(reaction.emoji.id) ||
-						(!this.ironmenAllowed && user.isIronman) ||
-						user.bot ||
-						user.minionIsBusy ||
-						!user.hasMinion
-					) {
-						return false;
-					}
-					const action = reaction.emoji.id;
 
-					if (
-						(action === ReactionEmoji.Join && user === this.leader) ||
-						(user !== this.leader && reaction.emoji.id !== ReactionEmoji.Join)
-					) {
-						reaction.users.remove(user);
-					}
-
-					return emojis.includes(reaction.emoji.id);
-				},
 				{
 					time: 120_000,
 					max: this.maxSize,
-					dispose: true
+					dispose: true,
+					filter: (reaction: MessageReaction, user: KlasaUser) => {
+						if (
+							!isActionEmoji(reaction.emoji.id) ||
+							(!this.ironmenAllowed && user.isIronman) ||
+							user.bot ||
+							user.minionIsBusy ||
+							!user.hasMinion
+						) {
+							return false;
+						}
+						const action = reaction.emoji.id;
+
+						if (
+							(action === ReactionEmoji.Join && user === this.leader) ||
+							(user !== this.leader && reaction.emoji.id !== ReactionEmoji.Join)
+						) {
+							reaction.users.remove(user);
+						}
+
+						return emojis.includes(reaction.emoji.id);
+					}
 				}
 			);
 

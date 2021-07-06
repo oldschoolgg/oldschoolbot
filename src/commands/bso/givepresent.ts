@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { BitField, PerkTier, Time } from '../../lib/constants';
+import { BitField, PerkTier } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
@@ -15,12 +16,14 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [user]: [KlasaUser]) {
 		const cl = new Bank(msg.author.settings.get(UserSettings.CollectionLogBank));
 		if (!cl.has('Cursed banana')) {
-			return msg.send("You cant give out a birthday pack because you haven't yet completed the birthday event.");
+			return msg.channel.send(
+				"You cant give out a birthday pack because you haven't yet completed the birthday event."
+			);
 		}
 		if (user.id === msg.author.id) throw "You can't give boxes to yourself!";
 		if (user.bot) throw 'no';
 		if (msg.author.settings.get(UserSettings.BitField).includes(BitField.HasGivenBirthdayPack)) {
-			return msg.send('You have already given out a birthday pack.');
+			return msg.channel.send('You have already given out a birthday pack.');
 		}
 		if (
 			msg.author.perkTier < PerkTier.Four &&
