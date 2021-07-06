@@ -64,7 +64,6 @@ export default class extends Task {
 			if (roll(80 + users.length * 2)) {
 				loot.add(randomItemFromArray(allNexItems), 1);
 			}
-			loot.multiply(2);
 			const winner = teamTable.roll()?.item;
 			if (!winner) continue;
 			const currentLoot = teamsLoot[winner];
