@@ -142,33 +142,31 @@ export default class extends BotCommand {
 						);
 					}
 					return msg.channel.send(
-						"As you knocks on the course entrance... Someone answers, but they don't say anything. You feel the gatekeeper gaze and somehow you know, you are missing something. What could be?"
+						"As you knock on the course entrance... Someone answers, but they don't say anything. You feel the gatekeeper gaze and somehow you know, you are missing something. What could it be?"
 					);
 				}
 				itemsToRemove.add(ticket[0].id);
-			} else {
-				successfulLaps = 1;
+				// The requirements increases every time the challenge is beaten.
+				const requiredBank = new Bank({
+					[itemID('Stamina potion(4)')]: Math.max(4, 4 * successfulLaps),
+					[itemID('Saradomin brew(4)')]: Math.max(15, 15 * successfulLaps),
+					[itemID('Super restore(4)')]: Math.max(5, 5 * successfulLaps)
+				});
+				if (!msg.author.bank().has(requiredBank.bank)) {
+					return msg.channel.send(
+						`As you prepare for the challenge ahead, you notice it will probably be much harder than it seems. Maybe you should bring more supplies, like ${requiredBank.remove(
+							msg.author.bank()
+						)}.`
+					);
+				}
+				itemsToRemove.add(requiredBank.bank);
 			}
-			// The requirements increases every time the challenge is beaten.
-			const requiredBank = new Bank({
-				[itemID('Stamina potion(4)')]: Math.max(4, 4 * successfulLaps),
-				[itemID('Saradomin brew(4)')]: Math.max(15, 15 * successfulLaps),
-				[itemID('Super restore(4)')]: Math.max(5, 5 * successfulLaps)
-			});
-			if (!msg.author.bank().has(requiredBank.bank)) {
-				return msg.channel.send(
-					`As you prepare for the challenge ahead, you notice it will probably be much harder than it seems. Maybe you should bring more supplies, like ${requiredBank.remove(
-						msg.author.bank()
-					)}.`
-				);
-			}
-			itemsToRemove.add(requiredBank.bank);
 			challengeStr = `${
 				challengeMode
 					? successfulLaps > 0
 						? `As you have completed the challenge ${successfulLaps} times before, the gatekeeper increases its difficulty!`
-						: "The gatekeeper takes easy on you, as you have never completed the challenge before, but it still won't be easy!"
-					: 'The gatekeeper notices your achievements and bows to you. You feel like you can do the challenge without expending too many resources.'
+						: "The gatekeeper takes it easy on you, as you have never completed the challenge before, but it still won't be easy!"
+					: 'The gatekeeper notices your achievements and bows to you. You are experienced enough to complete the challenge without using any supply.'
 			}`;
 		} else {
 			if (msg.author.skillLevel(SkillsEnum.Agility) < course.level) {

@@ -83,7 +83,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.hasGlobetrotterEquipped()) {
-			boosts.push(`${gracefulPenalty}% faster for havint the Globetrotter Outfit`);
+			boosts.push(`${gracefulPenalty}% faster for having the Globetrotter Outfit`);
 			timePerRune = reduceNumByPercent(timePerRune, gracefulPenalty);
 		} else if (!msg.author.hasGracefulEquipped()) {
 			boosts.push(`${gracefulPenalty}% slower for no Graceful`);

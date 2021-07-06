@@ -93,7 +93,7 @@ export default class extends BotCommand {
 		let graceful = '';
 		// Reduce time if user has graceful/globetrotter equipped
 		if (msg.author.hasGlobetrotterEquipped()) {
-			graceful = '=7.5% time per bar for having the Globetrotter Outfit';
+			graceful = '-7.5% time per bar for having the Globetrotter Outfit';
 			timeToSmithSingleBar *= 0.925;
 		} else if (msg.author.hasGracefulEquipped()) {
 			timeToSmithSingleBar *= 1.075;
