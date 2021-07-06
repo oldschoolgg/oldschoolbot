@@ -488,7 +488,7 @@ export default class extends Task {
 				loot = multiplyBank(loot, 4);
 			}
 
-			if (user.hasItemEquippedAnywhere(itemID('Farming master cape'))) {
+			if (duration > Time.Minute * 20 && user.hasItemEquippedAnywhere(itemID('Farming master cape'))) {
 				loot = addItemToBank(loot, getRandomMysteryBox());
 			}
 			// Give boxes for planting when harvesting
