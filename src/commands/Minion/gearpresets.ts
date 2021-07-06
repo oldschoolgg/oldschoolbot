@@ -4,8 +4,7 @@ import { Bank } from 'oldschooljs';
 import { cleanString } from 'oldschooljs/dist/util';
 
 import { Color } from '../../lib/constants';
-import { defaultGear, resolveGearTypeSetting } from '../../lib/gear';
-import { gearPresetToStr, globalPresets } from '../../lib/gear/functions/gearPresets';
+import { defaultGear, globalPresets, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -39,7 +38,7 @@ export default class extends BotCommand {
 		let title = '**Your presets:**';
 		let str = '';
 		for (const pre of presets) {
-			str += `**${pre.name}:** ${gearPresetToStr(pre)}\n`;
+			str += `**${pre.name}:** ${pre}\n`;
 		}
 		if (str.length > 2000) {
 			const attachment = new MessageAttachment(

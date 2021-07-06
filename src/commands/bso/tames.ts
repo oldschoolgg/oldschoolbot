@@ -1,9 +1,8 @@
-import { calcWhatPercent, increaseNumByPercent } from 'e';
+import { calcWhatPercent, increaseNumByPercent, Time } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { Time } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { requiresMinion } from '../../lib/minions/decorators';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';

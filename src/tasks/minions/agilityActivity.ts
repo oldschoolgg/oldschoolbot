@@ -1,8 +1,8 @@
-import { increaseNumByPercent, randInt, roll } from 'e';
+import { increaseNumByPercent, randInt, roll, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji, Events, MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
+import { Activity, Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';

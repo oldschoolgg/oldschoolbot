@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { PerkTier, Time } from '../../lib/constants';
+import { PerkTier } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';

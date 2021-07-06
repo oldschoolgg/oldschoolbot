@@ -1,10 +1,10 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageEmbed } from 'discord.js';
-import { chunk, sleep } from 'e';
+import { chunk, sleep, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters, Util } from 'oldschooljs';
 
-import { Color, Emoji, MAX_LEVEL, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
+import { Color, Emoji, MAX_LEVEL, MIMIC_MONSTER_ID, PerkTier } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';

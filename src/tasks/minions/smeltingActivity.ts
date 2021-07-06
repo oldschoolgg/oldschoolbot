@@ -1,8 +1,8 @@
-import { randInt } from 'e';
+import { randInt, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';

@@ -1,9 +1,10 @@
 import { MessageAttachment, TextChannel } from 'discord.js';
+import { Time } from 'e';
 import { ArrayActions, Gateway, Task } from 'klasa';
 import fetch from 'node-fetch';
 
 import { patreonConfig, production } from '../config';
-import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier, Time } from '../lib/constants';
+import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from '../lib/constants';
 import { fetchSponsors, getUserFromGithubID } from '../lib/http/util';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { getUserSettings } from '../lib/settings/settings';

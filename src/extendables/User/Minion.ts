@@ -1,5 +1,14 @@
 import { User } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, increaseNumByPercent, notEmpty, objectValues, randInt, uniqueArr } from 'e';
+import {
+	calcPercentOfNum,
+	calcWhatPercent,
+	increaseNumByPercent,
+	notEmpty,
+	objectValues,
+	randInt,
+	Time,
+	uniqueArr
+} from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -7,9 +16,9 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
-import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, PerkTier, skillEmoji, Time } from '../../lib/constants';
+import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, PerkTier, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
+import { hasGracefulEquipped } from '../../lib/gear/util';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';

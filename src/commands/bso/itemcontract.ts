@@ -1,10 +1,9 @@
 import { MessageEmbed } from 'discord.js';
-import { randArrItem } from 'e';
+import { randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Time } from '../../lib/constants';
 import { allMbTables, MysteryBoxes } from '../../lib/data/openables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';

@@ -1,6 +1,6 @@
+import { Time } from 'e';
 import { BaseEntity, Check, Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Time } from '../constants';
 import { tameSpecies } from '../tames';
 import { ItemBank } from '../types';
 import { TameActivityTable } from './TameActivityTable.entity';

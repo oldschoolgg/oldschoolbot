@@ -1,8 +1,8 @@
 import { Duration } from '@sapphire/time-utilities';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Time } from '../../lib/constants';
 import { ironsCantUse, minionNotBusy } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';

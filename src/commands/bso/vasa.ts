@@ -1,9 +1,9 @@
 import { MessageEmbed, TextChannel } from 'discord.js';
-import { randInt } from 'e';
+import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji, Time } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/VasaMagus';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';

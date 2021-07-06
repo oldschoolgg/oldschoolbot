@@ -1,8 +1,9 @@
 import { MessageEmbed, TextChannel } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji, Time } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/Ignecarus';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';

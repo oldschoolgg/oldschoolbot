@@ -1,9 +1,9 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import CommonSeedDropTable from 'oldschooljs/dist/simulation/subtables/CommonSeedDropTable';
 import { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Time } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { RuneTable } from '../../../simulation/seedTable';
 import { makeKillTable } from '../../../util/setCustomMonster';

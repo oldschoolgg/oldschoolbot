@@ -1,11 +1,11 @@
 import { MessageAttachment } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import { table } from 'table';
 
 import { Minigames } from '../../extendables/User/Minigame';
-import { Time } from '../../lib/constants';
 import Buyables from '../../lib/data/buyables/buyables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';

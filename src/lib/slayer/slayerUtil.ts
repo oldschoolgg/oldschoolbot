@@ -186,6 +186,27 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 
 	let messages: string[] = [];
 	let quantity = randInt(assignedTask!.amount[0], assignedTask!.amount[1]);
+
+	if (unlocks) {
+		if (
+			assignedTask!.extendedUnlockId &&
+			assignedTask!.extendedAmount &&
+			unlocks.includes(assignedTask!.extendedUnlockId)
+		) {
+			quantity = randInt(assignedTask!.extendedAmount[0], assignedTask!.extendedAmount[1]);
+		} else {
+			SlayerRewardsShop.filter(srs => {
+				return srs.extendID !== undefined;
+			}).forEach(srsf => {
+				if (unlocks.includes(srsf.id) && srsf.extendID!.includes(assignedTask!.monster.id)) {
+					quantity = assignedTask!.extendedAmount
+						? randInt(assignedTask!.extendedAmount[0], assignedTask!.extendedAmount[1])
+						: Math.ceil(quantity * srsf.extendMult!);
+				}
+			});
+		}
+	}
+
 	if (unlocks.includes(SlayerTaskUnlocksEnum.SizeMatters)) {
 		quantity *= 2;
 		messages.push('2x qty for unlock');

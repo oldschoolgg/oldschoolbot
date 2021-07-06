@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { Inhibitor, InhibitorStore, KlasaMessage } from 'klasa';
 
-import { BitField, PerkTier, Time } from '../lib/constants';
+import { BitField, PerkTier } from '../lib/constants';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 

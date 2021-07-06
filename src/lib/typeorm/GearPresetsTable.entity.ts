@@ -1,5 +1,21 @@
 import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
 
+import { itemNameFromID } from '../util';
+
+const keys = [
+	'TwoHanded',
+	'Body',
+	'Cape',
+	'Feet',
+	'Hands',
+	'Legs',
+	'Neck',
+	'Ring',
+	'Head',
+	'Shield',
+	'Weapon'
+] as const;
+
 @Entity('gear_presets')
 export class GearPresetsTable extends BaseEntity {
 	@PrimaryColumn('varchar', { length: 19, name: 'user_id' })
@@ -46,4 +62,16 @@ export class GearPresetsTable extends BaseEntity {
 
 	@Column({ name: 'ammo_qty', type: 'integer', default: null, nullable: true })
 	public AmmoQuantity: number | null = null;
+
+	toString() {
+		let parsed = [];
+		for (const key of keys) {
+			let val = this[key];
+			if (val) parsed.push(itemNameFromID(val));
+		}
+		if (this.Ammo) {
+			parsed.push(`${this.AmmoQuantity}x ${itemNameFromID(this.Ammo)}`);
+		}
+		return parsed.join(', ');
+	}
 }
