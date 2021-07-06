@@ -1,4 +1,4 @@
-import { TextChannel } from 'discord.js';
+import { MessageAttachment, TextChannel } from 'discord.js';
 import { ArrayActions, Gateway, Task } from 'klasa';
 import fetch from 'node-fetch';
 
@@ -27,12 +27,13 @@ patreonApiURL.search = new URLSearchParams([
 	],
 	['fields[user]', ['social_connections'].join(',')]
 ]).toString();
+
 const tiers: [PatronTierID, BitField][] = [
-	[PatronTierID.One, BitField.IsPatronTier1],
-	[PatronTierID.Two, BitField.IsPatronTier2],
-	[PatronTierID.Three, BitField.IsPatronTier3],
+	[PatronTierID.Five, BitField.IsPatronTier5],
 	[PatronTierID.Four, BitField.IsPatronTier4],
-	[PatronTierID.Five, BitField.IsPatronTier5]
+	[PatronTierID.Three, BitField.IsPatronTier3],
+	[PatronTierID.Two, BitField.IsPatronTier2],
+	[PatronTierID.One, BitField.IsPatronTier1]
 ];
 
 function bitFieldFromPerkTier(tier: PerkTier): BitField {
@@ -252,11 +253,12 @@ export default class PatreonTask extends Task {
 				const [tierID, bitField] = tiers[i];
 
 				if (!patron.entitledTiers.includes(tierID)) continue;
-				if (userBitfield.includes(bitField)) continue;
+				if (userBitfield.includes(bitField)) break;
 
 				result.push(`${username} was given Tier ${i + 1}.`);
 				messages.push(`Giving T${i + 1} patron perks to ${username} PatreonID[${patron.patreonID}]`);
 				await this.givePerks(patron.discordID, perkTierFromBitfield(bitField));
+				break;
 			}
 		}
 
@@ -265,7 +267,7 @@ export default class PatreonTask extends Task {
 
 		const channel = this.client.channels.cache.get(Channel.ErrorLogs) as TextChannel;
 		if (production) {
-			channel.sendFile(Buffer.from(result.join('\n')), 'patreon.txt');
+			channel.send({ files: [new MessageAttachment(Buffer.from(result.join('\n')), 'patreon.txt')] });
 			channel.send(messages.join(', '));
 		} else {
 			console.log(messages.join('\n'));

@@ -28,7 +28,7 @@ export default class extends BotCommand {
 		const osItem = itemArray.find(i => userBank[i.id]);
 
 		if (!osItem) {
-			return msg.send("You don't have any of this item to drop!");
+			return msg.channel.send("You don't have any of this item to drop!");
 		}
 
 		const numItemsHas = userBank[osItem.id];
@@ -37,7 +37,7 @@ export default class extends BotCommand {
 		}
 
 		if (quantity > numItemsHas) {
-			return msg.send(`You dont have ${quantity}x ${osItem.name}.`);
+			return msg.channel.send(`You dont have ${quantity}x ${osItem.name}.`);
 		}
 
 		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
@@ -46,10 +46,10 @@ export default class extends BotCommand {
 			);
 
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'drop',
-					options
-				);
+				await msg.channel.awaitMessages({
+					...options,
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'drop'
+				});
 			} catch (err) {
 				return dropMsg.edit(`Cancelling drop of ${quantity}x ${osItem.name}.`);
 			}
@@ -59,6 +59,6 @@ export default class extends BotCommand {
 
 		msg.author.log(`dropped Quantity[${quantity}] ItemID[${osItem.id}]`);
 
-		return msg.send(`Dropped ${quantity}x ${osItem.name}.`);
+		return msg.channel.send(`Dropped ${quantity}x ${osItem.name}.`);
 	}
 }

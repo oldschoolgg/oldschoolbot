@@ -51,6 +51,6 @@ export default class extends BotCommand {
 			.setColor(14981973)
 			.setDescription(formatted);
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

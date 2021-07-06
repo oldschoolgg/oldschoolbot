@@ -1,13 +1,86 @@
-import {
-	gracefulCapes,
-	gracefulFeet,
-	gracefulHands,
-	gracefulHoods,
-	gracefulLegs,
-	gracefulTops
-} from '../gear/functions/hasGracefulEquipped';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
+
+export const gracefulHoods = [
+	'Graceful hood',
+	'Arceuus graceful hood',
+	'Piscarilius graceful hood',
+	'Lovakengj graceful hood',
+	'Shayzien graceful hood',
+	'Hosidius graceful hood',
+	'Kourend graceful hood',
+	'Brimhaven graceful hood',
+	'Dark graceful hood',
+	'Trailblazer graceful hood'
+];
+
+export const gracefulTops = [
+	'Graceful top',
+	'Arceuus graceful top',
+	'Piscarilius graceful top',
+	'Lovakengj graceful top',
+	'Shayzien graceful top',
+	'Hosidius graceful top',
+	'Kourend graceful top',
+	'Brimhaven graceful top',
+	'Dark graceful top',
+	'Trailblazer graceful top'
+];
+
+export const gracefulLegs = [
+	'Graceful legs',
+	'Arceuus graceful legs',
+	'Piscarilius graceful legs',
+	'Lovakengj graceful legs',
+	'Shayzien graceful legs',
+	'Hosidius graceful legs',
+	'Kourend graceful legs',
+	'Brimhaven graceful legs',
+	'Dark graceful legs',
+	'Trailblazer graceful legs'
+];
+
+export const gracefulFeet = [
+	'Graceful boots',
+	'Arceuus graceful boots',
+	'Piscarilius graceful boots',
+	'Lovakengj graceful boots',
+	'Shayzien graceful boots',
+	'Hosidius graceful boots',
+	'Kourend graceful boots',
+	'Brimhaven graceful boots',
+	'Dark graceful boots',
+	'Trailblazer graceful boots'
+];
+
+export const gracefulHands = [
+	'Graceful gloves',
+	'Arceuus graceful gloves',
+	'Piscarilius graceful gloves',
+	'Lovakengj graceful gloves',
+	'Shayzien graceful gloves',
+	'Hosidius graceful gloves',
+	'Kourend graceful gloves',
+	'Brimhaven graceful gloves',
+	'Dark graceful gloves',
+	'Trailblazer graceful gloves'
+];
+
+export const gracefulCapes = [
+	'Graceful cape',
+	'Arceuus graceful cape',
+	'Piscarilius graceful cape',
+	'Lovakengj graceful cape',
+	'Shayzien graceful cape',
+	'Hosidius graceful cape',
+	'Kourend graceful cape',
+	'Brimhaven graceful cape',
+	'Dark graceful cape',
+	'Trailblazer graceful cape',
+	'Agility cape',
+	'Agility cape (t)',
+	'Max cape'
+];
 
 const blackMaskISimilar = resolveItems([
 	'Black mask (10) (i)',
@@ -42,7 +115,7 @@ const slayerHelmSimilarI = resolveItems([
 	'Slayer helmet (i)'
 ]);
 
-const source: [string, (string | number)[], true?][] = [
+const source: [string, (string | number)[]][] = [
 	['Dragon full helm', ['Dragon full helm (g)']],
 	['Dragon chainbody', ['Dragon chainbody (g)']],
 	['Dragon platebody', ['Dragon platebody (g)']],
@@ -211,6 +284,7 @@ const source: [string, (string | number)[], true?][] = [
 			'Mist battlestaff',
 			'Mystic mist staff',
 			'Tome of water',
+			'Kodai wand',
 			'Water battlestaff',
 			'Mystic water staff',
 			'Steam battlestaff',
@@ -220,22 +294,7 @@ const source: [string, (string | number)[], true?][] = [
 		]
 	],
 	['Attack cape', ['Max cape', 'Attack cape(t)']],
-	[
-		'Kodai wand',
-		[
-			'Staff of water',
-			'Mist battlestaff',
-			'Mystic mist staff',
-			'Tome of water',
-			'Water battlestaff',
-			'Mystic water staff',
-			'Steam battlestaff',
-			'Mystic steam staff',
-			'Mud battlestaff',
-			'Mystic mud staff'
-		],
-		true
-	]
+	['Ivandis flail', ['Blisterwood flail']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
@@ -243,8 +302,7 @@ export const similarItems: Map<number, number[]> = new Map(
 );
 
 export const inverseSimilarItems: Map<number, Set<number>> = new Map();
-for (const [baseItem, similarItems, isExclusive] of source) {
-	if (isExclusive) continue;
+for (const [baseItem, similarItems] of source) {
 	for (const item of resolveItems(similarItems)) {
 		if (!inverseSimilarItems.get(item)) {
 			inverseSimilarItems.set(item, new Set());
@@ -254,5 +312,6 @@ for (const [baseItem, similarItems, isExclusive] of source) {
 }
 
 export function getSimilarItems(itemID: number): number[] {
-	return similarItems.get(itemID) ?? [];
+	const similars = similarItems.get(itemID);
+	return similars ? [itemID, ...similars] : [];
 }

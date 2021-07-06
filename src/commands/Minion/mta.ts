@@ -83,7 +83,7 @@ export default class CastleWarsCommand extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		const user = await getNewUser(msg.author.id);
-		return msg.send(`You have **${user.PizazzPoints.toLocaleString()}** Pizazz points.
+		return msg.channel.send(`You have **${user.PizazzPoints.toLocaleString()}** Pizazz points.
 
 **Pizazz Points Per Hour:** ${pizazzPointsPerHour}
 ${buyables
@@ -118,7 +118,7 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 			minigameID: 'MagicTrainingArena'
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${
 				msg.author.minionName
 			} is now doing ${quantity} Magic Training Arena rooms. The trip will take around ${formatDuration(
@@ -130,7 +130,7 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 	async buy(msg: KlasaMessage, [input = '']: [string]) {
 		const buyable = buyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
-			return msg.send(
+			return msg.channel.send(
 				`Here are the items you can buy: \n\n${buyables
 					.map(i => `**${i.item.name}:** ${i.cost} points`)
 					.join('\n')}.`
@@ -148,7 +148,7 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 		}
 
 		if (balance < cost) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough Pizazz Points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`
 			);
 		}
@@ -161,6 +161,6 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 
 		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
 
-		return msg.send(`Successfully purchased 1x ${item.name} for ${cost} Pizazz Points.`);
+		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Pizazz Points.`);
 	}
 }

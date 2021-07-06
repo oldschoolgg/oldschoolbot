@@ -1,5 +1,4 @@
-import { constructGearSetup } from '../src/lib/gear';
-import { hasGracefulEquipped } from '../src/lib/gear/functions/hasGracefulEquipped';
+import { constructGearSetup, hasGracefulEquipped } from '../src/lib/gear';
 
 describe('hasGracefulEquipped', () => {
 	test('has graceful equipped', () => {
@@ -30,11 +29,8 @@ describe('hasGracefulEquipped', () => {
 			legs: 'Hosidius graceful legs'
 		};
 		expect(hasGracefulEquipped(constructGearSetup({ ...base, cape: 'Agility cape' }))).toEqual(true);
-		expect(
-			hasGracefulEquipped(constructGearSetup({ ...base, cape: 'Agility cape', head: 'Agility hood' }))
-		).toEqual(true);
 		expect(hasGracefulEquipped(constructGearSetup({ ...base, cape: 'Agility cape(t)' }))).toEqual(true);
 		expect(hasGracefulEquipped(constructGearSetup({ ...base, cape: 'Max cape' }))).toEqual(true);
-		expect(hasGracefulEquipped(constructGearSetup({ ...base, cape: 'Max cape', head: 'Max hood' }))).toEqual(true);
+		expect(hasGracefulEquipped(constructGearSetup({ ...base }))).toEqual(false);
 	});
 });

@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -45,11 +46,15 @@ export default class MinionCommand extends BotCommand {
 		}
 
 		if (!monster) {
-			return msg.channel.sendFile(
-				Buffer.from(killableMonsters.map(mon => mon.name).join('\n')),
-				'killableMonsters.txt',
-				"That's not a valid monster to kill. See attached file for list of killable monsters."
-			);
+			return msg.channel.send({
+				content: "That's not a valid monster to kill. See attached file for list of killable monsters.",
+				files: [
+					new MessageAttachment(
+						Buffer.from(killableMonsters.map(mon => mon.name).join('\n')),
+						'killableMonsters.txt'
+					)
+				]
+			});
 		}
 
 		const userKc = user.getKC(monster.id);
@@ -165,6 +170,6 @@ export default class MinionCommand extends BotCommand {
 			)}) to finish.\n`
 		);
 
-		return msg.send(str.join('\n'));
+		return msg.channel.send(str.join('\n'));
 	}
 }

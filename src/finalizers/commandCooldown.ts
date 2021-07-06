@@ -1,5 +1,7 @@
 import { Command, Finalizer, FinalizerStore, KlasaMessage, RateLimitManager } from 'klasa';
 
+import { BitField } from '../lib/constants';
+
 export default class extends Finalizer {
 	public cooldowns: WeakMap<object, any> = new WeakMap();
 
@@ -8,7 +10,13 @@ export default class extends Finalizer {
 	}
 
 	run(message: KlasaMessage, command: Command) {
-		if (command.cooldown <= 0 || this.client.owners.has(message.author)) return;
+		if (
+			command.cooldown <= 0 ||
+			this.client.owners.has(message.author) ||
+			message.author.bitfield.includes(BitField.isModerator)
+		) {
+			return;
+		}
 
 		try {
 			this.getCooldown(message, command).drip();

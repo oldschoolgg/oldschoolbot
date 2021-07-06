@@ -25,7 +25,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (received.length === 0) return msg.send("You didn't get any pets!");
-		return msg.send(received.join(' '));
+		if (received.length === 0) return msg.channel.send("You didn't get any pets!");
+		return msg.channel.send(received.join(' '));
 	}
 }

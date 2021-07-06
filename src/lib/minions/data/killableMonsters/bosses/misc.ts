@@ -70,7 +70,7 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43
 		},
 		healAmountNeeded: 20 * 10,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
 		defaultAttackStyles: [SkillsEnum.Ranged]
 	},
@@ -115,7 +115,7 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43
 		},
 		healAmountNeeded: 20 * 7,
-		attackStyleToUse: GearSetupTypes.Range,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic],
 		minimumGearRequirements: {
 			[GearSetupTypes.Mage]: {
@@ -233,8 +233,11 @@ const killableBosses: KillableMonster[] = [
 				[itemID("Inquisitor's plateskirt")]: 8
 			},
 			{
-				[itemID('Arclight')]: 15,
-				[itemID("Inquisitor's mace")]: 8
+				[itemID('Arclight')]: 8,
+				[itemID('Abyssal whip')]: 10,
+				[itemID('Abyssal tentacle')]: 11,
+				[itemID('Abyssal bludgeon')]: 13,
+				[itemID("Inquisitor's mace")]: 15
 			}
 		],
 		levelRequirements: {
