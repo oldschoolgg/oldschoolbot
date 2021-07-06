@@ -4,7 +4,7 @@ import { join } from 'path';
 import { Connection, createConnection } from 'typeorm';
 
 import { providerConfig } from '../../config';
-import { clientOptions } from '../config/config';
+import { clientOptions } from '../config';
 import { syncActivityCache } from '../settings/settings';
 import { piscinaPool } from '../workers';
 

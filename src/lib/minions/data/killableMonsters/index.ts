@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { Time, ZALCANO_ID } from '../../../constants';
+import { ZALCANO_ID } from '../../../constants';
 import { GearSetupTypes, GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
