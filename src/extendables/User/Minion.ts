@@ -18,7 +18,8 @@ import {
 	ZALCANO_ID
 } from '../../lib/constants';
 import { onMax } from '../../lib/events';
-import { hasGracefulEquipped } from '../../lib/gear/util';
+import { hasGracefulEquipped } from '../../lib/gear';
+import { availableQueues } from '../../lib/lfg/LfgUtils';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
@@ -71,14 +72,18 @@ import {
 	GroupMonsterActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
+	LfgActivityTaskOptions,
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
+	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
-	RaidsOptions,
+	PlunderActivityTaskOptions,
+	RaidsTaskOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
+	SepulchreActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SoulWarsOptions,
@@ -100,11 +105,6 @@ import {
 } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import {
-	NightmareActivityTaskOptions,
-	PlunderActivityTaskOptions,
-	SepulchreActivityTaskOptions
-} from './../../lib/types/minions';
 import { Minigames } from './Minigame';
 
 const suffixes = new SimpleTable<string>()
@@ -526,7 +526,7 @@ export default class extends Extendable {
 			}
 
 			case Activity.Raids: {
-				const data = currentTask as RaidsOptions;
+				const data = currentTask as RaidsTaskOptions;
 				return `${this.minionName} is currently doing the Chamber's of Xeric${
 					data.challengeMode ? ' in Challenge Mode' : ''
 				}, ${
@@ -574,6 +574,14 @@ export default class extends Extendable {
 			}
 			case Activity.Trekking: {
 				return `${this.minionName} is currently Temple Trekking. ${formattedDuration}`;
+			}
+			case Activity.Lfg: {
+				const data = currentTask as LfgActivityTaskOptions;
+				const queue = availableQueues.find(q => q.uniqueID === data.queueId);
+				const lfgType = queue!.monster ? 'killing' : 'playing';
+				return `${this.minionName} is currently on a LFG group ${lfgType} **${queue!.name}** with a party of ${
+					data.users.length
+				}.  ${formattedDuration}`;
 			}
 		}
 	}
