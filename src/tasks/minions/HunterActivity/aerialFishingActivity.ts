@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji, Events, Time } from '../../../lib/constants';
+import { Activity, Emoji, Events } from '../../../lib/constants';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';

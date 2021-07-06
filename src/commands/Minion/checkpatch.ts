@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Emoji, Time } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
 import { FarmingPatchTypes } from '../../lib/minions/farming/types';
@@ -44,11 +45,7 @@ export default class extends BotCommand {
 
 			if (patch.lastPlanted) {
 				const { lastPlanted } = patch;
-				const plant = Farming.Plants.find(plants =>
-					plants.aliases.some(
-						alias => stringMatches(alias, lastPlanted) || stringMatches(alias.split(' ')[0], lastPlanted)
-					)
-				);
+				const plant = Farming.Plants.find(plants => stringMatches(plants.name, lastPlanted));
 
 				if (!plant) {
 					this.client.wtf(new Error(`${msg.author.sanitizedName}'s patch had no plant found in it.`));

@@ -1,7 +1,8 @@
 import { TextChannel } from 'discord.js';
+import { Time } from 'e';
 import { KlasaMessage, Monitor, MonitorStore } from 'klasa';
 
-import { Channel, Emoji, SupportServer, Time } from '../lib/constants';
+import { Channel, Emoji, SupportServer } from '../lib/constants';
 import { roll } from '../lib/util';
 
 const rareRoles: [string, number, string][] = [

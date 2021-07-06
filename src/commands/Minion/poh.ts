@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { BitField, Time } from '../../lib/constants';
+import { BitField } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from '../../lib/poh';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';

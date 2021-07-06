@@ -1,6 +1,6 @@
+import { Time } from 'e';
 import { Clues } from 'oldschooljs';
 
-import { Time } from '../../constants';
 import itemID from '../../util/itemID';
 import { ClueTier } from '../types';
 
