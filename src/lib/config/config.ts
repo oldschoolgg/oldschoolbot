@@ -10,7 +10,6 @@ export const clientOptions: KlasaClientOptions = {
 	messageCacheLifetime: 120,
 	messageSweepInterval: 120,
 	owners: ['157797566833098752'],
-	// disableEveryone: true,
 	shards: 'auto',
 	http: {
 		api: 'https://discord.com/api'
@@ -21,10 +20,10 @@ export const clientOptions: KlasaClientOptions = {
 		'GUILD_MESSAGES',
 		'GUILD_MESSAGE_REACTIONS',
 		'DIRECT_MESSAGES',
-		'DIRECT_MESSAGE_REACTIONS'
+		'DIRECT_MESSAGE_REACTIONS',
+		'GUILD_WEBHOOKS'
 	]),
 	/* Klasa Options */
-	createPiecesFolders: false,
 	prefix: '+',
 	providers: providerConfig ?? undefined,
 	permissionLevels,
