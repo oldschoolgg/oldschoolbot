@@ -1,4 +1,3 @@
-import { randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
@@ -7,7 +6,6 @@ import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
-import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
 import {
 	assignNewSlayerTask,
 	calcMaxBlockedTasks,
@@ -302,23 +300,6 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 		}
 
 		const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
-		const myUnlocks = (await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks)) ?? undefined;
-		if (myUnlocks) {
-			SlayerRewardsShop.filter(srs => {
-				return srs.extendID !== undefined;
-			}).forEach(srsf => {
-				if (myUnlocks.includes(srsf.id) && srsf.extendID!.includes(newSlayerTask.currentTask.monsterID)) {
-					newSlayerTask.currentTask.quantity = newSlayerTask.assignedTask.extendedAmount
-						? randInt(
-								newSlayerTask.assignedTask.extendedAmount[0],
-								newSlayerTask.assignedTask.extendedAmount[1]
-						  )
-						: Math.ceil(newSlayerTask.currentTask.quantity * srsf.extendMult!);
-					newSlayerTask.currentTask.quantityRemaining = newSlayerTask.currentTask.quantity;
-					newSlayerTask.currentTask.save();
-				}
-			});
-		}
 
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 		if (commonName === 'TzHaar') {
