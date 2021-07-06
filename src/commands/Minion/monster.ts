@@ -9,6 +9,7 @@ import { requiresMinion } from '../../lib/minions/decorators';
 import { resolveAttackStyles } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
+import { calcPOHBoosts } from '../../lib/poh';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import {
@@ -19,6 +20,7 @@ import {
 	formatItemReqs,
 	formatPohBoosts,
 	itemNameFromID,
+	reduceNumByPercent,
 	round,
 	stringMatches
 } from '../../lib/util';
@@ -42,7 +44,9 @@ export default class MinionCommand extends BotCommand {
 		const user = msg.author;
 
 		if (stringMatches(name, 'nightmare')) {
-			return msg.send('The Nightmare is not supported by this command due to the complexity of the fight.');
+			return msg.channel.send(
+				'The Nightmare is not supported by this command due to the complexity of the fight.'
+			);
 		}
 
 		if (!monster) {
@@ -67,15 +71,43 @@ export default class MinionCommand extends BotCommand {
 			totalItemBoost += boostAmount;
 			ownedBoostItems.push(itemNameFromID(parseInt(itemID)));
 		}
+
+		if (monster.pohBoosts) {
+			const [boostPercent] = calcPOHBoosts(await msg.author.getPOH(), monster.pohBoosts);
+			if (boostPercent > 0) {
+				timeToFinish = reduceNumByPercent(timeToFinish, boostPercent);
+			}
+		}
+
+		const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
+			monsterID: monster.id
+		});
+
+		const skillTotal = addArrayOfNumbers(attackStyles.map(s => user.skillLevel(s)));
+
+		let percent = round(calcWhatPercent(skillTotal, attackStyles.length * 99), 2);
+
+		const str = [`**${monster.name}**\n`];
+
+		let skillString = '';
+
+		if (percent < 50) {
+			percent = 50 - percent;
+			skillString = `**Skills boost:** -${percent.toFixed(2)}% for your skills.\n`;
+		} else {
+			percent = Math.min(15, percent / 6.5);
+			skillString = `**Skills boost:** ${percent.toFixed(2)}% for your skills.\n`;
+		}
+
+		timeToFinish = reduceNumByPercent(timeToFinish, percent);
+
 		const maxCanKill = Math.floor(user.maxTripLength(Activity.MonsterKilling) / timeToFinish);
 
 		const QP = user.settings.get(UserSettings.QP);
 
-		const str = [`**${monster.name}**\n`];
-
-		str.push(`Barrage/Burst: ${monster.canBarrage ? 'Yes' : 'No'}`);
+		str.push(`**Barrage/Burst**: ${monster.canBarrage ? 'Yes' : 'No'}`);
 		str.push(
-			`Cannon: ${monster.canCannon ? `Yes, ${monster.cannonMulti ? 'multi' : 'single'} combat area` : 'No'}\n`
+			`**Cannon**: ${monster.canCannon ? `Yes, ${monster.cannonMulti ? 'multi' : 'single'} combat area` : 'No'}\n`
 		);
 
 		if (monster.qpRequired) {
@@ -102,24 +134,10 @@ export default class MinionCommand extends BotCommand {
 			}
 		}
 
+		str.push(skillString);
+
 		if (monster.pohBoosts) {
 			str.push(`**Player Owned House Boosts:**\n${formatPohBoosts(monster.pohBoosts)}`);
-		}
-
-		const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
-			monsterID: monster.id
-		});
-
-		const skillTotal = addArrayOfNumbers(attackStyles.map(s => user.skillLevel(s)));
-
-		let percent = round(calcWhatPercent(skillTotal, attackStyles.length * 99), 2);
-
-		if (percent < 50) {
-			percent = 50 - percent;
-			str.push(`**Skills boost:** -${percent.toFixed(2)}% for your skills.\n`);
-		} else {
-			percent = Math.min(15, percent / 6.5);
-			str.push(`**Skills boost:** ${percent.toFixed(2)}% for your skills.\n`);
 		}
 
 		// Removed vorkath because he has a special boost.
@@ -151,7 +169,7 @@ export default class MinionCommand extends BotCommand {
 		str.push(`**Maximum Trip Length:** ${formatDuration(user.maxTripLength(Activity.MonsterKilling))}.\n`);
 
 		str.push(
-			`This means the most you can kill with your current item and KC boosts is ${maxCanKill} (${formatDuration(
+			`This means the most you can kill with your current boosts is ${maxCanKill} (${formatDuration(
 				timeToFinish
 			)} per kill).\n`
 		);
