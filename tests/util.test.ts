@@ -14,33 +14,4 @@ describe('util', () => {
 
 		expect(() => getOSItem('Non-existant item')).toThrowError("That item doesn't exist.");
 	});
-<<<<<<< HEAD
-=======
-
-	test('getUserFoodFromBank', () => {
-		expect(getUserFoodFromBank({ [itemID('Shark')]: 1 }, 500)).toStrictEqual(false);
-		expect(getUserFoodFromBank({ [itemID('Shark')]: 100 }, 500)).toStrictEqual({
-			[itemID('Shark')]: 25
-		});
-		expect(getUserFoodFromBank({ [itemID('Shark')]: 30, [itemID('Tuna')]: 20 }, 750)).toStrictEqual({
-			[itemID('Tuna')]: 20,
-			[itemID('Shark')]: 28
-		});
-		expect(
-			getUserFoodFromBank(
-				{
-					[itemID('Shark')]: 100,
-					[itemID('Lobster')]: 20,
-					[itemID('Shrimps')]: 50,
-					[itemID('Coal')]: 1
-				},
-				1600
-			)
-		).toStrictEqual({
-			[itemID('Lobster')]: 20,
-			[itemID('Shark')]: 66,
-			[itemID('Shrimps')]: 50
-		});
-	});
->>>>>>> master
 });

@@ -15,7 +15,9 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [user]: [KlasaUser]) {
 		const cl = new Bank(msg.author.settings.get(UserSettings.CollectionLogBank));
 		if (!cl.has('Cursed banana')) {
-			return msg.channel.send("You cant give out a birthday pack because you haven't yet completed the birthday event.");
+			return msg.channel.send(
+				"You cant give out a birthday pack because you haven't yet completed the birthday event."
+			);
 		}
 		if (user.id === msg.author.id) throw "You can't give boxes to yourself!";
 		if (user.bot) throw 'no';

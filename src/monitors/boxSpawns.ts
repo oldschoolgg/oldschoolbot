@@ -10,7 +10,7 @@ import { Color, SupportServer, Time } from '../lib/constants';
 import { getRandomMysteryBox } from '../lib/data/openables';
 import { roll, stringMatches } from '../lib/util';
 
-export async function triviaChallenge(msg: KlasaMessage, ironsAllowed = true): Promise<KlasaUser | null> {
+export async function triviaChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 	const { question, correct_answer, incorrect_answers } = await fetch(
 		'https://opentdb.com/api.php?amount=1&category=9&difficulty=medium&type=multiple'
 	)
@@ -31,8 +31,7 @@ export async function triviaChallenge(msg: KlasaMessage, ironsAllowed = true): P
 			max: 1,
 			time: 14_000,
 			errors: ['time'],
-			filter: _msg =>
-				stringMatches(_msg.content, correct_answer) && ironsAllowed ? true : !_msg.author.isIronman
+			filter: _msg => stringMatches(_msg.content, correct_answer)
 		});
 
 		const winner = collected.first()?.author;
@@ -43,7 +42,7 @@ export async function triviaChallenge(msg: KlasaMessage, ironsAllowed = true): P
 	}
 }
 
-export async function itemChallenge(msg: KlasaMessage, ironsAllowed = true): Promise<KlasaUser | null> {
+export async function itemChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 	const randomItem = Items.random();
 	const scrambed = randomItem.name
 		.split(' ')
@@ -61,8 +60,7 @@ export async function itemChallenge(msg: KlasaMessage, ironsAllowed = true): Pro
 			max: 1,
 			time: 14_000,
 			errors: ['time'],
-			filter: _msg =>
-				stringMatches(_msg.content, randomItem.name) && ironsAllowed ? true : !_msg.author.isIronman
+			filter: _msg => stringMatches(_msg.content, randomItem.name)
 		});
 
 		const winner = collected.first()?.author;
@@ -73,7 +71,7 @@ export async function itemChallenge(msg: KlasaMessage, ironsAllowed = true): Pro
 	}
 }
 
-export async function reactChallenge(msg: KlasaMessage, ironsAllowed = true): Promise<KlasaUser | null> {
+export async function reactChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 	const embed = new MessageEmbed()
 		.setColor(Color.Orange)
 		.setTitle('Answer this for a reward!')
@@ -84,7 +82,7 @@ export async function reactChallenge(msg: KlasaMessage, ironsAllowed = true): Pr
 			max: 1,
 			time: 30_000,
 			errors: ['time'],
-			filter: react => (ironsAllowed ? true : !Boolean(react.users.cache.first()?.isIronman))
+			filter: () => true
 		});
 		const winner = collected.first()?.users.cache.first();
 		return winner ?? null;
