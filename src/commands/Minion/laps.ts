@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { globetrotterReqs } from '../../lib/customItems';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -108,7 +109,7 @@ export default class extends BotCommand {
 		const course = Agility.Courses.find(course => course.aliases.some(alias => stringMatches(alias, name)));
 
 		if (!course) {
-			return msg.send(
+			return msg.channel.send(
 				`Thats not a valid course. Valid courses are ${Agility.Courses.map(course => course.name).join(', ')}.`
 			);
 		}

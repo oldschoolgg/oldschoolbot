@@ -59,3 +59,17 @@ export function hasGracefulEquipped(setup: Gear) {
 		true
 	);
 }
+
+export function hasGlobetrotterEquipped(setup: Gear) {
+	return setup.hasEquipped(
+		[
+			'Globetrotter headress',
+			'Globetrotter  top',
+			'Globetrotter  legs',
+			'Globetrotter  boots',
+			'Globetrotter  boots',
+			'Globetrotter backpack'
+		],
+		true
+	);
+}

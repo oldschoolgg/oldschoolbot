@@ -18,7 +18,7 @@ import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, PerkTier, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
-import { hasGlobetrotterEquipped, hasGracefulEquipped } from '../../lib/gear/util';
+import { hasGlobetrotterEquipped, hasGracefulEquipped } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';

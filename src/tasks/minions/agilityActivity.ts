@@ -2,8 +2,8 @@ import { increaseNumByPercent, objectEntries, randInt, roll, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { GlobetrottlerOutfit } from '../../commands/Minion/mclue';
+import { Activity, Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globetrotterReqs } from '../../lib/customItems';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -76,7 +76,6 @@ export default class extends Task {
 							.join(', ')}. Try again!`
 					});
 				} finally {
-					console.log(xpToReceive);
 					Object.entries(xpToReceive).map(async skill =>
 						user.addXP({
 							skillName: SkillsEnum[skill[0] as keyof typeof SkillsEnum],
