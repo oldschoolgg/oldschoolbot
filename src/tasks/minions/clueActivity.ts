@@ -73,7 +73,7 @@ export default class extends Task {
 					loot.add(tierGlobetrotterPiece[clueTier.name][0]);
 					ticketStr = ` As you clean the buried casket${
 						quantity > 1 ? 's' : ''
-					}, you find a strange ticked glued to one of them.`;
+					}, you find a strange messaged glued to one of them.`;
 				}
 			}
 		}

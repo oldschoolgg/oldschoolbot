@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Time } from '../../lib/constants';
+import { globetrotterReqs } from '../../lib/customItems';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -123,24 +124,16 @@ export default class extends BotCommand {
 			let successfulLaps = msg.author.settings.get(UserSettings.LapsScores)[course.id] ?? 0;
 			challengeMode = !new Bank(msg.author.collectionLog).has(GlobetrottlerOutfit);
 			if (challengeMode) {
-				if (
-					!msg.author.hasSkillReqs({
-						agility: 120,
-						thieving: 120,
-						strength: 120,
-						prayer: 120,
-						defence: 120,
-						firemaking: 120,
-						construction: 120,
-						woodcutting: 120,
-						mining: 120
-					})
-				) {
+				ticket = globetrotterTickets.items().find(t => (msg.author.bank().has(t[0].id) ? t[0] : false));
+				if (!msg.author.hasSkillReqs(globetrotterReqs)[0]) {
 					return msg.channel.send(
-						'You knocks on the course entrance, but no one answers. Maybe you are not worthy enough for the challenge?'
+						`You knocks on the course entrance, but no one answers. Maybe you are not worthy enough for the challenge?${
+							ticket
+								? ' You should examine the message you received more thoroughly, it may have the answers you need.'
+								: ''
+						}`
 					);
 				}
-				ticket = globetrotterTickets.items().find(t => (msg.author.bank().has(t[0].id) ? t[0] : false));
 				if (!ticket) {
 					if (successfulLaps > 0) {
 						return msg.channel.send(

@@ -1253,7 +1253,7 @@ setCustomItem(41_085, 'Tattered robes of Vasa', 'Coal', {}, 1_000_000);
 /**
  * START CLUE OUTFIT ---------------------------------------------------------------------------------------------------
  */
-const globetrotterReqs = {
+export const globetrotterReqs = {
 	agility: 120,
 	thieving: 120,
 	strength: 120,
