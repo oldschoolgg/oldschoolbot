@@ -10,7 +10,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.send(
+		return msg.channel.send(
 			"You approach Koschei the deathless, he doesn't regard you as a threat, you eventually get scared and run away. Maybe another time."
 		);
 	}

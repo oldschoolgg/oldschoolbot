@@ -106,6 +106,6 @@ export default class extends BotCommand {
 			}
 		}
 
-		return msg.send(res);
+		return msg.channel.send(res);
 	}
 }

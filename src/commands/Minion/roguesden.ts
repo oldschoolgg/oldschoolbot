@@ -30,7 +30,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		if (msg.author.skillLevel(SkillsEnum.Agility) < 50 || msg.author.skillLevel(SkillsEnum.Thieving) < 50) {
-			return msg.send("To attempt the Rogues' Den maze you need 50 Agility and 50 Thieving.");
+			return msg.channel.send("To attempt the Rogues' Den maze you need 50 Agility and 50 Thieving.");
 		}
 
 		const staminasToRemove = new Bank();
@@ -98,6 +98,6 @@ export default class extends BotCommand {
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

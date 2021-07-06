@@ -24,15 +24,15 @@ export default class extends BotCommand {
 			// if (allNexItems.includes(i.id)) return false;
 			return i.name.toLowerCase() === name.toLowerCase();
 		}).array();
-		if (items.length === 0) return msg.send('No results for that item.');
+		if (items.length === 0) return msg.channel.send('No results for that item.');
 
 		const gettedItem = Items.get(name);
 
 		if (msg.flagArgs.raw) {
-			return msg.send(`\`\`\`\n${JSON.stringify(gettedItem, null, 4)}\n\`\`\``);
+			return msg.channel.send(`\`\`\`\n${JSON.stringify(gettedItem, null, 4)}\n\`\`\``);
 		}
 
-		return msg.send(
+		return msg.channel.send(
 			`Found ${items.length} items:\n${(items as Item[])
 				.map(
 					(item, index) => `${gettedItem!.id === item.id ? '**' : ''}

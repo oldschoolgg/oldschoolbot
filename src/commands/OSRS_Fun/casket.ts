@@ -57,7 +57,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [tier, quantity = 1]: [string, number]) {
 		const limit = this.determineLimit(msg.author);
 		if (quantity > limit) {
-			return msg.send(
+			return msg.channel.send(
 				`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 100,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`
 			);
 		}
@@ -65,21 +65,21 @@ export default class extends BotCommand {
 		const clueTier = clueTiers.find(_tier => _tier.name.toLowerCase() === tier.toLowerCase());
 
 		if (!clueTier) {
-			return msg.send(
+			return msg.channel.send(
 				`Not a valid clue tier. The valid tiers are: ${clueTiers.map(_tier => _tier.name).join(', ')}`
 			);
 		}
 
 		if (clueTier.name === 'Grandmaster') {
-			return msg.send('Error.');
+			return msg.channel.send('Error.');
 		}
 
 		const [loot, title] = await Workers.casketOpen({ quantity, clueTierID: clueTier.id });
 
-		if (Object.keys(loot).length === 0) return msg.send(`${title} and got nothing :(`);
+		if (Object.keys(loot).length === 0) return msg.channel.send(`${title} and got nothing :(`);
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(loot.bank, title);
 
-		return msg.send(new MessageAttachment(image!, 'osbot.png'));
+		return msg.channel.send({ files: [new MessageAttachment(image!, 'osbot.png')] });
 	}
 }

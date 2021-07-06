@@ -25,7 +25,7 @@ export default class extends BotCommand {
 		}
 
 		if (coins === 0) {
-			return msg.send(
+			return msg.channel.send(
 				`You have no GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command.`
 			);
 		}

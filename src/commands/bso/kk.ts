@@ -298,8 +298,6 @@ export default class extends BotCommand {
 
 		str += ` \n\n${debugStr}`;
 
-		return msg.channel.send(str, {
-			split: true
-		});
+		return msg.channel.send(str);
 	}
 }

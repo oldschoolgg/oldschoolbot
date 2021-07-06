@@ -1,4 +1,4 @@
-import { TextChannel } from 'discord.js';
+import { MessageAttachment, TextChannel } from 'discord.js';
 import { ArrayActions, Gateway, Task } from 'klasa';
 import fetch from 'node-fetch';
 
@@ -267,7 +267,7 @@ export default class PatreonTask extends Task {
 
 		const channel = this.client.channels.cache.get(Channel.ErrorLogs) as TextChannel;
 		if (production) {
-			channel.sendFile(Buffer.from(result.join('\n')), 'patreon.txt');
+			channel.send({ files: [new MessageAttachment(Buffer.from(result.join('\n')), 'patreon.txt')] });
 			channel.send(messages.join(', '));
 		} else {
 			console.log(messages.join('\n'));

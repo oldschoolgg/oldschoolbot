@@ -244,8 +244,6 @@ export default class extends BotCommand {
 			str += '\n2x Boost from Cob';
 		}
 
-		return msg.channel.send(str, {
-			split: true
-		});
+		return msg.channel.send(str);
 	}
 }

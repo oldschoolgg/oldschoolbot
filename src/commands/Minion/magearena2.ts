@@ -73,7 +73,7 @@ export default class extends BotCommand {
 			type: Activity.MageArena2
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now doing the Mage Arena II, it will take approximately ${formatDuration(
 				duration
 			)}. Removed ${totalCost} from your bank.`

@@ -125,14 +125,12 @@ export default class POHCommand extends BotCommand {
 
 			// Confirm the seller wants to sell
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: 20000,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					max: 1,
+					time: 20000,
+					errors: ['time'],
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return sellMsg.edit('Cancelled..');
 			}

@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -77,7 +78,7 @@ export default class extends BotCommand {
 					})
 				))
 			]);
-			return msg.channel.sendFile(Buffer.from(normalTable), 'cox-sim.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(normalTable), 'cox-sim.txt')] });
 		}
 
 		if (!type) {
@@ -133,7 +134,7 @@ export default class extends BotCommand {
 		}
 
 		if (type !== 'mass' && type !== 'solo') {
-			return msg.send("Specify your team setup for Chamber's of Xeric, either solo or mass.");
+			return msg.channel.send("Specify your team setup for Chamber's of Xeric, either solo or mass.");
 		}
 
 		const isChallengeMode = Boolean(msg.flagArgs.cm);
@@ -248,8 +249,6 @@ export default class extends BotCommand {
 
 		str += ` \n\n${debugStr}`;
 
-		return msg.channel.send(str, {
-			split: true
-		});
+		return msg.channel.send(str);
 	}
 }

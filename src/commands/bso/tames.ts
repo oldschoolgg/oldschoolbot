@@ -70,7 +70,7 @@ export default class extends BotCommand {
 			name.length > 30 ||
 			['\n', '`', '@', '<', ':'].some(char => name.includes(char))
 		) {
-			return msg.send("That's not a valid name for your tame.");
+			return msg.channel.send("That's not a valid name for your tame.");
 		}
 		const [selectedTame] = await getUsersTame(msg.author);
 		if (!selectedTame) {

@@ -26,15 +26,15 @@ export default class extends BotCommand {
 	async add(message: KlasaMessage, [tag, content]: [string, string]) {
 		const isStaff = await message.hasAtLeastPermissionLevel(6);
 		if (!message.member || !isStaff) {
-			return message.send('You must be a staff of this server to add tags.');
+			return message.channel.send('You must be a staff of this server to add tags.');
 		}
 
 		if (!content || content.length === 0) {
-			return message.send('You must provide content for the tag.');
+			return message.channel.send('You must provide content for the tag.');
 		}
 
 		if (message.guild!.settings.get(GuildSettings.Tags).some(_tag => _tag[0] === tag.toLowerCase())) {
-			return message.send('That tag already exists.');
+			return message.channel.send('That tag already exists.');
 		}
 		await message.guild!.settings.update(
 			GuildSettings.Tags,
@@ -42,7 +42,7 @@ export default class extends BotCommand {
 			{ arrayAction: 'overwrite' }
 		);
 
-		return message.send(
+		return message.channel.send(
 			`Added the tag \`${message.cmdPrefix + tag}\` with content: \`\`\`${Util.escapeMarkdown(content)}\`\`\``
 		);
 	}
@@ -51,17 +51,17 @@ export default class extends BotCommand {
 		const isStaff = await message.hasAtLeastPermissionLevel(6);
 		if (!message.member || !isStaff) return;
 		if (!message.guild!.settings.get(GuildSettings.Tags).some(_tag => _tag[0] === tag.toLowerCase())) {
-			return message.send("That tag doesn't exist.");
+			return message.channel.send("That tag doesn't exist.");
 		}
 		const filtered = message.guild!.settings.get(GuildSettings.Tags).filter(([name]) => name !== tag.toLowerCase());
 		await message.guild!.settings.update(GuildSettings.Tags, filtered, {
 			arrayAction: 'overwrite'
 		});
-		return message.send(`Removed the tag \`${tag}\`.`);
+		return message.channel.send(`Removed the tag \`${tag}\`.`);
 	}
 
 	list(message: KlasaMessage) {
-		return message.send(
+		return message.channel.send(
 			`Tags for this guild are: ${message
 				.guild!.settings.get(GuildSettings.Tags)
 				.map(([name]) => name)
@@ -74,14 +74,14 @@ export default class extends BotCommand {
 		if (!emote) {
 			return null;
 		}
-		return message.send(emote[1]);
+		return message.channel.send(emote[1]);
 	}
 
 	source(message: KlasaMessage, [tag]: [string]) {
 		const emote = message.guild!.settings.get(GuildSettings.Tags).find(([name]) => name === tag.toLowerCase());
 		if (!emote) {
-			return message.send("That emote doesn't exist.");
+			return message.channel.send("That emote doesn't exist.");
 		}
-		return message.send(`\`\`\`${Util.escapeMarkdown(emote[1])}\`\`\``);
+		return message.channel.send(`\`\`\`${Util.escapeMarkdown(emote[1])}\`\`\``);
 	}
 }

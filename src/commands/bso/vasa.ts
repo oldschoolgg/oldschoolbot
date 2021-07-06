@@ -71,7 +71,7 @@ export default class extends BotCommand {
 		});
 		try {
 			if (msg.flagArgs.s1mulat3) {
-				return msg.channel.send(await instance.simulate());
+				return msg.channel.send({ files: [await instance.simulate()] });
 			}
 			const { bossUsers } = await instance.start();
 			const embed = new MessageEmbed().setDescription(
@@ -81,7 +81,7 @@ ${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
 `
 			);
 
-			return msg.channel.send(embed);
+			return msg.channel.send({ embeds: [embed] });
 		} catch (err) {
 			return msg.channel.send(`The mass failed to start for this reason: ${err.message}.`);
 		}

@@ -24,12 +24,12 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [monName, itemName]: [string, string]) {
 		const mon = effectiveMonsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monName)));
 		if (!mon) {
-			return msg.send("That's not a valid monster or minigame.");
+			return msg.channel.send("That's not a valid monster or minigame.");
 		}
 
 		const item = getOSItem(itemName);
 		// if (allNexItems.includes(item.id)) {
-		// 	 return msg.send(`That item doesn't exist.`)
+		// 	 return msg.channel.send(`That item doesn't exist.`)
 		// }
 
 		const ironmanPart = msg.flagArgs.im ? 'AND "minion.ironman" = true' : '';
@@ -44,11 +44,11 @@ export default class extends BotCommand {
 			}[]
 		>(query);
 
-		if (result.length === 0) return msg.send('No results found.');
+		if (result.length === 0) return msg.channel.send('No results found.');
 
 		const command = this.client.commands.get('leaderboard') as LeaderboardCommand;
 
-		return msg.send(
+		return msg.channel.send(
 			`**Dry Streaks for ${item.name} from ${mon.name}:**\n${result
 				.map(({ id, KC }) => `${command.getUsername(id) as string}: ${parseInt(KC).toLocaleString()}`)
 				.join('\n')}`

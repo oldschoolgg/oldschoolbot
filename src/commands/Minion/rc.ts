@@ -41,7 +41,7 @@ export default class extends BotCommand {
 		);
 
 		if (!rune) {
-			return msg.send(
+			return msg.channel.send(
 				`Thats not a valid rune. Valid rune are ${Runecraft.Runes.map(_rune => _rune.name).join(', ')}.`
 			);
 		}
@@ -49,11 +49,13 @@ export default class extends BotCommand {
 		const quantityPerEssence = calcMaxRCQuantity(rune, msg.author);
 
 		if (quantityPerEssence === 0) {
-			return msg.send(`${msg.author.minionName} needs ${rune.levels[0][0]} Runecraft to create ${rune.name}s.`);
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${rune.levels[0][0]} Runecraft to create ${rune.name}s.`
+			);
 		}
 
 		if (rune.qpRequired && msg.author.settings.get(UserSettings.QP) < rune.qpRequired) {
-			return msg.send(`You need ${rune.qpRequired} QP to craft this rune.`);
+			return msg.channel.send(`You need ${rune.qpRequired} QP to craft this rune.`);
 		}
 
 		if (rune.name === 'Elder rune' && !msg.author.owns('Elder talisman')) {
@@ -113,7 +115,7 @@ export default class extends BotCommand {
 		}
 
 		if (numEssenceOwned === 0 || essenceRequired === 0 || numEssenceOwned < essenceRequired) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players (\`${msg.cmdPrefix}ge\`).`
 			);
 		}
@@ -122,7 +124,7 @@ export default class extends BotCommand {
 		const duration = numberOfInventories * tripLength;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${rune.name} you can craft is ${Math.floor(maxCanDo)}.`
@@ -148,6 +150,6 @@ export default class extends BotCommand {
 		
 **Boosts:** ${boosts.join(', ')}`;
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

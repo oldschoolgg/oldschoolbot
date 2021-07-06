@@ -162,7 +162,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.HillGiant.id,
 		name: Monsters.HillGiant.name,
 		aliases: Monsters.HillGiant.aliases,
-		timeToFinish: Time.Second * 24,
+		timeToFinish: Time.Second * 10,
 		table: Monsters.HillGiant,
 		wildy: false,
 

@@ -247,7 +247,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.BrineRat.id,
 		name: Monsters.BrineRat.name,
 		aliases: Monsters.BrineRat.aliases,
-		timeToFinish: Time.Second * 38,
+		timeToFinish: Time.Second * 13,
 		table: Monsters.BrineRat,
 
 		wildy: false,
@@ -391,7 +391,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.DeviantSpectre.id,
 		name: Monsters.DeviantSpectre.name,
 		aliases: Monsters.DeviantSpectre.aliases,
-		timeToFinish: Time.Second * 37,
+		timeToFinish: Time.Second * 45,
 		table: Monsters.DeviantSpectre,
 
 		wildy: false,
@@ -658,7 +658,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.IceGiant.id,
 		name: Monsters.IceGiant.name,
 		aliases: Monsters.IceGiant.aliases,
-		timeToFinish: Time.Second * 27,
+		timeToFinish: Time.Second * 16,
 		table: Monsters.IceGiant,
 		wildy: true,
 
@@ -846,7 +846,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.MossGiant.id,
 		name: Monsters.MossGiant.name,
 		aliases: Monsters.MossGiant.aliases,
-		timeToFinish: Time.Second * 30,
+		timeToFinish: Time.Second * 14,
 		table: Monsters.MossGiant,
 
 		wildy: true,

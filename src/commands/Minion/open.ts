@@ -56,7 +56,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [quantity = 1, name]: [number, string | undefined]) {
 		if (!name) {
-			return msg.send(await this.showAvailable(msg));
+			return msg.channel.send(await this.showAvailable(msg));
 		}
 
 		await msg.author.settings.sync(true);
@@ -74,7 +74,7 @@ export default class extends BotCommand {
 
 	async clueOpen(msg: KlasaMessage, quantity: number, clueTier: ClueTier) {
 		if (msg.author.numItemsInBankSync(clueTier.id) < quantity) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough ${clueTier.name} Caskets to open!\n\n However... ${await this.showAvailable(
 					msg
 				)}`
@@ -135,7 +135,7 @@ export default class extends BotCommand {
 		}
 
 		if (Object.keys(loot).length === 0) {
-			return msg.send(`${opened} and got nothing :(`);
+			return msg.channel.send(`${opened} and got nothing :(`);
 		}
 
 		this.client.emit(
@@ -175,7 +175,7 @@ export default class extends BotCommand {
 
 	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: Openable) {
 		if (msg.author.numItemsInBankSync(osjsOpenable.id) < quantity) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough ${osjsOpenable.name} to open!\n\n However... ${await this.showAvailable(msg)}`
 			);
 		}
@@ -209,7 +209,7 @@ export default class extends BotCommand {
 		const botOpenable = botOpenables.find(thing => thing.aliases.some(alias => stringMatches(alias, name)));
 
 		if (!botOpenable) {
-			return msg.send(
+			return msg.channel.send(
 				`That's not a valid thing you can open. You can open a clue tier (${ClueTiers.map(
 					tier => tier.name
 				).join(', ')}), or another non-clue thing (${botOpenables
@@ -220,7 +220,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.numItemsInBankSync(botOpenable.itemID) < quantity) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough ${botOpenable.name} to open!\n\n However... ${await this.showAvailable(msg)}`
 			);
 		}

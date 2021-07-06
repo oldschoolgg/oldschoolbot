@@ -1,5 +1,4 @@
-import { TextChannel } from 'discord.js';
-import { KlasaMessage } from 'klasa';
+import { Message, TextChannel } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import { getRandomMysteryBox } from './data/openables';
@@ -21,8 +20,11 @@ export async function boxFrenzy(channel: TextChannel, content: string, quantity:
 			title: 'Guess These Item Names For A Mystery Box'
 		});
 
-		await channel.awaitMessages(
-			(_msg: KlasaMessage) => {
+		await channel.awaitMessages({
+			max: 1,
+			time: 60_000,
+			errors: ['time'],
+			filter: (_msg: Message) => {
 				const isRight = items.find(i => stringMatches(i[0].name, _msg.content) && !guessed.has(i[0].id));
 				if (isRight) {
 					const item = isRight[0];
@@ -34,13 +36,8 @@ export async function boxFrenzy(channel: TextChannel, content: string, quantity:
 					);
 				}
 				return false;
-			},
-			{
-				max: 1,
-				time: 60_000,
-				errors: ['time']
 			}
-		);
+		});
 		channel.send(`The box frenzy has ended, ${guessed.size} boxes were given out.`);
 	} catch (err) {
 		console.error(err);

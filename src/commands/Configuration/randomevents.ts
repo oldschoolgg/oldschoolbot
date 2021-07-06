@@ -21,18 +21,18 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [command]: [string | undefined]) {
 		if (!command || !['enable', 'disable'].includes(command)) {
-			return msg.send(typeString(msg.cmdPrefix));
+			return msg.channel.send(typeString(msg.cmdPrefix));
 		}
 
 		const nextBool = command === 'enable' ? false : true;
 		const currentStatus = msg.author.settings.get(UserSettings.BitField).includes(BitField.DisabledRandomEvents);
 
 		if (currentStatus === nextBool) {
-			return msg.send(`Random events are already ${!currentStatus ? 'enabled' : 'disabled'} for you.`);
+			return msg.channel.send(`Random events are already ${!currentStatus ? 'enabled' : 'disabled'} for you.`);
 		}
 
 		await msg.author.settings.update(UserSettings.BitField, BitField.DisabledRandomEvents);
 
-		return msg.send(`Random events are now ${!nextBool ? 'enabled' : 'disabled'} for you.`);
+		return msg.channel.send(`Random events are now ${!nextBool ? 'enabled' : 'disabled'} for you.`);
 	}
 }

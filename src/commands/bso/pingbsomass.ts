@@ -17,7 +17,7 @@ export default class extends BotCommand {
 		if (!msg.member.roles.cache.has('759572886364225558') && !msg.member.roles.cache.has(Roles.Moderator)) {
 			return;
 		}
-		return msg.send(
+		return msg.channel.send(
 			'<@&759573020464906242> - *Note: You can type `.roles bso-mass` to remove, or add, this role to yourself.'
 		);
 	}
