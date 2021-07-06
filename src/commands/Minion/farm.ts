@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';

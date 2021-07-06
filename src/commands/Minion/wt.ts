@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { warmGear } from '../../lib/data/filterables';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';

@@ -1,7 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';

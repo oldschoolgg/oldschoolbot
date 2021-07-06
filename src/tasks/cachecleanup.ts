@@ -1,7 +1,7 @@
 import { SnowflakeUtil } from 'discord.js';
+import { Time } from 'e';
 import { Colors, Task, TaskStore } from 'klasa';
 
-import { Time } from '../lib/constants';
 import PostgresProvider from '../providers/postgres';
 
 const THRESHOLD = Time.Minute * 30;

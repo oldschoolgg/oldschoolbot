@@ -1,7 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Time } from '../../lib/constants';
 import TrekShopItems, { TrekExperience } from '../../lib/data/buyables/trekBuyables';
 import { rewardTokens } from '../../lib/minions/data/templeTrekking';
 import { AddXpParams } from '../../lib/minions/types';

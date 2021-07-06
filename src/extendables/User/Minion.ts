@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, uniqueArr } from 'e';
+import { calcPercentOfNum, calcWhatPercent, Time, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -15,7 +15,6 @@ import {
 	MAX_TOTAL_LEVEL,
 	PerkTier,
 	skillEmoji,
-	Time,
 	ZALCANO_ID
 } from '../../lib/constants';
 import { onMax } from '../../lib/events';
