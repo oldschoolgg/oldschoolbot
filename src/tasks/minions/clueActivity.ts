@@ -62,7 +62,7 @@ export default class extends Task {
 					tierGlobetrotterPiece[clueTier.name][2]
 			) {
 				const ticketsToCheck = new Bank();
-				Object.values(tierGlobetrotterPiece).map(value => {
+				Object.values(tierGlobetrotterPiece).forEach(value => {
 					ticketsToCheck.add(value[0]);
 				});
 				// Check if the user has the ticket already in the bank, if not, calculates the chance to receive it
