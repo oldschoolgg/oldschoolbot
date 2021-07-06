@@ -11,7 +11,6 @@ import { getRandomMysteryBox } from '../data/openables';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { ClientSettings } from '../settings/types/ClientSettings';
-import { UserSettings } from '../settings/types/UserSettings';
 import { RuneTable, SeedTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable } from '../simulation/sharedTables';
 import { ActivityTaskOptions } from '../types/minions';
@@ -105,12 +104,6 @@ export async function handleTripFinish(
 		}
 
 		message += `\nDoug did some mining while you were on your trip and got you: ${bonusLoot}.`;
-	}
-
-	const collectionLog = new Bank(user.settings.get(UserSettings.CollectionLogBank));
-	if (!collectionLog.has('Independence box') && roll(3)) {
-		bonusLoot.add('Independence box');
-		message += '\n**You received an Independence box!**';
 	}
 
 	if (bonusLoot.length > 0) {
