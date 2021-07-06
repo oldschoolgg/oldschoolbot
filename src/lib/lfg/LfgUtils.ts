@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { Emoji, Time } from '../constants';
+import { Emoji } from '../constants';
 import { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
 import { KillableMonster } from '../minions/types';
 import { ClientSettings } from '../settings/types/ClientSettings';

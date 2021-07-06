@@ -1,7 +1,7 @@
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../constants';
+import { Activity } from '../../constants';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { ActivityTaskOptions, GroupMonsterActivityTaskOptions, SoulWarsOptions } from '../../types/minions';
 import { noOp, randomVariation, roll } from '../../util';

@@ -1,8 +1,8 @@
-import { increaseNumByPercent, randArrItem, randInt } from 'e';
+import { increaseNumByPercent, randArrItem, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
-import { Activity, Time } from '../../constants';
+import { Activity } from '../../constants';
 import { KandarinDiary, userhasDiaryTier } from '../../diaries';
 import { GearSetupTypes, maxOtherStats } from '../../gear';
 import { UserSettings } from '../../settings/types/UserSettings';

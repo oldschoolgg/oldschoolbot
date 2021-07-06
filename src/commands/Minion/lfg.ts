@@ -1,9 +1,10 @@
 import { MessageAttachment, MessageEmbed, MessageOptions } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { getConnection } from 'typeorm';
 
-import { Activity, Color, Emoji, Events, SupportServer, Time } from '../../lib/constants';
+import { Activity, Color, Emoji, Events, SupportServer } from '../../lib/constants';
 import { LfgQueueState } from '../../lib/lfg/LfgInterface';
 import {
 	availableQueues,
@@ -357,10 +358,12 @@ export default class extends BotCommand {
 								quantity: activitiesThisTrip,
 								queue: selectedQueue
 							});
-							await user.removeItemsFromBank(itemsToRemove);
-							lootRemovedCost.add(itemsToRemove);
-							failSafe[user.id] = itemsToRemove;
-							itemsRemoved.push(`**${user.username}**: ${itemsToRemove}`);
+							if (itemsToRemove.items().length > 0) {
+								await user.removeItemsFromBank(itemsToRemove);
+								lootRemovedCost.add(itemsToRemove);
+								failSafe[user.id] = itemsToRemove;
+								itemsRemoved.push(`**${user.username}**: ${itemsToRemove}`);
+							}
 						} finally {
 							this.client.oneCommandAtATimeCache.delete(user.id);
 						}
@@ -798,6 +801,10 @@ export default class extends BotCommand {
 			if (selectedQueue.allowSolo) {
 				queueID = Number(msg.author.id);
 				skipChecks = true;
+				// Remove the queue if it already exists, as the user will be soloing it
+				if (QUEUE_LIST[queueID]) {
+					delete QUEUE_LIST[queueID];
+				}
 			} else {
 				return returnMessage("You can't solo this LFG activity.");
 			}

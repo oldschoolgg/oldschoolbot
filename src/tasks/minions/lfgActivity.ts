@@ -10,6 +10,7 @@ import {
 } from '../../lib/lfg/LfgUtils';
 import { LfgStatusTable } from '../../lib/typeorm/LfgStatusTable.entity';
 import { LfgActivityTaskOptions } from '../../lib/types/minions';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 function mergeLoot(loot_a: Record<string, number>, loot_b: Record<string, number>) {
 	const result = loot_a;
@@ -89,6 +90,32 @@ export default class extends Task {
 		table.lootObtained = mergeLoot(table.lootObtained ?? {}, totalLoot);
 		await table.save();
 
-		await sendLFGMessages(lootString, this.client, data.channels);
+		if (data.users.length === 1) {
+			const channel = Object.keys(lootString)[0];
+			const leader = await this.client.users.fetch(data.userID);
+			const loot = usersWithLoot ? usersWithLoot.find(u => u.user === leader)?.lootedItems : undefined;
+			let image: any = undefined;
+			if (loot !== undefined) {
+				image = await this.client.tasks
+					.get('bankImage')!
+					.generateBankImage(loot.bank, `${data.quantity}x ${lfgQueue.name}`, true, { showNewCL: 1 }, leader);
+			}
+			await handleTripFinish(
+				this.client,
+				leader,
+				channel,
+				lootString[channel],
+				res => {
+					leader.log(`continued trip of ${data.quantity}x ${lfgQueue.name.toLowerCase()}`);
+					res.commandText = 'solo';
+					return this.client.commands.get('solo')!.run(res, [lfgQueue.name]);
+				},
+				!image ? undefined : image!.image ? image!.image : image,
+				data,
+				loot ? loot.bank : null
+			);
+		} else {
+			return sendLFGMessages(lootString, this.client, data.channels);
+		}
 	}
 }

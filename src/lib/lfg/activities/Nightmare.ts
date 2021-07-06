@@ -1,7 +1,7 @@
-import { percentChance } from 'e';
+import { percentChance, Time } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
-import { Activity, Emoji, NIGHTMARE_ID, Time, ZAM_HASTA_CRUSH } from '../../constants';
+import { Activity, Emoji, NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../../constants';
 import { addMonsterXP, calculateMonsterFood } from '../../minions/functions';
 import announceLoot from '../../minions/functions/announceLoot';
 import hasEnoughFoodForMonster from '../../minions/functions/hasEnoughFoodForMonster';
