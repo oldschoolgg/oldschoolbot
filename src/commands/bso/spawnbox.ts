@@ -35,7 +35,7 @@ export default class extends BotCommand {
 			reactChallenge,
 			triviaChallenge
 		]);
-		const winner = await item(msg, false);
+		const winner = await item(msg);
 		if (winner) {
 			const loot = new Bank().add(getRandomMysteryBox());
 			await winner.addItemsToBank(loot);
