@@ -3,16 +3,6 @@ import { join } from 'path';
 
 import { SkillsEnum } from './skilling/types';
 
-export const enum Time {
-	Millisecond = 1,
-	Second = 1000,
-	Minute = 1000 * 60,
-	Hour = 1000 * 60 * 60,
-	Day = 1000 * 60 * 60 * 24,
-	Month = 1000 * 60 * 60 * 24 * 30,
-	Year = 1000 * 60 * 60 * 24 * 365
-}
-
 export const enum Channel {
 	Notifications = '469523207691436042',
 	ErrorLogs = '665678499578904596',
@@ -203,7 +193,8 @@ export const enum Tasks {
 	BlastFurnaceActivity = 'blastFurnaceActivity',
 	MageArena2 = 'mageArena2Activity',
 	BigChompyBirdHunting = 'chompyHuntActivity',
-	DarkAltar = 'darkAltarActivity'
+	DarkAltar = 'darkAltarActivity',
+	TrekkingActivity = 'templeTrekkingActivity'
 }
 
 export enum Activity {
@@ -263,7 +254,8 @@ export enum Activity {
 	BlastFurnace = 'BlastFurnace',
 	MageArena2 = 'MageArena2',
 	BigChompyBirdHunting = 'BigChompyBirdHunting',
-	DarkAltar = 'DarkAltar'
+	DarkAltar = 'DarkAltar',
+	Trekking = 'Trekking'
 }
 
 export enum ActivityGroup {

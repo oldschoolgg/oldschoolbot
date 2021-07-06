@@ -1,7 +1,7 @@
 import { User } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, uniqueArr } from 'e';
+import { calcPercentOfNum, calcWhatPercent, Time, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -15,11 +15,10 @@ import {
 	MAX_TOTAL_LEVEL,
 	PerkTier,
 	skillEmoji,
-	Time,
 	ZALCANO_ID
 } from '../../lib/constants';
 import { onMax } from '../../lib/events';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
+import { hasGracefulEquipped } from '../../lib/gear/util';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
@@ -119,6 +118,8 @@ const suffixes = new SimpleTable<string>()
 	.add(Emoji.PeepoNoob, 1)
 	.add(Emoji.PeepoRanger, 1)
 	.add(Emoji.PeepoSlayer);
+
+const { TzTokJad } = Monsters;
 
 function levelUpSuffix() {
 	return suffixes.roll().item;
@@ -571,6 +572,9 @@ export default class extends Extendable {
 					data.rune
 				)} runes at the Dark Altar. ${formattedDuration}`;
 			}
+			case Activity.Trekking: {
+				return `${this.minionName} is currently Temple Trekking. ${formattedDuration}`;
+			}
 		}
 	}
 
@@ -586,7 +590,8 @@ export default class extends Extendable {
 		const mon = [
 			...killableMonsters,
 			NightmareMonster,
-			{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID }
+			{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID },
+			{ name: 'TzTokJad', aliases: ['jad', 'fightcaves'], id: TzTokJad.id }
 		].find(mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName)));
 		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
 		const creature = Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
@@ -698,7 +703,7 @@ export default class extends Extendable {
 
 		const newXP = Math.min(200_000_000, currentXP + params.amount);
 		const totalXPAdded = newXP - currentXP;
-		const newLevel = convertXPtoLVL(newXP);
+		const newLevel = convertXPtoLVL(Math.floor(newXP));
 
 		if (totalXPAdded > 0) {
 			XPGainsTable.insert({

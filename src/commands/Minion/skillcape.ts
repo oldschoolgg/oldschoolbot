@@ -1,8 +1,8 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
-import { Time } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skillcapes from '../../lib/skilling/skillcapes';
@@ -29,15 +29,17 @@ export default class extends BotCommand {
 
 		await msg.author.settings.sync(true);
 		const GP = msg.author.settings.get(UserSettings.GP);
-		if (GP < skillCapeCost) return msg.send("You don't have enough GP to buy a skill cape.");
+		if (GP < skillCapeCost) return msg.channel.send("You don't have enough GP to buy a skill cape.");
 
 		const capeObject = Skillcapes.find(cape => stringMatches(cape.skill, skillName));
-		if (!capeObject) return msg.send("That's not a valid skill.");
+		if (!capeObject) return msg.channel.send("That's not a valid skill.");
 
 		const levelInSkill = convertXPtoLVL(msg.author.settings.get(`skills.${skillName}`) as number);
 
 		if (levelInSkill < 99) {
-			return msg.send(`Your ${toTitleCase(skillName)} level is less than 99! You can't buy a skill cape, noob.`);
+			return msg.channel.send(
+				`Your ${toTitleCase(skillName)} level is less than 99! You can't buy a skill cape, noob.`
+			);
 		}
 
 		const itemsToPurchase =
@@ -55,14 +57,12 @@ export default class extends BotCommand {
 
 		// Confirm the user wants to buy
 		try {
-			await msg.channel.awaitMessages(
-				_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-				{
-					max: 1,
-					time: Time.Second * 15,
-					errors: ['time']
-				}
-			);
+			await msg.channel.awaitMessages({
+				max: 1,
+				time: Time.Second * 15,
+				errors: ['time'],
+				filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+			});
 		} catch (err) {
 			return sellMsg.edit(`Cancelling purchase of ${toTitleCase(capeObject.skill)} skill cape.`);
 		}
@@ -74,6 +74,6 @@ export default class extends BotCommand {
 			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add('Coins', skillCapeCost).bank
 		);
 
-		return msg.send(`You purchased ${itemString} for ${toKMB(skillCapeCost)}.`);
+		return msg.channel.send(`You purchased ${itemString} for ${toKMB(skillCapeCost)}.`);
 	}
 }

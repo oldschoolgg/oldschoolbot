@@ -103,11 +103,13 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;
 
+		let lootQuantity = quantity;
+
 		if (fish.id === itemID('Raw karambwanji')) {
-			quantity *= 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
+			lootQuantity *= 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
 		}
 		let loot = new Bank({
-			[fish.id]: quantity
+			[fish.id]: lootQuantity
 		});
 
 		// Add clue scrolls

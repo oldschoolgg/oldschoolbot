@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Firemaking from '../../lib/skilling/skills/firemaking';
@@ -37,7 +38,7 @@ export default class extends BotCommand {
 		);
 
 		if (!log) {
-			return msg.send(
+			return msg.channel.send(
 				`That's not a valid log to light. Valid logs are ${Firemaking.Burnables.map(log => log.name).join(
 					', '
 				)}.`
@@ -45,7 +46,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Firemaking) < log.level) {
-			return msg.send(`${msg.author.minionName} needs ${log.level} Firemaking to light ${log.name}.`);
+			return msg.channel.send(`${msg.author.minionName} needs ${log.level} Firemaking to light ${log.name}.`);
 		}
 
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
@@ -57,7 +58,7 @@ export default class extends BotCommand {
 		if (quantity === null) {
 			const amountOfLogsOwned = msg.author.settings.get(UserSettings.Bank)[log.inputLogs];
 			if (!amountOfLogsOwned || amountOfLogsOwned === 0) {
-				return msg.send(`You have no ${log.name}.`);
+				return msg.channel.send(`You have no ${log.name}.`);
 			}
 			quantity = Math.min(Math.floor(maxTripLength / timeToLightSingleLog), amountOfLogsOwned);
 		}
@@ -66,13 +67,13 @@ export default class extends BotCommand {
 		// Multiplying the logs required by the quantity of ashes.
 		const hasRequiredLogs = await msg.author.hasItem(log.inputLogs, quantity);
 		if (!hasRequiredLogs) {
-			return msg.send(`You dont have ${quantity}x ${log.name}.`);
+			return msg.channel.send(`You dont have ${quantity}x ${log.name}.`);
 		}
 
 		const duration = quantity * timeToLightSingleLog;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${log.name}s you can light is ${Math.floor(
@@ -93,7 +94,7 @@ export default class extends BotCommand {
 			type: Activity.Firemaking
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatDuration(
 				duration
 			)} to finish.`

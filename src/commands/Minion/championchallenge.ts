@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { championScrolls } from '../../lib/data/collectionLog';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -26,7 +27,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const bank = msg.author.bank();
 		if (!bank.has(championScrolls)) {
-			return msg.send(
+			return msg.channel.send(
 				"You don't have a set of Champion Scrolls to do the Champion's Challenge! You need 1 of each."
 			);
 		}
@@ -41,7 +42,7 @@ export default class extends BotCommand {
 			minigameID: 'ChampionsChallenge'
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now doing the Champion's Challenge! Removed 1x of every Champion scroll from your bank.`
 		);
 	}

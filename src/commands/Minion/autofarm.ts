@@ -48,6 +48,6 @@ export default class extends BotCommand {
 		if (!toPlant) {
 			return msg.channel.send("There's no Farming crops that you have the requirements to plant.");
 		}
-		return this.client.commands.get('farm')?.run(msg, [toPlant.name]);
+		return this.client.commands.get('farm')?.run(msg, [toPlant.name, true]);
 	}
 }

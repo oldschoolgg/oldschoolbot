@@ -26,9 +26,20 @@ describe('util', () => {
 			[itemID('Tuna')]: 20,
 			[itemID('Shark')]: 28
 		});
-		// Shrimps is not an eatable so it is not used
 		expect(
-			getUserFoodFromBank({ [itemID('Shark')]: 100, [itemID('Lobster')]: 20, [itemID('Shrimps')]: 50 }, 1600)
-		).toStrictEqual({ [itemID('Lobster')]: 20, [itemID('Shark')]: 68 });
+			getUserFoodFromBank(
+				{
+					[itemID('Shark')]: 100,
+					[itemID('Lobster')]: 20,
+					[itemID('Shrimps')]: 50,
+					[itemID('Coal')]: 1
+				},
+				1600
+			)
+		).toStrictEqual({
+			[itemID('Lobster')]: 20,
+			[itemID('Shark')]: 66,
+			[itemID('Shrimps')]: 50
+		});
 	});
 });

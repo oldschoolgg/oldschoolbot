@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GloryChargingActivityTaskOptions } from '../../lib/types/minions';
@@ -47,7 +48,7 @@ export default class extends BotCommand {
 
 		const amountHas = userBank.amount('Amulet of glory');
 		if (amountHas < gloriesInventorySize) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough Amulets of glory to recharge. Your minion does trips of ${gloriesInventorySize}x glories.`
 			);
 		}
@@ -69,7 +70,7 @@ export default class extends BotCommand {
 		const duration = quantity * invDuration;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of inventories of glories you can recharge is ${Math.floor(
@@ -80,7 +81,7 @@ export default class extends BotCommand {
 		const quantityGlories = gloriesInventorySize * quantity;
 
 		if (userBank.amount('Amulet of glory') < quantityGlories) {
-			return msg.send(`You don't have enough ${quantityGlories}x Amulet of glory.`);
+			return msg.channel.send(`You don't have enough ${quantityGlories}x Amulet of glory.`);
 		}
 
 		await addSubTaskToActivityTask<GloryChargingActivityTaskOptions>({
@@ -93,7 +94,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(itemID('Amulet of glory'), quantityGlories);
 
-		return msg.send(
+		return msg.channel.send(
 			`${
 				msg.author.minionName
 			} is now charging ${quantityGlories} Amulets of glory, doing ${gloriesInventorySize} glories in ${quantity} trips, it'll take around ${formatDuration(

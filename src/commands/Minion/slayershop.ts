@@ -1,7 +1,8 @@
+import { MessageAttachment } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { table } from 'table';
 
-import { Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
@@ -37,7 +38,9 @@ export default class extends BotCommand {
 					i.item !== undefined ? 'item/buy' : i.extendMult !== undefined ? 'extend' : 'unlock'
 				])
 			]);
-			return msg.channel.sendFile(Buffer.from(unlockTable), 'slayerRewardsItems.txt');
+			return msg.channel.send({
+				files: [new MessageAttachment(Buffer.from(unlockTable), 'slayerRewardsItems.txt')]
+			});
 		}
 
 		const myUnlocks = await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
@@ -55,7 +58,9 @@ export default class extends BotCommand {
 			`Usage:\n\`${msg.cmdPrefix}slayershop [unlock|lock|buy] Reward\`\nExample:` +
 			`\n\`${msg.cmdPrefix}slayershop unlock Malevolent Masquerade\``;
 		if (defaultMsg.length > 2000) {
-			return msg.channel.sendFile(Buffer.from(defaultMsg.replace(/`/g, '')), 'currentUnlocks.txt');
+			return msg.channel.send({
+				files: [new MessageAttachment(Buffer.from(defaultMsg.replace(/`/g, '')), 'currentUnlocks.txt')]
+			});
 		}
 		return msg.channel.send(defaultMsg);
 	}
@@ -69,7 +74,9 @@ export default class extends BotCommand {
 				['Slayer Points', 'Name', 'Description', 'Type'],
 				...myUnlocks.map(i => [i.slayerPointCost, i.name, i.desc, 'item/buy'])
 			]);
-			return msg.channel.sendFile(Buffer.from(unlockTable), 'slayerRewardsItems.txt');
+			return msg.channel.send({
+				files: [new MessageAttachment(Buffer.from(unlockTable), 'slayerRewardsItems.txt')]
+			});
 		}
 
 		if (buyableName === '') {
@@ -114,14 +121,12 @@ export default class extends BotCommand {
 
 			// Confirm the user wants to buy
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 10,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					max: 1,
+					time: Time.Second * 10,
+					errors: ['time'],
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return sellMsg.edit(`Cancelling purchase of ${toTitleCase(buyable.name)}.`);
 			}
@@ -131,7 +136,7 @@ export default class extends BotCommand {
 
 		await msg.author.addItemsToBank({ [buyable.item!]: 1 }, true);
 
-		return msg.send(`You bought ${toTitleCase(buyable.name)} for ${slayerPointCost} Slayer points.`);
+		return msg.channel.send(`You bought ${toTitleCase(buyable.name)} for ${slayerPointCost} Slayer points.`);
 	}
 
 	async unlock(msg: KlasaMessage, [buyableName = '']: [string]) {
@@ -148,7 +153,9 @@ export default class extends BotCommand {
 					i.extendMult === undefined ? 'unlock' : 'extend'
 				])
 			]);
-			return msg.channel.sendFile(Buffer.from(unlockTable), 'slayerRewardsUnlocks.txt');
+			return msg.channel.send({
+				files: [new MessageAttachment(Buffer.from(unlockTable), 'slayerRewardsUnlocks.txt')]
+			});
 		}
 
 		if (buyableName === '') {
@@ -195,14 +202,12 @@ export default class extends BotCommand {
 
 			// Confirm the user wants to buy
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 10,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					max: 1,
+					time: Time.Second * 10,
+					errors: ['time'],
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return sellMsg.edit(`Cancelling unlock of ${toTitleCase(buyable.name)}.`);
 			}
@@ -212,7 +217,7 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks, buyable.id);
 
-		return msg.send(`You unlocked ${toTitleCase(buyable.name)} for ${slayerPointCost} Slayer points.`);
+		return msg.channel.send(`You unlocked ${toTitleCase(buyable.name)} for ${slayerPointCost} Slayer points.`);
 	}
 
 	async lock(msg: KlasaMessage, [toLockName = '']: [string]) {
@@ -235,11 +240,15 @@ export default class extends BotCommand {
 				['Slayer Points', 'Name', 'Description', 'Type'],
 				...myLocks.map(i => [i.slayerPointCost, i.name, i.desc, i.extendMult === undefined ? 'lock' : 'extend'])
 			]);
-			return msg.channel.sendFile(
-				Buffer.from(lockTable),
-				'slayerRewardsLocks.txt',
-				"I don't recognize that item. Here is a list of unlocks you can re-lock."
-			);
+			return msg.channel.send({
+				files: [
+					new MessageAttachment(
+						Buffer.from(lockTable),
+						'slayerRewardsLocks.txt',
+						"I don't recognize that item. Here is a list of unlocks you can re-lock."
+					)
+				]
+			});
 		}
 
 		await msg.author.settings.sync(true);
@@ -259,14 +268,12 @@ export default class extends BotCommand {
 
 			// Confirm the user wants to buy
 			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 10,
-						errors: ['time']
-					}
-				);
+				await msg.channel.awaitMessages({
+					max: 1,
+					time: Time.Second * 10,
+					errors: ['time'],
+					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
+				});
 			} catch (err) {
 				return sellMsg.edit(`Cancelling lock of ${toTitleCase(buyable.name)}.`);
 			}
@@ -274,6 +281,6 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks, buyable.id);
 
-		return msg.send(`You re-locked ${removeMsg}.`);
+		return msg.channel.send(`You re-locked ${removeMsg}.`);
 	}
 }

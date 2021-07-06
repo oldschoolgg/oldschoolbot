@@ -11,7 +11,7 @@ export function stringMatches(str: string, str2: string) {
 	return cleanString(str) === cleanString(str2);
 }
 
-export default ({ quantity, bossName, limit }: KillWorkerArgs): Bank | string => {
+export default ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs): Bank | string => {
 	const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, bossName)));
 
 	if (osjsMonster) {
@@ -23,7 +23,7 @@ export default ({ quantity, bossName, limit }: KillWorkerArgs): Bank | string =>
 			);
 		}
 
-		return osjsMonster.kill(quantity, {});
+		return osjsMonster.kill(quantity, { inCatacombs: catacombs, onSlayerTask: onTask });
 	}
 
 	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {
