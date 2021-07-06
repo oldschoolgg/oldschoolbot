@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';

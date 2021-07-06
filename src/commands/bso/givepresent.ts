@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { BitField, PerkTier, Time } from '../../lib/constants';
+import { BitField, PerkTier } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 

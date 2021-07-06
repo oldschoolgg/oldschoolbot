@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { BitField, Events, Time } from '../../lib/constants';
+import { BitField, Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';

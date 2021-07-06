@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';

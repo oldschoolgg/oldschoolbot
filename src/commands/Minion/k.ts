@@ -1,10 +1,10 @@
 import { MessageAttachment } from 'discord.js';
-import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round } from 'e';
+import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { GearSetupTypes, GearStat } from '../../lib/gear';
 import {

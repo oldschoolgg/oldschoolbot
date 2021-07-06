@@ -1,12 +1,12 @@
 import { MessageEmbed } from 'discord.js';
-import { randArrItem, shuffleArr } from 'e';
+import { randArrItem, shuffleArr, Time } from 'e';
 import he from 'he';
 import { KlasaMessage, KlasaUser, Monitor, MonitorStore } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 
 import { production } from '../config';
-import { Color, SupportServer, Time } from '../lib/constants';
+import { Color, SupportServer } from '../lib/constants';
 import { getRandomMysteryBox } from '../lib/data/openables';
 import { roll, stringMatches } from '../lib/util';
 

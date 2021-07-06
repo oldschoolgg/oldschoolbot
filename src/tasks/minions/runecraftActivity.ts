@@ -1,8 +1,8 @@
-import { increaseNumByPercent } from 'e';
+import { increaseNumByPercent, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, MIN_LENGTH_FOR_PET, Time } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';

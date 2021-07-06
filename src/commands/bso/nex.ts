@@ -1,8 +1,8 @@
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji, Time } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../lib/minions/types';

@@ -1,9 +1,9 @@
 import { MessageAttachment } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
-import { Time } from '../../lib/constants';
 import Createables from '../../lib/data/createables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';

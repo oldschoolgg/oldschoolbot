@@ -5,7 +5,7 @@ import 'reflect-metadata';
 import * as Sentry from '@sentry/node';
 
 import { botToken, SENTRY_DSN } from './config';
-import { clientOptions } from './lib/config/config';
+import { clientOptions } from './lib/config';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 
 if (SENTRY_DSN) {

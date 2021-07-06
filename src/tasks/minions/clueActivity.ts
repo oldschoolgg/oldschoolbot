@@ -1,8 +1,9 @@
+import { Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Events, Time } from '../../lib/constants';
+import { Events } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { addBanks, addItemToBank, itemID, multiplyBank, rand, roll } from '../../lib/util';

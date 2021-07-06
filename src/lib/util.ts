@@ -1,13 +1,13 @@
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
-import { objectEntries, randInt, shuffleArr } from 'e';
+import { objectEntries, randInt, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
-import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer, Time } from './constants';
+import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
 import { GearSetupTypes } from './gear/types';
 import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';

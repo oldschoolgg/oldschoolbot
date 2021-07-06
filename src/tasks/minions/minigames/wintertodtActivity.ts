@@ -1,7 +1,7 @@
-import { randInt } from 'e';
+import { randInt, Time } from 'e';
 import { Task } from 'klasa';
 
-import { Emoji, Events, Time } from '../../../lib/constants';
+import { Emoji, Events } from '../../../lib/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';

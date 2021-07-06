@@ -1,8 +1,9 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
-import { Channel, Time } from '../../lib/constants';
+import { Channel } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skillcapes, { MasterSkillcapes } from '../../lib/skilling/skillcapes';

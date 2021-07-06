@@ -1,6 +1,6 @@
+import { Time } from 'e';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Time } from './constants';
 import { GearSetupTypes, GearStat } from './gear/types';
 import { GrimyHerbTable } from './minions/data/killableMonsters/custom/Treebeard';
 import { KillableMonster } from './minions/types';

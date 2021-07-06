@@ -1,4 +1,5 @@
 import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
+import { Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -6,7 +7,7 @@ import { toKMB } from 'oldschooljs/dist/util';
 
 import { alching } from '../../commands/Minion/laps';
 import MinionCommand from '../../commands/Minion/minion';
-import { Activity, BitField, COINS_ID, Emoji, PerkTier, Time } from '../constants';
+import { Activity, BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { getRandomMysteryBox } from '../data/openables';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';

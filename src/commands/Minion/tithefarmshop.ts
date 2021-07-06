@@ -1,7 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Time } from '../../lib/constants';
 import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';

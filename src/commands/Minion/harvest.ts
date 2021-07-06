@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { production } from '../../config';
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
 import { FarmingPatchTypes } from '../../lib/minions/farming/types';
