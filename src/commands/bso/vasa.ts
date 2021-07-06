@@ -58,7 +58,7 @@ export default class extends BotCommand {
 				neck: 'Arcane blast necklace'
 			}),
 			gearSetup: GearSetupTypes.Mage,
-			itemCost: async () => new Bank().add('Elder rune', randInt(55, 100)),
+			itemCost: async (_user, baseFood) => baseFood.add('Elder rune', randInt(55, 100)),
 			mostImportantStat: 'attack_magic',
 			food: () => new Bank(),
 			settingsKeys: [ClientSettings.EconomyStats.VasaCost, ClientSettings.EconomyStats.VasaLoot],
