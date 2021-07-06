@@ -189,9 +189,6 @@ export default class extends Task {
 				str += '\nYou received 4x loot from Plopper';
 			}
 
-			const channel = this.client.channels.cache.get(channelID);
-			if (!channelIsSendable(channel)) return;
-
 			handleTripFinish(
 				this.client,
 				user,
@@ -528,7 +525,6 @@ export default class extends Task {
 			if (user.usingPet('Plopper')) {
 				infoStr.push('\nYou received 4x loot from Plopper');
 			}
-			channel.send(infoStr.join('\n'));
 			if (janeMessage) {
 				return channel.send({
 					embeds: [
