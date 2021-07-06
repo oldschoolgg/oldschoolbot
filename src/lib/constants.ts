@@ -440,3 +440,4 @@ export const skillEmoji = {
 export const LEVEL_99_XP = 13_034_431;
 export const MAX_LEVEL = 99;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
+export const SILENT_ERROR = 'SILENT_ERROR';
