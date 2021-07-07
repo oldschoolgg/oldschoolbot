@@ -14,7 +14,7 @@ import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, bankHasItem, channelIsSendable, multiplyBank, rand, roll } from '../../lib/util';
+import { addItemToBank, bankHasItem, multiplyBank, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
@@ -519,24 +519,11 @@ export default class extends Task {
 				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(loot).bank
 			);
 			await user.addItemsToBank(loot, true);
-			const channel = this.client.channels.cache.get(channelID);
-			if (!channelIsSendable(channel)) return;
 
 			if (user.usingPet('Plopper')) {
 				infoStr.push('\nYou received 4x loot from Plopper');
 			}
-			if (janeMessage) {
-				return channel.send({
-					files: [
-						await chatHeadImage({
-							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
-								contractsCompleted + 1
-							} farming contracts.`,
-							head: 'jane'
-						})
-					]
-				});
-			}
+
 			handleTripFinish(
 				this.client,
 				user,
@@ -548,7 +535,14 @@ export default class extends Task {
 							return this.client.commands.get('autofarm')!.run(res, []);
 					  }
 					: undefined,
-				undefined,
+				janeMessage
+					? await chatHeadImage({
+							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+								contractsCompleted + 1
+							} farming contracts.`,
+							head: 'jane'
+					  })
+					: undefined,
 				data,
 				null
 			);

@@ -2565,10 +2565,10 @@ fastify-error@^0.3.0:
   resolved "https://registry.yarnpkg.com/fastify-error/-/fastify-error-0.3.0.tgz#08866323d521156375a8be7c7fcaf98df946fafb"
   integrity sha512-Jm2LMTB5rsJqlS1+cmgqqM9tTs0UrlgYR7TvDT3ZgXsUI5ib1NjQlqZHf+tDK5tVPdFGwyq02wAoJtyYIRSiFA==
 
-fastify-helmet@^5.3.1:
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/fastify-helmet/-/fastify-helmet-5.3.1.tgz#ff1d9bcd05bd0518cb57e57e91ccf25f101bddea"
-  integrity sha512-VXxsqfG+ay/zd2it4WKsJYpToAcmGjARdKt7+6OcrTF1C/3Bhx5ReM4BCq2GbQoU/2Mh2l0tF49djNjlUEogQQ==
+fastify-helmet@^5.3.2:
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/fastify-helmet/-/fastify-helmet-5.3.2.tgz#eda259b8a9ad5ccc6dacc1b7ed358c03f59a7f7f"
+  integrity sha512-X9lKZa7wjvMe79eUP0Fo+3GMMmbxKC92ddJGdmSIEZxn0JwSw+Fw5mlOiM9RABRQGphdLDSHIL/29ywH7GUusQ==
   dependencies:
     fastify-plugin "^3.0.0"
     helmet "^4.0.0"
@@ -4038,7 +4038,7 @@ klasa-decorators@^0.0.1:
 
 "klasa@github:gc/klasa#settings":
   version "0.5.0-dev"
-  resolved "https://codeload.github.com/gc/klasa/tar.gz/3d025a7402fc2a4e9d127a67e524ae238def8d7b"
+  resolved "https://codeload.github.com/gc/klasa/tar.gz/c83cc29f7e12f5910a54490ce9052839bf9c2e93"
   dependencies:
     "@klasa/querybuilder" "^0.0.1"
     "@klasa/settings-gateway" "^0.0.10"
