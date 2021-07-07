@@ -13,7 +13,7 @@ import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: TemporossActivityTaskOptions) {
-		const { userID, channelID, quantity, rewardBoost } = data;
+		const { userID, channelID, quantity, rewardBoost, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		const channel = await this.client.channels.fetch(channelID);
@@ -24,7 +24,7 @@ export default class extends Task {
 			rewardTokens = Math.ceil(increaseNumByPercent(rewardTokens, rewardBoost));
 		}
 
-		loot = getTemporossLoot(rewardTokens, currentLevel).bank;
+		loot = getTemporossLoot(rewardTokens, currentLevel, user.bank()).bank;
 
 		if (bankHasItem(loot, itemID('Tiny tempor'))) {
 			this.client.emit(
@@ -61,19 +61,20 @@ export default class extends Task {
 			}
 		}
 
-		const xpStr = await user.addXP({ skillName: SkillsEnum.Fishing, amount: fXPtoGive });
+		const xpStr = await user.addXP({ skillName: SkillsEnum.Fishing, amount: fXPtoGive, duration });
 
-		await user.addItemsToBank(loot, true);
+		const { previousCL } = await user.addItemsToBank(loot, true);
 		user.incrementMinigameScore('Tempoross', quantity);
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
 			loot,
-			'',
+			`${rewardTokens} reward pool rolls`,
 			true,
 			{
 				showNewCL: 1
 			},
-			user
+			user,
+			previousCL
 		);
 
 		if (!channelIsSendable(channel)) return;
