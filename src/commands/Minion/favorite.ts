@@ -24,7 +24,7 @@ export default class extends BotCommand {
 
 		const currentFavorites = msg.author.settings.get(UserSettings.FavoriteItems);
 
-		if (!items) {
+		if (!items || items.length === 0) {
 			const currentFavorites = msg.author.settings.get(UserSettings.FavoriteItems);
 			if (currentFavorites.length === 0) {
 				return msg.channel.send('You have no favorited items.');
