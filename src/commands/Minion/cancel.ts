@@ -33,6 +33,10 @@ export default class extends BotCommand {
 			);
 		}
 
+		if ((currentTask as any).users && currentTask.users.length > 1) {
+			return msg.channel.send('Your minion is on a group activity and cannot cancel!');
+		}
+
 		if (currentTask.type === Activity.GroupMonsterKilling || currentTask.type === Activity.Dungeoneering) {
 			return msg.channel.send(
 				`${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`
