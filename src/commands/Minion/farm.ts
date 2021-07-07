@@ -30,7 +30,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[quantity:int{1}|name:...string] [plantName:...string] [autoFarmed:...boolean]',
+			usage: '[quantity:int{1}|name:...string] [plantName:...string] [autoFarmed:boolean]',
 			aliases: ['plant'],
 			usageDelim: ' ',
 			description: 'Allows a player to plant or harvest and replant seeds for farming.',
