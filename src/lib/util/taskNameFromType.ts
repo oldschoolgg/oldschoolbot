@@ -118,5 +118,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.DarkAltar;
 		case Activity.Trekking:
 			return Tasks.TrekkingActivity;
+		case Activity.Revenants:
+			return Tasks.RevenantsActivity;
 	}
 }

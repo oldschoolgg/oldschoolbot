@@ -60,6 +60,10 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	burstOrBarrage?: number;
 }
 
+export interface RevenantOptions extends ActivityTaskOptions {
+	monsterID: number;
+	quantity: number;
+}
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	clueID: number;
 	quantity: number;
