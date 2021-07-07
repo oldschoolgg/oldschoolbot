@@ -455,7 +455,7 @@ export default class extends Task {
 
 			if (janeMessage) {
 				return channel.send({
-					embeds: [
+					files: [
 						await chatHeadImage({
 							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
 								contractsCompleted + 1
