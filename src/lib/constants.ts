@@ -464,3 +464,4 @@ export const skillEmoji = {
 export const LEVEL_120_XP = convertLVLtoXP(120);
 export const MAX_LEVEL = 120;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
+export const SILENT_ERROR = 'SILENT_ERROR';
