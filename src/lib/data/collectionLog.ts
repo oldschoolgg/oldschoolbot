@@ -129,6 +129,16 @@ const wintertodtLog = resolveItems([
 	'Dragon axe'
 ]);
 
+const temporossLog = resolveItems([
+	'Soaked page',
+	'Fish barrel',
+	'Tackle box',
+	'Big harpoonfish',
+	'Tome of water (empty)',
+	'Tiny tempor',
+	'Dragon harpoon'
+]);
+
 const barbAssaultLog = resolveItems([
 	'Pet penance queen',
 	'Fighter torso',
@@ -370,6 +380,7 @@ export const bosses: CollectionLogData = {
 	Nightmare: nightmareLog,
 	Zalcano: zalcanoLog,
 	Wintertodt: wintertodtLog,
+	Tempoross: temporossLog,
 	Cox1: resolveItems([
 		'Dexterous prayer scroll',
 		'Torn prayer scroll',
@@ -1533,6 +1544,10 @@ export const wintertodt: CollectionLogData = {
 	'': wintertodtLog
 };
 
+export const tempoross: CollectionLogData = {
+	'': temporossLog
+};
+
 const infinityItems = resolveItems([
 	'Infinity hat',
 	'Infinity top',
@@ -1815,7 +1830,7 @@ export const skillingLog: CollectionLogData = {
 		'Golden nugget',
 		'Unidentified minerals'
 	]),
-	Fishing: resolveItems(['Heron', 'Big swordfish', 'Big shark', 'Big bass']),
+	Fishing: resolveItems(['Heron', 'Big swordfish', 'Big shark', 'Big bass']).concat(temporossLog),
 	AerialFishing: Object.values(aerialFishing).flat(Infinity) as number[],
 	Firemaking: wintertodtLog,
 	Farming: [...resolveItems(['Tangleroot', 'Bottomless compost bucket']), ...farmersOutfit],
@@ -1941,6 +1956,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Wintertodt',
 		aliases: ['todt', 'wintertodt', 'wt'],
 		items: wintertodt
+	},
+	{
+		name: 'Tempoross',
+		aliases: ['temp', 'ross', 'tempo'],
+		items: tempoross
 	},
 	{
 		name: 'Misc',
