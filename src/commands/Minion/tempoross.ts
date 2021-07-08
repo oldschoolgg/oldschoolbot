@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { calcWhatPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
@@ -34,7 +34,7 @@ export default class extends BotCommand {
 
 		const messages = [];
 
-		let durationPerRoss = Time.Minute * 12;
+		let durationPerRoss = Time.Minute * 15;
 
 		let rewardBoost = 0;
 
@@ -43,15 +43,24 @@ export default class extends BotCommand {
 		if (fBoost > 1) messages.push(`${fBoost.toFixed(2)}% boost for Fishing level`);
 		durationPerRoss = reduceNumByPercent(durationPerRoss, fBoost);
 
-		if (user.hasItemEquippedOrInBank('Crystal harpoon')) {
+		const kc = await msg.author.getMinigameScore('Tempoross');
+		const kcLearned = Math.min(100, calcWhatPercent(kc, 100));
+
+		if (kcLearned > 0) {
+			const percentReduced = kcLearned / 10;
+			messages.push(`${percentReduced.toFixed(2)}% boost for KC`);
+			durationPerRoss = reduceNumByPercent(durationPerRoss, percentReduced);
+		}
+
+		if (user.getGear('skilling').hasEquipped('Crystal harpoon') && fLevel >= 71) {
 			messages.push('30% boost for Crystal harpoon');
 			durationPerRoss = reduceNumByPercent(durationPerRoss, 30);
-		} else if (user.hasItemEquippedOrInBank('Infernal harpoon')) {
+		} else if (user.getGear('skilling').hasEquipped('Infernal harpoon') && fLevel >= 75) {
 			messages.push('10% boost for Infernal harpoon');
 			durationPerRoss = reduceNumByPercent(durationPerRoss, 10);
-			messages.push('50% more item rewards for Infernal harpoon');
-			rewardBoost = 50;
-		} else if (user.hasItemEquippedOrInBank('Dragon harpoon')) {
+			messages.push('100% more item rewards for Infernal harpoon');
+			rewardBoost = 100;
+		} else if (user.getGear('skilling').hasEquipped('Dragon harpoon') && fLevel >= 61) {
 			messages.push('10% boost for Dragon harpoon');
 			durationPerRoss = reduceNumByPercent(durationPerRoss, 10);
 		}

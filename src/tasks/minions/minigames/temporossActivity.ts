@@ -37,7 +37,7 @@ export default class extends Task {
 			);
 		}
 
-		let fXPtoGive = quantity * 12250;
+		let fXPtoGive = quantity * 5500 * (currentLevel / 40);
 		let fBonusXP = 0;
 
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
