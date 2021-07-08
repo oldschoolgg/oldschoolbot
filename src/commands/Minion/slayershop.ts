@@ -1,5 +1,4 @@
 import { MessageAttachment } from 'discord.js';
-import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { table } from 'table';
 
@@ -114,23 +113,7 @@ export default class extends BotCommand {
 
 		let purchaseMsg = `1x ${buyable.name} for ${slayerPointCost} Slayer points`;
 
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const sellMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to confirm that you want to buy ${purchaseMsg}.`
-			);
-
-			// Confirm the user wants to buy
-			try {
-				await msg.channel.awaitMessages({
-					max: 1,
-					time: Time.Second * 10,
-					errors: ['time'],
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-				});
-			} catch (err) {
-				return sellMsg.edit(`Cancelling purchase of ${toTitleCase(buyable.name)}.`);
-			}
-		}
+		await msg.confirm(`${msg.author}, please confirm that you want to buy ${purchaseMsg}.`);
 
 		await msg.author.settings.update(UserSettings.Slayer.SlayerPoints, curSlayerPoints - slayerPointCost);
 
@@ -195,23 +178,7 @@ export default class extends BotCommand {
 
 		let purchaseMsg = `${buyable.name} for ${slayerPointCost} Slayer points`;
 
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const sellMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to confirm that you want to unlock ${purchaseMsg}.`
-			);
-
-			// Confirm the user wants to buy
-			try {
-				await msg.channel.awaitMessages({
-					max: 1,
-					time: Time.Second * 10,
-					errors: ['time'],
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-				});
-			} catch (err) {
-				return sellMsg.edit(`Cancelling unlock of ${toTitleCase(buyable.name)}.`);
-			}
-		}
+		await msg.confirm(`${msg.author}, please confirm that you want to unlock ${purchaseMsg}.`);
 
 		await msg.author.settings.update(UserSettings.Slayer.SlayerPoints, curSlayerPoints - slayerPointCost);
 
@@ -261,23 +228,7 @@ export default class extends BotCommand {
 			`${buyable.name}. You will have to spend another ${buyable.slayerPointCost} ` +
 			'to unlock it again if you change your mind.';
 
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const sellMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to confirm that you want to **lock** ${removeMsg}.`
-			);
-
-			// Confirm the user wants to buy
-			try {
-				await msg.channel.awaitMessages({
-					max: 1,
-					time: Time.Second * 10,
-					errors: ['time'],
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-				});
-			} catch (err) {
-				return sellMsg.edit(`Cancelling lock of ${toTitleCase(buyable.name)}.`);
-			}
-		}
+		await msg.confirm(`${msg.author}, please confirm that you want to **lock** ${removeMsg}.`);
 
 		await msg.author.settings.update(UserSettings.Slayer.SlayerUnlocks, buyable.id);
 

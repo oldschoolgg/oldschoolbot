@@ -1,5 +1,4 @@
 import { MessageAttachment } from 'discord.js';
-import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
@@ -113,7 +112,7 @@ export default class extends BotCommand {
 		const itemString = new Bank(outItems).toString();
 
 		// Start building a string to show to the user.
-		let str = `${msg.author}, say \`confirm\` to confirm that you want to buy **${itemString}** for: `;
+		let str = `${msg.author}, please confirm that you want to buy **${itemString}** for: `;
 
 		// If theres an item cost or GP cost, add it to the string to show users the cost.
 		if (buyable.itemCost) {
@@ -125,20 +124,7 @@ export default class extends BotCommand {
 			str += `${totalGPCost.toLocaleString()} GP.`;
 		}
 
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const sellMsg = await msg.channel.send(str);
-
-			try {
-				await msg.channel.awaitMessages({
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					max: 1,
-					time: Time.Second * 15,
-					errors: ['time']
-				});
-			} catch (err) {
-				return sellMsg.edit('Cancelling purchase.');
-			}
-		}
+		await msg.confirm(str);
 
 		const econBankChanges = new Bank();
 

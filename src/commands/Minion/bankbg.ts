@@ -1,4 +1,3 @@
-import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -136,7 +135,7 @@ export default class extends BotCommand {
 			}
 
 			// Start building a string to show to the user.
-			let str = `${msg.author}, say \`confirm\` to confirm that you want to buy the **${selectedImage.name}** bank background for: `;
+			let str = `${msg.author}, please confirm that you want to buy the **${selectedImage.name}** bank background for: `;
 
 			// If theres an item cost or GP cost, add it to the string to show users the cost.
 			if (selectedImage.itemCost) {
@@ -151,19 +150,7 @@ export default class extends BotCommand {
 			str +=
 				" **Note:** You'll have to pay this cost again if you switch to another background and want this one again.";
 
-			const confirmMsg = await msg.channel.send(str);
-
-			// Confirm the user wants to buy the bg
-			try {
-				await msg.channel.awaitMessages({
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					max: 1,
-					time: Time.Second * 15,
-					errors: ['time']
-				});
-			} catch (err) {
-				return confirmMsg.edit('Cancelling purchase.');
-			}
+			await msg.confirm(str);
 
 			if (selectedImage.itemCost) {
 				await msg.author.settings.update(

@@ -6,12 +6,6 @@ import { cancelTask, getActivityOfUser } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { NightmareActivityTaskOptions, RaidsOptions } from './../../lib/types/minions';
 
-const options = {
-	max: 1,
-	time: 10000,
-	errors: ['time']
-};
-
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -69,21 +63,10 @@ export default class extends BotCommand {
 			}
 		}
 
-		const cancelMsg = await msg.channel.send(
-			`${msg.author} ${msg.author.minionStatus}\n Say \`confirm\` if you want to call your minion back from their trip. ` +
+		await msg.confirm(
+			`${msg.author} ${msg.author.minionStatus}\n Please confirm if you want to call your minion back from their trip. ` +
 				"They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any."
 		);
-
-		if (!msg.flagArgs.cf) {
-			try {
-				await msg.channel.awaitMessages({
-					...options,
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-				});
-			} catch (err) {
-				return cancelMsg.edit('Halting cancellation of minion task.');
-			}
-		}
 
 		await cancelTask(msg.author.id);
 
