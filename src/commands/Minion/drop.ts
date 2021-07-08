@@ -4,12 +4,6 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
-const options = {
-	max: 1,
-	time: 10000,
-	errors: ['time']
-};
-
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -40,20 +34,9 @@ export default class extends BotCommand {
 			return msg.channel.send(`You dont have ${quantity}x ${osItem.name}.`);
 		}
 
-		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-			const dropMsg = await msg.channel.send(
-				`${msg.author}, are you sure you want to drop ${quantity}x ${osItem.name}? This is irreversible, and you will lose the items permanently. Type \`drop\` to confirm.`
-			);
-
-			try {
-				await msg.channel.awaitMessages({
-					...options,
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'drop'
-				});
-			} catch (err) {
-				return dropMsg.edit(`Cancelling drop of ${quantity}x ${osItem.name}.`);
-			}
-		}
+		await msg.confirm(
+			`${msg.author}, are you sure you want to drop ${quantity}x ${osItem.name}? This is irreversible, and you will lose the items permanently.`
+		);
 
 		await msg.author.removeItemFromBank(osItem.id, quantity);
 
