@@ -136,7 +136,11 @@ const temporossLog = resolveItems([
 	'Big harpoonfish',
 	'Tome of water (empty)',
 	'Tiny tempor',
-	'Dragon harpoon'
+	'Dragon harpoon',
+	'Spirit angler headband',
+	'Spirit angler top',
+	'Spirit angler waders',
+	'Spirit angler boots'
 ]);
 
 const barbAssaultLog = resolveItems([
