@@ -5,12 +5,6 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 
-const options = {
-	max: 1,
-	time: 10_000,
-	errors: ['time']
-};
-
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -28,24 +22,13 @@ export default class extends BotCommand {
 		if (msg.author.isIronman) return msg.channel.send("Iron players can't sell items.");
 		totalPrice = Math.floor(totalPrice * 0.8);
 
-		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-			const sellMsg = await msg.channel.send(
-				`${
-					msg.author
-				}, say \`confirm\` to sell ${bankToSell} for **${totalPrice.toLocaleString()}** (${Util.toKMB(
-					totalPrice
-				)}).`
-			);
-
-			try {
-				await msg.channel.awaitMessages({
-					...options,
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-				});
-			} catch (err) {
-				return sellMsg.edit('Cancelling sale.');
-			}
-		}
+		await msg.confirm(
+			`${
+				msg.author
+			}, please confirm you want to sell ${bankToSell} for **${totalPrice.toLocaleString()}** (${Util.toKMB(
+				totalPrice
+			)}).`
+		);
 
 		const tax = Math.ceil((totalPrice / 0.8) * 0.2);
 

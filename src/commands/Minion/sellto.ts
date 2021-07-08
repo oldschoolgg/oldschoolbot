@@ -65,7 +65,7 @@ export default class extends BotCommand {
 	async sell(msg: KlasaMessage, buyerMember: GuildMember, price: number, [bankToSell, totalPrice]: [Bank, number]) {
 		const bankStr = bankToSell.toString();
 
-		let sellStr = `${msg.author}, say \`confirm\` to confirm that you want to sell ${bankStr} to \`${
+		let sellStr = `${msg.author}, please confirm that you want to sell ${bankStr} to \`${
 			buyerMember.user.username
 		}#${buyerMember.user.discriminator}\` for a *total* of ${price.toLocaleString()} GP.`;
 
@@ -75,19 +75,7 @@ export default class extends BotCommand {
 			sellStr += `\n\nWarning: The bot would pay you more (${botPays.toLocaleString()} GP) for these items than you are selling them for!`;
 		}
 
-		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-			const sellMsg = await msg.channel.send(sellStr);
-
-			// Confirm the seller wants to sell
-			try {
-				await msg.channel.awaitMessages({
-					...options,
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-				});
-			} catch (err) {
-				return sellMsg.edit(`Cancelling sale of ${bankToSell}.`);
-			}
-		}
+		await msg.confirm(sellStr);
 
 		// Confirm the buyer wants to buy
 		const buyerConfirmationMsg = await msg.channel.send(
