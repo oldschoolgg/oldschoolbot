@@ -19,7 +19,7 @@ export default class extends Task {
 		const channel = await this.client.channels.fetch(channelID);
 
 		let loot: ItemBank = {};
-		let rewardTokens = quantity * 10;
+		let rewardTokens = quantity * 6;
 		if (rewardBoost > 0) {
 			rewardTokens = Math.ceil(increaseNumByPercent(rewardTokens, rewardBoost));
 		}

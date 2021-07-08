@@ -130,17 +130,17 @@ const wintertodtLog = resolveItems([
 ]);
 
 const temporossLog = resolveItems([
+	'Spirit angler headband',
+	'Spirit angler top',
+	'Spirit angler waders',
+	'Spirit angler boots',
 	'Soaked page',
 	'Fish barrel',
 	'Tackle box',
 	'Big harpoonfish',
 	'Tome of water (empty)',
 	'Tiny tempor',
-	'Dragon harpoon',
-	'Spirit angler headband',
-	'Spirit angler top',
-	'Spirit angler waders',
-	'Spirit angler boots'
+	'Dragon harpoon'
 ]);
 
 const barbAssaultLog = resolveItems([
@@ -1834,8 +1834,9 @@ export const skillingLog: CollectionLogData = {
 		'Golden nugget',
 		'Unidentified minerals'
 	]),
-	Fishing: resolveItems(['Heron', 'Big swordfish', 'Big shark', 'Big bass']).concat(temporossLog),
+	Fishing: resolveItems(['Heron', 'Big swordfish', 'Big shark', 'Big bass']),
 	AerialFishing: Object.values(aerialFishing).flat(Infinity) as number[],
+	Tempoross: Object.values(temporossLog).flat(Infinity) as number[],
 	Firemaking: wintertodtLog,
 	Farming: [...resolveItems(['Tangleroot', 'Bottomless compost bucket']), ...farmersOutfit],
 	Plunder: resolveItems(['Rocky', "Pharaoh's sceptre (3)"]),
