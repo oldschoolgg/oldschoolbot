@@ -11,7 +11,7 @@ FROM xp_gains
 INNER JOIN "new_users" "new_user" ON xp_gains.user_id = "new_user"."id"
 WHERE date > ('2021-07-10 07:00:00'::timestamp)
 AND date < ('2021-07-17 07:00:00'::timestamp)
-AND skill = 'construction'
+AND skill = 'runecraft'
 GROUP BY "new_user".username
 ORDER BY total_xp DESC
 LIMIT 15;`
