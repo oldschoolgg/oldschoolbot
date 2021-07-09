@@ -76,6 +76,8 @@ export default class extends BotCommand {
 			maxTripLength = Time.Hour;
 		}
 
+		const quantitySpecified = quantity !== null;
+
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
@@ -126,7 +128,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Smithing
+			type: Activity.Smithing,
+			quantitySpecified
 		});
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 

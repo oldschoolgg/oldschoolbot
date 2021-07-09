@@ -192,6 +192,7 @@ export default class extends BotCommand {
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Hunter);
+		const quantitySpecified = quantity !== null;
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -281,7 +282,8 @@ export default class extends BotCommand {
 			duration,
 			usingHuntPotion,
 			wildyPeak,
-			type: Activity.Hunter
+			type: Activity.Hunter,
+			quantitySpecified
 		});
 
 		let response = `${msg.author.minionName} is now ${creature.huntTechnique} ${quantity}x ${

@@ -54,6 +54,7 @@ export default class extends BotCommand {
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Burying);
 
+		const quantitySpecified = quantity !== null;
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			const amountOfBonesOwned = msg.author.settings.get(UserSettings.Bank)[bone.inputId];
@@ -87,7 +88,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Burying
+			type: Activity.Burying,
+			quantitySpecified
 		});
 
 		return msg.channel.send(

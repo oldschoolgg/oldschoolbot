@@ -101,7 +101,7 @@ export default class extends BotCommand {
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Collecting);
-
+		const quantitySpecified = quantity !== null;
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / collectable.duration);
 		}
@@ -134,7 +134,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Collecting
+			type: Activity.Collecting,
+			quantitySpecified
 		});
 
 		return msg.channel.send(

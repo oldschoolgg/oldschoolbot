@@ -19,7 +19,17 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
-		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
+		const {
+			monsterID,
+			userID,
+			channelID,
+			quantity,
+			duration,
+			usingCannon,
+			cannonMulti,
+			burstOrBarrage,
+			quantitySpecified
+		} = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		await user.incrementMonsterScore(monsterID, quantity);
@@ -150,7 +160,9 @@ export default class extends Task {
 						if (usingCannon) method = 'cannon';
 						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
 						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
-						return this.client.commands.get('k')!.run(res, [quantity, monster.name, method]);
+						return this.client.commands
+							.get('k')!
+							.run(res, [quantitySpecified ? quantity : null, monster.name, method]);
 				  },
 			image!,
 			data,

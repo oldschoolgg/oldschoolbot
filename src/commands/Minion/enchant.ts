@@ -77,7 +77,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.bank();
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Enchanting);
-
+		const quantitySpecified = quantity !== null;
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToEnchantTen);
 			const spellRunes = determineRunes(msg.author, enchantable.input.clone());
@@ -118,7 +118,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Enchanting
+			type: Activity.Enchanting,
+			quantitySpecified
 		});
 
 		const xpHr = `${Math.round(

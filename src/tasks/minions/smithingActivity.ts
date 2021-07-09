@@ -8,7 +8,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: SmithingActivityTaskOptions) {
-		const { smithedBarID, quantity, userID, channelID, duration } = data;
+		const { smithedBarID, quantity, userID, channelID, duration, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 
 		const smithedItem = Smithing.SmithableItems.find(item => item.id === smithedBarID)!;
@@ -35,7 +35,9 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x  ${smithedItem.name}[${smithedItem.id}]`);
-				return this.client.commands.get('smith')!.run(res, [quantity, smithedItem.name]);
+				return this.client.commands
+					.get('smith')!
+					.run(res, [quantitySpecified ? quantity : null, smithedItem.name]);
 			},
 			undefined,
 			data,

@@ -12,7 +12,7 @@ import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: FishingActivityTaskOptions) {
-		let { fishID, quantity, userID, channelID, duration } = data;
+		let { fishID, quantity, userID, channelID, duration, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 
@@ -163,7 +163,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${fish.name}[${fish.id}]`);
-				return this.client.commands.get('fish')!.run(res, [quantity, fish.name]);
+				return this.client.commands.get('fish')!.run(res, [quantitySpecified ? quantity : null, fish.name]);
 			},
 			undefined,
 			data,

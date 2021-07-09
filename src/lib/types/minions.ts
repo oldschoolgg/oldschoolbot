@@ -11,6 +11,7 @@ export interface ActivityTaskOptions {
 	id: string;
 	finishDate: number;
 	channelID: string;
+	quantitySpecified?: boolean;
 }
 
 export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {

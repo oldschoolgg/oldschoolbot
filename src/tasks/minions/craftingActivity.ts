@@ -9,7 +9,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: CraftingActivityTaskOptions) {
-		const { craftableID, quantity, userID, channelID } = data;
+		const { craftableID, quantity, userID, channelID, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Crafting);
 		const item = Craftables.find(craft => craft.id === craftableID)!;
@@ -45,7 +45,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${item.name}`);
-				return this.client.commands.get('craft')!.run(res, [quantity, item.name]);
+				return this.client.commands.get('craft')!.run(res, [quantitySpecified ? quantity : null, item.name]);
 			},
 			undefined,
 			data,

@@ -38,7 +38,8 @@ const riskDeathNumbers = [
 
 export default class extends Task {
 	async run(data: HunterActivityTaskOptions) {
-		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration } = data;
+		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, quantitySpecified } =
+			data;
 		const user = await this.client.users.fetch(userID);
 		const userBank = user.bank();
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
@@ -194,7 +195,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${creatureName}[${creatureName}]`);
-				return this.client.commands.get('hunt')!.run(res, [quantity, creatureName]);
+				return this.client.commands.get('hunt')!.run(res, [quantitySpecified ? quantity : null, creatureName]);
 			},
 			undefined,
 			data,

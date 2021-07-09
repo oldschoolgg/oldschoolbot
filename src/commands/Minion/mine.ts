@@ -150,6 +150,7 @@ export default class extends BotCommand {
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Mining);
+		const quantitySpecified = quantity !== null;
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -173,7 +174,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Mining
+			type: Activity.Mining,
+			quantitySpecified
 		});
 
 		let response = `${msg.author.minionName} is now mining ${quantity}x ${

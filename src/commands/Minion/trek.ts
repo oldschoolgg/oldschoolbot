@@ -29,7 +29,7 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity, difficulty = 'easy']: [null | number | string, string]) {
+	async run(msg: KlasaMessage, [quantity = null, difficulty = 'easy']: [null | number | string, string]) {
 		if (typeof quantity === 'string') {
 			difficulty = quantity;
 			quantity = null;
@@ -157,8 +157,9 @@ export default class extends BotCommand {
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Trekking);
+		const quantitySpecified = quantity !== null;
 
-		if (quantity === undefined || quantity === null) {
+		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / tripTime);
 		}
 
@@ -181,7 +182,8 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Trekking,
 			channelID: msg.channel.id,
-			minigameID: 'TempleTrekking'
+			minigameID: 'TempleTrekking',
+			quantitySpecified
 		});
 
 		let str = `${

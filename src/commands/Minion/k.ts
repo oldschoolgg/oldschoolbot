@@ -251,6 +251,7 @@ export default class extends BotCommand {
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
+		const quantitySpecified = quantity !== null;
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -398,7 +399,8 @@ export default class extends BotCommand {
 			type: Activity.MonsterKilling,
 			usingCannon,
 			cannonMulti,
-			burstOrBarrage
+			burstOrBarrage,
+			quantitySpecified
 		});
 		let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 			duration

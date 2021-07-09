@@ -8,7 +8,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: OfferingActivityTaskOptions) {
-		const { boneID, quantity, userID, channelID } = data;
+		const { boneID, quantity, userID, channelID, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 
@@ -59,7 +59,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
-				return this.client.commands.get('offer')!.run(res, [quantity, bone.name]);
+				return this.client.commands.get('offer')!.run(res, [quantitySpecified ? quantity : null, bone.name]);
 			},
 			undefined,
 			data,

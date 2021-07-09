@@ -96,7 +96,7 @@ export default class extends BotCommand {
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Fishing);
-
+		let quantitySpecified = quantity !== null;
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / scaledTimePerFish);
 		}
@@ -134,7 +134,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Fishing
+			type: Activity.Fishing,
+			quantitySpecified
 		});
 
 		let response = `${msg.author.minionName} is now fishing ${quantity}x ${

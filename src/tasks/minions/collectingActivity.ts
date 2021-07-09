@@ -11,7 +11,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: CollectingOptions) {
-		let { collectableID, quantity, userID, channelID, duration } = data;
+		let { collectableID, quantity, userID, channelID, duration, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 		const collectable = collectables.find(c => c.item.id === collectableID)!;
 		let colQuantity = collectable.quantity;
@@ -44,7 +44,9 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of collecting ${collectable.item.name}`);
-				return this.client.commands.get('collect')!.run(res, [quantity, collectable.item.name]);
+				return this.client.commands
+					.get('collect')!
+					.run(res, [quantitySpecified ? quantity : null, collectable.item.name]);
 			},
 			undefined,
 			data,

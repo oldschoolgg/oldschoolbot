@@ -60,6 +60,7 @@ export default class extends BotCommand {
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Sawmill);
+		const quantitySpecified = quantity !== null;
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timePerPlank);
@@ -111,7 +112,8 @@ export default class extends BotCommand {
 			plankID: plank!.outputItem,
 			plankQuantity: quantity,
 			userID: msg.author.id,
-			channelID: msg.channel.id
+			channelID: msg.channel.id,
+			quantitySpecified
 		});
 
 		let response = `${msg.author.minionName} is now creating ${quantity} ${itemNameFromID(plank.outputItem)}${

@@ -82,6 +82,7 @@ export default class extends BotCommand {
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Construction);
 
+		const quantitySpecified = quantity !== null;
 		// If no quantity provided, set it to the max the player can make by either the items in bank or time.
 		if (quantity === null) {
 			const maxForMaterials = planksHas / planksQtyCost;
@@ -132,7 +133,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Construction
+			type: Activity.Construction,
+			quantitySpecified
 		});
 
 		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;

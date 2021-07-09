@@ -66,6 +66,8 @@ export default class extends BotCommand {
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Casting);
 
+		const quantitySpecified = quantity !== null;
+
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToEnchantTen);
 			const spellRunes = determineRunes(msg.author, spell.input.clone());
@@ -116,7 +118,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Casting
+			type: Activity.Casting,
+			quantitySpecified
 		});
 
 		const magicXpHr = `${Math.round(

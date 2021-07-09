@@ -7,7 +7,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: EnchantingActivityTaskOptions) {
-		let { itemID, quantity, userID, channelID, duration } = data;
+		let { itemID, quantity, userID, channelID, duration, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 
 		const enchantable = Enchantables.find(fletchable => fletchable.id === itemID)!;
@@ -31,7 +31,9 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${enchantable.name}[${enchantable.id}]`);
-				return this.client.commands.get('enchant')!.run(res, [quantity, enchantable.name]);
+				return this.client.commands
+					.get('enchant')!
+					.run(res, [quantitySpecified ? quantity : null, enchantable.name]);
 			},
 			undefined,
 			data,

@@ -15,7 +15,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: AgilityActivityTaskOptions) {
-		let { courseID, quantity, userID, channelID, duration, alch } = data;
+		let { courseID, quantity, userID, channelID, duration, alch, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
@@ -123,7 +123,9 @@ export default class extends Task {
 				res.prompter.flags = flags;
 
 				user.log(`continued trip of ${quantity}x ${course.name} laps`);
-				return this.client.commands.get('laps')!.run(res, [quantity, course.aliases[0]]);
+				return this.client.commands
+					.get('laps')!
+					.run(res, [quantitySpecified ? quantity : null, course.aliases[0]]);
 			},
 			undefined,
 			data,

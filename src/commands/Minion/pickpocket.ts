@@ -101,6 +101,7 @@ export default class extends BotCommand {
 		const timeToPickpocket = (pickpocketable.customTickRate ?? 2) * 600;
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Pickpocket);
+		const quantitySpecified = quantity !== null;
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
@@ -161,7 +162,8 @@ export default class extends BotCommand {
 			type: Activity.Pickpocket,
 			damageTaken,
 			successfulQuantity,
-			xpReceived
+			xpReceived,
+			quantitySpecified
 		});
 
 		let str = `${msg.author.minionName} is now going to pickpocket a ${

@@ -101,6 +101,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.bank();
 
+		const quantitySpecified = quantity !== null;
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
@@ -148,7 +149,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.BlastFurnace
+			type: Activity.BlastFurnace,
+			quantitySpecified
 		});
 
 		let goldGauntletMessage = '';

@@ -9,7 +9,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: CookingActivityTaskOptions) {
-		const { cookableID, quantity, userID, channelID, duration } = data;
+		const { cookableID, quantity, userID, channelID, duration, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 
 		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID)!;
@@ -54,7 +54,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${cookable.name}[${cookable.id}]`);
-				return this.client.commands.get('cook')!.run(res, [quantity, cookable.name]);
+				return this.client.commands.get('cook')!.run(res, [quantitySpecified ? quantity : null, cookable.name]);
 			},
 			undefined,
 			data,

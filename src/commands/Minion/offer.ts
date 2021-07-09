@@ -54,6 +54,8 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
+		const quantitySpecified = quantity !== null;
+
 		const whichOfferable = Offerables.find(
 			item =>
 				stringMatches(boneName, item.name) ||
@@ -202,7 +204,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Offering
+			type: Activity.Offering,
+			quantitySpecified
 		});
 		return msg.channel.send(
 			`${msg.author.minionName} is now offering ${quantity}x ${

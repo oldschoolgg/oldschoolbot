@@ -12,7 +12,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
-		const { oreID, quantity, userID, channelID, duration } = data;
+		const { oreID, quantity, userID, channelID, duration, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
@@ -104,7 +104,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);
-				return this.client.commands.get('mine')!.run(res, [quantity, ore.name]);
+				return this.client.commands.get('mine')!.run(res, [quantitySpecified ? quantity : null, ore.name]);
 			},
 			undefined,
 			data,

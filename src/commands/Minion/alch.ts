@@ -58,7 +58,7 @@ export default class extends BotCommand {
 		const maxTripLength = msg.author.maxTripLength(Activity.Alching);
 
 		const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank[osItem.id]);
-
+		const quantitySpecified = quantity !== null;
 		if (!quantity) {
 			quantity = maxCasts;
 		}
@@ -104,7 +104,8 @@ export default class extends BotCommand {
 			quantity,
 			duration,
 			alchValue,
-			type: Activity.Alching
+			type: Activity.Alching,
+			quantitySpecified
 		});
 
 		msg.author.log(`alched Quantity[${quantity}] ItemID[${osItem.id}] for ${alchValue}`);

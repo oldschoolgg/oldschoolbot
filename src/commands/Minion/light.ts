@@ -53,6 +53,7 @@ export default class extends BotCommand {
 		const timeToLightSingleLog = Time.Second * 2.4 + Time.Second / 4;
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Firemaking);
+		const quantitySpecified = quantity !== null;
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -91,7 +92,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Firemaking
+			type: Activity.Firemaking,
+			quantitySpecified
 		});
 
 		return msg.channel.send(

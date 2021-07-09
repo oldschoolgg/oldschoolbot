@@ -47,7 +47,7 @@ const defenders = [
 
 export default class extends Task {
 	async run(data: CyclopsActivityTaskOptions) {
-		const { userID, channelID, quantity } = data;
+		const { userID, channelID, quantity, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 		const userBank = new Bank(user.settings.get(UserSettings.Bank));
 
@@ -86,7 +86,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued cyclops');
-				return this.client.commands.get('wg')!.run(res, [quantity, 'cyclops']);
+				return this.client.commands.get('wg')!.run(res, [quantitySpecified ? quantity : null, 'cyclops']);
 			},
 			image!,
 			data,

@@ -8,7 +8,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: CastingActivityTaskOptions) {
-		let { spellID, quantity, userID, channelID, duration } = data;
+		let { spellID, quantity, userID, channelID, duration, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 
 		const spell = Castables.find(i => i.id === spellID)!;
@@ -51,7 +51,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${spell.name}[${spell.id}]`);
-				return this.client.commands.get('cast')!.run(res, [quantity, spell.name]);
+				return this.client.commands.get('cast')!.run(res, [quantitySpecified ? quantity : null, spell.name]);
 			},
 			undefined,
 			data,

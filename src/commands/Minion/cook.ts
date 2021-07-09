@@ -64,7 +64,7 @@ export default class extends BotCommand {
 		const inputCost = new Bank(cookable.inputCookables);
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Cooking);
-
+		const quantitySpecified = quantity !== null;
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToCookSingleCookable);
 			const max = userBank.fits(inputCost);
@@ -97,7 +97,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Cooking
+			type: Activity.Cooking,
+			quantitySpecified
 		});
 
 		return msg.channel.send(

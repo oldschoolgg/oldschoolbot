@@ -108,6 +108,7 @@ export default class extends BotCommand {
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Woodcutting);
 
+		const quantitySpecified = quantity !== null;
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timetoChop);
@@ -131,7 +132,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Woodcutting
+			type: Activity.Woodcutting,
+			quantitySpecified
 		});
 
 		let response = `${msg.author.minionName} is now chopping ${quantity}x ${

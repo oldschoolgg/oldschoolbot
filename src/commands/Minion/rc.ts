@@ -90,6 +90,7 @@ export default class extends BotCommand {
 			boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
 		}
 		const maxTripLength = msg.author.maxTripLength(Activity.Runecraft);
+		const quantitySpecified = quantity !== null;
 
 		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 
@@ -123,7 +124,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			essenceQuantity: quantity,
 			duration,
-			type: Activity.Runecraft
+			type: Activity.Runecraft,
+			quantitySpecified
 		});
 
 		const response = `${msg.author.minionName} is now turning ${quantity}x Essence into ${

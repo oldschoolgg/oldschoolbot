@@ -38,7 +38,7 @@ export default class extends Task {
 	}
 
 	async run(data: TempleTrekkingActivityTaskOptions) {
-		const { channelID, quantity, userID, difficulty } = data;
+		const { channelID, quantity, userID, difficulty, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 		user.incrementMinigameScore('TempleTrekking', quantity);
 		const userBank = user.bank();
@@ -103,7 +103,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x treks`);
-				return this.client.commands.get('trek')!.run(res, [quantity, difficulty]);
+				return this.client.commands.get('trek')!.run(res, [quantitySpecified ? quantity : null, difficulty]);
 			},
 			image!,
 			data,

@@ -11,7 +11,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: WoodcuttingActivityTaskOptions) {
-		const { logID, quantity, userID, channelID, duration } = data;
+		const { logID, quantity, userID, channelID, duration, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 
 		const log = Woodcutting.Logs.find(Log => Log.id === logID)!;
@@ -84,7 +84,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${log.name}[${log.id}]`);
-				return this.client.commands.get('chop')!.run(res, [quantity, log.name]);
+				return this.client.commands.get('chop')!.run(res, [quantitySpecified ? quantity : null, log.name]);
 			},
 			undefined,
 			data,

@@ -9,7 +9,7 @@ import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: BlastFurnaceActivityTaskOptions) {
-		let { barID, quantity, userID, channelID, duration } = data;
+		let { barID, quantity, userID, channelID, duration, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 
 		const bar = Smithing.BlastableBars.find(bar => bar.id === barID)!;
@@ -41,7 +41,9 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${bar.name}[${bar.id}]`);
-				return this.client.commands.get('blastfurnace')!.run(res, [quantity, bar.name]);
+				return this.client.commands
+					.get('blastfurnace')!
+					.run(res, [quantitySpecified ? quantity : null, bar.name]);
 			},
 			undefined,
 			data,

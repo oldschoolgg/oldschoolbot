@@ -9,7 +9,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: ConstructionActivityTaskOptions) {
-		const { objectID, quantity, userID, channelID, duration } = data;
+		const { objectID, quantity, userID, channelID, duration, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 		const object = Constructables.find(object => object.id === objectID)!;
 		const xpReceived = quantity * object.xp;
@@ -37,7 +37,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${object.name}[${object.id}]`);
-				return this.client.commands.get('build')!.run(res, [quantity, object.name]);
+				return this.client.commands.get('build')!.run(res, [quantitySpecified ? quantity : null, object.name]);
 			},
 			undefined,
 			data,

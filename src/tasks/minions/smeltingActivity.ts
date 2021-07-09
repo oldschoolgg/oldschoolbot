@@ -10,7 +10,7 @@ import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: SmeltingActivityTaskOptions) {
-		let { barID, quantity, userID, channelID, duration } = data;
+		let { barID, quantity, userID, channelID, duration, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
@@ -58,7 +58,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${oldQuantity}x ${bar.name}[${bar.id}]`);
-				return this.client.commands.get('smelt')!.run(res, [oldQuantity, bar.name]);
+				return this.client.commands.get('smelt')!.run(res, [quantitySpecified ? oldQuantity : null, bar.name]);
 			},
 			undefined,
 			data,

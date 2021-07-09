@@ -7,7 +7,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: FiremakingActivityTaskOptions) {
-		const { burnableID, quantity, userID, channelID } = data;
+		const { burnableID, quantity, userID, channelID, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 
 		const burnable = Firemaking.Burnables.find(Burn => Burn.inputLogs === burnableID)!;
@@ -51,7 +51,9 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${burnable.name}`);
-				return this.client.commands.get('light')!.run(res, [quantity, burnable.name]);
+				return this.client.commands
+					.get('light')!
+					.run(res, [quantitySpecified ? quantity : null, burnable.name]);
 			},
 			undefined,
 			data,

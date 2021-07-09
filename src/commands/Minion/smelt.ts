@@ -52,6 +52,7 @@ export default class extends BotCommand {
 		const timeToSmithSingleBar = Time.Second * 2.4 + Time.Second / 4;
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
+		const quantitySpecified = quantity !== null;
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -97,7 +98,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Smelting
+			type: Activity.Smelting,
+			quantitySpecified
 		});
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 

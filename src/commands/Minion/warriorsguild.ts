@@ -64,6 +64,8 @@ export default class extends BotCommand {
 			);
 		}
 
+		const quantitySpecified = quantity !== null;
+
 		const userBank = new Bank(msg.author.settings.get(UserSettings.Bank));
 
 		if (minigame === 'tokens') {
@@ -100,7 +102,8 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				quantity,
 				duration,
-				type: Activity.AnimatedArmour
+				type: Activity.AnimatedArmour,
+				quantitySpecified
 			});
 
 			const response = `${msg.author.minionName} is now killing ${quantity}x animated ${
@@ -156,7 +159,8 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				quantity,
 				duration,
-				type: Activity.Cyclops
+				type: Activity.Cyclops,
+				quantitySpecified
 			});
 
 			let response = `${

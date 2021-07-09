@@ -14,7 +14,7 @@ const bryophytasStaffId = itemID("Bryophyta's staff");
 
 export default class extends Task {
 	async run(data: AlchingActivityTaskOptions) {
-		let { itemID, quantity, channelID, alchValue, userID, duration } = data;
+		let { itemID, quantity, channelID, alchValue, userID, duration, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 		const loot = new Bank({ Coins: alchValue });
 
@@ -58,7 +58,7 @@ export default class extends Task {
 			responses,
 			res => {
 				user.log(`continued trip of alching ${quantity}x ${item.name}`);
-				return this.client.commands.get('alch')!.run(res, [quantity, [item]]);
+				return this.client.commands.get('alch')!.run(res, [quantitySpecified ? quantity : null, [item]]);
 			},
 			undefined,
 			data,

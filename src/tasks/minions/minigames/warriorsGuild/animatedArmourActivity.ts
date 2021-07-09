@@ -7,7 +7,7 @@ import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: AnimatedArmourActivityTaskOptions) {
-		const { armourID, userID, channelID, quantity } = data;
+		const { armourID, userID, channelID, quantity, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 		const armour = Armours.find(armour => armour.name === armourID)!;
 
@@ -28,7 +28,9 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued trip of animated armor');
-				return this.client.commands.get('warriorsguild')!.run(res, [quantity, 'tokens']);
+				return this.client.commands
+					.get('warriorsguild')!
+					.run(res, [quantitySpecified ? quantity : null, 'tokens']);
 			},
 			undefined,
 			data,

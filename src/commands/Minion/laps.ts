@@ -113,6 +113,7 @@ export default class extends BotCommand {
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Agility);
+		const quantitySpecified = quantity !== null;
 
 		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;
@@ -159,7 +160,8 @@ export default class extends BotCommand {
 					: {
 							itemID: alchResult.itemToAlch.id,
 							quantity: alchResult.maxCasts
-					  }
+					  },
+			quantitySpecified
 		});
 
 		return msg.channel.send(response);

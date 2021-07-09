@@ -79,6 +79,7 @@ export default class extends BotCommand {
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Crafting);
+		const quantitySpecified = quantity !== null;
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
@@ -119,7 +120,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Crafting
+			type: Activity.Crafting,
+			quantitySpecified
 		});
 
 		return msg.channel.send(

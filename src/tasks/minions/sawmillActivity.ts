@@ -8,7 +8,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: SawmillActivityTaskOptions) {
-		const { userID, channelID, plankID, plankQuantity } = data;
+		const { userID, channelID, plankID, plankQuantity, quantitySpecified } = data;
 		const user = await this.client.users.fetch(userID);
 		const plank = Planks.find(plank => plank.outputItem === plankID)!;
 
@@ -39,7 +39,9 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${plankQuantity}x ${plank.name}`);
-				return this.client.commands.get('sawmill')!.run(res, [plankQuantity, plank.name]);
+				return this.client.commands
+					.get('sawmill')!
+					.run(res, [quantitySpecified ? plankQuantity : null, plank.name]);
 			},
 			undefined,
 			data,

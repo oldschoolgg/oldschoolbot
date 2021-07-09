@@ -85,6 +85,7 @@ export default class extends BotCommand {
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Fletching);
+		const quantitySpecified = quantity !== null;
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToFletchSingleItem);
@@ -120,7 +121,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Fletching
+			type: Activity.Fletching,
+			quantitySpecified
 		});
 
 		return msg.channel.send(
