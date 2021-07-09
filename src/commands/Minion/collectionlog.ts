@@ -32,7 +32,14 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [inputType]: [string]) {
 		if (!inputType) {
-			const { percent, notOwned, owned } = msg.author.completion();
+			const { percent, notOwned, owned, debugBank } = msg.author.completion();
+			if (msg.flagArgs.debug) {
+				return msg.channel.sendBankImage({
+					bank: debugBank.bank,
+					title: 'All Items That Count Towards CL %',
+					flags: { debug: 1 }
+				});
+			}
 			return msg.channel.send(
 				`You have ${owned.length}/${allCollectionLogItems.length} (${percent.toFixed(
 					2
