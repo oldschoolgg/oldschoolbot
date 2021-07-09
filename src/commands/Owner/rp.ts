@@ -1,6 +1,6 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 
 import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
@@ -10,10 +10,12 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
-import { cleanString, formatDuration, itemNameFromID } from '../../lib/util';
+import { cleanString, formatDuration, getSupportGuild, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
+
+export const emoji = (client: KlasaClient) => getSupportGuild(client).emojis.cache.random().toString();
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -307,6 +309,21 @@ LIMIT 10;
 			case 'bank': {
 				if (!input || !(input instanceof KlasaUser)) return;
 				return msg.channel.sendBankImage({ bank: input.allItemsOwned().bank });
+			}
+			case 'disable': {
+				if (!input || input instanceof KlasaUser) return;
+				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
+				if (!command) return msg.channel.send("That's not a valid command.");
+				command.disable();
+				return msg.channel.send(`${emoji(this.client)} Disabled \`+${command}\`.`);
+			}
+			case 'enable': {
+				if (!input || input instanceof KlasaUser) return;
+				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
+				if (!command) return msg.channel.send("That's not a valid command.");
+				if (command.enabled) return msg.channel.send('That command is already enabled.');
+				command.enable();
+				return msg.channel.send(`${emoji(this.client)} Enabled \`+${command}\`.`);
 			}
 		}
 
