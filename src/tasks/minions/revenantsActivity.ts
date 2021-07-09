@@ -23,7 +23,7 @@ export default class extends Task {
 			const currentGear = user.settings.get(UserSettings.Gear.Wildy)!;
 			const newGear = { ...currentGear };
 			for (const [key, val] of objectEntries(currentGear)) {
-				if (key === 'weapon') continue;
+				if (['weapon', '2h'].includes(key)) continue;
 				if (val === null) continue;
 				cost.add(val.item, val.quantity);
 				newGear[key] = null;

@@ -38,7 +38,6 @@ export default class extends Task {
 						await trip.save();
 					}
 				}
-				console.log(revenantTrips);
 			} catch (err) {
 				console.error(err);
 			} finally {

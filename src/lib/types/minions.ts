@@ -66,6 +66,7 @@ export interface RevenantOptions extends ActivityTaskOptions {
 	deathChance: number;
 	rolledForDeath: boolean;
 	died: boolean;
+	skulled: boolean;
 }
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	clueID: number;

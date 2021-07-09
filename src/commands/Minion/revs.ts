@@ -165,8 +165,13 @@ export default class extends BotCommand {
 		const gearStat = gear.getStats()[key];
 		const gearPercent = Math.max(0, calcWhatPercent(gearStat, maxOffenceStats[key]));
 
-		if (!gear.weapon) {
+		const weapon = gear.equippedWeapon();
+		if (!weapon) {
 			return msg.channel.send('You have no weapon equipped in your wildy outfit.');
+		}
+
+		if (weapon.equipment![key] < 10) {
+			return msg.channel.send("Your weapon is terrible, you can't kill revenants.");
 		}
 
 		debug.push(`${gearStat} ${key} out of max ${maxOffenceStats[key]}`);
@@ -191,13 +196,13 @@ export default class extends BotCommand {
 		debug.push(`${gearPercent}% gearpercent`);
 
 		let deathChance = 5;
-		let deathChanceFromDefenceLevel = (100 - msg.author.skillLevel(SkillsEnum.Defence)) / 2;
+		let deathChanceFromDefenceLevel = (100 - msg.author.skillLevel(SkillsEnum.Defence)) / 4;
 		deathChance += deathChanceFromDefenceLevel;
 		debug.push(`${deathChanceFromDefenceLevel}% death chance from defence level`);
 
 		const defensiveGearPercent = Math.max(0, calcWhatPercent(gear.getStats().defence_magic, maxOffenceStats[key]));
 		debug.push(`${defensiveGearPercent}% defensive gear percent`);
-		let deathChanceFromGear = Math.min(60, 100 - defensiveGearPercent);
+		let deathChanceFromGear = Math.max(60, 100 - defensiveGearPercent) / 4;
 		deathChance += deathChanceFromGear;
 		debug.push(`${deathChanceFromGear}% death chance from magic defence`);
 
@@ -210,7 +215,8 @@ export default class extends BotCommand {
 			type: Activity.Revenants,
 			deathChance,
 			rolledForDeath: false,
-			died: false
+			died: false,
+			skulled: false
 		});
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${

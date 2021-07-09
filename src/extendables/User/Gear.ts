@@ -48,7 +48,7 @@ export default class extends Extendable {
 		return this.hasItemEquippedAnywhere(getSimilarItems(id), false) || this.numItemsInBankSync(id, true) > 0;
 	}
 
-	public getGear(this: User, setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling'): GearSetup {
+	public getGear(this: User, setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling' | 'wildy'): GearSetup {
 		return new Gear(this.settings.get(resolveGearTypeSetting(setup)) ?? defaultGear);
 	}
 }
