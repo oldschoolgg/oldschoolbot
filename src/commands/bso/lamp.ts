@@ -32,6 +32,10 @@ export default class extends BotCommand {
 			return msg.channel.send("That's not a valid skill.");
 		}
 
+		if (skillName === SkillsEnum.Mining) {
+			return msg.channel.send("You cannot lamp Mining, because it's the current SOTW skill.");
+		}
+
 		const bank = new Bank(msg.author.settings.get(UserSettings.Bank));
 		if (bank.amount(lamp.itemID) === 0) {
 			return msg.channel.send(`You don't have any ${lamp.name} lamps!`);
