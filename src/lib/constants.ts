@@ -461,6 +461,7 @@ export const skillEmoji = {
 	dungeoneering: '<:dungeoneering:828683755198873623>'
 };
 
+export const LEVEL_99_XP = convertLVLtoXP(99);
 export const LEVEL_120_XP = convertLVLtoXP(120);
 export const MAX_LEVEL = 120;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
