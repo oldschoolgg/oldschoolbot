@@ -63,6 +63,9 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 export interface RevenantOptions extends ActivityTaskOptions {
 	monsterID: number;
 	quantity: number;
+	deathChance: number;
+	rolledForDeath: boolean;
+	died: boolean;
 }
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	clueID: number;
