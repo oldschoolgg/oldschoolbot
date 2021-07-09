@@ -1,5 +1,4 @@
 import { MessageAttachment } from 'discord.js';
-import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
@@ -129,27 +128,11 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const sellMsg = await msg.channel.send(
-				`${
-					msg.author
-				}, say \`confirm\` to confirm that you want to create **${outputItemsString}** using ${inputItemsString}${
-					createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
-				}.`
-			);
-
-			// Confirm the user wants to create the item(s)
-			try {
-				await msg.channel.awaitMessages({
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					max: 1,
-					time: Time.Second * 15,
-					errors: ['time']
-				});
-			} catch (err) {
-				return sellMsg.edit('Cancelling item creation.');
-			}
-		}
+		await msg.confirm(
+			`${msg.author}, please confirm that you want to create **${outputItemsString}** using ${inputItemsString}${
+				createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
+			}.`
+		);
 
 		await msg.author.settings.update(
 			UserSettings.Bank,

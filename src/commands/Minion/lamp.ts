@@ -59,10 +59,8 @@ export default class extends BotCommand {
 		}
 		const skill = skillName as SkillsEnum;
 
-		if (skill === SkillsEnum.Slayer) {
-			return msg.channel.send(
-				'A magical force prevents you from using the lamp on Slayer, perhaps you should wait a few weeks.'
-			);
+		if (skill === SkillsEnum.Runecraft && msg.author.skillLevel(SkillsEnum.Runecraft) > 50) {
+			return msg.channel.send("You cannot lamp Runecraft, because it's the current SOTW skill.");
 		}
 
 		if (msg.author.skillLevel(skill) < lamp.minimumLevel) {

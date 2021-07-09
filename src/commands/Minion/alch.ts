@@ -88,24 +88,11 @@ export default class extends BotCommand {
 			return msg.channel.send(`You don't have the required items, you need ${consumedItems}`);
 		}
 
-		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-			const alchMessage = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to alch ${quantity} ${osItem.name} (${Util.toKMB(
-					alchValue
-				)}). This will take approximately ${formatDuration(duration)}, and consume ${quantity}x Nature runes.`
-			);
-
-			try {
-				await msg.channel.awaitMessages({
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					max: 1,
-					time: 10_000,
-					errors: ['time']
-				});
-			} catch (err) {
-				return alchMessage.edit(`Cancelling alch of ${quantity}x ${osItem.name}.`);
-			}
-		}
+		await msg.confirm(
+			`${msg.author}, please confirm you want to alch ${quantity} ${osItem.name} (${Util.toKMB(
+				alchValue
+			)}). This will take approximately ${formatDuration(duration)}, and consume ${quantity}x Nature runes.`
+		);
 
 		await msg.author.removeItemsFromBank(consumedItems);
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, consumedItems);
