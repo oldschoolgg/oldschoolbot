@@ -21,7 +21,6 @@ import {
 	cleanString,
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
-	rand,
 	restoreCtx,
 	roll,
 	saveCtx,
