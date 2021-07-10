@@ -1,4 +1,4 @@
-import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
+import { calcWhatPercent, percentChance, randInt, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -203,16 +203,16 @@ export default class extends BotCommand {
 		let deathChanceFromGear = Math.max(60, 100 - defensiveGearPercent) / 4;
 		deathChance += deathChanceFromGear;
 
+		const died = percentChance(deathChance);
+
 		await addSubTaskToActivityTask<RevenantOptions>({
 			monsterID: monster.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
-			duration,
+			duration: died ? (randInt(1, duration) + randInt(1, duration)) / 2 : duration,
 			type: Activity.Revenants,
-			deathChance,
-			rolledForDeath: false,
-			died: false,
+			died,
 			skulled
 		});
 

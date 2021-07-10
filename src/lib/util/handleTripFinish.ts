@@ -113,7 +113,7 @@ export async function handleTripFinish(
 				});
 			}
 		} catch (err) {
-			console.log(err);
+			console.log({ err });
 			channel.send(err);
 		} finally {
 			setTimeout(() => client.oneCommandAtATimeCache.delete(mes.author.id), 300);

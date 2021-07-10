@@ -77,6 +77,7 @@ import {
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	RaidsOptions,
+	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
@@ -574,6 +575,12 @@ export default class extends Extendable {
 			}
 			case Activity.Trekking: {
 				return `${this.minionName} is currently Temple Trekking. ${formattedDuration}`;
+			}
+			case Activity.Revenants: {
+				const data = currentTask as RevenantOptions;
+				return `${data.skulled ? `${Emoji.OSRSSkull} ` : ''} ${this.minionName} is currently killing ${
+					data.quantity
+				}x ${Monsters.get(data.monsterID)!.name} in the wilderness.`;
 			}
 		}
 	}
