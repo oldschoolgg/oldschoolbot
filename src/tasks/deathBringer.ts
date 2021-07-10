@@ -41,7 +41,7 @@ export default class extends Task {
 			} catch (err) {
 				console.error(err);
 			} finally {
-				this.client.deathTicker = setTimeout(ticker, 5000);
+				this.client.deathTicker = setTimeout(ticker, 500);
 			}
 		};
 		ticker();

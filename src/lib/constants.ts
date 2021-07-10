@@ -117,7 +117,8 @@ export const enum Emoji {
 	CollectionLog = '<:collectionLog:802136964027121684>',
 	Minigames = '<:minigameIcon:630400565070921761>',
 	Skull = '<:Skull:802136963926065165>',
-	CombatSword = '<:combat:802136963956080650>'
+	CombatSword = '<:combat:802136963956080650>',
+	OSRSSkull = '<:skull:863392427040440320>'
 }
 
 export const enum ReactionEmoji {

@@ -2,7 +2,7 @@ import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { maxOffenceStats } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { KillableMonster } from '../../lib/minions/types';
@@ -141,7 +141,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			usage: '<melee|range|mage> [name:...string]',
 			usageDelim: ' ',
-			description: 'Sends your minion to kill monsters.'
+			description: 'Sends your minion to kill revs. You can add --skull to your message to kill them skulled.'
 		});
 	}
 
@@ -186,6 +186,8 @@ export default class extends BotCommand {
 			boosts.push(`${20}% for ${specialWeapon.name}`);
 		}
 
+		let skulled = Boolean(msg.flagArgs.skull);
+
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.Revenants) / timePerMonster);
 		let duration = quantity * timePerMonster;
 
@@ -193,37 +195,32 @@ export default class extends BotCommand {
 		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, cost);
 		await msg.author.removeItemsFromBank(cost);
 
-		debug.push(`${gearPercent}% gearpercent`);
-
 		let deathChance = 5;
 		let deathChanceFromDefenceLevel = (100 - msg.author.skillLevel(SkillsEnum.Defence)) / 4;
 		deathChance += deathChanceFromDefenceLevel;
-		debug.push(`${deathChanceFromDefenceLevel}% death chance from defence level`);
 
 		const defensiveGearPercent = Math.max(0, calcWhatPercent(gear.getStats().defence_magic, maxOffenceStats[key]));
-		debug.push(`${defensiveGearPercent}% defensive gear percent`);
 		let deathChanceFromGear = Math.max(60, 100 - defensiveGearPercent) / 4;
 		deathChance += deathChanceFromGear;
-		debug.push(`${deathChanceFromGear}% death chance from magic defence`);
 
 		await addSubTaskToActivityTask<RevenantOptions>({
 			monsterID: monster.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
-			quantity: 1,
+			quantity,
 			duration,
 			type: Activity.Revenants,
 			deathChance,
 			rolledForDeath: false,
 			died: false,
-			skulled: false
+			skulled
 		});
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish. ${debug.join(', ')}
-		
-**Death Chance:** ${deathChance}%	`;
+${Emoji.OSRSSkull} ${skulled ? 'Skulled' : 'Unskulled'}
+**Death Chance:** ${deathChance}% (${deathChanceFromGear}% from magic def, ${deathChanceFromDefenceLevel}% from defence level)`;
 
 		return msg.channel.send(response);
 	}

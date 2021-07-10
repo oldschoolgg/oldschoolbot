@@ -95,7 +95,7 @@ export default class extends BotCommand {
 		const osItem = itemArray[0];
 		await msg.author.addItemsToBank({ [osItem.id]: qty }, Boolean(msg.flagArgs.cl));
 
-		for (const setup of ['range', 'melee', 'mage', 'skilling']) {
+		for (const setup of ['range', 'melee', 'mage', 'skilling', 'wildy']) {
 			if (msg.flagArgs[setup]) {
 				try {
 					await this.client.commands.get('equip')!.run(msg, [setup, 1, [osItem]]);
