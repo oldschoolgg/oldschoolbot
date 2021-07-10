@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { round, Time } from 'e';
 import { BaseEntity, Check, Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { tameSpecies } from '../tames';
@@ -84,23 +84,23 @@ export class TamesTable extends BaseEntity {
 	}
 
 	get combatLvl() {
-		return Math.floor(this.maxCombatLevel / this.growthLevel + 1);
+		return round(this.maxCombatLevel / this.growthLevel, 2);
 	}
 
 	get gathererLvl() {
-		return Math.floor(this.maxGathererLevel / this.growthLevel + 1);
+		return round(this.maxGathererLevel / this.growthLevel, 2);
 	}
 
 	get supportLvl() {
-		return Math.floor(this.maxSupportLevel / this.growthLevel + 1);
+		return round(this.maxSupportLevel / this.growthLevel, 2);
 	}
 
 	get artisanLvl() {
-		return Math.floor(this.maxArtisanLevel / this.growthLevel + 1);
+		return round(this.maxArtisanLevel / this.growthLevel, 2);
 	}
 
 	get species() {
-		return tameSpecies.find(s => s.id === this.speciesID)!;
+		return tameSpecies.find(s => s.id === this.speciesID, 2)!;
 	}
 
 	get name() {
