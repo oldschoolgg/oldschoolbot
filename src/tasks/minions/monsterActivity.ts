@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
+import { getRandomMysteryBox } from '../../lib/data/openables';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -227,6 +228,10 @@ export default class extends Task {
 			}
 			usersTask.currentTask!.quantityRemaining = quantityLeft;
 			await usersTask.currentTask!.save();
+		}
+
+		if (thisTripFinishesTask && roll(10)) {
+			loot.add(getRandomMysteryBox());
 		}
 
 		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
