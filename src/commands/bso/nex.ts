@@ -1,4 +1,4 @@
-import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
+import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -16,6 +16,7 @@ import { formatDuration, itemID, resolveNameBank, updateBankSetting } from '../.
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getNexGearStats } from '../../lib/util/getNexGearStats';
+import { gorajanArcherOutfit } from '../../tasks/minions/dungeoneeringActivity';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -140,7 +141,6 @@ export default class extends BotCommand {
 			debugStr += `**${user.username}**: `;
 			let msgs = [];
 
-			// Special inquisitor outfit damage boost
 			const rangeGear = user.getGear('range');
 			const equippedWeapon = rangeGear.equippedWeapon();
 			if (rangeGear.hasEquipped(pernixOutfit, true)) {
@@ -159,6 +159,12 @@ export default class extends BotCommand {
 					msgs.push(`${i}% boost for pernix items`);
 					effectiveTime = reduceNumByPercent(effectiveTime, i);
 				}
+			}
+
+			if (rangeGear.hasEquipped(gorajanArcherOutfit)) {
+				const perUserPercent = round(15 / users.length, 2);
+				effectiveTime = reduceNumByPercent(effectiveTime, perUserPercent);
+				msgs.push(`${perUserPercent}% for Gorajan archer`);
 			}
 
 			if (data.gearStats.attack_ranged < 200) {

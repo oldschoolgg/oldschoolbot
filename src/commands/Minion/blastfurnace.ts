@@ -108,6 +108,11 @@ export default class extends BotCommand {
 			if (max < quantity && max !== 0) quantity = max;
 		}
 
+		if (msg.author.hasItemEquippedAnywhere('Smithing master cape')) {
+			timeToSmithSingleBar /= 2;
+			graceful += '\n2x boost for Smithing master cape';
+		}
+
 		const duration = quantity * timeToSmithSingleBar;
 		if (duration > maxTripLength) {
 			return msg.channel.send(
