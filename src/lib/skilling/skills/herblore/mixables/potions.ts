@@ -451,6 +451,47 @@ const Potions: Mixable[] = [
 		tickRate: 2,
 		qpRequired: 205,
 		bankTimePerPotion: 0.3
+	},
+	{
+		name: 'Heat res. brew',
+		aliases: ['heat res. brew', 'heat res brew'],
+		id: itemID('Heat res. brew'),
+		level: 110,
+		xp: 230,
+		inputItems: resolveNameBank({
+			'Heat res. vial': 1,
+			'Super antifire potion(4)': 1,
+			'Saradomin brew(4)': 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
+		name: 'Heat res. restore',
+		aliases: ['heat res. restore', 'heat res restore'],
+		id: itemID('Heat res. restore'),
+		level: 110,
+		xp: 230,
+		inputItems: resolveNameBank({
+			'Heat res. vial': 1,
+			'Super antifire potion(4)': 1,
+			'Super restore(4)': 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
+		name: "Dragon's fury",
+		aliases: ['dragons fury'],
+		id: itemID("Dragon's fury"),
+		level: 120,
+		xp: 1830,
+		inputItems: resolveNameBank({
+			'Ignecarus scales': 3,
+			'Abyssal dragon bones': 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
 	}
 ];
 

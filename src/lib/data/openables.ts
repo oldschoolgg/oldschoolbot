@@ -463,6 +463,13 @@ const Openables: Openable[] = [
 			.add('Ice cream')
 			.add('Crab hat'),
 		emoji: Emoji.BirthdayPresent
+	},
+	{
+		name: 'Independence box',
+		itemID: itemID('Independence box'),
+		aliases: ['independence box'],
+		table: new LootTable().add('Fireworks').add('Fireworks').add('Liber tea').add("Sam's hat"),
+		emoji: Emoji.BirthdayPresent
 	}
 ];
 

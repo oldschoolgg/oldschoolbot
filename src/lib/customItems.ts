@@ -1516,7 +1516,144 @@ setCustomItem(48_201, 'Shadow dye', 'Coal', {}, 100_000_000);
 setCustomItem(48_202, 'Ice dye', 'Coal', {}, 100_000_000);
 setCustomItem(48_203, 'Blood dye', 'Coal', {}, 100_000_000);
 setCustomItem(48_204, 'Third age dye', 'Coal', {}, 100_000_000);
+setCustomItem(
+	48_205,
+	'Ignis ring',
+	'Berserker ring',
+	{
+		equipment: {
+			attack_stab: 4,
+			attack_slash: 5,
+			attack_crush: 4,
+			attack_magic: 0,
+			attack_ranged: 0,
 
+			defence_stab: 29,
+			defence_slash: 29,
+			defence_crush: 29,
+			defence_magic: 29,
+			defence_ranged: 32,
+
+			melee_strength: 15,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Ring,
+			requirements: {
+				defence: 105
+			}
+		}
+	},
+	100_000_000
+);
+setCustomItem(
+	48_206,
+	'Ignis ring(i)',
+	'Berserker ring',
+	{
+		equipment: {
+			attack_stab: 9,
+			attack_slash: 7,
+			attack_crush: 8,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 38,
+			defence_slash: 36,
+			defence_crush: 38,
+			defence_magic: 39,
+			defence_ranged: 42,
+
+			melee_strength: 21,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Ring,
+			requirements: {
+				defence: 105
+			}
+		}
+	},
+	100_000_000
+);
+setCustomItem(
+	48_207,
+	'Ignecarus scales',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+
+setCustomItem(
+	48_208,
+	'Ignecarus dragonclaw',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+
+setCustomItem(
+	48_209,
+	"Dragon's fury",
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+
+setCustomItem(
+	48_210,
+	'Dragon egg',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+/**
+ * Independence Box
+ */
+setCustomItem(
+	48_211,
+	'Independence box',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(
+	48_212,
+	'Fireworks',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(
+	48_213,
+	'Liber tea',
+	'Rune sword',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(
+	48_214,
+	"Sam's hat",
+	'Rune full helm',
+	{
+		highalch: 3000
+	},
+	6000
+);
 /**
  * Misc Items
  *
@@ -1561,6 +1698,43 @@ setCustomItem(
 	50_000_000
 );
 
+setCustomItem(
+	50_025,
+	'Heat res. vial',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+
+setCustomItem(
+	50_026,
+	'Heat res. brew',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(
+	50_027,
+	'Heat res. restore',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(
+	50_028,
+	'Athelas paste',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
 setCustomItem(
 	50_035,
 	'Scroll of longevity',

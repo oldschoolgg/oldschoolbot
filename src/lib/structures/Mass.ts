@@ -176,7 +176,7 @@ This party will automatically depart in 2 minutes, or if the leader clicks the s
 		if (this.customDenier) {
 			const [denied, reason] = await this.customDenier(user);
 			if (denied) {
-				user.send(`111 You couldn't join this mass, for this reason: ${reason}`);
+				user.send(`You couldn't join this mass, for this reason: ${reason}`);
 				return;
 			}
 		}

@@ -77,6 +77,9 @@ export namespace ClientSettings {
 		export const HunterCost = T<O.Readonly<ItemBank>>('hunter_cost');
 		export const HunterLoot = T<O.Readonly<ItemBank>>('hunter_loot');
 
+		export const IgnecarusCost = T<O.Readonly<ItemBank>>('ignecarus_cost');
+		export const IgnecarusLoot = T<O.Readonly<ItemBank>>('ignecarus_loot');
+
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');
 		export const GPSourceAlching = T<number>('gp_alch');

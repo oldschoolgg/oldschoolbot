@@ -594,6 +594,10 @@ export default class extends Extendable {
 				return `${this.minionName} is currently killing Vasa Magus. ${formattedDuration}`;
 			}
 
+			case Activity.Ignecarus: {
+				return `${this.minionName} is currently killing Ignecarus. ${formattedDuration}`;
+			}
+
 			case Activity.MageArena2: {
 				return `${this.minionName} is currently attempting the Mage Arena II. ${formattedDuration}`;
 			}

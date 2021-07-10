@@ -13,6 +13,7 @@ import { NIGHTMARES_HP } from './../../../constants';
 import { bossKillables } from './bosses';
 import { chaeldarMonsters } from './chaeldarMonsters';
 import AbyssalDragon, { AbyssalDragonLootTable } from './custom/AbyssalDragon';
+import { Ignecarus } from './custom/Ignecarus';
 import KingGoldemar from './custom/KingGoldemar';
 import Koschei, { koscheiTable } from './custom/Koschei';
 import SeaKraken, { KrakenTable } from './custom/SeaKraken';
@@ -497,5 +498,10 @@ export const effectiveMonsters = [
 		id: VasaMagus.id,
 		name: 'Vasa Magus',
 		aliases: ['vasa', 'vasa magus', 'vm']
+	},
+	{
+		id: Ignecarus.id,
+		name: 'Ignecarus',
+		aliases: ['igne', 'ignecarus']
 	}
 ];

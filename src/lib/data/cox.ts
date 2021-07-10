@@ -191,7 +191,7 @@ export const maxMeleeGear = constructGearSetup({
 	feet: 'Torva boots',
 	weapon: 'Drygore rapier',
 	shield: 'Offhand drygore rapier',
-	ring: 'Berserker ring(i)'
+	ring: 'Ignis ring(i)'
 });
 const maxMelee = new Gear(maxMeleeGear);
 
