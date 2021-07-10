@@ -85,6 +85,9 @@ export default class POHCommand extends BotCommand {
 		if (!nursery) {
 			return msg.channel.send("You don't have a nursery.");
 		}
+		if (nursery.hasFuel) {
+			return msg.channel.send('Your nursery already has fuel.');
+		}
 		const cost = new Bank().add('Elder logs', 2500).add('Coal', 10_000);
 		if (!msg.author.owns(cost)) {
 			return msg.channel.send(`You need ${cost} to fuel your nursery.`);
