@@ -13,6 +13,7 @@ import { NIGHTMARES_HP } from './../../../constants';
 import { bossKillables } from './bosses';
 import { chaeldarMonsters } from './chaeldarMonsters';
 import AbyssalDragon, { AbyssalDragonLootTable } from './custom/AbyssalDragon';
+import { Ignecarus } from './custom/Ignecarus';
 import KingGoldemar from './custom/KingGoldemar';
 import Koschei, { koscheiTable } from './custom/Koschei';
 import SeaKraken, { KrakenTable } from './custom/SeaKraken';
@@ -82,8 +83,8 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Armadyl chestplate', "Karil's leathertop"],
-			['Armadyl chainskirt', "Karil's leatherskirt"]
+			['Gorajan archer top', 'Pernix body', 'Armadyl chestplate', "Karil's leathertop"],
+			['Gorajan archer legs', 'Pernix chaps', 'Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
 
 		qpRequired: 0,
@@ -121,8 +122,8 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Bandos chestplate', "Torag's platebody"],
-			['Bandos tassets', "Torag's platelegs"]
+			['Gorajan warrior top', 'Torva platebody', 'Bandos chestplate', "Torag's platebody"],
+			['Gorajan warrior legs', 'Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: [
@@ -157,8 +158,8 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Bandos chestplate', "Torag's platebody"],
-			['Bandos tassets', "Torag's platelegs"]
+			['Gorajan warrior top', 'Torva platebody', 'Bandos chestplate', "Torag's platebody"],
+			['Gorajan warrior legs', 'Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
 		]),
 
 		qpRequired: 0,
@@ -497,5 +498,10 @@ export const effectiveMonsters = [
 		id: VasaMagus.id,
 		name: 'Vasa Magus',
 		aliases: ['vasa', 'vasa magus', 'vm']
+	},
+	{
+		id: Ignecarus.id,
+		name: 'Ignecarus',
+		aliases: ['igne', 'ignecarus']
 	}
 ];

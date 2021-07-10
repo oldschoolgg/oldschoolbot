@@ -47,6 +47,11 @@ import {
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import findMonster from '../../lib/util/findMonster';
 import itemID from '../../lib/util/itemID';
+import {
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit
+} from '../../tasks/minions/dungeoneeringActivity';
 
 const validMonsters = killableMonsters.map(mon => mon.name).join('\n');
 const invalidMonsterMsg = (prefix: string) =>
@@ -54,6 +59,12 @@ const invalidMonsterMsg = (prefix: string) =>
 	`\n\nTry: \`${prefix}k --monsters\` for a list of killable monsters.`;
 
 const { floor } = Math;
+
+const gorajanBoosts = [
+	[gorajanArcherOutfit, GearSetupTypes.Range],
+	[gorajanWarriorOutfit, GearSetupTypes.Melee],
+	[gorajanOccultOutfit, GearSetupTypes.Mage]
+] as const;
 
 function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
@@ -281,6 +292,14 @@ export default class extends BotCommand {
 		if (monster.wildy && hasZealotsAmulet) {
 			timeToFinish *= 0.95;
 			boosts.push('5% for Amulet of zealots');
+		}
+
+		for (const [outfit, setup] of gorajanBoosts) {
+			if (monster.attackStyleToUse?.includes(setup) && msg.author.getGear(setup).hasEquipped(outfit, true)) {
+				boosts.push('10% for gorajan');
+				timeToFinish *= 0.9;
+				break;
+			}
 		}
 
 		// If no quantity provided, set it to the max.

@@ -72,6 +72,7 @@ export default class BankImageTask extends Task {
 	public borderVertical: Image | null = null;
 
 	public imageHamstare: Image | null = null;
+	public redGlow: Image | null = null;
 	public constructor(store: TaskStore, file: string[], directory: string) {
 		super(store, file, directory, {});
 
@@ -117,6 +118,7 @@ export default class BankImageTask extends Task {
 			fs.readFileSync('./src/lib/resources/images/bank_border_v.png')
 		);
 		this.imageHamstare = await canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/hamstare.png'));
+		this.redGlow = await canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/red-glow.png'));
 	}
 
 	async cacheFiles() {
@@ -458,13 +460,23 @@ export default class BankImageTask extends Task {
 			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
 			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
 
-			ctx.drawImage(
-				itemImage,
-				floor(xLoc + (itemSize - itemWidth) / 2) + 2,
-				floor(yLoc + (itemSize - itemHeight) / 2),
-				itemWidth,
-				itemHeight
-			);
+			const x = floor(xLoc + (itemSize - itemWidth) / 2) + 2;
+			const y = floor(yLoc + (itemSize - itemHeight) / 2);
+			if (item.name === 'Dragon egg') {
+				const centerX = x + itemImage.width / 2;
+				const centerY = y + itemImage.height / 2;
+				const glowX = centerX - this.redGlow!.width / 2;
+				const glowY = centerY - this.redGlow!.width / 2;
+				ctx.strokeStyle = 'red';
+				if (flags.debug) {
+					ctx.strokeRect(glowX, glowY, this.redGlow!.width, this.redGlow!.height);
+				}
+				ctx.drawImage(this.redGlow, glowX, glowY, this.redGlow?.width, this.redGlow?.height);
+			}
+			if (flags.debug) {
+				ctx.strokeRect(x, y, itemWidth, itemHeight);
+			}
+			ctx.drawImage(itemImage, x, y, itemWidth, itemHeight);
 
 			// Check if new cl item
 			const isNewCLItem =

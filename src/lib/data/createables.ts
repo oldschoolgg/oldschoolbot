@@ -1,3 +1,5 @@
+import { Bank } from 'oldschooljs';
+
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
@@ -4670,6 +4672,46 @@ const Createables: Createable[] = [
 		requiredSkills: {
 			crafting: 105,
 			magic: 105
+		}
+	},
+	{
+		name: 'Ignis ring(i)',
+		inputItems: resolveNameBank({
+			'Ignis ring': 1,
+			'Magus scroll': 1
+		}),
+		outputItems: {
+			[itemID('Ignis ring(i)')]: 1
+		},
+		requiredSkills: {
+			crafting: 120,
+			magic: 105
+		}
+	},
+	{
+		name: 'Bottled dragonbreath',
+		inputItems: resolveNameBank({
+			Dragonfruit: 10,
+			Vial: 1
+		}),
+		outputItems: {
+			[itemID('Bottled dragonbreath')]: 1
+		},
+		requiredSkills: {
+			slayer: 62
+		}
+	},
+	{
+		name: 'Charged Dragonfire shield',
+		inputItems: new Bank({
+			'Bottled dragonbreath': 5,
+			11284: 1
+		}).bank,
+		outputItems: {
+			11283: 1
+		},
+		requiredSkills: {
+			slayer: 62
 		}
 	},
 	...chaoticCreatables,

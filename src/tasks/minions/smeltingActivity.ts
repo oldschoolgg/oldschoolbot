@@ -19,11 +19,14 @@ export default class extends Task {
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
 
 		// If this bar has a chance of failing to smelt, calculate that here.
+		const masterCapeInEffect = bar.chanceOfFail > 0 && user.hasItemEquippedAnywhere('Smithing master cape');
 		const oldQuantity = quantity;
+
 		if (bar.chanceOfFail > 0) {
+			let chance = masterCapeInEffect ? bar.chanceOfFail / 2 : bar.chanceOfFail;
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
-				if (randInt(0, 100) > bar.chanceOfFail) {
+				if (randInt(0, 100) > chance) {
 					newQuantity++;
 				}
 			}
@@ -46,6 +49,10 @@ export default class extends Task {
 
 		if (bar.chanceOfFail > 0 && oldQuantity > quantity) {
 			str += `\n\n${oldQuantity - quantity} ${bar.name}s failed to smelt.`;
+		}
+
+		if (masterCapeInEffect) {
+			str += '\n2x less likely to fail from Smithing master cape';
 		}
 
 		const loot = new Bank({

@@ -229,10 +229,20 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 	return { currentTask, assignedTask, messages };
 }
 
-export function calcMaxBlockedTasks(qps: number) {
+export function calcMaxBlockedTasks(user: KlasaUser) {
+	const QP = user.settings.get(UserSettings.QP);
+
 	// 6 Blocks total 5 for 250 qps, + 1 for lumby.
 	// For now we're do 1 free + 1 for every 50 qps.
-	return Math.min(1 + Math.floor(qps / 50), 6);
+	let amount = Math.min(1 + Math.floor(QP / 50), 6);
+
+	const unlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
+	const hasBlockAndRoll = unlocks.includes(SlayerTaskUnlocksEnum.BlockAndRoll);
+
+	if (hasBlockAndRoll) {
+		amount += 3;
+	}
+	return amount;
 }
 export function getCommonTaskName(task: Monster) {
 	let commonName = task.name;

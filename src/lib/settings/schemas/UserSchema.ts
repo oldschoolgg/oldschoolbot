@@ -152,4 +152,6 @@ Client.defaultUserSchema
 			.add(FarmingPatchTypes.Flower, 'any', { default: null })
 			.add(FarmingPatchTypes.Mushroom, 'any', { default: null })
 			.add(FarmingPatchTypes.Belladonna, 'any', { default: null })
-	);
+	)
+	.add('nursery', 'any', { default: null })
+	.add('selected_tame', 'any', { default: null });

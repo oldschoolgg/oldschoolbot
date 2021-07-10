@@ -29,6 +29,9 @@ export default class extends BotCommand {
 		bank.add('Zamorakian spear');
 		bank.add('Dragon warhammer');
 		bank.add('Bandos godsword');
+		bank.add('Saradomin brew(4)', 10_000);
+		bank.add('Super restore(4)', 10_000);
+
 		const poh = await msg.author.getPOH();
 		poh.pool = 29241;
 		await poh.save();
@@ -79,7 +82,7 @@ export default class extends BotCommand {
 			});
 		}
 		return msg.channel.send(
-			`Gave you 99 in all skills, 1b GP, ${MAX_QP} QP, and 1k of all eatable foods. **Gave your POH an ornate rejuve pool**`
+			`Gave you 99 in all skills, 1b GP, ${MAX_QP} QP, and ${bank}. **Gave your POH an ornate rejuve pool**`
 		);
 	}
 }

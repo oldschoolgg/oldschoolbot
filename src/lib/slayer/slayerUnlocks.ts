@@ -79,7 +79,8 @@ export enum SlayerTaskUnlocksEnum {
 	RunePouch,
 	DoubleTrouble,
 	BroaderFletching,
-	SizeMatters
+	SizeMatters,
+	BlockAndRoll
 }
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	{
@@ -534,5 +535,13 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 1500,
 		canBeRemoved: true,
 		aliases: ['size matters']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.BlockAndRoll,
+		name: 'Block and Roll',
+		desc: 'Allows you to have 3 extra task blocks',
+		slayerPointCost: 5000,
+		canBeRemoved: true,
+		aliases: ['block n roll', 'block and roll']
 	}
 ];
