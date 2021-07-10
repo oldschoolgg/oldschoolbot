@@ -17,6 +17,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, PerkTier, skillEmoji } from '../../lib/constants';
+import { Eatables } from '../../lib/data/eatables';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear/util';
 import ClueTiers from '../../lib/minions/data/clueTiers';
@@ -224,6 +225,14 @@ export default class extends Extendable {
 				return `${this.minionName} is currently cooking ${data.quantity}x ${
 					cookable!.name
 				}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${this.skillLevel(SkillsEnum.Cooking)}`;
+			}
+
+			case Activity.BaitCutting: {
+				const data = currentTask as CookingActivityTaskOptions;
+				const eatable = Eatables.find(e => e.id === data.cookableID);
+				return `${this.minionName} is currently transforming ${toTitleCase(
+					`Raw ${eatable!.name}`
+				)} into raw bait. ${formattedDuration}`;
 			}
 
 			case Activity.Fishing: {

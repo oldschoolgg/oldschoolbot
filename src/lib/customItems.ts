@@ -1560,7 +1560,6 @@ setCustomItem(
 	},
 	50_000_000
 );
-
 setCustomItem(
 	50_035,
 	'Scroll of longevity',
@@ -1570,3 +1569,4 @@ setCustomItem(
 	},
 	100_000
 );
+setCustomItem(50_036, 'Special raw bait', 'Fishing bait', {}, 1_000);
