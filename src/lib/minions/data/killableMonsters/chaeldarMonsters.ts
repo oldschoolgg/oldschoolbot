@@ -76,8 +76,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([
-			["Karil's leathertop", 'Armadyl chestplate'],
-			["Karil's leatherskirt", 'Armadyl chainskirt']
+			['Gorajan archer top', 'Pernix body', "Karil's leathertop", 'Armadyl chestplate'],
+			['Gorajan archer legs', 'Pernix chaps', "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		qpRequired: 20,
 		levelRequirements: {
@@ -254,6 +254,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			[
+				'Virtus wand',
 				'Trident of the seas',
 				'Trident of the seas (full)',
 				'Uncharged trident',
@@ -333,7 +334,14 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
-			["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow', 'Toxic blowpipe', 'Toxic blowpipe (empty)']
+			[
+				'Zaryte bow',
+				"Karil's crossbow",
+				'Rune crossbow',
+				'Armadyl crossbow',
+				'Toxic blowpipe',
+				'Toxic blowpipe (empty)'
+			]
 		]),
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,

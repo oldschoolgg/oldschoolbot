@@ -1199,8 +1199,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		existsInCatacombs: true,
 		itemsRequired: deepResolveItems([
-			["Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
-			["Black d'hide chaps", "Karil's leatherskirt", 'Armadyl chainskirt']
+			['Pernix body', "Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
+			['Pernix chaps', "Black d'hide chaps", "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		qpRequired: 0,
 		levelRequirements: {

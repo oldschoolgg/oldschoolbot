@@ -69,8 +69,8 @@ const killableBosses: KillableMonster[] = [
 		},
 		uniques: [...bosses.Saradomin, ...bosses.Shards],
 		itemsRequired: deepResolveItems([
-			["Karil's leathertop", 'Armadyl chestplate'],
-			["Karil's leatherskirt", 'Armadyl chainskirt']
+			['Pernix body', "Karil's leathertop", 'Armadyl chestplate'],
+			['Pernix chaps', "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		customMonsterHP: 723,
@@ -104,8 +104,8 @@ const killableBosses: KillableMonster[] = [
 		},
 		uniques: [...bosses.Arma, ...bosses.Shards],
 		itemsRequired: deepResolveItems([
-			["Karil's leathertop", 'Armadyl chestplate'],
-			["Karil's leatherskirt", 'Armadyl chainskirt']
+			['Pernix body', "Karil's leathertop", 'Armadyl chestplate'],
+			['Pernix chaps', "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
@@ -144,8 +144,8 @@ const killableBosses: KillableMonster[] = [
 		},
 		uniques: [...bosses.Zammy, ...bosses.Shards],
 		itemsRequired: deepResolveItems([
-			["Karil's leathertop", 'Armadyl chestplate'],
-			["Karil's leatherskirt", 'Armadyl chainskirt']
+			['Pernix body', "Karil's leathertop", 'Armadyl chestplate'],
+			['Pernix chaps', "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 708,
