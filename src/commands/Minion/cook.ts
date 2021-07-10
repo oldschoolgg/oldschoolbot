@@ -148,7 +148,7 @@ export default class extends BotCommand {
 			if (Object.keys(c.inputCookables).length === 1) {
 				const rawFood = new Bank(c.inputCookables);
 				const eatable = Eatables.find(e => e.id === c.id);
-				if (eatable && rawFood) rawFoods.push([eatable, rawFood.items()[0][0], c]);
+				if (eatable) rawFoods.push([eatable, rawFood.items()[0][0], c]);
 			}
 		});
 
@@ -263,7 +263,7 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`${msg.author.minionName} is now cutting ${toRemove} into raw bait. It'll take around ${formatDuration(
 				duration
-			)} to finish. ${boosts ? `\n\n${boosts.join(', ')}` : ''}`
+			)} to finish. ${boosts.length > 0 ? `\n\n${boosts.join(', ')}` : ''}`
 		);
 	}
 }
