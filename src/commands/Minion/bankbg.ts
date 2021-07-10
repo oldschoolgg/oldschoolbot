@@ -1,3 +1,4 @@
+import { uniqueArr } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -47,7 +48,9 @@ export default class extends BotCommand {
 			return msg.channel.send(`Your bank background is now **${selectedImage.name}**!`);
 		}
 
-		if (selectedImage.sacValueRequired) {
+		const userUnlockedBgs = [...msg.author.settings.get(UserSettings.UnlockedBankBackgrounds)];
+		const hasBgUnlocked = userUnlockedBgs.includes(selectedImage.id);
+		if (!hasBgUnlocked && selectedImage.sacValueRequired) {
 			const sac = msg.author.settings.get(UserSettings.SacrificedValue);
 			if (sac < selectedImage.sacValueRequired) {
 				return msg.channel.send(
@@ -58,7 +61,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (selectedImage.skillsNeeded) {
+		if (!hasBgUnlocked && selectedImage.skillsNeeded) {
 			const meets = skillsMeetRequirements(msg.author.rawSkills, selectedImage.skillsNeeded);
 			if (!meets) {
 				return msg.channel.send(
@@ -74,6 +77,7 @@ export default class extends BotCommand {
 		}
 
 		if (
+			!hasBgUnlocked &&
 			selectedImage.bitfield &&
 			!msg.author.settings.get(UserSettings.BitField).includes(selectedImage.bitfield)
 		) {
@@ -85,9 +89,10 @@ export default class extends BotCommand {
 			selectedImage.collectionLogItemsNeeded &&
 			!bankHasAllItemsFromBank(msg.author.collectionLog, selectedImage.collectionLogItemsNeeded)
 		) {
+			const clBank = new Bank(selectedImage.collectionLogItemsNeeded);
 			return msg.channel.send(
-				`You're not worthy to use this background. You need these items in your Collection Log: ${new Bank(
-					selectedImage.collectionLogItemsNeeded
+				`You're not worthy to use this background. You are missing the following items in your Collection Log: ${clBank.remove(
+					msg.author.collectionLog
 				)}`
 			);
 		}
@@ -119,48 +124,58 @@ export default class extends BotCommand {
 			const userBank = msg.author.settings.get(UserSettings.Bank);
 
 			// Ensure they have the required items.
-			if (selectedImage.itemCost && !bankHasAllItemsFromBank(userBank, selectedImage.itemCost)) {
+			if (
+				!hasBgUnlocked &&
+				selectedImage.itemCost &&
+				!bankHasAllItemsFromBank(userBank, selectedImage.itemCost)
+			) {
+				const requiredBank = new Bank(selectedImage.itemCost);
 				return msg.channel.send(
-					`You don't have the required items to purchase this background. You need: ${new Bank(
-						selectedImage.itemCost
+					`You don't have the required items to purchase this background. You are missing the following items: ${requiredBank.remove(
+						userBank
 					)}.`
 				);
 			}
 
 			// Ensure they have the required GP.
-			if (selectedImage.gpCost && msg.author.settings.get(UserSettings.GP) < selectedImage.gpCost) {
-				return msg.channel.send(
-					`You need ${selectedImage.gpCost.toLocaleString()} GP to purchase this background.`
-				);
+			const gpCost = selectedImage.gpCost
+				? !hasBgUnlocked
+					? selectedImage.gpCost
+					: selectedImage.gpCost * 0.1
+				: undefined;
+			if (gpCost && msg.author.settings.get(UserSettings.GP) < gpCost) {
+				return msg.channel.send(`You need ${gpCost.toLocaleString()} GP to purchase this background.`);
 			}
 
 			// Start building a string to show to the user.
 			let str = `${msg.author}, please confirm that you want to buy the **${selectedImage.name}** bank background for: `;
 
 			// If theres an item cost or GP cost, add it to the string to show users the cost.
-			if (selectedImage.itemCost) {
+			if (!hasBgUnlocked && selectedImage.itemCost) {
 				str += new Bank(selectedImage.itemCost).toString();
-				if (selectedImage.gpCost) {
-					str += `, ${selectedImage.gpCost.toLocaleString()} GP.`;
+				if (gpCost) {
+					str += `, ${gpCost.toLocaleString()} GP.`;
 				}
-			} else if (selectedImage.gpCost) {
-				str += `${selectedImage.gpCost.toLocaleString()} GP.`;
+			} else if (gpCost) {
+				str += `${gpCost.toLocaleString()} GP.`;
 			}
 
-			str +=
-				" **Note:** You'll have to pay this cost again if you switch to another background and want this one again.";
+			if (!hasBgUnlocked) {
+				str +=
+					" **Note:** You'll will **NOT** have to pay this cost again if you switch to another background and want this one again. The cost for re-applying this bank will be 10% of its initial GP cost.";
+			}
 
 			await msg.confirm(str);
 
-			if (selectedImage.itemCost) {
+			if (!hasBgUnlocked && selectedImage.itemCost) {
 				await msg.author.settings.update(
 					UserSettings.Bank,
 					removeBankFromBank(userBank, selectedImage.itemCost)
 				);
 			}
 
-			if (selectedImage.gpCost) {
-				await msg.author.removeGP(selectedImage.gpCost);
+			if (gpCost) {
+				await msg.author.removeGP(gpCost);
 			}
 		}
 
@@ -169,7 +184,14 @@ export default class extends BotCommand {
 				Events.ServerNotification,
 				`**${msg.author.username}'s** just purchased the ${selectedImage.name} bank background!`
 			);
+			if (!hasBgUnlocked) {
+				userUnlockedBgs.push(selectedImage.id);
+				await msg.author.settings.update(UserSettings.UnlockedBankBackgrounds, uniqueArr(userUnlockedBgs), {
+					arrayAction: 'overwrite'
+				});
+			}
 		}
+
 		await msg.author.settings.update(UserSettings.BankBackground, selectedImage.id);
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.BankBgCostBank,

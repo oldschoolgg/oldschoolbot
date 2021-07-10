@@ -20,6 +20,7 @@ Client.defaultUserSchema
 	.add('monsterScores', 'any', { default: {} })
 	.add('lapsScores', 'any', { default: {} })
 	.add('bankBackground', 'integer', { default: 1 })
+	.add('bankbgs_unlocked', 'integer', { array: true, default: [] })
 	.add('sacrificedBank', 'any', { default: {} })
 	.add('honour_level', 'integer', { default: 1 })
 	.add('honour_points', 'integer', { default: 0 })
