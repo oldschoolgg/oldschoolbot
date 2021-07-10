@@ -4,7 +4,7 @@ import { Activity } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { cancelTask, getActivityOfUser } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { BossActivityTaskOptions, RaidsActivityTaskOptions } from './../../lib/types/minions';
+import { BossActivityTaskOptions, NewBossOptions, RaidsActivityTaskOptions } from './../../lib/types/minions';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -65,9 +65,12 @@ export default class extends BotCommand {
 		}
 
 		if (currentTask.type === Activity.KalphiteKing) {
-			return msg.channel.send(
-				`${msg.author.minionName} is fighting the Kalphite King with a team, they cant leave their team!`
-			);
+			const data = currentTask as NewBossOptions;
+			if (data.users.length > 1) {
+				return msg.channel.send(
+					`${msg.author.minionName} is fighting the Kalphite King with a team, they cant leave their team!`
+				);
+			}
 		}
 		if (currentTask.type === Activity.BarbarianAssault) {
 			return msg.channel.send(
