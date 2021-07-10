@@ -32,9 +32,9 @@ export default class extends BotCommand {
 		}
 
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
-		const currentEquippedGear = msg.author.getGear(gearType);
+		const currentEquippedGear = msg.author.getGear(gearType).raw();
 
-		const itemToUnequip = itemArray.find(i => currentEquippedGear.hasEquipped([i.id]));
+		const itemToUnequip = itemArray.find(i => msg.author.getGear(gearType).hasEquipped([i.id]));
 
 		if (!itemToUnequip) {
 			return msg.channel.send("You don't have this item equipped!");

@@ -43,7 +43,7 @@ export default class extends BotCommand {
 		}
 
 		const { slot } = itemToEquip.equipment!;
-		const currentEquippedGear = msg.author.getGear(gearType);
+		const currentEquippedGear = msg.author.getGear(gearType).raw();
 
 		/**
 		 * Handle 2h items
