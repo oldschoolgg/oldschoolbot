@@ -18,6 +18,7 @@ interface NurseryEgg {
 export interface Nursery {
 	egg: NurseryEgg | null;
 	eggsHatched: number;
+	hasFuel: boolean;
 }
 
 export interface Species {

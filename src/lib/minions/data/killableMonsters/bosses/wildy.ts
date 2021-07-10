@@ -85,8 +85,8 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 8,
 		itemsRequired: deepResolveItems([
-			["Black d'hide body", "Karil's leathertop"],
-			["Black d'hide chaps", "Karil's leatherskirt"]
+			['Pernix body', "Black d'hide body", "Karil's leathertop"],
+			['Pernix chaps', "Black d'hide chaps", "Karil's leatherskirt"]
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: [
@@ -151,10 +151,22 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
-			'Anti-dragon shield',
-			['Armadyl crossbow', 'Rune crossbow', 'Twisted bow', 'Dragon hunter crossbow'],
-			["Black d'hide body", "Black d'hide body (g)", "Black d'hide body (t)", "Karil's leathertop"],
-			["Black d'hide chaps", "Black d'hide chaps (g)", "Black d'hide chaps (t)", "Karil's leatherskirt"]
+			['Dragonfire shield', 'Anti-dragon shield'],
+			['Zaryte bow', 'Armadyl crossbow', 'Rune crossbow', 'Twisted bow', 'Dragon hunter crossbow'],
+			[
+				'Pernix body',
+				"Black d'hide body",
+				"Black d'hide body (g)",
+				"Black d'hide body (t)",
+				"Karil's leathertop"
+			],
+			[
+				'Pernix chaps',
+				"Black d'hide chaps",
+				"Black d'hide chaps (g)",
+				"Black d'hide chaps (t)",
+				"Karil's leatherskirt"
+			]
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: [

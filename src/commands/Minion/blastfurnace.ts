@@ -96,6 +96,11 @@ export default class extends BotCommand {
 			graceful = '\n-7.5% time penalty for not having graceful equipped.';
 		}
 
+		if (msg.author.hasItemEquippedAnywhere('Smithing master cape')) {
+			timeToSmithSingleBar /= 2;
+			graceful += '\n2x boost for Smithing master cape';
+		}
+
 		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
 
 		await msg.author.settings.sync(true);
@@ -106,11 +111,6 @@ export default class extends BotCommand {
 			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
 			const max = userBank.fits(bar.inputOres);
 			if (max < quantity && max !== 0) quantity = max;
-		}
-
-		if (msg.author.hasItemEquippedAnywhere('Smithing master cape')) {
-			timeToSmithSingleBar /= 2;
-			graceful += '\n2x boost for Smithing master cape';
 		}
 
 		const duration = quantity * timeToSmithSingleBar;

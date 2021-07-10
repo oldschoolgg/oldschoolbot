@@ -19,7 +19,7 @@ export default class POHCommand extends BotCommand {
 			description: 'Allows you to access and build in your POH.',
 			examples: ['+poh build demonic throne', '+poh', '+poh items', '+poh destroy demonic throne'],
 			subcommands: true,
-			usage: '[build|add] [input:...str]',
+			usage: '[build|add|fuel] [input:...str]',
 			usageDelim: ' '
 		});
 	}
@@ -45,7 +45,8 @@ export default class POHCommand extends BotCommand {
 		if (diff >= specie.hatchTime) {
 			const newNursery: Nursery = {
 				egg: null,
-				eggsHatched: nursery.eggsHatched + 1
+				eggsHatched: nursery.eggsHatched + 1,
+				hasFuel: false
 			};
 			await msg.author.settings.update(UserSettings.Nursery, newNursery);
 			const tame = new TamesTable();
@@ -79,6 +80,33 @@ export default class POHCommand extends BotCommand {
 		);
 	}
 
+	async fuel(msg: KlasaMessage) {
+		const nursery = msg.author.settings.get(UserSettings.Nursery);
+		if (!nursery) {
+			return msg.channel.send("You don't have a nursery.");
+		}
+		if (nursery.hasFuel) {
+			return msg.channel.send('Your nursery already has fuel.');
+		}
+		const cost = new Bank().add('Elder logs', 2500).add('Coal', 10_000);
+		if (!msg.author.owns(cost)) {
+			return msg.channel.send(`You need ${cost} to fuel your nursery.`);
+		}
+		await msg.confirm(
+			`Are you sure you want to use ${cost} to fuel your nursery? You need to provide fuel once per egg.`
+		);
+		await msg.author.removeItemsFromBank(cost);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.ConstructCostBank, cost);
+		const newNursery: Nursery = {
+			...nursery,
+			hasFuel: true
+		};
+		await msg.author.settings.update(UserSettings.Nursery, newNursery);
+		return msg.channel.send(
+			`You fueled your nursery, it's now ready to keep an egg warm! Removed ${cost} from your bank.`
+		);
+	}
+
 	async build(msg: KlasaMessage) {
 		const nursery = msg.author.settings.get(UserSettings.Nursery);
 		if (nursery) {
@@ -95,7 +123,8 @@ export default class POHCommand extends BotCommand {
 		updateBankSetting(this.client, ClientSettings.EconomyStats.ConstructCostBank, cost);
 		const newNursery: Nursery = {
 			egg: null,
-			eggsHatched: 0
+			eggsHatched: 0,
+			hasFuel: false
 		};
 		await msg.author.settings.update(UserSettings.Nursery, newNursery);
 		return msg.channel.send(`You built a nursery! Removed ${cost} from your bank.`);
@@ -110,6 +139,12 @@ export default class POHCommand extends BotCommand {
 
 		if (nursery.egg) {
 			return msg.channel.send('Your nursery is already holding an egg.');
+		}
+
+		if (!nursery.hasFuel) {
+			return msg.channel.send(
+				`Your nursery has no fuel for a fire to keep the egg warm, add fuel for the egg using \`${msg.cmdPrefix}nursery fuel\`.`
+			);
 		}
 
 		const bank = msg.author.bank();
@@ -143,7 +178,8 @@ export default class POHCommand extends BotCommand {
 				insertedAt: Date.now(),
 				species: specie.id
 			},
-			eggsHatched: nursery.eggsHatched
+			eggsHatched: nursery.eggsHatched,
+			hasFuel: false
 		};
 		await msg.author.settings.update(UserSettings.Nursery, newNursery);
 

@@ -63,8 +63,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [input]: [string | undefined]) {
 		const { currentTask, totalTasksDone, assignedTask } = await getUsersCurrentSlayerInfo(msg.author.id);
 		const myBlockList = msg.author.settings.get(UserSettings.Slayer.BlockedTasks);
-		const myQPs = msg.author.settings.get(UserSettings.QP);
-		const maxBlocks = calcMaxBlockedTasks(myQPs);
+		const maxBlocks = calcMaxBlockedTasks(msg.author);
 
 		let returnMessage = '';
 
