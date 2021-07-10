@@ -514,7 +514,8 @@ export const pets: CollectionLogData = {
 		'Phoenix',
 		'Smolcano',
 		'Youngllef',
-		"Lil' creator"
+		"Lil' creator",
+		'Tiny tempor'
 	]),
 	Special: resolveItems(['Dark squirrel'])
 };
