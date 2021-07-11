@@ -195,25 +195,25 @@ export default class extends BotCommand {
 		if (msg.author.skillLevel(SkillsEnum.Cooking) >= 99) {
 			possibleOutcomeBoost += 0.1;
 			if (msg.author.hasItemEquippedAnywhere(itemID('Cooking master cape'))) {
-				possibleOutcomeBoost += 0.2;
-				boosts.push('30% for having a Cooking master cape equipped');
+				possibleOutcomeBoost += 0.1;
+				boosts.push('20% for having a Cooking master cape equipped');
 			} else {
 				boosts.push('10% for being a great cooker');
 			}
 		}
 		// Having a dwarven knife
 		if (msg.author.hasItemEquippedOrInBank('Dwarven knife')) {
-			possibleOutcomeBoost += 0.25;
-			boosts.push('25% for owning a Dwarven knife');
+			possibleOutcomeBoost += 0.15;
+			boosts.push('15% for owning a Dwarven knife');
 		}
 		// Having Pet?
 		if (msg.author.equippedPet() === itemID('Remy')) {
-			possibleOutcomeBoost += 0.5;
-			boosts.push('50% for having Remi helping you');
+			possibleOutcomeBoost += 0.25;
+			boosts.push('25% for having Remi helping you');
 		}
 
-		// 6 Ticks per action
-		const timePerFood = (6 * 0.6 * 1000) / (1 + possibleOutcomeBoost);
+		// 3 Ticks per action
+		const timePerFood = (3 * 0.6 * 1000) / (1 + possibleOutcomeBoost);
 
 		// Extra quantity that can be done in the same triplength
 		let duration = 0;

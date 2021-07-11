@@ -17,10 +17,10 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		const eatable = Eatables.find(e => e.id === cookableID);
 		if (!eatable) return;
-		const baitReceived = Math.floor(randFloat(eatable.healAmount / 9, eatable.healAmount / 5) * quantity);
+		const baitReceived = Math.floor((randFloat(eatable.healAmount / 9, eatable.healAmount / 5) * quantity) / 2);
 		const xpReceived = await user.addXP({
 			skillName: SkillsEnum.Cooking,
-			amount: Cookables.find(c => c.id === eatable.id)!.xp * 0.25 * quantity,
+			amount: Cookables.find(c => c.id === eatable.id)!.xp * 0.1 * quantity,
 			duration
 		});
 		const loot = new Bank().add('Special raw bait', baitReceived);
