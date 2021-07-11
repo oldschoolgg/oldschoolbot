@@ -26,8 +26,7 @@ export default class extends BotCommand {
 
 		if (capesOwned < 1) return msg.channel.send('You have no Fire capes to gamble!');
 
-		const str =
-			'Are you sure you want to gamble a Fire cape for a chance at the Tzrek-Jad pet?';
+		const str = 'Are you sure you want to gamble a Fire cape for a chance at the Tzrek-Jad pet?';
 
 		await msg.confirm(str);
 
