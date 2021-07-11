@@ -109,7 +109,7 @@ const TokkulShopItems: TokkulShopItem[] = [
 		name: 'Onyx bolt tips',
 		inputItem: itemID('Onyx bolt tips'),
 		tokkulReturn: 100,
-		tokkulCost: 1_500,
+		tokkulCost: 1500,
 		aliases: ['onyx tips', 'onix bolts']
 	},
 	// Equipment Store
@@ -123,56 +123,56 @@ const TokkulShopItems: TokkulShopItem[] = [
 	{
 		name: 'Obsidian sword',
 		inputItem: itemID('Toktz-xil-ak'),
-		tokkulReturn: 4_000,
+		tokkulReturn: 4000,
 		tokkulCost: 60_000,
 		aliases: ['toktz-xil-ak']
 	},
 	{
 		name: 'Obsidian dagger',
 		inputItem: itemID('Toktz-xil-ek'),
-		tokkulReturn: 2_500,
+		tokkulReturn: 2500,
 		tokkulCost: 37_500,
 		aliases: ['toktz-xil-ek']
 	},
 	{
 		name: 'Obsidian maul',
 		inputItem: itemID('Tzhaar-ket-om'),
-		tokkulReturn: 5_000,
+		tokkulReturn: 5000,
 		tokkulCost: 75_001,
 		aliases: ['tzhaar-ket-om']
 	},
 	{
 		name: 'Obsidian staff',
 		inputItem: itemID('Toktz-mej-tal'),
-		tokkulReturn: 3_500,
+		tokkulReturn: 3500,
 		tokkulCost: 52_500,
 		aliases: ['toktz-mej-tal']
 	},
 	{
 		name: 'Obsidian mace',
 		inputItem: itemID('Tzhaar-ket-em'),
-		tokkulReturn: 3_000,
+		tokkulReturn: 3000,
 		tokkulCost: 45_000,
 		aliases: ['tzhaar-ket-em']
 	},
 	{
 		name: 'Obsidian cape',
 		inputItem: itemID('Obsidian cape'),
-		tokkulReturn: 6_000,
+		tokkulReturn: 6000,
 		tokkulCost: 90_000,
 		aliases: ['obby cape']
 	},
 	{
 		name: 'Obsidian shield',
 		inputItem: itemID('Toktz-ket-xil'),
-		tokkulReturn: 4_500,
+		tokkulReturn: 4500,
 		tokkulCost: 67_500,
 		aliases: ['toktz-ket-xil', 'obby shield']
 	},
 	{
 		name: 'Obsidian helmet',
 		inputItem: itemID('Obsidian helmet'),
-		tokkulReturn: 5_632,
+		tokkulReturn: 5632,
 		tokkulCost: 84_480,
 		aliases: ['obby helmet'],
 		requireFireCape: true
@@ -180,7 +180,7 @@ const TokkulShopItems: TokkulShopItem[] = [
 	{
 		name: 'Obsidian platebody',
 		inputItem: itemID('Obsidian platebody'),
-		tokkulReturn: 8_400,
+		tokkulReturn: 8400,
 		tokkulCost: 126_000,
 		aliases: ['obby platebody'],
 		requireFireCape: true
@@ -188,7 +188,7 @@ const TokkulShopItems: TokkulShopItem[] = [
 	{
 		name: 'Obsidian platelegs',
 		inputItem: itemID('Obsidian platelegs'),
-		tokkulReturn: 6_700,
+		tokkulReturn: 6700,
 		tokkulCost: 100_500,
 		aliases: ['obby platelegs'],
 		requireFireCape: true

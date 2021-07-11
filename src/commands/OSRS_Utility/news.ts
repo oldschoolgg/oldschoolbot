@@ -29,7 +29,7 @@ export default class extends BotCommand {
 				new MessageEmbed()
 					.setTitle(item.title)
 					.setDescription(item.contentSnippet)
-					.setColor(52224)
+					.setColor(52_224)
 					.setThumbnail(item.enclosure.url)
 					.setURL(item.guid)
 			);

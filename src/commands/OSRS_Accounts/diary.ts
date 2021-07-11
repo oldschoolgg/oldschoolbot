@@ -47,7 +47,7 @@ export default class extends BotCommand {
 			.join('\n');
 
 		const embed = new MessageEmbed()
-			.setColor(11132490)
+			.setColor(11_132_490)
 			.setThumbnail('https://i.imgur.com/wV9zvLM.png')
 			.setDescription(username)
 			.addField('Diary', diaryNames, true)

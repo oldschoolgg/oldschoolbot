@@ -132,7 +132,7 @@ Please say \`permanent\` to confirm.`
 			try {
 				await msg.channel.awaitMessages({
 					max: 1,
-					time: 15000,
+					time: 15_000,
 					errors: ['time'],
 					filter: answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'deiron'
 				});
@@ -170,7 +170,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		try {
 			await msg.channel.awaitMessages({
 				max: 1,
-				time: 15000,
+				time: 15_000,
 				errors: ['time'],
 				filter: answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'confirm'
 			});
@@ -316,7 +316,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		try {
 			await msg.channel.awaitMessages({
 				max: 1,
-				time: 15000,
+				time: 15_000,
 				errors: ['time'],
 				filter: answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'yes'
 			});
