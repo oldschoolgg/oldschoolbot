@@ -1965,7 +1965,7 @@ export const collectionLogTypes: CollectionLogType[] = [
 	},
 	{
 		name: 'Tempoross',
-		aliases: ['temp', 'ross', 'tempo'],
+		aliases: ['temp', 'ross', 'tempo', 'tempoross'],
 		items: tempoross
 	},
 	{
