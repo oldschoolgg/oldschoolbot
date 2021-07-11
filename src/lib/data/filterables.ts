@@ -976,7 +976,7 @@ export const filterableTypes: Filterable[] = [
 	},
 	{
 		name: 'Tempoross',
-		aliases: ['temp', 'ross', 'tempo'],
+		aliases: ['temp', 'ross', 'tempo', 'tempoross'],
 		items: Object.values(tempoross).flat(Infinity) as number[]
 	},
 	{

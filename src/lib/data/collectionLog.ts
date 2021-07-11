@@ -2108,7 +2108,8 @@ export const collectionLogTypes: CollectionLogType[] = [
 			castleWarsGodItems,
 			castleWarsOther,
 			mta: [...wandItems, ...infinityItems],
-			trek: lumberjackOutfit
+			trek: lumberjackOutfit,
+			tempoross: temporossLog
 		}
 	},
 	{
