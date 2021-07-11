@@ -12,7 +12,7 @@ export default class extends Inhibitor {
 
 		const usersBitfields = msg.author.settings.get(UserSettings.BitField);
 		if (command.bitfieldsRequired.some(bit => !usersBitfields.includes(bit))) {
-			msg.send("You don't have the required permissions to use this command.");
+			msg.channel.send("You don't have the required permissions to use this command.");
 			return true;
 		}
 

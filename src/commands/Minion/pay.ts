@@ -1,7 +1,8 @@
 import { TextChannel } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { Channel, Events, Time } from '../../lib/constants';
+import { Channel, Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
@@ -44,6 +45,6 @@ export default class extends BotCommand {
 
 		this.client.emit(Events.EconomyLog, `${msg.author.sanitizedName} paid ${amount} GP to ${user.sanitizedName}.`);
 
-		return msg.send(`You sent ${amount.toLocaleString()} GP to ${user}.`);
+		return msg.channel.send(`You sent ${amount.toLocaleString()} GP to ${user}.`);
 	}
 }

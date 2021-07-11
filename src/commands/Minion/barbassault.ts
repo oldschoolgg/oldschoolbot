@@ -1,9 +1,9 @@
-import { increaseNumByPercent, randArrItem } from 'e';
+import { increaseNumByPercent, randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
-import { Activity, Emoji, Events, Time } from '../../lib/constants';
+import { Activity, Emoji, Events } from '../../lib/constants';
 import { maxOtherStats } from '../../lib/gear';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -113,7 +113,7 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		return msg.send(
+		return msg.channel.send(
 			`**Honour Points:** ${msg.author.settings.get(
 				UserSettings.HonourPoints
 			)} **Honour Level:** ${msg.author.settings.get(
@@ -130,7 +130,7 @@ export default class extends BotCommand {
 	async level(msg: KlasaMessage) {
 		const currentLevel = msg.author.settings.get(UserSettings.HonourLevel);
 		if (currentLevel === 5) {
-			return msg.send("You've already reached the highest possible Honour level.");
+			return msg.channel.send("You've already reached the highest possible Honour level.");
 		}
 
 		const points = msg.author.settings.get(UserSettings.HonourPoints);
@@ -138,20 +138,22 @@ export default class extends BotCommand {
 		for (const level of levels) {
 			if (currentLevel >= level.level) continue;
 			if (points < level.cost) {
-				return msg.send(
+				return msg.channel.send(
 					`You don't have enough points to upgrade to level ${level.level}. You need ${level.cost} points.`
 				);
 			}
 			await msg.author.settings.update(UserSettings.HonourPoints, points - level.cost);
 			await msg.author.settings.update(UserSettings.HonourLevel, currentLevel + 1);
-			return msg.send(`You've spent ${level.cost} Honour points to level up to Honour level ${level.level}!`);
+			return msg.channel.send(
+				`You've spent ${level.cost} Honour points to level up to Honour level ${level.level}!`
+			);
 		}
 	}
 
 	async buy(msg: KlasaMessage, [input = '']: [string]) {
 		const buyable = BarbBuyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
-			return msg.send(
+			return msg.channel.send(
 				`Here are the items you can buy: \n\n${BarbBuyables.map(
 					i => `**${i.item.name}:** ${i.cost} points`
 				).join('\n')}.`
@@ -161,7 +163,7 @@ export default class extends BotCommand {
 		const { item, cost } = buyable;
 		const balance = msg.author.settings.get(UserSettings.HonourPoints);
 		if (balance < cost) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough Honour Points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`
 			);
 		}
@@ -169,13 +171,13 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost);
 		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
 
-		return msg.send(`Successfully purchased 1x ${item.name} for ${cost} Honour Points.`);
+		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Honour Points.`);
 	}
 
 	async gamble(msg: KlasaMessage, [tier = '']: [string]) {
 		const buyable = GambleTiers.find(i => stringMatches(tier, i.name));
 		if (!buyable) {
-			return msg.send(
+			return msg.channel.send(
 				`You can gamble your points for the Low, Medium and High tiers. For example, \`${msg.cmdPrefix}ba gamble low\`.`
 			);
 		}
@@ -183,7 +185,7 @@ export default class extends BotCommand {
 		const balance = msg.author.settings.get(UserSettings.HonourPoints);
 		const { cost, name, table } = buyable;
 		if (balance < cost) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough Honour Points to do a ${name} gamble. You need ${cost}, but you have only ${balance}.`
 			);
 		}
@@ -214,7 +216,7 @@ export default class extends BotCommand {
 			UserSettings.HighGambles,
 			msg.author.settings.get(UserSettings.HighGambles) + 1
 		);
-		return msg.send(`You spent ${cost} Honour Points for a ${name} Gamble, and received... ${loot}.`);
+		return msg.channel.send(`You spent ${cost} Honour Points for a ${name} Gamble, and received... ${loot}.`);
 	}
 
 	@minionNotBusy
@@ -298,8 +300,6 @@ export default class extends BotCommand {
 			totalLevel
 		});
 
-		return msg.channel.send(str, {
-			split: true
-		});
+		return msg.channel.send(str);
 	}
 }

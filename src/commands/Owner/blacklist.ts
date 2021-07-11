@@ -36,6 +36,6 @@ export default class extends BotCommand {
 				`${toTitleCase(type)} \`${name}\` was ${newStatus} by ${msg.author.username} for \`${reason}\`.`
 			);
 		}
-		return msg.send(`${emoji} Successfully ${newStatus} ${type} ${name}.`);
+		return msg.channel.send(`${emoji} Successfully ${newStatus} ${type} ${name}.`);
 	}
 }

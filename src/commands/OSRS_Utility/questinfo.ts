@@ -94,14 +94,14 @@ export default class extends BotCommand {
 		const quest = cleanString(questName);
 
 		if (quests[quest]) {
-			return msg.send(this.questInfo(quests[quest]));
+			return msg.channel.send({ embeds: [this.questInfo(quests[quest])] });
 		}
 
 		if (alternativeNameMap[quest]) {
-			return msg.send(this.questInfo(quests[alternativeNameMap[quest]]));
+			return msg.channel.send({ embeds: [this.questInfo(quests[alternativeNameMap[quest]])] });
 		}
 
-		return msg.send("I don't have that quest, sorry!");
+		return msg.channel.send("I don't have that quest, sorry!");
 	}
 
 	questInfo(quest: Quest) {

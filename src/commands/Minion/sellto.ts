@@ -65,7 +65,7 @@ export default class extends BotCommand {
 	async sell(msg: KlasaMessage, buyerMember: GuildMember, price: number, [bankToSell, totalPrice]: [Bank, number]) {
 		const bankStr = bankToSell.toString();
 
-		let sellStr = `${msg.author}, say \`confirm\` to confirm that you want to sell ${bankStr} to \`${
+		let sellStr = `${msg.author}, please confirm that you want to sell ${bankStr} to \`${
 			buyerMember.user.username
 		}#${buyerMember.user.discriminator}\` for a *total* of ${price.toLocaleString()} GP.`;
 
@@ -75,19 +75,7 @@ export default class extends BotCommand {
 			sellStr += `\n\nWarning: The bot would pay you more (${botPays.toLocaleString()} GP) for these items than you are selling them for!`;
 		}
 
-		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-			const sellMsg = await msg.channel.send(sellStr);
-
-			// Confirm the seller wants to sell
-			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					options
-				);
-			} catch (err) {
-				return sellMsg.edit(`Cancelling sale of ${bankToSell}.`);
-			}
-		}
+		await msg.confirm(sellStr);
 
 		// Confirm the buyer wants to buy
 		const buyerConfirmationMsg = await msg.channel.send(
@@ -97,10 +85,10 @@ export default class extends BotCommand {
 		);
 
 		try {
-			await msg.channel.awaitMessages(
-				_msg => _msg.author.id === buyerMember.user.id && _msg.content.toLowerCase() === 'buy',
-				options
-			);
+			await msg.channel.awaitMessages({
+				...options,
+				filter: _msg => _msg.author.id === buyerMember.user.id && _msg.content.toLowerCase() === 'buy'
+			});
 		} catch (err) {
 			buyerConfirmationMsg.edit(`Cancelling sale of ${bankStr}.`);
 			return msg.channel.send(`Cancelling sale of ${bankStr}.`);
@@ -108,7 +96,7 @@ export default class extends BotCommand {
 
 		try {
 			if (buyerMember.user.settings.get(UserSettings.GP) < price || !msg.author.bank().fits(bankToSell)) {
-				return msg.send('One of you lacks the required GP or items to make this trade.');
+				return msg.channel.send('One of you lacks the required GP or items to make this trade.');
 			}
 
 			await buyerMember.user.removeGP(price);
@@ -118,7 +106,7 @@ export default class extends BotCommand {
 			await buyerMember.user.addItemsToBank(bankToSell.bank);
 		} catch (err) {
 			this.client.emit(Events.Wtf, err);
-			return msg.send('Fatal error occurred. Please seek help in the support server.');
+			return msg.channel.send('Fatal error occurred. Please seek help in the support server.');
 		}
 
 		this.client.emit(
@@ -130,6 +118,6 @@ export default class extends BotCommand {
 
 		msg.author.log(`sold ${bankStr} to ${buyerMember.user.sanitizedName} for ${price}`);
 
-		return msg.send(`Sale of ${bankStr} complete!`);
+		return msg.channel.send(`Sale of ${bankStr} complete!`);
 	}
 }

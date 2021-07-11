@@ -1,7 +1,7 @@
 import { objectEntries } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { addBanks, itemID, removeBankFromBank } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs/dist/util';
 
 import { Emoji } from '../../constants';
 import { Eatables } from '../../data/eatables';
@@ -9,7 +9,7 @@ import { GearSetupTypes } from '../../gear/types';
 import { ClientSettings } from '../../settings/types/ClientSettings';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { ItemBank } from '../../types';
-import { reduceNumByPercent } from '../../util';
+import { reduceNumByPercent, updateBankSetting } from '../../util';
 import getUserFoodFromBank from './getUserFoodFromBank';
 
 export default async function removeFoodFromUser({
@@ -52,11 +52,9 @@ export default async function removeFoodFromUser({
 			i => i.name
 		).join(', ')}.`;
 	} else {
-		await user.queueFn(() => user.settings.update(UserSettings.Bank, removeBankFromBank(userBank, foodToRemove)));
-		await client.settings.update(
-			ClientSettings.EconomyStats.PVMCost,
-			addBanks([client.settings.get(ClientSettings.EconomyStats.PVMCost), foodToRemove])
-		);
+		await user.removeItemsFromBank(foodToRemove);
+
+		updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, foodToRemove);
 
 		let reductionsStr = reductions.length > 0 ? ` **Base Food Reductions:** ${reductions.join(', ')}.` : '';
 		return [`${new Bank(foodToRemove)} from ${user.username}${reductionsStr}`, foodToRemove];

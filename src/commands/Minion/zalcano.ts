@@ -1,7 +1,7 @@
-import { calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
+import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time, ZALCANO_ID } from '../../lib/constants';
+import { Activity, ZALCANO_ID } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -15,9 +15,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 const skillRequirements: Skills = {
 	mining: 70,
 	smithing: 70,
-	cooking: 70,
 	farming: 70,
-	fishing: 70,
 	woodcutting: 70,
 	agility: 70,
 	herblore: 70,
@@ -57,7 +55,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`To fight Zalcano, you need: ${reason}.`);
 		}
 		if (msg.author.settings.get(UserSettings.QP) < 150) {
-			return msg.send('To fight Zalcano, you need 150 QP.');
+			return msg.channel.send('To fight Zalcano, you need 150 QP.');
 		}
 
 		const kc = msg.author.getKC(ZALCANO_ID);
@@ -105,7 +103,7 @@ export default class extends BotCommand {
 			isMVP: percentChance(80)
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${
 				msg.author.minionName
 			} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDuration(

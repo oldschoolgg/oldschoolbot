@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
 import { FarmingPatchTypes } from '../../lib/minions/farming/types';
@@ -56,7 +57,8 @@ export default class extends BotCommand {
 
 		const storeHarvestablePlant = patchType.lastPlanted;
 		const planted = storeHarvestablePlant
-			? Farming.Plants.find(
+			? Farming.Plants.find(plants => stringMatches(plants.name, storeHarvestablePlant)) ??
+			  Farming.Plants.find(
 					plants =>
 						stringMatches(plants.name, storeHarvestablePlant) ||
 						stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
@@ -166,9 +168,10 @@ export default class extends BotCommand {
 			quantity: patchType.lastQuantity,
 			planting: false,
 			currentDate,
-			type: Activity.Farming
+			type: Activity.Farming,
+			autoFarmed: false
 		});
 
-		return msg.send(returnMessageStr);
+		return msg.channel.send(returnMessageStr);
 	}
 }

@@ -16,6 +16,6 @@ export default class extends BotCommand {
 		await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
 		await msg.author.settings.reset();
 		await msg.author.settings.update('minion.hasBought', true);
-		return msg.send('Resetteded all your data.');
+		return msg.channel.send('Resetteded all your data.');
 	}
 }

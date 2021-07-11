@@ -19,13 +19,13 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [query]: [string | undefined]) {
 		if (!query) {
-			return msg.send('https://oldschool.runescape.wiki');
+			return msg.channel.send('https://oldschool.runescape.wiki');
 		}
 
 		const result = await Wiki.search(query);
 
 		if (result.length === 0) {
-			return msg.send('Found no results with that query.');
+			return msg.channel.send('Found no results with that query.');
 		}
 
 		const [page, ...tail] = result;
@@ -49,6 +49,6 @@ ${tail
 			embed.setThumbnail(page.image);
 		}
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

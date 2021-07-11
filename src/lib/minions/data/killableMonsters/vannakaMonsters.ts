@@ -82,7 +82,6 @@ export const vannakaMonsters: KillableMonster[] = [
 			}
 		},
 		slayerOnly: true,
-		notifyDrops: resolveItems(['Unsired']),
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 10
@@ -160,7 +159,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		notifyDrops: resolveItems(['Basilisk head']),
 		qpRequired: 1,
 		levelRequirements: {
 			slayer: 40
@@ -180,7 +178,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 4,
-		notifyDrops: resolveItems(['Basilisk head', 'Basilisk jaw']),
+		notifyDrops: resolveItems(['Basilisk jaw']),
 		qpRequired: 120,
 		levelRequirements: {
 			slayer: 60
@@ -248,7 +246,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.BrineRat.id,
 		name: Monsters.BrineRat.name,
 		aliases: Monsters.BrineRat.aliases,
-		timeToFinish: Time.Second * 38,
+		timeToFinish: Time.Second * 13,
 		table: Monsters.BrineRat,
 
 		wildy: false,
@@ -392,7 +390,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.DeviantSpectre.id,
 		name: Monsters.DeviantSpectre.name,
 		aliases: Monsters.DeviantSpectre.aliases,
-		timeToFinish: Time.Second * 37,
+		timeToFinish: Time.Second * 45,
 		table: Monsters.DeviantSpectre,
 
 		wildy: false,
@@ -419,7 +417,7 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		existsInCatacombs: true,
-		notifyDrops: resolveItems(['Dragon chainbody', 'Dust battlestaff']),
+		notifyDrops: resolveItems(['Dragon chainbody']),
 		qpRequired: 4,
 		levelRequirements: {
 			slayer: 65
@@ -659,7 +657,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.IceGiant.id,
 		name: Monsters.IceGiant.name,
 		aliases: Monsters.IceGiant.aliases,
-		timeToFinish: Time.Second * 27,
+		timeToFinish: Time.Second * 16,
 		table: Monsters.IceGiant,
 		wildy: true,
 
@@ -796,7 +794,6 @@ export const vannakaMonsters: KillableMonster[] = [
 				[itemID('Leaf-bladed battleaxe')]: 15
 			}
 		],
-		notifyDrops: resolveItems(['Kurask head']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 70
@@ -848,7 +845,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.MossGiant.id,
 		name: Monsters.MossGiant.name,
 		aliases: Monsters.MossGiant.aliases,
-		timeToFinish: Time.Second * 30,
+		timeToFinish: Time.Second * 14,
 		table: Monsters.MossGiant,
 
 		wildy: true,

@@ -1,54 +1,56 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 
-import { TradeableItemBankArgumentType } from '../../arguments/tradeableItemBank';
 import { Events } from '../../lib/constants';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks } from '../../lib/util';
+import { updateBankSetting } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '(items:TradeableBank)',
+			usage: '<amount:int{1}>',
 			oneAtTime: true,
 			categoryFlags: ['minion'],
-			description: 'Sacrifices items from your bank.',
-			examples: ['+sacrifice 1 Elysian sigil']
+			description: 'Sacrifices GP from your bank.',
+			examples: ['+sacrificegp 10m']
 		});
 	}
 
-	async run(msg: KlasaMessage, [[bankToSac, totalPrice]]: [TradeableItemBankArgumentType]) {
+	async run(msg: KlasaMessage, [amount]: [number]) {
 		await msg.confirm(
 			`${
 				msg.author
-			}, are you sure you want to sacrifice ${bankToSac}? This will add ${totalPrice.toLocaleString()} (${Util.toKMB(
-				totalPrice
+			}, please confirm you want to sacrifice ${amount} GP, this will add ${amount.toLocaleString()} (${Util.toKMB(
+				amount
 			)}) to your sacrificed amount.`
 		);
 
-		if (totalPrice > 200_000_000) {
-			this.client.emit(Events.ServerNotification, `${msg.author.username} just sacrificed ${bankToSac}!`);
+		if (amount > 200_000_000) {
+			this.client.emit(Events.ServerNotification, `${msg.author.username} just sacrificed ${amount} GP!`);
 		}
 
-		const newValue = msg.author.settings.get(UserSettings.SacrificedValue) + totalPrice;
+		const currentBal = msg.author.settings.get(UserSettings.GP);
+		if (currentBal < amount) {
+			return msg.channel.send(`You don't have ${amount} GP.`);
+		}
+
+		const bankToSac = new Bank().add('Coins', amount);
+
+		await msg.author.removeItemsFromBank(bankToSac);
+		const newValue = msg.author.settings.get(UserSettings.SacrificedValue) + amount;
 
 		await msg.author.settings.update(UserSettings.SacrificedValue, newValue);
-		await msg.author.removeItemsFromBank(bankToSac.bank);
 
 		const currentSacBank = new Bank(msg.author.settings.get(UserSettings.SacrificedBank));
-		currentSacBank.add(bankToSac);
-		await msg.author.settings.update(UserSettings.SacrificedBank, currentSacBank.values());
+		await msg.author.settings.update(UserSettings.SacrificedBank, currentSacBank.add(bankToSac).bank);
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.SacrificedBank,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.SacrificedBank), bankToSac.bank])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.SacrificedBank, bankToSac);
 
-		msg.author.log(`sacrificed ${bankToSac} for ${totalPrice}`);
+		msg.author.log(`sacrificed ${bankToSac} for ${amount}`);
 
 		let str = '';
 		const currentIcon = msg.author.settings.get(UserSettings.Minion.Icon);
@@ -67,9 +69,7 @@ export default class extends BotCommand {
 		}
 
 		return msg.channel.send(
-			`You sacrificed ${bankToSac}, with a value of ${totalPrice.toLocaleString()}gp (${Util.toKMB(
-				totalPrice
-			)}). Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`
+			`You sacrificed ${bankToSac}, with a value of ${amount.toLocaleString()} GP. Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`
 		);
 	}
 }
