@@ -1051,7 +1051,7 @@ export const cluesHard: CollectionLogData = {
 		'Nunchaku',
 		'Dual sai',
 		'Rune cane',
-		19912 // Zombie head
+		19_912 // Zombie head
 	]),
 	'3rd Age Melee': resolveItems([
 		'3rd age full helmet',
@@ -1424,8 +1424,8 @@ export const diangoCollectionLog: CollectionLogData = {
 		'White toy horsey',
 		'Black toy horsey',
 		'Grey toy horsey',
-		11705,
-		11706
+		11_705,
+		11_706
 	]),
 	Uncommon: resolveItems([
 		'Tiger toy',

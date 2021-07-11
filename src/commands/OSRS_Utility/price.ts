@@ -22,7 +22,7 @@ export default class extends BotCommand {
 
 		const embed = new MessageEmbed()
 			.setTitle(item.name)
-			.setColor(52224)
+			.setColor(52_224)
 			.setThumbnail(
 				`https://raw.githubusercontent.com/runelite/static.runelite.net/gh-pages/cache/item/icon/${item.id}.png`
 			)
