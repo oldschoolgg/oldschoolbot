@@ -128,6 +128,13 @@ export default class extends BotCommand {
 			const slayerStreak = msg.author.settings.get(UserSettings.Slayer.TaskStreak);
 			return msg.channel.send(
 				`Your minion is busy, but you can still manage your block list: \`${msg.cmdPrefix}st blocks\`` +
+					`${
+						currentTask
+							? `\nYour current task is to kill **${getCommonTaskName(
+									assignedTask!.monster
+							  )}**. You have ${currentTask.quantity.toLocaleString()} kills remaining.`
+							: ''
+					}` +
 					`\nYou have ${slayerPoints} slayer points, and have completed ${slayerStreak} tasks in a row.`
 			);
 		}
