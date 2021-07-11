@@ -780,8 +780,8 @@ const diango = resolveItems([
 	'White toy horsey',
 	'Black toy horsey',
 	'Grey toy horsey',
-	11705,
-	11706
+	11_705,
+	11_706
 ]);
 
 const diaries = resolveItems([

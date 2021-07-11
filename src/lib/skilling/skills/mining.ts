@@ -42,7 +42,7 @@ const ores: Ore[] = [
 	{
 		level: 1,
 		xp: 0,
-		id: 13421,
+		id: 13_421,
 		name: 'Saltpetre',
 		respawnTime: 1
 	},
@@ -68,7 +68,7 @@ const ores: Ore[] = [
 	{
 		level: 22,
 		xp: 10,
-		id: 21622,
+		id: 21_622,
 		name: 'Volcanic ash',
 		respawnTime: 0.05,
 		petChance: 741_600
@@ -142,7 +142,7 @@ const ores: Ore[] = [
 	{
 		level: 92,
 		xp: 240,
-		id: 21347,
+		id: 21_347,
 		name: 'Amethyst',
 		respawnTime: 40,
 		petChance: 50_000,

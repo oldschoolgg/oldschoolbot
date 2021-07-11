@@ -94,7 +94,7 @@ const logs: Log[] = [
 	{
 		level: 54,
 		xp: 40,
-		id: 10810,
+		id: 10_810,
 		name: 'Arctic Pine Logs',
 		respawnTime: 4.5,
 		petChance: 145_758,
@@ -134,7 +134,7 @@ const logs: Log[] = [
 	{
 		level: 90,
 		xp: 380,
-		id: 19669,
+		id: 19_669,
 		name: 'Redwood Logs',
 		respawnTime: 1.5,
 		petChance: 72_321,

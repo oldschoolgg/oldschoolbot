@@ -9,10 +9,10 @@ describe('util', () => {
 	});
 
 	test('getOSItem', () => {
-		expect(getOSItem('Twisted bow').id).toEqual(20997);
-		expect(getOSItem(20997).id).toEqual(20997);
-		expect(getOSItem('20997').id).toEqual(20997);
-		expect(getOSItem('3rd age platebody').id).toEqual(10348);
+		expect(getOSItem('Twisted bow').id).toEqual(20_997);
+		expect(getOSItem(20_997).id).toEqual(20_997);
+		expect(getOSItem('20997').id).toEqual(20_997);
+		expect(getOSItem('3rd age platebody').id).toEqual(10_348);
 
 		expect(() => getOSItem('Non-existant item')).toThrowError("That item doesn't exist.");
 	});

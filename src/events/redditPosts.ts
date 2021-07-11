@@ -103,7 +103,7 @@ export default class extends Event {
 	}
 
 	sendEmbed({ text, url, title, jmod }: RedditPost) {
-		const embed = new MessageEmbed().setDescription(he.decode(text)).setColor(1942002);
+		const embed = new MessageEmbed().setDescription(he.decode(text)).setColor(1_942_002);
 
 		if (jmod) {
 			embed.setAuthor(jmod.formattedName, undefined, `https://www.reddit.com/user/${jmod.redditUsername}`);
