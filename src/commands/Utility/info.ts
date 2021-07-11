@@ -9,7 +9,8 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			description: 'Shows some informational links relating to the bot.',
 			examples: ['+info'],
-			categoryFlags: ['utility']
+			categoryFlags: ['utility'],
+			aliases: ['help']
 		});
 	}
 
