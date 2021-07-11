@@ -49,7 +49,7 @@ const PoolCasketTable = new LootTable()
 	.add('Coins', [4000, 6000], 9)
 	.add('Loop half of key', 9, 1)
 	.add('Tooth half of key', 9, 1)
-	.add('Coins', [25000, 50_000], 1)
+	.add('Coins', [25_000, 50_000], 1)
 	.add('Clue scroll (easy)', 1, 12)
 	.add('Clue scroll (medium)', 1, 7)
 	.add('Clue scroll (hard)', 1, 5);
