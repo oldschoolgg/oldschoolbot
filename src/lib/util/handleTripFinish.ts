@@ -106,7 +106,7 @@ export async function handleTripFinish(
 					if (clueTier) {
 						messageComponents.components.push(
 							new MessageButton({
-								label: `Do ${clueTier.name} clue`,
+								label: `${clueTier.name} clue`,
 								style: 'SECONDARY',
 								customID: `clueID_${i[0].id}`
 							})
@@ -126,7 +126,7 @@ export async function handleTripFinish(
 					if (clueTier) {
 						messageComponents.components.push(
 							new MessageButton({
-								label: `Open ${clueTier.name} Casket`,
+								label: `Open ${clueTier.name.toLowerCase()} casket`,
 								style: 'SECONDARY',
 								customID: `clueID_${i[0].id}`
 							})
