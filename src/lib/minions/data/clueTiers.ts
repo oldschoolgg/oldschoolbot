@@ -10,15 +10,15 @@ const ClueTiers: ClueTier[] = [
 	{
 		name: 'Beginner',
 		table: Beginner,
-		id: 23245,
-		scrollID: 23182,
+		id: 23_245,
+		scrollID: 23_182,
 		timeToFinish: Time.Minute * 4.5,
 		mimicChance: false
 	},
 	{
 		name: 'Easy',
 		table: Easy,
-		id: 20546,
+		id: 20_546,
 		scrollID: 2677,
 		timeToFinish: Time.Minute * 6.5,
 		milestoneReward: {
@@ -30,7 +30,7 @@ const ClueTiers: ClueTier[] = [
 	{
 		name: 'Medium',
 		table: Medium,
-		id: 20545,
+		id: 20_545,
 		scrollID: 2801,
 		timeToFinish: Time.Minute * 9,
 		milestoneReward: {
@@ -42,7 +42,7 @@ const ClueTiers: ClueTier[] = [
 	{
 		name: 'Hard',
 		table: Hard,
-		id: 20544,
+		id: 20_544,
 		scrollID: 2722,
 		timeToFinish: Time.Minute * 12.5,
 		mimicChance: false
@@ -50,8 +50,8 @@ const ClueTiers: ClueTier[] = [
 	{
 		name: 'Elite',
 		table: Elite,
-		id: 20543,
-		scrollID: 12073,
+		id: 20_543,
+		scrollID: 12_073,
 		timeToFinish: Time.Minute * 15.7,
 		milestoneReward: {
 			itemReward: itemID('Heavy casket'),
@@ -62,8 +62,8 @@ const ClueTiers: ClueTier[] = [
 	{
 		name: 'Master',
 		table: Master,
-		id: 19836,
-		scrollID: 19835,
+		id: 19_836,
+		scrollID: 19_835,
 		timeToFinish: Time.Minute * 19.3,
 		milestoneReward: {
 			itemReward: itemID('Scroll sack'),

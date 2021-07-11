@@ -131,7 +131,7 @@ export const enum Image {
 }
 
 export const enum Color {
-	Orange = 16098851
+	Orange = 16_098_851
 }
 
 export const SupportServer = '342983479501389826';
@@ -383,7 +383,7 @@ export const badges: { [key: number]: string } = {
 
 export const MAX_QP = 280;
 
-export const MIMIC_MONSTER_ID = 23184;
+export const MIMIC_MONSTER_ID = 23_184;
 
 export const continuationChars = 'abdefghjkmnoprstuvwxyz123456789'.split('');
 export const CENA_CHARS = ['​', '‎', '‍'];

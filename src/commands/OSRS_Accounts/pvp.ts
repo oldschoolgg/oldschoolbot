@@ -27,7 +27,7 @@ export default class extends BotCommand {
 
 			const embed = new MessageEmbed()
 				.setAuthor(username)
-				.setColor(52224)
+				.setColor(52_224)
 				.setThumbnail('https://i.imgur.com/8hPO17o.png')
 				.addField(
 					'<:BH_Hunter:365046748022046723> Bounty Hunter - Hunter',
