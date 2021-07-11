@@ -6,11 +6,10 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { getTemporossLoot } from '../../../lib/simulation/tempoross';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ItemBank } from '../../../lib/types';
 import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
-import { bankHasItem, channelIsSendable } from '../../../lib/util';
+import { channelIsSendable } from '../../../lib/util';
+import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: TemporossActivityTaskOptions) {
@@ -30,7 +29,11 @@ export default class extends Task {
 		if (loot.has('Tiny tempor')) {
 			this.client.emit(
 				Events.ServerNotification,
-				`${Emoji.TinyTempor} **${user.username}'s** minion, ${user.minionName}, just received a Tiny tempor! Their Tempoross KC is ${kcForPet}, and their Fishing level is ${currentLevel}.`
+				`${Emoji.TinyTempor} **${user.username}'s** minion, ${
+					user.minionName
+				}, just received a Tiny tempor! They got the pet on the ${formatOrdinal(
+					kcForPet
+				)} kill, and their Fishing level is ${currentLevel}.`
 			);
 		}
 
