@@ -1,5 +1,6 @@
-import { MessageAttachment, MessageEmbed, Permissions, TextChannel, WebhookClient } from 'discord.js';
-import { KlasaClient } from 'klasa';
+import { MessageOptions, Permissions, TextChannel, WebhookClient } from 'discord.js';
+import { Time } from 'e';
+import { KlasaClient, KlasaUser } from 'klasa';
 import PQueue from 'p-queue';
 
 import { WebhookTable } from '../typeorm/WebhookTable.entity';
@@ -61,27 +62,18 @@ const queue = new PQueue({ concurrency: 10 });
 export async function sendToChannelID(
 	client: KlasaClient,
 	channelID: string,
-	data: {
-		content?: string;
-		image?: Buffer | MessageAttachment;
-		embed?: MessageEmbed;
-	}
+	data: MessageOptions,
+	user: KlasaUser | undefined = undefined,
+	componentSelection?: Record<string, Function>
 ) {
 	queue.add(async () => {
 		const channel = await resolveChannel(client, channelID);
 		if (!channel) return;
-
 		client.emit('log', `Sending to channelID[${channelID}].`);
-		let files = data.image ? [data.image] : undefined;
-		let embeds = [];
-		if (data.embed) embeds.push(data.embed);
+
 		if (channel instanceof WebhookClient) {
 			try {
-				await channel.send({
-					content: data.content,
-					files,
-					embeds
-				});
+				await channel.send(data);
 			} catch (err: any) {
 				const error = err as Error;
 				if (error.message === 'Unknown Webhook') {
@@ -90,11 +82,29 @@ export async function sendToChannelID(
 				}
 			}
 		} else {
-			await channel.send({
-				content: data.content,
-				files,
-				embeds
-			});
+			const message = await channel.send(data);
+			if (user) {
+				try {
+					const selection = await message.awaitMessageComponentInteraction({
+						time: Time.Minute * 10,
+						filter: i => {
+							if (i.user.id !== user.id) {
+								i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+								return false;
+							}
+							return true;
+						}
+					});
+					if (componentSelection && componentSelection[selection.customID]) {
+						message.author = user;
+						componentSelection[selection.customID](message);
+					}
+					await message.edit({ components: [] });
+				} catch (e) {
+					await message.edit({ components: [] });
+				} finally {
+				}
+			}
 		}
 	});
 }

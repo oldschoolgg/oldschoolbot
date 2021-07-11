@@ -119,7 +119,7 @@ export default class extends Event {
 			.map(guild => {
 				const channel = guild.channels.cache.get(guild.settings.get(GuildSettings.JMODComments));
 				if (channel && channel instanceof TextChannel && channel.postable) {
-					sendToChannelID(this.client, channel.id, { content: `<${url}>`, embed });
+					sendToChannelID(this.client, channel.id, { content: `<${url}>`, embeds: [embed] });
 				}
 			});
 	}

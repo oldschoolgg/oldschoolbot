@@ -24,7 +24,7 @@ export default class extends Task {
 			} catch (err) {
 				console.error(err);
 			} finally {
-				this.client.minionTicker = setTimeout(ticker, 5000);
+				this.client.minionTicker = setTimeout(ticker, 10000);
 			}
 		};
 		ticker();

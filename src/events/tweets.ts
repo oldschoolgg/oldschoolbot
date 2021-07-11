@@ -218,7 +218,7 @@ export default class extends Event {
 					channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.EMBED_LINKS) &&
 					channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.SEND_MESSAGES)
 				) {
-					sendToChannelID(this.client, channel.id, { content: `<${url}>`, embed });
+					sendToChannelID(this.client, channel.id, { content: `<${url}>`, embeds: [embed] });
 				}
 			});
 	}
