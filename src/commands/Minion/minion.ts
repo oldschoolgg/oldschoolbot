@@ -56,7 +56,7 @@ export default class MinionCommand extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|farm|harvest|mix|hunt] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|ironman] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true
