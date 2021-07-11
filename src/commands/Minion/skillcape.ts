@@ -48,11 +48,9 @@ export default class extends BotCommand {
 
 		const itemString = new Bank(itemsToPurchase).toString();
 
-		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-			await msg.confirm(
-				`${msg.author}, please confirm that you want to purchase ${itemString} for ${toKMB(skillCapeCost)}.`
-			);
-		}
+		await msg.confirm(
+			`${msg.author}, please confirm that you want to purchase ${itemString} for ${toKMB(skillCapeCost)}.`
+		);
 
 		await msg.author.removeGP(skillCapeCost);
 		await msg.author.addItemsToBank(itemsToPurchase, true);

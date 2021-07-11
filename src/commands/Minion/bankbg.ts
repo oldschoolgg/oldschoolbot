@@ -134,22 +134,23 @@ export default class extends BotCommand {
 				);
 			}
 
-			if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-				// Start building a string to show to the user.
-				let str = `${msg.author}, please confirm that you want to buy the **${selectedImage.name}** bank background for: `;
+			// Start building a string to show to the user.
+			let str = `${msg.author}, please confirm that you want to buy the **${selectedImage.name}** bank background for: `;
 
-				// If theres an item cost or GP cost, add it to the string to show users the cost.
-				if (selectedImage.itemCost) {
-					str += new Bank(selectedImage.itemCost).toString();
-					if (selectedImage.gpCost) {
-						str += `, ${selectedImage.gpCost.toLocaleString()} GP.`;
-					}
-				} else if (selectedImage.gpCost) {
-					str += `${selectedImage.gpCost.toLocaleString()} GP.`;
+			// If theres an item cost or GP cost, add it to the string to show users the cost.
+			if (selectedImage.itemCost) {
+				str += new Bank(selectedImage.itemCost).toString();
+				if (selectedImage.gpCost) {
+					str += `, ${selectedImage.gpCost.toLocaleString()} GP.`;
 				}
-
-				await msg.confirm(str);
+			} else if (selectedImage.gpCost) {
+				str += `${selectedImage.gpCost.toLocaleString()} GP.`;
 			}
+
+			str +=
+				" **Note:** You'll have to pay this cost again if you switch to another background and want this one again.";
+
+			await msg.confirm(str);
 
 			if (selectedImage.itemCost) {
 				await msg.author.settings.update(
@@ -161,23 +162,23 @@ export default class extends BotCommand {
 			if (selectedImage.gpCost) {
 				await msg.author.removeGP(selectedImage.gpCost);
 			}
-
-			if (selectedImage.id !== 1) {
-				this.client.emit(
-					Events.ServerNotification,
-					`**${msg.author.username}'s** just purchased the ${selectedImage.name} bank background!`
-				);
-			}
-			await msg.author.settings.update(UserSettings.BankBackground, selectedImage.id);
-			await this.client.settings.update(
-				ClientSettings.EconomyStats.BankBgCostBank,
-				addBanks([
-					{ ...(selectedImage.itemCost ?? {}), '995': selectedImage.gpCost ?? 0 },
-					this.client.settings.get(ClientSettings.EconomyStats.BankBgCostBank)
-				])
-			);
-
-			return msg.channel.send(`Your bank background is now **${selectedImage.name}**!`);
 		}
+
+		if (selectedImage.id !== 1) {
+			this.client.emit(
+				Events.ServerNotification,
+				`**${msg.author.username}'s** just purchased the ${selectedImage.name} bank background!`
+			);
+		}
+		await msg.author.settings.update(UserSettings.BankBackground, selectedImage.id);
+		await this.client.settings.update(
+			ClientSettings.EconomyStats.BankBgCostBank,
+			addBanks([
+				{ ...(selectedImage.itemCost ?? {}), '995': selectedImage.gpCost ?? 0 },
+				this.client.settings.get(ClientSettings.EconomyStats.BankBgCostBank)
+			])
+		);
+
+		return msg.channel.send(`Your bank background is now **${selectedImage.name}**!`);
 	}
 }
