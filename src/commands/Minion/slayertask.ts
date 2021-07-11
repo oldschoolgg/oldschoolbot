@@ -281,12 +281,13 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 		if (commonName === 'TzHaar') {
+			returnMessage = 'Ah... Tzhaar... ';
 			commonName +=
 				`. You can choose to kill TzTok-Jad with ${msg.cmdPrefix}fightcaves as long as you ` +
 				"don't kill any regular TzHaar first.";
 		}
 
-		returnMessage = `${slayerMaster.name} has assigned you to kill ${
+		returnMessage += `${slayerMaster.name} has assigned you to kill ${
 			newSlayerTask.currentTask.quantity
 		}x ${commonName}${this.getAlternateMonsterList(newSlayerTask.assignedTask)}.${updateMsg}`;
 		return this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
