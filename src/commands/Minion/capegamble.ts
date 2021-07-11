@@ -26,10 +26,10 @@ export default class extends BotCommand {
 
 		if (capesOwned < 1) return msg.channel.send('You have no Fire capes to gamble!');
 
-			const str = 'Are you sure you want to gamble a Fire cape for a chance at the Tzrek-Jad pet? Say `confirm` to confirm.'
+		const str =
+			'Are you sure you want to gamble a Fire cape for a chance at the Tzrek-Jad pet? Say `confirm` to confirm.';
 
-			await msg.confirm(str);
-
+		await msg.confirm(str);
 
 		const newSacrificedCount = msg.author.settings.get(UserSettings.Stats.FireCapesSacrificed) + 1;
 		await msg.author.removeItemFromBank(itemID('Fire cape'));
