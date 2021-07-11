@@ -1832,7 +1832,7 @@ export const skillingLog: CollectionLogData = {
 		'Gloves of silence'
 	]),
 	MahoganyHomes: Object.values(mahoganyHomesLog).flat(Infinity) as number[],
-	LumberjackOutfit: Object.values(lumberjackOutfit).flat(Infinity) as number[],
+	Woodcutting: resolveItems([...lumberjackOutfit, 'Beaver']),
 	Runecraft: resolveItems(['Rift guardian', 'Small pouch', 'Medium pouch', 'Large pouch', 'Giant pouch']),
 	Zalcano: zalcanoLog,
 	CrystalTools: resolveItems(['Crystal pickaxe', 'Crystal axe', 'Crystal harpoon'])
