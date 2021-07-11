@@ -9,7 +9,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 
 const options = {
 	max: 1,
-	time: 20000,
+	time: 20_000,
 	errors: ['time']
 };
 

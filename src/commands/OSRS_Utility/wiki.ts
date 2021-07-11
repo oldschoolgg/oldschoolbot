@@ -31,7 +31,7 @@ export default class extends BotCommand {
 		const [page, ...tail] = result;
 
 		const embed = new MessageEmbed()
-			.setColor(52224)
+			.setColor(52_224)
 			.setURL(page.url)
 			.setTitle(page.title)
 			.setDescription(

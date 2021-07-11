@@ -17,7 +17,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [guild = msg.guild!]) {
 		const embed = new MessageEmbed()
-			.setColor(16098851)
+			.setColor(16_098_851)
 			.setThumbnail(guild.iconURL()!)
 			.setAuthor(guild!.name)
 			.addField('Total Members', guild!.memberCount.toString(), true)

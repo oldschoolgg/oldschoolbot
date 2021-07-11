@@ -48,7 +48,7 @@ export default class extends BotCommand {
 		}
 
 		if (perkTier === PerkTier.One) {
-			return 1_000;
+			return 1000;
 		}
 
 		return 50;

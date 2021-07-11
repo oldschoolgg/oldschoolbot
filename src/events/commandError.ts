@@ -60,7 +60,7 @@ export default class extends Event {
 				embeds: [
 					new MessageEmbed()
 						.setDescription(output)
-						.setColor(0xfc1020)
+						.setColor(0xfc_10_20)
 						.setAuthor(
 							message.author.tag,
 							message.author.displayAvatarURL({

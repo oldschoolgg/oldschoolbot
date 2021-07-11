@@ -4,21 +4,21 @@ import { PoHObject } from '..';
 
 export const MountedFish: PoHObject[] = [
 	{
-		id: 13488,
+		id: 13_488,
 		name: 'Mounted bass',
 		slot: 'mountedFish',
 		level: 36,
 		itemCost: new Bank().add('Big bass').add('Oak plank', 2)
 	},
 	{
-		id: 13489,
+		id: 13_489,
 		name: 'Mounted swordfish',
 		slot: 'mountedFish',
 		level: 56,
 		itemCost: new Bank().add('Big swordfish').add('Teak plank', 2)
 	},
 	{
-		id: 13490,
+		id: 13_490,
 		name: 'Mounted shark',
 		slot: 'mountedFish',
 		level: 76,

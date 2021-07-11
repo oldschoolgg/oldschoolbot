@@ -10,25 +10,25 @@ import { itemNameFromID, toTitleCase } from '../../lib/util';
 
 export const XPLamps = [
 	{
-		itemID: 11137,
+		itemID: 11_137,
 		amount: 2500,
 		name: 'Antique lamp 1',
 		minimumLevel: 1
 	},
 	{
-		itemID: 11139,
+		itemID: 11_139,
 		amount: 7500,
 		name: 'Antique lamp 2',
 		minimumLevel: 30
 	},
 	{
-		itemID: 11141,
+		itemID: 11_141,
 		amount: 15_000,
 		name: 'Antique lamp 3',
 		minimumLevel: 40
 	},
 	{
-		itemID: 11185,
+		itemID: 11_185,
 		amount: 50_000,
 		name: 'Antique lamp 4',
 		minimumLevel: 70
