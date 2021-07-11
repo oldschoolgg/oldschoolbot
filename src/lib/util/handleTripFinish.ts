@@ -88,7 +88,7 @@ export async function handleTripFinish(
 			if (onContinue) {
 				messageComponents.components.push(
 					new MessageButton({
-						label: 'Continue Trip',
+						label: 'Continue trip',
 						style: 'PRIMARY',
 						customID: 'continueTrip'
 					})
