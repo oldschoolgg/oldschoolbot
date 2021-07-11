@@ -1,6 +1,7 @@
 import { User } from 'discord.js';
 import { calcWhatPercent, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { collectionLogTypes } from '../../lib/data/collectionLog';
@@ -28,6 +29,8 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 	public completion(this: User) {
 		const clItems = Object.keys(this.settings.get(UserSettings.CollectionLogBank)).map(i => parseInt(i));
+		const debugBank = new Bank();
+		for (const item of allCollectionLogItems) debugBank.add(item);
 		const owned = clItems.filter(i => allCollectionLogItems.includes(i));
 		const notOwned = shuffleRandom(
 			Number(this.id),
@@ -36,7 +39,8 @@ export default class extends Extendable {
 		return {
 			percent: calcWhatPercent(owned.length, allCollectionLogItems.length),
 			notOwned,
-			owned
+			owned,
+			debugBank
 		};
 	}
 

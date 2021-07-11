@@ -230,6 +230,7 @@ declare module 'discord.js' {
 			percent: number;
 			notOwned: number[];
 			owned: number[];
+			debugBank: Bank;
 		};
 
 		/**

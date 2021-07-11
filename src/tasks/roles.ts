@@ -19,7 +19,9 @@ const minigames = [
 	'castle_wars',
 	'raids',
 	'raids_challenge_mode',
-	'big_chompy_bird_hunting'
+	'big_chompy_bird_hunting',
+	'rogues_den',
+	'temple_trekking'
 ];
 
 const collections = ['Overall', 'Pets', 'Skilling', 'Clue all', 'Boss', 'Minigames', 'Chambers of Xeric', 'Slayer'];

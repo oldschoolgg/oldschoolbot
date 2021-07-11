@@ -1541,6 +1541,15 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Revert saradomin castlewars cloak',
+		inputItems: {
+			[itemID('Saradomin castlewars cloak')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 10
+		}
+	},
+	{
 		name: 'Revert saradomin banner',
 		inputItems: {
 			[itemID('Saradomin banner')]: 1
