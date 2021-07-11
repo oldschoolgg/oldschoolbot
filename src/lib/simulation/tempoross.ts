@@ -49,10 +49,83 @@ const PoolCasketTable = new LootTable()
 	.add('Coins', [4000, 6000], 9)
 	.add('Loop half of key', 9, 1)
 	.add('Tooth half of key', 9, 1)
-	.add('Coins', [25000, 50000], 1)
+	.add('Coins', [25000, 50_000], 1)
 	.add('Clue scroll (easy)', 1, 12)
 	.add('Clue scroll (medium)', 1, 7)
 	.add('Clue scroll (hard)', 1, 5);
+
+const fishTables = [
+	[
+		81,
+		(table: LootTable) =>
+			table
+				.add('Raw bass', [30, 40], 1125)
+				.add('Raw swordfish', [20, 30], 1013)
+				.add('Raw shark', [10, 20], 900)
+				.add('Raw sea turtle', [7, 12], 787)
+				.add('Raw manta ray', [5, 10], 675)
+	],
+	[
+		79,
+		(table: LootTable) =>
+			table
+				.add('Raw lobster', [30, 40], 1125)
+				.add('Raw bass', [20, 30], 1013)
+				.add('Raw swordfish', [10, 20], 900)
+				.add('Raw shark', [7, 12], 787)
+				.add('Raw sea turtle', [5, 10], 675)
+	],
+	[
+		76,
+		(table: LootTable) =>
+			table
+				.add('Raw tuna', [30, 40], 1125)
+				.add('Raw lobster', [20, 30], 1013)
+				.add('Raw bass', [10, 20], 900)
+				.add('Raw swordfish', [7, 12], 787)
+				.add('Raw shark', [5, 10], 675)
+	],
+	[
+		50,
+		(table: LootTable) =>
+			table
+				.add('Raw salmon', [30, 40], 1125)
+				.add('Raw tuna', [20, 30], 1013)
+				.add('Raw lobster', [10, 20], 900)
+				.add('Raw bass', [7, 12], 787)
+				.add('Raw swordfish', [5, 10], 675)
+	],
+	[
+		45,
+		(table: LootTable) =>
+			table
+				.add('Raw pike', [30, 40], 1125)
+				.add('Raw salmon', [20, 30], 1013)
+				.add('Raw tuna', [10, 20], 900)
+				.add('Raw lobster', [7, 12], 787)
+				.add('Raw bass', [5, 10], 675)
+	],
+	[
+		40,
+		(table: LootTable) =>
+			table
+				.add('Raw mackerel', [30, 40], 1125)
+				.add('Raw pike', [20, 30], 1013)
+				.add('Raw salmon', [10, 20], 900)
+				.add('Raw tuna', [7, 12], 787)
+				.add('Raw lobster', [5, 10], 675)
+	],
+	[
+		35,
+		(table: LootTable) =>
+			table
+				.add('Raw herring', [30, 40], 1125)
+				.add('Raw mackerel', [20, 30], 1013)
+				.add('Raw pike', [10, 20], 900)
+				.add('Raw salmon', [7, 12], 787)
+				.add('Raw tuna', [5, 10], 675)
+	]
+] as const;
 
 export function getTemporossLoot(quantity: number, fishingLevel: number, userBank: Bank) {
 	const loot = new Bank();
@@ -73,55 +146,11 @@ export function getTemporossLoot(quantity: number, fishingLevel: number, userBan
 		.add('Tiny tempor', 1, 1)
 		.add('Dragon harpoon', 1, 1);
 
-	if (fishingLevel >= 81) {
-		lootTable
-			.add('Raw bass', [30, 40], 1125)
-			.add('Raw swordfish', [20, 30], 1013)
-			.add('Raw shark', [10, 20], 900)
-			.add('Raw sea turtle', [7, 12], 787)
-			.add('Raw manta ray', [5, 10], 675);
-	} else if (fishingLevel >= 79) {
-		lootTable
-			.add('Raw lobster', [30, 40], 1125)
-			.add('Raw bass', [20, 30], 1013)
-			.add('Raw swordfish', [10, 20], 900)
-			.add('Raw shark', [7, 12], 787)
-			.add('Raw sea turtle', [5, 10], 675);
-	} else if (fishingLevel >= 76) {
-		lootTable
-			.add('Raw tuna', [30, 40], 1125)
-			.add('Raw lobster', [20, 30], 1013)
-			.add('Raw bass', [10, 20], 900)
-			.add('Raw swordfish', [7, 12], 787)
-			.add('Raw shark', [5, 10], 675);
-	} else if (fishingLevel >= 50) {
-		lootTable
-			.add('Raw salmon', [30, 40], 1125)
-			.add('Raw tuna', [20, 30], 1013)
-			.add('Raw lobster', [10, 20], 900)
-			.add('Raw bass', [7, 12], 787)
-			.add('Raw swordfish', [5, 10], 675);
-	} else if (fishingLevel >= 45) {
-		lootTable
-			.add('Raw pike', [30, 40], 1125)
-			.add('Raw salmon', [20, 30], 1013)
-			.add('Raw tuna', [10, 20], 900)
-			.add('Raw lobster', [7, 12], 787)
-			.add('Raw bass', [5, 10], 675);
-	} else if (fishingLevel >= 40) {
-		lootTable
-			.add('Raw mackerel', [30, 40], 1125)
-			.add('Raw pike', [20, 30], 1013)
-			.add('Raw salmon', [10, 20], 900)
-			.add('Raw tuna', [7, 12], 787)
-			.add('Raw lobster', [5, 10], 675);
-	} else {
-		lootTable
-			.add('Raw herring', [30, 40], 1125)
-			.add('Raw mackerel', [20, 30], 1013)
-			.add('Raw pike', [10, 20], 900)
-			.add('Raw salmon', [7, 12], 787)
-			.add('Raw tuna', [5, 10], 675);
+	for (const [level, fn] of fishTables) {
+		if (fishingLevel >= level) {
+			fn(lootTable);
+			break;
+		}
 	}
 
 	for (let index = 0; index < quantity; index++) {

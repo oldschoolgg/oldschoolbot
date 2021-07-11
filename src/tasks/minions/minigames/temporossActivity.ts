@@ -1,7 +1,8 @@
-import { increaseNumByPercent } from 'e';
+import { increaseNumByPercent, randInt } from 'e';
 import { Task } from 'klasa';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { getTemporossLoot } from '../../../lib/simulation/tempoross';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -17,23 +18,19 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		const channel = await this.client.channels.fetch(channelID);
+		const { previousScore, newScore } = await incrementMinigameScore(userID, 'Tempoross', quantity);
+		const kcForPet = randInt(previousScore, newScore);
 
-		let loot: ItemBank = {};
 		let rewardTokens = quantity * 6;
 		if (rewardBoost > 0) {
 			rewardTokens = Math.ceil(increaseNumByPercent(rewardTokens, rewardBoost));
 		}
+		const loot = getTemporossLoot(rewardTokens, currentLevel, user.bank());
 
-		loot = getTemporossLoot(rewardTokens, currentLevel, user.bank()).bank;
-
-		if (bankHasItem(loot, itemID('Tiny tempor'))) {
+		if (loot.has('Tiny tempor')) {
 			this.client.emit(
 				Events.ServerNotification,
-				`${Emoji.TinyTempor} **${user.username}'s** minion, ${
-					user.minionName
-				}, just received a Tiny tempor! Their Tempoross KC is ${
-					(await user.getMinigameScore('Tempoross')) + quantity
-				}, and their Fishing level is ${currentLevel}.`
+				`${Emoji.TinyTempor} **${user.username}'s** minion, ${user.minionName}, just received a Tiny tempor! Their Tempoross KC is ${kcForPet}, and their Fishing level is ${currentLevel}.`
 			);
 		}
 
@@ -64,10 +61,9 @@ export default class extends Task {
 		const xpStr = await user.addXP({ skillName: SkillsEnum.Fishing, amount: fXPtoGive, duration });
 
 		const { previousCL } = await user.addItemsToBank(loot, true);
-		user.incrementMinigameScore('Tempoross', quantity);
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
-			loot,
+			loot.bank,
 			`${rewardTokens} reward pool rolls`,
 			true,
 			{
@@ -98,7 +94,7 @@ export default class extends Task {
 			},
 			image!,
 			data,
-			loot
+			loot.bank
 		);
 	}
 }
