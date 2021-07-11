@@ -53,6 +53,7 @@ export default class extends BotCommand {
 				`${msg.author}, please confirm that you want to purchase ${itemString} for ${toKMB(skillCapeCost)}.`
 			);
 		}
+
 		await msg.author.removeGP(skillCapeCost);
 		await msg.author.addItemsToBank(itemsToPurchase, true);
 		await this.client.settings.update(
@@ -61,5 +62,5 @@ export default class extends BotCommand {
 		);
 
 		return msg.channel.send(`You purchased ${itemString} for ${toKMB(skillCapeCost)}.`);
-	
+	}
 }

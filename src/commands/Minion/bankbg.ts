@@ -144,6 +144,9 @@ export default class extends BotCommand {
 					if (selectedImage.gpCost) {
 						str += `, ${selectedImage.gpCost.toLocaleString()} GP.`;
 					}
+				} else if (selectedImage.gpCost) {
+					str += `${selectedImage.gpCost.toLocaleString()} GP.`;
+				}
 
 				await msg.confirm(str);
 			}
@@ -158,23 +161,23 @@ export default class extends BotCommand {
 			if (selectedImage.gpCost) {
 				await msg.author.removeGP(selectedImage.gpCost);
 			}
-		}
 
-		if (selectedImage.id !== 1) {
-			this.client.emit(
-				Events.ServerNotification,
-				`**${msg.author.username}'s** just purchased the ${selectedImage.name} bank background!`
+			if (selectedImage.id !== 1) {
+				this.client.emit(
+					Events.ServerNotification,
+					`**${msg.author.username}'s** just purchased the ${selectedImage.name} bank background!`
+				);
+			}
+			await msg.author.settings.update(UserSettings.BankBackground, selectedImage.id);
+			await this.client.settings.update(
+				ClientSettings.EconomyStats.BankBgCostBank,
+				addBanks([
+					{ ...(selectedImage.itemCost ?? {}), '995': selectedImage.gpCost ?? 0 },
+					this.client.settings.get(ClientSettings.EconomyStats.BankBgCostBank)
+				])
 			);
-		}
-		await msg.author.settings.update(UserSettings.BankBackground, selectedImage.id);
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.BankBgCostBank,
-			addBanks([
-				{ ...(selectedImage.itemCost ?? {}), '995': selectedImage.gpCost ?? 0 },
-				this.client.settings.get(ClientSettings.EconomyStats.BankBgCostBank)
-			])
-		);
 
-		return msg.channel.send(`Your bank background is now **${selectedImage.name}**!`);
-	
+			return msg.channel.send(`Your bank background is now **${selectedImage.name}**!`);
+		}
+	}
 }
