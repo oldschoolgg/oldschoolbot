@@ -1697,7 +1697,6 @@ setCustomItem(
 	},
 	50_000_000
 );
-
 setCustomItem(
 	50_025,
 	'Heat res. vial',
@@ -1744,3 +1743,4 @@ setCustomItem(
 	},
 	100_000
 );
+setCustomItem(50_036, 'Special raw bait', 'Fishing bait', {}, 1_000);

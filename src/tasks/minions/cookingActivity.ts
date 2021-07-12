@@ -1,17 +1,56 @@
+import { randFloat } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { Activity, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { Eatables } from '../../lib/data/eatables';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
-import Cooking from '../../lib/skilling/skills/cooking';
+import Cooking, { Cookables } from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { roll, toTitleCase } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
+	async bait(data: CookingActivityTaskOptions) {
+		const { cookableID, quantity, userID, channelID, duration } = data;
+		const user = await this.client.users.fetch(userID);
+		const eatable = Eatables.find(e => e.id === cookableID);
+		if (!eatable) return;
+		const baitReceived = Math.floor((randFloat(eatable.healAmount / 9, eatable.healAmount / 5) * quantity) / 2);
+		const xpReceived = await user.addXP({
+			skillName: SkillsEnum.Cooking,
+			amount: Cookables.find(c => c.id === eatable.id)!.xp * 0.1 * quantity,
+			duration
+		});
+		const loot = new Bank().add('Special raw bait', baitReceived);
+		await user.addItemsToBank(loot, true);
+		let str = `${user}, ${user.minionName} finished transforming ${quantity.toLocaleString()}x ${toTitleCase(
+			`Raw ${eatable.name}`
+		)} into ${loot}. ${xpReceived}`;
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => {
+				user.log(`continued trip of bait making ${quantity}x ${eatable.name}[${eatable.id}]`);
+				return this.client.commands.get('cook')!.run(res, [quantity, `bait raw ${eatable.name}`]);
+			},
+			undefined,
+			data,
+			loot.bank
+		);
+	}
+
 	async run(data: CookingActivityTaskOptions) {
 		const { cookableID, quantity, userID, channelID, duration } = data;
+
+		// This is a BaitCutting activity
+		if (data.type === Activity.BaitCutting) {
+			return this.bait(data);
+		}
+
 		const user = await this.client.users.fetch(userID);
 
 		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID)!;
