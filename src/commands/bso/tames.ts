@@ -141,11 +141,12 @@ ${allTames
 		if (!monster) {
 			return msg.channel.send("That's not a valid monster.");
 		}
+		const growthDifference = selectedTame.maxCombatLevel - selectedTame.combatLvl;
 		let speed = monster.timeToFinish * selectedTame.growthLevel;
-		speed = increaseNumByPercent(
-			speed,
-			calcWhatPercent(selectedTame.combatLvl, selectedTame.maxCombatLevel - selectedTame.combatLvl)
-		);
+		speed =
+			growthDifference === 0
+				? speed
+				: increaseNumByPercent(speed, calcWhatPercent(selectedTame.combatLvl, growthDifference));
 		const quantity = Math.floor(Time.Hour / speed);
 		if (quantity < 1) {
 			return msg.channel.send("Your tame can't kill this monster fast enough.");
