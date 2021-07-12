@@ -103,7 +103,7 @@ export default class extends Task {
 		}
 
 		if (monster.id === Monsters.Vorkath.id && roll(6000)) {
-			loot.add(23941);
+			loot.add(23_941);
 		}
 
 		let gotKlik = false;
@@ -218,7 +218,7 @@ export default class extends Task {
 				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
 				if (usersTask.assignedTask?.isBoss) {
-					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5_000 })}`;
+					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5000 })}`;
 					str += ' for completing your boss task.';
 				}
 			} else {

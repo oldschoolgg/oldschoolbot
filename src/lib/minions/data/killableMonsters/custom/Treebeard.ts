@@ -4,7 +4,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../../../../commands/Minion/seedpack';
 import setCustomMonster from '../../../../util/setCustomMonster';
 
-const TanglerootTable = new LootTable().add(20661).add(24555).add(24557).add(24559).add(24561).add(24563);
+const TanglerootTable = new LootTable().add(20_661).add(24_555).add(24_557).add(24_559).add(24_561).add(24_563);
 
 export const GrimyHerbTable = new LootTable()
 	.add('Grimy guam leaf', [20, 50])
@@ -73,8 +73,8 @@ export const TreebeardLootTable = new LootTable()
 	.add(GrimyHerbTable, [2, 3])
 	.add(LogTable, [10, 20]);
 
-setCustomMonster(932122, 'Treebeard', TreebeardLootTable, Monsters.Hespori, {
-	id: 932122,
+setCustomMonster(932_122, 'Treebeard', TreebeardLootTable, Monsters.Hespori, {
+	id: 932_122,
 	name: 'Treebeard',
 	aliases: ['treebeard', 'tree']
 });

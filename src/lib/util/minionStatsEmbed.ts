@@ -76,7 +76,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		);
 
 	if (user.isIronman) {
-		embed.setColor(5460819);
+		embed.setColor(5_460_819);
 	}
 
 	const { percent } = user.completion();

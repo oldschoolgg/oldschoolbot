@@ -23,7 +23,7 @@ export default class extends BotCommand {
 		msg.author.settings.update(paths.map(path => [path, 14_000_000]));
 		msg.author.settings.update(UserSettings.GP, 1_000_000_000);
 		msg.author.settings.update(UserSettings.QP, MAX_QP);
-		msg.author.settings.update(UserSettings.Slayer.SlayerPoints, 100000);
+		msg.author.settings.update(UserSettings.Slayer.SlayerPoints, 100_000);
 		const loot: Record<string, number> = Object.fromEntries(Eatables.map(({ id }) => [id, 1000]));
 		const bank = new Bank(loot);
 		bank.add('Zamorakian spear');
@@ -33,7 +33,7 @@ export default class extends BotCommand {
 		bank.add('Super restore(4)', 10_000);
 
 		const poh = await msg.author.getPOH();
-		poh.pool = 29241;
+		poh.pool = 29_241;
 		await poh.save();
 		msg.author.addItemsToBank(bank.bank);
 
@@ -41,12 +41,12 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.Gear.Melee, {
 				'2h': null,
 				ammo: null,
-				body: { item: 40034, quantity: 1 },
-				cape: { item: 40022, quantity: 1 },
-				feet: { item: 40037, quantity: 1 },
-				hands: { item: 40036, quantity: 1 },
-				head: { item: 40033, quantity: 1 },
-				legs: { item: 40035, quantity: 1 },
+				body: { item: 40_034, quantity: 1 },
+				cape: { item: 40_022, quantity: 1 },
+				feet: { item: 40_037, quantity: 1 },
+				hands: { item: 40_036, quantity: 1 },
+				head: { item: 40_033, quantity: 1 },
+				legs: { item: 40_035, quantity: 1 },
 				neck: null,
 				ring: null,
 				shield: null,
@@ -55,12 +55,12 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.Gear.Range, {
 				'2h': null,
 				ammo: null,
-				body: { item: 40048, quantity: 1 },
+				body: { item: 40_048, quantity: 1 },
 				cape: null,
-				feet: { item: 40051, quantity: 1 },
-				hands: { item: 40050, quantity: 1 },
-				head: { item: 40047, quantity: 1 },
-				legs: { item: 40049, quantity: 1 },
+				feet: { item: 40_051, quantity: 1 },
+				hands: { item: 40_050, quantity: 1 },
+				head: { item: 40_047, quantity: 1 },
+				legs: { item: 40_049, quantity: 1 },
 				neck: null,
 				ring: null,
 				shield: null,
@@ -69,12 +69,12 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.Gear.Mage, {
 				'2h': null,
 				ammo: null,
-				body: { item: 40043, quantity: 1 },
+				body: { item: 40_043, quantity: 1 },
 				cape: null,
-				feet: { item: 40046, quantity: 1 },
-				hands: { item: 40045, quantity: 1 },
-				head: { item: 40042, quantity: 1 },
-				legs: { item: 40044, quantity: 1 },
+				feet: { item: 40_046, quantity: 1 },
+				hands: { item: 40_045, quantity: 1 },
+				head: { item: 40_042, quantity: 1 },
+				legs: { item: 40_044, quantity: 1 },
 				neck: null,
 				ring: null,
 				shield: null,

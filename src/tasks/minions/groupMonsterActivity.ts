@@ -21,7 +21,7 @@ export default class extends Task {
 
 		for (let i = 0; i < quantity; i++) {
 			let loot = monster.table.kill(1, {});
-			if (roll(10) && monster.id !== 696969) {
+			if (roll(10) && monster.id !== 696_969) {
 				loot.multiply(4);
 				loot.add(getRandomMysteryBox());
 			}

@@ -55,7 +55,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		try {
 			await msg.channel.awaitMessages({
 				max: 1,
-				time: 15000,
+				time: 15_000,
 				errors: ['time'],
 				filter: answer => answer.author.id === msg.author.id && answer.content === 'confirm permanent ironman'
 			});

@@ -35,7 +35,7 @@ export const allKeyPieces = resolveItems(['Key piece 1', 'Key piece 2', 'Key pie
 export const allKeyItems = resolveItems(['Frozen key', 'Key piece 1', 'Key piece 2', 'Key piece 3', 'Key piece 4']);
 
 export const NexMonster: KillableMonster = {
-	id: 46274,
+	id: 46_274,
 	name: 'Nex',
 	aliases: ['nex'],
 	timeToFinish: Time.Minute * 25,

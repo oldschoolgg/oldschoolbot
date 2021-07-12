@@ -54,6 +54,8 @@ export default class extends Task {
 			})
 		);
 
+		const onyxChance = users.length * 70;
+
 		for (let [userID, _userLoot] of Object.entries(loot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
@@ -92,6 +94,10 @@ export default class extends Task {
 			if (roll(2000)) {
 				userLoot.add('Steve');
 			}
+			if (!totalLoot.has('Onyx') && roll(onyxChance)) {
+				userLoot.add('Onyx');
+			}
+
 			totalLoot.add(userLoot);
 
 			const items = userLoot.items();

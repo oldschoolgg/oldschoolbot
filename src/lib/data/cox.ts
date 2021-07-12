@@ -55,10 +55,10 @@ export async function createTeam(
 		const { total } = calculateUserGearPercents(u);
 		let deathChance = 20;
 		if (total < 30) {
-			points = 1_000;
+			points = 1000;
 			deathChance += 20;
 		} else if (total < 50) {
-			points = 5_000;
+			points = 5000;
 			deathChance += 10;
 		} else {
 			points = increaseNumByPercent(points, total / 10);

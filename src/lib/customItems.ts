@@ -33,23 +33,23 @@ function setCustomItem(id: number, name: string, baseItem: string, newItemData?:
 	customItems.push(id);
 }
 
-setCustomItem(19939, 'Untradeable Mystery Box', 'Mystery box', {}, 100_000);
+setCustomItem(19_939, 'Untradeable Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(6199, 'Tradeable Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(3062, 'Pet Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(3713, 'Holiday Mystery Box', 'Mystery box', {}, 100_000);
-setCustomItem(13345, 'Tester Gift Box', 'Mystery box', {}, 100_000);
+setCustomItem(13_345, 'Tester Gift Box', 'Mystery box', {}, 100_000);
 setCustomItem(5507, 'Remy', 'Herbi', {}, 1_000_000);
 setCustomItem(3714, 'Shelldon', 'Herbi', {}, 1_000_000);
 setCustomItem(9620, 'Doug', 'Herbi', {}, 1_000_000);
 setCustomItem(9619, 'Lil Lamb', 'Herbi', {}, 1_000_000);
-setCustomItem(10092, 'Zippy', 'Herbi', {}, 1_000_000);
+setCustomItem(10_092, 'Zippy', 'Herbi', {}, 1_000_000);
 setCustomItem(9058, 'Harry', 'Herbi', {}, 1_000_000);
-setCustomItem(10329, 'Wintertoad', 'Herbi', {}, 1_000_000);
+setCustomItem(10_329, 'Wintertoad', 'Herbi', {}, 1_000_000);
 setCustomItem(3469, 'Klik', 'Herbi', {}, 1_000_000);
-setCustomItem(21313, 'Scruffy', 'Herbi', {}, 1_000_000);
+setCustomItem(21_313, 'Scruffy', 'Herbi', {}, 1_000_000);
 setCustomItem(9057, 'Zak', 'Herbi', {}, 1_000_000);
 setCustomItem(8441, 'Hammy', 'Herbi', {}, 1_000_000);
-setCustomItem(12592, 'Divine sigil', 'Elysian sigil', {}, 930_000_000);
+setCustomItem(12_592, 'Divine sigil', 'Elysian sigil', {}, 930_000_000);
 setCustomItem(3454, 'Divine spirit shield', 'Elysian spirit shield', {}, 900_000_000);
 setCustomItem(500, 'Skipper', 'Herbi', {}, 1_000_000);
 
@@ -62,7 +62,7 @@ setCustomItem(476, 'Dwarven pickaxe', 'Dragon pickaxe', {}, 1_000_000);
 // 2x faster smithing and crafting
 setCustomItem(474, 'Dwarven greathammer', 'Dragon warhammer', {}, 1_000_000);
 // 2x faster smelting
-setCustomItem(12594, 'Dwarven gauntlets', 'Cooking gauntlets', {}, 1_000_000);
+setCustomItem(12_594, 'Dwarven gauntlets', 'Cooking gauntlets', {}, 1_000_000);
 
 setCustomItem(478, 'Dwarven knife', 'Bronze knife', {}, 1_000_000);
 // setCustomItem(11923, 'Dwarven tinderbox', ('Tinderbox'));
@@ -129,7 +129,7 @@ setCustomItem(8871, 'Dwarven crate', 'Mystery box', {}, 100_000);
 
 // Abyssal Cape || 24214 = Victor's cape (100) [DUPLICATE]
 setCustomItem(
-	24214,
+	24_214,
 	'Abyssal cape',
 	'Infernal cape',
 	{
@@ -160,26 +160,26 @@ setCustomItem(
 );
 
 // Abyssal thread || 24212 = Victor's cape (50) [DUPLICATE]
-setCustomItem(24212, 'Abyssal thread', 'Giant pouch', {}, 10_000_000);
+setCustomItem(24_212, 'Abyssal thread', 'Giant pouch', {}, 10_000_000);
 
 // Abyssal pouch || 24210 = Victor's cape (10) [DUPLICATE]
-setCustomItem(24210, 'Abyssal pouch', 'Giant pouch', {}, 100_000);
+setCustomItem(24_210, 'Abyssal pouch', 'Giant pouch', {}, 100_000);
 
 // Ori Pet || 4149	 = Abyssal demon
 setCustomItem(4149, 'Ori', 'Herbi', {}, 100_000);
 
 // Abyssal bones || 24199 = Seren halo [DUPLICATE]
-setCustomItem(24199, 'Abyssal dragon bones', 'Superior dragon bones', {}, 20_000);
+setCustomItem(24_199, 'Abyssal dragon bones', 'Superior dragon bones', {}, 20_000);
 
-setCustomItem(19567, 'Cob', 'Herbi');
+setCustomItem(19_567, 'Cob', 'Herbi');
 
-setCustomItem(22949, 'Takon', 'Herbi');
+setCustomItem(22_949, 'Takon', 'Herbi');
 
 setCustomItem(6796, 'Tiny lamp', 'Lamp', {}, 100_000);
-setCustomItem(21642, 'Small lamp', 'Lamp', {}, 300_000);
-setCustomItem(23516, 'Average lamp', 'Lamp', {}, 500_000);
-setCustomItem(22320, 'Large lamp', 'Lamp', {}, 600_000);
-setCustomItem(11157, 'Huge lamp', 'Lamp', {}, 1_000_000);
+setCustomItem(21_642, 'Small lamp', 'Lamp', {}, 300_000);
+setCustomItem(23_516, 'Average lamp', 'Lamp', {}, 500_000);
+setCustomItem(22_320, 'Large lamp', 'Lamp', {}, 600_000);
+setCustomItem(11_157, 'Huge lamp', 'Lamp', {}, 1_000_000);
 
 setCustomItem(1808, 'Peky', 'Herbi', {}, 1_000_000);
 
@@ -196,7 +196,7 @@ setCustomItem(5020, 'Lottery ticket', 'Paramaya ticket');
 setCustomItem(5021, 'Bank lottery ticket', 'Paramaya ticket');
 // setCustomItem(25238, 'Dwarven defender', ('Dragon defender'));
 setCustomItem(
-	19839,
+	19_839,
 	'Dwarven blessing',
 	'Holy blessing',
 	{
@@ -221,18 +221,18 @@ setCustomItem(
 	},
 	50_000_000
 );
-setCustomItem(19837, 'Clue scroll (grandmaster)', 'Clue scroll (easy)');
-setCustomItem(19838, 'Reward casket (grandmaster)', 'Reward casket (master)');
+setCustomItem(19_837, 'Clue scroll (grandmaster)', 'Clue scroll (easy)');
+setCustomItem(19_838, 'Reward casket (grandmaster)', 'Reward casket (master)');
 setCustomItem(516, 'Nuts of monkey', 'Rune platelegs');
 
 /**
  * Nex
  */
 setCustomItem(3741, 'Frozen key', 'Key');
-setCustomItem(11039, 'Key piece 1', 'Key');
-setCustomItem(11040, 'Key piece 2', 'Key');
-setCustomItem(11041, 'Key piece 3', 'Key');
-setCustomItem(11042, 'Key piece 4', 'Key');
+setCustomItem(11_039, 'Key piece 1', 'Key');
+setCustomItem(11_040, 'Key piece 2', 'Key');
+setCustomItem(11_041, 'Key piece 3', 'Key');
+setCustomItem(11_042, 'Key piece 4', 'Key');
 
 setCustomItem(
 	432,
@@ -742,8 +742,8 @@ setCustomItem(
 	50_000_000
 );
 
-setCustomItem(21807, 'Ancient emblem', 'Ancient emblem');
-setCustomItem(11196, 'Bloodsoaked feather', 'Feather');
+setCustomItem(21_807, 'Ancient emblem', 'Ancient emblem');
+setCustomItem(11_196, 'Bloodsoaked feather', 'Feather');
 
 /**
  *

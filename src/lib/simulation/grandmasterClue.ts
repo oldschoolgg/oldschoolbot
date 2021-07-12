@@ -81,7 +81,7 @@ const table = new LootTable()
 	.tertiary(12_000, BlessingTable)
 	.tertiary(12_000, DyeTable)
 	.tertiary(8000, 'Ring of luck')
-	.tertiary(5_000, 'Deathtouched dart')
+	.tertiary(5000, 'Deathtouched dart')
 	.tertiary(50, LampTable)
 	.tertiary(
 		130_000,

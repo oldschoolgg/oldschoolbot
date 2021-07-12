@@ -130,7 +130,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`You can't kill ${monster.name}, because you're not on a slayer task.`);
 		}
 
-		if (monster.id === 696969) {
+		if (monster.id === 696_969) {
 			throw 'You would be foolish to try to face King Goldemar in a solo fight.';
 		}
 

@@ -26,7 +26,7 @@ export type AttackStyles =
 
 const miscHpMap: Record<number, number> = {
 	3127: 250,
-	46274: 5000,
+	46_274: 5000,
 	9415: NIGHTMARES_HP,
 	[KingGoldemar.id]: 10_000,
 	[VasaMagus.id]: 3900,

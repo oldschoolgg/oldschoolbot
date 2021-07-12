@@ -320,7 +320,7 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Monkey',
 		outputItems: {
-			19556: 1
+			19_556: 1
 		},
 		gpCost: 1_000_000,
 		qpRequired: 182
