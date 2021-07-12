@@ -12,7 +12,7 @@ export default class extends Task {
 		const { quantity, userID, channelID, duration, hasElite, rune } = data;
 		const user = await this.client.users.fetch(userID);
 
-		const runeData = darkAltarRunes[rune];
+		const runeData = rune.toLowerCase().includes('soul') ? darkAltarRunes.soul : darkAltarRunes.blood;
 
 		const [xpRes1, xpRes2, xpRes3] = await Promise.all([
 			user.addXP({
