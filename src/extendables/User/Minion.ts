@@ -608,7 +608,7 @@ export default class extends Extendable {
 			? this.getCreatureScore(creature!)
 			: await this.settings.get(UserSettings.Slayer.SuperiorCount);
 
-		const name = minigame ? minigame.name : mon ? mon!.name : creature ? creature?.name : 'superior';
+		const name = minigame ? minigame.name : mon ? mon.name : creature ? creature.name : 'superior';
 		return [name, kc];
 	}
 
