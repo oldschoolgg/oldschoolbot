@@ -113,7 +113,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|itemcontracts] [name:...string]',
+			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|itemcontracts|itemcontractstreak] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -436,6 +436,22 @@ LIMIT 50;
 				.chunk(result, 10)
 				.map(subList => subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')),
 			'Item Contract Leaderboard'
+		);
+	}
+
+	async itemcontractstreak(msg: KlasaMessage) {
+		const result: { id: string; qty: number }[] = await this.client.orm.query(`
+SELECT id, item_contract_streak as qty
+FROM users
+WHERE item_contract_streak > 0
+LIMIT 10;
+`);
+		this.doMenu(
+			msg,
+			util
+				.chunk(result, 10)
+				.map(subList => subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')),
+			'Item Contract Streak Leaderboard'
 		);
 	}
 
