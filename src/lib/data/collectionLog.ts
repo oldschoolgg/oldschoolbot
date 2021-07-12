@@ -447,7 +447,8 @@ export const bosses: CollectionLogData = {
 		'Bludgeon spine',
 		'Bludgeon axon',
 		'Jar of miasma',
-		'Abyssal orphan'
+		'Abyssal orphan',
+		'Abyssal head'
 	]),
 	Kraken: resolveItems(['Trident of the seas (full)', 'Kraken tentacle', 'Jar of dirt', 'Pet kraken']),
 	Cerberus: resolveItems([
@@ -1099,7 +1100,7 @@ export const cluesHard: CollectionLogData = {
 		'Nunchaku',
 		'Dual sai',
 		'Rune cane',
-		19912 // Zombie head
+		19_912 // Zombie head
 	]),
 	'3rd Age Melee': resolveItems([
 		'3rd age full helmet',
@@ -1472,8 +1473,8 @@ export const diangoCollectionLog: CollectionLogData = {
 		'White toy horsey',
 		'Black toy horsey',
 		'Grey toy horsey',
-		11705,
-		11706
+		11_705,
+		11_706
 	]),
 	Uncommon: resolveItems([
 		'Tiger toy',
@@ -2003,7 +2004,7 @@ export const skillingLog: CollectionLogData = {
 		'Gloves of silence'
 	]),
 	MahoganyHomes: Object.values(mahoganyHomesLog).flat(Infinity) as number[],
-	LumberjackOutfit: Object.values(lumberjackOutfit).flat(Infinity) as number[],
+	Woodcutting: resolveItems([...lumberjackOutfit, 'Beaver']),
 	Runecraft: resolveItems(['Rift guardian', 'Small pouch', 'Medium pouch', 'Large pouch', 'Giant pouch']),
 	Zalcano: zalcanoLog,
 	CrystalTools: resolveItems(['Crystal pickaxe', 'Crystal axe', 'Crystal harpoon'])

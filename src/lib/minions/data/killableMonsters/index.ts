@@ -477,7 +477,7 @@ export const effectiveMonsters = [
 		emoji: '<:Smolcano:604670895113633802>'
 	},
 	{
-		id: 46274,
+		id: 46_274,
 		name: 'Nex',
 		aliases: ['nex']
 	},
@@ -487,7 +487,7 @@ export const effectiveMonsters = [
 		aliases: ['kalphite king', 'kk']
 	},
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
-	{ name: 'Mimic', aliases: ['mimic'], id: 23184, emoji: '<:Tangleroot:324127378978635778>' },
+	{ name: 'Mimic', aliases: ['mimic'], id: 23_184, emoji: '<:Tangleroot:324127378978635778>' },
 	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' },
 	{
 		id: KingGoldemar.id,

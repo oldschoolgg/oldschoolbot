@@ -321,7 +321,7 @@ export const IronmanPMBTable = new LootTable()
 const Openables: Openable[] = [
 	{
 		name: 'Birthday present',
-		itemID: 11918,
+		itemID: 11_918,
 		aliases: ['present', 'birthday present'],
 		table: BirthdayPresentTable,
 		emoji: Emoji.BirthdayPresent
@@ -363,7 +363,7 @@ const Openables: Openable[] = [
 	},
 	{
 		name: 'Untradeables Mystery box',
-		itemID: 19939,
+		itemID: 19_939,
 		aliases: ['untradeables mystery box', 'umb'],
 		table: () => getRandomItem(false),
 		emoji: Emoji.MysteryBox
@@ -391,7 +391,7 @@ const Openables: Openable[] = [
 	},
 	{
 		name: 'Builders supply crate',
-		itemID: 24884,
+		itemID: 24_884,
 		aliases: ['builders supply crate'],
 		table: new LootTable()
 			.add('Oak plank', [28, 30])
@@ -478,7 +478,7 @@ export const MysteryBoxes = new LootTable()
 	.oneIn(150, itemNameFromID(3713)!)
 	.oneIn(30, 'Equippable mystery box')
 	.add(6199)
-	.add(19939);
+	.add(19_939);
 
 export function getRandomMysteryBox() {
 	return MysteryBoxes.roll().items()[0][0].id;
@@ -518,7 +518,7 @@ const cantBeDropped = [
 	itemID('Clue hunter cloak'),
 	itemID('Cob'),
 	itemID('Tester gift box'),
-	22664, // JMOD Scythe of Vitur,
+	22_664, // JMOD Scythe of Vitur,
 	...resolveItems([
 		'Red Partyhat',
 		'Yellow partyhat',

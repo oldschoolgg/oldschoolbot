@@ -98,7 +98,7 @@ export default class extends BotCommand {
 			!equippedWeapon.weapon ||
 			!['crossbow', 'bow'].includes(equippedWeapon.weapon.weapon_type)
 		) {
-			throw 'JalYt, you not wearing ranged weapon?! TzTok-Jad stomp you to death if you get close, come back with range weapon.';
+			throw 'JalYt, you not wearing ranged weapon?! TzTok-Jad stomp you to death if you get close, come back with a bow or a crossbow.';
 		}
 
 		if (usersRangeStats.attack_ranged < 160) {

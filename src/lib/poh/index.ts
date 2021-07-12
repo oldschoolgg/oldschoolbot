@@ -59,31 +59,31 @@ export interface PoHObject {
 }
 
 export const Placeholders: Record<PoHSlot, [number, [number, number][]]> = {
-	mountedHead: [15382, [[430, GROUND_FLOOR_Y - 60]]],
-	mountedFish: [15383, [[240, GROUND_FLOOR_Y - 70]]],
+	mountedHead: [15_382, [[430, GROUND_FLOOR_Y - 60]]],
+	mountedFish: [15_383, [[240, GROUND_FLOOR_Y - 70]]],
 
-	throne: [15426, [[HOUSE_WIDTH / 2, GROUND_FLOOR_Y]]],
-	mountedCape: [29144, [[220, GROUND_FLOOR_Y]]],
-	jewelleryBox: [29142, [[369, GROUND_FLOOR_Y]]],
-	prayerAltar: [15270, [[175, TOP_FLOOR_Y]]],
-	spellbookAltar: [29140, [[60, TOP_FLOOR_Y]]],
+	throne: [15_426, [[HOUSE_WIDTH / 2, GROUND_FLOOR_Y]]],
+	mountedCape: [29_144, [[220, GROUND_FLOOR_Y]]],
+	jewelleryBox: [29_142, [[369, GROUND_FLOOR_Y]]],
+	prayerAltar: [15_270, [[175, TOP_FLOOR_Y]]],
+	spellbookAltar: [29_140, [[60, TOP_FLOOR_Y]]],
 	mountedItem: [1111, [[80, GROUND_FLOOR_Y - 70]]],
 
 	// Dungeon
-	guard: [15323, [[350, DUNGEON_FLOOR_Y]]],
+	guard: [15_323, [[350, DUNGEON_FLOOR_Y]]],
 	torch: [
-		15330,
+		15_330,
 		[
 			[50, DUNGEON_FLOOR_Y - FLOOR_HEIGHT / 2],
 			[HOUSE_WIDTH - 50, DUNGEON_FLOOR_Y - FLOOR_HEIGHT / 2]
 		]
 	],
-	dungeonDecoration: [15331, [[100, DUNGEON_FLOOR_Y]]],
-	prison: [15352, [[100, DUNGEON_FLOOR_Y]]],
+	dungeonDecoration: [15_331, [[100, DUNGEON_FLOOR_Y]]],
+	prison: [15_352, [[100, DUNGEON_FLOOR_Y]]],
 
 	// Garden
-	pool: [29122, [[GARDEN_X + HOUSE_WIDTH / 6, GARDEN_Y]]],
-	teleport: [29120, [[GARDEN_X + HOUSE_WIDTH / 2, GARDEN_Y]]]
+	pool: [29_122, [[GARDEN_X + HOUSE_WIDTH / 6, GARDEN_Y]]],
+	teleport: [29_120, [[GARDEN_X + HOUSE_WIDTH / 2, GARDEN_Y]]]
 };
 
 export const itemsNotRefundable = new Bank()

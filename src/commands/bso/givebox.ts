@@ -35,7 +35,7 @@ export default class extends BotCommand {
 		await user.addItemsToBank({ [box]: 1 });
 
 		return msg.channel.send(
-			`Gave ${[19939].includes(box) ? 'an' : 'a'} **${getOSItem(box).name}** to ${user.username}.`
+			`Gave ${[19_939].includes(box) ? 'an' : 'a'} **${getOSItem(box).name}** to ${user.username}.`
 		);
 	}
 }

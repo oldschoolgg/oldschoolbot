@@ -6,13 +6,14 @@ import { BotCommand } from '../lib/structures/BotCommand';
 export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const res = await this.client.orm.query(
-			`SELECT "new_user".username, sum(xp) as total_xp
+			`SELECT sum(xp) as total_xp, u."minion.ironman" as ironman, u.id
 FROM xp_gains
-INNER JOIN "new_users" "new_user" ON xp_gains.user_id = "new_user"."id"
+INNER JOIN "users" "u" ON xp_gains.user_id = "u"."id"
 WHERE date > ('2021-07-10 07:00:00'::timestamp)
 AND date < ('2021-07-17 07:00:00'::timestamp)
 AND skill = 'mining'
-GROUP BY "new_user".username
+${msg.flagArgs.im ? 'AND u."minion.ironman" = true' : ''}
+GROUP BY "u".id
 ORDER BY total_xp DESC
 LIMIT 15;`
 		);
@@ -25,7 +26,8 @@ LIMIT 15;`
 			res
 				.map((i: any, index: number) => {
 					const pos = index + 1;
-					let username = `${pos}. ${i.username ?? 'Unknown'}`;
+					// @ts-ignore 2339
+					let username = `${pos}. ${this.client.commands.get('leaderboard')!.getUsername(i.id)}`;
 					if (pos < 3) username = `**${username}**`;
 					return ` ${username} ${Number(i.total_xp).toLocaleString()} XP`;
 				})

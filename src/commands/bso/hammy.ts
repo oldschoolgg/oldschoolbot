@@ -9,7 +9,7 @@ import getOSItem from '../../lib/util/getOSItem';
 
 const options = {
 	max: 1,
-	time: 10000,
+	time: 10_000,
 	errors: ['time']
 };
 

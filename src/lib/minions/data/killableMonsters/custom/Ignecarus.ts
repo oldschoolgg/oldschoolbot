@@ -36,8 +36,8 @@ export const IgnecarusLootTable = new LootTable()
 	.add(runeAlchablesTable, 5)
 	.add(gemTable, 5);
 
-setCustomMonster(69420, 'Ignecarus', IgnecarusLootTable, Monsters.GeneralGraardor, {
-	id: 69420,
+setCustomMonster(69_420, 'Ignecarus', IgnecarusLootTable, Monsters.GeneralGraardor, {
+	id: 69_420,
 	name: 'Ignecarus',
 	aliases: ['ig', 'igne', 'ignecarus']
 });

@@ -5,7 +5,7 @@ import { itemNameFromID } from '../../lib/util';
 
 const options = {
 	max: 1,
-	time: 10000,
+	time: 10_000,
 	errors: ['time']
 };
 

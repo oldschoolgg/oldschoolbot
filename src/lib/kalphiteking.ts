@@ -20,7 +20,7 @@ export const allKalphiteKingItems = resolveItems([
 ]);
 
 export const KalphiteKingMonster: KillableMonster = {
-	id: 23483,
+	id: 23_483,
 	name: 'Kalphite King',
 	aliases: ['kk'],
 	timeToFinish: Time.Minute * 25,

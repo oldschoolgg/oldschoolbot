@@ -40,8 +40,8 @@ export const KingGoldemarLootTable = new LootTable()
 	.tertiary(15, 'Clue scroll (grandmaster)')
 	.tertiary(20, MysteryBoxes);
 
-setCustomMonster(696969, 'King Goldemar', KingGoldemarLootTable, Monsters.GeneralGraardor, {
-	id: 696969,
+setCustomMonster(696_969, 'King Goldemar', KingGoldemarLootTable, Monsters.GeneralGraardor, {
+	id: 696_969,
 	name: 'King Goldemar',
 	aliases: ['king goldemar', 'dwarf king', 'goldemar', 'kg']
 });

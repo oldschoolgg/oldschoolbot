@@ -24,7 +24,7 @@ export default class extends Task {
 		let totalPoints = 0;
 
 		for (let i = 0; i < quantity; i++) {
-			const points = rand(1000, 5_000);
+			const points = rand(1000, 5000);
 			totalPoints += points;
 
 			loot = addBanks([

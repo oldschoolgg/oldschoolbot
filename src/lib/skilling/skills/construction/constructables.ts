@@ -186,7 +186,7 @@ const Constructables: Constructable[] = [
 		ticks: 5
 	},
 	{
-		id: 838338383,
+		id: 838_338_383,
 		name: 'Elder table',
 		input: [Plank.ElderPlank, 6],
 		xp: 1540,
