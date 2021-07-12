@@ -444,6 +444,7 @@ LIMIT 50;
 SELECT id, item_contract_streak as qty
 FROM users
 WHERE item_contract_streak > 0
+ORDER BY qty DESC
 LIMIT 10;
 `);
 		this.doMenu(
