@@ -610,7 +610,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Infernal harpoon')]: 1
 		},
-		requiredSkills: { Cooking: 85, Fishing: 75 }
+		requiredSkills: { cooking: 85, fishing: 75 }
 	},
 	{
 		name: 'Graceful',

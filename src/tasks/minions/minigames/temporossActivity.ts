@@ -7,7 +7,6 @@ import { getTemporossLoot } from '../../../lib/simulation/tempoross';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -16,7 +15,6 @@ export default class extends Task {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
 		const user = await this.client.users.fetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		const channel = await this.client.channels.fetch(channelID);
 		const { previousScore, newScore } = await incrementMinigameScore(userID, 'Tempoross', quantity);
 		const kcForPet = randInt(previousScore, newScore);
 
@@ -75,8 +73,6 @@ export default class extends Task {
 			user,
 			previousCL
 		);
-
-		if (!channelIsSendable(channel)) return;
 
 		let output = `${user}, ${
 			user.minionName
