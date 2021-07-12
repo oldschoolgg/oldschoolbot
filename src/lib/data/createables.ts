@@ -602,6 +602,17 @@ const Createables: Createable[] = [
 		requiredSkills: { firemaking: 85 }
 	},
 	{
+		name: 'Infernal harpoon',
+		inputItems: {
+			[itemID('Dragon harpoon')]: 1,
+			[itemID('Smouldering stone')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal harpoon')]: 1
+		},
+		requiredSkills: { Cooking: 85, Fishing: 75 }
+	},
+	{
 		name: 'Graceful',
 		inputItems: {
 			[itemID('Mark of grace')]: 260
