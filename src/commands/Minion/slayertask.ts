@@ -132,10 +132,10 @@ export default class extends BotCommand {
 						currentTask
 							? `\nYour current task is to kill **${getCommonTaskName(
 									assignedTask!.monster
-							  )}**. You have ${currentTask.quantity.toLocaleString()} kills remaining.`
+							  )}**. You have ${currentTask.quantityRemaining.toLocaleString()} kills remaining.`
 							: ''
 					}` +
-					`\nYou have ${slayerPoints} slayer points, and have completed ${slayerStreak} tasks in a row.`
+					`\nYou have ${slayerPoints.toLocaleString()} slayer points, and have completed ${slayerStreak} tasks in a row.`
 			);
 		}
 		if (input && (input === 'skip' || input === 'block')) msg.flagArgs[input] = 'yes';
@@ -152,11 +152,13 @@ export default class extends BotCommand {
 			if (slayerPoints < (toBlock ? 100 : 30)) {
 				return msg.channel.send(
 					`You need ${toBlock ? 100 : 30} points to ${toBlock ? 'block' : 'cancel'},` +
-						` you only have: ${slayerPoints}`
+						` you only have: ${slayerPoints.toLocaleString()}`
 				);
 			}
 			await msg.confirm(
-				`Really ${toBlock ? 'block' : 'skip'} task? You have ${slayerPoints} and this will cost ${
+				`Really ${
+					toBlock ? 'block' : 'skip'
+				} task? You have ${slayerPoints.toLocaleString()} and this will cost ${
 					toBlock ? 100 : 30
 				} slayer points.\n\nPlease confirm you want to ${toBlock ? 'block' : 'skip'}.`
 			);
@@ -168,7 +170,9 @@ export default class extends BotCommand {
 			currentTask!.skipped = true;
 			currentTask!.save();
 			return msg.channel.send(
-				`Your task has been ${toBlock ? 'blocked' : 'skipped'}. You have ${slayerPoints} slayer points.`
+				`Your task has been ${
+					toBlock ? 'blocked' : 'skipped'
+				}. You have ${slayerPoints.toLocaleString()} slayer points.`
 			);
 		}
 
