@@ -596,7 +596,7 @@ export default class extends Extendable {
 		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
 		const creature = Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
 
-		if (!mon && !minigame && !creature) {
+		if (!mon && !minigame && !creature && !stringMatches(kcName, 'superior')) {
 			return [null, 0];
 		}
 
@@ -604,9 +604,11 @@ export default class extends Extendable {
 			? this.getKC((mon as unknown as Monster).id)
 			: minigame
 			? await this.getMinigameScore(minigame!.key)
-			: this.getCreatureScore(creature!);
+			: creature
+			? this.getCreatureScore(creature!)
+			: await this.settings.get(UserSettings.Slayer.SuperiorCount);
 
-		const name = minigame ? minigame.name : mon ? mon!.name : creature?.name;
+		const name = minigame ? minigame.name : mon ? mon!.name : creature ? creature?.name : 'superior';
 		return [name, kc];
 	}
 
