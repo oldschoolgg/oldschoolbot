@@ -588,11 +588,6 @@ export default class extends Extendable {
 	}
 
 	public async getKCByName(this: KlasaUser, kcName: string) {
-		const specialKCs = [
-			[['superior', 'superiors', 'superior slayer monster'], UserSettings.Slayer.SuperiorCount],
-			[['tithefarm', 'tithe'], UserSettings.Stats.TitheFarmsCompleted]
-		];
-
 		const mon = [
 			...killableMonsters,
 			NightmareMonster,
@@ -600,35 +595,29 @@ export default class extends Extendable {
 			{ name: 'TzTokJad', aliases: ['jad', 'fightcaves'], id: TzTokJad.id },
 			{ name: 'Hespori', aliases: ['hespori'], id: HESPORI_ID }
 		].find(mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName)));
+		if (mon) {
+			return [mon.name, this.getKC((mon as unknown as Monster).id)];
+		}
+
 		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
+		if (minigame) {
+			return [minigame.name, await this.getMinigameScore(minigame.key)];
+		}
+
 		const creature = Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
-
-		let specialName = '';
-		let specialSetting = null;
-
-		outerloop: for (const [names, setting] of specialKCs) {
-			for (const name of names) {
-				if (stringMatches(name, kcName)) {
-					[specialName, specialSetting] = [name, setting];
-					break outerloop;
-				}
-			}
+		if (creature) {
+			return [creature.name, this.getCreatureScore(creature)];
 		}
 
-		if (!mon && !minigame && !creature && !specialSetting) {
-			return [null, 0];
+		const special = [
+			[['superior', 'superiors', 'superior slayer monster'], UserSettings.Slayer.SuperiorCount],
+			[['tithefarm', 'tithe'], UserSettings.Stats.TitheFarmsCompleted]
+		].find(s => s[0].includes(kcName));
+		if (special) {
+			return [special[0][0], await this.settings.get(special![1] as string)];
 		}
 
-		const kc = mon
-			? this.getKC((mon as unknown as Monster).id)
-			: minigame
-			? await this.getMinigameScore(minigame!.key)
-			: creature
-			? this.getCreatureScore(creature!)
-			: await this.settings.get(specialSetting as string);
-
-		const name = minigame ? minigame.name : mon ? mon.name : creature ? creature.name : specialName;
-		return [name, kc];
+		return [null, 0];
 	}
 
 	getCreatureScore(this: KlasaUser, creature: Creature) {
