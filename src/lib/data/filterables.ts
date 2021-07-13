@@ -12,6 +12,7 @@ import {
 	cluesMedium,
 	cluesRares,
 	cluesShared,
+	tempoross,
 	wintertodt
 } from './collectionLog';
 import { Eatables } from './eatables';
@@ -972,6 +973,11 @@ export const filterableTypes: Filterable[] = [
 		name: 'Wintertodt',
 		aliases: ['wintertodt', 'todt', 'wt'],
 		items: Object.values(wintertodt).flat(Infinity) as number[]
+	},
+	{
+		name: 'Tempoross',
+		aliases: ['temp', 'ross', 'tempo', 'tempoross'],
+		items: Object.values(tempoross).flat(Infinity) as number[]
 	},
 	{
 		name: 'Warm gear',

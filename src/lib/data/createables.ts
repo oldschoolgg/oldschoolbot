@@ -602,6 +602,17 @@ const Createables: Createable[] = [
 		requiredSkills: { firemaking: 85 }
 	},
 	{
+		name: 'Infernal harpoon',
+		inputItems: {
+			[itemID('Dragon harpoon')]: 1,
+			[itemID('Smouldering stone')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal harpoon')]: 1
+		},
+		requiredSkills: { cooking: 85, fishing: 75 }
+	},
+	{
 		name: 'Graceful',
 		inputItems: {
 			[itemID('Mark of grace')]: 260
@@ -1647,6 +1658,46 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 75
+		}
+	},
+	{
+		name: 'Spirit angler headband',
+		inputItems: {
+			[itemID('Angler hat')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler headband')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler top',
+		inputItems: {
+			[itemID('Angler top')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler top')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler waders',
+		inputItems: {
+			[itemID('Angler waders')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler waders')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler boots',
+		inputItems: {
+			[itemID('Angler boots')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler boots')]: 1
 		}
 	},
 	...crystalTools,

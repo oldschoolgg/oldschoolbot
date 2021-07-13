@@ -129,6 +129,20 @@ const wintertodtLog = resolveItems([
 	'Dragon axe'
 ]);
 
+const temporossLog = resolveItems([
+	'Spirit angler headband',
+	'Spirit angler top',
+	'Spirit angler waders',
+	'Spirit angler boots',
+	'Soaked page',
+	'Fish barrel',
+	'Tackle box',
+	'Big harpoonfish',
+	'Tome of water (empty)',
+	'Tiny tempor',
+	'Dragon harpoon'
+]);
+
 const barbAssaultLog = resolveItems([
 	'Pet penance queen',
 	'Fighter torso',
@@ -370,6 +384,7 @@ export const bosses: CollectionLogData = {
 	Nightmare: nightmareLog,
 	Zalcano: zalcanoLog,
 	Wintertodt: wintertodtLog,
+	Tempoross: temporossLog,
 	Cox1: resolveItems([
 		'Dexterous prayer scroll',
 		'Torn prayer scroll',
@@ -500,7 +515,8 @@ export const pets: CollectionLogData = {
 		'Phoenix',
 		'Smolcano',
 		'Youngllef',
-		"Lil' creator"
+		"Lil' creator",
+		'Tiny tempor'
 	]),
 	Special: resolveItems(['Dark squirrel'])
 };
@@ -1534,6 +1550,10 @@ export const wintertodt: CollectionLogData = {
 	'': wintertodtLog
 };
 
+export const tempoross: CollectionLogData = {
+	'': temporossLog
+};
+
 const infinityItems = resolveItems([
 	'Infinity hat',
 	'Infinity top',
@@ -1818,6 +1838,7 @@ export const skillingLog: CollectionLogData = {
 	]),
 	Fishing: resolveItems(['Heron', 'Big swordfish', 'Big shark', 'Big bass']),
 	AerialFishing: Object.values(aerialFishing).flat(Infinity) as number[],
+	Tempoross: Object.values(temporossLog).flat(Infinity) as number[],
 	Firemaking: wintertodtLog,
 	Farming: [...resolveItems(['Tangleroot', 'Bottomless compost bucket']), ...farmersOutfit],
 	Plunder: resolveItems(['Rocky', "Pharaoh's sceptre (3)"]),
@@ -1942,6 +1963,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Wintertodt',
 		aliases: ['todt', 'wintertodt', 'wt'],
 		items: wintertodt
+	},
+	{
+		name: 'Tempoross',
+		aliases: ['temp', 'ross', 'tempo', 'tempoross'],
+		items: tempoross
 	},
 	{
 		name: 'Misc',
@@ -2083,7 +2109,8 @@ export const collectionLogTypes: CollectionLogType[] = [
 			castleWarsGodItems,
 			castleWarsOther,
 			mta: [...wandItems, ...infinityItems],
-			trek: lumberjackOutfit
+			trek: lumberjackOutfit,
+			tempoross: temporossLog
 		}
 	},
 	{
