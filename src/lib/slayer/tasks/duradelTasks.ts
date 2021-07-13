@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
-import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import DagannothKings from '../../minions/data/killableMonsters/bosses/groups/DagannothKings';
+import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 
