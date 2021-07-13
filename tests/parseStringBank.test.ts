@@ -21,7 +21,7 @@ describe('Bank Parsers', () => {
 		const runePlate = get('Rune platebody')!;
 		expect(pQI(`1 100 ${runePlate.id}`)).toEqual([[runePlate], 1]);
 		expect(pQI(`${runePlate.id}`)).toEqual([[runePlate], 0]);
-		expect(pQI('1 1 Dragonfire ward')).toEqual([[get(22_002), get(22_003)], 1]);
+		expect(pQI('1 1 Dragonfire ward')).toEqual([[get(22_002)], 1]);
 	});
 
 	test('parseStringBank', async () => {
@@ -170,14 +170,13 @@ describe('Bank Parsers', () => {
 	});
 
 	test('parseBank - same item names', async () => {
-		const bank = new Bank().add(22_002).add(22_003, 5);
+		const bank = new Bank().add(22_002);
 		const res = parseBank({
 			inputBank: bank,
 			flags: {},
 			inputStr: 'dragonfire ward'
 		});
-		expect(res.length).toEqual(2);
-		expect(res.amount(22_003)).toEqual(5);
+		expect(res.length).toEqual(1);
 		expect(res.amount(22_002)).toEqual(1);
 	});
 
