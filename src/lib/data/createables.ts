@@ -1,3 +1,5 @@
+import { Bank } from 'oldschooljs';
+
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
@@ -280,14 +282,13 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: 'Dragonfire shield',
+		name: 'Uncharged dragonfire shield',
 		inputItems: {
 			[itemID('Draconic visage')]: 1,
 			[itemID('Anti-dragon shield')]: 1
 		},
 		outputItems: {
-			// Uncharged dragonfire shield
-			11_284: 1
+			'Uncharged dragonfire shield': 1
 		},
 		requiredSkills: { smithing: 90 }
 	},
@@ -1698,6 +1699,32 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Spirit angler boots')]: 1
+		}
+	},
+	{
+		name: 'Bottled dragonbreath',
+		inputItems: resolveNameBank({
+			Dragonfruit: 10,
+			Vial: 1
+		}),
+		outputItems: {
+			[itemID('Bottled dragonbreath')]: 1
+		},
+		requiredSkills: {
+			slayer: 62
+		}
+	},
+	{
+		name: 'Dragonfire shield',
+		inputItems: new Bank({
+			'Bottled dragonbreath': 5,
+			'Uncharged dragonfire shield': 1
+		}).bank,
+		outputItems: resolveNameBank({
+			'Dragonfire shield': 1
+		}),
+		requiredSkills: {
+			slayer: 62
 		}
 	},
 	...crystalTools,
