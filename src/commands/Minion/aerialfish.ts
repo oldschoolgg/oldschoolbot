@@ -72,7 +72,7 @@ export default class extends BotCommand {
 			subcommands: true,
 			usageDelim: ' ',
 			cooldown: 1,
-			aliases: ['aerial', 'af'],
+			aliases: ['aerial', 'afi'],
 			description: 'Sends your minion to aerial fish, allowing you to get the angler outfit.',
 			examples: ['+aerialfishing 30', '+aerialfishing buy fish sack'],
 			categoryFlags: ['minion', 'skilling']
@@ -167,8 +167,13 @@ export default class extends BotCommand {
 				]
 			});
 		}
-		await msg.author.removeItemFromBank(itemID('Molch pearl'), buyable.cost);
-		await msg.author.addItemsToBank({ [buyable.item.id]: 1 }, true);
+
+		// Buy buyable for it's molch pearl cost:
+		await msg.author.exchangeItemsFromBank({
+			costBank: { [itemID('Molch pearl')]: buyable.cost },
+			lootBank: { [buyable.item.id]: 1 },
+			collectionLog: true
+		});
 		return msg.channel.send(`Successfully purchased 1x ${buyable.item.name} for ${buyable.cost}x Molch pearls.`);
 	}
 
@@ -198,8 +203,12 @@ export default class extends BotCommand {
 				]
 			});
 		}
-		await msg.author.removeItemFromBank(sellable.item.id, 1);
-		await msg.author.addItemsToBank({ [itemID('Molch pearl')]: sellable.cost }, true);
+		// Exchange sellable for it's molch pearl sell value
+		await msg.author.exchangeItemsFromBank({
+			costBank: { [sellable.item.id]: 1 },
+			lootBank: { [itemID('Molch pearl')]: sellable.cost },
+			collectionLog: true
+		});
 		return msg.channel.send(`Successfully sold 1x ${sellable.item.name} for ${sellable.cost}x Molch pearls.`);
 	}
 }

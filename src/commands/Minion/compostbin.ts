@@ -1,10 +1,11 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addItemToBank, bankHasItem, removeItemFromBank, stringMatches } from '../../lib/util';
+import { bankHasItem, stringMatches } from '../../lib/util';
 
 const SuperCompostables = [
 	'Pineapple',
@@ -89,11 +90,10 @@ export default class extends BotCommand {
 			`${msg.author}, please confirm that you want to compost ${quantity}x ${cropToCompost} into supercompost.`
 		);
 
-		let newBank = userBank;
-		newBank = await removeItemFromBank(newBank, itemID(superCompostableCrop), quantity);
-		newBank = await addItemToBank(newBank, itemID('Supercompost'), quantity);
+		const costBank = new Bank().add(superCompostableCrop, quantity);
+		const lootBank = new Bank().add('Supercompost', quantity);
 
-		await msg.author.settings.update(UserSettings.Bank, newBank);
+		await msg.author.exchangeItemsFromBank({ costBank, lootBank, collectionLog: true });
 
 		return msg.channel.send(
 			`You've composted ${quantity}x ${superCompostableCrop} and received ${quantity}x Supercompost in return.`

@@ -160,8 +160,12 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			if (amountTicketsHas < cost) {
 				return msg.channel.send("You don't have enough Agility arena tickets.");
 			}
-			await msg.author.removeItemFromBank(itemID('Agility arena ticket'), cost);
-			await msg.author.addItemsToBank({ [buyable.item.id]: qty }, true);
+			// Remove tickets and give buyable:
+			await msg.author.exchangeItemsFromBank({
+				costBank: { [itemID('Agility arena ticket')]: cost },
+				lootBank: { [buyable.item.id]: qty },
+				collectionLog: true
+			});
 			return msg.channel.send(
 				`Successfully purchased ${qty}x ${buyable.item.name} for ${cost}x Agility arena tickets.`
 			);
@@ -169,7 +173,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 		if (input === 'xp') {
 			if (!(qty in ticketQuantities)) {
 				return msg.channel.send(
-					`You can only redeem tickets for XP at the following quantities: ${Object.values(
+					`You can only redeem tickets for XP at the following quantities: ${Object.keys(
 						ticketQuantities
 					).join(', ')}.`
 				);
@@ -182,11 +186,13 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			let str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(
 				xpToGive / qty
 			).toFixed(2)} ea)`;
-			await msg.author.removeItemFromBank(itemID('Agility arena ticket'), qty);
-			await msg.author.addXP({
-				skillName: SkillsEnum.Agility,
-				amount: xpToGive
-			});
+			await Promise.all([
+				msg.author.removeItemFromBank(itemID('Agility arena ticket'), qty),
+				msg.author.addXP({
+					skillName: SkillsEnum.Agility,
+					amount: xpToGive
+				})
+			]);
 			if (hasKaramjaMed) {
 				str += '\n\nYou received 10% extra XP for the Karamja Medium Diary.';
 			}
@@ -195,6 +201,8 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 
 		if (input === 'recolor') {
 			let cost = 250;
+			const costBank = new Bank();
+			const lootBank = new Bank();
 			if (!bank.has(plainGraceful)) {
 				return msg.channel.send({
 					files: [
@@ -216,13 +224,12 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 					]
 				});
 			}
-			bank.remove('Agility arena ticket', cost);
-			bank.remove(plainGraceful);
-			bank.add(brimhavenGraceful);
-			await msg.author.settings.update(UserSettings.Bank, bank.bank);
-			await msg.author.addItemsToCollectionLog({
-				...brimhavenGraceful
-			});
+			costBank.add('Agility arena ticket', cost);
+			costBank.add(plainGraceful);
+			lootBank.add(brimhavenGraceful);
+			// Remove tickets and graceful and replace with brimhaven graceful
+			await msg.author.exchangeItemsFromBank({ costBank, lootBank, collectionLog: true });
+
 			return msg.channel.send({
 				files: [
 					await chatHeadImage({

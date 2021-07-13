@@ -151,3 +151,9 @@ export interface ResolveAttackStylesParams {
 	monsterID: number;
 	boostMethod?: string;
 }
+
+export interface ExchangeItemsFromBankOptions {
+	costBank?: ItemBank | Bank;
+	lootBank?: ItemBank | Bank;
+	collectionLog?: boolean;
+}
