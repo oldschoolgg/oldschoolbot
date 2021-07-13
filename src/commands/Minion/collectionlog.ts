@@ -1,15 +1,22 @@
 import { MessageAttachment } from 'discord.js';
-import { chunk } from 'e';
+import { chunk, uniqueArr } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { collectionLogTypes } from '../../lib/data/collectionLog';
+import { bosses, collectionLogTypes } from '../../lib/data/collectionLog';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID, stringMatches } from '../../lib/util';
 
-const slicedCollectionLogTypes = collectionLogTypes.slice(0, collectionLogTypes.length - 1);
+const slicedCollectionLogTypes = collectionLogTypes.filter(i => i.name !== 'Overall');
+
+const allCollectionLogItems = uniqueArr(
+	collectionLogTypes
+		.filter(i => !['Holiday', 'Diango', 'Overall', 'Capes', 'Clue Hunter'].includes(i.name))
+		.map(i => Object.values(i.items))
+		.flat(Infinity) as number[]
+);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -25,9 +32,18 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [inputType]: [string]) {
 		if (!inputType) {
-			const { percent, notOwned } = msg.author.completion();
-			return msg.send(
-				`You have **${percent.toFixed(2)}%** Collection Log Completion.
+			const { percent, notOwned, owned, debugBank } = msg.author.completion();
+			if (msg.flagArgs.debug) {
+				return msg.channel.sendBankImage({
+					bank: debugBank.bank,
+					title: 'All Items That Count Towards CL %',
+					flags: { debug: 1 }
+				});
+			}
+			return msg.channel.send(
+				`You have ${owned.length}/${allCollectionLogItems.length} (${percent.toFixed(
+					2
+				)}%) Collection Log Completion.
 				
 Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 			);
@@ -35,24 +51,36 @@ Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 
 		await msg.author.settings.sync(true);
 
-		const monster = killableMonsters.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
+		const monster = killableMonsters.find(
+			_type => stringMatches(_type.name, inputType) || _type.aliases.some(name => stringMatches(name, inputType))
+		);
 
-		const type = slicedCollectionLogTypes.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
+		const type = slicedCollectionLogTypes.find(
+			_type => stringMatches(_type.name, inputType) || _type.aliases.some(name => stringMatches(name, inputType))
+		);
 
 		if (!type && !monster) {
-			return msg.send(
+			return msg.channel.send(
 				`That's not a valid collection log type. The valid types are: ${slicedCollectionLogTypes
 					.map(type => type.name)
 					.join(', ')}`
 			);
 		}
 
-		const items = Array.from(
+		let items = Array.from(
 			new Set(Object.values(type?.items ?? Monsters.get(monster!.id)!.allItems!).flat(100))
 		) as number[];
 		const log = msg.author.settings.get(UserSettings.CollectionLogBank);
-		const num = items.filter(item => log[item] > 0).length;
 		const { name } = type || monster!;
+
+		// Add Sire uniques that come from Unsired.
+		if (stringMatches('abyssal sire', name)) {
+			items.unshift(...bosses['Abyssal Sire']);
+			items = [...new Set(items)];
+		}
+
+		// Count number of items the player owns in CL.
+		const num = items.filter(item => log[item] > 0).length;
 
 		const chunkedMonsterItems: Record<number, number[]> = {};
 		let i = 0;
@@ -75,9 +103,9 @@ Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 		const [kcName, kcAmount] = await msg.author.getKCByName(name);
 
 		if (!kcName) {
-			return msg.send(attachment);
+			return msg.channel.send({ files: [attachment] });
 		}
 
-		return msg.send(`Your ${kcName} KC is: ${kcAmount}.`, attachment);
+		return msg.channel.send({ content: `Your ${kcName} KC is: ${kcAmount}.`, files: [attachment] });
 	}
 }

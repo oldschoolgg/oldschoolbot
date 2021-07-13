@@ -12,6 +12,6 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.send('http://services.runescape.com/m=forum/forums.ws#group63');
+		return msg.channel.send('http://services.runescape.com/m=forum/forums.ws#group63');
 	}
 }

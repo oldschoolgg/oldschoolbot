@@ -1,6 +1,8 @@
+import { MessageAttachment } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -27,11 +29,15 @@ export default class MinionCommand extends BotCommand {
 		const monster = findMonster(name);
 
 		if (!monster) {
-			return msg.channel.sendFile(
-				Buffer.from(killableMonsters.map(mon => mon.name).join('\n')),
-				'killableMonsters.txt',
-				"That's not a valid monster to kill. See attached file for list of killable monsters."
-			);
+			return msg.channel.send({
+				content: "That's not a valid monster to kill. See attached file for list of killable monsters.",
+				files: [
+					new MessageAttachment(
+						Buffer.from(killableMonsters.map(mon => mon.name).join('\n')),
+						'killableMonsters.txt'
+					)
+				]
+			});
 		}
 
 		const userKc = msg.author.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
@@ -106,6 +112,6 @@ export default class MinionCommand extends BotCommand {
 			)}) to finish.\n`
 		);
 
-		return msg.send(str.join('\n'));
+		return msg.channel.send(str.join('\n'));
 	}
 }

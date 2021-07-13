@@ -1,7 +1,7 @@
+import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Time } from '../../../constants';
 import { NestBoxes } from '../../../data/openables';
 import { eggNest } from '../../../simulation/birdsNest';
 

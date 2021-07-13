@@ -20,6 +20,6 @@ export default class extends BotCommand {
 		) {
 			return;
 		}
-		return msg.send('<@&682052620809928718>');
+		return msg.channel.send('<@&682052620809928718>');
 	}
 }

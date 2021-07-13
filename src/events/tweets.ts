@@ -189,7 +189,7 @@ export default class extends Event {
 	sendTweet({ text, url, name, avatar, image, id, authorURL }: Tweet) {
 		const embed = new MessageEmbed()
 			.setDescription(`\n ${text}`)
-			.setColor(1942002)
+			.setColor(1_942_002)
 			.setThumbnail(avatar)
 			.setAuthor(name, undefined, authorURL)
 			.setImage(image);
@@ -203,7 +203,7 @@ export default class extends Event {
 
 		if (key === 'hexis') {
 			return (this.client.channels.cache.get(HEXIS_CHANNEL) as TextChannel)!
-				.send(`<${url}>`, { embed })
+				.send({ content: `<${url}>`, embeds: [embed] })
 				.catch(() => null);
 		}
 

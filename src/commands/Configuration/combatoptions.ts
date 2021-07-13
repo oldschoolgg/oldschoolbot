@@ -60,7 +60,7 @@ export default class extends BotCommand {
 		const nextBool = command !== 'remove';
 
 		if (currentStatus === nextBool) {
-			return msg.send(`"${newcbopt.name}" is already ${currentStatus ? 'enabled' : 'disabled'} for you.`);
+			return msg.channel.send(`"${newcbopt.name}" is already ${currentStatus ? 'enabled' : 'disabled'} for you.`);
 		}
 
 		let warningMsg = '';
@@ -92,6 +92,6 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.CombatOptions, newcbopt.id);
 
-		return msg.send(`${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`);
+		return msg.channel.send(`${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`);
 	}
 }

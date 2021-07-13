@@ -476,10 +476,6 @@ export default class BankImageTask extends Task {
 			}
 		}
 
-		// const args =
-		// 	!isTransparent && items.length > 2000
-		// 		? ['image/jpeg', { quality: 0.75 }]
-		// 		: ['image/png'];
 		const image = await canvasToBufferAsync(canvas, 'image/png');
 
 		return {
@@ -516,7 +512,6 @@ export default class BankImageTask extends Task {
 		}
 
 		// Draw Items
-
 		ctx.textAlign = 'start';
 		ctx.fillStyle = '#494034';
 
@@ -533,8 +528,8 @@ export default class BankImageTask extends Task {
 			const item = await this.getItemImage(itemID, 100_000);
 			if (!item) return;
 
-			x += (32 - item.width) / 2;
-			y += (32 - item.height) / 2;
+			x += floor((32 - item.width) / 2);
+			y += floor((32 - item.height) / 2);
 
 			if (!hasItem) {
 				ctx.save();

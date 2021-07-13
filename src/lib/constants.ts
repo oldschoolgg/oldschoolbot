@@ -1,17 +1,8 @@
+import { MessageButton } from 'discord.js';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { SkillsEnum } from './skilling/types';
-
-export const enum Time {
-	Millisecond = 1,
-	Second = 1000,
-	Minute = 1000 * 60,
-	Hour = 1000 * 60 * 60,
-	Day = 1000 * 60 * 60 * 24,
-	Month = 1000 * 60 * 60 * 24 * 30,
-	Year = 1000 * 60 * 60 * 24 * 365
-}
 
 export const enum Channel {
 	Notifications = '469523207691436042',
@@ -141,7 +132,7 @@ export const enum Image {
 }
 
 export const enum Color {
-	Orange = 16098851
+	Orange = 16_098_851
 }
 
 export const SupportServer = '342983479501389826';
@@ -203,7 +194,8 @@ export const enum Tasks {
 	BlastFurnaceActivity = 'blastFurnaceActivity',
 	MageArena2 = 'mageArena2Activity',
 	BigChompyBirdHunting = 'chompyHuntActivity',
-	DarkAltar = 'darkAltarActivity'
+	DarkAltar = 'darkAltarActivity',
+	TrekkingActivity = 'templeTrekkingActivity'
 }
 
 export enum Activity {
@@ -263,7 +255,8 @@ export enum Activity {
 	BlastFurnace = 'BlastFurnace',
 	MageArena2 = 'MageArena2',
 	BigChompyBirdHunting = 'BigChompyBirdHunting',
-	DarkAltar = 'DarkAltar'
+	DarkAltar = 'DarkAltar',
+	Trekking = 'Trekking'
 }
 
 export enum ActivityGroup {
@@ -391,7 +384,7 @@ export const badges: { [key: number]: string } = {
 
 export const MAX_QP = 280;
 
-export const MIMIC_MONSTER_ID = 23184;
+export const MIMIC_MONSTER_ID = 23_184;
 
 export const continuationChars = 'abdefghjkmnoprstuvwxyz123456789'.split('');
 export const CENA_CHARS = ['​', '‎', '‍'];
@@ -448,3 +441,19 @@ export const skillEmoji = {
 export const LEVEL_99_XP = 13_034_431;
 export const MAX_LEVEL = 99;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
+export const SILENT_ERROR = 'SILENT_ERROR';
+
+export const informationalButtons = [
+	new MessageButton().setLabel('Wiki').setEmoji('📰').setURL('https://wiki.oldschool.gg/').setStyle('LINK'),
+	new MessageButton()
+		.setLabel('Patreon')
+		.setEmoji('679334888792391703')
+		.setURL('https://www.patreon.com/oldschoolbot')
+		.setStyle('LINK'),
+	new MessageButton()
+		.setLabel('Support Server')
+		.setEmoji('778418736180494347')
+		.setURL('https://www.discord.gg/ob')
+		.setStyle('LINK'),
+	new MessageButton().setLabel('Bot Invite').setEmoji('🤖').setURL('http://invite.oldschool.gg/').setStyle('LINK')
+];

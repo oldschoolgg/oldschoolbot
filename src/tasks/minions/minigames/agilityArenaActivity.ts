@@ -1,7 +1,7 @@
+import { Time } from 'e';
 import { Task } from 'klasa';
 
 import { determineXPFromTickets } from '../../../commands/Minion/agilityarena';
-import { Time } from '../../../lib/constants';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';

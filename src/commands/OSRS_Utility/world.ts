@@ -18,17 +18,17 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [worldNumber]: [number]) {
 		const world = await Worlds.fetch(worldNumber);
-		if (!world) return msg.send("That's an invalid world!");
+		if (!world) return msg.channel.send("That's an invalid world!");
 
 		const embed = new MessageEmbed()
-			.setColor(7981338)
+			.setColor(7_981_338)
 			.setThumbnail('https://i.imgur.com/56i6oyn.png')
 			.setFooter(`Old School RuneScape World ${world.number}`, 'https://i.imgur.com/fVakfwp.png')
 			.addField('Access', world.members ? 'Members' : 'Free to Play', true)
 			.addField('Location', world.location, true)
-			.addField('Players', world.players, true)
+			.addField('Players', world.players.toString(), true)
 			.addField('Activity', world.activity, true);
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

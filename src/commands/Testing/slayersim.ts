@@ -1,8 +1,8 @@
-import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round } from 'e';
+import { MessageAttachment } from 'discord.js';
+import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { table } from 'table';
 
-import { Time } from '../../lib/constants';
 import { boostCannon, boostCannonMulti, boostIceBarrage, boostIceBurst } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -81,7 +81,7 @@ export default class extends BotCommand {
 					const kMonster = killableMonsters.find(km => {
 						return km.id === tmon;
 					});
-					let [killTime, percentReduced] = reducedTimeFromKC(kMonster!, 1000000);
+					let [killTime, percentReduced] = reducedTimeFromKC(kMonster!, 1_000_000);
 					const [newDuration, boostMsg] = applySkillBoostJr(msg.author, killTime, attackStyles);
 					const mSlayerXP = osjsMon?.data?.hitpoints
 						? osjsMon!.data!.slayerXP
@@ -143,6 +143,8 @@ export default class extends BotCommand {
 				});
 			});
 		});
-		return msg.channel.sendFile(Buffer.from(table(simTable)), 'slayerMonsterSim.txt');
+		return msg.channel.send({
+			files: [new MessageAttachment(Buffer.from(table(simTable)), 'slayerMonsterSim.txt')]
+		});
 	}
 }

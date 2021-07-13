@@ -1,13 +1,13 @@
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
-import { objectEntries, randInt, shuffleArr } from 'e';
+import { objectEntries, randInt, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
-import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer, Time } from './constants';
+import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
 import { GearSetupTypes } from './gear/types';
 import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
@@ -48,11 +48,11 @@ export function cleanMentions(guild: Guild | null, input: string, showAt = true)
 }
 
 export function generateHexColorForCashStack(coins: number) {
-	if (coins > 9999999) {
+	if (coins > 9_999_999) {
 		return '#00FF80';
 	}
 
-	if (coins > 99999) {
+	if (coins > 99_999) {
 		return '#FFFFFF';
 	}
 
@@ -60,9 +60,9 @@ export function generateHexColorForCashStack(coins: number) {
 }
 
 export function formatItemStackQuantity(quantity: number) {
-	if (quantity > 9999999) {
-		return `${Math.floor(quantity / 1000000)}M`;
-	} else if (quantity > 99999) {
+	if (quantity > 9_999_999) {
+		return `${Math.floor(quantity / 1_000_000)}M`;
+	} else if (quantity > 99_999) {
 		return `${Math.floor(quantity / 1000)}K`;
 	}
 	return quantity.toString();
@@ -106,9 +106,9 @@ export function bankToString(bank: ItemBank, chunkSize?: number) {
 export function formatDuration(ms: number) {
 	if (ms < 0) ms = -ms;
 	const time = {
-		day: Math.floor(ms / 86400000),
-		hour: Math.floor(ms / 3600000) % 24,
-		minute: Math.floor(ms / 60000) % 60,
+		day: Math.floor(ms / 86_400_000),
+		hour: Math.floor(ms / 3_600_000) % 24,
+		minute: Math.floor(ms / 60_000) % 60,
 		second: Math.floor(ms / 1000) % 60
 	};
 	let nums = Object.entries(time).filter(val => val[1] !== 0);
@@ -363,7 +363,7 @@ export function normal(mu = 0, sigma = 1, nsamples = 6) {
  * Checks if the bot can send a message to a channel object.
  * @param channel The channel to check if the bot can send a message to.
  */
-export function channelIsSendable(channel: Channel | undefined): channel is TextChannel {
+export function channelIsSendable(channel: Channel | undefined | null): channel is TextChannel {
 	if (!channel || (!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) || !channel.postable) {
 		return false;
 	}
@@ -497,4 +497,15 @@ export function textEffect(str: string, effect: 'none' | 'strikethrough') {
 export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
 	const active: any[] = user.settings.get(key) as any[];
 	return user.settings.update(key, active);
+}
+
+export function isValidNickname(str?: string) {
+	return (
+		!str ||
+		typeof str !== 'string' ||
+		str.length < 2 ||
+		str.length > 30 ||
+		['\n', '`', '@', '<', ':'].some(char => str.includes(char)) ||
+		stripEmojis(str).length !== str.length
+	);
 }

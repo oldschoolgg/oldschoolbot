@@ -21,7 +21,7 @@ describe('Bank Parsers', () => {
 		const runePlate = get('Rune platebody')!;
 		expect(pQI(`1 100 ${runePlate.id}`)).toEqual([[runePlate], 1]);
 		expect(pQI(`${runePlate.id}`)).toEqual([[runePlate], 0]);
-		expect(pQI('1 1 Dragonfire ward')).toEqual([[get(22002), get(22003)], 1]);
+		expect(pQI('1 1 Dragonfire ward')).toEqual([[get(22_002), get(22_003)], 1]);
 	});
 
 	test('parseStringBank', async () => {
@@ -170,15 +170,15 @@ describe('Bank Parsers', () => {
 	});
 
 	test('parseBank - same item names', async () => {
-		const bank = new Bank().add(22002).add(22003, 5);
+		const bank = new Bank().add(22_002).add(22_003, 5);
 		const res = parseBank({
 			inputBank: bank,
 			flags: {},
 			inputStr: 'dragonfire ward'
 		});
 		expect(res.length).toEqual(2);
-		expect(res.amount(22003)).toEqual(5);
-		expect(res.amount(22002)).toEqual(1);
+		expect(res.amount(22_003)).toEqual(5);
+		expect(res.amount(22_002)).toEqual(1);
 	});
 
 	test('parseBank - extra number', async () => {
@@ -195,5 +195,20 @@ describe('Bank Parsers', () => {
 
 		const other = parseBank({ inputBank: bank, inputStr: get('Egg').id.toString() });
 		expect(other.amount('Egg')).toEqual(3);
+	});
+
+	test('parseBank - look for nonexistent items', async () => {
+		const bank = new Bank().add('Steel arrow').add('Bones').add('Coal', 500).add('Clue scroll (easy)');
+		expect(parseBank({ inputBank: bank, inputStr: '1 Portrait' }).toString()).toEqual('No items');
+		expect(parseBank({ inputBank: bank, inputStr: '1 666' }).toString()).toEqual('No items');
+		expect(parseBank({ inputBank: bank, inputStr: '526' }).toString()).toEqual('1x Bones');
+		expect(parseBank({ inputBank: bank, inputStr: '0 cOaL' }).toString()).toEqual('500x Coal');
+	});
+
+	test('parseBank - check item aliases', async () => {
+		const bank = new Bank().add('Arceuus graceful top', 30).add('Bones');
+		expect(parseBank({ inputBank: bank, inputStr: 'pUrPle gRaceful top' }).toString()).toEqual(
+			'30x Arceuus graceful top'
+		);
 	});
 });

@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { Activity, Emoji, Time } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -49,7 +50,7 @@ export default class extends BotCommand {
 		const titheFarmPoints = msg.author.settings.get(UserSettings.Stats.TitheFarmPoints);
 
 		if (msg.flagArgs.points) {
-			return msg.send(`You have ${titheFarmPoints} Tithe Farm points.`);
+			return msg.channel.send(`You have ${titheFarmPoints} Tithe Farm points.`);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Farming) < 34) {
@@ -67,7 +68,7 @@ export default class extends BotCommand {
 			type: Activity.TitheFarm
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`Your minion is off completing a round of the ${Emoji.MinigameIcon} Tithe Farm. It'll take ${formatDuration(
 				duration
 			)} to finish.\n\n${boostStr.length > 0 ? '**Boosts:** ' : ''}${boostStr.join(', ')}`

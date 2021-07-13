@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { Time, ZALCANO_ID } from '../../../constants';
+import { ZALCANO_ID } from '../../../constants';
 import { GearSetupTypes, GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
@@ -330,6 +331,6 @@ export const effectiveMonsters = [
 		emoji: '<:Smolcano:604670895113633802>'
 	},
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
-	{ name: 'Mimic', aliases: ['mimic'], id: 23184, emoji: '<:Tangleroot:324127378978635778>' },
+	{ name: 'Mimic', aliases: ['mimic'], id: 23_184, emoji: '<:Tangleroot:324127378978635778>' },
 	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' }
 ];

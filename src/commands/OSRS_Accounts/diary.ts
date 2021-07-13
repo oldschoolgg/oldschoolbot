@@ -47,14 +47,14 @@ export default class extends BotCommand {
 			.join('\n');
 
 		const embed = new MessageEmbed()
-			.setColor(11132490)
+			.setColor(11_132_490)
 			.setThumbnail('https://i.imgur.com/wV9zvLM.png')
 			.setDescription(username)
 			.addField('Diary', diaryNames, true)
 			.addField('You can complete:', canComplete, true)
 			.setFooter('✶Boostable');
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 
 	check(skills: SkillsScore, diary: typeof diaryRequirements[keyof typeof diaryRequirements]) {

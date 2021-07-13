@@ -17,7 +17,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [playtime, arrival]: [number, number]) {
 		if (!playtime || !arrival) {
-			return msg.send('You can use this command like this: https://i.imgur.com/PPviStZ.png');
+			return msg.channel.send('You can use this command like this: https://i.imgur.com/PPviStZ.png');
 		}
 
 		const days = arrival * Time.Day;
@@ -25,7 +25,7 @@ export default class extends BotCommand {
 
 		const avg = ((playtime * 24) / arrival).toFixed(2);
 
-		return msg.send(`
+		return msg.channel.send(`
   Your account was made on: ${new Date(
 		createdAt
   ).toUTCString()}, and you've played an average of ${avg} Hours per day.`);

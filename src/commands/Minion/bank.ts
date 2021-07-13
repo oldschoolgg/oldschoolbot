@@ -26,7 +26,7 @@ export default class extends BotCommand {
 		const baseBank = msg.author.bank({ withGP: true });
 
 		if (baseBank.length === 0) {
-			return msg.send(
+			return msg.channel.send(
 				`You have no items or GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command, and you can get items by sending your minion to do tasks.`
 			);
 		}
@@ -38,7 +38,7 @@ export default class extends BotCommand {
 		});
 
 		if (bank.length === 0) {
-			return msg.send('No items found.');
+			return msg.channel.send('No items found.');
 		}
 		if (msg.flagArgs.text) {
 			const textBank = [];
@@ -55,7 +55,7 @@ export default class extends BotCommand {
 			}
 
 			if (textBank.length === 0) {
-				return msg.send('No items found.');
+				return msg.channel.send('No items found.');
 			}
 
 			if (msg.flagArgs.full) {
@@ -63,10 +63,13 @@ export default class extends BotCommand {
 					Buffer.from(textBank.join('\n')),
 					`${msg.author.username}s_Bank.txt`
 				);
-				return msg.channel.send('Here is your entire bank in txt file format.', attachment);
+				return msg.channel.send({
+					content: 'Here is your entire bank in txt file format.',
+					files: [attachment]
+				});
 			}
 
-			const loadingMsg = await msg.send(new MessageEmbed().setDescription('Loading...'));
+			const loadingMsg = await msg.channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
 			const display = new UserRichDisplay();
 			display.setFooterPrefix('Page ');
 

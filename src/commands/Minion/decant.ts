@@ -31,10 +31,12 @@ export default class extends BotCommand {
 			!msg.author.hasItemEquippedOrInBank('Clue hunter gloves')
 		) {
 			await msg.author.addItemsToBank(new Bank({ 'Clue hunter gloves': 1 }), true);
-			msg.send('\n\nWhile decanting some potions, you find a pair of gloves on the floor and pick them up.');
+			msg.channel.send(
+				'\n\nWhile decanting some potions, you find a pair of gloves on the floor and pick them up.'
+			);
 		}
 
-		return msg.send(
+		return msg.channel.send(
 			`You decanted **${sumOfPots}x ${potionName}${sumOfPots > 0 ? 's' : ''}** into **${new Bank(
 				potionsToAdd
 			)}**.`

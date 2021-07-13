@@ -30,11 +30,11 @@ export default class extends BotCommand {
 			}[]
 		>(query);
 
-		if (result.length === 0) return msg.send('No results found.');
+		if (result.length === 0) return msg.channel.send('No results found.');
 
 		const command = this.client.commands.get('leaderboard') as LeaderboardCommand;
 
-		return msg.send(
+		return msg.channel.send(
 			`**Most '${item.name}' received:**\n${result
 				.map(
 					({ id, qty }) =>
