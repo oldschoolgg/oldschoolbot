@@ -10,6 +10,7 @@ import {
 	Activity,
 	Emoji,
 	Events,
+	HESPORI_ID,
 	LEVEL_99_XP,
 	MAX_QP,
 	MAX_TOTAL_LEVEL,
@@ -587,16 +588,34 @@ export default class extends Extendable {
 	}
 
 	public async getKCByName(this: KlasaUser, kcName: string) {
+		const specialKCs = [
+			[['superior', 'superiors', 'superior slayer monster'], UserSettings.Slayer.SuperiorCount],
+			[['tithefarm', 'tithe'], UserSettings.Stats.TitheFarmsCompleted]
+		];
+
 		const mon = [
 			...killableMonsters,
 			NightmareMonster,
 			{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID },
-			{ name: 'TzTokJad', aliases: ['jad', 'fightcaves'], id: TzTokJad.id }
+			{ name: 'TzTokJad', aliases: ['jad', 'fightcaves'], id: TzTokJad.id },
+			{ name: 'Hespori', aliases: ['hespori'], id: HESPORI_ID }
 		].find(mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName)));
 		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
 		const creature = Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
 
-		if (!mon && !minigame && !creature && !stringMatches(kcName, 'superior')) {
+		let specialName = '';
+		let specialSetting = null;
+
+		outerloop: for (const [names, setting] of specialKCs) {
+			for (const name of names) {
+				if (stringMatches(name, kcName)) {
+					[specialName, specialSetting] = [name, setting];
+					break outerloop;
+				}
+			}
+		}
+
+		if (!mon && !minigame && !creature && !specialSetting) {
 			return [null, 0];
 		}
 
@@ -606,9 +625,9 @@ export default class extends Extendable {
 			? await this.getMinigameScore(minigame!.key)
 			: creature
 			? this.getCreatureScore(creature!)
-			: await this.settings.get(UserSettings.Slayer.SuperiorCount);
+			: await this.settings.get(specialSetting as string);
 
-		const name = minigame ? minigame.name : mon ? mon.name : creature ? creature.name : 'superior';
+		const name = minigame ? minigame.name : mon ? mon.name : creature ? creature.name : specialName;
 		return [name, kc];
 	}
 
