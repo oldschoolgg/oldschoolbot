@@ -166,7 +166,16 @@ const killableBosses: KillableMonster[] = [
 		},
 		defaultAttackStyles: [SkillsEnum.Strength],
 		customMonsterHP: 510,
-		combatXpMultiplier: 1.05
+		combatXpMultiplier: 1.05,
+		healAmountNeeded: 20 * 3,
+		minimumGearRequirements: {
+			[GearSetupTypes.Melee]: {
+				[GearStat.MeleeStrength]: 10
+			}
+		},
+		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
+		attackStylesUsed: [GearStat.AttackMagic],
+		attackStyleToUse: GearStat.AttackCrush
 	},
 	{
 		id: Monsters.CorporealBeast.id,
