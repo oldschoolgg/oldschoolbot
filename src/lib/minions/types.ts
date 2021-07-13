@@ -104,6 +104,9 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
+	isGroupMonster?: boolean;
+	groupMonsters?: SimpleMonster[];
+	minimumKC?: number;
 }
 /*
  * Monsters will have an array of Consumables

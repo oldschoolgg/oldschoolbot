@@ -5,7 +5,7 @@ import { ZALCANO_ID } from '../../../constants';
 import { GearSetupTypes, GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
+import resolveItems from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import bosses from './bosses';
@@ -59,121 +59,6 @@ const killableMonsters: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged],
 		customMonsterHP: 600,
 		combatXpMultiplier: 1.09
-	},
-	{
-		id: Monsters.DagannothPrime.id,
-		name: Monsters.DagannothPrime.name,
-		aliases: Monsters.DagannothPrime.aliases,
-		timeToFinish: Time.Minute * 1.9,
-		table: Monsters.DagannothPrime,
-		emoji: '<:Pet_dagannoth_prime:324127376877289474>',
-		wildy: false,
-
-		difficultyRating: 5,
-		itemsRequired: deepResolveItems([
-			"Guthan's platebody",
-			"Guthan's chainskirt",
-			"Guthan's helm",
-			"Guthan's warspear",
-			['Armadyl chestplate', "Karil's leathertop"],
-			['Armadyl chainskirt', "Karil's leatherskirt"]
-		]),
-		notifyDrops: resolveItems(['Pet dagannoth prime']),
-		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Armadyl chestplate')]: 2
-			},
-			{
-				[itemID('Armadyl chainskirt')]: 2
-			},
-			{
-				[itemID('Twisted bow')]: 6
-			}
-		],
-		levelRequirements: {
-			prayer: 43
-		},
-		combatXpMultiplier: 1.3,
-		healAmountNeeded: 100,
-		attackStyleToUse: GearStat.AttackRanged,
-		attackStylesUsed: [GearStat.AttackMagic]
-	},
-	{
-		id: Monsters.DagannothRex.id,
-		name: Monsters.DagannothRex.name,
-		aliases: Monsters.DagannothRex.aliases,
-		timeToFinish: Time.Minute * 1.9,
-		table: Monsters.DagannothRex,
-		emoji: '<:Pet_dagannoth_rex:324127377091330049>',
-		wildy: false,
-
-		difficultyRating: 5,
-		itemsRequired: deepResolveItems([
-			"Guthan's platebody",
-			"Guthan's chainskirt",
-			"Guthan's helm",
-			"Guthan's warspear",
-			['Bandos chestplate', "Torag's platebody"],
-			['Bandos tassets', "Torag's platelegs"]
-		]),
-		notifyDrops: resolveItems(['Pet dagannoth rex']),
-		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID("Iban's staff")]: 3,
-				[itemID('Harmonised nightmare staff')]: 5
-			},
-			{
-				[itemID('Occult necklace')]: 5
-			}
-		],
-		levelRequirements: {
-			prayer: 43
-		},
-		combatXpMultiplier: 1.3,
-		healAmountNeeded: 100,
-		attackStyleToUse: GearStat.AttackMagic,
-		attackStylesUsed: [GearStat.AttackSlash]
-	},
-	{
-		id: Monsters.DagannothSupreme.id,
-		name: Monsters.DagannothSupreme.name,
-		aliases: Monsters.DagannothSupreme.aliases,
-		timeToFinish: Time.Minute * 1.9,
-		table: Monsters.DagannothSupreme,
-		emoji: '<:Pet_dagannoth_supreme:324127377066164245>',
-		wildy: false,
-
-		difficultyRating: 5,
-		itemsRequired: deepResolveItems([
-			"Guthan's platebody",
-			"Guthan's chainskirt",
-			"Guthan's helm",
-			"Guthan's warspear",
-			['Bandos chestplate', "Torag's platebody"],
-			['Bandos tassets', "Torag's platelegs"]
-		]),
-		notifyDrops: resolveItems(['Pet dagannoth supreme']),
-		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Bandos chestplate')]: 2
-			},
-			{
-				[itemID('Bandos tassets')]: 2
-			},
-			{
-				[itemID('Saradomin godsword')]: 4,
-				[itemID('Dragon claws')]: 6
-			}
-		],
-		levelRequirements: {
-			prayer: 43
-		},
-		healAmountNeeded: 100,
-		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.Man.id,

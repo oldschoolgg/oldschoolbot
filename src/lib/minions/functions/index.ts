@@ -41,9 +41,29 @@ export function resolveAttackStyles(
 		SkillsEnum.Defence
 	];
 
-	// If their attack style can't be used on this monster, or they have no selected attack styles selected,
-	// use the monsters default attack style.
-	if (attackStyles.length === 0 || attackStyles.some(s => killableMon?.disallowedAttackStyles?.includes(s))) {
+	if (
+		[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic, SkillsEnum.Ranged].every(s =>
+			monsterStyles.includes(s as AttackStyles)
+		)
+	) {
+		// If the monsterStyles match this array, that means it needs to use all 3 styles
+		attackStyles = [
+			SkillsEnum.Magic,
+			SkillsEnum.Ranged,
+			...attackStyles.filter(s => {
+				if ([SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(s)) return s as AttackStyles;
+			})
+		];
+		if (
+			![SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].some(s =>
+				attackStyles.includes(s as AttackStyles)
+			)
+		) {
+			attackStyles.push(SkillsEnum.Attack as AttackStyles);
+		}
+	} else if (attackStyles.length === 0 || attackStyles.some(s => killableMon?.disallowedAttackStyles?.includes(s))) {
+		// If their attack style can't be used on this monster, or they have no selected attack styles selected,
+		// use the monsters default attack style.
 		attackStyles = monsterStyles;
 	}
 

@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import DagannothKings from '../../minions/data/killableMonsters/bosses/groups/DagannothKings';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
@@ -155,7 +156,8 @@ export const duradelTasks: AssignableSlayerTask[] = [
 			Monsters.DaganothFledgeling.id,
 			Monsters.DagannothSupreme.id,
 			Monsters.DagannothRex.id,
-			Monsters.DagannothPrime.id
+			Monsters.DagannothPrime.id,
+			DagannothKings.id
 		],
 		combatLevel: 75,
 		questPoints: 2,
