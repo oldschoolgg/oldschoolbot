@@ -14,6 +14,7 @@ import {
 	CluesMasterRareCl,
 	CluesMediumCl,
 	CluesSharedCl,
+	TemporossCl,
 	WintertodtCl
 } from './CollectionsExport';
 import { Eatables } from './eatables';
@@ -979,6 +980,11 @@ export const filterableTypes: Filterable[] = [
 		name: 'Warm gear',
 		aliases: ['warm gear', 'warm'],
 		items: warmGear
+	},
+	{
+		name: 'Tempoross',
+		aliases: ['temp', 'ross', 'tempo', 'tempoross'],
+		items: TemporossCl
 	},
 	{
 		name: 'Beginner Clues',

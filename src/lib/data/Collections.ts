@@ -319,7 +319,6 @@ export const allCollectionLogs: ICollection = {
 			roleCategory: ['bosses']
 		},
 		Tempoross: {
-			enabled: false,
 			items: TemporossCl,
 			roleCategory: ['bosses']
 		},
