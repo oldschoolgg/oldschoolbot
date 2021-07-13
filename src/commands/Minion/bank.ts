@@ -3,6 +3,7 @@ import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Emoji } from '../../lib/constants';
+import { filterableTypes } from '../../lib/data/filterables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
@@ -44,6 +45,13 @@ export default class extends BotCommand {
 			const textBank = [];
 			for (const [item, qty] of bank.items()) {
 				if (msg.flagArgs.search && !item.name.toLowerCase().includes(msg.flagArgs.search.toLowerCase())) {
+					continue;
+				}
+
+				const filter = msg.flagArgs.filter
+					? filterableTypes.find(type => type.aliases.some(alias => msg.flagArgs.filter === alias)) ?? null
+					: null;
+				if (filter && !filter.items.includes(item.id)) {
 					continue;
 				}
 
