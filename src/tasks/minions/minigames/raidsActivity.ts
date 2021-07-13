@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { coxLog, metamorphPets } from '../../../lib/data/collectionLog';
+import { ChambersOfXericCl, ChambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -20,7 +20,7 @@ const greenItems = resolveItems(['Twisted ancestral colour kit']);
 const blueItems = resolveItems(['Metamorphic dust']);
 const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
 
-const purpleItems = [...Object.values(coxLog), ...metamorphPets].flat(2).filter(i => !notPurple.includes(i));
+const purpleItems = ChambersOfXericCl.filter(i => !notPurple.includes(i));
 
 export default class extends Task {
 	async run({ channelID, users, challengeMode, duration, leader }: RaidsOptions) {
@@ -72,7 +72,7 @@ export default class extends Task {
 				user.settings.get(UserSettings.CollectionLogBank)[itemID('Metamorphic dust')]
 			) {
 				const { bank } = user.allItemsOwned();
-				const unownedPet = shuffleArr(metamorphPets).find(pet => !bank[pet]);
+				const unownedPet = shuffleArr(ChambersOfXericMetamorphPets).find(pet => !bank[pet]);
 				if (unownedPet) {
 					userLoot.add(unownedPet);
 				}

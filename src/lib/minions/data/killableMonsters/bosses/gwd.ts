@@ -1,7 +1,12 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { bosses } from '../../../../data/collectionLog';
+import {
+	CommanderZilyanaCl,
+	GeneralGraardorCl,
+	KreeArraCl,
+	KrilTsutsarothCl
+} from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
@@ -33,7 +38,7 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43,
 			strength: 70
 		},
-		uniques: [...resolveItems(['Rune sword']), ...bosses.Bandos, ...bosses.Shards],
+		uniques: [...resolveItems(['Rune sword']), ...GeneralGraardorCl],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 656,
 		combatXpMultiplier: 1.126,
@@ -69,7 +74,7 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43,
 			agility: 70
 		},
-		uniques: [...bosses.Saradomin, ...bosses.Shards],
+		uniques: CommanderZilyanaCl,
 		itemsRequired: deepResolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
@@ -105,7 +110,7 @@ const killableBosses: KillableMonster[] = [
 			prayer: 40,
 			ranged: 70
 		},
-		uniques: [...bosses.Arma, ...bosses.Shards],
+		uniques: KreeArraCl,
 		itemsRequired: deepResolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
@@ -146,7 +151,7 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43,
 			hitpoints: 70
 		},
-		uniques: [...bosses.Zammy, ...bosses.Shards],
+		uniques: KrilTsutsarothCl,
 		itemsRequired: deepResolveItems([
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']

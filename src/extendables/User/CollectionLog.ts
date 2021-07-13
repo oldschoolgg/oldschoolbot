@@ -1,10 +1,10 @@
 import { User } from 'discord.js';
-import { calcWhatPercent, uniqueArr } from 'e';
+import { calcWhatPercent } from 'e';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
-import { collectionLogTypes } from '../../lib/data/collectionLog';
+import { allClItems, clIntoBank } from '../../lib/data/Collections';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
 import { addBanks } from '../../lib/util';
@@ -13,13 +13,6 @@ export function shuffleRandom<T>(input: number, arr: T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
 	return shuffle(engine, [...arr]);
 }
-
-const allCollectionLogItems = uniqueArr(
-	collectionLogTypes
-		.filter(i => !['Holiday', 'Diango', 'Overall', 'Capes', 'Clue Hunter'].includes(i.name))
-		.map(i => Object.values(i.items))
-		.flat(Infinity) as number[]
-);
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -30,14 +23,14 @@ export default class extends Extendable {
 	public completion(this: User) {
 		const clItems = Object.keys(this.settings.get(UserSettings.CollectionLogBank)).map(i => parseInt(i));
 		const debugBank = new Bank();
-		for (const item of allCollectionLogItems) debugBank.add(item);
-		const owned = clItems.filter(i => allCollectionLogItems.includes(i));
+		debugBank.add(clIntoBank(allClItems));
+		const owned = clItems.filter(i => allClItems.includes(i));
 		const notOwned = shuffleRandom(
 			Number(this.id),
-			allCollectionLogItems.filter(i => !clItems.includes(i))
+			allClItems.filter(i => !clItems.includes(i))
 		).slice(0, 10);
 		return {
-			percent: calcWhatPercent(owned.length, allCollectionLogItems.length),
+			percent: calcWhatPercent(owned.length, allClItems.length),
 			notOwned,
 			owned,
 			debugBank

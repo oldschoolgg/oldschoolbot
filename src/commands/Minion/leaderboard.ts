@@ -5,7 +5,7 @@ import { IsNull, Not } from 'typeorm';
 
 import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Emoji } from '../../lib/constants';
-import { collectionLogTypes } from '../../lib/data/collectionLog';
+import { collectionLogRoleCategories } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
@@ -426,17 +426,14 @@ DESC LIMIT 100;`
 	}
 
 	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
-		const type = collectionLogTypes.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
-
-		if (!type) {
+		const items = collectionLogRoleCategories[inputType.toLowerCase()];
+		if (!items) {
 			return msg.channel.send(
-				`That's not a valid collection log type. The valid types are: ${collectionLogTypes
-					.map(type => type.name)
-					.join(', ')}`
+				`That's not a valid collection log category. The valid types are: ${Object.keys(
+					collectionLogRoleCategories
+				).join(', ')}`
 			);
 		}
-
-		const items = Object.values(type.items).flat(Infinity) as number[];
 
 		const users = (
 			await this.client.orm.query(
@@ -467,7 +464,7 @@ LIMIT 50;
 			util
 				.chunk(users, 10)
 				.map(subList => subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')),
-			`${type.name} Collection Log Leaderboard`
+			`${toTitleCase(inputType.toLowerCase())} Collection Log Leaderboard`
 		);
 	}
 

@@ -2,18 +2,20 @@ import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import resolveItems from '../util/resolveItems';
+import { collectionLogRoleCategories } from './Collections';
 import {
-	cluesAll,
-	cluesBeginner,
-	cluesEasy,
-	cluesElite,
-	cluesHard,
-	cluesMaster,
-	cluesMedium,
-	cluesRares,
-	cluesShared,
-	wintertodt
-} from './collectionLog';
+	CluesBeginnerCl,
+	CluesEasyCl,
+	CluesEliteCl,
+	CluesEliteRareCl,
+	CluesHardCl,
+	CluesHardRareCl,
+	CluesMasterCl,
+	CluesMasterRareCl,
+	CluesMediumCl,
+	CluesSharedCl,
+	WintertodtCl
+} from './CollectionsExport';
 import { Eatables } from './eatables';
 
 export const warmGear = resolveItems([
@@ -971,7 +973,7 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'Wintertodt',
 		aliases: ['wintertodt', 'todt', 'wt'],
-		items: Object.values(wintertodt).flat(Infinity) as number[]
+		items: WintertodtCl
 	},
 	{
 		name: 'Warm gear',
@@ -981,46 +983,46 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'Beginner Clues',
 		aliases: ['clues beginner', 'beginner clues', 'clue beginner', 'beginner clue'],
-		items: Object.values(cluesBeginner).flat(Infinity) as number[]
+		items: CluesBeginnerCl
 	},
 	{
 		name: 'Easy Clues',
 		aliases: ['clues easy', 'easy clues', 'clue easy', 'easy clue'],
-		items: Object.values(cluesEasy).flat(Infinity) as number[]
+		items: CluesEasyCl
 	},
 	{
 		name: 'Medium Clues',
 		aliases: ['clues medium', 'medium clues', 'clue medium', 'medium clue'],
-		items: Object.values(cluesMedium).flat(Infinity) as number[]
+		items: CluesMediumCl
 	},
 	{
 		name: 'Hard Clues',
 		aliases: ['clues hard', 'hard clues', 'clue hard', 'hard clue'],
-		items: Object.values(cluesHard).flat(Infinity) as number[]
+		items: CluesHardCl
 	},
 	{
 		name: 'Elite Clues',
 		aliases: ['clues elite', 'elite clues', 'clue elite', 'elite clue'],
-		items: Object.values(cluesElite).flat(Infinity) as number[]
+		items: CluesEliteCl
 	},
 	{
 		name: 'Master Clues',
 		aliases: ['clues master', 'master clues', 'clue master', 'master clue'],
-		items: Object.values(cluesMaster).flat(Infinity) as number[]
+		items: CluesMasterCl
 	},
 	{
 		name: 'All Clues',
 		aliases: ['clues all', 'all clues', 'clue all', 'all clue'],
-		items: Object.values(cluesAll).flat(Infinity) as number[]
+		items: collectionLogRoleCategories.clues
 	},
 	{
 		name: 'Clues Shared',
 		aliases: ['clues shared', 'shared clues', 'clue shared', 'shared clue'],
-		items: Object.values(cluesShared).flat(Infinity) as number[]
+		items: CluesSharedCl
 	},
 	{
 		name: 'Clues Rares',
 		aliases: ['clues rare', 'rare clues', 'clue rare', 'rare clue'],
-		items: Object.values(cluesRares).flat(Infinity) as number[]
+		items: [...new Set([...CluesHardRareCl, ...CluesEliteRareCl, ...CluesMasterRareCl])]
 	}
 ];
