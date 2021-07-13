@@ -220,7 +220,9 @@ export default class extends BotCommand {
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish. ${debug.join(', ')}
 ${Emoji.OSRSSkull} ${skulled ? 'Skulled' : 'Unskulled'}
-**Death Chance:** ${deathChance}% (${deathChanceFromGear}% from magic def, ${deathChanceFromDefenceLevel}% from defence level)`;
+**Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(
+			2
+		)}% from magic def, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level)`;
 
 		return msg.channel.send(response);
 	}

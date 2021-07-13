@@ -31,7 +31,10 @@ export default class extends Task {
 			}
 
 			const lostItemsBank = new Bank();
-			const lostItems = removableItems.sort((a, b) => a.item.price - b.item.price).slice(skulled ? 1 : 3);
+			const lostItems = removableItems
+				.filter(i => i.item.tradeable_on_ge)
+				.sort((a, b) => b.item.price - a.item.price)
+				.slice(skulled ? 1 : 3);
 			for (const { item, slot } of lostItems) {
 				newGear[slot] = null;
 				lostItemsBank.add(item.id);
