@@ -212,18 +212,24 @@ export default class CollectionLogTask extends Task {
 
 		const userCollectionBank = collectionLog.userItems;
 
-		const fullSize = collectionLog.name === collectionLog.category || !collectionLog.leftList;
+		const fullSize = !collectionLog.leftList;
 
 		const userTotalCl = getTotalCl(user);
 		const leftListCanvas = this.drawLeftList(collectionLog);
 
 		let leftDivisor = 214;
 		let rightArea = 276;
+
+		let canvasWidth = 500;
+		if (collectionLog.category === collectionLog.name) {
+			canvasWidth = 800;
+		}
+
 		if (leftListCanvas) {
 			leftDivisor = leftListCanvas.width + 14;
-			rightArea = 500 - leftDivisor - 10;
+			rightArea = canvasWidth - leftDivisor - 10;
 		}
-		if (fullSize) rightArea = 480;
+		if (fullSize) rightArea = canvasWidth - 20;
 
 		const itemSize = 36;
 		// 13 is the spacing at the front (5px) + end (5px) + 2 pixels for the line + 1 pixels to move forward
@@ -239,7 +245,7 @@ export default class CollectionLogTask extends Task {
 			)
 		);
 		// Create base canvas
-		const canvas = createCanvas(500, canvasHeight);
+		const canvas = createCanvas(canvasWidth, canvasHeight);
 		// Get the canvas context
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
@@ -256,12 +262,12 @@ export default class CollectionLogTask extends Task {
 		this.drawBorder(ctx);
 		ctx.strokeStyle = '#5D5848';
 		if (!fullSize) {
-			this.drawSquare(ctx, 10, 59, 480, boxHeight);
+			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, boxHeight);
 			this.drawSquare(ctx, leftDivisor, 59, rightArea, 41);
 			this.drawSquare(ctx, leftDivisor, 59, rightArea, boxHeight);
 		} else {
-			this.drawSquare(ctx, 10, 59, 480, boxHeight);
-			this.drawSquare(ctx, 10, 59, 480, 41);
+			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, boxHeight);
+			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, 41);
 		}
 
 		// Draw Title
@@ -285,7 +291,7 @@ export default class CollectionLogTask extends Task {
 		for (const cl of Object.keys(allCollectionLogs)) {
 			const x = aclIndex * this.cls.tabBorderInactive.width + aclIndex * 6 + 10;
 			ctx.drawImage(cl === collectionLog.category ? this.cls.tabBorderActive : this.cls.tabBorderInactive, x, 39);
-			ctx.fillStyle = '#FF981F';
+			ctx.fillStyle = cl === collectionLog.category ? '#FFFFFF' : '#FF981F';
 			ctx.textAlign = 'center';
 			this.drawText(
 				ctx,

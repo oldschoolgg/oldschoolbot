@@ -95,6 +95,7 @@ import {
 	SkotizoCl,
 	SlayerCl,
 	SoulWarsCl,
+	SpiritAnglerOutfit,
 	TempleTrekkingCl,
 	TemporossCl,
 	TheatreOfBLoodCl,
@@ -320,6 +321,7 @@ export const allCollectionLogs: ICollection = {
 		},
 		Tempoross: {
 			items: TemporossCl,
+			allItems: resolveItems([...SpiritAnglerOutfit, 'Spirit flakes']),
 			roleCategory: ['bosses']
 		},
 		'Thermonuclear smoke devil': {
@@ -351,7 +353,7 @@ export const allCollectionLogs: ICollection = {
 			items: WintertodtCl,
 			roleCategory: ['bosses', 'skilling']
 		},
-		Zalcano: { items: ZalcanoCl, roleCategory: ['skilling'] },
+		Zalcano: { items: ZalcanoCl, roleCategory: ['bosses', 'skilling'] },
 		Zulrah: {
 			alias: Monsters.Zulrah.aliases,
 			allItems: Monsters.Zulrah.allItems,
@@ -887,6 +889,7 @@ export async function getCollection(options: {
 				collection: clItems,
 				collectionObtained: userAmount,
 				collectionTotal: totalCl,
+				leftList: getLeftList(userCheckBank, category),
 				userItems: userCheckBank
 			};
 		}

@@ -56,8 +56,8 @@ export const AlchemicalHydraCl = resolveItems([
 	"Hydra's fang",
 	"Hydra's eye",
 	"Hydra's heart",
-	'Dragon knife',
-	'Dragon thrownaxe',
+	// 'Dragon knife',
+	// 'Dragon thrownaxe',
 	'Jar of chemicals',
 	'Alchemical hydra heads'
 ]);
@@ -169,7 +169,7 @@ export const TheGauntletCl = resolveItems([
 	// 'Enhanced crystal weapon seed', // TODO - MISSING ITEM
 	'Gauntlet cape'
 ]);
-export const GiantMoleCl = resolveItems(['Baby mole', 'Mole skin', 'Mole claw']);
+export const GiantMoleCl = resolveItems(['Baby mole', 'Long bone', 'Curved bone']);
 export const GrotesqueGuardiansCl = resolveItems([
 	'Noon',
 	'Black tourmaline core',
@@ -215,22 +215,23 @@ export const SkotizoCl = resolveItems([
 	'Jar of darkness',
 	'Dark claw',
 	'Dark totem',
-	'Uncut onyx',
-	'Ancient shard'
+	'Uncut onyx'
+	// 'Ancient shard'
+]);
+export const SpiritAnglerOutfit = resolveItems([
+	'Spirit angler headband',
+	'Spirit angler top',
+	'Spirit angler waders',
+	'Spirit angler boots'
 ]);
 export const TemporossCl = resolveItems([
 	'Tiny tempor',
 	'Big harpoonfish',
-	'Spirit angler headband',
-	'Spirit angler top',
-	'Spirit angler waders',
-	'Spirit angler boots',
 	'Tome of water (empty)',
 	'Soaked page',
 	'Tackle box',
 	'Fish barrel',
-	'Dragon harpoon',
-	'Spirit flakes'
+	'Dragon harpoon'
 ]);
 export const ThermonuclearSmokeDevilCl = resolveItems([
 	'Pet smoke devil',
