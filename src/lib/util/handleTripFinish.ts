@@ -4,7 +4,7 @@ import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import MinionCommand from '../../commands/Minion/minion';
-import { Activity, BitField, COINS_ID, Emoji, PerkTier } from '../constants';
+import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { ClientSettings } from '../settings/types/ClientSettings';
@@ -84,6 +84,10 @@ export async function handleTripFinish(
 	if (existingCollector) {
 		existingCollector.stop();
 		collectors.delete(user.id);
+	}
+
+	if (onContinue) {
+		lastTripCache.set(user.id, { data, continue: onContinue });
 	}
 
 	if (!channelIsSendable(channel)) return;
