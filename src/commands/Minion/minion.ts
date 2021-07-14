@@ -15,7 +15,6 @@ import {
 	PerkTier
 } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import clueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { getNewUser } from '../../lib/settings/settings';
@@ -67,7 +66,7 @@ export default class MinionCommand extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		let components = [];
+		let components = [...informationalButtons.slice(0, 2)];
 		const bank = msg.author.bank();
 		for (const tier of ClueTiers) {
 			if (bank.has(tier.scrollID)) {
@@ -83,19 +82,19 @@ export default class MinionCommand extends BotCommand {
 
 		const lastTrip = lastTripCache.get(msg.author.id);
 		if (lastTrip) {
-			components.push(new MessageButton()
-						.setLabel(`Repeat ${lastTrip.data.type} Trip`)
-						.setStyle('SECONDARY')
-						.setCustomID('REPEAT_LAST_TRIP'))
+			components.push(
+				new MessageButton()
+					.setLabel(`Repeat ${lastTrip.data.type} Trip`)
+					.setStyle('SECONDARY')
+					.setCustomID('REPEAT_LAST_TRIP')
+			);
 		}
 
-		const embed = new MessageEmbed()
-			.setTitle(msg.author.minionName)
-			.setDescription(msg.author.minionStatus);
+		const embed = new MessageEmbed().setTitle(msg.author.minionName).setDescription(msg.author.minionStatus);
 
 		const sentMessage = await msg.channel.send({
 			embeds: [embed],
-			components: components.length > 0 ? [informationalButtons.slice(0,2),...chunk(components, 5)] : undefined
+			components: components.length > 0 ? [...chunk(components, 5)] : undefined
 		});
 		if (components.length > 0) {
 			try {
@@ -337,7 +336,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
 		for (const [clueID, clueScore] of Object.entries(clueScores)) {
-			const clue = clueTiers.find(c => c.id === parseInt(clueID));
+			const clue = ClueTiers.find(c => c.id === parseInt(clueID));
 			res += `**${clue!.name}**: ${clueScore}\n`;
 		}
 		return msg.channel.send(res);

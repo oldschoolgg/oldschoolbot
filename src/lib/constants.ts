@@ -464,4 +464,7 @@ export const informationalButtons = [
 	new MessageButton().setLabel('Bot Invite').setEmoji('🤖').setURL('http://invite.oldschool.gg/').setStyle('LINK')
 ];
 
-export const lastTripCache = new Map<string, {continue: ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>), data: ActivityTaskOptions}>();
+export const lastTripCache = new Map<
+	string,
+	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
+>();
