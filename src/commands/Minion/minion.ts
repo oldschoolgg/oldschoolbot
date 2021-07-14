@@ -97,24 +97,27 @@ export default class MinionCommand extends BotCommand {
 			components: components.length > 0 ? [...chunk(components, 5)] : undefined
 		});
 		if (components.length > 0) {
-			try {
-				const selection = await sentMessage.awaitMessageComponentInteraction({
-					filter: i => {
-						if (i.user.id !== msg.author.id) {
-							i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-							return false;
-						}
-						return true;
-					},
-					time: Time.Second * 15
-				});
-				await sentMessage.edit({ components: [] });
-				selection.deferUpdate();
-				if (selection.customID === 'REPEAT_LAST_TRIP' && lastTrip) {
-					return lastTrip.continue(msg);
-				}
-				await this.client.commands.get('mclue')?.run(msg, [selection.customID]);
-			} catch {}
+			const handleButtons = async () => {
+				try {
+					const selection = await sentMessage.awaitMessageComponentInteraction({
+						filter: i => {
+							if (i.user.id !== msg.author.id) {
+								i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+								return false;
+							}
+							return true;
+						},
+						time: Time.Second * 15
+					});
+					await sentMessage.edit({ components: [] });
+					selection.deferUpdate();
+					if (selection.customID === 'REPEAT_LAST_TRIP' && lastTrip) {
+						return lastTrip.continue(msg);
+					}
+					await this.client.commands.get('mclue')?.run(msg, [selection.customID]);
+				} catch {}
+			};
+			handleButtons();
 		}
 	}
 
