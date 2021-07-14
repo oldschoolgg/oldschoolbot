@@ -1,7 +1,7 @@
-import { calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
+import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time, ZALCANO_ID } from '../../lib/constants';
+import { Activity, ZALCANO_ID } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';

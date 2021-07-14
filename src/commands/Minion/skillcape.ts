@@ -2,7 +2,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
-import { Time } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skillcapes from '../../lib/skilling/skillcapes';
@@ -49,23 +48,9 @@ export default class extends BotCommand {
 
 		const itemString = new Bank(itemsToPurchase).toString();
 
-		const sellMsg = await msg.channel.send(
-			`${msg.author}, say \`confirm\` to confirm that you want to purchase ${itemString} for ${toKMB(
-				skillCapeCost
-			)}.`
+		await msg.confirm(
+			`${msg.author}, please confirm that you want to purchase ${itemString} for ${toKMB(skillCapeCost)}.`
 		);
-
-		// Confirm the user wants to buy
-		try {
-			await msg.channel.awaitMessages({
-				max: 1,
-				time: Time.Second * 15,
-				errors: ['time'],
-				filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-			});
-		} catch (err) {
-			return sellMsg.edit(`Cancelling purchase of ${toTitleCase(capeObject.skill)} skill cape.`);
-		}
 
 		await msg.author.removeGP(skillCapeCost);
 		await msg.author.addItemsToBank(itemsToPurchase, true);

@@ -1,4 +1,6 @@
-import { Emoji, Time } from '../../constants';
+import { Time } from 'e';
+
+import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
 import { Rune, SkillsEnum } from '../types';
 

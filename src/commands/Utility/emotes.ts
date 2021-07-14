@@ -26,7 +26,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const embed = new MessageEmbed()
 			.setTitle('Emote Servers')
-			.setColor(14981973)
+			.setColor(14_981_973)
 			.setThumbnail(this.client?.user?.displayAvatarURL() || '')
 			.setDescription(servers);
 

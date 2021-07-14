@@ -2,11 +2,14 @@ import * as Sentry from '@sentry/node';
 import { DiscordAPIError, HTTPError, MessageEmbed, User } from 'discord.js';
 import { Command, Event, KlasaMessage, util } from 'klasa';
 
-import { Emoji, rootFolder } from '../lib/constants';
+import { Emoji, rootFolder, SILENT_ERROR } from '../lib/constants';
 import { inlineCodeblock } from '../lib/util';
 
 export default class extends Event {
 	public async run(msg: KlasaMessage, command: Command, _: string[], error: string | Error) {
+		if (error instanceof Error && error.message === SILENT_ERROR) {
+			return;
+		}
 		if (typeof error === 'string') {
 			return msg.channel.send(error);
 		}
@@ -57,7 +60,7 @@ export default class extends Event {
 				embeds: [
 					new MessageEmbed()
 						.setDescription(output)
-						.setColor(0xfc1020)
+						.setColor(0xfc_10_20)
 						.setAuthor(
 							message.author.tag,
 							message.author.displayAvatarURL({

@@ -1,5 +1,16 @@
-import { DMChannel, MessageAttachment, MessageOptions, Permissions, TextChannel } from 'discord.js';
-import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
+import {
+	DMChannel,
+	GuildMember,
+	MessageAttachment,
+	MessageOptions,
+	MessagePayload,
+	Permissions,
+	TextChannel,
+	User,
+	Util
+} from 'discord.js';
+import { isObject } from 'e';
+import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { bankImageCache } from '../lib/constants';
 import { ItemBank } from './../lib/types/index';
@@ -39,6 +50,41 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 	get readable(this: TextChannel) {
 		return !this.guild || this.permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.VIEW_CHANNEL, false);
+	}
+
+	async send(this: TextChannel, input: string | MessageOptions): Promise<KlasaMessage> {
+		if (typeof input === 'string' && input.length > 2000) {
+			let firstMessage = null;
+			for (const chunk of Util.splitMessage(input)) {
+				const sentMessage = await this.send(chunk);
+				if (!firstMessage) firstMessage = sentMessage;
+			}
+			return firstMessage!;
+		}
+		if (isObject(input) && input.content && input.content.length > 2000) {
+			const split = Util.splitMessage(input.content);
+			await this.send({ ...input, content: split[0] });
+			for (let i = 1; i < split.length; i++) {
+				await this.send(split[i]);
+			}
+		}
+
+		if (this instanceof User || this instanceof GuildMember) {
+			return this.createDM().then(dm => dm.send(input));
+		}
+
+		let messagePayload =
+			input instanceof MessagePayload ? input.resolveData() : MessagePayload.create(this, input).resolveData();
+
+		const { data, files } = await messagePayload.resolveFiles();
+		// @ts-ignore 2341
+		return (
+			// @ts-ignore 2571
+			this.client.api.channels[this.id].messages
+				.post({ data, files })
+				// @ts-ignore 2341
+				.then(d => this.client.actions.MessageCreate.handle(d).message)
+		);
 	}
 
 	async sendBankImage(

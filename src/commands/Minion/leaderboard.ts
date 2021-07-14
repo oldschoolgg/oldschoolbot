@@ -1,9 +1,10 @@
 import { MessageEmbed } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { IsNull, Not } from 'typeorm';
 
 import { Minigames } from '../../extendables/User/Minigame';
-import { badges, Emoji, Time } from '../../lib/constants';
+import { badges, Emoji } from '../../lib/constants';
 import { collectionLogTypes } from '../../lib/data/collectionLog';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { batchSyncNewUserUsernames } from '../../lib/settings/settings';

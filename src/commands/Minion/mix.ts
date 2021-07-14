@@ -1,7 +1,8 @@
 import { MessageAttachment } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -91,12 +92,12 @@ export default class extends BotCommand {
 
 		const zahur = Boolean(msg.flagArgs.zahur);
 		if (zahur && mixableItem.zahur === true) {
-			timeToMixSingleItem = 0.000001;
+			timeToMixSingleItem = 0.000_001;
 			requiredItems = requiredItems.concat([['995', 200]]);
 			cost = "decided to pay Zahur 200 gp for each potion so they don't have to go";
 		}
 		if (msg.flagArgs.wesley && mixableItem.wesley === true) {
-			timeToMixSingleItem = 0.000001;
+			timeToMixSingleItem = 0.000_001;
 			requiredItems = requiredItems.concat([['995', 50]]);
 			cost = "decided to pay Wesley 50 gp for each item so they don't have to go";
 		}

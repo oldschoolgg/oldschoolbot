@@ -1,12 +1,11 @@
+import { Time } from 'e';
 import { Task } from 'klasa';
 
 import { production } from '../config';
 import { client } from '../index';
-import { Time } from '../lib/constants';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { noOp } from '../lib/util';
 
-const dailyInterval = 12 * Time.Hour;
 const dailyTickInterval = Time.Second * 60;
 
 export default class extends Task {
@@ -23,11 +22,8 @@ export default class extends Task {
 	}
 
 	async dailyReminderTick() {
-		const currentDate = Date.now();
-
-		const dailyReady = currentDate - dailyInterval;
 		const result = await client.query<{ id: string }[]>(
-			`SELECT id FROM users WHERE bitfield && '{2,3,4,5,6}'::int[] AND "lastDailyTimestamp" != -1 AND "lastDailyTimestamp" < ${dailyReady};`
+			'SELECT id FROM users WHERE bitfield && \'{2,3,4,5,6,7,8}\'::int[] AND "lastDailyTimestamp" != -1 AND to_timestamp("lastDailyTimestamp" / 1000) < now() - interval \'12 hours\';'
 		);
 
 		for (const row of result.values()) {

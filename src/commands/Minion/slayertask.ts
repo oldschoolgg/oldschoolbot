@@ -114,22 +114,10 @@ export default class extends BotCommand {
 			if (!myBlockList.includes(idToRemove)) {
 				return msg.channel.send(`${idToRemove}: ${osjsMonster.name} is not on the block list!`);
 			}
-			if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-				const alchMessage = await msg.channel.send(
-					`Really unblock ${osjsMonster.name}? You will have to pay to block it again ` +
-						'in the future.\n\nType **confirm** to unblock.'
-				);
-				try {
-					await msg.channel.awaitMessages({
-						max: 1,
-						time: 10_000,
-						errors: ['time'],
-						filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-					});
-				} catch (err) {
-					return alchMessage.edit(`Not unblocking ${osjsMonster.name}.`);
-				}
-			}
+
+			await msg.confirm(
+				`Really unblock ${osjsMonster.name}? You will have to pay to block it again in the future.`
+			);
 			await msg.author.settings.update(UserSettings.Slayer.BlockedTasks, idToRemove);
 			return msg.channel.send(`${osjsMonster.name} have been unblocked`);
 		}
@@ -140,7 +128,14 @@ export default class extends BotCommand {
 			const slayerStreak = msg.author.settings.get(UserSettings.Slayer.TaskStreak);
 			return msg.channel.send(
 				`Your minion is busy, but you can still manage your block list: \`${msg.cmdPrefix}st blocks\`` +
-					`\nYou have ${slayerPoints} slayer points, and have completed ${slayerStreak} tasks in a row.`
+					`${
+						currentTask
+							? `\nYour current task is to kill **${getCommonTaskName(
+									assignedTask!.monster
+							  )}**. You have ${currentTask.quantityRemaining.toLocaleString()} kills remaining.`
+							: ''
+					}` +
+					`\nYou have ${slayerPoints.toLocaleString()} slayer points, and have completed ${slayerStreak} tasks in a row.`
 			);
 		}
 		if (input && (input === 'skip' || input === 'block')) msg.flagArgs[input] = 'yes';
@@ -157,27 +152,17 @@ export default class extends BotCommand {
 			if (slayerPoints < (toBlock ? 100 : 30)) {
 				return msg.channel.send(
 					`You need ${toBlock ? 100 : 30} points to ${toBlock ? 'block' : 'cancel'},` +
-						` you only have: ${slayerPoints}`
+						` you only have: ${slayerPoints.toLocaleString()}`
 				);
 			}
-			if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-				const alchMessage = await msg.channel.send(
-					`Really ${toBlock ? 'block' : 'skip'} task? You have ${slayerPoints} and this will cost ${
-						toBlock ? 100 : 30
-					} slayer points.\n\nType **confirm** to ${toBlock ? 'block' : 'skip'}.`
-				);
+			await msg.confirm(
+				`Really ${
+					toBlock ? 'block' : 'skip'
+				} task? You have ${slayerPoints.toLocaleString()} and this will cost ${
+					toBlock ? 100 : 30
+				} slayer points.\n\nPlease confirm you want to ${toBlock ? 'block' : 'skip'}.`
+			);
 
-				try {
-					await msg.channel.awaitMessages({
-						max: 1,
-						time: 10_000,
-						errors: ['time'],
-						filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-					});
-				} catch (err) {
-					return alchMessage.edit(`Not ${toBlock ? 'blocking' : 'skipping'} slayer task.`);
-				}
-			}
 			slayerPoints -= toBlock ? 100 : 30;
 			await msg.author.settings.update(UserSettings.Slayer.SlayerPoints, slayerPoints);
 			if (toBlock) await msg.author.settings.update(UserSettings.Slayer.BlockedTasks, currentTask.monsterID);
@@ -185,7 +170,9 @@ export default class extends BotCommand {
 			currentTask!.skipped = true;
 			currentTask!.save();
 			return msg.channel.send(
-				`Your task has been ${toBlock ? 'blocked' : 'skipped'}. You have ${slayerPoints} slayer points.`
+				`Your task has been ${
+					toBlock ? 'blocked' : 'skipped'
+				}. You have ${slayerPoints.toLocaleString()} slayer points.`
 			);
 		}
 
@@ -222,23 +209,9 @@ export default class extends BotCommand {
 			if (slayerMaster.tasks.find(t => t.monster.id === currentTask.monsterID)) {
 				return msg.channel.send('You cannot skip this task because Turael assigns it.');
 			}
-			if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-				const alchMessage = await msg.channel.send(
-					'Really cancel task? This will reset your streak to 0 and give you a new' +
-						` ${slayerMaster.name} task.\n\nType **confirm** to skip.`
-				);
-
-				try {
-					await msg.channel.awaitMessages({
-						max: 1,
-						time: 10_000,
-						errors: ['time'],
-						filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-					});
-				} catch (err) {
-					return alchMessage.edit('Not cancelling slayer task.');
-				}
-			}
+			await msg.confirm(
+				`Really cancel task? This will reset your streak to 0 and give you a new ${slayerMaster.name} task.`
+			);
 
 			currentTask!.quantityRemaining = 0;
 			currentTask!.skipped = true;
@@ -319,12 +292,13 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 		if (commonName === 'TzHaar') {
+			returnMessage = 'Ah... Tzhaar... ';
 			commonName +=
 				`. You can choose to kill TzTok-Jad with ${msg.cmdPrefix}fightcaves as long as you ` +
 				"don't kill any regular TzHaar first.";
 		}
 
-		returnMessage = `${slayerMaster.name} has assigned you to kill ${
+		returnMessage += `${slayerMaster.name} has assigned you to kill ${
 			newSlayerTask.currentTask.quantity
 		}x ${commonName}${this.getAlternateMonsterList(newSlayerTask.assignedTask)}.${updateMsg}`;
 		return this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));

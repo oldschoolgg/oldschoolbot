@@ -1,9 +1,10 @@
 import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
+import { Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import MinionCommand from '../../commands/Minion/minion';
-import { Activity, BitField, COINS_ID, Emoji, PerkTier, Time } from '../constants';
+import { Activity, BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { ClientSettings } from '../settings/types/ClientSettings';
