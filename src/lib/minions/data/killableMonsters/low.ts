@@ -1,12 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
-import CommonSeedDropTable from 'oldschooljs/dist/simulation/subtables/CommonSeedDropTable';
-import { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { GearStat } from '../../../gear/types';
-import { RuneTable } from '../../../simulation/seedTable';
-import { makeKillTable } from '../../../util/setCustomMonster';
 import { KillableMonster } from '../../types';
 
 const killableMonsters: KillableMonster[] = [
@@ -45,37 +40,6 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		respawnTime: Time.Second * 10,
 		healAmountNeeded: 8,
-		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackSlash]
-	},
-	{
-		id: 7989,
-		name: 'Ogress Warrior',
-		aliases: ['ogress warrior'],
-		timeToFinish: Time.Second * 15.5,
-		table: {
-			kill: makeKillTable(
-				new LootTable()
-					.every('Big bones')
-					.add('Mithril kiteshield', 1, 7)
-					.add('Mithril arrow', [5, 15], 7)
-					.add('Steel arrow', [5, 15], 5)
-					.add('Iron arrow', [5, 15], 5)
-					.add(RuneTable, 1, 45)
-					.add(CommonSeedDropTable, 1, 5)
-					.add(GemTable, 1, 20)
-					.tertiary(5000, 'Curved bone')
-					.tertiary(400, 'Long bone')
-					.tertiary(1200, 'Shaman mask')
-					.tertiary(6500, 'Ishi')
-			)
-		},
-		emoji: '',
-		wildy: false,
-		difficultyRating: 1,
-		qpRequired: 0,
-		respawnTime: Time.Second * 30,
-		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	}
