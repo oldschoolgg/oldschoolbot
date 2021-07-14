@@ -198,7 +198,6 @@ export async function generateGearImage(
 	ctx.textAlign = 'end';
 	drawText(canvas, `Magic Dmg.: ${gearStats.magic_damage.toFixed(1)}%`, 0, 165, false);
 	drawText(canvas, `Prayer: ${gearStats.prayer}`, 0, 183, false);
-	// drawText(canvas, `Slayer: ${(0).toFixed(1)} %`, 0, 201, false);
 	ctx.restore();
 
 	// Draw items
@@ -262,10 +261,6 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 			let [x, y] = slotCoordinatesCompact[enumName];
 			x = x + slotSize / 2 - image.width / 2;
 			y = y + slotSize / 2 - image.height / 2;
-			// ctx.globalAlpha = 0.5;
-			// ctx.fillStyle = '#FF0000';
-			// ctx.fillRect(x, y, image.width, image.height);
-			// ctx.globalAlpha = 1;
 			ctx.drawImage(image, x, y, image.width, image.height);
 
 			if (item.quantity > 1) {
