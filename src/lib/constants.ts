@@ -1,8 +1,10 @@
 import { MessageButton } from 'discord.js';
+import { KlasaMessage } from 'klasa';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { SkillsEnum } from './skilling/types';
+import { ActivityTaskOptions } from './types/minions';
 
 export const enum Channel {
 	Notifications = '469523207691436042',
@@ -385,7 +387,7 @@ export const badges: { [key: number]: string } = {
 	11: Emoji.MinigameIcon
 };
 
-export const MAX_QP = 280;
+export const MAX_QP = 284;
 
 export const MIMIC_MONSTER_ID = 23_184;
 
@@ -402,6 +404,7 @@ export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;
 export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
+export const HESPORI_ID = 8583;
 
 /**
  * Map<user_id, PromiseQueue>
@@ -460,3 +463,8 @@ export const informationalButtons = [
 		.setStyle('LINK'),
 	new MessageButton().setLabel('Bot Invite').setEmoji('🤖').setURL('http://invite.oldschool.gg/').setStyle('LINK')
 ];
+
+export const lastTripCache = new Map<
+	string,
+	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
+>();
