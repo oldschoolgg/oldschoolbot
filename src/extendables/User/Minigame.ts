@@ -30,6 +30,11 @@ export const Minigames: Minigame[] = [
 		column: 'wintertodt'
 	},
 	{
+		name: 'Tempoross',
+		key: 'Tempoross',
+		column: 'tempoross'
+	},
+	{
 		name: 'Hallowed Sepulchre',
 		key: 'Sepulchre',
 		column: 'sepulchre'
