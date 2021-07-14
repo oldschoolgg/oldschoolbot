@@ -1,3 +1,5 @@
+import { Bank } from 'oldschooljs';
+
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
@@ -280,14 +282,13 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: 'Dragonfire shield',
+		name: 'Uncharged dragonfire shield',
 		inputItems: {
 			[itemID('Draconic visage')]: 1,
 			[itemID('Anti-dragon shield')]: 1
 		},
 		outputItems: {
-			// Uncharged dragonfire shield
-			11_284: 1
+			'Uncharged dragonfire shield': 1
 		},
 		requiredSkills: { smithing: 90 }
 	},
@@ -600,6 +601,17 @@ const Createables: Createable[] = [
 			[itemID('Infernal axe')]: 1
 		},
 		requiredSkills: { firemaking: 85 }
+	},
+	{
+		name: 'Infernal harpoon',
+		inputItems: {
+			[itemID('Dragon harpoon')]: 1,
+			[itemID('Smouldering stone')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal harpoon')]: 1
+		},
+		requiredSkills: { cooking: 85, fishing: 75 }
 	},
 	{
 		name: 'Graceful',
@@ -1647,6 +1659,72 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 75
+		}
+	},
+	{
+		name: 'Spirit angler headband',
+		inputItems: {
+			[itemID('Angler hat')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler headband')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler top',
+		inputItems: {
+			[itemID('Angler top')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler top')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler waders',
+		inputItems: {
+			[itemID('Angler waders')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler waders')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler boots',
+		inputItems: {
+			[itemID('Angler boots')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler boots')]: 1
+		}
+	},
+	{
+		name: 'Bottled dragonbreath',
+		inputItems: resolveNameBank({
+			Dragonfruit: 10,
+			Vial: 1
+		}),
+		outputItems: {
+			[itemID('Bottled dragonbreath')]: 1
+		},
+		requiredSkills: {
+			slayer: 62
+		}
+	},
+	{
+		name: 'Dragonfire shield',
+		inputItems: new Bank({
+			'Bottled dragonbreath': 5,
+			'Uncharged dragonfire shield': 1
+		}).bank,
+		outputItems: resolveNameBank({
+			'Dragonfire shield': 1
+		}),
+		requiredSkills: {
+			slayer: 62
 		}
 	},
 	...crystalTools,

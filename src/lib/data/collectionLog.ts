@@ -129,6 +129,20 @@ const wintertodtLog = resolveItems([
 	'Dragon axe'
 ]);
 
+const temporossLog = resolveItems([
+	'Spirit angler headband',
+	'Spirit angler top',
+	'Spirit angler waders',
+	'Spirit angler boots',
+	'Soaked page',
+	'Fish barrel',
+	'Tackle box',
+	'Big harpoonfish',
+	'Tome of water (empty)',
+	'Tiny tempor',
+	'Dragon harpoon'
+]);
+
 const barbAssaultLog = resolveItems([
 	'Pet penance queen',
 	'Fighter torso',
@@ -370,6 +384,7 @@ export const bosses: CollectionLogData = {
 	Nightmare: nightmareLog,
 	Zalcano: zalcanoLog,
 	Wintertodt: wintertodtLog,
+	Tempoross: temporossLog,
 	Cox1: resolveItems([
 		'Dexterous prayer scroll',
 		'Torn prayer scroll',
@@ -412,7 +427,8 @@ export const bosses: CollectionLogData = {
 		'Bludgeon spine',
 		'Bludgeon axon',
 		'Jar of miasma',
-		'Abyssal orphan'
+		'Abyssal orphan',
+		'Abyssal head'
 	]),
 	Kraken: resolveItems(['Trident of the seas (full)', 'Kraken tentacle', 'Jar of dirt', 'Pet kraken']),
 	Cerberus: resolveItems([
@@ -499,7 +515,8 @@ export const pets: CollectionLogData = {
 		'Phoenix',
 		'Smolcano',
 		'Youngllef',
-		"Lil' creator"
+		"Lil' creator",
+		'Tiny tempor'
 	]),
 	Special: resolveItems(['Dark squirrel'])
 };
@@ -1533,6 +1550,10 @@ export const wintertodt: CollectionLogData = {
 	'': wintertodtLog
 };
 
+export const tempoross: CollectionLogData = {
+	'': temporossLog
+};
+
 const infinityItems = resolveItems([
 	'Infinity hat',
 	'Infinity top',
@@ -1817,6 +1838,7 @@ export const skillingLog: CollectionLogData = {
 	]),
 	Fishing: resolveItems(['Heron', 'Big swordfish', 'Big shark', 'Big bass']),
 	AerialFishing: Object.values(aerialFishing).flat(Infinity) as number[],
+	Tempoross: Object.values(temporossLog).flat(Infinity) as number[],
 	Firemaking: wintertodtLog,
 	Farming: [...resolveItems(['Tangleroot', 'Bottomless compost bucket']), ...farmersOutfit],
 	Plunder: resolveItems(['Rocky', "Pharaoh's sceptre (3)"]),
@@ -1832,7 +1854,7 @@ export const skillingLog: CollectionLogData = {
 		'Gloves of silence'
 	]),
 	MahoganyHomes: Object.values(mahoganyHomesLog).flat(Infinity) as number[],
-	LumberjackOutfit: Object.values(lumberjackOutfit).flat(Infinity) as number[],
+	Woodcutting: resolveItems([...lumberjackOutfit, 'Beaver']),
 	Runecraft: resolveItems(['Rift guardian', 'Small pouch', 'Medium pouch', 'Large pouch', 'Giant pouch']),
 	Zalcano: zalcanoLog,
 	CrystalTools: resolveItems(['Crystal pickaxe', 'Crystal axe', 'Crystal harpoon'])
@@ -1941,6 +1963,11 @@ export const collectionLogTypes: CollectionLogType[] = [
 		name: 'Wintertodt',
 		aliases: ['todt', 'wintertodt', 'wt'],
 		items: wintertodt
+	},
+	{
+		name: 'Tempoross',
+		aliases: ['temp', 'ross', 'tempo', 'tempoross'],
+		items: tempoross
 	},
 	{
 		name: 'Misc',
@@ -2082,7 +2109,8 @@ export const collectionLogTypes: CollectionLogType[] = [
 			castleWarsGodItems,
 			castleWarsOther,
 			mta: [...wandItems, ...infinityItems],
-			trek: lumberjackOutfit
+			trek: lumberjackOutfit,
+			tempoross: temporossLog
 		}
 	},
 	{
