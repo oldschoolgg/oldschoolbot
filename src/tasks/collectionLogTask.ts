@@ -6,11 +6,14 @@ import { KlasaUser, Task } from 'klasa';
 import { Events } from '../lib/constants';
 import { allCollectionLogs, getCollection, getPossibleOptions, getTotalCl } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
+import { UserSettings } from '../lib/settings/types/UserSettings';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
 import { canvasImageFromBuffer, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
 import BankImageTask from './bankImage';
 
 interface ISprite {
+	image: string;
+	oddListColor: string;
 	border: Canvas;
 	borderCorner: Canvas;
 	borderTitle: Canvas;
@@ -27,20 +30,32 @@ export default class CollectionLogTask extends Task {
 	private clSprite: Image = new Image();
 
 	// css = Collection Log Spreadsheet
-	private cls = <ISprite>{};
+	private cls = <ISprite>{
+		image: './src/lib/resources/images/cl_sprite.png',
+		oddListColor: '#655741'
+	};
+
+	private clsDark = <ISprite>{
+		image: './src/lib/resources/images/cl_sprite_dark.png',
+		oddListColor: '#393939'
+	};
+
+	private scls = <ISprite>{};
 
 	async init() {
-		this.clSprite = await canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/cl_sprite.png'));
-		this.cls.border = this.getClippedRegion(this.clSprite, 0, 0, 18, 6);
-		this.cls.borderCorner = this.getClippedRegion(this.clSprite, 19, 0, 6, 6);
-		this.cls.borderTitle = this.getClippedRegion(this.clSprite, 26, 0, 18, 6);
-		this.cls.tabBorderInactive = this.getClippedRegion(this.clSprite, 0, 7, 75, 20);
-		this.cls.tabBorderActive = this.getClippedRegion(this.clSprite, 0, 45, 75, 20);
-		this.cls.scrollArrow = this.getClippedRegion(this.clSprite, 0, 28, 16, 16);
-		this.cls.scrollBarEnd = this.getClippedRegion(this.clSprite, 17, 28, 16, 6);
-		this.cls.scrollBarOn = this.getClippedRegion(this.clSprite, 17, 35, 16, 1);
-		this.cls.scrollBarOff = this.getClippedRegion(this.clSprite, 17, 37, 16, 1);
-		this.cls.repeatableBg = this.getClippedRegion(this.clSprite, 93, 0, 96, 65);
+		for (const cls of [this.cls, this.clsDark]) {
+			this.clSprite = await canvasImageFromBuffer(fs.readFileSync(cls.image));
+			cls.border = this.getClippedRegion(this.clSprite, 0, 0, 18, 6);
+			cls.borderCorner = this.getClippedRegion(this.clSprite, 19, 0, 6, 6);
+			cls.borderTitle = this.getClippedRegion(this.clSprite, 26, 0, 18, 6);
+			cls.tabBorderInactive = this.getClippedRegion(this.clSprite, 0, 7, 75, 20);
+			cls.tabBorderActive = this.getClippedRegion(this.clSprite, 0, 45, 75, 20);
+			cls.scrollArrow = this.getClippedRegion(this.clSprite, 0, 28, 16, 16);
+			cls.scrollBarEnd = this.getClippedRegion(this.clSprite, 17, 28, 16, 6);
+			cls.scrollBarOn = this.getClippedRegion(this.clSprite, 17, 35, 16, 1);
+			cls.scrollBarOff = this.getClippedRegion(this.clSprite, 17, 37, 16, 1);
+			cls.repeatableBg = this.getClippedRegion(this.clSprite, 93, 0, 96, 65);
+		}
 	}
 
 	run() {}
@@ -58,61 +73,61 @@ export default class CollectionLogTask extends Task {
 	drawBorder(ctx: CanvasRenderingContext2D) {
 		// Top border
 		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.cls.border, 'repeat-y');
+		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-y');
 		ctx.translate(0, 0);
 		ctx.scale(1, 1);
-		ctx.fillRect(0, 0, ctx.canvas.width, this.cls.border.height);
+		ctx.fillRect(0, 0, ctx.canvas.width, this.scls.border.height);
 		ctx.restore();
 		// Bottom border
 		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.cls.border, 'repeat-y');
+		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-y');
 		ctx.translate(0, ctx.canvas.height);
 		ctx.scale(1, -1);
-		ctx.fillRect(0, 0, ctx.canvas.width, this.cls.border.height);
+		ctx.fillRect(0, 0, ctx.canvas.width, this.scls.border.height);
 		ctx.restore();
 		// Right border
 		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.cls.border, 'repeat-x');
+		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-x');
 		ctx.rotate((Math.PI / 180) * 90);
 		ctx.translate(0, -ctx.canvas.width);
-		ctx.fillRect(0, 0, ctx.canvas.height, this.cls.border.height);
+		ctx.fillRect(0, 0, ctx.canvas.height, this.scls.border.height);
 		ctx.restore();
 		// Left border
 		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.cls.border, 'repeat-x');
+		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-x');
 		ctx.rotate((Math.PI / 180) * 90);
 		ctx.scale(1, -1);
-		ctx.fillRect(0, 0, ctx.canvas.height, this.cls.border.height);
+		ctx.fillRect(0, 0, ctx.canvas.height, this.scls.border.height);
 		ctx.restore();
 		// Corners
 		// Top left
 		ctx.save();
 		ctx.scale(1, 1);
-		ctx.drawImage(this.cls.borderCorner, 0, 0);
+		ctx.drawImage(this.scls.borderCorner, 0, 0);
 		ctx.restore();
 		// Top right
 		ctx.save();
 		ctx.translate(ctx.canvas.width, 0);
 		ctx.scale(-1, 1);
-		ctx.drawImage(this.cls.borderCorner, 0, 0);
+		ctx.drawImage(this.scls.borderCorner, 0, 0);
 		ctx.restore();
 		// Bottom right
 		ctx.save();
 		ctx.translate(ctx.canvas.width, ctx.canvas.height);
 		ctx.scale(-1, -1);
-		ctx.drawImage(this.cls.borderCorner, 0, 0);
+		ctx.drawImage(this.scls.borderCorner, 0, 0);
 		ctx.restore();
 		// Bottom left
 		ctx.save();
 		ctx.translate(0, ctx.canvas.height);
 		ctx.scale(1, -1);
-		ctx.drawImage(this.cls.borderCorner, 0, 0);
+		ctx.drawImage(this.scls.borderCorner, 0, 0);
 		ctx.restore();
 		// Title border
 		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.cls.borderTitle, 'repeat-y');
-		ctx.translate(this.cls.border.height - 1, 29);
-		ctx.fillRect(0, 0, ctx.canvas.width - this.cls.border.height * 2 + 2, this.cls.borderTitle.height);
+		ctx.fillStyle = ctx.createPattern(this.scls.borderTitle, 'repeat-y');
+		ctx.translate(this.scls.border.height - 1, 29);
+		ctx.fillRect(0, 0, ctx.canvas.width - this.scls.border.height * 2 + 2, this.scls.borderTitle.height);
 		ctx.restore();
 	}
 
@@ -159,7 +174,7 @@ export default class CollectionLogTask extends Task {
 			started: '#FFFF00',
 			completed: '#0DC10D',
 			selected: '#6F675E',
-			odd: '#564C42'
+			odd: this.scls.oddListColor
 		};
 
 		// Create base canvas
@@ -171,6 +186,7 @@ export default class CollectionLogTask extends Task {
 		ctxl.imageSmoothingEnabled = false;
 		let index = 0;
 		let widestName = 0;
+
 		for (const [name, status] of Object.entries(collectionLog.leftList)) {
 			if (name === collectionLog.name) {
 				ctxl.fillStyle = colors.selected;
@@ -209,6 +225,10 @@ export default class CollectionLogTask extends Task {
 				files: [getPossibleOptions()]
 			};
 		}
+
+		const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
+		this.scls = this.cls;
+		if (userBgID === 11) this.scls = this.clsDark;
 
 		const userCollectionBank = collectionLog.userItems;
 
@@ -255,12 +275,12 @@ export default class CollectionLogTask extends Task {
 		const boxHeight = ctx.canvas.height - 69;
 
 		// Draw base background
-		ctx.fillStyle = ctx.createPattern(this.cls.repeatableBg, 'repeat');
+		ctx.fillStyle = ctx.createPattern(this.scls.repeatableBg, 'repeat');
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
 		// Draw cl box lines
 		this.drawBorder(ctx);
-		ctx.strokeStyle = '#5D5848';
+		ctx.strokeStyle = this.scls.oddListColor;
 		if (!fullSize) {
 			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, boxHeight);
 			this.drawSquare(ctx, leftDivisor, 59, rightArea, 41);
@@ -289,15 +309,19 @@ export default class CollectionLogTask extends Task {
 		let aclIndex = 0;
 		ctx.save();
 		for (const cl of Object.keys(allCollectionLogs)) {
-			const x = aclIndex * this.cls.tabBorderInactive.width + aclIndex * 6 + 10;
-			ctx.drawImage(cl === collectionLog.category ? this.cls.tabBorderActive : this.cls.tabBorderInactive, x, 39);
+			const x = aclIndex * this.scls.tabBorderInactive.width + aclIndex * 6 + 10;
+			ctx.drawImage(
+				cl === collectionLog.category ? this.scls.tabBorderActive : this.scls.tabBorderInactive,
+				x,
+				39
+			);
 			ctx.fillStyle = cl === collectionLog.category ? '#FFFFFF' : '#FF981F';
 			ctx.textAlign = 'center';
 			this.drawText(
 				ctx,
 				cl,
-				x + this.cls.tabBorderInactive.width / 2,
-				39 + this.cls.tabBorderInactive.height / 2 + 6 // 6 is to proper center the text
+				x + this.scls.tabBorderInactive.width / 2,
+				39 + this.scls.tabBorderInactive.height / 2 + 6 // 6 is to proper center the text
 			);
 			aclIndex++;
 		}
