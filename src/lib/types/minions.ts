@@ -30,7 +30,7 @@ export interface WealthChargingActivityTaskOptions extends ActivityTaskOptions {
 export interface DarkAltarOptions extends ActivityTaskOptions {
 	quantity: number;
 	hasElite: boolean;
-	rune: string;
+	rune: 'blood' | 'soul';
 }
 
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
