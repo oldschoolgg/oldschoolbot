@@ -41,6 +41,8 @@ const patMessages = [
 
 const randomPatMessage = (minionName: string) => randomItemFromArray(patMessages).replace('{name}', minionName);
 
+const buttonShowingCache = new Set();
+
 async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
 	try {
 		const command = msg.client.commands.get(name)!;
@@ -68,20 +70,22 @@ export default class MinionCommand extends BotCommand {
 	async run(msg: KlasaMessage) {
 		let components = [...informationalButtons.slice(0, 2)];
 		const bank = msg.author.bank();
-		for (const tier of ClueTiers) {
-			if (bank.has(tier.scrollID)) {
-				components.push(
-					new MessageButton()
-						.setLabel(`Do ${tier.name} Clue`)
-						.setStyle('SECONDARY')
-						.setCustomID(tier.name)
-						.setEmoji('365003979840552960')
-				);
+		if (!msg.author.minionIsBusy) {
+			for (const tier of ClueTiers) {
+				if (bank.has(tier.scrollID)) {
+					components.push(
+						new MessageButton()
+							.setLabel(`Do ${tier.name} Clue`)
+							.setStyle('SECONDARY')
+							.setCustomID(tier.name)
+							.setEmoji('365003979840552960')
+					);
+				}
 			}
 		}
 
 		const lastTrip = lastTripCache.get(msg.author.id);
-		if (lastTrip) {
+		if (lastTrip && !msg.author.minionIsBusy) {
 			components.push(
 				new MessageButton()
 					.setLabel(`Repeat ${lastTrip.data.type} Trip`)
@@ -99,10 +103,16 @@ export default class MinionCommand extends BotCommand {
 		if (components.length > 0) {
 			const handleButtons = async () => {
 				try {
+					if (buttonShowingCache.has(msg.author.id)) return;
+					buttonShowingCache.add(msg.author.id);
 					const selection = await sentMessage.awaitMessageComponentInteraction({
 						filter: i => {
 							if (i.user.id !== msg.author.id) {
 								i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+								return false;
+							}
+							if (i.user.minionIsBusy) {
+								i.reply({ ephemeral: true, content: 'Your minion is busy.' });
 								return false;
 							}
 							return true;
@@ -111,11 +121,17 @@ export default class MinionCommand extends BotCommand {
 					});
 					await sentMessage.edit({ components: [] });
 					selection.deferUpdate();
+					if (selection.user.minionIsBusy) {
+						return selection.reply({ content: msg.author.minionStatus, ephemeral: true });
+					}
 					if (selection.customID === 'REPEAT_LAST_TRIP' && lastTrip) {
 						return lastTrip.continue(msg);
 					}
 					await this.client.commands.get('mclue')?.run(msg, [selection.customID]);
-				} catch {}
+				} catch {
+				} finally {
+					buttonShowingCache.delete(msg.author.id);
+				}
 			};
 			handleButtons();
 		}
