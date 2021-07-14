@@ -1,7 +1,6 @@
 import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 
-import clueTiers from '../../lib/minions/data/clueTiers';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -9,12 +8,7 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import {
-	calculateSlayerPoints,
-	filterLootReplace,
-	getSlayerMasterOSJSbyID,
-	getUsersCurrentSlayerInfo
-} from '../../lib/slayer/slayerUtil';
+import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -122,14 +116,7 @@ export default class extends Task {
 			await usersTask.currentTask!.save();
 		}
 
-		// This will alter the loot variable by reference, changing its content
-		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
-		// Remove all the clues from the CL loot
-		for (const { scrollID } of clueTiers) clLoot.removeItem(scrollID, clLoot.amount(scrollID));
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, false);
-		// Re-add to the CL loot only the clues that were added to the user bank
-		for (const { scrollID } of clueTiers) if (itemsAdded[scrollID]) clLoot.add(scrollID, itemsAdded[scrollID]);
-		await user.addItemsToCollectionLog(clLoot.bank);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
