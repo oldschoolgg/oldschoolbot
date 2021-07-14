@@ -38,7 +38,7 @@ export default class extends BotCommand {
 		const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
 
 		if (tier === undefined)
-			return msg.send(
+			return msg.channel.send(
 				'Cannot start temple trekking due to unknown tier! Valid tiers are easy/medium/hard. Example: +trek medium'
 			);
 
@@ -92,7 +92,7 @@ export default class extends BotCommand {
 
 					const [meetsRequirements, unmetKey, has] = gear.meetsStatRequirements(newRequirements);
 					if (!meetsRequirements) {
-						return msg.send(
+						return msg.channel.send(
 							`You don't have the requirements to do ${tier.difficulty} treks! Your ${readableStatName(
 								unmetKey!
 							)} stat in your ${setup} setup is ${has}, but you need atleast ${
@@ -105,11 +105,13 @@ export default class extends BotCommand {
 		}
 
 		if (qp < 30) {
-			return msg.send('You need atleast level 30 QP to do Temple Trekking.');
+			return msg.channel.send('You need atleast level 30 QP to do Temple Trekking.');
 		}
 
 		if (minLevel !== undefined && msg.author.combatLevel < minLevel) {
-			return msg.send(`You need to be at least combat level ${minLevel} for ${difficulty} Temple Trekking.`);
+			return msg.channel.send(
+				`You need to be at least combat level ${minLevel} for ${difficulty} Temple Trekking.`
+			);
 		}
 
 		let tripTime = tier.time;
@@ -163,7 +165,7 @@ export default class extends BotCommand {
 		const duration = quantity * tripTime;
 
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of Treks you can go on is ${Math.floor(
@@ -192,6 +194,6 @@ export default class extends BotCommand {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

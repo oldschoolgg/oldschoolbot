@@ -32,10 +32,10 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [_styles]: [string]) {
 		if (msg.author.minionIsBusy) {
-			return msg.send("You can't change your attack style in the middle of a trip.");
+			return msg.channel.send("You can't change your attack style in the middle of a trip.");
 		}
 		if (!_styles) {
-			return msg.send(
+			return msg.channel.send(
 				`Your current attack style is ${msg.author
 					.getAttackStyles()
 					.map(toTitleCase)}, the available styles are: Shared, Attack, Strength, Defence, Magic, Ranged.`
@@ -60,7 +60,7 @@ export default class extends BotCommand {
 
 		for (const comb of invalidCombinations) {
 			if (comb.every(i => styles.includes(i))) {
-				return msg.send(
+				return msg.channel.send(
 					`That's not a valid attack style, you can't train these at the same time: ${comb.join(', ')}.`
 				);
 			}
@@ -68,7 +68,7 @@ export default class extends BotCommand {
 
 		await msg.author.setAttackStyle(styles);
 
-		return msg.send(
+		return msg.channel.send(
 			`You're now training: ${styles
 				.map(toTitleCase)
 				.join(', ')}. When you do PvM, you will receive XP in these skills.`

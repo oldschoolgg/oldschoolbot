@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -89,11 +90,11 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 
 		if (msg.author.skillLevel(SkillsEnum.Fishing) < 43 || msg.author.skillLevel(SkillsEnum.Hunter) < 35) {
-			return msg.send('You need atleast level 35 Hunter and 43 Fishing to do Aerial fishing.');
+			return msg.channel.send('You need atleast level 35 Hunter and 43 Fishing to do Aerial fishing.');
 		}
 
 		if (!Number(tripTime)) {
-			return msg.send(
+			return msg.channel.send(
 				`Specify a valid trip length for example \`${msg.cmdPrefix}aerialfish 10\` will send you out on a 10 minute trip.`
 			);
 		}
@@ -101,7 +102,7 @@ export default class extends BotCommand {
 		let tripLength = Time.Minute * tripTime;
 
 		if (tripLength > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower trip length. The highest amount of minutes you can send out is ${Math.floor(
@@ -122,7 +123,7 @@ export default class extends BotCommand {
 			type: Activity.AerialFishing
 		});
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now doing Aerial fishing, it will take around ${formatDuration(
 				duration
 			)} to finish.`
@@ -136,7 +137,7 @@ export default class extends BotCommand {
 		);
 
 		if (!buyable) {
-			return msg.send(
+			return msg.channel.send(
 				`Here are the items you can buy: \n\n${buyables
 					.map(i => `**${i.item.name}:** ${i.cost} Molch pearls`)
 					.join('\n')}.`
@@ -146,25 +147,29 @@ export default class extends BotCommand {
 		const bank = msg.author.bank();
 		const amountPearlsHas = bank.amount('Molch pearl');
 		if (amountPearlsHas === 0) {
-			return msg.send(
-				await chatHeadImage({
-					content:
-						'You have no Molch pearls, but here is a joke... \nWhere do fish keep their money? \nIn a riverbank. Hehe!',
-					head: 'alry'
-				})
-			);
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content:
+							'You have no Molch pearls, but here is a joke... \nWhere do fish keep their money? \nIn a riverbank. Hehe!',
+						head: 'alry'
+					})
+				]
+			});
 		}
 		if (amountPearlsHas < buyable.cost) {
-			return msg.send(
-				await chatHeadImage({
-					content: "You don't have enough Molch pearls.",
-					head: 'alry'
-				})
-			);
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content: "You don't have enough Molch pearls.",
+						head: 'alry'
+					})
+				]
+			});
 		}
 		await msg.author.removeItemFromBank(itemID('Molch pearl'), buyable.cost);
 		await msg.author.addItemsToBank({ [buyable.item.id]: 1 }, true);
-		return msg.send(`Successfully purchased 1x ${buyable.item.name} for ${buyable.cost}x Molch pearls.`);
+		return msg.channel.send(`Successfully purchased 1x ${buyable.item.name} for ${buyable.cost}x Molch pearls.`);
 	}
 
 	@requiresMinion
@@ -174,7 +179,7 @@ export default class extends BotCommand {
 		);
 
 		if (!sellable) {
-			return msg.send(
+			return msg.channel.send(
 				`Here are the items you can sell: \n\n${sellables
 					.map(i => `**${i.item.name}:** ${i.cost} Molch pearls`)
 					.join('\n')}.`
@@ -184,15 +189,17 @@ export default class extends BotCommand {
 		const bank = msg.author.bank();
 		const amount = bank.amount(sellable.item.name);
 		if (amount < 1) {
-			return msg.send(
-				await chatHeadImage({
-					content: `You have no ${sellable.item.name}.`,
-					head: 'alry'
-				})
-			);
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content: `You have no ${sellable.item.name}.`,
+						head: 'alry'
+					})
+				]
+			});
 		}
 		await msg.author.removeItemFromBank(sellable.item.id, 1);
 		await msg.author.addItemsToBank({ [itemID('Molch pearl')]: sellable.cost }, true);
-		return msg.send(`Successfully sold 1x ${sellable.item.name} for ${sellable.cost}x Molch pearls.`);
+		return msg.channel.send(`Successfully sold 1x ${sellable.item.name} for ${sellable.cost}x Molch pearls.`);
 	}
 }

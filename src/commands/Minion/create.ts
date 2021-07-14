@@ -1,8 +1,8 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
-import { Time } from '../../lib/constants';
 import Createables from '../../lib/data/createables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -52,7 +52,7 @@ export default class extends BotCommand {
 					`${i.QPRequired ?? ''}`
 				])
 			]);
-			return msg.channel.sendFile(Buffer.from(creatableTable), 'Creatables.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(creatableTable), 'Creatables.txt')] });
 		}
 		if (itemName === undefined) {
 			throw 'Item name is a required argument.';
@@ -128,29 +128,11 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const sellMsg = await msg.channel.send(
-				`${
-					msg.author
-				}, say \`confirm\` to confirm that you want to create **${outputItemsString}** using ${inputItemsString}${
-					createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
-				}.`
-			);
-
-			// Confirm the user wants to create the item(s)
-			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 15,
-						errors: ['time']
-					}
-				);
-			} catch (err) {
-				return sellMsg.edit('Cancelling item creation.');
-			}
-		}
+		await msg.confirm(
+			`${msg.author}, please confirm that you want to create **${outputItemsString}** using ${inputItemsString}${
+				createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
+			}.`
+		);
 
 		await msg.author.settings.update(
 			UserSettings.Bank,
@@ -163,6 +145,6 @@ export default class extends BotCommand {
 
 		if (!createableItem.noCl) await msg.author.addItemsToCollectionLog(outItems);
 
-		return msg.send(`You created ${outputItemsString}.`);
+		return msg.channel.send(`You created ${outputItemsString}.`);
 	}
 }

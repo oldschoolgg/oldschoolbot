@@ -18,7 +18,7 @@ export default class extends BotCommand {
 		msg.react('380915244760825857')
 			.then((react: MessageReaction) => react.message.react('380915244652036097'))
 			.catch(() => {
-				return msg.send(`There was an error ${Emoji.Sad} Do I have permissions to react to messages?`);
+				return msg.channel.send(`There was an error ${Emoji.Sad} Do I have permissions to react to messages?`);
 			});
 
 		return null;

@@ -16,18 +16,18 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [name]: [string]) {
 		const item = Items.get(name);
-		if (!item) return msg.send("Couldn't find that item.");
+		if (!item) return msg.channel.send("Couldn't find that item.");
 
 		const priceOfItem = item.price;
 
 		const embed = new MessageEmbed()
 			.setTitle(item.name)
-			.setColor(52224)
+			.setColor(52_224)
 			.setThumbnail(
 				`https://raw.githubusercontent.com/runelite/static.runelite.net/gh-pages/cache/item/icon/${item.id}.png`
 			)
 			.setDescription(`${priceOfItem.toLocaleString()} (${Util.toKMB(priceOfItem)})`);
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

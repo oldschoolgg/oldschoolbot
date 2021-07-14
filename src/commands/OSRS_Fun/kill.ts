@@ -71,7 +71,7 @@ export default class extends BotCommand {
 		});
 
 		if (typeof result === 'string') {
-			return msg.send(result);
+			return msg.channel.send(result);
 		}
 
 		const { image } = await this.client.tasks
@@ -83,6 +83,6 @@ export default class extends BotCommand {
 				msg.flagArgs
 			);
 
-		return msg.send(new MessageAttachment(image!, 'osbot.png'));
+		return msg.channel.send({ files: [new MessageAttachment(image!, 'osbot.png')] });
 	}
 }

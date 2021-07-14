@@ -28,23 +28,23 @@ export default class GetStatsEmbed extends Extendable {
 			.setTitle(`${this.client._badgeCache.get(username.toLowerCase()) || ''} ${toTitleCase(username)}`)
 			.addField(
 				'\u200b',
-				['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction'].map(
-					skillCell
-				),
+				['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
+					.map(skillCell)
+					.join('\n'),
 				true
 			)
 			.addField(
 				'\u200b',
-				['hitpoints', 'agility', 'herblore', 'thieving', 'crafting', 'fletching', 'slayer', 'hunter'].map(
-					skillCell
-				),
+				['hitpoints', 'agility', 'herblore', 'thieving', 'crafting', 'fletching', 'slayer', 'hunter']
+					.map(skillCell)
+					.join('\n'),
 				true
 			)
 			.addField(
 				'\u200b',
-				['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall'].map(
-					skillCell
-				),
+				['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall']
+					.map(skillCell)
+					.join('\n'),
 				true
 			);
 
@@ -73,7 +73,8 @@ export default class GetStatsEmbed extends Extendable {
 						.map(
 							tier =>
 								`**${toTitleCase(tier)}:** ${clues[tier as keyof CluesScore].score.toLocaleString()}`
-						),
+						)
+						.join('\n'),
 					true
 				);
 		}

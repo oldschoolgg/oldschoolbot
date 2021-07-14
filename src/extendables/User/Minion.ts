@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, uniqueArr } from 'e';
+import { calcPercentOfNum, calcWhatPercent, Time, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -15,11 +15,10 @@ import {
 	MAX_TOTAL_LEVEL,
 	PerkTier,
 	skillEmoji,
-	Time,
 	ZALCANO_ID
 } from '../../lib/constants';
 import { onMax } from '../../lib/events';
-import { hasGracefulEquipped } from '../../lib/gear/functions/hasGracefulEquipped';
+import { hasGracefulEquipped } from '../../lib/gear/util';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
@@ -355,6 +354,9 @@ export default class extends Extendable {
 			}
 			case Activity.Wintertodt: {
 				return `${this.minionName} is currently fighting the Wintertodt. ${formattedDuration}`;
+			}
+			case Activity.Tempoross: {
+				return `${this.minionName} is currently fighting Tempoross. ${formattedDuration}`;
 			}
 
 			case Activity.Alching: {

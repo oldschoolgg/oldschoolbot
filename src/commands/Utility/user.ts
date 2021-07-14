@@ -21,13 +21,13 @@ export default class extends BotCommand {
 		const { user } = member;
 
 		const embed = new MessageEmbed()
-			.setColor(16098851)
+			.setColor(16_098_851)
 			.setThumbnail(user.displayAvatarURL())
 			.setDescription(`${user.badges} **${user.username}**`)
 			.addField('RuneScape Username', user.settings.get(UserSettings.RSN) || 'Not Set', true)
 			.addField('Discord Join Date', user.createdAt.toLocaleDateString(), true)
 			.addField('Server Join Date', member.joinedAt!.toLocaleDateString(), true);
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

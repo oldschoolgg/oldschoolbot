@@ -54,9 +54,9 @@ export default class extends BotCommand {
 			gearType,
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);
-		return msg.send(
-			`You auto-equipped your best ${style} stat gear for ${type} in your ${gearType} preset.`,
-			new MessageAttachment(image, 'osbot.png')
-		);
+		return msg.channel.send({
+			content: `You auto-equipped your best ${style} stat gear for ${type} in your ${gearType} preset.`,
+			files: [new MessageAttachment(image, 'osbot.png')]
+		});
 	}
 }

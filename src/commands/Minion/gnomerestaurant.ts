@@ -1,8 +1,8 @@
-import { calcWhatPercent, randInt, reduceNumByPercent } from 'e';
+import { calcWhatPercent, randInt, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -34,7 +34,7 @@ export default class extends BotCommand {
 		const itemsToRemove = new Bank();
 		const gp = msg.author.settings.get(UserSettings.GP);
 		if (gp < 5000) {
-			return msg.send('You need atleast 5k GP to work at the Gnome Restaurant.');
+			return msg.channel.send('You need atleast 5k GP to work at the Gnome Restaurant.');
 		}
 		itemsToRemove.add('Coins', 5000);
 
@@ -124,6 +124,6 @@ export default class extends BotCommand {
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

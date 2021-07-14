@@ -181,6 +181,7 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	getPatchType: string;
 	planting: boolean;
 	currentDate: number;
+	autoFarmed: boolean;
 }
 
 export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
@@ -217,6 +218,11 @@ export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
+}
+
+export interface TemporossActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+	rewardBoost: number;
 }
 
 export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOptions {}
@@ -324,4 +330,5 @@ export type ActivityTaskData =
 	| HerbloreActivityTaskOptions
 	| FletchingActivityTaskOptions
 	| RunecraftActivityTaskOptions
-	| TempleTrekkingActivityTaskOptions;
+	| TempleTrekkingActivityTaskOptions
+	| TemporossActivityTaskOptions;

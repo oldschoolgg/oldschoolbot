@@ -30,6 +30,9 @@ export default class extends Monitor {
 				message.prefixLength
 			);
 		}
+		if (!message.command.enabled) {
+			return message.channel.send('That command is currently disabled, please try again later.');
+		}
 		this.client.emit('commandRun', message, message.command, message.args);
 
 		return this.runCommand(message);
@@ -46,7 +49,13 @@ export default class extends Monitor {
 			}
 		}
 		const prefix = message.guildSettings.get(GuildSettings.Prefix);
-		return message.sendLocale('PREFIX_REMINDER', [prefix.length ? prefix : undefined]);
+		return message.channel.send(
+			`The prefix${
+				Array.isArray(prefix)
+					? `es for this guild are: ${prefix.map(pre => `\`${pre}\``).join(', ')}`
+					: ` in this guild is set to: \`${prefix}\``
+			}`
+		);
 	}
 
 	public async runCommand(message: KlasaMessage) {

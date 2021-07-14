@@ -1,13 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Time } from '../../lib/constants';
 import TrekShopItems, { TrekExperience } from '../../lib/data/buyables/trekBuyables';
 import { rewardTokens } from '../../lib/minions/data/templeTrekking';
 import { AddXpParams } from '../../lib/minions/types';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { percentChance, rand, reduceNumByPercent, stringMatches, toTitleCase } from '../../lib/util';
+import { percentChance, rand, reduceNumByPercent, stringMatches } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -31,7 +30,7 @@ export default class extends BotCommand {
 		const userBank = user.bank();
 
 		if (name === undefined) {
-			return msg.send(
+			return msg.channel.send(
 				`Item is required. Possible items: ${TrekShopItems.map(item => {
 					return item.name;
 				}).join(', ')}.`
@@ -45,7 +44,7 @@ export default class extends BotCommand {
 		);
 
 		if (!specifiedItem) {
-			return msg.send(
+			return msg.channel.send(
 				`Item not recognized. Possible items: ${TrekShopItems.map(item => {
 					return item.name;
 				}).join(', ')}.`
@@ -62,7 +61,7 @@ export default class extends BotCommand {
 		}
 
 		if (quantity === 0) {
-			return msg.send("You don't have enough reward tokens for that.");
+			return msg.channel.send("You don't have enough reward tokens for that.");
 		}
 
 		let outItems = new Bank();
@@ -144,28 +143,12 @@ export default class extends BotCommand {
 		}
 
 		if (!userBank.has(inItems.bank)) {
-			return msg.send("You don't have enough reward tokens for that.");
+			return msg.channel.send("You don't have enough reward tokens for that.");
 		}
 
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const sellMsg = await msg.channel.send(
-				`${user}, say \`confirm\` to confirm that you want to use ${quantity} ${type} reward tokens to buy sets of ${specifiedItem.name}.`
-			);
-
-			// Confirm the user wants to buy
-			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === user.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: Time.Second * 15,
-						errors: ['time']
-					}
-				);
-			} catch (err) {
-				return sellMsg.edit(`Cancelling purchase of ${quantity} sets of ${toTitleCase(specifiedItem.name)}.`);
-			}
-		}
+		await msg.confirm(
+			`${user}, please confirm that you want to use ${quantity} ${type} reward tokens to buy sets of ${specifiedItem.name}.`
+		);
 
 		if (outItems.length > 0) await user.addItemsToBank(outItems);
 		await user.removeItemsFromBank(inItems);
@@ -179,6 +162,6 @@ export default class extends BotCommand {
 
 		ret += (await Promise.all(outXP.filter(xp => xp.amount > 0).map(xp => user.addXP(xp)))).join(', ');
 
-		return msg.send(`${ret}.`);
+		return msg.channel.send(`${ret}.`);
 	}
 }

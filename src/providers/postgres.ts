@@ -59,10 +59,10 @@ export default class extends SQLProvider {
 				port: 5432,
 				database: 'klasa',
 				max: 30,
-				idleTimeoutMillis: 30000,
+				idleTimeoutMillis: 30_000,
 				connectionTimeoutMillis: 0
 			},
-			this.client.options.providers.postgres
+			this.client.options.providers!.postgres
 		);
 
 		this.pgsql = new Pool(poolOptions);

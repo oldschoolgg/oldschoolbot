@@ -11,7 +11,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.send(`
+		return msg.channel.send(`
 <https://oldschool.runescape.com/mobile>
 
 **Play Store:** <https://play.google.com/store/apps/details?id=com.jagex.oldscape.android>

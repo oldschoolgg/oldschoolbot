@@ -22,7 +22,7 @@ export default class extends BotCommand {
 
 			const embed = new MessageEmbed()
 				.setAuthor(username)
-				.setColor(52224)
+				.setColor(52_224)
 				.setThumbnail('https://i.imgur.com/azW3cSB.png');
 
 			for (const tier of Object.keys(clues) as (keyof typeof clues)[]) {
@@ -35,9 +35,9 @@ export default class extends BotCommand {
 				);
 			}
 
-			return msg.send({ embed });
+			return msg.channel.send({ embeds: [embed] });
 		} catch (err) {
-			return msg.send(err.message);
+			return msg.channel.send(err.message);
 		}
 	}
 }

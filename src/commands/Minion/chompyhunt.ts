@@ -1,8 +1,8 @@
-import { percentChance, reduceNumByPercent } from 'e';
+import { percentChance, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { userhasDiaryTier, WesternProv } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -129,6 +129,6 @@ export default class extends BotCommand {
 			str += `\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

@@ -21,28 +21,13 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [amount]: [number]) {
-		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-			const sellMsg = await msg.channel.send(
-				`${
-					msg.author
-				}, say \`confirm\` to sacrifice ${amount} GP, this will add ${amount.toLocaleString()} (${Util.toKMB(
-					amount
-				)}) to your sacrificed amount.`
-			);
-
-			try {
-				await msg.channel.awaitMessages(
-					_msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					{
-						max: 1,
-						time: 10000,
-						errors: ['time']
-					}
-				);
-			} catch (err) {
-				return sellMsg.edit(`Cancelling sacrifice of ${amount} GP.`);
-			}
-		}
+		await msg.confirm(
+			`${
+				msg.author
+			}, please confirm you want to sacrifice ${amount} GP, this will add ${amount.toLocaleString()} (${Util.toKMB(
+				amount
+			)}) to your sacrificed amount.`
+		);
 
 		if (amount > 200_000_000) {
 			this.client.emit(Events.ServerNotification, `${msg.author.username} just sacrificed ${amount} GP!`);
@@ -83,7 +68,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		return msg.send(
+		return msg.channel.send(
 			`You sacrificed ${bankToSac}, with a value of ${amount.toLocaleString()} GP. Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`
 		);
 	}
