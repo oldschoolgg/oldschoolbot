@@ -10,6 +10,7 @@ import {
 	Activity,
 	Emoji,
 	Events,
+	HESPORI_ID,
 	LEVEL_99_XP,
 	MAX_QP,
 	MAX_TOTAL_LEVEL,
@@ -594,23 +595,32 @@ export default class extends Extendable {
 			...killableMonsters,
 			NightmareMonster,
 			{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID },
-			{ name: 'TzTokJad', aliases: ['jad', 'fightcaves'], id: TzTokJad.id }
+			{ name: 'TzTokJad', aliases: ['jad', 'fightcaves'], id: TzTokJad.id },
+			{ name: 'Hespori', aliases: ['hespori'], id: HESPORI_ID }
 		].find(mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName)));
-		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
-		const creature = Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
-
-		if (!mon && !minigame && !creature) {
-			return [null, 0];
+		if (mon) {
+			return [mon.name, this.getKC((mon as unknown as Monster).id)];
 		}
 
-		const kc = mon
-			? this.getKC((mon as unknown as Monster).id)
-			: minigame
-			? await this.getMinigameScore(minigame!.key)
-			: this.getCreatureScore(creature!);
+		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
+		if (minigame) {
+			return [minigame.name, await this.getMinigameScore(minigame.key)];
+		}
 
-		const name = minigame ? minigame.name : mon ? mon!.name : creature?.name;
-		return [name, kc];
+		const creature = Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
+		if (creature) {
+			return [creature.name, this.getCreatureScore(creature)];
+		}
+
+		const special = [
+			[['superior', 'superiors', 'superior slayer monster'], UserSettings.Slayer.SuperiorCount],
+			[['tithefarm', 'tithe'], UserSettings.Stats.TitheFarmsCompleted]
+		].find(s => s[0].includes(kcName));
+		if (special) {
+			return [special[0][0], await this.settings.get(special![1] as string)];
+		}
+
+		return [null, 0];
 	}
 
 	getCreatureScore(this: KlasaUser, creature: Creature) {
