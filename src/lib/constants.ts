@@ -385,7 +385,7 @@ export const badges: { [key: number]: string } = {
 	11: Emoji.MinigameIcon
 };
 
-export const MAX_QP = 280;
+export const MAX_QP = 284;
 
 export const MIMIC_MONSTER_ID = 23_184;
 
