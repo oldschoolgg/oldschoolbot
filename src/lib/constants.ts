@@ -1,8 +1,10 @@
 import { MessageButton } from 'discord.js';
+import { KlasaMessage } from 'klasa';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { SkillsEnum } from './skilling/types';
+import { ActivityTaskOptions } from './types/minions';
 
 export const enum Channel {
 	Notifications = '469523207691436042',
@@ -461,3 +463,8 @@ export const informationalButtons = [
 		.setStyle('LINK'),
 	new MessageButton().setLabel('Bot Invite').setEmoji('🤖').setURL('http://invite.oldschool.gg/').setStyle('LINK')
 ];
+
+export const lastTripCache = new Map<
+	string,
+	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
+>();
