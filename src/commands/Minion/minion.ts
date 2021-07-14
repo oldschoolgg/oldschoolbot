@@ -41,8 +41,6 @@ const patMessages = [
 
 const randomPatMessage = (minionName: string) => randomItemFromArray(patMessages).replace('{name}', minionName);
 
-const buttonShowingCache = new Set();
-
 async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
 	try {
 		const command = msg.client.commands.get(name)!;
@@ -103,8 +101,6 @@ export default class MinionCommand extends BotCommand {
 		if (components.length > 0) {
 			const handleButtons = async () => {
 				try {
-					if (buttonShowingCache.has(msg.author.id)) return;
-					buttonShowingCache.add(msg.author.id);
 					const selection = await sentMessage.awaitMessageComponentInteraction({
 						filter: i => {
 							if (i.user.id !== msg.author.id) {
@@ -128,10 +124,7 @@ export default class MinionCommand extends BotCommand {
 						return lastTrip.continue(msg);
 					}
 					await this.client.commands.get('mclue')?.run(msg, [selection.customID]);
-				} catch {
-				} finally {
-					buttonShowingCache.delete(msg.author.id);
-				}
+				} catch {}
 			};
 			handleButtons();
 		}
