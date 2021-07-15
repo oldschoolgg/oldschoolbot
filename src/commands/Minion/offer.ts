@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
-import { evilChickenOutfit } from '../../lib/data/collectionLog';
+import { EvilChickenOutfit } from '../../lib/data/CollectionsExport';
 import { Offerables } from '../../lib/data/offerData';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -104,7 +104,7 @@ export default class extends BotCommand {
 			let loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				if (roll(300)) {
-					loot.add(randArrItem(evilChickenOutfit));
+					loot.add(randArrItem(EvilChickenOutfit));
 				} else {
 					loot.add(birdsNestID);
 					loot.add(treeSeedsNest.roll());

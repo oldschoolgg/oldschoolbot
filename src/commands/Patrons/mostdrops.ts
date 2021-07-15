@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { PerkTier } from '../../lib/constants';
-import { allCollectionLogItems } from '../../lib/data/collectionLog';
+import { allClItems } from '../../lib/data/Collections';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import getOSItem from '../../lib/util/getOSItem';
 import LeaderboardCommand from '../Minion/leaderboard';
@@ -21,7 +21,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [itemName]: [string]) {
 		const item = getOSItem(itemName);
-		if (!allCollectionLogItems.includes(item.id)) {
+		if (!allClItems.includes(item.id)) {
 			return msg.channel.send("You can't check this item, because it's not on any collection log.");
 		}
 

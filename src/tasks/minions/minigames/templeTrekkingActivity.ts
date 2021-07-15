@@ -3,7 +3,7 @@ import { randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { lumberjackOutfit } from '../../../lib/data/collectionLog';
+import { TempleTrekkingOutfit } from '../../../lib/data/CollectionsExport';
 import {
 	EasyEncounterLoot,
 	HardEncounterLoot,
@@ -20,7 +20,7 @@ export default class extends Task {
 		let lowestCountPiece = 0;
 		let lowestCountAmount = -1;
 
-		for (const piece of lumberjackOutfit) {
+		for (const piece of TempleTrekkingOutfit) {
 			let amount = bank.amount(piece);
 
 			for (const setup of Object.values(user.rawGear())) {

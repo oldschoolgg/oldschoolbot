@@ -7,7 +7,7 @@ import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
 import { bankImageCache, Events } from '../lib/constants';
-import { allCollectionLogItems } from '../lib/data/collectionLog';
+import { allClItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
@@ -20,8 +20,6 @@ import {
 	cleanString,
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
-	restoreCtx,
-	saveCtx,
 	sha256Hash
 } from '../lib/util';
 import { canvasImageFromBuffer, canvasToBufferAsync, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
@@ -30,7 +28,6 @@ registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-bold.ttf', { family: 'Regular' });
 
-const bankImageFile = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/1.jpg');
 const bankRepeaterFile = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/r1.jpg');
 
 const coxPurpleBg = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/14_purple.jpg');
@@ -321,7 +318,7 @@ export default class BankImageTask extends Task {
 			bankBackgroundID === 14 &&
 			flags.showNewCL !== undefined &&
 			currentCL !== undefined &&
-			Object.keys(bank.bank).some(i => !currentCL[i] && allCollectionLogItems.includes(parseInt(i)));
+			Object.keys(bank.bank).some(i => !currentCL[i] && allClItems.includes(parseInt(i)));
 
 		if (isPurple) {
 			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
@@ -436,8 +433,7 @@ export default class BankImageTask extends Task {
 			);
 
 			// Check if new cl item
-			const isNewCLItem =
-				flags.showNewCL && currentCL && !currentCL[item.id] && allCollectionLogItems.includes(item.id);
+			const isNewCLItem = flags.showNewCL && currentCL && !currentCL[item.id] && allClItems.includes(item.id);
 			const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
 			const formattedQuantity = formatItemStackQuantity(quantity);
 
@@ -484,120 +480,5 @@ export default class BankImageTask extends Task {
 			cachedURL: null,
 			isTransparent
 		};
-	}
-
-	async generateCollectionLogImage(collectionLog: ItemBank, title = '', type: any): Promise<Buffer> {
-		const spacer = 12;
-		const canvas = createCanvas(488, 331);
-		const ctx = canvas.getContext('2d');
-		ctx.font = '16px OSRSFontCompact';
-		ctx.imageSmoothingEnabled = false;
-
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-		const backgroundImage = await canvasImageFromBuffer(bankImageFile);
-
-		ctx.drawImage(backgroundImage, 0, 0, backgroundImage.width, backgroundImage.height);
-
-		ctx.textAlign = 'center';
-		ctx.font = '16px RuneScape Bold 12';
-
-		for (let i = 0; i < 3; i++) {
-			ctx.fillStyle = '#000000';
-			ctx.fillText(title, canvas.width / 2 + 1, 21 + 1);
-		}
-		for (let i = 0; i < 3; i++) {
-			ctx.fillStyle = '#ff981f';
-			ctx.fillText(title, canvas.width / 2, 21);
-		}
-
-		// Draw Items
-		ctx.textAlign = 'start';
-		ctx.fillStyle = '#494034';
-
-		ctx.font = '16px OSRSFontCompact';
-
-		const drawItem = async (
-			itemID: number,
-			x: number,
-			y: number,
-			hasItem: boolean,
-			quantity: number,
-			completed: boolean
-		) => {
-			const item = await this.getItemImage(itemID, 100_000);
-			if (!item) return;
-
-			x += floor((32 - item.width) / 2);
-			y += floor((32 - item.height) / 2);
-
-			if (!hasItem) {
-				ctx.save();
-				ctx.globalAlpha = 0.25;
-			}
-
-			/* Draw Quantity */
-			const quantityColor = generateHexColorForCashStack(quantity);
-			const formattedQuantity = formatItemStackQuantity(quantity);
-
-			ctx.drawImage(item, x, y, item.width, item.height);
-
-			if (hasItem) {
-				ctx.fillStyle = '#000000';
-				for (let t = 0; t < 5; t++) {
-					ctx.fillText(formattedQuantity, x + distanceFromSide - 18 + 1, y + distanceFromTop - 24 + 1);
-				}
-
-				ctx.fillStyle = completed ? '#55fa6c' : quantityColor;
-				for (let t = 0; t < 5; t++) {
-					ctx.fillText(formattedQuantity, x + distanceFromSide - 18, y + distanceFromTop - 24);
-				}
-			}
-
-			/* End Draw Quantity */
-			if (!hasItem) ctx.restore();
-		};
-		const repeaterImage = await canvasImageFromBuffer(bankRepeaterFile);
-		let row = 0;
-
-		for (const items of Object.values(type.items) as number[][]) {
-			let column = 0;
-
-			if (row > 6) {
-				const state = saveCtx(ctx);
-				const temp = ctx.getImageData(0, 0, canvas.width, canvas.height - 10);
-				canvas.height += itemSize + spacer;
-
-				ctx.fillStyle = ctx.createPattern(repeaterImage, 'repeat');
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-				ctx.putImageData(temp, 0, 0);
-				restoreCtx(ctx, state);
-			}
-
-			const flatItems = items.flat(Infinity);
-			const completedThisSection = items.every(itemID => Boolean(collectionLog[itemID]));
-
-			for (const itemID of flatItems) {
-				const xLoc = floor(column * 0.7 * ((canvas.width - 40) / 8) + distanceFromSide);
-				const yLoc = floor(itemSize * (row * 1.22) + spacer + distanceFromTop);
-
-				await drawItem(
-					itemID,
-					xLoc,
-					yLoc,
-					Boolean(collectionLog[itemID]),
-					collectionLog[itemID] || 0,
-					completedThisSection
-				);
-
-				column++;
-			}
-			row++;
-		}
-		// Draw border
-		this.drawBorder(canvas);
-
-		return canvas.toBuffer();
 	}
 }

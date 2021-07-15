@@ -3,7 +3,7 @@ import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
 import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
-import { metamorphPets } from './collectionLog';
+import { ChambersOfXericMetamorphPets } from './CollectionsExport';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { ornamentKits } from './creatables/ornaments';
@@ -22,7 +22,7 @@ export interface Createable {
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 }
 
-const metamorphPetCreatables: Createable[] = metamorphPets.map(pet => ({
+const metamorphPetCreatables: Createable[] = ChambersOfXericMetamorphPets.map(pet => ({
 	name: itemNameFromID(pet)!,
 	inputItems: {
 		[itemID('Metamorphic dust')]: 1
