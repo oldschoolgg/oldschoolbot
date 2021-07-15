@@ -427,7 +427,7 @@ DESC LIMIT 100;`
 
 	async cl(msg: KlasaMessage, [inputType = 'overall']: [string]) {
 		const items = getCollectionItems(inputType, false);
-		if (!items) {
+		if (!items || items.length === 0) {
 			return msg.channel.send("That's not a valid collection log category. Check +cl for all possible logs.");
 		}
 		const users = (
