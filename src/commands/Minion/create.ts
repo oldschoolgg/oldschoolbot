@@ -9,14 +9,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {
-	addBanks,
-	bankHasAllItemsFromBank,
-	itemNameFromID,
-	multiplyBank,
-	removeBankFromBank,
-	stringMatches
-} from '../../lib/util';
+import { addBanks, bankHasAllItemsFromBank, itemNameFromID, removeBankFromBank, stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
