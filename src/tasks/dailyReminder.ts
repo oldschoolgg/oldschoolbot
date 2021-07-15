@@ -6,7 +6,7 @@ import { client } from '../index';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { noOp } from '../lib/util';
 
-const dailyTickInterval = Time.Second * 60;
+const dailyTickInterval = Time.Minute * 5;
 
 export default class extends Task {
 	async init() {
