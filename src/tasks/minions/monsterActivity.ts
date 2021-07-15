@@ -162,7 +162,9 @@ export default class extends Task {
 			str += `\n\n<:harry:749945071104819292> While you were PvMing, Harry went off and picked ${bananas} Bananas for you!`;
 		}
 
-		if (abyssalBonus > 1) {
+		if (DOUBLE_LOOT_ACTIVE) {
+			str += '\n\n**Double Loot!**';
+		} else if (abyssalBonus > 1) {
 			str += '\n\nOri has used the abyss to transmute you +25% bonus loot!';
 		}
 
