@@ -24,6 +24,7 @@ export default class extends BotCommand {
 			flags: msg.flagArgs,
 			collection
 		});
+
 		if (!(result instanceof MessageAttachment)) {
 			return msg.channel.send(result);
 		}

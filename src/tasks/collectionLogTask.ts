@@ -212,13 +212,16 @@ export default class CollectionLogTask extends Task {
 	}): Promise<MessageOptions | MessageAttachment> {
 		let { collection, type, user, flags } = options;
 
-		const collectionLog = await getCollection({
-			user,
-			search: collection,
-			allItems: Boolean(flags.all),
-			logType: type
-		});
+		let collectionLog = undefined;
 
+		if (collection) {
+			collectionLog = await getCollection({
+				user,
+				search: collection,
+				allItems: Boolean(flags.all),
+				logType: type
+			});
+		}
 		if (!collectionLog) {
 			return {
 				content: "That's not a valid collection log type. The valid types are: ",
@@ -234,7 +237,7 @@ export default class CollectionLogTask extends Task {
 
 		const fullSize = !collectionLog.leftList;
 
-		const userTotalCl = getTotalCl(user);
+		const userTotalCl = getTotalCl(user, type);
 		const leftListCanvas = this.drawLeftList(collectionLog);
 
 		let leftDivisor = 214;

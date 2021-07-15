@@ -78,7 +78,7 @@ import {
 	LastManStandingCl,
 	MagicTrainingArenaCl,
 	MahoganyHomesCl,
-	Miscellaneous,
+	MiscellaneousCl,
 	MonkeyBackpacksCl,
 	MotherlodeMineCl,
 	OborCl,
@@ -186,7 +186,7 @@ export const allCollectionLogs: ICollection = {
 			roleCategory: ['bosses']
 		},
 		'Dagannoth Kings': {
-			alias: ['dagannoth kings', 'kings', 'dagga'],
+			alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
 			kcActivity: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name],
 			allItems: (() => {
 				return [
@@ -474,7 +474,7 @@ export const allCollectionLogs: ICollection = {
 		},
 		'Rare Treasure Trail Rewards': {
 			alias: ['clues rare', 'rares'],
-			items: [...CluesHardRareCl, ...CluesEliteRareCl, ...CluesHardRareCl],
+			items: [...CluesHardRareCl, ...CluesEliteRareCl, ...CluesMasterRareCl],
 			roleCategory: ['clues'],
 			isActivity: true
 		}
@@ -634,7 +634,8 @@ export const allCollectionLogs: ICollection = {
 			isActivity: true
 		},
 		'Chaos Druids': {
-			enabled: false,
+			allItems: Monsters.ChaosDruid.allItems,
+			kcActivity: Monsters.ChaosDruid.name,
 			items: ChaosDruisCl
 		},
 		'Chompy Birds': {
@@ -755,7 +756,7 @@ export const allCollectionLogs: ICollection = {
 		},
 		Miscellaneous: {
 			alias: ['misc'],
-			items: Miscellaneous
+			items: MiscellaneousCl
 		}
 	},
 	Custom: {
@@ -851,8 +852,21 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems: boolean = 
 }
 
 // Get the total items the user has in its CL and the total items to collect
-export function getTotalCl(user: KlasaUser) {
-	const clItems = Object.keys(user.settings.get(UserSettings.CollectionLogBank)).map(i => parseInt(i));
+export function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection') {
+	const userCheckBank = new Bank();
+	switch (logType) {
+		case 'collection':
+			userCheckBank.add(user.settings.get(UserSettings.CollectionLogBank));
+			break;
+		case 'bank':
+			userCheckBank.add(user.bank());
+			break;
+		case 'sacrifice':
+			userCheckBank.add(user.settings.get(UserSettings.SacrificedBank));
+			break;
+	}
+
+	const clItems = Object.keys(userCheckBank.bank).map(i => parseInt(i));
 	const owned = clItems.filter(i => allClItems.includes(i));
 	return [owned.length, allClItems.length];
 }
@@ -885,6 +899,9 @@ export function getPossibleOptions() {
 function stringMatchNoS(string1: string, string2: string) {
 	let match = stringMatches(string1, string2);
 	if (!match) stringMatches(string1, string2.substr(0, string2.length - 1));
+	if (!match) stringMatches(string1, string2.substr(0, string2.length - 2));
+	if (!match) stringMatches(string1.substr(0, string1.length - 1), string2);
+	if (!match) stringMatches(string1.substr(0, string1.length - 2), string2);
 	return match;
 }
 
@@ -968,7 +985,7 @@ export async function getCollection(options: {
 	const [totalCl, userAmount] = getUserClData(userCheckBank.bank, clItems);
 
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
-		if (stringMatches(category, search)) {
+		if (stringMatchNoS(category, search)) {
 			return {
 				category,
 				name: category,
@@ -982,11 +999,11 @@ export async function getCollection(options: {
 		for (const [activityName, attributes] of Object.entries(entries)) {
 			if (
 				attributes.enabled !== false &&
-				(stringMatches(activityName, search) ||
-					stringMatches(activityName, search.substr(0, search.length - 1)) ||
-					(attributes.alias && attributes.alias.find(a => stringMatches(a, search))) ||
+				(stringMatchNoS(activityName, search) ||
+					stringMatchNoS(activityName, search.substr(0, search.length - 1)) ||
+					(attributes.alias && attributes.alias.find(a => stringMatchNoS(a, search))) ||
 					(attributes.alias &&
-						attributes.alias.find(a => stringMatches(a, search.substr(0, search.length - 1)))))
+						attributes.alias.find(a => stringMatchNoS(a, search.substr(0, search.length - 1)))))
 			) {
 				let userKC = 0;
 				if (attributes.kcActivity && Array.isArray(attributes.kcActivity)) {

@@ -1326,7 +1326,7 @@ export const AllPetsCl = resolveItems([
 	'Rocky',
 	'Rift guardian',
 	'Herbi',
-	'Chompy chick',
+	// 'Chompy chick',
 	'Sraracha',
 	'Smolcano',
 	'Youngllef',
@@ -1364,7 +1364,7 @@ export const ChampionScrolls = resolveItems([
 export const ChampionsChallengeCl = resolveItems([...ChampionScrolls, "Champion's cape"]);
 export const ChaosDruisCl = resolveItems(['Elder chaos top', 'Elder chaos robe', 'Elder chaos hood']);
 export const ChompyBirdsCl = resolveItems([
-	'Chompy chick',
+	// 'Chompy chick',
 	'Chompy bird hat (ogre bowman)',
 	'Chompy bird hat (bowman)',
 	'Chompy bird hat (ogre yeoman)',
@@ -1456,7 +1456,7 @@ export const RandomEventsCl = resolveItems([
 	'Mime legs',
 	'Mime gloves',
 	'Mime boots',
-	// 'Frog token', // Removed to keep like it is today
+	'Frog token', // Removed to keep like it is today
 	// 'Stale baguette', // Removed to keep like it is today
 	"Beekeeper's hat",
 	"Beekeeper's top",
@@ -1626,19 +1626,19 @@ export const SlayerCl = resolveItems([
 	'Ballista spring',
 	'Black mask',
 	'Granite longsword',
-	'Dragon chainbody',
-	"Dagon'hai hat",
-	"Dagon'hai robe top",
-	"Dagon'hai robe bottom"
+	'Dragon chainbody'
+	// "Dagon'hai hat", // Not obtainable yet
+	// "Dagon'hai robe top", // Not obtainable yet
+	// "Dagon'hai robe bottom" // Not obtainable yet
 ]);
 export const TzHaarCl = resolveItems([
 	'Obsidian cape',
 	'Toktz-ket-xil',
 	'Tzhaar-ket-om',
-	'Toktz-xil-ak', // Not possible to obtain at the moment
-	'Toktz-xil-ek', // Not possible to obtain at the moment
-	'Toktz-mej-tal', // Not possible to obtain at the moment
-	'Toktz-xil-ul', // Not possible to obtain at the moment
+	// 'Toktz-xil-ak', // Not possible to obtain at the moment
+	// 'Toktz-xil-ek', // Not possible to obtain at the moment
+	// 'Toktz-mej-tal', // Not possible to obtain at the moment
+	// 'Toktz-xil-ul', // Not possible to obtain at the moment
 	'Obsidian helmet',
 	'Obsidian platebody',
 	'Obsidian platelegs'
@@ -1650,7 +1650,7 @@ export const EvilChickenOutfit = resolveItems([
 	'Evil chicken legs',
 	'Evil chicken feet'
 ]);
-export const Miscellaneous = resolveItems([
+export const MiscellaneousCl = resolveItems([
 	'Holy book',
 	'Unholy book',
 	'Book of war',
@@ -1667,7 +1667,50 @@ export const Miscellaneous = resolveItems([
 	'Amulet of eternal glory',
 	'Crystal grail',
 	'Fire cape',
-	'Dragon warhammer'
+	'Dragon warhammer',
+	'Herbi',
+	// 'Chompy chick', // Not obtainable yet
+	'Big swordfish',
+	'Big shark',
+	'Big bass',
+	'Long bone',
+	'Curved bone',
+	// 'Ecumenical key', // Not obtainable yet
+	"Pharaoh's sceptre (3)",
+	'Dark totem base',
+	'Dark totem middle',
+	'Dark totem top',
+	'Chewed bones',
+	'Dragon full helm',
+	'Shield left half',
+	'Dragon metal slice',
+	'Dragon metal lump',
+	'Dragon limbs',
+	'Dragon spear',
+	'Shaman mask',
+	'Mining gloves',
+	'Superior mining gloves',
+	'Expert mining gloves',
+	'Right skull half',
+	'Left skull half',
+	'Top of sceptre',
+	'Bottom of sceptre',
+	'Mossy key',
+	'Giant key',
+	'Hespori seed',
+	// 'Fresh crab claw', // Not obtainable yet
+	// 'Fresh crab shell', // Not obtainable yet
+	"Xeric's talisman (inert)",
+	// 'Mask of ranul', // Not obtainable yet
+	// 'Elven signet', // Not obtainable yet
+	'Enhanced crystal teleport seed',
+	'Dragonstone full helm',
+	'Dragonstone platebody',
+	'Dragonstone platelegs',
+	'Dragonstone gauntlets',
+	'Dragonstone boots',
+	'Uncut onyx'
+	// 'Merfolk trident'
 ]);
 export const HolidayCl = resolveItems([
 	'Cow mask',
