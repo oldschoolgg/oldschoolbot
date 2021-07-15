@@ -898,10 +898,10 @@ export function getPossibleOptions() {
 
 function stringMatchNoS(string1: string, string2: string) {
 	let match = stringMatches(string1, string2);
-	if (!match) stringMatches(string1, string2.substr(0, string2.length - 1));
-	if (!match) stringMatches(string1, string2.substr(0, string2.length - 2));
-	if (!match) stringMatches(string1.substr(0, string1.length - 1), string2);
-	if (!match) stringMatches(string1.substr(0, string1.length - 2), string2);
+	if (!match) match = stringMatches(string1, string2.substr(0, string2.length - 1));
+	if (!match) match = stringMatches(string1, string2.substr(0, string2.length - 2));
+	if (!match) match = stringMatches(string1.substr(0, string1.length - 1), string2);
+	if (!match) match = stringMatches(string1.substr(0, string1.length - 2), string2);
 	return match;
 }
 
@@ -1043,7 +1043,7 @@ export async function getCollection(options: {
 		};
 	}
 	const monster = killableMonsters.find(
-		_type => stringMatches(_type.name, search) || _type.aliases.some(name => stringMatches(name, search))
+		_type => stringMatchNoS(_type.name, search) || _type.aliases.some(name => stringMatchNoS(name, search))
 	);
 	if (monster) {
 		return {
