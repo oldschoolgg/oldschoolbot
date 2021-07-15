@@ -2,7 +2,7 @@ import { percentChance, randArrItem } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
+import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
 import { Ignecarus, IgnecarusLootTable } from '../../../lib/minions/data/killableMonsters/custom/Ignecarus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -62,6 +62,9 @@ export default class extends Task {
 		const totalLoot = new Bank();
 		for (const { user } of bossUsers.filter(u => !deaths.includes(u.user))) {
 			const loot = new Bank().add(IgnecarusLootTable.roll());
+			if (DOUBLE_LOOT_ACTIVE) {
+				loot.multiply(2);
+			}
 			totalLoot.add(loot);
 			await addMonsterXP(user, {
 				monsterID: Ignecarus.id,

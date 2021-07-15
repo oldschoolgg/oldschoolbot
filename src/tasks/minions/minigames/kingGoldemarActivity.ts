@@ -2,7 +2,7 @@ import { percentChance, randArrItem } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
+import { DOUBLE_LOOT_ACTIVE, Emoji, Events } from '../../../lib/constants';
 import KingGoldemar, { KingGoldemarLootTable } from '../../../lib/minions/data/killableMonsters/custom/KingGoldemar';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -70,6 +70,9 @@ export default class extends Task {
 			const loot = new Bank().add(KingGoldemarLootTable.roll());
 			if (dwwhRecipient === user) {
 				loot.add('Broken dwarven warhammer');
+			}
+			if (DOUBLE_LOOT_ACTIVE) {
+				loot.multiply(2);
 			}
 			totalLoot.add(loot);
 			await addMonsterXP(user, {

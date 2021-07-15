@@ -2,7 +2,7 @@ import { randArrItem, randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
+import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
 import { bossKillables } from '../../../lib/minions/data/killableMonsters/bosses';
 import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killableMonsters/custom/VasaMagus';
 import { addMonsterXP } from '../../../lib/minions/functions';
@@ -23,6 +23,10 @@ export default class extends Task {
 		for (let i = 0; i < quantity; i++) {
 			loot.add(VasaMagusLootTable.roll());
 			loot.add(randArrItem(bossKillables).table.kill(randInt(1, 3), {}));
+		}
+
+		if (DOUBLE_LOOT_ACTIVE) {
+			loot.multiply(2);
 		}
 
 		const xpRes = await addMonsterXP(user, {
