@@ -6,6 +6,7 @@ import { SkillsEnum } from '../../skilling/types';
 Client.defaultUserSchema
 	.add('GP', 'integer', { default: 0 })
 	.add('QP', 'integer', { default: 0 })
+	.add('quests', 'integer', { array: true, default: [] })
 	.add('RSN', 'string', { default: null })
 	.add('pets', 'any', { default: {} })
 	.add('badges', 'integer', { array: true, default: [] })

@@ -2,6 +2,7 @@
 import { HexColorString } from 'discord.js';
 import { O } from 'ts-toolbelt';
 
+import { Quests } from '../../../commands/Testing/test';
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
@@ -21,6 +22,7 @@ export function T<TCustom>(k: string): CustomGet<string, TCustom> {
 export namespace UserSettings {
 	export const GP = T<number>('GP');
 	export const QP = T<number>('QP');
+	export const Quests = T<readonly Quests[]>('quests');
 	export const Bank = T<O.Readonly<ItemBank>>('bank');
 	export const BankBackground = T<number>('bankBackground');
 	export const Pets = T<O.Readonly<ItemBank>>('pets');
