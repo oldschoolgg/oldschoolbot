@@ -1,7 +1,7 @@
 import { User } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, Time, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -10,18 +10,16 @@ import {
 	Activity,
 	Emoji,
 	Events,
-	HESPORI_ID,
 	LEVEL_99_XP,
 	MAX_QP,
 	MAX_TOTAL_LEVEL,
 	PerkTier,
-	skillEmoji,
-	ZALCANO_ID
+	skillEmoji
 } from '../../lib/constants';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear/util';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
 import { AddXpParams, KillableMonster } from '../../lib/minions/types';
@@ -119,8 +117,6 @@ const suffixes = new SimpleTable<string>()
 	.add(Emoji.PeepoNoob, 1)
 	.add(Emoji.PeepoRanger, 1)
 	.add(Emoji.PeepoSlayer);
-
-const { TzTokJad } = Monsters;
 
 function levelUpSuffix() {
 	return suffixes.roll().item;
@@ -575,13 +571,9 @@ export default class extends Extendable {
 	}
 
 	public async getKCByName(this: KlasaUser, kcName: string) {
-		const mon = [
-			...killableMonsters,
-			NightmareMonster,
-			{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID },
-			{ name: 'TzTokJad', aliases: ['jad', 'fightcaves'], id: TzTokJad.id },
-			{ name: 'Hespori', aliases: ['hespori'], id: HESPORI_ID }
-		].find(mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName)));
+		const mon = effectiveMonsters.find(
+			mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
+		);
 		if (mon) {
 			return [mon.name, this.getKC((mon as unknown as Monster).id)];
 		}
