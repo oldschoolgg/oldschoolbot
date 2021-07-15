@@ -7,7 +7,6 @@ import { Events } from '../../lib/constants';
 import { similarItems } from '../../lib/data/similarItems';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
 import { bankHasAllItemsFromBank, removeBankFromBank, removeItemFromBank } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
@@ -113,18 +112,17 @@ export default class extends Extendable {
 				}
 			}
 
-			let items = new Bank({
+			const items = {
 				..._items
-			});
-			const { bankLoot, clLoot } = filterLootReplace(user.allItemsOwned(), items);
-			items = bankLoot;
+			};
+
 			if (collectionLog) {
-				await user.addItemsToCollectionLog(clLoot.bank);
+				await user.addItemsToCollectionLog(items);
 			}
 
-			if (items.has(995)) {
-				await user.addGP(items.amount(995));
-				items.remove(995);
+			if (items[995]) {
+				await user.addGP(items[995]);
+				delete items[995];
 			}
 
 			this.log(`Had items added to bank - ${JSON.stringify(items)}`);
@@ -132,7 +130,7 @@ export default class extends Extendable {
 
 			return {
 				previousCL,
-				itemsAdded: items.bank
+				itemsAdded: _items
 			};
 		});
 	}
