@@ -8,6 +8,7 @@ export interface IToReturnCollection {
 	name: string;
 	collection: number[];
 	completions?: number;
+	isActivity?: boolean;
 	collectionObtained: number;
 	collectionTotal: number;
 	leftList?: ILeftListStatus;
@@ -28,7 +29,7 @@ export interface ICollectionActivity {
 		items: number[];
 		allItems?: number[];
 		kcActivity?: string | string[] | ((user: KlasaUser) => number);
-		isActivity?: false;
+		isActivity?: boolean;
 		roleCategory?: TRoleCategories[];
 	};
 }
@@ -56,8 +57,8 @@ export const AlchemicalHydraCl = resolveItems([
 	"Hydra's fang",
 	"Hydra's eye",
 	"Hydra's heart",
-	// 'Dragon knife',
-	// 'Dragon thrownaxe',
+	'Dragon knife',
+	'Dragon thrownaxe',
 	'Jar of chemicals',
 	'Alchemical hydra heads'
 ]);
@@ -169,7 +170,7 @@ export const TheGauntletCl = resolveItems([
 	// 'Enhanced crystal weapon seed', // TODO - MISSING ITEM
 	'Gauntlet cape'
 ]);
-export const GiantMoleCl = resolveItems(['Baby mole', 'Long bone', 'Curved bone']);
+export const GiantMoleCl = resolveItems(['Baby mole', 'Mole skin', 'Mole claw', 'Long bone', 'Curved bone']);
 export const GrotesqueGuardiansCl = resolveItems([
 	'Noon',
 	'Black tourmaline core',
@@ -215,8 +216,8 @@ export const SkotizoCl = resolveItems([
 	'Jar of darkness',
 	'Dark claw',
 	'Dark totem',
-	'Uncut onyx'
-	// 'Ancient shard'
+	'Uncut onyx',
+	'Ancient shard'
 ]);
 export const SpiritAnglerOutfit = resolveItems([
 	'Spirit angler headband',
@@ -231,7 +232,8 @@ export const TemporossCl = resolveItems([
 	'Soaked page',
 	'Tackle box',
 	'Fish barrel',
-	'Dragon harpoon'
+	'Dragon harpoon',
+	...SpiritAnglerOutfit
 ]);
 export const ThermonuclearSmokeDevilCl = resolveItems([
 	'Pet smoke devil',
@@ -1621,86 +1623,22 @@ export const SlayerCl = resolveItems([
 	'Light frame',
 	'Monkey tail',
 	'Ballista limbs',
-	'Ballista spring'
-
-	// Original log below
-	// 7975, // 'Crawling hand',
-	// 'Cockatrice head',
-	// 'Basilisk head',
-	// 'Kurask head',
-	// 'Abyssal head',
-	// 'Imbued heart',
-	// 'Eternal gem',
-	// 'Dust battlestaff',
-	// 'Mist battlestaff',
-	// 'Abyssal whip',
-	// 'Granite maul',
-	// 'Mudskipper hat',
-	// 'Flippers',
-	// 'Brine sabre',
-	// 'Leaf-bladed sword',
-	// 'Leaf-bladed battleaxe',
-	// 'Black mask',
-	// 'Granite longsword',
-	// 'Granite boots',
-	// 'Wyvern visage',
-	// 'Granite legs',
-	// 'Granite helm',
-	// 'Draconic visage',
-	// 'Bronze boots',
-	// 'Iron boots',
-	// 'Steel boots',
-	// 'Black boots',
-	// 'Mithril boots',
-	// 'Adamant boots',
-	// 'Rune boots',
-	// 'Dragon boots',
-	// 'Abyssal dagger',
-	// 'Uncharged trident',
-	// 'Kraken tentacle',
-	// 'Dark bow',
-	// 'Occult necklace',
-	// 'Dragon chainbody',
-	// 'Dragon thrownaxe',
-	// 'Dragon harpoon',
-	// 'Dragon sword',
-	// 'Dragon knife',
-	// 'Broken dragon hasta',
-	// "Drake's tooth",
-	// "Drake's claw",
-	// 'Hydra tail',
-	// "Hydra's fang",
-	// "Hydra's eye",
-	// "Hydra's heart",
-	// 'Mystic hat (light)',
-	// 'Mystic robe top (light)',
-	// 'Mystic robe bottom (light)',
-	// 'Mystic gloves (light)',
-	// 'Mystic boots (light)',
-	// 'Mystic hat (dark)',
-	// 'Mystic robe top (dark)',
-	// 'Mystic robe bottom (dark)',
-	// 'Mystic gloves (dark)',
-	// 'Mystic boots (dark)',
-	// 'Mystic hat (dusk)',
-	// 'Mystic robe top (dusk)',
-	// 'Mystic robe bottom (dusk)',
-	// 'Mystic gloves (dusk)',
-	// 'Mystic boots (dusk)',
-	// 'Basilisk jaw',
-	// "Dagon'hai hat",
-	// "Dagon'hai robe top",
-	// "Dagon'hai robe bottom",
-	// 'Blood shard'
+	'Ballista spring',
+	'Black mask',
+	'Granite longsword',
+	'Dragon chainbody',
+	"Dagon'hai hat",
+	"Dagon'hai robe top",
+	"Dagon'hai robe bottom"
 ]);
 export const TzHaarCl = resolveItems([
 	'Obsidian cape',
 	'Toktz-ket-xil',
 	'Tzhaar-ket-om',
-	// 'Toktz-xil-ak', // Not possible to obtain at the moment
-	// 'Toktz-xil-ek', // Not possible to obtain at the moment
-	// 'Toktz-mej-tal', // Not possible to obtain at the moment
-	// 'Toktz-xil-ul', // Not possible to obtain at the moment
+	'Toktz-xil-ak', // Not possible to obtain at the moment
+	'Toktz-xil-ek', // Not possible to obtain at the moment
+	'Toktz-mej-tal', // Not possible to obtain at the moment
+	'Toktz-xil-ul', // Not possible to obtain at the moment
 	'Obsidian helmet',
 	'Obsidian platebody',
 	'Obsidian platelegs'

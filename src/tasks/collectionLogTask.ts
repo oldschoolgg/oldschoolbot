@@ -239,19 +239,18 @@ export default class CollectionLogTask extends Task {
 
 		let leftDivisor = 214;
 		let rightArea = 276;
-
 		let canvasWidth = 500;
+		const itemSize = 36;
+
 		if (collectionLog.category === collectionLog.name) {
 			canvasWidth = 800;
 		}
-
 		if (leftListCanvas) {
 			leftDivisor = leftListCanvas.width + 14;
 			rightArea = canvasWidth - leftDivisor - 10;
 		}
 		if (fullSize) rightArea = canvasWidth - 20;
 
-		const itemSize = 36;
 		// 13 is the spacing at the front (5px) + end (5px) + 2 pixels for the line + 1 pixels to move forward
 		let maxPerLine = (rightArea - 13) / itemSize;
 		if (maxPerLine - Math.floor(maxPerLine) > 0.5) maxPerLine = Math.floor(maxPerLine);
@@ -264,6 +263,7 @@ export default class CollectionLogTask extends Task {
 				116 + (itemSize + itemSpacer) * Math.ceil(collectionLog.collectionTotal / maxPerLine)
 			)
 		);
+
 		// Create base canvas
 		const canvas = createCanvas(canvasWidth, canvasHeight);
 		// Get the canvas context
@@ -411,12 +411,14 @@ export default class CollectionLogTask extends Task {
 			ctx.fillStyle = '#00FF00';
 		} else if (collectionLog.collectionObtained === 0) {
 			ctx.fillStyle = '#FF0000';
+		} else if (collectionLog.collectionTotal !== collectionLog.collectionObtained) {
+			ctx.fillStyle = '#FFFF00';
 		} else {
 			ctx.fillStyle = '#FF981F';
 		}
 		this.drawText(
 			ctx,
-			`${collectionLog.collectionObtained.toLocaleString()} of ${collectionLog.collectionTotal.toLocaleString()}`,
+			`${collectionLog.collectionObtained.toLocaleString()}/${collectionLog.collectionTotal.toLocaleString()}`,
 			obtainableMeasure.width,
 			16
 		);
@@ -432,7 +434,7 @@ export default class CollectionLogTask extends Task {
 			ctx.fillStyle = '#FF981F';
 			this.drawText(
 				ctx,
-				'Total kills/completions: ',
+				collectionLog.isActivity ? 'Total completions: ' : 'Total kills: ',
 				ctx.canvas.width - 19 - ctx.measureText(`${collectionLog.completions.toLocaleString()} `).width,
 				75 + 16
 			);

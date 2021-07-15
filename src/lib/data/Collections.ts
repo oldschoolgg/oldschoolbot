@@ -13,6 +13,7 @@ import {
 	rewardTokens
 } from '../minions/data/templeTrekking';
 import { UserSettings } from '../settings/types/UserSettings';
+import { ItemBank } from '../types';
 import { stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
@@ -134,7 +135,7 @@ export const allCollectionLogs: ICollection = {
 			alias: Monsters.Barrows.aliases,
 			kcActivity: Monsters.Barrows.name,
 			items: BarrowsChestCl,
-			roleCategory: ['bosses']
+			roleCategory: []
 		},
 		Bryophyta: {
 			alias: Monsters.Bryophyta.aliases,
@@ -366,13 +367,15 @@ export const allCollectionLogs: ICollection = {
 			alias: ChambersOfXeric.aliases,
 			kcActivity: ['Raids', 'RaidsChallengeMode'],
 			items: ChambersOfXericCl,
-			roleCategory: ['raids']
+			roleCategory: ['raids'],
+			isActivity: true
 		},
 		'Theatre of Blood': {
 			enabled: false,
 			alias: ['tob'],
 			items: TheatreOfBLoodCl,
-			roleCategory: ['raids']
+			roleCategory: ['raids'],
+			isActivity: true
 		}
 	},
 	Clues: {
@@ -383,7 +386,8 @@ export const allCollectionLogs: ICollection = {
 				return user.getOpenableScore(23_245);
 			},
 			items: CluesBeginnerCl,
-			roleCategory: ['clues']
+			roleCategory: ['clues'],
+			isActivity: true
 		},
 		'Easy Treasure Trails': {
 			alias: ['easy', 'clues easy', 'clue easy'],
@@ -392,7 +396,8 @@ export const allCollectionLogs: ICollection = {
 				return user.getOpenableScore(20_546);
 			},
 			items: CluesEasyCl,
-			roleCategory: ['clues']
+			roleCategory: ['clues'],
+			isActivity: true
 		},
 		'Medium Treasure Trails': {
 			alias: ['medium', 'clues medium', 'clue medium'],
@@ -401,7 +406,8 @@ export const allCollectionLogs: ICollection = {
 				return user.getOpenableScore(20_545);
 			},
 			items: CluesMediumCl,
-			roleCategory: ['clues']
+			roleCategory: ['clues'],
+			isActivity: true
 		},
 		'Hard Treasure Trails': {
 			alias: ['hard', 'clues hard', 'clue hard'],
@@ -410,7 +416,8 @@ export const allCollectionLogs: ICollection = {
 				return user.getOpenableScore(20_544);
 			},
 			items: CluesHardCl,
-			roleCategory: ['clues']
+			roleCategory: ['clues'],
+			isActivity: true
 		},
 		'Elite Treasure Trails': {
 			alias: ['elite', 'clues elite', 'clue elite'],
@@ -419,7 +426,8 @@ export const allCollectionLogs: ICollection = {
 				return user.getOpenableScore(20_543);
 			},
 			items: CluesEliteCl,
-			roleCategory: ['clues']
+			roleCategory: ['clues'],
+			isActivity: true
 		},
 		'Master Treasure Trails': {
 			alias: ['master', 'clues master', 'clue master'],
@@ -428,7 +436,8 @@ export const allCollectionLogs: ICollection = {
 				return user.getOpenableScore(19_836);
 			},
 			items: CluesMasterCl,
-			roleCategory: ['clues']
+			roleCategory: ['clues'],
+			isActivity: true
 		},
 		'Hard Treasure Trail Rewards (Rare)': {
 			alias: ['hard rares', 'clues hard rares', 'clue hard rares'],
@@ -436,7 +445,8 @@ export const allCollectionLogs: ICollection = {
 				return user.getOpenableScore(20_544);
 			},
 			items: CluesHardRareCl,
-			roleCategory: ['clues']
+			roleCategory: ['clues'],
+			isActivity: true
 		},
 		'Elite Treasure Trail Rewards (Rare)': {
 			alias: ['elite rares', 'clues elite rares', 'clue elite rares'],
@@ -444,7 +454,8 @@ export const allCollectionLogs: ICollection = {
 				return user.getOpenableScore(20_543);
 			},
 			items: CluesEliteRareCl,
-			roleCategory: ['clues']
+			roleCategory: ['clues'],
+			isActivity: true
 		},
 		'Master Treasure Trail Rewards (Rare)': {
 			alias: ['master rares', 'clues master rares', 'clue master rares'],
@@ -452,29 +463,40 @@ export const allCollectionLogs: ICollection = {
 				return user.getOpenableScore(19_836);
 			},
 			items: CluesMasterRareCl,
-			roleCategory: ['clues']
+			roleCategory: ['clues'],
+			isActivity: true
 		},
 		'Shared Treasure Trail Rewards': {
 			alias: ['shared', 'clues shared', 'clue shared'],
 			items: CluesSharedCl,
-			roleCategory: ['clues']
+			roleCategory: ['clues'],
+			isActivity: true
+		},
+		'Rare Treasure Trail Rewards': {
+			alias: ['clues rare', 'rares'],
+			items: [...CluesHardRareCl, ...CluesEliteRareCl, ...CluesHardRareCl],
+			roleCategory: ['clues'],
+			isActivity: true
 		}
 	},
 	Minigames: {
 		'Barbarian Assault': {
 			alias: ['ba', 'barb assault', 'barbarian assault'],
 			items: BarbarianAssaultCl,
-			roleCategory: ['minigames']
+			roleCategory: ['minigames'],
+			isActivity: true
 		},
 		'Brimhaven Agility Arena': {
 			alias: ['aa', 'agility arena'],
 			items: BrimhavenAgilityArenaCl,
-			roleCategory: ['minigames', 'skilling']
+			roleCategory: ['minigames', 'skilling'],
+			isActivity: true
 		},
 		'Castle Wars': {
 			alias: ['cw', 'castle wars'],
 			items: CastleWarsCl,
-			roleCategory: ['minigames']
+			roleCategory: ['minigames'],
+			isActivity: true
 		},
 		'Fishing Trawler': {
 			alias: ['trawler', 'ft', 'fishing trawler'],
@@ -499,53 +521,63 @@ export const allCollectionLogs: ICollection = {
 				'Raw manta ray'
 			]),
 			items: FishingTrawlerCl,
-			roleCategory: ['minigames']
+			roleCategory: ['minigames'],
+			isActivity: true
 		},
 		'Gnome Restaurant': {
 			alias: ['gnome', 'restaurant'],
 			allItems: resolveItems(['Snake charm', 'Gnomeball']),
 			items: GnomeRestaurantCl,
-			roleCategory: ['minigames']
+			roleCategory: ['minigames'],
+			isActivity: true
 		},
 		'Hallowed Sepulchre': {
 			alias: ['sepulchre', 'hallowed sepulchre'],
 			allItems: sepulchreFloors.map(f => f.coffinTable.allItems).flat(100),
 			items: HallowedSepulchreCl,
-			roleCategory: ['minigames', 'skilling']
+			roleCategory: ['minigames', 'skilling'],
+			isActivity: true
 		},
 		'Last Man Standing': {
 			enabled: false,
 			items: LastManStandingCl,
-			roleCategory: ['minigames']
+			roleCategory: ['minigames'],
+			isActivity: true
 		},
 		'Magic Training Arena': {
 			alias: ['mta'],
 			items: MagicTrainingArenaCl,
-			roleCategory: ['minigames']
+			roleCategory: ['minigames'],
+			isActivity: true
 		},
 		'Mahogany Homes': {
 			items: MahoganyHomesCl,
-			roleCategory: ['minigames', 'skilling']
+			roleCategory: ['minigames', 'skilling'],
+			isActivity: true
 		},
 		'Pest Control': {
 			enabled: false,
 			items: PestControlCl,
-			roleCategory: ['minigames']
+			roleCategory: ['minigames'],
+			isActivity: true
 		},
 		"Rogues' Den": {
 			alias: ['rogues den', 'rd'],
 			items: RoguesDenCl,
-			roleCategory: ['minigames', 'skilling']
+			roleCategory: ['minigames', 'skilling'],
+			isActivity: true
 		},
 		"Shades of Mort'ton": {
 			enabled: false,
 			items: ShadesOfMorttonCl,
-			roleCategory: ['minigames']
+			roleCategory: ['minigames'],
+			isActivity: true
 		},
 		'Soul Wars': {
 			alias: ['soul wars', 'sw'],
 			items: SoulWarsCl,
-			roleCategory: ['minigames']
+			roleCategory: ['minigames'],
+			isActivity: true
 		},
 		'Temple Trekking': {
 			allItems: [
@@ -556,7 +588,8 @@ export const allCollectionLogs: ICollection = {
 			],
 			alias: ['temple trekking', 'tt', 'temple', 'trek', 'trekking'],
 			items: TempleTrekkingCl,
-			roleCategory: ['minigames', 'skilling']
+			roleCategory: ['minigames', 'skilling'],
+			isActivity: true
 		},
 		'Tithe Farm': {
 			alias: ['tithe'],
@@ -564,17 +597,20 @@ export const allCollectionLogs: ICollection = {
 				return user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
 			},
 			items: TitheFarmCl,
-			roleCategory: ['minigames']
+			roleCategory: ['minigames'],
+			isActivity: true
 		},
 		'Trouble Brewing': {
 			enabled: false,
 			items: TroubleBrewingCl,
-			roleCategory: ['minigames']
+			roleCategory: ['minigames'],
+			isActivity: true
 		},
 		'Volcanic Mine': {
 			enabled: false,
 			items: VolcanicMineCl,
-			roleCategory: ['minigames']
+			roleCategory: ['minigames'],
+			isActivity: true
 		}
 	},
 	Others: {
@@ -594,7 +630,8 @@ export const allCollectionLogs: ICollection = {
 		},
 		"Champion's Challenge": {
 			alias: ['champion', 'champion scrolls', 'champion scroll', 'scroll', 'scrolls'],
-			items: ChampionsChallengeCl
+			items: ChampionsChallengeCl,
+			isActivity: true
 		},
 		'Chaos Druids': {
 			enabled: false,
@@ -631,7 +668,8 @@ export const allCollectionLogs: ICollection = {
 				return user.settings.get(UserSettings.LapsScores)[6];
 			},
 			items: MonkeyBackpacksCl,
-			roleCategory: ['skilling']
+			roleCategory: ['skilling'],
+			isActivity: true
 		},
 		'Motherlode Mine': {
 			enabled: false,
@@ -648,7 +686,8 @@ export const allCollectionLogs: ICollection = {
 		'Rooftop Agility': {
 			alias: ['rooftop', 'laps', 'agility', 'agil'],
 			items: RooftopAgilityCl,
-			roleCategory: ['skilling']
+			roleCategory: ['skilling'],
+			isActivity: true
 		},
 		'Shayzien Armour': {
 			enabled: false,
@@ -843,6 +882,60 @@ export function getPossibleOptions() {
 	return new MessageAttachment(Buffer.from(normalTable), 'possible_logs.txt');
 }
 
+function stringMatchNoS(string1: string, string2: string) {
+	let match = stringMatches(string1, string2);
+	if (!match) stringMatches(string1, string2.substr(0, string2.length - 1));
+	return match;
+}
+
+export function getCollectionItems(collection: string, allItems = false): number[] {
+	let _items: number[] = [];
+	loop: for (const [category, entries] of Object.entries(allCollectionLogs)) {
+		if (stringMatchNoS(category, collection)) {
+			_items = [
+				...new Set(
+					Object.entries(entries)
+						.filter(e => e[1].enabled === undefined)
+						.map(e => [...new Set([...e[1].items, ...(allItems && e[1].allItems ? e[1].allItems : [])])])
+						.flat(2)
+				)
+			];
+			break;
+		}
+		for (const [activityName, attributes] of Object.entries(entries)) {
+			if (
+				attributes.enabled === undefined &&
+				(stringMatchNoS(activityName, collection) ||
+					(attributes.alias && attributes.alias.find(a => stringMatchNoS(a, collection))))
+			) {
+				_items = [
+					...new Set([...attributes.items, ...(allItems && attributes.allItems ? attributes.allItems : [])])
+				];
+				break loop;
+			}
+		}
+	}
+	if (_items.length === 0) {
+		_items = collectionLogRoleCategories[collection.toLowerCase().replace('role', '')] ?? [];
+	}
+	if (_items.length === 0) {
+		const _monster = killableMonsters.find(
+			m => stringMatchNoS(m.name, collection) || m.aliases.some(name => stringMatchNoS(name, collection))
+		);
+		if (_monster) {
+			_items = Array.from(new Set(Object.values(Monsters.get(_monster!.id)!.allItems!).flat(100))) as number[];
+		}
+	}
+	return _items;
+}
+
+function getUserClData(usarBank: ItemBank, clItems: number[]) {
+	const clItemBank = clIntoBank(clItems);
+	const totalCl = clItemBank.items().length;
+	const userAmount = clItemBank.items().length - clItemBank.remove(usarBank).items().length;
+	return [totalCl, userAmount];
+}
+
 // Main function that gets the user collection based on its search parameter
 export async function getCollection(options: {
 	user: KlasaUser;
@@ -870,26 +963,19 @@ export async function getCollection(options: {
 			userCheckBank.add(user.settings.get(UserSettings.SacrificedBank));
 			break;
 	}
+
+	const clItems = getCollectionItems(search, allItems ?? false);
+	const [totalCl, userAmount] = getUserClData(userCheckBank.bank, clItems);
+
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (stringMatches(category, search)) {
-			const clItems = [
-				...new Set(
-					Object.entries(entries)
-						.filter(e => e[1].enabled === undefined)
-						.map(e => e[1].items)
-						.flat(2)
-				)
-			];
-			const clItemBank = clIntoBank(clItems);
-			const totalCl = clItemBank.items().length;
-			const userAmount = clItemBank.items().length - clItemBank.remove(userCheckBank).items().length;
 			return {
 				category,
 				name: category,
 				collection: clItems,
 				collectionObtained: userAmount,
 				collectionTotal: totalCl,
-				leftList: getLeftList(userCheckBank, category),
+				leftList: getLeftList(userCheckBank, category, allItems),
 				userItems: userCheckBank
 			};
 		}
@@ -902,13 +988,6 @@ export async function getCollection(options: {
 					(attributes.alias &&
 						attributes.alias.find(a => stringMatches(a, search.substr(0, search.length - 1)))))
 			) {
-				let { items } = attributes;
-				if (allItems && attributes.allItems) {
-					items = [...new Set([...attributes.items, ...attributes.allItems])];
-				}
-				const clItemBank = clIntoBank(items);
-				const totalCl = clItemBank.items().length;
-				const userAmount = clItemBank.items().length - clItemBank.remove(userCheckBank).items().length;
 				let userKC = 0;
 				if (attributes.kcActivity && Array.isArray(attributes.kcActivity)) {
 					for (const name of attributes.kcActivity) {
@@ -922,8 +1001,9 @@ export async function getCollection(options: {
 				return {
 					category,
 					name: activityName,
-					collection: items,
+					collection: clItems,
 					completions: userKC,
+					isActivity: attributes.isActivity,
 					collectionObtained: userAmount,
 					collectionTotal: totalCl,
 					leftList: getLeftList(userCheckBank, category, allItems && attributes.allItems !== undefined),
@@ -932,12 +1012,10 @@ export async function getCollection(options: {
 			}
 		}
 	}
+
 	// If didnt found it above, check for categories
 	const roleCategory = collectionLogRoleCategories[search.toLowerCase().replace('role', '')];
 	if (roleCategory) {
-		const clItemBank = clIntoBank(roleCategory);
-		const totalCl = clItemBank.items().length;
-		const userAmount = clItemBank.items().length - clItemBank.remove(userCheckBank).items().length;
 		return {
 			category: 'Custom',
 			name: search,
@@ -951,19 +1029,16 @@ export async function getCollection(options: {
 		_type => stringMatches(_type.name, search) || _type.aliases.some(name => stringMatches(name, search))
 	);
 	if (monster) {
-		const items = Array.from(new Set(Object.values(Monsters.get(monster!.id)!.allItems!).flat(100))) as number[];
-		const clItemBank = clIntoBank(items);
-		const totalCl = clItemBank.items().length;
-		const userAmount = clItemBank.items().length - clItemBank.remove(userCheckBank).items().length;
 		return {
 			category: 'Others',
 			name: monster.name,
-			collection: items,
+			collection: clItems,
 			completions: user.getKC(monster.id),
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank
 		};
 	}
+
 	return false;
 }

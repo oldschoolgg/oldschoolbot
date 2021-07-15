@@ -5,7 +5,7 @@ import { IsNull, Not } from 'typeorm';
 
 import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Emoji } from '../../lib/constants';
-import { collectionLogRoleCategories } from '../../lib/data/Collections';
+import { getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
@@ -425,24 +425,18 @@ DESC LIMIT 100;`
 		);
 	}
 
-	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
-		const items = collectionLogRoleCategories[inputType.toLowerCase()];
+	async cl(msg: KlasaMessage, [inputType = 'overall']: [string]) {
+		const items = getCollectionItems(inputType, false);
 		if (!items) {
-			return msg.channel.send(
-				`That's not a valid collection log category. The valid types are: ${Object.keys(
-					collectionLogRoleCategories
-				).join(', ')}`
-			);
+			return msg.channel.send("That's not a valid collection log category. Check +cl for all possible logs.");
 		}
-
 		const users = (
-			await this.client.orm.query(
-				`
+			await this.client.orm.query(`
 SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 				  FROM (
-  SELECT ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank")) "cl_keys",
+  SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
   				id, "collectionLogBank",
-			    cardinality(ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank" - array[${items
+			    cardinality(array(SELECT * FROM jsonb_object_keys("collectionLogBank" - array[${items
 					.map(i => `'${i}'`)
 					.join(', ')}]))) "inverse_length"
   FROM users
@@ -451,10 +445,8 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 ) u
 ORDER BY qty DESC
 LIMIT 50;
-`
-			)
+`)
 		).filter((i: any) => i.qty > 0) as CLUser[];
-
 		if (users.length === 0) {
 			return msg.channel.send('No users found.');
 		}
