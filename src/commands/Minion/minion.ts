@@ -59,7 +59,7 @@ export default class MinionCommand extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		let components = [...informationalButtons.slice(0, 2)];
+		let components = [];
 		const bank = msg.author.bank();
 		if (!msg.author.minionIsBusy) {
 			for (const tier of ClueTiers) {
@@ -85,10 +85,8 @@ export default class MinionCommand extends BotCommand {
 			);
 		}
 
-		const embed = new MessageEmbed().setTitle(msg.author.minionName).setDescription(msg.author.minionStatus);
-
 		const sentMessage = await msg.channel.send({
-			embeds: [embed],
+			content: msg.author.minionStatus,
 			components: components.length > 0 ? [...chunk(components, 5)] : undefined
 		});
 		if (components.length > 0) {
