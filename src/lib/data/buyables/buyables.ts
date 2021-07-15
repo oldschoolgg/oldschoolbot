@@ -554,6 +554,11 @@ const questBuyables: Buyable[] = [
 		},
 		gpCost: 2_500_000,
 		qpRequired: 5
+	},
+	{
+		name: 'Elemental shield',
+		gpCost: 2_500_000,
+		qpRequired: 25
 	}
 ];
 

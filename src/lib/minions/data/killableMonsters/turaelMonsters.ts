@@ -158,7 +158,8 @@ export const turaelMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Slayer helmet')]: 5
+				[itemID('Slayer helmet')]: 5,
+				[itemID('Slayer helmet (i)')]: 5
 			}
 		],
 		levelRequirements: {
