@@ -7,7 +7,7 @@ import { toKMB } from 'oldschooljs/dist/util';
 
 import { alching } from '../../commands/Minion/laps';
 import MinionCommand from '../../commands/Minion/minion';
-import { Activity, BitField, COINS_ID, Emoji, PerkTier } from '../constants';
+import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { getRandomMysteryBox } from '../data/openables';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
@@ -180,6 +180,10 @@ export async function handleTripFinish(
 	if (existingCollector) {
 		existingCollector.stop();
 		collectors.delete(user.id);
+	}
+
+	if (onContinue) {
+		lastTripCache.set(user.id, { data, continue: onContinue });
 	}
 
 	if (!channelIsSendable(channel)) return;

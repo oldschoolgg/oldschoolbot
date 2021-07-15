@@ -15,6 +15,9 @@ export class MinigameTable extends BaseEntity {
 	@Column({ name: 'wintertodt', type: 'int', nullable: false, default: 0 })
 	public Wintertodt!: number;
 
+	@Column({ name: 'tempoross', type: 'int', nullable: false, default: 0 })
+	public Tempoross!: number;
+
 	@Column({ name: 'sepulchre', type: 'int', nullable: false, default: 0 })
 	public Sepulchre!: number;
 

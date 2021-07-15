@@ -1,10 +1,12 @@
 import { MessageButton } from 'discord.js';
 import { Time } from 'e';
+import { KlasaMessage } from 'klasa';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { SkillsEnum } from './skilling/types';
+import { ActivityTaskOptions } from './types/minions';
 
 export const enum Channel {
 	Notifications = '811589869314899980',
@@ -78,6 +80,7 @@ export const enum Emoji {
 	Join = '<:join:705971600956194907>',
 	TzRekJad = '<:Tzrekjad:324127379188613121>',
 	Phoenix = '<:Phoenix:324127378223792129>',
+	TinyTempor = '<:TinyTempor:824483631694217277>',
 	AnimatedFireCape = '<a:FireCape:394692985184583690>',
 	Fletching = '<:fletching:630911040544309258>',
 	Farming = '<:farming:630911040355565599>',
@@ -163,6 +166,7 @@ export const enum Tasks {
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
+	TemporossActivity = 'temporossActivity',
 	AlchingActivity = 'alchingActivity',
 	RaidsActivity = 'raidsActivity',
 	NightmareActivity = 'nightmareActivity',
@@ -226,6 +230,7 @@ export enum Activity {
 	Offering = 'Offering',
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
+	Tempoross = 'Tempoross',
 	TitheFarm = 'TitheFarm',
 	Fletching = 'Fletching',
 	Pickpocket = 'Pickpocket',
@@ -422,6 +427,7 @@ export const BLACK_CHIN_ID = 9;
 export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
 export const MIN_LENGTH_FOR_PET = Time.Minute * 5;
+export const HESPORI_ID = 8583;
 
 /**
  * Map<user_id, PromiseQueue>
@@ -488,3 +494,8 @@ export const informationalButtons = [
 		)
 		.setStyle('LINK')
 ];
+
+export const lastTripCache = new Map<
+	string,
+	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
+>();

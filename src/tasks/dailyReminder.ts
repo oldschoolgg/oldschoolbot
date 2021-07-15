@@ -23,7 +23,7 @@ export default class extends Task {
 
 	async dailyReminderTick() {
 		const result = await client.query<{ id: string }[]>(
-			'SELECT id FROM users WHERE bitfield && \'{2,3,4,5,6}\'::int[] AND "lastDailyTimestamp" != -1 AND to_timestamp("lastDailyTimestamp" / 1000) < now() - interval \'4 hours\';'
+			'SELECT id FROM users WHERE bitfield && \'{2,3,4,5,6,7,8}\'::int[] AND "lastDailyTimestamp" != -1 AND to_timestamp("lastDailyTimestamp" / 1000) < now() - interval \'4 hours\';'
 		);
 
 		for (const row of result.values()) {

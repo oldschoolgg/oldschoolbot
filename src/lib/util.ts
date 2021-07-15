@@ -531,11 +531,11 @@ export function gaussianRandom(min: number, max: number) {
 }
 export function isValidNickname(str?: string) {
 	return (
-		!str ||
-		typeof str !== 'string' ||
-		str.length < 2 ||
-		str.length > 30 ||
-		['\n', '`', '@', '<', ':'].some(char => str.includes(char)) ||
-		stripEmojis(str).length !== str.length
+		str &&
+		typeof str === 'string' &&
+		str.length >= 2 &&
+		str.length <= 30 &&
+		['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
+		stripEmojis(str).length === str.length
 	);
 }

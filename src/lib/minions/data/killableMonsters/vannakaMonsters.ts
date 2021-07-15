@@ -4,6 +4,7 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import { GearStat } from '../../../gear';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
+import { makeKillTable } from '../../../util/setCustomMonster';
 import { KillableMonster } from '../../types';
 
 export const vannakaMonsters: KillableMonster[] = [
@@ -999,7 +1000,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		name: Monsters.OgressWarrior.name,
 		aliases: Monsters.OgressWarrior.aliases,
 		timeToFinish: Time.Second * 25,
-		table: Monsters.OgressWarrior,
+		table: {
+			kill: makeKillTable(Monsters.OgressWarrior.table!.tertiary(6500, 'Ishi'))
+		},
 
 		wildy: false,
 
