@@ -1,5 +1,3 @@
-import { Bank } from 'oldschooljs';
-
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
@@ -7,6 +5,7 @@ import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
 import { metamorphPets } from './collectionLog';
 import { capeCreatables } from './creatables/capes';
+import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
 
@@ -280,29 +279,6 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Zamorak godsword')]: 1
 		}
-	},
-	{
-		name: 'Uncharged dragonfire shield',
-		inputItems: {
-			[itemID('Draconic visage')]: 1,
-			[itemID('Anti-dragon shield')]: 1
-		},
-		outputItems: {
-			'Uncharged dragonfire shield': 1
-		},
-		requiredSkills: { smithing: 90 }
-	},
-	{
-		name: 'Dragonfire ward',
-		inputItems: {
-			[itemID('Skeletal visage')]: 1,
-			[itemID('Anti-dragon shield')]: 1
-		},
-		outputItems: {
-			// Uncharged Dragonfire ward
-			22_003: 1
-		},
-		requiredSkills: { smithing: 90 }
 	},
 	{
 		name: 'Infernal pickaxe',
@@ -1714,26 +1690,14 @@ const Createables: Createable[] = [
 			slayer: 62
 		}
 	},
-	{
-		name: 'Dragonfire shield',
-		inputItems: new Bank({
-			'Bottled dragonbreath': 5,
-			'Uncharged dragonfire shield': 1
-		}).bank,
-		outputItems: resolveNameBank({
-			'Dragonfire shield': 1
-		}),
-		requiredSkills: {
-			slayer: 62
-		}
-	},
 	...crystalTools,
 	...ornamentKits,
 	...hunterClothing,
 	...twistedAncestral,
 	...metamorphPetCreatables,
 	...slayerCreatables,
-	...capeCreatables
+	...capeCreatables,
+	...dragonFireShieldCreatables
 ];
 
 export default Createables;
