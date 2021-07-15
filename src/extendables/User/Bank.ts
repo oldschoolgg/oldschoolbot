@@ -124,7 +124,7 @@ export default class extends Extendable {
 
 			if (items.has(995)) {
 				await user.addGP(items.amount(995));
-				items.remove(995);
+				items.remove(995, items.amount(995));
 			}
 
 			this.log(`Had items added to bank - ${JSON.stringify(items)}`);
