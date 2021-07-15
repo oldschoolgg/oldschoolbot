@@ -3,7 +3,7 @@ import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { DungeoneeringOptions, maxFloorUserCanDo } from '../../commands/Minion/dung';
-import { Emoji } from '../../lib/constants';
+import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -104,7 +104,12 @@ export default class extends Task {
 				: 2000;
 			if (floor >= 5 && roll(Math.floor(shardChance / minutes))) {
 				str += ' **1x Gorajan shards**';
-				await u.addItemsToBank(new Bank().add('Gorajan shards'), true);
+				let quantity = 1;
+
+				if (DOUBLE_LOOT_ACTIVE) {
+					quantity *= 2;
+				}
+				await u.addItemsToBank(new Bank().add('Gorajan shards', quantity), true);
 			}
 			if (floor === 7 && roll(Math.floor(20_000 / minutes))) {
 				str += ' **1x Gorajan bonecrusher (u)**';

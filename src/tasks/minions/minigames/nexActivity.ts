@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { production } from '../../../config';
-import { Emoji } from '../../../lib/constants';
+import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { allNexItems, NexMonster } from '../../../lib/nex';
@@ -63,6 +63,9 @@ export default class extends Task {
 			loot.add(NexMonster.table.kill(1, {}));
 			if (roll(80 + users.length * 2)) {
 				loot.add(randomItemFromArray(allNexItems), 1);
+			}
+			if (DOUBLE_LOOT_ACTIVE) {
+				loot.multiply(2);
 			}
 			const winner = teamTable.roll()?.item;
 			if (!winner) continue;

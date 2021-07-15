@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
+import { DOUBLE_LOOT_ACTIVE } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -69,7 +70,10 @@ export default class extends Task {
 			hasSuperiors: superiorTable,
 			inCatacombs: isInCatacombs
 		};
-		const loot = (monster as KillableMonster).table.kill(Math.ceil(quantity * abyssalBonus), killOptions);
+		const loot = (monster as KillableMonster).table.kill(
+			Math.ceil(quantity * DOUBLE_LOOT_ACTIVE ? 2 : abyssalBonus),
+			killOptions
+		);
 		const newSuperiorCount = loot.bank[420];
 		const xpRes = await addMonsterXP(user, {
 			monsterID,
