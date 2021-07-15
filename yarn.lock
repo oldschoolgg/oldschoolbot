@@ -4321,7 +4321,7 @@ klasa-decorators@^0.0.1:
 
 "klasa@github:gc/klasa#settings":
   version "0.5.0-dev"
-  resolved "https://codeload.github.com/gc/klasa/tar.gz/c83cc29f7e12f5910a54490ce9052839bf9c2e93"
+  resolved "https://codeload.github.com/gc/klasa/tar.gz/aef80d8946f9798d5d4b45959c259823a79bc6ae"
   dependencies:
     "@klasa/querybuilder" "^0.0.1"
     "@klasa/settings-gateway" "^0.0.10"
