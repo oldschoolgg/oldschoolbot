@@ -11,6 +11,7 @@ import {
 } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
+import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
@@ -616,6 +617,10 @@ export default class extends Extendable {
 		const mon = effectiveMonsters.find(
 			mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
 		);
+		if (mon) {
+			return [mon.name, this.getKC((mon as unknown as Monster).id)];
+		}
+
 		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
 		if (minigame) {
 			return [minigame.name, await this.getMinigameScore(minigame.key)];
