@@ -47,7 +47,13 @@ export default class extends BotCommand {
 			await msg.author.addItemsToBank({ 742: 1 }, true);
 		}
 
-		const gotHammy = totalPrice >= 51_530_000 && roll(140);
+		let gotHammy = false;
+		for (let i = 0; i < Math.floor(totalPrice / 51_530_000); i++) {
+			if (roll(140)) {
+				gotHammy = true;
+				break;
+			}
+		}
 		if (gotHammy) {
 			await msg.author.addItemsToBank({ [itemID('Hammy')]: 1 }, true);
 		}
