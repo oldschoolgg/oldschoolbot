@@ -283,8 +283,8 @@ export default class BankImageTask extends Task {
 		const placeholder: Record<number, [number, GearSetupType[]]> = {};
 
 		// Add the equipped items to the user bank variable temporarily to allow them to show in bank
-		// Only shows if the user bank is the same as being used as a param (so we know it is a bank image being displayed)
-		if (user && (flags.placeholder || flags.ph) && user.bank({ withGP: true }).toString() === bank.toString()) {
+		// Only shows if the tile ends with 's Bank, so we know the bank command called it
+		if (user && (flags.placeholder || flags.ph) && title.endsWith("'s Bank")) {
 			for (const [type, gear] of Object.entries(user.rawGear())) {
 				for (const slot of Object.values(gear)) {
 					if (slot && slot.item) {
