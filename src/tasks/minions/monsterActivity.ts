@@ -8,7 +8,12 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import {
+	calculateSlayerPoints,
+	filterLootReplace,
+	getSlayerMasterOSJSbyID,
+	getUsersCurrentSlayerInfo
+} from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -116,7 +121,10 @@ export default class extends Task {
 			await usersTask.currentTask!.save();
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
+
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, false);
+		await user.addItemsToCollectionLog(clLoot.bank);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
