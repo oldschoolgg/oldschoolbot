@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Task } from 'klasa';
+import { Task, TaskStore } from 'klasa';
 
 import { production } from '../config';
 import { client } from '../index';
@@ -9,6 +9,11 @@ import { noOp } from '../lib/util';
 const dailyTickInterval = Time.Minute * 5;
 
 export default class extends Task {
+	public constructor(store: TaskStore, file: string[], directory: string) {
+		super(store, file, directory);
+		this.enabled = false;
+	}
+
 	async init() {
 		if (!production) return;
 		if (this.client.dailyReminderTicker) {
