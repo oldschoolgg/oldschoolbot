@@ -122,7 +122,9 @@ export default class MinionCommand extends BotCommand {
 						return lastTrip.continue(msg);
 					}
 					await this.client.commands.get('mclue')?.run(msg, [selection.customID]);
-				} catch {}
+				} catch {
+					await sentMessage.edit({ components: [] });
+				}
 			};
 			handleButtons();
 		}
