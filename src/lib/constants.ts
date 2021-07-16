@@ -500,4 +500,4 @@ export const lastTripCache = new Map<
 	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
 >();
 
-export const DOUBLE_LOOT_ACTIVE = true;
+export const DOUBLE_LOOT_ACTIVE = false;
