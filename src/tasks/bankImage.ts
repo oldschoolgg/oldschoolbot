@@ -9,7 +9,7 @@ import * as path from 'path';
 import { bankImageCache, Events } from '../lib/constants';
 import { allCollectionLogItems } from '../lib/data/collectionLog';
 import { filterableTypes } from '../lib/data/filterables';
-import { GearSetup, GearSetupType } from '../lib/gear';
+import { GearSetupType } from '../lib/gear';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
 import { getUserSettings } from '../lib/settings/settings';
@@ -264,8 +264,7 @@ export default class BankImageTask extends Task {
 		showValue = true,
 		flags: { [key: string]: string | number } = {},
 		user?: KlasaUser,
-		collectionLog?: ItemBank,
-		gearPlaceholder?: Record<GearSetupType, GearSetup>
+		collectionLog?: ItemBank
 	): Promise<BankImageResult> {
 		const bank = _bank instanceof Bank ? _bank : new Bank(_bank);
 		let compact = Boolean(flags.compact);
@@ -284,8 +283,9 @@ export default class BankImageTask extends Task {
 		const placeholder: Record<number, [number, GearSetupType[]]> = {};
 
 		// Add the equipped items to the user bank variable temporarily to allow them to show in bank
-		if (gearPlaceholder && (flags.placeholder || flags.ph)) {
-			for (const [type, gear] of Object.entries(gearPlaceholder)) {
+		// Only shows if the user bank is the same as being used as a param (so we know it is a bank image being displayed)
+		if (user && (flags.placeholder || flags.ph) && user.bank({ withGP: true }).toString() === bank.toString()) {
+			for (const [type, gear] of Object.entries(user.rawGear())) {
 				for (const slot of Object.values(gear)) {
 					if (slot && slot.item) {
 						if (placeholder[slot.item]) {

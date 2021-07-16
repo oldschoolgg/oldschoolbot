@@ -13,7 +13,6 @@ import { isObject } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { bankImageCache } from '../lib/constants';
-import { GearSetup, GearSetupType } from '../lib/gear';
 import { ItemBank } from '../lib/types';
 
 export default class extends Extendable {
@@ -97,8 +96,7 @@ export default class extends Extendable {
 			background,
 			flags,
 			user,
-			cl,
-			gearPlaceholder
+			cl
 		}: {
 			bank: ItemBank;
 			content?: string;
@@ -107,12 +105,11 @@ export default class extends Extendable {
 			flags?: Record<string, string>;
 			user?: KlasaUser;
 			cl?: ItemBank;
-			gearPlaceholder?: Record<GearSetupType, GearSetup>;
 		}
 	) {
 		const { image, cacheKey, isTransparent } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(bank, title, true, { background: background ?? 1, ...flags }, user, cl, gearPlaceholder);
+			.generateBankImage(bank, title, true, { background: background ?? 1, ...flags }, user, cl);
 
 		let cached = bankImageCache.get(cacheKey);
 		if (cached) {

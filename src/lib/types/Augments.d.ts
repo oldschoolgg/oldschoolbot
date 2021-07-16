@@ -74,8 +74,7 @@ declare module 'klasa' {
 			showValue?: boolean,
 			flags?: { [key: string]: string | number },
 			user?: KlasaUser,
-			cl?: ItemBank,
-			gearPlaceholder?: Record<GearSetupType, GearSetup>
+			cl?: ItemBank
 		): Promise<BankImageResult>;
 		generateCollectionLogImage(collectionLog: ItemBank, title: string = '', type: any): Promise<Buffer>;
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
