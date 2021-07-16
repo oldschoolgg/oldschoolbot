@@ -780,7 +780,23 @@ export const allCollectionLogs: ICollection = {
 	}
 };
 
-// Get all the log items into a single
+// Get all items, from all monsters and all CLs into a variable, for uses like mostdrops
+export const allDroppedItems = [
+	...new Set([
+		...Object.entries(allCollectionLogs)
+			.map(e =>
+				Object.entries(e[1])
+					.filter(f => f[1].enabled === undefined && f[1].hidden === undefined && f[1].counts === undefined)
+					.map(a => [...new Set([...a[1].items, ...(a[1].allItems !== undefined ? a[1].allItems : [])])])
+			)
+			.flat(100),
+		...Object.values(Monsters)
+			.map(m => (m && m.allItems ? m.allItems : []))
+			.flat(100)
+	])
+];
+
+// Get all the log items into a single variable
 export const allCLItems = [
 	...new Set(
 		Object.entries(allCollectionLogs)
