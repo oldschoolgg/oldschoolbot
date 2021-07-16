@@ -10,7 +10,7 @@ export default class extends BotCommand {
 			aliases: ['bl'],
 			usage: '[collection:string]',
 			examples: ['+inbank bosses'],
-			description: 'Allows you to view all yout collection log items that you have in yout bank.',
+			description: 'Allows you to view all you collection log items that you have in you bank.',
 			categoryFlags: ['minion']
 		});
 	}
