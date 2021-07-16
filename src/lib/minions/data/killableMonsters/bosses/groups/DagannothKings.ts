@@ -5,11 +5,11 @@ import setMonsterGroup from '../../../../../util/setMonsterGroup';
 export const DagannothKingsMonsterGroup = [Monsters.DagannothRex, Monsters.DagannothPrime, Monsters.DagannothSupreme];
 
 setMonsterGroup({
-	id: 632267,
+	id: 632_267,
 	name: 'Dagannoth kings',
 	monsters: DagannothKingsMonsterGroup,
 	newItemData: {
-		id: 632267,
+		id: 632_267,
 		name: 'Dagannoth kings',
 		aliases: ['dagannoth kings', 'dks', 'dag kings']
 	},
