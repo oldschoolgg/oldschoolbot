@@ -100,7 +100,7 @@ export class TamesTable extends BaseEntity {
 	}
 
 	get species() {
-		return tameSpecies.find(s => s.id === this.speciesID, 2)!;
+		return tameSpecies.find(s => s.id === this.speciesID)!;
 	}
 
 	get name() {
