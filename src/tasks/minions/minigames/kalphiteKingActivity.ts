@@ -3,7 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { Emoji } from '../../../lib/constants';
+import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
 import { KalphiteKingMonster } from '../../../lib/kalphiteking';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
@@ -64,7 +64,9 @@ export default class extends Task {
 
 			const loot = new Bank();
 			loot.add(KalphiteKingMonster.table.kill(1, {}));
-			loot.multiply(2);
+			if (DOUBLE_LOOT_ACTIVE) {
+				loot.multiply(2);
+			}
 			const winner = teamTable.roll()?.item;
 			if (!winner) continue;
 			const currentLoot = teamsLoot[winner];

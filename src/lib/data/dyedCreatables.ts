@@ -99,7 +99,7 @@ export const dyedCreatables: Createable[] = [
 	{
 		name: 'Offhand drygore mace (blood)',
 		inputItems: {
-			[itemID('Offhand drygore longsword')]: 1,
+			[itemID('Offhand drygore mace')]: 1,
 			[itemID('Blood dye')]: 1
 		}
 	},

@@ -1,4 +1,4 @@
-import { calcWhatPercent, increaseNumByPercent, Time } from 'e';
+import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -52,8 +52,8 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion'],
-			description: 'Allows you to access and build in your POH.',
-			examples: ['+poh build demonic throne', '+poh', '+poh items', '+poh destroy demonic throne'],
+			description: 'Use to control and manage your tames.',
+			examples: ['+tames k fire giant', '+tames', '+tames select 1', '+tames setname LilBuddy'],
 			subcommands: true,
 			usage: '[k|select|setname] [input:...str]',
 			usageDelim: ' ',
@@ -141,12 +141,19 @@ ${allTames
 		if (!monster) {
 			return msg.channel.send("That's not a valid monster.");
 		}
-		const growthDifference = selectedTame.maxCombatLevel - selectedTame.combatLvl;
+
+		// Get the amount stronger than minimum, and set boost accordingly:
+		const [speciesMinCombat, speciesMaxCombat] = selectedTame.species.combatLevelRange;
+		// Example: If combat level is 80/100 with 70 min, give a 10% boost.
+		const combatLevelBoost = calcWhatPercent(selectedTame.maxCombatLevel - speciesMinCombat, speciesMaxCombat);
+
+		// Increase trip length based on minion growth:
 		let speed = monster.timeToFinish * selectedTame.growthLevel;
-		speed =
-			growthDifference === 0
-				? speed
-				: increaseNumByPercent(speed, calcWhatPercent(selectedTame.combatLvl, growthDifference));
+
+		// Apply calculated boost:
+		speed = reduceNumByPercent(speed, combatLevelBoost);
+
+		// Calculate monster quantity:
 		const quantity = Math.floor(Time.Hour / speed);
 		if (quantity < 1) {
 			return msg.channel.send("Your tame can't kill this monster fast enough.");

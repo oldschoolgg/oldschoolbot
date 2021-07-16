@@ -5,8 +5,8 @@ export class MinigameTable extends BaseEntity {
 	@PrimaryGeneratedColumn('increment')
 	public id!: string;
 
-	@Index()
-	@Column({ name: 'user_id', length: 19, type: 'varchar', nullable: false })
+	@Index({ unique: true })
+	@Column({ name: 'user_id', length: 19, type: 'varchar', nullable: false, unique: true })
 	public userID!: string;
 
 	@Column({ name: 'tithe_farm', type: 'int', nullable: false, default: 0 })
