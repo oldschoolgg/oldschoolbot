@@ -1,6 +1,6 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { Time } from '../../../../constants';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
