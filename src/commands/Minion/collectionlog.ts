@@ -1,7 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { allClItems } from '../../lib/data/Collections';
+import { allCLItems } from '../../lib/data/Collections';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID } from '../../lib/util';
 
@@ -30,7 +30,7 @@ export default class extends BotCommand {
 				});
 			}
 			return msg.channel.send(
-				`You have ${owned.length}/${allClItems.length} (${percent.toFixed(2)}%) Collection Log Completion.
+				`You have ${owned.length}/${allCLItems.length} (${percent.toFixed(2)}%) Collection Log Completion.
 
 Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 			);

@@ -4,18 +4,18 @@ import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import resolveItems from '../util/resolveItems';
 import { collectionLogRoleCategories } from './Collections';
 import {
-	CluesBeginnerCl,
-	CluesEasyCl,
-	CluesEliteCl,
-	CluesEliteRareCl,
-	CluesHardCl,
-	CluesHardRareCl,
-	CluesMasterCl,
-	CluesMasterRareCl,
-	CluesMediumCl,
-	CluesSharedCl,
-	TemporossCl,
-	WintertodtCl
+	cluesBeginnerCL,
+	cluesEasyCL,
+	cluesEliteCL,
+	cluesEliteRareCL,
+	cluesHardCL,
+	cluesHardRareCL,
+	cluesMasterCL,
+	cluesMasterRareCL,
+	cluesMediumCL,
+	cluesSharedCL,
+	temporossCL,
+	wintertodtCL
 } from './CollectionsExport';
 import { Eatables } from './eatables';
 
@@ -974,7 +974,7 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'Wintertodt',
 		aliases: ['wintertodt', 'todt', 'wt'],
-		items: WintertodtCl
+		items: wintertodtCL
 	},
 	{
 		name: 'Warm gear',
@@ -984,37 +984,37 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'Tempoross',
 		aliases: ['temp', 'ross', 'tempo', 'tempoross'],
-		items: TemporossCl
+		items: temporossCL
 	},
 	{
 		name: 'Beginner Clues',
 		aliases: ['clues beginner', 'beginner clues', 'clue beginner', 'beginner clue'],
-		items: CluesBeginnerCl
+		items: cluesBeginnerCL
 	},
 	{
 		name: 'Easy Clues',
 		aliases: ['clues easy', 'easy clues', 'clue easy', 'easy clue'],
-		items: CluesEasyCl
+		items: cluesEasyCL
 	},
 	{
 		name: 'Medium Clues',
 		aliases: ['clues medium', 'medium clues', 'clue medium', 'medium clue'],
-		items: CluesMediumCl
+		items: cluesMediumCL
 	},
 	{
 		name: 'Hard Clues',
 		aliases: ['clues hard', 'hard clues', 'clue hard', 'hard clue'],
-		items: CluesHardCl
+		items: cluesHardCL
 	},
 	{
 		name: 'Elite Clues',
 		aliases: ['clues elite', 'elite clues', 'clue elite', 'elite clue'],
-		items: CluesEliteCl
+		items: cluesEliteCL
 	},
 	{
 		name: 'Master Clues',
 		aliases: ['clues master', 'master clues', 'clue master', 'master clue'],
-		items: CluesMasterCl
+		items: cluesMasterCL
 	},
 	{
 		name: 'All Clues',
@@ -1024,11 +1024,11 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'Clues Shared',
 		aliases: ['clues shared', 'shared clues', 'clue shared', 'shared clue'],
-		items: CluesSharedCl
+		items: cluesSharedCL
 	},
 	{
 		name: 'Clues Rares',
 		aliases: ['clues rare', 'rare clues', 'clue rare', 'rare clue'],
-		items: [...new Set([...CluesHardRareCl, ...CluesEliteRareCl, ...CluesMasterRareCl])]
+		items: [...new Set([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL])]
 	}
 ];

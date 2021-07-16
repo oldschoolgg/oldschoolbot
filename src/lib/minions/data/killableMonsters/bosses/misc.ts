@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { CorporealBeastCl } from '../../../../data/CollectionsExport';
+import { corporealBeastCL } from '../../../../data/CollectionsExport';
 import { GearSetupTypes, GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
@@ -202,7 +202,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: CorporealBeastCl,
+		uniques: corporealBeastCL,
 		pohBoosts: {
 			pool: {
 				'Rejuvenation pool': 50,

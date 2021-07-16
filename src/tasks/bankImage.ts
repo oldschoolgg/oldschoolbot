@@ -7,7 +7,7 @@ import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
 import { bankImageCache, Events } from '../lib/constants';
-import { allClItems } from '../lib/data/Collections';
+import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
@@ -318,7 +318,7 @@ export default class BankImageTask extends Task {
 			bankBackgroundID === 14 &&
 			flags.showNewCL !== undefined &&
 			currentCL !== undefined &&
-			Object.keys(bank.bank).some(i => !currentCL[i] && allClItems.includes(parseInt(i)));
+			Object.keys(bank.bank).some(i => !currentCL[i] && allCLItems.includes(parseInt(i)));
 
 		if (isPurple) {
 			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
@@ -433,7 +433,7 @@ export default class BankImageTask extends Task {
 			);
 
 			// Check if new cl item
-			const isNewCLItem = flags.showNewCL && currentCL && !currentCL[item.id] && allClItems.includes(item.id);
+			const isNewCLItem = flags.showNewCL && currentCL && !currentCL[item.id] && allCLItems.includes(item.id);
 			const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
 			const formattedQuantity = formatItemStackQuantity(quantity);
 

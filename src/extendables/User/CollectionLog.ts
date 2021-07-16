@@ -4,7 +4,7 @@ import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
-import { allClItems, clIntoBank } from '../../lib/data/Collections';
+import { allCLItems, converCLtoBank } from '../../lib/data/Collections';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
 import { addBanks } from '../../lib/util';
@@ -23,14 +23,14 @@ export default class extends Extendable {
 	public completion(this: User) {
 		const clItems = Object.keys(this.settings.get(UserSettings.CollectionLogBank)).map(i => parseInt(i));
 		const debugBank = new Bank();
-		debugBank.add(clIntoBank(allClItems));
-		const owned = clItems.filter(i => allClItems.includes(i));
+		debugBank.add(converCLtoBank(allCLItems));
+		const owned = clItems.filter(i => allCLItems.includes(i));
 		const notOwned = shuffleRandom(
 			Number(this.id),
-			allClItems.filter(i => !clItems.includes(i))
+			allCLItems.filter(i => !clItems.includes(i))
 		).slice(0, 10);
 		return {
-			percent: calcWhatPercent(owned.length, allClItems.length),
+			percent: calcWhatPercent(owned.length, allCLItems.length),
 			notOwned,
 			owned,
 			debugBank

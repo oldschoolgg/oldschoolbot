@@ -17,104 +17,104 @@ import { ItemBank } from '../types';
 import { stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
-	AbyssalSireCl,
-	AerialFishingCl,
-	AlchemicalHydraCl,
-	AllPetsCl,
-	BarbarianAssaultCl,
-	BarrowsChestCl,
-	BrimhavenAgilityArenaCl,
-	BryophytaCl,
-	CallistoCl,
-	CamdozaalCl,
-	CapesCl,
-	CastleWarsCl,
-	CerberusCl,
-	ChambersOfXericCl,
-	ChampionsChallengeCl,
-	ChaosDruisCl,
-	ChaosElementalCl,
-	ChaosFanaticCl,
-	ChompyBirdsCl,
-	CluesBeginnerCl,
-	CluesEasyCl,
-	CluesEliteCl,
-	CluesEliteRareCl,
-	CluesHardCl,
-	CluesHardRareCl,
-	CluesMasterCl,
-	CluesMasterRareCl,
-	CluesMediumCl,
-	CluesSharedCl,
-	CommanderZilyanaCl,
-	CorporealBeastCl,
-	CrazyArchaeologistCl,
-	CreatureCreationCl,
-	CyclopsCl,
-	DagannothKingsCl,
-	DagannothPrimeCl,
-	DagannothRexCl,
-	DagannothSupremeCl,
-	DailyCl,
-	DemonicGorillaCl,
-	FightCavesCl,
-	FishingTrawlerCl,
-	FossilIslandNotesCl,
-	GeneralGraardorCl,
-	GiantMoleCl,
-	GnomeRestaurantCl,
-	GrotesqueGuardiansCl,
-	HallowedSepulchreCl,
-	HesporiCl,
-	HolidayCl,
+	abyssalSireCL,
+	aerialFishingCL,
+	alchemicalHydraCL,
+	allPetsCL,
+	barbarianAssaultCL,
+	barrowsChestCL,
+	brimhavenAgilityArenaCL,
+	bryophytaCL,
+	callistoCL,
+	camdozaalCL,
+	capesCL,
+	castleWarsCL,
+	cerberusCL,
+	chambersOfXericCl,
+	championsChallengeCL,
+	chaosDruisCL,
+	chaosElementalCL,
+	chaosFanaticCL,
+	chompyBirdsCL,
+	cluesBeginnerCL,
+	cluesEasyCL,
+	cluesEliteCL,
+	cluesEliteRareCL,
+	cluesHardCL,
+	cluesHardRareCL,
+	cluesMasterCL,
+	cluesMasterRareCL,
+	cluesMediumCL,
+	cluesSharedCL,
+	commanderZilyanaCL,
+	corporealBeastCL,
+	crazyArchaeologistCL,
+	creatureCreationCL,
+	cyclopsCL,
+	dagannothKingsCL,
+	dagannothPrimeCL,
+	dagannothRexCL,
+	dagannothSupremeCL,
+	dailyCL,
+	demonicGorillaCL,
+	fightCavesCL,
+	fishingTrawlerCL,
+	fossilIslandNotesCL,
+	generalGraardorCL,
+	giantMoleCL,
+	gnomeRestaurantCL,
+	grotesqueGuardiansCL,
+	hallowedSepulchreCL,
+	hesporiCL,
+	holidayCL,
 	ICollection,
 	ILeftListStatus,
 	IToReturnCollection,
-	KalphiteQueenCl,
-	KingBlackDragonCl,
-	KrakenCl,
-	KreeArraCl,
-	KrilTsutsarothCl,
-	LastManStandingCl,
-	MagicTrainingArenaCl,
-	MahoganyHomesCl,
-	MiscellaneousCl,
-	MonkeyBackpacksCl,
-	MotherlodeMineCl,
-	OborCl,
-	PestControlCl,
-	QuestCl,
-	RandomEventsCl,
-	RevenantsCl,
-	RoguesDenCl,
-	RooftopAgilityCl,
-	SarachnisCl,
-	ScorpiaCl,
-	ShadesOfMorttonCl,
-	ShayzienArmourCl,
-	SkillingPetsCl,
-	SkotizoCl,
-	SlayerCl,
-	SoulWarsCl,
-	SpiritAnglerOutfit,
-	TempleTrekkingCl,
-	TemporossCl,
-	TheatreOfBLoodCl,
-	TheGauntletCl,
-	TheInfernoCl,
-	TheNightmareCl,
-	ThermonuclearSmokeDevilCl,
-	TitheFarmCl,
+	kalphiteQueenCL,
+	kingBlackDragonCL,
+	krakenCL,
+	kreeArraCL,
+	krilTsutsarothCL,
+	lastManStandingCL,
+	magicTrainingArenaCL,
+	mahoganyHomesCL,
+	miscellaneousCL,
+	monkeyBackpacksCL,
+	motherlodeMineCL,
+	oborCL,
+	pestControlCL,
+	questCL,
+	randomEventsCL,
+	revenantsCL,
+	roguesDenCL,
+	rooftopAgilityCL,
+	sarachnisCL,
+	scorpiaCL,
+	shadesOfMorttonCL,
+	shayzienArmourCL,
+	skillingPetsCL,
+	skotizoCL,
+	slayerCL,
+	soulWarsCL,
+	spiritAnglerOutfit,
+	templeTrekkingCL,
+	temporossCL,
+	theatreOfBLoodCL,
+	theGauntletCL,
+	theInfernoCL,
+	theNightmareCL,
+	thermonuclearSmokeDevilCL,
+	titheFarmCL,
 	TRoleCategories,
-	TroubleBrewingCl,
-	TzHaarCl,
-	VenenatisCl,
-	VetionCl,
-	VolcanicMineCl,
-	VorkathCl,
-	WintertodtCl,
-	ZalcanoCl,
-	ZulrahCl
+	troubleBrewingCL,
+	tzHaarCL,
+	venenatisCL,
+	vetionCL,
+	volcanicMineCL,
+	vorkathCL,
+	wintertodtCL,
+	zalcanoCL,
+	zulrahCL
 } from './CollectionsExport';
 
 export const allCollectionLogs: ICollection = {
@@ -122,67 +122,67 @@ export const allCollectionLogs: ICollection = {
 		'Abyssal Sire': {
 			alias: Monsters.AbyssalSire.aliases,
 			allItems: Monsters.AbyssalSire.allItems,
-			items: AbyssalSireCl,
+			items: abyssalSireCL,
 			roleCategory: ['bosses']
 		},
 		'Alchemical Hydra': {
 			alias: Monsters.AlchemicalHydra.aliases,
 			allItems: Monsters.AlchemicalHydra.allItems,
-			items: AlchemicalHydraCl,
+			items: alchemicalHydraCL,
 			roleCategory: ['bosses']
 		},
 		'Barrows Chests': {
 			alias: Monsters.Barrows.aliases,
 			kcActivity: Monsters.Barrows.name,
-			items: BarrowsChestCl,
+			items: barrowsChestCL,
 			roleCategory: []
 		},
 		Bryophyta: {
 			alias: Monsters.Bryophyta.aliases,
 			allItems: Monsters.Bryophyta.allItems,
-			items: BryophytaCl,
+			items: bryophytaCL,
 			roleCategory: ['bosses']
 		},
 		Callisto: {
 			alias: Monsters.Callisto.aliases,
 			allItems: Monsters.Callisto.allItems,
-			items: CallistoCl,
+			items: callistoCL,
 			roleCategory: ['bosses']
 		},
 		Cerberus: {
 			alias: Monsters.Cerberus.aliases,
 			allItems: Monsters.Cerberus.allItems,
-			items: CerberusCl,
+			items: cerberusCL,
 			roleCategory: ['bosses']
 		},
 		'Chaos Elemental': {
 			alias: Monsters.ChaosElemental.aliases,
 			allItems: Monsters.ChaosElemental.allItems,
-			items: ChaosElementalCl,
+			items: chaosElementalCL,
 			roleCategory: ['bosses']
 		},
 		'Chaos Fanatic': {
 			alias: Monsters.ChaosFanatic.aliases,
 			allItems: Monsters.ChaosFanatic.allItems,
-			items: ChaosFanaticCl,
+			items: chaosFanaticCL,
 			roleCategory: ['bosses']
 		},
 		'Commander Zilyana': {
 			alias: Monsters.CommanderZilyana.aliases,
 			allItems: Monsters.CommanderZilyana.allItems,
-			items: CommanderZilyanaCl,
+			items: commanderZilyanaCL,
 			roleCategory: ['bosses']
 		},
 		'Corporeal Beast': {
 			alias: Monsters.CorporealBeast.aliases,
 			allItems: Monsters.CorporealBeast.allItems,
-			items: CorporealBeastCl,
+			items: corporealBeastCL,
 			roleCategory: ['bosses']
 		},
 		'Crazy archaeologist': {
 			alias: Monsters.CrazyArchaeologist.aliases,
 			allItems: Monsters.CrazyArchaeologist.allItems,
-			items: CrazyArchaeologistCl,
+			items: crazyArchaeologistCL,
 			roleCategory: ['bosses']
 		},
 		'Dagannoth Kings': {
@@ -199,166 +199,166 @@ export const allCollectionLogs: ICollection = {
 					)
 				];
 			})(),
-			items: DagannothKingsCl,
+			items: dagannothKingsCL,
 			roleCategory: ['bosses']
 		},
 		'Dagannoth Rex': {
 			hidden: true,
 			alias: Monsters.DagannothRex.aliases,
 			allItems: Monsters.DagannothRex.allItems,
-			items: DagannothRexCl
+			items: dagannothRexCL
 		},
 		'Dagannoth Prime': {
 			hidden: true,
 			alias: Monsters.DagannothPrime.aliases,
 			allItems: Monsters.DagannothPrime.allItems,
-			items: DagannothPrimeCl
+			items: dagannothPrimeCL
 		},
 		'Dagannoth Supreme': {
 			hidden: true,
 			alias: Monsters.DagannothSupreme.aliases,
 			allItems: Monsters.DagannothSupreme.allItems,
-			items: DagannothSupremeCl
+			items: dagannothSupremeCL
 		},
 		'The Fight Caves': {
 			kcActivity: Monsters.TzTokJad.name,
 			alias: ['firecape', 'jad', 'fightcave'],
-			items: FightCavesCl,
+			items: fightCavesCL,
 			roleCategory: ['bosses']
 		},
 		'The Gauntlet': {
 			alias: ['gauntlet', 'crystalline hunllef', 'hunllef'],
 			kcActivity: ['Gauntlet', 'CorruptedGauntlet'],
-			items: TheGauntletCl,
+			items: theGauntletCL,
 			roleCategory: ['bosses']
 		},
 		'General Graardor': {
 			alias: Monsters.GeneralGraardor.aliases,
 			allItems: Monsters.GeneralGraardor.allItems,
-			items: GeneralGraardorCl,
+			items: generalGraardorCL,
 			roleCategory: ['bosses']
 		},
 		'Giant Mole': {
 			alias: Monsters.GiantMole.aliases,
 			allItems: Monsters.GiantMole.allItems,
-			items: GiantMoleCl,
+			items: giantMoleCL,
 			roleCategory: ['bosses']
 		},
 		'Grotesque Guardians': {
 			alias: Monsters.GrotesqueGuardians.aliases,
 			allItems: Monsters.GrotesqueGuardians.allItems,
-			items: GrotesqueGuardiansCl,
+			items: grotesqueGuardiansCL,
 			roleCategory: ['bosses']
 		},
 		Hespori: {
 			alias: Monsters.Hespori.aliases,
 			allItems: Monsters.Hespori.allItems,
-			items: HesporiCl,
+			items: hesporiCL,
 			roleCategory: ['bosses']
 		},
 		'The Inferno': {
 			enabled: false,
 			alias: ['zuk', 'inferno'],
-			items: TheInfernoCl
+			items: theInfernoCL
 		},
 		'Kalphite Queen': {
 			alias: Monsters.KalphiteQueen.aliases,
 			allItems: Monsters.KalphiteQueen.allItems,
-			items: KalphiteQueenCl,
+			items: kalphiteQueenCL,
 			roleCategory: ['bosses']
 		},
 		'King Black Dragon': {
 			alias: Monsters.KingBlackDragon.aliases,
 			allItems: Monsters.KingBlackDragon.allItems,
-			items: KingBlackDragonCl,
+			items: kingBlackDragonCL,
 			roleCategory: ['bosses']
 		},
 		Kraken: {
 			alias: Monsters.Kraken.aliases,
 			allItems: Monsters.Kraken.allItems,
-			items: KrakenCl,
+			items: krakenCL,
 			roleCategory: ['bosses']
 		},
 		"Kree'arra": {
 			alias: Monsters.Kreearra.aliases,
 			allItems: Monsters.Kreearra.allItems,
-			items: KreeArraCl,
+			items: kreeArraCL,
 			roleCategory: ['bosses']
 		},
 		"K'ril Tsutsaroth": {
 			alias: Monsters.KrilTsutsaroth.aliases,
 			allItems: Monsters.KrilTsutsaroth.allItems,
-			items: KrilTsutsarothCl,
+			items: krilTsutsarothCL,
 			roleCategory: ['bosses']
 		},
 		'The Nightmare': {
 			alias: NightmareMonster.aliases,
-			items: TheNightmareCl,
+			items: theNightmareCL,
 			roleCategory: ['bosses']
 		},
 		Obor: {
 			alias: Monsters.Obor.aliases,
 			allItems: Monsters.Obor.allItems,
-			items: OborCl,
+			items: oborCL,
 			roleCategory: ['bosses']
 		},
 		Sarachnis: {
 			alias: Monsters.Sarachnis.aliases,
 			allItems: Monsters.Sarachnis.allItems,
-			items: SarachnisCl,
+			items: sarachnisCL,
 			roleCategory: ['bosses']
 		},
 		Scorpia: {
 			alias: Monsters.Scorpia.aliases,
 			allItems: Monsters.Scorpia.allItems,
-			items: ScorpiaCl,
+			items: scorpiaCL,
 			roleCategory: ['bosses']
 		},
 		Skotizo: {
 			alias: Monsters.Skotizo.aliases,
 			allItems: Monsters.Skotizo.allItems,
-			items: SkotizoCl,
+			items: skotizoCL,
 			roleCategory: ['bosses']
 		},
 		Tempoross: {
-			items: TemporossCl,
-			allItems: resolveItems([...SpiritAnglerOutfit, 'Spirit flakes']),
+			items: temporossCL,
+			allItems: resolveItems([...spiritAnglerOutfit, 'Spirit flakes']),
 			roleCategory: ['bosses']
 		},
 		'Thermonuclear smoke devil': {
 			alias: Monsters.ThermonuclearSmokeDevil.aliases,
 			allItems: Monsters.ThermonuclearSmokeDevil.allItems,
-			items: ThermonuclearSmokeDevilCl,
+			items: thermonuclearSmokeDevilCL,
 			roleCategory: ['bosses']
 		},
 		Venenatis: {
 			alias: Monsters.Venenatis.aliases,
 			allItems: Monsters.Venenatis.allItems,
-			items: VenenatisCl,
+			items: venenatisCL,
 			roleCategory: ['bosses']
 		},
 		"Vet'ion": {
 			alias: Monsters.Vetion.aliases,
 			allItems: Monsters.Vetion.allItems,
-			items: VetionCl,
+			items: vetionCL,
 			roleCategory: ['bosses']
 		},
 		Vorkath: {
 			alias: Monsters.Vorkath.aliases,
 			allItems: Monsters.Vorkath.allItems,
-			items: VorkathCl,
+			items: vorkathCL,
 			roleCategory: ['bosses']
 		},
 		Wintertodt: {
 			alias: ['todt', 'wintertodt', 'wt'],
-			items: WintertodtCl,
+			items: wintertodtCL,
 			roleCategory: ['bosses', 'skilling']
 		},
-		Zalcano: { items: ZalcanoCl, roleCategory: ['bosses', 'skilling'] },
+		Zalcano: { items: zalcanoCL, roleCategory: ['bosses', 'skilling'] },
 		Zulrah: {
 			alias: Monsters.Zulrah.aliases,
 			allItems: Monsters.Zulrah.allItems,
-			items: ZulrahCl,
+			items: zulrahCL,
 			roleCategory: ['bosses']
 		}
 	},
@@ -366,14 +366,14 @@ export const allCollectionLogs: ICollection = {
 		"Chamber's of Xeric": {
 			alias: ChambersOfXeric.aliases,
 			kcActivity: ['Raids', 'RaidsChallengeMode'],
-			items: ChambersOfXericCl,
+			items: chambersOfXericCl,
 			roleCategory: ['raids'],
 			isActivity: true
 		},
 		'Theatre of Blood': {
 			enabled: false,
 			alias: ['tob'],
-			items: TheatreOfBLoodCl,
+			items: theatreOfBLoodCL,
 			roleCategory: ['raids'],
 			isActivity: true
 		}
@@ -385,7 +385,7 @@ export const allCollectionLogs: ICollection = {
 			kcActivity: user => {
 				return user.getOpenableScore(23_245);
 			},
-			items: CluesBeginnerCl,
+			items: cluesBeginnerCL,
 			roleCategory: ['clues'],
 			isActivity: true
 		},
@@ -395,7 +395,7 @@ export const allCollectionLogs: ICollection = {
 			kcActivity: user => {
 				return user.getOpenableScore(20_546);
 			},
-			items: CluesEasyCl,
+			items: cluesEasyCL,
 			roleCategory: ['clues'],
 			isActivity: true
 		},
@@ -405,7 +405,7 @@ export const allCollectionLogs: ICollection = {
 			kcActivity: user => {
 				return user.getOpenableScore(20_545);
 			},
-			items: CluesMediumCl,
+			items: cluesMediumCL,
 			roleCategory: ['clues'],
 			isActivity: true
 		},
@@ -415,7 +415,7 @@ export const allCollectionLogs: ICollection = {
 			kcActivity: user => {
 				return user.getOpenableScore(20_544);
 			},
-			items: CluesHardCl,
+			items: cluesHardCL,
 			roleCategory: ['clues'],
 			isActivity: true
 		},
@@ -425,7 +425,7 @@ export const allCollectionLogs: ICollection = {
 			kcActivity: user => {
 				return user.getOpenableScore(20_543);
 			},
-			items: CluesEliteCl,
+			items: cluesEliteCL,
 			roleCategory: ['clues'],
 			isActivity: true
 		},
@@ -435,7 +435,7 @@ export const allCollectionLogs: ICollection = {
 			kcActivity: user => {
 				return user.getOpenableScore(19_836);
 			},
-			items: CluesMasterCl,
+			items: cluesMasterCL,
 			roleCategory: ['clues'],
 			isActivity: true
 		},
@@ -444,7 +444,7 @@ export const allCollectionLogs: ICollection = {
 			kcActivity: user => {
 				return user.getOpenableScore(20_544);
 			},
-			items: CluesHardRareCl,
+			items: cluesHardRareCL,
 			roleCategory: ['clues'],
 			isActivity: true
 		},
@@ -453,7 +453,7 @@ export const allCollectionLogs: ICollection = {
 			kcActivity: user => {
 				return user.getOpenableScore(20_543);
 			},
-			items: CluesEliteRareCl,
+			items: cluesEliteRareCL,
 			roleCategory: ['clues'],
 			isActivity: true
 		},
@@ -462,19 +462,19 @@ export const allCollectionLogs: ICollection = {
 			kcActivity: user => {
 				return user.getOpenableScore(19_836);
 			},
-			items: CluesMasterRareCl,
+			items: cluesMasterRareCL,
 			roleCategory: ['clues'],
 			isActivity: true
 		},
 		'Shared Treasure Trail Rewards': {
 			alias: ['shared', 'clues shared', 'clue shared'],
-			items: CluesSharedCl,
+			items: cluesSharedCL,
 			roleCategory: ['clues'],
 			isActivity: true
 		},
 		'Rare Treasure Trail Rewards': {
 			alias: ['clues rare', 'rares'],
-			items: [...CluesHardRareCl, ...CluesEliteRareCl, ...CluesMasterRareCl],
+			items: [...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL],
 			roleCategory: ['clues'],
 			isActivity: true
 		}
@@ -482,19 +482,19 @@ export const allCollectionLogs: ICollection = {
 	Minigames: {
 		'Barbarian Assault': {
 			alias: ['ba', 'barb assault', 'barbarian assault'],
-			items: BarbarianAssaultCl,
+			items: barbarianAssaultCL,
 			roleCategory: ['minigames'],
 			isActivity: true
 		},
 		'Brimhaven Agility Arena': {
 			alias: ['aa', 'agility arena'],
-			items: BrimhavenAgilityArenaCl,
+			items: brimhavenAgilityArenaCL,
 			roleCategory: ['minigames', 'skilling'],
 			isActivity: true
 		},
 		'Castle Wars': {
 			alias: ['cw', 'castle wars'],
-			items: CastleWarsCl,
+			items: castleWarsCL,
 			roleCategory: ['minigames'],
 			isActivity: true
 		},
@@ -520,62 +520,62 @@ export const allCollectionLogs: ICollection = {
 				'Raw sea turtle',
 				'Raw manta ray'
 			]),
-			items: FishingTrawlerCl,
+			items: fishingTrawlerCL,
 			roleCategory: ['minigames'],
 			isActivity: true
 		},
 		'Gnome Restaurant': {
 			alias: ['gnome', 'restaurant'],
 			allItems: resolveItems(['Snake charm', 'Gnomeball']),
-			items: GnomeRestaurantCl,
+			items: gnomeRestaurantCL,
 			roleCategory: ['minigames'],
 			isActivity: true
 		},
 		'Hallowed Sepulchre': {
 			alias: ['sepulchre', 'hallowed sepulchre'],
 			allItems: sepulchreFloors.map(f => f.coffinTable.allItems).flat(100),
-			items: HallowedSepulchreCl,
+			items: hallowedSepulchreCL,
 			roleCategory: ['minigames', 'skilling'],
 			isActivity: true
 		},
 		'Last Man Standing': {
 			enabled: false,
-			items: LastManStandingCl,
+			items: lastManStandingCL,
 			roleCategory: ['minigames'],
 			isActivity: true
 		},
 		'Magic Training Arena': {
 			alias: ['mta'],
-			items: MagicTrainingArenaCl,
+			items: magicTrainingArenaCL,
 			roleCategory: ['minigames'],
 			isActivity: true
 		},
 		'Mahogany Homes': {
-			items: MahoganyHomesCl,
+			items: mahoganyHomesCL,
 			roleCategory: ['minigames', 'skilling'],
 			isActivity: true
 		},
 		'Pest Control': {
 			enabled: false,
-			items: PestControlCl,
+			items: pestControlCL,
 			roleCategory: ['minigames'],
 			isActivity: true
 		},
 		"Rogues' Den": {
 			alias: ['rogues den', 'rd'],
-			items: RoguesDenCl,
+			items: roguesDenCL,
 			roleCategory: ['minigames', 'skilling'],
 			isActivity: true
 		},
 		"Shades of Mort'ton": {
 			enabled: false,
-			items: ShadesOfMorttonCl,
+			items: shadesOfMorttonCL,
 			roleCategory: ['minigames'],
 			isActivity: true
 		},
 		'Soul Wars': {
 			alias: ['soul wars', 'sw'],
-			items: SoulWarsCl,
+			items: soulWarsCL,
 			roleCategory: ['minigames'],
 			isActivity: true
 		},
@@ -587,7 +587,7 @@ export const allCollectionLogs: ICollection = {
 				...[rewardTokens.hard, rewardTokens.medium, rewardTokens.easy]
 			],
 			alias: ['temple trekking', 'tt', 'temple', 'trek', 'trekking'],
-			items: TempleTrekkingCl,
+			items: templeTrekkingCL,
 			roleCategory: ['minigames', 'skilling'],
 			isActivity: true
 		},
@@ -596,19 +596,19 @@ export const allCollectionLogs: ICollection = {
 			kcActivity: user => {
 				return user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
 			},
-			items: TitheFarmCl,
+			items: titheFarmCL,
 			roleCategory: ['minigames'],
 			isActivity: true
 		},
 		'Trouble Brewing': {
 			enabled: false,
-			items: TroubleBrewingCl,
+			items: troubleBrewingCL,
 			roleCategory: ['minigames'],
 			isActivity: true
 		},
 		'Volcanic Mine': {
 			enabled: false,
-			items: VolcanicMineCl,
+			items: volcanicMineCL,
 			roleCategory: ['minigames'],
 			isActivity: true
 		}
@@ -616,98 +616,98 @@ export const allCollectionLogs: ICollection = {
 	Others: {
 		'Aerial Fishing': {
 			alias: ['af', 'aerial fishing'],
-			items: AerialFishingCl,
+			items: aerialFishingCL,
 			roleCategory: ['skilling']
 		},
 		'All Pets': {
 			alias: ['pet', 'pets'],
-			items: AllPetsCl,
+			items: allPetsCL,
 			roleCategory: ['pets']
 		},
 		Camdozaal: {
 			enabled: false,
-			items: CamdozaalCl
+			items: camdozaalCL
 		},
 		"Champion's Challenge": {
 			alias: ['champion', 'champion scrolls', 'champion scroll', 'scroll', 'scrolls'],
-			items: ChampionsChallengeCl,
+			items: championsChallengeCL,
 			isActivity: true
 		},
 		'Chaos Druids': {
 			allItems: Monsters.ChaosDruid.allItems,
 			kcActivity: Monsters.ChaosDruid.name,
-			items: ChaosDruisCl
+			items: chaosDruisCL
 		},
 		'Chompy Birds': {
 			alias: ['chompy', 'bgc', 'big chompy hunting'],
 			kcActivity: 'BigChompyBirdHunting',
-			items: ChompyBirdsCl
+			items: chompyBirdsCL
 		},
 		'Creature Creation': {
 			enabled: false,
-			items: CreatureCreationCl
+			items: creatureCreationCL
 		},
 		Cyclopes: {
 			alias: ['cyclops', 'wg', 'warriors guild', 'warrior guild'],
 			kcActivity: Monsters.Cyclops.name,
 			allItems: Monsters.Cyclops.allItems,
-			items: CyclopsCl
+			items: cyclopsCL
 		},
 		'Fossil Island Notes': {
 			enabled: false,
-			items: FossilIslandNotesCl
+			items: fossilIslandNotesCL
 		},
 		"Glough's Experiments": {
 			alias: Monsters.DemonicGorilla.aliases,
 			allItems: Monsters.DemonicGorilla.allItems,
 			kcActivity: Monsters.DemonicGorilla.name,
-			items: DemonicGorillaCl
+			items: demonicGorillaCL
 		},
 		'Monkey Backpacks': {
 			alias: ['monkey', 'monkey bps', 'backpacks'],
 			kcActivity: user => {
 				return user.settings.get(UserSettings.LapsScores)[6];
 			},
-			items: MonkeyBackpacksCl,
+			items: monkeyBackpacksCL,
 			roleCategory: ['skilling'],
 			isActivity: true
 		},
 		'Motherlode Mine': {
 			enabled: false,
-			items: MotherlodeMineCl
+			items: motherlodeMineCL
 		},
 		'Random Events': {
 			alias: ['random'],
-			items: RandomEventsCl
+			items: randomEventsCL
 		},
 		Revenants: {
 			enabled: false,
-			items: RevenantsCl
+			items: revenantsCL
 		},
 		'Rooftop Agility': {
 			alias: ['rooftop', 'laps', 'agility', 'agil'],
-			items: RooftopAgilityCl,
+			items: rooftopAgilityCL,
 			roleCategory: ['skilling'],
 			isActivity: true
 		},
 		'Shayzien Armour': {
 			enabled: false,
-			items: ShayzienArmourCl
+			items: shayzienArmourCL
 		},
 		'Shooting Stars': { enabled: false, items: resolveItems(['Celestial ring (uncharged)', 'Star fragment']) },
 		'Skilling Pets': {
 			alias: ['skill pets'],
-			items: SkillingPetsCl
+			items: skillingPetsCL
 		},
 		Slayer: {
 			alias: ['slay'],
-			items: SlayerCl,
+			items: slayerCL,
 			roleCategory: ['slayer']
 		},
 		TzHaar: {
 			kcActivity: [Monsters.TzHaarKet.name],
 			allItems: Monsters.TzHaarKet.allItems,
-			items: TzHaarCl
+			items: tzHaarCL
 		},
 		Skilling: {
 			items: resolveItems([
@@ -756,33 +756,37 @@ export const allCollectionLogs: ICollection = {
 		},
 		Miscellaneous: {
 			alias: ['misc'],
-			items: MiscellaneousCl
+			items: miscellaneousCL
 		}
 	},
 	Custom: {
 		Holiday: {
-			items: HolidayCl
+			counts: false,
+			items: holidayCL
 		},
 		Daily: {
+			counts: false,
 			alias: ['diango'],
-			items: DailyCl
+			items: dailyCL
 		},
 		Capes: {
-			items: CapesCl
+			counts: false,
+			items: capesCL
 		},
 		Quest: {
-			items: QuestCl
+			counts: false,
+			items: questCL
 		}
 	}
 };
 
 // Get all the log items into a single
-export const allClItems = [
+export const allCLItems = [
 	...new Set(
 		Object.entries(allCollectionLogs)
 			.map(e =>
 				Object.entries(e[1])
-					.filter(f => f[1].enabled === undefined && f[1].hidden === undefined)
+					.filter(f => f[1].enabled === undefined && f[1].hidden === undefined && f[1].counts === undefined)
 					.map(a => a[1].items)
 			)
 			.flat(100)
@@ -798,7 +802,7 @@ export const collectionLogRoleCategories: { [key: string]: number[] } = {
 	minigames: getItemsRole('minigames'),
 	pets: getItemsRole('pets'),
 	clues: getItemsRole('clues'),
-	overall: allClItems
+	overall: allCLItems
 };
 
 // To avoid code duplication, makes it into a function
@@ -819,7 +823,7 @@ export function getItemsRole(role: TRoleCategories) {
 	];
 }
 
-export function clIntoBank(items: number[]) {
+export function converCLtoBank(items: number[]) {
 	const clBank = new Bank();
 	for (const item of items) {
 		clBank.add(item, 1);
@@ -840,7 +844,7 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems: boolean = 
 				} else {
 					items = attributes.items;
 				}
-				const clItemBank = clIntoBank(items);
+				const clItemBank = converCLtoBank(items);
 				const totalCl = clItemBank.items().length;
 				const userAmount = clItemBank.items().length - clItemBank.remove(userBank).items().length;
 				leftList[activityName] =
@@ -867,8 +871,8 @@ export function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'col
 	}
 
 	const clItems = Object.keys(userCheckBank.bank).map(i => parseInt(i));
-	const owned = clItems.filter(i => allClItems.includes(i));
-	return [owned.length, allClItems.length];
+	const owned = clItems.filter(i => allCLItems.includes(i));
+	return [owned.length, allCLItems.length];
 }
 
 export function getPossibleOptions() {
@@ -947,7 +951,7 @@ export function getCollectionItems(collection: string, allItems = false): number
 }
 
 function getUserClData(usarBank: ItemBank, clItems: number[]) {
-	const clItemBank = clIntoBank(clItems);
+	const clItemBank = converCLtoBank(clItems);
 	const totalCl = clItemBank.items().length;
 	const userAmount = clItemBank.items().length - clItemBank.remove(usarBank).items().length;
 	return [totalCl, userAmount];
