@@ -2,7 +2,6 @@ import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
-import {} from 'node:process';
 import { Bank, Player } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { CommentStream, SubmissionStream } from 'snoostorm';
@@ -12,6 +11,7 @@ import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BankImageResult } from '../../tasks/bankImage';
 import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
+import { GearSetup } from '../gear';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
 import { AddXpParams, KillableMonster } from '../minions/types';
@@ -30,6 +30,7 @@ type SendBankImageFn = (options: {
 	flags?: Record<string, string | number>;
 	user?: KlasaUser;
 	cl?: ItemBank;
+	gearPlaceholder?: Record<GearSetupType, GearSetup>;
 }) => Promise<KlasaMessage>;
 
 declare module 'klasa' {
@@ -73,7 +74,8 @@ declare module 'klasa' {
 			showValue?: boolean,
 			flags?: { [key: string]: string | number },
 			user?: KlasaUser,
-			cl?: ItemBank
+			cl?: ItemBank,
+			gearPlaceholder?: Record<GearSetupType, GearSetup>
 		): Promise<BankImageResult>;
 		generateCollectionLogImage(collectionLog: ItemBank, title: string = '', type: any): Promise<Buffer>;
 		getItemImage(itemID: number, quantity: number): Promise<Image>;

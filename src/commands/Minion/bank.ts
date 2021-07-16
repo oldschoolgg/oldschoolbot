@@ -102,7 +102,8 @@ export default class extends BotCommand {
 				page: typeof pageNumberOrItemName === 'number' ? pageNumberOrItemName - 1 : 0
 			},
 			background: msg.author.settings.get(UserSettings.BankBackground),
-			user: msg.author
+			user: msg.author,
+			gearPlaceholder: msg.author.rawGear()
 		});
 	}
 }
