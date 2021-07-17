@@ -43,7 +43,7 @@ export default class extends Task {
 				GearSetupTypes.Wildy,
 				null
 			);
-			// await user.settings.update(UserSettings.Gear.Wildy, calc.newGear);
+			await user.settings.update(UserSettings.Gear.Wildy, calc.newGear);
 
 			updateBankSetting(this.client, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
 
