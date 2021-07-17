@@ -20,7 +20,7 @@ const pets: Pet[] = [
 	{
 		id: 1,
 		emoji: '<:Baby_chinchompa_red:324127375539306497>',
-		chance: 95898,
+		chance: 95_898,
 		name: 'Baby Chinchompa',
 		type: 'SKILL',
 		altNames: ['CHINCHOMPA', 'BABYCHINCHOMPA', 'CHIN'],
@@ -44,7 +44,7 @@ const pets: Pet[] = [
 	{
 		id: 3,
 		emoji: '<:Beaver:324127375761604611>',
-		chance: 69846,
+		chance: 69_846,
 		name: 'Beaver',
 		type: 'SKILL',
 		altNames: ['BEAVER', 'WC', 'WOODCUTTING'],
@@ -76,7 +76,7 @@ const pets: Pet[] = [
 	{
 		id: 6,
 		emoji: '<:Giant_squirrel:324127376432824320>',
-		chance: 31965,
+		chance: 31_965,
 		name: 'Giant Squirrel',
 		type: 'SKILL',
 		altNames: ['SQUIRREL', 'GIANTSQUIRREL', 'AGILITY'],
@@ -90,7 +90,7 @@ const pets: Pet[] = [
 	{
 		id: 7,
 		emoji: '<:Heron:324127376516841483>',
-		chance: 136108,
+		chance: 136_108,
 		name: 'Heron',
 		type: 'SKILL',
 		altNames: ['HERON', 'FISHING', 'AGILITY'],
@@ -325,7 +325,7 @@ const pets: Pet[] = [
 	{
 		id: 26,
 		emoji: '<:Rift_guardian_fire:324127378588827648>',
-		chance: 1793283,
+		chance: 1_793_283,
 		name: 'Rift Guardian',
 		type: 'SKILL',
 		altNames: ['RC', 'RIFTGUARDIAN', 'RUNECRAFTING'],
@@ -337,7 +337,7 @@ const pets: Pet[] = [
 	{
 		id: 27,
 		emoji: '<:Rock_golem:324127378429313026>',
-		chance: 244725,
+		chance: 244_725,
 		name: 'Rock Golem',
 		type: 'SKILL',
 		altNames: ['GOLEM', 'ROCKGOLEM', 'MINING'],
@@ -349,7 +349,7 @@ const pets: Pet[] = [
 	{
 		id: 28,
 		emoji: '<:Rocky:324127378647285771>',
-		chance: 254736,
+		chance: 254_736,
 		name: 'Rocky',
 		type: 'SKILL',
 		altNames: ['ROCKY', 'THIEVING', 'RACCOON'],
@@ -395,8 +395,8 @@ const pets: Pet[] = [
 			`You had to harvest ${fm(
 				num
 			)} Magic Trees to get the Tangleroot Pet! <:Tangleroot:324127378978635778> You also got...\n${xpEmoji} ${fm(
-				num * 13768.3
-			)} XP\n${gpEmoji} -${fm(num * 116894)} GP`
+				num * 13_768.3
+			)} XP\n${gpEmoji} -${fm(num * 116_894)} GP`
 	},
 	{
 		id: 32,

@@ -28,7 +28,7 @@ const { triviaQuestions } = JSON.parse(fs.readFileSync('./src/lib/resources/triv
 
 const options = {
 	max: 1,
-	time: 13000,
+	time: 13_000,
 	errors: ['time']
 };
 

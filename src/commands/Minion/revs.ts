@@ -213,7 +213,8 @@ export default class extends BotCommand {
 			duration: died ? (randInt(1, duration) + randInt(1, duration)) / 2 : duration,
 			type: Activity.Revenants,
 			died,
-			skulled
+			skulled,
+			style
 		});
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${

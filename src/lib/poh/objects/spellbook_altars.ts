@@ -4,7 +4,7 @@ import { PoHObject } from '..';
 
 export const SpellbookAltars: PoHObject[] = [
 	{
-		id: 29147,
+		id: 29_147,
 		name: 'Ancient altar',
 		slot: 'spellbookAltar',
 		level: 80,
@@ -15,7 +15,7 @@ export const SpellbookAltars: PoHObject[] = [
 			.add('Ancient signet')
 	},
 	{
-		id: 29148,
+		id: 29_148,
 		name: 'Lunar altar',
 		slot: 'spellbookAltar',
 		level: 80,
@@ -26,7 +26,7 @@ export const SpellbookAltars: PoHObject[] = [
 			.add('Lunar signet')
 	},
 	{
-		id: 29149,
+		id: 29_149,
 		name: 'Dark altar',
 		slot: 'spellbookAltar',
 		level: 80,
@@ -38,7 +38,7 @@ export const SpellbookAltars: PoHObject[] = [
 			.add('Arceuus signet')
 	},
 	{
-		id: 31858,
+		id: 31_858,
 		name: 'Occult altar',
 		slot: 'spellbookAltar',
 		level: 90,
@@ -50,6 +50,6 @@ export const SpellbookAltars: PoHObject[] = [
 			.add('Astral rune', 10_000)
 			.add('Arceuus signet')
 			.add('Lunar signet'),
-		requiredInPlace: 29147
+		requiredInPlace: 29_147
 	}
 ];

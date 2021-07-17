@@ -65,6 +65,7 @@ export interface RevenantOptions extends ActivityTaskOptions {
 	quantity: number;
 	died: boolean;
 	skulled: boolean;
+	style: 'mage' | 'range' | 'melee';
 }
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	clueID: number;
@@ -226,6 +227,11 @@ export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptio
 	quantity: number;
 }
 
+export interface TemporossActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+	rewardBoost: number;
+}
+
 export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -331,4 +337,5 @@ export type ActivityTaskData =
 	| HerbloreActivityTaskOptions
 	| FletchingActivityTaskOptions
 	| RunecraftActivityTaskOptions
-	| TempleTrekkingActivityTaskOptions;
+	| TempleTrekkingActivityTaskOptions
+	| TemporossActivityTaskOptions;

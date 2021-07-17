@@ -30,8 +30,8 @@ const CommonTable = new LootTable()
 	.add('Grey toy horsey')
 
 	// Boxing Gloves - they have the same names so need to use IDs.
-	.add(11705)
-	.add(11706)
+	.add(11_705)
+	.add(11_706)
 
 	.add(UncommonTable);
 

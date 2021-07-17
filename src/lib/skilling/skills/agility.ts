@@ -119,7 +119,7 @@ export const courses: Course[] = [
 		level: 30,
 		xp: 540,
 		lapTime: 65.6,
-		petChance: 9_979
+		petChance: 9979
 	}
 ];
 
@@ -136,32 +136,32 @@ export const gracefulItems = [
 
 export const MonkeyBackpacks = [
 	{
-		id: 24862,
+		id: 24_862,
 		name: 'Karamjan monkey',
 		lapsRequired: 100
 	},
 	{
-		id: 24863,
+		id: 24_863,
 		name: 'Zombie monkey',
 		lapsRequired: 250
 	},
 	{
-		id: 24864,
+		id: 24_864,
 		name: 'Maniacal monkey',
 		lapsRequired: 500
 	},
 	{
-		id: 24865,
+		id: 24_865,
 		name: 'Skeleton monkey',
 		lapsRequired: 1000
 	},
 	{
-		id: 24866,
+		id: 24_866,
 		name: 'Kruk jr',
 		lapsRequired: 1500
 	},
 	{
-		id: 24867,
+		id: 24_867,
 		name: 'Princely monkey',
 		lapsRequired: 2000
 	}

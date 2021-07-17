@@ -61,7 +61,7 @@ export default class extends BotCommand {
 		display.setFooterPrefix('Page ');
 
 		for (const page of chunk(sortedEntries, 12)) {
-			const embed = new MessageEmbed().setAuthor(`${toTitleCase(username)} - Boss Records`).setColor(52224);
+			const embed = new MessageEmbed().setAuthor(`${toTitleCase(username)} - Boss Records`).setColor(52_224);
 
 			for (const [name, { rank, score }] of page) {
 				embed.addField(

@@ -14,13 +14,12 @@ import {
 	MAX_QP,
 	MAX_TOTAL_LEVEL,
 	PerkTier,
-	skillEmoji,
-	ZALCANO_ID
+	skillEmoji
 } from '../../lib/constants';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear/util';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
 import { AddXpParams, KillableMonster } from '../../lib/minions/types';
@@ -120,8 +119,6 @@ const suffixes = new SimpleTable<string>()
 	.add(Emoji.PeepoRanger, 1)
 	.add(Emoji.PeepoSlayer);
 
-const { TzTokJad } = Monsters;
-
 function levelUpSuffix() {
 	return suffixes.roll().item;
 }
@@ -136,23 +133,7 @@ export default class extends Extendable {
 		const currentTask = getActivityOfUser(this.id);
 
 		if (!currentTask) {
-			return `${this.minionName} is currently doing nothing.
-
-- Visit <https://www.oldschool.gg/oldschoolbot/minions> for extensive information on minions.
-- Use \`+minion setname [name]\` to change your minions' name.
-- You can assign ${this.minionName} to kill monsters for loot using \`+minion kill\`.
-- Do clue scrolls with \`+minion clue easy\` (complete 1 easy clue)
-- Train mining with \`+mine\`
-- Train smithing with \`+smelt\` or \`+smith\`
-- Train prayer with \`+bury\` or \`+offer\`
-- Train woodcutting with \`+chop\`
-- Train firemaking with \`+light\`
-- Train crafting with \`+craft\`
-- Train fletching with \`+fletch\`
-- Train farming with \`+farm\` or \`+harvest\`
-- Train herblore with \`+mix\`
-- Gain quest points with \`+quest\`
-- Pat your minion with \`+minion pat\``;
+			return `${this.minionName} is currently doing nothing.`;
 		}
 
 		const durationRemaining = currentTask.finishDate - Date.now();
@@ -355,6 +336,9 @@ export default class extends Extendable {
 			}
 			case Activity.Wintertodt: {
 				return `${this.minionName} is currently fighting the Wintertodt. ${formattedDuration}`;
+			}
+			case Activity.Tempoross: {
+				return `${this.minionName} is currently fighting Tempoross. ${formattedDuration}`;
 			}
 
 			case Activity.Alching: {
@@ -594,27 +578,32 @@ export default class extends Extendable {
 	}
 
 	public async getKCByName(this: KlasaUser, kcName: string) {
-		const mon = [
-			...killableMonsters,
-			NightmareMonster,
-			{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID },
-			{ name: 'TzTokJad', aliases: ['jad', 'fightcaves'], id: TzTokJad.id }
-		].find(mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName)));
-		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
-		const creature = Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
-
-		if (!mon && !minigame && !creature) {
-			return [null, 0];
+		const mon = effectiveMonsters.find(
+			mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
+		);
+		if (mon) {
+			return [mon.name, this.getKC((mon as unknown as Monster).id)];
 		}
 
-		const kc = mon
-			? this.getKC((mon as unknown as Monster).id)
-			: minigame
-			? await this.getMinigameScore(minigame!.key)
-			: this.getCreatureScore(creature!);
+		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
+		if (minigame) {
+			return [minigame.name, await this.getMinigameScore(minigame.key)];
+		}
 
-		const name = minigame ? minigame.name : mon ? mon!.name : creature?.name;
-		return [name, kc];
+		const creature = Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
+		if (creature) {
+			return [creature.name, this.getCreatureScore(creature)];
+		}
+
+		const special = [
+			[['superior', 'superiors', 'superior slayer monster'], UserSettings.Slayer.SuperiorCount],
+			[['tithefarm', 'tithe'], UserSettings.Stats.TitheFarmsCompleted]
+		].find(s => s[0].includes(kcName));
+		if (special) {
+			return [special[0][0], await this.settings.get(special![1] as string)];
+		}
+
+		return [null, 0];
 	}
 
 	getCreatureScore(this: KlasaUser, creature: Creature) {
