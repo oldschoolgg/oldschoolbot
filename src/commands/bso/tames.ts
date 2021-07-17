@@ -159,11 +159,11 @@ ${allTames
 			return msg.channel.send("Your tame can't kill this monster fast enough.");
 		}
 
-		// Calculate food cost: 100% for baby, 50% for juvenile, 33% for adult
+		// Calculate food cost: 100% for baby, 67% for juvenile, 33% for adult
 		const baseFoodNeeded = monster.healAmountNeeded ?? 1;
-		// Food divisor: baby = 1, juvenile = 2, adult = 3
-		const growthFactor = 4 - selectedTame.growthLevel;
-		const foodPerKill = Math.ceil(baseFoodNeeded / growthFactor);
+		// Food divisor: baby = 3/3, juvenile = 2/3, adult = 1/3
+		const growthFactor = selectedTame.growthLevel / 3;
+		const foodPerKill = Math.ceil(baseFoodNeeded * growthFactor);
 
 		const [foodStr] = await removeRawFood({
 			client: this.client,
