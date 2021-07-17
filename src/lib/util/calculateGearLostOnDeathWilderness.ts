@@ -1,4 +1,4 @@
-import { objectEntries } from 'e';
+import { deepClone, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
@@ -14,9 +14,9 @@ export const gearSwap: IGearSwap = {
 	[itemID("Craw's bow")]: [itemID("Craw's bow (u)")],
 	[itemID("Thammaron's sceptre")]: [itemID("Thammaron's sceptre (u)")],
 	[itemID("Viggora's chainmace")]: [itemID("Viggora's chainmace (u)")],
-	23330: [itemID('Rune scimitar ornament kit (guthix)'), itemID('Rune scimitar')],
-	23332: [itemID('Rune scimitar ornament kit (saradomin)'), itemID('Rune scimitar')],
-	23334: [itemID('Rune scimitar ornament kit (zamorak)'), itemID('Rune scimitar')],
+	23_330: [itemID('Rune scimitar ornament kit (guthix)'), itemID('Rune scimitar')],
+	23_332: [itemID('Rune scimitar ornament kit (saradomin)'), itemID('Rune scimitar')],
+	23_334: [itemID('Rune scimitar ornament kit (zamorak)'), itemID('Rune scimitar')],
 	[itemID('Rune defender (t)')]: [itemID('Rune defender'), itemID('Rune defender ornament kit')],
 	[itemID('Dragon full helm (g)')]: [itemID('Dragon full helm'), itemID('Dragon full helm ornament kit')],
 	[itemID('Dragon chainbody (g)')]: [itemID('Dragon chainbody'), itemID('Dragon chainbody ornament kit')],
@@ -55,38 +55,38 @@ export const gearSwap: IGearSwap = {
 	// [itemID('Holy sanguinesti staff')]: [itemID('Holy ornament kit'), itemID('Sanguinesti staff')],
 	// [itemID('Holy scythe of vitur')]: [itemID('Holy ornament kit'), itemID('Scythe of vitur')],
 	// [itemID('Sanguine scythe of vitur')]: [itemID('Sanguine ornament kit'), itemID('Scythe of vitur')],
-	24743: [itemID('Graceful hood'), itemID('Dark dye')],
-	24749: [itemID('Graceful top'), itemID('Dark dye')],
-	24752: [itemID('Graceful legs'), itemID('Dark dye')],
-	24755: [itemID('Graceful gloves'), itemID('Dark dye')],
-	24758: [itemID('Graceful boots'), itemID('Dark dye')],
-	24746: [itemID('Graceful cape'), itemID('Dark dye')],
-	25069: [itemID('Graceful hood'), itemID('Trailblazer graceful ornament kit')],
-	25075: [itemID('Graceful top'), itemID('Trailblazer graceful ornament kit')],
-	25078: [itemID('Graceful legs'), itemID('Trailblazer graceful ornament kit')],
-	25081: [itemID('Graceful gloves'), itemID('Trailblazer graceful ornament kit')],
-	25084: [itemID('Graceful boots'), itemID('Trailblazer graceful ornament kit')],
-	25072: [itemID('Graceful cape'), itemID('Trailblazer graceful ornament kit')],
+	24_743: [itemID('Graceful hood'), itemID('Dark dye')],
+	24_749: [itemID('Graceful top'), itemID('Dark dye')],
+	24_752: [itemID('Graceful legs'), itemID('Dark dye')],
+	24_755: [itemID('Graceful gloves'), itemID('Dark dye')],
+	24_758: [itemID('Graceful boots'), itemID('Dark dye')],
+	24_746: [itemID('Graceful cape'), itemID('Dark dye')],
+	25_069: [itemID('Graceful hood'), itemID('Trailblazer graceful ornament kit')],
+	25_075: [itemID('Graceful top'), itemID('Trailblazer graceful ornament kit')],
+	25_078: [itemID('Graceful legs'), itemID('Trailblazer graceful ornament kit')],
+	25_081: [itemID('Graceful gloves'), itemID('Trailblazer graceful ornament kit')],
+	25_084: [itemID('Graceful boots'), itemID('Trailblazer graceful ornament kit')],
+	25_072: [itemID('Graceful cape'), itemID('Trailblazer graceful ornament kit')],
 	[itemID('Dragon axe (or)')]: [itemID('Dragon axe'), itemID('Trailblazer tool ornament kit')],
 	[itemID('Infernal axe (or)')]: [itemID('Infernal axe'), itemID('Trailblazer tool ornament kit')],
 	[itemID('Dragon harpoon (or)')]: [itemID('Dragon harpoon'), itemID('Trailblazer tool ornament kit')],
 	[itemID('Infernal harpoon (or)')]: [itemID('Infernal harpoon'), itemID('Trailblazer tool ornament kit')],
-	25376: [itemID('Dragon pickaxe'), itemID('Trailblazer tool ornament kit')],
+	25_376: [itemID('Dragon pickaxe'), itemID('Trailblazer tool ornament kit')],
 	[itemID('Infernal pickaxe (or)')]: [itemID('Infernal pickaxe'), itemID('Trailblazer tool ornament kit')],
 	[itemID('Dragon pickaxe (or)')]: [itemID('Dragon pickaxe'), itemID('Zalcano shard')],
-	12797: [itemID('Dragon pickaxe'), itemID('Dragon pickaxe upgrade kit')],
-	12795: [itemID('Steam battlestaff'), itemID('Steam staff upgrade kit')],
-	21198: [itemID('Lava battlestaff'), itemID('Lava staff upgrade kit')],
-	12807: [itemID('Odium ward'), itemID('Ward upgrade kit')],
-	12806: [itemID('Malediction ward'), itemID('Ward upgrade kit')],
-	12765: [itemID('Dark bow'), itemID('Green dark bow paint')],
-	12766: [itemID('Dark bow'), itemID('Blue dark bow paint')],
-	12767: [itemID('Dark bow'), itemID('Yellow dark bow paint')],
-	12768: [itemID('Dark bow'), itemID('White dark bow paint')],
+	12_797: [itemID('Dragon pickaxe'), itemID('Dragon pickaxe upgrade kit')],
+	12_795: [itemID('Steam battlestaff'), itemID('Steam staff upgrade kit')],
+	21_198: [itemID('Lava battlestaff'), itemID('Lava staff upgrade kit')],
+	12_807: [itemID('Odium ward'), itemID('Ward upgrade kit')],
+	12_806: [itemID('Malediction ward'), itemID('Ward upgrade kit')],
+	12_765: [itemID('Dark bow'), itemID('Green dark bow paint')],
+	12_766: [itemID('Dark bow'), itemID('Blue dark bow paint')],
+	12_767: [itemID('Dark bow'), itemID('Yellow dark bow paint')],
+	12_768: [itemID('Dark bow'), itemID('White dark bow paint')],
 	[itemID('Volcanic abyssal whip')]: [itemID('Abyssal whip'), itemID('Volcanic whip mix')],
 	[itemID('Frozen abyssal whip')]: [itemID('Abyssal whip'), itemID('Frozen whip mix')],
-	12848: [itemID('Granite maul'), itemID('Granite clamp')],
-	24227: [24225, itemID('Granite clamp')],
+	12_848: [itemID('Granite maul'), itemID('Granite clamp')],
+	24_227: [24_225, itemID('Granite clamp')],
 	[itemID('Abyssal tentacle')]: [itemID('Abyssal whip'), itemID('Kraken tentacle')]
 };
 
@@ -122,17 +122,26 @@ export const lockedItems = resolveItems([
 	'Elite void robe (l)',
 	'Void knight gloves (l)',
 	// Decorative armour gold
-	24158,
-	24159,
-	24162,
+	// Helm
+	24_158,
+	// Body
+	24_159,
+	// Legs
+	24_162,
 	// Decorative magic armour
-	24163,
-	24164,
-	24165,
+	// Helm
+	24_163,
+	// Body
+	24_164,
+	// Legs
+	24_165,
 	// Decorative ranged armour
-	24166,
-	24167,
-	24168,
+	// Helm
+	24_166,
+	// Body
+	24_167,
+	// Legs
+	24_168,
 	'Guthix halo (l)',
 	'Saradomin halo (l)',
 	'Zamorak halo (l)',
@@ -168,7 +177,7 @@ export default function calculateGearLostOnDeathWilderness(
 	}
 
 	// 1 - Duplicate user gear
-	let userGear = { ...options.gear };
+	let userGear = deepClone(options.gear);
 	let removableItems: { slot: EquipmentSlot; sorter: number; originalItem: Item }[] = [];
 
 	// 2 - Swap user gear to the correct gear for death calculations
@@ -195,18 +204,14 @@ export default function calculateGearLostOnDeathWilderness(
 	// 3 - Sort gear
 	const sortedGear = removableItems.sort((a, b) => b.sorter - a.sorter);
 
-	// 4 - Replicate the sorting to the main gear
+	// 4 - Decide how many items will be saved
+	let itemsToSave = 3;
+	if (options.skulled) itemsToSave -= 3;
+	if (options.protectItem && !options.smited) itemsToSave += 1;
+
+	// 5 - Replicate the sorting to the main gear
 	const lostItemsBank = new Bank();
-	for (const { slot, originalItem } of sortedGear.slice(
-		// 5 - Decide how many items will be saved
-		options.skulled
-			? options.protectItem && !options.smited
-				? 1
-				: 0
-			: options.protectItem && !options.smited
-			? 4
-			: 3
-	)) {
+	for (const { slot, originalItem } of sortedGear.slice(itemsToSave)) {
 		// Skip locked items
 		if (lockedItems.includes(originalItem.id)) continue;
 		userGear[slot] = null;
