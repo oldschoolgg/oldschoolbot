@@ -17,8 +17,8 @@ export const FishTable = new LootTable()
 	.add('Raw tuna', [1, 90]);
 
 export const KrakenTable = new LootTable()
-	.every(FishTable, [5, 12])
-	.tertiary(3, FishTable, 5)
+	.every(FishTable, [1, 3])
+	.tertiary(3, FishTable, 2)
 	.add('Coins', [50_000, 1_000_000])
 	.add('Clue scroll (elite)')
 	.add('Clue scroll (hard)')
