@@ -427,6 +427,33 @@ export default class BankImageTask extends Task {
 			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
 			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
 
+			// Check if new cl item
+			const isNewCLItem =
+				flags.showNewCL && currentCL && !currentCL[item.id] && allCollectionLogItems.includes(item.id);
+
+			if (isNewCLItem) {
+				let dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1];
+				let s = 1;
+				let i = 0;
+				let x = 0;
+				let y = 0;
+				const purplecanvas = new Canvas(itemImage.width + 3, itemImage.height + 3);
+				const pctx = purplecanvas.getContext('2d');
+				for (; i < dArr.length; i += 2) pctx.drawImage(itemImage, x + dArr[i] * s, y + dArr[i + 1] * s);
+				pctx.globalAlpha = 0.5;
+				pctx.globalCompositeOperation = 'source-in';
+				pctx.fillStyle = '#ac7fff';
+				pctx.fillRect(0, 0, canvas.width, canvas.height);
+				pctx.globalCompositeOperation = 'source-over';
+				ctx.drawImage(
+					pctx.canvas,
+					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
+					floor(yLoc + (itemSize - itemHeight) / 2),
+					itemWidth + 3,
+					itemHeight + 3
+				);
+			}
+
 			ctx.drawImage(
 				itemImage,
 				floor(xLoc + (itemSize - itemWidth) / 2) + 2,
@@ -435,9 +462,6 @@ export default class BankImageTask extends Task {
 				itemHeight
 			);
 
-			// Check if new cl item
-			const isNewCLItem =
-				flags.showNewCL && currentCL && !currentCL[item.id] && allCollectionLogItems.includes(item.id);
 			const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
 			const formattedQuantity = formatItemStackQuantity(quantity);
 
