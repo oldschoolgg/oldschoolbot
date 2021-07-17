@@ -81,7 +81,7 @@ export default class extends BotCommand {
 					const kMonster = killableMonsters.find(km => {
 						return km.id === tmon;
 					});
-					let [killTime, percentReduced] = reducedTimeFromKC(kMonster!, 1000000);
+					let [killTime, percentReduced] = reducedTimeFromKC(kMonster!, 1_000_000);
 					const [newDuration, boostMsg] = applySkillBoostJr(msg.author, killTime, attackStyles);
 					const mSlayerXP = osjsMon?.data?.hitpoints
 						? osjsMon!.data!.slayerXP

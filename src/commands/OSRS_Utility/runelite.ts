@@ -16,7 +16,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const embed = new MessageEmbed()
 			.setTitle('<:RuneLite:418690749719117834> RuneLite')
-			.setColor(16098851)
+			.setColor(16_098_851)
 			.setThumbnail('https://runelite.net/img/logo.png')
 			.setURL('https://runelite.net/')
 			.setDescription(

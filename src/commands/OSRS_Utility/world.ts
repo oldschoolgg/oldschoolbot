@@ -21,7 +21,7 @@ export default class extends BotCommand {
 		if (!world) return msg.channel.send("That's an invalid world!");
 
 		const embed = new MessageEmbed()
-			.setColor(7981338)
+			.setColor(7_981_338)
 			.setThumbnail('https://i.imgur.com/56i6oyn.png')
 			.setFooter(`Old School RuneScape World ${world.number}`, 'https://i.imgur.com/fVakfwp.png')
 			.addField('Access', world.members ? 'Members' : 'Free to Play', true)

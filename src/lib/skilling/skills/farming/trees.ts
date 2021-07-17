@@ -43,7 +43,7 @@ const trees: Plant[] = [
 	{
 		level: 30,
 		plantXp: 25,
-		checkXp: 1_456.5,
+		checkXp: 1456.5,
 		harvestXp: 0,
 		name: 'Willow tree',
 		aliases: ['willow tree', 'willow'],
@@ -80,7 +80,7 @@ const trees: Plant[] = [
 	{
 		level: 45,
 		plantXp: 45,
-		checkXp: 3_403.4,
+		checkXp: 3403.4,
 		harvestXp: 0,
 		name: 'Maple tree',
 		aliases: ['maple tree', 'maple'],
@@ -117,7 +117,7 @@ const trees: Plant[] = [
 	{
 		level: 60,
 		plantXp: 81,
-		checkXp: 7_069.9,
+		checkXp: 7069.9,
 		harvestXp: 0,
 		name: 'Yew tree',
 		aliases: ['yew tree', 'yew'],
@@ -162,7 +162,7 @@ const trees: Plant[] = [
 		outputLogs: itemID('Magic logs'),
 		outputRoots: itemID('Magic roots'),
 		treeWoodcuttingLevel: 75,
-		petChance: 9_368,
+		petChance: 9368,
 		seedType: 'tree',
 		growthTime: 480,
 		numOfStages: 12,

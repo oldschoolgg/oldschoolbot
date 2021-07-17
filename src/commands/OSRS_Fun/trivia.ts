@@ -40,7 +40,7 @@ export default class extends BotCommand {
 		try {
 			const collected = await msg.channel.awaitMessages({
 				max: 1,
-				time: 30000,
+				time: 30_000,
 				errors: ['time'],
 				filter: answer => item.a.includes(answer.content.toLowerCase())
 			});
