@@ -178,7 +178,7 @@ export default class extends BotCommand {
 				null
 			);
 
-			return await msg.channel.send({
+			return msg.channel.send({
 				content: `To kill Revenants, you need to use the \`${prefix}revs melee|range|mage revenantName\`. Below, you can see what you will keep in your gear, in case you die in there.
 Smited: \`${smited}\` - There is a chance you'll get smited while killing Revenants. You can check what you would lose using \`--smited\`.
 Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. Doing so, will reward you better drops but will also make you lose more items in case you die. Add \`--skull\` to go in skulled.`,
@@ -218,7 +218,7 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 
 		let timePerMonster = monster.timeToFinish;
 		timePerMonster = reduceNumByPercent(timePerMonster, gearPercent / 4);
-		boosts.push(`${gearPercent / 4} (out of a possible ${100 / 4}%) for ${key}`);
+		boosts.push(`${(gearPercent / 4).toFixed(2)}% (out of a possible 25%) for ${key}`);
 
 		const specialWeapon = specialWeapons[style];
 		if (gear.hasEquipped(specialWeapon.name)) {
@@ -263,7 +263,9 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 ${Emoji.OSRSSkull} ${skulled ? 'Skulled' : 'Unskulled'}
 **Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(
 			2
-		)}% from magic def, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level)`;
+		)}% from magic def, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level).${
+			boosts.length > 0 ? `\nBoosts: ${boosts.join(', ')}` : ''
+		}`;
 
 		return msg.channel.send(response);
 	}

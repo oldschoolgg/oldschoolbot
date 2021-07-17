@@ -35,8 +35,6 @@ export default class extends Task {
 				skulled
 			});
 
-			if (!calc) return;
-
 			const image = await generateGearImage(
 				this.client,
 				user,
