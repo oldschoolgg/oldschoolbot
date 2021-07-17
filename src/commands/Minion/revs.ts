@@ -213,7 +213,7 @@ export default class extends BotCommand {
 			type: Activity.Revenants,
 			died,
 			skulled,
-			combatType: style
+			style
 		});
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${

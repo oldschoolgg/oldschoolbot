@@ -18,7 +18,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: RevenantOptions) {
-		const { monsterID, userID, channelID, quantity, duration, died, skulled, combatType } = data;
+		const { monsterID, userID, channelID, quantity, duration, died, skulled, style } = data;
 		const monster = revenantMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		if (died) {
@@ -62,7 +62,7 @@ export default class extends Task {
 				}.\nHere is what you saved:`,
 				res => {
 					user.log(`continued trip of killing ${monster.name}`);
-					return this.client.commands.get('revs')!.run(res, [combatType, monster.name]);
+					return this.client.commands.get('revs')!.run(res, [style, monster.name]);
 				},
 				image,
 				data,
@@ -119,7 +119,7 @@ export default class extends Task {
 				res.prompter.flags = flags;
 
 				user.log(`continued trip of killing ${monster.name}`);
-				return this.client.commands.get('revs')!.run(res, [combatType, monster.name]);
+				return this.client.commands.get('revs')!.run(res, [style, monster.name]);
 			},
 			image!,
 			data,
