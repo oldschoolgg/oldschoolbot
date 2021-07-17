@@ -65,7 +65,7 @@ export interface RevenantOptions extends ActivityTaskOptions {
 	quantity: number;
 	died: boolean;
 	skulled: boolean;
-	style: 'mage' | 'range' | 'melee';
+	style: 'melee' | 'range' | 'mage';
 }
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	clueID: number;

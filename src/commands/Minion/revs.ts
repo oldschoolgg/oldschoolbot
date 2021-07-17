@@ -149,7 +149,6 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage, [style, name = '']: ['melee' | 'range' | 'mage', string]) {
 		const boosts = [];
-
 		const monster = revenantMonsters.find(
 			m => stringMatches(m.name, name) || m.name.toLowerCase().includes(name.toLowerCase())
 		);
