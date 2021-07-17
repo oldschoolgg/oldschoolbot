@@ -158,26 +158,18 @@ export const lockedItems = resolveItems([
 ]);
 
 export default function calculateGearLostOnDeathWilderness(
-	options: {
-		gear: GearSetup | undefined;
-		skulled: boolean;
-		after20wilderness: boolean;
-		smited: boolean;
-		protectItem: boolean;
-	} = {
-		gear: undefined,
-		skulled: false,
-		smited: false,
-		protectItem: false,
-		after20wilderness: false
-	}
+	options = <
+		{
+			gear: GearSetup;
+			skulled: boolean;
+			after20wilderness: boolean;
+			smited: boolean;
+			protectItem: boolean;
+		}
+	>{}
 ) {
-	if (!options.gear) {
-		return false;
-	}
-
 	// 1 - Duplicate user gear
-	let userGear = deepClone(options.gear);
+	let userGear = { ...deepClone(options.gear) };
 	let removableItems: { slot: EquipmentSlot; sorter: number; originalItem: Item }[] = [];
 
 	// 2 - Swap user gear to the correct gear for death calculations
