@@ -5,7 +5,7 @@ import resolveItems from './resolveItems';
 
 const res = resolveItems;
 
-const staves: [number[], number[]][] = [
+const runeItems: [number[], number[]][] = [
 	[res(['Staff of water', 'Mystic water staff', 'Water battlestaff']), res(['Water rune'])],
 	[res(['Staff of earth', 'Mystic earth staff', 'Earth battlestaff']), res(['Earth rune'])],
 	[res(['Staff of air', 'Mystic air staff', 'Air battlestaff']), res(['Air rune'])],
@@ -24,13 +24,16 @@ const staves: [number[], number[]][] = [
 export function determineRunes(user: KlasaUser, runeBank: Bank): Bank {
 	const gear = user.rawGear();
 	const staff = gear.skilling.weapon;
-	if (!staff) return new Bank(runeBank.bank);
-	for (const [staffSet, runes] of staves) {
-		if (staffSet.includes(staff.item)) {
+	const offhand = gear.skilling.shield;
+
+	if (!staff && !offhand) return new Bank(runeBank.bank);
+	for (const [itemSet, runes] of runeItems) {
+		if ((staff && itemSet.includes(staff.item)) || (offhand && itemSet.includes(offhand.item))) {
 			const bank = new Bank(runeBank.bank);
 			for (const rune of runes) {
 				bank.remove(rune, bank.amount(rune));
 			}
+			// Current returns after removing a single rune, doesn't support multiple items removing runes
 			return bank;
 		}
 	}
