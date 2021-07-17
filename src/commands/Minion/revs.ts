@@ -149,7 +149,7 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage, [style, name = '']: ['melee' | 'range' | 'mage', string]) {
 		const boosts = [];
-
+		console.log(style, name);
 		const monster = revenantMonsters.find(
 			m => stringMatches(m.name, name) || m.name.toLowerCase().includes(name.toLowerCase())
 		);
@@ -213,14 +213,17 @@ export default class extends BotCommand {
 			duration: died ? (randInt(1, duration) + randInt(1, duration)) / 2 : duration,
 			type: Activity.Revenants,
 			died,
-			skulled
+			skulled,
+			combatType: style
 		});
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish. ${debug.join(', ')}
 ${Emoji.OSRSSkull} ${skulled ? 'Skulled' : 'Unskulled'}
-**Death Chance:** ${deathChance}% (${deathChanceFromGear}% from magic def, ${deathChanceFromDefenceLevel}% from defence level)`;
+**Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(
+			2
+		)}% from magic def, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level)`;
 
 		return msg.channel.send(response);
 	}

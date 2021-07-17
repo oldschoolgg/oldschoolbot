@@ -1,54 +1,70 @@
-import { objectEntries } from 'e';
+import { deepClone, roll } from 'e';
 import { Task } from 'klasa';
-import { Bank } from 'oldschooljs';
-import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { revenantMonsters } from '../../commands/Minion/revs';
+import { GearSetupTypes } from '../../lib/gear';
+import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
+import { Gear } from '../../lib/structures/Gear';
 import { RevenantOptions } from '../../lib/types/minions';
 import { updateBankSetting } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
+import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: RevenantOptions) {
-		const { monsterID, userID, channelID, quantity, duration, died, skulled } = data;
+		const { monsterID, userID, channelID, quantity, duration, died, skulled, combatType } = data;
 		const monster = revenantMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
+		if (died || true) {
+			// 1 in 50 to get smited
+			const hasPrayerLevel = user.hasSkillReqs({ [SkillsEnum.Prayer]: 25 })[0];
+			const protectItem = roll(50) ? false : hasPrayerLevel;
 
-		if (died) {
-			const currentGear = user.settings.get(UserSettings.Gear.Wildy)!;
-			const newGear = { ...currentGear };
-			const removableItems: { slot: EquipmentSlot; item: Item }[] = [];
-			for (const [key, val] of objectEntries(currentGear)) {
-				if (val === null) continue;
-				console.log(key);
-				removableItems.push({ slot: key, item: getOSItem(val.item) });
-			}
+			const calc = calculateGearLostOnDeathWilderness({
+				gear: deepClone(user.settings.get(UserSettings.Gear.Wildy)!),
+				smited: hasPrayerLevel && !protectItem,
+				protectItem: hasPrayerLevel,
+				after20wilderness: true,
+				skulled
+			});
 
-			const lostItemsBank = new Bank();
-			const lostItems = removableItems.sort((a, b) => a.item.price - b.item.price).slice(skulled ? 1 : 3);
-			for (const { item, slot } of lostItems) {
-				newGear[slot] = null;
-				lostItemsBank.add(item.id);
-			}
+			if (!calc) return;
 
-			await user.settings.update(UserSettings.Gear.Wildy, newGear);
-			updateBankSetting(this.client, ClientSettings.EconomyStats.RevsCost, lostItemsBank);
+			const image = await generateGearImage(
+				this.client,
+				user,
+				new Gear(calc.newGear),
+				GearSetupTypes.Wildy,
+				null
+			);
+			// await user.settings.update(UserSettings.Gear.Wildy, calc.newGear);
+
+			updateBankSetting(this.client, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
+
 			handleTripFinish(
 				this.client,
 				user,
 				channelID,
-				`You died, you lost all your loot, and these equipped items: ${lostItemsBank}.`,
+				`${
+					hasPrayerLevel && !protectItem
+						? `Oh no! While running for your life, you panicked, got smited ${
+								skulled ? 'and lost everything!' : "and couldn't protect a 4th item."
+						  }`
+						: ''
+				} You died, you lost all your loot, and these equipped items: ${
+					calc.lostItems
+				}.\nHere is what you saved:`,
 				res => {
 					user.log(`continued trip of killing ${monster.name}`);
-					return this.client.commands.get('revs')!.run(res, [quantity, monster.name]);
+					return this.client.commands.get('revs')!.run(res, [combatType, monster.name]);
 				},
-				undefined,
+				image,
 				data,
 				null
 			);
@@ -103,7 +119,7 @@ export default class extends Task {
 				res.prompter.flags = flags;
 
 				user.log(`continued trip of killing ${monster.name}`);
-				return this.client.commands.get('revs')!.run(res, [quantity, monster.name]);
+				return this.client.commands.get('revs')!.run(res, [combatType, monster.name]);
 			},
 			image!,
 			data,

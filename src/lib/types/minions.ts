@@ -65,6 +65,7 @@ export interface RevenantOptions extends ActivityTaskOptions {
 	quantity: number;
 	died: boolean;
 	skulled: boolean;
+	combatType: 'melee' | 'range' | 'mage';
 }
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	clueID: number;
