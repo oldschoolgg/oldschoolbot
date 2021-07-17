@@ -21,7 +21,7 @@ export default class extends Task {
 		const { monsterID, userID, channelID, quantity, duration, died, skulled, style } = data;
 		const monster = revenantMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
-		if (died || true) {
+		if (died) {
 			// 1 in 50 to get smited
 			const hasPrayerLevel = user.hasSkillReqs({ [SkillsEnum.Prayer]: 25 })[0];
 			const protectItem = roll(50) ? false : hasPrayerLevel;
