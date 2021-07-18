@@ -1,6 +1,7 @@
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
+import { Kibble } from '../../commands/bso/kibble';
 import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
@@ -15,6 +16,11 @@ export interface ActivityTaskOptions {
 	id: string;
 	finishDate: number;
 	channelID: string;
+}
+
+export interface KibbleOptions extends ActivityTaskOptions {
+	quantity: number;
+	kibbleType: Kibble['type'];
 }
 
 export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
