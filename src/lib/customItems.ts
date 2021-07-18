@@ -1654,6 +1654,30 @@ setCustomItem(
 	},
 	6000
 );
+setCustomItem(
+	48_215,
+	"Simple kibble",
+	'Coal',
+	{
+	},
+	6000
+);
+setCustomItem(
+	48_216,
+	"Delicious kibble",
+	'Coal',
+	{
+	},
+	6000
+);
+setCustomItem(
+	48_217,
+	"Extraordinary kibble",
+	'Coal',
+	{
+	},
+	6000
+);
 /**
  * Misc Items
  *
@@ -1744,3 +1768,4 @@ setCustomItem(
 	},
 	100_000
 );
+
