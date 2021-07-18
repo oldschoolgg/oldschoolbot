@@ -61,10 +61,14 @@ export default class extends BotCommand {
 		return `You have ${available}.`;
 	}
 
-	async run(msg: KlasaMessage, [quantity = 1, name]: [number, string | undefined]) {
+	async run(msg: KlasaMessage, [quantity, name]: [number, string | undefined]) {
 		if (!name && msg.flagArgs.any === undefined && msg.flagArgs.all === undefined) {
 			return msg.channel.send(await this.showAvailable(msg));
 		}
+
+		let quantUndefined = quantity ? false : true;
+
+		if (quantUndefined) quantity = 1;
 
 		if (msg.flagArgs.master && msg.author.bank().has(19_835)) {
 			return msg.channel.send('You already have a master clue!');
@@ -80,7 +84,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === name!.toLowerCase());
 		if (clue) {
-			return this.clueOpen(msg, quantity, clue);
+			return this.clueOpen(msg, quantity, clue, quantUndefined);
 		}
 
 		const osjsOpenable = Openables.find(openable => openable.aliases.some(alias => stringMatches(alias, name!)));
@@ -228,7 +232,7 @@ export default class extends BotCommand {
 		for (const item of allOpenablesNames) {
 			const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === item.toLowerCase());
 			if (clue && userBank.has(clue.id)) {
-				return this.clueOpen(msg, userBank.amount(clue.id), clue);
+				return this.clueOpen(msg, userBank.amount(clue.id), clue, false);
 			}
 			const osjsOpenable = Openables.find(openable => openable.aliases.some(alias => stringMatches(alias, item)));
 			if (osjsOpenable && userBank.has(osjsOpenable.id)) {
@@ -247,8 +251,11 @@ export default class extends BotCommand {
 		return msg.channel.send('You have no openable items.');
 	}
 
-	async clueOpen(msg: KlasaMessage, quantity: number, clueTier: ClueTier) {
-		if (msg.author.numItemsInBankSync(clueTier.id) < quantity) {
+	async clueOpen(msg: KlasaMessage, quantity: number, clueTier: ClueTier, quantUndefined: boolean) {
+		const clueCount = msg.author.numItemsInBankSync(clueTier.id);
+		if (msg.flagArgs.master && quantUndefined && clueCount > 0) quantity = clueCount;
+
+		if (clueCount < quantity) {
 			return msg.channel.send(
 				`You don't have enough ${clueTier.name} Caskets to open!\n\n However... ${await this.showAvailable(
 					msg
