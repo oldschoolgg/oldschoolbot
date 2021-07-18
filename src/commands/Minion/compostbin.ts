@@ -6,7 +6,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addItemToBank, bankHasItem, removeItemFromBank, stringMatches } from '../../lib/util';
 
-const SuperCompostables = [
+export const SuperCompostables = [
 	'Pineapple',
 	'Watermelon',
 	'Coconut',

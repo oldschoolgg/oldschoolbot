@@ -37,7 +37,8 @@ export const slayerCreatables: Createable[] = [
 			'Ferocious gloves': 1
 		}),
 		outputItems: resolveNameBank({ 'Hydra leather': 1 }),
-		GPCost: 0
+		GPCost: 0,
+		noCl: true
 	},
 	{
 		name: 'Uncut zenyte',

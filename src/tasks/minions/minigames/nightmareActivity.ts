@@ -133,7 +133,7 @@ export default class extends Task {
 					NightmareMonster.name
 				}, you died ${deaths[userID] ?? 0} times. Your Nightmare KC is now ${kc}.`,
 				res => {
-					leaderUser.log(`continued trip of ${quantity}x plunder`);
+					leaderUser.log(`continued trip of ${quantity}x Nightmare`);
 					return this.client.commands.get('nightmare')!.run(res, ['solo']);
 				},
 				image!,
