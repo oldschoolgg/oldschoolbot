@@ -12,6 +12,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import getOSItem from '../../lib/util/getOSItem';
 import resolveItems from '../../lib/util/resolveItems';
 
 const unlimitedFireRuneProviders = resolveItems([
@@ -31,7 +32,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[quantity:int{1}] <item:...item>',
+			usage: '[quantity:int{1}] [item:...item]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			description: 'Allows you to send your minion to alch items from your bank',
@@ -43,21 +44,33 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity = null, item]: [number | null, Item[]]) {
-		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const osItem = item.find(i => userBank[i.id] && i.highalch && i.tradeable);
-		if (!osItem) {
-			return msg.channel.send("You don't have any of this item to alch.");
+		const userBank = msg.author.bank();
+		let osItem = item?.find(i => userBank.has(i.id) && i.highalch && i.tradeable);
+
+		const [favAlchs] = msg.author.settings
+			.get(UserSettings.FavoriteAlchables)
+			.filter(id => userBank.has(id))
+			.map(getOSItem)
+			.filter(i => i.highalch > 0)
+			.sort((a, b) => b.highalch - a.highalch);
+
+		if (!osItem && !favAlchs) {
+			return msg.channel.send("You don't have any of that item to alch.");
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) < 55) {
 			return msg.channel.send('You need level 55 Magic to cast High Alchemy');
 		}
 
+		if (!osItem) {
+			osItem = favAlchs;
+		}
+
 		// 5 tick action
 		const timePerAlch = Time.Second * 3;
 		const maxTripLength = msg.author.maxTripLength(Activity.Alching);
 
-		const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank[osItem.id]);
+		const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank.amount(osItem.id));
 
 		if (!quantity) {
 			quantity = maxCasts;
