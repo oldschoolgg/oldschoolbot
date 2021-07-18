@@ -6,13 +6,11 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import getOSItem from '../../lib/util/getOSItem';
 import resolveItems from '../../lib/util/resolveItems';
 
 const unlimitedFireRuneProviders = resolveItems([
@@ -47,12 +45,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.bank();
 		let osItem = item?.find(i => userBank.has(i.id) && i.highalch && i.tradeable);
 
-		const [favAlchs] = msg.author.settings
-			.get(UserSettings.FavoriteAlchables)
-			.filter(id => userBank.has(id))
-			.map(getOSItem)
-			.filter(i => i.highalch > 0)
-			.sort((a, b) => b.highalch - a.highalch);
+		const [favAlchs] = msg.author.getUserFavAlchs() as Item[];
 
 		if (!osItem && !favAlchs) {
 			return msg.channel.send("You don't have any of that item to alch.");
@@ -64,6 +57,7 @@ export default class extends BotCommand {
 
 		if (!osItem) {
 			osItem = favAlchs;
+			quantity = null;
 		}
 
 		// 5 tick action
