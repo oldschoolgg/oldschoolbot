@@ -401,7 +401,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 FROM users
 ${msg.flagArgs.im ? 'WHERE "minion.ironman" = true' : ''}
 ORDER BY totalxp
-DESC LIMIT 100;`
+DESC LIMIT 2000;`
 			);
 			overallUsers = res.map(user => {
 				let totalLevel = 0;
@@ -418,6 +418,7 @@ DESC LIMIT 100;`
 			if (!msg.flagArgs.xp) {
 				overallUsers.sort((a, b) => b.totalLevel - a.totalLevel);
 			}
+			overallUsers.slice(0, 100);
 		} else {
 			if (!skill) {
 				return msg.channel.send("That's not a valid skill.");
