@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { PerkTier } from '../../lib/constants';
+import { BitField, PerkTier } from '../../lib/constants';
 import { allDroppedItems } from '../../lib/data/Collections';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import getOSItem from '../../lib/util/getOSItem';
@@ -21,7 +21,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [itemName]: [string]) {
 		const item = getOSItem(itemName);
-		if (!allDroppedItems.includes(item.id)) {
+		if (!allDroppedItems.includes(item.id) && !msg.author.bitfield.includes(BitField.isModerator)) {
 			return msg.channel.send("You can't check this item, because it's not on any collection log.");
 		}
 

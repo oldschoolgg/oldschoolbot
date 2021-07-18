@@ -1,5 +1,6 @@
 import { Canvas, CanvasRenderingContext2D, createCanvas, Image } from 'canvas';
 import { MessageAttachment, MessageOptions } from 'discord.js';
+import { objectKeys } from 'e';
 import fs from 'fs';
 import { KlasaUser, Task } from 'klasa';
 
@@ -168,7 +169,6 @@ export default class CollectionLogTask extends Task {
 	drawLeftList(collectionLog: IToReturnCollection) {
 		if (!collectionLog.leftList) return;
 		const leftHeight = Object.keys(collectionLog.leftList).length * 15; // 15 is the height of every list item
-
 		const colors = {
 			not_started: '#FF981F',
 			started: '#FFFF00',
@@ -262,7 +262,7 @@ export default class CollectionLogTask extends Task {
 		const canvasHeight = Math.max(
 			317,
 			Math.max(
-				leftListCanvas ? 75 + leftListCanvas.height : 0,
+				flags.tall ? (leftListCanvas ? 75 + leftListCanvas.height : 0) : 0,
 				116 + (itemSize + itemSpacer) * Math.ceil(collectionLog.collectionTotal / maxPerLine)
 			)
 		);
@@ -445,7 +445,61 @@ export default class CollectionLogTask extends Task {
 		}
 
 		if (leftListCanvas) {
-			ctx.drawImage(leftListCanvas, 12, 62);
+			if (!Boolean(flags.tall)) {
+				let selectedPos = 0;
+				const listItemSize = 15;
+				for (const name of objectKeys(collectionLog.leftList!)) {
+					if (name === collectionLog.name) break;
+					selectedPos += listItemSize;
+				}
+				// Canvas height - top area until list starts - left area, where list should end
+				const listHeightSpace = ctx.canvas.height - 62 - 13;
+				if (selectedPos <= listHeightSpace) {
+					// Check if in the start of the list
+					ctx.drawImage(
+						leftListCanvas,
+						0,
+						0,
+						leftListCanvas.width,
+						listHeightSpace,
+						12,
+						62,
+						leftListCanvas.width,
+						listHeightSpace
+					);
+				} else if (
+					// Check if in the end of the list
+					Math.ceil(leftListCanvas.height / listHeightSpace) === Math.ceil(selectedPos / listHeightSpace)
+				) {
+					// Check if in the start of the list
+					ctx.drawImage(
+						leftListCanvas,
+						0,
+						leftListCanvas.height - listHeightSpace,
+						leftListCanvas.width,
+						leftListCanvas.height - (leftListCanvas.height - listHeightSpace),
+						12,
+						62,
+						leftListCanvas.width,
+						leftListCanvas.height - (leftListCanvas.height - listHeightSpace)
+					);
+				} else {
+					// It is in the middle
+					ctx.drawImage(
+						leftListCanvas,
+						0,
+						selectedPos - Math.floor(listHeightSpace / 2),
+						leftListCanvas.width,
+						listHeightSpace,
+						12,
+						62,
+						leftListCanvas.width,
+						listHeightSpace
+					);
+				}
+			} else {
+				ctx.drawImage(leftListCanvas, 12, 62);
+			}
 		}
 
 		return new MessageAttachment(canvas.toBuffer('image/png'), `${type}_log_${new Date().valueOf()}.png`);

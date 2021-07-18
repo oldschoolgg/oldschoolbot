@@ -121,7 +121,8 @@ export const enum Emoji {
 	CollectionLog = '<:collectionLog:802136964027121684>',
 	Minigames = '<:minigameIcon:630400565070921761>',
 	Skull = '<:Skull:802136963926065165>',
-	CombatSword = '<:combat:802136963956080650>'
+	CombatSword = '<:combat:802136963956080650>',
+	SOTWTrophy = '<:SOTWtrophy:842938096097820693>'
 }
 
 export const enum ReactionEmoji {
@@ -384,7 +385,8 @@ export const badges: { [key: number]: string } = {
 	8: Emoji.Incinerator,
 	9: Emoji.Skiller,
 	10: Emoji.CollectionLog,
-	11: Emoji.MinigameIcon
+	11: Emoji.MinigameIcon,
+	12: Emoji.SOTWTrophy
 };
 
 export const MAX_QP = 284;
