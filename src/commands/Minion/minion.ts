@@ -160,7 +160,7 @@ export default class MinionCommand extends BotCommand {
 			return msg.channel.send("That's not a valid emoji.");
 		}
 
-		await msg.confirm(`Icons cannot be inappropriate or NSFW. Do you understand?`);
+		await msg.confirm('Icons cannot be inappropriate or NSFW. Do you understand?');
 
 		await msg.author.settings.update(UserSettings.Minion.Icon, res[0]);
 
