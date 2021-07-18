@@ -2,9 +2,9 @@ import { MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaMessage, Task, TaskStore } from 'klasa';
 
-import { production } from '../config';
 import { PerkTier } from '../lib/constants';
 import { FarmingPatchTypes, PatchData } from '../lib/minions/farming/types';
+import { UserSettings } from '../lib/settings/types/UserSettings';
 import Farming from '../lib/skilling/skills/farming';
 import { stringMatches } from '../lib/util';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
@@ -31,6 +31,7 @@ export default class extends Task {
 				const now = Date.now();
 				for (const user of this.client.users.cache.values()) {
 					if (getUsersPerkTier(user) < PerkTier.Four) continue;
+					if (!user.settings.get(UserSettings.FarmingPatchReminders)) continue;
 					for (const patchType of Object.values(FarmingPatchTypes)) {
 						const key = `farmingPatches.${patchType}`;
 						const patch: PatchData = user.settings.get(key) as unknown as any;
@@ -55,31 +56,37 @@ export default class extends Task {
 						}
 						await user.settings.update(key, { ...patch, wasReminded: true });
 
-						if (!production) {
-							const message = await user.send({
-								content: `${user.username}, the ${planted.name} planted in your ${patchType} patches is ready to be harvested!`,
-								components: [
-									[
-										new MessageButton()
-											.setLabel('Harvest & Replant')
-											.setStyle('PRIMARY')
-											.setCustomID('HARVEST')
-									]
+						const message = await user.send({
+							content: `${user.username}, the ${planted.name} planted in your ${patchType} patches is ready to be harvested!`,
+							components: [
+								[
+									new MessageButton()
+										.setLabel('Harvest & Replant')
+										.setStyle('PRIMARY')
+										.setCustomID('HARVEST'),
+									new MessageButton()
+										.setLabel('Disable Reminders')
+										.setStyle('SECONDARY')
+										.setCustomID('DISABLE')
 								]
+							]
+						});
+						try {
+							const selection = await message.awaitMessageComponentInteraction({
+								time: Time.Minute * 5
 							});
-							try {
-								const selection = await message.awaitMessageComponentInteraction({
-									time: Time.Minute * 5
-								});
-								if (selection.customID === 'HARVEST') {
-									message.author = user;
-									this.client.commands.get('farm')?.run(message as KlasaMessage, [planted.name]);
-									message.edit({ components: [] });
-								}
-							} catch {}
-						} else {
-							console.log(`Would DM ${user} for their ${patchType} ${planted.name} being ready.`);
-						}
+							if (selection.customID === 'HARVEST') {
+								message.author = user;
+								this.client.commands.get('farm')?.run(message as KlasaMessage, [planted.name]);
+							}
+							if (selection.customID === 'DISABLE') {
+								await user.settings.update(UserSettings.FarmingPatchReminders, false);
+								await user.send(
+									'Farming patch reminders have been disabled. You can enable them again using `+farm --enablereminders`.'
+								);
+							}
+							message.edit({ components: [] });
+						} catch {}
 					}
 				}
 			} catch (err) {
