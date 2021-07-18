@@ -119,7 +119,10 @@ export default class extends BotCommand {
 		updateBankSetting(this.client, ClientSettings.EconomyStats.KibbleCost, cost);
 
 		let timePer = Time.Second * 2;
-		const duration = timePer * qty;
+		if (msg.author.usingPet('Remy')) {
+			timePer = Math.floor(timePer / 2);
+		}
+		let duration = timePer * qty;
 		let maxTripLength = msg.author.maxTripLength(Activity.KibbleMaking);
 		if (duration > msg.author.maxTripLength(Activity.KibbleMaking)) {
 			return msg.channel.send(
@@ -138,10 +141,12 @@ export default class extends BotCommand {
 			kibbleType: kibble.type
 		});
 
-		return msg.channel.send(
-			`${msg.author.minionName} is now creating ${qty}x ${kibble.item.name}, it will take ${formatDuration(
-				duration
-			)}. Removed ${cost} from your bank.`
-		);
+		let message = `${msg.author.minionName} is now creating ${qty}x ${
+			kibble.item.name
+		}, it will take ${formatDuration(duration)}. Removed ${cost} from your bank.`;
+		if (msg.author.usingPet('Remy')) {
+			message += '\n**Boosts:** 2x boost for Remy';
+		}
+		return msg.channel.send(message);
 	}
 }
