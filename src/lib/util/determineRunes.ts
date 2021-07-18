@@ -23,19 +23,19 @@ const runeItems: [number[], number[]][] = [
 
 export function determineRunes(user: KlasaUser, runeBank: Bank): Bank {
 	const gear = user.rawGear();
-	const staff = gear.skilling.weapon;
+	const mainhand = gear.skilling.weapon;
 	const offhand = gear.skilling.shield;
 
-	if (!staff && !offhand) return new Bank(runeBank.bank);
+	const bank = new Bank(runeBank.bank);
+
+	if (!mainhand && !offhand) return bank;
+
 	for (const [itemSet, runes] of runeItems) {
-		if ((staff && itemSet.includes(staff.item)) || (offhand && itemSet.includes(offhand.item))) {
-			const bank = new Bank(runeBank.bank);
+		if ((mainhand && itemSet.includes(mainhand.item)) || (offhand && itemSet.includes(offhand.item))) {
 			for (const rune of runes) {
-				bank.remove(rune, bank.amount(rune));
+				if (bank.has(rune)) bank.remove(rune, bank.amount(rune));
 			}
-			// Current returns after removing a single rune, doesn't support multiple items removing runes
-			return bank;
 		}
 	}
-	return new Bank(runeBank.bank);
+	return bank;
 }
