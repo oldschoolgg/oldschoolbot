@@ -568,7 +568,11 @@ for (const item of Items.values()) {
 	) {
 		continue;
 	}
-	if (item.tradeable_on_ge) {
+
+	if (
+		item.tradeable_on_ge ||
+		(Boolean(item.tradeable) && Boolean(item.equipable_by_player) && Boolean(item.equipment?.slot))
+	) {
 		tmbTable.push(item.id);
 	} else if (!item.tradeable) {
 		umbTable.push(item.id);
