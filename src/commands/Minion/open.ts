@@ -211,7 +211,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemsFromBank(openablesUsed);
 		const { previousCL, itemsAdded } = await msg.author.addItemsToBank(loot, true);
-		const openedStr = openablesUsed.toString();
+		const openedStr = `You opened: ${openablesUsed.toString()}`;
 		return msg.channel.sendBankImage({
 			bank: itemsAdded,
 			content: openedStr,
