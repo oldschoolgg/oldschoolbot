@@ -19,12 +19,12 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [items]: [Item[] | undefined]) {
 		const currentFavorites = msg.author.settings.get(UserSettings.FavoriteItems);
 
-		if (!items) {
+		if (!items || items.length === 0) {
 			const currentFavorites = msg.author.settings.get(UserSettings.FavoriteItems);
 			if (currentFavorites.length === 0) {
-				return msg.send('You have no favorited items.');
+				return msg.channel.send('You have no favorited items.');
 			}
-			return msg.send(
+			return msg.channel.send(
 				`Your current favorite items are: ${currentFavorites.map(id => itemNameFromID(id)).join(', ')}.`
 			);
 		}
@@ -35,13 +35,13 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.FavoriteItems, item.id, {
 				arrayAction: ArrayActions.Remove
 			});
-			return msg.send(`Removed ${item.name} from your favorite items.`);
+			return msg.channel.send(`Removed ${item.name} from your favorite items.`);
 		}
 
 		await msg.author.settings.update(UserSettings.FavoriteItems, item.id, {
 			arrayAction: ArrayActions.Add
 		});
 
-		return msg.send(`Added ${item.name} to your favorite items.`);
+		return msg.channel.send(`Added ${item.name} to your favorite items.`);
 	}
 }

@@ -1,9 +1,9 @@
-import { increaseNumByPercent, randInt, roll } from 'e';
+import { increaseNumByPercent, randInt, roll, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji, Events, Time } from '../../lib/constants';
-import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
+import { Activity, Emoji, Events } from '../../lib/constants';
+import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
@@ -44,8 +44,8 @@ export default class extends Task {
 			totalMarks = Math.ceil(totalMarks / 5);
 		}
 
-		const [hasFallyElite] = await userhasDiaryTier(user, FaladorDiary.elite);
-		const diaryBonus = hasFallyElite && course.name === 'Ardougne Rooftop Course';
+		const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
+		const diaryBonus = hasArdyElite && course.name === 'Ardougne Rooftop Course';
 		if (diaryBonus) {
 			totalMarks = Math.floor(increaseNumByPercent(totalMarks, 25));
 		}

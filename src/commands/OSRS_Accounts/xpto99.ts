@@ -25,18 +25,18 @@ export default class extends BotCommand {
 				const { xp } = player.skills[skill];
 				if (!xp) continue;
 				if (skill !== 'overall') {
-					const clampedXP = Math.min(xp, 13034431);
-					const remainingXP = 13034431 - clampedXP;
+					const clampedXP = Math.min(xp, 13_034_431);
+					const remainingXP = 13_034_431 - clampedXP;
 					totalXP += clampedXP;
 					player.skills[skill].xp = remainingXP;
 				}
 			}
 
-			player.skills.overall.xp = 299791913 - totalXP;
-			const embed = this.getStatsEmbed(username, 7981338, player, 'xp', false);
-			return msg.send({ embed });
+			player.skills.overall.xp = 299_791_913 - totalXP;
+			const embed = this.getStatsEmbed(username, 7_981_338, player, 'xp', false);
+			return msg.channel.send({ embeds: [embed] });
 		} catch (err) {
-			return msg.send(err.message);
+			return msg.channel.send(err.message);
 		}
 	}
 }

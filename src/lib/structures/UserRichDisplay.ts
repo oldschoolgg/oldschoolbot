@@ -1,7 +1,6 @@
 import { MessageReaction } from 'discord.js';
+import { Time } from 'e';
 import { KlasaMessage, KlasaUser, ReactionHandler, RichDisplay, RichDisplayRunOptions, util } from 'klasa';
-
-import { Time } from '../constants';
 
 export class UserRichDisplay extends RichDisplay {
 	public async start(

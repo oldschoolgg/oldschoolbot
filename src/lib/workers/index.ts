@@ -11,6 +11,8 @@ export interface KillWorkerArgs {
 	bossName: string;
 	quantity: number;
 	limit: number;
+	onTask: boolean;
+	catacombs: boolean;
 }
 
 export const piscinaPool = new Piscina();

@@ -1,3 +1,4 @@
+import { itemID } from '../../util';
 import { Buyable } from './buyables';
 
 // Most prices >=10k are x10, < 10k = x100
@@ -12,7 +13,10 @@ export const slayerBuyables: Buyable[] = [
 	},
 	{
 		name: 'Broad arrowhead pack',
-		gpCost: 22_500
+		gpCost: 22_500,
+		outputItems: {
+			[itemID('Broad arrowheads')]: 100
+		}
 	},
 	{
 		name: 'Unfinished broad bolts',
@@ -20,7 +24,10 @@ export const slayerBuyables: Buyable[] = [
 	},
 	{
 		name: 'Unfinished broad bolt pack',
-		gpCost: 22_500
+		gpCost: 22_500,
+		outputItems: {
+			[itemID('Unfinished broad bolts')]: 100
+		}
 	},
 	{
 		name: 'Enchanted gem',

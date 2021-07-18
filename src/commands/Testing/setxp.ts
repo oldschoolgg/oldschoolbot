@@ -17,8 +17,8 @@ export default class extends BotCommand {
 		skillName = skillName.toLowerCase();
 		if (Object.values(Skills).some(skill => skill.id === skillName)) {
 			await msg.author.settings.update(`skills.${skillName}`, newXP);
-			return msg.send(`${skillName} experience set to ${newXP}`);
+			return msg.channel.send(`${skillName} experience set to ${newXP}`);
 		}
-		return msg.send(`${skillName} is not a skill.`);
+		return msg.channel.send(`${skillName} is not a skill.`);
 	}
 }

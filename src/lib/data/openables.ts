@@ -61,14 +61,14 @@ export const NestBoxes = new LootTable()
 const Openables: Openable[] = [
 	{
 		name: 'Birthday present',
-		itemID: 11918,
+		itemID: 11_918,
 		aliases: ['present', 'birthday present'],
 		table: BirthdayPresentTable,
 		emoji: Emoji.BirthdayPresent
 	},
 	{
 		name: 'Builders supply crate',
-		itemID: 24884,
+		itemID: 24_884,
 		aliases: ['builders supply crate'],
 		table: new LootTable()
 			.add('Oak plank', [28, 30])

@@ -1,9 +1,11 @@
+import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
 import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
 import { metamorphPets } from './collectionLog';
 import { capeCreatables } from './creatables/capes';
+import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
 
@@ -277,30 +279,6 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Zamorak godsword')]: 1
 		}
-	},
-	{
-		name: 'Dragonfire shield',
-		inputItems: {
-			[itemID('Draconic visage')]: 1,
-			[itemID('Anti-dragon shield')]: 1
-		},
-		outputItems: {
-			// Uncharged dragonfire shield
-			11284: 1
-		},
-		requiredSkills: { smithing: 90 }
-	},
-	{
-		name: 'Dragonfire ward',
-		inputItems: {
-			[itemID('Skeletal visage')]: 1,
-			[itemID('Anti-dragon shield')]: 1
-		},
-		outputItems: {
-			// Uncharged Dragonfire ward
-			22003: 1
-		},
-		requiredSkills: { smithing: 90 }
 	},
 	{
 		name: 'Infernal pickaxe',
@@ -599,6 +577,17 @@ const Createables: Createable[] = [
 			[itemID('Infernal axe')]: 1
 		},
 		requiredSkills: { firemaking: 85 }
+	},
+	{
+		name: 'Infernal harpoon',
+		inputItems: {
+			[itemID('Dragon harpoon')]: 1,
+			[itemID('Smouldering stone')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal harpoon')]: 1
+		},
+		requiredSkills: { cooking: 85, fishing: 75 }
 	},
 	{
 		name: 'Graceful',
@@ -1272,6 +1261,30 @@ const Createables: Createable[] = [
 		noCl: true
 	},
 	{
+		name: 'Ivandis Flail',
+		inputItems: {
+			[itemID('Silver sickle')]: 1,
+			[itemID('Emerald')]: 1
+		},
+		outputItems: {
+			[itemID('Ivandis flail')]: 1
+		},
+		QPRequired: 75,
+		requiredSkills: ivandisRequirements
+	},
+	{
+		name: 'Blisterwood Flail',
+		inputItems: {
+			[itemID('Ivandis flail')]: 1,
+			[itemID('Ruby')]: 1
+		},
+		outputItems: {
+			[itemID('Blisterwood flail')]: 1
+		},
+		QPRequired: 125,
+		requiredSkills: blisterwoodRequirements
+	},
+	{
 		name: 'Revert red decorative full helm',
 		inputItems: {
 			[itemID('Red decorative full helm')]: 1
@@ -1516,6 +1529,15 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Revert saradomin castlewars cloak',
+		inputItems: {
+			[itemID('Saradomin castlewars cloak')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 10
+		}
+	},
+	{
 		name: 'Revert saradomin banner',
 		inputItems: {
 			[itemID('Saradomin banner')]: 1
@@ -1615,13 +1637,67 @@ const Createables: Createable[] = [
 			[itemID('Castle wars ticket')]: 75
 		}
 	},
+	{
+		name: 'Spirit angler headband',
+		inputItems: {
+			[itemID('Angler hat')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler headband')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler top',
+		inputItems: {
+			[itemID('Angler top')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler top')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler waders',
+		inputItems: {
+			[itemID('Angler waders')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler waders')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler boots',
+		inputItems: {
+			[itemID('Angler boots')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler boots')]: 1
+		}
+	},
+	{
+		name: 'Bottled dragonbreath',
+		inputItems: resolveNameBank({
+			Dragonfruit: 10,
+			Vial: 1
+		}),
+		outputItems: {
+			[itemID('Bottled dragonbreath')]: 1
+		},
+		requiredSkills: {
+			slayer: 62
+		}
+	},
 	...crystalTools,
 	...ornamentKits,
 	...hunterClothing,
 	...twistedAncestral,
 	...metamorphPetCreatables,
 	...slayerCreatables,
-	...capeCreatables
+	...capeCreatables,
+	...dragonFireShieldCreatables
 ];
 
 export default Createables;

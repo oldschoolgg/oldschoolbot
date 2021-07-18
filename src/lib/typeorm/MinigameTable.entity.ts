@@ -5,8 +5,8 @@ export class MinigameTable extends BaseEntity {
 	@PrimaryGeneratedColumn('increment')
 	public id!: string;
 
-	@Index()
-	@Column({ name: 'user_id', length: 19, type: 'varchar', nullable: false })
+	@Index({ unique: true })
+	@Column({ name: 'user_id', length: 19, type: 'varchar', nullable: false, unique: true })
 	public userID!: string;
 
 	@Column({ name: 'tithe_farm', type: 'int', nullable: false, default: 0 })
@@ -14,6 +14,9 @@ export class MinigameTable extends BaseEntity {
 
 	@Column({ name: 'wintertodt', type: 'int', nullable: false, default: 0 })
 	public Wintertodt!: number;
+
+	@Column({ name: 'tempoross', type: 'int', nullable: false, default: 0 })
+	public Tempoross!: number;
 
 	@Column({ name: 'sepulchre', type: 'int', nullable: false, default: 0 })
 	public Sepulchre!: number;
@@ -65,4 +68,7 @@ export class MinigameTable extends BaseEntity {
 
 	@Column({ name: 'big_chompy_bird_hunting', type: 'int', nullable: false, default: 0 })
 	public BigChompyBirdHunting!: number;
+
+	@Column({ name: 'temple_trekking', type: 'int', nullable: false, default: 0 })
+	public TempleTrekking!: number;
 }

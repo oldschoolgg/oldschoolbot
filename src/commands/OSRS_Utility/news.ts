@@ -18,7 +18,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		const [message, feed] = await Promise.all([
-			msg.send('Loading...'),
+			msg.channel.send('Loading...'),
 			parser.parseURL('http://services.runescape.com/m=news/latest_news.rss?oldschool=true')
 		]);
 		const display = new RichDisplay();
@@ -29,7 +29,7 @@ export default class extends BotCommand {
 				new MessageEmbed()
 					.setTitle(item.title)
 					.setDescription(item.contentSnippet)
-					.setColor(52224)
+					.setColor(52_224)
 					.setThumbnail(item.enclosure.url)
 					.setURL(item.guid)
 			);

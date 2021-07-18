@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -56,7 +57,7 @@ export default class extends BotCommand {
 		);
 
 		if (!skillsMeetRequirements(msg.author.rawSkills, requiredSkills)) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have the required stats to use the Blast Furnace, you need: ${formatSkillRequirements(
 					requiredSkills
 				)}.`
@@ -64,7 +65,7 @@ export default class extends BotCommand {
 		}
 
 		if (!bar) {
-			return msg.send(
+			return msg.channel.send(
 				`Thats not a valid bar to smelt. Valid bars are ${Smithing.BlastableBars.map(bar => bar.name).join(
 					', '
 				)}.`
@@ -72,7 +73,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < bar.level) {
-			return msg.send(`${msg.author.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`);
+			return msg.channel.send(`${msg.author.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`);
 		}
 
 		let timeToSmithSingleBar = bar.timeToUse + Time.Second / 10;
@@ -109,7 +110,7 @@ export default class extends BotCommand {
 
 		const duration = quantity * timeToSmithSingleBar;
 		if (duration > maxTripLength) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${bar.name}s you can smelt is ${Math.floor(
@@ -121,7 +122,7 @@ export default class extends BotCommand {
 		// Check the user has the required ores to smith these bars.
 		const itemsNeeded = bar.inputOres.clone().multiply(quantity);
 		if (!userBank.has(itemsNeeded.bank)) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough items. For ${quantity}x ${bar.name}, you're missing **${itemsNeeded
 					.clone()
 					.remove(userBank)}**.`
@@ -133,7 +134,7 @@ export default class extends BotCommand {
 		const coinsToRemove = Math.floor(gpPerHour * (duration / Time.Hour));
 		const gp = msg.author.settings.get(UserSettings.GP);
 		if (gp < coinsToRemove) {
-			return msg.send(`You need atleast ${coinsToRemove} GP to work at the Blast Furnace.`);
+			return msg.channel.send(`You need atleast ${coinsToRemove} GP to work at the Blast Furnace.`);
 		}
 
 		itemsNeeded.add('Coins', coinsToRemove);
@@ -155,7 +156,7 @@ export default class extends BotCommand {
 			goldGauntletMessage = '\n\n**Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.';
 		}
 
-		return msg.send(
+		return msg.channel.send(
 			`${msg.author.minionName} is now smelting ${quantity}x ${
 				bar.name
 			} at the Blast Furnace, it'll take around ${formatDuration(duration)} to finish. You paid ${toKMB(

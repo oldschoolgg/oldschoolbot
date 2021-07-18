@@ -48,9 +48,9 @@ export default class extends BotCommand {
 
 		const embed = new MessageEmbed()
 			.setTitle('Here are some Old School RuneScape youtubers!')
-			.setColor(14981973)
+			.setColor(14_981_973)
 			.setDescription(formatted);
 
-		return msg.send({ embed });
+		return msg.channel.send({ embeds: [embed] });
 	}
 }

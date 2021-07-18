@@ -1,8 +1,9 @@
-import { objectEntries, randArrItem, randInt } from 'e';
+import { MessageAttachment } from 'discord.js';
+import { objectEntries, randArrItem, randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -117,7 +118,7 @@ export default class MahoganyHomesCommand extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		return msg.send(
+		return msg.channel.send(
 			`You have ${msg.author.settings.get(UserSettings.CarpenterPoints)} Carpenter points.
 
 To do a Mahogany Homes trip, use \`${msg.cmdPrefix}mh build\`
@@ -128,7 +129,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 	async buy(msg: KlasaMessage, [input = '']: [string]) {
 		const buyable = buyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
-			return msg.send(
+			return msg.channel.send(
 				`Here are the items you can buy: \n\n${buyables
 					.map(i => `**${i.item.name}:** ${i.cost} points`)
 					.join('\n')}.`
@@ -138,7 +139,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		const { item, cost } = buyable;
 		const balance = msg.author.settings.get(UserSettings.CarpenterPoints);
 		if (balance < cost) {
-			return msg.send(
+			return msg.channel.send(
 				`You don't have enough Carpenter Points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`
 			);
 		}
@@ -146,7 +147,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		await msg.author.settings.update(UserSettings.CarpenterPoints, balance - cost);
 		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
 
-		return msg.send(`Successfully purchased 1x ${item.name} for ${cost} Carpenter Points.`);
+		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Carpenter Points.`);
 	}
 
 	@requiresMinion
@@ -175,7 +176,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 				}
 				str += '\n\n\n';
 			}
-			return msg.channel.sendFile(Buffer.from(str), 'construction-xpxhr.txt');
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(str), 'construction-xpxhr.txt')] });
 		}
 
 		const conLevel = msg.author.skillLevel(SkillsEnum.Construction);
@@ -190,7 +191,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		);
 
 		if (!msg.author.bank().has(itemsNeeded.bank)) {
-			return msg.send(`You don't have enough items for this trip. You need: ${itemsNeeded}.`);
+			return msg.channel.send(`You don't have enough items for this trip. You need: ${itemsNeeded}.`);
 		}
 		await msg.author.removeItemsFromBank(itemsNeeded.bank);
 
@@ -220,6 +221,6 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 			str += "\nYou're getting more XP/Hr because of your Plank sack!";
 		}
 
-		return msg.send(str);
+		return msg.channel.send(str);
 	}
 }

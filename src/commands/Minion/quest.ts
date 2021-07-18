@@ -1,6 +1,7 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, MAX_QP, Time } from '../../lib/constants';
+import { Activity, MAX_QP } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -26,7 +27,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const currentQP = msg.author.settings.get(UserSettings.QP);
 		if (currentQP >= MAX_QP) {
-			return msg.send('You already have the maximum amount of Quest Points.');
+			return msg.channel.send('You already have the maximum amount of Quest Points.');
 		}
 
 		const boosts = [];
@@ -52,6 +53,6 @@ export default class extends BotCommand {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
-		return msg.send(response);
+		return msg.channel.send(response);
 	}
 }

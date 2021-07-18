@@ -319,7 +319,7 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Monkey',
 		outputItems: {
-			19556: 1
+			19_556: 1
 		},
 		gpCost: 1_000_000,
 		qpRequired: 182
@@ -541,6 +541,11 @@ const questBuyables: Buyable[] = [
 		name: 'Cannon stand',
 		gpCost: 2_500_000,
 		qpRequired: 5
+	},
+	{
+		name: 'Elemental shield',
+		gpCost: 2_500_000,
+		qpRequired: 25
 	}
 ];
 

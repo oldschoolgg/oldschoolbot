@@ -1,6 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { PerkTier } from '../../lib/constants';
+import { BitField, PerkTier } from '../../lib/constants';
+import { allCollectionLogItems } from '../../lib/data/collectionLog';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import getOSItem from '../../lib/util/getOSItem';
 import LeaderboardCommand from '../Minion/leaderboard';
@@ -20,6 +21,9 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [itemName]: [string]) {
 		const item = getOSItem(itemName);
+		if (!allCollectionLogItems.includes(item.id) && !msg.author.bitfield.includes(BitField.isModerator)) {
+			return msg.channel.send("You can't check this item, because it's not on any collection log.");
+		}
 
 		const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT 10;`;
 
@@ -30,11 +34,11 @@ export default class extends BotCommand {
 			}[]
 		>(query);
 
-		if (result.length === 0) return msg.send('No results found.');
+		if (result.length === 0) return msg.channel.send('No results found.');
 
 		const command = this.client.commands.get('leaderboard') as LeaderboardCommand;
 
-		return msg.send(
+		return msg.channel.send(
 			`**Most '${item.name}' received:**\n${result
 				.map(
 					({ id, qty }) =>

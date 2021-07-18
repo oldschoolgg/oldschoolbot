@@ -52,3 +52,10 @@ export function constructGearSetup(setup: PartialGearSetup): Gear {
 		weapon: setup.weapon ? { item: itemID(setup.weapon), quantity: 1 } : null
 	});
 }
+
+export function hasGracefulEquipped(setup: Gear) {
+	return setup.hasEquipped(
+		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful boots', 'Graceful cape'],
+		true
+	);
+}

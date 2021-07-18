@@ -30,6 +30,11 @@ export const Minigames: Minigame[] = [
 		column: 'wintertodt'
 	},
 	{
+		name: 'Tempoross',
+		key: 'Tempoross',
+		column: 'tempoross'
+	},
+	{
 		name: 'Hallowed Sepulchre',
 		key: 'Sepulchre',
 		column: 'sepulchre'
@@ -113,6 +118,11 @@ export const Minigames: Minigame[] = [
 		name: 'Big Chompy Bird Hunting',
 		key: 'BigChompyBirdHunting',
 		column: 'big_chompy_bird_hunting'
+	},
+	{
+		name: 'Temple Trekking',
+		key: 'TempleTrekking',
+		column: 'temple_trekking'
 	}
 ];
 

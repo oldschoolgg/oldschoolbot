@@ -11,7 +11,7 @@ export default class extends Inhibitor {
 		if (!command.perkTier) return;
 
 		if (getUsersPerkTier(msg.author) < command.perkTier) {
-			msg.send(
+			msg.channel.send(
 				`You need to be a ${
 					command.perkTier - 1 > 0
 						? `tier ${command.perkTier - 1} patron`

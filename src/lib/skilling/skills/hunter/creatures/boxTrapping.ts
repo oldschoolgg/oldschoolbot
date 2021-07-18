@@ -28,8 +28,8 @@ const boxTrappingCreatures: Creature[] = [
 		multiTraps: true,
 		catchTime: 30,
 		qpRequired: 2,
-		slope: 1.03479,
-		intercept: 1.69495
+		slope: 1.034_79,
+		intercept: 1.694_95
 	},
 	{
 		name: 'Carnivorous chinchompa',

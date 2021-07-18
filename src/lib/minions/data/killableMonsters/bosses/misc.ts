@@ -1,6 +1,6 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { Time } from '../../../../constants';
 import { bosses } from '../../../../data/collectionLog';
 import { GearSetupTypes, GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
@@ -166,7 +166,16 @@ const killableBosses: KillableMonster[] = [
 		},
 		defaultAttackStyles: [SkillsEnum.Strength],
 		customMonsterHP: 510,
-		combatXpMultiplier: 1.05
+		combatXpMultiplier: 1.05,
+		healAmountNeeded: 20 * 3,
+		minimumGearRequirements: {
+			[GearSetupTypes.Melee]: {
+				[GearStat.MeleeStrength]: 10
+			}
+		},
+		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
+		attackStylesUsed: [GearStat.AttackMagic],
+		attackStyleToUse: GearStat.AttackCrush
 	},
 	{
 		id: Monsters.CorporealBeast.id,
