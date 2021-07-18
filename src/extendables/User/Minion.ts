@@ -6,16 +6,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
-import {
-	Activity,
-	Emoji,
-	Events,
-	LEVEL_99_XP,
-	MAX_QP,
-	MAX_TOTAL_LEVEL,
-	PerkTier,
-	skillEmoji
-} from '../../lib/constants';
+import { Activity, Emoji, Events, LEVEL_99_XP, MAX_QP, MAX_TOTAL_LEVEL, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear/util';
 import ClueTiers from '../../lib/minions/data/clueTiers';
@@ -91,6 +82,7 @@ import {
 	formatDuration,
 	formatSkillRequirements,
 	itemNameFromID,
+	patronMaxTripCalc,
 	skillsMeetRequirements,
 	stringMatches,
 	toKMB,
@@ -98,7 +90,6 @@ import {
 	Util
 } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import {
 	NightmareActivityTaskOptions,
 	PlunderActivityTaskOptions,
@@ -612,10 +603,7 @@ export default class extends Extendable {
 	public maxTripLength(this: User, activity?: Activity) {
 		let max = Time.Minute * 30;
 
-		const perkTier = getUsersPerkTier(this);
-		if (perkTier === PerkTier.Two) max += Time.Minute * 3;
-		else if (perkTier === PerkTier.Three) max += Time.Minute * 6;
-		else if (perkTier >= PerkTier.Four) max += Time.Minute * 10;
+		max += patronMaxTripCalc(this);
 
 		switch (activity) {
 			case Activity.Nightmare:
@@ -646,7 +634,6 @@ export default class extends Extendable {
 		const sac = this.settings.get(UserSettings.SacrificedValue);
 		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
 		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
-
 		return max;
 	}
 
