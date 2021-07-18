@@ -16,7 +16,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
-import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, PerkTier, skillEmoji } from '../../lib/constants';
+import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear/util';
 import ClueTiers from '../../lib/minions/data/clueTiers';
@@ -95,6 +95,7 @@ import {
 	formatDuration,
 	formatSkillRequirements,
 	itemNameFromID,
+	patronMaxTripCalc,
 	skillsMeetRequirements,
 	stringMatches,
 	toKMB,
@@ -102,7 +103,6 @@ import {
 	Util
 } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import resolveItems from '../../lib/util/resolveItems';
 import {
 	gorajanArcherOutfit,
@@ -655,20 +655,8 @@ export default class extends Extendable {
 	public maxTripLength(this: User, activity?: Activity) {
 		let max = Time.Minute * 30;
 
-		if (activity === Activity.Alching) {
-			return Time.Hour;
-		}
+		max += patronMaxTripCalc(this);
 
-		const perkTier = getUsersPerkTier(this);
-		if (perkTier === PerkTier.Two) max += Time.Minute * 3;
-		else if (perkTier === PerkTier.Three) max += Time.Minute * 6;
-		else if (perkTier >= PerkTier.Four) max += Time.Minute * 10;
-
-		const sac = this.settings.get(UserSettings.SacrificedValue);
-		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
-		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
-
-		if (!activity) return max;
 		switch (activity) {
 			case Activity.Fishing:
 				if (this.hasItemEquippedAnywhere('Fish sack')) {
@@ -691,7 +679,10 @@ export default class extends Extendable {
 				max += calcPercentOfNum(hpPercent, Time.Minute * 5);
 				break;
 			}
-
+			case Activity.Alching: {
+				max *= 2;
+				break;
+			}
 			default: {
 				break;
 			}
@@ -705,6 +696,9 @@ export default class extends Extendable {
 			max *= 1.2;
 		}
 
+		const sac = this.settings.get(UserSettings.SacrificedValue);
+		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
+		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
 		return max;
 	}
 

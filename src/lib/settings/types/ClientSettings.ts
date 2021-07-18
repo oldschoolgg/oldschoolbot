@@ -80,6 +80,8 @@ export namespace ClientSettings {
 		export const IgnecarusCost = T<O.Readonly<ItemBank>>('ignecarus_cost');
 		export const IgnecarusLoot = T<O.Readonly<ItemBank>>('ignecarus_loot');
 
+		export const KibbleCost = T<O.Readonly<ItemBank>>('kibble_cost');
+
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');
 		export const GPSourceAlching = T<number>('gp_alch');

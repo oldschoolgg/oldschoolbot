@@ -208,7 +208,8 @@ export const enum Tasks {
 	OuraniaDeliveryService = 'ouraniaDeliveryServiceActivity',
 	DarkAltar = 'darkAltarActivity',
 	Ignecarus = 'ignecarusActivity',
-	TrekkingActivity = 'templeTrekkingActivity'
+	TrekkingActivity = 'templeTrekkingActivity',
+	KibbleActivity = 'kibbleActivity'
 }
 
 export enum Activity {
@@ -277,7 +278,8 @@ export enum Activity {
 	OuraniaDeliveryService = 'OuraniaDeliveryService',
 	DarkAltar = 'DarkAltar',
 	Ignecarus = 'Ignecarus',
-	Trekking = 'Trekking'
+	Trekking = 'Trekking',
+	KibbleMaking = 'KibbleMaking'
 }
 
 export enum ActivityGroup {

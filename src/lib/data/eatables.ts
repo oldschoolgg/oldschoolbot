@@ -12,31 +12,31 @@ export const Eatables: Eatable[] = [
 		name: 'Shrimps',
 		id: itemID('Shrimps'),
 		healAmount: 1,
-		raw: null
+		raw: itemID('Raw shrimps')
 	},
 	{
 		name: 'Anchovies',
 		id: itemID('Anchovies'),
 		healAmount: 1,
-		raw: null
+		raw: itemID('Raw anchovies')
 	},
 	{
 		name: 'Sardine',
 		id: itemID('Sardine'),
 		healAmount: 4,
-		raw: null
+		raw: itemID('Raw sardine')
 	},
 	{
 		name: 'Herring',
 		id: itemID('Herring'),
 		healAmount: 5,
-		raw: null
+		raw: itemID('Raw herring')
 	},
 	{
 		name: 'Mackerel',
 		id: itemID('Mackerel'),
 		healAmount: 6,
-		raw: null
+		raw: itemID('Raw mackerel')
 	},
 	{
 		name: 'Trout',
@@ -138,7 +138,7 @@ export const Eatables: Eatable[] = [
 		name: 'Monkfish',
 		id: itemID('Monkfish'),
 		healAmount: 16,
-		raw: itemID('Raw cod')
+		raw: itemID('Raw monkfish')
 	},
 	{
 		name: 'Anchovy pizza',
@@ -174,7 +174,7 @@ export const Eatables: Eatable[] = [
 		name: 'Shark',
 		id: itemID('Shark'),
 		healAmount: 20,
-		raw: itemID('Raw cod')
+		raw: itemID('Raw shark')
 	},
 	{
 		name: 'Sea turtle',
@@ -204,6 +204,18 @@ export const Eatables: Eatable[] = [
 		name: 'Tuna potato',
 		id: itemID('Tuna potato'),
 		healAmount: 22,
+		raw: null
+	},
+	{
+		name: 'Chilli potato',
+		id: itemID('Chilli potato'),
+		healAmount: 14,
+		raw: null
+	},
+	{
+		name: 'Egg potato',
+		id: itemID('Egg potato'),
+		healAmount: 16,
 		raw: null
 	},
 	{
