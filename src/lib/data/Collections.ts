@@ -126,7 +126,7 @@ export const allCollectionLogs: ICollection = {
 			roleCategory: ['bosses']
 		},
 		'Alchemical Hydra': {
-			alias: Monsters.AlchemicalHydra.aliases,
+			alias: [...Monsters.AlchemicalHydra.aliases, 'ahydra', 'alchhydra'],
 			allItems: Monsters.AlchemicalHydra.allItems,
 			items: alchemicalHydraCL,
 			roleCategory: ['bosses']
@@ -440,7 +440,15 @@ export const allCollectionLogs: ICollection = {
 			isActivity: true
 		},
 		'Hard Treasure Trail Rewards (Rare)': {
-			alias: ['hard rares', 'clues hard rares', 'clue hard rares'],
+			alias: [
+				'hard rares',
+				'clues hard rares',
+				'clue hard rares',
+				'clue rare hard',
+				'clue rares hard',
+				'clues rares hard',
+				'clues rare hard'
+			],
 			kcActivity: user => {
 				return user.getOpenableScore(20_544);
 			},
@@ -449,7 +457,15 @@ export const allCollectionLogs: ICollection = {
 			isActivity: true
 		},
 		'Elite Treasure Trail Rewards (Rare)': {
-			alias: ['elite rares', 'clues elite rares', 'clue elite rares'],
+			alias: [
+				'elite rares',
+				'clues elite rares',
+				'clue elite rares',
+				'clue rare elite',
+				'clue rares elite',
+				'clues rares elite',
+				'clues rare elite'
+			],
 			kcActivity: user => {
 				return user.getOpenableScore(20_543);
 			},
@@ -458,7 +474,15 @@ export const allCollectionLogs: ICollection = {
 			isActivity: true
 		},
 		'Master Treasure Trail Rewards (Rare)': {
-			alias: ['master rares', 'clues master rares', 'clue master rares'],
+			alias: [
+				'master rares',
+				'clues master rares',
+				'clue master rares',
+				'clue rare master',
+				'clue rares master',
+				'clues rares master',
+				'clues rare master'
+			],
 			kcActivity: user => {
 				return user.getOpenableScore(19_836);
 			},
@@ -1019,11 +1043,11 @@ export async function getCollection(options: {
 		for (const [activityName, attributes] of Object.entries(entries)) {
 			if (
 				attributes.enabled !== false &&
-				(stringMatchNoS(activityName, search) ||
-					stringMatchNoS(activityName, search.substr(0, search.length - 1)) ||
-					(attributes.alias && attributes.alias.find(a => stringMatchNoS(a, search))) ||
+				(stringMatches(activityName, search) ||
+					stringMatches(activityName, search.substr(0, search.length - 1)) ||
+					(attributes.alias && attributes.alias.find(a => stringMatches(a, search))) ||
 					(attributes.alias &&
-						attributes.alias.find(a => stringMatchNoS(a, search.substr(0, search.length - 1)))))
+						attributes.alias.find(a => stringMatches(a, search.substr(0, search.length - 1)))))
 			) {
 				let userKC = 0;
 				if (attributes.kcActivity && Array.isArray(attributes.kcActivity)) {
@@ -1063,7 +1087,7 @@ export async function getCollection(options: {
 		};
 	}
 	const monster = killableMonsters.find(
-		_type => stringMatchNoS(_type.name, search) || _type.aliases.some(name => stringMatchNoS(name, search))
+		_type => stringMatches(_type.name, search) || _type.aliases.some(name => stringMatches(name, search))
 	);
 	if (monster) {
 		return {

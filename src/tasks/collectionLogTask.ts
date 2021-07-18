@@ -10,6 +10,7 @@ import { IToReturnCollection } from '../lib/data/CollectionsExport';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
 import { canvasImageFromBuffer, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
+import getOSItem from '../lib/util/getOSItem';
 import BankImageTask from './bankImage';
 
 interface ISprite {
@@ -245,6 +246,8 @@ export default class CollectionLogTask extends Task {
 		let canvasWidth = 500;
 		const itemSize = 36;
 
+		let totalPrice = 0;
+
 		if (collectionLog.category === collectionLog.name) {
 			canvasWidth = 800;
 		}
@@ -286,11 +289,11 @@ export default class CollectionLogTask extends Task {
 		ctx.strokeStyle = this.scls.oddListColor;
 		if (!fullSize) {
 			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, boxHeight);
-			this.drawSquare(ctx, leftDivisor, 59, rightArea, 41);
+			this.drawSquare(ctx, leftDivisor, 59, rightArea, 47);
 			this.drawSquare(ctx, leftDivisor, 59, rightArea, boxHeight);
 		} else {
 			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, boxHeight);
-			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, 41);
+			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, 47);
 		}
 
 		// Draw Title
@@ -333,9 +336,9 @@ export default class CollectionLogTask extends Task {
 		// Draw items
 		ctx.save();
 		if (!fullSize) {
-			ctx.translate(leftDivisor + 5, 104);
+			ctx.translate(leftDivisor + 5, 110);
 		} else {
-			ctx.translate(15, 104);
+			ctx.translate(15, 110);
 		}
 		let i = 0;
 		let y = 0;
@@ -353,12 +356,15 @@ export default class CollectionLogTask extends Task {
 				this.client.emit(Events.Warn, `Item with ID[${item}] has no item image.`);
 				continue;
 			}
+
 			let qtyText = 0;
 			if (!userCollectionBank.has(item)) {
 				ctx.globalAlpha = 0.3;
 			} else {
 				qtyText = userCollectionBank.amount(item);
 			}
+
+			totalPrice += getOSItem(item).price * qtyText;
 
 			if (flags.debug) {
 				ctx.fillStyle = '#FF0000';
@@ -395,7 +401,7 @@ export default class CollectionLogTask extends Task {
 		// Draw collection name
 		ctx.save();
 		if (!fullSize) {
-			ctx.translate(leftDivisor + 8, 75);
+			ctx.translate(leftDivisor + 5, 75);
 		} else {
 			ctx.translate(15, 75);
 		}
@@ -409,7 +415,7 @@ export default class CollectionLogTask extends Task {
 		ctx.font = '16px OSRSFontCompact';
 		const toDraw = type === 'sacrifice' ? 'Sacrificed: ' : 'Obtained: ';
 		const obtainableMeasure = ctx.measureText(toDraw);
-		this.drawText(ctx, toDraw, 0, 16);
+		this.drawText(ctx, toDraw, 0, 13);
 		if (collectionLog.collectionTotal === collectionLog.collectionObtained) {
 			ctx.fillStyle = '#00FF00';
 		} else if (collectionLog.collectionObtained === 0) {
@@ -423,26 +429,39 @@ export default class CollectionLogTask extends Task {
 			ctx,
 			`${collectionLog.collectionObtained.toLocaleString()}/${collectionLog.collectionTotal.toLocaleString()}`,
 			obtainableMeasure.width,
-			16
+			13
 		);
-		ctx.restore();
 
 		if (collectionLog.completions && ['collection', 'bank'].includes(type)) {
 			// Times done/killed
-			ctx.save();
 			ctx.font = '16px OSRSFontCompact';
-			ctx.textAlign = 'right';
-			ctx.fillStyle = '#FFFFFF';
-			this.drawText(ctx, collectionLog.completions.toLocaleString(), ctx.canvas.width - 19, 75 + 16);
+			ctx.textAlign = 'left';
 			ctx.fillStyle = '#FF981F';
+			this.drawText(ctx, collectionLog.isActivity ? 'Completions: ' : 'Kills: ', 0, 25);
+			ctx.fillStyle = '#FFFFFF';
 			this.drawText(
 				ctx,
-				collectionLog.isActivity ? 'Total completions: ' : 'Total kills: ',
-				ctx.canvas.width - 19 - ctx.measureText(`${collectionLog.completions.toLocaleString()} `).width,
-				75 + 16
+				collectionLog.completions.toLocaleString(),
+				ctx.measureText(collectionLog.isActivity ? 'Completions: ' : 'Kills: ').width,
+				25
 			);
-			ctx.restore();
 		}
+		ctx.restore();
+		// Total value of the selected activity/tab
+		// Times done/killed
+		ctx.save();
+		ctx.font = '16px OSRSFontCompact';
+		ctx.textAlign = 'right';
+		ctx.fillStyle = generateHexColorForCashStack(Math.round(totalPrice));
+		this.drawText(ctx, Math.round(totalPrice).toLocaleString(), ctx.canvas.width - 15, 75 + 25);
+		ctx.fillStyle = '#FF981F';
+		this.drawText(
+			ctx,
+			'Value: ',
+			ctx.canvas.width - 12 - ctx.measureText(`${Math.round(totalPrice).toLocaleString()} `).width,
+			75 + 25
+		);
+		ctx.restore();
 
 		if (leftListCanvas) {
 			if (!Boolean(flags.tall)) {
