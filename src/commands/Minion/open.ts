@@ -66,6 +66,10 @@ export default class extends BotCommand {
 			return msg.channel.send(await this.showAvailable(msg));
 		}
 
+		if (msg.flagArgs.master && msg.author.bank().has(19_835)) {
+			return msg.channel.send('You already have a master clue!');
+		}
+
 		if (msg.flagArgs.any !== undefined) {
 			return this.any(msg);
 		}
@@ -205,13 +209,11 @@ export default class extends BotCommand {
 			);
 		}
 
-		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
-
 		await msg.author.removeItemsFromBank(openablesUsed);
-		await msg.author.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await msg.author.addItemsToBank(loot, true);
 
 		return msg.channel.sendBankImage({
-			bank: loot.values(),
+			bank: itemsAdded,
 			title: `You opened ${totalOpens} openables`,
 			flags: { showNewCL: 1, ...msg.flagArgs },
 			user: msg.author,
@@ -293,6 +295,7 @@ export default class extends BotCommand {
 				const newLoot = new Bank().add(clueTier.table.open());
 				loot.add(newLoot);
 
+				// Master scroll ID
 				if (newLoot.has(19_835)) {
 					actualQuantity = i + 1;
 					break;
