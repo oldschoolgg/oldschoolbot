@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
-import { getSimilarItems } from '../../lib/data/similarItems';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
