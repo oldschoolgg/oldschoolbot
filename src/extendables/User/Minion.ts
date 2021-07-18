@@ -612,20 +612,11 @@ export default class extends Extendable {
 	public maxTripLength(this: User, activity?: Activity) {
 		let max = Time.Minute * 30;
 
-		if (activity === Activity.Alching) {
-			return Time.Hour;
-		}
-
 		const perkTier = getUsersPerkTier(this);
 		if (perkTier === PerkTier.Two) max += Time.Minute * 3;
 		else if (perkTier === PerkTier.Three) max += Time.Minute * 6;
 		else if (perkTier >= PerkTier.Four) max += Time.Minute * 10;
 
-		const sac = this.settings.get(UserSettings.SacrificedValue);
-		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
-		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
-
-		if (!activity) return max;
 		switch (activity) {
 			case Activity.Nightmare:
 			case Activity.GroupMonsterKilling:
@@ -643,11 +634,18 @@ export default class extends Extendable {
 				max += calcPercentOfNum(hpPercent, Time.Minute * 5);
 				break;
 			}
-
+			case Activity.Alching: {
+				max *= 2;
+				break;
+			}
 			default: {
 				break;
 			}
 		}
+
+		const sac = this.settings.get(UserSettings.SacrificedValue);
+		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
+		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
 
 		return max;
 	}
