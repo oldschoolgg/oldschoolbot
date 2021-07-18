@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { Events } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -32,6 +33,20 @@ export default class extends Task {
 			`${user.username}[${user.id}] received ${quantity} ${clueTier.name} Clue Caskets.`
 		);
 
-		handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, loot);
+		// Currently checking if tier is 0 or above, so anyone can use it. Change the number to whatever tier you want.
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			getUsersPerkTier(user) >= 0
+				? res => {
+						return this.client.commands.get('open')!.run(res, [quantity, clueTier.name]);
+				  }
+				: undefined,
+			undefined,
+			data,
+			loot
+		);
 	}
 }
