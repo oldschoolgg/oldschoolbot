@@ -11,6 +11,7 @@ import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportSer
 import { GearSetupTypes } from './gear/types';
 import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
+import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 
@@ -538,4 +539,12 @@ export function isValidNickname(str?: string) {
 		['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
 		stripEmojis(str).length === str.length
 	);
+}
+
+export function patronMaxTripCalc(user: KlasaUser) {
+	const perkTier = getUsersPerkTier(user);
+	if (perkTier === PerkTier.Two) return Time.Minute * 3;
+	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
+	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
+	return 0;
 }

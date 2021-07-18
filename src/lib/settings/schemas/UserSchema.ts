@@ -43,7 +43,7 @@ Client.defaultUserSchema
 	.add('item_contract_bank', 'any', { default: {} })
 	.add('ourania_tokens', 'integer', { default: 0 })
 	.add('combat_options', 'integer', { array: true, default: [] })
-
+	.add('farming_patch_reminders', 'boolean', { default: true })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })

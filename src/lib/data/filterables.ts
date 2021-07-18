@@ -1,5 +1,6 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { SuperCompostables } from '../../commands/Minion/compostbin';
 import { allPetIDs } from '../../commands/Minion/equippet';
 import { customItems } from '../customItems';
 import { gracefulItems } from '../skilling/skills/agility';
@@ -936,6 +937,11 @@ export const filterableTypes: Filterable[] = [
 		name: 'Farming',
 		aliases: ['farming', 'farm', 'seeds'],
 		items: [...resolveItems(['Compost', 'Supercompost', 'Ultracompost', 'Bottomless compost bucket ']), ...seeds]
+	},
+	{
+		name: 'Compost',
+		aliases: ['compost', 'compostables'],
+		items: [...resolveItems(['Compost', 'Supercompost', 'Ultracompost']), ...resolveItems(SuperCompostables)]
 	},
 	{
 		name: 'Herblore',

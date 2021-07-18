@@ -27,6 +27,7 @@ export interface IPatchData {
 	lastQuantity: number;
 	lastUpgradeType: 'compost' | 'supercompost' | 'ultracompost' | 'null' | null;
 	lastPayment: boolean;
+	wasReminded?: true;
 }
 
 export type PatchData = IPatchData | null;

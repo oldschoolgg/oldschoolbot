@@ -207,6 +207,18 @@ export const Eatables: Eatable[] = [
 		raw: null
 	},
 	{
+		name: 'Chilli potato',
+		id: itemID('Chilli potato'),
+		healAmount: 14,
+		raw: null
+	},
+	{
+		name: 'Egg potato',
+		id: itemID('Egg potato'),
+		healAmount: 16,
+		raw: null
+	},
+	{
 		name: 'Dark crab',
 		id: itemID('Dark crab'),
 		healAmount: 22,
