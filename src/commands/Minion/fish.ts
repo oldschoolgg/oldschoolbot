@@ -97,7 +97,10 @@ export default class extends BotCommand {
 				}
 				break;
 			default:
-				if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
+				if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven harpoon'))) {
+					scaledTimePerFish /= hasShelldon ? 1.5 : 2;
+					boosts.push(`${hasShelldon ? '50%' : '2x'} for Dwarven harpoon`);
+				} else if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Crystal harpoon');
 				}

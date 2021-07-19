@@ -511,6 +511,7 @@ const cantBeDropped = [
 	itemID('Dwarven gauntlets'),
 	itemID('Dwarven knife'),
 	itemID('Dwarven blessing'),
+	itemID('Dwarven harpoon'),
 	itemID('Helm of raedwald'),
 	itemID('Clue hunter garb'),
 	itemID('Clue hunter gloves'),

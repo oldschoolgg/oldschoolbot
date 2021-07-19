@@ -74,6 +74,9 @@ setCustomItem(6741, 'Dwarven warhammer', 'Dragon warhammer', {}, 10_000_000);
 
 setCustomItem(8871, 'Dwarven crate', 'Mystery box', {}, 100_000);
 
+// 2x faster fishing
+setCustomItem(50_036, 'Dwarven harpoon', 'Dragon harpoon', {}, 1_000_000);
+
 // Abyssal Dragon
 // Abyssal lance || 24218 = Guthixian icon [DUPLICATE]
 // setCustomItem(24218, 'Abyssal lance', ('Dragonhunter lance'), {

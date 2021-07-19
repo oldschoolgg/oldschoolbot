@@ -113,6 +113,16 @@ const Dwarven: SmithedItem[] = [
 		timeToUse: Time.Minute * 3,
 		outputMultiple: 1,
 		requiresBlacksmith: true
+	},
+	{
+		name: 'Dwarven harpoon',
+		level: 99,
+		xp: 12.5,
+		id: itemID('Dwarven harpoon'),
+		inputBars: { [itemID('Dwarven bar')]: 3 },
+		timeToUse: Time.Second * 3.4,
+		outputMultiple: 1,
+		requiresBlacksmith: true
 	}
 ];
 
