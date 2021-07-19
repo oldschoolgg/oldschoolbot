@@ -47,7 +47,7 @@ export default class extends BotCommand {
 			patch => FarmingPatchTypes[patch as keyof typeof FarmingPatchTypes] === undefined
 		);
 
-		if (patchesProvided && patchesProvided.length === 0) {
+		if (!patchesProvided || patchesProvided.length === 0) {
 			return msg.channel.send('No valid patches provided.');
 		}
 
