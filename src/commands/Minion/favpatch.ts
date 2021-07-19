@@ -47,7 +47,7 @@ export default class extends BotCommand {
 			patch => FarmingPatchTypes[patch as keyof typeof FarmingPatchTypes] === undefined
 		);
 
-		if (patchesProvided.length === 0) {
+		if (patchesProvided && patchesProvided.length === 0) {
 			return msg.channel.send('No valid patches provided.');
 		}
 
@@ -57,7 +57,7 @@ export default class extends BotCommand {
 		// Add all specified patches that weren't already favorites to the new favorites
 		newFavorites.push(...patchesProvided.filter(patch => !currentFavorites.includes(patch)));
 
-		if (newFavorites && newFavorites !== currentFavorites) {
+		if (newFavorites !== currentFavorites) {
 			const removed = currentFavorites.filter(x => !newFavorites.includes(x));
 			const added = newFavorites.filter(x => !currentFavorites.includes(x));
 			let str = 'Favorite patches modified.\n';
