@@ -242,7 +242,7 @@ export default class extends BotCommand {
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 1,
-			maxSize: 12,
+			maxSize: 5,
 			ironmanAllowed: true,
 			message,
 			customDenier: user => {
