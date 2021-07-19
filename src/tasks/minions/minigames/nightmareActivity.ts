@@ -26,7 +26,7 @@ export default class extends Task {
 	async run(data: NightmareActivityTaskOptions) {
 		const { channelID, leader, users, quantity, duration } = data;
 		const teamsLoot: { [key: string]: ItemBank } = {};
-		const teamsPCl: { [key: string]: ItemBank } = {};
+		const teamsPreviousCL: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
 		const parsedUsers: NightmareUser[] = [];
@@ -81,22 +81,22 @@ export default class extends Task {
 				taskQuantity: null
 			});
 
-			// Fix purple items on solo kills
-			const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
-			teamsLoot[user.id] = itemsAdded;
-			teamsPCl[user.id] = previousCL;
+			totalLoot.add(loot);
 
-			totalLoot.add(itemsAdded);
+			// Fix purple items on solo kills
+			const { previousCL } = await user.addItemsToBank(loot, true);
+			// Only add previousCL for leader
+			if (user.id === leader) teamsPreviousCL[user.id] = previousCL;
 
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) await user.incrementMonsterScore(NightmareMonster.id, kcToAdd);
-			const purple = Object.keys(itemsAdded).some(itemID =>
+			const purple = Object.keys(loot).some(itemID =>
 				isImportantItemForMonster(parseInt(itemID), NightmareMonster)
 			);
 
-			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(itemsAdded)}||\n`;
+			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
 
-			announceLoot(this.client, leaderUser, NightmareMonster, itemsAdded, {
+			announceLoot(this.client, leaderUser, NightmareMonster, loot, {
 				leader: leaderUser,
 				lootRecipient: user,
 				size: users.length
@@ -130,7 +130,7 @@ export default class extends Task {
 					true,
 					{ showNewCL: 1 },
 					leaderUser,
-					teamsPCl[leader]
+					teamsPreviousCL[leader]
 				);
 
 			const kc = leaderUser.getKC(NightmareMonster.id);
