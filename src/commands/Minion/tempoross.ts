@@ -52,7 +52,10 @@ export default class extends BotCommand {
 			durationPerRoss = reduceNumByPercent(durationPerRoss, percentReduced);
 		}
 
-		if (user.getGear('skilling').hasEquipped('Crystal harpoon') && fLevel >= 71) {
+		if (user.getGear('skilling').hasEquipped('Dwarven harpoon') && fLevel >= 99) {
+			messages.push('2x boost for Dwarven harpoon');
+			durationPerRoss /= 2;
+		} else if (user.getGear('skilling').hasEquipped('Crystal harpoon') && fLevel >= 71) {
 			messages.push('30% boost for Crystal harpoon');
 			durationPerRoss = reduceNumByPercent(durationPerRoss, 30);
 		} else if (user.getGear('skilling').hasEquipped('Infernal harpoon') && fLevel >= 75) {
