@@ -1001,14 +1001,14 @@ function getUserClData(usarBank: ItemBank, clItems: number[]) {
 export async function getCollection(options: {
 	user: KlasaUser;
 	search: string;
-	allItems?: boolean;
+	flags: { [key: string]: string | number };
 	logType?: 'collection' | 'sacrifice' | 'bank';
 }): Promise<false | IToReturnCollection> {
-	let { user, search, allItems, logType } = options;
+	let { user, search, flags, logType } = options;
 
 	await user.settings.sync(true);
 
-	if (allItems === undefined) allItems = false;
+	const allItems = Boolean(flags.all);
 	if (logType === undefined) logType = 'collection';
 
 	let userCheckBank = new Bank();
@@ -1025,7 +1025,10 @@ export async function getCollection(options: {
 			break;
 	}
 
-	const clItems = getCollectionItems(search, allItems ?? false);
+	let clItems = getCollectionItems(search, allItems);
+	if (Boolean(flags.missing)) {
+		clItems = clItems.filter(i => !userCheckBank.has(i));
+	}
 	const [totalCl, userAmount] = getUserClData(userCheckBank.bank, clItems);
 
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {

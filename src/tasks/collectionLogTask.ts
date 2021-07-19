@@ -219,7 +219,7 @@ export default class CollectionLogTask extends Task {
 			collectionLog = await getCollection({
 				user,
 				search: collection,
-				allItems: Boolean(flags.all),
+				flags,
 				logType: type
 			});
 		}
@@ -413,7 +413,7 @@ export default class CollectionLogTask extends Task {
 
 		// Collection obtained items
 		ctx.font = '16px OSRSFontCompact';
-		const toDraw = type === 'sacrifice' ? 'Sacrificed: ' : 'Obtained: ';
+		const toDraw = flags.missing ? 'Missing: ' : type === 'sacrifice' ? 'Sacrificed: ' : 'Obtained: ';
 		const obtainableMeasure = ctx.measureText(toDraw);
 		this.drawText(ctx, toDraw, 0, 13);
 		if (collectionLog.collectionTotal === collectionLog.collectionObtained) {
@@ -427,7 +427,9 @@ export default class CollectionLogTask extends Task {
 		}
 		this.drawText(
 			ctx,
-			`${collectionLog.collectionObtained.toLocaleString()}/${collectionLog.collectionTotal.toLocaleString()}`,
+			`${
+				flags.missing ? '' : `${collectionLog.collectionObtained.toLocaleString()}/`
+			}${collectionLog.collectionTotal.toLocaleString()}`,
 			obtainableMeasure.width,
 			13
 		);
