@@ -87,7 +87,13 @@ export default class extends Task {
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
-		let str = `${user}, ${user.minionName} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated.`;
+		let str = `${user}, ${
+			user.minionName
+		} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated. ${
+			user.usingPet('Flappy')
+				? ' \n\n<:flappy:812280578195456002> Flappy helps you in your treekings, granting you 2x rewards.'
+				: ''
+		}`;
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
