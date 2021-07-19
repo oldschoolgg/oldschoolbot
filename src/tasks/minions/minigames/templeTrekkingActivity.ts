@@ -81,6 +81,10 @@ export default class extends Task {
 			loot.add(rewardToken.id);
 		}
 
+		if (user.usingPet('Flappy')) {
+			loot.multiply(2);
+		}
+
 		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
 		let str = `${user}, ${user.minionName} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated.`;
