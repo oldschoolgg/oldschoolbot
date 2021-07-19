@@ -91,7 +91,7 @@ export default class extends BotCommand {
 		}
 		if (msg.author.hasItemEquippedAnywhere('Dwarven knife')) {
 			if (hasScruffy) {
-				timeToFletchSingleItem *= 0.75;
+				timeToFletchSingleItem /= 1.5;
 			} else {
 				timeToFletchSingleItem /= 2;
 			}
