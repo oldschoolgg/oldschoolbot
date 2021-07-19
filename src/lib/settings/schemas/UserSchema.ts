@@ -48,6 +48,7 @@ Client.defaultUserSchema
 	)
 
 	.add('favorite_alchables', 'integer', { array: true, default: [] })
+	.add('favorite_patches', 'string', { array: true, default: [] })
 	.add('bank_bg_hex', 'string', { default: null })
 	.add('minion', folder =>
 		folder

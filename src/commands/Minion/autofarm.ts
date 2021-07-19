@@ -4,11 +4,13 @@ import { Bank } from 'oldschooljs';
 
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
+import { FarmingPatchTypes } from '../../lib/minions/farming/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcNumOfPatches } from '../../lib/skilling/functions/calcsFarming';
 import { plants } from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { toTitleCase } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -30,9 +32,19 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const currentDate = new Date().getTime();
 		const userBank = msg.author.bank();
+		const favPatches = msg.author.settings.get(UserSettings.FavoritePatches);
 		let possiblePlants = plants.sort((a, b) => b.level - a.level);
 		const toPlant = possiblePlants.find(p => {
 			if (msg.author.skillLevel(SkillsEnum.Farming) < p.level) return false;
+			if (
+				favPatches.length !== 0 &&
+				!favPatches.includes(
+					FarmingPatchTypes[toTitleCase(p.seedType).replace(' ', '') as keyof typeof FarmingPatchTypes]
+				)
+			) {
+				return false;
+			}
+
 			const getPatchType = resolvePatchTypeSetting(p.seedType)!;
 			const patchData = msg.author.settings.get(getPatchType) ?? defaultPatches;
 			const lastPlantTime: number = patchData.plantTime;

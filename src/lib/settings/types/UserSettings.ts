@@ -47,6 +47,7 @@ export namespace UserSettings {
 	export const AttackStyle = T<readonly SkillsEnum[]>('attack_style');
 	export const TotalCoxPoints = T<number>('total_cox_points');
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
+	export const FavoritePatches = T<readonly FarmingPatchTypes[]>('favorite_patches');
 	export const BankBackgroundHex = T<HexColorString | null>('bank_bg_hex');
 	export const CombatOptions = T<readonly CombatOptionsEnum[]>('combat_options');
 	export const FarmingPatchReminders = T<boolean>('farming_patch_reminders');
