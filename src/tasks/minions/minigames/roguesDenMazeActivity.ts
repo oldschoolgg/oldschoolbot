@@ -47,16 +47,17 @@ export default class extends Task {
 			str += `\n**${user.minionName} failed to find any Rogue outfit pieces!**`;
 		}
 
-		await user.addItemsToBank(loot.bank, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot.bank, true);
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
-			loot.bank,
+			itemsAdded,
 			`Loot From ${quantity}x Rogues' Den maze`,
 			false,
 			{
 				showNewCL: 1
 			},
-			user
+			user,
+			previousCL
 		);
 
 		handleTripFinish(
@@ -70,7 +71,7 @@ export default class extends Task {
 			},
 			gotLoot ? image! : undefined,
 			data,
-			loot.bank
+			itemsAdded
 		);
 	}
 }
