@@ -90,9 +90,7 @@ export default class extends Task {
 		let str = `${user}, ${
 			user.minionName
 		} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated. ${
-			user.usingPet('Flappy')
-				? ' \n\n<:flappy:812280578195456002> Flappy helps you in your treekings, granting you 2x rewards.'
-				: ''
+			user.usingPet('Flappy') ? ' <:flappy:812280578195456002>' : ''
 		}`;
 
 		const { image } = await this.client.tasks
