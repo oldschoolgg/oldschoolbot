@@ -90,7 +90,9 @@ export default class extends Task {
 									'Farming patch reminders have been disabled. You can enable them again using `+farm --enablereminders`.'
 								);
 							}
-						} catch {}
+						} catch {
+							message.edit({ components: [] });
+						}
 					}
 				}
 			} catch (err) {
