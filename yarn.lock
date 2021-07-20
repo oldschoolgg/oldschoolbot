@@ -709,10 +709,10 @@
   dependencies:
     "@octokit/openapi-types" "^7.3.2"
 
-"@oldschoolgg/eslint-config@^1.2.3":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@oldschoolgg/eslint-config/-/eslint-config-1.2.3.tgz#f1a73035da9548847ff7eea232a301b760920838"
-  integrity sha512-Qvclj1bVYM0ovWgbqjRH166lskzWhndp304Qm/dqtUXCxtdVaxN0+yWEAnlL6ZjWGkTuG85HeUKrOJsgDtjhXQ==
+"@oldschoolgg/eslint-config@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@oldschoolgg/eslint-config/-/eslint-config-1.2.4.tgz#3569430a6a0c6cc7c69a388239a76243f1f3160d"
+  integrity sha512-zdVLqIKkhfiQPi/A2zJt46rZf5t28NiAPCNG/DfPHi7mgxQ7KAMx/kjr8MmprK6QpLDVMQfYLFhkpFmuonAZCQ==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.26.1"
     "@typescript-eslint/parser" "^4.26.1"
