@@ -163,12 +163,15 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		} else {
 			newSlayerXP += params.taskQuantity! * hp;
 		}
-		// Give slayer XP for K'ril + Kree'Arra
+		// Give slayer XP for K'ril + Kree'Arra + Sire
 		if (params.monsterID === Monsters.KrilTsutsaroth.id) {
 			newSlayerXP += params.taskQuantity! * 142;
 		}
 		if (params.monsterID === Monsters.Kreearra.id) {
 			newSlayerXP += params.taskQuantity! * (132.5 + 124 + 132.5);
+		}
+		if (params.monsterID === Monsters.AbyssalSire.id) {
+			newSlayerXP += params.taskQuantity! * 200;
 		}
 		res.push(
 			await user.addXP({

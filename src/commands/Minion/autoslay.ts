@@ -4,7 +4,12 @@ import { Monsters } from 'oldschooljs';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { AutoslayOptionsEnum, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../lib/slayer/slayerUtil';
+import {
+	AutoslayOptionsEnum,
+	getCommonTaskName,
+	getUsersCurrentSlayerInfo,
+	SlayerMasterEnum
+} from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { wipeDBArrayByKey } from '../../lib/util';
 
@@ -337,6 +342,12 @@ export default class extends BotCommand {
 					AutoslayOptionsEnum.HighestUnlocked
 				);
 			}
+
+			let commonName = getCommonTaskName(usersTask.assignedTask!.monster);
+			if (commonName === 'TzHaar') {
+				return this.client.commands.get('fightcaves')?.run(msg, []);
+			}
+
 			const allMonsters = killableMonsters.filter(m => {
 				return usersTask.assignedTask!.monsters.includes(m.id);
 			});
