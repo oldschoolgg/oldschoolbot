@@ -66,6 +66,11 @@ interface KCUser {
 	minigameScores: ItemBank;
 }
 
+interface contractUser {
+	id: string;
+	contractCount: number;
+}
+
 interface GPLeaderboard {
 	lastUpdated: number;
 	list: GPUser[];
@@ -113,7 +118,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame] [name:...string]',
+			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|farmingcontracts|xp] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -166,6 +171,12 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
+		this.skills(msg, ['overall']);
+		return null;
+	}
+
+	async xp(msg: KlasaMessage) {
+		msg.flagArgs.xp = 'xp';
 		this.skills(msg, ['overall']);
 		return null;
 	}
@@ -243,6 +254,42 @@ DESC LIMIT 2000;`
 					subList.map(({ id, QP }) => `**${this.getUsername(id)}** has ${QP.toLocaleString()} QP`).join('\n')
 				),
 			'QP Leaderboard'
+		);
+	}
+
+	async farmingcontracts(msg: KlasaMessage) {
+		const onlyForGuild = msg.flagArgs.server;
+		const key = 'minion.farmingContract';
+		const value = 'contractsCompleted';
+
+		let list = (
+			await this.query(`SELECT id, "${key}" FROM users WHERE CAST ("${key}"->>'${value}' AS INTEGER) >= 1;`)
+		)
+			.filter(user => typeof user[key][value] === 'number')
+			.sort((a: contractUser, b: contractUser) => {
+				return b.contractCount - a.contractCount;
+			})
+			.slice(0, 2000);
+
+		if (onlyForGuild && msg.guild) {
+			list = list.filter(user => msg.guild!.members.cache.has(user.id));
+		}
+
+		this.doMenu(
+			msg,
+			util
+				.chunk(list, 10)
+				.map(subList =>
+					subList
+						.map(
+							user =>
+								`**${this.getUsername(user.id)}** has ${user[key][
+									value
+								].toLocaleString()} contracts completed`
+						)
+						.join('\n')
+				),
+			'Farming contracts Leaderboard'
 		);
 	}
 
@@ -354,22 +401,24 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 FROM users
 ${msg.flagArgs.im ? 'WHERE "minion.ironman" = true' : ''}
 ORDER BY totalxp
-DESC LIMIT 100;`
+DESC LIMIT 2000;`
 			);
-			overallUsers = res
-				.map(user => {
-					let totalLevel = 0;
-					for (const skill of skillsVals) {
-						totalLevel += convertXPtoLVL(Number(user[`skills.${skill.id}` as keyof SkillUser]) as any);
-					}
-					return {
-						id: user.id,
-						totalLevel,
-						ironman: user['minion.ironman'],
-						totalXP: Number(user.totalxp!)
-					};
-				})
-				.sort((a, b) => b.totalLevel - a.totalLevel);
+			overallUsers = res.map(user => {
+				let totalLevel = 0;
+				for (const skill of skillsVals) {
+					totalLevel += convertXPtoLVL(Number(user[`skills.${skill.id}` as keyof SkillUser]) as any);
+				}
+				return {
+					id: user.id,
+					totalLevel,
+					ironman: user['minion.ironman'],
+					totalXP: Number(user.totalxp!)
+				};
+			});
+			if (!msg.flagArgs.xp) {
+				overallUsers.sort((a, b) => b.totalLevel - a.totalLevel);
+			}
+			overallUsers.slice(0, 100);
 		} else {
 			if (!skill) {
 				return msg.channel.send("That's not a valid skill.");
@@ -402,7 +451,7 @@ DESC LIMIT 100;`
 						})
 						.join('\n')
 				),
-				'Overall Leaderboard'
+				`Overall Leaderboard${msg.flagArgs.xp ? ' (XP)' : ''}`
 			);
 			return;
 		}
