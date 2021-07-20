@@ -602,6 +602,9 @@ export default class extends Extendable {
 			case Activity.Trekking: {
 				return `${this.minionName} is currently Temple Trekking. ${formattedDuration}`;
 			}
+			case Activity.KibbleMaking: {
+				return `${this.minionName} is currently making Kibble. ${formattedDuration}`;
+			}
 		}
 	}
 
