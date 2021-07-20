@@ -29,7 +29,7 @@ export async function triviaChallenge(msg: KlasaMessage): Promise<KlasaUser | nu
 	try {
 		const collected = await msg.channel.awaitMessages({
 			max: 1,
-			time: 14_000,
+			time: Time.Second * 30,
 			errors: ['time'],
 			filter: _msg => stringMatches(_msg.content, correct_answer)
 		});
@@ -58,7 +58,7 @@ export async function itemChallenge(msg: KlasaMessage): Promise<KlasaUser | null
 	try {
 		const collected = await msg.channel.awaitMessages({
 			max: 1,
-			time: 14_000,
+			time: Time.Second * 30,
 			errors: ['time'],
 			filter: _msg => stringMatches(_msg.content, randomItem.name)
 		});
@@ -80,7 +80,7 @@ export async function reactChallenge(msg: KlasaMessage): Promise<KlasaUser | nul
 	try {
 		const collected = await message.awaitReactions({
 			max: 1,
-			time: 30_000,
+			time: Time.Second * 30,
 			errors: ['time'],
 			filter: () => true
 		});
