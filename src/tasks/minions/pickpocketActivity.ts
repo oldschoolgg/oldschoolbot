@@ -24,12 +24,10 @@ export function calcLootXPPickpocketing(
 	// Pickpocketing takes 2 ticks
 	const timeToPickpocket = (npc.customTickRate ?? 2.05) * 0.6;
 	// For future Ardougne Diary and Thieving cape
-	const diary = 1;
+	const diary = hasDiary && npc.customTickRate === undefined ? 1.1 : 1;
 	const thievCape = hasThievingCape && npc.customTickRate === undefined ? 1.1 : 1;
 
 	let chanceOfSuccess = (npc.slope * currentLevel + npc.intercept) * diary * thievCape;
-
-	if (hasDiary) chanceOfSuccess += 10;
 
 	for (let i = 0; i < quantity; i++) {
 		if (!percentChance(chanceOfSuccess)) {

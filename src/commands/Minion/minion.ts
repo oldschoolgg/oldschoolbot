@@ -66,7 +66,7 @@ export default class MinionCommand extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		let components = [...informationalButtons.slice(0, 2)];
+		let components = [];
 		const bank = msg.author.bank();
 		if (!msg.author.minionIsBusy) {
 			for (const tier of ClueTiers) {
@@ -92,10 +92,8 @@ export default class MinionCommand extends BotCommand {
 			);
 		}
 
-		const embed = new MessageEmbed().setTitle(msg.author.minionName).setDescription(msg.author.minionStatus);
-
 		const sentMessage = await msg.channel.send({
-			embeds: [embed],
+			content: msg.author.minionStatus,
 			components: components.length > 0 ? [...chunk(components, 5)] : undefined
 		});
 		if (components.length > 0) {
@@ -124,7 +122,9 @@ export default class MinionCommand extends BotCommand {
 						return lastTrip.continue(msg);
 					}
 					await this.client.commands.get('mclue')?.run(msg, [selection.customID]);
-				} catch {}
+				} catch {
+					await sentMessage.edit({ components: [] });
+				}
 			};
 			handleButtons();
 		}
@@ -151,14 +151,17 @@ export default class MinionCommand extends BotCommand {
 
 	@requiresMinion
 	async seticon(msg: KlasaMessage, [icon]: [string]) {
-		if (msg.author.perkTier < PerkTier.Six) {
-			return msg.channel.send("You need to be a Tier 5 Patron to change your minion's icon to a custom icon.");
+		if (msg.author.perkTier < PerkTier.Four) {
+			return msg.channel.send("You need to be a Tier 3 Patron to change your minion's icon to a custom icon.");
 		}
 
 		const res = FormattedCustomEmoji.exec(icon);
 		if (!res || !res[0]) {
 			return msg.channel.send("That's not a valid emoji.");
 		}
+
+		await msg.confirm('Icons cannot be inappropriate or NSFW. Do you understand?');
+
 		await msg.author.settings.update(UserSettings.Minion.Icon, res[0]);
 
 		return msg.channel.send(`Changed your minion icon to ${res}.`);

@@ -1,27 +1,16 @@
 import { User } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, Time, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
-import {
-	Activity,
-	Emoji,
-	Events,
-	HESPORI_ID,
-	LEVEL_99_XP,
-	MAX_QP,
-	MAX_TOTAL_LEVEL,
-	PerkTier,
-	skillEmoji,
-	ZALCANO_ID
-} from '../../lib/constants';
+import { Activity, Emoji, Events, LEVEL_99_XP, MAX_QP, MAX_TOTAL_LEVEL, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear/util';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import killableMonsters, { NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
 import { AddXpParams, KillableMonster } from '../../lib/minions/types';
@@ -93,6 +82,7 @@ import {
 	formatDuration,
 	formatSkillRequirements,
 	itemNameFromID,
+	patronMaxTripCalc,
 	skillsMeetRequirements,
 	stringMatches,
 	toKMB,
@@ -100,7 +90,6 @@ import {
 	Util
 } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import {
 	NightmareActivityTaskOptions,
 	PlunderActivityTaskOptions,
@@ -119,8 +108,6 @@ const suffixes = new SimpleTable<string>()
 	.add(Emoji.PeepoNoob, 1)
 	.add(Emoji.PeepoRanger, 1)
 	.add(Emoji.PeepoSlayer);
-
-const { TzTokJad } = Monsters;
 
 function levelUpSuffix() {
 	return suffixes.roll().item;
@@ -575,13 +562,9 @@ export default class extends Extendable {
 	}
 
 	public async getKCByName(this: KlasaUser, kcName: string) {
-		const mon = [
-			...killableMonsters,
-			NightmareMonster,
-			{ name: 'Zalcano', aliases: ['zalcano'], id: ZALCANO_ID },
-			{ name: 'TzTokJad', aliases: ['jad', 'fightcaves'], id: TzTokJad.id },
-			{ name: 'Hespori', aliases: ['hespori'], id: HESPORI_ID }
-		].find(mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName)));
+		const mon = effectiveMonsters.find(
+			mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
+		);
 		if (mon) {
 			return [mon.name, this.getKC((mon as unknown as Monster).id)];
 		}
@@ -620,20 +603,8 @@ export default class extends Extendable {
 	public maxTripLength(this: User, activity?: Activity) {
 		let max = Time.Minute * 30;
 
-		if (activity === Activity.Alching) {
-			return Time.Hour;
-		}
+		max += patronMaxTripCalc(this);
 
-		const perkTier = getUsersPerkTier(this);
-		if (perkTier === PerkTier.Two) max += Time.Minute * 3;
-		else if (perkTier === PerkTier.Three) max += Time.Minute * 6;
-		else if (perkTier >= PerkTier.Four) max += Time.Minute * 10;
-
-		const sac = this.settings.get(UserSettings.SacrificedValue);
-		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
-		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
-
-		if (!activity) return max;
 		switch (activity) {
 			case Activity.Nightmare:
 			case Activity.GroupMonsterKilling:
@@ -651,12 +622,18 @@ export default class extends Extendable {
 				max += calcPercentOfNum(hpPercent, Time.Minute * 5);
 				break;
 			}
-
+			case Activity.Alching: {
+				max *= 2;
+				break;
+			}
 			default: {
 				break;
 			}
 		}
 
+		const sac = this.settings.get(UserSettings.SacrificedValue);
+		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
+		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
 		return max;
 	}
 
