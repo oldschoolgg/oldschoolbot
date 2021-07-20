@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/node';
 import { Util } from 'discord.js';
 import { Gateway, KlasaClient, Settings } from 'klasa';
 import { getConnection } from 'typeorm';
@@ -59,7 +60,15 @@ export async function getMinigameEntity(userID: string): Promise<MinigameTable> 
 	if (!value) {
 		value = new MinigameTable();
 		value.userID = userID;
-		await value.save();
+		try {
+			await value.save();
+		} catch (err) {
+			captureException(err, {
+				user: {
+					id: userID
+				}
+			});
+		}
 	}
 	return value;
 }

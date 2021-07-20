@@ -54,7 +54,7 @@ export default class extends BotCommand {
 			attackStylesUsed: [GearSetupTypes.Mage]
 		});
 
-		const totalCost = itemsNeeded.add(foodRemoved);
+		const totalCost = itemsNeeded.clone().add(foodRemoved);
 
 		await msg.author.removeItemsFromBank(itemsNeeded);
 

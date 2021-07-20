@@ -315,12 +315,11 @@ export default class BankImageTask extends Task {
 		const isTransparent = Boolean(bgImage.transparent);
 
 		const isPurple: boolean =
-			bankBackgroundID === 14 &&
 			flags.showNewCL !== undefined &&
 			currentCL !== undefined &&
 			Object.keys(bank.bank).some(i => !currentCL[i] && allCLItems.includes(parseInt(i)));
 
-		if (isPurple) {
+		if (isPurple && bankBackgroundID === 14) {
 			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
 		}
 
