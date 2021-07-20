@@ -24,7 +24,7 @@ jobs:
               with:
                   node-version: ${{ matrix.node_version }}
             - name: Restore CI Cache
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: node_modules
                   key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles(matrix.os == 'windows-latest' && '**\yarn.lock' || '**/yarn.lock') }}
