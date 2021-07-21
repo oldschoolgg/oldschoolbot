@@ -1883,3 +1883,14 @@ export const questCL = resolveItems([
 	'Bronze gloves',
 	'Hardleather gloves'
 ]);
+
+export const kingGoldemarCL = resolveItems([
+	'Broken dwarven warhammer',
+	'Dwarven ore',
+	'Dwarven crate',
+	'Athelas seed'
+]);
+
+export const abyssalDragonCL = resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori']);
+
+export const customBossesCL = [...kingGoldemarCL, ...abyssalDragonCL];

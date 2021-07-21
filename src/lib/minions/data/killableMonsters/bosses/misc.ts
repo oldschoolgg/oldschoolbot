@@ -2,15 +2,13 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
-import { bosses } from '../../../../data/collectionLog';
-import { GearSetupTypes, GearStat } from '../../../../gear/types';
 import { corporealBeastCL } from '../../../../data/CollectionsExport';
 import { GearSetupTypes, GearStat } from '../../../../gear';
+import { CorporealBeastTable } from '../../../../simulation/Corp';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
-import { CorporealBeastTable } from '../../../../simulation/Corp';
 
 const killableBosses: KillableMonster[] = [
 	{

@@ -162,8 +162,8 @@ export default class extends BotCommand {
 			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.${
 				extraClueRolls > 0
 					? ` You also received ${extraClueRolls} extra roll${
-						extraClueRolls > 1 ? 's' : ''
-					} from your casket${quantity > 1 ? 's' : ''}!`
+							extraClueRolls > 1 ? 's' : ''
+					  } from your casket${quantity > 1 ? 's' : ''}!`
 					: ''
 			}`,
 			title: opened,

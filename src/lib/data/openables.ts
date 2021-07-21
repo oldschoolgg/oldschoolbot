@@ -14,7 +14,7 @@ import { itemNameFromID, removeDuplicatesFromArray } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
-import { coxLog, customBossLog } from './collectionLog';
+import { chambersOfXericCl, customBossesCL } from './CollectionsExport';
 
 interface Openable {
 	name: string;
@@ -490,8 +490,8 @@ let allItemsIDs = Openables.map(i => (typeof i.table !== 'function' && i.table.a
 ) as number[];
 allItemsIDs = removeDuplicatesFromArray(allItemsIDs);
 const cantBeDropped = [
-	...Object.values(coxLog).flat(Infinity),
-	...Object.values(customBossLog).flat(Infinity),
+	...chambersOfXericCl,
+	...customBossesCL,
 	itemID('Abyssal pouch'),
 	itemID('Dwarven crate'),
 	itemID('Halloween mask set'),

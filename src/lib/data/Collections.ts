@@ -5,6 +5,9 @@ import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXer
 import { table } from 'table';
 
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
+import AbyssalDragon from '../minions/data/killableMonsters/custom/AbyssalDragon';
+import KingGoldemar from '../minions/data/killableMonsters/custom/KingGoldemar';
+import { VasaMagus } from '../minions/data/killableMonsters/custom/VasaMagus';
 import { sepulchreFloors } from '../minions/data/sepulchre';
 import {
 	EasyEncounterLoot,
@@ -17,6 +20,7 @@ import { ItemBank } from '../types';
 import { stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
+	abyssalDragonCL,
 	abyssalSireCL,
 	aerialFishingCL,
 	alchemicalHydraCL,
@@ -72,6 +76,7 @@ import {
 	IToReturnCollection,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
+	kingGoldemarCL,
 	krakenCL,
 	kreeArraCL,
 	krilTsutsarothCL,
@@ -800,6 +805,31 @@ export const allCollectionLogs: ICollection = {
 		Quest: {
 			counts: false,
 			items: questCL
+		},
+		'King Goldemar': {
+			alias: KingGoldemar.aliases,
+			allItems: KingGoldemar.allItems,
+			items: kingGoldemarCL
+		},
+		Malygos: {
+			alias: AbyssalDragon.aliases,
+			allItems: AbyssalDragon.allItems,
+			items: abyssalDragonCL
+		},
+		// 'Kalphite King': {
+		// 	alias: KalphiteKingMonster.aliases,
+		// 	allItems: KKLootTable.allItems,
+		// 	items: allKalphiteKingItems
+		// },
+		// Nex: {
+		// 	alias: NexMonster.aliases,
+		// 	allItems: NexLootTable.allItems,
+		// 	items: allNexItems
+		// },
+		'Vasa Magus': {
+			alias: VasaMagus.aliases,
+			allItems: VasaMagus.allItems,
+			items: resolveItems(['Tattered robes of Vasa', 'Jar of magic', 'Voidling', 'Magus scroll'])
 		}
 	}
 };
