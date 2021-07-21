@@ -319,8 +319,8 @@ export default class extends BotCommand {
 		duration = reduceNumByPercent(duration, 20);
 
 		if (users.length > 1) {
-			duration = reduceNumByPercent(duration, users.length * 10);
-			boosts.push(`${users.length * 10}% for having a team of ${users.length}`);
+			duration = reduceNumByPercent(duration, users.length * 5);
+			boosts.push(`${users.length * 5}% for having a team of ${users.length}`);
 		}
 
 		// Calculate new number of floors will be done now that it is about to start
