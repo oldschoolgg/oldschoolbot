@@ -1073,7 +1073,7 @@ export function getCollectionItems(collection: string, allItems = false): number
 			_items = [
 				...new Set(
 					Object.entries(entries)
-						.filter(e => e[1].enabled === undefined)
+						.filter(e => e[1].enabled === undefined && e[1].hidden === undefined)
 						.map(e => [...new Set([...e[1].items, ...(allItems && e[1].allItems ? e[1].allItems : [])])])
 						.flat(2)
 				)
