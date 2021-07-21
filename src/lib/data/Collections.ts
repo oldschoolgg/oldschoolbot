@@ -490,8 +490,8 @@ export const allCollectionLogs: ICollection = {
 		'Grandmaster Treasure Trails': {
 			alias: ['grandmaster', 'clues grandmaster', 'clue grandmaster', 'clue gm', 'gm'],
 			allItems: GrandmasterClueTable.allItems,
-			kcActivity: user => {
-				return user.getOpenableScore(19_838);
+			kcActivity: {
+				Default: async user => user.getOpenableScore(19_838)
 			},
 			items: cluesGrandmasterCL,
 			roleCategory: ['clues'],
