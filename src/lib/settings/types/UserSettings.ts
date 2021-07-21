@@ -2,7 +2,7 @@
 import { HexColorString } from 'discord.js';
 import { O } from 'ts-toolbelt';
 
-import { Quests } from '../../../commands/Testing/test';
+import { Quests } from '../../../commands/Minion/quest';
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
