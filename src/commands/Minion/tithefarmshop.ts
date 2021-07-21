@@ -31,33 +31,35 @@ export default class extends BotCommand {
 				(item.aliases && item.aliases.some(alias => stringMatches(alias, buyableName)))
 		);
 
+		await msg.author.settings.sync(true);
+        let titheFarmPoints = msg.author.settings.get(UserSettings.Stats.TitheFarmPoints);
+        
 		if (!buyable) {
 			throw `I don't recognize that item, the items you can buy are: ${TitheFarmBuyables.map(
 				item => item.name
-			).join(', ')}.`;
+			).join(', ')}.You have ${titheFarmPoints} points.`;
 		}
-
-		await msg.author.settings.sync(true);
 
 		const outItems = multiplyBank(buyable.outputItems, quantity);
 		const itemString = new Bank(outItems).toString();
 
-		const titheFarmPoints = msg.author.settings.get(UserSettings.Stats.TitheFarmPoints);
-
 		const titheFarmPointsCost = buyable.titheFarmPoints * quantity;
 
 		if (titheFarmPoints < titheFarmPointsCost) {
-			throw `You need ${titheFarmPointsCost} Tithe Farm points to make this purchase.`;
+			throw `You need ${titheFarmPointsCost} Tithe Farm points to make this purchase. You have ${titheFarmPoints}.`;
 		}
 
 		let purchaseMsg = `${itemString} for ${titheFarmPointsCost} Tithe Farm points`;
 
 		await msg.confirm(`${msg.author}, please confirm that you want to purchase ${purchaseMsg}.`);
-
-		await msg.author.settings.update(UserSettings.Stats.TitheFarmPoints, titheFarmPoints - titheFarmPointsCost);
+		titheFarmPoints -= titheFarmPointsCost;
+		
+		await msg.author.settings.update(UserSettings.Stats.TitheFarmPoints, titheFarmPoints);
 
 		await msg.author.addItemsToBank(outItems, true);
 
-		return msg.channel.send(`You purchased ${itemString} for ${titheFarmPointsCost} Tithe Farm points.`);
+		return msg.channel.send(
+			`You purchased ${itemString} for ${titheFarmPointsCost} Tithe Farm points. You have ${titheFarmPoints} remaining.`
+		);
 	}
 }
