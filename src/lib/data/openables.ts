@@ -6,7 +6,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { allPetIDs } from '../../commands/Minion/equippet';
 import { Emoji } from '../constants';
 import { FishTable } from '../minions/data/killableMonsters/custom/SeaKraken';
-import { allKeyPieces, allNexItems } from '../nex';
+import { allKeyPieces } from '../nex';
 import BirthdayPresentTable from '../simulation/birthdayPresent';
 import CasketTable from '../simulation/casket';
 import CrystalChestTable from '../simulation/crystalChest';
@@ -534,7 +534,6 @@ const cantBeDropped = [
 	]),
 	...allPetIDs,
 	...allKeyPieces,
-	...allNexItems,
 	...ALL_PRIMAL
 ] as number[];
 

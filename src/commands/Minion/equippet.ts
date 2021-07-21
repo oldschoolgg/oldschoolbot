@@ -1,51 +1,14 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { allPetsCL } from '../../lib/data/CollectionsExport';
+import { allPetsCL, customPetsCL } from '../../lib/data/CollectionsExport';
 import { requiresMinion } from '../../lib/minions/decorators';
 import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { removeItemFromBank } from '../../lib/util';
-import resolveItems from '../../lib/util/resolveItems';
 
-export const allPetIDs = [
-	...allPetsCL,
-	...resolveItems([
-		'Doug',
-		'Zippy',
-		'Shelldon',
-		'Remy',
-		'Lil Lamb',
-		'Harry',
-		'Klik',
-		'Wintertoad',
-		'Scruffy',
-		'Zak',
-		'Hammy',
-		'Skipper',
-		'Ori',
-		'Cob',
-		'Takon',
-		'Obis',
-		'Peky',
-		'Plopper',
-		'Brock',
-		'Wilvus',
-		'Smokey',
-		'Flappy',
-		'Ishi',
-		'Corgi',
-		'Sandy',
-		'Baby kalphite king',
-		'Craig',
-		'Snappy the Turtle',
-		'Hoppy',
-		'Steve',
-		'Frosty',
-		'Voidling'
-	])
-].flat(Infinity);
+export const allPetIDs = [...allPetsCL, ...customPetsCL];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

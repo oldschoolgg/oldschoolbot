@@ -1,5 +1,6 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { itemID } from 'oldschooljs/dist/util';
 
 import resolveItems from '../util/resolveItems';
 
@@ -1884,6 +1885,41 @@ export const questCL = resolveItems([
 	'Hardleather gloves'
 ]);
 
+export const customPetsCL = resolveItems([
+	'Doug',
+	'Zippy',
+	'Shelldon',
+	'Remy',
+	'Lil Lamb',
+	'Harry',
+	'Klik',
+	'Wintertoad',
+	'Scruffy',
+	'Zak',
+	'Hammy',
+	'Skipper',
+	'Ori',
+	'Cob',
+	'Takon',
+	'Obis',
+	'Peky',
+	'Plopper',
+	'Brock',
+	'Wilvus',
+	'Smokey',
+	'Flappy',
+	'Ishi',
+	'Corgi',
+	'Sandy',
+	'Baby kalphite king',
+	'Craig',
+	'Snappy the Turtle',
+	'Hoppy',
+	'Steve',
+	'Frosty',
+	'Voidling'
+]);
+
 export const kingGoldemarCL = resolveItems([
 	'Broken dwarven warhammer',
 	'Dwarven ore',
@@ -1893,4 +1929,48 @@ export const kingGoldemarCL = resolveItems([
 
 export const abyssalDragonCL = resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori']);
 
-export const customBossesCL = [...kingGoldemarCL, ...abyssalDragonCL];
+export const vasaMagusCL = resolveItems(['Tattered robes of Vasa', 'Jar of magic', 'Voidling', 'Magus scroll']);
+
+export const torvaOutfit = resolveItems([
+	'Torva full helm',
+	'Torva platebody',
+	'Torva platelegs',
+	'Torva boots',
+	'Torva gloves'
+]);
+export const pernixOutfit = resolveItems([
+	'Pernix cowl',
+	'Pernix body',
+	'Pernix chaps',
+	'Pernix boots',
+	'Pernix gloves'
+]);
+export const virtusOutfit = resolveItems([
+	'Virtus mask',
+	'Virtus robe top',
+	'Virtus robe legs',
+	'Virtus boots',
+	'Virtus gloves'
+]);
+export const nexAncientWeapons = resolveItems(['Virtus wand', 'Virtus book', 'Zaryte bow']);
+
+export const nexCL = [
+	...torvaOutfit,
+	...pernixOutfit,
+	...virtusOutfit,
+	...nexAncientWeapons,
+	itemID('Bloodsoaked feather')
+];
+
+export const kalphiteKingCL = resolveItems([
+	'Drygore mace',
+	'Offhand drygore mace',
+	'Drygore longsword',
+	'Offhand drygore longsword',
+	'Drygore rapier',
+	'Offhand drygore rapier',
+	'Perfect chitin',
+	'Baby kalphite king'
+]);
+
+export const customBossesCL = [...kingGoldemarCL, ...abyssalDragonCL, ...vasaMagusCL, ...nexCL, ...kalphiteKingCL];

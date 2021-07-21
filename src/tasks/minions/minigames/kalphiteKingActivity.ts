@@ -4,10 +4,10 @@ import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
+import { kalphiteKingCL } from '../../../lib/data/CollectionsExport';
 import { KalphiteKingMonster } from '../../../lib/kalphiteking';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { allNexItems } from '../../../lib/nex';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
@@ -91,7 +91,7 @@ export default class extends Task {
 			const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) user.incrementMonsterScore(KalphiteKingMonster.id, kcToAdd);
-			const purple = Object.keys(loot).some(id => allNexItems.includes(parseInt(id)));
+			const purple = Object.keys(loot).some(id => kalphiteKingCL.includes(parseInt(id)));
 
 			const usersTask = await getUsersCurrentSlayerInfo(user.id);
 			const isOnTask =
@@ -177,7 +177,8 @@ export default class extends Task {
 				`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 					KalphiteKingMonster.name
 				}, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${
-					(leaderUser.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0) + quantity
+					(leaderUser.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0) +
+					Number(quantity)
 				}.\n\n${soloXP}`,
 				res => {
 					leaderUser.log('continued kk');

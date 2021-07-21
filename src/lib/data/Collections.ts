@@ -4,6 +4,7 @@ import { Bank, Clues, Monsters } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 import { table } from 'table';
 
+import { kalphiteKingLootTable, KalphiteKingMonster } from '../kalphiteking';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
 import AbyssalDragon from '../minions/data/killableMonsters/custom/AbyssalDragon';
 import KingGoldemar from '../minions/data/killableMonsters/custom/KingGoldemar';
@@ -15,6 +16,7 @@ import {
 	MediumEncounterLoot,
 	rewardTokens
 } from '../minions/data/templeTrekking';
+import { nexLootTable, NexMonster } from '../nex';
 import { UserSettings } from '../settings/types/UserSettings';
 import { ItemBank } from '../types';
 import { stringMatches } from '../util';
@@ -54,6 +56,7 @@ import {
 	corporealBeastCL,
 	crazyArchaeologistCL,
 	creatureCreationCL,
+	customPetsCL,
 	cyclopsCL,
 	dagannothKingsCL,
 	dagannothPrimeCL,
@@ -74,6 +77,7 @@ import {
 	ICollection,
 	ILeftListStatus,
 	IToReturnCollection,
+	kalphiteKingCL,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
 	kingGoldemarCL,
@@ -86,6 +90,7 @@ import {
 	miscellaneousCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
+	nexCL,
 	oborCL,
 	pestControlCL,
 	questCL,
@@ -113,6 +118,7 @@ import {
 	TRoleCategories,
 	troubleBrewingCL,
 	tzHaarCL,
+	vasaMagusCL,
 	venenatisCL,
 	vetionCL,
 	volcanicMineCL,
@@ -365,6 +371,31 @@ export const allCollectionLogs: ICollection = {
 			allItems: Monsters.Zulrah.allItems,
 			items: zulrahCL,
 			roleCategory: ['bosses']
+		},
+		'King Goldemar': {
+			alias: KingGoldemar.aliases,
+			allItems: KingGoldemar.allItems,
+			items: kingGoldemarCL
+		},
+		Malygos: {
+			alias: AbyssalDragon.aliases,
+			allItems: AbyssalDragon.allItems,
+			items: abyssalDragonCL
+		},
+		'Kalphite King': {
+			alias: KalphiteKingMonster.aliases,
+			allItems: kalphiteKingLootTable.allItems,
+			items: kalphiteKingCL
+		},
+		Nex: {
+			alias: NexMonster.aliases,
+			allItems: nexLootTable.allItems,
+			items: nexCL
+		},
+		'Vasa Magus': {
+			alias: VasaMagus.aliases,
+			allItems: VasaMagus.allItems,
+			items: vasaMagusCL
 		}
 	},
 	Raids: {
@@ -806,30 +837,9 @@ export const allCollectionLogs: ICollection = {
 			counts: false,
 			items: questCL
 		},
-		'King Goldemar': {
-			alias: KingGoldemar.aliases,
-			allItems: KingGoldemar.allItems,
-			items: kingGoldemarCL
-		},
-		Malygos: {
-			alias: AbyssalDragon.aliases,
-			allItems: AbyssalDragon.allItems,
-			items: abyssalDragonCL
-		},
-		// 'Kalphite King': {
-		// 	alias: KalphiteKingMonster.aliases,
-		// 	allItems: KKLootTable.allItems,
-		// 	items: allKalphiteKingItems
-		// },
-		// Nex: {
-		// 	alias: NexMonster.aliases,
-		// 	allItems: NexLootTable.allItems,
-		// 	items: allNexItems
-		// },
-		'Vasa Magus': {
-			alias: VasaMagus.aliases,
-			allItems: VasaMagus.allItems,
-			items: resolveItems(['Tattered robes of Vasa', 'Jar of magic', 'Voidling', 'Magus scroll'])
+		'Custom Pets': {
+			alias: ['cpets', 'custom pet', 'cpet', 'custom pet'],
+			items: customPetsCL
 		}
 	}
 };

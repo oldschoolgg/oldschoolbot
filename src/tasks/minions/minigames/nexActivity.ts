@@ -5,9 +5,10 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { production } from '../../../config';
 import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
+import { nexCL } from '../../../lib/data/CollectionsExport';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { allNexItems, NexMonster } from '../../../lib/nex';
+import { NexMonster } from '../../../lib/nex';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
@@ -62,7 +63,7 @@ export default class extends Task {
 			const loot = new Bank();
 			loot.add(NexMonster.table.kill(1, {}));
 			if (roll(80 + users.length * 2)) {
-				loot.add(randomItemFromArray(allNexItems), 1);
+				loot.add(randomItemFromArray(nexCL), 1);
 			}
 			if (DOUBLE_LOOT_ACTIVE) {
 				loot.multiply(2);
@@ -96,7 +97,7 @@ export default class extends Task {
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) user.incrementMonsterScore(NexMonster.id, kcToAdd);
-			const purple = Object.keys(loot).some(id => allNexItems.includes(parseInt(id)));
+			const purple = Object.keys(loot).some(id => nexCL.includes(parseInt(id)));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
 
@@ -147,7 +148,7 @@ export default class extends Task {
 					content: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 						NexMonster.name
 					}, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${
-						(leaderUser.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) + quantity
+						(leaderUser.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) + Number(quantity)
 					}.`,
 					title: `${quantity}x Nex`,
 					background: leaderUser.settings.get(UserSettings.BankBackground),
