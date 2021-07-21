@@ -5,7 +5,7 @@ import { IsNull, Not } from 'typeorm';
 
 import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Emoji } from '../../lib/constants';
-import { collectionLogTypes } from '../../lib/data/collectionLog';
+import { getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
@@ -474,27 +474,18 @@ DESC LIMIT 2000;`
 		);
 	}
 
-	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
-		const type = collectionLogTypes.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
-
-		if (!type) {
-			return msg.channel.send(
-				`That's not a valid collection log type. The valid types are: ${collectionLogTypes
-					.map(type => type.name)
-					.join(', ')}`
-			);
+	async cl(msg: KlasaMessage, [inputType = 'overall']: [string]) {
+		const items = getCollectionItems(inputType, false);
+		if (!items || items.length === 0) {
+			return msg.channel.send("That's not a valid collection log category. Check +cl for all possible logs.");
 		}
-
-		const items = Object.values(type.items).flat(Infinity) as number[];
-
 		const users = (
-			await this.client.orm.query(
-				`
+			await this.client.orm.query(`
 SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 				  FROM (
-  SELECT ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank")) "cl_keys",
+  SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
   				id, "collectionLogBank",
-			    cardinality(ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank" - array[${items
+			    cardinality(array(SELECT * FROM jsonb_object_keys("collectionLogBank" - array[${items
 					.map(i => `'${i}'`)
 					.join(', ')}]))) "inverse_length"
   FROM users
@@ -503,10 +494,8 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 ) u
 ORDER BY qty DESC
 LIMIT 50;
-`
-			)
+`)
 		).filter((i: any) => i.qty > 0) as CLUser[];
-
 		if (users.length === 0) {
 			return msg.channel.send('No users found.');
 		}
@@ -516,7 +505,7 @@ LIMIT 50;
 			util
 				.chunk(users, 10)
 				.map(subList => subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')),
-			`${type.name} Collection Log Leaderboard`
+			`${toTitleCase(inputType.toLowerCase())} Collection Log Leaderboard`
 		);
 	}
 
