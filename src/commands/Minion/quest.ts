@@ -213,14 +213,12 @@ const QuestList: IQuest[] = [
 		id: Quests.CooksAssistant,
 		name: "Cook's Assistant",
 		time: Time.Minute * 3,
-		requirements: { items: { Pot: 1, Bucket: 1 } },
 		rewards: { qp: 1, xp: { [SkillsEnum.Cooking]: 300 } }
 	},
 	{
 		id: Quests.DemonSlayer,
 		name: 'Demon Slayer',
 		time: Time.Minute * 4,
-		requirements: { items: { Bones: 25, 995: 1 } },
 		rewards: { qp: 3, items: { Silverlight: 1 } }
 	},
 	{
@@ -234,14 +232,12 @@ const QuestList: IQuest[] = [
 		id: Quests.SheepShearer,
 		name: 'Sheep Shearer',
 		time: Time.Minute * 3,
-		requirements: { items: { 'Ball of wool': 20 } },
 		rewards: { qp: 1, xp: { [SkillsEnum.Crafting]: 150 }, items: { 995: 60 } }
 	},
 	{
 		id: Quests.ShieldofArrav,
 		name: 'Shield of Arrav',
 		time: Time.Minute * 7,
-		requirements: { items: { 995: 20 } },
 		rewards: { qp: 1, items: { 995: 600 } }
 	},
 	{
@@ -254,49 +250,43 @@ const QuestList: IQuest[] = [
 		id: Quests.VampyreSlayer,
 		name: 'Vampyre Slayer',
 		time: Time.Minute * 4,
-		requirements: { items: { 995: 2 } },
 		rewards: { qp: 3, xp: { [SkillsEnum.Attack]: 4825 } }
 	},
 	{
 		id: Quests.ImpCatcher,
 		name: 'Imp Catcher',
 		time: Time.Minute * 3,
-		requirements: { items: { 'White bead': 1, 'Black bead': 1, 'Yellow bead': 1, 'Red bead': 1 } },
 		rewards: { qp: 1, xp: { [SkillsEnum.Magic]: 875 }, items: { 'Amulet of accuracy': 1 } }
 	},
 	{
 		id: Quests.PrinceAliRescue,
 		name: 'Prince Ali Rescue',
 		time: Time.Minute * 9,
-		requirements: { items: { 'Ball of wool': 3, 995: 105, Ashes: 1, 'Bronze bar': 1 } },
 		rewards: { qp: 3, items: { 995: 700 } }
 	},
 	{
 		id: Quests.DoricsQuest,
 		name: "Doric's Quest",
 		time: Time.Minute * 3,
-		requirements: { items: { 'Copper ore': 4, 'Tin ore': 2 } },
 		rewards: { qp: 1, xp: { [SkillsEnum.Mining]: 1300 }, items: { 995: 180 } }
 	},
 	{
 		id: Quests.BlackKnightsFortress,
 		name: "Black Knights' Fortress",
 		time: Time.Minute * 7,
-		requirements: { items: { Cabbage: 1, 'Iron chainbody': 1, 'Bronze med helm': 1 } },
 		rewards: { qp: 3, items: { 995: 2500 } }
 	},
 	{
 		id: Quests.WitchsPotion,
 		name: "Witch's Potion",
 		time: Time.Minute * 4,
-		requirements: { items: { 'Eye of newt': 1, Onion: 1 } },
 		rewards: { qp: 1, xp: { [SkillsEnum.Magic]: 325 } }
 	},
 	{
 		id: Quests.TheKnightsSword,
 		name: "The Knight's Sword",
 		time: Time.Minute * 12,
-		requirements: { level: { [SkillsEnum.Mining]: 10 }, items: { 'Iron bar': 2 } },
+		requirements: { level: { [SkillsEnum.Mining]: 10 } },
 		rewards: { qp: 1, xp: { [SkillsEnum.Smithing]: 12_725 }, items: { 'Blurite sword': 1 } }
 	},
 	{
@@ -309,7 +299,6 @@ const QuestList: IQuest[] = [
 		id: Quests.PiratesTreasure,
 		name: "Pirate's Treasure",
 		time: Time.Minute * 7,
-		requirements: { items: { 995: 60 } },
 		rewards: {
 			qp: 2,
 			items: {
@@ -334,9 +323,6 @@ const QuestList: IQuest[] = [
 					[SkillsEnum.Smithing]: 34
 				}
 			],
-			items: {
-				'Anti-dragon shield': 1
-			},
 			qp: 32
 		},
 		rewards: {
@@ -351,14 +337,6 @@ const QuestList: IQuest[] = [
 		id: Quests.DruidicRitual,
 		name: 'Druidic Ritual',
 		time: Time.Minute * 4,
-		requirements: {
-			items: {
-				'Raw bear meat': 1,
-				'Raw rat meat': 1,
-				'Raw beef': 1,
-				'Raw chicken': 1
-			}
-		},
 		rewards: { qp: 4, xp: { [SkillsEnum.Herblore]: 250 } }
 	},
 	{
@@ -382,7 +360,6 @@ const QuestList: IQuest[] = [
 		id: Quests.WitchsHouse,
 		name: "Witch's House",
 		time: Time.Minute * 12,
-		requirements: {},
 		rewards: {
 			qp: 4,
 			xp: {
@@ -394,7 +371,6 @@ const QuestList: IQuest[] = [
 		id: Quests.MerlinsCrystal,
 		name: "Merlin's Crystal",
 		time: Time.Minute * 13,
-		requirements: {},
 		rewards: {
 			qp: 6,
 			items: {
@@ -460,14 +436,6 @@ const QuestList: IQuest[] = [
 				[SkillsEnum.Smithing]: 40,
 				[SkillsEnum.Magic]: 59,
 				[SkillsEnum.Crafting]: 40
-			},
-			items: {
-				Shrimps: 1,
-				Salmon: 1,
-				Tuna: 1,
-				Bass: 1,
-				Swordfish: 1,
-				Ruby: 2
 			}
 		},
 		rewards: { qp: 1 }
@@ -537,10 +505,7 @@ const QuestList: IQuest[] = [
 			level: {
 				[SkillsEnum.Attack]: 20
 			},
-			quests: [Quests.MerlinsCrystal],
-			items: {
-				Excalibur: 1
-			}
+			quests: [Quests.MerlinsCrystal]
 		},
 		rewards: {
 			qp: 2,
@@ -3336,18 +3301,31 @@ async function xpReward(msg: KlasaMessage, skills: Skills | Skills[], requiremen
 function meetQuestRequirements(quest: IQuest, user: KlasaUser) {
 	// Check requirements
 	const requirementsFailure: string[] = [];
+	const skills: string[] = [];
+	const quests: string[] = [];
+
+	if (quest.requirements?.combatLevel && quest.requirements?.combatLevel > user.combatLevel) {
+		skills.push(`${Emoji.CombatSword} ${quest.requirements?.combatLevel}`);
+	}
+
 	// Skills
 	if (quest.requirements?.level) {
-		const [hasSkillReqs, neededReqs] = user.hasSkillReqs(quest.requirements?.level);
-		if (!hasSkillReqs) {
-			requirementsFailure.push(`${neededReqs}`);
+		for (const [skill, level] of objectEntries(quest.requirements.level)) {
+			if (user.skillLevel(skill) < level!) {
+				skills.push(`${formatSkillRequirements({ [skill]: level! })} (You are **${user.skillLevel(skill)}**)`);
+			}
 		}
 	}
 
 	// Quest Points
 	const userQP = user.settings.get(UserSettings.QP);
 	if (quest.requirements?.qp && userQP < quest.requirements?.qp) {
-		requirementsFailure.push(`${Emoji.QuestIcon} **${quest.requirements?.qp}** Quest points`);
+		skills.push(`${Emoji.QuestIcon} **${quest.requirements?.qp}** QP (You have **${userQP ?? 0}**)`);
+	}
+
+	if (skills.length > 0) {
+		requirementsFailure.push('**Stats**: ');
+		requirementsFailure.push(skills.join(', '));
 	}
 
 	// Quests
@@ -3360,8 +3338,13 @@ function meetQuestRequirements(quest: IQuest, user: KlasaUser) {
 			}
 		}
 		if (questsMissing.length > 0) {
-			requirementsFailure.push(`${questsMissing.map(q => q.name).join(', ')}`);
+			quests.push(`${questsMissing.map(q => q.name).join(', ')}`);
 		}
+	}
+
+	if (quests.length > 0) {
+		requirementsFailure.push('**Quests**: ');
+		requirementsFailure.push(quests.join(', '));
 	}
 
 	return requirementsFailure;
@@ -3499,7 +3482,9 @@ export default class extends BotCommand {
 			const requirementsFailure = meetQuestRequirements(quest, msg.author);
 			if (requirementsFailure.length > 0) {
 				return msg.channel.send(
-					`You do not met all the requirements for this quest. ${requirementsFailure.join(', ')}`
+					`You do not meet all the requirements for the quest **${
+						quest.name
+					}**. You are missing:\n${requirementsFailure.join('\n')}`
 				);
 			}
 		}
