@@ -7,7 +7,7 @@ export interface IToReturnCollection {
 	category: string;
 	name: string;
 	collection: number[];
-	completions?: number;
+	completions?: Record<string, number>;
 	isActivity?: boolean;
 	collectionObtained: number;
 	collectionTotal: number;
@@ -21,6 +21,10 @@ export interface ILeftListStatus {
 
 export type TRoleCategories = 'bosses' | 'slayer' | 'clues' | 'minigames' | 'skilling' | 'raids' | 'pets';
 
+interface IKCActivity {
+	[key: string]: string | string[] | ((user: KlasaUser) => Promise<number>);
+}
+
 export interface ICollectionActivity {
 	[key: string]: {
 		// If the collection is enabled (ca not be accesed if set to false)
@@ -32,7 +36,7 @@ export interface ICollectionActivity {
 		alias?: string[];
 		items: number[];
 		allItems?: number[];
-		kcActivity?: string | string[] | ((user: KlasaUser) => number);
+		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
 		roleCategory?: TRoleCategories[];
 	};
@@ -1094,8 +1098,7 @@ export const castleWarsCL = resolveItems([
 	'Decorative quiver',
 	'Saradomin halo',
 	'Zamorak halo',
-	'Guthix halo',
-	'Castle wars ticket'
+	'Guthix halo'
 ]);
 export const fishingTrawlerCL = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 export const gnomeRestaurantCL = resolveItems(['Grand seed pod', 'Gnome scarf', 'Gnome goggles', 'Mint cake']);
@@ -1223,14 +1226,7 @@ export const shadesOfMorttonCL = resolveItems([
 	"Tree wizards' journal",
 	'Bloody notes'
 ]);
-export const soulWarsCL = resolveItems([
-	"Lil' creator",
-	'Red soul cape',
-	'Blue soul cape',
-	'Ectoplasmator',
-	// Not in the official log
-	'Spoils of war'
-]);
+export const soulWarsCL = resolveItems(["Lil' creator", 'Red soul cape', 'Blue soul cape', 'Ectoplasmator']);
 
 export const templeTrekkingOutfit = resolveItems([
 	'Lumberjack hat',

@@ -7,7 +7,7 @@ import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
-import { itemNameFromID } from '../../lib/util';
+import { itemNameFromID, rand } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
 const gearSpawns = [
@@ -62,8 +62,15 @@ export default class extends BotCommand {
 			for (let i = 0; i < 50; i++) {
 				t.add(Items.random().id);
 			}
-			await msg.author.addItemsToBank(t);
+			await msg.author.addItemsToBank(t, true);
 			return msg.channel.send('Added 50 random items to your bank.');
+		}
+
+		if (msg.flagArgs.all) {
+			let t = new Bank();
+			Items.map(i => t.add(i.id, rand(1, 10)));
+			await msg.author.addItemsToBank(t, true);
+			return msg.channel.send('Added a random amount of every item to your bank');
 		}
 
 		if (msg.flagArgs.openables) {
