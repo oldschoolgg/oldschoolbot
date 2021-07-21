@@ -97,11 +97,16 @@ export default class extends BotCommand {
 		for (const setup of ['range', 'melee', 'mage', 'skilling'] as const) {
 			if (msg.flagArgs[setup]) {
 				let newGear: GearSetup = msg.author.settings.get(`gear.${setup}`) as GearSetup;
+				const returnToBank = new Bank();
 				for (const [item] of items) {
 					if (!item.equipable_by_player || !item.equipment) continue;
+					if (newGear[item.equipment.slot] !== null) {
+						returnToBank.add(newGear[item.equipment.slot]!.item, newGear[item.equipment.slot]!.quantity);
+					}
 					newGear[item.equipment.slot] = { item: item.id, quantity: 1 };
 				}
 				await msg.author.settings.update(`gear.${setup}`, newGear);
+				await msg.author.addItemsToBank(returnToBank);
 				res += `\n\nEquipped these items: ${new Gear(newGear).toString()}`;
 			}
 		}
