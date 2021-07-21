@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { metamorphPets, pets } from '../../lib/data/collectionLog';
+import { allPetsCL } from '../../lib/data/CollectionsExport';
 import { requiresMinion } from '../../lib/minions/decorators';
 import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -10,6 +10,7 @@ import { removeItemFromBank } from '../../lib/util';
 import resolveItems from '../../lib/util/resolveItems';
 
 export const allPetIDs = [
+	...allPetsCL,
 	...resolveItems([
 		'Doug',
 		'Zippy',
@@ -43,9 +44,7 @@ export const allPetIDs = [
 		'Steve',
 		'Frosty',
 		'Voidling'
-	]),
-	Object.values(pets),
-	...metamorphPets
+	])
 ].flat(Infinity);
 
 export default class extends BotCommand {
