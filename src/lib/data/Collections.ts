@@ -18,6 +18,7 @@ import {
 } from '../minions/data/templeTrekking';
 import { nexLootTable, NexMonster } from '../nex';
 import { UserSettings } from '../settings/types/UserSettings';
+import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { ItemBank } from '../types';
 import { stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
@@ -46,6 +47,7 @@ import {
 	cluesEasyCL,
 	cluesEliteCL,
 	cluesEliteRareCL,
+	cluesGrandmasterCL,
 	cluesHardCL,
 	cluesHardRareCL,
 	cluesMasterCL,
@@ -64,6 +66,7 @@ import {
 	dagannothSupremeCL,
 	dailyCL,
 	demonicGorillaCL,
+	discontinuedCustomPetsCL,
 	fightCavesCL,
 	fishingTrawlerCL,
 	fossilIslandNotesCL,
@@ -178,12 +181,6 @@ export const allCollectionLogs: ICollection = {
 			items: chaosFanaticCL,
 			roleCategory: ['bosses']
 		},
-		'Commander Zilyana': {
-			alias: Monsters.CommanderZilyana.aliases,
-			allItems: Monsters.CommanderZilyana.allItems,
-			items: commanderZilyanaCL,
-			roleCategory: ['bosses']
-		},
 		'Corporeal Beast': {
 			alias: Monsters.CorporealBeast.aliases,
 			allItems: Monsters.CorporealBeast.allItems,
@@ -243,12 +240,6 @@ export const allCollectionLogs: ICollection = {
 			items: theGauntletCL,
 			roleCategory: ['bosses']
 		},
-		'General Graardor': {
-			alias: Monsters.GeneralGraardor.aliases,
-			allItems: Monsters.GeneralGraardor.allItems,
-			items: generalGraardorCL,
-			roleCategory: ['bosses']
-		},
 		'Giant Mole': {
 			alias: Monsters.GiantMole.aliases,
 			allItems: Monsters.GiantMole.allItems,
@@ -290,6 +281,12 @@ export const allCollectionLogs: ICollection = {
 			items: krakenCL,
 			roleCategory: ['bosses']
 		},
+		'General Graardor': {
+			alias: Monsters.GeneralGraardor.aliases,
+			allItems: Monsters.GeneralGraardor.allItems,
+			items: generalGraardorCL,
+			roleCategory: ['bosses']
+		},
 		"Kree'arra": {
 			alias: Monsters.Kreearra.aliases,
 			allItems: Monsters.Kreearra.allItems,
@@ -300,6 +297,12 @@ export const allCollectionLogs: ICollection = {
 			alias: Monsters.KrilTsutsaroth.aliases,
 			allItems: Monsters.KrilTsutsaroth.allItems,
 			items: krilTsutsarothCL,
+			roleCategory: ['bosses']
+		},
+		'Commander Zilyana': {
+			alias: Monsters.CommanderZilyana.aliases,
+			allItems: Monsters.CommanderZilyana.allItems,
+			items: commanderZilyanaCL,
 			roleCategory: ['bosses']
 		},
 		'The Nightmare': {
@@ -472,6 +475,16 @@ export const allCollectionLogs: ICollection = {
 				return user.getOpenableScore(19_836);
 			},
 			items: cluesMasterCL,
+			roleCategory: ['clues'],
+			isActivity: true
+		},
+		'Grandmaster Treasure Trails': {
+			alias: ['grandmaster', 'clues grandmaster', 'clue grandmaster', 'clue gm', 'gm'],
+			allItems: GrandmasterClueTable.allItems,
+			kcActivity: user => {
+				return user.getOpenableScore(19_838);
+			},
+			items: cluesGrandmasterCL,
 			roleCategory: ['clues'],
 			isActivity: true
 		},
@@ -673,7 +686,7 @@ export const allCollectionLogs: ICollection = {
 			isActivity: true
 		}
 	},
-	Others: {
+	Other: {
 		'Aerial Fishing': {
 			alias: ['af', 'aerial fishing'],
 			items: aerialFishingCL,
@@ -769,6 +782,49 @@ export const allCollectionLogs: ICollection = {
 			allItems: Monsters.TzHaarKet.allItems,
 			items: tzHaarCL
 		},
+		Miscellaneous: {
+			alias: ['misc'],
+			items: miscellaneousCL
+		},
+		'Ourania Delivery Service': {
+			alias: ['ods', 'ourania'],
+			items: resolveItems([
+				'Master runecrafter hat',
+				'Master runecrafter robe',
+				'Master runecrafter skirt',
+				'Master runecrafter boots',
+				'Elder thread',
+				'Elder talisman'
+			])
+		}
+	},
+	Custom: {
+		Holiday: {
+			counts: false,
+			items: holidayCL
+		},
+		Daily: {
+			counts: false,
+			alias: ['diango'],
+			items: dailyCL
+		},
+		Capes: {
+			counts: false,
+			items: capesCL
+		},
+		Quest: {
+			counts: false,
+			items: questCL
+		},
+		'Custom Pets': {
+			alias: ['cpets', 'custom pet', 'cpet', 'custom pet'],
+			items: customPetsCL
+		},
+		'Custom Pets (Discontinued)': {
+			alias: ['dcpets', 'disc custom pet', 'dcpet', 'dcp', 'discontinued custom pet'],
+			items: discontinuedCustomPetsCL,
+			counts: false
+		},
 		Skilling: {
 			items: resolveItems([
 				'Prospector helmet',
@@ -814,32 +870,52 @@ export const allCollectionLogs: ICollection = {
 			]),
 			roleCategory: ['skilling']
 		},
-		Miscellaneous: {
-			alias: ['misc'],
-			items: miscellaneousCL
-		}
-	},
-	Custom: {
-		Holiday: {
-			counts: false,
-			items: holidayCL
-		},
-		Daily: {
-			counts: false,
-			alias: ['diango'],
-			items: dailyCL
-		},
-		Capes: {
-			counts: false,
-			items: capesCL
-		},
-		Quest: {
-			counts: false,
-			items: questCL
-		},
-		'Custom Pets': {
-			alias: ['cpets', 'custom pet', 'cpet', 'custom pet'],
-			items: customPetsCL
+		Dungeoneering: {
+			alias: ['dg', 'dung', 'dungeoneering'],
+			items: resolveItems([
+				'Chaotic rapier',
+				'Chaotic longsword',
+				'Chaotic maul',
+				'Chaotic staff',
+				'Chaotic crossbow',
+				'Offhand Chaotic rapier',
+				'Offhand Chaotic longsword',
+				'Offhand chaotic crossbow',
+				'Scroll of life',
+				'Scroll of efficiency',
+				'Scroll of cleansing',
+				'Scroll of dexterity',
+				'Scroll of teleportation',
+				'Scroll of farming',
+				'Scroll of proficiency',
+				'Scroll of mystery',
+				'Scroll of longevity',
+				'Farseer kiteshield',
+				'Chaotic remnant',
+				'Frosty',
+				'Gorajan shards',
+				'Amulet of zealots',
+				'Herbicide',
+				'Gorajan warrior helmet',
+				'Gorajan warrior top',
+				'Gorajan warrior legs',
+				'Gorajan warrior gloves',
+				'Gorajan warrior boots',
+				'Gorajan archer helmet',
+				'Gorajan archer top',
+				'Gorajan archer legs',
+				'Gorajan archer gloves',
+				'Gorajan archer boots',
+				'Gorajan occult helmet',
+				'Gorajan occult top',
+				'Gorajan occult legs',
+				'Gorajan occult gloves',
+				'Gorajan occult boots',
+				'Arcane blast necklace',
+				'Farsight snapshot necklace',
+				"Brawler's hook necklace"
+			]),
+			roleCategory: ['skilling']
 		}
 	}
 };
@@ -916,17 +992,17 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems: boolean = 
 	let leftList: ILeftListStatus = {};
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (category === checkCategory) {
-			for (const [activityName, attributes] of Object.entries(entries)) {
+			// Sort list by alphabetical order
+			const catEntries = Object.entries(entries).sort((a, b) => 0 - (a > b ? -1 : 1));
+			for (const [activityName, attributes] of catEntries) {
 				if (attributes.enabled === false || attributes.hidden === true) continue;
 				let items: number[] = [];
 				if (allItems && attributes.allItems) {
 					items = [...new Set([...attributes.items, ...attributes.allItems])];
 				} else {
-					items = attributes.items;
+					items = [...new Set(attributes.items)];
 				}
-				const clItemBank = converCLtoBank(items);
-				const totalCl = clItemBank.items().length;
-				const userAmount = clItemBank.items().length - clItemBank.remove(userBank).items().length;
+				const [totalCl, userAmount] = getUserClData(userBank.bank, items);
 				leftList[activityName] =
 					userAmount === 0 ? 'not_started' : userAmount === totalCl ? 'completed' : 'started';
 			}
@@ -935,24 +1011,25 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems: boolean = 
 	return leftList;
 }
 
-// Get the total items the user has in its CL and the total items to collect
-export function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection') {
+export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collection') {
 	const userCheckBank = new Bank();
-	switch (logType) {
+	switch (type) {
 		case 'collection':
 			userCheckBank.add(user.settings.get(UserSettings.CollectionLogBank));
 			break;
 		case 'bank':
-			userCheckBank.add(user.bank());
+			userCheckBank.add(user.bank({ withGP: true }));
 			break;
 		case 'sacrifice':
 			userCheckBank.add(user.settings.get(UserSettings.SacrificedBank));
 			break;
 	}
+	return userCheckBank;
+}
 
-	const clItems = Object.keys(userCheckBank.bank).map(i => parseInt(i));
-	const owned = clItems.filter(i => allCLItems.includes(i));
-	return [owned.length, allCLItems.length];
+// Get the total items the user has in its CL and the total items to collect
+export function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection') {
+	return getUserClData(getBank(user, logType).bank, allCLItems);
 }
 
 export function getPossibleOptions() {
@@ -980,19 +1057,10 @@ export function getPossibleOptions() {
 	return new MessageAttachment(Buffer.from(normalTable), 'possible_logs.txt');
 }
 
-function stringMatchNoS(string1: string, string2: string) {
-	let match = stringMatches(string1, string2);
-	if (!match) match = stringMatches(string1, string2.substr(0, string2.length - 1));
-	if (!match) match = stringMatches(string1, string2.substr(0, string2.length - 2));
-	if (!match) match = stringMatches(string1.substr(0, string1.length - 1), string2);
-	if (!match) match = stringMatches(string1.substr(0, string1.length - 2), string2);
-	return match;
-}
-
 export function getCollectionItems(collection: string, allItems = false): number[] {
 	let _items: number[] = [];
 	loop: for (const [category, entries] of Object.entries(allCollectionLogs)) {
-		if (stringMatchNoS(category, collection)) {
+		if (stringMatches(category, collection)) {
 			_items = [
 				...new Set(
 					Object.entries(entries)
@@ -1006,8 +1074,8 @@ export function getCollectionItems(collection: string, allItems = false): number
 		for (const [activityName, attributes] of Object.entries(entries)) {
 			if (
 				attributes.enabled === undefined &&
-				(stringMatchNoS(activityName, collection) ||
-					(attributes.alias && attributes.alias.find(a => stringMatchNoS(a, collection))))
+				(stringMatches(activityName, collection) ||
+					(attributes.alias && attributes.alias.find(a => stringMatches(a, collection))))
 			) {
 				_items = [
 					...new Set([...attributes.items, ...(allItems && attributes.allItems ? attributes.allItems : [])])
@@ -1021,7 +1089,7 @@ export function getCollectionItems(collection: string, allItems = false): number
 	}
 	if (_items.length === 0) {
 		const _monster = killableMonsters.find(
-			m => stringMatchNoS(m.name, collection) || m.aliases.some(name => stringMatchNoS(name, collection))
+			m => stringMatches(m.name, collection) || m.aliases.some(name => stringMatches(name, collection))
 		);
 		if (_monster) {
 			_items = Array.from(new Set(Object.values(Monsters.get(_monster!.id)!.allItems!).flat(100))) as number[];
@@ -1031,10 +1099,8 @@ export function getCollectionItems(collection: string, allItems = false): number
 }
 
 function getUserClData(usarBank: ItemBank, clItems: number[]) {
-	const clItemBank = converCLtoBank(clItems);
-	const totalCl = clItemBank.items().length;
-	const userAmount = clItemBank.items().length - clItemBank.remove(usarBank).items().length;
-	return [totalCl, userAmount];
+	const owned = Object.keys(usarBank).filter(i => clItems.includes(Number(i)));
+	return [clItems.length, owned.length];
 }
 
 // Main function that gets the user collection based on its search parameter
@@ -1051,28 +1117,17 @@ export async function getCollection(options: {
 	const allItems = Boolean(flags.all);
 	if (logType === undefined) logType = 'collection';
 
-	let userCheckBank = new Bank();
-
-	switch (logType) {
-		case 'collection':
-			userCheckBank.add(user.settings.get(UserSettings.CollectionLogBank));
-			break;
-		case 'bank':
-			userCheckBank.add(user.bank());
-			break;
-		case 'sacrifice':
-			userCheckBank.add(user.settings.get(UserSettings.SacrificedBank));
-			break;
-	}
-
+	const userCheckBank = getBank(user, logType);
 	let clItems = getCollectionItems(search, allItems);
+
 	if (Boolean(flags.missing)) {
 		clItems = clItems.filter(i => !userCheckBank.has(i));
 	}
+
 	const [totalCl, userAmount] = getUserClData(userCheckBank.bank, clItems);
 
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
-		if (stringMatchNoS(category, search)) {
+		if (stringMatches(category, search)) {
 			return {
 				category,
 				name: category,
@@ -1134,7 +1189,7 @@ export async function getCollection(options: {
 	);
 	if (monster) {
 		return {
-			category: 'Others',
+			category: 'Other',
 			name: monster.name,
 			collection: clItems,
 			completions: user.getKC(monster.id),

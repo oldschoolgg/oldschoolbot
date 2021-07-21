@@ -7,6 +7,7 @@ import { KlasaUser, Task } from 'klasa';
 import { Events } from '../lib/constants';
 import { allCollectionLogs, getCollection, getPossibleOptions, getTotalCl } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
+import bankBackgrounds from '../lib/minions/data/bankBackgrounds';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
 import { canvasImageFromBuffer, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
@@ -230,13 +231,18 @@ export default class CollectionLogTask extends Task {
 			};
 		}
 
+		// Disable tall flag when not showing left list
+		if (flags.nl && flags.tall) {
+			delete flags.tall;
+		}
+
 		const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
 		this.scls = this.cls;
-		if (userBgID === 11) this.scls = this.clsDark;
+		if (userBgID === bankBackgrounds.find(b => b.name === 'Dark')!.id) this.scls = this.clsDark;
 
 		const userCollectionBank = collectionLog.userItems;
 
-		const fullSize = !collectionLog.leftList;
+		const fullSize = flags.nl || !collectionLog.leftList;
 
 		const userTotalCl = getTotalCl(user, type);
 		const leftListCanvas = this.drawLeftList(collectionLog);
@@ -248,10 +254,10 @@ export default class CollectionLogTask extends Task {
 
 		let totalPrice = 0;
 
-		if (collectionLog.category === collectionLog.name) {
+		if (collectionLog.category === collectionLog.name || flags.wide) {
 			canvasWidth = 800;
 		}
-		if (leftListCanvas) {
+		if (leftListCanvas && !fullSize) {
 			leftDivisor = leftListCanvas.width + 14;
 			rightArea = canvasWidth - leftDivisor - 10;
 		}
@@ -305,7 +311,7 @@ export default class CollectionLogTask extends Task {
 			ctx,
 			`${user.username}'s ${
 				type === 'sacrifice' ? 'Sacrifice' : type === 'collection' ? 'Collection' : 'Bank'
-			} Log - ${userTotalCl[0].toLocaleString()}/${userTotalCl[1].toLocaleString()}`,
+			} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()}`,
 			ctx.canvas.width / 2,
 			22
 		);
@@ -332,7 +338,6 @@ export default class CollectionLogTask extends Task {
 			aclIndex++;
 		}
 		ctx.restore();
-
 		// Draw items
 		ctx.save();
 		if (!fullSize) {
@@ -397,7 +402,6 @@ export default class CollectionLogTask extends Task {
 			i++;
 		}
 		ctx.restore();
-
 		// Draw collection name
 		ctx.save();
 		if (!fullSize) {
@@ -464,8 +468,7 @@ export default class CollectionLogTask extends Task {
 			75 + 25
 		);
 		ctx.restore();
-
-		if (leftListCanvas) {
+		if (leftListCanvas && !fullSize) {
 			if (!Boolean(flags.tall)) {
 				let selectedPos = 0;
 				const listItemSize = 15;
@@ -522,7 +525,6 @@ export default class CollectionLogTask extends Task {
 				ctx.drawImage(leftListCanvas, 12, 62);
 			}
 		}
-
 		return new MessageAttachment(canvas.toBuffer('image/png'), `${type}_log_${new Date().valueOf()}.png`);
 	}
 }

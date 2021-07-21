@@ -147,6 +147,7 @@ export const corporealBeastCL = resolveItems([
 	'Elysian sigil',
 	'Spectral sigil',
 	'Arcane sigil',
+	'Divine sigil',
 	'Holy elixir',
 	'Spirit shield',
 	'Jar of spirits'
@@ -864,6 +865,26 @@ export const cluesMasterCL = resolveItems([
 	'Fancy tiara'
 ]);
 
+export const cluesGrandmasterCL = resolveItems([
+	'Helm of raedwald',
+	'Clue hunter garb',
+	'Clue hunter gloves',
+	'Clue hunter trousers',
+	'Clue hunter boots',
+	'Clue hunter cloak',
+	'First age tiara',
+	'First age amulet',
+	'First age cape',
+	'First age bracelet',
+	'First age ring',
+	'Shadow dye',
+	'Blood dye',
+	'Third age dye',
+	'Ice dye',
+	'Dwarven blessing',
+	'Ring of luck'
+]);
+
 export const cluesHardRareCL = resolveItems([
 	'3rd age range coif',
 	'3rd age range top',
@@ -1095,8 +1116,7 @@ export const castleWarsCL = resolveItems([
 	'Decorative quiver',
 	'Saradomin halo',
 	'Zamorak halo',
-	'Guthix halo',
-	'Castle wars ticket'
+	'Guthix halo'
 ]);
 export const fishingTrawlerCL = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 export const gnomeRestaurantCL = resolveItems(['Grand seed pod', 'Gnome scarf', 'Gnome goggles', 'Mint cake']);
@@ -1224,14 +1244,7 @@ export const shadesOfMorttonCL = resolveItems([
 	"Tree wizards' journal",
 	'Bloody notes'
 ]);
-export const soulWarsCL = resolveItems([
-	"Lil' creator",
-	'Red soul cape',
-	'Blue soul cape',
-	'Ectoplasmator',
-	// Not in the official log
-	'Spoils of war'
-]);
+export const soulWarsCL = resolveItems(["Lil' creator", 'Red soul cape', 'Blue soul cape', 'Ectoplasmator']);
 
 export const templeTrekkingOutfit = resolveItems([
 	'Lumberjack hat',
@@ -1844,6 +1857,8 @@ export const capesCL = resolveItems([
 	'Ranging cape(t)',
 	'Slayer hood',
 	'Slayer cape(t)',
+	'Dungeoneering hood',
+	'Dungeoneering cape(t)',
 	'Quest point hood',
 	'Quest point cape',
 	'Achievement diary hood',
@@ -1863,7 +1878,31 @@ export const capesCL = resolveItems([
 	'Imbued zamorak max hood',
 	'Imbued zamorak max cape',
 	'Mythical max hood',
-	'Mythical max cape'
+	'Mythical max cape',
+	'Mining master cape',
+	'Smithing master cape',
+	'Woodcutting master cape',
+	'Firemaking master cape',
+	'Fishing master cape',
+	'Agility master cape',
+	'Cooking master cape',
+	'Crafting master cape',
+	'Prayer master cape',
+	'Fletching master cape',
+	'Runecraft master cape',
+	'Thieving master cape',
+	'Farming master cape',
+	'Herblore master cape',
+	'Hunter master cape',
+	'Construction master cape',
+	'Magic master cape',
+	'Attack master cape',
+	'Strength master cape',
+	'Defence master cape',
+	'Hitpoints master cape',
+	'Ranged master cape',
+	'Slayer master cape',
+	'Dungeoneering master cape'
 ]);
 export const questCL = resolveItems([
 	'Quest point hood',
@@ -1899,25 +1938,28 @@ export const customPetsCL = resolveItems([
 	'Hammy',
 	'Skipper',
 	'Ori',
-	'Cob',
 	'Takon',
 	'Obis',
 	'Peky',
 	'Plopper',
 	'Brock',
 	'Wilvus',
-	'Smokey',
-	'Flappy',
 	'Ishi',
-	'Corgi',
 	'Sandy',
 	'Baby kalphite king',
-	'Craig',
-	'Snappy the Turtle',
-	'Hoppy',
 	'Steve',
 	'Frosty',
 	'Voidling'
+]);
+
+export const discontinuedCustomPetsCL = resolveItems([
+	'Hoppy',
+	'Craig',
+	'Smokey',
+	'Flappy',
+	'Corgi',
+	'Snappy the turtle',
+	'Cob'
 ]);
 
 export const kingGoldemarCL = resolveItems([
@@ -1954,11 +1996,15 @@ export const virtusOutfit = resolveItems([
 ]);
 export const nexAncientWeapons = resolveItems(['Virtus wand', 'Virtus book', 'Zaryte bow']);
 
+export const frozenKeyPieces = resolveItems(['Key piece 1', 'Key piece 2', 'Key piece 3', 'Key piece 4']);
+
 export const nexCL = [
 	...torvaOutfit,
 	...pernixOutfit,
 	...virtusOutfit,
 	...nexAncientWeapons,
+	...frozenKeyPieces,
+	itemID('Frozen key'),
 	itemID('Bloodsoaked feather')
 ];
 

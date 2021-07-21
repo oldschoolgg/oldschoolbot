@@ -4,7 +4,6 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { nexCL } from './data/CollectionsExport';
 import { GearSetupTypes, GearStat } from './gear';
 import { KillableMonster } from './minions/types';
-import resolveItems from './util/resolveItems';
 import { makeKillTable } from './util/setCustomMonster';
 
 export const nexLootTable = new LootTable()
@@ -23,8 +22,6 @@ export const nexLootTable = new LootTable()
 	.tertiary(5, 'Tradeable mystery box')
 	.tertiary(20, 'Clue scroll (grandmaster)')
 	.tertiary(3000, 'Bloodsoaked feather');
-
-export const allKeyPieces = resolveItems(['Key piece 1', 'Key piece 2', 'Key piece 3', 'Key piece 4']);
 
 export const NexMonster: KillableMonster = {
 	id: 46_274,
