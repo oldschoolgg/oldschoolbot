@@ -1,6 +1,6 @@
 import { Canvas, CanvasRenderingContext2D, createCanvas, Image } from 'canvas';
 import { MessageAttachment, MessageOptions } from 'discord.js';
-import { objectKeys } from 'e';
+import { objectEntries, objectKeys } from 'e';
 import fs from 'fs';
 import { KlasaUser, Task } from 'klasa';
 
@@ -213,6 +213,8 @@ export default class CollectionLogTask extends Task {
 		flags: { [key: string]: string | number };
 	}): Promise<MessageOptions | MessageAttachment> {
 		let { collection, type, user, flags } = options;
+
+		await user.settings.sync(true);
 
 		let collectionLog = undefined;
 
@@ -439,18 +441,23 @@ export default class CollectionLogTask extends Task {
 		);
 
 		if (collectionLog.completions && ['collection', 'bank'].includes(type)) {
+			let drawnSoFar = '';
 			// Times done/killed
 			ctx.font = '16px OSRSFontCompact';
 			ctx.textAlign = 'left';
 			ctx.fillStyle = '#FF981F';
-			this.drawText(ctx, collectionLog.isActivity ? 'Completions: ' : 'Kills: ', 0, 25);
-			ctx.fillStyle = '#FFFFFF';
-			this.drawText(
-				ctx,
-				collectionLog.completions.toLocaleString(),
-				ctx.measureText(collectionLog.isActivity ? 'Completions: ' : 'Kills: ').width,
-				25
-			);
+			this.drawText(ctx, (drawnSoFar = collectionLog.isActivity ? 'Completions: ' : 'Kills: '), 0, 25);
+			for (let [type, value] of objectEntries(collectionLog.completions)) {
+				if (type !== 'Default') {
+					if (value === 0) continue;
+					ctx.fillStyle = '#FF981F';
+					this.drawText(ctx, ` / ${type}: `, ctx.measureText(drawnSoFar).width, 25);
+					drawnSoFar += ` / ${type}: `;
+				}
+				ctx.fillStyle = '#FFFFFF';
+				this.drawText(ctx, value.toLocaleString(), ctx.measureText(drawnSoFar).width, 25);
+				drawnSoFar += value.toLocaleString();
+			}
 		}
 		ctx.restore();
 		// Total value of the selected activity/tab

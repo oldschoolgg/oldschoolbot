@@ -7,7 +7,7 @@ export interface IToReturnCollection {
 	category: string;
 	name: string;
 	collection: number[];
-	completions?: number;
+	completions?: Record<string, number>;
 	isActivity?: boolean;
 	collectionObtained: number;
 	collectionTotal: number;
@@ -21,6 +21,10 @@ export interface ILeftListStatus {
 
 export type TRoleCategories = 'bosses' | 'slayer' | 'clues' | 'minigames' | 'skilling' | 'raids' | 'pets';
 
+interface IKCActivity {
+	[key: string]: string | string[] | ((user: KlasaUser) => Promise<number>);
+}
+
 export interface ICollectionActivity {
 	[key: string]: {
 		// If the collection is enabled (ca not be accesed if set to false)
@@ -32,7 +36,7 @@ export interface ICollectionActivity {
 		alias?: string[];
 		items: number[];
 		allItems?: number[];
-		kcActivity?: string | string[] | ((user: KlasaUser) => number);
+		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
 		roleCategory?: TRoleCategories[];
 	};

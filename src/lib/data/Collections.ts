@@ -1,4 +1,5 @@
 import { MessageAttachment } from 'discord.js';
+import { objectEntries } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Clues, Monsters } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
@@ -195,7 +196,9 @@ export const allCollectionLogs: ICollection = {
 		},
 		'Dagannoth Kings': {
 			alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
-			kcActivity: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name],
+			kcActivity: {
+				Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name]
+			},
 			allItems: (() => {
 				return [
 					...new Set(
@@ -236,7 +239,10 @@ export const allCollectionLogs: ICollection = {
 		},
 		'The Gauntlet': {
 			alias: ['gauntlet', 'crystalline hunllef', 'hunllef'],
-			kcActivity: ['Gauntlet', 'CorruptedGauntlet'],
+			kcActivity: {
+				Default: user => user.getMinigameScore('Gauntlet'),
+				Corrupted: user => user.getMinigameScore('CorruptedGauntlet')
+			},
 			items: theGauntletCL,
 			roleCategory: ['bosses']
 		},
@@ -404,7 +410,10 @@ export const allCollectionLogs: ICollection = {
 	Raids: {
 		"Chamber's of Xeric": {
 			alias: ChambersOfXeric.aliases,
-			kcActivity: ['Raids', 'RaidsChallengeMode'],
+			kcActivity: {
+				Default: async user => user.getMinigameScore('Raids'),
+				Challenge: async user => user.getMinigameScore('RaidsChallengeMode')
+			},
 			items: chambersOfXericCl,
 			roleCategory: ['raids'],
 			isActivity: true
@@ -421,8 +430,8 @@ export const allCollectionLogs: ICollection = {
 		'Beginner Treasure Trails': {
 			alias: ['beginner', 'clues beginner', 'clue beginner'],
 			allItems: Clues.Beginner.allItems,
-			kcActivity: user => {
-				return user.getOpenableScore(23_245);
+			kcActivity: {
+				Default: async user => user.getOpenableScore(23_245)
 			},
 			items: cluesBeginnerCL,
 			roleCategory: ['clues'],
@@ -431,8 +440,8 @@ export const allCollectionLogs: ICollection = {
 		'Easy Treasure Trails': {
 			alias: ['easy', 'clues easy', 'clue easy'],
 			allItems: Clues.Easy.allItems,
-			kcActivity: user => {
-				return user.getOpenableScore(20_546);
+			kcActivity: {
+				Default: async user => user.getOpenableScore(20_546)
 			},
 			items: cluesEasyCL,
 			roleCategory: ['clues'],
@@ -441,8 +450,8 @@ export const allCollectionLogs: ICollection = {
 		'Medium Treasure Trails': {
 			alias: ['medium', 'clues medium', 'clue medium'],
 			allItems: Clues.Medium.allItems,
-			kcActivity: user => {
-				return user.getOpenableScore(20_545);
+			kcActivity: {
+				Default: async user => user.getOpenableScore(20_545)
 			},
 			items: cluesMediumCL,
 			roleCategory: ['clues'],
@@ -451,8 +460,8 @@ export const allCollectionLogs: ICollection = {
 		'Hard Treasure Trails': {
 			alias: ['hard', 'clues hard', 'clue hard'],
 			allItems: Clues.Hard.allItems,
-			kcActivity: user => {
-				return user.getOpenableScore(20_544);
+			kcActivity: {
+				Default: async user => user.getOpenableScore(20_544)
 			},
 			items: cluesHardCL,
 			roleCategory: ['clues'],
@@ -461,8 +470,8 @@ export const allCollectionLogs: ICollection = {
 		'Elite Treasure Trails': {
 			alias: ['elite', 'clues elite', 'clue elite'],
 			allItems: Clues.Elite.allItems,
-			kcActivity: user => {
-				return user.getOpenableScore(20_543);
+			kcActivity: {
+				Default: async user => user.getOpenableScore(20_543)
 			},
 			items: cluesEliteCL,
 			roleCategory: ['clues'],
@@ -471,8 +480,8 @@ export const allCollectionLogs: ICollection = {
 		'Master Treasure Trails': {
 			alias: ['master', 'clues master', 'clue master'],
 			allItems: Clues.Master.allItems,
-			kcActivity: user => {
-				return user.getOpenableScore(19_836);
+			kcActivity: {
+				Default: async user => user.getOpenableScore(19_836)
 			},
 			items: cluesMasterCL,
 			roleCategory: ['clues'],
@@ -498,8 +507,8 @@ export const allCollectionLogs: ICollection = {
 				'clues rares hard',
 				'clues rare hard'
 			],
-			kcActivity: user => {
-				return user.getOpenableScore(20_544);
+			kcActivity: {
+				Default: async user => user.getOpenableScore(20_544)
 			},
 			items: cluesHardRareCL,
 			roleCategory: ['clues'],
@@ -515,8 +524,8 @@ export const allCollectionLogs: ICollection = {
 				'clues rares elite',
 				'clues rare elite'
 			],
-			kcActivity: user => {
-				return user.getOpenableScore(20_543);
+			kcActivity: {
+				Default: async user => user.getOpenableScore(20_543)
 			},
 			items: cluesEliteRareCL,
 			roleCategory: ['clues'],
@@ -532,8 +541,8 @@ export const allCollectionLogs: ICollection = {
 				'clues rares master',
 				'clues rare master'
 			],
-			kcActivity: user => {
-				return user.getOpenableScore(19_836);
+			kcActivity: {
+				Default: async user => user.getOpenableScore(19_836)
 			},
 			items: cluesMasterRareCL,
 			roleCategory: ['clues'],
@@ -666,8 +675,8 @@ export const allCollectionLogs: ICollection = {
 		},
 		'Tithe Farm': {
 			alias: ['tithe'],
-			kcActivity: user => {
-				return user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
+			kcActivity: {
+				Default: async user => user.settings.get(UserSettings.Stats.TitheFarmsCompleted)
 			},
 			items: titheFarmCL,
 			roleCategory: ['minigames'],
@@ -738,8 +747,8 @@ export const allCollectionLogs: ICollection = {
 		},
 		'Monkey Backpacks': {
 			alias: ['monkey', 'monkey bps', 'backpacks'],
-			kcActivity: user => {
-				return user.settings.get(UserSettings.LapsScores)[6];
+			kcActivity: {
+				Default: async user => user.settings.get(UserSettings.LapsScores)[6]
 			},
 			items: monkeyBackpacksCL,
 			roleCategory: ['skilling'],
@@ -778,7 +787,7 @@ export const allCollectionLogs: ICollection = {
 			roleCategory: ['slayer']
 		},
 		TzHaar: {
-			kcActivity: [Monsters.TzHaarKet.name],
+			kcActivity: Monsters.TzHaarKet.name,
 			allItems: Monsters.TzHaarKet.allItems,
 			items: tzHaarCL
 		},
@@ -1147,15 +1156,30 @@ export async function getCollection(options: {
 					(attributes.alias &&
 						attributes.alias.find(a => stringMatches(a, search.substr(0, search.length - 1)))))
 			) {
-				let userKC = 0;
-				if (attributes.kcActivity && Array.isArray(attributes.kcActivity)) {
-					for (const name of attributes.kcActivity) {
-						userKC += (await user.getKCByName(name))[1];
+				let userKC: Record<string, number> | undefined = { Default: 0 };
+
+				// Defaults to the activity name
+				if (attributes.kcActivity) {
+					if (typeof attributes.kcActivity === 'string') {
+						userKC.Default += (await user.getKCByName(attributes.kcActivity))[1];
+					} else {
+						for (const [type, value] of objectEntries(attributes.kcActivity)) {
+							if (!userKC[type]) userKC[type] = 0;
+							if (Array.isArray(value)) {
+								for (const name of value) {
+									userKC[type] += (await user.getKCByName(name))[1];
+								}
+							} else if (typeof value === 'function') {
+								userKC[type] += await value(user);
+							} else {
+								userKC[type] += (await user.getKCByName(value))[1];
+							}
+						}
 					}
-				} else if (attributes.kcActivity && typeof attributes.kcActivity === 'function') {
-					userKC += attributes.kcActivity(user);
 				} else {
-					userKC += (await user.getKCByName(attributes.kcActivity ? attributes.kcActivity : activityName))[1];
+					const defaultKc = await user.getKCByName(activityName);
+					if (defaultKc[0] !== null) userKC.Default += defaultKc[1];
+					else userKC = undefined;
 				}
 				return {
 					category,
@@ -1192,7 +1216,7 @@ export async function getCollection(options: {
 			category: 'Other',
 			name: monster.name,
 			collection: clItems,
-			completions: user.getKC(monster.id),
+			completions: { Default: user.getKC(monster.id) },
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank
