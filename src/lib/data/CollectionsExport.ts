@@ -1,6 +1,5 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
 
 import resolveItems from '../util/resolveItems';
 
@@ -2004,8 +2003,7 @@ export const nexCL = [
 	...virtusOutfit,
 	...nexAncientWeapons,
 	...frozenKeyPieces,
-	itemID('Frozen key'),
-	itemID('Bloodsoaked feather')
+	...resolveItems(['Frozen key', 'Bloodsoaked feather', 'Ancient emblem'])
 ];
 
 export const kalphiteKingCL = resolveItems([
