@@ -1747,3 +1747,23 @@ setCustomItem(
 	},
 	100_000
 );
+
+setCustomItem(
+	50_036,
+	'Mango',
+	'Fire rune',
+	{
+		highalch: 1000
+	},
+	1000
+);
+
+setCustomItem(
+	50_037,
+	'Mango seed',
+	'Fire rune',
+	{
+		highalch: 1000
+	},
+	1000
+);
