@@ -876,17 +876,17 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems: boolean = 
 	let leftList: ILeftListStatus = {};
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (category === checkCategory) {
-			for (const [activityName, attributes] of Object.entries(entries)) {
+			// Sort list by alphabetical order
+			const catEntries = Object.entries(entries).sort((a, b) => 0 - (a > b ? -1 : 1));
+			for (const [activityName, attributes] of catEntries) {
 				if (attributes.enabled === false || attributes.hidden === true) continue;
 				let items: number[] = [];
 				if (allItems && attributes.allItems) {
 					items = [...new Set([...attributes.items, ...attributes.allItems])];
 				} else {
-					items = attributes.items;
+					items = [...new Set(attributes.items)];
 				}
-				const clItemBank = converCLtoBank(items);
-				const totalCl = clItemBank.items().length;
-				const userAmount = clItemBank.items().length - clItemBank.remove(userBank).items().length;
+				const [totalCl, userAmount] = getUserClData(userBank.bank, items);
 				leftList[activityName] =
 					userAmount === 0 ? 'not_started' : userAmount === totalCl ? 'completed' : 'started';
 			}
@@ -895,24 +895,25 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems: boolean = 
 	return leftList;
 }
 
-// Get the total items the user has in its CL and the total items to collect
-export function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection') {
+export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collection') {
 	const userCheckBank = new Bank();
-	switch (logType) {
+	switch (type) {
 		case 'collection':
 			userCheckBank.add(user.settings.get(UserSettings.CollectionLogBank));
 			break;
 		case 'bank':
-			userCheckBank.add(user.bank());
+			userCheckBank.add(user.bank({ withGP: true }));
 			break;
 		case 'sacrifice':
 			userCheckBank.add(user.settings.get(UserSettings.SacrificedBank));
 			break;
 	}
+	return userCheckBank;
+}
 
-	const clItems = Object.keys(userCheckBank.bank).map(i => parseInt(i));
-	const owned = clItems.filter(i => allCLItems.includes(i));
-	return [owned.length, allCLItems.length];
+// Get the total items the user has in its CL and the total items to collect
+export function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection') {
+	return getUserClData(getBank(user, logType).bank, allCLItems);
 }
 
 export function getPossibleOptions() {
@@ -940,19 +941,10 @@ export function getPossibleOptions() {
 	return new MessageAttachment(Buffer.from(normalTable), 'possible_logs.txt');
 }
 
-function stringMatchNoS(string1: string, string2: string) {
-	let match = stringMatches(string1, string2);
-	if (!match) match = stringMatches(string1, string2.substr(0, string2.length - 1));
-	if (!match) match = stringMatches(string1, string2.substr(0, string2.length - 2));
-	if (!match) match = stringMatches(string1.substr(0, string1.length - 1), string2);
-	if (!match) match = stringMatches(string1.substr(0, string1.length - 2), string2);
-	return match;
-}
-
 export function getCollectionItems(collection: string, allItems = false): number[] {
 	let _items: number[] = [];
 	loop: for (const [category, entries] of Object.entries(allCollectionLogs)) {
-		if (stringMatchNoS(category, collection)) {
+		if (stringMatches(category, collection)) {
 			_items = [
 				...new Set(
 					Object.entries(entries)
@@ -966,8 +958,8 @@ export function getCollectionItems(collection: string, allItems = false): number
 		for (const [activityName, attributes] of Object.entries(entries)) {
 			if (
 				attributes.enabled === undefined &&
-				(stringMatchNoS(activityName, collection) ||
-					(attributes.alias && attributes.alias.find(a => stringMatchNoS(a, collection))))
+				(stringMatches(activityName, collection) ||
+					(attributes.alias && attributes.alias.find(a => stringMatches(a, collection))))
 			) {
 				_items = [
 					...new Set([...attributes.items, ...(allItems && attributes.allItems ? attributes.allItems : [])])
@@ -981,7 +973,7 @@ export function getCollectionItems(collection: string, allItems = false): number
 	}
 	if (_items.length === 0) {
 		const _monster = killableMonsters.find(
-			m => stringMatchNoS(m.name, collection) || m.aliases.some(name => stringMatchNoS(name, collection))
+			m => stringMatches(m.name, collection) || m.aliases.some(name => stringMatches(name, collection))
 		);
 		if (_monster) {
 			_items = Array.from(new Set(Object.values(Monsters.get(_monster!.id)!.allItems!).flat(100))) as number[];
@@ -991,10 +983,8 @@ export function getCollectionItems(collection: string, allItems = false): number
 }
 
 function getUserClData(usarBank: ItemBank, clItems: number[]) {
-	const clItemBank = converCLtoBank(clItems);
-	const totalCl = clItemBank.items().length;
-	const userAmount = clItemBank.items().length - clItemBank.remove(usarBank).items().length;
-	return [totalCl, userAmount];
+	const owned = Object.keys(usarBank).filter(i => clItems.includes(Number(i)));
+	return [clItems.length, owned.length];
 }
 
 // Main function that gets the user collection based on its search parameter
@@ -1011,28 +1001,17 @@ export async function getCollection(options: {
 	const allItems = Boolean(flags.all);
 	if (logType === undefined) logType = 'collection';
 
-	let userCheckBank = new Bank();
-
-	switch (logType) {
-		case 'collection':
-			userCheckBank.add(user.settings.get(UserSettings.CollectionLogBank));
-			break;
-		case 'bank':
-			userCheckBank.add(user.bank());
-			break;
-		case 'sacrifice':
-			userCheckBank.add(user.settings.get(UserSettings.SacrificedBank));
-			break;
-	}
-
+	const userCheckBank = getBank(user, logType);
 	let clItems = getCollectionItems(search, allItems);
+
 	if (Boolean(flags.missing)) {
 		clItems = clItems.filter(i => !userCheckBank.has(i));
 	}
+
 	const [totalCl, userAmount] = getUserClData(userCheckBank.bank, clItems);
 
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
-		if (stringMatchNoS(category, search)) {
+		if (stringMatches(category, search)) {
 			return {
 				category,
 				name: category,
@@ -1094,7 +1073,7 @@ export async function getCollection(options: {
 	);
 	if (monster) {
 		return {
-			category: 'Others',
+			category: 'Other',
 			name: monster.name,
 			collection: clItems,
 			completions: user.getKC(monster.id),
