@@ -1,65 +1,45 @@
 import { MessageButton, MessageComponentInteraction, MessageOptions } from 'discord.js';
-import { chunk, randArrItem, roll, shuffleArr, Time } from 'e';
+import { chunk, randArrItem, shuffleArr, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import SimpleTable from '../../lib/structures/SimpleTable';
 import { updateGPTrackSetting } from '../../lib/util';
 
 interface Button {
 	name: string;
 	mod: (qty: number) => number;
-	weight: number;
 }
 
 const buttons: Button[] = [
 	{
 		name: '0',
-		mod: () => 0,
-		weight: 45
-	},
-	{
-		name: '1x',
-		mod: (qty: number) => qty,
-		weight: 12
+		mod: () => 0
 	},
 	{
 		name: '2x',
-		mod: (qty: number) => qty * 2,
-		weight: 25
+		mod: (qty: number) => qty * 2
 	},
 	{
 		name: '3x',
-		mod: (qty: number) => qty * 3,
-		weight: 12
+		mod: (qty: number) => qty * 3
 	},
 	{
 		name: '5x',
-		mod: (qty: number) => qty * 5,
-		weight: 5
+		mod: (qty: number) => qty * 5
 	},
 	{
 		name: '10x',
-		mod: (qty: number) => qty * 10,
-		weight: 3
+		mod: (qty: number) => qty * 10
 	}
 ];
 
-const table = new SimpleTable<Button>();
-for (const button of buttons.slice(1)) {
-	table.add(button, button.weight);
-}
 function getButtons(): ButtonInstance[] {
-	let buttonsToShow = [buttons[0], buttons[0], buttons[0], buttons[0]];
-	if (!roll(4)) {
-		buttonsToShow.push(buttons[0]);
-	}
-	while (buttonsToShow.length < 8) {
-		buttonsToShow.push(table.roll());
-	}
+	let buttonsToShow = ['0', '0', '0', '0', '0', '0', '0', '2x', '2x', '3x', '5x', '10x'].map(
+		n => buttons.find(i => i.name === n)!
+	);
 	return shuffleArr(buttonsToShow).map((item, index) => ({ ...item, picked: false, id: index }));
 }
 
@@ -94,7 +74,6 @@ export default class extends BotCommand {
 					: pickedButtonsMap[pickedButton.name]++;
 				houseBalance -= pickedButton.mod(betSize);
 			}
-			console.log(pickedButtonsMap);
 			return msg.channel.send(
 				`With ${betQuantity} ${toKMB(betSize)} bets, the house ended up with ${toKMB(houseBalance)}.`
 			);
