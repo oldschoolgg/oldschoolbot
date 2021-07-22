@@ -12,11 +12,10 @@ import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { ItemBank, SettingsEntry } from '../../lib/types';
-import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
+import { convertXPtoLVL, makePaginatedMessage, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
 import PostgresProvider from '../../providers/postgres';
 
 const CACHE_TIME = Time.Minute * 5;
@@ -556,18 +555,9 @@ LIMIT 50;
 	}
 
 	async doMenu(msg: KlasaMessage, pages: string[], title: string) {
-		const loadingMsg = await msg.channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
-
-		const display = new UserRichDisplay();
-		display.setFooterPrefix('Page ');
-
-		for (const page of pages) {
-			display.addPage(new MessageEmbed().setTitle(title).setDescription(page));
-		}
-
-		return display.start(loadingMsg as KlasaMessage, msg.author.id, {
-			jump: false,
-			stop: false
-		});
+		return makePaginatedMessage(
+			msg,
+			pages.map(p => ({ embeds: [new MessageEmbed().setTitle(title).setDescription(p)] }))
+		);
 	}
 }
