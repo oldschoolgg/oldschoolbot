@@ -411,8 +411,8 @@ export const allCollectionLogs: ICollection = {
 		"Chamber's of Xeric": {
 			alias: ChambersOfXeric.aliases,
 			kcActivity: {
-				Default: async user => user.getMinigameScore('Raids'),
-				Challenge: async user => user.getMinigameScore('RaidsChallengeMode')
+				Default: user => user.getMinigameScore('Raids'),
+				Challenge: user => user.getMinigameScore('RaidsChallengeMode')
 			},
 			items: chambersOfXericCl,
 			roleCategory: ['raids'],
