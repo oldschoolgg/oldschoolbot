@@ -722,17 +722,38 @@
   dependencies:
     twemoji-parser "^13.1.0"
 
-"@sapphire/time-utilities@^1.3.6":
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.3.6.tgz#e314be9ea2caa8672c3b7f8a16d2b56778e2fec1"
-  integrity sha512-Ifbu5rjxo7ffmv6eXaKDv+d92kgMQoaEaNvD9XxZ+XeyUSGakrBBDOfn4ODZ5ygQOVAQ0TdUvOy5602+V/0Jsg==
+"@sapphire/discord.js-utilities@^3.0.0-next.600390f4.0":
+  version "3.0.0-next.600390f4.0"
+  resolved "https://registry.yarnpkg.com/@sapphire/discord.js-utilities/-/discord.js-utilities-3.0.0-next.600390f4.0.tgz#1ce78838fe044d4921740d28a7569f220ce9cd02"
+  integrity sha512-0WgX7H8BgEIymVL701rnJJoLNLLSmpbS7dyOTEtVz9g9LdZZU7NEzg6EzlZlHnlXZLLeohfBI9XdKExKoE1r2Q==
   dependencies:
-    "@sapphire/utilities" "^1.7.0"
+    "@sapphire/discord-utilities" "^2.1.5"
+    "@sapphire/time-utilities" "^1.3.8"
+    "@sapphire/utilities" "^2.0.1"
+
+"@sapphire/time-utilities@^1.3.7":
+  version "1.3.7"
+  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.3.7.tgz#635572883e5bdccd63a0702c7cbb56086a6078d0"
+  integrity sha512-CA/90kae9AngeE5kPN3BXJzCu4kAqnPs0SvWpclHQo3xTqlYbjAgO1Gs4Q1Qp7SkMDcvyRIrU99/77Z8/qL5Uw==
+  dependencies:
+    "@sapphire/utilities" "^2.0.0"
+
+"@sapphire/time-utilities@^1.3.8":
+  version "1.3.8"
+  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.3.8.tgz#70297b2b3321ada652ed424e9f32a82235ca2f9d"
+  integrity sha512-pmEoy24pW0xENjIGgws0r4TgeY7eemqkgDp35vRk9K4vi+RiEu9WMYfur1EI422mocQJNtfyQUo7mBKkBhSkTw==
+  dependencies:
+    "@sapphire/utilities" "^2.0.1"
 
 "@sapphire/utilities@^1.7.0":
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.7.0.tgz#b40adc0f092ce988232da3879c68d0ee17ee8908"
   integrity sha512-+bU6rGr529oj1RoK31aHkBoLYnEqawRwwwUMSRPeaZx21gPrvqjJgwyBBMPEWTv2kjRSyzTTVtV7U0bkZ2RMjQ==
+
+"@sapphire/utilities@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-2.0.1.tgz#c436c5b2b72679c89a40abe46d2f9301d03e63e2"
+  integrity sha512-KgJsgQ1cnfVKqscrMX4GH29mIVhVQkF8kSTIRCB+hgCCRfIvUU5peE4g/cegnesPS5eMiQqV+NWk7cNwhjextQ==
 
 "@sentry/core@6.9.0":
   version "6.9.0"
