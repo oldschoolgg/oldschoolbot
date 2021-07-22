@@ -1016,7 +1016,7 @@ function getLeftList(
 				} else {
 					items = [...new Set(attributes.items)];
 				}
-				if (removeCoins) items.splice(items.indexOf(995), 1);
+				if (removeCoins && items.includes(995)) items.splice(items.indexOf(995), 1);
 				const [totalCl, userAmount] = getUserClData(userBank.bank, items);
 				leftList[activityName] =
 					userAmount === 0 ? 'not_started' : userAmount === totalCl ? 'completed' : 'started';
@@ -1044,7 +1044,7 @@ export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collectio
 
 // Get the total items the user has in its CL and the total items to collect
 export function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection') {
-	if (logType === 'sacrifice') allCLItems.splice(allCLItems.indexOf(995), 1);
+	if (logType === 'sacrifice' && allCLItems.includes(995)) allCLItems.splice(allCLItems.indexOf(995), 1);
 	return getUserClData(getBank(user, logType).bank, allCLItems);
 }
 
@@ -1111,7 +1111,7 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 			_items = Array.from(new Set(Object.values(Monsters.get(_monster!.id)!.allItems!).flat(100))) as number[];
 		}
 	}
-	if (removeCoins) _items.splice(_items.indexOf(995), 1);
+	if (removeCoins && _items.includes(995)) _items.splice(_items.indexOf(995), 1);
 	return _items;
 }
 
