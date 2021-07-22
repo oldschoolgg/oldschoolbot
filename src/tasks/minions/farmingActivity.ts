@@ -149,7 +149,7 @@ export default class extends Task {
 				str += `\n${user.minionName}'s Farming level is now ${newLevel}!`;
 			}
 
-			if (user.usingPet('Plopper')) {
+			if (userBank[itemID('Plopper')]) {
 				loot = multiplyBank(loot, 4);
 			}
 
@@ -185,7 +185,7 @@ export default class extends Task {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			if (user.usingPet('Plopper')) {
+			if (userBank[itemID('Plopper')]) {
 				str += '\nYou received 4x loot from Plopper';
 			}
 
@@ -210,7 +210,7 @@ export default class extends Task {
 			if (!plant) return;
 
 			let quantityDead = 0;
-			if (!user.usingPet('Plopper')) {
+			if (!userBank[itemID('Plopper')]) {
 				for (let i = 0; i < patchType.lastQuantity; i++) {
 					for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
 						const deathRoll = Math.random();
@@ -484,7 +484,7 @@ export default class extends Task {
 				);
 			}
 
-			if (user.equippedPet() === itemID('Plopper')) {
+			if (userBank[itemID('Plopper')]) {
 				loot = multiplyBank(loot, 4);
 			}
 
@@ -520,7 +520,7 @@ export default class extends Task {
 			);
 			await user.addItemsToBank(loot, true);
 
-			if (user.usingPet('Plopper')) {
+			if (userBank[itemID('Plopper')]) {
 				infoStr.push('\nYou received 4x loot from Plopper');
 			}
 
