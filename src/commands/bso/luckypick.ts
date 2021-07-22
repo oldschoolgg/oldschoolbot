@@ -12,7 +12,7 @@ interface Button {
 	name: string;
 	mod: (qty: number) => number;
 }
-
+/*
 const buttons: Button[] = [
 	{
 		name: '0',
@@ -35,11 +35,32 @@ const buttons: Button[] = [
 		mod: (qty: number) => qty * 10
 	}
 ];
-
+*/
 function getButtons(): ButtonInstance[] {
+	/* TODO: Choose which odds you want: */
+
+	// House barely wins, most fun for players , 4% house edge
+	// const buttons = [0, 0, 0, 0, 0, 0, 0, 2, 2, 3, 2, 2.5];
+
+	// House wins about 8%
+	// const buttons = [0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 3];
+
+	// House wins ~ 0.27%, but it has a 5x win:
+	const buttons = [0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 5];
+	let buttonsToShow: Button[] = [];
+	buttons.forEach(b => {
+		buttonsToShow.push({
+			name: `${b.toString()}x`,
+			mod: qty => {
+				return qty * b;
+			}
+		});
+	});
+	/* Original code, you can switch back it and remove mine, or remove this.
 	let buttonsToShow = ['0', '0', '0', '0', '0', '0', '0', '2x', '2x', '3x', '5x', '10x'].map(
 		n => buttons.find(i => i.name === n)!
 	);
+	 */
 	return shuffleArr(buttonsToShow).map((item, index) => ({ ...item, picked: false, id: index }));
 }
 
@@ -51,7 +72,7 @@ interface ButtonInstance extends Button {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<amount:int{1000000,1000000000}>',
+			usage: '[amount:int]',
 			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true
@@ -59,10 +80,12 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [amount]: [number]) {
+		const minBet = 1_000_000;
+		const maxBet = 1_000_000_000;
 		if (msg.flagArgs.simulate) {
 			let houseBalance = 0;
-			let betQuantity = 500_000;
-			let betSize = 5_000_000;
+			let betQuantity = 100_000;
+			let betSize = 1_000_000;
 
 			const pickedButtonsMap: Record<string, number> = {};
 			for (let i = 0; i < betQuantity; i++) {
@@ -79,9 +102,14 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.confirm(
-			`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
-		);
+		if (!amount || amount < minBet || amount > maxBet) {
+			return msg.channel.send(`You must wager an amount between ${toKMB(minBet)} and ${toKMB(maxBet)}.`);
+		}
+		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
+			await msg.confirm(
+				`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
+			);
+		}
 		const currentBalance = msg.author.settings.get(UserSettings.GP);
 		if (currentBalance < amount) {
 			return msg.channel.send("You don't have enough GP to make this bet.");
@@ -124,6 +152,8 @@ export default class extends BotCommand {
 			return sentMessage.channel.send(
 				amountReceived === 0
 					? 'Unlucky, you picked the wrong button and lost your bet!'
+					: amountReceived === amount
+					? 'You won your money back!'
 					: `You won ${toKMB(amountReceived)}!`
 			);
 		};
