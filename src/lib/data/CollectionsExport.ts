@@ -2001,11 +2001,10 @@ export const nexAncientWeapons = resolveItems(['Virtus wand', 'Virtus book', 'Za
 
 export const frozenKeyPieces = resolveItems(['Key piece 1', 'Key piece 2', 'Key piece 3', 'Key piece 4']);
 
+export const nexUniqueDrops = [...torvaOutfit, ...pernixOutfit, ...virtusOutfit, ...nexAncientWeapons];
+
 export const nexCL = [
-	...torvaOutfit,
-	...pernixOutfit,
-	...virtusOutfit,
-	...nexAncientWeapons,
+	...nexUniqueDrops,
 	...frozenKeyPieces,
 	...resolveItems(['Frozen key', 'Bloodsoaked feather', 'Ancient emblem'])
 ];

@@ -5,7 +5,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { production } from '../../../config';
 import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
-import { nexCL } from '../../../lib/data/CollectionsExport';
+import { nexCL, nexUniqueDrops } from '../../../lib/data/CollectionsExport';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { NexMonster } from '../../../lib/nex';
@@ -63,7 +63,7 @@ export default class extends Task {
 			const loot = new Bank();
 			loot.add(NexMonster.table.kill(1, {}));
 			if (roll(80 + users.length * 2)) {
-				loot.add(randomItemFromArray(nexCL), 1);
+				loot.add(randomItemFromArray(nexUniqueDrops), 1);
 			}
 			if (DOUBLE_LOOT_ACTIVE) {
 				loot.multiply(2);
