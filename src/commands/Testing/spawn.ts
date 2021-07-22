@@ -88,7 +88,7 @@ export default class extends BotCommand {
 		const items = parseStringBank(str);
 		const loot = new Bank();
 		for (const [item, qty] of items) {
-			loot.add(item.id, qty === 0 ? 1 : qty);
+			loot.add(item.id, qty === 0 ? 1 : Math.min(qty ?? 1, 1_000_000_000));
 		}
 
 		await msg.author.addItemsToBank(loot, Boolean(msg.flagArgs.cl));
