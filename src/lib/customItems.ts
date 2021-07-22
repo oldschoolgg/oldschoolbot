@@ -1767,3 +1767,43 @@ setCustomItem(
 	},
 	1000
 );
+
+setCustomItem(
+	50_038,
+	'Avocado',
+	'Fire rune',
+	{
+		highalch: 1000
+	},
+	1000
+);
+
+setCustomItem(
+	50_039,
+	'Avocado seed',
+	'Fire rune',
+	{
+		highalch: 1000
+	},
+	1000
+);
+
+setCustomItem(
+	50_040,
+	'Lychee',
+	'Fire rune',
+	{
+		highalch: 1000
+	},
+	1000
+);
+
+setCustomItem(
+	50_041,
+	'Lychee seed',
+	'Fire rune',
+	{
+		highalch: 1000
+	},
+	1000
+);

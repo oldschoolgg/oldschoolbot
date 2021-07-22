@@ -1,9 +1,10 @@
-import { uniqueArr } from 'e';
+import { chunk, notEmpty, uniqueArr } from 'e';
 
 import { allKalphiteKingItems } from '../kalphiteking';
 import { allKeyItems, ancientWeapons, pernixOutfit, torvaOutfit, virtusOutfit } from '../nex';
 import { beekeeperOutfit, camoOutfit, lederhosenOutfit, mimeOutfit, zombieOutfit } from '../randomEvents';
 import Agility, { gracefulItems } from '../skilling/skills/agility';
+import { plants } from '../skilling/skills/farming';
 import resolveItems from '../util/resolveItems';
 
 // Castle Wars
@@ -2344,4 +2345,17 @@ collectionLogTypes.push({
 	name: 'Overall',
 	aliases: ['all', 'overall'],
 	items: { all: allCollectionLogItems }
+});
+
+let cropsLog: Record<string, number[]> = {};
+for (const c of chunk(
+	plants.filter(i => i.outputCrop !== undefined),
+	12
+)) {
+	cropsLog[c[0]!.name] = c.map(i => i.outputCrop).filter(notEmpty);
+}
+collectionLogTypes.push({
+	name: 'Crops',
+	aliases: ['crops'],
+	items: cropsLog
 });
