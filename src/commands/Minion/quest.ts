@@ -1,17 +1,19 @@
-import { MessageSelectMenu } from 'discord.js';
+import { MessageButton, MessageSelectMenu } from 'discord.js';
 import { objectEntries, objectKeys, randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveBank } from 'oldschooljs/dist/util';
 
 import { Emoji, skillEmoji } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank, Skills } from '../../lib/types';
-import { formatDuration, formatSkillRequirements, stringMatches } from '../../lib/util';
+import { formatSkillRequirements, stringMatches } from '../../lib/util';
 
 export const enum Quests {
+	Grandfathered = 0,
 	CooksAssistant = 1000,
 	DemonSlayer = 2000,
 	TheRestlessGhost = 3000,
@@ -3184,32 +3186,8 @@ const QuestList: IQuest[] = [
 	}
 ];
 
-console.log(
-	(() => {
-		let totalQp = 0;
-		let shortest: [number, string] = [Number.MAX_SAFE_INTEGER, ''];
-		let longest: [number, string] = [0, ''];
-		let totalTime = 0;
-		QuestList.forEach(q => {
-			totalQp += q.rewards.qp;
-			totalTime += q.time;
-			if (q.time < shortest[0]) shortest = [q.time, q.name];
-			if (q.time > longest[0]) longest = [q.time, q.name];
-			if (q.requirements && q.requirements.items) {
-				resolveBank(q.requirements.items);
-			}
-			if (q.rewards.items) {
-				resolveBank(q.rewards.items);
-			}
-		});
-		return {
-			totalQp,
-			totalTime: formatDuration(totalTime),
-			shortest: [formatDuration(shortest[0]), shortest[1]],
-			longest: [formatDuration(longest[0]), longest[1]],
-			average: formatDuration(totalTime / QuestList.length)
-		};
-	})()
+export const MAXQP = QuestList.map(q => q.rewards.qp).reduce(
+	(previousValue, currentValue) => previousValue + currentValue
 );
 
 function allSkills(xpOrLevel: number): Skills {
@@ -3350,8 +3328,6 @@ function meetQuestRequirements(quest: IQuest, user: KlasaUser) {
 	return requirementsFailure;
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 async function completeUserQuestID(user: KlasaUser, questID: number) {
 	const mainQuest = QuestList.find(q => q.id === questID);
 	if (mainQuest) await user.addQP(mainQuest.rewards.qp);
@@ -3360,31 +3336,94 @@ async function completeUserQuestID(user: KlasaUser, questID: number) {
 	});
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-async function userHasQuestID(user: KlasaUser, questID: number) {
-	const quests = [...user.settings.get(UserSettings.Quests)];
-	return quests.includes(Number(questID));
-}
+async function grandfatherUser(msg: KlasaMessage) {
+	let tempQuestList = [...QuestList];
+	tempQuestList.sort((a, b) => b.rewards.qp - a.rewards.qp);
+	let userNewQp = 0;
+	let userMaxQp = msg.author.settings.get(UserSettings.QP);
+	let questsDone: number[] = [];
+	let i = 0;
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-async function userHasQuest(user: KlasaUser, questID: number) {
-	const quests = [...user.settings.get(UserSettings.Quests)];
-	let mainQuest = Math.floor(Number(questID) / 1000) * 1000;
-	return quests.includes(Number(mainQuest));
+	let xpToReceive: Skills = {};
+	let itemsToReceive = new Bank();
+
+	while (userNewQp < userMaxQp) {
+		let questAdded = false;
+		tempQuestLoop: for (let index = 0; index < tempQuestList.length; index++) {
+			const value = tempQuestList[index];
+			if (value.requirements?.qp && userNewQp < value.requirements?.qp) continue;
+			if (value.requirements?.quests) {
+				for (const q of value.requirements?.quests) {
+					if (!questsDone.includes(q)) {
+						continue tempQuestLoop;
+					}
+				}
+			}
+			i++;
+			questAdded = true;
+			questsDone.push(value.id);
+			userNewQp += value.rewards.qp;
+
+			// Get custom rewards
+			if (value.rewards.customLogic) {
+				for (const customReward of value.rewards.customLogic)
+					if (customReward.type === 'collect_reward') questsDone.push(value.id + customReward.id);
+			}
+			// Get item rewarded
+			if (value.rewards.items) itemsToReceive.add(resolveBank(value.rewards.items));
+			// Get xp that were to be rewarded
+			if (value.rewards.xp)
+				for (const [skill, xp] of objectEntries(value.rewards.xp))
+					xpToReceive[skill] = (xpToReceive[skill] ?? 0) + xp!;
+
+			delete tempQuestList[index];
+			break;
+		}
+		tempQuestList = tempQuestList.filter(q => q !== undefined);
+		if (!questAdded) break;
+	}
+
+	await msg.confirm(
+		`You are about to convert your old quest points into the new Quest system.
+Your current quest point is **${userMaxQp}**. That will be converted into ${userNewQp}, from a total of ${i} quests.
+**You will not receive any reward from having these quests completed.**
+If you want to receve quest rewards, you'll have to start over in the new quest system.
+For that, you'll have **ONE** chance to reset your quest points and start over.
+In your first quest trip after clicking Confirm below, you'll receive the option to reset or not..`
+	);
+	questsDone.push(Quests.Grandfathered);
+	await msg.author.settings.update(UserSettings.QP, userNewQp);
+	await msg.author.settings.update(UserSettings.Quests, questsDone, {
+		arrayAction: 'overwrite'
+	});
+
+	return msg.channel.send('Your quests have been updated.');
 }
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[collect] [quest:...string]',
+			usage: '[collect|log] [quest:...string]',
 			aliases: ['q'],
 			usageDelim: ' ',
 			subcommands: true
 		});
 	}
 
+	async log(msg: KlasaMessage, [_cmd]: [string]) {
+		await msg.author.settings.sync(true);
+		const userQuests = msg.author.settings.get(UserSettings.Quests);
+		let result = `Current QP: ${msg.author.settings.get(UserSettings.QP)} / ${MAXQP}\n`;
+		for (const quest of QuestList) {
+			result += `${userQuests.includes(quest.id) ? '[DONE]' : ''} ${quest.name}\n`;
+		}
+		result = String(result);
+		console.log(Boolean(msg), _cmd);
+		return msg.channel.send(result);
+	}
+
+	@requiresMinion
+	@minionNotBusy
 	async collect(msg: KlasaMessage, [_cmd]: [string]) {
 		console.log('collect', _cmd);
 		const questsDone = msg.author.settings.get(UserSettings.Quests);
@@ -3450,11 +3489,79 @@ export default class extends BotCommand {
 		if (await reward.function(msg)) await completeUserQuestID(msg.author, quest.id + reward.id);
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async run(msg: KlasaMessage, [_quest]: [string]) {
 		console.log('run', _quest);
 		let quest: IQuest | undefined = undefined;
-		await msg.author.settings.sync();
+		await msg.author.settings.sync(true);
 		const questsDone = msg.author.settings.get(UserSettings.Quests);
+
+		if (questsDone.length === 0 && msg.author.settings.get(UserSettings.QP) > 0) {
+			return grandfatherUser(msg);
+		}
+
+		if (questsDone.includes(Quests.Grandfathered)) {
+			const message = await msg.channel.send({
+				content:
+					'You still have the option to reset your quests. Are you sure you want to do a quest anyway?\n**If you press yes, you wont be able to reset anymore! You have been warned!**',
+				components: [
+					[
+						new MessageButton({
+							type: 'BUTTON',
+							customID: 'doitanyway',
+							style: 'PRIMARY',
+							label: 'Yes, I do not want to reset'
+						}),
+						new MessageButton({
+							type: 'BUTTON',
+							customID: 'takemeoutofhere',
+							style: 'SECONDARY',
+							label: 'Not sure yet, take me out of here.'
+						}),
+						new MessageButton({
+							type: 'BUTTON',
+							customID: 'resetme',
+							style: 'DANGER',
+							label: 'No, I want to reset my quests!'
+						})
+					]
+				]
+			});
+			try {
+				const selection = await message.awaitMessageComponentInteraction({
+					filter: i => {
+						if (i.user.id !== msg.author.id) {
+							i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+							return false;
+						}
+						return true;
+					}
+				});
+				if (selection.customID === 'resetme') {
+					await msg.author.settings.update(UserSettings.QP, 0);
+					await msg.author.settings.update(UserSettings.Quests, [], { arrayAction: 'overwrite' });
+					return message.edit({
+						content:
+							'You now have 0 quest points. You can start doing quests by issuing `+q` or choosing a quest by hand, by doing, for example, `+q waterfall quest`.',
+						components: []
+					});
+				}
+				if (selection.customID === 'takemeoutofhere') {
+					return message.edit({
+						content: "You'll be asked again the next time you try to do a quest trip.",
+						components: []
+					});
+				}
+				await message.delete();
+			} catch (e) {
+				return message.edit({
+					content: "You'll be asked again the next time you try to do a quest trip.",
+					components: []
+				});
+			}
+		}
+
 		if (questsDone.length === QuestList.length) {
 			return msg.channel.send('You have done all the quests! Congratulations!');
 		}
@@ -3492,13 +3599,13 @@ export default class extends BotCommand {
 		// Give rewards
 		// xp
 		if (quest.rewards?.xp) {
-			for (const [skill, amount] of Object.entries(quest.rewards?.xp)) {
+			for (const [skill, amount] of Object.entries(quest.rewards.xp)) {
 				await msg.author.addXP({ skillName: skill as SkillsEnum, amount });
 			}
 		}
 		// items
 		if (quest.rewards?.items) {
-			await msg.author.addItemsToBank(quest.rewards?.items);
+			await msg.author.addItemsToBank(resolveBank(quest.rewards.items));
 		}
 
 		await completeUserQuestID(msg.author, quest.id);
