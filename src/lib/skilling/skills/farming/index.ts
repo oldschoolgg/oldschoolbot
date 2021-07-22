@@ -2,6 +2,7 @@ import { Emoji } from '../../../constants';
 import itemID from '../../../util/itemID';
 import { Plant, SkillsEnum } from '../../types';
 import allotmentPlants from './allotments';
+import { bushes } from './bushes';
 import fruitTrees from './fruitTrees';
 import herbPlants from './herbPlants';
 import hopsPlants from './hops';
@@ -14,7 +15,8 @@ export const plants: Plant[] = [
 	...allotmentPlants,
 	...fruitTrees,
 	...hopsPlants,
-	...specialPlants
+	...specialPlants,
+	...bushes
 ];
 
 const maleFarmerItems: { [key: number]: number } = {

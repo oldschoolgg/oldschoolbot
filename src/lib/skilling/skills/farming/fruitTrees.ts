@@ -314,44 +314,6 @@ const fruitTrees: Plant[] = [
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
-	},
-	{
-		level: 95,
-		plantXp: 290,
-		checkXp: 24_335,
-		harvestXp: 120,
-		name: 'Mango bush',
-		aliases: ['mango', 'mango bush'],
-		inputItems: resolveNameBank({ 'Mango seed': 1 }),
-		outputCrop: itemID('Mango'),
-		petChance: 9000,
-		seedType: 'fruit tree',
-		growthTime: 960,
-		numOfStages: 6,
-		chance1: 0,
-		chance99: 0,
-		chanceOfDeath: 17,
-		protectionPayment: resolveNameBank({ Dragonfruit: 15 }),
-		treeWoodcuttingLevel: 55,
-		fixedOutputAmount: 6,
-		woodcuttingXp: 500,
-		needsChopForHarvest: true,
-		fixedOutput: true,
-		givesLogs: false,
-		givesCrops: true,
-		defaultNumOfPatches: 4,
-		canPayFarmer: true,
-		canCompostPatch: true,
-		canCompostandPay: true,
-		// [QP, Patches Gained]
-		additionalPatchesByQP: [],
-		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[99, 1],
-			[110, 1]
-		],
-		timePerPatchTravel: 20,
-		timePerHarvest: 10
 	}
 ];
 
