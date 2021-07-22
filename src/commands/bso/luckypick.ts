@@ -105,11 +105,9 @@ export default class extends BotCommand {
 		if (!amount || amount < minBet || amount > maxBet) {
 			return msg.channel.send(`You must wager an amount between ${toKMB(minBet)} and ${toKMB(maxBet)}.`);
 		}
-		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-			await msg.confirm(
-				`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
-			);
-		}
+		await msg.confirm(
+			`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
+		);
 		const currentBalance = msg.author.settings.get(UserSettings.GP);
 		if (currentBalance < amount) {
 			return msg.channel.send("You don't have enough GP to make this bet.");
