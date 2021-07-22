@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
-import { evilChickenOutfit } from '../../lib/data/collectionLog';
+import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
 import { Offerables } from '../../lib/data/offerData';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';

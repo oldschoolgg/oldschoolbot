@@ -745,10 +745,10 @@
   dependencies:
     "@sapphire/utilities" "^2.0.1"
 
-"@sapphire/utilities@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-2.0.0.tgz#9bdf877d54125261c04cd17e4dbbb7817f677ea6"
-  integrity sha512-86hLyARI3171b8n0u7t2cJ2stUO3/2KX2usP7+lwVz+PT0mVBVYUH+yx6Pg0QcDyp/jQteBcjG1diLodZVA3OQ==
+"@sapphire/utilities@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.7.0.tgz#b40adc0f092ce988232da3879c68d0ee17ee8908"
+  integrity sha512-+bU6rGr529oj1RoK31aHkBoLYnEqawRwwwUMSRPeaZx21gPrvqjJgwyBBMPEWTv2kjRSyzTTVtV7U0bkZ2RMjQ==
 
 "@sapphire/utilities@^2.0.1":
   version "2.0.1"
