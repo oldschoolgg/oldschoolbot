@@ -2050,6 +2050,5 @@ export const customBossesDropsThatCantBeDroppedInMBs = [
 	...nexCL,
 	...kalphiteKingCL,
 	...ignecarusCL,
-	...treeBeardCL,
-	...seaKrakenCL
+	...treeBeardCL
 ];
