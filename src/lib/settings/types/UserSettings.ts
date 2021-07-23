@@ -162,4 +162,7 @@ export namespace UserSettings {
 
 	export const Nursery = T<Nursery | null>('nursery');
 	export const SelectedTame = T<number | null>('selected_tame');
+
+	export const GPLuckyPick = T<number>('gp_luckypick');
+	export const GPDice = T<number>('gp_dice');
 }

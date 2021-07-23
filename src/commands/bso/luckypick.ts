@@ -145,6 +145,7 @@ export default class extends BotCommand {
 				ClientSettings.EconomyStats.GPSourceLuckyPick,
 				amountReceived - amount
 			);
+			await updateGPTrackSetting(msg.author, UserSettings.GPLuckyPick, amountReceived - amount);
 			buttonsToShow[button.id].picked = true;
 			await interaction.update({ components: getCurrentButtons({ showTrueNames: true }) });
 			return sentMessage.channel.send(

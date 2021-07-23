@@ -154,4 +154,6 @@ Client.defaultUserSchema
 			.add(FarmingPatchTypes.Belladonna, 'any', { default: null })
 	)
 	.add('nursery', 'any', { default: null })
-	.add('selected_tame', 'any', { default: null });
+	.add('selected_tame', 'any', { default: null })
+	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER });
