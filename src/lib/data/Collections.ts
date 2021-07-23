@@ -869,7 +869,8 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Custom Pets': {
 				alias: ['cpets', 'custom pet', 'cpet', 'custom pet'],
-				items: customPetsCL
+				items: customPetsCL,
+				roleCategory: ['pets']
 			},
 			'Custom Pets (Discontinued)': {
 				alias: ['dcpets', 'disc custom pet', 'dcpet', 'dcp', 'discontinued custom pet'],
