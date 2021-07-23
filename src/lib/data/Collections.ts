@@ -159,7 +159,7 @@ export const allCollectionLogs: ICollection = {
 				alias: Monsters.Barrows.aliases,
 				kcActivity: Monsters.Barrows.name,
 				items: barrowsChestCL,
-				roleCategory: []
+				roleCategory: ['bosses']
 			},
 			Bryophyta: {
 				alias: Monsters.Bryophyta.aliases,
@@ -393,42 +393,50 @@ export const allCollectionLogs: ICollection = {
 			'King Goldemar': {
 				alias: KingGoldemar.aliases,
 				allItems: KingGoldemar.allItems,
-				items: kingGoldemarCL
+				items: kingGoldemarCL,
+				roleCategory: ['bosses']
 			},
 			Malygos: {
 				alias: AbyssalDragon.aliases,
 				allItems: AbyssalDragon.allItems,
-				items: abyssalDragonCL
+				items: abyssalDragonCL,
+				roleCategory: ['bosses']
 			},
 			'Kalphite King': {
 				alias: KalphiteKingMonster.aliases,
 				allItems: kalphiteKingLootTable.allItems,
-				items: kalphiteKingCL
+				items: kalphiteKingCL,
+				roleCategory: ['bosses']
 			},
 			Nex: {
 				alias: NexMonster.aliases,
 				allItems: nexLootTable.allItems,
-				items: nexCL
+				items: nexCL,
+				roleCategory: ['bosses']
 			},
 			'Vasa Magus': {
 				alias: VasaMagus.aliases,
 				allItems: VasaMagus.allItems,
-				items: vasaMagusCL
+				items: vasaMagusCL,
+				roleCategory: ['bosses']
 			},
 			Ignecarus: {
 				alias: Ignecarus.aliases,
 				allItems: Ignecarus.allItems,
-				items: ignecarusCL
+				items: ignecarusCL,
+				roleCategory: ['bosses']
 			},
 			Treebeard: {
 				alias: Treebeard.aliases,
 				allItems: Treebeard.allItems,
-				items: treeBeardCL
+				items: treeBeardCL,
+				roleCategory: ['bosses']
 			},
 			'Sea Kraken': {
 				alias: SeaKraken.aliases,
 				allItems: SeaKraken.allItems,
-				items: seaKrakenCL
+				items: seaKrakenCL,
+				roleCategory: ['bosses']
 			}
 		}
 	},
