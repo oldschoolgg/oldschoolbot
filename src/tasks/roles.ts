@@ -92,7 +92,6 @@ export default class extends Task {
 	async run() {
 		const g = this.client.guilds.cache.get('342983479501389826');
 		if (!g) return;
-		await g.members.fetch();
 		const skillVals = Object.values(Skills);
 
 		let result = '';
