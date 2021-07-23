@@ -66,7 +66,7 @@ interface ButtonInstance extends Button {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<amount:int{1000000,1000000000}>',
+			usage: '<amount:int{1000000,5000000000}>',
 			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true,
