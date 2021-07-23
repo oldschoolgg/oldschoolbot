@@ -1,52 +1,14 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { metamorphPets, pets } from '../../lib/data/collectionLog';
+import { allPetsCL, customPetsCL, discontinuedCustomPetsCL } from '../../lib/data/CollectionsExport';
 import { requiresMinion } from '../../lib/minions/decorators';
 import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { removeItemFromBank } from '../../lib/util';
-import resolveItems from '../../lib/util/resolveItems';
 
-export const allPetIDs = [
-	...resolveItems([
-		'Doug',
-		'Zippy',
-		'Shelldon',
-		'Remy',
-		'Lil Lamb',
-		'Harry',
-		'Klik',
-		'Wintertoad',
-		'Scruffy',
-		'Zak',
-		'Hammy',
-		'Skipper',
-		'Ori',
-		'Cob',
-		'Takon',
-		'Obis',
-		'Peky',
-		'Plopper',
-		'Brock',
-		'Wilvus',
-		'Smokey',
-		'Flappy',
-		'Ishi',
-		'Corgi',
-		'Sandy',
-		'Baby kalphite king',
-		'Craig',
-		'Snappy the Turtle',
-		'Hoppy',
-		'Steve',
-		'Frosty',
-		'Voidling'
-	]),
-	Object.values(pets),
-	...metamorphPets
-].flat(Infinity);
+export const allPetIDs = [...allPetsCL, ...customPetsCL, ...discontinuedCustomPetsCL];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

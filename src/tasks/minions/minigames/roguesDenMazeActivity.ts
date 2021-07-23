@@ -2,7 +2,7 @@ import { randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { rogueOutfit } from '../../../lib/data/collectionLog';
+import { roguesDenOutfit } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { RoguesDenMazeTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -12,7 +12,7 @@ export default class extends Task {
 		let lowestCountPiece = 0;
 		let lowestCountAmount = -1;
 
-		for (const piece of rogueOutfit) {
+		for (const piece of roguesDenOutfit) {
 			const amount = bank.amount(piece);
 			if (lowestCountAmount === -1 || amount < lowestCountAmount) {
 				lowestCountPiece = piece;

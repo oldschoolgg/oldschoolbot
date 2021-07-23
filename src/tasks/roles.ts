@@ -5,7 +5,7 @@ import { Task } from 'klasa';
 import { CLUser, SkillUser } from '../commands/Minion/leaderboard';
 import { production } from '../config';
 import { Roles } from '../lib/constants';
-import { collectionLogTypes } from '../lib/data/collectionLog';
+import { collectionLogRoleCategories } from '../lib/data/Collections';
 import ClueTiers from '../lib/minions/data/clueTiers';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
@@ -113,8 +113,7 @@ export default class extends Task {
 		// Top Collectors
 		const topCollectors = await Promise.all(
 			collections.map(async clName => {
-				const type = collectionLogTypes.find(t => t.name === clName)!;
-				const items = Object.values(type.items).flat(Infinity) as number[];
+				const items = collectionLogRoleCategories[clName];
 				const users = (
 					await this.client.orm.query(
 						`
@@ -162,7 +161,7 @@ ORDER BY u.sacbanklength DESC LIMIT 1;`);
 						`SELECT id, ("clueScores"->>'${t.id}')::int as qty
 FROM users
 WHERE "clueScores"->>'${t.id}' IS NOT NULL
-ORDER BY qty DESC 
+ORDER BY qty DESC
 LIMIT 1;`
 					)
 				)

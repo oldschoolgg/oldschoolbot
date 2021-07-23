@@ -5,7 +5,7 @@ import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
 import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
-import { metamorphPets } from './collectionLog';
+import { chambersOfXericMetamorphPets } from './CollectionsExport';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { ornamentKits } from './creatables/ornaments';
@@ -71,7 +71,8 @@ const chaoticCreatables: Createable[] = [
 		requiredSkills: { crafting: 120 }
 	}
 ];
-const metamorphPetCreatables: Createable[] = metamorphPets.map(pet => ({
+
+const metamorphPetCreatables: Createable[] = chambersOfXericMetamorphPets.map(pet => ({
 	name: itemNameFromID(pet)!,
 	inputItems: {
 		[itemID('Metamorphic dust')]: 1
