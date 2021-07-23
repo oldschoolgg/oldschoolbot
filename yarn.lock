@@ -2393,10 +2393,10 @@ fastify-plugin@^3.0.0:
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-3.0.0.tgz#cf1b8c8098e3b5a7c8c30e6aeb06903370c054ca"
   integrity sha512-ZdCvKEEd92DNLps5n0v231Bha8bkz1DjnPP/aEz37rz/q42Z5JVLmgnqR4DYuNn3NXAO3IDCPyRvgvxtJ4Ym4w==
 
-fastify-rate-limit@^5.5.0:
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/fastify-rate-limit/-/fastify-rate-limit-5.5.0.tgz#c4c3255aec1e12a3c49e14e20e96b5e8bd84aee1"
-  integrity sha512-mbvK1DQz6+rZDT01BMgygtdhq5fS/pCHv14BBWi/Cp0BdjXKYTg1j/VzoAjvLfzLTdOQbPGm2Z2Tfs7vjsmu+Q==
+fastify-rate-limit@^5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/fastify-rate-limit/-/fastify-rate-limit-5.6.0.tgz#aa5c96be85e03b764757e06180cde28833e08059"
+  integrity sha512-kkM+TQqU95OCNhVhRgke4+8t4UZHPoc93u+6S2Pzg7yoZ8IICJ8doRNcLxyYm1e20voBnyzooz5Thyw85kR2Nw==
   dependencies:
     fastify-plugin "^3.0.0"
     ms "^2.1.1"
@@ -2419,10 +2419,10 @@ fastify-warning@^0.2.0:
   resolved "https://registry.yarnpkg.com/fastify-warning/-/fastify-warning-0.2.0.tgz#e717776026a4493dc9a2befa44db6d17f618008f"
   integrity sha512-s1EQguBw/9qtc1p/WTY4eq9WMRIACkj+HTcOIK1in4MV5aFaQC9ZCIt0dJ7pr5bIf4lPpHvAtP2ywpTNgs7hqw==
 
-fastify@^3.19.1:
-  version "3.19.1"
-  resolved "https://registry.yarnpkg.com/fastify/-/fastify-3.19.1.tgz#6862a5677e0201d44023d105c58af64734ea6ed1"
-  integrity sha512-vyoRO/TQ+ta3OKShx5CHZ2qXXUXzBG4ZOVB0AEKlmf+DoMmP0ftuaEnzc7DPLVXtRYZ1A3Tbcn/6ja5e+sa2lw==
+fastify@^3.19.2:
+  version "3.19.2"
+  resolved "https://registry.yarnpkg.com/fastify/-/fastify-3.19.2.tgz#4e592835183a83f5b797897312a1a84eb6ff861d"
+  integrity sha512-s9naCdC0V1ynEzxMoe/0oX8XgcLk90VAnIms4z6KcF7Rpn1XiguoMyZSviTmv1x5rgy/OjGGBM45sNpMoBzCUQ==
   dependencies:
     "@fastify/ajv-compiler" "^1.0.0"
     abstract-logging "^2.0.0"
@@ -2433,7 +2433,7 @@ fastify@^3.19.1:
     find-my-way "^4.0.0"
     flatstr "^1.0.12"
     light-my-request "^4.2.0"
-    pino "^6.2.1"
+    pino "^6.13.0"
     proxy-addr "^2.0.7"
     readable-stream "^3.4.0"
     rfdc "^1.1.4"
@@ -3635,9 +3635,9 @@ klasa-decorators@^0.0.1:
   resolved "https://registry.yarnpkg.com/klasa-decorators/-/klasa-decorators-0.0.1.tgz#c4bcc7dd2b78814b4f625e611f82790ec6061d52"
   integrity sha512-uCoMz750Lnp0dM8VC787hnRrF9wqWfUrjT7dp+8ihqp6xmtX8ZSXoeK08WJgAhEdEdIDsUG+VMXi9gcG54EZMA==
 
-"klasa@https://github.com/gc/klasa.git#a5942d8289d12ce0eac3a4e13869ee3e93fa5f86":
+"klasa@https://github.com/gc/klasa.git#9cc34cbfd4f5a4b01068b402f19f9fa61641bdce":
   version "0.5.0-dev"
-  resolved "https://github.com/gc/klasa.git#a5942d8289d12ce0eac3a4e13869ee3e93fa5f86"
+  resolved "https://github.com/gc/klasa.git#9cc34cbfd4f5a4b01068b402f19f9fa61641bdce"
   dependencies:
     "@klasa/querybuilder" "^0.0.1"
     "@klasa/settings-gateway" "^0.0.10"
@@ -4283,10 +4283,10 @@ pino-std-serializers@^3.1.0:
   resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-3.2.0.tgz#b56487c402d882eb96cd67c257868016b61ad671"
   integrity sha512-EqX4pwDPrt3MuOAAUBMU0Tk5kR/YcCM5fNPEzgCO2zJ5HfX0vbiH9HbJglnyeQsN96Kznae6MWD47pZB5avTrg==
 
-pino@^6.2.1:
-  version "6.12.0"
-  resolved "https://registry.yarnpkg.com/pino/-/pino-6.12.0.tgz#2281521620d70eeff519039467352d656f46735e"
-  integrity sha512-5NGopOcUusGuklGHVVv9az0Hv/Dj3urHhD3G+zhl5pBGIRYAeGCi/Ej6YCl16Q2ko28cmYiJz+/qRoJiwy62Rw==
+pino@^6.13.0:
+  version "6.13.0"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-6.13.0.tgz#41810b9be213af6f8f7c23a1b17058d880267e7b"
+  integrity sha512-mRXSTfa34tbfrWqCIp1sUpZLqBhcoaGapoyxfEwaWwJGMpLijlRdDKIQUyvq4M3DUfFH5vEglwSw8POZYwbThA==
   dependencies:
     fast-redact "^3.0.0"
     fast-safe-stringify "^2.0.8"
