@@ -167,14 +167,14 @@ const killableBosses: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Strength],
 		customMonsterHP: 510,
 		combatXpMultiplier: 1.05,
-		healAmountNeeded: 20 * 3,
+		healAmountNeeded: 20 * 10,
 		minimumGearRequirements: {
 			[GearSetupTypes.Melee]: {
 				[GearStat.MeleeStrength]: 10
 			}
 		},
 		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
-		attackStylesUsed: [GearStat.AttackMagic],
+		attackStylesUsed: [GearStat.AttackStab],
 		attackStyleToUse: GearStat.AttackCrush
 	},
 	{
