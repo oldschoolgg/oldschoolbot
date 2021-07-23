@@ -14,6 +14,7 @@ import {
 	rewardTokens
 } from '../minions/data/templeTrekking';
 import { UserSettings } from '../settings/types/UserSettings';
+import { allFarmingItems } from '../skilling/skills/farming';
 import { ItemBank } from '../types';
 import { stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
@@ -809,6 +810,10 @@ export const allCollectionLogs: ICollection = {
 		Quest: {
 			counts: false,
 			items: questCL
+		},
+		Farming: {
+			counts: false,
+			items: allFarmingItems
 		}
 	}
 };
