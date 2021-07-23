@@ -266,6 +266,16 @@ export default class extends BotCommand {
 			boosts.push(`+2 hunter level for using ${hunterPotionQuantity}x Hunter potion(4) every 2nd minute.`);
 		}
 
+		if (creature.bait) {
+			let reqBank = creature.bait(quantity, msg.author);
+			if (!msg.author.owns(reqBank)) {
+				return msg.channel.send(
+					`You don't have enough bait to catch ${quantity}x ${creature.name}, you need: ${reqBank}.`
+				);
+			}
+			removeBank.add(reqBank);
+		}
+
 		updateBankSetting(this.client, ClientSettings.EconomyStats.HunterCost, removeBank);
 		await msg.author.removeItemsFromBank(removeBank.bank);
 
@@ -301,7 +311,9 @@ export default class extends BotCommand {
 
 		let response = `${msg.author.minionName} is now ${creature.huntTechnique} ${quantity}x ${
 			creature.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+		}, it'll take around ${formatDuration(duration)} to finish.${
+			removeBank.length > 0 ? `Removed ${removeBank} from your bank` : ''
+		}`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

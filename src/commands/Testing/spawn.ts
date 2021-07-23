@@ -3,7 +3,7 @@ import { Bank, Items, Openables } from 'oldschooljs';
 
 import { customItems } from '../../lib/customItems';
 import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
-import { defaultGear, GearSetup } from '../../lib/gear';
+import { GearSetup } from '../../lib/gear';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
@@ -96,12 +96,17 @@ export default class extends BotCommand {
 		let res = `Gave you ${loot}.`;
 		for (const setup of ['range', 'melee', 'mage', 'skilling'] as const) {
 			if (msg.flagArgs[setup]) {
-				let newGear: GearSetup = defaultGear;
+				let newGear: GearSetup = msg.author.settings.get(`gear.${setup}`) as GearSetup;
+				const returnToBank = new Bank();
 				for (const [item] of items) {
 					if (!item.equipable_by_player || !item.equipment) continue;
+					if (newGear[item.equipment.slot] !== null) {
+						returnToBank.add(newGear[item.equipment.slot]!.item, newGear[item.equipment.slot]!.quantity);
+					}
 					newGear[item.equipment.slot] = { item: item.id, quantity: 1 };
 				}
 				await msg.author.settings.update(`gear.${setup}`, newGear);
+				await msg.author.addItemsToBank(returnToBank);
 				res += `\n\nEquipped these items: ${new Gear(newGear).toString()}`;
 			}
 		}

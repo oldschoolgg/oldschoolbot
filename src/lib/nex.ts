@@ -1,64 +1,36 @@
 import { Time } from 'e';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-import { itemID } from 'oldschooljs/dist/util';
 
-import { GearSetupTypes, GearStat } from './gear/types';
+import { nexCL } from './data/CollectionsExport';
+import { GearSetupTypes, GearStat } from './gear';
 import { KillableMonster } from './minions/types';
-import resolveItems from './util/resolveItems';
 import { makeKillTable } from './util/setCustomMonster';
 
-export const torvaOutfit = resolveItems([
-	'Torva full helm',
-	'Torva platebody',
-	'Torva platelegs',
-	'Torva boots',
-	'Torva gloves'
-]);
-export const pernixOutfit = resolveItems([
-	'Pernix cowl',
-	'Pernix body',
-	'Pernix chaps',
-	'Pernix boots',
-	'Pernix gloves'
-]);
-export const virtusOutfit = resolveItems([
-	'Virtus mask',
-	'Virtus robe top',
-	'Virtus robe legs',
-	'Virtus boots',
-	'Virtus gloves'
-]);
-export const ancientWeapons = resolveItems(['Virtus wand', 'Virtus book', 'Zaryte bow']);
-
-export const allNexItems = [torvaOutfit, pernixOutfit, virtusOutfit, ancientWeapons].flat();
-export const allKeyPieces = resolveItems(['Key piece 1', 'Key piece 2', 'Key piece 3', 'Key piece 4']);
-export const allKeyItems = resolveItems(['Frozen key', 'Key piece 1', 'Key piece 2', 'Key piece 3', 'Key piece 4']);
+export const nexLootTable = new LootTable()
+	.every('Big bones')
+	.add(new LootTable().every('Saradomin brew(4)', [2, 15]).every('Super restore(4)', [1, 5]))
+	.add('Magic logs', 375)
+	.add('Green dragonhide', 400)
+	.add('Uncut dragonstone', 20)
+	.add('Onyx bolts (e)', 375)
+	.add('Grimy avantoe', 75)
+	.add('Grimy dwarf weed', 75)
+	.add('Grimy torstol', 40)
+	.add('Torstol seed', 12)
+	.add('Magic seed', 5)
+	.tertiary(1500, 'Ancient emblem')
+	.tertiary(5, 'Tradeable mystery box')
+	.tertiary(20, 'Clue scroll (grandmaster)')
+	.tertiary(3000, 'Bloodsoaked feather');
 
 export const NexMonster: KillableMonster = {
 	id: 46_274,
 	name: 'Nex',
 	aliases: ['nex'],
 	timeToFinish: Time.Minute * 25,
-	notifyDrops: [...allNexItems, itemID('Bloodsoaked feather')],
+	notifyDrops: nexCL,
 	table: {
-		kill: makeKillTable(
-			new LootTable()
-				.every('Big bones')
-				.add(new LootTable().every('Saradomin brew(4)', [2, 15]).every('Super restore(4)', [1, 5]))
-				.add('Magic logs', 375)
-				.add('Green dragonhide', 400)
-				.add('Uncut dragonstone', 20)
-				.add('Onyx bolts (e)', 375)
-				.add('Grimy avantoe', 75)
-				.add('Grimy dwarf weed', 75)
-				.add('Grimy torstol', 40)
-				.add('Torstol seed', 12)
-				.add('Magic seed', 5)
-				.tertiary(1500, 'Ancient emblem')
-				.tertiary(5, 'Tradeable mystery box')
-				.tertiary(20, 'Clue scroll (grandmaster)')
-				.tertiary(3000, 'Bloodsoaked feather')
-		)
+		kill: makeKillTable(nexLootTable)
 	},
 	emoji: '',
 	wildy: false,

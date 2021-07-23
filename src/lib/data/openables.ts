@@ -6,7 +6,6 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { allPetIDs } from '../../commands/Minion/equippet';
 import { Emoji } from '../constants';
 import { FishTable } from '../minions/data/killableMonsters/custom/SeaKraken';
-import { allKeyPieces, allNexItems } from '../nex';
 import BirthdayPresentTable from '../simulation/birthdayPresent';
 import CasketTable from '../simulation/casket';
 import CrystalChestTable from '../simulation/crystalChest';
@@ -14,7 +13,7 @@ import { itemNameFromID, removeDuplicatesFromArray } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
-import { coxLog, customBossLog } from './collectionLog';
+import { chambersOfXericCl, customBossesCL, frozenKeyPieces } from './CollectionsExport';
 
 interface Openable {
 	name: string;
@@ -490,8 +489,8 @@ let allItemsIDs = Openables.map(i => (typeof i.table !== 'function' && i.table.a
 ) as number[];
 allItemsIDs = removeDuplicatesFromArray(allItemsIDs);
 const cantBeDropped = [
-	...Object.values(coxLog).flat(Infinity),
-	...Object.values(customBossLog).flat(Infinity),
+	...chambersOfXericCl,
+	...customBossesCL,
 	itemID('Abyssal pouch'),
 	itemID('Dwarven crate'),
 	itemID('Halloween mask set'),
@@ -533,8 +532,7 @@ const cantBeDropped = [
 		'Bloodsoaked feather'
 	]),
 	...allPetIDs,
-	...allKeyPieces,
-	...allNexItems,
+	...frozenKeyPieces,
 	...ALL_PRIMAL
 ] as number[];
 

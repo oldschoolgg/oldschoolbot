@@ -1,3 +1,4 @@
+import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { MysteryBoxes } from '../../../../data/openables';
@@ -20,7 +21,13 @@ const customBSOCreatures: Creature[] = [
 		huntTechnique: HunterTechniqueEnum.Tracking,
 		catchTime: 91,
 		slope: 0,
-		intercept: 99
+		intercept: 99,
+		bait: qty => {
+			let req = new Bank();
+			const kibbleRequired = Math.ceil(qty / 12.5);
+			req.add('Simple kibble', kibbleRequired);
+			return req;
+		}
 	}
 ];
 

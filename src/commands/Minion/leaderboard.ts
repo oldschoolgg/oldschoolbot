@@ -5,18 +5,17 @@ import { IsNull, Not } from 'typeorm';
 
 import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Emoji } from '../../lib/constants';
-import { collectionLogTypes } from '../../lib/data/collectionLog';
+import { getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { ItemBank, SettingsEntry } from '../../lib/types';
-import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
+import { convertXPtoLVL, makePaginatedMessage, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
 import PostgresProvider from '../../providers/postgres';
 
 const CACHE_TIME = Time.Minute * 5;
@@ -505,27 +504,18 @@ LIMIT 10;
 		);
 	}
 
-	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
-		const type = collectionLogTypes.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
-
-		if (!type) {
-			return msg.channel.send(
-				`That's not a valid collection log type. The valid types are: ${collectionLogTypes
-					.map(type => type.name)
-					.join(', ')}`
-			);
+	async cl(msg: KlasaMessage, [inputType = 'overall']: [string]) {
+		const items = getCollectionItems(inputType, false);
+		if (!items || items.length === 0) {
+			return msg.channel.send("That's not a valid collection log category. Check +cl for all possible logs.");
 		}
-
-		const items = Object.values(type.items).flat(Infinity) as number[];
-
 		const users = (
-			await this.client.orm.query(
-				`
+			await this.client.orm.query(`
 SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 				  FROM (
-  SELECT ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank")) "cl_keys",
+  SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
   				id, "collectionLogBank",
-			    cardinality(ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank" - array[${items
+			    cardinality(array(SELECT * FROM jsonb_object_keys("collectionLogBank" - array[${items
 					.map(i => `'${i}'`)
 					.join(', ')}]))) "inverse_length"
   FROM users
@@ -534,10 +524,8 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 ) u
 ORDER BY qty DESC
 LIMIT 50;
-`
-			)
+`)
 		).filter((i: any) => i.qty > 0) as CLUser[];
-
 		if (users.length === 0) {
 			return msg.channel.send('No users found.');
 		}
@@ -547,7 +535,7 @@ LIMIT 50;
 			util
 				.chunk(users, 10)
 				.map(subList => subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')),
-			`${type.name} Collection Log Leaderboard`
+			`${toTitleCase(inputType.toLowerCase())} Collection Log Leaderboard`
 		);
 	}
 
@@ -598,18 +586,9 @@ LIMIT 50;
 	}
 
 	async doMenu(msg: KlasaMessage, pages: string[], title: string) {
-		const loadingMsg = await msg.channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
-
-		const display = new UserRichDisplay();
-		display.setFooterPrefix('Page ');
-
-		for (const page of pages) {
-			display.addPage(new MessageEmbed().setTitle(title).setDescription(page));
-		}
-
-		return display.start(loadingMsg as KlasaMessage, msg.author.id, {
-			jump: false,
-			stop: false
-		});
+		return makePaginatedMessage(
+			msg,
+			pages.map(p => ({ embeds: [new MessageEmbed().setTitle(title).setDescription(p)] }))
+		);
 	}
 }

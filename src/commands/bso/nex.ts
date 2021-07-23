@@ -3,10 +3,11 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
+import { pernixOutfit } from '../../lib/data/CollectionsExport';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../lib/minions/types';
-import { NexMonster, pernixOutfit } from '../../lib/nex';
+import { NexMonster } from '../../lib/nex';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
