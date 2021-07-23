@@ -99,6 +99,11 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		hp = monster.customMonsterHP;
 	} else if (osjsMon?.data?.hitpoints) {
 		hp = osjsMon.data.hitpoints;
+        
+        // Double hp for two guardians
+        if (params.monsterID == Monsters.GrotesqueGuardians.id) {
+            hp *= 2;
+        }
 	}
 	if (monster && monster.combatXpMultiplier) {
 		xpMultiplier = monster.combatXpMultiplier;
