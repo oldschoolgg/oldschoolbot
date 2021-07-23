@@ -163,6 +163,10 @@ export default class extends Task {
 				}
 			}
 
+			if (loot[itemID('Plopper')]) {
+				loot[itemID('Plopper')] = 1;
+			}
+
 			if (Object.keys(loot).length > 0) {
 				str += `\n\nYou received: ${new Bank(loot)}.`;
 			}
@@ -486,6 +490,10 @@ export default class extends Task {
 
 			if (userBank[itemID('Plopper')]) {
 				loot = multiplyBank(loot, 4);
+			}
+
+			if (loot[itemID('Plopper')]) {
+				loot[itemID('Plopper')] = 1;
 			}
 
 			if (duration > Time.Minute * 20 && user.hasItemEquippedAnywhere(itemID('Farming master cape'))) {
