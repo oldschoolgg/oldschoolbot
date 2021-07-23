@@ -560,7 +560,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		],
 		healAmountNeeded: 20 * 12,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged, GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged]
 	},
 	{
 		id: Monsters.GreaterNechryael.id,
