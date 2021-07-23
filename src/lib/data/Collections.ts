@@ -1005,7 +1005,7 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 		}
 	}
 	if (_items.length === 0) {
-		_items = collectionLogRoleCategories[collection.toLowerCase().replace('role', '')] ?? [];
+		_items = collectionLogRoleCategories[collection.toLowerCase()] ?? [];
 	}
 	if (_items.length === 0) {
 		const _monster = killableMonsters.find(
