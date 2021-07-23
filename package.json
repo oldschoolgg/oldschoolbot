@@ -20,7 +20,7 @@
 		"canvas": "^2.8.0",
 		"canvas-constructor": "^1.1.2",
 		"chokidar": "^3.5.2",
-		"discord.js": "https://github.com/discordjs/discord.js#a08ce7dddb5f056128488392742495398f9e33b5",
+		"discord.js": "github:discordjs/discord.js#a08ce7dddb5f056128488392742495398f9e33b5",
 		"e": "^0.2.1",
 		"emoji-regex": "^9.2.2",
 		"fastify": "^3.19.1",
