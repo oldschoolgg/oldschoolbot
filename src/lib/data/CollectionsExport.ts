@@ -1656,7 +1656,6 @@ export const slayerCL = resolveItems([
 	'Monkey tail',
 	'Ballista limbs',
 	'Ballista spring',
-	'Black mask',
 	'Granite longsword',
 	'Dragon chainbody'
 	// Not obtainable yet
