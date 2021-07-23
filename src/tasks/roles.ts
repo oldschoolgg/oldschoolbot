@@ -47,6 +47,7 @@ LIMIT 1;`;
 async function addRoles(g: Guild, users: string[], role: Roles, badge: number | null): Promise<string> {
 	let added: string[] = [];
 	let removed: string[] = [];
+	for (const user of users) await g.members.fetch(user);
 	const roleName = g.roles.cache.get(role)!.name!;
 	for (const mem of g.members.cache.values()) {
 		if (mem.roles.cache.has(role) && !users.includes(mem.user.id)) {
