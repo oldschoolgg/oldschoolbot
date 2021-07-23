@@ -81,21 +81,25 @@ export default class extends Task {
 		}
 
 		if (diedToJad) {
-			let slayerMsg = '';
+			const failBank = new Bank({ [TokkulID]: tokkulReward });
+			await user.addItemsToBank(failBank, true);
+
+            const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration });
+            const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration });
+            
+			let msg = `${rangeXP}. ${hpXP}.`;;
 			if (isOnTask) {
-				slayerMsg = ' **Task cancelled.**';
+				msg = `**Task cancelled.** \n${msg}`;
 				usersTask.currentTask!.quantityRemaining = 0;
 				usersTask.currentTask!.skipped = true;
 				await usersTask.currentTask!.save();
 			}
-			const failBank = new Bank({ [TokkulID]: tokkulReward });
-			await user.addItemsToBank(failBank, true);
-
+            
 			return handleTripFinish(
 				this.client,
 				user,
 				channelID,
-				`${user}${slayerMsg}`,
+				`${user} ${msg}`,
 				res => {
 					user.log('continued trip of fightcaves');
 					return this.client.commands.get('fightcaves')!.run(res, []);
@@ -132,7 +136,10 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		let slayerMsg = '';
+        const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 47_580, duration });
+        const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_860, duration });
+        
+		let msg = `${rangeXP}. ${hpXP}.`;
 		if (isOnTask) {
 			// 25,250 for Jad + 11,760 for waves.
 			const slayerXP = 37_010;
@@ -145,8 +152,8 @@ export default class extends Task {
 			usersTask.currentTask!.quantityRemaining = 0;
 			await usersTask.currentTask!.save();
 			const xpMessage = await user.addXP({ skillName: SkillsEnum.Slayer, amount: slayerXP, duration });
-
-			slayerMsg = ` Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
+            
+			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.** \n${msg}`;
 			// End slayer code
 		}
 
@@ -154,7 +161,7 @@ export default class extends Task {
 			this.client,
 			user,
 			channelID,
-			`${user}${slayerMsg}`,
+			`${user} ${msg}`,
 			res => {
 				user.log('continued trip of fightcaves');
 				return this.client.commands.get('fightcaves')!.run(res, []);
