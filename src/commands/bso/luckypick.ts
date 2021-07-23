@@ -1,5 +1,5 @@
 import { MessageButton, MessageComponentInteraction, MessageOptions } from 'discord.js';
-import { chunk, randArrItem, shuffleArr, Time } from 'e';
+import { chunk, randArrItem, randInt, roll, shuffleArr, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util';
 
@@ -20,6 +20,10 @@ const buttons: Button[] = [
 		mod: () => 0
 	},
 	{
+		name: '1.5x',
+		mod: (qty: number) => qty * 1.5
+	},
+	{
 		name: '2x',
 		mod: (qty: number) => qty * 2
 	},
@@ -28,20 +32,24 @@ const buttons: Button[] = [
 		mod: (qty: number) => qty * 3
 	},
 	{
-		name: '5x',
-		mod: (qty: number) => qty * 5
-	},
-	{
 		name: '10x',
 		mod: (qty: number) => qty * 10
 	}
 ];
 
 function getButtons(): ButtonInstance[] {
-	let buttonsToShow = ['0', '0', '0', '0', '0', '0', '0', '2x', '2x', '3x', '5x', '10x'].map(
-		n => buttons.find(i => i.name === n)!
-	);
-	return shuffleArr(buttonsToShow).map((item, index) => ({ ...item, picked: false, id: index }));
+	// prettier-ignore
+	let buttonsToShow = ['0', '0', '0', '0',
+		'2x', '1.5x', '0', '1.5x', '0',
+		'1.5x', '1.5x', '2x', '0', '3x',
+		'2x', '0', '0', '2x', '0'];
+
+	buttonsToShow.push(roll(10) ? '10x' : '0');
+	return shuffleArr(buttonsToShow.map(n => buttons.find(i => i.name === n)!)).map((item, index) => ({
+		...item,
+		picked: false,
+		id: index
+	}));
 }
 
 interface ButtonInstance extends Button {
@@ -63,11 +71,12 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [amount]: [number]) {
 		if (msg.flagArgs.simulate) {
 			let houseBalance = 0;
-			let betQuantity = 500_000;
-			let betSize = 5_000_000;
+			let betQuantity = 10_000;
 
 			const pickedButtonsMap: Record<string, number> = {};
 			for (let i = 0; i < betQuantity; i++) {
+				let betSize = randInt(1_000_000, 1_000_000_000);
+
 				houseBalance += betSize;
 				const buttons = getButtons();
 				const pickedButton = randArrItem(buttons);
@@ -77,7 +86,9 @@ export default class extends BotCommand {
 				houseBalance -= pickedButton.mod(betSize);
 			}
 			return msg.channel.send(
-				`With ${betQuantity} ${toKMB(betSize)} bets, the house ended up with ${toKMB(houseBalance)}.`
+				`With ${betQuantity} bets, the house ended up with ${toKMB(houseBalance)}. Average profit of ${toKMB(
+					houseBalance / betQuantity
+				)} per bet.`
 			);
 		}
 
@@ -91,14 +102,21 @@ export default class extends BotCommand {
 		await msg.author.removeGP(amount);
 		const buttonsToShow = getButtons();
 		function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): MessageOptions['components'] {
-			let chunkedButtons = chunk(buttonsToShow, 4);
+			let chunkedButtons = chunk(buttonsToShow, 5);
 			return chunkedButtons.map(c =>
-				c.map(b =>
-					new MessageButton()
-						.setLabel(showTrueNames ? b.name : '???')
+				c.map(b => {
+					let button = new MessageButton()
+						.setLabel(showTrueNames ? b.name : '')
 						.setCustomID(b.id.toString())
-						.setStyle(b.picked ? (b.name !== '0' ? 'SUCCESS' : 'DANGER') : 'SECONDARY')
-				)
+						.setStyle(b.picked ? (b.name !== '0' ? 'SUCCESS' : 'DANGER') : 'SECONDARY');
+					if (!showTrueNames) {
+						button.setEmoji('680783258488799277');
+					}
+					if (b.name === '10x' && !b.picked && showTrueNames) {
+						button.setStyle('PRIMARY');
+					}
+					return button;
+				})
 			);
 		}
 
