@@ -1,7 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 
-import { GearSetupTypes, GearStat, maxDefenceStats, maxOffenceStats } from '../../gear';
+import { GearSetupTypes, GearStat, maxDefenceStats, maxOffenceStats, defStyleNames, offStyleNames } from '../../gear';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
 import { calcWhatPercent, reduceNumByPercent } from '../../util';
 import { KillableMonster } from '../types';
@@ -42,14 +42,19 @@ export default function calculateMonsterFood(
 	// Check all styles the monster uses for defensive%
 	for (const style of attackStylesUsed) {
 		const inverseStyle = inverseOfOffenceStat(style);
+        const styleName = defStyleNames[inverseStyle];
 		const usersStyle = gearStats[inverseStyle];
 		const maxStyle = maxDefenceStats[inverseStyle]!;
 		const percent = floor(calcWhatPercent(usersStyle, maxStyle));
-		messages.push(`Your ${inverseStyle} bonus is ${percent}% of the best (${usersStyle} out of ${maxStyle})`);
+		messages.push(`Your ${styleName} bonus is ${percent}% of the best (${usersStyle} out of ${maxStyle}).`);
 		totalPercentOfGearLevel += percent;
 	}
 
-	totalOffensivePercent = floor(calcWhatPercent(gearStats[attackStyleToUse], maxOffenceStats[attackStyleToUse]));
+    const offStyleName = offStyleNames[attackStyleToUse];
+	const usersOffStyle = gearStats[attackStyleToUse];
+    const maxOffStyle = maxOffenceStats[attackStyleToUse];
+	totalOffensivePercent = floor(calcWhatPercent(usersOffStyle, maxOffStyle));
+    messages.push(`Your ${offStyleName} bonus is ${totalOffensivePercent}% of the best (${usersOffStyle} out of ${maxOffStyle}).`);
 
 	// Get average of all defensive%'s and limit it to a cap of 95
 	totalPercentOfGearLevel = Math.min(floor(max(0, totalPercentOfGearLevel / attackStylesUsed.length)), 95);
