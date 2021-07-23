@@ -486,8 +486,8 @@ export default class CollectionLogTask extends Task {
 				// Canvas height - top area until list starts - left area, where list should end
 				const listHeightSpace = ctx.canvas.height - 62 - 13;
 
+				// Check if in the start of the list
 				if (selectedPos <= listHeightSpace) {
-					// Check if in the start of the list
 					ctx.drawImage(
 						leftListCanvas,
 						0,
@@ -504,7 +504,6 @@ export default class CollectionLogTask extends Task {
 					leftListCanvas.height - listHeightSpace <=
 					selectedPos
 				) {
-					// Check if in the start of the list
 					ctx.drawImage(
 						leftListCanvas,
 						0,
