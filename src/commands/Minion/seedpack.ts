@@ -63,7 +63,10 @@ export const MediumSeedPackTable = new LootTable()
 	.add('Lantadyme seed', [1, 3], 1)
 	.add('Dwarf weed seed', [1, 3], 1)
 	.add('Calquat tree seed', [3, 6], 1)
-	.add('Teak seed', [1, 3], 1);
+	.add('Teak seed', [1, 3], 1)
+	.add('Mango seed', [1, 3], 1)
+	.add('Avocado seed', [1, 3], 1)
+	.add('Lychee seed', [1, 3], 1);
 
 export const HighSeedPackTable = new LootTable()
 	.add('Papaya tree seed', [1, 3], 5)
