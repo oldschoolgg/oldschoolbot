@@ -46,6 +46,11 @@ export default class extends BotCommand {
 			return returnListOfPlants(msg);
 		}
 
+		if (msg.flagArgs.enablereminders) {
+			await msg.author.settings.update(UserSettings.FarmingPatchReminders, true);
+			return msg.channel.send('Enabled farming patch reminders.');
+		}
+
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const questPoints = msg.author.settings.get(UserSettings.QP);

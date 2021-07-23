@@ -1,6 +1,6 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
-import { MessageEmbed } from 'discord.js';
-import { chunk } from 'e';
+import { MessageButton, MessageEmbed } from 'discord.js';
+import { chunk, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
@@ -9,11 +9,12 @@ import {
 	Color,
 	Emoji,
 	informationalButtons,
+	lastTripCache,
 	MAX_LEVEL,
 	MIMIC_MONSTER_ID,
 	PerkTier
 } from '../../lib/constants';
-import clueTiers from '../../lib/minions/data/clueTiers';
+import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { getNewUser } from '../../lib/settings/settings';
@@ -57,15 +58,76 @@ export default class MinionCommand extends BotCommand {
 			cooldown: 1,
 			aliases: ['m'],
 			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|ironman] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
-
 			usageDelim: ' ',
-			subcommands: true
+			subcommands: true,
+			requiredPermissions: ['EMBED_LINKS']
 		});
 	}
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		return msg.channel.send(msg.author.minionStatus);
+		let components = [];
+		const bank = msg.author.bank();
+		if (!msg.author.minionIsBusy) {
+			for (const tier of ClueTiers) {
+				if (bank.has(tier.scrollID)) {
+					components.push(
+						new MessageButton()
+							.setLabel(`Do ${tier.name} Clue`)
+							.setStyle('SECONDARY')
+							.setCustomID(tier.name)
+							.setEmoji('365003979840552960')
+					);
+				}
+			}
+		}
+
+		const lastTrip = lastTripCache.get(msg.author.id);
+		if (lastTrip && !msg.author.minionIsBusy) {
+			components.push(
+				new MessageButton()
+					.setLabel(`Repeat ${lastTrip.data.type} Trip`)
+					.setStyle('SECONDARY')
+					.setCustomID('REPEAT_LAST_TRIP')
+			);
+		}
+
+		const sentMessage = await msg.channel.send({
+			content: msg.author.minionStatus,
+			components: components.length > 0 ? [...chunk(components, 5)] : undefined
+		});
+		if (components.length > 0) {
+			const handleButtons = async () => {
+				try {
+					const selection = await sentMessage.awaitMessageComponentInteraction({
+						filter: i => {
+							if (i.user.id !== msg.author.id) {
+								i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+								return false;
+							}
+							if (i.user.minionIsBusy) {
+								i.reply({ ephemeral: true, content: 'Your minion is busy.' });
+								return false;
+							}
+							return true;
+						},
+						time: Time.Second * 15
+					});
+					await sentMessage.edit({ components: [] });
+					selection.deferUpdate();
+					if (selection.user.minionIsBusy) {
+						return selection.reply({ content: msg.author.minionStatus, ephemeral: true });
+					}
+					if (selection.customID === 'REPEAT_LAST_TRIP' && lastTrip) {
+						return lastTrip.continue(msg);
+					}
+					await this.client.commands.get('mclue')?.run(msg, [selection.customID]);
+				} catch {
+					await sentMessage.edit({ components: [] });
+				}
+			};
+			handleButtons();
+		}
 	}
 
 	@requiresMinion
@@ -89,14 +151,17 @@ export default class MinionCommand extends BotCommand {
 
 	@requiresMinion
 	async seticon(msg: KlasaMessage, [icon]: [string]) {
-		if (msg.author.perkTier < PerkTier.Six) {
-			return msg.channel.send("You need to be a Tier 5 Patron to change your minion's icon to a custom icon.");
+		if (msg.author.perkTier < PerkTier.Four) {
+			return msg.channel.send("You need to be a Tier 3 Patron to change your minion's icon to a custom icon.");
 		}
 
 		const res = FormattedCustomEmoji.exec(icon);
 		if (!res || !res[0]) {
 			return msg.channel.send("That's not a valid emoji.");
 		}
+
+		await msg.confirm('Icons cannot be inappropriate or NSFW. Do you understand?');
+
 		await msg.author.settings.update(UserSettings.Minion.Icon, res[0]);
 
 		return msg.channel.send(`Changed your minion icon to ${res}.`);
@@ -286,7 +351,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
 		for (const [clueID, clueScore] of Object.entries(clueScores)) {
-			const clue = clueTiers.find(c => c.id === parseInt(clueID));
+			const clue = ClueTiers.find(c => c.id === parseInt(clueID));
 			res += `**${clue!.name}**: ${clueScore}\n`;
 		}
 		return msg.channel.send(res);
