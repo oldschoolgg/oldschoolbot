@@ -56,7 +56,7 @@ export default class extends BotCommand {
 		const percentIncreaseFromRangeStats = Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromRangeStats);
 
-		if (gear.hasEquipped('Twisted bow')) {
+		if (user.hasItemEquippedOrInBank('Twisted bow')) {
 			debugStr += ', 15% from Twisted bow';
 			baseTime = reduceNumByPercent(baseTime, 15);
 		}
