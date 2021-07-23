@@ -75,6 +75,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [amount]: [number]) {
+		if (msg.author.isIronman) {
+			return msg.channel.send("Ironmen can't gamble! Go pickpocket some men for GP.");
+		}
 		if (msg.flagArgs.simulate && !production) {
 			let houseBalance = 0;
 			let betQuantity = 10_000;
