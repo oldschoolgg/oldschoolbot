@@ -31,7 +31,9 @@ export const enum Roles {
 	TopSkiller = '848966830617788427',
 	TopCollector = '848966773885763586',
 	TopSacrificer = '848966732265160775',
-	TopeClueHunter = '848967350120218636'
+	TopClueHunter = '848967350120218636',
+	TopSlayer = '867967551819358219',
+	TopMinigamer = '867967884515770419'
 }
 
 export const enum Emoji {

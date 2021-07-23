@@ -715,29 +715,38 @@
   resolved "https://registry.yarnpkg.com/@sapphire/async-queue/-/async-queue-1.1.4.tgz#ae431310917a8880961cebe8e59df6ffa40f2957"
   integrity sha512-fFrlF/uWpGOX5djw5Mu2Hnnrunao75WGey0sP0J3jnhmrJ5TAPzHYOmytD5iN/+pMxS+f+u/gezqHa9tPhRHEA==
 
-"@sapphire/discord-utilities@^2.1.3":
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.1.4.tgz#f7fd0b865f97599929639492ed602f8dd6679c72"
-  integrity sha512-5qXXOq7DJ8n71nUYnfCgx0c7n45jpmw3GPbF7/ESIrkgVWo2QQu5x9MiCwyeL4xAh6H8aUMzIRXqP7Tme3yudw==
+"@sapphire/discord-utilities@^2.1.5":
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.1.5.tgz#8b70b3949266d5b643a57c893985623f03297e8a"
+  integrity sha512-GQ1n+UCF3jsn1KmNLzEbjy6+ecfJPvWBaD7CZmQoXl385mTx4M2jen2w/guylJcScrsnUnbu6hgB3vSfkHXlFg==
   dependencies:
     twemoji-parser "^13.1.0"
 
-"@sapphire/time-utilities@^1.3.3":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.3.4.tgz#57c3758e57aa212b924d4506e011f49360cd3a7d"
-  integrity sha512-vKnOaVVE1cR7tdoyziOKwnMEjLZ8PuX+mZMF2JBNC662SM7nuv0w72hZfDwswcSu0mmT8JQ2h/sP8ZOb9uWtxA==
+"@sapphire/discord.js-utilities@^3.0.0-next.600390f4.0":
+  version "3.0.0-next.600390f4.0"
+  resolved "https://registry.yarnpkg.com/@sapphire/discord.js-utilities/-/discord.js-utilities-3.0.0-next.600390f4.0.tgz#1ce78838fe044d4921740d28a7569f220ce9cd02"
+  integrity sha512-0WgX7H8BgEIymVL701rnJJoLNLLSmpbS7dyOTEtVz9g9LdZZU7NEzg6EzlZlHnlXZLLeohfBI9XdKExKoE1r2Q==
   dependencies:
-    "@sapphire/utilities" "^1.6.0"
+    "@sapphire/discord-utilities" "^2.1.5"
+    "@sapphire/time-utilities" "^1.3.8"
+    "@sapphire/utilities" "^2.0.1"
+
+"@sapphire/time-utilities@^1.3.7", "@sapphire/time-utilities@^1.3.8":
+  version "1.3.8"
+  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.3.8.tgz#70297b2b3321ada652ed424e9f32a82235ca2f9d"
+  integrity sha512-pmEoy24pW0xENjIGgws0r4TgeY7eemqkgDp35vRk9K4vi+RiEu9WMYfur1EI422mocQJNtfyQUo7mBKkBhSkTw==
+  dependencies:
+    "@sapphire/utilities" "^2.0.1"
 
 "@sapphire/utilities@^1.4.7":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.5.0.tgz#8ab8001219668e3a9db65e13d7305aec3b838e9b"
-  integrity sha512-lgWjTsy9Dsl21zy4mAzZcftOhijWVq2Gok/aFfS8f3Jue5DC7jSTlJoyEypo9ihbLXHpl8ceIUlRPkMiXcaxIw==
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.7.0.tgz#b40adc0f092ce988232da3879c68d0ee17ee8908"
+  integrity sha512-+bU6rGr529oj1RoK31aHkBoLYnEqawRwwwUMSRPeaZx21gPrvqjJgwyBBMPEWTv2kjRSyzTTVtV7U0bkZ2RMjQ==
 
-"@sapphire/utilities@^1.6.0":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.6.1.tgz#33b2c9b10f78b7466869f39c8739050909f977f3"
-  integrity sha512-aOfw3yPuy51GxgyMHIHeLSaw4bN8+we2VSsojmX4HBLV687emy70AzPm98c2D8oOf6EqYzW9i1g8Rfbbh1ANqQ==
+"@sapphire/utilities@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-2.0.1.tgz#c436c5b2b72679c89a40abe46d2f9301d03e63e2"
+  integrity sha512-KgJsgQ1cnfVKqscrMX4GH29mIVhVQkF8kSTIRCB+hgCCRfIvUU5peE4g/cegnesPS5eMiQqV+NWk7cNwhjextQ==
 
 "@sentry/core@6.9.0":
   version "6.9.0"
@@ -1881,9 +1890,9 @@ discord-api-types@^0.19.0-next.f393ba520d7d6d2aacaca7b3ca5d355fab614f6e:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.19.0.tgz#86ba8021b29190cf860e90a2bc3e29b1d7aab3ba"
   integrity sha512-t2HKLd43Lbe+rf+ffYfKVv9Kk5f6p7sFqvO6CMV55ZB0PgZv8WigCkt9FoJciYo5S3Q6CGYK+WnE/ZG+6vkBDQ==
 
-"discord.js@https://github.com/discordjs/discord.js#a08ce7dddb5f056128488392742495398f9e33b5":
+"discord.js@github:discordjs/discord.js#a08ce7dddb5f056128488392742495398f9e33b5":
   version "13.0.0-dev"
-  resolved "https://github.com/discordjs/discord.js#a08ce7dddb5f056128488392742495398f9e33b5"
+  resolved "https://codeload.github.com/discordjs/discord.js/tar.gz/a08ce7dddb5f056128488392742495398f9e33b5"
   dependencies:
     "@discordjs/builders" "^0.1.1"
     "@discordjs/collection" "^0.1.6"
@@ -2384,10 +2393,10 @@ fastify-plugin@^3.0.0:
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-3.0.0.tgz#cf1b8c8098e3b5a7c8c30e6aeb06903370c054ca"
   integrity sha512-ZdCvKEEd92DNLps5n0v231Bha8bkz1DjnPP/aEz37rz/q42Z5JVLmgnqR4DYuNn3NXAO3IDCPyRvgvxtJ4Ym4w==
 
-fastify-rate-limit@^5.5.0:
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/fastify-rate-limit/-/fastify-rate-limit-5.5.0.tgz#c4c3255aec1e12a3c49e14e20e96b5e8bd84aee1"
-  integrity sha512-mbvK1DQz6+rZDT01BMgygtdhq5fS/pCHv14BBWi/Cp0BdjXKYTg1j/VzoAjvLfzLTdOQbPGm2Z2Tfs7vjsmu+Q==
+fastify-rate-limit@^5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/fastify-rate-limit/-/fastify-rate-limit-5.6.0.tgz#aa5c96be85e03b764757e06180cde28833e08059"
+  integrity sha512-kkM+TQqU95OCNhVhRgke4+8t4UZHPoc93u+6S2Pzg7yoZ8IICJ8doRNcLxyYm1e20voBnyzooz5Thyw85kR2Nw==
   dependencies:
     fastify-plugin "^3.0.0"
     ms "^2.1.1"
@@ -2410,10 +2419,10 @@ fastify-warning@^0.2.0:
   resolved "https://registry.yarnpkg.com/fastify-warning/-/fastify-warning-0.2.0.tgz#e717776026a4493dc9a2befa44db6d17f618008f"
   integrity sha512-s1EQguBw/9qtc1p/WTY4eq9WMRIACkj+HTcOIK1in4MV5aFaQC9ZCIt0dJ7pr5bIf4lPpHvAtP2ywpTNgs7hqw==
 
-fastify@^3.19.1:
-  version "3.19.1"
-  resolved "https://registry.yarnpkg.com/fastify/-/fastify-3.19.1.tgz#6862a5677e0201d44023d105c58af64734ea6ed1"
-  integrity sha512-vyoRO/TQ+ta3OKShx5CHZ2qXXUXzBG4ZOVB0AEKlmf+DoMmP0ftuaEnzc7DPLVXtRYZ1A3Tbcn/6ja5e+sa2lw==
+fastify@^3.19.2:
+  version "3.19.2"
+  resolved "https://registry.yarnpkg.com/fastify/-/fastify-3.19.2.tgz#4e592835183a83f5b797897312a1a84eb6ff861d"
+  integrity sha512-s9naCdC0V1ynEzxMoe/0oX8XgcLk90VAnIms4z6KcF7Rpn1XiguoMyZSviTmv1x5rgy/OjGGBM45sNpMoBzCUQ==
   dependencies:
     "@fastify/ajv-compiler" "^1.0.0"
     abstract-logging "^2.0.0"
@@ -2424,7 +2433,7 @@ fastify@^3.19.1:
     find-my-way "^4.0.0"
     flatstr "^1.0.12"
     light-my-request "^4.2.0"
-    pino "^6.2.1"
+    pino "^6.13.0"
     proxy-addr "^2.0.7"
     readable-stream "^3.4.0"
     rfdc "^1.1.4"
@@ -3626,9 +3635,9 @@ klasa-decorators@^0.0.1:
   resolved "https://registry.yarnpkg.com/klasa-decorators/-/klasa-decorators-0.0.1.tgz#c4bcc7dd2b78814b4f625e611f82790ec6061d52"
   integrity sha512-uCoMz750Lnp0dM8VC787hnRrF9wqWfUrjT7dp+8ihqp6xmtX8ZSXoeK08WJgAhEdEdIDsUG+VMXi9gcG54EZMA==
 
-"klasa@https://github.com/gc/klasa.git#a5942d8289d12ce0eac3a4e13869ee3e93fa5f86":
+"klasa@https://github.com/gc/klasa.git#9cc34cbfd4f5a4b01068b402f19f9fa61641bdce":
   version "0.5.0-dev"
-  resolved "https://github.com/gc/klasa.git#a5942d8289d12ce0eac3a4e13869ee3e93fa5f86"
+  resolved "https://github.com/gc/klasa.git#9cc34cbfd4f5a4b01068b402f19f9fa61641bdce"
   dependencies:
     "@klasa/querybuilder" "^0.0.1"
     "@klasa/settings-gateway" "^0.0.10"
@@ -4274,10 +4283,10 @@ pino-std-serializers@^3.1.0:
   resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-3.2.0.tgz#b56487c402d882eb96cd67c257868016b61ad671"
   integrity sha512-EqX4pwDPrt3MuOAAUBMU0Tk5kR/YcCM5fNPEzgCO2zJ5HfX0vbiH9HbJglnyeQsN96Kznae6MWD47pZB5avTrg==
 
-pino@^6.2.1:
-  version "6.12.0"
-  resolved "https://registry.yarnpkg.com/pino/-/pino-6.12.0.tgz#2281521620d70eeff519039467352d656f46735e"
-  integrity sha512-5NGopOcUusGuklGHVVv9az0Hv/Dj3urHhD3G+zhl5pBGIRYAeGCi/Ej6YCl16Q2ko28cmYiJz+/qRoJiwy62Rw==
+pino@^6.13.0:
+  version "6.13.0"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-6.13.0.tgz#41810b9be213af6f8f7c23a1b17058d880267e7b"
+  integrity sha512-mRXSTfa34tbfrWqCIp1sUpZLqBhcoaGapoyxfEwaWwJGMpLijlRdDKIQUyvq4M3DUfFH5vEglwSw8POZYwbThA==
   dependencies:
     fast-redact "^3.0.0"
     fast-safe-stringify "^2.0.8"
