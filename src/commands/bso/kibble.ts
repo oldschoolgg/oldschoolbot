@@ -115,13 +115,6 @@ export default class extends BotCommand {
 		let fishNeeded = calcFish(rawFishComponent);
 		cost.add(rawFishComponent.raw!, fishNeeded);
 
-		if (!msg.author.owns(cost)) {
-			return msg.channel.send(`You don't own ${cost}.`);
-		}
-
-		await msg.author.removeItemsFromBank(cost);
-		updateBankSetting(this.client, ClientSettings.EconomyStats.KibbleCost, cost);
-
 		let timePer = Time.Second * 2;
 		if (msg.author.usingPet('Remy')) {
 			timePer = Math.floor(timePer / 2);
@@ -135,6 +128,13 @@ export default class extends BotCommand {
 				)} is ${Math.floor(maxTripLength / timePer)}.`
 			);
 		}
+
+		if (!msg.author.owns(cost)) {
+			return msg.channel.send(`You don't own ${cost}.`);
+		}
+
+		await msg.author.removeItemsFromBank(cost);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.KibbleCost, cost);
 
 		await addSubTaskToActivityTask<KibbleOptions>({
 			userID: msg.author.id,
