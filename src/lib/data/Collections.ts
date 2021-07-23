@@ -20,6 +20,7 @@ import {
 import { nexLootTable, NexMonster } from '../nex';
 import { UserSettings } from '../settings/types/UserSettings';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
+import { allFarmingItems } from '../skilling/skills/farming';
 import { ItemBank } from '../types';
 import { stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
@@ -925,6 +926,14 @@ export const allCollectionLogs: ICollection = {
 				"Brawler's hook necklace"
 			]),
 			roleCategory: ['skilling']
+		},
+		Miscellaneous: {
+			alias: ['misc'],
+			items: miscellaneousCL
+		},
+		Farming: {
+			counts: false,
+			items: allFarmingItems
 		}
 	}
 };
