@@ -11,6 +11,7 @@ import { updateGPTrackSetting } from '../../lib/util';
 interface Button {
 	name: string;
 	mod: (qty: number) => number;
+	emoji?: string;
 }
 
 const buttons: Button[] = [
@@ -54,7 +55,8 @@ export default class extends BotCommand {
 			usage: '<amount:int{1000000,1000000000}>',
 			oneAtTime: true,
 			cooldown: 5,
-			altProtection: true
+			altProtection: true,
+			aliases: ['lp']
 		});
 	}
 
