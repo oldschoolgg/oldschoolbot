@@ -139,7 +139,7 @@ export const allCollectionLogs: ICollection = {
 				alias: Monsters.Barrows.aliases,
 				kcActivity: Monsters.Barrows.name,
 				items: barrowsChestCL,
-				roleCategory: []
+				roleCategory: ['bosses']
 			},
 			Bryophyta: {
 				alias: Monsters.Bryophyta.aliases,
