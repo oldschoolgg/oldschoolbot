@@ -71,8 +71,7 @@ export const TreebeardLootTable = new LootTable()
 	.add(CleanHerbTable, [1, 3])
 	.add(HerbSecondaries, [1, 7])
 	.add(GrimyHerbTable, [1, 3])
-	.add(LogTable, [10, 20])
-	.add('Mango seed');
+	.add(LogTable, [10, 20]);
 
 setCustomMonster(932_122, 'Treebeard', TreebeardLootTable, Monsters.Hespori, {
 	id: 932_122,
