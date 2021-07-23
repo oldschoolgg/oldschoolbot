@@ -32,6 +32,23 @@ export enum GearStat {
 	Prayer = 'prayer'
 }
 
+export const styleNames: { [key in GearStat]: string } = {
+	[GearStat.DefenceCrush]: 'crush defence',
+	[GearStat.DefenceMagic]: 'magic defence',
+	[GearStat.DefenceRanged]: 'ranged defence',
+	[GearStat.DefenceSlash]: 'slash defence',
+	[GearStat.DefenceStab]: 'stab defence',
+	[GearStat.AttackCrush]: 'crush attack',
+	[GearStat.AttackMagic]: 'magic attack',
+	[GearStat.AttackRanged]: 'ranged attack',
+	[GearStat.AttackSlash]: 'slash attack',
+	[GearStat.AttackStab]: 'stab attack',
+	[GearStat.MeleeStrength]: 'melee strength',
+	[GearStat.RangedStrength]: 'ranged strength',
+	[GearStat.MagicDamage]: 'magic damage',
+	[GearStat.Prayer]: 'prayer'
+};
+
 export interface GearSlotItem {
 	item: number;
 	quantity: number;

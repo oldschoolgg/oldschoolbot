@@ -30,30 +30,6 @@ export const maxOtherStats: { [key in OtherGearStat]: number } = {
 	[GearStat.Prayer]: 66
 };
 
-export const defStyleNames: { [key in DefenceGearStat]: string } = {
-	[GearStat.DefenceCrush]: 'crush defence',
-	[GearStat.DefenceMagic]: 'magic defence',
-	[GearStat.DefenceRanged]: 'ranged defence',
-	[GearStat.DefenceSlash]: 'slash defence',
-	[GearStat.DefenceStab]: 'stab defence'
-};
-
-export const offStyleNames: { [key in OffenceGearStat]: string } = {
-	[GearStat.AttackCrush]: 'crush attack',
-	[GearStat.AttackMagic]: 'magic attack',
-	[GearStat.AttackRanged]: 'ranged attack',
-	[GearStat.AttackSlash]: 'slash attack',
-	[GearStat.AttackStab]: 'stab attack'
-};
-
-export const otherStatNames: { [key in OtherGearStat]: string } = {
-	[GearStat.MeleeStrength]: 'melee strength',
-	[GearStat.RangedStrength]: 'ranged strength',
-	[GearStat.MagicDamage]: 'magic damage',
-	[GearStat.Prayer]: 'prayer'
-};
-
-
 export const defaultGear: GearSetup = {
 	[EquipmentSlot.TwoHanded]: null,
 	[EquipmentSlot.Ammo]: null,
