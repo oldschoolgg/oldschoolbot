@@ -3,6 +3,7 @@ import { chunk, randArrItem, randInt, roll, shuffleArr, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { production } from '../../config';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -32,6 +33,10 @@ const buttons: Button[] = [
 		mod: (qty: number) => qty * 3
 	},
 	{
+		name: '5x',
+		mod: (qty: number) => qty * 5
+	},
+	{
 		name: '10x',
 		mod: (qty: number) => qty * 10
 	}
@@ -39,12 +44,13 @@ const buttons: Button[] = [
 
 function getButtons(): ButtonInstance[] {
 	// prettier-ignore
-	let buttonsToShow = ['0', '0', '0', '0',
+	let buttonsToShow = ['0', '0', '0',
 		'2x', '1.5x', '0', '1.5x', '0',
 		'1.5x', '1.5x', '2x', '0', '3x',
 		'2x', '0', '0', '2x', '0'];
 
 	buttonsToShow.push(roll(10) ? '10x' : '0');
+	buttonsToShow.push(roll(10) ? '5x' : '0');
 	return shuffleArr(buttonsToShow.map(n => buttons.find(i => i.name === n)!)).map((item, index) => ({
 		...item,
 		picked: false,
@@ -69,7 +75,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [amount]: [number]) {
-		if (msg.flagArgs.simulate) {
+		if (msg.flagArgs.simulate && !production) {
 			let houseBalance = 0;
 			let betQuantity = 10_000;
 
