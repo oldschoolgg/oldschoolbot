@@ -43,27 +43,55 @@ export default class extends BotCommand {
 		}
 
 		const { slot } = itemToEquip.equipment!;
-		const currentEquippedGear = msg.author.getGear(gearType).raw();
+		let currentEquippedGear = msg.author.getGear(gearType).raw();
 
 		/**
 		 * Handle 2h items
 		 */
-		if (
-			slot === EquipmentSlot.TwoHanded &&
-			(currentEquippedGear[EquipmentSlot.Weapon] || currentEquippedGear[EquipmentSlot.Shield])
-		) {
-			return msg.channel.send(
-				"You can't equip this two-handed item because you have items equipped in your weapon/shield slots."
-			);
+		if (slot === EquipmentSlot.TwoHanded) {
+            const newGear = { ...currentEquippedGear };
+            const currWep = currentEquippedGear[EquipmentSlot.Weapon]
+            if (currWep) {
+                msg.author.log(
+                    `automatically unequipping ${itemNameFromID(currWep!.item)}, so they can equip ${
+                        itemToEquip.name
+                    }`
+                );
+                newGear[EquipmentSlot.Weapon] = null;
+                await msg.author.addItemsToBank({
+                    [currWep.item]: currWep.quantity
+                });
+            }
+            const currShield = currentEquippedGear[EquipmentSlot.Shield]
+			if (currShield) {
+                msg.author.log(
+                    `automatically unequipping ${itemNameFromID(currShield!.item)}, so they can equip ${
+                        itemToEquip.name
+                    }`
+                );
+                newGear[EquipmentSlot.Shield] = null;
+                await msg.author.addItemsToBank({
+                    [currShield.item]: currShield.quantity
+                });
+            }
+			await msg.author.settings.update(gearTypeSetting, newGear);
+            currentEquippedGear = newGear;
 		}
-
-		if (
-			[EquipmentSlot.Weapon, EquipmentSlot.Shield, EquipmentSlot.TwoHanded].includes(slot) &&
-			currentEquippedGear[EquipmentSlot.TwoHanded]
-		) {
-			return msg.channel.send(
-				"You can't equip this weapon or shield, because you have a 2H weapon equipped, and need to unequip it first."
-			);
+        
+        const curr2h = currentEquippedGear[EquipmentSlot.TwoHanded];
+		if ([EquipmentSlot.Weapon, EquipmentSlot.Shield, EquipmentSlot.TwoHanded].includes(slot) && curr2h)
+        {
+            msg.author.log(
+                `automatically unequipping ${itemNameFromID(curr2h!.item)}, so they can equip ${
+                    itemToEquip.name
+                }`
+            );
+            const newGear = { ...currentEquippedGear };
+            newGear[EquipmentSlot.TwoHanded] = null;
+            await msg.author.addItemsToBank({
+                [curr2h.item]: curr2h.quantity
+            });
+            currentEquippedGear = newGear;
 		}
 
 		if (!itemToEquip.stackable && quantity > 1) {
