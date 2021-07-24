@@ -199,7 +199,44 @@ const crystalTools: Createable[] = [
 		outputItems: {
 			[itemID('Blade of saeldor (c)')]: 1
 		},
-		requiredSkills: { smithing: 80, crafting: 80 },
+		requiredSkills: { smithing: 82, crafting: 82 },
+		QPRequired: 150
+	},
+	{
+		name: 'Bow of faerdhinen (c)',
+		inputItems: {
+			[itemID('Bow of faerdhinen (inactive)')]: 1,
+			[itemID('Crystal shard')]: 2000
+		},
+		outputItems: {
+			[itemID('Bow of faerdhinen (c)')]: 1
+		},
+		requiredSkills: { smithing: 82, crafting: 82 },
+		QPRequired: 150
+	}
+	,
+	{
+		name: 'Blade of saeldor (inactive)',
+		inputItems: {
+			[itemID('Enhanced crystal weapon seed')]: 1,
+			[itemID('Crystal shard')]: 1000
+		},
+		outputItems: {
+			[itemID('Blade of saeldor (inactive)')]: 1
+		},
+		requiredSkills: { smithing: 82, crafting: 82 },
+		QPRequired: 150
+	},
+	{
+		name: 'Bow of faerdhinen (inactive)',
+		inputItems: {
+			[itemID('Enhanced crystal weapon seed')]: 1,
+			[itemID('Crystal shard')]: 100
+		},
+		outputItems: {
+			[itemID('Bow of faerdhinen (inactive)')]: 1
+		},
+		requiredSkills: { smithing: 82, crafting: 82 },
 		QPRequired: 150
 	}
 ];
