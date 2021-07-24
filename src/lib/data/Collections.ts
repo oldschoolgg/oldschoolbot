@@ -399,7 +399,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['beginner', 'clues beginner', 'clue beginner'],
 				allItems: Clues.Beginner.allItems,
 				kcActivity: {
-					Default: async user => user.getOpenableScore(23_245)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[23_245]
 				},
 				items: cluesBeginnerCL,
 				roleCategory: ['clues'],
@@ -409,7 +409,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['easy', 'clues easy', 'clue easy'],
 				allItems: Clues.Easy.allItems,
 				kcActivity: {
-					Default: async user => user.getOpenableScore(20_546)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_546]
 				},
 				items: cluesEasyCL,
 				roleCategory: ['clues'],
@@ -419,7 +419,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['medium', 'clues medium', 'clue medium'],
 				allItems: Clues.Medium.allItems,
 				kcActivity: {
-					Default: async user => user.getOpenableScore(20_545)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_545]
 				},
 				items: cluesMediumCL,
 				roleCategory: ['clues'],
@@ -429,7 +429,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['hard', 'clues hard', 'clue hard'],
 				allItems: Clues.Hard.allItems,
 				kcActivity: {
-					Default: async user => user.getOpenableScore(20_544)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544]
 				},
 				items: cluesHardCL,
 				roleCategory: ['clues'],
@@ -439,7 +439,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['elite', 'clues elite', 'clue elite'],
 				allItems: Clues.Elite.allItems,
 				kcActivity: {
-					Default: async user => user.getOpenableScore(20_543)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543]
 				},
 				items: cluesEliteCL,
 				roleCategory: ['clues'],
@@ -449,7 +449,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['master', 'clues master', 'clue master'],
 				allItems: Clues.Master.allItems,
 				kcActivity: {
-					Default: async user => user.getOpenableScore(19_836)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836]
 				},
 				items: cluesMasterCL,
 				roleCategory: ['clues'],
@@ -466,7 +466,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare hard'
 				],
 				kcActivity: {
-					Default: async user => user.getOpenableScore(20_544)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544]
 				},
 				items: cluesHardRareCL,
 				roleCategory: ['clues'],
@@ -483,7 +483,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare elite'
 				],
 				kcActivity: {
-					Default: async user => user.getOpenableScore(20_543)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543]
 				},
 				items: cluesEliteRareCL,
 				roleCategory: ['clues'],
@@ -500,7 +500,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare master'
 				],
 				kcActivity: {
-					Default: async user => user.getOpenableScore(19_836)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836]
 				},
 				items: cluesMasterRareCL,
 				roleCategory: ['clues'],
