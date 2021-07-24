@@ -3,7 +3,9 @@ import { Bank, Items, Openables } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Emoji } from '../../lib/constants';
+import { converCLtoBank } from '../../lib/data/Collections';
 import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
+import { filterableTypes } from '../../lib/data/filterables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
@@ -73,6 +75,13 @@ export default class extends BotCommand {
 					.map(itemNameFromID)
 					.join(', ')}.`
 			);
+		}
+
+		for (const filter of filterableTypes) {
+			if (msg.flagArgs[filter.name]) {
+				await msg.author.addItemsToBank(converCLtoBank(filter.items).multiply(qty), Boolean(msg.flagArgs.cl));
+				return msg.channel.send(`Gave you the filter ${filter.name} items.`);
+			}
 		}
 
 		if (msg.flagArgs.id) {

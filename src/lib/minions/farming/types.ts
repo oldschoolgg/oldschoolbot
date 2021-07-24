@@ -22,15 +22,14 @@ export enum FarmingPatchTypes {
 
 export interface IPatchData {
 	lastPlanted: string | null;
-	patchPlanted: boolean; // false -> nothing planted, true -> something planted
+	// false -> nothing planted, true -> something planted
+	patchPlanted: boolean;
 	plantTime: number;
 	lastQuantity: number;
 	lastUpgradeType: 'compost' | 'supercompost' | 'ultracompost' | 'null' | null;
 	lastPayment: boolean;
 	wasReminded?: true;
 }
-
-export type PatchData = IPatchData | null;
 
 export type PlantTier = 0 | 1 | 2 | 3 | 4 | 5;
 

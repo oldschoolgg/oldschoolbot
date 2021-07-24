@@ -202,6 +202,27 @@ export interface Plankable {
 	gpCost: number;
 }
 
+export type TSeedType =
+	| 'seaweed'
+	| 'hops'
+	| 'herb'
+	| 'allotment'
+	| 'fruit tree'
+	| 'flower'
+	| 'hardwood'
+	| 'bush'
+	| 'belladonna'
+	| 'tree'
+	| 'crystal'
+	| 'celastrus'
+	| 'redwood'
+	| 'spirit'
+	| 'vine'
+	| 'mushroom'
+	| 'cactus'
+	| 'hespori'
+	| 'calquat';
+
 export interface Plant {
 	level: number;
 	plantXp: number;
@@ -223,7 +244,7 @@ export interface Plant {
 	givesLogs: boolean;
 	givesCrops: boolean;
 	petChance: number;
-	seedType: string;
+	seedType: TSeedType;
 	growthTime: number;
 	numOfStages: number;
 	chance1: number;
