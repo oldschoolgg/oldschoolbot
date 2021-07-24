@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { requiresMinion } from '../../lib/minions/decorators';
 import { defaultFarmingContract } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -27,7 +27,6 @@ export default class extends BotCommand {
 		});
 	}
 
-	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [contractLevel]: ['easy' | 'medium' | 'hard' | 'easier' | 'current' | 'completed']) {
 		await msg.author.settings.sync(true);
@@ -79,15 +78,25 @@ export default class extends BotCommand {
 			});
 		}
 
-		if (!currentContract.hasContract && contractLevel === 'current') {
+		if (contractLevel === 'current') {
+			let contractMsg = '';
+			if (currentContract.hasContract) {
+				contractMsg = this.getCurrentContractMsg(currentContract);
+			} else {
+				contractMsg = "You currently don't have a contract!";
+			}
 			return msg.channel.send({
 				files: [
 					await chatHeadImage({
-						content: "You currently don't have a contract!",
+						content: contractMsg,
 						head: 'jane'
 					})
 				]
 			});
+		}
+
+		if (msg.author.minionIsBusy) {
+			return msg.channel.send(`${msg.author.minionName} is currently busy.`);
 		}
 
 		const contractToFarmingLevel = {
@@ -96,11 +105,7 @@ export default class extends BotCommand {
 			hard: 85
 		};
 
-		if (
-			contractLevel !== 'easier' &&
-			contractLevel !== 'current' &&
-			farmingLevel < contractToFarmingLevel[contractLevel]
-		) {
+		if (contractLevel !== 'easier' && farmingLevel < contractToFarmingLevel[contractLevel]) {
 			return msg.channel.send({
 				files: [
 					await chatHeadImage({
@@ -141,28 +146,24 @@ export default class extends BotCommand {
 				return msg.channel.send({
 					files: [
 						await chatHeadImage({
-							content: `I suppose you were too chicken for the challange. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`,
+							content: `I suppose you were too chicken for the challenge. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`,
 							head: 'jane'
 						})
 					]
 				});
 			}
-
-			let easierStr = '';
-			if (currentContract.difficultyLevel !== 'easy') {
-				easierStr = "\nYou can request an easier contract if you'd like.";
-			}
+			let contractMsg = this.getCurrentContractMsg(currentContract);
 			return msg.channel.send({
 				files: [
 					await chatHeadImage({
-						content: `Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`,
+						content: contractMsg,
 						head: 'jane'
 					})
 				]
 			});
 		}
 
-		if (contractLevel === 'current' || contractLevel === 'easier') return;
+		if (contractLevel === 'easier') return;
 
 		const plantInformation = getPlantToGrow(msg.author, contractLevel);
 		const plantToGrow = plantInformation[0] as string;
@@ -186,5 +187,13 @@ export default class extends BotCommand {
 				})
 			]
 		});
+	}
+
+	getCurrentContractMsg(currentContract: FarmingContract) {
+		let easierStr = '';
+		if (currentContract.difficultyLevel !== 'easy') {
+			easierStr = "\nYou can request an easier contract if you'd like.";
+		}
+		return `Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`;
 	}
 }
