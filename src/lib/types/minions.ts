@@ -1,7 +1,7 @@
 import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
-import { Plant, TSeedType } from '../skilling/types';
+import { TSeedType } from '../skilling/types';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
 export interface ActivityTaskOptions {
@@ -185,7 +185,7 @@ export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
 // }
 
 export interface IFarmingPatchesToPlant {
-	plant: Plant;
+	plant: string;
 	type: TSeedType;
 	quantity: number;
 	compost: false | 'compost' | 'supercompost' | 'ultracompost';
@@ -193,10 +193,15 @@ export interface IFarmingPatchesToPlant {
 	duration: number;
 }
 
+export interface IFarmingPatchesToHarvest {
+	id: number;
+	paidToCut: boolean;
+}
+
 export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	channelID: string;
 	toPlant: IFarmingPatchesToPlant[];
-	toCollect: number[];
+	toCollect: IFarmingPatchesToHarvest[];
 	currentDate: number;
 }
 

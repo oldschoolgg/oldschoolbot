@@ -213,6 +213,7 @@ const source: [string, (string | number)[]][] = [
 	['Graceful boots', gracefulFeet],
 	['Graceful cape', gracefulCapes],
 	['Agility cape', ['Agility cape(t)']],
+	['Farming cape', ['Farming cape(t)']],
 	['Fire cape', ['Fire max cape', 'Fire max cape (l)']],
 	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)']],
 	['Ardougne cloak 4', ['Ardougne max cape']],
