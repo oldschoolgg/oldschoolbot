@@ -2,6 +2,7 @@ import { Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { runeAlchablesTable } from '../../../../simulation/sharedTables';
+import resolveItems from '../../../../util/resolveItems';
 import setCustomMonster from '../../../../util/setCustomMonster';
 
 const barTable = new LootTable()
@@ -35,6 +36,8 @@ export const IgnecarusLootTable = new LootTable()
 	.add(barTable, 5)
 	.add(runeAlchablesTable, 5)
 	.add(gemTable, 5);
+
+export const IgnecarusNotifyDrops = resolveItems(['Ignis ring', 'Ignecarus dragonclaw', 'Dragon egg']);
 
 setCustomMonster(69_420, 'Ignecarus', IgnecarusLootTable, Monsters.GeneralGraardor, {
 	id: 69_420,

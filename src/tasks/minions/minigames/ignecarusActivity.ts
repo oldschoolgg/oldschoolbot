@@ -3,7 +3,11 @@ import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
-import { Ignecarus, IgnecarusLootTable } from '../../../lib/minions/data/killableMonsters/custom/Ignecarus';
+import {
+	Ignecarus,
+	IgnecarusLootTable,
+	IgnecarusNotifyDrops
+} from '../../../lib/minions/data/killableMonsters/custom/Ignecarus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { BossUser } from '../../../lib/structures/Boss';
@@ -74,7 +78,8 @@ export default class extends Task {
 				taskQuantity: null
 			});
 			await user.addItemsToBank(loot, true);
-			resultStr += `\n${user} received ${loot}.`;
+			const purple = Object.keys(loot.bank).some(itemID => IgnecarusNotifyDrops.includes(parseInt(itemID)));
+			resultStr += `\n${purple ? Emoji.Purple : ''}${user} received ${loot}.`;
 		}
 		updateBankSetting(this.client, ClientSettings.EconomyStats.IgnecarusLoot, totalLoot);
 
