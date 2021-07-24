@@ -879,7 +879,7 @@ export function getItemsRole(role: TRoleCategories) {
 				.map(c =>
 					Object.values(c.activities)
 						.map(a => {
-							if (a.hidden === undefined || a.enabled === undefined)
+							if (a.hidden === undefined && a.enabled === undefined && a.counts === undefined)
 								return a.roleCategory?.includes(role) ? a.items : undefined;
 						})
 						.filter(f => f !== undefined)
@@ -888,6 +888,8 @@ export function getItemsRole(role: TRoleCategories) {
 		)
 	];
 }
+
+console.log(getItemsRole('bosses'));
 
 export function converCLtoBank(items: number[]) {
 	const clBank = new Bank();
@@ -1005,7 +1007,7 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 		}
 	}
 	if (_items.length === 0) {
-		_items = collectionLogRoleCategories[collection.toLowerCase()] ?? [];
+		_items = collectionLogRoleCategories[collection.toLowerCase().replace('role', '')] ?? [];
 	}
 	if (_items.length === 0) {
 		const _monster = killableMonsters.find(
