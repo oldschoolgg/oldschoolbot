@@ -334,8 +334,8 @@ export default class CollectionLogTask extends Task {
 			this.drawText(
 				ctx,
 				cl,
-				x + this.scls.tabBorderInactive.width / 2,
-				39 + this.scls.tabBorderInactive.height / 2 + 6 // 6 is to proper center the text
+				Math.floor(x + this.scls.tabBorderInactive.width / 2),
+				Math.floor(39 + this.scls.tabBorderInactive.height / 2 + 6) // 6 is to proper center the text
 			);
 			aclIndex++;
 		}
@@ -477,7 +477,7 @@ export default class CollectionLogTask extends Task {
 		ctx.restore();
 		if (leftListCanvas && !fullSize) {
 			if (!Boolean(flags.tall)) {
-				let selectedPos = 0;
+				let selectedPos = 8;
 				const listItemSize = 15;
 				for (const name of objectKeys(collectionLog.leftList!)) {
 					if (name === collectionLog.name) break;
@@ -485,8 +485,9 @@ export default class CollectionLogTask extends Task {
 				}
 				// Canvas height - top area until list starts - left area, where list should end
 				const listHeightSpace = ctx.canvas.height - 62 - 13;
+
+				// Check if in the start of the list
 				if (selectedPos <= listHeightSpace) {
-					// Check if in the start of the list
 					ctx.drawImage(
 						leftListCanvas,
 						0,
@@ -500,9 +501,9 @@ export default class CollectionLogTask extends Task {
 					);
 				} else if (
 					// Check if in the end of the list
-					Math.ceil(leftListCanvas.height / listHeightSpace) === Math.ceil(selectedPos / listHeightSpace)
+					leftListCanvas.height - listHeightSpace <=
+					selectedPos
 				) {
-					// Check if in the start of the list
 					ctx.drawImage(
 						leftListCanvas,
 						0,

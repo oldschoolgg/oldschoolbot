@@ -43,7 +43,10 @@ export interface ICollectionActivity {
 }
 
 export interface ICollection {
-	[key: string]: ICollectionActivity;
+	[key: string]: {
+		alias?: string[];
+		activities: ICollectionActivity;
+	};
 }
 
 export const abyssalSireCL = resolveItems([
@@ -1653,7 +1656,6 @@ export const slayerCL = resolveItems([
 	'Monkey tail',
 	'Ballista limbs',
 	'Ballista spring',
-	'Black mask',
 	'Granite longsword',
 	'Dragon chainbody'
 	// Not obtainable yet
@@ -2020,4 +2022,33 @@ export const kalphiteKingCL = resolveItems([
 	'Baby kalphite king'
 ]);
 
-export const customBossesCL = [...kingGoldemarCL, ...abyssalDragonCL, ...vasaMagusCL, ...nexCL, ...kalphiteKingCL];
+export const ignecarusCL = resolveItems(['Ignecarus scales', 'Ignecarus dragonclaw', 'Dragon egg', 'Ignis ring']);
+
+export const treeBeardCL = resolveItems([
+	// Tangleroot pets
+	20_661,
+	24_555,
+	24_557,
+	24_559,
+	24_561,
+	24_563,
+	'Mysterious seed',
+	'Ent hide'
+]);
+
+export const seaKrakenCL = resolveItems([
+	// Tangleroot pets
+	'Fish sack',
+	'Pufferfish',
+	'Fishing trophy'
+]);
+
+export const customBossesDropsThatCantBeDroppedInMBs = [
+	...kingGoldemarCL,
+	...abyssalDragonCL,
+	...vasaMagusCL,
+	...nexCL,
+	...kalphiteKingCL,
+	...ignecarusCL,
+	...treeBeardCL
+];
