@@ -1050,7 +1050,7 @@ export const cluesSharedCL = resolveItems([
 	'Tai bwo wannai teleport',
 	'Lumberyard teleport',
 	'Iorwerth camp teleport',
-	'Master scroll book',
+	'Master scroll book (empty)',
 	'Red firelighter',
 	'Green firelighter',
 	'Blue firelighter',

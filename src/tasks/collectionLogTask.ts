@@ -274,7 +274,7 @@ export default class CollectionLogTask extends Task {
 			317,
 			Math.max(
 				flags.tall ? (leftListCanvas ? 75 + leftListCanvas.height : 0) : 0,
-				116 + (itemSize + itemSpacer) * Math.ceil(collectionLog.collectionTotal / maxPerLine)
+				121 + (itemSize + itemSpacer) * Math.ceil(collectionLog.collectionTotal / maxPerLine)
 			)
 		);
 

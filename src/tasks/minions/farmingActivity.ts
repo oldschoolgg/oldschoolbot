@@ -389,11 +389,7 @@ export default class extends Task {
 					farmingLevel: currentFarmingLevel
 				});
 				loot = hesporiLoot.bank;
-				for (const hesporiLoot of Object.keys(loot)) {
-					if (itemID(hesporiLoot) === itemID('Tangleroot')) {
-						tangleroot = true;
-					}
-				}
+				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;
 				if (roll((plantToHarvest.petChance - currentFarmingLevel * 25) / patchType.lastQuantity / 5)) {
 					loot[itemID('Plopper')] = 1;
 				}

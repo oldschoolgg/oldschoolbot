@@ -191,6 +191,12 @@ export const allCollectionLogs: ICollection = {
 				items: chaosFanaticCL,
 				roleCategory: ['bosses']
 			},
+			'Commander Zilyana': {
+				alias: Monsters.CommanderZilyana.aliases,
+				allItems: Monsters.CommanderZilyana.allItems,
+				items: commanderZilyanaCL,
+				roleCategory: ['bosses']
+			},
 			'Corporeal Beast': {
 				alias: Monsters.CorporealBeast.aliases,
 				allItems: Monsters.CorporealBeast.allItems,
@@ -255,6 +261,12 @@ export const allCollectionLogs: ICollection = {
 				items: theGauntletCL,
 				roleCategory: ['bosses']
 			},
+			'General Graardor': {
+				alias: Monsters.GeneralGraardor.aliases,
+				allItems: Monsters.GeneralGraardor.allItems,
+				items: generalGraardorCL,
+				roleCategory: ['bosses']
+			},
 			'Giant Mole': {
 				alias: Monsters.GiantMole.aliases,
 				allItems: Monsters.GiantMole.allItems,
@@ -296,12 +308,6 @@ export const allCollectionLogs: ICollection = {
 				items: krakenCL,
 				roleCategory: ['bosses']
 			},
-			'General Graardor': {
-				alias: Monsters.GeneralGraardor.aliases,
-				allItems: Monsters.GeneralGraardor.allItems,
-				items: generalGraardorCL,
-				roleCategory: ['bosses']
-			},
 			"Kree'arra": {
 				alias: Monsters.Kreearra.aliases,
 				allItems: Monsters.Kreearra.allItems,
@@ -312,12 +318,6 @@ export const allCollectionLogs: ICollection = {
 				alias: Monsters.KrilTsutsaroth.aliases,
 				allItems: Monsters.KrilTsutsaroth.allItems,
 				items: krilTsutsarothCL,
-				roleCategory: ['bosses']
-			},
-			'Commander Zilyana': {
-				alias: Monsters.CommanderZilyana.aliases,
-				allItems: Monsters.CommanderZilyana.allItems,
-				items: commanderZilyanaCL,
 				roleCategory: ['bosses']
 			},
 			'The Nightmare': {
@@ -980,7 +980,6 @@ export const allCollectionLogs: ICollection = {
 		}
 	}
 };
-
 // Get all items, from all monsters and all CLs into a variable, for uses like mostdrops
 export const allDroppedItems = [
 	...new Set([
@@ -1156,7 +1155,7 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 		}
 	}
 	if (_items.length === 0) {
-		_items = collectionLogRoleCategories[collection.toLowerCase().replace('role', '')] ?? [];
+		_items = collectionLogRoleCategories[collection.toLowerCase()] ?? [];
 	}
 	if (_items.length === 0) {
 		const _monster = killableMonsters.find(
