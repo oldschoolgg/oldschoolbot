@@ -755,7 +755,7 @@ export const cluesHardCL = resolveItems([
 	'Nunchaku',
 	'Dual sai',
 	'Rune cane',
-	'Amulet of glory (t)',
+	'Amulet of glory (t4)',
 	'Magic comp bow'
 ]);
 export const cluesEliteCL = resolveItems([
@@ -1442,7 +1442,8 @@ export const monkeyBackpacksCL = resolveItems([
 ]);
 export const motherlodeMineCL = resolveItems([
 	'Coal bag',
-	'Gem bag',
+	// Cant obtain in the bot
+	// 'Gem bag',
 	'Prospector helmet',
 	'Prospector jacket',
 	'Prospector legs',
