@@ -717,8 +717,9 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Motherlode Mine': {
-				enabled: false,
-				items: motherlodeMineCL
+				alias: ['mlm'],
+				items: motherlodeMineCL,
+				roleCategory: ['skilling']
 			},
 			'Random Events': {
 				alias: ['random'],
