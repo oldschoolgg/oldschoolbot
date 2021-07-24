@@ -889,8 +889,6 @@ export function getItemsRole(role: TRoleCategories) {
 	];
 }
 
-console.log(getItemsRole('bosses'));
-
 export function converCLtoBank(items: number[]) {
 	const clBank = new Bank();
 	for (const item of items) {
