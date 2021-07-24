@@ -1,7 +1,7 @@
 import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
-import { IPatchData } from '../minions/farming/types';
+import { Plant, TSeedType } from '../skilling/types';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
 export interface ActivityTaskOptions {
@@ -171,17 +171,33 @@ export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
 
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
 
-export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
-	plantsName: string | null;
-	channelID: string;
+// export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
+// 	plantsName: string | null;
+// 	channelID: string;
+// 	quantity: number;
+// 	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null;
+// 	payment?: boolean;
+// 	patchType: IPatchData;
+// 	getPatchType: string;
+// 	planting: boolean;
+// 	currentDate: number;
+// 	autoFarmed: boolean;
+// }
+
+export interface IFarmingPatchesToPlant {
+	plant: Plant;
+	type: TSeedType;
 	quantity: number;
-	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null;
-	payment?: boolean;
-	patchType: IPatchData;
-	getPatchType: string;
-	planting: boolean;
+	compost: false | 'compost' | 'supercompost' | 'ultracompost';
+	payment: boolean;
+	duration: number;
+}
+
+export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
+	channelID: string;
+	toPlant: IFarmingPatchesToPlant[];
+	toCollect: number[];
 	currentDate: number;
-	autoFarmed: boolean;
 }
 
 export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {

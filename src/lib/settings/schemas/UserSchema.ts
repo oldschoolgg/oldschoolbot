@@ -117,8 +117,6 @@ Client.defaultUserSchema
 			.add('skilling', 'any', { default: null })
 	)
 
-	.add('farmingPatches', 'any', { array: true, default: [] })
-
 	.add('farmingPatches', (folder: SchemaFolder) =>
 		folder
 			.add(FarmingPatchTypes.Herb, 'any', { default: null })

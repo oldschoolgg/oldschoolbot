@@ -1,18 +1,21 @@
 import { Time } from 'e';
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util';
+import { Not } from 'typeorm';
 
 import { Activity, Emoji } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { IPatchData } from '../../lib/minions/farming/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcNumOfPatches, returnListOfPlants } from '../../lib/skilling/functions/calcsFarming';
-import Farming, { plants } from '../../lib/skilling/skills/farming';
+import { plants } from '../../lib/skilling/skills/farming';
 import { Plant, SkillsEnum, TSeedType } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration, stringMatches, toTitleCase } from '../../lib/util';
+import { FarmingPatchesTable, FarmingPatchStatus } from '../../lib/typeorm/FarmingPatchesTable.entity';
+import { FarmingActivityTaskOptions, IFarmingPatchesToPlant } from '../../lib/types/minions';
+import { stringMatches } from '../../lib/util';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
 interface IPatchValidation {
@@ -22,8 +25,6 @@ interface IPatchValidation {
 	usePayment: boolean;
 	paymentCheck: boolean;
 	canPay: boolean;
-	cutCheck: boolean;
-	needCut: boolean;
 	itemsForThisPatch: Bank;
 }
 
@@ -46,7 +47,6 @@ export default class extends BotCommand {
 		msg: KlasaMessage,
 		plant: Plant,
 		quantity: number,
-		planted: IPatchData,
 		currentRequiredBank: Bank
 	): [boolean, IPatchValidation] {
 		const validation: IPatchValidation = {
@@ -56,22 +56,11 @@ export default class extends BotCommand {
 			usePayment: false,
 			paymentCheck: true,
 			canPay: false,
-			cutCheck: true,
-			needCut: false,
 			itemsForThisPatch: new Bank()
 		};
 
-		const plantedPatch = planted
-			? Farming.Plants.find(
-					p =>
-						stringMatches(p.name, planted.lastPlanted!) ||
-						stringMatches(p.name.split(' ')[0], planted.lastPlanted!)
-			  )
-			: null;
-
 		validation.canCompost = plant.canCompostPatch;
 		validation.canPay = plant.canPayFarmer;
-		validation.needCut = plantedPatch ? plantedPatch.needsChopForHarvest : false;
 
 		if (validation.canCompost) {
 			validation.useCompost = msg.author.settings.get(UserSettings.Minion.DefaultCompostToUse);
@@ -97,19 +86,6 @@ export default class extends BotCommand {
 			}
 		}
 
-		// Check if there is a tree planted. If so, the user has to have enough level to cut it
-		// OR gp to pay for it to get cut
-		if (validation.needCut && plantedPatch && planted) {
-			if (plantedPatch!.treeWoodcuttingLevel! > msg.author.skillLevel(SkillsEnum.Woodcutting)) {
-				const gpNeeded = planted.lastQuantity * (plantedPatch.seedType === 'redwood' ? 2000 : 200);
-				if (!msg.author.bank({ withGP: true }).has({ 995: gpNeeded })) {
-					validation.cutCheck = false;
-				} else {
-					validation.itemsForThisPatch.add({ 995: gpNeeded });
-				}
-			}
-		}
-
 		// Remove use of compost if patch cant be composted while user is paying patch
 		if (validation.useCompost && validation.useCompost !== 'compost') {
 			if (!plant.canCompostandPay && validation.usePayment) validation.useCompost = false;
@@ -125,8 +101,17 @@ export default class extends BotCommand {
 			}
 		}
 
-		const isValid = validation.compostCheck && validation.paymentCheck && validation.cutCheck;
+		const isValid = validation.compostCheck && validation.paymentCheck;
 		return [isValid, validation];
+	}
+
+	async getPlanted(user: KlasaUser) {
+		return FarmingPatchesTable.find({
+			where: {
+				userID: user.id,
+				status: Not(FarmingPatchStatus.Harvested)
+			}
+		});
 	}
 
 	@minionNotBusy
@@ -150,18 +135,21 @@ export default class extends BotCommand {
 			patches: {
 				plant: Plant;
 				quantity: number;
-				toCollect: IPatchData;
 				duration: number;
 				validation: IPatchValidation;
 			}[];
 		}[] = [];
 
+		const toCollect: FarmingPatchesTable[] = [];
+
 		let possiblePlants = plants.sort((a, b) => b.level - a.level);
-		const currentDate = new Date().getTime();
 		const requiredBank = new Bank();
 		const maxUserTripLength = msg.author.maxTripLength(Activity.Farming);
+		const alreadyPlanted = <Record<TSeedType, number>>{};
+		const currentDate = new Date();
 
 		// Get what the user have planted
+		const planted = await this.getPlanted(msg.author);
 
 		loopPlant: for (const plant of possiblePlants) {
 			// If a plant has been informed, those plants will be checked
@@ -177,27 +165,24 @@ export default class extends BotCommand {
 				if (!plantFound) continue;
 			}
 
-			// Check if this is a valid seed that can be planted
-			// const getPatchType = resolvePatchTypeSetting(plant.seedType);
-			// if (!getPatchType) continue;
+			if (!alreadyPlanted[plant.seedType]) {
+				try {
+					alreadyPlanted[plant.seedType] = planted
+						.filter(p => p.patchType === plant.seedType && p.finishDate > currentDate)
+						.map(p => p.quantity)
+						.reduce((c, p) => c + p);
+				} catch (e) {
+					alreadyPlanted[plant.seedType] = 0;
+				}
 
-			let numPatchesPlanted = 0;
-
-			// Get path info from db
-			const patchData = msg.author.settings.get(UserSettings.farmingPatches);
-			// Check if something is already planted in this spot
-			if (patchData.length > 0) {
-				for (const pd of patchData) {
-					if (currentDate - pd.plantTime > plant.growthTime * Time.Minute) continue;
+				for (const _planted of planted) {
+					if (_planted.patchType === plant.seedType && _planted.finishDate <= currentDate) {
+						if (!toCollect.find(c => c.id === _planted.id)) toCollect.push(_planted);
+					}
 				}
 			}
 
-			// If path type is already being used
 			const patchBeingUsed = toPlant.find(p => p.type === plant.seedType);
-			if (patchBeingUsed) {
-				numPatchesPlanted = patchBeingUsed.patches.map(p => p.quantity).reduce((c, p) => c + p);
-				if (patchBeingUsed.maxPatchesAllowed === numPatchesPlanted) continue;
-			}
 
 			// If the user can plant it
 			if (msg.author.skillLevel(SkillsEnum.Farming) < plant.level) continue;
@@ -220,7 +205,9 @@ export default class extends BotCommand {
 			}
 
 			// Limit to max that can be planted
-			if (pathQty > maxPatches - numPatchesPlanted) pathQty = maxPatches - numPatchesPlanted;
+			if (pathQty > maxPatches - alreadyPlanted[plant.seedType]) {
+				pathQty = maxPatches - alreadyPlanted[plant.seedType];
+			}
 			// If nothing can be planted
 			if (pathQty === 0) continue;
 
@@ -229,30 +216,29 @@ export default class extends BotCommand {
 			if (!msg.author.bank({ withGP: true }).has(requiredItems.bank)) continue;
 
 			// Validate plant, if it have to be paid, can be paid, etc
-			const patchValidation = this.validatePlant(msg, plant, pathQty, patchData, requiredBank);
+			const patchValidation = this.validatePlant(msg, plant, pathQty, requiredBank);
 			const durationForThisPath = (pathQty * (plant.timePerHarvest + plant.timePerPatchTravel) + 5) * Time.Second;
-			if (patchValidation[1].cutCheck) {
-				requiredItems.add(patchValidation[1].itemsForThisPatch);
-				// Check if the user have time to plant this
-				if (
-					toPlant.length > 0 &&
-					toPlant
-						// Will sum all durations from all seeds to be planted in this patch type
-						.map(p => (p.patches ? p.patches.map(pp => pp.duration).reduce((p, c) => p + c) : 0))
-						// Sum the total of all patches
-						.reduce((p, c) => p + c) +
-						durationForThisPath >
-						maxUserTripLength
-				)
-					continue;
-			}
+
+			requiredItems.add(patchValidation[1].itemsForThisPatch);
+			// Check if the user have time to plant this
+			if (
+				toPlant.length > 0 &&
+				toPlant
+					// Will sum all durations from all seeds to be planted in this patch type
+					.map(p => (p.patches ? p.patches.map(pp => pp.duration).reduce((p, c) => p + c) : 0))
+					// Sum the total of all patches
+					.reduce((p, c) => p + c) +
+					durationForThisPath >
+					maxUserTripLength
+			)
+				continue;
+
 			// Everything OK, add this path
 			if (patchBeingUsed) {
 				patchBeingUsed.patches.push({
 					plant,
 					quantity: pathQty,
 					duration: durationForThisPath,
-					toCollect: patchData,
 					validation: patchValidation[1]
 				});
 			} else {
@@ -265,12 +251,12 @@ export default class extends BotCommand {
 							plant,
 							quantity: pathQty,
 							duration: durationForThisPath,
-							toCollect: patchData,
 							validation: patchValidation[1]
 						}
 					]
 				});
 			}
+			alreadyPlanted[plant.seedType] += pathQty;
 			requiredBank.add(requiredItems);
 		}
 
@@ -290,21 +276,15 @@ export default class extends BotCommand {
 					validationFailures.push('Not enough to pay');
 					_p.validation.usePayment = false;
 				}
-				if (_p.validation.needCut && !_p.validation.cutCheck) {
-					validationFailures.push(
-						'WC level too low or not enough GP to cut tree -- **THIS WILL BE IGNORED AND NOT BE PLANTED**'
-					);
-				} else {
-					duration += _p.duration;
-				}
+				duration += _p.duration;
 
 				if (validationFailures.length > 0 && !warningMessage) warningMessage = true;
-				if (_p.toCollect && !hasSomethingPlanted) hasSomethingPlanted = true;
+				// if (_p.toCollect && !hasSomethingPlanted) hasSomethingPlanted = true;
 
 				toBePlanted.push(
-					`**${toTitleCase(_patch.type)}** - ${_p.quantity}x ${_p.plant.name} for ${formatDuration(
-						_p.duration
-					)} ${validationFailures.length > 0 ? `[${validationFailures.join(', ')}]` : ''}`
+					`${_p.quantity}x ${_p.plant.name} ${
+						validationFailures.length > 0 ? `(${validationFailures.join(', ')})` : ''
+					}`
 				);
 			}
 		}
@@ -323,24 +303,34 @@ export default class extends BotCommand {
 				boosts.push('5% crop yield for Farming Skillcape');
 		}
 
-		const messageSend = `${
-			warningMessage
-				? `\n**${Emoji.Warning} WARNING ${Emoji.Warning}**\nSome plants have warnings. They maybe can't be paid, cut or composted. Plants that fails to be CUT will not be sent, everything else can and will, if you confirm! Check it before confirming your trip.\n\n`
-				: ''
-		}Here are the plants that you will be planting:\n\n${toBePlanted.join(
-			'\n'
-		)}\n\nThe trip will have a total duration of ${formatDuration(
-			duration
-		)}.\n\nThe following items will be removed from your bank: ${requiredBank}\n\n${
-			boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : ''
-		}`;
+		const messageSend: string[] = [];
+
+		if (warningMessage)
+			messageSend.push(
+				`${Emoji.Warning}\n__**WARNING**__\nSome plants have warnings. They maybe can't be paid, cut or composted. Plants that fails to be CUT will not be sent, everything else can and will, if you confirm! Check it before confirming your trip.`
+			);
+
+		if (toBePlanted.length > 0)
+			messageSend.push(`__Here are the plants that you will be planting__:\n${toBePlanted.join(', ')}`);
+
+		if (toCollect.length > 0)
+			messageSend.push(
+				`__Here are the plants that you will be harvesting__:\n${toCollect
+					.map(c => `${c.quantity}x ${c.plant}`)
+					.join(', ')}`
+			);
+
+		if (requiredBank.items().length > 0)
+			messageSend.push(`__The following items will be removed from your bank__:\n${requiredBank}`);
+
+		if (boosts.length > 0) messageSend.push(`__**Boosts:**__:\n${boosts.join(', ')}`);
 
 		if (warningMessage) {
-			await msg.confirm(messageSend);
+			await msg.confirm(messageSend.join('\n\n'));
 		} else {
 			await msg.channel.send(
 				toPlant.length > 0
-					? messageSend
+					? messageSend.join('\n\n')
 					: 'There is nothing you can plant at the moment. Check +cp for more information about your patches.'
 			);
 		}
@@ -354,19 +344,12 @@ export default class extends BotCommand {
 			);
 		}
 
-		const activityOptions: {
-			name: string;
-			type: TSeedType;
-			quantity: number;
-			compost: false | 'compost' | 'supercompost' | 'ultracompost';
-			payment: boolean;
-			duration: number;
-		}[] = [];
+		const activityOptions: IFarmingPatchesToPlant[] = [];
 
 		for (const _patch of toPlant) {
 			for (const _p of _patch.patches) {
 				activityOptions.push({
-					name: _p.plant.name,
+					plant: _p.plant,
 					duration: _p.duration,
 					quantity: _p.quantity,
 					compost: _p.validation.useCompost,
@@ -375,5 +358,31 @@ export default class extends BotCommand {
 				});
 			}
 		}
+
+		await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			duration,
+			toPlant: activityOptions,
+			toCollect: toCollect.map(c => c.id),
+			currentDate: currentDate.getTime(),
+			type: Activity.Farming
+		});
+
+		// for (const act of activityOptions) {
+		// 	const finishDate = new Date();
+		// 	finishDate.setTime(currentDate.getTime() + act.plant.growthTime * Time.Minute);
+		// 	const rec = new FarmingPatchesTable();
+		// 	rec.plant = act.plant.name;
+		// 	rec.patchType = act.plant.seedType;
+		// 	rec.quantity = act.quantity;
+		// 	rec.compostUsed = act.compost || null;
+		// 	rec.carePayment = act.payment;
+		// 	rec.userID = msg.author.id;
+		// 	rec.finishDate = finishDate;
+		// 	rec.plantDate = currentDate;
+		// 	rec.status = FarmingPatchStatus.Planted;
+		// 	await rec.save();
+		// }
 	}
 }

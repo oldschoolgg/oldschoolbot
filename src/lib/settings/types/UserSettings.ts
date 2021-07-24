@@ -5,7 +5,7 @@ import { O } from 'ts-toolbelt';
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
-import { CompostTier, FarmingContract, IPatchData } from '../../minions/farming/types';
+import { CompostTier, FarmingContract } from '../../minions/farming/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
@@ -124,6 +124,4 @@ export namespace UserSettings {
 		export const Misc = T<GearSetup | null>('gear.misc');
 		export const Skilling = T<GearSetup | null>('gear.skilling');
 	}
-
-	export const farmingPatches = T<IPatchData[]>('farmingPatches');
 }
