@@ -43,7 +43,10 @@ export interface ICollectionActivity {
 }
 
 export interface ICollection {
-	[key: string]: ICollectionActivity;
+	[key: string]: {
+		alias?: string[];
+		activities: ICollectionActivity;
+	};
 }
 
 export const abyssalSireCL = resolveItems([
@@ -1026,7 +1029,7 @@ export const cluesSharedCL = resolveItems([
 	'Tai bwo wannai teleport',
 	'Lumberyard teleport',
 	'Iorwerth camp teleport',
-	'Master scroll book',
+	'Master scroll book (empty)',
 	'Red firelighter',
 	'Green firelighter',
 	'Blue firelighter',
@@ -1632,7 +1635,6 @@ export const slayerCL = resolveItems([
 	'Monkey tail',
 	'Ballista limbs',
 	'Ballista spring',
-	'Black mask',
 	'Granite longsword',
 	'Dragon chainbody'
 	// Not obtainable yet
