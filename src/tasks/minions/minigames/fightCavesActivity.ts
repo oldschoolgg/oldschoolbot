@@ -84,17 +84,18 @@ export default class extends Task {
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
 			await user.addItemsToBank(failBank, true);
 
-            const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration });
-            const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration });
-            
-			let msg = `${rangeXP}. ${hpXP}.`;;
+			const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration });
+			const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration });
+
+			let msg = `${rangeXP}. ${hpXP}.`;
 			if (isOnTask) {
-				msg = `**Task cancelled.** \n${msg}`;
+				const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: 11_760, duration });
+				msg = `**Task cancelled.** \n${msg} ${slayXP}.`;
 				usersTask.currentTask!.quantityRemaining = 0;
 				usersTask.currentTask!.skipped = true;
 				await usersTask.currentTask!.save();
 			}
-            
+
 			return handleTripFinish(
 				this.client,
 				user,
@@ -136,9 +137,9 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-        const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 47_580, duration });
-        const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_860, duration });
-        
+		const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 47_580, duration });
+		const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_860, duration });
+
 		let msg = `${rangeXP}. ${hpXP}.`;
 		if (isOnTask) {
 			// 25,250 for Jad + 11,760 for waves.
@@ -151,9 +152,10 @@ export default class extends Task {
 
 			usersTask.currentTask!.quantityRemaining = 0;
 			await usersTask.currentTask!.save();
-			const xpMessage = await user.addXP({ skillName: SkillsEnum.Slayer, amount: slayerXP, duration });
-            
-			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.** \n${msg}`;
+			const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: slayerXP, duration });
+			const xpMessage = `${msg} ${slayXP}`
+			
+			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
 			// End slayer code
 		}
 
