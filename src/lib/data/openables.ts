@@ -13,7 +13,7 @@ import { itemNameFromID, removeDuplicatesFromArray } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
-import { chambersOfXericCl, customBossesCL, frozenKeyPieces } from './CollectionsExport';
+import { chambersOfXericCl, customBossesDropsThatCantBeDroppedInMBs, frozenKeyPieces } from './CollectionsExport';
 
 interface Openable {
 	name: string;
@@ -490,7 +490,7 @@ let allItemsIDs = Openables.map(i => (typeof i.table !== 'function' && i.table.a
 allItemsIDs = removeDuplicatesFromArray(allItemsIDs);
 const cantBeDropped = [
 	...chambersOfXericCl,
-	...customBossesCL,
+	...customBossesDropsThatCantBeDroppedInMBs,
 	itemID('Abyssal pouch'),
 	itemID('Dwarven crate'),
 	itemID('Halloween mask set'),

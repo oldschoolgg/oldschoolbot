@@ -75,6 +75,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [amount]: [number]) {
+		if (1 > 0) {
+			return msg.channel.send('The luckypick casino is currently closed, thanks for playing!');
+		}
 		if (msg.author.isIronman) {
 			return msg.channel.send("Ironmen can't gamble! Go pickpocket some men for GP.");
 		}
