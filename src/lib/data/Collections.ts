@@ -1063,10 +1063,7 @@ export async function getCollection(options: {
 			if (
 				attributes.enabled !== false &&
 				(stringMatches(activityName, search) ||
-					stringMatches(activityName, search.substr(0, search.length - 1)) ||
-					(attributes.alias && attributes.alias.find(a => stringMatches(a, search))) ||
-					(attributes.alias &&
-						attributes.alias.find(a => stringMatches(a, search.substr(0, search.length - 1)))))
+					(attributes.alias && attributes.alias.find(a => stringMatches(a, search))))
 			) {
 				let userKC: Record<string, number> | undefined = { Default: 0 };
 
