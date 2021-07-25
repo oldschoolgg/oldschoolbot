@@ -156,7 +156,7 @@ export default class extends BotCommand {
 		// 15% boost for on task
 		if (isOnTask && msg.author.hasItemEquippedOrInBank('Black mask (i)')) {
 			duration *= 0.85;
-			debugStr = debugStr === '' ? '15% on Task with Black mask (i)' : ', 15% on Task with Black mask (i)';
+			debugStr += ', 15% on Task with Black mask (i)';
 		}
 
 		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>({
