@@ -2,6 +2,7 @@ import { Message, MessageAttachment, MessageCollector, TextChannel } from 'disco
 import { Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { itemID } from 'oldschooljs/dist/util';
 
 import MinionCommand from '../../commands/Minion/minion';
 import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
@@ -46,6 +47,7 @@ export async function handleTripFinish(
 	}
 
 	const clueReceived = loot ? clueTiers.find(tier => loot[tier.scrollID] > 0) : undefined;
+	const unsiredReceived = loot ? loot[itemID('Unsired')] > 0 : undefined;
 
 	if (clueReceived) {
 		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;
@@ -54,6 +56,10 @@ export async function handleTripFinish(
 		} else {
 			message += 'You can get your minion to complete them using `+minion clue easy/medium/etc`';
 		}
+	}
+
+	if (unsiredReceived) {
+		message += '\n**You received an unsired!** You can offer it for loot using `+offer unsired`.';
 	}
 
 	const attachable = attachment
