@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { getNewUser } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { FarmingPatchesTable } from '../../lib/typeorm/FarmingPatchesTable.entity';
 import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
 
 export default class extends BotCommand {
@@ -13,6 +14,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
+		await FarmingPatchesTable.delete({ userID: msg.author.id });
 		await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
 		await msg.author.settings.reset();
 		await msg.author.settings.update('minion.hasBought', true);
