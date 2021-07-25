@@ -77,6 +77,13 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (msg.flagArgs.everything) {
+			const bank = new Bank();
+			for (const item of Items) bank.add(item[0], qty);
+			await msg.author.addItemsToBank(bank, Boolean(msg.flagArgs.cl));
+			return msg.channel.send('Gave you the everything!');
+		}
+
 		for (const filter of filterableTypes) {
 			if (msg.flagArgs[filter.name]) {
 				await msg.author.addItemsToBank(converCLtoBank(filter.items).multiply(qty), Boolean(msg.flagArgs.cl));

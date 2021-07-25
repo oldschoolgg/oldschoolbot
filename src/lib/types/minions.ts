@@ -171,19 +171,6 @@ export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
 
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
 
-// export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
-// 	plantsName: string | null;
-// 	channelID: string;
-// 	quantity: number;
-// 	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null;
-// 	payment?: boolean;
-// 	patchType: IPatchData;
-// 	getPatchType: string;
-// 	planting: boolean;
-// 	currentDate: number;
-// 	autoFarmed: boolean;
-// }
-
 export interface IFarmingPatchesToPlant {
 	plant: string;
 	type: TSeedType;
