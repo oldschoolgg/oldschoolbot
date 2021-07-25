@@ -41,7 +41,7 @@ export default class extends BotCommand {
 			// If the plant is still growing
 			if (currentDate < plant.finishDate) {
 				finalStr.push(
-					`:clock1: **${toTitleCase(plant.patchType)}**: ${plant.quantity}x ${
+					`<:rake:868670398361919488> **${toTitleCase(plant.patchType)}**: ${plant.quantity}x ${
 						plant.plant
 					} will be ready to harvest in ${formatDuration(
 						plant.finishDate.getTime() - currentDate.getTime(),
@@ -50,7 +50,9 @@ export default class extends BotCommand {
 				);
 			} else {
 				finalStr.push(
-					`${Emoji.Tick} **${toTitleCase(plant.patchType)}**: ${plant.quantity}x ${plant.plant} is ready.`
+					`<:secateurs:868671587614855258> **${toTitleCase(plant.patchType)}**: ${plant.quantity}x ${
+						plant.plant
+					} is ready.`
 				);
 			}
 		}
