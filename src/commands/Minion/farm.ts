@@ -151,8 +151,8 @@ export default class extends BotCommand {
 
 		// Get what the user have planted
 		const planted = await this.getPlanted(msg.author);
-
 		const harvestPatchDuration = <Record<TSeedType, number>>{};
+		const paidToCut: Record<number, boolean> = {};
 
 		loopPlant: for (const plant of possiblePlants) {
 			// If a plant has been informed, those plants will be checked
@@ -193,6 +193,7 @@ export default class extends BotCommand {
 									canCollect = false;
 								} else {
 									requiredBank.add(995, priceToCut);
+									paidToCut[_planted.id] = true;
 								}
 							}
 						}
@@ -459,7 +460,7 @@ export default class extends BotCommand {
 			duration,
 			toPlant: activityOptions,
 			toCollect: toCollect.map(c => {
-				return { id: c.id, paidToCut: false };
+				return { id: c.id, paidToCut: paidToCut[c.id] || false };
 			}),
 			currentDate: currentDate.getTime(),
 			type: Activity.Farming
