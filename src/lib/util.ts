@@ -105,7 +105,7 @@ export function bankToString(bank: ItemBank, chunkSize?: number) {
 	return chunkSize ? util.chunk(display, chunkSize) : display;
 }
 
-export function formatDuration(ms: number) {
+export function formatDuration(ms: number, short: boolean = false) {
 	if (ms < 0) ms = -ms;
 	const time = {
 		day: Math.floor(ms / 86_400_000),
@@ -114,8 +114,10 @@ export function formatDuration(ms: number) {
 		second: Math.floor(ms / 1000) % 60
 	};
 	let nums = Object.entries(time).filter(val => val[1] !== 0);
-	if (nums.length === 0) return '1 second';
-	return nums.map(([key, val]) => `${val} ${key}${val === 1 ? '' : 's'}`).join(', ');
+	if (nums.length === 0) return short ? '1S' : '1 second';
+	return nums
+		.map(([key, val]) => `${val}${short ? key[0].toLowerCase() : ` ${key}`}${val === 1 || short ? '' : 's'}`)
+		.join(short ? '' : ', ');
 }
 
 export function inlineCodeblock(input: string) {
