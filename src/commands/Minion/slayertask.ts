@@ -44,6 +44,14 @@ export default class extends BotCommand {
 				.map(m => {
 					return m!.name;
 				});
+			const cname = getCommonTaskName(assignedTask!.monster);
+			if (
+				cname !== assignedTask!.monster.name &&
+				cname.substr(0, cname.length - 1) !== assignedTask!.monster.name
+			) {
+				alternateMonsters.unshift(assignedTask!.monster.name);
+			}
+
 			return alternateMonsters.length > 0 ? ` (**Alternate Monsters**: ${alternateMonsters.join(', ')})` : '';
 		}
 		return '';

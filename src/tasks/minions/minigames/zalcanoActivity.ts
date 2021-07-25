@@ -49,11 +49,11 @@ export default class extends Task {
 			);
 		}
 
-		await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(loot.bank, `Loot From ${quantity}x Zalcano`, true, { showNewCL: 1 }, user);
+			.generateBankImage(itemsAdded, `Loot From ${quantity}x Zalcano`, true, { showNewCL: 1 }, user, previousCL);
 
 		handleTripFinish(
 			this.client,
@@ -68,7 +68,7 @@ export default class extends Task {
 			},
 			image!,
 			data,
-			loot.bank
+			itemsAdded
 		);
 	}
 }
