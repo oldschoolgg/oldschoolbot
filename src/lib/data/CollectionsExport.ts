@@ -1442,8 +1442,7 @@ export const monkeyBackpacksCL = resolveItems([
 ]);
 export const motherlodeMineCL = resolveItems([
 	'Coal bag',
-	// Cant obtain in the bot
-	// 'Gem bag',
+	'Gem bag',
 	'Prospector helmet',
 	'Prospector jacket',
 	'Prospector legs',
