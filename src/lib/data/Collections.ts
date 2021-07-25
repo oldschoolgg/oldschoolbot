@@ -399,7 +399,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['beginner', 'clues beginner', 'clue beginner'],
 				allItems: Clues.Beginner.allItems,
 				kcActivity: {
-					Default: async user => user.getOpenableScore(23_245)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[23_245]
 				},
 				items: cluesBeginnerCL,
 				roleCategory: ['clues'],
@@ -409,7 +409,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['easy', 'clues easy', 'clue easy'],
 				allItems: Clues.Easy.allItems,
 				kcActivity: {
-					Default: async user => user.getOpenableScore(20_546)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_546]
 				},
 				items: cluesEasyCL,
 				roleCategory: ['clues'],
@@ -419,7 +419,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['medium', 'clues medium', 'clue medium'],
 				allItems: Clues.Medium.allItems,
 				kcActivity: {
-					Default: async user => user.getOpenableScore(20_545)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_545]
 				},
 				items: cluesMediumCL,
 				roleCategory: ['clues'],
@@ -429,7 +429,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['hard', 'clues hard', 'clue hard'],
 				allItems: Clues.Hard.allItems,
 				kcActivity: {
-					Default: async user => user.getOpenableScore(20_544)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544]
 				},
 				items: cluesHardCL,
 				roleCategory: ['clues'],
@@ -439,7 +439,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['elite', 'clues elite', 'clue elite'],
 				allItems: Clues.Elite.allItems,
 				kcActivity: {
-					Default: async user => user.getOpenableScore(20_543)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543]
 				},
 				items: cluesEliteCL,
 				roleCategory: ['clues'],
@@ -449,7 +449,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['master', 'clues master', 'clue master'],
 				allItems: Clues.Master.allItems,
 				kcActivity: {
-					Default: async user => user.getOpenableScore(19_836)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836]
 				},
 				items: cluesMasterCL,
 				roleCategory: ['clues'],
@@ -466,7 +466,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare hard'
 				],
 				kcActivity: {
-					Default: async user => user.getOpenableScore(20_544)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544]
 				},
 				items: cluesHardRareCL,
 				roleCategory: ['clues'],
@@ -483,7 +483,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare elite'
 				],
 				kcActivity: {
-					Default: async user => user.getOpenableScore(20_543)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543]
 				},
 				items: cluesEliteRareCL,
 				roleCategory: ['clues'],
@@ -500,7 +500,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare master'
 				],
 				kcActivity: {
-					Default: async user => user.getOpenableScore(19_836)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836]
 				},
 				items: cluesMasterRareCL,
 				roleCategory: ['clues'],
@@ -717,8 +717,9 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Motherlode Mine': {
-				enabled: false,
-				items: motherlodeMineCL
+				alias: ['mlm'],
+				items: motherlodeMineCL,
+				roleCategory: ['skilling']
 			},
 			'Random Events': {
 				alias: ['random'],
@@ -879,7 +880,7 @@ export function getItemsRole(role: TRoleCategories) {
 				.map(c =>
 					Object.values(c.activities)
 						.map(a => {
-							if (a.hidden === undefined || a.enabled === undefined)
+							if (a.hidden === undefined && a.enabled === undefined && a.counts === undefined)
 								return a.roleCategory?.includes(role) ? a.items : undefined;
 						})
 						.filter(f => f !== undefined)
@@ -1005,7 +1006,7 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 		}
 	}
 	if (_items.length === 0) {
-		_items = collectionLogRoleCategories[collection.toLowerCase()] ?? [];
+		_items = collectionLogRoleCategories[collection.toLowerCase().replace('role', '')] ?? [];
 	}
 	if (_items.length === 0) {
 		const _monster = killableMonsters.find(
@@ -1063,10 +1064,7 @@ export async function getCollection(options: {
 			if (
 				attributes.enabled !== false &&
 				(stringMatches(activityName, search) ||
-					stringMatches(activityName, search.substr(0, search.length - 1)) ||
-					(attributes.alias && attributes.alias.find(a => stringMatches(a, search))) ||
-					(attributes.alias &&
-						attributes.alias.find(a => stringMatches(a, search.substr(0, search.length - 1)))))
+					(attributes.alias && attributes.alias.find(a => stringMatches(a, search))))
 			) {
 				let userKC: Record<string, number> | undefined = { Default: 0 };
 
