@@ -5,18 +5,17 @@ import { IsNull, Not } from 'typeorm';
 
 import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Emoji } from '../../lib/constants';
-import { collectionLogTypes } from '../../lib/data/collectionLog';
+import { getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { ItemBank, SettingsEntry } from '../../lib/types';
-import { convertXPtoLVL, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
+import { convertXPtoLVL, makePaginatedMessage, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
 import PostgresProvider from '../../providers/postgres';
 
 const CACHE_TIME = Time.Minute * 5;
@@ -66,6 +65,11 @@ interface KCUser {
 	minigameScores: ItemBank;
 }
 
+interface contractUser {
+	id: string;
+	contractCount: number;
+}
+
 interface GPLeaderboard {
 	lastUpdated: number;
 	list: GPUser[];
@@ -113,7 +117,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame] [name:...string]',
+			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|farmingcontracts|xp] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -166,6 +170,12 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
+		this.skills(msg, ['overall']);
+		return null;
+	}
+
+	async xp(msg: KlasaMessage) {
+		msg.flagArgs.xp = 'xp';
 		this.skills(msg, ['overall']);
 		return null;
 	}
@@ -243,6 +253,42 @@ DESC LIMIT 2000;`
 					subList.map(({ id, QP }) => `**${this.getUsername(id)}** has ${QP.toLocaleString()} QP`).join('\n')
 				),
 			'QP Leaderboard'
+		);
+	}
+
+	async farmingcontracts(msg: KlasaMessage) {
+		const onlyForGuild = msg.flagArgs.server;
+		const key = 'minion.farmingContract';
+		const value = 'contractsCompleted';
+
+		let list = (
+			await this.query(`SELECT id, "${key}" FROM users WHERE CAST ("${key}"->>'${value}' AS INTEGER) >= 1;`)
+		)
+			.filter(user => typeof user[key][value] === 'number')
+			.sort((a: contractUser, b: contractUser) => {
+				return b.contractCount - a.contractCount;
+			})
+			.slice(0, 2000);
+
+		if (onlyForGuild && msg.guild) {
+			list = list.filter(user => msg.guild!.members.cache.has(user.id));
+		}
+
+		this.doMenu(
+			msg,
+			util
+				.chunk(list, 10)
+				.map(subList =>
+					subList
+						.map(
+							user =>
+								`**${this.getUsername(user.id)}** has ${user[key][
+									value
+								].toLocaleString()} contracts completed`
+						)
+						.join('\n')
+				),
+			'Farming contracts Leaderboard'
 		);
 	}
 
@@ -354,22 +400,24 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 FROM users
 ${msg.flagArgs.im ? 'WHERE "minion.ironman" = true' : ''}
 ORDER BY totalxp
-DESC LIMIT 100;`
+DESC LIMIT 2000;`
 			);
-			overallUsers = res
-				.map(user => {
-					let totalLevel = 0;
-					for (const skill of skillsVals) {
-						totalLevel += convertXPtoLVL(Number(user[`skills.${skill.id}` as keyof SkillUser]) as any);
-					}
-					return {
-						id: user.id,
-						totalLevel,
-						ironman: user['minion.ironman'],
-						totalXP: Number(user.totalxp!)
-					};
-				})
-				.sort((a, b) => b.totalLevel - a.totalLevel);
+			overallUsers = res.map(user => {
+				let totalLevel = 0;
+				for (const skill of skillsVals) {
+					totalLevel += convertXPtoLVL(Number(user[`skills.${skill.id}` as keyof SkillUser]) as any);
+				}
+				return {
+					id: user.id,
+					totalLevel,
+					ironman: user['minion.ironman'],
+					totalXP: Number(user.totalxp!)
+				};
+			});
+			if (!msg.flagArgs.xp) {
+				overallUsers.sort((a, b) => b.totalLevel - a.totalLevel);
+			}
+			overallUsers.slice(0, 100);
 		} else {
 			if (!skill) {
 				return msg.channel.send("That's not a valid skill.");
@@ -402,7 +450,7 @@ DESC LIMIT 100;`
 						})
 						.join('\n')
 				),
-				'Overall Leaderboard'
+				`Overall Leaderboard${msg.flagArgs.xp ? ' (XP)' : ''}`
 			);
 			return;
 		}
@@ -425,27 +473,18 @@ DESC LIMIT 100;`
 		);
 	}
 
-	async cl(msg: KlasaMessage, [inputType = 'all']: [string]) {
-		const type = collectionLogTypes.find(_type => _type.aliases.some(name => stringMatches(name, inputType)));
-
-		if (!type) {
-			return msg.channel.send(
-				`That's not a valid collection log type. The valid types are: ${collectionLogTypes
-					.map(type => type.name)
-					.join(', ')}`
-			);
+	async cl(msg: KlasaMessage, [inputType = 'overall']: [string]) {
+		const items = getCollectionItems(inputType, false);
+		if (!items || items.length === 0) {
+			return msg.channel.send("That's not a valid collection log category. Check +cl for all possible logs.");
 		}
-
-		const items = Object.values(type.items).flat(Infinity) as number[];
-
 		const users = (
-			await this.client.orm.query(
-				`
+			await this.client.orm.query(`
 SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 				  FROM (
-  SELECT ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank")) "cl_keys",
+  SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
   				id, "collectionLogBank",
-			    cardinality(ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank" - array[${items
+			    cardinality(array(SELECT * FROM jsonb_object_keys("collectionLogBank" - array[${items
 					.map(i => `'${i}'`)
 					.join(', ')}]))) "inverse_length"
   FROM users
@@ -454,10 +493,8 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 ) u
 ORDER BY qty DESC
 LIMIT 50;
-`
-			)
+`)
 		).filter((i: any) => i.qty > 0) as CLUser[];
-
 		if (users.length === 0) {
 			return msg.channel.send('No users found.');
 		}
@@ -467,7 +504,7 @@ LIMIT 50;
 			util
 				.chunk(users, 10)
 				.map(subList => subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')),
-			`${type.name} Collection Log Leaderboard`
+			`${toTitleCase(inputType.toLowerCase())} Collection Log Leaderboard`
 		);
 	}
 
@@ -518,18 +555,9 @@ LIMIT 50;
 	}
 
 	async doMenu(msg: KlasaMessage, pages: string[], title: string) {
-		const loadingMsg = await msg.channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
-
-		const display = new UserRichDisplay();
-		display.setFooterPrefix('Page ');
-
-		for (const page of pages) {
-			display.addPage(new MessageEmbed().setTitle(title).setDescription(page));
-		}
-
-		return display.start(loadingMsg as KlasaMessage, msg.author.id, {
-			jump: false,
-			stop: false
-		});
+		return makePaginatedMessage(
+			msg,
+			pages.map(p => ({ embeds: [new MessageEmbed().setTitle(title).setDescription(p)] }))
+		);
 	}
 }
