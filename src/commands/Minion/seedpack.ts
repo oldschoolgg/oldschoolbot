@@ -156,7 +156,8 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		const { plantTier } = msg.author.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
+		const { plantTier } =
+			msg.author.settings.get(UserSettings.Minion.FarmingSettings).farmingContract || defaultFarmingContract;
 		const loot = new Bank();
 
 		if (bankHasItem(userBank, itemID('Seed pack'), 1)) {

@@ -1,12 +1,12 @@
+import { ArrayActions } from '@klasa/settings-gateway';
 import { MessageAttachment } from 'discord.js';
-import { objectEntries, roll, Time } from 'e';
+import { deepClone, objectEntries, roll, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { In } from 'typeorm';
 
 import { Emoji, Events } from '../../lib/constants';
 import { defaultFarmingContract } from '../../lib/minions/farming';
-import { FarmingContract } from '../../lib/minions/farming/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
@@ -198,17 +198,20 @@ export default class extends Task {
 			}
 
 			// Check for farming contracts
-			const currentContract = user.settings.get(UserSettings.Minion.FarmingContract) || defaultFarmingContract;
+			const farmingSettings = { ...deepClone(user.settings.get(UserSettings.Minion.FarmingSettings)) };
+			let currentContract = farmingSettings.farmingContract || defaultFarmingContract;
 			contractsCompleted = currentContract.contractsCompleted;
 			if (plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
-				const farmingContractUpdate: FarmingContract = {
+				currentContract = {
 					hasContract: false,
 					difficultyLevel: null,
 					plantToGrow: null,
 					plantTier: currentContract.plantTier,
 					contractsCompleted: contractsCompleted + 1
 				};
-				await user.settings.update(UserSettings.Minion.FarmingContract, farmingContractUpdate);
+				await user.settings.update(UserSettings.Minion.FarmingSettings, farmingSettings, {
+					arrayAction: ArrayActions.Overwrite
+				});
 				itemsReceived.add('Seed pack', 1);
 			}
 
@@ -310,6 +313,7 @@ export default class extends Task {
 		}
 
 		let xpReceivedStr: string[] = [];
+
 		if (xpReceived[SkillsEnum.Farming]! > 0)
 			xpReceivedStr.push(
 				await user.addXP({
@@ -317,6 +321,7 @@ export default class extends Task {
 					skillName: SkillsEnum.Farming
 				})
 			);
+
 		if (xpReceived[SkillsEnum.Woodcutting]! > 0)
 			xpReceivedStr.push(
 				await user.addXP({
@@ -324,6 +329,8 @@ export default class extends Task {
 					skillName: SkillsEnum.Woodcutting
 				})
 			);
+
+		if (itemsReceived.items().length > 0) await user.addItemsToBank(itemsReceived);
 
 		finalMessage.push(xpReceivedStr.join('\n'));
 

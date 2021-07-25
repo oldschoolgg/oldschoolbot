@@ -41,7 +41,7 @@ export default class extends BotCommand {
 			// If the plant is still growing
 			if (currentDate < plant.finishDate) {
 				finalStr.push(
-					`<:rake:868670398361919488> **${toTitleCase(plant.patchType)}**: ${plant.quantity}x ${
+					`<:ehpclock:352323705210142721> **${toTitleCase(plant.patchType)}**: ${plant.quantity}x ${
 						plant.plant
 					} will be ready to harvest in ${formatDuration(
 						plant.finishDate.getTime() - currentDate.getTime(),

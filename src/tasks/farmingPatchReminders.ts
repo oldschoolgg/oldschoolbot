@@ -1,5 +1,6 @@
+import { ArrayActions } from '@klasa/settings-gateway';
 import { MessageButton } from 'discord.js';
-import { Time } from 'e';
+import { deepClone, Time } from 'e';
 import { KlasaMessage, Task, TaskStore } from 'klasa';
 import { LessThan } from 'typeorm';
 
@@ -27,7 +28,8 @@ export default class extends Task {
 			try {
 				for (const user of this.client.users.cache.values()) {
 					if (getUsersPerkTier(user) < PerkTier.Four) continue;
-					if (!user.settings.get(UserSettings.FarmingPatchReminders)) continue;
+					const farmingSettings = { ...deepClone(user.settings.get(UserSettings.Minion.FarmingSettings)) };
+					if (farmingSettings.remindersEnabled === false) continue;
 					const messageArray = [];
 					const userPlants = await FarmingPatchesTable.find({
 						where: {
@@ -77,7 +79,10 @@ export default class extends Task {
 									?.run(message as KlasaMessage, [messageArray.join(',')]);
 							}
 							if (selection.customID === 'DISABLE') {
-								await user.settings.update(UserSettings.FarmingPatchReminders, false);
+								farmingSettings.remindersEnabled = false;
+								await user.settings.update(UserSettings.Minion.FarmingSettings, farmingSettings, {
+									arrayAction: ArrayActions.Overwrite
+								});
 								await user.send(
 									'Farming patch reminders have been disabled. You can enable them again using `+farm --togglereminders`.'
 								);

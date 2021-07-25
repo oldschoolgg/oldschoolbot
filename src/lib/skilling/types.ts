@@ -2,6 +2,7 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Emoji } from '../constants';
+import { CompostTier, FarmingContract } from '../minions/farming/types';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
 
@@ -295,4 +296,13 @@ export interface Creature {
 	qpRequired?: number;
 	slope: number;
 	intercept: number;
+}
+
+export interface IFarmingSettings {
+	defaultPay?: boolean;
+	defaultCompost?: CompostTier;
+	farmingContract?: FarmingContract;
+	remindersEnabled?: boolean;
+	favoritePlants?: { [key: string]: string };
+	blockedPatches?: TSeedType[];
 }

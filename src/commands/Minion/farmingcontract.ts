@@ -1,8 +1,9 @@
+import { ArrayActions } from '@klasa/settings-gateway';
+import { deepClone } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { defaultFarmingContract } from '../../lib/minions/farming';
-import { FarmingContract } from '../../lib/minions/farming/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getPlantToGrow } from '../../lib/skilling/functions/calcFarmingContracts';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -32,7 +33,8 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [contractLevel]: ['easy' | 'medium' | 'hard' | 'easier' | 'current' | 'completed']) {
 		await msg.author.settings.sync(true);
 		const farmingLevel = msg.author.skillLevel(SkillsEnum.Farming);
-		const currentContract = msg.author.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
+		const farmingSettings = { ...deepClone(msg.author.settings.get(UserSettings.Minion.FarmingSettings)) };
+		const currentContract = farmingSettings.farmingContract || defaultFarmingContract;
 
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
@@ -128,15 +130,16 @@ export default class extends BotCommand {
 				const plantToGrow = plantInformation[0];
 				const plantTier = plantInformation[1];
 
-				const farmingContractUpdate: FarmingContract = {
+				farmingSettings.farmingContract = {
 					hasContract: true,
 					difficultyLevel: newContractLevel,
 					plantToGrow,
 					plantTier,
 					contractsCompleted: currentContract.contractsCompleted
 				};
-
-				await msg.author.settings.update(UserSettings.Minion.FarmingContract, farmingContractUpdate);
+				await msg.author.settings.update(UserSettings.Minion.FarmingSettings, farmingSettings, {
+					arrayAction: 'overwrite'
+				});
 
 				return msg.channel.send({
 					files: [
@@ -168,7 +171,7 @@ export default class extends BotCommand {
 		const plantToGrow = plantInformation[0] as string;
 		const plantTier = plantInformation[1] as 0 | 1 | 2 | 3 | 4 | 5;
 
-		const farmingContractUpdate: FarmingContract = {
+		farmingSettings.farmingContract = {
 			hasContract: true,
 			difficultyLevel: contractLevel,
 			plantToGrow,
@@ -176,7 +179,9 @@ export default class extends BotCommand {
 			contractsCompleted: currentContract.contractsCompleted
 		};
 
-		await msg.author.settings.update(UserSettings.Minion.FarmingContract, farmingContractUpdate);
+		await msg.author.settings.update(UserSettings.Minion.FarmingSettings, farmingSettings, {
+			arrayAction: ArrayActions.Overwrite
+		});
 
 		return msg.channel.send({
 			files: [

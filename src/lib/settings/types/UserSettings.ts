@@ -5,9 +5,8 @@ import { O } from 'ts-toolbelt';
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
-import { CompostTier, FarmingContract } from '../../minions/farming/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
-import { SkillsEnum } from '../../skilling/types';
+import { IFarmingSettings, SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import { ItemBank } from '../../types';
 
@@ -48,7 +47,6 @@ export namespace UserSettings {
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
 	export const BankBackgroundHex = T<HexColorString | null>('bank_bg_hex');
 	export const CombatOptions = T<readonly CombatOptionsEnum[]>('combat_options');
-	export const FarmingPatchReminders = T<boolean>('farming_patch_reminders');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');
@@ -85,9 +83,7 @@ export namespace UserSettings {
 		export const Ironman = T<boolean>('minion.ironman');
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
-		export const FarmingContract = T<FarmingContract | null>('minion.farmingContract');
-		export const DefaultCompostToUse = T<CompostTier>('minion.defaultCompostToUse');
-		export const DefaultPay = T<boolean>('minion.defaultPay');
+		export const FarmingSettings = T<IFarmingSettings>('minion.farmingSettings');
 		export const BirdhouseTraps = T<BirdhouseData | null>('minion.birdhouseTraps');
 	}
 

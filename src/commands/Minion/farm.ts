@@ -1,5 +1,6 @@
+import { ArrayActions } from '@klasa/settings-gateway';
 import { MessageButton } from 'discord.js';
-import { objectValues, Time } from 'e';
+import { deepClone, objectValues, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util';
@@ -11,7 +12,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcNumOfPatches, returnListOfPlants } from '../../lib/skilling/functions/calcsFarming';
 import Farming, { plants } from '../../lib/skilling/skills/farming';
-import { Plant, SkillsEnum, TSeedType } from '../../lib/skilling/types';
+import { IFarmingSettings, Plant, SkillsEnum, TSeedType } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FarmingPatchesTable, FarmingPatchStatus } from '../../lib/typeorm/FarmingPatchesTable.entity';
 import { FarmingActivityTaskOptions, IFarmingPatchesToPlant } from '../../lib/types/minions';
@@ -48,7 +49,8 @@ export default class extends BotCommand {
 		msg: KlasaMessage,
 		plant: Plant,
 		quantity: number,
-		currentRequiredBank: Bank
+		currentRequiredBank: Bank,
+		farmingSettings: IFarmingSettings
 	): [boolean, IPatchValidation] {
 		const validation: IPatchValidation = {
 			canCompost: false,
@@ -64,14 +66,14 @@ export default class extends BotCommand {
 		validation.canPay = plant.canPayFarmer;
 
 		if (validation.canCompost) {
-			validation.useCompost = msg.author.settings.get(UserSettings.Minion.DefaultCompostToUse);
+			validation.useCompost = farmingSettings.defaultCompost ?? false;
 			if (msg.flagArgs.sc || msg.flagArgs.supercompost) validation.useCompost = 'supercompost';
 			if (msg.flagArgs.uc || msg.flagArgs.ultracompost) validation.useCompost = 'ultracompost';
 		}
 
 		// Check if payment will be made
 		if (validation.canPay) {
-			validation.usePayment = msg.author.settings.get(UserSettings.Minion.DefaultPay);
+			validation.usePayment = farmingSettings.defaultPay ?? false;
 			if (msg.flagArgs.pay) validation.usePayment = true;
 			if (validation.usePayment) {
 				const paymentBank = new Bank(plant.protectionPayment);
@@ -122,13 +124,21 @@ export default class extends BotCommand {
 			return returnListOfPlants(msg);
 		}
 
-		if (msg.flagArgs.togglereminders) {
-			const currentReminderSetting = await msg.author.settings.get(UserSettings.FarmingPatchReminders);
-			await msg.author.settings.update(UserSettings.FarmingPatchReminders, !currentReminderSetting);
-			return msg.channel.send(`${!currentReminderSetting ? 'Enabled' : 'Disabled'} farming patch reminders.`);
-		}
-
 		await msg.author.settings.sync(true);
+
+		const farmingSettings = {
+			...deepClone(await msg.author.settings.get(UserSettings.Minion.FarmingSettings))
+		};
+
+		if (msg.flagArgs.togglereminders) {
+			farmingSettings.remindersEnabled = !farmingSettings.remindersEnabled;
+			await msg.author.settings.update(UserSettings.Minion.FarmingSettings, farmingSettings, {
+				arrayAction: ArrayActions.Overwrite
+			});
+			return msg.channel.send(
+				`${farmingSettings.remindersEnabled ? 'Enabled' : 'Disabled'} farming patch reminders.`
+			);
+		}
 
 		const toPlant: {
 			type: TSeedType;
@@ -146,6 +156,7 @@ export default class extends BotCommand {
 		let possiblePlants = plants.sort((a, b) => b.level - a.level);
 		const requiredBank = new Bank();
 		const maxUserTripLength = msg.author.maxTripLength(Activity.Farming);
+		console.log(maxUserTripLength, formatDuration(maxUserTripLength));
 		const alreadyPlanted = <Record<TSeedType, number>>{};
 		const currentDate = new Date();
 
@@ -235,7 +246,16 @@ export default class extends BotCommand {
 			}
 
 			// Only plant stuff if harvest is not set
-			if (msg.flagArgs.harvest || pathQty === 0) {
+			if (
+				msg.flagArgs.harvest ||
+				pathQty === 0 ||
+				// Ignore if not favorite
+				(farmingSettings.favoritePlants &&
+					farmingSettings.favoritePlants[plant.seedType] &&
+					farmingSettings.favoritePlants[plant.seedType] !== plant.name) ||
+				// Ignore if patch is blocked
+				(farmingSettings.blockedPatches && farmingSettings.blockedPatches.includes(plant.seedType))
+			) {
 				continue;
 			}
 
@@ -244,7 +264,7 @@ export default class extends BotCommand {
 			if (!msg.author.bank({ withGP: true }).has(requiredItems.bank)) continue;
 
 			// Validate plant, if it have to be paid, can be paid, etc
-			const patchValidation = this.validatePlant(msg, plant, pathQty, requiredBank);
+			const patchValidation = this.validatePlant(msg, plant, pathQty, requiredBank, farmingSettings);
 			const durationForThisPath = pathQty * (plant.timePerHarvest + plant.timePerPatchTravel + 5) * Time.Second;
 
 			let checkCollectTime = 0;

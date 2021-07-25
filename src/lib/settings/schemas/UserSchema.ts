@@ -1,6 +1,5 @@
 import { Client, SchemaFolder } from 'klasa';
 
-import { FarmingPatchTypes } from '../../minions/farming/types';
 import { SkillsEnum } from '../../skilling/types';
 
 Client.defaultUserSchema
@@ -32,7 +31,6 @@ Client.defaultUserSchema
 	.add('attack_style', 'string', { array: true, default: [] })
 	.add('total_cox_points', 'integer', { default: 0 })
 	.add('combat_options', 'integer', { array: true, default: [] })
-	.add('farming_patch_reminders', 'boolean', { default: true })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })
@@ -56,9 +54,7 @@ Client.defaultUserSchema
 			.add('ironman', 'boolean', { default: false })
 			.add('icon', 'string', { default: null })
 			.add('equippedPet', 'integer', { default: null })
-			.add('farmingContract', 'any', { default: null })
-			.add('defaultCompostToUse', 'string', { default: 'compost' })
-			.add('defaultPay', 'boolean', { default: false })
+			.add('farmingSettings', 'any', { default: {} })
 			.add('birdhouseTraps', 'any', { default: null })
 	)
 	.add('stats', (folder: SchemaFolder) =>
@@ -115,27 +111,4 @@ Client.defaultUserSchema
 			.add('range', 'any', { default: null })
 			.add('misc', 'any', { default: null })
 			.add('skilling', 'any', { default: null })
-	)
-
-	.add('farmingPatches', (folder: SchemaFolder) =>
-		folder
-			.add(FarmingPatchTypes.Herb, 'any', { default: null })
-			.add(FarmingPatchTypes.FruitTree, 'any', { default: null })
-			.add(FarmingPatchTypes.Tree, 'any', { default: null })
-			.add(FarmingPatchTypes.Allotment, 'any', { default: null })
-			.add(FarmingPatchTypes.Hops, 'any', { default: null })
-			.add(FarmingPatchTypes.Cactus, 'any', { default: null })
-			.add(FarmingPatchTypes.Bush, 'any', { default: null })
-			.add(FarmingPatchTypes.Spirit, 'any', { default: null })
-			.add(FarmingPatchTypes.Hardwood, 'any', { default: null })
-			.add(FarmingPatchTypes.Seaweed, 'any', { default: null })
-			.add(FarmingPatchTypes.Vine, 'any', { default: null })
-			.add(FarmingPatchTypes.Calquat, 'any', { default: null })
-			.add(FarmingPatchTypes.Redwood, 'any', { default: null })
-			.add(FarmingPatchTypes.Crystal, 'any', { default: null })
-			.add(FarmingPatchTypes.Celastrus, 'any', { default: null })
-			.add(FarmingPatchTypes.Hespori, 'any', { default: null })
-			.add(FarmingPatchTypes.Flower, 'any', { default: null })
-			.add(FarmingPatchTypes.Mushroom, 'any', { default: null })
-			.add(FarmingPatchTypes.Belladonna, 'any', { default: null })
 	);
