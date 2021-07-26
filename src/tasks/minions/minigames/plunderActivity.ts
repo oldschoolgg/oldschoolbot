@@ -35,11 +35,8 @@ export default class extends Task {
 			loot.multiply(2);
 		}
 
-		await user.addItemsToBank(loot, true);
-		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Thieving,
-			amount: thievingXP
-		});
+		const { itemsAdded, previousCL } = await user.addItemsToBank(loot, true);
+		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: thievingXP });
 
 		let str = `${user}, ${
 			user.minionName
@@ -51,7 +48,14 @@ export default class extends Task {
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(loot.bank, `Loot From ${quantity}x Pyramid Plunder:`, true, { showNewCL: 1 }, user);
+			.generateBankImage(
+				itemsAdded,
+				`Loot From ${quantity}x Pyramid Plunder:`,
+				true,
+				{ showNewCL: 1 },
+				user,
+				previousCL
+			);
 
 		handleTripFinish(
 			this.client,
@@ -64,7 +68,7 @@ export default class extends Task {
 			},
 			image!,
 			data,
-			loot.bank
+			itemsAdded
 		);
 	}
 }
