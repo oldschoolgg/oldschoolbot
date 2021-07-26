@@ -1686,8 +1686,8 @@ setCustomItem(50_016, 'Master farmer boots', 'Rune boots', {}, 1_000_000);
 
 setCustomItem(50_017, 'Elder logs', 'Magic logs', {}, 19_000);
 setCustomItem(50_018, 'Elder plank', 'Mahogany plank', {}, 10_000);
-setCustomItem(50_019, 'Elder bow(u)', 'Magic logs', {}, 19_000);
-setCustomItem(50_020, 'Elder bow', 'Mahogany plank', {}, 10_000);
+setCustomItem(50_019, 'Elder bow(u)', 'Magic logs', { highalch: 1025 }, 19_000);
+setCustomItem(50_020, 'Elder bow', 'Mahogany plank', { highalch: 2100 }, 10_000);
 setCustomItem(50_021, 'Elder rune', 'Fire rune', {}, 500);
 setCustomItem(50_022, 'Jar of magic', 'Fire rune', {}, 1_000_000);
 setCustomItem(50_023, 'Magus scroll', 'Fire rune', {}, 500_000);
