@@ -1,17 +1,23 @@
-import { calcWhatPercent, percentChance, randInt, reduceNumByPercent, Time } from 'e';
+import { MessageAttachment } from 'discord.js';
+import { calcWhatPercent, deepClone, percentChance, randInt, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
-import { maxOffenceStats } from '../../lib/gear';
+import { GearSetupTypes, maxOffenceStats } from '../../lib/gear';
+import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { KillableMonster } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { GuildSettings } from '../../lib/settings/types/GuildSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { Gear } from '../../lib/structures/Gear';
 import { RevenantOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import getOSItem from '../../lib/util/getOSItem';
 
 export const revenantMonsters: KillableMonster[] = [
@@ -139,7 +145,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<melee|range|mage> [name:...string]',
+			usage: '[style:string] [name:...string]',
 			usageDelim: ' ',
 			description: 'Sends your minion to kill revs. You can add --skull to your message to kill them skulled.'
 		});
@@ -148,11 +154,46 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage, [style, name = '']: ['melee' | 'range' | 'mage', string]) {
+		if (!style || !['melee', 'range', 'mage'].includes(style)) {
+			const prefix = msg.guild
+				? msg.guild.settings.get(GuildSettings.Prefix)
+				: this.client.settings.get(GuildSettings.Prefix);
+			const hasPrayerLevel = msg.author.hasSkillReqs({ [SkillsEnum.Prayer]: 25 })[0];
+			let skulled = Boolean(msg.flagArgs.skull);
+			let smited = Boolean(msg.flagArgs.smited);
+			const userGear = { ...deepClone(msg.author.settings.get(UserSettings.Gear.Wildy)!) };
+
+			const calc = calculateGearLostOnDeathWilderness({
+				gear: userGear,
+				smited,
+				protectItem: hasPrayerLevel,
+				after20wilderness: true,
+				skulled
+			});
+			const image = await generateGearImage(
+				this.client,
+				msg.author,
+				new Gear(calc.newGear),
+				GearSetupTypes.Wildy,
+				null
+			);
+
+			return msg.channel.send({
+				content: `To kill Revenants, you need to use the \`${prefix}revs melee|range|mage revenantName\`. Below, you can see what you will keep in your gear, in case you die in there.
+Smited: \`${smited}\` - There is a chance you'll get smited while killing Revenants. You can check what you would lose using \`--smited\`.
+Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. Doing so, will reward you better drops but will also make you lose more items in case you die. Add \`--skull\` to go in skulled.`,
+				files: [new MessageAttachment(image)]
+			});
+		}
+
 		const boosts = [];
 		const monster = revenantMonsters.find(
-			m => stringMatches(m.name, name) || m.name.toLowerCase().includes(name.toLowerCase())
+			m =>
+				stringMatches(m.name, name) ||
+				m.aliases.some(a => stringMatches(a, name)) ||
+				m.name.split(' ').some(a => stringMatches(a, name))
 		);
-		if (!monster) {
+		if (!monster || !name) {
 			return msg.channel.send(
 				`That's not a valid revenant. The valid revenants are: ${revenantMonsters.map(m => m.name).join(', ')}.`
 			);
@@ -177,7 +218,7 @@ export default class extends BotCommand {
 
 		let timePerMonster = monster.timeToFinish;
 		timePerMonster = reduceNumByPercent(timePerMonster, gearPercent / 4);
-		boosts.push(`${gearPercent / 4} (out of a possible ${100 / 4}%) for ${key}`);
+		boosts.push(`${(gearPercent / 4).toFixed(2)}% (out of a possible 25%) for ${key}`);
 
 		const specialWeapon = specialWeapons[style];
 		if (gear.hasEquipped(specialWeapon.name)) {
@@ -222,7 +263,9 @@ export default class extends BotCommand {
 ${Emoji.OSRSSkull} ${skulled ? 'Skulled' : 'Unskulled'}
 **Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(
 			2
-		)}% from magic def, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level)`;
+		)}% from magic def, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level).${
+			boosts.length > 0 ? `\nBoosts: ${boosts.join(', ')}` : ''
+		}`;
 
 		return msg.channel.send(response);
 	}

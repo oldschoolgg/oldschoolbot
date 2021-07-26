@@ -1,4 +1,4 @@
-import { roll } from 'e';
+import { deepClone, roll } from 'e';
 import { Task } from 'klasa';
 
 import { revenantMonsters } from '../../commands/Minion/revs';
@@ -25,16 +25,15 @@ export default class extends Task {
 			// 1 in 50 to get smited
 			const hasPrayerLevel = user.hasSkillReqs({ [SkillsEnum.Prayer]: 25 })[0];
 			const protectItem = roll(50) ? false : hasPrayerLevel;
+			const userGear = { ...deepClone(user.settings.get(UserSettings.Gear.Wildy)!) };
 
 			const calc = calculateGearLostOnDeathWilderness({
-				gear: user.settings.get(UserSettings.Gear.Wildy)!,
+				gear: userGear,
 				smited: hasPrayerLevel && !protectItem,
 				protectItem: hasPrayerLevel,
 				after20wilderness: true,
 				skulled
 			});
-
-			if (!calc) return;
 
 			const image = await generateGearImage(
 				this.client,
