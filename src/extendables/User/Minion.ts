@@ -879,7 +879,13 @@ export default class extends Extendable {
 				// find the highest boost that the player has
 				for (const [itemID, boostAmount] of Object.entries(boostSet)) {
 					const parsedId = parseInt(itemID);
-					if (!this.hasItemEquippedOrInBank(parsedId)) continue;
+					if (
+						monster.wildy
+							? !this.hasItemEquippedAnywhere(parsedId)
+							: !this.hasItemEquippedOrInBank(parsedId)
+					) {
+						continue;
+					}
 					if (boostAmount > highestBoostAmount) {
 						highestBoostAmount = boostAmount;
 						highestBoostItem = parsedId;

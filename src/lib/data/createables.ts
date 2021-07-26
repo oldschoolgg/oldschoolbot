@@ -22,6 +22,46 @@ export interface Createable {
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 }
 
+const revWeapons: Createable[] = [
+	{
+		name: 'Bracelet of ethereum',
+		inputItems: resolveNameBank({
+			'Bracelet of ethereum (uncharged)': 1,
+			'Revenant ether': 2000
+		}),
+		outputItems: resolveNameBank({
+			'Bracelet of ethereum': 1
+		})
+	},
+	{
+		name: 'Revenant ether',
+		inputItems: resolveNameBank({
+			'Bracelet of ethereum (uncharged)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Revenant ether': 250
+		}),
+		noCl: true
+	}
+];
+
+for (const [uWep, cWep] of [
+	["Viggora's chainmace (u)", "Viggora's chainmace"],
+	["Craw's bow (u)", "Craw's bow"],
+	["Thammaron's sceptre (u)", "Thammaron's sceptre"]
+]) {
+	revWeapons.push({
+		name: cWep,
+		inputItems: {
+			[itemID('Revenant ether')]: 7000,
+			[itemID(uWep)]: 1
+		},
+		outputItems: {
+			[itemID(cWep)]: 1
+		}
+	});
+}
+
 const metamorphPetCreatables: Createable[] = chambersOfXericMetamorphPets.map(pet => ({
 	name: itemNameFromID(pet)!,
 	inputItems: {
@@ -1620,7 +1660,8 @@ const Createables: Createable[] = [
 	...metamorphPetCreatables,
 	...slayerCreatables,
 	...capeCreatables,
-	...dragonFireShieldCreatables
+	...dragonFireShieldCreatables,
+	...revWeapons
 ];
 
 export default Createables;

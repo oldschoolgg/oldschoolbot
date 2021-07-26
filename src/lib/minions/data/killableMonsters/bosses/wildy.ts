@@ -23,6 +23,9 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
+				[itemID("Viggora's chainmace (u)")]: 25
+			},
+			{
 				[itemID('Berserker ring')]: 3,
 				[itemID('Berserker ring (i)')]: 5
 			},
@@ -49,7 +52,12 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]),
 		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 3 }],
+		itemInBankBoosts: [
+			{
+				[itemID("Viggora's chainmace (u)")]: 25
+			},
+			{ [itemID('Dragon warhammer')]: 3 }
+		],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 1110,
 		combatXpMultiplier: 1.156,
@@ -70,7 +78,12 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]),
 		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID('Barrows gloves')]: 3 }],
+		itemInBankBoosts: [
+			{
+				[itemID("Craw's bow")]: 25
+			},
+			{ [itemID('Barrows gloves')]: 3 }
+		],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.525,
 		healAmountNeeded: 5 * 20,
@@ -94,6 +107,9 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
 		itemInBankBoosts: [
+			{
+				[itemID("Craw's bow")]: 25
+			},
 			{
 				[itemID('Archers ring')]: 3,
 				[itemID('Archers ring (i)')]: 5
@@ -119,7 +135,13 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		difficultyRating: 6,
 		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID("Karil's leathertop")]: 3 }, { [itemID("Karil's leatherskirt")]: 3 }],
+		itemInBankBoosts: [
+			{
+				[itemID("Craw's bow")]: 25
+			},
+			{ [itemID("Karil's leathertop")]: 3 },
+			{ [itemID("Karil's leatherskirt")]: 3 }
+		],
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.125,
 		healAmountNeeded: 4 * 20,

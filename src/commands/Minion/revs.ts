@@ -134,7 +134,7 @@ export const revenantMonsters: KillableMonster[] = [
 ];
 
 const specialWeapons = {
-	melee: getOSItem("Viggora's chainmace (u)"),
+	melee: getOSItem("Viggora's chainmace"),
 	range: getOSItem("Craw's bow"),
 	mage: getOSItem("Thammaron's sceptre")
 } as const;
@@ -179,7 +179,7 @@ export default class extends BotCommand {
 			);
 
 			return msg.channel.send({
-				content: `To kill Revenants, you need to use the \`${prefix}revs melee|range|mage revenantName\`. Below, you can see what you will keep in your gear, in case you die in there.
+				content: `To kill Revenants, use \`${prefix}revs melee|range|mage <name>\`. Below, you can see what you will keep in your gear if you die.
 Smited: \`${smited}\` - There is a chance you'll get smited while killing Revenants. You can check what you would lose using \`--smited\`.
 Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. Doing so, will reward you better drops but will also make you lose more items in case you die. Add \`--skull\` to go in skulled.`,
 				files: [new MessageAttachment(image)]
@@ -222,8 +222,8 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 
 		const specialWeapon = specialWeapons[style];
 		if (gear.hasEquipped(specialWeapon.name)) {
-			timePerMonster = reduceNumByPercent(timePerMonster, 20);
-			boosts.push(`${20}% for ${specialWeapon.name}`);
+			timePerMonster = reduceNumByPercent(timePerMonster, 35);
+			boosts.push(`${35}% for ${specialWeapon.name}`);
 		}
 
 		let skulled = Boolean(msg.flagArgs.skull);
