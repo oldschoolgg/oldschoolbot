@@ -4,7 +4,6 @@ import { Task } from 'klasa';
 import { revenantMonsters } from '../../commands/Minion/revs';
 import { GearSetupTypes } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -18,7 +17,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: RevenantOptions) {
-		const { monsterID, userID, channelID, quantity, duration, died, skulled, style } = data;
+		const { monsterID, userID, channelID, quantity, died, skulled, style } = data;
 		const monster = revenantMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		if (died) {
@@ -50,7 +49,7 @@ export default class extends Task {
 				this.client,
 				user,
 				channelID,
-				`${
+				`${user} ${
 					hasPrayerLevel && !protectItem
 						? `Oh no! While running for your life, you panicked, got smited ${
 								skulled ? 'and lost everything!' : "and couldn't protect a 4th item."
@@ -76,14 +75,6 @@ export default class extends Task {
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}.` +
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n`;
-		str += await addMonsterXP(user, {
-			monsterID,
-			quantity,
-			duration,
-			isOnTask: false,
-			taskQuantity: null,
-			minimal: true
-		});
 
 		announceLoot(this.client, user, monster, loot.bank);
 
