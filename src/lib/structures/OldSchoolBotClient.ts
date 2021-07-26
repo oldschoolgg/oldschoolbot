@@ -1,4 +1,3 @@
-import { Client as TagsClient } from '@kcp/tags';
 import { Client, KlasaClientOptions } from 'klasa';
 import { join } from 'path';
 import { Connection, createConnection } from 'typeorm';
@@ -7,8 +6,6 @@ import { providerConfig } from '../../config';
 import { clientOptions } from '../config';
 import { syncActivityCache } from '../settings/settings';
 import { piscinaPool } from '../workers';
-
-Client.use(TagsClient);
 
 const { production } = clientOptions;
 

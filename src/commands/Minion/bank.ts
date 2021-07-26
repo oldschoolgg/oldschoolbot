@@ -6,7 +6,7 @@ import { Emoji } from '../../lib/constants';
 import { filterableTypes } from '../../lib/data/filterables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
+import { makePaginatedMessage } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 
 export default class extends BotCommand {
@@ -77,20 +77,17 @@ export default class extends BotCommand {
 				});
 			}
 
-			const loadingMsg = await msg.channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
-			const display = new UserRichDisplay();
-			display.setFooterPrefix('Page ');
-
+			let pages = [];
 			for (const page of chunk(textBank, 10)) {
-				display.addPage(
-					new MessageEmbed().setTitle(`${msg.author.username}'s Bank`).setDescription(page.join('\n'))
-				);
+				pages.push({
+					embeds: [
+						new MessageEmbed().setTitle(`${msg.author.username}'s Bank`).setDescription(page.join('\n'))
+					]
+				});
 			}
 
-			await display.start(loadingMsg as KlasaMessage, msg.author.id, {
-				jump: false,
-				stop: false
-			});
+			await makePaginatedMessage(msg, pages);
+
 			return null;
 		}
 

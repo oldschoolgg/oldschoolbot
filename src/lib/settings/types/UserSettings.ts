@@ -49,6 +49,7 @@ export namespace UserSettings {
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
 	export const BankBackgroundHex = T<HexColorString | null>('bank_bg_hex');
 	export const CombatOptions = T<readonly CombatOptionsEnum[]>('combat_options');
+	export const FarmingPatchReminders = T<boolean>('farming_patch_reminders');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');

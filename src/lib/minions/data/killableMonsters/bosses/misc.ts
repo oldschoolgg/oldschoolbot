@@ -1,8 +1,8 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { bosses } from '../../../../data/collectionLog';
-import { GearSetupTypes, GearStat } from '../../../../gear/types';
+import { corporealBeastCL } from '../../../../data/CollectionsExport';
+import { GearSetupTypes, GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
@@ -202,7 +202,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: bosses['Corp Beast'],
+		uniques: corporealBeastCL,
 		pohBoosts: {
 			pool: {
 				'Rejuvenation pool': 50,

@@ -124,17 +124,18 @@ export default class extends Task {
 		await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive });
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
-		await user.addItemsToBank(loot, true);
+		const { itemsAdded, previousCL } = await user.addItemsToBank(loot, true);
 		user.incrementMinigameScore('Wintertodt', quantity);
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
-			loot,
+			itemsAdded,
 			'',
 			true,
 			{
 				showNewCL: 1
 			},
-			user
+			user,
+			previousCL
 		);
 
 		if (!channelIsSendable(channel)) return;
@@ -162,7 +163,7 @@ export default class extends Task {
 			},
 			image!,
 			data,
-			loot
+			itemsAdded
 		);
 	}
 }

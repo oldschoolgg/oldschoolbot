@@ -2,7 +2,7 @@ import { randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { rogueOutfit } from '../../../lib/data/collectionLog';
+import { roguesDenOutfit } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { RoguesDenMazeTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -12,7 +12,7 @@ export default class extends Task {
 		let lowestCountPiece = 0;
 		let lowestCountAmount = -1;
 
-		for (const piece of rogueOutfit) {
+		for (const piece of roguesDenOutfit) {
 			const amount = bank.amount(piece);
 			if (lowestCountAmount === -1 || amount < lowestCountAmount) {
 				lowestCountPiece = piece;
@@ -47,16 +47,17 @@ export default class extends Task {
 			str += `\n**${user.minionName} failed to find any Rogue outfit pieces!**`;
 		}
 
-		await user.addItemsToBank(loot.bank, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot.bank, true);
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
-			loot.bank,
+			itemsAdded,
 			`Loot From ${quantity}x Rogues' Den maze`,
 			false,
 			{
 				showNewCL: 1
 			},
-			user
+			user,
+			previousCL
 		);
 
 		handleTripFinish(
@@ -70,7 +71,7 @@ export default class extends Task {
 			},
 			gotLoot ? image! : undefined,
 			data,
-			loot.bank
+			itemsAdded
 		);
 	}
 }
