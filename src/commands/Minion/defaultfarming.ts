@@ -26,7 +26,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[tier|pay|reminders|favorite|block] [CompostTierOrEnable:...string]',
+			usage: '[tier|pay|reminders|favorite|block|confirmation] [CompostTierOrEnable:...string]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			subcommands: true,
@@ -70,8 +70,7 @@ export default class extends BotCommand {
 
 		if (newCompostTier === undefined) {
 			return msg.channel.send(
-				'You must specify a valid compost type. The available tiers to select are `compost`, `supercompost`, and `ultracompost`.' +
-					`For example, \`${msg.cmdPrefix}defaultfarming tier supercompost\`.`
+				`Your default compost is set to \`${farmingSettings.defaultCompost}\`. You must specify a valid compost type. The available tiers to select are \`compost\`, \`supercompost\`, and \`ultracompost\`.For example, \`${msg.cmdPrefix}defaultfarming tier supercompost\`.`
 			);
 		}
 
@@ -119,8 +118,11 @@ export default class extends BotCommand {
 			return msg.channel.send('Your minion will now **not** automatically pay for farming.');
 		}
 		return msg.channel.send(
-			'The available options for pay is `enable` and `disable`.' +
-				`\nFor example, \`${msg.cmdPrefix}defaultfarming pay enable\`.`
+			`Your payment setting is set to \`${
+				farmingSettings.defaultPay ? 'Enabled' : 'Disabled'
+			}\`. The available options for pay is \`enable\` and \`disable\`.\nFor example, \`${
+				msg.cmdPrefix
+			}defaultfarming pay enable\`.`
 		);
 	}
 
@@ -143,8 +145,38 @@ export default class extends BotCommand {
 			return msg.channel.send('You will NOT be notified by a direct message when your crops grown.');
 		}
 		return msg.channel.send(
-			'The available options for pay is `enable` and `disable`.' +
-				`\nFor example, \`${msg.cmdPrefix}defaultfarming reminders enable\`.`
+			`Your reminder setting is set to \`${
+				farmingSettings.remindersEnabled ? 'Enabled' : 'Disabled'
+			}\`. The available options for reminders is \`enable\` and \`disable\`.\nFor example, \`${
+				msg.cmdPrefix
+			}defaultfarming reminders enable\`.`
+		);
+	}
+
+	async confirmation(msg: KlasaMessage, [trueOrFalse]: ['enable' | 'disable']) {
+		const farmingSettings = await this.getSettings(msg);
+
+		if (trueOrFalse === 'enable') {
+			farmingSettings.confirmationEnabled = true;
+			await msg.author.settings.update(UserSettings.Minion.FarmingSettings, farmingSettings, {
+				arrayAction: ArrayActions.Overwrite
+			});
+
+			return msg.channel.send('You will now be required to confirm your farming trips.');
+		} else if (trueOrFalse === 'disable') {
+			farmingSettings.confirmationEnabled = false;
+			await msg.author.settings.update(UserSettings.Minion.FarmingSettings, farmingSettings, {
+				arrayAction: ArrayActions.Overwrite
+			});
+
+			return msg.channel.send('Your farming trips will not require confirmation anymore.');
+		}
+		return msg.channel.send(
+			`Your confirmation setting is set to \`${
+				farmingSettings.confirmationEnabled ? 'Enabled' : 'Disabled'
+			}\`. The available options for reminders is \`enable\` and \`disable\`.\nFor example, \`${
+				msg.cmdPrefix
+			}defaultfarming reminders enable\`.`
 		);
 	}
 

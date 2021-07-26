@@ -156,7 +156,6 @@ export default class extends BotCommand {
 		let possiblePlants = plants.sort((a, b) => b.level - a.level);
 		const requiredBank = new Bank();
 		const maxUserTripLength = msg.author.maxTripLength(Activity.Farming);
-		console.log(maxUserTripLength, formatDuration(maxUserTripLength));
 		const alreadyPlanted = <Record<TSeedType, number>>{};
 		const currentDate = new Date();
 
@@ -165,13 +164,22 @@ export default class extends BotCommand {
 		const harvestPatchDuration = <Record<TSeedType, number>>{};
 		const paidToCut: Record<number, boolean> = {};
 
+		// If the user wants to force a certain patch
+		const patchesForced = (msg.flagArgs.patches ?? '').split(',').filter(f => f);
+
 		loopPlant: for (const plant of possiblePlants) {
+			// If a patch is being forced...
+			if (patchesForced.length > 0) {
+				if (!patchesForced.find(p => stringMatches(p, plant.seedType))) continue;
+			}
 			// If a plant has been informed, those plants will be checked
+			let realPlantName = '';
 			if (plantName) {
 				const plantToCheck = plantName.split(',').map(n => n.trim());
 				let plantFound = false;
 				for (const check of plantToCheck) {
 					if (stringMatches(plant.name, check) || plant.aliases.some(a => stringMatches(a, check))) {
+						realPlantName = plant.name;
 						plantFound = true;
 						break;
 					}
@@ -209,7 +217,12 @@ export default class extends BotCommand {
 							}
 						}
 						// If it cant be collected, increase the already planted qty with the amount that is planted
-						if (!canCollect) {
+						if (
+							!canCollect ||
+							msg.flagArgs.nh ||
+							msg.flagArgs.noharvest ||
+							(plantName && realPlantName !== _planted.plant && msg.flagArgs.single)
+						) {
 							alreadyPlanted[plant.seedType] += _planted.quantity;
 						} else if (!toCollect.find(c => c.id === _planted.id)) {
 							toCollect.push(_planted);
@@ -356,9 +369,13 @@ export default class extends BotCommand {
 
 		// Apply boosts
 		const boosts: string[] = [];
-		if (await userhasDiaryTier(msg.author, ArdougneDiary.elite)) {
+		if ((await userhasDiaryTier(msg.author, ArdougneDiary.elite))[0] ?? false) {
 			boosts.push(`4% for ${ArdougneDiary.name} ${ArdougneDiary.elite.name}`);
 			duration *= 0.96;
+		}
+		if (msg.author.hasGracefulEquipped()) {
+			boosts.push('10% for having Graceful equipped.');
+			duration *= 0.9;
 		}
 
 		if (hasSomethingPlanted) {
@@ -396,60 +413,67 @@ export default class extends BotCommand {
 			);
 		}
 
-		const message = await msg.channel.send({
-			content: messageSend.join('\n\n'),
-			components: [
-				[
-					new MessageButton({
-						type: 'BUTTON',
-						label: 'Confirm',
-						customID: 'confirm',
-						style: 'PRIMARY'
-					}),
-					new MessageButton({
-						type: 'BUTTON',
-						label: 'Cancel',
-						customID: 'cancel',
-						style: 'SECONDARY'
-					}),
-					new MessageButton({
-						type: 'BUTTON',
-						label: `Trip length: ${formatDuration(duration)}`,
-						customID: 'triplength',
-						style: 'SECONDARY',
-						disabled: true
-					})
-				]
-			]
-		});
-
-		try {
-			const selection = await message.awaitMessageComponentInteraction({
-				filter: i => {
-					if (i.user.id !== msg.author.id) {
-						i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-						return false;
-					}
-					return true;
-				},
-				time: Time.Second * 45
-			});
-			if (selection.customID === 'cancel')
-				// noinspection ExceptionCaughtLocallyJS
-				throw new Error(SILENT_ERROR);
-			await message.edit({
-				components: [],
-				content: `${message.content}\n\n${msg.author}, ${
+		if (msg.flagArgs.cf || msg.flagArgs.confirm || farmingSettings.confirmationEnabled === false) {
+			await msg.channel.send({
+				content: `${messageSend.join('\n\n')}\n\n${msg.author.username}, ${
 					msg.author.minionName
 				} is now on a farming trip and it will take around ${formatDuration(duration)} to finish it.`
 			});
-		} catch {
-			return message.edit({
-				components: [],
-				content: `${message.content}\n\n${msg.author}, your farming trip will not start.`
+		} else {
+			const message = await msg.channel.send({
+				content: messageSend.join('\n\n'),
+				components: [
+					[
+						new MessageButton({
+							type: 'BUTTON',
+							label: 'Confirm',
+							customID: 'confirm',
+							style: 'PRIMARY'
+						}),
+						new MessageButton({
+							type: 'BUTTON',
+							label: 'Cancel',
+							customID: 'cancel',
+							style: 'SECONDARY'
+						}),
+						new MessageButton({
+							type: 'BUTTON',
+							label: `Trip length: ${formatDuration(duration)}`,
+							customID: 'triplength',
+							style: 'SECONDARY',
+							disabled: true
+						})
+					]
+				]
 			});
-		}
 
+			try {
+				const selection = await message.awaitMessageComponentInteraction({
+					filter: i => {
+						if (i.user.id !== msg.author.id) {
+							i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+							return false;
+						}
+						return true;
+					},
+					time: Time.Second * 45
+				});
+				if (selection.customID === 'cancel')
+					// noinspection ExceptionCaughtLocallyJS
+					throw new Error(SILENT_ERROR);
+				await message.edit({
+					components: [],
+					content: `${message.content}\n\n${msg.author.username}, ${
+						msg.author.minionName
+					} is now on a farming trip and it will take around ${formatDuration(duration)} to finish it.`
+				});
+			} catch {
+				return message.edit({
+					components: [],
+					content: `${message.content}\n\n${msg.author.username}, your farming trip will not start.`
+				});
+			}
+		}
 		// For a last validation, make sure the user has everything that will be used in this trip. This should never fail.
 		if (!msg.author.bank({ withGP: true }).has(requiredBank.bank)) {
 			return msg.channel.send(
@@ -458,6 +482,8 @@ export default class extends BotCommand {
 				)}`
 			);
 		}
+
+		await msg.author.removeItemsFromBank(requiredBank);
 
 		const activityOptions: IFarmingPatchesToPlant[] = [];
 

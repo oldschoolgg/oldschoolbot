@@ -303,6 +303,7 @@ export interface IFarmingSettings {
 	defaultCompost?: CompostTier;
 	farmingContract?: FarmingContract;
 	remindersEnabled?: boolean;
+	confirmationEnabled?: boolean;
 	favoritePlants?: { [key: string]: string };
 	blockedPatches?: TSeedType[];
 }

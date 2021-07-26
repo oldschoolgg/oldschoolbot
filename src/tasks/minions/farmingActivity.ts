@@ -201,7 +201,12 @@ export default class extends Task {
 			const farmingSettings = { ...deepClone(user.settings.get(UserSettings.Minion.FarmingSettings)) };
 			let currentContract = farmingSettings.farmingContract || defaultFarmingContract;
 			contractsCompleted = currentContract.contractsCompleted;
-			if (plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
+			if (
+				plantToHarvest.name === currentContract.plantToGrow &&
+				alivePlants > 0 &&
+				!user.bank().has('Seed pack') &&
+				!itemsReceived.has('Seed pack')
+			) {
 				currentContract = {
 					hasContract: false,
 					difficultyLevel: null,
@@ -225,6 +230,8 @@ export default class extends Task {
 			collect.harvestDate = currentDate;
 			await collect.save();
 		}
+
+		let durationPerSeedType = 0;
 
 		for (const plant of data.toPlant) {
 			const plantToPlant = Farming.Plants.find(p => p.name === plant.plant)!;
@@ -253,9 +260,13 @@ export default class extends Task {
 
 			// Save in the DB
 			const finishDate = new Date();
+			const plantedDate = new Date();
+			// Add to the plant date the time it took to plant the plants before
+			plantedDate.setTime(plantedDate.getTime() + durationPerSeedType * (this.client.production ? 1 : 0));
+			// Get the plant date and add the growth time
 			finishDate.setTime(
-				currentDate.getTime() +
-					(this.client.production ? plantToPlant.growthTime * Time.Minute : rand(5, 300) * Time.Second)
+				plantedDate.getTime() +
+					(this.client.production ? plantToPlant.growthTime * Time.Minute : rand(5, 150) * Time.Second)
 			);
 			const rec = new FarmingPatchesTable();
 			rec.plant = plantToPlant.name;
@@ -265,11 +276,12 @@ export default class extends Task {
 			rec.carePayment = plant.payment;
 			rec.userID = user.id;
 			rec.finishDate = finishDate;
-			rec.plantDate = currentDate;
+			rec.plantDate = plantedDate;
 			rec.status = FarmingPatchStatus.Planted;
 			await rec.save();
 
 			//
+			durationPerSeedType += plant.duration;
 			planted[plant.plant] = (planted[plant.plant] || 0) + plant.quantity;
 		}
 
@@ -330,7 +342,7 @@ export default class extends Task {
 				})
 			);
 
-		if (itemsReceived.items().length > 0) await user.addItemsToBank(itemsReceived);
+		if (itemsReceived.items().length > 0) await user.addItemsToBank(itemsReceived, true);
 
 		finalMessage.push(xpReceivedStr.join('\n'));
 
