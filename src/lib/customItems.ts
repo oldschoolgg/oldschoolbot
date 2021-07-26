@@ -166,14 +166,14 @@ setCustomItem(24_212, 'Abyssal thread', 'Giant pouch', {}, 10_000_000);
 setCustomItem(24_210, 'Abyssal pouch', 'Giant pouch', {}, 100_000);
 
 // Ori Pet || 4149	 = Abyssal demon
-setCustomItem(4149, 'Ori', 'Herbi', {}, 100_000);
+setCustomItem(4149, 'Ori', 'Herbi', {}, 1_000_000);
 
 // Abyssal bones || 24199 = Seren halo [DUPLICATE]
 setCustomItem(24_199, 'Abyssal dragon bones', 'Superior dragon bones', {}, 20_000);
 
-setCustomItem(19_567, 'Cob', 'Herbi');
+setCustomItem(19_567, 'Cob', 'Herbi', {}, 1_000_000);
 
-setCustomItem(22_949, 'Takon', 'Herbi');
+setCustomItem(22_949, 'Takon', 'Herbi', {}, 1_000_000);
 
 setCustomItem(6796, 'Tiny lamp', 'Lamp', {}, 100_000);
 setCustomItem(21_642, 'Small lamp', 'Lamp', {}, 300_000);
@@ -1162,8 +1162,8 @@ setCustomItem(
 
 setCustomItem(47_517, 'Perfect chitin', 'Magic seed', {}, 1_000_000);
 setCustomItem(47_518, 'Baby kalphite king', 'Herbi', {}, 1_000_000);
-setCustomItem(47_519, 'Hoppy', 'Herbi', {}, 20_000_000);
-setCustomItem(47_520, 'Craig', 'Herbi', {}, 20_000_000);
+setCustomItem(47_519, 'Hoppy', 'Herbi', {}, 1_000_000);
+setCustomItem(47_520, 'Craig', 'Herbi', {}, 1_000_000);
 
 setCustomItem(47_521, 'Beach mystery box', 'Mystery box', {}, 1_000_000);
 setCustomItem(47_522, 'Snappy the Turtle', 'Herbi', {}, 1_000_000);
@@ -1174,7 +1174,7 @@ setCustomItem(47_526, 'Crab hat', 'Coal', {}, 100_000);
 setCustomItem(47_527, 'Steve', 'Herbi', {}, 1_000_000);
 
 setCustomItem(47_528, "Bryophyta's staff(i)", "Bryophyta's staff", {}, 1_000_000);
-setCustomItem(47_529, 'Voidling', 'Herbi', {}, 10_000_000);
+setCustomItem(47_529, 'Voidling', 'Herbi', {}, 1_000_000);
 
 /**
  * -----------------------------------------------------------------------------------------------
