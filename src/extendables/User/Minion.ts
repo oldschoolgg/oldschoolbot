@@ -676,7 +676,13 @@ export default class extends Extendable {
 			case Activity.Sepulchre:
 			case Activity.Pickpocket:
 			case Activity.SoulWars:
-			case Activity.Cyclops: {
+			case Activity.Cyclops:
+			case Activity.KalphiteKing:
+			case Activity.Nex:
+			case Activity.VasaMagus:
+			case Activity.Ignecarus:
+			case Activity.KingGoldemar:
+			case Activity.Dungeoneering: {
 				const hpLevel = this.skillLevel(SkillsEnum.Hitpoints);
 				const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
 				max += calcPercentOfNum(hpPercent, Time.Minute * 5);
