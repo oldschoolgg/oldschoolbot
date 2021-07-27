@@ -881,7 +881,7 @@ export default class extends Extendable {
 			? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
 			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
 
-		if (masterCape) {
+		if (masterCape && !params.minimal) {
 			if (isMatchingCape) {
 				str += ` You received 8% bonus XP for having a ${masterCape.item.name}.`;
 			} else {
@@ -889,11 +889,11 @@ export default class extends Extendable {
 			}
 		}
 
-		if (gorajanBoost) {
+		if (gorajanBoost && !params.minimal) {
 			str += ' (2x boost from Gorajan armor)';
 		}
 
-		if (firstAgeEquipped) {
+		if (firstAgeEquipped && !params.minimal) {
 			str += ` You received ${
 				firstAgeEquipped === 5 ? 6 : firstAgeEquipped
 			}% bonus XP for First age outfit items.`;

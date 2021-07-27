@@ -71,6 +71,9 @@ export default class extends BotCommand {
 		if (msg.author.skillLevel(SkillsEnum.Cooking) < kibble.level) {
 			return msg.channel.send(`You need level ${kibble.level} Cooking to make kibble.`);
 		}
+		if (msg.author.skillLevel(SkillsEnum.Herblore) < kibble.level - 20) {
+			return msg.channel.send(`You need level ${kibble.level} Herblore to make kibble.`);
+		}
 		const userBank = msg.author.bank();
 
 		const cost = new Bank();
