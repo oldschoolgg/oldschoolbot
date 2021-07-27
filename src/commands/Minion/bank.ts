@@ -2,8 +2,8 @@ import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { filterableTypes } from '../../lib/data/filterables';
 import { BitField, Emoji } from '../../lib/constants';
+import { filterableTypes } from '../../lib/data/filterables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { makePaginatedMessage } from '../../lib/util';
