@@ -92,6 +92,10 @@ declare module 'klasa' {
 		makePartyAwaiter(options: MakePartyOptions): Promise<KlasaUser[]>;
 		removeAllReactions(): void;
 		confirm(this: KlasaMessage, str: string): Promise<void>;
+		groupConfirm(
+			this: KlasaMessage,
+			options: { str: string; type?: string[]; successStr?: string; errorStr?: string; users: KlasaUser[] }
+		);
 	}
 
 	interface SettingsFolder {
