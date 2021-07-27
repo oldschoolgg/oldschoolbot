@@ -37,6 +37,10 @@ const OuraniaBuyables = [
 	{
 		item: getOSItem('Elder talisman'),
 		cost: 350
+	},
+	{
+		item: getOSItem('Magic crate'),
+		cost: 115
 	}
 ];
 
