@@ -706,10 +706,6 @@ export default class extends Extendable {
 			max *= 1.4;
 		}
 
-		if (this.hasItemEquippedAnywhere('Hitpoints master cape')) {
-			max *= 1.2;
-		}
-
 		const sac = this.settings.get(UserSettings.SacrificedValue);
 		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
 		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
