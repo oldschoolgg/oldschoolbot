@@ -70,14 +70,6 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		boostMethod
 	});
 
-	// Special use cases for some monsters
-	switch (params.monsterID) {
-		case Monsters.GrotesqueGuardians.id:
-			// Double quantity killed (Dawn and Dusk)
-			params.quantity *= 2;
-			break;
-	}
-
 	const monster = killableMonsters.find(mon => mon.id === params.monsterID);
 	let hp = miscHpMap[params.monsterID] ?? 1;
 	let xpMultiplier = 1;
