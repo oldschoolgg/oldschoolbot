@@ -70,7 +70,20 @@ setCustomItem(478, 'Dwarven knife', 'Bronze knife', {}, 1_000_000);
 setCustomItem(506, 'Dwarven bar', 'Steel bar', {}, 500_000);
 setCustomItem(508, 'Dwarven ore', 'Iron ore', {}, 100_000);
 
-setCustomItem(6741, 'Dwarven warhammer', 'Dragon warhammer', {}, 10_000_000);
+setCustomItem(
+	6741,
+	'Dwarven warhammer',
+	'Dragon warhammer',
+	{
+		equipment: {
+			...getOSItem('Dragon warhammer').equipment!,
+			requirements: {
+				strength: 99
+			}
+		}
+	},
+	10_000_000
+);
 
 setCustomItem(8871, 'Dwarven crate', 'Mystery box', {}, 100_000);
 
