@@ -65,11 +65,6 @@ interface KCUser {
 	minigameScores: ItemBank;
 }
 
-interface contractUser {
-	id: string;
-	contractCount: number;
-}
-
 interface GPLeaderboard {
 	lastUpdated: number;
 	list: GPUser[];
@@ -265,8 +260,8 @@ DESC LIMIT 2000;`
 			await this.query(`SELECT id, "${key}" FROM users WHERE CAST ("${key}"->>'${value}' AS INTEGER) >= 1;`)
 		)
 			.filter(user => typeof user[key][value] === 'number')
-			.sort((a: contractUser, b: contractUser) => {
-				return b.contractCount - a.contractCount;
+			.sort((a, b) => {
+				return b[key][value] - a[key][value];
 			})
 			.slice(0, 2000);
 
