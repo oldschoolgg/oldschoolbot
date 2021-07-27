@@ -34,6 +34,6 @@ export default class extends BotCommand {
 				}`
 			);
 		}
-		return msg.channel.send('You can only select 1, 2 or 3. Example: `?settier 3` for Tier 3 Patreon.');
+		return msg.channel.send('You can only select 0, 1, 2 or 3. Example: `?settier 3` for Tier 3 Patreon.');
 	}
 }
