@@ -214,6 +214,7 @@ export default class extends Task {
 					plantTier: currentContract.plantTier,
 					contractsCompleted: contractsCompleted + 1
 				};
+				farmingSettings.farmingContract = currentContract;
 				await user.settings.update(UserSettings.Minion.FarmingSettings, farmingSettings, {
 					arrayAction: ArrayActions.Overwrite
 				});
