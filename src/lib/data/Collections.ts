@@ -121,709 +121,722 @@ import {
 
 export const allCollectionLogs: ICollection = {
 	Bosses: {
-		'Abyssal Sire': {
-			alias: Monsters.AbyssalSire.aliases,
-			allItems: Monsters.AbyssalSire.allItems,
-			items: abyssalSireCL,
-			roleCategory: ['bosses']
-		},
-		'Alchemical Hydra': {
-			alias: [...Monsters.AlchemicalHydra.aliases, 'ahydra', 'alchhydra'],
-			allItems: Monsters.AlchemicalHydra.allItems,
-			items: alchemicalHydraCL,
-			roleCategory: ['bosses']
-		},
-		'Barrows Chests': {
-			alias: Monsters.Barrows.aliases,
-			kcActivity: Monsters.Barrows.name,
-			items: barrowsChestCL,
-			roleCategory: []
-		},
-		Bryophyta: {
-			alias: Monsters.Bryophyta.aliases,
-			allItems: Monsters.Bryophyta.allItems,
-			items: bryophytaCL,
-			roleCategory: ['bosses']
-		},
-		Callisto: {
-			alias: Monsters.Callisto.aliases,
-			allItems: Monsters.Callisto.allItems,
-			items: callistoCL,
-			roleCategory: ['bosses']
-		},
-		Cerberus: {
-			alias: Monsters.Cerberus.aliases,
-			allItems: Monsters.Cerberus.allItems,
-			items: cerberusCL,
-			roleCategory: ['bosses']
-		},
-		'Chaos Elemental': {
-			alias: Monsters.ChaosElemental.aliases,
-			allItems: Monsters.ChaosElemental.allItems,
-			items: chaosElementalCL,
-			roleCategory: ['bosses']
-		},
-		'Chaos Fanatic': {
-			alias: Monsters.ChaosFanatic.aliases,
-			allItems: Monsters.ChaosFanatic.allItems,
-			items: chaosFanaticCL,
-			roleCategory: ['bosses']
-		},
-		'Commander Zilyana': {
-			alias: Monsters.CommanderZilyana.aliases,
-			allItems: Monsters.CommanderZilyana.allItems,
-			items: commanderZilyanaCL,
-			roleCategory: ['bosses']
-		},
-		'Corporeal Beast': {
-			alias: Monsters.CorporealBeast.aliases,
-			allItems: Monsters.CorporealBeast.allItems,
-			items: corporealBeastCL,
-			roleCategory: ['bosses']
-		},
-		'Crazy archaeologist': {
-			alias: Monsters.CrazyArchaeologist.aliases,
-			allItems: Monsters.CrazyArchaeologist.allItems,
-			items: crazyArchaeologistCL,
-			roleCategory: ['bosses']
-		},
-		'Dagannoth Kings': {
-			alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
-			kcActivity: {
-				Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name]
+		alias: ['boss'],
+		activities: {
+			'Abyssal Sire': {
+				alias: Monsters.AbyssalSire.aliases,
+				allItems: Monsters.AbyssalSire.allItems,
+				items: abyssalSireCL,
+				roleCategory: ['bosses']
 			},
-			allItems: (() => {
-				return [
-					...new Set(
-						...[
-							Monsters.DagannothPrime.allItems,
-							Monsters.DagannothSupreme.allItems,
-							Monsters.DagannothRex.allItems
-						]
-					)
-				];
-			})(),
-			items: dagannothKingsCL,
-			roleCategory: ['bosses']
-		},
-		'Dagannoth Rex': {
-			hidden: true,
-			alias: Monsters.DagannothRex.aliases,
-			allItems: Monsters.DagannothRex.allItems,
-			items: dagannothRexCL
-		},
-		'Dagannoth Prime': {
-			hidden: true,
-			alias: Monsters.DagannothPrime.aliases,
-			allItems: Monsters.DagannothPrime.allItems,
-			items: dagannothPrimeCL
-		},
-		'Dagannoth Supreme': {
-			hidden: true,
-			alias: Monsters.DagannothSupreme.aliases,
-			allItems: Monsters.DagannothSupreme.allItems,
-			items: dagannothSupremeCL
-		},
-		'The Fight Caves': {
-			kcActivity: Monsters.TzTokJad.name,
-			alias: ['firecape', 'jad', 'fightcave'],
-			items: fightCavesCL,
-			roleCategory: ['bosses']
-		},
-		'The Gauntlet': {
-			alias: ['gauntlet', 'crystalline hunllef', 'hunllef'],
-			kcActivity: {
-				Default: user => user.getMinigameScore('Gauntlet'),
-				Corrupted: user => user.getMinigameScore('CorruptedGauntlet')
+			'Alchemical Hydra': {
+				alias: [...Monsters.AlchemicalHydra.aliases, 'ahydra', 'alchhydra'],
+				allItems: Monsters.AlchemicalHydra.allItems,
+				items: alchemicalHydraCL,
+				roleCategory: ['bosses']
 			},
-			items: theGauntletCL,
-			roleCategory: ['bosses']
-		},
-		'General Graardor': {
-			alias: Monsters.GeneralGraardor.aliases,
-			allItems: Monsters.GeneralGraardor.allItems,
-			items: generalGraardorCL,
-			roleCategory: ['bosses']
-		},
-		'Giant Mole': {
-			alias: Monsters.GiantMole.aliases,
-			allItems: Monsters.GiantMole.allItems,
-			items: giantMoleCL,
-			roleCategory: ['bosses']
-		},
-		'Grotesque Guardians': {
-			alias: Monsters.GrotesqueGuardians.aliases,
-			allItems: Monsters.GrotesqueGuardians.allItems,
-			items: grotesqueGuardiansCL,
-			roleCategory: ['bosses']
-		},
-		Hespori: {
-			alias: Monsters.Hespori.aliases,
-			allItems: Monsters.Hespori.allItems,
-			items: hesporiCL,
-			roleCategory: ['bosses']
-		},
-		'The Inferno': {
-			enabled: false,
-			alias: ['zuk', 'inferno'],
-			items: theInfernoCL
-		},
-		'Kalphite Queen': {
-			alias: Monsters.KalphiteQueen.aliases,
-			allItems: Monsters.KalphiteQueen.allItems,
-			items: kalphiteQueenCL,
-			roleCategory: ['bosses']
-		},
-		'King Black Dragon': {
-			alias: Monsters.KingBlackDragon.aliases,
-			allItems: Monsters.KingBlackDragon.allItems,
-			items: kingBlackDragonCL,
-			roleCategory: ['bosses']
-		},
-		Kraken: {
-			alias: Monsters.Kraken.aliases,
-			allItems: Monsters.Kraken.allItems,
-			items: krakenCL,
-			roleCategory: ['bosses']
-		},
-		"Kree'arra": {
-			alias: Monsters.Kreearra.aliases,
-			allItems: Monsters.Kreearra.allItems,
-			items: kreeArraCL,
-			roleCategory: ['bosses']
-		},
-		"K'ril Tsutsaroth": {
-			alias: Monsters.KrilTsutsaroth.aliases,
-			allItems: Monsters.KrilTsutsaroth.allItems,
-			items: krilTsutsarothCL,
-			roleCategory: ['bosses']
-		},
-		'The Nightmare': {
-			alias: NightmareMonster.aliases,
-			items: theNightmareCL,
-			roleCategory: ['bosses']
-		},
-		Obor: {
-			alias: Monsters.Obor.aliases,
-			allItems: Monsters.Obor.allItems,
-			items: oborCL,
-			roleCategory: ['bosses']
-		},
-		Sarachnis: {
-			alias: Monsters.Sarachnis.aliases,
-			allItems: Monsters.Sarachnis.allItems,
-			items: sarachnisCL,
-			roleCategory: ['bosses']
-		},
-		Scorpia: {
-			alias: Monsters.Scorpia.aliases,
-			allItems: Monsters.Scorpia.allItems,
-			items: scorpiaCL,
-			roleCategory: ['bosses']
-		},
-		Skotizo: {
-			alias: Monsters.Skotizo.aliases,
-			allItems: Monsters.Skotizo.allItems,
-			items: skotizoCL,
-			roleCategory: ['bosses']
-		},
-		Tempoross: {
-			items: temporossCL,
-			allItems: resolveItems([...spiritAnglerOutfit, 'Spirit flakes']),
-			roleCategory: ['bosses']
-		},
-		'Thermonuclear smoke devil': {
-			alias: Monsters.ThermonuclearSmokeDevil.aliases,
-			allItems: Monsters.ThermonuclearSmokeDevil.allItems,
-			items: thermonuclearSmokeDevilCL,
-			roleCategory: ['bosses']
-		},
-		Venenatis: {
-			alias: Monsters.Venenatis.aliases,
-			allItems: Monsters.Venenatis.allItems,
-			items: venenatisCL,
-			roleCategory: ['bosses']
-		},
-		"Vet'ion": {
-			alias: Monsters.Vetion.aliases,
-			allItems: Monsters.Vetion.allItems,
-			items: vetionCL,
-			roleCategory: ['bosses']
-		},
-		Vorkath: {
-			alias: Monsters.Vorkath.aliases,
-			allItems: Monsters.Vorkath.allItems,
-			items: vorkathCL,
-			roleCategory: ['bosses']
-		},
-		Wintertodt: {
-			alias: ['todt', 'wintertodt', 'wt'],
-			items: wintertodtCL,
-			roleCategory: ['bosses', 'skilling']
-		},
-		Zalcano: { items: zalcanoCL, roleCategory: ['bosses', 'skilling'] },
-		Zulrah: {
-			alias: Monsters.Zulrah.aliases,
-			allItems: Monsters.Zulrah.allItems,
-			items: zulrahCL,
-			roleCategory: ['bosses']
+			'Barrows Chests': {
+				alias: Monsters.Barrows.aliases,
+				kcActivity: Monsters.Barrows.name,
+				items: barrowsChestCL,
+				roleCategory: ['bosses']
+			},
+			Bryophyta: {
+				alias: Monsters.Bryophyta.aliases,
+				allItems: Monsters.Bryophyta.allItems,
+				items: bryophytaCL,
+				roleCategory: ['bosses']
+			},
+			Callisto: {
+				alias: Monsters.Callisto.aliases,
+				allItems: Monsters.Callisto.allItems,
+				items: callistoCL,
+				roleCategory: ['bosses']
+			},
+			Cerberus: {
+				alias: Monsters.Cerberus.aliases,
+				allItems: Monsters.Cerberus.allItems,
+				items: cerberusCL,
+				roleCategory: ['bosses']
+			},
+			'Chaos Elemental': {
+				alias: Monsters.ChaosElemental.aliases,
+				allItems: Monsters.ChaosElemental.allItems,
+				items: chaosElementalCL,
+				roleCategory: ['bosses']
+			},
+			'Chaos Fanatic': {
+				alias: Monsters.ChaosFanatic.aliases,
+				allItems: Monsters.ChaosFanatic.allItems,
+				items: chaosFanaticCL,
+				roleCategory: ['bosses']
+			},
+			'Commander Zilyana': {
+				alias: Monsters.CommanderZilyana.aliases,
+				allItems: Monsters.CommanderZilyana.allItems,
+				items: commanderZilyanaCL,
+				roleCategory: ['bosses']
+			},
+			'Corporeal Beast': {
+				alias: Monsters.CorporealBeast.aliases,
+				allItems: Monsters.CorporealBeast.allItems,
+				items: corporealBeastCL,
+				roleCategory: ['bosses']
+			},
+			'Crazy archaeologist': {
+				alias: Monsters.CrazyArchaeologist.aliases,
+				allItems: Monsters.CrazyArchaeologist.allItems,
+				items: crazyArchaeologistCL,
+				roleCategory: ['bosses']
+			},
+			'Dagannoth Kings': {
+				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
+				kcActivity: {
+					Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name]
+				},
+				allItems: (() => {
+					return [
+						...new Set(
+							...[
+								Monsters.DagannothPrime.allItems,
+								Monsters.DagannothSupreme.allItems,
+								Monsters.DagannothRex.allItems
+							]
+						)
+					];
+				})(),
+				items: dagannothKingsCL,
+				roleCategory: ['bosses']
+			},
+			'Dagannoth Rex': {
+				hidden: true,
+				alias: Monsters.DagannothRex.aliases,
+				allItems: Monsters.DagannothRex.allItems,
+				items: dagannothRexCL
+			},
+			'Dagannoth Prime': {
+				hidden: true,
+				alias: Monsters.DagannothPrime.aliases,
+				allItems: Monsters.DagannothPrime.allItems,
+				items: dagannothPrimeCL
+			},
+			'Dagannoth Supreme': {
+				hidden: true,
+				alias: Monsters.DagannothSupreme.aliases,
+				allItems: Monsters.DagannothSupreme.allItems,
+				items: dagannothSupremeCL
+			},
+			'The Fight Caves': {
+				kcActivity: Monsters.TzTokJad.name,
+				alias: ['firecape', 'jad', 'fightcave'],
+				items: fightCavesCL,
+				roleCategory: ['bosses']
+			},
+			'The Gauntlet': {
+				alias: ['gauntlet', 'crystalline hunllef', 'hunllef'],
+				kcActivity: {
+					Default: user => user.getMinigameScore('Gauntlet'),
+					Corrupted: user => user.getMinigameScore('CorruptedGauntlet')
+				},
+				items: theGauntletCL,
+				roleCategory: ['bosses']
+			},
+			'General Graardor': {
+				alias: Monsters.GeneralGraardor.aliases,
+				allItems: Monsters.GeneralGraardor.allItems,
+				items: generalGraardorCL,
+				roleCategory: ['bosses']
+			},
+			'Giant Mole': {
+				alias: Monsters.GiantMole.aliases,
+				allItems: Monsters.GiantMole.allItems,
+				items: giantMoleCL,
+				roleCategory: ['bosses']
+			},
+			'Grotesque Guardians': {
+				alias: Monsters.GrotesqueGuardians.aliases,
+				allItems: Monsters.GrotesqueGuardians.allItems,
+				items: grotesqueGuardiansCL,
+				roleCategory: ['bosses']
+			},
+			Hespori: {
+				alias: Monsters.Hespori.aliases,
+				allItems: Monsters.Hespori.allItems,
+				items: hesporiCL,
+				roleCategory: ['bosses']
+			},
+			'The Inferno': {
+				enabled: false,
+				alias: ['zuk', 'inferno'],
+				items: theInfernoCL
+			},
+			'Kalphite Queen': {
+				alias: Monsters.KalphiteQueen.aliases,
+				allItems: Monsters.KalphiteQueen.allItems,
+				items: kalphiteQueenCL,
+				roleCategory: ['bosses']
+			},
+			'King Black Dragon': {
+				alias: Monsters.KingBlackDragon.aliases,
+				allItems: Monsters.KingBlackDragon.allItems,
+				items: kingBlackDragonCL,
+				roleCategory: ['bosses']
+			},
+			Kraken: {
+				alias: Monsters.Kraken.aliases,
+				allItems: Monsters.Kraken.allItems,
+				items: krakenCL,
+				roleCategory: ['bosses']
+			},
+			"Kree'arra": {
+				alias: Monsters.Kreearra.aliases,
+				allItems: Monsters.Kreearra.allItems,
+				items: kreeArraCL,
+				roleCategory: ['bosses']
+			},
+			"K'ril Tsutsaroth": {
+				alias: Monsters.KrilTsutsaroth.aliases,
+				allItems: Monsters.KrilTsutsaroth.allItems,
+				items: krilTsutsarothCL,
+				roleCategory: ['bosses']
+			},
+			'The Nightmare': {
+				alias: NightmareMonster.aliases,
+				items: theNightmareCL,
+				roleCategory: ['bosses']
+			},
+			Obor: {
+				alias: Monsters.Obor.aliases,
+				allItems: Monsters.Obor.allItems,
+				items: oborCL,
+				roleCategory: ['bosses']
+			},
+			Sarachnis: {
+				alias: Monsters.Sarachnis.aliases,
+				allItems: Monsters.Sarachnis.allItems,
+				items: sarachnisCL,
+				roleCategory: ['bosses']
+			},
+			Scorpia: {
+				alias: Monsters.Scorpia.aliases,
+				allItems: Monsters.Scorpia.allItems,
+				items: scorpiaCL,
+				roleCategory: ['bosses']
+			},
+			Skotizo: {
+				alias: Monsters.Skotizo.aliases,
+				allItems: Monsters.Skotizo.allItems,
+				items: skotizoCL,
+				roleCategory: ['bosses']
+			},
+			Tempoross: {
+				items: temporossCL,
+				allItems: resolveItems([...spiritAnglerOutfit, 'Spirit flakes']),
+				roleCategory: ['bosses']
+			},
+			'Thermonuclear smoke devil': {
+				alias: Monsters.ThermonuclearSmokeDevil.aliases,
+				allItems: Monsters.ThermonuclearSmokeDevil.allItems,
+				items: thermonuclearSmokeDevilCL,
+				roleCategory: ['bosses']
+			},
+			Venenatis: {
+				alias: Monsters.Venenatis.aliases,
+				allItems: Monsters.Venenatis.allItems,
+				items: venenatisCL,
+				roleCategory: ['bosses']
+			},
+			"Vet'ion": {
+				alias: Monsters.Vetion.aliases,
+				allItems: Monsters.Vetion.allItems,
+				items: vetionCL,
+				roleCategory: ['bosses']
+			},
+			Vorkath: {
+				alias: Monsters.Vorkath.aliases,
+				allItems: Monsters.Vorkath.allItems,
+				items: vorkathCL,
+				roleCategory: ['bosses']
+			},
+			Wintertodt: {
+				alias: ['todt', 'wintertodt', 'wt'],
+				items: wintertodtCL,
+				roleCategory: ['bosses', 'skilling']
+			},
+			Zalcano: { items: zalcanoCL, roleCategory: ['bosses', 'skilling'] },
+			Zulrah: {
+				alias: Monsters.Zulrah.aliases,
+				allItems: Monsters.Zulrah.allItems,
+				items: zulrahCL,
+				roleCategory: ['bosses']
+			}
 		}
 	},
 	Raids: {
-		"Chamber's of Xeric": {
-			alias: ChambersOfXeric.aliases,
-			kcActivity: {
-				Default: user => user.getMinigameScore('Raids'),
-				Challenge: user => user.getMinigameScore('RaidsChallengeMode')
+		activities: {
+			"Chamber's of Xeric": {
+				alias: ChambersOfXeric.aliases,
+				kcActivity: {
+					Default: user => user.getMinigameScore('Raids'),
+					Challenge: user => user.getMinigameScore('RaidsChallengeMode')
+				},
+				items: chambersOfXericCl,
+				roleCategory: ['raids'],
+				isActivity: true
 			},
-			items: chambersOfXericCl,
-			roleCategory: ['raids'],
-			isActivity: true
-		},
-		'Theatre of Blood': {
-			enabled: false,
-			alias: ['tob'],
-			items: theatreOfBLoodCL,
-			roleCategory: ['raids'],
-			isActivity: true
+			'Theatre of Blood': {
+				enabled: false,
+				alias: ['tob'],
+				items: theatreOfBLoodCL,
+				roleCategory: ['raids'],
+				isActivity: true
+			}
 		}
 	},
 	Clues: {
-		'Beginner Treasure Trails': {
-			alias: ['beginner', 'clues beginner', 'clue beginner'],
-			allItems: Clues.Beginner.allItems,
-			kcActivity: {
-				Default: async user => user.getOpenableScore(23_245)
+		activities: {
+			'Beginner Treasure Trails': {
+				alias: ['beginner', 'clues beginner', 'clue beginner'],
+				allItems: Clues.Beginner.allItems,
+				kcActivity: {
+					Default: async user => user.settings.get(UserSettings.ClueScores)[23_245]
+				},
+				items: cluesBeginnerCL,
+				roleCategory: ['clues'],
+				isActivity: true
 			},
-			items: cluesBeginnerCL,
-			roleCategory: ['clues'],
-			isActivity: true
-		},
-		'Easy Treasure Trails': {
-			alias: ['easy', 'clues easy', 'clue easy'],
-			allItems: Clues.Easy.allItems,
-			kcActivity: {
-				Default: async user => user.getOpenableScore(20_546)
+			'Easy Treasure Trails': {
+				alias: ['easy', 'clues easy', 'clue easy'],
+				allItems: Clues.Easy.allItems,
+				kcActivity: {
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_546]
+				},
+				items: cluesEasyCL,
+				roleCategory: ['clues'],
+				isActivity: true
 			},
-			items: cluesEasyCL,
-			roleCategory: ['clues'],
-			isActivity: true
-		},
-		'Medium Treasure Trails': {
-			alias: ['medium', 'clues medium', 'clue medium'],
-			allItems: Clues.Medium.allItems,
-			kcActivity: {
-				Default: async user => user.getOpenableScore(20_545)
+			'Medium Treasure Trails': {
+				alias: ['medium', 'clues medium', 'clue medium'],
+				allItems: Clues.Medium.allItems,
+				kcActivity: {
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_545]
+				},
+				items: cluesMediumCL,
+				roleCategory: ['clues'],
+				isActivity: true
 			},
-			items: cluesMediumCL,
-			roleCategory: ['clues'],
-			isActivity: true
-		},
-		'Hard Treasure Trails': {
-			alias: ['hard', 'clues hard', 'clue hard'],
-			allItems: Clues.Hard.allItems,
-			kcActivity: {
-				Default: async user => user.getOpenableScore(20_544)
+			'Hard Treasure Trails': {
+				alias: ['hard', 'clues hard', 'clue hard'],
+				allItems: Clues.Hard.allItems,
+				kcActivity: {
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544]
+				},
+				items: cluesHardCL,
+				roleCategory: ['clues'],
+				isActivity: true
 			},
-			items: cluesHardCL,
-			roleCategory: ['clues'],
-			isActivity: true
-		},
-		'Elite Treasure Trails': {
-			alias: ['elite', 'clues elite', 'clue elite'],
-			allItems: Clues.Elite.allItems,
-			kcActivity: {
-				Default: async user => user.getOpenableScore(20_543)
+			'Elite Treasure Trails': {
+				alias: ['elite', 'clues elite', 'clue elite'],
+				allItems: Clues.Elite.allItems,
+				kcActivity: {
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543]
+				},
+				items: cluesEliteCL,
+				roleCategory: ['clues'],
+				isActivity: true
 			},
-			items: cluesEliteCL,
-			roleCategory: ['clues'],
-			isActivity: true
-		},
-		'Master Treasure Trails': {
-			alias: ['master', 'clues master', 'clue master'],
-			allItems: Clues.Master.allItems,
-			kcActivity: {
-				Default: async user => user.getOpenableScore(19_836)
+			'Master Treasure Trails': {
+				alias: ['master', 'clues master', 'clue master'],
+				allItems: Clues.Master.allItems,
+				kcActivity: {
+					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836]
+				},
+				items: cluesMasterCL,
+				roleCategory: ['clues'],
+				isActivity: true
 			},
-			items: cluesMasterCL,
-			roleCategory: ['clues'],
-			isActivity: true
-		},
-		'Hard Treasure Trail Rewards (Rare)': {
-			alias: [
-				'hard rares',
-				'clues hard rares',
-				'clue hard rares',
-				'clue rare hard',
-				'clue rares hard',
-				'clues rares hard',
-				'clues rare hard'
-			],
-			kcActivity: {
-				Default: async user => user.getOpenableScore(20_544)
+			'Hard Treasure Trail Rewards (Rare)': {
+				alias: [
+					'hard rares',
+					'clues hard rares',
+					'clue hard rares',
+					'clue rare hard',
+					'clue rares hard',
+					'clues rares hard',
+					'clues rare hard'
+				],
+				kcActivity: {
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544]
+				},
+				items: cluesHardRareCL,
+				roleCategory: ['clues'],
+				isActivity: true
 			},
-			items: cluesHardRareCL,
-			roleCategory: ['clues'],
-			isActivity: true
-		},
-		'Elite Treasure Trail Rewards (Rare)': {
-			alias: [
-				'elite rares',
-				'clues elite rares',
-				'clue elite rares',
-				'clue rare elite',
-				'clue rares elite',
-				'clues rares elite',
-				'clues rare elite'
-			],
-			kcActivity: {
-				Default: async user => user.getOpenableScore(20_543)
+			'Elite Treasure Trail Rewards (Rare)': {
+				alias: [
+					'elite rares',
+					'clues elite rares',
+					'clue elite rares',
+					'clue rare elite',
+					'clue rares elite',
+					'clues rares elite',
+					'clues rare elite'
+				],
+				kcActivity: {
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543]
+				},
+				items: cluesEliteRareCL,
+				roleCategory: ['clues'],
+				isActivity: true
 			},
-			items: cluesEliteRareCL,
-			roleCategory: ['clues'],
-			isActivity: true
-		},
-		'Master Treasure Trail Rewards (Rare)': {
-			alias: [
-				'master rares',
-				'clues master rares',
-				'clue master rares',
-				'clue rare master',
-				'clue rares master',
-				'clues rares master',
-				'clues rare master'
-			],
-			kcActivity: {
-				Default: async user => user.getOpenableScore(19_836)
+			'Master Treasure Trail Rewards (Rare)': {
+				alias: [
+					'master rares',
+					'clues master rares',
+					'clue master rares',
+					'clue rare master',
+					'clue rares master',
+					'clues rares master',
+					'clues rare master'
+				],
+				kcActivity: {
+					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836]
+				},
+				items: cluesMasterRareCL,
+				roleCategory: ['clues'],
+				isActivity: true
 			},
-			items: cluesMasterRareCL,
-			roleCategory: ['clues'],
-			isActivity: true
-		},
-		'Shared Treasure Trail Rewards': {
-			alias: ['shared', 'clues shared', 'clue shared'],
-			items: cluesSharedCL,
-			roleCategory: ['clues'],
-			isActivity: true
-		},
-		'Rare Treasure Trail Rewards': {
-			alias: ['clues rare', 'rares'],
-			items: [...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL],
-			roleCategory: ['clues'],
-			isActivity: true
+			'Shared Treasure Trail Rewards': {
+				alias: ['shared', 'clues shared', 'clue shared'],
+				items: cluesSharedCL,
+				roleCategory: ['clues'],
+				isActivity: true
+			},
+			'Rare Treasure Trail Rewards': {
+				alias: ['clues rare', 'rares'],
+				items: [...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL],
+				roleCategory: ['clues'],
+				isActivity: true
+			}
 		}
 	},
 	Minigames: {
-		'Barbarian Assault': {
-			alias: ['ba', 'barb assault', 'barbarian assault'],
-			items: barbarianAssaultCL,
-			roleCategory: ['minigames'],
-			isActivity: true
-		},
-		'Brimhaven Agility Arena': {
-			alias: ['aa', 'agility arena'],
-			items: brimhavenAgilityArenaCL,
-			roleCategory: ['minigames', 'skilling'],
-			isActivity: true
-		},
-		'Castle Wars': {
-			alias: ['cw', 'castle wars'],
-			items: castleWarsCL,
-			roleCategory: ['minigames'],
-			isActivity: true
-		},
-		'Fishing Trawler': {
-			alias: ['trawler', 'ft', 'fishing trawler'],
-			allItems: resolveItems([
-				'Broken arrow',
-				'Broken glass',
-				'Broken staff',
-				'Buttons',
-				'Damaged armour',
-				'Old boot',
-				'Oyster',
-				'Pot',
-				'Rusty sword',
-				'Raw shrimps',
-				'Raw sardine',
-				'Raw anchovies',
-				'Raw tuna',
-				'Raw lobster',
-				'Raw swordfish',
-				'Raw shark',
-				'Raw sea turtle',
-				'Raw manta ray'
-			]),
-			items: fishingTrawlerCL,
-			roleCategory: ['minigames'],
-			isActivity: true
-		},
-		'Gnome Restaurant': {
-			alias: ['gnome', 'restaurant'],
-			allItems: resolveItems(['Snake charm', 'Gnomeball']),
-			items: gnomeRestaurantCL,
-			roleCategory: ['minigames'],
-			isActivity: true
-		},
-		'Hallowed Sepulchre': {
-			alias: ['sepulchre', 'hallowed sepulchre'],
-			allItems: sepulchreFloors.map(f => f.coffinTable.allItems).flat(100),
-			items: hallowedSepulchreCL,
-			roleCategory: ['minigames', 'skilling'],
-			isActivity: true
-		},
-		'Last Man Standing': {
-			enabled: false,
-			items: lastManStandingCL,
-			roleCategory: ['minigames'],
-			isActivity: true
-		},
-		'Magic Training Arena': {
-			alias: ['mta'],
-			items: magicTrainingArenaCL,
-			roleCategory: ['minigames'],
-			isActivity: true
-		},
-		'Mahogany Homes': {
-			items: mahoganyHomesCL,
-			roleCategory: ['minigames', 'skilling'],
-			isActivity: true
-		},
-		'Pest Control': {
-			enabled: false,
-			items: pestControlCL,
-			roleCategory: ['minigames'],
-			isActivity: true
-		},
-		"Rogues' Den": {
-			alias: ['rogues den', 'rd'],
-			items: roguesDenCL,
-			roleCategory: ['minigames', 'skilling'],
-			isActivity: true
-		},
-		"Shades of Mort'ton": {
-			enabled: false,
-			items: shadesOfMorttonCL,
-			roleCategory: ['minigames'],
-			isActivity: true
-		},
-		'Soul Wars': {
-			alias: ['soul wars', 'sw'],
-			items: soulWarsCL,
-			roleCategory: ['minigames'],
-			isActivity: true
-		},
-		'Temple Trekking': {
-			allItems: [
-				...HardEncounterLoot.allItems,
-				...EasyEncounterLoot.allItems,
-				...MediumEncounterLoot.allItems,
-				...[rewardTokens.hard, rewardTokens.medium, rewardTokens.easy]
-			],
-			alias: ['temple trekking', 'tt', 'temple', 'trek', 'trekking'],
-			items: templeTrekkingCL,
-			roleCategory: ['minigames', 'skilling'],
-			isActivity: true
-		},
-		'Tithe Farm': {
-			alias: ['tithe'],
-			kcActivity: {
-				Default: async user => user.settings.get(UserSettings.Stats.TitheFarmsCompleted)
+		activities: {
+			'Barbarian Assault': {
+				alias: ['ba', 'barb assault', 'barbarian assault'],
+				items: barbarianAssaultCL,
+				roleCategory: ['minigames'],
+				isActivity: true
 			},
-			items: titheFarmCL,
-			roleCategory: ['minigames'],
-			isActivity: true
-		},
-		'Trouble Brewing': {
-			enabled: false,
-			items: troubleBrewingCL,
-			roleCategory: ['minigames'],
-			isActivity: true
-		},
-		'Volcanic Mine': {
-			enabled: false,
-			items: volcanicMineCL,
-			roleCategory: ['minigames'],
-			isActivity: true
+			'Brimhaven Agility Arena': {
+				alias: ['aa', 'agility arena'],
+				items: brimhavenAgilityArenaCL,
+				roleCategory: ['minigames', 'skilling'],
+				isActivity: true
+			},
+			'Castle Wars': {
+				alias: ['cw', 'castle wars'],
+				items: castleWarsCL,
+				roleCategory: ['minigames'],
+				isActivity: true
+			},
+			'Fishing Trawler': {
+				alias: ['trawler', 'ft', 'fishing trawler'],
+				allItems: resolveItems([
+					'Broken arrow',
+					'Broken glass',
+					'Broken staff',
+					'Buttons',
+					'Damaged armour',
+					'Old boot',
+					'Oyster',
+					'Pot',
+					'Rusty sword',
+					'Raw shrimps',
+					'Raw sardine',
+					'Raw anchovies',
+					'Raw tuna',
+					'Raw lobster',
+					'Raw swordfish',
+					'Raw shark',
+					'Raw sea turtle',
+					'Raw manta ray'
+				]),
+				items: fishingTrawlerCL,
+				roleCategory: ['minigames'],
+				isActivity: true
+			},
+			'Gnome Restaurant': {
+				alias: ['gnome', 'restaurant'],
+				allItems: resolveItems(['Snake charm', 'Gnomeball']),
+				items: gnomeRestaurantCL,
+				roleCategory: ['minigames'],
+				isActivity: true
+			},
+			'Hallowed Sepulchre': {
+				alias: ['sepulchre', 'hallowed sepulchre'],
+				allItems: sepulchreFloors.map(f => f.coffinTable.allItems).flat(100),
+				items: hallowedSepulchreCL,
+				roleCategory: ['minigames', 'skilling'],
+				isActivity: true
+			},
+			'Last Man Standing': {
+				enabled: false,
+				items: lastManStandingCL,
+				roleCategory: ['minigames'],
+				isActivity: true
+			},
+			'Magic Training Arena': {
+				alias: ['mta'],
+				items: magicTrainingArenaCL,
+				roleCategory: ['minigames'],
+				isActivity: true
+			},
+			'Mahogany Homes': {
+				items: mahoganyHomesCL,
+				roleCategory: ['minigames', 'skilling'],
+				isActivity: true
+			},
+			'Pest Control': {
+				enabled: false,
+				items: pestControlCL,
+				roleCategory: ['minigames'],
+				isActivity: true
+			},
+			"Rogues' Den": {
+				alias: ['rogues den', 'rd'],
+				items: roguesDenCL,
+				roleCategory: ['minigames', 'skilling'],
+				isActivity: true
+			},
+			"Shades of Mort'ton": {
+				enabled: false,
+				items: shadesOfMorttonCL,
+				roleCategory: ['minigames'],
+				isActivity: true
+			},
+			'Soul Wars': {
+				alias: ['soul wars', 'sw'],
+				items: soulWarsCL,
+				roleCategory: ['minigames'],
+				isActivity: true
+			},
+			'Temple Trekking': {
+				allItems: [
+					...HardEncounterLoot.allItems,
+					...EasyEncounterLoot.allItems,
+					...MediumEncounterLoot.allItems,
+					...[rewardTokens.hard, rewardTokens.medium, rewardTokens.easy]
+				],
+				alias: ['temple trekking', 'tt', 'temple', 'trek', 'trekking'],
+				items: templeTrekkingCL,
+				roleCategory: ['minigames', 'skilling'],
+				isActivity: true
+			},
+			'Tithe Farm': {
+				alias: ['tithe'],
+				kcActivity: {
+					Default: async user => user.settings.get(UserSettings.Stats.TitheFarmsCompleted)
+				},
+				items: titheFarmCL,
+				roleCategory: ['minigames'],
+				isActivity: true
+			},
+			'Trouble Brewing': {
+				enabled: false,
+				items: troubleBrewingCL,
+				roleCategory: ['minigames'],
+				isActivity: true
+			},
+			'Volcanic Mine': {
+				enabled: false,
+				items: volcanicMineCL,
+				roleCategory: ['minigames'],
+				isActivity: true
+			}
 		}
 	},
 	Other: {
-		'Aerial Fishing': {
-			alias: ['af', 'aerial fishing'],
-			items: aerialFishingCL,
-			roleCategory: ['skilling']
-		},
-		'All Pets': {
-			alias: ['pet', 'pets'],
-			items: allPetsCL,
-			roleCategory: ['pets']
-		},
-		Camdozaal: {
-			enabled: false,
-			items: camdozaalCL
-		},
-		"Champion's Challenge": {
-			alias: ['champion', 'champion scrolls', 'champion scroll', 'scroll', 'scrolls'],
-			items: championsChallengeCL,
-			isActivity: true
-		},
-		'Chaos Druids': {
-			allItems: Monsters.ChaosDruid.allItems,
-			kcActivity: Monsters.ChaosDruid.name,
-			items: chaosDruisCL
-		},
-		'Chompy Birds': {
-			alias: ['chompy', 'bgc', 'big chompy hunting'],
-			kcActivity: 'BigChompyBirdHunting',
-			items: chompyBirdsCL
-		},
-		'Creature Creation': {
-			enabled: false,
-			items: creatureCreationCL
-		},
-		Cyclopes: {
-			alias: ['cyclops', 'wg', 'warriors guild', 'warrior guild'],
-			kcActivity: Monsters.Cyclops.name,
-			allItems: Monsters.Cyclops.allItems,
-			items: cyclopsCL
-		},
-		'Fossil Island Notes': {
-			enabled: false,
-			items: fossilIslandNotesCL
-		},
-		"Glough's Experiments": {
-			alias: Monsters.DemonicGorilla.aliases,
-			allItems: Monsters.DemonicGorilla.allItems,
-			kcActivity: Monsters.DemonicGorilla.name,
-			items: demonicGorillaCL
-		},
-		'Monkey Backpacks': {
-			alias: ['monkey', 'monkey bps', 'backpacks'],
-			kcActivity: {
-				Default: async user => user.settings.get(UserSettings.LapsScores)[6]
+		activities: {
+			'Aerial Fishing': {
+				alias: ['af', 'aerial fishing'],
+				items: aerialFishingCL,
+				roleCategory: ['skilling']
 			},
-			items: monkeyBackpacksCL,
-			roleCategory: ['skilling'],
-			isActivity: true
-		},
-		'Motherlode Mine': {
-			enabled: false,
-			items: motherlodeMineCL
-		},
-		'Random Events': {
-			alias: ['random'],
-			items: randomEventsCL
-		},
-		Revenants: {
-			enabled: false,
-			items: revenantsCL
-		},
-		'Rooftop Agility': {
-			alias: ['rooftop', 'laps', 'agility', 'agil'],
-			items: rooftopAgilityCL,
-			roleCategory: ['skilling'],
-			isActivity: true
-		},
-		'Shayzien Armour': {
-			enabled: false,
-			items: shayzienArmourCL
-		},
-		'Shooting Stars': { enabled: false, items: resolveItems(['Celestial ring (uncharged)', 'Star fragment']) },
-		'Skilling Pets': {
-			alias: ['skill pets'],
-			items: skillingPetsCL
-		},
-		Slayer: {
-			alias: ['slay'],
-			items: slayerCL,
-			roleCategory: ['slayer']
-		},
-		TzHaar: {
-			kcActivity: Monsters.TzHaarKet.name,
-			allItems: Monsters.TzHaarKet.allItems,
-			items: tzHaarCL
-		},
-		Skilling: {
-			items: resolveItems([
-				'Prospector helmet',
-				'Prospector jacket',
-				'Prospector legs',
-				'Prospector boots',
-				'Mining gloves',
-				'Superior mining gloves',
-				'Expert mining gloves',
-				'Golden nugget',
-				'Unidentified minerals',
-				'Big swordfish',
-				'Big shark',
-				'Big bass',
-				'Tangleroot',
-				'Bottomless compost bucket',
-				"Farmer's strawhat",
-				"Farmer's jacket",
-				"Farmer's shirt",
-				"Farmer's boro trousers",
-				"Farmer's boots",
-				"Pharaoh's sceptre (3)",
-				'Baby chinchompa',
-				'Kyatt hat',
-				'Kyatt top',
-				'Kyatt legs',
-				'Spotted cape',
-				'Spottier cape',
-				'Gloves of silence',
-				'Small pouch',
-				'Medium pouch',
-				'Large pouch',
-				'Giant pouch',
-				'Crystal pickaxe',
-				'Crystal axe',
-				'Crystal harpoon',
-				'Rift guardian',
-				'Rock golem',
-				'Heron',
-				'Rocky',
-				'Herbi',
-				'Beaver'
-			]),
-			roleCategory: ['skilling']
-		},
-		Miscellaneous: {
-			alias: ['misc'],
-			items: miscellaneousCL
+			'All Pets': {
+				alias: ['pet', 'pets'],
+				items: allPetsCL,
+				roleCategory: ['pets']
+			},
+			Camdozaal: {
+				enabled: false,
+				items: camdozaalCL
+			},
+			"Champion's Challenge": {
+				alias: ['champion', 'champion scrolls', 'champion scroll', 'scroll', 'scrolls'],
+				items: championsChallengeCL,
+				isActivity: true
+			},
+			'Chaos Druids': {
+				allItems: Monsters.ChaosDruid.allItems,
+				kcActivity: Monsters.ChaosDruid.name,
+				items: chaosDruisCL
+			},
+			'Chompy Birds': {
+				alias: ['chompy', 'bgc', 'big chompy hunting'],
+				kcActivity: 'BigChompyBirdHunting',
+				items: chompyBirdsCL
+			},
+			'Creature Creation': {
+				enabled: false,
+				items: creatureCreationCL
+			},
+			Cyclopes: {
+				alias: ['cyclops', 'wg', 'warriors guild', 'warrior guild'],
+				kcActivity: Monsters.Cyclops.name,
+				allItems: Monsters.Cyclops.allItems,
+				items: cyclopsCL
+			},
+			'Fossil Island Notes': {
+				enabled: false,
+				items: fossilIslandNotesCL
+			},
+			"Glough's Experiments": {
+				alias: Monsters.DemonicGorilla.aliases,
+				allItems: Monsters.DemonicGorilla.allItems,
+				kcActivity: Monsters.DemonicGorilla.name,
+				items: demonicGorillaCL
+			},
+			'Monkey Backpacks': {
+				alias: ['monkey', 'monkey bps', 'backpacks'],
+				kcActivity: {
+					Default: async user => user.settings.get(UserSettings.LapsScores)[6]
+				},
+				items: monkeyBackpacksCL,
+				roleCategory: ['skilling'],
+				isActivity: true
+			},
+			'Motherlode Mine': {
+				alias: ['mlm'],
+				items: motherlodeMineCL,
+				roleCategory: ['skilling']
+			},
+			'Random Events': {
+				alias: ['random'],
+				items: randomEventsCL
+			},
+			Revenants: {
+				enabled: false,
+				items: revenantsCL
+			},
+			'Rooftop Agility': {
+				alias: ['rooftop', 'laps', 'agility', 'agil'],
+				items: rooftopAgilityCL,
+				roleCategory: ['skilling'],
+				isActivity: true
+			},
+			'Shayzien Armour': {
+				enabled: false,
+				items: shayzienArmourCL
+			},
+			'Shooting Stars': { enabled: false, items: resolveItems(['Celestial ring (uncharged)', 'Star fragment']) },
+			'Skilling Pets': {
+				alias: ['skill pets'],
+				items: skillingPetsCL
+			},
+			Slayer: {
+				alias: ['slay'],
+				items: slayerCL,
+				roleCategory: ['slayer']
+			},
+			TzHaar: {
+				kcActivity: Monsters.TzHaarKet.name,
+				allItems: Monsters.TzHaarKet.allItems,
+				items: tzHaarCL
+			},
+			Skilling: {
+				items: resolveItems([
+					'Prospector helmet',
+					'Prospector jacket',
+					'Prospector legs',
+					'Prospector boots',
+					'Mining gloves',
+					'Superior mining gloves',
+					'Expert mining gloves',
+					'Golden nugget',
+					'Unidentified minerals',
+					'Big swordfish',
+					'Big shark',
+					'Big bass',
+					'Tangleroot',
+					'Bottomless compost bucket',
+					"Farmer's strawhat",
+					"Farmer's jacket",
+					"Farmer's shirt",
+					"Farmer's boro trousers",
+					"Farmer's boots",
+					"Pharaoh's sceptre (3)",
+					'Baby chinchompa',
+					'Kyatt hat',
+					'Kyatt top',
+					'Kyatt legs',
+					'Spotted cape',
+					'Spottier cape',
+					'Gloves of silence',
+					'Small pouch',
+					'Medium pouch',
+					'Large pouch',
+					'Giant pouch',
+					'Crystal pickaxe',
+					'Crystal axe',
+					'Crystal harpoon',
+					'Rift guardian',
+					'Rock golem',
+					'Heron',
+					'Rocky',
+					'Herbi',
+					'Beaver'
+				]),
+				roleCategory: ['skilling']
+			},
+			Miscellaneous: {
+				alias: ['misc'],
+				items: miscellaneousCL
+			}
 		}
 	},
 	Custom: {
-		Holiday: {
-			counts: false,
-			items: holidayCL
-		},
-		Daily: {
-			counts: false,
-			alias: ['diango'],
-			items: dailyCL
-		},
-		Capes: {
-			counts: false,
-			items: capesCL
-		},
-		Quest: {
-			counts: false,
-			items: questCL
-		},
-		Farming: {
-			counts: false,
-			items: allFarmingItems
+		activities: {
+			Holiday: {
+				counts: false,
+				items: holidayCL
+			},
+			Daily: {
+				counts: false,
+				alias: ['diango'],
+				items: dailyCL
+			},
+			Capes: {
+				counts: false,
+				items: capesCL
+			},
+			Quest: {
+				counts: false,
+				items: questCL
+			},
+			Farming: {
+				counts: false,
+				items: allFarmingItems
+			}
 		}
 	}
 };
-
 // Get all items, from all monsters and all CLs into a variable, for uses like mostdrops
 export const allDroppedItems = [
 	...new Set([
 		...Object.entries(allCollectionLogs)
 			.map(e =>
-				Object.entries(e[1])
+				Object.entries(e[1].activities)
 					.filter(f => f[1].enabled === undefined && f[1].hidden === undefined && f[1].counts === undefined)
 					.map(a => [...new Set([...a[1].items, ...(a[1].allItems !== undefined ? a[1].allItems : [])])])
 			)
@@ -839,7 +852,7 @@ export const allCLItems = [
 	...new Set(
 		Object.entries(allCollectionLogs)
 			.map(e =>
-				Object.entries(e[1])
+				Object.entries(e[1].activities)
 					.filter(f => f[1].enabled === undefined && f[1].hidden === undefined && f[1].counts === undefined)
 					.map(a => a[1].items)
 			)
@@ -865,9 +878,9 @@ export function getItemsRole(role: TRoleCategories) {
 		...new Set(
 			Object.values(allCollectionLogs)
 				.map(c =>
-					Object.values(c)
+					Object.values(c.activities)
 						.map(a => {
-							if (a.hidden === undefined || a.enabled === undefined)
+							if (a.hidden === undefined && a.enabled === undefined && a.counts === undefined)
 								return a.roleCategory?.includes(role) ? a.items : undefined;
 						})
 						.filter(f => f !== undefined)
@@ -886,12 +899,17 @@ export function converCLtoBank(items: number[]) {
 }
 
 // Get the left list to be added to the cls
-function getLeftList(userBank: Bank, checkCategory: string, allItems: boolean = false): ILeftListStatus {
+function getLeftList(
+	userBank: Bank,
+	checkCategory: string,
+	allItems: boolean = false,
+	removeCoins = false
+): ILeftListStatus {
 	let leftList: ILeftListStatus = {};
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (category === checkCategory) {
 			// Sort list by alphabetical order
-			const catEntries = Object.entries(entries).sort((a, b) => 0 - (a > b ? -1 : 1));
+			const catEntries = Object.entries(entries.activities).sort((a, b) => 0 - (a > b ? -1 : 1));
 			for (const [activityName, attributes] of catEntries) {
 				if (attributes.enabled === false || attributes.hidden === true) continue;
 				let items: number[] = [];
@@ -900,6 +918,7 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems: boolean = 
 				} else {
 					items = [...new Set(attributes.items)];
 				}
+				if (removeCoins && items.includes(995)) items.splice(items.indexOf(995), 1);
 				const [totalCl, userAmount] = getUserClData(userBank.bank, items);
 				leftList[activityName] =
 					userAmount === 0 ? 'not_started' : userAmount === totalCl ? 'completed' : 'started';
@@ -927,6 +946,7 @@ export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collectio
 
 // Get the total items the user has in its CL and the total items to collect
 export function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection') {
+	if (logType === 'sacrifice' && allCLItems.includes(995)) allCLItems.splice(allCLItems.indexOf(995), 1);
 	return getUserClData(getBank(user, logType).bank, allCLItems);
 }
 
@@ -937,8 +957,8 @@ export function getPossibleOptions() {
 
 	// Get categories and enabled activities
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
-		categories.push(['General', category, '']);
-		for (const [activityName, attributes] of Object.entries(entries)) {
+		categories.push(['General', category, entries.alias ? entries.alias.join(', ') : '']);
+		for (const [activityName, attributes] of Object.entries(entries.activities)) {
 			if (attributes.enabled === false || attributes.hidden === true) continue;
 			categories.push(['Activity', activityName, attributes.alias ? attributes.alias.join(', ') : '']);
 		}
@@ -955,13 +975,16 @@ export function getPossibleOptions() {
 	return new MessageAttachment(Buffer.from(normalTable), 'possible_logs.txt');
 }
 
-export function getCollectionItems(collection: string, allItems = false): number[] {
+export function getCollectionItems(collection: string, allItems = false, removeCoins = false): number[] {
 	let _items: number[] = [];
 	loop: for (const [category, entries] of Object.entries(allCollectionLogs)) {
-		if (stringMatches(category, collection)) {
+		if (
+			stringMatches(category, collection) ||
+			(entries.alias && entries.alias.some(a => stringMatches(a, collection)))
+		) {
 			_items = [
 				...new Set(
-					Object.entries(entries)
+					Object.entries(entries.activities)
 						.filter(e => e[1].enabled === undefined && e[1].hidden === undefined)
 						.map(e => [...new Set([...e[1].items, ...(allItems && e[1].allItems ? e[1].allItems : [])])])
 						.flat(2)
@@ -969,7 +992,7 @@ export function getCollectionItems(collection: string, allItems = false): number
 			];
 			break;
 		}
-		for (const [activityName, attributes] of Object.entries(entries)) {
+		for (const [activityName, attributes] of Object.entries(entries.activities)) {
 			if (
 				attributes.enabled === undefined &&
 				(stringMatches(activityName, collection) ||
@@ -993,6 +1016,7 @@ export function getCollectionItems(collection: string, allItems = false): number
 			_items = Array.from(new Set(Object.values(Monsters.get(_monster!.id)!.allItems!).flat(100))) as number[];
 		}
 	}
+	if (removeCoins && _items.includes(995)) _items.splice(_items.indexOf(995), 1);
 	return _items;
 }
 
@@ -1016,7 +1040,7 @@ export async function getCollection(options: {
 	if (logType === undefined) logType = 'collection';
 
 	const userCheckBank = getBank(user, logType);
-	let clItems = getCollectionItems(search, allItems);
+	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 
 	if (Boolean(flags.missing)) {
 		clItems = clItems.filter(i => !userCheckBank.has(i));
@@ -1025,25 +1049,22 @@ export async function getCollection(options: {
 	const [totalCl, userAmount] = getUserClData(userCheckBank.bank, clItems);
 
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
-		if (stringMatches(category, search)) {
+		if (stringMatches(category, search) || (entries.alias && entries.alias.some(a => stringMatches(a, search)))) {
 			return {
 				category,
 				name: category,
 				collection: clItems,
 				collectionObtained: userAmount,
 				collectionTotal: totalCl,
-				leftList: getLeftList(userCheckBank, category, allItems),
+				leftList: getLeftList(userCheckBank, category, allItems, logType === 'sacrifice'),
 				userItems: userCheckBank
 			};
 		}
-		for (const [activityName, attributes] of Object.entries(entries)) {
+		for (const [activityName, attributes] of Object.entries(entries.activities)) {
 			if (
 				attributes.enabled !== false &&
 				(stringMatches(activityName, search) ||
-					stringMatches(activityName, search.substr(0, search.length - 1)) ||
-					(attributes.alias && attributes.alias.find(a => stringMatches(a, search))) ||
-					(attributes.alias &&
-						attributes.alias.find(a => stringMatches(a, search.substr(0, search.length - 1)))))
+					(attributes.alias && attributes.alias.find(a => stringMatches(a, search))))
 			) {
 				let userKC: Record<string, number> | undefined = { Default: 0 };
 
@@ -1078,7 +1099,12 @@ export async function getCollection(options: {
 					isActivity: attributes.isActivity,
 					collectionObtained: userAmount,
 					collectionTotal: totalCl,
-					leftList: getLeftList(userCheckBank, category, allItems && attributes.allItems !== undefined),
+					leftList: getLeftList(
+						userCheckBank,
+						category,
+						allItems && attributes.allItems !== undefined,
+						logType === 'sacrifice'
+					),
 					userItems: userCheckBank
 				};
 			}

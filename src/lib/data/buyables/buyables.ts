@@ -13,6 +13,7 @@ import { capeBuyables } from './capes';
 import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
+import { miningBuyables } from './mining';
 import { slayerBuyables } from './slayerBuyables';
 
 export interface Buyable {
@@ -676,7 +677,8 @@ const Buyables: Buyable[] = [
 	...castleWarsBuyables,
 	...cmCapes,
 	...slayerBuyables,
-	...capeBuyables
+	...capeBuyables,
+	...miningBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
