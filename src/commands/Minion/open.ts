@@ -4,7 +4,7 @@ import { Bank, Misc, Openables } from 'oldschooljs';
 import Openable from 'oldschooljs/dist/structures/Openable';
 
 import { COINS_ID, Events, MIMIC_MONSTER_ID } from '../../lib/constants';
-import { cluesRares } from '../../lib/data/collectionLog';
+import { cluesRaresCL } from '../../lib/data/CollectionsExport';
 import botOpenables from '../../lib/data/openables';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
@@ -15,8 +15,7 @@ import { addBanks, roll, stringMatches, updateGPTrackSetting } from '../../lib/u
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 
-const itemsToNotifyOf = Object.values(cluesRares)
-	.flat(Infinity)
+const itemsToNotifyOf = cluesRaresCL
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
 	.concat([itemID('Bloodhound')]);
 
