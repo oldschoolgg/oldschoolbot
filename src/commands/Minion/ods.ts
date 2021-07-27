@@ -2,7 +2,7 @@ import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { getMinigameEntity } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -90,9 +90,15 @@ export default class ODSCommand extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async start(msg: KlasaMessage) {
-		// const boosts = ['asdf'];
+		const boosts = [];
 
 		let waveTime = randomVariation(Time.Minute * 4, 10);
+
+		if (msg.author.hasItemEquippedAnywhere('Runecraft master cape')) {
+			waveTime /= 2;
+			boosts.push(`${Emoji.RunecraftMasterCape} 2x faster`);
+		}
+
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.OuraniaDeliveryService) / waveTime);
 		const duration = quantity * waveTime;
 		const essenceRequired = quantity * randInt(235, 265);
@@ -110,9 +116,10 @@ export default class ODSCommand extends BotCommand {
 			duration
 		)}. Removed ${cost} from your bank.`;
 
-		// if (boosts.length > 0) {
-		// 	str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
-		// }
+		if (boosts.length > 0) {
+			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		}
+
 		await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
