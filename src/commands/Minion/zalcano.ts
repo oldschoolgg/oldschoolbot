@@ -1,7 +1,7 @@
-import { calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
+import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time, ZALCANO_ID } from '../../lib/constants';
+import { Activity, ZALCANO_ID } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -15,9 +15,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 const skillRequirements: Skills = {
 	mining: 70,
 	smithing: 70,
-	cooking: 70,
 	farming: 70,
-	fishing: 70,
 	woodcutting: 70,
 	agility: 70,
 	herblore: 70,

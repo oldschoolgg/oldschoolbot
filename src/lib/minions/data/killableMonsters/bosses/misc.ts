@@ -1,8 +1,8 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { Time } from '../../../../constants';
-import { bosses } from '../../../../data/collectionLog';
-import { GearSetupTypes, GearStat } from '../../../../gear/types';
+import { corporealBeastCL } from '../../../../data/CollectionsExport';
+import { GearSetupTypes, GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
@@ -166,7 +166,16 @@ const killableBosses: KillableMonster[] = [
 		},
 		defaultAttackStyles: [SkillsEnum.Strength],
 		customMonsterHP: 510,
-		combatXpMultiplier: 1.05
+		combatXpMultiplier: 1.05,
+		healAmountNeeded: 20 * 3,
+		minimumGearRequirements: {
+			[GearSetupTypes.Melee]: {
+				[GearStat.MeleeStrength]: 10
+			}
+		},
+		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
+		attackStylesUsed: [GearStat.AttackMagic],
+		attackStyleToUse: GearStat.AttackCrush
 	},
 	{
 		id: Monsters.CorporealBeast.id,
@@ -193,7 +202,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: bosses['Corp Beast'],
+		uniques: corporealBeastCL,
 		pohBoosts: {
 			pool: {
 				'Rejuvenation pool': 50,

@@ -8,6 +8,31 @@ export interface Eatable {
 
 export const Eatables: Eatable[] = [
 	{
+		name: 'Shrimps',
+		id: itemID('Shrimps'),
+		healAmount: 1
+	},
+	{
+		name: 'Anchovies',
+		id: itemID('Anchovies'),
+		healAmount: 1
+	},
+	{
+		name: 'Sardine',
+		id: itemID('Sardine'),
+		healAmount: 4
+	},
+	{
+		name: 'Herring',
+		id: itemID('Herring'),
+		healAmount: 5
+	},
+	{
+		name: 'Mackerel',
+		id: itemID('Mackerel'),
+		healAmount: 6
+	},
+	{
 		name: 'Trout',
 		id: itemID('Trout'),
 		healAmount: 7
@@ -146,6 +171,16 @@ export const Eatables: Eatable[] = [
 		name: 'Tuna potato',
 		id: itemID('Tuna potato'),
 		healAmount: 22
+	},
+	{
+		name: 'Chilli potato',
+		id: itemID('Chilli potato'),
+		healAmount: 14
+	},
+	{
+		name: 'Egg potato',
+		id: itemID('Egg potato'),
+		healAmount: 16
 	},
 	{
 		name: 'Dark crab',

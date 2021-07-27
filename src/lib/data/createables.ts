@@ -3,8 +3,9 @@ import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
 import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
-import { metamorphPets } from './collectionLog';
+import { chambersOfXericMetamorphPets } from './CollectionsExport';
 import { capeCreatables } from './creatables/capes';
+import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
 
@@ -21,7 +22,7 @@ export interface Createable {
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 }
 
-const metamorphPetCreatables: Createable[] = metamorphPets.map(pet => ({
+const metamorphPetCreatables: Createable[] = chambersOfXericMetamorphPets.map(pet => ({
 	name: itemNameFromID(pet)!,
 	inputItems: {
 		[itemID('Metamorphic dust')]: 1
@@ -280,30 +281,6 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: 'Dragonfire shield',
-		inputItems: {
-			[itemID('Draconic visage')]: 1,
-			[itemID('Anti-dragon shield')]: 1
-		},
-		outputItems: {
-			// Uncharged dragonfire shield
-			11284: 1
-		},
-		requiredSkills: { smithing: 90 }
-	},
-	{
-		name: 'Dragonfire ward',
-		inputItems: {
-			[itemID('Skeletal visage')]: 1,
-			[itemID('Anti-dragon shield')]: 1
-		},
-		outputItems: {
-			// Uncharged Dragonfire ward
-			22003: 1
-		},
-		requiredSkills: { smithing: 90 }
-	},
-	{
 		name: 'Infernal pickaxe',
 		inputItems: {
 			[itemID('Dragon pickaxe')]: 1,
@@ -498,83 +475,6 @@ const Createables: Createable[] = [
 		},
 		noCl: true
 	},
-	/**
-	 * Prospector outfit
-	 */
-	{
-		name: 'Prospector helmet',
-		outputItems: {
-			[itemID('Prospector helmet')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 40
-		}
-	},
-	{
-		name: 'Prospector jacket',
-		outputItems: {
-			[itemID('Prospector jacket')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 60
-		}
-	},
-	{
-		name: 'Prospector legs',
-		outputItems: {
-			[itemID('Prospector legs')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 50
-		}
-	},
-	{
-		name: 'Prospector boots',
-		outputItems: {
-			[itemID('Prospector boots')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 30
-		}
-	},
-	{
-		name: 'Coal bag',
-		outputItems: {
-			[itemID('Coal bag')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 100
-		}
-	},
-	{
-		name: 'Mining gloves',
-		outputItems: {
-			[itemID('Mining gloves')]: 1
-		},
-		inputItems: {
-			[itemID('Unidentified minerals')]: 60
-		}
-	},
-	{
-		name: 'Superior mining gloves',
-		outputItems: {
-			[itemID('Superior mining gloves')]: 1
-		},
-		inputItems: {
-			[itemID('Unidentified minerals')]: 120
-		}
-	},
-	{
-		name: 'Expert mining gloves',
-		outputItems: {
-			[itemID('Expert mining gloves')]: 1
-		},
-		inputItems: {
-			[itemID('Superior mining gloves')]: 1,
-			[itemID('Mining gloves')]: 1,
-			[itemID('Unidentified minerals')]: 60
-		}
-	},
 	{
 		name: 'Master clue',
 		inputItems: {
@@ -600,6 +500,17 @@ const Createables: Createable[] = [
 			[itemID('Infernal axe')]: 1
 		},
 		requiredSkills: { firemaking: 85 }
+	},
+	{
+		name: 'Infernal harpoon',
+		inputItems: {
+			[itemID('Dragon harpoon')]: 1,
+			[itemID('Smouldering stone')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal harpoon')]: 1
+		},
+		requiredSkills: { cooking: 85, fishing: 75 }
 	},
 	{
 		name: 'Graceful',
@@ -1541,6 +1452,15 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Revert saradomin castlewars cloak',
+		inputItems: {
+			[itemID('Saradomin castlewars cloak')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 10
+		}
+	},
+	{
 		name: 'Revert saradomin banner',
 		inputItems: {
 			[itemID('Saradomin banner')]: 1
@@ -1640,13 +1560,67 @@ const Createables: Createable[] = [
 			[itemID('Castle wars ticket')]: 75
 		}
 	},
+	{
+		name: 'Spirit angler headband',
+		inputItems: {
+			[itemID('Angler hat')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler headband')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler top',
+		inputItems: {
+			[itemID('Angler top')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler top')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler waders',
+		inputItems: {
+			[itemID('Angler waders')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler waders')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler boots',
+		inputItems: {
+			[itemID('Angler boots')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler boots')]: 1
+		}
+	},
+	{
+		name: 'Bottled dragonbreath',
+		inputItems: resolveNameBank({
+			Dragonfruit: 10,
+			Vial: 1
+		}),
+		outputItems: {
+			[itemID('Bottled dragonbreath')]: 1
+		},
+		requiredSkills: {
+			slayer: 62
+		}
+	},
 	...crystalTools,
 	...ornamentKits,
 	...hunterClothing,
 	...twistedAncestral,
 	...metamorphPetCreatables,
 	...slayerCreatables,
-	...capeCreatables
+	...capeCreatables,
+	...dragonFireShieldCreatables
 ];
 
 export default Createables;

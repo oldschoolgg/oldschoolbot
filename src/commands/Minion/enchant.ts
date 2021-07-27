@@ -1,8 +1,9 @@
 import { MessageAttachment } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { table } from 'table';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';

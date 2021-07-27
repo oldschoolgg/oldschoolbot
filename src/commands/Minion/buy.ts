@@ -5,7 +5,6 @@ import { toKMB } from 'oldschooljs/dist/util/util';
 import { table } from 'table';
 
 import { Minigames } from '../../extendables/User/Minigame';
-import { Time } from '../../lib/constants';
 import Buyables from '../../lib/data/buyables/buyables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -113,7 +112,7 @@ export default class extends BotCommand {
 		const itemString = new Bank(outItems).toString();
 
 		// Start building a string to show to the user.
-		let str = `${msg.author}, say \`confirm\` to confirm that you want to buy **${itemString}** for: `;
+		let str = `${msg.author}, please confirm that you want to buy **${itemString}** for: `;
 
 		// If theres an item cost or GP cost, add it to the string to show users the cost.
 		if (buyable.itemCost) {
@@ -125,20 +124,7 @@ export default class extends BotCommand {
 			str += `${totalGPCost.toLocaleString()} GP.`;
 		}
 
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const sellMsg = await msg.channel.send(str);
-
-			try {
-				await msg.channel.awaitMessages({
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm',
-					max: 1,
-					time: Time.Second * 15,
-					errors: ['time']
-				});
-			} catch (err) {
-				return sellMsg.edit('Cancelling purchase.');
-			}
-		}
+		await msg.confirm(str);
 
 		const econBankChanges = new Bank();
 

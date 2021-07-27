@@ -10,7 +10,7 @@ import { noOp, sleep } from '../../lib/util';
 
 const options = {
 	max: 1,
-	time: 15000,
+	time: 15_000,
 	errors: ['time']
 };
 

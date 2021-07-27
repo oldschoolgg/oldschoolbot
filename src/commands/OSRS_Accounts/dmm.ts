@@ -19,7 +19,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [username]: [string]) {
 		try {
 			const player = await Hiscores.fetch(username, { type: AccountType.Deadman });
-			return msg.channel.send({ embeds: [this.getStatsEmbed(username, 11995146, player)] });
+			return msg.channel.send({ embeds: [this.getStatsEmbed(username, 11_995_146, player)] });
 		} catch (err) {
 			return msg.channel.send(err.message);
 		}

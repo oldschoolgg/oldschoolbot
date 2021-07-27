@@ -1,14 +1,24 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import reducedClueTime from '../../lib/minions/functions/reducedClueTime';
+import { ClueTier } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+
+function reducedClueTime(clueTier: ClueTier, score: number) {
+	// Every 3 hours become 1% better to a cap of 10%
+	const percentReduced = Math.min(Math.floor(score / ((Time.Hour * 3) / clueTier.timeToFinish)), 10);
+	const amountReduced = (clueTier.timeToFinish * percentReduced) / 100;
+	const reducedTime = clueTier.timeToFinish - amountReduced;
+
+	return [reducedTime, percentReduced];
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

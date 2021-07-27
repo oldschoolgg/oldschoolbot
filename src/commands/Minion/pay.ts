@@ -1,7 +1,8 @@
 import { TextChannel } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { Channel, Events, Time } from '../../lib/constants';
+import { Channel, Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 

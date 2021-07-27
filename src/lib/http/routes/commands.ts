@@ -1,5 +1,6 @@
+import { Time } from 'e';
+
 import { client } from '../../..';
-import { Time } from '../../constants';
 import { BotCommand } from '../../structures/BotCommand';
 import { FastifyServer } from '../types';
 

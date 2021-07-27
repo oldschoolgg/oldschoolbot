@@ -1,7 +1,8 @@
 import { MessageAttachment } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -52,6 +53,8 @@ export default class extends BotCommand {
 			craftName = quantity;
 			quantity = null;
 		}
+
+		if (craftName.toLowerCase().includes('zenyte') && quantity === null) quantity = 1;
 
 		const craftable = Crafting.Craftables.find(item => stringMatches(item.name, craftName));
 

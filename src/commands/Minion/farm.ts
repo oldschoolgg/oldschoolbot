@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
@@ -29,7 +30,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[quantity:int{1}|name:...string] [plantName:...string]',
+			usage: '[quantity:int{1}|name:...string] [plantName:...string] [autoFarmed:boolean]',
 			aliases: ['plant'],
 			usageDelim: ' ',
 			description: 'Allows a player to plant or harvest and replant seeds for farming.',
@@ -40,9 +41,14 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage, [quantity, plantName = '']: [null | number | string, string]) {
+	async run(msg: KlasaMessage, [quantity, plantName = '', autoFarmed]: [null | number | string, string, boolean]) {
 		if (msg.flagArgs.plants) {
 			return returnListOfPlants(msg);
+		}
+
+		if (msg.flagArgs.enablereminders) {
+			await msg.author.settings.update(UserSettings.FarmingPatchReminders, true);
+			return msg.channel.send('Enabled farming patch reminders.');
 		}
 
 		await msg.author.settings.sync(true);
@@ -58,6 +64,9 @@ export default class extends BotCommand {
 		const boostStr: string[] = [];
 
 		if (typeof quantity === 'string') {
+			if (typeof plantName === 'boolean') {
+				autoFarmed = plantName;
+			}
 			plantName = quantity;
 			quantity = null;
 		}
@@ -318,7 +327,8 @@ export default class extends BotCommand {
 			planting: true,
 			duration,
 			currentDate,
-			type: Activity.Farming
+			type: Activity.Farming,
+			autoFarmed
 		});
 
 		return msg.channel.send(

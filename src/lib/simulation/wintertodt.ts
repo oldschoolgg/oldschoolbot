@@ -200,8 +200,8 @@ export class WintertodtCrateClass {
 	public rollUnique(itemsOwned: ItemBank): number | undefined {
 		// https://oldschool.runescape.wiki/w/Supply_crate#Reward_rolls
 		if (roll(10_000)) return itemID('Dragon axe');
-		if (roll(5_000)) return itemID('Phoenix');
-		if (roll(1_000)) return itemID('Tome of fire');
+		if (roll(5000)) return itemID('Phoenix');
+		if (roll(1000)) return itemID('Tome of fire');
 		if (roll(150)) {
 			const glovesOwned = itemsOwned[itemID('Warm gloves')];
 

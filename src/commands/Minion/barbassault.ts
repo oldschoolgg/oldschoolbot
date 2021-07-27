@@ -1,9 +1,9 @@
-import { increaseNumByPercent, randArrItem } from 'e';
+import { increaseNumByPercent, randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
-import { Activity, Emoji, Events, Time } from '../../lib/constants';
+import { Activity, Emoji, Events } from '../../lib/constants';
 import { maxOtherStats } from '../../lib/gear';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';

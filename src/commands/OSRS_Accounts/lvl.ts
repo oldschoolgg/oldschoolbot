@@ -37,7 +37,7 @@ export default class extends BotCommand {
 			if (res.level < 99) {
 				str += ` **${xpLeft(res.xp)}** XP away from level **${res.level + 1}**.`;
 			} else {
-				str += ` **${(200000000 - res.xp).toLocaleString()}** XP away from **200m**.`;
+				str += ` **${(200_000_000 - res.xp).toLocaleString()}** XP away from **200m**.`;
 			}
 
 			return msg.channel.send(str);

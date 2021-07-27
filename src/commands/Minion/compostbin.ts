@@ -1,13 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { Time } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addItemToBank, bankHasItem, removeItemFromBank, stringMatches } from '../../lib/util';
 
-const SuperCompostables = [
+export const SuperCompostables = [
 	'Pineapple',
 	'Watermelon',
 	'Coconut',
@@ -86,22 +85,9 @@ export default class extends BotCommand {
 			return msg.channel.send(`You have no ${superCompostableCrop} to compost!`);
 		}
 
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const sellMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to confirm that you want to compost ${quantity}x ${cropToCompost} into supercompost.`
-			);
-
-			try {
-				await msg.channel.awaitMessages({
-					max: 1,
-					time: Time.Second * 15,
-					errors: ['time'],
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-				});
-			} catch (err) {
-				return sellMsg.edit('Cancelling the compost process.');
-			}
-		}
+		await msg.confirm(
+			`${msg.author}, please confirm that you want to compost ${quantity}x ${cropToCompost} into supercompost.`
+		);
 
 		let newBank = userBank;
 		newBank = await removeItemFromBank(newBank, itemID(superCompostableCrop), quantity);
