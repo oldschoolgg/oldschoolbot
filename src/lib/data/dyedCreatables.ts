@@ -1,6 +1,37 @@
 import itemID from '../util/itemID';
 import { Createable } from './createables';
 
+const dwwhDyed: Createable[] = [
+	{
+		name: 'Dwarven warhammer (ice)',
+		inputItems: {
+			[itemID('Dwarven warhammer')]: 1,
+			[itemID('Ice dye')]: 1
+		}
+	},
+	{
+		name: 'Dwarven warhammer (blood)',
+		inputItems: {
+			[itemID('Dwarven warhammer')]: 1,
+			[itemID('Blood dye')]: 1
+		}
+	},
+	{
+		name: 'Dwarven warhammer (shadow)',
+		inputItems: {
+			[itemID('Dwarven warhammer')]: 1,
+			[itemID('Shadow dye')]: 1
+		}
+	},
+	{
+		name: 'Dwarven warhammer (3a)',
+		inputItems: {
+			[itemID('Dwarven warhammer')]: 1,
+			[itemID('Third age dye')]: 1
+		}
+	}
+];
+
 export const dyedCreatables: Createable[] = [
 	{
 		name: 'Drygore longsword (ice)',
@@ -174,5 +205,6 @@ export const dyedCreatables: Createable[] = [
 			[itemID('Offhand drygore rapier')]: 1,
 			[itemID('Third age dye')]: 1
 		}
-	}
+	},
+	...dwwhDyed
 ];
