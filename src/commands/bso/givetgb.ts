@@ -13,6 +13,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [user]: [KlasaUser]) {
+		if (user.id === msg.author.id) throw "You can't give boxes to yourself!";
 		await user.addItemsToBank({ [itemID('Tester gift box')]: 1 });
 		return msg.channel.send(`Gave 1x Tester gift box to ${user.username}.`);
 	}
