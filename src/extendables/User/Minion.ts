@@ -680,6 +680,11 @@ export default class extends Extendable {
 				const hpLevel = this.skillLevel(SkillsEnum.Hitpoints);
 				const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
 				max += calcPercentOfNum(hpPercent, Time.Minute * 5);
+
+				if (this.hasItemEquippedAnywhere('Hitpoints master cape')) {
+					max += calcPercentOfNum(randInt(5, 10), max);
+				}
+
 				break;
 			}
 			case Activity.Alching: {
