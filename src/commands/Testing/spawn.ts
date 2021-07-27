@@ -1,3 +1,4 @@
+import { objectKeys } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Items, Openables } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -9,7 +10,7 @@ import { filterableTypes } from '../../lib/data/filterables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
-import { itemNameFromID } from '../../lib/util';
+import { itemNameFromID, stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
 const gearSpawns = [
@@ -84,11 +85,18 @@ export default class extends BotCommand {
 			return msg.channel.send('Gave you EVERYTHING!');
 		}
 
-		for (const filter of filterableTypes) {
-			if (msg.flagArgs[filter.name]) {
+		const filtersAdded = [];
+		for (const flag of objectKeys(msg.flagArgs)) {
+			const filter = filterableTypes.find(f => stringMatches(f.name, flag));
+			if (filter) {
 				await msg.author.addItemsToBank(converCLtoBank(filter.items).multiply(qty), Boolean(msg.flagArgs.cl));
-				return msg.channel.send(`Gave you the filter ${filter.name} items.`);
+				filtersAdded.push(filter.name);
 			}
+		}
+		if (filtersAdded.length > 0) {
+			return msg.channel.send(
+				`Gave you ${qty} of every item in the following filters: ${filtersAdded.join(', ')}`
+			);
 		}
 
 		if (msg.flagArgs.id) {
