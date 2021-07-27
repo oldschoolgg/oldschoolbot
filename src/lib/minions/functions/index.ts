@@ -69,7 +69,6 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		monsterID: params.monsterID,
 		boostMethod
 	});
-
 	const monster = killableMonsters.find(mon => mon.id === params.monsterID);
 	let hp = miscHpMap[params.monsterID] ?? 1;
 	let xpMultiplier = 1;
