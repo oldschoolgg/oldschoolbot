@@ -25,6 +25,18 @@ export default class extends Extendable {
 		const confirmation = options.type[0] || 'confirmation';
 		const confirmed = options.type[1] || 'confirmed';
 		const users = uniqueUsers.map(u => {
+			if (u.id === this.author.id && (this.flagArgs.cf || this.flagArgs.confirm)) {
+				return {
+					user: u,
+					confirmed: true,
+					btn: new MessageButton({
+						label: `${u.username} ${confirmed}`,
+						disabled: true,
+						style: 'SUCCESS',
+						customID: u.id
+					})
+				};
+			}
 			return {
 				user: u,
 				confirmed: false,
