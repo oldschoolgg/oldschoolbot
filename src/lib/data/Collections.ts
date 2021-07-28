@@ -844,7 +844,8 @@ export const allCollectionLogs: ICollection = {
 					'Master runecrafter skirt',
 					'Master runecrafter boots',
 					'Elder thread',
-					'Elder talisman'
+					'Elder talisman',
+					'Magic crate'
 				])
 			}
 		}
