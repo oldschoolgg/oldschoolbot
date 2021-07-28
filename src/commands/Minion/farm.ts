@@ -1,12 +1,12 @@
 import { ArrayActions } from '@klasa/settings-gateway';
 import { MessageButton } from 'discord.js';
-import { deepClone, objectValues, Time } from 'e';
+import { deepClone, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util';
 import { Not } from 'typeorm';
 
-import { Activity, Emoji, SILENT_ERROR } from '../../lib/constants';
+import { Activity, COINS_ID, Emoji, SILENT_ERROR } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -30,14 +30,18 @@ interface IPatchValidation {
 	itemsForThisPatch: Bank;
 }
 
+function sumAll(current: number, previous: number) {
+	return current + previous;
+}
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[quantity:int] [plantName:...string]',
-			aliases: ['plant', 'harvest', 'af'],
+			usage: '[plantName:...string]',
+			aliases: ['plant', 'harvest'],
 			usageDelim: ' ',
 			description: 'Allows a player to plant or harvest and replant seeds for farming.',
 			examples: ['+plant ranarr seed', '+farm oak tree'],
@@ -119,7 +123,7 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage, [quantity = NaN, plantName = '']: [number, string, boolean]) {
+	async run(msg: KlasaMessage, [plantName = '']: [string]) {
 		if (msg.flagArgs.plants) {
 			return returnListOfPlants(msg);
 		}
@@ -140,264 +144,428 @@ export default class extends BotCommand {
 			);
 		}
 
+		const plantsToCheck = plantName
+			.split(',')
+			.map(n => n.trim())
+			.filter(f => f);
+
+		const quantity = Number(msg.flagArgs.qty) ?? NaN;
+
+		let subQtyInformed = false;
+		const plantsQty: Record<string, number> = {};
+		for (let i = 0; i < plantsToCheck.length; i++) {
+			const check = plantsToCheck[i].split(' ');
+			const qty = Number(check.shift());
+			if (!isNaN(qty)) {
+				plantsToCheck[i] = check.join(' ').trim();
+				plantsQty[plantsToCheck[i]] = Number(qty);
+				subQtyInformed = true;
+			}
+		}
+
 		const toPlant: {
 			type: TSeedType;
 			maxPatchesAllowed: number;
+			totalToHarvest: number;
 			patches: {
 				plant: Plant;
 				quantity: number;
 				duration: number;
-				validation: IPatchValidation;
+				items: Bank;
 			}[];
 		}[] = [];
 
-		const toCollect: FarmingPatchesTable[] = [];
-
+		const userFarmingLevel = msg.author.skillLevel(SkillsEnum.Farming);
+		const userWoodcuttingLevel = msg.author.skillLevel(SkillsEnum.Woodcutting);
 		let possiblePlants = plants.sort((a, b) => b.level - a.level);
 		const requiredBank = new Bank();
-		const maxUserTripLength = msg.author.maxTripLength(Activity.Farming);
-		const alreadyPlanted = <Record<TSeedType, number>>{};
 		const currentDate = new Date();
-
-		// Get what the user have planted
-		const planted = await this.getPlanted(msg.author);
-		const harvestPatchDuration = <Record<TSeedType, number>>{};
-		const paidToCut: Record<number, boolean> = {};
-
 		// If the user wants to force a certain patch
 		const patchesForced = (msg.flagArgs.patches ?? '').split(',').filter(f => f);
 
+		// Get everything the user planted
+		const planted = await this.getPlanted(msg.author);
+		// Check what can be harvested
+		const canBeHarvested = planted.filter(p => p.finishDate <= currentDate);
+		// Start iterating over everything the user wants to plant
 		loopPlant: for (const plant of possiblePlants) {
-			// If a patch is being forced...
-			if (patchesForced.length > 0) {
-				if (!patchesForced.find(p => stringMatches(p, plant.seedType))) continue;
-			}
-			// If a plant has been informed, those plants will be checked
-			let realPlantName = '';
-			if (plantName) {
-				const plantToCheck = plantName.split(',').map(n => n.trim());
-				let plantFound = false;
-				for (const check of plantToCheck) {
-					if (stringMatches(plant.name, check) || plant.aliases.some(a => stringMatches(a, check))) {
-						realPlantName = plant.name;
-						plantFound = true;
-						break;
-					}
-				}
-				if (!plantFound) continue;
-			}
-
-			if (!alreadyPlanted[plant.seedType]) {
-				try {
-					alreadyPlanted[plant.seedType] = planted
-						.filter(p => p.patchType === plant.seedType && p.finishDate > currentDate)
-						.map(p => p.quantity)
-						.reduce((c, p) => c + p);
-				} catch (e) {
-					alreadyPlanted[plant.seedType] = 0;
-				}
-
-				for (const _planted of planted) {
-					if (_planted.patchType === plant.seedType && _planted.finishDate <= currentDate) {
-						// Check if user can harvest this seed (it it is a tree, it may not allow it due to the user
-						// not having enough WC Level or GP
-						const plantedPlant = Farming.Plants.find(p => p.name === _planted.plant)!;
-						// Check if it needs to be cut
-						const priceToCut = _planted.quantity * (plantedPlant.seedType === 'redwood' ? 2000 : 200);
-						let canCollect = true;
-						if (plantedPlant.needsChopForHarvest) {
-							// User has WC level...
-							if (msg.author.skillLevel(SkillsEnum.Woodcutting) < plantedPlant.treeWoodcuttingLevel!) {
-								if (msg.author.settings.get(UserSettings.GP) < priceToCut) {
-									canCollect = false;
-								} else {
-									requiredBank.add(995, priceToCut);
-									paidToCut[_planted.id] = true;
-								}
-							}
-						}
-						// If it cant be collected, increase the already planted qty with the amount that is planted
-						if (
-							!canCollect ||
-							msg.flagArgs.nh ||
-							msg.flagArgs.noharvest ||
-							(plantName && realPlantName !== _planted.plant && msg.flagArgs.single)
-						) {
-							alreadyPlanted[plant.seedType] += _planted.quantity;
-						} else if (!toCollect.find(c => c.id === _planted.id)) {
-							toCollect.push(_planted);
-							// Add to the harvested Patch Duration
-							if (!harvestPatchDuration[_planted.patchType]) harvestPatchDuration[_planted.patchType] = 0;
-							harvestPatchDuration[_planted.patchType] +=
-								_planted.quantity * (plant.timePerHarvest + plant.timePerPatchTravel + 5) * Time.Second;
-						}
-					}
-				}
-			}
-
-			const patchBeingUsed = toPlant.find(p => p.type === plant.seedType);
-
-			// If the user can plant it
-			if (msg.author.skillLevel(SkillsEnum.Farming) < plant.level) continue;
-
-			// Get number of patches the player will be doing
-			const maxPatches = calcNumOfPatches(plant, msg.author, msg.author.settings.get(UserSettings.QP));
-
-			// Check what can be planted, either the maximum the user can or limited to what the user sets as quantity
-			let pathQty = maxPatches;
-			for (const item of new Bank(plant.inputItems).items()) {
-				let numInBank = msg.author.bank().amount(item[0].id);
-				if (numInBank === 0) continue loopPlant;
-
-				let checkItem = Math.floor(numInBank / item[1]);
-				if (quantity < checkItem) checkItem = quantity;
-				if (checkItem < pathQty) pathQty = checkItem;
-			}
-			// Limit to max that can be planted
-			if (pathQty > maxPatches - alreadyPlanted[plant.seedType]) {
-				pathQty = maxPatches - alreadyPlanted[plant.seedType];
-			}
-
-			// Only plant stuff if harvest is not set
+			// Check if user has enough level to plant it
+			if (plant.level > userFarmingLevel) continue;
+			// Check if user is forcing a certain patch
+			const forcedPatch = patchesForced.find(p => stringMatches(p, plant.seedType));
+			if (patchesForced.length > 0) if (!forcedPatch) continue;
+			// Check if user is forcing a seed and this is not it
+			const userForcedSeed = plantsToCheck.find(
+				p => stringMatches(plant.name, p) || plant.aliases.some(a => stringMatches(a, p))
+			);
+			if (plantsToCheck.length > 0 && !userForcedSeed) continue;
+			// Check if favorite & block
+			let block = farmingSettings.blockedPatches && farmingSettings.blockedPatches.includes(plant.seedType);
 			if (
-				msg.flagArgs.harvest ||
-				pathQty === 0 ||
-				// Ignore if not favorite
+				(block && plantsToCheck.length > 0 && userForcedSeed) ||
+				(block && patchesForced.length > 0 && forcedPatch)
+			) {
+				block = false;
+			}
+			if (
+				// Has a favorite for this patch type and it is not this plant
 				(farmingSettings.favoritePlants &&
 					farmingSettings.favoritePlants[plant.seedType] &&
-					farmingSettings.favoritePlants[plant.seedType] !== plant.name) ||
-				// Ignore if patch is blocked
-				(farmingSettings.blockedPatches && farmingSettings.blockedPatches.includes(plant.seedType))
+					farmingSettings.favoritePlants[plant.seedType] !== plant.name &&
+					!userForcedSeed) ||
+				// Has this patch type blocked
+				block
 			) {
 				continue;
 			}
+			// Get how many can be planted in total
+			const maxPatches = calcNumOfPatches(plant, msg.author, msg.author.settings.get(UserSettings.QP));
 
-			// Check if the user has everything
-			const requiredItems = new Bank(plant.inputItems).multiply(pathQty);
-			if (!msg.author.bank({ withGP: true }).has(requiredItems.bank)) continue;
-
-			// Validate plant, if it have to be paid, can be paid, etc
-			const patchValidation = this.validatePlant(msg, plant, pathQty, requiredBank, farmingSettings);
-			const durationForThisPath = pathQty * (plant.timePerHarvest + plant.timePerPatchTravel + 5) * Time.Second;
-
-			let checkCollectTime = 0;
-			if (harvestPatchDuration[plant.seedType]) {
-				harvestPatchDuration[plant.seedType] -= durationForThisPath;
-				checkCollectTime = harvestPatchDuration[plant.seedType];
+			// Calculate the maximum number that can be planted, based on how many are currently planted, will be
+			// harvested and are being planted
+			let totalPlanted = 0;
+			if (planted.length > 0) {
+				const plantedPatch = planted.filter(f => f.patchType === plant.seedType).map(p => p.quantity);
+				if (plantedPatch.length > 0) totalPlanted = plantedPatch.reduce(sumAll);
+			}
+			let totalToHarvest = 0;
+			if (canBeHarvested.length > 0) {
+				const harvestPatch = canBeHarvested.filter(f => f.patchType === plant.seedType).map(p => p.quantity);
+				if (harvestPatch.length > 0) totalToHarvest = harvestPatch.reduce(sumAll);
+			}
+			let totalToPlant = 0;
+			if (toPlant.length > 0) {
+				const patchType = toPlant
+					.filter(f => f.type === plant.seedType)
+					.map(p => p.patches.map(pp => pp.quantity).reduce(sumAll));
+				if (patchType.length > 0) totalToPlant = patchType.reduce(sumAll);
 			}
 
-			requiredItems.add(patchValidation[1].itemsForThisPatch);
-			// Check if the user have time to plant this
-			if (
-				toPlant.length > 0 &&
-				toPlant
-					// Will sum all durations from all seeds to be planted in this patch type
-					.map(p => (p.patches ? p.patches.map(pp => pp.duration).reduce((p, c) => p + c) : 0))
-					// Sum the total of all patches
-					.reduce((p, c) => p + c) +
-					durationForThisPath +
-					checkCollectTime >
-					maxUserTripLength
-			)
-				continue;
+			let qtyToPlant =
+				maxPatches -
+				(isNaN(totalPlanted) ? 0 : totalPlanted) +
+				(isNaN(totalToHarvest) ? 0 : totalToHarvest) -
+				(isNaN(totalToPlant) ? 0 : totalToPlant);
 
-			// Everything OK, add this path
+			if (userForcedSeed && plantsQty[userForcedSeed]) {
+				if (plantsQty[userForcedSeed] < qtyToPlant) qtyToPlant = plantsQty[userForcedSeed];
+			} else if (!isNaN(quantity) && quantity < qtyToPlant) qtyToPlant = quantity;
+			else if (subQtyInformed && qtyToPlant > 1) qtyToPlant = 1;
+
+			// Not enough to plant, skip seed
+			if (qtyToPlant === 0) continue;
+
+			// Validate if user has enough base items to plant this
+			const plantBank = new Bank().add(plant.inputItems);
+			const checkBank = new Bank().add(msg.author.bank()).remove(requiredBank);
+			// Uses the minimum qty the user can plant between all required items
+			for (const item of plantBank.items()) {
+				let numInBank = checkBank.amount(item[0].id);
+				if (numInBank === 0) continue loopPlant;
+				let checkItem = Math.floor(numInBank / item[1]);
+				if (checkItem === 0) continue loopPlant;
+				// This is what defined how many will be able to plant
+				if (checkItem < qtyToPlant) qtyToPlant = checkItem;
+			}
+
+			// Store what the user can plant of this patch so it can be sorted and filtered later, on the trip length
+			// and validation check (for trees)
+			// We store individual values, so the qty can be altered later
+			const patchOptions = {
+				plant,
+				quantity: qtyToPlant,
+				duration: plant.timePerHarvest + plant.timePerPatchTravel + 5,
+				items: plantBank
+			};
+			const patchBeingUsed = toPlant.find(p => p.type === plant.seedType);
 			if (patchBeingUsed) {
-				patchBeingUsed.patches.push({
-					plant,
-					quantity: pathQty,
-					duration: durationForThisPath,
-					validation: patchValidation[1]
-				});
+				patchBeingUsed.patches.push(patchOptions);
 			} else {
-				// Calculate maximum number of patches the user can plant
 				toPlant.push({
 					type: plant.seedType,
 					maxPatchesAllowed: maxPatches,
-					patches: [
-						{
-							plant,
-							quantity: pathQty,
-							duration: durationForThisPath,
-							validation: patchValidation[1]
-						}
-					]
+					patches: [patchOptions],
+					totalToHarvest
 				});
 			}
-			alreadyPlanted[plant.seedType] += pathQty;
-			requiredBank.add(requiredItems);
 		}
 
-		let duration: number = 0;
-		let warningMessage: boolean = false;
-		let hasSomethingPlanted: boolean = false;
-		let toBePlanted: string[] = [];
-
-		for (const _patch of toPlant) {
-			for (const _p of _patch.patches) {
-				const validationFailures: string[] = [];
-
-				if (_p.validation.useCompost && !_p.validation.compostCheck) {
-					validationFailures.push(`Not enough ${_p.validation.useCompost}`);
-					_p.validation.useCompost = false;
-				}
-				if (_p.validation.usePayment && !_p.validation.paymentCheck) {
-					validationFailures.push('Not enough to pay');
-					_p.validation.usePayment = false;
-				}
-				duration += _p.duration;
-
-				if (validationFailures.length > 0 && !warningMessage) warningMessage = true;
-
-				toBePlanted.push(
-					`${_p.quantity}x ${_p.plant.name} ${
-						validationFailures.length > 0 ? `(${validationFailures.join(', ')})` : ''
-					}`
-				);
+		// Calculate the user tripLength
+		const collectChecked: number[] = [];
+		const maxTripLength = msg.author.maxTripLength(Activity.Farming);
+		let tripLengthLeft = maxTripLength;
+		const harvesting: Record<
+			string,
+			{
+				harvested: number;
+				harvestedDuration: number;
+				harvestedChecked: number;
+				cantHarvest: number;
+				planted: number;
 			}
-		}
-
-		// Add harvesting duration for the crops that doesnt mix with the ones being planted
-		if (objectValues(harvestPatchDuration).length > 0) {
-			duration += Object.values(harvestPatchDuration)
-				.map(d => {
-					if (d > 0) return d;
-					return 0;
-				})
-				.reduce((c, p) => c + p);
-		}
+		> = {};
 
 		// Apply boosts
+		let durationBoost: number = 1;
 		const boosts: string[] = [];
 		if ((await userhasDiaryTier(msg.author, ArdougneDiary.elite))[0] ?? false) {
 			boosts.push(`4% for ${ArdougneDiary.name} ${ArdougneDiary.elite.name}`);
-			duration *= 0.96;
+			durationBoost *= 0.96;
 		}
 		if (msg.author.hasGracefulEquipped()) {
 			boosts.push('10% for having Graceful equipped.');
-			duration *= 0.9;
+			durationBoost *= 0.9;
 		}
 
-		if (hasSomethingPlanted) {
-			if (msg.author.hasItemEquippedOrInBank('Magic secateurs'))
+		let gpNeeded = 0;
+		const finalPlant = [];
+		const finalCollectIds: number[] = [];
+		const paidToCut: Record<number, boolean> = {};
+
+		// Iterate over plants that will be planted
+		if (!msg.flagArgs.harvest) {
+			forPatch: for (const p of toPlant) {
+				for (const pp of p.patches) {
+					// Check if it will need to harvest something to plant this
+					// Initiate the counters so we can calculate the trip length
+					if (!harvesting[pp.plant.seedType]) {
+						harvesting[pp.plant.seedType] = {
+							planted: 0,
+							harvested: 0,
+							harvestedChecked: 0,
+							harvestedDuration: 0,
+							cantHarvest: 0
+						};
+					}
+					// Only iterate over harvested if the patch cant be planted
+					if (harvesting[pp.plant.seedType].harvested - harvesting[pp.plant.seedType].planted < pp.quantity) {
+						// Iterate over patches to harvest of the same type that is planted, ordering by highest qty
+						for (const collect of canBeHarvested
+							.filter(
+								c =>
+									!collectChecked.includes(c.id) &&
+									(c.plant === pp.plant.name || c.patchType === pp.plant.seedType)
+							)
+							// This will make sure the same the user is planting is always take into consideration first
+							.sort((a, b) => {
+								if (a.plant === b.plant) return 0;
+								if (a.plant === pp.plant.name) return -1;
+								if (b.plant === pp.plant.name) return 1;
+								return a.quantity - b.quantity;
+							})) {
+							const collectPlant = Farming.Plants.find(f => f.name === collect.plant)!;
+							// Ignore patches that the user cant cut
+							let cantCut = false;
+							if (collectPlant.needsChopForHarvest) {
+								if (userWoodcuttingLevel < (collectPlant.treeWoodcuttingLevel ?? 0)) {
+									const gpForThisPlant =
+										collect.quantity * (collectPlant.seedType === 'redwood' ? 2000 : 200);
+									if (
+										msg.author.bank({ withGP: true }).amount(COINS_ID) >=
+										gpNeeded + gpForThisPlant
+									) {
+										paidToCut[collect.id] = true;
+										gpNeeded += gpForThisPlant;
+									} else {
+										// Prevent this plant to be checked again
+										collectChecked.push(collect.id);
+										cantCut = true;
+									}
+								}
+							}
+							if (cantCut) {
+								harvesting[pp.plant.seedType].cantHarvest += collect.quantity;
+								continue;
+							}
+							harvesting[pp.plant.seedType].harvested += collect.quantity;
+							// Keep the average time between multiple type of seeds
+							if (harvesting[pp.plant.seedType].harvestedDuration > 0) {
+								harvesting[pp.plant.seedType].harvestedDuration = Math.floor(
+									(harvesting[pp.plant.seedType].harvestedDuration +
+										collectPlant.timePerHarvest +
+										collectPlant.timePerPatchTravel +
+										5) /
+										2
+								);
+							} else {
+								harvesting[pp.plant.seedType].harvestedDuration =
+									collectPlant.timePerHarvest + collectPlant.timePerPatchTravel + 5;
+							}
+							// Prevent this plant to be checked again
+							collectChecked.push(collect.id);
+							finalCollectIds.push(collect.id);
+							// Enough qty harvested to plant this
+							if (
+								harvesting[pp.plant.seedType].harvested - harvesting[pp.plant.seedType].planted >=
+								pp.quantity
+							)
+								break;
+						}
+					}
+
+					if (p.maxPatchesAllowed - harvesting[pp.plant.seedType].cantHarvest - pp.quantity < 0) {
+						pp.quantity = p.maxPatchesAllowed - harvesting[pp.plant.seedType].cantHarvest;
+					}
+
+					const canHarvest =
+						harvesting[pp.plant.seedType].harvested - harvesting[pp.plant.seedType].harvestedChecked;
+					let tripTime = canHarvest * harvesting[pp.plant.seedType].harvestedDuration * Time.Second;
+					// Means that we are planting more than we can harvest
+					if (harvesting[pp.plant.seedType].planted + pp.quantity > harvesting[pp.plant.seedType].harvested) {
+						tripTime += (pp.quantity - canHarvest) * pp.duration * Time.Second;
+					}
+					// If harvesting and planting at the same time, instead of doubling the time needed, add the time
+					// for 1 extra interaction, as it takes much less time to plant than it takes to harvest, as the user
+					// is already at the place to plant
+					if (canHarvest) tripTime += pp.duration * Time.Second;
+
+					// Apply boost
+					tripTime *= durationBoost;
+
+					if (tripLengthLeft - tripTime >= 0) {
+						// If enters here, means the total harvest/planting can be done for this seed
+						tripLengthLeft -= tripTime;
+					} else {
+						// Recalculates de qty to try and match an amount that can be planted
+						const recalculatedQty = Math.floor(tripLengthLeft / (pp.duration * Time.Second));
+						if (recalculatedQty > 0 && pp.quantity > recalculatedQty) {
+							pp.quantity = recalculatedQty;
+							tripLengthLeft -= recalculatedQty * pp.duration * Time.Second;
+						} else {
+							// Skipping, not enough time to plant any if this seed
+							continue;
+						}
+					}
+
+					finalPlant.push(pp);
+
+					// Update the number of planteds, so the next plant knows what to deduct
+					harvesting[pp.plant.seedType].planted += pp.quantity;
+					harvesting[pp.plant.seedType].harvestedChecked += canHarvest;
+
+					// If we cant do any more of this seed type, jumps to the next one
+					if (
+						harvesting[pp.plant.seedType].cantHarvest + harvesting[pp.plant.seedType].planted ===
+						p.maxPatchesAllowed
+					) {
+						continue forPatch;
+					}
+				}
+			}
+		}
+
+		// Iterate over plants to harvest that can still be harvested, if the trip time allows and have not been
+		// checked already
+
+		for (const collect of canBeHarvested.filter(c => !collectChecked.includes(c.id))) {
+			if (!harvesting[collect.patchType]) {
+				harvesting[collect.patchType] = {
+					planted: 0,
+					harvested: 0,
+					harvestedChecked: 0,
+					harvestedDuration: 0,
+					cantHarvest: 0
+				};
+			}
+
+			const collectPlant = Farming.Plants.find(f => f.name === collect.plant)!;
+
+			// Check if user is forcing a certain patch
+			if (patchesForced.length > 0)
+				if (!patchesForced.find(p => stringMatches(p, collectPlant.seedType))) continue;
+			// Check if user is forcing a seed and this is not it
+			const userForcedSeed = plantsToCheck.find(
+				p => stringMatches(collectPlant.name, p) || collectPlant.aliases.some(a => stringMatches(a, p))
+			);
+			if (plantsToCheck.length > 0 && !userForcedSeed) continue;
+
+			// Ignore patches that the user cant cut
+			if (collectPlant.needsChopForHarvest) {
+				if (userWoodcuttingLevel < (collectPlant.treeWoodcuttingLevel ?? 0)) {
+					const gpForThisPlant = collect.quantity * (collectPlant.seedType === 'redwood' ? 2000 : 200);
+					if (msg.author.bank({ withGP: true }).amount(COINS_ID) >= gpNeeded + gpForThisPlant) {
+						gpNeeded += gpForThisPlant;
+						paidToCut[collect.id] = true;
+					} else {
+						continue;
+					}
+				}
+			}
+			let timeForThisPlant =
+				(collect.quantity * collectPlant.timePerHarvest + collectPlant.timePerPatchTravel + 5) * Time.Second;
+			// Apply boost
+			timeForThisPlant *= durationBoost;
+			if (tripLengthLeft - timeForThisPlant >= 0) {
+				tripLengthLeft -= timeForThisPlant;
+				harvesting[collect.patchType].harvested += collect.quantity;
+				finalCollectIds.push(collect.id);
+			}
+		}
+
+		// Harvest boosts (only visible)
+		if (finalCollectIds.length > 0) {
+			if (msg.author.hasItemEquippedOrInBank('Magic secateurs')) {
 				boosts.push('10% crop yield for Magic Secateurs');
-			if (msg.author.hasItemEquippedAnywhere(['Farming cape(t)', 'Farming cape']))
+			}
+			if (msg.author.hasItemEquippedOrInBank('Farming cape') && userFarmingLevel >= 99) {
 				boosts.push('5% crop yield for Farming Skillcape');
+			}
 		}
 
+		const activityOptions: IFarmingPatchesToPlant[] = [];
 		const messageSend: string[] = [];
+		let warningMessage = false;
+
+		// Add GP to cut trees (if any was calculated)
+		if (gpNeeded > 0) requiredBank.add({ 995: gpNeeded });
+
+		// Prepare plants to plant
+		const plantMessage: string[] = [];
+		for (const plant of finalPlant) {
+			// Validate compost and payments for patch
+			const patchValidation = this.validatePlant(msg, plant.plant, plant.quantity, requiredBank, farmingSettings);
+			requiredBank.add(plant.items.multiply(plant.quantity)).add(patchValidation[1].itemsForThisPatch);
+			// Prepare the errors to show
+			const validationFailures: string[] = [];
+			if (patchValidation[1].useCompost && !patchValidation[1].compostCheck) {
+				validationFailures.push(`Not enough ${patchValidation[1].useCompost}`);
+				patchValidation[1].useCompost = false;
+			}
+			if (patchValidation[1].usePayment && !patchValidation[1].paymentCheck) {
+				validationFailures.push('Not enough to pay');
+				patchValidation[1].usePayment = false;
+			}
+
+			activityOptions.push({
+				plant: plant.plant.name,
+				duration: plant.duration * plant.quantity * Time.Second,
+				quantity: plant.quantity,
+				compost: patchValidation[1].useCompost,
+				payment: patchValidation[1].usePayment,
+				type: plant.plant.seedType
+			});
+
+			if (validationFailures.length > 0 && !warningMessage) warningMessage = true;
+
+			plantMessage.push(
+				`${plant.quantity}x ${plant.plant.name} ${
+					validationFailures.length > 0 ? `(${validationFailures.join(', ')})` : ''
+				}`
+			);
+		}
 
 		if (warningMessage)
 			messageSend.push(
-				`${Emoji.Warning}\n__**WARNING**__\nSome plants have warnings. They maybe can't be paid, cut or composted. Plants that fails to be CUT will not be sent, everything else can and will, if you confirm! Check it before confirming your trip.`
+				`${Emoji.Warning}\n__**WARNING**__\nSome plants have warnings. They maybe can't be paid, cut or composted. Check it before confirming your trip.`
 			);
 
-		if (toBePlanted.length > 0)
-			messageSend.push(`__Here are the plants that you will be planting__:\n${toBePlanted.join(', ')}`);
+		if (plantMessage.length > 0)
+			messageSend.push(`__Here are the plants that you will be planting__:\n${plantMessage.join(', ')}`);
 
-		if (toCollect.length > 0)
+		if (finalCollectIds.length > 0)
 			messageSend.push(
-				`__Here are the plants that you will be harvesting__:\n${toCollect
+				`__Here are the plants that you will be harvesting__:\n${canBeHarvested
+					.filter(c => finalCollectIds.includes(c.id))
 					.map(c => `${c.quantity}x ${c.plant}`)
 					.join(', ')}`
 			);
@@ -407,21 +575,40 @@ export default class extends BotCommand {
 
 		if (boosts.length > 0) messageSend.push(`__**Boosts:**__:\n${boosts.join(', ')}`);
 
-		if (toPlant.length === 0 && toCollect.length === 0) {
+		if (toPlant.length === 0 && finalCollectIds.length === 0) {
 			return msg.channel.send(
 				'There is nothing you can plant at the moment. Check +cp for more information about your patches.'
 			);
 		}
 
+		let finalMessage = messageSend.join('\n\n');
+
+		// Cut long messages so the button to confirm can show without errors
+		let stringToSend = '';
+		if (finalMessage.length > 2000) {
+			for (const message of finalMessage.split('\n')) {
+				if (`${stringToSend}\n${message}`.length >= 2000) {
+					await msg.channel.send(stringToSend);
+					stringToSend = message;
+				} else {
+					stringToSend += `\n${message}`;
+				}
+			}
+		} else {
+			stringToSend = finalMessage;
+		}
+
 		if (msg.flagArgs.cf || msg.flagArgs.confirm || farmingSettings.confirmationEnabled === false) {
 			await msg.channel.send({
-				content: `${messageSend.join('\n\n')}\n\n${msg.author.username}, ${
+				content: `${stringToSend}\n\n${msg.author.username}, ${
 					msg.author.minionName
-				} is now on a farming trip and it will take around ${formatDuration(duration)} to finish it.`
+				} is now on a farming trip and it will take around ${formatDuration(
+					maxTripLength - tripLengthLeft
+				)} to finish it.`
 			});
 		} else {
 			const message = await msg.channel.send({
-				content: messageSend.join('\n\n'),
+				content: stringToSend,
 				components: [
 					[
 						new MessageButton({
@@ -438,7 +625,7 @@ export default class extends BotCommand {
 						}),
 						new MessageButton({
 							type: 'BUTTON',
-							label: `Trip length: ${formatDuration(duration)}`,
+							label: `Trip length: ${formatDuration(maxTripLength - tripLengthLeft)}`,
 							customID: 'triplength',
 							style: 'SECONDARY',
 							disabled: true
@@ -461,11 +648,14 @@ export default class extends BotCommand {
 				if (selection.customID === 'cancel')
 					// noinspection ExceptionCaughtLocallyJS
 					throw new Error(SILENT_ERROR);
+
 				await message.edit({
 					components: [],
 					content: `${message.content}\n\n${msg.author.username}, ${
 						msg.author.minionName
-					} is now on a farming trip and it will take around ${formatDuration(duration)} to finish it.`
+					} is now on a farming trip and it will take around ${formatDuration(
+						maxTripLength - tripLengthLeft
+					)} to finish it.`
 				});
 			} catch {
 				return message.edit({
@@ -474,38 +664,14 @@ export default class extends BotCommand {
 				});
 			}
 		}
-		// For a last validation, make sure the user has everything that will be used in this trip. This should never fail.
-		if (!msg.author.bank({ withGP: true }).has(requiredBank.bank)) {
-			return msg.channel.send(
-				`You don't have the required items for this trip. You are missing: ${requiredBank.remove(
-					msg.author.bank()
-				)}`
-			);
-		}
 
-		await msg.author.removeItemsFromBank(requiredBank);
-
-		const activityOptions: IFarmingPatchesToPlant[] = [];
-
-		for (const _patch of toPlant) {
-			for (const _p of _patch.patches) {
-				activityOptions.push({
-					plant: _p.plant.name,
-					duration: _p.duration,
-					quantity: _p.quantity,
-					compost: _p.validation.useCompost,
-					payment: _p.validation.usePayment,
-					type: _p.plant.seedType
-				});
-			}
-		}
 		await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
-			duration,
+			duration: maxTripLength - tripLengthLeft,
 			toPlant: activityOptions,
-			toCollect: toCollect.map(c => {
-				return { id: c.id, paidToCut: paidToCut[c.id] ?? false };
+			toCollect: finalCollectIds.map(c => {
+				return { id: c, paidToCut: paidToCut[c] ?? false };
 			}),
 			currentDate: currentDate.getTime(),
 			type: Activity.Farming

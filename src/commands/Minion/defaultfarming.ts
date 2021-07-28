@@ -2,6 +2,7 @@ import { ArrayActions } from '@klasa/settings-gateway';
 import { deepClone, objectEntries, objectValues } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { PerkTier } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { CompostTier, FarmingPatchTypes } from '../../lib/minions/farming/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -54,14 +55,30 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		const farmingSettings = await this.getSettings(msg);
-		const currentCompostTier = farmingSettings.defaultCompost;
-		const currentPaymentSetting = farmingSettings.defaultPay;
 
 		return msg.channel.send(
-			`Your current compost tier to automatically use is ${currentCompostTier}.` +
-				`\nYour current payment default is ${currentPaymentSetting ? '' : '**not**'} to automatically pay.` +
-				`\n\`${msg.cmdPrefix}defaultfarming tier <compost_type>\` will set your default compost to what you specify.` +
-				`\n\`${msg.cmdPrefix}defaultfarming pay <enable/disable>\` will either enable automatic payments or disable them.`
+			`Your current compost tier to automatically use is \`${farmingSettings.defaultCompost || 'Compost'}\`.` +
+				`\nYour current payment default is \`${
+					farmingSettings.defaultPay === true ? 'Enabled' : 'Disabled'
+				}\`.` +
+				`\nYour current reminder setting is \`${
+					farmingSettings.remindersEnabled === false ? 'Disabled' : 'Enabled'
+				}\`.` +
+				`\nYour current confirmation setting is \`${
+					farmingSettings.confirmationEnabled === false ? 'Disabled' : 'Enabled'
+				}\`.` +
+				`\nYour current favorite setting is \`${farmingSettings.favoritePlants ?? 'Nothing'}\`.` +
+				`\nYour current block setting is \`${farmingSettings.blockedPatches ?? 'Nothing'}\`.` +
+				`\n\nThe default settings you can adjust are: \`${msg.cmdPrefix}defaultfarming tier [compost|supercompost|ultracompost]\`, ` +
+				`\`${msg.cmdPrefix}defaultfarming pay enable/disable\`, ` +
+				`\`${
+					msg.author.perkTier >= PerkTier.Four
+						? `${msg.cmdPrefix}defaultfarming reminders enable/disable\`, `
+						: ''
+				}` +
+				`\`${msg.cmdPrefix}defaultfarming confirmation enable/disable\`, ` +
+				`\`${msg.cmdPrefix}defaultfarming favorite [plant]\`, ` +
+				`\`${msg.cmdPrefix}defaultfarming block [patch]\`.`
 		);
 	}
 
@@ -70,7 +87,7 @@ export default class extends BotCommand {
 
 		if (newCompostTier === undefined) {
 			return msg.channel.send(
-				`Your default compost is set to \`${farmingSettings.defaultCompost}\`. You must specify a valid compost type. The available tiers to select are \`compost\`, \`supercompost\`, and \`ultracompost\`.For example, \`${msg.cmdPrefix}defaultfarming tier supercompost\`.`
+				`Your default compost is set to \`${farmingSettings.defaultCompost}\`. You must specify a valid compost type. The available tiers to select are \`compost\`, \`supercompost\`, or \`ultracompost\`.For example, \`${msg.cmdPrefix}defaultfarming tier supercompost\`.`
 			);
 		}
 
@@ -173,8 +190,8 @@ export default class extends BotCommand {
 		}
 		return msg.channel.send(
 			`Your confirmation setting is set to \`${
-				farmingSettings.confirmationEnabled ? 'Enabled' : 'Disabled'
-			}\`. The available options for reminders is \`enable\` and \`disable\`.\nFor example, \`${
+				farmingSettings.confirmationEnabled === false ? 'Disabled' : 'Enabled'
+			}\`. The available options for confirmation is \`enable\` and \`disable\`.\nFor example, \`${
 				msg.cmdPrefix
 			}defaultfarming reminders enable\`.`
 		);
