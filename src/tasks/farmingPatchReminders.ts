@@ -95,7 +95,7 @@ export default class extends Task {
 			} catch (err) {
 				console.error(err);
 			} finally {
-				this.client.__farmingPatchReminders = setTimeout(ticker, Number(Time.Second * 10));
+				this.client.__farmingPatchReminders = setTimeout(ticker, Number(Time.Second * 60));
 			}
 		};
 		ticker();

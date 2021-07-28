@@ -177,11 +177,14 @@ export default class extends BotCommand {
 
 		const userFarmingLevel = msg.author.skillLevel(SkillsEnum.Farming);
 		const userWoodcuttingLevel = msg.author.skillLevel(SkillsEnum.Woodcutting);
+		const userQP = msg.author.settings.get(UserSettings.QP);
 		let possiblePlants = plants.sort((a, b) => b.level - a.level);
 		const requiredBank = new Bank();
 		const currentDate = new Date();
 		// If the user wants to force a certain patch
 		const patchesForced = (msg.flagArgs.patches ?? '').split(',').filter(f => f);
+
+		const errors: string[] = [];
 
 		// Get everything the user planted
 		const planted = await this.getPlanted(msg.author);
@@ -219,7 +222,10 @@ export default class extends BotCommand {
 				continue;
 			}
 			// Get how many can be planted in total
-			const maxPatches = calcNumOfPatches(plant, msg.author, msg.author.settings.get(UserSettings.QP));
+			const maxPatches = calcNumOfPatches(plant, msg.author, userQP);
+			if (maxPatches === 0 && userForcedSeed) {
+				errors.push(`You do not meet all requirements to plant a ${plant.name}.`);
+			}
 
 			// Calculate the maximum number that can be planted, based on how many are currently planted, will be
 			// harvested and are being planted
@@ -261,9 +267,15 @@ export default class extends BotCommand {
 			// Uses the minimum qty the user can plant between all required items
 			for (const item of plantBank.items()) {
 				let numInBank = checkBank.amount(item[0].id);
-				if (numInBank === 0) continue loopPlant;
+				if (numInBank === 0) {
+					if (userForcedSeed) errors.push(`You do not have enough ${item[0].name} to plant a ${plant.name}.`);
+					continue loopPlant;
+				}
 				let checkItem = Math.floor(numInBank / item[1]);
-				if (checkItem === 0) continue loopPlant;
+				if (checkItem === 0) {
+					if (userForcedSeed) errors.push(`You do not have enough ${item[0].name} to plant a ${plant.name}.`);
+					continue loopPlant;
+				}
 				// This is what defined how many will be able to plant
 				if (checkItem < qtyToPlant) qtyToPlant = checkItem;
 			}
@@ -355,7 +367,6 @@ export default class extends BotCommand {
 							})) {
 							const collectPlant = Farming.Plants.find(f => f.name === collect.plant)!;
 							// Ignore patches that the user cant cut
-							let cantCut = false;
 							if (collectPlant.needsChopForHarvest) {
 								if (userWoodcuttingLevel < (collectPlant.treeWoodcuttingLevel ?? 0)) {
 									const gpForThisPlant =
@@ -369,13 +380,18 @@ export default class extends BotCommand {
 									} else {
 										// Prevent this plant to be checked again
 										collectChecked.push(collect.id);
-										cantCut = true;
+										harvesting[pp.plant.seedType].cantHarvest += collect.quantity;
+										errors.push(
+											`You can't cut ${collect.quantity}x ${
+												collectPlant.name
+											} because you don't have level ${
+												collectPlant.treeWoodcuttingLevel
+											} in Woodcutting or ${gpForThisPlant.toLocaleString()} GP to pay for it to be cut down.`
+										);
+
+										continue;
 									}
 								}
-							}
-							if (cantCut) {
-								harvesting[pp.plant.seedType].cantHarvest += collect.quantity;
-								continue;
 							}
 							harvesting[pp.plant.seedType].harvested += collect.quantity;
 							// Keep the average time between multiple type of seeds
@@ -419,6 +435,8 @@ export default class extends BotCommand {
 					// is already at the place to plant
 					if (canHarvest) tripTime += pp.duration * Time.Second;
 
+					if (pp.quantity === 0) continue;
+
 					// Apply boost
 					tripTime *= durationBoost;
 
@@ -456,7 +474,6 @@ export default class extends BotCommand {
 
 		// Iterate over plants to harvest that can still be harvested, if the trip time allows and have not been
 		// checked already
-
 		for (const collect of canBeHarvested.filter(c => !collectChecked.includes(c.id))) {
 			if (!harvesting[collect.patchType]) {
 				harvesting[collect.patchType] = {
@@ -487,6 +504,11 @@ export default class extends BotCommand {
 						gpNeeded += gpForThisPlant;
 						paidToCut[collect.id] = true;
 					} else {
+						errors.push(
+							`You can't cut ${collect.quantity}x ${collectPlant.name} because you don't have level ${
+								collectPlant.treeWoodcuttingLevel
+							} in Woodcutting or ${gpForThisPlant.toLocaleString()} GP to pay for it to be cut down.`
+						);
 						continue;
 					}
 				}
@@ -573,11 +595,17 @@ export default class extends BotCommand {
 		if (requiredBank.items().length > 0)
 			messageSend.push(`__The following items will be removed from your bank__:\n${requiredBank}`);
 
+		if (errors.length > 0) {
+			messageSend.push(`__Warnings__:\n${errors.join(', ')}`);
+		}
+
 		if (boosts.length > 0) messageSend.push(`__**Boosts:**__:\n${boosts.join(', ')}`);
 
 		if (toPlant.length === 0 && finalCollectIds.length === 0) {
 			return msg.channel.send(
-				'There is nothing you can plant at the moment. Check +cp for more information about your patches.'
+				`There is nothing you can plant at the moment. Check +cp for more information about your patches.${
+					errors.length > 0 ? `\n\n__Warnings__:\n${errors.join(', ')}` : ''
+				}`
 			);
 		}
 
