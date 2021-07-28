@@ -27,7 +27,7 @@ export default class extends BotCommand {
 		const difference = currentDate - lastDate;
 
 		if (difference < Time.Hour * 24 && msg.author.id !== '157797566833098752') {
-			const duration = formatDuration(Date.now() - (Number(lastDate) + Time.Hour * 24));
+			const duration = formatDuration(Date.now() - (lastDate + Time.Hour * 24));
 			return msg.channel.send(`You can give another box in ${duration}.`);
 		}
 		await msg.author.settings.update(UserSettings.LastGivenBox, currentDate);
