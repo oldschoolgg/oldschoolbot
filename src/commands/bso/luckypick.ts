@@ -75,9 +75,6 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [amount]: [number]) {
-		if (1 > 0) {
-			return msg.channel.send('The luckypick casino is currently closed, thanks for playing!');
-		}
 		if (msg.author.isIronman) {
 			return msg.channel.send("Ironmen can't gamble! Go pickpocket some men for GP.");
 		}
@@ -152,7 +149,7 @@ export default class extends BotCommand {
 				amountReceived - amount
 			);
 			await updateGPTrackSetting(msg.author, UserSettings.GPLuckyPick, amountReceived - amount);
-			buttonsToShow[button.id].picked = true;
+
 			await interaction.update({ components: getCurrentButtons({ showTrueNames: true }) });
 			return sentMessage.channel.send(
 				amountReceived === 0
@@ -167,14 +164,14 @@ export default class extends BotCommand {
 		});
 
 		collector.on('collect', async interaction => {
-			const pickedButton = buttonsToShow.find(b => b.id.toString() === interaction.customID);
-			if (!pickedButton) return;
+			const pickedButton = buttonsToShow.find(b => b.id.toString() === interaction.customID)!;
+			buttonsToShow[pickedButton.id].picked = true;
+			collector.stop('PICKED');
 			try {
 				await finalize({ button: pickedButton, interaction });
 			} catch (err) {
 				console.error(err);
 			}
-			collector.stop('PICKED');
 		});
 
 		collector.on('end', async () => {
