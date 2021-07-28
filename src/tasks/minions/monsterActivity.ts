@@ -3,7 +3,7 @@ import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import { DOUBLE_LOOT_ACTIVE } from '../../lib/constants';
+import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../lib/constants';
 import { frozenKeyPieces } from '../../lib/data/CollectionsExport';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
@@ -74,7 +74,7 @@ export default class extends Task {
 			Math.ceil(quantity * (DOUBLE_LOOT_ACTIVE ? 2 : abyssalBonus)),
 			killOptions
 		);
-		const newSuperiorCount = loot.bank[420];
+		let newSuperiorCount = loot.bank[420];
 		const xpRes = await addMonsterXP(user, {
 			monsterID,
 			quantity,
@@ -88,6 +88,12 @@ export default class extends Task {
 			superiorCount: newSuperiorCount
 		});
 
+		let masterCapeRolls =
+			user.hasItemEquippedAnywhere('Slayer master cape') && typeof newSuperiorCount === 'number'
+				? newSuperiorCount
+				: 0;
+		newSuperiorCount += masterCapeRolls;
+
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
 			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
@@ -97,6 +103,10 @@ export default class extends Task {
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
+
+		if (masterCapeRolls > 0) {
+			str += `${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls `;
+		}
 
 		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
 			for (let i = 0; i < quantity; i++) {

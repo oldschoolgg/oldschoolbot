@@ -9,6 +9,8 @@ import { FishTable } from '../minions/data/killableMonsters/custom/SeaKraken';
 import BirthdayPresentTable from '../simulation/birthdayPresent';
 import CasketTable from '../simulation/casket';
 import CrystalChestTable from '../simulation/crystalChest';
+import { RuneTable } from '../simulation/seedTable';
+import { ExoticSeedsTable } from '../simulation/sharedTables';
 import { itemNameFromID, removeDuplicatesFromArray } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
@@ -22,6 +24,17 @@ interface Openable {
 	table: (() => number) | LootTable;
 	emoji: Emoji;
 }
+
+export const odsCrate = new LootTable()
+	.add('Pure essence', [500, 1000], 4)
+	.add(ExoticSeedsTable)
+	.add('Coins', [50_000, 1_000_000])
+	.tertiary(150, 'Magus scroll')
+	.tertiary(100, LampTable)
+	.add('Clue scroll (beginner)', 1, 2)
+	.add('Clue scroll (easy)', 1, 2)
+	.add('Clue scroll (medium)', 1)
+	.add(RuneTable, [1, 10], 3);
 
 export const ALL_PRIMAL = resolveItems([
 	'Primal full helm',
@@ -469,6 +482,13 @@ const Openables: Openable[] = [
 		itemID: itemID('Independence box'),
 		aliases: ['independence box'],
 		table: new LootTable().add('Fireworks').add('Fireworks').add('Liber tea').add("Sam's hat"),
+		emoji: Emoji.BirthdayPresent
+	},
+	{
+		name: 'Magic crate',
+		itemID: itemID('Magic crate'),
+		aliases: ['magic crate'],
+		table: odsCrate,
 		emoji: Emoji.BirthdayPresent
 	}
 ];

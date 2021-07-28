@@ -66,7 +66,7 @@ export default class extends Task {
 			str += '\nYou received **2x** extra fish from Shelldon helping you.';
 		}
 
-		await user.addItemsToBank(loot.bank, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot.bank, true);
 
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		await user.addXP({ skillName: SkillsEnum.Fishing, amount: totalXP });
@@ -77,7 +77,14 @@ export default class extends Task {
 		}
 		const { image } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(loot.bank, `Loot From ${quantity}x Fishing Trawler`, true, { showNewCL: 1 }, user);
+			.generateBankImage(
+				itemsAdded,
+				`Loot From ${quantity}x Fishing Trawler`,
+				true,
+				{ showNewCL: 1 },
+				user,
+				previousCL
+			);
 
 		handleTripFinish(
 			this.client,
@@ -90,7 +97,7 @@ export default class extends Task {
 			},
 			image!,
 			data,
-			loot.bank
+			itemsAdded
 		);
 	}
 }

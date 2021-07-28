@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
@@ -81,6 +81,11 @@ export default class extends BotCommand {
 		if (msg.author.usingPet('Obis')) {
 			tripLength /= 2;
 			boosts.push('2x from Obis (3x more essence)');
+		}
+
+		if (msg.author.hasItemEquippedAnywhere('Runecraft master cape')) {
+			tripLength /= 2;
+			boosts.push(`${Emoji.RunecraftMasterCape} 2x faster`);
 		}
 
 		let inventorySize = 28;

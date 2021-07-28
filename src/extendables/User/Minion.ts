@@ -676,10 +676,21 @@ export default class extends Extendable {
 			case Activity.Sepulchre:
 			case Activity.Pickpocket:
 			case Activity.SoulWars:
-			case Activity.Cyclops: {
+			case Activity.Cyclops:
+			case Activity.KalphiteKing:
+			case Activity.Nex:
+			case Activity.VasaMagus:
+			case Activity.Ignecarus:
+			case Activity.KingGoldemar:
+			case Activity.Dungeoneering: {
 				const hpLevel = this.skillLevel(SkillsEnum.Hitpoints);
 				const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
 				max += calcPercentOfNum(hpPercent, Time.Minute * 5);
+
+				if (this.hasItemEquippedAnywhere('Hitpoints master cape')) {
+					max += calcPercentOfNum(randInt(5, 10), max);
+				}
+
 				break;
 			}
 			case Activity.Alching: {
@@ -693,10 +704,6 @@ export default class extends Extendable {
 
 		if (this.usingPet('Zak')) {
 			max *= 1.4;
-		}
-
-		if (this.hasItemEquippedAnywhere('Hitpoints master cape')) {
-			max *= 1.2;
 		}
 
 		const sac = this.settings.get(UserSettings.SacrificedValue);
@@ -874,7 +881,7 @@ export default class extends Extendable {
 			? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
 			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
 
-		if (masterCape) {
+		if (masterCape && !params.minimal) {
 			if (isMatchingCape) {
 				str += ` You received 8% bonus XP for having a ${masterCape.item.name}.`;
 			} else {
@@ -882,11 +889,11 @@ export default class extends Extendable {
 			}
 		}
 
-		if (gorajanBoost) {
+		if (gorajanBoost && !params.minimal) {
 			str += ' (2x boost from Gorajan armor)';
 		}
 
-		if (firstAgeEquipped) {
+		if (firstAgeEquipped && !params.minimal) {
 			str += ` You received ${
 				firstAgeEquipped === 5 ? 6 : firstAgeEquipped
 			}% bonus XP for First age outfit items.`;

@@ -12,7 +12,7 @@ const options = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 30,
+			cooldown: 10,
 			usage: '<user:user>',
 			oneAtTime: true,
 			categoryFlags: ['minion'],

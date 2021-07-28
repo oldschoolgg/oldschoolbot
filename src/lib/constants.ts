@@ -107,6 +107,8 @@ export const enum Emoji {
 	Dungeoneering = '<:dungeoneering:828683755198873623>',
 	Gear = '<:gear:835314891950129202>',
 	Slayer = '<:slayer:630911040560824330>',
+	SlayerMasterCape = '<:slayerMasterCape:869497600284459008>',
+	RunecraftMasterCape = '<:runecraftMasterCape:869497600997470258>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',

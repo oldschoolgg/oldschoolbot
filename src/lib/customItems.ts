@@ -70,7 +70,20 @@ setCustomItem(478, 'Dwarven knife', 'Bronze knife', {}, 1_000_000);
 setCustomItem(506, 'Dwarven bar', 'Steel bar', {}, 500_000);
 setCustomItem(508, 'Dwarven ore', 'Iron ore', {}, 100_000);
 
-setCustomItem(6741, 'Dwarven warhammer', 'Dragon warhammer', {}, 10_000_000);
+setCustomItem(
+	6741,
+	'Dwarven warhammer',
+	'Dragon warhammer',
+	{
+		equipment: {
+			...getOSItem('Dragon warhammer').equipment!,
+			requirements: {
+				strength: 99
+			}
+		}
+	},
+	10_000_000
+);
 
 setCustomItem(8871, 'Dwarven crate', 'Mystery box', {}, 100_000);
 
@@ -166,14 +179,14 @@ setCustomItem(24_212, 'Abyssal thread', 'Giant pouch', {}, 10_000_000);
 setCustomItem(24_210, 'Abyssal pouch', 'Giant pouch', {}, 100_000);
 
 // Ori Pet || 4149	 = Abyssal demon
-setCustomItem(4149, 'Ori', 'Herbi', {}, 100_000);
+setCustomItem(4149, 'Ori', 'Herbi', {}, 1_000_000);
 
 // Abyssal bones || 24199 = Seren halo [DUPLICATE]
 setCustomItem(24_199, 'Abyssal dragon bones', 'Superior dragon bones', {}, 20_000);
 
-setCustomItem(19_567, 'Cob', 'Herbi');
+setCustomItem(19_567, 'Cob', 'Herbi', {}, 1_000_000);
 
-setCustomItem(22_949, 'Takon', 'Herbi');
+setCustomItem(22_949, 'Takon', 'Herbi', {}, 1_000_000);
 
 setCustomItem(6796, 'Tiny lamp', 'Lamp', {}, 100_000);
 setCustomItem(21_642, 'Small lamp', 'Lamp', {}, 300_000);
@@ -1162,8 +1175,8 @@ setCustomItem(
 
 setCustomItem(47_517, 'Perfect chitin', 'Magic seed', {}, 1_000_000);
 setCustomItem(47_518, 'Baby kalphite king', 'Herbi', {}, 1_000_000);
-setCustomItem(47_519, 'Hoppy', 'Herbi', {}, 20_000_000);
-setCustomItem(47_520, 'Craig', 'Herbi', {}, 20_000_000);
+setCustomItem(47_519, 'Hoppy', 'Herbi', {}, 1_000_000);
+setCustomItem(47_520, 'Craig', 'Herbi', {}, 1_000_000);
 
 setCustomItem(47_521, 'Beach mystery box', 'Mystery box', {}, 1_000_000);
 setCustomItem(47_522, 'Snappy the Turtle', 'Herbi', {}, 1_000_000);
@@ -1174,7 +1187,7 @@ setCustomItem(47_526, 'Crab hat', 'Coal', {}, 100_000);
 setCustomItem(47_527, 'Steve', 'Herbi', {}, 1_000_000);
 
 setCustomItem(47_528, "Bryophyta's staff(i)", "Bryophyta's staff", {}, 1_000_000);
-setCustomItem(47_529, 'Voidling', 'Herbi', {}, 10_000_000);
+setCustomItem(47_529, 'Voidling', 'Herbi', {}, 1_000_000);
 
 /**
  * -----------------------------------------------------------------------------------------------
@@ -1249,6 +1262,14 @@ setCustomItem(
 	1_000_000
 );
 setCustomItem(41_085, 'Tattered robes of Vasa', 'Coal', {}, 1_000_000);
+
+/**
+ * Dyed DWWH Items
+ */
+setCustomItem(41_086, 'Dwarven warhammer (ice)', 'Dwarven warhammer', {}, 10_000_000);
+setCustomItem(41_087, 'Dwarven warhammer (shadow)', 'Dwarven warhammer', {}, 10_000_000);
+setCustomItem(41_088, 'Dwarven warhammer (blood)', 'Dwarven warhammer', {}, 10_000_000);
+setCustomItem(41_089, 'Dwarven warhammer (3a)', 'Dwarven warhammer', {}, 10_000_000);
 
 /**
  *
@@ -1657,6 +1678,7 @@ setCustomItem(
 setCustomItem(48_215, 'Simple kibble', 'Coal', {}, 6000);
 setCustomItem(48_216, 'Delicious kibble', 'Coal', {}, 6000);
 setCustomItem(48_217, 'Extraordinary kibble', 'Coal', {}, 6000);
+setCustomItem(48_218, 'Magic crate', 'Coal', {}, 50_000);
 /**
  * Misc Items
  *
@@ -1686,8 +1708,8 @@ setCustomItem(50_016, 'Master farmer boots', 'Rune boots', {}, 1_000_000);
 
 setCustomItem(50_017, 'Elder logs', 'Magic logs', {}, 19_000);
 setCustomItem(50_018, 'Elder plank', 'Mahogany plank', {}, 10_000);
-setCustomItem(50_019, 'Elder bow(u)', 'Magic logs', {}, 19_000);
-setCustomItem(50_020, 'Elder bow', 'Mahogany plank', {}, 10_000);
+setCustomItem(50_019, 'Elder bow(u)', 'Magic logs', { highalch: 1025 }, 19_000);
+setCustomItem(50_020, 'Elder bow', 'Mahogany plank', { highalch: 2100 }, 10_000);
 setCustomItem(50_021, 'Elder rune', 'Fire rune', {}, 500);
 setCustomItem(50_022, 'Jar of magic', 'Fire rune', {}, 1_000_000);
 setCustomItem(50_023, 'Magus scroll', 'Fire rune', {}, 500_000);

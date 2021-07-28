@@ -756,7 +756,7 @@ export const cluesHardCL = resolveItems([
 	'Nunchaku',
 	'Dual sai',
 	'Rune cane',
-	'Amulet of glory (t)',
+	'Amulet of glory (t4)',
 	'Magic comp bow'
 ]);
 export const cluesEliteCL = resolveItems([

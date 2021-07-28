@@ -17,7 +17,7 @@ export async function triviaChallenge(msg: KlasaMessage): Promise<KlasaUser | nu
 		.then(res => res.json())
 		.then(res => res.results[0]);
 
-	const allAnswers = [correct_answer, ...incorrect_answers].sort(() => 0.5 - Math.random());
+	const allAnswers = [correct_answer, ...incorrect_answers].sort(() => 0.5 - Math.random()).map(s => he.decode(s));
 
 	const embed = new MessageEmbed()
 		.setColor(Color.Orange)

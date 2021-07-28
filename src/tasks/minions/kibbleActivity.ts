@@ -14,7 +14,18 @@ export default class extends Task {
 		const kibble = kibbles.find(k => k.type === kibbleType)!;
 		const loot = new Bank().add(kibble.item.id, quantity);
 		await user.addItemsToBank(loot, true);
-		let xpRes = await user.addXP({ skillName: SkillsEnum.Cooking, amount: kibble.xp * quantity, duration });
+		let xpRes = await user.addXP({
+			skillName: SkillsEnum.Cooking,
+			amount: kibble.xp * quantity,
+			duration,
+			minimal: true
+		});
+		xpRes += await user.addXP({
+			skillName: SkillsEnum.Herblore,
+			amount: Math.floor((kibble.xp * quantity) / 2),
+			duration,
+			minimal: true
+		});
 
 		handleTripFinish(
 			this.client,
