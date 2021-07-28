@@ -12,7 +12,6 @@ import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FarmingPatchesTable, FarmingPatchStatus } from '../../lib/typeorm/FarmingPatchesTable.entity';
-import { Skills } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
@@ -23,10 +22,9 @@ export default class extends Task {
 		const user = await this.client.users.fetch(data.userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
 
-		const xpReceived: Skills = {
-			[SkillsEnum.Farming]: 0,
-			[SkillsEnum.Woodcutting]: 0
-		};
+		let farmingXP = 0;
+		let wcXp = 0;
+
 		const itemsReceived = new Bank();
 
 		const harvested: Record<string, number> = {};
@@ -109,14 +107,19 @@ export default class extends Task {
 			}
 
 			// Get health xp
-			xpReceived[SkillsEnum.Farming]! += alivePlants * plantToHarvest.checkXp;
+			farmingXP += alivePlants * plantToHarvest.checkXp;
 
 			// If this plant have crops/collectables (allotments, fruit trees, etc)
 			if (plantToHarvest.givesCrops && plantToHarvest.outputCrop) {
 				let cropYield = 0;
 				if (plantToHarvest.variableYield) {
 					// For variable crops, like herbs and allotments
-					cropYield = calcVariableYield(plantToHarvest, collect.patchType, currentFarmingLevel, alivePlants);
+					cropYield = calcVariableYield(
+						plantToHarvest,
+						collect.compostUsed,
+						currentFarmingLevel,
+						alivePlants
+					);
 				} else if (plantToHarvest.fixedOutput) {
 					// For fixed crops, like fruit trees
 					if (plantToHarvest.fixedOutputAmount) {
@@ -153,9 +156,9 @@ export default class extends Task {
 				if (cropYield > 0) itemsReceived.add(plantToHarvest.outputCrop, cropYield);
 				// Get the base xp for these crops
 				if (plantToHarvest.name === 'Limpwurt') {
-					xpReceived[SkillsEnum.Farming]! += plantToHarvest.harvestXp * alivePlants;
+					farmingXP += plantToHarvest.harvestXp * alivePlants;
 				} else {
-					xpReceived[SkillsEnum.Farming]! += cropYield * plantToHarvest.harvestXp;
+					farmingXP += cropYield * plantToHarvest.harvestXp;
 				}
 			}
 
@@ -164,7 +167,7 @@ export default class extends Task {
 				const amountOfLogs = rand(5, 10) * alivePlants;
 				itemsReceived.add(plantToHarvest.outputLogs, amountOfLogs);
 				if (plantToHarvest.outputRoots) itemsReceived.add(plantToHarvest.outputRoots, rand(1, 4) * alivePlants);
-				xpReceived[SkillsEnum.Woodcutting]! += amountOfLogs * plantToHarvest.woodcuttingXp!;
+				wcXp += amountOfLogs * (plantToHarvest.woodcuttingXp ?? 0);
 			}
 
 			// Check specific for Hespori loot
@@ -199,7 +202,7 @@ export default class extends Task {
 
 			// Check for farming contracts
 			const farmingSettings = { ...deepClone(user.settings.get(UserSettings.Minion.FarmingSettings)) };
-			let currentContract = farmingSettings.farmingContract || defaultFarmingContract;
+			let currentContract = farmingSettings.farmingContract ?? defaultFarmingContract;
 			contractsCompleted = currentContract.contractsCompleted;
 			if (
 				plantToHarvest.name === currentContract.plantToGrow &&
@@ -222,10 +225,10 @@ export default class extends Task {
 			}
 
 			// Add the qty that died or was harvested
-			harvested[collect.plant] = (harvested[collect.plant] || 0) + alivePlants;
-			dead[collect.plant] = (dead[collect.plant] || 0) + quantityDead;
+			harvested[collect.plant] = (harvested[collect.plant] ?? 0) + alivePlants;
+			dead[collect.plant] = (dead[collect.plant] ?? 0) + quantityDead;
 			patchesQtyByTypeHarvested[collect.patchType] =
-				(patchesQtyByTypeHarvested[collect.patchType] || 0) + collect.quantity;
+				(patchesQtyByTypeHarvested[collect.patchType] ?? 0) + collect.quantity;
 
 			collect.status = FarmingPatchStatus.Harvested;
 			collect.harvestDate = currentDate;
@@ -245,7 +248,7 @@ export default class extends Task {
 			// If we have more patches to plant than we collected
 			if (patchesQtyByTypeHarvested[plantToPlant.seedType] < 0) {
 				const weedsReceived = Math.abs(patchesQtyByTypeHarvested[plantToPlant.seedType]) * 3;
-				xpReceived[SkillsEnum.Farming]! += weedsReceived * 4;
+				farmingXP += weedsReceived * 4;
 				itemsReceived.add('Weeds', weedsReceived);
 				// Reset to 0, so the next plant will be use only what it is planting
 				patchesQtyByTypeHarvested[plantToPlant.seedType] = 0;
@@ -257,7 +260,7 @@ export default class extends Task {
 			if (plant.compost === 'ultracompost') compostXp = 36;
 
 			// Add XP for planting
-			xpReceived[SkillsEnum.Farming]! += (plantToPlant.plantXp + compostXp) * plant.quantity;
+			farmingXP += (plantToPlant.plantXp + compostXp) * plant.quantity;
 
 			// Save in the DB
 			const finishDate = new Date();
@@ -267,7 +270,7 @@ export default class extends Task {
 			// Get the plant date and add the growth time
 			finishDate.setTime(
 				plantedDate.getTime() +
-					(this.client.production ? plantToPlant.growthTime * Time.Minute : rand(5, 150) * Time.Second)
+					(this.client.production ? plantToPlant.growthTime * Time.Minute : rand(5, 10) * Time.Second)
 			);
 			const rec = new FarmingPatchesTable();
 			rec.plant = plantToPlant.name;
@@ -283,10 +286,10 @@ export default class extends Task {
 
 			//
 			durationPerSeedType += plant.duration;
-			planted[plant.plant] = (planted[plant.plant] || 0) + plant.quantity;
+			planted[plant.plant] = (planted[plant.plant] ?? 0) + plant.quantity;
 		}
 
-		xpReceived[SkillsEnum.Farming]! *= 1 + bonusXpMultiplier;
+		farmingXP *= 1 + bonusXpMultiplier;
 
 		// Prepare the messages to send the player
 		const finalMessage: string[] = [];
@@ -327,18 +330,18 @@ export default class extends Task {
 
 		let xpReceivedStr: string[] = [];
 
-		if (xpReceived[SkillsEnum.Farming]! > 0)
+		if (farmingXP > 0)
 			xpReceivedStr.push(
 				await user.addXP({
-					amount: xpReceived[SkillsEnum.Farming]!,
+					amount: farmingXP,
 					skillName: SkillsEnum.Farming
 				})
 			);
 
-		if (xpReceived[SkillsEnum.Woodcutting]! > 0)
+		if (wcXp > 0)
 			xpReceivedStr.push(
 				await user.addXP({
-					amount: xpReceived[SkillsEnum.Woodcutting]!,
+					amount: wcXp,
 					skillName: SkillsEnum.Woodcutting
 				})
 			);

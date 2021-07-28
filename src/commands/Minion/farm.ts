@@ -499,14 +499,13 @@ export default class extends BotCommand {
 				});
 			}
 		}
-
 		await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
 			toPlant: activityOptions,
 			toCollect: toCollect.map(c => {
-				return { id: c.id, paidToCut: paidToCut[c.id] || false };
+				return { id: c.id, paidToCut: paidToCut[c.id] ?? false };
 			}),
 			currentDate: currentDate.getTime(),
 			type: Activity.Farming

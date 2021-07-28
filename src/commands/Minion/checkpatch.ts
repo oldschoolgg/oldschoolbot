@@ -1,7 +1,7 @@
+import { objectEntries } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Not } from 'typeorm';
 
-import { Emoji } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { FarmingPatchTypes } from '../../lib/minions/farming/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -24,7 +24,6 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		await msg.author.settings.sync(true);
-		let finalStr: string[] = [];
 
 		const currentDate = new Date();
 		const patchArray = Object.values(FarmingPatchTypes);
@@ -35,31 +34,32 @@ export default class extends BotCommand {
 			}
 		});
 
+		const ready: Record<string, string[]> = {};
+		const notReady: Record<string, string[]> = {};
+
 		for (const plant of userPlants) {
 			// Remove from patchArray, the patches that are being used
 			patchArray.splice(patchArray.indexOf(plant.patchType as FarmingPatchTypes), 1);
 			// If the plant is still growing
 			if (currentDate < plant.finishDate) {
-				finalStr.push(
-					`<:ehpclock:352323705210142721> **${toTitleCase(plant.patchType)}**: ${plant.quantity}x ${
-						plant.plant
-					} will be ready to harvest in ${formatDuration(
-						plant.finishDate.getTime() - currentDate.getTime(),
-						true
-					)}`
+				if (!notReady[toTitleCase(plant.patchType)]) notReady[toTitleCase(plant.patchType)] = [];
+				notReady[toTitleCase(plant.patchType)].push(
+					`${plant.plant} (${formatDuration(plant.finishDate.getTime() - currentDate.getTime(), true)})`
 				);
 			} else {
-				finalStr.push(
-					`<:secateurs:868671587614855258> **${toTitleCase(plant.patchType)}**: ${plant.quantity}x ${
-						plant.plant
-					} is ready.`
-				);
+				if (!ready[toTitleCase(plant.patchType)]) ready[toTitleCase(plant.patchType)] = [];
+				ready[toTitleCase(plant.patchType)].push(`${plant.plant}`);
 			}
 		}
 
-		if (patchArray.length > 0)
-			finalStr.push(`${Emoji.RedX} You have nothing planted in these patches: ${patchArray.join(', ')}`);
-
-		return msg.channel.send(finalStr.join('\n'));
+		return msg.channel.send(
+			`Your Farming Patch Status\n\n<:secateurs:868671587614855258> **Ready to harvest**\n${objectEntries(ready)
+				.filter(v => v[1].length > 0)
+				.map(r => `**${r[0]}:** ${r[1].join(', ')}`)
+				.join('\n')}\n\n<:ehpclock:352323705210142721> **Growing**\n${objectEntries(notReady)
+				.filter(v => v[1].length > 0)
+				.map(r => `**${r[0]}:** ${r[1].join(', ')}`)
+				.join('\n')}\n\nNothing planted in: ${patchArray.length > 0 ? patchArray.join(', ') : '-'}`
+		);
 	}
 }

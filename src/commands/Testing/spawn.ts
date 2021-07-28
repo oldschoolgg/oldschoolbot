@@ -7,6 +7,7 @@ import { Emoji } from '../../lib/constants';
 import { converCLtoBank } from '../../lib/data/Collections';
 import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
 import { filterableTypes } from '../../lib/data/filterables';
+import { constructGearSetup } from '../../lib/gear';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
@@ -28,6 +29,18 @@ const gearSpawns = [
 		name: 'coxrange',
 		gear: maxRangeGear,
 		setup: UserSettings.Gear.Range
+	},
+	{
+		name: 'graceful',
+		gear: constructGearSetup({
+			head: 'Graceful hood',
+			cape: 'Graceful cape',
+			body: 'Graceful top',
+			legs: 'Graceful legs',
+			feet: 'Graceful boots',
+			hands: 'Graceful gloves'
+		}),
+		setup: UserSettings.Gear.Skilling
 	}
 ];
 

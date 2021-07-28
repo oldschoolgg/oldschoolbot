@@ -34,7 +34,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const farmingLevel = msg.author.skillLevel(SkillsEnum.Farming);
 		const farmingSettings = { ...deepClone(msg.author.settings.get(UserSettings.Minion.FarmingSettings)) };
-		const currentContract = farmingSettings.farmingContract || defaultFarmingContract;
+		const currentContract = farmingSettings.farmingContract ?? defaultFarmingContract;
 
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
