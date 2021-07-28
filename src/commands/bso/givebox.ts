@@ -18,14 +18,16 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [user]: [KlasaUser]) {
-		if (user.id === msg.author.id) throw "You can't give boxes to yourself!";
+		if (user.id === msg.author.id) {
+			return msg.channel.send("You can't give boxes to yourself!");
+		}
 		if (user.isIronman) return;
 		const currentDate = Date.now();
 		const lastDate = msg.author.settings.get(UserSettings.LastGivenBox);
 		const difference = currentDate - lastDate;
 
 		if (difference < Time.Hour * 24 && msg.author.id !== '157797566833098752') {
-			const duration = formatDuration(Date.now() - (lastDate + Time.Hour * 24));
+			const duration = formatDuration(Date.now() - (Number(lastDate) + Time.Hour * 24));
 			return msg.channel.send(`You can give another box in ${duration}.`);
 		}
 		await msg.author.settings.update(UserSettings.LastGivenBox, currentDate);
