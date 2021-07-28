@@ -149,7 +149,7 @@ export default class extends BotCommand {
 			.map(n => n.trim())
 			.filter(f => f);
 
-		const quantity = Number(msg.flagArgs.qty) ?? NaN;
+		let quantity = Number(msg.flagArgs.qty);
 
 		let subQtyInformed = false;
 		const plantsQty: Record<string, number> = {};
