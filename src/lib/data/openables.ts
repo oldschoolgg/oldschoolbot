@@ -582,9 +582,7 @@ for (const item of Items.values()) {
 	}
 }
 
-const preFilteredAllMbTables = [...tmbTable, ...umbTable, ...embTable];
-
-export const allMbTables = [...new Set([...preFilteredAllMbTables])];
+export const allMbTables = [...new Set([...tmbTable, ...umbTable, ...embTable])];
 
 function randomEquippable(): number {
 	const res = randArrItem(embTable);
