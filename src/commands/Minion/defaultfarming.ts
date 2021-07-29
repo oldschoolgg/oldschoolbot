@@ -55,7 +55,6 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		const farmingSettings = await this.getSettings(msg);
-
 		return msg.channel.send(
 			`Your current compost tier to automatically use is \`${farmingSettings.defaultCompost || 'Compost'}\`.` +
 				`\nYour current payment default is \`${
@@ -68,7 +67,11 @@ export default class extends BotCommand {
 					farmingSettings.confirmationEnabled === false ? 'Disabled' : 'Enabled'
 				}\`.` +
 				`\nYour current favorite setting is \`${farmingSettings.favoritePlants ?? 'Nothing'}\`.` +
-				`\nYour current block setting is \`${farmingSettings.blockedPatches ?? 'Nothing'}\`.` +
+				`\nYour current block setting is \`${
+					farmingSettings.blockedPatches && farmingSettings.blockedPatches.length > 0
+						? farmingSettings.blockedPatches.join(', ')
+						: 'Nothing'
+				}\`.` +
 				`\n\nThe default settings you can adjust are: \`${msg.cmdPrefix}defaultfarming tier [compost|supercompost|ultracompost]\`, ` +
 				`\`${msg.cmdPrefix}defaultfarming pay enable/disable\`, ` +
 				`\`${
