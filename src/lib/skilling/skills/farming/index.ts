@@ -2,6 +2,7 @@ import { Emoji } from '../../../constants';
 import itemID from '../../../util/itemID';
 import { Plant, SkillsEnum } from '../../types';
 import allotmentPlants from './allotments';
+import flowerPlants from './flowers';
 import fruitTrees from './fruitTrees';
 import herbPlants from './herbPlants';
 import hopsPlants from './hops';
@@ -14,6 +15,7 @@ export const plants: Plant[] = [
 	...allotmentPlants,
 	...fruitTrees,
 	...hopsPlants,
+	...flowerPlants,
 	...specialPlants
 ];
 
