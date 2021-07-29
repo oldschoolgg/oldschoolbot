@@ -1,6 +1,6 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Eatables } from '../../lib/data/eatables';
@@ -44,6 +44,20 @@ export async function removeRawFood({
 
 		return [`${new Bank(foodToRemove)} from ${user.username}`, foodToRemove];
 	}
+}
+
+async function getTameStatus(user: KlasaUser) {
+	const [, currentTask] = await getUsersTame(user);
+	if (currentTask) {
+		const currentDate = new Date().valueOf();
+		switch (currentTask.type) {
+			case 'pvm':
+				return `Currently killing ${currentTask.data.quantity}x ${
+					Monsters.find(m => m.id === currentTask.data.monsterID)!.name
+				}, ${formatDuration(currentTask.finishDate.valueOf() - currentDate)} remaining.`;
+		}
+	}
+	return 'Currently doing nothing';
 }
 
 export default class extends BotCommand {
@@ -102,17 +116,17 @@ export default class extends BotCommand {
 			});
 		}
 		const [selectedTame] = await getUsersTame(msg.author);
-		return msg.channel.send(
-			`Your tames:
-${allTames
-	.map(
-		t =>
-			`${t.id}. ${t.toString()}${
-				t?.growthStage === TameGrowthStage.Adult ? '' : ` ${t?.currentGrowthPercent}% grown ${t.growthStage}`
-			}${selectedTame?.id === t.id ? ' *Selected*' : ''}`
-	)
-	.join('\n')}`
-		);
+		const tames = [];
+		for (const t of allTames) {
+			tames.push(
+				`${t.id}. ${t.toString()}${
+					t?.growthStage === TameGrowthStage.Adult
+						? ''
+						: ` ${t?.currentGrowthPercent}% grown ${t.growthStage}`
+				}${selectedTame?.id === t.id ? ` **Selected** - ${await getTameStatus(msg.author)}` : ''}`
+			);
+		}
+		return msg.channel.send(`Your tames:\n${tames.join('\n')}`);
 	}
 
 	async select(msg: KlasaMessage, [str = '']: [string]) {
