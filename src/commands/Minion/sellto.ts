@@ -74,7 +74,7 @@ export default class extends BotCommand {
 		const message = await msg.groupConfirm({
 			users: [msg.author, buyerMember.user],
 			str: sellStr,
-			type: ['Accept', 'Accepted'],
+			type: ['Accept', 'Accepted', 'Accept'],
 			errorStr: 'Trade canceled. Everyone must accept it.'
 		});
 
