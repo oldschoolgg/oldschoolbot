@@ -51,11 +51,11 @@ export const XPLamps: IXPLamp[] = [
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Uses an item',
+			description: 'Uses an item that gives XP',
 			cooldown: 3,
 			usageDelim: ' ',
 			usage: '[qty:int] [cmd:...string]',
-			examples: ['+use 1 dark relic'],
+			examples: ['+lamp 1 dark relic', '+lamp 1 antique lamp 3 agility'],
 			categoryFlags: ['minion'],
 			oneAtTime: true
 		});
