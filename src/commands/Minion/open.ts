@@ -156,9 +156,8 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemFromBank(osjsOpenable.id, quantity);
-
 		const loot = osjsOpenable.open(quantity, {});
-
+		const score = msg.author.getOpenableScore(osjsOpenable.id) + quantity;
 		this.client.emit(
 			Events.Log,
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${osjsOpenable.name}.`
@@ -173,6 +172,7 @@ export default class extends BotCommand {
 
 		return msg.channel.sendBankImage({
 			bank: loot,
+			content: `You have opened the ${osjsOpenable.name.toLowerCase()} ${score.toLocaleString()} times.`,
 			title: `You opened ${quantity} ${osjsOpenable.name}`,
 			flags: { showNewCL: 1, ...msg.flagArgs },
 			user: msg.author,
@@ -201,11 +201,8 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
-
-		const score = msg.author.getOpenableScore(itemID('Spoils of war'));
-
+		const score = msg.author.getOpenableScore(botOpenable.itemID);
 		const loot = botOpenable.table.roll(quantity);
-
 		if (loot.has("Lil' creator")) {
 			this.client.emit(
 				Events.ServerNotification,
@@ -228,6 +225,9 @@ export default class extends BotCommand {
 
 		return msg.channel.sendBankImage({
 			bank: loot.values(),
+			content: `You have opened the ${botOpenable.name.toLowerCase()} ${(
+				score + quantity
+			).toLocaleString()} times.`,
 			title: `You opened ${quantity} ${botOpenable.name}`,
 			flags: { showNewCL: 1, ...msg.flagArgs },
 			user: msg.author,
