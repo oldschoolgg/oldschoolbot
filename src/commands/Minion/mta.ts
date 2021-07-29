@@ -91,7 +91,7 @@ ${buyables
 	.map(i => `${i.item.name} - ${i.cost} pts - ${formatDuration((i.cost / pizazzPointsPerHour) * (Time.Minute * 60))}`)
 	.join('\n')}
 
-Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get.`);
+Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **+mta train**`);
 	}
 
 	@requiresMinion
