@@ -1,4 +1,4 @@
-import { Message, MessageButton } from 'discord.js';
+import { Message, MessageButton, MessageComponentInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
 
@@ -40,20 +40,39 @@ export default class extends Extendable {
 		}
 
 		try {
-			const selection = await confirmMessage.awaitMessageComponentInteraction({
-				filter: i => {
-					if (i.user.id !== this.author.id) {
-						i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-						return false;
+			const selection = await Promise.race([
+				confirmMessage.channel.awaitMessages({
+					time: Time.Second * 15,
+					max: 1,
+					errors: ['time'],
+					filter: _msg => {
+						return (
+							_msg.author.id === this.author.id &&
+							['confirm', 'cancel'].includes(_msg.content.toLowerCase())
+						);
 					}
-					return true;
-				},
-				time: Time.Second * 15
-			});
-			if (selection.customID === 'CANCEL') {
+				}),
+				confirmMessage.awaitMessageComponentInteraction({
+					filter: i => {
+						if (i.user.id !== this.author.id) {
+							i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+							return false;
+						}
+						return true;
+					},
+					time: Time.Second * 15
+				})
+			]);
+			let response = '';
+			if (selection instanceof MessageComponentInteraction) {
+				response = selection.customID;
+			} else {
+				response = selection.entries().next().value[1].content.toUpperCase();
+			}
+			if (response === 'CANCEL') {
 				return cancel('cancelled the confirmation');
 			}
-			if (selection.customID === 'CONFIRM') {
+			if (response === 'CONFIRM') {
 				return confirm();
 			}
 		} catch {
