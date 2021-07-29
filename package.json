@@ -35,7 +35,7 @@
 		"node-fetch": "^2.6.1",
 		"oldschooljs": "1.9.5",
 		"p-queue": "^6.6.2",
-		"pg": "^8.6.0",
+		"pg": "^8.7.1",
 		"piscina": "^3.1.0",
 		"random-js": "^2.1.0",
 		"reflect-metadata": "^0.1.13",
