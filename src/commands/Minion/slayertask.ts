@@ -1,5 +1,5 @@
 import { MessageButton } from 'discord.js';
-import { randInt, Time } from 'e';
+import { deepClone, randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
@@ -104,9 +104,10 @@ export default class extends BotCommand {
 				return msg.channel.send('It was not possible to auto-slay this task. Please, try again.');
 			}
 		}
+		const components = deepClone(returnSuccessButtons);
 		// Add turael only if master is not turael
 		if (!message.toLowerCase().includes('turael')) {
-			returnSuccessButtons[1].push(
+			components[1].push(
 				new MessageButton({
 					label: 'Turael Skip (Will reset streak)',
 					style: 'DANGER',
@@ -114,7 +115,7 @@ export default class extends BotCommand {
 				})
 			);
 		}
-		const sentMessage = await msg.channel.send({ content: message, components: returnSuccessButtons });
+		const sentMessage = await msg.channel.send({ content: message, components });
 		try {
 			const selection = await sentMessage.awaitMessageComponentInteraction({
 				filter: i => {
