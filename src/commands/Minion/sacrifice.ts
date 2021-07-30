@@ -52,20 +52,22 @@ export default class extends BotCommand {
 
 		let str = '';
 		const currentIcon = msg.author.settings.get(UserSettings.Minion.Icon);
-		for (const icon of minionIcons) {
-			if (newValue < icon.valueRequired) continue;
-			if (newValue >= icon.valueRequired) {
-				if (currentIcon === icon.emoji) break;
-				await msg.author.settings.update(UserSettings.Minion.Icon, icon.emoji);
-				str += `\n\nYou have now unlocked the **${icon.name}** minion icon!`;
-				this.client.emit(
-					Events.ServerNotification,
-					`**${msg.author.username}** just unlocked the ${icon.emoji} icon for their minion.`
-				);
-				break;
+		// Ignores notifying the user/server if the user is using a custom icon
+		if (!currentIcon || minionIcons.find(m => m.emoji === currentIcon)) {
+			for (const icon of minionIcons) {
+				if (newValue < icon.valueRequired) continue;
+				if (newValue >= icon.valueRequired) {
+					if (currentIcon === icon.emoji) break;
+					await msg.author.settings.update(UserSettings.Minion.Icon, icon.emoji);
+					str += `\n\nYou have now unlocked the **${icon.name}** minion icon!`;
+					this.client.emit(
+						Events.ServerNotification,
+						`**${msg.author.username}** just unlocked the ${icon.emoji} icon for their minion.`
+					);
+					break;
+				}
 			}
 		}
-
 		return msg.channel.send(
 			`You sacrificed ${bankToSac}, with a value of ${totalPrice.toLocaleString()}gp (${Util.toKMB(
 				totalPrice

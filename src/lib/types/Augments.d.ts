@@ -1,6 +1,6 @@
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
-import { MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
+import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Bank, Player } from 'oldschooljs';
 import PQueue from 'p-queue';
@@ -76,8 +76,13 @@ declare module 'klasa' {
 			user?: KlasaUser,
 			cl?: ItemBank
 		): Promise<BankImageResult>;
-		generateCollectionLogImage(collectionLog: ItemBank, title: string = '', type: any): Promise<Buffer>;
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
+		generateLogImage(options: {
+			user: KlasaUser;
+			collection: string;
+			type: 'collection' | 'sacrifice' | 'bank';
+			flags: { [key: string]: string | number };
+		}): Promise<MessageOptions | MessageAttachment>;
 	}
 	interface Command {
 		kill(message: KlasaMessage, [quantity, monster]: [number | string, string]): Promise<any>;

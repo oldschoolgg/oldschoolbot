@@ -4,13 +4,14 @@ import { Bank } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { coxLog, metamorphPets } from '../../../lib/data/collectionLog';
+import { chambersOfXericCl, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { addBanks, filterBankFromArrayOfItems, roll } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import resolveItems from '../../../lib/util/resolveItems';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -20,10 +21,11 @@ const greenItems = resolveItems(['Twisted ancestral colour kit']);
 const blueItems = resolveItems(['Metamorphic dust']);
 const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
 
-const purpleItems = [...Object.values(coxLog), ...metamorphPets].flat(2).filter(i => !notPurple.includes(i));
+const purpleItems = chambersOfXericCl.filter(i => !notPurple.includes(i));
 
 export default class extends Task {
-	async run({ channelID, users, challengeMode, duration, leader }: RaidsOptions) {
+	async run(data: RaidsOptions) {
+		const { channelID, users, challengeMode, duration, leader } = data;
 		const allUsers = await Promise.all(users.map(async u => this.client.users.fetch(u)));
 		const team = await createTeam(allUsers, challengeMode);
 
@@ -72,7 +74,7 @@ export default class extends Task {
 				user.settings.get(UserSettings.CollectionLogBank)[itemID('Metamorphic dust')]
 			) {
 				const { bank } = user.allItemsOwned();
-				const unownedPet = shuffleArr(metamorphPets).find(pet => !bank[pet]);
+				const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !bank[pet]);
 				if (unownedPet) {
 					userLoot.add(unownedPet);
 				}
@@ -113,6 +115,31 @@ export default class extends Task {
 			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CoxLoot), totalLoot.bank])
 		);
 
-		sendToChannelID(this.client, channelID, { content: resultMessage });
+		if (allUsers.length === 1) {
+			handleTripFinish(
+				this.client,
+				allUsers[0],
+				channelID,
+				resultMessage,
+				res => {
+					const flags: Record<string, string> = challengeMode ? { cm: 'cm' } : {};
+
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					if (!res.prompter) res.prompter = {};
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					res.prompter.flags = flags;
+
+					allUsers[0].log('continued trip of solo CoX');
+					return this.client.commands.get('raid')!.run(res, ['solo']);
+				},
+				undefined,
+				data,
+				null
+			);
+		} else {
+			sendToChannelID(this.client, channelID, { content: resultMessage });
+		}
 	}
 }
