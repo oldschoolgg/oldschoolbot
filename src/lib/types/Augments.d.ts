@@ -11,6 +11,7 @@ import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BankImageResult } from '../../tasks/bankImage';
 import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
+import { GearSetup } from '../gear';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
 import { AddXpParams, KillableMonster } from '../minions/types';
@@ -29,6 +30,7 @@ type SendBankImageFn = (options: {
 	flags?: Record<string, string | number>;
 	user?: KlasaUser;
 	cl?: ItemBank;
+	gearPlaceholder?: Record<GearSetupType, GearSetup>;
 }) => Promise<KlasaMessage>;
 
 declare module 'klasa' {

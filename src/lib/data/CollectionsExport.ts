@@ -1525,7 +1525,7 @@ export const shayzienArmourCL = resolveItems([
 	'Shayzien boots (5)',
 	'Shayzien helm (5)',
 	'Shayzien greaves (5)',
-	'Shayzien platebody (5)'
+	'Shayzien body (5)'
 ]);
 export const skillingPetsCL = resolveItems([
 	'Heron',
