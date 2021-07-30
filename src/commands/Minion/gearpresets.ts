@@ -186,8 +186,8 @@ export default class extends BotCommand {
 
 	async share(msg: KlasaMessage, [name = '', user]: [string, KlasaUser]) {
 		const preset = await GearPresetsTable.findOne({ userID: msg.author.id, name });
-		if (!name) return msg.channel.send('You must inform the name of the preset you want to share.');
-		if (!preset) return msg.channel.send(`You do not own any preset called ${name}.`);
+		if (!name) return msg.channel.send('You must specify the name of the preset you want to share.');
+		if (!preset) return msg.channel.send(`You do not have any preset called ${name}.`);
 		if (user === msg.author) return msg.channel.send("You can't share a preset with yourself.");
 
 		// Check if user can receive the preset
@@ -228,7 +228,11 @@ export default class extends BotCommand {
 
 	async rename(msg: KlasaMessage, [name = '', newName = '']: [string, string]) {
 		if (!name || !newName)
-			return msg.channel.send('You must use this command as "rename `currentPresetName` `newPresetName`"');
+			return msg.channel.send(
+				`You must specify the preset you want to rename and the new name. Example: \`${
+					msg.cmdPrefix
+				}grearpresets rename ${name || 'currentname'} newname\``
+			);
 		const realNewName = newName.substr(0, 12);
 		const preset = await GearPresetsTable.findOne({ userID: msg.author.id, name });
 		if (!preset) {
@@ -245,6 +249,6 @@ export default class extends BotCommand {
 			},
 			{ name: realNewName }
 		);
-		return msg.channel.send(`Successfully renamed your preset \`${name}\` to \`${realNewName}\`.`);
+		return msg.channel.send(`Successfully renamed your preset from \`${name}\` to \`${realNewName}\`.`);
 	}
 }
