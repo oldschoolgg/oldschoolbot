@@ -1,7 +1,6 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { cleanString } from 'oldschooljs/dist/util';
 
 import { Color } from '../../lib/constants';
 import { defaultGear, globalPresets, resolveGearTypeSetting } from '../../lib/gear';
@@ -10,7 +9,7 @@ import { GearSetupTypes } from '../../lib/gear/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GearPresetsTable } from '../../lib/typeorm/GearPresetsTable.entity';
-import { isValidGearSetup } from '../../lib/util';
+import { cleanString, isValidGearSetup } from '../../lib/util';
 
 function maxPresets(user: KlasaUser) {
 	return user.perkTier * 2 + 3;
