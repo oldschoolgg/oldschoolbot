@@ -1,6 +1,7 @@
 import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
+import { Quests } from '../data/QuestExports';
 import { IPatchData } from '../minions/farming/types';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
@@ -169,7 +170,9 @@ export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
+export interface QuestingActivityTaskOptions extends ActivityTaskOptions {
+	questID: Quests;
+}
 
 export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	plantsName: string | null;
