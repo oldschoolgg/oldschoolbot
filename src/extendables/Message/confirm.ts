@@ -13,7 +13,7 @@ export default class extends Extendable {
 		if (this.flagArgs.confirm || this.flagArgs.cf) return;
 
 		const confirmMessage = await this.channel.send({
-			content: str,
+			content: `${str}\n\nYou can also type \`confirm\` or \`cancel\`.`,
 			components: [
 				[
 					new MessageButton({
