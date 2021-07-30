@@ -231,7 +231,7 @@ export default class extends BotCommand {
 			return msg.channel.send(
 				`You must specify the preset you want to rename and the new name. Example: \`${
 					msg.cmdPrefix
-				}grearpresets rename ${name || 'currentname'} newname\``
+				}gearpresets rename ${name || 'currentname'} newname\``
 			);
 		const realNewName = newName.substr(0, 12);
 		const preset = await GearPresetsTable.findOne({ userID: msg.author.id, name });
