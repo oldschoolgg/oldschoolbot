@@ -12,7 +12,7 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, stringMatches } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -85,9 +85,16 @@ export default class extends BotCommand {
 		}
 
 		let hasScruffy = false;
-		if (msg.author.equippedPet() === itemID('Scruffy')) {
+		if (msg.author.usingPet('Scruffy')) {
 			timeToFletchSingleItem /= 2;
 			hasScruffy = true;
+		}
+		if (msg.author.hasItemEquippedAnywhere('Dwarven knife')) {
+			if (hasScruffy) {
+				timeToFletchSingleItem /= 1.5;
+			} else {
+				timeToFletchSingleItem /= 2;
+			}
 		}
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
