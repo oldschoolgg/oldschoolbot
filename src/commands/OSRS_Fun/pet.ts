@@ -1,9 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { cleanString } from 'oldschooljs/dist/util';
 
 import pets from '../../lib/data/pets';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { roll } from '../../lib/util';
+import { cleanString, roll } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
