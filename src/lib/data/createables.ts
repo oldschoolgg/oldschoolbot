@@ -3,7 +3,7 @@ import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
 import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
-import { metamorphPets } from './collectionLog';
+import { chambersOfXericMetamorphPets } from './CollectionsExport';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { ornamentKits } from './creatables/ornaments';
@@ -22,7 +22,7 @@ export interface Createable {
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 }
 
-const metamorphPetCreatables: Createable[] = metamorphPets.map(pet => ({
+const metamorphPetCreatables: Createable[] = chambersOfXericMetamorphPets.map(pet => ({
 	name: itemNameFromID(pet)!,
 	inputItems: {
 		[itemID('Metamorphic dust')]: 1
@@ -474,83 +474,6 @@ const Createables: Createable[] = [
 			[itemID("Karil's crossbow")]: 1
 		},
 		noCl: true
-	},
-	/**
-	 * Prospector outfit
-	 */
-	{
-		name: 'Prospector helmet',
-		outputItems: {
-			[itemID('Prospector helmet')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 40
-		}
-	},
-	{
-		name: 'Prospector jacket',
-		outputItems: {
-			[itemID('Prospector jacket')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 60
-		}
-	},
-	{
-		name: 'Prospector legs',
-		outputItems: {
-			[itemID('Prospector legs')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 50
-		}
-	},
-	{
-		name: 'Prospector boots',
-		outputItems: {
-			[itemID('Prospector boots')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 30
-		}
-	},
-	{
-		name: 'Coal bag',
-		outputItems: {
-			[itemID('Coal bag')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 100
-		}
-	},
-	{
-		name: 'Mining gloves',
-		outputItems: {
-			[itemID('Mining gloves')]: 1
-		},
-		inputItems: {
-			[itemID('Unidentified minerals')]: 60
-		}
-	},
-	{
-		name: 'Superior mining gloves',
-		outputItems: {
-			[itemID('Superior mining gloves')]: 1
-		},
-		inputItems: {
-			[itemID('Unidentified minerals')]: 120
-		}
-	},
-	{
-		name: 'Expert mining gloves',
-		outputItems: {
-			[itemID('Expert mining gloves')]: 1
-		},
-		inputItems: {
-			[itemID('Superior mining gloves')]: 1,
-			[itemID('Mining gloves')]: 1,
-			[itemID('Unidentified minerals')]: 60
-		}
 	},
 	{
 		name: 'Master clue',

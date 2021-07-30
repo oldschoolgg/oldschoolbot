@@ -59,10 +59,6 @@ export default class extends BotCommand {
 		}
 		const skill = skillName as SkillsEnum;
 
-		if (skill === SkillsEnum.Runecraft && msg.author.skillLevel(SkillsEnum.Runecraft) > 50) {
-			return msg.channel.send("You cannot lamp Runecraft, because it's the current SOTW skill.");
-		}
-
 		if (msg.author.skillLevel(skill) < lamp.minimumLevel) {
 			return msg.channel.send(
 				`You can't use this lamp on ${skill} because it requires a minimum level of ${lamp.minimumLevel}.`
