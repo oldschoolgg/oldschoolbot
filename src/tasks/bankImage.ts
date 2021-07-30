@@ -1,4 +1,5 @@
 import { Canvas, createCanvas, Image, registerFont } from 'canvas';
+import { objectKeys } from 'e';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
@@ -9,6 +10,7 @@ import * as path from 'path';
 import { bankImageCache, Events } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
+import { GearSetupType } from '../lib/gear';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
 import { getUserSettings } from '../lib/settings/settings';
@@ -59,11 +61,14 @@ export default class BankImageTask extends Task {
 	public itemIconImagesCache: Map<number, Image>;
 	public backgroundImages: BankBackground[] = [];
 
-	public repeatingImage: Image | null = null;
+	public repeatingImage: Image = new Image();
 
-	public borderCorner: Image | null = null;
-	public borderHorizontal: Image | null = null;
-	public borderVertical: Image | null = null;
+	public borderCorner: Image = new Image();
+	public borderHorizontal: Image = new Image();
+	public borderVertical: Image = new Image();
+
+	public skillMiniIcons: Image = new Image();
+	public skillMiniIconsSheet: Record<string, Canvas> = {};
 
 	public constructor(store: TaskStore, file: string[], directory: string) {
 		super(store, file, directory, {});
@@ -109,6 +114,28 @@ export default class BankImageTask extends Task {
 		this.borderVertical = await canvasImageFromBuffer(
 			fs.readFileSync('./src/lib/resources/images/bank_border_v.png')
 		);
+
+		// Get MiniIcons
+		this.skillMiniIcons = await canvasImageFromBuffer(
+			fs.readFileSync('./src/lib/resources/images/skill_mini_icons.png')
+		);
+		// Get skill mini icons
+		this.skillMiniIconsSheet.melee = this.getClippedRegion(this.skillMiniIcons, 0, 0, 12, 12);
+		this.skillMiniIconsSheet.range = this.getClippedRegion(this.skillMiniIcons, 12, 0, 12, 12);
+		this.skillMiniIconsSheet.mage = this.getClippedRegion(this.skillMiniIcons, 24, 0, 12, 12);
+		this.skillMiniIconsSheet.misc = this.getClippedRegion(this.skillMiniIcons, 36, 0, 12, 12);
+		this.skillMiniIconsSheet.skilling = this.getClippedRegion(this.skillMiniIcons, 48, 0, 12, 12);
+		this.skillMiniIconsSheet.more = this.getClippedRegion(this.skillMiniIcons, 60, 0, 12, 12);
+	}
+
+	// Split sprite into smaller images by coors and size
+	getClippedRegion(image: Image | Canvas, x: number, y: number, width: number, height: number) {
+		const canvas = createCanvas(0, 0);
+		const ctx = canvas.getContext('2d');
+		canvas.width = width;
+		canvas.height = height;
+		ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
+		return canvas;
 	}
 
 	async cacheFiles() {
@@ -250,6 +277,27 @@ export default class BankImageTask extends Task {
 		const currentCL = collectionLog ?? settings?.get(UserSettings.CollectionLogBank);
 		let partial = false;
 
+		// Used for flags placeholder and ph
+		const placeholder: Record<number, [number, GearSetupType[]]> = {};
+
+		// Add the equipped items to the user bank variable temporarily to allow them to show in bank
+		// Only shows if the tile ends with 's Bank, so we know the bank command called it
+		if (user && (flags.placeholder || flags.ph) && title.endsWith("'s Bank")) {
+			for (const [type, gear] of Object.entries(user.rawGear())) {
+				for (const slot of Object.values(gear)) {
+					if (slot && slot.item) {
+						if (placeholder[slot.item]) {
+							placeholder[slot.item][0] += slot.quantity;
+							placeholder[slot.item][1].push(type as GearSetupType);
+						} else {
+							placeholder[slot.item] = [slot.quantity, [type as GearSetupType]];
+						}
+						bank.add(slot.item, slot.quantity);
+					}
+				}
+			}
+		}
+
 		// Filtering
 		const searchQuery = flags.search as string | undefined;
 		const filter = flags.filter
@@ -339,7 +387,8 @@ export default class BankImageTask extends Task {
 			canvasHeight,
 			Object.entries(flags).toString(),
 			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join('')),
-			hexColor ?? 'no-hex'
+			hexColor ?? 'no-hex',
+			objectKeys(placeholder).length > 0 ? sha256Hash(JSON.stringify(placeholder)) : ''
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
@@ -411,7 +460,7 @@ export default class BankImageTask extends Task {
 			// Adds distance from side
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + this.borderVertical!.width + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
-			const [item, quantity] = items[i];
+			let [item, quantity] = items[i];
 			const itemImage = await this.getItemImage(item.id, quantity).catch(() => {
 				console.error(`Failed to load item image for item with id: ${item.id}`);
 			});
@@ -423,6 +472,12 @@ export default class BankImageTask extends Task {
 			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
 			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
 
+			// If there is this item as placeholder, and the item qty is the same as the placeholder qty,
+			// Make it transparent, because it is not in the bank
+			if (placeholder[item.id] && quantity === (placeholder[item.id][0] ?? 0)) {
+				ctx.globalAlpha = 0.3;
+			}
+
 			ctx.drawImage(
 				itemImage,
 				floor(xLoc + (itemSize - itemWidth) / 2) + 2,
@@ -431,18 +486,25 @@ export default class BankImageTask extends Task {
 				itemHeight
 			);
 
-			// Check if new cl item
-			const isNewCLItem = flags.showNewCL && currentCL && !currentCL[item.id] && allCLItems.includes(item.id);
-			const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
-			const formattedQuantity = formatItemStackQuantity(quantity);
+			// Force the global alpha to 1
+			ctx.globalAlpha = 1;
 
-			// Draw qty shadow
-			ctx.fillStyle = '#000000';
-			fillTextXTimesInCtx(ctx, formattedQuantity, xLoc + distanceFromSide - 17, yLoc + distanceFromTop - 23);
+			// Remove placeholder qty, it was only needed for the item to actually show
+			if (placeholder[item.id]) quantity -= placeholder[item.id][0];
 
-			// Draw qty
-			ctx.fillStyle = quantityColor;
-			fillTextXTimesInCtx(ctx, formattedQuantity, xLoc + distanceFromSide - 18, yLoc + distanceFromTop - 24);
+			// Do not draw the item qty if there is 0 of that item in the bank
+			if (quantity !== 0) {
+				// Check if new cl item
+				const isNewCLItem = flags.showNewCL && currentCL && !currentCL[item.id] && allCLItems.includes(item.id);
+				const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
+				const formattedQuantity = formatItemStackQuantity(quantity);
+				// Draw qty shadow
+				ctx.fillStyle = '#000000';
+				fillTextXTimesInCtx(ctx, formattedQuantity, xLoc + distanceFromSide - 17, yLoc + distanceFromTop - 23);
+				// Draw qty
+				ctx.fillStyle = quantityColor;
+				fillTextXTimesInCtx(ctx, formattedQuantity, xLoc + distanceFromSide - 18, yLoc + distanceFromTop - 24);
+			}
 
 			let bottomItemText: string | number | null = null;
 
@@ -468,6 +530,25 @@ export default class BankImageTask extends Task {
 				ctx.fillStyle =
 					typeof bottomItemText === 'string' ? 'white' : generateHexColorForCashStack(bottomItemText);
 				fillTextXTimesInCtx(ctx, text, floor(xLoc - 1), yLoc + distanceFromTop - 1);
+			}
+
+			if (placeholder[item.id]) {
+				let i = 0;
+				for (const slotType of placeholder[item.id][1].slice(0, 4)) {
+					ctx.drawImage(
+						this.skillMiniIconsSheet[i === 3 && placeholder[item.id][1].length > 4 ? 'more' : slotType],
+						floor(
+							xLoc +
+								itemImage.width / 2 -
+								i * (placeholder[item.id][1].length <= 3 ? 12 : 10) +
+								(placeholder[item.id][1].length <= 3 ? 3 : 8)
+						),
+						floor(yLoc + itemImage.height / 2) + 3 - (bottomItemText ? 10 : 0),
+						12,
+						12
+					);
+					i++;
+				}
 			}
 		}
 

@@ -1619,7 +1619,7 @@ clean-regexp@^1.0.0:
   dependencies:
     escape-string-regexp "^1.0.5"
 
-cli-highlight@^2.1.10:
+cli-highlight@^2.1.11:
   version "2.1.11"
   resolved "https://registry.yarnpkg.com/cli-highlight/-/cli-highlight-2.1.11.tgz#49736fa452f0aaf4fae580e30acb26828d2dc1bf"
   integrity sha512-9KDcoEVwyUXrjcJNvHD0NFc/hiwe/WPVYIleQh2O1N2Zro5gWJZ/K+3DGn8w8P/F6FxOgzyC5bxDyHIgCSPhGg==
@@ -4010,10 +4010,10 @@ object.values@^1.1.3:
     define-properties "^1.1.3"
     es-abstract "^1.18.2"
 
-oldschooljs@1.9.5:
-  version "1.9.5"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.9.5.tgz#7c91a83c2e34c9f2c1d7902d1bfae19d78b75225"
-  integrity sha512-91hkCSLg5hYTSbsuUTdZqCjikqImAxBGga1d4AD7uAdg7VRsIiAblzXqWZDSkZpU/XTX/iwq5fnPZL8ZUWh7tA==
+oldschooljs@^1.9.7:
+  version "1.9.7"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.9.7.tgz#c3d101d1bffd4d36b082ca35131a42d61a3b5879"
+  integrity sha512-LGyf6ZDnuwtXXH/0aF5QObKxjaTNska/53fG7TTYVbdUCl25eNaLAcOq32Yhq8Tj1Vdx7ndxlAjxpbnCXSRULQ==
   dependencies:
     e "^0.2.0"
     jsdom "^16.0.1"
@@ -5354,16 +5354,16 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-typeorm@^0.2.34:
-  version "0.2.34"
-  resolved "https://registry.yarnpkg.com/typeorm/-/typeorm-0.2.34.tgz#637b3cec2de54ee7f423012b813a2022c0aacc8b"
-  integrity sha512-FZAeEGGdSGq7uTH3FWRQq67JjKu0mgANsSZ04j3kvDYNgy9KwBl/6RFgMVgiSgjf7Rqd7NrhC2KxVT7I80qf7w==
+typeorm@^0.2.35:
+  version "0.2.35"
+  resolved "https://registry.yarnpkg.com/typeorm/-/typeorm-0.2.35.tgz#bf6a8cda6e287af8fa662a490c4457e69a3b1752"
+  integrity sha512-vj4U8K1rlBW3N/3AkuEnjdawYp+yo3uw0OWK+5/E5tFuaofV9x3zWtLYKQngsEAZ7l/lLsN5fbz7MtBnwSPe8A==
   dependencies:
     "@sqltools/formatter" "^1.2.2"
     app-root-path "^3.0.0"
     buffer "^6.0.3"
     chalk "^4.1.0"
-    cli-highlight "^2.1.10"
+    cli-highlight "^2.1.11"
     debug "^4.3.1"
     dotenv "^8.2.0"
     glob "^7.1.6"
