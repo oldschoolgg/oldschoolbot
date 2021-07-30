@@ -474,53 +474,56 @@ export default class extends BotCommand {
 
 		// Iterate over plants to harvest that can still be harvested, if the trip time allows and have not been
 		// checked already
-		for (const collect of canBeHarvested.filter(c => !collectChecked.includes(c.id))) {
-			if (!harvesting[collect.patchType]) {
-				harvesting[collect.patchType] = {
-					planted: 0,
-					harvested: 0,
-					harvestedChecked: 0,
-					harvestedDuration: 0,
-					cantHarvest: 0
-				};
-			}
+		if (!msg.flagArgs.nh && !msg.flagArgs.noharvest) {
+			for (const collect of canBeHarvested.filter(c => !collectChecked.includes(c.id))) {
+				if (!harvesting[collect.patchType]) {
+					harvesting[collect.patchType] = {
+						planted: 0,
+						harvested: 0,
+						harvestedChecked: 0,
+						harvestedDuration: 0,
+						cantHarvest: 0
+					};
+				}
 
-			const collectPlant = Farming.Plants.find(f => f.name === collect.plant)!;
+				const collectPlant = Farming.Plants.find(f => f.name === collect.plant)!;
 
-			// Check if user is forcing a certain patch
-			if (patchesForced.length > 0)
-				if (!patchesForced.find(p => stringMatches(p, collectPlant.seedType))) continue;
-			// Check if user is forcing a seed and this is not it
-			const userForcedSeed = plantsToCheck.find(
-				p => stringMatches(collectPlant.name, p) || collectPlant.aliases.some(a => stringMatches(a, p))
-			);
-			if (plantsToCheck.length > 0 && !userForcedSeed) continue;
+				// Check if user is forcing a certain patch
+				if (patchesForced.length > 0)
+					if (!patchesForced.find(p => stringMatches(p, collectPlant.seedType))) continue;
+				// Check if user is forcing a seed and this is not it
+				const userForcedSeed = plantsToCheck.find(
+					p => stringMatches(collectPlant.name, p) || collectPlant.aliases.some(a => stringMatches(a, p))
+				);
+				if (plantsToCheck.length > 0 && !userForcedSeed) continue;
 
-			// Ignore patches that the user cant cut
-			if (collectPlant.needsChopForHarvest) {
-				if (userWoodcuttingLevel < (collectPlant.treeWoodcuttingLevel ?? 0)) {
-					const gpForThisPlant = collect.quantity * (collectPlant.seedType === 'redwood' ? 2000 : 200);
-					if (msg.author.bank({ withGP: true }).amount(COINS_ID) >= gpNeeded + gpForThisPlant) {
-						gpNeeded += gpForThisPlant;
-						paidToCut[collect.id] = true;
-					} else {
-						errors.push(
-							`You can't cut ${collect.quantity}x ${collectPlant.name} because you don't have level ${
-								collectPlant.treeWoodcuttingLevel
-							} in Woodcutting or ${gpForThisPlant.toLocaleString()} GP to pay for it to be cut down.`
-						);
-						continue;
+				// Ignore patches that the user cant cut
+				if (collectPlant.needsChopForHarvest) {
+					if (userWoodcuttingLevel < (collectPlant.treeWoodcuttingLevel ?? 0)) {
+						const gpForThisPlant = collect.quantity * (collectPlant.seedType === 'redwood' ? 2000 : 200);
+						if (msg.author.bank({ withGP: true }).amount(COINS_ID) >= gpNeeded + gpForThisPlant) {
+							gpNeeded += gpForThisPlant;
+							paidToCut[collect.id] = true;
+						} else {
+							errors.push(
+								`You can't cut ${collect.quantity}x ${collectPlant.name} because you don't have level ${
+									collectPlant.treeWoodcuttingLevel
+								} in Woodcutting or ${gpForThisPlant.toLocaleString()} GP to pay for it to be cut down.`
+							);
+							continue;
+						}
 					}
 				}
-			}
-			let timeForThisPlant =
-				(collect.quantity * collectPlant.timePerHarvest + collectPlant.timePerPatchTravel + 5) * Time.Second;
-			// Apply boost
-			timeForThisPlant *= durationBoost;
-			if (tripLengthLeft - timeForThisPlant >= 0) {
-				tripLengthLeft -= timeForThisPlant;
-				harvesting[collect.patchType].harvested += collect.quantity;
-				finalCollectIds.push(collect.id);
+				let timeForThisPlant =
+					(collect.quantity * collectPlant.timePerHarvest + collectPlant.timePerPatchTravel + 5) *
+					Time.Second;
+				// Apply boost
+				timeForThisPlant *= durationBoost;
+				if (tripLengthLeft - timeForThisPlant >= 0) {
+					tripLengthLeft -= timeForThisPlant;
+					harvesting[collect.patchType].harvested += collect.quantity;
+					finalCollectIds.push(collect.id);
+				}
 			}
 		}
 
