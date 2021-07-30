@@ -21,6 +21,43 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
 
+const returnSuccessButtons = [
+	[
+		new MessageButton({
+			label: 'Autoslay (Saved)',
+			style: 'SECONDARY',
+			customID: 'assaved'
+		}),
+		new MessageButton({
+			label: 'Autoslay (Default)',
+			style: 'SECONDARY',
+			customID: 'asdef'
+		}),
+		new MessageButton({
+			label: 'Autoslay (EHP)',
+			style: 'SECONDARY',
+			customID: 'asehp'
+		}),
+		new MessageButton({
+			label: 'Autoslay (Boss)',
+			style: 'SECONDARY',
+			customID: 'asboss'
+		})
+	],
+	[
+		new MessageButton({
+			label: 'Cancel Task (30 points)',
+			style: 'DANGER',
+			customID: 'skip'
+		}),
+		new MessageButton({
+			label: 'Block Task (100 points)',
+			style: 'DANGER',
+			customID: 'block'
+		})
+	]
+];
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -67,45 +104,9 @@ export default class extends BotCommand {
 				return msg.channel.send('It was not possible to auto-slay this task. Please, try again.');
 			}
 		}
-		const components = [
-			[
-				new MessageButton({
-					label: 'Autoslay (Saved)',
-					style: 'SECONDARY',
-					customID: 'assaved'
-				}),
-				new MessageButton({
-					label: 'Autoslay (Default)',
-					style: 'SECONDARY',
-					customID: 'asdef'
-				}),
-				new MessageButton({
-					label: 'Autoslay (EHP)',
-					style: 'SECONDARY',
-					customID: 'asehp'
-				}),
-				new MessageButton({
-					label: 'Autoslay (Boss)',
-					style: 'SECONDARY',
-					customID: 'asboss'
-				})
-			],
-			[
-				new MessageButton({
-					label: 'Cancel Task (30 points)',
-					style: 'DANGER',
-					customID: 'skip'
-				}),
-				new MessageButton({
-					label: 'Block Task (100 points)',
-					style: 'DANGER',
-					customID: 'block'
-				})
-			]
-		];
 		// Add turael only if master is not turael
 		if (!message.toLowerCase().includes('turael')) {
-			components[1].push(
+			returnSuccessButtons[1].push(
 				new MessageButton({
 					label: 'Turael Skip (Will reset streak)',
 					style: 'DANGER',
@@ -113,7 +114,7 @@ export default class extends BotCommand {
 				})
 			);
 		}
-		const sentMessage = await msg.channel.send({ content: message, components });
+		const sentMessage = await msg.channel.send({ content: message, components: returnSuccessButtons });
 		try {
 			const selection = await sentMessage.awaitMessageComponentInteraction({
 				filter: i => {
