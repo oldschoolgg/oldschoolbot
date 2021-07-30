@@ -61,10 +61,10 @@ export default class extends Task {
 
 		const xpStr = await user.addXP({ skillName: SkillsEnum.Fishing, amount: fXPtoGive, duration });
 
-		const { previousCL } = await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
-			loot.bank,
+			itemsAdded,
 			`${rewardTokens} reward pool rolls`,
 			true,
 			{
@@ -93,7 +93,7 @@ export default class extends Task {
 			},
 			image!,
 			data,
-			loot.bank
+			itemsAdded
 		);
 	}
 }

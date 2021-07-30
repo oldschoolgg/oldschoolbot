@@ -16,6 +16,7 @@ import {
 } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { getNewUser } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -153,6 +154,21 @@ export default class MinionCommand extends BotCommand {
 	async seticon(msg: KlasaMessage, [icon]: [string]) {
 		if (msg.author.perkTier < PerkTier.Four) {
 			return msg.channel.send("You need to be a Tier 3 Patron to change your minion's icon to a custom icon.");
+		}
+
+		if (!icon) {
+			await msg.confirm('Would you like to return to your default minion icon?');
+			const sacValue = msg.author.settings.get(UserSettings.SacrificedValue);
+			let icon = null;
+			for (const sacIcon of minionIcons) {
+				if (sacValue < sacIcon.valueRequired) continue;
+				if (sacValue >= sacIcon.valueRequired) {
+					icon = sacIcon.emoji;
+					break;
+				}
+			}
+			await msg.author.settings.update(UserSettings.Minion.Icon, icon);
+			return msg.channel.send(`Restored your minion icon to ${icon ?? Emoji.Minion}.`);
 		}
 
 		const res = FormattedCustomEmoji.exec(icon);
