@@ -30,7 +30,7 @@ export default class extends Task {
 
 		const loot = new Bank();
 		const user = await this.client.users.fetch(userID);
-		const userBankCopy = user.bank();
+		const userBankCopy = user.allItemsOwned();
 
 		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;
 
