@@ -1,4 +1,5 @@
 import { Canvas, createCanvas, Image, registerFont } from 'canvas';
+import { objectKeys } from 'e';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
@@ -386,7 +387,8 @@ export default class BankImageTask extends Task {
 			canvasHeight,
 			Object.entries(flags).toString(),
 			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join('')),
-			hexColor ?? 'no-hex'
+			hexColor ?? 'no-hex',
+			placeholder ? addArrayOfNumbers(objectKeys(placeholder)) : ''
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
