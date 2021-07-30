@@ -23,6 +23,9 @@ export default function addSkillingClueToLoot(
 	const userLevel = user.skillLevel(skill);
 	const chance = Math.floor(clueChance / (100 + userLevel));
 	let nests = 0;
+	let cluesTotalWeight = 0;
+	clues.forEach(c => (cluesTotalWeight += c[1]));
+
 	for (let i = 0; i < quantity; i++) {
 		if (skill === SkillsEnum.Woodcutting && roll(256)) {
 			loot.add(nestTable.roll());
@@ -31,20 +34,25 @@ export default function addSkillingClueToLoot(
 		if (!roll(chance)) continue;
 		let nextTier = false;
 		let gotClue = false;
+		let clueRoll = randFloat(0, cluesTotalWeight);
 		for (const clue of clues) {
-			if (nextTier || randFloat(0, 1) <= clue[1]) {
+			if (clueRoll < clue[1] || nextTier) {
+				//  This if block is ONLY for OSB.
 				if (user.numItemsInBankSync(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
 					nextTier = true;
 					continue;
 				}
-				gotClue = true;
+
 				nests++;
+				gotClue = true;
 				loot.add(clue[0]);
 				break;
 			}
+			// Remove weighting to check next tier.
+			clueRoll -= clue[1];
 		}
 		if (!gotClue && roll(1000)) {
-			loot.add('Clue scroll(beginner)');
+			loot.add('Clue scroll (beginner)');
 		}
 	}
 	if (skill === SkillsEnum.Woodcutting) {
