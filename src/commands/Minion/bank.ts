@@ -27,8 +27,8 @@ export default class extends BotCommand {
 		const baseBank = msg.author.bank({ withGP: true });
 
 		if (msg.flagArgs.smallbank) {
-			const currentStatus = msg.author.settings.get(UserSettings.BitField).includes(BitField.AllwaysSmallBank);
-			await msg.author.settings.update(UserSettings.BitField, BitField.AllwaysSmallBank);
+			const currentStatus = msg.author.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank);
+			await msg.author.settings.update(UserSettings.BitField, BitField.AlwaysSmallBank);
 			return msg.channel.send(`Small Banks are now ${currentStatus ? 'disabled' : 'enabled'} for you.`);
 		}
 

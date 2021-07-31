@@ -374,7 +374,7 @@ export default class BankImageTask extends Task {
 		const hexColor = user?.settings.get(UserSettings.BankBackgroundHex);
 
 		const useSmallBank = user
-			? await user.settings.get(UserSettings.BitField).includes(BitField.AllwaysSmallBank)
+			? await user.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank)
 			: true;
 
 		const cacheKey = [
