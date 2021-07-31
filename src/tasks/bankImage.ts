@@ -7,7 +7,7 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { bankImageCache, Events } from '../lib/constants';
+import { bankImageCache, BitField, Events } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import { GearSetupType } from '../lib/gear';
@@ -373,6 +373,10 @@ export default class BankImageTask extends Task {
 
 		const hexColor = user?.settings.get(UserSettings.BankBackgroundHex);
 
+		const useSmallBank = user
+			? await user.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank)
+			: true;
+
 		const cacheKey = [
 			title,
 			user?.id ?? 'nouser',
@@ -388,7 +392,8 @@ export default class BankImageTask extends Task {
 			Object.entries(flags).toString(),
 			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join('')),
 			hexColor ?? 'no-hex',
-			objectKeys(placeholder).length > 0 ? sha256Hash(JSON.stringify(placeholder)) : ''
+			objectKeys(placeholder).length > 0 ? sha256Hash(JSON.stringify(placeholder)) : '',
+			useSmallBank ? 'smallbank' : 'no-smallbank'
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
@@ -401,7 +406,7 @@ export default class BankImageTask extends Task {
 			};
 		}
 
-		const canvas = createCanvas(width, bankBackgroundID === 1 ? canvasHeight : Math.max(331, canvasHeight));
+		const canvas = createCanvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
 
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
