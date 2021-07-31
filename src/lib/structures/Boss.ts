@@ -121,6 +121,8 @@ interface BossOptions {
 	canDie: boolean;
 	kcLearningCap?: number;
 	customDeathChance?: (user: KlasaUser, deathChance: number) => number;
+	allowMoreThan1Solo?: boolean;
+	allowMoreThan1Group?: boolean;
 }
 
 export interface BossUser {
@@ -144,6 +146,9 @@ export class BossInstance {
 	food: Bank | ((user: KlasaUser) => Bank);
 	bossUsers: BossUser[] = [];
 	duration: number = -1;
+	quantity: number = 1;
+	allowMoreThan1Solo: boolean = false;
+	allowMoreThan1Group: boolean = false;
 	totalPercent: number = -1;
 	settingsKeys: [string, string];
 	client: KlasaClient;
@@ -179,6 +184,8 @@ export class BossInstance {
 		this.canDie = options.canDie;
 		this.kcLearningCap = options.kcLearningCap ?? 250;
 		this.customDeathChance = options.customDeathChance ?? null;
+		this.allowMoreThan1Solo = options.allowMoreThan1Solo ?? false;
+		this.allowMoreThan1Group = options.allowMoreThan1Group ?? false;
 		let massText = [options.massText, '\n', `**Skill Reqs:** ${formatSkillRequirements(this.skillRequirements)}`];
 		if (this.id !== Ignecarus.id) {
 			massText.push(`**Item Boosts:** ${this.itemBoosts.map(i => `${i[0]}: ${i[1]}%`).join(', ')}`);
@@ -337,6 +344,16 @@ export class BossInstance {
 	async start() {
 		await this.init();
 		await this.validateTeam();
+
+		if (
+			(this.users && this.users.length === 1 && this.allowMoreThan1Solo) ||
+			(this.users && this.users.length > 1 && this.allowMoreThan1Group)
+		) {
+			const maxTripLength = this.users[0].maxTripLength(this.activity);
+			this.quantity = Math.max(1, Math.floor(maxTripLength / this.duration));
+			this.duration *= this.quantity;
+		}
+
 		const totalCost = new Bank();
 		for (const { user, itemsToRemove } of this.bossUsers) {
 			await user.removeItemsFromBank(itemsToRemove);
@@ -347,7 +364,7 @@ export class BossInstance {
 		await addSubTaskToActivityTask<NewBossOptions>({
 			userID: this.users![0].id,
 			channelID: this.channel.id,
-			quantity: 1,
+			quantity: this.quantity,
 			duration: this.duration,
 			type: this.activity,
 			users: this.users!.map(u => u.id),

@@ -67,7 +67,8 @@ export default class extends BotCommand {
 			massText: `${msg.author.username} is assembling a team to fight Vasa Magus! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			minSize: 1,
 			solo: true,
-			canDie: false
+			canDie: false,
+			allowMoreThan1Solo: true
 		});
 		try {
 			if (msg.flagArgs.s1mulat3) {
@@ -75,7 +76,9 @@ export default class extends BotCommand {
 			}
 			const { bossUsers } = await instance.start();
 			const embed = new MessageEmbed().setDescription(
-				`Your team is off to fight Vasa Magus. The total trip will take ${formatDuration(instance.duration)}.
+				`Your team is off to fight ${instance.quantity}x Vasa Magus. The total trip will take ${formatDuration(
+					instance.duration
+				)}.
 
 ${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
 `
