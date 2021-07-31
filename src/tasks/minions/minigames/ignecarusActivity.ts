@@ -57,7 +57,7 @@ export default class extends Task {
 			});
 		}
 
-		await Promise.all(bossUsers.map(u => u.user.incrementMonsterScore(Ignecarus.id, 1)));
+		await Promise.all(bossUsers.map(u => u.user.incrementMonsterScore(Ignecarus.id, quantity)));
 
 		const killStr = `Your team managed to slay ${quantity}x Ignecarus, everyone grabs some loot and escapes from the dragons lair.`;
 
