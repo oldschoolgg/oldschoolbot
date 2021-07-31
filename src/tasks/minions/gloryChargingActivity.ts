@@ -2,6 +2,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { gloriesInventorySize } from '../../commands/Minion/chargeglories';
+import { Events } from '../../lib/constants';
 import { GloryChargingActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -39,6 +40,12 @@ export default class extends Task {
 
 		if (loot.has('Amulet of eternal glory')) {
 			str += '\n**Your minion received an Amulet of eternal glory.**';
+			this.client.emit(
+				Events.ServerNotification,
+				`**${user.username}'s** minion, ${user.minionName}, just received **${loot.amount(
+					'Amulet of eternal glory'
+				)}x Amulet of eternal glory**!`
+			);
 		}
 
 		await user.addItemsToBank(loot.bank, true);
