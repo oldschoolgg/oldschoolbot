@@ -255,7 +255,7 @@ export class BossInstance {
 
 	async calcFoodForUser(user: KlasaUser, solo = false) {
 		const kc = user.getKC(this.id);
-		const itemsToRemove = calcFood(solo, kc);
+		const itemsToRemove = calcFood(solo, kc).multiply(this.quantity);
 		if (this.itemCost) {
 			return this.itemCost(user, itemsToRemove);
 		}
@@ -345,13 +345,11 @@ export class BossInstance {
 
 	async start() {
 		await this.init();
-		await this.validateTeam();
 
 		// Calculate max kill qty
 		let tempQty = 1;
 		const maxTripLength = this.leader.maxTripLength(this.activity);
 		tempQty = Math.max(tempQty, Math.floor(maxTripLength / this.duration));
-
 		// This boss doesnt allow more than 1KC at time, limits to 1
 		if (
 			(this.users && this.users.length === 1 && !this.allowMoreThan1Solo) ||
@@ -359,11 +357,11 @@ export class BossInstance {
 		) {
 			tempQty = 1;
 		}
-
 		// If the user informed a higher qty than it can kill or is NaN, defaults to max
 		if (isNaN(this.quantity) || !this.quantity || this.quantity > tempQty) this.quantity = tempQty;
-
 		this.duration *= this.quantity;
+
+		await this.validateTeam();
 
 		const totalCost = new Bank();
 		for (const { user, itemsToRemove } of this.bossUsers) {

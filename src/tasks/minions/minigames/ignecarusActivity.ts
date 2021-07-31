@@ -1,4 +1,4 @@
-import { percentChance, randArrItem } from 'e';
+import { objectValues, percentChance, randArrItem } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -12,15 +12,15 @@ import { addMonsterXP } from '../../../lib/minions/functions';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { BossUser } from '../../../lib/structures/Boss';
 import { NewBossOptions } from '../../../lib/types/minions';
-import { updateBankSetting } from '../../../lib/util';
+import { addArrayOfNumbers, updateBankSetting } from '../../../lib/util';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 const methodsOfDeath = ['Burnt to death', 'Eaten', 'Crushed', 'Incinerated'];
 
 export default class extends Task {
-	async run({ channelID, users: idArr, duration, bossUsers: _bossUsers }: NewBossOptions) {
+	async run({ channelID, users: idArr, duration, bossUsers: _bossUsers, quantity }: NewBossOptions) {
 		const wrongFoodDeaths: KlasaUser[] = [];
-		const deaths: KlasaUser[] = [];
+		const deaths: Record<string, { user: KlasaUser; qty: number }> = {};
 		const bossUsers: BossUser[] = await Promise.all(
 			_bossUsers.map(async u => ({
 				...u,
@@ -29,28 +29,30 @@ export default class extends Task {
 			}))
 		);
 
-		/**
-		 * Deaths
-		 */
-
-		for (const { user, deathChance, itemsToRemove } of bossUsers) {
-			if (itemsToRemove.has('Saradomin brew(4)')) {
-				wrongFoodDeaths.push(user);
-				deaths.push(user);
-			} else if (percentChance(deathChance)) {
-				deaths.push(user);
+		// Deaths
+		for (let i = 0; i < quantity; i++) {
+			for (const { user, deathChance, itemsToRemove } of bossUsers) {
+				let dead = false;
+				if (itemsToRemove.has('Saradomin brew(4)')) {
+					wrongFoodDeaths.push(user);
+					dead = true;
+				}
+				if (dead || percentChance(deathChance)) {
+					if (deaths[user.id]) deaths[user.id].qty++;
+					else deaths[user.id] = { qty: 1, user };
+				}
 			}
 		}
 
 		const tagAll = bossUsers.map(u => u.user.toString()).join(', ');
 
-		if (wrongFoodDeaths.length === bossUsers.length) {
+		if (wrongFoodDeaths.length === bossUsers.length * quantity) {
 			return sendToChannelID(this.client, channelID, {
 				content: `${tagAll}\n\nYour team began the fight, but the intense heat of the dragons lair melted your potions, and spoiled them - with no food left to eat, your entire team died.`
 			});
 		}
 
-		if (deaths.length === idArr.length) {
+		if (addArrayOfNumbers(objectValues(deaths).map(d => d.qty)) === idArr.length * quantity) {
 			return sendToChannelID(this.client, channelID, {
 				content: `${tagAll}\n\nYour team all died.`
 			});
@@ -58,21 +60,25 @@ export default class extends Task {
 
 		await Promise.all(bossUsers.map(u => u.user.incrementMonsterScore(Ignecarus.id, 1)));
 
-		const killStr =
-			'Your team managed to slay Ignecarus, everyone grabs some loot and escapes from the dragons lair.';
+		const killStr = `Your team managed to slay ${quantity}x Ignecarus, everyone grabs some loot and escapes from the dragons lair.`;
 
 		let resultStr = `${tagAll}\n\n${killStr}\n\n${Emoji.Casket} **Loot:**`;
 
 		const totalLoot = new Bank();
-		for (const { user } of bossUsers.filter(u => !deaths.includes(u.user))) {
-			const loot = new Bank().add(IgnecarusLootTable.roll());
+		for (const { user } of bossUsers) {
+			let lootRolls = quantity;
+			if (deaths[user.id]) {
+				if (deaths[user.id].qty === quantity) continue;
+				else lootRolls = quantity - deaths[user.id].qty;
+			}
+			const loot = new Bank().add(IgnecarusLootTable.roll(lootRolls));
 			if (DOUBLE_LOOT_ACTIVE) {
 				loot.multiply(2);
 			}
 			totalLoot.add(loot);
 			await addMonsterXP(user, {
 				monsterID: Ignecarus.id,
-				quantity: 1,
+				quantity,
 				duration,
 				isOnTask: false,
 				taskQuantity: null
@@ -84,9 +90,12 @@ export default class extends Task {
 		updateBankSetting(this.client, ClientSettings.EconomyStats.IgnecarusLoot, totalLoot);
 
 		// Show deaths in the result
-		if (deaths.length > 0) {
-			resultStr += `\n\n**Died in battle**: ${deaths.map(
-				u => `${u.toString()}(${wrongFoodDeaths.includes(u) ? 'Had no food' : randArrItem(methodsOfDeath)})`
+		if (objectValues(deaths).length > 0) {
+			resultStr += `\n\n**Died in battle**: ${objectValues(deaths).map(
+				u =>
+					`${u.user.toString()}(${
+						wrongFoodDeaths.includes(u.user) ? 'Had no food' : randArrItem(methodsOfDeath)
+					})${u.qty > 1 ? ` x${u.qty}` : ''}`
 			)}.`;
 		}
 
