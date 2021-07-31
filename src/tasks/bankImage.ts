@@ -24,7 +24,12 @@ import {
 	generateHexColorForCashStack,
 	sha256Hash
 } from '../lib/util';
-import { canvasImageFromBuffer, canvasToBufferAsync, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
+import {
+	canvasImageFromBuffer,
+	canvasToBufferAsync,
+	drawImageWithOutline,
+	fillTextXTimesInCtx
+} from '../lib/util/canvasUtil';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -481,35 +486,25 @@ export default class BankImageTask extends Task {
 			const isNewCLItem = flags.showNewCL && currentCL && !currentCL[item.id] && allCLItems.includes(item.id);
 
 			if (isNewCLItem) {
-				let dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1];
-				let s = 1;
-				let i = 0;
-				let x = 0;
-				let y = 0;
-				const purplecanvas = new Canvas(itemImage.width + 3, itemImage.height + 3);
-				const pctx = purplecanvas.getContext('2d');
-				for (; i < dArr.length; i += 2) pctx.drawImage(itemImage, x + dArr[i] * s, y + dArr[i + 1] * s);
-				pctx.globalAlpha = 0.5;
-				pctx.globalCompositeOperation = 'source-in';
-				pctx.fillStyle = '#ac7fff';
-				pctx.fillRect(0, 0, canvas.width, canvas.height);
-				pctx.globalCompositeOperation = 'source-over';
-				ctx.drawImage(
-					pctx.canvas,
+				drawImageWithOutline(
+					ctx,
+					itemImage,
 					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
 					floor(yLoc + (itemSize - itemHeight) / 2),
-					itemWidth + 3,
-					itemHeight + 3
+					itemWidth,
+					itemHeight,
+					'#ac7fff',
+					1
+				);
+			} else {
+				ctx.drawImage(
+					itemImage,
+					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
+					floor(yLoc + (itemSize - itemHeight) / 2),
+					itemWidth,
+					itemHeight
 				);
 			}
-
-			ctx.drawImage(
-				itemImage,
-				floor(xLoc + (itemSize - itemWidth) / 2) + 2,
-				floor(yLoc + (itemSize - itemHeight) / 2),
-				itemWidth,
-				itemHeight
-			);
 
 			// Force the global alpha to 1
 			ctx.globalAlpha = 1;
