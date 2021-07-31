@@ -364,7 +364,7 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman' },
-	[BitField.AlwaysSmallBank]: { name: 'Allways Use Small Banks' }
+	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' }
 } as const;
 
 export const enum PatronTierID {
