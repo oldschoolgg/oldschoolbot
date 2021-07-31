@@ -15,6 +15,7 @@ import { formatDuration } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			usage: '[qty:int]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
@@ -22,7 +23,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage) {
+	async run(msg: KlasaMessage, [qty]: [number]) {
 		const instance = new BossInstance({
 			leader: msg.author,
 			id: VasaMagus.id,
@@ -68,7 +69,8 @@ export default class extends BotCommand {
 			minSize: 1,
 			solo: true,
 			canDie: false,
-			allowMoreThan1Solo: true
+			allowMoreThan1Solo: true,
+			quantity: qty
 		});
 		try {
 			if (msg.flagArgs.s1mulat3) {

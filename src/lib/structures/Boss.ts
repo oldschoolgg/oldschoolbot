@@ -123,6 +123,7 @@ interface BossOptions {
 	customDeathChance?: (user: KlasaUser, deathChance: number) => number;
 	allowMoreThan1Solo?: boolean;
 	allowMoreThan1Group?: boolean;
+	quantity?: number;
 }
 
 export interface BossUser {
@@ -186,6 +187,7 @@ export class BossInstance {
 		this.customDeathChance = options.customDeathChance ?? null;
 		this.allowMoreThan1Solo = options.allowMoreThan1Solo ?? false;
 		this.allowMoreThan1Group = options.allowMoreThan1Group ?? false;
+		this.quantity = options.quantity ?? NaN;
 		let massText = [options.massText, '\n', `**Skill Reqs:** ${formatSkillRequirements(this.skillRequirements)}`];
 		if (this.id !== Ignecarus.id) {
 			massText.push(`**Item Boosts:** ${this.itemBoosts.map(i => `${i[0]}: ${i[1]}%`).join(', ')}`);
@@ -345,14 +347,23 @@ export class BossInstance {
 		await this.init();
 		await this.validateTeam();
 
+		// Calculate max kill qty
+		let tempQty = 1;
+		const maxTripLength = this.leader.maxTripLength(this.activity);
+		tempQty = Math.max(tempQty, Math.floor(maxTripLength / this.duration));
+
+		// This boss doesnt allow more than 1KC at time, limits to 1
 		if (
-			(this.users && this.users.length === 1 && this.allowMoreThan1Solo) ||
-			(this.users && this.users.length > 1 && this.allowMoreThan1Group)
+			(this.users && this.users.length === 1 && !this.allowMoreThan1Solo) ||
+			(this.users && this.users.length > 1 && !this.allowMoreThan1Group)
 		) {
-			const maxTripLength = this.users[0].maxTripLength(this.activity);
-			this.quantity = Math.max(1, Math.floor(maxTripLength / this.duration));
-			this.duration *= this.quantity;
+			tempQty = 1;
 		}
+
+		// If the user informed a higher qty than it can kill or is NaN, defaults to max
+		if (isNaN(this.quantity) || !this.quantity || this.quantity > tempQty) this.quantity = tempQty;
+
+		this.duration *= this.quantity;
 
 		const totalCost = new Bank();
 		for (const { user, itemsToRemove } of this.bossUsers) {

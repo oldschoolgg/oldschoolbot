@@ -15,6 +15,7 @@ import { formatDuration } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			usage: '[qty:int]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
@@ -22,7 +23,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage) {
+	async run(msg: KlasaMessage, [qty]: [number]) {
 		const instance = new BossInstance({
 			leader: msg.author,
 			id: Ignecarus.id,
@@ -91,7 +92,10 @@ export default class extends BotCommand {
 				}
 				baseDeathChance -= (100 - preCalcedDeathChance) / 10;
 				return baseDeathChance;
-			}
+			},
+			quantity: qty,
+			allowMoreThan1Solo: true,
+			allowMoreThan1Group: true
 		});
 		const hasNormalFood = [];
 		for (const user of instance.bossUsers) {
@@ -105,9 +109,12 @@ export default class extends BotCommand {
 				return msg.channel.send({ files: [await instance.simulate()] });
 			}
 			const { bossUsers } = await instance.start();
+
 			const embed = new MessageEmbed()
 				.setDescription(
-					`Your team is off to fight Ignecarus. The total trip will take ${formatDuration(instance.duration)}.
+					`Your team is off to fight ${
+						instance.quantity
+					}x Ignecarus. The total trip will take ${formatDuration(instance.duration)}.
 
 ${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
 `
