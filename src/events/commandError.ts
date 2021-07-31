@@ -30,7 +30,14 @@ export default class extends Event {
 		}
 
 		this.client.emit('wtf', `[COMMAND] ${command.path}\n${error.stack ?? error.name}`);
-		Sentry.captureException(error);
+		Sentry.captureException(error, {
+			user: {
+				id: message.author.id
+			},
+			tags: {
+				command: command.name
+			}
+		});
 
 		if (error instanceof DiscordAPIError || error instanceof HTTPError) {
 			output = [

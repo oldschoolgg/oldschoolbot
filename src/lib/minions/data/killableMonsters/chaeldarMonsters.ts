@@ -119,6 +119,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.FossilIslandWyvernAncient,
 		wildy: false,
 
+		notifyDrops: resolveItems(['Wyvern visage']),
+
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
@@ -139,6 +141,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.FossilIslandWyvernLongTailed,
 
 		wildy: false,
+
+		notifyDrops: resolveItems(['Wyvern visage']),
 
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
@@ -161,6 +165,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		wildy: false,
 
+		notifyDrops: resolveItems(['Wyvern visage']),
+
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
 			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
@@ -181,6 +187,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.FossilIslandWyvernTaloned,
 
 		wildy: false,
+
+		notifyDrops: resolveItems(['Wyvern visage']),
 
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
@@ -339,7 +347,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		qpRequired: 30,
 		itemInBankBoosts: [
 			{
-				[itemID('Ring of the gods')]: 3
+				[itemID('Ring of the gods')]: 3,
+				[itemID('Ring of the gods (i)')]: 5
 			},
 			{
 				[itemID('Toxic blowpipe')]: 15,
