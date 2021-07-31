@@ -220,10 +220,8 @@ export class BossInstance {
 			tempQty = 1;
 		}
 		// If the user informed a higher qty than it can kill or is NaN, defaults to max
-		let toReturn = 0;
-		if (isNaN(baseQty) || baseQty > tempQty) toReturn = tempQty;
-		else toReturn = baseQty;
-		return toReturn;
+		if (isNaN(baseQty) || baseQty > tempQty) return tempQty;
+		return baseQty;
 	}
 
 	async init() {
