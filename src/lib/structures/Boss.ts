@@ -148,7 +148,7 @@ export class BossInstance {
 	bossUsers: BossUser[] = [];
 	duration: number = -1;
 	quantity: number = 1;
-	finalQuantity: number = NaN;
+	tempQty: number = NaN;
 	allowMoreThan1Solo: boolean = false;
 	allowMoreThan1Group: boolean = false;
 	totalPercent: number = -1;
@@ -207,7 +207,7 @@ export class BossInstance {
 	}
 
 	calculateQty(duration: number) {
-		let baseQty = this.finalQuantity;
+		let baseQty = this.tempQty;
 		// Calculate max kill qty
 		let tempQty = 1;
 		const maxTripLength = this.leader.maxTripLength(this.activity);
@@ -238,7 +238,7 @@ export class BossInstance {
 				return this.checkUser(user);
 			}
 		});
-		this.finalQuantity = this.quantity;
+		this.tempQty = this.quantity;
 		// Force qty to 1 for init calculations
 		this.quantity = this.calculateQty(this.baseDuration);
 		this.users = this.solo ? [this.leader] : await mass.init();
