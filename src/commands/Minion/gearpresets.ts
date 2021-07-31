@@ -1,7 +1,6 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { cleanString } from 'oldschooljs/dist/util';
 
 import { Color } from '../../lib/constants';
 import { defaultGear, globalPresets, resolveGearTypeSetting } from '../../lib/gear';
@@ -10,7 +9,7 @@ import { GearSetupTypes } from '../../lib/gear/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GearPresetsTable } from '../../lib/typeorm/GearPresetsTable.entity';
-import { isValidGearSetup } from '../../lib/util';
+import { cleanString, isValidGearSetup } from '../../lib/util';
 
 function maxPresets(user: KlasaUser) {
 	return user.perkTier * 2 + 3;
@@ -23,7 +22,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			description: 'Allows you to manage your gear presets.',
 			usageDelim: ' ',
-			usage: '[new|delete|equip] [name:str{1,12}] [setup:str]',
+			usage: '[new|delete|equip|share|rename] [name:str{1,12}] [user:user|setup:str]',
 			subcommands: true,
 			examples: ['+gearpresets new pvm melee', '+gearpresets delete pvm', '+gearpresets equip pvm melee'],
 			categoryFlags: ['minion', 'skilling']
@@ -183,5 +182,73 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`Successfully made a new preset called \`${preset.name}\` based off your ${setup} setup.`
 		);
+	}
+
+	async share(msg: KlasaMessage, [name = '', user]: [string, KlasaUser]) {
+		const preset = await GearPresetsTable.findOne({ userID: msg.author.id, name });
+		if (!name) return msg.channel.send('You must specify the name of the preset you want to share.');
+		if (!preset) return msg.channel.send(`You do not have any preset called ${name}.`);
+		if (user === msg.author) return msg.channel.send("You can't share a preset with yourself.");
+
+		// Check if user can receive the preset
+		const userPresets = await GearPresetsTable.find({ userID: user.id });
+		if (userPresets.some(pre => pre.name === name)) {
+			return msg.channel.send(`${user.username} already have a gear presets called \`${name}\`.`);
+		}
+		const max = maxPresets(user);
+		if (userPresets.length >= max) {
+			return msg.channel.send(`The maximum amount of gear presets ${user.username} can have is ${max}.`);
+		}
+
+		// Ask for the user confirmation
+		const originalUser = msg.author;
+		msg.author = user;
+		await msg.confirm(
+			`${user.username}, do you want to receive ${originalUser.username}'s ${preset.name} preset (Only the preset will be shared, not the items)?`
+		);
+		const newPreset = new GearPresetsTable();
+		newPreset.Head = preset.Head;
+		newPreset.Neck = preset.Neck;
+		newPreset.Body = preset.Body;
+		newPreset.Legs = preset.Legs;
+		newPreset.Cape = preset.Cape;
+		newPreset.TwoHanded = preset.TwoHanded;
+		newPreset.Hands = preset.Hands;
+		newPreset.Feet = preset.Feet;
+		newPreset.Shield = preset.Shield;
+		newPreset.Weapon = preset.Weapon;
+		newPreset.Ring = preset.Ring;
+		newPreset.Ammo = preset.Ammo;
+		newPreset.AmmoQuantity = preset.AmmoQuantity;
+		newPreset.name = preset.name;
+		newPreset.userID = user.id;
+		await newPreset.save();
+		return msg.channel.send(`${user.username}, you can now use the preset ${newPreset.name}.`);
+	}
+
+	async rename(msg: KlasaMessage, [name = '', newName = '']: [string, string]) {
+		if (!name || !newName)
+			return msg.channel.send(
+				`You must specify the preset you want to rename and the new name. Example: \`${
+					msg.cmdPrefix
+				}gearpresets rename ${name || 'currentname'} newname\``
+			);
+		const realNewName = newName.substr(0, 12);
+		const preset = await GearPresetsTable.findOne({ userID: msg.author.id, name });
+		if (!preset) {
+			return msg.channel.send("You don't have a gear preset with that name.");
+		}
+		const presetNewName = await GearPresetsTable.findOne({ userID: msg.author.id, name: realNewName });
+		if (presetNewName) {
+			return msg.channel.send(`You already have a preset called ${realNewName}.`);
+		}
+		await GearPresetsTable.update(
+			{
+				userID: msg.author.id,
+				name
+			},
+			{ name: realNewName }
+		);
+		return msg.channel.send(`Successfully renamed your preset from \`${name}\` to \`${realNewName}\`.`);
 	}
 }
