@@ -343,7 +343,8 @@ export const enum BitField {
 	HasPermanentEventBackgrounds = 11,
 	HasPermanentTierOne = 12,
 	DisabledRandomEvents = 13,
-	PermanentIronman = 14
+	PermanentIronman = 14,
+	AlwaysSmallBank = 15
 }
 
 interface BitFieldData {
@@ -362,7 +363,8 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' },
 	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
-	[BitField.PermanentIronman]: { name: 'Permanent Ironman' }
+	[BitField.PermanentIronman]: { name: 'Permanent Ironman' },
+	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' }
 } as const;
 
 export const enum PatronTierID {
