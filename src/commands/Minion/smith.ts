@@ -73,7 +73,7 @@ export default class extends BotCommand {
 
 		let maxTripLength = msg.author.maxTripLength(Activity.Smithing);
 		if (smithedItem.name === 'Cannonball') {
-			maxTripLength = Time.Hour;
+			maxTripLength *= 2;
 		}
 
 		// If no quantity provided, set it to the max.
