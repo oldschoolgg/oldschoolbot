@@ -423,7 +423,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		canBarrage: true
 	},
 	{
 		id: Monsters.Wyrm.id,
