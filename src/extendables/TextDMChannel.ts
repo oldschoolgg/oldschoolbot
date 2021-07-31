@@ -13,7 +13,7 @@ import { isObject } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { bankImageCache } from '../lib/constants';
-import { ItemBank } from './../lib/types/index';
+import { ItemBank } from '../lib/types';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
