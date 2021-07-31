@@ -24,7 +24,12 @@ import {
 	generateHexColorForCashStack,
 	sha256Hash
 } from '../lib/util';
-import { canvasImageFromBuffer, canvasToBufferAsync, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
+import {
+	canvasImageFromBuffer,
+	canvasToBufferAsync,
+	drawImageWithOutline,
+	fillTextXTimesInCtx
+} from '../lib/util/canvasUtil';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -483,13 +488,28 @@ export default class BankImageTask extends Task {
 				ctx.globalAlpha = 0.3;
 			}
 
-			ctx.drawImage(
-				itemImage,
-				floor(xLoc + (itemSize - itemWidth) / 2) + 2,
-				floor(yLoc + (itemSize - itemHeight) / 2),
-				itemWidth,
-				itemHeight
-			);
+			const isNewCLItem = flags.showNewCL && currentCL && !currentCL[item.id] && allCLItems.includes(item.id);
+
+			if (isNewCLItem) {
+				drawImageWithOutline(
+					ctx,
+					itemImage,
+					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
+					floor(yLoc + (itemSize - itemHeight) / 2),
+					itemWidth,
+					itemHeight,
+					'#ac7fff',
+					1
+				);
+			} else {
+				ctx.drawImage(
+					itemImage,
+					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
+					floor(yLoc + (itemSize - itemHeight) / 2),
+					itemWidth,
+					itemHeight
+				);
+			}
 
 			// Force the global alpha to 1
 			ctx.globalAlpha = 1;
@@ -500,7 +520,6 @@ export default class BankImageTask extends Task {
 			// Do not draw the item qty if there is 0 of that item in the bank
 			if (quantity !== 0) {
 				// Check if new cl item
-				const isNewCLItem = flags.showNewCL && currentCL && !currentCL[item.id] && allCLItems.includes(item.id);
 				const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
 				const formattedQuantity = formatItemStackQuantity(quantity);
 				// Draw qty shadow
