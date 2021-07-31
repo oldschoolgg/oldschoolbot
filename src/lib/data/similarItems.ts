@@ -283,6 +283,7 @@ const source: [string, (string | number)[]][] = [
 		[
 			'Mist battlestaff',
 			'Mystic mist staff',
+			'Tome of water (empty)',
 			'Tome of water',
 			'Kodai wand',
 			'Water battlestaff',
