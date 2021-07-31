@@ -49,19 +49,20 @@ export default class extends BotCommand {
 				neck: "Brawler's hook necklace"
 			}),
 			gearSetup: GearSetupTypes.Melee,
-			itemCost: async user => {
-				const userBank = user.bank();
-				const kc = user.getKC(Ignecarus.id);
+			itemCost: async data => {
+				const userBank = data.user.bank();
+				const kc = data.user.getKC(Ignecarus.id);
 
 				let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30))) + 1;
 				const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
 				const heatResBank = new Bank()
 					.add('Heat res. brew', brewsNeeded)
-					.add('Heat res. restore', restoresNeeded);
+					.add('Heat res. restore', restoresNeeded)
+					.multiply(data.kills);
 				const normalBank = new Bank()
 					.add('Saradomin brew(4)', brewsNeeded)
-					.add('Super restore(4)', restoresNeeded);
-
+					.add('Super restore(4)', restoresNeeded)
+					.multiply(data.kills);
 				return userBank.has(heatResBank.bank) ? heatResBank : normalBank;
 			},
 			mostImportantStat: 'attack_crush',

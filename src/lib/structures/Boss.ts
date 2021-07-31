@@ -108,7 +108,7 @@ interface BossOptions {
 	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
 	gearSetup: GearSetupTypes;
-	itemCost?: (user: KlasaUser, baseFood: Bank) => Promise<Bank>;
+	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
 	food: Bank | ((user: KlasaUser) => Bank);
 	settingsKeys: [string, string];
@@ -142,12 +142,13 @@ export class BossInstance {
 	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
 	gearSetup: GearSetupTypes;
-	itemCost?: (user: KlasaUser, baseFood: Bank) => Promise<Bank>;
+	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
 	food: Bank | ((user: KlasaUser) => Bank);
 	bossUsers: BossUser[] = [];
 	duration: number = -1;
 	quantity: number = 1;
+	finalQuantity: number = NaN;
 	allowMoreThan1Solo: boolean = false;
 	allowMoreThan1Group: boolean = false;
 	totalPercent: number = -1;
@@ -205,6 +206,26 @@ export class BossInstance {
 		}
 	}
 
+	calculateQty(duration: number) {
+		let baseQty = this.finalQuantity;
+		// Calculate max kill qty
+		let tempQty = 1;
+		const maxTripLength = this.leader.maxTripLength(this.activity);
+		tempQty = Math.max(tempQty, Math.floor(maxTripLength / duration));
+		// This boss doesnt allow more than 1KC at time, limits to 1
+		if (
+			(this.users && this.users.length === 1 && !this.allowMoreThan1Solo) ||
+			(this.users && this.users.length > 1 && !this.allowMoreThan1Group)
+		) {
+			tempQty = 1;
+		}
+		// If the user informed a higher qty than it can kill or is NaN, defaults to max
+		let toReturn = 0;
+		if (isNaN(baseQty) || baseQty > tempQty) toReturn = tempQty;
+		else toReturn = baseQty;
+		return toReturn;
+	}
+
 	async init() {
 		const mass = new Mass({
 			channel: this.channel,
@@ -214,15 +235,25 @@ export class BossInstance {
 			text: this.massText,
 			ironmenAllowed: true,
 			customDenier: async (user: KlasaUser) => {
-				const result = await this.checkUser(user);
-				return result;
+				return this.checkUser(user);
 			}
 		});
+		this.finalQuantity = this.quantity;
+		// Force qty to 1 for init calculations
+		this.quantity = this.calculateQty(this.baseDuration);
 		this.users = this.solo ? [this.leader] : await mass.init();
 		await this.validateTeam();
 		const { bossUsers, duration, totalPercent } = await this.calculateBossUsers();
+		this.quantity = this.calculateQty(duration);
+		this.duration = duration * this.quantity;
+		// Calculate item usage
+		for (const user of bossUsers) {
+			// Items to remove
+			user.itemsToRemove = await this.calcFoodForUser(user.user, this.users!.length === 1);
+			user.debugStr += ` **Cost**[${user.itemsToRemove}]`;
+		}
+
 		this.bossUsers = bossUsers;
-		this.duration = duration;
 		this.totalPercent = totalPercent;
 	}
 
@@ -255,11 +286,11 @@ export class BossInstance {
 
 	async calcFoodForUser(user: KlasaUser, solo = false) {
 		const kc = user.getKC(this.id);
-		const itemsToRemove = calcFood(solo, kc).multiply(this.quantity);
+		let itemsToRemove = calcFood(solo, kc);
 		if (this.itemCost) {
-			return this.itemCost(user, itemsToRemove);
+			return this.itemCost({ user, kills: this.quantity, baseFood: itemsToRemove });
 		}
-		return itemsToRemove;
+		return itemsToRemove.multiply(this.quantity);
 	}
 
 	async calculateBossUsers() {
@@ -303,10 +334,6 @@ export class BossInstance {
 			userPercentChange += itemBoostsBoostPercent;
 			debugStr.push(`**Boosts**[${itemBoostPercent.toFixed(1)}%]`);
 
-			// Items to remove
-			const itemsToRemove = await this.calcFoodForUser(user, this.users!.length === 1);
-			debugStr.push(`**Cost**[${itemsToRemove}]`);
-
 			// Total
 			debugStr.push(`**Total**[${calcWhatPercent(userPercentChange, totalSpeedReduction).toFixed(2)}%]`);
 
@@ -324,7 +351,7 @@ export class BossInstance {
 			bossUsers.push({
 				user,
 				userPercentChange,
-				itemsToRemove,
+				itemsToRemove: new Bank(),
 				debugStr: debugStr.join(' '),
 				deathChance
 			});
@@ -345,22 +372,6 @@ export class BossInstance {
 
 	async start() {
 		await this.init();
-
-		// Calculate max kill qty
-		let tempQty = 1;
-		const maxTripLength = this.leader.maxTripLength(this.activity);
-		tempQty = Math.max(tempQty, Math.floor(maxTripLength / this.duration));
-		// This boss doesnt allow more than 1KC at time, limits to 1
-		if (
-			(this.users && this.users.length === 1 && !this.allowMoreThan1Solo) ||
-			(this.users && this.users.length > 1 && !this.allowMoreThan1Group)
-		) {
-			tempQty = 1;
-		}
-		// If the user informed a higher qty than it can kill or is NaN, defaults to max
-		if (isNaN(this.quantity) || !this.quantity || this.quantity > tempQty) this.quantity = tempQty;
-		this.duration *= this.quantity;
-
 		await this.validateTeam();
 
 		const totalCost = new Bank();

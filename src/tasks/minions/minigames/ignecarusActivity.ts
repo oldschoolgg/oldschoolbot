@@ -1,4 +1,4 @@
-import { objectValues, percentChance, randArrItem } from 'e';
+import { objectValues, percentChance, shuffleArr } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -45,7 +45,6 @@ export default class extends Task {
 		}
 
 		const tagAll = bossUsers.map(u => u.user.toString()).join(', ');
-
 		if (wrongFoodDeaths.length === bossUsers.length * quantity) {
 			return sendToChannelID(this.client, channelID, {
 				content: `${tagAll}\n\nYour team began the fight, but the intense heat of the dragons lair melted your potions, and spoiled them - with no food left to eat, your entire team died.`
@@ -93,9 +92,13 @@ export default class extends Task {
 		if (objectValues(deaths).length > 0) {
 			resultStr += `\n\n**Died in battle**: ${objectValues(deaths).map(
 				u =>
-					`${u.user.toString()}(${
-						wrongFoodDeaths.includes(u.user) ? 'Had no food' : randArrItem(methodsOfDeath)
-					})${u.qty > 1 ? ` x${u.qty}` : ''}`
+					`${u.user.toString()}${u.qty > 1 ? ` x${u.qty}` : ''} (${
+						wrongFoodDeaths.includes(u.user)
+							? 'Had no food'
+							: shuffleArr([...methodsOfDeath])
+									.slice(0, u.qty)
+									.join(', ')
+					})`
 			)}.`;
 		}
 
