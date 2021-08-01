@@ -17,6 +17,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, skillEmoji } from '../../lib/constants';
+import { getSimilarItems } from '../../lib/data/similarItems';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear/util';
 import ClueTiers from '../../lib/minions/data/clueTiers';
@@ -761,17 +762,23 @@ export default class extends Extendable {
 			.filter(notEmpty)
 			.map(i => i.item);
 
+		// Build list of all Master capes including combined capes.
+		const allMasterCapes = MasterSkillcapes.map(msc => getSimilarItems(msc.item.id)).flat(Infinity) as number[];
+
 		// Get cape object from MasterSkillCapes that matches active skill.
 		const matchingCape = multiplier ? MasterSkillcapes.find(cape => params.skillName === cape.skill) : undefined;
 
-		// If the matching cape is equipped, isMatchingCape = true
-		const isMatchingCape = multiplier && matchingCape ? allCapes.includes(matchingCape.item.id) : false;
+		// If the matching cape [or similar] is equipped, isMatchingCape = matched itemId.
+		const isMatchingCape =
+			multiplier && matchingCape
+				? allCapes.find(cape => getSimilarItems(matchingCape.item.id).includes(cape))
+				: false;
 
-		// Get the masterCape object for use in text output
+		// Get the masterCape itemId for use in text output, and check for non-matching cape.
 		const masterCape = isMatchingCape
-			? matchingCape
+			? isMatchingCape
 			: multiplier
-			? MasterSkillcapes.find(cape => allCapes.includes(cape.item.id))
+			? allMasterCapes.find(cape => allCapes.includes(cape))
 			: undefined;
 
 		if (masterCape) {
@@ -883,9 +890,9 @@ export default class extends Extendable {
 
 		if (masterCape && !params.minimal) {
 			if (isMatchingCape) {
-				str += ` You received 8% bonus XP for having a ${masterCape.item.name}.`;
+				str += ` You received 8% bonus XP for having a ${itemNameFromID(masterCape)}.`;
 			} else {
-				str += ` You received 3% bonus XP for having a ${masterCape.item.name}.`;
+				str += ` You received 3% bonus XP for having a ${itemNameFromID(masterCape)}.`;
 			}
 		}
 
