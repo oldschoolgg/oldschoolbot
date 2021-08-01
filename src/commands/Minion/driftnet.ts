@@ -7,9 +7,8 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { DriftNetActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, formatDuration, randFloat } from '../../lib/util';
+import { formatDuration, randFloat } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
