@@ -9,14 +9,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {
-	addBanks,
-	bankHasAllItemsFromBank,
-	itemNameFromID,
-	multiplyBank,
-	removeBankFromBank,
-	stringMatches
-} from '../../lib/util';
+import { addBanks, bankHasAllItemsFromBank, itemNameFromID, removeBankFromBank, stringMatches } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -100,17 +93,19 @@ export default class extends BotCommand {
 			}
 		}
 
-		const outItems = multiplyBank(createableItem.outputItems, quantity);
-		const inItems = multiplyBank(createableItem.inputItems, quantity);
+		const outItems = new Bank(createableItem.outputItems).multiply(quantity);
+		const inItems = new Bank(createableItem.inputItems).multiply(quantity);
 
-		const outputItemsString = new Bank(outItems).toString();
-		const inputItemsString = new Bank(inItems).toString();
+		console.log(outItems, createableItem.outputItems);
+
+		const outputItemsString = outItems.toString();
+		const inputItemsString = inItems.toString();
 
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
 		// Ensure they have the required items to create the item.
-		if (!bankHasAllItemsFromBank(userBank, inItems)) {
+		if (!bankHasAllItemsFromBank(userBank, inItems.bank)) {
 			throw `You don't have the required items to create this item. You need: ${inputItemsString}${
 				createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
 			}.`;
@@ -136,14 +131,14 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(
 			UserSettings.Bank,
-			addBanks([outItems, removeBankFromBank(userBank, inItems)])
+			addBanks([outItems.bank, removeBankFromBank(userBank, inItems.bank)])
 		);
 
 		if (createableItem.GPCost) {
 			await msg.author.removeGP(createableItem.GPCost);
 		}
 
-		if (!createableItem.noCl) await msg.author.addItemsToCollectionLog(outItems);
+		if (!createableItem.noCl) await msg.author.addItemsToCollectionLog(outItems.bank);
 
 		return msg.channel.send(`You created ${outputItemsString}.`);
 	}

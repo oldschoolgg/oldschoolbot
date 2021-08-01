@@ -283,6 +283,7 @@ const source: [string, (string | number)[]][] = [
 		[
 			'Mist battlestaff',
 			'Mystic mist staff',
+			'Tome of water (empty)',
 			'Tome of water',
 			'Kodai wand',
 			'Water battlestaff',
@@ -294,7 +295,11 @@ const source: [string, (string | number)[]][] = [
 		]
 	],
 	['Attack cape', ['Max cape', 'Attack cape(t)']],
-	['Ivandis flail', ['Blisterwood flail']]
+	['Ivandis flail', ['Blisterwood flail']],
+	['Angler hat', ['Spirit angler headband']],
+	['Angler top', ['Spirit angler top']],
+	['Angler waders', ['Spirit angler waders']],
+	['Angler boots', ['Spirit angler boots']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(

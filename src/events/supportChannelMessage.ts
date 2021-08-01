@@ -2,6 +2,7 @@ import { MessageEmbed, TextChannel } from 'discord.js';
 import { noOp, Time } from 'e';
 import { Event, EventStore } from 'klasa';
 
+import { informationalButtons } from '../lib/constants';
 import { getSupportGuild } from '../lib/util';
 
 declare module 'klasa' {
@@ -14,7 +15,7 @@ const embed = new MessageEmbed()
 	.setAuthor('⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️')
 	.addField(
 		'📖 Read the FAQ',
-		'The FAQ answers commonly asked questions: https://www.oldschool.gg/oldschoolbot/faq - also make sure to read the other pages of the website, which might contain the information you need.'
+		'The FAQ answers commonly asked questions: https://wiki.oldschool.gg/faq - also make sure to read the other pages of the website, which might contain the information you need.'
 	)
 	.addField(
 		'🔎 Search',
@@ -54,7 +55,7 @@ export default class extends Event {
 						await message.delete();
 					}
 				}
-				const res = await channel.send({ embeds: [embed] });
+				const res = await channel.send({ embeds: [embed], components: [informationalButtons] });
 				lastMessageID = res.id;
 			} catch (_) {}
 		}, Number(Time.Minute * 15));

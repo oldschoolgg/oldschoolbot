@@ -13,6 +13,7 @@ import { capeBuyables } from './capes';
 import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
+import { miningBuyables } from './mining';
 import { slayerBuyables } from './slayerBuyables';
 
 export interface Buyable {
@@ -541,6 +542,11 @@ const questBuyables: Buyable[] = [
 		name: 'Cannon stand',
 		gpCost: 2_500_000,
 		qpRequired: 5
+	},
+	{
+		name: 'Elemental shield',
+		gpCost: 2_500_000,
+		qpRequired: 25
 	}
 ];
 
@@ -671,7 +677,8 @@ const Buyables: Buyable[] = [
 	...castleWarsBuyables,
 	...cmCapes,
 	...slayerBuyables,
-	...capeBuyables
+	...capeBuyables,
+	...miningBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

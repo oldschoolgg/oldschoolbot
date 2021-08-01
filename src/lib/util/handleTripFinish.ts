@@ -21,6 +21,7 @@ import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, generateContinuationChar, stringMatches, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
+import { lastTripCache } from '../../../dist/lib/constants';
 
 export const collectors = new Map<string, MessageCollector>();
 
@@ -53,6 +54,7 @@ export async function handleTripFinish(
 
 	const lootClueScrolls = new Bank();
 	const lootClueChests = new Bank();
+	const hasUnsired = false;
 	if (loot) {
 		// Scrolls
 		ClueTiers.filter(tier => loot[tier.scrollID]).forEach(tier =>
@@ -60,6 +62,7 @@ export async function handleTripFinish(
 		);
 		// Caskets (when doing clues)
 		ClueTiers.filter(tier => loot[tier.id]).forEach(tier => lootClueChests.add(tier.id, loot[tier.id]));
+		hasUnsired = loot[itemID('Unsired')] > 0;
 	}
 	const attachable = attachment
 		? attachment instanceof MessageAttachment
@@ -180,6 +183,10 @@ export async function handleTripFinish(
 			triggerRandomEvent(channel, user);
 		}
 	});
+
+	if (onContinue) {
+		lastTripCache.set(user.id, { data, continue: onContinue });
+	}
 
 	if (perkTier < PerkTier.One) {
 		if (!onContinue) return;

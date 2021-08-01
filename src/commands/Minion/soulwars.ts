@@ -141,54 +141,86 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [input]: [string]) {
-		const partyOptions: MakePartyOptions = {
-			leader: msg.author,
-			minSize: 1,
-			maxSize: 99,
-			ironmanAllowed: true,
-			message: `${msg.author.username} is starting a Soul Wars mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
-			customDenier: user => {
-				if (!user.hasMinion) {
-					return [true, "you don't have a minion."];
-				}
-				if (user.minionIsBusy) {
-					return [true, 'your minion is busy.'];
-				}
-
-				return [false];
-			}
-		};
-
-		const users =
-			input === 'solo' ? [msg.author] : (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
-		if (users.length === 0) {
-			return;
-		}
-
 		const perDuration = randomVariation(Time.Minute * 7, 5);
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.SoulWars) / perDuration);
 		const duration = quantity * perDuration;
 
-		await addSubTaskToActivityTask<SoulWarsOptions>({
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			quantity,
-			duration,
-			type: Activity.SoulWars,
-			leader: msg.author.id,
-			users: users.map(u => u.id)
-		});
+		if (input === 'solo') {
+			await addSubTaskToActivityTask<SoulWarsOptions>({
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.SoulWars,
+				leader: msg.author.id,
+				users: [msg.author.id]
+			});
 
-		const str = `${partyOptions.leader.username}'s party (${users
-			.map(u => u.username)
-			.join(', ')}) is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatDuration(
-			duration
-		)}.`;
+			const str = `${
+				msg.author.minionName
+			} is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatDuration(duration)}.`;
 
-		return msg.channel.send(str);
+			return msg.channel.send(str);
+		} else if (input === 'mass') {
+			const partyOptions: MakePartyOptions = {
+				leader: msg.author,
+				minSize: 1,
+				maxSize: 99,
+				ironmanAllowed: true,
+				message: `${msg.author.username} is starting a Soul Wars mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+				customDenier: user => {
+					if (!user.hasMinion) {
+						return [true, "you don't have a minion."];
+					}
+					if (user.minionIsBusy) {
+						return [true, 'your minion is busy.'];
+					}
+
+					return [false];
+				}
+			};
+
+			const users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
+			if (users.length === 0) {
+				return;
+			}
+
+			await addSubTaskToActivityTask<SoulWarsOptions>({
+				userID: msg.author.id,
+				channelID: msg.channel.id,
+				quantity,
+				duration,
+				type: Activity.SoulWars,
+				leader: msg.author.id,
+				users: users.map(u => u.id)
+			});
+
+			const str = `${partyOptions.leader.username}'s party (${users
+				.map(u => u.username)
+				.join(
+					', '
+				)}) is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatDuration(
+				duration
+			)}.`;
+
+			return msg.channel.send(str);
+		}
+
+		return msg.channel.send(
+			`Commands: +sw solo/mass/buy/imbue. Current SW points: ${msg.author.settings.get(UserSettings.ZealTokens)}`
+		);
 	}
 
 	async buy(msg: KlasaMessage, [input = '']: [string]) {
+		const possibleItemName = input.split(' ');
+
+		let quantity = 1;
+		if (!Number.isNaN(parseInt(possibleItemName[0]))) {
+			quantity = Number(possibleItemName.shift());
+		}
+
+		input = possibleItemName.join(' ');
+
 		const item = buyables.find(i => stringMatches(input, i.item.name));
 		if (!item) {
 			return msg.channel.send(
@@ -198,14 +230,18 @@ export default class extends BotCommand {
 			);
 		}
 		const bal = msg.author.settings.get(UserSettings.ZealTokens);
-		if (bal < item.tokens) {
+		if (bal < item.tokens * quantity) {
 			return msg.channel.send(
-				`You don't have enough Zeal Tokens to buy a ${item.item.name}. You have ${bal} but need ${item.tokens}.`
+				`You don't have enough Zeal Tokens to buy ${quantity} ${item.item.name}. You have ${bal} but need ${
+					item.tokens * quantity
+				}.`
 			);
 		}
-		await msg.author.settings.update(UserSettings.ZealTokens, bal - item.tokens);
-		await msg.author.addItemsToBank({ [item.item.id]: 1 }, true);
-		return msg.channel.send(`Added 1x ${item.item.name} to your bank, removed ${item.tokens}x Zeal Tokens.`);
+		await msg.author.settings.update(UserSettings.ZealTokens, bal - item.tokens * quantity);
+		await msg.author.addItemsToBank({ [item.item.id]: quantity }, true);
+		return msg.channel.send(
+			`Added ${quantity}x ${item.item.name} to your bank, removed ${item.tokens * quantity}x Zeal Tokens.`
+		);
 	}
 
 	async imbue(msg: KlasaMessage, [input = '']: [string]) {

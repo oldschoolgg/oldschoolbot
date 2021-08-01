@@ -2,10 +2,11 @@ import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Emoji } from '../../lib/constants';
+import { BitField, Emoji } from '../../lib/constants';
+import { filterableTypes } from '../../lib/data/filterables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
+import { makePaginatedMessage } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 
 export default class extends BotCommand {
@@ -24,6 +25,12 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [pageNumberOrItemName]: [number | string | undefined]) {
 		await msg.author.settings.sync(true);
 		const baseBank = msg.author.bank({ withGP: true });
+
+		if (msg.flagArgs.smallbank) {
+			const currentStatus = msg.author.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank);
+			await msg.author.settings.update(UserSettings.BitField, BitField.AlwaysSmallBank);
+			return msg.channel.send(`Small Banks are now ${currentStatus ? 'disabled' : 'enabled'} for you.`);
+		}
 
 		if (baseBank.length === 0) {
 			return msg.channel.send(
@@ -44,6 +51,13 @@ export default class extends BotCommand {
 			const textBank = [];
 			for (const [item, qty] of bank.items()) {
 				if (msg.flagArgs.search && !item.name.toLowerCase().includes(msg.flagArgs.search.toLowerCase())) {
+					continue;
+				}
+
+				const filter = msg.flagArgs.filter
+					? filterableTypes.find(type => type.aliases.some(alias => msg.flagArgs.filter === alias)) ?? null
+					: null;
+				if (filter && !filter.items.includes(item.id)) {
 					continue;
 				}
 
@@ -69,20 +83,17 @@ export default class extends BotCommand {
 				});
 			}
 
-			const loadingMsg = await msg.channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
-			const display = new UserRichDisplay();
-			display.setFooterPrefix('Page ');
-
+			let pages = [];
 			for (const page of chunk(textBank, 10)) {
-				display.addPage(
-					new MessageEmbed().setTitle(`${msg.author.username}'s Bank`).setDescription(page.join('\n'))
-				);
+				pages.push({
+					embeds: [
+						new MessageEmbed().setTitle(`${msg.author.username}'s Bank`).setDescription(page.join('\n'))
+					]
+				});
 			}
 
-			await display.start(loadingMsg as KlasaMessage, msg.author.id, {
-				jump: false,
-				stop: false
-			});
+			await makePaginatedMessage(msg, pages);
+
 			return null;
 		}
 
@@ -94,7 +105,8 @@ export default class extends BotCommand {
 				page: typeof pageNumberOrItemName === 'number' ? pageNumberOrItemName - 1 : 0
 			},
 			background: msg.author.settings.get(UserSettings.BankBackground),
-			user: msg.author
+			user: msg.author,
+			gearPlaceholder: msg.author.rawGear()
 		});
 	}
 }

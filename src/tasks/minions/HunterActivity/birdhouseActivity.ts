@@ -1,3 +1,4 @@
+import { randFloat, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -7,7 +8,15 @@ import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHo
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import itemID from '../../../lib/util/itemID';
 import { sendToChannelID } from '../../../lib/util/webhook';
+
+const clues = [
+	[itemID('Clue scroll(elite)'), 1 / 10],
+	[itemID('Clue scroll(hard)'), 2 / 10],
+	[itemID('Clue scroll(medium)'), 3 / 10],
+	[itemID('Clue scroll(easy)'), 4 / 10]
+];
 
 export default class extends Task {
 	async run(data: BirdhouseActivityTaskOptions) {
@@ -54,6 +63,26 @@ export default class extends Task {
 				str = `${user}, ${user.minionName} finished placing 4x ${birdhouse.name} and collecting 4x full ${birdhouseToCollect.name}.`;
 			} else {
 				str = `${user}, ${user.minionName} finished collecting 4x full ${birdhouseToCollect.name}.`;
+			}
+
+			for (let i = 0; i < 4; i++) {
+				if (!roll(200)) continue;
+				let nextTier = false;
+				let gotClue = false;
+				for (const clue of clues) {
+					if (nextTier || randFloat(0, 1) <= clue[1]) {
+						if (user.numItemsInBankSync(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
+							nextTier = true;
+							continue;
+						}
+						gotClue = true;
+						loot.add(clue[0]);
+						break;
+					}
+				}
+				if (!gotClue && roll(1000)) {
+					loot.add('Clue scroll(beginner)');
+				}
 			}
 
 			hunterXP = birdhouseToCollect.huntXP * 4;

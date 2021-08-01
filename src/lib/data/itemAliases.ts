@@ -174,3 +174,13 @@ setItemAlias(11_137, 'Antique lamp 1');
 setItemAlias(11_139, 'Antique lamp 2');
 setItemAlias(11_141, 'Antique lamp 3');
 setItemAlias(11_185, 'Antique lamp 4');
+
+// Dragonfire shields
+setItemAlias(11_284, 'Uncharged dragonfire shield');
+setItemAlias(11_283, 'Dragonfire shield');
+
+setItemAlias(21_634, 'Uncharged ancient wyvern shield');
+setItemAlias(21_633, 'Ancient wyvern shield');
+
+setItemAlias(22_003, 'Uncharged dragonfire ward');
+setItemAlias(22_002, 'Dragonfire ward');
