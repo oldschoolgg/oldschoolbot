@@ -1,27 +1,21 @@
-import {
-	Message,
-	MessageActionRow,
-	MessageAttachment,
-	MessageButton,
-	MessageCollector,
-	MessageOptions,
-	TextChannel
-} from 'discord.js';
+import { Message, MessageAttachment, MessageCollector, MessageOptions, TextChannel } from 'discord.js';
 import { roll, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import MinionCommand from '../../commands/Minion/minion';
-import { Activity, BitField, COINS_ID, PerkTier } from '../constants';
+import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import ClueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { ClientSettings } from '../settings/types/ClientSettings';
+import { UserSettings } from '../settings/types/UserSettings';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, generateContinuationChar, stringMatches, updateGPTrackSetting } from '../util';
+import { customMessageComponents } from './customMessageComponents';
 import getUsersPerkTier from './getUsersPerkTier';
+import itemID from './itemID';
 import { sendToChannelID } from './webhook';
-import { lastTripCache } from '../../../dist/lib/constants';
 
 export const collectors = new Map<string, MessageCollector>();
 
@@ -52,9 +46,25 @@ export async function handleTripFinish(
 		}
 	}
 
+	const attachable = attachment
+		? attachment instanceof MessageAttachment
+			? attachment
+			: new MessageAttachment(attachment)
+		: undefined;
+
+	const channel = client.channels.cache.get(channelID);
+
+	const options: MessageOptions = {
+		content: message
+	};
+
+	if (attachable) options.files = [attachable];
+	const components = new customMessageComponents();
 	const lootClueScrolls = new Bank();
 	const lootClueChests = new Bank();
-	const hasUnsired = false;
+	let hasUnsired = false;
+	let newSlayerTask = options.content?.includes('return to a Slayer master.');
+
 	if (loot) {
 		// Scrolls
 		ClueTiers.filter(tier => loot[tier.scrollID]).forEach(tier =>
@@ -64,86 +74,68 @@ export async function handleTripFinish(
 		ClueTiers.filter(tier => loot[tier.id]).forEach(tier => lootClueChests.add(tier.id, loot[tier.id]));
 		hasUnsired = loot[itemID('Unsired')] > 0;
 	}
-	const attachable = attachment
-		? attachment instanceof MessageAttachment
-			? attachment
-			: new MessageAttachment(attachment)
-		: undefined;
-	//
-	const channel = client.channels.cache.get(channelID);
-
-	const options: MessageOptions = {
-		content: message
-	};
-
-	if (attachable) {
-		options.files = [attachable];
-	}
-
-	let componentsFunctions: Record<string, Function> = {};
 
 	// If Patreon
 	if (perkTier >= PerkTier.One) {
-		if (onContinue || lootClueScrolls.items().length > 0 || lootClueChests.items().length > 0) {
-			const messageComponents = new MessageActionRow();
-			options.components = [messageComponents];
-
-			if (onContinue) {
-				messageComponents.components.push(
-					new MessageButton({
-						label: 'Continue trip',
-						style: 'PRIMARY',
-						customID: 'continueTrip'
-					})
-				);
-				componentsFunctions.continueTrip = (msg: KlasaMessage) => {
-					return onContinue(msg).catch(err => {
+		if (onContinue) {
+			components.addButton({
+				label: 'Continue trip',
+				style: 'PRIMARY',
+				customID: 'continueTrip',
+				onClick: msg =>
+					onContinue(msg).catch(err => {
 						msg.channel.send(err);
-					});
-				};
-			}
-
-			if (lootClueScrolls.items().length > 0) {
-				lootClueScrolls.items().forEach(i => {
-					const clueTier = ClueTiers.find(c => c.scrollID === i[0].id);
-					if (clueTier) {
-						messageComponents.components.push(
-							new MessageButton({
-								label: `${clueTier.name} clue`,
-								style: 'SECONDARY',
-								customID: `clueID_${i[0].id}`
-							})
-						);
-						componentsFunctions[`clueID_${i[0].id}`] = (msg: KlasaMessage) => {
-							return (client.commands.get('minion') as unknown as MinionCommand).clue(msg, [
+					})
+			});
+		}
+		if (lootClueScrolls.items().length > 0) {
+			lootClueScrolls.forEach(i => {
+				const clueTier = ClueTiers.find(c => c.scrollID === i.id);
+				if (clueTier) {
+					components.addButton({
+						label: `${clueTier.name} clue`,
+						style: 'SECONDARY',
+						customID: `clueID_${i.id}`,
+						onClick: msg =>
+							(client.commands.get('minion') as unknown as MinionCommand).clue(msg, [
 								lootClueScrolls.amount(clueTier.scrollID),
 								clueTier.name
-							]);
-						};
-					}
-				});
-			}
-			if (lootClueChests.items().length > 0) {
-				lootClueChests.items().forEach(i => {
-					const clueTier = ClueTiers.find(c => c.id === i[0].id);
-					if (clueTier) {
-						messageComponents.components.push(
-							new MessageButton({
-								label: `Open ${clueTier.name.toLowerCase()} casket`,
-								style: 'SECONDARY',
-								customID: `clueID_${i[0].id}`
-							})
-						);
-						componentsFunctions[`clueID_${i[0].id}`] = (msg: KlasaMessage) => {
-							return client.commands
-								.get('open')!
-								.run(msg, [lootClueChests.amount(clueTier.id), clueTier.name]);
-						};
-					}
-				});
-			}
-			// Limit to 3 buttons per message
-			messageComponents.components = messageComponents.components.slice(0, 3);
+							])
+					});
+				}
+			});
+		}
+		if (lootClueChests.items().length > 0) {
+			lootClueChests.forEach(i => {
+				const clueTier = ClueTiers.find(c => c.id === i.id);
+				if (clueTier) {
+					components.addButton({
+						label: `Open ${clueTier.name.toLowerCase()} casket`,
+						style: 'SECONDARY',
+						customID: `clueID_${i.id}`,
+						onClick: msg =>
+							client.commands.get('open')!.run(msg, [lootClueChests.amount(clueTier.id), clueTier.name])
+					});
+				}
+			});
+		}
+		if (hasUnsired) {
+			components.addButton({
+				label: 'Offer unsired',
+				style: 'SECONDARY',
+				customID: 'offerUnsired',
+				onClick: msg => client.commands.get('offer')!.run(msg, [loot![itemID('Unsired')], 'unsired'])
+			});
+		}
+		// Only show slayer button if the user has a slayer master saved
+		if (newSlayerTask && user.settings.get(UserSettings.Slayer.RememberSlayerMaster)) {
+			components.addButton({
+				label: 'New Slayer Task',
+				style: 'PRIMARY',
+				customID: 'newSlayerTask',
+				emoji: Emoji.Slayer,
+				onClick: msg => client.commands.get('slayertask')!.run(msg, [undefined])
+			});
 		}
 	} else {
 		if (onContinue) {
@@ -169,9 +161,12 @@ export async function handleTripFinish(
 			});
 			options.content += `\nTo open this clue casket, do ${command.join(' or ')}`;
 		}
+		if (hasUnsired) {
+			options.content += '\n**You received an unsired!** You can offer it for loot using `+offer unsired`.';
+		}
 	}
 
-	await sendToChannelID(client, channelID, options, user, componentsFunctions).then(() => {
+	await sendToChannelID(client, channelID, options, user, components).then(() => {
 		const minutes = Math.min(30, data.duration / Time.Minute);
 		const randomEventChance = 60 - minutes;
 		if (
@@ -184,9 +179,7 @@ export async function handleTripFinish(
 		}
 	});
 
-	if (onContinue) {
-		lastTripCache.set(user.id, { data, continue: onContinue });
-	}
+	if (onContinue) lastTripCache.set(user.id, { data, continue: onContinue });
 
 	if (perkTier < PerkTier.One) {
 		if (!onContinue) return;

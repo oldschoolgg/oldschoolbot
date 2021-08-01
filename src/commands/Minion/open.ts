@@ -12,8 +12,10 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
+import { customMessageComponents } from '../../lib/util/customMessageComponents';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
+import MinionCommand from './minion';
 
 const itemsToNotifyOf = cluesRaresCL
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
@@ -124,8 +126,7 @@ export default class extends BotCommand {
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${clueTier.name} caskets.`
 		);
 
-		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
-		await msg.author.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await msg.author.addItemsToBank(loot, true);
 		if (typeof loot[COINS_ID] === 'number') {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot[COINS_ID]);
 		}
@@ -138,13 +139,36 @@ export default class extends BotCommand {
 			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 		}
 
+		const components = new customMessageComponents();
+		for (const tier of ClueTiers) {
+			if (itemsAdded[tier.scrollID] && itemsAdded[tier.scrollID] > 0) {
+				components.addButton({
+					label: `Do ${tier.name.toLowerCase()} clue`,
+					customID: `clueTier_${tier.id}`,
+					style: 'SECONDARY',
+					onClick: msg =>
+						(this.client.commands.get('minion') as unknown as MinionCommand).clue(msg, [
+							itemsAdded[tier.scrollID],
+							tier.name
+						])
+				});
+			}
+		}
+		if (components.getButtons()) {
+			components.addButton({
+				label: 'Another time',
+				customID: 'anotherTime',
+				style: 'SECONDARY'
+			});
+		}
 		return msg.channel.sendBankImage({
-			bank: loot,
+			bank: itemsAdded,
 			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.`,
 			title: opened,
 			flags: { showNewCL: 1, ...msg.flagArgs },
 			user: msg.author,
-			cl: previousCL
+			cl: previousCL,
+			components
 		});
 	}
 

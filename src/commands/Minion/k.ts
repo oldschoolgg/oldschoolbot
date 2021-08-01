@@ -131,7 +131,7 @@ export default class extends BotCommand {
 
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
-		if (!hasReqs) throw reason;
+		if (!hasReqs) return msg.channel.send(`${reason}`);
 
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, msg.author.getKC(monster.id));
 

@@ -20,6 +20,7 @@ import { Creature, SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
 import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
+import { customMessageComponents } from '../util/customMessageComponents';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
 type SendBankImageFn = (options: {
@@ -31,6 +32,7 @@ type SendBankImageFn = (options: {
 	user?: KlasaUser;
 	cl?: ItemBank;
 	gearPlaceholder?: Record<GearSetupType, GearSetup>;
+	components?: customMessageComponents;
 }) => Promise<KlasaMessage>;
 
 declare module 'klasa' {

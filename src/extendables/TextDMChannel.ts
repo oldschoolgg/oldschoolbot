@@ -14,6 +14,7 @@ import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { bankImageCache } from '../lib/constants';
 import { ItemBank } from '../lib/types';
+import { customMessageComponents } from '../lib/util/customMessageComponents';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -96,7 +97,8 @@ export default class extends Extendable {
 			background,
 			flags,
 			user,
-			cl
+			cl,
+			components
 		}: {
 			bank: ItemBank;
 			content?: string;
@@ -105,6 +107,7 @@ export default class extends Extendable {
 			flags?: Record<string, string>;
 			user?: KlasaUser;
 			cl?: ItemBank;
+			components: customMessageComponents;
 		}
 	) {
 		const { image, cacheKey, isTransparent } = await this.client.tasks
@@ -124,9 +127,19 @@ export default class extends Extendable {
 		if (image && !cached) {
 			options.files = [new MessageAttachment(image!, isTransparent ? 'bank.png' : 'bank.jpg')];
 		}
-		const sent = await this.send(options);
 
-		const url = sent.attachments.first()?.proxyURL;
+		let sent = undefined;
+		if (components) {
+			sent = await components.sendMessage({
+				user,
+				channel: this,
+				data: options
+			});
+		} else {
+			sent = await this.send(options);
+		}
+
+		const url = sent!.attachments.first()?.proxyURL;
 		if (url) {
 			bankImageCache.set(cacheKey, url);
 		}

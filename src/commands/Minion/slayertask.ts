@@ -55,6 +55,13 @@ const returnSuccessButtons = [
 			style: 'DANGER',
 			customID: 'block'
 		})
+	],
+	[
+		new MessageButton({
+			label: 'Nothing',
+			style: 'SECONDARY',
+			customID: 'doNothing'
+		})
 	]
 ];
 
@@ -233,9 +240,9 @@ export default class extends BotCommand {
 					`\nYou have ${slayerPoints.toLocaleString()} slayer points, and have completed ${slayerStreak} tasks in a row.`
 			);
 		}
-		if (input && (input === 'skip' || input === 'block')) msg.flagArgs[input] = 'yes';
-		if (currentTask && (msg.flagArgs.skip || msg.flagArgs.block)) {
-			const toBlock = msg.flagArgs.block ? true : false;
+		let skipTask = input === 'skip' || msg.flagArgs.skip;
+		let toBlock = input === 'block' || msg.flagArgs.block;
+		if (currentTask && (skipTask || toBlock)) {
 			if (toBlock && myBlockList.length >= maxBlocks) {
 				return msg.channel.send(
 					`You cannot have more than ${maxBlocks} slayer blocks!\n\nUse:\n` +

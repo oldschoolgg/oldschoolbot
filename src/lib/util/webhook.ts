@@ -1,10 +1,10 @@
 import { MessageOptions, Permissions, TextChannel, WebhookClient } from 'discord.js';
-import { Time } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
 import PQueue from 'p-queue';
 
 import { WebhookTable } from '../typeorm/WebhookTable.entity';
 import { channelIsSendable } from '../util';
+import { customMessageComponents } from './customMessageComponents';
 
 const webhookCache: Map<string, WebhookClient> = new Map();
 
@@ -64,7 +64,7 @@ export async function sendToChannelID(
 	channelID: string,
 	data: MessageOptions,
 	user: KlasaUser | undefined = undefined,
-	componentSelection?: Record<string, Function>
+	components?: customMessageComponents
 ) {
 	queue.add(async () => {
 		const channel = await resolveChannel(client, channelID);
@@ -81,30 +81,10 @@ export async function sendToChannelID(
 					await sendToChannelID(client, channelID, data);
 				}
 			}
+		} else if (user && components) {
+			await components.sendMessage({ channel, data, user });
 		} else {
-			const message = await channel.send(data);
-			if (user) {
-				try {
-					const selection = await message.awaitMessageComponentInteraction({
-						time: Time.Minute * 10,
-						filter: i => {
-							if (i.user.id !== user.id) {
-								i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-								return false;
-							}
-							return true;
-						}
-					});
-					if (componentSelection && componentSelection[selection.customID]) {
-						message.author = user;
-						componentSelection[selection.customID](message);
-					}
-					await message.edit({ components: [] });
-				} catch (e) {
-					await message.edit({ components: [] });
-				} finally {
-				}
-			}
+			await channel.send(data);
 		}
 	});
 }
