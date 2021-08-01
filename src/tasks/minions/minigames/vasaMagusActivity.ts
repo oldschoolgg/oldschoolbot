@@ -20,9 +20,13 @@ export default class extends Task {
 
 		const loot = new Bank();
 
+		let resultStr = `${user}, ${user.minionName} finished killing ${quantity}x Vasa Magus.`;
 		for (let i = 0; i < quantity; i++) {
 			loot.add(VasaMagusLootTable.roll());
-			loot.add(randArrItem(bossKillables).table.kill(randInt(1, 3), {}));
+			let mon = randArrItem(bossKillables);
+			let qty = randInt(1, 3);
+			resultStr += ` Vasa dropped the loot of ${qty}x ${mon.name}.`;
+			loot.add(mon.table.kill(qty, {}));
 		}
 
 		if (DOUBLE_LOOT_ACTIVE) {
@@ -38,7 +42,7 @@ export default class extends Task {
 		});
 		await user.addItemsToBank(loot, true);
 
-		let resultStr = `${user}, ${user.minionName} finished killing ${quantity}x Vasa Magus.\n\n${Emoji.Casket} **Loot:** ${loot}\n\n${xpRes}`;
+		resultStr += `\n\n${Emoji.Casket} **Loot:** ${loot}\n\n${xpRes}`;
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.VasaLoot, loot);
 
