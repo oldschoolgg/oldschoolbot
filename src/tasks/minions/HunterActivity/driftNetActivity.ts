@@ -9,7 +9,7 @@ import { DriftNetActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 // Bonus loot from higher fishing level
-const FishBonusLoot = [
+const fishBonusLoot = [
 	{
 		item: 'Raw lobster',
 		req: 50
@@ -46,7 +46,7 @@ export default class extends Task {
 
 		// Build up loot table based on fishing level
 		const fishTable = fishShoal.table.clone();
-		for (const bonus of FishBonusLoot) {
+		for (const bonus of fishBonusLoot) {
 			if (currentFishLevel > bonus.req) {
 				fishTable.add(bonus.item);
 			}

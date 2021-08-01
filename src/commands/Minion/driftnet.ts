@@ -42,11 +42,7 @@ export default class extends BotCommand {
 			return msg.channel.send('You need atleast level 44 Hunter and 47 Fishing to do Drift net fishing.');
 		}
 
-		if (
-			!msg.author.hasItemEquippedAnywhere('Graceful gloves') ||
-			!msg.author.hasItemEquippedAnywhere('Graceful top') ||
-			!msg.author.hasItemEquippedAnywhere('Graceful legs')
-		) {
+		if (!msg.author.hasItemEquippedAnywhere(['Graceful gloves', 'Graceful top', 'Graceful legs'])) {
 			return msg.channel.send('You need Graceful top,legs and gloves equipped to do Drift net fishing.');
 		}
 
@@ -107,12 +103,13 @@ export default class extends BotCommand {
 		const quantity = Math.round(tripLength / oneDriftNetTime);
 		const duration = quantity * oneDriftNetTime;
 
-		if (!bankHasItem(userBank.bank, itemID('Drift net'), quantity)) {
+		itemsToRemove.add('Drift net', quantity);
+
+		if (!userBank.has(itemsToRemove.bank)) {
 			return msg.channel.send(
 				`You need ${quantity}x Drift net for the whole trip, try a lower trip lengthor make/buy more Drift net.`
 			);
 		}
-		itemsToRemove.add('Drift net', quantity);
 
 		await addSubTaskToActivityTask<DriftNetActivityTaskOptions>({
 			userID: msg.author.id,
