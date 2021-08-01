@@ -27,6 +27,8 @@ interface IOptions {
 	time: number;
 }
 
+const userCache: Record<string, string> = {};
+
 export class customMessageComponents {
 	public buttons: MessageActionRowComponentResolvable[] = [];
 	public functions: TComponentSelection = {};
@@ -88,6 +90,7 @@ export class customMessageComponents {
 		if (typeof data === 'string') data = { content: data };
 		if (this.getButtons()) data.components = this.getButtons();
 		const message = await channel.send(data);
+		userCache[user.id] = message.id;
 		if (data.components) {
 			try {
 				const allowsTypedChars = objectValues(this.functions)
@@ -122,6 +125,11 @@ export class customMessageComponents {
 				if (selection instanceof MessageComponentInteraction) {
 					response = selection.customID;
 				} else {
+					// Ignore text responses from old messages
+					if (userCache[user.id] !== message.id) {
+						await message.edit({ components: [] });
+						return message;
+					}
 					response = selection.entries().next().value[1].content.toLowerCase();
 					const functionExists = objectEntries(this.functions).find(f => {
 						return f[1].char?.toLowerCase() === response.toLowerCase();
@@ -138,6 +146,8 @@ export class customMessageComponents {
 				await message.edit({ components: [] });
 			} catch (e) {
 				await message.edit({ components: [] });
+			} finally {
+				if (userCache[user.id] === message.id) delete userCache[user.id];
 			}
 		}
 		return message;
