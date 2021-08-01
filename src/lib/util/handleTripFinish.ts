@@ -77,6 +77,7 @@ export async function handleTripFinish(
 
 	// If Patreon
 	if (perkTier >= PerkTier.One) {
+		components.setOptions({ time: Time.Minute * 10 });
 		if (onContinue) {
 			components.addButton({
 				label: 'Continue trip',
@@ -85,10 +86,13 @@ export async function handleTripFinish(
 				onClick: msg =>
 					onContinue(msg).catch(err => {
 						msg.channel.send(err);
-					})
+					}),
+				messageCharacter: 'y'
 			});
 		}
 		if (lootClueScrolls.items().length > 0) {
+			let tripChars = ['c', 'v', 'n', 'm', 'x', 'z', 'a'];
+			let j = 0;
 			lootClueScrolls.forEach(i => {
 				const clueTier = ClueTiers.find(c => c.scrollID === i.id);
 				if (clueTier) {
@@ -100,12 +104,16 @@ export async function handleTripFinish(
 							(client.commands.get('minion') as unknown as MinionCommand).clue(msg, [
 								lootClueScrolls.amount(clueTier.scrollID),
 								clueTier.name
-							])
+							]),
+						messageCharacter: tripChars[j] ?? undefined
 					});
+					j++;
 				}
 			});
 		}
 		if (lootClueChests.items().length > 0) {
+			let tripChars = ['o', 'p', 'e', 'n', 'c', 'l', 'u'];
+			let j = 0;
 			lootClueChests.forEach(i => {
 				const clueTier = ClueTiers.find(c => c.id === i.id);
 				if (clueTier) {
@@ -114,8 +122,10 @@ export async function handleTripFinish(
 						style: 'SECONDARY',
 						customID: `clueID_${i.id}`,
 						onClick: msg =>
-							client.commands.get('open')!.run(msg, [lootClueChests.amount(clueTier.id), clueTier.name])
+							client.commands.get('open')!.run(msg, [lootClueChests.amount(clueTier.id), clueTier.name]),
+						messageCharacter: tripChars[j] ?? undefined
 					});
+					j++;
 				}
 			});
 		}

@@ -3,21 +3,25 @@ import {
 	MessageActionRowComponentResolvable,
 	MessageButton,
 	MessageButtonOptions,
+	MessageComponentInteraction,
 	MessageOptions,
 	NewsChannel,
 	TextChannel,
 	ThreadChannel
 } from 'discord.js';
-import { chunk, Time } from 'e';
+import { chunk, objectEntries, objectValues, Time } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
 
 export type customComponentButtonFunction =
 	| ((msg: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>)
 	| ((msg: KlasaMessage) => void);
 
-export type TComponentSelection = Record<string, customComponentButtonFunction>;
+export type TComponentSelection = Record<string, { function?: customComponentButtonFunction; char?: string }>;
 
-export type customMessageButtonOptions = MessageButtonOptions & { onClick?: customComponentButtonFunction };
+export type customMessageButtonOptions = MessageButtonOptions & {
+	onClick?: customComponentButtonFunction;
+	messageCharacter?: string;
+};
 
 interface IOptions {
 	time: number;
@@ -40,8 +44,22 @@ export class customMessageComponents {
 			b.map(_b => this.addButton(_b));
 			return this;
 		}
+		if (b.onClick) {
+			if (this.functions[b.customID!]) {
+				this.functions[b.customID!].function = b.onClick;
+			} else {
+				this.functions[b.customID!] = { function: b.onClick };
+			}
+		}
+		if (b.messageCharacter) {
+			b.label = `[${b.messageCharacter.toUpperCase()}] ${b.label}`;
+			if (this.functions[b.customID!]) {
+				this.functions[b.customID!].char = b.messageCharacter;
+			} else {
+				this.functions[b.customID!] = { char: b.messageCharacter };
+			}
+		}
 		this.buttons.push(new MessageButton(b));
-		if (b.onClick) this.functions[b.customID!] = b.onClick;
 		return this;
 	}
 
@@ -72,22 +90,50 @@ export class customMessageComponents {
 		const message = await channel.send(data);
 		if (data.components) {
 			try {
-				const selection = await message.awaitMessageComponentInteraction({
-					time: this.options.time,
-					filter: i => {
-						if (i.user.id !== user!.id) {
-							i.reply({
-								ephemeral: true,
-								content: `This \`${user!.username}'s\` message not your message.`
-							});
-							return false;
+				const allowsTypedChars = objectValues(this.functions)
+					.filter(f => f.char)
+					.map(f => f.char!.toLowerCase());
+				const selection = await Promise.race([
+					message.channel.awaitMessages({
+						time: this.options.time,
+						max: 1,
+						errors: ['time'],
+						filter: _msg => {
+							return (
+								allowsTypedChars.length > 0 &&
+								_msg.author.id === user!.id &&
+								allowsTypedChars.includes(_msg.content.toLowerCase())
+							);
 						}
-						return true;
+					}),
+					message.awaitMessageComponentInteraction({
+						filter: i => {
+							if (i.user.id !== user!.id) {
+								i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+								return false;
+							}
+							return true;
+						},
+						time: this.options.time
+					})
+				]);
+				let response = '';
+				// noinspection SuspiciousTypeOfGuard
+				if (selection instanceof MessageComponentInteraction) {
+					response = selection.customID;
+				} else {
+					response = selection.entries().next().value[1].content.toLowerCase();
+					const functionExists = objectEntries(this.functions).find(f => {
+						return f[1].char?.toLowerCase() === response.toLowerCase();
+					});
+					if (functionExists) {
+						// eslint-disable-next-line prefer-destructuring
+						response = functionExists[0];
 					}
-				});
-				if (this.functions && this.functions[selection.customID]) {
+				}
+				if (this.functions && this.functions[response] && this.functions[response].function) {
 					message.author = user;
-					this.functions[selection.customID](message);
+					this.functions[response].function!(message);
 				}
 				await message.edit({ components: [] });
 			} catch (e) {

@@ -51,7 +51,9 @@ export default class extends BotCommand {
 		if (!name) {
 			return msg.channel.send(await this.showAvailable(msg));
 		}
-
+		if (quantity > 100) {
+			return msg.channel.send('Please, limit your openings to 100 at time. My PC sends its regards.');
+		}
 		await msg.author.settings.sync(true);
 		const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === name.toLowerCase());
 		if (clue) {
@@ -141,6 +143,8 @@ export default class extends BotCommand {
 
 		const components = new customMessageComponents();
 		if (msg.author.perkTier >= PerkTier.One) {
+			let tripChars = ['c', 'l', 'u', 'e'];
+			let j = 0;
 			for (const tier of ClueTiers) {
 				if (itemsAdded[tier.scrollID] && itemsAdded[tier.scrollID] > 0) {
 					components.addButton({
@@ -151,15 +155,18 @@ export default class extends BotCommand {
 							(this.client.commands.get('minion') as unknown as MinionCommand).clue(msg, [
 								itemsAdded[tier.scrollID],
 								tier.name
-							])
+							]),
+						messageCharacter: tripChars[j] ?? undefined
 					});
+					j++;
 				}
 			}
 			if (components.getButtons()) {
 				components.addButton({
 					label: 'Another time',
 					customID: 'anotherTime',
-					style: 'SECONDARY'
+					style: 'SECONDARY',
+					messageCharacter: 'n'
 				});
 			}
 		}
