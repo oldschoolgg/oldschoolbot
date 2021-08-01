@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Misc, Openables } from 'oldschooljs';
 import Openable from 'oldschooljs/dist/structures/Openable';
 
-import { COINS_ID, Events, MIMIC_MONSTER_ID } from '../../lib/constants';
+import { COINS_ID, Events, MIMIC_MONSTER_ID, PerkTier } from '../../lib/constants';
 import { cluesRaresCL } from '../../lib/data/CollectionsExport';
 import botOpenables from '../../lib/data/openables';
 import ClueTiers from '../../lib/minions/data/clueTiers';
@@ -140,26 +140,28 @@ export default class extends BotCommand {
 		}
 
 		const components = new customMessageComponents();
-		for (const tier of ClueTiers) {
-			if (itemsAdded[tier.scrollID] && itemsAdded[tier.scrollID] > 0) {
+		if (msg.author.perkTier >= PerkTier.One) {
+			for (const tier of ClueTiers) {
+				if (itemsAdded[tier.scrollID] && itemsAdded[tier.scrollID] > 0) {
+					components.addButton({
+						label: `Do ${tier.name.toLowerCase()} clue`,
+						customID: `clueTier_${tier.id}`,
+						style: 'SECONDARY',
+						onClick: msg =>
+							(this.client.commands.get('minion') as unknown as MinionCommand).clue(msg, [
+								itemsAdded[tier.scrollID],
+								tier.name
+							])
+					});
+				}
+			}
+			if (components.getButtons()) {
 				components.addButton({
-					label: `Do ${tier.name.toLowerCase()} clue`,
-					customID: `clueTier_${tier.id}`,
-					style: 'SECONDARY',
-					onClick: msg =>
-						(this.client.commands.get('minion') as unknown as MinionCommand).clue(msg, [
-							itemsAdded[tier.scrollID],
-							tier.name
-						])
+					label: 'Another time',
+					customID: 'anotherTime',
+					style: 'SECONDARY'
 				});
 			}
-		}
-		if (components.getButtons()) {
-			components.addButton({
-				label: 'Another time',
-				customID: 'anotherTime',
-				style: 'SECONDARY'
-			});
 		}
 		return msg.channel.sendBankImage({
 			bank: itemsAdded,
