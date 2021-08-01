@@ -163,10 +163,10 @@ export default class extends BotCommand {
 			}
 			if (components.getButtons()) {
 				components.addButton({
-					label: 'Another time',
+					label: 'Cancel',
 					customID: 'anotherTime',
 					style: 'SECONDARY',
-					messageCharacter: 'n'
+					messageCharacter: 'c'
 				});
 			}
 		}
