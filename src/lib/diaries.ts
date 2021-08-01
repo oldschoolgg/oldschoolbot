@@ -455,7 +455,7 @@ export const FaladorDiary: Diary = {
 			thieving: 13,
 			woodcutting: 75
 		},
-		qp: MAX_QP,
+		qp: 284,
 		collectionLogReqs: resolveItems(['Air rune', 'Saradomin brew(3)'])
 	}
 };
