@@ -6,6 +6,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import MinionCommand from '../../commands/Minion/minion';
 import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
+import { Offerables } from '../data/offerData';
 import ClueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { ClientSettings } from '../settings/types/ClientSettings';
@@ -14,7 +15,6 @@ import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, generateContinuationChar, stringMatches, updateGPTrackSetting } from '../util';
 import { customMessageComponents } from './customMessageComponents';
 import getUsersPerkTier from './getUsersPerkTier';
-import itemID from './itemID';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
@@ -62,7 +62,6 @@ export async function handleTripFinish(
 	const components = new customMessageComponents();
 	const lootClueScrolls = new Bank();
 	const lootClueChests = new Bank();
-	let hasUnsired = false;
 	let newSlayerTask = options.content?.includes('return to a Slayer master.');
 
 	if (loot) {
@@ -72,7 +71,6 @@ export async function handleTripFinish(
 		);
 		// Caskets (when doing clues)
 		ClueTiers.filter(tier => loot[tier.id]).forEach(tier => lootClueChests.add(tier.id, loot[tier.id]));
-		hasUnsired = loot[itemID('Unsired')] > 0;
 	}
 
 	// If Patreon
@@ -112,7 +110,7 @@ export async function handleTripFinish(
 			});
 		}
 		if (lootClueChests.items().length > 0) {
-			let tripChars = ['o', 'p', 'e', 'n', 'c', 'l', 'u'];
+			let tripChars = ['o', 'p', 'e', 'n', 'h', 'l', 'u'];
 			let j = 0;
 			lootClueChests.forEach(i => {
 				const clueTier = ClueTiers.find(c => c.id === i.id);
@@ -129,13 +127,17 @@ export async function handleTripFinish(
 				}
 			});
 		}
-		if (hasUnsired) {
-			components.addButton({
-				label: 'Offer unsired',
-				style: 'SECONDARY',
-				customID: 'offerUnsired',
-				onClick: msg => client.commands.get('offer')!.run(msg, [loot![itemID('Unsired')], 'unsired'])
-			});
+		// Check for offer custom items (Unsired, Chewed bones, etc)
+		for (const offerable of Offerables) {
+			if (loot && loot[offerable.itemID]) {
+				components.addButton({
+					label: `Offer ${offerable.name.toLowerCase()}`,
+					style: 'SECONDARY',
+					customID: `offer${offerable.itemID}`,
+					onClick: msg =>
+						client.commands.get('offer')!.run(msg, [loot[offerable.itemID], offerable.name.toLowerCase()])
+				});
+			}
 		}
 		// Only show slayer button if the user has a slayer master saved
 		if (newSlayerTask && user.settings.get(UserSettings.Slayer.RememberSlayerMaster)) {
@@ -144,7 +146,8 @@ export async function handleTripFinish(
 				style: 'PRIMARY',
 				customID: 'newSlayerTask',
 				emoji: Emoji.Slayer,
-				onClick: msg => client.commands.get('slayertask')!.run(msg, [undefined])
+				onClick: msg => client.commands.get('slayertask')!.run(msg, [undefined]),
+				messageCharacter: 'y'
 			});
 		}
 	} else {
@@ -171,8 +174,13 @@ export async function handleTripFinish(
 			});
 			options.content += `\nTo open this clue casket, do ${command.join(' or ')}`;
 		}
-		if (hasUnsired) {
-			options.content += '\n**You received an unsired!** You can offer it for loot using `+offer unsired`.';
+		// Check for offer custom items (Unsired, Chewed bones, etc)
+		for (const offerable of Offerables) {
+			if (loot && loot[offerable.itemID]) {
+				options.content += `\n\n**You received ${loot[offerable.itemID]}x ${
+					offerable.name
+				}!** You can offer it for loot using \`+offer ${offerable.name.toLowerCase()}\`.`;
+			}
 		}
 	}
 

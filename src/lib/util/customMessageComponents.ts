@@ -89,13 +89,28 @@ export class customMessageComponents {
 		if (!channel || !user) return;
 		if (typeof data === 'string') data = { content: data };
 		if (this.getButtons()) data.components = this.getButtons();
+
+		const allowsTypedChars = objectValues(this.functions)
+			.filter(f => f.char)
+			.map(f => f.char!.toLowerCase());
+
+		if (allowsTypedChars.length > 0) {
+			data.content += '\n\nYou can type the following as shortcut:\n';
+		}
+		const textShortcuts = [];
+		for (const d of this.buttons as customMessageButtonOptions[]) {
+			if (this.functions[d.customID!]) {
+				textShortcuts.push(
+					`${(d as customMessageButtonOptions).label!.replace(/\[/g, '`').replace(/]/g, '`')}`
+				);
+			}
+		}
+		if (textShortcuts.length > 0) data.content += textShortcuts.join(', ');
+
 		const message = await channel.send(data);
 		userCache[user.id] = message.id;
 		if (data.components) {
 			try {
-				const allowsTypedChars = objectValues(this.functions)
-					.filter(f => f.char)
-					.map(f => f.char!.toLowerCase());
 				const selection = await Promise.race([
 					message.channel.awaitMessages({
 						time: this.options.time,
