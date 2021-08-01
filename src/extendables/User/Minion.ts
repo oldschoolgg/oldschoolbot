@@ -436,6 +436,10 @@ export default class extends Extendable {
 				return `${this.minionName} is currently aerial fishing. ${formattedDuration}`;
 			}
 
+			case Activity.DriftNet: {
+				return `${this.minionName} is currently drift net fishing. ${formattedDuration}`;
+			}
+
 			case Activity.Construction: {
 				const data = currentTask as ConstructionActivityTaskOptions;
 				return `${this.minionName} is currently building ${data.quantity}x ${itemNameFromID(
