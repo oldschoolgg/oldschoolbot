@@ -74,7 +74,7 @@ export default class extends Task {
 			(user.settings.get(UserSettings.MonsterScores)[cyclopsID] ?? 0) + quantity
 		}.`;
 
-		user.incrementMonsterScore(cyclopsID, quantity);
+		await user.incrementMonsterScore(cyclopsID, quantity);
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(itemsAdded, `Loot From ${quantity}x Cyclops`, true, { showNewCL: 1 }, user, previousCL);
