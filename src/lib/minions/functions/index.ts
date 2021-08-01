@@ -31,7 +31,7 @@ const miscHpMap: Record<number, number> = {
 	[KingGoldemar.id]: 10_000,
 	[VasaMagus.id]: 3900,
 	[KalphiteKingMonster.id]: 5300,
-	[SeaKraken.id]: 3900,
+	[SeaKraken.id]: 5200,
 	[Ignecarus.id]: 10_000
 };
 
