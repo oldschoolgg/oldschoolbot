@@ -15,6 +15,7 @@ import { formatDuration } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			usage: '[qty:int]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
@@ -22,7 +23,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage) {
+	async run(msg: KlasaMessage, [qty]: [number]) {
 		const instance = new BossInstance({
 			leader: msg.author,
 			id: VasaMagus.id,
@@ -58,7 +59,8 @@ export default class extends BotCommand {
 				neck: 'Arcane blast necklace'
 			}),
 			gearSetup: GearSetupTypes.Mage,
-			itemCost: async (_user, baseFood) => baseFood.add('Elder rune', randInt(55, 100)),
+			itemCost: async data =>
+				data.baseFood.multiply(data.kills).add('Elder rune', randInt(55 * data.kills, 100 * data.kills)),
 			mostImportantStat: 'attack_magic',
 			food: () => new Bank(),
 			settingsKeys: [ClientSettings.EconomyStats.VasaCost, ClientSettings.EconomyStats.VasaLoot],
@@ -67,7 +69,9 @@ export default class extends BotCommand {
 			massText: `${msg.author.username} is assembling a team to fight Vasa Magus! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			minSize: 1,
 			solo: true,
-			canDie: false
+			canDie: false,
+			allowMoreThan1Solo: true,
+			quantity: qty
 		});
 		try {
 			if (msg.flagArgs.s1mulat3) {
@@ -75,7 +79,9 @@ export default class extends BotCommand {
 			}
 			const { bossUsers } = await instance.start();
 			const embed = new MessageEmbed().setDescription(
-				`Your team is off to fight Vasa Magus. The total trip will take ${formatDuration(instance.duration)}.
+				`Your team is off to fight ${instance.quantity}x Vasa Magus. The total trip will take ${formatDuration(
+					instance.duration
+				)}.
 
 ${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
 `
