@@ -90,7 +90,7 @@ export default class extends Task {
 			totalLoot.add(loot);
 			const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
-			if (kcToAdd) user.incrementMonsterScore(KalphiteKingMonster.id, kcToAdd);
+			if (kcToAdd) await user.incrementMonsterScore(KalphiteKingMonster.id, kcToAdd);
 			const purple = Object.keys(loot).some(id => kalphiteKingCL.includes(parseInt(id)));
 
 			const usersTask = await getUsersCurrentSlayerInfo(user.id);
@@ -177,8 +177,7 @@ export default class extends Task {
 				`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 					KalphiteKingMonster.name
 				}, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${
-					(leaderUser.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0) +
-					Number(quantity)
+					leaderUser.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0
 				}.\n\n${soloXP}`,
 				res => {
 					leaderUser.log('continued kk');

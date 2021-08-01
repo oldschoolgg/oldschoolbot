@@ -16,7 +16,7 @@ export default class extends Task {
 		const { channelID, userID, duration, quantity } = data;
 		const user = await this.client.users.fetch(userID);
 
-		user.incrementMonsterScore(VasaMagus.id, quantity);
+		await user.incrementMonsterScore(VasaMagus.id, quantity);
 
 		const loot = new Bank();
 

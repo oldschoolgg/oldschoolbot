@@ -96,7 +96,7 @@ export default class extends Task {
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
-			if (kcToAdd) user.incrementMonsterScore(NexMonster.id, kcToAdd);
+			if (kcToAdd) await user.incrementMonsterScore(NexMonster.id, kcToAdd);
 			const purple = Object.keys(loot).some(id => nexCL.includes(parseInt(id)));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
@@ -148,7 +148,7 @@ export default class extends Task {
 					content: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 						NexMonster.name
 					}, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${
-						(leaderUser.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) + Number(quantity)
+						leaderUser.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0
 					}.`,
 					title: `${quantity}x Nex`,
 					background: leaderUser.settings.get(UserSettings.BankBackground),
