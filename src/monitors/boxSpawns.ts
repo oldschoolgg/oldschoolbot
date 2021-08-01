@@ -11,13 +11,17 @@ import { getRandomMysteryBox } from '../lib/data/openables';
 import { roll, stringMatches } from '../lib/util';
 
 export async function triviaChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
-	const { question, correct_answer, incorrect_answers } = await fetch(
+	let { question, correct_answer, incorrect_answers } = await fetch(
 		'https://opentdb.com/api.php?amount=1&category=9&difficulty=medium&type=multiple'
 	)
 		.then(res => res.json())
 		.then(res => res.results[0]);
 
-	const allAnswers = [correct_answer, ...incorrect_answers].sort(() => 0.5 - Math.random()).map(s => he.decode(s));
+	correct_answer = he.decode(correct_answer);
+	incorrect_answers = incorrect_answers.map((s: string) => he.decode(s));
+	question = he.decode(question);
+
+	const allAnswers = [correct_answer, ...incorrect_answers].sort(() => 0.5 - Math.random());
 
 	const embed = new MessageEmbed()
 		.setColor(Color.Orange)
