@@ -1,11 +1,13 @@
-import { MessageButton, MessageSelectMenu } from 'discord.js';
-import { objectEntries, objectKeys, objectValues, Time } from 'e';
+import { MessageAttachment, MessageButton } from 'discord.js';
+import { objectEntries, objectKeys, shuffleArr } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { resolveBank, toKMB } from 'oldschooljs/dist/util';
+import { resolveBank } from 'oldschooljs/dist/util';
+import { table } from 'table';
 
-import { Activity, Emoji, skillEmoji } from '../../lib/constants';
-import { ICustomRewardCollect, IQuest, QuestList, Quests } from '../../lib/data/QuestExports';
+import { Activity, Emoji } from '../../lib/constants';
+import { uniQuestRewardItems } from '../../lib/data/CollectionsExport';
+import { ICustomRewardCollect, IQuest, MAXQP, QuestList, Quests, userQP } from '../../lib/data/QuestExports';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -14,11 +16,8 @@ import { Skills } from '../../lib/types';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import getOSItem from '../../lib/util/getOSItem';
 import { completeUserQuestID } from '../../tasks/minions/questingActivity';
-
-export const MAXQP = QuestList.map(q => q.rewards.qp).reduce(
-	(previousValue, currentValue) => previousValue + currentValue
-);
 
 export function allSkills(xpOrLevel: number): Skills {
 	const toReturn = <Partial<Skills>>{};
@@ -26,154 +25,6 @@ export function allSkills(xpOrLevel: number): Skills {
 		toReturn[s.toLowerCase() as SkillsEnum] = xpOrLevel;
 	});
 	return toReturn;
-}
-
-async function addExp(
-	msg: KlasaMessage,
-	skillName: SkillsEnum,
-	skills: Skills,
-	requirements?: Skills
-): Promise<[boolean, string]> {
-	if (!skills[skillName]) {
-		return [false, 'This is not a valid skill for this item.'];
-	}
-
-	// if ((await this.lockedSkills()).includes(skillName)) {
-	// 	return [false, `A magical force is preventing you from receiving XP in ${skillName}.`];
-	// }
-
-	if (requirements && msg.author.skillLevel(skillName) < requirements[skillName]!) {
-		return [
-			false,
-			`You are not string enough to receive this reward. You need level **${requirements[
-				skillName
-			]!}** in ${skillName} to receive it.`
-		];
-	}
-
-	let amount = skills[skillName]!;
-	const userXp = msg.author.rawSkills[skillName]!;
-
-	if (userXp === 200_000_000) return [false, `You are already 200m exp in ${skillName} and can't receive any more.`];
-
-	if (amount + userXp > 200_000_000) {
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm)
-			return [
-				false,
-				`This will waste more XP than necessary to max your ${skillName} xp. To force this, use \`--cf\` or use a lower quantity.`
-			];
-		amount = 200_000_000 - userXp;
-	}
-	return [true, await msg.author.addXP({ skillName, amount })];
-}
-
-export async function xpReward(
-	msg: KlasaMessage,
-	skills: Skills | Skills[],
-	requirements?: Skills,
-	selectedOption?: SkillsEnum | string
-): Promise<boolean | [false, string]> {
-	let options = [];
-	if (Array.isArray(skills)) {
-		options = skills.map((opts, index) => {
-			return {
-				label: `Option ${index + 1}`,
-				description: `${objectKeys(opts).join(', ')}`,
-				value: `${index}`,
-				emoji: skillEmoji[objectKeys(opts)[0]]
-			};
-		});
-	} else {
-		options = await Promise.all(
-			objectEntries(skills).map(async skill => {
-				const userXp = msg.author.rawSkills[skill[0]]!;
-				const userLevel = msg.author.skillLevel(skill[0]);
-				const requiredLevel = requirements && requirements[skill[0]] ? requirements[skill[0]]! : 0;
-
-				let hasReq = userLevel >= requiredLevel;
-
-				let emoji = hasReq ? skillEmoji[skill[0]] : Emoji.RedX;
-				let description = hasReq ? 'You can select this!' : `You need level ${requirements![skill[0]]}.`;
-				if (userXp === 200_000_000) description = `You are already 200m in ${skill[0]}`;
-				// if ((await this.lockedSkills()).includes(skill[0])) description = 'This skill is locked.';
-
-				let label = `${skill[1]!.toLocaleString()} in ${skill[0].toString()}`;
-				if (label.length > 25) label = `${toKMB(skill[1]!)} in ${skill[0].toString()}`;
-				if (label.length > 25) label = `${toKMB(skill[1]!)} in ${skill[0].toString().slice(0, 3)}`;
-
-				return { label, description, value: `${skill[0]}`, emoji };
-			})
-		);
-	}
-	if (!selectedOption) {
-		const selectedMessage = await msg.channel.send({
-			content: 'Please, select your reward from the list below.',
-			components: [
-				[
-					new MessageSelectMenu({
-						type: 3,
-						customID: 'xpSelect',
-						options,
-						placeholder: 'Select a reward...'
-					})
-				]
-			]
-		});
-		try {
-			const selection = await selectedMessage.awaitMessageComponentInteraction({
-				filter: i => {
-					if (i.user.id !== msg.author.id) {
-						i.reply({
-							ephemeral: true,
-							content: 'This reward is not for you.'
-						});
-						return false;
-					}
-					return true;
-				},
-				time: Time.Second * 15
-			});
-			if (selection.isSelectMenu() && selection.values) {
-				if (Array.isArray(skills)) {
-					const msgAddXp: [boolean, string][] = [];
-					for (const skill of objectEntries(skills[Number(selection.values)])) {
-						const res = await addExp(msg, skill[0], { [skill[0]]: skill[1]! }, requirements);
-						if (!res[0]) return [false, res[1]];
-						msgAddXp.push(res);
-					}
-					await selectedMessage.edit({ components: [], content: msgAddXp.map(x => x[1]).join(', ') });
-					return true;
-				}
-				const msgAddXp = await addExp(msg, selection.values[0] as SkillsEnum, skills, requirements);
-				if (!msgAddXp[0]) return [false, msgAddXp[1]];
-				await selectedMessage.edit({ components: [], content: msgAddXp[1] });
-				return true;
-			}
-			await selectedMessage.edit({ components: [], content: 'This is not a valid option.' });
-			return false;
-		} catch (e) {
-			await selectedMessage.edit({ components: [], content: 'Please, try again.' });
-			return false;
-		}
-	} else {
-		if (Array.isArray(skills)) {
-			const msgAddXp: [boolean, string][] = [];
-			const selection = skills[Number(selectedOption)];
-			if (!selection) return false;
-			for (const skill of objectEntries(skills[Number(selectedOption)])) {
-				const res = await addExp(msg, skill[0], { [skill[0]]: skill[1]! }, requirements);
-				if (!res[0]) return [false, res[1]];
-				msgAddXp.push(res);
-			}
-			await msg.channel.send({ content: msgAddXp.map(x => x[1]).join(', ') });
-			return true;
-		}
-		if (!objectValues(SkillsEnum).includes(selectedOption as SkillsEnum)) return false;
-		const msgAddXp = await addExp(msg, selectedOption as SkillsEnum, skills, requirements);
-		if (!msgAddXp[0]) return [false, msgAddXp[1]];
-		await msg.channel.send({ content: msgAddXp[1] });
-		return true;
-	}
 }
 
 function meetQuestRequirements(quest: IQuest, user: KlasaUser) {
@@ -234,7 +85,6 @@ async function grandfatherUser(msg: KlasaMessage) {
 	let userNewQp = 0;
 	let userMaxQp = msg.author.settings.get(UserSettings.QP);
 	let questsDone: number[] = [];
-	let i = 0;
 
 	let xpToReceive: Skills = {};
 	let itemsToReceive = new Bank();
@@ -246,12 +96,12 @@ async function grandfatherUser(msg: KlasaMessage) {
 			if (value.requirements?.qp && userNewQp < value.requirements?.qp) continue;
 			if (value.requirements?.quests) {
 				for (const q of value.requirements?.quests) {
-					if (!questsDone.includes(q)) {
-						continue tempQuestLoop;
-					}
+					if (!questsDone.includes(q)) continue tempQuestLoop;
 				}
 			}
-			i++;
+
+			if (userNewQp + value.rewards.qp > userMaxQp) continue;
+
 			questAdded = true;
 			questsDone.push(value.id);
 			userNewQp += value.rewards.qp;
@@ -259,7 +109,16 @@ async function grandfatherUser(msg: KlasaMessage) {
 			// Get custom rewards
 			if (value.rewards.customLogic) {
 				for (const customReward of value.rewards.customLogic)
-					if (customReward.type === 'collect_reward') questsDone.push(value.id + customReward.id);
+					if (customReward.type === 'collect_reward') {
+						questsDone.push(value.id + customReward.id);
+					} else {
+						const reward = customReward.function();
+						if (reward[0] === 'item') itemsToReceive.add(reward[1]);
+						else {
+							for (const [skill, xp] of objectEntries(reward[1]))
+								xpToReceive[skill] = (xpToReceive[skill] ?? 0) + xp!;
+						}
+					}
 			}
 			// Get item rewarded
 			if (value.rewards.items) itemsToReceive.add(resolveBank(value.rewards.items));
@@ -275,27 +134,24 @@ async function grandfatherUser(msg: KlasaMessage) {
 		if (!questAdded) break;
 	}
 
-	await msg.confirm(
-		`You are about to convert your old quest points into the new Quest system.
-Your current quest point is **${userMaxQp}**. That will be converted into ${userNewQp}, from a total of ${i} quests.
-**You will not receive any reward from having these quests completed.**
-If you want to receve quest rewards, you'll have to start over in the new quest system.
-For that, you'll have **ONE** chance to reset your quest points and start over.
-In your first quest trip after clicking Confirm below, you'll receive the option to reset or not..`
-	);
+	const totalQuestsDone = QuestList.filter(q => questsDone.includes(q.id)).length;
+
 	questsDone.push(Quests.Grandfathered);
+	await msg.author.addItemsToBank(itemsToReceive, true);
 	await msg.author.settings.update(UserSettings.QP, userNewQp);
 	await msg.author.settings.update(UserSettings.Quests, questsDone, {
 		arrayAction: 'overwrite'
 	});
 
-	return msg.channel.send('Your quests have been updated.');
+	return msg.channel.send(
+		`You converted your current quest point is **${userMaxQp}** into ${userNewQp}, from a total of ${totalQuestsDone} quests.`
+	);
 }
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[collect|log] [quest:...string]',
+			usage: '[collect|log|recover] [quest:...string]',
 			aliases: ['q'],
 			usageDelim: ' ',
 			subcommands: true,
@@ -303,22 +159,105 @@ export default class extends BotCommand {
 		});
 	}
 
+	@requiresMinion
 	async log(msg: KlasaMessage, [_cmd]: [string]) {
 		await msg.author.settings.sync(true);
 		const userQuests = msg.author.settings.get(UserSettings.Quests);
-		let result = `Current QP: ${msg.author.settings.get(UserSettings.QP)} / ${MAXQP}\n`;
-		for (const quest of QuestList) {
-			result += `${userQuests.includes(quest.id) ? '[DONE]' : ''} ${quest.name}\n`;
+		const totalQuestsDone = QuestList.filter(q => userQuests.includes(q.id)).length;
+		let quest = undefined;
+		if (_cmd) quest = QuestList.find(q => stringMatches(q.name, _cmd) || q.id === Number(_cmd));
+
+		const canDo = [];
+		const logArray: string[][] = [];
+		let row = [];
+		for (let i = 0; i < QuestList.length; i++) {
+			row.push((QuestList[i].id / 1000).toLocaleString());
+			row.push(QuestList[i].name);
+			if (userQuests.includes(QuestList[i].id)) {
+				row.push('Completed');
+			} else if (meetQuestRequirements(QuestList[i], msg.author).length === 0) {
+				row.push('Not Started');
+				canDo.push(QuestList[i].name);
+			} else {
+				row.push('Locked');
+			}
+			if (row.length === 9) {
+				logArray.push(row);
+				row = [];
+			}
 		}
-		result = String(result);
-		console.log(Boolean(msg), _cmd);
-		return msg.channel.send(result);
+		if (row.length > 0) {
+			logArray.push(row);
+		}
+
+		if (quest) {
+			const questInfo: string[] = [];
+			questInfo.push(`**ID / Name**\n${quest.id / 1000} / ${quest.name}`);
+			questInfo.push(`**Length/Duration**\n${formatDuration(quest.time)}`);
+			const reqs = [];
+			if (quest.requirements?.qp) reqs.push(`Quest Points: ${quest.requirements.qp} QP`);
+			if (quest.requirements?.combatLevel) reqs.push(`Combat Level: ${quest.requirements.combatLevel}`);
+			if (quest.requirements?.level) reqs.push(`Skills: ${formatSkillRequirements(quest.requirements.level)}`);
+			if (quest.requirements?.quests) {
+				const reqQuests = quest.requirements.quests;
+				reqs.push(
+					`Quests: ${QuestList.filter(q => {
+						return reqQuests.includes(q.id);
+					})
+						.map(q => q.name)
+						.join(', ')}`
+				);
+			}
+			questInfo.push(`**Requirements**\n${reqs.length > 0 ? reqs.join('\n') : 'None'}`);
+			const rewards: string[] = [];
+			rewards.push(`Quest Points: ${quest.rewards.qp} QP`);
+			if (quest.rewards.xp) rewards.push(`Experience: ${formatSkillRequirements(quest.rewards.xp)}`);
+			if (quest.rewards.items) rewards.push(`Items: ${new Bank(quest.rewards.items).toString()}`);
+			questInfo.push(`**Rewards**\n${rewards.join('\n')}`);
+			return msg.channel.send({
+				content: `You have ${userQP(
+					msg.author
+				).toLocaleString()} QP.\nYou have completed ${totalQuestsDone} out of ${QuestList.length} quests.${
+					canDo.length > 0
+						? `\nHere are some quests you can do: ${shuffleArr(canDo).slice(0, 5).join(', ')}`
+						: ''
+				}\n\n${questInfo.join('\n')}`
+			});
+		}
+
+		const normalTable = table([
+			['#', 'Quest', 'Status', '#', 'Quest', 'Status', '#', 'Quest', 'Status'],
+			...logArray
+		]);
+		return msg.channel.send({
+			content: `You have ${userQP(
+				msg.author
+			).toLocaleString()} QP.\nYou have completed ${totalQuestsDone} out of ${QuestList.length} quests.${
+				canDo.length > 0 ? `\nHere are some quests you can do: ${shuffleArr(canDo).slice(0, 5).join(', ')}` : ''
+			}\n\nHere is your current quest log with all your quest information. Quests marked as Locked means you do not meet all requirements.`,
+			files: [new MessageAttachment(Buffer.from(normalTable), 'QuestLog.txt')]
+		});
+	}
+
+	async recover(msg: KlasaMessage, [item]: [string]) {
+		const userAllItems = msg.author.allItemsOwned();
+		const selectedItem = getOSItem(item);
+		if (!item || !selectedItem || !uniQuestRewardItems.includes(selectedItem.id)) {
+			return msg.channel.send('This is not a valid quest item to recover.');
+		}
+		if (!msg.author.collectionLog[selectedItem.id]) {
+			return msg.channel.send('You must acquire this item through questing first, before you can recover it.');
+		}
+		if (userAllItems.has(selectedItem.id)) {
+			return msg.channel.send('You already own a copy of this item.');
+		}
+		await msg.author.addItemsToBank({ [selectedItem.id]: 1 }, false);
+		return msg.channel.send(`You recovered **1x ${selectedItem.name}**.`);
 	}
 
 	@requiresMinion
 	@minionNotBusy
 	async collect(msg: KlasaMessage, [_cmd]: [string]) {
-		console.log('collect', _cmd);
 		const questsDone = msg.author.settings.get(UserSettings.Quests);
 		if (!_cmd) {
 			const canCollect = [];
@@ -386,15 +325,12 @@ export default class extends BotCommand {
 		if (tryXp && !Array.isArray(tryXp)) await completeUserQuestID(msg.author, quest.id + reward.id);
 		else if (Array.isArray(tryXp)) {
 			return msg.channel.send(tryXp[1]);
-		} else {
-			return msg.channel.send('It was not possible to collect this award.');
 		}
 	}
 
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage, [_quest]: [string]) {
-		console.log('run', _quest);
 		let quest: IQuest | undefined = undefined;
 		await msg.author.settings.sync(true);
 		const questsDone = msg.author.settings.get(UserSettings.Quests);
@@ -464,9 +400,14 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (questsDone.length === QuestList.length) {
-			return msg.channel.send('You have done all the quests! Congratulations!');
+		if (userQP(msg.author) === MAXQP) {
+			let str = 'You have done all the quests! Congratulations!';
+			if (!msg.author.allItemsOwned().has('Quest point cape')) {
+				str += ` You can buy a **Quest point cape** for 99K by using \`${msg.cmdPrefix}buy quest cape\`.`;
+			}
+			return msg.channel.send(str);
 		}
+
 		if (!_quest) {
 			for (const q of QuestList) {
 				if (questsDone.includes(q.id)) continue;
@@ -476,7 +417,9 @@ export default class extends BotCommand {
 				}
 			}
 			if (!quest) {
-				return msg.channel.send('You dont have the requirements to do any quest at the moment!');
+				return msg.channel.send(
+					'You dont have the requirements to do any quest at the moment! You can check your quest log for more information on what you are missing!'
+				);
 			}
 		} else {
 			quest = QuestList.find(q => stringMatches(q.name, _quest) || q.id === Number(_quest));
@@ -507,9 +450,9 @@ export default class extends BotCommand {
 		});
 
 		return msg.channel.send(
-			`${msg.author.minionName} is now on an adventure, doing **${
-				quest.name
-			}** quest. It says it will be back in around ${formatDuration(quest.time)}`
+			`${msg.author.minionName} is now on an adventure, doing ${
+				!quest.name.toLowerCase().startsWith('the') ? 'the ' : ''
+			}**${quest.name}** quest. It says it will be back in around ${formatDuration(quest.time)}`
 		);
 	}
 }

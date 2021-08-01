@@ -1,9 +1,14 @@
-import { randArrItem, Time } from 'e';
-import { KlasaMessage } from 'klasa';
+import { MessageButton, MessageSelectMenu } from 'discord.js';
+import { objectEntries, objectKeys, objectValues, randArrItem, Time } from 'e';
+import { KlasaMessage, KlasaUser } from 'klasa';
+import { toKMB } from 'oldschooljs/dist/util';
 
-import { allSkills, xpReward } from '../../commands/Minion/quest';
+import { allSkills } from '../../commands/Minion/quest';
+import { Emoji, skillEmoji } from '../constants';
+import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import { ItemBank, Skills } from '../types';
+import { addArrayOfNumbers } from '../util';
 
 export const enum Quests {
 	Grandfathered = 0,
@@ -193,6 +198,168 @@ export interface IQuestRewards {
 	items?: ItemBank;
 	qp: number;
 	customLogic?: (ICustomRewardDirect | ICustomRewardCollect)[];
+}
+
+async function addExp(
+	msg: KlasaMessage,
+	skillName: SkillsEnum,
+	skills: Skills,
+	requirements?: Skills
+): Promise<[boolean, string]> {
+	if (!skills[skillName]) {
+		return [false, 'This is not a valid skill for this item.'];
+	}
+
+	// if ((await this.lockedSkills()).includes(skillName)) {
+	// 	return [false, `A magical force is preventing you from receiving XP in ${skillName}.`];
+	// }
+
+	if (requirements && msg.author.skillLevel(skillName) < requirements[skillName]!) {
+		return [
+			false,
+			`You are not string enough to receive this reward. You need level **${requirements[
+				skillName
+			]!}** in ${skillName} to receive it.`
+		];
+	}
+
+	let amount = skills[skillName]!;
+	const userXp = msg.author.rawSkills[skillName]!;
+
+	if (userXp === 200_000_000) return [false, `You are already 200m exp in ${skillName} and can't receive any more.`];
+
+	if (amount + userXp > 200_000_000) {
+		if (!msg.flagArgs.cf && !msg.flagArgs.confirm)
+			return [
+				false,
+				`This will waste more XP than necessary to max your ${skillName} xp. To force this, use \`--cf\` or use a lower quantity.`
+			];
+		amount = 200_000_000 - userXp;
+	}
+	return [true, await msg.author.addXP({ skillName, amount })];
+}
+
+export async function xpReward(
+	msg: KlasaMessage,
+	skills: Skills | Skills[],
+	requirements?: Skills,
+	selectedOption?: SkillsEnum | string
+): Promise<boolean | [false, string]> {
+	let options = [];
+	if (Array.isArray(skills)) {
+		options = skills.map((opts, index) => {
+			return {
+				label: `Option ${index + 1}`,
+				description: `${objectKeys(opts).join(', ')}`,
+				value: `${index}`,
+				emoji: skillEmoji[objectKeys(opts)[0]]
+			};
+		});
+	} else {
+		options = await Promise.all(
+			objectEntries(skills).map(async skill => {
+				const userXp = msg.author.rawSkills[skill[0]]!;
+				const userLevel = msg.author.skillLevel(skill[0]);
+				const requiredLevel = requirements && requirements[skill[0]] ? requirements[skill[0]]! : 0;
+
+				let hasReq = userLevel >= requiredLevel;
+
+				let emoji = hasReq ? skillEmoji[skill[0]] : Emoji.RedX;
+				let description = hasReq ? 'You can select this!' : `You need level ${requirements![skill[0]]}.`;
+				if (userXp === 200_000_000) description = `You are already 200m in ${skill[0]}`;
+				// if ((await this.lockedSkills()).includes(skill[0])) description = 'This skill is locked.';
+
+				let label = `${skill[1]!.toLocaleString()} in ${skill[0].toString()}`;
+				if (label.length > 25) label = `${toKMB(skill[1]!)} in ${skill[0].toString()}`;
+				if (label.length > 25) label = `${toKMB(skill[1]!)} in ${skill[0].toString().slice(0, 3)}`;
+
+				return { label, description, value: `${skill[0]}`, emoji };
+			})
+		);
+	}
+	if (!selectedOption) {
+		const selectedMessage = await msg.channel.send({
+			content: 'Please, select your reward from the list below.',
+			components: [
+				[
+					new MessageSelectMenu({
+						type: 3,
+						customID: 'xpSelect',
+						options,
+						placeholder: 'Select a reward...'
+					})
+				],
+				[
+					new MessageButton({
+						label: 'Cancel',
+						customID: 'cancel',
+						style: 'DANGER'
+					})
+				]
+			]
+		});
+		try {
+			const selection = await selectedMessage.awaitMessageComponentInteraction({
+				filter: i => {
+					if (i.user.id !== msg.author.id) {
+						i.reply({
+							ephemeral: true,
+							content: 'This reward is not for you.'
+						});
+						return false;
+					}
+					return true;
+				},
+				time: Time.Second * 15
+			});
+			if (selection.isSelectMenu() && selection.values) {
+				if (Array.isArray(skills)) {
+					const msgAddXp: [boolean, string][] = [];
+					for (const skill of objectEntries(skills[Number(selection.values)])) {
+						const res = await addExp(msg, skill[0], { [skill[0]]: skill[1]! }, requirements);
+						if (!res[0]) return [false, res[1]];
+						msgAddXp.push(res);
+					}
+					await selectedMessage.edit({ components: [], content: msgAddXp.map(x => x[1]).join(', ') });
+					return true;
+				}
+				const msgAddXp = await addExp(msg, selection.values[0] as SkillsEnum, skills, requirements);
+				if (!msgAddXp[0]) return [false, msgAddXp[1]];
+				await selectedMessage.edit({ components: [], content: msgAddXp[1] });
+				return true;
+			}
+			if (selection.isButton() && selection.customID === 'cancel') {
+				await selectedMessage.edit({
+					components: [],
+					content: 'You decided to collect this reward at a later time.'
+				});
+				return false;
+			}
+			await selectedMessage.edit({ components: [], content: 'This is not a valid option.' });
+			return false;
+		} catch (e) {
+			await selectedMessage.edit({ components: [], content: 'Please, try again.' });
+			return false;
+		}
+	} else {
+		if (Array.isArray(skills)) {
+			const msgAddXp: [boolean, string][] = [];
+			const selection = skills[Number(selectedOption)];
+			if (!selection) return false;
+			for (const skill of objectEntries(skills[Number(selectedOption)])) {
+				const res = await addExp(msg, skill[0], { [skill[0]]: skill[1]! }, requirements);
+				if (!res[0]) return [false, res[1]];
+				msgAddXp.push(res);
+			}
+			await msg.channel.send({ content: msgAddXp.map(x => x[1]).join(', ') });
+			return true;
+		}
+		if (!objectValues(SkillsEnum).includes(selectedOption as SkillsEnum)) return false;
+		const msgAddXp = await addExp(msg, selectedOption as SkillsEnum, skills, requirements);
+		if (!msgAddXp[0]) return [false, msgAddXp[1]];
+		await msg.channel.send({ content: msgAddXp[1] });
+		return true;
+	}
 }
 
 export interface IQuest {
@@ -552,7 +719,7 @@ export const QuestList: IQuest[] = [
 			xp: { [SkillsEnum.Thieving]: 1500 },
 			items: {
 				995: 2005,
-				"Hazeel's mark ": 1,
+				"Hazeel's mark": 1,
 				'Carnillean armour': 1
 			}
 		}
@@ -2567,7 +2734,7 @@ export const QuestList: IQuest[] = [
 				[SkillsEnum.Thieving]: 500,
 				[SkillsEnum.Construction]: 1000
 			},
-			items: { 'hard hat': 1, "Builder's shirt": 1, "Builder's trousers": 1, "Builder's boots": 1 }
+			items: { 'Hard hat': 1, "Builder's shirt": 1, "Builder's trousers": 1, "Builder's boots": 1 }
 		}
 	},
 	{
@@ -3236,3 +3403,10 @@ export const QuestList: IQuest[] = [
 		}
 	}
 ];
+
+export const MAXQP = addArrayOfNumbers(QuestList.map(q => q.rewards.qp));
+
+export function userQP(user: KlasaUser) {
+	const questsDoneID = user.settings.get(UserSettings.Quests);
+	return addArrayOfNumbers(QuestList.filter(q => questsDoneID.includes(q.id)).map(q => q.rewards.qp));
+}

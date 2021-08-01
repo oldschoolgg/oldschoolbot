@@ -2,7 +2,7 @@ import { KlasaMessage, KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveBank } from 'oldschooljs/dist/util';
 
-import { QuestList } from '../../lib/data/QuestExports';
+import { QuestList, userQP } from '../../lib/data/QuestExports';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
@@ -22,6 +22,7 @@ export default class extends Task {
 		const { userID, channelID, questID } = data;
 		const user = await this.client.users.fetch(userID);
 		const quest = QuestList.find(q => q.id === questID)!;
+		const rewardBank = new Bank();
 		// xp
 		if (quest.rewards?.xp) {
 			for (const [skill, amount] of Object.entries(quest.rewards.xp)) {
@@ -30,7 +31,7 @@ export default class extends Task {
 		}
 		// items
 		if (quest.rewards?.items) {
-			await user.addItemsToBank(resolveBank(quest.rewards.items));
+			rewardBank.add(resolveBank(quest.rewards.items));
 		}
 		// Custom reward
 		let customRewardString = '';
@@ -48,8 +49,9 @@ export default class extends Task {
 							break;
 						}
 						case 'item': {
-							const { itemsAdded } = await user.addItemsToBank(resolveBank(customReward[1]));
-							customRewardString += new Bank(itemsAdded).toString();
+							const itensAdded = resolveBank(customReward[1]);
+							rewardBank.add(itensAdded);
+							customRewardString += new Bank(itensAdded).toString();
 							break;
 						}
 					}
@@ -60,11 +62,16 @@ export default class extends Task {
 				}
 			}
 		}
+
+		if (rewardBank.items().length > 0) {
+			await user.addItemsToBank(rewardBank, true);
+		}
+
 		await completeUserQuestID(user, quest.id);
-		const returnStr = `${user}, ${user.minionName} returned from its adventure, completing **${
-			quest.name
-		}**. You received the following rewards:\n${quest.rewards?.qp} QP (You now have ${user.settings.get(
-			UserSettings.QP
+		const returnStr = `${user}, ${user.minionName} returned from its adventure, completing ${
+			!quest.name.toLowerCase().startsWith('the') ? 'the ' : ''
+		}**${quest.name}**. You received the following rewards:\n${quest.rewards?.qp} QP (You now have ${userQP(
+			user
 		)} QP)${quest.rewards?.xp ? `\n${formatSkillRequirements(quest.rewards?.xp)}` : ''}${
 			quest.rewards?.items ? `\n${new Bank(quest.rewards?.items)}` : ''
 		}${customRewardString ? `\n${customRewardString}` : ''}${rewardToCollect ? `\n${rewardToCollect}` : ''}`;

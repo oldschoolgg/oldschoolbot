@@ -110,6 +110,7 @@ import {
 	TRoleCategories,
 	troubleBrewingCL,
 	tzHaarCL,
+	uniQuestRewardItems,
 	venenatisCL,
 	vetionCL,
 	volcanicMineCL,
@@ -822,7 +823,8 @@ export const allCollectionLogs: ICollection = {
 			},
 			Quest: {
 				counts: false,
-				items: questCL
+				alias: ['quests'],
+				items: [...questCL, ...uniQuestRewardItems]
 			},
 			Farming: {
 				counts: false,

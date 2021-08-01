@@ -417,7 +417,7 @@ export function formatSkillRequirements(reqs: Record<string, number>, emojis = t
 	for (const [name, num] of objectEntries(reqs)) {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		arr.push(`${emojis ? ` ${skillEmoji[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
+		arr.push(`${emojis ? ` ${skillEmoji[name]} ` : ''}**${num.toLocaleString()}** ${toTitleCase(name)}`);
 	}
 	return arr.join(', ');
 }
