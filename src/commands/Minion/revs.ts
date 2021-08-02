@@ -191,6 +191,9 @@ export default class extends BotCommand {
 				value += qty * item.price;
 				toSellBank.add(item.item.id, qty);
 			}
+			if (toSellBank.length === 0) {
+				return msg.channel.send('You have no ancient items to sell.');
+			}
 			await msg.confirm(`Do you want to sell ${toSellBank} for ${toKMB(value)}?`);
 			await msg.author.removeItemsFromBank(toSellBank);
 			await msg.author.addGP(value);
