@@ -1,74 +1,100 @@
-import { calcWhatPercent, percentChance } from 'e';
-import { Task } from 'klasa';
+import { noOp, objectKeys, objectValues, percentChance, shuffleArr } from 'e';
+import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
+import { addBanks } from 'oldschooljs/dist/util';
 
 import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
 import { kalphiteKingCL } from '../../../lib/data/CollectionsExport';
+import { GearStats } from '../../../lib/gear';
 import { KalphiteKingMonster } from '../../../lib/kalphiteking';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
+import { BossUser } from '../../../lib/structures/Boss';
 import { ItemBank } from '../../../lib/types';
-import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, noOp, updateBankSetting } from '../../../lib/util';
+import { NewBossOptions } from '../../../lib/types/minions';
+import { updateBankSetting } from '../../../lib/util';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
-interface NexUser {
-	id: string;
-	chanceOfDeath: number;
-	damageDone: number;
-}
+const methodsOfDeath = ['Buried', 'Eaten', 'Crushed', 'Exploded', 'Pierced'];
+
+type KKBossUser = BossUser & {
+	kKData?: {
+		chanceOfDeath: number;
+		damageDone: number;
+		percentAttackStrength: number;
+		totalGearPercent: number;
+		percentWeaponAttackCrush: number;
+		attackCrushStat: number;
+		kc: number;
+		gearStats: GearStats;
+	};
+};
 
 export default class extends Task {
-	async run(data: BossActivityTaskOptions) {
-		const { channelID, userID, users, quantity, duration } = data;
+	async run(data: NewBossOptions) {
+		const { channelID, users: idArr, duration, bossUsers: _bossUsers, quantity } = data;
+		const deaths: Record<string, { user: KlasaUser; qty: number; kcDeaths: Record<number, number> }> = {};
+		const bossUsers: KKBossUser[] = await Promise.all(
+			_bossUsers.map(async u => ({
+				...u,
+				itemsToRemove: new Bank(u.itemsToRemove),
+				user: await this.client.users.fetch(u.user)
+			}))
+		);
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
-		const parsedUsers: NexUser[] = [];
+		// eslint-disable-next-line prefer-destructuring
+		for (const bU of bossUsers) bU.kKData = getKalphiteKingGearStats(bU.user, idArr)[0];
 
-		// For each user in the party, calculate their damage and death chance.
-		for (const id of users) {
-			const user = await this.client.users.fetch(id).catch(noOp);
-			if (!user) continue;
-			const [data] = getKalphiteKingGearStats(user, users);
-			parsedUsers.push({ ...data, id: user.id });
+		const leader = bossUsers.find(b => b.user.id === data.userID)!.user;
+
+		// Deaths
+		for (let i = 0; i < quantity; i++) {
+			let kcDeath = [];
+			for (const { user, deathChance } of bossUsers) {
+				if (percentChance(deathChance)) {
+					kcDeath.push(user);
+				}
+			}
+			// If over 50% died (save in cases of duo as duo playes can still solo if one dies) entire team dies
+			if (bossUsers.length > 2 && kcDeath.length >= Math.ceil(bossUsers.length / 2)) {
+				kcDeath = [];
+				kcDeath = bossUsers.map(b => b.user);
+			}
+			// Add user deaths
+			for (const kcDeathUser of kcDeath) {
+				if (deaths[kcDeathUser.id]) {
+					deaths[kcDeathUser.id].qty++;
+					deaths[kcDeathUser.id].kcDeaths[i] = 1;
+				} else deaths[kcDeathUser.id] = { qty: 1, user: kcDeathUser, kcDeaths: { [i]: 1 } };
+			}
 		}
 
-		// Store total amount of deaths
-		const deaths: Record<string, number> = {};
+		await Promise.all(bossUsers.map(u => u.user.incrementMonsterScore(KalphiteKingMonster.id, quantity)));
+		const killStr = `${leader}, your party finished killing ${quantity}x ${KalphiteKingMonster.name}!\n\n`;
+		let resultStr = `${killStr}${Emoji.Casket} **Loot:**\n`;
+
+		const totalLoot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
 			const teamTable = new SimpleTable<string>();
-
-			let teamFailed = false;
-			for (const user of parsedUsers.sort((a, b) => b.chanceOfDeath - a.chanceOfDeath)) {
-				const currentDeaths = Object.keys(deaths).length;
-				if (calcWhatPercent(currentDeaths, users.length) >= 50) {
-					// If over 50% of the team died, the entire team dies.
-					teamFailed = true;
-				}
-
-				if (teamFailed || percentChance(user.chanceOfDeath)) {
-					deaths[user.id] = Boolean(deaths[user.id]) ? deaths[user.id] + 1 : 1;
-				} else {
-					// weight on damagedone
-					teamTable.add(user.id, user.damageDone);
+			for (const user of bossUsers) {
+				if (!deaths[user.user.id] || !deaths[user.user.id].kcDeaths[i]) {
+					teamTable.add(user.user.id, user.kKData!.damageDone);
 				}
 			}
-
+			if (teamTable.length === 0) continue;
 			const loot = new Bank();
 			loot.add(KalphiteKingMonster.table.kill(1, {}));
-			if (DOUBLE_LOOT_ACTIVE) {
-				loot.multiply(2);
-			}
+			if (DOUBLE_LOOT_ACTIVE) loot.multiply(2);
 			const winner = teamTable.roll()?.item;
-			if (!winner) continue;
 			const currentLoot = teamsLoot[winner];
 			if (!currentLoot) teamsLoot[winner] = loot.bank;
 			else teamsLoot[winner] = addBanks([currentLoot, loot.bank]);
@@ -76,14 +102,10 @@ export default class extends Task {
 			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
 		}
 
-		const leaderUser = await this.client.users.fetch(userID);
-		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${KalphiteKingMonster.name}!\n\n`;
-
 		let soloXP = '';
 		let soloPrevCl = null;
 		let soloItemsAdded = null;
 
-		const totalLoot = new Bank();
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
@@ -101,7 +123,7 @@ export default class extends Task {
 
 			let xpStr = await addMonsterXP(user, {
 				monsterID: KalphiteKingMonster.id,
-				quantity: Math.ceil(quantity / users.length),
+				quantity: Math.ceil(quantity / bossUsers.length),
 				duration,
 				isOnTask,
 				taskQuantity: quantity
@@ -123,65 +145,71 @@ export default class extends Task {
 				isOnTask ? Emoji.Slayer : ''
 			} **${user} received:** ||${new Bank(loot)}||\n`;
 
-			announceLoot(this.client, leaderUser, KalphiteKingMonster, loot, {
-				leader: leaderUser,
+			announceLoot(this.client, leader, KalphiteKingMonster, loot, {
+				leader,
 				lootRecipient: user,
-				size: users.length
+				size: bossUsers.length
 			});
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.KalphiteKingLoot, totalLoot);
 
-		// Show deaths in the result
-		const deathEntries = Object.entries(deaths);
-		if (deathEntries.length > 0) {
-			const deaths = [];
-			for (const [id, qty] of deathEntries) {
-				const user = await this.client.users.fetch(id).catch(noOp);
-				if (!user) continue;
-				deaths.push(`**${user}**: ${qty}x`);
-			}
-			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
+		const noLootUsers = bossUsers.filter(f => {
+			return !objectKeys(teamsLoot).includes(f.user.id) && !objectKeys(deaths).includes(f.user.id);
+		});
+		if (noLootUsers.length > 0) {
+			resultStr += `\n**Got no loot**: ${noLootUsers.map(u => `${u.user}`)}`;
 		}
 
-		if (users.length > 1) {
+		if (objectValues(deaths).length > 0) {
+			resultStr += `\n**Died in battle**: ${objectValues(deaths).map(
+				u =>
+					`${u.user.toString()}${u.qty > 1 ? ` x${u.qty}` : ''} (${shuffleArr([...methodsOfDeath])
+						.slice(0, u.qty)
+						.join(', ')})`
+			)}.`;
+		}
+
+		if (bossUsers.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
 				sendToChannelID(this.client, channelID, {
-					content: `${users
-						.map(id => `<@${id}>`)
+					content: `${bossUsers
+						.map(id => `<@${id.user.id}>`)
 						.join(' ')} Your team all died, and failed to defeat the Kalphite King.`
 				});
 			} else {
 				sendToChannelID(this.client, channelID, { content: resultStr });
 			}
 		} else {
-			const image = !kcAmounts[userID]
+			const image = !kcAmounts[leader.id]
 				? undefined
 				: (
 						await this.client.tasks
 							.get('bankImage')!
 							.generateBankImage(
 								soloItemsAdded!,
-								`Loot From ${quantity} Kalphite King:`,
+								`Loot From ${
+									quantity - (deaths[leader.id] ? deaths[leader.id].qty : 0)
+								} Kalphite King:`,
 								true,
 								{ showNewCL: 1 },
-								leaderUser,
+								leader,
 								soloPrevCl!
 							)
 				  ).image;
 			handleTripFinish(
 				this.client,
-				leaderUser,
+				leader,
 				channelID,
-				!kcAmounts[userID]
-					? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`
-					: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
-							KalphiteKingMonster.name
-					  }, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${
-							leaderUser.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0
+				!kcAmounts[leader.id]
+					? `${leader}, ${leader.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`
+					: `${leader}, ${leader.minionName} finished killing ${quantity} ${KalphiteKingMonster.name}${
+							deaths[leader.id] ? `, you died ${deaths[leader.id].qty} times` : ''
+					  }. Your Kalphite King KC is now ${
+							leader.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0
 					  }.\n\n${soloXP}`,
 				res => {
-					leaderUser.log('continued kk');
+					leader.log('continued kk');
 					return this.client.commands.get('kk')!.run(res, ['solo']);
 				},
 				image!,
