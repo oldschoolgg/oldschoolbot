@@ -102,7 +102,7 @@ export class customMessageComponents {
 			.map(f => f.char!.toLowerCase());
 
 		if (allowsTypedChars.length > 0) {
-			data.content += '\n\nYou can type the following as shortcut:\n';
+			data.content += '\nYou can type the following as shortcut:\n';
 		}
 		const textShortcuts = [];
 		for (const d of this.buttons as customMessageButtonOptions[]) {
