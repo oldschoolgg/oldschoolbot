@@ -265,7 +265,7 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.KingBlackDragon,
 		timeToFinish: Time.Minute * 3.1,
 		emoji: '<:Prince_black_dragon:324127378538364928>',
-		wildy: true,
+		wildy: false,
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
 			'Anti-dragon shield',
