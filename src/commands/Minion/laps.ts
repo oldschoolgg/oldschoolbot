@@ -27,11 +27,24 @@ const unlimitedFireRuneProviders = [
 	'Tome of fire'
 ];
 
-export function alching(user: KlasaUser, tripLength: number, isUsingVoidling: boolean) {
+export function alching({
+	flags,
+	user,
+	tripLength,
+	isUsingVoidling
+}: {
+	flags: Record<string, string>;
+	user: KlasaUser;
+	tripLength: number;
+	isUsingVoidling: boolean;
+}) {
 	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const bank = user.bank();
 	const favAlchables = user.getUserFavAlchs() as Item[];
 
+	if (!flags.alch) {
+		return null;
+	}
 	if (favAlchables.length === 0) {
 		return null;
 	}
@@ -132,7 +145,15 @@ export default class extends BotCommand {
 			course.name
 		} laps, it'll take around ${formatDuration(duration)} to finish.`;
 
-		const alchResult = course.name === 'Ape Atoll Agility Course' ? null : alching(msg.author, duration, true);
+		const alchResult =
+			course.name === 'Ape Atoll Agility Course'
+				? null
+				: alching({
+						user: msg.author,
+						flags: msg.flagArgs,
+						tripLength: duration,
+						isUsingVoidling: true
+				  });
 		if (alchResult !== null) {
 			if (!msg.author.owns(alchResult.bankToRemove)) {
 				return msg.channel.send(`You don't own ${alchResult.bankToRemove}.`);

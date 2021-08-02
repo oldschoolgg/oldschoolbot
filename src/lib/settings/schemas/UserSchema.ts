@@ -130,6 +130,7 @@ Client.defaultUserSchema
 			.add('range', 'any', { default: null })
 			.add('misc', 'any', { default: null })
 			.add('skilling', 'any', { default: null })
+			.add('wildy', 'any', { default: null })
 	)
 	.add('farmingPatches', (folder: SchemaFolder) =>
 		folder

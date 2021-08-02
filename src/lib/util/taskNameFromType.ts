@@ -136,5 +136,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.TrekkingActivity;
 		case Activity.KibbleMaking:
 			return Tasks.KibbleActivity;
+		case Activity.Revenants:
+			return Tasks.RevenantsActivity;
 	}
 }

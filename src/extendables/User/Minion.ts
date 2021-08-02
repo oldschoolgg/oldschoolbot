@@ -10,7 +10,7 @@ import {
 	uniqueArr
 } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -80,6 +80,7 @@ import {
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	RaidsActivityTaskOptions,
+	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
@@ -605,6 +606,12 @@ export default class extends Extendable {
 			}
 			case Activity.KibbleMaking: {
 				return `${this.minionName} is currently making Kibble. ${formattedDuration}`;
+			}
+			case Activity.Revenants: {
+				const data = currentTask as RevenantOptions;
+				return `${data.skulled ? `${Emoji.OSRSSkull} ` : ''} ${this.minionName} is currently killing ${
+					data.quantity
+				}x ${Monsters.get(data.monsterID)!.name} in the wilderness.`;
 			}
 		}
 	}

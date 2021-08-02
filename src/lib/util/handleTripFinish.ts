@@ -132,7 +132,7 @@ export async function handleTripFinish(
 	}
 
 	if (user.usingPet('Voidling')) {
-		const alchResult = alching(user, data.duration, true);
+		const alchResult = alching({ user, tripLength: data.duration, isUsingVoidling: true, flags: {} });
 		if (alchResult !== null) {
 			if (!user.owns(alchResult.bankToRemove)) {
 				message += `\Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`;
@@ -213,7 +213,7 @@ export async function handleTripFinish(
 				});
 			}
 		} catch (err) {
-			console.log(err);
+			console.log({ err });
 			channel.send(err);
 		} finally {
 			setTimeout(() => client.oneCommandAtATimeCache.delete(mes.author.id), 300);

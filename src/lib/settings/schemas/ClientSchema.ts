@@ -41,6 +41,8 @@ Client.defaultClientSchema
 	.add('ignecarus_cost', 'any', { default: {} })
 	.add('ignecarus_loot', 'any', { default: {} })
 	.add('kibble_cost', 'any', { default: {} })
+	.add('revs_cost', 'any', { default: {} })
+	.add('revs_loot', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })

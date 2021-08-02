@@ -804,7 +804,7 @@ export const allCollectionLogs: ICollection = {
 				items: randomEventsCL
 			},
 			Revenants: {
-				enabled: false,
+				alias: ['revs'],
 				items: revenantsCL
 			},
 			'Rooftop Agility': {

@@ -15,7 +15,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<melee|mage|range> <attack|defence> <crush|slash|stab|ranged|magic> [prayer|strength]',
+			usage: '<melee|mage|range|wildy> <attack|defence> <crush|slash|stab|ranged|magic> [prayer|strength]',
 			usageDelim: ' ',
 			aliases: ['aep', 'aequip'],
 			description:
