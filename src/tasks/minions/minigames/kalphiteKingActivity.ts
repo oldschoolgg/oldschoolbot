@@ -154,31 +154,32 @@ export default class extends Task {
 			} else {
 				sendToChannelID(this.client, channelID, { content: resultStr });
 			}
-		} else if (!kcAmounts[userID]) {
-			sendToChannelID(this.client, channelID, {
-				content: `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`
-			});
 		} else {
-			const { image } = await this.client.tasks
-				.get('bankImage')!
-				.generateBankImage(
-					soloItemsAdded!,
-					`Loot From ${quantity} Kalphite King:`,
-					true,
-					{ showNewCL: 1 },
-					leaderUser,
-					soloPrevCl!
-				);
-
+			const image = !kcAmounts[userID]
+				? undefined
+				: (
+						await this.client.tasks
+							.get('bankImage')!
+							.generateBankImage(
+								soloItemsAdded!,
+								`Loot From ${quantity} Kalphite King:`,
+								true,
+								{ showNewCL: 1 },
+								leaderUser,
+								soloPrevCl!
+							)
+				  ).image;
 			handleTripFinish(
 				this.client,
 				leaderUser,
 				channelID,
-				`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
-					KalphiteKingMonster.name
-				}, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${
-					leaderUser.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0
-				}.\n\n${soloXP}`,
+				!kcAmounts[userID]
+					? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`
+					: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
+							KalphiteKingMonster.name
+					  }, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${
+							leaderUser.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0
+					  }.\n\n${soloXP}`,
 				res => {
 					leaderUser.log('continued kk');
 					return this.client.commands.get('kk')!.run(res, ['solo']);
