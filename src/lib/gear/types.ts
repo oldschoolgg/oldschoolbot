@@ -11,9 +11,10 @@ export enum GearSetupTypes {
 	Mage = 'mage',
 	Range = 'range',
 	Misc = 'misc',
-	Skilling = 'skilling'
+	Skilling = 'skilling',
+	Wildy = 'wildy'
 }
-export type GearSetupType = 'melee' | 'mage' | 'range' | 'misc' | 'skilling';
+export type GearSetupType = 'melee' | 'mage' | 'range' | 'misc' | 'skilling' | 'wildy';
 
 export enum GearStat {
 	AttackStab = 'attack_stab',
