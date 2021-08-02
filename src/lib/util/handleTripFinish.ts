@@ -59,7 +59,7 @@ export async function handleTripFinish(
 	};
 
 	if (attachable) options.files = [attachable];
-	const components = new customMessageComponents();
+	const components = new customMessageComponents().setClient(client);
 	const lootClueScrolls = new Bank();
 	const lootClueChests = new Bank();
 	let newSlayerTask = options.content?.includes('return to a Slayer master.');

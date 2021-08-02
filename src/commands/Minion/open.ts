@@ -141,7 +141,7 @@ export default class extends BotCommand {
 			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 		}
 
-		const components = new customMessageComponents();
+		const components = new customMessageComponents().setClient(this.client);
 		if (msg.author.perkTier >= PerkTier.One) {
 			let tripChars = ['c', 'l', 'u', 'e'];
 			let j = 0;

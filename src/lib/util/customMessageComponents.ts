@@ -10,7 +10,7 @@ import {
 	ThreadChannel
 } from 'discord.js';
 import { chunk, objectEntries, objectValues, Time } from 'e';
-import { KlasaMessage, KlasaUser } from 'klasa';
+import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 
 export type customComponentButtonFunction =
 	| ((msg: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>)
@@ -35,6 +35,13 @@ export class customMessageComponents {
 	public options: IOptions = {
 		time: Time.Second * 15
 	};
+
+	private _client: KlasaClient | undefined = undefined;
+
+	public setClient(value: KlasaClient | undefined = undefined) {
+		this._client = value;
+		return this;
+	}
 
 	public setOptions(newOptions: Partial<IOptions>) {
 		this.options = { ...this.options, ...newOptions };
@@ -135,6 +142,12 @@ export class customMessageComponents {
 						time: this.options.time
 					})
 				]);
+
+				if (user.minionIsBusy || (this._client && this._client.oneCommandAtATimeCache.has(user.id))) {
+					await message.edit({ components: [] });
+					return message;
+				}
+
 				let response = '';
 				// noinspection SuspiciousTypeOfGuard
 				if (selection instanceof MessageComponentInteraction) {
@@ -154,6 +167,9 @@ export class customMessageComponents {
 						response = functionExists[0];
 					}
 				}
+				if (this._client !== undefined) {
+					this._client.oneCommandAtATimeCache.add(user.id);
+				}
 				if (this.functions && this.functions[response] && this.functions[response].function) {
 					message.author = user;
 					this.functions[response].function!(message);
@@ -163,6 +179,9 @@ export class customMessageComponents {
 				await message.edit({ components: [] });
 			} finally {
 				if (userCache[user.id] === message.id) delete userCache[user.id];
+				if (this._client !== undefined) {
+					setTimeout(() => this._client!.oneCommandAtATimeCache.delete(user!.id), 300);
+				}
 			}
 		}
 		return message;
