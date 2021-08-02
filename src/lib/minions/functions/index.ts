@@ -4,6 +4,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { NIGHTMARES_HP } from '../../constants';
 import { KalphiteKingMonster } from '../../kalphiteking';
+import { NexMonster } from '../../nex';
 import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
@@ -48,6 +49,7 @@ export function resolveAttackStyles(
 ): [KillableMonster | undefined, Monster | undefined, AttackStyles[]] {
 	if (params.monsterID === KingGoldemar.id) return [undefined, undefined, meleeOnly(user)];
 	if (params.monsterID === VasaMagus.id) return [undefined, undefined, [SkillsEnum.Magic]];
+	if (params.monsterID === NexMonster.id) return [undefined, undefined, [SkillsEnum.Ranged]];
 
 	const killableMon = killableMonsters.find(m => m.id === params.monsterID);
 
