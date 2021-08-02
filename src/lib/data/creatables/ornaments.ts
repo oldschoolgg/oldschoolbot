@@ -26,6 +26,39 @@ export const ornamentKits: Createable[] = [
 		noCl: true
 	},
 	{
+		name: 'Rune scimitar (guthix)',
+		inputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (guthix)': 1 }),
+		outputItems: resolveNameBank({ 'Rune scimitar (guthix)': 1 })
+	},
+	{
+		name: 'revert Rune scimitar (guthix)',
+		inputItems: resolveNameBank({ 'Rune scimitar (guthix)': 1 }),
+		outputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (guthix)': 1 }),
+		noCl: true
+	},
+		{
+		name: 'Rune scimitar (saradomin)',
+		inputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (saradomin)': 1 }),
+		outputItems: resolveNameBank({ 'Rune scimitar (saradomin)': 1 })
+	},
+	{
+		name: 'revert Rune scimitar (saradomin)',
+		inputItems: resolveNameBank({ 'Rune scimitar (saradomin)': 1 }),
+		outputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (saradomin)': 1 }),
+		noCl: true
+	},
+		{
+		name: 'Rune scimitar (zamorak)',
+		inputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (zamorak)': 1 }),
+		outputItems: resolveNameBank({ 'Rune scimitar (zamorak)': 1 })
+	},
+	{
+		name: 'revert Rune scimitar (zamorak)',
+		inputItems: resolveNameBank({ 'Rune scimitar (zamorak)': 1 }),
+		outputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (zamorak)': 1 }),
+		noCl: true
+	},
+	{
 		name: 'Dragon pickaxe (or)',
 		inputItems: resolveNameBank({ 'Dragon pickaxe': 1, 'Zalcano shard': 1 }),
 		outputItems: resolveNameBank({ 'Dragon pickaxe (or)': 1 })
@@ -96,6 +129,90 @@ export const ornamentKits: Createable[] = [
 		noCl: true
 	},
 	{
+		name: 'revert Dragon platebody',
+		inputItems: resolveNameBank({ 'Dragon platebody (g)': 1 }),
+		outputItems: resolveNameBank({ 'Dragon platebody': 1, 'Dragon platebody ornament kit': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Dragon platebody (g)',
+		inputItems: resolveNameBank({
+			'Dragon platebody': 1,
+			'Dragon platebody ornament kit': 1
+		}),
+		outputItems: resolveNameBank({ 'Dragon platebody (g)': 1 })
+	},
+	{
+		name: 'revert Dragon full helm',
+		inputItems: resolveNameBank({ 'Dragon full helm (g)': 1 }),
+		outputItems: resolveNameBank({ 'Dragon full helm': 1, 'Dragon full helm ornament kit': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Dragon full helm (g)',
+		inputItems: resolveNameBank({
+			'Dragon full helm': 1,
+			'Dragon full helm ornament kit': 1
+		}),
+		outputItems: resolveNameBank({ 'Dragon full helm (g)': 1 })
+	},
+	{
+		name: 'revert Dragon kiteshield',
+		inputItems: resolveNameBank({ 'Dragon kiteshield (g)': 1 }),
+		outputItems: resolveNameBank({ 'Dragon kiteshield': 1, 'Dragon kiteshield ornament kit': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Dragon kiteshield (g)',
+		inputItems: resolveNameBank({
+			'Dragon kiteshield': 1,
+			'Dragon kiteshield ornament kit': 1
+		}),
+		outputItems: resolveNameBank({ 'Dragon kiteshield (g)': 1 })
+	},
+		{
+		name: 'revert Dragon boots',
+		inputItems: resolveNameBank({ 'Dragon boots (g)': 1 }),
+		outputItems: resolveNameBank({ 'Dragon boots': 1, 'Dragon boots ornament kit': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Dragon boots (g)',
+		inputItems: resolveNameBank({
+			'Dragon boots': 1,
+			'Dragon boots ornament kit': 1
+		}),
+		outputItems: resolveNameBank({ 'Dragon boots (g)': 1 })
+	},
+		{
+		name: 'revert Dragon scimitar',
+		inputItems: resolveNameBank({ 'Dragon scimitar (g)': 1 }),
+		outputItems: resolveNameBank({ 'Dragon scimitar': 1, 'Dragon scimitar ornament kit': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Dragon scimitar (g)',
+		inputItems: resolveNameBank({
+			'Dragon scimitar': 1,
+			'Dragon scimitar ornament kit': 1
+		}),
+		outputItems: resolveNameBank({ 'Dragon scimitar (g)': 1 })
+	},
+		{
+		name: 'revert Obsidian maul',
+		inputItems: resolveNameBank({ 'Tzhaar-ket-om (t)': 1 }),
+		outputItems: resolveNameBank({ 'Tzhaar-ket-om': 1, 'Tzhaar-ket-om ornament kit': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Obsidian maul (t)',
+		inputItems: resolveNameBank({
+			'Tzhaar-ket-om': 1,
+			'Tzhaar-ket-om ornament kit': 1
+		}),
+		outputItems: resolveNameBank({ 'Tzhaar-ket-om (t)': 1 })
+	},
+	{
 		name: 'Amulet of fury (or)',
 		inputItems: resolveNameBank({ 'Amulet of fury': 1, 'Fury ornament kit': 1 }),
 		outputItems: resolveNameBank({
@@ -108,6 +225,21 @@ export const ornamentKits: Createable[] = [
 			'Amulet of fury (or)': 1
 		}),
 		outputItems: resolveNameBank({ 'Amulet of fury': 1, 'Fury ornament kit': 1 }),
+		noCl: true
+	},
+		{
+		name: 'Berserker necklace (or)',
+		inputItems: resolveNameBank({ 'Berserker necklace': 1, 'Berserker necklace ornament kit': 1 }),
+		outputItems: resolveNameBank({
+			'Berserker necklace (or)': 1
+		})
+	},
+	{
+		name: 'revert Berserker necklace',
+		inputItems: resolveNameBank({
+			'Berserker necklace (or)': 1
+		}),
+		outputItems: resolveNameBank({ 'Berserker necklace': 1, 'Berserker necklace ornament kit': 1 }),
 		noCl: true
 	},
 	// Godswords
