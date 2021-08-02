@@ -42,7 +42,7 @@ export default class extends BotCommand {
 		}
 
 		if (!msg.author.hasItemEquippedAnywhere(['Graceful gloves', 'Graceful top', 'Graceful legs'])) {
-			return msg.channel.send('You need Graceful top,legs and gloves equipped to do Drift net fishing.');
+			return msg.channel.send('You need Graceful top, legs and gloves equipped to do Drift net fishing.');
 		}
 
 		if (!msg.author.hasItemEquippedAnywhere('Merfolk trident')) {
@@ -106,7 +106,7 @@ export default class extends BotCommand {
 
 		if (!userBank.has(itemsToRemove.bank)) {
 			return msg.channel.send(
-				`You need ${quantity}x Drift net for the whole trip, try a lower trip lengthor make/buy more Drift net.`
+				`You need ${quantity}x Drift net for the whole trip, try a lower trip length or make/buy more Drift net.`
 			);
 		}
 
