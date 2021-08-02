@@ -149,16 +149,20 @@ export default class extends Task {
 				sendToChannelID(this.client, channelID, { content: resultStr + debug });
 			}
 		} else {
-			const { image } = await this.client.tasks
-				.get('bankImage')!
-				.generateBankImage(
-					soloItemsAdded,
-					`Loot From ${quantity} ${NexMonster.name}:`,
-					true,
-					{ showNewCL: 1 },
-					leaderUser,
-					soloPrevCl
-				);
+			const image = !kcAmounts[userID]
+				? undefined
+				: (
+						await this.client.tasks
+							.get('bankImage')!
+							.generateBankImage(
+								soloItemsAdded,
+								`Loot From ${quantity} ${NexMonster.name}:`,
+								true,
+								{ showNewCL: 1 },
+								leaderUser,
+								soloPrevCl
+							)
+				  ).image;
 			handleTripFinish(
 				this.client,
 				leaderUser,
@@ -174,7 +178,7 @@ export default class extends Task {
 					leaderUser.log('continued nex');
 					return this.client.commands.get('nex')!.run(res, ['solo']);
 				},
-				!kcAmounts[userID] ? undefined : image!,
+				image!,
 				data,
 				soloItemsAdded
 			);
