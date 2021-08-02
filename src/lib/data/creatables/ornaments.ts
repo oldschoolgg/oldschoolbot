@@ -36,7 +36,7 @@ export const ornamentKits: Createable[] = [
 		outputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (guthix)': 1 }),
 		noCl: true
 	},
-		{
+	{
 		name: 'Rune scimitar (saradomin)',
 		inputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (saradomin)': 1 }),
 		outputItems: { 23_332: 1 }
@@ -47,7 +47,7 @@ export const ornamentKits: Createable[] = [
 		outputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (saradomin)': 1 }),
 		noCl: true
 	},
-		{
+	{
 		name: 'Rune scimitar (zamorak)',
 		inputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (zamorak)': 1 }),
 		outputItems: { 23_334: 1 }
@@ -170,7 +170,7 @@ export const ornamentKits: Createable[] = [
 		}),
 		outputItems: resolveNameBank({ 'Dragon kiteshield (g)': 1 })
 	},
-		{
+	{
 		name: 'Revert dragon boots (g)',
 		inputItems: resolveNameBank({ 'Dragon boots (g)': 1 }),
 		outputItems: resolveNameBank({ 'Dragon boots': 1, 'Dragon boots ornament kit': 1 }),
@@ -184,7 +184,7 @@ export const ornamentKits: Createable[] = [
 		}),
 		outputItems: resolveNameBank({ 'Dragon boots (g)': 1 })
 	},
-		{
+	{
 		name: 'Revert dragon scimitar (or)',
 		inputItems: resolveNameBank({ 'Dragon scimitar (or)': 1 }),
 		outputItems: resolveNameBank({ 'Dragon scimitar': 1, 'Dragon scimitar ornament kit': 1 }),
@@ -198,7 +198,7 @@ export const ornamentKits: Createable[] = [
 		}),
 		outputItems: resolveNameBank({ 'Dragon scimitar (or)': 1 })
 	},
-		{
+	{
 		name: 'Revert obsidian maul (t)',
 		inputItems: resolveNameBank({ 'Tzhaar-ket-om (t)': 1 }),
 		outputItems: resolveNameBank({ 'Tzhaar-ket-om': 1, 'Tzhaar-ket-om ornament kit': 1 }),
@@ -227,7 +227,7 @@ export const ornamentKits: Createable[] = [
 		outputItems: resolveNameBank({ 'Amulet of fury': 1, 'Fury ornament kit': 1 }),
 		noCl: true
 	},
-		{
+	{
 		name: 'Berserker necklace (or)',
 		inputItems: resolveNameBank({ 'Berserker necklace': 1, 'Berserker necklace ornament kit': 1 }),
 		outputItems: resolveNameBank({
