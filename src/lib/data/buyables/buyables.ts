@@ -598,7 +598,7 @@ const Buyables: Buyable[] = [
 		gpCost: 1_000_000
 	},
 	{
-		name: 'Dragon metal shard,
+		name: 'Dragon metal shard',
 		aliases: ['metal shard'],
 		qpRequired: 205,
 		gpCost: 2_500_000
