@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { Events } from '../../../lib/constants';
 import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -45,6 +46,18 @@ export default class extends Task {
 				? ' \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.'
 				: ''
 		}`;
+
+		if (loot.amount('Rocky') > 0) {
+			str += "\n\n**You have a funny feeling you're being followed...**";
+			this.client.emit(
+				Events.ServerNotification,
+				`**${user.username}'s** minion, ${
+					user.minionName
+				}, just received a **Rocky** <:Rocky:324127378647285771> while doing the Pyramid Plunder, their Thieving level is ${user.skillLevel(
+					SkillsEnum.Thieving
+				)}!`
+			);
+		}
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
