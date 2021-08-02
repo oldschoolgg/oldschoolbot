@@ -542,24 +542,9 @@ export default class BankImageTask extends Task {
 			}
 
 			if (isNewCLItem) {
-				drawImageWithOutline(
-					ctx,
-					itemImage,
-					x,
-					y,
-					itemWidth,
-					itemHeight,
-					'#ac7fff',
-					1
-				);
+				drawImageWithOutline(ctx, itemImage, x, y, itemWidth, itemHeight, '#ac7fff', 1);
 			} else {
-				ctx.drawImage(
-					itemImage,
-					x,
-					y,
-					itemWidth,
-					itemHeight
-				);
+				ctx.drawImage(itemImage, x, y, itemWidth, itemHeight);
 			}
 
 			// Force the global alpha to 1

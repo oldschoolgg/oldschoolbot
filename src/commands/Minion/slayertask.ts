@@ -1,6 +1,6 @@
-import { CommandStore, KlasaMessage } from 'klasa';
 import { MessageButton } from 'discord.js';
-import { deepClone, randInt, Time } from 'e';
+import { deepClone, Time } from 'e';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';

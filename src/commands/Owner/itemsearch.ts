@@ -21,7 +21,6 @@ export default class extends BotCommand {
 			if (msg.flagArgs.includes) {
 				return i.name.toLowerCase().includes(name.toLowerCase());
 			}
-			// if (allNexItems.includes(i.id)) return false;
 			return i.name.toLowerCase() === name.toLowerCase();
 		}).array();
 		if (items.length === 0) return msg.channel.send('No results for that item.');
