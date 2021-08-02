@@ -857,7 +857,6 @@ const Createables: Createable[] = [
 			'Dragon sq shield': 1,
 			'Dragon metal shard': 1,
 			'Dragon metal slice': 1
-			
 		}),
 		outputItems: resolveNameBank({
 			'Dragon kiteshield': 1
@@ -865,13 +864,12 @@ const Createables: Createable[] = [
 		QPRequired: 205,
 		requiredSkills: { smithing: 75 }
 	},
-		{
+	{
 		name: 'Dragon platebody',
 		inputItems: resolveNameBank({
 			'Dragon chainbody': 1,
 			'Dragon metal shard': 1,
 			'Dragon metal lump': 1
-			
 		}),
 		outputItems: resolveNameBank({
 			'Dragon platebody': 1
