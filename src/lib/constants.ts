@@ -365,6 +365,7 @@ export const enum BitField {
 	HasPermanentTierOne = 12,
 	DisabledRandomEvents = 13,
 	PermanentIronman = 14,
+	AlwaysSmallBank = 15,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -388,7 +389,8 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
 	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp' },
-	[BitField.PermanentIronman]: { name: 'Permanent Ironman' }
+	[BitField.PermanentIronman]: { name: 'Permanent Ironman' },
+	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' }
 } as const;
 
 export const enum PatronTierID {

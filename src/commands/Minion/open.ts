@@ -271,6 +271,9 @@ export default class extends BotCommand {
 			bank: loot.values(),
 			content: `You have opened the ${botOpenable.name.toLowerCase()} ${(
 				score + quantity
+			).toLocaleString()} times.`,
+			content: `You have opened the ${botOpenable.name.toLowerCase()} ${(
+				score + quantity
 			).toLocaleString()} times. ${hasSmokey ? `You got ${smokeyBonus}x bonus rolls from Smokey.` : undefined}`,
 			title: `You opened ${quantity} ${botOpenable.name}`,
 			flags: {

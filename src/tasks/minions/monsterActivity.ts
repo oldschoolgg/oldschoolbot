@@ -15,12 +15,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { bones } from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import {
-	calculateSlayerPoints,
-	filterLootReplace,
-	getSlayerMasterOSJSbyID,
-	getUsersCurrentSlayerInfo
-} from '../../lib/slayer/slayerUtil';
+import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -250,10 +245,7 @@ export default class extends Task {
 			loot.add(getRandomMysteryBox());
 		}
 
-		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
-
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, false);
-		await user.addItemsToCollectionLog(clLoot.bank);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!

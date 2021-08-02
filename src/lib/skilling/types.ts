@@ -50,6 +50,7 @@ export interface Log {
 	xp: number;
 	id: number;
 	name: string;
+	aliases?: string[];
 	respawnTime: number;
 	petChance?: number;
 	qpRequired: number;
