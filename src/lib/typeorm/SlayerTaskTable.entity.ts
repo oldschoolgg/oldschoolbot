@@ -14,7 +14,7 @@ import { NewUserTable } from './NewUserTable.entity';
 
 @Check('quantity_remaining >= 0')
 @Entity('slayer_tasks')
-@Index('slayer_task_quantity_remaining', ['user_id', 'quantity_remaining'])
+@Index('slayer_task_quantity_remaining', ['user', 'quantityRemaining'])
 export class SlayerTaskTable extends BaseEntity {
 	@PrimaryGeneratedColumn('increment')
 	public id!: string;

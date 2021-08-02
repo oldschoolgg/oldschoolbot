@@ -736,7 +736,8 @@ export const cluesHardCL = resolveItems([
 	'Guthix crozier',
 	'Zamorak stole',
 	'Zamorak crozier',
-	'Zombie head',
+	// Zombie head
+	19_912,
 	'Cyclops head',
 	"Pirate's hat",
 	'Red cavalier',
@@ -1525,7 +1526,7 @@ export const shayzienArmourCL = resolveItems([
 	'Shayzien boots (5)',
 	'Shayzien helm (5)',
 	'Shayzien greaves (5)',
-	'Shayzien platebody (5)'
+	'Shayzien body (5)'
 ]);
 export const skillingPetsCL = resolveItems([
 	'Heron',
