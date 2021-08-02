@@ -15,7 +15,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
 import { RevenantOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
+import { formatDuration, stringMatches, toKMB, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import getOSItem from '../../lib/util/getOSItem';
@@ -139,6 +139,33 @@ const specialWeapons = {
 	mage: getOSItem("Thammaron's sceptre")
 } as const;
 
+const ancientItems = [
+	{
+		item: getOSItem('Ancient relic'),
+		price: 16_000_000
+	},
+	{
+		item: getOSItem('Ancient effigy'),
+		price: 8_000_000
+	},
+	{
+		item: getOSItem('Ancient medallion'),
+		price: 4_000_000
+	},
+	{
+		item: getOSItem('Ancient statuette'),
+		price: 2_000_000
+	},
+	{
+		item: getOSItem('Ancient totem'),
+		price: 1_000_000
+	},
+	{
+		item: getOSItem('Ancient emblem'),
+		price: 500_000
+	}
+];
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -153,7 +180,23 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [style, name = '']: ['melee' | 'range' | 'mage', string]) {
+	async run(msg: KlasaMessage, [style, name = '']: ['melee' | 'range' | 'mage' | 'sell', string]) {
+		if (style === 'sell') {
+			let userBank = msg.author.bank();
+			let toSellBank = new Bank();
+			let value = 0;
+			for (const item of ancientItems) {
+				const qty = userBank.amount(item.item.id);
+				if (qty === 0) continue;
+				value += qty * item.price;
+				toSellBank.add(item.item.id, qty);
+			}
+			await msg.confirm(`Do you want to sell ${toSellBank} for ${toKMB(value)}?`);
+			await msg.author.removeItemsFromBank(toSellBank);
+			await msg.author.addGP(value);
+			return msg.channel.send(`You sold ${toSellBank} for ${toKMB(value)}.`);
+		}
+
 		if (!style || !['melee', 'range', 'mage'].includes(style)) {
 			const prefix = msg.guild
 				? msg.guild.settings.get(GuildSettings.Prefix)
