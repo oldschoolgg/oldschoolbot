@@ -28,33 +28,33 @@ export const ornamentKits: Createable[] = [
 	{
 		name: 'Rune scimitar (guthix)',
 		inputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (guthix)': 1 }),
-		outputItems: resolveNameBank({ 'Rune scimitar (guthix)': 1 })
+		outputItems: resolveNameBank({ '23_330)': 1 })
 	},
 	{
 		name: 'revert Rune scimitar (guthix)',
-		inputItems: resolveNameBank({ 'Rune scimitar (guthix)': 1 }),
+		inputItems: resolveNameBank({ '23_330': 1 }),
 		outputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (guthix)': 1 }),
 		noCl: true
 	},
 		{
 		name: 'Rune scimitar (saradomin)',
 		inputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (saradomin)': 1 }),
-		outputItems: resolveNameBank({ 'Rune scimitar (saradomin)': 1 })
+		outputItems: resolveNameBank({ '23_332': 1 })
 	},
 	{
 		name: 'revert Rune scimitar (saradomin)',
-		inputItems: resolveNameBank({ 'Rune scimitar (saradomin)': 1 }),
+		inputItems: resolveNameBank({ '23_332': 1 }),
 		outputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (saradomin)': 1 }),
 		noCl: true
 	},
 		{
 		name: 'Rune scimitar (zamorak)',
 		inputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (zamorak)': 1 }),
-		outputItems: resolveNameBank({ 'Rune scimitar (zamorak)': 1 })
+		outputItems: resolveNameBank({ '23_334': 1 })
 	},
 	{
 		name: 'revert Rune scimitar (zamorak)',
-		inputItems: resolveNameBank({ 'Rune scimitar (zamorak)': 1 }),
+		inputItems: resolveNameBank({ '23_334': 1 }),
 		outputItems: resolveNameBank({ 'Rune scimitar': 1, 'Rune scimitar ornament kit (zamorak)': 1 }),
 		noCl: true
 	},
@@ -186,17 +186,17 @@ export const ornamentKits: Createable[] = [
 	},
 		{
 		name: 'revert Dragon scimitar',
-		inputItems: resolveNameBank({ 'Dragon scimitar (g)': 1 }),
+		inputItems: resolveNameBank({ 'Dragon scimitar (or)': 1 }),
 		outputItems: resolveNameBank({ 'Dragon scimitar': 1, 'Dragon scimitar ornament kit': 1 }),
 		noCl: true
 	},
 	{
-		name: 'Dragon scimitar (g)',
+		name: 'Dragon scimitar (or)',
 		inputItems: resolveNameBank({
 			'Dragon scimitar': 1,
 			'Dragon scimitar ornament kit': 1
 		}),
-		outputItems: resolveNameBank({ 'Dragon scimitar (g)': 1 })
+		outputItems: resolveNameBank({ 'Dragon scimitar (or)': 1 })
 	},
 		{
 		name: 'revert Obsidian maul',
