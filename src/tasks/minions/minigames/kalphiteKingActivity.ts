@@ -155,17 +155,20 @@ export default class extends Task {
 				sendToChannelID(this.client, channelID, { content: resultStr });
 			}
 		} else {
-			const { image } = await this.client.tasks
-				.get('bankImage')!
-				.generateBankImage(
-					soloItemsAdded!,
-					`Loot From ${quantity} Kalphite King:`,
-					true,
-					{ showNewCL: 1 },
-					leaderUser,
-					soloPrevCl!
-				);
-
+			const image = !kcAmounts[userID]
+				? undefined
+				: (
+						await this.client.tasks
+							.get('bankImage')!
+							.generateBankImage(
+								soloItemsAdded!,
+								`Loot From ${quantity} Kalphite King:`,
+								true,
+								{ showNewCL: 1 },
+								leaderUser,
+								soloPrevCl!
+							)
+				  ).image;
 			handleTripFinish(
 				this.client,
 				leaderUser,
@@ -181,7 +184,7 @@ export default class extends Task {
 					leaderUser.log('continued kk');
 					return this.client.commands.get('kk')!.run(res, ['solo']);
 				},
-				!kcAmounts[userID] ? undefined : image!,
+				image!,
 				data,
 				soloItemsAdded
 			);
