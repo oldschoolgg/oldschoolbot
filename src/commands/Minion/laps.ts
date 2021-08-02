@@ -60,6 +60,8 @@ export function alching(user: KlasaUser, tripLength: number, isUsingVoidling: bo
 		bankToRemove.add('Fire rune', maxCasts * 5);
 	}
 
+	if (maxCasts === 0 || bankToRemove.length === 0) return null;
+
 	return {
 		maxCasts,
 		bankToRemove,
