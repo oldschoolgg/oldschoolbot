@@ -227,7 +227,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
 
-		const hasSmokey = msg.author.equippedPet() === itemID('Smokey');
+		const hasSmokey = msg.author.allItemsOwned().has('Smokey');
 		const loot = new Bank();
 		let smokeyBonus = 0;
 		if (botOpenable.name.toLowerCase().includes('mystery') && hasSmokey) {
