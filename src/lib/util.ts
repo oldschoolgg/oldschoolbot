@@ -1,7 +1,8 @@
+import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import crypto from 'crypto';
-import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
+import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
 import { objectEntries, randInt, shuffleArr, Time } from 'e';
-import { KlasaClient, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
+import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -316,7 +317,7 @@ export function generateContinuationChar(user: KlasaUser) {
 }
 
 export function isValidGearSetup(str: string): str is GearSetupTypes {
-	return ['melee', 'mage', 'range', 'skilling', 'misc'].includes(str);
+	return ['melee', 'mage', 'range', 'skilling', 'misc', 'wildy'].includes(str);
 }
 
 /**
@@ -500,7 +501,7 @@ export function userHasMasterFarmerOutfit(user: KlasaUser) {
 	return true;
 }
 
-export function updateGPTrackSetting(client: KlasaClient, setting: string, amount: number) {
+export function updateGPTrackSetting(client: KlasaClient | KlasaUser, setting: string, amount: number) {
 	const current = client.settings.get(setting) as number;
 	const newValue = current + amount;
 	return client.settings.update(setting, newValue);
@@ -547,4 +548,52 @@ export function patronMaxTripCalc(user: KlasaUser) {
 	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
 	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
 	return 0;
+}
+
+export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[]) {
+	const display = new PaginatedMessage();
+	// @ts-ignore 2445
+	display.setUpReactions = () => null;
+
+	for (const page of pages) {
+		display.addPage({
+			...page,
+			components: [
+				PaginatedMessage.defaultActions
+					.slice(1, -1)
+					.map(a => new MessageButton().setLabel('').setStyle('SECONDARY').setCustomID(a.id).setEmoji(a.id))
+			]
+		});
+	}
+
+	await display.run(message);
+	const collector = display.response!.createMessageComponentInteractionCollector({
+		time: Time.Minute,
+		filter: i => i.user.id === message.author.id
+	});
+
+	collector.on('collect', async interaction => {
+		for (const action of PaginatedMessage.defaultActions) {
+			if (interaction.customID === action.id) {
+				const previousIndex = display.index;
+
+				await action.run({
+					handler: display,
+					author: message.author,
+					channel: message.channel,
+					response: display.response!,
+					collector: display.collector!
+				});
+
+				if (previousIndex !== display.index) {
+					await interaction.update(await display.resolvePage(message.channel, display.index));
+					return;
+				}
+			}
+		}
+	});
+
+	collector.on('end', () => {
+		display.response!.edit({ components: [] });
+	});
 }

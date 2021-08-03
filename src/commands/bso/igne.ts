@@ -15,6 +15,7 @@ import { formatDuration } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			usage: '[qty:int]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
@@ -22,7 +23,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage) {
+	async run(msg: KlasaMessage, [qty]: [number]) {
 		const instance = new BossInstance({
 			leader: msg.author,
 			id: Ignecarus.id,
@@ -48,19 +49,20 @@ export default class extends BotCommand {
 				neck: "Brawler's hook necklace"
 			}),
 			gearSetup: GearSetupTypes.Melee,
-			itemCost: async user => {
-				const userBank = user.bank();
-				const kc = user.getKC(Ignecarus.id);
+			itemCost: async data => {
+				const userBank = data.user.bank();
+				const kc = data.user.getKC(Ignecarus.id);
 
 				let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30))) + 1;
 				const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
 				const heatResBank = new Bank()
 					.add('Heat res. brew', brewsNeeded)
-					.add('Heat res. restore', restoresNeeded);
+					.add('Heat res. restore', restoresNeeded)
+					.multiply(data.kills);
 				const normalBank = new Bank()
 					.add('Saradomin brew(4)', brewsNeeded)
-					.add('Super restore(4)', restoresNeeded);
-
+					.add('Super restore(4)', restoresNeeded)
+					.multiply(data.kills);
 				return userBank.has(heatResBank.bank) ? heatResBank : normalBank;
 			},
 			mostImportantStat: 'attack_crush',
@@ -91,7 +93,10 @@ export default class extends BotCommand {
 				}
 				baseDeathChance -= (100 - preCalcedDeathChance) / 10;
 				return baseDeathChance;
-			}
+			},
+			quantity: qty,
+			allowMoreThan1Solo: true,
+			allowMoreThan1Group: true
 		});
 		const hasNormalFood = [];
 		for (const user of instance.bossUsers) {
@@ -105,9 +110,12 @@ export default class extends BotCommand {
 				return msg.channel.send({ files: [await instance.simulate()] });
 			}
 			const { bossUsers } = await instance.start();
+
 			const embed = new MessageEmbed()
 				.setDescription(
-					`Your team is off to fight Ignecarus. The total trip will take ${formatDuration(instance.duration)}.
+					`Your team is off to fight ${
+						instance.quantity
+					}x Ignecarus. The total trip will take ${formatDuration(instance.duration)}.
 
 ${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
 `

@@ -114,17 +114,18 @@ export default class extends Task {
 			loot = multiplyBank(loot, 2);
 		}
 
-		await user.addItemsToBank(loot, true);
+		const { itemsAdded, previousCL } = await user.addItemsToBank(loot, true);
 		user.incrementMinigameScore('Wintertodt', quantity);
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
-			loot,
+			itemsAdded,
 			'',
 			true,
 			{
 				showNewCL: 1
 			},
-			user
+			user,
+			previousCL
 		);
 
 		if (!channelIsSendable(channel)) return;
@@ -156,7 +157,7 @@ export default class extends Task {
 			},
 			image!,
 			data,
-			loot
+			itemsAdded
 		);
 	}
 }

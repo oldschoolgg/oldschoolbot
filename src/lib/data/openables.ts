@@ -6,15 +6,16 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { allPetIDs } from '../../commands/Minion/equippet';
 import { Emoji } from '../constants';
 import { FishTable } from '../minions/data/killableMonsters/custom/SeaKraken';
-import { allKeyPieces, allNexItems } from '../nex';
 import BirthdayPresentTable from '../simulation/birthdayPresent';
 import CasketTable from '../simulation/casket';
 import CrystalChestTable from '../simulation/crystalChest';
+import { RuneTable } from '../simulation/seedTable';
+import { ExoticSeedsTable } from '../simulation/sharedTables';
 import { itemNameFromID, removeDuplicatesFromArray } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
-import { coxLog, customBossLog } from './collectionLog';
+import { chambersOfXericCl, customBossesDropsThatCantBeDroppedInMBs, frozenKeyPieces } from './CollectionsExport';
 
 interface Openable {
 	name: string;
@@ -23,6 +24,17 @@ interface Openable {
 	table: (() => number) | LootTable;
 	emoji: Emoji;
 }
+
+export const odsCrate = new LootTable()
+	.add('Pure essence', [500, 1000], 4)
+	.add(ExoticSeedsTable)
+	.add('Coins', [50_000, 1_000_000])
+	.tertiary(150, 'Magus scroll')
+	.tertiary(100, LampTable)
+	.add('Clue scroll (beginner)', 1, 2)
+	.add('Clue scroll (easy)', 1, 2)
+	.add('Clue scroll (medium)', 1)
+	.add(RuneTable, [1, 10], 3);
 
 export const ALL_PRIMAL = resolveItems([
 	'Primal full helm',
@@ -471,6 +483,13 @@ const Openables: Openable[] = [
 		aliases: ['independence box'],
 		table: new LootTable().add('Fireworks').add('Fireworks').add('Liber tea').add("Sam's hat"),
 		emoji: Emoji.BirthdayPresent
+	},
+	{
+		name: 'Magic crate',
+		itemID: itemID('Magic crate'),
+		aliases: ['magic crate'],
+		table: odsCrate,
+		emoji: Emoji.BirthdayPresent
 	}
 ];
 
@@ -490,8 +509,8 @@ let allItemsIDs = Openables.map(i => (typeof i.table !== 'function' && i.table.a
 ) as number[];
 allItemsIDs = removeDuplicatesFromArray(allItemsIDs);
 const cantBeDropped = [
-	...Object.values(coxLog).flat(Infinity),
-	...Object.values(customBossLog).flat(Infinity),
+	...chambersOfXericCl,
+	...customBossesDropsThatCantBeDroppedInMBs,
 	itemID('Abyssal pouch'),
 	itemID('Dwarven crate'),
 	itemID('Halloween mask set'),
@@ -534,8 +553,7 @@ const cantBeDropped = [
 		'Bloodsoaked feather'
 	]),
 	...allPetIDs,
-	...allKeyPieces,
-	...allNexItems,
+	...frozenKeyPieces,
 	...ALL_PRIMAL
 ] as number[];
 
@@ -551,7 +569,11 @@ for (const item of Items.values()) {
 	) {
 		continue;
 	}
-	if (item.tradeable_on_ge) {
+
+	if (
+		item.tradeable_on_ge ||
+		(Boolean(item.tradeable) && Boolean(item.equipable_by_player) && Boolean(item.equipment?.slot))
+	) {
 		tmbTable.push(item.id);
 	} else if (!item.tradeable) {
 		umbTable.push(item.id);
@@ -560,7 +582,8 @@ for (const item of Items.values()) {
 		embTable.push(item.id);
 	}
 }
-export const allMbTables = [...tmbTable, ...umbTable, ...embTable];
+
+export const allMbTables = [...new Set([...tmbTable, ...umbTable, ...embTable])];
 
 function randomEquippable(): number {
 	const res = randArrItem(embTable);

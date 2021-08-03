@@ -43,6 +43,7 @@ export default class extends BotCommand {
 
 			await msg.author.addGP(amountToAdd);
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceDice, amountToAdd);
+			updateGPTrackSetting(msg.author, UserSettings.GPDice, amountToAdd);
 
 			if (won) {
 				const wins = msg.author.settings.get(UserSettings.Stats.DiceWins);

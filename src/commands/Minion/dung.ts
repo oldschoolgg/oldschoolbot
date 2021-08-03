@@ -1,4 +1,4 @@
-import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Emoji } from '../../lib/constants';
@@ -226,8 +226,8 @@ export default class extends BotCommand {
 			return msg.channel.send(`You need level ${determineDgLevelForFloor(floorToDo)} to do Floor ${floorToDo}.`);
 		}
 
-		const dungeonLength = Time.Minute * 5 * (floorToDo / 2) * 1;
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.Dungeoneering) / dungeonLength);
+		const dungeonLength = Time.Minute * 5 * (floorToDo / 2);
+		let quantity = Math.floor(msg.author.maxTripLength(Activity.Dungeoneering) / dungeonLength);
 		let duration = quantity * dungeonLength;
 
 		let message = `${msg.author.username} has created a Dungeoneering party! Anyone can click the ${
@@ -236,13 +236,13 @@ export default class extends BotCommand {
 
 **Floor:** ${floorToDo}
 **Duration:** ${formatDuration(duration)}
-**Quantity:** ${quantity}
+**Min. Quantity:** ${quantity}
 **Required Stats:** ${formatSkillRequirements(requiredSkills(floorToDo))}`;
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 1,
-			maxSize: 12,
+			maxSize: 5,
 			ironmanAllowed: true,
 			message,
 			customDenier: user => {
@@ -318,19 +318,21 @@ export default class extends BotCommand {
 
 		duration = reduceNumByPercent(duration, 20);
 
-		if (users.length === 1) {
-			duration = increaseNumByPercent(duration, 20);
-			boosts.push('-20% for not having a team');
-		} else if (users.length === 2) {
-			duration = increaseNumByPercent(duration, 15);
-			boosts.push('-15% for having a small team');
+		if (users.length > 1) {
+			duration = reduceNumByPercent(duration, users.length * 5);
+			boosts.push(`${users.length * 5}% for having a team of ${users.length}`);
 		}
+
+		// Calculate new number of floors will be done now that it is about to start
+		const perFloor = duration / quantity;
+		quantity = Math.floor(msg.author.maxTripLength(Activity.Dungeoneering) / perFloor);
+		duration = quantity * perFloor;
 
 		let str = `${partyOptions.leader.username}'s dungeoneering party (${users
 			.map(u => u.username)
 			.join(', ')}) is now off to do ${quantity}x dungeons of the ${formatOrdinal(
 			floorToDo
-		)} floor. Each dungeon takes ${formatDuration(dungeonLength)} - the total trip will take ${formatDuration(
+		)} floor. Each dungeon takes ${formatDuration(perFloor)} - the total trip will take ${formatDuration(
 			duration
 		)}.`;
 

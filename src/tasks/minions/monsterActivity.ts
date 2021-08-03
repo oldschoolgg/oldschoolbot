@@ -3,24 +3,19 @@ import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import { DOUBLE_LOOT_ACTIVE } from '../../lib/constants';
+import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../lib/constants';
+import { frozenKeyPieces } from '../../lib/data/CollectionsExport';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
-import { allKeyPieces } from '../../lib/nex';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { bones } from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import {
-	calculateSlayerPoints,
-	filterLootReplace,
-	getSlayerMasterOSJSbyID,
-	getUsersCurrentSlayerInfo
-} from '../../lib/slayer/slayerUtil';
+import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -74,7 +69,7 @@ export default class extends Task {
 			Math.ceil(quantity * (DOUBLE_LOOT_ACTIVE ? 2 : abyssalBonus)),
 			killOptions
 		);
-		const newSuperiorCount = loot.bank[420];
+		let newSuperiorCount = loot.bank[420];
 		const xpRes = await addMonsterXP(user, {
 			monsterID,
 			quantity,
@@ -88,6 +83,12 @@ export default class extends Task {
 			superiorCount: newSuperiorCount
 		});
 
+		let masterCapeRolls =
+			user.hasItemEquippedAnywhere('Slayer master cape') && typeof newSuperiorCount === 'number'
+				? newSuperiorCount
+				: 0;
+		newSuperiorCount += masterCapeRolls;
+
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
 			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
@@ -98,10 +99,14 @@ export default class extends Task {
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
 
+		if (masterCapeRolls > 0) {
+			str += `${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls `;
+		}
+
 		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(20)) {
-					loot.add(randArrItem(allKeyPieces));
+					loot.add(randArrItem(frozenKeyPieces));
 				}
 			}
 		}
@@ -240,10 +245,7 @@ export default class extends Task {
 			loot.add(getRandomMysteryBox());
 		}
 
-		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
-
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, false);
-		await user.addItemsToCollectionLog(clLoot.bank);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!

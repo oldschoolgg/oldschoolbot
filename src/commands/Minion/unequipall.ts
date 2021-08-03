@@ -12,9 +12,9 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<melee|mage|range|skilling|misc>',
+			usage: '<melee|mage|range|skilling|misc|wildy>',
 			usageDelim: ' ',
-			description: 'Unequips everything from one of your gear setups. (melee/range/range/skilling/misc)',
+			description: 'Unequips everything from one of your gear setups. (melee/range/range/skilling/misc/wildy)',
 			examples: ['+unequipall melee'],
 			categoryFlags: ['minion']
 		});

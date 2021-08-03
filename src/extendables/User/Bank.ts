@@ -6,6 +6,7 @@ import { O } from 'ts-toolbelt';
 import { Events } from '../../lib/constants';
 import { similarItems } from '../../lib/data/similarItems';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
 import { bankHasAllItemsFromBank, removeBankFromBank, removeItemFromBank } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
@@ -98,17 +99,18 @@ export default class extends Extendable {
 
 			const previousCL = user.settings.get(UserSettings.CollectionLogBank);
 
-			const items = {
+			let items = new Bank({
 				..._items
-			};
-
+			});
+			const { bankLoot, clLoot } = filterLootReplace(user.allItemsOwned(), items);
+			items = bankLoot;
 			if (collectionLog) {
-				await user.addItemsToCollectionLog(items);
+				await user.addItemsToCollectionLog(clLoot.bank);
 			}
 
-			if (items[995]) {
-				await user.addGP(items[995]);
-				delete items[995];
+			if (items.has(995)) {
+				await user.addGP(items.amount(995));
+				items.remove(995, items.amount(995));
 			}
 
 			this.log(`Had items added to bank - ${JSON.stringify(items)}`);
@@ -116,7 +118,7 @@ export default class extends Extendable {
 
 			return {
 				previousCL,
-				itemsAdded: _items
+				itemsAdded: items.bank
 			};
 		});
 	}

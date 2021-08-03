@@ -12,7 +12,7 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, stringMatches } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -84,11 +84,20 @@ export default class extends BotCommand {
 			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6;
 		}
 
-		let hasScruffy = false;
-		if (msg.author.equippedPet() === itemID('Scruffy')) {
-			timeToFletchSingleItem /= 2;
-			hasScruffy = true;
+		const boostMsg: string[] = [];
+		let boost = 1;
+		if (msg.author.usingPet('Scruffy')) {
+			boost += 1;
+			boostMsg.push(
+				'<:scruffy:749945071146762301> To help out, Scruffy is fetching items from the bank for you - making your training much faster! Good boy! (+100% for Scruffy)'
+			);
 		}
+		if (msg.author.hasItemEquippedAnywhere('Dwarven knife')) {
+			boostMsg.push('+100% for Dwarven knife');
+			boost += 1;
+		}
+
+		timeToFletchSingleItem /= boost;
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		const maxTripLength = msg.author.maxTripLength(Activity.Fletching);
@@ -133,11 +142,9 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`${msg.author.minionName} is now Fletching ${quantity}${sets} ${
 				fletchable.name
-			}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank. ${
-				hasScruffy
-					? '\n<:scruffy:749945071146762301> To help out, Scruffy is fetching items from the bank for you - making your training much faster! Good boy.'
-					: ''
-			}`
+			}, it'll take around ${formatDuration(
+				duration
+			)} to finish. Removed ${itemsNeeded} from your bank.\n${boostMsg.join(', ')}`
 		);
 	}
 }

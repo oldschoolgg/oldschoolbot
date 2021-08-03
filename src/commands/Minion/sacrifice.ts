@@ -47,7 +47,13 @@ export default class extends BotCommand {
 			await msg.author.addItemsToBank({ 742: 1 }, true);
 		}
 
-		const gotHammy = totalPrice >= 51_530_000 && roll(140);
+		let gotHammy = false;
+		for (let i = 0; i < Math.floor(totalPrice / 51_530_000); i++) {
+			if (roll(140)) {
+				gotHammy = true;
+				break;
+			}
+		}
 		if (gotHammy) {
 			await msg.author.addItemsToBank({ [itemID('Hammy')]: 1 }, true);
 		}
@@ -69,17 +75,20 @@ export default class extends BotCommand {
 		msg.author.log(`sacrificed ${bankToSac} for ${totalPrice}`);
 
 		const currentIcon = msg.author.settings.get(UserSettings.Minion.Icon);
-		for (const icon of minionIcons) {
-			if (newValue < icon.valueRequired) continue;
-			if (newValue >= icon.valueRequired) {
-				if (currentIcon === icon.emoji) break;
-				await msg.author.settings.update(UserSettings.Minion.Icon, icon.emoji);
-				str += `\n\nYou have now unlocked the **${icon.name}** minion icon!`;
-				this.client.emit(
-					Events.ServerNotification,
-					`**${msg.author.username}** just unlocked the ${icon.emoji} icon for their minion.`
-				);
-				break;
+		// Ignores notifying the user/server if the user is using a custom icon
+		if (!currentIcon || minionIcons.find(m => m.emoji === currentIcon)) {
+			for (const icon of minionIcons) {
+				if (newValue < icon.valueRequired) continue;
+				if (newValue >= icon.valueRequired) {
+					if (currentIcon === icon.emoji) break;
+					await msg.author.settings.update(UserSettings.Minion.Icon, icon.emoji);
+					str += `\n\nYou have now unlocked the **${icon.name}** minion icon!`;
+					this.client.emit(
+						Events.ServerNotification,
+						`**${msg.author.username}** just unlocked the ${icon.emoji} icon for their minion.`
+					);
+					break;
+				}
 			}
 		}
 

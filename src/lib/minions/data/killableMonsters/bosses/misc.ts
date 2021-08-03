@@ -2,8 +2,8 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
-import { bosses } from '../../../../data/collectionLog';
-import { GearSetupTypes, GearStat } from '../../../../gear/types';
+import { corporealBeastCL } from '../../../../data/CollectionsExport';
+import { GearSetupTypes, GearStat } from '../../../../gear';
 import { CorporealBeastTable } from '../../../../simulation/Corp';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
@@ -210,7 +210,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: bosses['Corp Beast'],
+		uniques: corporealBeastCL,
 		pohBoosts: {
 			pool: {
 				'Rejuvenation pool': 50,
@@ -265,6 +265,47 @@ const killableBosses: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Strength],
 		combatXpMultiplier: 1.15,
 		healAmountNeeded: 20 * 7
+	},
+	{
+		id: Monsters.KingBlackDragon.id,
+		name: Monsters.KingBlackDragon.name,
+		aliases: Monsters.KingBlackDragon.aliases,
+		table: Monsters.KingBlackDragon,
+		timeToFinish: Time.Minute * 3.1,
+		emoji: '<:Prince_black_dragon:324127378538364928>',
+		wildy: true,
+
+		difficultyRating: 6,
+		itemsRequired: deepResolveItems([
+			['Dragonfire shield', 'Anti-dragon shield'],
+			['Zaryte bow', 'Armadyl crossbow', 'Rune crossbow', 'Twisted bow', 'Dragon hunter crossbow'],
+			[
+				'Pernix body',
+				"Black d'hide body",
+				"Black d'hide body (g)",
+				"Black d'hide body (t)",
+				"Karil's leathertop"
+			],
+			[
+				'Pernix chaps',
+				"Black d'hide chaps",
+				"Black d'hide chaps (g)",
+				"Black d'hide chaps (t)",
+				"Karil's leatherskirt"
+			]
+		]),
+		qpRequired: 0,
+		itemInBankBoosts: [
+			{
+				[itemID('Armadyl crossbow')]: 6,
+				[itemID('Twisted bow')]: 10
+			}
+		],
+		defaultAttackStyles: [SkillsEnum.Ranged],
+		combatXpMultiplier: 1.075,
+		healAmountNeeded: 5 * 20,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash]
 	}
 ];
 

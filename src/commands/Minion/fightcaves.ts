@@ -56,7 +56,7 @@ export default class extends BotCommand {
 		const percentIncreaseFromRangeStats = Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromRangeStats);
 
-		if (gear.hasEquipped('Twisted bow')) {
+		if (user.hasItemEquippedOrInBank('Twisted bow')) {
 			debugStr += ', 15% from Twisted bow';
 			baseTime = reduceNumByPercent(baseTime, 15);
 		}
@@ -162,7 +162,7 @@ export default class extends BotCommand {
 		// 15% boost for on task
 		if (isOnTask && msg.author.hasItemEquippedOrInBank('Black mask (i)')) {
 			duration *= 0.85;
-			debugStr = debugStr === '' ? '15% on Task with Black mask (i)' : ', 15% on Task with Black mask (i)';
+			debugStr += ', 15% on Task with Black mask (i)';
 		}
 
 		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>({

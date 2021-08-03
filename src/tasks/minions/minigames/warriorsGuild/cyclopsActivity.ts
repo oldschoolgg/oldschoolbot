@@ -68,16 +68,16 @@ export default class extends Task {
 			loot.add(CyclopsTable.roll());
 		}
 
-		await user.addItemsToBank(loot.bank, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot.bank, true);
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} Cyclops. Your Cyclops KC is now ${
 			(user.settings.get(UserSettings.MonsterScores)[cyclopsID] ?? 0) + quantity
 		}.`;
 
-		user.incrementMonsterScore(cyclopsID, quantity);
+		await user.incrementMonsterScore(cyclopsID, quantity);
 		const { image } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(loot.bank, `Loot From ${quantity}x Cyclops`, true, { showNewCL: 1 }, user);
+			.generateBankImage(itemsAdded, `Loot From ${quantity}x Cyclops`, true, { showNewCL: 1 }, user, previousCL);
 
 		handleTripFinish(
 			this.client,
@@ -90,7 +90,7 @@ export default class extends Task {
 			},
 			image!,
 			data,
-			loot.bank
+			itemsAdded
 		);
 	}
 }

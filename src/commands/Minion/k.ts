@@ -180,7 +180,7 @@ export default class extends BotCommand {
 			timeToFinish *= (100 - boostAmount) / 100;
 			boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 		}
-		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven warhammer'))) {
+		if (msg.author.hasItemEquippedAnywhere('Dwarven warhammer')) {
 			timeToFinish *= 0.6;
 			boosts.push('40% boost for Dwarven warhammer');
 		}
@@ -430,16 +430,17 @@ export default class extends BotCommand {
 					break;
 			}
 
+			if (monster.wildy) gearToCheck = GearSetupTypes.Wildy;
+
 			const [result] = await removeFoodFromUser({
 				client: this.client,
 				user: msg.author,
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
-				attackStylesUsed: removeDuplicatesFromArray([
-					...objectKeys(monster.minimumGearRequirements ?? {}),
-					gearToCheck
-				]),
+				attackStylesUsed: monster.wildy
+					? [GearSetupTypes.Wildy]
+					: removeDuplicatesFromArray([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced
 			});
 

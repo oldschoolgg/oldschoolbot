@@ -17,6 +17,18 @@ import PatreonTask from '../../tasks/patreon';
 
 export const emoji = (client: KlasaClient) => getSupportGuild(client).emojis.cache.random().toString();
 
+const statusMap = {
+	'0': '🟢 Ready',
+	'1': '🟠 Connecting',
+	'2': '🟠 Reconnecting',
+	'3': 'Idle',
+	'4': 'Nearly',
+	'5': '🔴 Disconnected',
+	'6': 'Waiting For Guilds',
+	'7': '🟠 Identifying',
+	'8': '🟠 Resuming'
+};
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -88,6 +100,21 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
+			case 'status': {
+				let counter: Record<string, number> = {};
+				for (const key of Object.keys(statusMap)) {
+					counter[key] = 0;
+				}
+				for (const shard of this.client.ws.shards.values()) {
+					counter[shard.status]++;
+				}
+
+				let status = Object.entries(counter)
+					.filter(ent => ent[1] !== 0)
+					.map(ent => `${statusMap[ent[0] as keyof typeof statusMap]}: ${ent[1]}`)
+					.join('\n');
+				return msg.channel.send(status);
+			}
 			case 'bypassage': {
 				if (!input || !(input instanceof KlasaUser)) return;
 				await input.settings.sync(true);
@@ -156,8 +183,13 @@ ${
 			}
 			case 'roles': {
 				msg.channel.send('Running roles task...');
-				const result = await this.client.tasks.get('roles')?.run();
-				return msg.channel.send(result as string);
+				try {
+					const result = await this.client.tasks.get('roles')?.run();
+					return msg.channel.send(result as string);
+				} catch (err) {
+					console.error(err);
+					return msg.channel.send(`Failed to run roles task. ${err.message}`);
+				}
 			}
 			case 'canceltask': {
 				if (!input || !(input instanceof KlasaUser)) return;

@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { LEVEL_99_XP } from '../../constants';
 import { diaries, userhasDiaryTier } from '../../diaries';
 import { SkillsEnum } from '../../skilling/types';
+import { resolveNameBank } from '../../util';
 import { Buyable } from './buyables';
 
 export const capeBuyables: Buyable[] = [
@@ -149,5 +150,13 @@ export const capeBuyables: Buyable[] = [
 			}
 			return [true];
 		}
+	},
+	{
+		name: 'Master quest cape',
+		outputItems: resolveNameBank({
+			'Master quest cape': 1
+		}),
+		gpCost: 1_000_000_000,
+		qpRequired: 5000
 	}
 ];

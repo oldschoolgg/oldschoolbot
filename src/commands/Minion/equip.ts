@@ -15,7 +15,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<melee|mage|range|skilling|misc> [quantity:integer{1}] (item:...item)',
+			usage: '<melee|mage|range|skilling|misc|wildy> [quantity:integer{1}] (item:...item)',
 			usageDelim: ' ',
 			description: 'Equips an item to one of your gear setups. (melee/range/range/skilling/misc)',
 			examples: ['+equip skilling graceful hood', '+equip melee bandos godsword', '+equip mage staff of fire'],
@@ -82,6 +82,11 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (gearType === GearSetupTypes.Wildy) {
+			await msg.confirm(
+				"You are equipping items to your **wilderness** setup. *Every* item in this setup can potentially be lost if you're doing activities in the wilderness. Are you sure you want to equip it?"
+			);
+		}
 		/**
 		 * If there's already an item equipped in this slot, unequip it,
 		 * then recursively call this function again.
@@ -100,7 +105,7 @@ export default class extends BotCommand {
 				[equippedInThisSlot.item]: equippedInThisSlot.quantity
 			});
 			await msg.author.settings.update(gearTypeSetting, newGear);
-
+			msg.flagArgs.cf = '1';
 			return this.run(msg, [gearType, quantity, [itemToEquip]]);
 		}
 

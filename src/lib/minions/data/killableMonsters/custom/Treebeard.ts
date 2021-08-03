@@ -65,12 +65,12 @@ export const TreebeardLootTable = new LootTable()
 	.tertiary(300, DeadLumberjackTable)
 	.tertiary(100, 'Mysterious seed')
 	.tertiary(100, 'Ent hide')
-	.every(AllSeedTables, [2, 3])
+	.every(AllSeedTables, [1, 2])
 	.add('Elder logs', [5, 25])
-	.add(AllSeedTables, [5, 10])
-	.add(CleanHerbTable, [2, 3])
-	.add(HerbSecondaries, [5, 10])
-	.add(GrimyHerbTable, [2, 3])
+	.add(AllSeedTables, [1, 4])
+	.add(CleanHerbTable, [1, 3])
+	.add(HerbSecondaries, [1, 7])
+	.add(GrimyHerbTable, [1, 3])
 	.add(LogTable, [10, 20]);
 
 setCustomMonster(932_122, 'Treebeard', TreebeardLootTable, Monsters.Hespori, {

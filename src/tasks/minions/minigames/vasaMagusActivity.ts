@@ -1,8 +1,8 @@
-import { randArrItem, randInt } from 'e';
+import { objectEntries, randArrItem, randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
+import { DOUBLE_LOOT_ACTIVE } from '../../../lib/constants';
 import { bossKillables } from '../../../lib/minions/data/killableMonsters/bosses';
 import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killableMonsters/custom/VasaMagus';
 import { addMonsterXP } from '../../../lib/minions/functions';
@@ -16,14 +16,24 @@ export default class extends Task {
 		const { channelID, userID, duration, quantity } = data;
 		const user = await this.client.users.fetch(userID);
 
-		user.incrementMonsterScore(VasaMagus.id, quantity);
+		await user.incrementMonsterScore(VasaMagus.id, quantity);
 
 		const loot = new Bank();
 
+		const lootOf: Record<string, number> = {};
 		for (let i = 0; i < quantity; i++) {
 			loot.add(VasaMagusLootTable.roll());
-			loot.add(randArrItem(bossKillables).table.kill(randInt(1, 3), {}));
+			let mon = randArrItem(bossKillables);
+			let qty = randInt(1, 3);
+			lootOf[mon.name] = (lootOf[mon.name] ?? 0) + qty;
+			loot.add(mon.table.kill(qty, {}));
 		}
+
+		let resultStr = `${user}, ${
+			user.minionName
+		} finished killing ${quantity}x Vasa Magus.\nVasa dropped the loot of ${objectEntries(lootOf)
+			.map(l => `${l[1]}x ${l[0]}`)
+			.join(', ')}`;
 
 		if (DOUBLE_LOOT_ACTIVE) {
 			loot.multiply(2);
@@ -36,9 +46,20 @@ export default class extends Task {
 			isOnTask: false,
 			taskQuantity: null
 		});
-		await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
-		let resultStr = `${user}, ${user.minionName} finished killing ${quantity}x Vasa Magus.\n\n${Emoji.Casket} **Loot:** ${loot}\n\n${xpRes}`;
+		const { image } = await this.client.tasks
+			.get('bankImage')!
+			.generateBankImage(
+				itemsAdded,
+				`Loot From ${quantity} ${VasaMagus.name}:`,
+				true,
+				{ showNewCL: 1 },
+				user,
+				previousCL
+			);
+
+		resultStr += `\n${xpRes}\n`;
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.VasaLoot, loot);
 
@@ -51,9 +72,9 @@ export default class extends Task {
 				user.log('continued vasa');
 				return this.client.commands.get('vasa')!.run(res, []);
 			},
-			undefined,
+			image!,
 			data,
-			loot.bank
+			itemsAdded
 		);
 	}
 }

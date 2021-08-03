@@ -20,6 +20,7 @@ export interface Kibble {
 	cropComponent: Item[];
 	herbComponent: Item[];
 	xp: number;
+	level: number;
 }
 
 export const kibbles: Kibble[] = [
@@ -29,7 +30,8 @@ export const kibbles: Kibble[] = [
 		minimumFishHeal: 1,
 		cropComponent: ['Cabbage', 'Potato'].map(getOSItem),
 		herbComponent: ['Marrentill', 'Tarromin'].map(getOSItem),
-		xp: 600
+		xp: 600,
+		level: 105
 	},
 	{
 		item: getOSItem('Delicious kibble'),
@@ -37,7 +39,8 @@ export const kibbles: Kibble[] = [
 		minimumFishHeal: 19,
 		cropComponent: ['Strawberry', 'Papaya fruit'].map(getOSItem),
 		herbComponent: ['Cadantine', 'Kwuarm'].map(getOSItem),
-		xp: 900
+		xp: 900,
+		level: 110
 	},
 	{
 		item: getOSItem('Extraordinary kibble'),
@@ -45,7 +48,8 @@ export const kibbles: Kibble[] = [
 		minimumFishHeal: 26,
 		cropComponent: ['Orange', 'Pineapple'].map(getOSItem),
 		herbComponent: ['Torstol', 'Dwarf weed'].map(getOSItem),
-		xp: 1100
+		xp: 1100,
+		level: 120
 	}
 ];
 
@@ -64,8 +68,11 @@ export default class extends BotCommand {
 				`No matching kibble found, they are: ${kibbles.map(k => k.item.name).join(', ,')}.`
 			);
 		}
-		if (msg.author.skillLevel(SkillsEnum.Cooking) < 120) {
-			return msg.channel.send('You need level 120 Cooking to make kibble.');
+		if (msg.author.skillLevel(SkillsEnum.Cooking) < kibble.level) {
+			return msg.channel.send(`You need level ${kibble.level} Cooking to make kibble.`);
+		}
+		if (msg.author.skillLevel(SkillsEnum.Herblore) < kibble.level - 20) {
+			return msg.channel.send(`You need level ${kibble.level} Herblore to make kibble.`);
 		}
 		const userBank = msg.author.bank();
 
@@ -111,13 +118,6 @@ export default class extends BotCommand {
 		let fishNeeded = calcFish(rawFishComponent);
 		cost.add(rawFishComponent.raw!, fishNeeded);
 
-		if (!msg.author.owns(cost)) {
-			return msg.channel.send(`You don't own ${cost}.`);
-		}
-
-		await msg.author.removeItemsFromBank(cost);
-		updateBankSetting(this.client, ClientSettings.EconomyStats.KibbleCost, cost);
-
 		let timePer = Time.Second * 2;
 		if (msg.author.usingPet('Remy')) {
 			timePer = Math.floor(timePer / 2);
@@ -131,6 +131,13 @@ export default class extends BotCommand {
 				)} is ${Math.floor(maxTripLength / timePer)}.`
 			);
 		}
+
+		if (!msg.author.owns(cost)) {
+			return msg.channel.send(`You don't own ${cost}.`);
+		}
+
+		await msg.author.removeItemsFromBank(cost);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.KibbleCost, cost);
 
 		await addSubTaskToActivityTask<KibbleOptions>({
 			userID: msg.author.id,

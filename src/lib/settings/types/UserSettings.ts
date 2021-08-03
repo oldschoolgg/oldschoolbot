@@ -136,6 +136,7 @@ export namespace UserSettings {
 		export const Mage = T<GearSetup | null>('gear.mage');
 		export const Misc = T<GearSetup | null>('gear.misc');
 		export const Skilling = T<GearSetup | null>('gear.skilling');
+		export const Wildy = T<GearSetup | null>('gear.wildy');
 	}
 
 	export namespace FarmingPatches {
@@ -162,4 +163,7 @@ export namespace UserSettings {
 
 	export const Nursery = T<Nursery | null>('nursery');
 	export const SelectedTame = T<number | null>('selected_tame');
+
+	export const GPLuckyPick = T<number>('gp_luckypick');
+	export const GPDice = T<number>('gp_dice');
 }

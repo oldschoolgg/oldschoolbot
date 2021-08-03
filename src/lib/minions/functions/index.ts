@@ -4,6 +4,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { NIGHTMARES_HP } from '../../constants';
 import { KalphiteKingMonster } from '../../kalphiteking';
+import { NexMonster } from '../../nex';
 import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
@@ -31,7 +32,7 @@ const miscHpMap: Record<number, number> = {
 	[KingGoldemar.id]: 10_000,
 	[VasaMagus.id]: 3900,
 	[KalphiteKingMonster.id]: 5300,
-	[SeaKraken.id]: 3900,
+	[SeaKraken.id]: 5200,
 	[Ignecarus.id]: 10_000
 };
 
@@ -48,6 +49,7 @@ export function resolveAttackStyles(
 ): [KillableMonster | undefined, Monster | undefined, AttackStyles[]] {
 	if (params.monsterID === KingGoldemar.id) return [undefined, undefined, meleeOnly(user)];
 	if (params.monsterID === VasaMagus.id) return [undefined, undefined, [SkillsEnum.Magic]];
+	if (params.monsterID === NexMonster.id) return [undefined, undefined, [SkillsEnum.Ranged]];
 
 	const killableMon = killableMonsters.find(m => m.id === params.monsterID);
 
@@ -163,12 +165,15 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		} else {
 			newSlayerXP += params.taskQuantity! * hp;
 		}
-		// Give slayer XP for K'ril + Kree'Arra
+		// Give slayer XP for K'ril + Kree'Arra + Sire
 		if (params.monsterID === Monsters.KrilTsutsaroth.id) {
 			newSlayerXP += params.taskQuantity! * 142;
 		}
 		if (params.monsterID === Monsters.Kreearra.id) {
 			newSlayerXP += params.taskQuantity! * (132.5 + 124 + 132.5);
+		}
+		if (params.monsterID === Monsters.AbyssalSire.id) {
+			newSlayerXP += params.taskQuantity! * 200;
 		}
 		res.push(
 			await user.addXP({

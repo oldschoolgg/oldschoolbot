@@ -82,6 +82,9 @@ export namespace ClientSettings {
 
 		export const KibbleCost = T<O.Readonly<ItemBank>>('kibble_cost');
 
+		export const RevsCost = T<O.Readonly<ItemBank>>('revs_cost');
+		export const RevsLoot = T<O.Readonly<ItemBank>>('revs_loot');
+
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');
 		export const GPSourceAlching = T<number>('gp_alch');
@@ -91,5 +94,6 @@ export namespace ClientSettings {
 		export const GPSourcePet = T<number>('gp_pet');
 		export const GPSourceDaily = T<number>('gp_daily');
 		export const GPSourceItemContracts = T<number>('gp_ic');
+		export const GPSourceLuckyPick = T<number>('gp_luckypick');
 	}
 }

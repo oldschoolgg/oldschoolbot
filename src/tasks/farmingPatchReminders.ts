@@ -50,31 +50,36 @@ export default class extends Task {
 						const difference = now - patch.plantTime;
 						if (!planted) continue;
 						if (difference < planted.growthTime * Time.Minute) continue;
-						if (patch.wasReminded) {
-							console.log(`Wouldnt DM ${user} because already reminded.`);
-							continue;
-						}
+						if (patch.wasReminded) continue;
 						await user.settings.update(key, { ...patch, wasReminded: true });
 
 						const message = await user.send({
 							content: `${user.username}, the ${planted.name} planted in your ${patchType} patches is ready to be harvested!`,
-							components: [
-								[
-									new MessageButton()
-										.setLabel('Harvest & Replant')
-										.setStyle('PRIMARY')
-										.setCustomID('HARVEST'),
-									new MessageButton()
-										.setLabel('Disable Reminders')
-										.setStyle('SECONDARY')
-										.setCustomID('DISABLE')
-								]
-							]
+							components: user.minionIsBusy
+								? undefined
+								: [
+										[
+											new MessageButton()
+												.setLabel('Harvest & Replant')
+												.setStyle('PRIMARY')
+												.setCustomID('HARVEST'),
+											new MessageButton()
+												.setLabel('Disable Reminders')
+												.setStyle('SECONDARY')
+												.setCustomID('DISABLE')
+										]
+								  ]
 						});
 						try {
 							const selection = await message.awaitMessageComponentInteraction({
 								time: Time.Minute * 5
 							});
+							message.edit({ components: [] });
+
+							if (user.minionIsBusy) {
+								selection.reply({ content: 'Your minion is busy.' });
+								return;
+							}
 							if (selection.customID === 'HARVEST') {
 								message.author = user;
 								this.client.commands.get('farm')?.run(message as KlasaMessage, [planted.name]);
@@ -85,8 +90,9 @@ export default class extends Task {
 									'Farming patch reminders have been disabled. You can enable them again using `+farm --enablereminders`.'
 								);
 							}
+						} catch {
 							message.edit({ components: [] });
-						} catch {}
+						}
 					}
 				}
 			} catch (err) {
