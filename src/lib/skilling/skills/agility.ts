@@ -129,7 +129,7 @@ export const courses: Course[] = [
 		xp: 100_000,
 		lapTime: 1800,
 		marksPer60: 220,
-		petChance: 5_000
+		petChance: 5000
 	}
 ];
 
