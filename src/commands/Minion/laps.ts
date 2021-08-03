@@ -152,7 +152,7 @@ export default class extends BotCommand {
 						user: msg.author,
 						flags: msg.flagArgs,
 						tripLength: duration,
-						isUsingVoidling: true
+						isUsingVoidling: msg.author.usingPet('Voidling')
 				  });
 		if (alchResult !== null) {
 			if (!msg.author.owns(alchResult.bankToRemove)) {
