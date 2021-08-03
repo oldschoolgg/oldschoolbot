@@ -1,16 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { cancelTask, getActivityOfUser } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { BossActivityTaskOptions, RaidsActivityTaskOptions } from './../../lib/types/minions';
-
-const options = {
-	max: 1,
-	time: 10000,
-	errors: ['time']
-};
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -25,7 +17,7 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		const currentTask = getActivityOfUser(msg.author.id) as any;
+		const currentTask = getActivityOfUser(msg.author.id);
 
 		if (!currentTask) {
 			return msg.channel.send(
@@ -33,80 +25,14 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (currentTask.type === Activity.GroupMonsterKilling || currentTask.type === Activity.Dungeoneering) {
-			return msg.channel.send(
-				`${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`
-			);
+		if ((currentTask as any).users && (currentTask as any).users.length > 1) {
+			return msg.channel.send('Your minion is on a group activity and cannot cancel!');
 		}
 
-		if (currentTask.type === Activity.Nightmare) {
-			const data = currentTask as BossActivityTaskOptions;
-			if (data.users.length > 1) {
-				return msg.channel.send(
-					`${msg.author.minionName} is fighting the Nightmare with a team, they cant leave their team!`
-				);
-			}
-		}
-
-		if (currentTask.type === Activity.Nex) {
-			const data = currentTask as BossActivityTaskOptions;
-			if (data.users.length > 1) {
-				return msg.channel.send(
-					`${msg.author.minionName} is fighting Nex with a team, they cant leave their team!`
-				);
-			}
-		}
-
-		if (currentTask.type === Activity.KingGoldemar) {
-			const data = currentTask as BossActivityTaskOptions;
-			if (data.users.length > 1) {
-				return msg.channel.send(
-					`${msg.author.minionName} is fighting King Goldemar with a team, they cant leave their team!`
-				);
-			}
-		}
-
-		if (currentTask.type === Activity.KalphiteKing) {
-			return msg.channel.send(
-				`${msg.author.minionName} is fighting the Kalphite King with a team, they cant leave their team!`
-			);
-		}
-		if (currentTask.type === Activity.BarbarianAssault) {
-			return msg.channel.send(
-				`${msg.author.minionName} is currently doing Barbarian Assault, and cant leave their team!`
-			);
-		}
-
-		if (currentTask.type === Activity.SoulWars) {
-			return msg.channel.send(
-				`${msg.author.minionName} is currently doing Soul Wars, and cant leave their team!`
-			);
-		}
-
-		if (currentTask.type === Activity.Raids) {
-			const data = currentTask as RaidsActivityTaskOptions;
-			if (data.users.length > 1) {
-				return msg.channel.send(
-					`${msg.author.minionName} is currently doing the Chamber's of Xeric, they cannot leave their team!`
-				);
-			}
-		}
-
-		const cancelMsg = await msg.channel.send(
-			`${msg.author} ${msg.author.minionStatus}\n Say \`confirm\` if you want to call your minion back from their trip. ` +
+		await msg.confirm(
+			`${msg.author} ${msg.author.minionStatus}\n Please confirm if you want to call your minion back from their trip. ` +
 				"They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any."
 		);
-
-		if (!msg.flagArgs.cf) {
-			try {
-				await msg.channel.awaitMessages({
-					...options,
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-				});
-			} catch (err) {
-				return cancelMsg.edit('Halting cancellation of minion task.');
-			}
-		}
 
 		await cancelTask(msg.author.id);
 

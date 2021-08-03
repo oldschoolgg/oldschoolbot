@@ -14,6 +14,7 @@ import { capeBuyables } from './capes';
 import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
+import { miningBuyables } from './mining';
 import { slayerBuyables } from './slayerBuyables';
 
 export interface Buyable {
@@ -320,7 +321,7 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Monkey',
 		outputItems: {
-			19556: 1
+			19_556: 1
 		},
 		gpCost: 1_000_000,
 		qpRequired: 182
@@ -554,6 +555,11 @@ const questBuyables: Buyable[] = [
 		},
 		gpCost: 2_500_000,
 		qpRequired: 5
+	},
+	{
+		name: 'Elemental shield',
+		gpCost: 2_500_000,
+		qpRequired: 25
 	}
 ];
 
@@ -719,14 +725,7 @@ const Buyables: Buyable[] = [
 	...cmCapes,
 	...slayerBuyables,
 	...capeBuyables,
-	{
-		name: 'Master quest cape',
-		outputItems: resolveNameBank({
-			'Master quest cape': 1
-		}),
-		gpCost: 1_000_000_000,
-		qpRequired: 5000
-	}
+	...miningBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

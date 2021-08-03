@@ -62,7 +62,8 @@ export default class extends BotCommand {
 				neck: "Brawler's hook necklace"
 			}),
 			gearSetup: GearSetupTypes.Melee,
-			itemCost: async user => new Bank().add('Coins', gpCostPerKill(user)),
+			itemCost: async data =>
+				data.baseFood.multiply(data.kills).add('Coins', gpCostPerKill(data.user) * data.kills),
 			mostImportantStat: 'attack_slash',
 			food: () => new Bank(),
 			settingsKeys: [ClientSettings.EconomyStats.KingGoldemarCost, ClientSettings.EconomyStats.KingGoldemarLoot],

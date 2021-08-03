@@ -33,23 +33,23 @@ function setCustomItem(id: number, name: string, baseItem: string, newItemData?:
 	customItems.push(id);
 }
 
-setCustomItem(19939, 'Untradeable Mystery Box', 'Mystery box', {}, 100_000);
+setCustomItem(19_939, 'Untradeable Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(6199, 'Tradeable Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(3062, 'Pet Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(3713, 'Holiday Mystery Box', 'Mystery box', {}, 100_000);
-setCustomItem(13345, 'Tester Gift Box', 'Mystery box', {}, 100_000);
+setCustomItem(13_345, 'Tester Gift Box', 'Mystery box', {}, 100_000);
 setCustomItem(5507, 'Remy', 'Herbi', {}, 1_000_000);
 setCustomItem(3714, 'Shelldon', 'Herbi', {}, 1_000_000);
 setCustomItem(9620, 'Doug', 'Herbi', {}, 1_000_000);
 setCustomItem(9619, 'Lil Lamb', 'Herbi', {}, 1_000_000);
-setCustomItem(10092, 'Zippy', 'Herbi', {}, 1_000_000);
+setCustomItem(10_092, 'Zippy', 'Herbi', {}, 1_000_000);
 setCustomItem(9058, 'Harry', 'Herbi', {}, 1_000_000);
-setCustomItem(10329, 'Wintertoad', 'Herbi', {}, 1_000_000);
+setCustomItem(10_329, 'Wintertoad', 'Herbi', {}, 1_000_000);
 setCustomItem(3469, 'Klik', 'Herbi', {}, 1_000_000);
-setCustomItem(21313, 'Scruffy', 'Herbi', {}, 1_000_000);
+setCustomItem(21_313, 'Scruffy', 'Herbi', {}, 1_000_000);
 setCustomItem(9057, 'Zak', 'Herbi', {}, 1_000_000);
 setCustomItem(8441, 'Hammy', 'Herbi', {}, 1_000_000);
-setCustomItem(12592, 'Divine sigil', 'Elysian sigil', {}, 930_000_000);
+setCustomItem(12_592, 'Divine sigil', 'Elysian sigil', {}, 930_000_000);
 setCustomItem(3454, 'Divine spirit shield', 'Elysian spirit shield', {}, 900_000_000);
 setCustomItem(500, 'Skipper', 'Herbi', {}, 1_000_000);
 
@@ -62,7 +62,7 @@ setCustomItem(476, 'Dwarven pickaxe', 'Dragon pickaxe', {}, 1_000_000);
 // 2x faster smithing and crafting
 setCustomItem(474, 'Dwarven greathammer', 'Dragon warhammer', {}, 1_000_000);
 // 2x faster smelting
-setCustomItem(12594, 'Dwarven gauntlets', 'Cooking gauntlets', {}, 1_000_000);
+setCustomItem(12_594, 'Dwarven gauntlets', 'Cooking gauntlets', {}, 1_000_000);
 
 setCustomItem(478, 'Dwarven knife', 'Bronze knife', {}, 1_000_000);
 // setCustomItem(11923, 'Dwarven tinderbox', ('Tinderbox'));
@@ -70,7 +70,20 @@ setCustomItem(478, 'Dwarven knife', 'Bronze knife', {}, 1_000_000);
 setCustomItem(506, 'Dwarven bar', 'Steel bar', {}, 500_000);
 setCustomItem(508, 'Dwarven ore', 'Iron ore', {}, 100_000);
 
-setCustomItem(6741, 'Dwarven warhammer', 'Dragon warhammer', {}, 10_000_000);
+setCustomItem(
+	6741,
+	'Dwarven warhammer',
+	'Dragon warhammer',
+	{
+		equipment: {
+			...getOSItem('Dragon warhammer').equipment!,
+			requirements: {
+				strength: 99
+			}
+		}
+	},
+	10_000_000
+);
 
 setCustomItem(8871, 'Dwarven crate', 'Mystery box', {}, 100_000);
 
@@ -129,7 +142,7 @@ setCustomItem(8871, 'Dwarven crate', 'Mystery box', {}, 100_000);
 
 // Abyssal Cape || 24214 = Victor's cape (100) [DUPLICATE]
 setCustomItem(
-	24214,
+	24_214,
 	'Abyssal cape',
 	'Infernal cape',
 	{
@@ -160,26 +173,26 @@ setCustomItem(
 );
 
 // Abyssal thread || 24212 = Victor's cape (50) [DUPLICATE]
-setCustomItem(24212, 'Abyssal thread', 'Giant pouch', {}, 10_000_000);
+setCustomItem(24_212, 'Abyssal thread', 'Giant pouch', {}, 10_000_000);
 
 // Abyssal pouch || 24210 = Victor's cape (10) [DUPLICATE]
-setCustomItem(24210, 'Abyssal pouch', 'Giant pouch', {}, 100_000);
+setCustomItem(24_210, 'Abyssal pouch', 'Giant pouch', {}, 100_000);
 
 // Ori Pet || 4149	 = Abyssal demon
-setCustomItem(4149, 'Ori', 'Herbi', {}, 100_000);
+setCustomItem(4149, 'Ori', 'Herbi', {}, 1_000_000);
 
 // Abyssal bones || 24199 = Seren halo [DUPLICATE]
-setCustomItem(24199, 'Abyssal dragon bones', 'Superior dragon bones', {}, 20_000);
+setCustomItem(24_199, 'Abyssal dragon bones', 'Superior dragon bones', {}, 20_000);
 
-setCustomItem(19567, 'Cob', 'Herbi');
+setCustomItem(19_567, 'Cob', 'Herbi', {}, 1_000_000);
 
-setCustomItem(22949, 'Takon', 'Herbi');
+setCustomItem(22_949, 'Takon', 'Herbi', {}, 1_000_000);
 
 setCustomItem(6796, 'Tiny lamp', 'Lamp', {}, 100_000);
-setCustomItem(21642, 'Small lamp', 'Lamp', {}, 300_000);
-setCustomItem(23516, 'Average lamp', 'Lamp', {}, 500_000);
-setCustomItem(22320, 'Large lamp', 'Lamp', {}, 600_000);
-setCustomItem(11157, 'Huge lamp', 'Lamp', {}, 1_000_000);
+setCustomItem(21_642, 'Small lamp', 'Lamp', {}, 300_000);
+setCustomItem(23_516, 'Average lamp', 'Lamp', {}, 500_000);
+setCustomItem(22_320, 'Large lamp', 'Lamp', {}, 600_000);
+setCustomItem(11_157, 'Huge lamp', 'Lamp', {}, 1_000_000);
 
 setCustomItem(1808, 'Peky', 'Herbi', {}, 1_000_000);
 
@@ -196,7 +209,7 @@ setCustomItem(5020, 'Lottery ticket', 'Paramaya ticket');
 setCustomItem(5021, 'Bank lottery ticket', 'Paramaya ticket');
 // setCustomItem(25238, 'Dwarven defender', ('Dragon defender'));
 setCustomItem(
-	19839,
+	19_839,
 	'Dwarven blessing',
 	'Holy blessing',
 	{
@@ -221,18 +234,18 @@ setCustomItem(
 	},
 	50_000_000
 );
-setCustomItem(19837, 'Clue scroll (grandmaster)', 'Clue scroll (easy)');
-setCustomItem(19838, 'Reward casket (grandmaster)', 'Reward casket (master)');
+setCustomItem(19_837, 'Clue scroll (grandmaster)', 'Clue scroll (easy)');
+setCustomItem(19_838, 'Reward casket (grandmaster)', 'Reward casket (master)');
 setCustomItem(516, 'Nuts of monkey', 'Rune platelegs');
 
 /**
  * Nex
  */
 setCustomItem(3741, 'Frozen key', 'Key');
-setCustomItem(11039, 'Key piece 1', 'Key');
-setCustomItem(11040, 'Key piece 2', 'Key');
-setCustomItem(11041, 'Key piece 3', 'Key');
-setCustomItem(11042, 'Key piece 4', 'Key');
+setCustomItem(11_039, 'Key piece 1', 'Key');
+setCustomItem(11_040, 'Key piece 2', 'Key');
+setCustomItem(11_041, 'Key piece 3', 'Key');
+setCustomItem(11_042, 'Key piece 4', 'Key');
 
 setCustomItem(
 	432,
@@ -742,8 +755,8 @@ setCustomItem(
 	50_000_000
 );
 
-setCustomItem(21807, 'Ancient emblem', 'Ancient emblem');
-setCustomItem(11196, 'Bloodsoaked feather', 'Feather');
+setCustomItem(21_807, 'Ancient emblem', 'Ancient emblem');
+setCustomItem(11_196, 'Bloodsoaked feather', 'Feather');
 
 /**
  *
@@ -1162,8 +1175,8 @@ setCustomItem(
 
 setCustomItem(47_517, 'Perfect chitin', 'Magic seed', {}, 1_000_000);
 setCustomItem(47_518, 'Baby kalphite king', 'Herbi', {}, 1_000_000);
-setCustomItem(47_519, 'Hoppy', 'Herbi', {}, 20_000_000);
-setCustomItem(47_520, 'Craig', 'Herbi', {}, 20_000_000);
+setCustomItem(47_519, 'Hoppy', 'Herbi', {}, 1_000_000);
+setCustomItem(47_520, 'Craig', 'Herbi', {}, 1_000_000);
 
 setCustomItem(47_521, 'Beach mystery box', 'Mystery box', {}, 1_000_000);
 setCustomItem(47_522, 'Snappy the Turtle', 'Herbi', {}, 1_000_000);
@@ -1174,7 +1187,7 @@ setCustomItem(47_526, 'Crab hat', 'Coal', {}, 100_000);
 setCustomItem(47_527, 'Steve', 'Herbi', {}, 1_000_000);
 
 setCustomItem(47_528, "Bryophyta's staff(i)", "Bryophyta's staff", {}, 1_000_000);
-setCustomItem(47_529, 'Voidling', 'Herbi', {}, 10_000_000);
+setCustomItem(47_529, 'Voidling', 'Herbi', {}, 1_000_000);
 
 /**
  * -----------------------------------------------------------------------------------------------
@@ -1251,6 +1264,14 @@ setCustomItem(
 setCustomItem(41_085, 'Tattered robes of Vasa', 'Coal', {}, 1_000_000);
 
 /**
+ * Dyed DWWH Items
+ */
+setCustomItem(41_086, 'Dwarven warhammer (ice)', 'Dwarven warhammer', {}, 10_000_000);
+setCustomItem(41_087, 'Dwarven warhammer (shadow)', 'Dwarven warhammer', {}, 10_000_000);
+setCustomItem(41_088, 'Dwarven warhammer (blood)', 'Dwarven warhammer', {}, 10_000_000);
+setCustomItem(41_089, 'Dwarven warhammer (3a)', 'Dwarven warhammer', {}, 10_000_000);
+
+/**
  * START CLUE OUTFIT ---------------------------------------------------------------------------------------------------
  */
 export const globetrotterReqs = {
@@ -1279,7 +1300,7 @@ const globetrotterTicketExamine =
 	'to fade and you fell more confused than ever before. Was this a hint of some sort? What an odd message and ' +
 	'what mysteries does it hold?';
 setCustomItem(
-	41_086,
+	41_090,
 	'Globetrotter headress',
 	'Graceful hood',
 	{
@@ -1291,7 +1312,7 @@ setCustomItem(
 	0
 );
 setCustomItem(
-	41_087,
+	41_091,
 	'Globetrotter top',
 	'Graceful top',
 	{
@@ -1303,7 +1324,7 @@ setCustomItem(
 	0
 );
 setCustomItem(
-	41_088,
+	41_092,
 	'Globetrotter legs',
 	'Graceful legs',
 	{
@@ -1315,7 +1336,7 @@ setCustomItem(
 	0
 );
 setCustomItem(
-	41_089,
+	41_093,
 	'Globetrotter gloves',
 	'Graceful gloves',
 	{
@@ -1327,7 +1348,7 @@ setCustomItem(
 	0
 );
 setCustomItem(
-	41_090,
+	41_094,
 	'Globetrotter boots',
 	'Graceful boots',
 	{
@@ -1339,7 +1360,7 @@ setCustomItem(
 	0
 );
 setCustomItem(
-	41_091,
+	41_095,
 	'Globetrotter backpack',
 	'Graceful cape',
 	{
@@ -1351,7 +1372,7 @@ setCustomItem(
 	0
 );
 setCustomItem(
-	41_092,
+	41_096,
 	'Globetrotter message (beginner)',
 	'Coal',
 	{
@@ -1360,7 +1381,7 @@ setCustomItem(
 	0
 );
 setCustomItem(
-	41_093,
+	41_097,
 	'Globetrotter message (easy)',
 	'Coal',
 	{
@@ -1369,7 +1390,7 @@ setCustomItem(
 	0
 );
 setCustomItem(
-	41_094,
+	41_098,
 	'Globetrotter message (medium)',
 	'Coal',
 	{
@@ -1378,7 +1399,7 @@ setCustomItem(
 	0
 );
 setCustomItem(
-	41_095,
+	41_099,
 	'Globetrotter message (hard)',
 	'Coal',
 	{
@@ -1387,7 +1408,7 @@ setCustomItem(
 	0
 );
 setCustomItem(
-	41_096,
+	41_100,
 	'Globetrotter message (elite)',
 	'Coal',
 	{
@@ -1396,7 +1417,7 @@ setCustomItem(
 	0
 );
 setCustomItem(
-	41_097,
+	41_101,
 	'Globetrotter message (master)',
 	'Coal',
 	{
@@ -1674,7 +1695,148 @@ setCustomItem(48_201, 'Shadow dye', 'Coal', {}, 100_000_000);
 setCustomItem(48_202, 'Ice dye', 'Coal', {}, 100_000_000);
 setCustomItem(48_203, 'Blood dye', 'Coal', {}, 100_000_000);
 setCustomItem(48_204, 'Third age dye', 'Coal', {}, 100_000_000);
+setCustomItem(
+	48_205,
+	'Ignis ring',
+	'Berserker ring',
+	{
+		equipment: {
+			attack_stab: 4,
+			attack_slash: 5,
+			attack_crush: 4,
+			attack_magic: 0,
+			attack_ranged: 0,
 
+			defence_stab: 29,
+			defence_slash: 29,
+			defence_crush: 29,
+			defence_magic: 29,
+			defence_ranged: 32,
+
+			melee_strength: 15,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Ring,
+			requirements: {
+				defence: 105
+			}
+		}
+	},
+	100_000_000
+);
+setCustomItem(
+	48_206,
+	'Ignis ring(i)',
+	'Berserker ring',
+	{
+		equipment: {
+			attack_stab: 9,
+			attack_slash: 7,
+			attack_crush: 8,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 38,
+			defence_slash: 36,
+			defence_crush: 38,
+			defence_magic: 39,
+			defence_ranged: 42,
+
+			melee_strength: 21,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Ring,
+			requirements: {
+				defence: 105
+			}
+		}
+	},
+	100_000_000
+);
+setCustomItem(
+	48_207,
+	'Ignecarus scales',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+
+setCustomItem(
+	48_208,
+	'Ignecarus dragonclaw',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+
+setCustomItem(
+	48_209,
+	"Dragon's fury",
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+
+setCustomItem(
+	48_210,
+	'Dragon egg',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+/**
+ * Independence Box
+ */
+setCustomItem(
+	48_211,
+	'Independence box',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(
+	48_212,
+	'Fireworks',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(
+	48_213,
+	'Liber tea',
+	'Rune sword',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(
+	48_214,
+	"Sam's hat",
+	'Rune full helm',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(48_215, 'Simple kibble', 'Coal', {}, 6000);
+setCustomItem(48_216, 'Delicious kibble', 'Coal', {}, 6000);
+setCustomItem(48_217, 'Extraordinary kibble', 'Coal', {}, 6000);
+setCustomItem(48_218, 'Magic crate', 'Coal', {}, 50_000);
 /**
  * Misc Items
  *
@@ -1704,8 +1866,8 @@ setCustomItem(50_016, 'Master farmer boots', 'Rune boots', {}, 1_000_000);
 
 setCustomItem(50_017, 'Elder logs', 'Magic logs', {}, 19_000);
 setCustomItem(50_018, 'Elder plank', 'Mahogany plank', {}, 10_000);
-setCustomItem(50_019, 'Elder bow(u)', 'Magic logs', {}, 19_000);
-setCustomItem(50_020, 'Elder bow', 'Mahogany plank', {}, 10_000);
+setCustomItem(50_019, 'Elder bow(u)', 'Magic logs', { highalch: 1025 }, 19_000);
+setCustomItem(50_020, 'Elder bow', 'Mahogany plank', { highalch: 2100 }, 10_000);
 setCustomItem(50_021, 'Elder rune', 'Fire rune', {}, 500);
 setCustomItem(50_022, 'Jar of magic', 'Fire rune', {}, 1_000_000);
 setCustomItem(50_023, 'Magus scroll', 'Fire rune', {}, 500_000);
@@ -1720,6 +1882,43 @@ setCustomItem(
 );
 
 setCustomItem(
+	50_025,
+	'Heat res. vial',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+
+setCustomItem(
+	50_026,
+	'Heat res. brew',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(
+	50_027,
+	'Heat res. restore',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(
+	50_028,
+	'Athelas paste',
+	'Fire rune',
+	{
+		highalch: 3000
+	},
+	6000
+);
+setCustomItem(
 	50_035,
 	'Scroll of longevity',
 	'Fire rune',
@@ -1727,4 +1926,64 @@ setCustomItem(
 		highalch: 100_000
 	},
 	100_000
+);
+
+setCustomItem(
+	50_036,
+	'Mango',
+	'Fire rune',
+	{
+		highalch: 1000
+	},
+	1000
+);
+
+setCustomItem(
+	50_037,
+	'Mango seed',
+	'Fire rune',
+	{
+		highalch: 1000
+	},
+	1000
+);
+
+setCustomItem(
+	50_038,
+	'Avocado',
+	'Fire rune',
+	{
+		highalch: 1000
+	},
+	1000
+);
+
+setCustomItem(
+	50_039,
+	'Avocado seed',
+	'Fire rune',
+	{
+		highalch: 1000
+	},
+	1000
+);
+
+setCustomItem(
+	50_040,
+	'Lychee',
+	'Fire rune',
+	{
+		highalch: 1000
+	},
+	1000
+);
+
+setCustomItem(
+	50_041,
+	'Lychee seed',
+	'Fire rune',
+	{
+		highalch: 1000
+	},
+	1000
 );

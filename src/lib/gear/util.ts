@@ -28,6 +28,8 @@ export function resolveGearTypeSetting(type: GearSetupType) {
 			return UserSettings.Gear.Skilling;
 		case 'misc':
 			return UserSettings.Gear.Misc;
+		case 'wildy':
+			return UserSettings.Gear.Wildy;
 	}
 }
 

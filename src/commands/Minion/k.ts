@@ -47,6 +47,11 @@ import {
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import findMonster from '../../lib/util/findMonster';
 import itemID from '../../lib/util/itemID';
+import {
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit
+} from '../../tasks/minions/dungeoneeringActivity';
 
 const validMonsters = killableMonsters.map(mon => mon.name).join('\n');
 const invalidMonsterMsg = (prefix: string) =>
@@ -54,6 +59,12 @@ const invalidMonsterMsg = (prefix: string) =>
 	`\n\nTry: \`${prefix}k --monsters\` for a list of killable monsters.`;
 
 const { floor } = Math;
+
+const gorajanBoosts = [
+	[gorajanArcherOutfit, GearSetupTypes.Range],
+	[gorajanWarriorOutfit, GearSetupTypes.Melee],
+	[gorajanOccultOutfit, GearSetupTypes.Mage]
+] as const;
 
 function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
@@ -119,7 +130,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`You can't kill ${monster.name}, because you're not on a slayer task.`);
 		}
 
-		if (monster.id === 696969) {
+		if (monster.id === 696_969) {
 			throw 'You would be foolish to try to face King Goldemar in a solo fight.';
 		}
 
@@ -169,7 +180,7 @@ export default class extends BotCommand {
 			timeToFinish *= (100 - boostAmount) / 100;
 			boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 		}
-		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven warhammer'))) {
+		if (msg.author.hasItemEquippedAnywhere('Dwarven warhammer')) {
 			timeToFinish *= 0.6;
 			boosts.push('40% boost for Dwarven warhammer');
 		}
@@ -281,6 +292,14 @@ export default class extends BotCommand {
 		if (monster.wildy && hasZealotsAmulet) {
 			timeToFinish *= 0.95;
 			boosts.push('5% for Amulet of zealots');
+		}
+
+		for (const [outfit, setup] of gorajanBoosts) {
+			if (monster.attackStyleToUse?.includes(setup) && msg.author.getGear(setup).hasEquipped(outfit, true)) {
+				boosts.push('10% for gorajan');
+				timeToFinish *= 0.9;
+				break;
+			}
 		}
 
 		// If no quantity provided, set it to the max.
@@ -411,16 +430,17 @@ export default class extends BotCommand {
 					break;
 			}
 
+			if (monster.wildy) gearToCheck = GearSetupTypes.Wildy;
+
 			const [result] = await removeFoodFromUser({
 				client: this.client,
 				user: msg.author,
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
-				attackStylesUsed: removeDuplicatesFromArray([
-					...objectKeys(monster.minimumGearRequirements ?? {}),
-					gearToCheck
-				]),
+				attackStylesUsed: monster.wildy
+					? [GearSetupTypes.Wildy]
+					: removeDuplicatesFromArray([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced
 			});
 

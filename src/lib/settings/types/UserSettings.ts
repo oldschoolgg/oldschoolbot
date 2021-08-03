@@ -10,6 +10,7 @@ import { CompostTier, FarmingContract, FarmingPatchTypes } from '../../minions/f
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
+import { Nursery } from '../../tames';
 import { ItemBank } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
@@ -59,6 +60,7 @@ export namespace UserSettings {
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
 	export const BankBackgroundHex = T<HexColorString | null>('bank_bg_hex');
 	export const CombatOptions = T<readonly CombatOptionsEnum[]>('combat_options');
+	export const FarmingPatchReminders = T<boolean>('farming_patch_reminders');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');
@@ -134,6 +136,7 @@ export namespace UserSettings {
 		export const Mage = T<GearSetup | null>('gear.mage');
 		export const Misc = T<GearSetup | null>('gear.misc');
 		export const Skilling = T<GearSetup | null>('gear.skilling');
+		export const Wildy = T<GearSetup | null>('gear.wildy');
 	}
 
 	export namespace FarmingPatches {
@@ -157,4 +160,10 @@ export namespace UserSettings {
 		export const Mushroom = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Mushroom}`);
 		export const Belladonna = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Belladonna}`);
 	}
+
+	export const Nursery = T<Nursery | null>('nursery');
+	export const SelectedTame = T<number | null>('selected_tame');
+
+	export const GPLuckyPick = T<number>('gp_luckypick');
+	export const GPDice = T<number>('gp_dice');
 }

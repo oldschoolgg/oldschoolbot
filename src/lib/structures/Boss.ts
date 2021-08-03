@@ -6,6 +6,7 @@ import { table } from 'table';
 
 import { Activity } from '../constants';
 import { GearSetupTypes, GearStats } from '../gear';
+import { Ignecarus } from '../minions/data/killableMonsters/custom/Ignecarus';
 import { Skills } from '../types';
 import { NewBossOptions } from '../types/minions';
 import { formatDuration, formatSkillRequirements, updateBankSetting } from '../util';
@@ -107,7 +108,7 @@ interface BossOptions {
 	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
 	gearSetup: GearSetupTypes;
-	itemCost?: (user: KlasaUser) => Promise<Bank>;
+	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
 	food: Bank | ((user: KlasaUser) => Bank);
 	settingsKeys: [string, string];
@@ -119,6 +120,10 @@ interface BossOptions {
 	solo: boolean;
 	canDie: boolean;
 	kcLearningCap?: number;
+	customDeathChance?: (user: KlasaUser, deathChance: number) => number;
+	allowMoreThan1Solo?: boolean;
+	allowMoreThan1Group?: boolean;
+	quantity?: number;
 }
 
 export interface BossUser {
@@ -137,11 +142,15 @@ export class BossInstance {
 	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
 	gearSetup: GearSetupTypes;
-	itemCost?: (user: KlasaUser) => Promise<Bank>;
+	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
 	food: Bank | ((user: KlasaUser) => Bank);
 	bossUsers: BossUser[] = [];
 	duration: number = -1;
+	quantity: number = 1;
+	tempQty: number = NaN;
+	allowMoreThan1Solo: boolean = false;
+	allowMoreThan1Group: boolean = false;
 	totalPercent: number = -1;
 	settingsKeys: [string, string];
 	client: KlasaClient;
@@ -154,6 +163,7 @@ export class BossInstance {
 	solo: boolean;
 	canDie: boolean;
 	kcLearningCap: number;
+	customDeathChance: null | ((user: KlasaUser, deathChance: number) => number);
 
 	constructor(options: BossOptions) {
 		this.baseDuration = options.baseDuration;
@@ -175,13 +185,16 @@ export class BossInstance {
 		this.solo = options.solo;
 		this.canDie = options.canDie;
 		this.kcLearningCap = options.kcLearningCap ?? 250;
-		this.massText = [
-			options.massText,
-			'\n',
-			`**Item Boosts:** ${this.itemBoosts.map(i => `${i[0]}: ${i[1]}%`).join(', ')}`,
-			`**BiS Gear:** ${this.bisGear}`,
-			`**Skill Reqs:** ${formatSkillRequirements(this.skillRequirements)}`
-		].join('\n');
+		this.customDeathChance = options.customDeathChance ?? null;
+		this.allowMoreThan1Solo = options.allowMoreThan1Solo ?? false;
+		this.allowMoreThan1Group = options.allowMoreThan1Group ?? false;
+		this.quantity = options.quantity ?? NaN;
+		let massText = [options.massText, '\n', `**Skill Reqs:** ${formatSkillRequirements(this.skillRequirements)}`];
+		if (this.id !== Ignecarus.id) {
+			massText.push(`**Item Boosts:** ${this.itemBoosts.map(i => `${i[0]}: ${i[1]}%`).join(', ')}`);
+			massText.push(`**BiS Gear:** ${this.bisGear}`);
+		}
+		this.massText = massText.join('\n');
 	}
 
 	async validateTeam() {
@@ -193,6 +206,24 @@ export class BossInstance {
 		}
 	}
 
+	calculateQty(duration: number) {
+		let baseQty = this.tempQty;
+		// Calculate max kill qty
+		let tempQty = 1;
+		const maxTripLength = this.leader.maxTripLength(this.activity);
+		tempQty = Math.max(tempQty, Math.floor(maxTripLength / duration));
+		// This boss doesnt allow more than 1KC at time, limits to 1
+		if (
+			(this.users && this.users.length === 1 && !this.allowMoreThan1Solo) ||
+			(this.users && this.users.length > 1 && !this.allowMoreThan1Group)
+		) {
+			tempQty = 1;
+		}
+		// If the user informed a higher qty than it can kill or is NaN, defaults to max
+		if (isNaN(baseQty) || baseQty > tempQty) return tempQty;
+		return baseQty;
+	}
+
 	async init() {
 		const mass = new Mass({
 			channel: this.channel,
@@ -202,15 +233,25 @@ export class BossInstance {
 			text: this.massText,
 			ironmenAllowed: true,
 			customDenier: async (user: KlasaUser) => {
-				const result = await this.checkUser(user);
-				return result;
+				return this.checkUser(user);
 			}
 		});
+		this.tempQty = this.quantity;
+		// Force qty to 1 for init calculations
+		this.quantity = this.calculateQty(this.baseDuration);
 		this.users = this.solo ? [this.leader] : await mass.init();
 		await this.validateTeam();
 		const { bossUsers, duration, totalPercent } = await this.calculateBossUsers();
+		this.quantity = this.calculateQty(duration);
+		this.duration = duration * this.quantity;
+		// Calculate item usage
+		for (const user of bossUsers) {
+			// Items to remove
+			user.itemsToRemove = await this.calcFoodForUser(user.user, this.users!.length === 1);
+			user.debugStr += ` **Cost**[${user.itemsToRemove}]`;
+		}
+
 		this.bossUsers = bossUsers;
-		this.duration = duration;
 		this.totalPercent = totalPercent;
 	}
 
@@ -243,10 +284,11 @@ export class BossInstance {
 
 	async calcFoodForUser(user: KlasaUser, solo = false) {
 		const kc = user.getKC(this.id);
-		const itemsToRemove = calcFood(solo, kc);
-		const itemCost = this.itemCost && (await this.itemCost(user));
-		if (itemCost) itemsToRemove.add(itemCost);
-		return itemsToRemove;
+		let itemsToRemove = calcFood(solo, kc);
+		if (this.itemCost) {
+			return this.itemCost({ user, kills: this.quantity, baseFood: itemsToRemove });
+		}
+		return itemsToRemove.multiply(this.quantity);
 	}
 
 	async calculateBossUsers() {
@@ -290,10 +332,6 @@ export class BossInstance {
 			userPercentChange += itemBoostsBoostPercent;
 			debugStr.push(`**Boosts**[${itemBoostPercent.toFixed(1)}%]`);
 
-			// Items to remove
-			const itemsToRemove = await this.calcFoodForUser(user, this.users!.length === 1);
-			debugStr.push(`**Cost**[${itemsToRemove}]`);
-
 			// Total
 			debugStr.push(`**Total**[${calcWhatPercent(userPercentChange, totalSpeedReduction).toFixed(2)}%]`);
 
@@ -301,6 +339,7 @@ export class BossInstance {
 			let deathChance = this.canDie
 				? Math.max(0, reduceNumByPercent(55, kcBoostPercent * 2.4 + gearBoostPercent)) + randFloat(4.5, 5.5)
 				: 0;
+			if (this.customDeathChance) deathChance = this.customDeathChance(user, deathChance);
 			debugStr.push(`**Death**[${deathChance.toFixed(2)}%]`);
 
 			// Apply a percentage of maxReduction based on the percent of total boosts.
@@ -310,7 +349,7 @@ export class BossInstance {
 			bossUsers.push({
 				user,
 				userPercentChange,
-				itemsToRemove,
+				itemsToRemove: new Bank(),
 				debugStr: debugStr.join(' '),
 				deathChance
 			});
@@ -332,6 +371,7 @@ export class BossInstance {
 	async start() {
 		await this.init();
 		await this.validateTeam();
+
 		const totalCost = new Bank();
 		for (const { user, itemsToRemove } of this.bossUsers) {
 			await user.removeItemsFromBank(itemsToRemove);
@@ -342,11 +382,11 @@ export class BossInstance {
 		await addSubTaskToActivityTask<NewBossOptions>({
 			userID: this.users![0].id,
 			channelID: this.channel.id,
-			quantity: 1,
+			quantity: this.quantity,
 			duration: this.duration,
 			type: this.activity,
 			users: this.users!.map(u => u.id),
-			bossUsers: this.bossUsers.map(u => ({ ...u, user: u.user.id }))
+			bossUsers: this.bossUsers.map(u => ({ ...u, itemsToRemove: u.itemsToRemove.bank, user: u.user.id }))
 		});
 		return {
 			bossUsers: this.bossUsers

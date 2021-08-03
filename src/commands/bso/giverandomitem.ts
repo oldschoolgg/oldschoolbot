@@ -5,14 +5,14 @@ import { itemNameFromID } from '../../lib/util';
 
 const options = {
 	max: 1,
-	time: 10000,
+	time: 10_000,
 	errors: ['time']
 };
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 30,
+			cooldown: 10,
 			usage: '<user:user>',
 			oneAtTime: true,
 			categoryFlags: ['minion'],

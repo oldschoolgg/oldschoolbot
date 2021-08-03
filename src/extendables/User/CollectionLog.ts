@@ -1,9 +1,10 @@
 import { User } from 'discord.js';
-import { calcWhatPercent, uniqueArr } from 'e';
+import { calcWhatPercent } from 'e';
 import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
-import { collectionLogTypes } from '../../lib/data/collectionLog';
+import { allCLItems, converCLtoBank } from '../../lib/data/Collections';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
 import { addBanks } from '../../lib/util';
@@ -13,13 +14,6 @@ export function shuffleRandom<T>(input: number, arr: T[]): T[] {
 	return shuffle(engine, [...arr]);
 }
 
-const allCollectionLogItems = uniqueArr(
-	collectionLogTypes
-		.filter(i => !['Holiday', 'Diango', 'Overall', 'Capes', 'Clue Hunter'].includes(i.name))
-		.map(i => Object.values(i.items))
-		.flat(Infinity) as number[]
-);
-
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [User] });
@@ -28,15 +22,18 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 	public completion(this: User) {
 		const clItems = Object.keys(this.settings.get(UserSettings.CollectionLogBank)).map(i => parseInt(i));
-		const owned = clItems.filter(i => allCollectionLogItems.includes(i));
+		const debugBank = new Bank();
+		debugBank.add(converCLtoBank(allCLItems));
+		const owned = clItems.filter(i => allCLItems.includes(i));
 		const notOwned = shuffleRandom(
 			Number(this.id),
-			allCollectionLogItems.filter(i => !clItems.includes(i))
+			allCLItems.filter(i => !clItems.includes(i))
 		).slice(0, 10);
 		return {
-			percent: calcWhatPercent(owned.length, allCollectionLogItems.length),
+			percent: calcWhatPercent(owned.length, allCLItems.length),
 			notOwned,
-			owned
+			owned,
+			debugBank
 		};
 	}
 

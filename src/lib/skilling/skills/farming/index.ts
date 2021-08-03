@@ -2,6 +2,7 @@ import { Emoji } from '../../../constants';
 import itemID from '../../../util/itemID';
 import { Plant, SkillsEnum } from '../../types';
 import allotmentPlants from './allotments';
+import { bushes } from './bushes';
 import fruitTrees from './fruitTrees';
 import herbPlants from './herbPlants';
 import hopsPlants from './hops';
@@ -14,7 +15,8 @@ export const plants: Plant[] = [
 	...allotmentPlants,
 	...fruitTrees,
 	...hopsPlants,
-	...specialPlants
+	...specialPlants,
+	...bushes
 ];
 
 const maleFarmerItems: { [key: number]: number } = {
@@ -30,6 +32,19 @@ const femaleFarmerItems: { [key: number]: number } = {
 	[itemID("Farmer's boro trousers")]: 0.6,
 	[itemID("Farmer's boots")]: 0.2
 };
+
+export const allFarmingItems: number[] = [];
+
+for (const plant of plants) {
+	if (plant.outputCrop) allFarmingItems.push(plant.outputCrop);
+	for (const key of Object.keys(plant.inputItems)) {
+		allFarmingItems.push(Number(key));
+	}
+	if (plant.outputLogs) allFarmingItems.push(plant.outputLogs);
+	if (plant.outputRoots) allFarmingItems.push(plant.outputRoots);
+}
+allFarmingItems.push(itemID('Tangleroot'));
+allFarmingItems.push(itemID('Plopper'));
 
 const Farming = {
 	aliases: ['farming'],

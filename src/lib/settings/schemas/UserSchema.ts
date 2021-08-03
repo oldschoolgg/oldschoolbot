@@ -43,7 +43,7 @@ Client.defaultUserSchema
 	.add('item_contract_bank', 'any', { default: {} })
 	.add('ourania_tokens', 'integer', { default: 0 })
 	.add('combat_options', 'integer', { array: true, default: [] })
-
+	.add('farming_patch_reminders', 'boolean', { default: true })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })
@@ -130,6 +130,7 @@ Client.defaultUserSchema
 			.add('range', 'any', { default: null })
 			.add('misc', 'any', { default: null })
 			.add('skilling', 'any', { default: null })
+			.add('wildy', 'any', { default: null })
 	)
 	.add('farmingPatches', (folder: SchemaFolder) =>
 		folder
@@ -152,4 +153,8 @@ Client.defaultUserSchema
 			.add(FarmingPatchTypes.Flower, 'any', { default: null })
 			.add(FarmingPatchTypes.Mushroom, 'any', { default: null })
 			.add(FarmingPatchTypes.Belladonna, 'any', { default: null })
-	);
+	)
+	.add('nursery', 'any', { default: null })
+	.add('selected_tame', 'any', { default: null })
+	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER });

@@ -76,8 +76,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([
-			["Karil's leathertop", 'Armadyl chestplate'],
-			["Karil's leatherskirt", 'Armadyl chainskirt']
+			['Gorajan archer top', 'Pernix body', "Karil's leathertop", 'Armadyl chestplate'],
+			['Gorajan archer legs', 'Pernix chaps', "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		qpRequired: 20,
 		levelRequirements: {
@@ -119,6 +119,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.FossilIslandWyvernAncient,
 		wildy: false,
 
+		notifyDrops: resolveItems(['Wyvern visage']),
+
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
@@ -139,6 +141,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.FossilIslandWyvernLongTailed,
 
 		wildy: false,
+
+		notifyDrops: resolveItems(['Wyvern visage']),
 
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
@@ -161,6 +165,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		wildy: false,
 
+		notifyDrops: resolveItems(['Wyvern visage']),
+
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
 			['Elemental shield', 'Mind shield', 'Dragonfire shield', 'Dragonfire ward', 'Ancient wyvern shield']
@@ -181,6 +187,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		table: Monsters.FossilIslandWyvernTaloned,
 
 		wildy: false,
+
+		notifyDrops: resolveItems(['Wyvern visage']),
 
 		difficultyRating: 4,
 		itemsRequired: deepResolveItems([
@@ -254,6 +262,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			[
+				'Virtus wand',
 				'Trident of the seas',
 				'Trident of the seas (full)',
 				'Uncharged trident',
@@ -333,13 +342,21 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
-			["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow', 'Toxic blowpipe', 'Toxic blowpipe (empty)']
+			[
+				'Zaryte bow',
+				"Karil's crossbow",
+				'Rune crossbow',
+				'Armadyl crossbow',
+				'Toxic blowpipe',
+				'Toxic blowpipe (empty)'
+			]
 		]),
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,
 		itemInBankBoosts: [
 			{
-				[itemID('Ring of the gods')]: 3
+				[itemID('Ring of the gods')]: 3,
+				[itemID('Ring of the gods (i)')]: 5
 			},
 			{
 				[itemID('Toxic blowpipe')]: 15,
@@ -414,7 +431,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 0
+		qpRequired: 0,
+		canBarrage: true
 	},
 	{
 		id: Monsters.Wyrm.id,

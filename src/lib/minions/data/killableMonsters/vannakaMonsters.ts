@@ -4,6 +4,7 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import { GearStat } from '../../../gear';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
+import { makeKillTable } from '../../../util/setCustomMonster';
 import { KillableMonster } from '../../types';
 
 export const vannakaMonsters: KillableMonster[] = [
@@ -561,7 +562,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		],
 		healAmountNeeded: 20 * 12,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged, GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackRanged, GearStat.AttackMagic],
+		customMonsterHP: 900
 	},
 	{
 		id: Monsters.GreaterNechryael.id,
@@ -999,7 +1001,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		name: Monsters.OgressWarrior.name,
 		aliases: Monsters.OgressWarrior.aliases,
 		timeToFinish: Time.Second * 25,
-		table: Monsters.OgressWarrior,
+		table: {
+			kill: makeKillTable(Monsters.OgressWarrior.table!.tertiary(6500, 'Ishi'))
+		},
 
 		wildy: false,
 
@@ -1199,8 +1203,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		existsInCatacombs: true,
 		itemsRequired: deepResolveItems([
-			["Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
-			["Black d'hide chaps", "Karil's leatherskirt", 'Armadyl chainskirt']
+			['Pernix body', "Black d'hide body", "Karil's leathertop", 'Armadyl chestplate'],
+			['Pernix chaps', "Black d'hide chaps", "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		qpRequired: 0,
 		levelRequirements: {

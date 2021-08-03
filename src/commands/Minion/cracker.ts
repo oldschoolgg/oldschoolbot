@@ -59,23 +59,9 @@ export default class extends BotCommand {
 			return msg.channel.send("You don't have any Christmas crackers.");
 		}
 
-		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-			const sellMsg = await msg.channel.send(
-				`${Emoji.ChristmasCracker} Are you sure you want to use your cracker on them? Either person could get the partyhat! Please type \`confirm\` if you understand and wish to use it.`
-			);
-
-			// Confirm the seller wants to sell
-			try {
-				await msg.channel.awaitMessages({
-					max: 1,
-					time: 20000,
-					errors: ['time'],
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-				});
-			} catch (err) {
-				return sellMsg.edit('Cancelling cracker pull.');
-			}
-		}
+		await msg.confirm(
+			`${Emoji.ChristmasCracker} Are you sure you want to use your cracker on them? Either person could get the partyhat! Please confirm if you understand and wish to use it.`
+		);
 
 		await msg.author.removeItemFromBank(itemID('Christmas cracker'), 1);
 		const winnerLoot = HatTable.roll();

@@ -96,6 +96,18 @@ const Crush: Mixable[] = [
 		tickRate: 2,
 		bankTimePerPotion: 0.17,
 		wesley: true
+	},
+	{
+		name: 'Athelas paste',
+		aliases: ['athelas paste', 'athelas'],
+		id: itemID('Athelas paste'),
+		level: 82,
+		xp: 10,
+		inputItems: resolveNameBank({ Athelas: 1 }),
+		tickRate: 2,
+		bankTimePerPotion: 0.17,
+		wesley: false,
+		outputMultiple: 2
 	}
 ];
 

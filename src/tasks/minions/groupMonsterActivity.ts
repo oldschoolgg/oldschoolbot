@@ -21,7 +21,7 @@ export default class extends Task {
 
 		for (let i = 0; i < quantity; i++) {
 			let loot = monster.table.kill(1, {});
-			if (roll(10) && monster.id !== 696969) {
+			if (roll(10) && monster.id !== 696_969) {
 				loot.multiply(4);
 				loot.add(getRandomMysteryBox());
 			}
@@ -55,7 +55,7 @@ export default class extends Task {
 			await user.addItemsToBank(loot, true);
 			totalLoot.add(loot);
 
-			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
+			if (kcToAdd) await user.incrementMonsterScore(monsterID, kcToAdd);
 			const purple = Object.keys(loot).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;

@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Activity } from '../../lib/constants';
 import { globetrotterReqs } from '../../lib/customItems';
@@ -39,16 +40,24 @@ const globetrotterTickets = new Bank({
 	'Globetrotter message (master)': 1
 });
 
-export function alching(user: KlasaUser, tripLength: number, isUsingVoidling: boolean) {
+export function alching({
+	flags,
+	user,
+	tripLength,
+	isUsingVoidling
+}: {
+	flags: Record<string, string>;
+	user: KlasaUser;
+	tripLength: number;
+	isUsingVoidling: boolean;
+}) {
 	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const bank = user.bank();
-	const favAlchables = user.settings
-		.get(UserSettings.FavoriteAlchables)
-		.filter(id => bank.has(id))
-		.map(getOSItem)
-		.filter(i => i.tradeable_on_ge && i.highalch > 0)
-		.sort((a, b) => b.highalch - a.highalch);
+	const favAlchables = user.getUserFavAlchs() as Item[];
 
+	if (!flags.alch) {
+		return null;
+	}
 	if (favAlchables.length === 0) {
 		return null;
 	}
@@ -76,6 +85,8 @@ export function alching(user: KlasaUser, tripLength: number, isUsingVoidling: bo
 	if (!hasInfiniteFireRunes) {
 		bankToRemove.add('Fire rune', maxCasts * 5);
 	}
+
+	if (maxCasts === 0 || bankToRemove.length === 0) return null;
 
 	return {
 		maxCasts,
@@ -205,18 +216,22 @@ export default class extends BotCommand {
 
 		let alchResult = null;
 		if (!challengeMode) {
-			alchResult = alching(msg.author, duration, true);
-			if (alchResult !== null && course.name === 'Ape Atoll Agility Course') {
-				if (!msg.author.owns(alchResult.bankToRemove)) {
-					return msg.channel.send(`You don't own ${alchResult.bankToRemove}.`);
+			if(course.name !== 'Ape Atoll Agility Course') {
+				alchResult = alching({
+					user: msg.author,
+					flags: msg.flagArgs,
+					tripLength: duration,
+					isUsingVoidling: msg.author.usingPet('Voidling')
+				});
+				if (alchResult !== null) {
+					if (!msg.author.owns(alchResult.bankToRemove)) {
+						return msg.channel.send(`You don't own ${alchResult.bankToRemove}.`);
+					}
+
+					itemsToRemove.add(alchResult.bankToRemove);
+					response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
+					updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
 				}
-				itemsToRemove.add(alchResult.bankToRemove.bank);
-				response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
-				await updateBankSetting(
-					this.client,
-					ClientSettings.EconomyStats.MagicCostBank,
-					alchResult.bankToRemove
-				);
 			}
 		} else {
 			response +=

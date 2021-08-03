@@ -20,12 +20,14 @@ export default class extends Extendable {
 		const misc = this.getGear('misc');
 		const mage = this.getGear('mage');
 		const skilling = this.getGear('skilling');
+		const wildy = this.getGear('wildy');
 		return {
 			melee,
 			range,
 			misc,
 			skilling,
-			mage
+			mage,
+			wildy
 		};
 	}
 
@@ -51,7 +53,7 @@ export default class extends Extendable {
 		return this.settings.get(UserSettings.Minion.EquippedPet);
 	}
 
-	public getGear(this: User, setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling'): GearSetup {
+	public getGear(this: User, setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling' | 'wildy'): GearSetup {
 		return new Gear(this.settings.get(resolveGearTypeSetting(setup)) ?? defaultGear);
 	}
 }

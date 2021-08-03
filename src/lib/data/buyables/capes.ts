@@ -1,7 +1,9 @@
 import { Bank } from 'oldschooljs';
 
+import { LEVEL_99_XP } from '../../constants';
 import { diaries, userhasDiaryTier } from '../../diaries';
 import { SkillsEnum } from '../../skilling/types';
+import { resolveNameBank } from '../../util';
 import { Buyable } from './buyables';
 
 export const capeBuyables: Buyable[] = [
@@ -31,7 +33,7 @@ export const capeBuyables: Buyable[] = [
 		}),
 		gpCost: 150_000_000,
 		customReq: async user => {
-			if (user.totalLevel() < 2277) {
+			if (Object.values(user.rawSkills).filter(s => s < LEVEL_99_XP).length > 0) {
 				return [false, "You can't buy this because you aren't maxed!"];
 			}
 			return [true];
@@ -148,5 +150,13 @@ export const capeBuyables: Buyable[] = [
 			}
 			return [true];
 		}
+	},
+	{
+		name: 'Master quest cape',
+		outputItems: resolveNameBank({
+			'Master quest cape': 1
+		}),
+		gpCost: 1_000_000_000,
+		qpRequired: 5000
 	}
 ];

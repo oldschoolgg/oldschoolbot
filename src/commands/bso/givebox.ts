@@ -18,7 +18,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [user]: [KlasaUser]) {
-		if (user.id === msg.author.id) throw "You can't give boxes to yourself!";
+		if (user.id === msg.author.id) {
+			return msg.channel.send("You can't give boxes to yourself!");
+		}
 		if (user.isIronman) return;
 		const currentDate = Date.now();
 		const lastDate = msg.author.settings.get(UserSettings.LastGivenBox);
@@ -35,7 +37,7 @@ export default class extends BotCommand {
 		await user.addItemsToBank({ [box]: 1 });
 
 		return msg.channel.send(
-			`Gave ${[19939].includes(box) ? 'an' : 'a'} **${getOSItem(box).name}** to ${user.username}.`
+			`Gave ${[19_939].includes(box) ? 'an' : 'a'} **${getOSItem(box).name}** to ${user.username}.`
 		);
 	}
 }

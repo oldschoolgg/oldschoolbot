@@ -1,5 +1,7 @@
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
+import { Kibble } from '../../commands/bso/kibble';
 import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
@@ -14,6 +16,11 @@ export interface ActivityTaskOptions {
 	id: string;
 	finishDate: number;
 	channelID: string;
+}
+
+export interface KibbleOptions extends ActivityTaskOptions {
+	quantity: number;
+	kibbleType: Kibble['type'];
 }
 
 export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
@@ -64,6 +71,13 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	burstOrBarrage?: number;
 }
 
+export interface RevenantOptions extends ActivityTaskOptions {
+	monsterID: number;
+	quantity: number;
+	died: boolean;
+	skulled: boolean;
+	style: 'melee' | 'range' | 'mage';
+}
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	clueID: number;
 	quantity: number;
@@ -219,8 +233,9 @@ export interface BossActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-interface StoredBossUser extends Omit<BossUser, 'user'> {
+interface StoredBossUser extends Omit<BossUser, 'user' | 'itemsToRemove'> {
 	user: string;
+	itemsToRemove: ItemBank;
 }
 
 export interface NewBossOptions extends ActivityTaskOptions {
@@ -231,6 +246,11 @@ export interface NewBossOptions extends ActivityTaskOptions {
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
+}
+
+export interface TemporossActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+	rewardBoost: number;
 }
 
 export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOptions {}
@@ -347,4 +367,5 @@ export type ActivityTaskData =
 	| HerbloreActivityTaskOptions
 	| FletchingActivityTaskOptions
 	| RunecraftActivityTaskOptions
-	| TempleTrekkingActivityTaskOptions;
+	| TempleTrekkingActivityTaskOptions
+	| TemporossActivityTaskOptions;

@@ -7,7 +7,7 @@ import { toKMB } from 'oldschooljs/dist/util';
 
 import { alching } from '../../commands/Minion/laps';
 import MinionCommand from '../../commands/Minion/minion';
-import { Activity, BitField, COINS_ID, Emoji, PerkTier } from '../constants';
+import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { getRandomMysteryBox } from '../data/openables';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
@@ -106,6 +106,7 @@ export async function handleTripFinish(
 
 		message += `\nDoug did some mining while you were on your trip and got you: ${bonusLoot}.`;
 	}
+
 	if (bonusLoot.length > 0) {
 		if (bonusLoot.has('Coins')) {
 			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourcePet, bonusLoot.amount('Coins'));
@@ -131,7 +132,7 @@ export async function handleTripFinish(
 	}
 
 	if (user.usingPet('Voidling')) {
-		const alchResult = alching(user, data.duration, true);
+		const alchResult = alching({ user, tripLength: data.duration, isUsingVoidling: true, flags: { alch: 'yes' } });
 		if (alchResult !== null) {
 			if (!user.owns(alchResult.bankToRemove)) {
 				message += `\Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`;
@@ -181,6 +182,10 @@ export async function handleTripFinish(
 		collectors.delete(user.id);
 	}
 
+	if (onContinue) {
+		lastTripCache.set(user.id, { data, continue: onContinue });
+	}
+
 	if (!channelIsSendable(channel)) return;
 	const collector = new MessageCollector(channel, {
 		filter: (mes: Message) =>
@@ -208,7 +213,7 @@ export async function handleTripFinish(
 				});
 			}
 		} catch (err) {
-			console.log(err);
+			console.log({ err });
 			channel.send(err);
 		} finally {
 			setTimeout(() => client.oneCommandAtATimeCache.delete(mes.author.id), 300);

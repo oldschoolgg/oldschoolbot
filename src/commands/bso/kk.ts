@@ -3,11 +3,11 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
+import { torvaOutfit } from '../../lib/data/CollectionsExport';
 import { KalphiteKingMonster } from '../../lib/kalphiteking';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../lib/minions/types';
-import { torvaOutfit } from '../../lib/nex';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';

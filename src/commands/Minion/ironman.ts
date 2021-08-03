@@ -1,11 +1,14 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { getNewUser } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
+import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
+import { TamesTable } from '../../lib/typeorm/TamesTable.entity';
 import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
 
 export default class extends BotCommand {
@@ -52,7 +55,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		try {
 			await msg.channel.awaitMessages({
 				max: 1,
-				time: 15000,
+				time: 15_000,
 				errors: ['time'],
 				filter: answer => answer.author.id === msg.author.id && answer.content === 'confirm permanent ironman'
 			});
@@ -68,6 +71,8 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 				await MinigameTable.delete({ userID: msg.author.id });
 				await ActivityTable.delete({ userID: msg.author.id });
 				await XPGainsTable.delete({ userID: msg.author.id });
+				await TamesTable.delete({ userID: msg.author.id });
+				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
 			} catch (_) {}
 
 			await msg.author.settings.update([

@@ -1,8 +1,7 @@
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
-import { MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
+import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
-import {} from 'node:process';
 import { Bank, Player } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { CommentStream, SubmissionStream } from 'snoostorm';
@@ -12,6 +11,7 @@ import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BankImageResult } from '../../tasks/bankImage';
 import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
+import { GearSetup } from '../gear';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
 import { AddXpParams, KillableMonster } from '../minions/types';
@@ -30,6 +30,7 @@ type SendBankImageFn = (options: {
 	flags?: Record<string, string | number>;
 	user?: KlasaUser;
 	cl?: ItemBank;
+	gearPlaceholder?: Record<GearSetupType, GearSetup>;
 }) => Promise<KlasaMessage>;
 
 declare module 'klasa' {
@@ -49,6 +50,7 @@ declare module 'klasa' {
 		submissionStream?: SubmissionStream;
 		fastifyServer: FastifyInstance;
 		minionTicker: NodeJS.Timeout;
+		tameTicker: NodeJS.Timeout;
 		dailyReminderTicker: NodeJS.Timeout;
 		giveawayTicker: NodeJS.Timeout;
 		analyticsInterval: NodeJS.Timeout;
@@ -76,8 +78,13 @@ declare module 'klasa' {
 			user?: KlasaUser,
 			cl?: ItemBank
 		): Promise<BankImageResult>;
-		generateCollectionLogImage(collectionLog: ItemBank, title: string = '', type: any): Promise<Buffer>;
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
+		generateLogImage(options: {
+			user: KlasaUser;
+			collection: string;
+			type: 'collection' | 'sacrifice' | 'bank';
+			flags: { [key: string]: string | number };
+		}): Promise<MessageOptions | MessageAttachment>;
 	}
 	interface Command {
 		kill(message: KlasaMessage, [quantity, monster]: [number | string, string]): Promise<any>;
@@ -225,6 +232,7 @@ declare module 'discord.js' {
 		queueFn(fn: (user: KlasaUser) => Promise<T>): Promise<T>;
 		bank(options?: GetUserBankOptions): Bank;
 		getPOH(): Promise<PoHTable>;
+		getUserFavAlchs(): Item[];
 		getGear(gearType: GearSetupType): Gear;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
 		getAttackStyles(): AttackStyles[];
@@ -233,6 +241,7 @@ declare module 'discord.js' {
 			percent: number;
 			notOwned: number[];
 			owned: number[];
+			debugBank: Bank;
 		};
 
 		/**

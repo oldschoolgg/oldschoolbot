@@ -14,7 +14,7 @@ import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, bankHasItem, channelIsSendable, multiplyBank, rand, roll } from '../../lib/util';
+import { addItemToBank, bankHasItem, multiplyBank, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
@@ -60,6 +60,8 @@ export default class extends Task {
 		let bonusXpMultiplier = 0;
 		let farmersPiecesCheck = 0;
 		let loot: ItemBank = {};
+
+		const hasPlopper = user.allItemsOwned().has('Plopper');
 
 		const plant = Farming.Plants.find(plant => plant.name === plantsName);
 		const userBank = user.settings.get(UserSettings.Bank);
@@ -149,9 +151,7 @@ export default class extends Task {
 				str += `\n${user.minionName}'s Farming level is now ${newLevel}!`;
 			}
 
-			if (user.usingPet('Plopper')) {
-				loot = multiplyBank(loot, 4);
-			}
+			if (hasPlopper) loot = multiplyBank(loot, 4);
 
 			// This code gives the boxes for planing when ONLY planting.
 			if (plant.name === 'Mysterious tree') {
@@ -161,6 +161,10 @@ export default class extends Task {
 						loot = addItemToBank(loot, getRandomMysteryBox());
 					}
 				}
+			}
+
+			if (loot[itemID('Plopper')]) {
+				loot[itemID('Plopper')] = 1;
 			}
 
 			if (Object.keys(loot).length > 0) {
@@ -185,9 +189,7 @@ export default class extends Task {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			if (user.usingPet('Plopper')) {
-				str += '\nYou received 4x loot from Plopper';
-			}
+			if (hasPlopper) str += '\nYou received 4x loot from Plopper';
 
 			handleTripFinish(
 				this.client,
@@ -210,7 +212,7 @@ export default class extends Task {
 			if (!plant) return;
 
 			let quantityDead = 0;
-			if (!user.usingPet('Plopper')) {
+			if (!hasPlopper) {
 				for (let i = 0; i < patchType.lastQuantity; i++) {
 					for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
 						const deathRoll = Math.random();
@@ -385,11 +387,7 @@ export default class extends Task {
 					farmingLevel: currentFarmingLevel
 				});
 				loot = hesporiLoot.bank;
-				for (const hesporiLoot of Object.keys(loot)) {
-					if (itemID(hesporiLoot) === itemID('Tangleroot')) {
-						tangleroot = true;
-					}
-				}
+				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;
 				if (roll((plantToHarvest.petChance - currentFarmingLevel * 25) / patchType.lastQuantity / 5)) {
 					loot[itemID('Plopper')] = 1;
 				}
@@ -484,8 +482,10 @@ export default class extends Task {
 				);
 			}
 
-			if (user.equippedPet() === itemID('Plopper')) {
-				loot = multiplyBank(loot, 4);
+			if (hasPlopper) loot = multiplyBank(loot, 4);
+
+			if (loot[itemID('Plopper')]) {
+				loot[itemID('Plopper')] = 1;
 			}
 
 			if (duration > Time.Minute * 20 && user.hasItemEquippedAnywhere(itemID('Farming master cape'))) {
@@ -519,24 +519,9 @@ export default class extends Task {
 				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(loot).bank
 			);
 			await user.addItemsToBank(loot, true);
-			const channel = this.client.channels.cache.get(channelID);
-			if (!channelIsSendable(channel)) return;
 
-			if (user.usingPet('Plopper')) {
-				infoStr.push('\nYou received 4x loot from Plopper');
-			}
-			if (janeMessage) {
-				return channel.send({
-					embeds: [
-						await chatHeadImage({
-							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
-								contractsCompleted + 1
-							} farming contracts.`,
-							head: 'jane'
-						})
-					]
-				});
-			}
+			if (hasPlopper) infoStr.push('\nYou received 4x loot from Plopper');
+
 			handleTripFinish(
 				this.client,
 				user,
@@ -548,7 +533,14 @@ export default class extends Task {
 							return this.client.commands.get('autofarm')!.run(res, []);
 					  }
 					: undefined,
-				undefined,
+				janeMessage
+					? await chatHeadImage({
+							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+								contractsCompleted + 1
+							} farming contracts.`,
+							head: 'jane'
+					  })
+					: undefined,
 				data,
 				null
 			);

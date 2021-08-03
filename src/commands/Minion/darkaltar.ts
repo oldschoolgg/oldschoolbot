@@ -47,14 +47,14 @@ export default class extends BotCommand {
 			description: 'Sends your minion to runecraft at the dark altar.',
 			examples: ['+darkaltar soul', 'darkaltar blood'],
 			categoryFlags: ['skilling', 'minion'],
-			usage: '[blood|soul]',
+			usage: '[name:...string]',
 			aliases: ['da']
 		});
 	}
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage, [rune = 'blood']: ['soul' | 'blood']) {
+	async run(msg: KlasaMessage, [name = 'blood']: [string]) {
 		const [hasSkillReqs, neededReqs] = msg.author.hasSkillReqs(skillReqs);
 		if (!hasSkillReqs) {
 			return msg.channel.send(
@@ -62,6 +62,7 @@ export default class extends BotCommand {
 			);
 		}
 
+		const rune = name.toLowerCase().includes('soul') ? 'soul' : 'blood';
 		const runeData = darkAltarRunes[rune];
 
 		if (msg.author.skillLevel(SkillsEnum.Runecraft) < runeData.level) {

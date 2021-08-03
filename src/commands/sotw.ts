@@ -1,21 +1,19 @@
 import { MessageEmbed } from 'discord.js';
 import { KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../../lib/structures/BotCommand';
+import { BotCommand } from '../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
-		if (1 > 0) {
-			return msg.channel.send('There is currently no SOTW running.');
-		}
 		const res = await this.client.orm.query(
-			`SELECT "new_user".username, sum(xp) as total_xp
+			`SELECT sum(xp) as total_xp, u."minion.ironman" as ironman, u.id
 FROM xp_gains
-INNER JOIN "new_users" "new_user" ON xp_gains.user_id = "new_user"."id"
-WHERE date > ('2021-06-05 07:00:00'::timestamp)
-AND date < ('2021-06-12 07:00:00'::timestamp)
-AND skill = 'construction'
-GROUP BY "new_user".username
+INNER JOIN "users" "u" ON xp_gains.user_id = "u"."id"
+WHERE date > ('2021-07-10 07:00:00'::timestamp)
+AND date < ('2021-07-17 07:00:00'::timestamp)
+AND skill = 'mining'
+${msg.flagArgs.im ? 'AND u."minion.ironman" = true' : ''}
+GROUP BY "u".id
 ORDER BY total_xp DESC
 LIMIT 15;`
 		);
@@ -24,11 +22,12 @@ LIMIT 15;`
 			return msg.channel.send('No results found.');
 		}
 
-		const embed = new MessageEmbed().setTitle('#1 BSO SOTW - Construction').setDescription(
+		const embed = new MessageEmbed().setTitle('#2 SOTW - Mining').setDescription(
 			res
 				.map((i: any, index: number) => {
 					const pos = index + 1;
-					let username = `${pos}. ${i.username ?? 'Unknown'}`;
+					// @ts-ignore 2339
+					let username = `${pos}. ${this.client.commands.get('leaderboard')!.getUsername(i.id)}`;
 					if (pos < 3) username = `**${username}**`;
 					return ` ${username} ${Number(i.total_xp).toLocaleString()} XP`;
 				})

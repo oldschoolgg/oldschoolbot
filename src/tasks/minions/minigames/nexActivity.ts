@@ -4,16 +4,18 @@ import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { production } from '../../../config';
-import { Emoji } from '../../../lib/constants';
+import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
+import { nexCL, nexUniqueDrops } from '../../../lib/data/CollectionsExport';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { allNexItems, NexMonster } from '../../../lib/nex';
+import { NexMonster } from '../../../lib/nex';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, channelIsSendable, noOp, randomItemFromArray, roll, updateBankSetting } from '../../../lib/util';
+import { addBanks, noOp, randomItemFromArray, roll, updateBankSetting } from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 interface NexUser {
@@ -23,7 +25,8 @@ interface NexUser {
 }
 
 export default class extends Task {
-	async run({ channelID, userID, users, quantity, duration }: BossActivityTaskOptions) {
+	async run(data: BossActivityTaskOptions) {
+		const { channelID, userID, users, quantity, duration } = data;
 		const teamsLoot: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
@@ -62,7 +65,10 @@ export default class extends Task {
 			const loot = new Bank();
 			loot.add(NexMonster.table.kill(1, {}));
 			if (roll(80 + users.length * 2)) {
-				loot.add(randomItemFromArray(allNexItems), 1);
+				loot.add(randomItemFromArray(nexUniqueDrops), 1);
+			}
+			if (DOUBLE_LOOT_ACTIVE) {
+				loot.multiply(2);
 			}
 			const winner = teamTable.roll()?.item;
 			if (!winner) continue;
@@ -77,12 +83,17 @@ export default class extends Task {
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NexMonster.name}!\n\n`;
 		const totalLoot = new Bank();
 
+		let soloXP = '';
+		let soloPrevCl: ItemBank = {};
+		let soloItemsAdded: ItemBank = {};
+
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.users.fetch(userID).catch(noOp);
 			if (!user) continue;
+			let xpStr = '';
 			if (kcAmounts[user.id]) {
-				await addMonsterXP(user, {
-					monsterID: 46274,
+				xpStr = await addMonsterXP(user, {
+					monsterID: 46_274,
 					quantity: Math.ceil(quantity / users.length),
 					duration,
 					isOnTask: false,
@@ -90,10 +101,17 @@ export default class extends Task {
 				});
 			}
 			totalLoot.add(loot);
-			await user.addItemsToBank(loot, true);
+			const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+
+			if (user.id === userID) {
+				soloXP = xpStr;
+				soloPrevCl = previousCL;
+				soloItemsAdded = itemsAdded;
+			}
+
 			const kcToAdd = kcAmounts[user.id];
-			if (kcToAdd) user.incrementMonsterScore(NexMonster.id, kcToAdd);
-			const purple = Object.keys(loot).some(id => allNexItems.includes(parseInt(id)));
+			if (kcToAdd) await user.incrementMonsterScore(NexMonster.id, kcToAdd);
+			const purple = Object.keys(loot).some(id => nexCL.includes(parseInt(id)));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
 
@@ -131,27 +149,39 @@ export default class extends Task {
 				sendToChannelID(this.client, channelID, { content: resultStr + debug });
 			}
 		} else {
-			const channel = this.client.channels.cache.get(channelID);
-			if (!channelIsSendable(channel)) return;
-
-			if (!kcAmounts[userID]) {
-				sendToChannelID(this.client, channelID, {
-					content: `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill Nex, they apologize and promise to try harder next time.`
-				});
-			} else {
-				channel.sendBankImage({
-					bank: teamsLoot[userID],
-					content: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
-						NexMonster.name
-					}, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${
-						(leaderUser.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) + quantity
-					}.`,
-					title: `${quantity}x Nex`,
-					background: leaderUser.settings.get(UserSettings.BankBackground),
-					user: leaderUser,
-					flags: { showNewCL: 1 }
-				});
-			}
+			const image = !kcAmounts[userID]
+				? undefined
+				: (
+						await this.client.tasks
+							.get('bankImage')!
+							.generateBankImage(
+								soloItemsAdded,
+								`Loot From ${quantity} ${NexMonster.name}:`,
+								true,
+								{ showNewCL: 1 },
+								leaderUser,
+								soloPrevCl
+							)
+				  ).image;
+			handleTripFinish(
+				this.client,
+				leaderUser,
+				channelID,
+				!kcAmounts[userID]
+					? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill Nex, they apologize and promise to try harder next time.`
+					: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
+							NexMonster.name
+					  }, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${
+							leaderUser.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0
+					  }.\n\n${soloXP}`,
+				res => {
+					leaderUser.log('continued nex');
+					return this.client.commands.get('nex')!.run(res, ['solo']);
+				},
+				image!,
+				data,
+				soloItemsAdded
+			);
 		}
 	}
 }

@@ -3,7 +3,7 @@ import { randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { lumberjackOutfit } from '../../../lib/data/collectionLog';
+import { templeTrekkingOutfit } from '../../../lib/data/CollectionsExport';
 import {
 	EasyEncounterLoot,
 	HardEncounterLoot,
@@ -20,7 +20,7 @@ export default class extends Task {
 		let lowestCountPiece = 0;
 		let lowestCountAmount = -1;
 
-		for (const piece of lumberjackOutfit) {
+		for (const piece of templeTrekkingOutfit) {
 			let amount = bank.amount(piece);
 
 			for (const setup of Object.values(user.rawGear())) {
@@ -81,9 +81,17 @@ export default class extends Task {
 			loot.add(rewardToken.id);
 		}
 
+		if (user.usingPet('Flappy')) {
+			loot.multiply(2);
+		}
+
 		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
-		let str = `${user}, ${user.minionName} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated.`;
+		let str = `${user}, ${
+			user.minionName
+		} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated. ${
+			user.usingPet('Flappy') ? ' <:flappy:812280578195456002>' : ''
+		}`;
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!

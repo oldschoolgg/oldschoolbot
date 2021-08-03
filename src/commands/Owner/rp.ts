@@ -1,6 +1,6 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 
 import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
@@ -10,10 +10,24 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
-import { cleanString, formatDuration, itemNameFromID } from '../../lib/util';
+import { cleanString, formatDuration, getSupportGuild, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
+
+export const emoji = (client: KlasaClient) => getSupportGuild(client).emojis.cache.random().toString();
+
+const statusMap = {
+	'0': '🟢 Ready',
+	'1': '🟠 Connecting',
+	'2': '🟠 Reconnecting',
+	'3': 'Idle',
+	'4': 'Nearly',
+	'5': '🔴 Disconnected',
+	'6': 'Waiting For Guilds',
+	'7': '🟠 Identifying',
+	'8': '🟠 Resuming'
+};
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -86,6 +100,21 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
+			case 'status': {
+				let counter: Record<string, number> = {};
+				for (const key of Object.keys(statusMap)) {
+					counter[key] = 0;
+				}
+				for (const shard of this.client.ws.shards.values()) {
+					counter[shard.status]++;
+				}
+
+				let status = Object.entries(counter)
+					.filter(ent => ent[1] !== 0)
+					.map(ent => `${statusMap[ent[0] as keyof typeof statusMap]}: ${ent[1]}`)
+					.join('\n');
+				return msg.channel.send(status);
+			}
 			case 'bypassage': {
 				if (!input || !(input instanceof KlasaUser)) return;
 				await input.settings.sync(true);
@@ -154,8 +183,13 @@ ${
 			}
 			case 'roles': {
 				msg.channel.send('Running roles task...');
-				const result = await this.client.tasks.get('roles')?.run();
-				return msg.channel.send(result as string);
+				try {
+					const result = await this.client.tasks.get('roles')?.run();
+					return msg.channel.send(result as string);
+				} catch (err) {
+					console.error(err);
+					return msg.channel.send(`Failed to run roles task. ${err.message}`);
+				}
 			}
 			case 'canceltask': {
 				if (!input || !(input instanceof KlasaUser)) return;
@@ -309,6 +343,21 @@ LIMIT 10;
 			case 'bank': {
 				if (!input || !(input instanceof KlasaUser)) return;
 				return msg.channel.sendBankImage({ bank: input.allItemsOwned().bank });
+			}
+			case 'disable': {
+				if (!input || input instanceof KlasaUser) return;
+				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
+				if (!command) return msg.channel.send("That's not a valid command.");
+				command.disable();
+				return msg.channel.send(`${emoji(this.client)} Disabled \`+${command}\`.`);
+			}
+			case 'enable': {
+				if (!input || input instanceof KlasaUser) return;
+				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
+				if (!command) return msg.channel.send("That's not a valid command.");
+				if (command.enabled) return msg.channel.send('That command is already enabled.');
+				command.enable();
+				return msg.channel.send(`${emoji(this.client)} Enabled \`+${command}\`.`);
 			}
 		}
 

@@ -93,10 +93,10 @@ export const AbyssalDragonLootTable = new LootTable()
 	.tertiary(100, 'Lump of crystal')
 	.tertiary(140, 'Clue scroll (grandmaster)');
 
-setCustomMonster(707070, 'Malygos', AbyssalDragonLootTable, Monsters.Vorkath, {
-	id: 707070,
+setCustomMonster(707_070, 'Malygos', AbyssalDragonLootTable, Monsters.Vorkath, {
+	id: 707_070,
 	name: 'Malygos',
-	aliases: ['abyssal dragon', 'abyss drag', 'mally']
+	aliases: ['abyssal dragon', 'abyss drag', 'mally', 'malygos']
 });
 
 const AbyssalDragon = Monsters.find(mon => mon.name === 'Malygos')!;

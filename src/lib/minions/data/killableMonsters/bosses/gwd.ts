@@ -1,7 +1,12 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { bosses } from '../../../../data/collectionLog';
+import {
+	commanderZilyanaCL,
+	generalGraardorCL,
+	kreeArraCL,
+	krilTsutsarothCL
+} from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
@@ -32,7 +37,7 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43,
 			strength: 70
 		},
-		uniques: [...resolveItems(['Rune sword']), ...bosses.Bandos, ...bosses.Shards],
+		uniques: [...resolveItems(['Rune sword']), ...generalGraardorCL],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 656,
 		combatXpMultiplier: 1.126,
@@ -67,10 +72,10 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43,
 			agility: 70
 		},
-		uniques: [...bosses.Saradomin, ...bosses.Shards],
+		uniques: commanderZilyanaCL,
 		itemsRequired: deepResolveItems([
-			["Karil's leathertop", 'Armadyl chestplate'],
-			["Karil's leatherskirt", 'Armadyl chainskirt']
+			['Pernix body', "Karil's leathertop", 'Armadyl chestplate'],
+			['Pernix chaps', "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		customMonsterHP: 723,
@@ -102,10 +107,10 @@ const killableBosses: KillableMonster[] = [
 			prayer: 40,
 			ranged: 70
 		},
-		uniques: [...bosses.Arma, ...bosses.Shards],
+		uniques: kreeArraCL,
 		itemsRequired: deepResolveItems([
-			["Karil's leathertop", 'Armadyl chestplate'],
-			["Karil's leatherskirt", 'Armadyl chainskirt']
+			['Pernix body', "Karil's leathertop", 'Armadyl chestplate'],
+			['Pernix chaps', "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
@@ -142,10 +147,10 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43,
 			hitpoints: 70
 		},
-		uniques: [...bosses.Zammy, ...bosses.Shards],
+		uniques: krilTsutsarothCL,
 		itemsRequired: deepResolveItems([
-			["Karil's leathertop", 'Armadyl chestplate'],
-			["Karil's leatherskirt", 'Armadyl chainskirt']
+			['Pernix body', "Karil's leathertop", 'Armadyl chestplate'],
+			['Pernix chaps', "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 708,

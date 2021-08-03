@@ -1,7 +1,8 @@
+import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import crypto from 'crypto';
-import { Channel, Client, DMChannel, Guild, TextChannel } from 'discord.js';
+import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
 import { objectEntries, randInt, shuffleArr, Time } from 'e';
-import { KlasaClient, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
+import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -11,6 +12,7 @@ import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportSer
 import { GearSetupTypes } from './gear/types';
 import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
+import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 
@@ -48,11 +50,11 @@ export function cleanMentions(guild: Guild | null, input: string, showAt = true)
 }
 
 export function generateHexColorForCashStack(coins: number) {
-	if (coins > 9999999) {
+	if (coins > 9_999_999) {
 		return '#00FF80';
 	}
 
-	if (coins > 99999) {
+	if (coins > 99_999) {
 		return '#FFFFFF';
 	}
 
@@ -60,9 +62,9 @@ export function generateHexColorForCashStack(coins: number) {
 }
 
 export function formatItemStackQuantity(quantity: number) {
-	if (quantity > 9999999) {
-		return `${Math.floor(quantity / 1000000)}M`;
-	} else if (quantity > 99999) {
+	if (quantity > 9_999_999) {
+		return `${Math.floor(quantity / 1_000_000)}M`;
+	} else if (quantity > 99_999) {
 		return `${Math.floor(quantity / 1000)}K`;
 	}
 	return quantity.toString();
@@ -106,9 +108,9 @@ export function bankToString(bank: ItemBank, chunkSize?: number) {
 export function formatDuration(ms: number) {
 	if (ms < 0) ms = -ms;
 	const time = {
-		day: Math.floor(ms / 86400000),
-		hour: Math.floor(ms / 3600000) % 24,
-		minute: Math.floor(ms / 60000) % 60,
+		day: Math.floor(ms / 86_400_000),
+		hour: Math.floor(ms / 3_600_000) % 24,
+		minute: Math.floor(ms / 60_000) % 60,
 		second: Math.floor(ms / 1000) % 60
 	};
 	let nums = Object.entries(time).filter(val => val[1] !== 0);
@@ -315,7 +317,7 @@ export function generateContinuationChar(user: KlasaUser) {
 }
 
 export function isValidGearSetup(str: string): str is GearSetupTypes {
-	return ['melee', 'mage', 'range', 'skilling', 'misc'].includes(str);
+	return ['melee', 'mage', 'range', 'skilling', 'misc', 'wildy'].includes(str);
 }
 
 /**
@@ -499,7 +501,7 @@ export function userHasMasterFarmerOutfit(user: KlasaUser) {
 	return true;
 }
 
-export function updateGPTrackSetting(client: KlasaClient, setting: string, amount: number) {
+export function updateGPTrackSetting(client: KlasaClient | KlasaUser, setting: string, amount: number) {
 	const current = client.settings.get(setting) as number;
 	const newValue = current + amount;
 	return client.settings.update(setting, newValue);
@@ -517,4 +519,81 @@ export function textEffect(str: string, effect: 'none' | 'strikethrough') {
 export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
 	const active: any[] = user.settings.get(key) as any[];
 	return user.settings.update(key, active);
+}
+
+function gaussianRand() {
+	let rand = 0;
+	for (let i = 0; i < 3; i += 1) {
+		rand += Math.random();
+	}
+	return rand / 3;
+}
+export function gaussianRandom(min: number, max: number) {
+	return Math.floor(min + gaussianRand() * (max - min + 1));
+}
+export function isValidNickname(str?: string) {
+	return (
+		str &&
+		typeof str === 'string' &&
+		str.length >= 2 &&
+		str.length <= 30 &&
+		['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
+		stripEmojis(str).length === str.length
+	);
+}
+
+export function patronMaxTripCalc(user: KlasaUser) {
+	const perkTier = getUsersPerkTier(user);
+	if (perkTier === PerkTier.Two) return Time.Minute * 3;
+	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
+	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
+	return 0;
+}
+
+export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[]) {
+	const display = new PaginatedMessage();
+	// @ts-ignore 2445
+	display.setUpReactions = () => null;
+
+	for (const page of pages) {
+		display.addPage({
+			...page,
+			components: [
+				PaginatedMessage.defaultActions
+					.slice(1, -1)
+					.map(a => new MessageButton().setLabel('').setStyle('SECONDARY').setCustomID(a.id).setEmoji(a.id))
+			]
+		});
+	}
+
+	await display.run(message);
+	const collector = display.response!.createMessageComponentInteractionCollector({
+		time: Time.Minute,
+		filter: i => i.user.id === message.author.id
+	});
+
+	collector.on('collect', async interaction => {
+		for (const action of PaginatedMessage.defaultActions) {
+			if (interaction.customID === action.id) {
+				const previousIndex = display.index;
+
+				await action.run({
+					handler: display,
+					author: message.author,
+					channel: message.channel,
+					response: display.response!,
+					collector: display.collector!
+				});
+
+				if (previousIndex !== display.index) {
+					await interaction.update(await display.resolvePage(message.channel, display.index));
+					return;
+				}
+			}
+		}
+	});
+
+	collector.on('end', () => {
+		display.response!.edit({ components: [] });
+	});
 }

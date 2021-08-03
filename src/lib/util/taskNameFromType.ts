@@ -40,6 +40,8 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.FletchingActivity;
 		case Activity.Wintertodt:
 			return Tasks.WintertodtActivity;
+		case Activity.Tempoross:
+			return Tasks.TemporossActivity;
 		case Activity.Alching:
 			return Tasks.AlchingActivity;
 		case Activity.Raids:
@@ -128,7 +130,13 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.BigChompyBirdHunting;
 		case Activity.DarkAltar:
 			return Tasks.DarkAltar;
+		case Activity.Ignecarus:
+			return Tasks.Ignecarus;
 		case Activity.Trekking:
 			return Tasks.TrekkingActivity;
+		case Activity.KibbleMaking:
+			return Tasks.KibbleActivity;
+		case Activity.Revenants:
+			return Tasks.RevenantsActivity;
 	}
 }

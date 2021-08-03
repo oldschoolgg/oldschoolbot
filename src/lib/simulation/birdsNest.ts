@@ -64,5 +64,4 @@ export const nestTable = new LootTable()
 	.every(birdsNestID)
 	.add(eggNest, 1, 3)
 	.add(ringNests, 1, 32)
-	.add(wysonSeedsNest, 1, 65 / 2)
-	.add(treeSeedsNest, 1, 65 / 2);
+	.add(treeSeedsNest, 1, 65);

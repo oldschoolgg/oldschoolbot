@@ -1,20 +1,22 @@
-import { randArrItem, Time } from 'e';
-import { CommandStore, KlasaMessage } from 'klasa';
+import { objectKeys, randArrItem, Time } from 'e';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
-import { evilChickenOutfit } from '../../lib/data/collectionLog';
+import { Activity, Events } from '../../lib/constants';
+import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
 import { Offerables } from '../../lib/data/offerData';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { birdsNestID, treeSeedsNest, wysonSeedsNest } from '../../lib/simulation/birdsNest';
+import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { ItemBank } from '../../lib/types';
 import { OfferingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, roll, stringMatches } from '../../lib/util';
+import { filterBankFromArrayOfItems, formatDuration, rand, roll, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 
 const specialBones = [
@@ -42,6 +44,21 @@ export default class extends BotCommand {
 			description: 'Sends your minion to offer bones to the chaos altar.',
 			examples: ['+offer dragon bones']
 		});
+	}
+
+	notifyUniques(user: KlasaUser, activity: string, uniques: number[], loot: ItemBank, qty: number, randQty?: number) {
+		const itemsToAnnounce = filterBankFromArrayOfItems(uniques, loot);
+		if (objectKeys(itemsToAnnounce).length > 0) {
+			const lootStr = new Bank(itemsToAnnounce).toString();
+			this.client.emit(
+				Events.ServerNotification,
+				`**${user.username}'s** minion, ${
+					user.minionName
+				}, while offering ${qty}x ${activity}, found **${lootStr}**${
+					randQty ? ` on their ${formatOrdinal(randQty)} offering!` : '!'
+				}`
+			);
+		}
 	}
 
 	@minionNotBusy
@@ -77,11 +94,23 @@ export default class extends BotCommand {
 			loot.add(whichOfferable.table.roll(quantity));
 
 			filterLootReplace(msg.author.allItemsOwned(), loot);
+			let score = 0;
 			const { previousCL } = await msg.author.addItemsToBank(loot.values(), true);
 			if (whichOfferable.economyCounter) {
-				const oldValue: number = msg.author.settings.get(whichOfferable.economyCounter) as number;
+				score = msg.author.settings.get(whichOfferable.economyCounter) as number;
 				if (typeof quantity !== 'number') quantity = parseInt(quantity);
-				msg.author.settings.update(whichOfferable.economyCounter, oldValue + quantity);
+				msg.author.settings.update(whichOfferable.economyCounter, score + quantity);
+			}
+			// Notify uniques
+			if (whichOfferable.uniques) {
+				this.notifyUniques(
+					msg.author,
+					whichOfferable.name,
+					whichOfferable.uniques,
+					loot.bank,
+					quantity,
+					score + rand(1, quantity)
+				);
 			}
 
 			return msg.channel.sendBankImage({
@@ -107,7 +136,7 @@ export default class extends BotCommand {
 					loot.add(randArrItem(evilChickenOutfit));
 				} else {
 					loot.add(birdsNestID);
-					loot.add(roll(2) ? treeSeedsNest.roll() : wysonSeedsNest.roll());
+					loot.add(treeSeedsNest.roll());
 				}
 			}
 
@@ -116,6 +145,9 @@ export default class extends BotCommand {
 				amount: quantity * 100
 			});
 			await msg.author.addItemsToBank(loot, true);
+
+			this.notifyUniques(msg.author, egg.name, evilChickenOutfit, loot.bank, quantity);
+
 			return msg.channel.send(
 				`You offered ${quantity}x ${egg.name} to the Shrine and received ${loot} and ${xpStr}.`
 			);

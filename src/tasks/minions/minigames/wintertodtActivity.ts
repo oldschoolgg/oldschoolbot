@@ -24,7 +24,7 @@ export default class extends Task {
 		let totalPoints = 0;
 
 		for (let i = 0; i < quantity; i++) {
-			const points = rand(1000, 5_000);
+			const points = rand(1000, 5000);
 			totalPoints += points;
 
 			loot = addBanks([
@@ -114,17 +114,18 @@ export default class extends Task {
 			loot = multiplyBank(loot, 2);
 		}
 
-		await user.addItemsToBank(loot, true);
+		const { itemsAdded, previousCL } = await user.addItemsToBank(loot, true);
 		user.incrementMinigameScore('Wintertodt', quantity);
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
-			loot,
+			itemsAdded,
 			'',
 			true,
 			{
 				showNewCL: 1
 			},
-			user
+			user,
+			previousCL
 		);
 
 		if (!channelIsSendable(channel)) return;
@@ -156,7 +157,7 @@ export default class extends Task {
 			},
 			image!,
 			data,
-			loot
+			itemsAdded
 		);
 	}
 }

@@ -24,7 +24,7 @@ export default class extends BotCommand {
 
 		const currentFavorites = msg.author.settings.get(UserSettings.FavoriteItems);
 
-		if (!items) {
+		if (!items || items.length === 0) {
 			const currentFavorites = msg.author.settings.get(UserSettings.FavoriteItems);
 			if (currentFavorites.length === 0) {
 				return msg.channel.send('You have no favorited items.');
@@ -48,8 +48,9 @@ export default class extends BotCommand {
 			return msg.channel.send(`Removed ${item.name} from your favorite items.`);
 		}
 
-		if (currentFavorites.length >= 100) {
-			return msg.channel.send('You cant favorite anymore items.');
+		let limit = (msg.author.perkTier + 1) * 100;
+		if (currentFavorites.length >= limit) {
+			return msg.channel.send(`You cant favorite anymore items, you can favorite a maximum of ${limit}.`);
 		}
 
 		await msg.author.settings.update(UserSettings.FavoriteItems, item.id, {

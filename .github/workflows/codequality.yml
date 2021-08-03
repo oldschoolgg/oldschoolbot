@@ -14,17 +14,18 @@ jobs:
         steps:
             - name: Checkout Project
               uses: actions/checkout@v2
-            - name: Use Node.js 14
+            - name: Use Node.js 14.17.3
               uses: actions/setup-node@v2
               with:
-                  node-version: 14.14.0
+                  node-version: 14.17.3
+                  cache: yarn
             - name: Restore CI Cache
               uses: actions/cache@v1
               with:
                   path: node_modules
                   key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
             - name: Install Dependencies
-              run: yarn
+              run: yarn --frozen-lockfile
             - name: Run ESLint
               uses: icrawl/action-eslint@v1
 
@@ -34,17 +35,18 @@ jobs:
         steps:
             - name: Checkout Project
               uses: actions/checkout@v2
-            - name: Use Node.js 14.14.0
+            - name: Use Node.js 14.17.3
               uses: actions/setup-node@v2
               with:
-                  node-version: 14.14.0
+                  node-version: 14.17.3
+                  cache: yarn
             - name: Restore CI Cache
               uses: actions/cache@v1
               with:
                   path: node_modules
                   key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
             - name: Install Dependencies
-              run: yarn
+              run: yarn --frozen-lockfile
             - name: Copy Configuration
               run: |
                   pushd src &&

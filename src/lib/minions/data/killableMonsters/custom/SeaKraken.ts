@@ -17,12 +17,12 @@ export const FishTable = new LootTable()
 	.add('Raw tuna', [1, 90]);
 
 export const KrakenTable = new LootTable()
-	.every(FishTable, [5, 12])
-	.tertiary(3, FishTable, 5)
+	.every(FishTable, [1, 3])
+	.tertiary(3, FishTable, 2)
 	.add('Coins', [50_000, 1_000_000])
-	.add('Clue scroll (master)', 4)
 	.add('Clue scroll (elite)')
 	.add('Clue scroll (hard)')
+	.add('Clue scroll (medium)')
 	.add('Pirate boots')
 	.add('Harpoon')
 	.add('Kraken tentacle')
@@ -35,8 +35,8 @@ export const KrakenTable = new LootTable()
 	.tertiary(100_000, 'Fishing trophy')
 	.tertiary(50, 'Clue scroll (grandmaster)');
 
-setCustomMonster(53466534, 'Sea Kraken', KrakenTable, Monsters.CommanderZilyana, {
-	id: 53466534,
+setCustomMonster(53_466_534, 'Sea Kraken', KrakenTable, Monsters.CommanderZilyana, {
+	id: 53_466_534,
 	name: 'Sea Kraken',
 	aliases: ['sea kraken']
 });

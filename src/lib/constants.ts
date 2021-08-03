@@ -1,9 +1,12 @@
+import { MessageButton } from 'discord.js';
 import { Time } from 'e';
+import { KlasaMessage } from 'klasa';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { SkillsEnum } from './skilling/types';
+import { ActivityTaskOptions } from './types/minions';
 
 export const enum Channel {
 	Notifications = '811589869314899980',
@@ -28,7 +31,9 @@ export const enum Roles {
 	TopSkiller = '848966830617788427',
 	TopCollector = '848966773885763586',
 	TopSacrificer = '848966732265160775',
-	TopeClueHunter = '848967350120218636'
+	TopClueHunter = '848967350120218636',
+	TopSlayer = '867967551819358219',
+	TopMinigamer = '867967884515770419'
 }
 
 export const enum Emoji {
@@ -77,6 +82,7 @@ export const enum Emoji {
 	Join = '<:join:705971600956194907>',
 	TzRekJad = '<:Tzrekjad:324127379188613121>',
 	Phoenix = '<:Phoenix:324127378223792129>',
+	TinyTempor = '<:TinyTempor:824483631694217277>',
 	AnimatedFireCape = '<a:FireCape:394692985184583690>',
 	Fletching = '<:fletching:630911040544309258>',
 	Farming = '<:farming:630911040355565599>',
@@ -101,6 +107,8 @@ export const enum Emoji {
 	Dungeoneering = '<:dungeoneering:828683755198873623>',
 	Gear = '<:gear:835314891950129202>',
 	Slayer = '<:slayer:630911040560824330>',
+	SlayerMasterCape = '<:slayerMasterCape:869497600284459008>',
+	RunecraftMasterCape = '<:runecraftMasterCape:869497600997470258>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -119,7 +127,8 @@ export const enum Emoji {
 	Minigames = '<:minigameIcon:630400565070921761>',
 	Skull = '<:Skull:802136963926065165>',
 	CombatSword = '<:combat:802136963956080650>',
-	SOTW = '<:SOTWtrophy:842938096097820693>'
+	SOTW = '<:SOTWtrophy:842938096097820693>',
+	OSRSSkull = '<:skull:863392427040440320>'
 }
 
 export const enum ReactionEmoji {
@@ -133,7 +142,7 @@ export const enum Image {
 }
 
 export const enum Color {
-	Orange = 16098851
+	Orange = 16_098_851
 }
 
 export const SupportServer = '342983479501389826';
@@ -162,6 +171,7 @@ export const enum Tasks {
 	QuestingActivity = 'questingActivity',
 	FightCavesActivity = 'fightCavesActivity',
 	WintertodtActivity = 'wintertodtActivity',
+	TemporossActivity = 'temporossActivity',
 	AlchingActivity = 'alchingActivity',
 	RaidsActivity = 'raidsActivity',
 	NightmareActivity = 'nightmareActivity',
@@ -202,7 +212,10 @@ export const enum Tasks {
 	VasaMagus = 'vasaMagusActivity',
 	OuraniaDeliveryService = 'ouraniaDeliveryServiceActivity',
 	DarkAltar = 'darkAltarActivity',
-	TrekkingActivity = 'templeTrekkingActivity'
+	Ignecarus = 'ignecarusActivity',
+	TrekkingActivity = 'templeTrekkingActivity',
+	KibbleActivity = 'kibbleActivity',
+	RevenantsActivity = 'revenantsActivity'
 }
 
 export enum Activity {
@@ -224,6 +237,7 @@ export enum Activity {
 	Offering = 'Offering',
 	FightCaves = 'FightCaves',
 	Wintertodt = 'Wintertodt',
+	Tempoross = 'Tempoross',
 	TitheFarm = 'TitheFarm',
 	Fletching = 'Fletching',
 	Pickpocket = 'Pickpocket',
@@ -269,7 +283,10 @@ export enum Activity {
 	VasaMagus = 'VasaMagus',
 	OuraniaDeliveryService = 'OuraniaDeliveryService',
 	DarkAltar = 'DarkAltar',
-	Trekking = 'Trekking'
+	Ignecarus = 'Ignecarus',
+	Trekking = 'Trekking',
+	KibbleMaking = 'KibbleMaking',
+	Revenants = 'Revenants'
 }
 
 export enum ActivityGroup {
@@ -351,6 +368,7 @@ export const enum BitField {
 	HasPermanentTierOne = 12,
 	DisabledRandomEvents = 13,
 	PermanentIronman = 14,
+	AlwaysSmallBank = 15,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -374,7 +392,8 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
 	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp' },
-	[BitField.PermanentIronman]: { name: 'Permanent Ironman' }
+	[BitField.PermanentIronman]: { name: 'Permanent Ironman' },
+	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' }
 } as const;
 
 export const enum PatronTierID {
@@ -403,7 +422,7 @@ export const badges: { [key: number]: string } = {
 
 export const MAX_QP = 5000;
 
-export const MIMIC_MONSTER_ID = 23184;
+export const MIMIC_MONSTER_ID = 23_184;
 
 export const continuationChars = 'abdefghjkmnoprstuvwxyz123456789'.split('');
 export const CENA_CHARS = ['​', '‎', '‍'];
@@ -419,6 +438,7 @@ export const BLACK_CHIN_ID = 9;
 export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
 export const MIN_LENGTH_FOR_PET = Time.Minute * 5;
+export const HESPORI_ID = 8583;
 
 /**
  * Map<user_id, PromiseQueue>
@@ -459,6 +479,36 @@ export const skillEmoji = {
 	dungeoneering: '<:dungeoneering:828683755198873623>'
 };
 
+export const LEVEL_99_XP = convertLVLtoXP(99);
 export const LEVEL_120_XP = convertLVLtoXP(120);
 export const MAX_LEVEL = 120;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
+export const SILENT_ERROR = 'SILENT_ERROR';
+
+export const informationalButtons = [
+	new MessageButton().setLabel('Wiki').setEmoji('📰').setURL('https://wiki.oldschool.gg/').setStyle('LINK'),
+	new MessageButton()
+		.setLabel('Patreon')
+		.setEmoji('679334888792391703')
+		.setURL('https://www.patreon.com/oldschoolbot')
+		.setStyle('LINK'),
+	new MessageButton()
+		.setLabel('Support Server')
+		.setEmoji('778418736180494347')
+		.setURL('https://www.discord.gg/ob')
+		.setStyle('LINK'),
+	new MessageButton()
+		.setLabel('Bot Invite')
+		.setEmoji('🤖')
+		.setURL(
+			'https://discord.com/oauth2/authorize?client_id=729244028989603850&scope=bot+applications.commands&permissions=537259072'
+		)
+		.setStyle('LINK')
+];
+
+export const lastTripCache = new Map<
+	string,
+	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
+>();
+
+export const DOUBLE_LOOT_ACTIVE = false;

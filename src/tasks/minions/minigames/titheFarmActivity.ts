@@ -23,7 +23,12 @@ export default class extends Task {
 		const titheFarmPoints = user.settings.get(UserSettings.Stats.TitheFarmPoints);
 
 		const determineHarvest = baseHarvest + Math.min(15, titheFarmsCompleted);
-		const determinePoints = determineHarvest - 74;
+		let determinePoints = determineHarvest - 74;
+
+		const flappy = user.usingPet('Flappy');
+		if (flappy) {
+			determinePoints *= 2;
+		}
 
 		await user.settings.update(UserSettings.Stats.TitheFarmsCompleted, titheFarmsCompleted + 1);
 		await user.settings.update(UserSettings.Stats.TitheFarmPoints, titheFarmPoints + determinePoints);
@@ -120,7 +125,9 @@ export default class extends Task {
 			await user.addItemsToBank(loot, true);
 		}
 
-		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n`;
+		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n${
+			flappy ? '<:flappy:813000865383972874> 2x points' : ''
+		}`;
 
 		handleTripFinish(
 			this.client,

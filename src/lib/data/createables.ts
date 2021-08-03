@@ -1,10 +1,13 @@
+import { Bank } from 'oldschooljs';
+
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
 import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
-import { metamorphPets } from './collectionLog';
+import { chambersOfXericMetamorphPets } from './CollectionsExport';
 import { capeCreatables } from './creatables/capes';
+import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
 import { dyedCreatables } from './dyedCreatables';
@@ -68,7 +71,47 @@ const chaoticCreatables: Createable[] = [
 		requiredSkills: { crafting: 120 }
 	}
 ];
-const metamorphPetCreatables: Createable[] = metamorphPets.map(pet => ({
+const revWeapons: Createable[] = [
+	{
+		name: 'Bracelet of ethereum',
+		inputItems: resolveNameBank({
+			'Bracelet of ethereum (uncharged)': 1,
+			'Revenant ether': 2000
+		}),
+		outputItems: resolveNameBank({
+			'Bracelet of ethereum': 1
+		})
+	},
+	{
+		name: 'Revenant ether',
+		inputItems: resolveNameBank({
+			'Bracelet of ethereum (uncharged)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Revenant ether': 250
+		}),
+		noCl: true
+	}
+];
+
+for (const [uWep, cWep] of [
+	["Viggora's chainmace (u)", "Viggora's chainmace"],
+	["Craw's bow (u)", "Craw's bow"],
+	["Thammaron's sceptre (u)", "Thammaron's sceptre"]
+]) {
+	revWeapons.push({
+		name: cWep,
+		inputItems: {
+			[itemID('Revenant ether')]: 7000,
+			[itemID(uWep)]: 1
+		},
+		outputItems: {
+			[itemID(cWep)]: 1
+		}
+	});
+}
+
+const metamorphPetCreatables: Createable[] = chambersOfXericMetamorphPets.map(pet => ({
 	name: itemNameFromID(pet)!,
 	inputItems: {
 		[itemID('Metamorphic dust')]: 1
@@ -214,7 +257,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix fire cape',
 		inputItems: {
-			20445: 1
+			20_445: 1
 		},
 		outputItems: {
 			[itemID('Fire cape')]: 1
@@ -224,7 +267,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix fire max cape',
 		inputItems: {
-			20447: 1
+			20_447: 1
 		},
 		outputItems: {
 			[itemID('Fire max cape')]: 1
@@ -235,7 +278,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix infernal cape',
 		inputItems: {
-			21287: 1
+			21_287: 1
 		},
 		outputItems: {
 			[itemID('Infernal cape')]: 1
@@ -246,7 +289,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix infernal max cape',
 		inputItems: {
-			21289: 1
+			21_289: 1
 		},
 		outputItems: {
 			[itemID('Infernal max cape')]: 1
@@ -257,7 +300,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix assembler max cape',
 		inputItems: {
-			21916: 1
+			21_916: 1
 		},
 		outputItems: {
 			[itemID('Assembler max cape')]: 1
@@ -268,7 +311,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix imbued saradomin cape',
 		inputItems: {
-			24236: 1
+			24_236: 1
 		},
 		outputItems: {
 			[itemID('Imbued saradomin cape')]: 1
@@ -279,7 +322,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix imbued saradomin max cape',
 		inputItems: {
-			24238: 1
+			24_238: 1
 		},
 		outputItems: {
 			[itemID('Imbued saradomin max cape')]: 1
@@ -290,7 +333,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix imbued guthix cape',
 		inputItems: {
-			24240: 1
+			24_240: 1
 		},
 		outputItems: {
 			[itemID('Imbued guthix cape')]: 1
@@ -301,7 +344,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix imbued guthix max cape',
 		inputItems: {
-			24242: 1
+			24_242: 1
 		},
 		outputItems: {
 			[itemID('Imbued guthix max cape')]: 1
@@ -312,7 +355,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix imbued zamorak cape',
 		inputItems: {
-			24244: 1
+			24_244: 1
 		},
 		outputItems: {
 			[itemID('Imbued zamorak cape')]: 1
@@ -323,7 +366,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix imbued zamorak max cape',
 		inputItems: {
-			24246: 1
+			24_246: 1
 		},
 		outputItems: {
 			[itemID('Imbued zamorak max cape')]: 1
@@ -334,7 +377,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix imbued zamorak max cape',
 		inputItems: {
-			24246: 1
+			24_246: 1
 		},
 		outputItems: {
 			[itemID('Imbued zamorak max cape')]: 1
@@ -345,7 +388,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix dragon defender',
 		inputItems: {
-			20463: 1
+			20_463: 1
 		},
 		outputItems: {
 			[itemID('Dragon defender')]: 1
@@ -356,7 +399,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix avernic defender',
 		inputItems: {
-			22441: 1
+			22_441: 1
 		},
 		outputItems: {
 			[itemID('Avernic defender')]: 1
@@ -367,7 +410,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix void knight top',
 		inputItems: {
-			20465: 1
+			20_465: 1
 		},
 		outputItems: {
 			[itemID('Void knight top')]: 1
@@ -378,7 +421,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix void knight robe',
 		inputItems: {
-			20469: 1
+			20_469: 1
 		},
 		outputItems: {
 			[itemID('Void knight robe')]: 1
@@ -389,7 +432,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix elite void top',
 		inputItems: {
-			20467: 1
+			20_467: 1
 		},
 		outputItems: {
 			[itemID('Elite void top')]: 1
@@ -400,7 +443,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix elite void robe',
 		inputItems: {
-			20471: 1
+			20_471: 1
 		},
 		outputItems: {
 			[itemID('Elite void robe')]: 1
@@ -411,7 +454,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix void knight gloves',
 		inputItems: {
-			20475: 1
+			20_475: 1
 		},
 		outputItems: {
 			[itemID('Void knight gloves')]: 1
@@ -422,7 +465,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix void mage helm',
 		inputItems: {
-			20477: 1
+			20_477: 1
 		},
 		outputItems: {
 			[itemID('Void mage helm')]: 1
@@ -433,7 +476,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix void ranger helm',
 		inputItems: {
-			20479: 1
+			20_479: 1
 		},
 		outputItems: {
 			[itemID('Void ranger helm')]: 1
@@ -444,7 +487,7 @@ const brokenItems: Createable[] = [
 	{
 		name: 'Fix void melee helm',
 		inputItems: {
-			20481: 1
+			20_481: 1
 		},
 		outputItems: {
 			[itemID('Void melee helm')]: 1
@@ -578,30 +621,6 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Zamorak godsword')]: 1
 		}
-	},
-	{
-		name: 'Dragonfire shield',
-		inputItems: {
-			[itemID('Draconic visage')]: 1,
-			[itemID('Anti-dragon shield')]: 1
-		},
-		outputItems: {
-			// Uncharged dragonfire shield
-			11284: 1
-		},
-		requiredSkills: { smithing: 90 }
-	},
-	{
-		name: 'Dragonfire ward',
-		inputItems: {
-			[itemID('Skeletal visage')]: 1,
-			[itemID('Anti-dragon shield')]: 1
-		},
-		outputItems: {
-			// Uncharged Dragonfire ward
-			22003: 1
-		},
-		requiredSkills: { smithing: 90 }
 	},
 	{
 		name: 'Infernal pickaxe',
@@ -798,95 +817,6 @@ const Createables: Createable[] = [
 		},
 		noCl: true
 	},
-	/**
-	 * Prospector outfit
-	 */
-	{
-		name: 'Prospector',
-		inputItems: {
-			[itemID('Golden nugget')]: 180
-		},
-		outputItems: {
-			[itemID('Prospector helmet')]: 1,
-			[itemID('Prospector jacket')]: 1,
-			[itemID('Prospector legs')]: 1,
-			[itemID('Prospector boots')]: 1
-		}
-	},
-	{
-		name: 'Prospector helmet',
-		outputItems: {
-			[itemID('Prospector helmet')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 40
-		}
-	},
-	{
-		name: 'Prospector jacket',
-		outputItems: {
-			[itemID('Prospector jacket')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 60
-		}
-	},
-	{
-		name: 'Prospector legs',
-		outputItems: {
-			[itemID('Prospector legs')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 50
-		}
-	},
-	{
-		name: 'Prospector boots',
-		outputItems: {
-			[itemID('Prospector boots')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 30
-		}
-	},
-	{
-		name: 'Coal bag',
-		outputItems: {
-			[itemID('Coal bag')]: 1
-		},
-		inputItems: {
-			[itemID('Golden nugget')]: 100
-		}
-	},
-	{
-		name: 'Mining gloves',
-		outputItems: {
-			[itemID('Mining gloves')]: 1
-		},
-		inputItems: {
-			[itemID('Unidentified minerals')]: 60
-		}
-	},
-	{
-		name: 'Superior mining gloves',
-		outputItems: {
-			[itemID('Superior mining gloves')]: 1
-		},
-		inputItems: {
-			[itemID('Unidentified minerals')]: 120
-		}
-	},
-	{
-		name: 'Expert mining gloves',
-		outputItems: {
-			[itemID('Expert mining gloves')]: 1
-		},
-		inputItems: {
-			[itemID('Superior mining gloves')]: 1,
-			[itemID('Mining gloves')]: 1,
-			[itemID('Unidentified minerals')]: 60
-		}
-	},
 	{
 		name: 'Master clue',
 		inputItems: {
@@ -912,6 +842,17 @@ const Createables: Createable[] = [
 			[itemID('Infernal axe')]: 1
 		},
 		requiredSkills: { firemaking: 85 }
+	},
+	{
+		name: 'Infernal harpoon',
+		inputItems: {
+			[itemID('Dragon harpoon')]: 1,
+			[itemID('Smouldering stone')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal harpoon')]: 1
+		},
+		requiredSkills: { cooking: 85, fishing: 75 }
 	},
 	{
 		name: 'Graceful',
@@ -4527,6 +4468,15 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Revert saradomin castlewars cloak',
+		inputItems: {
+			[itemID('Saradomin castlewars cloak')]: 1
+		},
+		outputItems: {
+			[itemID('Castle wars ticket')]: 10
+		}
+	},
+	{
 		name: 'Revert saradomin banner',
 		inputItems: {
 			[itemID('Saradomin banner')]: 1
@@ -4626,6 +4576,59 @@ const Createables: Createable[] = [
 			[itemID('Castle wars ticket')]: 75
 		}
 	},
+	{
+		name: 'Spirit angler headband',
+		inputItems: {
+			[itemID('Angler hat')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler headband')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler top',
+		inputItems: {
+			[itemID('Angler top')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler top')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler waders',
+		inputItems: {
+			[itemID('Angler waders')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler waders')]: 1
+		}
+	},
+	{
+		name: 'Spirit angler boots',
+		inputItems: {
+			[itemID('Angler boots')]: 1,
+			[itemID('Spirit flakes')]: 1200
+		},
+		outputItems: {
+			[itemID('Spirit angler boots')]: 1
+		}
+	},
+	{
+		name: 'Bottled dragonbreath',
+		inputItems: resolveNameBank({
+			Dragonfruit: 10,
+			Vial: 1
+		}),
+		outputItems: {
+			[itemID('Bottled dragonbreath')]: 1
+		},
+		requiredSkills: {
+			slayer: 62
+		}
+	},
 	...crystalTools,
 	...brokenItems,
 	...lockedItems,
@@ -4672,12 +4675,54 @@ const Createables: Createable[] = [
 			magic: 105
 		}
 	},
+	{
+		name: 'Ignis ring(i)',
+		inputItems: resolveNameBank({
+			'Ignis ring': 1,
+			'Magus scroll': 1
+		}),
+		outputItems: {
+			[itemID('Ignis ring(i)')]: 1
+		},
+		requiredSkills: {
+			crafting: 120,
+			magic: 105
+		}
+	},
+	{
+		name: 'Bottled dragonbreath',
+		inputItems: resolveNameBank({
+			Dragonfruit: 10,
+			Vial: 1
+		}),
+		outputItems: {
+			[itemID('Bottled dragonbreath')]: 1
+		},
+		requiredSkills: {
+			slayer: 62
+		}
+	},
+	{
+		name: 'Charged Dragonfire shield',
+		inputItems: new Bank({
+			'Bottled dragonbreath': 5,
+			11_284: 1
+		}).bank,
+		outputItems: {
+			11_283: 1
+		},
+		requiredSkills: {
+			slayer: 62
+		}
+	},
 	...chaoticCreatables,
 	...twistedAncestral,
 	...metamorphPetCreatables,
 	...dyedCreatables,
 	...slayerCreatables,
-	...capeCreatables
+	...capeCreatables,
+	...dragonFireShieldCreatables,
+	...revWeapons
 ];
 
 export default Createables;

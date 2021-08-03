@@ -19,11 +19,11 @@ export default class extends Monitor {
 
 		// If they sent a message in this server in the past 1.5 mins, return.
 		const lastMessage = this.__memberCache[`${msg.author.id}.${msg.guild.id}`] || 1;
-		if (Date.now() - lastMessage < 80000) return;
+		if (Date.now() - lastMessage < 80_000) return;
 		this.__memberCache[`${msg.author.id}.${msg.guild.id}`] = Date.now();
 
 		const pet = pets[Math.floor(Math.random() * pets.length)];
-		if (roll(Math.max(Math.min(pet.chance, 250000), 1000))) {
+		if (roll(Math.max(Math.min(pet.chance, 250_000), 1000))) {
 			await msg.author.settings.sync(true);
 			const userPets = msg.author.settings.get(UserSettings.Pets);
 			const newUserPets = { ...userPets };
