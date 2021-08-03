@@ -1275,17 +1275,17 @@ setCustomItem(41_089, 'Dwarven warhammer (3a)', 'Dwarven warhammer', {}, 10_000_
  * START CLUE OUTFIT ---------------------------------------------------------------------------------------------------
  */
 export const globetrotterReqs = {
-	agility: 120,
-	thieving: 120,
-	strength: 120,
-	prayer: 120,
-	defence: 120,
-	firemaking: 120,
-	construction: 120,
-	woodcutting: 120,
-	mining: 120,
-	magic: 120,
-	ranged: 120
+	agility: 100,
+	thieving: 100,
+	strength: 100,
+	prayer: 100,
+	defence: 100,
+	firemaking: 100,
+	construction: 100,
+	woodcutting: 100,
+	mining: 100,
+	magic: 100,
+	ranged: 100
 };
 const globetrotterTicketExamine =
 	'You carefully read the paper, without trying to torn it appart more than it already is. It says: "For the best of ' +
@@ -1372,6 +1372,18 @@ setCustomItem(
 	0
 );
 setCustomItem(
+	41_103,
+	'Globetrotter ring',
+	'Diamond ring',
+	{
+		equipment: {
+			...getOSItem('Diamond ring').equipment!,
+			requirements: globetrotterReqs
+		}
+	},
+	0
+);
+setCustomItem(
 	41_096,
 	'Globetrotter message (beginner)',
 	'Coal',
@@ -1419,6 +1431,15 @@ setCustomItem(
 setCustomItem(
 	41_101,
 	'Globetrotter message (master)',
+	'Coal',
+	{
+		examine: globetrotterTicketExamine
+	},
+	0
+);
+setCustomItem(
+	41_102,
+	'Globetrotter message (grandmaster)',
 	'Coal',
 	{
 		examine: globetrotterTicketExamine

@@ -28,7 +28,8 @@ export const GlobetrottlerOutfit = resolveItems([
 	'Globetrotter legs',
 	'Globetrotter boots',
 	'Globetrotter gloves',
-	'Globetrotter backpack'
+	'Globetrotter backpack',
+	'Globetrotter ring'
 ]);
 
 export function hasClueHunterEquipped(user: KlasaUser, setup: GearSetupType) {

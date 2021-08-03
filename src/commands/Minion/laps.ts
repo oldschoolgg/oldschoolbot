@@ -14,7 +14,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
 import { GlobetrottlerOutfit } from './mclue';
 
@@ -216,7 +215,7 @@ export default class extends BotCommand {
 
 		let alchResult = null;
 		if (!challengeMode) {
-			if(course.name !== 'Ape Atoll Agility Course') {
+			if (course.name !== 'Ape Atoll Agility Course') {
 				alchResult = alching({
 					user: msg.author,
 					flags: msg.flagArgs,

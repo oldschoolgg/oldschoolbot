@@ -27,12 +27,13 @@ const possibleFound = new LootTable()
 	.add('Untradeable Mystery Box');
 
 const tierGlobetrotterPiece: Record<string, number[]> = {
-	Beginner: [itemID('Globetrotter message (beginner)'), itemID('Globetrotter headress'), 6_000],
-	Easy: [itemID('Globetrotter message (easy)'), itemID('Globetrotter top'), 5_000],
-	Medium: [itemID('Globetrotter message (medium)'), itemID('Globetrotter legs'), 4_000],
-	Hard: [itemID('Globetrotter message (hard)'), itemID('Globetrotter gloves'), 3_000],
-	Elite: [itemID('Globetrotter message (elite)'), itemID('Globetrotter boots'), 2_000],
-	Master: [itemID('Globetrotter message (master)'), itemID('Globetrotter backpack'), 1_000]
+	Beginner: [itemID('Globetrotter message (beginner)'), itemID('Globetrotter headress'), 2000],
+	Easy: [itemID('Globetrotter message (easy)'), itemID('Globetrotter top'), 1800],
+	Medium: [itemID('Globetrotter message (medium)'), itemID('Globetrotter legs'), 1600],
+	Hard: [itemID('Globetrotter message (hard)'), itemID('Globetrotter gloves'), 1400],
+	Elite: [itemID('Globetrotter message (elite)'), itemID('Globetrotter boots'), 1200],
+	Master: [itemID('Globetrotter message (master)'), itemID('Globetrotter backpack'), 1000],
+	Grandmaster: [itemID('Globetrotter message (grandmaster)'), itemID('Globetrotter ring'), 200]
 };
 
 export default class extends Task {
