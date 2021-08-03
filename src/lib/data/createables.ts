@@ -1170,6 +1170,32 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Dragon kiteshield',
+		inputItems: resolveNameBank({
+			'Dragon sq shield': 1,
+			'Dragon metal shard': 1,
+			'Dragon metal slice': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragon kiteshield': 1
+		}),
+		QPRequired: 205,
+		requiredSkills: { smithing: 75 }
+	},
+	{
+		name: 'Dragon platebody',
+		inputItems: resolveNameBank({
+			'Dragon chainbody': 1,
+			'Dragon metal shard': 1,
+			'Dragon metal lump': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragon platebody': 1
+		}),
+		QPRequired: 205,
+		requiredSkills: { smithing: 90 }
+	},
+	{
 		name: 'Coconut milk',
 		inputItems: resolveNameBank({
 			Vial: 1,
