@@ -22,7 +22,8 @@ const globetrotterTicketPiece: Record<number, number> = {
 	[itemID('Globetrotter message (medium)')]: itemID('Globetrotter legs'),
 	[itemID('Globetrotter message (hard)')]: itemID('Globetrotter gloves'),
 	[itemID('Globetrotter message (elite)')]: itemID('Globetrotter boots'),
-	[itemID('Globetrotter message (master)')]: itemID('Globetrotter backpack')
+	[itemID('Globetrotter message (master)')]: itemID('Globetrotter backpack'),
+	[itemID('Globetrotter message (grandmaster)')]: itemID('Globetrotter ring')
 };
 
 function getChallengeXp(xpMultiplier: number) {
