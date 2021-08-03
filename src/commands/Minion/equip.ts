@@ -9,6 +9,9 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatSkillRequirements, itemNameFromID, skillsMeetRequirements, toTitleCase } from '../../lib/util';
 
+export const WILDY_PRESET_WARNING_MESSAGE =
+	"You are equipping items to your **wilderness** setup. *Every* item in this setup can potentially be lost if you're doing activities in the wilderness. Are you sure you want to equip it?";
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -83,9 +86,7 @@ export default class extends BotCommand {
 		}
 
 		if (gearType === GearSetupTypes.Wildy) {
-			await msg.confirm(
-				"You are equipping items to your **wilderness** setup. *Every* item in this setup can potentially be lost if you're doing activities in the wilderness. Are you sure you want to equip it?"
-			);
+			await msg.confirm(WILDY_PRESET_WARNING_MESSAGE);
 		}
 		/**
 		 * If there's already an item equipped in this slot, unequip it,
