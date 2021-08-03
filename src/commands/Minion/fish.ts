@@ -72,6 +72,9 @@ export default class extends BotCommand {
 		const hasShelldon = msg.author.equippedPet() === itemID('Shelldon');
 		if (hasShelldon) {
 			scaledTimePerFish /= 2;
+			boosts.push(
+				`\n<:shelldon:748496988407988244> ${msg.author.minionName} picks up Shelldon to help them fish! (100% for Shelldon)`
+			);
 		}
 
 		switch (fish.bait) {
@@ -99,7 +102,7 @@ export default class extends BotCommand {
 			default:
 				if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven harpoon'))) {
 					scaledTimePerFish /= hasShelldon ? 1.5 : 2;
-					boosts.push(`${hasShelldon ? '50%' : '2x'} for Dwarven harpoon`);
+					boosts.push('100% for Dwarven harpoon');
 				} else if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Crystal harpoon');
@@ -151,11 +154,7 @@ export default class extends BotCommand {
 
 		let response = `${msg.author.minionName} is now fishing ${quantity}x ${
 			fish.name
-		}, it'll take around ${formatDuration(duration)} to finish. ${
-			hasShelldon
-				? `\n<:shelldon:748496988407988244> ${msg.author.minionName} picks up Shelldon to help them fish!`
-				: ''
-		}`;
+		}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
