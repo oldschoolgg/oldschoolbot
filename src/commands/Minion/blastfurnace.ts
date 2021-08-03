@@ -78,8 +78,9 @@ export default class extends BotCommand {
 
 		let timeToSmithSingleBar = bar.timeToUse + Time.Second / 10;
 
+		const boosts = [];
+
 		// check if they have a coal bag
-		let coalbag = '';
 		if (
 			msg.author.hasItemEquippedOrInBank(itemID('Coal bag')) &&
 			(bar.id === itemID('Steel Bar') ||
@@ -87,18 +88,23 @@ export default class extends BotCommand {
 				bar.id === itemID('Adamantite Bar') ||
 				bar.id === itemID('Runite Bar'))
 		) {
-			coalbag = '\n\n**Boosts:** 60% speed boost for coal bag.';
+			boosts.push('60% speed boost for coal bag.');
 			timeToSmithSingleBar *= 0.625;
 		}
-		let graceful = '';
+
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven gauntlets')) && bar.id !== itemID('Gold bar')) {
+			boosts.push('100% for having a Dwarven gauntlets equipped.');
+			timeToSmithSingleBar /= 2;
+		}
+
 		if (!msg.author.hasGracefulEquipped()) {
 			timeToSmithSingleBar *= 1.075;
-			graceful = '\n-7.5% time penalty for not having graceful equipped.';
+			boosts.push('-7.5% time penalty for not having graceful equipped.');
 		}
 
 		if (msg.author.hasItemEquippedAnywhere('Smithing master cape')) {
 			timeToSmithSingleBar /= 2;
-			graceful += '\n2x boost for Smithing master cape';
+			boosts.push('2x boost for Smithing master cape');
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
@@ -156,9 +162,8 @@ export default class extends BotCommand {
 			type: Activity.BlastFurnace
 		});
 
-		let goldGauntletMessage = '';
 		if (bar.id === itemID('Gold bar') && msg.author.hasItemEquippedOrInBank(itemID('Goldsmith gauntlets'))) {
-			goldGauntletMessage = '\n\n**Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.';
+			boosts.push('56.2 xp per gold bar for Goldsmith gauntlets.');
 		}
 
 		return msg.channel.send(
@@ -166,7 +171,7 @@ export default class extends BotCommand {
 				bar.name
 			} at the Blast Furnace, it'll take around ${formatDuration(duration)} to finish. You paid ${toKMB(
 				coinsToRemove
-			)} GP to use the Blast Furnace.${goldGauntletMessage}${coalbag}${graceful}`
+			)} GP to use the Blast Furnace.${boosts.length > 0 ? `\n\n${boosts.join(', ')}` : ''}`
 		);
 	}
 }
