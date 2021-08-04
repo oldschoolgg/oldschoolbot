@@ -137,6 +137,7 @@ export default class BankImageTask extends Task {
 		this.skillMiniIconsSheet.misc = this.getClippedRegion(this.skillMiniIcons, 36, 0, 12, 12);
 		this.skillMiniIconsSheet.skilling = this.getClippedRegion(this.skillMiniIcons, 48, 0, 12, 12);
 		this.skillMiniIconsSheet.more = this.getClippedRegion(this.skillMiniIcons, 60, 0, 12, 12);
+		this.skillMiniIconsSheet.wildy = this.getClippedRegion(this.skillMiniIcons, 72, 0, 12, 12);
 	}
 
 	// Split sprite into smaller images by coors and size
@@ -542,9 +543,24 @@ export default class BankImageTask extends Task {
 			}
 
 			if (isNewCLItem) {
-				drawImageWithOutline(ctx, itemImage, x, y, itemWidth, itemHeight, '#ac7fff', 1);
+				drawImageWithOutline(
+					ctx,
+					itemImage,
+					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
+					floor(yLoc + (itemSize - itemHeight) / 2),
+					itemWidth,
+					itemHeight,
+					'#ac7fff',
+					1
+				);
 			} else {
-				ctx.drawImage(itemImage, x, y, itemWidth, itemHeight);
+				ctx.drawImage(
+					itemImage,
+					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
+					floor(yLoc + (itemSize - itemHeight) / 2),
+					itemWidth,
+					itemHeight
+				);
 			}
 
 			// Force the global alpha to 1

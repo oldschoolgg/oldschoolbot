@@ -59,6 +59,16 @@ export default class extends Task {
 			);
 		}
 
+		if (loot.amount('Rift guardian') > 0) {
+			str += "\n\n**You have a funny feeling you're being followed...**";
+			this.client.emit(
+				Events.ServerNotification,
+				`**${user.username}'s** minion, ${user.minionName}, just received a Rift guardian while crafting ${
+					runeData.item.name
+				}s at level ${user.skillLevel(SkillsEnum.Runecraft)} Runecrafting!`
+			);
+		}
+
 		await user.addItemsToBank(loot, true);
 
 		handleTripFinish(

@@ -83,6 +83,18 @@ export default class extends Task {
 			);
 		}
 
+		if (loot.amount('Rocky') > 0) {
+			str += "\n\n**You have a funny feeling you're being followed...**";
+			this.client.emit(
+				Events.ServerNotification,
+				`**${user.username}'s** minion, ${
+					user.minionName
+				}, just received a **Rocky** <:Rocky:324127378647285771> while doing the Pyramid Plunder, their Thieving level is ${user.skillLevel(
+					SkillsEnum.Thieving
+				)}!`
+			);
+		}
+
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
