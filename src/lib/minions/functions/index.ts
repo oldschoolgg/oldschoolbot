@@ -50,6 +50,7 @@ export function resolveAttackStyles(
 	if (params.monsterID === KingGoldemar.id) return [undefined, undefined, meleeOnly(user)];
 	if (params.monsterID === VasaMagus.id) return [undefined, undefined, [SkillsEnum.Magic]];
 	if (params.monsterID === NexMonster.id) return [undefined, undefined, [SkillsEnum.Ranged]];
+	if (params.monsterID === KalphiteKingMonster.id) return [undefined, undefined, meleeOnly(user)];
 
 	const killableMon = killableMonsters.find(m => m.id === params.monsterID);
 
