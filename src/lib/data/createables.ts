@@ -218,7 +218,7 @@ const crystalTools: Createable[] = [
 		name: 'Blade of saeldor (inactive)',
 		inputItems: {
 			[itemID('Enhanced crystal weapon seed')]: 1,
-			[itemID('Crystal shard')]: 1000
+			[itemID('Crystal shard')]: 100
 		},
 		outputItems: {
 			[itemID('Blade of saeldor (inactive)')]: 1
