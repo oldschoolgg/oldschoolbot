@@ -94,7 +94,7 @@ export default class extends BotCommand {
 		await msg.author.addItemsToBank(loot, Boolean(msg.flagArgs.cl));
 
 		let res = `Gave you ${loot}.`;
-		for (const setup of ['range', 'melee', 'mage', 'skilling'] as const) {
+		for (const setup of ['range', 'melee', 'mage', 'skilling', 'wildy'] as const) {
 			if (msg.flagArgs[setup]) {
 				let newGear: GearSetup = msg.author.settings.get(`gear.${setup}`) as GearSetup;
 				const returnToBank = new Bank();

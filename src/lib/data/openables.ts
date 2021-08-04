@@ -568,7 +568,11 @@ for (const item of Items.values()) {
 	) {
 		continue;
 	}
-	if (item.tradeable_on_ge) {
+
+	if (
+		item.tradeable_on_ge ||
+		(Boolean(item.tradeable) && Boolean(item.equipable_by_player) && Boolean(item.equipment?.slot))
+	) {
 		tmbTable.push(item.id);
 	} else if (!item.tradeable) {
 		umbTable.push(item.id);
@@ -577,7 +581,8 @@ for (const item of Items.values()) {
 		embTable.push(item.id);
 	}
 }
-export const allMbTables = [...tmbTable, ...umbTable, ...embTable];
+
+export const allMbTables = [...new Set([...tmbTable, ...umbTable, ...embTable])];
 
 function randomEquippable(): number {
 	const res = randArrItem(embTable);

@@ -179,7 +179,7 @@ export const theGauntletCL = resolveItems([
 	'Youngllef',
 	'Crystal armour seed',
 	'Crystal weapon seed',
-	// 'Enhanced crystal weapon seed', // TODO - MISSING ITEM
+	'Enhanced crystal weapon seed',
 	'Gauntlet cape'
 ]);
 export const giantMoleCL = resolveItems(['Baby mole', 'Mole skin', 'Mole claw', 'Long bone', 'Curved bone']);
@@ -271,6 +271,7 @@ export const vorkathCL = resolveItems([
 ]);
 export const wintertodtCL = resolveItems([
 	'Phoenix',
+	'Wintertoad',
 	'Tome of fire',
 	'Burnt page',
 	'Pyromancer garb',
@@ -290,6 +291,7 @@ export const zalcanoCL = resolveItems([
 ]);
 export const zulrahCL = resolveItems([
 	'Pet snakeling',
+	'Brock',
 	'Tanzanite mutagen',
 	'Magma mutagen',
 	'Jar of swamp',
@@ -737,7 +739,8 @@ export const cluesHardCL = resolveItems([
 	'Guthix crozier',
 	'Zamorak stole',
 	'Zamorak crozier',
-	'Zombie head',
+	// Zombie head
+	19_912,
 	'Cyclops head',
 	"Pirate's hat",
 	'Red cavalier',
@@ -1546,7 +1549,7 @@ export const shayzienArmourCL = resolveItems([
 	'Shayzien boots (5)',
 	'Shayzien helm (5)',
 	'Shayzien greaves (5)',
-	'Shayzien platebody (5)'
+	'Shayzien body (5)'
 ]);
 export const skillingPetsCL = resolveItems([
 	'Heron',

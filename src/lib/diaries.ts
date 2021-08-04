@@ -1,3 +1,4 @@
+import { objectEntries } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -7,7 +8,7 @@ import { MAX_QP } from './constants';
 import { UserSettings } from './settings/types/UserSettings';
 import { courses } from './skilling/skills/agility';
 import { Skills } from './types';
-import { itemNameFromID } from './util';
+import { formatSkillRequirements, itemNameFromID } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
@@ -32,16 +33,23 @@ interface Diary {
 }
 
 export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promise<[true] | [false, string]> {
-	const [hasSkillReqs, reason] = user.hasSkillReqs(tier.skillReqs);
+	const [hasSkillReqs] = user.hasSkillReqs(tier.skillReqs);
+	let canDo = true;
+	const reasons: string[] = [];
 	if (!hasSkillReqs) {
-		return [false, `you don't have these stats: ${reason!}`];
+		let failSkills: Skills = {};
+		for (const skill of objectEntries(tier.skillReqs))
+			if (user.skillLevel(skill[0]) < skill[1]!) failSkills[skill[0]] = skill[1]!;
+		canDo = false;
+		reasons.push(`You don't have these stats: ${formatSkillRequirements(failSkills)!}`);
 	}
 
 	if (tier.ownedItems) {
 		const bank = user.bank();
 		const unownedItems = tier.ownedItems.filter(i => !bank.has(i));
 		if (unownedItems.length > 0) {
-			return [false, `you don't own ${unownedItems.map(itemNameFromID).join(', ')}`];
+			canDo = false;
+			reasons.push(`You don't own ${unownedItems.map(itemNameFromID).join(', ')}`);
 		}
 	}
 
@@ -49,12 +57,14 @@ export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promis
 		const cl = new Bank(user.settings.get(UserSettings.CollectionLogBank));
 		const unownedItems = tier.collectionLogReqs.filter(i => !cl.has(i));
 		if (unownedItems.length > 0) {
-			return [false, `you don't have ${unownedItems.map(itemNameFromID).join(', ')} in your collection log`];
+			canDo = false;
+			reasons.push(`You don't have **${unownedItems.map(itemNameFromID).join(', ')}** in your collection log`);
 		}
 	}
 
 	if (tier.qp && user.settings.get(UserSettings.QP) < tier.qp) {
-		return [false, `you don't have ${tier.qp} Quest Points`];
+		canDo = false;
+		reasons.push(`You don't have ${tier.qp} Quest Points`);
 	}
 
 	if (tier.minigameReqs) {
@@ -63,10 +73,10 @@ export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promis
 		for (const [key, neededScore] of entries) {
 			const thisScore = scores.find(m => m.minigame.key === key)!;
 			if (thisScore.score < neededScore!) {
-				return [
-					false,
-					`you don't have ${neededScore} KC in ${thisScore.minigame.name}, you have ${thisScore.score}`
-				];
+				canDo = false;
+				reasons.push(
+					`You don't have **${neededScore}** KC in **${thisScore.minigame.name}**, you have **${thisScore.score}**`
+				);
 			}
 		}
 	}
@@ -78,7 +88,8 @@ export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promis
 			const course = courses.find(c => c.name === name)!;
 
 			if (!userLaps[course.id] || userLaps[course.id] < score) {
-				return [false, `you don't have ${score} laps at ${course.name}`];
+				canDo = false;
+				reasons.push(`You don't have **${score}** laps at **${course.name}**`);
 			}
 		}
 	}
@@ -89,17 +100,22 @@ export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promis
 		for (const [name, score] of entries) {
 			const mon = Monsters.find(mon => mon.name === name)!;
 			if (!userScores[mon.id] || userScores[mon.id] < score) {
-				return [false, `you don't have ${score} ${mon.name} KC, you have ${userScores[mon.id] ?? 0} KC`];
+				canDo = false;
+				reasons.push(`You don't have **${score} ${mon.name}** KC, you have **${userScores[mon.id] ?? 0}** KC`);
 			}
 		}
 	}
 
 	if (tier.customReq) {
 		const [hasCustomReq, reason] = await tier.customReq(user);
-		if (!hasCustomReq) return [hasCustomReq, reason!];
+		if (!hasCustomReq) {
+			canDo = false;
+			reasons.push(reason!);
+		}
 	}
 
-	return [true];
+	if (canDo) return [true];
+	return [canDo, reasons.join('\n- ')];
 }
 
 export const WesternProv: Diary = {
@@ -455,7 +471,7 @@ export const FaladorDiary: Diary = {
 			thieving: 13,
 			woodcutting: 75
 		},
-		qp: MAX_QP,
+		qp: 284,
 		collectionLogReqs: resolveItems(['Air rune', 'Saradomin brew(3)'])
 	}
 };

@@ -5,7 +5,7 @@ import resolveItems from './resolveItems';
 
 const res = resolveItems;
 
-const staves: [number[], number[]][] = [
+const runeItems: [number[], number[]][] = [
 	[res(['Staff of water', 'Mystic water staff', 'Water battlestaff']), res(['Water rune'])],
 	[res(['Staff of earth', 'Mystic earth staff', 'Earth battlestaff']), res(['Earth rune'])],
 	[res(['Staff of air', 'Mystic air staff', 'Air battlestaff']), res(['Air rune'])],
@@ -16,21 +16,26 @@ const staves: [number[], number[]][] = [
 	[res(['Mystic smoke staff', 'Smoke battlestaff']), res(['Fire rune', 'Air rune'])],
 	[res(['Mystic mist staff', 'Mist battlestaff']), res(['Water rune', 'Air rune'])],
 	[res(['Mystic dust staff', 'Dust battlestaff']), res(['Earth rune', 'Air rune'])],
-	[res(['Kodai wand']), res(['Water rune'])]
+	[res(['Kodai wand']), res(['Water rune'])],
+	[res(['Tome of water (empty)', 'Tome of water']), res(['Water rune'])],
+	[res(['Tome of fire (empty)', 'Tome of fire']), res(['Fire rune'])]
 ];
 
 export function determineRunes(user: KlasaUser, runeBank: Bank): Bank {
 	const gear = user.rawGear();
-	const staff = gear.skilling.weapon;
-	if (!staff) return new Bank(runeBank.bank);
-	for (const [staffSet, runes] of staves) {
-		if (staffSet.includes(staff.item)) {
-			const bank = new Bank(runeBank.bank);
+	const mainhand = gear.skilling.weapon;
+	const offhand = gear.skilling.shield;
+
+	const bank = new Bank(runeBank.bank);
+
+	if (!mainhand && !offhand) return bank;
+
+	for (const [itemSet, runes] of runeItems) {
+		if ((mainhand && itemSet.includes(mainhand.item)) || (offhand && itemSet.includes(offhand.item))) {
 			for (const rune of runes) {
-				bank.remove(rune, bank.amount(rune));
+				if (bank.has(rune)) bank.remove(rune, bank.amount(rune));
 			}
-			return bank;
 		}
 	}
-	return new Bank(runeBank.bank);
+	return bank;
 }

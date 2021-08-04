@@ -1,6 +1,7 @@
 import { User } from 'discord.js';
 import { objectEntries } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser, SettingsFolder } from 'klasa';
+import { Item } from 'oldschooljs/dist/meta/types';
 import PromiseQueue from 'p-queue';
 
 import { Events, PerkTier, userQueues } from '../../lib/constants';
@@ -10,6 +11,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { Skills } from '../../lib/types';
 import { formatItemReqs, itemID, itemNameFromID } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 export default class extends Extendable {
@@ -126,6 +128,15 @@ export default class extends Extendable {
 			throw new Error('Failed to find POH after creation.');
 		}
 		return created;
+	}
+
+	public getUserFavAlchs(this: User): Item[] {
+		return this.settings
+			.get(UserSettings.FavoriteAlchables)
+			.filter(id => this.bank().has(id))
+			.map(getOSItem)
+			.filter(i => i.highalch > 0)
+			.sort((a, b) => b.highalch - a.highalch);
 	}
 
 	public usingPet(this: User, name: string) {

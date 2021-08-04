@@ -9,7 +9,7 @@ import { SeedTable } from './simulation/seedTable';
 import { makeKillTable } from './util/setCustomMonster';
 
 export const kalphiteKingLootTable = new LootTable()
-	.tertiary(80, 'Clue scroll (grandmaster)')
+	.tertiary(30, 'Clue scroll (grandmaster)')
 	.tertiary(6000, 'Baby kalphite king')
 	.tertiary(2500, 'Perfect chitin')
 	.tertiary(

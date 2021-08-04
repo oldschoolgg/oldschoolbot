@@ -61,6 +61,8 @@ export default class extends Task {
 		let farmersPiecesCheck = 0;
 		let loot: ItemBank = {};
 
+		const hasPlopper = user.allItemsOwned().has('Plopper');
+
 		const plant = Farming.Plants.find(plant => plant.name === plantsName);
 		const userBank = user.settings.get(UserSettings.Bank);
 
@@ -149,9 +151,7 @@ export default class extends Task {
 				str += `\n${user.minionName}'s Farming level is now ${newLevel}!`;
 			}
 
-			if (userBank[itemID('Plopper')]) {
-				loot = multiplyBank(loot, 4);
-			}
+			if (hasPlopper) loot = multiplyBank(loot, 4);
 
 			// This code gives the boxes for planing when ONLY planting.
 			if (plant.name === 'Mysterious tree') {
@@ -189,9 +189,7 @@ export default class extends Task {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			if (userBank[itemID('Plopper')]) {
-				str += '\nYou received 4x loot from Plopper';
-			}
+			if (hasPlopper) str += '\nYou received 4x loot from Plopper';
 
 			handleTripFinish(
 				this.client,
@@ -214,7 +212,7 @@ export default class extends Task {
 			if (!plant) return;
 
 			let quantityDead = 0;
-			if (!userBank[itemID('Plopper')]) {
+			if (!hasPlopper) {
 				for (let i = 0; i < patchType.lastQuantity; i++) {
 					for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
 						const deathRoll = Math.random();
@@ -484,9 +482,7 @@ export default class extends Task {
 				);
 			}
 
-			if (userBank[itemID('Plopper')]) {
-				loot = multiplyBank(loot, 4);
-			}
+			if (hasPlopper) loot = multiplyBank(loot, 4);
 
 			if (loot[itemID('Plopper')]) {
 				loot[itemID('Plopper')] = 1;
@@ -524,9 +520,7 @@ export default class extends Task {
 			);
 			await user.addItemsToBank(loot, true);
 
-			if (userBank[itemID('Plopper')]) {
-				infoStr.push('\nYou received 4x loot from Plopper');
-			}
+			if (hasPlopper) infoStr.push('\nYou received 4x loot from Plopper');
 
 			handleTripFinish(
 				this.client,

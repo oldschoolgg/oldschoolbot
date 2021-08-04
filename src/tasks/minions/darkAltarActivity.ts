@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { darkAltarRunes } from '../../commands/Minion/darkaltar';
+import { Events } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { DarkAltarOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -46,7 +47,27 @@ export default class extends Task {
 			}
 		}
 
-		let str = `${user}, ${user.minionName} finished runecrafing at the Dark altar, you received ${loot}. ${xpRes1} ${xpRes2} ${xpRes3}`;
+		let str = `${user}, ${user.minionName} finished runecrafting at the Dark altar, you received ${loot}. ${xpRes1} ${xpRes2} ${xpRes3}`;
+
+		if (loot.amount('Rift guardian') > 0) {
+			str += "\n\n**You have a funny feeling you're being followed...**";
+			this.client.emit(
+				Events.ServerNotification,
+				`**${user.username}'s** minion, ${user.minionName}, just received a Rift guardian while crafting ${
+					runeData.item.name
+				}s at level ${user.skillLevel(SkillsEnum.Runecraft)} Runecrafting!`
+			);
+		}
+
+		if (loot.amount('Rift guardian') > 0) {
+			str += "\n\n**You have a funny feeling you're being followed...**";
+			this.client.emit(
+				Events.ServerNotification,
+				`**${user.username}'s** minion, ${user.minionName}, just received a Rift guardian while crafting ${
+					runeData.item.name
+				}s at level ${user.skillLevel(SkillsEnum.Runecraft)} Runecrafting!`
+			);
+		}
 
 		await user.addItemsToBank(loot, true);
 

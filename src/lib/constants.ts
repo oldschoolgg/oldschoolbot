@@ -127,7 +127,8 @@ export const enum Emoji {
 	Minigames = '<:minigameIcon:630400565070921761>',
 	Skull = '<:Skull:802136963926065165>',
 	CombatSword = '<:combat:802136963956080650>',
-	SOTW = '<:SOTWtrophy:842938096097820693>'
+	SOTW = '<:SOTWtrophy:842938096097820693>',
+	OSRSSkull = '<:skull:863392427040440320>'
 }
 
 export const enum ReactionEmoji {
@@ -213,7 +214,8 @@ export const enum Tasks {
 	DarkAltar = 'darkAltarActivity',
 	Ignecarus = 'ignecarusActivity',
 	TrekkingActivity = 'templeTrekkingActivity',
-	KibbleActivity = 'kibbleActivity'
+	KibbleActivity = 'kibbleActivity',
+	RevenantsActivity = 'revenantsActivity'
 }
 
 export enum Activity {
@@ -283,7 +285,8 @@ export enum Activity {
 	DarkAltar = 'DarkAltar',
 	Ignecarus = 'Ignecarus',
 	Trekking = 'Trekking',
-	KibbleMaking = 'KibbleMaking'
+	KibbleMaking = 'KibbleMaking',
+	Revenants = 'Revenants'
 }
 
 export enum ActivityGroup {
@@ -365,6 +368,7 @@ export const enum BitField {
 	HasPermanentTierOne = 12,
 	DisabledRandomEvents = 13,
 	PermanentIronman = 14,
+	AlwaysSmallBank = 15,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -388,7 +392,8 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
 	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp' },
-	[BitField.PermanentIronman]: { name: 'Permanent Ironman' }
+	[BitField.PermanentIronman]: { name: 'Permanent Ironman' },
+	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' }
 } as const;
 
 export const enum PatronTierID {
