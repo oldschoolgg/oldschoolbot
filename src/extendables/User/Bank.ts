@@ -122,7 +122,7 @@ export default class extends Extendable {
 				await user.addItemsToCollectionLog(clLoot.bank);
 			}
 
-			// Get the amount of coins in the loot and remove the coins form the items to be added to the user bank
+			// Get the amount of coins in the loot and remove the coins from the items to be added to the user bank
 			const coinsInLoot = items.amount(995);
 			if (coinsInLoot > 0) {
 				await user.addGP(items.amount(995));
