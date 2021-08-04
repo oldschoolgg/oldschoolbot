@@ -50,6 +50,28 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 		titheFarmPoints: 50
 	},
 	{
+		name: "Seed box",
+		outputItems: {
+			[itemID("Seed box")]: 1
+		},
+		titheFarmPoints: 250
+	},
+	{
+		name: "Gricoller's can",
+		aliases: ['can', 'gricollers can'],
+		outputItems: {
+			[itemID("Gricoller's can")]: 1
+		},
+		titheFarmPoints: 200
+	},
+	{
+		name: "Herb sack",
+		outputItems: {
+			[itemID("Herb sack")]: 1
+		},
+		titheFarmPoints: 250
+	},
+	{
 		name: 'Grape seed',
 		aliases: ['grape seeds'],
 		outputItems: {
