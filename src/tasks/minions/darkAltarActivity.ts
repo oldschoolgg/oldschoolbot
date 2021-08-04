@@ -47,7 +47,7 @@ export default class extends Task {
 			}
 		}
 
-		let str = `${user}, ${user.minionName} finished runecrafing at the Dark altar, you received ${loot}. ${xpRes1} ${xpRes2} ${xpRes3}`;
+		let str = `${user}, ${user.minionName} finished runecrafting at the Dark altar, you received ${loot}. ${xpRes1} ${xpRes2} ${xpRes3}`;
 
 		if (loot.amount('Rift guardian') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";
