@@ -96,9 +96,9 @@ setCustomItem(
 		equipment: {
 			...Items.get('Dragon harpoon')!.equipment!,
 			requirements: {
-				agility: 90,
-				attack: 90,
-				fishing: 90
+				agility: 99,
+				attack: 99,
+				fishing: 99
 			}
 		}
 	},
