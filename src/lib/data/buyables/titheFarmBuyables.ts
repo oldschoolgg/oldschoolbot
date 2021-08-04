@@ -50,9 +50,9 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 		titheFarmPoints: 50
 	},
 	{
-		name: "Seed box",
+		name: 'Seed box',
 		outputItems: {
-			[itemID("Seed box")]: 1
+			[itemID('Seed box')]: 1
 		},
 		titheFarmPoints: 250
 	},
@@ -65,9 +65,9 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 		titheFarmPoints: 200
 	},
 	{
-		name: "Herb sack",
+		name: 'Herb sack',
 		outputItems: {
-			[itemID("Herb sack")]: 1
+			[itemID('Herb sack')]: 1
 		},
 		titheFarmPoints: 250
 	},
