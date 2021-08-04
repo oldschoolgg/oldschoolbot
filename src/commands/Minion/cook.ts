@@ -60,6 +60,7 @@ export default class extends BotCommand {
 		let timeToCookSingleCookable = Time.Second * 2.88;
 		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
 			timeToCookSingleCookable /= 1.6;
+			if (hasRemy) timeToCookSingleCookable /= 1.5;
 		} else if (msg.author.hasItemEquippedAnywhere(itemID('Cooking master cape'))) {
 			timeToCookSingleCookable /= 5;
 		} else if (hasRemy) {
