@@ -271,6 +271,7 @@ export const vorkathCL = resolveItems([
 ]);
 export const wintertodtCL = resolveItems([
 	'Phoenix',
+	'Wintertoad',
 	'Tome of fire',
 	'Burnt page',
 	'Pyromancer garb',
@@ -290,6 +291,7 @@ export const zalcanoCL = resolveItems([
 ]);
 export const zulrahCL = resolveItems([
 	'Pet snakeling',
+	'Brock',
 	'Tanzanite mutagen',
 	'Magma mutagen',
 	'Jar of swamp',
