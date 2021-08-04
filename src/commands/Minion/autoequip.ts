@@ -8,6 +8,7 @@ import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
 import getUserBestGearFromBank from '../../lib/minions/functions/getUserBestGearFromBank';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { WILDY_PRESET_WARNING_MESSAGE } from './equip';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -32,6 +33,8 @@ export default class extends BotCommand {
 		[gearType, type, style, extra = null]: [GearSetupTypes, string, string, string | null]
 	) {
 		await msg.author.settings.sync(true);
+
+		if (gearType === 'wildy') await msg.confirm(WILDY_PRESET_WARNING_MESSAGE);
 
 		await msg.author.queueFn(async () => {
 			const { gearToEquip, userFinalBank } = getUserBestGearFromBank(
