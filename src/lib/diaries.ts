@@ -4,7 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { MinigameKey } from '../extendables/User/Minigame';
-import { MAX_QP } from './constants';
+import { MAX_REAL_QP } from './constants';
 import { UserSettings } from './settings/types/UserSettings';
 import { courses } from './skilling/skills/agility';
 import { Skills } from './types';
@@ -471,7 +471,7 @@ export const FaladorDiary: Diary = {
 			thieving: 13,
 			woodcutting: 75
 		},
-		qp: 284,
+		qp: MAX_REAL_QP,
 		collectionLogReqs: resolveItems(['Air rune', 'Saradomin brew(3)'])
 	}
 };
@@ -844,7 +844,7 @@ export const LumbridgeDraynorDiary: Diary = {
 			woodcutting: 75
 		},
 		collectionLogReqs: resolveItems(['Magic logs', 'Water rune', 'Adamant platebody']),
-		qp: MAX_QP
+		qp: MAX_REAL_QP
 	}
 };
 

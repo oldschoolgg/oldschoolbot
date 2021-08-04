@@ -420,6 +420,7 @@ export const badges: { [key: number]: string } = {
 	12: Emoji.SOTW
 };
 
+export const MAX_REAL_QP = 284;
 export const MAX_QP = 5000;
 
 export const MIMIC_MONSTER_ID = 23_184;
