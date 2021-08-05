@@ -839,12 +839,17 @@ export default class extends Extendable {
 		});
 
 		if (currentXP >= 5_000_000_000) {
-			return (
-				`**You received no XP because you have 5b ${name} XP already.**\n` +
-				`Tracked +${Math.ceil(params.amount).toLocaleString()} ${
-					skillEmoji[params.skillName]
-				}, including all boosts.`
-			);
+			let xpStr = '';
+			if (params.duration && !params.minimal) {
+				xpStr += `You received no XP because you have 200m ${name} XP already.`;
+				xpStr += ` Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
+				let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
+				rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
+				xpStr += ` (${toKMB(rawXPHr)}/Hr)`;
+			} else {
+				xpStr += `:no_entry_sign: Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
+			}
+			return xpStr;
 		}
 
 		// If they reached a XP milestone, send a server notification.
