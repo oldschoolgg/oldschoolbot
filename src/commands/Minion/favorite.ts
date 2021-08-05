@@ -19,6 +19,24 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [items]: [Item[] | undefined]) {
 		const currentFavorites = msg.author.settings.get(UserSettings.FavoriteItems);
 
+		if (msg.flagArgs.clear) {
+			const currentFavorites = msg.author.settings.get(UserSettings.FavoriteItems);
+			if (currentFavorites.length > 0) {
+				await msg.confirm(
+					`Do you want to clear your favorite items from your bank? You currently have ${currentFavorites.length.toLocaleString()} favorite items.`
+				);
+				await msg.author.settings.update(UserSettings.FavoriteItems, [], {
+					arrayAction: ArrayActions.Overwrite
+				});
+				return msg.channel.send(
+					`You cleared your favorite items. Here is what you had on your favorite list: ${currentFavorites
+						.map(id => itemNameFromID(id))
+						.join(', ')}.`
+				);
+			}
+			return msg.channel.send('You dont have anything on your favorites to clear.');
+		}
+
 		if (!items || items.length === 0) {
 			const currentFavorites = msg.author.settings.get(UserSettings.FavoriteItems);
 			if (currentFavorites.length === 0) {
