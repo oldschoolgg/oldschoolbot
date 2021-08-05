@@ -676,22 +676,29 @@ export default class extends Extendable {
 
 		const name = toTitleCase(params.skillName);
 
-		if (currentXP >= 200_000_000) {
-			return `You received no XP because you have 200m ${name} XP already.`;
-		}
-
 		const skill = Object.values(Skills).find(skill => skill.id === params.skillName)!;
 
 		const newXP = Math.min(200_000_000, currentXP + params.amount);
-		const totalXPAdded = newXP - currentXP;
 		const newLevel = convertXPtoLVL(Math.floor(newXP));
 
-		if (totalXPAdded > 0) {
-			XPGainsTable.insert({
-				userID: this.id,
-				skill: params.skillName,
-				xp: Math.floor(params.amount)
-			});
+		await XPGainsTable.insert({
+			userID: this.id,
+			skill: params.skillName,
+			xp: Math.floor(params.amount)
+		});
+
+		if (currentXP >= 200_000_000) {
+			let xpStr = '';
+			if (params.duration && !params.minimal) {
+				xpStr += `You received no XP because you have 200m ${name} XP already.`;
+				xpStr += ` Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
+				let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
+				rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
+				xpStr += ` (${toKMB(rawXPHr)}/Hr)`;
+			} else {
+				xpStr += `:no_entry_sign: Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
+			}
+			return xpStr;
 		}
 
 		// If they reached a XP milestone, send a server notification.
