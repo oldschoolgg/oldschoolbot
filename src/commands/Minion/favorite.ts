@@ -23,13 +23,13 @@ export default class extends BotCommand {
 			const currentFavorites = msg.author.settings.get(UserSettings.FavoriteItems);
 			if (currentFavorites.length > 0) {
 				await msg.confirm(
-					`Do you want to clear your favorite items from your bank? You currently have ${currentFavorites.length.toLocaleString()} favorite items.`
+					`Are you sure you want to clear your favorite items list? You currently have ${currentFavorites.length.toLocaleString()} favorite items.`
 				);
 				await msg.author.settings.update(UserSettings.FavoriteItems, [], {
 					arrayAction: ArrayActions.Overwrite
 				});
 				return msg.channel.send(
-					`You cleared your favorite items. Here is what you had on your favorite list: ${currentFavorites
+					`You cleared your favorite items. Here is what you had in your favorite list: ${currentFavorites
 						.map(id => itemNameFromID(id))
 						.join(', ')}.`
 				);
