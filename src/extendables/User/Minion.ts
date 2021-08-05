@@ -752,10 +752,6 @@ export default class extends Extendable {
 
 		const name = toTitleCase(params.skillName);
 
-		if (currentXP >= 5_000_000_000) {
-			return `You received no XP because you have 5b ${name} XP already.`;
-		}
-
 		const skill = Object.values(Skills).find(skill => skill.id === params.skillName)!;
 		const currentTotalLevel = this.totalLevel();
 
@@ -834,14 +830,21 @@ export default class extends Extendable {
 
 		const newXP = Math.min(5_000_000_000, currentXP + params.amount);
 		const newLevel = convertXPtoLVL(newXP, 120);
-		const totalXPAdded = newXP - currentXP;
 
-		if (totalXPAdded > 0) {
-			XPGainsTable.insert({
-				userID: this.id,
-				skill: params.skillName,
-				xp: Math.floor(params.amount)
-			});
+		// Track XP past 5b for leagues / sotw
+		await XPGainsTable.insert({
+			userID: this.id,
+			skill: params.skillName,
+			xp: Math.floor(params.amount)
+		});
+
+		if (currentXP >= 5_000_000_000) {
+			return (
+				`**You received no XP because you have 5b ${name} XP already.**\n` +
+				`Tracked +${Math.ceil(params.amount).toLocaleString()} ${
+					skillEmoji[params.skillName]
+				}, including all boosts.`
+			);
 		}
 
 		// If they reached a XP milestone, send a server notification.
