@@ -157,13 +157,14 @@ export default class DailyCommand extends BotCommand {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceDaily, loot[COINS_ID]);
 		}
 
-		await user.addItemsToBank(loot, true);
+		const { itemsAdded, previousCL } = await user.addItemsToBank(loot, true);
 
 		return msg.channel.sendBankImage({
-			bank: loot,
+			bank: itemsAdded,
+			user: msg.author,
 			title: `${msg.author.username}'s Daily`,
 			content: dmStr,
-			background: msg.author.settings.get(UserSettings.BankBackground)
+			cl: previousCL
 		});
 	}
 }
