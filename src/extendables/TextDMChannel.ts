@@ -55,20 +55,21 @@ export default class extends Extendable {
 	async send(this: TextChannel, input: string | MessageOptions): Promise<KlasaMessage> {
 		const maxLength = 2000;
 		if (typeof input === 'string' && input.length > maxLength) {
-			let firstMessage = null;
+			let lastMessage = null;
 			for (const chunk of Util.splitMessage(input, { maxLength })) {
 				const sentMessage = await this.send(chunk);
-				if (!firstMessage) firstMessage = sentMessage;
+				lastMessage = sentMessage;
 			}
-			return firstMessage!;
+			return lastMessage!;
 		}
 		if (isObject(input) && input.content && input.content.length > maxLength) {
 			const split = Util.splitMessage(input.content, { maxLength });
-			const firstMessage = await this.send({ ...input, content: split[0] });
+			await this.send({ ...input, content: split[0] });
+			let lastMessage = null;
 			for (let i = 1; i < split.length; i++) {
-				await this.send(split[i]);
+				lastMessage = await this.send(split[i]);
 			}
-			return firstMessage;
+			return lastMessage!;
 		}
 
 		if (this instanceof User || this instanceof GuildMember) {
