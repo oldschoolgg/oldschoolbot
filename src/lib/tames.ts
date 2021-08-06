@@ -82,7 +82,7 @@ export async function runTameTask(activity: TameActivityTable) {
 			const fullMonster = Monsters.get(monsterID)!;
 			const loot = fullMonster.kill(quantity, {});
 			const user = await client.users.fetch(activity.userID);
-			await user.addItemsToBank(loot, true);
+			await user.addItemsToBank(loot);
 			handleFinish({
 				loot,
 				message: `${user}, ${activity.tame.name} finished killing ${quantity}x ${fullMonster.name}, you received ${loot}.`
