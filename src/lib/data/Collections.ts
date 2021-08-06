@@ -845,7 +845,12 @@ export const allCollectionLogs: ICollection = {
 					'Master runecrafter boots',
 					'Elder thread',
 					'Elder talisman',
-					'Magic crate'
+					'Magic crate',
+					'Lychee seed',
+					'Avocado seed',
+					'Mysterious seed',
+					'Mango seed',
+					'Magical artifact'
 				])
 			}
 		}
