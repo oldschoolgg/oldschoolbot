@@ -71,7 +71,7 @@ export default class extends BotCommand {
 			subcommands: true,
 			usage: '[k|select|setname] [input:...str]',
 			usageDelim: ' ',
-			aliases: ['tame']
+			aliases: ['tame', 't']
 		});
 	}
 
