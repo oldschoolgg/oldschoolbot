@@ -53,20 +53,35 @@ export default class extends Extendable {
 	}
 
 	async send(this: TextChannel, input: string | MessageOptions): Promise<KlasaMessage> {
-		if (typeof input === 'string' && input.length > 2000) {
-			let firstMessage = null;
-			for (const chunk of Util.splitMessage(input)) {
+		const maxLength = 2000;
+		if (typeof input === 'string' && input.length > maxLength) {
+			let lastMessage = null;
+			for (const chunk of Util.splitMessage(input, { maxLength })) {
 				const sentMessage = await this.send(chunk);
-				if (!firstMessage) firstMessage = sentMessage;
+				lastMessage = sentMessage;
 			}
-			return firstMessage!;
+			return lastMessage!;
 		}
-		if (isObject(input) && input.content && input.content.length > 2000) {
-			const split = Util.splitMessage(input.content);
-			await this.send({ ...input, content: split[0] });
+		if (isObject(input) && input.content && input.content.length > maxLength) {
+			// Moves files + components to the final message.
+			const split = Util.splitMessage(input.content, { maxLength });
+			const newPayload = { ...input };
+			// Separate files and components from payload for interactions
+			const { components, files } = newPayload;
+			delete newPayload.components;
+			delete newPayload.files;
+			await this.send({ ...newPayload, content: split[0] });
+
+			let lastMessage = null;
 			for (let i = 1; i < split.length; i++) {
-				await this.send(split[i]);
+				if (i + 1 === split.length) {
+					// Add files to last msg, and components for interactions to the final message.
+					lastMessage = await this.send({ components, files, content: split[i] });
+				} else {
+					await this.send(split[i]);
+				}
 			}
+			return lastMessage!;
 		}
 
 		if (this instanceof User || this instanceof GuildMember) {
