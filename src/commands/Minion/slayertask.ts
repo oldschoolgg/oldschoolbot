@@ -46,12 +46,12 @@ const returnSuccessButtons = [
 	],
 	[
 		new MessageButton({
-			label: 'Cancel Task (30 points)',
+			label: 'Cancel Task + New (30 points)',
 			style: 'DANGER',
 			customID: 'skip'
 		}),
 		new MessageButton({
-			label: 'Block Task (100 points)',
+			label: 'Block Task + New (100 points)',
 			style: 'DANGER',
 			customID: 'block'
 		}),
@@ -135,9 +135,11 @@ export default class extends BotCommand {
 					return this.client.commands.get('autoslay')!.run(msg, ['boss']);
 				}
 				case 'skip': {
+					msg.flagArgs.new = 'yes';
 					return this.client.commands.get('slayertask')!.run(msg, ['skip']);
 				}
 				case 'block': {
+					msg.flagArgs.new = 'yes';
 					return this.client.commands.get('slayertask')!.run(msg, ['block']);
 				}
 			}
@@ -255,11 +257,15 @@ export default class extends BotCommand {
 			currentTask!.quantityRemaining = 0;
 			currentTask!.skipped = true;
 			currentTask!.save();
-			return msg.channel.send(
+			await msg.channel.send(
 				`Your task has been ${
 					toBlock ? 'blocked' : 'skipped'
 				}. You have ${slayerPoints.toLocaleString()} slayer points.`
 			);
+			if (Boolean(msg.flagArgs.new)) {
+				return this.client.commands.get('slayertask')!.run(msg, []);
+			}
+			return;
 		}
 
 		let rememberedSlayerMaster: string = '';
