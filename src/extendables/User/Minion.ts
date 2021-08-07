@@ -787,21 +787,28 @@ export default class extends Extendable {
 		if (masterCape) {
 			params.amount = increaseNumByPercent(params.amount, isMatchingCape ? 8 : 3);
 		}
+		// Check if each gorajan set is equipped:
+		const gorajanMeleeEquipped = this.getGear('melee').hasEquipped(gorajanWarriorOutfit, true);
+		const gorajanRangeEquipped = this.getGear('range').hasEquipped(gorajanArcherOutfit, true);
+		const gorajanMageEquipped = this.getGear('mage').hasEquipped(gorajanOccultOutfit, true);
 
+		// Determine if boost should apply based on skill + equipped sets:
 		let gorajanBoost = false;
 		const gorajanMeleeBoost =
 			multiplier &&
 			[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(params.skillName) &&
-			this.getGear('melee').hasEquipped(gorajanWarriorOutfit, true);
-		const gorajanRangeBoost =
+			gorajanMeleeEquipped;
+		const gorajanRangeBoost = multiplier && params.skillName === SkillsEnum.Ranged && gorajanRangeEquipped;
+		const gorajanMageBoost = multiplier && params.skillName === SkillsEnum.Magic && gorajanMageEquipped;
+		// 2x HP if all 3 gorajan sets are equipped:
+		const gorajanHpBoost =
 			multiplier &&
-			params.skillName === SkillsEnum.Ranged &&
-			this.getGear('range').hasEquipped(gorajanArcherOutfit, true);
-		const gorajanMageBoost =
-			multiplier &&
-			params.skillName === SkillsEnum.Magic &&
-			this.getGear('mage').hasEquipped(gorajanOccultOutfit, true);
-		if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost) {
+			params.skillName === SkillsEnum.Hitpoints &&
+			gorajanMeleeEquipped &&
+			gorajanRangeEquipped &&
+			gorajanMageEquipped;
+
+		if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost || gorajanHpBoost) {
 			params.amount *= 2;
 			gorajanBoost = true;
 		}
