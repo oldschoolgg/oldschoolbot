@@ -278,15 +278,27 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 		let duration = quantity * timePerMonster;
 
 		const cost = new Bank();
+
+		let hasPrayerPots = true;
+		if (msg.author.bank().amount('Prayer potion(4)') < 5) {
+			hasPrayerPots = false;
+			await msg.confirm(
+				'Are you sure you want to kill revenants without prayer potions? You should bring at least 5 Prayer potion(4).'
+			);
+		} else {
+			cost.add('Prayer potion(4)', 5);
+		}
+
 		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, cost);
 		await msg.author.removeItemsFromBank(cost);
 
 		let deathChance = 5;
-		let deathChanceFromDefenceLevel = (100 - msg.author.skillLevel(SkillsEnum.Defence)) / 4;
+		let defLvl = msg.author.skillLevel(SkillsEnum.Defence);
+		let deathChanceFromDefenceLevel = (100 - (defLvl === 99 ? 100 : defLvl)) / 4;
 		deathChance += deathChanceFromDefenceLevel;
 
 		const defensiveGearPercent = Math.max(0, calcWhatPercent(gear.getStats().defence_magic, maxOffenceStats[key]));
-		let deathChanceFromGear = Math.max(60, 100 - defensiveGearPercent) / 4;
+		let deathChanceFromGear = Math.max(20, 100 - defensiveGearPercent) / 4;
 		deathChance += deathChanceFromGear;
 
 		const died = percentChance(deathChance);
@@ -296,11 +308,12 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
-			duration: died ? (randInt(1, duration) + randInt(1, duration)) / 2 : duration,
+			duration: died ? randInt(Math.min(Time.Minute * 3, duration), duration) : duration,
 			type: Activity.Revenants,
 			died,
 			skulled,
-			style
+			style,
+			usingPrayerPots: hasPrayerPots
 		});
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
@@ -310,8 +323,8 @@ ${Emoji.OSRSSkull} ${skulled ? 'Skulled' : 'Unskulled'}
 **Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(
 			2
 		)}% from magic def, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level).${
-			boosts.length > 0 ? `\nBoosts: ${boosts.join(', ')}` : ''
-		}`;
+			cost.length > 0 ? `\nRemoved from bank: ${cost}` : ''
+		}${boosts.length > 0 ? `\nBoosts: ${boosts.join(', ')}` : ''}`;
 
 		return msg.channel.send(response);
 	}
