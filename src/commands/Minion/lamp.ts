@@ -12,6 +12,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Skills } from '../../lib/types';
+import { convertXPtoLVL } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
 interface IXPLamp {
@@ -149,7 +150,7 @@ export default class extends BotCommand {
 				];
 			amount = 200_000_000 - userXp;
 		}
-		return [true, `You received ${await msg.author.addXP({ skillName, amount })}`];
+		return [true, await msg.author.addXP({ skillName, amount })];
 	}
 
 	async xpReward(msg: KlasaMessage, skills: Skills, requirements?: Skills) {
@@ -157,18 +158,23 @@ export default class extends BotCommand {
 			objectEntries(skills).map(async skill => {
 				const userXp = msg.author.rawSkills[skill[0]]!;
 				const userLevel = msg.author.skillLevel(skill[0]);
+				const newUserLevel = convertXPtoLVL(userXp + skill[1]!);
 				const requiredLevel = requirements && requirements[skill[0]] ? requirements[skill[0]]! : 0;
 
 				let hasReq = userLevel >= requiredLevel;
 
 				let emoji = hasReq ? skillEmoji[skill[0]] : Emoji.RedX;
-				let description = hasReq ? 'You can select this!' : `You need level ${requirements![skill[0]]}.`;
+				let description = hasReq
+					? newUserLevel !== userLevel
+						? `You will level up to level ${newUserLevel.toLocaleString()}!`
+						: 'You can select this!'
+					: `You need level ${requirements![skill[0]]}.`;
 				if (userXp === 200_000_000) description = `You are already 200m in ${skill[0]}`;
 				if ((await this.lockedSkills()).includes(skill[0])) description = 'This skill is locked.';
 
-				let label = `${skill[1]!.toLocaleString()} in ${skill[0].toString()}`;
-				if (label.length > 25) label = `${toKMB(skill[1]!)} in ${skill[0].toString()}`;
-				if (label.length > 25) label = `${toKMB(skill[1]!)} in ${skill[0].toString().slice(0, 3)}`;
+				let label = `${skill[1]!.toLocaleString()} XP in ${skill[0].toString()}`;
+				if (label.length > 100) label = `${toKMB(skill[1]!)} XP in ${skill[0].toString()}`;
+				if (label.length > 100) label = `${toKMB(skill[1]!)} XP in ${skill[0].toString().slice(0, 3)}`;
 
 				return { label, description, value: `${skill[0]}`, emoji };
 			})
