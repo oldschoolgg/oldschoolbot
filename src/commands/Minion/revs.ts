@@ -320,11 +320,11 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish. ${debug.join(', ')}
 ${Emoji.OSRSSkull} ${skulled ? 'Skulled' : 'Unskulled'}
-**Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(
-			2
-		)}% from magic def, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level).${
-			cost.length > 0 ? `\nRemoved from bank: ${cost}` : ''
-		}${boosts.length > 0 ? `\nBoosts: ${boosts.join(', ')}` : ''}`;
+**Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(2)}% from magic def${
+			deathChanceFromDefenceLevel > 0 ? `, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level` : ''
+		} + 5% as default chance).${cost.length > 0 ? `\nRemoved from bank: ${cost}` : ''}${
+			boosts.length > 0 ? `\nBoosts: ${boosts.join(', ')}` : ''
+		}`;
 
 		return msg.channel.send(response);
 	}
