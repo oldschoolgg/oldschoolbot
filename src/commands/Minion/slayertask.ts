@@ -1,4 +1,5 @@
-import { randInt } from 'e';
+import { MessageButton } from 'discord.js';
+import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
@@ -19,6 +20,48 @@ import { AssignableSlayerTask } from '../../lib/slayer/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
+
+const returnSuccessButtons = [
+	[
+		new MessageButton({
+			label: 'Autoslay (Saved)',
+			style: 'SECONDARY',
+			customID: 'assaved'
+		}),
+		new MessageButton({
+			label: 'Autoslay (Default)',
+			style: 'SECONDARY',
+			customID: 'asdef'
+		}),
+		new MessageButton({
+			label: 'Autoslay (EHP)',
+			style: 'SECONDARY',
+			customID: 'asehp'
+		}),
+		new MessageButton({
+			label: 'Autoslay (Boss)',
+			style: 'SECONDARY',
+			customID: 'asboss'
+		})
+	],
+	[
+		new MessageButton({
+			label: 'Cancel Task + New (30 points)',
+			style: 'DANGER',
+			customID: 'skip'
+		}),
+		new MessageButton({
+			label: 'Block Task + New (100 points)',
+			style: 'DANGER',
+			customID: 'block'
+		}),
+		new MessageButton({
+			label: 'Do Nothing',
+			style: 'SECONDARY',
+			customID: 'doNothing'
+		})
+	]
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -66,7 +109,44 @@ export default class extends BotCommand {
 				return msg.channel.send('It was not possible to auto-slay this task. Please, try again.');
 			}
 		}
-		return msg.channel.send(message);
+		const sentMessage = await msg.channel.send({ content: message, components: returnSuccessButtons });
+		try {
+			const selection = await sentMessage.awaitMessageComponentInteraction({
+				filter: i => {
+					if (i.user.id !== msg.author.id) {
+						i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+						return false;
+					}
+					return true;
+				},
+				time: Time.Second * 15
+			});
+			switch (selection.customID) {
+				case 'assaved': {
+					return this.client.commands.get('autoslay')!.run(msg, ['']);
+				}
+				case 'asdef': {
+					return this.client.commands.get('autoslay')!.run(msg, ['default']);
+				}
+				case 'asehp': {
+					return this.client.commands.get('autoslay')!.run(msg, ['ehp']);
+				}
+				case 'asboss': {
+					return this.client.commands.get('autoslay')!.run(msg, ['boss']);
+				}
+				case 'skip': {
+					msg.flagArgs.new = 'yes';
+					return this.client.commands.get('slayertask')!.run(msg, ['skip']);
+				}
+				case 'block': {
+					msg.flagArgs.new = 'yes';
+					return this.client.commands.get('slayertask')!.run(msg, ['block']);
+				}
+			}
+		} catch {
+		} finally {
+			await sentMessage.edit({ components: [] });
+		}
 	}
 
 	@requiresMinion
@@ -177,11 +257,15 @@ export default class extends BotCommand {
 			currentTask!.quantityRemaining = 0;
 			currentTask!.skipped = true;
 			currentTask!.save();
-			return msg.channel.send(
+			await msg.channel.send(
 				`Your task has been ${
 					toBlock ? 'blocked' : 'skipped'
 				}. You have ${slayerPoints.toLocaleString()} slayer points.`
 			);
+			if (Boolean(msg.flagArgs.new)) {
+				return this.client.commands.get('slayertask')!.run(msg, []);
+			}
+			return;
 		}
 
 		let rememberedSlayerMaster: string = '';
@@ -232,7 +316,8 @@ export default class extends BotCommand {
 				` has assigned you to kill ${
 					newSlayerTask.currentTask.quantity
 				}x ${commonName}${this.getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
-			return this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
+			this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
+			return;
 		}
 
 		if (currentTask || !slayerMaster) {
@@ -263,11 +348,8 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 				UserSettings.Slayer.TaskStreak
 			)}.`;
 			if (currentTask && !warningInfo) {
-				return this.returnSuccess(
-					msg,
-					returnMessage,
-					Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay)
-				);
+				this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
+				return;
 			}
 			return msg.channel.send(returnMessage);
 		}
@@ -309,6 +391,6 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 		returnMessage += `${slayerMaster.name} has assigned you to kill ${
 			newSlayerTask.currentTask.quantity
 		}x ${commonName}${this.getAlternateMonsterList(newSlayerTask.assignedTask)}.${updateMsg}`;
-		return this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
+		this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
 	}
 }
