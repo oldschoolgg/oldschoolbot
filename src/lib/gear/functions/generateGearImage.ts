@@ -240,16 +240,21 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 		userBg = bankTask.backgroundImages.find(i => i.id === 1)!;
 	}
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateCompactFile);
-	const canvas = createCanvas((gearTemplateImage.width + 10) * 5 + 30 + 36 + 2, gearTemplateImage.height + 40);
+	const canvas = createCanvas((gearTemplateImage.width + 10) * 3 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 	ctx.fillStyle = ctx.createPattern(userBg.image!, 'repeat');
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	let i = 0;
-	for (const type of ['melee', 'range', 'mage', 'misc', 'skilling']) {
+	let y = 30;
+	for (const type of ['melee', 'range', 'mage', 'misc', 'skilling', 'wildy']) {
+		if (i === 3) {
+			y += gearTemplateImage.height + 30;
+			i = 0;
+		}
 		const gear = user.getGear(type as GearSetupType);
 		ctx.save();
-		ctx.translate(15 + i * (gearTemplateImage.width + 10), 30);
+		ctx.translate(15 + i * (gearTemplateImage.width + 10), y);
 		ctx.font = '16px RuneScape Bold 12';
 		ctx.textAlign = 'center';
 		drawText(canvas, toTitleCase(type), gearTemplateImage.width / 2, -7);
@@ -272,7 +277,7 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 	}
 
 	ctx.save();
-	ctx.translate(15 + i * (gearTemplateImage.width + 10), 31);
+	ctx.translate(-33 + i * (gearTemplateImage.width + 10), 31);
 	ctx.font = '16px RuneScape Bold 12';
 	ctx.textAlign = 'center';
 	drawText(canvas, 'Pet', 18, -8);

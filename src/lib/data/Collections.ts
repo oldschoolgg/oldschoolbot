@@ -16,7 +16,7 @@ import {
 import { UserSettings } from '../settings/types/UserSettings';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { ItemBank } from '../types';
-import { stringMatches } from '../util';
+import { addArrayOfNumbers, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
 	abyssalSireCL,
@@ -726,7 +726,26 @@ export const allCollectionLogs: ICollection = {
 				items: randomEventsCL
 			},
 			Revenants: {
-				enabled: false,
+				alias: ['revs'],
+				kcActivity: {
+					Default: async user => {
+						return addArrayOfNumbers(
+							[
+								Monsters.RevenantImp.id,
+								Monsters.RevenantGoblin.id,
+								Monsters.RevenantPyrefiend.id,
+								Monsters.RevenantHobgoblin.id,
+								Monsters.RevenantCyclops.id,
+								Monsters.RevenantHellhound.id,
+								Monsters.RevenantDemon.id,
+								Monsters.RevenantOrk.id,
+								Monsters.RevenantDarkBeast.id,
+								Monsters.RevenantKnight.id,
+								Monsters.RevenantDragon.id
+							].map(i => user.getKC(i))
+						);
+					}
+				},
 				items: revenantsCL
 			},
 			'Rooftop Agility': {

@@ -122,6 +122,7 @@ export const enum Emoji {
 	Minigames = '<:minigameIcon:630400565070921761>',
 	Skull = '<:Skull:802136963926065165>',
 	CombatSword = '<:combat:802136963956080650>',
+	OSRSSkull = '<:skull:863392427040440320>',
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>'
 }
 
@@ -201,7 +202,8 @@ export const enum Tasks {
 	MageArena2 = 'mageArena2Activity',
 	BigChompyBirdHunting = 'chompyHuntActivity',
 	DarkAltar = 'darkAltarActivity',
-	TrekkingActivity = 'templeTrekkingActivity'
+	TrekkingActivity = 'templeTrekkingActivity',
+	RevenantsActivity = 'revenantsActivity'
 }
 
 export enum Activity {
@@ -264,7 +266,8 @@ export enum Activity {
 	MageArena2 = 'MageArena2',
 	BigChompyBirdHunting = 'BigChompyBirdHunting',
 	DarkAltar = 'DarkAltar',
-	Trekking = 'Trekking'
+	Trekking = 'Trekking',
+	Revenants = 'Revenants'
 }
 
 export enum ActivityGroup {

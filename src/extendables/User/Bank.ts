@@ -122,13 +122,18 @@ export default class extends Extendable {
 				await user.addItemsToCollectionLog(clLoot.bank);
 			}
 
-			if (items.has(995)) {
+			// Get the amount of coins in the loot and remove the coins from the items to be added to the user bank
+			const coinsInLoot = items.amount(995);
+			if (coinsInLoot > 0) {
 				await user.addGP(items.amount(995));
 				items.remove(995, items.amount(995));
 			}
 
 			this.log(`Had items added to bank - ${JSON.stringify(items)}`);
 			await this.settings.update(UserSettings.Bank, user.bank().add(items).bank);
+
+			// Re-add the coins to the loot
+			if (coinsInLoot > 0) items.add(995, coinsInLoot);
 
 			return {
 				previousCL,

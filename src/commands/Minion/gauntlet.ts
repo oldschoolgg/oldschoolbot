@@ -40,11 +40,11 @@ const corruptedRequirements = {
 	ranged: 90,
 	prayer: 77,
 	// Skilling
-	cooking: 80,
-	farming: 80,
-	fishing: 80,
-	mining: 80,
-	woodcutting: 80
+	cooking: 70,
+	farming: 70,
+	fishing: 70,
+	mining: 70,
+	woodcutting: 70
 };
 
 export default class extends BotCommand {
@@ -94,7 +94,7 @@ export default class extends BotCommand {
 		}
 
 		let gauntletLength = baseLength;
-		if (type === 'corrupted') gauntletLength *= 2;
+		if (type === 'corrupted') gauntletLength *= 1.3;
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Gauntlet);
 

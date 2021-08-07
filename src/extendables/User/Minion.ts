@@ -1,7 +1,7 @@
 import { User } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, Time, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -67,6 +67,7 @@ import {
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	RaidsOptions,
+	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	SmeltingActivityTaskOptions,
@@ -554,6 +555,12 @@ export default class extends Extendable {
 			case Activity.Trekking: {
 				return `${this.minionName} is currently Temple Trekking. ${formattedDuration}`;
 			}
+			case Activity.Revenants: {
+				const data = currentTask as RevenantOptions;
+				return `${data.skulled ? `${Emoji.OSRSSkull} ` : ''} ${this.minionName} is currently killing ${
+					data.quantity
+				}x ${Monsters.get(data.monsterID)!.name} in the wilderness.`;
+			}
 		}
 	}
 
@@ -876,7 +883,13 @@ export default class extends Extendable {
 				// find the highest boost that the player has
 				for (const [itemID, boostAmount] of Object.entries(boostSet)) {
 					const parsedId = parseInt(itemID);
-					if (!this.hasItemEquippedOrInBank(parsedId)) continue;
+					if (
+						monster.wildy
+							? !this.hasItemEquippedAnywhere(parsedId)
+							: !this.hasItemEquippedOrInBank(parsedId)
+					) {
+						continue;
+					}
 					if (boostAmount > highestBoostAmount) {
 						highestBoostAmount = boostAmount;
 						highestBoostItem = parsedId;

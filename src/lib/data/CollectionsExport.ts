@@ -178,7 +178,7 @@ export const theGauntletCL = resolveItems([
 	'Youngllef',
 	'Crystal armour seed',
 	'Crystal weapon seed',
-	// 'Enhanced crystal weapon seed', // TODO - MISSING ITEM
+	'Enhanced crystal weapon seed',
 	'Gauntlet cape'
 ]);
 export const giantMoleCL = resolveItems(['Baby mole', 'Mole skin', 'Mole claw', 'Long bone', 'Curved bone']);
@@ -736,7 +736,8 @@ export const cluesHardCL = resolveItems([
 	'Guthix crozier',
 	'Zamorak stole',
 	'Zamorak crozier',
-	'Zombie head',
+	// Zombie head
+	19_912,
 	'Cyclops head',
 	"Pirate's hat",
 	'Red cavalier',
