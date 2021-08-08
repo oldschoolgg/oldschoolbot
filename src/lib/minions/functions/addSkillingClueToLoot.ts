@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { birdsNestID, nestTable } from '../../simulation/birdsNest';
 import { SkillsEnum } from '../../skilling/types';
-import { randFloat, roll } from '../../util';
+import { addArrayOfNumbers, randFloat, roll } from '../../util';
 import itemID from '../../util/itemID';
 
 const clues = [
@@ -23,8 +23,7 @@ export default function addSkillingClueToLoot(
 	const userLevel = user.skillLevel(skill);
 	const chance = Math.floor(clueChance / (100 + userLevel));
 	let nests = 0;
-	let cluesTotalWeight = 0;
-	clues.forEach(c => (cluesTotalWeight += c[1]));
+	const cluesTotalWeight = addArrayOfNumbers(clues.map(c => c[1]));
 
 	for (let i = 0; i < quantity; i++) {
 		if (skill === SkillsEnum.Woodcutting && roll(256)) {
