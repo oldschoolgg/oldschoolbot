@@ -181,7 +181,7 @@ export default class extends BotCommand {
 			timeToFinish *= (100 - boostAmount) / 100;
 			boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 		}
-		if (msg.author.hasItemEquippedAnywhere('Dwarven warhammer')) {
+		if (msg.author.hasItemEquippedAnywhere('Dwarven warhammer') && !monster.wildy) {
 			timeToFinish *= 0.6;
 			boosts.push('40% boost for Dwarven warhammer');
 		}
