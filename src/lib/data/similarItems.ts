@@ -380,6 +380,21 @@ const source: [string, (string | number)[]][] = [
 	[
 		'Dwarven warhammer',
 		['Dwarven warhammer (ice)', 'Dwarven warhammer (blood)', 'Dwarven warhammer (shadow)', 'Dwarven warhammer (3a)']
+	],
+	['Flippers', ['Dark flippers']],
+	[
+		'Merfolk trident',
+		[
+			'Trident of the seas (full)',
+			'Trident of the seas',
+			'Uncharged trident',
+			'Trident of the seas (e)',
+			'Uncharged trident (e)',
+			'Trident of the swamp',
+			'Uncharged toxic trident',
+			'Trident of the swamp (e)',
+			'Uncharged toxic trident (e)'
+		]
 	]
 ];
 

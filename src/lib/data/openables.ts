@@ -330,6 +330,15 @@ export const IronmanPMBTable = new LootTable()
 	.add('Hoppy')
 	.add('Flappy')
 	.add('Cob');
+const BaseGemBagTable = new LootTable()
+	.add('Uncut sapphire', 1, 4993)
+	.add('Uncut emerald', 1, 3468)
+	.add('Uncut ruby', 1, 1180)
+	.add('Uncut diamond', 1, 309)
+	.add('Uncut dragonstone', 1, 62)
+	.oneIn(100_000_000, 'Uncut onyx');
+
+const BagFullOfGemsTable = new LootTable().every(BaseGemBagTable, 40);
 
 const Openables: Openable[] = [
 	{
@@ -490,6 +499,13 @@ const Openables: Openable[] = [
 		aliases: ['magic crate'],
 		table: odsCrate,
 		emoji: Emoji.BirthdayPresent
+	},
+	{
+		name: 'Bag full of gems',
+		itemID: itemID('Bag full of gems'),
+		aliases: ['bag full of gems', 'gem bag'],
+		table: BagFullOfGemsTable,
+		emoji: Emoji.Casket
 	}
 ];
 
