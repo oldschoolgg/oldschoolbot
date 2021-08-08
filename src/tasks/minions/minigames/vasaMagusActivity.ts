@@ -70,7 +70,7 @@ export default class extends Task {
 			resultStr,
 			res => {
 				user.log('continued vasa');
-				return this.client.commands.get('vasa')!.run(res, []);
+				return this.client.commands.get('vasa')!.run(res, [quantity]);
 			},
 			image!,
 			data,
