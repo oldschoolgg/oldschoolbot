@@ -203,7 +203,7 @@ export const enum Tasks {
 	DarkAltar = 'darkAltarActivity',
 	TrekkingActivity = 'templeTrekkingActivity',
 	RevenantsActivity = 'revenantsActivity',
-	PestControl = 'pestControl'
+	PestControl = 'pestControlActivity'
 }
 
 export enum Activity {

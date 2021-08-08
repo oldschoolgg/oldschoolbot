@@ -30,11 +30,11 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			description: 'Sends your minion to catch chompies.',
-			examples: ['+chompyhunt', '+ch'],
+			description: 'Sends your minion to do pest control.',
+			examples: ['+pestcontrol', '+pc'],
 			categoryFlags: ['minion', 'minigame'],
 			subcommands: true,
-			aliases: ['ch'],
+			aliases: ['pc'],
 			usage: '<quantity:int{1,10}>'
 		});
 	}
