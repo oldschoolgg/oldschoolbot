@@ -78,7 +78,10 @@ export default class extends Task {
 		}
 
 		if (numberOfMinutes > 10 && ore.nuggets) {
-			const numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
+			let numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
+			if (user.hasItemEquippedAnywhere('Mining master cape')) {
+				numberOfNuggets *= 2;
+			}
 			loot.add('Golden nugget', numberOfNuggets);
 		} else if (numberOfMinutes > 10 && ore.minerals) {
 			let numberOfMinerals = 0;
@@ -87,6 +90,9 @@ export default class extends Task {
 			}
 
 			if (numberOfMinerals > 0) {
+				if (user.hasItemEquippedAnywhere('Mining master cape')) {
+					numberOfMinerals *= 2;
+				}
 				loot.add('Unidentified minerals', numberOfMinerals);
 			}
 		}
@@ -126,6 +132,10 @@ export default class extends Task {
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
+		}
+
+		if (user.hasItemEquippedAnywhere('Mining master cape')) {
+			str += '\n2x minerals/nuggets for Mining master cape.';
 		}
 
 		await user.addItemsToBank(loot, true);
