@@ -18,6 +18,7 @@ import { RevenantOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches, toKMB, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
+import combatAmmoUsage from '../../lib/util/combatAmmoUsage';
 import getOSItem from '../../lib/util/getOSItem';
 
 export const revenantMonsters: KillableMonster[] = [
@@ -133,11 +134,12 @@ export const revenantMonsters: KillableMonster[] = [
 	}
 ];
 
-const specialWeapons = {
-	melee: getOSItem("Viggora's chainmace"),
-	range: getOSItem("Craw's bow"),
-	mage: getOSItem("Thammaron's sceptre")
-} as const;
+const specialWeapons = [
+	{ gear: 'melee', item: getOSItem("Viggora's chainmace"), boost: 35 },
+	{ gear: 'range', item: getOSItem("Craw's bow"), boost: 35 },
+	{ gear: 'range', item: getOSItem('Hellfire bow'), boost: 80 },
+	{ gear: 'mage', item: getOSItem("Thammaron's sceptre"), boost: 35 }
+] as const;
 
 const ancientItems = [
 	{
@@ -232,7 +234,7 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 			});
 		}
 
-		const boosts = [];
+		let boosts = [];
 		const monster = revenantMonsters.find(
 			m =>
 				stringMatches(m.name, name) ||
@@ -266,10 +268,11 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 		timePerMonster = reduceNumByPercent(timePerMonster, gearPercent / 4);
 		boosts.push(`${(gearPercent / 4).toFixed(2)}% (out of a possible 25%) for ${key}`);
 
-		const specialWeapon = specialWeapons[style];
-		if (gear.hasEquipped(specialWeapon.name)) {
-			timePerMonster = reduceNumByPercent(timePerMonster, 35);
-			boosts.push(`${35}% for ${specialWeapon.name}`);
+		for (const sw of specialWeapons) {
+			if (sw.gear === style && gear.hasEquipped([sw.item.id])) {
+				timePerMonster = reduceNumByPercent(timePerMonster, sw.boost);
+				boosts.push(`${sw.boost}% for ${sw.item.name}`);
+			}
 		}
 
 		let skulled = Boolean(msg.flagArgs.skull);
@@ -278,8 +281,6 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 		let duration = quantity * timePerMonster;
 
 		const cost = new Bank();
-		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, cost);
-		await msg.author.removeItemsFromBank(cost);
 
 		let deathChance = 5;
 		let deathChanceFromDefenceLevel = (100 - msg.author.skillLevel(SkillsEnum.Defence)) / 4;
@@ -291,12 +292,39 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 
 		const died = percentChance(deathChance);
 
+		if (gear.hasEquipped(['Hellfire bow'])) {
+			if (!skulled) {
+				await msg.confirm(
+					'Using a **Hellfire bow** will automatically make you skulled! Are you sure you want to continue?'
+				);
+				skulled = true;
+			}
+			const {
+				bank: combatBankusage,
+				boosts: combatBoosts,
+				errors
+			} = combatAmmoUsage({
+				duration,
+				user: msg.author,
+				gearType: GearSetupTypes.Wildy
+			});
+			console.log({ errors, combatBoosts, combatBankusage });
+			if (errors.length > 0) return msg.channel.send(errors.join('\n'));
+			if (combatBoosts.length > 0) boosts = [...boosts, ...combatBoosts];
+			if (combatBankusage.length > 0) cost.add(combatBankusage);
+		}
+
+		if (died) duration = randInt(Math.min(Time.Minute * 3, duration), duration);
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, cost);
+		await msg.author.removeItemsFromBank(cost);
+
 		await addSubTaskToActivityTask<RevenantOptions>({
 			monsterID: monster.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
-			duration: died ? (randInt(1, duration) + randInt(1, duration)) / 2 : duration,
+			duration,
 			type: Activity.Revenants,
 			died,
 			skulled,

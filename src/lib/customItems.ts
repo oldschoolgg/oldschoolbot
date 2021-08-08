@@ -1679,6 +1679,68 @@ setCustomItem(48_215, 'Simple kibble', 'Coal', {}, 6000);
 setCustomItem(48_216, 'Delicious kibble', 'Coal', {}, 6000);
 setCustomItem(48_217, 'Extraordinary kibble', 'Coal', {}, 6000);
 setCustomItem(48_218, 'Magic crate', 'Coal', {}, 50_000);
+
+setCustomItem(
+	48_219,
+	'Hellfire arrow',
+	'Barbed arrow',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 75,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 200,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.Ammo,
+			requirements: {
+				ranged: 110
+			}
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	48_220,
+	'Hellfire bow',
+	'Twisted bow',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 250,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 110,
+			magic_damage: 0,
+			prayer: 10,
+			slot: EquipmentSlot.TwoHanded,
+			requirements: {
+				ranged: 110
+			}
+		}
+	},
+	(getOSItem('Twisted bow').price + getOSItem('Zaryte bow').price) * 1.1
+);
 /**
  * Misc Items
  *
