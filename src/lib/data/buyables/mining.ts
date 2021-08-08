@@ -1,3 +1,5 @@
+import { Bank } from 'oldschooljs';
+
 import { itemID } from '../../util';
 import { Buyable } from './buyables';
 
@@ -62,6 +64,15 @@ export const miningBuyables: Buyable[] = [
 		name: 'Bag full of gems',
 		itemCost: {
 			[itemID('Golden nugget')]: 40
+		}
+	},
+	{
+		name: 'Bag full of gems (minerals)',
+		outputItems: new Bank({
+			'Bag full of gems': 1
+		}),
+		itemCost: {
+			[itemID('Unidentified minerals')]: 20
 		}
 	}
 ];
