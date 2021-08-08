@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -12,7 +13,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import getOSItem from '../../lib/util/getOSItem';
 
 const unlimitedFireRuneProviders = [
 	'Staff of fire',
@@ -30,12 +30,7 @@ const unlimitedFireRuneProviders = [
 function alching(msg: KlasaMessage, tripLength: number) {
 	if (msg.author.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const bank = msg.author.bank();
-	const favAlchables = msg.author.settings
-		.get(UserSettings.FavoriteAlchables)
-		.filter(id => bank.has(id))
-		.map(getOSItem)
-		.filter(i => i.highalch > 0)
-		.sort((a, b) => b.highalch - a.highalch);
+	const favAlchables = msg.author.getUserFavAlchs() as Item[];
 
 	if (!msg.flagArgs.alch) {
 		return null;
@@ -64,6 +59,8 @@ function alching(msg: KlasaMessage, tripLength: number) {
 	if (!hasInfiniteFireRunes) {
 		bankToRemove.add('Fire rune', maxCasts * 5);
 	}
+
+	if (maxCasts === 0 || bankToRemove.length === 0) return null;
 
 	return {
 		maxCasts,

@@ -48,6 +48,7 @@ export interface Log {
 	xp: number;
 	id: number;
 	name: string;
+	aliases?: string[];
 	respawnTime: number;
 	petChance?: number;
 	qpRequired: number;
@@ -242,6 +243,7 @@ export interface Plant {
 
 export enum HunterTechniqueEnum {
 	AerialFishing = 'aerial fishing',
+	DriftNet = 'drift net fishing',
 	BirdSnaring = 'bird snaring',
 	BoxTrapping = 'box trapping',
 	ButterflyNetting = 'butterfly netting',

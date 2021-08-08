@@ -25,6 +25,8 @@ Client.defaultClientSchema
 	.add('mage_arena_cost', 'any', { default: {} })
 	.add('hunter_cost', 'any', { default: {} })
 	.add('hunter_loot', 'any', { default: {} })
+	.add('revs_cost', 'any', { default: {} })
+	.add('revs_loot', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })
