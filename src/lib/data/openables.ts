@@ -69,7 +69,7 @@ const BaseGemBagTable = new LootTable()
 	.oneIn(100_000_000, 'Uncut onyx');
 
 const BagFullOfGemsTable = new LootTable().every(BaseGemBagTable, 40);
-console.log(BagFullOfGemsTable.roll(5_000_000));
+
 const Openables: Openable[] = [
 	{
 		name: 'Birthday present',
