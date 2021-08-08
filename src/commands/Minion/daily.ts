@@ -167,6 +167,8 @@ export default class DailyCommand extends BotCommand {
 
 		if (loot[COINS_ID] > 0) {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceDaily, loot[COINS_ID]);
+		} else {
+			delete loot[COINS_ID];
 		}
 
 		const { itemsAdded, previousCL } = await user.addItemsToBank(loot, true);
