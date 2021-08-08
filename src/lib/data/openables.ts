@@ -116,7 +116,7 @@ const Openables: Openable[] = [
 	{
 		name: 'Bag full of gems',
 		itemID: itemID('Bag full of gems'),
-		aliases: ['bag full of gems'],
+		aliases: ['bag full of gems', 'gem bag'],
 		table: BagFullOfGemsTable,
 		emoji: Emoji.Casket
 	}
