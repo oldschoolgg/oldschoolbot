@@ -1,5 +1,5 @@
 import { MessageButton } from 'discord.js';
-import { deepClone, Time } from 'e';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
@@ -45,14 +45,19 @@ const returnSuccessButtons = [
 	],
 	[
 		new MessageButton({
-			label: 'Cancel Task (30 points)',
+			label: 'Cancel Task + New (30 points)',
 			style: 'DANGER',
 			customID: 'skip'
 		}),
 		new MessageButton({
-			label: 'Block Task (100 points)',
+			label: 'Block Task + New (100 points)',
 			style: 'DANGER',
 			customID: 'block'
+		}),
+		new MessageButton({
+			label: 'Do Nothing',
+			style: 'SECONDARY',
+			customID: 'doNothing'
 		})
 	]
 ];
@@ -103,18 +108,7 @@ export default class extends BotCommand {
 				return msg.channel.send('It was not possible to auto-slay this task. Please, try again.');
 			}
 		}
-		const components = deepClone(returnSuccessButtons);
-		// Add turael only if master is not turael
-		if (!message.toLowerCase().includes('turael')) {
-			components[1].push(
-				new MessageButton({
-					label: 'Turael Skip (Will reset streak)',
-					style: 'DANGER',
-					customID: 'turaelskip'
-				})
-			);
-		}
-		const sentMessage = await msg.channel.send({ content: message, components });
+		const sentMessage = await msg.channel.send({ content: message, components: returnSuccessButtons });
 		try {
 			const selection = await sentMessage.awaitMessageComponentInteraction({
 				filter: i => {
@@ -140,13 +134,12 @@ export default class extends BotCommand {
 					return this.client.commands.get('autoslay')!.run(msg, ['boss']);
 				}
 				case 'skip': {
+					msg.flagArgs.new = 'yes';
 					return this.client.commands.get('slayertask')!.run(msg, ['skip']);
 				}
 				case 'block': {
+					msg.flagArgs.new = 'yes';
 					return this.client.commands.get('slayertask')!.run(msg, ['block']);
-				}
-				case 'turaelskip': {
-					return this.client.commands.get('slayertask')!.run(msg, ['turael']);
 				}
 			}
 		} catch {
@@ -262,11 +255,15 @@ export default class extends BotCommand {
 			currentTask!.quantityRemaining = 0;
 			currentTask!.skipped = true;
 			currentTask!.save();
-			return msg.channel.send(
+			await msg.channel.send(
 				`Your task has been ${
 					toBlock ? 'blocked' : 'skipped'
 				}. You have ${slayerPoints.toLocaleString()} slayer points.`
 			);
+			if (Boolean(msg.flagArgs.new)) {
+				return this.client.commands.get('slayertask')!.run(msg, []);
+			}
+			return;
 		}
 
 		let rememberedSlayerMaster: string = '';
@@ -320,7 +317,8 @@ export default class extends BotCommand {
 			if (newSlayerTask.messages.length > 0) {
 				returnMessage += `\n\n**Messages:** ${newSlayerTask.messages.join(', ')}.`;
 			}
-			return this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
+			this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
+			return;
 		}
 
 		if (currentTask || !slayerMaster) {
@@ -351,11 +349,8 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 				UserSettings.Slayer.TaskStreak
 			)}.`;
 			if (currentTask && !warningInfo) {
-				return this.returnSuccess(
-					msg,
-					returnMessage,
-					Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay)
-				);
+				this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
+				return;
 			}
 			return msg.channel.send(returnMessage);
 		}
@@ -383,6 +378,6 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 		if (newSlayerTask.messages.length > 0) {
 			returnMessage += `\n\n**Messages:** ${newSlayerTask.messages.join(', ')}.`;
 		}
-		return this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
+		this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
 	}
 }

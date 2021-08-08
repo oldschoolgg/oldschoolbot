@@ -283,11 +283,12 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 		const cost = new Bank();
 
 		let deathChance = 5;
-		let deathChanceFromDefenceLevel = (100 - msg.author.skillLevel(SkillsEnum.Defence)) / 4;
+		let defLvl = msg.author.skillLevel(SkillsEnum.Defence);
+		let deathChanceFromDefenceLevel = (100 - (defLvl === 99 ? 100 : defLvl)) / 4;
 		deathChance += deathChanceFromDefenceLevel;
 
 		const defensiveGearPercent = Math.max(0, calcWhatPercent(gear.getStats().defence_magic, maxOffenceStats[key]));
-		let deathChanceFromGear = Math.max(60, 100 - defensiveGearPercent) / 4;
+		let deathChanceFromGear = Math.max(20, 100 - defensiveGearPercent) / 4;
 		deathChance += deathChanceFromGear;
 
 		const died = percentChance(deathChance);
@@ -308,13 +309,22 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 				user: msg.author,
 				gearType: GearSetupTypes.Wildy
 			});
-			console.log({ errors, combatBoosts, combatBankusage });
 			if (errors.length > 0) return msg.channel.send(errors.join('\n'));
 			if (combatBoosts.length > 0) boosts = [...boosts, ...combatBoosts];
 			if (combatBankusage.length > 0) cost.add(combatBankusage);
 		}
 
 		if (died) duration = randInt(Math.min(Time.Minute * 3, duration), duration);
+
+		let hasPrayerPots = true;
+		if (msg.author.bank().amount('Prayer potion(4)') < 5) {
+			hasPrayerPots = false;
+			await msg.confirm(
+				'Are you sure you want to kill revenants without prayer potions? You should bring at least 5 Prayer potion(4).'
+			);
+		} else {
+			cost.add('Prayer potion(4)', 5);
+		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, cost);
 		await msg.author.removeItemsFromBank(cost);
@@ -328,16 +338,17 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 			type: Activity.Revenants,
 			died,
 			skulled,
-			style
+			style,
+			usingPrayerPots: hasPrayerPots
 		});
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish. ${debug.join(', ')}
 ${Emoji.OSRSSkull} ${skulled ? 'Skulled' : 'Unskulled'}
-**Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(
-			2
-		)}% from magic def, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level).${
+**Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(2)}% from magic def${
+			deathChanceFromDefenceLevel > 0 ? `, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level` : ''
+		} + 5% as default chance).${cost.length > 0 ? `\nRemoved from bank: ${cost}` : ''}${
 			boosts.length > 0 ? `\nBoosts: ${boosts.join(', ')}` : ''
 		}`;
 

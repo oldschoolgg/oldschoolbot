@@ -22,7 +22,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID("Viggora's chainmace (u)")]: 25,
+				[itemID("Viggora's chainmace")]: 25,
 				[itemID('Hellfire bow')]: 66
 			},
 			{
@@ -53,7 +53,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID("Viggora's chainmace (u)")]: 25,
+				[itemID("Viggora's chainmace")]: 25,
 				[itemID('Hellfire bow')]: 66
 			},
 			{ [itemID('Dragon warhammer')]: 3 }
