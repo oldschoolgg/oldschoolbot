@@ -57,5 +57,11 @@ export const miningBuyables: Buyable[] = [
 			[itemID('Mining gloves')]: 1,
 			[itemID('Unidentified minerals')]: 60
 		}
+	},
+	{
+		name: 'Bag full of gems',
+		itemCost: {
+			[itemID('Golden nugget')]: 40
+		}
 	}
 ];

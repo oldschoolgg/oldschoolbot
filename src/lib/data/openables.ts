@@ -60,6 +60,16 @@ export const NestBoxes = new LootTable()
 	.add('Nest box (ring)', 1, 5)
 	.add('Nest box (empty)', 1, 3);
 
+const BaseGemBagTable = new LootTable()
+	.add('Uncut sapphire', 1, 4993)
+	.add('Uncut emerald', 1, 3468)
+	.add('Uncut ruby', 1, 1180)
+	.add('Uncut diamond', 1, 309)
+	.add('Uncut dragonstone', 1, 62)
+	.oneIn(100_000_000, 'Uncut onyx');
+
+const BagFullOfGemsTable = new LootTable().every(BaseGemBagTable, 40);
+console.log(BagFullOfGemsTable.roll(5_000_000));
 const Openables: Openable[] = [
 	{
 		name: 'Birthday present',
@@ -101,6 +111,13 @@ const Openables: Openable[] = [
 		itemID: itemID('Spoils of war'),
 		aliases: ['Spoils of war'],
 		table: SpoilsOfWarTable,
+		emoji: Emoji.Casket
+	},
+	{
+		name: 'Bag full of gems',
+		itemID: itemID('Bag full of gems'),
+		aliases: ['bag full of gems'],
+		table: BagFullOfGemsTable,
 		emoji: Emoji.Casket
 	}
 ];
