@@ -694,7 +694,8 @@ export default class extends Extendable {
 			XPGainsTable.insert({
 				userID: this.id,
 				skill: params.skillName,
-				xp: Math.floor(params.amount)
+				xp: Math.floor(params.amount),
+				artificial: params.artificial ? true : null
 			});
 		}
 
