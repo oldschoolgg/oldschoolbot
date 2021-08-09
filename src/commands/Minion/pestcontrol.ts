@@ -10,18 +10,18 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 
 let itemBoosts = [
-	[getOSItem('Abyssal whip'), 10],
-	[getOSItem('Barrows gloves'), 3],
-	[getOSItem('Amulet of fury'), 3],
-	[getOSItem('Fire cape'), 5]
+	[getOSItem('Abyssal whip'), 13],
+	[getOSItem('Barrows gloves'), 5],
+	[getOSItem('Amulet of fury'), 5],
+	[getOSItem('Fire cape'), 7]
 ] as const;
 
-export type PestControlBoat = 'veteran' | 'intermediate' | 'novice';
+export type PestControlBoat = ['veteran' | 'intermediate' | 'novice', 3 | 4 | 5];
 
-function getBoatType(cbLevel: number): PestControlBoat {
-	if (cbLevel >= 100) return 'veteran';
-	if (cbLevel >= 70) return 'intermediate';
-	return 'novice';
+export function getBoatType(cbLevel: number): PestControlBoat {
+	if (cbLevel >= 100) return ['veteran', 5];
+	if (cbLevel >= 70) return ['intermediate', 4];
+	return ['novice', 3];
 }
 
 export default class extends BotCommand {
@@ -35,20 +35,20 @@ export default class extends BotCommand {
 			categoryFlags: ['minion', 'minigame'],
 			subcommands: true,
 			aliases: ['pc'],
-			usage: '<quantity:int{1,10}>'
+			usage: '[quantity:int{1}]'
 		});
 	}
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage) {
+	async run(msg: KlasaMessage, [quantity]: [number | undefined]) {
 		const { combatLevel } = msg.author;
 		if (combatLevel < 40) {
 			return msg.channel.send('You need a combat level of atleast 40 to do Pest Control.');
 		}
 
-		let quantity = 1;
-		let gameLength = Time.Minute * 2;
+		let gameLength = Time.Minute * 2.5;
+		const maxLength = msg.author.maxTripLength(Activity.PestControl);
 
 		let boosts = [];
 		const gear = msg.author.getGear('melee');
@@ -57,6 +57,9 @@ export default class extends BotCommand {
 				gameLength = reduceNumByPercent(gameLength, percent);
 				boosts.push(`${percent}% for ${item.name}`);
 			}
+		}
+		if (!quantity || quantity * gameLength > maxLength) {
+			quantity = Math.floor(maxLength / gameLength);
 		}
 
 		let duration = quantity * gameLength;
@@ -70,7 +73,7 @@ export default class extends BotCommand {
 			minigameID: 'PestControl'
 		});
 
-		let boat = getBoatType(combatLevel);
+		let [boat] = getBoatType(combatLevel);
 
 		let str = `${
 			msg.author.minionName
