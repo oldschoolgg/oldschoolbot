@@ -437,6 +437,10 @@ export default class extends Extendable {
 				return `${this.minionName} is currently aerial fishing. ${formattedDuration}`;
 			}
 
+			case Activity.DriftNet: {
+				return `${this.minionName} is currently drift net fishing. ${formattedDuration}`;
+			}
+
 			case Activity.Construction: {
 				const data = currentTask as ConstructionActivityTaskOptions;
 				return `${this.minionName} is currently building ${data.quantity}x ${itemNameFromID(
@@ -690,7 +694,8 @@ export default class extends Extendable {
 			XPGainsTable.insert({
 				userID: this.id,
 				skill: params.skillName,
-				xp: Math.floor(params.amount)
+				xp: Math.floor(params.amount),
+				artificial: params.artificial ? true : null
 			});
 		}
 

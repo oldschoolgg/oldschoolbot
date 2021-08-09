@@ -8,7 +8,7 @@ const Slayer: Fletchable[] = [
 	{
 		name: 'Incomplete heavy ballista',
 		id: itemID('Incomplete heavy ballista'),
-		level: 72,
+		level: 47,
 		xp: 1,
 		inputItems: new Bank({ 'Ballista limbs': 1, 'Heavy frame': 1 }),
 		tickRate: 3
@@ -16,7 +16,7 @@ const Slayer: Fletchable[] = [
 	{
 		name: 'Incomplete light ballista',
 		id: itemID('Incomplete light ballista'),
-		level: 72,
+		level: 47,
 		xp: 1,
 		inputItems: new Bank({ 'Ballista limbs': 1, 'Light frame': 1 }),
 		tickRate: 3

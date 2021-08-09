@@ -1,5 +1,6 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage, Stopwatch, Type, util } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { inspect } from 'util';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -63,6 +64,7 @@ export default class extends BotCommand {
 		// eslint-disable-next-line @typescript-eslint/init-declarations
 		let type!: Type;
 		try {
+			code = `\nconst {Bank} = require('oldschooljs');\n${code}`;
 			if (flags.async) code = `(async () => {\n${code}\n})();`;
 			else if (flags.bk) code = `(async () => {\nreturn ${code}\n})();`;
 			// eslint-disable-next-line no-eval
@@ -86,8 +88,9 @@ export default class extends BotCommand {
 		}
 
 		stopwatch.stop();
-		if (msg.flagArgs.bk) {
-			msg.channel.sendBankImage({ bank: result });
+		if (msg.flagArgs.bk || result instanceof Bank) {
+			msg.channel.sendBankImage({ bank: result, title: msg.flagArgs.title, flags: msg.flagArgs });
+			return;
 		}
 
 		if (Buffer.isBuffer(result)) {

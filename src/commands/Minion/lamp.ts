@@ -73,7 +73,8 @@ export default class extends BotCommand {
 			skillName: skill,
 			amount: lamp.amount,
 			duration: undefined,
-			minimal: false
+			minimal: false,
+			artificial: true
 		});
 		await msg.author.removeItemFromBank(lamp.itemID);
 
