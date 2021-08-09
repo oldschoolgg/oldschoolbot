@@ -598,10 +598,10 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Pest Control': {
-				enabled: false,
 				items: pestControlCL,
 				roleCategory: ['minigames'],
-				isActivity: true
+				isActivity: true,
+				alias: ['pc']
 			},
 			"Rogues' Den": {
 				alias: ['rogues den', 'rd'],

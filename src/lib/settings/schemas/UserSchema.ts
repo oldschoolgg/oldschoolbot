@@ -33,6 +33,7 @@ Client.defaultUserSchema
 	.add('total_cox_points', 'integer', { default: 0 })
 	.add('combat_options', 'integer', { array: true, default: [] })
 	.add('farming_patch_reminders', 'boolean', { default: true })
+	.add('pest_control_points', 'integer', { default: 0 })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })
