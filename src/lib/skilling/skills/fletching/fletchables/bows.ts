@@ -221,11 +221,11 @@ const Bows: Fletchable[] = [
 		tickRate: 2
 	},
 	{
-		name: 'Hellfire bow',
-		id: itemID('Hellfire bow'),
+		name: 'Hellfire bow (uncharged)',
+		id: itemID('Hellfire bow (uncharged)'),
 		level: 110,
 		xp: 250_000,
-		inputItems: new Bank({ 'Zaryte bow': 1, 'Twisted bow': 1, 'Ignecarus dragonclaw': 1, 'Smouldering stone': 3 }),
+		inputItems: new Bank({ 'Zaryte bow': 1, 'Twisted bow': 1, 'Smouldering stone': 2 }),
 		tickRate: 2
 	}
 ];

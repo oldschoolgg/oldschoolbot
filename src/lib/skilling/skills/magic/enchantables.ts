@@ -507,4 +507,15 @@ const bolts = [
 	}
 ];
 
-export const Enchantables: Enchantable[] = [...bolts, ...jewelery];
+const custom = [
+	{
+		name: 'Hellfire bow',
+		id: itemID('Hellfire bow'),
+		input: new Bank().add('Hellfire bow (uncharged)', 1).add("Dragon's fury", 1),
+		output: new Bank().add('Hellfire bow', 1),
+		xp: 250_000,
+		level: 110
+	}
+];
+
+export const Enchantables: Enchantable[] = [...bolts, ...jewelery, ...custom];
