@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
+import { userhasDiaryTier, WesternProv } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -12,10 +13,10 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 
 let itemBoosts = [
-	[getOSItem('Abyssal whip'), 12],
-	[getOSItem('Barrows gloves'), 4],
-	[getOSItem('Amulet of fury'), 5],
-	[getOSItem('Fire cape'), 6]
+	[['Abyssal whip', 'Abyssal tentacle'].map(getOSItem), 12],
+	[['Barrows gloves', 'Ferocious gloves'].map(getOSItem), 4],
+	[['Amulet of fury', 'Amulet of torture'].map(getOSItem), 5],
+	[['Fire cape', 'Infernal cape'].map(getOSItem), 6]
 ] as const;
 
 export type PestControlBoat = ['veteran' | 'intermediate' | 'novice', 3 | 4 | 5];
@@ -127,10 +128,13 @@ You have completed ${kc} games of Pest Control.`);
 
 		let boosts = [];
 		const gear = msg.author.getGear('melee');
-		for (const [item, percent] of itemBoosts) {
-			if (gear.hasEquipped(item.name)) {
-				gameLength = reduceNumByPercent(gameLength, percent);
-				boosts.push(`${percent}% for ${item.name}`);
+		for (const [items, percent] of itemBoosts) {
+			for (const item of items) {
+				if (gear.hasEquipped(item.name)) {
+					gameLength = reduceNumByPercent(gameLength, percent);
+					boosts.push(`${percent}% for ${item.name}`);
+					break;
+				}
 			}
 		}
 		if (!quantity || quantity * gameLength > maxLength) {
@@ -186,15 +190,22 @@ You have completed ${kc} games of Pest Control.`);
 		if (!hasReqs) {
 			return msg.channel.send(`You need ${str} to buy this item.`);
 		}
-		await msg.author.settings.update(UserSettings.PestControlPoints, balance - cost);
 
 		if (buyable.inputItem && !msg.author.owns(buyable.inputItem.id)) {
 			return msg.channel.send(`This item requires that you own a ${buyable.inputItem.name}.`);
 		}
 
 		if (buyable.inputItem) {
+			const [hasDiary] = await userhasDiaryTier(msg.author, WesternProv.hard);
+			if (!hasDiary) {
+				return msg.channel.send(
+					"You can't buy this because you haven't completed the Western Provinces hard diary."
+				);
+			}
 			await msg.author.removeItemsFromBank(new Bank().add(buyable.inputItem.id));
 		}
+		await msg.author.settings.update(UserSettings.PestControlPoints, balance - cost);
+
 		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
 
 		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Void knight commendation points.`);

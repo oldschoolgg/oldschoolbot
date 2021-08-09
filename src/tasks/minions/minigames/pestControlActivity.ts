@@ -23,7 +23,11 @@ export default class extends Task {
 		);
 
 		let perHour = `(${toKMB((points / (duration / Time.Minute)) * 60)}/Hr)`;
-		let str = `${user}, ${user.minionName} finished ${quantity}x games of Pest Control on the ${boatType} boat. You received ${points}x Void Knight commendation points. ${perHour}`;
+		let str = `${user}, ${
+			user.minionName
+		} finished ${quantity}x games of Pest Control on the ${boatType} boat. You received ${points}x Void Knight commendation points, you now have ${user.settings.get(
+			UserSettings.PestControlPoints
+		)} points. ${perHour}`;
 
 		handleTripFinish(
 			this.client,
@@ -32,7 +36,8 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued trip of pestcontrol');
-				return this.client.commands.get('pestcontrol')!.run(res, [quantity]);
+				// @ts-ignore 2339
+				return this.client.commands.get('pestcontrol')!.start(res, [quantity]);
 			},
 			undefined,
 			data,
