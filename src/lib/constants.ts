@@ -27,6 +27,8 @@ export const enum Roles {
 	PatronTier2 = '678967943979204608',
 	PatronTier3 = '687408140832342043',
 	Patron = '679620175838183424',
+	MassHoster = '734055552933429280',
+	BSOMassHoster = '759572886364225558',
 	// Status Roles
 	TopSkiller = '848966830617788427',
 	TopCollector = '848966773885763586',
@@ -34,6 +36,14 @@ export const enum Roles {
 	TopClueHunter = '848967350120218636',
 	TopSlayer = '867967551819358219',
 	TopMinigamer = '867967884515770419'
+}
+
+export const enum DefaultPingableRoles {
+	// Tester roles:
+	Tester = '682052620809928718',
+	BSOTester = '829368646182371419',
+	// Mass roles:
+	BSOMass = '759573020464906242'
 }
 
 export const enum Emoji {

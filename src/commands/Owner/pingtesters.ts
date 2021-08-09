@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Roles } from '../../lib/constants';
+import { DefaultPingableRoles, Roles } from '../../lib/constants';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
@@ -20,6 +20,6 @@ export default class extends BotCommand {
 		) {
 			return;
 		}
-		return msg.channel.send('<@&682052620809928718>');
+		return msg.channel.send(`<@&${DefaultPingableRoles.BSOTester}>`);
 	}
 }
