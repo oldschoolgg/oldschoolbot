@@ -159,6 +159,42 @@ const Misc: Craftable[] = [
 		xp: 15,
 		inputItems: new Bank({ 'Steel bar': 1 }),
 		tickRate: 3
+	},
+	{
+		name: 'Amethyst bolt tips',
+		id: itemID('Amethyst bolt tips'),
+		level: 83,
+		xp: 60,
+		inputItems: new Bank({ Amethyst: 1 }),
+		tickRate: 2,
+		outputMultiple: 15
+	},
+	{
+		name: 'Amethyst arrowtips',
+		id: itemID('Amethyst arrowtips'),
+		level: 85,
+		xp: 60,
+		inputItems: new Bank({ Amethyst: 1 }),
+		tickRate: 2,
+		outputMultiple: 15
+	},
+	{
+		name: 'Amethyst javelin haeds',
+		id: itemID('Amethyst javelin heads'),
+		level: 87,
+		xp: 60,
+		inputItems: new Bank({ Amethyst: 1 }),
+		tickRate: 2,
+		outputMultiple: 5
+	},
+	{
+		name: 'Amethyst dart tip',
+		id: itemID('Amethyst dart tip'),
+		level: 89,
+		xp: 60,
+		inputItems: new Bank({ Amethyst: 1 }),
+		tickRate: 2,
+		outputMultiple: 8
 	}
 ];
 
