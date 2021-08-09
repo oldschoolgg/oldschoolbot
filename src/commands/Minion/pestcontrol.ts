@@ -164,7 +164,6 @@ You have completed ${kc} games of Pest Control.`);
 	}
 
 	async buy(msg: KlasaMessage, [input = '']: [string]) {
-		console.log(input);
 		if (typeof input !== 'string') input = '';
 		const buyable = pestControlBuyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
