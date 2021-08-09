@@ -561,6 +561,10 @@ export default class extends Extendable {
 					data.quantity
 				}x ${Monsters.get(data.monsterID)!.name} in the wilderness.`;
 			}
+			case Activity.PestControl: {
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.quantity} games of Pest Control. ${formatDuration}`;
+			}
 		}
 	}
 

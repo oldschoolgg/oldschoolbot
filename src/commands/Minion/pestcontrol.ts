@@ -1,6 +1,7 @@
 import { reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Activity } from '../../lib/constants';
 import { userhasDiaryTier, WesternProv } from '../../lib/diaries';
@@ -8,7 +9,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MinigameActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration, fromKMB, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 
@@ -92,6 +93,16 @@ const pestControlBuyables = [
 	}
 ];
 
+let xpMultiplier = {
+	prayer: 18,
+	magic: 32,
+	ranged: 32,
+	attack: 35,
+	strength: 35,
+	defence: 35,
+	hitpoints: 35
+};
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -103,7 +114,7 @@ export default class extends BotCommand {
 			categoryFlags: ['minion', 'minigame'],
 			subcommands: true,
 			aliases: ['pc'],
-			usage: '[start|buy] [quantity:int{1}|str:...str]',
+			usage: '[start|buy|xp] [quantity:int{1}|str:...str]',
 			usageDelim: ' '
 		});
 	}
@@ -113,6 +124,43 @@ export default class extends BotCommand {
 		const kc = await msg.author.getMinigameScore('PestControl');
 		return msg.channel.send(`You have ${points} Void knight commendation points.
 You have completed ${kc} games of Pest Control.`);
+	}
+
+	async xp(msg: KlasaMessage, [input = '']: [string]) {
+		if (typeof input !== 'string') input = '';
+		const [_skillName, _amount] = input.split(' ');
+		if (!Object.keys(xpMultiplier).includes(_skillName)) {
+			return msg.channel.send("That's not a valid skill to buy XP for.");
+		}
+		let amount = fromKMB(_amount);
+		if (!amount || amount < 1) {
+			return msg.channel.send("That's not a valid amount of XP.");
+		}
+
+		const level = msg.author.skillLevel(_skillName as SkillsEnum);
+		if (level < 25) {
+			return msg.channel.send('You need atleast level 25 to buy XP from Pest Control.');
+		}
+		const xpPerPoint = Math.floor(Math.pow(level, 2) / 600) * xpMultiplier[_skillName as keyof typeof xpMultiplier];
+
+		const balance = msg.author.settings.get(UserSettings.PestControlPoints);
+		if (balance < amount) {
+			return msg.channel.send(`You cannot afford this, because you have only ${balance} points.`);
+		}
+		await msg.confirm(
+			`Are you sure you want to spend ${amount} points on ${xpPerPoint * amount} ${_skillName} XP?`
+		);
+		await msg.author.settings.update(UserSettings.PestControlPoints, balance - amount);
+		const xpRes = await msg.author.addXP({
+			skillName: _skillName as SkillsEnum,
+			amount: xpPerPoint * amount,
+			duration: undefined,
+			minimal: false,
+			artificial: true
+		});
+
+		return msg.channel.send(`You spent ${amount} points (${xpPerPoint} ${_skillName} XP per point).
+${xpRes}`);
 	}
 
 	@requiresMinion
