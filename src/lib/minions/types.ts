@@ -124,6 +124,7 @@ export interface AddXpParams {
 	duration?: number;
 	multiplier?: boolean;
 	minimal?: boolean;
+	artificial?: boolean;
 }
 
 export interface AddMonsterXpParams {
