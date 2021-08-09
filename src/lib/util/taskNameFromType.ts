@@ -124,5 +124,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.TrekkingActivity;
 		case Activity.Revenants:
 			return Tasks.RevenantsActivity;
+		case Activity.PestControl:
+			return Tasks.PestControl;
 	}
 }

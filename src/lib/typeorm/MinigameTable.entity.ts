@@ -71,4 +71,7 @@ export class MinigameTable extends BaseEntity {
 
 	@Column({ name: 'temple_trekking', type: 'int', nullable: false, default: 0 })
 	public TempleTrekking!: number;
+
+	@Column({ name: 'pest_control', type: 'int', nullable: false, default: 0 })
+	public PestControl!: number;
 }
