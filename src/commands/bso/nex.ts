@@ -162,7 +162,7 @@ export default class extends BotCommand {
 				}
 			}
 
-			if (rangeGear.hasEquipped(gorajanArcherOutfit)) {
+			if (rangeGear.hasEquipped(gorajanArcherOutfit, true)) {
 				const perUserPercent = round(15 / users.length, 2);
 				effectiveTime = reduceNumByPercent(effectiveTime, perUserPercent);
 				msgs.push(`${perUserPercent}% for Gorajan archer`);
