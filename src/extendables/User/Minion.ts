@@ -563,7 +563,7 @@ export default class extends Extendable {
 			}
 			case Activity.PestControl: {
 				const data = currentTask as MinigameActivityTaskOptions;
-				return `${this.minionName} is currently doing ${data.quantity} games of Pest Control. ${formatDuration}`;
+				return `${this.minionName} is currently doing ${data.quantity} games of Pest Control. ${formattedDuration}`;
 			}
 		}
 	}
