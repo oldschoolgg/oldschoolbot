@@ -22,6 +22,46 @@ export interface Createable {
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 }
 
+const revWeapons: Createable[] = [
+	{
+		name: 'Bracelet of ethereum',
+		inputItems: resolveNameBank({
+			'Bracelet of ethereum (uncharged)': 1,
+			'Revenant ether': 2000
+		}),
+		outputItems: resolveNameBank({
+			'Bracelet of ethereum': 1
+		})
+	},
+	{
+		name: 'Revenant ether',
+		inputItems: resolveNameBank({
+			'Bracelet of ethereum (uncharged)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Revenant ether': 250
+		}),
+		noCl: true
+	}
+];
+
+for (const [uWep, cWep] of [
+	["Viggora's chainmace (u)", "Viggora's chainmace"],
+	["Craw's bow (u)", "Craw's bow"],
+	["Thammaron's sceptre (u)", "Thammaron's sceptre"]
+]) {
+	revWeapons.push({
+		name: cWep,
+		inputItems: {
+			[itemID('Revenant ether')]: 7000,
+			[itemID(uWep)]: 1
+		},
+		outputItems: {
+			[itemID(cWep)]: 1
+		}
+	});
+}
+
 const metamorphPetCreatables: Createable[] = chambersOfXericMetamorphPets.map(pet => ({
 	name: itemNameFromID(pet)!,
 	inputItems: {
@@ -159,7 +199,43 @@ const crystalTools: Createable[] = [
 		outputItems: {
 			[itemID('Blade of saeldor (c)')]: 1
 		},
-		requiredSkills: { smithing: 80, crafting: 80 },
+		requiredSkills: { smithing: 82, crafting: 82 },
+		QPRequired: 150
+	},
+	{
+		name: 'Bow of faerdhinen (c)',
+		inputItems: {
+			[itemID('Bow of faerdhinen (inactive)')]: 1,
+			[itemID('Crystal shard')]: 2000
+		},
+		outputItems: {
+			[itemID('Bow of faerdhinen (c)')]: 1
+		},
+		requiredSkills: { smithing: 82, crafting: 82 },
+		QPRequired: 150
+	},
+	{
+		name: 'Blade of saeldor (inactive)',
+		inputItems: {
+			[itemID('Enhanced crystal weapon seed')]: 1,
+			[itemID('Crystal shard')]: 100
+		},
+		outputItems: {
+			[itemID('Blade of saeldor (inactive)')]: 1
+		},
+		requiredSkills: { smithing: 82, crafting: 82 },
+		QPRequired: 150
+	},
+	{
+		name: 'Bow of faerdhinen (inactive)',
+		inputItems: {
+			[itemID('Enhanced crystal weapon seed')]: 1,
+			[itemID('Crystal shard')]: 100
+		},
+		outputItems: {
+			[itemID('Bow of faerdhinen (inactive)')]: 1
+		},
+		requiredSkills: { smithing: 82, crafting: 82 },
 		QPRequired: 150
 	}
 ];
@@ -810,6 +886,32 @@ const Createables: Createable[] = [
 		}),
 		QPRequired: 111,
 		requiredSkills: { smithing: 60 }
+	},
+	{
+		name: 'Dragon kiteshield',
+		inputItems: resolveNameBank({
+			'Dragon sq shield': 1,
+			'Dragon metal shard': 1,
+			'Dragon metal slice': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragon kiteshield': 1
+		}),
+		QPRequired: 205,
+		requiredSkills: { smithing: 75 }
+	},
+	{
+		name: 'Dragon platebody',
+		inputItems: resolveNameBank({
+			'Dragon chainbody': 1,
+			'Dragon metal shard': 1,
+			'Dragon metal lump': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragon platebody': 1
+		}),
+		QPRequired: 205,
+		requiredSkills: { smithing: 90 }
 	},
 	{
 		name: 'Coconut milk',
@@ -1620,7 +1722,8 @@ const Createables: Createable[] = [
 	...metamorphPetCreatables,
 	...slayerCreatables,
 	...capeCreatables,
-	...dragonFireShieldCreatables
+	...dragonFireShieldCreatables,
+	...revWeapons
 ];
 
 export default Createables;

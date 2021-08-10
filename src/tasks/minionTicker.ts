@@ -16,7 +16,7 @@ export default class extends Task {
 				if (production) {
 					query.andWhere('finish_date < now()');
 				} else {
-					query.andWhere("start_date + interval '5 seconds' < now()");
+					query.andWhere("start_date + interval '10 seconds' < now()");
 				}
 
 				const result = await query.getMany();
