@@ -1829,3 +1829,13 @@ setCustomItem(
 	},
 	1000
 );
+
+setCustomItem(
+	50_042,
+	'Elder bird house',
+	'Fire rune',
+	{
+		highalch: 1000
+	},
+	1000
+);

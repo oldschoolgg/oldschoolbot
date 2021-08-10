@@ -3,8 +3,9 @@ import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { DungeoneeringOptions, maxFloorUserCanDo } from '../../commands/Minion/dung';
-import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
+import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { randomVariation, roll, toKMB } from '../../lib/util';
@@ -112,7 +113,7 @@ export default class extends Task {
 				str += ' **1x Gorajan shards**';
 				let quantity = 1;
 
-				if (DOUBLE_LOOT_ACTIVE) {
+				if (isDoubleLootActive(this.client)) {
 					quantity *= 2;
 				}
 				await u.addItemsToBank(new Bank().add('Gorajan shards', quantity), true);

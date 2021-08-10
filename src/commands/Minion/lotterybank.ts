@@ -5,7 +5,7 @@ import { Events } from '../../lib/constants';
 import { hasSet } from '../../lib/customItems';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, itemID } from '../../lib/util';
+import { addBanks, isSuperUntradeable, itemID } from '../../lib/util';
 import { allPetIDs } from './equippet';
 
 const options = {
@@ -33,13 +33,13 @@ export default class extends BotCommand {
 		}
 		const bankToSell = initBankToSell.filter((i, qty) => {
 			if (msg.flagArgs.bypass && msg.author.id === '157797566833098752') return true;
-			let stackPrice = (this.client.settings!.get(ClientSettings.Prices)[i.id]?.price ?? 1) * qty;
-			return hasSet.has(i.id) || allPetIDs.includes(i.id) || (i.tradeable_on_ge && stackPrice > 3_000_000);
+			let stackPrice = i.price * qty;
+			return (
+				(!isSuperUntradeable(i) && hasSet.has(i.id)) ||
+				allPetIDs.includes(i.id) ||
+				(i.tradeable_on_ge && stackPrice > 3_000_000)
+			);
 		});
-
-		if (bankToSell.items().some(i => i[0].id >= 40_000 && i[0].id <= 45_000)) {
-			return msg.channel.send("You can't add that item to the lottery.");
-		}
 
 		if (bankToSell.amount('Lottery ticket')) {
 			bankToSell.remove('Lottery ticket', bankToSell.amount('Lottery ticket'));

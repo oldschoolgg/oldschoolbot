@@ -457,6 +457,10 @@ export default class extends Extendable {
 				return `${this.minionName} is currently aerial fishing. ${formattedDuration}`;
 			}
 
+			case Activity.DriftNet: {
+				return `${this.minionName} is currently drift net fishing. ${formattedDuration}`;
+			}
+
 			case Activity.Construction: {
 				const data = currentTask as ConstructionActivityTaskOptions;
 				return `${this.minionName} is currently building ${data.quantity}x ${itemNameFromID(
@@ -613,6 +617,10 @@ export default class extends Extendable {
 					data.quantity
 				}x ${Monsters.get(data.monsterID)!.name} in the wilderness.`;
 			}
+			case Activity.PestControl: {
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.quantity} games of Pest Control. ${formatDuration}`;
+			}
 		}
 	}
 
@@ -752,10 +760,6 @@ export default class extends Extendable {
 
 		const name = toTitleCase(params.skillName);
 
-		if (currentXP >= 5_000_000_000) {
-			return `You received no XP because you have 5b ${name} XP already.`;
-		}
-
 		const skill = Object.values(Skills).find(skill => skill.id === params.skillName)!;
 		const currentTotalLevel = this.totalLevel();
 
@@ -791,21 +795,28 @@ export default class extends Extendable {
 		if (masterCape) {
 			params.amount = increaseNumByPercent(params.amount, isMatchingCape ? 8 : 3);
 		}
+		// Check if each gorajan set is equipped:
+		const gorajanMeleeEquipped = this.getGear('melee').hasEquipped(gorajanWarriorOutfit, true);
+		const gorajanRangeEquipped = this.getGear('range').hasEquipped(gorajanArcherOutfit, true);
+		const gorajanMageEquipped = this.getGear('mage').hasEquipped(gorajanOccultOutfit, true);
 
+		// Determine if boost should apply based on skill + equipped sets:
 		let gorajanBoost = false;
 		const gorajanMeleeBoost =
 			multiplier &&
 			[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(params.skillName) &&
-			this.getGear('melee').hasEquipped(gorajanWarriorOutfit, true);
-		const gorajanRangeBoost =
+			gorajanMeleeEquipped;
+		const gorajanRangeBoost = multiplier && params.skillName === SkillsEnum.Ranged && gorajanRangeEquipped;
+		const gorajanMageBoost = multiplier && params.skillName === SkillsEnum.Magic && gorajanMageEquipped;
+		// 2x HP if all 3 gorajan sets are equipped:
+		const gorajanHpBoost =
 			multiplier &&
-			params.skillName === SkillsEnum.Ranged &&
-			this.getGear('range').hasEquipped(gorajanArcherOutfit, true);
-		const gorajanMageBoost =
-			multiplier &&
-			params.skillName === SkillsEnum.Magic &&
-			this.getGear('mage').hasEquipped(gorajanOccultOutfit, true);
-		if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost) {
+			params.skillName === SkillsEnum.Hitpoints &&
+			gorajanMeleeEquipped &&
+			gorajanRangeEquipped &&
+			gorajanMageEquipped;
+
+		if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost || gorajanHpBoost) {
 			params.amount *= 2;
 			gorajanBoost = true;
 		}
@@ -834,14 +845,26 @@ export default class extends Extendable {
 
 		const newXP = Math.min(5_000_000_000, currentXP + params.amount);
 		const newLevel = convertXPtoLVL(newXP, 120);
-		const totalXPAdded = newXP - currentXP;
 
-		if (totalXPAdded > 0) {
-			XPGainsTable.insert({
-				userID: this.id,
-				skill: params.skillName,
-				xp: Math.floor(params.amount)
-			});
+		// Track XP past 5b for leagues / sotw
+		await XPGainsTable.insert({
+			userID: this.id,
+			skill: params.skillName,
+			xp: Math.floor(params.amount)
+		});
+
+		if (currentXP >= 5_000_000_000) {
+			let xpStr = '';
+			if (params.duration && !params.minimal) {
+				xpStr += `You received no XP because you have 200m ${name} XP already.`;
+				xpStr += ` Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
+				let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
+				rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
+				xpStr += ` (${toKMB(rawXPHr)}/Hr)`;
+			} else {
+				xpStr += `:no_entry_sign: Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
+			}
+			return xpStr;
 		}
 
 		// If they reached a XP milestone, send a server notification.

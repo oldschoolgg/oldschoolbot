@@ -3,9 +3,10 @@ import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { frozenKeyPieces } from '../../lib/data/CollectionsExport';
 import { getRandomMysteryBox } from '../../lib/data/openables';
+import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -17,7 +18,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, rand, roll } from '../../lib/util';
+import { itemID, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../lib/util/webhook';
 
@@ -37,7 +38,7 @@ export default class extends Task {
 
 		// Abyssal set bonuses -- grants the user a few extra kills
 		let abyssalBonus = 1;
-		if (user.equippedPet() === itemID('Ori')) {
+		if (user.equippedPet() === itemID('Ori') && duration > Time.Minute * 5) {
 			abyssalBonus += 0.25;
 		}
 
@@ -66,7 +67,7 @@ export default class extends Task {
 			inCatacombs: isInCatacombs
 		};
 		const loot = (monster as KillableMonster).table.kill(
-			Math.ceil(quantity * (DOUBLE_LOOT_ACTIVE ? 2 : abyssalBonus)),
+			Math.ceil(quantity * (isDoubleLootActive(this.client) ? 2 : abyssalBonus)),
 			killOptions
 		);
 		let newSuperiorCount = loot.bank[420];
@@ -127,14 +128,6 @@ export default class extends Task {
 			}
 		}
 
-		let bananas = 0;
-		if (user.equippedPet() === itemID('Harry')) {
-			for (let i = 0; i < minutes; i++) {
-				bananas += rand(1, 3);
-			}
-			loot.add('Banana', bananas);
-		}
-
 		if (monster.id === 290) {
 			for (let i = 0; i < minutes; i++) {
 				if (roll(6000)) {
@@ -163,11 +156,7 @@ export default class extends Task {
 			str += '\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.';
 		}
 
-		if (bananas > 0) {
-			str += `\n\n<:harry:749945071104819292> While you were PvMing, Harry went off and picked ${bananas} Bananas for you!`;
-		}
-
-		if (DOUBLE_LOOT_ACTIVE) {
+		if (isDoubleLootActive(this.client)) {
 			str += '\n\n**Double Loot!**';
 		} else if (abyssalBonus > 1) {
 			str += '\n\nOri has used the abyss to transmute you +25% bonus loot!';

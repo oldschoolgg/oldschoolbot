@@ -24,8 +24,9 @@ import { nexLootTable, NexMonster } from '../nex';
 import { UserSettings } from '../settings/types/UserSettings';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { allFarmingItems } from '../skilling/skills/farming';
+import { TamesTable } from '../typeorm/TamesTable.entity';
 import { ItemBank } from '../types';
-import { stringMatches } from '../util';
+import { addArrayOfNumbers, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
 	abyssalDragonCL,
@@ -676,10 +677,10 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Pest Control': {
-				enabled: false,
 				items: pestControlCL,
 				roleCategory: ['minigames'],
-				isActivity: true
+				isActivity: true,
+				alias: ['pc']
 			},
 			"Rogues' Den": {
 				alias: ['rogues den', 'rd'],
@@ -805,6 +806,25 @@ export const allCollectionLogs: ICollection = {
 			},
 			Revenants: {
 				alias: ['revs'],
+				kcActivity: {
+					Default: async user => {
+						return addArrayOfNumbers(
+							[
+								Monsters.RevenantImp.id,
+								Monsters.RevenantGoblin.id,
+								Monsters.RevenantPyrefiend.id,
+								Monsters.RevenantHobgoblin.id,
+								Monsters.RevenantCyclops.id,
+								Monsters.RevenantHellhound.id,
+								Monsters.RevenantDemon.id,
+								Monsters.RevenantOrk.id,
+								Monsters.RevenantDarkBeast.id,
+								Monsters.RevenantKnight.id,
+								Monsters.RevenantDragon.id
+							].map(i => user.getKC(i))
+						);
+					}
+				},
 				items: revenantsCL
 			},
 			'Rooftop Agility': {
@@ -845,7 +865,12 @@ export const allCollectionLogs: ICollection = {
 					'Master runecrafter boots',
 					'Elder thread',
 					'Elder talisman',
-					'Magic crate'
+					'Magic crate',
+					'Lychee seed',
+					'Avocado seed',
+					'Mysterious seed',
+					'Mango seed',
+					'Magical artifact'
 				])
 			}
 		}
@@ -1079,7 +1104,20 @@ function getLeftList(
 	return leftList;
 }
 
-export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collection') {
+export async function getUsersTamesCollectionLog(user: KlasaUser) {
+	const allTames = await TamesTable.find({
+		where: {
+			userID: user.id
+		}
+	});
+	let totalBank = new Bank();
+	for (const tame of allTames) {
+		totalBank.add(tame.totalLoot);
+	}
+	return totalBank;
+}
+
+export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collection' | 'tame') {
 	const userCheckBank = new Bank();
 	switch (type) {
 		case 'collection':
@@ -1091,14 +1129,17 @@ export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collectio
 		case 'sacrifice':
 			userCheckBank.add(user.settings.get(UserSettings.SacrificedBank));
 			break;
+		case 'tame':
+			return getUsersTamesCollectionLog(user);
 	}
 	return userCheckBank;
 }
 
 // Get the total items the user has in its CL and the total items to collect
-export function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection') {
+export async function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection' | 'tame') {
 	if (logType === 'sacrifice' && allCLItems.includes(995)) allCLItems.splice(allCLItems.indexOf(995), 1);
-	return getUserClData(getBank(user, logType).bank, allCLItems);
+	const b = await getBank(user, logType);
+	return getUserClData(b.bank, allCLItems);
 }
 
 export function getPossibleOptions() {
@@ -1181,7 +1222,7 @@ export async function getCollection(options: {
 	user: KlasaUser;
 	search: string;
 	flags: { [key: string]: string | number };
-	logType?: 'collection' | 'sacrifice' | 'bank';
+	logType?: 'collection' | 'sacrifice' | 'bank' | 'tame';
 }): Promise<false | IToReturnCollection> {
 	let { user, search, flags, logType } = options;
 
@@ -1189,8 +1230,10 @@ export async function getCollection(options: {
 
 	const allItems = Boolean(flags.all);
 	if (logType === undefined) logType = 'collection';
-
-	const userCheckBank = getBank(user, logType);
+	if (flags.tame) {
+		logType = 'tame';
+	}
+	const userCheckBank = await getBank(user, logType);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 
 	if (Boolean(flags.missing)) {

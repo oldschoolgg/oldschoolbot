@@ -1,3 +1,4 @@
+import { Duration } from '@sapphire/time-utilities';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
@@ -5,6 +6,7 @@ import fetch from 'node-fetch';
 
 import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
+import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -87,6 +89,13 @@ ${
 							)
 					]
 				});
+			}
+			case 'doubletime': {
+				const diff = this.client.settings.get(ClientSettings.DoubleLootFinishTime) - Date.now();
+				if (diff < 0) {
+					return msg.channel.send(`Double loot is finished. It finished ${formatDuration(diff)} ago.`);
+				}
+				return msg.channel.send(`Time Remaining: ${formatDuration(diff)}`);
 			}
 		}
 
@@ -370,6 +379,17 @@ LIMIT 10;
 				return msg.channel.send({
 					files: [new MessageAttachment(Buffer.from(JSON.stringify(result, null, 4)), 'patreon.txt')]
 				});
+			}
+			case 'adddoubleloottime': {
+				if (typeof input !== 'string' || input.length < 2) return;
+				const duration = new Duration(input);
+				const ms = duration.offset;
+				addToDoubleLootTimer(this.client, ms, 'added by RP command');
+				return msg.channel.send(`Added ${formatDuration(ms)} to the double loot timer.`);
+			}
+			case 'resetdoubletime': {
+				await this.client.settings.update(ClientSettings.DoubleLootFinishTime, 0);
+				return msg.channel.send('Reset the double loot timer.');
 			}
 		}
 	}

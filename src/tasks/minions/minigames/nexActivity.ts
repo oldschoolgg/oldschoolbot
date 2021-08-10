@@ -4,8 +4,9 @@ import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { production } from '../../../config';
-import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
+import { Emoji } from '../../../lib/constants';
 import { nexCL, nexUniqueDrops } from '../../../lib/data/CollectionsExport';
+import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { NexMonster } from '../../../lib/nex';
@@ -46,9 +47,12 @@ export default class extends Task {
 		for (let i = 0; i < quantity; i++) {
 			const teamTable = new SimpleTable<string>();
 
+			// Track deaths per kill so you don't stay dead the entire trip.
+			const deathsThisKill: Record<string, number> = {};
+
 			let teamFailed = false;
 			for (const user of parsedUsers.sort((a, b) => b.chanceOfDeath - a.chanceOfDeath)) {
-				const currentDeaths = Object.keys(deaths).length;
+				const currentDeaths = Object.keys(deathsThisKill).length;
 				if (calcWhatPercent(currentDeaths, users.length) >= 50) {
 					// If over 50% of the team died, the entire team dies.
 					teamFailed = true;
@@ -56,6 +60,8 @@ export default class extends Task {
 
 				if (teamFailed || percentChance(user.chanceOfDeath)) {
 					deaths[user.id] = Boolean(deaths[user.id]) ? deaths[user.id] + 1 : 1;
+					// Mark user as dead this kill:
+					deathsThisKill[user.id] = 1;
 				} else {
 					// weight on damagedone
 					teamTable.add(user.id, user.damageDone);
@@ -67,7 +73,7 @@ export default class extends Task {
 			if (roll(80 + users.length * 2)) {
 				loot.add(randomItemFromArray(nexUniqueDrops), 1);
 			}
-			if (DOUBLE_LOOT_ACTIVE) {
+			if (isDoubleLootActive(this.client)) {
 				loot.multiply(2);
 			}
 			const winner = teamTable.roll()?.item;

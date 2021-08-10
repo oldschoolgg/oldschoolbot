@@ -225,6 +225,12 @@ export const Eatables: Eatable[] = [
 		raw: itemID('Raw dark crab')
 	},
 	{
+		name: 'Anglerfish',
+		id: itemID('Anglerfish'),
+		healAmount: 22,
+		raw: itemID('Raw anglerfish')
+	},
+	{
 		name: 'Rocktail',
 		id: itemID('Rocktail'),
 		healAmount: 26,

@@ -68,5 +68,29 @@ export const capeCreatables: Createable[] = [
 			'Imbued zamorak max hood': 1,
 			'Imbued zamorak max cape': 1
 		})
+	},
+	{
+		name: 'Mythical max cape',
+		inputItems: resolveNameBank({
+			'Max hood': 1,
+			'Max cape': 1,
+			'Mythical cape': 1
+		}),
+		outputItems: resolveNameBank({
+			'Mythical max hood': 1,
+			'Mythical max cape': 1
+		})
+	},
+	{
+		name: 'Fire max cape',
+		inputItems: resolveNameBank({
+			'Max hood': 1,
+			'Max cape': 1,
+			'Fire cape': 1
+		}),
+		outputItems: resolveNameBank({
+			'Fire max hood': 1,
+			'Fire max cape': 1
+		})
 	}
 ];

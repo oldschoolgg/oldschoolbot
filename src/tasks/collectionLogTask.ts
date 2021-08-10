@@ -209,9 +209,12 @@ export default class CollectionLogTask extends Task {
 	async generateLogImage(options: {
 		user: KlasaUser;
 		collection: string;
-		type: 'collection' | 'sacrifice' | 'bank';
+		type: 'collection' | 'sacrifice' | 'bank' | 'tame';
 		flags: { [key: string]: string | number };
 	}): Promise<MessageOptions | MessageAttachment> {
+		if (options.flags.tame) {
+			options.type = 'tame';
+		}
 		let { collection, type, user, flags } = options;
 
 		await user.settings.sync(true);
@@ -246,7 +249,7 @@ export default class CollectionLogTask extends Task {
 
 		const fullSize = flags.nl || !collectionLog.leftList;
 
-		const userTotalCl = getTotalCl(user, type);
+		const userTotalCl = await getTotalCl(user, type);
 		const leftListCanvas = this.drawLeftList(collectionLog);
 
 		let leftDivisor = 214;
@@ -312,7 +315,13 @@ export default class CollectionLogTask extends Task {
 		this.drawText(
 			ctx,
 			`${user.username}'s ${
-				type === 'sacrifice' ? 'Sacrifice' : type === 'collection' ? 'Collection' : 'Bank'
+				type === 'sacrifice'
+					? 'Sacrifice'
+					: type === 'collection'
+					? 'Collection'
+					: type === 'tame'
+					? 'Tame Collection'
+					: 'Bank'
 			} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()}`,
 			ctx.canvas.width / 2,
 			22

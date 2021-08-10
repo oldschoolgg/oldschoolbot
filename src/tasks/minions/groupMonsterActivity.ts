@@ -1,3 +1,4 @@
+import { Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -49,7 +50,7 @@ export default class extends Task {
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
-			if (user.equippedPet() === itemID('Ori')) {
+			if (user.equippedPet() === itemID('Ori') && duration > Time.Minute * 5) {
 				loot.bank = addBanks([monster.table.kill(Math.ceil(kcToAdd * 0.25), {}).bank ?? {}, loot.bank]);
 			}
 			await user.addItemsToBank(loot, true);

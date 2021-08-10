@@ -6,6 +6,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { Eatables } from '../../lib/data/eatables';
 import { requiresMinion } from '../../lib/minions/decorators';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
+import { KillableMonster } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -20,13 +21,17 @@ export async function removeRawFood({
 	user,
 	totalHealingNeeded,
 	healPerAction,
-	raw = false
+	raw = false,
+	monster,
+	quantity
 }: {
 	client: KlasaClient;
 	user: KlasaUser;
 	totalHealingNeeded: number;
 	healPerAction: number;
 	raw?: boolean;
+	monster: KillableMonster;
+	quantity: number;
 }): Promise<[string, ItemBank]> {
 	await user.settings.sync(true);
 
@@ -38,11 +43,18 @@ export async function removeRawFood({
 			.map(i => itemNameFromID(i.raw!))
 			.join(', ')}.`;
 	} else {
-		await user.removeItemsFromBank(foodToRemove);
+		const itemCost = new Bank(foodToRemove);
+		if (monster.itemCost) {
+			itemCost.add(monster.itemCost.clone().multiply(quantity));
+		}
+		if (!user.owns(itemCost)) {
+			throw `You don't have the required items, you need: ${itemCost}.`;
+		}
+		await user.removeItemsFromBank(itemCost);
 
-		updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, foodToRemove);
+		updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, itemCost);
 
-		return [`${new Bank(foodToRemove)} from ${user.username}`, foodToRemove];
+		return [`${itemCost} from ${user.username}`, itemCost.bank];
 	}
 }
 
@@ -71,7 +83,7 @@ export default class extends BotCommand {
 			subcommands: true,
 			usage: '[k|select|setname] [input:...str]',
 			usageDelim: ' ',
-			aliases: ['tame']
+			aliases: ['tame', 't']
 		});
 	}
 
@@ -175,7 +187,9 @@ export default class extends BotCommand {
 			totalHealingNeeded: (monster.healAmountNeeded ?? 1) * quantity,
 			healPerAction: monster.healAmountNeeded ?? 1,
 			raw: true,
-			user: msg.author
+			user: msg.author,
+			monster,
+			quantity
 		});
 		const duration = Math.floor(quantity * speed);
 
