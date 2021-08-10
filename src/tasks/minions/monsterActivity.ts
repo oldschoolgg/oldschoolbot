@@ -17,7 +17,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, rand, roll } from '../../lib/util';
+import { itemID, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../lib/util/webhook';
 
@@ -127,14 +127,6 @@ export default class extends Task {
 			}
 		}
 
-		let bananas = 0;
-		if (user.equippedPet() === itemID('Harry')) {
-			for (let i = 0; i < minutes; i++) {
-				bananas += rand(1, 3);
-			}
-			loot.add('Banana', bananas);
-		}
-
 		if (monster.id === 290) {
 			for (let i = 0; i < minutes; i++) {
 				if (roll(6000)) {
@@ -161,10 +153,6 @@ export default class extends Task {
 
 		if (gotKlik) {
 			str += '\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.';
-		}
-
-		if (bananas > 0) {
-			str += `\n\n<:harry:749945071104819292> While you were PvMing, Harry went off and picked ${bananas} Bananas for you!`;
 		}
 
 		if (DOUBLE_LOOT_ACTIVE) {

@@ -1,5 +1,5 @@
 import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
-import { Time } from 'e';
+import { randInt, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -105,6 +105,12 @@ export async function handleTripFinish(
 		}
 
 		message += `\nDoug did some mining while you were on your trip and got you: ${bonusLoot}.`;
+	} else if (pet === itemID('Harry')) {
+		for (let i = 0; i < minutes; i++) {
+			bonusLoot.add('Banana', randInt(1, 3));
+		}
+
+		message += `\n<:harry:749945071104819292>: ${bonusLoot}.`;
 	}
 
 	if (bonusLoot.length > 0) {
