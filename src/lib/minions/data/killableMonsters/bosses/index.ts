@@ -1,5 +1,5 @@
 import gwdBosses from './gwd';
 import miscBosses from './misc';
-import wildyBosses from './wildy';
+import { wildyKillableMonsters } from './wildy';
 
-export default [...gwdBosses, ...miscBosses, ...wildyBosses];
+export default [...gwdBosses, ...miscBosses, ...wildyKillableMonsters];

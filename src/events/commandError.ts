@@ -30,7 +30,14 @@ export default class extends Event {
 		}
 
 		this.client.emit('wtf', `[COMMAND] ${command.path}\n${error.stack ?? error.name}`);
-		Sentry.captureException(error);
+		Sentry.captureException(error, {
+			user: {
+				id: message.author.id
+			},
+			tags: {
+				command: command.name
+			}
+		});
 
 		if (error instanceof DiscordAPIError || error instanceof HTTPError) {
 			output = [
@@ -60,7 +67,7 @@ export default class extends Event {
 				embeds: [
 					new MessageEmbed()
 						.setDescription(output)
-						.setColor(0xfc1020)
+						.setColor(0xfc_10_20)
 						.setAuthor(
 							message.author.tag,
 							message.author.displayAvatarURL({

@@ -30,7 +30,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[quantity:int{1}|name:...string] [plantName:...string] [autoFarmed:...boolean]',
+			usage: '[quantity:int{1}|name:...string] [plantName:...string] [autoFarmed:boolean]',
 			aliases: ['plant'],
 			usageDelim: ' ',
 			description: 'Allows a player to plant or harvest and replant seeds for farming.',
@@ -44,6 +44,11 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [quantity, plantName = '', autoFarmed]: [null | number | string, string, boolean]) {
 		if (msg.flagArgs.plants) {
 			return returnListOfPlants(msg);
+		}
+
+		if (msg.flagArgs.enablereminders) {
+			await msg.author.settings.update(UserSettings.FarmingPatchReminders, true);
+			return msg.channel.send('Enabled farming patch reminders.');
 		}
 
 		await msg.author.settings.sync(true);

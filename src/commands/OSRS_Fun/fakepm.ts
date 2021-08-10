@@ -37,7 +37,7 @@ export default class extends BotCommand {
 		ctx.fillText(`From ${username}: ${message}`, 5, 97);
 
 		return msg.channel.send({
-			files: [new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`)]
+			files: [new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10_000)}.jpg`)]
 		});
 	}
 }

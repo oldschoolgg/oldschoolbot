@@ -147,8 +147,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Monsters.Man.id,
 		stunTime: 5,
 		stunDamage: 1,
-		slope: 0.23918,
-		intercept: 70.46118
+		slope: 0.239_18,
+		intercept: 70.461_18
 	},
 	{
 		name: 'Woman',
@@ -158,8 +158,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Monsters.Woman.id,
 		stunTime: 5,
 		stunDamage: 1,
-		slope: 0.23918,
-		intercept: 70.46118
+		slope: 0.239_18,
+		intercept: 70.461_18
 	},
 	{
 		name: 'Farmer',
@@ -170,8 +170,8 @@ export const Pickpocketables: Pickpockable[] = [
 		stunTime: 5,
 		stunDamage: 1,
 		// No current data on slope/intercept
-		slope: 0.23918,
-		intercept: 70.46118
+		slope: 0.239_18,
+		intercept: 70.461_18
 	},
 	{
 		name: 'Female H.A.M. member',
@@ -181,8 +181,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: HamMember.id,
 		stunTime: 4,
 		stunDamage: 2,
-		slope: 0.41847,
-		intercept: 52.71147
+		slope: 0.418_47,
+		intercept: 52.711_47
 	},
 	{
 		name: 'Male H.A.M. member',
@@ -192,8 +192,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: HamMember.id,
 		stunTime: 4,
 		stunDamage: 2,
-		slope: 0.49031,
-		intercept: 45.59931
+		slope: 0.490_31,
+		intercept: 45.599_31
 	},
 	{
 		name: 'Warrior woman',
@@ -204,8 +204,8 @@ export const Pickpocketables: Pickpockable[] = [
 		stunTime: 5,
 		stunDamage: 2,
 		// No current data on slope/intercept
-		slope: 0.53031,
-		intercept: 43.59931
+		slope: 0.530_31,
+		intercept: 43.599_31
 	},
 	{
 		name: 'Rogue',
@@ -215,8 +215,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Rogue.id,
 		stunTime: 5,
 		stunDamage: 2,
-		slope: 0.66879,
-		intercept: 27.92979
+		slope: 0.668_79,
+		intercept: 27.929_79
 	},
 	{
 		name: 'Cave goblin',
@@ -227,8 +227,8 @@ export const Pickpocketables: Pickpockable[] = [
 		stunTime: 5,
 		stunDamage: 1,
 		// No current data on slope/intercept
-		slope: 0.66879,
-		intercept: 27.92979
+		slope: 0.668_79,
+		intercept: 27.929_79
 	},
 	{
 		name: 'Master Farmer',
@@ -238,8 +238,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: MasterFarmer.id,
 		stunTime: 5,
 		stunDamage: 3,
-		slope: 0.59786,
-		intercept: 34.95186
+		slope: 0.597_86,
+		intercept: 34.951_86
 	},
 	{
 		name: 'Guard',
@@ -249,8 +249,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Guard.id,
 		stunTime: 5,
 		stunDamage: 2,
-		slope: 0.76776,
-		intercept: 18.13176
+		slope: 0.767_76,
+		intercept: 18.131_76
 	},
 	{
 		name: 'Fremennik Citizen',
@@ -261,19 +261,19 @@ export const Pickpocketables: Pickpockable[] = [
 		stunTime: 5,
 		stunDamage: 2,
 		// No current data on slope/intercept
-		slope: 0.76776,
-		intercept: 18.13176
+		slope: 0.767_76,
+		intercept: 18.131_76
 	},
 	{
 		name: 'Desert Bandit',
 		level: 53,
 		xp: 79.5,
 		table: DesertBandit.pickpocketTable!,
-		id: 33322,
+		id: 33_322,
 		stunTime: 5,
 		stunDamage: 3,
-		slope: 0.75735,
-		intercept: 19.16235
+		slope: 0.757_35,
+		intercept: 19.162_35
 	},
 	{
 		name: 'Knight of Ardougne',
@@ -283,8 +283,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: KnightOfArdougne.id,
 		stunTime: 5,
 		stunDamage: 3,
-		slope: 0.77209,
-		intercept: 17.70309
+		slope: 0.772_09,
+		intercept: 17.703_09
 	},
 	{
 		name: 'Pollnivian Bandit',
@@ -295,8 +295,8 @@ export const Pickpocketables: Pickpockable[] = [
 		stunTime: 5,
 		stunDamage: 5,
 		// No current data on slope/intercept
-		slope: 0.77209,
-		intercept: 17.70309,
+		slope: 0.772_09,
+		intercept: 17.703_09,
 		customTickRate: 2.5
 	},
 	{
@@ -318,8 +318,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: MenaphiteThug.id,
 		stunTime: 5,
 		stunDamage: 5,
-		slope: 0.65485,
-		intercept: 29.30985,
+		slope: 0.654_85,
+		intercept: 29.309_85,
 		customTickRate: 2.5
 	},
 	{
@@ -330,8 +330,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Paladin.id,
 		stunTime: 5,
 		stunDamage: 3,
-		slope: 0.40429,
-		intercept: 18.95529
+		slope: 0.404_29,
+		intercept: 18.955_29
 	},
 	{
 		name: 'Gnome',
@@ -341,8 +341,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Gnome.id,
 		stunTime: 5,
 		stunDamage: 1,
-		slope: 0.47565,
-		intercept: 0.18065
+		slope: 0.475_65,
+		intercept: 0.180_65
 	},
 	{
 		name: 'Hero',
@@ -352,8 +352,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Hero.id,
 		stunTime: 6,
 		stunDamage: 4,
-		slope: 0.39056,
-		intercept: 0.78456
+		slope: 0.390_56,
+		intercept: 0.784_56
 	},
 	{
 		name: 'Vyre',
@@ -363,8 +363,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Vyre.id,
 		stunTime: 5,
 		stunDamage: 5,
-		slope: 0.48813,
-		intercept: 2.06513
+		slope: 0.488_13,
+		intercept: 2.065_13
 	},
 	{
 		name: 'Elf',
@@ -374,8 +374,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: PrifddinasElf.id,
 		stunTime: 6,
 		stunDamage: 5,
-		slope: 0.42077,
-		intercept: -2.20623,
+		slope: 0.420_77,
+		intercept: -2.206_23,
 		qpRequired: 200
 	},
 	{
@@ -386,8 +386,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: TzHaarHur.id,
 		stunTime: 5,
 		stunDamage: 4,
-		slope: 1.61125,
-		intercept: -80.99375,
+		slope: 1.611_25,
+		intercept: -80.993_75,
 		itemsRequired: resolveNameBank({
 			'Fire cape': 1
 		})

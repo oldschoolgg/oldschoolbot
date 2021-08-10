@@ -4,6 +4,7 @@ import { Task } from 'klasa';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SoulWarsOptions } from '../../../lib/types/minions';
 import { noOp, roll } from '../../../lib/util';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 function calcPoints() {
@@ -23,7 +24,8 @@ function calcPoints() {
 }
 
 export default class extends Task {
-	async run({ channelID, leader, users, quantity }: SoulWarsOptions) {
+	async run(data: SoulWarsOptions) {
+		const { channelID, leader, users, quantity } = data;
 		const leaderUser = await this.client.users.fetch(leader);
 		let str = `${leaderUser}, your party finished doing ${quantity}x games of Soul Wars.\n\n`;
 
@@ -42,6 +44,22 @@ export default class extends Task {
 			str += `${user} received ${points}x Zeal Tokens.`;
 		}
 
-		sendToChannelID(this.client, channelID, { content: str });
+		if (users.length === 1) {
+			handleTripFinish(
+				this.client,
+				leaderUser,
+				channelID,
+				str,
+				res => {
+					leaderUser.log('continued trip of killing soul wars}');
+					return this.client.commands.get('sw')!.run(res, ['solo']);
+				},
+				undefined!,
+				data,
+				null
+			);
+		} else {
+			sendToChannelID(this.client, channelID, { content: str });
+		}
 	}
 }

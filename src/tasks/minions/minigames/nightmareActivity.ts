@@ -26,6 +26,7 @@ export default class extends Task {
 	async run(data: NightmareActivityTaskOptions) {
 		const { channelID, leader, users, quantity, duration } = data;
 		const teamsLoot: { [key: string]: ItemBank } = {};
+		const teamsPreviousCL: { [key: string]: ItemBank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
 		const parsedUsers: NightmareUser[] = [];
@@ -79,8 +80,14 @@ export default class extends Task {
 				isOnTask: false,
 				taskQuantity: null
 			});
+
 			totalLoot.add(loot);
-			await user.addItemsToBank(loot, true);
+
+			// Fix purple items on solo kills
+			const { previousCL } = await user.addItemsToBank(loot, true);
+			// Only add previousCL for leader
+			if (user.id === leader) teamsPreviousCL[user.id] = previousCL;
+
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) await user.incrementMonsterScore(NightmareMonster.id, kcToAdd);
 			const purple = Object.keys(loot).some(itemID =>
@@ -117,7 +124,14 @@ export default class extends Task {
 		} else {
 			const { image } = await this.client.tasks
 				.get('bankImage')!
-				.generateBankImage(teamsLoot[leader], `${quantity}x Nightmare`, true, { showNewCL: 1 }, leaderUser);
+				.generateBankImage(
+					teamsLoot[leader],
+					`${quantity}x Nightmare`,
+					true,
+					{ showNewCL: 1 },
+					leaderUser,
+					teamsPreviousCL[leader]
+				);
 
 			const kc = leaderUser.getKC(NightmareMonster.id);
 			handleTripFinish(
@@ -128,7 +142,7 @@ export default class extends Task {
 					NightmareMonster.name
 				}, you died ${deaths[leader] ?? 0} times. Your Nightmare KC is now ${kc}.`,
 				res => {
-					leaderUser.log(`continued trip of ${quantity}x plunder`);
+					leaderUser.log(`continued trip of ${quantity}x Nightmare`);
 					return this.client.commands.get('nightmare')!.run(res, ['solo']);
 				},
 				image!,

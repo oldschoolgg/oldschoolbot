@@ -64,7 +64,7 @@ const StandardTable = new LootTable()
 	.tertiary(25, 'Clue scroll (elite)')
 	.tertiary(120, 'Crystal weapon seed')
 	.tertiary(120, 'Crystal armour seed')
-	.tertiary(2000, 'Blade of saeldor (inactive)')
+	.tertiary(2000, 'Enhanced crystal weapon seed')
 	.tertiary(2000, 'Youngllef');
 
 const CorruptedInnerTable = new LootTable()
@@ -109,7 +109,7 @@ const CorruptedTable = new LootTable()
 	.tertiary(20, 'Clue scroll (elite)')
 	.tertiary(50, 'Crystal weapon seed')
 	.tertiary(50, 'Crystal armour seed')
-	.tertiary(400, 'Blade of saeldor (inactive)')
+	.tertiary(400, 'Enhanced crystal weapon seed')
 	.tertiary(800, 'Youngllef');
 
 interface NormalGauntletOptions {

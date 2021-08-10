@@ -13,6 +13,7 @@ import { capeBuyables } from './capes';
 import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
+import { miningBuyables } from './mining';
 import { slayerBuyables } from './slayerBuyables';
 
 export interface Buyable {
@@ -319,7 +320,7 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Monkey',
 		outputItems: {
-			19556: 1
+			19_556: 1
 		},
 		gpCost: 1_000_000,
 		qpRequired: 182
@@ -541,6 +542,11 @@ const questBuyables: Buyable[] = [
 		name: 'Cannon stand',
 		gpCost: 2_500_000,
 		qpRequired: 5
+	},
+	{
+		name: 'Elemental shield',
+		gpCost: 2_500_000,
+		qpRequired: 25
 	}
 ];
 
@@ -590,6 +596,12 @@ const Buyables: Buyable[] = [
 		aliases: ['shield right half', 'right shield'],
 		qpRequired: 111,
 		gpCost: 1_000_000
+	},
+	{
+		name: 'Dragon metal shard',
+		aliases: ['metal shard'],
+		qpRequired: 205,
+		gpCost: 2_500_000
 	},
 	{
 		name: 'Eye of newt',
@@ -671,7 +683,8 @@ const Buyables: Buyable[] = [
 	...castleWarsBuyables,
 	...cmCapes,
 	...slayerBuyables,
-	...capeBuyables
+	...capeBuyables,
+	...miningBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

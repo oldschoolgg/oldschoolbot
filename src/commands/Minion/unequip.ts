@@ -15,7 +15,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<melee|mage|range|skilling|misc> (item:...item)',
+			usage: '<melee|mage|range|skilling|misc|wildy> (item:...item)',
 			usageDelim: ' ',
 			categoryFlags: ['minion'],
 			description: 'Unequips items from one of your gear setups.',
@@ -32,9 +32,9 @@ export default class extends BotCommand {
 		}
 
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
-		const currentEquippedGear = msg.author.getGear(gearType);
+		const currentEquippedGear = msg.author.getGear(gearType).raw();
 
-		const itemToUnequip = itemArray.find(i => currentEquippedGear.hasEquipped([i.id]));
+		const itemToUnequip = itemArray.find(i => msg.author.getGear(gearType).hasEquipped([i.id]));
 
 		if (!itemToUnequip) {
 			return msg.channel.send("You don't have this item equipped!");

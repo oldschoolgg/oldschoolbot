@@ -1,4 +1,3 @@
-import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -6,7 +5,7 @@ import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { multiplyBank, stringMatches, toTitleCase } from '../../lib/util';
+import { multiplyBank, stringMatches } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -53,23 +52,7 @@ export default class extends BotCommand {
 
 		let purchaseMsg = `${itemString} for ${titheFarmPointsCost} Tithe Farm points`;
 
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const sellMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to confirm that you want to purchase ${purchaseMsg}.`
-			);
-
-			// Confirm the user wants to buy
-			try {
-				await msg.channel.awaitMessages({
-					max: 1,
-					time: Time.Second * 15,
-					errors: ['time'],
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-				});
-			} catch (err) {
-				return sellMsg.edit(`Cancelling purchase of ${quantity} ${toTitleCase(buyable.name)}.`);
-			}
-		}
+		await msg.confirm(`${msg.author}, please confirm that you want to purchase ${purchaseMsg}.`);
 
 		await msg.author.settings.update(UserSettings.Stats.TitheFarmPoints, titheFarmPoints - titheFarmPointsCost);
 

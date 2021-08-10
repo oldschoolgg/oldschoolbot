@@ -69,7 +69,7 @@ export default class extends BotCommand {
 		ctx.fillText('*', 12 + ctx.measureText(`${username}: `).width, 70);
 
 		return msg.channel.send({
-			files: [new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10000)}.jpg`)]
+			files: [new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10_000)}.jpg`)]
 		});
 	}
 }

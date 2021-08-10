@@ -38,6 +38,7 @@ export function taskGroupFromActivity(type: Activity): ActivityGroup {
 			return ActivityGroup.Skilling;
 		case Activity.FightCaves:
 		case Activity.Wintertodt:
+		case Activity.Tempoross:
 		case Activity.Nightmare:
 		case Activity.AnimatedArmour:
 		case Activity.Cyclops:

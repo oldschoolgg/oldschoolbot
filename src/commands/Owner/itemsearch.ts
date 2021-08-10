@@ -31,17 +31,24 @@ export default class extends BotCommand {
 			return msg.channel.send(`\`\`\`\n${JSON.stringify(gettedItem, null, 4)}\n\`\`\``);
 		}
 
-		return msg.channel.send(
-			`Found ${items.length} items:\n${(items as Item[])
-				.map(
-					(item, index) => `${gettedItem!.id === item.id ? '**' : ''}
+		let str = `Found ${items.length} items:\n${(items as Item[])
+			.slice(0, 5)
+			.map(
+				(item, index) => `${gettedItem!.id === item.id ? '**' : ''}
 ${index + 1}. ${item.name}[${item.id}] Price[${item.price}] ${
-						item.tradeable_on_ge ? 'GE_Tradeable' : 'Not_GE_Tradeable'
-					} ${item.tradeable ? 'Tradeable' : 'Not_Tradeable'} ${
-						item.incomplete ? 'Incomplete' : 'Not_Incomplete'
-					} ${item.duplicate ? 'Duplicate' : 'Not_Duplicate'}${gettedItem!.id === item.id ? '**' : ''}`
-				)
-				.join('\n')}`
-		);
+					item.tradeable_on_ge ? 'GE_Tradeable' : 'Not_GE_Tradeable'
+				} ${item.tradeable ? 'Tradeable' : 'Not_Tradeable'} ${
+					item.incomplete ? 'Incomplete' : 'Not_Incomplete'
+				} ${item.duplicate ? 'Duplicate' : 'Not_Duplicate'}${gettedItem!.id === item.id ? '**' : ''} <${
+					item.wiki_url
+				}>`
+			)
+			.join('\n')}`;
+
+		if (items.length > 5) {
+			str += `\n...and ${items.length - 5} others`;
+		}
+
+		return msg.channel.send(str);
 	}
 }

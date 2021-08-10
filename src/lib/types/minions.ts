@@ -60,6 +60,14 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	burstOrBarrage?: number;
 }
 
+export interface RevenantOptions extends ActivityTaskOptions {
+	monsterID: number;
+	quantity: number;
+	died: boolean;
+	usingPrayerPots: boolean;
+	skulled: boolean;
+	style: 'melee' | 'range' | 'mage';
+}
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	clueID: number;
 	quantity: number;
@@ -197,6 +205,10 @@ export interface AerialFishingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface DriftNetActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 	minigameID: MinigameKey;
 	quantity: number;
@@ -218,6 +230,11 @@ export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
+}
+
+export interface TemporossActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+	rewardBoost: number;
 }
 
 export interface TitheFarmActivityTaskOptions extends MinigameActivityTaskOptions {}
@@ -336,5 +353,6 @@ export type ActivityTaskData =
 	| HerbloreActivityTaskOptions
 	| FletchingActivityTaskOptions
 	| RunecraftActivityTaskOptions
-	| LfgActivityTaskOptions
-	| TempleTrekkingActivityTaskOptions;
+	| TempleTrekkingActivityTaskOptions
+	| TemporossActivityTaskOptions
+	| LfgActivityTaskOptions;

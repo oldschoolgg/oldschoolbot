@@ -68,7 +68,10 @@ export default class extends BotCommand {
 		}
 
 		const log = Woodcutting.Logs.find(
-			log => stringMatches(log.name, name) || stringMatches(log.name.split(' ')[0], name)
+			log =>
+				stringMatches(log.name, name) ||
+				stringMatches(log.name.split(' ')[0], name) ||
+				log.aliases?.some(a => stringMatches(a, name))
 		);
 
 		if (!log) {
