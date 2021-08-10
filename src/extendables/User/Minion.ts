@@ -96,12 +96,6 @@ import {
 	Util
 } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import {
-	NightmareActivityTaskOptions,
-	PlunderActivityTaskOptions,
-	SepulchreActivityTaskOptions
-} from './../../lib/types/minions';
 import { Minigames } from './Minigame';
 
 const suffixes = new SimpleTable<string>()

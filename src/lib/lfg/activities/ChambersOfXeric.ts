@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { Activity, Emoji, Events } from '../../constants';
-import { coxLog, metamorphPets } from '../../data/collectionLog';
+import { chambersOfXericCl, chambersOfXericMetamorphPets } from '../../data/CollectionsExport';
 import {
 	calcCoxDuration,
 	calcCoxInput,
@@ -37,7 +37,9 @@ export default class implements LfgInterface {
 	greenItems = resolveItems(['Twisted ancestral colour kit']);
 	blueItems = resolveItems(['Metamorphic dust']);
 	purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
-	purpleItems = [...Object.values(coxLog), ...metamorphPets].flat(2).filter(i => !this.notPurple.includes(i));
+	purpleItems = [...Object.values(chambersOfXericCl), ...chambersOfXericMetamorphPets].filter(
+		i => !this.notPurple.includes(i)
+	);
 
 	async HandleTripFinish(params: LfgHandleTripFinish): Promise<LfgHandleTripFinishReturn> {
 		const { users, duration } = <GroupMonsterActivityTaskOptions>params.data;
@@ -94,7 +96,7 @@ export default class implements LfgInterface {
 				user.settings.get(UserSettings.CollectionLogBank)[itemID('Metamorphic dust')]
 			) {
 				const { bank } = user.allItemsOwned();
-				const unownedPet = shuffleArr(metamorphPets).find(pet => !bank[pet]);
+				const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !bank[pet]);
 				if (unownedPet) {
 					userLoot.add(unownedPet);
 				}

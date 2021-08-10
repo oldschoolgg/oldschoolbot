@@ -42,17 +42,17 @@ export default class extends BotCommand {
 		msg.author.settings.update(paths.map(path => [path, 14_000_000]));
 		msg.author.settings.update(UserSettings.GP, 1_000_000_000);
 		msg.author.settings.update(UserSettings.QP, MAX_QP);
-		msg.author.settings.update(UserSettings.Slayer.SlayerPoints, 100000);
+		msg.author.settings.update(UserSettings.Slayer.SlayerPoints, 100_000);
 
 		const loot: Record<string, number> = Object.fromEntries(Eatables.map(({ id }) => [id, 1000]));
 
 		const bank = new Bank(loot);
 
 		// Potions
-		bank.add('Saradomin Brew(4)', 10000);
-		bank.add('Super restore(4)', 10000);
-		bank.add('Stamina potion(4)', 10000);
-		bank.add('Prayer potion(4)', 10000);
+		bank.add('Saradomin Brew(4)', 10_000);
+		bank.add('Super restore(4)', 10_000);
+		bank.add('Stamina potion(4)', 10_000);
+		bank.add('Prayer potion(4)', 10_000);
 
 		// Required and BiS items
 		let itemsToAdd = new Set([
@@ -169,7 +169,7 @@ export default class extends BotCommand {
 		});
 
 		const poh = await msg.author.getPOH();
-		poh.pool = 29241;
+		poh.pool = 29_241;
 		await poh.save();
 		msg.author.addItemsToBank(bank.bank);
 		return msg.channel.send(
