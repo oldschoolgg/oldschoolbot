@@ -7,8 +7,10 @@ import { GearSetup } from '../../lib/gear';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
+import { tameSpecies } from '../../lib/tames';
 import { itemNameFromID } from '../../lib/util';
 import { parseStringBank } from '../../lib/util/parseStringBank';
+import { generateNewTame } from '../bso/nursery';
 
 const gearSpawns = [
 	{
@@ -74,6 +76,11 @@ export default class extends BotCommand {
 					.map(itemNameFromID)
 					.join(', ')}.`
 			);
+		}
+
+		if (str === 'igne') {
+			const tame = await generateNewTame(msg.author, tameSpecies[0]);
+			return msg.channel.send(`Gave you a new tame: ${tame}.`);
 		}
 
 		if (msg.flagArgs.customitems) {
