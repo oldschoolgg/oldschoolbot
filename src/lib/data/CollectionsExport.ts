@@ -1521,7 +1521,10 @@ export const rooftopAgilityCL = resolveItems([
 	'Graceful top',
 	'Graceful legs',
 	'Graceful gloves',
-	'Graceful boots'
+	'Graceful boots',
+	'Scruffy',
+	'Harry',
+	'Skipper'
 ]);
 
 export const shayzienArmourCL = resolveItems([
