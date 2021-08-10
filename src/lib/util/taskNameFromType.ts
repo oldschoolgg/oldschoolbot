@@ -140,5 +140,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.KibbleActivity;
 		case Activity.Revenants:
 			return Tasks.RevenantsActivity;
+		case Activity.PestControl:
+			return Tasks.PestControl;
 	}
 }
