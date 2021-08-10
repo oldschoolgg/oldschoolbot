@@ -179,7 +179,7 @@ const Misc: Craftable[] = [
 		outputMultiple: 15
 	},
 	{
-		name: 'Amethyst javelin haeds',
+		name: 'Amethyst javelin heads',
 		id: itemID('Amethyst javelin heads'),
 		level: 87,
 		xp: 60,
