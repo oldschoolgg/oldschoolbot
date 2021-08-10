@@ -24,9 +24,9 @@ import { nexLootTable, NexMonster } from '../nex';
 import { UserSettings } from '../settings/types/UserSettings';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { allFarmingItems } from '../skilling/skills/farming';
-import { TamesTable } from '../typeorm/TamesTable.entity';
 import { ItemBank } from '../types';
 import { addArrayOfNumbers, stringMatches } from '../util';
+import { getUsersTamesCollectionLog } from '../util/getUsersTameCL';
 import resolveItems from '../util/resolveItems';
 import {
 	abyssalDragonCL,
@@ -1102,19 +1102,6 @@ function getLeftList(
 		}
 	}
 	return leftList;
-}
-
-export async function getUsersTamesCollectionLog(user: KlasaUser) {
-	const allTames = await TamesTable.find({
-		where: {
-			userID: user.id
-		}
-	});
-	let totalBank = new Bank();
-	for (const tame of allTames) {
-		totalBank.add(tame.totalLoot);
-	}
-	return totalBank;
 }
 
 export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collection' | 'tame') {
