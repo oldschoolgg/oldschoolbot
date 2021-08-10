@@ -2,7 +2,8 @@ import { percentChance, randArrItem } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { DOUBLE_LOOT_ACTIVE, Emoji, Events } from '../../../lib/constants';
+import { Emoji, Events } from '../../../lib/constants';
+import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import KingGoldemar, { KingGoldemarLootTable } from '../../../lib/minions/data/killableMonsters/custom/KingGoldemar';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -71,7 +72,7 @@ export default class extends Task {
 			if (dwwhRecipient === user) {
 				loot.add('Broken dwarven warhammer');
 			}
-			if (DOUBLE_LOOT_ACTIVE) {
+			if (isDoubleLootActive(this.client)) {
 				loot.multiply(2);
 			}
 			totalLoot.add(loot);

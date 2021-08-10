@@ -3,9 +3,10 @@ import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { frozenKeyPieces } from '../../lib/data/CollectionsExport';
 import { getRandomMysteryBox } from '../../lib/data/openables';
+import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -66,7 +67,7 @@ export default class extends Task {
 			inCatacombs: isInCatacombs
 		};
 		const loot = (monster as KillableMonster).table.kill(
-			Math.ceil(quantity * (DOUBLE_LOOT_ACTIVE ? 2 : abyssalBonus)),
+			Math.ceil(quantity * (isDoubleLootActive(this.client) ? 2 : abyssalBonus)),
 			killOptions
 		);
 		let newSuperiorCount = loot.bank[420];
@@ -155,7 +156,7 @@ export default class extends Task {
 			str += '\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.';
 		}
 
-		if (DOUBLE_LOOT_ACTIVE) {
+		if (isDoubleLootActive(this.client)) {
 			str += '\n\n**Double Loot!**';
 		} else if (abyssalBonus > 1) {
 			str += '\n\nOri has used the abyss to transmute you +25% bonus loot!';

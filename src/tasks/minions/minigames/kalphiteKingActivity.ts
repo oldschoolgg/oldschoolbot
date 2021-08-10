@@ -3,8 +3,9 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
+import { Emoji } from '../../../lib/constants';
 import { kalphiteKingCL } from '../../../lib/data/CollectionsExport';
+import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { KalphiteKingMonster } from '../../../lib/kalphiteking';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
@@ -69,7 +70,7 @@ export default class extends Task {
 
 			const loot = new Bank();
 			loot.add(KalphiteKingMonster.table.kill(1, {}));
-			if (DOUBLE_LOOT_ACTIVE) {
+			if (isDoubleLootActive(this.client)) {
 				loot.multiply(2);
 			}
 			const winner = teamTable.roll()?.item;

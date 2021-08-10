@@ -2,7 +2,7 @@ import { objectEntries, randArrItem, randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { DOUBLE_LOOT_ACTIVE } from '../../../lib/constants';
+import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { bossKillables } from '../../../lib/minions/data/killableMonsters/bosses';
 import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killableMonsters/custom/VasaMagus';
 import { addMonsterXP } from '../../../lib/minions/functions';
@@ -35,7 +35,7 @@ export default class extends Task {
 			.map(l => `${l[1]}x ${l[0]}`)
 			.join(', ')}`;
 
-		if (DOUBLE_LOOT_ACTIVE) {
+		if (isDoubleLootActive(this.client)) {
 			loot.multiply(2);
 		}
 
