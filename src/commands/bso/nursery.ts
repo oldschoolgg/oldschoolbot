@@ -1,4 +1,4 @@
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { requiresMinion } from '../../lib/minions/decorators';
@@ -6,9 +6,34 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { Nursery, tameSpecies } from '../../lib/tames';
+import { Nursery, Species, tameSpecies } from '../../lib/tames';
 import { TameGrowthStage, TamesTable } from '../../lib/typeorm/TamesTable.entity';
 import { formatDuration, gaussianRandom, stringMatches, updateBankSetting } from '../../lib/util';
+
+export async function generateNewTame(user: KlasaUser, species: Species) {
+	const tame = new TamesTable();
+	tame.userID = user.id;
+	tame.speciesID = species.id;
+	tame.growthStage = TameGrowthStage.Baby;
+	tame.currentGrowthPercent = 0;
+
+	const [minCmbt, maxCmbt] = species.combatLevelRange;
+	tame.maxCombatLevel = gaussianRandom(minCmbt, maxCmbt);
+
+	const [minArt, maxArt] = species.artisanLevelRange;
+	tame.maxArtisanLevel = gaussianRandom(minArt, maxArt);
+
+	const [minSup, maxSup] = species.supportLevelRange;
+	tame.maxSupportLevel = gaussianRandom(minSup, maxSup);
+
+	const [minGath, maxGath] = species.gathererLevelRange;
+	tame.maxGathererLevel = gaussianRandom(minGath, maxGath);
+
+	tame.totalLoot = {};
+	tame.fedItems = {};
+	await tame.save();
+	return tame;
+}
 
 export default class POHCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -49,27 +74,7 @@ export default class POHCommand extends BotCommand {
 				hasFuel: false
 			};
 			await msg.author.settings.update(UserSettings.Nursery, newNursery);
-			const tame = new TamesTable();
-			tame.userID = msg.author.id;
-			tame.speciesID = specie.id;
-			tame.growthStage = TameGrowthStage.Baby;
-			tame.currentGrowthPercent = 0;
-
-			const [minCmbt, maxCmbt] = specie.combatLevelRange;
-			tame.maxCombatLevel = gaussianRandom(minCmbt, maxCmbt);
-
-			const [minArt, maxArt] = specie.artisanLevelRange;
-			tame.maxArtisanLevel = gaussianRandom(minArt, maxArt);
-
-			const [minSup, maxSup] = specie.supportLevelRange;
-			tame.maxSupportLevel = gaussianRandom(minSup, maxSup);
-
-			const [minGath, maxGath] = specie.gathererLevelRange;
-			tame.maxGathererLevel = gaussianRandom(minGath, maxGath);
-
-			tame.totalLoot = {};
-			await tame.save();
-
+			await generateNewTame(msg.author, specie);
 			return msg.channel.send(`Your ${specie.name} Egg has hatched! You now have a ${specie.name} Baby.`);
 		}
 

@@ -5,6 +5,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { addBanks } from 'oldschooljs/dist/util';
 
 import { client } from '..';
+import BankImageTask from '../tasks/bankImage';
 import { UserSettings } from './settings/types/UserSettings';
 import { TameActivityTable } from './typeorm/TameActivityTable.entity';
 import { TamesTable } from './typeorm/TamesTable.entity';
@@ -74,18 +75,40 @@ export async function runTameTask(activity: TameActivityTable) {
 		if (addRes) {
 			res.message += `\n${addRes}`;
 		}
-		sendToChannelID(client, activity.channelID, { content: res.message });
+		sendToChannelID(client, activity.channelID, {
+			content: res.message,
+			image: (
+				await (client.tasks.get('bankImage') as BankImageTask).generateBankImage(
+					res.loot,
+					`${activity.tame.name}'s PvM Trip Loot`,
+					false
+				)
+			).image!
+		});
 	}
 	switch (activity.type) {
 		case 'pvm': {
 			const { quantity, monsterID } = activity.data;
+			let killQty = quantity;
+			const hasOri = activity.tame.hasBeenFed('Ori');
+			if (hasOri) {
+				killQty = Math.floor(killQty * 1.25);
+			}
 			const fullMonster = Monsters.get(monsterID)!;
-			const loot = fullMonster.kill(quantity, {});
+			const loot = fullMonster.kill(killQty, {});
 			const user = await client.users.fetch(activity.userID);
+			let str = `${user}, ${activity.tame.name} finished killing ${quantity}x ${fullMonster.name}.`;
+			const boosts = [];
+			if (hasOri) {
+				boosts.push('25% extra loot (ate a Ori)');
+			}
+			if (boosts.length > 0) {
+				str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+			}
 			await user.addItemsToBank(loot);
 			handleFinish({
 				loot,
-				message: `${user}, ${activity.tame.name} finished killing ${quantity}x ${fullMonster.name}, you received ${loot}.`
+				message: str
 			});
 			break;
 		}

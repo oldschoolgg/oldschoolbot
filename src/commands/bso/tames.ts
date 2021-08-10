@@ -13,8 +13,23 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { getUsersTame } from '../../lib/tames';
 import { TameActivityTable } from '../../lib/typeorm/TameActivityTable.entity';
 import { TameGrowthStage, TamesTable } from '../../lib/typeorm/TamesTable.entity';
-import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
+import {
+	addBanks,
+	formatDuration,
+	itemNameFromID,
+	patronMaxTripCalc,
+	stringMatches,
+	updateBankSetting
+} from '../../lib/util';
 import findMonster from '../../lib/util/findMonster';
+import getOSItem from '../../lib/util/getOSItem';
+import { parseStringBank } from '../../lib/util/parseStringBank';
+
+const feedableItems = [
+	[getOSItem('Ori'), '25% extra loot'],
+	[getOSItem('Zak'), '+35 minutes longer max trip length'],
+	[getOSItem('Abyssal cape'), '25% food reduction']
+] as const;
 
 export async function removeRawFood({
 	client,
@@ -23,7 +38,8 @@ export async function removeRawFood({
 	healPerAction,
 	raw = false,
 	monster,
-	quantity
+	quantity,
+	tame
 }: {
 	client: KlasaClient;
 	user: KlasaUser;
@@ -32,8 +48,13 @@ export async function removeRawFood({
 	raw?: boolean;
 	monster: KillableMonster;
 	quantity: number;
+	tame: TamesTable;
 }): Promise<[string, ItemBank]> {
 	await user.settings.sync(true);
+	if (tame.hasBeenFed('Abyssal cape')) {
+		totalHealingNeeded = Math.floor(totalHealingNeeded * 0.75);
+		healPerAction = Math.floor(healPerAction * 0.75);
+	}
 
 	const foodToRemove = getUserFoodFromBank(user, totalHealingNeeded, raw);
 	if (!foodToRemove) {
@@ -81,7 +102,7 @@ export default class extends BotCommand {
 			description: 'Use to control and manage your tames.',
 			examples: ['+tames k fire giant', '+tames', '+tames select 1', '+tames setname LilBuddy'],
 			subcommands: true,
-			usage: '[k|select|setname] [input:...str]',
+			usage: '[k|select|setname|feed] [input:...str]',
 			usageDelim: ' ',
 			aliases: ['tame', 't']
 		});
@@ -153,6 +174,51 @@ export default class extends BotCommand {
 		return msg.channel.send(`You selected your ${toSelect.name}.`);
 	}
 
+	async feed(msg: KlasaMessage, [str = '']: [string]) {
+		const [selectedTame] = await getUsersTame(msg.author);
+		if (!selectedTame) {
+			return msg.channel.send('You have no selected tame.');
+		}
+
+		let rawBank = parseStringBank(str);
+		let bankToAdd = new Bank();
+		let userBank = msg.author.bank();
+		for (const [item, qty] of rawBank) {
+			let qtyOwned = userBank.amount(item.id);
+			if (qtyOwned === 0) continue;
+			let qtyToUse = !qty ? qtyOwned : qty > qtyOwned ? qtyOwned : qty;
+			bankToAdd.add(item.id, qtyToUse);
+		}
+		if (!str || bankToAdd.length === 0) {
+			return msg.channel.sendBankImage({
+				bank: selectedTame.fedItems,
+				title: 'Items Fed To This Tame',
+				content: `The items which give a perk/usage when fed are: ${feedableItems
+					.map(i => `${i[0].name} (${i[1]})`)
+					.join(', ')}.`
+			});
+		}
+
+		if (!userBank.fits(bankToAdd)) {
+			return msg.channel.send("You don't have enough items.");
+		}
+
+		let specialStrArr = [];
+		for (const [i, perk] of feedableItems) {
+			if (bankToAdd.has(i.id)) {
+				specialStrArr.push(`**${i.name}**: ${perk}`);
+			}
+		}
+		let specialStr = specialStrArr.length === 0 ? '' : `\n\n${specialStrArr.join(', ')}`;
+		await msg.confirm(
+			`Are you sure you want to feed \`${bankToAdd}\` to ${selectedTame.name}? You cannot get these items back after they're eaten by your tame.${specialStr}`
+		);
+		await msg.author.removeItemsFromBank(bankToAdd);
+		selectedTame.fedItems = addBanks([selectedTame.fedItems, bankToAdd.bank]);
+		await selectedTame.save();
+		return msg.channel.send(`You fed \`${bankToAdd}\` to ${selectedTame.name}.${specialStr}`);
+	}
+
 	async k(msg: KlasaMessage, [str = '']: [string]) {
 		const [selectedTame, currentTask] = await getUsersTame(msg.author);
 		if (!selectedTame) {
@@ -177,8 +243,15 @@ export default class extends BotCommand {
 		// Apply calculated boost:
 		speed = reduceNumByPercent(speed, combatLevelBoost);
 
+		let boosts = [];
+		let maxTripLength = Time.Minute * 20 * (4 - selectedTame.growthLevel);
+		if (selectedTame.hasBeenFed('Zak')) {
+			maxTripLength += Time.Minute * 35;
+			boosts.push('+35mins trip length (ate a Zak)');
+		}
+		maxTripLength += patronMaxTripCalc(msg.author) * 2;
 		// Calculate monster quantity:
-		const quantity = Math.floor(Time.Hour / speed);
+		const quantity = Math.floor(maxTripLength / speed);
 		if (quantity < 1) {
 			return msg.channel.send("Your tame can't kill this monster fast enough.");
 		}
@@ -189,7 +262,8 @@ export default class extends BotCommand {
 			raw: true,
 			user: msg.author,
 			monster,
-			quantity
+			quantity,
+			tame: selectedTame
 		});
 		const duration = Math.floor(quantity * speed);
 
