@@ -6,7 +6,7 @@ import { Bank } from 'oldschooljs';
 import { ironsCantUse, minionNotBusy } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
-import { formatDuration } from '../../lib/util';
+import { formatDuration, isSuperUntradeable } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -44,7 +44,7 @@ export default class extends BotCommand {
 			return msg.channel.send("You don't own those items.");
 		}
 
-		if (bank.items().some(i => i[0].id >= 40_000 && i[0].id <= 45_000)) {
+		if (bank.items().some(i => isSuperUntradeable(i[0]))) {
 			return msg.channel.send('You are trying to sell unsellable items.');
 		}
 

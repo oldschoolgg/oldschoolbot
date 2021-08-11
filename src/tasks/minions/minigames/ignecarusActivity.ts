@@ -2,7 +2,8 @@ import { objectValues, percentChance, shuffleArr } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
+import { Emoji } from '../../../lib/constants';
+import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import {
 	Ignecarus,
 	IgnecarusLootTable,
@@ -71,7 +72,7 @@ export default class extends Task {
 				else lootRolls = quantity - deaths[user.id].qty;
 			}
 			const loot = new Bank().add(IgnecarusLootTable.roll(lootRolls));
-			if (DOUBLE_LOOT_ACTIVE) {
+			if (isDoubleLootActive(this.client)) {
 				loot.multiply(2);
 			}
 			totalLoot.add(loot);

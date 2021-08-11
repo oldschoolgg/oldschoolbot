@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { convertXPtoLVL } from 'oldschooljs/dist/util';
+import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
 import { BitField, Color, PerkTier } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -55,13 +55,15 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.LastSpawnLamp, currentDate);
 
-		const xp = randInt(1, 13_400_000);
-		const level = convertXPtoLVL(xp);
+		const level = randInt(1, 99);
+		const xp = randInt(convertLVLtoXP(level - 1), convertLVLtoXP(level + 1));
 
 		const embed = new MessageEmbed()
 			.setColor(Color.Orange)
 			.setThumbnail('https://static.runelite.net/cache/item/icon/11157.png')
-			.setTitle(`Answer me this, for a random XP Lamp! What level would you be at with ${xp} XP?`);
+			.setTitle(
+				`Answer me this, for a random XP Lamp! What level would you be at with ${xp.toLocaleString()} XP?`
+			);
 
 		await msg.channel.send({ embeds: [embed] });
 

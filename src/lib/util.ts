@@ -4,7 +4,7 @@ import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextC
 import { objectEntries, randInt, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
@@ -596,4 +596,9 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 	collector.on('end', () => {
 		display.response!.edit({ components: [] });
 	});
+}
+
+export function isSuperUntradeable(item: number | Item) {
+	const id = typeof item === 'number' ? item : item.id;
+	return id >= 40_000 && id <= 45_000;
 }

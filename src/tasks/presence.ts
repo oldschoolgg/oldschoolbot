@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Task } from 'klasa';
 
-import { DOUBLE_LOOT_ACTIVE } from '../lib/constants';
+import { isDoubleLootActive } from '../lib/doubleLoot';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -14,7 +14,7 @@ export default class extends Task {
 		if (this.client._presenceInterval) {
 			clearTimeout(this.client._presenceInterval);
 		}
-		let str = DOUBLE_LOOT_ACTIVE ? 'Double Loot is active!' : `${this.client.options.prefix}info`;
+		let str = isDoubleLootActive(this.client) ? 'Double Loot is active!' : `${this.client.options.prefix}info`;
 		const set = () => this.client.user?.setActivity(str);
 		this.client._presenceInterval = setInterval(set, Time.Hour);
 		set();

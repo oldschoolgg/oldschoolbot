@@ -4,8 +4,9 @@ import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { production } from '../../../config';
-import { DOUBLE_LOOT_ACTIVE, Emoji } from '../../../lib/constants';
+import { Emoji } from '../../../lib/constants';
 import { nexCL, nexUniqueDrops } from '../../../lib/data/CollectionsExport';
+import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { NexMonster } from '../../../lib/nex';
@@ -72,7 +73,7 @@ export default class extends Task {
 			if (roll(80 + users.length * 2)) {
 				loot.add(randomItemFromArray(nexUniqueDrops), 1);
 			}
-			if (DOUBLE_LOOT_ACTIVE) {
+			if (isDoubleLootActive(this.client)) {
 				loot.multiply(2);
 			}
 			const winner = teamTable.roll()?.item;

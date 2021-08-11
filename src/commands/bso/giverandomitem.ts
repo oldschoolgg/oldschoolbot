@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { itemNameFromID } from '../../lib/util';
+import { isSuperUntradeable, itemNameFromID } from '../../lib/util';
 
 const options = {
 	max: 1,
@@ -45,7 +45,7 @@ export default class extends BotCommand {
 		const bank = msg.author.bank();
 		const item = bank.random();
 		if (!item) return msg.channel.send('No items found.');
-		if (item.id >= 40_000 && item.id <= 45_000) {
+		if (isSuperUntradeable(item.id)) {
 			return msg.channel.send(`You can't give away your ${itemNameFromID(item.id)}!`);
 		}
 		if (!item) return msg.channel.send('You have no items!');

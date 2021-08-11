@@ -157,6 +157,12 @@ export function maxFloorUserCanDo(user: KlasaUser) {
 	return [7, 6, 5, 4, 3, 2, 1].find(floor => hasRequiredLevels(user, floor)) || 1;
 }
 
+// Max people in a party:
+const maxTeamSize = 20;
+// Limit party size boost to maxBoostSize * boostPerPlayer:
+const maxBoostSize = 5;
+const boostPerPlayer = 5;
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -164,7 +170,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			categoryFlags: ['minion', 'pvm', 'minigame'],
 			subcommands: true,
-			usage: '[start|buy] [floor:number{1,7}|name:...string]',
+			usage: '[start|buy] [floor:int{1,7}|name:...string]',
 			usageDelim: ' ',
 			aliases: ['dg']
 		});
@@ -242,7 +248,7 @@ export default class extends BotCommand {
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 1,
-			maxSize: 5,
+			maxSize: maxTeamSize,
 			ironmanAllowed: true,
 			message,
 			customDenier: user => {
@@ -319,8 +325,13 @@ export default class extends BotCommand {
 		duration = reduceNumByPercent(duration, 20);
 
 		if (users.length > 1) {
-			duration = reduceNumByPercent(duration, users.length * 5);
-			boosts.push(`${users.length * 5}% for having a team of ${users.length}`);
+			const boostMultiplier = Math.min(users.length, maxBoostSize);
+			duration = reduceNumByPercent(duration, boostMultiplier * boostPerPlayer);
+			boosts.push(
+				`${boostMultiplier * boostPerPlayer}% for having a team of ${
+					users.length < maxBoostSize ? users.length : `${maxBoostSize}+`
+				}`
+			);
 		}
 
 		// Calculate new number of floors will be done now that it is about to start

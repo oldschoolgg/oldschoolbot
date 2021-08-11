@@ -6,7 +6,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { MAX_INT_JAVA } from '../lib/constants';
 import { filterableTypes } from '../lib/data/filterables';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { stringMatches } from '../lib/util';
+import { isSuperUntradeable, stringMatches } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
 import { parseStringBank } from '../lib/util/parseStringBank';
 
@@ -70,7 +70,7 @@ export default class TradeableItemBankArgument extends Argument {
 			if (bank.length === 70) break;
 			const qty = Math.max(1, qtyOverride ?? (!_qty ? Math.max(1, userBank.amount(item.id)) : _qty));
 
-			if (userBank.amount(item.id) >= qty && item.id !== 995) {
+			if (userBank.amount(item.id) >= qty && item.id !== 995 && !isSuperUntradeable(item.id)) {
 				bank.add(item.id, qty);
 				totalPrice += item.price * qty;
 			} else {
