@@ -185,6 +185,10 @@ export default class extends BotCommand {
 			timeToFinish *= 0.6;
 			boosts.push('40% boost for Dwarven warhammer');
 		}
+		if (msg.author.getGear(GearSetupTypes.Wildy).hasEquipped(['Hellfire bow']) && monster.wildy) {
+			timeToFinish /= 3;
+			boosts.push('3x boost for Hellfire bow');
+		}
 		// Removed vorkath because he has a special boost.
 		if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
 			if (

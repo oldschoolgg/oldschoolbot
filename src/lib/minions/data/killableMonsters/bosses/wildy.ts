@@ -22,8 +22,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID("Viggora's chainmace")]: 25,
-				[itemID('Hellfire bow')]: 66
+				[itemID("Viggora's chainmace")]: 25
 			},
 			{
 				[itemID('Berserker ring')]: 3,
@@ -53,8 +52,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID("Viggora's chainmace")]: 25,
-				[itemID('Hellfire bow')]: 66
+				[itemID("Viggora's chainmace")]: 25
 			},
 			{ [itemID('Dragon warhammer')]: 3 }
 		],
@@ -79,8 +77,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID("Craw's bow")]: 25,
-				[itemID('Hellfire bow')]: 66
+				[itemID("Craw's bow")]: 25
 			},
 			{ [itemID('Barrows gloves')]: 3 }
 		],
@@ -107,8 +104,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID("Craw's bow")]: 25,
-				[itemID('Hellfire bow')]: 66
+				[itemID("Craw's bow")]: 25
 			},
 			{
 				[itemID('Archers ring')]: 3,
@@ -136,8 +132,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID("Craw's bow")]: 25,
-				[itemID('Hellfire bow')]: 66
+				[itemID("Craw's bow")]: 25
 			},
 			{ [itemID("Karil's leathertop")]: 3 },
 			{ [itemID("Karil's leatherskirt")]: 3 }
@@ -176,13 +171,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		wildy: true,
 		difficultyRating: 8,
 		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Hellfire bow')]: 66
-			},
-			{ [itemID('Occult necklace')]: 10 },
-			{ [itemID('Harmonised nightmare staff')]: 10 }
-		],
+		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }, { [itemID('Harmonised nightmare staff')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.3,
 		healAmountNeeded: 4 * 20,

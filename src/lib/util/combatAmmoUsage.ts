@@ -22,7 +22,7 @@ export const combatItemsConsumption: ICombatItemsConsumption = {
 			'Hellfire arrow': 1
 		}),
 		every: Time.Minute,
-		consume: 3,
+		consume: 1,
 		reductions: resolveBank({
 			"Ava's assembler": 50,
 			'Ranged master cape': 90
@@ -55,7 +55,7 @@ export default function combatAmmoUsage(options: { duration: number; gearType: G
 				for (const [reductionItem, reductionPercentage] of objectEntries(cic.reductions)) {
 					const _reductionItem = getOSItem(reductionItem)!;
 					if (gear.hasEquipped([_reductionItem.name])) {
-						toRemove = reduceNumByPercent(toRemove, reductionPercentage);
+						toRemove = Math.ceil(reduceNumByPercent(toRemove, reductionPercentage));
 						boosts.push(
 							`${reductionPercentage}% reduction for **${requiredItems}** by having ${_reductionItem.name} equipped.`
 						);

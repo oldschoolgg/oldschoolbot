@@ -9,17 +9,14 @@ import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatSkillRequirements, itemNameFromID, skillsMeetRequirements, toTitleCase } from '../../lib/util';
-import resolveItems from '../../lib/util/resolveItems';
 
 export const WILDY_PRESET_WARNING_MESSAGE =
 	"You are equipping items to your **wilderness** setup. *Every* item in this setup can potentially be lost if you're doing activities in the wilderness. Are you sure you want to equip it?";
 
-export const LIMITED_GEARTYPE_ITEMS = {
-	[GearSetupTypes.Wildy]: resolveItems(['Hellfire bow', 'Hellfire arrow'])
-};
+export const LIMITED_GEARTYPE_ITEMS: { [key: string]: number[] } = {};
 
 export function canEquipItemInThisGearType(gearType: GearSetupType, item: number) {
-	const canEquip = [];
+	const canEquip: string[] = [];
 	// Sort to check user gear first
 	for (const [gear, items] of objectEntries(LIMITED_GEARTYPE_ITEMS).sort((a, b) => {
 		if (a[0] === b[0]) return 0;
@@ -31,7 +28,7 @@ export function canEquipItemInThisGearType(gearType: GearSetupType, item: number
 			if (items.includes(item)) return true;
 			continue;
 		}
-		if (items.includes(item)) canEquip.push(gear);
+		if (items.includes(item)) canEquip.push(gear as string);
 	}
 	if (canEquip.length > 0) return canEquip.join(', ');
 	return true;
@@ -75,7 +72,7 @@ export default class extends BotCommand {
 
 		const itemLockedTo = canEquipItemInThisGearType(gearType, itemToEquip.id);
 		if (itemLockedTo !== true) {
-			return msg.channel.send(`You can only equip this items on your **${itemLockedTo}** gear setup.`);
+			return msg.channel.send(`You can only equip this item on your **${itemLockedTo}** gear setup.`);
 		}
 
 		/**

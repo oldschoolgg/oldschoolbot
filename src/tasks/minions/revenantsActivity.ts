@@ -1,5 +1,6 @@
 import { deepClone, roll } from 'e';
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { revenantMonsters } from '../../commands/Minion/revs';
 import { GearSetupTypes } from '../../lib/gear';
@@ -23,7 +24,7 @@ export default class extends Task {
 		if (died) {
 			// 1 in 20 to get smited without prayer potions and 1 in 300 if the user has prayer potions
 			const hasPrayerLevel = user.hasSkillReqs({ [SkillsEnum.Prayer]: 25 })[0];
-			const protectItem = roll(data.usingPrayerPots ? 300 : 20) ? false : hasPrayerLevel;
+			const protectItem = roll(data.usingPrayerPots ? 300 : 1) ? false : hasPrayerLevel;
 			const userGear = { ...deepClone(user.settings.get(UserSettings.Gear.Wildy)!) };
 
 			const calc = calculateGearLostOnDeathWilderness({
@@ -43,6 +44,13 @@ export default class extends Task {
 			);
 			await user.settings.update(UserSettings.Gear.Wildy, calc.newGear);
 
+			let extraMsg = '';
+			if (calc.lostItems.has('Hellfire bow')) {
+				calc.lostItems.remove('Hellfire bow');
+				await user.addItemsToBank(new Bank().add('Hellfire bow (broken)'));
+				extraMsg += 'Your Hellfire bow broke and was sent to your bank.';
+			}
+
 			updateBankSetting(this.client, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
 
 			handleTripFinish(
@@ -57,7 +65,7 @@ export default class extends Task {
 						: ''
 				} You died, you lost all your loot, and these equipped items: ${
 					calc.lostItems
-				}.\nHere is what you saved:`,
+				}. ${extraMsg}\nHere is what you saved:`,
 				res => {
 					user.log(`continued trip of killing ${monster.name}`);
 					return this.client.commands.get('revs')!.run(res, [style, monster.name]);

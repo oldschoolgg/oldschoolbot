@@ -1690,7 +1690,7 @@ setCustomItem(
 			attack_slash: 0,
 			attack_crush: 0,
 			attack_magic: 0,
-			attack_ranged: 75,
+			attack_ranged: 45,
 
 			defence_stab: 0,
 			defence_slash: 0,
@@ -1699,7 +1699,7 @@ setCustomItem(
 			defence_ranged: 0,
 
 			melee_strength: 0,
-			ranged_strength: 200,
+			ranged_strength: 120,
 			magic_damage: 0,
 			prayer: 0,
 			slot: EquipmentSlot.Ammo,
@@ -1721,7 +1721,7 @@ setCustomItem(
 			attack_slash: 0,
 			attack_crush: 0,
 			attack_magic: 0,
-			attack_ranged: 250,
+			attack_ranged: 220,
 
 			defence_stab: 0,
 			defence_slash: 0,
@@ -1730,7 +1730,7 @@ setCustomItem(
 			defence_ranged: 0,
 
 			melee_strength: 0,
-			ranged_strength: 110,
+			ranged_strength: 25,
 			magic_damage: 0,
 			prayer: 10,
 			slot: EquipmentSlot.TwoHanded,
@@ -1744,32 +1744,11 @@ setCustomItem(
 
 setCustomItem(
 	48_221,
-	'Hellfire bow (uncharged)',
+	'Hellfire bow (broken)',
 	'Twisted bow',
 	{
 		equipable: false,
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 0,
-			attack_ranged: 0,
-
-			defence_stab: 0,
-			defence_slash: 0,
-			defence_crush: 0,
-			defence_magic: 0,
-			defence_ranged: 0,
-
-			melee_strength: 0,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 0,
-			slot: EquipmentSlot.TwoHanded,
-			requirements: {
-				ranged: 110
-			}
-		}
+		equipment: null
 	},
 	0
 );
