@@ -399,6 +399,7 @@ export const badges: { [key: number]: string } = {
 };
 
 export const MAX_QP = 284;
+export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
 
