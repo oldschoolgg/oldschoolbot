@@ -393,14 +393,13 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 								${skillsVals.map(s => `"skills.${s.id}"`)},
 								${skillsVals.map(s => `"skills.${s.id}"`).join(' + ')} as totalxp,
 								u."minion.ironman",
-								(select max(x.date) from "xp_gains" x where x.user_id = u.id and (not x.post_max or x.post_max is null)) as last_date_xp
+								(select max(x.date) from "xp_gains" x where x.user_id = u.id and not x.post_max) as last_date_xp
 							FROM
 								users u
 							ORDER BY
-								1 DESC,
-								4 ASC
+								totalxp DESC,
+								last_date_xp ASC
 							LIMIT 2000;`;
-			console.log(query);
 			res = await this.query(query);
 			overallUsers = res.map(user => {
 				let totalLevel = 0;
@@ -425,12 +424,12 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 			const query = `SELECT
 								u."skills.${skill.id}", u.id, u."minion.ironman",
-								(select max(x.date) from "xp_gains" x where x.user_id = u.id and x.skill = '${skill.id}' and (not x.post_max or x.post_max is null)) as last_date_xp
+								(select max(x.date) from "xp_gains" x where x.user_id = u.id and x.skill = '${skill.id}' and not x.post_max) as last_date_xp
 							FROM
 								users u
 							ORDER BY
 								1 DESC,
-								4 ASC
+								last_date_xp ASC
 							LIMIT 2000;`;
 			res = await this.query(query);
 		}
