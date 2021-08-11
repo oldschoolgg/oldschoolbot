@@ -144,6 +144,7 @@ export default class extends BotCommand {
 			}
 			return msg.channel.sendBankImage({
 				content: `${tame!.toString()}`,
+				flags: msg.flagArgs,
 				bank: tame.totalLoot,
 				title: `All Loot ${tame.name} Has Gotten You`
 			});
