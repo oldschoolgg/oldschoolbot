@@ -561,6 +561,10 @@ export default class extends Extendable {
 					data.quantity
 				}x ${Monsters.get(data.monsterID)!.name} in the wilderness.`;
 			}
+			case Activity.PestControl: {
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.quantity} games of Pest Control. ${formattedDuration}`;
+			}
 		}
 	}
 
@@ -694,7 +698,8 @@ export default class extends Extendable {
 			XPGainsTable.insert({
 				userID: this.id,
 				skill: params.skillName,
-				xp: Math.floor(params.amount)
+				xp: Math.floor(params.amount),
+				artificial: params.artificial ? true : null
 			});
 		}
 

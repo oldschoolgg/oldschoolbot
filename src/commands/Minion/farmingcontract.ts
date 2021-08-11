@@ -123,7 +123,7 @@ export default class extends BotCommand {
 						]
 					});
 				}
-				const newContractLevel = 'easy';
+				const newContractLevel = currentContract.difficultyLevel === 'hard' ? 'medium' : 'easy';
 				const plantInformation = getPlantToGrow(msg.author, newContractLevel);
 				const plantToGrow = plantInformation[0];
 				const plantTier = plantInformation[1];
