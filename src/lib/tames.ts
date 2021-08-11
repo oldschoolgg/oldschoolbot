@@ -97,7 +97,7 @@ export async function runTameTask(activity: TameActivityTable) {
 				if (killQty >= 8) {
 					killQty = Math.floor(killQty * 1.25);
 				} else {
-					for (let i = 0; i < killQty; i++) {
+					for (let i = 0; i < quantity; i++) {
 						if (roll(4)) killQty++;
 					}
 				}
