@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { GearSetupTypes } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -53,7 +54,7 @@ export default class extends BotCommand {
 			attackStylesUsed: [GearSetupTypes.Mage]
 		});
 
-		const totalCost = itemsNeeded.add(foodRemoved);
+		const totalCost = itemsNeeded.clone().add(foodRemoved);
 
 		await msg.author.removeItemsFromBank(itemsNeeded);
 

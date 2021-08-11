@@ -8,12 +8,7 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import {
-	calculateSlayerPoints,
-	filterLootReplace,
-	getSlayerMasterOSJSbyID,
-	getUsersCurrentSlayerInfo
-} from '../../lib/slayer/slayerUtil';
+import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -121,7 +116,7 @@ export default class extends Task {
 				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
 				if (usersTask.assignedTask?.isBoss) {
-					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5_000 })}`;
+					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5000 })}`;
 					str += ' for completing your boss task.';
 				}
 			} else {
@@ -133,10 +128,7 @@ export default class extends Task {
 			await usersTask.currentTask!.save();
 		}
 
-		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
-
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, false);
-		await user.addItemsToCollectionLog(clLoot.bank);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!

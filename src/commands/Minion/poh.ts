@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { BitField, Time } from '../../lib/constants';
+import { BitField } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from '../../lib/poh';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -142,24 +142,11 @@ export default class POHCommand extends BotCommand {
 					`You don't have enough items to build a ${obj.name}, you need ${obj.itemCost}.`
 				);
 			}
-			if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-				let str = `${msg.author}, say \`confirm\` to confirm that you want to build a ${obj.name} using ${obj.itemCost}.`;
-				if (inPlace !== null) {
-					str += ` You will lose the ${getPOHObject(inPlace).name} that you currently have there.`;
-				}
-				const sellMsg = await msg.channel.send(str);
-
-				try {
-					await msg.channel.awaitMessages({
-						max: 1,
-						time: Time.Second * 15,
-						errors: ['time'],
-						filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-					});
-				} catch (err) {
-					return sellMsg.edit('Cancelled.');
-				}
+			let str = `${msg.author}, please confirm that you want to build a ${obj.name} using ${obj.itemCost}.`;
+			if (inPlace !== null) {
+				str += ` You will lose the ${getPOHObject(inPlace).name} that you currently have there.`;
 			}
+			await msg.confirm(str);
 			await msg.author.removeItemsFromBank(obj.itemCost.bank);
 			updateBankSetting(this.client, ClientSettings.EconomyStats.ConstructCostBank, obj.itemCost);
 		}

@@ -2,7 +2,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { addBanks, bankHasAllItemsFromBank, removeBankFromBank } from 'oldschooljs/dist/util';
 
-import { Time } from '../../lib/constants';
 import TokkulShopItem from '../../lib/data/buyables/tokkulBuyables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -95,25 +94,11 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (!msg.flagArgs.cf && !msg.flagArgs.confirm) {
-			const sellMsg = await msg.channel.send(
-				`${msg.author}, JalYt, say \`confirm\` to confirm that you want to ${
-					type === 'buy' ? 'buy' : 'sell'
-				} **${items}** for **${tokkul}**.`
-			);
-
-			// Confirm the user wants to buy
-			try {
-				await msg.channel.awaitMessages({
-					max: 1,
-					time: Time.Second * 15,
-					errors: ['time'],
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-				});
-			} catch (err) {
-				return sellMsg.edit(`Cancelling ${type === 'buy' ? 'purchase' : 'sale'} of **${items}**.`);
-			}
-		}
+		await msg.confirm(
+			`${msg.author}, JalYt, please confirm that you want to ${
+				type === 'buy' ? 'buy' : 'sell'
+			} **${items}** for **${tokkul}**.`
+		);
 
 		await msg.author.settings.update(
 			UserSettings.Bank,

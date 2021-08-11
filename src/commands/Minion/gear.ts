@@ -2,11 +2,11 @@ import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { GearSetupTypes } from '../../lib/gear';
-import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { GearSetupType, GearSetupTypes } from '../../lib/gear';
+import { generateAllGearImage, generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { UserRichDisplay } from '../../lib/structures/UserRichDisplay';
+import { makePaginatedMessage } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
@@ -14,7 +14,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			cooldown: 1,
-			usage: '<melee|mage|range|skilling|misc>',
+			usage: '[melee|mage|range|skilling|misc|wildy]',
 			description: 'Shows your equipped gear.',
 			examples: ['+gear melee', '+gear misc'],
 			categoryFlags: ['minion', 'skilling']
@@ -24,34 +24,55 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [gearType]: [GearSetupTypes]) {
 		const gear = msg.author.getGear(gearType);
 
+		if (!gearType && !msg.flagArgs.all) {
+			return msg.channel.send(
+				'Invalid gear type. The valid types are: melee, mage, range, skilling or misc. You can use `--all` to show all your gear in a single image.'
+			);
+		}
+
 		if (msg.flagArgs.text) {
 			const textBank = [];
 
-			for (const gearItem of Object.values(gear.raw())) {
-				if (!gearItem) continue;
-				textBank.push(`${getOSItem(gearItem.item).name}: ${gearItem.quantity.toLocaleString()}`);
+			if (msg.flagArgs.all) {
+				for (const type of ['melee', 'range', 'mage', 'misc', 'skilling']) {
+					const gear = msg.author.getGear(type as GearSetupType);
+					for (const gearItem of Object.values(gear.raw())) {
+						if (!gearItem) continue;
+						textBank.push(`${getOSItem(gearItem.item).name}: ${gearItem.quantity.toLocaleString()}`);
+					}
+				}
+			} else {
+				for (const gearItem of Object.values(gear.raw())) {
+					if (!gearItem) continue;
+					textBank.push(`${getOSItem(gearItem.item).name}: ${gearItem.quantity.toLocaleString()}`);
+				}
 			}
+
 			if (textBank.length === 0) {
 				return msg.channel.send('No items found.');
 			}
 
-			const loadingMsg = await msg.channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
-			const display = new UserRichDisplay();
-			display.setFooterPrefix('Page ');
-
+			const pages = [];
 			for (const page of chunk(textBank, 12)) {
-				display.addPage(
-					new MessageEmbed()
-						.setTitle(`${msg.author.username}'s ${gearType} gear`)
-						.setDescription(page.join('\n'))
-				);
+				pages.push({
+					embeds: [
+						new MessageEmbed()
+							.setTitle(`${msg.author.username}'s ${gearType} gear`)
+							.setDescription(page.join('\n'))
+					]
+				});
 			}
 
-			await display.start(loadingMsg as KlasaMessage, msg.author.id, {
-				jump: false,
-				stop: false
-			});
+			await makePaginatedMessage(msg, pages);
+
 			return null;
+		}
+
+		if (msg.flagArgs.all) {
+			return msg.channel.send({
+				content: 'Here are all your gear setups',
+				files: [new MessageAttachment(await generateAllGearImage(this.client, msg.author), 'osbot.png')]
+			});
 		}
 
 		const image = await generateGearImage(

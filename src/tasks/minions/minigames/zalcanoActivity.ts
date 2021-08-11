@@ -11,7 +11,8 @@ export default class extends Task {
 	async run(data: ZalcanoActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, performance, isMVP } = data;
 		const user = await this.client.users.fetch(userID);
-		user.incrementMonsterScore(ZALCANO_ID, quantity);
+		const kc = user.getKC(ZALCANO_ID);
+		await user.incrementMonsterScore(ZALCANO_ID, quantity);
 
 		const loot = new Bank();
 
@@ -38,8 +39,6 @@ export default class extends Task {
 		xpRes += await user.addXP({ skillName: SkillsEnum.Smithing, amount: smithingXP });
 		xpRes += await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP });
 
-		const kc = user.getKC(ZALCANO_ID);
-
 		if (loot.amount('Smolcano') > 0) {
 			this.client.emit(
 				Events.ServerNotification,
@@ -49,11 +48,11 @@ export default class extends Task {
 			);
 		}
 
-		await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(loot.bank, `Loot From ${quantity}x Zalcano`, true, { showNewCL: 1 }, user);
+			.generateBankImage(itemsAdded, `Loot From ${quantity}x Zalcano`, true, { showNewCL: 1 }, user, previousCL);
 
 		handleTripFinish(
 			this.client,
@@ -68,7 +67,7 @@ export default class extends Task {
 			},
 			image!,
 			data,
-			loot.bank
+			itemsAdded
 		);
 	}
 }

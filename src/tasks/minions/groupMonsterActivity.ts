@@ -44,7 +44,7 @@ export default class extends Task {
 			totalLoot.add(loot);
 			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
-			if (kcToAdd) user.incrementMonsterScore(monsterID, kcToAdd);
+			if (kcToAdd) await user.incrementMonsterScore(monsterID, kcToAdd);
 			const purple = Object.keys(loot).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;

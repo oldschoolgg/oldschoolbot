@@ -1,9 +1,11 @@
 import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
+import { Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { itemID } from 'oldschooljs/dist/util';
 
 import MinionCommand from '../../commands/Minion/minion';
-import { Activity, BitField, COINS_ID, Emoji, PerkTier, Time } from '../constants';
+import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { ClientSettings } from '../settings/types/ClientSettings';
@@ -45,6 +47,7 @@ export async function handleTripFinish(
 	}
 
 	const clueReceived = loot ? clueTiers.find(tier => loot[tier.scrollID] > 0) : undefined;
+	const unsiredReceived = loot ? loot[itemID('Unsired')] > 0 : undefined;
 
 	if (clueReceived) {
 		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;
@@ -53,6 +56,10 @@ export async function handleTripFinish(
 		} else {
 			message += 'You can get your minion to complete them using `+minion clue easy/medium/etc`';
 		}
+	}
+
+	if (unsiredReceived) {
+		message += '\n**You received an unsired!** You can offer it for loot using `+offer unsired`.';
 	}
 
 	const attachable = attachment
@@ -85,6 +92,10 @@ export async function handleTripFinish(
 		collectors.delete(user.id);
 	}
 
+	if (onContinue) {
+		lastTripCache.set(user.id, { data, continue: onContinue });
+	}
+
 	if (!channelIsSendable(channel)) return;
 	const collector = new MessageCollector(channel, {
 		filter: (mes: Message) =>
@@ -112,7 +123,7 @@ export async function handleTripFinish(
 				});
 			}
 		} catch (err) {
-			console.log(err);
+			console.log({ err });
 			channel.send(err);
 		} finally {
 			setTimeout(() => client.oneCommandAtATimeCache.delete(mes.author.id), 300);

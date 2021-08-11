@@ -358,11 +358,7 @@ export default class extends Task {
 				await user.incrementMonsterScore(Monsters.Hespori.id);
 				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel });
 				loot = hesporiLoot.bank;
-				for (const hesporiLoot of Object.keys(loot)) {
-					if (itemID(hesporiLoot) === itemID('Tangleroot')) {
-						tangleroot = true;
-					}
-				}
+				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;
 			} else if (
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
@@ -450,21 +446,7 @@ export default class extends Task {
 				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(loot).bank
 			);
 			await user.addItemsToBank(loot, true);
-			const channel = this.client.channels.cache.get(channelID);
-			if (!channelIsSendable(channel)) return;
 
-			if (janeMessage) {
-				return channel.send({
-					embeds: [
-						await chatHeadImage({
-							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
-								contractsCompleted + 1
-							} farming contracts.`,
-							head: 'jane'
-						})
-					]
-				});
-			}
 			handleTripFinish(
 				this.client,
 				user,
@@ -476,7 +458,14 @@ export default class extends Task {
 							return this.client.commands.get('autofarm')!.run(res, []);
 					  }
 					: undefined,
-				undefined,
+				janeMessage
+					? await chatHeadImage({
+							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+								contractsCompleted + 1
+							} farming contracts.`,
+							head: 'jane'
+					  })
+					: undefined,
 				data,
 				null
 			);

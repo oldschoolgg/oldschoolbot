@@ -1,40 +1,51 @@
-import { Task } from 'klasa';
+import { Time } from 'e';
+import { Task, TaskStore } from 'klasa';
 
 import { production } from '../config';
 import { client } from '../index';
-import { Time } from '../lib/constants';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { noOp } from '../lib/util';
 
-const dailyInterval = 12 * Time.Hour;
-const dailyTickInterval = Time.Second * 60;
+declare module 'klasa' {
+	interface KlasaClient {
+		__dailyReminderInterval: NodeJS.Timeout;
+	}
+}
 
 export default class extends Task {
+	public constructor(store: TaskStore, file: string[], directory: string) {
+		super(store, file, directory);
+	}
+
 	async init() {
-		if (!production) return;
-		if (this.client.dailyReminderTicker) {
-			clearInterval(this.client.dailyReminderTicker);
+		if (this.client.__dailyReminderInterval) {
+			clearTimeout(this.client.__dailyReminderInterval);
 		}
-		this.client.dailyReminderTicker = setInterval(this.dailyReminderTick.bind(this), dailyTickInterval);
+		const ticker = async () => {
+			try {
+				const result = await client.query<{ id: string }[]>(
+					'SELECT id FROM users WHERE bitfield && \'{2,3,4,5,6,7,8}\'::int[] AND "lastDailyTimestamp" != -1 AND to_timestamp("lastDailyTimestamp" / 1000) < now() - interval \'12 hours\';'
+				);
+
+				for (const row of result.values()) {
+					const user = await client.users.fetch(row.id);
+					if (user.settings.get(UserSettings.LastDailyTimestamp) === -1) continue;
+
+					await user.settings.update(UserSettings.LastDailyTimestamp, -1);
+					if (production) {
+						await user.send('Your daily is ready!').catch(noOp);
+					} else {
+						console.log(`Would DM ${user.username}`);
+					}
+				}
+			} catch (err) {
+				console.error(err);
+			} finally {
+				this.client.__dailyReminderInterval = setTimeout(ticker, Number(Time.Minute));
+			}
+		};
+		ticker();
 	}
 
-	async run() {
-		this.dailyReminderTick();
-	}
-
-	async dailyReminderTick() {
-		const currentDate = Date.now();
-
-		const dailyReady = currentDate - dailyInterval;
-		const result = await client.query<{ id: string }[]>(
-			`SELECT id FROM users WHERE bitfield && '{2,3,4,5,6}'::int[] AND "lastDailyTimestamp" != -1 AND "lastDailyTimestamp" < ${dailyReady};`
-		);
-
-		for (const row of result.values()) {
-			const user = await client.users.fetch(row.id);
-
-			await user.settings.update(UserSettings.LastDailyTimestamp, -1);
-			await user.send('Your daily is ready!').catch(noOp);
-		}
-	}
+	async run() {}
 }

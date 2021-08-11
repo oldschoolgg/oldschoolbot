@@ -1,7 +1,8 @@
 import { MessageAttachment } from 'discord.js';
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -53,12 +54,18 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
+		if (craftName.toLowerCase().includes('zenyte') && quantity === null) quantity = 1;
+
 		const craftable = Crafting.Craftables.find(item => stringMatches(item.name, craftName));
 
 		if (!craftable) {
 			return msg.channel.send(
 				`That is not a valid craftable item, to see the items available do \`${msg.cmdPrefix}craft --items\``
 			);
+		}
+		let sets = 'x';
+		if (craftable.outputMultiple) {
+			sets = ' sets of';
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Crafting) < craftable.level) {
@@ -122,7 +129,7 @@ export default class extends BotCommand {
 		});
 
 		return msg.channel.send(
-			`${msg.author.minionName} is now crafting ${quantity}x ${
+			`${msg.author.minionName} is now crafting ${quantity}${sets} ${
 				craftable.name
 			}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`
 		);

@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import * as fs from 'fs';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { COINS_ID, Emoji, SupportServer, Time } from '../../lib/constants';
+import { COINS_ID, Emoji, SupportServer } from '../../lib/constants';
 import pets from '../../lib/data/pets';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -27,7 +28,7 @@ const { triviaQuestions } = JSON.parse(fs.readFileSync('./src/lib/resources/triv
 
 const options = {
 	max: 1,
-	time: 13000,
+	time: 13_000,
 	errors: ['time']
 };
 
@@ -156,13 +157,14 @@ export default class DailyCommand extends BotCommand {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceDaily, loot[COINS_ID]);
 		}
 
-		await user.addItemsToBank(loot, true);
+		const { itemsAdded, previousCL } = await user.addItemsToBank(loot, true);
 
 		return msg.channel.sendBankImage({
-			bank: loot,
+			bank: itemsAdded,
+			user: msg.author,
 			title: `${msg.author.username}'s Daily`,
 			content: dmStr,
-			background: msg.author.settings.get(UserSettings.BankBackground)
+			cl: previousCL
 		});
 	}
 }

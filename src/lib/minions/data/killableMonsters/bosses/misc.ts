@@ -1,8 +1,8 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { Time } from '../../../../constants';
-import { bosses } from '../../../../data/collectionLog';
-import { GearSetupTypes, GearStat } from '../../../../gear/types';
+import { corporealBeastCL } from '../../../../data/CollectionsExport';
+import { GearSetupTypes, GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
@@ -42,7 +42,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.Vorkath.id,
 		name: Monsters.Vorkath.name,
 		aliases: Monsters.Vorkath.aliases,
-		timeToFinish: Time.Minute * 3.2,
+		timeToFinish: Time.Minute * 3.8,
 		table: Monsters.Vorkath,
 		emoji: '<:Vorki:400713309252222977>',
 		wildy: false,
@@ -53,17 +53,17 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 205,
 		itemInBankBoosts: [
 			{
-				[itemID('Bandos godsword')]: 15,
-				[itemID('Dragon warhammer')]: 15,
-				[itemID('Dragon claws')]: 10
+				[itemID('Bandos godsword')]: 13,
+				[itemID('Dragon warhammer')]: 13,
+				[itemID('Dragon claws')]: 8
 			},
 			{
-				[itemID('Dragon hunter lance')]: 20,
-				[itemID('Dragon hunter crossbow')]: 30
+				[itemID('Dragon hunter lance')]: 15,
+				[itemID('Dragon hunter crossbow')]: 25
 			},
 			{
-				[itemID('Salve amulet (ei)')]: 15,
-				[itemID('Salve amulet (i)')]: 10
+				[itemID('Salve amulet (ei)')]: 11,
+				[itemID('Salve amulet (i)')]: 8
 			}
 		],
 		levelRequirements: {
@@ -166,7 +166,16 @@ const killableBosses: KillableMonster[] = [
 		},
 		defaultAttackStyles: [SkillsEnum.Strength],
 		customMonsterHP: 510,
-		combatXpMultiplier: 1.05
+		combatXpMultiplier: 1.05,
+		healAmountNeeded: 20 * 3,
+		minimumGearRequirements: {
+			[GearSetupTypes.Melee]: {
+				[GearStat.MeleeStrength]: 10
+			}
+		},
+		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
+		attackStylesUsed: [GearStat.AttackMagic],
+		attackStyleToUse: GearStat.AttackCrush
 	},
 	{
 		id: Monsters.CorporealBeast.id,
@@ -193,7 +202,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		uniques: bosses['Corp Beast'],
+		uniques: corporealBeastCL,
 		pohBoosts: {
 			pool: {
 				'Rejuvenation pool': 50,
@@ -248,6 +257,35 @@ const killableBosses: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Strength],
 		combatXpMultiplier: 1.15,
 		healAmountNeeded: 20 * 7
+	},
+	{
+		id: Monsters.KingBlackDragon.id,
+		name: Monsters.KingBlackDragon.name,
+		aliases: Monsters.KingBlackDragon.aliases,
+		table: Monsters.KingBlackDragon,
+		timeToFinish: Time.Minute * 3.1,
+		emoji: '<:Prince_black_dragon:324127378538364928>',
+		wildy: false,
+		difficultyRating: 6,
+		itemsRequired: deepResolveItems([
+			'Anti-dragon shield',
+			['Armadyl crossbow', 'Rune crossbow', 'Twisted bow', 'Dragon hunter crossbow'],
+			["Black d'hide body", "Black d'hide body (g)", "Black d'hide body (t)", "Karil's leathertop"],
+			["Black d'hide chaps", "Black d'hide chaps (g)", "Black d'hide chaps (t)", "Karil's leatherskirt"]
+		]),
+		notifyDrops: resolveItems(['Prince black dragon', 'Draconic visage']),
+		qpRequired: 0,
+		itemInBankBoosts: [
+			{
+				[itemID('Armadyl crossbow')]: 6,
+				[itemID('Twisted bow')]: 10
+			}
+		],
+		defaultAttackStyles: [SkillsEnum.Ranged],
+		combatXpMultiplier: 1.075,
+		healAmountNeeded: 5 * 20,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash]
 	}
 ];
 

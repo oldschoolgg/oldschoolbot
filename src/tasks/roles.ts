@@ -4,7 +4,7 @@ import { Task } from 'klasa';
 import { CLUser, SkillUser } from '../commands/Minion/leaderboard';
 import { production } from '../config';
 import { Roles } from '../lib/constants';
-import { collectionLogTypes } from '../lib/data/collectionLog';
+import { collectionLogRoleCategories } from '../lib/data/Collections';
 import ClueTiers from '../lib/minions/data/clueTiers';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
@@ -19,18 +19,20 @@ const minigames = [
 	'castle_wars',
 	'raids',
 	'raids_challenge_mode',
-	'big_chompy_bird_hunting'
+	'big_chompy_bird_hunting',
+	'rogues_den',
+	'temple_trekking'
 ];
 
-const collections = ['Overall', 'Pets', 'Skilling', 'Clue all', 'Boss', 'Minigames', 'Chambers of Xeric', 'Slayer'];
+const collections = ['overall', 'pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer'];
 
-const mostSlayerPointsQuery = `SELECT id 
+const mostSlayerPointsQuery = `SELECT id
 FROM users
 WHERE "slayer.points" > 50
 ORDER BY "slayer.points" DESC
 LIMIT 1;`;
 
-const longerSlayerTaskStreakQuery = `SELECT id 
+const longerSlayerTaskStreakQuery = `SELECT id
 FROM users
 WHERE "slayer.task_streak" > 20
 ORDER BY "slayer.task_streak" DESC
@@ -149,8 +151,7 @@ export default class extends Task {
 		async function topCollector() {
 			const topCollectors = await Promise.all(
 				collections.map(async clName => {
-					const type = collectionLogTypes.find(t => t.name === clName)!;
-					const items = Object.values(type.items).flat(Infinity) as number[];
+					const items = collectionLogRoleCategories[clName];
 					const users = (
 						await q<any>(
 							`
@@ -197,7 +198,7 @@ ORDER BY u.sacbanklength DESC LIMIT 1;`);
 				await Promise.all(
 					minigames.map(m =>
 						q(
-							`SELECT user_id 
+							`SELECT user_id
 FROM minigames
 ORDER BY ${m} DESC
 LIMIT 1;`
@@ -218,7 +219,7 @@ LIMIT 1;`
 							`SELECT id, ("clueScores"->>'${t.id}')::int as qty
 FROM users
 WHERE "clueScores"->>'${t.id}' IS NOT NULL
-ORDER BY qty DESC 
+ORDER BY qty DESC
 LIMIT 1;`
 						)
 					)

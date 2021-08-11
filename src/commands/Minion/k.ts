@@ -1,10 +1,10 @@
 import { MessageAttachment } from 'discord.js';
-import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round } from 'e';
+import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { GearSetupTypes, GearStat } from '../../lib/gear';
 import {
@@ -362,16 +362,17 @@ export default class extends BotCommand {
 					break;
 			}
 
+			if (monster.wildy) gearToCheck = GearSetupTypes.Wildy;
+
 			const [result] = await removeFoodFromUser({
 				client: this.client,
 				user: msg.author,
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
-				attackStylesUsed: removeDuplicatesFromArray([
-					...objectKeys(monster.minimumGearRequirements ?? {}),
-					gearToCheck
-				]),
+				attackStylesUsed: monster.wildy
+					? [GearSetupTypes.Wildy]
+					: removeDuplicatesFromArray([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced
 			});
 

@@ -4,7 +4,7 @@ import { Bank, Misc, Openables } from 'oldschooljs';
 import Openable from 'oldschooljs/dist/structures/Openable';
 
 import { COINS_ID, Events, MIMIC_MONSTER_ID } from '../../lib/constants';
-import { cluesRares } from '../../lib/data/collectionLog';
+import { cluesRaresCL } from '../../lib/data/CollectionsExport';
 import botOpenables from '../../lib/data/openables';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
@@ -15,8 +15,7 @@ import { addBanks, roll, stringMatches, updateGPTrackSetting } from '../../lib/u
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 
-const itemsToNotifyOf = Object.values(cluesRares)
-	.flat(Infinity)
+const itemsToNotifyOf = cluesRaresCL
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
 	.concat([itemID('Bloodhound')]);
 
@@ -157,9 +156,8 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemFromBank(osjsOpenable.id, quantity);
-
 		const loot = osjsOpenable.open(quantity, {});
-
+		const score = msg.author.getOpenableScore(osjsOpenable.id) + quantity;
 		this.client.emit(
 			Events.Log,
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${osjsOpenable.name}.`
@@ -174,6 +172,7 @@ export default class extends BotCommand {
 
 		return msg.channel.sendBankImage({
 			bank: loot,
+			content: `You have opened the ${osjsOpenable.name.toLowerCase()} ${score.toLocaleString()} times.`,
 			title: `You opened ${quantity} ${osjsOpenable.name}`,
 			flags: { showNewCL: 1, ...msg.flagArgs },
 			user: msg.author,
@@ -202,10 +201,10 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
-
-		const score = msg.author.getOpenableScore(itemID('Spoils of war'));
-
+		const score = msg.author.getOpenableScore(botOpenable.itemID);
 		const loot = botOpenable.table.roll(quantity);
+
+		const nthOpenable = formatOrdinal(score + randInt(1, quantity));
 
 		if (loot.has("Lil' creator")) {
 			this.client.emit(
@@ -214,9 +213,14 @@ export default class extends BotCommand {
 					msg.author.minionName
 				}, just received a Lil' creator! They've done ${await msg.author.getMinigameScore(
 					'SoulWars'
-				)} Soul wars games, and this is their ${formatOrdinal(
-					score + randInt(1, quantity)
-				)} Spoils of war crate.`
+				)} Soul wars games, and this is their ${nthOpenable} Spoils of war crate.`
+			);
+		}
+
+		if (botOpenable.itemID === itemID('Bag full of gems') && loot.has('Uncut onyx')) {
+			this.client.emit(
+				Events.ServerNotification,
+				`${msg.author} just received an Uncut Onyx from their ${nthOpenable} Bag full of gems!`
 			);
 		}
 
@@ -229,6 +233,9 @@ export default class extends BotCommand {
 
 		return msg.channel.sendBankImage({
 			bank: loot.values(),
+			content: `You have opened the ${botOpenable.name.toLowerCase()} ${(
+				score + quantity
+			).toLocaleString()} times.`,
 			title: `You opened ${quantity} ${botOpenable.name}`,
 			flags: { showNewCL: 1, ...msg.flagArgs },
 			user: msg.author,

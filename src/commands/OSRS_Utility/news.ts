@@ -1,8 +1,9 @@
 import { MessageEmbed } from 'discord.js';
-import { CommandStore, KlasaMessage, RichDisplay } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import Parser from 'rss-parser';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { makePaginatedMessage } from '../../lib/util';
 
 const parser = new Parser();
 
@@ -17,25 +18,23 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		const [message, feed] = await Promise.all([
-			msg.channel.send('Loading...'),
-			parser.parseURL('http://services.runescape.com/m=news/latest_news.rss?oldschool=true')
-		]);
-		const display = new RichDisplay();
-		display.setFooterPrefix('Page ');
+		const feed = await parser.parseURL('http://services.runescape.com/m=news/latest_news.rss?oldschool=true');
 
+		const pages = [];
 		for (const item of feed.items as any) {
-			display.addPage(
-				new MessageEmbed()
-					.setTitle(item.title)
-					.setDescription(item.contentSnippet)
-					.setColor(52224)
-					.setThumbnail(item.enclosure.url)
-					.setURL(item.guid)
-			);
+			pages.push({
+				embeds: [
+					new MessageEmbed()
+						.setTitle(item.title)
+						.setDescription(item.contentSnippet)
+						.setColor(52_224)
+						.setThumbnail(item.enclosure.url)
+						.setURL(item.guid)
+				]
+			});
 		}
 
-		display.run(message, { jump: false, stop: false });
+		await makePaginatedMessage(msg, pages);
 		return null;
 	}
 }

@@ -1,9 +1,8 @@
-import { randInt } from 'e';
+import { randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
-import { Time } from '../../constants';
 import { ItemBank } from '../../types';
 import { roll } from '../../util';
 

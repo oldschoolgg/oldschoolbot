@@ -114,7 +114,7 @@ function hydraFinish() {
 
 async function getAllPetsEmbed(petsRecieved: string[]) {
 	const embed = new MessageEmbed()
-		.setColor(7981338)
+		.setColor(7_981_338)
 		.addField(
 			'\u200b',
 			`
@@ -1383,7 +1383,7 @@ ${lootMSG.join('\n')}`);
 						lootMSG.push(`**Dark Claw:** ${kc.toLocaleString()} KC <:Dark_claw:417703739218984960>`);
 					}
 				}
-				const SE = kc * 64114;
+				const SE = kc * 64_114;
 				// AVG Slay XP = https://tinyurl.com/y8hbcdca
 				return msg.channel.send(`
 It took you **${kc.toLocaleString()}** kills to finish Skotizo <:Skotos:324127378890817546>
@@ -1397,7 +1397,7 @@ ${lootMSG.join('\n')}\n\nYou also gained **${SE.toLocaleString()}** Slayer XP!`)
 				let unidFoss = 0;
 				while (loot.length !== 3) {
 					kc++;
-					if (!loot.includes('WV') && roll(10000)) {
+					if (!loot.includes('WV') && roll(10_000)) {
 						loot.push('WV');
 						lootMSG.push(
 							`**Wyvern Visage:** ${kc.toLocaleString()} KC <:Wyvern_visage:506330718641586185>`
@@ -1433,13 +1433,13 @@ ${lootMSG.join('\n')}\n\nYou also received **${unidFoss.toLocaleString()}** Unid
 				const lootMSG = [];
 				while (loot.length !== 2) {
 					kc++;
-					if (!loot.includes('DV') && roll(10000)) {
+					if (!loot.includes('DV') && roll(10_000)) {
 						loot.push('DV');
 						lootMSG.push(
 							`**Draconic Visage:** ${kc.toLocaleString()} KC <:Draconic_visage:403378090979491840>`
 						);
 					}
-					if (!loot.includes('DFH') && roll(32768)) {
+					if (!loot.includes('DFH') && roll(32_768)) {
 						loot.push('DFH');
 						lootMSG.push(
 							`**Dragon Full Helm:** ${kc.toLocaleString()} KC from a Mithril Dragon <:Dragon_full_helm:456177009639424020>`

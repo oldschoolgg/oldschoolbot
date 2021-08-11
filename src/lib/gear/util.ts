@@ -28,6 +28,8 @@ export function resolveGearTypeSetting(type: GearSetupType) {
 			return UserSettings.Gear.Skilling;
 		case 'misc':
 			return UserSettings.Gear.Misc;
+		case 'wildy':
+			return UserSettings.Gear.Wildy;
 	}
 }
 
@@ -51,4 +53,11 @@ export function constructGearSetup(setup: PartialGearSetup): Gear {
 		shield: setup.shield ? { item: itemID(setup.shield), quantity: 1 } : null,
 		weapon: setup.weapon ? { item: itemID(setup.weapon), quantity: 1 } : null
 	});
+}
+
+export function hasGracefulEquipped(setup: Gear) {
+	return setup.hasEquipped(
+		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful gloves', 'Graceful cape'],
+		true
+	);
 }
