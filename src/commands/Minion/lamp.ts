@@ -7,8 +7,30 @@ import Skills from '../../lib/skilling/skills';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID, toTitleCase } from '../../lib/util';
+import itemID from '../../lib/util/itemID';
 
-export const XPLamps = [
+const darkRelicBoostSkills: SkillsEnum[] = [
+	SkillsEnum.Mining,
+	SkillsEnum.Woodcutting,
+	SkillsEnum.Herblore,
+	SkillsEnum.Fishing,
+	SkillsEnum.Hunter,
+	SkillsEnum.Cooking,
+	SkillsEnum.Farming,
+	SkillsEnum.Thieving,
+	SkillsEnum.Firemaking,
+	SkillsEnum.Agility
+];
+
+export interface Lamp {
+	itemID: number;
+	amount?: number;
+	amountFn?: (_skill: SkillsEnum, _level: number) => number;
+	name: string;
+	minimumLevel: number;
+}
+
+export const XPLamps: Lamp[] = [
 	{
 		itemID: 11_137,
 		amount: 2500,
@@ -32,8 +54,16 @@ export const XPLamps = [
 		amount: 50_000,
 		name: 'Antique lamp 4',
 		minimumLevel: 70
+	},
+	{
+		itemID: itemID('Dark relic'),
+		amountFn: (skill, level) => {
+			return darkRelicBoostSkills.includes(skill) ? level * 150 : level * 50;
+		},
+		name: 'Dark relic',
+		minimumLevel: 1
 	}
-] as const;
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -69,9 +99,10 @@ export default class extends BotCommand {
 			return msg.channel.send(`You don't have any ${lamp.name} lamps!`);
 		}
 
+		const amount = lamp.amountFn ? lamp.amountFn(skill, msg.author.skillLevel(skill)) : lamp.amount!;
 		await msg.author.addXP({
 			skillName: skill,
-			amount: lamp.amount,
+			amount,
 			duration: undefined,
 			minimal: false,
 			artificial: true
@@ -79,7 +110,7 @@ export default class extends BotCommand {
 		await msg.author.removeItemFromBank(lamp.itemID);
 
 		return msg.channel.send(
-			`Added ${lamp.amount.toLocaleString()} ${toTitleCase(skill)} XP from your ${itemNameFromID(lamp.itemID)}.`
+			`Added ${amount.toLocaleString()} ${toTitleCase(skill)} XP from your ${itemNameFromID(lamp.itemID)}.`
 		);
 	}
 }
