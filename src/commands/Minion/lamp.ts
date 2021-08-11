@@ -130,7 +130,7 @@ export default class extends BotCommand {
 		if (requirements && msg.author.skillLevel(skillName) < requirements[skillName]!) {
 			return [
 				false,
-				`You are not string enough to receive this reward. You need level **${requirements[
+				`You are not skilled enough to receive this reward. You need level **${requirements[
 					skillName
 				]!}** in ${skillName} to receive it.`
 			];
@@ -138,19 +138,9 @@ export default class extends BotCommand {
 
 		let amount = skills[skillName]!;
 		const userXp = msg.author.rawSkills[skillName]!;
-
-		if (userXp === 200_000_000)
-			return [false, `You are already 200m exp in ${skillName} and can't receive any more.`];
-
-		if (amount + userXp > 200_000_000) {
-			if (!msg.flagArgs.cf && !msg.flagArgs.confirm)
-				return [
-					false,
-					`This will waste more XP than necessary to max your ${skillName} xp. To force this, use \`--cf\` or use a lower quantity.`
-				];
-			amount = 200_000_000 - userXp;
-		}
-		return [true, await msg.author.addXP({ skillName, amount })];
+		let artificial = false;
+		if (userXp === 200_000_000) artificial = true;
+		return [true, await msg.author.addXP({ skillName, amount, artificial })];
 	}
 
 	async xpReward(msg: KlasaMessage, skills: Skills, requirements?: Skills) {
