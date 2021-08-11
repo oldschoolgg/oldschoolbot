@@ -6,6 +6,7 @@ import { getBoatType } from '../../../commands/Minion/pestcontrol';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
@@ -16,18 +17,26 @@ export default class extends Task {
 
 		let points = pointsPerGame * quantity;
 
+		// 2x points for Flappy.
+		let hasFlappy = false;
+		if (user.equippedPet() === itemID('Flappy')) {
+			hasFlappy = true;
+			points *= 2;
+		}
+
 		await user.incrementMinigameScore('PestControl', quantity);
 		await user.settings.update(
 			UserSettings.PestControlPoints,
 			user.settings.get(UserSettings.PestControlPoints) + points
 		);
 
-		let perHour = `(${toKMB((points / (duration / Time.Minute)) * 60)}/Hr)`;
+		let perHour = ` (${toKMB((points / (duration / Time.Minute)) * 60)}/Hr)`;
 		let str = `${user}, ${
 			user.minionName
 		} finished ${quantity}x games of Pest Control on the ${boatType} boat. You received ${points}x Void Knight commendation points, you now have ${user.settings.get(
 			UserSettings.PestControlPoints
-		)} points. ${perHour}`;
+		)} points.${perHour}`;
+		if (hasFlappy) str += '\n2x Points for using Flappy.';
 
 		handleTripFinish(
 			this.client,

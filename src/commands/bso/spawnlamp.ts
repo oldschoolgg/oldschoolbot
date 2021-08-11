@@ -56,7 +56,7 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.LastSpawnLamp, currentDate);
 
 		const level = randInt(1, 99);
-		const xp = randInt(convertLVLtoXP(level - 1), convertLVLtoXP(level + 1));
+		const xp = randInt(convertLVLtoXP(level), convertLVLtoXP(level + 1) - 1);
 
 		const embed = new MessageEmbed()
 			.setColor(Color.Orange)
@@ -80,7 +80,9 @@ export default class extends BotCommand {
 			const winner = col.author!;
 			const box = LampTable.roll();
 			await winner.addItemsToBank(box);
-			return msg.channel.send(`Congratulations, ${winner}! You got it. I've given you: **${box}**.`);
+			return msg.channel.send(
+				`Congratulations, ${winner}! You got it! It was: ${level}. I've given you: **${box}**.`
+			);
 		} catch (err) {
 			return msg.channel.send('Nobody got it! :(');
 		}

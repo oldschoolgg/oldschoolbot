@@ -1,4 +1,5 @@
 import { round, Time } from 'e';
+import { itemID } from 'oldschooljs/dist/util';
 import { BaseEntity, Check, Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { tameSpecies } from '../tames';
@@ -56,12 +57,15 @@ export class TamesTable extends BaseEntity {
 	@Column('json', { name: 'max_total_loot', nullable: false })
 	public totalLoot!: ItemBank;
 
+	@Column('json', { name: 'fed_items', nullable: false, default: {} })
+	public fedItems!: ItemBank;
+
 	@OneToMany(() => TameActivityTable, task => task.tame, { nullable: false })
 	activities!: TameActivityTable[];
 
 	async addDuration(duration: number): Promise<string | null> {
 		if (this.growthStage === TameGrowthStage.Adult) return null;
-		const percentToAdd = Math.floor(duration / Time.Minute / 20);
+		const percentToAdd = duration / Time.Minute / 20;
 		let newPercent = Math.floor(Math.max(1, Math.min(100, this.currentGrowthPercent + percentToAdd)));
 
 		if (newPercent === 100) {
@@ -75,6 +79,11 @@ export class TamesTable extends BaseEntity {
 		this.currentGrowthPercent = newPercent;
 		await this.save();
 		return `Your tame has grown ${percentToAdd}%!`;
+	}
+
+	hasBeenFed(item: string) {
+		const id = itemID(item);
+		return Boolean(this.fedItems[id]);
 	}
 
 	get growthLevel() {
