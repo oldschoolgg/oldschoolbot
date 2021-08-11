@@ -3,7 +3,7 @@ import { Bank, Items, Openables } from 'oldschooljs';
 
 import { customItems } from '../../lib/customItems';
 import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
-import { GearSetup } from '../../lib/gear';
+import { defaultGear, GearSetup } from '../../lib/gear';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
@@ -103,7 +103,7 @@ export default class extends BotCommand {
 		let res = `Gave you ${loot}.`;
 		for (const setup of ['range', 'melee', 'mage', 'skilling', 'wildy'] as const) {
 			if (msg.flagArgs[setup]) {
-				let newGear: GearSetup = msg.author.settings.get(`gear.${setup}`) as GearSetup;
+				let newGear: GearSetup = (msg.author.settings.get(`gear.${setup}`) as GearSetup) ?? { ...defaultGear };
 				const returnToBank = new Bank();
 				for (const [item] of items) {
 					if (!item.equipable_by_player || !item.equipment) continue;
