@@ -37,9 +37,12 @@ export default class extends BotCommand {
 			return msg.channel.send(`You don't have any ${lamp.name} lamps!`);
 		}
 
+		const amount = lamp.amountFn
+			? lamp.amountFn(skillName as SkillsEnum, msg.author.skillLevel(skillName as SkillsEnum))
+			: lamp.amount!;
 		await msg.author.addXP({
 			skillName: skillName as SkillsEnum,
-			amount: lamp.amount,
+			amount,
 			duration: undefined,
 			minimal: false,
 			multiplier: false,
@@ -48,9 +51,7 @@ export default class extends BotCommand {
 		await msg.author.removeItemFromBank(lamp.itemID);
 
 		return msg.channel.send(
-			`Added ${lamp.amount.toLocaleString()} ${toTitleCase(skillName)} XP from your ${itemNameFromID(
-				lamp.itemID
-			)}`
+			`Added ${amount.toLocaleString()} ${toTitleCase(skillName)} XP from your ${itemNameFromID(lamp.itemID)}`
 		);
 	}
 }

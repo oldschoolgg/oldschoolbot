@@ -1,10 +1,27 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { SkillsEnum } from './skilling/types';
+import itemID from './util/itemID';
+
 export interface XPLamp {
 	itemID: number;
-	amount: number;
+	amount?: number;
+	amountFn?: (_skill: SkillsEnum, _level: number) => number;
 	name: string;
 }
+
+const darkRelicBoostSkills: SkillsEnum[] = [
+	SkillsEnum.Mining,
+	SkillsEnum.Woodcutting,
+	SkillsEnum.Herblore,
+	SkillsEnum.Fishing,
+	SkillsEnum.Hunter,
+	SkillsEnum.Cooking,
+	SkillsEnum.Farming,
+	SkillsEnum.Thieving,
+	SkillsEnum.Firemaking,
+	SkillsEnum.Agility
+];
 
 export const XPLamps: XPLamp[] = [
 	// Achievement diary lamps
@@ -53,6 +70,13 @@ export const XPLamps: XPLamp[] = [
 		itemID: 11_157,
 		amount: 5_000_000,
 		name: 'Huge lamp'
+	},
+	{
+		itemID: itemID('Dark relic'),
+		amountFn: (skill, level) => {
+			return darkRelicBoostSkills.includes(skill) ? level * 150 : level * 50;
+		},
+		name: 'Dark relic'
 	}
 ];
 
