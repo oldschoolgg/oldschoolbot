@@ -24,7 +24,7 @@ export default class extends Task {
 		if (died) {
 			// 1 in 20 to get smited without prayer potions and 1 in 300 if the user has prayer potions
 			const hasPrayerLevel = user.hasSkillReqs({ [SkillsEnum.Prayer]: 25 })[0];
-			const protectItem = roll(data.usingPrayerPots ? 300 : 1) ? false : hasPrayerLevel;
+			const protectItem = roll(data.usingPrayerPots ? 300 : 20) ? false : hasPrayerLevel;
 			const userGear = { ...deepClone(user.settings.get(UserSettings.Gear.Wildy)!) };
 
 			const calc = calculateGearLostOnDeathWilderness({
