@@ -84,6 +84,14 @@ const Shafts: Fletchable[] = [
 		inputItems: new Bank({ 'Redwood logs': 1 }),
 		tickRate: 2,
 		outputMultiple: 105
+	},
+	{
+		name: 'Battlestaff',
+		id: itemID('Battlestaff'),
+		level: 40,
+		xp: 80,
+		inputItems: new Bank({ 'Celastrus bark': 1 }),
+		tickRate: 4
 	}
 ];
 

@@ -63,6 +63,10 @@ export default class extends BotCommand {
 				`That is not a valid craftable item, to see the items available do \`${msg.cmdPrefix}craft --items\``
 			);
 		}
+		let sets = 'x';
+		if (craftable.outputMultiple) {
+			sets = ' sets of';
+		}
 
 		if (msg.author.skillLevel(SkillsEnum.Crafting) < craftable.level) {
 			return msg.channel.send(
@@ -125,7 +129,7 @@ export default class extends BotCommand {
 		});
 
 		return msg.channel.send(
-			`${msg.author.minionName} is now crafting ${quantity}x ${
+			`${msg.author.minionName} is now crafting ${quantity}${sets} ${
 				craftable.name
 			}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`
 		);

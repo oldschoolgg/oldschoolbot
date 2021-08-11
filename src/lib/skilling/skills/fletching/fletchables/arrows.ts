@@ -70,14 +70,6 @@ const Arrows: Fletchable[] = [
 		tickRate: 0.13
 	},
 	{
-		name: 'Broad arrows',
-		id: itemID('Broad arrows'),
-		level: 52,
-		xp: 10,
-		inputItems: new Bank({ 'Broad arrowheads': 1, 'Headless arrow': 1 }),
-		tickRate: 0.13
-	},
-	{
 		name: 'Adamant arrow',
 		id: itemID('Adamant arrow'),
 		level: 60,

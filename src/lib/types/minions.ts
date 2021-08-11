@@ -205,6 +205,10 @@ export interface AerialFishingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface DriftNetActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 	minigameID: MinigameKey;
 	quantity: number;

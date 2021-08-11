@@ -187,6 +187,7 @@ export const enum Tasks {
 	ChampionsChallenge = 'championsChallengeActivity',
 	BirdhouseActivity = 'birdhouseActivity',
 	AerialFishingActivity = 'aerialFishingActivity',
+	DriftNetActivity = 'driftNetActivity',
 	MahoganyHomes = 'mahoganyHomesActivity',
 	GnomeRestaurant = 'gnomeRestaurantActivity',
 	SoulWars = 'soulWarsActivity',
@@ -202,7 +203,8 @@ export const enum Tasks {
 	BigChompyBirdHunting = 'chompyHuntActivity',
 	DarkAltar = 'darkAltarActivity',
 	TrekkingActivity = 'templeTrekkingActivity',
-	RevenantsActivity = 'revenantsActivity'
+	RevenantsActivity = 'revenantsActivity',
+	PestControl = 'pestControlActivity'
 }
 
 export enum Activity {
@@ -250,6 +252,7 @@ export enum Activity {
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge',
 	AerialFishing = 'AerialFishing',
+	DriftNet = 'DriftNet',
 	MahoganyHomes = 'MahoganyHomes',
 	GnomeRestaurant = 'GnomeRestaurant',
 	SoulWars = 'SoulWars',
@@ -265,7 +268,8 @@ export enum Activity {
 	BigChompyBirdHunting = 'BigChompyBirdHunting',
 	DarkAltar = 'DarkAltar',
 	Trekking = 'Trekking',
-	Revenants = 'Revenants'
+	Revenants = 'Revenants',
+	PestControl = 'PestControl'
 }
 
 export enum ActivityGroup {
