@@ -3,6 +3,7 @@ import { Hiscores } from 'oldschooljs';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, convertXPtoLVL } from 'oldschooljs/dist/util';
 
+import { MAX_XP } from '../../lib/constants';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
 const xpLeft = (xp: number) => {
@@ -37,7 +38,7 @@ export default class extends BotCommand {
 			if (res.level < 99) {
 				str += ` **${xpLeft(res.xp)}** XP away from level **${res.level + 1}**.`;
 			} else {
-				str += ` **${(200_000_000 - res.xp).toLocaleString()}** XP away from **200m**.`;
+				str += ` **${(MAX_XP - res.xp).toLocaleString()}** XP away from **200m**.`;
 			}
 
 			return msg.channel.send(str);
