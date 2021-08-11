@@ -21,7 +21,7 @@ export default class extends Task {
 		const kc = await user.getMinigameScore(key);
 
 		let chanceOfDeath = corrupted ? 6 : 3;
-		chanceOfDeath += Math.max(0, calcWhatPercent(100 - kc, 100) / 2);
+		chanceOfDeath += Math.max(0, calcWhatPercent(50 - kc, 50) / 2);
 
 		const loot = new Bank();
 

@@ -122,6 +122,7 @@ export const enum Emoji {
 	Minigames = '<:minigameIcon:630400565070921761>',
 	Skull = '<:Skull:802136963926065165>',
 	CombatSword = '<:combat:802136963956080650>',
+	OSRSSkull = '<:skull:863392427040440320>',
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>'
 }
 
@@ -186,6 +187,7 @@ export const enum Tasks {
 	ChampionsChallenge = 'championsChallengeActivity',
 	BirdhouseActivity = 'birdhouseActivity',
 	AerialFishingActivity = 'aerialFishingActivity',
+	DriftNetActivity = 'driftNetActivity',
 	MahoganyHomes = 'mahoganyHomesActivity',
 	GnomeRestaurant = 'gnomeRestaurantActivity',
 	SoulWars = 'soulWarsActivity',
@@ -200,7 +202,9 @@ export const enum Tasks {
 	MageArena2 = 'mageArena2Activity',
 	BigChompyBirdHunting = 'chompyHuntActivity',
 	DarkAltar = 'darkAltarActivity',
-	TrekkingActivity = 'templeTrekkingActivity'
+	TrekkingActivity = 'templeTrekkingActivity',
+	RevenantsActivity = 'revenantsActivity',
+	PestControl = 'pestControlActivity'
 }
 
 export enum Activity {
@@ -248,6 +252,7 @@ export enum Activity {
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge',
 	AerialFishing = 'AerialFishing',
+	DriftNet = 'DriftNet',
 	MahoganyHomes = 'MahoganyHomes',
 	GnomeRestaurant = 'GnomeRestaurant',
 	SoulWars = 'SoulWars',
@@ -262,7 +267,9 @@ export enum Activity {
 	MageArena2 = 'MageArena2',
 	BigChompyBirdHunting = 'BigChompyBirdHunting',
 	DarkAltar = 'DarkAltar',
-	Trekking = 'Trekking'
+	Trekking = 'Trekking',
+	Revenants = 'Revenants',
+	PestControl = 'PestControl'
 }
 
 export enum ActivityGroup {
@@ -343,7 +350,8 @@ export const enum BitField {
 	HasPermanentEventBackgrounds = 11,
 	HasPermanentTierOne = 12,
 	DisabledRandomEvents = 13,
-	PermanentIronman = 14
+	PermanentIronman = 14,
+	AlwaysSmallBank = 15
 }
 
 interface BitFieldData {
@@ -362,7 +370,8 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' },
 	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
-	[BitField.PermanentIronman]: { name: 'Permanent Ironman' }
+	[BitField.PermanentIronman]: { name: 'Permanent Ironman' },
+	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' }
 } as const;
 
 export const enum PatronTierID {

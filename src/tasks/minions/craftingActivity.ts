@@ -15,6 +15,11 @@ export default class extends Task {
 		const item = Craftables.find(craft => craft.id === craftableID)!;
 
 		let xpReceived = quantity * item.xp;
+		let sets = 'x';
+		if (item.outputMultiple) {
+			sets = ' sets of';
+		}
+		let quantityToGive = item.outputMultiple ? quantity * item.outputMultiple : quantity;
 		const loot = new Bank();
 
 		let crushed = 0;
@@ -28,13 +33,11 @@ export default class extends Task {
 			xpReceived -= 0.75 * crushed * item.xp;
 			loot.add('crushed gem', crushed);
 		}
-		loot.add(item.id, quantity - crushed);
+		loot.add(item.id, quantityToGive - crushed);
 
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Crafting, amount: xpReceived });
 
-		let str = `${user}, ${user.minionName} finished crafting ${quantity} ${item.name}${
-			crushed ? `, crushing ${crushed} of them` : ''
-		}. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}.${xpRes}`;
 
 		await user.addItemsToBank(loot.values(), true);
 

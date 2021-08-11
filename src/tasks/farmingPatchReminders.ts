@@ -1,4 +1,4 @@
-import { MessageButton } from 'discord.js';
+import { MessageActionRow, MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaMessage, Task, TaskStore } from 'klasa';
 
@@ -53,22 +53,26 @@ export default class extends Task {
 						if (patch.wasReminded) continue;
 						await user.settings.update(key, { ...patch, wasReminded: true });
 
+						// Build buttons (only show Harvest/replant if not busy):
+						const farmingReminderButtons: MessageActionRow = new MessageActionRow();
+						if (!user.minionIsBusy) {
+							farmingReminderButtons.addComponents(
+								new MessageButton()
+									.setLabel('Harvest & Replant')
+									.setStyle('PRIMARY')
+									.setCustomID('HARVEST')
+							);
+						}
+						// Always show disable reminders:
+						farmingReminderButtons.addComponents(
+							new MessageButton()
+								.setLabel('Disable Reminders')
+								.setStyle('SECONDARY')
+								.setCustomID('DISABLE')
+						);
 						const message = await user.send({
 							content: `${user.username}, the ${planted.name} planted in your ${patchType} patches is ready to be harvested!`,
-							components: user.minionIsBusy
-								? undefined
-								: [
-										[
-											new MessageButton()
-												.setLabel('Harvest & Replant')
-												.setStyle('PRIMARY')
-												.setCustomID('HARVEST'),
-											new MessageButton()
-												.setLabel('Disable Reminders')
-												.setStyle('SECONDARY')
-												.setCustomID('DISABLE')
-										]
-								  ]
+							components: [farmingReminderButtons]
 						});
 						try {
 							const selection = await message.awaitMessageComponentInteraction({
@@ -76,6 +80,14 @@ export default class extends Task {
 							});
 							message.edit({ components: [] });
 
+							// Check disable first so minion doesn't have to be free to disable reminders.
+							if (selection.customID === 'DISABLE') {
+								await user.settings.update(UserSettings.FarmingPatchReminders, false);
+								await user.send(
+									'Farming patch reminders have been disabled. You can enable them again using `+farm --enablereminders`.'
+								);
+								return;
+							}
 							if (user.minionIsBusy) {
 								selection.reply({ content: 'Your minion is busy.' });
 								return;
@@ -83,12 +95,6 @@ export default class extends Task {
 							if (selection.customID === 'HARVEST') {
 								message.author = user;
 								this.client.commands.get('farm')?.run(message as KlasaMessage, [planted.name]);
-							}
-							if (selection.customID === 'DISABLE') {
-								await user.settings.update(UserSettings.FarmingPatchReminders, false);
-								await user.send(
-									'Farming patch reminders have been disabled. You can enable them again using `+farm --enablereminders`.'
-								);
 							}
 						} catch {
 							message.edit({ components: [] });

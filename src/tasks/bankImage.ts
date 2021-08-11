@@ -7,7 +7,7 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { bankImageCache, Events } from '../lib/constants';
+import { bankImageCache, BitField, Events } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import { GearSetupType } from '../lib/gear';
@@ -24,7 +24,12 @@ import {
 	generateHexColorForCashStack,
 	sha256Hash
 } from '../lib/util';
-import { canvasImageFromBuffer, canvasToBufferAsync, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
+import {
+	canvasImageFromBuffer,
+	canvasToBufferAsync,
+	drawImageWithOutline,
+	fillTextXTimesInCtx
+} from '../lib/util/canvasUtil';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -126,6 +131,7 @@ export default class BankImageTask extends Task {
 		this.skillMiniIconsSheet.misc = this.getClippedRegion(this.skillMiniIcons, 36, 0, 12, 12);
 		this.skillMiniIconsSheet.skilling = this.getClippedRegion(this.skillMiniIcons, 48, 0, 12, 12);
 		this.skillMiniIconsSheet.more = this.getClippedRegion(this.skillMiniIcons, 60, 0, 12, 12);
+		this.skillMiniIconsSheet.wildy = this.getClippedRegion(this.skillMiniIcons, 72, 0, 12, 12);
 	}
 
 	// Split sprite into smaller images by coors and size
@@ -373,6 +379,10 @@ export default class BankImageTask extends Task {
 
 		const hexColor = user?.settings.get(UserSettings.BankBackgroundHex);
 
+		const useSmallBank = user
+			? await user.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank)
+			: true;
+
 		const cacheKey = [
 			title,
 			user?.id ?? 'nouser',
@@ -388,7 +398,8 @@ export default class BankImageTask extends Task {
 			Object.entries(flags).toString(),
 			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join('')),
 			hexColor ?? 'no-hex',
-			objectKeys(placeholder).length > 0 ? sha256Hash(JSON.stringify(placeholder)) : ''
+			objectKeys(placeholder).length > 0 ? sha256Hash(JSON.stringify(placeholder)) : '',
+			useSmallBank ? 'smallbank' : 'no-smallbank'
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
@@ -401,7 +412,7 @@ export default class BankImageTask extends Task {
 			};
 		}
 
-		const canvas = createCanvas(width, bankBackgroundID === 1 ? canvasHeight : Math.max(331, canvasHeight));
+		const canvas = createCanvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
 
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
@@ -478,13 +489,28 @@ export default class BankImageTask extends Task {
 				ctx.globalAlpha = 0.3;
 			}
 
-			ctx.drawImage(
-				itemImage,
-				floor(xLoc + (itemSize - itemWidth) / 2) + 2,
-				floor(yLoc + (itemSize - itemHeight) / 2),
-				itemWidth,
-				itemHeight
-			);
+			const isNewCLItem = flags.showNewCL && currentCL && !currentCL[item.id] && allCLItems.includes(item.id);
+
+			if (isNewCLItem) {
+				drawImageWithOutline(
+					ctx,
+					itemImage,
+					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
+					floor(yLoc + (itemSize - itemHeight) / 2),
+					itemWidth,
+					itemHeight,
+					'#ac7fff',
+					1
+				);
+			} else {
+				ctx.drawImage(
+					itemImage,
+					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
+					floor(yLoc + (itemSize - itemHeight) / 2),
+					itemWidth,
+					itemHeight
+				);
+			}
 
 			// Force the global alpha to 1
 			ctx.globalAlpha = 1;
@@ -495,7 +521,6 @@ export default class BankImageTask extends Task {
 			// Do not draw the item qty if there is 0 of that item in the bank
 			if (quantity !== 0) {
 				// Check if new cl item
-				const isNewCLItem = flags.showNewCL && currentCL && !currentCL[item.id] && allCLItems.includes(item.id);
 				const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
 				const formattedQuantity = formatItemStackQuantity(quantity);
 				// Draw qty shadow

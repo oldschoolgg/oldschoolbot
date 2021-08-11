@@ -52,6 +52,8 @@ export default function getUserBestGearFromBank(
 				case GearSetupTypes.Mage:
 					gearStatExtra = GearStat.MagicDamage;
 					break;
+				case GearSetupTypes.Wildy:
+					break;
 			}
 			break;
 		case 'prayer':
