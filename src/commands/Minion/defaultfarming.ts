@@ -67,7 +67,6 @@ export default class extends BotCommand {
 
 		const currentCompostTier = msg.author.settings.get(UserSettings.Minion.DefaultCompostToUse);
 
-		// I am purposefully not toLowerCase()ing current so people can fix theirs if broken.
 		if (currentCompostTier !== cleanedNewCompostTier) {
 			await msg.author.settings.update(UserSettings.Minion.DefaultCompostToUse, cleanedNewCompostTier);
 
