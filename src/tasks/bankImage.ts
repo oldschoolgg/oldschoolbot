@@ -1,5 +1,5 @@
 import { Canvas, createCanvas, Image, registerFont } from 'canvas';
-import { objectKeys } from 'e';
+import { objectEntries, objectKeys } from 'e';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
@@ -22,6 +22,7 @@ import {
 	cleanString,
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
+	rand,
 	sha256Hash
 } from '../lib/util';
 import {
@@ -323,10 +324,15 @@ export default class BankImageTask extends Task {
 		const sort = flags.sort ? BankSortMethods.find(s => s === flags.sort) ?? 'value' : 'value';
 		if (sort || favorites?.length) {
 			items = items.sort((a, b) => {
-				if (favorites) {
-					const aFav = favorites.includes(a[0].id);
-					const bFav = favorites.includes(b[0].id);
-					if (aFav && bFav) return sorts[sort](a, b);
+				if (favorites && objectEntries(favorites).length > 0) {
+					const aFav = favorites[a[0].id];
+					const bFav = favorites[b[0].id];
+					if (aFav && bFav) {
+						if (aFav === bFav) {
+							return sorts[sort](a, b);
+						}
+						return aFav - bFav;
+					}
 					if (bFav) return 1;
 					if (aFav) return -1;
 				}
@@ -399,7 +405,8 @@ export default class BankImageTask extends Task {
 			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join('')),
 			hexColor ?? 'no-hex',
 			objectKeys(placeholder).length > 0 ? sha256Hash(JSON.stringify(placeholder)) : '',
-			useSmallBank ? 'smallbank' : 'no-smallbank'
+			useSmallBank ? 'smallbank' : 'no-smallbank',
+			rand(0, Number.MAX_SAFE_INTEGER)
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);

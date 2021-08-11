@@ -31,7 +31,7 @@ export namespace UserSettings {
 	export const LapsScores = T<O.Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const BitField = T<readonly BitField[]>('bitfield');
-	export const FavoriteItems = T<readonly number[]>('favoriteItems');
+	export const FavoriteItems = T<O.Readonly<ItemBank>>('favoriteItems');
 	export const Badges = T<readonly number[]>('badges');
 	export const RSN = T<string>('RSN');
 	export const SacrificedValue = T<number>('sacrificedValue');

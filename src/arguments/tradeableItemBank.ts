@@ -41,7 +41,7 @@ export default class TradeableItemBankArgument extends Argument {
 				let [id, qty] = entries[i];
 				id = Number(id);
 				const item: [Item, number] = [getOSItem(id), qtyOverride ?? qty];
-				if (!favorites.includes(id) && !items.some(i => i[0] === item[0])) {
+				if (!favorites[id] && !items.some(i => i[0] === item[0])) {
 					items.push(item);
 				}
 			}
