@@ -86,7 +86,9 @@ export default class extends Task {
 								await user.send(
 									'Farming patch reminders have been disabled. You can enable them again using `+farm --enablereminders`.'
 								);
-							} else if (user.minionIsBusy) {
+								return;
+							}
+							if (user.minionIsBusy) {
 								selection.reply({ content: 'Your minion is busy.' });
 								return;
 							}
