@@ -396,7 +396,7 @@ export default class CollectionLogTask extends Task {
 					ctx,
 					formatItemStackQuantity(qtyText),
 					Math.floor(i * (itemSize + itemSpacer) + (itemSize - itemImage.width) / 2) + 1,
-					Math.floor(y * (itemSize + itemSpacer) + (itemSize - itemImage.height) / 2) + 9
+					y * (itemSize + itemSpacer) + 11
 				);
 			}
 
