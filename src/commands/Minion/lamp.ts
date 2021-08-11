@@ -22,7 +22,7 @@ const darkRelicBoostSkills: SkillsEnum[] = [
 	SkillsEnum.Agility
 ];
 
-export interface Lamp {
+export interface XPLamp {
 	itemID: number;
 	amount?: number;
 	amountFn?: (_skill: SkillsEnum, _level: number) => number;
@@ -30,7 +30,7 @@ export interface Lamp {
 	minimumLevel: number;
 }
 
-export const XPLamps: Lamp[] = [
+export const XPLamps: XPLamp[] = [
 	{
 		itemID: 11_137,
 		amount: 2500,
