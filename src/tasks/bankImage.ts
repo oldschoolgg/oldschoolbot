@@ -22,7 +22,6 @@ import {
 	cleanString,
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
-	rand,
 	sha256Hash
 } from '../lib/util';
 import {
@@ -405,8 +404,7 @@ export default class BankImageTask extends Task {
 			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join('')),
 			hexColor ?? 'no-hex',
 			objectKeys(placeholder).length > 0 ? sha256Hash(JSON.stringify(placeholder)) : '',
-			useSmallBank ? 'smallbank' : 'no-smallbank',
-			rand(0, Number.MAX_SAFE_INTEGER)
+			useSmallBank ? 'smallbank' : 'no-smallbank'
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
