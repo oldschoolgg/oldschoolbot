@@ -37,9 +37,19 @@ export default class extends Task {
 		await user.incrementMonsterScore(monsterID, quantity);
 
 		// Abyssal set bonuses -- grants the user a few extra kills
-		let abyssalBonus = 1;
-		if (user.equippedPet() === itemID('Ori') && duration > Time.Minute * 5) {
-			abyssalBonus += 0.25;
+		let boostedQuantity = quantity;
+		let oriBoost = false;
+		if (user.equippedPet() === itemID('Ori')) {
+			oriBoost = true;
+			if (duration > Time.Minute * 5) {
+				// Original boost for 5+ minute task:
+				boostedQuantity = Math.ceil(quantity * 1.25);
+			} else {
+				// 25% chance at extra kill otherwise:
+				for (let i = 0; i < quantity; i++) {
+					if (roll(4)) boostedQuantity++;
+				}
+			}
 		}
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
@@ -67,7 +77,7 @@ export default class extends Task {
 			inCatacombs: isInCatacombs
 		};
 		const loot = (monster as KillableMonster).table.kill(
-			Math.ceil(quantity * (isDoubleLootActive(this.client) ? 2 : abyssalBonus)),
+			Math.ceil(quantity * (isDoubleLootActive(this.client) ? 2 : boostedQuantity)),
 			killOptions
 		);
 		let newSuperiorCount = loot.bank[420];
@@ -158,7 +168,7 @@ export default class extends Task {
 
 		if (isDoubleLootActive(this.client)) {
 			str += '\n\n**Double Loot!**';
-		} else if (abyssalBonus > 1) {
+		} else if (oriBoost) {
 			str += '\n\nOri has used the abyss to transmute you +25% bonus loot!';
 		}
 

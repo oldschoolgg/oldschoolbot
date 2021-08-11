@@ -9,6 +9,7 @@ import BankImageTask from '../tasks/bankImage';
 import { UserSettings } from './settings/types/UserSettings';
 import { TameActivityTable } from './typeorm/TameActivityTable.entity';
 import { TamesTable } from './typeorm/TamesTable.entity';
+import { roll } from './util';
 import getOSItem from './util/getOSItem';
 import { sendToChannelID } from './util/webhook';
 
@@ -91,8 +92,15 @@ export async function runTameTask(activity: TameActivityTable) {
 			const { quantity, monsterID } = activity.data;
 			let killQty = quantity;
 			const hasOri = activity.tame.hasBeenFed('Ori');
+			// If less than 8 kills, roll 25% chance per kill
 			if (hasOri) {
-				killQty = Math.floor(killQty * 1.25);
+				if (killQty >= 8) {
+					killQty = Math.floor(killQty * 1.25);
+				} else {
+					for (let i = 0; i < killQty; i++) {
+						if (roll(4)) killQty++;
+					}
+				}
 			}
 			const fullMonster = Monsters.get(monsterID)!;
 			const loot = fullMonster.kill(killQty, {});
