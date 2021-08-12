@@ -4,7 +4,7 @@ import { objectEntries, objectValues, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { itemID, toKMB } from 'oldschooljs/dist/util';
+import { toKMB } from 'oldschooljs/dist/util';
 
 import { Emoji, skillEmoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -14,6 +14,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { Skills } from '../../lib/types';
 import { convertXPtoLVL } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
+import resolveItems from '../../lib/util/resolveItems';
 
 interface IXPLamp {
 	itemID: number;
@@ -49,6 +50,79 @@ export const XPLamps: IXPLamp[] = [
 	}
 ];
 
+interface IFunctionData {
+	user: KlasaUser;
+	item: number;
+	quantity: number;
+}
+
+interface IXPObject {
+	items: number[];
+	function: (data: IFunctionData) => [Skills, Skills | undefined];
+}
+
+const XPObjects: IXPObject[] = [
+	{
+		items: resolveItems(['Dark relic']),
+		function: data => {
+			const skills: Skills = {};
+			for (const skill of objectValues(SkillsEnum)) {
+				skills[skill] =
+					data.user.skillLevel(skill) *
+					([
+						SkillsEnum.Mining,
+						SkillsEnum.Woodcutting,
+						SkillsEnum.Herblore,
+						SkillsEnum.Farming,
+						SkillsEnum.Hunter,
+						SkillsEnum.Cooking,
+						SkillsEnum.Fishing,
+						SkillsEnum.Thieving,
+						SkillsEnum.Firemaking,
+						SkillsEnum.Agility
+					].includes(skill)
+						? 150
+						: 50) *
+					data.quantity;
+			}
+			return [skills, undefined];
+		}
+	},
+	{
+		items: resolveItems(['Genie lamp']),
+		function: data => {
+			const skills: Skills = {};
+			for (const skill of objectValues(SkillsEnum)) {
+				skills[skill] = data.user.skillLevel(skill) * 10 * data.quantity;
+			}
+			return [skills, undefined];
+		}
+	},
+	{
+		items: resolveItems(['Book of knowledge']),
+		function: data => {
+			const skills: Skills = {};
+			for (const skill of objectValues(SkillsEnum)) {
+				skills[skill] = data.user.skillLevel(skill) * 15 * data.quantity;
+			}
+			return [skills, undefined];
+		}
+	},
+	{
+		items: resolveItems(['Antique lamp 1', 'Antique lamp 2', 'Antique lamp 3', 'Antique lamp 4']),
+		function: data => {
+			const lamp = XPLamps.find(l => l.itemID === data.item)!;
+			const skills: Skills = {};
+			const requirements: Skills = {};
+			for (const skill of objectValues(SkillsEnum)) {
+				skills[skill] = lamp.amount * data.quantity;
+				requirements[skill] = lamp.minimumLevel;
+			}
+			return [skills, requirements];
+		}
+	}
+];
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -65,52 +139,6 @@ export default class extends BotCommand {
 	async lockedSkills() {
 		await this.client.settings.sync(true);
 		return this.client.settings.get(ClientSettings.LockedSkills);
-	}
-
-	darkRelic(user: KlasaUser, qty: number): [Skills, Skills | undefined] {
-		const skills: Skills = {};
-		const requirements: Skills | undefined = {};
-		for (const skill of objectValues(SkillsEnum)) {
-			skills[skill] =
-				user.skillLevel(skill) *
-				([
-					SkillsEnum.Mining,
-					SkillsEnum.Woodcutting,
-					SkillsEnum.Herblore,
-					SkillsEnum.Farming,
-					SkillsEnum.Hunter,
-					SkillsEnum.Cooking,
-					SkillsEnum.Fishing,
-					SkillsEnum.Thieving,
-					SkillsEnum.Firemaking,
-					SkillsEnum.Agility
-				].includes(skill)
-					? 150
-					: 50) *
-				qty;
-			requirements[skill] = 1;
-		}
-		return [skills, requirements];
-	}
-
-	levelMultiplier(user: KlasaUser, qty: number, multiplyer: number): [Skills, Skills | undefined] {
-		const skills: Skills = {};
-		const requirements: Skills | undefined = {};
-		for (const skill of objectValues(SkillsEnum)) {
-			skills[skill] = user.skillLevel(skill) * multiplyer * qty;
-			requirements[skill] = 1;
-		}
-		return [skills, requirements];
-	}
-
-	diaryLamp(qty: number, lamp: IXPLamp): [Skills, Skills | undefined] {
-		const skills: Skills = {};
-		const requirements: Skills | undefined = {};
-		for (const skill of objectValues(SkillsEnum)) {
-			skills[skill] = lamp.amount * qty;
-			requirements[skill] = lamp.minimumLevel;
-		}
-		return [skills, requirements];
 	}
 
 	async addExp(
@@ -250,14 +278,14 @@ export default class extends BotCommand {
 
 		// Default item to nothing and skill to the last word informed
 		let selectedItem: Item | undefined = undefined;
-		let skill: string | undefined = cmd.split(' ').pop();
+		let skill: string | undefined = cmd.split(',').pop();
 
 		// If the word selected to the skill is not valid, use everything as the name of the item
 		if (!objectValues(SkillsEnum).includes(skill as SkillsEnum)) {
-			selectedItem = getOSItem(cmd);
+			selectedItem = getOSItem(cmd.split(',')[0]);
 			skill = undefined;
 		} else {
-			selectedItem = getOSItem(cmd.split(' ').slice(0, -1).join(' '));
+			selectedItem = getOSItem(cmd.split(',')[0]);
 		}
 
 		if (!selectedItem || cmd === skill) return msg.channel.send('This is not a valid item to use.');
@@ -272,31 +300,14 @@ export default class extends BotCommand {
 		let skillsToReceive: Skills = {};
 		let skillsRequirements: Skills | undefined = undefined;
 
-		// Iterate over valid items to use and execute their specific functions
-		// The function MUST result [Skill, Skill], where the first is an object with the skills and the xp to be awarded
-		// and the second the skills and the level required to receive the xp. The latter can be undefined
-		switch (selectedItem.id) {
-			case itemID('Dark relic'):
-				[skillsToReceive, skillsRequirements] = this.darkRelic(msg.author, qty);
-				break;
-			case itemID('Genie lamp'):
-				[skillsToReceive, skillsRequirements] = this.levelMultiplier(msg.author, qty, 10);
-				break;
-			case itemID('Book of knowledge'):
-				[skillsToReceive, skillsRequirements] = this.levelMultiplier(msg.author, qty, 15);
-				break;
-			case itemID('Antique lamp 1'):
-			case itemID('Antique lamp 2'):
-			case itemID('Antique lamp 3'):
-			case itemID('Antique lamp 4'):
-				[skillsToReceive, skillsRequirements] = this.diaryLamp(
-					qty,
-					XPLamps.find(l => l.itemID === selectedItem!.id)!
-				);
-				break;
-			default:
-				return msg.channel.send('This is not a valid item to use.');
-		}
+		const xpObject = XPObjects.find(x => x.items.includes(selectedItem!.id));
+		if (!xpObject) return msg.channel.send('This is not a valid item to use.');
+
+		[skillsToReceive, skillsRequirements] = xpObject.function({
+			user: msg.author,
+			quantity: qty,
+			item: selectedItem!.id
+		});
 
 		// Automatically uses the item on the skill selected in the command
 		if (skill) {
