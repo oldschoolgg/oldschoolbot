@@ -16,6 +16,11 @@ export default class extends Task {
 		const item = Craftables.find(craft => craft.id === craftableID)!;
 
 		let xpReceived = quantity * item.xp;
+		let sets = 'x';
+		if (item.outputMultiple) {
+			sets = ' sets of';
+		}
+		let quantityToGive = item.outputMultiple ? quantity * item.outputMultiple : quantity;
 		const loot = new Bank();
 
 		let crushed = 0;
@@ -44,9 +49,7 @@ export default class extends Task {
 			amount: xpReceived
 		});
 
-		let str = `${user}, ${user.minionName} finished crafting ${quantity} ${item.name}${
-			crushed ? `, crushing ${crushed} of them` : ''
-		}. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}.${xpRes}`;
 
 		if (hasScroll) {
 			str += '\n\nYour Scroll of dexterity allows you to receive 15% extra items.';

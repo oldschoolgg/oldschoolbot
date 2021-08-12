@@ -35,7 +35,7 @@
 		"klasa": "https://github.com/gc/klasa.git#9cc34cbfd4f5a4b01068b402f19f9fa61641bdce",
 		"klasa-decorators": "^0.0.1",
 		"node-fetch": "^2.6.1",
-		"oldschooljs": "^1.9.7",
+		"oldschooljs": "^1.9.9",
 		"p-queue": "^6.6.2",
 		"pg": "^8.7.1",
 		"piscina": "^3.1.0",

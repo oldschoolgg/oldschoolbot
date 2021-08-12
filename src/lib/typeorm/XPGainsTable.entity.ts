@@ -27,4 +27,7 @@ export class XPGainsTable extends BaseEntity {
 
 	@Column({ type: 'boolean', name: 'artificial', nullable: true })
 	public artificial!: boolean | null;
+
+	@Column({ type: 'boolean', name: 'post_max', nullable: false, default: false })
+	public postMax!: boolean | null;
 }
