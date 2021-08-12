@@ -111,7 +111,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	const otherStats: [string, number | string][] = [
 		['Fight Caves Attempts', user.settings.get(UserSettings.Stats.FightCavesAttempts)],
 		['Fire Capes Sacrificed', user.settings.get(UserSettings.Stats.FireCapesSacrificed)],
-		['Tithe Farm Score', user.settings.get(UserSettings.Stats.TitheFarmsCompleted)],
+		['Tithe Farm Score', await user.getMinigameScore('TitheFarm')],
 		['Dice Wins', user.settings.get(UserSettings.Stats.DiceWins)],
 		['Dice Losses', user.settings.get(UserSettings.Stats.DiceLosses)],
 		['Duel Wins', user.settings.get(UserSettings.Stats.DuelWins)],

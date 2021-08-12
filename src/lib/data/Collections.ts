@@ -673,7 +673,7 @@ export const allCollectionLogs: ICollection = {
 			'Tithe Farm': {
 				alias: ['tithe'],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.Stats.TitheFarmsCompleted)
+					Default: async user => user.getMinigameScore('TitheFarm')
 				},
 				items: titheFarmCL,
 				roleCategory: ['minigames'],

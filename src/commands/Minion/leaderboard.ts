@@ -330,9 +330,13 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 		const res: MinigameTable[] = await MinigameTable.getRepository()
 			.createQueryBuilder('user')
 			.orderBy(minigame.column, 'DESC')
-			.where(`${minigame.column} > 10`)
+			.where(`${minigame.column} >= 10`)
 			.limit(100)
 			.getMany();
+
+		if (res.length === 0) {
+			return msg.channel.send('No users meets the criteria for this minigame (10+ completions).');
+		}
 
 		this.doMenu(
 			msg,
