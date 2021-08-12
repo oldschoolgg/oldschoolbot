@@ -1,9 +1,8 @@
 import { ArrayActions } from '@klasa/settings-gateway';
-import { MessageSelectMenu } from 'discord.js';
+import { MessageButton, MessageSelectMenu } from 'discord.js';
 import { objectEntries, objectValues, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { Emoji, skillEmoji } from '../../lib/constants';
@@ -13,7 +12,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Skills } from '../../lib/types';
 import { convertXPtoLVL } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
+import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
 
 interface IXPLamp {
@@ -208,6 +207,13 @@ export default class extends BotCommand {
 						options,
 						placeholder: 'Select a reward...'
 					})
+				],
+				[
+					new MessageButton({
+						customID: 'cancelXpSelection',
+						label: 'Cancel',
+						style: 'DANGER'
+					})
 				]
 			]
 		});
@@ -229,6 +235,10 @@ export default class extends BotCommand {
 				const msgAddXp = await this.addExp(msg, selection.values[0] as SkillsEnum, skills, requirements);
 				await selectedMessage.edit({ components: [], content: msgAddXp[1] });
 				return msgAddXp[0];
+			}
+			if (selection.isButton() && selection.customID === 'cancelXpSelection') {
+				await selectedMessage.edit({ components: [], content: 'Cancelled XP selection. No items were used.' });
+				return false;
 			}
 			await selectedMessage.edit({ components: [], content: 'This is not a valid option.' });
 			return false;
@@ -277,21 +287,26 @@ export default class extends BotCommand {
 		}
 
 		// Default item to nothing and skill to the last word informed
-		let selectedItem: Item | undefined = undefined;
+		let selectedItem: number | undefined = undefined;
 		let skill: string | undefined = cmd.split(',').pop();
 
 		// If the word selected to the skill is not valid, use everything as the name of the item
-		if (!objectValues(SkillsEnum).includes(skill as SkillsEnum)) {
-			selectedItem = getOSItem(cmd.split(',')[0]);
-			skill = undefined;
-		} else {
-			selectedItem = getOSItem(cmd.split(',')[0]);
+		try {
+			if (!objectValues(SkillsEnum).includes(skill as SkillsEnum)) {
+				selectedItem = itemID(cmd.split(',')[0]);
+				skill = undefined;
+			} else {
+				selectedItem = itemID(cmd.split(',')[0]);
+			}
+		} catch (e) {
+			return msg.channel.send(`**${cmd.split(',')[0]}** is not a valid item to use.`);
 		}
 
-		if (!selectedItem || cmd === skill) return msg.channel.send('This is not a valid item to use.');
+		const xpObject = XPObjects.find(x => x.items.includes(selectedItem!));
+		if (!selectedItem || cmd === skill || !xpObject) return msg.channel.send('This is not a valid item to use.');
 
 		// Prepare the items to be removed from the user bank
-		const toRemoveFromBank = new Bank({ [selectedItem.id]: qty });
+		const toRemoveFromBank = new Bank({ [selectedItem]: qty });
 
 		if (!msg.author.bank().has(toRemoveFromBank.bank)) {
 			return msg.channel.send(`You don't have **${toRemoveFromBank}** in your bank.`);
@@ -300,13 +315,10 @@ export default class extends BotCommand {
 		let skillsToReceive: Skills = {};
 		let skillsRequirements: Skills | undefined = undefined;
 
-		const xpObject = XPObjects.find(x => x.items.includes(selectedItem!.id));
-		if (!xpObject) return msg.channel.send('This is not a valid item to use.');
-
 		[skillsToReceive, skillsRequirements] = xpObject.function({
 			user: msg.author,
 			quantity: qty,
-			item: selectedItem!.id
+			item: selectedItem
 		});
 
 		// Automatically uses the item on the skill selected in the command
