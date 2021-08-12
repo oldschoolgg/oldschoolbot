@@ -27,6 +27,8 @@ import itemID from '../../lib/util/itemID';
 
 const { TzTokJad } = Monsters;
 
+const ZUK_ID = 7706;
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -46,8 +48,8 @@ export default class extends BotCommand {
 		let debugStr = '';
 
 		// Reduce time based on KC
-		const jadKC = user.getKC(TzTokJad.id);
-		const percentIncreaseFromKC = Math.min(50, jadKC);
+		const kc = user.getKC(ZUK_ID);
+		const percentIncreaseFromKC = Math.min(50, kc);
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromKC);
 		debugStr += `${percentIncreaseFromKC}% from KC`;
 
