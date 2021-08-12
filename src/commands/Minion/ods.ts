@@ -53,7 +53,7 @@ export default class ODSCommand extends BotCommand {
 			description: 'Sends your minion to complete Ourania Delivery Service trips, or buy rewards.',
 			examples: ['+ods start'],
 			subcommands: true,
-			usage: '[start|buy] [qty:integer] [buyable:...string]',
+			usage: '[start|buy] [qty:integer{1}] [buyable:...string]',
 			usageDelim: ' '
 		});
 	}
