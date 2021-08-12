@@ -53,42 +53,48 @@ export default class ODSCommand extends BotCommand {
 			description: 'Sends your minion to complete Ourania Delivery Service trips, or buy rewards.',
 			examples: ['+ods start'],
 			subcommands: true,
-			usage: '[start|buy] [buyable:...string]',
+			usage: '[start|buy] [qty:integer] [buyable:...string]',
 			usageDelim: ' '
 		});
 	}
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
+		await msg.author.settings.sync(true);
 		const minigames = await getMinigameEntity(msg.author.id);
 		return msg.channel.send(`**Ourania Delivery Service** (ODS)
 
-**Deliveries done:** ${minigames.OuraniaDeliveryService}
-**Ourania Tokens:** ${msg.author.settings.get(UserSettings.OuraniaTokens)}`);
+**Deliveries done:** ${minigames.OuraniaDeliveryService.toLocaleString()}
+**Ourania Tokens:** ${msg.author.settings.get(UserSettings.OuraniaTokens).toLocaleString()}`);
 	}
 
-	async buy(msg: KlasaMessage, [input = '']: [string]) {
+	async buy(msg: KlasaMessage, [qty = 1, input = '']: [number, string]) {
 		const buyable = OuraniaBuyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
 			return msg.channel.send(
 				`Here are the items you can buy: \n\n${OuraniaBuyables.map(
-					i => `**${i.item.name}:** ${i.cost} points`
+					i => `**${i.item.name}:** ${i.cost.toLocaleString()} points`
 				).join('\n')}.`
 			);
 		}
 
-		const { item, cost } = buyable;
+		let { item, cost } = buyable;
+		cost *= qty;
 		const balance = msg.author.settings.get(UserSettings.OuraniaTokens);
 		if (balance < cost) {
 			return msg.channel.send(
-				`You don't have enough Ourania Tokens to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`
+				`You don't have enough Ourania Tokens to buy the ${qty.toLocaleString()}x ${
+					item.name
+				}. You need ${cost.toLocaleString()}, but you have only ${balance.toLocaleString()}.`
 			);
 		}
 
 		await msg.author.settings.update(UserSettings.OuraniaTokens, balance - cost);
-		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
+		await msg.author.addItemsToBank({ [item.id]: qty }, true);
 
-		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Ourania Tokens.`);
+		return msg.channel.send(
+			`Successfully purchased ${qty.toLocaleString()}x ${item.name} for ${cost.toLocaleString()} Ourania Tokens.`
+		);
 	}
 
 	@minionNotBusy
