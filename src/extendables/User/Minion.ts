@@ -921,7 +921,7 @@ export default class extends Extendable {
 		if (currentXP >= 5_000_000_000) {
 			let xpStr = '';
 			if (params.duration && !params.minimal) {
-				xpStr += `You received no XP because you have 200m ${name} XP already.`;
+				xpStr += `You received no XP because you have ${toKMB(MAX_XP)} ${name} XP already.`;
 				xpStr += ` Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
 				let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
 				rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
