@@ -90,6 +90,9 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 75,
 		itemInBankBoosts: [
 			{
+				[itemID('Vasa cloak')]: 5
+			},
+			{
 				[itemID('Ranger boots')]: 2,
 				[itemID('Pegasian boots')]: 4
 			},
