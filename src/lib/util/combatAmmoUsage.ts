@@ -3,12 +3,13 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveBank } from 'oldschooljs/dist/util';
 
-import { GearSetupType } from '../gear';
+import { GearSetupType, GearSetupTypes } from '../gear';
 import getOSItem from './getOSItem';
 import itemID from './itemID';
 
 interface ICombatItemsConsumption {
 	[key: number]: {
+		requiredGearType?: GearSetupType[];
 		required: Bank;
 		every: number;
 		consume: number;
@@ -18,6 +19,7 @@ interface ICombatItemsConsumption {
 
 export const combatItemsConsumption: ICombatItemsConsumption = {
 	[itemID('Hellfire bow')]: {
+		requiredGearType: [GearSetupTypes.Wildy],
 		required: new Bank({
 			'Hellfire arrow': 1
 		}),
@@ -45,6 +47,7 @@ export default function combatAmmoUsage(options: { duration: number; gearType: G
 		const _item = getOSItem(item)!;
 		const cic = combatItemsConsumption[item];
 		if (cic) {
+			if (cic.requiredGearType && !cic.requiredGearType.includes(gearType)) continue;
 			let requiredBank = cic.required.clone();
 			let requiredItems = requiredBank
 				.items()
