@@ -88,10 +88,7 @@ export default class extends Task {
 			for (let i = 0; i < quantity; i++) if (roll(200)) newSuperiorCount++;
 		}
 
-		let masterCapeRolls =
-			user.hasItemEquippedAnywhere('Slayer master cape') && typeof newSuperiorCount === 'number'
-				? newSuperiorCount
-				: 0;
+		let masterCapeRolls = user.hasItemEquippedAnywhere('Slayer master cape') ? newSuperiorCount : 0;
 		newSuperiorCount += masterCapeRolls;
 
 		if (newSuperiorCount) {
