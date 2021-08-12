@@ -137,8 +137,14 @@ export async function handleTripFinish(
 		}
 	}
 
-	if (user.usingPet('Voidling')) {
-		const alchResult = alching({ user, tripLength: data.duration, isUsingVoidling: true, flags: { alch: 'yes' } });
+	if (user.allItemsOwned().has('Voidling')) {
+		const voidlingEquipped = user.usingPet('Voidling');
+		const alchResult = alching({
+			user,
+			tripLength: voidlingEquipped ? data.duration : data.duration / randInt(8, 12),
+			isUsingVoidling: true,
+			flags: { alch: 'yes' }
+		});
 		if (alchResult !== null) {
 			if (!user.owns(alchResult.bankToRemove)) {
 				message += `\Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`;
@@ -151,7 +157,11 @@ export async function handleTripFinish(
 			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
 			message += `\nYour Voidling alched ${alchResult.maxCasts}x ${alchResult.itemToAlch.name}. Removed ${
 				alchResult.bankToRemove
-			} from your bank and added ${toKMB(alchGP)} GP.`;
+			} from your bank and added ${toKMB(alchGP)} GP. ${
+				!voidlingEquipped
+					? "As you left your Voidling alone in the bank, it got distracted easily and didn't manage to alch at its full potential."
+					: ''
+			}`;
 		} else {
 			message +=
 				"\nYour Voidling didn't alch anything because you either: don't have Nature runes, Fire Runes, or any Favorited alchables that you own.";
