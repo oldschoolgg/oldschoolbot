@@ -256,16 +256,30 @@ export default class extends BotCommand {
 		if (this.client.owners.has(msg.author)) {
 			if (objectValues(SkillsEnum).includes(cmd as SkillsEnum)) {
 				const lockedSkills = await this.lockedSkills();
-				if (msg.flagArgs.add && !lockedSkills.includes(cmd as SkillsEnum)) {
+				if (msg.flagArgs.add) {
+					if (lockedSkills.includes(cmd as SkillsEnum)) {
+						return msg.channel.send(
+							`**${skillEmoji[cmd as SkillsEnum]} ${cmd}** is already on the list of locked skills.`
+						);
+					}
 					await this.client.settings.update(ClientSettings.LockedSkills, cmd as SkillsEnum, {
 						arrayAction: ArrayActions.Add
 					});
-					return msg.channel.send(`Added ${cmd} to the list of locked skills.`);
-				} else if (msg.flagArgs.remove && lockedSkills.includes(cmd as SkillsEnum)) {
+					return msg.channel.send(
+						`Added **${skillEmoji[cmd as SkillsEnum]} ${cmd}** to the list of locked skills.`
+					);
+				} else if (msg.flagArgs.remove) {
+					if (!lockedSkills.includes(cmd as SkillsEnum)) {
+						return msg.channel.send(
+							`**${skillEmoji[cmd as SkillsEnum]} ${cmd}** is not on the list of locked skills.`
+						);
+					}
 					await this.client.settings.update(ClientSettings.LockedSkills, cmd as SkillsEnum, {
 						arrayAction: ArrayActions.Remove
 					});
-					return msg.channel.send(`Removed ${cmd} to the list of locked skills.`);
+					return msg.channel.send(
+						`Removed **${skillEmoji[cmd as SkillsEnum]} ${cmd}** from the list of locked skills.`
+					);
 				}
 			} else if (msg.flagArgs.add || msg.flagArgs.remove) {
 				return msg.channel.send(`${cmd} is not a valid skill to add/remove.`);
