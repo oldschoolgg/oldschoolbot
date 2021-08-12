@@ -99,7 +99,8 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Barrows gloves')]: 3
 			},
 			{
-				[itemID('Twisted bow')]: 5
+				[itemID('Twisted bow')]: 5,
+				[itemID('Bow of faerdhinen (c)')]: 3
 			},
 			{
 				[itemID('Ancestral hat')]: 2
@@ -278,6 +279,7 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Armadyl crossbow')]: 6,
+				[itemID('Bow of faerdhinen (c)')]: 8,
 				[itemID('Twisted bow')]: 10
 			}
 		],
