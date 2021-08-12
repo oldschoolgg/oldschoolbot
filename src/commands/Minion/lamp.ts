@@ -11,7 +11,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Skills } from '../../lib/types';
-import { convertXPtoLVL } from '../../lib/util';
+import { convertXPtoLVL, toTitleCase } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
 
@@ -259,30 +259,36 @@ export default class extends BotCommand {
 				if (msg.flagArgs.add) {
 					if (lockedSkills.includes(cmd as SkillsEnum)) {
 						return msg.channel.send(
-							`**${skillEmoji[cmd as SkillsEnum]} ${cmd}** is already on the list of locked skills.`
+							`**${skillEmoji[cmd as SkillsEnum]} ${toTitleCase(
+								cmd
+							)}** is already on the list of locked skills.`
 						);
 					}
 					await this.client.settings.update(ClientSettings.LockedSkills, cmd as SkillsEnum, {
 						arrayAction: ArrayActions.Add
 					});
 					return msg.channel.send(
-						`Added **${skillEmoji[cmd as SkillsEnum]} ${cmd}** to the list of locked skills.`
+						`Added **${skillEmoji[cmd as SkillsEnum]} ${toTitleCase(cmd)}** to the list of locked skills.`
 					);
 				} else if (msg.flagArgs.remove) {
 					if (!lockedSkills.includes(cmd as SkillsEnum)) {
 						return msg.channel.send(
-							`**${skillEmoji[cmd as SkillsEnum]} ${cmd}** is not on the list of locked skills.`
+							`**${skillEmoji[cmd as SkillsEnum]} ${toTitleCase(
+								cmd
+							)}** is not on the list of locked skills.`
 						);
 					}
 					await this.client.settings.update(ClientSettings.LockedSkills, cmd as SkillsEnum, {
 						arrayAction: ArrayActions.Remove
 					});
 					return msg.channel.send(
-						`Removed **${skillEmoji[cmd as SkillsEnum]} ${cmd}** from the list of locked skills.`
+						`Removed **${skillEmoji[cmd as SkillsEnum]} ${toTitleCase(
+							cmd
+						)}** from the list of locked skills.`
 					);
 				}
 			} else if (msg.flagArgs.add || msg.flagArgs.remove) {
-				return msg.channel.send(`${cmd} is not a valid skill to add/remove.`);
+				return msg.channel.send(`${toTitleCase(cmd)} is not a valid skill to add/remove.`);
 			}
 		}
 
