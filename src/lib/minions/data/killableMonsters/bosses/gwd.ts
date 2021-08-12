@@ -102,7 +102,7 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Armadyl crossbow')]: 5,
-				[itemID('Bow of faerdhinen (c))]: 7,
+				[itemID('Bow of faerdhinen (c)')]: 7,
 				[itemID('Twisted bow')]: 10
 			}
 		],
