@@ -99,6 +99,8 @@ export default class extends BotCommand {
 			itemsToRemove.add('Stamina potion(4)', 1);
 		}
 
+		if (msg.author.usingPet('Shelldon')) boosts.push('2x more fish for using Shelldon');
+
 		const quantity = Math.round(tripLength / oneDriftNetTime);
 		const duration = quantity * oneDriftNetTime;
 
