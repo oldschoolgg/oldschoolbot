@@ -49,6 +49,12 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const titheFarmPoints = msg.author.settings.get(UserSettings.Stats.TitheFarmPoints);
 
+		// Transfer KC from the old system to the new one
+		let titheFarmsCompleted = msg.author.settings.get(UserSettings.Stats.TitheFarmsCompleted);
+		if (titheFarmsCompleted > 0 && (await msg.author.getMinigameScore('TitheFarm')) === 0) {
+			await msg.author.incrementMinigameScore('TitheFarm', titheFarmsCompleted);
+		}
+
 		if (msg.flagArgs.points) {
 			return msg.channel.send(`You have ${titheFarmPoints} Tithe Farm points.`);
 		}

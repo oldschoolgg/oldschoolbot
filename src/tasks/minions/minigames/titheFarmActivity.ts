@@ -19,13 +19,7 @@ export default class extends Task {
 		const user = await this.client.users.fetch(userID);
 
 		const farmingLvl = user.skillLevel(SkillsEnum.Farming);
-		// Fix for old tithe farm kcs
-		let titheFarmsCompleted = user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
-		if (titheFarmsCompleted > 0 && (await user.getMinigameScore('TitheFarm')) === 0) {
-			await user.incrementMinigameScore('TitheFarm', titheFarmsCompleted);
-		} else {
-			titheFarmsCompleted = await user.getMinigameScore('TitheFarm');
-		}
+		const titheFarmsCompleted = await user.getMinigameScore('TitheFarm');
 		await user.incrementMinigameScore('TitheFarm', 1);
 		const titheFarmPoints = user.settings.get(UserSettings.Stats.TitheFarmPoints);
 
