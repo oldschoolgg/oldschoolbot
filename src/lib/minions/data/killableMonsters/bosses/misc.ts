@@ -99,7 +99,8 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Barrows gloves')]: 3
 			},
 			{
-				[itemID('Twisted bow')]: 5
+				[itemID('Twisted bow')]: 5,
+				[itemID('Bow of faerdhinen (c)')]: 3
 			},
 			{
 				[itemID('Ancestral hat')]: 2
