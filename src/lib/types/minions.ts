@@ -193,7 +193,7 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	plantsName: string | null;
 	channelID: string;
 	quantity: number;
-	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null;
+	upgradeType: string | null;
 	payment?: boolean;
 	patchType: IPatchData;
 	getPatchType: string;

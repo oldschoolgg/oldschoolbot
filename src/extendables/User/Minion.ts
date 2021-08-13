@@ -844,7 +844,7 @@ export default class extends Extendable {
 
 		params.amount = Math.floor(params.amount);
 
-		const newXP = Math.min(5_000_000_000, currentXP + params.amount);
+		const newXP = Math.min(MAX_XP, currentXP + params.amount);
 		const newLevel = convertXPtoLVL(newXP, 120);
 		const totalXPAdded = newXP - currentXP;
 

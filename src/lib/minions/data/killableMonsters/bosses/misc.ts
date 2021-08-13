@@ -43,7 +43,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.Vorkath.id,
 		name: Monsters.Vorkath.name,
 		aliases: Monsters.Vorkath.aliases,
-		timeToFinish: Time.Minute * 3.8,
+		timeToFinish: Time.Minute * 3.5,
 		table: Monsters.Vorkath,
 		emoji: '<:Vorki:400713309252222977>',
 		wildy: false,
@@ -104,7 +104,8 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Barrows gloves')]: 3
 			},
 			{
-				[itemID('Twisted bow')]: 5
+				[itemID('Twisted bow')]: 5,
+				[itemID('Bow of faerdhinen (c)')]: 3
 			},
 			{
 				[itemID('Ancestral hat')]: 2
