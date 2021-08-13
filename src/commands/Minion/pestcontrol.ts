@@ -19,7 +19,6 @@ let itemBoosts = [
 	[['Amulet of fury', 'Amulet of torture'].map(getOSItem), 5],
 	[['Fire cape', 'Infernal cape'].map(getOSItem), 6],
 	[['Dragon claws'].map(getOSItem), 5]
-
 ] as const;
 
 export type PestControlBoat = ['veteran' | 'intermediate' | 'novice', 3 | 4 | 5];
