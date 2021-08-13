@@ -39,7 +39,7 @@ export class TamesTable extends BaseEntity {
 	@Column({ type: 'enum', enum: TameGrowthStage, name: 'growth_stage', enumName: 'tame_growth' })
 	public growthStage!: TameGrowthStage;
 
-	@Column('integer', { name: 'growth_percent', nullable: false })
+	@Column('real', { name: 'growth_percent', nullable: false })
 	public currentGrowthPercent!: number;
 
 	@Column('integer', { name: 'max_combat_level', nullable: false })
@@ -66,7 +66,7 @@ export class TamesTable extends BaseEntity {
 	async addDuration(duration: number): Promise<string | null> {
 		if (this.growthStage === TameGrowthStage.Adult) return null;
 		const percentToAdd = duration / Time.Minute / 20;
-		let newPercent = Math.floor(Math.max(1, Math.min(100, this.currentGrowthPercent + percentToAdd)));
+		let newPercent = Math.max(1, Math.min(100, this.currentGrowthPercent + percentToAdd));
 
 		if (newPercent === 100) {
 			newPercent = 0;
@@ -78,7 +78,7 @@ export class TamesTable extends BaseEntity {
 		}
 		this.currentGrowthPercent = newPercent;
 		await this.save();
-		return `Your tame has grown ${percentToAdd}%!`;
+		return `Your tame has grown ${percentToAdd.toFixed(2)}%!`;
 	}
 
 	hasBeenFed(item: string) {
