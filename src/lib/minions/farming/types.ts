@@ -25,7 +25,7 @@ export interface IPatchData {
 	patchPlanted: boolean; // false -> nothing planted, true -> something planted
 	plantTime: number;
 	lastQuantity: number;
-	lastUpgradeType: 'compost' | 'supercompost' | 'ultracompost' | 'null' | null;
+	lastUpgradeType: string | null;
 	lastPayment: boolean;
 	wasReminded?: true;
 }

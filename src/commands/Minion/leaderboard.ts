@@ -465,7 +465,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 						const objKey = `skills.${skill?.id}` as keyof SkillUser;
 						const skillXP = Number(obj[objKey] ?? 0);
 
-						return `**${this.getUsername(obj.id)}:** ${skillXP.toLocaleString()} xp (${convertXPtoLVL(
+						return `**${this.getUsername(obj.id)}:** ${skillXP.toLocaleString()} XP (${convertXPtoLVL(
 							skillXP,
 							120
 						)})`;
