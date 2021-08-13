@@ -101,7 +101,9 @@ export async function generateGearImage(
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 	if (uniqueSprite) {
-		ctx.fillStyle = ctx.createPattern(sprite.repeatableBg, 'repeat');
+		const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
+		ctx.fillStyle =
+			userBgImage.transparent && hexColor ? hexColor : ctx.createPattern(sprite.repeatableBg, 'repeat');
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	} else {
 		ctx.drawImage(
@@ -277,7 +279,8 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 			imgHeight
 		);
 	} else {
-		ctx.fillStyle = ctx.createPattern(bgSprite.repeatableBg, 'repeat');
+		const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
+		ctx.fillStyle = userBg.transparent && hexColor ? hexColor : ctx.createPattern(bgSprite.repeatableBg, 'repeat');
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	}
 	let i = 0;
