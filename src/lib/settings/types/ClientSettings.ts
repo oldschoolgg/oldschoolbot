@@ -61,6 +61,8 @@ export namespace ClientSettings {
 		export const RevsCost = T<O.Readonly<ItemBank>>('revs_cost');
 		export const RevsLoot = T<O.Readonly<ItemBank>>('revs_loot');
 
+		export const InfernoCost = T<O.Readonly<ItemBank>>('inferno_cost');
+
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');
 		export const GPSourceAlching = T<number>('gp_alch');

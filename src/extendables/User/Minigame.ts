@@ -128,6 +128,11 @@ export const Minigames: Minigame[] = [
 		name: 'Pest Control',
 		key: 'PestControl',
 		column: 'pest_control'
+	},
+	{
+		name: 'Inferno',
+		key: 'Inferno',
+		column: 'inferno'
 	}
 ];
 

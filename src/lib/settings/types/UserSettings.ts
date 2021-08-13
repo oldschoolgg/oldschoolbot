@@ -52,6 +52,9 @@ export namespace UserSettings {
 	export const FarmingPatchReminders = T<boolean>('farming_patch_reminders');
 	export const PestControlPoints = T<number>('pest_control_points');
 
+	export const InfernoAttempts = T<number>('inferno_attempts');
+	export const InfernoCapeSacrifices = T<number>('inferno_cape_sacrifices');
+
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');
 		export const TaskStreak = T<number>('slayer.task_streak');

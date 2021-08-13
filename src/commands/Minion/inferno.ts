@@ -1,33 +1,77 @@
-import { Time } from 'e';
+import { sumArr, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
+import { Activity, ZUK_ID } from '../../lib/constants';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FightCavesActivityTaskOptions } from '../../lib/types/minions';
 import {
-	addBanks,
-	bankHasAllItemsFromBank,
 	calcWhatPercent,
 	formatDuration,
 	percentChance,
 	rand,
 	reduceNumByPercent,
-	removeBankFromBank
+	removeBankFromBank,
+	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
+import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
 
 const { TzTokJad } = Monsters;
 
-const ZUK_ID = 7706;
+const minimumRangeItems = [
+	'Amulet of fury',
+	"Ancient d'hide body",
+	'Ancient chaps',
+	'Dragon crossbow',
+	'Barrows gloves',
+	"Ava's assembler",
+	'Snakeskin boots'
+].map(getOSItem);
+
+export const minimumRangeAttackStat = sumArr(minimumRangeItems.map(i => i.equipment!.attack_ranged));
+
+const minimumMageItems = [
+	'Amulet of fury',
+	'Saradomin cape',
+	"Ahrim's robetop",
+	"Ahrim's robeskirt",
+	'Barrows gloves',
+	'Splitbark boots',
+	'Ancient staff'
+].map(getOSItem);
+
+export const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipment!.attack_magic));
+
+function gearCheck(user: KlasaUser): true | string {
+	const rangeGear = user.getGear('range');
+	const mageGear = user.getGear('mage');
+
+	if (!rangeGear.equippedWeapon() || !mageGear.equippedWeapon()) {
+		return "You aren't wearing a weapon in your range/mage setup.";
+	}
+
+	if (rangeGear.stats.attack_ranged < minimumRangeAttackStat) {
+		return `Your range setup needs a minimum of ${minimumRangeAttackStat} ranged attack. Try equipping some of these items: ${minimumRangeItems
+			.map(i => i.name)
+			.join(', ')}.`;
+	}
+
+	if (mageGear.stats.attack_magic < minimumMageAttackStat) {
+		return `Your range setup needs a minimum of ${minimumMageAttackStat} mage attack. Try equipping some of these items: ${minimumMageItems
+			.map(i => i.name)
+			.join(', ')}.`;
+	}
+
+	return true;
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -37,7 +81,7 @@ export default class extends BotCommand {
 			requiredPermissions: ['ATTACH_FILES'],
 			description:
 				'Sends your minion to complete the fight caves - it will start off bad but get better with more attempts. Requires range gear, prayer pots, brews and restores.',
-			examples: ['+fightcaves'],
+			examples: ['+inferno'],
 			categoryFlags: ['minion', 'minigame']
 		});
 	}
@@ -88,46 +132,13 @@ export default class extends BotCommand {
 		return Math.max(Math.min(chance, 99), 5);
 	}
 
-	async checkGear(user: KlasaUser) {
-		const gear = user.getGear('range');
-		const equippedWeapon = gear.equippedWeapon();
-
-		const usersRangeStats = gear.stats;
-
-		if (
-			!equippedWeapon ||
-			!equippedWeapon.weapon ||
-			!['crossbow', 'bow'].includes(equippedWeapon.weapon.weapon_type)
-		) {
-			throw 'JalYt, you not wearing ranged weapon?! TzTok-Jad stomp you to death if you get close, come back with a bow or a crossbow.';
-		}
-
-		if (usersRangeStats.attack_ranged < 160) {
-			throw 'JalYt, your ranged gear not strong enough! You die very quickly with your bad gear, come back with better range gear.';
-		}
-
-		if (!bankHasAllItemsFromBank(user.settings.get(UserSettings.Bank), fightCavesSupplies)) {
-			throw `JalYt, you need supplies to have a chance in the caves...come back with ${new Bank(
-				fightCavesSupplies
-			)}.`;
-		}
-
-		if (user.skillLevel(SkillsEnum.Prayer) < 43) {
-			throw 'JalYt, come back when you have atleast 43 Prayer, TzTok-Jad annihilate you without protection from gods.';
-		}
-	}
-
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		await msg.author.settings.sync(true);
-		try {
-			await this.checkGear(msg.author);
-		} catch (err) {
-			if (typeof err === 'string') {
-				return msg.channel.send({ files: [await chatHeadImage({ content: err, head: 'mejJal' })] });
-			}
-			throw err;
+		const gearOkay = gearCheck(msg.author);
+		if (typeof gearOkay === 'string') {
+			return msg.channel.send(gearOkay);
 		}
 
 		let [duration, debugStr] = this.determineDuration(msg.author);
@@ -172,11 +183,7 @@ export default class extends BotCommand {
 			preJadDeathTime
 		});
 
-		// Track this food cost in Economy Stats
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.FightCavesCost,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.FightCavesCost), fightCavesSupplies])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.InfernoCost, fightCavesSupplies);
 
 		const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 
