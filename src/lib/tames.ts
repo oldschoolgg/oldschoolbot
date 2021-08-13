@@ -94,7 +94,7 @@ export async function runTameTask(activity: TameActivityTable) {
 	switch (activity.type) {
 		case 'pvm': {
 			const { quantity, monsterID } = activity.data;
-			let killQty = 10_000; // quantity;
+			let killQty = quantity;
 			const hasOri = activity.tame.hasBeenFed('Ori');
 			// If less than 8 kills, roll 25% chance per kill
 			if (hasOri) {
