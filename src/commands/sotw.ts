@@ -9,9 +9,10 @@ export default class extends BotCommand {
 			`SELECT sum(xp) as total_xp, u."minion.ironman" as ironman, u.id
 FROM xp_gains
 INNER JOIN "users" "u" ON xp_gains.user_id = "u"."id"
-WHERE date > ('2021-07-10 07:00:00'::timestamp)
-AND date < ('2021-07-17 07:00:00'::timestamp)
-AND skill = 'runecraft'
+WHERE date > ('2021-08-13 07:00:00'::timestamp)
+AND date < ('2021-08-20 07:00:00'::timestamp)
+AND skill = 'agility'
+AND artificial IS NULL
 ${msg.flagArgs.im ? 'AND u."minion.ironman" = true' : ''}
 GROUP BY "u".id
 ORDER BY total_xp DESC
