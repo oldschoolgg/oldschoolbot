@@ -34,12 +34,12 @@ export default class CollectionLogTask extends Task {
 
 	// css = Collection Log Spreadsheet
 	private cls = <ISprite>{
-		image: './src/lib/resources/images/cl_sprite.png',
+		image: './src/lib/resources/images/bank_backgrounds/spritesheet/Default.png',
 		oddListColor: '#655741'
 	};
 
 	private clsDark = <ISprite>{
-		image: './src/lib/resources/images/cl_sprite_dark.png',
+		image: './src/lib/resources/images/bank_backgrounds/spritesheet/Dark.png',
 		oddListColor: '#393939'
 	};
 

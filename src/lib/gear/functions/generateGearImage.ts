@@ -89,18 +89,30 @@ export async function generateGearImage(
 		bankTask = client.tasks.get('bankImage') as BankImageTask;
 	}
 
-	const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
-	const userBg = bankTask.backgroundImages.find(i => i.id === userBgID)!.image!;
+	let {
+		sprite,
+		uniqueSprite,
+		background: userBgImage
+	} = bankTask.getBgAndSprite(user.settings.get(UserSettings.BankBackground) ?? 1);
 
 	const gearStats = gearSetup.stats;
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
 	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	ctx.drawImage(userBg, (canvas.width - userBg.width) * 0.5, (canvas.height - userBg.height) * 0.5);
+	if (uniqueSprite) {
+		ctx.fillStyle = ctx.createPattern(sprite.repeatableBg, 'repeat');
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+	} else {
+		ctx.drawImage(
+			userBgImage.image!,
+			(canvas.width - userBgImage.image!.width) * 0.5,
+			(canvas.height - userBgImage.image!.height) * 0.5
+		);
+	}
 	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
-	bankTask?.drawBorder(canvas, false);
+
+	if (!userBgImage.transparent) bankTask?.drawBorder(ctx, sprite, false);
 
 	ctx.font = '16px OSRSFontCompact';
 	// Draw preset title
@@ -146,7 +158,7 @@ export async function generateGearImage(
 	);
 	ctx.restore();
 	ctx.save();
-	ctx.translate(canvas.width - bankTask.borderVertical!.width * 2, 0);
+	ctx.translate(canvas.width - 6 * 2, 0);
 	ctx.font = '16px RuneScape Bold 12';
 	ctx.textAlign = 'end';
 	drawText(canvas, 'Defence bonus', 0, 25);
@@ -193,7 +205,7 @@ export async function generateGearImage(
 	// drawText(canvas, `Undead: ${(0).toFixed(1)} %`, 0, 201, false);
 	ctx.restore();
 	ctx.save();
-	ctx.translate(canvas.width - bankTask.borderVertical!.width * 2, 0);
+	ctx.translate(canvas.width - 6 * 2, 0);
 	ctx.font = '16px OSRSFontCompact';
 	ctx.textAlign = 'end';
 	drawText(canvas, `Magic Dmg.: ${gearStats.magic_damage.toFixed(1)}%`, 0, 165, false);
@@ -234,17 +246,40 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 	if (!bankTask) {
 		bankTask = client.tasks.get('bankImage') as BankImageTask;
 	}
-	const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
-	let userBg = bankTask.backgroundImages.find(i => [1, 11].includes(userBgID) && i.id === userBgID);
-	if (!userBg) {
-		userBg = bankTask.backgroundImages.find(i => i.id === 1)!;
-	}
+
+	let {
+		sprite: bgSprite,
+		uniqueSprite: hasBgSprite,
+		background: userBg
+	} = bankTask.getBgAndSprite(user.settings.get(UserSettings.BankBackground) ?? 1);
+
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateCompactFile);
 	const canvas = createCanvas((gearTemplateImage.width + 10) * 3 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
-	ctx.fillStyle = ctx.createPattern(userBg.image!, 'repeat');
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	if (!hasBgSprite) {
+		let imgHeight = 0;
+		let imgWidth = 0;
+		if (userBg.transparent) {
+			const ratio = canvas.width / userBg.image!.width;
+			imgHeight = userBg.image!.height * ratio;
+			imgWidth = canvas.width;
+		} else {
+			const ratio = canvas.height / userBg.image!.height;
+			imgWidth = userBg.image!.width * ratio;
+			imgHeight = userBg.image!.height * ratio;
+		}
+		ctx.drawImage(
+			userBg.image!,
+			(canvas.width - imgWidth) / 2,
+			(canvas.height - imgHeight) / 2,
+			imgWidth,
+			imgHeight
+		);
+	} else {
+		ctx.fillStyle = ctx.createPattern(bgSprite.repeatableBg, 'repeat');
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+	}
 	let i = 0;
 	let y = 30;
 	for (const type of ['melee', 'range', 'mage', 'misc', 'skilling', 'wildy']) {
@@ -297,7 +332,7 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 
 	ctx.restore();
 
-	bankTask?.drawBorder(canvas, false);
+	if (!userBg.transparent) bankTask?.drawBorder(ctx, bgSprite, false);
 
 	return canvas.toBuffer();
 }
