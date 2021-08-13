@@ -154,7 +154,9 @@ export default class extends BotCommand {
 		for (const t of allTames) {
 			tames.push(
 				`${t.id}. ${t.toString()}${
-					t.growthStage === TameGrowthStage.Adult ? '' : ` ${t.currentGrowthPercent}% grown ${t.growthStage}`
+					t.growthStage === TameGrowthStage.Adult
+						? ''
+						: ` ${t.currentGrowthPercent.toFixed(2)}% grown ${t.growthStage}`
 				}${selectedTame?.id === t.id ? ` **Selected** - ${await getTameStatus(msg.author)}` : ''}`
 			);
 		}

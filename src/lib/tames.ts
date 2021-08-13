@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { deepClone, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -69,7 +69,8 @@ export interface TameTaskOptions {
 }
 
 export async function runTameTask(activity: TameActivityTable) {
-	async function handleFinish(res: { loot: Bank; message: string }) {
+	async function handleFinish(res: { loot: Bank; message: string; user: KlasaUser }) {
+		const previousTameCl = { ...deepClone(activity.tame.totalLoot) };
 		activity.tame.totalLoot = addBanks([activity.tame.totalLoot, res.loot.bank]);
 		await activity.tame.save();
 		const addRes = await activity.tame.addDuration(activity.duration);
@@ -82,7 +83,10 @@ export async function runTameTask(activity: TameActivityTable) {
 				await (client.tasks.get('bankImage') as BankImageTask).generateBankImage(
 					res.loot,
 					`${activity.tame.name}'s PvM Trip Loot`,
-					false
+					true,
+					{ showNewCL: 1 },
+					res.user,
+					previousTameCl
 				)
 			).image!
 		});
@@ -90,7 +94,7 @@ export async function runTameTask(activity: TameActivityTable) {
 	switch (activity.type) {
 		case 'pvm': {
 			const { quantity, monsterID } = activity.data;
-			let killQty = quantity;
+			let killQty = 10_000; // quantity;
 			const hasOri = activity.tame.hasBeenFed('Ori');
 			// If less than 8 kills, roll 25% chance per kill
 			if (hasOri) {
@@ -113,10 +117,11 @@ export async function runTameTask(activity: TameActivityTable) {
 			if (boosts.length > 0) {
 				str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 			}
-			await user.addItemsToBank(loot);
+			const { itemsAdded } = await user.addItemsToBank(loot);
 			handleFinish({
-				loot,
-				message: str
+				loot: new Bank(itemsAdded),
+				message: str,
+				user
 			});
 			break;
 		}
