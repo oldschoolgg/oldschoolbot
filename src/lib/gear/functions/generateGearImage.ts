@@ -95,17 +95,18 @@ export async function generateGearImage(
 		background: userBgImage
 	} = bankTask.getBgAndSprite(user.settings.get(UserSettings.BankBackground) ?? 1);
 
+	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
+
 	const gearStats = gearSetup.stats;
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
 	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
-	if (uniqueSprite) {
-		const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
-		ctx.fillStyle =
-			userBgImage.transparent && hexColor ? hexColor : ctx.createPattern(sprite.repeatableBg, 'repeat');
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-	} else {
+
+	ctx.fillStyle = userBgImage.transparent && hexColor ? hexColor : ctx.createPattern(sprite.repeatableBg, 'repeat');
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	if (!uniqueSprite) {
 		ctx.drawImage(
 			userBgImage.image!,
 			(canvas.width - userBgImage.image!.width) * 0.5,
@@ -255,10 +256,16 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 		background: userBg
 	} = bankTask.getBgAndSprite(user.settings.get(UserSettings.BankBackground) ?? 1);
 
+	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
+
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateCompactFile);
 	const canvas = createCanvas((gearTemplateImage.width + 10) * 3 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
+
+	ctx.fillStyle = userBg.transparent && hexColor ? hexColor : ctx.createPattern(bgSprite.repeatableBg, 'repeat');
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
 	if (!hasBgSprite) {
 		let imgHeight = 0;
 		let imgWidth = 0;
@@ -278,10 +285,6 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 			imgWidth,
 			imgHeight
 		);
-	} else {
-		const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
-		ctx.fillStyle = userBg.transparent && hexColor ? hexColor : ctx.createPattern(bgSprite.repeatableBg, 'repeat');
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	}
 	let i = 0;
 	let y = 30;
