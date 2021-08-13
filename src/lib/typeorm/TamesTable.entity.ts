@@ -67,7 +67,7 @@ export class TamesTable extends BaseEntity {
 		if (this.growthStage === TameGrowthStage.Adult) return null;
 		const percentToAdd = duration / Time.Minute / 20;
 		let newPercent = Math.max(1, Math.min(100, this.currentGrowthPercent + percentToAdd));
-		console.log(newPercent);
+
 		if (newPercent >= 100) {
 			newPercent = 0;
 			this.growthStage =
