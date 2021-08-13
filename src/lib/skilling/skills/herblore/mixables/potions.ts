@@ -435,7 +435,7 @@ const Potions: Mixable[] = [
 		level: 94,
 		xp: 125,
 		inputItems: resolveNameBank({ 'Anti-venom (4)': 1, Torstol: 1 }),
-		tickRate: 4,
+		tickRate: 2,
 		bankTimePerPotion: 0.3
 	},
 	{

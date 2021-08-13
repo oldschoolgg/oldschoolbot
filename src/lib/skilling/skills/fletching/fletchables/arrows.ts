@@ -34,7 +34,7 @@ const Arrows: Fletchable[] = [
 		id: itemID('Flighted ogre arrow'),
 		level: 5,
 		xp: 9,
-		inputItems: new Bank({ 'Ogre arrow shaft': 1, Feather: 6 }),
+		inputItems: new Bank({ 'Ogre arrow shaft': 1, Feather: 4 }),
 		tickRate: 0.13
 	},
 	{
@@ -67,14 +67,6 @@ const Arrows: Fletchable[] = [
 		level: 45,
 		xp: 7.5,
 		inputItems: new Bank({ 'Mithril arrowtips': 1, 'Headless arrow': 1 }),
-		tickRate: 0.13
-	},
-	{
-		name: 'Broad arrows',
-		id: itemID('Broad arrows'),
-		level: 52,
-		xp: 10,
-		inputItems: new Bank({ 'Broad arrowheads': 1, 'Headless arrow': 1 }),
 		tickRate: 0.13
 	},
 	{

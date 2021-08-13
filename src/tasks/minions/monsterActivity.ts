@@ -76,11 +76,27 @@ export default class extends Task {
 			hasSuperiors: superiorTable,
 			inCatacombs: isInCatacombs
 		};
+		// Regular loot
 		const loot = (monster as KillableMonster).table.kill(
 			isDoubleLootActive(this.client) ? quantity * 2 : boostedQuantity,
 			killOptions
 		);
-		let newSuperiorCount = loot.bank[420];
+
+		// Calculate superiors and assign loot.
+		let newSuperiorCount = 0;
+		if (superiorTable && isOnTask) {
+			for (let i = 0; i < quantity; i++) if (roll(200)) newSuperiorCount++;
+		}
+
+		let masterCapeRolls = user.hasItemEquippedAnywhere('Slayer master cape') ? newSuperiorCount : 0;
+		newSuperiorCount += masterCapeRolls;
+
+		if (newSuperiorCount) {
+			// Superior loot and totems if in catacombs
+			loot.add(superiorTable!.kill(newSuperiorCount));
+			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
+		}
+
 		const xpRes = await addMonsterXP(user, {
 			monsterID,
 			quantity,
@@ -93,17 +109,6 @@ export default class extends Task {
 			burstOrBarrage,
 			superiorCount: newSuperiorCount
 		});
-
-		let masterCapeRolls =
-			user.hasItemEquippedAnywhere('Slayer master cape') && typeof newSuperiorCount === 'number'
-				? newSuperiorCount
-				: 0;
-		newSuperiorCount += masterCapeRolls;
-
-		if (newSuperiorCount && newSuperiorCount > 0) {
-			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
-			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
-		}
 
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
 		let str =

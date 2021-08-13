@@ -16,10 +16,10 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
-import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, skillEmoji } from '../../lib/constants';
+import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { onMax } from '../../lib/events';
-import { hasGracefulEquipped } from '../../lib/gear/util';
+import { hasGracefulEquipped } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
@@ -79,10 +79,12 @@ import {
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
+	PlunderActivityTaskOptions,
 	RaidsActivityTaskOptions,
 	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
+	SepulchreActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SoulWarsOptions,
@@ -111,7 +113,6 @@ import {
 	gorajanOccultOutfit,
 	gorajanWarriorOutfit
 } from '../../tasks/minions/dungeoneeringActivity';
-import { PlunderActivityTaskOptions, SepulchreActivityTaskOptions } from './../../lib/types/minions';
 import { Minigames } from './Minigame';
 
 const suffixes = new SimpleTable<string>()
@@ -619,7 +620,7 @@ export default class extends Extendable {
 			}
 			case Activity.PestControl: {
 				const data = currentTask as MinigameActivityTaskOptions;
-				return `${this.minionName} is currently doing ${data.quantity} games of Pest Control. ${formatDuration}`;
+				return `${this.minionName} is currently doing ${data.quantity} games of Pest Control. ${formattedDuration}`;
 			}
 		}
 	}
@@ -845,18 +846,82 @@ export default class extends Extendable {
 
 		const newXP = Math.min(5_000_000_000, currentXP + params.amount);
 		const newLevel = convertXPtoLVL(newXP, 120);
+		const totalXPAdded = newXP - currentXP;
 
-		// Track XP past 5b for leagues / sotw
-		await XPGainsTable.insert({
-			userID: this.id,
-			skill: params.skillName,
-			xp: Math.floor(params.amount)
-		});
+		// Pre-MAX_XP
+		let preMax = -1;
+		if (totalXPAdded > 0) {
+			preMax = totalXPAdded;
+			XPGainsTable.insert({
+				userID: this.id,
+				skill: params.skillName,
+				xp: Math.floor(totalXPAdded),
+				artificial: params.artificial ? true : null
+			});
+		}
+
+		// Post-MAX_XP
+		if (params.amount - totalXPAdded > 0) {
+			XPGainsTable.insert({
+				userID: this.id,
+				skill: params.skillName,
+				xp: Math.floor(params.amount - totalXPAdded),
+				artificial: params.artificial ? true : null,
+				postMax: true
+			});
+		}
+
+		// If they reached a XP milestone, send a server notification.
+		if (preMax !== -1) {
+			for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, MAX_XP]) {
+				if (newXP < XPMilestone) break;
+
+				if (currentXP < XPMilestone && newXP >= XPMilestone) {
+					this.client.emit(
+						Events.ServerNotification,
+						`${skill.emoji} **${this.username}'s** minion, ${
+							this.minionName
+						}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(params.skillName)}!`
+					);
+					break;
+				}
+			}
+			// If they just reached 120, send a server notification.
+			if (currentLevel < 120 && newLevel >= 120) {
+				const skillNameCased = toTitleCase(params.skillName);
+				const [usersWith] = await this.client.query<
+					{
+						count: string;
+					}[]
+				>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${convertLVLtoXP(120)};`);
+
+				let str = `${skill.emoji} **${this.username}'s** minion, ${
+					this.minionName
+				}, just achieved level 120 in ${skillNameCased}! They are the ${formatOrdinal(
+					parseInt(usersWith.count) + 1
+				)} to get 120 ${skillNameCased}.`;
+
+				if (this.isIronman) {
+					const [ironmenWith] = await this.client.query<
+						{
+							count: string;
+						}[]
+					>(
+						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${
+							params.skillName
+						}" >= ${convertLVLtoXP(120)};`
+					);
+					str += ` They are the ${formatOrdinal(parseInt(ironmenWith.count) + 1)} Ironman to get 120.`;
+				}
+				this.client.emit(Events.ServerNotification, str);
+			}
+			await this.settings.update(`skills.${params.skillName}`, Math.floor(newXP));
+		}
 
 		if (currentXP >= 5_000_000_000) {
 			let xpStr = '';
 			if (params.duration && !params.minimal) {
-				xpStr += `You received no XP because you have 200m ${name} XP already.`;
+				xpStr += `You received no XP because you have ${toKMB(MAX_XP)} ${name} XP already.`;
 				xpStr += ` Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
 				let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
 				rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
@@ -866,89 +931,44 @@ export default class extends Extendable {
 			}
 			return xpStr;
 		}
+		let str = '';
+		if (preMax !== -1) {
+			str = params.minimal
+				? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
+				: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
 
-		// If they reached a XP milestone, send a server notification.
-		for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, 200_000_000]) {
-			if (newXP < XPMilestone) break;
-
-			if (currentXP < XPMilestone && newXP >= XPMilestone) {
-				this.client.emit(
-					Events.ServerNotification,
-					`${skill.emoji} **${this.username}'s** minion, ${
-						this.minionName
-					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(params.skillName)}!`
-				);
-				break;
+			if (masterCape && !params.minimal) {
+				if (isMatchingCape) {
+					str += ` You received 8% bonus XP for having a ${itemNameFromID(masterCape)}.`;
+				} else {
+					str += ` You received 3% bonus XP for having a ${itemNameFromID(masterCape)}.`;
+				}
 			}
-		}
 
-		// If they just reached 120, send a server notification.
-		if (currentLevel < 120 && newLevel >= 120) {
-			const skillNameCased = toTitleCase(params.skillName);
-			const [usersWith] = await this.client.query<
-				{
-					count: string;
-				}[]
-			>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${convertLVLtoXP(120)};`);
-
-			let str = `${skill.emoji} **${this.username}'s** minion, ${
-				this.minionName
-			}, just achieved level 120 in ${skillNameCased}! They are the ${formatOrdinal(
-				parseInt(usersWith.count) + 1
-			)} to get 120 ${skillNameCased}.`;
-
-			if (this.isIronman) {
-				const [ironmenWith] = await this.client.query<
-					{
-						count: string;
-					}[]
-				>(
-					`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${
-						params.skillName
-					}" >= ${convertLVLtoXP(120)};`
-				);
-				str += ` They are the ${formatOrdinal(parseInt(ironmenWith.count) + 1)} Ironman to get 120.`;
+			if (gorajanBoost && !params.minimal) {
+				str += ' (2x boost from Gorajan armor)';
 			}
-			this.client.emit(Events.ServerNotification, str);
-		}
 
-		await this.settings.update(`skills.${params.skillName}`, Math.floor(newXP));
-
-		let str = params.minimal
-			? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
-			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
-
-		if (masterCape && !params.minimal) {
-			if (isMatchingCape) {
-				str += ` You received 8% bonus XP for having a ${itemNameFromID(masterCape)}.`;
-			} else {
-				str += ` You received 3% bonus XP for having a ${itemNameFromID(masterCape)}.`;
+			if (firstAgeEquipped && !params.minimal) {
+				str += ` You received ${
+					firstAgeEquipped === 5 ? 6 : firstAgeEquipped
+				}% bonus XP for First age outfit items.`;
 			}
-		}
 
-		if (gorajanBoost && !params.minimal) {
-			str += ' (2x boost from Gorajan armor)';
-		}
+			if (params.duration && !params.minimal) {
+				let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
+				rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
+				str += ` (${toKMB(rawXPHr)}/Hr)`;
+			}
 
-		if (firstAgeEquipped && !params.minimal) {
-			str += ` You received ${
-				firstAgeEquipped === 5 ? 6 : firstAgeEquipped
-			}% bonus XP for First age outfit items.`;
-		}
-
-		if (params.duration && !params.minimal) {
-			let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
-			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
-			str += ` (${toKMB(rawXPHr)}/Hr)`;
-		}
-
-		if (currentTotalLevel < MAX_TOTAL_LEVEL && this.totalLevel() >= MAX_TOTAL_LEVEL) {
-			str += '\n\n**Congratulations, your minion has reached the maximum total level!**\n\n';
-			onMax(this);
-		} else if (currentLevel !== newLevel) {
-			str += params.minimal
-				? `(Levelled up to ${newLevel})`
-				: `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
+			if (currentTotalLevel < MAX_TOTAL_LEVEL && this.totalLevel() >= MAX_TOTAL_LEVEL) {
+				str += '\n\n**Congratulations, your minion has reached the maximum total level!**\n\n';
+				onMax(this);
+			} else if (currentLevel !== newLevel) {
+				str += params.minimal
+					? `(Levelled up to ${newLevel})`
+					: `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
+			}
 		}
 		return str;
 	}
