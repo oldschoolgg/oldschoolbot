@@ -420,7 +420,7 @@ export default class extends Task {
 				const farmingContractUpdate: FarmingContract = {
 					hasContract: false,
 					difficultyLevel: null,
-					plantToGrow: null,
+					plantToGrow: currentContract.plantToGrow,
 					plantTier: currentContract.plantTier,
 					contractsCompleted: contractsCompleted + 1
 				};
