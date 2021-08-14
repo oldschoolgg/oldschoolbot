@@ -16,9 +16,12 @@ import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { ItemBank, SettingsEntry } from '../../lib/types';
 import { convertXPtoLVL, makePaginatedMessage, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import PostgresProvider from '../../providers/postgres';
+import { allOpenables } from './open';
 
 const CACHE_TIME = Time.Minute * 5;
+const allOpenableItems = allOpenables.map(getOSItem);
 
 export interface CLUser {
 	id: string;
@@ -112,7 +115,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|farmingcontracts|xp] [name:...string]',
+			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|farmingcontracts|xp|open] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -135,7 +138,8 @@ export default class extends BotCommand {
 		await this.cacheUsernames();
 	}
 
-	getUsername(userID: string) {
+	getUsername(userID: string, lbSize?: number) {
+		if (lbSize && lbSize < 10) return '(Anonymous)';
 		const username = this.usernameCache.map.get(userID);
 		if (!username) return '(Unknown)';
 		return username;
@@ -379,6 +383,44 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 		);
 	}
 
+	async open(msg: KlasaMessage, [name = '']: [string]) {
+		name = name.trim();
+		const openable = !name
+			? undefined
+			: allOpenableItems.find(
+					item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
+			  );
+		if (!openable) {
+			return msg.channel.send(
+				`That's not a valid openable item! You can check: ${allOpenableItems.map(i => i.name).join(', ')}.`
+			);
+		}
+
+		let key = 'openable_scores' as const;
+		let entityID = openable.id;
+		let list = await this.query(
+			`SELECT id, "${key}" FROM users
+			WHERE CAST ("${key}"->>'${entityID}' AS INTEGER) > 3 
+			${msg.flagArgs.im ? 'AND "minion.ironman" = true' : ''}
+			ORDER BY ("${key}"->>'${entityID}')::int DESC LIMIT 30;`
+		);
+		if (list.length === 0) {
+			return msg.channel.send('Nobody is on this leaderboard.');
+		}
+
+		this.doMenu(
+			msg,
+			util
+				.chunk(list, 10)
+				.map(subList =>
+					subList
+						.map(user => `**${this.getUsername(user.id, list.length)}:** ${user[key][entityID]} Opens`)
+						.join('\n')
+				),
+			`Open Leaderboard for ${openable.name}`
+		);
+	}
+
 	async skills(msg: KlasaMessage, [inputSkill = 'overall']: [string]) {
 		let res: SkillUser[] = [];
 		let overallUsers: OverallSkillUser[] = [];
@@ -392,13 +434,10 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 								u.id,
 								${skillsVals.map(s => `"skills.${s.id}"`)},
 								${skillsVals.map(s => `"skills.${s.id}"`).join(' + ')} as totalxp,
-								u."minion.ironman",
-								(select max(x.date) from "xp_gains" x where x.user_id = u.id and not x.post_max) as last_date_xp
+								u."minion.ironman"
 							FROM
 								users u
-							ORDER BY
-								totalxp DESC,
-								last_date_xp ASC
+							ORDER BY totalxp DESC
 							LIMIT 2000;`;
 			res = await this.query(query);
 			overallUsers = res.map(user => {
@@ -423,13 +462,11 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 			}
 
 			const query = `SELECT
-								u."skills.${skill.id}", u.id, u."minion.ironman",
-								(select max(x.date) from "xp_gains" x where x.user_id = u.id and x.skill = '${skill.id}' and not x.post_max) as last_date_xp
+								u."skills.${skill.id}", u.id, u."minion.ironman"
 							FROM
 								users u
 							ORDER BY
-								1 DESC,
-								last_date_xp ASC
+								1 DESC
 							LIMIT 2000;`;
 			res = await this.query(query);
 		}
