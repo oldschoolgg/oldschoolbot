@@ -23,7 +23,7 @@ LIMIT 15;`
 			return msg.channel.send('No results found.');
 		}
 
-		const embed = new MessageEmbed().setTitle('#1 SOTW - Runecraft').setDescription(
+		const embed = new MessageEmbed().setTitle('#2 SOTW - Agility').setDescription(
 			res
 				.map((i: any, index: number) => {
 					const pos = index + 1;
