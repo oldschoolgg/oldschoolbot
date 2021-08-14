@@ -335,7 +335,7 @@ export default class extends BotCommand {
 
 		if (!qty && !cmd) {
 			return msg.channel.send(
-				'You can use this command by doing `+use [qty] (item_to_use) [skill]`. Qty and Skill are optional.'
+				`You can use this command by doing \`${msg.cmdPrefix}lamp [qty] (item_to_use), [skill]\`. Qty and Skill are optional.`
 			);
 		}
 
@@ -349,7 +349,7 @@ export default class extends BotCommand {
 
 		// Default item to nothing and skill to the last word informed
 		let selectedItem: number | undefined = undefined;
-		let skill: string | undefined = cmd.split(',').pop();
+		let skill: string | undefined = cmd.split(',').pop()?.trim().toLowerCase();
 
 		// If the word selected to the skill is not valid, use everything as the name of the item
 		try {
