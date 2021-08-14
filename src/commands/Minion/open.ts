@@ -28,7 +28,11 @@ const itemsToNotifyOf = resolveItems([
 
 const Openables = _Openables.filter(i => i.name !== 'Mystery box');
 
-const allOpenables = [...ClueTiers.map(i => i.id), ...botOpenables.map(i => i.itemID), ...Openables.map(i => i.id)];
+export const allOpenables = [
+	...ClueTiers.map(i => i.id),
+	...botOpenables.map(i => i.itemID),
+	...Openables.map(i => i.id)
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

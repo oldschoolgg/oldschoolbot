@@ -7,6 +7,7 @@ import driftNetCreatures from '../../../lib/skilling/skills/hunter/driftNet';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { DriftNetActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import resolveItems from '../../../lib/util/resolveItems';
 
 // Bonus loot from higher fishing level
 const fishBonusLoot = [
@@ -31,6 +32,17 @@ const fishBonusLoot = [
 		req: 90
 	}
 ];
+
+const shelldonFish = resolveItems([
+	'Raw lobster',
+	'Raw swordfish',
+	'Raw shark',
+	'Raw sea turtle',
+	'Raw manta ray',
+	'Raw anchovies',
+	'Raw sardine',
+	'Raw tuna'
+]);
 
 export default class extends Task {
 	async run(data: DriftNetActivityTaskOptions) {
@@ -61,9 +73,17 @@ export default class extends Task {
 		const huntXpReceived = Math.round(
 			quantity * (fishShoal.hunterXP + Math.min(currentHuntLevel - 44, 26) * 11.35)
 		);
-		const fishXpReceived = Math.round(
-			quantity * (fishShoal.fishingXP! + Math.min(currentFishLevel - 47, 23) * 8.91)
-		);
+		let fishXpReceived = Math.round(quantity * (fishShoal.fishingXP! + Math.min(currentFishLevel - 47, 23) * 8.91));
+
+		let shelldonStr = '';
+		if (user.usingPet('Shelldon')) {
+			// Double fish from loot
+			for (const item of loot.items()) {
+				if (shelldonFish.includes(item[0].id)) loot.add(item[0].id, item[1]);
+			}
+			fishXpReceived *= 1.5;
+			shelldonStr += '\nYou received **2x** extra fish from Shelldon helping you.';
+		}
 
 		let xpRes = `\n${await user.addXP({
 			skillName: SkillsEnum.Hunter,
@@ -73,7 +93,7 @@ export default class extends Task {
 		xpRes += `\n${await user.addXP({ skillName: SkillsEnum.Fishing, amount: fishXpReceived, duration })}`;
 		await user.incrementCreatureScore(fishShoal.id, fishShoalCaught);
 
-		let str = `${user}, ${user.minionName} finished drift net fishing and caught ${quantity}x ${fishShoal.name}. ${xpRes}\n${user.minionName} asks if you'd like them to do another of the same trip.`;
+		let str = `${user}, ${user.minionName} finished drift net fishing and caught ${quantity}x ${fishShoal.name}.${xpRes}${shelldonStr}\n${user.minionName} asks if you'd like them to do another of the same trip.`;
 
 		await user.addItemsToBank(loot, true);
 		str += `\n\nYou received: ${loot}.`;

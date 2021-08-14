@@ -63,6 +63,7 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				[itemID('Armadyl crossbow')]: 5,
+				[itemID('Bow of faerdhinen (c)')]: 7,
 				[itemID('Twisted bow')]: 10
 			}
 		],
@@ -98,6 +99,7 @@ const killableBosses: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Armadyl crossbow')]: 5,
+				[itemID('Bow of faerdhinen (c)')]: 7,
 				[itemID('Twisted bow')]: 10
 			}
 		],
@@ -138,7 +140,8 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Dragon claws')]: 3
 			},
 			{
-				[itemID('Arclight')]: 9
+				[itemID('Arclight')]: 9,
+				[itemID('Twisted bow')]: 10
 			}
 		],
 		groupKillable: true,
