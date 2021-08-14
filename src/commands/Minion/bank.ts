@@ -8,6 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { makePaginatedMessage } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
+import BankImageTask from '../../tasks/bankImage';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -27,9 +28,15 @@ export default class extends BotCommand {
 		const baseBank = msg.author.bank({ withGP: true });
 
 		if (msg.flagArgs.smallbank) {
+			const userBg = msg.author.settings.get(UserSettings.BankBackground);
+			const { uniqueSprite } = (this.client.tasks.get('bankImage') as BankImageTask).getBgAndSprite(userBg);
 			const currentStatus = msg.author.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank);
 			await msg.author.settings.update(UserSettings.BitField, BitField.AlwaysSmallBank);
-			return msg.channel.send(`Small Banks are now ${currentStatus ? 'disabled' : 'enabled'} for you.`);
+			return msg.channel.send(
+				`Small Banks are now ${currentStatus ? 'disabled' : 'enabled'} for you.${
+					uniqueSprite ? ' You current BG will always draw the bank as small.' : ''
+				}`
+			);
 		}
 
 		if (baseBank.length === 0) {
@@ -104,7 +111,6 @@ export default class extends BotCommand {
 				...msg.flagArgs,
 				page: typeof pageNumberOrItemName === 'number' ? pageNumberOrItemName - 1 : 0
 			},
-			background: msg.author.settings.get(UserSettings.BankBackground),
 			user: msg.author,
 			gearPlaceholder: msg.author.rawGear()
 		});
