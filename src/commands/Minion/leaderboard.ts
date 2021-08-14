@@ -384,9 +384,12 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 	}
 
 	async open(msg: KlasaMessage, [name = '']: [string]) {
-		const openable = allOpenableItems.find(
-			item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
-		);
+		name = name.trim();
+		const openable = !name
+			? undefined
+			: allOpenableItems.find(
+					item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
+			  );
 		if (!openable) {
 			return msg.channel.send(
 				`That's not a valid openable item! You can check: ${allOpenableItems.map(i => i.name).join(', ')}.`
