@@ -141,13 +141,13 @@ export async function handleTripFinish(
 		const voidlingEquipped = user.usingPet('Voidling');
 		const alchResult = alching({
 			user,
-			tripLength: voidlingEquipped ? data.duration : data.duration / randInt(8, 12),
+			tripLength: voidlingEquipped ? data.duration : data.duration / randInt(6, 7),
 			isUsingVoidling: true,
 			flags: { alch: 'yes' }
 		});
 		if (alchResult !== null) {
 			if (!user.owns(alchResult.bankToRemove)) {
-				message += `\Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`;
+				message += `Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`;
 			}
 			await user.removeItemsFromBank(alchResult.bankToRemove);
 			updateBankSetting(client, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
