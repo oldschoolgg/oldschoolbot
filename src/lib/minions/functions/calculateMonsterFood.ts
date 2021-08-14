@@ -39,6 +39,8 @@ export default function calculateMonsterFood(
 			break;
 	}
 
+	if (monster.wildy) gearToCheck = GearSetupTypes.Wildy;
+
 	const gearStats = user.getGear(gearToCheck).stats;
 
 	let totalPercentOfGearLevel = 0;

@@ -45,6 +45,7 @@ import {
 	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import combatAmmoUsage from '../../lib/util/combatAmmoUsage';
 import findMonster from '../../lib/util/findMonster';
 import itemID from '../../lib/util/itemID';
 import {
@@ -103,7 +104,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [quantity, name = '', method = '']: [null | number | string, string, string]) {
 		const { minionName } = msg.author;
 
-		const boosts = [];
+		let boosts = [];
 		let messages: string[] = [];
 
 		if (typeof quantity === 'string') {
@@ -180,9 +181,13 @@ export default class extends BotCommand {
 			timeToFinish *= (100 - boostAmount) / 100;
 			boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 		}
-		if (msg.author.hasItemEquippedAnywhere('Dwarven warhammer')) {
+		if (msg.author.hasItemEquippedAnywhere('Dwarven warhammer') && !monster.wildy) {
 			timeToFinish *= 0.6;
 			boosts.push('40% boost for Dwarven warhammer');
+		}
+		if (msg.author.getGear(GearSetupTypes.Wildy).hasEquipped(['Hellfire bow']) && monster.wildy) {
+			timeToFinish /= 3;
+			boosts.push('3x boost for Hellfire bow');
 		}
 		// Removed vorkath because he has a special boost.
 		if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
@@ -413,11 +418,12 @@ export default class extends BotCommand {
 		}
 		// Check food
 		let foodStr: undefined | string = undefined;
+
+		let gearToCheck = GearSetupTypes.Melee;
+
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
-
-			let gearToCheck = GearSetupTypes.Melee;
 
 			switch (monster.attackStyleToUse) {
 				case GearStat.AttackMagic:
@@ -446,6 +452,19 @@ export default class extends BotCommand {
 
 			foodStr = result;
 		}
+
+		const {
+			bank: combatBankusage,
+			boosts: combatBoosts,
+			errors
+		} = combatAmmoUsage({
+			duration,
+			user: msg.author,
+			gearType: gearToCheck
+		});
+		if (errors.length > 0) return msg.channel.send(errors.join('\n'));
+		if (combatBoosts.length > 0) boosts = [...boosts, ...combatBoosts];
+		if (combatBankusage.length > 0) lootToRemove.add(combatBankusage);
 
 		// Boosts that don't affect quantity:
 		duration = randomVariation(duration, 3);
@@ -492,6 +511,7 @@ export default class extends BotCommand {
 				'You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.'
 			);
 		}
+
 		totalEconomyCost.add(lootToRemove);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, totalEconomyCost);
 		await msg.author.removeItemsFromBank(lootToRemove);
@@ -518,12 +538,12 @@ export default class extends BotCommand {
 			duration
 		)} to finish. Attack styles used: ${attackStyles.join(', ')}.`;
 
-		if (pvmCost) {
-			response += ` Removed ${lootToRemove}.`;
+		if (lootToRemove.length > 0) {
+			response += `\nRemoved ${lootToRemove}.`;
 		}
 
 		if (foodStr) {
-			response += ` Removed ${foodStr}\n`;
+			response += `\nRemoved ${foodStr}\n`;
 		}
 
 		if (hasBlessing) {

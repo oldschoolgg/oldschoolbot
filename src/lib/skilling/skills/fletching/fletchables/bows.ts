@@ -219,6 +219,20 @@ const Bows: Fletchable[] = [
 		xp: 120,
 		inputItems: new Bank({ 'Tanzanite fang': 1 }),
 		tickRate: 2
+	},
+	{
+		name: 'Hellfire bow',
+		id: itemID('Hellfire bow'),
+		level: 110,
+		xp: 250_000,
+		inputItems: new Bank({
+			'Zaryte bow': 1,
+			'Twisted bow': 1,
+			'Ignecarus dragonclaw': 1,
+			'Smouldering stone': 3,
+			"Dragon's fury": 1
+		}),
+		tickRate: 2
 	}
 ];
 

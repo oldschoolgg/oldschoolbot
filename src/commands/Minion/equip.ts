@@ -1,8 +1,9 @@
 import { MessageAttachment } from 'discord.js';
+import { objectEntries } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
-import { GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
+import { GearSetupType, GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -11,6 +12,27 @@ import { formatSkillRequirements, itemNameFromID, skillsMeetRequirements, toTitl
 
 export const WILDY_PRESET_WARNING_MESSAGE =
 	"You are equipping items to your **wilderness** setup. *Every* item in this setup can potentially be lost if you're doing activities in the wilderness. Are you sure you want to equip it?";
+
+export const LIMITED_GEARTYPE_ITEMS: { [key: string]: number[] } = {};
+
+export function canEquipItemInThisGearType(gearType: GearSetupType, item: number) {
+	const canEquip: string[] = [];
+	// Sort to check user gear first
+	for (const [gear, items] of objectEntries(LIMITED_GEARTYPE_ITEMS).sort((a, b) => {
+		if (a[0] === b[0]) return 0;
+		if (a[0] === gearType) return -1;
+		if (b[0] === gearType) return 1;
+		return a > b ? -1 : 1;
+	})) {
+		if (gear === gearType) {
+			if (items.includes(item)) return true;
+			continue;
+		}
+		if (items.includes(item)) canEquip.push(gear as string);
+	}
+	if (canEquip.length > 0) return canEquip.join(', ');
+	return true;
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -47,6 +69,11 @@ export default class extends BotCommand {
 
 		const { slot } = itemToEquip.equipment!;
 		const currentEquippedGear = msg.author.getGear(gearType).raw();
+
+		const itemLockedTo = canEquipItemInThisGearType(gearType, itemToEquip.id);
+		if (itemLockedTo !== true) {
+			return msg.channel.send(`You can only equip this item on your **${itemLockedTo}** gear setup.`);
+		}
 
 		/**
 		 * Handle 2h items
