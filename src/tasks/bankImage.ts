@@ -277,17 +277,18 @@ export default class BankImageTask extends Task {
 		};
 	}
 
-	addsHamstare(canvas: Canvas, wide = false) {
+	addsHamstare(canvas: Canvas, bgSprite: IBgSprite, wide = false) {
 		if (!roll(100)) return;
 		const ctx = canvas.getContext('2d');
 		ctx.save();
 		ctx.globalAlpha = 0.9;
 		const ham = this.imageHamstare!;
+		const hamHeight = wide ? canvas.height / 2 : canvas.height >= 2 * ham.height ? ham.height : canvas.height / 2;
 		ctx.translate(
-			wide ? this.borderVertical?.width! : canvas.width / 2 - ham.width! / 2,
-			canvas.height - ham.height! - this.borderHorizontal?.height!
+			wide ? bgSprite.border.height : canvas.width / 2 - ham.width! / 2,
+			canvas.height - hamHeight - bgSprite.border.height
 		);
-		ctx.drawImage(ham, 0, 0, wide ? canvas.width - this.borderVertical?.width! * 2 : ham.width!, canvas.height / 2);
+		ctx.drawImage(ham, 0, 0, wide ? canvas.width - bgSprite.border.height * 2 : ham.width!, hamHeight);
 		ctx.restore();
 	}
 
@@ -495,7 +496,7 @@ export default class BankImageTask extends Task {
 
 		// Adds hamstare
 		if (bgImage.name === 'Default' && !isTransparent) {
-			this.addsHamstare(canvas, Boolean(wide));
+			this.addsHamstare(canvas, bgSprite, Boolean(wide));
 		}
 
 		if (showValue) {

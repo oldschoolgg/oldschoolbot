@@ -139,7 +139,17 @@ const XPObjects: IXPObject[] = [
 		}
 	},
 	{
-		items: resolveItems(['Antique lamp 1', 'Antique lamp 2', 'Antique lamp 3', 'Antique lamp 4']),
+		items: resolveItems([
+			'Antique lamp 1',
+			'Antique lamp 2',
+			'Antique lamp 3',
+			'Antique lamp 4',
+			'Tiny lamp',
+			'Small lamp',
+			'Average lamp',
+			'Large lamp',
+			'Huge lamp'
+		]),
 		function: data => {
 			const lamp = XPLamps.find(l => l.itemID === data.item)!;
 			const skills: Skills = {};
