@@ -384,9 +384,12 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 	}
 
 	async open(msg: KlasaMessage, [name = '']: [string]) {
-		const openable = allOpenableItems.find(
-			item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
-		);
+		name = name.trim();
+		const openable = !name
+			? undefined
+			: allOpenableItems.find(
+					item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
+			  );
 		if (!openable) {
 			return msg.channel.send(
 				`That's not a valid openable item! You can check: ${allOpenableItems.map(i => i.name).join(', ')}.`
@@ -396,7 +399,10 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 		let key = 'openable_scores' as const;
 		let entityID = openable.id;
 		let list = await this.query(
-			`SELECT id, "${key}" FROM users WHERE CAST ("${key}"->>'${entityID}' AS INTEGER) > 5 ORDER BY "${key}"->>'${entityID}' DESC LIMIT 2000;`
+			`SELECT id, "${key}" FROM users
+			WHERE CAST ("${key}"->>'${entityID}' AS INTEGER) > 3 
+			${msg.flagArgs.im ? 'AND "minion.ironman" = true' : ''}
+			ORDER BY ("${key}"->>'${entityID}')::int DESC LIMIT 30;`
 		);
 		if (list.length === 0) {
 			return msg.channel.send('Nobody is on this leaderboard.');
