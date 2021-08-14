@@ -1,5 +1,5 @@
 import { Canvas, CanvasRenderingContext2D, createCanvas, Image, registerFont } from 'canvas';
-import { objectKeys } from 'e';
+import { objectKeys, randInt } from 'e';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
@@ -414,7 +414,8 @@ export default class BankImageTask extends Task {
 			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join('')),
 			hexColor ?? 'no-hex',
 			objectKeys(placeholder).length > 0 ? sha256Hash(JSON.stringify(placeholder)) : '',
-			useSmallBank ? 'smallbank' : 'no-smallbank'
+			useSmallBank ? 'smallbank' : 'no-smallbank',
+			randInt(0, Number.MAX_SAFE_INTEGER)
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
@@ -428,6 +429,11 @@ export default class BankImageTask extends Task {
 		}
 
 		const canvas = createCanvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
+
+		let resizeBg = -1;
+		if (!wide && !useSmallBank && !isTransparent && bgImage.image && canvasHeight > 331) {
+			resizeBg = Math.min(1440, canvasHeight) / bgImage.image.height;
+		}
 
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
@@ -448,10 +454,10 @@ export default class BankImageTask extends Task {
 		if (!hasBgSprite) {
 			ctx.drawImage(
 				bgImage!.image,
+				resizeBg === -1 ? 0 : (canvas.width - bgImage.image!.width! * resizeBg) / 2,
 				0,
-				0,
-				wide ? canvas.width : bgImage.image!.width!,
-				wide ? canvas.height : bgImage.image!.height!
+				wide ? canvas.width : bgImage.image!.width! * (resizeBg === -1 ? 1 : resizeBg),
+				wide ? canvas.height : bgImage.image!.height! * (resizeBg === -1 ? 1 : resizeBg)
 			);
 		}
 
