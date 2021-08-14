@@ -396,7 +396,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 		let key = 'openable_scores' as const;
 		let entityID = openable.id;
 		let list = await this.query(
-			`SELECT id, "${key}" FROM users WHERE CAST ("${key}"->>'${entityID}' AS INTEGER) > 5 ORDER BY "${key}"->>'${entityID}' DESC LIMIT 2000;`
+			`SELECT id, "${key}" FROM users WHERE CAST ("${key}"->>'${entityID}' AS INTEGER) > 5 ORDER BY "${key}"->>'${entityID}' DESC LIMIT 30;`
 		);
 		if (list.length === 0) {
 			return msg.channel.send('Nobody is on this leaderboard.');
