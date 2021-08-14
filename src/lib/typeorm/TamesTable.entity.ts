@@ -39,7 +39,7 @@ export class TamesTable extends BaseEntity {
 	@Column({ type: 'enum', enum: TameGrowthStage, name: 'growth_stage', enumName: 'tame_growth' })
 	public growthStage!: TameGrowthStage;
 
-	@Column('float', { name: 'growth_percent', nullable: false, default: 0 })
+	@Column('double precision', { name: 'growth_percent', nullable: false, default: 0 })
 	public currentGrowthPercent!: number;
 
 	@Column('integer', { name: 'max_combat_level', nullable: false })
