@@ -9,9 +9,10 @@ export default class extends BotCommand {
 			`SELECT sum(xp) as total_xp, u."minion.ironman" as ironman, u.id
 FROM xp_gains
 INNER JOIN "users" "u" ON xp_gains.user_id = "u"."id"
-WHERE date > ('2021-07-10 07:00:00'::timestamp)
-AND date < ('2021-07-17 07:00:00'::timestamp)
-AND skill = 'mining'
+WHERE date > ('2021-08-14 07:00:00'::timestamp)
+AND date < ('2021-08-21 07:00:00'::timestamp)
+AND skill = 'fishing'
+AND artificial IS NULL
 ${msg.flagArgs.im ? 'AND u."minion.ironman" = true' : ''}
 GROUP BY "u".id
 ORDER BY total_xp DESC
@@ -22,7 +23,7 @@ LIMIT 15;`
 			return msg.channel.send('No results found.');
 		}
 
-		const embed = new MessageEmbed().setTitle('#2 SOTW - Mining').setDescription(
+		const embed = new MessageEmbed().setTitle('#3 SOTW - Fishing').setDescription(
 			res
 				.map((i: any, index: number) => {
 					const pos = index + 1;

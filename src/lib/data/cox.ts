@@ -332,6 +332,10 @@ const itemBoosts = [
 			boost: 7
 		},
 		{
+			item: getOSItem('Bow of faerdhinen (c)'),
+			boost: 7
+		},
+		{
 			item: getOSItem('Dragon hunter crossbow'),
 			boost: 5
 		}
