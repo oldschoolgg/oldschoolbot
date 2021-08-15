@@ -13,7 +13,14 @@ import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, cleanString, formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
+import {
+	bankHasItem,
+	cleanString,
+	formatDuration,
+	itemNameFromID,
+	stringMatches,
+	updateBankSetting
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
