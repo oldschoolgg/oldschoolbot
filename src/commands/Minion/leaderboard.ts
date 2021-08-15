@@ -6,6 +6,7 @@ import { IsNull, Not } from 'typeorm';
 import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Emoji } from '../../lib/constants';
 import { getCollectionItems } from '../../lib/data/Collections';
+import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
@@ -385,28 +386,46 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 
 	async open(msg: KlasaMessage, [name = '']: [string]) {
 		name = name.trim();
-		const openable = !name
+
+		let entityID = -1;
+		let key = '';
+		let openableName = '';
+
+		const clue = !name
 			? undefined
-			: allOpenableItems.find(
-					item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
+			: ClueTiers.find(
+					clue => stringMatches(clue.name, name) || clue.name.toLowerCase().includes(name.toLowerCase())
 			  );
-		if (!openable) {
+
+		if (clue) {
+			entityID = clue.id;
+			key = 'clueScores';
+			openableName = clue.name;
+		} else {
+			const openable = !name
+				? undefined
+				: allOpenableItems.find(
+						item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
+				  );
+			if (openable) {
+				entityID = openable.id;
+				key = 'openable_scores';
+				openableName = openable.name;
+			}
+		}
+
+		if (entityID === -1) {
 			return msg.channel.send(
 				`That's not a valid openable item! You can check: ${allOpenableItems.map(i => i.name).join(', ')}.`
 			);
 		}
 
-		let key = 'openable_scores' as const;
-		let entityID = openable.id;
 		let list = await this.query(
 			`SELECT id, "${key}" FROM users
-			WHERE CAST ("${key}"->>'${entityID}' AS INTEGER) > 3 
+			WHERE CAST ("${key}"->>'${entityID}' AS INTEGER) > 3
 			${msg.flagArgs.im ? 'AND "minion.ironman" = true' : ''}
 			ORDER BY ("${key}"->>'${entityID}')::int DESC LIMIT 30;`
 		);
-		if (list.length === 0) {
-			return msg.channel.send('Nobody is on this leaderboard.');
-		}
 
 		this.doMenu(
 			msg,
@@ -414,10 +433,13 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 				.chunk(list, 10)
 				.map(subList =>
 					subList
-						.map(user => `**${this.getUsername(user.id, list.length)}:** ${user[key][entityID]} Opens`)
+						.map(
+							user =>
+								`**${this.getUsername(user.id, list.length)}:** ${user[key][entityID].toLocaleString()}`
+						)
 						.join('\n')
 				),
-			`Open Leaderboard for ${openable.name}`
+			`Open Leaderboard for ${openableName}`
 		);
 	}
 
@@ -437,6 +459,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 								u."minion.ironman"
 							FROM
 								users u
+							${msg.flagArgs.im ? ' WHERE "minion.ironman" = true ' : ''}
 							ORDER BY totalxp DESC
 							LIMIT 2000;`;
 			res = await this.query(query);
@@ -465,6 +488,7 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 								u."skills.${skill.id}", u.id, u."minion.ironman"
 							FROM
 								users u
+							${msg.flagArgs.im ? ' WHERE "minion.ironman" = true ' : ''}
 							ORDER BY
 								1 DESC
 							LIMIT 2000;`;
@@ -538,9 +562,6 @@ ORDER BY qty DESC
 LIMIT 50;
 `)
 		).filter((i: any) => i.qty > 0) as CLUser[];
-		if (users.length === 0) {
-			return msg.channel.send('No users found.');
-		}
 
 		this.doMenu(
 			msg,
@@ -598,6 +619,9 @@ LIMIT 50;
 	}
 
 	async doMenu(msg: KlasaMessage, pages: string[], title: string) {
+		if (pages.length === 0) {
+			return msg.channel.send('Nobody is on this leaderboard.');
+		}
 		return makePaginatedMessage(
 			msg,
 			pages.map(p => ({ embeds: [new MessageEmbed().setTitle(title).setDescription(p)] }))
