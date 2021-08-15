@@ -170,7 +170,13 @@ export default class extends BotCommand {
 			try {
 				await finalize({ button: pickedButton, interaction });
 			} catch (err) {
-				console.error(err);
+				const errStr = `${msg.author} had an error in Luckypick and was not refunded. ${JSON.stringify(
+					pickedButton
+				)} Start balance: ${currentBalance} Bet amount: ${amount} End balance: ${msg.author.settings.get(
+					UserSettings.GP
+				)} Error: ${typeof err === 'object' ? JSON.stringify(err) : err}`;
+				console.error(errStr);
+				this.client.wtf(new Error(errStr));
 			}
 		});
 
