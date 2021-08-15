@@ -69,4 +69,5 @@ Client.defaultClientSchema
 	.add('gp_ic', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 
-	.add('double_loot_finish_time', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER });
+	.add('double_loot_finish_time', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('locked_skills', 'any', { array: true, default: [] });
