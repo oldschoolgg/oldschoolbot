@@ -101,17 +101,17 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (msg.author.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
+		if (msg.author.hasItemEquippedOrInBank('Achievement diary cape')) {
 			boosts.push('5% for Achievement diary cape');
 			duration *= 0.95;
 		}
 
-		if (msg.author.hasItemEquippedAnywhere(['Quest point cape', 'Quest point cape(t)'], false)) {
+		if (msg.author.hasItemEquippedOrInBank('Quest point cape')) {
 			boosts.push('5% for Quest point cape');
 			duration *= 0.95;
 		}
 
-		if (msg.author.hasItemEquippedAnywhere(['Music cape', 'Music cape(t)'], false)) {
+		if (msg.author.hasItemEquippedOrInBank('Music cape') && clueTier.name === 'Master') {
 			boosts.push('5% for Music cape');
 			duration *= 0.95;
 		}
