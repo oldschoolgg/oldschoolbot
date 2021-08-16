@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 
+import { MAX_QP } from '../../constants';
 import { diaries, userhasDiaryTier } from '../../diaries';
 import { Buyable } from './buyables';
-import { MAX_QP } from '../../constants';
 
 export const capeBuyables: Buyable[] = [
 	{
@@ -36,7 +36,10 @@ export const capeBuyables: Buyable[] = [
 			for (const diary of diaries.map(d => d.elite)) {
 				const [has] = await userhasDiaryTier(user, diary);
 				if (!has) {
-					return [false, "You can't buy this because you haven't completed all the Elite achievement diaries!"];
+					return [
+						false,
+						"You can't buy this because you haven't completed all the Elite achievement diaries!"
+					];
 				}
 			}
 			return [true];

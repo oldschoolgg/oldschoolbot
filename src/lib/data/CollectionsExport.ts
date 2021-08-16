@@ -1372,7 +1372,6 @@ export const championScrolls = resolveItems([
 export const championsChallengeCL = resolveItems([...championScrolls, "Champion's cape"]);
 export const chaosDruisCL = resolveItems(['Elder chaos top', 'Elder chaos robe', 'Elder chaos hood']);
 export const chompyBirdsCL = resolveItems([
-
 	'Chompy chick',
 	'Chompy bird hat (ogre bowman)',
 	'Chompy bird hat (bowman)',
