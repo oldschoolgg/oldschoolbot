@@ -1,3 +1,4 @@
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { BaseEntity, Column, Entity, getConnection, Index, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { client } from '../..';
@@ -40,6 +41,9 @@ export class ActivityTable extends BaseEntity {
 
 	@Column('json', { name: 'data', nullable: false })
 	public data!: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelID' | 'userID' | 'duration'>;
+
+	@Column('json', { name: 'data', nullable: true })
+	public loot!: ItemBank | null;
 
 	public get taskData(): ActivityTaskData {
 		return {
