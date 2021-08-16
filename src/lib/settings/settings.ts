@@ -6,7 +6,6 @@ import { getConnection } from 'typeorm';
 import { client } from '../..';
 import { MinigameKey, Minigames } from '../../extendables/User/Minigame';
 import { Emoji } from '../constants';
-import { ActivityTable } from '../typeorm/ActivityTable.entity';
 import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { NewUserTable } from '../typeorm/NewUserTable.entity';
 import { ActivityTaskData } from '../types/minions';

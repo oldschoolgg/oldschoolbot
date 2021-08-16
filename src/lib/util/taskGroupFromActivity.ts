@@ -1,6 +1,6 @@
 import { Activity, ActivityGroup } from '../constants';
 
-export function taskGroupFromActivity(type: Activity): ActivityGroup {
+export function taskGroupFromActivity(type: keyof typeof Activity): ActivityGroup {
 	switch (type) {
 		case Activity.ClueCompletion:
 			return ActivityGroup.Clue;

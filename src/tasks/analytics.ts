@@ -1,10 +1,9 @@
 import { Time } from 'e';
 import { Task } from 'klasa';
-import { MoreThan } from 'typeorm';
 
 import { ActivityGroup } from '../lib/constants';
+import { prisma } from '../lib/settings/prisma';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
-import { ActivityTable } from '../lib/typeorm/ActivityTable.entity';
 import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable.entity';
 import { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
@@ -29,18 +28,21 @@ export default class extends Task {
 			[ActivityGroup.Skilling]: 0
 		};
 
-		const currentTasks = await ActivityTable.find({
+		const currentTasks = await prisma.activity.findMany({
 			where: {
 				completed: false,
-				finishDate: MoreThan('now()')
+				finish_date: {
+					gt: 'now()'
+				}
 			}
 		});
 
 		for (const task of currentTasks) {
+			taskGroupFromActivity('Agility');
 			const group = taskGroupFromActivity(task.type);
 
-			if (task.groupActivity) {
-				minionTaskCounts[group] += (task.data as GroupMonsterActivityTaskOptions).users.length;
+			if (task.group_activity) {
+				minionTaskCounts[group] += (task.data as unknown as GroupMonsterActivityTaskOptions).users.length;
 			} else {
 				minionTaskCounts[group] += 1;
 			}
