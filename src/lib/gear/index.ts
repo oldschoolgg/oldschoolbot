@@ -7,25 +7,25 @@ export * from './types';
 export * from './util';
 
 export const maxDefenceStats: { [key in DefenceGearStat]: number } = {
-	[GearStat.DefenceCrush]: 621,
-	[GearStat.DefenceMagic]: 461,
-	[GearStat.DefenceRanged]: 659,
-	[GearStat.DefenceSlash]: 621,
-	[GearStat.DefenceStab]: 622
+	[GearStat.DefenceCrush]: 789,
+	[GearStat.DefenceMagic]: 480,
+	[GearStat.DefenceRanged]: 681,
+	[GearStat.DefenceSlash]: 637,
+	[GearStat.DefenceStab]: 640
 };
 
 export const maxOffenceStats: { [key in OffenceGearStat]: number } = {
-	[GearStat.AttackCrush]: 300,
-	[GearStat.AttackMagic]: 436,
-	[GearStat.AttackRanged]: 391,
-	[GearStat.AttackSlash]: 273,
-	[GearStat.AttackStab]: 274
+	[GearStat.AttackCrush]: 352,
+	[GearStat.AttackMagic]: 459,
+	[GearStat.AttackRanged]: 431,
+	[GearStat.AttackSlash]: 288,
+	[GearStat.AttackStab]: 361
 };
 
 export const maxOtherStats: { [key in OtherGearStat]: number } = {
-	[GearStat.MeleeStrength]: 204,
+	[GearStat.MeleeStrength]: 243,
 	[GearStat.RangedStrength]: 172,
-	[GearStat.MagicDamage]: 38,
+	[GearStat.MagicDamage]: 51,
 	[GearStat.Prayer]: 66
 };
 
