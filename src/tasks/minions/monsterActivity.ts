@@ -1,3 +1,4 @@
+import { objectKeys } from 'e';
 import { Task } from 'klasa';
 import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 
@@ -26,11 +27,18 @@ export default class extends Task {
 			usersTask.assignedTask.monsters.includes(monsterID);
 		const quantitySlayed = isOnTask ? Math.min(usersTask.currentTask!.quantityRemaining, quantity) : null;
 
+		let returnedLoot = '';
 		let newSuperiorCount = 0;
 		let loot = new Bank();
 		if (data.seededLoot) {
 			newSuperiorCount = data.seededLoot.superiorCount;
 			loot.add(data.seededLoot.loot);
+			if (objectKeys(data.seededLoot.returnLootCost).length > 0) {
+				await user.addItemsToBank(data.seededLoot.returnLootCost);
+				returnedLoot += `\nAs you returned early from your trip, you saved on some supplies: ${new Bank(
+					data.seededLoot.returnLootCost
+				)}\n`;
+			}
 		} else {
 			const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
 			const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
@@ -128,6 +136,8 @@ export default class extends Task {
 			usersTask.currentTask!.quantityRemaining = quantityLeft;
 			await usersTask.currentTask!.save();
 		}
+
+		str += returnedLoot;
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 

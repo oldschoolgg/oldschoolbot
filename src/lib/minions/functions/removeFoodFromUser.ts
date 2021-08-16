@@ -19,8 +19,7 @@ export default async function removeFoodFromUser({
 	healPerAction,
 	activityName,
 	attackStylesUsed,
-	learningPercentage,
-	dontRemoveFood
+	learningPercentage
 }: {
 	client: KlasaClient;
 	user: KlasaUser;
@@ -54,10 +53,9 @@ export default async function removeFoodFromUser({
 			i => i.name
 		).join(', ')}.`;
 	} else {
-		if (!dontRemoveFood) {
-			await user.removeItemsFromBank(foodToRemove);
-			updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, foodToRemove);
-		}
+		await user.removeItemsFromBank(foodToRemove);
+		updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, foodToRemove);
+
 		let reductionsStr = reductions.length > 0 ? ` **Base Food Reductions:** ${reductions.join(', ')}.` : '';
 		return [`${new Bank(foodToRemove)} from ${user.username}${reductionsStr}`, foodToRemove];
 	}

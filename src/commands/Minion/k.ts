@@ -356,10 +356,49 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
+		// Check food
+		let foodToGiveBack = new Bank();
+		let foodStr: undefined | string = undefined;
+		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
+			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
+			messages = messages.concat(foodMessages);
+
+			let gearToCheck = GearSetupTypes.Melee;
+
+			switch (monster.attackStyleToUse) {
+				case GearStat.AttackMagic:
+					gearToCheck = GearSetupTypes.Mage;
+					break;
+				case GearStat.AttackRanged:
+					gearToCheck = GearSetupTypes.Range;
+					break;
+				default:
+					break;
+			}
+
+			if (monster.wildy) gearToCheck = GearSetupTypes.Wildy;
+
+			// Check first, without removing user food.
+			const [result, _food] = await removeFoodFromUser({
+				client: this.client,
+				user: msg.author,
+				totalHealingNeeded: healAmountNeeded * quantity,
+				healPerAction: Math.ceil(healAmountNeeded / quantity),
+				activityName: monster.name,
+				attackStylesUsed: monster.wildy
+					? [GearSetupTypes.Wildy]
+					: removeDuplicatesFromArray([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
+				learningPercentage: percentReduced
+			});
+			foodToGiveBack.add(_food);
+			foodStr = result;
+		}
+
 		duration = Math.ceil(duration);
 		const displayDuration = duration;
 		const displayQuantity = quantity;
-		let seededLoot: { loot: ItemBank; superiorCount: number } | undefined = undefined;
+		let factor = 1;
+		let seededLoot: { loot: ItemBank; superiorCount: number; returnLootCost: ItemBank } | undefined = undefined;
 		let untilStr = '';
 		// Check for until flags
 		if (msg.flagArgs.until || msg.flagArgs.clues) {
@@ -384,6 +423,7 @@ export default class extends BotCommand {
 			};
 
 			const calculatedLoot = new Bank();
+			const returnLootCost = new Bank();
 			let superiorCount = 0;
 			const untilBank = parseStringBank(msg.flagArgs.until ?? '');
 			if (msg.flagArgs.clues) {
@@ -405,72 +445,22 @@ export default class extends BotCommand {
 						continue;
 					}
 					if (calculatedLoot.has(j[0].id)) {
-						const factor = i / quantity;
+						factor = i / quantity;
 						duration = Math.ceil(duration * factor);
 						quantity = i;
+						const reimburseLoot = new Bank().add(lootToRemove).add(foodToGiveBack);
+						reimburseLoot.forEach((item, qty) => {
+							returnLootCost.add(item.id, Math.max(0, qty - Math.ceil(qty * factor)));
+						});
 						break loopQty;
 					}
 				}
 			}
-			seededLoot = { loot: calculatedLoot.bank, superiorCount };
+			seededLoot = { loot: calculatedLoot.bank, superiorCount, returnLootCost: returnLootCost.bank };
 			const lootNames = [...new Set([...untilBank.map(i => i[0].name)])];
 			untilStr += `You are killing **${monster.name}s** until one of the following drops: ${lootNames.join(
 				', '
 			)}`;
-		}
-
-		// Check food
-		let foodStr: undefined | string = undefined;
-		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
-			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
-			messages = messages.concat(foodMessages);
-
-			let gearToCheck = GearSetupTypes.Melee;
-
-			switch (monster.attackStyleToUse) {
-				case GearStat.AttackMagic:
-					gearToCheck = GearSetupTypes.Mage;
-					break;
-				case GearStat.AttackRanged:
-					gearToCheck = GearSetupTypes.Range;
-					break;
-				default:
-					break;
-			}
-
-			if (monster.wildy) gearToCheck = GearSetupTypes.Wildy;
-
-			// Check first, without removing user food.
-			const [result] = await removeFoodFromUser({
-				client: this.client,
-				user: msg.author,
-				totalHealingNeeded: healAmountNeeded * displayQuantity,
-				healPerAction: Math.ceil(healAmountNeeded / displayQuantity),
-				activityName: monster.name,
-				attackStylesUsed: monster.wildy
-					? [GearSetupTypes.Wildy]
-					: removeDuplicatesFromArray([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
-				learningPercentage: percentReduced,
-				dontRemoveFood: displayQuantity !== quantity
-			});
-			foodStr = result;
-			// Run it again, but now, removing only the required food
-			if (displayQuantity !== quantity) {
-				await removeFoodFromUser({
-					client: this.client,
-					user: msg.author,
-					totalHealingNeeded: healAmountNeeded * quantity,
-					healPerAction: Math.ceil(healAmountNeeded / quantity),
-					activityName: monster.name,
-					attackStylesUsed: monster.wildy
-						? [GearSetupTypes.Wildy]
-						: removeDuplicatesFromArray([
-								...objectKeys(monster.minimumGearRequirements ?? {}),
-								gearToCheck
-						  ]),
-					learningPercentage: percentReduced
-				});
-			}
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);

@@ -1,4 +1,3 @@
-import { deepClone } from 'e';
 import { BaseEntity, Column, Entity, getConnection, Index, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { client } from '../..';
@@ -93,7 +92,7 @@ export class ActivityTable extends BaseEntity {
 		client.oneCommandAtATimeCache.add(this.userID);
 		try {
 			const { taskData } = this;
-			const newData = { ...deepClone(taskData) };
+			const newData = { ...this.data };
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			if (newData.seededLoot) {
