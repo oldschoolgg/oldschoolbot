@@ -55,7 +55,7 @@ export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
-	seededLoot?: { loot: ItemBank; superiorCount: number; returnLootCost: ItemBank };
+	seededLoot?: { loot: ItemBank; superiorCount: number; returnLootCost: ItemBank; untilItems: number[] };
 	monsterID: number;
 	quantity: number;
 	displayQuantity?: number;
