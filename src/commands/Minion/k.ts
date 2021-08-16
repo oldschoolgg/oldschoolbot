@@ -1,12 +1,13 @@
 import { MessageAttachment } from 'discord.js';
-import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round, Time } from 'e';
+import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, roll, round, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Activity } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { GearSetupTypes, GearStat } from '../../lib/gear';
+import ClueTiers from '../../lib/minions/data/clueTiers';
 import {
 	boostCannon,
 	boostCannonMulti,
@@ -32,8 +33,9 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import { determineBoostChoice, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { ItemBank } from '../../lib/types';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
 	addArrayOfNumbers,
@@ -46,7 +48,9 @@ import {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import findMonster from '../../lib/util/findMonster';
+import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
+import { parseStringBank } from '../../lib/util/parseStringBank';
 
 const validMonsters = killableMonsters.map(mon => mon.name).join('\n');
 const invalidMonsterMsg = (prefix: string) =>
@@ -343,6 +347,78 @@ export default class extends BotCommand {
 				);
 			}
 		}
+
+		// Boosts that don't affect quantity:
+		duration = randomVariation(duration, 3);
+
+		if (isWeekend()) {
+			boosts.push('10% for Weekend');
+			duration *= 0.9;
+		}
+
+		duration = Math.ceil(duration);
+		const displayDuration = duration;
+		const displayQuantity = quantity;
+		let seededLoot: { loot: ItemBank; superiorCount: number } | undefined = undefined;
+		let untilStr = '';
+		// Check for until flags
+		if (msg.flagArgs.until || msg.flagArgs.clues) {
+			const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
+			const isOnTask =
+				usersTask.assignedTask !== null &&
+				usersTask.currentTask !== null &&
+				usersTask.assignedTask.monsters.includes(monster.id);
+			const mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
+			const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
+			// Check if superiors unlock is purchased
+			const superiorsUnlocked = isOnTask
+				? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder)
+				: undefined;
+			const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
+			const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
+			const killOptions: MonsterKillOptions = {
+				onSlayerTask: isOnTask,
+				slayerMaster,
+				hasSuperiors: superiorTable,
+				inCatacombs: isInCatacombs
+			};
+
+			const calculatedLoot = new Bank();
+			let superiorCount = 0;
+			const untilBank = parseStringBank(msg.flagArgs.until ?? '');
+			if (msg.flagArgs.clues) {
+				for (const c of ClueTiers) {
+					untilBank.push([getOSItem(c.scrollID), undefined]);
+				}
+			}
+			loopQty: for (let i = 1; i <= quantity; i++) {
+				if (superiorTable && isOnTask && roll(200)) {
+					superiorCount++;
+					calculatedLoot.add(superiorTable.kill(1));
+					if (isInCatacombs) calculatedLoot.add('Dark totem base', 1);
+				} else {
+					calculatedLoot.add(monster.table.kill(1, killOptions));
+				}
+				for (const j of untilBank) {
+					// Ignore clues that the user already have in the bank
+					if (ClueTiers.map(c => c.scrollID).includes(j[0].id) && msg.author.bank().has(j[0].id)) {
+						continue;
+					}
+					if (calculatedLoot.has(j[0].id)) {
+						const factor = i / quantity;
+						duration = Math.ceil(duration * factor);
+						quantity = i;
+						break loopQty;
+					}
+				}
+			}
+			seededLoot = { loot: calculatedLoot.bank, superiorCount };
+			const lootNames = [...new Set([...untilBank.map(i => i[0].name)])];
+			untilStr += `You are killing **${monster.name}s** until one of the following drops: ${lootNames.join(
+				', '
+			)}`;
+		}
+
 		// Check food
 		let foodStr: undefined | string = undefined;
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
@@ -364,27 +440,37 @@ export default class extends BotCommand {
 
 			if (monster.wildy) gearToCheck = GearSetupTypes.Wildy;
 
+			// Check first, without removing user food.
 			const [result] = await removeFoodFromUser({
 				client: this.client,
 				user: msg.author,
-				totalHealingNeeded: healAmountNeeded * quantity,
-				healPerAction: Math.ceil(healAmountNeeded / quantity),
+				totalHealingNeeded: healAmountNeeded * displayQuantity,
+				healPerAction: Math.ceil(healAmountNeeded / displayQuantity),
 				activityName: monster.name,
 				attackStylesUsed: monster.wildy
 					? [GearSetupTypes.Wildy]
 					: removeDuplicatesFromArray([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
-				learningPercentage: percentReduced
+				learningPercentage: percentReduced,
+				dontRemoveFood: displayQuantity !== quantity
 			});
-
 			foodStr = result;
-		}
-
-		// Boosts that don't affect quantity:
-		duration = randomVariation(duration, 3);
-
-		if (isWeekend()) {
-			boosts.push('10% for Weekend');
-			duration *= 0.9;
+			// Run it again, but now, removing only the required food
+			if (displayQuantity !== quantity) {
+				await removeFoodFromUser({
+					client: this.client,
+					user: msg.author,
+					totalHealingNeeded: healAmountNeeded * quantity,
+					healPerAction: Math.ceil(healAmountNeeded / quantity),
+					activityName: monster.name,
+					attackStylesUsed: monster.wildy
+						? [GearSetupTypes.Wildy]
+						: removeDuplicatesFromArray([
+								...objectKeys(monster.minimumGearRequirements ?? {}),
+								gearToCheck
+						  ]),
+					learningPercentage: percentReduced
+				});
+			}
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
@@ -395,15 +481,20 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
+			displayQuantity: displayQuantity !== quantity ? displayQuantity : undefined,
 			duration,
+			displayDuration: displayDuration !== duration ? displayDuration : undefined,
+			seededLoot,
 			type: Activity.MonsterKilling,
 			usingCannon,
 			cannonMulti,
 			burstOrBarrage
 		});
-		let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish. Attack styles used: ${attackStyles.join(', ')}.`;
+		let response = `${minionName} is now killing ${displayQuantity}x ${
+			monster.name
+		}, it'll take around ${formatDuration(displayDuration)} to finish. Attack styles used: ${attackStyles.join(
+			', '
+		)}.`;
 
 		if (pvmCost) {
 			response += ` Removed ${lootToRemove}.`;
@@ -419,6 +510,10 @@ export default class extends BotCommand {
 
 		if (messages.length > 0) {
 			response += `\n**Messages:** ${messages.join('\n')}.`;
+		}
+
+		if (untilStr) {
+			response += `\n${untilStr}`;
 		}
 
 		return msg.channel.send(response);

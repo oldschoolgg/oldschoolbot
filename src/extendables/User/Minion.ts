@@ -125,7 +125,14 @@ export default class extends Extendable {
 			return `${this.minionName} is currently doing nothing.`;
 		}
 
-		const durationRemaining = currentTask.finishDate - Date.now();
+		const durationRemaining = (() => {
+			if (currentTask.displayDuration) {
+				let duration = currentTask.finishDate - currentTask.duration;
+				duration += currentTask.displayDuration;
+				return duration - Date.now();
+			}
+			return currentTask.finishDate - Date.now();
+		})();
 		const formattedDuration = `${formatDuration(durationRemaining)} remaining.`;
 
 		switch (currentTask.type) {
@@ -133,7 +140,7 @@ export default class extends Extendable {
 				const data = currentTask as MonsterActivityTaskOptions;
 				const monster = killableMonsters.find(mon => mon.id === data.monsterID);
 
-				return `${this.minionName} is currently killing ${data.quantity}x ${
+				return `${this.minionName} is currently killing ${data.displayQuantity ?? data.quantity}x ${
 					monster!.name
 				}. ${formattedDuration}`;
 			}

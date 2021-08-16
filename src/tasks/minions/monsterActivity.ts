@@ -1,5 +1,5 @@
 import { Task } from 'klasa';
-import { MonsterKillOptions, Monsters } from 'oldschooljs';
+import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -19,7 +19,6 @@ export default class extends Task {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.users.fetch(userID);
 		await user.incrementMonsterScore(monsterID, quantity);
-
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
 			usersTask.assignedTask !== null &&
@@ -27,35 +26,37 @@ export default class extends Task {
 			usersTask.assignedTask.monsters.includes(monsterID);
 		const quantitySlayed = isOnTask ? Math.min(usersTask.currentTask!.quantityRemaining, quantity) : null;
 
-		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
-
-		const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
-		// Check if superiors unlock is purchased
-		const superiorsUnlocked = isOnTask
-			? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder)
-			: undefined;
-
-		const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
-		const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
-
-		const killOptions: MonsterKillOptions = {
-			onSlayerTask: isOnTask,
-			slayerMaster,
-			hasSuperiors: superiorTable,
-			inCatacombs: isInCatacombs
-		};
-
-		// Calculate superiors and assign loot.
 		let newSuperiorCount = 0;
-		if (superiorTable && isOnTask) {
-			for (let i = 0; i < quantity; i++) if (roll(200)) newSuperiorCount++;
-		}
-		// Regular loot
-		const loot = monster.table.kill(quantity - newSuperiorCount, killOptions);
-		if (newSuperiorCount) {
-			// Superior loot and totems if in catacombs
-			loot.add(superiorTable!.kill(newSuperiorCount));
-			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
+		let loot = new Bank();
+		if (data.seededLoot) {
+			newSuperiorCount = data.seededLoot.superiorCount;
+			loot.add(data.seededLoot.loot);
+		} else {
+			const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
+			const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
+			// Check if superiors unlock is purchased
+			const superiorsUnlocked = isOnTask
+				? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder)
+				: undefined;
+			const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
+			const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
+			const killOptions: MonsterKillOptions = {
+				onSlayerTask: isOnTask,
+				slayerMaster,
+				hasSuperiors: superiorTable,
+				inCatacombs: isInCatacombs
+			};
+			// Calculate superiors and assign loot.
+			if (superiorTable && isOnTask) {
+				for (let i = 0; i < quantity; i++) if (roll(200)) newSuperiorCount++;
+			}
+			// Regular loot
+			loot.add(monster.table.kill(quantity - newSuperiorCount, killOptions));
+			if (newSuperiorCount) {
+				// Superior loot and totems if in catacombs
+				loot.add(superiorTable!.kill(newSuperiorCount));
+				if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
+			}
 		}
 
 		const xpRes = await addMonsterXP(user, {

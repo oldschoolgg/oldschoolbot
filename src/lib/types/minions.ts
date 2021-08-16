@@ -2,12 +2,14 @@ import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
 import { IPatchData } from '../minions/farming/types';
-import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import { BirdhouseData } from '../skilling/skills/hunter/defaultBirdHouseTrap';
+import { ItemBank } from './index';
 
 export interface ActivityTaskOptions {
 	type: Activity;
 	userID: string;
 	duration: number;
+	displayDuration?: number;
 	id: string;
 	finishDate: number;
 	channelID: string;
@@ -53,8 +55,10 @@ export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
+	seededLoot?: { loot: ItemBank; superiorCount: number };
 	monsterID: number;
 	quantity: number;
+	displayQuantity?: number;
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
 	burstOrBarrage?: number;

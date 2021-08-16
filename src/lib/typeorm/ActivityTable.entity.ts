@@ -1,3 +1,4 @@
+import { deepClone } from 'e';
 import { BaseEntity, Column, Entity, getConnection, Index, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { client } from '../..';
@@ -91,13 +92,26 @@ export class ActivityTable extends BaseEntity {
 
 		client.oneCommandAtATimeCache.add(this.userID);
 		try {
+			const { taskData } = this;
+			const newData = { ...deepClone(taskData) };
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			if (newData.seededLoot) {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				delete newData.seededLoot;
+				delete newData.displayDuration;
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				delete newData.displayQuantity;
+			}
 			await getConnection()
 				.createQueryBuilder()
 				.update(ActivityTable)
-				.set({ completed: true })
+				.set({ completed: true, data: newData })
 				.where('id = :id', { id: this.id })
 				.execute();
-			await task.run(this.taskData);
+			await task.run(taskData);
 		} catch (err) {
 			console.error(err);
 		} finally {
