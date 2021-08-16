@@ -2,6 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import { diaries, userhasDiaryTier } from '../../diaries';
 import { Buyable } from './buyables';
+import { MAX_QP } from '../../constants';
 
 export const capeBuyables: Buyable[] = [
 	{
@@ -17,6 +18,25 @@ export const capeBuyables: Buyable[] = [
 				const [has] = await userhasDiaryTier(user, diary);
 				if (!has) {
 					return [false, "You can't buy this because you haven't completed all the Elite diaries!"];
+				}
+			}
+			return [true];
+		}
+	},
+	{
+		name: 'Music cape',
+		outputItems: new Bank({
+			'Music cape': 1,
+			'Music cape(t)': 1,
+			'Music hood': 1
+		}),
+		gpCost: 1_000_000,
+		qpRequired: MAX_QP,
+		customReq: async user => {
+			for (const diary of diaries.map(d => d.elite)) {
+				const [has] = await userhasDiaryTier(user, diary);
+				if (!has) {
+					return [false, "You can't buy this because you haven't completed all the Elite achievement diaries!"];
 				}
 			}
 			return [true];
