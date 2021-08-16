@@ -1335,8 +1335,7 @@ export const allPetsCL = resolveItems([
 	'Rocky',
 	'Rift guardian',
 	'Herbi',
-	// Not obtainable yet
-	// 'Chompy chick',
+	'Chompy chick',
 	'Sraracha',
 	'Smolcano',
 	'Youngllef',
@@ -1373,8 +1372,8 @@ export const championScrolls = resolveItems([
 export const championsChallengeCL = resolveItems([...championScrolls, "Champion's cape"]);
 export const chaosDruisCL = resolveItems(['Elder chaos top', 'Elder chaos robe', 'Elder chaos hood']);
 export const chompyBirdsCL = resolveItems([
-	// Not obtainable yet
-	// 'Chompy chick',
+
+	'Chompy chick',
 	'Chompy bird hat (ogre bowman)',
 	'Chompy bird hat (bowman)',
 	'Chompy bird hat (ogre yeoman)',
@@ -1682,8 +1681,7 @@ export const miscellaneousCL = resolveItems([
 	'Fire cape',
 	'Dragon warhammer',
 	'Herbi',
-	// Not obtainable yet
-	// 'Chompy chick',
+	'Chompy chick',
 	'Big swordfish',
 	'Big shark',
 	'Big bass',
@@ -1846,6 +1844,8 @@ export const capesCL = resolveItems([
 	'Quest point cape',
 	'Achievement diary hood',
 	'Achievement diary cape(t)',
+	'Music hood',
+	'Music cape(t)',
 	'Max hood',
 	'Max cape',
 	'Ardougne max hood',
