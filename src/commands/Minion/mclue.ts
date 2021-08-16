@@ -102,8 +102,13 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
-			boosts.push('10% for Achievement diary cape');
-			duration *= 0.9;
+			boosts.push('5% for Achievement diary cape');
+			duration *= 0.95;
+		}
+
+		if (msg.author.hasItemEquippedAnywhere(['Quest point cape', 'Quest point cape(t)'], false)) {
+			boosts.push('5% for Quest point cape');
+			duration *= 0.95;
 		}
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
