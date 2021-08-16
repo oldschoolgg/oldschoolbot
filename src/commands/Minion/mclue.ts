@@ -111,6 +111,11 @@ export default class extends BotCommand {
 			duration *= 0.95;
 		}
 
+		if (msg.author.hasItemEquippedAnywhere(['Music cape', 'Music cape(t)'], false)) {
+			boosts.push('5% for Music cape');
+			duration *= 0.95;
+		}
+
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			clueID: clueTier.id,
 			userID: msg.author.id,
