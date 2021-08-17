@@ -1,6 +1,7 @@
 import { Command, Inhibitor, KlasaMessage } from 'klasa';
 
 import { Channel } from '../lib/constants';
+import { getGuildSettings } from '../lib/settings/settings';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 
@@ -16,7 +17,9 @@ export default class extends Inhibitor {
 		) {
 			return;
 		}
-		if (msg.guild.settings.get(GuildSettings.StaffOnlyChannels).includes(msg.channel.id)) {
+
+		const settings = await getGuildSettings(msg.guild!);
+		if (settings.get(GuildSettings.StaffOnlyChannels).includes(msg.channel.id)) {
 			const hasPerm = await msg.hasAtLeastPermissionLevel(6);
 			if (!hasPerm) throw true;
 		}
