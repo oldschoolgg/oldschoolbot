@@ -25,6 +25,7 @@ export type customMessageButtonOptions = MessageButtonOptions & {
 
 interface IOptions {
 	time: number;
+	chunkSize: number;
 }
 
 const userCache: Record<string, string> = {};
@@ -33,7 +34,8 @@ export class customMessageComponents {
 	public buttons: MessageActionRowComponentResolvable[] = [];
 	public functions: TComponentSelection = {};
 	public options: IOptions = {
-		time: Time.Second * 15
+		time: Time.Second * 15,
+		chunkSize: 5
 	};
 
 	private _client: KlasaClient | undefined = undefined;
@@ -73,7 +75,7 @@ export class customMessageComponents {
 	}
 
 	public getButtons() {
-		return this.buttons.length > 0 ? [...chunk(this.buttons, 5)] : undefined;
+		return this.buttons.length > 0 ? [...chunk(this.buttons, this.options.chunkSize)] : undefined;
 	}
 
 	public getFunctions() {

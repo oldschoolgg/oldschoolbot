@@ -1,5 +1,4 @@
-import { MessageButton } from 'discord.js';
-import { randInt, Time } from 'e';
+import { randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
@@ -19,49 +18,50 @@ import {
 import { AssignableSlayerTask } from '../../lib/slayer/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
+import { customMessageComponents } from '../../lib/util/customMessageComponents';
 import itemID from '../../lib/util/itemID';
 
-const returnSuccessButtons = [
-	[
-		new MessageButton({
-			label: 'Autoslay (Saved)',
-			style: 'SECONDARY',
-			customID: 'assaved'
-		}),
-		new MessageButton({
-			label: 'Autoslay (Default)',
-			style: 'SECONDARY',
-			customID: 'asdef'
-		}),
-		new MessageButton({
-			label: 'Autoslay (EHP)',
-			style: 'SECONDARY',
-			customID: 'asehp'
-		}),
-		new MessageButton({
-			label: 'Autoslay (Boss)',
-			style: 'SECONDARY',
-			customID: 'asboss'
-		})
-	],
-	[
-		new MessageButton({
-			label: 'Cancel Task + New (30 points)',
-			style: 'DANGER',
-			customID: 'skip'
-		}),
-		new MessageButton({
-			label: 'Block Task + New (100 points)',
-			style: 'DANGER',
-			customID: 'block'
-		}),
-		new MessageButton({
-			label: 'Do Nothing',
-			style: 'SECONDARY',
-			customID: 'doNothing'
-		})
-	]
-];
+// 	[
+// 	[
+// 		new MessageButton({
+// 			label: 'Autoslay (Saved)',
+// 			style: 'SECONDARY',
+// 			customID: 'assaved'
+// 		}),
+// 		new MessageButton({
+// 			label: 'Autoslay (Default)',
+// 			style: 'SECONDARY',
+// 			customID: 'asdef'
+// 		}),
+// 		new MessageButton({
+// 			label: 'Autoslay (EHP)',
+// 			style: 'SECONDARY',
+// 			customID: 'asehp'
+// 		}),
+// 		new MessageButton({
+// 			label: 'Autoslay (Boss)',
+// 			style: 'SECONDARY',
+// 			customID: 'asboss'
+// 		})
+// 	],
+// 	[
+// 		new MessageButton({
+// 			label: 'Cancel Task + New (30 points)',
+// 			style: 'DANGER',
+// 			customID: 'skip'
+// 		}),
+// 		new MessageButton({
+// 			label: 'Block Task + New (100 points)',
+// 			style: 'DANGER',
+// 			customID: 'block'
+// 		}),
+// 		new MessageButton({
+// 			label: 'Do Nothing',
+// 			style: 'SECONDARY',
+// 			customID: 'doNothing'
+// 		})
+// 	]
+// ];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -109,44 +109,59 @@ export default class extends BotCommand {
 				return msg.channel.send('It was not possible to auto-slay this task. Please, try again.');
 			}
 		}
-		const sentMessage = await msg.channel.send({ content: message, components: returnSuccessButtons });
-		try {
-			const selection = await sentMessage.awaitMessageComponentInteraction({
-				filter: i => {
-					if (i.user.id !== msg.author.id) {
-						i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-						return false;
-					}
-					return true;
-				},
-				time: Time.Second * 15
-			});
-			switch (selection.customID) {
-				case 'assaved': {
-					return this.client.commands.get('autoslay')!.run(msg, ['']);
-				}
-				case 'asdef': {
-					return this.client.commands.get('autoslay')!.run(msg, ['default']);
-				}
-				case 'asehp': {
-					return this.client.commands.get('autoslay')!.run(msg, ['ehp']);
-				}
-				case 'asboss': {
-					return this.client.commands.get('autoslay')!.run(msg, ['boss']);
-				}
-				case 'skip': {
-					msg.flagArgs.new = 'yes';
-					return this.client.commands.get('slayertask')!.run(msg, ['skip']);
-				}
-				case 'block': {
-					msg.flagArgs.new = 'yes';
-					return this.client.commands.get('slayertask')!.run(msg, ['block']);
-				}
-			}
-		} catch {
-		} finally {
-			await sentMessage.edit({ components: [] });
-		}
+
+		await new customMessageComponents()
+			.addButton({
+				label: 'Autoslay (Saved)',
+				customID: 'autoslay_saved',
+				style: 'SECONDARY',
+				onClick: msg => this.client.commands.get('autoslay')!.run(msg, ['']),
+				messageCharacter: 's'
+			})
+			.addButton({
+				label: 'Autoslay (Default)',
+				customID: 'autoslay_default',
+				style: 'SECONDARY',
+				onClick: msg => this.client.commands.get('autoslay')!.run(msg, ['default']),
+				messageCharacter: 'd'
+			})
+			.addButton({
+				label: 'Autoslay (EHP)',
+				customID: 'autoslay_ehp',
+				style: 'SECONDARY',
+				onClick: msg => this.client.commands.get('autoslay')!.run(msg, ['ehp']),
+				messageCharacter: 'e'
+			})
+			.addButton({
+				label: 'Autoslay (Highest)',
+				customID: 'autoslay_highest',
+				style: 'SECONDARY',
+				onClick: msg => this.client.commands.get('autoslay')!.run(msg, ['boss']),
+				messageCharacter: 'h'
+			})
+			.addButton({
+				label: 'Skip + New Task',
+				customID: 'autoslay_skip',
+				style: 'DANGER',
+				onClick: msg => this.client.commands.get('slayertask')!.run(msg, ['skip']),
+				messageCharacter: 'c'
+			})
+			.addButton({
+				label: 'Block + New Task',
+				customID: 'autoslay_block',
+				style: 'DANGER',
+				onClick: msg => this.client.commands.get('slayertask')!.run(msg, ['block']),
+				messageCharacter: 'b'
+			})
+			.addButton({
+				label: 'Hide buttons',
+				customID: 'autoslay_hide',
+				style: 'SECONDARY',
+				onClick: () => {},
+				messageCharacter: 'x'
+			})
+			.setOptions({ chunkSize: 4 })
+			.sendMessage({ user: msg.author, channel: msg.channel, data: message });
 	}
 
 	@requiresMinion
