@@ -111,7 +111,7 @@ export async function fetchSponsors() {
 export async function getUserFromGithubID(githubID: string) {
 	const result = await client.query<{ id: string }[]>(`SELECT id FROM users WHERE github_id = '${githubID}';`);
 	if (result.length === 0) return null;
-	return fetchUser(client, result[0].id);
+	return client.fetchUser(result[0].id);
 }
 
 export function encryptJWT(payload: unknown, secret = CLIENT_SECRET) {
