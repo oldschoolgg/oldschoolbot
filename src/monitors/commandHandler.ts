@@ -21,6 +21,7 @@ export default class extends Monitor {
 		if (!message.commandText && message.prefix === this.client.mentionPrefix) {
 			return this.sendPrefixReminder(message);
 		}
+		console.log(111_111, message.command);
 		if (!message.commandText) return undefined;
 		if (!message.command) {
 			return this.client.emit(
