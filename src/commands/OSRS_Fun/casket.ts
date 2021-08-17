@@ -74,7 +74,9 @@ export default class extends BotCommand {
 
 		if (Object.keys(loot).length === 0) return msg.channel.send(`${title} and got nothing :(`);
 
-		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(loot.bank, title);
+		const { image } = await this.client.tasks
+			.get('bankImage')!
+			.generateBankImage(loot.bank, title, false, {}, msg.author);
 
 		return msg.channel.send({ files: [new MessageAttachment(image!, 'osbot.png')] });
 	}

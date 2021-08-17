@@ -6,6 +6,7 @@ import { IsNull, Not } from 'typeorm';
 import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Emoji } from '../../lib/constants';
 import { getCollectionItems } from '../../lib/data/Collections';
+import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
@@ -16,9 +17,12 @@ import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { ItemBank, SettingsEntry } from '../../lib/types';
 import { convertXPtoLVL, makePaginatedMessage, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import PostgresProvider from '../../providers/postgres';
+import { allOpenables } from './open';
 
 const CACHE_TIME = Time.Minute * 5;
+const allOpenableItems = allOpenables.map(getOSItem);
 
 export interface CLUser {
 	id: string;
@@ -112,7 +116,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|farmingcontracts|xp] [name:...string]',
+			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|farmingcontracts|xp|open] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -135,7 +139,8 @@ export default class extends BotCommand {
 		await this.cacheUsernames();
 	}
 
-	getUsername(userID: string) {
+	getUsername(userID: string, lbSize?: number) {
+		if (lbSize && lbSize < 10) return '(Anonymous)';
 		const username = this.usernameCache.map.get(userID);
 		if (!username) return '(Unknown)';
 		return username;
@@ -379,6 +384,65 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 		);
 	}
 
+	async open(msg: KlasaMessage, [name = '']: [string]) {
+		name = name.trim();
+
+		let entityID = -1;
+		let key = '';
+		let openableName = '';
+
+		const clue = !name
+			? undefined
+			: ClueTiers.find(
+					clue => stringMatches(clue.name, name) || clue.name.toLowerCase().includes(name.toLowerCase())
+			  );
+
+		if (clue) {
+			entityID = clue.id;
+			key = 'clueScores';
+			openableName = clue.name;
+		} else {
+			const openable = !name
+				? undefined
+				: allOpenableItems.find(
+						item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
+				  );
+			if (openable) {
+				entityID = openable.id;
+				key = 'openable_scores';
+				openableName = openable.name;
+			}
+		}
+
+		if (entityID === -1) {
+			return msg.channel.send(
+				`That's not a valid openable item! You can check: ${allOpenableItems.map(i => i.name).join(', ')}.`
+			);
+		}
+
+		let list = await this.query(
+			`SELECT id, "${key}" FROM users
+			WHERE CAST ("${key}"->>'${entityID}' AS INTEGER) > 3
+			${msg.flagArgs.im ? 'AND "minion.ironman" = true' : ''}
+			ORDER BY ("${key}"->>'${entityID}')::int DESC LIMIT 30;`
+		);
+
+		this.doMenu(
+			msg,
+			util
+				.chunk(list, 10)
+				.map(subList =>
+					subList
+						.map(
+							user =>
+								`**${this.getUsername(user.id, list.length)}:** ${user[key][entityID].toLocaleString()}`
+						)
+						.join('\n')
+				),
+			`Open Leaderboard for ${openableName}`
+		);
+	}
+
 	async skills(msg: KlasaMessage, [inputSkill = 'overall']: [string]) {
 		let res: SkillUser[] = [];
 		let overallUsers: OverallSkillUser[] = [];
@@ -388,15 +452,17 @@ ORDER BY u.petcount DESC LIMIT 2000;`
 		const skill = skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, inputSkill)));
 
 		if (inputSkill === 'overall') {
-			res = await this.query(
-				`SELECT id,  ${skillsVals.map(s => `"skills.${s.id}"`)}, ${skillsVals
-					.map(s => `"skills.${s.id}"`)
-					.join(' + ')} as totalxp
-FROM users
-${msg.flagArgs.im ? 'WHERE "minion.ironman" = true' : ''}
-ORDER BY totalxp
-DESC LIMIT 2000;`
-			);
+			const query = `SELECT
+								u.id,
+								${skillsVals.map(s => `"skills.${s.id}"`)},
+								${skillsVals.map(s => `"skills.${s.id}"`).join(' + ')} as totalxp,
+								u."minion.ironman"
+							FROM
+								users u
+							${msg.flagArgs.im ? ' WHERE "minion.ironman" = true ' : ''}
+							ORDER BY totalxp DESC
+							LIMIT 2000;`;
+			res = await this.query(query);
 			overallUsers = res.map(user => {
 				let totalLevel = 0;
 				for (const skill of skillsVals) {
@@ -418,9 +484,15 @@ DESC LIMIT 2000;`
 				return msg.channel.send("That's not a valid skill.");
 			}
 
-			res = await this.query(
-				`SELECT "skills.${skill.id}", id, "minion.ironman" FROM users ORDER BY "skills.${skill.id}" DESC LIMIT 2000;`
-			);
+			const query = `SELECT
+								u."skills.${skill.id}", u.id, u."minion.ironman"
+							FROM
+								users u
+							${msg.flagArgs.im ? ' WHERE "minion.ironman" = true ' : ''}
+							ORDER BY
+								1 DESC
+							LIMIT 2000;`;
+			res = await this.query(query);
 		}
 
 		const onlyForGuild = msg.flagArgs.server;
@@ -458,7 +530,7 @@ DESC LIMIT 2000;`
 						const objKey = `skills.${skill?.id}` as keyof SkillUser;
 						const skillXP = Number(obj[objKey] ?? 0);
 
-						return `**${this.getUsername(obj.id)}:** ${skillXP.toLocaleString()} xp (${convertXPtoLVL(
+						return `**${this.getUsername(obj.id)}:** ${skillXP.toLocaleString()} XP (${convertXPtoLVL(
 							skillXP
 						)})`;
 					})
@@ -490,9 +562,6 @@ ORDER BY qty DESC
 LIMIT 50;
 `)
 		).filter((i: any) => i.qty > 0) as CLUser[];
-		if (users.length === 0) {
-			return msg.channel.send('No users found.');
-		}
 
 		this.doMenu(
 			msg,
@@ -550,6 +619,9 @@ LIMIT 50;
 	}
 
 	async doMenu(msg: KlasaMessage, pages: string[], title: string) {
+		if (pages.length === 0) {
+			return msg.channel.send('Nobody is on this leaderboard.');
+		}
 		return makePaginatedMessage(
 			msg,
 			pages.map(p => ({ embeds: [new MessageEmbed().setTitle(title).setDescription(p)] }))

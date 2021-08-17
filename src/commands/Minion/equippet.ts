@@ -36,6 +36,11 @@ export default class extends BotCommand {
 			await this.client.commands.get('unequippet')?.run(msg, []);
 		}
 
+		const doubleCheckEquippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
+		if (doubleCheckEquippedPet) {
+			msg.author.log(`Aborting pet equip so we don't clobber ${doubleCheckEquippedPet}`);
+			return msg.channel.send('You still have a pet equipped, cancelling.');
+		}
 		await msg.author.settings.update([
 			[UserSettings.Minion.EquippedPet, petItem.id],
 			[UserSettings.Bank, removeItemFromBank(msg.author.settings.get(UserSettings.Bank), petItem.id)]

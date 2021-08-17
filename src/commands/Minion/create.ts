@@ -96,8 +96,6 @@ export default class extends BotCommand {
 		const outItems = new Bank(createableItem.outputItems).multiply(quantity);
 		const inItems = new Bank(createableItem.inputItems).multiply(quantity);
 
-		console.log(outItems, createableItem.outputItems);
-
 		const outputItemsString = outItems.toString();
 		const inputItemsString = inItems.toString();
 

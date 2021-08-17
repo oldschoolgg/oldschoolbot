@@ -60,6 +60,14 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	burstOrBarrage?: number;
 }
 
+export interface RevenantOptions extends ActivityTaskOptions {
+	monsterID: number;
+	quantity: number;
+	died: boolean;
+	usingPrayerPots: boolean;
+	skulled: boolean;
+	style: 'melee' | 'range' | 'mage';
+}
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	clueID: number;
 	quantity: number;
@@ -175,7 +183,7 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	plantsName: string | null;
 	channelID: string;
 	quantity: number;
-	upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null;
+	upgradeType: string | null;
 	payment?: boolean;
 	patchType: IPatchData;
 	getPatchType: string;
@@ -194,6 +202,10 @@ export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface AerialFishingActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
+export interface DriftNetActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 

@@ -16,7 +16,7 @@ import {
 import { UserSettings } from '../settings/types/UserSettings';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { ItemBank } from '../types';
-import { stringMatches } from '../util';
+import { addArrayOfNumbers, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
 	abyssalSireCL,
@@ -65,6 +65,7 @@ import {
 	generalGraardorCL,
 	giantMoleCL,
 	gnomeRestaurantCL,
+	godWarsDungeonGodswordShards,
 	grotesqueGuardiansCL,
 	hallowedSepulchreCL,
 	hesporiCL,
@@ -176,6 +177,42 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.CommanderZilyana.allItems,
 				items: commanderZilyanaCL,
 				roleCategory: ['bosses']
+			},
+			'God Wars Dungeon': {
+				alias: ['gwd', 'godwars'],
+				kcActivity: {
+					Default: async user => {
+						return addArrayOfNumbers(
+							[
+								Monsters.GeneralGraardor.id,
+								Monsters.CommanderZilyana.id,
+								Monsters.Kreearra.id,
+								Monsters.KrilTsutsaroth.id
+							].map(i => user.getKC(i))
+						);
+					}
+				},
+				allItems: (() => {
+					return [
+						...new Set(
+							...[
+								Monsters.GeneralGraardor.allItems,
+								Monsters.CommanderZilyana.allItems,
+								Monsters.Kreearra.allItems,
+								Monsters.KrilTsutsaroth.allItems
+							]
+						)
+					];
+				})(),
+				items: [
+					...godWarsDungeonGodswordShards,
+					...commanderZilyanaCL,
+					...generalGraardorCL,
+					...kreeArraCL,
+					...krilTsutsarothCL
+				].sort((a, b) => a - b),
+				hidden: true,
+				counts: false
 			},
 			'Corporeal Beast': {
 				alias: Monsters.CorporealBeast.aliases,
@@ -598,10 +635,10 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Pest Control': {
-				enabled: false,
 				items: pestControlCL,
 				roleCategory: ['minigames'],
-				isActivity: true
+				isActivity: true,
+				alias: ['pc']
 			},
 			"Rogues' Den": {
 				alias: ['rogues den', 'rd'],
@@ -726,7 +763,45 @@ export const allCollectionLogs: ICollection = {
 				items: randomEventsCL
 			},
 			Revenants: {
-				enabled: false,
+				alias: ['revs'],
+				kcActivity: {
+					Default: async user => {
+						return addArrayOfNumbers(
+							[
+								Monsters.RevenantImp.id,
+								Monsters.RevenantGoblin.id,
+								Monsters.RevenantPyrefiend.id,
+								Monsters.RevenantHobgoblin.id,
+								Monsters.RevenantCyclops.id,
+								Monsters.RevenantHellhound.id,
+								Monsters.RevenantDemon.id,
+								Monsters.RevenantOrk.id,
+								Monsters.RevenantDarkBeast.id,
+								Monsters.RevenantKnight.id,
+								Monsters.RevenantDragon.id
+							].map(i => user.getKC(i))
+						);
+					}
+				},
+				allItems: (() => {
+					return [
+						...new Set(
+							...[
+								Monsters.RevenantImp.allItems,
+								Monsters.RevenantGoblin.allItems,
+								Monsters.RevenantPyrefiend.allItems,
+								Monsters.RevenantHobgoblin.allItems,
+								Monsters.RevenantCyclops.allItems,
+								Monsters.RevenantHellhound.allItems,
+								Monsters.RevenantDemon.allItems,
+								Monsters.RevenantOrk.allItems,
+								Monsters.RevenantDarkBeast.allItems,
+								Monsters.RevenantKnight.allItems,
+								Monsters.RevenantDragon.allItems
+							]
+						)
+					];
+				})(),
 				items: revenantsCL
 			},
 			'Rooftop Agility': {

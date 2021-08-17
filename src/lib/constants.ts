@@ -122,6 +122,7 @@ export const enum Emoji {
 	Minigames = '<:minigameIcon:630400565070921761>',
 	Skull = '<:Skull:802136963926065165>',
 	CombatSword = '<:combat:802136963956080650>',
+	OSRSSkull = '<:skull:863392427040440320>',
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>'
 }
 
@@ -186,6 +187,7 @@ export const enum Tasks {
 	ChampionsChallenge = 'championsChallengeActivity',
 	BirdhouseActivity = 'birdhouseActivity',
 	AerialFishingActivity = 'aerialFishingActivity',
+	DriftNetActivity = 'driftNetActivity',
 	MahoganyHomes = 'mahoganyHomesActivity',
 	GnomeRestaurant = 'gnomeRestaurantActivity',
 	SoulWars = 'soulWarsActivity',
@@ -200,7 +202,9 @@ export const enum Tasks {
 	MageArena2 = 'mageArena2Activity',
 	BigChompyBirdHunting = 'chompyHuntActivity',
 	DarkAltar = 'darkAltarActivity',
-	TrekkingActivity = 'templeTrekkingActivity'
+	TrekkingActivity = 'templeTrekkingActivity',
+	RevenantsActivity = 'revenantsActivity',
+	PestControl = 'pestControlActivity'
 }
 
 export enum Activity {
@@ -248,6 +252,7 @@ export enum Activity {
 	AgilityArena = 'AgilityArena',
 	ChampionsChallenge = 'ChampionsChallenge',
 	AerialFishing = 'AerialFishing',
+	DriftNet = 'DriftNet',
 	MahoganyHomes = 'MahoganyHomes',
 	GnomeRestaurant = 'GnomeRestaurant',
 	SoulWars = 'SoulWars',
@@ -262,7 +267,9 @@ export enum Activity {
 	MageArena2 = 'MageArena2',
 	BigChompyBirdHunting = 'BigChompyBirdHunting',
 	DarkAltar = 'DarkAltar',
-	Trekking = 'Trekking'
+	Trekking = 'Trekking',
+	Revenants = 'Revenants',
+	PestControl = 'PestControl'
 }
 
 export enum ActivityGroup {
@@ -392,6 +399,7 @@ export const badges: { [key: number]: string } = {
 };
 
 export const MAX_QP = 284;
+export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
 

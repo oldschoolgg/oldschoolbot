@@ -21,7 +21,11 @@ const itemsToNotifyOf = cluesRaresCL
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
 	.concat([itemID('Bloodhound')]);
 
-const allOpenables = [...Openables.map(i => i.id), ...ClueTiers.map(i => i.id), ...botOpenables.map(i => i.itemID)];
+export const allOpenables = [
+	...Openables.map(i => i.id),
+	...ClueTiers.map(i => i.id),
+	...botOpenables.map(i => i.itemID)
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -236,6 +240,9 @@ export default class extends BotCommand {
 		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
 		const score = msg.author.getOpenableScore(botOpenable.itemID);
 		const loot = botOpenable.table.roll(quantity);
+
+		const nthOpenable = formatOrdinal(score + randInt(1, quantity));
+
 		if (loot.has("Lil' creator")) {
 			this.client.emit(
 				Events.ServerNotification,
@@ -243,9 +250,14 @@ export default class extends BotCommand {
 					msg.author.minionName
 				}, just received a Lil' creator! They've done ${await msg.author.getMinigameScore(
 					'SoulWars'
-				)} Soul wars games, and this is their ${formatOrdinal(
-					score + randInt(1, quantity)
-				)} Spoils of war crate.`
+				)} Soul wars games, and this is their ${nthOpenable} Spoils of war crate.`
+			);
+		}
+
+		if (botOpenable.itemID === itemID('Bag full of gems') && loot.has('Uncut onyx')) {
+			this.client.emit(
+				Events.ServerNotification,
+				`${msg.author} just received an Uncut Onyx from their ${nthOpenable} Bag full of gems!`
 			);
 		}
 

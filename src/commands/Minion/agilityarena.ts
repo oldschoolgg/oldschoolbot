@@ -169,7 +169,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 		if (input === 'xp') {
 			if (!(qty in ticketQuantities)) {
 				return msg.channel.send(
-					`You can only redeem tickets for XP at the following quantities: ${Object.values(
+					`You can only redeem tickets for XP at the following quantities: ${Object.keys(
 						ticketQuantities
 					).join(', ')}.`
 				);
@@ -185,7 +185,8 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			await msg.author.removeItemFromBank(itemID('Agility arena ticket'), qty);
 			await msg.author.addXP({
 				skillName: SkillsEnum.Agility,
-				amount: xpToGive
+				amount: xpToGive,
+				artificial: true
 			});
 			if (hasKaramjaMed) {
 				str += '\n\nYou received 10% extra XP for the Karamja Medium Diary.';

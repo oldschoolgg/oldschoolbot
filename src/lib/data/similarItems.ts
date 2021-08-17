@@ -299,7 +299,22 @@ const source: [string, (string | number)[]][] = [
 	['Angler hat', ['Spirit angler headband']],
 	['Angler top', ['Spirit angler top']],
 	['Angler waders', ['Spirit angler waders']],
-	['Angler boots', ['Spirit angler boots']]
+	['Angler boots', ['Spirit angler boots']],
+	['Flippers', ['Dark flippers']],
+	[
+		'Merfolk trident',
+		[
+			'Trident of the seas (full)',
+			'Trident of the seas',
+			'Uncharged trident',
+			'Trident of the seas (e)',
+			'Uncharged trident (e)',
+			'Trident of the swamp',
+			'Uncharged toxic trident',
+			'Trident of the swamp (e)',
+			'Uncharged toxic trident (e)'
+		]
+	]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(

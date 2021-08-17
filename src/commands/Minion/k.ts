@@ -362,16 +362,17 @@ export default class extends BotCommand {
 					break;
 			}
 
+			if (monster.wildy) gearToCheck = GearSetupTypes.Wildy;
+
 			const [result] = await removeFoodFromUser({
 				client: this.client,
 				user: msg.author,
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
-				attackStylesUsed: removeDuplicatesFromArray([
-					...objectKeys(monster.minimumGearRequirements ?? {}),
-					gearToCheck
-				]),
+				attackStylesUsed: monster.wildy
+					? [GearSetupTypes.Wildy]
+					: removeDuplicatesFromArray([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced
 			});
 
