@@ -12,6 +12,8 @@ import {
 import { chunk, objectEntries, objectValues, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 
+import { SILENT_ERROR } from '../constants';
+
 export type customComponentButtonFunction =
 	| ((msg: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>)
 	| ((msg: KlasaMessage) => void);
@@ -26,6 +28,9 @@ export type customMessageButtonOptions = MessageButtonOptions & {
 interface IOptions {
 	time: number;
 	chunkSize: number;
+	timeLimitMessage?: string;
+	timeLimitThrows?: boolean;
+	deleteOnSuccess?: boolean;
 }
 
 const userCache: Record<string, string> = {};
@@ -82,11 +87,23 @@ export class customMessageComponents {
 		return Object.keys(this.functions).length > 0 ? this.functions : undefined;
 	}
 
-	public async clearMessage(message: KlasaMessage) {
-		return message.edit({
-			content: message.content.replace(/\*\* \*\* \*\* \*\*\n(.+?)\*\* \*\* \*\* \*\*/, ''),
-			components: []
-		});
+	public async clearMessage(message: KlasaMessage, type?: string) {
+		if (type !== 'error') {
+			await message.edit({
+				content:
+					type === 'timelimit' && this.options.timeLimitMessage
+						? this.options.timeLimitMessage
+						: message.content.replace(/\*\* \*\* \*\* \*\*\n(.+?)\*\* \*\* \*\* \*\*/, ''),
+				components: []
+			});
+		} else {
+			await message.edit({ components: [] });
+		}
+		if ((type === 'timelimit' && this.options.timeLimitThrows) || type === 'error') {
+			throw new Error(SILENT_ERROR);
+		} else if (type === 'sucess' && this.options.deleteOnSuccess) {
+			await message.delete();
+		}
 	}
 
 	/**
@@ -153,7 +170,7 @@ export class customMessageComponents {
 				]);
 
 				if (user.minionIsBusy || (this._client && this._client.oneCommandAtATimeCache.has(user.id))) {
-					await this.clearMessage(message);
+					await this.clearMessage(message, 'busy_or_one_at_time');
 					return message;
 				}
 
@@ -164,7 +181,7 @@ export class customMessageComponents {
 				} else {
 					// Ignore text responses from old messages
 					if (userCache[user.id] !== message.id) {
-						await this.clearMessage(message);
+						await this.clearMessage(message, 'old_message_text_reply');
 						return message;
 					}
 					response = selection.entries().next().value[1].content.toLowerCase();
@@ -183,9 +200,9 @@ export class customMessageComponents {
 					message.author = user;
 					this.functions[response].function!(message);
 				}
-				await this.clearMessage(message);
+				await this.clearMessage(message, 'sucess');
 			} catch (e) {
-				await this.clearMessage(message);
+				await this.clearMessage(message, e instanceof Error ? 'error' : 'timelimit');
 			} finally {
 				if (userCache[user.id] === message.id) delete userCache[user.id];
 				if (this._client !== undefined) {

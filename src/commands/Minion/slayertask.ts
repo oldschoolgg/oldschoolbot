@@ -21,48 +21,6 @@ import { stringMatches } from '../../lib/util';
 import { customMessageComponents } from '../../lib/util/customMessageComponents';
 import itemID from '../../lib/util/itemID';
 
-// 	[
-// 	[
-// 		new MessageButton({
-// 			label: 'Autoslay (Saved)',
-// 			style: 'SECONDARY',
-// 			customID: 'assaved'
-// 		}),
-// 		new MessageButton({
-// 			label: 'Autoslay (Default)',
-// 			style: 'SECONDARY',
-// 			customID: 'asdef'
-// 		}),
-// 		new MessageButton({
-// 			label: 'Autoslay (EHP)',
-// 			style: 'SECONDARY',
-// 			customID: 'asehp'
-// 		}),
-// 		new MessageButton({
-// 			label: 'Autoslay (Boss)',
-// 			style: 'SECONDARY',
-// 			customID: 'asboss'
-// 		})
-// 	],
-// 	[
-// 		new MessageButton({
-// 			label: 'Cancel Task + New (30 points)',
-// 			style: 'DANGER',
-// 			customID: 'skip'
-// 		}),
-// 		new MessageButton({
-// 			label: 'Block Task + New (100 points)',
-// 			style: 'DANGER',
-// 			customID: 'block'
-// 		}),
-// 		new MessageButton({
-// 			label: 'Do Nothing',
-// 			style: 'SECONDARY',
-// 			customID: 'doNothing'
-// 		})
-// 	]
-// ];
-
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -73,7 +31,7 @@ export default class extends BotCommand {
 			aliases: ['st'],
 			description: 'Gets a slayer task from the master of your choice.',
 			examples: ['+slayertask turael', '+st duradel --save', '+st konar --forget'],
-			usage: '[input:str]'
+			usage: '[input:str] [new]'
 		});
 	}
 
@@ -143,14 +101,14 @@ export default class extends BotCommand {
 				label: 'Skip + New Task',
 				customID: 'autoslay_skip',
 				style: 'DANGER',
-				onClick: msg => this.client.commands.get('slayertask')!.run(msg, ['skip']),
+				onClick: msg => this.client.commands.get('slayertask')!.run(msg, ['skip', 'new']),
 				messageCharacter: 'c'
 			})
 			.addButton({
 				label: 'Block + New Task',
 				customID: 'autoslay_block',
 				style: 'DANGER',
-				onClick: msg => this.client.commands.get('slayertask')!.run(msg, ['block']),
+				onClick: msg => this.client.commands.get('slayertask')!.run(msg, ['block', 'new']),
 				messageCharacter: 'b'
 			})
 			.addButton({
@@ -165,7 +123,7 @@ export default class extends BotCommand {
 	}
 
 	@requiresMinion
-	async run(msg: KlasaMessage, [input]: [string | undefined]) {
+	async run(msg: KlasaMessage, [input, newTask]: [string | undefined, string | undefined]) {
 		const { currentTask, totalTasksDone, assignedTask } = await getUsersCurrentSlayerInfo(msg.author.id);
 		const myBlockList = msg.author.settings.get(UserSettings.Slayer.BlockedTasks);
 		const myQPs = msg.author.settings.get(UserSettings.QP);
@@ -277,7 +235,7 @@ export default class extends BotCommand {
 					toBlock ? 'blocked' : 'skipped'
 				}. You have ${slayerPoints.toLocaleString()} slayer points.`
 			);
-			if (Boolean(msg.flagArgs.new)) {
+			if (Boolean(msg.flagArgs.new) || newTask === 'new') {
 				return this.client.commands.get('slayertask')!.run(msg, []);
 			}
 			return;

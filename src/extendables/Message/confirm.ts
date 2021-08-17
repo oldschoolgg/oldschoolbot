@@ -1,8 +1,8 @@
-import { Message, MessageButton } from 'discord.js';
-import { Time } from 'e';
+import { Message } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
 
 import { SILENT_ERROR } from '../../lib/constants';
+import { customMessageComponents } from '../../lib/util/customMessageComponents';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -11,53 +11,29 @@ export default class extends Extendable {
 
 	async confirm(this: KlasaMessage, str: string): Promise<void> {
 		if (this.flagArgs.confirm || this.flagArgs.cf) return;
-
-		const confirmMessage = await this.channel.send({
-			content: str,
-			components: [
-				[
-					new MessageButton({
-						label: 'Confirm',
-						style: 'PRIMARY',
-						customID: 'CONFIRM'
-					}),
-					new MessageButton({
-						label: 'Cancel',
-						style: 'SECONDARY',
-						customID: 'CANCEL'
-					})
-				]
-			]
-		});
-
-		const cancel = async (reason: string) => {
-			await confirmMessage.edit({ components: [], content: `${this.author} ${reason}.` });
-			throw new Error(SILENT_ERROR);
-		};
-
-		async function confirm() {
-			await confirmMessage.delete();
-		}
-
-		try {
-			const selection = await confirmMessage.awaitMessageComponentInteraction({
-				filter: i => {
-					if (i.user.id !== this.author.id) {
-						i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-						return false;
-					}
-					return true;
+		await new customMessageComponents()
+			.addButton({
+				label: 'Confirm',
+				customID: 'confirm_message',
+				style: 'PRIMARY',
+				messageCharacter: 'c'
+			})
+			.addButton({
+				label: 'Cancel',
+				customID: 'cancel_message',
+				style: 'SECONDARY',
+				onClick: msg => {
+					msg.edit(`${this.author} cancelled the confirmation.`);
+					throw new Error(SILENT_ERROR);
 				},
-				time: Time.Second * 15
-			});
-			if (selection.customID === 'CANCEL') {
-				return cancel('cancelled the confirmation');
-			}
-			if (selection.customID === 'CONFIRM') {
-				return confirm();
-			}
-		} catch {
-			return cancel("didn't confirm within the time limit");
-		}
+				messageCharacter: 'x'
+			})
+			.setOptions({
+				chunkSize: 4,
+				timeLimitMessage: `${this.author} didn't confirm within the time limit`,
+				timeLimitThrows: true,
+				deleteOnSuccess: true
+			})
+			.sendMessage({ user: this.author, channel: this.channel, data: str });
 	}
 }
