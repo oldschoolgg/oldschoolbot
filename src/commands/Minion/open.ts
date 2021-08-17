@@ -153,7 +153,7 @@ export default class extends BotCommand {
 				if (itemsAdded[tier.scrollID] && itemsAdded[tier.scrollID] > 0) {
 					components.addButton({
 						label: `Do ${tier.name.toLowerCase()} clue`,
-						customID: `clueTier_${tier.id}`,
+						customID: `open_clueTier_${tier.id}`,
 						style: 'SECONDARY',
 						onClick: msg =>
 							(this.client.commands.get('minion') as unknown as MinionCommand).clue(msg, [
@@ -168,13 +168,13 @@ export default class extends BotCommand {
 			if (components.getButtons()) {
 				components.addButton({
 					label: 'Cancel',
-					customID: 'anotherTime',
+					customID: 'open_anotherTime',
 					style: 'SECONDARY',
-					messageCharacter: 'c'
+					messageCharacter: 'x'
 				});
 			}
 		}
-		return msg.channel.sendBankImage({
+		msg.channel.sendBankImage({
 			bank: itemsAdded,
 			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.`,
 			title: opened,

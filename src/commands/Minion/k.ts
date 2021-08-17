@@ -364,19 +364,25 @@ export default class extends BotCommand {
 
 			if (monster.wildy) gearToCheck = GearSetupTypes.Wildy;
 
-			const [result] = await removeFoodFromUser({
-				client: this.client,
-				user: msg.author,
-				totalHealingNeeded: healAmountNeeded * quantity,
-				healPerAction: Math.ceil(healAmountNeeded / quantity),
-				activityName: monster.name,
-				attackStylesUsed: monster.wildy
-					? [GearSetupTypes.Wildy]
-					: removeDuplicatesFromArray([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
-				learningPercentage: percentReduced
-			});
-
-			foodStr = result;
+			try {
+				const [result] = await removeFoodFromUser({
+					client: this.client,
+					user: msg.author,
+					totalHealingNeeded: healAmountNeeded * quantity,
+					healPerAction: Math.ceil(healAmountNeeded / quantity),
+					activityName: monster.name,
+					attackStylesUsed: monster.wildy
+						? [GearSetupTypes.Wildy]
+						: removeDuplicatesFromArray([
+								...objectKeys(monster.minimumGearRequirements ?? {}),
+								gearToCheck
+						  ]),
+					learningPercentage: percentReduced
+				});
+				foodStr = result;
+			} catch (e) {
+				return msg.channel.send(e);
+			}
 		}
 
 		// Boosts that don't affect quantity:

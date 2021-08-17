@@ -60,13 +60,6 @@ const returnSuccessButtons = [
 			style: 'SECONDARY',
 			customID: 'doNothing'
 		})
-	],
-	[
-		new MessageButton({
-			label: 'Cancel',
-			style: 'SECONDARY',
-			customID: 'doNothing'
-		})
 	]
 ];
 

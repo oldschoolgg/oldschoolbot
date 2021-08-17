@@ -80,6 +80,13 @@ export class customMessageComponents {
 		return Object.keys(this.functions).length > 0 ? this.functions : undefined;
 	}
 
+	public async clearMessage(message: KlasaMessage) {
+		return message.edit({
+			content: message.content.replace(/\*\* \*\* \*\* \*\*\n(.+?)\*\* \*\* \*\* \*\*/, ''),
+			components: []
+		});
+	}
+
 	/**
 	 * Send a message to the channel specified, with all the buttons created that only the user specified can react to.
 	 * @param options
@@ -102,7 +109,7 @@ export class customMessageComponents {
 			.map(f => f.char!.toLowerCase());
 
 		if (allowsTypedChars.length > 0) {
-			data.content += '\nYou can type the following as shortcut:\n';
+			data.content += '\n** ** ** **\n';
 		}
 		const textShortcuts = [];
 		for (const d of this.buttons as customMessageButtonOptions[]) {
@@ -112,7 +119,7 @@ export class customMessageComponents {
 				);
 			}
 		}
-		if (textShortcuts.length > 0) data.content += textShortcuts.join(', ');
+		if (textShortcuts.length > 0) data.content += `${textShortcuts.join(', ')}** ** ** **`;
 
 		const message = await channel.send(data);
 		userCache[user.id] = message.id;
@@ -144,7 +151,7 @@ export class customMessageComponents {
 				]);
 
 				if (user.minionIsBusy || (this._client && this._client.oneCommandAtATimeCache.has(user.id))) {
-					await message.edit({ components: [] });
+					await this.clearMessage(message);
 					return message;
 				}
 
@@ -155,7 +162,7 @@ export class customMessageComponents {
 				} else {
 					// Ignore text responses from old messages
 					if (userCache[user.id] !== message.id) {
-						await message.edit({ components: [] });
+						await this.clearMessage(message);
 						return message;
 					}
 					response = selection.entries().next().value[1].content.toLowerCase();
@@ -174,9 +181,9 @@ export class customMessageComponents {
 					message.author = user;
 					this.functions[response].function!(message);
 				}
-				await message.edit({ components: [] });
+				await this.clearMessage(message);
 			} catch (e) {
-				await message.edit({ components: [] });
+				await this.clearMessage(message);
 			} finally {
 				if (userCache[user.id] === message.id) delete userCache[user.id];
 				if (this._client !== undefined) {
