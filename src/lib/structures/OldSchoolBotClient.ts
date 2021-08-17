@@ -45,4 +45,10 @@ export class OldSchoolBotClient extends Client {
 		await syncActivityCache();
 		return super.login(token);
 	}
+
+	async fetchUser(id: string) {
+		const user = await this.users.fetch(id);
+		await user.settings.sync();
+		return user;
+	}
 }

@@ -16,7 +16,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: AgilityActivityTaskOptions) {
 		let { courseID, quantity, userID, channelID, duration, alch } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
 		const course = Agility.Courses.find(course => course.name === courseID)!;
