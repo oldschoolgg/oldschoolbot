@@ -21,8 +21,8 @@ export default class extends Task {
 
 		for (let i = 0; i < quantity; i++) {
 			for (const floor of completedFloors) {
-				if (floor.number === 5) {
-					loot.add(GrandHallowedCoffin.roll());
+				if (floor.number >= 5) {
+					loot.add(GrandHallowedCoffin.roll(), { 5: 1, 6: 2, 7: 3 }[floor.number] ?? 1);
 				}
 
 				const numCoffinsToOpen = 1;
