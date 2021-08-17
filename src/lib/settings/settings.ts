@@ -11,12 +11,19 @@ import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { NewUserTable } from '../typeorm/NewUserTable.entity';
 import { ActivityTaskData } from '../types/minions';
 
+const guildSettingsCache = new Map<string, Settings>();
+
 export async function getGuildSettings(guild: Guild) {
-	return (guild.client.gateways.get('guilds') as Gateway)!.acquire(guild);
+	const cached = guildSettingsCache.get(guild.id);
+	if (cached) return cached;
+	const gateway = (guild.client.gateways.get('guilds') as Gateway)!;
+	const settings = await gateway.acquire(guild);
+	guildSettingsCache.set(guild.id, settings);
+	return settings;
 }
 
 export function getGuildSettingsCached(guild: Guild) {
-	return (guild.client.gateways.get('guilds') as Gateway)!.get(guild.id);
+	return guildSettingsCache.get(guild.id);
 }
 
 export async function getUserSettings(userID: string): Promise<Settings> {

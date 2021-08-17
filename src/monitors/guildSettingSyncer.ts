@@ -10,10 +10,8 @@ export default class extends Monitor {
 	public async run(msg: KlasaMessage) {
 		if (msg.guild) {
 			const cachedSettings = getGuildSettingsCached(msg.guild);
-			console.log({ cachedSettings });
 			if (!cachedSettings) {
-				const t = await getGuildSettings(msg.guild);
-				console.log({ t });
+				await getGuildSettings(msg.guild);
 			}
 		}
 	}
