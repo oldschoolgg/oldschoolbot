@@ -27,7 +27,7 @@ import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import { Consumable } from '../../lib/minions/types';
+import { Consumable, KillableMonster } from '../../lib/minions/types';
 import { calcPOHBoosts } from '../../lib/poh';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -77,6 +77,105 @@ function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles
 	}
 
 	return [newDuration, str];
+}
+
+async function killUntilCalculation(data: {
+	msg: KlasaMessage;
+	monster: KillableMonster;
+	duration: number;
+	quantity: number;
+	usingCannon: boolean;
+	lootToRemove: Bank;
+	foodToGiveBack: Bank;
+}) {
+	const { msg, monster, usingCannon, lootToRemove, foodToGiveBack } = data;
+	let { quantity, duration } = data;
+	let seededLoot:
+		| { loot: ItemBank; superiorCount: number; returnLootCost: ItemBank; untilItems: number[] }
+		| undefined = undefined;
+	let factor = 1;
+	let untilStr = '';
+	// Check for until flags
+	if (msg.flagArgs.until || msg.flagArgs.clues) {
+		let untilBank = parseStringBank(msg.flagArgs.until ?? '').map(u => u[0].id);
+		if (msg.flagArgs.clues) {
+			for (const c of ClueTiers) {
+				untilBank.push(getOSItem(c.scrollID).id);
+			}
+		}
+		if (untilBank.length > 0) {
+			const allMonsterLoot: number[] = [];
+			allMonsterLoot.push(...Monsters.get(monster.id)!.allItems);
+			if (monster.superior) allMonsterLoot.push(...Monsters.get(monster.superior!.id!)!.allItems);
+			const allowedItems: number[] = [];
+			for (const _item of [...new Set(allMonsterLoot)]) {
+				if (untilBank.includes(_item)) allowedItems.push(_item);
+			}
+			untilBank = allowedItems;
+			if (untilBank.length > 0) {
+				const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
+				const isOnTask =
+					usersTask.assignedTask !== null &&
+					usersTask.currentTask !== null &&
+					usersTask.assignedTask.monsters.includes(monster.id);
+				const mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
+				const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
+				// Check if superiors unlock is purchased
+				const superiorsUnlocked = isOnTask
+					? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder)
+					: undefined;
+				const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
+				const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
+				const killOptions: MonsterKillOptions = {
+					onSlayerTask: isOnTask,
+					slayerMaster,
+					hasSuperiors: superiorTable,
+					inCatacombs: isInCatacombs
+				};
+
+				const calculatedLoot = new Bank();
+				const returnLootCost = new Bank();
+				let superiorCount = 0;
+				loopQty: for (let i = 1; i <= quantity; i++) {
+					if (superiorTable && isOnTask && roll(200)) {
+						superiorCount++;
+						calculatedLoot.add(superiorTable.kill(1));
+						if (isInCatacombs) calculatedLoot.add('Dark totem base', 1);
+					} else {
+						calculatedLoot.add(monster.table.kill(1, killOptions));
+					}
+					for (const j of untilBank) {
+						// Ignore clues that the user already have in the bank
+						if (ClueTiers.map(c => c.scrollID).includes(j) && msg.author.bank().has(j)) {
+							continue;
+						}
+						if (calculatedLoot.has(j)) {
+							factor = i / quantity;
+							duration = Math.ceil(duration * factor);
+							quantity = i;
+							const reimburseLoot = new Bank().add(lootToRemove).add(foodToGiveBack);
+							reimburseLoot.forEach((item, qty) => {
+								returnLootCost.add(item.id, Math.max(0, qty - Math.ceil(qty * factor)));
+							});
+							break loopQty;
+						}
+					}
+				}
+				seededLoot = {
+					loot: calculatedLoot.bank,
+					superiorCount,
+					returnLootCost: returnLootCost.bank,
+					untilItems: untilBank
+				};
+				untilStr += `You are killing **${monster.name}s** until one of the following drops: ${untilBank
+					.map(u => getOSItem(u).name)
+					.join(', ')}`;
+			} else {
+				untilStr += 'None of the items defined exists or can be dropped by this monster.';
+			}
+		}
+	}
+	return { seededLoot, untilStr, quantity, duration };
 }
 
 export default class extends BotCommand {
@@ -397,91 +496,18 @@ export default class extends BotCommand {
 		duration = Math.ceil(duration);
 		const displayDuration = duration;
 		const displayQuantity = quantity;
-		let factor = 1;
-		let seededLoot:
-			| { loot: ItemBank; superiorCount: number; returnLootCost: ItemBank; untilItems: number[] }
-			| undefined = undefined;
-		let untilStr = '';
-		// Check for until flags
-		if (msg.flagArgs.until || msg.flagArgs.clues) {
-			let untilBank = parseStringBank(msg.flagArgs.until ?? '').map(u => u[0].id);
-			if (msg.flagArgs.clues) {
-				for (const c of ClueTiers) {
-					untilBank.push(getOSItem(c.scrollID).id);
-				}
-			}
-			if (untilBank.length > 0) {
-				const allMonsterLoot: number[] = [];
-				allMonsterLoot.push(...Monsters.get(monster.id)!.allItems);
-				if (monster.superior) allMonsterLoot.push(...Monsters.get(monster.superior!.id!)!.allItems);
-				const allowedItems: number[] = [];
-				for (const _item of [...new Set(allMonsterLoot)]) {
-					if (untilBank.includes(_item)) allowedItems.push(_item);
-				}
-				untilBank = allowedItems;
-				if (untilBank.length > 0) {
-					const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
-					const isOnTask =
-						usersTask.assignedTask !== null &&
-						usersTask.currentTask !== null &&
-						usersTask.assignedTask.monsters.includes(monster.id);
-					const mySlayerUnlocks = msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks);
-					const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
-					// Check if superiors unlock is purchased
-					const superiorsUnlocked = isOnTask
-						? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder)
-						: undefined;
-					const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
-					const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
-					const killOptions: MonsterKillOptions = {
-						onSlayerTask: isOnTask,
-						slayerMaster,
-						hasSuperiors: superiorTable,
-						inCatacombs: isInCatacombs
-					};
+		const data = await killUntilCalculation({
+			msg,
+			monster,
+			foodToGiveBack,
+			lootToRemove,
+			quantity,
+			usingCannon,
+			duration
+		});
 
-					const calculatedLoot = new Bank();
-					const returnLootCost = new Bank();
-					let superiorCount = 0;
-					loopQty: for (let i = 1; i <= quantity; i++) {
-						if (superiorTable && isOnTask && roll(200)) {
-							superiorCount++;
-							calculatedLoot.add(superiorTable.kill(1));
-							if (isInCatacombs) calculatedLoot.add('Dark totem base', 1);
-						} else {
-							calculatedLoot.add(monster.table.kill(1, killOptions));
-						}
-						for (const j of untilBank) {
-							// Ignore clues that the user already have in the bank
-							if (ClueTiers.map(c => c.scrollID).includes(j) && msg.author.bank().has(j)) {
-								continue;
-							}
-							if (calculatedLoot.has(j)) {
-								factor = i / quantity;
-								duration = Math.ceil(duration * factor);
-								quantity = i;
-								const reimburseLoot = new Bank().add(lootToRemove).add(foodToGiveBack);
-								reimburseLoot.forEach((item, qty) => {
-									returnLootCost.add(item.id, Math.max(0, qty - Math.ceil(qty * factor)));
-								});
-								break loopQty;
-							}
-						}
-					}
-					seededLoot = {
-						loot: calculatedLoot.bank,
-						superiorCount,
-						returnLootCost: returnLootCost.bank,
-						untilItems: untilBank
-					};
-					untilStr += `You are killing **${monster.name}s** until one of the following drops: ${untilBank
-						.map(u => getOSItem(u).name)
-						.join(', ')}`;
-				} else {
-					untilStr += 'None of the items defined exists or can be dropped by this monster.';
-				}
-			}
-		}
+		duration = data.duration;
+		quantity = data.quantity;
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
 		await msg.author.removeItemsFromBank(lootToRemove);
@@ -494,7 +520,7 @@ export default class extends BotCommand {
 			displayQuantity: displayQuantity !== quantity ? displayQuantity : undefined,
 			duration,
 			displayDuration: displayDuration !== duration ? displayDuration : undefined,
-			seededLoot,
+			seededLoot: data.seededLoot,
 			type: Activity.MonsterKilling,
 			usingCannon,
 			cannonMulti,
@@ -522,8 +548,8 @@ export default class extends BotCommand {
 			response += `\n**Messages:** ${messages.join('\n')}.`;
 		}
 
-		if (untilStr) {
-			response += `\n${untilStr}`;
+		if (data.untilStr) {
+			response += `\n${data.untilStr}`;
 		}
 
 		return msg.channel.send(response);
