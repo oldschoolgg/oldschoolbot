@@ -4,7 +4,7 @@ import { Connection, createConnection } from 'typeorm';
 
 import { providerConfig } from '../../config';
 import { clientOptions } from '../config';
-import { syncActivityCache } from '../settings/settings';
+import { getGuildSettings, syncActivityCache } from '../settings/settings';
 import { piscinaPool } from '../workers';
 
 const { production } = clientOptions;
@@ -41,6 +41,10 @@ export class OldSchoolBotClient extends Client {
 			entities: [join(__dirname, '..', 'typeorm', '*.entity{.ts,.js}')],
 			synchronize: !production
 		});
+
+		for (const guild of this.guilds.cache.values()) {
+			getGuildSettings(guild);
+		}
 
 		await syncActivityCache();
 		return super.login(token);

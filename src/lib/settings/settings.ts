@@ -18,6 +18,7 @@ export async function getGuildSettings(guild: Guild) {
 	if (cached) return cached;
 	const gateway = (guild.client.gateways.get('guilds') as Gateway)!;
 	const settings = await gateway.acquire(guild);
+	gateway.cache.set(guild.id, { settings });
 	guildSettingsCache.set(guild.id, settings);
 	return settings;
 }

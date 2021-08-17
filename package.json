@@ -30,7 +30,7 @@
 		"fastify-sensible": "^3.1.1",
 		"he": "^1.2.0",
 		"jwt-simple": "^0.5.6",
-		"klasa": "https://github.com/gc/klasa.git#9760111063bec591aa4267506b4bf66d2c6401ca",
+		"klasa": "https://github.com/gc/klasa.git#91f42f7a5db8f451834b381ad5c88da760fa3c8f",
 		"klasa-decorators": "^0.0.1",
 		"node-fetch": "^2.6.1",
 		"oldschooljs": "^1.9.9",
