@@ -3670,9 +3670,9 @@ klasa-decorators@^0.0.1:
   resolved "https://registry.yarnpkg.com/klasa-decorators/-/klasa-decorators-0.0.1.tgz#c4bcc7dd2b78814b4f625e611f82790ec6061d52"
   integrity sha512-uCoMz750Lnp0dM8VC787hnRrF9wqWfUrjT7dp+8ihqp6xmtX8ZSXoeK08WJgAhEdEdIDsUG+VMXi9gcG54EZMA==
 
-"klasa@https://github.com/gc/klasa.git#91f42f7a5db8f451834b381ad5c88da760fa3c8f":
+"klasa@https://github.com/gc/klasa.git#3273add8c97b350a3b665898d242161e9729db09":
   version "0.5.0-dev"
-  resolved "https://github.com/gc/klasa.git#91f42f7a5db8f451834b381ad5c88da760fa3c8f"
+  resolved "https://github.com/gc/klasa.git#3273add8c97b350a3b665898d242161e9729db09"
   dependencies:
     "@klasa/querybuilder" "^0.0.1"
     "@klasa/settings-gateway" "^0.0.10"
