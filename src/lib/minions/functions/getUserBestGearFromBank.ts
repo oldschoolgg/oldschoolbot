@@ -1,6 +1,7 @@
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { addBanks, removeItemFromBank } from 'oldschooljs/dist/util';
 
+import { canEquipItemInThisGearType } from '../../../commands/Minion/equip';
 import { GearSetupTypes, GearStat } from '../../gear/types';
 import { Gear } from '../../structures/Gear';
 import { ItemBank, Skills } from '../../types';
@@ -94,6 +95,9 @@ export default function getUserBestGearFromBank(
 			? skillsMeetRequirements(skills, item.equipment.requirements)
 			: true;
 		if (item.equipable_by_player && item.equipment && item.equipment[gearStat] >= 0 && quantity > 0 && hasStats) {
+			// Ignore wilderness only items if non wildy gear type
+			const itemLockedTo = canEquipItemInThisGearType(gearType, item.id);
+			if (itemLockedTo !== true) continue;
 			equipables[item.equipment.slot].push(item.id);
 		}
 	}

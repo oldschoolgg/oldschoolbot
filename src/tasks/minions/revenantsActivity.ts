@@ -1,5 +1,6 @@
 import { deepClone, roll } from 'e';
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { revenantMonsters } from '../../commands/Minion/revs';
 import { GearSetupTypes } from '../../lib/gear';
@@ -43,6 +44,13 @@ export default class extends Task {
 			);
 			await user.settings.update(UserSettings.Gear.Wildy, calc.newGear);
 
+			let extraMsg = '';
+			if (calc.lostItems.has('Hellfire bow')) {
+				calc.lostItems.remove('Hellfire bow');
+				await user.addItemsToBank(new Bank().add('Hellfire bow (broken)'));
+				extraMsg += 'Your Hellfire bow broke and was sent to your bank.';
+			}
+
 			updateBankSetting(this.client, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
 
 			const flags: Record<string, string> = !skulled ? {} : { skull: 'skull' };
@@ -59,7 +67,7 @@ export default class extends Task {
 						: ''
 				} You died, you lost all your loot, and these equipped items: ${
 					calc.lostItems
-				}.\nHere is what you saved:`,
+				}. ${extraMsg}\nHere is what you saved:`,
 				res => {
 					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 					// @ts-ignore

@@ -10,6 +10,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GearPresetsTable } from '../../lib/typeorm/GearPresetsTable.entity';
 import { cleanString, isValidGearSetup } from '../../lib/util';
+import { canEquipItemInThisGearType } from './equip';
 
 function maxPresets(user: KlasaUser) {
 	return user.perkTier * 2 + 3;
@@ -97,6 +98,16 @@ export default class extends BotCommand {
 		if (preset.Ammo) {
 			newGear.ammo = { item: preset.Ammo, quantity: preset.AmmoQuantity! };
 			toRemove.add(preset.Ammo, preset.AmmoQuantity!);
+		}
+
+		const cantEquip = new Bank();
+		for (const i of toRemove.items()) {
+			if (canEquipItemInThisGearType(setup, i[0].id) !== true) {
+				cantEquip.add(i[0].id, i[1] ?? 1);
+			}
+		}
+		if (cantEquip.length > 0) {
+			return msg.channel.send(`You can't equip the following items on your ${setup} setup: ${cantEquip}.`);
 		}
 
 		if (!msg.author.bank().has(toRemove.bank)) {

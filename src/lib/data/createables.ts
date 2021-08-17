@@ -1,4 +1,5 @@
 import { Bank } from 'oldschooljs';
+import { resolveBank } from 'oldschooljs/dist/util';
 
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
@@ -529,6 +530,20 @@ const brokenItems: Createable[] = [
 			[itemID('Void melee helm')]: 1
 		},
 		GPCost: 100_000_000,
+		noCl: true
+	},
+	{
+		name: 'Fix hellfire bow',
+		inputItems: resolveBank({
+			'Hellfire bow (broken)': 1,
+			'Ignecarus dragonclaw': 1,
+			'Smouldering stone': 1,
+			"Dragon's fury": 1
+		}),
+		outputItems: {
+			[itemID('Hellfire bow')]: 1
+		},
+		GPCost: 200_000_000,
 		noCl: true
 	}
 ];

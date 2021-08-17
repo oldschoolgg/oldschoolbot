@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
 
+import { SkillsEnum } from '../../skilling/types';
 import { ItemBank, ItemPriceCache } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
@@ -97,4 +98,6 @@ export namespace ClientSettings {
 		export const GPSourceItemContracts = T<number>('gp_ic');
 		export const GPSourceLuckyPick = T<number>('gp_luckypick');
 	}
+
+	export const LockedSkills = T<readonly SkillsEnum[]>('locked_skills');
 }
