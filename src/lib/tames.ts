@@ -112,7 +112,7 @@ export async function runTameTask(activity: TameActivityTable) {
 			let str = `${user}, ${activity.tame.name} finished killing ${quantity}x ${fullMonster.name}.`;
 			const boosts = [];
 			if (hasOri) {
-				boosts.push('25% extra loot (ate a Ori)');
+				boosts.push('25% extra loot (ate an Ori)');
 			}
 			if (boosts.length > 0) {
 				str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
