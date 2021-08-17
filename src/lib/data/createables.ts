@@ -1715,6 +1715,16 @@ const Createables: Createable[] = [
 			slayer: 62
 		}
 	},
+	{
+		name: 'Ring of endurance',
+		inputItems: resolveNameBank({
+			'Ring of endurance (uncharged)': 1,
+			'Stamina potion (4)': 125
+		}),
+		outputItems: {
+			[itemID('Ring of endurance')]: 1
+		}
+	},
 	...crystalTools,
 	...ornamentKits,
 	...hunterClothing,
