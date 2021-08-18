@@ -101,9 +101,19 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (msg.author.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
+		if (msg.author.hasItemEquippedOrInBank(['Achievement diary cape', 'Achievement diary cape (t)'])) {
 			boosts.push('10% for Achievement diary cape');
-			duration *= 0.9;
+			duration *= 0.95;
+		}
+		
+		if (msg.author.hasItemEquippedOrInBank('Quest point cape', 'Quest point cape (t)')) {
+			boosts.push('5% for Quest point cape');
+			duration *= 0.95;
+		}
+
+		if (msg.author.hasItemEquippedOrInBank('Music cape', 'Music cape(t)') && clueTier.name === 'Master') {
+			boosts.push('5% for Music cape');
+			duration *= 0.95;
 		}
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
