@@ -827,7 +827,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			SlayerHelms: {
 				alias: ['slayerHelms', 'helms', 'slayerhelmets'],
-				items: slayerHelmsCL
+				items: slayerHelmsCL,
 				hidden: true,
  				counts: false
 			},
