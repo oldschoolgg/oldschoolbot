@@ -1192,7 +1192,7 @@ export async function getCollection(options: {
 		return {
 			category: 'Custom',
 			name: search,
-			collection: roleCategory,
+			collection: clItems,
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank
