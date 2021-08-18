@@ -98,6 +98,7 @@ import {
 	skillingPetsCL,
 	skotizoCL,
 	slayerCL,
+	slayerHelmsCL,
 	soulWarsCL,
 	spiritAnglerOutfit,
 	templeTrekkingCL,
@@ -823,6 +824,10 @@ export const allCollectionLogs: ICollection = {
 				alias: ['slay'],
 				items: slayerCL,
 				roleCategory: ['slayer']
+			},
+			SlayerHelms: {
+				alias: ['slayerHelms', 'helms', 'slayerhelmets'],
+				items: slayerHelmsCL
 			},
 			TzHaar: {
 				kcActivity: Monsters.TzHaarKet.name,
