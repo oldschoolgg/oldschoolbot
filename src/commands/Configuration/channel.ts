@@ -1,5 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { getGuildSettings } from '../../lib/settings/settings';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
@@ -17,12 +18,13 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [input]: [string]) {
-		const isDisabled = msg.guild?.settings.get(GuildSettings.StaffOnlyChannels).includes(msg.channel.id);
+		const settings = await getGuildSettings(msg.guild!);
+		const isDisabled = settings.get(GuildSettings.StaffOnlyChannels).includes(msg.channel.id);
 
 		if (input === 'disable') {
 			if (isDisabled) return msg.channel.send('This channel is already disabled.');
 
-			await msg.guild!.settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
+			await settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
 				arrayAction: 'add'
 			});
 
@@ -30,7 +32,7 @@ export default class extends BotCommand {
 		}
 		if (!isDisabled) return msg.channel.send('This channel is already enabled.');
 
-		await msg.guild!.settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
+		await settings.update(GuildSettings.StaffOnlyChannels, msg.channel.id, {
 			arrayAction: 'remove'
 		});
 

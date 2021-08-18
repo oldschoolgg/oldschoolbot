@@ -4,7 +4,7 @@ import { Connection, createConnection } from 'typeorm';
 
 import { providerConfig } from '../../config';
 import { clientOptions } from '../config';
-import { syncActivityCache } from '../settings/settings';
+import { getGuildSettings, syncActivityCache } from '../settings/settings';
 import { piscinaPool } from '../workers';
 
 const { production } = clientOptions;
@@ -42,7 +42,17 @@ export class OldSchoolBotClient extends Client {
 			synchronize: !production
 		});
 
+		for (const guild of this.guilds.cache.values()) {
+			getGuildSettings(guild);
+		}
+
 		await syncActivityCache();
 		return super.login(token);
+	}
+
+	async fetchUser(id: string) {
+		const user = await this.users.fetch(id);
+		await user.settings.sync();
+		return user;
 	}
 }
