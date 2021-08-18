@@ -19,6 +19,7 @@ import {
 	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { hasBlackSmithEquipped } from './smith';
 
 const requiredSkills = {
 	crafting: 12,
@@ -105,6 +106,10 @@ export default class extends BotCommand {
 		if (msg.author.hasItemEquippedAnywhere('Smithing master cape')) {
 			timeToSmithSingleBar /= 2;
 			boosts.push('2x boost for Smithing master cape');
+		}
+
+		if (hasBlackSmithEquipped(msg.author.getGear('skilling'))) {
+			boosts.push('10% more XP for having the blacksmith outfit equipped');
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
