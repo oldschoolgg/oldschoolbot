@@ -47,11 +47,8 @@ const DailyTable = new LootTable()
 
 export default function dailyRoll(qty = 1, correct = false) {
 	const loot = new Bank();
-
-	for (let i = 0; i < qty; i++) {
-		loot.add(DailyTable.roll());
-		if (correct) loot.add(CommonTable.roll());
-	}
-
+	loot.add(DailyTable.roll(qty));
+	// Correct trivia gives 2x extra daily roll
+	if (correct) loot.add(CommonTable.roll(qty)).add(DailyTable.roll(2));
 	return loot.values();
 }
