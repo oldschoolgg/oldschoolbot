@@ -828,6 +828,8 @@ export const allCollectionLogs: ICollection = {
 			SlayerHelms: {
 				alias: ['slayerHelms', 'helms', 'slayerhelmets'],
 				items: slayerHelmsCL
+				hidden: true,
+ 				counts: false
 			},
 			TzHaar: {
 				kcActivity: Monsters.TzHaarKet.name,
