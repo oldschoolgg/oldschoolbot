@@ -1536,6 +1536,19 @@ export const skillingPetsCL = resolveItems([
 	'Rocky',
 	'Rift guardian'
 ]);
+export const slayerHelms = resolveItems([
+	'Slayer helmet',
+	'Black slayer helmet',
+	'Green slayer helmet',
+	'Red slayer helmet',
+	'Purple slayer helmet',
+	'Turquoise slayer helmet',
+	'Hydra slayer helmet',
+	'Twisted slayer helmet',
+	'Tztok slayer helmet',
+	'Vampyric slayer helmet',
+	'Tzkal slayer helmet'
+]);
 export const slayerCL = resolveItems([
 	'Imbued heart',
 	'Eternal gem',
@@ -1635,11 +1648,12 @@ export const slayerCL = resolveItems([
 	'Ballista limbs',
 	'Ballista spring',
 	'Granite longsword',
-	'Dragon chainbody'
+	'Dragon chainbody',
 	// Not obtainable yet
 	// "Dagon'hai hat",
 	// "Dagon'hai robe top",
-	// "Dagon'hai robe bottom"
+	// "Dagon'hai robe bottom",
+	...SlayerHelms
 ]);
 export const tzHaarCL = resolveItems([
 	'Obsidian cape',
