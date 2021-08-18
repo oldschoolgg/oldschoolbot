@@ -17,7 +17,7 @@ export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
 		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		await user.incrementMonsterScore(monsterID, quantity);
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
