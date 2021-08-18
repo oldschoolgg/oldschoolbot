@@ -184,3 +184,6 @@ setItemAlias(21_633, 'Ancient wyvern shield');
 
 setItemAlias(22_003, 'Uncharged dragonfire ward');
 setItemAlias(22_002, 'Dragonfire ward');
+
+// Weird/broken/untradeable items
+setItemAlias(4692, 'Gold leaf (u)');

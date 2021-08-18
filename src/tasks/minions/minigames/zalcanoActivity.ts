@@ -10,7 +10,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: ZalcanoActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, performance, isMVP } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const kc = user.getKC(ZALCANO_ID);
 		await user.incrementMonsterScore(ZALCANO_ID, quantity);
 
