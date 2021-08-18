@@ -34,12 +34,12 @@ export default class CollectionLogTask extends Task {
 
 	// css = Collection Log Spreadsheet
 	private cls = <ISprite>{
-		image: './src/lib/resources/images/cl_sprite.png',
+		image: './src/lib/resources/images/bank_backgrounds/spritesheet/Default.png',
 		oddListColor: '#655741'
 	};
 
 	private clsDark = <ISprite>{
-		image: './src/lib/resources/images/cl_sprite_dark.png',
+		image: './src/lib/resources/images/bank_backgrounds/spritesheet/Dark.png',
 		oddListColor: '#393939'
 	};
 
@@ -216,7 +216,7 @@ export default class CollectionLogTask extends Task {
 
 		await user.settings.sync(true);
 
-		let collectionLog = undefined;
+		let collectionLog: IToReturnCollection | undefined | false = undefined;
 
 		if (collection) {
 			collectionLog = await getCollection({
@@ -226,10 +226,33 @@ export default class CollectionLogTask extends Task {
 				logType: type
 			});
 		}
+
 		if (!collectionLog) {
 			return {
 				content: "That's not a valid collection log type. The valid types are: ",
 				files: [getPossibleOptions()]
+			};
+		}
+
+		if (flags.text) {
+			return {
+				content: 'This is the items on your log:',
+				files: [
+					new MessageAttachment(
+						Buffer.from(
+							collectionLog.collection
+								.map(i => {
+									let _i = getOSItem(i);
+									const _q = (collectionLog as IToReturnCollection).userItems.amount(_i.id);
+									if (_q === 0 && !flags.missing) return undefined;
+									return `${flags.nq || flags.missing ? '' : `${_q}x `}${_i.name}`;
+								})
+								.filter(f => f)
+								.join(flags.comma ? ', ' : '\n')
+						),
+						'yourLogItems.txt'
+					)
+				]
 			};
 		}
 
@@ -396,7 +419,7 @@ export default class CollectionLogTask extends Task {
 					ctx,
 					formatItemStackQuantity(qtyText),
 					Math.floor(i * (itemSize + itemSpacer) + (itemSize - itemImage.width) / 2) + 1,
-					Math.floor(y * (itemSize + itemSpacer) + (itemSize - itemImage.height) / 2) + 9
+					y * (itemSize + itemSpacer) + 11
 				);
 			}
 

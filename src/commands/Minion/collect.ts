@@ -67,6 +67,16 @@ export const collectables: Collectable[] = [
 		}),
 		duration: Time.Minute * 6.5,
 		qpRequired: 72
+	},
+	{
+		item: getOSItem('Bucket of sand'),
+		quantity: 30,
+		itemCost: new Bank({
+			'Law rune': 1,
+			Coins: 30 * 25
+		}),
+		duration: Time.Minute,
+		qpRequired: 30
 	}
 ];
 

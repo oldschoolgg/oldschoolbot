@@ -142,7 +142,7 @@ export const globalPresets = [
 		Head: itemID('Pyromancer hood'),
 		Neck: null,
 		Body: itemID('Pyromancer garb'),
-		Legs: itemID('	Pyromancer robe'),
+		Legs: itemID('Pyromancer robe'),
 		Cape: null,
 		TwoHanded: null,
 		Hands: null,

@@ -80,7 +80,8 @@ export default class extends BotCommand {
 				result.bank,
 				`Loot from ${quantity.toLocaleString()} ${toTitleCase(bossName)}`,
 				true,
-				msg.flagArgs
+				msg.flagArgs,
+				msg.author
 			);
 
 		return msg.channel.send({ files: [new MessageAttachment(image!, 'osbot.png')] });

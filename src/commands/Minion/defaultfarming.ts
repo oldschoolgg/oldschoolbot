@@ -63,14 +63,15 @@ export default class extends BotCommand {
 					` For example, \`${msg.cmdPrefix}defaultfarming tier supercompost\`.`
 			);
 		}
+		const cleanedNewCompostTier = compostTier.name.toLowerCase();
 
 		const currentCompostTier = msg.author.settings.get(UserSettings.Minion.DefaultCompostToUse);
 
-		if (currentCompostTier !== newCompostTier) {
-			await msg.author.settings.update(UserSettings.Minion.DefaultCompostToUse, newCompostTier);
+		if (currentCompostTier !== cleanedNewCompostTier) {
+			await msg.author.settings.update(UserSettings.Minion.DefaultCompostToUse, cleanedNewCompostTier);
 
 			return msg.channel.send(
-				`Your minion will now automatically use ${newCompostTier} for farming, if you have any.`
+				`Your minion will now automatically use ${cleanedNewCompostTier} for farming, if you have any.`
 			);
 		}
 		return msg.channel.send('You are already automatically using this type of compost.');

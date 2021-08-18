@@ -1,6 +1,7 @@
 import { QueryBuilder } from '@klasa/querybuilder';
 import { isNumber, makeObject, mergeDefault } from '@klasa/utils';
-import { SchemaEntry, SchemaFolder, SettingsUpdateResults, SQLProvider, Type } from 'klasa';
+import { Type } from '@sapphire/type';
+import { SchemaEntry, SchemaFolder, SettingsUpdateResults, SQLProvider } from 'klasa';
 import {
 	Pool,
 	PoolConfig,
