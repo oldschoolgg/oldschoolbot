@@ -6,7 +6,7 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { Emoji, skillEmoji } from '../../lib/constants';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -248,7 +248,6 @@ export default class extends BotCommand {
 		}
 	}
 
-	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [qty, cmd]: [number, string]) {
 		await msg.author.settings.sync(true);
