@@ -68,7 +68,7 @@ export class GiveawayTable extends BaseEntity {
 				u => !u.isIronman && !u.bot && u.id !== this.userID
 			);
 
-			const creator = await client.users.fetch(this.userID);
+			const creator = await client.fetchUser(this.userID);
 
 			if (users.length === 0 || !channel || !message) {
 				console.error('Giveaway failed');
