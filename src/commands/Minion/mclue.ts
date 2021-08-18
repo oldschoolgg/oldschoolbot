@@ -7,24 +7,19 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClueTier } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { Gear } from '../../lib/structures/Gear';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import resolveItems from '../../lib/util/resolveItems';
 
-export function hasClueHunterEquipped(setup: Gear) {
-	return setup.hasEquipped(
-		[
-			'Helm of raedwald',
-			'Clue hunter garb',
-			'Clue hunter trousers',
-			'Clue hunter boots',
-			'Clue hunter gloves',
-			'Clue hunter cloak'
-		],
-		true
-	);
-}
+export const clueHunterOutfit = resolveItems([
+	'Helm of raedwald',
+	'Clue hunter garb',
+	'Clue hunter trousers',
+	'Clue hunter boots',
+	'Clue hunter gloves',
+	'Clue hunter cloak'
+]);
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
 	// Every 3 hours become 1% better to a cap of 10%
@@ -91,7 +86,7 @@ export default class extends BotCommand {
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);
 
-		if (hasClueHunterEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasItemEquippedAnywhere(clueHunterOutfit, true)) {
 			timeToFinish /= 2;
 			boosts.push('2x Boost for Clue hunter outfit');
 		}
