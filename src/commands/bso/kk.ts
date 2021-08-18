@@ -1,4 +1,4 @@
-import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
+import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -18,6 +18,7 @@ import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getKalphiteKingGearStats } from '../../lib/util/getKalphiteKingGearStats';
+import { gorajanWarriorOutfit } from '../../tasks/minions/dungeoneeringActivity';
 
 const minimumSoloGear = new Gear({
 	body: 'Torva platebody',
@@ -169,10 +170,16 @@ export default class extends BotCommand {
 				}
 			}
 
+			if (meleeGear.hasEquipped(gorajanWarriorOutfit, true)) {
+				const perUserPercent = round(15 / users.length, 2);
+				effectiveTime = reduceNumByPercent(effectiveTime, perUserPercent);
+				msgs.push(`${perUserPercent}% for Gorajan warrior`);
+			}
+
 			if (data.gearStats.attack_crush < 200) {
 				const percent = 10;
 				effectiveTime = increaseNumByPercent(effectiveTime, percent);
-				msgs.push(`-${percent}% penalty for 140 attack crush`);
+				msgs.push(`-${percent}% penalty for 200 attack crush`);
 			}
 
 			if (!equippedWeapon || !equippedWeapon.equipment || equippedWeapon.equipment.attack_crush < 95) {
