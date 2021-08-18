@@ -76,7 +76,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => this.client.commands.get('mclue')!.run(res, [-1, clueTier.name]),
+			res => this.client.commands.get('mclue')!.run(res, [quantity, clueTier.name]),
 			undefined,
 			data,
 			loot

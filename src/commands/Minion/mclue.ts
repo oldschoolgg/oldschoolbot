@@ -116,7 +116,9 @@ export default class extends BotCommand {
 		const maxTripLength = msg.author.maxTripLength(Activity.ClueCompletion);
 		const maxPerTrip = Math.floor(maxTripLength / timeToFinish);
 		if (quantity === -1) quantity = maxPerTrip;
-		if (numOfScrolls < quantity) quantity = numOfScrolls;
+		if (numOfScrolls < quantity) {
+			return msg.channel.send(`You only have ${numOfScrolls}x ${clueTier.name.toLowerCase()} clue scrolls.`);
+		}
 
 		let duration = timeToFinish * quantity;
 
