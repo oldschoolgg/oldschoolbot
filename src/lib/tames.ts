@@ -99,7 +99,7 @@ export async function runTameTask(activity: TameActivityTable) {
 			// If less than 8 kills, roll 25% chance per kill
 			if (hasOri) {
 				if (killQty >= 8) {
-					killQty = Math.floor(killQty * 1.25);
+					killQty = Math.ceil(killQty * 1.25);
 				} else {
 					for (let i = 0; i < quantity; i++) {
 						if (roll(4)) killQty++;
@@ -112,7 +112,7 @@ export async function runTameTask(activity: TameActivityTable) {
 			let str = `${user}, ${activity.tame.name} finished killing ${quantity}x ${fullMonster.name}.`;
 			const boosts = [];
 			if (hasOri) {
-				boosts.push('25% extra loot (ate a Ori)');
+				boosts.push('25% extra loot (ate an Ori)');
 			}
 			if (boosts.length > 0) {
 				str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
