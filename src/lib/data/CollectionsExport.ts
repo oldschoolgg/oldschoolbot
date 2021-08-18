@@ -1843,6 +1843,8 @@ export const capesCL = resolveItems([
 	'Quest point cape',
 	'Achievement diary hood',
 	'Achievement diary cape(t)',
+	'Music hood',
+	'Music cape(t)',
 	'Max hood',
 	'Max cape',
 	'Ardougne max hood',
