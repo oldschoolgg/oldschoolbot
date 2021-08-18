@@ -108,7 +108,7 @@ export async function runTameTask(activity: TameActivityTable) {
 			}
 			const fullMonster = Monsters.get(monsterID)!;
 			const loot = fullMonster.kill(killQty, {});
-			const user = await client.users.fetch(activity.userID);
+			const user = await client.fetchUser(activity.userID);
 			let str = `${user}, ${activity.tame.name} finished killing ${quantity}x ${fullMonster.name}.`;
 			const boosts = [];
 			if (hasOri) {

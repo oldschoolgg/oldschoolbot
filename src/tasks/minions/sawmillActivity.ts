@@ -11,7 +11,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: SawmillActivityTaskOptions) {
 		const { userID, channelID, plankID, plankQuantity } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const plank = Planks.find(plank => plank.outputItem === plankID)!;
 
 		const loot = new Bank({

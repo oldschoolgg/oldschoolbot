@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import { Canvas, CanvasRenderingContext2D, createCanvas, Image, registerFont } from 'canvas';
 import { objectKeys, randInt } from 'e';
 import * as fs from 'fs';

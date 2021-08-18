@@ -47,7 +47,7 @@ const shelldonFish = resolveItems([
 export default class extends Task {
 	async run(data: DriftNetActivityTaskOptions) {
 		let { quantity, userID, channelID, duration } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
 

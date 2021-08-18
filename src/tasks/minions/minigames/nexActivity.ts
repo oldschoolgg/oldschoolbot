@@ -35,7 +35,7 @@ export default class extends Task {
 
 		// For each user in the party, calculate their damage and death chance.
 		for (const id of users) {
-			const user = await this.client.users.fetch(id).catch(noOp);
+			const user = await this.client.fetchUser(id).catch(noOp);
 			if (!user) continue;
 			const [data] = getNexGearStats(user, users);
 			parsedUsers.push({ ...data, id: user.id });
@@ -85,7 +85,7 @@ export default class extends Task {
 			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
 		}
 
-		const leaderUser = await this.client.users.fetch(userID);
+		const leaderUser = await this.client.fetchUser(userID);
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NexMonster.name}!\n\n`;
 		const totalLoot = new Bank();
 
@@ -94,7 +94,7 @@ export default class extends Task {
 		let soloItemsAdded: ItemBank = {};
 
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
-			const user = await this.client.users.fetch(userID).catch(noOp);
+			const user = await this.client.fetchUser(userID).catch(noOp);
 			if (!user) continue;
 			let xpStr = '';
 			if (kcAmounts[user.id]) {
@@ -135,7 +135,7 @@ export default class extends Task {
 		if (deathEntries.length > 0) {
 			const deaths = [];
 			for (const [id, qty] of deathEntries) {
-				const user = await this.client.users.fetch(id).catch(noOp);
+				const user = await this.client.fetchUser(id).catch(noOp);
 				if (!user) continue;
 				deaths.push(`**${user.username}**: ${qty}x`);
 			}

@@ -15,7 +15,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
 		const { oreID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 

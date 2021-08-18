@@ -33,7 +33,7 @@ export default class extends Task {
 
 		incrementMinigameScore(userID, 'OuraniaDeliveryService', quantity);
 
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const level = user.skillLevel(SkillsEnum.Magic);
 		let tokens = Math.floor((quantity / 2) * 3.235 * (level / 25 + 1));
 		if (user.equippedPet() === itemID('Flappy')) {

@@ -229,3 +229,5 @@ setItemAlias(23_639, "Dharok's helm (LMS)");
 setItemAlias(25_515, "Dharok's platebody (LMS)");
 setItemAlias(23_633, "Dharok's platelegs (LMS)");
 setItemAlias(25_516, "Dharok's greataxe (LMS)");
+// Weird/broken/untradeable items
+setItemAlias(4692, 'Gold leaf (u)');

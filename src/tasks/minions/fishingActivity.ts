@@ -14,7 +14,7 @@ import itemID from '../../lib/util/itemID';
 export default class extends Task {
 	async run(data: FishingActivityTaskOptions) {
 		let { fishID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;

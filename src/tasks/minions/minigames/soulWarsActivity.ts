@@ -26,11 +26,11 @@ function calcPoints() {
 export default class extends Task {
 	async run(data: SoulWarsOptions) {
 		const { channelID, leader, users, quantity } = data;
-		const leaderUser = await this.client.users.fetch(leader);
+		const leaderUser = await this.client.fetchUser(leader);
 		let str = `${leaderUser}, your party finished doing ${quantity}x games of Soul Wars.\n\n`;
 
 		for (const id of users) {
-			const user = await this.client.users.fetch(id).catch(noOp);
+			const user = await this.client.fetchUser(id).catch(noOp);
 			if (!user) continue;
 
 			let points = 0;

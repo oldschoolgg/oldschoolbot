@@ -20,7 +20,7 @@ export default class extends Task {
 	async run(data: RevenantOptions) {
 		const { monsterID, userID, channelID, quantity, died, skulled, style } = data;
 		const monster = revenantMonsters.find(mon => mon.id === monsterID)!;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		if (died) {
 			// 1 in 20 to get smited without prayer potions and 1 in 300 if the user has prayer potions
 			const hasPrayerLevel = user.hasSkillReqs({ [SkillsEnum.Prayer]: 25 })[0];

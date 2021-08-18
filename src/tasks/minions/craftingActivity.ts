@@ -11,7 +11,7 @@ import itemID from '../../lib/util/itemID';
 export default class extends Task {
 	async run(data: CraftingActivityTaskOptions) {
 		const { craftableID, quantity, userID, channelID } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Crafting);
 		const item = Craftables.find(craft => craft.id === craftableID)!;
 

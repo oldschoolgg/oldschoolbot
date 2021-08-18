@@ -49,7 +49,7 @@ export function numberOfGorajanOutfitsEquipped(user: KlasaUser) {
 export default class extends Task {
 	async run(data: DungeoneeringOptions) {
 		const { channelID, duration, userID, floor, quantity, users } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 
 		let baseXp = ((Math.log(floor * 16 + 1) * quantity) / (36 - floor * 5)) * 59_000;
 		baseXp *= 1.5;
@@ -57,7 +57,7 @@ export default class extends Task {
 		const minutes = duration / Time.Minute;
 
 		for (const id of users) {
-			const u = await this.client.users.fetch(id).catch(noOp);
+			const u = await this.client.fetchUser(id).catch(noOp);
 			if (!u) return;
 			let xp = Math.floor(randomVariation((baseXp * u.skillLevel(SkillsEnum.Dungeoneering)) / 120, 5));
 			const maxFloor = maxFloorUserCanDo(u);

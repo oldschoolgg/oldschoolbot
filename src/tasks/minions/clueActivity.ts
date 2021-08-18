@@ -29,7 +29,7 @@ export default class extends Task {
 	async run(data: ClueActivityTaskOptions) {
 		const { clueID, userID, channelID, quantity, duration } = data;
 		const clueTier = clueTiers.find(mon => mon.id === clueID);
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 
 		const logInfo = `ClueID[${clueID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 

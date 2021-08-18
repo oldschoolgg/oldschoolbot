@@ -11,7 +11,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: SepulchreActivityTaskOptions) {
 		const { channelID, quantity, floors, userID } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		user.incrementMinigameScore('Sepulchre', quantity);
 
 		const completedFloors = sepulchreFloors.filter(fl => floors.includes(fl.number));
