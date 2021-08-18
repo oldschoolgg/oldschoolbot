@@ -1,5 +1,4 @@
 import { KlasaClientOptions } from 'klasa';
-import os from 'os';
 
 import { PatreonConfig, ProviderConfig, RedditAppConfig, TwitterAppConfig } from './lib/types';
 
@@ -13,8 +12,7 @@ export const providerConfig: ProviderConfig | null = {
 		port: 5432
 	}
 };
-export const production = os.platform() === 'linux';
-export const staging = false;
+export const production = false;
 
 export const redditAppConfig: RedditAppConfig = null;
 export const twitterAppConfig: TwitterAppConfig = null;
