@@ -47,6 +47,21 @@ export default class extends BotCommand {
 			if (objectEntries(currentFavorites).length === 0) {
 				return msg.channel.send('You have no favorited items.');
 			}
+			if (msg.flagArgs.text) {
+				return msg.channel.send({
+					content: 'Here is a list of all your favorites:',
+					files: [
+						new MessageAttachment(
+							Buffer.from(
+								objectEntries(currentFavorites)
+									.map(e => `${e[1]} ${e[0]}`)
+									.join(msg.flagArgs.comma ? ', ' : '\n')
+							),
+							'favorites.txt'
+						)
+					]
+				});
+			}
 			const { image } = await this.client.tasks
 				.get('bankImage')!
 				.generateBankImage(currentFavorites, `${msg.author.username} Favorites`, false, {}, msg.author);
