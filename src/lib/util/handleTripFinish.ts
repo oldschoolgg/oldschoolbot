@@ -162,9 +162,9 @@ export async function handleTripFinish(
 					? "As you left your Voidling alone in the bank, it got distracted easily and didn't manage to alch at its full potential."
 					: ''
 			}`;
-		} else {
+		} else if (user.getUserFavAlchs().length !== 0) {
 			message +=
-				"\nYour Voidling didn't alch anything because you either: don't have Nature runes, Fire Runes, or any Favorited alchables that you own.";
+				"\nYour Voidling didn't alch anything because you either don't have any nature runes or fire runes.";
 		}
 	}
 
