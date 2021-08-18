@@ -104,6 +104,14 @@ export default class extends BotCommand {
 				break;
 		}
 
+		if (msg.author.allItemsOwned().has('Fish sack barrel') || msg.author.allItemsOwned().has('Fish barrel')) {
+			boosts.push(
+				`+9 trip minutes for having a ${
+					msg.author.allItemsOwned().has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
+				}`
+			);
+		}
+
 		const maxTripLength = msg.author.maxTripLength(Activity.Fishing);
 
 		if (quantity === null) {
