@@ -22,6 +22,8 @@ import { allOpenables } from './open';
 
 const allOpenableItems = allOpenables.map(getOSItem);
 
+export const LB_PAGE_SIZE = 10;
+
 export interface CLUser {
 	id: string;
 	qty: number;
@@ -104,6 +106,10 @@ export default class extends BotCommand {
 		await this.cacheUsernames();
 	}
 
+	getPos(page: number, record: number) {
+		return `${page * LB_PAGE_SIZE + 1 + record}) `;
+	}
+
 	getUsername(userID: string, lbSize?: number) {
 		if (lbSize && lbSize < 10) return '(Anonymous)';
 		const username = this.usernameCache.map.get(userID);
@@ -166,9 +172,14 @@ export default class extends BotCommand {
 		this.doMenu(
 			msg,
 			util
-				.chunk(users, 10)
-				.map(subList =>
-					subList.map(({ id, GP }) => `**${this.getUsername(id)}** has ${GP.toLocaleString()} GP `).join('\n')
+				.chunk(users, LB_PAGE_SIZE)
+				.map((subList, i) =>
+					subList
+						.map(
+							({ id, GP }, j) =>
+								`${this.getPos(i, j)}**${this.getUsername(id)}:** ${GP.toLocaleString()} GP`
+						)
+						.join('\n')
 				),
 			'GP Leaderboard'
 		);
@@ -189,11 +200,12 @@ export default class extends BotCommand {
 		this.doMenu(
 			msg,
 			util
-				.chunk(list, 10)
-				.map(subList =>
+				.chunk(list, LB_PAGE_SIZE)
+				.map((subList, i) =>
 					subList
 						.map(
-							({ id, amount }) => `**${this.getUsername(id)}** sacrificed ${amount.toLocaleString()} GP `
+							({ id, amount }, j) =>
+								`${this.getPos(i, j)}**${this.getUsername(id)}:** ${amount.toLocaleString()} GP `
 						)
 						.join('\n')
 				),
@@ -222,9 +234,13 @@ export default class extends BotCommand {
 		this.doMenu(
 			msg,
 			util
-				.chunk(list, 10)
-				.map(subList =>
-					subList.map(({ id, QP }) => `**${this.getUsername(id)}** has ${QP.toLocaleString()} QP`).join('\n')
+				.chunk(list, LB_PAGE_SIZE)
+				.map((subList, i) =>
+					subList
+						.map(
+							({ id, QP }, j) => `${this.getPos(i, j)}**${this.getUsername(id)}:** ${QP.toLocaleString()}`
+						)
+						.join('\n')
 				),
 			'QP Leaderboard'
 		);
@@ -248,10 +264,10 @@ export default class extends BotCommand {
 
 		this.doMenu(
 			msg,
-			util.chunk(list, 10).map(subList =>
+			util.chunk(list, LB_PAGE_SIZE).map((subList, i) =>
 				subList
-					.map(({ id, count }) => {
-						return `**${this.getUsername(id)}** has ${count.toLocaleString()} contracts completed`;
+					.map(({ id, count }, j) => {
+						return `${this.getPos(i, j)}**${this.getUsername(id)}:** ${count.toLocaleString()}`;
 					})
 					.join('\n')
 			),
@@ -276,10 +292,13 @@ export default class extends BotCommand {
 		this.doMenu(
 			msg,
 			util
-				.chunk(list, 10)
-				.map(subList =>
+				.chunk(list, LB_PAGE_SIZE)
+				.map((subList, i) =>
 					subList
-						.map(({ id, petcount }) => `**${this.getUsername(id)}** has ${petcount.toLocaleString()} pets `)
+						.map(
+							({ id, petcount }, j) =>
+								`${this.getPos(i, j)}**${this.getUsername(id)}:** ${petcount.toLocaleString()}`
+						)
 						.join('\n')
 				),
 			'Pet Leaderboard'
@@ -304,8 +323,17 @@ export default class extends BotCommand {
 		this.doMenu(
 			msg,
 			util
-				.chunk(res, 10)
-				.map(subList => subList.map(u => `**${this.getUsername(u.userID)}:** ${u[minigame.key]}`).join('\n')),
+				.chunk(res, LB_PAGE_SIZE)
+				.map((subList, i) =>
+					subList
+						.map(
+							(u, j) =>
+								`${this.getPos(i, j)}**${this.getUsername(u.userID)}:** ${u[
+									minigame.key
+								].toLocaleString()}`
+						)
+						.join('\n')
+				),
 			`${minigame.name} Leaderboard`
 		);
 	}
@@ -333,8 +361,15 @@ export default class extends BotCommand {
 		this.doMenu(
 			msg,
 			util
-				.chunk(list, 10)
-				.map(subList => subList.map(user => `**${this.getUsername(user.id)}:** ${user.kc} KC`).join('\n')),
+				.chunk(list, LB_PAGE_SIZE)
+				.map((subList, i) =>
+					subList
+						.map(
+							(user, j) =>
+								`${this.getPos(i, j)}**${this.getUsername(user.id)}:** ${user.kc.toLocaleString()}`
+						)
+						.join('\n')
+				),
 			`KC Leaderboard for ${monster.name}`
 		);
 	}
@@ -385,10 +420,16 @@ export default class extends BotCommand {
 		this.doMenu(
 			msg,
 			util
-				.chunk(list, 10)
-				.map(subList =>
+				.chunk(list, LB_PAGE_SIZE)
+				.map((subList, i) =>
 					subList
-						.map(user => `**${this.getUsername(user.id, list.length)}:** ${user.qty.toLocaleString()}`)
+						.map(
+							(user, j) =>
+								`${this.getPos(i, j)}**${this.getUsername(
+									user.id,
+									list.length
+								)}:** ${user.qty.toLocaleString()}`
+						)
 						.join('\n')
 				),
 			`Open Leaderboard for ${openableName}`
@@ -460,10 +501,10 @@ export default class extends BotCommand {
 		if (inputSkill === 'overall') {
 			this.doMenu(
 				msg,
-				util.chunk(overallUsers, 10).map(subList =>
+				util.chunk(overallUsers, LB_PAGE_SIZE).map((subList, i) =>
 					subList
-						.map((obj: OverallSkillUser) => {
-							return `**${this.getUsername(
+						.map((obj: OverallSkillUser, j) => {
+							return `${this.getPos(i, j)}**${this.getUsername(
 								obj.id
 							)}:** ${obj.totalLevel.toLocaleString()} (${obj.totalXP.toLocaleString()} XP)`;
 						})
@@ -476,15 +517,15 @@ export default class extends BotCommand {
 
 		this.doMenu(
 			msg,
-			util.chunk(res, 10).map(subList =>
+			util.chunk(res, LB_PAGE_SIZE).map((subList, i) =>
 				subList
-					.map((obj: SkillUser) => {
+					.map((obj: SkillUser, j) => {
 						const objKey = `skills.${skill?.id}` as keyof SkillUser;
 						const skillXP = Number(obj[objKey] ?? 0);
 
-						return `**${this.getUsername(obj.id)}:** ${skillXP.toLocaleString()} XP (${convertXPtoLVL(
-							skillXP
-						)})`;
+						return `${this.getPos(i, j)}**${this.getUsername(
+							obj.id
+						)}:** ${skillXP.toLocaleString()} XP (${convertXPtoLVL(skillXP)})`;
 					})
 					.join('\n')
 			),
@@ -518,8 +559,15 @@ LIMIT 50;
 		this.doMenu(
 			msg,
 			util
-				.chunk(users, 10)
-				.map(subList => subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')),
+				.chunk(users, LB_PAGE_SIZE)
+				.map((subList, i) =>
+					subList
+						.map(
+							({ id, qty }, j) =>
+								`${this.getPos(i, j)}**${this.getUsername(id)}:** ${qty.toLocaleString()}`
+						)
+						.join('\n')
+				),
 			`${toTitleCase(inputType.toLowerCase())} Collection Log Leaderboard`
 		);
 	}
@@ -534,14 +582,19 @@ LIMIT 50;
 				   FROM users
 				   WHERE "lapsScores"->>'${course.id}' IS NOT NULL
 				   ${msg.flagArgs.im ? ' AND "minion.ironman" = true ' : ''}
-				   ORDER BY lapCount DESC LIMIT 50;`
+				   ORDER BY count DESC LIMIT 50;`
 		);
 		this.doMenu(
 			msg,
 			util
-				.chunk(data, 10)
-				.map(subList =>
-					subList.map(({ id, count }) => `**${this.getUsername(id)}:** ${count.toLocaleString()}`).join('\n')
+				.chunk(data, LB_PAGE_SIZE)
+				.map((subList, i) =>
+					subList
+						.map(
+							({ id, count }, j) =>
+								`${this.getPos(i, j)}**${this.getUsername(id)}:** ${count.toLocaleString()}`
+						)
+						.join('\n')
 				),
 			`${course.name} Laps Leaderboard`
 		);
@@ -554,7 +607,10 @@ LIMIT 50;
 			)
 		);
 
-		if (!creature) return msg.channel.send('Thats not a valid creature.');
+		if (!creature)
+			return msg.channel.send(
+				`Thats not a valid creature. Valid creatures are: ${Hunter.Creatures.map(h => h.name).join(', ')}`
+			);
 
 		const data: { id: string; count: number }[] = await this.query(
 			`SELECT id, "creatureScores"->>'${creature.id}' as count
@@ -566,9 +622,14 @@ LIMIT 50;
 		this.doMenu(
 			msg,
 			util
-				.chunk(data, 10)
-				.map(subList =>
-					subList.map(({ id, count }) => `**${this.getUsername(id)}:** ${count.toLocaleString()}`).join('\n')
+				.chunk(data, LB_PAGE_SIZE)
+				.map((subList, i) =>
+					subList
+						.map(
+							({ id, count }, j) =>
+								`${this.getPos(i, j)}**${this.getUsername(id)}:** ${count.toLocaleString()}`
+						)
+						.join('\n')
 				),
 			`Catch Leaderboard for ${creature.name}`
 		);
