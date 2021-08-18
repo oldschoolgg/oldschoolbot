@@ -62,7 +62,7 @@ export default class extends BotCommand {
 
 		if (typeof quantity === 'string') {
 			tierName = quantity;
-			quantity = 1;
+			quantity = -1;
 		}
 
 		if (!tierName) return msg.channel.send(this.invalidClue(msg));
@@ -96,46 +96,49 @@ export default class extends BotCommand {
 			boosts.push('2x Boost for Clue hunter outfit');
 		}
 
-		let duration = timeToFinish * quantity;
+		if (msg.author.hasGracefulEquipped()) {
+			boosts.push('10% for Graceful');
+			timeToFinish *= 0.9;
+		}
+
+		if (msg.author.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
+			boosts.push('10% for Achievement diary cape');
+			timeToFinish *= 0.9;
+		}
+
+		const bank = msg.author.bank();
+		const numOfScrolls = bank.amount(clueTier.scrollID);
+
+		if (numOfScrolls === 0) {
+			return msg.channel.send(`You don't have any ${clueTier.name.toLowerCase()} clue scrolls.`);
+		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.ClueCompletion);
+		const maxPerTrip = Math.floor(maxTripLength / timeToFinish);
+		if (quantity === -1) quantity = maxPerTrip;
+		if (numOfScrolls < quantity) quantity = numOfScrolls;
+
+		let duration = timeToFinish * quantity;
 
 		if (duration > maxTripLength) {
 			return msg.channel.send(
 				`${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${Math.floor(
+				)}, try a lower quantity. The highest amount you can do for ${clueTier.name.toLowerCase()} is ${Math.floor(
 					maxTripLength / timeToFinish
 				)}.`
 			);
 		}
 
-		const bank = msg.author.settings.get(UserSettings.Bank);
-		const numOfScrolls = bank[clueTier.scrollID];
-
-		if (!numOfScrolls || numOfScrolls < quantity) {
-			return msg.channel.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
-		}
-
 		await msg.author.removeItemFromBank(clueTier.scrollID, quantity);
-
-		const randomAddedDuration = rand(1, 20);
-		duration += (randomAddedDuration * duration) / 100;
-
-		if (msg.author.hasGracefulEquipped()) {
-			boosts.push('10% for Graceful');
-			duration *= 0.9;
-		}
 
 		if (isWeekend()) {
 			boosts.push('10% for Weekend');
 			duration *= 0.9;
 		}
 
-		if (msg.author.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
-			boosts.push('10% for Achievement diary cape');
-			duration *= 0.9;
-		}
+		const randomAddedDuration = rand(1, 20);
+		duration += (randomAddedDuration * duration) / 100;
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			clueID: clueTier.id,

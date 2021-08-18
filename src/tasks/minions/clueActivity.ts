@@ -71,6 +71,15 @@ export default class extends Task {
 			`${user.username}[${user.id}] received ${quantity} ${clueTier.name} Clue Caskets.`
 		);
 
-		handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, loot);
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => this.client.commands.get('mclue')!.run(res, [-1, clueTier.name]),
+			undefined,
+			data,
+			loot
+		);
 	}
 }
