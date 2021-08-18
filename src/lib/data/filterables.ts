@@ -265,7 +265,8 @@ const seeds = resolveItems([
 	'Cabbage seed',
 	'Onion seed',
 	'Potato seed',
-	'Mysterious seed'
+	'Mysterious seed',
+	'Athelas seed'
 ]);
 
 const herbs = resolveItems([
