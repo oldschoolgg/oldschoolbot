@@ -102,7 +102,10 @@ const slayerHelmSimilar = resolveItems([
 	'Purple slayer helmet',
 	'Turquoise slayer helmet',
 	'Hydra slayer helmet',
-	'Twisted slayer helmet'
+	'Twisted slayer helmet',
+	'Tztok slayer helmet',
+	'Vampyric slayer helmet',
+	'Tzkal slayer helmet'
 ]);
 const slayerHelmSimilarI = resolveItems([
 	'Black slayer helmet (i)',
@@ -112,7 +115,10 @@ const slayerHelmSimilarI = resolveItems([
 	'Turquoise slayer helmet (i)',
 	'Hydra slayer helmet (i)',
 	'Twisted slayer helmet (i)',
-	'Slayer helmet (i)'
+	'Slayer helmet (i)',
+	'Tztok slayer helmet (i)',
+	'Vampyric slayer helmet (i)',
+	'Tzkal slayer helmet (i)'
 ]);
 
 const source: [string, (string | number)[]][] = [
