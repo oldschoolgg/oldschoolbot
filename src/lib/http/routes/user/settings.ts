@@ -11,7 +11,7 @@ const userSettingsGetMe = (server: FastifyServer) =>
 		method: 'GET',
 		url: '/users/me',
 		async handler(request, reply) {
-			const user = await client.users.fetch(request.auth!.user_id!).catch(noOp);
+			const user = await client.fetchUser(request.auth!.user_id!).catch(noOp);
 			if (!user) {
 				return reply.notFound('User not found.');
 			}

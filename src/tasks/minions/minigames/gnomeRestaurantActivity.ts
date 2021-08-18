@@ -79,7 +79,7 @@ export default class extends Task {
 
 		const minionName = await getMinionName(userID);
 
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		await user.addItemsToBank(loot.bank, true);
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Cooking,

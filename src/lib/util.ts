@@ -249,7 +249,7 @@ export function reduceNumByPercent(value: number, percent: number): number {
 }
 
 export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
-	return Promise.all(ids.map(id => client.users.fetch(id)));
+	return Promise.all(ids.map(id => client.fetchUser(id)));
 }
 
 const rawEmojiRegex = emojiRegex();
