@@ -297,7 +297,8 @@ const herbs = resolveItems([
 	'Cadantine',
 	'Lantadyme',
 	'Dwarf weed',
-	'Torstol'
+	'Torstol',
+	'Athelas'
 ]);
 
 const secondaries = resolveItems([
