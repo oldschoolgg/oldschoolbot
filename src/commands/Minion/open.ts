@@ -15,7 +15,7 @@ import { addBanks, addItemToBank, rand, roll, stringMatches, updateGPTrackSettin
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
-import { hasClueHunterEquipped } from './mclue';
+import { clueHunterOutfit } from './mclue';
 
 const itemsToNotifyOf = resolveItems([
 	'Dwarven blessing',
@@ -87,7 +87,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemFromBank(clueTier.id, quantity);
 
-		const hasCHEquipped = hasClueHunterEquipped(msg.author.getGear('skilling'));
+		const hasCHEquipped = msg.author.hasItemEquippedAnywhere(clueHunterOutfit, true);
 
 		let extraClueRolls = 0;
 		let loot: ItemBank = {};

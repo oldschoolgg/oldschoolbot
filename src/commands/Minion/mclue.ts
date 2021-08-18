@@ -7,24 +7,19 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClueTier } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { Gear } from '../../lib/structures/Gear';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import resolveItems from '../../lib/util/resolveItems';
 
-export function hasClueHunterEquipped(setup: Gear) {
-	return setup.hasEquipped(
-		[
-			'Helm of raedwald',
-			'Clue hunter garb',
-			'Clue hunter trousers',
-			'Clue hunter boots',
-			'Clue hunter gloves',
-			'Clue hunter cloak'
-		],
-		true
-	);
-}
+export const clueHunterOutfit = resolveItems([
+	'Helm of raedwald',
+	'Clue hunter garb',
+	'Clue hunter trousers',
+	'Clue hunter boots',
+	'Clue hunter gloves',
+	'Clue hunter cloak'
+]);
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
 	// Every 3 hours become 1% better to a cap of 10%
@@ -62,7 +57,7 @@ export default class extends BotCommand {
 
 		if (typeof quantity === 'string') {
 			tierName = quantity;
-			quantity = 1;
+			quantity = -1;
 		}
 
 		if (!tierName) return msg.channel.send(this.invalidClue(msg));
@@ -91,51 +86,56 @@ export default class extends BotCommand {
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);
 
-		if (hasClueHunterEquipped(msg.author.getGear('skilling'))) {
+		if (msg.author.hasItemEquippedAnywhere(clueHunterOutfit, true)) {
 			timeToFinish /= 2;
 			boosts.push('2x Boost for Clue hunter outfit');
 		}
 
-		let duration = timeToFinish * quantity;
+		if (msg.author.hasGracefulEquipped()) {
+			boosts.push('10% for Graceful');
+			timeToFinish *= 0.9;
+		}
+
+		if (msg.author.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
+			boosts.push('10% for Achievement diary cape');
+			timeToFinish *= 0.9;
+		}
+
+		const bank = msg.author.bank();
+		const numOfScrolls = bank.amount(clueTier.scrollID);
+
+		if (numOfScrolls === 0) {
+			return msg.channel.send(`You don't have any ${clueTier.name.toLowerCase()} clue scrolls.`);
+		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.ClueCompletion);
+		const maxPerTrip = Math.floor(maxTripLength / timeToFinish);
+		if (quantity === -1) quantity = maxPerTrip;
+		if (numOfScrolls < quantity) {
+			return msg.channel.send(`You only have ${numOfScrolls}x ${clueTier.name.toLowerCase()} clue scrolls.`);
+		}
+
+		let duration = timeToFinish * quantity;
 
 		if (duration > maxTripLength) {
 			return msg.channel.send(
 				`${msg.author.minionName} can't go on Clue trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${Math.floor(
+				)}, try a lower quantity. The highest amount you can do for ${clueTier.name.toLowerCase()} is ${Math.floor(
 					maxTripLength / timeToFinish
 				)}.`
 			);
 		}
 
-		const bank = msg.author.settings.get(UserSettings.Bank);
-		const numOfScrolls = bank[clueTier.scrollID];
-
-		if (!numOfScrolls || numOfScrolls < quantity) {
-			return msg.channel.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
-		}
-
 		await msg.author.removeItemFromBank(clueTier.scrollID, quantity);
-
-		const randomAddedDuration = rand(1, 20);
-		duration += (randomAddedDuration * duration) / 100;
-
-		if (msg.author.hasGracefulEquipped()) {
-			boosts.push('10% for Graceful');
-			duration *= 0.9;
-		}
 
 		if (isWeekend()) {
 			boosts.push('10% for Weekend');
 			duration *= 0.9;
 		}
 
-		if (msg.author.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
-			boosts.push('10% for Achievement diary cape');
-			duration *= 0.9;
-		}
+		const randomAddedDuration = rand(1, 20);
+		duration += (randomAddedDuration * duration) / 100;
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			clueID: clueTier.id,
