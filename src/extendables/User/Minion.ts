@@ -679,7 +679,7 @@ export default class extends Extendable {
 
 		switch (activity) {
 			case Activity.Fishing:
-				if (this.hasItemEquippedAnywhere('Fish sack')) {
+				if (this.allItemsOwned().has('Fish barrel sack') || this.allItemsOwned().has('Fish barrel')) {
 					max += Time.Minute * 9;
 				}
 				break;
