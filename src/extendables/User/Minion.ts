@@ -677,6 +677,10 @@ export default class extends Extendable {
 
 		max += patronMaxTripCalc(this);
 
+		const hasMasterHPCape = this.hasItemEquippedAnywhere('Hitpoints master cape');
+		let masterHPCapeBoost = 0;
+		let regularHPBoost = false;
+
 		switch (activity) {
 			case Activity.Fishing:
 				if (this.hasItemEquippedAnywhere('Fish sack')) {
@@ -693,21 +697,19 @@ export default class extends Extendable {
 			case Activity.Sepulchre:
 			case Activity.Pickpocket:
 			case Activity.SoulWars:
-			case Activity.Cyclops:
+			case Activity.Cyclops: {
+				masterHPCapeBoost = 20;
+				regularHPBoost = true;
+				break;
+			}
 			case Activity.KalphiteKing:
 			case Activity.Nex:
 			case Activity.VasaMagus:
 			case Activity.Ignecarus:
 			case Activity.KingGoldemar:
 			case Activity.Dungeoneering: {
-				const hpLevel = this.skillLevel(SkillsEnum.Hitpoints);
-				const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
-				max += calcPercentOfNum(hpPercent, Time.Minute * 5);
-
-				if (this.hasItemEquippedAnywhere('Hitpoints master cape')) {
-					max += calcPercentOfNum(randInt(5, 10), max);
-				}
-
+				masterHPCapeBoost = 10;
+				regularHPBoost = true;
 				break;
 			}
 			case Activity.Alching: {
@@ -716,6 +718,16 @@ export default class extends Extendable {
 			}
 			default: {
 				break;
+			}
+		}
+
+		if (regularHPBoost) {
+			const hpLevel = this.skillLevel(SkillsEnum.Hitpoints);
+			const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
+			max += calcPercentOfNum(hpPercent, Time.Minute * 5);
+
+			if (hasMasterHPCape) {
+				max += calcPercentOfNum(masterHPCapeBoost, max);
 			}
 		}
 
