@@ -1,10 +1,11 @@
-import { MessageEmbed, TextChannel } from 'discord.js';
+import { MessageEmbed, Permissions, TextChannel } from 'discord.js';
 import he from 'he';
 import { Event, EventStore } from 'klasa';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 import Snoowrap from 'snoowrap';
 
 import { redditAppConfig } from '../config';
+import { getGuildSettingsCached } from '../lib/settings/settings';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { JMod } from '../lib/types';
 import { sendToChannelID } from '../lib/util/webhook';
@@ -102,7 +103,7 @@ export default class extends Event {
 		});
 	}
 
-	sendEmbed({ text, url, title, jmod }: RedditPost) {
+	async sendEmbed({ text, url, title, jmod }: RedditPost) {
 		const embed = new MessageEmbed().setDescription(he.decode(text)).setColor(1_942_002);
 
 		if (jmod) {
@@ -114,13 +115,21 @@ export default class extends Event {
 			embed.setURL(url);
 		}
 
-		this.client.guilds.cache
-			.filter(guild => Boolean(guild.settings.get(GuildSettings.JMODComments)))
-			.map(guild => {
-				const channel = guild.channels.cache.get(guild.settings.get(GuildSettings.JMODComments));
-				if (channel && channel instanceof TextChannel && channel.postable) {
-					sendToChannelID(this.client, channel.id, { content: `<${url}>`, embed });
-				}
-			});
+		for (const guild of this.client.guilds.cache.values()) {
+			const settings = getGuildSettingsCached(guild);
+			if (!settings) continue;
+			if (!settings.get(GuildSettings.JMODComments)) continue;
+
+			const channel = guild.channels.cache.get(settings.get(GuildSettings.JMODComments) as string);
+			if (
+				channel &&
+				channel instanceof TextChannel &&
+				channel.postable &&
+				channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.EMBED_LINKS) &&
+				channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.SEND_MESSAGES)
+			) {
+				sendToChannelID(this.client, channel.id, { content: `<${url}>`, embed });
+			}
+		}
 	}
 }

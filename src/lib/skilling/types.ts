@@ -148,6 +148,7 @@ export interface Craftable {
 	tickRate: number;
 	crushChance?: number[];
 	bankChest?: boolean;
+	outputMultiple?: number;
 }
 
 export interface Fletchable {

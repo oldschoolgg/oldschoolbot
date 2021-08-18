@@ -1,6 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
+import { getGuildSettings } from '../../lib/settings/settings';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -21,27 +22,29 @@ export default class extends BotCommand {
 	}
 
 	async on(msg: KlasaMessage) {
+		const settings = await getGuildSettings(msg.guild!);
 		if (msg.guild!.memberCount < 20 && getUsersPerkTier(msg.author) < PerkTier.Four) {
 			return msg.channel.send(TWEETS_RATELIMITING);
 		}
-		if (msg.guild!.settings.get(GuildSettings.HCIMDeaths) === msg.channel.id) {
+		if (settings.get(GuildSettings.HCIMDeaths) === msg.channel.id) {
 			return msg.channel.send('HCIM Death Tweets are already enabled in this channel.');
 		}
-		if (msg.guild!.settings.get(GuildSettings.HCIMDeaths)) {
-			await msg.guild!.settings.update(GuildSettings.HCIMDeaths, msg.channel);
+		if (settings.get(GuildSettings.HCIMDeaths)) {
+			await settings.update(GuildSettings.HCIMDeaths, msg.channel);
 			return msg.channel.send(
 				"HCIM Death Tweets are already enabled in another channel, but I've switched them to use this channel."
 			);
 		}
-		await msg.guild!.settings.update(GuildSettings.HCIMDeaths, msg.channel);
+		await settings.update(GuildSettings.HCIMDeaths, msg.channel);
 		return msg.channel.send('Enabled HCIM Death Tweets in this channel.');
 	}
 
 	async off(msg: KlasaMessage) {
-		if (!msg.guild!.settings.get(GuildSettings.HCIMDeaths)) {
+		const settings = await getGuildSettings(msg.guild!);
+		if (!settings.get(GuildSettings.HCIMDeaths)) {
 			return msg.channel.send("HCIM Death Tweets aren't enabled, so you can't disable them.");
 		}
-		await msg.guild!.settings.reset(GuildSettings.HCIMDeaths);
+		await settings.reset(GuildSettings.HCIMDeaths);
 		return msg.channel.send('Disabled HCIM Death Tweets in this channel.');
 	}
 }

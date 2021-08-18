@@ -9,7 +9,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MinigameActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, fromKMB, stringMatches } from '../../lib/util';
+import { formatDuration, fromKMB, stringMatches, toTitleCase } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 
@@ -17,7 +17,8 @@ let itemBoosts = [
 	[['Abyssal whip', 'Abyssal tentacle'].map(getOSItem), 12],
 	[['Barrows gloves', 'Ferocious gloves'].map(getOSItem), 4],
 	[['Amulet of fury', 'Amulet of torture'].map(getOSItem), 5],
-	[['Fire cape', 'Infernal cape'].map(getOSItem), 6]
+	[['Fire cape', 'Infernal cape'].map(getOSItem), 6],
+	[['Dragon claws'].map(getOSItem), 5]
 ] as const;
 
 export type PestControlBoat = ['veteran' | 'intermediate' | 'novice', 3 | 4 | 5];
@@ -122,44 +123,47 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const points = msg.author.settings.get(UserSettings.PestControlPoints);
 		const kc = await msg.author.getMinigameScore('PestControl');
+		const usageStr = `Usage: \`${msg.cmdPrefix}pc [start|buy|xp]\``;
 		return msg.channel.send(`You have ${points} Void knight commendation points.
-You have completed ${kc} games of Pest Control.`);
+You have completed ${kc} games of Pest Control.\n${usageStr}`);
 	}
 
 	async xp(msg: KlasaMessage, [input = '']: [string]) {
+		const usageStr = `Usage: \`${msg.cmdPrefix}pc xp hitpoints 1\``;
 		if (typeof input !== 'string') input = '';
 		const [_skillName, _amount] = input.split(' ');
-		if (!Object.keys(xpMultiplier).includes(_skillName)) {
-			return msg.channel.send("That's not a valid skill to buy XP for.");
+		const skillName = _skillName.toLowerCase();
+		if (!Object.keys(xpMultiplier).includes(skillName)) {
+			return msg.channel.send(`That's not a valid skill to buy XP for.\n${usageStr}`);
 		}
-		let amount = fromKMB(_amount);
+		let amount = fromKMB(_amount ?? '0');
 		if (!amount || amount < 1) {
-			return msg.channel.send("That's not a valid amount of XP.");
+			return msg.channel.send(`That's not a valid amount of points to spend.\n${usageStr}`);
 		}
 
-		const level = msg.author.skillLevel(_skillName as SkillsEnum);
+		const level = msg.author.skillLevel(skillName as SkillsEnum);
 		if (level < 25) {
-			return msg.channel.send('You need atleast level 25 to buy XP from Pest Control.');
+			return msg.channel.send('You need at least level 25 to buy XP from Pest Control.');
 		}
-		const xpPerPoint = Math.floor(Math.pow(level, 2) / 600) * xpMultiplier[_skillName as keyof typeof xpMultiplier];
+		const xpPerPoint = Math.floor(Math.pow(level, 2) / 600) * xpMultiplier[skillName as keyof typeof xpMultiplier];
 
 		const balance = msg.author.settings.get(UserSettings.PestControlPoints);
 		if (balance < amount) {
 			return msg.channel.send(`You cannot afford this, because you have only ${balance} points.`);
 		}
 		await msg.confirm(
-			`Are you sure you want to spend ${amount} points on ${xpPerPoint * amount} ${_skillName} XP?`
+			`Are you sure you want to spend ${amount} points on ${xpPerPoint * amount} ${toTitleCase(skillName)} XP?`
 		);
 		await msg.author.settings.update(UserSettings.PestControlPoints, balance - amount);
 		const xpRes = await msg.author.addXP({
-			skillName: _skillName as SkillsEnum,
+			skillName: skillName as SkillsEnum,
 			amount: xpPerPoint * amount,
 			duration: undefined,
 			minimal: false,
 			artificial: true
 		});
 
-		return msg.channel.send(`You spent ${amount} points (${xpPerPoint} ${_skillName} XP per point).
+		return msg.channel.send(`You spent ${amount} points (${xpPerPoint} ${toTitleCase(skillName)} XP per point).
 ${xpRes}`);
 	}
 
@@ -168,7 +172,7 @@ ${xpRes}`);
 	async start(msg: KlasaMessage, [quantity]: [number | undefined]) {
 		const { combatLevel } = msg.author;
 		if (combatLevel < 40) {
-			return msg.channel.send('You need a combat level of atleast 40 to do Pest Control.');
+			return msg.channel.send('You need a combat level of at least 40 to do Pest Control.');
 		}
 
 		let gameLength = Time.Minute * 2.8;

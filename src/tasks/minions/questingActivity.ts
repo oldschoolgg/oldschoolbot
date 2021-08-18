@@ -20,7 +20,7 @@ export async function completeUserQuestID(user: KlasaUser, questID: number) {
 export default class extends Task {
 	async run(data: QuestingActivityTaskOptions) {
 		const { userID, channelID, questID } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const quest = QuestList.find(q => q.id === questID)!;
 		const rewardBank = new Bank();
 		// xp

@@ -48,7 +48,7 @@ export function calcLootXPPickpocketing(
 export default class extends Task {
 	async run(data: PickpocketActivityTaskOptions) {
 		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const npc = Pickpocketables.find(_npc => _npc.id === monsterID)!;
 
 		const currentLevel = user.skillLevel(SkillsEnum.Thieving);

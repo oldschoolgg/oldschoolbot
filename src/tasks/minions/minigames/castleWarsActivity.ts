@@ -17,7 +17,7 @@ export default class extends Task {
 
 		const minionName = await getMinionName(userID);
 
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Castle wars ticket', ticketTable.roll().item);

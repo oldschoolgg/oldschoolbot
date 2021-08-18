@@ -10,7 +10,7 @@ import { PlunderActivityTaskOptions } from './../../../lib/types/minions';
 export default class extends Task {
 	async run(data: PlunderActivityTaskOptions) {
 		const { channelID, quantity, rooms, userID } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		user.incrementMinigameScore('PyramidPlunder', quantity);
 		const allRooms = plunderRooms.filter(room => rooms.includes(room.number));
 		const completedRooms = [
