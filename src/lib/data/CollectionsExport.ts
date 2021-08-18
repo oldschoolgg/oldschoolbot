@@ -1536,7 +1536,7 @@ export const skillingPetsCL = resolveItems([
 	'Rocky',
 	'Rift guardian'
 ]);
-export const slayerHelms = resolveItems([
+export const slayerHelmsCL = resolveItems([
 	'Slayer helmet',
 	'Black slayer helmet',
 	'Green slayer helmet',
@@ -1653,7 +1653,7 @@ export const slayerCL = resolveItems([
 	// "Dagon'hai hat",
 	// "Dagon'hai robe top",
 	// "Dagon'hai robe bottom",
-	...SlayerHelms
+	...slayerHelmsCL
 ]);
 export const tzHaarCL = resolveItems([
 	'Obsidian cape',
