@@ -38,7 +38,7 @@ export default class extends Task {
 		}
 
 		let gotToad = false;
-		if (roll(100) && duration > Time.Minute * 20) {
+		if (duration > Time.Minute * 20 && roll(3000 / Math.floor(duration / Time.Minute))) {
 			gotToad = true;
 			loot[itemID('Wintertoad')] = 1;
 		}
