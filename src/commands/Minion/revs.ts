@@ -9,7 +9,6 @@ import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { KillableMonster } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -201,9 +200,7 @@ export default class extends BotCommand {
 		}
 
 		if (!style || !['melee', 'range', 'mage'].includes(style)) {
-			const prefix = msg.guild
-				? msg.guild.settings.get(GuildSettings.Prefix)
-				: this.client.settings.get(GuildSettings.Prefix);
+			const prefix = msg.cmdPrefix;
 			const hasPrayerLevel = msg.author.hasSkillReqs({ [SkillsEnum.Prayer]: 25 })[0];
 			let skulled = Boolean(msg.flagArgs.skull);
 			let smited = Boolean(msg.flagArgs.smited);

@@ -1,5 +1,5 @@
 import { captureException } from '@sentry/node';
-import { Util } from 'discord.js';
+import { Guild, Util } from 'discord.js';
 import { Gateway, KlasaClient, Settings } from 'klasa';
 import { getConnection } from 'typeorm';
 
@@ -10,6 +10,22 @@ import { ActivityTable } from '../typeorm/ActivityTable.entity';
 import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { NewUserTable } from '../typeorm/NewUserTable.entity';
 import { ActivityTaskData } from '../types/minions';
+
+const guildSettingsCache = new Map<string, Settings>();
+
+export async function getGuildSettings(guild: Guild) {
+	const cached = guildSettingsCache.get(guild.id);
+	if (cached) return cached;
+	const gateway = (guild.client.gateways.get('guilds') as Gateway)!;
+	const settings = await gateway.acquire(guild);
+	gateway.cache.set(guild.id, { settings });
+	guildSettingsCache.set(guild.id, settings);
+	return settings;
+}
+
+export function getGuildSettingsCached(guild: Guild) {
+	return guildSettingsCache.get(guild.id);
+}
 
 export async function getUserSettings(userID: string): Promise<Settings> {
 	return (client.gateways.get('users') as Gateway)!

@@ -26,13 +26,13 @@ export default class extends Task {
 			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot]) ? ++kcAmounts[userWhoGetsLoot] : 1;
 		}
 
-		const leaderUser = await this.client.users.fetch(leader);
+		const leaderUser = await this.client.fetchUser(leader);
 
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
 		const totalLoot = new Bank();
 
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
-			const user = await this.client.users.fetch(userID).catch(noOp);
+			const user = await this.client.fetchUser(userID).catch(noOp);
 			if (!user) continue;
 			await addMonsterXP(user, {
 				monsterID,
