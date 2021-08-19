@@ -191,6 +191,7 @@ const barrows = resolveItems([
 ]);
 
 const seeds = resolveItems([
+	'Pineapple seed',
 	'Magic seed',
 	'Yew seed',
 	'Maple seed',
