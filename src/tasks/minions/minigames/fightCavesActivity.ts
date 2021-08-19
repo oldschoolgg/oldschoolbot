@@ -20,7 +20,7 @@ const TzrekJadPet = itemID('Tzrek-jad');
 export default class extends Task {
 	async run(data: FightCavesActivityTaskOptions) {
 		const { userID, channelID, jadDeathChance, preJadDeathTime, duration } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 
 		const tokkulReward = rand(2000, 6000);
 		const diedToJad = percentChance(jadDeathChance);

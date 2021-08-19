@@ -14,6 +14,7 @@
 		"@sapphire/discord-utilities": "^2.1.5",
 		"@sapphire/discord.js-utilities": "^3.0.0-next.600390f4.0",
 		"@sapphire/time-utilities": "^1.3.7",
+		"@sapphire/type": "^2.1.0",
 		"@sentry/node": "^6.11.0",
 		"@sinclair/typebox": "^0.12.9",
 		"bufferutil": "^4.0.3",
@@ -30,7 +31,7 @@
 		"fastify-sensible": "^3.1.1",
 		"he": "^1.2.0",
 		"jwt-simple": "^0.5.6",
-		"klasa": "https://github.com/gc/klasa.git#9cc34cbfd4f5a4b01068b402f19f9fa61641bdce",
+		"klasa": "https://github.com/gc/klasa.git#932cee4387720fc22e9c13dfba2c1c385912f351",
 		"klasa-decorators": "^0.0.1",
 		"node-fetch": "^2.6.1",
 		"oldschooljs": "^1.9.9",
@@ -63,7 +64,7 @@
 		"jest": "^27.0.6",
 		"jest-circus": "^27.0.6",
 		"rimraf": "^3.0.2",
-		"ts-jest": "^27.0.3",
+		"ts-jest": "^27.0.5",
 		"typescript": "^4.3.5"
 	},
 	"engines": {

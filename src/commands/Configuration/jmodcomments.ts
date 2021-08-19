@@ -1,6 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
+import { getGuildSettings } from '../../lib/settings/settings';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -23,24 +24,26 @@ export default class extends BotCommand {
 		if (msg.guild!.memberCount < 20 && getUsersPerkTier(msg.author) < PerkTier.Four) {
 			return msg.channel.send(TWEETS_RATELIMITING);
 		}
-		if (msg.guild!.settings.get(GuildSettings.JMODComments) === msg.channel.id) {
+		const settings = await getGuildSettings(msg.guild!);
+		if (settings.get(GuildSettings.JMODComments) === msg.channel.id) {
 			return msg.channel.send('JMod Comments are already enabled in this channel.');
 		}
-		if (msg.guild!.settings.get(GuildSettings.JMODComments) !== null) {
-			await msg.guild!.settings.update(GuildSettings.JMODComments, msg.channel.id);
+		if (settings.get(GuildSettings.JMODComments) !== null) {
+			await settings.update(GuildSettings.JMODComments, msg.channel.id);
 			return msg.channel.send(
 				"JMod Comments are already enabled in another channel, but I've switched them to use this channel."
 			);
 		}
-		await msg.guild!.settings.update(GuildSettings.JMODComments, msg.channel.id);
+		await settings.update(GuildSettings.JMODComments, msg.channel.id);
 		return msg.channel.send('Enabled JMod Comments in this channel.');
 	}
 
 	async off(msg: KlasaMessage) {
-		if (msg.guild!.settings.get(GuildSettings.JMODComments) === null) {
+		const settings = await getGuildSettings(msg.guild!);
+		if (settings.get(GuildSettings.JMODComments) === null) {
 			return msg.channel.send("JMod Comments aren't enabled, so you can't disable them.");
 		}
-		await msg.guild!.settings.reset(GuildSettings.JMODComments);
+		await settings.reset(GuildSettings.JMODComments);
 		return msg.channel.send('Disabled JMod Comments in this channel.');
 	}
 }

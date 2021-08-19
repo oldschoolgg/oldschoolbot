@@ -55,6 +55,7 @@ declare module 'klasa' {
 		analyticsInterval: NodeJS.Timeout;
 		metricsInterval: NodeJS.Timeout;
 		options: KlasaClientOptions;
+		fetchUser(id: string): Promise<KlasaUser>;
 	}
 
 	interface Command {

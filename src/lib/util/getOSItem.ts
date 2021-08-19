@@ -1,6 +1,8 @@
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { production } from '../../config';
+
 const cache = new Map();
 
 function cleanItemName(itemName: string) {
@@ -21,7 +23,7 @@ export default function getOSItem(itemName: string | number): Item {
 	}
 
 	const osItem = Items.get(identifier) as Item | undefined;
-	if (!osItem) throw `${identifier}That item doesn't exist.`;
+	if (!osItem) throw `${production ? 'That item' : identifier} doesn't exist.`;
 	cache.set(itemName, osItem);
 	return osItem;
 }

@@ -1,6 +1,8 @@
 import { Message, Permissions, TextChannel } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
 
+import { customClientOptions } from '../../config';
+import { getGuildSettingsCached } from '../../lib/settings/settings';
 import { noOp } from '../../lib/util';
 
 export default class extends Extendable {
@@ -10,7 +12,8 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	get cmdPrefix(this: KlasaMessage) {
-		return this.guild ? this.guild.settings.get('prefix') : '+';
+		let defaultPrefix = customClientOptions.prefix ?? '+';
+		return this.guild ? getGuildSettingsCached(this.guild)?.get('prefix') ?? defaultPrefix : defaultPrefix;
 	}
 
 	removeAllReactions(this: KlasaMessage) {
