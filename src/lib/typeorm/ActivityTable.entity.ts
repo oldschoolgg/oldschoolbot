@@ -42,7 +42,7 @@ export class ActivityTable extends BaseEntity {
 	@Column('json', { name: 'data', nullable: false })
 	public data!: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelID' | 'userID' | 'duration'>;
 
-	@Column('json', { name: 'data', nullable: true })
+	@Column('json', { name: 'loot', nullable: true })
 	public loot!: ItemBank | null;
 
 	public get taskData(): ActivityTaskData {

@@ -46,6 +46,13 @@ export async function handleTripFinish(
 		}
 	}
 
+	if (loot) {
+		const query = `UPDATE activity
+					   SET loot = $1
+					   WHERE id = ${data.id};`;
+		client.query(query, [JSON.stringify(loot)]);
+	}
+
 	const clueReceived = loot ? clueTiers.find(tier => loot[tier.scrollID] > 0) : undefined;
 	const unsiredReceived = loot ? loot[itemID('Unsired')] > 0 : undefined;
 
