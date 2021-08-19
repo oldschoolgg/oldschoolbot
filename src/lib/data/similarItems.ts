@@ -396,7 +396,8 @@ const source: [string, (string | number)[]][] = [
 			'Uncharged toxic trident (e)'
 		]
 	],
-	['Zaryte bow', ['Hellfire bow']]
+	['Zaryte bow', ['Hellfire bow']],
+	['Twisted bow', ['Hellfire bow']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
