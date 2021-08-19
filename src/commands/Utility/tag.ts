@@ -70,4 +70,13 @@ export default class extends BotCommand {
 				.join(', ')}`
 		);
 	}
+
+	async show(message: KlasaMessage, [tag]: [string]) {
+		const settings = await getGuildSettings(message.guild!);
+		const emote = settings.get(GuildSettings.Tags).find(([name]) => name === tag.toLowerCase());
+		if (!emote) {
+			return null;
+		}
+		return message.channel.send(emote[1]);
+	}
 }
