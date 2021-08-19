@@ -11,6 +11,7 @@ import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BankImageResult } from '../../tasks/bankImage';
 import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
+import { Quests } from '../data/QuestExports';
 import { GearSetup } from '../gear';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
@@ -271,6 +272,9 @@ declare module 'discord.js' {
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
 		combatLevel: number;
+		hasQuest(quest: Quests): boolean;
+		getQP(): number;
+		completeQuest(quest: Quests): Promise<boolean>;
 	}
 
 	interface TextChannel {

@@ -5,12 +5,13 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import PromiseQueue from 'p-queue';
 
 import { Events, PerkTier, userQueues } from '../../lib/constants';
+import { QuestList, Quests } from '../../lib/data/QuestExports';
 import { readableStatName } from '../../lib/gear';
 import { KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { Skills } from '../../lib/types';
-import { formatItemReqs, itemNameFromID } from '../../lib/util';
+import { addArrayOfNumbers, formatItemReqs, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
@@ -137,5 +138,24 @@ export default class extends Extendable {
 			.map(getOSItem)
 			.filter(i => i.highalch > 0)
 			.sort((a, b) => b.highalch - a.highalch);
+	}
+
+	public hasQuest(this: User, quest: Quests): boolean {
+		const questsDone = this.settings.get(UserSettings.Quests);
+		return questsDone.includes(quest);
+	}
+
+	public getQP(this: User): number {
+		const questsDoneID = this.settings.get(UserSettings.Quests);
+		return addArrayOfNumbers(QuestList.filter(q => questsDoneID.includes(q.id)).map(q => q.rewards.qp));
+	}
+
+	public async completeQuest(this: User, quest: Quests): Promise<boolean> {
+		const mainQuest = QuestList.find(q => q.id === quest);
+		if (!mainQuest) return false;
+		await this.settings.update(UserSettings.Quests, mainQuest.id, {
+			arrayAction: 'add'
+		});
+		return true;
 	}
 }

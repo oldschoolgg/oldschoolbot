@@ -1,14 +1,14 @@
 import { MessageButton, MessageSelectMenu } from 'discord.js';
 import { objectEntries, objectKeys, objectValues, randArrItem, Time } from 'e';
-import { KlasaMessage, KlasaUser } from 'klasa';
+import { KlasaMessage } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { allSkills } from '../../commands/Minion/quest';
 import { Emoji, skillEmoji } from '../constants';
-import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import { ItemBank, Skills } from '../types';
 import { addArrayOfNumbers } from '../util';
+import resolveItems from '../util/resolveItems';
 
 export const enum Quests {
 	Grandfathered = 0,
@@ -184,9 +184,14 @@ export interface ICustomRewardCollect {
 	id: number;
 }
 
+export interface IIronRequirements {
+	skill?: Skills[];
+	items?: number[][];
+}
+
 export interface IQuestRequirements {
 	level?: Skills;
-	ironLevel?: Skills[];
+	ironman?: IIronRequirements[];
 	items?: ItemBank;
 	quests?: Quests[];
 	qp?: number;
@@ -479,10 +484,14 @@ export const QuestList: IQuest[] = [
 				[SkillsEnum.Magic]: 33,
 				[SkillsEnum.Prayer]: 37
 			},
-			ironLevel: [
+			ironman: [
 				{
-					[SkillsEnum.Crafting]: 8,
-					[SkillsEnum.Smithing]: 34
+					skill: [{ [SkillsEnum.Crafting]: 8 }],
+					items: [resolveItems(['Unfired bowl'])]
+				},
+				{
+					skill: [{ [SkillsEnum.Smithing]: 34 }],
+					items: [resolveItems(['Steel nails'])]
 				}
 			],
 			qp: 32
@@ -807,9 +816,10 @@ export const QuestList: IQuest[] = [
 				[SkillsEnum.Crafting]: 20,
 				[SkillsEnum.Agility]: 32
 			},
-			ironLevel: [
+			ironman: [
 				{
-					[SkillsEnum.Smithing]: 4
+					skill: [{ [SkillsEnum.Smithing]: 4 }],
+					items: [resolveItems(['Bronze wire'])]
 				}
 			],
 			quests: [Quests.JunglePotion]
@@ -1090,9 +1100,10 @@ export const QuestList: IQuest[] = [
 				[SkillsEnum.Smithing]: 20,
 				[SkillsEnum.Crafting]: 20
 			},
-			ironLevel: [
+			ironman: [
 				{
-					[SkillsEnum.Mining]: 30
+					skill: [{ [SkillsEnum.Mining]: 30 }],
+					items: [resolveItems(['Coal'])]
 				}
 			]
 		},
@@ -1125,9 +1136,10 @@ export const QuestList: IQuest[] = [
 		name: 'Nature Spirit',
 		time: Time.Minute * 13,
 		requirements: {
-			ironLevel: [
+			ironman: [
 				{
-					[SkillsEnum.Crafting]: 18
+					skill: [{ [SkillsEnum.Crafting]: 18 }],
+					items: [resolveItems(['Silver sickle'])]
 				}
 			]
 		},
@@ -1190,10 +1202,14 @@ export const QuestList: IQuest[] = [
 				[SkillsEnum.Cooking]: 30,
 				[SkillsEnum.Fishing]: 5
 			},
-			ironLevel: [
+			ironman: [
 				{
-					[SkillsEnum.Fishing]: 65,
-					[SkillsEnum.Herblore]: 34
+					skill: [{ [SkillsEnum.Herblore]: 34 }],
+					items: [resolveItems(['Agility potion(3)'])]
+				},
+				{
+					skill: [{ [SkillsEnum.Fishing]: 64 }],
+					items: [resolveItems(['Raw karambwan'])]
 				}
 			]
 		},
@@ -1221,9 +1237,10 @@ export const QuestList: IQuest[] = [
 				[SkillsEnum.Crafting]: 10,
 				[SkillsEnum.Agility]: 56
 			},
-			ironLevel: [
+			ironman: [
 				{
-					[SkillsEnum.Crafting]: 10
+					skill: [{ [SkillsEnum.Crafting]: 10 }],
+					items: [resolveItems(['Strip of cloth'])]
 				}
 			]
 		},
@@ -1442,9 +1459,10 @@ export const QuestList: IQuest[] = [
 				[SkillsEnum.Crafting]: 20,
 				[SkillsEnum.Thieving]: 25
 			},
-			ironLevel: [
+			ironman: [
 				{
-					[SkillsEnum.Smithing]: 4
+					skill: [{ [SkillsEnum.Smithing]: 4 }],
+					items: [resolveItems(['Bronze wire'])]
 				}
 			]
 		},
@@ -1617,7 +1635,13 @@ export const QuestList: IQuest[] = [
 				[SkillsEnum.Crafting]: 20,
 				[SkillsEnum.Mining]: 20
 			},
-			ironLevel: [{ [SkillsEnum.Smithing]: 49 }, { [SkillsEnum.Thieving]: 26 }, { [SkillsEnum.Slayer]: 35 }]
+			ironman: [
+				{
+					// One of these skills
+					skill: [{ [SkillsEnum.Smithing]: 49 }, { [SkillsEnum.Thieving]: 26 }, { [SkillsEnum.Slayer]: 35 }],
+					items: [resolveItems(['Bullseye lantern'])]
+				}
+			]
 		},
 		rewards: { qp: 1, xp: { [SkillsEnum.Crafting]: 1000 } }
 	},
@@ -1953,7 +1977,17 @@ export const QuestList: IQuest[] = [
 				[SkillsEnum.Prayer]: 43,
 				[SkillsEnum.Magic]: 39
 			},
-			ironLevel: [{ [SkillsEnum.Mining]: 45 }]
+			ironman: [
+				{
+					skill: [{ [SkillsEnum.Mining]: 45 }],
+					// One of these items
+					items: [
+						resolveItems(['Granite (500g)']),
+						resolveItems(['Granite (2kg)']),
+						resolveItems(['Granite (5kg)'])
+					]
+				}
+			]
 		},
 		rewards: {
 			qp: 2,
@@ -2048,10 +2082,14 @@ export const QuestList: IQuest[] = [
 			level: {
 				[SkillsEnum.Cooking]: 31
 			},
-			ironLevel: [
+			ironman: [
 				{
-					[SkillsEnum.Crafting]: 42,
-					[SkillsEnum.Smithing]: 4
+					skill: [{ [SkillsEnum.Crafting]: 42 }],
+					items: [resolveItems(['Fishbowl'])]
+				},
+				{
+					skill: [{ [SkillsEnum.Smithing]: 4 }],
+					items: [resolveItems(['Bronze wire'])]
 				}
 			]
 		},
@@ -2145,7 +2183,12 @@ export const QuestList: IQuest[] = [
 				Quests.UndergroundPass,
 				Quests.WaterfallQuest
 			],
-			ironLevel: [{ [SkillsEnum.Farming]: 20 }]
+			ironman: [
+				{
+					skill: [{ [SkillsEnum.Farming]: 20 }],
+					items: [resolveItems(['Sweetcorn'])]
+				}
+			]
 		},
 		rewards: {
 			qp: 1,
@@ -2220,7 +2263,12 @@ export const QuestList: IQuest[] = [
 				[SkillsEnum.Crafting]: 25,
 				[SkillsEnum.Mining]: 15
 			},
-			ironLevel: [{ [SkillsEnum.Smithing]: 50 }]
+			ironman: [
+				{
+					skill: [{ [SkillsEnum.Smithing]: 50 }],
+					items: [resolveItems(['Mithril bar'])]
+				}
+			]
 		},
 		rewards: {
 			qp: 2,
@@ -2411,9 +2459,15 @@ export const QuestList: IQuest[] = [
 				[SkillsEnum.Construction]: 5,
 				[SkillsEnum.Magic]: 46
 			},
-			ironLevel: [
-				{ [SkillsEnum.Woodcutting]: 45, [SkillsEnum.Runecraft]: 13 },
-				{ [SkillsEnum.Firemaking]: 50, [SkillsEnum.Runecraft]: 13 }
+			ironman: [
+				{
+					skill: [{ [SkillsEnum.Firemaking]: 50 }, { [SkillsEnum.Woodcutting]: 45 }],
+					items: [resolveItems(['Maple logs'])]
+				},
+				{
+					skill: [{ [SkillsEnum.Runecraft]: 13 }],
+					items: [resolveItems(['Mud rune'])]
+				}
 			]
 		},
 		rewards: {
@@ -2590,10 +2644,19 @@ export const QuestList: IQuest[] = [
 				[SkillsEnum.Ranged]: 30,
 				[SkillsEnum.Woodcutting]: 35
 			},
-			ironLevel: [
-				{ [SkillsEnum.Smithing]: 51, [SkillsEnum.Prayer]: 31 },
-				{ [SkillsEnum.Thieving]: 28, [SkillsEnum.Prayer]: 31 },
-				{ [SkillsEnum.Woodcutting]: 60, [SkillsEnum.Prayer]: 31 }
+			ironman: [
+				{
+					skill: [
+						{ [SkillsEnum.Smithing]: 51 },
+						{ [SkillsEnum.Thieving]: 28 },
+						{ [SkillsEnum.Woodcutting]: 60 }
+					],
+					items: [resolveItems(['Mithril axe'])]
+				},
+				{
+					skill: [{ [SkillsEnum.Prayer]: 31 }],
+					items: [resolveItems(['Holy symbol'])]
+				}
 			]
 		},
 		rewards: {
@@ -2660,7 +2723,12 @@ export const QuestList: IQuest[] = [
 				[SkillsEnum.Construction]: 34,
 				[SkillsEnum.Thieving]: 15
 			},
-			ironLevel: [{ [SkillsEnum.Woodcutting]: 50 }]
+			ironman: [
+				{
+					skill: [{ [SkillsEnum.Woodcutting]: 50 }],
+					items: [resolveItems(['Mahogany plank'])]
+				}
+			]
 		},
 		rewards: {
 			qp: 1,
@@ -2681,7 +2749,14 @@ export const QuestList: IQuest[] = [
 				[SkillsEnum.Agility]: 40,
 				[SkillsEnum.Construction]: 20
 			},
-			ironLevel: [{ [SkillsEnum.Woodcutting]: 56, [SkillsEnum.Crafting]: 46 }]
+			ironman: [
+				{
+					skill: [{ [SkillsEnum.Woodcutting]: 56 }]
+				},
+				{
+					skill: [{ [SkillsEnum.Crafting]: 46 }]
+				}
+			]
 		},
 		rewards: {
 			qp: 1,
@@ -3405,8 +3480,3 @@ export const QuestList: IQuest[] = [
 ];
 
 export const MAXQP = addArrayOfNumbers(QuestList.map(q => q.rewards.qp));
-
-export function userQP(user: KlasaUser) {
-	const questsDoneID = user.settings.get(UserSettings.Quests);
-	return addArrayOfNumbers(QuestList.filter(q => questsDoneID.includes(q.id)).map(q => q.rewards.qp));
-}

@@ -1,21 +1,12 @@
-import { KlasaMessage, KlasaUser, Task } from 'klasa';
+import { KlasaMessage, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveBank } from 'oldschooljs/dist/util';
 
-import { QuestList, userQP } from '../../lib/data/QuestExports';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { MAXQP, QuestList } from '../../lib/data/QuestExports';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
 import { formatSkillRequirements } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-
-export async function completeUserQuestID(user: KlasaUser, questID: number) {
-	const mainQuest = QuestList.find(q => q.id === questID);
-	if (mainQuest) await user.addQP(mainQuest.rewards.qp);
-	return user.settings.update(UserSettings.Quests, questID, {
-		arrayAction: 'add'
-	});
-}
 
 export default class extends Task {
 	async run(data: QuestingActivityTaskOptions) {
@@ -67,14 +58,22 @@ export default class extends Task {
 			await user.addItemsToBank(rewardBank, true);
 		}
 
-		await completeUserQuestID(user, quest.id);
-		const returnStr = `${user}, ${user.minionName} returned from its adventure, completing ${
+		await user.completeQuest(quest.id);
+		const userQP = user.getQP();
+		let returnStr = `${user}, ${user.minionName} returned from its adventure, completing ${
 			!quest.name.toLowerCase().startsWith('the') ? 'the ' : ''
-		}**${quest.name}**. You received the following rewards:\n${quest.rewards?.qp} QP (You now have ${userQP(
-			user
-		)} QP)${quest.rewards?.xp ? `\n${formatSkillRequirements(quest.rewards?.xp)}` : ''}${
-			quest.rewards?.items ? `\n${new Bank(quest.rewards?.items)}` : ''
-		}${customRewardString ? `\n${customRewardString}` : ''}${rewardToCollect ? `\n${rewardToCollect}` : ''}`;
+		}**${quest.name}**. You received the following rewards:\n${
+			quest.rewards?.qp
+		} QP (You now have ${userQP.toLocaleString()} QP)${
+			quest.rewards?.xp ? `\n${formatSkillRequirements(quest.rewards?.xp)}` : ''
+		}${quest.rewards?.items ? `\n${new Bank(quest.rewards?.items)}` : ''}${
+			customRewardString ? `\n${customRewardString}` : ''
+		}${rewardToCollect ? `\n${rewardToCollect}` : ''}`;
+
+		if (userQP === MAXQP) {
+			returnStr +=
+				'\nYou have done all the quests! 🎉 Congratulations! You are now ellegible to buy a **Quest point cape**!';
+		}
 
 		handleTripFinish(
 			this.client,
