@@ -3,6 +3,7 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { barrowsTuple } from './data/CollectionsExport';
 import { ItemBank } from './types';
 import resolveItems from './util/resolveItems';
 
@@ -54,11 +55,9 @@ export interface BingoItem {
 	check: (user: KlasaUser, bingo: BingoInstance) => Promise<boolean>;
 }
 
-function oneOf(user: KlasaUser) {
+async function oneOf(user: KlasaUser, items: string[]) {
 	const loot = await getTotalLootInBingo(user);
-	return resolveItems(['Skeletal visage', 'Wyvern visage', 'Skeletal visage', 'Serpentine visage']).some(item =>
-		loot.has(item)
-	);
+	return resolveItems(items).some(item => loot.has(item));
 }
 
 export const bingoItems: BingoItem[] = [
@@ -110,21 +109,61 @@ export const bingoItems: BingoItem[] = [
 		category: 'PvM',
 		description: 'Receive any visage (draconic, skeletal, wyvern, serpentine) as a drop',
 		check: async user => {
-			const loot = await getTotalLootInBingo(user);
-			return resolveItems(['Skeletal visage', 'Wyvern visage', 'Skeletal visage', 'Serpentine visage']).some(
-				item => loot.has(item)
-			);
+			return oneOf(user, ['Skeletal visage', 'Wyvern visage', 'Skeletal visage', 'Serpentine visage']);
 		}
 	},
 	{
 		id: 5,
 		category: 'PvM',
-		description: 'Receive any sigil from Corporeal Beast',
+		description: 'Receive any sigil from Corporeal Beast as a drop',
+		check: async user => {
+			return oneOf(user, ['Spectral sigil', 'Arcane sigil', 'Elysian sigil']);
+		}
+	},
+	{
+		id: 6,
+		category: 'PvM',
+		description: 'Obtain any godsword hilt as a drop',
+		check: async user => {
+			return oneOf(user, ['Armadyl hilt', 'Bandos hilt', 'Zamorak hilt', 'Saradomin hilt']);
+		}
+	},
+	{
+		id: 7,
+		category: 'PvM',
+		description: 'Obtain any full set of Barrows as drops',
 		check: async user => {
 			const loot = await getTotalLootInBingo(user);
-			return resolveItems(['Skeletal visage', 'Wyvern visage', 'Skeletal visage', 'Serpentine visage']).some(
-				item => loot.has(item)
-			);
+			for (const set of barrowsTuple) {
+				if (set.every(item => loot.has(item))) {
+					return true;
+				}
+			}
+			return false;
+		}
+	},
+	{
+		id: 8,
+		category: 'PvM',
+		description: 'Obtain any Wilderness pet as a drop',
+		check: async user => {
+			return oneOf(user, ["Vet'ion jr.", 'Venenatis spiderling', "Scorpia's offspring", 'Callisto cub']);
+		}
+	},
+	{
+		id: 9,
+		category: 'PvM',
+		description: 'Receive an Onyx or Uncut Onyx as a drop',
+		check: async user => {
+			return oneOf(user, ['Onyx', 'Uncut onyx']);
+		}
+	},
+	{
+		id: 10,
+		category: 'PvM',
+		description: 'Receive an Onyx or Uncut Onyx as a drop',
+		check: async user => {
+			return oneOf(user, ['Onyx', 'Uncut onyx']);
 		}
 	}
 ];

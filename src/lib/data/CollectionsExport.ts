@@ -73,6 +73,14 @@ export const alchemicalHydraCL = resolveItems([
 	'Jar of chemicals',
 	'Alchemical hydra heads'
 ]);
+export const barrowsTuple = [
+	["Ahrim's hood", "Ahrim's robetop", "Ahrim's robeskirt", "Ahrim's staff"],
+	["Dharok's helm", "Dharok's platebody", "Dharok's platelegs", "Dharok's greataxe"],
+	["Guthan's helm", "Guthan's platebody", "Guthan's chainskirt", "Guthan's warspear"],
+	["Karil's coif", "Karil's leathertop", "Karil's leatherskirt", "Karil's crossbow"],
+	["Torag's helm", "Torag's platebody", "Torag's platelegs", "Torag's hammers"],
+	["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]
+].map(resolveItems);
 export const barrowsChestCL = resolveItems([
 	"Karil's coif",
 	"Karil's leathertop",
