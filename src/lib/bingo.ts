@@ -157,13 +157,5 @@ export const bingoItems: BingoItem[] = [
 		check: async user => {
 			return oneOf(user, ['Onyx', 'Uncut onyx']);
 		}
-	},
-	{
-		id: 10,
-		category: 'PvM',
-		description: 'Receive an Onyx or Uncut Onyx as a drop',
-		check: async user => {
-			return oneOf(user, ['Onyx', 'Uncut onyx']);
-		}
 	}
 ];
