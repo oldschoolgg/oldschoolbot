@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { requiresMinion } from '../../lib/minions/decorators';
 import { defaultFarmingContract } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -29,7 +29,6 @@ export default class extends BotCommand {
 		});
 	}
 
-	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [contractLevel]: ['easy' | 'medium' | 'hard' | 'easier' | 'current' | 'completed']) {
 		await msg.author.settings.sync(true);
@@ -161,6 +160,18 @@ export default class extends BotCommand {
 				files: [
 					await chatHeadImage({
 						content: `Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`,
+						head: 'jane'
+					})
+				]
+			});
+		}
+
+		if (msg.author.minionIsBusy) {
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content:
+							"You are busy at the moment! I can't give you a new farming contract like that. Please, come back when you have some free time for us to talk.",
 						head: 'jane'
 					})
 				]
