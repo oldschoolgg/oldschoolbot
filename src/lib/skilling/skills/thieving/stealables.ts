@@ -287,7 +287,7 @@ export const Pickpocketables: Pickpockable[] = [
 		intercept: 17.703_09
 	},
 	{
-		name: 'Pollnivian Bandit',
+		name: 'Pollnivnian Bandit',
 		level: 55,
 		xp: 84.3,
 		table: PollnivnianBandit.pickpocketTable!,
