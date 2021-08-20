@@ -5,8 +5,8 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { Emoji, skillEmoji } from '../../lib/constants';
-import { requiresMinion } from '../../lib/minions/decorators';
+import { Emoji, MAX_XP, skillEmoji } from '../../lib/constants';
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -46,6 +46,37 @@ export const XPLamps: IXPLamp[] = [
 		amount: 50_000,
 		name: 'Antique lamp 4',
 		minimumLevel: 70
+	},
+	// BSO Lamps
+	{
+		itemID: 6796,
+		amount: 20_000,
+		name: 'Tiny lamp',
+		minimumLevel: 1
+	},
+	{
+		itemID: 21_642,
+		amount: 50_000,
+		name: 'Small lamp',
+		minimumLevel: 1
+	},
+	{
+		itemID: 23_516,
+		amount: 100_000,
+		name: 'Average lamp',
+		minimumLevel: 1
+	},
+	{
+		itemID: 22_320,
+		amount: 1_000_000,
+		name: 'Large lamp',
+		minimumLevel: 1
+	},
+	{
+		itemID: 11_157,
+		amount: 5_000_000,
+		name: 'Huge lamp',
+		minimumLevel: 1
 	}
 ];
 
@@ -108,7 +139,17 @@ const XPObjects: IXPObject[] = [
 		}
 	},
 	{
-		items: resolveItems(['Antique lamp 1', 'Antique lamp 2', 'Antique lamp 3', 'Antique lamp 4']),
+		items: resolveItems([
+			'Antique lamp 1',
+			'Antique lamp 2',
+			'Antique lamp 3',
+			'Antique lamp 4',
+			'Tiny lamp',
+			'Small lamp',
+			'Average lamp',
+			'Large lamp',
+			'Huge lamp'
+		]),
 		function: data => {
 			const lamp = XPLamps.find(l => l.itemID === data.item)!;
 			const skills: Skills = {};
@@ -166,8 +207,8 @@ export default class extends BotCommand {
 		let amount = skills[skillName]!;
 		const userXp = msg.author.rawSkills[skillName]!;
 		let artificial = false;
-		if (userXp === 200_000_000) artificial = true;
-		return [true, await msg.author.addXP({ skillName, amount, artificial })];
+		if (userXp === MAX_XP) artificial = true;
+		return [true, await msg.author.addXP({ skillName, amount, artificial, multiplier: false })];
 	}
 
 	async xpReward(msg: KlasaMessage, skills: Skills, requirements?: Skills) {
@@ -186,7 +227,7 @@ export default class extends BotCommand {
 						? `You will level up to level ${newUserLevel.toLocaleString()}!`
 						: 'You can select this!'
 					: `You need level ${requirements![skill[0]]}.`;
-				if (userXp === 200_000_000) description = `You are already 200m in ${skill[0]}`;
+				if (userXp === MAX_XP) description = `You are already ${toKMB(MAX_XP)} in ${skill[0]}`;
 				if ((await this.lockedSkills()).includes(skill[0])) description = 'This skill is locked.';
 
 				let label = `${skill[1]!.toLocaleString()} XP in ${skill[0].toString()}`;
@@ -248,6 +289,7 @@ export default class extends BotCommand {
 		}
 	}
 
+	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [qty, cmd]: [number, string]) {
 		await msg.author.settings.sync(true);
