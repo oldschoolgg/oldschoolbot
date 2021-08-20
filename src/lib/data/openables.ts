@@ -553,6 +553,7 @@ const cantBeDropped = [
 	itemID('Clue hunter boots'),
 	itemID('Clue hunter cloak'),
 	itemID('Cob'),
+	itemID('Bank lottery ticket'),
 	itemID('Tester gift box'),
 	22_664, // JMOD Scythe of Vitur,
 	...resolveItems([
