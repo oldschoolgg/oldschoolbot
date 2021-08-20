@@ -164,9 +164,7 @@ export default class extends BotCommand {
 		}
 
 		let amount = skills[skillName]!;
-		const userXp = msg.author.rawSkills[skillName]!;
-		let artificial = false;
-		if (userXp === 200_000_000) artificial = true;
+		const artificial = true;
 		return [true, await msg.author.addXP({ skillName, amount, artificial })];
 	}
 
