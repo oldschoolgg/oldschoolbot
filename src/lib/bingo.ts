@@ -59,7 +59,9 @@ async function oneOf(user: KlasaUser, items: string[]) {
 	const loot = await getTotalLootInBingo(user);
 	return resolveItems(items).some(item => loot.has(item));
 }
-
+// 5 easy scroll uniques
+// 3 hard scroll uniques
+// 1 elite scroll unique
 export const bingoItems: BingoItem[] = [
 	{
 		id: 1,
