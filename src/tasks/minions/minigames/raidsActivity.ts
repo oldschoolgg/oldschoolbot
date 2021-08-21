@@ -27,7 +27,7 @@ const purpleItems = chambersOfXericCl.filter(i => !notPurple.includes(i));
 export default class extends Task {
 	async run(data: RaidsOptions) {
 		const { channelID, users, challengeMode, duration, leader } = data;
-		const allUsers = await Promise.all(users.map(async u => this.client.users.fetch(u)));
+		const allUsers = await Promise.all(users.map(async u => this.client.fetchUser(u)));
 		const team = await createTeam(allUsers, challengeMode);
 
 		const loot = ChambersOfXeric.complete({
@@ -59,7 +59,7 @@ export default class extends Task {
 		const onyxChance = users.length * 70;
 
 		for (let [userID, _userLoot] of Object.entries(loot)) {
-			const user = await this.client.users.fetch(userID).catch(noOp);
+			const user = await this.client.fetchUser(userID).catch(noOp);
 			if (!user) continue;
 			const { personalPoints, deaths, deathChance } = team.find(u => u.id === user.id)!;
 

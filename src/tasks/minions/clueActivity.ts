@@ -29,7 +29,7 @@ export default class extends Task {
 	async run(data: ClueActivityTaskOptions) {
 		const { clueID, userID, channelID, quantity, duration } = data;
 		const clueTier = clueTiers.find(mon => mon.id === clueID);
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 
 		const logInfo = `ClueID[${clueID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
@@ -71,6 +71,15 @@ export default class extends Task {
 			`${user.username}[${user.id}] received ${quantity} ${clueTier.name} Clue Caskets.`
 		);
 
-		handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, loot);
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			res => this.client.commands.get('mclue')!.run(res, [quantity, clueTier.name]),
+			undefined,
+			data,
+			loot
+		);
 	}
 }

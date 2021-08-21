@@ -26,7 +26,7 @@ const methodsOfDeath = [
 export default class extends Task {
 	async run({ channelID, users: idArr, duration, bossUsers }: NewBossOptions) {
 		const deaths: KlasaUser[] = [];
-		const users: KlasaUser[] = await Promise.all(idArr.map(i => this.client.users.fetch(i)));
+		const users: KlasaUser[] = await Promise.all(idArr.map(i => this.client.fetchUser(i)));
 
 		const getUser = (id: string) => users.find(u => u.id === id)!;
 		const dwwhTable: KlasaUser[] = [];

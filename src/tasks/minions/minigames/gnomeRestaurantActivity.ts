@@ -78,7 +78,7 @@ export default class extends Task {
 		}
 
 		const minionName = await getMinionName(userID);
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 
 		if (user.usingPet('Flappy')) {
 			loot.multiply(2);

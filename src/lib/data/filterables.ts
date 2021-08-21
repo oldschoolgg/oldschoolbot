@@ -196,6 +196,7 @@ const barrows = resolveItems([
 ]);
 
 const seeds = resolveItems([
+	'Pineapple seed',
 	'Magic seed',
 	'Yew seed',
 	'Maple seed',
@@ -265,7 +266,8 @@ const seeds = resolveItems([
 	'Cabbage seed',
 	'Onion seed',
 	'Potato seed',
-	'Mysterious seed'
+	'Mysterious seed',
+	'Athelas seed'
 ]);
 
 const herbs = resolveItems([
@@ -296,7 +298,8 @@ const herbs = resolveItems([
 	'Cadantine',
 	'Lantadyme',
 	'Dwarf weed',
-	'Torstol'
+	'Torstol',
+	'Athelas'
 ]);
 
 const secondaries = resolveItems([

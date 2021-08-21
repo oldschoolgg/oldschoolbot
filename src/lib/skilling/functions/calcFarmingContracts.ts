@@ -85,9 +85,9 @@ export function getPlantToGrow(
 ): [string, PlantTier] {
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
 	let contractType: PlantsList = [];
-	if (contractLevel === 'easy') contractType = easyPlants;
-	if (contractLevel === 'medium') contractType = mediumPlants;
-	if (contractLevel === 'hard') contractType = hardPlants;
+	if (contractLevel === 'easy') contractType = [...easyPlants];
+	if (contractLevel === 'medium') contractType = [...mediumPlants];
+	if (contractLevel === 'hard') contractType = [...hardPlants];
 
 	for (let i = contractType.length; i > 0; i--) {
 		const [farmingLevelNeeded, plantName] = contractType[i - 1];

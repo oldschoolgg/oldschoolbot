@@ -35,7 +35,7 @@ export default class extends Task {
 			currentDate,
 			autoFarmed
 		} = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const currentFarmingLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
 		const currentWoodcuttingLevel = Math.min(99, user.skillLevel(SkillsEnum.Woodcutting));
 		let baseBonus = 1;

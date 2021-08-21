@@ -26,7 +26,7 @@ export default class extends Task {
 			_bossUsers.map(async u => ({
 				...u,
 				itemsToRemove: new Bank(u.itemsToRemove),
-				user: await this.client.users.fetch(u.user)
+				user: await this.client.fetchUser(u.user)
 			}))
 		);
 

@@ -11,7 +11,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: AgilityArenaActivityTaskOptions) {
 		const { channelID, duration, userID } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
 		// You get 1 ticket per minute at best without diary

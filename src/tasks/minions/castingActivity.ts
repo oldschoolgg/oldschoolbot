@@ -9,7 +9,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: CastingActivityTaskOptions) {
 		let { spellID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 
 		const spell = Castables.find(i => i.id === spellID)!;
 

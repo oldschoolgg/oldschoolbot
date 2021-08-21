@@ -9,7 +9,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: KibbleOptions) {
 		let { quantity, channelID, userID, kibbleType, duration } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 
 		const kibble = kibbles.find(k => k.type === kibbleType)!;
 		const loot = new Bank().add(kibble.item.id, quantity);

@@ -122,6 +122,9 @@ export default class DailyCommand extends BotCommand {
 
 		if (!triviaCorrect) {
 			loot[COINS_ID] = 0;
+		} else if (loot[COINS_ID] <= 1_000_000_000) {
+			// Correct daily gives 10% more cash if the jackpot is not won
+			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.1);
 		}
 
 		// Ensure amount of GP is an integer

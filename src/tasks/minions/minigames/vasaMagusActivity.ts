@@ -14,7 +14,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: NewBossOptions) {
 		const { channelID, userID, duration, quantity } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 
 		await user.incrementMonsterScore(VasaMagus.id, quantity);
 

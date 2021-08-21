@@ -28,7 +28,7 @@ export default class extends Task {
 				);
 
 				for (const row of result.values()) {
-					const user = await client.users.fetch(row.id);
+					const user = await client.fetchUser(row.id);
 					if (user.settings.get(UserSettings.LastDailyTimestamp) === -1) continue;
 
 					await user.settings.update(UserSettings.LastDailyTimestamp, -1);

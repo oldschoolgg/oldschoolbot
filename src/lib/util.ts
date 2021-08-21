@@ -249,7 +249,7 @@ export function reduceNumByPercent(value: number, percent: number): number {
 }
 
 export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
-	return Promise.all(ids.map(id => client.users.fetch(id)));
+	return Promise.all(ids.map(id => client.fetchUser(id)));
 }
 
 const rawEmojiRegex = emojiRegex();
@@ -554,48 +554,59 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 	const display = new PaginatedMessage();
 	// @ts-ignore 2445
 	display.setUpReactions = () => null;
-
 	for (const page of pages) {
 		display.addPage({
 			...page,
-			components: [
-				PaginatedMessage.defaultActions
-					.slice(1, -1)
-					.map(a => new MessageButton().setLabel('').setStyle('SECONDARY').setCustomID(a.id).setEmoji(a.id))
-			]
+			components:
+				pages.length > 1
+					? [
+							PaginatedMessage.defaultActions
+								.slice(1, -1)
+								.map(a =>
+									new MessageButton()
+										.setLabel('')
+										.setStyle('SECONDARY')
+										.setCustomID(a.id)
+										.setEmoji(a.id)
+								)
+					  ]
+					: []
 		});
 	}
 
 	await display.run(message);
-	const collector = display.response!.createMessageComponentInteractionCollector({
-		time: Time.Minute,
-		filter: i => i.user.id === message.author.id
-	});
 
-	collector.on('collect', async interaction => {
-		for (const action of PaginatedMessage.defaultActions) {
-			if (interaction.customID === action.id) {
-				const previousIndex = display.index;
+	if (pages.length > 1) {
+		const collector = display.response!.createMessageComponentInteractionCollector({
+			time: Time.Minute,
+			filter: i => i.user.id === message.author.id
+		});
 
-				await action.run({
-					handler: display,
-					author: message.author,
-					channel: message.channel,
-					response: display.response!,
-					collector: display.collector!
-				});
+		collector.on('collect', async interaction => {
+			for (const action of PaginatedMessage.defaultActions) {
+				if (interaction.customID === action.id) {
+					const previousIndex = display.index;
 
-				if (previousIndex !== display.index) {
-					await interaction.update(await display.resolvePage(message.channel, display.index));
-					return;
+					await action.run({
+						handler: display,
+						author: message.author,
+						channel: message.channel,
+						response: display.response!,
+						collector: display.collector!
+					});
+
+					if (previousIndex !== display.index) {
+						await interaction.update(await display.resolvePage(message.channel, display.index));
+						return;
+					}
 				}
 			}
-		}
-	});
+		});
 
-	collector.on('end', () => {
-		display.response!.edit({ components: [] });
-	});
+		collector.on('end', () => {
+			display.response!.edit({ components: [] });
+		});
+	}
 }
 
 export function isSuperUntradeable(item: number | Item) {

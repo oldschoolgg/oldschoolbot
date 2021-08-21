@@ -6,7 +6,7 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { Emoji, MAX_XP, skillEmoji } from '../../lib/constants';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -205,9 +205,7 @@ export default class extends BotCommand {
 		}
 
 		let amount = skills[skillName]!;
-		const userXp = msg.author.rawSkills[skillName]!;
-		let artificial = false;
-		if (userXp === MAX_XP) artificial = true;
+		const artificial = true;
 		return [true, await msg.author.addXP({ skillName, amount, artificial, multiplier: false })];
 	}
 
@@ -289,7 +287,6 @@ export default class extends BotCommand {
 		}
 	}
 
-	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [qty, cmd]: [number, string]) {
 		await msg.author.settings.sync(true);

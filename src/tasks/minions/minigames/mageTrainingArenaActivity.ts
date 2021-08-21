@@ -18,7 +18,7 @@ export default class extends Task {
 
 		const loot = new Bank();
 
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		let baseXP = (25_000 / (Time.Minute * 60)) * duration;
 		let xp = randomVariation(baseXP, 5);
 		const xpRes = await user.addXP({
