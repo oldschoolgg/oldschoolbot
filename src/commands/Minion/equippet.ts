@@ -7,7 +7,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { removeItemFromBank } from '../../lib/util';
 
-const allPetIDs = [ ...allPetsCL, '21750'];
+const allPetIDs = [...allPetsCL, '21750'];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
