@@ -728,7 +728,8 @@ const Reverteables: Createable[] = [
 		outputItems: {
 			[itemID('Godsword blade')]: 1,
 			[itemID('Armadyl hilt')]: 1
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert bandos godsword',
@@ -748,7 +749,8 @@ const Reverteables: Createable[] = [
 		outputItems: {
 			[itemID('Godsword blade')]: 1,
 			[itemID('Saradomin hilt')]: 1
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert zamorak godsword',
@@ -758,7 +760,8 @@ const Reverteables: Createable[] = [
 		outputItems: {
 			[itemID('Godsword blade')]: 1,
 			[itemID('Zamorak hilt')]: 1
-		}
+		},
+		noCl: true
 	}
 ];
 
