@@ -38,8 +38,7 @@ export default class extends BotCommand {
 		// No items to fix on OSB for now
 		if (cmd === 'fix') return;
 		if (msg.flagArgs.items || !itemName) {
-			let content = '';
-			if (!itemName) content += `This are the items that you can ${cmd}:`;
+			let content = `This are the items that you can ${cmd}:`;
 			const creatableTable = table([
 				['Item Name', 'Input Items', 'Output Items', 'GP Cost', 'Skills Required', 'QP Required'],
 				...Createables.filter(f => {
@@ -83,9 +82,7 @@ export default class extends BotCommand {
 				files: [new MessageAttachment(Buffer.from(creatableTable), 'Creatables.txt')]
 			});
 		}
-		if (itemName === undefined) {
-			throw 'Item name is a required argument.';
-		}
+
 		itemName = itemName.toLowerCase();
 
 		if (cmd.toLowerCase() === 'revert') itemName = `revert ${itemName}`;
