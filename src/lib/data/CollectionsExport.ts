@@ -1308,7 +1308,6 @@ export const allPetsCL = resolveItems([
 	'Pet general graardor',
 	'Baby mole',
 	'Noon',
-	'Midnight',
 	'Jal-nib-rek',
 	'Kalphite princess',
 	'Prince black dragon',
