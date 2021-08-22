@@ -34,7 +34,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
-		const cmd = msg.commandText!;
+		const cmd = msg.commandText!.toLowerCase();
 		// No items to fix on OSB for now
 		if (cmd === 'fix') return;
 		if (msg.flagArgs.items || !itemName) {
@@ -96,7 +96,7 @@ export default class extends BotCommand {
 					? !msg.command!.aliases.some(s => item.name.toLowerCase().startsWith(s))
 					: item.name.toLowerCase().startsWith(cmd.toLowerCase()))
 		);
-		if (!createableItem) throw `That's not a valid item you can ${msg.commandText!.toLowerCase()}.`;
+		if (!createableItem) throw `That's not a valid item you can ${cmd}.`;
 
 		if (!quantity || createableItem.cantHaveItems) {
 			quantity = 1;
