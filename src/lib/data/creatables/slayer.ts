@@ -32,7 +32,7 @@ export const slayerCreatables: Createable[] = [
 		GPCost: 0
 	},
 	{
-		name: 'Hydra leather',
+		name: 'Revert ferocious gloves',
 		inputItems: resolveNameBank({
 			'Ferocious gloves': 1
 		}),
@@ -152,7 +152,7 @@ export const slayerCreatables: Createable[] = [
 		GPCost: 0
 	},
 	{
-		name: 'Uncharge black mask',
+		name: 'Uncharged black mask',
 		inputItems: resolveNameBank({
 			'Black mask (10)': 1
 		}),

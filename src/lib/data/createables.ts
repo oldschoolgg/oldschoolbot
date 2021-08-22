@@ -4,6 +4,7 @@ import { ItemBank } from '../types';
 import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
 import { chambersOfXericMetamorphPets } from './CollectionsExport';
+import { armorAndItemPacks } from './creatables/armorPacks';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { ornamentKits } from './creatables/ornaments';
@@ -60,6 +61,16 @@ for (const [uWep, cWep] of [
 			[itemID(cWep)]: 1
 		}
 	});
+	revWeapons.push({
+		name: `Revert ${cWep.toLowerCase()}`,
+		inputItems: {
+			[itemID(cWep)]: 1
+		},
+		outputItems: {
+			[itemID('Revenant ether')]: 7000,
+			[itemID(uWep)]: 1
+		}
+	});
 }
 
 const metamorphPetCreatables: Createable[] = chambersOfXericMetamorphPets.map(pet => ({
@@ -104,7 +115,7 @@ const twistedAncestral: Createable[] = [
 		}
 	},
 	{
-		name: 'Revert ancestral robe bottom',
+		name: 'Revert twisted ancestral robe bottom',
 		inputItems: {
 			[itemID('Twisted ancestral robe bottom')]: 1
 		},
@@ -115,7 +126,7 @@ const twistedAncestral: Createable[] = [
 		noCl: true
 	},
 	{
-		name: 'Revert ancestral robe top',
+		name: 'Revert twisted ancestral robe top',
 		inputItems: {
 			[itemID('Twisted ancestral robe top')]: 1
 		},
@@ -126,7 +137,7 @@ const twistedAncestral: Createable[] = [
 		noCl: true
 	},
 	{
-		name: 'Revert ancestral hat',
+		name: 'Revert twisted ancestral hat',
 		inputItems: {
 			[itemID('Twisted ancestral hat')]: 1
 		},
@@ -303,851 +314,9 @@ const hunterClothing: Createable[] = [
 	}
 ];
 
-const Createables: Createable[] = [
+const Reverteables: Createable[] = [
 	{
-		name: 'Godsword blade',
-		inputItems: {
-			[itemID('Godsword shard 1')]: 1,
-			[itemID('Godsword shard 2')]: 1,
-			[itemID('Godsword shard 3')]: 1
-		},
-		outputItems: {
-			[itemID('Godsword blade')]: 1
-		},
-		requiredSkills: { smithing: 80 }
-	},
-	{
-		name: 'Armadyl godsword',
-		inputItems: {
-			[itemID('Godsword blade')]: 1,
-			[itemID('Armadyl hilt')]: 1
-		},
-		outputItems: {
-			[itemID('Armadyl godsword')]: 1
-		}
-	},
-	{
-		name: 'Bandos godsword',
-		inputItems: {
-			[itemID('Godsword blade')]: 1,
-			[itemID('Bandos hilt')]: 1
-		},
-		outputItems: {
-			[itemID('Bandos godsword')]: 1
-		}
-	},
-	{
-		name: 'Saradomin godsword',
-		inputItems: {
-			[itemID('Godsword blade')]: 1,
-			[itemID('Saradomin hilt')]: 1
-		},
-		outputItems: {
-			[itemID('Saradomin godsword')]: 1
-		}
-	},
-	{
-		name: 'Zamorak godsword',
-		inputItems: {
-			[itemID('Godsword blade')]: 1,
-			[itemID('Zamorak hilt')]: 1
-		},
-		outputItems: {
-			[itemID('Zamorak godsword')]: 1
-		}
-	},
-	{
-		name: 'Infernal pickaxe',
-		inputItems: {
-			[itemID('Dragon pickaxe')]: 1,
-			[itemID('Smouldering stone')]: 1
-		},
-		outputItems: {
-			[itemID('Infernal pickaxe')]: 1
-		},
-		requiredSkills: { smithing: 85 }
-	},
-	{
-		name: 'Malediction ward',
-		inputItems: {
-			[itemID('Malediction shard 1')]: 1,
-			[itemID('Malediction shard 2')]: 1,
-			[itemID('Malediction shard 3')]: 1
-		},
-		outputItems: {
-			[itemID('Malediction ward')]: 1
-		}
-	},
-	{
-		name: 'Odium ward',
-		inputItems: {
-			[itemID('Odium shard 1')]: 1,
-			[itemID('Odium shard 2')]: 1,
-			[itemID('Odium shard 3')]: 1
-		},
-		outputItems: {
-			[itemID('Odium ward')]: 1
-		}
-	},
-	{
-		name: 'Crystal key',
-		inputItems: {
-			[itemID('Loop half of key')]: 1,
-			[itemID('Tooth half of key')]: 1
-		},
-		outputItems: {
-			[itemID('Crystal key')]: 1
-		}
-	},
-	{
-		name: "Verac's armour set",
-		inputItems: {
-			[itemID("Verac's helm")]: 1,
-			[itemID("Verac's brassard")]: 1,
-			[itemID("Verac's plateskirt")]: 1,
-			[itemID("Verac's flail")]: 1
-		},
-		outputItems: {
-			[itemID("Verac's armour set")]: 1
-		}
-	},
-	{
-		name: 'Veracs',
-		inputItems: {
-			[itemID("Verac's armour set")]: 1
-		},
-		outputItems: {
-			[itemID("Verac's helm")]: 1,
-			[itemID("Verac's brassard")]: 1,
-			[itemID("Verac's plateskirt")]: 1,
-			[itemID("Verac's flail")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: "Dharok's armour set",
-		inputItems: {
-			[itemID("Dharok's helm")]: 1,
-			[itemID("Dharok's platebody")]: 1,
-			[itemID("Dharok's platelegs")]: 1,
-			[itemID("Dharok's greataxe")]: 1
-		},
-		outputItems: {
-			[itemID("Dharok's armour set")]: 1
-		}
-	},
-	{
-		name: 'Dharoks',
-		inputItems: {
-			[itemID("Dharok's armour set")]: 1
-		},
-		outputItems: {
-			[itemID("Dharok's helm")]: 1,
-			[itemID("Dharok's platebody")]: 1,
-			[itemID("Dharok's platelegs")]: 1,
-			[itemID("Dharok's greataxe")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: "Guthan's armour set",
-		inputItems: {
-			[itemID("Guthan's helm")]: 1,
-			[itemID("Guthan's platebody")]: 1,
-			[itemID("Guthan's chainskirt")]: 1,
-			[itemID("Guthan's warspear")]: 1
-		},
-		outputItems: {
-			[itemID("Guthan's armour set")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Guthans',
-		inputItems: {
-			[itemID("Guthan's armour set")]: 1
-		},
-		outputItems: {
-			[itemID("Guthan's helm")]: 1,
-			[itemID("Guthan's platebody")]: 1,
-			[itemID("Guthan's chainskirt")]: 1,
-			[itemID("Guthan's warspear")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: "Ahrim's armour set",
-		inputItems: {
-			[itemID("Ahrim's hood")]: 1,
-			[itemID("Ahrim's robetop")]: 1,
-			[itemID("Ahrim's robeskirt")]: 1,
-			[itemID("Ahrim's staff")]: 1
-		},
-		outputItems: {
-			[itemID("Ahrim's armour set")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Ahrims',
-		inputItems: {
-			[itemID("Ahrim's armour set")]: 1
-		},
-		outputItems: {
-			[itemID("Ahrim's hood")]: 1,
-			[itemID("Ahrim's robetop")]: 1,
-			[itemID("Ahrim's robeskirt")]: 1,
-			[itemID("Ahrim's staff")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: "Torag's armour set",
-		inputItems: {
-			[itemID("Torag's helm")]: 1,
-			[itemID("Torag's platebody")]: 1,
-			[itemID("Torag's platelegs")]: 1,
-			[itemID("Torag's hammers")]: 1
-		},
-		outputItems: {
-			[itemID("Torag's armour set")]: 1
-		}
-	},
-	{
-		name: 'Torags',
-		inputItems: {
-			[itemID("Torag's armour set")]: 1
-		},
-		outputItems: {
-			[itemID("Torag's helm")]: 1,
-			[itemID("Torag's platebody")]: 1,
-			[itemID("Torag's platelegs")]: 1,
-			[itemID("Torag's hammers")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: "Karil's armour set",
-		inputItems: {
-			[itemID("Karil's coif")]: 1,
-			[itemID("Karil's leathertop")]: 1,
-			[itemID("Karil's leatherskirt")]: 1,
-			[itemID("Karil's crossbow")]: 1
-		},
-		outputItems: {
-			[itemID("Karil's armour set")]: 1
-		}
-	},
-	{
-		name: 'Karils',
-		inputItems: {
-			[itemID("Karil's armour set")]: 1
-		},
-		outputItems: {
-			[itemID("Karil's coif")]: 1,
-			[itemID("Karil's leathertop")]: 1,
-			[itemID("Karil's leatherskirt")]: 1,
-			[itemID("Karil's crossbow")]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Master clue',
-		inputItems: {
-			[itemID('Clue scroll (easy)')]: 1,
-			[itemID('Clue scroll (medium)')]: 1,
-			[itemID('Clue scroll (hard)')]: 1,
-			[itemID('Clue scroll (elite)')]: 1
-		},
-		outputItems: {
-			[itemID('Clue scroll (master)')]: 1
-		},
-		cantHaveItems: {
-			[itemID('Clue scroll (master)')]: 1
-		}
-	},
-	{
-		name: 'Infernal axe',
-		inputItems: {
-			[itemID('Dragon axe')]: 1,
-			[itemID('Smouldering stone')]: 1
-		},
-		outputItems: {
-			[itemID('Infernal axe')]: 1
-		},
-		requiredSkills: { firemaking: 85 }
-	},
-	{
-		name: 'Infernal harpoon',
-		inputItems: {
-			[itemID('Dragon harpoon')]: 1,
-			[itemID('Smouldering stone')]: 1
-		},
-		outputItems: {
-			[itemID('Infernal harpoon')]: 1
-		},
-		requiredSkills: { cooking: 85, fishing: 75 }
-	},
-	{
-		name: 'Graceful',
-		inputItems: {
-			[itemID('Mark of grace')]: 260
-		},
-		outputItems: {
-			[itemID('Graceful hood')]: 1,
-			[itemID('Graceful top')]: 1,
-			[itemID('Graceful legs')]: 1,
-			[itemID('Graceful gloves')]: 1,
-			[itemID('Graceful boots')]: 1,
-			[itemID('Graceful cape')]: 1
-		}
-	},
-	{
-		name: 'Graceful hood',
-		inputItems: {
-			[itemID('Mark of grace')]: 35
-		},
-		outputItems: {
-			[itemID('Graceful hood')]: 1
-		}
-	},
-	{
-		name: 'Graceful top',
-		inputItems: {
-			[itemID('Mark of grace')]: 55
-		},
-		outputItems: {
-			[itemID('Graceful top')]: 1
-		}
-	},
-	{
-		name: 'Graceful legs',
-		inputItems: {
-			[itemID('Mark of grace')]: 60
-		},
-		outputItems: {
-			[itemID('Graceful legs')]: 1
-		}
-	},
-	{
-		name: 'Graceful gloves',
-		inputItems: {
-			[itemID('Mark of grace')]: 30
-		},
-		outputItems: {
-			[itemID('Graceful gloves')]: 1
-		}
-	},
-	{
-		name: 'Graceful boots',
-		inputItems: {
-			[itemID('Mark of grace')]: 40
-		},
-		outputItems: {
-			[itemID('Graceful boots')]: 1
-		}
-	},
-	{
-		name: 'Graceful cape',
-		inputItems: {
-			[itemID('Mark of grace')]: 40
-		},
-		outputItems: {
-			[itemID('Graceful cape')]: 1
-		}
-	},
-	{
-		name: 'Hell cat ears',
-		inputItems: {
-			[itemID('Cat ears')]: 1,
-			[itemID('Red dye')]: 1
-		},
-		outputItems: {
-			[itemID('Hell cat ears')]: 1
-		},
-		cantHaveItems: {
-			[itemID('Hell cat ears')]: 1
-		}
-	},
-	/** Runecrafting Pouches */
-	{
-		name: 'Small pouch',
-		inputItems: {
-			[itemID('Leather')]: 10
-		},
-		outputItems: {
-			[itemID('Small pouch')]: 1
-		},
-		cantHaveItems: {
-			[itemID('Small pouch')]: 1
-		}
-	},
-	{
-		name: 'Medium pouch',
-		inputItems: {
-			[itemID('Leather')]: 20
-		},
-		outputItems: {
-			[itemID('Medium pouch')]: 1
-		},
-		cantHaveItems: {
-			[itemID('Medium pouch')]: 1
-		},
-
-		requiredSkills: { crafting: 10 }
-	},
-	{
-		name: 'Large pouch',
-		inputItems: {
-			[itemID('Leather')]: 30
-		},
-		outputItems: {
-			[itemID('Large pouch')]: 1
-		},
-		cantHaveItems: {
-			[itemID('Large pouch')]: 1
-		},
-
-		requiredSkills: { crafting: 20 }
-	},
-	{
-		name: 'Giant pouch',
-		inputItems: {
-			[itemID('Leather')]: 40
-		},
-		outputItems: {
-			[itemID('Giant pouch')]: 1
-		},
-		cantHaveItems: {
-			[itemID('Giant pouch')]: 1
-		},
-
-		requiredSkills: { crafting: 30 }
-	},
-	// Spirit Shields
-	{
-		name: 'Blessed spirit shield',
-		inputItems: {
-			[itemID('Spirit shield')]: 1,
-			[itemID('Holy elixir')]: 1
-		},
-		outputItems: {
-			[itemID('Blessed spirit shield')]: 1
-		},
-		requiredSkills: { prayer: 85 }
-	},
-	{
-		name: 'Spectral spirit shield',
-		inputItems: {
-			[itemID('Blessed spirit shield')]: 1,
-			[itemID('Spectral sigil')]: 1
-		},
-		outputItems: {
-			[itemID('Spectral spirit shield')]: 1
-		},
-		requiredSkills: { prayer: 90, smithing: 85 }
-	},
-	{
-		name: 'Arcane spirit shield',
-		inputItems: {
-			[itemID('Blessed spirit shield')]: 1,
-			[itemID('Arcane sigil')]: 1
-		},
-		outputItems: {
-			[itemID('Arcane spirit shield')]: 1
-		},
-		requiredSkills: { prayer: 90, smithing: 85 }
-	},
-	{
-		name: 'Elysian spirit shield',
-		inputItems: {
-			[itemID('Blessed spirit shield')]: 1,
-			[itemID('Elysian sigil')]: 1
-		},
-		outputItems: {
-			[itemID('Elysian spirit shield')]: 1
-		},
-		requiredSkills: { prayer: 90, smithing: 85 }
-	},
-	{
-		name: 'Holy book',
-		inputItems: resolveNameBank({
-			'Saradomin page 1': 1,
-			'Saradomin page 2': 1,
-			'Saradomin page 3': 1,
-			'Saradomin page 4': 1
-		}),
-		outputItems: resolveNameBank({
-			'Holy book': 1
-		}),
-		requiredSkills: { agility: 35 },
-		QPRequired: 5
-	},
-	{
-		name: 'Book of balance',
-		inputItems: resolveNameBank({
-			'Guthix page 1': 1,
-			'Guthix page 2': 1,
-			'Guthix page 3': 1,
-			'Guthix page 4': 1
-		}),
-		outputItems: resolveNameBank({
-			'Book of balance': 1
-		}),
-		requiredSkills: { agility: 35 },
-		QPRequired: 5
-	},
-	{
-		name: 'Unholy book',
-		inputItems: resolveNameBank({
-			'Zamorak page 1': 1,
-			'Zamorak page 2': 1,
-			'Zamorak page 3': 1,
-			'Zamorak page 4': 1
-		}),
-		outputItems: resolveNameBank({
-			'Unholy book': 1
-		}),
-		requiredSkills: { agility: 35 },
-		QPRequired: 5
-	},
-	{
-		name: 'Book of law',
-		inputItems: resolveNameBank({
-			'Armadyl page 1': 1,
-			'Armadyl page 2': 1,
-			'Armadyl page 3': 1,
-			'Armadyl page 4': 1
-		}),
-		outputItems: resolveNameBank({
-			'Book of law': 1
-		}),
-		requiredSkills: { agility: 35 },
-		QPRequired: 5
-	},
-	{
-		name: 'Book of war',
-		inputItems: resolveNameBank({
-			'Bandos page 1': 1,
-			'Bandos page 2': 1,
-			'Bandos page 3': 1,
-			'Bandos page 4': 1
-		}),
-		outputItems: resolveNameBank({
-			'Book of war': 1
-		}),
-		requiredSkills: { agility: 35 },
-		QPRequired: 5
-	},
-	{
-		name: 'Book of darkness',
-		inputItems: resolveNameBank({
-			'Ancient page 1': 1,
-			'Ancient page 2': 1,
-			'Ancient page 3': 1,
-			'Ancient page 4': 1
-		}),
-		outputItems: resolveNameBank({
-			'Book of darkness': 1
-		}),
-		requiredSkills: { agility: 35 },
-		QPRequired: 5
-	},
-	{
-		name: "Ava's accumulator",
-		inputItems: resolveNameBank({
-			'Steel arrow': 75
-		}),
-		outputItems: resolveNameBank({
-			"Ava's accumulator": 1
-		}),
-		QPRequired: 30
-	},
-	{
-		name: "Ava's assembler",
-		inputItems: resolveNameBank({
-			'Mithril arrow': 75,
-			"Ava's accumulator": 1,
-			"Vorkath's head": 1
-		}),
-		outputItems: resolveNameBank({
-			"Ava's assembler": 1
-		}),
-		QPRequired: 205
-	},
-	{
-		name: 'Dragon sq shield',
-		inputItems: resolveNameBank({
-			'Shield right half': 1,
-			'Shield left half': 1
-		}),
-		outputItems: resolveNameBank({
-			'Dragon sq shield': 1
-		}),
-		QPRequired: 111,
-		requiredSkills: { smithing: 60 }
-	},
-	{
-		name: 'Dragon kiteshield',
-		inputItems: resolveNameBank({
-			'Dragon sq shield': 1,
-			'Dragon metal shard': 1,
-			'Dragon metal slice': 1
-		}),
-		outputItems: resolveNameBank({
-			'Dragon kiteshield': 1
-		}),
-		QPRequired: 205,
-		requiredSkills: { smithing: 75 }
-	},
-	{
-		name: 'Dragon platebody',
-		inputItems: resolveNameBank({
-			'Dragon chainbody': 1,
-			'Dragon metal shard': 1,
-			'Dragon metal lump': 1
-		}),
-		outputItems: resolveNameBank({
-			'Dragon platebody': 1
-		}),
-		QPRequired: 205,
-		requiredSkills: { smithing: 90 }
-	},
-	{
-		name: 'Coconut milk',
-		inputItems: resolveNameBank({
-			Vial: 1,
-			Coconut: 1
-		}),
-		outputItems: resolveNameBank({
-			'Coconut milk': 1,
-			'Coconut shell': 1
-		})
-	},
-	{
-		name: 'Zamorakian hasta',
-		inputItems: resolveNameBank({
-			'Zamorakian spear': 1
-		}),
-		outputItems: resolveNameBank({
-			'Zamorakian hasta': 1
-		}),
-		QPRequired: 3,
-		requiredSkills: {
-			fishing: 55,
-			firemaking: 35,
-			crafting: 11,
-			smithing: 5
-		},
-		GPCost: 300_000
-	},
-	{
-		name: 'Zamorakian spear',
-		inputItems: resolveNameBank({
-			'Zamorakian hasta': 1
-		}),
-		outputItems: resolveNameBank({
-			'Zamorakian spear': 1
-		}),
-		noCl: true
-	},
-	{
-		name: 'Ultracompost',
-		inputItems: resolveNameBank({
-			Supercompost: 1,
-			'Volcanic ash': 2
-		}),
-		outputItems: resolveNameBank({
-			Ultracompost: 1
-		})
-	},
-	{
-		name: 'Tomatoes(5)',
-		inputItems: resolveNameBank({
-			Tomato: 5
-		}),
-		outputItems: resolveNameBank({
-			'Tomatoes(5)': 1
-		})
-	},
-	{
-		name: 'Tomato',
-		inputItems: resolveNameBank({
-			'Tomatoes(5)': 1
-		}),
-		outputItems: resolveNameBank({
-			Tomato: 5
-		})
-	},
-	{
-		name: 'Apples(5)',
-		inputItems: resolveNameBank({
-			'Cooking apple': 5
-		}),
-		outputItems: resolveNameBank({
-			'Apples(5)': 1
-		})
-	},
-	{
-		name: 'Cooking apple',
-		inputItems: resolveNameBank({
-			'Apples(5)': 1
-		}),
-		outputItems: resolveNameBank({
-			'Cooking Apple': 5
-		})
-	},
-	{
-		name: 'Bananas(5)',
-		inputItems: resolveNameBank({
-			Banana: 5
-		}),
-		outputItems: resolveNameBank({
-			'Bananas(5)': 1
-		})
-	},
-	{
-		name: 'Banana',
-		inputItems: resolveNameBank({
-			'Bananas(5)': 1
-		}),
-		outputItems: resolveNameBank({
-			Banana: 5
-		})
-	},
-	{
-		name: 'Strawberries(5)',
-		inputItems: resolveNameBank({
-			Strawberry: 5
-		}),
-		outputItems: resolveNameBank({
-			'Strawberries(5)': 1
-		})
-	},
-	{
-		name: 'Strawberry',
-		inputItems: resolveNameBank({
-			'Strawberries(5)': 1
-		}),
-		outputItems: resolveNameBank({
-			Strawberry: 5
-		})
-	},
-	{
-		name: 'Oranges(5)',
-		inputItems: resolveNameBank({
-			Orange: 5
-		}),
-		outputItems: resolveNameBank({
-			'Oranges(5)': 1
-		})
-	},
-	{
-		name: 'Orange',
-		inputItems: resolveNameBank({
-			'Oranges(5)': 1
-		}),
-		outputItems: resolveNameBank({
-			Orange: 5
-		})
-	},
-	{
-		name: 'Potatoes(10)',
-		inputItems: resolveNameBank({
-			Potato: 10
-		}),
-		outputItems: resolveNameBank({
-			'Potatoes(10)': 1
-		})
-	},
-	{
-		name: 'Potato',
-		inputItems: resolveNameBank({
-			'Potatoes(10)': 1
-		}),
-		outputItems: resolveNameBank({
-			Potato: 10
-		})
-	},
-	{
-		name: 'Onions(10)',
-		inputItems: resolveNameBank({
-			Onion: 10
-		}),
-		outputItems: resolveNameBank({
-			'Onions(10)': 1
-		})
-	},
-	{
-		name: 'Onion',
-		inputItems: resolveNameBank({
-			'Onions(10)': 1
-		}),
-		outputItems: resolveNameBank({
-			Onion: 10
-		})
-	},
-	{
-		name: 'Cabbages(10)',
-		inputItems: resolveNameBank({
-			Cabbage: 10
-		}),
-		outputItems: resolveNameBank({
-			'Cabbages(10)': 1
-		})
-	},
-	{
-		name: 'Cabbage',
-		inputItems: resolveNameBank({
-			'Cabbages(10)': 1
-		}),
-		outputItems: resolveNameBank({
-			Cabbage: 10
-		})
-	},
-	/* {
-		name: 'Toxic blowpipe (empty)',
-		inputItems: {
-			[itemID('Toxic blowpipe')]: 1
-		},
-		outputItems: {
-			[itemID('Toxic blowpipe (empty)')]: 1,
-			[itemID(`Zulrah's Scales`)]: 25000
-		}
-	}, */
-	// Nightmare
-	{
-		name: 'Eldritch nightmare staff',
-		inputItems: resolveNameBank({
-			'Nightmare staff': 1,
-			'Eldritch orb': 1
-		}),
-		outputItems: resolveNameBank({
-			'Eldritch nightmare staff': 1
-		})
-	},
-	{
-		name: 'Harmonised nightmare staff',
-		inputItems: resolveNameBank({
-			'Nightmare staff': 1,
-			'Harmonised orb': 1
-		}),
-		outputItems: resolveNameBank({
-			'Harmonised nightmare staff': 1
-		})
-	},
-	{
-		name: 'Volatile nightmare staff',
-		inputItems: resolveNameBank({
-			'Nightmare staff': 1,
-			'Volatile orb': 1
-		}),
-		outputItems: resolveNameBank({
-			'Volatile nightmare staff': 1
-		})
-	},
-	{
-		name: 'Volatile orb',
+		name: 'Revert volatile nightmare staff',
 		outputItems: resolveNameBank({
 			'Nightmare staff': 1,
 			'Volatile orb': 1
@@ -1158,7 +327,7 @@ const Createables: Createable[] = [
 		noCl: true
 	},
 	{
-		name: 'Harmonised orb',
+		name: 'Revert harmonised nightmare staff',
 		outputItems: resolveNameBank({
 			'Nightmare staff': 1,
 			'Harmonised orb': 1
@@ -1169,7 +338,7 @@ const Createables: Createable[] = [
 		noCl: true
 	},
 	{
-		name: 'Eldritch orb',
+		name: 'Revert eldritch nightmare staff',
 		outputItems: resolveNameBank({
 			'Nightmare staff': 1,
 			'Eldritch orb': 1
@@ -1178,136 +347,6 @@ const Createables: Createable[] = [
 			'Eldritch nightmare staff': 1
 		}),
 		noCl: true
-	},
-	{
-		name: "Inquisitor's",
-		inputItems: resolveNameBank({
-			"Inquisitor's armour set": 1
-		}),
-		outputItems: resolveNameBank({
-			"Inquisitor's great helm": 1,
-			"Inquisitor's hauberk": 1,
-			"Inquisitor's plateskirt": 1
-		}),
-		noCl: true
-	},
-	{
-		name: "Inquisitor's armour set",
-		inputItems: resolveNameBank({
-			"Inquisitor's great helm": 1,
-			"Inquisitor's hauberk": 1,
-			"Inquisitor's plateskirt": 1
-		}),
-		outputItems: resolveNameBank({
-			"Inquisitor's armour set": 1
-		})
-	},
-	{
-		name: "Zamorak's grapes",
-		inputItems: resolveNameBank({
-			Grapes: 1,
-			"Bologa's blessing": 1
-		}),
-		outputItems: {
-			[itemID("Zamorak's grapes")]: 1
-		}
-	},
-	{
-		name: "Toad's legs",
-		inputItems: resolveNameBank({
-			'Swamp toad': 1
-		}),
-		outputItems: {
-			[itemID("Toad's legs")]: 1
-		}
-	},
-	{
-		name: 'Pegasian boots',
-		inputItems: {
-			[itemID('Pegasian crystal')]: 1,
-			[itemID('Ranger boots')]: 1
-		},
-		outputItems: {
-			[itemID('Pegasian boots')]: 1
-		},
-		requiredSkills: { magic: 60, runecraft: 60 }
-	},
-	{
-		name: 'Primordial boots',
-		inputItems: {
-			[itemID('Primordial crystal')]: 1,
-			[itemID('Dragon boots')]: 1
-		},
-		outputItems: {
-			[itemID('Primordial boots')]: 1
-		},
-		requiredSkills: { magic: 60, runecraft: 60 }
-	},
-	{
-		name: 'Eternal boots',
-		inputItems: {
-			[itemID('Eternal crystal')]: 1,
-			[itemID('Infinity boots')]: 1
-		},
-		outputItems: {
-			[itemID('Eternal boots')]: 1
-		},
-		requiredSkills: { magic: 60, runecraft: 60 }
-	},
-	{
-		name: 'Kodai wand',
-		inputItems: {
-			[itemID('Master wand')]: 1,
-			[itemID('Kodai insignia')]: 1
-		},
-		outputItems: {
-			[itemID('Kodai wand')]: 1
-		}
-	},
-	{
-		name: 'Partyhat & specs',
-		inputItems: {
-			[itemID('Blue partyhat')]: 1,
-			[itemID('Sagacious spectacles')]: 1
-		},
-		outputItems: {
-			[itemID('Partyhat & specs')]: 1
-		}
-	},
-	{
-		name: 'Blue partyhat',
-		inputItems: {
-			[itemID('Partyhat & specs')]: 1
-		},
-		outputItems: {
-			[itemID('Blue partyhat')]: 1,
-			[itemID('Sagacious spectacles')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Ivandis Flail',
-		inputItems: {
-			[itemID('Silver sickle')]: 1,
-			[itemID('Emerald')]: 1
-		},
-		outputItems: {
-			[itemID('Ivandis flail')]: 1
-		},
-		QPRequired: 75,
-		requiredSkills: ivandisRequirements
-	},
-	{
-		name: 'Blisterwood Flail',
-		inputItems: {
-			[itemID('Ivandis flail')]: 1,
-			[itemID('Ruby')]: 1
-		},
-		outputItems: {
-			[itemID('Blisterwood flail')]: 1
-		},
-		QPRequired: 125,
-		requiredSkills: blisterwoodRequirements
 	},
 	{
 		name: 'Revert red decorative full helm',
@@ -1318,7 +357,6 @@ const Createables: Createable[] = [
 			[itemID('Castle wars ticket')]: 5
 		}
 	},
-
 	{
 		name: 'Revert red decorative helm',
 		inputItems: {
@@ -1616,7 +654,6 @@ const Createables: Createable[] = [
 			[itemID('Castle wars ticket')]: 40
 		}
 	},
-
 	{
 		name: 'Revert decorative ranged legs',
 		inputItems: {
@@ -1661,6 +698,845 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Castle wars ticket')]: 75
 		}
+	},
+	{
+		name: 'Revert partyhat & specs',
+		inputItems: {
+			[itemID('Partyhat & specs')]: 1
+		},
+		outputItems: {
+			[itemID('Blue partyhat')]: 1,
+			[itemID('Sagacious spectacles')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert zamorakian hasta',
+		inputItems: resolveNameBank({
+			'Zamorakian hasta': 1
+		}),
+		outputItems: resolveNameBank({
+			'Zamorakian spear': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Revert armadyl godsword',
+		inputItems: {
+			[itemID('Armadyl godsword')]: 1
+		},
+		outputItems: {
+			[itemID('Godsword blade')]: 1,
+			[itemID('Armadyl hilt')]: 1
+		}
+	},
+	{
+		name: 'Revert bandos godsword',
+		inputItems: {
+			[itemID('Bandos godsword')]: 1
+		},
+		outputItems: {
+			[itemID('Godsword blade')]: 1,
+			[itemID('Bandos hilt')]: 1
+		}
+	},
+	{
+		name: 'Revert saradomin godsword',
+		inputItems: {
+			[itemID('Saradomin godsword')]: 1
+		},
+		outputItems: {
+			[itemID('Godsword blade')]: 1,
+			[itemID('Saradomin hilt')]: 1
+		}
+	},
+	{
+		name: 'Revert zamorak godsword',
+		inputItems: {
+			[itemID('Zamorak godsword')]: 1
+		},
+		outputItems: {
+			[itemID('Godsword blade')]: 1,
+			[itemID('Zamorak hilt')]: 1
+		}
+	}
+];
+
+const Createables: Createable[] = [
+	{
+		name: 'Godsword blade',
+		inputItems: {
+			[itemID('Godsword shard 1')]: 1,
+			[itemID('Godsword shard 2')]: 1,
+			[itemID('Godsword shard 3')]: 1
+		},
+		outputItems: {
+			[itemID('Godsword blade')]: 1
+		},
+		requiredSkills: { smithing: 80 }
+	},
+	{
+		name: 'Armadyl godsword',
+		inputItems: {
+			[itemID('Godsword blade')]: 1,
+			[itemID('Armadyl hilt')]: 1
+		},
+		outputItems: {
+			[itemID('Armadyl godsword')]: 1
+		}
+	},
+	{
+		name: 'Bandos godsword',
+		inputItems: {
+			[itemID('Godsword blade')]: 1,
+			[itemID('Bandos hilt')]: 1
+		},
+		outputItems: {
+			[itemID('Bandos godsword')]: 1
+		}
+	},
+	{
+		name: 'Saradomin godsword',
+		inputItems: {
+			[itemID('Godsword blade')]: 1,
+			[itemID('Saradomin hilt')]: 1
+		},
+		outputItems: {
+			[itemID('Saradomin godsword')]: 1
+		}
+	},
+	{
+		name: 'Zamorak godsword',
+		inputItems: {
+			[itemID('Godsword blade')]: 1,
+			[itemID('Zamorak hilt')]: 1
+		},
+		outputItems: {
+			[itemID('Zamorak godsword')]: 1
+		}
+	},
+	{
+		name: 'Infernal pickaxe',
+		inputItems: {
+			[itemID('Dragon pickaxe')]: 1,
+			[itemID('Smouldering stone')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal pickaxe')]: 1
+		},
+		requiredSkills: { smithing: 85 }
+	},
+	{
+		name: 'Malediction ward',
+		inputItems: {
+			[itemID('Malediction shard 1')]: 1,
+			[itemID('Malediction shard 2')]: 1,
+			[itemID('Malediction shard 3')]: 1
+		},
+		outputItems: {
+			[itemID('Malediction ward')]: 1
+		}
+	},
+	{
+		name: 'Odium ward',
+		inputItems: {
+			[itemID('Odium shard 1')]: 1,
+			[itemID('Odium shard 2')]: 1,
+			[itemID('Odium shard 3')]: 1
+		},
+		outputItems: {
+			[itemID('Odium ward')]: 1
+		}
+	},
+	{
+		name: 'Crystal key',
+		inputItems: {
+			[itemID('Loop half of key')]: 1,
+			[itemID('Tooth half of key')]: 1
+		},
+		outputItems: {
+			[itemID('Crystal key')]: 1
+		}
+	},
+	{
+		name: 'Master clue',
+		inputItems: {
+			[itemID('Clue scroll (easy)')]: 1,
+			[itemID('Clue scroll (medium)')]: 1,
+			[itemID('Clue scroll (hard)')]: 1,
+			[itemID('Clue scroll (elite)')]: 1
+		},
+		outputItems: {
+			[itemID('Clue scroll (master)')]: 1
+		},
+		cantHaveItems: {
+			[itemID('Clue scroll (master)')]: 1
+		}
+	},
+	{
+		name: 'Infernal axe',
+		inputItems: {
+			[itemID('Dragon axe')]: 1,
+			[itemID('Smouldering stone')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal axe')]: 1
+		},
+		requiredSkills: { firemaking: 85 }
+	},
+	{
+		name: 'Infernal harpoon',
+		inputItems: {
+			[itemID('Dragon harpoon')]: 1,
+			[itemID('Smouldering stone')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal harpoon')]: 1
+		},
+		requiredSkills: { cooking: 85, fishing: 75 }
+	},
+	{
+		name: 'Graceful',
+		inputItems: {
+			[itemID('Mark of grace')]: 260
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1,
+			[itemID('Graceful top')]: 1,
+			[itemID('Graceful legs')]: 1,
+			[itemID('Graceful gloves')]: 1,
+			[itemID('Graceful boots')]: 1,
+			[itemID('Graceful cape')]: 1
+		}
+	},
+	{
+		name: 'Graceful hood',
+		inputItems: {
+			[itemID('Mark of grace')]: 35
+		},
+		outputItems: {
+			[itemID('Graceful hood')]: 1
+		}
+	},
+	{
+		name: 'Graceful top',
+		inputItems: {
+			[itemID('Mark of grace')]: 55
+		},
+		outputItems: {
+			[itemID('Graceful top')]: 1
+		}
+	},
+	{
+		name: 'Graceful legs',
+		inputItems: {
+			[itemID('Mark of grace')]: 60
+		},
+		outputItems: {
+			[itemID('Graceful legs')]: 1
+		}
+	},
+	{
+		name: 'Graceful gloves',
+		inputItems: {
+			[itemID('Mark of grace')]: 30
+		},
+		outputItems: {
+			[itemID('Graceful gloves')]: 1
+		}
+	},
+	{
+		name: 'Graceful boots',
+		inputItems: {
+			[itemID('Mark of grace')]: 40
+		},
+		outputItems: {
+			[itemID('Graceful boots')]: 1
+		}
+	},
+	{
+		name: 'Graceful cape',
+		inputItems: {
+			[itemID('Mark of grace')]: 40
+		},
+		outputItems: {
+			[itemID('Graceful cape')]: 1
+		}
+	},
+	{
+		name: 'Hell cat ears',
+		inputItems: {
+			[itemID('Cat ears')]: 1,
+			[itemID('Red dye')]: 1
+		},
+		outputItems: {
+			[itemID('Hell cat ears')]: 1
+		},
+		cantHaveItems: {
+			[itemID('Hell cat ears')]: 1
+		}
+	},
+	// Runecrafting Pouches
+	{
+		name: 'Small pouch',
+		inputItems: {
+			[itemID('Leather')]: 10
+		},
+		outputItems: {
+			[itemID('Small pouch')]: 1
+		},
+		cantHaveItems: {
+			[itemID('Small pouch')]: 1
+		}
+	},
+	{
+		name: 'Medium pouch',
+		inputItems: {
+			[itemID('Leather')]: 20
+		},
+		outputItems: {
+			[itemID('Medium pouch')]: 1
+		},
+		cantHaveItems: {
+			[itemID('Medium pouch')]: 1
+		},
+
+		requiredSkills: { crafting: 10 }
+	},
+	{
+		name: 'Large pouch',
+		inputItems: {
+			[itemID('Leather')]: 30
+		},
+		outputItems: {
+			[itemID('Large pouch')]: 1
+		},
+		cantHaveItems: {
+			[itemID('Large pouch')]: 1
+		},
+
+		requiredSkills: { crafting: 20 }
+	},
+	{
+		name: 'Giant pouch',
+		inputItems: {
+			[itemID('Leather')]: 40
+		},
+		outputItems: {
+			[itemID('Giant pouch')]: 1
+		},
+		cantHaveItems: {
+			[itemID('Giant pouch')]: 1
+		},
+
+		requiredSkills: { crafting: 30 }
+	},
+	// Spirit Shields
+	{
+		name: 'Blessed spirit shield',
+		inputItems: {
+			[itemID('Spirit shield')]: 1,
+			[itemID('Holy elixir')]: 1
+		},
+		outputItems: {
+			[itemID('Blessed spirit shield')]: 1
+		},
+		requiredSkills: { prayer: 85 }
+	},
+	{
+		name: 'Spectral spirit shield',
+		inputItems: {
+			[itemID('Blessed spirit shield')]: 1,
+			[itemID('Spectral sigil')]: 1
+		},
+		outputItems: {
+			[itemID('Spectral spirit shield')]: 1
+		},
+		requiredSkills: { prayer: 90, smithing: 85 }
+	},
+	{
+		name: 'Arcane spirit shield',
+		inputItems: {
+			[itemID('Blessed spirit shield')]: 1,
+			[itemID('Arcane sigil')]: 1
+		},
+		outputItems: {
+			[itemID('Arcane spirit shield')]: 1
+		},
+		requiredSkills: { prayer: 90, smithing: 85 }
+	},
+	{
+		name: 'Elysian spirit shield',
+		inputItems: {
+			[itemID('Blessed spirit shield')]: 1,
+			[itemID('Elysian sigil')]: 1
+		},
+		outputItems: {
+			[itemID('Elysian spirit shield')]: 1
+		},
+		requiredSkills: { prayer: 90, smithing: 85 }
+	},
+	{
+		name: 'Holy book',
+		inputItems: resolveNameBank({
+			'Saradomin page 1': 1,
+			'Saradomin page 2': 1,
+			'Saradomin page 3': 1,
+			'Saradomin page 4': 1
+		}),
+		outputItems: resolveNameBank({
+			'Holy book': 1
+		}),
+		requiredSkills: { agility: 35 },
+		QPRequired: 5
+	},
+	{
+		name: 'Book of balance',
+		inputItems: resolveNameBank({
+			'Guthix page 1': 1,
+			'Guthix page 2': 1,
+			'Guthix page 3': 1,
+			'Guthix page 4': 1
+		}),
+		outputItems: resolveNameBank({
+			'Book of balance': 1
+		}),
+		requiredSkills: { agility: 35 },
+		QPRequired: 5
+	},
+	{
+		name: 'Unholy book',
+		inputItems: resolveNameBank({
+			'Zamorak page 1': 1,
+			'Zamorak page 2': 1,
+			'Zamorak page 3': 1,
+			'Zamorak page 4': 1
+		}),
+		outputItems: resolveNameBank({
+			'Unholy book': 1
+		}),
+		requiredSkills: { agility: 35 },
+		QPRequired: 5
+	},
+	{
+		name: 'Book of law',
+		inputItems: resolveNameBank({
+			'Armadyl page 1': 1,
+			'Armadyl page 2': 1,
+			'Armadyl page 3': 1,
+			'Armadyl page 4': 1
+		}),
+		outputItems: resolveNameBank({
+			'Book of law': 1
+		}),
+		requiredSkills: { agility: 35 },
+		QPRequired: 5
+	},
+	{
+		name: 'Book of war',
+		inputItems: resolveNameBank({
+			'Bandos page 1': 1,
+			'Bandos page 2': 1,
+			'Bandos page 3': 1,
+			'Bandos page 4': 1
+		}),
+		outputItems: resolveNameBank({
+			'Book of war': 1
+		}),
+		requiredSkills: { agility: 35 },
+		QPRequired: 5
+	},
+	{
+		name: 'Book of darkness',
+		inputItems: resolveNameBank({
+			'Ancient page 1': 1,
+			'Ancient page 2': 1,
+			'Ancient page 3': 1,
+			'Ancient page 4': 1
+		}),
+		outputItems: resolveNameBank({
+			'Book of darkness': 1
+		}),
+		requiredSkills: { agility: 35 },
+		QPRequired: 5
+	},
+	{
+		name: "Ava's accumulator",
+		inputItems: resolveNameBank({
+			'Steel arrow': 75
+		}),
+		outputItems: resolveNameBank({
+			"Ava's accumulator": 1
+		}),
+		QPRequired: 30
+	},
+	{
+		name: "Ava's assembler",
+		inputItems: resolveNameBank({
+			'Mithril arrow': 75,
+			"Ava's accumulator": 1,
+			"Vorkath's head": 1
+		}),
+		outputItems: resolveNameBank({
+			"Ava's assembler": 1
+		}),
+		QPRequired: 205
+	},
+	{
+		name: 'Dragon sq shield',
+		inputItems: resolveNameBank({
+			'Shield right half': 1,
+			'Shield left half': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragon sq shield': 1
+		}),
+		QPRequired: 111,
+		requiredSkills: { smithing: 60 }
+	},
+	{
+		name: 'Dragon kiteshield',
+		inputItems: resolveNameBank({
+			'Dragon sq shield': 1,
+			'Dragon metal shard': 1,
+			'Dragon metal slice': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragon kiteshield': 1
+		}),
+		QPRequired: 205,
+		requiredSkills: { smithing: 75 }
+	},
+	{
+		name: 'Dragon platebody',
+		inputItems: resolveNameBank({
+			'Dragon chainbody': 1,
+			'Dragon metal shard': 1,
+			'Dragon metal lump': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragon platebody': 1
+		}),
+		QPRequired: 205,
+		requiredSkills: { smithing: 90 }
+	},
+	{
+		name: 'Coconut milk',
+		inputItems: resolveNameBank({
+			Vial: 1,
+			Coconut: 1
+		}),
+		outputItems: resolveNameBank({
+			'Coconut milk': 1,
+			'Coconut shell': 1
+		})
+	},
+	{
+		name: 'Zamorakian hasta',
+		inputItems: resolveNameBank({
+			'Zamorakian spear': 1
+		}),
+		outputItems: resolveNameBank({
+			'Zamorakian hasta': 1
+		}),
+		QPRequired: 3,
+		requiredSkills: {
+			fishing: 55,
+			firemaking: 35,
+			crafting: 11,
+			smithing: 5
+		},
+		GPCost: 300_000
+	},
+	{
+		name: 'Ultracompost',
+		inputItems: resolveNameBank({
+			Supercompost: 1,
+			'Volcanic ash': 2
+		}),
+		outputItems: resolveNameBank({
+			Ultracompost: 1
+		})
+	},
+	{
+		name: 'Tomatoes(5)',
+		inputItems: resolveNameBank({
+			Tomato: 5
+		}),
+		outputItems: resolveNameBank({
+			'Tomatoes(5)': 1
+		})
+	},
+	{
+		name: 'Tomato',
+		inputItems: resolveNameBank({
+			'Tomatoes(5)': 1
+		}),
+		outputItems: resolveNameBank({
+			Tomato: 5
+		})
+	},
+	{
+		name: 'Apples(5)',
+		inputItems: resolveNameBank({
+			'Cooking apple': 5
+		}),
+		outputItems: resolveNameBank({
+			'Apples(5)': 1
+		})
+	},
+	{
+		name: 'Cooking apple',
+		inputItems: resolveNameBank({
+			'Apples(5)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Cooking Apple': 5
+		})
+	},
+	{
+		name: 'Bananas(5)',
+		inputItems: resolveNameBank({
+			Banana: 5
+		}),
+		outputItems: resolveNameBank({
+			'Bananas(5)': 1
+		})
+	},
+	{
+		name: 'Banana',
+		inputItems: resolveNameBank({
+			'Bananas(5)': 1
+		}),
+		outputItems: resolveNameBank({
+			Banana: 5
+		})
+	},
+	{
+		name: 'Strawberries(5)',
+		inputItems: resolveNameBank({
+			Strawberry: 5
+		}),
+		outputItems: resolveNameBank({
+			'Strawberries(5)': 1
+		})
+	},
+	{
+		name: 'Strawberry',
+		inputItems: resolveNameBank({
+			'Strawberries(5)': 1
+		}),
+		outputItems: resolveNameBank({
+			Strawberry: 5
+		})
+	},
+	{
+		name: 'Oranges(5)',
+		inputItems: resolveNameBank({
+			Orange: 5
+		}),
+		outputItems: resolveNameBank({
+			'Oranges(5)': 1
+		})
+	},
+	{
+		name: 'Orange',
+		inputItems: resolveNameBank({
+			'Oranges(5)': 1
+		}),
+		outputItems: resolveNameBank({
+			Orange: 5
+		})
+	},
+	{
+		name: 'Potatoes(10)',
+		inputItems: resolveNameBank({
+			Potato: 10
+		}),
+		outputItems: resolveNameBank({
+			'Potatoes(10)': 1
+		})
+	},
+	{
+		name: 'Potato',
+		inputItems: resolveNameBank({
+			'Potatoes(10)': 1
+		}),
+		outputItems: resolveNameBank({
+			Potato: 10
+		})
+	},
+	{
+		name: 'Onions(10)',
+		inputItems: resolveNameBank({
+			Onion: 10
+		}),
+		outputItems: resolveNameBank({
+			'Onions(10)': 1
+		})
+	},
+	{
+		name: 'Onion',
+		inputItems: resolveNameBank({
+			'Onions(10)': 1
+		}),
+		outputItems: resolveNameBank({
+			Onion: 10
+		})
+	},
+	{
+		name: 'Cabbages(10)',
+		inputItems: resolveNameBank({
+			Cabbage: 10
+		}),
+		outputItems: resolveNameBank({
+			'Cabbages(10)': 1
+		})
+	},
+	{
+		name: 'Cabbage',
+		inputItems: resolveNameBank({
+			'Cabbages(10)': 1
+		}),
+		outputItems: resolveNameBank({
+			Cabbage: 10
+		})
+	},
+	/* {
+		name: 'Toxic blowpipe (empty)',
+		inputItems: {
+			[itemID('Toxic blowpipe')]: 1
+		},
+		outputItems: {
+			[itemID('Toxic blowpipe (empty)')]: 1,
+			[itemID(`Zulrah's Scales`)]: 25000
+		}
+	}, */
+	{
+		name: 'Eldritch nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Eldritch orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Eldritch nightmare staff': 1
+		})
+	},
+	{
+		name: 'Harmonised nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Harmonised orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Harmonised nightmare staff': 1
+		})
+	},
+	{
+		name: 'Volatile nightmare staff',
+		inputItems: resolveNameBank({
+			'Nightmare staff': 1,
+			'Volatile orb': 1
+		}),
+		outputItems: resolveNameBank({
+			'Volatile nightmare staff': 1
+		})
+	},
+	{
+		name: "Zamorak's grapes",
+		inputItems: resolveNameBank({
+			Grapes: 1,
+			"Bologa's blessing": 1
+		}),
+		outputItems: {
+			[itemID("Zamorak's grapes")]: 1
+		}
+	},
+	{
+		name: "Toad's legs",
+		inputItems: resolveNameBank({
+			'Swamp toad': 1
+		}),
+		outputItems: {
+			[itemID("Toad's legs")]: 1
+		}
+	},
+	{
+		name: 'Pegasian boots',
+		inputItems: {
+			[itemID('Pegasian crystal')]: 1,
+			[itemID('Ranger boots')]: 1
+		},
+		outputItems: {
+			[itemID('Pegasian boots')]: 1
+		},
+		requiredSkills: { magic: 60, runecraft: 60 }
+	},
+	{
+		name: 'Primordial boots',
+		inputItems: {
+			[itemID('Primordial crystal')]: 1,
+			[itemID('Dragon boots')]: 1
+		},
+		outputItems: {
+			[itemID('Primordial boots')]: 1
+		},
+		requiredSkills: { magic: 60, runecraft: 60 }
+	},
+	{
+		name: 'Eternal boots',
+		inputItems: {
+			[itemID('Eternal crystal')]: 1,
+			[itemID('Infinity boots')]: 1
+		},
+		outputItems: {
+			[itemID('Eternal boots')]: 1
+		},
+		requiredSkills: { magic: 60, runecraft: 60 }
+	},
+	{
+		name: 'Kodai wand',
+		inputItems: {
+			[itemID('Master wand')]: 1,
+			[itemID('Kodai insignia')]: 1
+		},
+		outputItems: {
+			[itemID('Kodai wand')]: 1
+		}
+	},
+	{
+		name: 'Partyhat & specs',
+		inputItems: {
+			[itemID('Blue partyhat')]: 1,
+			[itemID('Sagacious spectacles')]: 1
+		},
+		outputItems: {
+			[itemID('Partyhat & specs')]: 1
+		}
+	},
+	{
+		name: 'Ivandis Flail',
+		inputItems: {
+			[itemID('Silver sickle')]: 1,
+			[itemID('Emerald')]: 1
+		},
+		outputItems: {
+			[itemID('Ivandis flail')]: 1
+		},
+		QPRequired: 75,
+		requiredSkills: ivandisRequirements
+	},
+	{
+		name: 'Blisterwood Flail',
+		inputItems: {
+			[itemID('Ivandis flail')]: 1,
+			[itemID('Ruby')]: 1
+		},
+		outputItems: {
+			[itemID('Blisterwood flail')]: 1
+		},
+		QPRequired: 125,
+		requiredSkills: blisterwoodRequirements
 	},
 	{
 		name: 'Spirit angler headband',
@@ -1715,6 +1591,7 @@ const Createables: Createable[] = [
 			slayer: 62
 		}
 	},
+	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
 	...hunterClothing,
@@ -1723,7 +1600,8 @@ const Createables: Createable[] = [
 	...slayerCreatables,
 	...capeCreatables,
 	...dragonFireShieldCreatables,
-	...revWeapons
+	...revWeapons,
+	...armorAndItemPacks
 ];
 
 export default Createables;

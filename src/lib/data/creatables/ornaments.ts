@@ -9,7 +9,7 @@ export const ornamentKits: Createable[] = [
 		outputItems: resolveNameBank({ 'Dragon defender (t)': 1 })
 	},
 	{
-		name: 'Dragon defender',
+		name: 'Revert dragon defender (t)',
 		inputItems: resolveNameBank({ 'Dragon defender (t)': 1 }),
 		outputItems: resolveNameBank({ 'Dragon defender': 1, 'Dragon defender ornament kit': 1 }),
 		noCl: true
@@ -20,7 +20,7 @@ export const ornamentKits: Createable[] = [
 		outputItems: resolveNameBank({ 'Rune defender (t)': 1 })
 	},
 	{
-		name: 'Rune defender',
+		name: 'Revert rune defender (t)',
 		inputItems: resolveNameBank({ 'Rune defender (t)': 1 }),
 		outputItems: resolveNameBank({ 'Rune defender': 1, 'Rune defender ornament kit': 1 }),
 		noCl: true
@@ -31,7 +31,7 @@ export const ornamentKits: Createable[] = [
 		outputItems: resolveNameBank({ 'Dragon pickaxe (or)': 1 })
 	},
 	{
-		name: 'Dragon pickaxe',
+		name: 'Revert dragon pickaxe (or)',
 		inputItems: resolveNameBank({ 'Dragon pickaxe (or)': 1 }),
 		outputItems: resolveNameBank({ 'Dragon pickaxe': 1, 'Zalcano shard': 1 }),
 		noCl: true
@@ -42,7 +42,7 @@ export const ornamentKits: Createable[] = [
 		outputItems: resolveNameBank({ 'Dragon sq shield (g)': 1 })
 	},
 	{
-		name: 'Revert dragon sq shield',
+		name: 'Revert dragon sq shield (g)',
 		inputItems: resolveNameBank({ 'Dragon sq shield (g)': 1 }),
 		outputItems: resolveNameBank({ 'Dragon sq shield ornament kit': 1, 'Dragon sq shield': 1 }),
 		noCl: true
@@ -53,7 +53,7 @@ export const ornamentKits: Createable[] = [
 		outputItems: resolveNameBank({ 'Dragon platelegs (g)': 1 })
 	},
 	{
-		name: 'Dragon platelegs',
+		name: 'Revert dragon platelegs (g)',
 		inputItems: resolveNameBank({ 'Dragon platelegs (g)': 1 }),
 		outputItems: resolveNameBank({
 			'Dragon platelegs': 1,
@@ -70,7 +70,7 @@ export const ornamentKits: Createable[] = [
 		outputItems: resolveNameBank({ 'Dragon plateskirt (g)': 1 })
 	},
 	{
-		name: 'Dragon plateskirt',
+		name: 'Revert dragon plateskirt (g)',
 		inputItems: resolveNameBank({ 'Dragon plateskirt (g)': 1 }),
 		outputItems: resolveNameBank({
 			'Dragon plateskirt': 1,
@@ -87,7 +87,7 @@ export const ornamentKits: Createable[] = [
 		outputItems: resolveNameBank({ 'Dragon chainbody (g)': 1 })
 	},
 	{
-		name: 'Dragon chainbody',
+		name: 'Revert dragon chainbody (g)',
 		inputItems: resolveNameBank({ 'Dragon chainbody (g)': 1 }),
 		outputItems: resolveNameBank({
 			'Dragon chainbody': 1,
@@ -103,7 +103,7 @@ export const ornamentKits: Createable[] = [
 		})
 	},
 	{
-		name: 'Amulet of fury',
+		name: 'Revert amulet of fury (or)',
 		inputItems: resolveNameBank({
 			'Amulet of fury (or)': 1
 		}),
@@ -119,7 +119,7 @@ export const ornamentKits: Createable[] = [
 		})
 	},
 	{
-		name: 'Revert zamorak godsword',
+		name: 'Revert zamorak godsword (or)',
 		inputItems: resolveNameBank({
 			'Zamorak godsword (or)': 1
 		}),
@@ -134,7 +134,7 @@ export const ornamentKits: Createable[] = [
 		})
 	},
 	{
-		name: 'Revert bandos godsword',
+		name: 'Revert bandos godsword (or)',
 		inputItems: resolveNameBank({
 			'Bandos godsword (or)': 1
 		}),
@@ -152,7 +152,7 @@ export const ornamentKits: Createable[] = [
 		})
 	},
 	{
-		name: 'Revert saradomin godsword',
+		name: 'Revert saradomin godsword (or)',
 		inputItems: resolveNameBank({
 			'Saradomin godsword (or)': 1
 		}),
@@ -173,7 +173,7 @@ export const ornamentKits: Createable[] = [
 		})
 	},
 	{
-		name: 'Revert Armadyl godsword',
+		name: 'Revert armadyl godsword (or)',
 		inputItems: resolveNameBank({
 			'Armadyl godsword (or)': 1
 		}),
@@ -194,7 +194,7 @@ export const ornamentKits: Createable[] = [
 		})
 	},
 	{
-		name: 'Revert amulet of torture',
+		name: 'Revert amulet of torture (or)',
 		inputItems: resolveNameBank({
 			'Amulet of torture (or)': 1
 		}),
@@ -215,7 +215,7 @@ export const ornamentKits: Createable[] = [
 		})
 	},
 	{
-		name: 'Revert necklace of anguish',
+		name: 'Revert necklace of anguish (or)',
 		inputItems: resolveNameBank({
 			'Necklace of anguish (or)': 1
 		}),
@@ -236,7 +236,7 @@ export const ornamentKits: Createable[] = [
 		})
 	},
 	{
-		name: 'Revert tormented bracelet',
+		name: 'Revert tormented bracelet (or)',
 		inputItems: resolveNameBank({
 			'Tormented bracelet (or)': 1
 		}),
@@ -257,7 +257,7 @@ export const ornamentKits: Createable[] = [
 		})
 	},
 	{
-		name: 'Revert occult necklace',
+		name: 'Revert occult necklace (or)',
 		inputItems: resolveNameBank({
 			'Occult necklace (or)': 1
 		}),
