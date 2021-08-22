@@ -189,8 +189,8 @@ export default class extends BotCommand {
 			await msg.author.removeGP(createableItem.GPCost);
 		}
 
-		if (!createableItem.noCl && !msg.command!.aliases.includes(cmd))
-			await msg.author.addItemsToCollectionLog(outItems.bank);
+		// Only allow +create to add items to CL
+		if (!createableItem.noCl && cmd === 'create') await msg.author.addItemsToCollectionLog(outItems.bank);
 
 		if (cmd === 'revert') {
 			return msg.channel.send(`You reverted ${inputItemsString} into ${outputItemsString}.`);
