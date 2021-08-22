@@ -245,16 +245,18 @@ export default class MinionCommand extends BotCommand {
 
 		const starter = new Bank({
 			Shark: 300,
-			'Saradomin brew(4)': 20,
-			'Super restore(4)': 10,
+			'Saradomin brew(4)': 50,
+			'Super restore(4)': 20,
 			'Anti-dragon shield': 1,
-			'Tiny lamp': 3,
-			'Small lamp': 1,
+			'Tiny lamp': 5,
+			'Small lamp': 2,
 			'Tradeable mystery box': 5,
+			'Untradeable Mystery box': 5,
 			'Dragon bones': 50,
-			Coins: 500_000,
+			Coins: 50_000_000,
 			'Clue scroll (beginner)': 10,
-			'Equippable mystery box': 1
+			'Equippable mystery box': 1,
+			'Pet Mystery box': 1
 		});
 
 		await msg.author.addItemsToBank(starter);
