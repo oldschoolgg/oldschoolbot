@@ -107,7 +107,7 @@ export default class extends BotCommand {
 	}
 
 	getPos(page: number, record: number) {
-		return `${page * LB_PAGE_SIZE + 1 + record}) `;
+		return `${page * LB_PAGE_SIZE + 1 + record}. `;
 	}
 
 	getUsername(userID: string, lbSize?: number) {
