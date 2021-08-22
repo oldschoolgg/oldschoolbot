@@ -1341,8 +1341,7 @@ export const allPetsCL = resolveItems([
 	'Youngllef',
 	'Little nightmare',
 	"Lil' creator",
-	'Tiny tempor',
-	...chambersOfXericMetamorphPets
+	'Tiny tempor'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
