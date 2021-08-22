@@ -59,6 +59,17 @@ export const ornamentKits: Createable[] = [
 		noCl: true
 	},
 	{
+		name: 'Dragon platebody (g)',
+		inputItems: resolveNameBank({ 'Dragon platebody ornament kit': 1, 'Dragon platebody': 1 }),
+		outputItems: resolveNameBank({ 'Dragon platebody (g)': 1 })
+	},
+	{
+		name: 'Revert dragon platebody (g)',
+		inputItems: resolveNameBank({ 'Dragon platebody (g)': 1 }),
+		outputItems: resolveNameBank({ 'Dragon platebody ornament kit': 1, 'Dragon platebody': 1 }),
+		noCl: true
+	},
+	{
 		name: 'Dragon platelegs (g)',
 		inputItems: resolveNameBank({ 'Dragon platelegs': 1, 'Dragon legs/skirt ornament kit': 1 }),
 		outputItems: resolveNameBank({ 'Dragon platelegs (g)': 1 })
