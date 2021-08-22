@@ -153,7 +153,7 @@ export default class extends BotCommand {
 			}
 		}
 		if (msg.author.minionIsBusy) {
-			return msg.channel.send("Your minion is busy, so you can't host a mass.");
+			return msg.channel.send("Your minion is busy, so you can't start a raid.");
 		}
 
 		const partyOptions: MakePartyOptions = {
