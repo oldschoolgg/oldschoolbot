@@ -448,5 +448,18 @@ export const slayerCreatables: Createable[] = [
 		inputItems: resolveNameBank({ 'Twisted slayer helmet (i)': 1 }),
 		GPCost: 0,
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.TwistedVision]
+	},
+	{
+		name: 'Midnight',
+		outputItems: resolveNameBank({ 'Midnight': 1 }),
+		inputItems: resolveNameBank({ 'Noon': 1 }),
+		GPCost: 0
+	},
+	{
+		name: 'Noon',
+		outputItems: resolveNameBank({ 'Noon': 1 }),
+		inputItems: resolveNameBank({ 'Midnight': 1 }),
+		GPCost: 0,
+		noCl: true
 	}
 ];
