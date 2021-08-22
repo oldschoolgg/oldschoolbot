@@ -1,4 +1,4 @@
-import { resolveNameBank } from 'oldschooljs/dist/util';
+import { resolveBank, resolveNameBank } from 'oldschooljs/dist/util';
 
 import { Createable } from '../createables';
 
@@ -67,6 +67,39 @@ export const ornamentKits: Createable[] = [
 		name: 'Revert dragon platebody (g)',
 		inputItems: resolveNameBank({ 'Dragon platebody (g)': 1 }),
 		outputItems: resolveNameBank({ 'Dragon platebody ornament kit': 1, 'Dragon platebody': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Dragon kiteshield (g)',
+		inputItems: resolveNameBank({ 'Dragon kiteshield ornament kit': 1, 'Dragon kiteshield': 1 }),
+		outputItems: resolveNameBank({ 'Dragon kiteshield (g)': 1 })
+	},
+	{
+		name: 'Revert dragon kiteshield (g)',
+		inputItems: resolveNameBank({ 'Dragon kiteshield (g)': 1 }),
+		outputItems: resolveNameBank({ 'Dragon kiteshield ornament kit': 1, 'Dragon kiteshield': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Dragon boots (g)',
+		inputItems: resolveNameBank({ 'Dragon boots ornament kit': 1, 'Dragon boots': 1 }),
+		outputItems: resolveNameBank({ 'Dragon boots (g)': 1 })
+	},
+	{
+		name: 'Revert dragon boots (g)',
+		inputItems: resolveNameBank({ 'Dragon boots (g)': 1 }),
+		outputItems: resolveNameBank({ 'Dragon boots ornament kit': 1, 'Dragon boots': 1 }),
+		noCl: true
+	},
+	{
+		name: 'Dragon scimitar (or)',
+		inputItems: resolveNameBank({ 'Dragon scimitar ornament kit': 1, 'Dragon scimitar': 1 }),
+		outputItems: resolveNameBank({ 'Dragon scimitar (or)': 1 })
+	},
+	{
+		name: 'Revert dragon scimitar (or)',
+		inputItems: resolveNameBank({ 'Dragon scimitar (or)': 1 }),
+		outputItems: resolveNameBank({ 'Dragon scimitar ornament kit': 1, 'Dragon scimitar': 1 }),
 		noCl: true
 	},
 	{
@@ -286,6 +319,237 @@ export const ornamentKits: Createable[] = [
 		outputItems: resolveNameBank({
 			'Occult necklace': 1,
 			'Occult ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Rune scimitar (guthix)',
+		inputItems: resolveNameBank({
+			'Rune scimitar': 1,
+			'Rune scimitar ornament kit (guthix)': 1
+		}),
+		outputItems: resolveBank({
+			23_330: 1
+		})
+	},
+	{
+		name: 'Revert rune scimitar (guthix)',
+		inputItems: resolveBank({
+			23_330: 1
+		}),
+		outputItems: resolveNameBank({
+			'Rune scimitar': 1,
+			'Rune scimitar ornament kit (guthix)': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Rune scimitar (saradomin)',
+		inputItems: resolveNameBank({
+			'Rune scimitar': 1,
+			'Rune scimitar ornament kit (saradomin)': 1
+		}),
+		outputItems: resolveBank({
+			23_332: 1
+		})
+	},
+	{
+		name: 'Revert rune scimitar (saradomin)',
+		inputItems: resolveBank({
+			23_332: 1
+		}),
+		outputItems: resolveNameBank({
+			'Rune scimitar': 1,
+			'Rune scimitar ornament kit (saradomin)': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Rune scimitar (zamorak)',
+		inputItems: resolveNameBank({
+			'Rune scimitar': 1,
+			'Rune scimitar ornament kit (zamorak)': 1
+		}),
+		outputItems: resolveBank({
+			23_334: 1
+		})
+	},
+	{
+		name: 'Revert rune scimitar (zamorak)',
+		inputItems: resolveBank({
+			23_334: 1
+		}),
+		outputItems: resolveNameBank({
+			'Rune scimitar': 1,
+			'Rune scimitar ornament kit (zamorak)': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Tzhaar-ket-om (t)',
+		inputItems: resolveNameBank({
+			'Tzhaar-ket-om': 1,
+			'Tzhaar-ket-om ornament kit': 1
+		}),
+		outputItems: resolveBank({
+			'Tzhaar-ket-om (t)': 1
+		})
+	},
+	{
+		name: 'Revert tzhaar-ket-om (t)',
+		inputItems: resolveBank({
+			'Tzhaar-ket-om (t)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Tzhaar-ket-om': 1,
+			'Tzhaar-ket-om ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Berserker necklace (or)',
+		inputItems: resolveNameBank({
+			'Berserker necklace': 1,
+			'Berserker necklace ornament kit': 1
+		}),
+		outputItems: resolveBank({
+			'Berserker necklace (or)': 1
+		})
+	},
+	{
+		name: 'Revert berserker necklace (or)',
+		inputItems: resolveBank({
+			'Berserker necklace (or)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Berserker necklace': 1,
+			'Berserker necklace ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Dark infinity hat',
+		inputItems: resolveNameBank({
+			'Infinity hat': 1,
+			'Dark infinity colour kit': 1
+		}),
+		outputItems: resolveBank({
+			'Dark infinity hat': 1
+		})
+	},
+	{
+		name: 'Revert dark infinity hat',
+		inputItems: resolveBank({
+			'Dark infinity hat': 1
+		}),
+		outputItems: resolveNameBank({
+			'Infinity hat': 1,
+			'Dark infinity colour kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Dark infinity top',
+		inputItems: resolveNameBank({
+			'Infinity top': 1,
+			'Dark infinity colour kit': 1
+		}),
+		outputItems: resolveBank({
+			'Dark infinity top': 1
+		})
+	},
+	{
+		name: 'Revert dark infinity top',
+		inputItems: resolveBank({
+			'Dark infinity top': 1
+		}),
+		outputItems: resolveNameBank({
+			'Infinity top': 1,
+			'Dark infinity colour kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Dark infinity bottoms',
+		inputItems: resolveNameBank({
+			'Infinity bottoms': 1,
+			'Dark infinity colour kit': 1
+		}),
+		outputItems: resolveBank({
+			'Dark infinity bottoms': 1
+		})
+	},
+	{
+		name: 'Revert dark infinity bottoms',
+		inputItems: resolveBank({
+			'Dark infinity bottoms': 1
+		}),
+		outputItems: resolveNameBank({
+			'Infinity bottoms': 1,
+			'Dark infinity colour kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Light infinity hat',
+		inputItems: resolveNameBank({
+			'Infinity hat': 1,
+			'Light infinity colour kit': 1
+		}),
+		outputItems: resolveBank({
+			'Light infinity hat': 1
+		})
+	},
+	{
+		name: 'Revert light infinity hat',
+		inputItems: resolveBank({
+			'Light infinity hat': 1
+		}),
+		outputItems: resolveNameBank({
+			'Infinity hat': 1,
+			'Light infinity colour kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Light infinity top',
+		inputItems: resolveNameBank({
+			'Infinity top': 1,
+			'Light infinity colour kit': 1
+		}),
+		outputItems: resolveBank({
+			'Light infinity top': 1
+		})
+	},
+	{
+		name: 'Revert light infinity top',
+		inputItems: resolveBank({
+			'Light infinity top': 1
+		}),
+		outputItems: resolveNameBank({
+			'Infinity top': 1,
+			'Light infinity colour kit': 1
+		}),
+		noCl: true
+	},
+	{
+		name: 'Light infinity bottoms',
+		inputItems: resolveNameBank({
+			'Infinity bottoms': 1,
+			'Light infinity colour kit': 1
+		}),
+		outputItems: resolveBank({
+			'Light infinity bottoms': 1
+		})
+	},
+	{
+		name: 'Revert light infinity bottoms',
+		inputItems: resolveBank({
+			'Light infinity bottoms': 1
+		}),
+		outputItems: resolveNameBank({
+			'Infinity bottoms': 1,
+			'Light infinity colour kit': 1
 		}),
 		noCl: true
 	}
