@@ -453,7 +453,8 @@ export const slayerCreatables: Createable[] = [
 		name: 'Midnight',
 		outputItems: resolveNameBank({ 'Midnight': 1 }),
 		inputItems: resolveNameBank({ 'Noon': 1 }),
-		GPCost: 0
+		GPCost: 0,
+		noCl: true
 	},
 	{
 		name: 'Noon',
