@@ -234,7 +234,8 @@ export const slayerCreatables: Createable[] = [
 			crafting: 55
 		},
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade],
+		noCl: true
 	},
 	{
 		name: 'Revert slayer helmet (i)',
@@ -251,7 +252,8 @@ export const slayerCreatables: Createable[] = [
 			crafting: 55
 		},
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade],
+		noCl: true
 	},
 	{
 		name: 'Black slayer helmet',
@@ -272,14 +274,16 @@ export const slayerCreatables: Createable[] = [
 		outputItems: resolveNameBank({ 'Slayer helmet': 1, 'Kbd heads': 1 }),
 		inputItems: resolveNameBank({ 'Black slayer helmet': 1 }),
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.KingBlackBonnet]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.KingBlackBonnet],
+		noCl: true
 	},
 	{
 		name: 'Revert black slayer helmet (i)',
 		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Kbd heads': 1 }),
 		inputItems: resolveNameBank({ 'Black slayer helmet (i)': 1 }),
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.KingBlackBonnet]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.KingBlackBonnet],
+		noCl: true
 	},
 	{
 		name: 'Green slayer helmet',
@@ -300,14 +304,16 @@ export const slayerCreatables: Createable[] = [
 		outputItems: resolveNameBank({ 'Slayer helmet': 1, 'Kq head': 1 }),
 		inputItems: resolveNameBank({ 'Green slayer helmet': 1 }),
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.KalphiteKhat]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.KalphiteKhat],
+		noCl: true
 	},
 	{
 		name: 'Revert green slayer helmet (i)',
 		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Kq head': 1 }),
 		inputItems: resolveNameBank({ 'Green slayer helmet (i)': 1 }),
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.KalphiteKhat]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.KalphiteKhat],
+		noCl: true
 	},
 	{
 		name: 'Red slayer helmet',
@@ -328,14 +334,16 @@ export const slayerCreatables: Createable[] = [
 		outputItems: resolveNameBank({ 'Slayer helmet': 1, 'Abyssal head': 1 }),
 		inputItems: resolveNameBank({ 'Red slayer helmet': 1 }),
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.UnholyHelmet]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.UnholyHelmet],
+		noCl: true
 	},
 	{
 		name: 'Revert red slayer helmet (i)',
 		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Abyssal head': 1 }),
 		inputItems: resolveNameBank({ 'Red slayer helmet (i)': 1 }),
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.UnholyHelmet]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.UnholyHelmet],
+		noCl: true
 	},
 	{
 		name: 'Purple slayer helmet',
@@ -356,14 +364,16 @@ export const slayerCreatables: Createable[] = [
 		outputItems: resolveNameBank({ 'Slayer helmet': 1, 'Dark claw': 1 }),
 		inputItems: resolveNameBank({ 'Purple slayer helmet': 1 }),
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.DarkMantle]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.DarkMantle],
+		noCl: true
 	},
 	{
 		name: 'Revert purple slayer helmet (i)',
 		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Dark claw': 1 }),
 		inputItems: resolveNameBank({ 'Purple slayer helmet (i)': 1 }),
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.DarkMantle]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.DarkMantle],
+		noCl: true
 	},
 	{
 		name: 'Turquoise slayer helmet',
@@ -384,14 +394,16 @@ export const slayerCreatables: Createable[] = [
 		outputItems: resolveNameBank({ 'Slayer helmet': 1, "Vorkath's head": 1 }),
 		inputItems: resolveNameBank({ 'Turquoise slayer helmet': 1 }),
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.UndeadHead]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.UndeadHead],
+		noCl: true
 	},
 	{
 		name: 'Revert turquoise slayer helmet (i)',
 		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, "Vorkath's head": 1 }),
 		inputItems: resolveNameBank({ 'Turquoise slayer helmet (i)': 1 }),
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.UndeadHead]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.UndeadHead],
+		noCl: true
 	},
 	{
 		name: 'Hydra slayer helmet',
@@ -412,14 +424,16 @@ export const slayerCreatables: Createable[] = [
 		outputItems: resolveNameBank({ 'Slayer helmet': 1, 'Alchemical hydra heads': 1 }),
 		inputItems: resolveNameBank({ 'Hydra slayer helmet': 1 }),
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.UseMoreHead]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.UseMoreHead],
+		noCl: true
 	},
 	{
 		name: 'Revert hydra slayer helmet (i)',
 		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Alchemical hydra heads': 1 }),
 		inputItems: resolveNameBank({ 'Hydra slayer helmet (i)': 1 }),
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.UseMoreHead]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.UseMoreHead],
+		noCl: true
 	},
 	{
 		name: 'Twisted slayer helmet',
@@ -440,13 +454,15 @@ export const slayerCreatables: Createable[] = [
 		outputItems: resolveNameBank({ 'Slayer helmet': 1, 'Twisted horns': 1 }),
 		inputItems: resolveNameBank({ 'Twisted slayer helmet': 1 }),
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.TwistedVision]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.TwistedVision],
+		noCl: true
 	},
 	{
 		name: 'Revert twisted slayer helmet (i)',
 		outputItems: resolveNameBank({ 'Slayer helmet (i)': 1, 'Twisted horns': 1 }),
 		inputItems: resolveNameBank({ 'Twisted slayer helmet (i)': 1 }),
 		GPCost: 0,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.TwistedVision]
+		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.MalevolentMasquerade, SlayerTaskUnlocksEnum.TwistedVision],
+		noCl: true
 	}
 ];

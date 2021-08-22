@@ -355,7 +355,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 5
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert red decorative helm',
@@ -364,7 +365,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 4
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert red decorative body',
@@ -373,7 +375,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 8
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert red decorative legs',
@@ -382,7 +385,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 6
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert red decorative skirt',
@@ -391,7 +395,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 6
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert red decorative boots',
@@ -400,7 +405,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 4
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert red decorative shield',
@@ -409,7 +415,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 6
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert red decorative sword',
@@ -418,7 +425,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 5
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert white decorative full helm',
@@ -427,7 +435,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 50
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert white decorative helm',
@@ -436,7 +445,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 40
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert white decorative body',
@@ -445,7 +455,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 80
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert white decorative legs',
@@ -454,7 +465,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 60
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert white decorative skirt',
@@ -463,7 +475,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 60
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert white decorative boots',
@@ -472,7 +485,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 40
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert white decorative shield',
@@ -481,7 +495,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 60
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert white decorative sword',
@@ -490,7 +505,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 50
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert gold decorative full helm',
@@ -499,7 +515,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 500
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert gold decorative helm',
@@ -508,7 +525,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 400
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert gold decorative body',
@@ -517,7 +535,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 800
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert gold decorative legs',
@@ -526,7 +545,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 600
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert gold decorative skirt',
@@ -535,7 +555,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 600
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert gold decorative boots',
@@ -544,7 +565,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 400
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert gold decorative shield',
@@ -553,7 +575,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 600
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert gold decorative sword',
@@ -562,7 +585,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 500
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert zamorak castlewars hood',
@@ -571,7 +595,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 10
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert zamorak castlewars cloak',
@@ -580,7 +605,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 10
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert saradomin castlewars hood',
@@ -589,7 +615,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 10
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert saradomin castlewars cloak',
@@ -598,7 +625,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 10
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert saradomin banner',
@@ -607,7 +635,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 100
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert zamorak banner',
@@ -616,7 +645,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 100
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert decorative magic hat',
@@ -625,7 +655,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 20
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert decorative magic top',
@@ -634,7 +665,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 40
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert decorative magic robe',
@@ -643,7 +675,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 30
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert decorative ranged top',
@@ -652,7 +685,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 40
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert decorative ranged legs',
@@ -661,7 +695,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 30
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert decorative quiver',
@@ -670,7 +705,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 40
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert saradomin halo',
@@ -679,7 +715,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 75
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert zamorak halo',
@@ -688,7 +725,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 75
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert guthix halo',
@@ -697,7 +735,8 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Castle wars ticket')]: 75
-		}
+		},
+		noCl: true
 	},
 	{
 		name: 'Revert partyhat & specs',
