@@ -2,13 +2,14 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { allPetsCL } from '../../lib/data/CollectionsExport';
+import { chambersOfXericMetamorphPets } from '../../lib/data/CollectionsExport';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { removeItemFromBank } from '../../lib/util';
 import resolveItems from '../../lib/util/resolveItems';
 
-const allPetIDs = [...allPetsCL, ...resolveItems(['Midnight', 'Dark squirrel'])];
+const allPetIDs = [...allPetsCL, ...chambersOfXericMetamorphPets, ...resolveItems(['Midnight', 'Dark squirrel'])];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
