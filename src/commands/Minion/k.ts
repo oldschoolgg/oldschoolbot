@@ -299,8 +299,12 @@ export default class extends BotCommand {
 			boosts.push('5% for Amulet of zealots');
 		}
 
+		const allGorajan = gorajanBoosts.every(e => msg.author.getGear(e[1]).hasEquipped(e[0], true));
 		for (const [outfit, setup] of gorajanBoosts) {
-			if (monster.attackStyleToUse?.includes(setup) && msg.author.getGear(setup).hasEquipped(outfit, true)) {
+			if (
+				allGorajan ||
+				(monster.attackStyleToUse?.includes(setup) && msg.author.getGear(setup).hasEquipped(outfit, true))
+			) {
 				boosts.push('10% for gorajan');
 				timeToFinish *= 0.9;
 				break;
