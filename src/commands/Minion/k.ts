@@ -306,13 +306,14 @@ export default class extends BotCommand {
 			lootToRemove.add(itemCost);
 		}
 
-		if (['hydra', 'alchemical hydra'].includes(monster.name.toLowerCase())) {
-			// Add a cost of 1 antidote++(4) per 15 minutes
-			const hydraCost: Consumable = {
-				itemCost: new Bank().add('Antidote++(4)', 1),
-				qtyPerMinute: 0.067
-			};
-			consumableCosts.push(hydraCost);
+		switch (monster.id) {
+			case Monsters.Hydra.id:
+			case Monsters.AlchemicalHydra.id:
+				consumableCosts.push({
+					itemCost: new Bank().add('Antidote++(4)', 1),
+					qtyPerMinute: 0.067
+				});
+				break;
 		}
 
 		consumableCosts.forEach(cc => {
