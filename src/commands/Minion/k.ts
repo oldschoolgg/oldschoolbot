@@ -290,20 +290,14 @@ export default class extends BotCommand {
 			);
 		}
 
-		// Check consumables: (hope this forEach is ok :) )
 		const lootToRemove = new Bank();
 		let pvmCost = false;
 
-		const itemCost = monster.itemCost ? monster.itemCost.clone() : null;
-		if (itemCost) {
-			const fits = msg.author.bank({ withGP: true }).fits(itemCost);
-			if (fits < quantity) {
-				duration = Math.floor(duration * (fits / quantity));
-				quantity = fits;
-			}
-			itemCost.multiply(quantity);
-			pvmCost = true;
-			lootToRemove.add(itemCost);
+		if (monster.itemCost) {
+			consumableCosts.push({
+				itemCost: monster.itemCost.clone(),
+				qtyPerKill: 1
+			});
 		}
 
 		switch (monster.id) {
@@ -329,11 +323,9 @@ export default class extends BotCommand {
 					}
 				}
 
-				let multiply = cc!.qtyPerKill
-					? itemMultiple
-					: cc!.qtyPerMinute
-					? (duration / Number(quantity) / Time.Minute) * itemMultiple
-					: 1;
+				let multiply = 1;
+				if (cc!.qtyPerKill) multiply = itemMultiple;
+				else if (cc!.qtyPerMinute) multiply = (duration / Number(quantity) / Time.Minute) * itemMultiple;
 
 				if (cc.itemCost) {
 					// Calculate supply for 1 kill
