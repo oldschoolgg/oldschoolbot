@@ -141,7 +141,9 @@ export async function handleTripFinish(
 		const voidlingEquipped = user.usingPet('Voidling');
 		const alchResult = alching({
 			user,
-			tripLength: voidlingEquipped ? data.duration : data.duration / randInt(6, 7),
+			tripLength: voidlingEquipped
+				? data.duration * (user.hasItemEquippedAnywhere('Magic master cape') ? 3 : 1)
+				: data.duration / (user.hasItemEquippedAnywhere('Magic master cape') ? 1 : randInt(6, 7)),
 			isUsingVoidling: true,
 			flags: { alch: 'yes' }
 		});
@@ -158,8 +160,12 @@ export async function handleTripFinish(
 			message += `\nYour Voidling alched ${alchResult.maxCasts}x ${alchResult.itemToAlch.name}. Removed ${
 				alchResult.bankToRemove
 			} from your bank and added ${toKMB(alchGP)} GP. ${
-				!voidlingEquipped
+				!voidlingEquipped && !user.hasItemEquippedAnywhere('Magic master cape')
 					? "As you left your Voidling alone in the bank, it got distracted easily and didn't manage to alch at its full potential."
+					: ''
+			}${
+				user.hasItemEquippedAnywhere('Magic master cape')
+					? '\nVoidling notices your Magic Master cape and wants to be just like you. Voidling is now alching much faster!'
 					: ''
 			}`;
 		} else if (user.getUserFavAlchs().length !== 0) {
