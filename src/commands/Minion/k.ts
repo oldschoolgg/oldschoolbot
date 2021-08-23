@@ -330,8 +330,14 @@ export default class extends BotCommand {
 			lootToRemove.remove('Water rune', lootToRemove.amount('Water rune'));
 		}
 
-		const itemCost = monster.itemCost ? monster.itemCost.clone().multiply(quantity) : null;
+		const itemCost = monster.itemCost ? monster.itemCost.clone() : null;
 		if (itemCost) {
+			const fits = msg.author.bank({ withGP: true }).fits(itemCost);
+			if (fits < quantity) {
+				duration *= Math.ceil(fits / quantity);
+				quantity = fits;
+			}
+			itemCost.multiply(quantity);
 			pvmCost = true;
 			lootToRemove.add(itemCost);
 		}
