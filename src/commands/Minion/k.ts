@@ -336,14 +336,14 @@ export default class extends BotCommand {
 
 				if (cc.itemCost) {
 					// Calculate supply for 1 kill
-					const costOneKill = cc.itemCost.multiply(multiply);
+					const costOneKill = cc.itemCost.clone().multiply(multiply);
 					const fits = msg.author.bank({ withGP: true }).fits(costOneKill);
 					if (fits < Number(quantity)) {
 						duration = Math.floor(duration * (fits / Number(quantity)));
 						quantity = fits;
 					}
 					const { bank } = costOneKill.multiply(Number(quantity));
-					// Make sure the QTY is ceiled for each item
+					// Ceil cost QTY to avoid fractions
 					for (const [item, qty] of objectEntries(bank)) {
 						bank[item] = Math.ceil(qty);
 					}
