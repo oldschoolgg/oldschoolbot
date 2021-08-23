@@ -298,22 +298,21 @@ export default class extends BotCommand {
 				itemCost: monster.itemCost.clone(),
 				qtyPerKill: 1
 			});
-		}
-
-		switch (monster.id) {
-			case Monsters.Hydra.id:
-			case Monsters.AlchemicalHydra.id:
-				consumableCosts.push({
-					itemCost: new Bank().add('Antidote++(4)', 1),
-					qtyPerMinute: 0.067
-				});
-				break;
+		} else {
+			switch (monster.id) {
+				case Monsters.Hydra.id:
+				case Monsters.AlchemicalHydra.id:
+					consumableCosts.push({
+						itemCost: new Bank().add('Antidote++(4)', 1),
+						qtyPerMinute: 0.067
+					});
+					break;
+			}
 		}
 
 		consumableCosts.forEach(cc => {
-			let itemMultiple = cc!.qtyPerKill ?? cc!.qtyPerMinute ?? null;
-
-			if (itemMultiple && typeof itemMultiple === 'number') {
+			let itemMultiple = cc.qtyPerKill ?? cc.qtyPerMinute ?? null;
+			if (itemMultiple) {
 				if (cc.isRuneCost) {
 					// Free casts for kodai + sotd
 					if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
@@ -323,9 +322,9 @@ export default class extends BotCommand {
 					}
 				}
 
-				let multiply = 1;
-				if (cc!.qtyPerKill) multiply = itemMultiple;
-				else if (cc!.qtyPerMinute) multiply = (duration / Number(quantity) / Time.Minute) * itemMultiple;
+				let multiply = itemMultiple;
+				// Calculate the duration for 1 kill and check how much will be used in 1 kill
+				if (cc.qtyPerMinute) multiply = (duration / Number(quantity) / Time.Minute) * itemMultiple;
 
 				if (cc.itemCost) {
 					// Calculate supply for 1 kill
