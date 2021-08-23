@@ -8,7 +8,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { removeItemFromBank } from '../../lib/util';
 import resolveItems from '../../lib/util/resolveItems';
 
-const allPetIDs = [...allPetsCL, ...resolveItems(['Midnight'])];
+const allPetIDs = [...allPetsCL, ...resolveItems(['Midnight', 'Dark squirrel'])];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
