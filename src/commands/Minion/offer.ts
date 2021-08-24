@@ -93,7 +93,7 @@ export default class extends BotCommand {
 			loot.add(whichOfferable.table.roll(quantity));
 
 			let score = 0;
-			const { previousCL, itemsAdded } = await msg.author.addItemsToBank(loot.values(), true, true);
+			const { previousCL, itemsAdded } = await msg.author.addItemsToBank(loot.values(), true);
 			if (whichOfferable.economyCounter) {
 				score = msg.author.settings.get(whichOfferable.economyCounter) as number;
 				if (typeof quantity !== 'number') quantity = parseInt(quantity);

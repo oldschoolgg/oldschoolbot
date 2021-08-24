@@ -128,7 +128,7 @@ export default class extends Task {
 			await usersTask.currentTask!.save();
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
