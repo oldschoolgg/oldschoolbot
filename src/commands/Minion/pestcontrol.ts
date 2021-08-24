@@ -18,7 +18,7 @@ let itemBoosts = [
 	[['Barrows gloves', 'Ferocious gloves'].map(getOSItem), 4],
 	[['Amulet of fury', 'Amulet of torture'].map(getOSItem), 5],
 	[['Fire cape', 'Infernal cape'].map(getOSItem), 6],
-	[['Dragon claws'].map(getOSItem), 5]
+	[['Dragon claws', 'Dragon dagger'].map(getOSItem), 5]
 ] as const;
 
 export type PestControlBoat = ['veteran' | 'intermediate' | 'novice', 3 | 4 | 5];
