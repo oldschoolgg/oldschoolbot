@@ -152,6 +152,7 @@ const source: [string, (string | number)[]][] = [
 	['Abyssal whip', ['Volcanic abyssal whip', 'Frozen abyssal whip']],
 	['Granite maul', [12_848]],
 	['Rune scimitar', [23_330, 23_332, 23_334]],
+	['Dragon dagger', ['Dragon dagger(p)', 'Dragon dagger(p+)', 'Dragon dagger(p++)']],
 	[
 		"Black d'hide body",
 		[
