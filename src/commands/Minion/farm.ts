@@ -1,4 +1,4 @@
-import {calcPercentOfNum, percentChance, Time} from 'e';
+import { calcPercentOfNum, percentChance, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
