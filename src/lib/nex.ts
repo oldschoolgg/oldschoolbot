@@ -1,4 +1,5 @@
 import { Time } from 'e';
+import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { nexCL } from './data/CollectionsExport';
@@ -8,8 +9,11 @@ import { makeKillTable } from './util/setCustomMonster';
 
 export const nexLootTable = new LootTable()
 	.every('Big bones')
-	.add(new LootTable().every('Saradomin brew(4)', [2, 15]).every('Super restore(4)', [1, 5]))
+	.add(new LootTable().every('Saradomin brew(4)', 10).every('Super restore(4)', 30))
+	.add(new LootTable().every('Saradomin brew(4)', 30).every('Super restore(4)', 10))
 	.add('Magic logs', 375)
+	.add('Coal', 2400)
+	.add('Runite ore', 80)
 	.add('Green dragonhide', 400)
 	.add('Uncut dragonstone', 20)
 	.add('Onyx bolts (e)', 375)
@@ -18,8 +22,11 @@ export const nexLootTable = new LootTable()
 	.add('Grimy torstol', 40)
 	.add('Torstol seed', 12)
 	.add('Magic seed', 5)
+	.add(RareDropTable, 2, 1, { multiply: true })
 	.tertiary(1500, 'Ancient emblem')
 	.tertiary(5, 'Tradeable mystery box')
+	.tertiary(14, 'Clue scroll (hard)')
+	.tertiary(16, new LootTable().add('Clue scroll (elite)', 1, 99).add('Clue scroll (master)', 1, 1))
 	.tertiary(20, 'Clue scroll (grandmaster)')
 	.tertiary(3000, 'Bloodsoaked feather');
 
