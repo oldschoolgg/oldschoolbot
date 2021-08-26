@@ -204,7 +204,8 @@ export const enum Tasks {
 	DarkAltar = 'darkAltarActivity',
 	TrekkingActivity = 'templeTrekkingActivity',
 	RevenantsActivity = 'revenantsActivity',
-	PestControl = 'pestControlActivity'
+	PestControl = 'pestControlActivity',
+	LmsGambling = 'lmsGamblingActivity'
 }
 
 export enum Activity {
@@ -269,8 +270,11 @@ export enum Activity {
 	DarkAltar = 'DarkAltar',
 	Trekking = 'Trekking',
 	Revenants = 'Revenants',
-	PestControl = 'PestControl'
+	PestControl = 'PestControl',
+	LmsGambling = 'LmsGambling'
 }
+
+export const NotBusyActivity = [Activity.LmsGambling];
 
 export enum ActivityGroup {
 	Skilling = 'Skilling',

@@ -5,8 +5,9 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import LastManStandingUsage, { LMS_FINAL, LMS_PREP, LMS_ROUND } from '../../lib/structures/LastManStandingUsage';
 import { cleanMentions } from '../../lib/util';
 
-export default class extends BotCommand {
-	public readonly playing: Set<string> = new Set();
+export const channelsPlayingLms: Set<string> = new Set();
+
+export default class LastManStandingCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['lms'],
@@ -20,6 +21,73 @@ export default class extends BotCommand {
 			categoryFlags: ['fun', 'simulation'],
 			examples: ['+lms', '+lms Mod Ash, Mod Mark, Mod Huskyy']
 		});
+	}
+
+	playAsyncLms(contestants: Set<string>) {
+		const game: LastManStandingGame = Object.seal({
+			prep: true,
+			final: false,
+			contestants: this.shuffle([...contestants]),
+			round: 0
+		});
+		const gameTexts: Record<string, { time: number; deaths: string[] }> = {};
+		while (game.contestants.size > 1) {
+			// If it's not prep, increase the round
+			if (!game.prep) ++game.round;
+			const events = game.prep ? LMS_PREP : game.final ? LMS_FINAL : LMS_ROUND;
+			// Main logic of the game
+			const { results, deaths } = this.makeResultEvents(game, events);
+			const texts = this.buildTexts(game, results, deaths);
+			// Ask for the user to proceed:
+			for (const text of texts) {
+				gameTexts[text] = { time: Math.max(text.length / 20, 7) * 1000, deaths };
+			}
+			if (game.prep) game.prep = false;
+			else if (game.contestants.size < 4) game.final = true;
+		}
+		// The match finished with one remaining player
+		return {
+			winner: game.contestants.values().next().value,
+			messages: gameTexts
+		};
+	}
+
+	async playLms(msg: KlasaMessage, filtered: Set<string>): Promise<string> {
+		let gameMessage: KlasaMessage | null = null;
+		const game: LastManStandingGame = Object.seal({
+			prep: true,
+			final: false,
+			contestants: this.shuffle([...filtered]),
+			round: 0
+		});
+
+		while (game.contestants.size > 1) {
+			// If it's not prep, increase the round
+			if (!game.prep) ++game.round;
+			const events = game.prep ? LMS_PREP : game.final ? LMS_FINAL : LMS_ROUND;
+
+			// Main logic of the game
+			const { results, deaths } = this.makeResultEvents(game, events);
+			const texts = this.buildTexts(game, results, deaths);
+
+			// Ask for the user to proceed:
+			for (const text of texts) {
+				// If the channel is not postable, break:
+				if (!msg.channel.postable) throw 'WTF';
+
+				gameMessage = (await msg.channel.send(text)) as KlasaMessage;
+				await sleep(Math.max(gameMessage!.content.length / 20, 7) * 1000);
+
+				// Delete the previous message, and if stopped, send stop.
+				gameMessage.delete();
+			}
+
+			if (game.prep) game.prep = false;
+			else if (game.contestants.size < 4) game.final = true;
+		}
+
+		// The match finished with one remaining player
+		return game.contestants.values().next().value;
 	}
 
 	async run(message: KlasaMessage, [contestants]: [string | undefined]): Promise<KlasaMessage> {
@@ -48,48 +116,14 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (this.playing.has(message.channel.id)) {
+		if (channelsPlayingLms.has(message.channel.id)) {
 			throw 'There is a game in progress in this channel already, try again when it finishes.';
 		}
 
-		this.playing.add(message.channel.id);
+		channelsPlayingLms.add(message.channel.id);
+		const winner = await this.playLms(message, filtered);
+		channelsPlayingLms.delete(message.channel.id);
 
-		let gameMessage: KlasaMessage | null = null;
-		const game: LastManStandingGame = Object.seal({
-			prep: true,
-			final: false,
-			contestants: this.shuffle([...filtered]),
-			round: 0
-		});
-
-		while (game.contestants.size > 1) {
-			// If it's not prep, increase the round
-			if (!game.prep) ++game.round;
-			const events = game.prep ? LMS_PREP : game.final ? LMS_FINAL : LMS_ROUND;
-
-			// Main logic of the game
-			const { results, deaths } = this.makeResultEvents(game, events);
-			const texts = this.buildTexts(game, results, deaths);
-
-			// Ask for the user to proceed:
-			for (const text of texts) {
-				// If the channel is not postable, break:
-				if (!message.channel.postable) throw 'WTF';
-
-				gameMessage = (await message.channel.send(text)) as KlasaMessage;
-				await sleep(Math.max(gameMessage!.content.length / 20, 7) * 1000);
-
-				// Delete the previous message, and if stopped, send stop.
-				gameMessage.delete();
-			}
-
-			if (game.prep) game.prep = false;
-			else if (game.contestants.size < 4) game.final = true;
-		}
-
-		// The match finished with one remaining player
-		const winner = game.contestants.values().next().value;
-		this.playing.delete(message.channel.id);
 		return message.channel.send(`And the Last Man Standing is... **${winner}**!`);
 	}
 

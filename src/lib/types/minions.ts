@@ -322,6 +322,12 @@ export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface LmsGamblingActivityTaskOptions extends ActivityTaskOptions {
+	winner: string;
+	prize: number;
+	users: string[];
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions
@@ -343,4 +349,5 @@ export type ActivityTaskData =
 	| FletchingActivityTaskOptions
 	| RunecraftActivityTaskOptions
 	| TempleTrekkingActivityTaskOptions
-	| TemporossActivityTaskOptions;
+	| TemporossActivityTaskOptions
+	| LmsGamblingActivityTaskOptions;

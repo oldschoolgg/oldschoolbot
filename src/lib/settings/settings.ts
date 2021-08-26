@@ -5,7 +5,7 @@ import { getConnection } from 'typeorm';
 
 import { client } from '../..';
 import { MinigameKey, Minigames } from '../../extendables/User/Minigame';
-import { Emoji } from '../constants';
+import { Emoji, NotBusyActivity } from '../constants';
 import { ActivityTable } from '../typeorm/ActivityTable.entity';
 import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { NewUserTable } from '../typeorm/NewUserTable.entity';
@@ -126,7 +126,8 @@ export async function getMinionName(userID: string): Promise<string> {
 export const minionActivityCache = new Map<string, ActivityTaskData>();
 export function getActivityOfUser(userID: string) {
 	const task = minionActivityCache.get(userID);
-	return task ?? null;
+	if (!task || NotBusyActivity.includes(task.type)) return null;
+	return task;
 }
 
 export async function cancelTask(userID: string) {
