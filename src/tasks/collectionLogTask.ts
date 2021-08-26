@@ -419,7 +419,7 @@ export default class CollectionLogTask extends Task {
 					ctx,
 					formatItemStackQuantity(qtyText),
 					Math.floor(i * (itemSize + itemSpacer) + (itemSize - itemImage.width) / 2) + 1,
-					y * (itemSize + itemSpacer) + 11
+					Math.floor(y * (itemSize + itemSpacer)) + 11
 				);
 			}
 
@@ -510,7 +510,7 @@ export default class CollectionLogTask extends Task {
 				const listHeightSpace = ctx.canvas.height - 62 - 13;
 
 				// Check if in the start of the list
-				if (selectedPos <= listHeightSpace) {
+				if (selectedPos <= listHeightSpace || selectedPos > leftListCanvas.height) {
 					ctx.drawImage(
 						leftListCanvas,
 						0,

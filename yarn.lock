@@ -2419,10 +2419,10 @@ fastify-plugin@^3.0.0:
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-3.0.0.tgz#cf1b8c8098e3b5a7c8c30e6aeb06903370c054ca"
   integrity sha512-ZdCvKEEd92DNLps5n0v231Bha8bkz1DjnPP/aEz37rz/q42Z5JVLmgnqR4DYuNn3NXAO3IDCPyRvgvxtJ4Ym4w==
 
-fastify-rate-limit@^5.6.0:
-  version "5.6.0"
-  resolved "https://registry.yarnpkg.com/fastify-rate-limit/-/fastify-rate-limit-5.6.0.tgz#aa5c96be85e03b764757e06180cde28833e08059"
-  integrity sha512-kkM+TQqU95OCNhVhRgke4+8t4UZHPoc93u+6S2Pzg7yoZ8IICJ8doRNcLxyYm1e20voBnyzooz5Thyw85kR2Nw==
+fastify-rate-limit@^5.6.1:
+  version "5.6.1"
+  resolved "https://registry.yarnpkg.com/fastify-rate-limit/-/fastify-rate-limit-5.6.1.tgz#37b5264ff62f622d4e0cc8827e03c30b5ee0a3b0"
+  integrity sha512-L9Aqql8k3GXb58yhi2JekbfMGEDApWmjTd/57cXdW/swKExIunrcqi4zOsnso2EG2XcauDqgt9lIXeyEZB4CAg==
   dependencies:
     fastify-plugin "^3.0.0"
     ms "^2.1.1"
@@ -3694,9 +3694,9 @@ klasa-decorators@^0.0.1:
   resolved "https://registry.yarnpkg.com/klasa-decorators/-/klasa-decorators-0.0.1.tgz#c4bcc7dd2b78814b4f625e611f82790ec6061d52"
   integrity sha512-uCoMz750Lnp0dM8VC787hnRrF9wqWfUrjT7dp+8ihqp6xmtX8ZSXoeK08WJgAhEdEdIDsUG+VMXi9gcG54EZMA==
 
-"klasa@https://github.com/gc/klasa.git#932cee4387720fc22e9c13dfba2c1c385912f351":
+"klasa@https://github.com/gc/klasa.git#a4ec68f2d89eaf00c66436a5829ce508e061ba39":
   version "0.5.0-dev"
-  resolved "https://github.com/gc/klasa.git#932cee4387720fc22e9c13dfba2c1c385912f351"
+  resolved "https://github.com/gc/klasa.git#a4ec68f2d89eaf00c66436a5829ce508e061ba39"
   dependencies:
     "@klasa/querybuilder" "^0.0.1"
     "@klasa/settings-gateway" "^0.0.10"
@@ -4072,10 +4072,10 @@ object.values@^1.1.3:
     define-properties "^1.1.3"
     es-abstract "^1.18.2"
 
-oldschooljs@^1.9.9:
-  version "1.9.9"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-1.9.9.tgz#08d71c48a930f3b068f392715fd4749494e4dd13"
-  integrity sha512-ickzVl3VIjk85h1S68a+/+zzwaMDfl1YKv1HvjUjELQebC2ulsVPhB5NS/QKszXA4d1NMqJEmyfDWQoUX0bHBA==
+oldschooljs@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.0.1.tgz#79e1ac83e48ac3310cae28fbb6da09e1eefbb4fe"
+  integrity sha512-fXSeX0muPERRokyERe91ThZxpfGTx9t8HNnMB92KM+Myr+tPGjQHKsVdDTThpaUfp6XHc8efHOWTt3adKiY3Sw==
   dependencies:
     e "^0.2.1"
     jsdom "^16.7.0"
