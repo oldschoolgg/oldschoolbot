@@ -1,8 +1,8 @@
 import { MessageButton } from 'discord.js';
 import { objectEntries, objectValues, sleep, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { toKMB } from 'oldschooljs/dist/util/util';
 
-import { toKMB } from '../../../.yalc/oldschooljs/dist/util';
 import { Activity, channelsPlayingLms } from '../../lib/constants';
 import { ironsCantUse, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
