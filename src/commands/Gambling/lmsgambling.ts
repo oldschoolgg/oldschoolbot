@@ -3,14 +3,14 @@ import { objectEntries, objectValues, sleep, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { toKMB } from '../../../.yalc/oldschooljs/dist/util';
-import { Activity } from '../../lib/constants';
+import { Activity, channelsPlayingLms } from '../../lib/constants';
 import { ironsCantUse, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { LmsGamblingActivityTaskOptions } from '../../lib/types/minions';
 import { addArrayOfNumbers } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import LastManStandingCommand, { channelsPlayingLms } from '../OSRS_Fun/LastManStanding';
+import LastManStandingCommand from '../OSRS_Fun/LastManStanding';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -47,6 +47,7 @@ export default class extends BotCommand {
 			{ id: msg.author.id, name: `${msg.author.username}#${msg.author.discriminator}`, user: msg.author }
 		];
 		let started = false;
+		let canceled = false;
 
 		let contentMsg = () => {
 			const prize = usersIn.length * price;
@@ -112,6 +113,13 @@ export default class extends BotCommand {
 					i.reply({ ephemeral: true, content: 'You can not leave what you never joined!' });
 					return false;
 				}
+				if (i.user !== msg.author && i.customID === 'START') {
+					i.reply({
+						ephemeral: true,
+						content: 'Only the host can force start the LMS.'
+					});
+					return false;
+				}
 				if (i.user === msg.author && i.customID === 'START' && usersIn.length < minUsers) {
 					i.reply({
 						ephemeral: true,
@@ -145,6 +153,7 @@ export default class extends BotCommand {
 						usersIn.filter(f => f);
 						await interaction.update(contentMsg());
 					} else {
+						canceled = true;
 						usersIn = [];
 						started = false;
 						collector.stop();
@@ -174,6 +183,7 @@ export default class extends BotCommand {
 				if (usersIn.length < minUsers) {
 					await Promise.all(usersIn.map(u => u.user.addGP(price)));
 					started = false;
+					extraReason += '\nCancelling the LMS. Not enough users.';
 				}
 			}
 
@@ -182,7 +192,6 @@ export default class extends BotCommand {
 				await msg.channel.send({
 					content: `The LMS has started! Good luck!${extraReason ? `\n${extraReason}` : ''}`
 				});
-
 				const lmsCommand = this.client.commands.get('lastmanstanding') as unknown as LastManStandingCommand;
 				const lmsGame = lmsCommand.playAsyncLms(new Set(usersIn.map(u => u.name)));
 				const winner = await usersIn.find(f => f.name === lmsGame.winner)!.id;
@@ -201,6 +210,7 @@ export default class extends BotCommand {
 					gameMessage.delete();
 				}
 			} else {
+				if (canceled) extraReason += `\n${msg.author} canceled the LMS.`;
 				channelsPlayingLms.delete(msg.channel.id);
 				await confirmMessage.edit({ components: [] });
 				await msg.channel.send({ content: `The LMS failed to start.${extraReason ? `${extraReason}` : ''}` });

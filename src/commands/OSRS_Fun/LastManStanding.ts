@@ -1,11 +1,10 @@
 import { chunk, sleep } from '@klasa/utils';
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { channelsPlayingLms } from '../../lib/constants';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import LastManStandingUsage, { LMS_FINAL, LMS_PREP, LMS_ROUND } from '../../lib/structures/LastManStandingUsage';
 import { cleanMentions } from '../../lib/util';
-
-export const channelsPlayingLms: Set<string> = new Set();
 
 export default class LastManStandingCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

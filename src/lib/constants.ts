@@ -484,3 +484,5 @@ export const lastTripCache = new Map<
 	string,
 	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
 >();
+
+export const channelsPlayingLms: Set<string> = new Set();
