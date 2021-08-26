@@ -73,7 +73,6 @@ export default class extends Task {
 				usersTask.currentTask !== null &&
 				usersTask.assignedTask.monsters.includes(Ignecarus.id);
 			if (isOnTask) {
-				console.log({ remaining: usersTask.currentTask!.quantityRemaining, quantity });
 				usersTask.currentTask!.quantityRemaining = Math.max(
 					0,
 					usersTask.currentTask!.quantityRemaining - quantity
