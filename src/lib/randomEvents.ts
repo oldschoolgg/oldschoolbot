@@ -180,6 +180,7 @@ export async function triggerRandomEvent(ch: TextChannel, user: KlasaUser) {
 	if (prev && Date.now() - prev < Time.Hour * 3) {
 		return;
 	}
+	cache.set(user.id, Date.now());
 
 	const event = randArrItem(RandomEvents);
 	const roll = randInt(1, 4);
