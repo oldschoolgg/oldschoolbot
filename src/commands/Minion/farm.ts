@@ -1,4 +1,4 @@
-import { calcPercentOfNum, Time } from 'e';
+import { calcPercentOfNum, percentChance, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -213,6 +213,7 @@ export default class extends BotCommand {
 		let newBank = { ...userBank };
 		let econBank = new Bank();
 		const hasScroll = await msg.author.hasItem(itemID('Scroll of life'));
+		const hasMasterFarmingCape = await msg.author.hasItemEquippedOrInBank(itemID('Farming master cape'));
 
 		const requiredSeeds: [string, number][] = Object.entries(plants.inputItems);
 		for (const [seedID, qty] of requiredSeeds) {
@@ -223,7 +224,21 @@ export default class extends BotCommand {
 					throw `You don't have enough ${itemNameFromID(parseInt(seedID))}s.`;
 				}
 			}
-			const _qty = hasScroll ? Math.floor(calcPercentOfNum(85, qty * quantity)) : qty * quantity;
+			let _qty = 0;
+			if (hasScroll) {
+				if (hasMasterFarmingCape) {
+					// Always round down with Farming master cape
+					_qty = Math.floor(calcPercentOfNum(85, qty * quantity));
+				} else {
+					// 15% chance to negate seed cost
+					for (let i = 0; i < quantity; i++) {
+						if (!percentChance(15)) _qty += qty;
+					}
+				}
+			} else {
+				// Total quantity = per patch qty * total patches used
+				_qty = qty * quantity;
+			}
 			newBank = removeItemFromBank(newBank, parseInt(seedID), _qty);
 			econBank.add(parseInt(seedID), _qty);
 			if (hasScroll) {
