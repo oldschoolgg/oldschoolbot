@@ -203,6 +203,16 @@ const questBuyables: Buyable[] = [
 		gpCost: 10_000
 	},
 	{
+		name: 'Uncharged dragonfire shield',
+		qpRequired: 34,
+		aliases: ['dfs', 'dragonfire shield'],
+		gpCost: 1_250_000,
+		itemCost: resolveNameBank({ 'Draconic visage': 1 }),
+		outputItems: resolveNameBank({
+			'Uncharged dragonfire shield': 1,
+		}),
+	},
+	{
 		name: 'Hardleather gloves',
 		qpRequired: 5,
 		gpCost: 50_000
