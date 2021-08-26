@@ -15,7 +15,7 @@ import LastManStandingCommand from '../OSRS_Fun/LastManStanding';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[price:int{0,1000000000}] [minUsers:int{3,40}] [maxUsers:int{3,40}]',
+			usage: '[price:int{0,1000000000}] [minUsers:int{4,40}] [maxUsers:int{4,40}]',
 			usageDelim: ' ',
 			aliases: ['lmsg']
 		});
@@ -23,13 +23,10 @@ export default class extends BotCommand {
 
 	@ironsCantUse
 	@requiresMinion
-	async run(msg: KlasaMessage, [price = 0, minUsers = 2, maxUsers = 40]: [number, number, number]) {
+	async run(msg: KlasaMessage, [price = 0, minUsers = 4, maxUsers = 40]: [number, number, number]) {
 		if (msg.author.settings.get(UserSettings.GP) < price) {
 			return msg.channel.send('You do not have enough GP to host this LMS.');
 		}
-
-		if (msg.flagArgs.min && !isNaN(Number(msg.flagArgs.min))) minUsers = Number(msg.flagArgs.min);
-		if (msg.flagArgs.max && !isNaN(Number(msg.flagArgs.max))) maxUsers = Number(msg.flagArgs.max);
 
 		if (channelsPlayingLms.has(msg.channel.id)) {
 			return msg.channel.send(
