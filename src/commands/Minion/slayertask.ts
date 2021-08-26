@@ -3,7 +3,7 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -79,7 +79,7 @@ export default class extends BotCommand {
 	public getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 		if (assignedTask) {
 			const altMobs = assignedTask.monsters;
-			const alternateMonsters = killableMonsters
+			const alternateMonsters = effectiveMonsters
 				.filter(m => {
 					return altMobs.includes(m.id) && m!.id !== assignedTask.monster.id;
 				})

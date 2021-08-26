@@ -2,6 +2,7 @@ import { Monsters } from 'oldschooljs';
 
 import { KalphiteKingMonster } from '../../kalphiteking';
 import AbyssalDragon from '../../minions/data/killableMonsters/custom/AbyssalDragon';
+import { Ignecarus } from '../../minions/data/killableMonsters/custom/Ignecarus';
 import SeaKraken from '../../minions/data/killableMonsters/custom/SeaKraken';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import { AssignableSlayerTask } from '../types';
@@ -76,7 +77,8 @@ export const nieveTasks: AssignableSlayerTask[] = [
 			Monsters.BlackDragon.id,
 			Monsters.BabyBlackDragon.id,
 			Monsters.BrutalBlackDragon.id,
-			Monsters.KingBlackDragon.id
+			Monsters.KingBlackDragon.id,
+			Ignecarus.id
 		],
 		slayerLevel: 77,
 		combatLevel: 80,
