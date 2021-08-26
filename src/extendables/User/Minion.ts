@@ -563,6 +563,9 @@ export default class extends Extendable {
 				const data = currentTask as MinigameActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity} games of Pest Control. ${formattedDuration}`;
 			}
+			case Activity.LmsGambling: {
+				return `${this.minionName} is fighting for its life on a LMS game!`;
+			}
 		}
 	}
 
