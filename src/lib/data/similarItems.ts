@@ -397,7 +397,12 @@ const source: [string, (string | number)[]][] = [
 		]
 	],
 	['Zaryte bow', ['Hellfire bow']],
-	['Twisted bow', ['Hellfire bow']]
+	['Twisted bow', ['Hellfire bow']],
+	['Ghrazi rapier', ['Holy ghrazi rapier']],
+	['Scythe of vitur', ['Sanguine scythe of vitur', 'Holy scythe of vitur']],
+	['Scythe of vitur (uncharged)', ['Sanguine scythe of vitur (uncharged)', 'Holy scythe of vitur (uncharged)']],
+	['Sanguinesti staff', ['Holy sanguinesti staff']],
+	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
