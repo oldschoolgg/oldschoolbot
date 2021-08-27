@@ -65,14 +65,18 @@ export async function handleTripFinish(
 
 	const imp = handlePassiveImplings(user, data);
 	if (imp) {
-		if (!imp.missed) {
+		if (imp.bank.length > 0) {
 			const many = imp.bank.length > 1;
-			message += `\n\nYour minion caught ${many ? 'some' : 'an'} impling${
-				many ? 's' : ''
-			}, you received: ${imp}.`;
+			message += `\n\nYour minion caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${
+				imp.bank
+			}.`;
 			await user.addItemsToBank(imp.bank);
-		} else {
-			message += `\n\n${imp.missed.join(', ')}`;
+		}
+
+		if (imp.missed.length > 0) {
+			message += `\n\nYou missed out on these implings, because your hunter level is too low: ${imp.missed
+				.map(m => m.name)
+				.join(', ')}.`;
 		}
 	}
 

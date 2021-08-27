@@ -43,7 +43,7 @@ for (const [imp, weight] of implings) {
 }
 
 export const AVERAGE_TIME_PER_IMPLING_FIND = Time.Hour;
-const IMPLING_CHANCE_PER_MINUTE = 60;
+const IMPLING_CHANCE_PER_MINUTE = 5;
 
 export function handlePassiveImplings(user: KlasaUser, activity: ActivityTaskOptions) {
 	const minutes = Math.floor(activity.duration / Time.Minute);
@@ -52,14 +52,14 @@ export function handlePassiveImplings(user: KlasaUser, activity: ActivityTaskOpt
 	const level = user.skillLevel(SkillsEnum.Hunter);
 
 	let bank = new Bank();
-	const missed: string[] = [];
+	const missed: SimpleOpenable[] = [];
 	for (let i = 0; i < minutes; i++) {
 		const gotImp = roll(IMPLING_CHANCE_PER_MINUTE);
 		if (gotImp) {
 			const imp = ImplingTable.roll()!.item;
 			const levelReq = implings.find(i => i[0] === imp)![2];
 			if (level < levelReq) {
-				missed.push(`You missed out on a ${imp.name}, because your Hunter level is too low!`);
+				missed.push(imp);
 			} else {
 				bank.add(imp.id);
 			}
