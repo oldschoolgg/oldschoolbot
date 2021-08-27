@@ -5,6 +5,7 @@ import fetch from 'node-fetch';
 
 import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
+import { AVERAGE_TIME_PER_IMPLING_FIND, ImplingTable } from '../../lib/implings';
 import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -43,6 +44,23 @@ export default class extends BotCommand {
 		if (msg.guild!.id !== '342983479501389826') return null;
 
 		switch (cmd.toLowerCase()) {
+			case 'imps': {
+				let i: any = {};
+
+				let t = 0;
+				while (Object.keys(i).length < ImplingTable.length) {
+					const { item } = ImplingTable.roll()!;
+					typeof i[item.name] === 'number' ? i[item.name]++ : (i[item.name] = 1);
+					t += AVERAGE_TIME_PER_IMPLING_FIND;
+				}
+				return msg.channel.send(
+					`It took ${formatDuration(t)} before you found aleast 1 of every Impling. ${JSON.stringify(
+						i,
+						null,
+						4
+					)}`
+				);
+			}
 			case 'hasequipped': {
 				if (typeof input !== 'string') return;
 				const item = getOSItem(input);
