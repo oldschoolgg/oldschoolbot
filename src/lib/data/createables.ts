@@ -214,6 +214,18 @@ const crystalTools: Createable[] = [
 		QPRequired: 150
 	},
 	{
+		name: 'Revert blade of saeldor (c)',
+		inputItems: {
+			[itemID('Blade of saeldor (c)')]: 1
+		},
+		outputItems: {
+			[itemID('Blade of saeldor (inactive)')]: 1
+		},
+		requiredSkills: { smithing: 82, crafting: 82 },
+		QPRequired: 150,
+		noCl: true
+	},
+	{
 		name: 'Bow of faerdhinen (c)',
 		inputItems: {
 			[itemID('Bow of faerdhinen (inactive)')]: 1,
@@ -224,6 +236,18 @@ const crystalTools: Createable[] = [
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
 		QPRequired: 150
+	},
+	{
+		name: 'Revert bow of faerdhinen (c)',
+		inputItems: {
+			[itemID('Bow of faerdhinen (c)')]: 1
+		},
+		outputItems: {
+			[itemID('Bow of faerdhinen (inactive)')]: 1
+		},
+		requiredSkills: { smithing: 82, crafting: 82 },
+		QPRequired: 150,
+		noCl: true
 	},
 	{
 		name: 'Blade of saeldor (inactive)',
@@ -238,6 +262,18 @@ const crystalTools: Createable[] = [
 		QPRequired: 150
 	},
 	{
+		name: 'Revert blade of saeldor (inactive)',
+		inputItems: {
+			[itemID('Blade of saeldor (inactive)')]: 1,
+			[itemID('Crystal shard')]: 250
+		},
+		outputItems: {
+			[itemID('Enhanced crystal weapon seed')]: 1
+		},
+		requiredSkills: { smithing: 82, crafting: 82 },
+		QPRequired: 150
+	},
+	{
 		name: 'Bow of faerdhinen (inactive)',
 		inputItems: {
 			[itemID('Enhanced crystal weapon seed')]: 1,
@@ -245,6 +281,18 @@ const crystalTools: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Bow of faerdhinen (inactive)')]: 1
+		},
+		requiredSkills: { smithing: 82, crafting: 82 },
+		QPRequired: 150
+	},
+	{
+		name: 'Revert bow of faerdhinen (inactive)',
+		inputItems: {
+			[itemID('Bow of faerdhinen (inactive)')]: 1,
+			[itemID('Crystal shard')]: 250
+		},
+		outputItems: {
+			[itemID('Enhanced crystal weapon seed')]: 1
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
 		QPRequired: 150
