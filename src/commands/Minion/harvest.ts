@@ -36,7 +36,7 @@ export default class extends BotCommand {
 		const currentWoodcuttingLevel = msg.author.skillLevel(SkillsEnum.Woodcutting);
 		const currentDate = new Date().getTime();
 
-		const getPatchType = resolvePatchTypeSetting(seedType);
+		const getPatchType = resolvePatchTypeSetting(seedType.toLowerCase());
 		if (!getPatchType) {
 			const patchStr: string[] = [];
 			const patchArray = Object.values(FarmingPatchTypes);
