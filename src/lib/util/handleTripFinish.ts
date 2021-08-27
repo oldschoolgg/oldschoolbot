@@ -6,6 +6,7 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import MinionCommand from '../../commands/Minion/minion';
 import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
+import { handlePassiveImplings } from '../implings';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { ClientSettings } from '../settings/types/ClientSettings';
@@ -60,6 +61,19 @@ export async function handleTripFinish(
 
 	if (unsiredReceived) {
 		message += '\n**You received an unsired!** You can offer it for loot using `+offer unsired`.';
+	}
+
+	const imp = handlePassiveImplings(user, data);
+	if (imp) {
+		if (!imp.missed) {
+			const many = imp.bank.length > 1;
+			message += `\n\nYour minion caught ${many ? 'some' : 'an'} impling${
+				many ? 's' : ''
+			}, you received: ${imp}.`;
+			await user.addItemsToBank(imp.bank);
+		} else {
+			message += `\n\n${imp.missed.join(', ')}`;
+		}
 	}
 
 	const attachable = attachment
