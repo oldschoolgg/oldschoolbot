@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round, Time } from 'e';
+import { calcWhatPercent, increaseNumByPercent, objectEntries, objectKeys, reduceNumByPercent, round, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -366,23 +366,30 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (['hydra', 'alchemical hydra'].includes(monster.name.toLowerCase())) {
-			// Add a cost of 1 antidote++(4) per 15 minutes
-			const hydraCost: Consumable = {
-				itemCost: new Bank().add('Antidote++(4)', 1),
-				qtyPerMinute: 0.067
-			};
-			consumableCosts.push(hydraCost);
-		}
-
-		// Check consumables: (hope this forEach is ok :) )
 		const totalEconomyCost = new Bank();
 		const lootToRemove = new Bank();
 		let pvmCost = false;
-		consumableCosts.forEach(cc => {
-			let itemMultiple = cc!.qtyPerKill ?? cc!.qtyPerMinute ?? null;
 
-			if (itemMultiple && typeof itemMultiple === 'number') {
+		if (monster.itemCost) {
+			consumableCosts.push({
+				itemCost: monster.itemCost.clone(),
+				qtyPerKill: 1
+			});
+		} else {
+			switch (monster.id) {
+				case Monsters.Hydra.id:
+				case Monsters.AlchemicalHydra.id:
+					consumableCosts.push({
+						itemCost: new Bank().add('Antidote++(4)', 1),
+						qtyPerMinute: 0.067
+					});
+					break;
+			}
+		}
+
+		consumableCosts.forEach(cc => {
+			let itemMultiple = cc.qtyPerKill ?? cc.qtyPerMinute ?? null;
+			if (itemMultiple) {
 				if (cc.isRuneCost) {
 					// Free casts for kodai + sotd
 					if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
@@ -391,26 +398,32 @@ export default class extends BotCommand {
 						itemMultiple = Math.ceil((6 / 7) * itemMultiple);
 					}
 				}
-				const itemCost = cc!.qtyPerKill
-					? cc!.itemCost.clone().multiply(itemMultiple)
-					: cc!.qtyPerMinute
-					? cc!.itemCost.clone().multiply(Math.ceil((duration / Time.Minute) * itemMultiple))
-					: null;
-				if (itemCost) {
+
+				let multiply = itemMultiple;
+				// Calculate the duration for 1 kill and check how much will be used in 1 kill
+				if (cc.qtyPerMinute) multiply = (duration / Number(quantity) / Time.Minute) * itemMultiple;
+
+				if (cc.itemCost) {
+					// Calculate supply for 1 kill
+					const costOneKill = cc.itemCost.clone().multiply(multiply);
+					const fits = msg.author.bank({ withGP: true }).fits(costOneKill);
+					if (fits < Number(quantity)) {
+						duration = Math.floor(duration * (fits / Number(quantity)));
+						quantity = fits;
+					}
+					const { bank } = costOneKill.multiply(Number(quantity));
+					// Ceil cost QTY to avoid fractions
+					for (const [item, qty] of objectEntries(bank)) {
+						bank[item] = Math.ceil(qty);
+					}
 					pvmCost = true;
-					lootToRemove.add(itemCost);
+					lootToRemove.add(bank);
 				}
 			}
 		});
 
 		if (msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Staff of water')))) {
 			lootToRemove.remove('Water rune', lootToRemove.amount('Water rune'));
-		}
-
-		const itemCost = monster.itemCost ? monster.itemCost.clone().multiply(quantity) : null;
-		if (itemCost) {
-			pvmCost = true;
-			lootToRemove.add(itemCost);
 		}
 
 		if (pvmCost) {

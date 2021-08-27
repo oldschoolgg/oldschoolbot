@@ -375,7 +375,6 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 
 	myLoot.filter(l => {
 		return (
-			l.id !== 420 &&
 			l.id !== itemID('Black mask (10)') &&
 			l.id !== itemID("Hydra's eye") &&
 			l.id !== itemID("Hydra's fang") &&

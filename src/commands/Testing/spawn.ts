@@ -98,7 +98,7 @@ export default class extends BotCommand {
 			loot.add(item.id, qty === 0 ? 1 : Math.min(qty ?? 1, 1_000_000_000));
 		}
 
-		await msg.author.addItemsToBank(loot, Boolean(msg.flagArgs.cl));
+		await msg.author.addItemsToBank(loot, Boolean(msg.flagArgs.cl), false);
 
 		let res = `Gave you ${loot}.`;
 		for (const setup of ['range', 'melee', 'mage', 'skilling', 'wildy'] as const) {

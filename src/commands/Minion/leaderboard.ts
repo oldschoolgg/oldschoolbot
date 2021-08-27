@@ -107,7 +107,7 @@ export default class extends BotCommand {
 	}
 
 	getPos(page: number, record: number) {
-		return `${page * LB_PAGE_SIZE + 1 + record}) `;
+		return `${page * LB_PAGE_SIZE + 1 + record}. `;
 	}
 
 	getUsername(userID: string, lbSize?: number) {
@@ -612,7 +612,7 @@ LIMIT 50;
 		if (!course) return msg.channel.send('Thats not a valid agility course.');
 
 		const data: { id: string; count: number }[] = await this.query(
-			`SELECT id, "lapsScores"->>'${course.id}' as count
+			`SELECT id, ("lapsScores"->>'${course.id}')::int as count
 				   FROM users
 				   WHERE "lapsScores"->>'${course.id}' IS NOT NULL
 				   ${msg.flagArgs.im ? ' AND "minion.ironman" = true ' : ''}
@@ -646,13 +646,11 @@ LIMIT 50;
 				`Thats not a valid creature. Valid creatures are: ${Hunter.Creatures.map(h => h.name).join(', ')}`
 			);
 
-		const data: { id: string; count: number }[] = await this.query(
-			`SELECT id, "creatureScores"->>'${creature.id}' as count
+		const query = `SELECT id, ("creatureScores"->>'${creature.id}')::int as count
 				   FROM users WHERE "creatureScores"->>'${creature.id}' IS NOT NULL
 				   ${msg.flagArgs.im ? ' AND "minion.ironman" = true ' : ''}
-				   ORDER BY count DESC LIMIT 50;`
-		);
-
+				   ORDER BY count DESC LIMIT 50;`;
+		const data: { id: string; count: number }[] = await this.query(query);
 		this.doMenu(
 			msg,
 			util

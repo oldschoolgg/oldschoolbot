@@ -91,7 +91,8 @@ export default class extends Extendable {
 	public async addItemsToBank(
 		this: User,
 		inputItems: ItemBank | Bank,
-		collectionLog = false
+		collectionLog: boolean = false,
+		filterLoot: boolean = true
 	): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }> {
 		return this.queueFn(async user => {
 			const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
@@ -102,7 +103,9 @@ export default class extends Extendable {
 			let items = new Bank({
 				..._items
 			});
-			const { bankLoot, clLoot } = filterLootReplace(user.allItemsOwned(), items);
+			const { bankLoot, clLoot } = filterLoot
+				? filterLootReplace(user.allItemsOwned(), items)
+				: { bankLoot: items, clLoot: items };
 			items = bankLoot;
 			if (collectionLog) {
 				await user.addItemsToCollectionLog(clLoot.bank);
