@@ -169,7 +169,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 		if (input === 'xp') {
 			if (!(qty in ticketQuantities)) {
 				return msg.channel.send(
-					`You can only redeem tickets for XP at the following quantities: ${Object.values(
+					`You can only redeem tickets for XP at the following quantities: ${Object.keys(
 						ticketQuantities
 					).join(', ')}.`
 				);

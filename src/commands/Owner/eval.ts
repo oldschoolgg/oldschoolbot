@@ -1,5 +1,6 @@
+import { Type } from '@sapphire/type';
 import { MessageAttachment } from 'discord.js';
-import { CommandStore, KlasaMessage, Stopwatch, Type, util } from 'klasa';
+import { CommandStore, KlasaMessage, Stopwatch, util } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { inspect } from 'util';
 

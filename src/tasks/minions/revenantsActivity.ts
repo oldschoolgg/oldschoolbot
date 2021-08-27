@@ -19,7 +19,7 @@ export default class extends Task {
 	async run(data: RevenantOptions) {
 		const { monsterID, userID, channelID, quantity, died, skulled, style } = data;
 		const monster = revenantMonsters.find(mon => mon.id === monsterID)!;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		if (died) {
 			// 1 in 20 to get smited without prayer potions and 1 in 300 if the user has prayer potions
 			const hasPrayerLevel = user.hasSkillReqs({ [SkillsEnum.Prayer]: 25 })[0];
@@ -45,6 +45,8 @@ export default class extends Task {
 
 			updateBankSetting(this.client, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
 
+			const flags: Record<string, string> = !skulled ? {} : { skull: 'skull' };
+
 			handleTripFinish(
 				this.client,
 				user,
@@ -59,6 +61,12 @@ export default class extends Task {
 					calc.lostItems
 				}.\nHere is what you saved:`,
 				res => {
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					if (!res.prompter) res.prompter = {};
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					res.prompter.flags = flags;
 					user.log(`continued trip of killing ${monster.name}`);
 					return this.client.commands.get('revs')!.run(res, [style, monster.name]);
 				},
@@ -100,14 +108,12 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				const flags: Record<string, string> = !skulled ? {} : { skull: 'skull' };
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				if (!res.prompter) res.prompter = {};
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				res.prompter.flags = flags;
-
 				user.log(`continued trip of killing ${monster.name}`);
 				return this.client.commands.get('revs')!.run(res, [style, monster.name]);
 			},

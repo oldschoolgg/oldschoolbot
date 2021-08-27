@@ -6,9 +6,9 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
-import { Activity, Emoji, Events, LEVEL_99_XP, MAX_QP, MAX_TOTAL_LEVEL, skillEmoji } from '../../lib/constants';
+import { Activity, Emoji, Events, LEVEL_99_XP, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
-import { hasGracefulEquipped } from '../../lib/gear/util';
+import { hasGracefulEquipped } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
@@ -64,12 +64,15 @@ import {
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
+	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
+	PlunderActivityTaskOptions,
 	RaidsOptions,
 	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
+	SepulchreActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SoulWarsOptions,
@@ -91,11 +94,6 @@ import {
 	Util
 } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import {
-	NightmareActivityTaskOptions,
-	PlunderActivityTaskOptions,
-	SepulchreActivityTaskOptions
-} from './../../lib/types/minions';
 import { Minigames } from './Minigame';
 
 const suffixes = new SimpleTable<string>()
@@ -684,37 +682,49 @@ export default class extends Extendable {
 
 		const name = toTitleCase(params.skillName);
 
-		if (currentXP >= 200_000_000) {
-			return `You received no XP because you have 200m ${name} XP already.`;
-		}
-
 		const skill = Object.values(Skills).find(skill => skill.id === params.skillName)!;
 
-		const newXP = Math.min(200_000_000, currentXP + params.amount);
+		const newXP = Math.min(MAX_XP, currentXP + params.amount);
 		const totalXPAdded = newXP - currentXP;
 		const newLevel = convertXPtoLVL(Math.floor(newXP));
 
+		// Pre-MAX_XP
+		let preMax = -1;
 		if (totalXPAdded > 0) {
+			preMax = totalXPAdded;
 			XPGainsTable.insert({
 				userID: this.id,
 				skill: params.skillName,
-				xp: Math.floor(params.amount),
+				xp: Math.floor(totalXPAdded),
 				artificial: params.artificial ? true : null
 			});
 		}
 
-		// If they reached a XP milestone, send a server notification.
-		for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, 200_000_000]) {
-			if (newXP < XPMilestone) break;
+		// Post-MAX_XP
+		if (params.amount - totalXPAdded > 0) {
+			XPGainsTable.insert({
+				userID: this.id,
+				skill: params.skillName,
+				xp: Math.floor(params.amount - totalXPAdded),
+				artificial: params.artificial ? true : null,
+				postMax: true
+			});
+		}
 
-			if (currentXP < XPMilestone && newXP >= XPMilestone) {
-				this.client.emit(
-					Events.ServerNotification,
-					`${skill.emoji} **${this.username}'s** minion, ${
-						this.minionName
-					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(params.skillName)}!`
-				);
-				break;
+		// If they reached a XP milestone, send a server notification.
+		if (preMax !== -1) {
+			for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, MAX_XP]) {
+				if (newXP < XPMilestone) break;
+
+				if (currentXP < XPMilestone && newXP >= XPMilestone) {
+					this.client.emit(
+						Events.ServerNotification,
+						`${skill.emoji} **${this.username}'s** minion, ${
+							this.minionName
+						}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(params.skillName)}!`
+					);
+					break;
+				}
 			}
 		}
 
@@ -748,22 +758,25 @@ export default class extends Extendable {
 
 		await this.settings.update(`skills.${params.skillName}`, Math.floor(newXP));
 
-		let str = params.minimal
-			? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
-			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
-		if (params.duration && !params.minimal) {
-			let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
-			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
-			str += ` (${toKMB(rawXPHr)}/Hr)`;
-		}
-
-		if (currentTotalLevel < MAX_TOTAL_LEVEL && this.totalLevel() >= MAX_TOTAL_LEVEL) {
-			str += '\n\n**Congratulations, your minion has reached the maximum total level!**\n\n';
-			onMax(this);
-		} else if (currentLevel !== newLevel) {
+		let str = '';
+		if (preMax !== -1) {
 			str += params.minimal
-				? `(Levelled up to ${newLevel})`
-				: `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
+				? `+${Math.ceil(preMax).toLocaleString()} ${skillEmoji[params.skillName]}`
+				: `You received ${Math.ceil(preMax).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
+			if (params.duration && !params.minimal) {
+				let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
+				rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
+				str += ` (${toKMB(rawXPHr)}/Hr)`;
+			}
+
+			if (currentTotalLevel < MAX_TOTAL_LEVEL && this.totalLevel() >= MAX_TOTAL_LEVEL) {
+				str += '\n\n**Congratulations, your minion has reached the maximum total level!**\n\n';
+				onMax(this);
+			} else if (currentLevel !== newLevel) {
+				str += params.minimal
+					? `(Levelled up to ${newLevel})`
+					: `\n**Congratulations! Your ${name} level is now ${newLevel}** ${levelUpSuffix()}`;
+			}
 		}
 		return str;
 	}

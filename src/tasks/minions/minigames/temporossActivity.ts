@@ -13,7 +13,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: TemporossActivityTaskOptions) {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		const { previousScore, newScore } = await incrementMinigameScore(userID, 'Tempoross', quantity);
 		const kcForPet = randInt(previousScore, newScore);

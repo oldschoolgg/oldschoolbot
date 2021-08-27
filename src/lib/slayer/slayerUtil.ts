@@ -328,12 +328,13 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 
 	myLoot.filter(l => {
 		return (
-			l.id !== 420 &&
 			l.id !== itemID('Black mask (10)') &&
 			l.id !== itemID("Hydra's eye") &&
 			l.id !== itemID("Hydra's fang") &&
 			l.id !== itemID("Hydra's heart") &&
 			l.id !== itemID('Dark totem base') &&
+			l.id !== itemID('Dark totem middle') &&
+			l.id !== itemID('Dark totem top') &&
 			l.id !== itemID('Bludgeon claw')
 		);
 	}, true);

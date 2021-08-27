@@ -114,6 +114,16 @@ const slayerHelmSimilarI = resolveItems([
 	'Twisted slayer helmet (i)',
 	'Slayer helmet (i)'
 ]);
+const bowfaCorruptSimilar = resolveItems([
+	25_869, // Red, 'duplicate' according to osrsbox item-search
+	25_884, // White
+	25_886, // Black
+	25_888, // Brown?
+	25_890, // Green
+	25_892, // Yellow
+	25_894, // Light blue
+	25_896 // Dark blue
+]);
 
 const source: [string, (string | number)[]][] = [
 	['Dragon full helm', ['Dragon full helm (g)']],
@@ -247,6 +257,7 @@ const source: [string, (string | number)[]][] = [
 	['Void knight gloves', ['Void knight gloves (l)']],
 	['Trident of the seas', ['Trident of the seas (full)', 'Trident of the seas (e)']],
 	['Trident of the swamp', ['Trident of the swamp (e)']],
+	['Bow of faerdhinen (c)', bowfaCorruptSimilar],
 	['Slayer helmet', slayerHelmSimilar],
 	['Slayer helmet (i)', slayerHelmSimilarI],
 	['Black mask (i)', [...slayerHelmSimilarI, ...blackMaskISimilar]],

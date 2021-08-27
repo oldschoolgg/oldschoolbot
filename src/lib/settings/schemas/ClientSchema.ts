@@ -48,4 +48,6 @@ Client.defaultClientSchema
 	.add('gp_pickpocket', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_open', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
-	.add('gp_daily', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER });
+	.add('gp_daily', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+
+	.add('locked_skills', 'any', { array: true, default: [] });

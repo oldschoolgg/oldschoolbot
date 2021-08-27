@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { requiresMinion } from '../../lib/minions/decorators';
 import { defaultFarmingContract } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -10,6 +10,8 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { bankHasItem } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import itemID from '../../lib/util/itemID';
+
+type FarmingContractDifficultyLevel = 'easy' | 'medium' | 'hard';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -27,7 +29,6 @@ export default class extends BotCommand {
 		});
 	}
 
-	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [contractLevel]: ['easy' | 'medium' | 'hard' | 'easier' | 'current' | 'completed']) {
 		await msg.author.settings.sync(true);
@@ -124,7 +125,10 @@ export default class extends BotCommand {
 					});
 				}
 				const newContractLevel = currentContract.difficultyLevel === 'hard' ? 'medium' : 'easy';
-				const plantInformation = getPlantToGrow(msg.author, newContractLevel);
+				const plantInformation = getPlantToGrow(msg.author, {
+					contractLevel: newContractLevel,
+					ignorePlant: currentContract.plantToGrow!
+				});
 				const plantToGrow = plantInformation[0];
 				const plantTier = plantInformation[1];
 
@@ -141,7 +145,7 @@ export default class extends BotCommand {
 				return msg.channel.send({
 					files: [
 						await chatHeadImage({
-							content: `I suppose you were too chicken for the challange. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`,
+							content: `I suppose you were too chicken for the challenge. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`,
 							head: 'jane'
 						})
 					]
@@ -162,15 +166,28 @@ export default class extends BotCommand {
 			});
 		}
 
-		if (contractLevel === 'current' || contractLevel === 'easier') return;
+		if (msg.author.minionIsBusy) {
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content:
+							"You are busy at the moment! I can't give you a new farming contract like that. Please, come back when you have some free time for us to talk.",
+						head: 'jane'
+					})
+				]
+			});
+		}
 
-		const plantInformation = getPlantToGrow(msg.author, contractLevel);
+		const plantInformation = getPlantToGrow(msg.author, {
+			contractLevel: contractLevel as FarmingContractDifficultyLevel,
+			ignorePlant: currentContract.plantToGrow
+		});
 		const plantToGrow = plantInformation[0] as string;
 		const plantTier = plantInformation[1] as 0 | 1 | 2 | 3 | 4 | 5;
 
 		const farmingContractUpdate: FarmingContract = {
 			hasContract: true,
-			difficultyLevel: contractLevel,
+			difficultyLevel: contractLevel as FarmingContractDifficultyLevel,
 			plantToGrow,
 			plantTier,
 			contractsCompleted: currentContract.contractsCompleted

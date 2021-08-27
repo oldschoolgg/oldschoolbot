@@ -10,7 +10,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: QuestingActivityTaskOptions) {
 		const { userID, channelID } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const currentQP = user.settings.get(UserSettings.QP);
 
 		// This assumes you do quests in order of scaling difficulty, ~115 hours for max qp
