@@ -91,10 +91,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (!planted) {
-			this.client.wtf(new Error(`${msg.author.sanitizedName}'s patch had no plant found in it.`));
-			return;
-		}
+		if (!planted) return msg.channel.send(`${msg.author}, you have nothing planted on this patch type.`);
 
 		const timePerPatchTravel = Time.Second * planted.timePerPatchTravel;
 		const timePerPatchHarvest = Time.Second * planted.timePerHarvest;
