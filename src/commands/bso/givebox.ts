@@ -22,10 +22,11 @@ export default class extends BotCommand {
 		const lastDate = msg.author.settings.get(UserSettings.LastGivenBox);
 		const difference = currentDate - lastDate;
 		const timeLimit = Time.Hour * 24;
+		const isOwner = this.client.owners.has(msg.author);
 
 		// If no user or not an owner and can not send one yet, show time till next box.
-		if (!user || (difference < timeLimit && !this.client.owners.has(msg.author))) {
-			if (difference >= timeLimit || this.client.owners.has(msg.author)) {
+		if (!user || (difference < timeLimit && !isOwner)) {
+			if (difference >= timeLimit || isOwner) {
 				return msg.channel.send('You can give another box!');
 			}
 			return msg.channel.send(`You can give another box in ${formatDuration(timeLimit - difference)}`);
