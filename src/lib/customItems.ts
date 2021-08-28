@@ -1754,6 +1754,7 @@ setCustomItem(
 );
 
 setCustomItem(48_222, 'Hellfire arrowtips', 'Dragon arrowtips', {}, 1000);
+setCustomItem(48_223, 'Scroll of the hunt', 'Coal', {}, 1_000_000);
 
 /**
  * Misc Items

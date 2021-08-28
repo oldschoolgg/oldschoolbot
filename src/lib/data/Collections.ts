@@ -1026,6 +1026,7 @@ export const allCollectionLogs: ICollection = {
 					'Scroll of proficiency',
 					'Scroll of mystery',
 					'Scroll of longevity',
+					'Scroll of the hunt',
 					'Farseer kiteshield',
 					'Chaotic remnant',
 					'Frosty',
