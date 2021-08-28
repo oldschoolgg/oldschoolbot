@@ -1,6 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { implings } from '../implings';
 import resolveItems from '../util/resolveItems';
 
 export interface IToReturnCollection {
@@ -1879,3 +1880,4 @@ export const questCL = resolveItems([
 	'Bronze gloves',
 	'Hardleather gloves'
 ]);
+export const implingsCL = implings.map(i => i[0].id);
