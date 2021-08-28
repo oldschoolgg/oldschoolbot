@@ -1,11 +1,12 @@
 import { roll, Time } from 'e';
 import { KlasaUser } from 'klasa';
-import { Bank, Openables } from 'oldschooljs';
+import { Bank, Monsters, Openables } from 'oldschooljs';
 import SimpleOpenable from 'oldschooljs/dist/structures/SimpleOpenable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import { Activity } from './constants';
 import { SkillsEnum } from './skilling/types';
-import { ActivityTaskOptions } from './types/minions';
+import { ActivityTaskOptions, MonsterActivityTaskOptions, PickpocketActivityTaskOptions } from './types/minions';
 
 const {
 	BabyImpling,
@@ -22,31 +23,55 @@ const {
 	LuckyImpling
 } = Openables;
 
-const implings = [
-	[BabyImpling, 55, 17],
-	[YoungImpling, 45, 22],
-	[GourmetImpling, 43, 28],
-	[EarthImpling, 32, 36],
-	[EssenceImpling, 25, 42],
-	[EclecticImpling, 24, 50],
-	[NatureImpling, 33, 58],
-	[MagpieImpling, 24, 65],
-	[NinjaImpling, 20, 74],
-	[CrystalImpling, 15, 80],
-	[DragonImpling, 9, 83],
-	[LuckyImpling, 4, 89]
-] as const;
+type Impling = [SimpleOpenable, number, number, null | ((activity: ActivityTaskOptions) => boolean)];
 
-export const ImplingTable = new SimpleTable<SimpleOpenable>();
-for (const [imp, weight] of implings) {
-	ImplingTable.add(imp, weight);
+export const implings: Impling[] = [
+	// [Imp, Weight, Level, Inhibitor]
+	[BabyImpling, 66, 17, null],
+	[YoungImpling, 55, 22, null],
+	[GourmetImpling, 48, 28, null],
+	[EarthImpling, 38, 36, null],
+	[EssenceImpling, 29, 42, null],
+	[EclecticImpling, 24, 50, null],
+	[NatureImpling, 33, 58, null],
+	[MagpieImpling, 24, 65, null],
+	[NinjaImpling, 21, 74, null],
+	[
+		CrystalImpling,
+		16,
+		80,
+		(activity: ActivityTaskOptions) => {
+			if ([Activity.Gauntlet, Activity.Zalcano].includes(activity.type)) return true;
+			if (
+				activity.type === Activity.MonsterKilling &&
+				[Monsters.DarkBeast.id, Monsters.PrifddinasElf.id].includes(
+					(activity as MonsterActivityTaskOptions).monsterID
+				)
+			) {
+				return true;
+			}
+			if (
+				activity.type === Activity.Pickpocket &&
+				(activity as PickpocketActivityTaskOptions).monsterID === Monsters.PrifddinasElf.id
+			)
+				return true;
+
+			return false;
+		}
+	],
+	[DragonImpling, 10, 83, null],
+	[LuckyImpling, 1, 89, null]
+];
+
+export const ImplingTable = new SimpleTable<Impling>();
+for (const imp of implings) {
+	ImplingTable.add(imp, imp[1]);
 }
 
-export const AVERAGE_TIME_PER_IMPLING_FIND = Time.Hour;
-const IMPLING_CHANCE_PER_MINUTE = 5;
+const IMPLING_CHANCE_PER_MINUTE = 65;
 
-export function handlePassiveImplings(user: KlasaUser, activity: ActivityTaskOptions) {
-	const minutes = Math.floor(activity.duration / Time.Minute);
+export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
+	const minutes = Math.floor(data.duration / Time.Minute);
 
 	if (minutes < 4) return null;
 	const level = user.skillLevel(SkillsEnum.Hunter);
@@ -56,8 +81,8 @@ export function handlePassiveImplings(user: KlasaUser, activity: ActivityTaskOpt
 	for (let i = 0; i < minutes; i++) {
 		const gotImp = roll(IMPLING_CHANCE_PER_MINUTE);
 		if (gotImp) {
-			const imp = ImplingTable.roll()!.item;
-			const levelReq = implings.find(i => i[0] === imp)![2];
+			const [imp, , levelReq, inhibitor] = ImplingTable.roll()!.item;
+			if (inhibitor && !inhibitor(data)) continue;
 			if (level < levelReq) {
 				missed.push(imp);
 			} else {

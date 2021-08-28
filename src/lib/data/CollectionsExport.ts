@@ -1716,7 +1716,7 @@ export const miscellaneousCL = resolveItems([
 	"Xeric's talisman (inert)",
 	// Not obtainable yet
 	// 'Mask of ranul',
-	// 'Elven signet',
+	'Elven signet',
 	'Enhanced crystal teleport seed',
 	'Dragonstone full helm',
 	'Dragonstone platebody',
