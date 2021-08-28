@@ -34,6 +34,20 @@ const usables = [
 				'You have used your Scroll of longevity - your future slayer tasks will always have 2x more quantity.'
 			);
 		}
+	},
+	{
+		item: getOSItem('Scroll of the hunt'),
+		run: async (msg: KlasaMessage) => {
+			const bits = msg.author.bitfield;
+			if (bits.includes(BitField.HasScrollOfTheHunt)) {
+				return msg.channel.send('You have already unlocked the Scroll of the hunt.');
+			}
+			await msg.author.removeItemsFromBank(new Bank().add('Scroll of the hunt'));
+			await msg.author.settings.update(UserSettings.BitField, BitField.HasScrollOfTheHunt);
+			return msg.channel.send(
+				'You have used your Scroll of the hunt - you feel your hunting skills have improved.'
+			);
+		}
 	}
 ];
 

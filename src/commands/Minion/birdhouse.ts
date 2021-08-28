@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Activity, BitField, Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -127,6 +127,8 @@ export default class extends BotCommand {
 		const infoStr: string[] = [];
 		const boostStr: string[] = [];
 
+		const birdHouses = msg.author.bitfield.includes(BitField.HasScrollOfTheHunt) ? 8 : 4;
+
 		const birdhouse = birdhouses.find(_birdhouse =>
 			_birdhouse.aliases.some(alias => stringMatches(alias, type) || stringMatches(alias.split(' ')[0], type))
 		);
@@ -189,10 +191,10 @@ export default class extends BotCommand {
 		let gotCraft = false;
 		if (!prevBirdhouse || msg.flagArgs.nocraft) {
 			for (const [item, quantity] of birdhouse.houseItemReq.items()) {
-				if (userBank.amount(item.name) < quantity * 4) {
+				if (userBank.amount(item.name) < quantity * birdHouses) {
 					return msg.channel.send(`You don't have enough ${item.name}s.`);
 				}
-				removeBank.add(item.id, quantity * 4);
+				removeBank.add(item.id, quantity * birdHouses);
 			}
 		} else {
 			if (msg.author.skillLevel(SkillsEnum.Crafting) < birdhouse.craftLvl) {
@@ -202,20 +204,22 @@ export default class extends BotCommand {
 			}
 			gotCraft = true;
 			for (const [item, quantity] of birdhouse.craftItemReq.items()) {
-				if (userBank.amount(item.name) < quantity * 4) {
+				if (userBank.amount(item.name) < quantity * birdHouses) {
 					return msg.channel.send(`You don't have enough ${item.name}.`);
 				}
-				removeBank.add(item.id, quantity * 4);
+				removeBank.add(item.id, quantity * birdHouses);
 			}
 		}
 
 		let canPay = false;
 		for (const currentSeed of birdhouseSeedReq) {
-			if (userBank.amount(currentSeed.itemID) >= currentSeed.amount * 4) {
+			if (userBank.amount(currentSeed.itemID) >= currentSeed.amount * birdHouses) {
 				infoStr.push(
-					`You baited the birdhouses with ${currentSeed.amount * 4}x ${itemNameFromID(currentSeed.itemID)}.`
+					`You baited the birdhouses with ${currentSeed.amount * birdHouses}x ${itemNameFromID(
+						currentSeed.itemID
+					)}.`
 				);
-				removeBank.add(currentSeed.itemID, currentSeed.amount * 4);
+				removeBank.add(currentSeed.itemID, currentSeed.amount * birdHouses);
 				canPay = true;
 				break;
 			}
@@ -230,10 +234,10 @@ export default class extends BotCommand {
 
 		// If user does not have something already placed, just place the new birdhouses.
 		if (!previousBirdhouseTraps.birdhousePlaced) {
-			infoStr.unshift(`${msg.author.minionName} is now placing 4x ${birdhouse.name}.`);
+			infoStr.unshift(`${msg.author.minionName} is now placing ${birdHouses}x ${birdhouse.name}.`);
 		} else {
 			infoStr.unshift(
-				`${msg.author.minionName} is now collecting 4x ${storePreviousBirdhouse}, and then placing 4x ${birdhouse.name}.`
+				`${msg.author.minionName} is now collecting ${birdHouses}x ${storePreviousBirdhouse}, and then placing ${birdHouses}x ${birdhouse.name}.`
 			);
 		}
 
@@ -309,9 +313,11 @@ export default class extends BotCommand {
 		if (!previousBirdhouseTraps.birdhousePlaced) {
 			return msg.channel.send('There is no placed birdhouses to collect from!');
 		}
+
+		const birdHouses = msg.author.bitfield.includes(BitField.HasScrollOfTheHunt) ? 8 : 4;
 		returnMessageStr = `${
 			msg.author.minionName
-		} is now collecting 4x ${storePreviousBirdhouse}.\nIt'll take around ${formatDuration(
+		} is now collecting ${birdHouses}x ${storePreviousBirdhouse}.\nIt'll take around ${formatDuration(
 			duration
 		)} to finish.\n\n${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 

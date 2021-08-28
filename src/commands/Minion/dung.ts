@@ -116,6 +116,10 @@ const dungBuyables = [
 	{
 		item: getOSItem('Scroll of longevity'),
 		cost: 800_000
+	},
+	{
+		item: getOSItem('Scroll of the hunt'),
+		cost: 800_000
 	}
 ];
 
