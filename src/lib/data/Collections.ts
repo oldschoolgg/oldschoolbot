@@ -686,8 +686,8 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Volcanic Mine': {
-				enabled: false,
 				items: volcanicMineCL,
+				alias: ['vm', 'vmine', 'volcanic'],
 				roleCategory: ['minigames'],
 				isActivity: true
 			}
