@@ -1,9 +1,12 @@
+import { objectEntries } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { stringMatches } from '../../lib/util';
+import { formatSkillRequirements, stringMatches } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
+import { soteSkillRequirements } from './zalcano';
 
 const amrodTradeableList = [
 	{
@@ -54,6 +57,25 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [quantity = 1, itemName]: [number, string]) {
 		await msg.author.settings.sync(true);
+		const userHasQP = msg.author.settings.get(UserSettings.QP) >= 150;
+		// SotE requirements
+		const [hasSkillReqs] = msg.author.hasSkillReqs(soteSkillRequirements);
+		if (!hasSkillReqs || !userHasQP) {
+			return msg.channel.send(
+				`${
+					!hasSkillReqs
+						? `To trade with Amrod, you need: ${objectEntries(soteSkillRequirements)
+								.map(s => {
+									if (msg.author.skillLevel(s[0]) < s[1]!)
+										return formatSkillRequirements({ [s[0]]: s[1]! });
+								})
+								.filter(f => f)
+								.join(', ')}.`
+						: ''
+				}${!userHasQP ? '\nTo trade with Amrod, you need 150 QP.' : ''}`
+			);
+		}
+
 		const amrodTrade = amrodTradeableList.find(
 			a => stringMatches(itemName, a.name) || a.alias.some(al => stringMatches(al, itemName))
 		);
@@ -66,7 +88,7 @@ export default class extends BotCommand {
 		}
 		const toTradeBank = new Bank().add(amrodTrade.require, quantity);
 		if (!msg.author.bank().has(toTradeBank.bank)) {
-			return msg.channel.send(`You do not have **${toTradeBank}** to trade. Plese, come back when you do.`);
+			return msg.channel.send(`You do not have **${toTradeBank}** to trade. Please, come back when you do.`);
 		}
 
 		const toReceiveBank = new Bank().add('Crystal shard', amrodTrade.output * quantity);
