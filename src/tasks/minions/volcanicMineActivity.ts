@@ -1,6 +1,6 @@
 import { randFloat, roll, Time } from 'e';
 import { Task } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
 import { VolcanicMineGameTime } from '../../commands/Minion/volcanicmine';
 import { Emoji, Events } from '../../lib/constants';
@@ -8,7 +8,16 @@ import { GearSetupTypes } from '../../lib/gear';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { VolcanicMineActivityTaskOptions } from '../../lib/types/minions';
+import { rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+
+const fossilTable = new LootTable()
+	.add('Unidentified small fossil', 1, 10)
+	.add('Unidentified medium fossil', 1, 5)
+	.add('Unidentified large fossil', 1, 4)
+	.add('Unidentified rare fossil', 1, 1);
+const numuliteTable = new LootTable().every('Numulite', 3).add('Calcite', 2).add('Pyrophosphite', 2);
+const fragmentTable = new LootTable({ limit: 175 }).add(numuliteTable, 1, 45).add(fossilTable, 1, 5);
 
 export default class extends Task {
 	async run(data: VolcanicMineActivityTaskOptions) {
@@ -61,13 +70,17 @@ export default class extends Task {
 
 		await user.incrementMinigameScore('VolcanicMine', quantity);
 
-		let str = `${user}, ${
-			user.minionName
-		} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`;
+		const fragmentRolls = rand(38, 40) * quantity;
+		const loot = new Bank().add(fragmentTable.roll(fragmentRolls));
+		// Iterate over the fragments received
+		for (let i = 0; i < fragmentRolls; i++) {
+			// Roll for pet --- Average 40 fragments per game at 60K chance per fragment
+			if (roll(60_000)) loot.add('Rock golem');
+		}
 
-		// Roll for pet --- Average 40 fragments per game at 60K chance per fragment
-		const loot = new Bank();
-		for (let i = 0; i < 40; i++) if (roll(60_000)) loot.add('Rock golem');
+		let str = `${user}, ${user.minionName} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}${
+			loot.length > 0 ? `\nYou received ${loot}` : ''
+		}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`;
 
 		if (loot.has('Rock golem')) {
 			str += "\nYou have a funny feeling you're being followed...";
@@ -78,6 +91,8 @@ export default class extends Task {
 				} Rock golem while mining on the Volcanic Mine at level ${userMiningLevel} Mining!`
 			);
 		}
+
+		const { itemsAdded } = await user.addItemsToBank(loot, true);
 
 		handleTripFinish(
 			this.client,
@@ -90,7 +105,7 @@ export default class extends Task {
 			},
 			undefined,
 			data,
-			loot.bank
+			itemsAdded
 		);
 	}
 }
