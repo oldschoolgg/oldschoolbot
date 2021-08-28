@@ -87,6 +87,7 @@ import {
 	ICollection,
 	ignecarusCL,
 	ILeftListStatus,
+	implingsCL,
 	IToReturnCollection,
 	kalphiteKingCL,
 	kalphiteQueenCL,
@@ -1059,6 +1060,10 @@ export const allCollectionLogs: ICollection = {
 			Farming: {
 				counts: false,
 				items: allFarmingItems
+			},
+			Implings: {
+				counts: false,
+				items: implingsCL
 			}
 		}
 	}

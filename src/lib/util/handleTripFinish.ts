@@ -9,6 +9,7 @@ import { alching } from '../../commands/Minion/laps';
 import MinionCommand from '../../commands/Minion/minion';
 import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { getRandomMysteryBox } from '../data/openables';
+import { handlePassiveImplings } from '../implings';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { ClientSettings } from '../settings/types/ClientSettings';
@@ -171,6 +172,23 @@ export async function handleTripFinish(
 		} else if (user.getUserFavAlchs().length !== 0) {
 			message +=
 				"\nYour Voidling didn't alch anything because you either don't have any nature runes or fire runes.";
+		}
+	}
+
+	const imp = handlePassiveImplings(user, data);
+	if (imp) {
+		if (imp.bank.length > 0) {
+			const many = imp.bank.length > 1;
+			message += `\n\nYour minion caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${
+				imp.bank
+			}.`;
+			await user.addItemsToBank(imp.bank, true);
+		}
+
+		if (imp.missed.length > 0) {
+			message += `\n\nYou missed out on these implings, because your hunter level is too low: ${imp.missed
+				.map(m => m.name)
+				.join(', ')}.`;
 		}
 	}
 

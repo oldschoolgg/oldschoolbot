@@ -1,15 +1,18 @@
 import { Duration } from '@sapphire/time-utilities';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
-import { notEmpty, uniqueArr } from 'e';
+import { notEmpty, Time, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
+import { Bank } from 'oldschooljs';
 
-import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
+import { Activity, badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
+import { handlePassiveImplings, implings } from '../../lib/implings';
 import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { cleanString, formatDuration, getSupportGuild, itemNameFromID } from '../../lib/util';
@@ -45,6 +48,49 @@ export default class extends BotCommand {
 		if (msg.guild!.id !== '342983479501389826') return null;
 
 		switch (cmd.toLowerCase()) {
+			case 'imps': {
+				const total = new Bank();
+				let hours = 0;
+				let effectiveImps = implings.filter(i => {
+					return msg.author.skillLevel(SkillsEnum.Hunter) >= i[2];
+				});
+				while (total.length < effectiveImps.length) {
+					let i = handlePassiveImplings(msg.author, { duration: Time.Hour, type: Activity.Gauntlet } as any);
+					if (i) {
+						total.add(i.bank);
+					}
+					hours++;
+				}
+				return msg.channel.sendBankImage({
+					content: `It took ${hours} hours to get atleast 1 of every impling. You got: ${total}.`,
+					bank: total.bank,
+					flags: { names: 'names' }
+				});
+			}
+			case 'impsim': {
+				const total = new Bank();
+				let hours = 0;
+				for (let i = 0; i < 5000; i++) {
+					let i = handlePassiveImplings(msg.author, {
+						duration: Time.Hour,
+						activity: Activity.Gauntlet
+					} as any);
+					if (i) {
+						total.add(i.bank);
+					}
+					hours++;
+				}
+				let totalItems = 0;
+				for (const [, qty] of total.items()) totalItems += qty;
+				return msg.channel.sendBankImage({
+					content: `${hours} hours, 1 Impling every ${(
+						((totalItems / hours) * Time.Hour) /
+						Time.Minute
+					).toFixed(2)} mins. You got: ${total}.`,
+					bank: total.bank,
+					flags: { names: 'names' }
+				});
+			}
 			case 'hasequipped': {
 				if (typeof input !== 'string') return;
 				const item = getOSItem(input);
