@@ -4,7 +4,8 @@ import { Bank, Monsters, Openables } from 'oldschooljs';
 import SimpleOpenable from 'oldschooljs/dist/structures/SimpleOpenable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { Activity } from './constants';
+import { Activity, BitField } from './constants';
+import { EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions, MonsterActivityTaskOptions, PickpocketActivityTaskOptions } from './types/minions';
 
@@ -27,15 +28,15 @@ type Impling = [SimpleOpenable, number, number, null | ((activity: ActivityTaskO
 
 export const implings: Impling[] = [
 	// [Imp, Weight, Level, Inhibitor]
-	[BabyImpling, 66, 17, null],
-	[YoungImpling, 55, 22, null],
-	[GourmetImpling, 48, 28, null],
-	[EarthImpling, 38, 36, null],
-	[EssenceImpling, 29, 42, null],
-	[EclecticImpling, 24, 50, null],
-	[NatureImpling, 33, 58, null],
-	[MagpieImpling, 24, 65, null],
-	[NinjaImpling, 21, 74, null],
+	[BabyImpling, 126, 17, null],
+	[YoungImpling, 85, 22, null],
+	[GourmetImpling, 88, 28, null],
+	[EarthImpling, 68, 36, null],
+	[EssenceImpling, 49, 42, null],
+	[EclecticImpling, 44, 50, null],
+	[NatureImpling, 63, 58, null],
+	[MagpieImpling, 44, 65, null],
+	[NinjaImpling, 41, 74, null],
 	[
 		CrystalImpling,
 		16,
@@ -59,8 +60,11 @@ export const implings: Impling[] = [
 			return false;
 		}
 	],
-	[DragonImpling, 10, 83, null],
-	[LuckyImpling, 1, 89, null]
+	[DragonImpling, 24, 83, null],
+	[LuckyImpling, 14, 89, null],
+	[InfernalImpling, 9, 94, null],
+	[EternalImpling, 7, 99, null],
+	[MysteryImpling, 3, 105, null]
 ];
 
 export const ImplingTable = new SimpleTable<Impling>();
@@ -77,13 +81,23 @@ export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions
 	const level = user.skillLevel(SkillsEnum.Hunter);
 
 	let bank = new Bank();
+
+	const hasScrollOfTheHunt = user.bitfield.includes(BitField.HasScrollOfTheHunt);
+	let chance = IMPLING_CHANCE_PER_MINUTE;
+	if (hasScrollOfTheHunt) {
+		chance = Math.floor(chance / 2);
+	}
+	if (user.hasItemEquippedAnywhere('Hunter master cape')) {
+		chance = Math.floor(chance / 2);
+	}
 	const missed: SimpleOpenable[] = [];
 	for (let i = 0; i < minutes; i++) {
-		const gotImp = roll(IMPLING_CHANCE_PER_MINUTE);
+		const gotImp = roll(chance);
 		if (gotImp) {
 			const [imp, , levelReq, inhibitor] = ImplingTable.roll()!.item;
 			if (inhibitor && !inhibitor(data)) continue;
-			if (level < levelReq) {
+
+			if (level < levelReq || (imp === EternalImpling && !user.hasItemEquippedAnywhere('Vasa cloak'))) {
 				missed.push(imp);
 			} else {
 				bank.add(imp.id);

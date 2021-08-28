@@ -1916,3 +1916,7 @@ setCustomItem(
 	},
 	1000
 );
+
+setCustomItem(50_043, 'Infernal impling jar', 'Coal', {}, 50_000);
+setCustomItem(50_044, 'Eternal impling jar', 'Coal', {}, 50_000);
+setCustomItem(50_045, 'Mystery impling jar', 'Coal', {}, 50_000);
