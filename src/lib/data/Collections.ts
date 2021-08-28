@@ -72,6 +72,7 @@ import {
 	holidayCL,
 	ICollection,
 	ILeftListStatus,
+	implingsCL,
 	IToReturnCollection,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
@@ -902,6 +903,10 @@ export const allCollectionLogs: ICollection = {
 			Farming: {
 				counts: false,
 				items: allFarmingItems
+			},
+			Implings: {
+				counts: false,
+				items: implingsCL
 			}
 		}
 	}
