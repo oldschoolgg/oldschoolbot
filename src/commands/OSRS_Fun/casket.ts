@@ -80,7 +80,7 @@ export default class extends BotCommand {
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(loot.bank, title, false, {}, msg.author);
+			.generateBankImage(loot.bank, title, true, {}, msg.author);
 
 		return msg.channel.send({ files: [new MessageAttachment(image!, 'osbot.png')] });
 	}

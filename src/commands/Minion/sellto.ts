@@ -109,7 +109,7 @@ export default class extends BotCommand {
 			await msg.author.addGP(price);
 
 			await msg.author.removeItemsFromBank(bankToSell.bank);
-			await buyerMember.user.addItemsToBank(bankToSell.bank);
+			await buyerMember.user.addItemsToBank(bankToSell.bank, false, false);
 		} catch (err) {
 			this.client.emit(Events.Wtf, err);
 			return msg.channel.send('Fatal error occurred. Please seek help in the support server.');
