@@ -16,7 +16,7 @@ const fossilTable = new LootTable()
 	.add('Unidentified medium fossil', 1, 5)
 	.add('Unidentified large fossil', 1, 4)
 	.add('Unidentified rare fossil', 1, 1);
-const numuliteTable = new LootTable().every('Numulite', 3).add('Calcite', 2).add('Pyrophosphite', 2);
+const numuliteTable = new LootTable().every('Numulite', 5).add('Calcite', 1).add('Pyrophosphite', 1);
 const fragmentTable = new LootTable({ limit: 175 }).add(numuliteTable, 1, 45).add(fossilTable, 1, 5);
 
 export default class extends Task {
