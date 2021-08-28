@@ -400,8 +400,10 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
-		await msg.author.removeItemsFromBank(lootToRemove);
+		if (lootToRemove.length > 0) {
+			updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
+			await msg.author.removeItemsFromBank(lootToRemove);
+		}
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
 			monsterID: monster.id,
