@@ -226,7 +226,7 @@ export default class extends BotCommand {
 				)} High gamble! They are the ${formatOrdinal(countUsersHas)} to it.`
 			);
 		}
-		await msg.author.addItemsToBank(loot.bank, true);
+		const { itemsAdded } = await msg.author.addItemsToBank(loot.bank, true);
 		await msg.author.settings.update(
 			UserSettings.HighGambles,
 			msg.author.settings.get(UserSettings.HighGambles) + qty
@@ -234,7 +234,9 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`You spent ${(
 				cost * qty
-			).toLocaleString()} Honour Points for ${qty.toLocaleString()}x ${name} Gamble, and received... ${loot}.`
+			).toLocaleString()} Honour Points for ${qty.toLocaleString()}x ${name} Gamble, and received... ${new Bank(
+				itemsAdded
+			)}.`
 		);
 	}
 
