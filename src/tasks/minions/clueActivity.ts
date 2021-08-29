@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { clueHunterOutfit } from '../../commands/Minion/mclue';
 import { Events } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
@@ -49,8 +50,19 @@ export default class extends Task {
 		if (user.equippedPet() === itemID('Zippy') && duration > Time.Minute * 5) {
 			let bonusLoot = {};
 			const numberOfMinutes = Math.floor(duration / Time.Minute);
-
-			for (let i = 0; i < numberOfMinutes / rand(5, 10); i++) {
+			let zippyRolls = rand(5, 10);
+			if (user.hasItemEquippedAnywhere(clueHunterOutfit, true)) {
+				zippyRolls /= 2;
+			}
+			if (user.hasGracefulEquipped()) {
+				zippyRolls *= 0.9;
+			}
+			if (user.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
+				zippyRolls *= 0.9;
+			}
+			zippyRolls = Math.max(2, Math.floor(zippyRolls));
+			// Allow clue buffs to affect zippy rolls. Cant get below 2
+			for (let i = 0; i < numberOfMinutes / zippyRolls; i++) {
 				const item = possibleFound.roll().items()[0][0].id;
 				bonusLoot = addItemToBank(bonusLoot, item);
 			}
