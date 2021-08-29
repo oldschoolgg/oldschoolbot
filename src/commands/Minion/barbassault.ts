@@ -105,7 +105,7 @@ export default class extends BotCommand {
 			description: 'Sends your minion to do barbarian assault, or buy rewards and gamble.',
 			examples: ['+barbassault [start]'],
 			subcommands: true,
-			usage: '[start|level|buy|gamble] [buyableOrGamble:...string] [qty:int{1}]',
+			usage: '[start|level|buy|gamble] [qty:int{1}] [buyableOrGamble:...string]',
 			usageDelim: ' ',
 			aliases: ['ba']
 		});
@@ -150,12 +150,7 @@ export default class extends BotCommand {
 		}
 	}
 
-	async buy(msg: KlasaMessage, [input = '', qty = 1]: [string, number]) {
-		if (!isNaN(Number(input.split(' ').pop()))) {
-			let exploded = input.split(' ');
-			qty = Math.abs(Number(exploded.pop()));
-			input = exploded.join(' ');
-		}
+	async buy(msg: KlasaMessage, [qty = 1, input = '']: [number, string]) {
 		const buyable = BarbBuyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
 			return msg.channel.send(
@@ -189,12 +184,7 @@ export default class extends BotCommand {
 		);
 	}
 
-	async gamble(msg: KlasaMessage, [tier = '', qty = 1]: [string, number]) {
-		if (!isNaN(Number(tier.split(' ').pop()))) {
-			let exploded = tier.split(' ');
-			qty = Math.abs(Number(exploded.pop()));
-			tier = exploded.join(' ');
-		}
+	async gamble(msg: KlasaMessage, [qty = 1, tier = '']: [number, string]) {
 		const buyable = GambleTiers.find(i => stringMatches(tier, i.name));
 		if (!buyable) {
 			return msg.channel.send(
@@ -250,13 +240,17 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async start(msg: KlasaMessage, [input]: [string]) {
+	async start(msg: KlasaMessage, [qty = 0, input]: [number, string]) {
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 1,
 			maxSize: 4,
 			ironmanAllowed: true,
-			message: `${msg.author.username} has created a Barbarian Assault party! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave. There must be 2+ users in the party.`,
+			message: `${msg.author.username} has created a Barbarian Assault party${
+				qty > 0 ? ` for a maximum of ${qty} wave${qty > 1 ? 's' : ''}` : ''
+			}! Anyone can click the ${
+				Emoji.Join
+			} reaction to join, click it again to leave. There must be 2+ users in the party.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
@@ -304,7 +298,8 @@ export default class extends BotCommand {
 		boosts.push(`${kcPercent}% for average KC`);
 		waveTime = reduceNumByPercent(waveTime, kcPercent);
 
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.BarbarianAssault) / waveTime);
+		let quantity = Math.floor(msg.author.maxTripLength(Activity.BarbarianAssault) / waveTime);
+		if (qty > 0 && quantity > qty) quantity = qty;
 		const duration = quantity * waveTime;
 
 		boosts.push(`Each wave takes ${formatDuration(waveTime)}`);
