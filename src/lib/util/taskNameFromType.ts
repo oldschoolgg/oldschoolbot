@@ -126,5 +126,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.RevenantsActivity;
 		case Activity.PestControl:
 			return Tasks.PestControl;
+		case Activity.VolcanicMine:
+			return Tasks.VolcanicMine;
 	}
 }
