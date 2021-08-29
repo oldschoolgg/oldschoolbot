@@ -21,7 +21,8 @@ const minigames = [
 	'raids_challenge_mode',
 	'big_chompy_bird_hunting',
 	'temple_trekking',
-	'ourania_delivery_service'
+	'ourania_delivery_service',
+	'volcanic_mine'
 ];
 
 const collections = ['overall', 'pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer'];

@@ -88,6 +88,7 @@ import {
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SoulWarsOptions,
+	VolcanicMineActivityTaskOptions,
 	WealthChargingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
@@ -621,6 +622,10 @@ export default class extends Extendable {
 			case Activity.PestControl: {
 				const data = currentTask as MinigameActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity} games of Pest Control. ${formattedDuration}`;
+			}
+			case Activity.VolcanicMine: {
+				const data = currentTask as VolcanicMineActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.quantity} games of Volcanic Mine. ${formattedDuration}`;
 			}
 		}
 	}

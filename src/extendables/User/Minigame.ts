@@ -133,6 +133,11 @@ export const Minigames: Minigame[] = [
 		name: 'Pest Control',
 		key: 'PestControl',
 		column: 'pest_control'
+	},
+	{
+		name: 'Volcanic Mine',
+		key: 'VolcanicMine',
+		column: 'volcanic_mine'
 	}
 ];
 
