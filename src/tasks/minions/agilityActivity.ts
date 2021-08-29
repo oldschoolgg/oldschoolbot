@@ -10,7 +10,6 @@ import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank, updateGPTrackSetting } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -68,15 +67,20 @@ export default class extends Task {
 		});
 
 		if (alch) {
-			const alchedItem = getOSItem(alch.itemID);
-			const alchGP = alchedItem.highalch * alch.quantity;
-			loot.add('Coins', alchGP);
+			const alchedBank = new Bank(alch);
+			let valueAlched = 0;
+			let totalAchs = 0;
+			alchedBank.forEach((i, q) => {
+				valueAlched += i.highalch;
+				totalAchs += q;
+			});
+			loot.add('Coins', valueAlched);
 			xpRes += ` ${await user.addXP({
 				skillName: SkillsEnum.Magic,
-				amount: alch.quantity * 65,
+				amount: totalAchs * 65,
 				duration
 			})}`;
-			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
+			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, valueAlched);
 		}
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${

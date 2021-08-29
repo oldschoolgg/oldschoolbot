@@ -1,7 +1,5 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -13,60 +11,15 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-
-const unlimitedFireRuneProviders = [
-	'Staff of fire',
-	'Fire battlestaff',
-	'Mystic fire staff',
-	'Lava battlestaff',
-	'Mystic lava staff',
-	'Steam battlestaff',
-	'Mystic steam staff',
-	'Smoke battlestaff',
-	'Mystic smoke staff',
-	'Tome of fire'
-];
+import { calculateAlchItemByTripDuration } from './alch';
 
 function alching(msg: KlasaMessage, tripLength: number) {
 	if (msg.author.skillLevel(SkillsEnum.Magic) < 55) return null;
-	const bank = msg.author.bank();
-	const favAlchables = msg.author.getUserFavAlchs() as Item[];
-
-	if (!msg.flagArgs.alch) {
-		return null;
-	}
-	if (favAlchables.length === 0) {
-		return null;
-	}
-
-	const [itemToAlch] = favAlchables;
-
-	const alchItemQty = bank.amount(itemToAlch.id);
-	const nats = bank.amount('Nature rune');
-	const fireRunes = bank.amount('Fire rune');
-
-	const hasInfiniteFireRunes = msg.author.hasItemEquippedAnywhere(unlimitedFireRuneProviders);
-
-	let maxCasts = Math.floor(tripLength / (Time.Second * (3 + 10)));
-	maxCasts = Math.min(alchItemQty, maxCasts);
-	maxCasts = Math.min(nats, maxCasts);
-	if (!hasInfiniteFireRunes) {
-		maxCasts = Math.min(fireRunes / 5, maxCasts);
-	}
-	maxCasts = Math.floor(maxCasts);
-
-	const bankToRemove = new Bank().add('Nature rune', maxCasts).add(itemToAlch.id, maxCasts);
-	if (!hasInfiniteFireRunes) {
-		bankToRemove.add('Fire rune', maxCasts * 5);
-	}
-
-	if (maxCasts === 0 || bankToRemove.length === 0) return null;
-
-	return {
-		maxCasts,
-		bankToRemove,
-		itemToAlch
-	};
+	return calculateAlchItemByTripDuration({
+		user: msg.author,
+		duration: tripLength,
+		calculateByRunesOwned: true
+	});
 }
 
 export default class extends BotCommand {
@@ -132,15 +85,12 @@ export default class extends BotCommand {
 			course.name
 		} laps, it'll take around ${formatDuration(duration)} to finish.`;
 
-		const alchResult = course.name === 'Ape Atoll Agility Course' ? null : alching(msg, duration);
-		if (alchResult !== null) {
-			if (!msg.author.owns(alchResult.bankToRemove)) {
-				return msg.channel.send(`You don't own ${alchResult.bankToRemove}.`);
-			}
-
-			await msg.author.removeItemsFromBank(alchResult.bankToRemove);
-			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
-			updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
+		const alchResult = course.name === 'Ape Atoll Agility Course' ? false : alching(msg, duration);
+		if (alchResult) {
+			const removedItems = alchResult.items.clone().add(alchResult.runes);
+			await msg.author.removeItemsFromBank(removedItems);
+			response += `\n\nYour minion is alching ${alchResult.items} while training. Removed ${removedItems} from your bank.`;
+			updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, removedItems);
 		}
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({
@@ -150,13 +100,7 @@ export default class extends BotCommand {
 			quantity,
 			duration,
 			type: Activity.Agility,
-			alch:
-				alchResult === null
-					? null
-					: {
-							itemID: alchResult.itemToAlch.id,
-							quantity: alchResult.maxCasts
-					  }
+			alch: alchResult ? alchResult.items.bank : null
 		});
 
 		return msg.channel.send(response);

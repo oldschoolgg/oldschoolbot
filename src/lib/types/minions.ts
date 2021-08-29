@@ -3,6 +3,7 @@ import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
 import { IPatchData } from '../minions/farming/types';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import { ItemBank } from './index';
 
 export interface ActivityTaskOptions {
 	type: Activity;
@@ -37,10 +38,7 @@ export interface DarkAltarOptions extends ActivityTaskOptions {
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	courseID: string;
 	quantity: number;
-	alch: {
-		itemID: number;
-		quantity: number;
-	} | null;
+	alch: ItemBank | null;
 }
 
 export interface CookingActivityTaskOptions extends ActivityTaskOptions {
@@ -164,9 +162,10 @@ export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
-	itemID: number;
-	quantity: number;
+	alchedBank: ItemBank;
 	alchValue: number;
+	quantity?: number;
+	favorites?: boolean;
 }
 
 export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
