@@ -60,7 +60,7 @@ export default class extends Task {
 			if (user.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
 				zippyRolls *= 0.9;
 			}
-			zippyRolls = Math.max(2, Math.floor(zippyRolls));
+			zippyRolls = Math.max(2, zippyRolls);
 			// Allow clue buffs to affect zippy rolls. Cant get below 2
 			for (let i = 0; i < numberOfMinutes / zippyRolls; i++) {
 				const item = possibleFound.roll().items()[0][0].id;
