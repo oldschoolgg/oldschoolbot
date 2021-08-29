@@ -2,6 +2,7 @@ import { randFloat, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { BitField } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import birdhouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
@@ -32,15 +33,17 @@ export default class extends Task {
 		const birdhouse = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseName);
 		if (!birdhouse) return;
 
+		const birdHouses = user.bitfield.includes(BitField.HasScrollOfTheHunt) ? 8 : 4;
+
 		if (!placing || !gotCraft) {
-			loot.add('Clockwork', 4);
+			loot.add('Clockwork', birdHouses);
 		}
 
 		if (!birdhouseData.birdhousePlaced) {
-			let str = `${user}, ${user.minionName} finished placing 4x ${birdhouse.name}.`;
+			let str = `${user}, ${user.minionName} finished placing ${birdHouses}x ${birdhouse.name}.`;
 
 			if (placing && gotCraft) {
-				craftingXP = birdhouse.craftXP * 4;
+				craftingXP = birdhouse.craftXP * birdHouses;
 				str += await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftingXP });
 			}
 
@@ -60,12 +63,12 @@ export default class extends Task {
 			const birdhouseToCollect = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseData.lastPlaced);
 			if (!birdhouseToCollect) return;
 			if (placing) {
-				str = `${user}, ${user.minionName} finished placing 4x ${birdhouse.name} and collecting 4x full ${birdhouseToCollect.name}.`;
+				str = `${user}, ${user.minionName} finished placing ${birdHouses}x ${birdhouse.name} and collecting ${birdHouses}x full ${birdhouseToCollect.name}.`;
 			} else {
-				str = `${user}, ${user.minionName} finished collecting 4x full ${birdhouseToCollect.name}.`;
+				str = `${user}, ${user.minionName} finished collecting ${birdHouses}x full ${birdhouseToCollect.name}.`;
 			}
 
-			for (let i = 0; i < 4; i++) {
+			for (let i = 0; i < birdHouses; i++) {
 				if (!roll(200)) continue;
 				let nextTier = false;
 				let gotClue = false;
@@ -85,8 +88,8 @@ export default class extends Task {
 				}
 			}
 
-			hunterXP = birdhouseToCollect.huntXP * 4;
-			for (let i = 0; i < 4; i++) {
+			hunterXP = birdhouseToCollect.huntXP * birdHouses;
+			for (let i = 0; i < birdHouses; i++) {
 				loot.add(birdhouseToCollect.table.roll());
 			}
 			await user.addItemsToBank(loot.values(), true);
@@ -96,7 +99,7 @@ export default class extends Task {
 			str += `\n\nYou received ${hunterXP.toLocaleString()} XP from collecting the birdhouses.`;
 
 			if (placing && gotCraft) {
-				craftingXP = birdhouse.craftXP * 4;
+				craftingXP = birdhouse.craftXP * birdHouses;
 				await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftingXP });
 				str += `You also received ${craftingXP.toLocaleString()} crafting XP for making own birdhouses.`;
 				const newCraftLevel = user.skillLevel(SkillsEnum.Crafting);

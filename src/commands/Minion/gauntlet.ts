@@ -77,15 +77,20 @@ export default class extends BotCommand {
 			msg.author.getMinigameScore('Gauntlet')
 		]);
 
-		if (type === 'corrupted' && normalKC < 50) {
+		if (type === 'corrupted' && normalKC < (msg.author.usingPet('Brock') ? 0 : 50)) {
 			return msg.channel.send(
 				"You can't attempt the Corrupted Gauntlet, you have less than 50 normal Gauntlets completed - you would not stand a chance in the Corrupted Gauntlet!"
 			);
 		}
 
+		const boosts = [];
+
 		let baseLength = type === 'corrupted' ? Time.Minute * 10 : Time.Minute * 14;
 
-		const boosts = [];
+		if (msg.author.usingPet('Brock')) {
+			boosts.push('2x faster for having Brock');
+			baseLength /= 2;
+		}
 
 		const scoreBoost = Math.min(100, calcWhatPercent(type === 'corrupted' ? corruptedKC : normalKC, 100)) / 5;
 		if (scoreBoost > 1) {

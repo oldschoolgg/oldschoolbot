@@ -1754,6 +1754,7 @@ setCustomItem(
 );
 
 setCustomItem(48_222, 'Hellfire arrowtips', 'Dragon arrowtips', {}, 1000);
+setCustomItem(48_223, 'Scroll of the hunt', 'Coal', {}, 1_000_000);
 
 /**
  * Misc Items
@@ -1915,3 +1916,7 @@ setCustomItem(
 	},
 	1000
 );
+
+setCustomItem(50_043, 'Infernal impling jar', 'Coal', {}, 50_000);
+setCustomItem(50_044, 'Eternal impling jar', 'Coal', {}, 50_000);
+setCustomItem(50_045, 'Mystery impling jar', 'Coal', {}, 50_000);

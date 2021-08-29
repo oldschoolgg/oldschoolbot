@@ -8,7 +8,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
-import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
+import { BitField, CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
 import { GearSetupTypes } from './gear/types';
 import { ArrayItemsResolved, ItemTuple, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
@@ -612,4 +612,11 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 export function isSuperUntradeable(item: number | Item) {
 	const id = typeof item === 'number' ? item : item.id;
 	return id >= 40_000 && id <= 45_000;
+}
+
+export function birdhouseLimit(user: KlasaUser) {
+	let base = 4;
+	if (user.bitfield.includes(BitField.HasScrollOfTheHunt)) base += 4;
+	if (user.hasItemEquippedAnywhere('Hunter master cape')) base += 4;
+	return base;
 }

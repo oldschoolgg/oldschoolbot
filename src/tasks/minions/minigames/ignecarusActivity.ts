@@ -11,6 +11,7 @@ import {
 } from '../../../lib/minions/data/killableMonsters/custom/Ignecarus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { BossUser } from '../../../lib/structures/Boss';
 import { NewBossOptions } from '../../../lib/types/minions';
 import { addArrayOfNumbers, updateBankSetting } from '../../../lib/util';
@@ -66,6 +67,19 @@ export default class extends Task {
 
 		const totalLoot = new Bank();
 		for (const { user } of bossUsers) {
+			const usersTask = await getUsersCurrentSlayerInfo(user.id);
+			const isOnTask =
+				usersTask.assignedTask !== null &&
+				usersTask.currentTask !== null &&
+				usersTask.assignedTask.monsters.includes(Ignecarus.id);
+			if (isOnTask) {
+				usersTask.currentTask!.quantityRemaining = Math.max(
+					0,
+					usersTask.currentTask!.quantityRemaining - quantity
+				);
+				await usersTask.currentTask!.save();
+			}
+
 			let lootRolls = quantity;
 			if (deaths[user.id]) {
 				if (deaths[user.id].qty === quantity) continue;
@@ -80,8 +94,8 @@ export default class extends Task {
 				monsterID: Ignecarus.id,
 				quantity,
 				duration,
-				isOnTask: false,
-				taskQuantity: null
+				isOnTask,
+				taskQuantity: quantity
 			});
 			await user.addItemsToBank(loot, true);
 			const purple = Object.keys(loot.bank).some(itemID => IgnecarusNotifyDrops.includes(parseInt(itemID)));

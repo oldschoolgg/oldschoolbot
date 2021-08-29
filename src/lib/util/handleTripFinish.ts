@@ -9,6 +9,7 @@ import { alching } from '../../commands/Minion/laps';
 import MinionCommand from '../../commands/Minion/minion';
 import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { getRandomMysteryBox } from '../data/openables';
+import { handlePassiveImplings } from '../implings';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { ClientSettings } from '../settings/types/ClientSettings';
@@ -141,7 +142,9 @@ export async function handleTripFinish(
 		const voidlingEquipped = user.usingPet('Voidling');
 		const alchResult = alching({
 			user,
-			tripLength: voidlingEquipped ? data.duration : data.duration / randInt(6, 7),
+			tripLength: voidlingEquipped
+				? data.duration * (user.hasItemEquippedAnywhere('Magic master cape') ? 3 : 1)
+				: data.duration / (user.hasItemEquippedAnywhere('Magic master cape') ? 1 : randInt(6, 7)),
 			isUsingVoidling: true,
 			flags: { alch: 'yes' }
 		});
@@ -158,13 +161,34 @@ export async function handleTripFinish(
 			message += `\nYour Voidling alched ${alchResult.maxCasts}x ${alchResult.itemToAlch.name}. Removed ${
 				alchResult.bankToRemove
 			} from your bank and added ${toKMB(alchGP)} GP. ${
-				!voidlingEquipped
+				!voidlingEquipped && !user.hasItemEquippedAnywhere('Magic master cape')
 					? "As you left your Voidling alone in the bank, it got distracted easily and didn't manage to alch at its full potential."
+					: ''
+			}${
+				user.hasItemEquippedAnywhere('Magic master cape')
+					? '\nVoidling notices your Magic Master cape and wants to be just like you. Voidling is now alching much faster!'
 					: ''
 			}`;
 		} else if (user.getUserFavAlchs().length !== 0) {
 			message +=
 				"\nYour Voidling didn't alch anything because you either don't have any nature runes or fire runes.";
+		}
+	}
+
+	const imp = handlePassiveImplings(user, data);
+	if (imp) {
+		if (imp.bank.length > 0) {
+			const many = imp.bank.length > 1;
+			message += `\n\nYour minion caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${
+				imp.bank
+			}.`;
+			await user.addItemsToBank(imp.bank, true);
+		}
+
+		if (imp.missed.length > 0) {
+			message += `\n\nYou missed out on these implings, because your hunter level is too low: ${imp.missed
+				.map(m => m.name)
+				.join(', ')}.`;
 		}
 	}
 

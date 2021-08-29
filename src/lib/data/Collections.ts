@@ -87,6 +87,7 @@ import {
 	ICollection,
 	ignecarusCL,
 	ILeftListStatus,
+	implingsCL,
 	IToReturnCollection,
 	kalphiteKingCL,
 	kalphiteQueenCL,
@@ -1025,6 +1026,7 @@ export const allCollectionLogs: ICollection = {
 					'Scroll of proficiency',
 					'Scroll of mystery',
 					'Scroll of longevity',
+					'Scroll of the hunt',
 					'Farseer kiteshield',
 					'Chaotic remnant',
 					'Frosty',
@@ -1059,6 +1061,10 @@ export const allCollectionLogs: ICollection = {
 			Farming: {
 				counts: false,
 				items: allFarmingItems
+			},
+			Implings: {
+				counts: false,
+				items: implingsCL
 			}
 		}
 	}

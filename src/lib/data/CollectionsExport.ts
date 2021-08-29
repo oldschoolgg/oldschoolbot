@@ -1,6 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { implings } from '../implings';
 import resolveItems from '../util/resolveItems';
 
 export interface IToReturnCollection {
@@ -1742,7 +1743,7 @@ export const miscellaneousCL = resolveItems([
 	"Xeric's talisman (inert)",
 	// Not obtainable yet
 	// 'Mask of ranul',
-	// 'Elven signet',
+	'Elven signet',
 	'Enhanced crystal teleport seed',
 	'Dragonstone full helm',
 	'Dragonstone platebody',
@@ -2055,3 +2056,4 @@ export const customBossesDropsThatCantBeDroppedInMBs = [
 	...ignecarusCL,
 	...treeBeardCL
 ];
+export const implingsCL = implings.map(i => i[0].id);

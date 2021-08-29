@@ -77,3 +77,14 @@ export const ExoticSeedsTable = new LootTable()
 	.add('Avocado seed')
 	.add('Lychee seed')
 	.add('Mysterious seed');
+
+export const BattlestaffTable = new LootTable()
+	.add('Battlestaff')
+	.add('Air battlestaff')
+	.add('Earth battlestaff')
+	.add('Fire battlestaff')
+	.add('Water battlestaff')
+	.add('Lava battlestaff')
+	.add('Steam battlestaff');
+
+export const StaffOrbTable = new LootTable().add('Air orb').add('Earth orb').add('Fire orb').add('Water orb');

@@ -82,7 +82,7 @@ export class GiveawayTable extends BaseEntity {
 			}
 
 			const winner = randArrItem(users);
-			await winner.addItemsToBank(this.bank);
+			await winner.addItemsToBank(this.bank, false, false);
 
 			const osBank = new Bank(this.bank);
 			client.emit(
