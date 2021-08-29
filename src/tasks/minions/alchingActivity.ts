@@ -48,7 +48,8 @@ export default class extends Task {
 		});
 
 		const saved = savedRunes > 0 ? `Your Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
-		let responses = `${user}, ${user.minionName} has finished alching ${parsedBank}!\n${loot} has been added to your bank.\n${xpRes}.\n${saved}`;
+		let responses =
+			`${user}, ${user.minionName} has finished alching ${parsedBank}!\n${loot} has been added to your bank.\n${xpRes}\n${saved}`.trim();
 
 		handleTripFinish(
 			this.client,

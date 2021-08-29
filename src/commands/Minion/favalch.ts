@@ -1,4 +1,5 @@
 import { MessageAttachment } from 'discord.js';
+import { chunk } from 'e';
 import { ArrayActions, CommandStore, KlasaMessage } from 'klasa';
 
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -25,9 +26,12 @@ export default class extends BotCommand {
 			if (currentFavorites.length === 0) return msg.channel.send('You have no favorited alchable items.');
 			if (msg.flagArgs.text) {
 				return msg.channel.send(
-					`Your current favorite alchable items are: ${currentFavorites
-						.map(id => itemNameFromID(id))
-						.join(', ')}.`
+					`Your current favorite alchable items are: ${chunk(
+						currentFavorites.map(id => itemNameFromID(id)),
+						50
+					)
+						.map(m => m.join(', '))
+						.join('\n')}.`
 				);
 			}
 			const imageBank: ItemBank = {};

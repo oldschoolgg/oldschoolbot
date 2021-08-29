@@ -71,7 +71,7 @@ export default class extends Task {
 			let valueAlched = 0;
 			let totalAchs = 0;
 			alchedBank.forEach((i, q) => {
-				valueAlched += i.highalch;
+				valueAlched += i.highalch * q;
 				totalAchs += q;
 			});
 			loot.add('Coins', valueAlched);

@@ -89,7 +89,7 @@ export default class extends BotCommand {
 		if (alchResult) {
 			const removedItems = alchResult.items.clone().add(alchResult.runes);
 			await msg.author.removeItemsFromBank(removedItems);
-			response += `\n\nYour minion is alching ${alchResult.items} while training. Removed ${removedItems} from your bank.`;
+			response += `\n\nYour minion is alching ${alchResult.items} while training. Removed ${alchResult.runes} from your bank.`;
 			updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, removedItems);
 		}
 
