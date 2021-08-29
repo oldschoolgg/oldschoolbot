@@ -105,7 +105,7 @@ export default class extends BotCommand {
 			description: 'Sends your minion to do barbarian assault, or buy rewards and gamble.',
 			examples: ['+barbassault [start]'],
 			subcommands: true,
-			usage: '[start|level|buy|gamble] [buyableOrGamble:...string]',
+			usage: '[start|level|buy|gamble] [buyableOrGamble:...string] [qty:int{1}]',
 			usageDelim: ' ',
 			aliases: ['ba']
 		});
@@ -150,7 +150,12 @@ export default class extends BotCommand {
 		}
 	}
 
-	async buy(msg: KlasaMessage, [input = '']: [string]) {
+	async buy(msg: KlasaMessage, [input = '', qty = 1]: [string, number]) {
+		if (!isNaN(Number(input.split(' ').pop()))) {
+			let exploded = input.split(' ');
+			qty = Math.abs(Number(exploded.pop()));
+			input = exploded.join(' ');
+		}
 		const buyable = BarbBuyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
 			return msg.channel.send(
@@ -162,36 +167,56 @@ export default class extends BotCommand {
 
 		const { item, cost } = buyable;
 		const balance = msg.author.settings.get(UserSettings.HonourPoints);
-		if (balance < cost) {
+		if (balance < cost * qty) {
 			return msg.channel.send(
-				`You don't have enough Honour Points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`
+				`You don't have enough Honour Points to buy ${qty.toLocaleString()}x ${item.name}. You need ${(
+					cost * qty
+				).toLocaleString()}, but you have only ${balance.toLocaleString()}.`
 			);
 		}
+		await msg.confirm(
+			`Are you sure you want to buy ${qty.toLocaleString()}x ${item.name}, for ${(
+				cost * qty
+			).toLocaleString()} honour points?`
+		);
+		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost * qty);
+		await msg.author.addItemsToBank({ [item.id]: qty }, true);
 
-		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost);
-		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
-
-		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Honour Points.`);
+		return msg.channel.send(
+			`Successfully purchased ${qty.toLocaleString()}x ${item.name} for ${(
+				cost * qty
+			).toLocaleString()} Honour Points.`
+		);
 	}
 
-	async gamble(msg: KlasaMessage, [tier = '']: [string]) {
+	async gamble(msg: KlasaMessage, [tier = '', qty = 1]: [string, number]) {
+		if (!isNaN(Number(tier.split(' ').pop()))) {
+			let exploded = tier.split(' ');
+			qty = Math.abs(Number(exploded.pop()));
+			tier = exploded.join(' ');
+		}
 		const buyable = GambleTiers.find(i => stringMatches(tier, i.name));
 		if (!buyable) {
 			return msg.channel.send(
 				`You can gamble your points for the Low, Medium and High tiers. For example, \`${msg.cmdPrefix}ba gamble low\`.`
 			);
 		}
-
 		const balance = msg.author.settings.get(UserSettings.HonourPoints);
 		const { cost, name, table } = buyable;
-		if (balance < cost) {
+		if (balance < cost * qty) {
 			return msg.channel.send(
-				`You don't have enough Honour Points to do a ${name} gamble. You need ${cost}, but you have only ${balance}.`
+				`You don't have enough Honour Points to do ${qty.toLocaleString()}x ${name} gamble. You need ${(
+					cost * qty
+				).toLocaleString()}, but you have only ${balance.toLocaleString()}.`
 			);
 		}
-
-		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost);
-		const loot = new Bank().add(table.roll());
+		await msg.confirm(
+			`Are you sure you want to do ${qty.toLocaleString()}x ${name} gamble, using ${(
+				cost * qty
+			).toLocaleString()} honour points?`
+		);
+		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost * qty);
+		const loot = new Bank().add(table.roll(qty));
 		if (loot.has('Pet penance queen')) {
 			const gamblesDone = msg.author.settings.get(UserSettings.HighGambles) + 1;
 			const countUsersHas =
@@ -214,9 +239,13 @@ export default class extends BotCommand {
 		await msg.author.addItemsToBank(loot.bank, true);
 		await msg.author.settings.update(
 			UserSettings.HighGambles,
-			msg.author.settings.get(UserSettings.HighGambles) + 1
+			msg.author.settings.get(UserSettings.HighGambles) + qty
 		);
-		return msg.channel.send(`You spent ${cost} Honour Points for a ${name} Gamble, and received... ${loot}.`);
+		return msg.channel.send(
+			`You spent ${(
+				cost * qty
+			).toLocaleString()} Honour Points for ${qty.toLocaleString()}x ${name} Gamble, and received... ${loot}.`
+		);
 	}
 
 	@minionNotBusy
