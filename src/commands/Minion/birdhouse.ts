@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, BitField, Emoji } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -9,7 +9,7 @@ import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import defaultBirdhouseTrap from '../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
+import { birdhouseLimit, formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { BirdhouseActivityTaskOptions } from './../../lib/types/minions';
@@ -127,7 +127,7 @@ export default class extends BotCommand {
 		const infoStr: string[] = [];
 		const boostStr: string[] = [];
 
-		const birdHouses = msg.author.bitfield.includes(BitField.HasScrollOfTheHunt) ? 8 : 4;
+		const birdHouses = birdhouseLimit(msg.author);
 
 		const birdhouse = birdhouses.find(_birdhouse =>
 			_birdhouse.aliases.some(alias => stringMatches(alias, type) || stringMatches(alias.split(' ')[0], type))
@@ -314,7 +314,7 @@ export default class extends BotCommand {
 			return msg.channel.send('There is no placed birdhouses to collect from!');
 		}
 
-		const birdHouses = msg.author.bitfield.includes(BitField.HasScrollOfTheHunt) ? 8 : 4;
+		const birdHouses = birdhouseLimit(msg.author);
 		returnMessageStr = `${
 			msg.author.minionName
 		} is now collecting ${birdHouses}x ${storePreviousBirdhouse}.\nIt'll take around ${formatDuration(
