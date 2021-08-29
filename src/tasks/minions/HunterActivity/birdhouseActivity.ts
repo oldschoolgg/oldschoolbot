@@ -2,12 +2,12 @@ import { randFloat, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import birdhouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
+import { birdhouseLimit } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -33,7 +33,7 @@ export default class extends Task {
 		const birdhouse = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseName);
 		if (!birdhouse) return;
 
-		const birdHouses = user.bitfield.includes(BitField.HasScrollOfTheHunt) ? 8 : 4;
+		const birdHouses = birdhouseLimit(user);
 
 		if (!placing || !gotCraft) {
 			loot.add('Clockwork', birdHouses);
