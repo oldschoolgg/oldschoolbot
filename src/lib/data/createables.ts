@@ -1,3 +1,5 @@
+import { Bank } from 'oldschooljs';
+
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
@@ -1733,7 +1735,17 @@ const Createables: Createable[] = [
 	...slayerCreatables,
 	...capeCreatables,
 	...dragonFireShieldCreatables,
-	...revWeapons
+	...revWeapons,
+	{
+		name: 'Fish sack barrel',
+		inputItems: new Bank({
+			'Fish sack': 1,
+			'Fish barrel': 1
+		}).bank,
+		outputItems: {
+			'Fish sack barrel': 1
+		}
+	}
 ];
 
 export default Createables;
