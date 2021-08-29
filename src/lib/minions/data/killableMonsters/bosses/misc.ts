@@ -110,6 +110,9 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				[itemID('Ancestral robe bottom')]: 2
+			},
+			{
+				[itemID('Imbued heart')]: 3
 			}
 		],
 		levelRequirements: {
