@@ -109,7 +109,7 @@ export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions
 			const [imp, , levelReq, inhibitor] = ImplingTable.roll()!.item;
 			if (inhibitor && !inhibitor(data)) continue;
 
-			if (level < levelReq || (imp === EternalImpling && !user.hasItemEquippedAnywhere('Vasa cloak'))) {
+			if (level < levelReq || (imp === EternalImpling && !user.hasItemEquippedOrInBank('Vasa cloak'))) {
 				missed.push(imp);
 			} else {
 				bank.add(imp.id);
