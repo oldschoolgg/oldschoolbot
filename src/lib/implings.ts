@@ -7,7 +7,12 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { Activity, BitField } from './constants';
 import { EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
 import { SkillsEnum } from './skilling/types';
-import { ActivityTaskOptions, MonsterActivityTaskOptions, PickpocketActivityTaskOptions } from './types/minions';
+import {
+	ActivityTaskOptions,
+	AgilityActivityTaskOptions,
+	MonsterActivityTaskOptions,
+	PickpocketActivityTaskOptions
+} from './types/minions';
 
 const {
 	BabyImpling,
@@ -54,8 +59,15 @@ export const implings: Impling[] = [
 			if (
 				activity.type === Activity.Pickpocket &&
 				(activity as PickpocketActivityTaskOptions).monsterID === Monsters.PrifddinasElf.id
-			)
+			) {
 				return true;
+			}
+			if (
+				activity.type === Activity.Agility &&
+				(activity as AgilityActivityTaskOptions).courseID === 'Prifddinas Rooftop Course'
+			) {
+				return true;
+			}
 
 			return false;
 		}

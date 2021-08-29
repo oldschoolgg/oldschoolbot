@@ -120,6 +120,17 @@ export const courses: Course[] = [
 		xp: 540,
 		lapTime: 65.6,
 		petChance: 9979
+	},
+	{
+		id: 13,
+		name: 'Prifddinas Rooftop Course',
+		aliases: ['priff', 'prif', 'prifddinas', 'prifddinas course', 'prifddinas agility course'],
+		level: 75,
+		xp: 1340.6,
+		marksPer60: 0,
+		lapTime: 74.2,
+		petChance: 25_146,
+		qpRequired: 205
 	}
 ];
 
