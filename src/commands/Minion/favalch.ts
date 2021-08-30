@@ -11,9 +11,8 @@ import { ItemBank } from '../../lib/types';
 import { itemNameFromID } from '../../lib/util';
 
 interface IParsedItem {
-	item: Item;
-	forcedID: boolean;
 	qty: number;
+	item: Item;
 }
 function customItemParse(str: string): IParsedItem[] {
 	const parsedItems = str
@@ -33,9 +32,8 @@ function customItemParse(str: string): IParsedItem[] {
 					const _i = Items.get(forcedID ? Number(_s) : _s);
 					if (_i) {
 						return {
-							item: _i,
-							forcedID,
-							qty: _q
+							qty: _q,
+							item: _i
 						};
 					}
 				})
