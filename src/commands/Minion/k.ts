@@ -207,9 +207,6 @@ export default class extends BotCommand {
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !monster!.canBarrage) {
 			return msg.channel.send(`${monster!.name} cannot be barraged or burst.`);
 		}
-		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !attackStyles.includes(SkillsEnum.Magic)) {
-			return msg.channel.send("You can only barrage/burst when you're using magic!");
-		}
 		if (msg.flagArgs.cannon && !hasCannon) {
 			return msg.channel.send("You don't own a Dwarf multicannon, so how could you use one?");
 		}
@@ -310,49 +307,58 @@ export default class extends BotCommand {
 			}
 		}
 
-		consumableCosts.forEach(cc => {
-			let itemMultiple = cc.qtyPerKill ?? cc.qtyPerMinute ?? null;
-			if (itemMultiple) {
-				if (cc.isRuneCost) {
-					// Free casts for kodai + sotd
-					if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
-						itemMultiple = Math.ceil(0.85 * itemMultiple);
-					} else if (msg.author.hasItemEquippedAnywhere('Staff of the dead')) {
-						itemMultiple = Math.ceil((6 / 7) * itemMultiple);
+		const infiniteWaterRunes = msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Staff of water')));
+		const perKillCost = new Bank();
+		// Calculate per kill cost:
+		if (consumableCosts.length > 0) {
+			for (const cc of consumableCosts) {
+				let itemMultiple = cc.qtyPerKill ?? cc.qtyPerMinute ?? null;
+				if (itemMultiple) {
+					if (cc.isRuneCost) {
+						// Free casts for kodai + sotd
+						if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
+							itemMultiple = Math.ceil(0.85 * itemMultiple);
+						} else if (msg.author.hasItemEquippedAnywhere('Staff of the dead')) {
+							itemMultiple = Math.ceil((6 / 7) * itemMultiple);
+						}
 					}
-				}
 
-				let multiply = itemMultiple;
-				// Calculate the duration for 1 kill and check how much will be used in 1 kill
-				if (cc.qtyPerMinute) multiply = (duration / Number(quantity) / Time.Minute) * itemMultiple;
+					let multiply = itemMultiple;
+					// Calculate the duration for 1 kill and check how much will be used in 1 kill
 
-				if (cc.itemCost) {
-					// Calculate supply for 1 kill
-					const costOneKill = cc.itemCost.clone().multiply(multiply);
-					const fits = msg.author.bank({ withGP: true }).fits(costOneKill);
-					if (fits < Number(quantity)) {
-						duration = Math.floor(duration * (fits / Number(quantity)));
-						quantity = fits;
+					if (cc.qtyPerMinute) multiply = (timeToFinish / Time.Minute) * itemMultiple;
+					if (cc.itemCost) {
+						// Calculate supply for 1 kill
+						const oneKcCost = cc.itemCost.clone().multiply(multiply);
+						// Can't use Bank.add() because it discards < 1 qty.
+						for (const [itemID, qty] of objectEntries(oneKcCost.bank)) {
+							if (perKillCost.bank[itemID]) perKillCost.bank[itemID] += qty;
+							else perKillCost.bank[itemID] = qty;
+						}
+						pvmCost = true;
 					}
-					const { bank } = costOneKill.multiply(Number(quantity));
-					// Ceil cost QTY to avoid fractions
-					for (const [item, qty] of objectEntries(bank)) {
-						bank[item] = Math.ceil(qty);
-					}
-					pvmCost = true;
-					lootToRemove.add(bank);
 				}
 			}
-		});
-
-		if (msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Staff of water')))) {
-			lootToRemove.remove('Water rune', lootToRemove.amount('Water rune'));
+			// This will be replaced with a generic function in another PR
+			if (infiniteWaterRunes) perKillCost.remove('Water rune', perKillCost.amount('Water rune'));
+			// Calculate how many monsters can be killed with that cost:
+			const fits = msg.author.bank({ withGP: true }).fits(perKillCost);
+			if (fits < Number(quantity)) {
+				duration = Math.floor(duration * (fits / Number(quantity)));
+				quantity = fits;
+			}
+			const { bank } = perKillCost.clone().multiply(Number(quantity));
+			// Ceil cost QTY to avoid fractions
+			for (const [item, qty] of objectEntries(bank)) {
+				bank[item] = Math.ceil(qty);
+			}
+			pvmCost = true;
+			lootToRemove.add(bank);
 		}
-
 		if (pvmCost) {
-			if (!msg.author.owns(lootToRemove)) {
+			if (quantity === 0 || !msg.author.owns(lootToRemove)) {
 				return msg.channel.send(
-					`You don't have the items needed to kill ${quantity}x ${monster.name}, you need: ${lootToRemove}.`
+					`You don't have the items needed to kill any amount of ${monster.name}, you need: ${perKillCost} per kill.`
 				);
 			}
 		}
