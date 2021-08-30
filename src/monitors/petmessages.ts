@@ -1,6 +1,7 @@
 import { KlasaMessage, Monitor, MonitorStore } from 'klasa';
 
 import pets from '../lib/data/pets';
+import { getGuildSettings } from '../lib/settings/settings';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { channelIsSendable, roll } from '../lib/util';
@@ -15,7 +16,8 @@ export default class extends Monitor {
 	/* eslint-disable consistent-return */
 	async run(msg: KlasaMessage) {
 		if (!msg.guild) return;
-		if (!msg.guild.settings.get(GuildSettings.PetChannel)) return;
+		const settings = await getGuildSettings(msg.guild);
+		if (!settings.get(GuildSettings.PetChannel)) return;
 
 		// If they sent a message in this server in the past 1.5 mins, return.
 		const lastMessage = this.__memberCache[`${msg.author.id}.${msg.guild.id}`] || 1;
@@ -34,8 +36,9 @@ export default class extends Monitor {
 			if (userPets[pet.id] > 1) {
 				msg.channel.send(`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`);
 			} else {
+				const settings = await getGuildSettings(msg.guild!);
 				msg.channel.send(`You have a funny feeling like you’re being followed, ${msg.author} ${pet.emoji}
-Type \`${msg.guild.settings.get(GuildSettings.Prefix)}mypets\` to see your pets.`);
+Type \`${settings.get(GuildSettings.Prefix)}mypets\` to see your pets.`);
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
+import BeardedBandit from 'oldschooljs/dist/simulation/monsters/low/a-f/BeardedBandit';
 import CaveGoblin from 'oldschooljs/dist/simulation/monsters/low/a-f/CaveGoblin';
 import DesertBandit from 'oldschooljs/dist/simulation/monsters/low/a-f/DesertBandit';
 import Farmer from 'oldschooljs/dist/simulation/monsters/low/a-f/Farmer';
@@ -265,6 +266,19 @@ export const Pickpocketables: Pickpockable[] = [
 		intercept: 18.131_76
 	},
 	{
+		name: 'Bearded Pollnivnian Bandit',
+		level: 45,
+		xp: 65,
+		table: BeardedBandit.pickpocketTable!,
+		id: BeardedBandit.id,
+		stunTime: 5,
+		stunDamage: 3,
+		// No current data on slope/intercept
+		slope: 0.767_76,
+		intercept: 18.131_76,
+		customTickRate: 2.5
+	},
+	{
 		name: 'Desert Bandit',
 		level: 53,
 		xp: 79.5,
@@ -287,7 +301,7 @@ export const Pickpocketables: Pickpockable[] = [
 		intercept: 17.703_09
 	},
 	{
-		name: 'Pollnivian Bandit',
+		name: 'Pollnivnian Bandit',
 		level: 55,
 		xp: 84.3,
 		table: PollnivnianBandit.pickpocketTable!,

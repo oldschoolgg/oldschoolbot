@@ -1,6 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
+import { getGuildSettings } from '../../lib/settings/settings';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -20,27 +21,29 @@ export default class extends BotCommand {
 	}
 
 	async on(msg: KlasaMessage) {
+		const settings = await getGuildSettings(msg.guild!);
 		if (msg.guild!.memberCount < 20 && getUsersPerkTier(msg.author) < PerkTier.Four) {
 			return msg.channel.send(TWEETS_RATELIMITING);
 		}
-		if (msg.guild!.settings.get(GuildSettings.StreamerTweets) === msg.channel.id) {
+		if (settings.get(GuildSettings.StreamerTweets) === msg.channel.id) {
 			return msg.channel.send('Streamer Tweets are already enabled in this channel.');
 		}
-		if (msg.guild!.settings.get(GuildSettings.StreamerTweets) !== null) {
-			await msg.guild!.settings.update(GuildSettings.StreamerTweets, msg.channel);
+		if (settings.get(GuildSettings.StreamerTweets) !== null) {
+			await settings.update(GuildSettings.StreamerTweets, msg.channel);
 			return msg.channel.send(
 				"Streamer Tweets are already enabled in another channel, but I've switched them to use this channel."
 			);
 		}
-		await msg.guild!.settings.update(GuildSettings.StreamerTweets, msg.channel);
+		await settings.update(GuildSettings.StreamerTweets, msg.channel);
 		return msg.channel.send('Enabled Streamer Tweets in this channel.');
 	}
 
 	async off(msg: KlasaMessage) {
-		if (msg.guild!.settings.get(GuildSettings.StreamerTweets) === null) {
+		const settings = await getGuildSettings(msg.guild!);
+		if (settings.get(GuildSettings.StreamerTweets) === null) {
 			return msg.channel.send("Streamer Tweets aren't enabled, so you can't disable them.");
 		}
-		await msg.guild!.settings.reset(GuildSettings.StreamerTweets);
+		await settings.reset(GuildSettings.StreamerTweets);
 		return msg.channel.send('Disabled Streamer Tweets in this channel.');
 	}
 }

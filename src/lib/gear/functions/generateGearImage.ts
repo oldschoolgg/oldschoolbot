@@ -103,7 +103,11 @@ export async function generateGearImage(
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 
-	ctx.fillStyle = userBgImage.transparent && hexColor ? hexColor : ctx.createPattern(sprite.repeatableBg, 'repeat');
+	ctx.fillStyle = userBgImage.transparent
+		? hexColor
+			? hexColor
+			: 'transparent'
+		: ctx.createPattern(sprite.repeatableBg, 'repeat');
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	if (!uniqueSprite) {
@@ -263,7 +267,11 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 
-	ctx.fillStyle = userBg.transparent && hexColor ? hexColor : ctx.createPattern(bgSprite.repeatableBg, 'repeat');
+	ctx.fillStyle = userBg.transparent
+		? hexColor
+			? hexColor
+			: 'transparent'
+		: ctx.createPattern(bgSprite.repeatableBg, 'repeat');
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	if (!hasBgSprite) {

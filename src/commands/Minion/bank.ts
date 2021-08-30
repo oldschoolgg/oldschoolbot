@@ -15,6 +15,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			description: 'Shows your bank, with all your items and GP.',
 			cooldown: 3,
+			oneAtTime: true,
 			usage: '[page:int|name:string]',
 			requiredPermissions: ['ATTACH_FILES'],
 			aliases: ['b'],

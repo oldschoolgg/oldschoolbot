@@ -18,7 +18,7 @@ export const maxDefenceStats: { [key in DefenceGearStat]: number } = {
 export const maxOffenceStats: { [key in OffenceGearStat]: number } = {
 	[GearStat.AttackCrush]: 214,
 	[GearStat.AttackMagic]: 177,
-	[GearStat.AttackRanged]: 243,
+	[GearStat.AttackRanged]: 246,
 	[GearStat.AttackSlash]: 182,
 	[GearStat.AttackStab]: 177
 };
@@ -142,7 +142,7 @@ export const globalPresets = [
 		Head: itemID('Pyromancer hood'),
 		Neck: null,
 		Body: itemID('Pyromancer garb'),
-		Legs: itemID('	Pyromancer robe'),
+		Legs: itemID('Pyromancer robe'),
 		Cape: null,
 		TwoHanded: null,
 		Hands: null,
