@@ -889,8 +889,12 @@ export default class extends Extendable {
 		}
 
 		// If they reached a XP milestone, send a server notification.
+		// 500m and 5b are handled below
 		if (preMax !== -1) {
-			for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, MAX_XP]) {
+			for (const XPMilestone of [
+				50_000_000, 100_000_000, 150_000_000, 200_000_000, 1_000_000_000, 2_000_000_000, 3_000_000_000,
+				4_000_000_000
+			]) {
 				if (newXP < XPMilestone) break;
 
 				if (currentXP < XPMilestone && newXP >= XPMilestone) {
@@ -932,10 +936,44 @@ export default class extends Extendable {
 				}
 				this.client.emit(Events.ServerNotification, str);
 			}
+
+			// Server wide announcements for 500m and 5b
+			for (const _xp of [500_000_000, 5_000_000_000]) {
+				if (newXP < _xp) break;
+				if (currentXP < _xp && newXP >= _xp) {
+					const skillNameCased = toTitleCase(params.skillName);
+					const [usersWith] = await this.client.query<
+						{
+							count: string;
+						}[]
+					>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${_xp};`);
+
+					let str = `${skill.emoji} **${this.username}'s** minion, ${this.minionName}, just achieved ${toKMB(
+						_xp
+					)} in ${skillNameCased}! They are the ${formatOrdinal(
+						parseInt(usersWith.count) + 1
+					)} to get ${toKMB(_xp)} in ${skillNameCased}.`;
+
+					if (this.isIronman) {
+						const [ironmenWith] = await this.client.query<
+							{
+								count: string;
+							}[]
+						>(
+							`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${_xp};`
+						);
+						str += ` They are the ${formatOrdinal(parseInt(ironmenWith.count) + 1)} Ironman to get ${toKMB(
+							_xp
+						)} in ${skillNameCased}.`;
+					}
+					this.client.emit(Events.ServerNotification, str);
+				}
+			}
+
 			await this.settings.update(`skills.${params.skillName}`, Math.floor(newXP));
 		}
 
-		if (currentXP >= 5_000_000_000) {
+		if (currentXP >= MAX_XP) {
 			let xpStr = '';
 			if (params.duration && !params.minimal) {
 				xpStr += `You received no XP because you have ${toKMB(MAX_XP)} ${name} XP already.`;
