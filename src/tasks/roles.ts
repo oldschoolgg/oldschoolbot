@@ -21,7 +21,8 @@ const minigames = [
 	'raids_challenge_mode',
 	'big_chompy_bird_hunting',
 	'rogues_den',
-	'temple_trekking'
+	'temple_trekking',
+	'volcanic_mine'
 ];
 
 const collections = ['overall', 'pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer'];
