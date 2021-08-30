@@ -353,6 +353,10 @@ export interface VolcanicMineActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface MonkeyRumbleOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions

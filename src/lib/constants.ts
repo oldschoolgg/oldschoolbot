@@ -228,7 +228,8 @@ export const enum Tasks {
 	KibbleActivity = 'kibbleActivity',
 	RevenantsActivity = 'revenantsActivity',
 	PestControl = 'pestControlActivity',
-	VolcanicMine = 'volcanicMineActivity'
+	VolcanicMine = 'volcanicMineActivity',
+	MonkeyRumble = 'monkeyRumbleActivity'
 }
 
 export enum Activity {
@@ -302,7 +303,8 @@ export enum Activity {
 	KibbleMaking = 'KibbleMaking',
 	Revenants = 'Revenants',
 	PestControl = 'PestControl',
-	VolcanicMine = 'VolcanicMine'
+	VolcanicMine = 'VolcanicMine',
+	MonkeyRumble = 'MonkeyRumble'
 }
 
 export enum ActivityGroup {

@@ -1,18 +1,27 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
-import { Canvas, createCanvas } from 'canvas';
+import { Canvas, createCanvas, Image } from 'canvas';
+import { randInt } from 'e';
 import * as fs from 'fs';
 import { KlasaClient, KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import BankImageTask from '../../../tasks/bankImage';
+import { monkeyTiers } from '../../monkeyRumble';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { Gear } from '../../structures/Gear';
 import { toTitleCase } from '../../util';
-import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
-import { GearSetupType, GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..';
+import {
+	calcAspectRatioFit,
+	canvasImageFromBuffer,
+	drawItemQuantityText,
+	drawTitleText,
+	fillTextXTimesInCtx
+} from '../../util/canvasUtil';
+import { GearSetupType, GearSetupTypes, GearStats, maxDefenceStats, maxOffenceStats } from '..';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
 const gearTemplateCompactFile = fs.readFileSync('./src/lib/resources/images/gear_template_compact.png');
+const banana = canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/banana.png'));
 
 /**
  * The default gear in a gear setup, when nothing is equipped.
@@ -77,57 +86,26 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 	}
 }
 
-export async function generateGearImage(
-	client: KlasaClient,
-	user: KlasaUser,
-	gearSetup: Gear,
-	gearType: GearSetupTypes | null,
-	petID: number | null
-) {
-	// Init the background images if they are not already
-	if (!bankTask) {
-		bankTask = client.tasks.get('bankImage') as BankImageTask;
-	}
-
-	let {
-		sprite,
-		uniqueSprite,
-		background: userBgImage
-	} = bankTask.getBgAndSprite(user.settings.get(UserSettings.BankBackground) ?? 1);
-
-	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
-
-	const gearStats = gearSetup.stats;
-	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
-	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
+async function drawStats(canvas: Canvas, gearStats: GearStats, alternateImage: Image | null) {
 	const ctx = canvas.getContext('2d');
-	ctx.imageSmoothingEnabled = false;
 
-	ctx.fillStyle = userBgImage.transparent
-		? hexColor
-			? hexColor
-			: 'transparent'
-		: ctx.createPattern(sprite.repeatableBg, 'repeat');
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-	if (!uniqueSprite) {
-		ctx.drawImage(
-			userBgImage.image!,
-			(canvas.width - userBgImage.image!.width) * 0.5,
-			(canvas.height - userBgImage.image!.height) * 0.5
-		);
-	}
-	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
-
-	if (!userBgImage.transparent) bankTask?.drawBorder(ctx, sprite, false);
-
-	ctx.font = '16px OSRSFontCompact';
-	// Draw preset title
-	if (gearType) {
-		drawTitleText(ctx, toTitleCase(gearType), Math.floor(176 / 2), 25);
+	if (alternateImage) {
+		// TODO: up to their monkey level or how many bananas they own
+		for (let i = 0; i < 23; i++) {
+			let b = await banana;
+			ctx.drawImage(
+				b,
+				randInt(1, canvas.width * 0.8),
+				randInt(canvas.height * 0.75, canvas.height * 0.8),
+				b.width,
+				b.height
+			);
+		}
+		let { sprite } = bankTask!.getBgAndSprite(1);
+		if (1 > 2) bankTask?.drawBorder(ctx, sprite, false);
+		return;
 	}
 
-	// Draw stats
 	ctx.save();
 	ctx.translate(225, 0);
 	ctx.font = '16px RuneScape Bold 12';
@@ -218,6 +196,78 @@ export async function generateGearImage(
 	drawText(canvas, `Magic Dmg.: ${gearStats.magic_damage.toFixed(1)}%`, 0, 165, false);
 	drawText(canvas, `Prayer: ${gearStats.prayer}`, 0, 183, false);
 	ctx.restore();
+}
+
+export async function generateGearImage(
+	client: KlasaClient,
+	user: KlasaUser,
+	gearSetup: Gear,
+	gearType: GearSetupTypes | null,
+	petID: number | null
+) {
+	const alternateImageSrc = monkeyTiers.find(t => user.hasItemEquippedAnywhere(t.greegree.id))?.image;
+	const alternateImage = alternateImageSrc === undefined ? null : await alternateImageSrc;
+
+	// Init the background images if they are not already
+	if (!bankTask) {
+		bankTask = client.tasks.get('bankImage') as BankImageTask;
+	}
+
+	let {
+		sprite,
+		uniqueSprite,
+		background: userBgImage
+	} = bankTask.getBgAndSprite(user.settings.get(UserSettings.BankBackground) ?? 1);
+
+	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
+
+	const gearStats = gearSetup.stats;
+	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
+	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
+	const ctx = canvas.getContext('2d');
+	ctx.imageSmoothingEnabled = false;
+
+	ctx.fillStyle = userBgImage.transparent
+		? hexColor
+			? hexColor
+			: 'transparent'
+		: ctx.createPattern(sprite.repeatableBg, 'repeat');
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	// Draw stats
+	await drawStats(canvas, gearStats, alternateImage);
+
+	if (!uniqueSprite) {
+		ctx.drawImage(
+			userBgImage.image!,
+			(canvas.width - userBgImage.image!.width) * 0.5,
+			(canvas.height - userBgImage.image!.height) * 0.5
+		);
+	}
+	if (!alternateImage) {
+		ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
+	}
+
+	if (alternateImage) {
+		const altSize = calcAspectRatioFit(
+			alternateImage.width / 2,
+			alternateImage.height / 2,
+			gearTemplateImage.width * 0.8,
+			gearTemplateImage.height * 0.5
+		);
+		const x = gearTemplateImage.width * 0.25 - altSize.width;
+		const y = gearTemplateImage.height * 0.9 - altSize.height;
+
+		ctx.drawImage(alternateImage, x, y, altSize.width, altSize.height);
+	}
+
+	if (!userBgImage.transparent) bankTask?.drawBorder(ctx, sprite, false);
+
+	ctx.font = '16px OSRSFontCompact';
+	// Draw preset title
+	if (gearType) {
+		drawTitleText(ctx, toTitleCase(gearType), Math.floor(176 / 2), 25);
+	}
 
 	// Draw items
 	if (petID) {
@@ -233,7 +283,7 @@ export async function generateGearImage(
 
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
-		if (!item) continue;
+		if (!item || alternateImage) continue;
 		const image = await client.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
 
 		let [x, y] = slotCoordinates[enumName];

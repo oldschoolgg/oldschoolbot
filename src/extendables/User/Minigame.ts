@@ -138,6 +138,11 @@ export const Minigames: Minigame[] = [
 		name: 'Volcanic Mine',
 		key: 'VolcanicMine',
 		column: 'volcanic_mine'
+	},
+	{
+		name: "Mad Marimbo's Monkey Rumble",
+		key: 'MadMarimbosMonkeyRumble',
+		column: 'monkey_rumble'
 	}
 ];
 

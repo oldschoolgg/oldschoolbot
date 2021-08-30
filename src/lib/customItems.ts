@@ -1756,6 +1756,13 @@ setCustomItem(
 setCustomItem(48_222, 'Hellfire arrowtips', 'Dragon arrowtips', {}, 1000);
 setCustomItem(48_223, 'Scroll of the hunt', 'Coal', {}, 1_000_000);
 
+// MMMR
+setCustomItem(48_224, 'Beginner rumble greegree', 'Bronze 2h sword', {}, 999_995);
+setCustomItem(48_225, 'Intermediate rumble greegree', 'Bronze 2h sword', {}, 999_996);
+setCustomItem(48_226, 'Ninja rumble greegree', 'Bronze 2h sword', {}, 999_997);
+setCustomItem(48_227, 'Expert ninja rumble greegree', 'Bronze 2h sword', {}, 999_998);
+setCustomItem(48_228, 'Elder rumble greegree', 'Bronze 2h sword', {}, 999_999);
+
 /**
  * Misc Items
  *
