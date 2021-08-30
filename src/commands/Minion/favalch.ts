@@ -83,12 +83,12 @@ export default class extends BotCommand {
 		const removed: string[] = [];
 		const added: string[] = [];
 
-		items.map(i => {
+		for (const i of items) {
 			const { item } = i;
-			if (dupeCheck.includes(item.id)) return;
+			if (dupeCheck.includes(item.id)) continue;
 			if (!item.highalch) {
 				cantAlchItems.push(item.name);
-				return;
+				continue;
 			}
 			if (newFavorites.includes(item.id)) {
 				newFavorites.splice(newFavorites.indexOf(item.id), 1);
@@ -98,7 +98,7 @@ export default class extends BotCommand {
 				added.push(`${item.name} (${item.id})`);
 			}
 			dupeCheck.push(item.id);
-		});
+		}
 
 		if (msg.author.settings.get(UserSettings.FavoriteAlchables) !== newFavorites) {
 			await msg.author.settings.update(UserSettings.FavoriteAlchables, newFavorites, {
