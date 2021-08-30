@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { Activity } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -40,8 +40,6 @@ export function calculateAlchItemByTripDuration(params: {
 
 	if (items.length === 0) {
 		for (const i of user.getUserFavAlchs() as Item[]) {
-			// Ignore alchs that are already on the alch items
-			if (items.find(a => a.item.id === i.id)) continue;
 			items.push({
 				item: i,
 				qty: qtyLimit
@@ -51,8 +49,10 @@ export function calculateAlchItemByTripDuration(params: {
 					: userBank.amount(i.id)
 			});
 		}
-		if (items.length === 0) return false;
 	}
+
+	if (items.length === 0) return false;
+	items = items.sort((a, b) => b.item.highalch - a.item.highalch);
 
 	// Check if user has infinite fire runes
 	let infiniteFireRunes = false;
@@ -176,9 +176,9 @@ export default class extends BotCommand {
 
 		if (!ignoreConfirm) {
 			await msg.confirm(
-				`Are you sure you want to use **${result.runes}** to alch **${
-					result.items
-				}** and convert it to <:RSGP:369349580040437770> **${result.value.toLocaleString()}** coins? This will take approximately ${formatDuration(
+				`Are you sure you want to use **${result.runes}** to alch **${result.items}** and convert it to ${
+					Emoji.GP
+				} **${result.value.toLocaleString()}** coins? This will take approximately ${formatDuration(
 					result.duration
 				)}`
 			);

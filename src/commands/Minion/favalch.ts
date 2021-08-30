@@ -1,12 +1,48 @@
 import { MessageAttachment } from 'discord.js';
 import { chunk } from 'e';
 import { ArrayActions, CommandStore, KlasaMessage } from 'klasa';
+import { Items } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
+import { fromKMB } from 'oldschooljs/dist/util';
 
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { itemNameFromID } from '../../lib/util';
-import { parseStringBank } from '../../lib/util/parseStringBank';
+
+interface IParsedItem {
+	item: Item;
+	forcedID: boolean;
+	qty: number;
+}
+function customItemParse(str: string): IParsedItem[] {
+	const parsedItems = str
+		? str
+				.split(',')
+				.map(s => {
+					let _s = s.trim();
+					const _e = _s.split(' ');
+					let _q = fromKMB(_e[0]);
+					if (!isNaN(_q) && _e.length > 1) {
+						_e.shift();
+					} else {
+						_q = 1;
+					}
+					_s = _e.join(' ');
+					const forcedID = Number(_s) === parseInt(_s);
+					const _i = Items.get(forcedID ? Number(_s) : _s);
+					if (_i) {
+						return {
+							item: _i,
+							forcedID,
+							qty: _q
+						};
+					}
+				})
+				.filter(f => f)
+		: [];
+	return parsedItems as IParsedItem[];
+}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -21,7 +57,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [str]: [string]) {
 		const currentFavorites = msg.author.settings.get(UserSettings.FavoriteAlchables);
 		const newFavorites: number[] = [...currentFavorites];
-		const items = parseStringBank(str);
+		const items = customItemParse(str);
 		if (!str || items.length === 0) {
 			if (currentFavorites.length === 0) return msg.channel.send('You have no favorited alchable items.');
 			if (msg.flagArgs.text) {
@@ -42,25 +78,27 @@ export default class extends BotCommand {
 			return msg.channel.send({ files: [new MessageAttachment(image!, 'youFavoriteItems.png')] });
 		}
 
-		const dupeCheck: string[] = [];
+		const dupeCheck: number[] = [];
 		const cantAlchItems: string[] = [];
 		const removed: string[] = [];
 		const added: string[] = [];
-		for (const [item] of items) {
-			if (dupeCheck.includes(item.name)) continue;
+
+		items.map(i => {
+			const { item } = i;
+			if (dupeCheck.includes(item.id)) return;
 			if (!item.highalch) {
 				cantAlchItems.push(item.name);
-				continue;
+				return;
 			}
 			if (newFavorites.includes(item.id)) {
 				newFavorites.splice(newFavorites.indexOf(item.id), 1);
-				removed.push(item.name);
+				removed.push(`${item.name} (${item.id})`);
 			} else {
 				newFavorites.push(item.id);
-				added.push(item.name);
+				added.push(`${item.name} (${item.id})`);
 			}
-			dupeCheck.push(item.name);
-		}
+			dupeCheck.push(item.id);
+		});
 
 		if (msg.author.settings.get(UserSettings.FavoriteAlchables) !== newFavorites) {
 			await msg.author.settings.update(UserSettings.FavoriteAlchables, newFavorites, {
