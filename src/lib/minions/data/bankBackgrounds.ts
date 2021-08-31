@@ -324,6 +324,18 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
+		id: 42,
+		name: 'iYeeYee CustomBG (42)',
+		image: null,
+		available: false
+	},
+	{
+		id: 43,
+		name: 'Guacamole CustomBG (43)',
+		image: null,
+		available: false
+	},
+	{
 		id: 47,
 		name: 'Slav',
 		image: null,
