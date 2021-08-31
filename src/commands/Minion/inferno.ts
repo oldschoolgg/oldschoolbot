@@ -9,7 +9,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { FightCavesActivityTaskOptions } from '../../lib/types/minions';
+import { InfernoOptions } from '../../lib/types/minions';
 import {
 	calcWhatPercent,
 	formatDuration,
@@ -22,7 +22,6 @@ import {
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
-import itemID from '../../lib/util/itemID';
 
 const { TzTokJad } = Monsters;
 
@@ -49,6 +48,12 @@ const minimumMageItems = [
 ].map(getOSItem);
 
 export const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipment!.attack_magic));
+
+const startMessages = [
+	"You're on your own now JalYt, you face certain death... prepare to fight for your life.",
+	'You will certainly die, JalYt, good luck.',
+	'Many think they are strong enough to defeat TzKal-Zuk, many are wrong... good luck JalYt.'
+];
 
 function gearCheck(user: KlasaUser): true | string {
 	const rangeGear = user.getGear('range');
@@ -117,7 +122,7 @@ export default class extends BotCommand {
 		let deathChance = Math.max(14 - attempts * 2, 5);
 
 		// -4% Chance of dying before Jad if you have SGS.
-		if (user.hasItemEquippedAnywhere(itemID('Saradomin godsword'))) {
+		if (user.hasItemEquippedAnywhere('Saradomin godsword')) {
 			deathChance -= 4;
 		}
 
@@ -161,8 +166,7 @@ export default class extends BotCommand {
 		// Add slayer
 		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
 		const isOnTask =
-			usersTask.currentTask !== null &&
-			usersTask.currentTask !== undefined &&
+			Boolean(usersTask.currentTask) &&
 			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
 			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
 
@@ -172,10 +176,9 @@ export default class extends BotCommand {
 			debugStr += ', 15% on Task with Black mask (i)';
 		}
 
-		await addSubTaskToActivityTask<FightCavesActivityTaskOptions>({
+		await addSubTaskToActivityTask<InfernoOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
-			quantity: 1,
 			duration,
 			type: Activity.FightCaves,
 			jadDeathChance,
@@ -197,8 +200,8 @@ export default class extends BotCommand {
 **Removed from your bank:** ${new Bank(fightCavesSupplies)}`,
 			files: [
 				await chatHeadImage({
-					content: `You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`,
-					head: 'mejJal'
+					content: "You're on your own now JalYt, you face certain death... prepare to fight for your life.",
+					head: 'ketKeh'
 				})
 			]
 		});

@@ -175,6 +175,11 @@ export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
 	preJadDeathTime: number | null;
 	quantity: number;
 }
+export interface InfernoOptions extends ActivityTaskOptions {
+	jadDeathChance: number;
+	preJadDeathChance: number;
+	preJadDeathTime: number | null;
+}
 
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
 
