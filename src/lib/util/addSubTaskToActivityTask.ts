@@ -38,8 +38,4 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 			duration
 		}
 	});
-
-	activity.activitySync();
-
-	await activity.save();
 }

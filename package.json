@@ -10,8 +10,8 @@
 		"dev": "yarn wipedist && tsc -w -p src"
 	},
 	"dependencies": {
-		"@prisma/client": "^2.29.1",
 		"@octokit/graphql": "^4.7.0",
+		"@prisma/client": "^2.30.0",
 		"@sapphire/discord-utilities": "^2.1.5",
 		"@sapphire/discord.js-utilities": "^3.0.0-next.600390f4.0",
 		"@sapphire/time-utilities": "^1.3.7",
