@@ -1,7 +1,7 @@
 import { LootTable, Openables } from 'oldschooljs';
 import SimpleOpenable from 'oldschooljs/dist/structures/SimpleOpenable';
 
-import { RuneTable } from './seedTable';
+import { HighRuneTable, LowRunes } from './seedTable';
 import { BattlestaffTable, StaffOrbTable } from './sharedTables';
 
 export const InfernalImpling = new SimpleOpenable({
@@ -38,19 +38,21 @@ export const InfernalImpling = new SimpleOpenable({
 		.tertiary(1_000_000, 'Uncut onyx')
 });
 
+const customRuneTable = new LootTable().add(LowRunes, 1, 3).add(HighRuneTable.add('Elder rune', [20, 50]));
+
 export const EternalImpling = new SimpleOpenable({
 	id: 50_044,
 	name: 'Eternal impling jar',
 	aliases: ['eternal impling', 'eternal imp'],
 	table: new LootTable()
-		.every(RuneTable, [10, 15])
+		.every(customRuneTable, [10, 15])
 		.add(BattlestaffTable, [12, 22])
 		.add(StaffOrbTable, [50, 100])
 		.add('Pure essence', [500, 1000])
 		.add('Magic logs', [150, 200])
 		.add('Magic seed', [5, 20])
 		.add('Clue scroll (easy)', [1, 5])
-		.add(RuneTable, [5, 10])
+		.add(customRuneTable, [5, 10])
 		.tertiary(8, 'Clue scroll (grandmaster)')
 		.tertiary(1_000_000, 'Eternal crystal')
 });

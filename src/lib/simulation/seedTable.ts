@@ -10,7 +10,7 @@ export const SeedTable = new LootTable()
 	.add(MediumSeedPackTable, 1, 2)
 	.add(HighSeedPackTable);
 
-const LowRunes = new LootTable()
+export const LowRunes = new LootTable()
 	.add('Air rune', [50, 100])
 	.add('Mind rune', [50, 100])
 	.add('Water rune', [50, 100])
