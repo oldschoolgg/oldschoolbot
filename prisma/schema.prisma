@@ -8,20 +8,19 @@ datasource db {
 }
 
 model activity {
-  id             Int                @unique @default(autoincrement())
-  user_id        String             @db.VarChar(19)
-  start_date     DateTime           @db.Timestamp(6)
-  finish_date    DateTime           @db.Timestamp(6)
+  id             Int      @unique @default(autoincrement())
+  user_id        String   @db.VarChar(19)
+  start_date     DateTime @db.Timestamp(6)
+  finish_date    DateTime @db.Timestamp(6)
   duration       Int
   completed      Boolean
   group_activity Boolean
-  type           activity_type_enum
-  channel_id     String             @db.VarChar(19)
-  data           Json               @db.Json
+  type           Activity
+  channel_id     String   @db.VarChar(19)
+  data           Json     @db.Json
 
-  @@id([id, user_id, channel_id])
-  @@index([group_activity], name: "IDX_73e0d6954aecafe0383b77d390")
-  @@index([completed], name: "IDX_d71ac68a9d4b4245287caab788")
+  @@index([group_activity], name: "group_activity_index")
+  @@index([completed], name: "completed_index")
 }
 
 model analytics_table {
@@ -191,6 +190,7 @@ model minigames {
   big_chompy_bird_hunting Int        @default(0)
   temple_trekking         Int        @default(0)
   pest_control            Int        @default(0)
+  volcanic_mine           Int        @default(0)
   new_users               new_users?
 }
 
@@ -374,7 +374,7 @@ model xp_gains {
   @@index([skill], name: "IDX_f14b5b3590390b5d81576d8cd1")
 }
 
-enum activity_type_enum {
+enum Activity {
   Agility
   Cooking
   MonsterKilling
@@ -437,6 +437,7 @@ enum activity_type_enum {
   Trekking
   Revenants
   PestControl
+  VolcanicMine
 }
 
 enum xp_gains_skill_enum {

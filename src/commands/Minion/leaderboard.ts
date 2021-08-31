@@ -1,13 +1,12 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, util } from 'klasa';
-import { IsNull, Not } from 'typeorm';
 
 import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Emoji } from '../../lib/constants';
 import { getCollectionItems } from '../../lib/data/Collections';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
+import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
@@ -136,8 +135,6 @@ export default class extends BotCommand {
 			}
 			this.usernameCache.map.set(user.id, `${rawBadges.join(' ')} ${rawName}`);
 		}
-
-		batchSyncNewUserUsernames(this.client);
 	}
 
 	async run(msg: KlasaMessage) {
@@ -313,12 +310,17 @@ export default class extends BotCommand {
 			);
 		}
 
-		const res: MinigameTable[] = await MinigameTable.getRepository()
-			.createQueryBuilder('user')
-			.orderBy(minigame.column, 'DESC')
-			.where(`${minigame.column} > 10`)
-			.limit(100)
-			.getMany();
+		const res = await prisma.minigames.findMany({
+			where: {
+				[minigame.column]: {
+					gt: 10
+				}
+			},
+			orderBy: {
+				[minigame.column]: 'sadffdsafsfdsaTODO'
+			},
+			take: 10
+		});
 
 		this.doMenu(
 			msg,
@@ -329,7 +331,7 @@ export default class extends BotCommand {
 						.map(
 							(u, j) =>
 								`${this.getPos(i, j)}**${this.getUsername(u.userID)}:** ${u[
-									minigame.key
+									minigame.column
 								].toLocaleString()}`
 						)
 						.join('\n')

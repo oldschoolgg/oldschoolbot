@@ -17,7 +17,7 @@ import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
 
-const activitiesToTrackAsPVMGPSource = [
+const activitiesToTrackAsPVMGPSource: Activity[] = [
 	Activity.GroupMonsterKilling,
 	Activity.MonsterKilling,
 	Activity.Raids,

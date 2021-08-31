@@ -1,5 +1,4 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { MoreThan } from 'typeorm';
 
 import { getNewUser } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';

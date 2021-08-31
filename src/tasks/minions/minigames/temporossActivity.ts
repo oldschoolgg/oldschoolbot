@@ -2,7 +2,7 @@ import { increaseNumByPercent, randInt } from 'e';
 import { Task } from 'klasa';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
 import { getTemporossLoot } from '../../../lib/simulation/tempoross';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -15,7 +15,8 @@ export default class extends Task {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		const { previousScore, newScore } = await incrementMinigameScore(userID, 'Tempoross', quantity);
+		const previousScore = (await getMinigameEntity(user.id)).big_chompy_bird_hunting;
+		const { newScore } = await incrementMinigameScore(userID, 'tempoross', quantity);
 		const kcForPet = randInt(previousScore, newScore);
 
 		let rewardTokens = quantity * 6;

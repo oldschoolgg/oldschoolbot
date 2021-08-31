@@ -14,10 +14,12 @@ import {
 	MIMIC_MONSTER_ID,
 	PerkTier
 } from '../../lib/constants';
+import { userhasDiaryTier } from '../../lib/diaries';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { prisma } from '../../lib/settings/prisma';
 import { getNewUser } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
@@ -243,9 +245,11 @@ Please say \`permanent\` to confirm.`
 			}
 		}
 
-		const existingGiveaways = await GiveawayTable.find({
-			userID: msg.author.id,
-			completed: false
+		const existingGiveaways = await prisma.giveaway.findMany({
+			where: {
+				user_id: msg.author.id,
+				completed: false
+			}
 		});
 
 		if (existingGiveaways.length !== 0) {

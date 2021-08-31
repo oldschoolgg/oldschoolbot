@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { prisma } from '../../lib/settings/prisma';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { formatDuration } from '../../lib/util';
 
 export default class extends BotCommand {
@@ -15,12 +15,12 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		const res = await ActivityTable.find({
+		const res = await prisma.activity.findMany({
 			where: {
-				userID: msg.author.id
+				user_id: msg.author.id
 			},
-			order: {
-				id: 'DESC'
+			orderBy: {
+				id: 'desc'
 			}
 		});
 

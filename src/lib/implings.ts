@@ -46,7 +46,7 @@ export const implings: Impling[] = [
 		16,
 		80,
 		(activity: ActivityTaskOptions) => {
-			if ([Activity.Gauntlet, Activity.Zalcano].includes(activity.type)) return true;
+			if (([Activity.Gauntlet, Activity.Zalcano] as Activity[]).includes(activity.type)) return true;
 			if (
 				activity.type === Activity.MonsterKilling &&
 				[Monsters.DarkBeast.id, Monsters.PrifddinasElf.id].includes(

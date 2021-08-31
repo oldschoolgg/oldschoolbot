@@ -7,12 +7,12 @@ import { Bank } from 'oldschooljs';
 import { Activity, badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { handlePassiveImplings, implings } from '../../lib/implings';
+import { prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { cleanString, formatDuration, getSupportGuild, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -198,8 +198,8 @@ ${
 					? `${task.type} - ${formatDuration(task.finishDate - Date.now())} remaining`
 					: 'None';
 
-				const lastTasks = await ActivityTable.find({
-					where: { userID: msg.author.id },
+				const lastTasks = await prisma.activity.findMany({
+					where: { user_id: msg.author.id },
 					take: 10
 				});
 				const lastTasksStr = lastTasks.map(i => (i.completed ? i.type : `*${i.type}*`)).join(', ');

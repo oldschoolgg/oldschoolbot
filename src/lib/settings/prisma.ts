@@ -2,13 +2,14 @@ import { activity, Prisma, PrismaClient } from '@prisma/client';
 
 import { client } from '../..';
 import { Activity } from '../constants';
+import { ActivityTaskData } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
 import { minionActivityCache } from './settings';
 
 export const prisma = new PrismaClient();
 
-export function convertActivityToTaskData(activity: activity) {
+export function convertStoredActivityToFlatActivity(activity: activity): ActivityTaskData {
 	return {
 		...(activity.data as Prisma.JsonObject),
 		type: activity.type as Activity,
@@ -25,12 +26,12 @@ export function activitySync(activity: activity) {
 		? ((activity.data as Prisma.JsonObject).users! as string[])
 		: [activity.user_id];
 	for (const user of users) {
-		minionActivityCache.set(user, convertActivityToTaskData(activity));
+		minionActivityCache.set(user, convertStoredActivityToFlatActivity(activity));
 	}
 }
 
 export async function completeActivity(_activity: activity) {
-	const activity = convertActivityToTaskData(_activity);
+	const activity = convertStoredActivityToFlatActivity(_activity);
 	if (_activity.completed) {
 		throw new Error('Tried to complete an already completed task.');
 	}

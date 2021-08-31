@@ -8,19 +8,17 @@ export interface ActivityTaskOptions {
 	type: Activity;
 	userID: string;
 	duration: number;
-	id: string;
+	id: number;
 	finishDate: number;
 	channelID: string;
 }
 
 export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
-	type: Activity.Runecraft;
 	runeID: number;
 	essenceQuantity: number;
 }
 
 export interface GloryChargingActivityTaskOptions extends ActivityTaskOptions {
-	type: Activity.GloryCharging;
 	quantity: number;
 }
 
@@ -315,7 +313,6 @@ export interface CollectingOptions extends ActivityTaskOptions {
 }
 
 export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
-	type: Activity.BlastFurnace;
 	barID: number;
 	quantity: number;
 }

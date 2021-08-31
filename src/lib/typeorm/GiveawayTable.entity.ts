@@ -3,7 +3,6 @@ import { noOp, randArrItem } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { BaseEntity, Column, Entity, getConnection, Index, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 import { client } from '../..';
 import { Events } from '../constants';

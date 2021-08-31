@@ -2,7 +2,6 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { chompyHats } from '../../../commands/Minion/chompyhunt';
-import { MinigameKey } from '../../../extendables/User/Minigame';
 import { MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { ItemBank, Skills } from '../../types';

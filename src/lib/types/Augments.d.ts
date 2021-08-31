@@ -1,3 +1,4 @@
+import { minigames } from '@prisma/client';
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
@@ -209,7 +210,7 @@ declare module 'discord.js' {
 		/**
 		 * Returns minigame entity
 		 */
-		getMinigameEntity(): Promise<MinigameTable>;
+		getMinigameEntity(): Promise<minigames>;
 		/**
 		 * Returns Creature score
 		 */
