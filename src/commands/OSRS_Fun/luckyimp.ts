@@ -21,7 +21,7 @@ export default class extends BotCommand {
 			return msg.channel.send('I can only catch 10 Lucky Imps at a time!');
 		}
 
-		const loot = Openables.LuckyImp.open(qty);
+		const loot = Openables.LuckyImpling.open(qty);
 
 		const opened = `You caught ${qty} Lucky Imp${qty > 1 ? 's' : ''}`;
 

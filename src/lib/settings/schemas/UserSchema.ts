@@ -36,6 +36,7 @@ Client.defaultUserSchema
 	.add('pest_control_points', 'integer', { default: 0 })
 	.add('inferno_attempts', 'integer', { default: 0 })
 	.add('inferno_cape_sacrifices', 'integer', { default: 0 })
+	.add('volcanic_mine_points', 'integer', { default: 0 })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })

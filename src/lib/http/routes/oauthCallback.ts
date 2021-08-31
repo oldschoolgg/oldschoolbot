@@ -13,7 +13,7 @@ export async function fetchUser(token: string) {
 	const apiUser = await fetch('https://discordapp.com/api/users/@me', {
 		headers: { Authorization: apiToken }
 	}).then((result: any) => result.json());
-	const user = await client.users.fetch(apiUser.id);
+	const user = await client.fetchUser(apiUser.id);
 
 	return {
 		...apiUser,

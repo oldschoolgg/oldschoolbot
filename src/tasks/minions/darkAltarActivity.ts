@@ -11,7 +11,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: DarkAltarOptions) {
 		const { quantity, userID, channelID, duration, hasElite, rune } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 
 		const runeData = darkAltarRunes[rune];
 
@@ -47,7 +47,7 @@ export default class extends Task {
 			}
 		}
 
-		let str = `${user}, ${user.minionName} finished runecrafing at the Dark altar, you received ${loot}. ${xpRes1} ${xpRes2} ${xpRes3}`;
+		let str = `${user}, ${user.minionName} finished runecrafting at the Dark altar, you received ${loot}. ${xpRes1} ${xpRes2} ${xpRes3}`;
 
 		if (loot.amount('Rift guardian') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";

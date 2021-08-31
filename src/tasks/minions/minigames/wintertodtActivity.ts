@@ -39,7 +39,7 @@ const PointsTable = new SimpleTable<number>()
 export default class extends Task {
 	async run(data: WintertodtActivityTaskOptions) {
 		const { userID, channelID, quantity } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const channel = await this.client.channels.fetch(channelID);
 

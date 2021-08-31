@@ -77,4 +77,7 @@ export class MinigameTable extends BaseEntity {
 
 	@Column({ name: 'inferno', type: 'int', nullable: false, default: 0 })
 	public Inferno!: number;
+
+	@Column({ name: 'volcanic_mine', type: 'int', nullable: false, default: 0 })
+	public VolcanicMine!: number;
 }

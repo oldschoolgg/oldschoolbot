@@ -19,7 +19,11 @@ const itemsToNotifyOf = cluesRaresCL
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
 	.concat([itemID('Bloodhound')]);
 
-const allOpenables = [...Openables.map(i => i.id), ...ClueTiers.map(i => i.id), ...botOpenables.map(i => i.itemID)];
+export const allOpenables = [
+	...Openables.map(i => i.id),
+	...ClueTiers.map(i => i.id),
+	...botOpenables.map(i => i.itemID)
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -226,7 +230,7 @@ export default class extends BotCommand {
 
 		msg.author.incrementOpenableScore(botOpenable.itemID, quantity);
 		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
-		await msg.author.addItemsToBank(loot.values(), true);
+		await msg.author.addItemsToBank(loot.values(), true, false);
 		if (loot.amount('Coins') > 0) {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
 		}

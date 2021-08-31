@@ -9,7 +9,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: BuryingActivityTaskOptions) {
 		const { boneID, quantity, userID, channelID } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 

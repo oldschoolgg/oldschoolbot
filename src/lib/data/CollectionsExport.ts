@@ -1,6 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { implings } from '../implings';
 import resolveItems from '../util/resolveItems';
 
 export interface IToReturnCollection {
@@ -1335,8 +1336,7 @@ export const allPetsCL = resolveItems([
 	'Rocky',
 	'Rift guardian',
 	'Herbi',
-	// Not obtainable yet
-	// 'Chompy chick',
+	'Chompy chick',
 	'Sraracha',
 	'Smolcano',
 	'Youngllef',
@@ -1373,8 +1373,7 @@ export const championScrolls = resolveItems([
 export const championsChallengeCL = resolveItems([...championScrolls, "Champion's cape"]);
 export const chaosDruisCL = resolveItems(['Elder chaos top', 'Elder chaos robe', 'Elder chaos hood']);
 export const chompyBirdsCL = resolveItems([
-	// Not obtainable yet
-	// 'Chompy chick',
+	'Chompy chick',
 	'Chompy bird hat (ogre bowman)',
 	'Chompy bird hat (bowman)',
 	'Chompy bird hat (ogre yeoman)',
@@ -1682,8 +1681,7 @@ export const miscellaneousCL = resolveItems([
 	'Fire cape',
 	'Dragon warhammer',
 	'Herbi',
-	// Not obtainable yet
-	// 'Chompy chick',
+	'Chompy chick',
 	'Big swordfish',
 	'Big shark',
 	'Big bass',
@@ -1719,7 +1717,7 @@ export const miscellaneousCL = resolveItems([
 	"Xeric's talisman (inert)",
 	// Not obtainable yet
 	// 'Mask of ranul',
-	// 'Elven signet',
+	'Elven signet',
 	'Enhanced crystal teleport seed',
 	'Dragonstone full helm',
 	'Dragonstone platebody',
@@ -1882,3 +1880,4 @@ export const questCL = resolveItems([
 	'Bronze gloves',
 	'Hardleather gloves'
 ]);
+export const implingsCL = implings.map(i => i[0].id);
