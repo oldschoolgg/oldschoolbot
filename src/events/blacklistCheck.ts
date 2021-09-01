@@ -1,4 +1,5 @@
-import { Event, EventStore, KlasaGuild } from 'klasa';
+import { Guild } from 'discord.js';
+import { Event, EventStore } from 'klasa';
 
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 
@@ -11,7 +12,7 @@ export default class extends Event {
 		this.enabled = this.client.production;
 	}
 
-	run(guild: KlasaGuild) {
+	run(guild: Guild) {
 		if (!guild.available) return;
 		if (
 			this.client.settings.get(ClientSettings.GuildBlacklist).includes(guild.id) ||

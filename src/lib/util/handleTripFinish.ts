@@ -4,6 +4,7 @@ import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { handlePassiveImplings } from '../../../dist/lib/implings';
 import MinionCommand from '../../commands/Minion/minion';
 import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { Offerables } from '../data/offerData';
@@ -43,6 +44,23 @@ export async function handleTripFinish(
 		const GP = loot[COINS_ID];
 		if (typeof GP === 'number') {
 			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
+		}
+	}
+
+	const imp = handlePassiveImplings(user, data);
+	if (imp) {
+		if (imp.bank.length > 0) {
+			const many = imp.bank.length > 1;
+			message += `\n\nYour minion caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${
+				imp.bank
+			}.`;
+			await user.addItemsToBank(imp.bank, true);
+		}
+
+		if (imp.missed.length > 0) {
+			message += `\n\nYou missed out on these implings, because your hunter level is too low: ${imp.missed
+				.map(m => m.name)
+				.join(', ')}.`;
 		}
 	}
 

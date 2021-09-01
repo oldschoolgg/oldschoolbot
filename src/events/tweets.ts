@@ -4,6 +4,7 @@ import { Event, EventStore } from 'klasa';
 import Twit from 'twit';
 
 import { twitterAppConfig } from '../config';
+import { getGuildSettingsCached } from '../lib/settings/settings';
 import { sendToChannelID } from '../lib/util/webhook';
 
 const ALL_TWITTERS = [
@@ -186,7 +187,7 @@ export default class extends Event {
 		this.sendTweet(formattedTweet);
 	}
 
-	sendTweet({ text, url, name, avatar, image, id, authorURL }: Tweet) {
+	async sendTweet({ text, url, name, avatar, image, id, authorURL }: Tweet) {
 		const embed = new MessageEmbed()
 			.setDescription(`\n ${text}`)
 			.setColor(1_942_002)
@@ -207,19 +208,21 @@ export default class extends Event {
 				.catch(() => null);
 		}
 
-		this.client.guilds.cache
-			.filter(guild => Boolean(guild.settings.get(key as string)))
-			.map(guild => {
-				const channel = guild.channels.cache.get(guild.settings.get(key) as string);
-				if (
-					channel &&
-					channel instanceof TextChannel &&
-					channel.postable &&
-					channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.EMBED_LINKS) &&
-					channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.SEND_MESSAGES)
-				) {
-					sendToChannelID(this.client, channel.id, { content: `<${url}>`, embeds: [embed] });
-				}
-			});
+		for (const guild of this.client.guilds.cache.values()) {
+			const settings = getGuildSettingsCached(guild);
+			if (!settings) continue;
+			if (!settings.get(key as string)) continue;
+
+			const channel = guild.channels.cache.get(settings.get(key) as string);
+			if (
+				channel &&
+				channel instanceof TextChannel &&
+				channel.postable &&
+				channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.EMBED_LINKS) &&
+				channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.SEND_MESSAGES)
+			) {
+				sendToChannelID(this.client, channel.id, { content: `<${url}>`, embeds: [embed] });
+			}
+		}
 	}
 }

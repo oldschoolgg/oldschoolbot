@@ -135,7 +135,7 @@ export default class extends Extendable {
 			.get(UserSettings.FavoriteAlchables)
 			.filter(id => this.bank().has(id))
 			.map(getOSItem)
-			.filter(i => i.highalch > 0)
+			.filter(i => i.highalch > 0 && i.tradeable)
 			.sort((a, b) => b.highalch - a.highalch);
 	}
 }

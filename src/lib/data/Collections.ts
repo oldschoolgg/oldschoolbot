@@ -72,6 +72,7 @@ import {
 	holidayCL,
 	ICollection,
 	ILeftListStatus,
+	implingsCL,
 	IToReturnCollection,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
@@ -686,8 +687,8 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Volcanic Mine': {
-				enabled: false,
 				items: volcanicMineCL,
+				alias: ['vm', 'vmine', 'volcanic'],
 				roleCategory: ['minigames'],
 				isActivity: true
 			}
@@ -902,6 +903,10 @@ export const allCollectionLogs: ICollection = {
 			Farming: {
 				counts: false,
 				items: allFarmingItems
+			},
+			Implings: {
+				counts: false,
+				items: implingsCL
 			}
 		}
 	}
@@ -1192,7 +1197,7 @@ export async function getCollection(options: {
 		return {
 			category: 'Custom',
 			name: search,
-			collection: roleCategory,
+			collection: clItems,
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank

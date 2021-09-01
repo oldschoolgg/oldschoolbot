@@ -57,6 +57,7 @@ declare module 'klasa' {
 		analyticsInterval: NodeJS.Timeout;
 		metricsInterval: NodeJS.Timeout;
 		options: KlasaClientOptions;
+		fetchUser(id: string): Promise<KlasaUser>;
 	}
 
 	interface Command {
@@ -140,7 +141,8 @@ declare module 'discord.js' {
 	interface User {
 		addItemsToBank(
 			items: ItemBank | Bank,
-			collectionLog?: boolean
+			collectionLog?: boolean,
+			filterLoot?: boolean
 		): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }>;
 		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
 		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
