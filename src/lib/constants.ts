@@ -227,7 +227,8 @@ export const enum Tasks {
 	TrekkingActivity = 'templeTrekkingActivity',
 	KibbleActivity = 'kibbleActivity',
 	RevenantsActivity = 'revenantsActivity',
-	PestControl = 'pestControlActivity'
+	PestControl = 'pestControlActivity',
+	VolcanicMine = 'volcanicMineActivity'
 }
 
 export enum Activity {
@@ -300,7 +301,8 @@ export enum Activity {
 	Trekking = 'Trekking',
 	KibbleMaking = 'KibbleMaking',
 	Revenants = 'Revenants',
-	PestControl = 'PestControl'
+	PestControl = 'PestControl',
+	VolcanicMine = 'VolcanicMine'
 }
 
 export enum ActivityGroup {

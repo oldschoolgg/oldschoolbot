@@ -282,6 +282,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 				[itemID('Trident of the swamp')]: 10,
 				[itemID('Sanguinesti staff')]: 12,
 				[itemID('Harmonised nightmare staff')]: 15
+			},
+			{
+				[itemID('Imbued heart')]: 5
 			}
 		],
 		qpRequired: 0,

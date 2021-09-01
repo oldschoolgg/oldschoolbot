@@ -349,6 +349,10 @@ export interface RaidsOptions extends ActivityTaskOptions {
 	challengeMode: boolean;
 }
 
+export interface VolcanicMineActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions
@@ -370,4 +374,5 @@ export type ActivityTaskData =
 	| FletchingActivityTaskOptions
 	| RunecraftActivityTaskOptions
 	| TempleTrekkingActivityTaskOptions
-	| TemporossActivityTaskOptions;
+	| TemporossActivityTaskOptions
+	| VolcanicMineActivityTaskOptions;
