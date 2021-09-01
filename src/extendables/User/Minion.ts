@@ -888,9 +888,14 @@ export default class extends Extendable {
 			});
 		}
 
-		// If they reached a XP milestone, send a server notification.
+		// Ignore notifications if the user is already MAX_XP
 		if (preMax !== -1) {
-			for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, MAX_XP]) {
+			// If they reached a XP milestone, send a server notification.
+			// 500m and 5b are handled below
+			for (const XPMilestone of [
+				50_000_000, 100_000_000, 150_000_000, 200_000_000, 1_000_000_000, 2_000_000_000, 3_000_000_000,
+				4_000_000_000
+			]) {
 				if (newXP < XPMilestone) break;
 
 				if (currentXP < XPMilestone && newXP >= XPMilestone) {
@@ -903,39 +908,67 @@ export default class extends Extendable {
 					break;
 				}
 			}
-			// If they just reached 120, send a server notification.
-			if (currentLevel < 120 && newLevel >= 120) {
+
+			// Announcements with nthUser
+			for (const { type, value } of [
+				{ type: 'lvl', value: 120 },
+				{ type: 'xp', value: 500_000_000 },
+				{ type: 'xp', value: 5_000_000_000 }
+			]) {
+				// Ignore check
+				if (type === 'lvl') {
+					if (newLevel < value || currentLevel >= value || newLevel < value) continue;
+				} else if (newXP < value || currentXP >= value || newXP < value) continue;
+
 				const skillNameCased = toTitleCase(params.skillName);
-				const [usersWith] = await this.client.query<
+
+				let resultStr = '';
+				let queryValue = 0;
+
+				// Prepare the message to be sent
+				if (type === 'lvl') {
+					queryValue = convertLVLtoXP(value);
+					resultStr += `${skill.emoji} **${this.username}'s** minion, ${
+						this.minionName
+					}, just achieved level ${value} in ${skillNameCased}! They are the {nthUser} to get level ${value} in ${skillNameCased}.${
+						!this.isIronman ? '' : ` They are the {nthIron} to get level ${value} in ${skillNameCased}`
+					}`;
+				} else {
+					queryValue = value;
+					resultStr += `${skill.emoji} **${this.username}'s** minion, ${
+						this.minionName
+					}, just achieved ${toKMB(value)} XP in ${skillNameCased}! They are the {nthUser} to get ${toKMB(
+						value
+					)} in ${skillNameCased}.${
+						!this.isIronman ? '' : ` They are the {nthIron} to get ${toKMB(value)} XP in ${skillNameCased}`
+					}`;
+				}
+
+				// Query nthUser and nthIronman
+				const [nthUser] = await this.client.query<
 					{
 						count: string;
 					}[]
-				>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${convertLVLtoXP(120)};`);
-
-				let str = `${skill.emoji} **${this.username}'s** minion, ${
-					this.minionName
-				}, just achieved level 120 in ${skillNameCased}! They are the ${formatOrdinal(
-					parseInt(usersWith.count) + 1
-				)} to get 120 ${skillNameCased}.`;
-
+				>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${queryValue};`);
+				resultStr = resultStr.replace('{nthUser}', formatOrdinal(Number(nthUser.count)));
 				if (this.isIronman) {
-					const [ironmenWith] = await this.client.query<
+					const [nthIron] = await this.client.query<
 						{
 							count: string;
 						}[]
 					>(
-						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${
-							params.skillName
-						}" >= ${convertLVLtoXP(120)};`
+						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${queryValue};`
 					);
-					str += ` They are the ${formatOrdinal(parseInt(ironmenWith.count) + 1)} Ironman to get 120.`;
+					resultStr = resultStr.replace('{nthIron}', formatOrdinal(Number(nthIron.count)));
 				}
-				this.client.emit(Events.ServerNotification, str);
+
+				this.client.emit(Events.ServerNotification, resultStr);
 			}
+
 			await this.settings.update(`skills.${params.skillName}`, Math.floor(newXP));
 		}
 
-		if (currentXP >= 5_000_000_000) {
+		if (currentXP >= MAX_XP) {
 			let xpStr = '';
 			if (params.duration && !params.minimal) {
 				xpStr += `You received no XP because you have ${toKMB(MAX_XP)} ${name} XP already.`;
