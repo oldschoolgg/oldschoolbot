@@ -14,7 +14,7 @@ import {
 import { chunk, objectEntries, objectValues, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 
-import { Channel, SILENT_ERROR } from '../constants';
+import { SILENT_ERROR } from '../constants';
 
 export type customComponentButtonFunction =
 	| ((msg: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>)
@@ -36,7 +36,10 @@ interface IOptions {
 	deleteOnSuccess?: boolean;
 }
 
-const userCache: Record<string, KlasaMessage> = {};
+const userCache = new Map<
+	string,
+	{ message: KlasaMessage; collectors: { txt: MessageCollector; btn: MessageComponentInteractionCollector } }
+>();
 
 export class customMessageComponents {
 	public rawButtons: customMessageButtonOptions[] = [];
@@ -111,6 +114,7 @@ export class customMessageComponents {
 		}
 
 		this.stopCollectors(type);
+		userCache.delete(message.author.id);
 
 		if ((type === 'timelimit' && this.options.timeLimitThrows) || type === 'error') {
 			throw new Error(SILENT_ERROR);
@@ -160,10 +164,7 @@ export class customMessageComponents {
 			message.author = user;
 			await interactionFunction.function!(message);
 		} else {
-			await this.clearMessage(message, 'interafction_not_found');
-			return message.channel.send(
-				`It was not possible to execute this interaction. Please, report this in the <@${Channel.Developers}> channel on the support server.`
-			);
+			await this.clearMessage(message, 'interaction_not_found');
 		}
 		// Check if the interaction is a final interaction or one that just execute and remove the btn from the message
 		let thisSelection = this.rawButtons.find(b => b.customID === identifier);
@@ -179,7 +180,7 @@ export class customMessageComponents {
 			delete this.functions[identifier];
 			// Update the message
 			await message.edit({ components: this.getButtons() });
-			this._client!.oneCommandAtATimeCache.delete(user!.id);
+			setTimeout(() => this._client!.oneCommandAtATimeCache.delete(user!.id), 300);
 		} else {
 			await this.clearMessage(message, 'success');
 		}
@@ -205,27 +206,31 @@ export class customMessageComponents {
 		data.content = (data.content ?? '') + this.getCharText();
 
 		const message = await channel.send(data);
-		// Clear old btns if they exist
-		if (userCache[user.id] && userCache[user.id].id !== message.id && this._client) {
-			await this.clearMessage(userCache[user.id], 'old_message_text_reply');
-		}
-		userCache[user.id] = message;
 		if (data.components) {
-			try {
-				// Collect typed messages (c for confirm, etc)
-				this.collectors.txt = new MessageCollector(message.channel as TextChannel, {
-					filter: (_msg: Message) => {
-						const allowsTypedChars = objectValues(this.functions)
-							.filter(f => f.char)
-							.map(f => f.char!.toLowerCase());
-						return (
-							_msg.author.id === user!.id &&
-							allowsTypedChars.length > 0 &&
-							allowsTypedChars.includes(_msg.content.toLowerCase())
-						);
-					},
-					time: this.options.time
-				}).on('collect', async (msg: KlasaMessage) => {
+			// Clear old btns if they exist
+			if (userCache.has(user.id)) {
+				const cache = userCache.get(user.id)!;
+				cache.collectors.txt.stop('old_message_text_reply');
+				cache.collectors.btn.stop('old_message_text_reply');
+				userCache.delete(user.id);
+			}
+			// Collect typed messages (c for confirm, etc)
+			this.collectors.txt = new MessageCollector(message.channel as TextChannel, {
+				filter: (_msg: Message) => {
+					const allowsTypedChars = objectValues(this.functions)
+						.filter(f => f.char)
+						.map(f => f.char!.toLowerCase());
+					return (
+						_msg.author.id === user!.id &&
+						allowsTypedChars.length > 0 &&
+						allowsTypedChars.includes(_msg.content.toLowerCase())
+					);
+				},
+				time: this.options.time
+			}).on('collect', async (msg: KlasaMessage) => {
+				if (userCache.get(user!.id) && userCache.get(user!.id)!.message.id !== message.id) {
+					await this.clearMessage(message, 'old_message_text_reply');
+				} else {
 					const functionExists = objectEntries(this.functions).find(f => {
 						return f[1].char?.toLowerCase() === msg.content.toLowerCase();
 					});
@@ -234,36 +239,47 @@ export class customMessageComponents {
 					} else {
 						await this.clearMessage(message, 'invalid_request');
 					}
+				}
+			});
+
+			// Collect component interactions (clicking on btns or selecting an option on a dropdown)
+			this.collectors.btn = message
+				.createMessageComponentInteractionCollector({
+					filter: i => {
+						i.deferUpdate();
+						if (i.user.id !== user!.id) {
+							i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+							return false;
+						}
+						return true;
+					},
+					time: this.options.time
+				})
+				.on('collect', async interaction => {
+					if (userCache.get(user!.id) && userCache.get(user!.id)!.message.id !== message.id) {
+						await this.clearMessage(message, 'old_message_text_reply');
+					} else {
+						await this.verifyInteraction(message, user!, interaction.customID);
+					}
+				})
+				// Only 1 collector needs to handle the ending
+				.on('end', async () => {
+					if (userCache.get(user!.id) && userCache.get(user!.id)!.message.id === message.id) {
+						userCache.delete(user!.id);
+					}
+					if (this._client !== undefined) {
+						setTimeout(() => this._client!.oneCommandAtATimeCache.delete(user!.id), 300);
+					}
+					// await this.clearMessage(message);
 				});
 
-				// Collect component interactions (clicking on btns or selecting an option on a dropdown)
-				this.collectors.btn = message
-					.createMessageComponentInteractionCollector({
-						filter: i => {
-							i.deferUpdate();
-							if (i.user.id !== user!.id) {
-								i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-								return false;
-							}
-							return true;
-						},
-						time: this.options.time
-					})
-					.on('collect', async interaction => {
-						await this.verifyInteraction(message, user!, interaction.customID);
-					})
-					// Only 1 collector needs to handle the ending
-					.on('end', async () => {
-						if (userCache[user!.id] && userCache[user!.id].id === message.id) delete userCache[user!.id];
-						if (this._client !== undefined) this._client!.oneCommandAtATimeCache.delete(user!.id);
-						await this.clearMessage(message);
-					});
-			} finally {
-				if (userCache[user.id].id === message.id) delete userCache[user.id];
-				if (this._client !== undefined) {
-					setTimeout(() => this._client!.oneCommandAtATimeCache.delete(user!.id), 300);
+			userCache.set(user.id, {
+				message,
+				collectors: {
+					txt: this.collectors.txt,
+					btn: this.collectors.btn
 				}
-			}
+			});
 		}
 		return message;
 	}
