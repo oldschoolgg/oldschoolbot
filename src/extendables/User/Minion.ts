@@ -888,7 +888,7 @@ export default class extends Extendable {
 			});
 		}
 
-		// Ifnore notifications if the user is already MAX_XP
+		// Ignore notifications if the user is already MAX_XP
 		if (preMax !== -1) {
 			// If they reached a XP milestone, send a server notification.
 			// 500m and 5b are handled below
@@ -910,15 +910,15 @@ export default class extends Extendable {
 			}
 
 			// Announcements with nthUser
-			for (const _this of [
+			for (const { type, value } of [
 				{ type: 'lvl', value: 120 },
 				{ type: 'xp', value: 500_000_000 },
 				{ type: 'xp', value: 5_000_000_000 }
 			]) {
 				// Ignore check
-				if (_this.type === 'lvl') {
-					if (newLevel < _this.value || currentLevel >= _this.value || newLevel < _this.value) continue;
-				} else if (newXP < _this.value || currentXP >= _this.value || newXP < _this.value) continue;
+				if (type === 'lvl') {
+					if (newLevel < value || currentLevel >= value || newLevel < value) continue;
+				} else if (newXP < value || currentXP >= value || newXP < value) continue;
 
 				const skillNameCased = toTitleCase(params.skillName);
 
@@ -926,29 +926,21 @@ export default class extends Extendable {
 				let queryValue = 0;
 
 				// Prepare the message to be sent
-				if (_this.type === 'lvl') {
-					queryValue = convertLVLtoXP(_this.value);
+				if (type === 'lvl') {
+					queryValue = convertLVLtoXP(value);
 					resultStr += `${skill.emoji} **${this.username}'s** minion, ${
 						this.minionName
-					}, just achieved level ${_this.value} in ${skillNameCased}! They are the {nthUser} to get level ${
-						_this.value
-					} in ${skillNameCased}.${
-						!this.isIronman
-							? ''
-							: ` They are the {nthIron} to get level ${_this.value} in ${skillNameCased}`
+					}, just achieved level ${value} in ${skillNameCased}! They are the {nthUser} to get level ${value} in ${skillNameCased}.${
+						!this.isIronman ? '' : ` They are the {nthIron} to get level ${value} in ${skillNameCased}`
 					}`;
 				} else {
-					queryValue = _this.value;
+					queryValue = value;
 					resultStr += `${skill.emoji} **${this.username}'s** minion, ${
 						this.minionName
-					}, just achieved ${toKMB(
-						_this.value
-					)} XP in ${skillNameCased}! They are the {nthUser} to get ${toKMB(
-						_this.value
+					}, just achieved ${toKMB(value)} XP in ${skillNameCased}! They are the {nthUser} to get ${toKMB(
+						value
 					)} in ${skillNameCased}.${
-						!this.isIronman
-							? ''
-							: ` They are the {nthIron} to get ${toKMB(_this.value)} XP in ${skillNameCased}`
+						!this.isIronman ? '' : ` They are the {nthIron} to get ${toKMB(value)} XP in ${skillNameCased}`
 					}`;
 				}
 
