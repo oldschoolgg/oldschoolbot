@@ -1,4 +1,4 @@
-import { roll } from 'e';
+import { roll, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Monsters, Openables } from 'oldschooljs';
 import SimpleOpenable from 'oldschooljs/dist/structures/SimpleOpenable';
@@ -83,7 +83,7 @@ for (const imp of implings) {
 const IMPLING_CHANCE_PER_MINUTE = 65;
 
 export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
-	const minutes = 100_000; // Math.floor(data.duration / Time.Minute);
+	const minutes = Math.floor(data.duration / Time.Minute);
 
 	if (minutes < 4) return null;
 	const level = user.skillLevel(SkillsEnum.Hunter);
