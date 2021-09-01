@@ -55,9 +55,6 @@ export default class extends BotCommand {
 		if (!name) {
 			return msg.channel.send(await this.showAvailable(msg));
 		}
-		if (quantity > 100) {
-			return msg.channel.send('Please, limit your openings to 100 at time. My PC sends its regards.');
-		}
 		await msg.author.settings.sync(true);
 		const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === name.toLowerCase());
 		if (clue) {

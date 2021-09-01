@@ -176,7 +176,15 @@ export async function handleTripFinish(
 						label: `Loot ${imp.bank.amount(i.id)}x ${impOpenable.name}`,
 						style: 'SECONDARY',
 						customID: `imp_${i.id}`,
-						onClick: msg => client.commands.get('open')!.run(msg, [imp.bank.amount(i.id), impOpenable.name])
+						removeAfterClick: true,
+						onClick: msg =>
+							client.commands
+								.get('open')!
+								.run(msg, [imp.bank.amount(i.id), impOpenable.aliases[0] ?? impOpenable.name]),
+						messageCharacter: `i${impOpenable.aliases[0]
+							.split(' ')
+							.map(s => s[0])
+							.join('')}`
 					});
 				}
 			});

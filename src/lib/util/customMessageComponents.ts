@@ -1,9 +1,11 @@
 import {
 	DMChannel,
+	Message,
 	MessageActionRowComponentResolvable,
 	MessageButton,
 	MessageButtonOptions,
-	MessageComponentInteraction,
+	MessageCollector,
+	MessageComponentInteractionCollector,
 	MessageOptions,
 	NewsChannel,
 	TextChannel,
@@ -12,7 +14,7 @@ import {
 import { chunk, objectEntries, objectValues, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 
-import { SILENT_ERROR } from '../constants';
+import { Channel, SILENT_ERROR } from '../constants';
 
 export type customComponentButtonFunction =
 	| ((msg: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>)
@@ -23,7 +25,6 @@ export type TComponentSelection = Record<string, { function?: customComponentBut
 export type customMessageButtonOptions = MessageButtonOptions & {
 	onClick?: customComponentButtonFunction;
 	messageCharacter?: string;
-	closeAll?: boolean;
 	removeAfterClick?: boolean;
 };
 
@@ -35,15 +36,21 @@ interface IOptions {
 	deleteOnSuccess?: boolean;
 }
 
-const userCache: Record<string, string> = {};
+const userCache: Record<string, KlasaMessage> = {};
 
 export class customMessageComponents {
+	public rawButtons: customMessageButtonOptions[] = [];
 	public buttons: MessageActionRowComponentResolvable[] = [];
 	public functions: TComponentSelection = {};
 	public options: IOptions = {
 		time: Time.Second * 15,
 		chunkSize: 5
 	};
+
+	private collectors: {
+		btn: MessageComponentInteractionCollector | undefined;
+		txt: MessageCollector | undefined;
+	} = { btn: undefined, txt: undefined };
 
 	private _client: KlasaClient | undefined = undefined;
 
@@ -77,6 +84,7 @@ export class customMessageComponents {
 				this.functions[b.customID!] = { char: b.messageCharacter };
 			}
 		}
+		this.rawButtons.push(b);
 		this.buttons.push(new MessageButton(b));
 		return this;
 	}
@@ -101,10 +109,79 @@ export class customMessageComponents {
 		} else {
 			await message.edit({ components: [] });
 		}
+
+		this.stopCollectors(type);
+
 		if ((type === 'timelimit' && this.options.timeLimitThrows) || type === 'error') {
 			throw new Error(SILENT_ERROR);
 		} else if (type === 'sucess' && this.options.deleteOnSuccess) {
 			await message.delete();
+		}
+	}
+
+	private getCharText(): string {
+		let returnStr = '';
+		const allowsTypedChars = objectValues(this.functions)
+			.filter(f => f.char)
+			.map(f => f.char!.toLowerCase());
+
+		if (allowsTypedChars.length > 0) {
+			returnStr += '\n** ** ** **\n';
+		}
+		const textShortcuts = [];
+		for (const d of this.rawButtons as customMessageButtonOptions[]) {
+			if (this.functions[d.customID!] && d.messageCharacter) {
+				textShortcuts.push(
+					`${(d as customMessageButtonOptions).label!.replace(/\[/g, '`').replace(/]/g, '`')}`
+				);
+			}
+		}
+		if (textShortcuts.length > 0) returnStr += `${textShortcuts.join(', ')}** ** ** **`;
+		return returnStr;
+	}
+
+	private stopCollectors(reason?: string) {
+		for (const col of objectValues(this.collectors)) {
+			if (col) if (!col.ended) col.stop(reason ?? 'unknown reason');
+		}
+	}
+
+	private async verifyInteraction(message: KlasaMessage, user: KlasaUser, identifier: string) {
+		// Ignore if minion is busy
+		if (user.minionIsBusy || (this._client && this._client.oneCommandAtATimeCache.has(user.id))) {
+			await this.clearMessage(message, 'busy_or_one_at_time');
+			return message.channel.send("You are busy and can't do this at this time.");
+		}
+		// If the client is set, set the user as oneAtTime
+		if (this._client !== undefined) this._client.oneCommandAtATimeCache.add(user.id);
+		// Run the interaction
+		const interactionFunction = this.functions[identifier];
+		if (interactionFunction && interactionFunction.function) {
+			message.author = user;
+			await interactionFunction.function!(message);
+		} else {
+			await this.clearMessage(message, 'interafction_not_found');
+			return message.channel.send(
+				`It was not possible to execute this interaction. Please, report this in the <@${Channel.Developers}> channel on the support server.`
+			);
+		}
+		// Check if the interaction is a final interaction or one that just execute and remove the btn from the message
+		let thisSelection = this.rawButtons.find(b => b.customID === identifier);
+		if (thisSelection && (thisSelection as customMessageButtonOptions).removeAfterClick === true) {
+			// Remove the buttons from this message
+			[this.rawButtons, this.buttons].map(b => {
+				b.splice(
+					b.findIndex(f => f.customID === thisSelection!.customID),
+					1
+				);
+			});
+			// Remove the attached button function
+			delete this.functions[identifier];
+			// Update the message
+			await message.edit({ components: this.getButtons() });
+			this._client!.oneCommandAtATimeCache.delete(user!.id);
+		} else {
+			await this.clearMessage(message, 'success');
 		}
 	}
 
@@ -125,42 +202,45 @@ export class customMessageComponents {
 		if (typeof data === 'string') data = { content: data };
 		if (this.getButtons()) data.components = this.getButtons();
 
-		const allowsTypedChars = objectValues(this.functions)
-			.filter(f => f.char)
-			.map(f => f.char!.toLowerCase());
-
-		if (allowsTypedChars.length > 0) {
-			data.content += '\n** ** ** **\n';
-		}
-		const textShortcuts = [];
-		for (const d of this.buttons as customMessageButtonOptions[]) {
-			if (this.functions[d.customID!]) {
-				textShortcuts.push(
-					`${(d as customMessageButtonOptions).label!.replace(/\[/g, '`').replace(/]/g, '`')}`
-				);
-			}
-		}
-		if (textShortcuts.length > 0) data.content += `${textShortcuts.join(', ')}** ** ** **`;
+		data.content = (data.content ?? '') + this.getCharText();
 
 		const message = await channel.send(data);
-		userCache[user.id] = message.id;
+		// Clear old btns if they exist
+		if (userCache[user.id] && userCache[user.id].id !== message.id && this._client) {
+			await this.clearMessage(userCache[user.id], 'old_message_text_reply');
+		}
+		userCache[user.id] = message;
 		if (data.components) {
 			try {
-				const selection = await Promise.race([
-					message.channel.awaitMessages({
-						time: this.options.time,
-						max: 1,
-						errors: ['time'],
-						filter: _msg => {
-							return (
-								allowsTypedChars.length > 0 &&
-								_msg.author.id === user!.id &&
-								allowsTypedChars.includes(_msg.content.toLowerCase())
-							);
-						}
-					}),
-					message.awaitMessageComponentInteraction({
+				// Collect typed messages (c for confirm, etc)
+				this.collectors.txt = new MessageCollector(message.channel as TextChannel, {
+					filter: (_msg: Message) => {
+						const allowsTypedChars = objectValues(this.functions)
+							.filter(f => f.char)
+							.map(f => f.char!.toLowerCase());
+						return (
+							_msg.author.id === user!.id &&
+							allowsTypedChars.length > 0 &&
+							allowsTypedChars.includes(_msg.content.toLowerCase())
+						);
+					},
+					time: this.options.time
+				}).on('collect', async (msg: KlasaMessage) => {
+					const functionExists = objectEntries(this.functions).find(f => {
+						return f[1].char?.toLowerCase() === msg.content.toLowerCase();
+					});
+					if (functionExists && functionExists.length > 0 && functionExists[0]) {
+						await this.verifyInteraction(message, user!, functionExists[0]);
+					} else {
+						await this.clearMessage(message, 'invalid_request');
+					}
+				});
+
+				// Collect component interactions (clicking on btns or selecting an option on a dropdown)
+				this.collectors.btn = message
+					.createMessageComponentInteractionCollector({
 						filter: i => {
+							i.deferUpdate();
 							if (i.user.id !== user!.id) {
 								i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 								return false;
@@ -169,44 +249,17 @@ export class customMessageComponents {
 						},
 						time: this.options.time
 					})
-				]);
-
-				if (user.minionIsBusy || (this._client && this._client.oneCommandAtATimeCache.has(user.id))) {
-					await this.clearMessage(message, 'busy_or_one_at_time');
-					return message;
-				}
-
-				let response = '';
-				// noinspection SuspiciousTypeOfGuard
-				if (selection instanceof MessageComponentInteraction) {
-					response = selection.customID;
-				} else {
-					// Ignore text responses from old messages
-					if (userCache[user.id] !== message.id) {
-						await this.clearMessage(message, 'old_message_text_reply');
-						return message;
-					}
-					response = selection.entries().next().value[1].content.toLowerCase();
-					const functionExists = objectEntries(this.functions).find(f => {
-						return f[1].char?.toLowerCase() === response.toLowerCase();
+					.on('collect', async interaction => {
+						await this.verifyInteraction(message, user!, interaction.customID);
+					})
+					// Only 1 collector needs to handle the ending
+					.on('end', async () => {
+						if (userCache[user!.id] && userCache[user!.id].id === message.id) delete userCache[user!.id];
+						if (this._client !== undefined) this._client!.oneCommandAtATimeCache.delete(user!.id);
+						await this.clearMessage(message);
 					});
-					if (functionExists) {
-						// eslint-disable-next-line prefer-destructuring
-						response = functionExists[0];
-					}
-				}
-				if (this._client !== undefined) {
-					this._client.oneCommandAtATimeCache.add(user.id);
-				}
-				if (this.functions && this.functions[response] && this.functions[response].function) {
-					message.author = user;
-					this.functions[response].function!(message);
-				}
-				await this.clearMessage(message, 'sucess');
-			} catch (e) {
-				await this.clearMessage(message, e instanceof Error ? 'error' : 'timelimit');
 			} finally {
-				if (userCache[user.id] === message.id) delete userCache[user.id];
+				if (userCache[user.id].id === message.id) delete userCache[user.id];
 				if (this._client !== undefined) {
 					setTimeout(() => this._client!.oneCommandAtATimeCache.delete(user!.id), 300);
 				}
