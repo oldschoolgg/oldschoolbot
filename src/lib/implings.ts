@@ -88,15 +88,15 @@ export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions
 	if (minutes < 4) return null;
 	const level = user.skillLevel(SkillsEnum.Hunter);
 
-	let bank = new Bank();
-	const missed: SimpleOpenable[] = [];
+	const bank = new Bank();
+	const missed = new Bank();
 	for (let i = 0; i < minutes; i++) {
 		const gotImp = roll(IMPLING_CHANCE_PER_MINUTE);
 		if (gotImp) {
 			const [imp, , levelReq, inhibitor] = ImplingTable.roll()!.item;
 			if (inhibitor && !inhibitor(data)) continue;
 			if (level < levelReq) {
-				missed.push(imp);
+				missed.add(imp.id);
 			} else {
 				bank.add(imp.id);
 			}

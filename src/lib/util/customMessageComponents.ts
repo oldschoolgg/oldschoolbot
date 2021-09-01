@@ -23,6 +23,8 @@ export type TComponentSelection = Record<string, { function?: customComponentBut
 export type customMessageButtonOptions = MessageButtonOptions & {
 	onClick?: customComponentButtonFunction;
 	messageCharacter?: string;
+	closeAll?: boolean;
+	removeAfterClick?: boolean;
 };
 
 interface IOptions {

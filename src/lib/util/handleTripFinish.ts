@@ -1,13 +1,13 @@
 import { Message, MessageAttachment, MessageCollector, MessageOptions, TextChannel } from 'discord.js';
 import { roll, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { Bank, Openables } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { handlePassiveImplings } from '../../../dist/lib/implings';
 import MinionCommand from '../../commands/Minion/minion';
 import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { Offerables } from '../data/offerData';
+import { handlePassiveImplings } from '../implings';
 import ClueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { ClientSettings } from '../settings/types/ClientSettings';
@@ -48,21 +48,6 @@ export async function handleTripFinish(
 	}
 
 	const imp = handlePassiveImplings(user, data);
-	if (imp) {
-		if (imp.bank.length > 0) {
-			const many = imp.bank.length > 1;
-			message += `\n\nYour minion caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${
-				imp.bank
-			}.`;
-			await user.addItemsToBank(imp.bank, true);
-		}
-
-		if (imp.missed.length > 0) {
-			message += `\n\nYou missed out on these implings, because your hunter level is too low: ${imp.missed
-				.map(m => m.name)
-				.join(', ')}.`;
-		}
-	}
 
 	const attachable = attachment
 		? attachment instanceof MessageAttachment
@@ -89,6 +74,21 @@ export async function handleTripFinish(
 		);
 		// Caskets (when doing clues)
 		ClueTiers.filter(tier => loot[tier.id]).forEach(tier => lootClueChests.add(tier.id, loot[tier.id]));
+	}
+
+	// Imp message
+	if (imp) {
+		if (imp.bank.length > 0) {
+			const many = imp.bank.length > 1;
+			options.content += `\n\nYour minion caught ${many ? 'some' : 'an'} impling${
+				many ? 's' : ''
+			}, you received: ${imp.bank}.`;
+			await user.addItemsToBank(imp.bank, true);
+		}
+
+		if (imp.missed.length > 0) {
+			options.content += `\n\nYou missed out on these implings, because your hunter level is too low: ${imp.missed}.`;
+		}
 	}
 
 	// If Patreon
@@ -166,6 +166,19 @@ export async function handleTripFinish(
 				emoji: Emoji.Slayer,
 				onClick: msg => client.commands.get('slayertask')!.run(msg, [undefined]),
 				messageCharacter: 'y'
+			});
+		}
+		if (imp && imp.bank.length > 0) {
+			imp.bank.forEach(i => {
+				const impOpenable = Openables.find(c => c.id === i.id);
+				if (impOpenable) {
+					components.addButton({
+						label: `Loot ${imp.bank.amount(i.id)}x ${impOpenable.name}`,
+						style: 'SECONDARY',
+						customID: `imp_${i.id}`,
+						onClick: msg => client.commands.get('open')!.run(msg, [imp.bank.amount(i.id), impOpenable.name])
+					});
+				}
 			});
 		}
 	} else {
