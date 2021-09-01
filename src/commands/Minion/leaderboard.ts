@@ -448,7 +448,7 @@ export default class extends BotCommand {
 			const query = `SELECT
 								u.id,
 								${skillsVals.map(s => `"skills.${s.id}"`)},
-								${skillsVals.map(s => `"skills.${s.id}"`).join(' + ')} as totalxp,
+								${skillsVals.map(s => `"skills.${s.id}"::int8`).join(' + ')} as totalxp,
 								u."minion.ironman"
 							FROM
 								users u
