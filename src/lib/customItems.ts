@@ -82,7 +82,7 @@ setCustomItem(
 			}
 		}
 	},
-	10_000_000
+	100_000_000
 );
 
 setCustomItem(8871, 'Dwarven crate', 'Mystery box', {}, 100_000);
@@ -1927,3 +1927,4 @@ setCustomItem(
 setCustomItem(50_043, 'Infernal impling jar', 'Coal', {}, 50_000);
 setCustomItem(50_044, 'Eternal impling jar', 'Coal', {}, 50_000);
 setCustomItem(50_045, 'Mystery impling jar', 'Coal', {}, 50_000);
+setCustomItem(50_046, 'Rumble token', 'Coal', {}, 1000);

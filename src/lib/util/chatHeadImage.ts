@@ -3,9 +3,11 @@ import { Canvas } from 'canvas-constructor';
 import { MessageAttachment } from 'discord.js';
 import * as fs from 'fs';
 
+import { canvasImageFromBuffer } from './canvasUtil';
+
 registerFont('./src/lib/resources/osrs-font-quill-8.ttf', { family: 'Regular' });
 
-const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
+export const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
 const mejJalChatHead = fs.readFileSync('./src/lib/resources/images/mejJal.png');
 const janeChatHead = fs.readFileSync('./src/lib/resources/images/jane.png');
 const santaChatHead = fs.readFileSync('./src/lib/resources/images/santa.png');
@@ -21,7 +23,7 @@ export const chatHeads = {
 	izzy: izzyChatHead,
 	alry: alryTheAnglerChatHead,
 	// monkey: monkeyChildChatHead,
-	wurMu: monkeyChildChatHead
+	placeHolderName: monkeyChildChatHead
 };
 
 const names: Record<keyof typeof chatHeads, string> = {
@@ -30,16 +32,18 @@ const names: Record<keyof typeof chatHeads, string> = {
 	santa: 'Santa',
 	izzy: "Cap'n Izzy No-Beard",
 	alry: 'Alry the Angler',
-	wurMu: 'Wur Mu'
+	placeHolderName: 'placeHolderName'
 };
 
 export default async function chatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
 	const canvas = new Canvas(519, 142);
 	canvas.context.imageSmoothingEnabled = false;
+	const headImage = await canvasImageFromBuffer(chatHeads[head]);
+	const bg = await canvasImageFromBuffer(textBoxFile);
 
 	const image = await canvas
-		.addImage(textBoxFile, 0, 0)
-		.addImage(chatHeads[head], 28, 21)
+		.addImage(bg as any, 0, 0)
+		.addImage(headImage as any, 28, bg.height / 2 - headImage.height / 2)
 		.setTextAlign('center')
 		.setTextFont('16px RuneScape Quill 8')
 
