@@ -64,7 +64,8 @@ export const MysteryImpling = new SimpleOpenable({
 		.add('Tradeable Mystery Box')
 		.add('Pet Mystery Box')
 		.add('Equippable mystery box')
-		.every('Clue scroll (grandmaster)')
+		.add('Clue scroll (grandmaster)')
+		.add('Clue scroll (hard)')
 		.tertiary(1_000_000, 'Mystery impling jar')
 });
 
