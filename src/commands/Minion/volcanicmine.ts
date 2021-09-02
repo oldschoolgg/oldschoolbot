@@ -180,7 +180,9 @@ export default class extends BotCommand {
 			.add('Numulite', 30);
 
 		// Activity boosts
-		if (userMiningLevel >= 71 && userSkillingGear.hasEquipped('Crystal pickaxe')) {
+		if (userMiningLevel >= 99 && userSkillingGear.hasEquipped('Dwarven pickaxe')) {
+			boosts.push('2x boost for having a Dwarven pickaxe equipped.');
+		} else if (userMiningLevel >= 71 && userSkillingGear.hasEquipped('Crystal pickaxe')) {
 			boosts.push('50% boost for having a Crystal pickaxe equipped.');
 		} else if (userMiningLevel >= 61 && userSkillingGear.hasEquipped('Dragon pickaxe')) {
 			boosts.push('30% boost for having a Dragon pickaxe equipped.');
@@ -208,6 +210,9 @@ export default class extends BotCommand {
 					: 'No prayer potion usage for having 80+ prayer and a Dragonbone necklace equipped.'
 			);
 		}
+
+		if (msg.author.usingPet('Doug')) boosts.push('20% more Mining XP for having Doug helping you!');
+		if (msg.author.usingPet('Flappy')) boosts.push('2x more loot and points for having Flappy helping you!');
 
 		suppliesUsage.multiply(numberOfGames);
 		if (!msg.author.owns(suppliesUsage)) {
