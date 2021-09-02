@@ -10,13 +10,13 @@
 		"dev": "yarn wipedist && tsc -w -p src"
 	},
 	"dependencies": {
-		"@octokit/graphql": "^4.7.0",
+		"@octokit/graphql": "^4.8.0",
 		"@sapphire/discord-utilities": "^2.1.5",
 		"@sapphire/discord.js-utilities": "^3.0.0-next.600390f4.0",
 		"@sapphire/time-utilities": "^1.3.7",
 		"@sapphire/utilities": "^1.4.7",
 		"@sapphire/type": "^2.1.0",
-		"@sentry/node": "^6.11.0",
+		"@sentry/node": "^6.12.0",
 		"@sinclair/typebox": "^0.12.9",
 		"bufferutil": "^4.0.3",
 		"canvas": "^2.8.0",

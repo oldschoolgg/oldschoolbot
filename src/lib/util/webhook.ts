@@ -1,4 +1,12 @@
-import { MessageAttachment, MessageEmbed, Permissions, TextChannel, WebhookClient } from 'discord.js';
+import {
+	MessageAttachment,
+	MessageEmbed,
+	MessageOptions,
+	Permissions,
+	TextChannel,
+	Util,
+	WebhookClient
+} from 'discord.js';
 import { KlasaClient } from 'klasa';
 import PQueue from 'p-queue';
 
@@ -77,7 +85,7 @@ export async function sendToChannelID(
 		if (data.embed) embeds.push(data.embed);
 		if (channel instanceof WebhookClient) {
 			try {
-				await channel.send({
+				await webhookSend(channel, {
 					content: data.content,
 					files,
 					embeds
@@ -97,4 +105,30 @@ export async function sendToChannelID(
 			});
 		}
 	});
+}
+
+async function webhookSend(channel: WebhookClient, input: MessageOptions) {
+	const maxLength = 2000;
+
+	if (input.content && input.content.length > maxLength) {
+		// Moves files + components to the final message.
+		const split = Util.splitMessage(input.content, { maxLength });
+		const newPayload = { ...input };
+		// Separate files and components from payload for interactions
+		const { files, embeds } = newPayload;
+		delete newPayload.files;
+		delete newPayload.embeds;
+		await webhookSend(channel, { ...newPayload, content: split[0] });
+
+		for (let i = 1; i < split.length; i++) {
+			if (i + 1 === split.length) {
+				// Add files to last msg, and components for interactions to the final message.
+				await webhookSend(channel, { files, embeds, content: split[i] });
+			} else {
+				await webhookSend(channel, { content: split[i] });
+			}
+		}
+		return;
+	}
+	await channel.send({ content: input.content, embeds: input.embeds, files: input.files });
 }

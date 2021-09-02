@@ -81,7 +81,16 @@ export const warmGear = resolveItems([
 	'Graahk legs',
 	'Kyatt hat',
 	'Kyatt top',
-	'Kyatt legs'
+	'Kyatt legs',
+	'Bearhead',
+	'Lumberjack hat',
+	'Fire tiara',
+	'Fire max hood',
+	'Firemaking hood',
+	'Black santa hat',
+	'Infernal max hood',
+	'Bomber jacket',
+	'Bomber cap'
 ]) as number[];
 
 const ores = resolveItems([
