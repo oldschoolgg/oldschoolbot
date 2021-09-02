@@ -206,9 +206,9 @@ export default class extends BotCommand {
 						return {
 							type: v,
 							growthStage: {
-								[TameGrowthStage.Baby]: getClippedRegion(tameImage, (v - 1) * 128, 0, 128, 128),
-								[TameGrowthStage.Juvenile]: getClippedRegion(tameImage, (v - 1) * 128, 128, 128, 128),
-								[TameGrowthStage.Adult]: getClippedRegion(tameImage, (v - 1) * 128, 256, 128, 128)
+								[TameGrowthStage.Baby]: getClippedRegion(tameImage, (v - 1) * 96, 0, 96, 96),
+								[TameGrowthStage.Juvenile]: getClippedRegion(tameImage, (v - 1) * 96, 96, 96, 96),
+								[TameGrowthStage.Adult]: getClippedRegion(tameImage, (v - 1) * 96, 96 * 2, 96, 96)
 							}
 						};
 					})
@@ -237,6 +237,7 @@ export default class extends BotCommand {
 	}
 
 	async tameList(msg: KlasaMessage) {
+		if (this.client.owners.has(msg.author) && msg.flagArgs.reload) await this.init();
 		const userTames = await TamesTable.find({
 			where: {
 				userID: msg.author.id
@@ -323,10 +324,10 @@ export default class extends BotCommand {
 			ctx.drawImage(
 				this.tameSprites.tames!.find(t => t.id === tame.species.id)!.sprites.find(f => f.type === tame.variant)!
 					.growthStage[tame.growthStage],
-				(10 + 256) * x + (isTameActive ? 64 : 128) / 2,
-				(10 + 128) * y,
-				128,
-				128
+				(10 + 256) * x + (isTameActive ? 96 : 256 - 96) / 2,
+				(10 + 128) * y + 10,
+				96,
+				96
 			);
 
 			// Draw tame name / level / stats
@@ -571,11 +572,12 @@ export default class extends BotCommand {
 	async merge(msg: KlasaMessage, [tame = '']: [string]) {
 		const tames = await TamesTable.find({ where: { userID: msg.author.id } });
 		const toSelect = tames.find(t => stringMatches(tame, t.id.toString()) || stringMatches(tame, t.nickname ?? ''));
-		if (!toSelect) return msg.channel.send("Couldn't find a tame to select.");
+		if (!toSelect) return msg.channel.send("Couldn't find a tame to merge.");
 
 		const [currentTame, currentTask] = await getUsersTame(msg.author);
 		if (currentTask) return msg.channel.send('Your tame is busy. Wait for it to be free to do this.');
-
+		if (currentTame!.species.id !== toSelect.species.id)
+			return msg.channel.send("You can't merge different species of tames!");
 		if (currentTame!.id === toSelect.id) return msg.channel.send('You can not merge your tame into itself!');
 
 		const mergeStuff = {
