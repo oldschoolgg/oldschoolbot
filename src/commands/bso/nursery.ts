@@ -1,3 +1,4 @@
+import { randArrItem, roll } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -17,20 +18,25 @@ export async function generateNewTame(user: KlasaUser, species: Species) {
 	tame.growthStage = TameGrowthStage.Baby;
 	tame.currentGrowthPercent = 0;
 
+	tame.variant = randArrItem(species.variants);
+	if (species.shinyVariant && roll(100)) tame.variant = species.shinyVariant;
+	let isShiny = tame.variant === species.shinyVariant;
+
 	const [minCmbt, maxCmbt] = species.combatLevelRange;
-	tame.maxCombatLevel = gaussianRandom(minCmbt, maxCmbt);
+	tame.maxCombatLevel = isShiny ? maxCmbt : gaussianRandom(minCmbt, maxCmbt);
 
 	const [minArt, maxArt] = species.artisanLevelRange;
-	tame.maxArtisanLevel = gaussianRandom(minArt, maxArt);
+	tame.maxArtisanLevel = isShiny ? maxArt : gaussianRandom(minArt, maxArt);
 
 	const [minSup, maxSup] = species.supportLevelRange;
-	tame.maxSupportLevel = gaussianRandom(minSup, maxSup);
+	tame.maxSupportLevel = isShiny ? maxSup : gaussianRandom(minSup, maxSup);
 
 	const [minGath, maxGath] = species.gathererLevelRange;
-	tame.maxGathererLevel = gaussianRandom(minGath, maxGath);
+	tame.maxGathererLevel = isShiny ? maxGath : gaussianRandom(minGath, maxGath);
 
 	tame.totalLoot = {};
 	tame.fedItems = {};
+
 	await tame.save();
 	return tame;
 }

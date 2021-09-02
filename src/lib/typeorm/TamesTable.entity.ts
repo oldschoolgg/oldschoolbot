@@ -36,6 +36,9 @@ export class TamesTable extends BaseEntity {
 	@Column('integer', { name: 'species_id', nullable: false })
 	public speciesID!: number;
 
+	@Column('integer', { name: 'species_variant', nullable: false, default: 1 })
+	public variant!: number;
+
 	@Column({ type: 'enum', enum: TameGrowthStage, name: 'growth_stage', enumName: 'tame_growth' })
 	public growthStage!: TameGrowthStage;
 

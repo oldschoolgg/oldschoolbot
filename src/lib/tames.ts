@@ -26,6 +26,9 @@ export interface Nursery {
 export interface Species {
 	id: number;
 	name: string;
+	// Tame type within its specie
+	variants: number[];
+	shinyVariant?: number;
 	/**
 	 * Tames get assigned a max level in these ranges,
 	 * in a bell curve fashion, where the middle of the range
@@ -50,6 +53,8 @@ export const tameSpecies: Species[] = [
 	{
 		id: 1,
 		name: 'Igne',
+		variants: [1, 2, 3],
+		shinyVariant: 4,
 		combatLevelRange: [70, 100],
 		artisanLevelRange: [1, 10],
 		supportLevelRange: [1, 10],
