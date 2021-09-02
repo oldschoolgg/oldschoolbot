@@ -391,8 +391,6 @@ export default class extends BotCommand {
 							Math.floor(itemImage.width * ratio),
 							Math.floor(itemImage.height * ratio)
 						);
-						if (msg.flagArgs.debug) {
-						}
 
 						prevWidth += Math.ceil(itemImage.width * ratio);
 						feedQty++;
@@ -406,8 +404,8 @@ export default class extends BotCommand {
 		const badgesStr = rawBadges.map(num => badges[num]).join(' ');
 
 		return msg.channel.send({
-			content: `${badgesStr}${msg.author.minionName}, ${
-				userTames.length > 1 ? 'this are your tames' : 'this is your tame'
+			content: `${badgesStr}${msg.author.username}, ${
+				userTames.length > 1 ? 'there are your tames' : 'this is your tame'
 			}!`,
 			files: [
 				new MessageAttachment(
@@ -577,6 +575,8 @@ export default class extends BotCommand {
 
 		const [currentTame, currentTask] = await getUsersTame(msg.author);
 		if (currentTask) return msg.channel.send('Your tame is busy. Wait for it to be free to do this.');
+
+		if (currentTame!.id === toSelect.id) return msg.channel.send('You can not merge your tame into itself!');
 
 		const mergeStuff = {
 			totalLoot: new Bank(currentTame!.totalLoot).add(toSelect.totalLoot).bank,
