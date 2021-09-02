@@ -1,9 +1,7 @@
 import {
-	BufferResolvable,
-	FileOptions,
 	MessageAttachment,
 	MessageEmbed,
-	MessageEmbedOptions,
+	MessageOptions,
 	Permissions,
 	TextChannel,
 	Util,
@@ -11,7 +9,6 @@ import {
 } from 'discord.js';
 import { KlasaClient } from 'klasa';
 import PQueue from 'p-queue';
-import { Stream } from 'stream';
 
 import { WebhookTable } from '../typeorm/WebhookTable.entity';
 import { channelIsSendable } from '../util';
@@ -110,14 +107,7 @@ export async function sendToChannelID(
 	});
 }
 
-async function webhookSend(
-	channel: WebhookClient,
-	input: {
-		content?: string;
-		files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
-		embeds?: (MessageEmbed | MessageEmbedOptions)[];
-	}
-) {
+async function webhookSend(channel: WebhookClient, input: MessageOptions) {
 	const maxLength = 2000;
 
 	if (input.content && input.content.length > maxLength) {
