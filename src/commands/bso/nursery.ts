@@ -2,6 +2,7 @@ import { randArrItem, roll } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { Events } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -80,7 +81,15 @@ export default class POHCommand extends BotCommand {
 				hasFuel: false
 			};
 			await msg.author.settings.update(UserSettings.Nursery, newNursery);
-			await generateNewTame(msg.author, specie);
+			const newUserTame = await generateNewTame(msg.author, specie);
+
+			if (newUserTame.variant === specie.shinyVariant) {
+				this.client.emit(
+					Events.ServerNotification,
+					`**${msg.author.username}** just hatched a shiny ${specie.name}!`
+				);
+			}
+
 			return msg.channel.send(`Your ${specie.name} Egg has hatched! You now have a ${specie.name} Baby.`);
 		}
 
