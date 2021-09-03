@@ -11,6 +11,7 @@ Client.defaultUserSchema
 	.add('badges', 'integer', { array: true, default: [] })
 	.add('bitfield', 'integer', { array: true, default: [] })
 	.add('favoriteItems', 'integer', { array: true, default: [] })
+	.add('ignoredItems', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
 	.add('sacrificedValue', 'integer', { default: 0, minimum: 0 })
 	.add('bank', 'any', { default: {} })

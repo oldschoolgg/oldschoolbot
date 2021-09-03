@@ -1,75 +1,82 @@
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
-import { fromKMB } from 'oldschooljs/dist/util';
 
-import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
 import { cleanString, stringMatches } from '../util';
 
-const { floor, max, min } = Math;
-
-export function parseQuantityAndItem(str = ''): [Item[], number] | [] {
-	str = str.trim();
-	if (!str) return [];
-	// Make it so itemIDs aren't interpreted as quantities
-	if (str.match(/^[0-9]+$/)) str = `0 ${str}`;
-	const split = str.split(' ');
-
-	// If we're passed 2 numbers in a row, e.g. '1 1 coal', remove that number and recurse back.
-	if (!isNaN(Number(split[1])) && split.length > 2) {
-		split.splice(1, 1);
-		return parseQuantityAndItem(split.join(' '));
+export function customKMB(number: string) {
+	if (!number.toLowerCase().match('^[.bmk0-9]+$')) return NaN;
+	let previous = 0;
+	let strNum = '';
+	for (const c of number.split('')) {
+		switch (c) {
+			case 'b':
+				previous += Number(strNum) * 1_000_000_000;
+				strNum = '';
+				break;
+			case 'm':
+				previous += Number(strNum) * 1_000_000;
+				strNum = '';
+				break;
+			case 'k':
+				previous += Number(strNum) * 1000;
+				strNum = '';
+				break;
+			default:
+				strNum += c;
+				break;
+		}
 	}
-
-	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
-
-	// Fix for 3rd age items
-	if (potentialQty === '3rd') potentialQty = '';
-
-	let parsedQty: number | null = fromKMB(potentialQty);
-	if (isNaN(parsedQty)) parsedQty = null;
-
-	const parsedName = parsedQty === null ? str : potentialName.join(' ');
-
-	let osItems: Item[] = [];
-
-	const nameAsInt = Number(parsedName);
-	if (!isNaN(nameAsInt)) {
-		const item = Items.get(nameAsInt);
-		if (item) osItems.push(item);
-	} else {
-		osItems = Array.from(
-			Items.filter(
-				i => itemNameMap.get(cleanString(parsedName)) === i.id || stringMatches(i.name, parsedName)
-			).values()
-		);
-	}
-	if (osItems.length === 0) return [];
-
-	let quantity = floor(min(MAX_INT_JAVA, max(0, parsedQty ?? 0)));
-
-	return [osItems, quantity];
+	if (strNum) previous += Number(strNum);
+	return previous;
 }
 
-export function parseStringBank(str = ''): [Item, number | undefined][] {
-	str = str.trim().replace(/\s\s+/g, ' ');
-	if (!str) return [];
-	const split = str.split(',');
-	if (split.length === 0) return [];
-	let items: [Item, number | undefined][] = [];
-	const currentIDs = new Set();
-	for (let i = 0; i < split.length; i++) {
-		let [resItems, quantity] = parseQuantityAndItem(split[i]);
-		if (resItems !== undefined) {
-			for (const item of resItems) {
-				if (currentIDs.has(item.id)) continue;
-				currentIDs.add(item.id);
-				items.push([item, quantity]);
+type TParsedItem = [Item, number];
+
+export function parseStringBank(str: string, allOfTheSameItem: boolean = true): TParsedItem[] {
+	const returnItems: TParsedItem[] = [];
+	if (str) {
+		for (const s of str.split(',')) {
+			let item = s.trim();
+			const splitItem = item.split(' ');
+			// Check if there is two numbers back to back on a search by name
+			if (splitItem.length > 2) {
+				let n1 = customKMB(splitItem[0]);
+				let n2 = customKMB(splitItem[1]);
+				// If both are numbers, ignore the first one
+				if (!isNaN(n1) && !isNaN(n2)) splitItem.shift();
+			}
+			let qty = customKMB(splitItem[0]);
+			// If the qty was valid, remove the first element of the array
+			if (!isNaN(qty) && splitItem.length > 1) splitItem.shift();
+			else qty = 0;
+			item = splitItem.join(' ');
+			const forcedID = Number(item) === parseInt(item);
+			// If the item was a string, check all items with this name
+			if (!forcedID) {
+				let numFound = 0;
+				const foundItems = Items.filter(i => {
+					// If the allOfTheSameItem is false, return only the first item found
+					const foundMap = itemNameMap.get(cleanString(item)) === i.id || stringMatches(i.name, item);
+					if (!foundMap || (!allOfTheSameItem && numFound > 0)) return false;
+					numFound++;
+					return true;
+				}).map(i => {
+					return [i, qty];
+				}) as TParsedItem[];
+				returnItems.push(...foundItems);
+			} else {
+				const _i = Items.get(forcedID ? Number(item) : item);
+				if (_i) returnItems.push([_i, qty]);
 			}
 		}
 	}
-	return items;
+	console.log(
+		str,
+		returnItems.map(i => [i[0].id, i[0].name, i[1]])
+	);
+	return returnItems;
 }
 
 interface ParseBankOptions {
