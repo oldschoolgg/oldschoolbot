@@ -22,7 +22,7 @@ type TBFSettings = Record<
 		// What bitfield will be changed
 		bitfield: BitField;
 		// If necessary, a custom validation to be run
-		customValidation?: (msg: KlasaMessage, proposedState: TType) => Promise<{ allowed: boolean; reason?: string }>;
+		customValidation?: (msg: KlasaMessage, proposedState?: TType) => Promise<{ allowed: boolean; reason?: string }>;
 		// When changing this BF, do...
 		// Useful when the user cant have two bitfields enabled/disabled
 		onChange?: (msg: KlasaMessage, newState: 'enabled' | 'disabled') => Promise<void>;
