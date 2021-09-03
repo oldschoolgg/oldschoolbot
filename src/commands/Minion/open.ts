@@ -6,6 +6,7 @@ import Openable from 'oldschooljs/dist/structures/Openable';
 
 import { COINS_ID, Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import botOpenables, { IronmanPMBTable } from '../../lib/data/openables';
+import { emojiMap } from '../../lib/itemEmojiMap';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -55,7 +56,13 @@ export default class extends BotCommand {
 			return 'You have no openable items.';
 		}
 
-		return `You have ${available}.`;
+		let results = [];
+		for (const [item, qty] of available.items()) {
+			let emoji = emojiMap.get(item.id) ?? '';
+			results.push(`${emoji}${qty}x ${item.name}`);
+		}
+
+		return `You have ${results.join(', ')}.`;
 	}
 
 	async run(msg: KlasaMessage, [quantity = 1, name]: [number, string | undefined]) {

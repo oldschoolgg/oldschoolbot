@@ -27,7 +27,9 @@ export default class extends Task {
 		const userMiningLevel = user.skillLevel(SkillsEnum.Mining);
 		let boost = 1;
 		// Activity boosts
-		if (userMiningLevel >= 71 && userSkillingGear.hasEquipped('Crystal pickaxe')) {
+		if (userMiningLevel >= 99 && userSkillingGear.hasEquipped('Dwarven pickaxe')) {
+			boost += 2;
+		} else if (userMiningLevel >= 71 && userSkillingGear.hasEquipped('Crystal pickaxe')) {
 			boost += 0.5;
 		} else if (userMiningLevel >= 61 && userSkillingGear.hasEquipped('Dragon pickaxe')) {
 			boost += 0.3;
@@ -41,9 +43,13 @@ export default class extends Task {
 			boost += 0.025;
 		}
 
-		const xpReceived = Math.round(
+		let xpReceived = Math.round(
 			userMiningLevel * ((VolcanicMineGameTime * quantity) / Time.Minute) * 10 * boost * randFloat(1.02, 1.08)
 		);
+
+		// Boost XP for having doug equipped
+		if (user.usingPet('Doug')) xpReceived = Math.floor(xpReceived * 1.2);
+
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Mining,
 			amount: xpReceived,
@@ -54,6 +60,7 @@ export default class extends Task {
 
 		const currentUserPoints = user.settings.get(UserSettings.VolcanicMinePoints);
 		let pointsReceived = Math.round(xpReceived / 5.5);
+		if (user.usingPet('Flappy')) pointsReceived *= 2;
 		const maxPoints = 2_097_151;
 		await user.settings.update(
 			UserSettings.VolcanicMinePoints,
@@ -77,6 +84,9 @@ export default class extends Task {
 			// Roll for pet --- Average 40 fragments per game at 60K chance per fragment
 			if (roll(60_000)) loot.add('Rock golem');
 		}
+
+		// 4x Loot for having doug helping, as it helps mining more fragments
+		if (user.usingPet('Flappy')) loot.multiply(2);
 
 		let str = `${user}, ${user.minionName} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}${
 			loot.length > 0 ? `\nYou received ${loot}` : ''
