@@ -100,6 +100,18 @@ export default class extends Task {
 			await user.addItemsToBank(loot, true);
 			const purple = Object.keys(loot.bank).some(itemID => IgnecarusNotifyDrops.includes(parseInt(itemID)));
 			resultStr += `\n${purple ? Emoji.Purple : ''}${user} received ${loot}.`;
+
+			announceLoot({
+				user: leaderUser,
+				monsterID: KalphiteKingMonster.id,
+				loot: new Bank(loot),
+				notifyDrops: KalphiteKingMonster.notifyDrops,
+				team: {
+					leader: leaderUser,
+					lootRecipient: user,
+					size: users.length
+				}
+			});
 		}
 		updateBankSetting(this.client, ClientSettings.EconomyStats.IgnecarusLoot, totalLoot);
 

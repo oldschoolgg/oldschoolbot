@@ -92,7 +92,7 @@ export default class extends Task {
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}.` +
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n`;
 
-		announceLoot(this.client, user, monster, loot.bank);
+		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
 
 		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
 

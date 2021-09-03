@@ -177,7 +177,8 @@ export default class extends Task {
 			str += '\n\nOri has used the abyss to transmute you +25% bonus loot!';
 		}
 
-		announceLoot(this.client, user, monster, loot.bank);
+		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
+
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
 			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
