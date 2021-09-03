@@ -71,7 +71,8 @@ export default class extends Task {
 			superiorCount: newSuperiorCount
 		});
 
-		announceLoot(this.client, user, monster, loot.bank);
+		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
+
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
 			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
