@@ -1816,8 +1816,12 @@ export const dailyCL = resolveItems([
 	'Mask of balance',
 	'Druidic wreath',
 	'Disk of returning',
-	'Mystery box',
-	'Stale baguette'
+	'Stale baguette',
+	'Tradeable mystery box',
+	'Untradeable mystery box',
+	'Equippable mystery box',
+	'Holiday mystery box',
+	'Pet mystery box'
 ]);
 export const capesCL = resolveItems([
 	'Mining hood',
