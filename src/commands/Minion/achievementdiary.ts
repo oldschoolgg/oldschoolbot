@@ -38,7 +38,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		const diary = diaries.find(d => stringMatches(d.name, input));
+		const diary = diaries.find(d => stringMatches(d.name, input) || d.alias?.some(a => stringMatches(a, input)));
 
 		if (!diary) {
 			let str = 'Your Achievement Diaries\n\n';
@@ -73,21 +73,21 @@ export default class extends BotCommand {
 			}
 
 			if (tier.qp) {
-				thisStr += `- ${tier.qp} QP\n`;
+				thisStr += `- **${tier.qp}** QP\n`;
 			}
 
 			if (tier.minigameReqs) {
 				const entries = Object.entries(tier.minigameReqs);
 				for (const [key, neededScore] of entries) {
 					const minigame = Minigames.find(m => m.key === key)!;
-					thisStr += `- Must Have ${neededScore} KC in ${minigame.name}`;
+					thisStr += `- Must Have **${neededScore}** KC in ${minigame.name}\n`;
 				}
 			}
 
 			if (tier.lapsReqs) {
 				const entries = Object.entries(tier.lapsReqs);
 				for (const [name, score] of entries) {
-					thisStr += `- Must Have ${score} Laps of ${name}`;
+					thisStr += `- Must Have **${score}** Laps of ${name}\n`;
 				}
 			}
 
@@ -95,7 +95,7 @@ export default class extends BotCommand {
 				const entries = Object.entries(tier.monsterScores);
 				for (const [name, score] of entries) {
 					const mon = Monsters.find(mon => mon.name === name)!;
-					thisStr += `- Must Have ${score} KC of ${mon.name}`;
+					thisStr += `- Must Have **${score}** KC of ${mon.name}\n`;
 				}
 			}
 
@@ -105,7 +105,7 @@ export default class extends BotCommand {
 	}
 
 	async claim(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		const diary = diaries.find(d => stringMatches(d.name, input));
+		const diary = diaries.find(d => stringMatches(d.name, input) || d.alias?.some(a => stringMatches(a, input)));
 
 		if (!diary) {
 			return msg.channel.send(
