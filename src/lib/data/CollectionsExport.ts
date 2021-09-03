@@ -1892,7 +1892,12 @@ export const capesCL = resolveItems([
 	'Guthix cloak',
 	'Zamorak cloak',
 	'Spotted cape',
-	'Spottier cape'
+	'Spottier cape',
+	"Xeric's guard",
+	"Xeric's warrior",
+	"Xeric's sentinel",
+	"Xeric's general",
+	"Xeric's champion"
 ]);
 export const questCL = resolveItems([
 	'Quest point hood',
