@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { corporealBeastCL } from '../../../../data/CollectionsExport';
+import { FaladorDiary, userhasDiaryTier } from '../../../../diaries';
 import { GearSetupTypes, GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
@@ -36,7 +37,18 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43
 		},
 		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.075
+		combatXpMultiplier: 1.075,
+		customDurationBoost: async user => {
+			const reductions: { percent: number; message: string }[] = [];
+			const userHardDiary = await userhasDiaryTier(user, FaladorDiary.hard);
+			if (!userHardDiary[0]) {
+				reductions.push({
+					percent: -50,
+					message: '50% slower kills for not having the Falador hard diary'
+				});
+			}
+			return reductions;
+		}
 	},
 	{
 		id: Monsters.Vorkath.id,

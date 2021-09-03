@@ -247,6 +247,19 @@ export default class extends BotCommand {
 			boosts.push(`${boostCannon}% for Cannon in singles`);
 		}
 
+		// Custom buffs
+		if (monster.customDurationBoost) {
+			const reductions = await monster.customDurationBoost(msg.author);
+			for (const reduction of reductions) {
+				if (reduction.percent < 0) {
+					timeToFinish = increaseNumByPercent(timeToFinish, Math.abs(reduction.percent));
+				} else {
+					timeToFinish = reduceNumByPercent(timeToFinish, Math.abs(reduction.percent));
+				}
+				boosts.push(reduction.message);
+			}
+		}
+
 		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
 
 		// If no quantity provided, set it to the max.

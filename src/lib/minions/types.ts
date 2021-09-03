@@ -1,5 +1,5 @@
 import { Image } from 'canvas';
-import { KlasaMessage } from 'klasa';
+import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
@@ -104,6 +104,11 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
+	/**
+	 * Returns an array of {percent;message} of all the custom boosts that this monster can have.
+	 * @param user
+	 */
+	customDurationBoost?: (user: KlasaUser) => Promise<{ percent: number; message: string }[]>;
 }
 /*
  * Monsters will have an array of Consumables
