@@ -1,5 +1,5 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { Message, MessageReaction } from 'discord.js';
+import { MessageReaction } from 'discord.js';
 import { debounce } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 
@@ -163,7 +163,7 @@ async function _setup(
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
-		super(store, file, directory, { appliesTo: [Message] });
+		super(store, file, directory, { appliesTo: [KlasaMessage] });
 	}
 
 	async makePartyAwaiter(this: KlasaMessage, options: MakePartyOptions) {

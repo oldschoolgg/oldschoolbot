@@ -1,4 +1,4 @@
-import { Message, MessageButton } from 'discord.js';
+import { MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
 
@@ -6,7 +6,7 @@ import { SILENT_ERROR } from '../../lib/constants';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
-		super(store, file, directory, { appliesTo: [Message] });
+		super(store, file, directory, { appliesTo: [KlasaMessage] });
 	}
 
 	async confirm(this: KlasaMessage, str: string): Promise<void> {
