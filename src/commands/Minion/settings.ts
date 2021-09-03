@@ -31,7 +31,7 @@ const bitfieldSettings = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<enable|disable> <bitfield:...string>',
+			usage: '[type:string] [bitfield:...string]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
@@ -45,6 +45,22 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [_type, _bitfield]: ['enable' | 'disable', string]) {
 		await msg.author.settings.sync(true);
+		const userBitfields = [...msg.author.settings.get(UserSettings.BitField)];
+		console.log(_type, _bitfield);
+		if (!_type || !['enable', 'disable'].includes(_type.toLowerCase()) || msg.flagArgs.help) {
+			return msg.channel.send(
+				`Here are the settings you can change:\n${objectEntries(bitfieldSettings)
+					.map(b => {
+						const current = userBitfields.includes(b[1].bitfield);
+						return `>> ${b[0]}\n**Enabled**: ${b[1].description.enabled}\n**Disabled**: ${
+							b[1].description.disabled
+						}\nYour status: \`${
+							current ? (b[1].inverse ? 'Disabled' : 'Enabled') : b[1].inverse ? 'Enabled' : 'Disabled'
+						}\``;
+					})
+					.join('\n')}`
+			);
+		}
 
 		const bitfield = objectEntries(bitfieldSettings).find(
 			b => stringMatches(b[0], _bitfield) || b[1].alias.some(a => stringMatches(a, _bitfield))
@@ -54,7 +70,6 @@ export default class extends BotCommand {
 			return msg.channel.send(`**${_bitfield.toLowerCase()}** is not a valid setting you can change.`);
 		}
 
-		const userBitfields = [...msg.author.settings.get(UserSettings.BitField)];
 		const userHaveBitfield = userBitfields.includes(bitfield[1].bitfield);
 
 		let type: 'enabled' | 'disabled' | undefined = undefined;
