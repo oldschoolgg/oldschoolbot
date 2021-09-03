@@ -10,7 +10,7 @@ export default class extends Argument {
 	run(arg: string, possible: Possible, message: KlasaMessage) {
 		const { min, max } = possible;
 		const number = customKMB(arg);
-		if (!number || isNaN(number)) throw message.language.get('RESOLVER_INVALID_INT', possible.name);
+		if (!number) throw message.language.get('RESOLVER_INVALID_INT', possible.name);
 		// @ts-ignore 2341
 		return this.constructor.minOrMax(this.client, number, min, max, possible, message) ? number : null;
 	}
