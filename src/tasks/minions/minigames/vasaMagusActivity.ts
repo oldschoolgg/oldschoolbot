@@ -10,10 +10,12 @@ import SeaKraken from '../../../lib/minions/data/killableMonsters/custom/SeaKrak
 import Treebeard from '../../../lib/minions/data/killableMonsters/custom/Treebeard';
 import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killableMonsters/custom/VasaMagus';
 import { addMonsterXP } from '../../../lib/minions/functions';
+import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { NewBossOptions } from '../../../lib/types/minions';
 import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import resolveItems from '../../../lib/util/resolveItems';
 
 const vasaBosses: Monster[] = [
 	Monsters.AbyssalSire,
@@ -81,6 +83,13 @@ export default class extends Task {
 			);
 
 		resultStr += `\n${xpRes}\n`;
+
+		announceLoot({
+			user,
+			monsterID: VasaMagus.id,
+			loot,
+			notifyDrops: resolveItems(['Magus scroll', 'Voidling', 'Tattered robes of Vasa'])
+		});
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.VasaLoot, loot);
 

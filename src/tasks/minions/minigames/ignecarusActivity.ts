@@ -10,6 +10,7 @@ import {
 	IgnecarusNotifyDrops
 } from '../../../lib/minions/data/killableMonsters/custom/Ignecarus';
 import { addMonsterXP } from '../../../lib/minions/functions';
+import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { BossUser } from '../../../lib/structures/Boss';
@@ -20,7 +21,7 @@ import { sendToChannelID } from '../../../lib/util/webhook';
 const methodsOfDeath = ['Burnt to death', 'Eaten', 'Crushed', 'Incinerated'];
 
 export default class extends Task {
-	async run({ channelID, users: idArr, duration, bossUsers: _bossUsers, quantity }: NewBossOptions) {
+	async run({ channelID, users: idArr, duration, bossUsers: _bossUsers, quantity, userID }: NewBossOptions) {
 		const wrongFoodDeaths: KlasaUser[] = [];
 		const deaths: Record<string, { user: KlasaUser; qty: number }> = {};
 		const bossUsers: BossUser[] = await Promise.all(
@@ -102,14 +103,14 @@ export default class extends Task {
 			resultStr += `\n${purple ? Emoji.Purple : ''}${user} received ${loot}.`;
 
 			announceLoot({
-				user: leaderUser,
-				monsterID: KalphiteKingMonster.id,
-				loot: new Bank(loot),
-				notifyDrops: KalphiteKingMonster.notifyDrops,
+				user,
+				monsterID: Ignecarus.id,
+				loot,
+				notifyDrops: IgnecarusNotifyDrops,
 				team: {
-					leader: leaderUser,
+					leader: await this.client.fetchUser(userID),
 					lootRecipient: user,
-					size: users.length
+					size: idArr.length
 				}
 			});
 		}
