@@ -389,7 +389,8 @@ export const enum BitField {
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
 	HasScrollOfLongevity = 203,
-	HasScrollOfTheHunt = 204
+	HasScrollOfTheHunt = 204,
+	DisableGorajanBonecrusher = 205
 }
 
 interface BitFieldData {
