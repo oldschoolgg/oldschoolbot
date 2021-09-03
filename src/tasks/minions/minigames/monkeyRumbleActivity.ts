@@ -1,7 +1,6 @@
 import { KlasaMessage, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import CastleWarsCommand from '../../../commands/Minion/castlewars';
 import { monkeyTierOfUser } from '../../../lib/monkeyRumble';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -33,9 +32,7 @@ export default class extends Task {
 			`${user}, ${user.minionName} finished ${quantity}x Rumble fights against ${monkey.name} and received ${loot}. ${xpStr}`,
 			res => {
 				user.log('continued castle wars');
-				return (this.client.commands.get('castlewars') as unknown as CastleWarsCommand)!.play(
-					res
-				) as Promise<KlasaMessage>;
+				return (this.client.commands.get('mmmr') as unknown as any)!.start(res) as Promise<KlasaMessage>;
 			},
 			undefined,
 			data,

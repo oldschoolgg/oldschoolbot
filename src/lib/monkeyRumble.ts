@@ -209,3 +209,20 @@ export function monkeyTierOfUser(user: KlasaUser) {
 }
 
 export const TOTAL_MONKEYS = firstNames.length * lastNames.length * titles.length;
+
+interface MonkeyEatable {
+	item: Item;
+	boost?: number;
+}
+
+export const monkeyEatables: MonkeyEatable[] = [
+	{ item: getOSItem('Lychee'), boost: 9 },
+	{ item: getOSItem('Mango'), boost: 6 },
+	{ item: getOSItem('Avocado'), boost: 3 },
+	{ item: getOSItem('Banana') },
+	{ item: getOSItem('Orange') },
+	{ item: getOSItem('Pineapple') },
+	{ item: getOSItem('Strawberry') },
+	{ item: getOSItem('Watermelon') },
+	{ item: getOSItem('Tomato') }
+];

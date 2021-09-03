@@ -1,4 +1,4 @@
-import { randArrItem, Time } from 'e';
+import { randArrItem, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -8,6 +8,7 @@ import {
 	fightingMessages,
 	getMonkeyPhrase,
 	getRandomMonkey,
+	monkeyEatables,
 	monkeyHeadImage,
 	monkeyTierOfUser,
 	monkeyTiers,
@@ -105,11 +106,42 @@ Greegree Level: ${tier.id}/${monkeyTiers.length}`
 			});
 		}
 
+		if (!monkeyTiers.some(t => msg.author.hasItemEquippedAnywhere(t.greegree.id))) {
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						head: 'placeHolderName',
+						content: "Humans aren't allowed! Leave, leave!"
+					})
+				]
+			});
+		}
+
 		const monkey = getRandomMonkey();
 
 		const fightDuration = Time.Minute * 5;
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.MonkeyRumble) / fightDuration);
-		const duration = quantity * fightDuration;
+		let duration = quantity * fightDuration;
+
+		const foodRequired = Math.floor(duration / (Time.Minute * 1.34));
+
+		const bank = msg.author.bank();
+		const eatable = monkeyEatables.find(e => bank.amount(e.item.id) >= foodRequired);
+
+		if (!eatable) {
+			return msg.channel.send(
+				`You don't have enough food to fight. In your monkey form, you can only eat certain items (${monkeyEatables
+					.map(i => i.item.name + (i.boost ? ` (${i.boost}% boost)` : ''))
+					.join(', ')}). For this trip, you'd need ${foodRequired} of one of these items.`
+			);
+		}
+		const boosts = [];
+		if (eatable.boost) {
+			duration = reduceNumByPercent(duration, eatable.boost);
+			boosts.push(`${eatable.boost}% for ${eatable.item.name} food`);
+		}
+		const cost = new Bank().add(eatable.item.id, foodRequired);
+		await msg.author.removeItemsFromBank(cost);
 
 		await addSubTaskToActivityTask<MonkeyRumbleOptions>({
 			userID: msg.author.id,
@@ -125,8 +157,13 @@ Greegree Level: ${tier.id}/${monkeyTiers.length}`
 			await msg.author.settings.update(UserSettings.MonkeysFought, monkey.nameKey);
 		}
 
+		let str = `You are fighting ${quantity}x rounds with ${monkey.name}. Removed ${cost} from your bank.`;
+		if (boosts.length > 0) {
+			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		}
+
 		return msg.channel.send({
-			content: `You are fighting ${quantity}x rounds with ${monkey.name}.`,
+			content: str,
 			files: [await monkeyHeadImage({ monkey, content: randArrItem(fightingMessages) })]
 		});
 	}
