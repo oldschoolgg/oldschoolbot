@@ -67,15 +67,11 @@ export function parseStringBank(str: string, allOfTheSameItem: boolean = true): 
 				}) as TParsedItem[];
 				returnItems.push(...foundItems);
 			} else {
-				const _i = Items.get(forcedID ? Number(item) : item);
+				const _i = Items.get(Number(item));
 				if (_i) returnItems.push([_i, qty]);
 			}
 		}
 	}
-	console.log(
-		str,
-		returnItems.map(i => [i[0].id, i[0].name, i[1]])
-	);
 	return returnItems;
 }
 
