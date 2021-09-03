@@ -5,6 +5,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { addBanks } from 'oldschooljs/dist/util';
 
 import { client } from '..';
+import { collectables } from '../commands/Minion/collect';
 import BankImageTask from '../tasks/bankImage';
 import { UserSettings } from './settings/types/UserSettings';
 import { TameActivityTable } from './typeorm/TameActivityTable.entity';
@@ -57,16 +58,33 @@ export const tameSpecies: Species[] = [
 		hatchTime: Time.Hour * 18.5,
 		egg: getOSItem(48_210),
 		emoji: '<:dragonEgg:858948148641660948>'
+	},
+	{
+		id: 2,
+		name: 'Monkey',
+		combatLevelRange: [12, 24],
+		artisanLevelRange: [1, 10],
+		supportLevelRange: [1, 10],
+		gathererLevelRange: [75, 100],
+		hatchTime: Time.Hour * 9.5,
+		egg: getOSItem('Monkey egg'),
+		emoji: '<:monkey_egg:883326001445224488>'
 	}
 ];
 
-export type TameTaskType = 'pvm';
+export type TameTaskType = 'pvm' | 'collect';
 
-export interface TameTaskOptions {
-	type: 'pvm';
-	monsterID: number;
-	quantity: number;
-}
+export type TameTaskOptions =
+	| {
+			type: 'pvm';
+			monsterID: number;
+			quantity: number;
+	  }
+	| {
+			type: 'collect';
+			itemID: number;
+			quantity: number;
+	  };
 
 export async function runTameTask(activity: TameActivityTable) {
 	async function handleFinish(res: { loot: Bank; message: string; user: KlasaUser }) {
@@ -82,7 +100,7 @@ export async function runTameTask(activity: TameActivityTable) {
 			image: (
 				await (client.tasks.get('bankImage') as BankImageTask).generateBankImage(
 					res.loot,
-					`${activity.tame.name}'s PvM Trip Loot`,
+					`${activity.tame.name}'s Loot`,
 					true,
 					{ showNewCL: 1 },
 					res.user,
@@ -91,7 +109,7 @@ export async function runTameTask(activity: TameActivityTable) {
 			).image!
 		});
 	}
-	switch (activity.type) {
+	switch (activity.data.type) {
 		case 'pvm': {
 			const { quantity, monsterID } = activity.data;
 			let killQty = quantity;
@@ -125,6 +143,20 @@ export async function runTameTask(activity: TameActivityTable) {
 			});
 			break;
 		}
+		case 'collect': {
+			const { quantity, itemID } = activity.data;
+			const collectable = collectables.find(c => c.item.id === itemID)!;
+			const loot = new Bank().add(collectable.item.id, quantity * collectable.quantity);
+			const user = await client.fetchUser(activity.userID);
+			let str = `${user}, ${activity.tame.name} finished collecting ${quantity}x ${collectable.item.name}.`;
+			const { itemsAdded } = await user.addItemsToBank(loot);
+			handleFinish({
+				loot: new Bank(itemsAdded),
+				message: str,
+				user
+			});
+			break;
+		}
 		default: {
 			console.error('Unmatched tame activity type', activity.type);
 			break;
@@ -143,4 +175,33 @@ export async function getUsersTame(user: KlasaUser): Promise<[TamesTable | undef
 	}
 	const activity = await TameActivityTable.findOne({ where: { userID: user.id, tame, completed: false } });
 	return [tame, activity];
+}
+
+export async function createTameTask({
+	user,
+	channelID,
+	type,
+	data,
+	duration,
+	selectedTame
+}: {
+	user: KlasaUser;
+	channelID: string;
+	type: TameTaskType;
+	data: TameTaskOptions;
+	duration: number;
+	selectedTame: TamesTable;
+}) {
+	const activity = new TameActivityTable();
+	activity.userID = user.id;
+	activity.startDate = new Date();
+	activity.finishDate = new Date(Date.now() + duration);
+	activity.completed = false;
+	activity.type = type;
+	activity.data = data;
+	activity.channelID = channelID;
+	activity.duration = duration;
+	activity.tame = selectedTame;
+	await activity.save();
+	return activity;
 }

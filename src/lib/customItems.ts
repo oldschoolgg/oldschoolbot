@@ -1762,6 +1762,7 @@ setCustomItem(48_225, 'Intermediate rumble greegree', 'Bronze 2h sword', {}, 999
 setCustomItem(48_226, 'Ninja rumble greegree', 'Bronze 2h sword', {}, 999_997);
 setCustomItem(48_227, 'Expert ninja rumble greegree', 'Bronze 2h sword', {}, 999_998);
 setCustomItem(48_228, 'Elder rumble greegree', 'Bronze 2h sword', {}, 999_999);
+setCustomItem(48_229, 'Monkey egg', 'Egg', {}, 100_000_000);
 
 /**
  * Misc Items

@@ -7,11 +7,11 @@ import { Eatables } from '../../lib/data/eatables';
 import { requiresMinion } from '../../lib/minions/decorators';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { KillableMonster } from '../../lib/minions/types';
+import { monkeyEatables } from '../../lib/monkeyRumble';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { getUsersTame } from '../../lib/tames';
-import { TameActivityTable } from '../../lib/typeorm/TameActivityTable.entity';
+import { createTameTask, getUsersTame } from '../../lib/tames';
 import { TameGrowthStage, TamesTable } from '../../lib/typeorm/TamesTable.entity';
 import {
 	addBanks,
@@ -24,6 +24,7 @@ import {
 import findMonster from '../../lib/util/findMonster';
 import getOSItem from '../../lib/util/getOSItem';
 import { parseStringBank } from '../../lib/util/parseStringBank';
+import { collectables } from '../Minion/collect';
 
 const feedableItems = [
 	[getOSItem('Ori'), '25% extra loot'],
@@ -83,11 +84,15 @@ async function getTameStatus(user: KlasaUser) {
 	const [, currentTask] = await getUsersTame(user);
 	if (currentTask) {
 		const currentDate = new Date().valueOf();
-		switch (currentTask.type) {
-			case 'pvm':
-				return `Currently killing ${currentTask.data.quantity}x ${
-					Monsters.find(m => m.id === currentTask.data.monsterID)!.name
-				}, ${formatDuration(currentTask.finishDate.valueOf() - currentDate)} remaining.`;
+		const timeRemaining = `${formatDuration(currentTask.finishDate.valueOf() - currentDate)} remaining.`;
+		switch (currentTask.data.type) {
+			case 'pvm': {
+				const { monsterID } = currentTask.data;
+				const mon = Monsters.find(m => m.id === monsterID)!;
+				return `Currently killing ${currentTask.data.quantity}x ${mon.name}. ${timeRemaining}`;
+			}
+			case 'collect':
+				return `Currently collecting ${itemNameFromID(currentTask.data.itemID)}. ${timeRemaining}.`;
 		}
 	}
 	return 'Currently doing nothing';
@@ -270,26 +275,106 @@ export default class extends BotCommand {
 		});
 		const duration = Math.floor(quantity * speed);
 
-		const activity = new TameActivityTable();
-		activity.userID = msg.author.id;
-		activity.startDate = new Date();
-		activity.finishDate = new Date(Date.now() + duration);
-		activity.completed = false;
-		activity.type = 'pvm';
-		activity.data = {
+		await createTameTask({
+			user: msg.author,
+			channelID: msg.channel.id,
+			selectedTame,
+			data: {
+				type: 'pvm',
+				monsterID: monster.id,
+				quantity
+			},
 			type: 'pvm',
-			monsterID: monster.id,
-			quantity
-		};
-		activity.channelID = msg.channel.id;
-		activity.duration = duration;
-		activity.tame = selectedTame;
-		await activity.save();
+			duration
+		});
 
 		return msg.channel.send(
 			`${selectedTame.name} is now killing ${quantity}x ${monster.name}. The trip will take ${formatDuration(
 				duration
 			)}.\n\nRemoved ${foodStr}`
 		);
+	}
+
+	async c(msg: KlasaMessage, [str = '']: [string]) {
+		const [selectedTame, currentTask] = await getUsersTame(msg.author);
+		if (!selectedTame) {
+			return msg.channel.send('You have no selected tame.');
+		}
+		if (currentTask) {
+			return msg.channel.send(`${selectedTame.name} is busy.`);
+		}
+		const collectable = collectables.find(c => stringMatches(c.item.name, str));
+		if (!collectable) {
+			return msg.channel.send(
+				`That's not a valid collectable item. The items you can collect are: ${collectables
+					.map(i => i.item.name)
+					.join(', ')}.`
+			);
+		}
+
+		const [min, max] = selectedTame.species.gathererLevelRange;
+		const gathererLevelBoost = calcWhatPercent(selectedTame.maxCombatLevel - min, max);
+
+		// Increase trip length based on minion growth:
+		let speed = collectable.duration * selectedTame.growthLevel;
+
+		// Apply calculated boost:
+		speed = reduceNumByPercent(speed, gathererLevelBoost);
+
+		let boosts = [];
+		let maxTripLength = Time.Minute * 20 * (4 - selectedTame.growthLevel);
+		if (selectedTame.hasBeenFed('Zak')) {
+			maxTripLength += Time.Minute * 35;
+			boosts.push('+35mins trip length (ate a Zak)');
+		}
+		maxTripLength += patronMaxTripCalc(msg.author) * 2;
+		// Calculate monster quantity:
+		const quantity = Math.floor(maxTripLength / speed);
+		if (quantity < 1) {
+			return msg.channel.send("Your tame can't kill this monster fast enough.");
+		}
+
+		let duration = Math.floor(quantity * speed);
+		const foodRequired = Math.floor(duration / (Time.Minute * 1.34));
+
+		const bank = msg.author.bank();
+		const eatable = monkeyEatables.find(e => bank.amount(e.item.id) >= foodRequired);
+
+		if (!eatable) {
+			return msg.channel.send(
+				`You don't have enough food to feed your monkey. They can only eat certain items (${monkeyEatables
+					.map(i => i.item.name + (i.boost ? ` (${i.boost}% boost)` : ''))
+					.join(', ')}). For this trip, you'd need ${foodRequired} of one of these items.`
+			);
+		}
+		if (eatable.boost) {
+			duration = reduceNumByPercent(duration, eatable.boost);
+			boosts.push(`${eatable.boost}% for ${eatable.item.name} food`);
+		}
+		const cost = new Bank().add(eatable.item.id, foodRequired);
+		await msg.author.removeItemsFromBank(cost);
+
+		await createTameTask({
+			user: msg.author,
+			channelID: msg.channel.id,
+			selectedTame,
+			data: {
+				type: 'collect',
+				itemID: collectable.item.id,
+				quantity
+			},
+			type: 'collect',
+			duration
+		});
+
+		let reply = `${selectedTame.name} is now collecting ${quantity * collectable.quantity}x ${
+			collectable.item.name
+		}. The trip will take ${formatDuration(duration)}.\n\nRemoved ${cost}`;
+
+		if (boosts.length > 0) {
+			reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.channel.send(reply);
 	}
 }
