@@ -1,6 +1,5 @@
 import { Items } from 'oldschooljs';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
-import { itemID } from 'oldschooljs/dist/util';
 
 export function cleanString(str: string): string {
 	return str.replace(/\s/g, '').toUpperCase();
@@ -107,8 +106,8 @@ setItemAlias(3713, ['hmb'], false);
 setItemAlias(6199, ['tmb'], false);
 setItemAlias(19_939, ['umb'], false);
 setItemAlias(47_509, ['emb'], false);
-setItemAlias(itemID('Clue scroll (grandmaster)'), ['gmc'], false);
-setItemAlias(itemID('Reward casket (grandmaster)'), ['gm'], false);
+setItemAlias(19_837, ['gmc'], false);
+setItemAlias(19_838, ['gm'], false);
 // Castle wars
 setItemAlias(25_165, 'Red decorative full helm');
 setItemAlias(4071, 'Red decorative helm');
