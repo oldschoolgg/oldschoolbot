@@ -1,5 +1,6 @@
 import { randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -8,10 +9,12 @@ import {
 	getMonkeyPhrase,
 	getRandomMonkey,
 	monkeyHeadImage,
+	monkeyTierOfUser,
 	monkeyTiers,
 	TOTAL_MONKEYS
 } from '../../lib/monkeyRumble';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonkeyRumbleOptions } from '../../lib/types/minions';
 import { stringMatches } from '../../lib/util';
@@ -43,7 +46,11 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		return msg.channel.send(`Total Monkeys you can fight: ${TOTAL_MONKEYS}`);
+		const tier = monkeyTiers.find(t => t.id === monkeyTierOfUser(msg.author))!;
+		return msg.channel.send(
+			`Monkeys fought: ${msg.author.settings.get(UserSettings.MonkeysFought).length}/${TOTAL_MONKEYS}
+Greegree Level: ${tier.id}/${monkeyTiers.length}`
+		);
 	}
 
 	async buy(msg: KlasaMessage, [input = '']: [string]) {
@@ -56,57 +63,37 @@ export default class extends BotCommand {
 			);
 		}
 
-		const { item, cost } = buyable;
-		const balance = msg.author.settings.get(UserSettings.HonourPoints);
-		if (balance < cost) {
+		if (msg.author.skillLevel(SkillsEnum.Strength) < buyable.strengthLevelReq) {
+			return msg.channel.send(`You need atleast level ${buyable.strengthLevelReq} Strength to buy this.`);
+		}
+
+		const score = await msg.author.getMinigameScore('MadMarimbosMonkeyRumble');
+		if (score < buyable.gamesReq) {
 			return msg.channel.send(
-				`You don't have enough Honour Points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`
+				`You need to have completed atleast ${
+					buyable.gamesReq
+				} rumble matches before you can buy this, you have ${buyable.gamesReq - score} remaining.`
 			);
 		}
 
-		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost);
+		const { item, cost } = buyable;
+		const bank = msg.author.bank();
+		const balance = bank.amount('Rumble token');
+		if (balance < cost) {
+			return msg.channel.send(
+				`You don't have enough Rumble tokens to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`
+			);
+		}
+
+		await msg.author.removeItemsFromBank(new Bank().add('Rumble token', cost));
 		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
 
-		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Honour Points.`);
+		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Rumble tokens.`);
 	}
 
 	@minionNotBusy
 	@requiresMinion
 	async start(msg: KlasaMessage) {
-		// const boosts = [];
-
-		// let waveTime = randomVariation(Time.Minute * 4, 10);
-
-		// // Up to 12.5% speed boost for max strength
-		// const gearStats = msg.author.getGear(GearSetupTypes.Melee).stats;
-		// const strengthPercent = round(calcWhatPercent(gearStats.melee_strength, maxOtherStats.melee_strength) / 8, 2);
-		// waveTime = reduceNumByPercent(waveTime, strengthPercent);
-		// boosts.push(`${strengthPercent}% for ${msg.author.username}'s melee gear`);
-
-		// // Up to 30% speed boost for team total honour level
-		// const totalLevelPercent = round(calcWhatPercent(1, 5 * 1) / 3.3, 2);
-		// boosts.push(`${totalLevelPercent}% for team honour levels`);
-		// waveTime = reduceNumByPercent(waveTime, totalLevelPercent);
-
-		// // Up to 10%, at 200 kc, speed boost for team average kc
-		// const averageKC = 1;
-		// const kcPercent = round(Math.min(100, calcWhatPercent(averageKC, 200)) / 5, 2);
-		// boosts.push(`${kcPercent}% for average KC`);
-		// waveTime = reduceNumByPercent(waveTime, kcPercent);
-
-		// const quantity = Math.floor(msg.author.maxTripLength(Activity.BarbarianAssault) / waveTime);
-		// const duration = quantity * waveTime;
-
-		// boosts.push(`Each wave takes ${formatDuration(waveTime)}`);
-
-		// let str = `${
-		// 	msg.author.minionName
-		// } is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
-		// 	waveTime
-		// )} - the total trip will take ${formatDuration(duration)}. `;
-
-		// str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
-
 		if (!msg.author.hasItemEquippedAnywhere("M'speak amulet")) {
 			return msg.channel.send({
 				files: [
@@ -122,12 +109,13 @@ export default class extends BotCommand {
 
 		const fightDuration = Time.Minute * 5;
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.MonkeyRumble) / fightDuration);
+		const duration = quantity * fightDuration;
 
 		await addSubTaskToActivityTask<MonkeyRumbleOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
-			quantity: 1,
-			duration: 1,
+			quantity,
+			duration,
 			type: Activity.MonkeyRumble,
 			minigameID: 'MadMarimbosMonkeyRumble',
 			monkey

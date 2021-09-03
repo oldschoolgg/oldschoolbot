@@ -3,6 +3,7 @@ import { Canvas } from 'canvas-constructor';
 import { MessageAttachment } from 'discord.js';
 import { randArrItem, randInt, roll } from 'e';
 import fs from 'fs/promises';
+import { KlasaUser } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { toTitleCase } from './util';
@@ -196,6 +197,15 @@ export function getRandomMonkey(): Monkey {
 		head: randomHead[1],
 		special
 	};
+}
+
+export function monkeyTierOfUser(user: KlasaUser) {
+	for (const tier of monkeyTiers) {
+		if (user.hasItemEquippedOrInBank(tier.greegree.id)) {
+			return tier.id;
+		}
+	}
+	return 1;
 }
 
 export const TOTAL_MONKEYS = firstNames.length * lastNames.length * titles.length;
