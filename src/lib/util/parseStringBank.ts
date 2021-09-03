@@ -5,8 +5,10 @@ import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { filterableTypes } from '../data/filterables';
 import { cleanString, stringMatches } from '../util';
 
+type TParsedItem = [Item, number];
+
 export function customKMB(number: string) {
-	if (!number.toLowerCase().match('^[.bmk0-9]+$')) return NaN;
+	if (!number.toLowerCase().match('^[-.bmk0-9]+$')) return NaN;
 	let previous = 0;
 	let strNum = '';
 	for (const c of number.split('')) {
@@ -32,8 +34,6 @@ export function customKMB(number: string) {
 	return previous;
 }
 
-type TParsedItem = [Item, number];
-
 export function parseStringBank(str: string, allOfTheSameItem: boolean = true): TParsedItem[] {
 	const returnItems: TParsedItem[] = [];
 	if (str) {
@@ -44,13 +44,17 @@ export function parseStringBank(str: string, allOfTheSameItem: boolean = true): 
 			if (splitItem.length > 2) {
 				let n1 = customKMB(splitItem[0]);
 				let n2 = customKMB(splitItem[1]);
-				// If both are numbers, ignore the first one
-				if (!isNaN(n1) && !isNaN(n2)) splitItem.shift();
+				// If both are numbers, ignore the second one (
+				// Developer Comment: Why not the first? I will never know, kept second to follow testing guidelines)
+				if (!isNaN(n1) && !isNaN(n2)) splitItem.splice(1, 1);
 			}
 			let qty = customKMB(splitItem[0]);
 			// If the qty was valid, remove the first element of the array
-			if (!isNaN(qty) && splitItem.length > 1) splitItem.shift();
-			else qty = 0;
+			if (!isNaN(qty) && splitItem.length > 1) {
+				// Handle negative qtys
+				if (qty < 0) qty = 0;
+				splitItem.shift();
+			} else qty = 0;
 			item = splitItem.join(' ');
 			const forcedID = Number(item) === parseInt(item);
 			// If the item was a string, check all items with this name
@@ -65,10 +69,16 @@ export function parseStringBank(str: string, allOfTheSameItem: boolean = true): 
 				}).map(i => {
 					return [i, qty];
 				}) as TParsedItem[];
-				returnItems.push(...foundItems);
+				for (const fi of foundItems) {
+					if (!returnItems.find(r => r[0].id === fi[0].id)) {
+						returnItems.push(fi);
+					}
+				}
 			} else {
 				const _i = Items.get(Number(item));
-				if (_i) returnItems.push([_i, qty]);
+				if (_i && !returnItems.find(r => r[0].id === _i.id)) {
+					returnItems.push([_i, qty]);
+				}
 			}
 		}
 	}

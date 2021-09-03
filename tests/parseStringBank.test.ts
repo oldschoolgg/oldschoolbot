@@ -2,28 +2,12 @@
 import { Bank } from 'oldschooljs';
 
 import getOSItem from '../src/lib/util/getOSItem';
-import { parseBank, parseQuantityAndItem, parseStringBank } from '../src/lib/util/parseStringBank';
+import { parseBank, parseStringBank } from '../src/lib/util/parseStringBank';
 
 const psb = parseStringBank;
 const get = getOSItem;
-const pQI = parseQuantityAndItem;
 
 describe('Bank Parsers', () => {
-	test('parseQuantityAndItem', () => {
-		expect(pQI('')).toEqual([]);
-		expect(pQI(' ,,, ')).toEqual([]);
-		expect(pQI('1.5k twisted bow')).toEqual([[get('Twisted bow')], 1500]);
-		expect(pQI('1m twisted bow')).toEqual([[get('Twisted bow')], 1_000_000]);
-		expect(pQI('20 twisted bow')).toEqual([[get('Twisted bow')], 20]);
-		expect(pQI('0 twisted bow')).toEqual([[get('Twisted bow')], 0]);
-		expect(pQI('twisted bow')).toEqual([[get('Twisted bow')], 0]);
-		expect(pQI('1 1 twisted bow')).toEqual([[get('Twisted bow')], 1]);
-		const runePlate = get('Rune platebody')!;
-		expect(pQI(`1 100 ${runePlate.id}`)).toEqual([[runePlate], 1]);
-		expect(pQI(`${runePlate.id}`)).toEqual([[runePlate], 0]);
-		expect(pQI('1 1 Dragonfire ward')).toEqual([[get(22_002)], 1]);
-	});
-
 	test('parseStringBank', async () => {
 		const output = psb(' 1 twisted bow, coal,  5k egg,  1b trout ');
 		const expected = [

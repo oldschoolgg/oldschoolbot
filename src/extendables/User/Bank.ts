@@ -1,5 +1,4 @@
 import { User } from 'discord.js';
-import { deepClone } from 'e';
 import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { O } from 'ts-toolbelt';
@@ -12,7 +11,6 @@ import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
 import { bankHasAllItemsFromBank, removeBankFromBank, removeItemFromBank } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
 
 export interface GetUserBankOptions {
 	withGP?: boolean;
@@ -127,28 +125,11 @@ export default class extends Extendable {
 				await user.addItemsToCollectionLog(clLoot.bank);
 			}
 
-			// Apply ignored items
-			if (filterLoot) {
-				const userIgnoredItems = [...deepClone(this.settings.get(UserSettings.IgnoredItems))];
-				// Iterate over the lesser array for performance
-				if (userIgnoredItems.length > 0) {
-					items
-						.filter(i => userIgnoredItems.includes(i.id))
-						.forEach((item, quantity) => {
-							items.remove(item.id, quantity);
-							// Transform the item into coins
-							if (itemIsTradeable(item.id)) {
-								items.add(995, Math.floor(quantity * item.price));
-							}
-						});
-				}
-			}
-
 			// Get the amount of coins in the loot and remove the coins from the items to be added to the user bank
 			const coinsInLoot = items.amount(995);
 			if (coinsInLoot > 0) {
-				await user.addGP(coinsInLoot);
-				items.remove(995, coinsInLoot);
+				await user.addGP(items.amount(995));
+				items.remove(995, items.amount(995));
 			}
 
 			this.log(`Had items added to bank - ${JSON.stringify(items)}`);

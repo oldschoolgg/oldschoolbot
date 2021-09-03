@@ -32,7 +32,6 @@ export namespace UserSettings {
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const BitField = T<readonly BitField[]>('bitfield');
 	export const FavoriteItems = T<readonly number[]>('favoriteItems');
-	export const IgnoredItems = T<readonly number[]>('ignoredItems');
 	export const Badges = T<readonly number[]>('badges');
 	export const RSN = T<string>('RSN');
 	export const SacrificedValue = T<number>('sacrificedValue');
