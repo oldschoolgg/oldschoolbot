@@ -82,7 +82,7 @@ setCustomItem(
 			}
 		}
 	},
-	100_000_000
+	1_000_000_000
 );
 
 setCustomItem(8871, 'Dwarven crate', 'Mystery box', {}, 100_000);
