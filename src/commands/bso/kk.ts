@@ -24,7 +24,8 @@ const minimumSoloGear = new Gear({
 	body: 'Torva platebody',
 	legs: 'Torva platelegs',
 	feet: 'Torva boots',
-	hands: 'Torva gloves'
+	hands: 'Torva gloves',
+	weapon: 'Drygore mace'
 });
 
 function calcFood(user: KlasaUser, teamSize: number, quantity: number) {
