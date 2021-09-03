@@ -8,6 +8,21 @@ const psb = parseStringBank;
 const get = getOSItem;
 
 describe('Bank Parsers', () => {
+	test('parseQuantityAndItem', () => {
+		expect(psb('')).toEqual([]);
+		expect(psb(' ,,, ')).toEqual([]);
+		expect(psb('1.5k twisted bow')).toEqual([[get('Twisted bow'), 1500]]);
+		expect(psb('1m twisted bow')).toEqual([[get('Twisted bow'), 1_000_000]]);
+		expect(psb('20 twisted bow')).toEqual([[get('Twisted bow'), 20]]);
+		expect(psb('0 twisted bow')).toEqual([[get('Twisted bow'), 0]]);
+		expect(psb('twisted bow')).toEqual([[get('Twisted bow'), 0]]);
+		expect(psb('1 1 twisted bow')).toEqual([[get('Twisted bow'), 1]]);
+		const runePlate = get('Rune platebody')!;
+		expect(psb(`1 100 ${runePlate.id}`)).toEqual([[runePlate, 1]]);
+		expect(psb(`${runePlate.id}`)).toEqual([[runePlate, 0]]);
+		expect(psb('1 1 Dragonfire ward')).toEqual([[get(22_002), 1]]);
+	});
+
 	test('parseStringBank', async () => {
 		const output = psb(' 1 twisted bow, coal,  5k egg,  1b trout ');
 		const expected = [

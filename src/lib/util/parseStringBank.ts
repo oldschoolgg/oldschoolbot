@@ -7,7 +7,7 @@ import { cleanString, stringMatches } from '../util';
 
 type TParsedItem = [Item, number];
 
-export function customKMB(number: string) {
+export function customKMB(number: string, floor: boolean = true) {
 	if (!number.toLowerCase().match('^[-.bmk0-9]+$')) return NaN;
 	let previous = 0;
 	let strNum = '';
@@ -31,7 +31,7 @@ export function customKMB(number: string) {
 		}
 	}
 	if (strNum) previous += Number(strNum);
-	return previous;
+	return !isNaN(previous) ? (floor ? Math.floor(previous) : previous) : NaN;
 }
 
 export function parseStringBank(str: string, allOfTheSameItem: boolean = true): TParsedItem[] {
