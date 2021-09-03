@@ -50,7 +50,7 @@ export default class extends Task {
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;
 
 			announceLoot({
-				user: leaderUser,
+				user,
 				monsterID: monster.id,
 				loot,
 				notifyDrops: monster.notifyDrops,
