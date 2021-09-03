@@ -241,9 +241,18 @@ export default class extends BotCommand {
 		const hasSmokey = msg.author.allItemsOwned().has('Smokey');
 		const loot = new Bank();
 		let smokeyBonus = 0;
-		if (botOpenable.name.toLowerCase().includes('mystery') && hasSmokey) {
-			for (let i = 0; i < quantity; i++) {
-				if (roll(10)) smokeyBonus++;
+		if (botOpenable.name.toLowerCase().includes('mystery')) {
+			// Force names to TMBs/UMBs
+			if (
+				['Tradeables Mystery box', 'Untradeables Mystery box'].includes(botOpenable.name) &&
+				!Boolean(msg.flagArgs.id)
+			) {
+				msg.flagArgs.names = 'yes';
+			}
+			if (hasSmokey) {
+				for (let i = 0; i < quantity; i++) {
+					if (roll(10)) smokeyBonus++;
+				}
 			}
 		}
 
