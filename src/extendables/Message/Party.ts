@@ -50,7 +50,8 @@ async function _setup(msg: KlasaMessage, options: MakePartyOptions): Promise<[Us
 				time: 120_000,
 				max: options.usersAllowed?.length ?? options.maxSize,
 				dispose: true,
-				filter: (reaction: MessageReaction, user: User) => {
+				filter: async (reaction: MessageReaction, user: User) => {
+					await user.settings.sync();
 					if (
 						(!options.ironmanAllowed && user.isIronman) ||
 						user.bot ||
@@ -103,7 +104,10 @@ async function _setup(msg: KlasaMessage, options: MakePartyOptions): Promise<[Us
 			}
 
 			collector.on('collect', async (reaction, user) => {
+				console.log(user);
 				if (user.partial) await user.fetch();
+				console.log('syncing...');
+				await user.settings.sync();
 				switch (reaction.emoji.id) {
 					case ReactionEmoji.Join: {
 						if (usersWhoConfirmed.includes(user)) return;
@@ -115,7 +119,7 @@ async function _setup(msg: KlasaMessage, options: MakePartyOptions): Promise<[Us
 						// Add the user
 						usersWhoConfirmed.push(user);
 						updateUsersIn();
-
+						console.log(usersWhoConfirmed);
 						if (usersWhoConfirmed.length >= options.maxSize) {
 							collector.stop('everyoneJoin');
 							break;
