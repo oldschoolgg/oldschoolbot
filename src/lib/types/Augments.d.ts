@@ -1,7 +1,7 @@
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
-import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
-import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
+import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload, User } from 'discord.js';
+import { Settings, SettingsUpdateResult } from 'klasa';
 import { Bank, Player } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { CommentStream, SubmissionStream } from 'snoostorm';
@@ -28,10 +28,10 @@ type SendBankImageFn = (options: {
 	title?: string;
 	background?: number;
 	flags?: Record<string, string | number>;
-	user?: KlasaUser;
+	user?: User;
 	cl?: ItemBank;
 	gearPlaceholder?: Record<GearSetupType, GearSetup>;
-}) => Promise<KlasaMessage>;
+}) => Promise<Message>;
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -55,7 +55,7 @@ declare module 'klasa' {
 		analyticsInterval: NodeJS.Timeout;
 		metricsInterval: NodeJS.Timeout;
 		options: KlasaClientOptions;
-		fetchUser(id: string): Promise<KlasaUser>;
+		fetchUser(id: string): Promise<User>;
 	}
 
 	interface Command {
@@ -74,12 +74,12 @@ declare module 'klasa' {
 			title?: string,
 			showValue?: boolean,
 			flags?: { [key: string]: string | number },
-			user?: KlasaUser,
+			user?: User,
 			cl?: ItemBank
 		): Promise<BankImageResult>;
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
 		generateLogImage(options: {
-			user: KlasaUser;
+			user: User;
 			collection: string;
 			type: 'collection' | 'sacrifice' | 'bank';
 			flags: { [key: string]: string | number };
@@ -92,7 +92,7 @@ declare module 'klasa' {
 	interface KlasaMessage {
 		cmdPrefix: string;
 
-		makePartyAwaiter(options: MakePartyOptions): Promise<KlasaUser[]>;
+		makePartyAwaiter(options: MakePartyOptions): Promise<User[]>;
 		removeAllReactions(): void;
 		confirm(this: KlasaMessage, str: string): Promise<void>;
 	}
@@ -106,7 +106,7 @@ declare module 'discord-api-types/v8' {
 	type Snowflake = string;
 }
 
-type KlasaSend = (input: string | MessagePayload | MessageOptions) => Promise<KlasaMessage>;
+type KlasaSend = (input: string | MessagePayload | MessageOptions) => Promise<Message>;
 
 declare module 'discord.js' {
 	interface TextBasedChannel {
@@ -137,6 +137,7 @@ declare module 'discord.js' {
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {
+		settings: Settings;
 		addItemsToBank(
 			items: ItemBank | Bank,
 			collectionLog?: boolean,
@@ -227,7 +228,7 @@ declare module 'discord.js' {
 		/**
 		 * Queue a function to run on a per-user queue.
 		 */
-		queueFn(fn: (user: KlasaUser) => Promise<T>): Promise<T>;
+		queueFn(fn: (user: User) => Promise<T>): Promise<T>;
 		bank(options?: GetUserBankOptions): Bank;
 		getPOH(): Promise<PoHTable>;
 		getUserFavAlchs(): Item[];
@@ -300,8 +301,8 @@ declare module 'discord.js' {
 			title?: string;
 			background?: number;
 			flags?: Record<string, string | number>;
-			user?: KlasaUser;
-		}): Promise<KlasaMessage>;
+			user?: User;
+		}): Promise<Message>;
 		__triviaQuestionsDone: any;
 	}
 }

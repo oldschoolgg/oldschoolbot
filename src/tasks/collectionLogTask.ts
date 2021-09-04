@@ -1,8 +1,8 @@
 import { Canvas, CanvasRenderingContext2D, createCanvas, Image } from 'canvas';
-import { MessageAttachment, MessageOptions } from 'discord.js';
+import { MessageAttachment, MessageOptions, User } from 'discord.js';
 import { objectEntries, objectKeys } from 'e';
 import fs from 'fs';
-import { KlasaUser, Task } from 'klasa';
+import { Task } from 'klasa';
 
 import { Events } from '../lib/constants';
 import { allCollectionLogs, getCollection, getPossibleOptions, getTotalCl } from '../lib/data/Collections';
@@ -207,7 +207,7 @@ export default class CollectionLogTask extends Task {
 	}
 
 	async generateLogImage(options: {
-		user: KlasaUser;
+		user: User;
 		collection: string;
 		type: 'collection' | 'sacrifice' | 'bank';
 		flags: { [key: string]: string | number };

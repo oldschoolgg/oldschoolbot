@@ -1,4 +1,5 @@
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { User } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
@@ -57,7 +58,7 @@ const brimhavenGraceful = resolveNameBank({
 	'Brimhaven graceful cape': 1
 });
 
-export function determineXPFromTickets(qty: number, user: KlasaUser, hasDiary: boolean) {
+export function determineXPFromTickets(qty: number, user: User, hasDiary: boolean) {
 	let baseXP = ticketQuantities[qty as keyof typeof ticketQuantities] ?? ticketQuantities[1000];
 	// The experience reward from the tickets is increased by 5 per ticket for each Agility level above 40.
 	baseXP += 5 * (user.skillLevel(SkillsEnum.Agility) - 40);

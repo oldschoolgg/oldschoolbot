@@ -1,6 +1,7 @@
 import {
 	DMChannel,
 	GuildMember,
+	Message,
 	MessageAttachment,
 	MessageOptions,
 	MessagePayload,
@@ -10,7 +11,7 @@ import {
 	Util
 } from 'discord.js';
 import { isObject } from 'e';
-import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
+import { Extendable, ExtendableStore } from 'klasa';
 
 import { bankImageCache } from '../lib/constants';
 import { ItemBank } from '../lib/types';
@@ -52,7 +53,7 @@ export default class extends Extendable {
 		return !this.guild || this.permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.VIEW_CHANNEL, false);
 	}
 
-	async send(this: TextChannel, input: string | MessageOptions): Promise<KlasaMessage> {
+	async send(this: TextChannel, input: string | MessageOptions): Promise<Message> {
 		const maxLength = 2000;
 		if (typeof input === 'string' && input.length > maxLength) {
 			let lastMessage = null;
@@ -119,7 +120,7 @@ export default class extends Extendable {
 			title?: string;
 			background?: number;
 			flags?: Record<string, string>;
-			user?: KlasaUser;
+			user?: User;
 			cl?: ItemBank;
 		}
 	) {

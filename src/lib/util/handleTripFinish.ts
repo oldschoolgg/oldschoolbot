@@ -1,6 +1,6 @@
-import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
+import { Message, MessageAttachment, MessageCollector, TextChannel, User } from 'discord.js';
 import { Time } from 'e';
-import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { KlasaClient, KlasaMessage } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { itemID } from 'oldschooljs/dist/util';
 
@@ -26,7 +26,7 @@ const activitiesToTrackAsPVMGPSource = [
 
 export async function handleTripFinish(
 	client: KlasaClient,
-	user: KlasaUser,
+	user: User,
 	channelID: string,
 	message: string,
 	onContinue: undefined | ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),

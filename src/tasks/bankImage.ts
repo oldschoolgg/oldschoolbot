@@ -1,7 +1,8 @@
 import { Canvas, CanvasRenderingContext2D, createCanvas, Image, registerFont } from 'canvas';
+import { User } from 'discord.js';
 import { objectKeys, randInt } from 'e';
 import * as fs from 'fs';
-import { KlasaUser, Task, TaskStore, util } from 'klasa';
+import { Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
@@ -275,7 +276,7 @@ export default class BankImageTask extends Task {
 		title = '',
 		showValue = true,
 		flags: { [key: string]: string | number } = {},
-		user?: KlasaUser,
+		user?: User,
 		collectionLog?: ItemBank
 	): Promise<BankImageResult> {
 		const bank = _bank instanceof Bank ? _bank : new Bank(_bank);

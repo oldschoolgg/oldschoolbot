@@ -1,4 +1,4 @@
-import { KlasaUser } from 'klasa';
+import { User } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { implings } from '../implings';
@@ -23,7 +23,7 @@ export interface ILeftListStatus {
 export type TRoleCategories = 'bosses' | 'slayer' | 'clues' | 'minigames' | 'skilling' | 'raids' | 'pets';
 
 interface IKCActivity {
-	[key: string]: string | string[] | ((user: KlasaUser) => Promise<number>);
+	[key: string]: string | string[] | ((user: User) => Promise<number>);
 }
 
 export interface ICollectionActivity {

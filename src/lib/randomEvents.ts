@@ -1,7 +1,6 @@
-import { MessageEmbed, TextChannel } from 'discord.js';
+import { Message, MessageEmbed, TextChannel, User } from 'discord.js';
 import { randArrItem, randInt, Time } from 'e';
 import fs from 'fs';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
@@ -148,7 +147,7 @@ try {
 	).triviaQuestions;
 } catch (_) {}
 
-async function finalizeEvent(event: RandomEvent, user: KlasaUser, ch: TextChannel) {
+async function finalizeEvent(event: RandomEvent, user: User, ch: TextChannel) {
 	const loot = new Bank();
 	if (event.outfit) {
 		for (const piece of event.outfit) {
@@ -169,7 +168,7 @@ const options = {
 	errors: ['time']
 };
 
-export async function triggerRandomEvent(ch: TextChannel, user: KlasaUser) {
+export async function triggerRandomEvent(ch: TextChannel, user: User) {
 	if (user.settings.get(UserSettings.BitField).includes(BitField.DisabledRandomEvents)) {
 		return;
 	}
@@ -252,7 +251,7 @@ export async function triggerRandomEvent(ch: TextChannel, user: KlasaUser) {
 			}
 		}
 		case 4: {
-			const message = await ch.send({
+			const message: Message = await ch.send({
 				embeds: [
 					embed.setDescription(
 						`${user}, you've encountered the ${event.name} random event! To complete this event, reaction to this message with any emoji.`

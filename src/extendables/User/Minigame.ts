@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
+import { Extendable, ExtendableStore } from 'klasa';
 import { EntityFieldsNames } from 'typeorm/common/EntityFieldsNames';
 
 import { getMinigameEntity, incrementMinigameScore } from '../../lib/settings/settings';
@@ -141,12 +141,12 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
-	async getMinigameScore(this: KlasaUser, minigame: MinigameKey) {
+	async getMinigameScore(this: User, minigame: MinigameKey) {
 		const MinigameEntity = await this.getMinigameEntity();
 		return MinigameEntity[minigame];
 	}
 
-	async getMinigameEntity(this: KlasaUser): Promise<MinigameTable> {
+	async getMinigameEntity(this: User): Promise<MinigameTable> {
 		return getMinigameEntity(this.id);
 	}
 

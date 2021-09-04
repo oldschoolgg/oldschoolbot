@@ -1,5 +1,6 @@
+import { User } from 'discord.js';
 import { Time } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -11,7 +12,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 export const gloriesInventorySize = 26;
 export const gloriesInventoryTime = Time.Minute * 2.2;
 
-export function hasWildyEliteDiary(user: KlasaUser): boolean {
+export function hasWildyEliteDiary(user: User): boolean {
 	return skillsMeetRequirements(user.rawSkills, {
 		woodcutting: 75,
 		agility: 60,

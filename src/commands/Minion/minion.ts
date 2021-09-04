@@ -1,5 +1,5 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
-import { MessageButton, MessageEmbed } from 'discord.js';
+import { Message, MessageButton, MessageEmbed } from 'discord.js';
 import { chunk, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
@@ -95,7 +95,7 @@ export default class MinionCommand extends BotCommand {
 			);
 		}
 
-		const sentMessage = await msg.channel.send({
+		const sentMessage: Message = await msg.channel.send({
 			content: msg.author.minionStatus,
 			components: components.length > 0 ? [...chunk(components, 5)] : undefined
 		});

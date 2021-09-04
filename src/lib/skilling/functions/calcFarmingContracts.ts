@@ -1,4 +1,4 @@
-import { KlasaUser } from 'klasa';
+import { User } from 'discord.js';
 
 import { rand, stringMatches } from '../../../lib/util';
 import { PlantTier } from '../../minions/farming/types';
@@ -80,7 +80,7 @@ const hardPlants: PlantsList = [
 ];
 
 export function getPlantToGrow(
-	user: KlasaUser,
+	user: User,
 	{ contractLevel, ignorePlant }: { contractLevel: 'easy' | 'medium' | 'hard'; ignorePlant: string | null }
 ): [string, PlantTier] {
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);

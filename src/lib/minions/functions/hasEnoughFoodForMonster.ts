@@ -1,4 +1,4 @@
-import { KlasaUser } from 'klasa';
+import { User } from 'discord.js';
 import { O } from 'ts-toolbelt';
 
 import { UserSettings } from '../../settings/types/UserSettings';
@@ -8,7 +8,7 @@ import getUserFoodFromBank from './getUserFoodFromBank';
 
 export default function hasEnoughFoodForMonster(
 	monster: O.Readonly<KillableMonster>,
-	user: O.Readonly<KlasaUser>,
+	user: O.Readonly<User>,
 	quantity: number,
 	totalPartySize = 1
 ) {

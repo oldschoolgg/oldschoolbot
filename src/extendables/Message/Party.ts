@@ -1,18 +1,15 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { MessageReaction } from 'discord.js';
+import { MessageReaction, User } from 'discord.js';
 import { debounce } from 'e';
-import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
+import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
 
 import { ReactionEmoji } from '../../lib/constants';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
 import { MakePartyOptions } from '../../lib/types';
 import { sleep } from '../../lib/util';
 
-async function _setup(
-	msg: KlasaMessage,
-	options: MakePartyOptions
-): Promise<[KlasaUser[], () => Promise<KlasaUser[]>]> {
-	const usersWhoConfirmed: KlasaUser[] = [options.leader];
+async function _setup(msg: KlasaMessage, options: MakePartyOptions): Promise<[User[], () => Promise<User[]>]> {
+	const usersWhoConfirmed: User[] = [options.leader];
 
 	function getMessageContent() {
 		return `${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
@@ -38,7 +35,7 @@ async function _setup(
 		confirmMessage.edit(getMessageContent());
 	}, 500);
 
-	const removeUser = (user: KlasaUser) => {
+	const removeUser = (user: User) => {
 		if (user === options.leader) return;
 		const index = usersWhoConfirmed.indexOf(user);
 		if (index !== -1) {
@@ -48,12 +45,12 @@ async function _setup(
 	};
 
 	const reactionAwaiter = () =>
-		new Promise<KlasaUser[]>(async (resolve, reject) => {
+		new Promise<User[]>(async (resolve, reject) => {
 			const collector = new CustomReactionCollector(confirmMessage, {
 				time: 120_000,
 				max: options.usersAllowed?.length ?? options.maxSize,
 				dispose: true,
-				filter: (reaction: MessageReaction, user: KlasaUser) => {
+				filter: (reaction: MessageReaction, user: User) => {
 					if (
 						(!options.ironmanAllowed && user.isIronman) ||
 						user.bot ||
@@ -90,7 +87,7 @@ async function _setup(
 				}
 			});
 
-			collector.on('remove', (reaction: MessageReaction, user: KlasaUser) => {
+			collector.on('remove', (reaction: MessageReaction, user: User) => {
 				if (!usersWhoConfirmed.includes(user)) return false;
 				if (reaction.emoji.id !== ReactionEmoji.Join) return false;
 				removeUser(user);

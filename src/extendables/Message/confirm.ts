@@ -1,4 +1,4 @@
-import { MessageButton } from 'discord.js';
+import { Message, MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
 
@@ -12,7 +12,7 @@ export default class extends Extendable {
 	async confirm(this: KlasaMessage, str: string): Promise<void> {
 		if (this.flagArgs.confirm || this.flagArgs.cf) return;
 
-		const confirmMessage = await this.channel.send({
+		const confirmMessage: Message = await this.channel.send({
 			content: str,
 			components: [
 				[

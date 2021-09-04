@@ -1,4 +1,4 @@
-import { KlasaUser } from 'klasa';
+import { User } from 'discord.js';
 import { O } from 'ts-toolbelt';
 
 import { GearSetupTypes, GearStat, maxDefenceStats, maxOffenceStats } from '../../gear';
@@ -10,7 +10,7 @@ const { floor, max } = Math;
 
 export default function calculateMonsterFood(
 	monster: O.Readonly<KillableMonster>,
-	user: O.Readonly<KlasaUser>
+	user: O.Readonly<User>
 ): [number, string[]] {
 	const messages: string[] = [];
 	let { healAmountNeeded, attackStyleToUse, attackStylesUsed } = monster;

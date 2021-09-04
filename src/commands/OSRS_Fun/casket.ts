@@ -1,5 +1,5 @@
-import { MessageAttachment } from 'discord.js';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { MessageAttachment, User } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { PerkTier } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
@@ -21,7 +21,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	determineLimit(user: KlasaUser) {
+	determineLimit(user: User) {
 		if (this.client.owners.has(user)) {
 			return Infinity;
 		}

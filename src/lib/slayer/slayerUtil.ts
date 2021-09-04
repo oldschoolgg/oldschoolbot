@@ -1,5 +1,5 @@
+import { User } from 'discord.js';
 import { randFloat, randInt } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { MoreThan } from 'typeorm';
@@ -100,7 +100,7 @@ export function weightedPick(filteredTasks: AssignableSlayerTask[]) {
 	return task;
 }
 
-export function userCanUseMaster(user: KlasaUser, master: SlayerMaster) {
+export function userCanUseMaster(user: User, master: SlayerMaster) {
 	return (
 		user.settings.get(UserSettings.QP) >= (master.questPoints ?? 0) &&
 		user.skillLevel(SkillsEnum.Slayer) >= (master.slayerLvl ?? 0) &&
@@ -109,7 +109,7 @@ export function userCanUseMaster(user: KlasaUser, master: SlayerMaster) {
 }
 
 export function userCanUseTask(
-	user: KlasaUser,
+	user: User,
 	task: AssignableSlayerTask,
 	master: SlayerMaster,
 	allowBossTasks: boolean = false
@@ -150,7 +150,7 @@ export function userCanUseTask(
 	return true;
 }
 
-export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
+export async function assignNewSlayerTask(_user: User, master: SlayerMaster) {
 	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master, false));
 	let bossTask = false;

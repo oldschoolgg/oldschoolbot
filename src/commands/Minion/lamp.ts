@@ -1,7 +1,7 @@
 import { ArrayActions } from '@klasa/settings-gateway';
-import { MessageButton, MessageSelectMenu } from 'discord.js';
+import { Message, MessageButton, MessageSelectMenu, User } from 'discord.js';
 import { objectEntries, objectValues, Time } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
@@ -50,7 +50,7 @@ export const XPLamps: IXPLamp[] = [
 ];
 
 interface IFunctionData {
-	user: KlasaUser;
+	user: User;
 	item: number;
 	quantity: number;
 }
@@ -195,7 +195,7 @@ export default class extends BotCommand {
 			})
 		);
 
-		const selectedMessage = await msg.channel.send({
+		const selectedMessage: Message = await msg.channel.send({
 			content: 'Please, select your reward from the list below.',
 			components: [
 				[

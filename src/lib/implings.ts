@@ -1,5 +1,5 @@
+import { User } from 'discord.js';
 import { roll, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank, Monsters, Openables } from 'oldschooljs';
 import SimpleOpenable from 'oldschooljs/dist/structures/SimpleOpenable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -82,7 +82,7 @@ for (const imp of implings) {
 
 const IMPLING_CHANCE_PER_MINUTE = 65;
 
-export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
+export function handlePassiveImplings(user: User, data: ActivityTaskOptions) {
 	const minutes = Math.floor(data.duration / Time.Minute);
 
 	if (minutes < 4) return null;

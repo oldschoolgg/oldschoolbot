@@ -1,5 +1,6 @@
+import { User } from 'discord.js';
 import { Time } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -18,7 +19,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	determineDuration(user: KlasaUser): [number, string[]] {
+	determineDuration(user: User): [number, string[]] {
 		let baseTime = Time.Second * 1500;
 		let nonGracefulTimeAddition = Time.Second * 123;
 

@@ -1,11 +1,11 @@
-import { KlasaUser } from 'klasa';
+import { User } from 'discord.js';
 
 import { Activity } from '../constants';
 import { reducedTimeForGroup } from '../minions/functions';
 import { KillableMonster } from '../minions/types';
 
 export default async function calcDurQty(
-	users: KlasaUser[],
+	users: User[],
 	monster: KillableMonster,
 	quantity: number | undefined,
 	min?: number,

@@ -1,5 +1,4 @@
 import { User } from 'discord.js';
-import { KlasaUser } from 'klasa';
 
 import { BitField, PerkTier, Roles } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
@@ -7,7 +6,7 @@ import { getSupportGuild } from '../util';
 
 const tier3ElligibleBits = [BitField.IsPatronTier3, BitField.isContributor, BitField.isModerator];
 
-export default function getUsersPerkTier(userOrBitfield: KlasaUser | readonly BitField[]): PerkTier | 0 {
+export default function getUsersPerkTier(userOrBitfield: User | readonly BitField[]): PerkTier | 0 {
 	if (userOrBitfield instanceof User && userOrBitfield.client.owners.has(userOrBitfield)) {
 		return 10;
 	}

@@ -1,5 +1,6 @@
+import { User } from 'discord.js';
 import { objectKeys, Time } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity, Emoji } from '../../lib/constants';
 import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -31,7 +32,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number) {
+	checkReqs(users: User[], monster: KillableMonster, quantity: number) {
 		// Check if every user has the requirements for this monster.
 		for (const user of users) {
 			if (!user.hasMinion) {

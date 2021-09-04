@@ -1,5 +1,5 @@
-import { MessageAttachment } from 'discord.js';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { MessageAttachment, User } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
@@ -23,7 +23,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	determineKillLimit(user: KlasaUser) {
+	determineKillLimit(user: User) {
 		if (this.client.owners.has(user)) {
 			return Infinity;
 		}

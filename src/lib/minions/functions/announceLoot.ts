@@ -1,4 +1,4 @@
-import { KlasaUser } from 'klasa';
+import { User } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Events } from '../../constants';
@@ -12,11 +12,11 @@ export default async function announceLoot({
 	loot,
 	team
 }: {
-	user: KlasaUser;
+	user: User;
 	monsterID: number;
 	notifyDrops?: number[] | ArrayItemsResolved;
 	loot: Bank;
-	team?: { leader: KlasaUser; lootRecipient: KlasaUser; size: number };
+	team?: { leader: User; lootRecipient: User; size: number };
 }) {
 	if (!_notifyDrops) return;
 	const notifyDrops = _notifyDrops.flat(Infinity);

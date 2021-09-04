@@ -1,5 +1,6 @@
+import { User } from 'discord.js';
 import { objectEntries } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaClient } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
@@ -22,7 +23,7 @@ export default async function removeFoodFromUser({
 	learningPercentage
 }: {
 	client: KlasaClient;
-	user: KlasaUser;
+	user: User;
 	totalHealingNeeded: number;
 	healPerAction: number;
 	activityName: string;

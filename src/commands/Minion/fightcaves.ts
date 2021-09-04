@@ -1,5 +1,6 @@
+import { User } from 'discord.js';
 import { Time } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
@@ -40,7 +41,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	determineDuration(user: KlasaUser): [number, string] {
+	determineDuration(user: User): [number, string] {
 		let baseTime = Time.Hour * 2;
 		const gear = user.getGear('range');
 		let debugStr = '';
@@ -66,7 +67,7 @@ export default class extends BotCommand {
 		return [baseTime, debugStr];
 	}
 
-	determineChanceOfDeathPreJad(user: KlasaUser) {
+	determineChanceOfDeathPreJad(user: User) {
 		const attempts = user.settings.get(UserSettings.Stats.FightCavesAttempts);
 		let deathChance = Math.max(14 - attempts * 2, 5);
 
@@ -78,7 +79,7 @@ export default class extends BotCommand {
 		return deathChance;
 	}
 
-	determineChanceOfDeathInJad(user: KlasaUser) {
+	determineChanceOfDeathInJad(user: User) {
 		const attempts = user.settings.get(UserSettings.Stats.FightCavesAttempts);
 		const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(15))) * 50);
 
@@ -86,7 +87,7 @@ export default class extends BotCommand {
 		return Math.max(Math.min(chance, 99), 5);
 	}
 
-	async checkGear(user: KlasaUser) {
+	async checkGear(user: User) {
 		const gear = user.getGear('range');
 		const equippedWeapon = gear.equippedWeapon();
 

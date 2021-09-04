@@ -1,4 +1,4 @@
-import { KlasaUser } from 'klasa';
+import { User } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { chompyHats } from '../../../commands/Minion/chompyhunt';
@@ -26,7 +26,7 @@ export interface Buyable {
 	skillsNeeded?: Skills;
 	restockTime?: number;
 	minigameScoreReq?: [MinigameKey, number];
-	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
+	customReq?: (user: User) => Promise<[true] | [false, string]>;
 }
 
 const cmCapes: Buyable[] = [

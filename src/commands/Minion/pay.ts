@@ -1,6 +1,6 @@
-import { TextChannel } from 'discord.js';
+import { TextChannel, User } from 'discord.js';
 import { Time } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Channel, Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -21,7 +21,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [user, amount]: [KlasaUser, number]) {
+	async run(msg: KlasaMessage, [user, amount]: [User, number]) {
 		await msg.author.settings.sync(true);
 		const GP = msg.author.settings.get(UserSettings.GP);
 		if (msg.author.isIronman) throw "Iron players can't send money.";

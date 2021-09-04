@@ -1,6 +1,6 @@
-import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { MessageAttachment, MessageEmbed, User } from 'discord.js';
 import { notEmpty, Time, uniqueArr } from 'e';
-import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank } from 'oldschooljs';
 
@@ -42,7 +42,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [cmd, input, str]: [string, KlasaUser | string | undefined, string | undefined]) {
+	async run(msg: KlasaMessage, [cmd, input, str]: [string, User | string | undefined, string | undefined]) {
 		if (msg.guild!.id !== '342983479501389826') return null;
 
 		switch (cmd.toLowerCase()) {
@@ -140,7 +140,7 @@ ${
 		const isOwner = this.client.owners.has(msg.author);
 		if (!isMod && !isOwner) return null;
 
-		if (input && input instanceof KlasaUser) {
+		if (input && input instanceof User) {
 			await input.settings.sync(true);
 		}
 
@@ -162,7 +162,7 @@ ${
 				return msg.channel.send(status);
 			}
 			case 'bypassage': {
-				if (!input || !(input instanceof KlasaUser)) return;
+				if (!input || !(input instanceof User)) return;
 				await input.settings.sync(true);
 				if (input.settings.get(UserSettings.BitField).includes(BitField.BypassAgeRestriction)) {
 					return msg.channel.send('This user is already bypassed.');
@@ -185,7 +185,7 @@ ${
 			}
 			case 'check':
 			case 'c': {
-				if (!input || !(input instanceof KlasaUser)) return;
+				if (!input || !(input instanceof User)) return;
 				const bitfields = `${input.settings
 					.get(UserSettings.BitField)
 					.map(i => BitFieldData[i])
@@ -231,7 +231,7 @@ ${
 				return msg.channel.send(result as string);
 			}
 			case 'canceltask': {
-				if (!input || !(input instanceof KlasaUser)) return;
+				if (!input || !(input instanceof User)) return;
 				await cancelTask(input.id);
 				this.client.oneCommandAtATimeCache.delete(input.id);
 				this.client.secondaryUserBusyCache.delete(input.id);
@@ -240,7 +240,7 @@ ${
 				return msg.react(Emoji.Tick);
 			}
 			case 'setgh': {
-				if (!input || !(input instanceof KlasaUser)) return;
+				if (!input || !(input instanceof User)) return;
 				if (!str) return;
 				const res = await fetch(`https://api.github.com/users/${encodeURIComponent(str)}`)
 					.then(res => res.json())
@@ -261,7 +261,7 @@ ${
 				return msg.channel.send(`Set ${res.login}[${res.id}] as ${input.username}'s Github account.`);
 			}
 			case 'giveperm': {
-				if (!input || !(input instanceof KlasaUser)) return;
+				if (!input || !(input instanceof User)) return;
 				await input.settings.update(
 					UserSettings.BitField,
 					[
@@ -278,7 +278,7 @@ ${
 			}
 
 			case 'bf': {
-				if (!input || !str || !(input instanceof KlasaUser)) {
+				if (!input || !str || !(input instanceof User)) {
 					return msg.channel.send(
 						Object.entries(BitFieldData)
 							.map(entry => `**${entry[0]}:** ${entry[1]?.name}`)
@@ -323,7 +323,7 @@ ${
 			}
 
 			case 'badges': {
-				if (!input || !str || !(input instanceof KlasaUser)) {
+				if (!input || !str || !(input instanceof User)) {
 					return msg.channel.send(
 						Object.entries(badges)
 							.map(entry => `**${entry[1]}:** ${entry[0]}`)
@@ -380,18 +380,18 @@ LIMIT 10;
 				);
 			}
 			case 'bank': {
-				if (!input || !(input instanceof KlasaUser)) return;
+				if (!input || !(input instanceof User)) return;
 				return msg.channel.sendBankImage({ bank: input.allItemsOwned().bank });
 			}
 			case 'disable': {
-				if (!input || input instanceof KlasaUser) return;
+				if (!input || input instanceof User) return;
 				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
 				if (!command) return msg.channel.send("That's not a valid command.");
 				command.disable();
 				return msg.channel.send(`${emoji(this.client)} Disabled \`+${command}\`.`);
 			}
 			case 'enable': {
-				if (!input || input instanceof KlasaUser) return;
+				if (!input || input instanceof User) return;
 				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
 				if (!command) return msg.channel.send("That's not a valid command.");
 				if (command.enabled) return msg.channel.send('That command is already enabled.');

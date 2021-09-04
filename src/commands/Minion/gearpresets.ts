@@ -1,5 +1,5 @@
-import { MessageAttachment, MessageEmbed } from 'discord.js';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { MessageAttachment, MessageEmbed, User } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Color } from '../../lib/constants';
@@ -11,7 +11,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { GearPresetsTable } from '../../lib/typeorm/GearPresetsTable.entity';
 import { cleanString, isValidGearSetup } from '../../lib/util';
 
-function maxPresets(user: KlasaUser) {
+function maxPresets(user: User) {
 	return user.perkTier * 2 + 3;
 }
 
@@ -184,7 +184,7 @@ export default class extends BotCommand {
 		);
 	}
 
-	async share(msg: KlasaMessage, [name = '', user]: [string, KlasaUser]) {
+	async share(msg: KlasaMessage, [name = '', user]: [string, User]) {
 		const preset = await GearPresetsTable.findOne({ userID: msg.author.id, name });
 		if (!name) return msg.channel.send('You must specify the name of the preset you want to share.');
 		if (!preset) return msg.channel.send(`You do not have any preset called ${name}.`);

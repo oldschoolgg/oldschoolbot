@@ -1,4 +1,4 @@
-import { MessageButton } from 'discord.js';
+import { Message, MessageButton } from 'discord.js';
 import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
@@ -109,7 +109,7 @@ export default class extends BotCommand {
 				return msg.channel.send('It was not possible to auto-slay this task. Please, try again.');
 			}
 		}
-		const sentMessage = await msg.channel.send({ content: message, components: returnSuccessButtons });
+		const sentMessage: Message = await msg.channel.send({ content: message, components: returnSuccessButtons });
 		try {
 			const selection = await sentMessage.awaitMessageComponentInteraction({
 				filter: i => {

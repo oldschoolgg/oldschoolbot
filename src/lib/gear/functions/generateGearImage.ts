@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 import { Canvas, createCanvas } from 'canvas';
+import { User } from 'discord.js';
 import * as fs from 'fs';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaClient } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import BankImageTask from '../../../tasks/bankImage';
@@ -79,7 +80,7 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 
 export async function generateGearImage(
 	client: KlasaClient,
-	user: KlasaUser,
+	user: User,
 	gearSetup: Gear,
 	gearType: GearSetupTypes | null,
 	petID: number | null
@@ -249,7 +250,7 @@ export async function generateGearImage(
 	return canvas.toBuffer();
 }
 
-export async function generateAllGearImage(client: KlasaClient, user: KlasaUser) {
+export async function generateAllGearImage(client: KlasaClient, user: User) {
 	if (!bankTask) {
 		bankTask = client.tasks.get('bankImage') as BankImageTask;
 	}

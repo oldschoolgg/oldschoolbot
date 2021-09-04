@@ -1,6 +1,6 @@
-import { MessageAttachment } from 'discord.js';
+import { MessageAttachment, User } from 'discord.js';
 import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { table } from 'table';
 
 import { boostCannon, boostCannonMulti, boostIceBarrage, boostIceBurst } from '../../lib/minions/data/combatConstants';
@@ -13,7 +13,7 @@ import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addArrayOfNumbers } from '../../lib/util';
 
-function applySkillBoostJr(user: KlasaUser, duration: number, styles: AttackStyles[]): [number, string] {
+function applySkillBoostJr(user: User, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
 
 	let newDuration = duration;

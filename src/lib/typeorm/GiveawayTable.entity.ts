@@ -1,6 +1,5 @@
-import { TextChannel } from 'discord.js';
+import { TextChannel, User } from 'discord.js';
 import { noOp, randArrItem } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { BaseEntity, Column, Entity, getConnection, Index, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
@@ -64,7 +63,7 @@ export class GiveawayTable extends BaseEntity {
 			const message = await channel?.messages.fetch(this.messageID).catch(noOp);
 
 			const reactions = message ? message.reactions.cache.get(this.reactionID) : undefined;
-			const users: KlasaUser[] = !reactions
+			const users: User[] = !reactions
 				? []
 				: (await reactions.users.fetch())!.array()!.filter(u => !u.isIronman && !u.bot && u.id !== this.userID);
 			const creator = await client.fetchUser(this.userID);

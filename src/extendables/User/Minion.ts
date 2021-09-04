@@ -1,6 +1,6 @@
 import { User } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, Time, uniqueArr } from 'e';
-import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
+import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -571,15 +571,15 @@ export default class extends Extendable {
 		}
 	}
 
-	getKC(this: KlasaUser, id: number) {
+	getKC(this: User, id: number) {
 		return this.settings.get(UserSettings.MonsterScores)[id] ?? 0;
 	}
 
-	getOpenableScore(this: KlasaUser, id: number) {
+	getOpenableScore(this: User, id: number) {
 		return this.settings.get(UserSettings.OpenableScores)[id] ?? 0;
 	}
 
-	public async getKCByName(this: KlasaUser, kcName: string) {
+	public async getKCByName(this: User, kcName: string) {
 		const mon = effectiveMonsters.find(
 			mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
 		);
@@ -608,7 +608,7 @@ export default class extends Extendable {
 		return [null, 0];
 	}
 
-	getCreatureScore(this: KlasaUser, creature: Creature) {
+	getCreatureScore(this: User, creature: Creature) {
 		return this.settings.get(UserSettings.CreatureScores)[creature.id] ?? 0;
 	}
 

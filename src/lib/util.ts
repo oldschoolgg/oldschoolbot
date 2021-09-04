@@ -1,8 +1,8 @@
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import crypto from 'crypto';
-import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
+import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel, User } from 'discord.js';
 import { objectEntries, randInt, shuffleArr, Time } from 'e';
-import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
+import { KlasaClient, KlasaMessage, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -270,7 +270,7 @@ export const anglerBoosts = [
 	[itemID('Angler boots'), 0.2]
 ];
 
-export function anglerBoostPercent(user: KlasaUser) {
+export function anglerBoostPercent(user: User) {
 	const skillingSetup = user.getGear('skilling');
 	let amountEquipped = 0;
 	let boostPercent = 0;
@@ -288,7 +288,7 @@ export function anglerBoostPercent(user: KlasaUser) {
 
 const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
 
-export function rogueOutfitPercentBonus(user: KlasaUser): number {
+export function rogueOutfitPercentBonus(user: User): number {
 	const skillingSetup = user.getGear('skilling');
 	let amountEquipped = 0;
 	for (const id of rogueOutfit) {
@@ -299,11 +299,11 @@ export function rogueOutfitPercentBonus(user: KlasaUser): number {
 	return amountEquipped * 20;
 }
 
-export function rollRogueOutfitDoubleLoot(user: KlasaUser): boolean {
+export function rollRogueOutfitDoubleLoot(user: User): boolean {
 	return randInt(1, 100) <= rogueOutfitPercentBonus(user);
 }
 
-export function generateContinuationChar(user: KlasaUser) {
+export function generateContinuationChar(user: User) {
 	const baseChar =
 		user.perkTier > PerkTier.One
 			? 'y'
@@ -340,7 +340,7 @@ export function sha256Hash(x: string) {
 	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
 }
 
-export function countSkillsAtleast99(user: KlasaUser) {
+export function countSkillsAtleast99(user: User) {
 	const skills = (user.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>;
 	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
 }
@@ -496,7 +496,7 @@ export function textEffect(str: string, effect: 'none' | 'strikethrough') {
 	return `${wrap}${str.replace(/~/g, '')}${wrap}`;
 }
 
-export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
+export async function wipeDBArrayByKey(user: User, key: string): Promise<SettingsUpdateResults> {
 	const active: any[] = user.settings.get(key) as any[];
 	return user.settings.update(key, active);
 }
@@ -512,7 +512,7 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export function patronMaxTripCalc(user: KlasaUser) {
+export function patronMaxTripCalc(user: User) {
 	const perkTier = getUsersPerkTier(user);
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
 	else if (perkTier === PerkTier.Three) return Time.Minute * 6;

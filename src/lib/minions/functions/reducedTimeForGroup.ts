@@ -1,4 +1,4 @@
-import { KlasaUser } from 'klasa';
+import { User } from 'discord.js';
 
 import { calcPOHBoosts } from '../../poh';
 import { UserSettings } from '../../settings/types/UserSettings';
@@ -7,7 +7,7 @@ import { KillableMonster } from '../types';
 import reducedTimeFromKC from './reducedTimeFromKC';
 
 export default async function reducedTimeForGroup(
-	users: KlasaUser[],
+	users: User[],
 	monster: KillableMonster
 ): Promise<[number, string[]]> {
 	let reductionMultiplier = 0;

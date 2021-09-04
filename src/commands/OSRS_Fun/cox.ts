@@ -1,4 +1,5 @@
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { User } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
@@ -21,7 +22,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	determineLimit(user: KlasaUser) {
+	determineLimit(user: User) {
 		if (this.client.owners.has(user)) {
 			return Infinity;
 		}

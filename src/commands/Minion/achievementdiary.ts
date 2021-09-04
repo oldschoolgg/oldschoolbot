@@ -1,4 +1,5 @@
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { User } from 'discord.js';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Minigames } from '../../extendables/User/Minigame';
@@ -13,7 +14,7 @@ const lampRewards = {
 	Elite: 'Antique lamp 4'
 } as const;
 
-async function howManyOfTierCompleted(user: KlasaUser, tiers: DiaryTier[]) {
+async function howManyOfTierCompleted(user: User, tiers: DiaryTier[]) {
 	let completed = 0;
 	for (const tier of tiers) {
 		const [has] = await userhasDiaryTier(user, tier);

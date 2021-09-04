@@ -1,6 +1,6 @@
-import { MessageAttachment } from 'discord.js';
+import { MessageAttachment, User } from 'discord.js';
 import { calcWhatPercent, increaseNumByPercent, objectEntries, objectKeys, reduceNumByPercent, round, Time } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
@@ -55,7 +55,7 @@ const invalidMonsterMsg = (prefix: string) =>
 
 const { floor } = Math;
 
-function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles[]): [number, string] {
+function applySkillBoost(user: User, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
 
 	let newDuration = duration;

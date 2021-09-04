@@ -1,11 +1,11 @@
-import { MessageAttachment } from 'discord.js';
-import { KlasaMessage, KlasaUser } from 'klasa';
+import { MessageAttachment, User } from 'discord.js';
+import { KlasaMessage } from 'klasa';
 
 import Farming from '../../skilling/skills/farming';
 import { itemNameFromID, rand } from '../../util';
 import { Plant, SkillsEnum } from '../types';
 
-export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
+export function calcNumOfPatches(plant: Plant, user: User, qp: number) {
 	let numOfPatches = plant.defaultNumOfPatches;
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
 	const questPoints = qp;

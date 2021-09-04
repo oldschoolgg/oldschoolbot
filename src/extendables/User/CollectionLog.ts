@@ -1,6 +1,6 @@
 import { User } from 'discord.js';
 import { calcWhatPercent } from 'e';
-import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
+import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
@@ -42,7 +42,7 @@ export default class extends Extendable {
 		return this.settings.get(UserSettings.CollectionLogBank);
 	}
 
-	getCL(this: KlasaUser, itemID: number) {
+	getCL(this: User, itemID: number) {
 		return this.settings.get(UserSettings.CollectionLogBank)[itemID] ?? 0;
 	}
 

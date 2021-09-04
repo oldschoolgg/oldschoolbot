@@ -1,4 +1,5 @@
 import { captureMessage } from '@sentry/minimal';
+import { User } from 'discord.js';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -9,7 +10,6 @@ import {
 	shuffleArr,
 	Time
 } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
@@ -29,7 +29,7 @@ export const bareMinStats: Skills = {
 	prayer: 70
 };
 
-export function hasMinRaidsRequirements(user: KlasaUser) {
+export function hasMinRaidsRequirements(user: User) {
 	return skillsMeetRequirements(user.rawSkills, bareMinStats);
 }
 
@@ -46,7 +46,7 @@ function kcPointsEffect(kc: number) {
 }
 
 export async function createTeam(
-	users: KlasaUser[],
+	users: User[],
 	cm: boolean
 ): Promise<Array<{ deaths: number; deathChance: number } & ChambersOfXericOptions['team'][0]>> {
 	let res = [];
@@ -195,7 +195,7 @@ export const maxMeleeGear = constructGearSetup({
 });
 const maxMelee = new Gear(maxMeleeGear);
 
-export function calculateUserGearPercents(user: KlasaUser) {
+export function calculateUserGearPercents(user: User) {
 	const melee = calcSetupPercent(
 		maxMelee.stats,
 		user.getGear('melee').stats,
@@ -231,7 +231,7 @@ export const minimumCoxSuppliesNeeded = new Bank({
 	'Super restore(4)': 5
 });
 
-export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<string | null> {
+export async function checkCoxTeam(users: User[], cm: boolean): Promise<string | null> {
 	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
 	if (!hasHerbalist) {
 		return 'nobody with atleast level 78 Herblore';
@@ -277,7 +277,7 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 	return null;
 }
 
-async function kcEffectiveness(u: KlasaUser, challengeMode: boolean, isSolo: boolean) {
+async function kcEffectiveness(u: User, challengeMode: boolean, isSolo: boolean) {
 	const kc = await u.getMinigameScore(challengeMode ? 'RaidsChallengeMode' : 'Raids');
 	let cap = isSolo ? 250 : 400;
 	if (challengeMode) {
@@ -359,7 +359,7 @@ const itemBoosts = [
 ];
 
 export async function calcCoxDuration(
-	_team: KlasaUser[],
+	_team: User[],
 	challengeMode: boolean
 ): Promise<{ reductions: Record<string, number>; duration: number; totalReduction: number }> {
 	const team = shuffleArr(_team).slice(0, 9);
@@ -408,7 +408,7 @@ export async function calcCoxDuration(
 	return { duration, reductions, totalReduction: totalSpeedReductions / size };
 }
 
-export async function calcCoxInput(u: KlasaUser, solo: boolean) {
+export async function calcCoxInput(u: User, solo: boolean) {
 	const items = new Bank();
 	const kc = await u.getMinigameScore('Raids');
 	items.add('Stamina potion(4)', solo ? 2 : 1);

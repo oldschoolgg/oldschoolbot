@@ -1,5 +1,6 @@
+import { User } from 'discord.js';
 import { objectKeys, randArrItem, Time } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Events } from '../../lib/constants';
@@ -45,7 +46,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	notifyUniques(user: KlasaUser, activity: string, uniques: number[], loot: ItemBank, qty: number, randQty?: number) {
+	notifyUniques(user: User, activity: string, uniques: number[], loot: ItemBank, qty: number, randQty?: number) {
 		const itemsToAnnounce = filterBankFromArrayOfItems(uniques, loot);
 		if (objectKeys(itemsToAnnounce).length > 0) {
 			const lootStr = new Bank(itemsToAnnounce).toString();

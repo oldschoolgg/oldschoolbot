@@ -1,5 +1,5 @@
+import { User } from 'discord.js';
 import { objectEntries } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -22,7 +22,7 @@ export interface DiaryTier {
 	lapsReqs?: Record<string, number>;
 	qp?: number;
 	monsterScores?: Record<string, number>;
-	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
+	customReq?: (user: User) => Promise<[true] | [false, string]>;
 }
 interface Diary {
 	name: string;
@@ -33,7 +33,7 @@ interface Diary {
 	elite: DiaryTier;
 }
 
-export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promise<[true] | [false, string]> {
+export async function userhasDiaryTier(user: User, tier: DiaryTier): Promise<[true] | [false, string]> {
 	const [hasSkillReqs] = user.hasSkillReqs(tier.skillReqs);
 	let canDo = true;
 	const reasons: string[] = [];

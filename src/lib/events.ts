@@ -1,5 +1,6 @@
+import { User } from 'discord.js';
 import { noOp } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaClient } from 'klasa';
 import { getConnection } from 'typeorm';
 
 import { Events, LEVEL_99_XP } from './constants';
@@ -28,7 +29,7 @@ async function howManyMaxed() {
 	};
 }
 
-export async function onMax(user: KlasaUser) {
+export async function onMax(user: User) {
 	const { normies, irons } = await howManyMaxed();
 
 	const str = `🎉 ${user.username}'s minion just achieved level 99 in every skill, they are the **${formatOrdinal(

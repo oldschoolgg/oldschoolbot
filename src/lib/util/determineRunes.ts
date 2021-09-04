@@ -1,4 +1,4 @@
-import { KlasaUser } from 'klasa';
+import { User } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import resolveItems from './resolveItems';
@@ -21,7 +21,7 @@ const runeItems: [number[], number[]][] = [
 	[res(['Tome of fire (empty)', 'Tome of fire']), res(['Fire rune'])]
 ];
 
-export function determineRunes(user: KlasaUser, runeBank: Bank): Bank {
+export function determineRunes(user: User, runeBank: Bank): Bank {
 	const gear = user.rawGear();
 	const mainhand = gear.skilling.weapon;
 	const offhand = gear.skilling.shield;

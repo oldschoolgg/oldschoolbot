@@ -1,6 +1,5 @@
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, User } from 'discord.js';
 import { shuffleArr } from 'e';
-import { KlasaUser } from 'klasa';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util';
 
@@ -13,7 +12,7 @@ import creatures from '../skilling/skills/hunter/creatures';
 import { Skills } from '../types';
 import { addArrayOfNumbers, toTitleCase } from '../util';
 
-export async function minionStatsEmbed(user: KlasaUser) {
+export async function minionStatsEmbed(user: User) {
 	const { rawSkills } = user;
 	const QP = user.settings.get(UserSettings.QP);
 

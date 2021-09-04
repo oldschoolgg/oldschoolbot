@@ -1,5 +1,6 @@
+import { User } from 'discord.js';
 import { Time } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
@@ -22,7 +23,7 @@ import resolveItems from '../../lib/util/resolveItems';
 import { ZAM_HASTA_CRUSH } from './../../lib/constants';
 import { NightmareMonster } from './../../lib/minions/data/killableMonsters/index';
 
-function soloMessage(user: KlasaUser, duration: number, quantity: number) {
+function soloMessage(user: User, duration: number, quantity: number) {
 	const kc = user.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 0;
 	let str = `${user.minionName} is now off to kill The Nightmare ${quantity} times.`;
 	if (kc < 5) {
@@ -60,7 +61,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number) {
+	checkReqs(users: User[], monster: KillableMonster, quantity: number) {
 		// Check if every user has the requirements for this monster.
 		for (const user of users) {
 			if (!user.hasMinion) {

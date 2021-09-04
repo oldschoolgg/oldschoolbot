@@ -1,6 +1,5 @@
-import { KlasaUser } from 'klasa';
-
 import { SkillsEnum } from '../skilling/types';
+import {User} from "discord.js";
 
 export interface ItemBank {
 	[key: string]: number;
@@ -95,12 +94,12 @@ export type ArrayItemsResolved = (number | number[])[];
 export interface MakePartyOptions {
 	maxSize: number;
 	minSize: number;
-	leader: KlasaUser;
+	leader: User;
 	message: string;
 	ironmanAllowed: boolean;
 	usersAllowed?: string[];
 	party?: boolean;
-	customDenier?(user: KlasaUser): [boolean, string] | [boolean];
+	customDenier?(user: User): [boolean, string] | [boolean];
 }
 
 export type Skills = Partial<

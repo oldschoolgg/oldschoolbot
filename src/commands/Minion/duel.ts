@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Util } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -29,12 +29,12 @@ export default class extends BotCommand {
 		});
 	}
 
-	async checkBal(user: KlasaUser, amount: number) {
+	async checkBal(user: User, amount: number) {
 		await user.settings.sync(true);
 		return user.settings.get(UserSettings.GP) >= amount;
 	}
 
-	async run(msg: KlasaMessage, [user, amount]: [KlasaUser, number]) {
+	async run(msg: KlasaMessage, [user, amount]: [User, number]) {
 		if (!amount) {
 			return msg.channel.send(
 				`${Math.random() >= 0.5 ? msg.author.username : user.username} won the duel with ${Math.floor(
@@ -60,7 +60,7 @@ export default class extends BotCommand {
 		}
 	}
 
-	async game(msg: KlasaMessage, user: KlasaUser, amount: number) {
+	async game(msg: KlasaMessage, user: User, amount: number) {
 		if (!(await this.checkBal(msg.author, amount))) {
 			return msg.channel.send('You dont have have enough GP to duel that much.');
 		}

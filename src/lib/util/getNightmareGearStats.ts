@@ -1,5 +1,5 @@
+import { User } from 'discord.js';
 import { calcWhatPercent } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { NIGHTMARES_HP, ZAM_HASTA_CRUSH } from '../constants';
 import { maxOtherStats } from '../gear';
@@ -7,7 +7,7 @@ import { NightmareMonster } from '../minions/data/killableMonsters';
 import { UserSettings } from '../settings/types/UserSettings';
 
 export function getNightmareGearStats(
-	user: KlasaUser,
+	user: User,
 	team: string[]
 ): [
 	{
