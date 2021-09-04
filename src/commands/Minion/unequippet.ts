@@ -1,3 +1,4 @@
+import { Message } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { requiresMinion } from '../../lib/minions/decorators';
@@ -18,7 +19,7 @@ export default class extends BotCommand {
 	}
 
 	@requiresMinion
-	async run(msg: KlasaMessage): Promise<KlasaMessage> {
+	async run(msg: KlasaMessage): Promise<Message> {
 		const equippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
 		if (!equippedPet) return msg.channel.send("You don't have a pet equipped.");
 

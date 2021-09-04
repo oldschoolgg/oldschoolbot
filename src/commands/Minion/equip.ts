@@ -1,4 +1,4 @@
-import { MessageAttachment } from 'discord.js';
+import { Message, MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
@@ -30,7 +30,7 @@ export default class extends BotCommand {
 	async run(
 		msg: KlasaMessage,
 		[gearType, quantity = 1, itemArray]: [GearSetupTypes, number, Item[]]
-	): Promise<KlasaMessage> {
+	): Promise<Message> {
 		if (msg.author.minionIsBusy) {
 			return msg.channel.send(
 				`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`

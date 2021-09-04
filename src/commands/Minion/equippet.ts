@@ -1,3 +1,4 @@
+import { Message } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -24,7 +25,7 @@ export default class extends BotCommand {
 	}
 
 	@requiresMinion
-	async run(msg: KlasaMessage, [itemArray]: [Item[]]): Promise<KlasaMessage> {
+	async run(msg: KlasaMessage, [itemArray]: [Item[]]): Promise<Message> {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const petItem = itemArray.find(i => userBank[i.id] && allPetIDs.includes(i.id));
 		if (!petItem) {

@@ -1,6 +1,8 @@
-import { Command, KlasaMessage } from 'klasa';
+import { KlasaMessage } from 'klasa';
 
-export default class extends Command {
+import { BotCommand } from '../../lib/structures/BotCommand';
+
+export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		return msg.channel.send('https://www.oldschool.gg/oldschoolbot/faq');
 	}

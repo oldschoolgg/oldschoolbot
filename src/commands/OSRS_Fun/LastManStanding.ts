@@ -1,4 +1,5 @@
 import { chunk, sleep } from '@klasa/utils';
+import { Message } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -22,7 +23,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(message: KlasaMessage, [contestants]: [string | undefined]): Promise<KlasaMessage> {
+	async run(message: KlasaMessage, [contestants]: [string | undefined]): Promise<Message> {
 		let filtered = new Set<string>();
 		const splitContestants = contestants ? cleanMentions(message.guild, contestants).split(',') : [];
 		// Autofill using authors from the last 100 messages, if none are given to the command

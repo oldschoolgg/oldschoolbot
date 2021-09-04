@@ -1,3 +1,4 @@
+import { Message } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { requiresMinion } from '../../lib/minions/decorators';
@@ -14,7 +15,7 @@ export default class extends BotCommand {
 	}
 
 	@requiresMinion
-	async run(msg: KlasaMessage, [name]: [string]): Promise<KlasaMessage> {
+	async run(msg: KlasaMessage, [name]: [string]): Promise<Message> {
 		const [kcName, kcAmount] = await msg.author.getKCByName(name);
 
 		if (!kcName) {
