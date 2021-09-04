@@ -24,7 +24,7 @@ if (!fs.existsSync('./src/lib/resources/trivia-questions.json')) {
 	console.log('Created empty trivia questions file at ./src/lib/resources/trivia-questions.json');
 }
 
-let { triviaQuestions } = JSON.parse(fs.readFileSync('./src/lib/resources/trivia-questions.json').toString());
+const { triviaQuestions } = JSON.parse(fs.readFileSync('./src/lib/resources/trivia-questions.json').toString());
 
 // Handle repeating questions
 for (const t of triviaQuestions) {
