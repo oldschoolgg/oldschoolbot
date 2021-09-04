@@ -36,6 +36,7 @@ export default class extends Monitor {
 		}
 		this.client.emit('commandRun', message, message.command, message.args);
 
+		await message.author.settings.sync();
 		return this.runCommand(message);
 	}
 
