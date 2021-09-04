@@ -1,16 +1,20 @@
+import { MessageCollector } from 'discord.js';
 import { deepClone, Time } from 'e';
-import { KlasaUser } from 'klasa';
+import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { addBanks } from 'oldschooljs/dist/util';
 
 import { client } from '..';
 import BankImageTask from '../tasks/bankImage';
+import { effectiveMonsters } from './minions/data/killableMonsters';
 import { UserSettings } from './settings/types/UserSettings';
 import { TameActivityTable } from './typeorm/TameActivityTable.entity';
 import { TamesTable } from './typeorm/TamesTable.entity';
-import { roll } from './util';
+import { generateContinuationChar, roll } from './util';
+import { createCollector } from './util/createCollector';
 import getOSItem from './util/getOSItem';
+import { collectors } from './util/handleTripFinish';
 import { sendToChannelID } from './util/webhook';
 
 interface NurseryEgg {
@@ -74,9 +78,11 @@ export async function runTameTask(activity: TameActivityTable) {
 		activity.tame.totalLoot = addBanks([activity.tame.totalLoot, res.loot.bank]);
 		await activity.tame.save();
 		const addRes = await activity.tame.addDuration(activity.duration);
-		if (addRes) {
-			res.message += `\n${addRes}`;
-		}
+		if (addRes) res.message += `\n${addRes}`;
+
+		const continuationChar = generateContinuationChar(res.user);
+		res.message += `\nSay \`${continuationChar}\` to repeat this trip.`;
+
 		sendToChannelID(client, activity.channelID, {
 			content: res.message,
 			image: (
@@ -90,7 +96,33 @@ export async function runTameTask(activity: TameActivityTable) {
 				)
 			).image!
 		});
+
+		createCollector({
+			user: res.user,
+			channelID: activity.channelID,
+			continuationCharacter: [continuationChar],
+			toExecute: async (mes: KlasaMessage, collector: MessageCollector) => {
+				if (mes.author.minionIsBusy || client.oneCommandAtATimeCache.has(mes.author.id)) {
+					collector.stop();
+					collectors.delete(mes.author.id);
+					return;
+				}
+				client.oneCommandAtATimeCache.add(mes.author.id);
+				try {
+					const monsterName = effectiveMonsters.find(e => e.id === activity.data.monsterID)!.name;
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					client.commands.get('tame')!.k(mes, [monsterName]);
+				} catch (err) {
+					console.log({ err });
+					mes.channel.send(err);
+				} finally {
+					setTimeout(() => client.oneCommandAtATimeCache.delete(mes.author.id), 300);
+				}
+			}
+		});
 	}
+
 	switch (activity.type) {
 		case 'pvm': {
 			const { quantity, monsterID } = activity.data;
