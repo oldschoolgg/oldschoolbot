@@ -7,7 +7,7 @@ import { noOp } from '../../lib/util';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
-		super(store, file, directory, { appliesTo: [Message] });
+		super(store, file, directory, { appliesTo: [Message, KlasaMessage] });
 	}
 
 	// @ts-ignore 2784
