@@ -18,7 +18,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Simulates dueling another player, or allows you to duel another player for their bot GP.',
-			usage: '<user:user|user:str> [amount:int{10000}]',
+			usage: '<user:botuser|user:str> [amount:int{10000}]',
 			usageDelim: ' ',
 			cooldown: 5,
 			oneAtTime: true,

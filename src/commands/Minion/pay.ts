@@ -9,7 +9,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<user:user> <amount:int{1}>',
+			usage: '<user:botuser> <amount:int{1}>',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,

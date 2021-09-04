@@ -10,7 +10,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			bitfieldsRequired: [BitField.isModerator],
-			usage: '<User:user|Guild:guild> [reason:...str]',
+			usage: '<User:botuser|Guild:guild> [reason:...str]',
 			usageDelim: ' ',
 			guarded: true
 		});

@@ -9,7 +9,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			description: 'Get information on a mentioned user, or yourself.',
 			examples: ['+user', '+user @Magnaboy'],
-			usage: '[Member:member]',
+			usage: '[Member:botmember]',
 			requiredPermissions: ['EMBED_LINKS'],
 			runIn: ['text'],
 			categoryFlags: ['utility']

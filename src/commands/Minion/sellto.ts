@@ -17,7 +17,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
-			usage: '<member:member> [price:int{1,100000000000}] (items:...TradeableBank)',
+			usage: '<member:botmember> [price:int{1,100000000000}] (items:...TradeableBank)',
 			usageDelim: ' ',
 			oneAtTime: true,
 			ironCantUse: true,

@@ -32,7 +32,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
-			usage: '<member:member>',
+			usage: '<member:botmember>',
 			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Uses a christmas cracker on another player.',

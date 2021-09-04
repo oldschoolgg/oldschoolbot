@@ -37,7 +37,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			enabled: true,
 			runIn: ['text'],
-			usage: '<cmd:str> [user:user|str:...str] [str:...str]',
+			usage: '<cmd:str> [user:botuser|str:...str] [str:...str]',
 			usageDelim: ' '
 		});
 	}

@@ -22,7 +22,7 @@ export default class extends BotCommand {
 			cooldown: 1,
 			description: 'Allows you to manage your gear presets.',
 			usageDelim: ' ',
-			usage: '[new|delete|equip|share|rename] [name:str{1,12}] [user:user|setup:str]',
+			usage: '[new|delete|equip|share|rename] [name:str{1,12}] [user:botuser|setup:str]',
 			subcommands: true,
 			examples: ['+gearpresets new pvm melee', '+gearpresets delete pvm', '+gearpresets equip pvm melee'],
 			categoryFlags: ['minion', 'skilling']
