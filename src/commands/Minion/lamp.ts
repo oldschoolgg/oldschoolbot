@@ -1,5 +1,5 @@
 import { ArrayActions } from '@klasa/settings-gateway';
-import { Message, MessageButton, MessageSelectMenu, User } from 'discord.js';
+import { MessageButton, MessageSelectMenu, User } from 'discord.js';
 import { objectEntries, objectValues, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
