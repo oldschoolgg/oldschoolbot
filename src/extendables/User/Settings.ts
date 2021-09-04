@@ -12,7 +12,7 @@ export default class extends Extendable {
 		const cachedSettings = userGateway.get(this.id);
 		if (cachedSettings) return cachedSettings;
 		const settings = userGateway.create(this);
-		settings.sync(true).then(_s => userGateway.cache.set(this.id, { settings }));
+		settings.sync(true).then(() => userGateway.cache.set(this.id, { settings }));
 		return settings;
 	}
 }
