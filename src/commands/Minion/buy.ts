@@ -21,7 +21,7 @@ import {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[quantity:int{1,250000}] <name:...string>',
+			usage: '[quantity:int{1,5000000}] <name:...string>',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
