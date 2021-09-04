@@ -8,7 +8,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration, isWeekend, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
+import { isWeekend, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
 
 if (!fs.existsSync('./src/lib/resources/trivia-questions.json')) {
 	fs.writeFileSync(
@@ -24,7 +24,16 @@ if (!fs.existsSync('./src/lib/resources/trivia-questions.json')) {
 	console.log('Created empty trivia questions file at ./src/lib/resources/trivia-questions.json');
 }
 
-const { triviaQuestions } = JSON.parse(fs.readFileSync('./src/lib/resources/trivia-questions.json').toString());
+let { triviaQuestions } = JSON.parse(fs.readFileSync('./src/lib/resources/trivia-questions.json').toString());
+
+// Handle repeating questions
+for (const t of triviaQuestions) {
+	if (t.r && t.r > 1) {
+		for (let i = 0; i < t.r - 1; i++) {
+			triviaQuestions.push({ q: t.q, a: t.a });
+		}
+	}
+}
 
 const options = {
 	max: 1,
@@ -47,18 +56,18 @@ export default class DailyCommand extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		await msg.author.settings.sync();
-		const currentDate = new Date().getTime();
-		const lastVoteDate = msg.author.settings.get(UserSettings.LastDailyTimestamp);
-		const difference = currentDate - lastVoteDate;
-
-		// If they have already claimed a daily in the past 12h
-		if (difference < Time.Hour * 12) {
-			const duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 12));
-
-			return msg.channel.send(`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`);
-		}
-
-		await msg.author.settings.update(UserSettings.LastDailyTimestamp, currentDate);
+		// const currentDate = new Date().getTime();
+		// const lastVoteDate = msg.author.settings.get(UserSettings.LastDailyTimestamp);
+		// const difference = currentDate - lastVoteDate;
+		//
+		// // If they have already claimed a daily in the past 12h
+		// if (difference < Time.Hour * 12) {
+		// 	const duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 12));
+		//
+		// 	return msg.channel.send(`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`);
+		// }
+		//
+		// await msg.author.settings.update(UserSettings.LastDailyTimestamp, currentDate);
 
 		const trivia = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
 
