@@ -195,7 +195,7 @@ export default class extends BotCommand {
 			})
 		);
 
-		const selectedMessage: Message = await msg.channel.send({
+		const selectedMessage = await msg.channel.send({
 			content: 'Please, select your reward from the list below.',
 			components: [
 				[

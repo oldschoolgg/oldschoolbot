@@ -1,6 +1,6 @@
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
-import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload, User } from 'discord.js';
+import { Message, MessageAttachment, MessageEmbed, MessageOptions, MessagePayload, User } from 'discord.js';
 import { Settings, SettingsUpdateResult } from 'klasa';
 import { Bank, Player } from 'oldschooljs';
 import PQueue from 'p-queue';
