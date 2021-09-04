@@ -1,5 +1,6 @@
+import { User } from 'discord.js';
+
 import { SkillsEnum } from '../skilling/types';
-import {User} from "discord.js";
 
 export interface ItemBank {
 	[key: string]: number;
