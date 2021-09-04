@@ -1,8 +1,8 @@
-import { Time } from 'e';
+import { deepClone, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { Emoji, Events, MAX_LEVEL, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -15,10 +15,15 @@ export default class extends Task {
 		const { logID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.fetchUser(userID);
 
-		const log = Woodcutting.Logs.find(Log => Log.id === logID)!;
+		const log = { ...deepClone(Woodcutting.Logs.find(Log => Log.id === logID))! };
 
+		let clueChance = log.clueScrollChance;
 		let xpReceived = quantity * log.xp;
-		if (logID === itemID('Elder logs')) xpReceived *= 2;
+		if (logID === itemID('Elder logs')) {
+			const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
+			if (userWcLevel >= MAX_LEVEL) clueChance = 20_434;
+			xpReceived *= 2;
+		}
 		let bonusXP = 0;
 
 		// If they have the entire lumberjack outfit, give an extra 0.5% xp bonus
@@ -48,18 +53,14 @@ export default class extends Task {
 			duration
 		});
 
-		let loot = new Bank({
-			[log.id]: quantity
-		});
+		let loot = new Bank().add(log.id, quantity);
 
 		if (user.hasItemEquippedAnywhere('Woodcutting master cape')) {
 			loot.multiply(2);
 		}
 
 		// Add clue scrolls
-		if (log.clueScrollChance) {
-			addSkillingClueToLoot(user, SkillsEnum.Woodcutting, quantity, log.clueScrollChance, loot);
-		}
+		if (clueChance) addSkillingClueToLoot(user, SkillsEnum.Woodcutting, quantity, clueChance, loot);
 
 		let str = `${user}, ${user.minionName} finished woodcutting, you received ${loot}. ${xpRes}`;
 
