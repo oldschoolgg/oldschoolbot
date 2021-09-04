@@ -21,7 +21,8 @@ export default class extends Task {
 		let xpReceived = quantity * log.xp;
 		if (logID === itemID('Elder logs')) {
 			const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
-			if (userWcLevel >= MAX_LEVEL) clueChance = 20_434;
+			// Bring it as close as possible to Rocktails
+			if (userWcLevel >= MAX_LEVEL) clueChance = 13_011;
 			xpReceived *= 2;
 		}
 		let bonusXP = 0;
