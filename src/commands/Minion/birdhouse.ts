@@ -187,12 +187,21 @@ export default class extends BotCommand {
 
 		let removeBank = new Bank();
 		let gotCraft = false;
-		if (!prevBirdhouse || msg.flagArgs.nocraft) {
-			for (const [item, quantity] of birdhouse.houseItemReq.items()) {
-				if (userBank.amount(item.name) < quantity * 4) {
-					return msg.channel.send(`You don't have enough ${item.name}s.`);
-				}
-				removeBank.add(item.id, quantity * 4);
+
+		const birdHouses = 4;
+
+		const requiredWithoutCrafting = birdhouse.houseItemReq.clone().multiply(birdHouses);
+		const haveBirdhousesInBank = userBank.fits(requiredWithoutCrafting);
+
+		if (!msg.flagArgs.craft && (haveBirdhousesInBank || msg.flagArgs.nocraft)) {
+			if (haveBirdhousesInBank) {
+				removeBank.add(requiredWithoutCrafting);
+			} else {
+				return msg.channel.send(
+					`You don't have enough ${
+						birdhouse.name
+					} in your bank. You are missing ${requiredWithoutCrafting.remove(userBank)}.`
+				);
 			}
 		} else {
 			if (msg.author.skillLevel(SkillsEnum.Crafting) < birdhouse.craftLvl) {
@@ -201,12 +210,15 @@ export default class extends BotCommand {
 				);
 			}
 			gotCraft = true;
-			for (const [item, quantity] of birdhouse.craftItemReq.items()) {
-				if (userBank.amount(item.name) < quantity * 4) {
-					return msg.channel.send(`You don't have enough ${item.name}.`);
-				}
-				removeBank.add(item.id, quantity * 4);
+			const requiredForCrafting = birdhouse.craftItemReq.clone().multiply(birdHouses);
+			if (!userBank.fits(requiredForCrafting)) {
+				return msg.channel.send(
+					`You don't have enough to craft ${birdHouses}x ${
+						birdhouse.name
+					}. You are missing ${requiredForCrafting.remove(userBank)}.`
+				);
 			}
+			removeBank.add(requiredForCrafting);
 		}
 
 		let canPay = false;
