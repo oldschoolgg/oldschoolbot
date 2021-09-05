@@ -8,7 +8,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MinigameActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration } from '../../lib/util';
+import { addArrayOfNumbers, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 
@@ -52,12 +52,43 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
+			usage: '[claim]',
 			description: 'Sends your minion to catch chompies.',
-			examples: ['+chompyhunt', '+ch'],
+			examples: ['+chompyhunt', '+ch', '+ch claim'],
 			categoryFlags: ['minion', 'minigame'],
 			subcommands: true,
 			aliases: ['ch']
 		});
+	}
+
+	@requiresMinion
+	async claim(msg: KlasaMessage) {
+		const chompyScore = await msg.author.getMinigameScore('BigChompyBirdHunting');
+		const userBank = msg.author.bank({ withGP: true });
+		const userCl = msg.author.collectionLog;
+
+		const missingHats = chompyHats.filter(c => (!userBank.has(c[0].id) || !userCl[c[0].id]) && chompyScore >= c[1]);
+
+		if (missingHats.length === 0) return msg.channel.send('There is nothing to claim.');
+		const missingHatsBank = new Bank();
+		for (const mh of missingHats) missingHatsBank.add(mh[0].id, 1);
+
+		const totalPrice = addArrayOfNumbers(missingHats.map(m => m[1] * 44));
+
+		if (msg.author.bank({ withGP: true }).amount(995) < totalPrice) {
+			return msg.channel.send(
+				`You need at least ${totalPrice.toLocaleString()} GP to claim the hats you are missing.`
+			);
+		}
+
+		await msg.confirm(
+			`You need to pay a fee of ${totalPrice.toLocaleString()} GP to claim all the hats you are missing from your bank/collection log. Do you want to pay the fee?`
+		);
+
+		await msg.author.removeGP(totalPrice);
+		await msg.author.addItemsToBank(missingHatsBank, true);
+
+		return msg.channel.send(`Added the following hats to your bank: ${missingHatsBank}`);
 	}
 
 	@requiresMinion
