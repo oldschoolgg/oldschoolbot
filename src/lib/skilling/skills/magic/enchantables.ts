@@ -504,6 +504,14 @@ const bolts = [
 		output: new Bank().add('Topaz dragon bolts (e)', 10),
 		xp: 33,
 		level: 49
+	},
+	{
+		name: 'Banana',
+		id: itemID('Magic banana'),
+		input: new Bank().add('Banana', 10).add('Fire rune', 64).add('Chaos rune', 32).add('Cosmic rune', 12),
+		output: new Bank().add('Magic banana', 10),
+		xp: 66,
+		level: 82
 	}
 ];
 

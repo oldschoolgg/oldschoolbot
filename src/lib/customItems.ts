@@ -1763,6 +1763,7 @@ setCustomItem(48_226, 'Ninja rumble greegree', 'Bronze 2h sword', {}, 999_997);
 setCustomItem(48_227, 'Expert ninja rumble greegree', 'Bronze 2h sword', {}, 999_998);
 setCustomItem(48_228, 'Elder rumble greegree', 'Bronze 2h sword', {}, 999_999);
 setCustomItem(48_229, 'Monkey egg', 'Egg', {}, 100_000_000);
+setCustomItem(48_230, 'Banana encantation scroll', 'Egg', {}, 1_000_000);
 
 /**
  * Misc Items
@@ -1929,3 +1930,4 @@ setCustomItem(50_043, 'Infernal impling jar', 'Coal', {}, 50_000);
 setCustomItem(50_044, 'Eternal impling jar', 'Coal', {}, 50_000);
 setCustomItem(50_045, 'Mystery impling jar', 'Coal', {}, 50_000);
 setCustomItem(50_046, 'Rumble token', 'Coal', {}, 1000);
+setCustomItem(50_047, 'Magic banana', 'Coal', {}, 1000);

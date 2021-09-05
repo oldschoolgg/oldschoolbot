@@ -9,29 +9,34 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MonkeyRumbleOptions) {
-		const { channelID, quantity, userID, monkey, duration } = data;
+		const { channelID, quantity, userID, monkeys, duration } = data;
+		const user = await this.client.fetchUser(userID);
 
 		await incrementMinigameScore(userID, 'MadMarimbosMonkeyRumble', quantity);
 
-		const user = await this.client.fetchUser(userID);
-		const loot = new Bank();
-		await user.addItemsToBank(loot, true);
-
-		const strXP = quantity * (monkeyTierOfUser(user) * 2.5 * (user.skillLevel(SkillsEnum.Strength) * 10.6));
+		const monkeyTier = monkeyTierOfUser(user);
+		const strXP = quantity * (monkeyTier * 2.5 * (user.skillLevel(SkillsEnum.Strength) * 10.6));
 		let xpStr = await user.addXP({
 			skillName: SkillsEnum.Strength,
 			amount: strXP,
-			duration
+			duration,
+			minimal: true
 		});
-		xpStr += await user.addXP({ skillName: SkillsEnum.Agility, amount: strXP / 5, duration });
+		xpStr += await user.addXP({ skillName: SkillsEnum.Agility, amount: strXP / 5, duration, minimal: true });
+		xpStr += await user.addXP({ skillName: SkillsEnum.Defence, amount: strXP / 10, duration, minimal: true });
+
+		const loot = new Bank().add('Rumble token', Math.ceil(quantity * (monkeyTier / 2)));
+		await user.addItemsToBank(loot, true);
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished ${quantity}x Rumble fights against ${monkey.name} and received ${loot}. ${xpStr}`,
+			`${user}, ${user.minionName} finished ${quantity}x Rumble fights against ${quantity}x monkeys (${monkeys
+				.map(m => m.name)
+				.join(', ')}).\n${xpStr}\nYou received **${loot}.**`,
 			res => {
-				user.log('continued castle wars');
+				user.log('continued mmmr');
 				return (this.client.commands.get('mmmr') as unknown as any)!.start(res) as Promise<KlasaMessage>;
 			},
 			undefined,

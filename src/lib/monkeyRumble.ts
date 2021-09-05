@@ -91,9 +91,10 @@ const firstNames = [
 	'Musel',
 	'Rog',
 	'Rok',
-	'Fadt'
+	'Fadt',
+	'Big'
 ];
-const lastNames = ['Mu', 'Lu', 'Jo', 'Buu', 'Nana', 'Ko', 'Ku', 'Qa', 'Cha', 'Ueu', 'Itu', 'Suk', 'In'];
+const lastNames = ['Mu', 'Lu', 'Jo', 'Buu', 'Nana', 'Ko', 'Ku', 'Qa', 'Cha', 'Ueu', 'Itu', 'Suk', 'In', 'Mo', 'Gree'];
 const titles = [
 	'undefeated',
 	'strong',
@@ -119,7 +120,17 @@ const titles = [
 	'tank',
 	'hairy',
 	'over-confident',
-	'vicious'
+	'vicious',
+	'monkey',
+	'polite',
+	'relentless',
+	'brute',
+	'savage',
+	'monster',
+	'thug',
+	'aggressive',
+	'friendly',
+	'challenger'
 ];
 
 export const fightingMessages = [
@@ -182,13 +193,13 @@ export interface Monkey {
 	special: boolean;
 }
 
-export function getRandomMonkey(): Monkey {
+export function getRandomMonkey(exclude: Monkey[]): Monkey {
 	const firstName = randArrItem(firstNames);
 	const lastName = randArrItem(lastNames);
 	const title = toTitleCase(randArrItem(titles));
 	const name = `${firstName} ${lastName} the ${title}`;
 	const nameKey = `${firstName.toLowerCase()}-${lastName.toLowerCase()}-${title.toLowerCase()}`;
-
+	if (exclude.some(m => m.nameKey === nameKey)) return getRandomMonkey(exclude);
 	const special = roll(250);
 	const randomHead = randArrItem(special ? specialHeads : normalHeads);
 	return {
