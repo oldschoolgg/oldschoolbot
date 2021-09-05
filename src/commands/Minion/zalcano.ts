@@ -12,7 +12,7 @@ import { ZalcanoActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
-const skillRequirements: Skills = {
+export const soteSkillRequirements: Skills = {
 	mining: 70,
 	smithing: 70,
 	farming: 70,
@@ -50,7 +50,7 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		const [hasSkillReqs, reason] = msg.author.hasSkillReqs(skillRequirements);
+		const [hasSkillReqs, reason] = msg.author.hasSkillReqs(soteSkillRequirements);
 		if (!hasSkillReqs) {
 			return msg.channel.send(`To fight Zalcano, you need: ${reason}.`);
 		}
