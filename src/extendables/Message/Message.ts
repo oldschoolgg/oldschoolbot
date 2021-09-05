@@ -2,6 +2,7 @@ import { Message, Permissions, TextChannel } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
 
 import { customClientOptions } from '../../config';
+import { ReturnFlags, ReturnFlagsMap } from '../../lib/constants';
 import { getGuildSettingsCached } from '../../lib/settings/settings';
 import { noOp } from '../../lib/util';
 
@@ -24,5 +25,10 @@ export default class extends Extendable {
 		) {
 			this.reactions.removeAll().catch(noOp);
 		}
+	}
+
+	removeCooldown(this: KlasaMessage) {
+		ReturnFlagsMap.set(this.id, ReturnFlags.NO_COOLDOWN);
+		return this;
 	}
 }

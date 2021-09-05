@@ -1,6 +1,6 @@
 import { Command, Finalizer, FinalizerStore, KlasaMessage, RateLimitManager } from 'klasa';
 
-import { BitField } from '../lib/constants';
+import { BitField, ReturnFlagsMap } from '../lib/constants';
 
 export default class extends Finalizer {
 	public cooldowns: WeakMap<object, any> = new WeakMap();
@@ -10,6 +10,11 @@ export default class extends Finalizer {
 	}
 
 	run(message: KlasaMessage, command: Command) {
+		if (ReturnFlagsMap.has(message.id)) {
+			ReturnFlagsMap.delete(message.id);
+			return false;
+		}
+
 		if (
 			command.cooldown <= 0 ||
 			this.client.owners.has(message.author) ||

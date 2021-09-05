@@ -94,6 +94,7 @@ declare module 'klasa' {
 
 		makePartyAwaiter(options: MakePartyOptions): Promise<KlasaUser[]>;
 		removeAllReactions(): void;
+		removeCooldown(): this;
 		confirm(this: KlasaMessage, str: string): Promise<void>;
 	}
 

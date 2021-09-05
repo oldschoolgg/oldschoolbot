@@ -24,7 +24,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [monName, itemName]: [string, string]) {
 		const mon = effectiveMonsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monName)));
 		if (!mon) {
-			return msg.channel.send("That's not a valid monster or minigame.");
+			return msg.removeCooldown().channel.send("That's not a valid monster or minigame.");
 		}
 
 		const item = getOSItem(itemName);

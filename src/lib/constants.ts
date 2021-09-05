@@ -482,3 +482,11 @@ export const lastTripCache = new Map<
 	string,
 	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
 >();
+
+// Object that will hold the message id and the flag it requires to run
+export const ReturnFlagsMap = new Map<string, ReturnFlags>();
+
+// Powers of 2 return flags for Finalizer processing
+export const enum ReturnFlags {
+	NO_COOLDOWN = 8
+}
