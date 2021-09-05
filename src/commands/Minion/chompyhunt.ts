@@ -75,7 +75,7 @@ export default class extends BotCommand {
 
 		const totalPrice = addArrayOfNumbers(missingHats.map(m => m[1] * 44));
 
-		if (msg.author.bank({ withGP: true }).amount(995) < totalPrice) {
+		if (msg.author.bank({ withGP: true }).amount('Coins') < totalPrice) {
 			return msg.channel.send(
 				`You need at least ${totalPrice.toLocaleString()} GP to claim the hats you are missing.`
 			);
