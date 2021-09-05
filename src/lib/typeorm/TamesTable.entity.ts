@@ -95,6 +95,20 @@ export class TamesTable extends BaseEntity {
 		return growth;
 	}
 
+	get level() {
+		switch (this.species.relevantLevelCategory) {
+			case 'combat':
+				return this.combatLvl;
+			case 'artisan':
+				return this.artisanLvl;
+			case 'support':
+				return this.supportLvl;
+			case 'gatherer':
+				return this.gathererLvl;
+		}
+		return 0;
+	}
+
 	get combatLvl() {
 		return round(this.maxCombatLevel / this.growthLevel, 2);
 	}

@@ -175,7 +175,7 @@ export default class extends BotCommand {
 			description: 'Use to control and manage your tames.',
 			examples: ['+tames k fire giant', '+tames', '+tames select 1', '+tames setname LilBuddy'],
 			subcommands: true,
-			usage: '[k|select|setname|feed|merge] [input:...str]',
+			usage: '[k|select|setname|feed] [input:...str]',
 			usageDelim: ' ',
 			aliases: ['tame', 't']
 		});
@@ -307,10 +307,7 @@ export default class extends BotCommand {
 		ctx.translate(16, 16);
 		let i = 0;
 		for (const tame of userTames) {
-			let isTameActive = false;
 			let selectedTame = mainTame && mainTame[0] && mainTame[0].id === tame.id;
-			if (selectedTame) isTameActive = (await getTameStatus(msg.author)).length > 1;
-
 			const x = i % tamesPerLine;
 			const y = Math.floor(i / tamesPerLine);
 			ctx.drawImage(
@@ -324,7 +321,7 @@ export default class extends BotCommand {
 			ctx.drawImage(
 				this.tameSprites.tames!.find(t => t.id === tame.species.id)!.sprites.find(f => f.type === tame.variant)!
 					.growthStage[tame.growthStage],
-				(10 + 256) * x + (isTameActive ? 96 : 256 - 96) / 2,
+				(10 + 256) * x + (256 - 96) / 2,
 				(10 + 128) * y + 10,
 				96,
 				96
@@ -351,17 +348,18 @@ export default class extends BotCommand {
 			}
 
 			ctx.textAlign = 'right';
-			drawText(ctx, `Combat: ${tame.combatLvl}`, (10 + 256) * x + 256 - 5, (10 + 128) * y + 16);
-			ctx.textAlign = 'right';
-			drawText(ctx, `Artisan. ${tame.artisanLvl}`, (10 + 256) * x + 256 - 5, (10 + 128) * y + 128 - 5);
+			drawText(
+				ctx,
+				`${toTitleCase(tame.species.relevantLevelCategory)}: ${tame.level}`,
+				(10 + 256) * x + 256 - 5,
+				(10 + 128) * y + 16
+			);
 			ctx.textAlign = 'left';
-			drawText(ctx, `Gatherer. ${tame.gathererLvl}`, (10 + 256) * x + 5, (10 + 128) * y + 128 - 5);
-			ctx.textAlign = 'center';
 			const grouthStage =
 				tame.growthStage === 'adult'
 					? tame.growthStage
 					: `${tame.growthStage} (${tame.currentGrowthPercent.toFixed(2)}%)`;
-			drawText(ctx, `${toTitleCase(grouthStage)}`, (10 + 256) * x + 256 / 2, (10 + 128) * y + 128 - 5);
+			drawText(ctx, `${toTitleCase(grouthStage)}`, (10 + 256) * x + 5, (10 + 128) * y + 128 - 5);
 
 			// Draw tame status (idle, in activity)
 			if (selectedTame) {
@@ -387,8 +385,8 @@ export default class extends BotCommand {
 						if (feedQty % 3 === 0) prevWidth = 0;
 						ctx.drawImage(
 							itemImage,
-							(10 + 256) * x + 250 - prevWidth - Math.ceil(itemImage.width * ratio),
-							(10 + 128) * y + 35 + 52 - yLine * 20,
+							(10 + 256) * x + 253 - prevWidth - Math.ceil(itemImage.width * ratio),
+							(10 + 128) * y + 128 - 25 - yLine * 20,
 							Math.floor(itemImage.width * ratio),
 							Math.floor(itemImage.height * ratio)
 						);
@@ -567,69 +565,5 @@ export default class extends BotCommand {
 				duration
 			)}.\n\nRemoved ${foodStr}`
 		);
-	}
-
-	async merge(msg: KlasaMessage, [tame = '']: [string]) {
-		const tames = await TamesTable.find({ where: { userID: msg.author.id } });
-		const toSelect = tames.find(t => stringMatches(tame, t.id.toString()) || stringMatches(tame, t.nickname ?? ''));
-		if (!toSelect) return msg.channel.send("Couldn't find a tame to merge.");
-
-		const [currentTame, currentTask] = await getUsersTame(msg.author);
-		if (currentTask) return msg.channel.send('Your tame is busy. Wait for it to be free to do this.');
-		if (currentTame!.species.id !== toSelect.species.id)
-			return msg.channel.send("You can't merge different species of tames!");
-		if (currentTame!.id === toSelect.id) return msg.channel.send('You can not merge your tame into itself!');
-
-		const mergeStuff = {
-			totalLoot: new Bank(currentTame!.totalLoot).add(toSelect.totalLoot).bank,
-			fedItems: new Bank(currentTame!.fedItems).add(toSelect.fedItems).bank,
-			maxCombatLevel: Math.max(currentTame!.maxCombatLevel, toSelect.maxCombatLevel),
-			maxArtisanLevel: Math.max(currentTame!.maxArtisanLevel, toSelect.maxArtisanLevel),
-			maxGathererLevel: Math.max(currentTame!.maxGathererLevel, toSelect.maxGathererLevel),
-			maxSupportLevel: Math.max(currentTame!.maxSupportLevel, toSelect.maxSupportLevel)
-		};
-
-		delete msg.flagArgs.cf;
-		delete msg.flagArgs.confirm;
-
-		await msg.confirm(
-			`Are you sure you want to merge **${toSelect.name}** (Tame ID: ${toSelect.id}) into **${
-				currentTame!.name
-			}** (Tame ID: ${currentTame!.id})?\n\n${
-				currentTame!.name
-			} will receive all the items fed and all loot obtained from ${
-				toSelect.name
-			}, and will have its stats match the highest of both tames.\n\n**THIS ACTION CAN NOT BE REVERSED!**`
-		);
-
-		// Set the merged tame activities to the tame that is consuming it
-		await TameActivityTable.update(
-			{
-				tame: toSelect.id
-			},
-			{
-				tame: currentTame!.id
-			}
-		);
-		// Delete merged tame
-		await TamesTable.delete({
-			id: toSelect.id
-		});
-
-		await TamesTable.update(
-			{
-				id: currentTame!.id
-			},
-			{
-				totalLoot: mergeStuff.totalLoot,
-				fedItems: mergeStuff.fedItems,
-				maxCombatLevel: mergeStuff.maxCombatLevel,
-				maxArtisanLevel: mergeStuff.maxArtisanLevel,
-				maxGathererLevel: mergeStuff.maxGathererLevel,
-				maxSupportLevel: mergeStuff.maxSupportLevel
-			}
-		);
-
-		return msg.channel.send(`${currentTame!.name} consumed ${toSelect.name} and all its attributes.`);
 	}
 }

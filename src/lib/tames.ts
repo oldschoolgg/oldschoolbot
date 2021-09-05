@@ -44,6 +44,7 @@ export interface Species {
 	artisanLevelRange: [number, number];
 	supportLevelRange: [number, number];
 	gathererLevelRange: [number, number];
+	relevantLevelCategory: 'combat' | 'artisan' | 'support' | 'gatherer';
 	hatchTime: number;
 	egg: Item;
 	emoji: string;
@@ -59,6 +60,7 @@ export const tameSpecies: Species[] = [
 		artisanLevelRange: [1, 10],
 		supportLevelRange: [1, 10],
 		gathererLevelRange: [1, 10],
+		relevantLevelCategory: 'combat',
 		hatchTime: Time.Hour * 18.5,
 		egg: getOSItem(48_210),
 		emoji: '<:dragonEgg:858948148641660948>'
