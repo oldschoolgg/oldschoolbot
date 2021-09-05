@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { LevelRequirements } from '../skilling/types';
 import { PoHTable } from '../typeorm/PoHTable.entity';
 import { DungeonDecorations } from './objects/dungeon_decorations';
+import { GardenDecorations } from './objects/garden_decorations';
 import { Guards } from './objects/guards';
 import { JewelleryBoxes } from './objects/jewellery_boxes';
 import { MountedCapes } from './objects/mounted_capes';
@@ -30,6 +31,7 @@ export interface PoH {
 	mountedHead: number | null;
 	teleport: number | null;
 	mountedItem: number | null;
+	gardenDecoration: number | null;
 
 	torch: number | null;
 	guard: number | null;
@@ -83,7 +85,8 @@ export const Placeholders: Record<PoHSlot, [number, [number, number][]]> = {
 
 	// Garden
 	pool: [29_122, [[GARDEN_X + HOUSE_WIDTH / 6, GARDEN_Y]]],
-	teleport: [29_120, [[GARDEN_X + HOUSE_WIDTH / 2, GARDEN_Y]]]
+	teleport: [29_120, [[GARDEN_X + HOUSE_WIDTH / 2, GARDEN_Y]]],
+	gardenDecoration: [29_120, [[GARDEN_X + HOUSE_WIDTH * 0.82, GARDEN_Y]]]
 };
 
 export const itemsNotRefundable = new Bank()
@@ -112,7 +115,8 @@ export const GroupedPohObjects = {
 	Torches,
 	DungeonDecorations,
 	Prisons,
-	MountedItems
+	MountedItems,
+	GardenDecorations
 };
 
 export const PoHObjects = Object.values(GroupedPohObjects).flat(Infinity) as PoHObject[];
