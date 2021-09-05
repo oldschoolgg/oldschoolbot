@@ -1,6 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { implings } from '../implings';
 import resolveItems from '../util/resolveItems';
 
 export interface IToReturnCollection {
@@ -1716,7 +1717,7 @@ export const miscellaneousCL = resolveItems([
 	"Xeric's talisman (inert)",
 	// Not obtainable yet
 	// 'Mask of ranul',
-	// 'Elven signet',
+	'Elven signet',
 	'Enhanced crystal teleport seed',
 	'Dragonstone full helm',
 	'Dragonstone platebody',
@@ -1847,8 +1848,9 @@ export const capesCL = resolveItems([
 	'Max cape',
 	'Ardougne max hood',
 	'Ardougne max cape',
-	'Infernal max hood',
-	'Infernal max cape',
+	// TODO - Enable back when Inferno is released
+	// 'Infernal max hood',
+	// 'Infernal max cape',
 	'Assembler max hood',
 	'Assembler max cape',
 	'Imbued guthix max hood',
@@ -1858,7 +1860,44 @@ export const capesCL = resolveItems([
 	'Imbued zamorak max hood',
 	'Imbued zamorak max cape',
 	'Mythical max hood',
-	'Mythical max cape'
+	'Mythical max cape',
+	'Fire max hood',
+	'Fire max cape',
+	"Champion's cape",
+	'Mythical cape',
+	'Fire cape',
+	'Imbued saradomin cape',
+	'Imbued guthix cape',
+	'Imbued zamorak cape',
+	'Saradomin cape',
+	'Guthix cape',
+	'Zamorak cape',
+	'Saradomin castlewars cloak',
+	'Zamorak castlewars cloak',
+	'Cape of legends',
+	'Ardougne cloak 1',
+	'Ardougne cloak 2',
+	'Ardougne cloak 3',
+	'Ardougne cloak 4',
+	'Obsidian cape',
+	'Obsidian cape (r)',
+	'Team cape x',
+	'Graceful cape',
+	'3rd age druidic cloak',
+	'3rd age cloak',
+	'Ancient cloak',
+	'Armadyl cloak',
+	'Bandos cloak',
+	'Saradomin cloak',
+	'Guthix cloak',
+	'Zamorak cloak',
+	'Spotted cape',
+	'Spottier cape',
+	"Xeric's guard",
+	"Xeric's warrior",
+	"Xeric's sentinel",
+	"Xeric's general",
+	"Xeric's champion"
 ]);
 export const questCL = resolveItems([
 	'Quest point hood',
@@ -1879,3 +1918,4 @@ export const questCL = resolveItems([
 	'Bronze gloves',
 	'Hardleather gloves'
 ]);
+export const implingsCL = implings.map(i => i[0].id);
