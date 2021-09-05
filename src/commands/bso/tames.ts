@@ -307,7 +307,10 @@ export default class extends BotCommand {
 		ctx.translate(16, 16);
 		let i = 0;
 		for (const tame of userTames) {
+			let isTameActive = false;
 			let selectedTame = mainTame && mainTame[0] && mainTame[0].id === tame.id;
+			if (selectedTame) isTameActive = (await getTameStatus(msg.author)).length > 1;
+
 			const x = i % tamesPerLine;
 			const y = Math.floor(i / tamesPerLine);
 			ctx.drawImage(
@@ -321,7 +324,7 @@ export default class extends BotCommand {
 			ctx.drawImage(
 				this.tameSprites.tames!.find(t => t.id === tame.species.id)!.sprites.find(f => f.type === tame.variant)!
 					.growthStage[tame.growthStage],
-				(10 + 256) * x + (256 - 96) / 2,
+				(10 + 256) * x + (isTameActive ? 96 : 256 - 96) / 2,
 				(10 + 128) * y + 10,
 				96,
 				96
