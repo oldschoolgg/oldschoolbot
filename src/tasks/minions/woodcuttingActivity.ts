@@ -1,4 +1,4 @@
-import { deepClone, Time } from 'e';
+import { Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -15,8 +15,7 @@ export default class extends Task {
 		const { logID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.fetchUser(userID);
 
-		const log = { ...deepClone(Woodcutting.Logs.find(Log => Log.id === logID))! };
-
+		const log = Woodcutting.Logs.find(Log => Log.id === logID)!;
 		let clueChance = log.clueScrollChance;
 		let xpReceived = quantity * log.xp;
 		if (logID === itemID('Elder logs')) {
