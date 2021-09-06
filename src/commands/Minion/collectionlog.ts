@@ -41,7 +41,11 @@ Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 			flags: msg.flagArgs,
 			collection
 		});
+
 		if (!(result instanceof MessageAttachment)) {
+			if (result.content?.includes("That's not a valid collection log type.")) {
+				return msg.removeCooldown().channel.send(result);
+			}
 			return msg.channel.send(result);
 		}
 		return msg.channel.send({ files: [result as MessageAttachment] });
