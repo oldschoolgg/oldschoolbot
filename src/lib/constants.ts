@@ -1,12 +1,16 @@
 import { MessageButton } from 'discord.js';
+import { objectEntries } from 'e';
 import { KlasaMessage } from 'klasa';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
+import { DISCORD_SETTINGS } from '../config';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 
-export const enum Channel {
+export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
+
+export enum Channel {
 	Notifications = '469523207691436042',
 	ErrorLogs = '665678499578904596',
 	GrandExchange = '682996313209831435',
@@ -17,7 +21,7 @@ export const enum Channel {
 	SupportChannel = '668073484731154462'
 }
 
-export const enum Roles {
+export enum Roles {
 	Booster = '665908237152813057',
 	Contributor = '456181501437018112',
 	Moderator = '622806157563527178',
@@ -139,8 +143,6 @@ export const enum Image {
 export const enum Color {
 	Orange = 16_098_851
 }
-
-export const SupportServer = '342983479501389826';
 
 export const enum Tasks {
 	AgilityActivity = 'agilityActivity',
@@ -482,3 +484,19 @@ export const lastTripCache = new Map<
 	string,
 	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
 >();
+
+// Override Roles and Channels settings with what is set on the config.ts
+if (DISCORD_SETTINGS.Roles) {
+	for (const [_key, _value] of objectEntries(DISCORD_SETTINGS.Roles)) {
+		if ((Roles as any)[_key]) {
+			(Roles as any)[_key] = _value;
+		}
+	}
+}
+if (DISCORD_SETTINGS.Channels) {
+	for (const [_key, _value] of objectEntries(DISCORD_SETTINGS.Channels)) {
+		if ((Channel as any)[_key]) {
+			(Channel as any)[_key] = _value;
+		}
+	}
+}
