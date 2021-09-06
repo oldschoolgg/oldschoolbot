@@ -146,9 +146,12 @@ export async function runTameTask(activity: TameActivityTable) {
 		case 'collect': {
 			const { quantity, itemID } = activity.data;
 			const collectable = collectables.find(c => c.item.id === itemID)!;
-			const loot = new Bank().add(collectable.item.id, quantity * collectable.quantity);
+			const totalQuantity = quantity * collectable.quantity;
+			const loot = new Bank().add(collectable.item.id, totalQuantity);
 			const user = await client.fetchUser(activity.userID);
-			let str = `${user}, ${activity.tame.name} finished collecting ${quantity}x ${collectable.item.name}.`;
+			let str = `${user}, ${activity.tame.name} finished collecting ${totalQuantity}x ${
+				collectable.item.name
+			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
 			const { itemsAdded } = await user.addItemsToBank(loot);
 			handleFinish({
 				loot: new Bank(itemsAdded),
@@ -200,7 +203,7 @@ export async function createTameTask({
 	activity.type = type;
 	activity.data = data;
 	activity.channelID = channelID;
-	activity.duration = duration;
+	activity.duration = Math.floor(duration);
 	activity.tame = selectedTame;
 	await activity.save();
 	return activity;

@@ -951,6 +951,52 @@ setCustomItem(40_052, 'Scroll of mystery', 'Coal', {}, 1_000_000);
 
 setCustomItem(40_060, 'Slayer master cape', 'Abyssal cape', {}, 10_000_000);
 
+// ---------
+setCustomItem(
+	48_220,
+	'Hellfire bow',
+	'Twisted bow',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 220,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 25,
+			magic_damage: 0,
+			prayer: 10,
+			slot: EquipmentSlot.TwoHanded,
+			requirements: {
+				ranged: 110
+			}
+		}
+	},
+	(getOSItem('Twisted bow').price + getOSItem('Zaryte bow').price) * 1.1
+);
+// ----------
+// MMMR
+setCustomItem(40_061, 'Beginner rumble greegree', 'Bronze 2h sword', {}, 999_995);
+setCustomItem(40_062, 'Intermediate rumble greegree', 'Bronze 2h sword', {}, 999_996);
+setCustomItem(40_063, 'Ninja rumble greegree', 'Bronze 2h sword', {}, 999_997);
+setCustomItem(40_064, 'Expert ninja rumble greegree', 'Bronze 2h sword', {}, 999_998);
+setCustomItem(40_065, 'Elder rumble greegree', 'Bronze 2h sword', {}, 999_999);
+setCustomItem(40_066, 'Gorilla rumble greegree', 'Bronze 2h sword', {}, 1_000_000);
+
+setCustomItem(40_067, 'Dwarven warnana', 'Dwarven warhammer', {}, 1_000_000_000);
+setCustomItem(40_068, 'Twisted bownana', 'Twisted bow', {}, 500_000_000);
+setCustomItem(40_069, 'Zaryte bownana', 'Zaryte bow', {}, 500_000_000);
+setCustomItem(40_070, 'Hellfire bownana', 'Hellfire bow', {}, 500_000_000);
+setCustomItem(40_071, 'Monkey dye', 'Egg', {}, 10_000_000);
+
 /**
  * Non-mystery box items
  *
@@ -1712,37 +1758,6 @@ setCustomItem(
 );
 
 setCustomItem(
-	48_220,
-	'Hellfire bow',
-	'Twisted bow',
-	{
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 0,
-			attack_ranged: 220,
-
-			defence_stab: 0,
-			defence_slash: 0,
-			defence_crush: 0,
-			defence_magic: 0,
-			defence_ranged: 0,
-
-			melee_strength: 0,
-			ranged_strength: 25,
-			magic_damage: 0,
-			prayer: 10,
-			slot: EquipmentSlot.TwoHanded,
-			requirements: {
-				ranged: 110
-			}
-		}
-	},
-	(getOSItem('Twisted bow').price + getOSItem('Zaryte bow').price) * 1.1
-);
-
-setCustomItem(
 	48_221,
 	'Hellfire bow (broken)',
 	'Twisted bow',
@@ -1757,13 +1772,11 @@ setCustomItem(48_222, 'Hellfire arrowtips', 'Dragon arrowtips', {}, 1000);
 setCustomItem(48_223, 'Scroll of the hunt', 'Coal', {}, 1_000_000);
 
 // MMMR
-setCustomItem(48_224, 'Beginner rumble greegree', 'Bronze 2h sword', {}, 999_995);
-setCustomItem(48_225, 'Intermediate rumble greegree', 'Bronze 2h sword', {}, 999_996);
-setCustomItem(48_226, 'Ninja rumble greegree', 'Bronze 2h sword', {}, 999_997);
-setCustomItem(48_227, 'Expert ninja rumble greegree', 'Bronze 2h sword', {}, 999_998);
-setCustomItem(48_228, 'Elder rumble greegree', 'Bronze 2h sword', {}, 999_999);
-setCustomItem(48_229, 'Monkey egg', 'Egg', {}, 100_000_000);
-setCustomItem(48_230, 'Banana encantation scroll', 'Egg', {}, 1_000_000);
+
+setCustomItem(48_224, 'Monkey egg', 'Egg', {}, 100_000_000);
+setCustomItem(48_225, 'Banana enchantment scroll', 'Egg', {}, 1_000_000);
+setCustomItem(48_226, 'Chimpling jar', 'Egg', {}, 100_000);
+setCustomItem(48_227, 'Shiny monkey nuts', 'Egg', {}, 100_000);
 
 /**
  * Misc Items

@@ -34,7 +34,7 @@ export default class extends Task {
 			channelID,
 			`${user}, ${user.minionName} finished ${quantity}x Rumble fights against ${quantity}x monkeys (${monkeys
 				.map(m => m.name)
-				.join(', ')}).\n${xpStr}\nYou received **${loot}.**`,
+				.join(', ')}), your monkey tier is ${monkeyTier}.\n${xpStr}\nYou received **${loot}.**`,
 			res => {
 				user.log('continued mmmr');
 				return (this.client.commands.get('mmmr') as unknown as any)!.start(res) as Promise<KlasaMessage>;

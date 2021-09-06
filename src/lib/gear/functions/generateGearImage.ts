@@ -6,7 +6,7 @@ import { KlasaClient, KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import BankImageTask from '../../../tasks/bankImage';
-import { monkeyTiers } from '../../monkeyRumble';
+import { monkeyTierOfUser, monkeyTiers } from '../../monkeyRumble';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { Gear } from '../../structures/Gear';
 import { toTitleCase } from '../../util';
@@ -86,12 +86,14 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 	}
 }
 
-async function drawStats(canvas: Canvas, gearStats: GearStats, alternateImage: Image | null) {
+async function drawStats(user: KlasaUser, canvas: Canvas, gearStats: GearStats, alternateImage: Image | null) {
 	const ctx = canvas.getContext('2d');
 
 	if (alternateImage) {
-		// TODO: up to their monkey level or how many bananas they own
-		for (let i = 0; i < 23; i++) {
+		const b = user.bank();
+		const numBananas =
+			monkeyTierOfUser(user) * 2 + Math.min(20, b.amount('Banana')) + Math.min(20, b.amount('Magic banana'));
+		for (let i = 0; i < numBananas; i++) {
 			let b = await banana;
 			ctx.drawImage(
 				b,
@@ -235,7 +237,7 @@ export async function generateGearImage(
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	// Draw stats
-	await drawStats(canvas, gearStats, alternateImage);
+	await drawStats(user, canvas, gearStats, alternateImage);
 
 	if (!uniqueSprite) {
 		ctx.drawImage(

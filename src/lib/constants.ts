@@ -392,7 +392,7 @@ export const enum BitField {
 	HasScrollOfFarming = 202,
 	HasScrollOfLongevity = 203,
 	HasScrollOfTheHunt = 204,
-	HasBananaEncantationScroll = 205
+	HasBananaEnchantmentScroll = 205
 }
 
 interface BitFieldData {

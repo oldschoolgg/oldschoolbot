@@ -28,15 +28,15 @@ const buyables = monkeyTiers.map((t, index) => ({
 	item: t.greegree,
 	gamesReq: t.gamesReq,
 	strengthLevelReq: t.strengthLevelReq,
-	cost: (index + 1) * 100,
+	cost: index === 0 ? 0 : (index + 1) * 100,
 	aliases: [t.name, t.greegree.name]
 }));
 buyables.push({
-	item: getOSItem('Banana encantation scroll'),
+	item: getOSItem('Banana enchantment scroll'),
 	gamesReq: 0,
 	strengthLevelReq: 0,
 	cost: 200,
-	aliases: ['bes', 'banana scroll', 'banana encantation scroll']
+	aliases: ['bes', 'banana scroll', 'banana enchantment scroll']
 });
 
 export default class extends BotCommand {
@@ -59,7 +59,7 @@ export default class extends BotCommand {
 		const tier = monkeyTiers.find(t => t.id === monkeyTierOfUser(msg.author))!;
 		return msg.channel.send(
 			`Monkeys fought: ${msg.author.settings.get(UserSettings.MonkeysFought).length}/${TOTAL_MONKEYS}
-Greegree Level: ${tier.id}/${monkeyTiers.length.toLocaleString()}`
+Greegree Level: ${tier.greegree.name} - ${tier.id}/${monkeyTiers.length.toLocaleString()}`
 		);
 	}
 

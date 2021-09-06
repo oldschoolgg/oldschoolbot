@@ -55,7 +55,10 @@ export default class extends BotCommand {
 					return msg.author.skillLevel(SkillsEnum.Hunter) >= i[2];
 				});
 				while (total.length < effectiveImps.length) {
-					let i = handlePassiveImplings(msg.author, { duration: Time.Hour, type: Activity.Gauntlet } as any);
+					let i = await handlePassiveImplings(msg.author, {
+						duration: Time.Hour,
+						type: Activity.Gauntlet
+					} as any);
 					if (i) {
 						total.add(i.bank);
 					}
@@ -71,7 +74,7 @@ export default class extends BotCommand {
 				const total = new Bank();
 				let hours = 0;
 				for (let i = 0; i < 5000; i++) {
-					let i = handlePassiveImplings(msg.author, {
+					let i = await handlePassiveImplings(msg.author, {
 						duration: Time.Hour,
 						activity: Activity.Gauntlet
 					} as any);

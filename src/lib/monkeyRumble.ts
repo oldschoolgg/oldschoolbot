@@ -92,7 +92,8 @@ const firstNames = [
 	'Rog',
 	'Rok',
 	'Fadt',
-	'Big'
+	'Big',
+	'Smol'
 ];
 const lastNames = ['Mu', 'Lu', 'Jo', 'Buu', 'Nana', 'Ko', 'Ku', 'Qa', 'Cha', 'Ueu', 'Itu', 'Suk', 'In', 'Mo', 'Gree'];
 const titles = [

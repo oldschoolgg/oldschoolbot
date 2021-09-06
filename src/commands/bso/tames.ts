@@ -1,13 +1,12 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Eatables } from '../../lib/data/eatables';
 import { requiresMinion } from '../../lib/minions/decorators';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { KillableMonster } from '../../lib/minions/types';
-import { monkeyEatables } from '../../lib/monkeyRumble';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -26,11 +25,70 @@ import getOSItem from '../../lib/util/getOSItem';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { collectables } from '../Minion/collect';
 
-const feedableItems = [
-	[getOSItem('Ori'), '25% extra loot'],
-	[getOSItem('Zak'), '+35 minutes longer max trip length'],
-	[getOSItem('Abyssal cape'), '25% food reduction']
-] as const;
+interface FeedableItem {
+	item: Item;
+	tameSpeciesCanBeFedThis: number[];
+	description: string;
+	announcementString: string;
+}
+const feedableItems: FeedableItem[] = [
+	{
+		item: getOSItem('Ori'),
+		description: '25% extra loot',
+		tameSpeciesCanBeFedThis: [1],
+		announcementString: 'Your tame will now get 25% extra loot!'
+	},
+	{
+		item: getOSItem('Zak'),
+		description: '+35 minutes longer max trip length',
+		tameSpeciesCanBeFedThis: [1, 2],
+		announcementString: 'Your tame now has a much longer max trip length!'
+	},
+	{
+		item: getOSItem('Abyssal cape'),
+		description: '25% food reduction',
+		tameSpeciesCanBeFedThis: [1],
+		announcementString: 'Your tame now has 25% food reduction!'
+	},
+	{
+		item: getOSItem('Voidling'),
+		description: '10% faster collecting',
+		tameSpeciesCanBeFedThis: [2],
+		announcementString: 'Your tame can now collect items 10% faster thanks to the Voidling helping them teleport!'
+	},
+	{
+		item: getOSItem('Ring of endurance'),
+		description: '10% faster collecting',
+		tameSpeciesCanBeFedThis: [2],
+		announcementString:
+			'Your tame can now collect items 10% faster thanks to the Ring of endurance helping them run for longer!'
+	}
+];
+
+const feedingEasterEggs: [Bank, number, TameGrowthStage[], string][] = [
+	[new Bank().add('Vial of water'), 2, [TameGrowthStage.Baby], 'https://imgur.com/pYjshTg'],
+	[new Bank().add('Bread'), 2, [TameGrowthStage.Baby, TameGrowthStage.Juvenile], 'https://i.imgur.com/yldSKLZ.mp4'],
+	[
+		new Bank().add('Banana', 2),
+		2,
+		[TameGrowthStage.Juvenile, TameGrowthStage.Adult],
+		'https://i.imgur.com/11Bads1.mp4'
+	],
+	[
+		new Bank().add('Strawberry'),
+		2,
+		[TameGrowthStage.Juvenile, TameGrowthStage.Adult],
+		'https://i.imgur.com/ZqN1BHZ.mp4'
+	],
+	[new Bank().add('Lychee'), 2, [TameGrowthStage.Juvenile, TameGrowthStage.Adult], 'https://i.imgur.com/e5TqK1S.mp4'],
+	[
+		new Bank().add('Chocolate bar'),
+		2,
+		[TameGrowthStage.Baby, TameGrowthStage.Juvenile],
+		'https://i.imgur.com/KRGURck.mp4'
+	],
+	[new Bank().add('Coconut milk'), 2, [TameGrowthStage.Baby], 'https://i.imgur.com/OE7tXI8.mp4']
+];
 
 export async function removeRawFood({
 	client,
@@ -107,7 +165,7 @@ export default class extends BotCommand {
 			description: 'Use to control and manage your tames.',
 			examples: ['+tames k fire giant', '+tames', '+tames select 1', '+tames setname LilBuddy'],
 			subcommands: true,
-			usage: '[k|select|setname|feed] [input:...str]',
+			usage: '[k|c|select|setname|feed] [input:...str]',
 			usageDelim: ' ',
 			aliases: ['tame', 't']
 		});
@@ -202,7 +260,7 @@ export default class extends BotCommand {
 				bank: selectedTame.fedItems,
 				title: 'Items Fed To This Tame',
 				content: `The items which give a perk/usage when fed are: ${feedableItems
-					.map(i => `${i[0].name} (${i[1]})`)
+					.map(i => `${i.item.name} (${i.description})`)
 					.join(', ')}.`
 			});
 		}
@@ -212,15 +270,35 @@ export default class extends BotCommand {
 		}
 
 		let specialStrArr = [];
-		for (const [i, perk] of feedableItems) {
-			if (bankToAdd.has(i.id)) {
-				specialStrArr.push(`**${i.name}**: ${perk}`);
+		for (const { item, description, tameSpeciesCanBeFedThis } of feedableItems) {
+			if (bankToAdd.has(item.id)) {
+				if (!tameSpeciesCanBeFedThis.includes(selectedTame.speciesID)) {
+					await msg.confirm(
+						`Feeding a '${item.name}' to your tame won't give it a perk, are you sure you want to?`
+					);
+				}
+				specialStrArr.push(`**${item.name}**: ${description}`);
 			}
 		}
 		let specialStr = specialStrArr.length === 0 ? '' : `\n\n${specialStrArr.join(', ')}`;
 		await msg.confirm(
 			`Are you sure you want to feed \`${bankToAdd}\` to ${selectedTame.name}? You cannot get these items back after they're eaten by your tame.${specialStr}`
 		);
+
+		for (const [eggBank, eggSpecies, eggGrowth, easterEgg] of feedingEasterEggs) {
+			if (
+				selectedTame.species.id === eggSpecies &&
+				bankToAdd.fits(eggBank) &&
+				eggGrowth.includes(selectedTame.growthStage)
+			) {
+				msg.channel.send(easterEgg);
+			}
+		}
+		for (const { item, announcementString } of feedableItems) {
+			if (bankToAdd.has(item.id)) {
+				msg.channel.send(`**${announcementString}**`);
+			}
+		}
 		await msg.author.removeItemsFromBank(bankToAdd);
 		selectedTame.fedItems = addBanks([selectedTame.fedItems, bankToAdd.bank]);
 		await selectedTame.save();
@@ -232,6 +310,7 @@ export default class extends BotCommand {
 		if (!selectedTame) {
 			return msg.channel.send('You have no selected tame.');
 		}
+		if (selectedTame.species.id !== 1) return msg.channel.send('This tame species cannot do PvM.');
 		if (currentTask) {
 			return msg.channel.send(`${selectedTame.name} is busy.`);
 		}
@@ -258,6 +337,7 @@ export default class extends BotCommand {
 			boosts.push('+35mins trip length (ate a Zak)');
 		}
 		maxTripLength += patronMaxTripCalc(msg.author) * 2;
+
 		// Calculate monster quantity:
 		const quantity = Math.floor(maxTripLength / speed);
 		if (quantity < 1) {
@@ -300,6 +380,8 @@ export default class extends BotCommand {
 		if (!selectedTame) {
 			return msg.channel.send('You have no selected tame.');
 		}
+
+		if (selectedTame.species.id !== 2) return msg.channel.send('This tame species cannot collect items.');
 		if (currentTask) {
 			return msg.channel.send(`${selectedTame.name} is busy.`);
 		}
@@ -313,15 +395,30 @@ export default class extends BotCommand {
 		}
 
 		const [min, max] = selectedTame.species.gathererLevelRange;
-		const gathererLevelBoost = calcWhatPercent(selectedTame.maxCombatLevel - min, max);
+		const gathererLevelBoost = calcWhatPercent(selectedTame.maxGathererLevel - min, max);
 
 		// Increase trip length based on minion growth:
-		let speed = collectable.duration * selectedTame.growthLevel;
+		let speed = collectable.duration;
+		if (selectedTame.growthStage === TameGrowthStage.Baby) {
+			speed /= 1.5;
+		} else if (selectedTame.growthStage === TameGrowthStage.Juvenile) {
+			speed /= 2;
+		} else {
+			speed /= 2.5;
+		}
+
+		let boosts = [];
+
+		for (const item of ['Voidling', 'Ring of endurance']) {
+			if (selectedTame.hasBeenFed(item)) {
+				speed = reduceNumByPercent(speed, 10);
+				boosts.push(`10% for ${item}`);
+			}
+		}
 
 		// Apply calculated boost:
 		speed = reduceNumByPercent(speed, gathererLevelBoost);
 
-		let boosts = [];
 		let maxTripLength = Time.Minute * 20 * (4 - selectedTame.growthLevel);
 		if (selectedTame.hasBeenFed('Zak')) {
 			maxTripLength += Time.Minute * 35;
@@ -335,24 +432,6 @@ export default class extends BotCommand {
 		}
 
 		let duration = Math.floor(quantity * speed);
-		const foodRequired = Math.floor(duration / (Time.Minute * 1.34));
-
-		const bank = msg.author.bank();
-		const eatable = monkeyEatables.find(e => bank.amount(e.item.id) >= foodRequired);
-
-		if (!eatable) {
-			return msg.channel.send(
-				`You don't have enough food to feed your monkey. They can only eat certain items (${monkeyEatables
-					.map(i => i.item.name + (i.boost ? ` (${i.boost}% boost)` : ''))
-					.join(', ')}). For this trip, you'd need ${foodRequired} of one of these items.`
-			);
-		}
-		if (eatable.boost) {
-			duration = reduceNumByPercent(duration, eatable.boost);
-			boosts.push(`${eatable.boost}% for ${eatable.item.name} food`);
-		}
-		const cost = new Bank().add(eatable.item.id, foodRequired);
-		await msg.author.removeItemsFromBank(cost);
 
 		await createTameTask({
 			user: msg.author,
@@ -369,7 +448,7 @@ export default class extends BotCommand {
 
 		let reply = `${selectedTame.name} is now collecting ${quantity * collectable.quantity}x ${
 			collectable.item.name
-		}. The trip will take ${formatDuration(duration)}.\n\nRemoved ${cost}`;
+		}. The trip will take ${formatDuration(duration)}.`;
 
 		if (boosts.length > 0) {
 			reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;

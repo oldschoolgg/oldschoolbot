@@ -50,16 +50,16 @@ const usables = [
 		}
 	},
 	{
-		item: getOSItem('Banana encantation scroll'),
+		item: getOSItem('Banana enchantment scroll'),
 		run: async (msg: KlasaMessage) => {
 			const bits = msg.author.bitfield;
-			if (bits.includes(BitField.HasBananaEncantationScroll)) {
-				return msg.channel.send('You have already used a Banana encantation scroll.');
+			if (bits.includes(BitField.HasBananaEnchantmentScroll)) {
+				return msg.channel.send('You have already used a Banana enchantment scroll.');
 			}
-			await msg.author.removeItemsFromBank(new Bank().add('Banana encantation scroll'));
-			await msg.author.settings.update(UserSettings.BitField, BitField.HasBananaEncantationScroll);
+			await msg.author.removeItemsFromBank(new Bank().add('Banana enchantment scroll'));
+			await msg.author.settings.update(UserSettings.BitField, BitField.HasBananaEnchantmentScroll);
 			return msg.channel.send(
-				'You have used your Banana encantation scroll - you feel your monkey magic skills have improved.'
+				'You have used your Banana enchantment scroll - you feel your monkey magic skills have improved.'
 			);
 		}
 	}

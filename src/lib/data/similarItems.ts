@@ -390,7 +390,13 @@ const source: [string, (string | number)[]][] = [
 	['Angler boots', ['Spirit angler boots']],
 	[
 		'Dwarven warhammer',
-		['Dwarven warhammer (ice)', 'Dwarven warhammer (blood)', 'Dwarven warhammer (shadow)', 'Dwarven warhammer (3a)']
+		[
+			'Dwarven warhammer (ice)',
+			'Dwarven warhammer (blood)',
+			'Dwarven warhammer (shadow)',
+			'Dwarven warhammer (3a)',
+			'Dwarven warnana'
+		]
 	],
 	['Flippers', ['Dark flippers']],
 	[
@@ -407,8 +413,9 @@ const source: [string, (string | number)[]][] = [
 			'Uncharged toxic trident (e)'
 		]
 	],
-	['Zaryte bow', ['Hellfire bow']],
-	['Twisted bow', ['Hellfire bow']],
+	['Zaryte bow', ['Hellfire bow', 'Zaryte bownana']],
+	['Twisted bow', ['Hellfire bow', 'Twisted bownana']],
+	['Hellfire bow', ['Hellfire bownana']],
 	['Ghrazi rapier', ['Holy ghrazi rapier']],
 	['Scythe of vitur', ['Sanguine scythe of vitur', 'Holy scythe of vitur']],
 	['Scythe of vitur (uncharged)', ['Sanguine scythe of vitur (uncharged)', 'Holy scythe of vitur (uncharged)']],

@@ -5,7 +5,7 @@ import SimpleOpenable from 'oldschooljs/dist/structures/SimpleOpenable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Activity, BitField } from './constants';
-import { EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
+import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
 import { SkillsEnum } from './skilling/types';
 import {
 	ActivityTaskOptions,
@@ -29,7 +29,7 @@ const {
 	LuckyImpling
 } = Openables;
 
-type Impling = [SimpleOpenable, number, number, null | ((activity: ActivityTaskOptions) => boolean)];
+type Impling = [SimpleOpenable, number, number, null | ((activity: ActivityTaskOptions, user: KlasaUser) => boolean)];
 
 export const implings: Impling[] = [
 	// [Imp, Weight, Level, Inhibitor]
@@ -73,6 +73,15 @@ export const implings: Impling[] = [
 		}
 	],
 	[DragonImpling, 24, 83, null],
+	[
+		ChimplingImpling,
+		19,
+		95,
+		(_activity: ActivityTaskOptions, user: KlasaUser) => {
+			if (user.owns('Magic banana')) return true;
+			return false;
+		}
+	],
 	[LuckyImpling, 14, 89, null],
 	[InfernalImpling, 9, 94, null],
 	[EternalImpling, 7, 99, null],
@@ -86,7 +95,7 @@ for (const imp of implings) {
 
 const IMPLING_CHANCE_PER_MINUTE = 65;
 
-export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
+export async function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
 	const minutes = Math.floor(data.duration / Time.Minute);
 
 	if (minutes < 4) return null;
@@ -104,14 +113,20 @@ export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions
 	}
 	const missed: SimpleOpenable[] = [];
 	for (let i = 0; i < minutes; i++) {
-		const gotImp = roll(chance);
+		const gotImp = roll(1 > 0 ? 5 : chance);
 		if (gotImp) {
 			const [imp, , levelReq, inhibitor] = ImplingTable.roll()!.item;
-			if (inhibitor && !inhibitor(data)) continue;
+			if (inhibitor && !inhibitor(data, user)) continue;
 
-			if (level < levelReq || (imp === EternalImpling && !user.hasItemEquippedOrInBank('Vasa cloak'))) {
+			const chimplingCost = new Bank().add('Magic banana');
+			if (
+				level < levelReq ||
+				(imp === EternalImpling && !user.hasItemEquippedOrInBank('Vasa cloak')) ||
+				(imp === ChimplingImpling && !user.owns(chimplingCost))
+			) {
 				missed.push(imp);
 			} else {
+				if (imp === ChimplingImpling) await user.removeItemsFromBank(chimplingCost);
 				bank.add(imp.id);
 			}
 		}
