@@ -529,7 +529,7 @@ function gaussianRand(rolls: number = 3) {
 	return rand / rolls;
 }
 export function gaussianRandom(min: number, max: number, rolls?: number) {
-	return Math.floor(min + gaussianRand(rolls) * (max - (min - 1) + 1));
+	return Math.floor(min + gaussianRand(rolls) * (max - min + 1));
 }
 export function isValidNickname(str?: string) {
 	return (
