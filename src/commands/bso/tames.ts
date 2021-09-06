@@ -589,7 +589,7 @@ export default class extends BotCommand {
 
 		const tames = await TamesTable.find({ where: { userID: msg.author.id } });
 		const toSelect = tames.find(t => stringMatches(tame, t.id.toString()) || stringMatches(tame, t.nickname ?? ''));
-		if (!toSelect) {
+		if (!toSelect || !tame) {
 			return msg.channel.send(
 				"Couldn't find a tame to participate in the ritual. Make sure you selected the correct Tame, by its number or nickname."
 			);

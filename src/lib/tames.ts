@@ -57,7 +57,7 @@ export const tameSpecies: Species[] = [
 		name: 'Igne',
 		variants: [1, 2, 3],
 		shinyVariant: 4,
-		combatLevelRange: [70, 126],
+		combatLevelRange: [70, 100],
 		artisanLevelRange: [1, 10],
 		supportLevelRange: [1, 10],
 		gathererLevelRange: [1, 10],

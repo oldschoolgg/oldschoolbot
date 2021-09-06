@@ -23,16 +23,16 @@ export async function generateNewTame(user: KlasaUser, species: Species) {
 	if (species.shinyVariant && roll(100)) tame.variant = species.shinyVariant;
 
 	const [minCmbt, maxCmbt] = species.combatLevelRange;
-	tame.maxCombatLevel = gaussianRandom(minCmbt, maxCmbt);
+	tame.maxCombatLevel = gaussianRandom(minCmbt, maxCmbt, 2);
 
 	const [minArt, maxArt] = species.artisanLevelRange;
-	tame.maxArtisanLevel = gaussianRandom(minArt, maxArt);
+	tame.maxArtisanLevel = gaussianRandom(minArt, maxArt, 2);
 
 	const [minSup, maxSup] = species.supportLevelRange;
-	tame.maxSupportLevel = gaussianRandom(minSup, maxSup);
+	tame.maxSupportLevel = gaussianRandom(minSup, maxSup, 2);
 
 	const [minGath, maxGath] = species.gathererLevelRange;
-	tame.maxGathererLevel = gaussianRandom(minGath, maxGath);
+	tame.maxGathererLevel = gaussianRandom(minGath, maxGath, 2);
 
 	tame.totalLoot = {};
 	tame.fedItems = {};
