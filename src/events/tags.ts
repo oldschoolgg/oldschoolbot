@@ -25,7 +25,7 @@ export default class TagHandler extends Event {
 
 			if (
 				message.guild.id !== SupportServer ||
-				(message.channel.id === Channel.SupportChannel &&
+				(message.channel.id === Channel.HelpAndSupport &&
 					!message.author.settings.get(UserSettings.Badges).includes(5))
 			) {
 				await this.client.inhibitors.run(message, tagCommand);

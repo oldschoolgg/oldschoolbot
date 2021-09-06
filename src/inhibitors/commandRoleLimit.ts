@@ -6,7 +6,7 @@ import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 export default class extends Inhibitor {
 	public async run(msg: KlasaMessage) {
 		if (!msg.guild || msg.guild.id !== SupportServer) return;
-		if (msg.channel.id !== Channel.SupportChannel) return;
+		if (msg.channel.id !== Channel.HelpAndSupport) return;
 
 		const perkTier = getUsersPerkTier(msg.author);
 

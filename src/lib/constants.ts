@@ -18,7 +18,7 @@ export enum Channel {
 	BlacklistLogs = '782459317218967602',
 	EconomyLogs = '802029843712573510',
 	NewSponsors = '806744016309714966',
-	SupportChannel = '668073484731154462'
+	HelpAndSupport = '668073484731154462'
 }
 
 export enum Roles {
@@ -295,13 +295,6 @@ export const enum Events {
 	EconomyLog = 'economyLog'
 }
 
-export const enum BadgesEnum {
-	Developer = 0,
-	Booster = 1,
-	LimitedPatron = 2,
-	Patron = 3
-}
-
 export const enum PermissionLevelsEnum {
 	Zero = 0,
 	Moderator = 6,
@@ -386,20 +379,36 @@ export const enum PatronTierID {
 	Five = '5262216'
 }
 
+export const enum BadgesEnum {
+	Developer = 0,
+	Booster = 1,
+	LimitedPatron = 2,
+	Patron = 3,
+	Moderator = 4,
+	GreenGem = 5,
+	Bug = 6,
+	GoldenTrophy = 7,
+	TopSacrifice = 8,
+	TopSkiller = 9,
+	TopCollector = 10,
+	TopMinigame = 11,
+	SotWTrophy = 12
+}
+
 export const badges: { [key: number]: string } = {
-	0: Emoji.Spanner,
-	1: Emoji.PinkGem,
-	2: Emoji.Crab,
-	3: Emoji.BigOrangeGem,
-	4: Emoji.Hammer,
-	5: Emoji.GreenGem,
-	6: Emoji.Bug,
-	7: Emoji.Trophy,
-	8: Emoji.Incinerator,
-	9: Emoji.Skiller,
-	10: Emoji.CollectionLog,
-	11: Emoji.MinigameIcon,
-	12: Emoji.SOTWTrophy
+	[BadgesEnum.Developer]: Emoji.Spanner,
+	[BadgesEnum.Booster]: Emoji.PinkGem,
+	[BadgesEnum.LimitedPatron]: Emoji.Crab,
+	[BadgesEnum.Patron]: Emoji.BigOrangeGem,
+	[BadgesEnum.Moderator]: Emoji.Hammer,
+	[BadgesEnum.GreenGem]: Emoji.GreenGem,
+	[BadgesEnum.Bug]: Emoji.Bug,
+	[BadgesEnum.GoldenTrophy]: Emoji.Trophy,
+	[BadgesEnum.TopSacrifice]: Emoji.Incinerator,
+	[BadgesEnum.TopSkiller]: Emoji.Skiller,
+	[BadgesEnum.TopCollector]: Emoji.CollectionLog,
+	[BadgesEnum.TopMinigame]: Emoji.MinigameIcon,
+	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy
 };
 
 export const MAX_QP = 284;
