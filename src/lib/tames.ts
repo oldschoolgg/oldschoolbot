@@ -30,6 +30,9 @@ export interface Nursery {
 export interface Species {
 	id: number;
 	name: string;
+	// Tame type within its specie
+	variants: number[];
+	shinyVariant?: number;
 	/**
 	 * Tames get assigned a max level in these ranges,
 	 * in a bell curve fashion, where the middle of the range
@@ -45,6 +48,7 @@ export interface Species {
 	artisanLevelRange: [number, number];
 	supportLevelRange: [number, number];
 	gathererLevelRange: [number, number];
+	relevantLevelCategory: 'combat' | 'artisan' | 'support' | 'gatherer';
 	hatchTime: number;
 	egg: Item;
 	emoji: string;
@@ -54,10 +58,13 @@ export const tameSpecies: Species[] = [
 	{
 		id: 1,
 		name: 'Igne',
+		variants: [1, 2, 3],
+		shinyVariant: 4,
 		combatLevelRange: [70, 100],
 		artisanLevelRange: [1, 10],
 		supportLevelRange: [1, 10],
 		gathererLevelRange: [1, 10],
+		relevantLevelCategory: 'combat',
 		hatchTime: Time.Hour * 18.5,
 		egg: getOSItem(48_210),
 		emoji: '<:dragonEgg:858948148641660948>'

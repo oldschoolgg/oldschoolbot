@@ -1,6 +1,8 @@
+import { randArrItem, roll } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { Events } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -17,20 +19,25 @@ export async function generateNewTame(user: KlasaUser, species: Species) {
 	tame.growthStage = TameGrowthStage.Baby;
 	tame.currentGrowthPercent = 0;
 
+	tame.variant = randArrItem(species.variants);
+	if (species.shinyVariant && roll(100)) tame.variant = species.shinyVariant;
+	let isShiny = tame.variant === species.shinyVariant;
+
 	const [minCmbt, maxCmbt] = species.combatLevelRange;
-	tame.maxCombatLevel = gaussianRandom(minCmbt, maxCmbt);
+	tame.maxCombatLevel = isShiny ? maxCmbt : gaussianRandom(minCmbt, maxCmbt);
 
 	const [minArt, maxArt] = species.artisanLevelRange;
-	tame.maxArtisanLevel = gaussianRandom(minArt, maxArt);
+	tame.maxArtisanLevel = isShiny ? maxArt : gaussianRandom(minArt, maxArt);
 
 	const [minSup, maxSup] = species.supportLevelRange;
-	tame.maxSupportLevel = gaussianRandom(minSup, maxSup);
+	tame.maxSupportLevel = isShiny ? maxSup : gaussianRandom(minSup, maxSup);
 
 	const [minGath, maxGath] = species.gathererLevelRange;
-	tame.maxGathererLevel = gaussianRandom(minGath, maxGath);
+	tame.maxGathererLevel = isShiny ? maxGath : gaussianRandom(minGath, maxGath);
 
 	tame.totalLoot = {};
 	tame.fedItems = {};
+
 	await tame.save();
 	return tame;
 }
@@ -74,7 +81,15 @@ export default class POHCommand extends BotCommand {
 				hasFuel: false
 			};
 			await msg.author.settings.update(UserSettings.Nursery, newNursery);
-			await generateNewTame(msg.author, specie);
+			const newUserTame = await generateNewTame(msg.author, specie);
+
+			if (newUserTame.variant === specie.shinyVariant) {
+				this.client.emit(
+					Events.ServerNotification,
+					`**${msg.author.username}** just hatched a shiny ${specie.name}!`
+				);
+			}
+
 			return msg.channel.send(`Your ${specie.name} Egg has hatched! You now have a ${specie.name} Baby.`);
 		}
 
