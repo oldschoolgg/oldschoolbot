@@ -129,10 +129,16 @@ export default class extends Task {
 				isOnTask ? Emoji.Slayer : ''
 			} **${user} received:** ||${new Bank(loot)}||\n`;
 
-			announceLoot(this.client, leaderUser, KalphiteKingMonster, loot, {
-				leader: leaderUser,
-				lootRecipient: user,
-				size: users.length
+			announceLoot({
+				user: leaderUser,
+				monsterID: KalphiteKingMonster.id,
+				loot: new Bank(loot),
+				notifyDrops: KalphiteKingMonster.notifyDrops,
+				team: {
+					leader: leaderUser,
+					lootRecipient: user,
+					size: users.length
+				}
 			});
 		}
 

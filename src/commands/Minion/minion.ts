@@ -127,7 +127,7 @@ export default class MinionCommand extends BotCommand {
 	@requiresMinion
 	async lvl(msg: KlasaMessage, [input]: [string]) {
 		const values = Object.values(Skills);
-		const skill = values.find(s => stringMatches(s.name, input));
+		const skill = values.find(s => stringMatches(s.name, input) || s.aliases.some(a => stringMatches(a, input)));
 		if (!skill) {
 			return msg.channel.send(
 				`That's not a valid skill. The valid skills are: ${values.map(v => v.name).join(', ')}.`

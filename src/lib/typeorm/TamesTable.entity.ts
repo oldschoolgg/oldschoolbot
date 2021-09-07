@@ -36,6 +36,9 @@ export class TamesTable extends BaseEntity {
 	@Column('integer', { name: 'species_id', nullable: false })
 	public speciesID!: number;
 
+	@Column('integer', { name: 'species_variant', nullable: false, default: 1 })
+	public variant!: number;
+
 	@Column({ type: 'enum', enum: TameGrowthStage, name: 'growth_stage', enumName: 'tame_growth' })
 	public growthStage!: TameGrowthStage;
 
@@ -90,6 +93,20 @@ export class TamesTable extends BaseEntity {
 		const growth =
 			3 - [TameGrowthStage.Baby, TameGrowthStage.Juvenile, TameGrowthStage.Adult].indexOf(this.growthStage);
 		return growth;
+	}
+
+	get level() {
+		switch (this.species.relevantLevelCategory) {
+			case 'combat':
+				return this.combatLvl;
+			case 'artisan':
+				return this.artisanLvl;
+			case 'support':
+				return this.supportLvl;
+			case 'gatherer':
+				return this.gathererLvl;
+		}
+		return 0;
 	}
 
 	get combatLvl() {

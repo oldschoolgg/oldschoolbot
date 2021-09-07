@@ -26,6 +26,7 @@ export interface DiaryTier {
 }
 interface Diary {
 	name: string;
+	alias?: string[];
 	easy: DiaryTier;
 	medium: DiaryTier;
 	hard: DiaryTier;
@@ -120,6 +121,7 @@ export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promis
 
 export const WesternProv: Diary = {
 	name: 'Western Provinces',
+	alias: ['western', 'wp', 'west', 'west prov'],
 	easy: {
 		name: 'Easy',
 		item: getOSItem('Western banner 1'),
@@ -217,6 +219,7 @@ export const WesternProv: Diary = {
 };
 export const ArdougneDiary: Diary = {
 	name: 'Ardougne',
+	alias: ['ardy', 'ardougn'],
 	easy: {
 		name: 'Easy',
 		item: getOSItem('Ardougne cloak 1'),
@@ -390,6 +393,7 @@ export const DesertDiary: Diary = {
 
 export const FaladorDiary: Diary = {
 	name: 'Falador',
+	alias: ['fally', 'fal'],
 	easy: {
 		name: 'Easy',
 		item: getOSItem('Falador shield 1'),
@@ -478,6 +482,7 @@ export const FaladorDiary: Diary = {
 
 export const FremennikDiary: Diary = {
 	name: 'Fremennik',
+	alias: ['fremmy', 'fremenik', 'fremmenik', 'frem'],
 	easy: {
 		name: 'Easy',
 		item: getOSItem('Fremennik sea boots 1'),
@@ -557,6 +562,7 @@ export const FremennikDiary: Diary = {
 
 export const KandarinDiary: Diary = {
 	name: 'Kandarin',
+	alias: ['kand'],
 	easy: {
 		name: 'Easy',
 		item: getOSItem('Kandarin headgear 1'),
@@ -644,6 +650,7 @@ export const KandarinDiary: Diary = {
 
 export const KaramjaDiary: Diary = {
 	name: 'Karamja',
+	alias: ['ramja', 'ram', 'karam', 'kar'],
 	easy: {
 		name: 'Easy',
 		item: getOSItem('Karamja gloves 1'),
@@ -705,6 +712,7 @@ export const KaramjaDiary: Diary = {
 
 export const KourendKebosDiary: Diary = {
 	name: 'Kourend & Kebos',
+	alias: ['kebos', 'kouren', 'kourend', 'kk', 'kek'],
 	easy: {
 		name: 'Easy',
 		item: getOSItem("Rada's blessing 1"),
@@ -779,6 +787,7 @@ export const KourendKebosDiary: Diary = {
 };
 export const LumbridgeDraynorDiary: Diary = {
 	name: 'Lumbridge & Draynor',
+	alias: ['lumb', 'draynor', 'lumbridge', 'led'],
 	easy: {
 		name: 'Easy',
 		item: getOSItem("Explorer's ring 1"),
@@ -850,6 +859,7 @@ export const LumbridgeDraynorDiary: Diary = {
 
 export const MorytaniaDiary: Diary = {
 	name: 'Morytania',
+	alias: ['mory', 'swamp'],
 	easy: {
 		name: 'Easy',
 		item: getOSItem('Morytania legs 1'),
@@ -928,6 +938,7 @@ export const MorytaniaDiary: Diary = {
 
 export const VarrockDiary: Diary = {
 	name: 'Varrock',
+	alias: ['var'],
 	easy: {
 		name: 'Easy',
 		item: getOSItem('Varrock armour 1'),
@@ -994,6 +1005,7 @@ export const VarrockDiary: Diary = {
 
 export const WildernessDiary: Diary = {
 	name: 'Wilderness',
+	alias: ['wild', 'wildy'],
 	easy: {
 		name: 'Easy',
 		item: getOSItem('Wilderness sword 1'),

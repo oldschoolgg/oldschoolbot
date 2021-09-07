@@ -121,10 +121,16 @@ export default class extends Task {
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
 
-			announceLoot(this.client, leaderUser, NexMonster, loot, {
-				leader: leaderUser,
-				lootRecipient: user,
-				size: users.length
+			announceLoot({
+				user: leaderUser,
+				monsterID: NexMonster.id,
+				loot: new Bank(loot),
+				notifyDrops: NexMonster.notifyDrops,
+				team: {
+					leader: leaderUser,
+					lootRecipient: user,
+					size: users.length
+				}
 			});
 		}
 

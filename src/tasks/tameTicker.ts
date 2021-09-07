@@ -1,3 +1,4 @@
+import { Time } from 'e';
 import { Task } from 'klasa';
 import { FindConditions, LessThan } from 'typeorm';
 
@@ -16,6 +17,9 @@ export default class extends Task {
 				};
 				if (production) {
 					opts.finishDate = LessThan('now()');
+				} else {
+					// 10 seconds trips on dev mode
+					opts.startDate = LessThan(new Date(Date.now() - Time.Second * 10));
 				}
 				const tameTasks = await TameActivityTable.find({
 					where: opts,
