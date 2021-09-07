@@ -563,6 +563,10 @@ export const allCollectionLogs: ICollection = {
 			'Barbarian Assault': {
 				alias: ['ba', 'barb assault', 'barbarian assault'],
 				items: barbarianAssaultCL,
+				kcActivity: {
+					Default: async user => user.getMinigameScore('BarbarianAssault'),
+					'High Gambles': async user => user.settings.get(UserSettings.HighGambles)
+				},
 				roleCategory: ['minigames'],
 				isActivity: true
 			},
