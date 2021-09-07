@@ -1,4 +1,5 @@
 import { objectEntries } from 'e';
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { LevelRequirements } from '../skilling/types';
@@ -58,6 +59,7 @@ export interface PoHObject {
 	slot: PoHSlot;
 	level: number | LevelRequirements;
 	refundItems?: boolean;
+	canBuild?: (user: KlasaUser) => Promise<boolean>;
 }
 
 export const Placeholders: Record<PoHSlot, [number, [number, number][]]> = {
@@ -86,7 +88,7 @@ export const Placeholders: Record<PoHSlot, [number, [number, number][]]> = {
 	// Garden
 	pool: [29_122, [[GARDEN_X + HOUSE_WIDTH / 6, GARDEN_Y]]],
 	teleport: [29_120, [[GARDEN_X + HOUSE_WIDTH / 2, GARDEN_Y]]],
-	gardenDecoration: [29_120, [[GARDEN_X + HOUSE_WIDTH * 0.82, GARDEN_Y]]]
+	gardenDecoration: [2_342_341, [[GARDEN_X + HOUSE_WIDTH * 0.82, GARDEN_Y]]]
 };
 
 export const itemsNotRefundable = new Bank()
