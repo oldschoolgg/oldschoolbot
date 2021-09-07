@@ -691,8 +691,8 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Volcanic Mine': {
-				enabled: false,
 				items: volcanicMineCL,
+				alias: ['vm', 'vmine', 'volcanic'],
 				roleCategory: ['minigames'],
 				isActivity: true
 			}
@@ -725,7 +725,7 @@ export const allCollectionLogs: ICollection = {
 				items: chaosDruisCL
 			},
 			'Chompy Birds': {
-				alias: ['chompy', 'bgc', 'big chompy hunting'],
+				alias: ['chompy', 'bgc', 'big chompy hunting', 'ch', 'chompyhunting', 'chompyhunt'],
 				kcActivity: 'BigChompyBirdHunting',
 				items: chompyBirdsCL
 			},

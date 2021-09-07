@@ -320,6 +320,10 @@ export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface VolcanicMineActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions
@@ -341,4 +345,5 @@ export type ActivityTaskData =
 	| FletchingActivityTaskOptions
 	| RunecraftActivityTaskOptions
 	| TempleTrekkingActivityTaskOptions
-	| TemporossActivityTaskOptions;
+	| TemporossActivityTaskOptions
+	| VolcanicMineActivityTaskOptions;

@@ -271,6 +271,9 @@ export const konarMonsters: KillableMonster[] = [
 			},
 			{
 				[itemID('Ancestral robe top')]: 3
+			},
+			{
+				[itemID('Imbued heart')]: 5
 			}
 		],
 		healAmountNeeded: 20 * 5,
