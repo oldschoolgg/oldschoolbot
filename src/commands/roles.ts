@@ -45,8 +45,8 @@ export default class extends BotCommand {
 			!msg.guild ||
 			msg.guild.id !== SupportServer ||
 			!role ||
-			// 346238402737340416 = Bot Role
-			// 590527706974781470 = Skira user?
+			// 346238402737340416 = Bot role
+			// 590527706974781470 = Skira role
 			[Roles.Moderator, '590527706974781470', '346238402737340416'].includes(role.id) ||
 			!msg.member ||
 			!msg.member!.roles.cache.has(Roles.Moderator)
