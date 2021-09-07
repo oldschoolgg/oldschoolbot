@@ -12,6 +12,7 @@ function setItemAlias(id: number, name: string | string[], rename = true) {
 		firstName = name;
 		itemNameMap.set(name, id);
 		itemNameMap.set(cleanString(name), id);
+		console.log(`Setting ${name} and ${cleanString(name)}`);
 	} else {
 		for (const _name of name) {
 			if (!firstName) firstName = _name;
@@ -184,6 +185,3 @@ setItemAlias(21_633, 'Ancient wyvern shield');
 
 setItemAlias(22_003, 'Uncharged dragonfire ward');
 setItemAlias(22_002, 'Dragonfire ward');
-
-// Weird/broken/untradeable items
-setItemAlias(4692, 'Gold leaf (u)');

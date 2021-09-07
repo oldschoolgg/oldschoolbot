@@ -55,4 +55,7 @@ export class PoHTable extends BaseEntity {
 
 	@Column({ type: 'integer', default: null, nullable: true })
 	public teleport!: number | null;
+
+	@Column({ type: 'integer', name: 'garden_decoration', default: null, nullable: true })
+	public gardenDecoration!: number | null;
 }
