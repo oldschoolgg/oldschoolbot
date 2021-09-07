@@ -86,14 +86,6 @@ const GardenDecorations: PoHObject[] = [
 		refundItems: true
 	},
 	{
-		id: 6494,
-		name: 'Bandos decoration',
-		slot: 'gardenDecoration',
-		level: 99,
-		itemCost: cost.clone().add('Pet general graardor'),
-		refundItems: true
-	},
-	{
 		id: 6495,
 		name: 'Zamorak decoration',
 		slot: 'gardenDecoration',
