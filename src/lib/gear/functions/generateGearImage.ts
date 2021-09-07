@@ -2,8 +2,9 @@
 import { Canvas, createCanvas, Image } from 'canvas';
 import { randInt } from 'e';
 import * as fs from 'fs';
+import fsPromises from 'fs/promises';
 import { KlasaClient, KlasaUser } from 'klasa';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import BankImageTask from '../../../tasks/bankImage';
 import { monkeyTierOfUser, monkeyTiers } from '../../monkeyRumble';
@@ -17,6 +18,7 @@ import {
 	drawTitleText,
 	fillTextXTimesInCtx
 } from '../../util/canvasUtil';
+import getOSItem from '../../util/getOSItem';
 import { GearSetupType, GearSetupTypes, GearStats, maxDefenceStats, maxOffenceStats } from '..';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
@@ -200,6 +202,20 @@ async function drawStats(user: KlasaUser, canvas: Canvas, gearStats: GearStats, 
 	ctx.restore();
 }
 
+interface TransmogItem {
+	item: Item;
+	image: Promise<Image>;
+	maxHeight?: number;
+}
+const transmogItems: TransmogItem[] = [
+	...monkeyTiers.map(m => ({ item: m.greegree, image: m.image })),
+	{
+		item: getOSItem('Gorilla rumble greegree'),
+		image: fsPromises.readFile('./src/lib/resources/images/mmmr/gorilla.png').then(canvasImageFromBuffer),
+		maxHeight: 170
+	}
+];
+
 export async function generateGearImage(
 	client: KlasaClient,
 	user: KlasaUser,
@@ -207,8 +223,8 @@ export async function generateGearImage(
 	gearType: GearSetupTypes | null,
 	petID: number | null
 ) {
-	const alternateImageSrc = monkeyTiers.find(t => user.hasItemEquippedAnywhere(t.greegree.id))?.image;
-	const alternateImage = alternateImageSrc === undefined ? null : await alternateImageSrc;
+	const transmogItem = transmogItems.find(t => user.hasItemEquippedAnywhere(t.item.id));
+	const transMogImage = transmogItem === undefined ? null : await transmogItem.image;
 
 	// Init the background images if they are not already
 	if (!bankTask) {
@@ -237,7 +253,7 @@ export async function generateGearImage(
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	// Draw stats
-	await drawStats(user, canvas, gearStats, alternateImage);
+	await drawStats(user, canvas, gearStats, transMogImage);
 
 	if (!uniqueSprite) {
 		ctx.drawImage(
@@ -246,21 +262,22 @@ export async function generateGearImage(
 			(canvas.height - userBgImage.image!.height) * 0.5
 		);
 	}
-	if (!alternateImage) {
+	if (!transMogImage) {
 		ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 	}
 
-	if (alternateImage) {
+	if (transMogImage) {
 		const altSize = calcAspectRatioFit(
-			alternateImage.width / 2,
-			alternateImage.height / 2,
+			transMogImage.width / 2,
+			transMogImage.height / 2,
 			gearTemplateImage.width * 0.8,
-			gearTemplateImage.height * 0.5
+			transmogItem?.maxHeight ?? gearTemplateImage.height * 0.5
 		);
-		const x = gearTemplateImage.width * 0.25 - altSize.width;
 		const y = gearTemplateImage.height * 0.9 - altSize.height;
 
-		ctx.drawImage(alternateImage, x, y, altSize.width, altSize.height);
+		ctx.fillStyle = 'magenta';
+		ctx.fillRect(10, y, altSize.width, altSize.height);
+		ctx.drawImage(transMogImage, 10, y, altSize.width, altSize.height);
 	}
 
 	if (!userBgImage.transparent) bankTask?.drawBorder(ctx, sprite, false);
@@ -285,7 +302,7 @@ export async function generateGearImage(
 
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
-		if (!item || alternateImage) continue;
+		if (!item || transMogImage) continue;
 		const image = await client.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
 
 		let [x, y] = slotCoordinates[enumName];
