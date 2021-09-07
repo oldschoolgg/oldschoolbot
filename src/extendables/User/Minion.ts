@@ -628,7 +628,6 @@ export default class extends Extendable {
 				const data = currentTask as VolcanicMineActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity} games of Volcanic Mine. ${formattedDuration}`;
 			}
-
 			case Activity.MonkeyRumble: {
 				const data = currentTask as MonkeyRumbleOptions;
 				return `${this.minionName} is currently playing ${data.quantity} games of Monkey Rumble. ${formattedDuration}`;
