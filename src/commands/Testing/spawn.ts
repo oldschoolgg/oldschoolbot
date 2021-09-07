@@ -83,6 +83,11 @@ export default class extends BotCommand {
 			return msg.channel.send(`Gave you a new tame: ${tame}.`);
 		}
 
+		if (str === 'monke') {
+			const tame = await generateNewTame(msg.author, tameSpecies[1]);
+			return msg.channel.send(`Gave you a new tame: ${tame}.`);
+		}
+
 		if (msg.flagArgs.customitems) {
 			const b = new Bank();
 			for (const item of customItems) {

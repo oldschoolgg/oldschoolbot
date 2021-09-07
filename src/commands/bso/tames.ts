@@ -14,7 +14,7 @@ import { KillableMonster } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { createTameTask, getUsersTame, tameSpecies } from '../../lib/tames';
+import { createTameTask, getUsersTame, tameSpecies, TameType } from '../../lib/tames';
 import { TameActivityTable } from '../../lib/typeorm/TameActivityTable.entity';
 import { TameGrowthStage, TamesTable } from '../../lib/typeorm/TamesTable.entity';
 import {
@@ -39,6 +39,7 @@ interface FeedableItem {
 	description: string;
 	announcementString: string;
 }
+
 const feedableItems: FeedableItem[] = [
 	{
 		item: getOSItem('Ori'),
@@ -163,23 +164,27 @@ export async function getTameStatus(user: KlasaUser) {
 	const [, currentTask] = await getUsersTame(user);
 	if (currentTask) {
 		const currentDate = new Date().valueOf();
-		const timeRemaining = `${formatDuration(currentTask.finishDate.valueOf() - currentDate)} remaining`;
-		switch (currentTask.type) {
-			case 'pvm':
+		const timeRemaining = `${formatDurationSmall(currentTask.finishDate.valueOf() - currentDate)} remaining`;
+		const activityData = currentTask.data;
+		switch (activityData.type) {
+			case TameType.Combat:
 				return [
-					`Killing ${currentTask.data.quantity.toLocaleString()}x ${
-						Monsters.find(m => m.id === currentTask.data.monsterID)!.name
-					}`,
+					`Killing ${currentTask.data.quantity.toLocaleString()}x ${Monsters.find(
+						m => m.id === activityData.monsterID
+					)?.name.toLowerCase()}`,
 					timeRemaining
 				];
-			case 'collect':
-				return [`Collecting ${itemNameFromID(currentTask.data.itemID)}`, `${timeRemaining}`];
+			case TameType.Gatherer:
+				return [`Collecting ${itemNameFromID(activityData.itemID)?.toLowerCase()}`, timeRemaining];
+			default:
+				return ['This tame type is not released yet.'];
 		}
 	}
 	return ['Idle'];
 }
 
 let bankTask: BankImageTask | null = null;
+
 // Split sprite into smaller images by coors and size
 function getClippedRegion(image: Image | Canvas, x: number, y: number, width: number, height: number) {
 	const canvas = createCanvas(0, 0);
@@ -283,7 +288,6 @@ export default class extends BotCommand {
 	async setname(msg: KlasaMessage, [name = '']: [string]) {
 		if (
 			!name ||
-			typeof name !== 'string' ||
 			name.length < 2 ||
 			name.length > 30 ||
 			['\n', '`', '@', '<', ':'].some(char => name.includes(char))
@@ -442,7 +446,7 @@ export default class extends BotCommand {
 			// Draw tame boosts
 			let prevWidth = 0;
 			let feedQty = 0;
-			for (const [item] of feedableItems) {
+			for (const { item } of feedableItems) {
 				if (tame.fedItems[item.id]) {
 					const itemImage = await getItem(item.id);
 					if (itemImage) {
@@ -587,7 +591,9 @@ export default class extends BotCommand {
 		if (!selectedTame) {
 			return msg.channel.send('You have no selected tame.');
 		}
-		if (selectedTame.species.id !== 1) return msg.channel.send('This tame species cannot do PvM.');
+		if (selectedTame.species.type !== TameType.Combat) {
+			return msg.channel.send('This tame species cannot do PvM.');
+		}
 		if (currentTask) {
 			return msg.channel.send(`${selectedTame.name} is busy.`);
 		}
@@ -637,11 +643,11 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			selectedTame,
 			data: {
-				type: 'pvm',
+				type: TameType.Combat,
 				monsterID: monster.id,
 				quantity
 			},
-			type: 'pvm',
+			type: TameType.Combat,
 			duration
 		});
 
@@ -658,7 +664,9 @@ export default class extends BotCommand {
 			return msg.channel.send('You have no selected tame.');
 		}
 
-		if (selectedTame.species.id !== 2) return msg.channel.send('This tame species cannot collect items.');
+		if (selectedTame.species.type !== TameType.Gatherer) {
+			return msg.channel.send('This tame species cannot collect items.');
+		}
 		if (currentTask) {
 			return msg.channel.send(`${selectedTame.name} is busy.`);
 		}
@@ -715,11 +723,11 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			selectedTame,
 			data: {
-				type: 'collect',
+				type: TameType.Gatherer,
 				itemID: collectable.item.id,
 				quantity
 			},
-			type: 'collect',
+			type: TameType.Gatherer,
 			duration
 		});
 

@@ -24,8 +24,30 @@ export interface Nursery {
 	hasFuel: boolean;
 }
 
+export const enum TameType {
+	Combat = 'pvm',
+	Gatherer = 'collect',
+	Support = 'support',
+	Artisan = 'craft'
+}
+
+export interface TameTaskCombatOptions {
+	type: TameType.Combat;
+	monsterID: number;
+	quantity: number;
+}
+
+export interface TameTaskGathererOptions {
+	type: TameType.Gatherer;
+	itemID: number;
+	quantity: number;
+}
+
+export type TameTaskOptions = TameTaskCombatOptions | TameTaskGathererOptions;
+
 export interface Species {
 	id: number;
+	type: TameType;
 	name: string;
 	// Tame type within its specie
 	variants: number[];
@@ -54,6 +76,7 @@ export interface Species {
 export const tameSpecies: Species[] = [
 	{
 		id: 1,
+		type: TameType.Combat,
 		name: 'Igne',
 		variants: [1, 2, 3],
 		shinyVariant: 4,
@@ -68,30 +91,20 @@ export const tameSpecies: Species[] = [
 	},
 	{
 		id: 2,
+		type: TameType.Gatherer,
 		name: 'Monkey',
+		variants: [1],
+		shinyVariant: 2,
 		combatLevelRange: [12, 24],
 		artisanLevelRange: [1, 10],
 		supportLevelRange: [1, 10],
 		gathererLevelRange: [75, 100],
+		relevantLevelCategory: 'gatherer',
 		hatchTime: Time.Hour * 9.5,
 		egg: getOSItem('Monkey egg'),
 		emoji: '<:monkey_egg:883326001445224488>'
 	}
 ];
-
-export type TameTaskType = 'pvm' | 'collect';
-
-export type TameTaskOptions =
-	| {
-			type: 'pvm';
-			monsterID: number;
-			quantity: number;
-	  }
-	| {
-			type: 'collect';
-			itemID: number;
-			quantity: number;
-	  };
 
 export async function runTameTask(activity: TameActivityTable) {
 	async function handleFinish(res: { loot: Bank; message: string; user: KlasaUser }) {
@@ -197,7 +210,7 @@ export async function createTameTask({
 }: {
 	user: KlasaUser;
 	channelID: string;
-	type: TameTaskType;
+	type: TameType;
 	data: TameTaskOptions;
 	duration: number;
 	selectedTame: TamesTable;
