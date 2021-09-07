@@ -72,7 +72,9 @@ export default class extends BotCommand {
 				max: 1,
 				time: 14_000,
 				errors: ['time'],
-				filter: _msg => _msg.content === level.toString() && !_msg.author.isIronman
+				filter: _msg =>
+					_msg.content === level.toString() &&
+					(!_msg.author.isIronman || (_msg.author.isIronman && _msg.author.id === msg.author.id))
 			});
 
 			const col = collected.first();

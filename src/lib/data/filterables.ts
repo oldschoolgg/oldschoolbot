@@ -81,7 +81,16 @@ export const warmGear = resolveItems([
 	'Graahk legs',
 	'Kyatt hat',
 	'Kyatt top',
-	'Kyatt legs'
+	'Kyatt legs',
+	'Bearhead',
+	'Lumberjack hat',
+	'Fire tiara',
+	'Fire max hood',
+	'Firemaking hood',
+	'Black santa hat',
+	'Infernal max hood',
+	'Bomber jacket',
+	'Bomber cap'
 ]) as number[];
 
 const ores = resolveItems([
@@ -267,7 +276,10 @@ const seeds = resolveItems([
 	'Onion seed',
 	'Potato seed',
 	'Mysterious seed',
-	'Athelas seed'
+	'Athelas seed',
+	'Avocado seed',
+	'Lychee seed',
+	'Mango seed'
 ]);
 
 const herbs = resolveItems([

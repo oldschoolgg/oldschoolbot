@@ -44,6 +44,7 @@ export const EternalImpling = new SimpleOpenable({
 	aliases: ['eternal impling', 'eternal imp'],
 	table: new LootTable()
 		.every(RuneTable, [10, 15])
+		.add('Elder rune', [200, 300])
 		.add(BattlestaffTable, [12, 22])
 		.add(StaffOrbTable, [50, 100])
 		.add('Pure essence', [500, 1000])
@@ -64,7 +65,8 @@ export const MysteryImpling = new SimpleOpenable({
 		.add('Tradeable Mystery Box')
 		.add('Pet Mystery Box')
 		.add('Equippable mystery box')
-		.every('Clue scroll (grandmaster)')
+		.add('Clue scroll (grandmaster)')
+		.add('Clue scroll (hard)')
 		.tertiary(1_000_000, 'Mystery impling jar')
 });
 

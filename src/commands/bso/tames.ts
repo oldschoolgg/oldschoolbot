@@ -1,8 +1,12 @@
+import { Canvas, CanvasRenderingContext2D, createCanvas, Image } from 'canvas';
+import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
+import fs from 'fs';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { requiresMinion } from '../../lib/minions/decorators';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
@@ -10,7 +14,8 @@ import { KillableMonster } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { createTameTask, getUsersTame } from '../../lib/tames';
+import { createTameTask, getUsersTame, tameSpecies } from '../../lib/tames';
+import { TameActivityTable } from '../../lib/typeorm/TameActivityTable.entity';
 import { TameGrowthStage, TamesTable } from '../../lib/typeorm/TamesTable.entity';
 import {
 	addBanks,
@@ -18,11 +23,14 @@ import {
 	itemNameFromID,
 	patronMaxTripCalc,
 	stringMatches,
+	toTitleCase,
 	updateBankSetting
 } from '../../lib/util';
+import { canvasImageFromBuffer, canvasToBufferAsync, fillTextXTimesInCtx } from '../../lib/util/canvasUtil';
 import findMonster from '../../lib/util/findMonster';
 import getOSItem from '../../lib/util/getOSItem';
 import { parseStringBank } from '../../lib/util/parseStringBank';
+import BankImageTask from '../../tasks/bankImage';
 import { collectables } from '../Minion/collect';
 
 interface FeedableItem {
@@ -90,6 +98,19 @@ const feedingEasterEggs: [Bank, number, TameGrowthStage[], string][] = [
 	[new Bank().add('Coconut milk'), 2, [TameGrowthStage.Baby], 'https://i.imgur.com/OE7tXI8.mp4']
 ];
 
+function formatDurationSmall(ms: number) {
+	if (ms < 0) ms = -ms;
+	const time = {
+		d: Math.floor(ms / 86_400_000),
+		h: Math.floor(ms / 3_600_000) % 24,
+		m: Math.floor(ms / 60_000) % 60,
+		s: Math.floor(ms / 1000) % 60
+	};
+	let nums = Object.entries(time).filter(val => val[1] !== 0);
+	if (nums.length === 0) return '1s';
+	return nums.map(([key, val]) => `${val}${key}`).join(' ');
+}
+
 export async function removeRawFood({
 	client,
 	user,
@@ -138,25 +159,77 @@ export async function removeRawFood({
 	}
 }
 
-async function getTameStatus(user: KlasaUser) {
+export async function getTameStatus(user: KlasaUser) {
 	const [, currentTask] = await getUsersTame(user);
 	if (currentTask) {
 		const currentDate = new Date().valueOf();
-		const timeRemaining = `${formatDuration(currentTask.finishDate.valueOf() - currentDate)} remaining.`;
-		switch (currentTask.data.type) {
-			case 'pvm': {
-				const { monsterID } = currentTask.data;
-				const mon = Monsters.find(m => m.id === monsterID)!;
-				return `Currently killing ${currentTask.data.quantity}x ${mon.name}. ${timeRemaining}`;
-			}
+		const timeRemaining = `${formatDuration(currentTask.finishDate.valueOf() - currentDate)} remaining`;
+		switch (currentTask.type) {
+			case 'pvm':
+				return [
+					`Killing ${currentTask.data.quantity.toLocaleString()}x ${
+						Monsters.find(m => m.id === currentTask.data.monsterID)!.name
+					}`,
+					timeRemaining
+				];
 			case 'collect':
-				return `Currently collecting ${itemNameFromID(currentTask.data.itemID)}. ${timeRemaining}.`;
+				return [`Collecting ${itemNameFromID(currentTask.data.itemID)}`, `${timeRemaining}`];
 		}
 	}
-	return 'Currently doing nothing';
+	return ['Idle'];
+}
+
+let bankTask: BankImageTask | null = null;
+// Split sprite into smaller images by coors and size
+function getClippedRegion(image: Image | Canvas, x: number, y: number, width: number, height: number) {
+	const canvas = createCanvas(0, 0);
+	const ctx = canvas.getContext('2d');
+	canvas.width = width;
+	canvas.height = height;
+	ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
+	return canvas;
+}
+
+function drawText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number) {
+	const baseFill = ctx.fillStyle;
+	ctx.fillStyle = '#000000';
+	fillTextXTimesInCtx(ctx, text, x, y + 1);
+	fillTextXTimesInCtx(ctx, text, x, y - 1);
+	fillTextXTimesInCtx(ctx, text, x + 1, y);
+	fillTextXTimesInCtx(ctx, text, x - 1, y);
+	ctx.fillStyle = baseFill;
+	fillTextXTimesInCtx(ctx, text, x, y);
+}
+
+async function getItem(item: number) {
+	return bankTask?.getItemImage(item, 1).catch(() => {
+		console.error(`Failed to load item image for item with id: ${item}`);
+	});
 }
 
 export default class extends BotCommand {
+	public tameSprites: {
+		base?: {
+			image: Image;
+			slot: Canvas;
+			selectedSlot: Canvas;
+			shinyIcon: Canvas;
+		};
+		tames?: {
+			id: number;
+			name: string;
+			image: Image;
+			sprites: {
+				type: number;
+				growthStage: {
+					[TameGrowthStage.Baby]: Canvas;
+					[TameGrowthStage.Juvenile]: Canvas;
+					[TameGrowthStage.Adult]: Canvas;
+				};
+			}[];
+		}[];
+	} = {};
+
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			oneAtTime: true,
@@ -169,6 +242,42 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			aliases: ['tame', 't']
 		});
+	}
+
+	async init() {
+		const tameSpriteBase = await canvasImageFromBuffer(
+			fs.readFileSync('./src/lib/resources/images/tames/tame_sprite.png')
+		);
+		this.tameSprites.base = {
+			image: tameSpriteBase,
+			slot: getClippedRegion(tameSpriteBase, 0, 0, 256, 128),
+			selectedSlot: getClippedRegion(tameSpriteBase, 0, 128, 256, 128),
+			shinyIcon: getClippedRegion(tameSpriteBase, 256, 0, 24, 24)
+		};
+		this.tameSprites.tames = await Promise.all(
+			tameSpecies.map(async value => {
+				const tameImage = await canvasImageFromBuffer(
+					fs.readFileSync(`./src/lib/resources/images/tames/${value.id}_sprite.png`)
+				);
+				const vars = [...value.variants];
+				if (value.shinyVariant) vars.push(value.shinyVariant);
+				return {
+					id: value.id,
+					name: value.name,
+					image: tameImage,
+					sprites: vars.map(v => {
+						return {
+							type: v,
+							growthStage: {
+								[TameGrowthStage.Baby]: getClippedRegion(tameImage, (v - 1) * 96, 0, 96, 96),
+								[TameGrowthStage.Juvenile]: getClippedRegion(tameImage, (v - 1) * 96, 96, 96, 96),
+								[TameGrowthStage.Adult]: getClippedRegion(tameImage, (v - 1) * 96, 96 * 2, 96, 96)
+							}
+						};
+					})
+				};
+			})
+		);
 	}
 
 	async setname(msg: KlasaMessage, [name = '']: [string]) {
@@ -190,15 +299,194 @@ export default class extends BotCommand {
 		return msg.channel.send(`Updated the nickname of your selected tame to ${name}.`);
 	}
 
+	async tameList(msg: KlasaMessage) {
+		if (this.client.owners.has(msg.author) && msg.flagArgs.reload) await this.init();
+		const userTames = await TamesTable.find({
+			where: {
+				userID: msg.author.id
+			},
+			order: {
+				id: 'ASC'
+			}
+		});
+
+		if (userTames.length === 0) {
+			return msg.channel.send("You don't have any tames.");
+		}
+
+		let mainTame: [TamesTable | undefined, TameActivityTable | undefined] | undefined = undefined;
+		try {
+			mainTame = await getUsersTame(msg.author);
+		} catch (e) {}
+
+		// Init the background images if they are not already
+		if (!bankTask) bankTask = this.client.tasks.get('bankImage') as BankImageTask;
+
+		let {
+			sprite,
+			uniqueSprite,
+			background: userBgImage
+		} = bankTask.getBgAndSprite(msg.author.settings.get(UserSettings.BankBackground) ?? 1);
+		const hexColor = msg.author.settings.get(UserSettings.BankBackgroundHex);
+
+		const tamesPerLine = 4;
+
+		const canvas = createCanvas(
+			12 + 10 + (256 + 10) * Math.min(userTames.length, tamesPerLine),
+			12 + 10 + (128 + 10) * Math.ceil(userTames.length / tamesPerLine)
+		);
+
+		const ctx = canvas.getContext('2d');
+
+		ctx.font = '16px OSRSFontCompact';
+		ctx.imageSmoothingEnabled = false;
+
+		ctx.fillStyle = userBgImage.transparent
+			? hexColor
+				? hexColor
+				: 'transparent'
+			: ctx.createPattern(sprite.repeatableBg, 'repeat');
+
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+		if (!uniqueSprite) {
+			let imgHeight = 0;
+			let imgWidth = 0;
+			const ratio1 = canvas.height / userBgImage.image!.height;
+			const ratio2 = canvas.width / userBgImage.image!.width;
+			imgWidth = userBgImage.image!.width * (ratio1 > ratio2 ? ratio1 : ratio2);
+			imgHeight = userBgImage.image!.height * (ratio1 > ratio2 ? ratio1 : ratio2);
+			ctx.drawImage(
+				userBgImage.image!,
+				(canvas.width - imgWidth) / 2,
+				(canvas.height - imgHeight) / 2,
+				imgWidth,
+				imgHeight
+			);
+		}
+
+		if (!userBgImage.transparent) bankTask?.drawBorder(ctx, sprite, false);
+
+		ctx.translate(16, 16);
+		let i = 0;
+		for (const tame of userTames) {
+			let isTameActive = false;
+			let selectedTame = mainTame && mainTame[0] && mainTame[0].id === tame.id;
+			if (selectedTame) isTameActive = (await getTameStatus(msg.author)).length > 1;
+
+			const x = i % tamesPerLine;
+			const y = Math.floor(i / tamesPerLine);
+			ctx.drawImage(
+				selectedTame ? this.tameSprites.base!.selectedSlot : this.tameSprites.base!.slot,
+				(10 + 256) * x,
+				(10 + 128) * y,
+				256,
+				128
+			);
+			// Draw tame
+			ctx.drawImage(
+				this.tameSprites.tames!.find(t => t.id === tame.species.id)!.sprites.find(f => f.type === tame.variant)!
+					.growthStage[tame.growthStage],
+				(10 + 256) * x + (isTameActive ? 96 : 256 - 96) / 2,
+				(10 + 128) * y + 10,
+				96,
+				96
+			);
+
+			// Draw tame name / level / stats
+			ctx.fillStyle = '#ffffff';
+			ctx.textAlign = 'left';
+			drawText(
+				ctx,
+				`${tame.id}. ${tame.nickname ? `${tame.nickname} (${tame.species.name})` : tame.species.name}`,
+				(10 + 256) * x + 5,
+				(10 + 128) * y + 16
+			);
+			// Shiny indicator
+			if (tame.variant === tame.species.shinyVariant) {
+				ctx.drawImage(this.tameSprites.base!.shinyIcon, (10 + 256) * x + 5, (10 + 128) * y + 18, 16, 16);
+				drawText(
+					ctx,
+					'Shiny!',
+					(10 + 256) * x + 3 + this.tameSprites.base!.shinyIcon.width,
+					(10 + 128) * y + 18 + this.tameSprites.base!.shinyIcon.height / 2
+				);
+			}
+
+			ctx.textAlign = 'right';
+			drawText(
+				ctx,
+				`${toTitleCase(tame.species.relevantLevelCategory)}: ${tame.level}`,
+				(10 + 256) * x + 256 - 5,
+				(10 + 128) * y + 16
+			);
+			ctx.textAlign = 'left';
+			const grouthStage =
+				tame.growthStage === 'adult'
+					? tame.growthStage
+					: `${tame.growthStage} (${tame.currentGrowthPercent.toFixed(2)}%)`;
+			drawText(ctx, `${toTitleCase(grouthStage)}`, (10 + 256) * x + 5, (10 + 128) * y + 128 - 5);
+
+			// Draw tame status (idle, in activity)
+			if (selectedTame) {
+				const mtText = await getTameStatus(msg.author);
+				ctx.textAlign = 'right';
+				for (let i = 0; i < mtText.length; i++) {
+					drawText(ctx, mtText[i], (10 + 256) * x + 256 - 5, (10 + 128) * y + 28 + i * 12);
+				}
+			} else {
+				ctx.textAlign = 'right';
+				drawText(ctx, 'Not selected', (10 + 256) * x + 256 - 5, (10 + 128) * y + 28);
+			}
+
+			// Draw tame boosts
+			let prevWidth = 0;
+			let feedQty = 0;
+			for (const [item] of feedableItems) {
+				if (tame.fedItems[item.id]) {
+					const itemImage = await getItem(item.id);
+					if (itemImage) {
+						let ratio = 19 / itemImage.height;
+						const yLine = Math.floor(feedQty / 3);
+						if (feedQty % 3 === 0) prevWidth = 0;
+						ctx.drawImage(
+							itemImage,
+							(10 + 256) * x + 253 - prevWidth - Math.ceil(itemImage.width * ratio),
+							(10 + 128) * y + 128 - 25 - yLine * 20,
+							Math.floor(itemImage.width * ratio),
+							Math.floor(itemImage.height * ratio)
+						);
+
+						prevWidth += Math.ceil(itemImage.width * ratio);
+						feedQty++;
+					}
+				}
+			}
+			i++;
+		}
+
+		const rawBadges = msg.author.settings.get(UserSettings.Badges);
+		const badgesStr = rawBadges.map(num => badges[num]).join(' ');
+
+		return msg.channel.send({
+			content: `${badgesStr}${msg.author.username}, ${
+				userTames.length > 1 ? 'there are your tames' : 'this is your tame'
+			}!`,
+			files: [
+				new MessageAttachment(
+					await canvasToBufferAsync(canvas, 'image/png'),
+					`${msg.author.username}_${msg.author.discriminator}_tames.png`
+				)
+			]
+		});
+	}
+
 	@requiresMinion
 	async run(msg: KlasaMessage, [input]: [string | undefined]) {
-		const allTames = await TamesTable.find({
-			where: { userID: msg.author.id }
-		});
-		if (allTames.length === 0) {
-			return msg.channel.send('You have no tames.');
-		}
 		if (input) {
+			const allTames = await TamesTable.find({
+				where: { userID: msg.author.id }
+			});
 			const tame = allTames.find(
 				t => stringMatches(t.id.toString(), input) || stringMatches(t.nickname ?? '', input)
 			);
@@ -212,18 +500,7 @@ export default class extends BotCommand {
 				title: `All Loot ${tame.name} Has Gotten You`
 			});
 		}
-		const [selectedTame] = await getUsersTame(msg.author);
-		const tames = [];
-		for (const t of allTames) {
-			tames.push(
-				`${t.id}. ${t.toString()}${
-					t.growthStage === TameGrowthStage.Adult
-						? ''
-						: ` ${t.currentGrowthPercent.toFixed(2)}% grown ${t.growthStage}`
-				}${selectedTame?.id === t.id ? ` **Selected** - ${await getTameStatus(msg.author)}` : ''}`
-			);
-		}
-		return msg.channel.send(`Your tames:\n${tames.join('\n')}`);
+		return this.tameList(msg);
 	}
 
 	async select(msg: KlasaMessage, [str = '']: [string]) {
@@ -252,7 +529,7 @@ export default class extends BotCommand {
 		for (const [item, qty] of rawBank) {
 			let qtyOwned = userBank.amount(item.id);
 			if (qtyOwned === 0) continue;
-			let qtyToUse = !qty ? qtyOwned : qty > qtyOwned ? qtyOwned : qty;
+			let qtyToUse = !qty ? 1 : qty > qtyOwned ? qtyOwned : qty;
 			bankToAdd.add(item.id, qtyToUse);
 		}
 		if (!str || bankToAdd.length === 0) {
@@ -282,7 +559,7 @@ export default class extends BotCommand {
 		}
 		let specialStr = specialStrArr.length === 0 ? '' : `\n\n${specialStrArr.join(', ')}`;
 		await msg.confirm(
-			`Are you sure you want to feed \`${bankToAdd}\` to ${selectedTame.name}? You cannot get these items back after they're eaten by your tame.${specialStr}`
+			`Are you sure you want to feed \`${bankToAdd}\` to ${selectedTame.name}? You **cannot** get these items back after they're eaten by your tame.${specialStr}`
 		);
 
 		for (const [eggBank, eggSpecies, eggGrowth, easterEgg] of feedingEasterEggs) {
