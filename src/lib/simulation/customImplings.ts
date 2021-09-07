@@ -78,7 +78,7 @@ export const ChimplingImpling = new SimpleOpenable({
 		.add('Pet Mystery Box')
 		.add('Equippable mystery box')
 		.every('Clue scroll (grandmaster)')
-		.tertiary(1_000_000, 'Mystery impling jar')
+		.tertiary(1_000_000, 'Shiny monkey nuts')
 });
 
 Openables.set(InfernalImpling.id, InfernalImpling);
