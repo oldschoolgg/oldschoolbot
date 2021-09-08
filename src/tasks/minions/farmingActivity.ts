@@ -488,8 +488,12 @@ export default class extends Task {
 				loot[itemID('Plopper')] = 1;
 			}
 
-			if (roll(10) && user.hasItemEquippedOrInBank(itemID('Farming master cape'))) {
-				loot = addItemToBank(loot, getRandomMysteryBox());
+			if (user.hasItemEquippedOrInBank(itemID('Farming master cape'))) {
+				for (let j = 0; j < alivePlants; j++) {
+					if (roll(10)) {
+						loot = addItemToBank(loot, getRandomMysteryBox());
+					}
+				}
 			}
 			// Give boxes for planting when harvesting
 			if (planting && plant.name === 'Mysterious tree') {
