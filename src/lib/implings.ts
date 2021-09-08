@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
@@ -25,7 +24,7 @@ const {
 type Impling = [number, number];
 
 export const implings: Impling[] = [
-	// [Imp, Weight, Level]
+	// [Impling ID, Level to Catch]
 	[BabyImpling.id, 17],
 	[YoungImpling.id, 22],
 	[GourmetImpling.id, 28],
@@ -40,28 +39,22 @@ export const implings: Impling[] = [
 	[LuckyImpling.id, 89]
 ];
 
-export const ImplingTable = new SimpleTable<Impling>();
-for (const imp of implings) {
-	ImplingTable.add(imp, imp[1]);
-}
+const defaultImpTable = new LootTable()
+	.add('Baby impling jar', 1, 66)
+	.add('Young impling jar', 1, 55)
+	.add('Gourmet impling jar', 1, 48)
+	.add('Earth impling jar', 1, 38)
+	.add('Essence impling jar', 1, 29)
+	.add('Eclectic impling jar', 1, 24)
+	.add('Nature impling jar', 1, 33)
+	.add('Magpie impling jar', 1, 24)
+	.add('Ninja impling jar', 1, 21)
+	.add('Dragon impling jar', 1, 10)
+	.add('Lucky impling jar', 1, 1);
 
 const implingTableByWorldLocation = {
 	[WorldLocations.Priffdinas]: new LootTable({ limit: 142 }).add('Crystal impling jar', 1, 1),
-	[WorldLocations.World]: new LootTable().oneIn(
-		65,
-		new LootTable()
-			.add('Baby impling jar', 1, 66)
-			.add('Young impling jar', 1, 55)
-			.add('Gourmet impling jar', 1, 48)
-			.add('Earth impling jar', 1, 38)
-			.add('Essence impling jar', 1, 29)
-			.add('Eclectic impling jar', 1, 24)
-			.add('Nature impling jar', 1, 33)
-			.add('Magpie impling jar', 1, 24)
-			.add('Ninja impling jar', 1, 21)
-			.add('Dragon impling jar', 1, 10)
-			.add('Lucky impling jar', 1, 1)
-	)
+	[WorldLocations.World]: new LootTable().oneIn(69, defaultImpTable)
 };
 
 export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
