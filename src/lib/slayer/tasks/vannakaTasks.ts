@@ -1,6 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { KalphiteKingMonster } from '../../kalphiteking';
+import killableMonsters from '../../minions/data/killableMonsters';
 import AbyssalDragon from '../../minions/data/killableMonsters/custom/AbyssalDragon';
 import { AssignableSlayerTask } from '../types';
 
@@ -177,6 +178,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		amount: [40, 80],
 		weight: 6,
 		monsters: [Monsters.EarthWarrior.id],
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.EarthWarrior.id)!.levelRequirements,
 		combatLevel: 35,
 		unlocked: true
 	},

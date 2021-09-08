@@ -192,11 +192,11 @@ export default class extends BotCommand {
 		}
 
 		if (creature.wildy) {
-			const [bol, reason, score] = hasWildyHuntGearEquipped(msg.author.getGear('misc'));
+			const [bol, reason, score] = hasWildyHuntGearEquipped(msg.author.getGear('wildy'));
 			wildyScore = score;
 			if (!bol) {
 				return msg.channel.send(
-					`To hunt ${creature.name} in the wilderness you need to meet the following requirment: ${reason} To check current equipped gear in misc write \`${msg.cmdPrefix}gear misc\`.`
+					`To hunt ${creature.name} in the wilderness you need to meet the following requirment: ${reason} To check current equipped gear in wildy, write \`${msg.cmdPrefix}gear wildy\`.`
 				);
 			}
 			if (userBank.amount(itemID('Saradomin brew(4)')) < 10 || userBank.amount(itemID('Super restore(4)')) < 5) {
@@ -293,7 +293,7 @@ export default class extends BotCommand {
 			}
 			wildyStr = `You are hunting ${creature.name} in the Wilderness during ${
 				wildyPeak!.peakTier
-			} peak time and potentially risking your equipped body and legs in the misc setup with a score ${wildyScore} and also risking Saradomin brews and Super restore potions. If you feel unsure \`${
+			} peak time and potentially risking your equipped body and legs in the wildy setup with a score ${wildyScore} and also risking Saradomin brews and Super restore potions. If you feel unsure \`${
 				msg.cmdPrefix
 			}cancel\` the activity.`;
 		}

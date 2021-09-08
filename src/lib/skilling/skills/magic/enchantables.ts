@@ -2,12 +2,13 @@ import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
 interface Enchantable {
+	name: string;
+	alias?: string[];
 	id: number;
 	input: Bank;
 	output: Bank;
-	name: string;
-	level: number;
 	xp: number;
+	level: number;
 }
 
 const jewelery: Enchantable[] = [
@@ -80,6 +81,7 @@ const jewelery: Enchantable[] = [
 	// Dragonstone
 	{
 		name: 'Dragon necklace',
+		alias: ['Dragonstone necklace'],
 		id: itemID('Dragon necklace'),
 		input: new Bank().add('Dragon necklace').add('Cosmic rune', 1).add('Earth rune', 15).add('Water rune', 15),
 		output: new Bank().add('Skills necklace'),

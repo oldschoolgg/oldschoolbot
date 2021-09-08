@@ -4,7 +4,7 @@ import { MoreThan } from 'typeorm';
 import { getNewUser } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
-import { getCommonTaskName } from '../../lib/slayer/slayerUtil';
+import { getCommonTaskName, userCanUseTask } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
 import { stringMatches } from '../../lib/util';
@@ -30,6 +30,11 @@ export default class extends BotCommand {
 			b => stringMatches(b.monster.name, task) || b.monster.aliases.some(a => stringMatches(a, task))
 		);
 		if (!selectedTask) return msg.channel.send(`${task} is not a valid task from ${slayerMaster.name}`);
+
+		if (!userCanUseTask(msg.author, selectedTask, slayerMaster)) {
+			return msg.channel.send('You do not met the requirements to do this task.');
+		}
+
 		const newUser = await getNewUser(msg.author.id);
 		await SlayerTaskTable.update(
 			{
