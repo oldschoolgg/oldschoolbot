@@ -9,7 +9,6 @@ import { DISCORD_SETTINGS } from '../config';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 
-
 export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
 
 export const Channel = {

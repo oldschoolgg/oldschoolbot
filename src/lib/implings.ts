@@ -22,7 +22,7 @@ const {
 	LuckyImpling
 } = Openables;
 
-export const implings: Record<number, { level: number, customRequirements?: (user: KlasaUser) => boolean }> = {
+export const implings: Record<number, { level: number; customRequirements?: (user: KlasaUser) => boolean }> = {
 	// [Impling ID, Level to Catch]
 	[BabyImpling.id]: { level: 17 },
 	[YoungImpling.id]: { level: 22 },
@@ -37,7 +37,7 @@ export const implings: Record<number, { level: number, customRequirements?: (use
 	[DragonImpling.id]: { level: 83 },
 	[LuckyImpling.id]: { level: 89 },
 	[InfernalImpling.id]: { level: 94 },
-	[EternalImpling.id]: { level: 99 },
+	[EternalImpling.id]: { level: 99, customRequirements: user => user.hasItemEquippedAnywhere('Vasa cloak') },
 	[MysteryImpling.id]: { level: 105 }
 };
 
@@ -74,8 +74,12 @@ export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions
 		const loot = impTable.roll();
 		if (loot.length === 0) continue;
 		const implingReceived = implings[loot.items()[0][0].id]!;
-		if (level < implingReceived.level) missed.add(loot);
-		else bank.add(loot);
+		if (
+			level < implingReceived.level ||
+			(implingReceived.customRequirements && !implingReceived.customRequirements(user))
+		) {
+			missed.add(loot);
+		} else bank.add(loot);
 	}
 
 	if (bank.length === 0 && missed.length === 0) return null;
