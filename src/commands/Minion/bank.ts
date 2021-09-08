@@ -25,7 +25,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [page = undefined, itemNameOrID = '']: [number | undefined, string]) {
+	async run(msg: KlasaMessage, [page = undefined, itemNameOrID = '']: [number | undefined, string | undefined]) {
 		await msg.author.settings.sync(true);
 		const baseBank = msg.author.bank({ withGP: true });
 
@@ -118,7 +118,7 @@ export default class extends BotCommand {
 			title: `${msg.author.username}'s Bank`,
 			flags: {
 				...msg.flagArgs,
-				page
+				page: page - 1
 			},
 			user: msg.author,
 			gearPlaceholder: msg.author.rawGear()
