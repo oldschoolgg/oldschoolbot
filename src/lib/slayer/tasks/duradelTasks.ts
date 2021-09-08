@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import killableMonsters from '../../minions/data/killableMonsters';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
@@ -411,6 +412,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		amount: [10, 20],
 		weight: 7,
 		monsters: [Monsters.SteelDragon.id],
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)!.levelRequirements,
 		extendedAmount: [40, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
 		combatLevel: 85,

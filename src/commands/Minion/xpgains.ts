@@ -5,6 +5,7 @@ import { PerkTier } from '../../lib/constants';
 import { Skills } from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
+import LeaderboardCommand from './leaderboard';
 
 const TimeIntervals = ['day', 'week'] as const;
 
@@ -30,13 +31,12 @@ export default class extends BotCommand {
 			: undefined;
 
 		const res = await this.client.orm.query(
-			`SELECT "new_user".username, sum(xp) as total_xp
+			`SELECT user_id AS user, sum(xp) AS total_xp, max(date) AS lastDate
 FROM xp_gains
-INNER JOIN "new_users" "new_user" ON xp_gains.user_id = "new_user"."id"
 WHERE date > now() - INTERVAL '1 ${interval}'
 ${skillObj ? `AND skill = '${skillObj.id}'` : ''}
-GROUP BY "new_user".username
-ORDER BY total_xp DESC
+GROUP BY user_id
+ORDER BY total_xp DESC, lastDate ASC
 LIMIT 10;`
 		);
 
@@ -44,11 +44,17 @@ LIMIT 10;`
 			return msg.channel.send('No results found.');
 		}
 
+		const command = this.client.commands.get('leaderboard') as LeaderboardCommand;
+
+		let place = 0;
 		const embed = new MessageEmbed()
 			.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
 			.setDescription(
 				res
-					.map((i: any) => `**${i.username ?? 'Unknown'}** ${Number(i.total_xp).toLocaleString()} XP`)
+					.map(
+						(i: any) =>
+							`${++place}. **${command.getUsername(i.user)}**: ${Number(i.total_xp).toLocaleString()} XP`
+					)
 					.join('\n')
 			);
 
