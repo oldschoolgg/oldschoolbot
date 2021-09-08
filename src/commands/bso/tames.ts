@@ -21,6 +21,7 @@ import { TameGrowthStage, TamesTable } from '../../lib/typeorm/TamesTable.entity
 import {
 	addBanks,
 	formatDuration,
+	formatSkillRequirements,
 	itemNameFromID,
 	patronMaxTripCalc,
 	stringMatches,

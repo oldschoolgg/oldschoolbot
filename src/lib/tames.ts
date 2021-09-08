@@ -108,7 +108,13 @@ export const tameSpecies: Species[] = [
 		relevantLevelCategory: 'gatherer',
 		hatchTime: Time.Hour * 9.5,
 		egg: getOSItem('Monkey egg'),
-		emoji: '<:monkey_egg:883326001445224488>'
+		emoji: '<:monkey_egg:883326001445224488>',
+		mergingCost: new Bank()
+			.add('Banana', 1000)
+			.add('Magic banana', 50)
+			.add('Chimpling jar')
+			.add('Soul rune', 2500)
+			.add('Elder rune', 100)
 	}
 ];
 
