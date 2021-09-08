@@ -1261,7 +1261,7 @@ setCustomItem(
 	},
 	1_000_000
 );
-setCustomItem(41_085, 'Tattered robes of Vasa', 'Coal', {}, 1_000_000);
+setCustomItem(41_085, 'Tattered robes of Vasa', 'Coal', { highalch: 90_000_000 }, 1_000_000);
 
 /**
  * Dyed DWWH Items
