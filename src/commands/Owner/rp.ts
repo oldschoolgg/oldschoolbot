@@ -47,22 +47,19 @@ export default class extends BotCommand {
 		switch (cmd.toLowerCase()) {
 			case 'impsim': {
 				const total = new Bank();
-				let hours = 142 * 1_000_000 * Time.Minute;
-				// for (let i = 0; i < 50_000; i++) {
+				let time = 5 * 1_000_000 * Time.Minute;
 				let i = handlePassiveImplings(msg.author, {
-					duration: hours,
+					duration: time,
 					activity: { type: Activity.MonsterKilling } as MonsterKillOptions
 				} as any);
 				if (i) {
 					total.add(i.bank);
 				}
-				// hours++;
-				// }
 				let totalItems = 0;
 				for (const [, qty] of total.items()) totalItems += qty;
 				return msg.channel.sendBankImage({
-					content: `${hours} hours, 1 Impling every ${(
-						((totalItems / hours) * Time.Hour) /
+					content: `${(time / Time.Hour).toFixed(2)} hours, 1 Impling every ${(
+						((totalItems / time) * Time.Hour) /
 						Time.Minute
 					).toFixed(2)} mins. You got: ${total}.`,
 					bank: total.bank,
