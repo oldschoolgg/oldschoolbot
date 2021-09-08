@@ -8,6 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
 import { tameSpecies } from '../../lib/tames';
+import { TameGrowthStage } from '../../lib/typeorm/TamesTable.entity';
 import { itemNameFromID } from '../../lib/util';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { generateNewTame } from '../bso/nursery';
@@ -86,6 +87,22 @@ export default class extends BotCommand {
 		if (str === 'monke') {
 			const tame = await generateNewTame(msg.author, tameSpecies[1]);
 			return msg.channel.send(`Gave you a new tame: ${tame}.`);
+		}
+
+		if (str === 'alltames') {
+			let num = 0;
+			for (const specie of tameSpecies) {
+				for (const growth of [TameGrowthStage.Baby, TameGrowthStage.Juvenile, TameGrowthStage.Adult]) {
+					for (const variation of [...specie.variants, specie.shinyVariant]) {
+						const tame = await generateNewTame(msg.author, specie);
+						tame.variant = variation;
+						tame.growthStage = growth;
+						await tame.save();
+						num++;
+					}
+				}
+			}
+			return msg.channel.send(`Spawned you ${num} tames, 1 of every possible tame you can have.`);
 		}
 
 		if (msg.flagArgs.customitems) {
