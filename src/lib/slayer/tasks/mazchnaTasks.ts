@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import killableMonsters from '../../minions/data/killableMonsters';
 import { AssignableSlayerTask } from '../types';
 
 export const mazchnaTasks: AssignableSlayerTask[] = [
@@ -108,6 +109,7 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		amount: [40, 70],
 		weight: 6,
 		monsters: [Monsters.EarthWarrior.id],
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.EarthWarrior.id)!.levelRequirements,
 		combatLevel: 35,
 		unlocked: true
 	},
