@@ -17,7 +17,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [qty = 1]: [number]) {
-		if (qty > 10 && msg.author.id !== '157797566833098752') {
+		if (qty > 10 && !this.client.owners.has(msg.author)) {
 			return msg.channel.send('I can only catch 10 Lucky Imps at a time!');
 		}
 

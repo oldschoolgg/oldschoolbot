@@ -4,7 +4,7 @@ import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank } from 'oldschooljs';
 
-import { Activity, badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
+import { Activity, badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { handlePassiveImplings, implings } from '../../lib/implings';
 import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
@@ -43,7 +43,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [cmd, input, str]: [string, KlasaUser | string | undefined, string | undefined]) {
-		if (msg.guild!.id !== '342983479501389826') return null;
+		if (msg.guild!.id !== SupportServer) return null;
 
 		switch (cmd.toLowerCase()) {
 			case 'git': {
