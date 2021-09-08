@@ -1,17 +1,11 @@
-import { roll, Time } from 'e';
+import { Time } from 'e';
 import { KlasaUser } from 'klasa';
-import { Bank, Monsters, Openables } from 'oldschooljs';
-import SimpleOpenable from 'oldschooljs/dist/structures/SimpleOpenable';
+import { Bank, LootTable, Openables } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { Activity } from './constants';
 import { SkillsEnum } from './skilling/types';
-import {
-	ActivityTaskOptions,
-	AgilityActivityTaskOptions,
-	MonsterActivityTaskOptions,
-	PickpocketActivityTaskOptions
-} from './types/minions';
+import { ActivityTaskOptions } from './types/minions';
+import activityInArea, { WorldLocations } from './util/activityInArea';
 
 const {
 	BabyImpling,
@@ -28,51 +22,22 @@ const {
 	LuckyImpling
 } = Openables;
 
-type Impling = [SimpleOpenable, number, number, null | ((activity: ActivityTaskOptions) => boolean)];
+type Impling = [number, number];
 
 export const implings: Impling[] = [
-	// [Imp, Weight, Level, Inhibitor]
-	[BabyImpling, 66, 17, null],
-	[YoungImpling, 55, 22, null],
-	[GourmetImpling, 48, 28, null],
-	[EarthImpling, 38, 36, null],
-	[EssenceImpling, 29, 42, null],
-	[EclecticImpling, 24, 50, null],
-	[NatureImpling, 33, 58, null],
-	[MagpieImpling, 24, 65, null],
-	[NinjaImpling, 21, 74, null],
-	[
-		CrystalImpling,
-		16,
-		80,
-		(activity: ActivityTaskOptions) => {
-			if ([Activity.Gauntlet, Activity.Zalcano].includes(activity.type)) return true;
-			if (
-				activity.type === Activity.MonsterKilling &&
-				[Monsters.DarkBeast.id, Monsters.PrifddinasElf.id].includes(
-					(activity as MonsterActivityTaskOptions).monsterID
-				)
-			) {
-				return true;
-			}
-			if (
-				activity.type === Activity.Pickpocket &&
-				(activity as PickpocketActivityTaskOptions).monsterID === Monsters.PrifddinasElf.id
-			) {
-				return true;
-			}
-			if (
-				activity.type === Activity.Agility &&
-				(activity as AgilityActivityTaskOptions).courseID === 'Prifddinas Rooftop Course'
-			) {
-				return true;
-			}
-
-			return false;
-		}
-	],
-	[DragonImpling, 10, 83, null],
-	[LuckyImpling, 1, 89, null]
+	// [Imp, Weight, Level]
+	[BabyImpling.id, 17],
+	[YoungImpling.id, 22],
+	[GourmetImpling.id, 28],
+	[EarthImpling.id, 36],
+	[EssenceImpling.id, 42],
+	[EclecticImpling.id, 50],
+	[NatureImpling.id, 58],
+	[MagpieImpling.id, 65],
+	[NinjaImpling.id, 74],
+	[CrystalImpling.id, 80],
+	[DragonImpling.id, 83],
+	[LuckyImpling.id, 89]
 ];
 
 export const ImplingTable = new SimpleTable<Impling>();
@@ -80,7 +45,24 @@ for (const imp of implings) {
 	ImplingTable.add(imp, imp[1]);
 }
 
-const IMPLING_CHANCE_PER_MINUTE = 65;
+const implingTableByWorldLocation = {
+	[WorldLocations.Priffdinas]: new LootTable({ limit: 142 }).add('Crystal impling jar', 1, 1),
+	[WorldLocations.World]: new LootTable().oneIn(
+		65,
+		new LootTable()
+			.add('Baby impling jar', 1, 66)
+			.add('Young impling jar', 1, 55)
+			.add('Gourmet impling jar', 1, 48)
+			.add('Earth impling jar', 1, 38)
+			.add('Essence impling jar', 1, 29)
+			.add('Eclectic impling jar', 1, 24)
+			.add('Nature impling jar', 1, 33)
+			.add('Magpie impling jar', 1, 24)
+			.add('Ninja impling jar', 1, 21)
+			.add('Dragon impling jar', 1, 10)
+			.add('Lucky impling jar', 1, 1)
+	)
+};
 
 export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
 	const minutes = Math.floor(data.duration / Time.Minute);
@@ -89,18 +71,14 @@ export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions
 	const level = user.skillLevel(SkillsEnum.Hunter);
 
 	let bank = new Bank();
-	const missed: SimpleOpenable[] = [];
+	const missed = new Bank();
+
 	for (let i = 0; i < minutes; i++) {
-		const gotImp = roll(IMPLING_CHANCE_PER_MINUTE);
-		if (gotImp) {
-			const [imp, , levelReq, inhibitor] = ImplingTable.roll()!.item;
-			if (inhibitor && !inhibitor(data)) continue;
-			if (level < levelReq) {
-				missed.push(imp);
-			} else {
-				bank.add(imp.id);
-			}
-		}
+		const loot = implingTableByWorldLocation[activityInArea(data)].roll();
+		if (loot.length === 0) continue;
+		const implingReceived = implings.find(i => i[0] === loot.items()[0][0].id)!;
+		if (level < implingReceived[1]) missed.add(loot);
+		else bank.add(loot);
 	}
 	if (bank.length === 0 && missed.length === 0) return null;
 	return { bank, missed };

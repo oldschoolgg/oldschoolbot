@@ -1918,4 +1918,4 @@ export const questCL = resolveItems([
 	'Bronze gloves',
 	'Hardleather gloves'
 ]);
-export const implingsCL = implings.map(i => i[0].id);
+export const implingsCL = implings.map(i => i[0]);
