@@ -19,7 +19,8 @@ export default class extends BotCommand {
 			aliases: ['log'],
 			usage: '<day|week> <monster:...str>',
 			usageDelim: ' ',
-			perkTier: PerkTier.Four
+			perkTier: PerkTier.Four,
+			cooldown: 30
 		});
 	}
 
