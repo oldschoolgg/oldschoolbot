@@ -1,4 +1,5 @@
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
+import { exec } from 'child_process';
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
 import { objectEntries, randInt, shuffleArr, Time } from 'e';
@@ -7,6 +8,7 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
+import { promisify } from 'util';
 
 import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
 import { GearSetupTypes } from './gear/types';
@@ -578,3 +580,5 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 		});
 	}
 }
+
+export const asyncExec = promisify(exec);
