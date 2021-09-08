@@ -334,7 +334,7 @@ export default class extends BotCommand {
 		} = bankTask.getBgAndSprite(msg.author.settings.get(UserSettings.BankBackground) ?? 1);
 		const hexColor = msg.author.settings.get(UserSettings.BankBackgroundHex);
 
-		const tamesPerLine = 4;
+		const tamesPerLine = 3;
 
 		const canvas = createCanvas(
 			12 + 10 + (256 + 10) * Math.min(userTames.length, tamesPerLine),
