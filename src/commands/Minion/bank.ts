@@ -25,7 +25,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [page = undefined, itemNameOrID]: [number | undefined, number | string | undefined]) {
+	async run(msg: KlasaMessage, [page = undefined, itemNameOrID = '']: [number | undefined, string]) {
 		await msg.author.settings.sync(true);
 		const baseBank = msg.author.bank({ withGP: true });
 
@@ -33,9 +33,8 @@ export default class extends BotCommand {
 			msg.flagArgs.search = String(itemNameOrID);
 			// Clear item string
 			itemNameOrID = '';
-		} else {
-			itemNameOrID = `${page ?? 0} ${itemNameOrID}`;
-		}
+		} else if (page && itemNameOrID) itemNameOrID = `${page} ${itemNameOrID}`.trim();
+		if (!page) page = 1;
 
 		if (msg.flagArgs.smallbank) {
 			const userBg = msg.author.settings.get(UserSettings.BankBackground);
