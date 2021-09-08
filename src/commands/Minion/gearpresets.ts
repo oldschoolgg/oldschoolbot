@@ -1,4 +1,5 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { objectValues } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -21,8 +22,9 @@ export default class extends BotCommand {
 			altProtection: true,
 			cooldown: 1,
 			description: 'Allows you to manage your gear presets.',
+			aliases: ['gps'],
 			usageDelim: ' ',
-			usage: '[new|delete|equip|share|rename] [name:str{1,12}] [user:user|setup:str]',
+			usage: '[new|update|delete|equip|share|rename] [name:str{1,12}] [user:user|setup:str]',
 			subcommands: true,
 			examples: ['+gearpresets new pvm melee', '+gearpresets delete pvm', '+gearpresets equip pvm melee'],
 			categoryFlags: ['minion', 'skilling']
@@ -99,14 +101,28 @@ export default class extends BotCommand {
 			toRemove.add(preset.Ammo, preset.AmmoQuantity!);
 		}
 
-		if (!msg.author.bank().has(toRemove.bank)) {
+		const userBankWithEquippedItems = msg.author.bank().clone();
+		for (const e of objectValues(msg.author.getGear(setup).raw())) {
+			if (e) userBankWithEquippedItems.add(e.item, e.quantity);
+		}
+
+		if (!userBankWithEquippedItems.has(toRemove.bank)) {
 			return msg.channel.send(
 				`You don't have the items in this preset. You're missing: ${toRemove.remove(msg.author.bank())}.`
 			);
 		}
 
 		try {
-			await this.client.commands.get('unequipall')!.run(msg, [setup]);
+			const unequipAllMessage = await this.client.commands.get('unequipall')!.run(msg, [setup]);
+			if (
+				!(unequipAllMessage instanceof KlasaMessage) ||
+				(!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you unequipped all items') &&
+					!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you have no items in your'))
+			) {
+				return msg.channel.send(
+					`It was not possible to equip your **${preset.name}** on your ${setup} gear setup.`
+				);
+			}
 		} catch (_) {}
 
 		await msg.author.removeItemsFromBank(toRemove.bank);
@@ -139,7 +155,11 @@ export default class extends BotCommand {
 		return msg.channel.send(`Successfully deleted your preset called \`${name}\`.`);
 	}
 
-	async new(msg: KlasaMessage, [name = '', setup = '']: [string, string]) {
+	async update(msg: KlasaMessage, [name = '', setup = '']: [string, string]) {
+		return this.new(msg, [name, setup, true]);
+	}
+
+	async new(msg: KlasaMessage, [name = '', setup = '', update = false]: [string, string, boolean]) {
 		setup = setup.toLowerCase();
 		name = cleanString(name).toLowerCase();
 		if (!name) return msg.channel.send("You didn't supply a name.");
@@ -150,12 +170,15 @@ export default class extends BotCommand {
 		}
 
 		const currentPresets = await GearPresetsTable.find({ userID: msg.author.id });
-		if (currentPresets.some(pre => pre.name === name)) {
+		if (currentPresets.some(pre => pre.name === name) && !update) {
 			return msg.channel.send(`You already have a gear presets called \`${name}\`.`);
+		}
+		if (!currentPresets.some(pre => pre.name === name) && update) {
+			return msg.channel.send('You cant update a gearpreset you dont have.');
 		}
 
 		const max = maxPresets(msg.author);
-		if (currentPresets.length >= max) {
+		if (currentPresets.length >= max && !update) {
 			return msg.channel.send(`The maximum amount of gear presets you can have is ${max}.`);
 		}
 
@@ -180,7 +203,9 @@ export default class extends BotCommand {
 		preset.userID = msg.author.id;
 		await preset.save();
 		return msg.channel.send(
-			`Successfully made a new preset called \`${preset.name}\` based off your ${setup} setup.`
+			`Successfully ${update ? 'updated the' : 'made a new'} preset called \`${
+				preset.name
+			}\` based off your ${setup} setup.`
 		);
 	}
 
