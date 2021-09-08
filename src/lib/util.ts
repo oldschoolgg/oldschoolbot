@@ -521,15 +521,15 @@ export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<Se
 	return user.settings.update(key, active);
 }
 
-function gaussianRand() {
+function gaussianRand(rolls: number = 3) {
 	let rand = 0;
-	for (let i = 0; i < 3; i += 1) {
+	for (let i = 0; i < rolls; i += 1) {
 		rand += Math.random();
 	}
-	return rand / 3;
+	return rand / rolls;
 }
-export function gaussianRandom(min: number, max: number) {
-	return Math.floor(min + gaussianRand() * (max - min + 1));
+export function gaussianRandom(min: number, max: number, rolls?: number) {
+	return Math.floor(min + gaussianRand(rolls) * (max - min + 1));
 }
 export function isValidNickname(str?: string) {
 	return (

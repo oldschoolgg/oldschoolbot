@@ -47,6 +47,7 @@ export interface Species {
 	relevantLevelCategory: 'combat' | 'artisan' | 'support' | 'gatherer';
 	hatchTime: number;
 	egg: Item;
+	mergingCost: Bank;
 	emoji: string;
 }
 
@@ -63,6 +64,11 @@ export const tameSpecies: Species[] = [
 		relevantLevelCategory: 'combat',
 		hatchTime: Time.Hour * 18.5,
 		egg: getOSItem(48_210),
+		mergingCost: new Bank()
+			.add('Ignecarus scales', 100)
+			.add('Zenyte', 2)
+			.add('Soul rune', 2500)
+			.add('Elder rune', 100),
 		emoji: '<:dragonEgg:858948148641660948>'
 	}
 ];
