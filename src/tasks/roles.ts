@@ -3,7 +3,7 @@ import { Task } from 'klasa';
 
 import { CLUser, SkillUser } from '../commands/Minion/leaderboard';
 import { production } from '../config';
-import { Roles } from '../lib/constants';
+import { Roles, SupportServer } from '../lib/constants';
 import { collectionLogRoleCategories } from '../lib/data/Collections';
 import ClueTiers from '../lib/minions/data/clueTiers';
 import { UserSettings } from '../lib/settings/types/UserSettings';
@@ -21,7 +21,8 @@ const minigames = [
 	'raids_challenge_mode',
 	'big_chompy_bird_hunting',
 	'rogues_den',
-	'temple_trekking'
+	'temple_trekking',
+	'volcanic_mine'
 ];
 
 const collections = ['overall', 'pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer'];
@@ -44,10 +45,13 @@ GROUP BY user_id
 ORDER BY count(user_id) DESC
 LIMIT 1;`;
 
-async function addRoles(g: Guild, users: string[], role: Roles, badge: number | null): Promise<string> {
+async function addRoles(g: Guild, users: string[], role: string, badge: number | null): Promise<string> {
 	let added: string[] = [];
 	let removed: string[] = [];
-	const roleName = g.roles.cache.get(role)!.name!;
+	let _role = g.roles.cache.get(role);
+	if (!_role) _role = (await g.roles.fetch(role)) ?? undefined;
+	if (!_role) return 'Could not check role';
+	const roleName = _role.name!;
 	for (const mem of g.members.cache.values()) {
 		if (mem.roles.cache.has(role) && !users.includes(mem.user.id)) {
 			if (production) {
@@ -73,7 +77,7 @@ async function addRoles(g: Guild, users: string[], role: Roles, badge: number | 
 			}
 		}
 	}
-	let str = `**${roleName}**`;
+	let str = `\n\n**${roleName}**`;
 	if (added.length > 0) {
 		str += `\nAdded to: ${added.join(', ')}.`;
 	}
@@ -81,16 +85,16 @@ async function addRoles(g: Guild, users: string[], role: Roles, badge: number | 
 		str += `\nRemoved from: ${removed.join(', ')}.`;
 	}
 	if (added.length || removed.length) {
-		str += '\n\n';
+		str += '\n';
 	} else {
-		return '';
+		return `\nNo changes for **${roleName}**`;
 	}
 	return str;
 }
 
 export default class extends Task {
 	async run() {
-		const g = this.client.guilds.cache.get('342983479501389826');
+		const g = this.client.guilds.cache.get(SupportServer);
 		if (!g) return;
 		await g.members.fetch();
 		const skillVals = Object.values(Skills);
@@ -121,7 +125,7 @@ export default class extends Task {
 							.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 1;`
 					)
 				])
-			).map(i => i[0].id);
+			).map(i => i[0]?.id);
 
 			// Rank 1 Total Level
 			const rankOneTotal = (
@@ -224,7 +228,7 @@ LIMIT 1;`
 						)
 					)
 				)
-			).map((i: any) => i[0].id);
+			).map((i: any) => i[0]?.id);
 
 			result += await addRoles(g!, topClueHunters, Roles.TopClueHunter, null);
 		}
@@ -237,7 +241,7 @@ LIMIT 1;`
 						q(query)
 					)
 				)
-			).map((i: any) => i[0].id);
+			).map((i: any) => i[0]?.id);
 
 			result += await addRoles(g!, topSlayers, Roles.TopSlayer, null);
 		}
@@ -252,6 +256,6 @@ LIMIT 1;`
 			})
 		);
 
-		return result;
+		return result || 'Roles task: nothing to add or remove.';
 	}
 }

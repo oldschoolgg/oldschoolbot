@@ -1681,6 +1681,26 @@ const Createables: Createable[] = [
 			slayer: 62
 		}
 	},
+	{
+		name: 'Ring of endurance',
+		inputItems: resolveNameBank({
+			'Ring of endurance (uncharged)': 1,
+			'Stamina potion (4)': 125
+		}),
+		outputItems: {
+			[itemID('Ring of endurance')]: 1
+		}
+	},
+	{
+		name: 'Fish sack barrel',
+		inputItems: resolveNameBank({
+			'Fish sack': 1,
+			'Fish barrel': 1
+		}),
+		outputItems: {
+			[itemID('Fish sack barrel')]: 1
+		}
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,

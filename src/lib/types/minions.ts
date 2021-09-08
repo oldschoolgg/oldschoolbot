@@ -14,12 +14,13 @@ export interface ActivityTaskOptions {
 }
 
 export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
+	type: Activity.Runecraft;
 	runeID: number;
-	channelID: string;
 	essenceQuantity: number;
 }
 
 export interface GloryChargingActivityTaskOptions extends ActivityTaskOptions {
+	type: Activity.GloryCharging;
 	quantity: number;
 }
 
@@ -151,14 +152,12 @@ export interface AnimatedArmourActivityTaskOptions extends ActivityTaskOptions {
 
 export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 	mixableID: number;
-	channelID: string;
 	quantity: number;
 	zahur: boolean;
 }
 
 export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 	creatureName: string;
-	channelID: string;
 	quantity: number;
 	usingHuntPotion: boolean;
 	wildyPeak: Peak | null;
@@ -181,7 +180,6 @@ export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
 
 export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	plantsName: string | null;
-	channelID: string;
 	quantity: number;
 	upgradeType: string | null;
 	payment?: boolean;
@@ -194,7 +192,6 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 
 export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
 	birdhouseName: string | null;
-	channelID: string;
 	placing: boolean;
 	gotCraft: boolean;
 	birdhouseData: BirdhouseData;
@@ -318,7 +315,12 @@ export interface CollectingOptions extends ActivityTaskOptions {
 }
 
 export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
+	type: Activity.BlastFurnace;
 	barID: number;
+	quantity: number;
+}
+
+export interface VolcanicMineActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
@@ -343,4 +345,5 @@ export type ActivityTaskData =
 	| FletchingActivityTaskOptions
 	| RunecraftActivityTaskOptions
 	| TempleTrekkingActivityTaskOptions
-	| TemporossActivityTaskOptions;
+	| TemporossActivityTaskOptions
+	| VolcanicMineActivityTaskOptions;
