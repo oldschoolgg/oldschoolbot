@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
+import { BitField } from './constants';
 import { EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
@@ -56,9 +57,16 @@ const defaultImpTable = new LootTable()
 	.add('Eternal impling jar', 1, 7)
 	.add('Mystery impling jar', 1, 3);
 
-const implingTableByWorldLocation = {
-	[WorldLocations.Priffdinas]: new LootTable({ limit: 142 }).add('Crystal impling jar', 1, 1),
-	[WorldLocations.World]: new LootTable().oneIn(68, defaultImpTable)
+const IMPLING_CHANCE_PER_MINUTE = 68;
+
+type TWorldLocationImplingTable = Record<number, (caughtChance: number) => LootTable>;
+
+const implingTableByWorldLocation: TWorldLocationImplingTable = {
+	[WorldLocations.Priffdinas]: caughtChance => {
+		const reductionFactor = IMPLING_CHANCE_PER_MINUTE / caughtChance;
+		return new LootTable({ limit: Math.floor(142 / reductionFactor) }).add('Crystal impling jar', 1, 1);
+	},
+	[WorldLocations.World]: caughtChance => new LootTable().oneIn(caughtChance, defaultImpTable)
 };
 
 export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
@@ -70,7 +78,12 @@ export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions
 	let bank = new Bank();
 	const missed = new Bank();
 
-	const impTable = implingTableByWorldLocation[activityInArea(data)];
+	let baseChance = IMPLING_CHANCE_PER_MINUTE;
+	const hasScrollOfTheHunt = user.bitfield.includes(BitField.HasScrollOfTheHunt);
+	if (hasScrollOfTheHunt) baseChance = Math.floor(baseChance / 2);
+	if (user.hasItemEquippedAnywhere('Hunter master cape')) baseChance = Math.floor(baseChance / 2);
+
+	const impTable = implingTableByWorldLocation[activityInArea(data)](baseChance);
 
 	for (let i = 0; i < minutes; i++) {
 		const loot = impTable.roll();
