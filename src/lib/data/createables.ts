@@ -1,6 +1,3 @@
-import { Bank } from 'oldschooljs';
-import { resolveBank } from 'oldschooljs/dist/util';
-
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
@@ -8,15 +5,15 @@ import { itemNameFromID, resolveNameBank } from '../util';
 import itemID from '../util/itemID';
 import { chambersOfXericMetamorphPets } from './CollectionsExport';
 import { armorAndItemPacks } from './creatables/armorPacks';
+import { BsoCreateables } from './creatables/bsoItems';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
-import { dyedCreatables } from './dyedCreatables';
 
 export interface Createable {
 	name: string;
-	outputItems?: ItemBank;
+	outputItems: ItemBank;
 	inputItems: ItemBank;
 	cantHaveItems?: ItemBank;
 	requiredSkills?: Record<string, number>;
@@ -27,52 +24,6 @@ export interface Createable {
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 }
 
-const chaoticCreatables: Createable[] = [
-	{
-		name: 'Arcane blast necklace',
-		inputItems: {
-			[itemID('Occult necklace')]: 1,
-			[itemID('Chaotic remnant')]: 1
-		},
-		outputItems: {
-			[itemID('Arcane blast necklace')]: 1
-		},
-		requiredSkills: { dungeoneering: 99, crafting: 99 }
-	},
-	{
-		name: 'Farsight snapshot necklace',
-		inputItems: {
-			[itemID('Necklace of anguish')]: 1,
-			[itemID('Chaotic remnant')]: 1
-		},
-		outputItems: {
-			[itemID('Farsight snapshot necklace')]: 1
-		},
-		requiredSkills: { dungeoneering: 99, crafting: 99 }
-	},
-	{
-		name: "Brawler's hook necklace",
-		inputItems: {
-			[itemID('Amulet of torture')]: 1,
-			[itemID('Chaotic remnant')]: 1
-		},
-		outputItems: {
-			[itemID("Brawler's hook necklace")]: 1
-		},
-		requiredSkills: { dungeoneering: 99, crafting: 99 }
-	},
-	{
-		name: 'Gorajan bonecrusher',
-		inputItems: {
-			[itemID('Gorajan shards')]: 3,
-			[itemID('Gorajan bonecrusher (u)')]: 1
-		},
-		outputItems: {
-			[itemID('Gorajan bonecrusher')]: 1
-		},
-		requiredSkills: { crafting: 120 }
-	}
-];
 const revWeapons: Createable[] = [
 	{
 		name: 'Bracelet of ethereum',
@@ -346,273 +297,6 @@ const crystalTools: Createable[] = [
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
 		QPRequired: 150
-	}
-];
-
-const brokenItems: Createable[] = [
-	{
-		name: 'Fix fire cape',
-		inputItems: {
-			20_445: 1
-		},
-		outputItems: {
-			[itemID('Fire cape')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: 'Fix fire max cape',
-		inputItems: {
-			20_447: 1
-		},
-		outputItems: {
-			[itemID('Fire max cape')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix infernal cape',
-		inputItems: {
-			21_287: 1
-		},
-		outputItems: {
-			[itemID('Infernal cape')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix infernal max cape',
-		inputItems: {
-			21_289: 1
-		},
-		outputItems: {
-			[itemID('Infernal max cape')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix assembler max cape',
-		inputItems: {
-			21_916: 1
-		},
-		outputItems: {
-			[itemID('Assembler max cape')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix imbued saradomin cape',
-		inputItems: {
-			24_236: 1
-		},
-		outputItems: {
-			[itemID('Imbued saradomin cape')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix imbued saradomin max cape',
-		inputItems: {
-			24_238: 1
-		},
-		outputItems: {
-			[itemID('Imbued saradomin max cape')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix imbued guthix cape',
-		inputItems: {
-			24_240: 1
-		},
-		outputItems: {
-			[itemID('Imbued guthix cape')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix imbued guthix max cape',
-		inputItems: {
-			24_242: 1
-		},
-		outputItems: {
-			[itemID('Imbued guthix max cape')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix imbued zamorak cape',
-		inputItems: {
-			24_244: 1
-		},
-		outputItems: {
-			[itemID('Imbued zamorak cape')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix imbued zamorak max cape',
-		inputItems: {
-			24_246: 1
-		},
-		outputItems: {
-			[itemID('Imbued zamorak max cape')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix imbued zamorak max cape',
-		inputItems: {
-			24_246: 1
-		},
-		outputItems: {
-			[itemID('Imbued zamorak max cape')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix dragon defender',
-		inputItems: {
-			20_463: 1
-		},
-		outputItems: {
-			[itemID('Dragon defender')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix avernic defender',
-		inputItems: {
-			22_441: 1
-		},
-		outputItems: {
-			[itemID('Avernic defender')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix void knight top',
-		inputItems: {
-			20_465: 1
-		},
-		outputItems: {
-			[itemID('Void knight top')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix void knight robe',
-		inputItems: {
-			20_469: 1
-		},
-		outputItems: {
-			[itemID('Void knight robe')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix elite void top',
-		inputItems: {
-			20_467: 1
-		},
-		outputItems: {
-			[itemID('Elite void top')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix elite void robe',
-		inputItems: {
-			20_471: 1
-		},
-		outputItems: {
-			[itemID('Elite void robe')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix void knight gloves',
-		inputItems: {
-			20_475: 1
-		},
-		outputItems: {
-			[itemID('Void knight gloves')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix void mage helm',
-		inputItems: {
-			20_477: 1
-		},
-		outputItems: {
-			[itemID('Void mage helm')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix void ranger helm',
-		inputItems: {
-			20_479: 1
-		},
-		outputItems: {
-			[itemID('Void ranger helm')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix void melee helm',
-		inputItems: {
-			20_481: 1
-		},
-		outputItems: {
-			[itemID('Void melee helm')]: 1
-		},
-		GPCost: 100_000_000,
-		noCl: true
-	},
-	{
-		name: 'Fix hellfire bow',
-		inputItems: resolveBank({
-			'Hellfire bow (broken)': 1,
-			'Ignecarus dragonclaw': 1,
-			'Smouldering stone': 1,
-			"Dragon's fury": 1
-		}),
-		outputItems: {
-			[itemID('Hellfire bow')]: 1
-		},
-		GPCost: 200_000_000,
-		noCl: true
-	}
-];
-
-const lockedItems: Createable[] = [
-	{
-		name: 'Unlock dragon defender',
-		inputItems: { [itemID('Dragon defender (l)')]: 1 },
-		outputItems: { [itemID('Dragon defender')]: 1 },
-		noCl: true
 	}
 ];
 
@@ -1275,9 +959,6 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Clue scroll (master)')]: 1
-		},
-		cantHaveItems: {
-			[itemID('Clue scroll (master)')]: 1
 		}
 	},
 	{
@@ -1484,20 +1165,6 @@ const Createables: Createable[] = [
 		requiredSkills: { prayer: 90, smithing: 85 }
 	},
 	{
-		name: 'Divine spirit shield',
-		inputItems: {
-			[itemID('Blessed spirit shield')]: 1,
-			[itemID('Divine sigil')]: 1
-		},
-		outputItems: {
-			[itemID('Divine spirit shield')]: 1
-		},
-		requiredSkills: {
-			prayer: 90,
-			smithing: 85
-		}
-	},
-	{
 		name: 'Holy book',
 		inputItems: resolveNameBank({
 			'Saradomin page 1': 1,
@@ -1670,36 +1337,6 @@ const Createables: Createable[] = [
 			smithing: 5
 		},
 		GPCost: 300_000
-	},
-	{
-		name: 'Avernic defender',
-		inputItems: {
-			[itemID('Avernic defender hilt')]: 1,
-			[itemID('Dragon defender')]: 1
-		},
-		outputItems: {
-			[itemID('Avernic defender')]: 1
-		}
-	},
-	{
-		name: 'Kodai wand',
-		inputItems: {
-			[itemID('Master wand')]: 1,
-			[itemID('Kodai insignia')]: 1
-		},
-		outputItems: {
-			[itemID('Kodai wand')]: 1
-		}
-	},
-	{
-		name: 'Zamorakian spear',
-		inputItems: resolveNameBank({
-			'Zamorakian hasta': 1
-		}),
-		outputItems: resolveNameBank({
-			'Zamorakian spear': 1
-		}),
-		noCl: true
 	},
 	{
 		name: 'Ultracompost',
@@ -1906,39 +1543,6 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: 'Neitiznot faceguard',
-		inputItems: resolveNameBank({
-			'Helm of neitiznot': 1,
-			'Basilisk jaw': 1
-		}),
-		outputItems: resolveNameBank({
-			'Neitiznot faceguard': 1
-		}),
-		QPRequired: 77
-	},
-	{
-		name: 'Basilisk jaw',
-		inputItems: resolveNameBank({
-			'Neitiznot faceguard': 1
-		}),
-		outputItems: resolveNameBank({
-			'Helm of neitiznot': 1,
-			'Basilisk jaw': 1
-		}),
-		QPRequired: 77
-	},
-	{
-		name: 'Heart crystal',
-		inputItems: resolveNameBank({
-			'Chunk of crystal': 1,
-			'Hunk of crystal': 1,
-			'Lump of crystal': 1
-		}),
-		outputItems: {
-			745: 1
-		}
-	},
-	{
 		name: "Toad's legs",
 		inputItems: resolveNameBank({
 			'Swamp toad': 1
@@ -1979,16 +1583,6 @@ const Createables: Createable[] = [
 			[itemID('Eternal boots')]: 1
 		},
 		requiredSkills: { magic: 60, runecraft: 60 }
-	},
-	{
-		name: 'Kodai wand',
-		inputItems: {
-			[itemID('Master wand')]: 1,
-			[itemID('Kodai insignia')]: 1
-		},
-		outputItems: {
-			[itemID('Kodai wand')]: 1
-		}
 	},
 	{
 		name: 'Partyhat & specs',
@@ -2098,89 +1692,15 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: 'Frozen key',
-		inputItems: resolveNameBank({
-			'Key piece 1': 1,
-			'Key piece 2': 1,
-			'Key piece 3': 1,
-			'Key piece 4': 1
-		}),
-		outputItems: {
-			[itemID('Frozen key')]: 1
-		}
-	},
-	{
-		name: 'Vasa cloak',
-		inputItems: resolveNameBank({
-			'Tattered robes of Vasa': 1,
-			'Abyssal cape': 1
-		}),
-		outputItems: {
-			[itemID('Vasa cloak')]: 1
+		name: 'Kodai wand',
+		inputItems: {
+			[itemID('Master wand')]: 1,
+			[itemID('Kodai insignia')]: 1
 		},
-		requiredSkills: {
-			crafting: 105,
-			magic: 105,
-			runecraft: 105
-		}
-	},
-	{
-		name: "Bryophyta's staff(i)",
-		inputItems: resolveNameBank({
-			"Bryophyta's staff": 1,
-			'Magus scroll': 1
-		}),
 		outputItems: {
-			[itemID("Bryophyta's staff(i)")]: 1
-		},
-		requiredSkills: {
-			crafting: 105,
-			magic: 105
+			[itemID('Kodai wand')]: 1
 		}
 	},
-	{
-		name: 'Ignis ring(i)',
-		inputItems: resolveNameBank({
-			'Ignis ring': 1,
-			'Magus scroll': 1
-		}),
-		outputItems: {
-			[itemID('Ignis ring(i)')]: 1
-		},
-		requiredSkills: {
-			crafting: 120,
-			magic: 105
-		}
-	},
-	{
-		name: 'Bottled dragonbreath',
-		inputItems: resolveNameBank({
-			Dragonfruit: 10,
-			Vial: 1
-		}),
-		outputItems: {
-			[itemID('Bottled dragonbreath')]: 1
-		},
-		requiredSkills: {
-			slayer: 62
-		}
-	},
-	{
-		name: 'Charged Dragonfire shield',
-		inputItems: new Bank({
-			'Bottled dragonbreath': 5,
-			11_284: 1
-		}).bank,
-		outputItems: {
-			11_283: 1
-		},
-		requiredSkills: {
-			slayer: 62
-		}
-	},
-	...chaoticCreatables,
-	...brokenItems,
-	...lockedItems,
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
@@ -2191,8 +1711,8 @@ const Createables: Createable[] = [
 	...capeCreatables,
 	...dragonFireShieldCreatables,
 	...revWeapons,
-	...dyedCreatables,
-	...armorAndItemPacks
+	...armorAndItemPacks,
+	...BsoCreateables
 ];
 
 export default Createables;

@@ -2160,29 +2160,6 @@ export const armorAndItemPacks: Createable[] = [
 			[itemID('Mystic set (dusk)')]: 1
 		}
 	},
-	// {
-	// 	name: "Unpack dagon'hai robes set",
-	// 	inputItems: {
-	// 		[itemID("Dagon'hai robes set")]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID("Dagon'hai hat")]: 1,
-	// 		[itemID("Dagon'hai robe top")]: 1,
-	// 		[itemID("Dagon'hai robe bottom")]: 1
-	// 	},
-	// 	noCl: true
-	// },
-	// {
-	// 	name: "Dagon'hai robes set",
-	// 	inputItems: {
-	// 		[itemID("Dagon'hai hat")]: 1,
-	// 		[itemID("Dagon'hai robe top")]: 1,
-	// 		[itemID("Dagon'hai robe bottom")]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID("Dagon'hai robes set")]: 1
-	// 	}
-	// },
 	{
 		name: 'Unpack ancestral robes set',
 		inputItems: {
@@ -2357,82 +2334,6 @@ export const armorAndItemPacks: Createable[] = [
 			[itemID('Book of war page set')]: 1
 		}
 	},
-	// twisted relichunter
-	// {
-	// 	name: 'Unpack twisted relichunter (t1) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted relichunter (t1) armour set')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted hat (t1)')]: 1,
-	// 		[itemID('Twisted coat (t1)')]: 1,
-	// 		[itemID('Twisted trousers (t1)')]: 1,
-	// 		[itemID('Twisted boots (t1)')]: 1
-	// 	},
-	// 	noCl: true
-	// },
-	// {
-	// 	name: 'Twisted relichunter (t1) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted hat (t1)')]: 1,
-	// 		[itemID('Twisted coat (t1)')]: 1,
-	// 		[itemID('Twisted trousers (t1)')]: 1,
-	// 		[itemID('Twisted boots (t1)')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted relichunter (t1) armour set')]: 1
-	// 	}
-	// },
-	// {
-	// 	name: 'Unpack twisted relichunter (t2) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted relichunter (t2) armour set')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted hat (t2)')]: 1,
-	// 		[itemID('Twisted coat (t2)')]: 1,
-	// 		[itemID('Twisted trousers (t2)')]: 1,
-	// 		[itemID('Twisted boots (t2)')]: 1
-	// 	},
-	// 	noCl: true
-	// },
-	// {
-	// 	name: 'Twisted relichunter (t2) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted hat (t2)')]: 1,
-	// 		[itemID('Twisted coat (t2)')]: 1,
-	// 		[itemID('Twisted trousers (t2)')]: 1,
-	// 		[itemID('Twisted boots (t2)')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted relichunter (t2) armour set')]: 1
-	// 	}
-	// },
-	// {
-	// 	name: 'Unpack twisted relichunter (t3) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted relichunter (t3) armour set')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted hat (t3)')]: 1,
-	// 		[itemID('Twisted coat (t3)')]: 1,
-	// 		[itemID('Twisted trousers (t3)')]: 1,
-	// 		[itemID('Twisted boots (t3)')]: 1
-	// 	},
-	// 	noCl: true
-	// },
-	// {
-	// 	name: 'Twisted relichunter (t3) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted hat (t3)')]: 1,
-	// 		[itemID('Twisted coat (t3)')]: 1,
-	// 		[itemID('Twisted trousers (t3)')]: 1,
-	// 		[itemID('Twisted boots (t3)')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted relichunter (t3) armour set')]: 1
-	// 	}
-	// },
 	// holiday
 	{
 		name: 'Unpack partyhat set',

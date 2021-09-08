@@ -42,17 +42,19 @@ export const implings: Record<number, { level: number; customRequirements?: (use
 };
 
 const defaultImpTable = new LootTable()
-	.add('Baby impling jar', 1, 66)
-	.add('Young impling jar', 1, 55)
-	.add('Gourmet impling jar', 1, 48)
-	.add('Earth impling jar', 1, 38)
-	.add('Essence impling jar', 1, 29)
-	.add('Eclectic impling jar', 1, 24)
-	.add('Nature impling jar', 1, 33)
-	.add('Magpie impling jar', 1, 24)
-	.add('Ninja impling jar', 1, 21)
-	.add('Dragon impling jar', 1, 10)
-	.add('Lucky impling jar', 1, 1);
+	.add('Baby impling jar', 1, 126)
+	.add('Young impling jar', 1, 85)
+	.add('Gourmet impling jar', 1, 88)
+	.add('Earth impling jar', 1, 68)
+	.add('Essence impling jar', 1, 49)
+	.add('Eclectic impling jar', 1, 44)
+	.add('Nature impling jar', 1, 63)
+	.add('Magpie impling jar', 1, 44)
+	.add('Ninja impling jar', 1, 41)
+	.add('Dragon impling jar', 1, 24)
+	.add('Infernal impling jar', 1, 9)
+	.add('Eternal impling jar', 1, 7)
+	.add('Mystery impling jar', 1, 3);
 
 const implingTableByWorldLocation = {
 	[WorldLocations.Priffdinas]: new LootTable({ limit: 142 }).add('Crystal impling jar', 1, 1),

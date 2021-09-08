@@ -17,7 +17,6 @@ import {
 	stringMatches,
 	toTitleCase
 } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -36,8 +35,6 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
 		const cmd = msg.commandText!.toLowerCase();
-		// No items to fix on OSB for now
-		if (cmd === 'fix') return;
 		if (msg.flagArgs.items || !itemName) {
 			let content = `This are the items that you can ${cmd}:`;
 			const creatableTable = table([
@@ -130,16 +127,14 @@ export default class extends BotCommand {
 			throw `You need ${createableItem.GPCost.toLocaleString()} coins to ${cmd} this item.`;
 		}
 
-		const output = createableItem.outputItems ?? new Bank().add(getOSItem(createableItem.name).id).bank;
-
 		if (createableItem.cantBeInCL) {
 			const cl = new Bank(msg.author.settings.get(UserSettings.CollectionLogBank));
-			if (Object.keys(output).some(itemID => cl.amount(Number(itemID)) > 0)) {
+			if (Object.keys(createableItem.outputItems).some(itemID => cl.amount(Number(itemID)) > 0)) {
 				return msg.channel.send(`You can only ${cmd} this item once!`);
 			}
 		}
 
-		const outItems = new Bank(output).multiply(quantity);
+		const outItems = new Bank(createableItem.outputItems).multiply(quantity);
 		const inItems = new Bank(createableItem.inputItems).multiply(quantity);
 
 		const outputItemsString = outItems.toString();

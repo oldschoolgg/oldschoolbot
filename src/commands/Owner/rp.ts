@@ -3,7 +3,7 @@ import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { notEmpty, Time, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
-import { Bank, MonsterKillOptions } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import { Activity, badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
@@ -70,8 +70,9 @@ export default class extends BotCommand {
 				let time = 5 * 1_000_000 * Time.Minute;
 				let i = handlePassiveImplings(msg.author, {
 					duration: time,
-					activity: { type: Activity.MonsterKilling } as MonsterKillOptions
+					activity: Activity.MonsterKilling
 				} as any);
+				console.log(i);
 				if (i) {
 					total.add(i.bank);
 				}
