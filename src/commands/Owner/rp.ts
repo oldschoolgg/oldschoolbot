@@ -2,7 +2,7 @@ import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { notEmpty, Time, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
-import { Bank } from 'oldschooljs';
+import { Bank, MonsterKillOptions } from 'oldschooljs';
 
 import { Activity, badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
@@ -12,7 +12,6 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
-import { GauntletOptions } from '../../lib/types/minions';
 import { cleanString, formatDuration, getSupportGuild, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -52,7 +51,7 @@ export default class extends BotCommand {
 				// for (let i = 0; i < 50_000; i++) {
 				let i = handlePassiveImplings(msg.author, {
 					duration: hours,
-					activity: { type: Activity.Gauntlet } as GauntletOptions
+					activity: { type: Activity.MonsterKilling } as MonsterKillOptions
 				} as any);
 				if (i) {
 					total.add(i.bank);

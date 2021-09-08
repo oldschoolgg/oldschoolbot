@@ -97,7 +97,7 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
-			duration: Time.Minute * 142 * 1_000_000,
+			duration,
 			type: Activity.Zalcano,
 			performance: this.calcPerformance(kcLearned, skillPercentage),
 			isMVP: percentChance(80)
