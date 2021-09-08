@@ -95,7 +95,24 @@ const firstNames = [
 	'Big',
 	'Smol'
 ];
-const lastNames = ['Mu', 'Lu', 'Jo', 'Buu', 'Nana', 'Ko', 'Ku', 'Qa', 'Cha', 'Ueu', 'Itu', 'Suk', 'In', 'Mo', 'Gree'];
+const lastNames = [
+	'Mu',
+	'Lu',
+	'Jo',
+	'Buu',
+	'Nana',
+	'Ko',
+	'Ku',
+	'Qa',
+	'Cha',
+	'Ueu',
+	'Itu',
+	'Suk',
+	'In',
+	'Mo',
+	'Gree',
+	'Edin'
+];
 const titles = [
 	'undefeated',
 	'strong',
@@ -212,7 +229,7 @@ export function getRandomMonkey(exclude: Monkey[]): Monkey {
 }
 
 export function monkeyTierOfUser(user: KlasaUser) {
-	for (const tier of monkeyTiers) {
+	for (const tier of [...monkeyTiers].reverse()) {
 		if (user.hasItemEquippedOrInBank(tier.greegree.id)) {
 			return tier.id;
 		}

@@ -84,6 +84,7 @@ export const ChimplingImpling = new SimpleOpenable({
 		.add('Clue scroll (grandmaster)')
 		.tertiary(300, 'Gorilla rumble greegree')
 		.tertiary(7000, 'Monkey egg')
+		.tertiary(3000, 'Monkey dye')
 		.tertiary(100, 'Banana enchantment scroll')
 		.tertiary(1_000_000, 'Shiny monkey nuts')
 });

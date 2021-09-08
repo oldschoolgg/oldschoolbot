@@ -995,7 +995,6 @@ setCustomItem(40_067, 'Dwarven warnana', 'Dwarven warhammer', {}, 1_000_000_000)
 setCustomItem(40_068, 'Twisted bownana', 'Twisted bow', {}, 500_000_000);
 setCustomItem(40_069, 'Zaryte bownana', 'Zaryte bow', {}, 500_000_000);
 setCustomItem(40_070, 'Hellfire bownana', 'Hellfire bow', {}, 500_000_000);
-setCustomItem(40_071, 'Monkey dye', 'Egg', {}, 10_000_000);
 
 /**
  * Non-mystery box items
@@ -1777,6 +1776,8 @@ setCustomItem(48_224, 'Monkey egg', 'Egg', {}, 100_000_000);
 setCustomItem(48_225, 'Banana enchantment scroll', 'Egg', {}, 1_000_000);
 setCustomItem(48_226, 'Chimpling jar', 'Egg', {}, 100_000);
 setCustomItem(48_227, 'Shiny monkey nuts', 'Egg', {}, 100_000);
+setCustomItem(48_228, 'Monkey dye', 'Egg', {}, 10_000_000);
+setCustomItem(48_229, 'Marimbo statue', 'Egg', {}, 10_000_000);
 
 setCustomItem(48_324, 'Blacksmith crate', 'Mystery box', {}, 100_000);
 /**

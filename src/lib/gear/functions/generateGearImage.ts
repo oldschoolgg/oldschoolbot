@@ -267,17 +267,18 @@ export async function generateGearImage(
 	}
 
 	if (transMogImage) {
+		const maxWidth = gearTemplateImage.width * 0.45;
 		const altSize = calcAspectRatioFit(
 			transMogImage.width / 2,
 			transMogImage.height / 2,
-			gearTemplateImage.width * 0.8,
+			maxWidth,
 			transmogItem?.maxHeight ?? gearTemplateImage.height * 0.5
 		);
+
 		const y = gearTemplateImage.height * 0.9 - altSize.height;
 
-		ctx.fillStyle = 'magenta';
-		ctx.fillRect(10, y, altSize.width, altSize.height);
-		ctx.drawImage(transMogImage, 10, y, altSize.width, altSize.height);
+		ctx.fillRect(maxWidth / 2 - altSize.width / 2, y, altSize.width, altSize.height);
+		ctx.drawImage(transMogImage, maxWidth / 2 - altSize.width / 2, y, altSize.width, altSize.height);
 	}
 
 	if (!userBgImage.transparent) bankTask?.drawBorder(ctx, sprite, false);
