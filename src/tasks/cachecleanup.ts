@@ -2,6 +2,7 @@ import { SnowflakeUtil } from 'discord.js';
 import { Time } from 'e';
 import { Colors, Task, TaskStore } from 'klasa';
 
+import { SupportServer } from '../lib/constants';
 import PostgresProvider from '../providers/postgres';
 
 const THRESHOLD = Time.Minute * 30;
@@ -44,7 +45,7 @@ export default class MemorySweeper extends Task {
 		// Per-Guild sweeper
 		for (const guild of this.client.guilds.cache.values()) {
 			// Don't wipe the Old School Bot guild
-			if (guild.id === '342983479501389826') continue;
+			if (guild.id === SupportServer) continue;
 
 			// Clear presences
 			presences += guild.presences.cache.size;
