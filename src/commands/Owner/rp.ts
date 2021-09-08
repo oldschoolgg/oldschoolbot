@@ -15,7 +15,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
-import { cleanString, formatDuration, getSupportGuild, itemNameFromID } from '../../lib/util';
+import { asyncExec, cleanString, formatDuration, getSupportGuild, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
@@ -48,6 +48,24 @@ export default class extends BotCommand {
 		if (msg.guild!.id !== '342983479501389826') return null;
 
 		switch (cmd.toLowerCase()) {
+			case 'git': {
+				try {
+					const currentCommit = await asyncExec('git log --pretty=oneline -1', {
+						timeout: 30
+					});
+					const rawStr = currentCommit.stdout.trim();
+					const [commitHash, ...commentArr] = rawStr.split(' ');
+					return msg.channel.send({
+						embeds: [
+							new MessageEmbed()
+								.setDescription(`[Diff between latest and now](https://github.com/oldschoolgg/oldschoolbot/compare/${commitHash}...master)
+**Last commit:** [\`${commentArr.join(' ')}\`](https://github.com/oldschoolgg/oldschoolbot/commit/${commitHash})`)
+						]
+					});
+				} catch {
+					return msg.channel.send('Failed to fetch git info.');
+				}
+			}
 			case 'imps': {
 				const total = new Bank();
 				let hours = 0;

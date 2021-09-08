@@ -57,7 +57,9 @@ export default class extends BotCommand {
 
 		if (craftName.toLowerCase().includes('zenyte') && quantity === null) quantity = 1;
 
-		const craftable = Crafting.Craftables.find(item => stringMatches(item.name, craftName));
+		const craftable = Crafting.Craftables.find(
+			item => stringMatches(item.name, craftName) || item.alias?.some(a => stringMatches(a, craftName))
+		);
 
 		if (!craftable) {
 			return msg.channel.send(

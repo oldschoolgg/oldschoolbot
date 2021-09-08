@@ -231,7 +231,8 @@ const Gold: Craftable[] = [
 		tickRate: 3
 	},
 	{
-		name: 'Dragonstone necklace',
+		name: 'Dragon necklace',
+		alias: ['Dragonstone necklace'],
 		id: itemID('Dragon necklace'),
 		level: 72,
 		xp: 105,

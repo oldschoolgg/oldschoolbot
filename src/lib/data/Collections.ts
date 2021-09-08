@@ -642,6 +642,10 @@ export const allCollectionLogs: ICollection = {
 			'Barbarian Assault': {
 				alias: ['ba', 'barb assault', 'barbarian assault'],
 				items: barbarianAssaultCL,
+				kcActivity: {
+					Default: async user => user.getMinigameScore('BarbarianAssault'),
+					'High Gambles': async user => user.settings.get(UserSettings.HighGambles)
+				},
 				roleCategory: ['minigames'],
 				isActivity: true
 			},
@@ -800,7 +804,7 @@ export const allCollectionLogs: ICollection = {
 				items: chaosDruisCL
 			},
 			'Chompy Birds': {
-				alias: ['chompy', 'bgc', 'big chompy hunting'],
+				alias: ['chompy', 'bgc', 'big chompy hunting', 'ch', 'chompyhunting', 'chompyhunt'],
 				kcActivity: 'BigChompyBirdHunting',
 				items: chompyBirdsCL
 			},
