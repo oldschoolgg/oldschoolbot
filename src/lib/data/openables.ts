@@ -238,6 +238,13 @@ const DwarvenCrateTable = new LootTable()
 	.add('Beer', 1, 3)
 	.add('Kebab', 1, 3);
 
+const BlacksmithCrateTable = new LootTable()
+	.add('Blacksmith helmet')
+	.add('Blacksmith top')
+	.add('Blacksmith apron')
+	.add('Blacksmith gloves')
+	.add('Blacksmith boots');
+
 export const SpoilsOfWarBaseTable = new LootTable()
 	.add('Pure essence', [4000, 6000], 6)
 	.add('Coins', [20_000, 30_000], 5)
@@ -409,6 +416,13 @@ const Openables: Openable[] = [
 		itemID: itemID('Dwarven crate'),
 		aliases: ['dwarven crate', 'dc'],
 		table: DwarvenCrateTable,
+		emoji: Emoji.MysteryBox
+	},
+	{
+		name: 'Blacksmith crate',
+		itemID: itemID('Blacksmith crate'),
+		aliases: ['blacksmith crate', 'bsc'],
+		table: BlacksmithCrateTable,
 		emoji: Emoji.MysteryBox
 	},
 	{
