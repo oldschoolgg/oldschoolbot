@@ -31,12 +31,12 @@ export default class extends BotCommand {
 			: undefined;
 
 		const res = await this.client.orm.query(
-			`SELECT user_id as user, sum(xp) as total_xp, max(date) as lastDate
+			`SELECT user_id AS user, sum(xp) AS total_xp, max(date) AS lastDate
 FROM xp_gains
 WHERE date > now() - INTERVAL '1 ${interval}'
 ${skillObj ? `AND skill = '${skillObj.id}'` : ''}
 GROUP BY user_id
-ORDER BY total_xp DESC, lastDate asc
+ORDER BY total_xp DESC, lastDate ASC
 LIMIT 10;`
 		);
 
