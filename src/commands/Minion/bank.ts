@@ -30,6 +30,10 @@ export default class extends BotCommand {
 		const baseBank = msg.author.bank({ withGP: true });
 
 		if (msg.commandText === 'bs') {
+			if (page && !itemNameOrID) {
+				itemNameOrID = String(page);
+				page = undefined;
+			}
 			msg.flagArgs.search = String(itemNameOrID);
 			// Clear item string
 			itemNameOrID = '';
