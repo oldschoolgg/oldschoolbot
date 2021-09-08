@@ -87,7 +87,7 @@ async function addRoles(g: Guild, users: string[], role: string, badge: number |
 	if (added.length || removed.length) {
 		str += '\n';
 	} else {
-		return `\nNo changes in for **${roleName}**`;
+		return `\nNo changes for **${roleName}**`;
 	}
 	return str;
 }
