@@ -51,7 +51,7 @@ export interface Species {
 	name: string;
 	// Tame type within its specie
 	variants: number[];
-	shinyVariant?: number;
+	shinyVariant: number;
 	/**
 	 * Tames get assigned a max level in these ranges,
 	 * in a bell curve fashion, where the middle of the range
@@ -99,8 +99,8 @@ export const tameSpecies: Species[] = [
 		id: 2,
 		type: TameType.Gatherer,
 		name: 'Monkey',
-		variants: [1],
-		shinyVariant: 2,
+		variants: [1, 2, 3],
+		shinyVariant: 4,
 		combatLevelRange: [12, 24],
 		artisanLevelRange: [1, 10],
 		supportLevelRange: [1, 10],
