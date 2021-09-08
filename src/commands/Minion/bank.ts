@@ -118,7 +118,7 @@ export default class extends BotCommand {
 			title: `${msg.author.username}'s Bank`,
 			flags: {
 				...msg.flagArgs,
-				page: page ? page - 1 : 0
+				page
 			},
 			user: msg.author,
 			gearPlaceholder: msg.author.rawGear()
