@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import killableMonsters from '../../minions/data/killableMonsters';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
@@ -386,6 +387,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [30, 60],
 		weight: 5,
 		monsters: [Monsters.SteelDragon.id],
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)!.levelRequirements,
 		combatLevel: 85,
 		questPoints: 34,
 		unlocked: true
