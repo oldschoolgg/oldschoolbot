@@ -12,6 +12,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
+import { GauntletOptions } from '../../lib/types/minions';
 import { cleanString, formatDuration, getSupportGuild, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -47,17 +48,17 @@ export default class extends BotCommand {
 		switch (cmd.toLowerCase()) {
 			case 'impsim': {
 				const total = new Bank();
-				let hours = 0;
-				for (let i = 0; i < 50_000; i++) {
-					let i = handlePassiveImplings(msg.author, {
-						duration: Time.Hour,
-						activity: Activity.Gauntlet
-					} as any);
-					if (i) {
-						total.add(i.bank);
-					}
-					hours++;
+				let hours = 142 * 1_000_000 * Time.Minute;
+				// for (let i = 0; i < 50_000; i++) {
+				let i = handlePassiveImplings(msg.author, {
+					duration: hours,
+					activity: { type: Activity.Gauntlet } as GauntletOptions
+				} as any);
+				if (i) {
+					total.add(i.bank);
 				}
+				// hours++;
+				// }
 				let totalItems = 0;
 				for (const [, qty] of total.items()) totalItems += qty;
 				return msg.channel.sendBankImage({

@@ -21,23 +21,21 @@ const {
 	LuckyImpling
 } = Openables;
 
-type Impling = [number, number];
-
-export const implings: Impling[] = [
+export const implings: Record<number, { level: number }> = {
 	// [Impling ID, Level to Catch]
-	[BabyImpling.id, 17],
-	[YoungImpling.id, 22],
-	[GourmetImpling.id, 28],
-	[EarthImpling.id, 36],
-	[EssenceImpling.id, 42],
-	[EclecticImpling.id, 50],
-	[NatureImpling.id, 58],
-	[MagpieImpling.id, 65],
-	[NinjaImpling.id, 74],
-	[CrystalImpling.id, 80],
-	[DragonImpling.id, 83],
-	[LuckyImpling.id, 89]
-];
+	[BabyImpling.id]: { level: 17 },
+	[YoungImpling.id]: { level: 22 },
+	[GourmetImpling.id]: { level: 28 },
+	[EarthImpling.id]: { level: 36 },
+	[EssenceImpling.id]: { level: 42 },
+	[EclecticImpling.id]: { level: 50 },
+	[NatureImpling.id]: { level: 58 },
+	[MagpieImpling.id]: { level: 65 },
+	[NinjaImpling.id]: { level: 74 },
+	[CrystalImpling.id]: { level: 80 },
+	[DragonImpling.id]: { level: 83 },
+	[LuckyImpling.id]: { level: 89 }
+};
 
 const defaultImpTable = new LootTable()
 	.add('Baby impling jar', 1, 66)
@@ -54,7 +52,7 @@ const defaultImpTable = new LootTable()
 
 const implingTableByWorldLocation = {
 	[WorldLocations.Priffdinas]: new LootTable({ limit: 142 }).add('Crystal impling jar', 1, 1),
-	[WorldLocations.World]: new LootTable().oneIn(69, defaultImpTable)
+	[WorldLocations.World]: new LootTable().oneIn(68, defaultImpTable)
 };
 
 export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
@@ -66,11 +64,13 @@ export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions
 	let bank = new Bank();
 	const missed = new Bank();
 
+	const impTable = implingTableByWorldLocation[activityInArea(data)];
+
 	for (let i = 0; i < minutes; i++) {
-		const loot = implingTableByWorldLocation[activityInArea(data)].roll();
+		const loot = impTable.roll();
 		if (loot.length === 0) continue;
-		const implingReceived = implings.find(i => i[0] === loot.items()[0][0].id)!;
-		if (level < implingReceived[1]) missed.add(loot);
+		const implingReceived = implings[loot.items()[0][0].id]!;
+		if (level < implingReceived.level) missed.add(loot);
 		else bank.add(loot);
 	}
 
