@@ -13,6 +13,7 @@ import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank
 import { KillableMonster } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { createTameTask, getUsersTame, tameSpecies, TameType } from '../../lib/tames';
 import { TameActivityTable } from '../../lib/typeorm/TameActivityTable.entity';
@@ -184,7 +185,6 @@ export async function getTameStatus(user: KlasaUser) {
 }
 
 let bankTask: BankImageTask | null = null;
-
 // Split sprite into smaller images by coors and size
 function getClippedRegion(image: Image | Canvas, x: number, y: number, width: number, height: number) {
 	const canvas = createCanvas(0, 0);
@@ -243,7 +243,7 @@ export default class extends BotCommand {
 			description: 'Use to control and manage your tames.',
 			examples: ['+tames k fire giant', '+tames', '+tames select 1', '+tames setname LilBuddy'],
 			subcommands: true,
-			usage: '[k|c|select|setname|feed] [input:...str]',
+			usage: '[k|c|select|setname|feed|merge] [input:...str]',
 			usageDelim: ' ',
 			aliases: ['tame', 't']
 		});
@@ -740,5 +740,97 @@ export default class extends BotCommand {
 		}
 
 		return msg.channel.send(reply);
+	}
+
+	async merge(msg: KlasaMessage, [tame = '']: [string]) {
+		const requirements = {
+			[SkillsEnum.Magic]: 110,
+			[SkillsEnum.Runecraft]: 110,
+			[SkillsEnum.Herblore]: 110
+		};
+
+		if (!msg.author.hasSkillReqs(requirements)) {
+			return msg.channel.send(
+				`You are not skillful enough to do this merging ritual. You need the following requirements: ${formatSkillRequirements(
+					requirements
+				)}`
+			);
+		}
+
+		const tames = await TamesTable.find({ where: { userID: msg.author.id } });
+		const toSelect = tames.find(t => stringMatches(tame, t.id.toString()) || stringMatches(tame, t.nickname ?? ''));
+		if (!toSelect || !tame) {
+			return msg.channel.send(
+				"Couldn't find a tame to participate in the ritual. Make sure you selected the correct Tame, by its number or nickname."
+			);
+		}
+
+		const [currentTame, currentTask] = await getUsersTame(msg.author);
+		if (currentTask) return msg.channel.send('Your tame is busy. Wait for it to be free to do this.');
+		if (!currentTame) return msg.channel.send("You don't have a selected tame. Select your tame first.");
+		if (currentTame.id === toSelect.id) return msg.channel.send(`You can't merge ${currentTame.name} with itself!`);
+		if (currentTame.species.id !== toSelect.species.id) {
+			return msg.channel.send("You can't merge two tames from two different species!");
+		}
+
+		if (!msg.author.owns(currentTame.species.mergingCost)) {
+			return msg.channel.send(
+				`You don't have enough materials for this ritual. You need ${
+					currentTame.species.mergingCost
+				}. You are missing **${currentTame.species.mergingCost.clone().remove(msg.author.bank())}**.`
+			);
+		}
+
+		const mergeStuff = {
+			totalLoot: new Bank(currentTame!.totalLoot).add(toSelect.totalLoot).bank,
+			fedItems: new Bank(currentTame!.fedItems).add(toSelect.fedItems).bank,
+			maxCombatLevel: Math.max(currentTame!.maxCombatLevel, toSelect.maxCombatLevel),
+			maxArtisanLevel: Math.max(currentTame!.maxArtisanLevel, toSelect.maxArtisanLevel),
+			maxGathererLevel: Math.max(currentTame!.maxGathererLevel, toSelect.maxGathererLevel),
+			maxSupportLevel: Math.max(currentTame!.maxSupportLevel, toSelect.maxSupportLevel)
+		};
+
+		delete msg.flagArgs.cf;
+		delete msg.flagArgs.confirm;
+
+		await msg.confirm(
+			`Are you sure you want to merge **${toSelect.name}** (Tame ${toSelect.id}) into **${
+				currentTame!.name
+			}** (Tame ${currentTame!.id})?\n\n${
+				currentTame!.name
+			} will receive all the items fed and all loot obtained from ${
+				toSelect.name
+			}, and will have its stats match the highest of both tames.\n\n**THIS ACTION CAN NOT BE REVERSED!**`
+		);
+
+		// Set the merged tame activities to the tame that is consuming it
+		await TameActivityTable.update(
+			{
+				tame: toSelect.id
+			},
+			{
+				tame: currentTame!.id
+			}
+		);
+		// Delete merged tame
+		await TamesTable.delete({
+			id: toSelect.id
+		});
+
+		await TamesTable.update(
+			{
+				id: currentTame!.id
+			},
+			{
+				totalLoot: mergeStuff.totalLoot,
+				fedItems: mergeStuff.fedItems,
+				maxCombatLevel: mergeStuff.maxCombatLevel,
+				maxArtisanLevel: mergeStuff.maxArtisanLevel,
+				maxGathererLevel: mergeStuff.maxGathererLevel,
+				maxSupportLevel: mergeStuff.maxSupportLevel
+			}
+		);
+
+		return msg.channel.send(`${currentTame!.name} consumed ${toSelect.name} and all its attributes.`);
 	}
 }
