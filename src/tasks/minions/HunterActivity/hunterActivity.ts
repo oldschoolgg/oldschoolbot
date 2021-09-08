@@ -71,8 +71,8 @@ export default class extends Task {
 			// The more experienced the less chance of death.
 			riskDeathChance += Math.min(Math.floor((user.getCreatureScore(creature) ?? 1) / 100), 200);
 
-			// Gives lower death chance depending on what the user got equipped in misc.
-			const [, , score] = hasWildyHuntGearEquipped(user.getGear('misc'));
+			// Gives lower death chance depending on what the user got equipped in wildy.
+			const [, , score] = hasWildyHuntGearEquipped(user.getGear('wildy'));
 			riskDeathChance += score;
 			for (let i = 0; i < duration / Time.Minute; i++) {
 				if (roll(riskPkChance)) {
@@ -89,10 +89,10 @@ export default class extends Task {
 					await user.removeItemFromBank(itemID('Saradomin brew(4)'), 10);
 					await user.removeItemFromBank(itemID('Super restore(4)'), 5);
 				}
-				const newGear = { ...user.settings.get(UserSettings.Gear.Misc) };
+				const newGear = { ...user.settings.get(UserSettings.Gear.Wildy) };
 				newGear[EquipmentSlot.Body] = null;
 				newGear[EquipmentSlot.Legs] = null;
-				await user.settings.update(UserSettings.Gear.Misc, newGear);
+				await user.settings.update(UserSettings.Gear.Wildy, newGear);
 				pkedQuantity = 0.5 * successfulQuantity;
 				xpReceived *= 0.8;
 				diedStr =
