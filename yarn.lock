@@ -2456,10 +2456,10 @@ fastify-warning@^0.2.0:
   resolved "https://registry.yarnpkg.com/fastify-warning/-/fastify-warning-0.2.0.tgz#e717776026a4493dc9a2befa44db6d17f618008f"
   integrity sha512-s1EQguBw/9qtc1p/WTY4eq9WMRIACkj+HTcOIK1in4MV5aFaQC9ZCIt0dJ7pr5bIf4lPpHvAtP2ywpTNgs7hqw==
 
-fastify@^3.20.2:
-  version "3.20.2"
-  resolved "https://registry.yarnpkg.com/fastify/-/fastify-3.20.2.tgz#99a5a2b4b4a8c468dfae245219af053b12c5fe55"
-  integrity sha512-POvayPpbyvkE/wHQquQsNwIgYKVRz7HhCXYJyzUuWEN3kch7/QeI+/azQCjS6+XHiHZPWQwrBKjJB9FBdJHrgA==
+fastify@^3.21.0:
+  version "3.21.0"
+  resolved "https://registry.yarnpkg.com/fastify/-/fastify-3.21.0.tgz#c732b58ffec74f885d1dc6b7b1a993288dfea9d6"
+  integrity sha512-hc9p0meCV8PXIQzg8BwXekhCmJm5LHfeJi7U3mKQTMu7pQT24CL756jUxM9sOLEbBpQoD82PejVPW2lfLiXJsw==
   dependencies:
     "@fastify/ajv-compiler" "^1.0.0"
     abstract-logging "^2.0.0"
@@ -3988,6 +3988,11 @@ node-fetch@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
+
+node-fetch@^2.6.2:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.2.tgz#986996818b73785e47b1965cc34eb093a1d464d0"
+  integrity sha512-aLoxToI6RfZ+0NOjmWAgn9+LEd30YCkJKFSyWacNZdEKTit/ZMcKjGkTRo8uWEsnIb/hfKecNPEbln02PdWbcA==
 
 node-gyp-build@^4.2.0, node-gyp-build@^4.2.2:
   version "4.2.3"
