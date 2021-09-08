@@ -73,6 +73,7 @@ export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions
 		if (level < implingReceived[1]) missed.add(loot);
 		else bank.add(loot);
 	}
+
 	if (bank.length === 0 && missed.length === 0) return null;
 	return { bank, missed };
 }
