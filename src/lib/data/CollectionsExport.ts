@@ -1,3 +1,4 @@
+import { objectEntries } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -1918,4 +1919,5 @@ export const questCL = resolveItems([
 	'Bronze gloves',
 	'Hardleather gloves'
 ]);
-export const implingsCL = implings.map(i => i[0].id);
+
+export const implingsCL = objectEntries(implings).map(m => Number(m[0]));
