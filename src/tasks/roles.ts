@@ -45,7 +45,7 @@ GROUP BY user_id
 ORDER BY count(user_id) DESC
 LIMIT 1;`;
 
-async function addRoles(g: Guild, users: string[], role: Roles, badge: number | null): Promise<string> {
+async function addRoles(g: Guild, users: string[], role: string, badge: number | null): Promise<string> {
 	let added: string[] = [];
 	let removed: string[] = [];
 	let _role = g.roles.cache.get(role);
@@ -77,7 +77,7 @@ async function addRoles(g: Guild, users: string[], role: Roles, badge: number | 
 			}
 		}
 	}
-	let str = `**${roleName}**`;
+	let str = `\n\n**${roleName}**`;
 	if (added.length > 0) {
 		str += `\nAdded to: ${added.join(', ')}.`;
 	}
@@ -85,9 +85,9 @@ async function addRoles(g: Guild, users: string[], role: Roles, badge: number | 
 		str += `\nRemoved from: ${removed.join(', ')}.`;
 	}
 	if (added.length || removed.length) {
-		str += '\n\n';
+		str += '\n';
 	} else {
-		return `Nothing for [${roleName}]`;
+		return `\nNo changes in for **${roleName}**`;
 	}
 	return str;
 }

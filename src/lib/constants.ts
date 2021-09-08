@@ -1,5 +1,4 @@
 import { MessageButton } from 'discord.js';
-import { objectEntries } from 'e';
 import { KlasaMessage } from 'klasa';
 import PQueue from 'p-queue';
 import { join } from 'path';
@@ -10,33 +9,32 @@ import { ActivityTaskOptions } from './types/minions';
 
 export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
 
-export enum Channel {
-	Notifications = '469523207691436042',
-	ErrorLogs = '665678499578904596',
-	GrandExchange = '682996313209831435',
-	Developers = '648196527294251020',
-	BlacklistLogs = '782459317218967602',
-	EconomyLogs = '802029843712573510',
-	NewSponsors = '806744016309714966',
-	HelpAndSupport = '668073484731154462'
-}
+export const Channel = {
+	Notifications: DISCORD_SETTINGS.Channels?.Notifications ?? '469523207691436042',
+	ErrorLogs: DISCORD_SETTINGS.Channels?.ErrorLogs ?? '665678499578904596',
+	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '682996313209831435',
+	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
+	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
+	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
+	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
+	HelpAndSupport: DISCORD_SETTINGS.Channels?.HelpAndSupport ?? '668073484731154462'
+};
 
-export enum Roles {
-	Booster = '665908237152813057',
-	Contributor = '456181501437018112',
-	Moderator = '622806157563527178',
-	PatronTier1 = '678970545789730826',
-	PatronTier2 = '678967943979204608',
-	PatronTier3 = '687408140832342043',
-	Patron = '679620175838183424',
-	// Status Roles
-	TopSkiller = '795266465329709076',
-	TopCollector = '795271210141351947',
-	TopSacrificer = '795933981715464192',
-	TopMinigamer = '832798997033779220',
-	TopClueHunter = '839135887467610123',
-	TopSlayer = '856080958247010324'
-}
+export const Roles = {
+	Booster: DISCORD_SETTINGS.Roles?.Booster ?? '665908237152813057',
+	Contributor: DISCORD_SETTINGS.Roles?.Contributor ?? '456181501437018112',
+	Moderator: DISCORD_SETTINGS.Roles?.Moderator ?? '622806157563527178',
+	PatronTier1: DISCORD_SETTINGS.Roles?.PatronTier1 ?? '678970545789730826',
+	PatronTier2: DISCORD_SETTINGS.Roles?.PatronTier2 ?? '678967943979204608',
+	PatronTier3: DISCORD_SETTINGS.Roles?.PatronTier3 ?? '687408140832342043',
+	Patron: DISCORD_SETTINGS.Roles?.Patron ?? '679620175838183424',
+	TopSkiller: DISCORD_SETTINGS.Roles?.TopSkiller ?? '795266465329709076',
+	TopCollector: DISCORD_SETTINGS.Roles?.TopCollector ?? '795271210141351947',
+	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '795933981715464192',
+	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '832798997033779220',
+	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '839135887467610123',
+	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '856080958247010324'
+};
 
 export const enum Emoji {
 	MoneyBag = '<:MoneyBag:493286312854683654>',
@@ -493,19 +491,3 @@ export const lastTripCache = new Map<
 	string,
 	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
 >();
-
-// Override Roles and Channels settings with what is set on the config.ts
-if (DISCORD_SETTINGS.Roles) {
-	for (const [_key, _value] of objectEntries(DISCORD_SETTINGS.Roles)) {
-		if ((Roles as any)[_key]) {
-			(Roles as any)[_key] = _value;
-		}
-	}
-}
-if (DISCORD_SETTINGS.Channels) {
-	for (const [_key, _value] of objectEntries(DISCORD_SETTINGS.Channels)) {
-		if ((Channel as any)[_key]) {
-			(Channel as any)[_key] = _value;
-		}
-	}
-}

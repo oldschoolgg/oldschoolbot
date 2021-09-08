@@ -121,7 +121,7 @@ export type CategoryFlag =
 	| 'simulation';
 
 export interface IDiscordSettings {
-	Roles?: Record<string, string>;
-	Channels?: Record<string, string>;
-	SupportServer?: string;
+	Roles: Record<string, string>;
+	Channels: Record<string, string>;
+	SupportServer: string;
 }
