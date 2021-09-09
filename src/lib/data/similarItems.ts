@@ -327,7 +327,8 @@ const source: [string, (string | number)[]][] = [
 			'Trident of the swamp (e)',
 			'Uncharged toxic trident (e)'
 		]
-	]
+	],
+	['Runecraft cape', ['Max cape', 'Runecraft cape(t)']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
