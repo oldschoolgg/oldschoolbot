@@ -5,14 +5,13 @@ import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank } from 'oldschooljs';
 
-import { Activity, badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
+import { Activity, badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
-import { handlePassiveImplings, implings } from '../../lib/implings';
+import { handlePassiveImplings } from '../../lib/implings';
 import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { asyncExec, cleanString, formatDuration, getSupportGuild, itemNameFromID } from '../../lib/util';
@@ -45,7 +44,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [cmd, input, str]: [string, KlasaUser | string | undefined, string | undefined]) {
-		if (msg.guild!.id !== '342983479501389826') return null;
+		if (msg.guild!.id !== SupportServer) return null;
 
 		switch (cmd.toLowerCase()) {
 			case 'git': {
@@ -66,46 +65,22 @@ export default class extends BotCommand {
 					return msg.channel.send('Failed to fetch git info.');
 				}
 			}
-			case 'imps': {
-				const total = new Bank();
-				let hours = 0;
-				let effectiveImps = implings.filter(i => {
-					return msg.author.skillLevel(SkillsEnum.Hunter) >= i[2];
-				});
-				while (total.length < effectiveImps.length) {
-					let i = await handlePassiveImplings(msg.author, {
-						duration: Time.Hour,
-						type: Activity.Gauntlet
-					} as any);
-					if (i) {
-						total.add(i.bank);
-					}
-					hours++;
-				}
-				return msg.channel.sendBankImage({
-					content: `It took ${hours} hours to get atleast 1 of every impling. You got: ${total}.`,
-					bank: total.bank,
-					flags: { names: 'names' }
-				});
-			}
 			case 'impsim': {
 				const total = new Bank();
-				let hours = 0;
-				for (let i = 0; i < 5000; i++) {
-					let i = await handlePassiveImplings(msg.author, {
-						duration: Time.Hour,
-						activity: Activity.Gauntlet
-					} as any);
-					if (i) {
-						total.add(i.bank);
-					}
-					hours++;
+				let time = 5 * 1_000_000 * Time.Minute;
+				let i = handlePassiveImplings(msg.author, {
+					duration: time,
+					activity: Activity.MonsterKilling
+				} as any);
+				console.log(i);
+				if (i) {
+					total.add(i.bank);
 				}
 				let totalItems = 0;
 				for (const [, qty] of total.items()) totalItems += qty;
 				return msg.channel.sendBankImage({
-					content: `${hours} hours, 1 Impling every ${(
-						((totalItems / hours) * Time.Hour) /
+					content: `${(time / Time.Hour).toFixed(2)} hours, 1 Impling every ${(
+						((totalItems / time) * Time.Hour) /
 						Time.Minute
 					).toFixed(2)} mins. You got: ${total}.`,
 					bank: total.bank,

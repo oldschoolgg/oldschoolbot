@@ -21,7 +21,7 @@ export class ActivityTable extends BaseEntity {
 	@Column('timestamp without time zone', { name: 'finish_date', nullable: false })
 	public finishDate!: Date;
 
-	@Column('integer', { name: 'duration', nullable: false })
+	@Column('bigint', { name: 'duration', nullable: false })
 	public duration!: number;
 
 	@Index()

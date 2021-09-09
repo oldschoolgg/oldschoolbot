@@ -475,7 +475,7 @@ export default class extends BotCommand {
 
 		return msg.channel.send({
 			content: `${badgesStr}${msg.author.username}, ${
-				userTames.length > 1 ? 'there are your tames' : 'this is your tame'
+				userTames.length > 1 ? 'here are your tames' : 'this is your tame'
 			}!`,
 			files: [
 				new MessageAttachment(
