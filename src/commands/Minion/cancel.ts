@@ -1,8 +1,10 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { Activity } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { cancelTask, getActivityOfUser } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import chatHeadImage from '../../lib/util/chatHeadImage';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -27,6 +29,17 @@ export default class extends BotCommand {
 
 		if ((currentTask as any).users && (currentTask as any).users.length > 1) {
 			return msg.channel.send('Your minion is on a group activity and cannot cancel!');
+		}
+
+		if (currentTask.type === Activity.MonkeyRumble) {
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content: 'You no allowed to leave the arena! You finish fight!',
+						head: 'marimbo'
+					})
+				]
+			});
 		}
 
 		await msg.confirm(

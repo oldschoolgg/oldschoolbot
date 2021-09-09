@@ -1,18 +1,20 @@
-import { roll, Time } from 'e';
+import { randArrItem, Time } from 'e';
 import { KlasaMessage, Task } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
-import { monkeyTierOfUser } from '../../../lib/monkeyRumble';
+import { monkeyHeadImage, monkeyTierOfUser } from '../../../lib/monkeyRumble';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MonkeyRumbleOptions } from '../../../lib/types/minions';
-import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
-const rewards = [
-	[getOSItem('Monkey egg'), 1000],
-	[getOSItem('Monkey dye'), 1000]
-] as const;
+const rewardTable = new LootTable().add('Monkey egg').add('Monkey dye');
+
+const gotUniqueMessages = [
+	'You fought well. Take this as a reward.',
+	'You fight well. I respect little monkey, take this reward.',
+	'You did well in the arena, we should fight again. Take these items.'
+];
 
 export default class extends Task {
 	async run(data: MonkeyRumbleOptions) {
@@ -22,29 +24,42 @@ export default class extends Task {
 		await incrementMinigameScore(userID, 'MadMarimbosMonkeyRumble', quantity);
 
 		const monkeyTier = monkeyTierOfUser(user);
-		const strXP = quantity * (monkeyTier * 2.5 * (user.skillLevel(SkillsEnum.Strength) * 10.6));
+		const strXP = Math.floor(quantity * 2.666 * (monkeyTier * 2.5 * (user.skillLevel(SkillsEnum.Strength) * 10.6)));
 		let xpStr = await user.addXP({
 			skillName: SkillsEnum.Strength,
 			amount: strXP,
 			duration,
 			minimal: true
 		});
-		xpStr += await user.addXP({ skillName: SkillsEnum.Agility, amount: strXP / 5, duration, minimal: true });
-		xpStr += await user.addXP({ skillName: SkillsEnum.Defence, amount: strXP / 10, duration, minimal: true });
+		xpStr += await user.addXP({
+			skillName: SkillsEnum.Agility,
+			amount: Math.floor(strXP / 4),
+			duration,
+			minimal: true
+		});
+		xpStr += await user.addXP({
+			skillName: SkillsEnum.Defence,
+			amount: Math.floor(strXP / 6.5),
+			duration,
+			minimal: true
+		});
 
 		const tokens = Math.ceil(quantity * (monkeyTier / 2));
 		const loot = new Bank().add('Rumble token', tokens);
 
-		let debugstr = '';
-		// let gotRare = false;
-		for (const [reward, chance] of rewards) {
-			const realChance = Math.floor(chance * 5 - monkeyTier) / quantity;
-			debugstr += `1 in ${realChance} of ${reward.name}`;
-			if (roll(realChance)) {
-				loot.add(reward.id);
-				// gotRare = true;
-				break;
-			}
+		let files = [];
+		const specialMonkeys = monkeys.filter(m => m.special);
+		for (const monkey of specialMonkeys) {
+			const unique = rewardTable.roll();
+			files.push(
+				await monkeyHeadImage({
+					monkey,
+					content: unique.has('Monkey egg')
+						? 'You are strong warrior. Take this monkey egg, raise him well and take care of him or I find you and crush you.'
+						: randArrItem(gotUniqueMessages)
+				})
+			);
+			loot.add(unique);
 		}
 
 		await user.addItemsToBank(loot, true);
@@ -56,16 +71,14 @@ export default class extends Task {
 			this.client,
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished ${quantity}x Rumble fights against ${quantity}x monkeys (${monkeys
-				.map(m => m.name)
-				.join(
-					', '
-				)}), your monkey tier is ${monkeyTier}. ${rumbleTokensPerHour} tokens/hr, ${fightsPerHour} fights/hr\n${xpStr}\nYou received **${loot}.**\n\n${debugstr}`,
+			`${user}, ${user.minionName} finished ${quantity}x fights against ${quantity}x monkeys, your monkey tier is ${monkeyTier}. ${rumbleTokensPerHour} tokens/hr, ${fightsPerHour} fights/hr
+${xpStr}
+You received **${loot}.**`,
 			res => {
 				user.log('continued mmmr');
 				return (this.client.commands.get('mmmr') as unknown as any)!.start(res) as Promise<KlasaMessage>;
 			},
-			undefined,
+			files[0],
 			data,
 			loot.bank
 		);

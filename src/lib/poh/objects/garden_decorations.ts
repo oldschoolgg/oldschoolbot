@@ -196,6 +196,14 @@ const GardenDecorations: PoHObject[] = [
 		level: 99,
 		itemCost: cost.clone().add('Olmlet'),
 		refundItems: true
+	},
+	{
+		id: 4860,
+		name: 'Marimbo statue',
+		slot: 'gardenDecoration',
+		level: 99,
+		itemCost: cost.clone().add('Marimbo statue'),
+		refundItems: true
 	}
 ];
 

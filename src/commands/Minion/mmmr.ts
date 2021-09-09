@@ -2,7 +2,7 @@ import { randArrItem, reduceNumByPercent, Time, uniqueArr } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
+import { Activity, Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import {
 	fightingMessages,
@@ -15,6 +15,7 @@ import {
 	monkeyTiers,
 	TOTAL_MONKEYS
 } from '../../lib/monkeyRumble';
+import { getMinigameEntity } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -57,9 +58,15 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		const tier = monkeyTiers.find(t => t.id === monkeyTierOfUser(msg.author))!;
+		const scores = await getMinigameEntity(msg.author.id);
 		return msg.channel.send(
-			`Monkeys fought: ${msg.author.settings.get(UserSettings.MonkeysFought).length}/${TOTAL_MONKEYS}
-Greegree Level: ${tier.greegree.name} - ${tier.id}/${monkeyTiers.length.toLocaleString()}`
+			`**Mad Marimbo's Monkey Rumble**
+
+**Fights Done:** ${scores.MadMarimbosMonkeyRumble}
+**Unique Monkeys Fought:** ${
+				msg.author.settings.get(UserSettings.MonkeysFought).length
+			}/${TOTAL_MONKEYS.toLocaleString()}
+**Greegree Level:** ${tier.greegree.name} - ${tier.id}/${monkeyTiers.length.toLocaleString()}`
 		);
 	}
 
@@ -144,13 +151,16 @@ Greegree Level: ${tier.greegree.name} - ${tier.id}/${monkeyTiers.length.toLocale
 			});
 		}
 
-		const fightDuration = Time.Minute * 5;
+		const fightDuration = Time.Minute * 9;
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.MonkeyRumble) / fightDuration);
 		let duration = quantity * fightDuration;
-
+		let chanceOfSpecial = Math.floor(300 * (6 - monkeyTierOfUser(msg.author) / 2));
+		chanceOfSpecial = 2;
 		const monkeysToFight: Monkey[] = [];
-		for (let i = 0; i < quantity; i++) monkeysToFight.push(getRandomMonkey(monkeysToFight));
-
+		for (let i = 0; i < quantity; i++) {
+			monkeysToFight.push(getRandomMonkey(monkeysToFight, chanceOfSpecial));
+		}
+		monkeysToFight.sort((a, b) => (a.special === b.special ? 0 : a.special ? -1 : 1));
 		const foodRequired = Math.floor(duration / (Time.Minute * 1.34));
 
 		const bank = msg.author.bank();
@@ -188,8 +198,12 @@ Greegree Level: ${tier.greegree.name} - ${tier.id}/${monkeyTiers.length.toLocale
 		msg.author.settings.update(UserSettings.MonkeysFought, newMonkeysFought, { arrayAction: 'overwrite' });
 
 		let str = `You are fighting ${quantity}x different monkeys (${monkeysToFight
-			.map(m => m.name)
-			.join(', ')}). The trip will take ${formatDuration(duration)}. Removed ${cost} from your bank.`;
+			.map(m => `${m.special ? `${Emoji.Purple} ` : ''}${m.name}`)
+			.join(', ')}). The trip will take ${formatDuration(
+			duration
+		)}. Removed ${cost} from your bank. **1 in ${chanceOfSpecial} chance of monkey being special, with ${quantity} monkeys in this trip, there was a 1 in ${
+			chanceOfSpecial / quantity
+		} chance that one of them would be special.**`;
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
