@@ -71,7 +71,7 @@ const implingTableByWorldLocation: TWorldLocationImplingTable = {
 	[WorldLocations.World]: caughtChance => new LootTable().oneIn(caughtChance, defaultImpTable)
 };
 
-export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
+export async function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
 	const minutes = Math.floor(data.duration / Time.Minute);
 
 	if (minutes < 4) return null;
@@ -91,12 +91,17 @@ export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions
 		const loot = impTable.roll();
 		if (loot.length === 0) continue;
 		const implingReceived = implings[loot.items()[0][0].id]!;
+		const chimplingCost = new Bank().add('Magic banana');
 		if (
 			level < implingReceived.level ||
-			(implingReceived.customRequirements && !implingReceived.customRequirements(user))
+			(implingReceived.customRequirements && !implingReceived.customRequirements(user)) ||
+			(loot.has('Chimpling jar') && !user.owns(chimplingCost))
 		) {
 			missed.add(loot);
-		} else bank.add(loot);
+		} else {
+			if (loot.has('Chimpling jar')) await user.removeItemsFromBank(chimplingCost);
+			bank.add(loot);
+		}
 	}
 
 	if (bank.length === 0 && missed.length === 0) return null;

@@ -68,7 +68,7 @@ export default class extends BotCommand {
 			case 'impsim': {
 				const total = new Bank();
 				let time = 5 * 1_000_000 * Time.Minute;
-				let i = handlePassiveImplings(msg.author, {
+				let i = await handlePassiveImplings(msg.author, {
 					duration: time,
 					activity: Activity.MonsterKilling
 				} as any);
