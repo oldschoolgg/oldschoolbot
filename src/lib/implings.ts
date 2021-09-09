@@ -23,7 +23,7 @@ const {
 	LuckyImpling
 } = Openables;
 
-export const implings: Record<number, { level: number; customRequirements?: (user: KlasaUser) => boolean }> = {
+export const implings: Record<number, { level: number; customRequirements?: (user: KlasaUser) => Promise<boolean> }> = {
 	// [Impling ID, Level to Catch]
 	[BabyImpling.id]: { level: 17 },
 	[YoungImpling.id]: { level: 22 },
@@ -38,8 +38,17 @@ export const implings: Record<number, { level: number; customRequirements?: (use
 	[DragonImpling.id]: { level: 83 },
 	[LuckyImpling.id]: { level: 89 },
 	[InfernalImpling.id]: { level: 94 },
-	[ChimplingImpling.id]: { level: 95, customRequirements: user => user.owns('Magic banana') },
-	[EternalImpling.id]: { level: 99, customRequirements: user => user.hasItemEquippedAnywhere('Vasa cloak') },
+	[ChimplingImpling.id]: {
+		level: 95,
+		customRequirements: async user => {
+			if (user.owns('Magic banana')) {
+				await user.removeItemsFromBank(new Bank().add('Magic banana'));
+				return true;
+			}
+			return false;
+		}
+	},
+	[EternalImpling.id]: { level: 99, customRequirements: async user => user.hasItemEquippedAnywhere('Vasa cloak') },
 	[MysteryImpling.id]: { level: 105 }
 };
 
@@ -91,15 +100,12 @@ export async function handlePassiveImplings(user: KlasaUser, data: ActivityTaskO
 		const loot = impTable.roll();
 		if (loot.length === 0) continue;
 		const implingReceived = implings[loot.items()[0][0].id]!;
-		const chimplingCost = new Bank().add('Magic banana');
 		if (
 			level < implingReceived.level ||
-			(implingReceived.customRequirements && !implingReceived.customRequirements(user)) ||
-			(loot.has('Chimpling jar') && !user.owns(chimplingCost))
+			(implingReceived.customRequirements && !(await implingReceived.customRequirements(user)))
 		) {
 			missed.add(loot);
 		} else {
-			if (loot.has('Chimpling jar')) await user.removeItemsFromBank(chimplingCost);
 			bank.add(loot);
 		}
 	}
