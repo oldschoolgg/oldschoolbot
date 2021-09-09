@@ -10,7 +10,7 @@ import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 
 export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
-export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
+export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
 
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
