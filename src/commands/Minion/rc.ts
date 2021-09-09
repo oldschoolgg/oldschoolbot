@@ -209,6 +209,10 @@ export default class extends BotCommand {
 			quantityPerEssence * quantity
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
 
+		if (rune.inputRune) {
+			response += `\nYour minion also consumed ${removeTalismanAndOrRunes}.`;
+		}
+
 		return msg.channel.send(response);
 	}
 }
