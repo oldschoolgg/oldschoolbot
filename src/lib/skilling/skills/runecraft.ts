@@ -1,4 +1,5 @@
 import { Time } from 'e';
+import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
