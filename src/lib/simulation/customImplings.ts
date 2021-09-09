@@ -71,7 +71,7 @@ export const MysteryImpling = new SimpleOpenable({
 });
 
 export const ChimplingImpling = new SimpleOpenable({
-	id: 50_045,
+	id: 48_226,
 	name: 'Chimpling jar',
 	aliases: ['chimpling', 'chimpling'],
 	table: new LootTable()

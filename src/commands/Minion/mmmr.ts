@@ -47,6 +47,13 @@ buyables.push({
 	cost: 500,
 	aliases: ['monkey dye']
 });
+buyables.push({
+	item: getOSItem('Gorilla rumble greegree'),
+	gamesReq: 1000,
+	strengthLevelReq: 120,
+	cost: 1000,
+	aliases: ['gorilla greegree', 'gorilla rumble greegree']
+});
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

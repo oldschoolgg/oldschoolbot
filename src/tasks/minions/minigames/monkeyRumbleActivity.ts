@@ -1,4 +1,4 @@
-import { randArrItem, Time } from 'e';
+import { randArrItem, roll, Time } from 'e';
 import { KlasaMessage, Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -56,6 +56,9 @@ export default class extends Task {
 		const specialMonkeys = monkeys.filter(m => m.special);
 		for (const monkey of specialMonkeys) {
 			const unique = rewardTable.roll();
+			if (roll(4) && monkeyTier === 5) {
+				loot.add('Marimbo statue');
+			}
 			files.push(
 				await monkeyHeadImage({
 					monkey,
