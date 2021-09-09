@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { PerkTier } from '../../lib/constants';
+import { Channel, PerkTier } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -13,7 +13,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '[user:user]',
 			perkTier: PerkTier.One,
-			restrictedChannels: ['732207379818479756', '792691343284764693']
+			restrictedChannels: [Channel.BSOChannel, Channel.BSOGeneral]
 		});
 	}
 

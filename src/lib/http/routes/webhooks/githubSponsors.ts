@@ -39,7 +39,7 @@ SET "lastDailyTimestamp" = 0
 WHERE "lastDailyTimestamp" != 0;
 `);
 					}
-					for (const id of ['732207379818479756', '792691343284764693']) {
+					for (const id of [Channel.BSOChannel, Channel.BSOGeneral]) {
 						boxFrenzy(
 							client.channels.cache.get(id) as TextChannel,
 							`🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉

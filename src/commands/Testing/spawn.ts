@@ -45,7 +45,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [str]: [string]) {
-		if (this.client.production && msg.author.id !== '157797566833098752') {
+		if (this.client.production && !this.client.owners.has(msg.author)) {
 			return;
 		}
 
