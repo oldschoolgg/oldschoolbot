@@ -9,7 +9,7 @@ import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, formatDuration, round, stringMatches } from '../../lib/util';
+import { bankHasItem, formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { determineRunes } from '../../lib/util/determineRunes';
 import itemID from '../../lib/util/itemID';
@@ -63,7 +63,6 @@ export default class extends BotCommand {
 		const numEssenceOwned = await msg.author.numberOfItemInBank(itemID('Pure essence'));
 
 		let { tripLength } = rune;
-		let runners = false;
 		const boosts = [];
 		if (msg.author.hasGracefulEquipped()) {
 			tripLength -= rune.tripLength * 0.1;
@@ -76,11 +75,6 @@ export default class extends BotCommand {
 		} else if (msg.author.skillLevel(SkillsEnum.Agility) >= 60) {
 			tripLength -= rune.tripLength * 0.05;
 			boosts.push('5% for 60+ Agility');
-		}
-
-		if (msg.flagArgs.runners && !msg.author.isIronman) {
-			runners = true;
-			tripLength /= 3.2;
 		}
 
 		let inventorySize = 28;
@@ -145,7 +139,7 @@ export default class extends BotCommand {
 						msg.author,
 						new Bank({ 'Astral rune': 2, 'Fire rune': tomeOfFire, 'Water rune': 7 })
 							.clone()
-							.multiply(runners ? Math.floor(duration / (Time.Second * 12.6)) : numberOfInventories)
+							.multiply(numberOfInventories)
 					)
 				);
 				if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
@@ -169,36 +163,23 @@ export default class extends BotCommand {
 					)}x Binding necklace.`
 				);
 			}
-			if (!runners) {
-				const teleports = msg.author.skillLevel(SkillsEnum.Crafting) > 98 ? 2 : 1;
-				removeTalismanAndOrRunes.add('Ring of dueling(8)', Math.ceil(numberOfInventories / (8 * teleports)));
-				if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
-					return msg.send(
-						`You don't have enough Ring of dueling(8) for this trip. You need ${Math.ceil(
-							numberOfInventories / (8 * teleports)
-						)}x Ring of dueling(8).`
-					);
-				}
-				removeTalismanAndOrRunes.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
-				if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
-					return msg.send(
-						`You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
-							Math.ceil(duration / (Time.Minute * 8)),
-							1
-						)}x Stamina potion(4).`
-					);
-				}
-			} else {
-				const userGP = msg.author.settings.get(UserSettings.GP);
-				if (userGP < (duration / Time.Hour) * 40_000_000) {
-					return msg.send(
-						`You do not have enough GP to pay your runners for this trip. You need atleast ${round(
-							Math.ceil((duration / Time.Hour) * 40_000_000) / 1_000_000,
-							2
-						)}M GP.`
-					);
-				}
-				await msg.author.removeGP((duration / Time.Hour) * 40_000_000);
+			const teleports = msg.author.skillLevel(SkillsEnum.Crafting) > 98 ? 2 : 1;
+			removeTalismanAndOrRunes.add('Ring of dueling(8)', Math.ceil(numberOfInventories / (8 * teleports)));
+			if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
+				return msg.send(
+					`You don't have enough Ring of dueling(8) for this trip. You need ${Math.ceil(
+						numberOfInventories / (8 * teleports)
+					)}x Ring of dueling(8).`
+				);
+			}
+			removeTalismanAndOrRunes.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
+			if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
+				return msg.send(
+					`You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
+						Math.ceil(duration / (Time.Minute * 8)),
+						1
+					)}x Stamina potion(4).`
+				);
 			}
 			await msg.author.removeItemsFromBank(removeTalismanAndOrRunes.bank);
 		}

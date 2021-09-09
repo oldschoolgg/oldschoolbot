@@ -139,8 +139,7 @@ const Runes: Rune[] = [
 		levels: [[23, 1]],
 		tripLength: Time.Minute * 0.56,
 		inputRune: new Bank({ 'Earth rune': 1 }),
-		inputTalisman: new Bank({ 'Earth talisman': 1 }),
-		runners: true
+		inputTalisman: new Bank({ 'Earth talisman': 1 })
 	},
 	{
 		xp: 8,

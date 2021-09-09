@@ -97,7 +97,6 @@ export interface Rune {
 	tripLength: number;
 	inputRune?: Bank;
 	inputTalisman?: Bank;
-	runners?: boolean;
 }
 
 export interface Cookable {
