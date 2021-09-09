@@ -143,6 +143,7 @@ export default class extends BotCommand {
 			);
 		}
 		let imbueCasts = 0;
+		let teleportReduction = 1;
 		let removeTalismanAndOrRunes = new Bank();
 		if (rune.inputTalisman) {
 			if (msg.flagArgs.talisman) {
@@ -193,12 +194,20 @@ export default class extends BotCommand {
 					)}x Binding necklace.`
 				);
 			}
-			const teleports = msg.author.skillLevel(SkillsEnum.Crafting) > 98 ? 1 : 2;
-			removeTalismanAndOrRunes.add('Ring of dueling(8)', Math.ceil(numberOfInventories / (8 * teleports)));
+			if (
+				msg.author.skillLevel(SkillsEnum.Crafting) >= 99 &&
+				msg.author.hasItemEquippedOrInBank(itemID('Crafting cape'))
+			) {
+				teleportReduction = 2;
+			}
+			removeTalismanAndOrRunes.add(
+				'Ring of dueling(8)',
+				Math.ceil(numberOfInventories / (8 * teleportReduction))
+			);
 			if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
 				return msg.channel.send(
 					`You don't have enough Ring of dueling(8) for this trip. You need ${Math.ceil(
-						numberOfInventories / (8 * teleports)
+						numberOfInventories / (8 * teleportReduction)
 					)}x Ring of dueling(8).`
 				);
 			}
@@ -237,7 +246,9 @@ export default class extends BotCommand {
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
 
 		if (rune.inputRune) {
-			response += `\nYour minion also consumed ${removeTalismanAndOrRunes}.`;
+			response += `\nYour minion also consumed ${removeTalismanAndOrRunes}${
+				teleportReduction > 1 ? ', 50% less ring of dueling charges due to Crafting cape' : ''
+			}.`;
 		}
 
 		return msg.channel.send(response);
