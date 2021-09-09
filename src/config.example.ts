@@ -1,6 +1,6 @@
 import { KlasaClientOptions } from 'klasa';
 
-import { PatreonConfig, ProviderConfig, RedditAppConfig, TwitterAppConfig } from './lib/types';
+import { IDiscordSettings, PatreonConfig, ProviderConfig, RedditAppConfig, TwitterAppConfig } from './lib/types';
 
 export const botToken = '';
 export const providerConfig: ProviderConfig | null = {
@@ -25,3 +25,4 @@ export const HTTP_PORT = 1234;
 export const CLIENT_SECRET = '';
 export const CLIENT_ID = '';
 export const GITHUB_TOKEN = '';
+export const DISCORD_SETTINGS: Partial<IDiscordSettings> = {};

@@ -117,3 +117,9 @@ export type CategoryFlag =
 	| 'utility'
 	| 'fun'
 	| 'simulation';
+
+export interface IDiscordSettings {
+	Roles: Record<string, string>;
+	Channels: Record<string, string>;
+	SupportServer: string;
+}
