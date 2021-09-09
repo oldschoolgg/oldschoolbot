@@ -123,14 +123,14 @@ export default class extends BotCommand {
 			if (msg.flagArgs.talisman) {
 				removeTalismanAndOrRunes.add(rune.inputTalisman.clone().multiply(numberOfInventories));
 				if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
-					return msg.send(
+					return msg.channel.send(
 						`You don't have enough talismans for this trip. You need ${rune.inputTalisman
 							.clone()
 							.multiply(numberOfInventories)}.`
 					);
 				}
 			} else if (msg.author.skillLevel(SkillsEnum.Magic) < 82) {
-				return msg.send(
+				return msg.channel.send(
 					`${msg.author.minionName} needs atleast 82 Magic to cast Magic Imbue, come back with a higher magic level or write --talisman to consume elemental talismans instead.`
 				);
 			} else {
@@ -147,7 +147,7 @@ export default class extends BotCommand {
 					)
 				);
 				if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
-					return msg.send(
+					return msg.channel.send(
 						`You don't have enough Magic imbue runes for this trip. You need ${removeTalismanAndOrRunes}.`
 					);
 				}
@@ -155,13 +155,13 @@ export default class extends BotCommand {
 			}
 			removeTalismanAndOrRunes.add(rune.inputRune?.clone().multiply(quantity));
 			if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
-				return msg.send(
+				return msg.channel.send(
 					`You don't have enough runes for this trip. You need ${rune.inputRune?.clone().multiply(quantity)}.`
 				);
 			}
 			removeTalismanAndOrRunes.add('Binding necklace', Math.max(Math.floor(numberOfInventories / 8), 1));
 			if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
-				return msg.send(
+				return msg.channel.send(
 					`You don't have enough Binding necklaces for this trip. You need ${Math.max(
 						Math.floor(numberOfInventories / 8),
 						1
@@ -171,7 +171,7 @@ export default class extends BotCommand {
 			const teleports = msg.author.skillLevel(SkillsEnum.Crafting) > 98 ? 2 : 1;
 			removeTalismanAndOrRunes.add('Ring of dueling(8)', Math.ceil(numberOfInventories / (8 * teleports)));
 			if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
-				return msg.send(
+				return msg.channel.send(
 					`You don't have enough Ring of dueling(8) for this trip. You need ${Math.ceil(
 						numberOfInventories / (8 * teleports)
 					)}x Ring of dueling(8).`
@@ -179,7 +179,7 @@ export default class extends BotCommand {
 			}
 			removeTalismanAndOrRunes.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
 			if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
-				return msg.send(
+				return msg.channel.send(
 					`You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
 						Math.ceil(duration / (Time.Minute * 8)),
 						1
