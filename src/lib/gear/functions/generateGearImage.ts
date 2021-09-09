@@ -223,8 +223,8 @@ export async function generateGearImage(
 	gearType: GearSetupTypes | null,
 	petID: number | null
 ) {
-	const transmogItem = transmogItems.find(t => user.hasItemEquippedAnywhere(t.item.id));
-	const transMogImage = transmogItem === undefined ? null : await transmogItem.image;
+	const transmogItem = (gearType && transmogItems.find(t => user.getGear(gearType).hasEquipped(t.item.name))) ?? null;
+	const transMogImage = transmogItem === null ? null : await transmogItem.image;
 
 	// Init the background images if they are not already
 	if (!bankTask) {
@@ -264,6 +264,8 @@ export async function generateGearImage(
 	}
 	if (!transMogImage) {
 		ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
+	} else {
+		ctx.drawImage(gearTemplateImage, 200, 0, gearTemplateImage.width, gearTemplateImage.height);
 	}
 
 	if (transMogImage) {
@@ -303,12 +305,17 @@ export async function generateGearImage(
 
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
-		if (!item || transMogImage) continue;
+		if (!item) continue;
 		const image = await client.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
 
 		let [x, y] = slotCoordinates[enumName];
 		x = x + slotSize / 2 - image.width / 2;
 		y = y + slotSize / 2 - image.height / 2;
+
+		if (transMogImage) {
+			x += 200;
+		}
+
 		ctx.drawImage(image, x, y, image.width, image.height);
 
 		if (item.quantity > 1) {

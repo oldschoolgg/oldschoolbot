@@ -10,7 +10,7 @@ import { MonkeyRumbleOptions } from '../../../lib/types/minions';
 import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
-const rewardTable = new LootTable().add('Monkey egg').add('Monkey dye');
+const rewardTable = new LootTable().add('Monkey egg').add('Monkey dye').add('Big banana');
 
 const gotUniqueMessages = [
 	'You fought well. Take this as a reward.',

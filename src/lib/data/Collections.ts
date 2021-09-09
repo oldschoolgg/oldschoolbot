@@ -799,7 +799,8 @@ export const allCollectionLogs: ICollection = {
 					'Marimbo statue',
 					'Monkey dye',
 					'Banana enchantment scroll',
-					'Rumble token'
+					'Rumble token',
+					'Big banana'
 				])
 			}
 		}
