@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Time } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
@@ -116,7 +117,7 @@ export default class extends BotCommand {
 				)}, try a lower quantity. The highest amount of ${rune.name} you can craft is ${Math.floor(maxCanDo)}.`
 			);
 		}
-
+		let imbueCasts = 0;
 		let removeTalismanAndOrRunes = new Bank();
 		if (rune.inputTalisman) {
 			if (msg.flagArgs.talisman) {
@@ -134,10 +135,13 @@ export default class extends BotCommand {
 				);
 			} else {
 				const tomeOfFire = msg.author.hasItemEquippedAnywhere(['Tome of fire', 'Tome of fire (empty)']) ? 0 : 7;
+				const tomeOfWater = msg.author.hasItemEquippedAnywhere(['Tome of water', 'Tome of water (empty)'])
+					? 0
+					: 7;
 				removeTalismanAndOrRunes.add(
 					determineRunes(
 						msg.author,
-						new Bank({ 'Astral rune': 2, 'Fire rune': tomeOfFire, 'Water rune': 7 })
+						new Bank({ 'Astral rune': 2, 'Fire rune': tomeOfFire, 'Water rune': tomeOfWater })
 							.clone()
 							.multiply(numberOfInventories)
 					)
@@ -147,6 +151,7 @@ export default class extends BotCommand {
 						`You don't have enough Magic imbue runes for this trip. You need ${removeTalismanAndOrRunes}.`
 					);
 				}
+				imbueCasts = numberOfInventories;
 			}
 			removeTalismanAndOrRunes.add(rune.inputRune?.clone().multiply(quantity));
 			if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
@@ -192,6 +197,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			essenceQuantity: quantity,
 			duration,
+			imbueCasts,
 			type: Activity.Runecraft
 		});
 
