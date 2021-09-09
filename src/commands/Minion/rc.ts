@@ -66,16 +66,32 @@ export default class extends BotCommand {
 		let { tripLength } = rune;
 		const boosts = [];
 		if (msg.author.hasGracefulEquipped()) {
-			tripLength -= rune.tripLength * 0.1;
+			tripLength -= tripLength * 0.1;
 			boosts.push('10% for Graceful');
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Agility) >= 90) {
-			tripLength -= rune.tripLength * 0.1;
+			tripLength *= 0.9;
 			boosts.push('10% for 90+ Agility');
 		} else if (msg.author.skillLevel(SkillsEnum.Agility) >= 60) {
-			tripLength -= rune.tripLength * 0.05;
+			tripLength *= 0.95;
 			boosts.push('5% for 60+ Agility');
+		}
+
+		if (msg.flagArgs.ns) {
+			tripLength *= 3;
+			boosts.push('**3x slower** for no Stamina potion(4)s');
+		} else if (
+			msg.author.hasItemEquippedOrInBank('Ring of endurance (uncharged)') ||
+			msg.author.hasItemEquippedOrInBank('Ring of endurance')
+		) {
+			tripLength *= 0.99;
+			const ringStr = `1% boost for ${
+				msg.author.hasItemEquippedOrInBank('Ring of endurance (uncharged)')
+					? 'Ring of endurance (uncharged)'
+					: 'Ring of endurance'
+			}`;
+			boosts.push(ringStr);
 		}
 
 		let inventorySize = 28;
@@ -91,6 +107,15 @@ export default class extends BotCommand {
 
 		if (inventorySize > 28) {
 			boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
+		}
+
+		if (
+			msg.author.skillLevel(SkillsEnum.Runecraft) >= 99 &&
+			msg.author.hasItemEquippedOrInBank(itemID('Runecraft cape')) &&
+			inventorySize > 28
+		) {
+			tripLength *= 0.97;
+			boosts.push('3% for Runecraft cape');
 		}
 		const maxTripLength = msg.author.maxTripLength(Activity.Runecraft);
 
@@ -168,7 +193,7 @@ export default class extends BotCommand {
 					)}x Binding necklace.`
 				);
 			}
-			const teleports = msg.author.skillLevel(SkillsEnum.Crafting) > 98 ? 2 : 1;
+			const teleports = msg.author.skillLevel(SkillsEnum.Crafting) > 98 ? 1 : 2;
 			removeTalismanAndOrRunes.add('Ring of dueling(8)', Math.ceil(numberOfInventories / (8 * teleports)));
 			if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
 				return msg.channel.send(
@@ -177,14 +202,16 @@ export default class extends BotCommand {
 					)}x Ring of dueling(8).`
 				);
 			}
-			removeTalismanAndOrRunes.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
-			if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
-				return msg.channel.send(
-					`You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
-						Math.ceil(duration / (Time.Minute * 8)),
-						1
-					)}x Stamina potion(4).`
-				);
+			if (!msg.flagArgs.ns) {
+				removeTalismanAndOrRunes.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
+				if (!msg.author.bank().has(removeTalismanAndOrRunes.bank)) {
+					return msg.channel.send(
+						`You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
+							Math.ceil(duration / (Time.Minute * 8)),
+							1
+						)}x Stamina potion(4).`
+					);
+				}
 			}
 			await msg.author.removeItemsFromBank(removeTalismanAndOrRunes.bank);
 		}
