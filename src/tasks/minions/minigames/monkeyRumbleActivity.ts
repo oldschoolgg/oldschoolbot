@@ -4,8 +4,10 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { monkeyHeadImage, monkeyTierOfUser } from '../../../lib/monkeyRumble';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MonkeyRumbleOptions } from '../../../lib/types/minions';
+import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const rewardTable = new LootTable().add('Monkey egg').add('Monkey dye');
@@ -24,7 +26,10 @@ export default class extends Task {
 		await incrementMinigameScore(userID, 'MadMarimbosMonkeyRumble', quantity);
 
 		const monkeyTier = monkeyTierOfUser(user);
-		const strXP = Math.floor(quantity * 2.666 * (monkeyTier * 2.5 * (user.skillLevel(SkillsEnum.Strength) * 10.6)));
+		let tierBonusXP = quantity * monkeyTier * 1233;
+		let strengthBonusXP = quantity * user.skillLevel(SkillsEnum.Strength) * 1000;
+		const strXP = Math.floor(tierBonusXP + strengthBonusXP) / 5;
+
 		let xpStr = await user.addXP({
 			skillName: SkillsEnum.Strength,
 			amount: strXP,
@@ -63,6 +68,7 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank(loot, true);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.MonkeyRumbleLoot, loot);
 
 		const rumbleTokensPerHour = `${Math.round((tokens / (duration / Time.Minute)) * 60).toLocaleString()}`;
 		const fightsPerHour = `${Math.round((quantity / (duration / Time.Minute)) * 60).toLocaleString()}`;

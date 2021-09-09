@@ -774,6 +774,33 @@ export const allCollectionLogs: ICollection = {
 				alias: ['vm', 'vmine', 'volcanic'],
 				roleCategory: ['minigames'],
 				isActivity: true
+			},
+			'Ourania Delivery Service': {
+				alias: ['ods', 'ourania'],
+				items: resolveItems([
+					'Master runecrafter hat',
+					'Master runecrafter robe',
+					'Master runecrafter skirt',
+					'Master runecrafter boots',
+					'Elder thread',
+					'Elder talisman',
+					'Magic crate',
+					'Lychee seed',
+					'Avocado seed',
+					'Mysterious seed',
+					'Mango seed',
+					'Magical artifact'
+				])
+			},
+			"Mad Marimbo's Monkey Rumble": {
+				alias: ['mr', 'mmmr', 'mmr', 'monkey rumble', 'mad marimbos monkey rumble'],
+				items: resolveItems([
+					'Monkey egg',
+					'Marimbo statue',
+					'Monkey dye',
+					'Banana enchantment scroll',
+					'Rumble token'
+				])
 			}
 		}
 	},
@@ -916,23 +943,6 @@ export const allCollectionLogs: ICollection = {
 			Miscellaneous: {
 				alias: ['misc'],
 				items: miscellaneousCL
-			},
-			'Ourania Delivery Service': {
-				alias: ['ods', 'ourania'],
-				items: resolveItems([
-					'Master runecrafter hat',
-					'Master runecrafter robe',
-					'Master runecrafter skirt',
-					'Master runecrafter boots',
-					'Elder thread',
-					'Elder talisman',
-					'Magic crate',
-					'Lychee seed',
-					'Avocado seed',
-					'Mysterious seed',
-					'Mango seed',
-					'Magical artifact'
-				])
 			}
 		}
 	},

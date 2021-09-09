@@ -16,11 +16,12 @@ import {
 	TOTAL_MONKEYS
 } from '../../lib/monkeyRumble';
 import { getMinigameEntity } from '../../lib/settings/settings';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonkeyRumbleOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
@@ -29,7 +30,7 @@ const buyables = monkeyTiers.map((t, index) => ({
 	item: t.greegree,
 	gamesReq: t.gamesReq,
 	strengthLevelReq: t.strengthLevelReq,
-	cost: index === 0 ? 0 : (index + 1) * 100,
+	cost: index === 0 ? 0 : (index + 1) * 10,
 	aliases: [t.name, t.greegree.name]
 }));
 buyables.push({
@@ -38,6 +39,13 @@ buyables.push({
 	strengthLevelReq: 0,
 	cost: 200,
 	aliases: ['bes', 'banana scroll', 'banana enchantment scroll']
+});
+buyables.push({
+	item: getOSItem('Monkey dye'),
+	gamesReq: 0,
+	strengthLevelReq: 0,
+	cost: 500,
+	aliases: ['monkey dye']
 });
 
 export default class extends BotCommand {
@@ -155,7 +163,6 @@ export default class extends BotCommand {
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.MonkeyRumble) / fightDuration);
 		let duration = quantity * fightDuration;
 		let chanceOfSpecial = Math.floor(300 * (6 - monkeyTierOfUser(msg.author) / 2));
-		chanceOfSpecial = 2;
 		const monkeysToFight: Monkey[] = [];
 		for (let i = 0; i < quantity; i++) {
 			monkeysToFight.push(getRandomMonkey(monkeysToFight, chanceOfSpecial));
@@ -180,6 +187,7 @@ export default class extends BotCommand {
 		}
 		const cost = new Bank().add(eatable.item.id, foodRequired);
 		await msg.author.removeItemsFromBank(cost);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.MonkeyRumbleCost, cost);
 
 		await addSubTaskToActivityTask<MonkeyRumbleOptions>({
 			userID: msg.author.id,
