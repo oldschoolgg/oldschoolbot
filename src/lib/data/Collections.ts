@@ -1024,7 +1024,13 @@ export const allCollectionLogs: ICollection = {
 					'Heron',
 					'Rocky',
 					'Herbi',
-					'Beaver'
+					'Beaver',
+					// Dwarven equipment
+					'Dwarven greataxe',
+					'Dwarven greathammer',
+					'Dwarven pickaxe',
+					'Dwarven knife',
+					'Dwarven gauntlets'
 				]),
 				roleCategory: ['skilling']
 			},
