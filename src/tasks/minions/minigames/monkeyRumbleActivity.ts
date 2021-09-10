@@ -10,7 +10,7 @@ import { MonkeyRumbleOptions } from '../../../lib/types/minions';
 import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
-const rewardTable = new LootTable().add('Monkey egg').add('Monkey dye').add('Big banana');
+const rewardTable = new LootTable().add('Monkey egg').add('Monkey dye').add('Big banana').add('Monkey crate', [5, 10]);
 const baseTable = new LootTable().tertiary(25, 'Monkey crate');
 
 const gotUniqueMessages = [

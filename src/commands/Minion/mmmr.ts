@@ -186,7 +186,7 @@ export default class extends BotCommand {
 		const fightDuration = Time.Minute * 9;
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.MonkeyRumble) / fightDuration);
 		let duration = quantity * fightDuration;
-		let chanceOfSpecial = Math.floor(300 * (6 - monkeyTierOfUser(msg.author) / 2));
+		let chanceOfSpecial = Math.floor(75 * (6 - monkeyTierOfUser(msg.author) / 2));
 		const monkeysToFight: Monkey[] = [];
 		for (let i = 0; i < quantity; i++) {
 			monkeysToFight.push(getRandomMonkey(monkeysToFight, chanceOfSpecial));
