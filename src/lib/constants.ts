@@ -14,7 +14,7 @@ export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
 
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
-	Notifications: DISCORD_SETTINGS.Channels?.Notifications ?? '469523207691436042',
+	Notifications: DISCORD_SETTINGS.Channels?.Notifications ?? '811589869314899980',
 	ErrorLogs: DISCORD_SETTINGS.Channels?.ErrorLogs ?? '665678499578904596',
 	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '682996313209831435',
 	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
