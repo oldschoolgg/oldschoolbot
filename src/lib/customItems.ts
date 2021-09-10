@@ -984,12 +984,12 @@ setCustomItem(
 );
 // ----------
 // MMMR
-setCustomItem(40_061, 'Beginner rumble greegree', 'Bronze 2h sword', {}, 999_995);
-setCustomItem(40_062, 'Intermediate rumble greegree', 'Bronze 2h sword', {}, 999_996);
-setCustomItem(40_063, 'Ninja rumble greegree', 'Bronze 2h sword', {}, 999_997);
-setCustomItem(40_064, 'Expert ninja rumble greegree', 'Bronze 2h sword', {}, 999_998);
-setCustomItem(40_065, 'Elder rumble greegree', 'Bronze 2h sword', {}, 999_999);
-setCustomItem(40_066, 'Gorilla rumble greegree', 'Bronze 2h sword', {}, 1_000_000);
+setCustomItem(40_061, 'Beginner rumble greegree', 'Bronze dagger', {}, 999_995);
+setCustomItem(40_062, 'Intermediate rumble greegree', 'Bronze dagger', {}, 999_996);
+setCustomItem(40_063, 'Ninja rumble greegree', 'Bronze dagger', {}, 999_997);
+setCustomItem(40_064, 'Expert ninja rumble greegree', 'Bronze dagger', {}, 999_998);
+setCustomItem(40_065, 'Elder rumble greegree', 'Bronze dagger', {}, 999_999);
+setCustomItem(40_066, 'Gorilla rumble greegree', 'Bronze dagger', {}, 1_000_000);
 
 setCustomItem(40_067, 'Dwarven warnana', 'Dwarven warhammer', {}, 1_000_000_000);
 setCustomItem(40_068, 'Twisted bownana', 'Twisted bow', {}, 500_000_000);

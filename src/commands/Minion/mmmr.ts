@@ -166,6 +166,8 @@ export default class extends BotCommand {
 			});
 		}
 
+		const boosts = [];
+
 		const fightDuration = Time.Minute * 9;
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.MonkeyRumble) / fightDuration);
 		let duration = quantity * fightDuration;
@@ -175,7 +177,11 @@ export default class extends BotCommand {
 			monkeysToFight.push(getRandomMonkey(monkeysToFight, chanceOfSpecial));
 		}
 		monkeysToFight.sort((a, b) => (a.special === b.special ? 0 : a.special ? -1 : 1));
-		const foodRequired = Math.floor(duration / (Time.Minute * 1.34));
+		let foodRequired = Math.floor(duration / (Time.Minute * 1.34));
+		if (msg.author.hasItemEquippedAnywhere('Big banana')) {
+			foodRequired = reduceNumByPercent(foodRequired, 25);
+			boosts.push('25% less food from Big banana');
+		}
 
 		const bank = msg.author.bank();
 		const eatable = monkeyEatables.find(e => bank.amount(e.item.id) >= foodRequired);
@@ -187,7 +193,6 @@ export default class extends BotCommand {
 					.join(', ')}). For this trip, you'd need ${foodRequired} of one of these items.`
 			);
 		}
-		const boosts = [];
 		if (eatable.boost) {
 			duration = reduceNumByPercent(duration, eatable.boost);
 			boosts.push(`${eatable.boost}% for ${eatable.item.name} food`);
