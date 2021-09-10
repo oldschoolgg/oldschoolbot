@@ -4,6 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { Events } from '../../constants';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { ArrayItemsResolved } from '../../types';
+import { effectiveMonsters } from '../data/killableMonsters';
 
 export default async function announceLoot({
 	user,
@@ -27,11 +28,11 @@ export default async function announceLoot({
 
 		if (team && team.size > 1) {
 			notif = `In ${team.leader.username}'s party of ${team.size} minions killing ${
-				Monsters.get(monsterID)!.name
+				effectiveMonsters.find(m => m.id === monsterID)!.name
 			}, **${team.lootRecipient.username}** just received **${itemsToAnnounce}**!`;
 		} else {
 			notif = `**${user.username}'s** minion, ${user.minionName}, just received **${itemsToAnnounce}**, their ${
-				Monsters.get(monsterID)!.name
+				effectiveMonsters.find(m => m.id === monsterID)!.name
 			} KC is ${kc.toLocaleString()}!`;
 		}
 
