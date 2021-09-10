@@ -89,7 +89,8 @@ export default class extends BotCommand {
 **Unique Monkeys Fought:** ${
 				msg.author.settings.get(UserSettings.MonkeysFought).length
 			}/${TOTAL_MONKEYS.toLocaleString()}
-**Greegree Level:** ${tier.greegree.name} - ${tier.id}/${monkeyTiers.length.toLocaleString()}`
+**Greegree Level:** ${tier.greegree.name} - ${tier.id}/${monkeyTiers.length.toLocaleString()}
+**Rumble tokens:** ${msg.author.bank().amount('Rumble token')}`
 		);
 	}
 
@@ -97,9 +98,14 @@ export default class extends BotCommand {
 		const buyable = buyables.find(
 			i => stringMatches(input, i.item.name) || i.aliases.some(a => stringMatches(a, input))
 		);
+
+		const score = await msg.author.getMinigameScore('MadMarimbosMonkeyRumble');
+
 		if (!buyable) {
 			return msg.channel.send(
-				`Here are the items you can buy: \n\n${buyables
+				`You have ${msg.author.bank().amount('Rumble token')} Rumble tokens, and have done ${score} fights.
+
+Here are the items you can buy: \n\n${buyables
 					.map(
 						i =>
 							`**${i.item.name}:** ${i.cost} Rumble Tokens${
@@ -131,7 +137,6 @@ export default class extends BotCommand {
 			});
 		}
 
-		const score = await msg.author.getMinigameScore('MadMarimbosMonkeyRumble');
 		if (score < buyable.gamesReq) {
 			return msg.channel.send(
 				`You need to have completed atleast ${
@@ -231,7 +236,7 @@ export default class extends BotCommand {
 			...msg.author.settings.get(UserSettings.MonkeysFought),
 			...monkeysToFight.map(m => m.nameKey)
 		]);
-		msg.author.settings.update(UserSettings.MonkeysFought, newMonkeysFought, { arrayAction: 'overwrite' });
+		await msg.author.settings.update(UserSettings.MonkeysFought, newMonkeysFought, { arrayAction: 'overwrite' });
 
 		let str = `You are fighting ${quantity}x different monkeys (${monkeysToFight
 			.map(m => `${m.special ? `${Emoji.Purple} ` : ''}${m.name}`)
