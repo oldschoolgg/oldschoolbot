@@ -30,7 +30,7 @@ const buyables = monkeyTiers.map((t, index) => ({
 	item: t.greegree,
 	gamesReq: t.gamesReq,
 	strengthLevelReq: t.strengthLevelReq,
-	cost: index === 0 ? 0 : Math.floor((index + 1) * 6.5),
+	cost: index === 0 ? 0 : Math.floor((index + 1) * 8.5),
 	aliases: [t.name, t.greegree.name]
 }));
 
