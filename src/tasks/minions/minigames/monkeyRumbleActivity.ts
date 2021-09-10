@@ -84,7 +84,7 @@ export default class extends Task {
 			this.client,
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished ${quantity}x fights against ${quantity}x monkeys, your monkey tier is ${monkeyTier}. ${rumbleTokensPerHour} tokens/hr, ${fightsPerHour} fights/hr
+			`${user}, ${user.minionName} finished fighting ${quantity}x monkeys, your monkey tier is ${monkeyTier}. ${rumbleTokensPerHour} tokens/hr, ${fightsPerHour} fights/hr
 ${xpStr}
 You received **${loot}.**`,
 			res => {

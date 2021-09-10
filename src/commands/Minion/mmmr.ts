@@ -237,9 +237,9 @@ export default class extends BotCommand {
 			.map(m => `${m.special ? `${Emoji.Purple} ` : ''}${m.name}`)
 			.join(', ')}). The trip will take ${formatDuration(
 			duration
-		)}. Removed ${cost} from your bank. **1 in ${chanceOfSpecial} chance of a monkey being special, with ${quantity} monkeys in this trip, there was a 1 in ${
+		)}. Removed ${cost} from your bank. **1 in ${chanceOfSpecial} chance of a monkey being special, with ${quantity} monkeys in this trip, there was a 1 in ${(
 			chanceOfSpecial / quantity
-		} chance that one of them would be special.**`;
+		).toFixed(2)} chance that one of them would be special.**`;
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}

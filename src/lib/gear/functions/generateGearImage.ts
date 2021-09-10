@@ -296,7 +296,7 @@ export async function generateGearImage(
 		const image = await client.tasks.get('bankImage')!.getItemImage(petID, 1);
 		ctx.drawImage(
 			image,
-			178 + slotSize / 2 - image.width / 2,
+			(transMogImage ? 200 : 0) + 178 + slotSize / 2 - image.width / 2,
 			190 + slotSize / 2 - image.height / 2,
 			image.width,
 			image.height
