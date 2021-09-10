@@ -61,10 +61,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'pvm', 'minigame'],
-			description: 'Sends your minion to do barbarian assault, or buy rewards and gamble.',
-			examples: ['+barbassault [start]'],
+			description: 'Sends your minion to do the Monkey Rumble minigame.',
+			examples: ['=mr [start|buy]'],
 			subcommands: true,
-			usage: '[start|level|buy] [buyableOrGamble:...string]',
+			usage: '[start|buy] [buyableOrGamble:...string]',
 			usageDelim: ' ',
 			aliases: ['mr', 'mmr', 'rumble']
 		});
@@ -86,7 +86,9 @@ export default class extends BotCommand {
 	}
 
 	async buy(msg: KlasaMessage, [input = '']: [string]) {
-		const buyable = buyables.find(i => stringMatches(input, i.item.name));
+		const buyable = buyables.find(
+			i => stringMatches(input, i.item.name) || i.aliases.some(a => stringMatches(a, input))
+		);
 		if (!buyable) {
 			return msg.channel.send(
 				`Here are the items you can buy: \n\n${buyables
