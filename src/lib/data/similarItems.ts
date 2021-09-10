@@ -226,7 +226,7 @@ const source: [string, (string | number)[]][] = [
 	['Graceful cape', gracefulCapes],
 	['Agility cape', ['Agility cape(t)']],
 	['Fire cape', ['Fire max cape', 'Fire max cape (l)']],
-	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)']],
+	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)', "Combatant's cape"]],
 	['Ardougne cloak 4', ['Ardougne max cape']],
 	["Ava's accumulator", ['Accumulator max cape']],
 	["Ava's assembler", ['Assembler max cape', 'Assembler max cape (l)', "Combatant's cape"]],
@@ -241,7 +241,9 @@ const source: [string, (string | number)[]][] = [
 			'Imbued saradomin max cape (l)',
 			'Imbued zamorak cape',
 			'Imbued zamorak max cape',
-			'Imbued zamorak max cape (l)'
+			'Imbued zamorak max cape (l)',
+			"Combatant's cape"
+
 		]
 	],
 	['Guthix cape', ['Saradomin cape', 'Zamorak cape', 'Guthix max cape', 'Saradomin max cape', 'Zamorak max cape']],
