@@ -630,7 +630,7 @@ export default class extends Extendable {
 			}
 			case Activity.MonkeyRumble: {
 				const data = currentTask as MonkeyRumbleOptions;
-				return `${data.monkeys.some(m => (m.special ? Emoji.Purple : ''))} ${
+				return `${data.monkeys.some(m => m.special) ? Emoji.Purple : ''} ${
 					this.minionName
 				} is currently doing ${data.quantity} fights in Monkey Rumble. ${formattedDuration}`;
 			}
