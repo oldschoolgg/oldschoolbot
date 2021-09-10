@@ -80,6 +80,7 @@ export default class BankImageTask extends Task {
 
 	public imageHamstare: Image | null = null;
 	public redGlow: Image | null = null;
+	public bananaGlow: Image | null = null;
 
 	public constructor(store: TaskStore, file: string[], directory: string) {
 		super(store, file, directory, {});
@@ -127,6 +128,7 @@ export default class BankImageTask extends Task {
 		);
 		this.imageHamstare = await canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/hamstare.png'));
 		this.redGlow = await canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/red-glow.png'));
+		this.bananaGlow = await canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/banana-glow.png'));
 
 		// Get MiniIcons
 		this.skillMiniIcons = await canvasImageFromBuffer(
@@ -549,16 +551,22 @@ export default class BankImageTask extends Task {
 
 			const isNewCLItem = flags.showNewCL && currentCL && !currentCL[item.id] && allCLItems.includes(item.id);
 
-			if (item.name === 'Dragon egg') {
-				const centerX = x + itemImage.width / 2;
-				const centerY = y + itemImage.height / 2;
-				const glowX = centerX - this.redGlow!.width / 2;
-				const glowY = centerY - this.redGlow!.width / 2;
-				ctx.strokeStyle = 'red';
-				if (flags.debug) {
-					ctx.strokeRect(glowX, glowY, this.redGlow!.width, this.redGlow!.height);
+			const glows = [
+				['Dragon egg', this.redGlow!],
+				['Monkey egg', this.bananaGlow!]
+			] as const;
+			for (const [name, glow] of glows) {
+				if (item.name === name) {
+					const centerX = x + itemImage.width / 2;
+					const centerY = y + itemImage.height / 2;
+					const glowX = centerX - glow.width / 2;
+					const glowY = centerY - glow.width / 2;
+					ctx.strokeStyle = 'red';
+					if (flags.debug) {
+						ctx.strokeRect(glowX, glowY, glow.width, glow.height);
+					}
+					ctx.drawImage(glow, glowX, glowY, glow.width, glow.height);
 				}
-				ctx.drawImage(this.redGlow, glowX, glowY, this.redGlow?.width, this.redGlow?.height);
 			}
 
 			if (flags.debug) {
