@@ -27,7 +27,7 @@ export const monkeyTiers: MonkeyTier[] = [
 		greegree: getOSItem('Beginner rumble greegree'),
 		image: fs.readFile('./src/lib/resources/images/mmmr/beginnermonkey.png').then(canvasImageFromBuffer),
 		strengthLevelReq: 80,
-		gamesReq: 1 * 100
+		gamesReq: 0
 	},
 	{
 		id: 2,
@@ -35,7 +35,7 @@ export const monkeyTiers: MonkeyTier[] = [
 		greegree: getOSItem('Intermediate rumble greegree'),
 		image: fs.readFile('./src/lib/resources/images/mmmr/intermediatemonkey.png').then(canvasImageFromBuffer),
 		strengthLevelReq: 90,
-		gamesReq: 2 * 100
+		gamesReq: 50
 	},
 	{
 		id: 3,
@@ -43,7 +43,7 @@ export const monkeyTiers: MonkeyTier[] = [
 		greegree: getOSItem('Ninja rumble greegree'),
 		image: fs.readFile('./src/lib/resources/images/mmmr/ninjamonkey.png').then(canvasImageFromBuffer),
 		strengthLevelReq: 100,
-		gamesReq: 3 * 100
+		gamesReq: 100
 	},
 	{
 		id: 4,
@@ -51,7 +51,7 @@ export const monkeyTiers: MonkeyTier[] = [
 		greegree: getOSItem('Expert ninja rumble greegree'),
 		image: fs.readFile('./src/lib/resources/images/mmmr/expertninjamonkey.png').then(canvasImageFromBuffer),
 		strengthLevelReq: 110,
-		gamesReq: 4 * 100
+		gamesReq: 200
 	},
 	{
 		id: 5,
@@ -59,7 +59,7 @@ export const monkeyTiers: MonkeyTier[] = [
 		greegree: getOSItem('Elder rumble greegree'),
 		image: fs.readFile('./src/lib/resources/images/mmmr/eldermonkey.png').then(canvasImageFromBuffer),
 		strengthLevelReq: 120,
-		gamesReq: 5 * 100
+		gamesReq: 500
 	}
 ];
 

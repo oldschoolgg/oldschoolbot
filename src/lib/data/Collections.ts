@@ -800,7 +800,14 @@ export const allCollectionLogs: ICollection = {
 					'Monkey dye',
 					'Banana enchantment scroll',
 					'Rumble token',
-					'Big banana'
+					'Big banana',
+					'Monkey crate',
+					'Gorilla rumble greegree',
+					'Beginner rumble greegree',
+					'Intermediate rumble greegree',
+					'Ninja rumble greegree',
+					'Expert ninja rumble greegree',
+					'Gorilla rumble greegree'
 				])
 			}
 		}

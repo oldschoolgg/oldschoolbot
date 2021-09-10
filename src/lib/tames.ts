@@ -106,7 +106,7 @@ export const tameSpecies: Species[] = [
 		supportLevelRange: [1, 10],
 		gathererLevelRange: [75, 100],
 		relevantLevelCategory: 'gatherer',
-		hatchTime: Time.Hour * 9.5,
+		hatchTime: Time.Hour * 4.5,
 		egg: getOSItem('Monkey egg'),
 		emoji: '<:monkey_egg:883326001445224488>',
 		mergingCost: new Bank()

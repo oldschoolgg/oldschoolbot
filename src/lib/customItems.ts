@@ -1947,3 +1947,4 @@ setCustomItem(50_044, 'Eternal impling jar', 'Coal', {}, 50_000);
 setCustomItem(50_045, 'Mystery impling jar', 'Coal', {}, 50_000);
 setCustomItem(50_046, 'Rumble token', 'Coal', {}, 1000);
 setCustomItem(50_047, 'Magic banana', 'Coal', {}, 1000);
+setCustomItem(50_048, 'Monkey crate', 'Coal', {}, 10_000);

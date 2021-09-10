@@ -11,6 +11,7 @@ import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const rewardTable = new LootTable().add('Monkey egg').add('Monkey dye').add('Big banana');
+const baseTable = new LootTable().tertiary(25, 'Monkey crate');
 
 const gotUniqueMessages = [
 	'You fought well. Take this as a reward.',
@@ -49,7 +50,7 @@ export default class extends Task {
 			minimal: true
 		});
 
-		const tokens = Math.ceil(quantity * (monkeyTier / 2));
+		const tokens = Math.ceil(quantity * (monkeyTier / 1.2));
 		const loot = new Bank().add('Rumble token', tokens);
 
 		let files = [];
@@ -68,6 +69,9 @@ export default class extends Task {
 				})
 			);
 			loot.add(unique);
+		}
+		for (let i = 0; i < monkeys.length; i++) {
+			loot.add(baseTable.roll());
 		}
 
 		await user.addItemsToBank(loot, true);

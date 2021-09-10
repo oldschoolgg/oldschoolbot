@@ -510,8 +510,8 @@ const bolts = [
 	{
 		name: 'Banana',
 		id: itemID('Magic banana'),
-		input: new Bank().add('Banana', 10).add('Fire rune', 64).add('Chaos rune', 32).add('Cosmic rune', 12),
-		output: new Bank().add('Magic banana', 10),
+		input: new Bank().add('Banana', 1).add('Fire rune', 15).add('Chaos rune', 12).add('Cosmic rune', 3),
+		output: new Bank().add('Magic banana', 1),
 		xp: 66,
 		level: 82
 	}

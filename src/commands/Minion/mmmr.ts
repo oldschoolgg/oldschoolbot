@@ -30,9 +30,10 @@ const buyables = monkeyTiers.map((t, index) => ({
 	item: t.greegree,
 	gamesReq: t.gamesReq,
 	strengthLevelReq: t.strengthLevelReq,
-	cost: index === 0 ? 0 : (index + 1) * 10,
+	cost: index === 0 ? 0 : Math.floor((index + 1) * 6.5),
 	aliases: [t.name, t.greegree.name]
 }));
+
 buyables.push({
 	item: getOSItem('Banana enchantment scroll'),
 	gamesReq: 0,
@@ -53,6 +54,13 @@ buyables.push({
 	strengthLevelReq: 120,
 	cost: 1000,
 	aliases: ['gorilla greegree', 'gorilla rumble greegree']
+});
+buyables.push({
+	item: getOSItem('Monkey crate'),
+	gamesReq: 0,
+	strengthLevelReq: 0,
+	cost: 35,
+	aliases: ['mc', 'monkey crate']
 });
 
 export default class extends BotCommand {
@@ -92,7 +100,12 @@ export default class extends BotCommand {
 		if (!buyable) {
 			return msg.channel.send(
 				`Here are the items you can buy: \n\n${buyables
-					.map(i => `**${i.item.name}:** ${i.cost} points`)
+					.map(
+						i =>
+							`**${i.item.name}:** ${i.cost} Rumble Tokens${
+								i.gamesReq > 0 ? ` (${i.gamesReq} fights)` : ''
+							}`
+					)
 					.join('\n')}.`
 			);
 		}
@@ -182,6 +195,7 @@ export default class extends BotCommand {
 		let foodRequired = Math.floor(duration / (Time.Minute * 1.34));
 		if (msg.author.hasItemEquippedAnywhere('Big banana')) {
 			foodRequired = reduceNumByPercent(foodRequired, 25);
+			foodRequired = Math.floor(foodRequired);
 			boosts.push('25% less food from Big banana');
 		}
 
@@ -223,7 +237,7 @@ export default class extends BotCommand {
 			.map(m => `${m.special ? `${Emoji.Purple} ` : ''}${m.name}`)
 			.join(', ')}). The trip will take ${formatDuration(
 			duration
-		)}. Removed ${cost} from your bank. **1 in ${chanceOfSpecial} chance of monkey being special, with ${quantity} monkeys in this trip, there was a 1 in ${
+		)}. Removed ${cost} from your bank. **1 in ${chanceOfSpecial} chance of a monkey being special, with ${quantity} monkeys in this trip, there was a 1 in ${
 			chanceOfSpecial / quantity
 		} chance that one of them would be special.**`;
 		if (boosts.length > 0) {
