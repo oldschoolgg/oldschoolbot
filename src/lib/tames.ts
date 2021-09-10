@@ -12,7 +12,7 @@ import { effectiveMonsters } from './minions/data/killableMonsters';
 import { UserSettings } from './settings/types/UserSettings';
 import { TameActivityTable } from './typeorm/TameActivityTable.entity';
 import { TamesTable } from './typeorm/TamesTable.entity';
-import { generateContinuationChar, roll } from './util';
+import { generateContinuationChar, itemNameFromID, roll } from './util';
 import { createCollector } from './util/createCollector';
 import getOSItem from './util/getOSItem';
 import { collectors } from './util/handleTripFinish';
@@ -159,10 +159,18 @@ export async function runTameTask(activity: TameActivityTable) {
 				}
 				client.oneCommandAtATimeCache.add(mes.author.id);
 				try {
-					const monsterName = effectiveMonsters.find(e => e.id === activity.data.monsterID)!.name;
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					client.commands.get('tame')!.k(mes, [monsterName]);
+					const activityData = activity.data;
+					let tameInteraction = '';
+					switch (activityData.type) {
+						case TameType.Combat:
+							tameInteraction = effectiveMonsters.find(e => e.id === activityData.monsterID)!.name;
+							(client.commands.get('tame') as any)!.k(mes, [tameInteraction]);
+							break;
+						case TameType.Gatherer:
+							tameInteraction = itemNameFromID(activityData.itemID)!.toLowerCase();
+							(client.commands.get('tame') as any)!.c(mes, [tameInteraction]);
+							break;
+					}
 				} catch (err) {
 					console.log({ err });
 					mes.channel.send(err);
@@ -236,7 +244,7 @@ export async function getUsersTame(user: KlasaUser): Promise<[TamesTable | undef
 	if (!selectedTame) {
 		return [undefined, undefined];
 	}
-	const tame = await TamesTable.findOne({ where: { id: selectedTame } });
+	const tame = await TamesTable.findOne({ where: { id: selectedTame as Number } });
 	if (!tame) {
 		throw new Error('No tame found for selected tame.');
 	}
