@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { SupportServer } from '../../lib/constants';
+import { Roles, SupportServer } from '../../lib/constants';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { PingableRolesTable } from '../../lib/typeorm/PingableRoles.entity';
 import { stringMatches } from '../../lib/util';
@@ -20,7 +20,7 @@ export default class extends BotCommand {
 			return message.channel.send('No role with that name found.');
 		}
 		if (!message.member) return;
-		if (!message.member?.roles.cache.has('759572886364225558')) {
+		if (!message.member?.roles.cache.has(Roles.BSOMassHoster)) {
 			return;
 		}
 		return message.channel.send(

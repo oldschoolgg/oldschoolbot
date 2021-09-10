@@ -205,7 +205,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 20,
-		name: '	PoGnome CustomBG (20)',
+		name: 'PoGnome CustomBG (20)',
 		image: null,
 		available: false
 	},
@@ -462,6 +462,12 @@ const backgroundImages: BankBackground[] = [
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 20_000_000,
 		transparent: true
+	},
+	{
+		id: 77,
+		name: 'Volt CustomBG (77)',
+		image: null,
+		available: false
 	}
 ];
 

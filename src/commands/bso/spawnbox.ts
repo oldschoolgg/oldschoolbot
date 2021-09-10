@@ -2,7 +2,7 @@ import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { BitField, PerkTier } from '../../lib/constants';
+import { BitField, Channel, PerkTier } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -24,7 +24,7 @@ export default class extends BotCommand {
 			return msg.channel.send('You need to be a T3 patron or higher to use this command.');
 		}
 
-		if (msg.author.id !== '157797566833098752' && msg.channel.id !== '732207379818479756') {
+		if (!this.client.owners.has(msg.author) && msg.channel.id !== Channel.BSOChannel) {
 			return msg.channel.send('You can only use this in the BSO channel.');
 		}
 		const item = randArrItem([

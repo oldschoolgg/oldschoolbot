@@ -133,9 +133,6 @@ export default class extends BotCommand {
 			if (!msg.author.getGear('melee').meetsStatRequirements(minimumSoloGear.stats)) {
 				return msg.channel.send("Your gear isn't good enough to solo the Kalphite King.");
 			}
-			if (msg.author.getKC(KalphiteKingMonster.id) < 10) {
-				return msg.channel.send('You need atleast 10 KC before you can solo the Kalphite King.');
-			}
 		}
 
 		let debugStr = '';

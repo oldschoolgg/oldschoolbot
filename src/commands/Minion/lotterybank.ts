@@ -32,7 +32,7 @@ export default class extends BotCommand {
 			return msg.channel.send('Ironmen cannot participate in the lottery.');
 		}
 		const bankToSell = initBankToSell.filter((i, qty) => {
-			if (msg.flagArgs.bypass && msg.author.id === '157797566833098752') return true;
+			if (msg.flagArgs.bypass && this.client.owners.has(msg.author)) return true;
 			let stackPrice = i.price * qty;
 			return (
 				(!isSuperUntradeable(i) && hasSet.has(i.id)) ||

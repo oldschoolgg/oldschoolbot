@@ -38,7 +38,8 @@ export const KingGoldemarLootTable = new LootTable()
 	.add('Dwarven rock cake')
 	.add('Dwarven stout')
 	.tertiary(15, 'Clue scroll (grandmaster)')
-	.tertiary(20, MysteryBoxes);
+	.tertiary(20, MysteryBoxes)
+	.tertiary(60, 'Blacksmith crate');
 
 setCustomMonster(696_969, 'King Goldemar', KingGoldemarLootTable, Monsters.GeneralGraardor, {
 	id: 696_969,

@@ -3,7 +3,7 @@ import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
-import { BitField, Color, PerkTier } from '../../lib/constants';
+import { BitField, Channel, Color, PerkTier, SupportServer } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration } from '../../lib/util';
@@ -27,15 +27,11 @@ export default class extends BotCommand {
 			return;
 		}
 
-		if (!msg.guild || msg.guild.id !== '342983479501389826') {
+		if (!msg.guild || msg.guild.id !== SupportServer) {
 			return msg.channel.send('You can only do this in the Oldschool.gg server.');
 		}
 
-		if (
-			!['732207379818479756', '342983479501389826', '792691343284764693', '812289826346762250'].includes(
-				msg.channel.id
-			)
-		) {
+		if (![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(msg.channel.id)) {
 			return msg.channel.send("You can't use spawnlamp in this channel.");
 		}
 
@@ -49,7 +45,8 @@ export default class extends BotCommand {
 			cooldown = Time.Hour * 48;
 		}
 
-		if (difference < cooldown && !['157797566833098752', '242043489611808769'].includes(msg.author.id)) {
+		//                                                                                      Kyra user
+		if (difference < cooldown && !(this.client.owners.has(msg.author) || msg.author.id === '242043489611808769')) {
 			const duration = formatDuration(Date.now() - (lastDate + cooldown));
 			return msg.channel.send(`You can spawn another lamp in ${duration}.`);
 		}
@@ -72,7 +69,9 @@ export default class extends BotCommand {
 				max: 1,
 				time: 14_000,
 				errors: ['time'],
-				filter: _msg => _msg.content === level.toString() && !_msg.author.isIronman
+				filter: _msg =>
+					_msg.content === level.toString() &&
+					(!_msg.author.isIronman || (_msg.author.isIronman && _msg.author.id === msg.author.id))
 			});
 
 			const col = collected.first();

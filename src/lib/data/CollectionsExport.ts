@@ -1,3 +1,4 @@
+import { objectEntries } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -1816,8 +1817,12 @@ export const dailyCL = resolveItems([
 	'Mask of balance',
 	'Druidic wreath',
 	'Disk of returning',
-	'Mystery box',
-	'Stale baguette'
+	'Stale baguette',
+	'Tradeable mystery box',
+	'Untradeable mystery box',
+	'Equippable mystery box',
+	'Holiday mystery box',
+	'Pet mystery box'
 ]);
 export const capesCL = resolveItems([
 	'Mining hood',
@@ -1913,6 +1918,10 @@ export const capesCL = resolveItems([
 	'Ranged master cape',
 	'Slayer master cape',
 	'Dungeoneering master cape',
+	"Combatant's cape",
+	"Artisan's cape",
+	'Support cape',
+	"Gatherer's cape",
 	'Fire max hood',
 	'Fire max cape',
 	"Champion's cape",
@@ -2094,4 +2103,4 @@ export const customBossesDropsThatCantBeDroppedInMBs = [
 	...ignecarusCL,
 	...treeBeardCL
 ];
-export const implingsCL = implings.map(i => i[0].id);
+export const implingsCL = objectEntries(implings).map(m => Number(m[0]));

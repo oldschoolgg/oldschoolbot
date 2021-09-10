@@ -6,6 +6,7 @@ import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
 import { IPatchData } from '../minions/farming/types';
+import { Monkey } from '../monkeyRumble';
 import { BossUser } from '../structures/Boss';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
@@ -351,6 +352,11 @@ export interface RaidsOptions extends ActivityTaskOptions {
 
 export interface VolcanicMineActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
+}
+
+export interface MonkeyRumbleOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+	monkeys: Monkey[];
 }
 
 export type ActivityTaskData =

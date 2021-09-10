@@ -8,7 +8,11 @@ export default class extends Inhibitor {
 	public async run(msg: KlasaMessage, command: Command) {
 		if (!command.oneAtTime) return;
 
-		if (msg.author.isBusy && !['157797566833098752', '242043489611808769'].includes(msg.author.id)) {
+		if (
+			msg.author.isBusy &&
+			//                                        Kyra user
+			!(this.client.owners.has(msg.author) || ['242043489611808769'].includes(msg.author.id))
+		) {
 			throw true;
 		}
 	}

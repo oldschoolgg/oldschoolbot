@@ -153,7 +153,8 @@ const source: [string, (string | number)[]][] = [
 	['Tormented bracelet', ['Tormented bracelet (or)']],
 	['Necklace of anguish', ['Necklace of anguish (or)']],
 	['Occult necklace', ['Occult necklace (or)']],
-	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797]],
+	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, '3rd age pickaxe']],
+	['Dragon axe', ['3rd age axe']],
 	['Steam battlestaff', [12_795]],
 	['Lava battlestaff', [21_198]],
 	['Odium ward', [12_807]],
@@ -207,6 +208,7 @@ const source: [string, (string | number)[]][] = [
 			'Amulet of glory (4)',
 			'Amulet of glory (5)',
 			'Amulet of glory (6)',
+			'Amulet of glory (t)',
 			'Amulet of glory (t1)',
 			'Amulet of glory (t2)',
 			'Amulet of glory (t3)',
@@ -390,7 +392,13 @@ const source: [string, (string | number)[]][] = [
 	['Angler boots', ['Spirit angler boots']],
 	[
 		'Dwarven warhammer',
-		['Dwarven warhammer (ice)', 'Dwarven warhammer (blood)', 'Dwarven warhammer (shadow)', 'Dwarven warhammer (3a)']
+		[
+			'Dwarven warhammer (ice)',
+			'Dwarven warhammer (blood)',
+			'Dwarven warhammer (shadow)',
+			'Dwarven warhammer (3a)',
+			'Dwarven warnana'
+		]
 	],
 	['Flippers', ['Dark flippers']],
 	[
@@ -407,8 +415,9 @@ const source: [string, (string | number)[]][] = [
 			'Uncharged toxic trident (e)'
 		]
 	],
-	['Zaryte bow', ['Hellfire bow']],
-	['Twisted bow', ['Hellfire bow']],
+	['Zaryte bow', ['Hellfire bow', 'Zaryte bownana']],
+	['Twisted bow', ['Hellfire bow', 'Twisted bownana']],
+	['Hellfire bow', ['Hellfire bownana']],
 	['Ghrazi rapier', ['Holy ghrazi rapier']],
 	['Scythe of vitur', ['Sanguine scythe of vitur', 'Holy scythe of vitur']],
 	['Scythe of vitur (uncharged)', ['Sanguine scythe of vitur (uncharged)', 'Holy scythe of vitur (uncharged)']],

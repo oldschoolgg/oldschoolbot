@@ -642,6 +642,10 @@ export const allCollectionLogs: ICollection = {
 			'Barbarian Assault': {
 				alias: ['ba', 'barb assault', 'barbarian assault'],
 				items: barbarianAssaultCL,
+				kcActivity: {
+					Default: async user => user.getMinigameScore('BarbarianAssault'),
+					'High Gambles': async user => user.settings.get(UserSettings.HighGambles)
+				},
 				roleCategory: ['minigames'],
 				isActivity: true
 			},
@@ -770,6 +774,41 @@ export const allCollectionLogs: ICollection = {
 				alias: ['vm', 'vmine', 'volcanic'],
 				roleCategory: ['minigames'],
 				isActivity: true
+			},
+			'Ourania Delivery Service': {
+				alias: ['ods', 'ourania'],
+				items: resolveItems([
+					'Master runecrafter hat',
+					'Master runecrafter robe',
+					'Master runecrafter skirt',
+					'Master runecrafter boots',
+					'Elder thread',
+					'Elder talisman',
+					'Magic crate',
+					'Lychee seed',
+					'Avocado seed',
+					'Mysterious seed',
+					'Mango seed',
+					'Magical artifact'
+				])
+			},
+			"Mad Marimbo's Monkey Rumble": {
+				alias: ['mr', 'mmmr', 'mmr', 'monkey rumble', 'mad marimbos monkey rumble'],
+				items: resolveItems([
+					'Monkey egg',
+					'Marimbo statue',
+					'Monkey dye',
+					'Banana enchantment scroll',
+					'Rumble token',
+					'Big banana',
+					'Monkey crate',
+					'Gorilla rumble greegree',
+					'Beginner rumble greegree',
+					'Intermediate rumble greegree',
+					'Ninja rumble greegree',
+					'Expert ninja rumble greegree',
+					'Gorilla rumble greegree'
+				])
 			}
 		}
 	},
@@ -800,7 +839,7 @@ export const allCollectionLogs: ICollection = {
 				items: chaosDruisCL
 			},
 			'Chompy Birds': {
-				alias: ['chompy', 'bgc', 'big chompy hunting'],
+				alias: ['chompy', 'bgc', 'big chompy hunting', 'ch', 'chompyhunting', 'chompyhunt'],
 				kcActivity: 'BigChompyBirdHunting',
 				items: chompyBirdsCL
 			},
@@ -912,23 +951,6 @@ export const allCollectionLogs: ICollection = {
 			Miscellaneous: {
 				alias: ['misc'],
 				items: miscellaneousCL
-			},
-			'Ourania Delivery Service': {
-				alias: ['ods', 'ourania'],
-				items: resolveItems([
-					'Master runecrafter hat',
-					'Master runecrafter robe',
-					'Master runecrafter skirt',
-					'Master runecrafter boots',
-					'Elder thread',
-					'Elder talisman',
-					'Magic crate',
-					'Lychee seed',
-					'Avocado seed',
-					'Mysterious seed',
-					'Mango seed',
-					'Magical artifact'
-				])
 			}
 		}
 	},
@@ -1002,7 +1024,13 @@ export const allCollectionLogs: ICollection = {
 					'Heron',
 					'Rocky',
 					'Herbi',
-					'Beaver'
+					'Beaver',
+					// Dwarven equipment
+					'Dwarven greataxe',
+					'Dwarven greathammer',
+					'Dwarven pickaxe',
+					'Dwarven knife',
+					'Dwarven gauntlets'
 				]),
 				roleCategory: ['skilling']
 			},
@@ -1075,7 +1103,7 @@ export const allDroppedItems = [
 		...Object.entries(allCollectionLogs)
 			.map(e =>
 				Object.entries(e[1].activities)
-					.filter(f => f[1].enabled === undefined && f[1].hidden === undefined && f[1].counts === undefined)
+					.filter(f => f[1].enabled === undefined)
 					.map(a => [...new Set([...a[1].items, ...(a[1].allItems !== undefined ? a[1].allItems : [])])])
 			)
 			.flat(100),

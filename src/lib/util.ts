@@ -1,4 +1,5 @@
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
+import { exec } from 'child_process';
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
 import { objectEntries, randInt, shuffleArr, Time } from 'e';
@@ -7,6 +8,7 @@ import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
+import { promisify } from 'util';
 
 import { BitField, CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
 import { GearSetupTypes } from './gear/types';
@@ -521,15 +523,15 @@ export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<Se
 	return user.settings.update(key, active);
 }
 
-function gaussianRand() {
+function gaussianRand(rolls: number = 3) {
 	let rand = 0;
-	for (let i = 0; i < 3; i += 1) {
+	for (let i = 0; i < rolls; i += 1) {
 		rand += Math.random();
 	}
-	return rand / 3;
+	return rand / rolls;
 }
-export function gaussianRandom(min: number, max: number) {
-	return Math.floor(min + gaussianRand() * (max - min + 1));
+export function gaussianRandom(min: number, max: number, rolls?: number) {
+	return Math.floor(min + gaussianRand(rolls) * (max - min + 1));
 }
 export function isValidNickname(str?: string) {
 	return (
@@ -620,3 +622,4 @@ export function birdhouseLimit(user: KlasaUser) {
 	if (user.hasItemEquippedAnywhere('Hunter master cape')) base += 4;
 	return base;
 }
+export const asyncExec = promisify(exec);

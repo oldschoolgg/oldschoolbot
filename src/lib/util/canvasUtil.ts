@@ -82,3 +82,9 @@ export function drawImageWithOutline(
 	ctx.drawImage(pctx.canvas, dx, dy, dw + (outlineWidth + 2), dh + (outlineWidth + 2));
 	ctx.drawImage(image, dx, dy, dw, dh);
 }
+
+export function calcAspectRatioFit(srcWidth: number, srcHeight: number, maxWidth: number, maxHeight: number) {
+	let ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+
+	return { width: srcWidth * ratio, height: srcHeight * ratio };
+}

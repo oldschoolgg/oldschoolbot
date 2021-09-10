@@ -2,7 +2,7 @@ import { GuildMember } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../lib/constants';
+import { Channel, Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -25,7 +25,7 @@ export default class extends BotCommand {
 			categoryFlags: ['minion'],
 			description: 'Sells items to other players for GP.',
 			examples: ['+sellto @Magnaboy 1b 2 Elysian sigil', '+sellto @Magnaboy 500k 1 Dragon platelegs'],
-			restrictedChannels: ['792691343284764693']
+			restrictedChannels: [Channel.BSOGeneral]
 		});
 	}
 
