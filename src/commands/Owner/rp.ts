@@ -1,13 +1,10 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
-import { notEmpty, Time, uniqueArr } from 'e';
+import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
-import { Bank } from 'oldschooljs';
 
-import { production } from '../../config';
-import { Activity, badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
+import { badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
-import { handlePassiveImplings } from '../../lib/implings';
 import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -63,49 +60,6 @@ export default class extends BotCommand {
 				} catch {
 					return msg.channel.send('Failed to fetch git info.');
 				}
-			}
-			case 'impsim': {
-				if (production && !this.client.owners.has(msg.author)) {
-					return msg.channel.send('This command is disabled while on production mode.');
-				}
-
-				// clone user bank & set user busy to avoid transactions & etc
-				const userBank = msg.author.bank({ withGP: true }).clone();
-				msg.author.toggleBusy(true);
-
-				const caught = new Bank();
-				const missed = new Bank();
-				let time = 5 * 1_000_000 * Time.Minute;
-				let i = await handlePassiveImplings(msg.author, {
-					duration: time,
-					activity: Activity.MonsterKilling
-				} as any);
-				if (i) {
-					caught.add(i.bank);
-					missed.add(i.missed);
-				}
-				let totalItems = 0;
-				for (const [, qty] of caught.items()) totalItems += qty;
-				for (const [, qty] of missed.items()) totalItems += qty;
-				const { image: caughtImage } = await this.client.tasks
-					.get('bankImage')!
-					.generateBankImage(caught.bank, 'Implings caught', true, { names: 'names' });
-				const { image: missedImage } = await this.client.tasks
-					.get('bankImage')!
-					.generateBankImage(missed.bank, 'Implings missed', true, { names: 'names' });
-
-				// reverts user bank to what it was when the command started & remove user from being busy
-				await msg.author.settings.update(UserSettings.Bank, userBank.bank);
-				msg.author.toggleBusy(false);
-
-				return msg.channel.send({
-					content: `Duration of the simulation: ${formatDuration(
-						(time / Time.Minute) * Time.Second
-					)}. 1x impling every ${formatDuration(
-						time / totalItems
-					)}.\nYou caught: ${caught}\nYou missed: ${missed}`,
-					files: [new MessageAttachment(caughtImage!, '1.png'), new MessageAttachment(missedImage!, '2.png')]
-				});
 			}
 			case 'hasequipped': {
 				if (typeof input !== 'string') return;
