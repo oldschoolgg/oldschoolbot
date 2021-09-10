@@ -1103,7 +1103,7 @@ export const allDroppedItems = [
 		...Object.entries(allCollectionLogs)
 			.map(e =>
 				Object.entries(e[1].activities)
-					.filter(f => f[1].enabled === undefined && f[1].hidden === undefined && f[1].counts === undefined)
+					.filter(f => f[1].enabled === undefined)
 					.map(a => [...new Set([...a[1].items, ...(a[1].allItems !== undefined ? a[1].allItems : [])])])
 			)
 			.flat(100),
