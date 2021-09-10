@@ -1,5 +1,6 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
+import { Channel } from '../../lib/constants';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { isSuperUntradeable, itemNameFromID } from '../../lib/util';
 
@@ -17,7 +18,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			categoryFlags: ['minion'],
 			aliases: ['gri'],
-			restrictedChannels: ['342983479501389826', '732207379818479756', '792691343284764693', '792692390778896424']
+			restrictedChannels: [Channel.General, Channel.BSOChannel, Channel.BSOGeneral, Channel.BSOGambling]
 		});
 	}
 

@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { Events } from '../../lib/constants';
+import { Channel, Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
@@ -16,7 +16,7 @@ export default class extends BotCommand {
 			categoryFlags: ['minion'],
 			description: 'Pays GP to another user.',
 			examples: ['+pay @Magnaboy 10m'],
-			restrictedChannels: ['792691343284764693', '792692390778896424']
+			restrictedChannels: [Channel.BSOGeneral, Channel.BSOChannel]
 		});
 	}
 

@@ -1,5 +1,6 @@
 import { KlasaClient } from 'klasa';
 
+import { Channel } from './constants';
 import { ClientSettings } from './settings/types/ClientSettings';
 import { formatDuration } from './util';
 import { sendToChannelID } from './util/webhook';
@@ -15,7 +16,7 @@ export async function addToDoubleLootTimer(client: KlasaClient, amount: number, 
 		current = Date.now();
 	}
 	await client.settings.update(ClientSettings.DoubleLootFinishTime, current + amount);
-	sendToChannelID(client, '665678499578904596', {
+	sendToChannelID(client, Channel.ErrorLogs, {
 		content: `${formatDuration(amount)} added to the Double Loot timer because: ${reason}.`
 	});
 }

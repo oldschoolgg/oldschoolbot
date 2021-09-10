@@ -10,8 +10,10 @@ import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 
 export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
+export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
 
 export const Channel = {
+	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
 	Notifications: DISCORD_SETTINGS.Channels?.Notifications ?? '469523207691436042',
 	ErrorLogs: DISCORD_SETTINGS.Channels?.ErrorLogs ?? '665678499578904596',
 	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '682996313209831435',
@@ -19,7 +21,13 @@ export const Channel = {
 	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
 	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
 	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
-	HelpAndSupport: DISCORD_SETTINGS.Channels?.HelpAndSupport ?? '668073484731154462'
+	HelpAndSupport: DISCORD_SETTINGS.Channels?.HelpAndSupport ?? '668073484731154462',
+	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
+	// BSO Channels
+	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? '792691343284764693',
+	BSOChannel: DISCORD_SETTINGS.Channels?.BSOChannel ?? '732207379818479756',
+	BSOGambling: DISCORD_SETTINGS.Channels?.BSOChannel ?? '792692390778896424',
+	BSOGrandExchange: DISCORD_SETTINGS.Channels?.BSOChannel ?? '738780181946171493'
 };
 
 export const Roles = {
