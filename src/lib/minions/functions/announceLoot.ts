@@ -1,5 +1,5 @@
 import { KlasaUser } from 'klasa';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import { Events } from '../../constants';
 import { UserSettings } from '../../settings/types/UserSettings';
