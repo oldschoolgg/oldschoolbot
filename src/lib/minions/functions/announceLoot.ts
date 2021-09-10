@@ -22,17 +22,17 @@ export default async function announceLoot({
 	const notifyDrops = _notifyDrops.flat(Infinity);
 	const kc = user.settings.get(UserSettings.MonsterScores)[monsterID] ?? 0;
 	const itemsToAnnounce = loot.clone().filter(i => notifyDrops.includes(i.id));
-	if (Object.keys(itemsToAnnounce).length > 0) {
+	if (itemsToAnnounce.length > 0) {
 		let notif = '';
 
-		if (team) {
-			notif = `In **${team.leader.username}'s** party of ${team.size} minions killing ${
+		if (team && team.size > 1) {
+			notif = `In ${team.leader.username}'s party of ${team.size} minions killing ${
 				Monsters.get(monsterID)!.name
-			}, ${team.lootRecipient.username} just received **${loot}**!`;
+			}, **${team.lootRecipient.username}** just received **${itemsToAnnounce}**!`;
 		} else {
 			notif = `**${user.username}'s** minion, ${user.minionName}, just received **${itemsToAnnounce}**, their ${
 				Monsters.get(monsterID)!.name
-			} KC is ${kc}!`;
+			} KC is ${kc.toLocaleString()}!`;
 		}
 
 		user.client.emit(Events.ServerNotification, notif);
