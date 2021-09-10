@@ -4,6 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { GearSetupType, GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
 import { generateAllGearImage, generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { minionNotBusy } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { makePaginatedMessage } from '../../lib/util';
@@ -24,6 +25,7 @@ export default class extends BotCommand {
 		});
 	}
 
+	@minionNotBusy
 	async swap(msg: KlasaMessage, [gear1, gear2]: [GearSetupTypes, GearSetupTypes]) {
 		if (msg.commandText !== 'gear') return this.run(msg, [gear1]);
 		if (!gear1 || !gear2) {
