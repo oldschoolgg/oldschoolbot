@@ -129,7 +129,7 @@ Here are the items you can buy: \n\n${buyables
 			return msg.channel.send({
 				files: [
 					await chatHeadImage({
-						head: 'placeHolderName',
+						head: 'wurMuTheMonkey',
 						content:
 							'Take this beginner rumble greegree for free! Any higher tier and you have to pay in Rumble tokens!!'
 					})
@@ -167,7 +167,7 @@ Here are the items you can buy: \n\n${buyables
 			return msg.channel.send({
 				files: [
 					await chatHeadImage({
-						head: 'placeHolderName',
+						head: 'wurMuTheMonkey',
 						content: getMonkeyPhrase()
 					})
 				]
@@ -179,7 +179,7 @@ Here are the items you can buy: \n\n${buyables
 				content: `You need to have a rumble greegree equipped. If you don't have a rumble greegree yet, you can buy one using \`${msg.cmdPrefix}mr buy beginner rumble greegree\`.`,
 				files: [
 					await chatHeadImage({
-						head: 'placeHolderName',
+						head: 'wurMuTheMonkey',
 						content: "Humans aren't allowed! Leave, leave!"
 					})
 				]

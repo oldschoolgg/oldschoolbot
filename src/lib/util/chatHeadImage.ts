@@ -22,7 +22,7 @@ export const chatHeads = {
 	santa: santaChatHead,
 	izzy: izzyChatHead,
 	alry: alryTheAnglerChatHead,
-	placeHolderName: monkeyChildChatHead,
+	wurMuTheMonkey: monkeyChildChatHead,
 	marimbo: marimboChatHead
 };
 
@@ -32,7 +32,7 @@ const names: Record<keyof typeof chatHeads, string> = {
 	santa: 'Santa',
 	izzy: "Cap'n Izzy No-Beard",
 	alry: 'Alry the Angler',
-	placeHolderName: 'placeHolderName',
+	wurMuTheMonkey: 'Wur Mu the Monkey',
 	marimbo: 'Marimbo'
 };
 

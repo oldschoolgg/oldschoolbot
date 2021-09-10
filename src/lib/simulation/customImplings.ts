@@ -73,7 +73,7 @@ export const MysteryImpling = new SimpleOpenable({
 export const ChimplingImpling = new SimpleOpenable({
 	id: 48_226,
 	name: 'Chimpling jar',
-	aliases: ['chimpling', 'chimpling'],
+	aliases: ['chimpling', 'chimpling jar'],
 	table: new LootTable()
 		.every('Banana', [20, 100])
 		.add('Avocado seed', [10, 30])
