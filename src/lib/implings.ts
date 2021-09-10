@@ -3,7 +3,7 @@ import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
 import { BitField } from './constants';
-import { EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
+import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import activityInArea, { WorldLocations } from './util/activityInArea';
@@ -23,7 +23,7 @@ const {
 	LuckyImpling
 } = Openables;
 
-export const implings: Record<number, { level: number; customRequirements?: (user: KlasaUser) => boolean }> = {
+export const implings: Record<number, { level: number; customRequirements?: (user: KlasaUser) => Promise<boolean> }> = {
 	// [Impling ID, Level to Catch]
 	[BabyImpling.id]: { level: 17 },
 	[YoungImpling.id]: { level: 22 },
@@ -38,7 +38,17 @@ export const implings: Record<number, { level: number; customRequirements?: (use
 	[DragonImpling.id]: { level: 83 },
 	[LuckyImpling.id]: { level: 89 },
 	[InfernalImpling.id]: { level: 94 },
-	[EternalImpling.id]: { level: 99, customRequirements: user => user.hasItemEquippedAnywhere('Vasa cloak') },
+	[ChimplingImpling.id]: {
+		level: 95,
+		customRequirements: async user => {
+			if (user.owns('Magic banana')) {
+				await user.removeItemsFromBank(new Bank().add('Magic banana'));
+				return true;
+			}
+			return false;
+		}
+	},
+	[EternalImpling.id]: { level: 99, customRequirements: async user => user.hasItemEquippedAnywhere('Vasa cloak') },
 	[MysteryImpling.id]: { level: 105 }
 };
 
@@ -54,6 +64,7 @@ const defaultImpTable = new LootTable()
 	.add('Ninja impling jar', 1, 41)
 	.add('Dragon impling jar', 1, 24)
 	.add('Infernal impling jar', 1, 9)
+	.add('Chimpling jar', 1, 19)
 	.add('Eternal impling jar', 1, 7)
 	.add('Mystery impling jar', 1, 3);
 
@@ -69,7 +80,7 @@ const implingTableByWorldLocation: TWorldLocationImplingTable = {
 	[WorldLocations.World]: caughtChance => new LootTable().oneIn(caughtChance, defaultImpTable)
 };
 
-export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
+export async function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
 	const minutes = Math.floor(data.duration / Time.Minute);
 
 	if (minutes < 4) return null;
@@ -91,10 +102,12 @@ export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions
 		const implingReceived = implings[loot.items()[0][0].id]!;
 		if (
 			level < implingReceived.level ||
-			(implingReceived.customRequirements && !implingReceived.customRequirements(user))
+			(implingReceived.customRequirements && !(await implingReceived.customRequirements(user)))
 		) {
 			missed.add(loot);
-		} else bank.add(loot);
+		} else {
+			bank.add(loot);
+		}
 	}
 
 	if (bank.length === 0 && missed.length === 0) return null;

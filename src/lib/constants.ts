@@ -228,7 +228,8 @@ export const enum Tasks {
 	KibbleActivity = 'kibbleActivity',
 	RevenantsActivity = 'revenantsActivity',
 	PestControl = 'pestControlActivity',
-	VolcanicMine = 'volcanicMineActivity'
+	VolcanicMine = 'volcanicMineActivity',
+	MonkeyRumble = 'monkeyRumbleActivity'
 }
 
 export enum Activity {
@@ -302,7 +303,8 @@ export enum Activity {
 	KibbleMaking = 'KibbleMaking',
 	Revenants = 'Revenants',
 	PestControl = 'PestControl',
-	VolcanicMine = 'VolcanicMine'
+	VolcanicMine = 'VolcanicMine',
+	MonkeyRumble = 'MonkeyRumble'
 }
 
 export enum ActivityGroup {
@@ -382,7 +384,8 @@ export const enum BitField {
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
 	HasScrollOfLongevity = 203,
-	HasScrollOfTheHunt = 204
+	HasScrollOfTheHunt = 204,
+	HasBananaEnchantmentScroll = 205
 }
 
 interface BitFieldData {

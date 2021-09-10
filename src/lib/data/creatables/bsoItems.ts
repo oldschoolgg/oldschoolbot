@@ -350,6 +350,49 @@ const dwwhDyed: Createable[] = [
 	}
 ];
 
+const monkeyDyables: Createable[] = [
+	{
+		name: 'Dwarven warnana',
+		inputItems: {
+			[itemID('Dwarven warhammer')]: 1,
+			[itemID('Monkey dye')]: 1
+		},
+		outputItems: resolveNameBank({
+			'Dwarven warnana': 1
+		})
+	},
+	{
+		name: 'Twisted bownana',
+		inputItems: {
+			[itemID('Twisted bow')]: 1,
+			[itemID('Monkey dye')]: 1
+		},
+		outputItems: resolveNameBank({
+			'Twisted bownana': 1
+		})
+	},
+	{
+		name: 'Zaryte bownana',
+		inputItems: {
+			[itemID('Zaryte bow')]: 1,
+			[itemID('Monkey dye')]: 1
+		},
+		outputItems: resolveNameBank({
+			'Zaryte bownana': 1
+		})
+	},
+	{
+		name: 'Hellfire bownana',
+		inputItems: {
+			[itemID('Hellfire bow')]: 1,
+			[itemID('Monkey dye')]: 1
+		},
+		outputItems: resolveNameBank({
+			'Hellfire bownana': 1
+		})
+	}
+];
+
 const dyedCreatables: Createable[] = [
 	{
 		name: 'Drygore longsword (ice)',
@@ -898,5 +941,6 @@ export const BsoCreateables: Createable[] = [
 	...brokenItems,
 	...lockedItems,
 	...dyedCreatables,
-	...bsoArmorSets
+	...bsoArmorSets,
+	...monkeyDyables
 ];

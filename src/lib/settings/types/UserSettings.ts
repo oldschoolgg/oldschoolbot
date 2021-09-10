@@ -63,6 +63,7 @@ export namespace UserSettings {
 	export const FarmingPatchReminders = T<boolean>('farming_patch_reminders');
 	export const PestControlPoints = T<number>('pest_control_points');
 	export const VolcanicMinePoints = T<number>('volcanic_mine_points');
+	export const MonkeysFought = T<string[]>('monkeys_fought');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');

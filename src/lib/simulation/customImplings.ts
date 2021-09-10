@@ -70,6 +70,26 @@ export const MysteryImpling = new SimpleOpenable({
 		.tertiary(1_000_000, 'Mystery impling jar')
 });
 
+export const ChimplingImpling = new SimpleOpenable({
+	id: 48_226,
+	name: 'Chimpling jar',
+	aliases: ['chimpling', 'chimpling jar'],
+	table: new LootTable()
+		.every('Banana', [20, 100])
+		.add('Avocado seed', [10, 30])
+		.add('Mango seed', [10, 30])
+		.add('Rumble token', [10, 30])
+		.add('Lychee seed', [10, 30])
+		.add('Tradeable Mystery Box', [1, 3])
+		.add('Clue scroll (grandmaster)')
+		.tertiary(300, 'Gorilla rumble greegree')
+		.tertiary(7000, 'Monkey egg')
+		.tertiary(3000, 'Monkey dye')
+		.tertiary(100, 'Banana enchantment scroll')
+		.tertiary(1_000_000, 'Shiny monkey nuts')
+});
+
 Openables.set(InfernalImpling.id, InfernalImpling);
 Openables.set(EternalImpling.id, EternalImpling);
 Openables.set(MysteryImpling.id, MysteryImpling);
+Openables.set(ChimplingImpling.id, ChimplingImpling);

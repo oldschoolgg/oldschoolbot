@@ -9,7 +9,7 @@ import {
 	PrimaryGeneratedColumn
 } from 'typeorm';
 
-import { runTameTask, TameTaskOptions, TameTaskType } from '../tames';
+import { runTameTask, TameTaskOptions, TameType } from '../tames';
 import { TamesTable } from './TamesTable.entity';
 
 @Entity({ name: 'tame_activity' })
@@ -34,7 +34,7 @@ export class TameActivityTable extends BaseEntity {
 	public completed: boolean = false;
 
 	@Column({ type: 'varchar', name: 'type', nullable: false })
-	public type!: TameTaskType;
+	public type!: TameType;
 
 	@Column('varchar', { length: 19, name: 'channel_id', nullable: false })
 	public channelID!: string;

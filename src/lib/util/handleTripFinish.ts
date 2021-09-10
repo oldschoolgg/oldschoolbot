@@ -175,7 +175,7 @@ export async function handleTripFinish(
 		}
 	}
 
-	const imp = handlePassiveImplings(user, data);
+	const imp = await handlePassiveImplings(user, data);
 	if (imp) {
 		if (imp.bank.length > 0) {
 			const many = imp.bank.length > 1;

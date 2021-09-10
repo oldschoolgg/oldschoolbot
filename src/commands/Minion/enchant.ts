@@ -3,7 +3,7 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { table } from 'table';
 
-import { Activity } from '../../lib/constants';
+import { Activity, BitField } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
@@ -13,6 +13,7 @@ import { EnchantingActivityTaskOptions } from '../../lib/types/minions';
 import { addBanks, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { determineRunes } from '../../lib/util/determineRunes';
+import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -68,6 +69,13 @@ export default class extends BotCommand {
 					i => i.name
 				).join(', ')}.`
 			);
+		}
+
+		if (
+			enchantable.id === itemID('Magic banana') &&
+			!msg.author.bitfield.includes(BitField.HasBananaEnchantmentScroll)
+		) {
+			return msg.channel.send("You haven't learnt this spell yet.");
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) < enchantable.level) {

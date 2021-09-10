@@ -4,7 +4,7 @@ import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import fs from 'fs';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
@@ -15,7 +15,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { getUsersTame, tameSpecies } from '../../lib/tames';
+import { createTameTask, getUsersTame, tameSpecies, TameType } from '../../lib/tames';
 import { TameActivityTable } from '../../lib/typeorm/TameActivityTable.entity';
 import { TameGrowthStage, TamesTable } from '../../lib/typeorm/TamesTable.entity';
 import {
@@ -33,12 +33,73 @@ import findMonster from '../../lib/util/findMonster';
 import getOSItem from '../../lib/util/getOSItem';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import BankImageTask from '../../tasks/bankImage';
+import { collectables } from '../Minion/collect';
 
-export const feedableItems = [
-	[getOSItem('Ori'), '25% extra loot'],
-	[getOSItem('Zak'), '+35 minutes longer max trip length'],
-	[getOSItem('Abyssal cape'), '25% food reduction']
-] as const;
+interface FeedableItem {
+	item: Item;
+	tameSpeciesCanBeFedThis: number[];
+	description: string;
+	announcementString: string;
+}
+
+const feedableItems: FeedableItem[] = [
+	{
+		item: getOSItem('Ori'),
+		description: '25% extra loot',
+		tameSpeciesCanBeFedThis: [1],
+		announcementString: 'Your tame will now get 25% extra loot!'
+	},
+	{
+		item: getOSItem('Zak'),
+		description: '+35 minutes longer max trip length',
+		tameSpeciesCanBeFedThis: [1, 2],
+		announcementString: 'Your tame now has a much longer max trip length!'
+	},
+	{
+		item: getOSItem('Abyssal cape'),
+		description: '25% food reduction',
+		tameSpeciesCanBeFedThis: [1],
+		announcementString: 'Your tame now has 25% food reduction!'
+	},
+	{
+		item: getOSItem('Voidling'),
+		description: '10% faster collecting',
+		tameSpeciesCanBeFedThis: [2],
+		announcementString: 'Your tame can now collect items 10% faster thanks to the Voidling helping them teleport!'
+	},
+	{
+		item: getOSItem('Ring of endurance'),
+		description: '10% faster collecting',
+		tameSpeciesCanBeFedThis: [2],
+		announcementString:
+			'Your tame can now collect items 10% faster thanks to the Ring of endurance helping them run for longer!'
+	}
+];
+
+const feedingEasterEggs: [Bank, number, TameGrowthStage[], string][] = [
+	[new Bank().add('Vial of water'), 2, [TameGrowthStage.Baby], 'https://imgur.com/pYjshTg'],
+	[new Bank().add('Bread'), 2, [TameGrowthStage.Baby, TameGrowthStage.Juvenile], 'https://i.imgur.com/yldSKLZ.mp4'],
+	[
+		new Bank().add('Banana', 2),
+		2,
+		[TameGrowthStage.Juvenile, TameGrowthStage.Adult],
+		'https://i.imgur.com/11Bads1.mp4'
+	],
+	[
+		new Bank().add('Strawberry'),
+		2,
+		[TameGrowthStage.Juvenile, TameGrowthStage.Adult],
+		'https://i.imgur.com/ZqN1BHZ.mp4'
+	],
+	[new Bank().add('Lychee'), 2, [TameGrowthStage.Juvenile, TameGrowthStage.Adult], 'https://i.imgur.com/e5TqK1S.mp4'],
+	[
+		new Bank().add('Chocolate bar'),
+		2,
+		[TameGrowthStage.Baby, TameGrowthStage.Juvenile],
+		'https://i.imgur.com/KRGURck.mp4'
+	],
+	[new Bank().add('Coconut milk'), 2, [TameGrowthStage.Baby], 'https://i.imgur.com/OE7tXI8.mp4']
+];
 
 function formatDurationSmall(ms: number) {
 	if (ms < 0) ms = -ms;
@@ -105,14 +166,20 @@ export async function getTameStatus(user: KlasaUser) {
 	const [, currentTask] = await getUsersTame(user);
 	if (currentTask) {
 		const currentDate = new Date().valueOf();
-		switch (currentTask.type) {
-			case 'pvm':
+		const timeRemaining = `${formatDurationSmall(currentTask.finishDate.valueOf() - currentDate)} remaining`;
+		const activityData = currentTask.data;
+		switch (activityData.type) {
+			case TameType.Combat:
 				return [
-					`Killing ${currentTask.data.quantity.toLocaleString()}x ${
-						Monsters.find(m => m.id === currentTask.data.monsterID)!.name
-					}`,
-					`${formatDurationSmall(currentTask.finishDate.valueOf() - currentDate)} remaining`
+					`Killing ${currentTask.data.quantity.toLocaleString()}x ${Monsters.find(
+						m => m.id === activityData.monsterID
+					)?.name.toLowerCase()}`,
+					timeRemaining
 				];
+			case TameType.Gatherer:
+				return [`Collecting ${itemNameFromID(activityData.itemID)?.toLowerCase()}`, timeRemaining];
+			default:
+				return ['This tame type is not released yet.'];
 		}
 	}
 	return ['Idle'];
@@ -177,7 +244,7 @@ export default class extends BotCommand {
 			description: 'Use to control and manage your tames.',
 			examples: ['+tames k fire giant', '+tames', '+tames select 1', '+tames setname LilBuddy'],
 			subcommands: true,
-			usage: '[k|select|setname|feed|merge] [input:...str]',
+			usage: '[k|c|select|setname|feed|merge] [input:...str]',
 			usageDelim: ' ',
 			aliases: ['tame', 't']
 		});
@@ -222,7 +289,6 @@ export default class extends BotCommand {
 	async setname(msg: KlasaMessage, [name = '']: [string]) {
 		if (
 			!name ||
-			typeof name !== 'string' ||
 			name.length < 2 ||
 			name.length > 30 ||
 			['\n', '`', '@', '<', ':'].some(char => name.includes(char))
@@ -268,7 +334,7 @@ export default class extends BotCommand {
 		} = bankTask.getBgAndSprite(msg.author.settings.get(UserSettings.BankBackground) ?? 1);
 		const hexColor = msg.author.settings.get(UserSettings.BankBackgroundHex);
 
-		const tamesPerLine = 4;
+		const tamesPerLine = 3;
 
 		const canvas = createCanvas(
 			12 + 10 + (256 + 10) * Math.min(userTames.length, tamesPerLine),
@@ -381,7 +447,7 @@ export default class extends BotCommand {
 			// Draw tame boosts
 			let prevWidth = 0;
 			let feedQty = 0;
-			for (const [item] of feedableItems) {
+			for (const { item } of feedableItems) {
 				if (tame.fedItems[item.id]) {
 					const itemImage = await getItem(item.id);
 					if (itemImage) {
@@ -476,7 +542,7 @@ export default class extends BotCommand {
 				bank: selectedTame.fedItems,
 				title: 'Items Fed To This Tame',
 				content: `The items which give a perk/usage when fed are: ${feedableItems
-					.map(i => `${i[0].name} (${i[1]})`)
+					.map(i => `${i.item.name} (${i.description})`)
 					.join(', ')}.`
 			});
 		}
@@ -486,15 +552,35 @@ export default class extends BotCommand {
 		}
 
 		let specialStrArr = [];
-		for (const [i, perk] of feedableItems) {
-			if (bankToAdd.has(i.id)) {
-				specialStrArr.push(`**${i.name}**: ${perk}`);
+		for (const { item, description, tameSpeciesCanBeFedThis } of feedableItems) {
+			if (bankToAdd.has(item.id)) {
+				if (!tameSpeciesCanBeFedThis.includes(selectedTame.speciesID)) {
+					await msg.confirm(
+						`Feeding a '${item.name}' to your tame won't give it a perk, are you sure you want to?`
+					);
+				}
+				specialStrArr.push(`**${item.name}**: ${description}`);
 			}
 		}
 		let specialStr = specialStrArr.length === 0 ? '' : `\n\n${specialStrArr.join(', ')}`;
 		await msg.confirm(
 			`Are you sure you want to feed \`${bankToAdd}\` to ${selectedTame.name}? You **cannot** get these items back after they're eaten by your tame.${specialStr}`
 		);
+
+		for (const [eggBank, eggSpecies, eggGrowth, easterEgg] of feedingEasterEggs) {
+			if (
+				selectedTame.species.id === eggSpecies &&
+				bankToAdd.fits(eggBank) &&
+				eggGrowth.includes(selectedTame.growthStage)
+			) {
+				msg.channel.send(easterEgg);
+			}
+		}
+		for (const { item, announcementString } of feedableItems) {
+			if (bankToAdd.has(item.id)) {
+				msg.channel.send(`**${announcementString}**`);
+			}
+		}
 		await msg.author.removeItemsFromBank(bankToAdd);
 		selectedTame.fedItems = addBanks([selectedTame.fedItems, bankToAdd.bank]);
 		await selectedTame.save();
@@ -505,6 +591,9 @@ export default class extends BotCommand {
 		const [selectedTame, currentTask] = await getUsersTame(msg.author);
 		if (!selectedTame) {
 			return msg.channel.send('You have no selected tame.');
+		}
+		if (selectedTame.species.type !== TameType.Combat) {
+			return msg.channel.send('This tame species cannot do PvM.');
 		}
 		if (currentTask) {
 			return msg.channel.send(`${selectedTame.name} is busy.`);
@@ -532,6 +621,7 @@ export default class extends BotCommand {
 			boosts.push('+35mins trip length (ate a Zak)');
 		}
 		maxTripLength += patronMaxTripCalc(msg.author) * 2;
+
 		// Calculate monster quantity:
 		const quantity = Math.floor(maxTripLength / speed);
 		if (quantity < 1) {
@@ -549,27 +639,108 @@ export default class extends BotCommand {
 		});
 		const duration = Math.floor(quantity * speed);
 
-		const activity = new TameActivityTable();
-		activity.userID = msg.author.id;
-		activity.startDate = new Date();
-		activity.finishDate = new Date(Date.now() + duration);
-		activity.completed = false;
-		activity.type = 'pvm';
-		activity.data = {
-			type: 'pvm',
-			monsterID: monster.id,
-			quantity
-		};
-		activity.channelID = msg.channel.id;
-		activity.duration = duration;
-		activity.tame = selectedTame;
-		await activity.save();
+		await createTameTask({
+			user: msg.author,
+			channelID: msg.channel.id,
+			selectedTame,
+			data: {
+				type: TameType.Combat,
+				monsterID: monster.id,
+				quantity
+			},
+			type: TameType.Combat,
+			duration
+		});
 
 		return msg.channel.send(
 			`${selectedTame.name} is now killing ${quantity}x ${monster.name}. The trip will take ${formatDuration(
 				duration
 			)}.\n\nRemoved ${foodStr}`
 		);
+	}
+
+	async c(msg: KlasaMessage, [str = '']: [string]) {
+		const [selectedTame, currentTask] = await getUsersTame(msg.author);
+		if (!selectedTame) {
+			return msg.channel.send('You have no selected tame.');
+		}
+
+		if (selectedTame.species.type !== TameType.Gatherer) {
+			return msg.channel.send('This tame species cannot collect items.');
+		}
+		if (currentTask) {
+			return msg.channel.send(`${selectedTame.name} is busy.`);
+		}
+		const collectable = collectables.find(c => stringMatches(c.item.name, str));
+		if (!collectable) {
+			return msg.channel.send(
+				`That's not a valid collectable item. The items you can collect are: ${collectables
+					.map(i => i.item.name)
+					.join(', ')}.`
+			);
+		}
+
+		const [min, max] = selectedTame.species.gathererLevelRange;
+		const gathererLevelBoost = calcWhatPercent(selectedTame.maxGathererLevel - min, max);
+
+		// Increase trip length based on minion growth:
+		let speed = collectable.duration;
+		if (selectedTame.growthStage === TameGrowthStage.Baby) {
+			speed /= 1.5;
+		} else if (selectedTame.growthStage === TameGrowthStage.Juvenile) {
+			speed /= 2;
+		} else {
+			speed /= 2.5;
+		}
+
+		let boosts = [];
+
+		for (const item of ['Voidling', 'Ring of endurance']) {
+			if (selectedTame.hasBeenFed(item)) {
+				speed = reduceNumByPercent(speed, 10);
+				boosts.push(`10% for ${item}`);
+			}
+		}
+
+		// Apply calculated boost:
+		speed = reduceNumByPercent(speed, gathererLevelBoost);
+
+		let maxTripLength = Time.Minute * 20 * (4 - selectedTame.growthLevel);
+		if (selectedTame.hasBeenFed('Zak')) {
+			maxTripLength += Time.Minute * 35;
+			boosts.push('+35mins trip length (ate a Zak)');
+		}
+		maxTripLength += patronMaxTripCalc(msg.author) * 2;
+		// Calculate monster quantity:
+		const quantity = Math.floor(maxTripLength / speed);
+		if (quantity < 1) {
+			return msg.channel.send("Your tame can't kill this monster fast enough.");
+		}
+
+		let duration = Math.floor(quantity * speed);
+
+		await createTameTask({
+			user: msg.author,
+			channelID: msg.channel.id,
+			selectedTame,
+			data: {
+				type: TameType.Gatherer,
+				itemID: collectable.item.id,
+				quantity
+			},
+			type: TameType.Gatherer,
+			duration
+		});
+
+		let reply = `${selectedTame.name} is now collecting ${quantity * collectable.quantity}x ${
+			collectable.item.name
+		}. The trip will take ${formatDuration(duration)}.`;
+
+		if (boosts.length > 0) {
+			reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.channel.send(reply);
 	}
 
 	async merge(msg: KlasaMessage, [tame = '']: [string]) {
