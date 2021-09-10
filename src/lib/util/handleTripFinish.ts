@@ -176,7 +176,7 @@ export async function handleTripFinish(
 		}
 	}
 
-	const imp = handlePassiveImplings(user, data);
+	const imp = await handlePassiveImplings(user, data);
 	if (imp) {
 		if (imp.bank.length > 0) {
 			const many = imp.bank.length > 1;
@@ -187,9 +187,7 @@ export async function handleTripFinish(
 		}
 
 		if (imp.missed.length > 0) {
-			message += `\n\nYou missed out on these implings, because your hunter level is too low: ${imp.missed
-				.map(m => m.name)
-				.join(', ')}.`;
+			message += `\n\nYou missed out on these implings, because your hunter level is too low: ${imp.missed}.`;
 		}
 	}
 

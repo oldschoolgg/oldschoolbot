@@ -1,6 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { KalphiteKingMonster } from '../../kalphiteking';
+import killableMonsters from '../../minions/data/killableMonsters';
 import AbyssalDragon from '../../minions/data/killableMonsters/custom/AbyssalDragon';
 import { Ignecarus } from '../../minions/data/killableMonsters/custom/Ignecarus';
 import SeaKraken from '../../minions/data/killableMonsters/custom/SeaKraken';
@@ -393,6 +394,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		amount: [30, 50],
 		weight: 7,
 		monsters: [Monsters.SteelDragon.id],
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)!.levelRequirements,
 		extendedAmount: [40, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.PedalToTheMetals,
 		combatLevel: 85,

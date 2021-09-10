@@ -22,8 +22,15 @@ interface Openable {
 	itemID: number;
 	aliases: string[];
 	table: (() => number) | LootTable;
-	emoji: Emoji;
+	emoji: Emoji | string;
 }
+
+export const MysteryBoxes = new LootTable()
+	.oneIn(40, itemNameFromID(3062)!)
+	.oneIn(150, itemNameFromID(3713)!)
+	.oneIn(30, 'Equippable mystery box')
+	.add(6199)
+	.add(19_939);
 
 export const odsCrate = new LootTable()
 	.add('Pure essence', [500, 1000], 4)
@@ -238,6 +245,13 @@ const DwarvenCrateTable = new LootTable()
 	.add('Beer', 1, 3)
 	.add('Kebab', 1, 3);
 
+const BlacksmithCrateTable = new LootTable()
+	.add('Blacksmith helmet')
+	.add('Blacksmith top')
+	.add('Blacksmith apron')
+	.add('Blacksmith gloves')
+	.add('Blacksmith boots');
+
 export const SpoilsOfWarBaseTable = new LootTable()
 	.add('Pure essence', [4000, 6000], 6)
 	.add('Coins', [20_000, 30_000], 5)
@@ -412,6 +426,13 @@ const Openables: Openable[] = [
 		emoji: Emoji.MysteryBox
 	},
 	{
+		name: 'Blacksmith crate',
+		itemID: itemID('Blacksmith crate'),
+		aliases: ['blacksmith crate', 'bsc'],
+		table: BlacksmithCrateTable,
+		emoji: Emoji.MysteryBox
+	},
+	{
 		name: 'Builders supply crate',
 		itemID: 24_884,
 		aliases: ['builders supply crate'],
@@ -506,15 +527,28 @@ const Openables: Openable[] = [
 		aliases: ['bag full of gems', 'gem bag'],
 		table: BagFullOfGemsTable,
 		emoji: Emoji.Casket
+	},
+	{
+		name: 'Monkey crate',
+		itemID: itemID('Monkey crate'),
+		aliases: ['monkey crate'],
+		table: new LootTable()
+			.add('Avocado seed', [2, 5], 2)
+			.add('Lychee seed', [2, 5], 2)
+			.add('Mango seed', [2, 5])
+			.add('Magic banana')
+			.add(
+				new LootTable()
+					.add('Clue scroll (hard)')
+					.add('Clue scroll (elite)')
+					.add('Clue scroll (master)')
+					.add('Clue scroll (grandmaster)')
+			)
+			.add(MysteryBoxes)
+			.add(LampTable),
+		emoji: '<:Monkey_crate:885774318041202708>'
 	}
 ];
-
-export const MysteryBoxes = new LootTable()
-	.oneIn(40, itemNameFromID(3062)!)
-	.oneIn(150, itemNameFromID(3713)!)
-	.oneIn(30, 'Equippable mystery box')
-	.add(6199)
-	.add(19_939);
 
 export function getRandomMysteryBox() {
 	return MysteryBoxes.roll().items()[0][0].id;

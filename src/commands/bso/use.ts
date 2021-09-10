@@ -48,6 +48,20 @@ const usables = [
 				'You have used your Scroll of the hunt - you feel your hunting skills have improved.'
 			);
 		}
+	},
+	{
+		item: getOSItem('Banana enchantment scroll'),
+		run: async (msg: KlasaMessage) => {
+			const bits = msg.author.bitfield;
+			if (bits.includes(BitField.HasBananaEnchantmentScroll)) {
+				return msg.channel.send('You have already used a Banana enchantment scroll.');
+			}
+			await msg.author.removeItemsFromBank(new Bank().add('Banana enchantment scroll'));
+			await msg.author.settings.update(UserSettings.BitField, BitField.HasBananaEnchantmentScroll);
+			return msg.channel.send(
+				'You have used your Banana enchantment scroll - you feel your monkey magic skills have improved.'
+			);
+		}
 	}
 ];
 

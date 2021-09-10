@@ -180,12 +180,14 @@ export default class extends BotCommand {
 			.add('Numulite', 30);
 
 		// Activity boosts
-		if (userMiningLevel >= 99 && userSkillingGear.hasEquipped('Dwarven pickaxe')) {
-			boosts.push('2x boost for having a Dwarven pickaxe equipped.');
-		} else if (userMiningLevel >= 71 && userSkillingGear.hasEquipped('Crystal pickaxe')) {
-			boosts.push('50% boost for having a Crystal pickaxe equipped.');
+		if (userMiningLevel >= 71 && userSkillingGear.hasEquipped('Crystal pickaxe')) {
+			boosts.push(
+				`50% boost for having a ${userSkillingGear.equippedWeapon()?.name ?? 'Crystal pickaxe'} equipped.`
+			);
 		} else if (userMiningLevel >= 61 && userSkillingGear.hasEquipped('Dragon pickaxe')) {
-			boosts.push('30% boost for having a Dragon pickaxe equipped.');
+			boosts.push(
+				`30% boost for having a ${userSkillingGear.equippedWeapon()?.name ?? 'Dragon pickaxe'} equipped.`
+			);
 		}
 
 		if (

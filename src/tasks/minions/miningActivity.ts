@@ -114,6 +114,23 @@ export default class extends Task {
 			for (let i = 0; i < quantity; i++) {
 				loot.add(Mining.GemRockTable.roll());
 			}
+		} else if (ore.id === 21_622) {
+			// Volcanic ash
+			const userLevel = user.skillLevel(SkillsEnum.Mining);
+			const tiers = [
+				[22, 1],
+				[37, 2],
+				[52, 3],
+				[67, 4],
+				[82, 5],
+				[97, 6]
+			];
+			for (const [lvl, multiplier] of tiers.reverse()) {
+				if (userLevel >= lvl) {
+					loot.add(ore.id, quantity * multiplier);
+					break;
+				}
+			}
 		} else {
 			loot.add(ore.id, quantity);
 		}

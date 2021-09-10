@@ -702,6 +702,10 @@ const Buyables: Buyable[] = [
 		gpCost: 10_000
 	},
 	{
+		name: "M'speak amulet",
+		gpCost: 100_000
+	},
+	{
 		name: 'Achievement diary cape',
 		outputItems: resolveNameBank({
 			'Achievement diary cape': 1,

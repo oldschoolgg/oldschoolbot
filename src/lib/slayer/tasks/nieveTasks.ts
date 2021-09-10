@@ -1,6 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { KalphiteKingMonster } from '../../kalphiteking';
+import killableMonsters from '../../minions/data/killableMonsters';
 import AbyssalDragon from '../../minions/data/killableMonsters/custom/AbyssalDragon';
 import { Ignecarus } from '../../minions/data/killableMonsters/custom/Ignecarus';
 import SeaKraken from '../../minions/data/killableMonsters/custom/SeaKraken';
@@ -392,6 +393,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [30, 60],
 		weight: 5,
 		monsters: [Monsters.SteelDragon.id],
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)!.levelRequirements,
 		combatLevel: 85,
 		questPoints: 34,
 		unlocked: true

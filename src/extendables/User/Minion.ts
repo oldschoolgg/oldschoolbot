@@ -76,6 +76,7 @@ import {
 	HunterActivityTaskOptions,
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
+	MonkeyRumbleOptions,
 	MonsterActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
@@ -626,6 +627,12 @@ export default class extends Extendable {
 			case Activity.VolcanicMine: {
 				const data = currentTask as VolcanicMineActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity} games of Volcanic Mine. ${formattedDuration}`;
+			}
+			case Activity.MonkeyRumble: {
+				const data = currentTask as MonkeyRumbleOptions;
+				return `${data.monkeys.some(m => (m.special ? Emoji.Purple : ''))} ${
+					this.minionName
+				} is currently doing ${data.quantity} fights in Monkey Rumble. ${formattedDuration}`;
 			}
 		}
 	}

@@ -951,6 +951,51 @@ setCustomItem(40_052, 'Scroll of mystery', 'Coal', {}, 1_000_000);
 
 setCustomItem(40_060, 'Slayer master cape', 'Abyssal cape', {}, 10_000_000);
 
+// ---------
+setCustomItem(
+	48_220,
+	'Hellfire bow',
+	'Twisted bow',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 220,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 25,
+			magic_damage: 0,
+			prayer: 10,
+			slot: EquipmentSlot.TwoHanded,
+			requirements: {
+				ranged: 110
+			}
+		}
+	},
+	(getOSItem('Twisted bow').price + getOSItem('Zaryte bow').price) * 1.1
+);
+// ----------
+// MMMR
+setCustomItem(40_061, 'Beginner rumble greegree', 'Bronze dagger', {}, 999_995);
+setCustomItem(40_062, 'Intermediate rumble greegree', 'Bronze dagger', {}, 999_996);
+setCustomItem(40_063, 'Ninja rumble greegree', 'Bronze dagger', {}, 999_997);
+setCustomItem(40_064, 'Expert ninja rumble greegree', 'Bronze dagger', {}, 999_998);
+setCustomItem(40_065, 'Elder rumble greegree', 'Bronze dagger', {}, 999_999);
+setCustomItem(40_066, 'Gorilla rumble greegree', 'Bronze dagger', {}, 1_000_000);
+
+setCustomItem(40_067, 'Dwarven warnana', 'Dwarven warhammer', {}, 1_000_000_000);
+setCustomItem(40_068, 'Twisted bownana', 'Twisted bow', {}, 500_000_000);
+setCustomItem(40_069, 'Zaryte bownana', 'Zaryte bow', {}, 500_000_000);
+setCustomItem(40_070, 'Hellfire bownana', 'Hellfire bow', {}, 500_000_000);
+
 /**
  * Non-mystery box items
  *
@@ -1261,7 +1306,7 @@ setCustomItem(
 	},
 	1_000_000
 );
-setCustomItem(41_085, 'Tattered robes of Vasa', 'Coal', {}, 1_000_000);
+setCustomItem(41_085, 'Tattered robes of Vasa', 'Coal', { highalch: 90_000_000 }, 1_000_000);
 
 /**
  * Dyed DWWH Items
@@ -1712,37 +1757,6 @@ setCustomItem(
 );
 
 setCustomItem(
-	48_220,
-	'Hellfire bow',
-	'Twisted bow',
-	{
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 0,
-			attack_ranged: 220,
-
-			defence_stab: 0,
-			defence_slash: 0,
-			defence_crush: 0,
-			defence_magic: 0,
-			defence_ranged: 0,
-
-			melee_strength: 0,
-			ranged_strength: 25,
-			magic_damage: 0,
-			prayer: 10,
-			slot: EquipmentSlot.TwoHanded,
-			requirements: {
-				ranged: 110
-			}
-		}
-	},
-	(getOSItem('Twisted bow').price + getOSItem('Zaryte bow').price) * 1.1
-);
-
-setCustomItem(
 	48_221,
 	'Hellfire bow (broken)',
 	'Twisted bow',
@@ -1756,6 +1770,17 @@ setCustomItem(
 setCustomItem(48_222, 'Hellfire arrowtips', 'Dragon arrowtips', {}, 1000);
 setCustomItem(48_223, 'Scroll of the hunt', 'Coal', {}, 1_000_000);
 
+// MMMR
+
+setCustomItem(48_224, 'Monkey egg', 'Egg', {}, 100_000_000);
+setCustomItem(48_225, 'Banana enchantment scroll', 'Egg', {}, 1_000_000);
+setCustomItem(48_226, 'Chimpling jar', 'Egg', {}, 100_000);
+setCustomItem(48_227, 'Shiny monkey nuts', 'Egg', {}, 100_000);
+setCustomItem(48_228, 'Monkey dye', 'Egg', {}, 10_000_000);
+setCustomItem(48_229, 'Marimbo statue', 'Egg', {}, 10_000_000);
+setCustomItem(48_230, 'Big banana', 'Bronze kiteshield', {}, 100_000);
+
+setCustomItem(48_324, 'Blacksmith crate', 'Mystery box', {}, 100_000);
 /**
  * Misc Items
  *
@@ -1920,3 +1945,6 @@ setCustomItem(
 setCustomItem(50_043, 'Infernal impling jar', 'Coal', {}, 50_000);
 setCustomItem(50_044, 'Eternal impling jar', 'Coal', {}, 50_000);
 setCustomItem(50_045, 'Mystery impling jar', 'Coal', {}, 50_000);
+setCustomItem(50_046, 'Rumble token', 'Coal', {}, 1000);
+setCustomItem(50_047, 'Magic banana', 'Coal', {}, 1000);
+setCustomItem(50_048, 'Monkey crate', 'Coal', {}, 10_000);
