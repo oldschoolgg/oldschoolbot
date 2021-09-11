@@ -1,6 +1,6 @@
 import { Duration } from '@sapphire/time-utilities';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
-import { notEmpty, uniqueArr } from 'e';
+import { notEmpty, Time, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 
@@ -385,6 +385,13 @@ LIMIT 10;
 				if (command.enabled) return msg.channel.send('That command is already enabled.');
 				command.enable();
 				return msg.channel.send(`${emoji(this.client)} Enabled \`+${command}\`.`);
+			}
+			case 'dtp': {
+				if (!input || !(input instanceof KlasaUser)) return;
+				const effectiveTier = input.perkTier - 1;
+				let minutes = (effectiveTier >= 3 ? effectiveTier : effectiveTier / 2) * 10;
+				let timeAdded = Math.floor(Time.Minute * minutes);
+				addToDoubleLootTimer(this.client, timeAdded, `${input} became a Tier ${effectiveTier} patron!`);
 			}
 		}
 
