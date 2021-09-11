@@ -1,12 +1,12 @@
 import { Duration } from '@sapphire/time-utilities';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
-import { notEmpty, Time, uniqueArr } from 'e';
+import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 
 import { badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
-import { addToDoubleLootTimer } from '../../lib/doubleLoot';
+import { addPatronLootTime, addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -388,10 +388,7 @@ LIMIT 10;
 			}
 			case 'dtp': {
 				if (!input || !(input instanceof KlasaUser)) return;
-				const effectiveTier = input.perkTier - 1;
-				let minutes = (effectiveTier >= 3 ? effectiveTier : effectiveTier / 2) * 10;
-				let timeAdded = Math.floor(Time.Minute * minutes);
-				addToDoubleLootTimer(this.client, timeAdded, `${input} became a Tier ${effectiveTier} patron!`);
+				addPatronLootTime(input.perkTier, this.client, input);
 			}
 		}
 
