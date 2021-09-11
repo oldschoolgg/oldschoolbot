@@ -1,11 +1,8 @@
 import { randInt } from 'e';
 import { Bank, Openables as _Openables } from 'oldschooljs';
-import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
-import { EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
 import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
 import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
-import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 import { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import Clue from 'oldschooljs/dist/structures/Clue';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
@@ -27,12 +24,12 @@ const ClueHunterTable = new LootTable()
 	.add('Clue hunter cloak');
 
 export const ClueTable = new LootTable()
-	.add(BeginnerClueTable, 1)
-	.add(EasyClueTable, 1)
-	.add(MediumClueTable, 1)
-	.add(HardClueTable, 1)
-	.add(EliteClueTable, 1)
-	.add(MasterClueTable, 1);
+	.add('Reward casket (beginner)', 1)
+	.add('Reward casket (easy)', 1)
+	.add('Reward casket (medium)', 1)
+	.add(HardClueTable, [1, 2])
+	.add(EliteClueTable, [1, 2])
+	.add(MasterClueTable, [1, 2]);
 
 const BlessingTable = new LootTable().add('Dwarven blessing').add('Monkey nuts');
 
