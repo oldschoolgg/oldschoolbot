@@ -806,7 +806,8 @@ export const allCollectionLogs: ICollection = {
 					'Mysterious seed',
 					'Mango seed',
 					'Magical artifact'
-				])
+				]),
+				roleCategory: ['minigames']
 			},
 			"Mad Marimbo's Monkey Rumble": {
 				alias: ['mr', 'mmmr', 'mmr', 'monkey rumble', 'mad marimbos monkey rumble'],
@@ -824,7 +825,8 @@ export const allCollectionLogs: ICollection = {
 					'Ninja rumble greegree',
 					'Expert ninja rumble greegree',
 					'Gorilla rumble greegree'
-				])
+				]),
+				roleCategory: ['minigames']
 			}
 		}
 	},
