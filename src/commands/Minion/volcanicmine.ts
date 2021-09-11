@@ -5,6 +5,7 @@ import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { Activity } from '../../lib/constants';
 import { GearSetupTypes } from '../../lib/gear';
+import { minionNotBusy } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -146,6 +147,7 @@ export default class extends BotCommand {
 		);
 	}
 
+	@minionNotBusy
 	async run(msg: KlasaMessage, [numberOfGames = undefined]: [number | undefined]) {
 		const skillReqs = {
 			[SkillsEnum.Prayer]: 70,
