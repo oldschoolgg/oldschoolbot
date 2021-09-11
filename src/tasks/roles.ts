@@ -52,7 +52,9 @@ async function addRoles(g: Guild, users: string[], role: string, badge: number |
 	let removed: string[] = [];
 	let _role = await g.roles.fetch(role);
 	if (!_role) return 'Could not check role';
-	for (const u of users) await g.client.users.fetch(u);
+	for (const u of users) {
+		await g.members.fetch(u);
+	}
 	const roleName = _role.name!;
 	for (const mem of g.members.cache.values()) {
 		if (mem.roles.cache.has(role) && !users.includes(mem.user.id)) {
