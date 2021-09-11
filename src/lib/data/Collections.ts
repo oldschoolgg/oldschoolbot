@@ -43,7 +43,7 @@ import {
 	capesCL,
 	castleWarsCL,
 	cerberusCL,
-	chambersOfXericCl,
+	chambersOfXericCL,
 	championsChallengeCL,
 	chaosDruisCL,
 	chaosElementalCL,
@@ -487,7 +487,7 @@ export const allCollectionLogs: ICollection = {
 					Default: user => user.getMinigameScore('Raids'),
 					Challenge: user => user.getMinigameScore('RaidsChallengeMode')
 				},
-				items: chambersOfXericCl,
+				items: chambersOfXericCL,
 				roleCategory: ['raids'],
 				isActivity: true
 			},
@@ -506,7 +506,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['beginner', 'clues beginner', 'clue beginner'],
 				allItems: Clues.Beginner.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[23_245]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[23_245] || 0
 				},
 				items: cluesBeginnerCL,
 				roleCategory: ['clues'],
@@ -516,7 +516,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['easy', 'clues easy', 'clue easy'],
 				allItems: Clues.Easy.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_546]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_546] || 0
 				},
 				items: cluesEasyCL,
 				roleCategory: ['clues'],
@@ -526,7 +526,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['medium', 'clues medium', 'clue medium'],
 				allItems: Clues.Medium.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_545]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_545] || 0
 				},
 				items: cluesMediumCL,
 				roleCategory: ['clues'],
@@ -536,7 +536,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['hard', 'clues hard', 'clue hard'],
 				allItems: Clues.Hard.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544] || 0
 				},
 				items: cluesHardCL,
 				roleCategory: ['clues'],
@@ -546,7 +546,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['elite', 'clues elite', 'clue elite'],
 				allItems: Clues.Elite.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543] || 0
 				},
 				items: cluesEliteCL,
 				roleCategory: ['clues'],
@@ -556,7 +556,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['master', 'clues master', 'clue master'],
 				allItems: Clues.Master.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836] || 0
 				},
 				items: cluesMasterCL,
 				roleCategory: ['clues'],
@@ -583,7 +583,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare hard'
 				],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544] || 0
 				},
 				items: cluesHardRareCL,
 				roleCategory: ['clues'],
@@ -600,7 +600,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare elite'
 				],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543] || 0
 				},
 				items: cluesEliteRareCL,
 				roleCategory: ['clues'],
@@ -617,7 +617,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare master'
 				],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836] || 0
 				},
 				items: cluesMasterRareCL,
 				roleCategory: ['clues'],
@@ -625,12 +625,27 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Shared Treasure Trail Rewards': {
 				alias: ['shared', 'clues shared', 'clue shared'],
+				kcActivity: {
+					Default: async user =>
+						(user.settings.get(UserSettings.ClueScores)[23_245] || 0) +
+						(user.settings.get(UserSettings.ClueScores)[20_546] || 0) +
+						(user.settings.get(UserSettings.ClueScores)[20_545] || 0) +
+						(user.settings.get(UserSettings.ClueScores)[20_544] || 0) +
+						(user.settings.get(UserSettings.ClueScores)[20_543] || 0) +
+						(user.settings.get(UserSettings.ClueScores)[19_836] || 0)
+				},
 				items: cluesSharedCL,
 				roleCategory: ['clues'],
 				isActivity: true
 			},
 			'Rare Treasure Trail Rewards': {
 				alias: ['clues rare', 'rares'],
+				kcActivity: {
+					Default: async user =>
+						(user.settings.get(UserSettings.ClueScores)[20_544] || 0) +
+						(user.settings.get(UserSettings.ClueScores)[20_543] || 0) +
+						(user.settings.get(UserSettings.ClueScores)[19_836] || 0)
+				},
 				items: [...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL],
 				roleCategory: ['clues'],
 				isActivity: true
@@ -739,6 +754,7 @@ export const allCollectionLogs: ICollection = {
 			'Soul Wars': {
 				alias: ['soul wars', 'sw'],
 				items: soulWarsCL,
+				allItems: resolveItems(['Blue soul cape']),
 				roleCategory: ['minigames'],
 				isActivity: true
 			},
@@ -790,7 +806,8 @@ export const allCollectionLogs: ICollection = {
 					'Mysterious seed',
 					'Mango seed',
 					'Magical artifact'
-				])
+				]),
+				roleCategory: ['minigames']
 			},
 			"Mad Marimbo's Monkey Rumble": {
 				alias: ['mr', 'mmmr', 'mmr', 'monkey rumble', 'mad marimbos monkey rumble'],
@@ -808,7 +825,8 @@ export const allCollectionLogs: ICollection = {
 					'Ninja rumble greegree',
 					'Expert ninja rumble greegree',
 					'Gorilla rumble greegree'
-				])
+				]),
+				roleCategory: ['minigames']
 			}
 		}
 	},
@@ -866,7 +884,7 @@ export const allCollectionLogs: ICollection = {
 			'Monkey Backpacks': {
 				alias: ['monkey', 'monkey bps', 'backpacks'],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.LapsScores)[6]
+					Default: async user => user.settings.get(UserSettings.LapsScores)[6] || 0
 				},
 				items: monkeyBackpacksCL,
 				roleCategory: ['skilling'],
@@ -1156,7 +1174,7 @@ export function getItemsRole(role: TRoleCategories) {
 	];
 }
 
-export function converCLtoBank(items: number[]) {
+export function convertCLtoBank(items: number[]) {
 	const clBank = new Bank();
 	for (const item of items) {
 		clBank.add(item, 1);

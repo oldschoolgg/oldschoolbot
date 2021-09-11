@@ -1,9 +1,11 @@
 import { TextChannel } from 'discord.js';
+import { KlasaUser } from 'klasa';
 
 import { client } from '../../../..';
 import PatreonTask from '../../../../tasks/patreon';
 import { boxFrenzy } from '../../../boxFrenzy';
 import { Channel, PerkTier } from '../../../constants';
+import { addPatronLootTime } from '../../../doubleLoot';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
 import { FastifyServer } from '../../types';
@@ -24,12 +26,15 @@ const githubSponsors = (server: FastifyServer) =>
 			switch (data.action) {
 				case 'created': {
 					const tier = parseStrToTier(data.sponsorship.tier.name);
+					let effectiveTier = tier - 1;
 					sendToChannelID(client, Channel.NewSponsors, {
-						content: `${data.sender.login}[${data.sender.id}] became a Tier ${tier - 1} sponsor.`
+						content: `${data.sender.login}[${data.sender.id}] became a Tier ${effectiveTier} sponsor.`
 					});
 					if (user) {
 						await (client.tasks.get('patreon') as PatreonTask)!.givePerks(user.id, tier);
 					}
+
+					addPatronLootTime(tier, client, user as KlasaUser);
 
 					const isDoingReset = [PerkTier.Five, PerkTier.Six].includes(tier);
 					if (isDoingReset) {

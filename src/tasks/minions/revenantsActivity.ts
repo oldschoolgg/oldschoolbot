@@ -1,4 +1,4 @@
-import { deepClone, roll } from 'e';
+import { deepClone, objectEntries, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -14,6 +14,7 @@ import { Gear } from '../../lib/structures/Gear';
 import { RevenantOptions } from '../../lib/types/minions';
 import { updateBankSetting } from '../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -45,15 +46,14 @@ export default class extends Task {
 			await user.settings.update(UserSettings.Gear.Wildy, calc.newGear);
 
 			let extraMsg = '';
-			if (calc.lostItems.has('Hellfire bow')) {
-				calc.lostItems.remove('Hellfire bow');
-				await user.addItemsToBank(new Bank().add('Hellfire bow (broken)'));
-				extraMsg += 'Your Hellfire bow broke and was sent to your bank.';
+
+			for (const brokenGear of objectEntries(calc.brokenGear)) {
+				const brokenItem = getOSItem(brokenGear[0]);
+				await user.addItemsToBank(new Bank().add(brokenGear[1]));
+				extraMsg += `\nYour ${brokenItem.name} broke and was sent to your bank as a ${brokenGear[1]}.`;
 			}
 
 			updateBankSetting(this.client, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
-
-			const flags: Record<string, string> = !skulled ? {} : { skull: 'skull' };
 
 			handleTripFinish(
 				this.client,

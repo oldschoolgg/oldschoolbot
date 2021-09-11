@@ -3,11 +3,11 @@ import { Bank, Util } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
-import { chambersOfXericCl } from '../../lib/data/CollectionsExport';
+import { chambersOfXericCL } from '../../lib/data/CollectionsExport';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks, filterBankFromArrayOfItems } from '../../lib/util';
 
-const itemsToShow = chambersOfXericCl;
+const itemsToShow = chambersOfXericCL;
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
