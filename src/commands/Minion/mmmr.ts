@@ -1,4 +1,4 @@
-import { randArrItem, reduceNumByPercent, Time, uniqueArr } from 'e';
+import { randArrItem, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -231,12 +231,6 @@ Here are the items you can buy: \n\n${buyables
 			minigameID: 'MadMarimbosMonkeyRumble',
 			monkeys: monkeysToFight
 		});
-
-		const newMonkeysFought: string[] = uniqueArr([
-			...msg.author.settings.get(UserSettings.MonkeysFought),
-			...monkeysToFight.map(m => m.nameKey)
-		]);
-		await msg.author.settings.update(UserSettings.MonkeysFought, newMonkeysFought, { arrayAction: 'overwrite' });
 
 		let str = `You are fighting ${quantity}x different monkeys (${monkeysToFight
 			.map(m => `${m.special ? `${Emoji.Purple} ` : ''}${m.name}`)

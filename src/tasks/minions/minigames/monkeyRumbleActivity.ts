@@ -1,10 +1,11 @@
-import { randArrItem, roll, Time } from 'e';
+import { randArrItem, roll, Time, uniqueArr } from 'e';
 import { KlasaMessage, Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { monkeyHeadImage, monkeyTierOfUser } from '../../../lib/monkeyRumble';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MonkeyRumbleOptions } from '../../../lib/types/minions';
 import { updateBankSetting } from '../../../lib/util';
@@ -25,6 +26,12 @@ export default class extends Task {
 		const user = await this.client.fetchUser(userID);
 
 		await incrementMinigameScore(userID, 'MadMarimbosMonkeyRumble', quantity);
+
+		const newMonkeysFought: string[] = uniqueArr([
+			...user.settings.get(UserSettings.MonkeysFought),
+			...monkeys.map(m => m.nameKey)
+		]);
+		await user.settings.update(UserSettings.MonkeysFought, newMonkeysFought, { arrayAction: 'overwrite' });
 
 		const monkeyTier = monkeyTierOfUser(user);
 		let tierBonusXP = quantity * monkeyTier * 1233;

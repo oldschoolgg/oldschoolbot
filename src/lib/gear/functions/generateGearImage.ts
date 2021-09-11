@@ -252,9 +252,6 @@ export async function generateGearImage(
 		: ctx.createPattern(sprite.repeatableBg, 'repeat');
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-	// Draw stats
-	await drawStats(user, canvas, gearStats, transMogImage);
-
 	if (!uniqueSprite) {
 		ctx.drawImage(
 			userBgImage.image!,
@@ -268,6 +265,8 @@ export async function generateGearImage(
 		ctx.drawImage(gearTemplateImage, 200, 0, gearTemplateImage.width, gearTemplateImage.height);
 	}
 
+	if (!userBgImage.transparent) bankTask.drawBorder(ctx, sprite, false);
+
 	if (transMogImage) {
 		const maxWidth = gearTemplateImage.width * 0.45;
 		const altSize = calcAspectRatioFit(
@@ -278,22 +277,21 @@ export async function generateGearImage(
 		);
 
 		const y = gearTemplateImage.height * 0.9 - altSize.height;
-
-		ctx.fillRect(maxWidth / 2 - altSize.width / 2, y, altSize.width, altSize.height);
 		ctx.drawImage(transMogImage, maxWidth / 2 - altSize.width / 2, y, altSize.width, altSize.height);
 	}
 
-	if (!userBgImage.transparent) bankTask?.drawBorder(ctx, sprite, false);
+	// Draw stats
+	if (!transMogImage) await drawStats(user, canvas, gearStats, transMogImage);
 
 	ctx.font = '16px OSRSFontCompact';
 	// Draw preset title
 	if (gearType) {
-		drawTitleText(ctx, toTitleCase(gearType), Math.floor(176 / 2), 25);
+		drawTitleText(ctx, toTitleCase(gearType), Math.floor(176 / 2) + (transMogImage ? 200 : 0), 25);
 	}
 
 	// Draw items
 	if (petID) {
-		const image = await client.tasks.get('bankImage')!.getItemImage(petID, 1);
+		const image = await bankTask.getItemImage(petID, 1);
 		ctx.drawImage(
 			image,
 			(transMogImage ? 200 : 0) + 178 + slotSize / 2 - image.width / 2,
@@ -306,7 +304,7 @@ export async function generateGearImage(
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
 		if (!item) continue;
-		const image = await client.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
+		const image = await bankTask.getItemImage(item.item, item.quantity);
 
 		let [x, y] = slotCoordinates[enumName];
 		x = x + slotSize / 2 - image.width / 2;
