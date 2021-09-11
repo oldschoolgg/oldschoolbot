@@ -74,6 +74,7 @@ const ClueTiers: ClueTier[] = [
 	},
 	{
 		name: 'Grandmaster',
+		aliases: ['gm'],
 		table: GrandmasterClueTable,
 		id: 19_838,
 		scrollID: 19_837,

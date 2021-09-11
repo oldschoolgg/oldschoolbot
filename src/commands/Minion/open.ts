@@ -71,7 +71,9 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.settings.sync(true);
-		const clue = ClueTiers.find(_tier => _tier.name.toLowerCase() === name.toLowerCase());
+		const clue = ClueTiers.find(
+			_tier => stringMatches(_tier.name, name) || _tier.aliases?.some(a => stringMatches(a, name))
+		);
 		if (clue) {
 			return this.clueOpen(msg, quantity, clue);
 		}

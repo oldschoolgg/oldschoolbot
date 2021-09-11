@@ -40,6 +40,7 @@ export interface ClueMilestoneReward {
 
 export interface ClueTier {
 	name: string;
+	aliases?: string[];
 	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket;
 	id: number;
 	scrollID: number;
