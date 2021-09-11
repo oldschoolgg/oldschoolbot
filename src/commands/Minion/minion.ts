@@ -279,29 +279,9 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				`just became an ironman, previous settings: ${JSON.stringify(msg.author.settings.toJSON())}`
 			);
 
-			await msg.author.settings.reset([
-				UserSettings.Bank,
-				UserSettings.CollectionLogBank,
-				UserSettings.GP,
-				UserSettings.QP,
-				UserSettings.MonsterScores,
-				UserSettings.ClueScores,
-				UserSettings.BankBackground,
-				UserSettings.SacrificedValue,
-				UserSettings.SacrificedBank,
-				UserSettings.HonourLevel,
-				UserSettings.HonourPoints,
-				UserSettings.HighGambles,
-				UserSettings.CarpenterPoints,
-				UserSettings.ZealTokens,
-				UserSettings.OpenableScores,
-				'slayer',
-				'gear',
-				'stats',
-				'skills',
-				'minion',
-				'farmingPatches'
-			]);
+			const allSchemaKeys = Array.from(this.client.gateways.get('users')!.schema.keys());
+			const keysToReset = allSchemaKeys.filter(k => !['pets', 'RSN', 'patreon_id', 'github_id'].includes(k));
+			await msg.author.settings.reset([...keysToReset]);
 
 			try {
 				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
