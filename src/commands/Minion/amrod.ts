@@ -44,7 +44,7 @@ const amrodTradeableList = [
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[quantity:int{1,250000}] <name:...string>',
+			usage: '[quantity:int{1,250000}] [name:...string]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
@@ -55,7 +55,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [quantity = 1, itemName]: [number, string]) {
+	async run(msg: KlasaMessage, [quantity = 1, itemName = '']: [number, string]) {
 		await msg.author.settings.sync(true);
 		const userHasQP = msg.author.settings.get(UserSettings.QP) >= 150;
 		// SotE requirements
@@ -81,9 +81,9 @@ export default class extends BotCommand {
 		);
 		if (!amrodTrade) {
 			return msg.channel.send(
-				`This is not a valid item. Valid items that can be traded are: ${amrodTradeableList
-					.map(a => `${a.name} (${a.alias})`)
-					.join(', ')}`
+				`This is not a valid item. Valid items that can be traded are:\n\n${amrodTradeableList
+					.map(a => `- ${a.name} (${a.alias}) for ${a.output.toLocaleString()} shards`)
+					.join('\n')}`
 			);
 		}
 		const toTradeBank = new Bank().add(amrodTrade.require, quantity);
