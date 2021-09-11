@@ -996,6 +996,17 @@ setCustomItem(40_068, 'Twisted bownana', 'Twisted bow', {}, 500_000_000);
 setCustomItem(40_069, 'Zaryte bownana', 'Zaryte bow', {}, 500_000_000);
 setCustomItem(40_070, 'Hellfire bownana', 'Hellfire bow', {}, 500_000_000);
 
+setCustomItem(
+	40_071,
+	'Hellfire bownana (broken)',
+	'Twisted bow',
+	{
+		equipable: false,
+		equipment: null
+	},
+	0
+);
+
 /**
  * Non-mystery box items
  *
