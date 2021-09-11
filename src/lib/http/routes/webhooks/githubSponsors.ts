@@ -1,11 +1,11 @@
 import { TextChannel } from 'discord.js';
-import { Time } from 'e';
+import { KlasaUser } from 'klasa';
 
 import { client } from '../../../..';
 import PatreonTask from '../../../../tasks/patreon';
 import { boxFrenzy } from '../../../boxFrenzy';
 import { Channel, PerkTier } from '../../../constants';
-import { addToDoubleLootTimer } from '../../../doubleLoot';
+import { addPatronLootTime } from '../../../doubleLoot';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
 import { FastifyServer } from '../../types';
@@ -34,9 +34,7 @@ const githubSponsors = (server: FastifyServer) =>
 						await (client.tasks.get('patreon') as PatreonTask)!.givePerks(user.id, tier);
 					}
 
-					let minutes = (effectiveTier >= 3 ? effectiveTier : effectiveTier / 2) * 10;
-					let timeAdded = Math.floor(Time.Minute * minutes);
-					addToDoubleLootTimer(client, timeAdded, `${user} became a Tier ${effectiveTier} sponsor`);
+					addPatronLootTime(tier, client, user as KlasaUser);
 
 					const isDoingReset = [PerkTier.Five, PerkTier.Six].includes(tier);
 					if (isDoingReset) {
