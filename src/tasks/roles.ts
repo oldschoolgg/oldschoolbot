@@ -50,9 +50,9 @@ LIMIT 1;`;
 async function addRoles(g: Guild, users: string[], role: string, badge: number | null): Promise<string> {
 	let added: string[] = [];
 	let removed: string[] = [];
-	let _role = g.roles.cache.get(role);
-	if (!_role) _role = (await g.roles.fetch(role)) ?? undefined;
+	let _role = await g.roles.fetch(role);
 	if (!_role) return 'Could not check role';
+	for (const u of users) await g.client.users.fetch(u);
 	const roleName = _role.name!;
 	for (const mem of g.members.cache.values()) {
 		if (mem.roles.cache.has(role) && !users.includes(mem.user.id)) {
@@ -98,7 +98,6 @@ export default class extends Task {
 	async run() {
 		const g = this.client.guilds.cache.get(SupportServer);
 		if (!g) return;
-		await g.members.fetch();
 		const skillVals = Object.values(Skills);
 
 		let result = '';
