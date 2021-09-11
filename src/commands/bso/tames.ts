@@ -664,11 +664,15 @@ export default class extends BotCommand {
 			duration
 		});
 
-		return msg.channel.send(
-			`${selectedTame.name} is now killing ${quantity}x ${monster.name}. The trip will take ${formatDuration(
-				duration
-			)}.\n\nRemoved ${foodStr}`
-		);
+		let reply = `${selectedTame.name} is now killing ${quantity}x ${
+			monster.name
+		}. The trip will take ${formatDuration(duration)}.\n\nRemoved ${foodStr}`;
+
+		if (boosts.length > 0) {
+			reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.channel.send(reply);
 	}
 
 	async c(msg: KlasaMessage, [str = '']: [string]) {
