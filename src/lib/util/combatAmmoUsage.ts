@@ -8,7 +8,7 @@ import { GearSetupType, GearSetupTypes } from '../gear';
 import getOSItem from './getOSItem';
 import itemID from './itemID';
 
-interface ICombatItemsConsumption {
+export const combatItemsConsumption: {
 	[key: number]: {
 		requiredGearType?: GearSetupType[];
 		required: Bank;
@@ -16,9 +16,7 @@ interface ICombatItemsConsumption {
 		consume: number;
 		reductions?: Record<string, number>;
 	};
-}
-
-export const combatItemsConsumption: ICombatItemsConsumption = {
+} = {
 	[itemID('Hellfire bow')]: {
 		requiredGearType: [GearSetupTypes.Wildy],
 		required: new Bank({
@@ -44,9 +42,7 @@ export default function combatAmmoUsage(options: { duration: number; gearType: G
 	const gear = user.getGear(gearType);
 	const toConsume = new Bank();
 
-	for (const cic of Object.entries(combatItemsConsumption)) {
-		const cicItem = cic[0];
-		const cicData = cic[1];
+	for (const [cicItem, cicData] of Object.entries(combatItemsConsumption)) {
 		// Ignore this gear, if this boost cant be applied to this gear type
 		if (cicData.requiredGearType && !cicData.requiredGearType.includes(gearType)) continue;
 		if (gear.hasEquipped([cicItem])) {
@@ -57,7 +53,7 @@ export default function combatAmmoUsage(options: { duration: number; gearType: G
 				for (const [reductionItem, reductionPercentage] of Object.entries(cicData.reductions)) {
 					const _reductionItem = getOSItem(reductionItem);
 					if (gear.hasEquipped([_reductionItem.name])) {
-						toRemove = Math.ceil(reduceNumByPercent(toRemove, Number(reductionPercentage)));
+						toRemove = Math.ceil(reduceNumByPercent(toRemove, reductionPercentage));
 						boosts.push(
 							`${reductionPercentage}% reduction for **${requiredBank
 								.items()
