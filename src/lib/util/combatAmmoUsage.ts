@@ -45,7 +45,7 @@ export default function combatAmmoUsage(options: { duration: number; gearType: G
 	const toConsume = new Bank();
 
 	for (const cic of Object.entries(combatItemsConsumption)) {
-		const cicItem = Number(cic[0]);
+		const cicItem = cic[0];
 		const cicData = cic[1];
 		// Ignore this gear, if this boost cant be applied to this gear type
 		if (cicData.requiredGearType && !cicData.requiredGearType.includes(gearType)) continue;
@@ -55,7 +55,7 @@ export default function combatAmmoUsage(options: { duration: number; gearType: G
 			let toRemove = Math.ceil(duration / cicData.every) * cicData.consume;
 			if (cicData.reductions) {
 				for (const [reductionItem, reductionPercentage] of Object.entries(cicData.reductions)) {
-					const _reductionItem = getOSItem(Number(reductionItem));
+					const _reductionItem = getOSItem(reductionItem);
 					if (gear.hasEquipped([_reductionItem.name])) {
 						toRemove = Math.ceil(reduceNumByPercent(toRemove, Number(reductionPercentage)));
 						boosts.push(
