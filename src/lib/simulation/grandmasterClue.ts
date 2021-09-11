@@ -87,10 +87,9 @@ const runeTable = new LootTable()
 	.add('Astral rune', [3000, 5000]);
 
 const PlankTable = new LootTable()
-	.add('Oak plank', [8000, 2700])
+	.add('Oak plank', [800, 2700])
 	.add('Teak plank', [300, 1500])
-	.add('Mahogany plank', [300, 800])
-	.add('Elder plank', [10, 50]);
+	.add('Mahogany plank', [300, 800]);
 
 const Supplies = new LootTable()
 	.add('Gingerbread gnome', [3, 5])
