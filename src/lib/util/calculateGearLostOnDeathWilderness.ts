@@ -157,6 +157,11 @@ export const lockedItems = resolveItems([
 	'Penance skirt (l)'
 ]);
 
+const itemsThatBreakOnDeath: Record<number, number> = {
+	[itemID('Hellfire bow')]: itemID('Hellfire bow (broken)'),
+	[itemID('Hellfire bownana')]: itemID('Hellfire bownana (broken)')
+};
+
 export default function calculateGearLostOnDeathWilderness(
 	options = <
 		{
@@ -210,9 +215,18 @@ export default function calculateGearLostOnDeathWilderness(
 		lostItemsBank.add(originalItem.id);
 	}
 
+	const brokenGear: Record<number, Bank> = {};
+	for (const item of lostItemsBank.items()) {
+		if (itemsThatBreakOnDeath[item[0].id]) {
+			lostItemsBank.remove(item[0].id, item[1]);
+			brokenGear[item[0].id] = new Bank().add(itemsThatBreakOnDeath[item[0].id], item[1]);
+		}
+	}
+
 	// 6 - Return lost items + new gear
 	return {
 		lostItems: lostItemsBank,
-		newGear: userGear
+		newGear: userGear,
+		brokenGear
 	};
 }

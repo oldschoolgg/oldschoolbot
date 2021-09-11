@@ -1,13 +1,14 @@
 import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import { resolveBank } from 'oldschooljs/dist/util';
 
 import { GearSetupType, GearSetupTypes } from '../gear';
 import getOSItem from './getOSItem';
 import itemID from './itemID';
 
-interface ICombatItemsConsumption {
+export const combatItemsConsumption: {
 	[key: number]: {
 		requiredGearType?: GearSetupType[];
 		required: Bank;
@@ -15,9 +16,7 @@ interface ICombatItemsConsumption {
 		consume: number;
 		reductions?: Record<string, number>;
 	};
-}
-
-export const combatItemsConsumption: ICombatItemsConsumption = {
+} = {
 	[itemID('Hellfire bow')]: {
 		requiredGearType: [GearSetupTypes.Wildy],
 		required: new Bank({
@@ -43,34 +42,34 @@ export default function combatAmmoUsage(options: { duration: number; gearType: G
 	const gear = user.getGear(gearType);
 	const toConsume = new Bank();
 
-	for (const item of gear.allItems()) {
-		const _item = getOSItem(item)!;
-		const cic = combatItemsConsumption[item];
-		if (cic) {
-			if (cic.requiredGearType && !cic.requiredGearType.includes(gearType)) continue;
-			let requiredBank = cic.required.clone();
-			let requiredItems = requiredBank
-				.items()
-				.map(r => r[0].name)
-				.join(', ');
-			let toRemove = Math.ceil(duration / cic.every) * cic.consume;
-			if (cic.reductions) {
-				for (const [reductionItem, reductionPercentage] of objectEntries(cic.reductions)) {
-					const _reductionItem = getOSItem(reductionItem)!;
+	for (const [cicItem, cicData] of objectEntries(combatItemsConsumption)) {
+		// Ignore this gear, if this boost cant be applied to this gear type
+		if (cicData.requiredGearType && !cicData.requiredGearType.includes(gearType)) continue;
+		if (gear.hasEquipped([cicItem])) {
+			const item = getOSItem(cicItem);
+			let requiredBank = cicData.required.clone();
+			let toRemove = Math.ceil(duration / cicData.every) * cicData.consume;
+			if (cicData.reductions) {
+				for (const [reductionItem, reductionPercentage] of objectEntries(cicData.reductions)) {
+					const _reductionItem = getOSItem(reductionItem);
 					if (gear.hasEquipped([_reductionItem.name])) {
 						toRemove = Math.ceil(reduceNumByPercent(toRemove, reductionPercentage));
 						boosts.push(
-							`${reductionPercentage}% reduction for **${requiredItems}** by having ${_reductionItem.name} equipped.`
+							`${reductionPercentage}% reduction for **${requiredBank
+								.items()
+								.map((r: [Item, number]) => r[0].name)
+								.join(', ')}** by having ${_reductionItem.name} equipped.`
 						);
 					}
 				}
 			}
 			if (!user.bank().has(requiredBank.multiply(toRemove).bank)) {
-				errors.push(`You need at least ${requiredBank} to go on a trip using ${_item.name}`);
+				errors.push(`You need at least ${requiredBank} to go on a trip using ${item.name}`);
 			}
 			toConsume.add(requiredBank);
 		}
 	}
+
 	return {
 		boosts,
 		errors,
