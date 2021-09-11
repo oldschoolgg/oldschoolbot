@@ -1,6 +1,5 @@
 import { TextChannel } from 'discord.js';
 import { Time } from 'e';
-import { KlasaClient } from 'klasa';
 
 import { client } from '../../../..';
 import PatreonTask from '../../../../tasks/patreon';
