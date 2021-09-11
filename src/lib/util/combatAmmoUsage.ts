@@ -1,4 +1,4 @@
-import { reduceNumByPercent, Time } from 'e';
+import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -42,7 +42,7 @@ export default function combatAmmoUsage(options: { duration: number; gearType: G
 	const gear = user.getGear(gearType);
 	const toConsume = new Bank();
 
-	for (const [cicItem, cicData] of Object.entries(combatItemsConsumption)) {
+	for (const [cicItem, cicData] of objectEntries(combatItemsConsumption)) {
 		// Ignore this gear, if this boost cant be applied to this gear type
 		if (cicData.requiredGearType && !cicData.requiredGearType.includes(gearType)) continue;
 		if (gear.hasEquipped([cicItem])) {
@@ -50,7 +50,7 @@ export default function combatAmmoUsage(options: { duration: number; gearType: G
 			let requiredBank = cicData.required.clone();
 			let toRemove = Math.ceil(duration / cicData.every) * cicData.consume;
 			if (cicData.reductions) {
-				for (const [reductionItem, reductionPercentage] of Object.entries(cicData.reductions)) {
+				for (const [reductionItem, reductionPercentage] of objectEntries(cicData.reductions)) {
 					const _reductionItem = getOSItem(reductionItem);
 					if (gear.hasEquipped([_reductionItem.name])) {
 						toRemove = Math.ceil(reduceNumByPercent(toRemove, reductionPercentage));
