@@ -1,9 +1,12 @@
 import { TextChannel } from 'discord.js';
+import { Time } from 'e';
+import { KlasaClient } from 'klasa';
 
 import { client } from '../../../..';
 import PatreonTask from '../../../../tasks/patreon';
 import { boxFrenzy } from '../../../boxFrenzy';
 import { Channel, PerkTier } from '../../../constants';
+import { addToDoubleLootTimer } from '../../../doubleLoot';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
 import { FastifyServer } from '../../types';
@@ -24,12 +27,17 @@ const githubSponsors = (server: FastifyServer) =>
 			switch (data.action) {
 				case 'created': {
 					const tier = parseStrToTier(data.sponsorship.tier.name);
+					let effectiveTier = tier - 1;
 					sendToChannelID(client, Channel.NewSponsors, {
-						content: `${data.sender.login}[${data.sender.id}] became a Tier ${tier - 1} sponsor.`
+						content: `${data.sender.login}[${data.sender.id}] became a Tier ${effectiveTier} sponsor.`
 					});
 					if (user) {
 						await (client.tasks.get('patreon') as PatreonTask)!.givePerks(user.id, tier);
 					}
+
+					let minutes = (effectiveTier >= 3 ? effectiveTier : effectiveTier / 2) * 10;
+					let timeAdded = Math.floor(Time.Minute * minutes);
+					addToDoubleLootTimer(client, timeAdded, `${user} became a Tier ${effectiveTier} sponsor`);
 
 					const isDoingReset = [PerkTier.Five, PerkTier.Six].includes(tier);
 					if (isDoingReset) {
