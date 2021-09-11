@@ -23,7 +23,8 @@ const minigames = [
 	'rogues_den',
 	'temple_trekking',
 	'ourania_delivery_service',
-	'volcanic_mine'
+	'volcanic_mine',
+	'monkey_rumble'
 ];
 
 const collections = ['overall', 'pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer'];
