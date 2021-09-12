@@ -1,4 +1,4 @@
-import { calcPercentOfNum, percentChance, Time } from 'e';
+import { percentChance, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -212,8 +212,8 @@ export default class extends BotCommand {
 
 		let newBank = { ...userBank };
 		let econBank = new Bank();
-		const hasScroll = await msg.author.hasItem(itemID('Scroll of life'));
-		const hasMasterFarmingCape = await msg.author.hasItemEquippedOrInBank(itemID('Farming master cape'));
+		const hasScroll = msg.author.owns('Scroll of life');
+		const hasMasterFarmingCape = msg.author.hasItemEquippedOrInBank(itemID('Farming master cape'));
 
 		const requiredSeeds: [string, number][] = Object.entries(plants.inputItems);
 		for (const [seedID, qty] of requiredSeeds) {
@@ -225,15 +225,11 @@ export default class extends BotCommand {
 				}
 			}
 			let _qty = 0;
-			if (hasScroll) {
-				if (hasMasterFarmingCape) {
-					// Always round down with Farming master cape
-					_qty = Math.floor(calcPercentOfNum(85, qty * quantity));
-				} else {
-					// 15% chance to negate seed cost
-					for (let i = 0; i < quantity; i++) {
-						if (!percentChance(15)) _qty += qty;
-					}
+			if (hasScroll || hasMasterFarmingCape) {
+				// 15% chance to negate seed cost for either master cape or scroll. 50% if both.
+				const saveChance = hasMasterFarmingCape && hasScroll ? 50 : 15;
+				for (let i = 0; i < quantity; i++) {
+					if (!percentChance(saveChance)) _qty += qty;
 				}
 			} else {
 				// Total quantity = per patch qty * total patches used
@@ -241,10 +237,12 @@ export default class extends BotCommand {
 			}
 			newBank = removeItemFromBank(newBank, parseInt(seedID), _qty);
 			econBank.add(parseInt(seedID), _qty);
-			if (hasScroll) {
-				boostStr.push('15% less seeds used from Scroll of life');
-			}
 		}
+
+		if (!hasScroll && hasMasterFarmingCape) boostStr.push('15% less seeds used for having a Farming master cape');
+		if (hasScroll && !hasMasterFarmingCape) boostStr.push('15% less seeds used for having a Scroll of life');
+		if (hasScroll && hasMasterFarmingCape)
+			boostStr.push('50% less seeds used for having a Scroll of life and a Farming master cape');
 
 		let paymentBank = { ...newBank };
 		let canPay = false;
