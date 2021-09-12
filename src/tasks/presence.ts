@@ -17,10 +17,12 @@ export default class extends Task {
 
 		const set = () => {
 			let str = isDoubleLootActive(this.client) ? 'Double Loot is active!' : `${this.client.options.prefix}info`;
-			this.client.user?.setActivity(str);
+			if (this.client.user!.presence.activities[0].name !== str) {
+				this.client.user?.setActivity(str);
+			}
 		};
 
-		this.client._presenceInterval = setInterval(set, Time.Hour);
+		this.client._presenceInterval = setInterval(set, Time.Minute);
 		set();
 	}
 
