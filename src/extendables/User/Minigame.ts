@@ -100,7 +100,7 @@ export const Minigames: Minigame[] = [
 	},
 	{
 		name: 'Gauntlet',
-		aliases: ['gauntlet', 'gaunt'],
+		aliases: ['gauntlet', 'gaunt', 'ng'],
 		key: 'Gauntlet',
 		column: 'gauntlet'
 	},
