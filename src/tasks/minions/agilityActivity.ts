@@ -147,7 +147,7 @@ export default class extends Task {
 
 					let quantity = 1;
 
-					if (isDoubleLootActive(this.client)) {
+					if (isDoubleLootActive(this.client, duration)) {
 						quantity *= 2;
 					}
 					loot.add(item.id, quantity);

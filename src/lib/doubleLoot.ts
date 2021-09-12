@@ -6,8 +6,8 @@ import { ClientSettings } from './settings/types/ClientSettings';
 import { formatDuration } from './util';
 import { sendToChannelID } from './util/webhook';
 
-export function isDoubleLootActive(client: KlasaClient) {
-	return Date.now() < client.settings.get(ClientSettings.DoubleLootFinishTime);
+export function isDoubleLootActive(client: KlasaClient, duration: number) {
+	return Date.now() - duration < client.settings.get(ClientSettings.DoubleLootFinishTime);
 }
 
 export async function addToDoubleLootTimer(client: KlasaClient, amount: number, reason: string) {
