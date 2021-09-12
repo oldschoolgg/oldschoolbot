@@ -307,7 +307,7 @@ export default class extends BotCommand {
 
 	async minigame(msg: KlasaMessage, [name = '']: [string]) {
 		const minigame = Minigames.find(
-			m => stringMatches(m.name, name) || m.aliases?.some(a => stringMatches(a, name))
+			m => stringMatches(m.name, name) || m.aliases.some(a => stringMatches(a, name))
 		);
 		if (!minigame) {
 			return msg.channel.send(

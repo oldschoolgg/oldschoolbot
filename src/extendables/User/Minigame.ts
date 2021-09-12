@@ -7,7 +7,7 @@ import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 
 export interface Minigame {
 	name: string;
-	aliases?: string[];
+	aliases: string[];
 	key: MinigameKey;
 	column: string;
 }
@@ -100,12 +100,13 @@ export const Minigames: Minigame[] = [
 	},
 	{
 		name: 'Gauntlet',
+		aliases: ['gauntlet', 'gaunt'],
 		key: 'Gauntlet',
 		column: 'gauntlet'
 	},
 	{
 		name: 'Corrupted Gauntlet',
-		aliases: ['cgauntlet', 'corruptedg', 'corruptg'],
+		aliases: ['cgauntlet', 'corruptedg', 'corruptg', 'cg'],
 		key: 'CorruptedGauntlet',
 		column: 'corrupted_gauntlet'
 	},
