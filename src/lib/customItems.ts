@@ -1808,8 +1808,8 @@ setCustomItem(50_006, 'Blacksmith gloves', 'Leather gloves', {}, 100_000);
 setCustomItem(50_007, 'Blacksmith boots', 'Rune boots', {}, 100_000);
 
 setCustomItem(50_008, 'Mysterious seed', 'Magic seed', {}, 100_000);
-setCustomItem(50_009, 'Athelas seed', 'Magic seed', {}, 1_000_000);
-setCustomItem(50_010, 'Athelas', 'Magic seed', {}, 1_000_000);
+setCustomItem(50_009, 'Athelas seed', 'Magic seed', {}, 10_000);
+setCustomItem(50_010, 'Athelas', 'Magic seed', {}, 200_000);
 
 // Master farmer
 setCustomItem(50_011, 'Ent hide', 'Magic seed', {}, 1_000_000);
