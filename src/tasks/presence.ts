@@ -14,8 +14,12 @@ export default class extends Task {
 		if (this.client._presenceInterval) {
 			clearTimeout(this.client._presenceInterval);
 		}
-		let str = isDoubleLootActive(this.client) ? 'Double Loot is active!' : `${this.client.options.prefix}info`;
-		const set = () => this.client.user?.setActivity(str);
+
+		const set = () => {
+			let str = isDoubleLootActive(this.client) ? 'Double Loot is active!' : `${this.client.options.prefix}info`;
+			this.client.user?.setActivity(str);
+		};
+
 		this.client._presenceInterval = setInterval(set, Time.Hour);
 		set();
 	}
