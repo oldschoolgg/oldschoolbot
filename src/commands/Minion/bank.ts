@@ -34,10 +34,13 @@ export default class extends BotCommand {
 				itemNameOrID = String(page);
 				page = undefined;
 			}
-			msg.flagArgs.search = String(itemNameOrID);
+			msg.flagArgs.search = String(itemNameOrID).trim().replace(/"/g, '');
 			// Clear item string
 			itemNameOrID = '';
-		} else if (page && itemNameOrID) itemNameOrID = `${page} ${itemNameOrID}`.trim();
+		} else if (page && itemNameOrID) {
+			itemNameOrID = `${page} ${itemNameOrID}`.trim();
+			page = undefined;
+		}
 		if (!page) page = 1;
 
 		if (msg.flagArgs.smallbank) {
