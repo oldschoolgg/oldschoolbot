@@ -1,3 +1,4 @@
+import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -6,7 +7,7 @@ import { rewardTokens } from '../../lib/minions/data/templeTrekking';
 import { AddXpParams } from '../../lib/minions/types';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { percentChance, rand, reduceNumByPercent, stringMatches } from '../../lib/util';
+import { percentChance, rand, stringMatches } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

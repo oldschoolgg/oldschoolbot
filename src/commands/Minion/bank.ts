@@ -16,17 +16,32 @@ export default class extends BotCommand {
 			description: 'Shows your bank, with all your items and GP.',
 			cooldown: 3,
 			oneAtTime: true,
-			usage: '[page:int|name:string]',
+			usage: '[page:int{1}] [name:...string]',
+			usageDelim: ' ',
 			requiredPermissions: ['ATTACH_FILES'],
-			aliases: ['b'],
+			aliases: ['b', 'bs'],
 			examples: ['+b'],
 			categoryFlags: ['minion']
 		});
 	}
 
-	async run(msg: KlasaMessage, [pageNumberOrItemName]: [number | string | undefined]) {
+	async run(msg: KlasaMessage, [page = undefined, itemNameOrID = '']: [number | undefined, string | undefined]) {
 		await msg.author.settings.sync(true);
 		const baseBank = msg.author.bank({ withGP: true });
+
+		if (msg.commandText === 'bs') {
+			if (page && !itemNameOrID) {
+				itemNameOrID = String(page);
+				page = undefined;
+			}
+			msg.flagArgs.search = String(itemNameOrID).trim().replace(/"/g, '');
+			// Clear item string
+			itemNameOrID = '';
+		} else if (page && itemNameOrID) {
+			itemNameOrID = `${page} ${itemNameOrID}`.trim();
+			page = undefined;
+		}
+		if (!page) page = 1;
 
 		if (msg.flagArgs.smallbank) {
 			const userBg = msg.author.settings.get(UserSettings.BankBackground);
@@ -49,7 +64,7 @@ export default class extends BotCommand {
 		const bank = parseBank({
 			inputBank: baseBank,
 			flags: msg.flagArgs,
-			inputStr: typeof pageNumberOrItemName === 'string' ? pageNumberOrItemName : undefined
+			inputStr: itemNameOrID
 		});
 
 		if (bank.length === 0) {
@@ -110,7 +125,7 @@ export default class extends BotCommand {
 			title: `${msg.author.username}'s Bank`,
 			flags: {
 				...msg.flagArgs,
-				page: typeof pageNumberOrItemName === 'number' ? pageNumberOrItemName - 1 : 0
+				page: page - 1
 			},
 			user: msg.author,
 			gearPlaceholder: msg.author.rawGear()

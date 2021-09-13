@@ -67,16 +67,17 @@ export default class extends Extendable {
 			const split = Util.splitMessage(input.content, { maxLength });
 			const newPayload = { ...input };
 			// Separate files and components from payload for interactions
-			const { components, files } = newPayload;
+			const { components, files, embeds } = newPayload;
 			delete newPayload.components;
 			delete newPayload.files;
+			delete newPayload.embeds;
 			await this.send({ ...newPayload, content: split[0] });
 
 			let lastMessage = null;
 			for (let i = 1; i < split.length; i++) {
 				if (i + 1 === split.length) {
 					// Add files to last msg, and components for interactions to the final message.
-					lastMessage = await this.send({ components, files, content: split[i] });
+					lastMessage = await this.send({ components, files, embeds, content: split[i] });
 				} else {
 					await this.send(split[i]);
 				}

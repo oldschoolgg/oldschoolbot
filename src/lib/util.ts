@@ -1,16 +1,18 @@
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
+import { exec } from 'child_process';
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
-import { objectEntries, randInt, shuffleArr, Time } from 'e';
+import { objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
+import { promisify } from 'util';
 
 import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
 import { GearSetupTypes } from './gear/types';
-import { ArrayItemsResolved, ItemTuple, Skills } from './types';
+import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
@@ -70,10 +72,6 @@ export function formatItemStackQuantity(quantity: number) {
 	return quantity.toString();
 }
 
-export function randomItemFromArray<T>(array: T[]): T {
-	return array[Math.floor(Math.random() * array.length)];
-}
-
 export function toTitleCase(str: string) {
 	const splitStr = str.toLowerCase().split(' ');
 	for (let i = 0; i < splitStr.length; i++) {
@@ -86,23 +84,8 @@ export function cleanString(str: string) {
 	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function noOp(_any: any) {
-	return undefined;
-}
-
 export function stringMatches(str: string, str2: string) {
 	return cleanString(str) === cleanString(str2);
-}
-
-export function bankToString(bank: ItemBank, chunkSize?: number) {
-	const display = [];
-	for (const [itemID, qty] of Object.entries(bank)) {
-		const item = Items.get(parseInt(itemID));
-		if (!item) continue;
-		display.push(`**${item.name}:** ${qty.toLocaleString()}`);
-	}
-	return chunkSize ? util.chunk(display, chunkSize) : display;
 }
 
 export function formatDuration(ms: number) {
@@ -122,46 +105,14 @@ export function inlineCodeblock(input: string) {
 	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
 }
 
-export function saveCtx(ctx: any) {
-	const props = [
-		'fillStyle',
-		'globalAlpha',
-		'globalCompositeOperation',
-		'font',
-		'textAlign',
-		'textBaseline',
-		'direction',
-		'imageSmoothingEnabled'
-	];
-	const state: { [key: string]: any } = {};
-	for (const prop of props) {
-		state[prop] = ctx[prop];
-	}
-	return state;
-}
-
-export function restoreCtx(ctx: any, state: any) {
-	for (const prop of Object.keys(state)) {
-		ctx[prop] = state[prop];
-	}
-}
-
 export function isWeekend() {
-	const currentDate = new Date();
-	return currentDate.getDay() === 6 || currentDate.getDay() === 0;
-}
-
-export function sleep(ms: number) {
-	return new Promise(resolve => setTimeout(resolve, ms));
+	const currentDate = new Date(Date.now() - Time.Hour * 15);
+	return [6, 0].includes(currentDate.getDay());
 }
 
 export function saidYes(content: string) {
 	const newContent = content.toLowerCase();
 	return newContent === 'y' || newContent === 'yes';
-}
-
-export function removeDuplicatesFromArray<T>(arr: readonly T[]): T[] {
-	return [...new Set(arr)];
 }
 
 export function convertXPtoLVL(xp: number, cap = 99) {
@@ -203,49 +154,12 @@ export function roll(max: number) {
 	return rand(1, max) === 1;
 }
 
-export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-	return value !== null && value !== undefined;
-}
-
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
 }
 
 export function floatPromise(ctx: { client: Client }, promise: Promise<unknown>) {
 	if (util.isThenable(promise)) promise.catch(error => ctx.client.emit(Events.Wtf, error));
-}
-
-export function addArrayOfNumbers(arr: number[]) {
-	return arr.reduce((a, b) => a + b, 0);
-}
-
-/**
- * Shows what percentage a value is of a total value, for example calculating what percentage of 20 is 5? (25%)
- * @param partialValue The partial value of the total number, that you want to know what its percentage of the total is.
- * @param totalValue The total value, that the partial value is a part of.
- */
-export function calcWhatPercent(partialValue: number, totalValue: number): number {
-	return (100 * partialValue) / totalValue;
-}
-
-/**
- * Calculates what a X% of a total number is, for example calculating what is 20% of 100
- * @param percent The percentage (%) you want to calculate.
- * @param valueToCalc The total number that you want to get the percentage of.
- */
-export function calcPercentOfNum(percent: number, valueToCalc: number): number {
-	return (percent * valueToCalc) / 100;
-}
-
-/**
- * Reduces a number by a percentage of itself.
- * @param value, The number to be reduced.
- * @param percent The total number that you want to get the percentage of.
- */
-export function reduceNumByPercent(value: number, percent: number): number {
-	if (percent <= 0) return value;
-	if (percent >= 100) return 0;
-	return value - value * (percent / 100);
 }
 
 export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
@@ -256,11 +170,6 @@ const rawEmojiRegex = emojiRegex();
 
 export function stripEmojis(str: string) {
 	return str.replace(rawEmojiRegex, '');
-}
-
-export function round(value = 1, precision = 1) {
-	const multiplier = Math.pow(10, precision || 0);
-	return Math.round(value * multiplier) / multiplier;
 }
 
 export const anglerBoosts = [
@@ -309,7 +218,7 @@ export function generateContinuationChar(user: KlasaUser) {
 			? 'y'
 			: Date.now() - user.createdTimestamp < Time.Month * 6
 			? shuffleArr(continuationChars).slice(0, randInt(1, 2)).join('')
-			: randomItemFromArray(continuationChars);
+			: randArrItem(continuationChars);
 
 	return `${shuffleArr(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffleArr(CENA_CHARS)
 		.slice(0, randInt(1, 2))
@@ -442,18 +351,6 @@ export function formatItemBoosts(items: ItemBank[]) {
 	return str.join(', ');
 }
 
-export function filterItemTupleByQuery(query: string, items: ItemTuple[]) {
-	const filtered: ItemTuple[] = [];
-
-	for (const item of items) {
-		if (cleanString(Items.get(item[0])!.name).includes(cleanString(query))) {
-			filtered.push(item);
-		}
-	}
-
-	return filtered;
-}
-
 /**
  * Given a list of items, and a bank, it will return a new bank with all items not
  * in the filter removed from the bank.
@@ -578,3 +475,5 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 		});
 	}
 }
+
+export const asyncExec = promisify(exec);

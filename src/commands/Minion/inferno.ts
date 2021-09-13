@@ -1,4 +1,4 @@
-import { sumArr, Time } from 'e';
+import { calcWhatPercent, reduceNumByPercent, sumArr, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -10,15 +10,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { InfernoOptions } from '../../lib/types/minions';
-import {
-	calcWhatPercent,
-	formatDuration,
-	percentChance,
-	rand,
-	reduceNumByPercent,
-	removeBankFromBank,
-	updateBankSetting
-} from '../../lib/util';
+import { formatDuration, percentChance, rand, removeBankFromBank, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';

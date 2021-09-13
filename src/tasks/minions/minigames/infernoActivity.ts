@@ -1,3 +1,4 @@
+import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -7,7 +8,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import { calcPercentOfNum, calcWhatPercent, formatDuration, percentChance, rand } from '../../../lib/util';
+import { formatDuration, percentChance, rand } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';

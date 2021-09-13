@@ -151,6 +151,19 @@ export default class POHCommand extends BotCommand {
 			updateBankSetting(this.client, ClientSettings.EconomyStats.ConstructCostBank, obj.itemCost);
 		}
 
+		if (inPlace !== null) {
+			const inPlaceObj = getPOHObject(inPlace);
+			if (inPlaceObj.refundItems && inPlaceObj.itemCost) {
+				const itemsToRefund = new Bank(inPlaceObj.itemCost.bank).remove(itemsNotRefundable);
+				if (itemsToRefund.length > 0) {
+					msg.channel.send(
+						`You were refunded: ${itemsToRefund}, from the ${inPlaceObj.name} you already had built here.`
+					);
+					await msg.author.addItemsToBank(itemsToRefund.bank);
+				}
+			}
+		}
+
 		poh[obj.slot] = obj.id;
 		await poh.save();
 		return msg.channel.send({

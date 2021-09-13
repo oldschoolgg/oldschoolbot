@@ -349,6 +349,20 @@ const MountedCapes: PoHObject[] = [
 		slot: 'mountedCape',
 		level: 80,
 		itemCost: baseBank().add('Woodcut. cape(t)')
+	},
+	{
+		id: 26_713,
+		name: 'Mounted Infernal Cape',
+		slot: 'mountedCape',
+		level: 80,
+		itemCost: baseBank().add('Infernal cape')
+	},
+	{
+		id: 26_714,
+		name: 'Mounted Infernal Max Cape',
+		slot: 'mountedCape',
+		level: 80,
+		itemCost: baseBank().add('Infernal max cape')
 	}
 ];
 

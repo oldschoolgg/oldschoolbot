@@ -1,4 +1,4 @@
-import { increaseNumByPercent, randArrItem, Time } from 'e';
+import { calcWhatPercent, increaseNumByPercent, randArrItem, reduceNumByPercent, round, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
@@ -12,14 +12,7 @@ import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../lib/si
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { BarbarianAssaultActivityTaskOptions } from '../../lib/types/minions';
-import {
-	calcWhatPercent,
-	formatDuration,
-	randomVariation,
-	reduceNumByPercent,
-	round,
-	stringMatches
-} from '../../lib/util';
+import { formatDuration, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
@@ -105,7 +98,7 @@ export default class extends BotCommand {
 			description: 'Sends your minion to do barbarian assault, or buy rewards and gamble.',
 			examples: ['+barbassault [start]'],
 			subcommands: true,
-			usage: '[start|level|buy|gamble] [buyableOrGamble:...string]',
+			usage: '[start|level|buy|gamble] [qty:int{1}] [buyableOrGamble:...string]',
 			usageDelim: ' ',
 			aliases: ['ba']
 		});
@@ -150,7 +143,7 @@ export default class extends BotCommand {
 		}
 	}
 
-	async buy(msg: KlasaMessage, [input = '']: [string]) {
+	async buy(msg: KlasaMessage, [qty = 1, input = '']: [number, string]) {
 		const buyable = BarbBuyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
 			return msg.channel.send(
@@ -162,36 +155,51 @@ export default class extends BotCommand {
 
 		const { item, cost } = buyable;
 		const balance = msg.author.settings.get(UserSettings.HonourPoints);
-		if (balance < cost) {
+		if (balance < cost * qty) {
 			return msg.channel.send(
-				`You don't have enough Honour Points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`
+				`You don't have enough Honour Points to buy ${qty.toLocaleString()}x ${item.name}. You need ${(
+					cost * qty
+				).toLocaleString()}, but you have only ${balance.toLocaleString()}.`
 			);
 		}
+		await msg.confirm(
+			`Are you sure you want to buy ${qty.toLocaleString()}x ${item.name}, for ${(
+				cost * qty
+			).toLocaleString()} honour points?`
+		);
+		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost * qty);
+		await msg.author.addItemsToBank({ [item.id]: qty }, true);
 
-		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost);
-		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
-
-		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Honour Points.`);
+		return msg.channel.send(
+			`Successfully purchased ${qty.toLocaleString()}x ${item.name} for ${(
+				cost * qty
+			).toLocaleString()} Honour Points.`
+		);
 	}
 
-	async gamble(msg: KlasaMessage, [tier = '']: [string]) {
+	async gamble(msg: KlasaMessage, [qty = 1, tier = '']: [number, string]) {
 		const buyable = GambleTiers.find(i => stringMatches(tier, i.name));
 		if (!buyable) {
 			return msg.channel.send(
 				`You can gamble your points for the Low, Medium and High tiers. For example, \`${msg.cmdPrefix}ba gamble low\`.`
 			);
 		}
-
 		const balance = msg.author.settings.get(UserSettings.HonourPoints);
 		const { cost, name, table } = buyable;
-		if (balance < cost) {
+		if (balance < cost * qty) {
 			return msg.channel.send(
-				`You don't have enough Honour Points to do a ${name} gamble. You need ${cost}, but you have only ${balance}.`
+				`You don't have enough Honour Points to do ${qty.toLocaleString()}x ${name} gamble. You need ${(
+					cost * qty
+				).toLocaleString()}, but you have only ${balance.toLocaleString()}.`
 			);
 		}
-
-		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost);
-		const loot = new Bank().add(table.roll());
+		await msg.confirm(
+			`Are you sure you want to do ${qty.toLocaleString()}x ${name} gamble, using ${(
+				cost * qty
+			).toLocaleString()} honour points?`
+		);
+		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost * qty);
+		const loot = new Bank().add(table.roll(qty));
 		if (loot.has('Pet penance queen')) {
 			const gamblesDone = msg.author.settings.get(UserSettings.HighGambles) + 1;
 			const countUsersHas =
@@ -211,23 +219,33 @@ export default class extends BotCommand {
 				)} High gamble! They are the ${formatOrdinal(countUsersHas)} to it.`
 			);
 		}
-		await msg.author.addItemsToBank(loot.bank, true);
+		const { itemsAdded } = await msg.author.addItemsToBank(loot.bank, true);
 		await msg.author.settings.update(
 			UserSettings.HighGambles,
-			msg.author.settings.get(UserSettings.HighGambles) + 1
+			msg.author.settings.get(UserSettings.HighGambles) + qty
 		);
-		return msg.channel.send(`You spent ${cost} Honour Points for a ${name} Gamble, and received... ${loot}.`);
+		return msg.channel.send(
+			`You spent ${(
+				cost * qty
+			).toLocaleString()} Honour Points for ${qty.toLocaleString()}x ${name} Gamble, and received... ${new Bank(
+				itemsAdded
+			)}.`
+		);
 	}
 
 	@minionNotBusy
 	@requiresMinion
-	async start(msg: KlasaMessage, [input]: [string]) {
+	async start(msg: KlasaMessage, [qty = 0, input]: [number, string]) {
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 1,
 			maxSize: 4,
 			ironmanAllowed: true,
-			message: `${msg.author.username} has created a Barbarian Assault party! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave. There must be 2+ users in the party.`,
+			message: `${msg.author.username} has created a Barbarian Assault party${
+				qty > 0 ? ` for a maximum of ${qty} wave${qty > 1 ? 's' : ''}` : ''
+			}! Anyone can click the ${
+				Emoji.Join
+			} reaction to join, click it again to leave. There must be 2+ users in the party.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
@@ -275,7 +293,8 @@ export default class extends BotCommand {
 		boosts.push(`${kcPercent}% for average KC`);
 		waveTime = reduceNumByPercent(waveTime, kcPercent);
 
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.BarbarianAssault) / waveTime);
+		let quantity = Math.floor(msg.author.maxTripLength(Activity.BarbarianAssault) / waveTime);
+		if (qty > 0 && quantity > qty) quantity = qty;
 		const duration = quantity * waveTime;
 
 		boosts.push(`Each wave takes ${formatDuration(waveTime)}`);

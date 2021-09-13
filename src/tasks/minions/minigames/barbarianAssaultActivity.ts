@@ -1,10 +1,9 @@
-import { randInt } from 'e';
+import { calcPercentOfNum, calcWhatPercent, noOp, randInt } from 'e';
 import { Task } from 'klasa';
 
 import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { BarbarianAssaultActivityTaskOptions } from '../../../lib/types/minions';
-import { calcPercentOfNum, calcWhatPercent, noOp } from '../../../lib/util';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 function generateExpertiseString(totalLevel: number) {

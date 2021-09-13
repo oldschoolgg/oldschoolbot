@@ -141,6 +141,7 @@ export interface SmithedItem {
 
 export interface Craftable {
 	name: string;
+	alias?: string[];
 	id: number;
 	level: number;
 	xp: number;

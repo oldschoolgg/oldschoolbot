@@ -1,4 +1,5 @@
 import { User } from 'discord.js';
+import { noOp, sleep } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Util } from 'oldschooljs';
 
@@ -6,7 +7,6 @@ import { Emoji, Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { noOp, sleep } from '../../lib/util';
 
 const options = {
 	max: 1,

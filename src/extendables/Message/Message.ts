@@ -1,9 +1,9 @@
 import { Message, Permissions, TextChannel } from 'discord.js';
+import { noOp } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
 
 import { customClientOptions } from '../../config';
 import { getGuildSettingsCached } from '../../lib/settings/settings';
-import { noOp } from '../../lib/util';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
