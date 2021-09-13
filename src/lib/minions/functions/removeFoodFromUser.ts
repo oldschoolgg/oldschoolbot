@@ -1,4 +1,4 @@
-import { objectEntries } from 'e';
+import { objectEntries, reduceNumByPercent } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
@@ -8,7 +8,7 @@ import { Eatables } from '../../data/eatables';
 import { GearSetupTypes } from '../../gear/types';
 import { ClientSettings } from '../../settings/types/ClientSettings';
 import { ItemBank } from '../../types';
-import { reduceNumByPercent, updateBankSetting } from '../../util';
+import { updateBankSetting } from '../../util';
 import getUserFoodFromBank from './getUserFoodFromBank';
 
 export default async function removeFoodFromUser({

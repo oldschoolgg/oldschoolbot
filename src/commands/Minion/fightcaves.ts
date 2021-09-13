@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -14,11 +14,9 @@ import { FightCavesActivityTaskOptions } from '../../lib/types/minions';
 import {
 	addBanks,
 	bankHasAllItemsFromBank,
-	calcWhatPercent,
 	formatDuration,
 	percentChance,
 	rand,
-	reduceNumByPercent,
 	removeBankFromBank
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';

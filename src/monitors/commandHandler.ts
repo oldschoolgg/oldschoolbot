@@ -69,7 +69,6 @@ export default class extends Monitor {
 
 	public async runCommand(message: KlasaMessage) {
 		const timer = new Stopwatch();
-		if (this.client.options.typing) floatPromise(this, message.channel.startTyping());
 
 		try {
 			await this.client.inhibitors.run(message, message.command!);
@@ -103,6 +102,5 @@ export default class extends Monitor {
 		} catch (response) {
 			return this.client.emit('commandInhibited', message, message.command, response);
 		}
-		if (this.client.options.typing) message.channel.stopTyping();
 	}
 }
