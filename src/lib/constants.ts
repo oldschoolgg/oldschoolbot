@@ -216,7 +216,8 @@ export const enum Tasks {
 	TrekkingActivity = 'templeTrekkingActivity',
 	RevenantsActivity = 'revenantsActivity',
 	PestControl = 'pestControlActivity',
-	VolcanicMine = 'volcanicMineActivity'
+	VolcanicMine = 'volcanicMineActivity',
+	Inferno = 'infernoActivity'
 }
 
 export enum Activity {
@@ -282,7 +283,8 @@ export enum Activity {
 	Trekking = 'Trekking',
 	Revenants = 'Revenants',
 	PestControl = 'PestControl',
-	VolcanicMine = 'VolcanicMine'
+	VolcanicMine = 'VolcanicMine',
+	Inferno = 'Inferno'
 }
 
 export enum ActivityGroup {
@@ -502,5 +504,3 @@ export const lastTripCache = new Map<
 	string,
 	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
 >();
-
-export const ZUK_ID = 7706;

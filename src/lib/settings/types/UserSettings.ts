@@ -83,6 +83,9 @@ export namespace UserSettings {
 
 		export const TitheFarmsCompleted = T<number>('stats.titheFarmsCompleted');
 		export const TitheFarmPoints = T<number>('stats.titheFarmPoints');
+
+		export const InfernoAttempts = T<number>('inferno_attempts');
+		export const InfernoCapesSacrificed = T<number>('inferno_cape_sacrifices');
 	}
 
 	export namespace Minion {

@@ -176,9 +176,9 @@ export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 export interface InfernoOptions extends ActivityTaskOptions {
-	jadDeathChance: number;
-	preJadDeathChance: number;
-	preJadDeathTime: number | null;
+	zukDeathChance: number;
+	preZukDeathChance: number;
+	preZukDeathTime: number | null;
 }
 
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}

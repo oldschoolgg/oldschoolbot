@@ -1,8 +1,9 @@
 import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
+import { TzKalZuk } from 'oldschooljs/dist/simulation/monsters/special/TzKalZuk';
 
-import { Emoji, Events, ZUK_ID } from '../../../lib/constants';
+import { Emoji, Events } from '../../../lib/constants';
 import fightCavesSupplies from '../../../lib/minions/data/fightCavesSupplies';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -122,7 +123,7 @@ export default class extends Task {
 				Events.ServerNotification,
 				`**${user.username}** just received their ${formatOrdinal(user.getCL(pet) + 1)} ${
 					Emoji.TzRekJad
-				} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(user.getKC(ZUK_ID))} kill!`
+				} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(user.getKC(TzKalZuk.id))} kill!`
 			);
 		}
 

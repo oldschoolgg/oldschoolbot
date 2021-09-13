@@ -1,8 +1,9 @@
 import { calcWhatPercent, reduceNumByPercent, sumArr, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
+import { TzKalZuk } from 'oldschooljs/dist/simulation/monsters/special/TzKalZuk';
 
-import { Activity, ZUK_ID } from '../../lib/constants';
+import { Activity } from '../../lib/constants';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -14,8 +15,6 @@ import { formatDuration, percentChance, rand, removeBankFromBank, updateBankSett
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
-
-const { TzTokJad } = Monsters;
 
 const minimumRangeItems = [
 	'Amulet of fury',
@@ -41,11 +40,11 @@ const minimumMageItems = [
 
 export const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipment!.attack_magic));
 
-const startMessages = [
-	"You're on your own now JalYt, you face certain death... prepare to fight for your life.",
-	'You will certainly die, JalYt, good luck.',
-	'Many think they are strong enough to defeat TzKal-Zuk, many are wrong... good luck JalYt.'
-];
+// const startMessages = [
+// 	"You're on your own now JalYt, you face certain death... prepare to fight for your life.",
+// 	'You will certainly die, JalYt, good luck.',
+// 	'Many think they are strong enough to defeat TzKal-Zuk, many are wrong... good luck JalYt.'
+// ];
 
 function gearCheck(user: KlasaUser): true | string {
 	const rangeGear = user.getGear('range');
@@ -89,7 +88,7 @@ export default class extends BotCommand {
 		let debugStr = '';
 
 		// Reduce time based on KC
-		const kc = user.getKC(ZUK_ID);
+		const kc = user.getKC(TzKalZuk.id);
 		const percentIncreaseFromKC = Math.min(50, kc);
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromKC);
 		debugStr += `${percentIncreaseFromKC}% from KC`;
@@ -109,11 +108,11 @@ export default class extends BotCommand {
 		return [baseTime, debugStr];
 	}
 
-	determineChanceOfDeathPreJad(user: KlasaUser) {
-		const attempts = user.settings.get(UserSettings.Stats.FightCavesAttempts);
+	determineChanceOfDeathPrezuk(user: KlasaUser) {
+		const attempts = user.settings.get(UserSettings.Stats.InfernoAttempts);
 		let deathChance = Math.max(14 - attempts * 2, 5);
 
-		// -4% Chance of dying before Jad if you have SGS.
+		// -4% Chance of dying before zuk if you have SGS.
 		if (user.hasItemEquippedAnywhere('Saradomin godsword')) {
 			deathChance -= 4;
 		}
@@ -121,8 +120,8 @@ export default class extends BotCommand {
 		return deathChance;
 	}
 
-	determineChanceOfDeathInJad(user: KlasaUser) {
-		const attempts = user.settings.get(UserSettings.Stats.FightCavesAttempts);
+	determineChanceOfDeathInzuk(user: KlasaUser) {
+		const attempts = user.settings.get(UserSettings.Stats.InfernoAttempts);
 		const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(15))) * 50);
 
 		// Chance of death cannot be 100% or <5%.
@@ -139,17 +138,17 @@ export default class extends BotCommand {
 		}
 
 		let [duration, debugStr] = this.determineDuration(msg.author);
-		const jadDeathChance = this.determineChanceOfDeathInJad(msg.author);
-		const preJadDeathChance = this.determineChanceOfDeathPreJad(msg.author);
+		const zukDeathChance = this.determineChanceOfDeathInzuk(msg.author);
+		const preZukDeathChance = this.determineChanceOfDeathPrezuk(msg.author);
 
-		const attempts = msg.author.settings.get(UserSettings.Stats.FightCavesAttempts);
+		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
 		const usersRangeStats = msg.author.getGear('range').stats;
-		const jadKC = msg.author.getKC(TzTokJad.id);
+		const zukKC = msg.author.getKC(TzKalZuk.id);
 
 		duration += (rand(1, 5) * duration) / 100;
 
-		const diedPreJad = percentChance(preJadDeathChance);
-		const preJadDeathTime = diedPreJad ? rand(Time.Minute * 20, duration) : null;
+		const diedPreZuk = percentChance(preZukDeathChance);
+		const preZukDeathTime = diedPreZuk ? rand(Time.Minute * 20, duration) : null;
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		const newBank = removeBankFromBank(bank, fightCavesSupplies);
@@ -159,7 +158,7 @@ export default class extends BotCommand {
 		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
 		const isOnTask =
 			Boolean(usersTask.currentTask) &&
-			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
+			usersTask.currentTask!.monsterID === Monsters.TzKalZuk.id &&
 			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
 
 		// 15% boost for on task
@@ -172,21 +171,21 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
-			type: Activity.FightCaves,
-			jadDeathChance,
-			preJadDeathChance,
-			preJadDeathTime
+			type: Activity.Inferno,
+			zukDeathChance,
+			preZukDeathChance,
+			preZukDeathTime
 		});
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.InfernoCost, fightCavesSupplies);
 
-		const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
+		// const totalDeathChance = (((100 - preZukDeathChance) * (100 - zukDeathChance)) / 100).toFixed(1);
 
 		return msg.channel.send({
 			content: `**Duration:** ${formatDuration(duration)} (${(duration / 1000 / 60).toFixed(2)} minutes)
 **Boosts:** ${debugStr}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
-**Jad KC:** ${jadKC}
+**zuk KC:** ${zukKC}
 **Attempts:** ${attempts}
 
 **Removed from your bank:** ${new Bank(fightCavesSupplies)}`,
