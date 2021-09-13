@@ -28,6 +28,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [[initBankToSell, totalPrice]]: [[Bank, number]]) {
+		if (2 > 1) {
+			return msg.channel.send('The lottery is currently disabled, wait for an announcement!');
+		}
 		if (msg.author.isIronman) {
 			return msg.channel.send('Ironmen cannot participate in the lottery.');
 		}
