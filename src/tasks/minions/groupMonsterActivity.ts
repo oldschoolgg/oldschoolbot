@@ -1,3 +1,4 @@
+import { noOp, randArrItem } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -7,7 +8,6 @@ import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
-import { noOp, randomItemFromArray } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -20,7 +20,7 @@ export default class extends Task {
 
 		for (let i = 0; i < quantity; i++) {
 			const loot = monster.table.kill(1, {});
-			const userWhoGetsLoot = randomItemFromArray(users);
+			const userWhoGetsLoot = randArrItem(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = loot.add(currentLoot);
 			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot]) ? ++kcAmounts[userWhoGetsLoot] : 1;

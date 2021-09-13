@@ -1,5 +1,14 @@
 import { MessageAttachment } from 'discord.js';
-import { calcWhatPercent, increaseNumByPercent, objectEntries, objectKeys, reduceNumByPercent, round, Time } from 'e';
+import {
+	calcWhatPercent,
+	increaseNumByPercent,
+	objectEntries,
+	objectKeys,
+	reduceNumByPercent,
+	round,
+	Time,
+	uniqueArr
+} from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -41,7 +50,6 @@ import {
 	isWeekend,
 	itemNameFromID,
 	randomVariation,
-	removeDuplicatesFromArray,
 	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -391,7 +399,7 @@ export default class extends BotCommand {
 				activityName: monster.name,
 				attackStylesUsed: monster.wildy
 					? [GearSetupTypes.Wildy]
-					: removeDuplicatesFromArray([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
+					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced
 			});
 

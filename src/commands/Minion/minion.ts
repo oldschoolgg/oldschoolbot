@@ -1,6 +1,6 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageButton, MessageEmbed } from 'discord.js';
-import { chunk, Time } from 'e';
+import { chunk, randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -28,7 +28,7 @@ import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
 import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
-import { convertLVLtoXP, isValidNickname, randomItemFromArray, stringMatches } from '../../lib/util';
+import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
 const patMessages = [
@@ -40,7 +40,7 @@ const patMessages = [
 	'You give {name} head pats, they get comfortable and start falling asleep.'
 ];
 
-const randomPatMessage = (minionName: string) => randomItemFromArray(patMessages).replace('{name}', minionName);
+const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
 	try {
