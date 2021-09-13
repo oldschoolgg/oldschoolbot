@@ -1,7 +1,8 @@
+import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { cleanMentions, randomItemFromArray } from '../../lib/util';
+import { cleanMentions } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -15,8 +16,6 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [choices]: [string]) {
-		return msg.channel.send(
-			`I choose... **${cleanMentions(msg.guild, randomItemFromArray(choices.split(',')))}**.`
-		);
+		return msg.channel.send(`I choose... **${cleanMentions(msg.guild, randArrItem(choices.split(',')))}**.`);
 	}
 }
