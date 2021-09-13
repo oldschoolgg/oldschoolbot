@@ -12,6 +12,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
+		if (2 > 1) {
+			return msg.channel.send('The lottery is currently disabled, wait for an announcement!');
+		}
 		return msg.channel.sendBankImage({
 			bank: this.client.settings.get(ClientSettings.BankLottery)
 		});
