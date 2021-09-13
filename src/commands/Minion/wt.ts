@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
@@ -10,14 +10,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
-import {
-	addItemToBank,
-	bankHasItem,
-	calcWhatPercent,
-	formatDuration,
-	itemID,
-	reduceNumByPercent
-} from '../../lib/util';
+import { addItemToBank, bankHasItem, formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {

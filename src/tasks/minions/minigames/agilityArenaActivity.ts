@@ -1,11 +1,11 @@
-import { Time } from 'e';
+import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { Task } from 'klasa';
 
 import { determineXPFromTickets } from '../../../commands/Minion/agilityarena';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
-import { calcWhatPercent, formatDuration, itemID, randomVariation, reduceNumByPercent, roll } from '../../../lib/util';
+import { formatDuration, itemID, randomVariation, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {

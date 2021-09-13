@@ -1,12 +1,11 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Message, MessageReaction } from 'discord.js';
-import { debounce } from 'e';
+import { debounce, sleep } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { ReactionEmoji } from '../../lib/constants';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
 import { MakePartyOptions } from '../../lib/types';
-import { sleep } from '../../lib/util';
 
 async function _setup(
 	msg: KlasaMessage,

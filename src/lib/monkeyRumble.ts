@@ -255,6 +255,8 @@ export const monkeyEatables: MonkeyEatable[] = [
 	{ item: getOSItem('Lychee'), boost: 9 },
 	{ item: getOSItem('Mango'), boost: 6 },
 	{ item: getOSItem('Avocado'), boost: 3 },
+	{ item: getOSItem('Coconut') },
+	{ item: getOSItem('Dragonfruit') },
 	{ item: getOSItem('Banana') },
 	{ item: getOSItem('Orange') },
 	{ item: getOSItem('Pineapple') },

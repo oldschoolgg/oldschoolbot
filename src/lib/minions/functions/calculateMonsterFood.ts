@@ -1,9 +1,9 @@
+import { calcWhatPercent, reduceNumByPercent } from 'e';
 import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 
 import { GearSetupTypes, GearStat, maxDefenceStats, maxOffenceStats } from '../../gear';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
-import { calcWhatPercent, reduceNumByPercent } from '../../util';
 import killableMonsters from '../data/killableMonsters';
 import { KillableMonster } from '../types';
 

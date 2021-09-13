@@ -1559,7 +1559,8 @@ export const skillingPetsCL = resolveItems([
 	'Rift guardian'
 ]);
 export const slayerCL = resolveItems([
-	'Crawling hand',
+	// Crawling hand
+	7975,
 	'Cockatrice head',
 	'Basilisk head',
 	'Kurask head',

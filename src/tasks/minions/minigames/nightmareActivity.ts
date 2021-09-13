@@ -1,4 +1,4 @@
-import { percentChance, roll, Time } from 'e';
+import { noOp, percentChance, roll, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank, Misc } from 'oldschooljs';
 
@@ -9,7 +9,7 @@ import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, multiplyBank, noOp, randomVariation } from '../../../lib/util';
+import { addBanks, multiplyBank, randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';

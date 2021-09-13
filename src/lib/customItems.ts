@@ -882,30 +882,30 @@ setCustomItem(5839, 'Primal gauntlets', 'Rune gloves', {
  * Items from 40_000 to 45_000 will not be dropped by any mystery box, and are untradeable
  */
 // Master capes
-setCustomItem(40_000, 'Construction master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_001, 'Cooking master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_002, 'Crafting master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_003, 'Farming master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_004, 'Firemaking master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_005, 'Fishing master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_006, 'Fletching master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_007, 'Herblore master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_008, 'Hunter master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_009, 'Magic master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_010, 'Mining master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_011, 'Prayer master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_012, 'Runecraft master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_013, 'Smithing master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_014, 'Thieving master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_015, 'Woodcutting master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_016, 'Agility master cape', 'Abyssal cape', {}, 10_000_000);
+setCustomItem(40_000, 'Construction master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_001, 'Cooking master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_002, 'Crafting master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_003, 'Farming master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_004, 'Firemaking master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_005, 'Fishing master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_006, 'Fletching master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_007, 'Herblore master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_008, 'Hunter master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_009, 'Magic master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_010, 'Mining master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_011, 'Prayer master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_012, 'Runecraft master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_013, 'Smithing master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_014, 'Thieving master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_015, 'Woodcutting master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_016, 'Agility master cape', 'Abyssal cape', {}, 200_000_000);
 
-setCustomItem(40_017, 'Attack master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_018, 'Strength master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_019, 'Defence master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_020, 'Hitpoints master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_021, 'Ranged master cape', 'Abyssal cape', {}, 10_000_000);
-setCustomItem(40_022, 'Dungeoneering master cape', 'Abyssal cape', {}, 10_000_000);
+setCustomItem(40_017, 'Attack master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_018, 'Strength master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_019, 'Defence master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_020, 'Hitpoints master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_021, 'Ranged master cape', 'Abyssal cape', {}, 200_000_000);
+setCustomItem(40_022, 'Dungeoneering master cape', 'Abyssal cape', {}, 200_000_000);
 setCustomItem(40_023, 'Dungeoneering cape', 'Fire cape', {}, 20_000);
 setCustomItem(40_024, 'Dungeoneering cape(t)', 'Fire cape', {}, 20_000);
 setCustomItem(40_025, 'Dungeoneering hood', 'Rune full helm', {}, 20_000);
@@ -949,7 +949,7 @@ setCustomItem(40_051, 'Gorajan archer boots', 'Pernix boots', {}, 55_000_000);
 
 setCustomItem(40_052, 'Scroll of mystery', 'Coal', {}, 1_000_000);
 
-setCustomItem(40_060, 'Slayer master cape', 'Abyssal cape', {}, 10_000_000);
+setCustomItem(40_060, 'Slayer master cape', 'Abyssal cape', {}, 200_000_000);
 
 // ---------
 setCustomItem(
@@ -1808,8 +1808,8 @@ setCustomItem(50_006, 'Blacksmith gloves', 'Leather gloves', {}, 100_000);
 setCustomItem(50_007, 'Blacksmith boots', 'Rune boots', {}, 100_000);
 
 setCustomItem(50_008, 'Mysterious seed', 'Magic seed', {}, 100_000);
-setCustomItem(50_009, 'Athelas seed', 'Magic seed', {}, 1_000_000);
-setCustomItem(50_010, 'Athelas', 'Magic seed', {}, 1_000_000);
+setCustomItem(50_009, 'Athelas seed', 'Magic seed', {}, 10_000);
+setCustomItem(50_010, 'Athelas', 'Magic seed', {}, 200_000);
 
 // Master farmer
 setCustomItem(50_011, 'Ent hide', 'Magic seed', {}, 1_000_000);

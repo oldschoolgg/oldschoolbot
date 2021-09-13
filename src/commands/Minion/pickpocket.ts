@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { Time } from 'e';
+import { round, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -19,7 +19,6 @@ import {
 	formatDuration,
 	itemID,
 	rogueOutfitPercentBonus,
-	round,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';

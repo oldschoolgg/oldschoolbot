@@ -96,6 +96,12 @@ export default class extends BotCommand {
 		);
 		if (!createableItem) throw `That's not a valid item you can ${cmd}.`;
 
+		if (new Bank(createableItem.inputItems).items().some(i => i[0].name.toLowerCase().includes('dye'))) {
+			await msg.confirm(
+				'If you are putting a dye on an item - the action is irreversible, you cannot get back the dye or the item, it is dyed forever. Are you sure you want to do that?'
+			);
+		}
+
 		if (!quantity || createableItem.cantHaveItems) {
 			quantity = 1;
 		}
