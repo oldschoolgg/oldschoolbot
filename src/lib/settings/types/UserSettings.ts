@@ -7,6 +7,7 @@ import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
 import { PatchTypes } from '../../minions/farming';
 import { CompostTier, FarmingContract, FarmingPatchTypes } from '../../minions/farming/types';
+import { RawBlowpipeData } from '../../minions/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
@@ -55,6 +56,8 @@ export namespace UserSettings {
 
 	export const InfernoAttempts = T<number>('inferno_attempts');
 	export const InfernoCapeSacrifices = T<number>('inferno_cape_sacrifices');
+
+	export const Blowpipe = T<RawBlowpipeData>('blowpipe');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');

@@ -1,17 +1,19 @@
-import { calcWhatPercent, reduceNumByPercent, sumArr, Time } from 'e';
+import { calcWhatPercent, randInt, reduceNumByPercent, sumArr, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { TzKalZuk } from 'oldschooljs/dist/simulation/monsters/special/TzKalZuk';
 
 import { Activity } from '../../lib/constants';
+import { maxOffenceStats } from '../../lib/gear';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { InfernoOptions } from '../../lib/types/minions';
-import { formatDuration, percentChance, rand, removeBankFromBank, updateBankSetting } from '../../lib/util';
+import { formatDuration, percentChance, rand, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
@@ -95,7 +97,8 @@ export default class extends BotCommand {
 
 		// Reduce time based on Gear
 		const usersRangeStats = gear.stats;
-		const percentIncreaseFromRangeStats = Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
+		const percentIncreaseFromRangeStats =
+			Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, maxOffenceStats.attack_ranged)) / 2;
 		baseTime = reduceNumByPercent(baseTime, percentIncreaseFromRangeStats);
 
 		if (user.hasItemEquippedOrInBank('Twisted bow')) {
@@ -112,7 +115,6 @@ export default class extends BotCommand {
 		const attempts = user.settings.get(UserSettings.Stats.InfernoAttempts);
 		let deathChance = Math.max(14 - attempts * 2, 5);
 
-		// -4% Chance of dying before zuk if you have SGS.
 		if (user.hasItemEquippedAnywhere('Saradomin godsword')) {
 			deathChance -= 4;
 		}
@@ -124,7 +126,6 @@ export default class extends BotCommand {
 		const attempts = user.settings.get(UserSettings.Stats.InfernoAttempts);
 		const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(15))) * 50);
 
-		// Chance of death cannot be 100% or <5%.
 		return Math.max(Math.min(chance, 99), 5);
 	}
 
@@ -145,26 +146,42 @@ export default class extends BotCommand {
 		const usersRangeStats = msg.author.getGear('range').stats;
 		const zukKC = msg.author.getKC(TzKalZuk.id);
 
-		duration += (rand(1, 5) * duration) / 100;
+		duration += (randInt(1, 5) * duration) / 100;
 
 		const diedPreZuk = percentChance(preZukDeathChance);
 		const preZukDeathTime = diedPreZuk ? rand(Time.Minute * 20, duration) : null;
 
-		const bank = msg.author.settings.get(UserSettings.Bank);
-		const newBank = removeBankFromBank(bank, fightCavesSupplies);
-		await msg.author.settings.update(UserSettings.Bank, newBank);
-
-		// Add slayer
 		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
 		const isOnTask =
-			Boolean(usersTask.currentTask) &&
+			usersTask.currentTask !== null &&
 			usersTask.currentTask!.monsterID === Monsters.TzKalZuk.id &&
 			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
 
-		// 15% boost for on task
 		if (isOnTask && msg.author.hasItemEquippedOrInBank('Black mask (i)')) {
 			duration *= 0.85;
 			debugStr += ', 15% on Task with Black mask (i)';
+		}
+
+		const boosts = [];
+
+		const userBank = msg.author.bank();
+		const cost = new Bank();
+
+		/** *
+		 *
+		 *
+		 * Consumables / Cost
+		 *
+		 */
+		/**
+		 * Players with over 100 Zuk KC and 99 Agility don't need a Stamina potion.
+		 */
+		if (zukKC < 100 && msg.author.skillLevel(SkillsEnum.Agility) === 99) {
+			if (userBank.has('Stamina potion(4)')) {
+				cost.add('Stamina potion(4)');
+			} else {
+				boosts.push('-');
+			}
 		}
 
 		await addSubTaskToActivityTask<InfernoOptions>({

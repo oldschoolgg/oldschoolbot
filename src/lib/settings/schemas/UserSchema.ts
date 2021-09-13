@@ -37,6 +37,7 @@ Client.defaultUserSchema
 	.add('inferno_attempts', 'integer', { default: 0 })
 	.add('inferno_cape_sacrifices', 'integer', { default: 0 })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
+	.add('blowpipe', 'any', { default: null })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })

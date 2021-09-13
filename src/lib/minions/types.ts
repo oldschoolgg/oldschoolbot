@@ -152,3 +152,11 @@ export interface ResolveAttackStylesParams {
 	monsterID: number;
 	boostMethod?: string;
 }
+
+export interface BlowpipeData {
+	scales: number;
+	dartQuantity: number | null;
+	dartID: number | null;
+}
+
+export type RawBlowpipeData = BlowpipeData | null;
