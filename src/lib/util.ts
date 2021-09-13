@@ -149,8 +149,8 @@ export function restoreCtx(ctx: any, state: any) {
 }
 
 export function isWeekend() {
-	const currentDate = new Date();
-	return currentDate.getDay() === 6 || currentDate.getDay() === 0;
+	const currentDate = new Date(Date.now() - Time.Hour * 15);
+	return [6, 0].includes(currentDate.getDay());
 }
 
 export function sleep(ms: number) {
