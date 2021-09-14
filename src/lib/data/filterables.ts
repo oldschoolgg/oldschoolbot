@@ -1,8 +1,15 @@
+import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
+import { EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
+import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
+import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
+import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
+import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { SuperCompostables } from '../../commands/Minion/compostbin';
 import { allPetIDs } from '../../commands/Minion/equippet';
 import { customItems } from '../customItems';
+import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
@@ -1088,5 +1095,40 @@ export const filterableTypes: Filterable[] = [
 		name: 'Custom Items',
 		aliases: ['custom', 'custom items'],
 		items: customItems
+	},
+	{
+		name: 'Beginner rewards',
+		aliases: ['beginnerrewards'],
+		items: BeginnerClueTable.allItems
+	},
+	{
+		name: 'Easy rewards',
+		aliases: ['easyrewards'],
+		items: EasyClueTable.allItems
+	},
+	{
+		name: 'Medium rewards',
+		aliases: ['mediumrewards'],
+		items: MediumClueTable.allItems
+	},
+	{
+		name: 'Hard rewards',
+		aliases: ['hardrewards'],
+		items: HardClueTable.allItems
+	},
+	{
+		name: 'Elite rewards',
+		aliases: ['eliterewards'],
+		items: EliteClueTable.allItems
+	},
+	{
+		name: 'Master rewards',
+		aliases: ['masterrewards'],
+		items: MasterClueTable.allItems
+	},
+	{
+		name: 'Grandmaster rewards',
+		aliases: ['grandmasterrewards'],
+		items: GrandmasterClueTable.allItems
 	}
 ];
