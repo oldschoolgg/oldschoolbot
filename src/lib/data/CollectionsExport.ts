@@ -1576,7 +1576,7 @@ export const slayerCL = resolveItems([
 	'Brine sabre',
 	'Leaf-bladed sword',
 	'Leaf-bladed battleaxe',
-	'Black mask',
+	'Black mask (10)',
 	'Granite longsword',
 	'Granite boots',
 	'Wyvern visage',
