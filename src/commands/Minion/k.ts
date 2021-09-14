@@ -442,24 +442,20 @@ export default class extends BotCommand {
 		// Check food
 		let foodStr: undefined | string = undefined;
 
-		let gearToCheck = monster.wildy ? GearSetupTypes.Wildy : GearSetupTypes.Melee;
+		let gearToCheck = GearSetupTypes.Melee;
+
+		// Check if the gear should be changed to another combat style or the wilderness preset.
+		if (monster.wildy) {
+			gearToCheck = GearSetupTypes.Wildy;
+		} else if (monster.attackStyleToUse === GearStat.AttackMagic) {
+			gearToCheck = GearSetupTypes.Mage;
+		} else if (monster.attackStyleToUse === GearStat.AttackRanged) {
+			gearToCheck = GearSetupTypes.Range;
+		}
 
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
-
-			if (!monster.wildy) {
-				switch (monster.attackStyleToUse) {
-					case GearStat.AttackMagic:
-						gearToCheck = GearSetupTypes.Mage;
-						break;
-					case GearStat.AttackRanged:
-						gearToCheck = GearSetupTypes.Range;
-						break;
-					default:
-						break;
-				}
-			}
 
 			const [result] = await removeFoodFromUser({
 				client: this.client,
