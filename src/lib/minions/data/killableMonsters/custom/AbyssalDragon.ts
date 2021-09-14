@@ -96,7 +96,7 @@ export const AbyssalDragonLootTable = new LootTable()
 setCustomMonster(707_070, 'Malygos', AbyssalDragonLootTable, Monsters.Vorkath, {
 	id: 707_070,
 	name: 'Malygos',
-	aliases: ['abyssal dragon', 'abyss drag', 'mally', 'malygos']
+	aliases: ['abyssal dragon', 'abyss drag', 'mally', 'maly', 'malygos']
 });
 
 const AbyssalDragon = Monsters.find(mon => mon.name === 'Malygos')!;
