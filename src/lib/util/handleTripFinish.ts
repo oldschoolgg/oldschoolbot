@@ -1,4 +1,4 @@
-import { MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
+import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
 import { randInt, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -17,6 +17,7 @@ import { RuneTable, SeedTable, WilvusTable, WoodTable } from '../simulation/seed
 import { DougTable } from '../simulation/sharedTables';
 import { ActivityTaskOptions } from '../types/minions';
 import {
+	channelIsSendable,
 	generateContinuationChar,
 	getSupportGuild,
 	itemID,
@@ -25,7 +26,6 @@ import {
 	updateBankSetting,
 	updateGPTrackSetting
 } from '../util';
-import { createCollector } from './createCollector';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
 
@@ -49,7 +49,7 @@ export async function handleTripFinish(
 	loot: ItemBank | null
 ) {
 	const perkTier = getUsersPerkTier(user);
-	const continuationChar = [generateContinuationChar(user)];
+	const continuationChar = generateContinuationChar(user);
 	if (onContinue) {
 		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
 	}
@@ -132,7 +132,6 @@ export async function handleTripFinish(
 	if (clueReceived) {
 		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;
 		if (perkTier > PerkTier.One) {
-			continuationChar.push('c');
 			message += ` Say \`c\` if you want to complete this ${clueReceived.name} clue now.`;
 		} else {
 			message += 'You can get your minion to complete them using `+minion clue easy/medium/etc`';
@@ -213,33 +212,49 @@ export async function handleTripFinish(
 	});
 
 	if (!onContinue && !clueReceived) return;
-	if (onContinue) lastTripCache.set(user.id, { data, continue: onContinue });
-	createCollector({
-		user,
-		channelID,
-		continuationCharacter: continuationChar,
-		toExecute: async (mes: KlasaMessage, collector: MessageCollector) => {
-			if (mes.author.minionIsBusy || client.oneCommandAtATimeCache.has(mes.author.id)) {
-				collector.stop();
-				collectors.delete(mes.author.id);
+
+	const existingCollector = collectors.get(user.id);
+
+	if (existingCollector) {
+		existingCollector.stop();
+		collectors.delete(user.id);
+	}
+
+	if (onContinue) {
+		lastTripCache.set(user.id, { data, continue: onContinue });
+	}
+
+	if (!channelIsSendable(channel)) return;
+	const collector = new MessageCollector(channel, {
+		filter: (mes: Message) =>
+			mes.author === user && (mes.content.toLowerCase() === 'c' || stringMatches(mes.content, continuationChar)),
+		time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
+		max: 1
+	});
+
+	collectors.set(user.id, collector);
+
+	collector.on('collect', async (mes: KlasaMessage) => {
+		if (user.minionIsBusy || client.oneCommandAtATimeCache.has(mes.author.id)) {
+			collector.stop();
+			collectors.delete(user.id);
+			return;
+		}
+		client.oneCommandAtATimeCache.add(mes.author.id);
+		try {
+			if (mes.content.toLowerCase() === 'c' && clueReceived && perkTier > PerkTier.One) {
+				(client.commands.get('minion') as unknown as MinionCommand).clue(mes, [1, clueReceived.name]);
 				return;
+			} else if (onContinue && stringMatches(mes.content, continuationChar)) {
+				await onContinue(mes).catch(err => {
+					channel.send(err);
+				});
 			}
-			client.oneCommandAtATimeCache.add(mes.author.id);
-			try {
-				if (mes.content.toLowerCase() === 'c' && clueReceived && perkTier > PerkTier.One) {
-					(client.commands.get('minion') as unknown as MinionCommand).clue(mes, [1, clueReceived.name]);
-					return;
-				} else if (onContinue && continuationChar.find(c => stringMatches(c, mes.content))) {
-					await onContinue(mes).catch(err => {
-						mes.channel.send(err);
-					});
-				}
-			} catch (err) {
-				console.log({ err });
-				mes.channel.send(err);
-			} finally {
-				setTimeout(() => client.oneCommandAtATimeCache.delete(mes.author.id), 300);
-			}
+		} catch (err) {
+			console.log({ err });
+			channel.send(err);
+		} finally {
+			setTimeout(() => client.oneCommandAtATimeCache.delete(mes.author.id), 300);
 		}
 	});
 }
