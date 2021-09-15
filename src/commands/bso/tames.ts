@@ -98,7 +98,19 @@ const feedingEasterEggs: [Bank, number, TameGrowthStage[], string][] = [
 		[TameGrowthStage.Baby, TameGrowthStage.Juvenile],
 		'https://i.imgur.com/KRGURck.mp4'
 	],
-	[new Bank().add('Coconut milk'), 2, [TameGrowthStage.Baby], 'https://i.imgur.com/OE7tXI8.mp4']
+	[
+		new Bank().add('Watermelon'),
+		2,
+		[TameGrowthStage.Juvenile, TameGrowthStage.Adult],
+		'https://i.imgur.com/qDY6Skv.mp4'
+	],
+	[new Bank().add('Coconut milk'), 2, [TameGrowthStage.Baby], 'https://i.imgur.com/OE7tXI8.mp4'],
+	[
+		new Bank().add('Grapes'),
+		2,
+		[TameGrowthStage.Juvenile, TameGrowthStage.Adult],
+		'https://c.tenor.com/ZHBDNOEv_m4AAAAM/monkey-monke.gif'
+	]
 ];
 
 function formatDurationSmall(ms: number) {

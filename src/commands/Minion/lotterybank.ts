@@ -11,6 +11,7 @@ import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 import { production } from '../../config';
 import { Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { GrandmasterClueTable } from '../../lib/simulation/grandmasterClue';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks, formatDuration, isSuperUntradeable, itemID } from '../../lib/util';
@@ -165,6 +166,8 @@ export default class extends BotCommand {
 			return msg.channel.send('The clue lottery has finished! (or this is bugged)');
 		}
 
+		const dayFinish = start + day.number * Time.Day;
+
 		if (msg.flagArgs.prices) {
 			return msg.channel.send(`Special Item Prices:
 
@@ -180,13 +183,16 @@ ${lotteryItems
 				title: `Day ${day.number} - Clue Lottery`,
 				content:
 					`It's day ${day.number}, today is: ${day.name}! Note: clues and caskets have special prices,` +
-					` do \`${msg.cmdPrefix}lottery --prices\` to see a list.`
+					` do \`${msg.cmdPrefix}lottery --prices\` to see a list. The next day starts in: **${formatDuration(
+						dayFinish - now
+					)}**.`
 			});
 		}
 
 		const [initBankToSell] = bankArg;
+		const favs = msg.author.settings.get(UserSettings.FavoriteItems);
 		const bankToSell = initBankToSell.filter(i => {
-			return !isSuperUntradeable(i) && day.items.includes(i.id);
+			return !favs.includes(i.id) && !isSuperUntradeable(i) && day.items.includes(i.id);
 		});
 
 		if (bankToSell.amount('Lottery ticket')) {
