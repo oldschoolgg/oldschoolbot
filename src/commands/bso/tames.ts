@@ -102,7 +102,7 @@ const feedingEasterEggs: [Bank, number, TameGrowthStage[], string][] = [
 		new Bank().add('Watermelon'),
 		2,
 		[TameGrowthStage.Juvenile, TameGrowthStage.Adult],
-		'https://c.tenor.com/_35sXMdnPMUAAAAM/bite-monkeyboo.gif'
+		'https://i.imgur.com/qDY6Skv.mp4'
 	],
 	[new Bank().add('Coconut milk'), 2, [TameGrowthStage.Baby], 'https://i.imgur.com/OE7tXI8.mp4'],
 	[
