@@ -155,7 +155,7 @@ export async function runTameTask(activity: TameActivityTable) {
 			channelID: activity.channelID,
 			continuationCharacter: [continuationChar],
 			toExecute: async (mes: KlasaMessage, collector: MessageCollector) => {
-				if (mes.author.minionIsBusy || client.oneCommandAtATimeCache.has(mes.author.id)) {
+				if (client.oneCommandAtATimeCache.has(mes.author.id)) {
 					collector.stop();
 					collectors.delete(mes.author.id);
 					return;
