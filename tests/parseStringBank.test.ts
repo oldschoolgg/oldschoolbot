@@ -7,23 +7,7 @@ import { parseBank, parseQuantityAndItem, parseStringBank } from '../src/lib/uti
 const psb = parseStringBank;
 const get = getOSItem;
 const pQI = parseQuantityAndItem;
-
 describe('Bank Parsers', () => {
-	test('parseQuantityAndItem', () => {
-		expect(pQI('')).toEqual([]);
-		expect(pQI(' ,,, ')).toEqual([]);
-		expect(pQI('1.5k twisted bow')).toEqual([[get('Twisted bow')], 1500]);
-		expect(pQI('1m twisted bow')).toEqual([[get('Twisted bow')], 1_000_000]);
-		expect(pQI('20 twisted bow')).toEqual([[get('Twisted bow')], 20]);
-		expect(pQI('0 twisted bow')).toEqual([[get('Twisted bow')], 0]);
-		expect(pQI('twisted bow')).toEqual([[get('Twisted bow')], 0]);
-		expect(pQI('1 1 twisted bow')).toEqual([[get('Twisted bow')], 1]);
-		const runePlate = get('Rune platebody')!;
-		expect(pQI(`1 100 ${runePlate.id}`)).toEqual([[runePlate], 1]);
-		expect(pQI(`${runePlate.id}`)).toEqual([[runePlate], 0]);
-		expect(pQI('1 1 Dragonfire ward')).toEqual([[get(22_002)], 1]);
-	});
-
 	test('parseStringBank', async () => {
 		const output = psb(' 1 twisted bow, coal,  5k egg,  1b trout ');
 		const expected = [
@@ -209,5 +193,46 @@ describe('Bank Parsers', () => {
 		expect(parseBank({ inputBank: bank, inputStr: 'pUrPle gRaceful top' }).toString()).toEqual(
 			'30x Arceuus graceful top'
 		);
+	});
+
+	test('parseQuantityAndItem', () => {
+		expect(pQI('')).toEqual([]);
+		expect(pQI(' ,,, ')).toEqual([]);
+		expect(pQI('1.5k twisted bow')).toEqual([[get('Twisted bow')], 1500]);
+		expect(pQI('1m twisted bow')).toEqual([[get('Twisted bow')], 1_000_000]);
+		expect(pQI('20 twisted bow')).toEqual([[get('Twisted bow')], 20]);
+		expect(pQI('0 twisted bow')).toEqual([[get('Twisted bow')], 0]);
+		expect(pQI('twisted bow')).toEqual([[get('Twisted bow')], 0]);
+		expect(pQI('1 1 twisted bow')).toEqual([[get('Twisted bow')], 1]);
+		const runePlate = get('Rune platebody')!;
+		expect(pQI(`1 100 ${runePlate.id}`)).toEqual([[runePlate], 1]);
+		expect(pQI(`${runePlate.id}`)).toEqual([[runePlate], 0]);
+		expect(pQI('1 1 Dragonfire ward')).toEqual([[get(22_002)], 1]);
+
+		// Expressions
+		expect(pQI('10+10 twisted bow')).toEqual([[get('Twisted bow')], 20]);
+		expect(pQI('1.5k*1 twisted bow')).toEqual([[get('Twisted bow')], 1500]);
+		expect(pQI('10*10 twisted bow')).toEqual([[get('Twisted bow')], 100]);
+		expect(pQI('10*10 twisted bow')).toEqual([[get('Twisted bow')], 100]);
+		expect(pQI('10*10 twisted bow')).toEqual([[get('Twisted bow')], 100]);
+		expect(pQI('$-1 twisted bow', new Bank().add('Twisted bow', 100))).toEqual([[get('Twisted bow')], 99]);
+		expect(pQI('$/2 twisted bow', new Bank().add('Twisted bow', 100))).toEqual([[get('Twisted bow')], 50]);
+		expect(pQI('$-1 twisted bow', new Bank().add('Twisted bow', 100))).toEqual([[get('Twisted bow')], 99]);
+		expect(pQI('$-1 3rd age platebody', new Bank().add('3rd age platebody', 100))).toEqual([
+			[get('3rd age platebody')],
+			99
+		]);
+		expect(pQI('($/2)+5 3rd age platebody', new Bank().add('3rd age platebody', 100))).toEqual([
+			[get('3rd age platebody')],
+			55
+		]);
+
+		const testBank = new Bank().add('Feather', 100_000_000_000);
+		expect(pQI('1b*2 twisted bow', testBank)).toEqual([[get('Twisted bow')], 2_000_000_000]);
+		expect(pQI('1m*10 twisted bow', testBank)).toEqual([[get('Twisted bow')], 10_000_000]);
+		expect(pQI('1k*10 twisted bow', testBank)).toEqual([[get('Twisted bow')], 10_000]);
+		expect(pQI('0.5b*2 twisted bow', testBank)).toEqual([[get('Twisted bow')], 1_000_000_000]);
+		expect(pQI('1.5m*10 twisted bow', testBank)).toEqual([[get('Twisted bow')], 10_000_000 * 1.5]);
+		expect(pQI('1.5k*10 twisted bow', testBank)).toEqual([[get('Twisted bow')], 10_000 * 1.5]);
 	});
 });
