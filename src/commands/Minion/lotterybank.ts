@@ -166,6 +166,8 @@ export default class extends BotCommand {
 			return msg.channel.send('The clue lottery has finished! (or this is bugged)');
 		}
 
+		const dayFinish = start + day.number * Time.Day;
+
 		if (msg.flagArgs.prices) {
 			return msg.channel.send(`Special Item Prices:
 
@@ -181,7 +183,9 @@ ${lotteryItems
 				title: `Day ${day.number} - Clue Lottery`,
 				content:
 					`It's day ${day.number}, today is: ${day.name}! Note: clues and caskets have special prices,` +
-					` do \`${msg.cmdPrefix}lottery --prices\` to see a list.`
+					` do \`${msg.cmdPrefix}lottery --prices\` to see a list. The next day starts in: **${formatDuration(
+						dayFinish - now
+					)}**.`
 			});
 		}
 
