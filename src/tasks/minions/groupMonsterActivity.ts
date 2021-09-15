@@ -1,6 +1,7 @@
-import { Time } from 'e';
+import { noOp, randArrItem, roll, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { addBanks, itemID } from 'oldschooljs/dist/util';
 
 import { Emoji } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
@@ -9,7 +10,6 @@ import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
-import { addBanks, itemID, noOp, randomItemFromArray, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -26,7 +26,7 @@ export default class extends Task {
 				loot.multiply(4);
 				loot.add(getRandomMysteryBox());
 			}
-			const userWhoGetsLoot = randomItemFromArray(users);
+			const userWhoGetsLoot = randArrItem(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = loot.add(currentLoot);
 			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot]) ? ++kcAmounts[userWhoGetsLoot] : 1;

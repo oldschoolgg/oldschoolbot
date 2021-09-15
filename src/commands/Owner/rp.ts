@@ -1,14 +1,12 @@
 import { Duration } from '@sapphire/time-utilities';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
-import { notEmpty, Time, uniqueArr } from 'e';
+import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
-import { Bank } from 'oldschooljs';
 
-import { Activity, badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
+import { badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
-import { addToDoubleLootTimer } from '../../lib/doubleLoot';
-import { handlePassiveImplings } from '../../lib/implings';
+import { addPatronLootTime, addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -57,35 +55,13 @@ export default class extends BotCommand {
 					return msg.channel.send({
 						embeds: [
 							new MessageEmbed()
-								.setDescription(`[Diff between latest and now](https://github.com/oldschoolgg/oldschoolbot/compare/${commitHash}...master)
+								.setDescription(`[Diff between latest and now](https://github.com/oldschoolgg/oldschoolbot/compare/${commitHash}...bso)
 **Last commit:** [\`${commentArr.join(' ')}\`](https://github.com/oldschoolgg/oldschoolbot/commit/${commitHash})`)
 						]
 					});
 				} catch {
 					return msg.channel.send('Failed to fetch git info.');
 				}
-			}
-			case 'impsim': {
-				const total = new Bank();
-				let time = 5 * 1_000_000 * Time.Minute;
-				let i = await handlePassiveImplings(msg.author, {
-					duration: time,
-					activity: Activity.MonsterKilling
-				} as any);
-				console.log(i);
-				if (i) {
-					total.add(i.bank);
-				}
-				let totalItems = 0;
-				for (const [, qty] of total.items()) totalItems += qty;
-				return msg.channel.sendBankImage({
-					content: `${(time / Time.Hour).toFixed(2)} hours, 1 Impling every ${(
-						((totalItems / time) * Time.Hour) /
-						Time.Minute
-					).toFixed(2)} mins. You got: ${total}.`,
-					bank: total.bank,
-					flags: { names: 'names' }
-				});
 			}
 			case 'hasequipped': {
 				if (typeof input !== 'string') return;
@@ -409,6 +385,10 @@ LIMIT 10;
 				if (command.enabled) return msg.channel.send('That command is already enabled.');
 				command.enable();
 				return msg.channel.send(`${emoji(this.client)} Enabled \`+${command}\`.`);
+			}
+			case 'dtp': {
+				if (!input || !(input instanceof KlasaUser)) return;
+				addPatronLootTime(input.perkTier, this.client, input);
 			}
 		}
 

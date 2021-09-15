@@ -1,5 +1,14 @@
 import { MessageAttachment } from 'discord.js';
-import { calcWhatPercent, increaseNumByPercent, objectEntries, objectKeys, reduceNumByPercent, round, Time } from 'e';
+import {
+	calcWhatPercent,
+	increaseNumByPercent,
+	objectEntries,
+	objectKeys,
+	reduceNumByPercent,
+	round,
+	Time,
+	uniqueArr
+} from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -41,7 +50,6 @@ import {
 	isWeekend,
 	itemNameFromID,
 	randomVariation,
-	removeDuplicatesFromArray,
 	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -444,22 +452,18 @@ export default class extends BotCommand {
 
 		let gearToCheck = GearSetupTypes.Melee;
 
+		// Check if the gear should be changed to another combat style or the wilderness preset.
+		if (monster.wildy) {
+			gearToCheck = GearSetupTypes.Wildy;
+		} else if (monster.attackStyleToUse === GearStat.AttackMagic) {
+			gearToCheck = GearSetupTypes.Mage;
+		} else if (monster.attackStyleToUse === GearStat.AttackRanged) {
+			gearToCheck = GearSetupTypes.Range;
+		}
+
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
-
-			switch (monster.attackStyleToUse) {
-				case GearStat.AttackMagic:
-					gearToCheck = GearSetupTypes.Mage;
-					break;
-				case GearStat.AttackRanged:
-					gearToCheck = GearSetupTypes.Range;
-					break;
-				default:
-					break;
-			}
-
-			if (monster.wildy) gearToCheck = GearSetupTypes.Wildy;
 
 			const [result] = await removeFoodFromUser({
 				client: this.client,
@@ -469,7 +473,7 @@ export default class extends BotCommand {
 				activityName: monster.name,
 				attackStylesUsed: monster.wildy
 					? [GearSetupTypes.Wildy]
-					: removeDuplicatesFromArray([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
+					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced
 			});
 

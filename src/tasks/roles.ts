@@ -23,7 +23,8 @@ const minigames = [
 	'rogues_den',
 	'temple_trekking',
 	'ourania_delivery_service',
-	'volcanic_mine'
+	'volcanic_mine',
+	'monkey_rumble'
 ];
 
 const collections = ['overall', 'pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer'];
@@ -49,9 +50,11 @@ LIMIT 1;`;
 async function addRoles(g: Guild, users: string[], role: string, badge: number | null): Promise<string> {
 	let added: string[] = [];
 	let removed: string[] = [];
-	let _role = g.roles.cache.get(role);
-	if (!_role) _role = (await g.roles.fetch(role)) ?? undefined;
+	let _role = await g.roles.fetch(role);
 	if (!_role) return 'Could not check role';
+	for (const u of users) {
+		await g.members.fetch(u);
+	}
 	const roleName = _role.name!;
 	for (const mem of g.members.cache.values()) {
 		if (mem.roles.cache.has(role) && !users.includes(mem.user.id)) {
@@ -97,7 +100,6 @@ export default class extends Task {
 	async run() {
 		const g = this.client.guilds.cache.get(SupportServer);
 		if (!g) return;
-		await g.members.fetch();
 		const skillVals = Object.values(Skills);
 
 		let result = '';
@@ -247,14 +249,21 @@ LIMIT 1;`
 			result += await addRoles(g!, topSlayers, Roles.TopSlayer, null);
 		}
 
+		async function monkeyKing() {
+			const res = await q<any>('SELECT id FROM users ORDER BY cardinality(monkeys_fought) DESC LIMIT 1;');
+			result += await addRoles(g!, [res[0].id], '886180040465870918', null);
+		}
+
 		await Promise.all(
-			[slayer, topClueHunters, topMinigamers, topSacrificers, topCollector, topSkillers].map(async fn => {
-				try {
-					await fn();
-				} catch (err) {
-					console.error(err);
+			[slayer, topClueHunters, topMinigamers, topSacrificers, topCollector, topSkillers, monkeyKing].map(
+				async fn => {
+					try {
+						await fn();
+					} catch (err) {
+						console.error(err);
+					}
 				}
-			})
+			)
 		);
 
 		return result || 'Roles task: nothing to add or remove.';

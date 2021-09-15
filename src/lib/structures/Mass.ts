@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable prefer-promise-reject-errors */
 import { MessageReaction, TextChannel } from 'discord.js';
-import { debounce } from 'e';
+import { debounce, sleep } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
 
 import { ReactionEmoji } from '../../lib/constants';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
-import { removeFromArr, sleep } from '../../lib/util';
+import { removeFromArr } from '../../lib/util';
 import { UserDenyResult } from './Boss';
 
 export interface MassOptions {

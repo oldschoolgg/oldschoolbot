@@ -37,7 +37,7 @@ import { collectables } from '../Minion/collect';
 
 interface FeedableItem {
 	item: Item;
-	tameSpeciesCanBeFedThis: number[];
+	tameSpeciesCanBeFedThis: TameType[];
 	description: string;
 	announcementString: string;
 }
@@ -46,31 +46,31 @@ const feedableItems: FeedableItem[] = [
 	{
 		item: getOSItem('Ori'),
 		description: '25% extra loot',
-		tameSpeciesCanBeFedThis: [1],
+		tameSpeciesCanBeFedThis: [TameType.Combat],
 		announcementString: 'Your tame will now get 25% extra loot!'
 	},
 	{
 		item: getOSItem('Zak'),
 		description: '+35 minutes longer max trip length',
-		tameSpeciesCanBeFedThis: [1, 2],
+		tameSpeciesCanBeFedThis: [TameType.Combat, TameType.Gatherer],
 		announcementString: 'Your tame now has a much longer max trip length!'
 	},
 	{
 		item: getOSItem('Abyssal cape'),
 		description: '25% food reduction',
-		tameSpeciesCanBeFedThis: [1],
+		tameSpeciesCanBeFedThis: [TameType.Combat],
 		announcementString: 'Your tame now has 25% food reduction!'
 	},
 	{
 		item: getOSItem('Voidling'),
 		description: '10% faster collecting',
-		tameSpeciesCanBeFedThis: [2],
+		tameSpeciesCanBeFedThis: [TameType.Gatherer],
 		announcementString: 'Your tame can now collect items 10% faster thanks to the Voidling helping them teleport!'
 	},
 	{
 		item: getOSItem('Ring of endurance'),
 		description: '10% faster collecting',
-		tameSpeciesCanBeFedThis: [2],
+		tameSpeciesCanBeFedThis: [TameType.Gatherer],
 		announcementString:
 			'Your tame can now collect items 10% faster thanks to the Ring of endurance helping them run for longer!'
 	}
@@ -447,7 +447,7 @@ export default class extends BotCommand {
 			// Draw tame boosts
 			let prevWidth = 0;
 			let feedQty = 0;
-			for (const { item } of feedableItems) {
+			for (const { item } of feedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(tame.species.type))) {
 				if (tame.fedItems[item.id]) {
 					const itemImage = await getItem(item.id);
 					if (itemImage) {
@@ -537,13 +537,18 @@ export default class extends BotCommand {
 			let qtyToUse = !qty ? 1 : qty > qtyOwned ? qtyOwned : qty;
 			bankToAdd.add(item.id, qtyToUse);
 		}
+
+		const thisTameSpecialFeedableItems = feedableItems.filter(f =>
+			f.tameSpeciesCanBeFedThis.includes(selectedTame.species.type)
+		);
+
 		if (!str || bankToAdd.length === 0) {
 			return msg.channel.sendBankImage({
 				bank: selectedTame.fedItems,
 				title: 'Items Fed To This Tame',
-				content: `The items which give a perk/usage when fed are: ${feedableItems
-					.map(i => `${i.item.name} (${i.description})`)
-					.join(', ')}.`
+				content: `The items which give a perk/usage to this tame type when fed are:\n${thisTameSpecialFeedableItems
+					.map(i => `- ${i.item.name} (${i.description})`)
+					.join('\n')}.`
 			});
 		}
 
@@ -552,9 +557,9 @@ export default class extends BotCommand {
 		}
 
 		let specialStrArr = [];
-		for (const { item, description, tameSpeciesCanBeFedThis } of feedableItems) {
+		for (const { item, description, tameSpeciesCanBeFedThis } of thisTameSpecialFeedableItems) {
 			if (bankToAdd.has(item.id)) {
-				if (!tameSpeciesCanBeFedThis.includes(selectedTame.speciesID)) {
+				if (!tameSpeciesCanBeFedThis.includes(selectedTame.species.type)) {
 					await msg.confirm(
 						`Feeding a '${item.name}' to your tame won't give it a perk, are you sure you want to?`
 					);
@@ -576,15 +581,22 @@ export default class extends BotCommand {
 				msg.channel.send(easterEgg);
 			}
 		}
-		for (const { item, announcementString } of feedableItems) {
-			if (bankToAdd.has(item.id)) {
-				msg.channel.send(`**${announcementString}**`);
+
+		let newBoosts: string[] = [];
+		for (const { item, announcementString } of thisTameSpecialFeedableItems) {
+			if (bankToAdd.has(item.id) && !selectedTame.fedItems[item.id]) {
+				newBoosts.push(`**${announcementString}**`);
 			}
 		}
+
 		await msg.author.removeItemsFromBank(bankToAdd);
 		selectedTame.fedItems = addBanks([selectedTame.fedItems, bankToAdd.bank]);
 		await selectedTame.save();
-		return msg.channel.send(`You fed \`${bankToAdd}\` to ${selectedTame.name}.${specialStr}`);
+		return msg.channel.send(
+			`You fed \`${bankToAdd}\` to ${selectedTame.name}.${
+				newBoosts.length > 0 ? `\n\n${newBoosts.join('\n')}` : ''
+			}${specialStr}`
+		);
 	}
 
 	async k(msg: KlasaMessage, [str = '']: [string]) {
@@ -652,11 +664,15 @@ export default class extends BotCommand {
 			duration
 		});
 
-		return msg.channel.send(
-			`${selectedTame.name} is now killing ${quantity}x ${monster.name}. The trip will take ${formatDuration(
-				duration
-			)}.\n\nRemoved ${foodStr}`
-		);
+		let reply = `${selectedTame.name} is now killing ${quantity}x ${
+			monster.name
+		}. The trip will take ${formatDuration(duration)}.\n\nRemoved ${foodStr}`;
+
+		if (boosts.length > 0) {
+			reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.channel.send(reply);
 	}
 
 	async c(msg: KlasaMessage, [str = '']: [string]) {

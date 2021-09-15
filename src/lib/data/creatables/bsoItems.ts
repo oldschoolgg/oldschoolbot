@@ -295,6 +295,20 @@ const brokenItems: Createable[] = [
 		},
 		GPCost: 200_000_000,
 		noCl: true
+	},
+	{
+		name: 'Fix hellfire bownana',
+		inputItems: resolveBank({
+			'Hellfire bownana (broken)': 1,
+			'Ignecarus dragonclaw': 1,
+			'Smouldering stone': 1,
+			"Dragon's fury": 1
+		}),
+		outputItems: {
+			[itemID('Hellfire bownana')]: 1
+		},
+		GPCost: 200_000_000,
+		noCl: true
 	}
 ];
 

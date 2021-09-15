@@ -1,4 +1,4 @@
-import { calcWhatPercent, percentChance } from 'e';
+import { calcWhatPercent, noOp, percentChance } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -14,7 +14,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, noOp, updateBankSetting } from '../../../lib/util';
+import { addBanks, updateBankSetting } from '../../../lib/util';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';

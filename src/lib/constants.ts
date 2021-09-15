@@ -10,16 +10,24 @@ import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 
 export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
+export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
 
 export const Channel = {
-	Notifications: DISCORD_SETTINGS.Channels?.Notifications ?? '469523207691436042',
+	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
+	Notifications: DISCORD_SETTINGS.Channels?.Notifications ?? '811589869314899980',
 	ErrorLogs: DISCORD_SETTINGS.Channels?.ErrorLogs ?? '665678499578904596',
-	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '682996313209831435',
+	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '738780181946171493',
 	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
 	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
 	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
 	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
-	HelpAndSupport: DISCORD_SETTINGS.Channels?.HelpAndSupport ?? '668073484731154462'
+	HelpAndSupport: DISCORD_SETTINGS.Channels?.HelpAndSupport ?? '668073484731154462',
+	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
+	// BSO Channels
+	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? '792691343284764693',
+	BSOChannel: DISCORD_SETTINGS.Channels?.BSOChannel ?? '732207379818479756',
+	BSOGambling: DISCORD_SETTINGS.Channels?.BSOChannel ?? '792692390778896424',
+	BSOGrandExchange: DISCORD_SETTINGS.Channels?.BSOChannel ?? '738780181946171493'
 };
 
 export const Roles = {
@@ -32,12 +40,12 @@ export const Roles = {
 	Patron: DISCORD_SETTINGS.Roles?.Patron ?? '679620175838183424',
 	MassHoster: DISCORD_SETTINGS.Roles?.MassHoster ?? '734055552933429280',
 	BSOMassHoster: DISCORD_SETTINGS.Roles?.BSOMassHoster ?? '759572886364225558',
-	TopSkiller: DISCORD_SETTINGS.Roles?.TopSkiller ?? '795266465329709076',
-	TopCollector: DISCORD_SETTINGS.Roles?.TopCollector ?? '795271210141351947',
-	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '795933981715464192',
-	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '832798997033779220',
-	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '839135887467610123',
-	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '856080958247010324'
+	TopSkiller: DISCORD_SETTINGS.Roles?.TopSkiller ?? '848966830617788427',
+	TopCollector: DISCORD_SETTINGS.Roles?.TopCollector ?? '848966773885763586',
+	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '848966732265160775',
+	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '867967884515770419',
+	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '848967350120218636',
+	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219'
 };
 
 export const enum DefaultPingableRoles {

@@ -20,7 +20,7 @@ export async function generateNewTame(user: KlasaUser, species: Species) {
 	tame.currentGrowthPercent = 0;
 
 	tame.variant = randArrItem(species.variants);
-	if (species.shinyVariant && roll(100)) tame.variant = species.shinyVariant;
+	if (species.shinyVariant && roll(species.shinyChance)) tame.variant = species.shinyVariant;
 
 	const [minCmbt, maxCmbt] = species.combatLevelRange;
 	tame.maxCombatLevel = gaussianRandom(minCmbt, maxCmbt, 2);

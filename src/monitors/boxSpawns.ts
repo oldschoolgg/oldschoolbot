@@ -6,7 +6,7 @@ import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 
 import { production } from '../config';
-import { Color, SupportServer } from '../lib/constants';
+import { Channel, Color, SupportServer } from '../lib/constants';
 import { getRandomMysteryBox } from '../lib/data/openables';
 import { roll, stringMatches } from '../lib/util';
 
@@ -126,7 +126,7 @@ export default class extends Monitor {
 	}
 
 	async run(msg: KlasaMessage) {
-		if (!msg.guild || msg.guild.id !== SupportServer || msg.channel.id !== '792691343284764693') {
+		if (!msg.guild || msg.guild.id !== SupportServer || msg.channel.id !== Channel.BSOGeneral) {
 			return;
 		}
 

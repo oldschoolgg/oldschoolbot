@@ -1,4 +1,4 @@
-import { calcWhatPercent, percentChance } from 'e';
+import { calcWhatPercent, noOp, percentChance, randArrItem } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -14,7 +14,7 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, noOp, randomItemFromArray, roll, updateBankSetting } from '../../../lib/util';
+import { addBanks, roll, updateBankSetting } from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -71,7 +71,7 @@ export default class extends Task {
 			const loot = new Bank();
 			loot.add(NexMonster.table.kill(1, {}));
 			if (roll(80 + users.length * 2)) {
-				loot.add(randomItemFromArray(nexUniqueDrops), 1);
+				loot.add(randArrItem(nexUniqueDrops), 1);
 			}
 			if (isDoubleLootActive(this.client)) {
 				loot.multiply(2);

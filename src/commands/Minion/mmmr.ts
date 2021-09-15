@@ -1,4 +1,4 @@
-import { randArrItem, reduceNumByPercent, Time, uniqueArr } from 'e';
+import { randArrItem, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -191,7 +191,7 @@ Here are the items you can buy: \n\n${buyables
 		const fightDuration = Time.Minute * 9;
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.MonkeyRumble) / fightDuration);
 		let duration = quantity * fightDuration;
-		let chanceOfSpecial = Math.floor(75 * (6 - monkeyTierOfUser(msg.author) / 2));
+		let chanceOfSpecial = Math.floor(150 * (6 - monkeyTierOfUser(msg.author) / 2));
 		const monkeysToFight: Monkey[] = [];
 		for (let i = 0; i < quantity; i++) {
 			monkeysToFight.push(getRandomMonkey(monkeysToFight, chanceOfSpecial));
@@ -231,12 +231,6 @@ Here are the items you can buy: \n\n${buyables
 			minigameID: 'MadMarimbosMonkeyRumble',
 			monkeys: monkeysToFight
 		});
-
-		const newMonkeysFought: string[] = uniqueArr([
-			...msg.author.settings.get(UserSettings.MonkeysFought),
-			...monkeysToFight.map(m => m.nameKey)
-		]);
-		await msg.author.settings.update(UserSettings.MonkeysFought, newMonkeysFought, { arrayAction: 'overwrite' });
 
 		let str = `You are fighting ${quantity}x different monkeys (${monkeysToFight
 			.map(m => `${m.special ? `${Emoji.Purple} ` : ''}${m.name}`)

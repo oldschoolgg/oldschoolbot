@@ -317,7 +317,11 @@ export default class extends Task {
 					harvestXp = 0;
 				} else if (plantToHarvest.givesCrops && chopped) {
 					if (!plantToHarvest.outputCrop) return;
-					loot[plantToHarvest.outputCrop] = cropYield * alivePlants;
+					// cropYield already counts each patch if variableYield is true:
+					loot[plantToHarvest.outputCrop] =
+						plantToHarvest.fixedOutput && plantToHarvest.fixedOutputAmount
+							? plantToHarvest.fixedOutputAmount * alivePlants
+							: cropYield;
 
 					harvestXp = cropYield * alivePlants * plantToHarvest.harvestXp;
 				}

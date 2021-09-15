@@ -1,4 +1,4 @@
-import { randArrItem } from 'e';
+import { randArrItem, uniqueArr } from 'e';
 import { Items } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
@@ -11,11 +11,11 @@ import CasketTable from '../simulation/casket';
 import CrystalChestTable from '../simulation/crystalChest';
 import { RuneTable } from '../simulation/seedTable';
 import { ExoticSeedsTable } from '../simulation/sharedTables';
-import { itemNameFromID, removeDuplicatesFromArray } from '../util';
+import { itemNameFromID } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
-import { chambersOfXericCl, customBossesDropsThatCantBeDroppedInMBs, frozenKeyPieces } from './CollectionsExport';
+import { chambersOfXericCL, customBossesDropsThatCantBeDroppedInMBs, frozenKeyPieces } from './CollectionsExport';
 
 interface Openable {
 	name: string;
@@ -557,9 +557,9 @@ export function getRandomMysteryBox() {
 let allItemsIDs = Openables.map(i => (typeof i.table !== 'function' && i.table.allItems) || []).flat(
 	Infinity
 ) as number[];
-allItemsIDs = removeDuplicatesFromArray(allItemsIDs);
+allItemsIDs = uniqueArr(allItemsIDs);
 const cantBeDropped = [
-	...chambersOfXericCl,
+	...chambersOfXericCL,
 	...customBossesDropsThatCantBeDroppedInMBs,
 	itemID('Abyssal pouch'),
 	itemID('Dwarven crate'),

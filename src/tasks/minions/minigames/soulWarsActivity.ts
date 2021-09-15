@@ -1,9 +1,9 @@
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { increaseNumByPercent, noOp, reduceNumByPercent } from 'e';
 import { Task } from 'klasa';
 
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SoulWarsOptions } from '../../../lib/types/minions';
-import { noOp, roll } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
