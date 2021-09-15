@@ -20,7 +20,7 @@ const axes = [
 	},
 	{
 		id: itemID('Infernal axe'),
-		reductionPercent: 11,
+		reductionPercent: 9,
 		wcLvl: 61
 	},
 	{
