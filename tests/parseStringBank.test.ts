@@ -215,14 +215,14 @@ describe('Bank Parsers', () => {
 		expect(pQI('10*10 twisted bow')).toEqual([[get('Twisted bow')], 100]);
 		expect(pQI('10*10 twisted bow')).toEqual([[get('Twisted bow')], 100]);
 		expect(pQI('10*10 twisted bow')).toEqual([[get('Twisted bow')], 100]);
-		expect(pQI('$-1 twisted bow', new Bank().add('Twisted bow', 100))).toEqual([[get('Twisted bow')], 99]);
-		expect(pQI('$/2 twisted bow', new Bank().add('Twisted bow', 100))).toEqual([[get('Twisted bow')], 50]);
-		expect(pQI('$-1 twisted bow', new Bank().add('Twisted bow', 100))).toEqual([[get('Twisted bow')], 99]);
-		expect(pQI('$-1 3rd age platebody', new Bank().add('3rd age platebody', 100))).toEqual([
+		expect(pQI('#-1 twisted bow', new Bank().add('Twisted bow', 100))).toEqual([[get('Twisted bow')], 99]);
+		expect(pQI('#/2 twisted bow', new Bank().add('Twisted bow', 100))).toEqual([[get('Twisted bow')], 50]);
+		expect(pQI('#-1 twisted bow', new Bank().add('Twisted bow', 100))).toEqual([[get('Twisted bow')], 99]);
+		expect(pQI('#-1 3rd age platebody', new Bank().add('3rd age platebody', 100))).toEqual([
 			[get('3rd age platebody')],
 			99
 		]);
-		expect(pQI('($/2)+5 3rd age platebody', new Bank().add('3rd age platebody', 100))).toEqual([
+		expect(pQI('(#/2)+5 3rd age platebody', new Bank().add('3rd age platebody', 100))).toEqual([
 			[get('3rd age platebody')],
 			55
 		]);

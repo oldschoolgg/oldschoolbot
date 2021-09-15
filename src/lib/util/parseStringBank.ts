@@ -26,8 +26,8 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
 
 	let lazyItemGet = Items.get(potentialName.join(' '));
-	if (str.includes('$') && lazyItemGet && inputBank) {
-		potentialQty = potentialQty.replace('$', inputBank.amount(lazyItemGet.id).toString());
+	if (str.includes('#') && lazyItemGet && inputBank) {
+		potentialQty = potentialQty.replace('#', inputBank.amount(lazyItemGet.id).toString());
 	}
 
 	let parsedQty: number | null = evalMathExpression(potentialQty);
