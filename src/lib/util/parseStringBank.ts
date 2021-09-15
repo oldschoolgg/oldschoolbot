@@ -1,3 +1,4 @@
+import { notEmpty } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
@@ -53,9 +54,11 @@ export function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 }
 
 export function parseStringBank(str = ''): [Item, number | undefined][] {
-	str = str.trim().replace(/\s\s+/g, ' ');
-	if (!str) return [];
-	const split = str.split(',');
+	const split = str
+		.trim()
+		.replace(/\s\s+/g, ' ')
+		.split(',')
+		.filter(i => notEmpty(i) && i !== '');
 	if (split.length === 0) return [];
 	let items: [Item, number | undefined][] = [];
 	const currentIDs = new Set();
