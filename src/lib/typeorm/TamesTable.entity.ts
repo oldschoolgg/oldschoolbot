@@ -57,6 +57,9 @@ export class TamesTable extends BaseEntity {
 	@Column('integer', { name: 'max_support_level', nullable: false })
 	public maxSupportLevel!: number;
 
+	@Column('json', { name: 'activities_done', nullable: false, default: {} })
+	public activitiesDone!: ItemBank;
+
 	@Column('json', { name: 'max_total_loot', nullable: false })
 	public totalLoot!: ItemBank;
 

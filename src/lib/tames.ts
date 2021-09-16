@@ -12,6 +12,7 @@ import { effectiveMonsters } from './minions/data/killableMonsters';
 import { UserSettings } from './settings/types/UserSettings';
 import { TameActivityTable } from './typeorm/TameActivityTable.entity';
 import { TamesTable } from './typeorm/TamesTable.entity';
+import { ItemBank } from './types';
 import { generateContinuationChar, itemNameFromID, roll } from './util';
 import { createCollector } from './util/createCollector';
 import getOSItem from './util/getOSItem';
@@ -126,9 +127,12 @@ export const tameSpecies: Species[] = [
 ];
 
 export async function runTameTask(activity: TameActivityTable) {
-	async function handleFinish(res: { loot: Bank; message: string; user: KlasaUser }) {
+	async function handleFinish(res: { loot: Bank; message: string; user: KlasaUser; activityDone: ItemBank }) {
 		const previousTameCl = { ...deepClone(activity.tame.totalLoot) };
+
 		activity.tame.totalLoot = addBanks([activity.tame.totalLoot, res.loot.bank]);
+		activity.tame.activitiesDone = addBanks([activity.tame.activitiesDone, res.activityDone]);
+
 		await activity.tame.save();
 		const addRes = await activity.tame.addDuration(activity.duration);
 		if (addRes) res.message += `\n${addRes}`;
@@ -214,7 +218,8 @@ export async function runTameTask(activity: TameActivityTable) {
 			handleFinish({
 				loot: new Bank(itemsAdded),
 				message: str,
-				user
+				user,
+				activityDone: { [monsterID]: quantity }
 			});
 			break;
 		}
@@ -231,7 +236,8 @@ export async function runTameTask(activity: TameActivityTable) {
 			handleFinish({
 				loot: new Bank(itemsAdded),
 				message: str,
-				user
+				user,
+				activityDone: { [itemID]: quantity }
 			});
 			break;
 		}

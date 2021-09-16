@@ -24,6 +24,7 @@ import { nexLootTable, NexMonster } from '../nex';
 import { UserSettings } from '../settings/types/UserSettings';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { allFarmingItems } from '../skilling/skills/farming';
+import { getUsersTame } from '../tames';
 import { ItemBank } from '../types';
 import { addArrayOfNumbers, stringMatches } from '../util';
 import { getUsersTamesCollectionLog } from '../util/getUsersTameCL';
@@ -1312,6 +1313,20 @@ function getUserClData(usarBank: ItemBank, clItems: number[]) {
 	return [clItems.length, owned.length];
 }
 
+async function getKCByName(user: KlasaUser, name: string | number, tame?: ItemBank): Promise<number> {
+	if (tame) {
+		if (typeof name === 'number') return tame[name] ?? 0;
+		const mon = effectiveMonsters.find(
+			mon => stringMatches(mon.name, name) || mon.aliases.some(alias => stringMatches(alias, name))
+		);
+		if (mon) return tame[mon.id] ?? 0;
+	} else {
+		if (typeof name === 'number') return user.getKC(name) ?? 0;
+		return (await user.getKCByName(name))[1] ?? 0;
+	}
+	return 0;
+}
+
 // Main function that gets the user collection based on its search parameter
 export async function getCollection(options: {
 	user: KlasaUser;
@@ -1325,9 +1340,14 @@ export async function getCollection(options: {
 
 	const allItems = Boolean(flags.all);
 	if (logType === undefined) logType = 'collection';
+
+	let tameActDone = undefined;
+
 	if (flags.tame) {
 		logType = 'tame';
+		tameActDone = (await getUsersTame(user))[0]?.activitiesDone ?? undefined;
 	}
+
 	const userCheckBank = await getBank(user, logType);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 
@@ -1360,24 +1380,24 @@ export async function getCollection(options: {
 				// Defaults to the activity name
 				if (attributes.kcActivity) {
 					if (typeof attributes.kcActivity === 'string') {
-						userKC.Default += (await user.getKCByName(attributes.kcActivity))[1];
+						userKC.Default += await getKCByName(user, attributes.kcActivity, tameActDone);
 					} else {
 						for (const [type, value] of objectEntries(attributes.kcActivity)) {
 							if (!userKC[type]) userKC[type] = 0;
 							if (Array.isArray(value)) {
 								for (const name of value) {
-									userKC[type] += (await user.getKCByName(name))[1];
+									userKC[type] += await getKCByName(user, name, tameActDone);
 								}
 							} else if (typeof value === 'function') {
-								userKC[type] += await value(user);
+								userKC[type] += tameActDone ? 0 : await value(user);
 							} else {
-								userKC[type] += (await user.getKCByName(value))[1];
+								userKC[type] += await getKCByName(user, value, tameActDone);
 							}
 						}
 					}
 				} else {
-					const defaultKc = await user.getKCByName(activityName);
-					if (defaultKc[0] !== null) userKC.Default += defaultKc[1];
+					const defaultKc = await getKCByName(user, activityName, tameActDone);
+					if (defaultKc !== 0) userKC.Default += defaultKc;
 					else userKC = undefined;
 				}
 				return {
@@ -1420,7 +1440,7 @@ export async function getCollection(options: {
 			category: 'Other',
 			name: monster.name,
 			collection: clItems,
-			completions: { Default: user.getKC(monster.id) },
+			completions: { Default: await getKCByName(user, monster.id, tameActDone) },
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank
