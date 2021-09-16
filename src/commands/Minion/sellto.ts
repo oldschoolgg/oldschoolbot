@@ -39,9 +39,17 @@ export default class extends BotCommand {
 			const item = bankToSell.items()[0];
 			rawPrice = rawPrice.replace('#', bankToSell.amount(item[0].id).toString());
 		}
-		const price = evalMathExpression(rawPrice ?? '1') ?? 1;
+		let price = evalMathExpression(rawPrice ?? '1') ?? 1;
 		if (price < 1 || price > 100_000_000_000) {
 			return msg.channel.send('Invalid price.');
+		}
+
+		// If the each flag is set, multiply the value for each of the items being sold
+		if (msg.flagArgs.each) {
+			price *= bankToSell
+				.items()
+				.map(i => i[1])
+				.reduce((a, b) => a + b);
 		}
 
 		// Make sure blacklisted members can't be traded.
