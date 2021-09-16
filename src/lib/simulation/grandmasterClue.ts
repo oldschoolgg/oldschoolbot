@@ -8,7 +8,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { LampTable } from '../xpLamps';
 import CrystalChestTable from './crystalChest';
-import { AllBarrows } from './sharedTables';
+import { AllBarrows, runeAlchablesTable } from './sharedTables';
 
 const ClueHunterTable = new LootTable()
 	.add('Helm of raedwald')
@@ -96,6 +96,7 @@ const table = new LootTable()
 	.tertiary(30, boxTable, [1, 3])
 	.add(DragonTable, [3, 10], 2)
 	.add(runeTable, [1, 5])
+	.every(runeAlchablesTable, [1, 4])
 	.add('Coins', [500_000, 5_000_000])
 	.add(AllBarrows, 3)
 	.add(PlankTable, 4)
