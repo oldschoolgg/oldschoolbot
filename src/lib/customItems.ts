@@ -1052,7 +1052,7 @@ setCustomItem(47_505, 'First age cape', 'Fire cape', {}, 100_000_000);
 setCustomItem(47_506, 'First age bracelet', 'Barrows gloves', {}, 100_000_000);
 setCustomItem(47_507, 'First age ring', 'Berserker ring', {}, 100_000_000);
 
-setCustomItem(47_508, 'Broken dwarven warhammer', 'Rune warhammer', {}, 1_000_000);
+setCustomItem(47_508, 'Broken dwarven warhammer', 'Rune warhammer', {}, 1_000_000_000);
 
 setCustomItem(47_509, 'Equippable mystery box', 'Mystery box', {}, 1_000_000);
 
