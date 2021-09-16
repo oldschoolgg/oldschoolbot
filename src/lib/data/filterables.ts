@@ -9,6 +9,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { SuperCompostables } from '../../commands/Minion/compostbin';
 import { allPetIDs } from '../../commands/Minion/equippet';
 import { customItems } from '../customItems';
+import { monkeyEatables } from '../monkeyRumble';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
@@ -1130,5 +1131,10 @@ export const filterableTypes: Filterable[] = [
 		name: 'Grandmaster rewards',
 		aliases: ['grandmasterrewards'],
 		items: GrandmasterClueTable.allItems
+	},
+	{
+		name: 'Fruit',
+		aliases: ['fruit'],
+		items: monkeyEatables.map(i => i.item.id)
 	}
 ];
