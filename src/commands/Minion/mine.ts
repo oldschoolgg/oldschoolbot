@@ -29,7 +29,7 @@ const pickaxes = [
 	},
 	{
 		id: itemID('Infernal pickaxe'),
-		reductionPercent: 10,
+		reductionPercent: 6,
 		miningLvl: 61
 	},
 	{
