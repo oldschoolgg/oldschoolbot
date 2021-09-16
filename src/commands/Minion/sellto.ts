@@ -40,9 +40,6 @@ export default class extends BotCommand {
 			rawPrice = rawPrice.replace('#', bankToSell.amount(item[0].id).toString());
 		}
 		let price = evalMathExpression(rawPrice ?? '1') ?? 1;
-		if (price < 1 || price > 100_000_000_000) {
-			return msg.channel.send('Invalid price.');
-		}
 
 		// If the each flag is set, multiply the value for each of the items being sold
 		if (msg.flagArgs.each) {
@@ -50,6 +47,10 @@ export default class extends BotCommand {
 				.items()
 				.map(i => i[1])
 				.reduce((a, b) => a + b);
+		}
+
+		if (price < 1 || price > 100_000_000_000) {
+			return msg.channel.send('Invalid price.');
 		}
 
 		// Make sure blacklisted members can't be traded.
