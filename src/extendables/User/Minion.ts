@@ -821,9 +821,16 @@ export default class extends Extendable {
 			params.amount = increaseNumByPercent(params.amount, isMatchingCape ? 8 : 3);
 		}
 		// Check if each gorajan set is equipped:
-		const gorajanMeleeEquipped = this.getGear('melee').hasEquipped(gorajanWarriorOutfit, true);
-		const gorajanRangeEquipped = this.getGear('range').hasEquipped(gorajanArcherOutfit, true);
-		const gorajanMageEquipped = this.getGear('mage').hasEquipped(gorajanOccultOutfit, true);
+		const wildyOutfit = this.getGear('wildy');
+		const gorajanMeleeEquipped =
+			this.getGear('melee').hasEquipped(gorajanWarriorOutfit, true) ||
+			wildyOutfit.hasEquipped(gorajanWarriorOutfit, true);
+		const gorajanRangeEquipped =
+			this.getGear('range').hasEquipped(gorajanArcherOutfit, true) ||
+			wildyOutfit.hasEquipped(gorajanWarriorOutfit, true);
+		const gorajanMageEquipped =
+			this.getGear('mage').hasEquipped(gorajanOccultOutfit, true) ||
+			wildyOutfit.hasEquipped(gorajanWarriorOutfit, true);
 
 		// Determine if boost should apply based on skill + equipped sets:
 		let gorajanBoost = false;
