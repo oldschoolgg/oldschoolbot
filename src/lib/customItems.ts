@@ -1315,7 +1315,7 @@ setCustomItem(
 			requirements: null
 		}
 	},
-	1_000_000
+	20_000_000
 );
 setCustomItem(41_085, 'Tattered robes of Vasa', 'Coal', { highalch: 90_000_000 }, 1_000_000);
 
@@ -1731,10 +1731,10 @@ setCustomItem(
 	},
 	6000
 );
-setCustomItem(48_215, 'Simple kibble', 'Coal', {}, 6000);
-setCustomItem(48_216, 'Delicious kibble', 'Coal', {}, 6000);
-setCustomItem(48_217, 'Extraordinary kibble', 'Coal', {}, 6000);
-setCustomItem(48_218, 'Magic crate', 'Coal', {}, 50_000);
+setCustomItem(48_215, 'Simple kibble', 'Coal', {}, 150_000);
+setCustomItem(48_216, 'Delicious kibble', 'Coal', {}, 200_000);
+setCustomItem(48_217, 'Extraordinary kibble', 'Coal', {}, 250_000);
+setCustomItem(48_218, 'Magic crate', 'Coal', {}, 300_000);
 
 setCustomItem(
 	48_219,
@@ -1764,7 +1764,7 @@ setCustomItem(
 			}
 		}
 	},
-	1000
+	10_000
 );
 
 setCustomItem(
