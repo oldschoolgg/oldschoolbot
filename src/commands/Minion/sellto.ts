@@ -50,7 +50,13 @@ export default class extends BotCommand {
 		}
 
 		if (price < 1 || price > 100_000_000_000) {
-			return msg.channel.send('Invalid price.');
+			return msg.channel.send(
+				`Invalid price. ${
+					price > 100_000_000_000
+						? "Total price of trade can't be over 100b."
+						: "The price of the trade can't be lower than 1."
+				}`
+			);
 		}
 
 		// Make sure blacklisted members can't be traded.
