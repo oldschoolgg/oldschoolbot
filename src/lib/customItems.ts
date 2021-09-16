@@ -1322,10 +1322,10 @@ setCustomItem(41_085, 'Tattered robes of Vasa', 'Coal', { highalch: 90_000_000 }
 /**
  * Dyed DWWH Items
  */
-setCustomItem(41_086, 'Dwarven warhammer (ice)', 'Dwarven warhammer', {}, 10_000_000);
-setCustomItem(41_087, 'Dwarven warhammer (shadow)', 'Dwarven warhammer', {}, 10_000_000);
-setCustomItem(41_088, 'Dwarven warhammer (blood)', 'Dwarven warhammer', {}, 10_000_000);
-setCustomItem(41_089, 'Dwarven warhammer (3a)', 'Dwarven warhammer', {}, 10_000_000);
+setCustomItem(41_086, 'Dwarven warhammer (ice)', 'Dwarven warhammer', {}, 1_000_000_000);
+setCustomItem(41_087, 'Dwarven warhammer (shadow)', 'Dwarven warhammer', {}, 1_000_000_000);
+setCustomItem(41_088, 'Dwarven warhammer (blood)', 'Dwarven warhammer', {}, 1_000_000_000);
+setCustomItem(41_089, 'Dwarven warhammer (3a)', 'Dwarven warhammer', {}, 1_000_000_000);
 
 /**
  *
