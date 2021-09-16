@@ -184,3 +184,4 @@ setItemAlias(21_633, 'Ancient wyvern shield');
 
 setItemAlias(22_003, 'Uncharged dragonfire ward');
 setItemAlias(22_002, 'Dragonfire ward');
+setItemAlias(12_934, 'Scales');

@@ -155,8 +155,6 @@ export interface ResolveAttackStylesParams {
 
 export interface BlowpipeData {
 	scales: number;
-	dartQuantity: number | null;
+	dartQuantity: number;
 	dartID: number | null;
 }
-
-export type RawBlowpipeData = BlowpipeData | null;
