@@ -559,8 +559,13 @@ let allItemsIDs = Openables.map(i => (typeof i.table !== 'function' && i.table.a
 ) as number[];
 allItemsIDs = uniqueArr(allItemsIDs);
 const cantBeDropped = [
-	...chambersOfXericCL,
 	...customBossesDropsThatCantBeDroppedInMBs,
+	itemID('Metamorphic dust'),
+	itemID("Xeric's guard"),
+	itemID("Xeric's warrior"),
+	itemID("Xeric's sentinel"),
+	itemID("Xeric's general"),
+	itemID("Xeric's champion"),
 	itemID('Abyssal pouch'),
 	itemID('Dwarven crate'),
 	itemID('Halloween mask set'),
