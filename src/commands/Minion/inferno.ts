@@ -1,5 +1,6 @@
 import { calcPercentOfNum, randInt, sumArr, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import fetch from 'node-fetch';
 import { Bank } from 'oldschooljs';
 import { TzKalZuk } from 'oldschooljs/dist/simulation/monsters/special/TzKalZuk';
 
@@ -41,11 +42,43 @@ const minimumMageItems = [
 
 export const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipment!.attack_magic));
 
+/**
+ *
+ * TODO---------
+ * - Must have sacced 1 fire cape
+ *
+ */
+
 // const startMessages = [
 // 	"You're on your own now JalYt, you face certain death... prepare to fight for your life.",
 // 	'You will certainly die, JalYt, good luck.',
 // 	'Many think they are strong enough to defeat TzKal-Zuk, many are wrong... good luck JalYt.'
 // ];
+
+// function chart() {
+// 	const options = {
+// 		type: 'bar',
+// 		data: {
+// 			labels: [...Array(69).keys()].map(i => `${i + 1}`),
+// 			datasets: [
+// 				{
+// 					label: 'Deaths',
+// 					backgroundColor: 'rgb(255, 99, 132)',
+// 					borderColor: 'rgb(255, 99, 132)',
+// 					data: [1, 2, 5, 1, 2, 5, 23, 25, 112, 51, 251, 2],
+// 					fill: false
+// 				}
+// 			]
+// 		},
+// 		options: {
+// 			title: {
+// 				display: true,
+// 				text: 'Inferno Simulated Deaths'
+// 			}
+// 		}
+// 	};
+// 	return `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(options))}`;
+// }
 
 function gearCheck(user: KlasaUser): true | string {
 	const rangeGear = user.getGear('range');
@@ -83,38 +116,71 @@ export default class extends BotCommand {
 		});
 	}
 
-	basePreZukDeathChance(user: KlasaUser) {
-		const attempts = user.settings.get(UserSettings.Stats.InfernoAttempts);
-		let deathChance = Math.max(14 - attempts * 2, 5);
-
-		return deathChance;
-	}
-
-	baseZukDeathChance(user: KlasaUser) {
-		const attempts = user.settings.get(UserSettings.Stats.InfernoAttempts);
-		const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(15))) * 50);
-
+	basePreZukDeathChance(attempts: number) {
+		const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(45))) * 50);
 		return Math.max(Math.min(chance, 99), 5);
 	}
 
-	@minionNotBusy
-	@requiresMinion
-	async run(msg: KlasaMessage) {
-		await msg.author.settings.sync(true);
-		const gearOkay = gearCheck(msg.author);
-		if (typeof gearOkay === 'string') {
-			return msg.channel.send(gearOkay);
+	baseZukDeathChance(attempts: number) {
+		const chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(65))) * 65);
+		return Math.max(Math.min(chance, 99), 5);
+	}
+
+	async baseDeathChances() {
+		let preZuk = [];
+		let zuk = [];
+		for (let i = 0; i < 100; i++) {
+			preZuk.push(this.basePreZukDeathChance(i));
+			zuk.push(this.baseZukDeathChance(i));
 		}
+		const options = {
+			type: 'line',
+			data: {
+				labels: [...Array(zuk.length).keys()].map(i => `${i + 1}`),
+				datasets: [
+					{
+						label: 'Pre-Zuk Death Chance',
+						backgroundColor: 'rgb(255, 99, 132)',
+						borderColor: 'rgb(255, 99, 132)',
+						data: preZuk,
+						fill: false
+					},
+					{
+						label: 'Zuk Death Chance',
+						fill: false,
+						backgroundColor: 'rgb(54, 162, 235)',
+						borderColor: 'rgb(54, 162, 235)',
+						data: zuk
+					}
+				]
+			}
+		};
 
-		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
-		const usersRangeStats = msg.author.getGear('range').stats;
-		const zukKC = msg.author.getKC(TzKalZuk.id);
+		const imageBuffer = await fetch(
+			`https://quickchart.io/chart?bkg=${encodeURIComponent('#fff')}&c=${encodeURIComponent(
+				JSON.stringify(options)
+			)}`
+		).then(result => result.buffer());
+		return imageBuffer;
+	}
 
+	simulate(msg: KlasaMessage) {
+		let kc = 0;
+		for (let i = 0; i < 10_000; i++) {
+			const res = this.infernoRun({ user: msg.author, kc, attempts: i });
+			if (!res.deathTime) {
+				return `You finished the inferno after ${i} attempts. ${res.duration.messages.join(', ')}`;
+			}
+		}
+		return "After 10,000 attempts, you still didn't finish.";
+	}
+
+	infernoRun({ user, kc, attempts }: { user: KlasaUser; kc: number; attempts: number }) {
 		const duration = new PercentCounter(Time.Hour * 3);
-		const zukDeathChance = new PercentCounter(this.baseZukDeathChance(msg.author));
-		const preZukDeathChance = new PercentCounter(this.basePreZukDeathChance(msg.author));
+		const zukDeathChance = new PercentCounter(this.baseZukDeathChance(attempts));
+		const preZukDeathChance = new PercentCounter(this.basePreZukDeathChance(attempts));
 
-		const userBank = msg.author.bank();
+		const userBank = user.bank();
 		const cost = new Bank();
 
 		/** *
@@ -123,10 +189,11 @@ export default class extends BotCommand {
 		 * Consumables / Cost
 		 *
 		 */
+
 		/**
 		 * Players with over 100 Zuk KC and 99 Agility don't need a Stamina potion.
 		 */
-		if (zukKC < 100 && msg.author.skillLevel(SkillsEnum.Agility) === 99) {
+		if (kc < 100 && user.skillLevel(SkillsEnum.Agility) === 99) {
 			if (userBank.has('Stamina potion(4)')) {
 				cost.add('Stamina potion(4)');
 			} else {
@@ -145,6 +212,36 @@ export default class extends BotCommand {
 		} else if (diedZuk) {
 			deathTime = randInt(calcPercentOfNum(90, duration.value), duration.value);
 		}
+
+		return {
+			deathTime,
+			fakeDuration,
+			zukDeathChance,
+			duration,
+			diedZuk,
+			diedPreZuk,
+			preZukDeathChance
+		};
+	}
+
+	@minionNotBusy
+	@requiresMinion
+	async run(msg: KlasaMessage) {
+		const gearOkay = gearCheck(msg.author);
+		if (typeof gearOkay === 'string') {
+			return msg.channel.send(gearOkay);
+		}
+		if (msg.flagArgs.sim) {
+			msg.channel.send({ files: [await this.baseDeathChances()] });
+			return msg.channel.send(this.simulate(msg));
+		}
+
+		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
+		const usersRangeStats = msg.author.getGear('range').stats;
+		const zukKC = msg.author.getKC(TzKalZuk.id);
+
+		const { deathTime, diedPreZuk, zukDeathChance, diedZuk, duration, fakeDuration, preZukDeathChance } =
+			this.infernoRun({ user: msg.author, kc: zukKC, attempts });
 
 		await addSubTaskToActivityTask<InfernoOptions>({
 			userID: msg.author.id,
