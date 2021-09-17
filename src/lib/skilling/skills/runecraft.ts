@@ -1,4 +1,5 @@
 import { Time } from 'e';
+import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
@@ -54,6 +55,15 @@ const Runes: Rune[] = [
 		tripLength: Time.Minute
 	},
 	{
+		xp: 8.5,
+		id: itemID('Mist rune'),
+		name: 'Mist rune',
+		levels: [[6, 1]],
+		tripLength: Time.Minute * 0.95,
+		inputRune: new Bank({ 'Air rune': 1 }),
+		inputTalisman: new Bank({ 'Air talisman': 1 })
+	},
+	{
 		xp: 6.5,
 		id: itemID('Earth rune'),
 		name: 'Earth rune',
@@ -64,6 +74,24 @@ const Runes: Rune[] = [
 			[78, 4]
 		],
 		tripLength: Time.Minute
+	},
+	{
+		xp: 9,
+		id: itemID('Dust rune'),
+		name: 'Dust rune',
+		levels: [[10, 1]],
+		tripLength: Time.Minute * 0.95,
+		inputRune: new Bank({ 'Air rune': 1 }),
+		inputTalisman: new Bank({ 'Air talisman': 1 })
+	},
+	{
+		xp: 9.5,
+		id: itemID('Mud rune'),
+		name: 'Mud rune',
+		levels: [[13, 1]],
+		tripLength: Time.Minute * 0.95,
+		inputRune: new Bank({ 'Water rune': 1 }),
+		inputTalisman: new Bank({ 'Water talisman': 1 })
 	},
 	{
 		xp: 7,
@@ -77,6 +105,24 @@ const Runes: Rune[] = [
 		tripLength: Time.Minute
 	},
 	{
+		xp: 9.5,
+		id: itemID('Smoke rune'),
+		name: 'Smoke rune',
+		levels: [[15, 1]],
+		tripLength: Time.Minute * 0.56,
+		inputRune: new Bank({ 'Air rune': 1 }),
+		inputTalisman: new Bank({ 'Air talisman': 1 })
+	},
+	{
+		xp: 10,
+		id: itemID('Steam rune'),
+		name: 'Steam rune',
+		levels: [[19, 1]],
+		tripLength: Time.Minute * 0.56,
+		inputRune: new Bank({ 'Water rune': 1 }),
+		inputTalisman: new Bank({ 'Water talisman': 1 })
+	},
+	{
 		xp: 7.5,
 		id: itemID('Body rune'),
 		name: 'Body rune',
@@ -86,6 +132,15 @@ const Runes: Rune[] = [
 			[92, 3]
 		],
 		tripLength: Time.Minute
+	},
+	{
+		xp: 10.5,
+		id: itemID('Lava rune'),
+		name: 'Lava rune',
+		levels: [[23, 1]],
+		tripLength: Time.Minute * 0.56,
+		inputRune: new Bank({ 'Earth rune': 1 }),
+		inputTalisman: new Bank({ 'Earth talisman': 1 })
 	},
 	{
 		xp: 8,

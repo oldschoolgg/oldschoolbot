@@ -30,9 +30,11 @@ describe('Gear', () => {
 
 	test('allItems', () => {
 		const gear = new Gear({ head: 'Max cape' });
-		const allItems = gear.allItems(true);
-		expect(allItems.map(itemNameFromID)).toEqual(['Max cape', 'Graceful cape', 'Attack cape']);
-		expect(allItems.length).toEqual(3);
+		const allItems = gear.allItems(true).map(itemNameFromID).sort();
+		expect(allItems).toEqual(
+			['Max cape', 'Graceful cape', 'Attack cape', 'Crafting cape', 'Runecraft cape'].sort()
+		);
+		expect(allItems.length).toEqual(5);
 	});
 
 	test('equippedWeapon', () => {
