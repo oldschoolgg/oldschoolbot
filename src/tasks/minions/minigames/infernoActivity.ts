@@ -30,6 +30,9 @@ export default class extends Task {
 
 		const attemptsStr = `You have attempted the Inferno ${attempts}x times.`;
 
+		const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration, minimal: true });
+		const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration, minimal: true });
+
 		if (diedPreZuk) {
 			const refundBank = new Bank();
 			const percSuppliesToRefund = 100 - calcWhatPercent(preZukDeathChance, duration);
@@ -65,9 +68,6 @@ export default class extends Task {
 		if (diedZuk) {
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
 			await user.addItemsToBank(failBank, true);
-
-			const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration });
-			const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration });
 
 			let msg = `${rangeXP}. ${hpXP}.`;
 
@@ -114,9 +114,6 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank(loot, true);
-
-		const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 47_580, duration });
-		const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_860, duration });
 
 		let msg = `${rangeXP}. ${hpXP}.`;
 

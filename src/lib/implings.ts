@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
+import { Activity } from './constants';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import activityInArea, { WorldLocations } from './util/activityInArea';
@@ -56,6 +57,7 @@ const implingTableByWorldLocation = {
 };
 
 export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
+	if ([Activity.FightCaves, Activity.Inferno].includes(data.type)) return null;
 	const minutes = Math.floor(data.duration / Time.Minute);
 
 	if (minutes < 4) return null;
