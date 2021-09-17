@@ -229,6 +229,7 @@ declare module 'discord.js' {
 		 */
 		queueFn(fn: (user: KlasaUser) => Promise<T>): Promise<T>;
 		bank(options?: GetUserBankOptions): Bank;
+		cl(): Bank;
 		getPOH(): Promise<PoHTable>;
 		getUserFavAlchs(): Item[];
 		getGear(gearType: GearSetupType): Gear;
