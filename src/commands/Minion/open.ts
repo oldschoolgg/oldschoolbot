@@ -84,7 +84,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemFromBank(clueTier.id, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(clueTier.id, quantity));
 
 		let loot = clueTier.table.open(quantity);
 
@@ -166,7 +166,8 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemFromBank(osjsOpenable.id, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(osjsOpenable.id, quantity));
+
 		const loot = osjsOpenable.open(quantity, {});
 		const score = msg.author.getOpenableScore(osjsOpenable.id) + quantity;
 		this.client.emit(
@@ -211,7 +212,8 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(botOpenable.itemID, quantity));
+
 		const score = msg.author.getOpenableScore(botOpenable.itemID);
 		const loot = botOpenable.table.roll(quantity);
 
