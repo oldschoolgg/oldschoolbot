@@ -146,7 +146,6 @@ declare module 'discord.js' {
 		): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }>;
 		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
 		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
-		removeItemFromBank(itemID: number, numberToRemove?: number): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 
 		incrementOpenableScore(openableID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;

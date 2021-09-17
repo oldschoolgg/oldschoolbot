@@ -50,7 +50,7 @@ const lotteryItems = [
 	},
 	{
 		item: getOSItem('Clue scroll(grandmaster)'),
-		value: 110_000_000
+		value: 650_000_000
 	},
 	// Caskets
 	{
@@ -79,7 +79,7 @@ const lotteryItems = [
 	},
 	{
 		item: getOSItem('Reward casket(grandmaster)'),
-		value: 150_000_000
+		value: 700_000_000
 	}
 ];
 

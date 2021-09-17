@@ -177,7 +177,7 @@ export default class extends BotCommand {
 		const boosts: string[] = [];
 
 		const suppliesUsage = new Bank()
-			.add('Saradomin brew (4)', userHitpointsLevel >= 80 ? 3 : 2)
+			.add('Saradomin brew (4)', userHitpointsLevel < 80 ? 3 : 2)
 			.add('Prayer potion (4)', 1)
 			.add('Numulite', 30);
 

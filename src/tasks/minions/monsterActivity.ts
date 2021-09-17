@@ -1,4 +1,4 @@
-import { randArrItem, Time } from 'e';
+import { calcWhatPercent, randArrItem, reduceNumByPercent, Time } from 'e';
 import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -232,7 +232,7 @@ export default class extends Task {
 				const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
 				const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
-				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
+				str += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
 				if (usersTask.assignedTask?.isBoss) {
 					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5000 })}`;
 					str += ' for completing your boss task.';
@@ -242,12 +242,28 @@ export default class extends Task {
 					usersTask.currentTask!.quantityRemaining
 				} remaining kills, you now have ${quantityLeft} kills remaining.`;
 			}
+
+			if (thisTripFinishesTask) {
+				let mysteryBoxChance = 25;
+				if (usersTask.slayerMaster!.id >= 4) {
+					mysteryBoxChance -= 20;
+				}
+
+				mysteryBoxChance = reduceNumByPercent(
+					mysteryBoxChance,
+					calcWhatPercent(monster.timeToFinish, Time.Minute * 15) / 3
+				);
+
+				mysteryBoxChance = Math.floor(mysteryBoxChance);
+				mysteryBoxChance = Math.max(1, mysteryBoxChance);
+
+				if (roll(mysteryBoxChance)) {
+					loot.add(getRandomMysteryBox());
+				}
+			}
+
 			usersTask.currentTask!.quantityRemaining = quantityLeft;
 			await usersTask.currentTask!.save();
-		}
-
-		if (thisTripFinishesTask && roll(10)) {
-			loot.add(getRandomMysteryBox());
 		}
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);

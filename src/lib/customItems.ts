@@ -1052,7 +1052,7 @@ setCustomItem(47_505, 'First age cape', 'Fire cape', {}, 100_000_000);
 setCustomItem(47_506, 'First age bracelet', 'Barrows gloves', {}, 100_000_000);
 setCustomItem(47_507, 'First age ring', 'Berserker ring', {}, 100_000_000);
 
-setCustomItem(47_508, 'Broken dwarven warhammer', 'Rune warhammer', {}, 1_000_000);
+setCustomItem(47_508, 'Broken dwarven warhammer', 'Rune warhammer', {}, 1_000_000_000);
 
 setCustomItem(47_509, 'Equippable mystery box', 'Mystery box', {}, 1_000_000);
 
@@ -1251,34 +1251,34 @@ setCustomItem(47_529, 'Voidling', 'Herbi', {}, 1_000_000);
  * -----------------------------------------------------------------------------------------------
  */
 // Ice
-setCustomItem(41_053, 'Offhand drygore rapier (ice)', 'Offhand drygore rapier', {}, 1_000_000);
-setCustomItem(41_054, 'Drygore rapier (ice)', 'Drygore rapier', {}, 1_000_000);
-setCustomItem(41_055, 'Offhand drygore mace (ice)', 'Offhand Drygore mace', {}, 1_000_000);
-setCustomItem(41_056, 'Drygore mace (ice)', 'Drygore mace', {}, 1_000_000);
-setCustomItem(41_057, 'Offhand drygore longsword (ice)', 'Offhand drygore longsword', {}, 1_000_000);
-setCustomItem(41_058, 'Drygore longsword (ice)', 'Drygore longsword', {}, 1_000_000);
+setCustomItem(41_053, 'Offhand drygore rapier (ice)', 'Offhand drygore rapier', {}, 200_000_000);
+setCustomItem(41_054, 'Drygore rapier (ice)', 'Drygore rapier', {}, 200_000_000);
+setCustomItem(41_055, 'Offhand drygore mace (ice)', 'Offhand Drygore mace', {}, 200_000_000);
+setCustomItem(41_056, 'Drygore mace (ice)', 'Drygore mace', {}, 200_000_000);
+setCustomItem(41_057, 'Offhand drygore longsword (ice)', 'Offhand drygore longsword', {}, 200_000_000);
+setCustomItem(41_058, 'Drygore longsword (ice)', 'Drygore longsword', {}, 200_000_000);
 
 // Blood
-setCustomItem(41_059, 'Offhand drygore rapier (blood)', 'Offhand drygore rapier', {}, 1_000_000);
-setCustomItem(41_060, 'Drygore rapier (blood)', 'Drygore rapier', {}, 1_000_000);
-setCustomItem(41_061, 'Offhand drygore mace (blood)', 'Offhand Drygore mace', {}, 1_000_000);
-setCustomItem(41_062, 'Drygore mace (blood)', 'Drygore mace', {}, 1_000_000);
-setCustomItem(41_063, 'Offhand drygore longsword (blood)', 'Offhand drygore longsword', {}, 1_000_000);
-setCustomItem(41_064, 'Drygore longsword (blood)', 'Drygore longsword', {}, 1_000_000);
+setCustomItem(41_059, 'Offhand drygore rapier (blood)', 'Offhand drygore rapier', {}, 200_000_000);
+setCustomItem(41_060, 'Drygore rapier (blood)', 'Drygore rapier', {}, 200_000_000);
+setCustomItem(41_061, 'Offhand drygore mace (blood)', 'Offhand Drygore mace', {}, 200_000_000);
+setCustomItem(41_062, 'Drygore mace (blood)', 'Drygore mace', {}, 200_000_000);
+setCustomItem(41_063, 'Offhand drygore longsword (blood)', 'Offhand drygore longsword', {}, 200_000_000);
+setCustomItem(41_064, 'Drygore longsword (blood)', 'Drygore longsword', {}, 200_000_000);
 // Shadow
-setCustomItem(41_065, 'Offhand drygore rapier (shadow)', 'Offhand drygore rapier', {}, 1_000_000);
-setCustomItem(41_066, 'Drygore rapier (shadow)', 'Drygore rapier', {}, 1_000_000);
-setCustomItem(41_067, 'Offhand drygore mace (shadow)', 'Offhand Drygore mace', {}, 1_000_000);
-setCustomItem(41_068, 'Drygore mace (shadow)', 'Drygore mace', {}, 1_000_000);
-setCustomItem(41_069, 'Offhand drygore longsword (shadow)', 'Offhand drygore longsword', {}, 1_000_000);
-setCustomItem(41_070, 'Drygore longsword (shadow)', 'Drygore longsword', {}, 1_000_000);
+setCustomItem(41_065, 'Offhand drygore rapier (shadow)', 'Offhand drygore rapier', {}, 200_000_000);
+setCustomItem(41_066, 'Drygore rapier (shadow)', 'Drygore rapier', {}, 200_000_000);
+setCustomItem(41_067, 'Offhand drygore mace (shadow)', 'Offhand Drygore mace', {}, 200_000_000);
+setCustomItem(41_068, 'Drygore mace (shadow)', 'Drygore mace', {}, 200_000_000);
+setCustomItem(41_069, 'Offhand drygore longsword (shadow)', 'Offhand drygore longsword', {}, 200_000_000);
+setCustomItem(41_070, 'Drygore longsword (shadow)', 'Drygore longsword', {}, 200_000_000);
 // 3a
-setCustomItem(41_071, 'Offhand drygore rapier (3a)', 'Offhand drygore rapier', {}, 1_000_000);
-setCustomItem(41_072, 'Drygore rapier (3a)', 'Drygore rapier', {}, 1_000_000);
-setCustomItem(41_073, 'Offhand drygore mace (3a)', 'Offhand Drygore mace', {}, 1_000_000);
-setCustomItem(41_074, 'Drygore mace (3a)', 'Drygore mace', {}, 1_000_000);
-setCustomItem(41_075, 'Offhand drygore longsword (3a)', 'Offhand drygore longsword', {}, 1_000_000);
-setCustomItem(41_076, 'Drygore longsword (3a)', 'Drygore longsword', {}, 1_000_000);
+setCustomItem(41_071, 'Offhand drygore rapier (3a)', 'Offhand drygore rapier', {}, 200_000_000);
+setCustomItem(41_072, 'Drygore rapier (3a)', 'Drygore rapier', {}, 200_000_000);
+setCustomItem(41_073, 'Offhand drygore mace (3a)', 'Offhand Drygore mace', {}, 200_000_000);
+setCustomItem(41_074, 'Drygore mace (3a)', 'Drygore mace', {}, 200_000_000);
+setCustomItem(41_075, 'Offhand drygore longsword (3a)', 'Offhand drygore longsword', {}, 200_000_000);
+setCustomItem(41_076, 'Drygore longsword (3a)', 'Drygore longsword', {}, 200_000_000);
 
 setCustomItem(41_077, 'Master runecrafter hat', 'Rune full helm', {}, 1_000_000);
 setCustomItem(41_078, 'Master runecrafter robe', 'Rune platebody', {}, 1_000_000);
@@ -1315,17 +1315,17 @@ setCustomItem(
 			requirements: null
 		}
 	},
-	1_000_000
+	20_000_000
 );
 setCustomItem(41_085, 'Tattered robes of Vasa', 'Coal', { highalch: 90_000_000 }, 1_000_000);
 
 /**
  * Dyed DWWH Items
  */
-setCustomItem(41_086, 'Dwarven warhammer (ice)', 'Dwarven warhammer', {}, 10_000_000);
-setCustomItem(41_087, 'Dwarven warhammer (shadow)', 'Dwarven warhammer', {}, 10_000_000);
-setCustomItem(41_088, 'Dwarven warhammer (blood)', 'Dwarven warhammer', {}, 10_000_000);
-setCustomItem(41_089, 'Dwarven warhammer (3a)', 'Dwarven warhammer', {}, 10_000_000);
+setCustomItem(41_086, 'Dwarven warhammer (ice)', 'Dwarven warhammer', {}, 1_000_000_000);
+setCustomItem(41_087, 'Dwarven warhammer (shadow)', 'Dwarven warhammer', {}, 1_000_000_000);
+setCustomItem(41_088, 'Dwarven warhammer (blood)', 'Dwarven warhammer', {}, 1_000_000_000);
+setCustomItem(41_089, 'Dwarven warhammer (3a)', 'Dwarven warhammer', {}, 1_000_000_000);
 
 /**
  *
@@ -1731,10 +1731,10 @@ setCustomItem(
 	},
 	6000
 );
-setCustomItem(48_215, 'Simple kibble', 'Coal', {}, 6000);
-setCustomItem(48_216, 'Delicious kibble', 'Coal', {}, 6000);
-setCustomItem(48_217, 'Extraordinary kibble', 'Coal', {}, 6000);
-setCustomItem(48_218, 'Magic crate', 'Coal', {}, 50_000);
+setCustomItem(48_215, 'Simple kibble', 'Coal', {}, 150_000);
+setCustomItem(48_216, 'Delicious kibble', 'Coal', {}, 200_000);
+setCustomItem(48_217, 'Extraordinary kibble', 'Coal', {}, 250_000);
+setCustomItem(48_218, 'Magic crate', 'Coal', {}, 300_000);
 
 setCustomItem(
 	48_219,
@@ -1764,7 +1764,7 @@ setCustomItem(
 			}
 		}
 	},
-	1000
+	10_000
 );
 
 setCustomItem(
@@ -1808,8 +1808,8 @@ setCustomItem(50_006, 'Blacksmith gloves', 'Leather gloves', {}, 100_000);
 setCustomItem(50_007, 'Blacksmith boots', 'Rune boots', {}, 100_000);
 
 setCustomItem(50_008, 'Mysterious seed', 'Magic seed', {}, 100_000);
-setCustomItem(50_009, 'Athelas seed', 'Magic seed', {}, 1_000_000);
-setCustomItem(50_010, 'Athelas', 'Magic seed', {}, 1_000_000);
+setCustomItem(50_009, 'Athelas seed', 'Magic seed', {}, 50_000);
+setCustomItem(50_010, 'Athelas', 'Magic seed', {}, 100_000);
 
 // Master farmer
 setCustomItem(50_011, 'Ent hide', 'Magic seed', {}, 1_000_000);

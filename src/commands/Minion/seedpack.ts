@@ -173,7 +173,7 @@ export default class extends BotCommand {
 			return msg.channel.send('You have no seed packs to open!');
 		}
 
-		await msg.author.removeItemFromBank(itemID('Seed pack'), 1);
+		await msg.author.removeItemsFromBank(new Bank().add('Seed pack'));
 		await msg.author.addItemsToBank(loot.bank, true);
 
 		return msg.channel.send(`You opened a seed pack and received: ${loot}.`);

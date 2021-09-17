@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Channel, Events } from '../../lib/constants';
+import { evalMathExpression } from '../../lib/expressionParser';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -18,7 +19,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
-			usage: '<member:member> [price:int{1,100000000000}] (items:...TradeableBank)',
+			usage: '<member:member> [price:string] (items:...TradeableBank)',
 			usageDelim: ' ',
 			oneAtTime: true,
 			ironCantUse: true,
@@ -31,10 +32,18 @@ export default class extends BotCommand {
 
 	async run(
 		msg: KlasaMessage,
-		[buyerMember, price, [bankToSell, totalPrice]]: [GuildMember, number, [Bank, number]]
+		[buyerMember, rawPrice, [bankToSell, totalPrice]]: [GuildMember, string, [Bank, number]]
 	) {
-		if (!price) {
-			price = 1;
+		if (!rawPrice) {
+			rawPrice = '1';
+		}
+		if (bankToSell.length === 1) {
+			const item = bankToSell.items()[0];
+			rawPrice = rawPrice.replace('#', bankToSell.amount(item[0].id).toString());
+		}
+		const price = evalMathExpression(rawPrice ?? '1') ?? 1;
+		if (price < 1 || price > 100_000_000_000) {
+			return msg.channel.send('Invalid price.');
 		}
 
 		// Make sure blacklisted members can't be traded.

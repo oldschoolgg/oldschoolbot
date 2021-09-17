@@ -12,7 +12,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: RunecraftActivityTaskOptions) {
-		const { runeID, essenceQuantity, userID, channelID, duration } = data;
+		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration } = data;
 		const user = await this.client.fetchUser(userID);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
@@ -37,11 +37,16 @@ export default class extends Task {
 		if (hasMaster) {
 			xpReceived = increaseNumByPercent(xpReceived, 10);
 		}
-		const xpRes = await user.addXP({
+		const magicXpReceived = imbueCasts * 86;
+
+		let xpRes = `\n${await user.addXP({
 			skillName: SkillsEnum.Runecraft,
 			amount: xpReceived,
 			duration
-		});
+		})}`;
+		if (magicXpReceived > 0) {
+			xpRes += `\n${await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXpReceived, duration })}`;
+		}
 
 		let str = `${user}, ${user.minionName} finished crafting ${runeQuantity} ${rune.name}. ${xpRes}`;
 		if (hasMaster) {

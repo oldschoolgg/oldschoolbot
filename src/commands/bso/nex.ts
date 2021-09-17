@@ -173,8 +173,7 @@ export default class extends BotCommand {
 				effectiveTime = increaseNumByPercent(effectiveTime, percent);
 				msgs.push(`-${percent}% penalty for <200 ranged attack`);
 			}
-
-			if (equippedWeapon?.id === itemID('Zaryte bow') || equippedWeapon?.id === itemID('Hellfire bow')) {
+			if (rangeGear.hasEquipped('Zaryte bow')) {
 				const percent = isSolo ? 20 : 14;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for Zaryte bow`);

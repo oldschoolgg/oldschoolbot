@@ -99,7 +99,7 @@ export default class extends BotCommand {
 		if (roll(chanceToSave)) {
 			return msg.channel.send(randArrItem(hammyFailMessages).replace(/\{item\}/g, firstItem.name));
 		}
-		await msg.author.removeItemFromBank(firstItem.id);
+		await msg.author.removeItemsFromBank(new Bank().add(firstItem.id));
 		return msg.channel.send(randArrItem(hammyMessages).replace(/\{item\}/g, firstItem.name));
 	}
 }

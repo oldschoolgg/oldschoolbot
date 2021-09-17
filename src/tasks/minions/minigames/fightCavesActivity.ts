@@ -59,7 +59,7 @@ export default class extends Task {
 				}
 			}
 
-			await user.addItemsToBank(itemLootBank, true);
+			await user.addItemsToBank(itemLootBank);
 
 			return handleTripFinish(
 				this.client,

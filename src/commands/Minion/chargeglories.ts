@@ -1,11 +1,12 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GloryChargingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, skillsMeetRequirements } from '../../lib/util';
+import { formatDuration, skillsMeetRequirements } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export const gloriesInventorySize = 26;
@@ -92,7 +93,7 @@ export default class extends BotCommand {
 			type: Activity.GloryCharging
 		});
 
-		await msg.author.removeItemFromBank(itemID('Amulet of glory'), quantityGlories);
+		await msg.author.removeItemsFromBank(new Bank().add('Amulet of glory', quantityGlories));
 
 		return msg.channel.send(
 			`${

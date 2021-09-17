@@ -89,6 +89,7 @@ export namespace ClientSettings {
 
 		export const MonkeyRumbleCost = T<O.Readonly<ItemBank>>('mr_cost');
 		export const MonkeyRumbleLoot = T<O.Readonly<ItemBank>>('mr_loot');
+		export const DroppedItems = T<O.Readonly<ItemBank>>('dropped_items');
 
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');

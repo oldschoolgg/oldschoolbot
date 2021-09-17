@@ -1,5 +1,6 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
@@ -86,7 +87,7 @@ export default class extends BotCommand {
 			}
 
 			messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank`);
-			await msg.author.removeItemFromBank(food.id, amountNeeded);
+			await msg.author.removeItemsFromBank(new Bank().add(food.id, amountNeeded));
 
 			// Track this food cost in Economy Stats
 			await this.client.settings.update(

@@ -824,7 +824,7 @@ export const allCollectionLogs: ICollection = {
 					'Intermediate rumble greegree',
 					'Ninja rumble greegree',
 					'Expert ninja rumble greegree',
-					'Gorilla rumble greegree'
+					'Elder rumble greegree'
 				]),
 				roleCategory: ['minigames']
 			}

@@ -5,17 +5,13 @@ import { Buyable } from './buyables';
 export const slayerBuyables: Buyable[] = [
 	{
 		name: 'Broad arrows',
-		outputItems: resolveNameBank({
-			'Broad arrows': 1
-		}),
-		gpCost: 250
+		gpCost: 250,
+		ironmanPrice: 60
 	},
 	{
 		name: 'Broad arrowheads',
-		outputItems: resolveNameBank({
-			'Broad arrowheads': 1
-		}),
-		gpCost: 225
+		gpCost: 225,
+		ironmanPrice: 55
 	},
 	{
 		name: 'Broad arrowhead pack',

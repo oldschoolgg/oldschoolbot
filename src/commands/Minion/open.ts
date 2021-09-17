@@ -92,7 +92,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemFromBank(clueTier.id, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(clueTier.id, quantity));
 
 		const hasCHEquipped = msg.author.hasItemEquippedAnywhere(clueHunterOutfit, true);
 
@@ -191,7 +191,8 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemFromBank(osjsOpenable.id, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(osjsOpenable.id, quantity));
+
 		const loot = osjsOpenable.open(quantity, {});
 		const score = msg.author.getOpenableScore(osjsOpenable.id) + quantity;
 		this.client.emit(
@@ -236,7 +237,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(botOpenable.itemID, quantity));
 
 		const hasSmokey = msg.author.allItemsOwned().has('Smokey');
 		const loot = new Bank();

@@ -119,9 +119,9 @@ export class Gear {
 		}
 		// similar = true, every = false
 		for (const i of [...items]) {
-			const similarItems = getSimilarItems(i) ?? [i];
+			const similarItems = getSimilarItems(i);
+			similarItems.push(i);
 			if (similarItems.some(si => allItems.includes(si))) return true;
-			else if (allItems.includes(i)) return true;
 		}
 		return false;
 	}

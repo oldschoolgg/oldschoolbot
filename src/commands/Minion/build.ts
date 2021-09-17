@@ -123,7 +123,7 @@ export default class extends BotCommand {
 			return msg.channel.send("You don't have enough GP to pay your Butler.");
 		}
 		await msg.author.removeGP(gpNeeded);
-		await msg.author.removeItemFromBank(plank, totalPlanksNeeded);
+		await msg.author.removeItemsFromBank(new Bank().add(plank, totalPlanksNeeded));
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.ConstructCostBank,

@@ -153,7 +153,7 @@ const source: [string, (string | number)[]][] = [
 	['Tormented bracelet', ['Tormented bracelet (or)']],
 	['Necklace of anguish', ['Necklace of anguish (or)']],
 	['Occult necklace', ['Occult necklace (or)']],
-	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, '3rd age pickaxe']],
+	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, '3rd age pickaxe', 'Infernal pickaxe']],
 	['Dragon axe', ['3rd age axe']],
 	['Steam battlestaff', [12_795]],
 	['Lava battlestaff', [21_198]],
@@ -422,7 +422,9 @@ const source: [string, (string | number)[]][] = [
 	['Scythe of vitur', ['Sanguine scythe of vitur', 'Holy scythe of vitur']],
 	['Scythe of vitur (uncharged)', ['Sanguine scythe of vitur (uncharged)', 'Holy scythe of vitur (uncharged)']],
 	['Sanguinesti staff', ['Holy sanguinesti staff']],
-	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']]
+	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']],
+	['Runecraft cape', ['Max cape', 'Runecraft cape(t)']],
+	['Crafting cape', ['Max cape', 'Crafting cape(t)']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
