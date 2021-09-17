@@ -422,7 +422,9 @@ const source: [string, (string | number)[]][] = [
 	['Scythe of vitur', ['Sanguine scythe of vitur', 'Holy scythe of vitur']],
 	['Scythe of vitur (uncharged)', ['Sanguine scythe of vitur (uncharged)', 'Holy scythe of vitur (uncharged)']],
 	['Sanguinesti staff', ['Holy sanguinesti staff']],
-	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']]
+	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']],
+	['Runecraft cape', ['Max cape', 'Runecraft cape(t)']],
+	['Crafting cape', ['Max cape', 'Crafting cape(t)']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
