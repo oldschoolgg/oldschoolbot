@@ -118,7 +118,7 @@ const GardenDecorations: PoHObject[] = [
 		refundItems: true
 	},
 	{
-		id: 494,
+		id: 9398,
 		name: 'Nightmare decoration',
 		slot: 'gardenDecoration',
 		level: 99,

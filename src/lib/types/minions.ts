@@ -17,6 +17,7 @@ export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	type: Activity.Runecraft;
 	runeID: number;
 	essenceQuantity: number;
+	imbueCasts: number;
 }
 
 export interface GloryChargingActivityTaskOptions extends ActivityTaskOptions {

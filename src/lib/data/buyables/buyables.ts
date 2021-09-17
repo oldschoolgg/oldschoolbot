@@ -14,6 +14,7 @@ import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 import { miningBuyables } from './mining';
+import { runeBuyables } from './runes';
 import { slayerBuyables } from './slayerBuyables';
 
 export interface Buyable {
@@ -26,6 +27,7 @@ export interface Buyable {
 	skillsNeeded?: Skills;
 	restockTime?: number;
 	minigameScoreReq?: [MinigameKey, number];
+	ironmanPrice?: number;
 	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
 }
 
@@ -578,7 +580,8 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Fishing Bait',
 		aliases: ['fishing bait'],
-		gpCost: 20
+		gpCost: 20,
+		ironmanPrice: 3
 	},
 	{
 		name: 'Jug of Water',
@@ -589,7 +592,8 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Feather',
 		aliases: ['feather'],
-		gpCost: 50
+		gpCost: 50,
+		ironmanPrice: 2
 	},
 	{
 		name: 'Shield right half',
@@ -606,17 +610,20 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Eye of newt',
 		aliases: ['eye of newt', 'newt eye'],
-		gpCost: 300
+		gpCost: 300,
+		ironmanPrice: 3
 	},
 	{
 		name: 'Vial of water',
 		aliases: ['vial of water'],
-		gpCost: 60
+		gpCost: 60,
+		ironmanPrice: 3
 	},
 	{
 		name: 'Vial',
 		aliases: ['vial'],
-		gpCost: 30
+		gpCost: 30,
+		ironmanPrice: 2
 	},
 	{
 		name: 'Cup of hot water',
@@ -684,7 +691,8 @@ const Buyables: Buyable[] = [
 	...cmCapes,
 	...slayerBuyables,
 	...capeBuyables,
-	...miningBuyables
+	...miningBuyables,
+	...runeBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
