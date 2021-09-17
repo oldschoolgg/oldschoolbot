@@ -5,6 +5,7 @@ import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { Activity } from '../../lib/constants';
 import { GearSetupTypes } from '../../lib/gear';
+import { minionNotBusy } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -146,6 +147,7 @@ export default class extends BotCommand {
 		);
 	}
 
+	@minionNotBusy
 	async run(msg: KlasaMessage, [numberOfGames = undefined]: [number | undefined]) {
 		const skillReqs = {
 			[SkillsEnum.Prayer]: 70,
@@ -175,7 +177,7 @@ export default class extends BotCommand {
 		const boosts: string[] = [];
 
 		const suppliesUsage = new Bank()
-			.add('Saradomin brew (4)', userHitpointsLevel >= 80 ? 3 : 2)
+			.add('Saradomin brew (4)', userHitpointsLevel < 80 ? 3 : 2)
 			.add('Prayer potion (4)', 1)
 			.add('Numulite', 30);
 

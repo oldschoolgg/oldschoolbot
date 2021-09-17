@@ -1,15 +1,16 @@
+import { notEmpty } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
-import { fromKMB } from 'oldschooljs/dist/util';
 
 import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
+import { evalMathExpression } from '../expressionParser';
 import { cleanString, stringMatches } from '../util';
 
 const { floor, max, min } = Math;
 
-export function parseQuantityAndItem(str = ''): [Item[], number] | [] {
+export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], number] | [] {
 	str = str.trim();
 	if (!str) return [];
 	// Make it so itemIDs aren't interpreted as quantities
@@ -24,11 +25,13 @@ export function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 
 	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
 
-	// Fix for 3rd age items
-	if (potentialQty === '3rd') potentialQty = '';
+	let lazyItemGet = Items.get(potentialName.join(' '));
+	if (str.includes('#') && lazyItemGet && inputBank) {
+		potentialQty = potentialQty.replace('#', inputBank.amount(lazyItemGet.id).toString());
+	}
 
-	let parsedQty: number | null = fromKMB(potentialQty);
-	if (isNaN(parsedQty)) parsedQty = null;
+	let parsedQty: number | null = evalMathExpression(potentialQty);
+	if (parsedQty !== null && isNaN(parsedQty)) parsedQty = null;
 
 	const parsedName = parsedQty === null ? str : potentialName.join(' ');
 
@@ -52,15 +55,17 @@ export function parseQuantityAndItem(str = ''): [Item[], number] | [] {
 	return [osItems, quantity];
 }
 
-export function parseStringBank(str = ''): [Item, number | undefined][] {
-	str = str.trim().replace(/\s\s+/g, ' ');
-	if (!str) return [];
-	const split = str.split(',');
+export function parseStringBank(str = '', inputBank?: Bank): [Item, number | undefined][] {
+	const split = str
+		.trim()
+		.replace(/\s\s+/g, ' ')
+		.split(',')
+		.filter(i => notEmpty(i) && i !== '');
 	if (split.length === 0) return [];
 	let items: [Item, number | undefined][] = [];
 	const currentIDs = new Set();
 	for (let i = 0; i < split.length; i++) {
-		let [resItems, quantity] = parseQuantityAndItem(split[i]);
+		let [resItems, quantity] = parseQuantityAndItem(split[i], inputBank);
 		if (resItems !== undefined) {
 			for (const item of resItems) {
 				if (currentIDs.has(item.id)) continue;
@@ -83,7 +88,7 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 
 	if (inputStr) {
 		let _bank = new Bank();
-		const strItems = parseStringBank(inputStr);
+		const strItems = parseStringBank(inputStr, inputBank);
 		for (const [item, quantity] of strItems) {
 			_bank.add(
 				item.id,

@@ -1,3 +1,4 @@
+import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
@@ -6,13 +7,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import {
-	determineScaledOreTime,
-	formatDuration,
-	itemNameFromID,
-	reduceNumByPercent,
-	stringMatches
-} from '../../lib/util';
+import { determineScaledOreTime, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
@@ -24,7 +19,7 @@ const pickaxes = [
 	},
 	{
 		id: itemID('Infernal pickaxe'),
-		reductionPercent: 10,
+		reductionPercent: 6,
 		miningLvl: 61
 	},
 	{

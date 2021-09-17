@@ -225,7 +225,7 @@ export default class extends BotCommand {
 			await msg.author.removeItemsFromBank(removeTalismanAndOrRunes.bank);
 		}
 
-		await msg.author.removeItemFromBank(itemID('Pure essence'), quantity);
+		await msg.author.removeItemsFromBank(new Bank().add('Pure essence', quantity));
 
 		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
 			runeID: rune.id,

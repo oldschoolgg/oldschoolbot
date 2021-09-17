@@ -1,5 +1,6 @@
-import { Time } from 'e';
+import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
@@ -10,7 +11,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, bankHasItem, calcWhatPercent, formatDuration, reduceNumByPercent } from '../../lib/util';
+import { addItemToBank, bankHasItem, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -84,7 +85,7 @@ export default class extends BotCommand {
 			}
 
 			messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank`);
-			await msg.author.removeItemFromBank(food.id, amountNeeded);
+			await msg.author.removeItemsFromBank(new Bank().add(food.id, amountNeeded));
 
 			// Track this food cost in Economy Stats
 			await this.client.settings.update(

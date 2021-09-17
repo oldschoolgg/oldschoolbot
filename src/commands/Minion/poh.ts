@@ -9,7 +9,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
-import { itemID, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
+import { itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import PoHImage from '../../tasks/pohImage';
 
@@ -68,8 +68,8 @@ export default class POHCommand extends BotCommand {
 		const userBank = msg.author.bank();
 		if (selectedKit.bitfield && !bitfield.includes(BitField.HasHosidiusWallkit)) {
 			if (selectedKit.imageID === 2 && userBank.has('Hosidius blueprints')) {
-				await msg.author.removeItemFromBank(itemID('Hosidius blueprints'));
-				msg.author.settings.update(UserSettings.BitField, selectedKit.bitfield);
+				await msg.author.removeItemsFromBank(new Bank().add('Hosidius blueprints'));
+				await msg.author.settings.update(UserSettings.BitField, selectedKit.bitfield);
 			} else {
 				return msg.channel.send(`You haven't unlocked the ${selectedKit.name} wallkit!`);
 			}

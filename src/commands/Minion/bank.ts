@@ -1,3 +1,4 @@
+import { codeBlock } from '@sapphire/utilities';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
@@ -29,15 +30,26 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const baseBank = msg.author.bank({ withGP: true });
 
+		if (msg.flagArgs.json) {
+			const json = JSON.stringify(baseBank.bank);
+			if (json.length > 1900) {
+				return msg.channel.send({ files: [new MessageAttachment(Buffer.from(json), 'bank.json')] });
+			}
+			return msg.channel.send(`${codeBlock('json', json)}`);
+		}
+
 		if (msg.commandText === 'bs') {
 			if (page && !itemNameOrID) {
 				itemNameOrID = String(page);
 				page = undefined;
 			}
-			msg.flagArgs.search = String(itemNameOrID);
+			msg.flagArgs.search = String(itemNameOrID).trim().replace(/"/g, '');
 			// Clear item string
 			itemNameOrID = '';
-		} else if (page && itemNameOrID) itemNameOrID = `${page} ${itemNameOrID}`.trim();
+		} else if (page && itemNameOrID) {
+			itemNameOrID = `${page} ${itemNameOrID}`.trim();
+			page = undefined;
+		}
 		if (!page) page = 1;
 
 		if (msg.flagArgs.smallbank) {

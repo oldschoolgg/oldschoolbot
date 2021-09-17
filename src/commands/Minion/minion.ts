@@ -1,6 +1,6 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageButton, MessageEmbed } from 'discord.js';
-import { chunk, Time } from 'e';
+import { chunk, randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -28,7 +28,7 @@ import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
 import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
-import { convertLVLtoXP, isValidNickname, randomItemFromArray, stringMatches } from '../../lib/util';
+import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
 const patMessages = [
@@ -40,7 +40,7 @@ const patMessages = [
 	'You give {name} head pats, they get comfortable and start falling asleep.'
 ];
 
-const randomPatMessage = (minionName: string) => randomItemFromArray(patMessages).replace('{name}', minionName);
+const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
 	try {
@@ -279,29 +279,9 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				`just became an ironman, previous settings: ${JSON.stringify(msg.author.settings.toJSON())}`
 			);
 
-			await msg.author.settings.reset([
-				UserSettings.Bank,
-				UserSettings.CollectionLogBank,
-				UserSettings.GP,
-				UserSettings.QP,
-				UserSettings.MonsterScores,
-				UserSettings.ClueScores,
-				UserSettings.BankBackground,
-				UserSettings.SacrificedValue,
-				UserSettings.SacrificedBank,
-				UserSettings.HonourLevel,
-				UserSettings.HonourPoints,
-				UserSettings.HighGambles,
-				UserSettings.CarpenterPoints,
-				UserSettings.ZealTokens,
-				UserSettings.OpenableScores,
-				'slayer',
-				'gear',
-				'stats',
-				'skills',
-				'minion',
-				'farmingPatches'
-			]);
+			const allSchemaKeys = Array.from(this.client.gateways.get('users')!.schema.keys());
+			const keysToReset = allSchemaKeys.filter(k => !['pets', 'RSN', 'patreon_id', 'github_id'].includes(k));
+			await msg.author.settings.reset([...keysToReset]);
 
 			try {
 				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });

@@ -9,7 +9,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: CraftingActivityTaskOptions) {
-		const { craftableID, quantity, userID, channelID } = data;
+		const { craftableID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Crafting);
 		const item = Craftables.find(craft => craft.id === craftableID)!;
@@ -35,7 +35,7 @@ export default class extends Task {
 		}
 		loot.add(item.id, quantityToGive - crushed);
 
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Crafting, amount: xpReceived });
+		const xpRes = await user.addXP({ skillName: SkillsEnum.Crafting, amount: xpReceived, duration });
 
 		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}.${xpRes}`;
 

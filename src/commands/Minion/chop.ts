@@ -1,3 +1,4 @@
+import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
@@ -7,13 +8,7 @@ import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	determineScaledLogTime,
-	formatDuration,
-	itemNameFromID,
-	reduceNumByPercent,
-	stringMatches
-} from '../../lib/util';
+import { determineScaledLogTime, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
@@ -25,7 +20,7 @@ const axes = [
 	},
 	{
 		id: itemID('Infernal axe'),
-		reductionPercent: 11,
+		reductionPercent: 9,
 		wcLvl: 61
 	},
 	{

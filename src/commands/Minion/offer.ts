@@ -170,7 +170,7 @@ export default class extends BotCommand {
 					skillName: SkillsEnum.Construction,
 					amount: xp
 				}),
-				msg.author.removeItemFromBank(specialBone.item.id, quantity)
+				msg.author.removeItemsFromBank(new Bank().add(specialBone.item.id, quantity))
 			]);
 			return msg.channel.send(
 				`You handed over ${quantity} ${specialBone.item.name}${
@@ -224,7 +224,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemFromBank(bone.inputId, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(bone.inputId, quantity));
 
 		await addSubTaskToActivityTask<OfferingActivityTaskOptions>({
 			boneID: bone.inputId,

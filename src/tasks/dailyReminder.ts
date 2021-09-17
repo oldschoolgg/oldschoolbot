@@ -1,10 +1,9 @@
-import { Time } from 'e';
+import { noOp, Time } from 'e';
 import { Task, TaskStore } from 'klasa';
 
 import { production } from '../config';
 import { client } from '../index';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { noOp } from '../lib/util';
 
 declare module 'klasa' {
 	interface KlasaClient {
