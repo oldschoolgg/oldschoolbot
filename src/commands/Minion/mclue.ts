@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
@@ -86,7 +87,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
 		}
 
-		await msg.author.removeItemFromBank(clueTier.scrollID, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
 
 		const randomAddedDuration = rand(1, 20);
 		duration += (randomAddedDuration * duration) / 100;

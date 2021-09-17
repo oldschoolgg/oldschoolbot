@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -167,7 +168,7 @@ export default class extends BotCommand {
 				]
 			});
 		}
-		await msg.author.removeItemFromBank(itemID('Molch pearl'), buyable.cost);
+		await msg.author.removeItemsFromBank(new Bank().add('Molch pearl', buyable.cost));
 		await msg.author.addItemsToBank({ [buyable.item.id]: 1 }, true);
 		return msg.channel.send(`Successfully purchased 1x ${buyable.item.name} for ${buyable.cost}x Molch pearls.`);
 	}
@@ -198,7 +199,7 @@ export default class extends BotCommand {
 				]
 			});
 		}
-		await msg.author.removeItemFromBank(sellable.item.id, 1);
+		await msg.author.removeItemsFromBank(new Bank().add(sellable.item.id, 1));
 		await msg.author.addItemsToBank({ [itemID('Molch pearl')]: sellable.cost }, true);
 		return msg.channel.send(`Successfully sold 1x ${sellable.item.name} for ${sellable.cost}x Molch pearls.`);
 	}

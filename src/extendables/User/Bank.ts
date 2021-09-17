@@ -3,13 +3,12 @@ import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { O } from 'ts-toolbelt';
 
-import { Events } from '../../lib/constants';
 import { similarItems } from '../../lib/data/similarItems';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
-import { bankHasAllItemsFromBank, removeBankFromBank, removeItemFromBank } from '../../lib/util';
+import { bankHasAllItemsFromBank, removeBankFromBank } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
 
 export interface GetUserBankOptions {
@@ -143,21 +142,6 @@ export default class extends Extendable {
 				itemsAdded: items.bank
 			};
 		});
-	}
-
-	public async removeItemFromBank(this: User, itemID: number, amountToRemove = 1) {
-		await this.settings.sync(true);
-		const bank = { ...this.settings.get(UserSettings.Bank) };
-		if (typeof bank[itemID] === 'undefined' || bank[itemID] < amountToRemove) {
-			this.client.emit(Events.Wtf, `${this.username}[${this.id}] [NEI] ${itemID} ${amountToRemove}`);
-
-			throw `${this.username}[${this.id}] doesn't have enough of item[${itemID}] to remove ${amountToRemove}.`;
-		}
-
-		this.log(`had Quantity[${amountToRemove}] of ItemID[${itemID}] removed from bank.`);
-		return this.queueFn(() =>
-			this.settings.update(UserSettings.Bank, removeItemFromBank(bank, itemID, amountToRemove))
-		);
 	}
 
 	public async removeItemsFromBank(this: User, _itemBank: O.Readonly<ItemBank>) {

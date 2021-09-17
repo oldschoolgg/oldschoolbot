@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -38,7 +39,7 @@ export default class extends BotCommand {
 			`${msg.author}, are you sure you want to drop ${quantity}x ${osItem.name}? This is irreversible, and you will lose the items permanently.`
 		);
 
-		await msg.author.removeItemFromBank(osItem.id, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(osItem.id, quantity));
 
 		msg.author.log(`dropped Quantity[${quantity}] ItemID[${osItem.id}]`);
 
