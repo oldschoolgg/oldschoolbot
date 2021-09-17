@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { Planks } from '../../lib/minions/data/planks';
@@ -93,7 +94,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemFromBank(plank!.inputItem, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(plank!.inputItem, quantity));
 		await msg.author.removeGP(cost);
 
 		await this.client.settings.update(

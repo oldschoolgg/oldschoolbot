@@ -75,8 +75,6 @@ export type PatreonConfig = null | {
 	token: string;
 };
 
-export type ItemTuple = [number, number, number];
-
 export interface Patron {
 	patreonID: string;
 	discordID?: string;
@@ -124,4 +122,5 @@ export interface IDiscordSettings {
 	Roles: Record<string, string>;
 	Channels: Record<string, string>;
 	SupportServer: string;
+	BotID: string;
 }

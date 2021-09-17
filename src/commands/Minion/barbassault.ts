@@ -1,4 +1,4 @@
-import { increaseNumByPercent, randArrItem, Time } from 'e';
+import { calcWhatPercent, increaseNumByPercent, randArrItem, reduceNumByPercent, round, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
@@ -12,14 +12,7 @@ import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../lib/si
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { BarbarianAssaultActivityTaskOptions } from '../../lib/types/minions';
-import {
-	calcWhatPercent,
-	formatDuration,
-	randomVariation,
-	reduceNumByPercent,
-	round,
-	stringMatches
-} from '../../lib/util';
+import { formatDuration, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';

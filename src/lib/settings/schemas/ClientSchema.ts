@@ -27,6 +27,7 @@ Client.defaultClientSchema
 	.add('hunter_loot', 'any', { default: {} })
 	.add('revs_cost', 'any', { default: {} })
 	.add('revs_loot', 'any', { default: {} })
+	.add('dropped_items', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })

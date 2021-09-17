@@ -1,5 +1,6 @@
-import { Time } from 'e';
+import { calcPercentOfNum, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -8,7 +9,7 @@ import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { calcPercentOfNum, formatDuration, itemID, itemNameFromID, rand, stringMatches } from '../../lib/util';
+import { formatDuration, itemID, itemNameFromID, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -125,7 +126,7 @@ export default class extends BotCommand {
 
 		// Remove the bait from their bank.
 		if (fish.bait) {
-			await msg.author.removeItemFromBank(fish.bait, quantity);
+			await msg.author.removeItemsFromBank(new Bank().add(fish.bait, quantity));
 		}
 
 		await addSubTaskToActivityTask<FishingActivityTaskOptions>({

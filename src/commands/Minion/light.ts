@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -82,8 +83,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		// Remove the logs from their bank.
-		await msg.author.removeItemFromBank(log.inputLogs, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(log.inputLogs, quantity));
 
 		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>({
 			burnableID: log.inputLogs,

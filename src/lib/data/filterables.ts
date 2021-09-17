@@ -1,4 +1,4 @@
-import { SuperCompostables } from '../../commands/Minion/compostbin';
+import { superCompostables } from '../../commands/Minion/compostbin';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
@@ -945,7 +945,7 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'Compost',
 		aliases: ['compost', 'compostables'],
-		items: [...resolveItems(['Compost', 'Supercompost', 'Ultracompost']), ...resolveItems(SuperCompostables)]
+		items: [...resolveItems(['Compost', 'Supercompost', 'Ultracompost']), ...resolveItems(superCompostables)]
 	},
 	{
 		name: 'Herblore',

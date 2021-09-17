@@ -8,8 +8,10 @@ import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 
 export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
+export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
 export const Channel = {
+	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
 	Notifications: DISCORD_SETTINGS.Channels?.Notifications ?? '469523207691436042',
 	ErrorLogs: DISCORD_SETTINGS.Channels?.ErrorLogs ?? '665678499578904596',
 	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '682996313209831435',
@@ -17,7 +19,10 @@ export const Channel = {
 	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
 	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
 	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
-	HelpAndSupport: DISCORD_SETTINGS.Channels?.HelpAndSupport ?? '668073484731154462'
+	HelpAndSupport: DISCORD_SETTINGS.Channels?.HelpAndSupport ?? '668073484731154462',
+	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
+	BarbarianAssault: DISCORD_SETTINGS.Channels?.BarbarianAssault ?? '789717054902763520',
+	ChambersOfXeric: DISCORD_SETTINGS.Channels?.ChambersOfXeric ?? '835876917252587581'
 };
 
 export const Roles = {
@@ -28,6 +33,12 @@ export const Roles = {
 	PatronTier2: DISCORD_SETTINGS.Roles?.PatronTier2 ?? '678967943979204608',
 	PatronTier3: DISCORD_SETTINGS.Roles?.PatronTier3 ?? '687408140832342043',
 	Patron: DISCORD_SETTINGS.Roles?.Patron ?? '679620175838183424',
+	Testers: DISCORD_SETTINGS.Roles?.Tester ?? '682052620809928718',
+	MassHoster: DISCORD_SETTINGS.Roles?.MassHoster ?? '734055552933429280',
+	Mass: DISCORD_SETTINGS.Roles?.Mass ?? '711215501543473182',
+	BarbarianAssaultMass: DISCORD_SETTINGS.Roles?.BarbarianAssaultMass ?? '789724904885846016',
+	ChambersOfXericMass: DISCORD_SETTINGS.Roles?.ChambersOfXericMass ?? '836539487815204865',
+	// Top Roles
 	TopSkiller: DISCORD_SETTINGS.Roles?.TopSkiller ?? '795266465329709076',
 	TopCollector: DISCORD_SETTINGS.Roles?.TopCollector ?? '795271210141351947',
 	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '795933981715464192',

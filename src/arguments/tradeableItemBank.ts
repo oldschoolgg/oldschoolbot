@@ -20,7 +20,7 @@ export default class TradeableItemBankArgument extends Argument {
 
 	async run(arg: string, _: Possible, msg: KlasaMessage): Promise<TradeableItemBankArgumentType> {
 		await msg.author.settings.sync(true);
-		let items: [Item, number | undefined][] = parseStringBank(arg);
+		let items: [Item, number | undefined][] = parseStringBank(arg, msg.author.bank());
 
 		let bank = new Bank();
 
