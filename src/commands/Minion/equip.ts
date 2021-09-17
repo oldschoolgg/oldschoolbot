@@ -1,6 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { objectEntries } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { GearSetupType, GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
@@ -137,7 +138,8 @@ export default class extends BotCommand {
 			return this.run(msg, [gearType, quantity, [itemToEquip]]);
 		}
 
-		await msg.author.removeItemFromBank(itemToEquip.id, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(itemToEquip.id, quantity));
+
 		const newGear = { ...currentEquippedGear };
 		newGear[slot] = {
 			item: itemToEquip.id,

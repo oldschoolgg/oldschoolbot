@@ -190,7 +190,7 @@ export default class POHCommand extends BotCommand {
 			}
 		}
 
-		await msg.author.removeItemFromBank(specie.egg.id);
+		await msg.author.removeItemsFromBank(new Bank().add(specie.egg.id));
 
 		const newNursery: Nursery = {
 			egg: {

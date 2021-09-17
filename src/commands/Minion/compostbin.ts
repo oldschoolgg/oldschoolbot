@@ -1,12 +1,11 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { itemID } from 'oldschooljs/dist/util';
+import { Bank } from 'oldschooljs';
 
 import { requiresMinion } from '../../lib/minions/decorators';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addItemToBank, bankHasItem, removeItemFromBank, stringMatches } from '../../lib/util';
+import { stringMatches } from '../../lib/util';
 
-export const SuperCompostables = [
+export const superCompostables = [
 	'Pineapple',
 	'Watermelon',
 	'Coconut',
@@ -59,23 +58,27 @@ export default class extends BotCommand {
 
 		if (!cropToCompost) {
 			return msg.channel.send(
-				`You need to select a crop to compost. The crops you can compost are: ${SuperCompostables.join(', ')}.`
+				`You need to select a crop to compost. The crops you can compost are: ${superCompostables.join(', ')}.`
 			);
 		}
 
-		const superCompostableCrop = SuperCompostables.find(crop => stringMatches(crop, cropToCompost));
+		const superCompostableCrop = superCompostables.find(crop => stringMatches(crop, cropToCompost));
 
 		if (!superCompostableCrop) {
 			return msg.channel.send(
-				`That's not a valid crop to compost. The crops you can compost are: ${SuperCompostables.join(', ')}.`
+				`That's not a valid crop to compost. The crops you can compost are: ${superCompostables.join(', ')}.`
 			);
 		}
 
-		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const userBank = msg.author.bank();
 
 		if (quantity === null) {
-			quantity = msg.author.numItemsInBankSync(itemID(superCompostableCrop));
-		} else if (!bankHasItem(userBank, itemID(superCompostableCrop), quantity)) {
+			quantity = userBank.amount(superCompostableCrop);
+		}
+
+		const cost = new Bank().add(superCompostableCrop, quantity);
+
+		if (!userBank.has(cost)) {
 			return msg.channel.send(
 				`You do not have enough ${superCompostableCrop} to compost for the quantity specified`
 			);
@@ -89,14 +92,9 @@ export default class extends BotCommand {
 			`${msg.author}, please confirm that you want to compost ${quantity}x ${cropToCompost} into supercompost.`
 		);
 
-		let newBank = userBank;
-		newBank = await removeItemFromBank(newBank, itemID(superCompostableCrop), quantity);
-		newBank = await addItemToBank(newBank, itemID('Supercompost'), quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(superCompostableCrop, quantity));
+		await msg.author.addItemsToBank(new Bank().add('Supercompost', quantity));
 
-		await msg.author.settings.update(UserSettings.Bank, newBank);
-
-		return msg.channel.send(
-			`You've composted ${quantity}x ${superCompostableCrop} and received ${quantity}x Supercompost in return.`
-		);
+		return msg.channel.send(`You've composted ${cost} and received ${quantity}x Supercompost in return.`);
 	}
 }

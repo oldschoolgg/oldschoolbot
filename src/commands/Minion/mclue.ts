@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
@@ -104,8 +105,8 @@ export default class extends BotCommand {
 		const bank = msg.author.bank();
 		const numOfScrolls = bank.amount(clueTier.scrollID);
 
-		if (numOfScrolls === 0) {
-			return msg.channel.send(`You don't have any ${clueTier.name.toLowerCase()} clue scrolls.`);
+		if (!numOfScrolls || numOfScrolls < quantity) {
+			return msg.channel.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.ClueCompletion);
@@ -130,7 +131,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemFromBank(clueTier.scrollID, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
 
 		if (isWeekend()) {
 			boosts.push('10% for Weekend');

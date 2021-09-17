@@ -6,7 +6,7 @@ import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { SuperCompostables } from '../../commands/Minion/compostbin';
+import { superCompostables } from '../../commands/Minion/compostbin';
 import { allPetIDs } from '../../commands/Minion/equippet';
 import { customItems } from '../customItems';
 import { monkeyEatables } from '../monkeyRumble';
@@ -967,7 +967,7 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'Compost',
 		aliases: ['compost', 'compostables'],
-		items: [...resolveItems(['Compost', 'Supercompost', 'Ultracompost']), ...resolveItems(SuperCompostables)]
+		items: [...resolveItems(['Compost', 'Supercompost', 'Ultracompost']), ...resolveItems(superCompostables)]
 	},
 	{
 		name: 'Herblore',

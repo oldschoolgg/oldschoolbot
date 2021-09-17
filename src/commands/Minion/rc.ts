@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -136,7 +137,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemFromBank(itemID('Pure essence'), essenceRequired);
+		await msg.author.removeItemsFromBank(new Bank().add('Pure essence', quantity));
 
 		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
 			runeID: rune.id,

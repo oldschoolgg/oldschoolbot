@@ -82,12 +82,9 @@ export default class extends Task {
 			}
 			if (gotPked && roll(riskDeathChance)) {
 				died = true;
-				if (
-					userBank.amount(itemID('Saradomin brew(4)')) >= 10 &&
-					userBank.amount(itemID('Super restore(4)')) >= 5
-				) {
-					await user.removeItemFromBank(itemID('Saradomin brew(4)'), 10);
-					await user.removeItemFromBank(itemID('Super restore(4)'), 5);
+				const cost = new Bank().add('Saradomin brew(4)', 10).add('Super restore(4)', 5);
+				if (userBank.has(cost)) {
+					await user.removeItemsFromBank(cost);
 				}
 				const newGear = { ...user.settings.get(UserSettings.Gear.Wildy) };
 				newGear[EquipmentSlot.Body] = null;
@@ -99,15 +96,13 @@ export default class extends Task {
 					'Your minion got killed during the activity and lost gear, catch quantity, 10x Saradomin brew and 5x Super restore.';
 			}
 			if (gotPked && !died) {
-				if (
-					userBank.amount(itemID('Saradomin brew(4)')) >= 10 &&
-					userBank.amount(itemID('Super restore(4)')) >= 5
-				) {
+				if (userBank.amount('Saradomin brew(4)') >= 10 && userBank.amount('Super restore(4)') >= 5) {
 					let lostBrew = rand(1, 10);
 					let lostRestore = rand(1, 5);
-					await user.removeItemFromBank(itemID('Saradomin brew(4)'), lostBrew);
-					await user.removeItemFromBank(itemID('Super restore(4)'), lostRestore);
-					pkStr = `Your minion got attacked during the activity, escaped and lost some catch quantity, ${lostBrew}x Saradomin brew and ${lostRestore}x Super restore.`;
+					const cost = new Bank().add('Saradomin brew(4)', lostBrew).add('Super restore(4)', lostRestore);
+					await user.removeItemsFromBank(cost);
+
+					pkStr = `Your minion got attacked during the activity, escaped and lost some catch quantity, and ${cost}.`;
 					pkedQuantity = 0.1 * successfulQuantity;
 					xpReceived *= 0.9;
 				}

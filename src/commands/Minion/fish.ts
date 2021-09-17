@@ -1,5 +1,6 @@
 import { calcPercentOfNum, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -134,7 +135,7 @@ export default class extends BotCommand {
 
 		// Remove the bait from their bank.
 		if (fish.bait) {
-			await msg.author.removeItemFromBank(fish.bait, quantity);
+			await msg.author.removeItemsFromBank(new Bank().add(fish.bait, quantity));
 		}
 
 		await addSubTaskToActivityTask<FishingActivityTaskOptions>({
