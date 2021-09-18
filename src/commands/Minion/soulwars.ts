@@ -68,7 +68,7 @@ const imbueables = [
 		output: getOSItem('Hydra slayer helmet (i)'),
 		tokens: 500
 	},
-	{ input: getOSItem('Salve amulet'), output: getOSItem('Salve amulet (i)'), tokens: 320 },
+	{ input: getOSItem('Salve amulet'), output: getOSItem('Salve amulet(i)'), tokens: 320 },
 	{ input: getOSItem('Salve amulet (e)'), output: getOSItem('Salve amulet(ei)'), tokens: 320 },
 	{
 		input: getOSItem('Ring of the gods'),

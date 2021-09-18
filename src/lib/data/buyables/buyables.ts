@@ -679,6 +679,14 @@ const Buyables: Buyable[] = [
 		name: 'Ogre bow',
 		gpCost: 10_000
 	},
+	{
+		name: 'Salve amulet',
+		gpCost: 200_000,
+		skillsNeeded: {
+			crafting: 35
+		},
+		qpRequired: 58
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
