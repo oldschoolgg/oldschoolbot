@@ -131,6 +131,16 @@ export const courses: Course[] = [
 		lapTime: 74.2,
 		petChance: 25_146,
 		qpRequired: 205
+	},
+	{
+		id: 30,
+		name: 'Daemonheim Rooftop Course',
+		aliases: ['daemonheim', 'dh'],
+		level: 95,
+		xp: 3140.6,
+		marksPer60: 35,
+		lapTime: 140.2,
+		petChance: 25_146
 	}
 ];
 

@@ -120,6 +120,10 @@ const dungBuyables = [
 	{
 		item: getOSItem('Scroll of the hunt'),
 		cost: 800_000
+	},
+	{
+		item: getOSItem('Daemonheim agility pass'),
+		cost: 1_000_000
 	}
 ];
 
