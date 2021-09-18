@@ -1792,6 +1792,9 @@ setCustomItem(48_229, 'Marimbo statue', 'Egg', {}, 10_000_000);
 setCustomItem(48_230, 'Big banana', 'Bronze kiteshield', {}, 100_000);
 
 setCustomItem(48_324, 'Blacksmith crate', 'Mystery box', {}, 100_000);
+
+setCustomItem(48_240, 'Ignecarus mask', 'Rune full helm', {}, 1_000_000);
+setCustomItem(48_241, 'Malygos mask', 'Rune full helm', {}, 1_000_000);
 /**
  * Misc Items
  *

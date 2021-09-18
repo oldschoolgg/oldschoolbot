@@ -11,7 +11,6 @@ import CasketTable from '../simulation/casket';
 import CrystalChestTable from '../simulation/crystalChest';
 import { RuneTable } from '../simulation/seedTable';
 import { ExoticSeedsTable } from '../simulation/sharedTables';
-import { itemNameFromID } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
@@ -26,11 +25,11 @@ interface Openable {
 }
 
 export const MysteryBoxes = new LootTable()
-	.oneIn(40, itemNameFromID(3062)!)
-	.oneIn(150, itemNameFromID(3713)!)
+	.oneIn(40, 'Pet Mystery Box')
+	.oneIn(150, 'Holiday Mystery Box')
 	.oneIn(30, 'Equippable mystery box')
-	.add(6199)
-	.add(19_939);
+	.add('Tradeable Mystery Box')
+	.add('Untradeable Mystery Box');
 
 export const odsCrate = new LootTable()
 	.add('Pure essence', [500, 1000], 4)

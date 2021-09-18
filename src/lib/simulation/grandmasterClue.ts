@@ -7,8 +7,7 @@ import Clue from 'oldschooljs/dist/structures/Clue';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { LampTable } from '../xpLamps';
-import CrystalChestTable from './crystalChest';
-import { AllBarrows, runeAlchablesTable } from './sharedTables';
+import { AllBarrows, BattlestaffTable, FletchingTipsTable, runeAlchablesTable } from './sharedTables';
 
 const ClueHunterTable = new LootTable()
 	.add('Helm of raedwald')
@@ -58,17 +57,17 @@ const runeTable = new LootTable()
 	.add('Wrath rune', [3000, 5000])
 	.add('Astral rune', [3000, 5000]);
 
-const PlankTable = new LootTable()
-	.add('Oak plank', [50, 150])
-	.add('Teak plank', [20, 100])
-	.add('Mahogany plank', [5, 50]);
+const LogsTable = new LootTable()
+	.add('Teak logs', [20, 100])
+	.add('Mahogany logs', [5, 50])
+	.add('Yew logs', [50, 150])
+	.add('Magic logs', [20, 100])
+	.add('Elder logs', [5, 50]);
 
 const Supplies = new LootTable()
-	.add('Gingerbread gnome', [3, 5])
-	.add('Shark', [155, 322])
-	.add('Purple sweets', [50, 510])
-	.add('Saradomin brew(4)', [1, 3])
-	.add('Super restore(4)', [1, 3]);
+	.add('Saradomin brew(4)', [6, 13])
+	.add('Super restore(4)', [6, 13])
+	.add(FletchingTipsTable, [100, 300], 1, { multiply: true });
 
 const DyeTable = new LootTable()
 	.add('Third age dye', 2)
@@ -78,10 +77,10 @@ const DyeTable = new LootTable()
 
 const table = new LootTable()
 	.tertiary(2500, ClueHunterTable)
-	.tertiary(12_000, BlessingTable)
-	.tertiary(12_000, DyeTable)
+	.tertiary(10_000, BlessingTable)
+	.tertiary(10_000, DyeTable)
 	.tertiary(8000, 'Ring of luck')
-	.tertiary(5000, 'Deathtouched dart')
+	.tertiary(3000, 'Deathtouched dart')
 	.tertiary(50, LampTable)
 	.tertiary(
 		130_000,
@@ -94,14 +93,16 @@ const table = new LootTable()
 	)
 	.add(ClueTable, [1, 3])
 	.tertiary(30, boxTable, [1, 3])
-	.add(DragonTable, [3, 10], 2)
+	.add(DragonTable, [5, 12], 2)
 	.add(runeTable, [1, 5])
 	.every(runeAlchablesTable, [1, 4])
+	.add(runeAlchablesTable, 12, 1)
+	.add(BattlestaffTable, 20)
 	.add('Coins', [500_000, 5_000_000])
 	.add(AllBarrows, 3)
-	.add(PlankTable, 4)
+	.add(LogsTable, 4)
 	.add(Supplies, 1, 5)
-	.add(CrystalChestTable, [5, 10], 2);
+	.tertiary(5, 'Mysterious seed', [1, 2]);
 
 class GrandmasterClue extends Clue {
 	open(quantity: number) {
