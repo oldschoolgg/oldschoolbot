@@ -743,7 +743,8 @@ const Buyables: Buyable[] = [
 	...slayerBuyables,
 	...capeBuyables,
 	...miningBuyables,
-	...runeBuyables
+	...runeBuyables,
+	...castleWarsBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

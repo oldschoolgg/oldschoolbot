@@ -1123,7 +1123,12 @@ export const castleWarsCL = resolveItems([
 	'Decorative quiver',
 	'Saradomin halo',
 	'Zamorak halo',
-	'Guthix halo'
+	'Guthix halo',
+	'Castle wars cape (beginner)',
+	'Castle wars cape (intermediate)',
+	'Castle wars cape (advanced)',
+	'Castle wars cape (expert)',
+	'Castle wars cape (legend)'
 ]);
 export const fishingTrawlerCL = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 export const gnomeRestaurantCL = resolveItems(['Grand seed pod', 'Gnome scarf', 'Gnome goggles', 'Mint cake']);

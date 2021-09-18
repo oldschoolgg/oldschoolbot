@@ -1007,6 +1007,12 @@ setCustomItem(
 	0
 );
 
+setCustomItem(40_072, 'Castle wars cape (beginner)', 'Fire cape', {}, 1_000_000);
+setCustomItem(40_073, 'Castle wars cape (intermediate)', 'Fire cape', {}, 1_000_000);
+setCustomItem(40_074, 'Castle wars cape (advanced)', 'Fire cape', {}, 1_000_000);
+setCustomItem(40_075, 'Castle wars cape (expert)', 'Fire cape', {}, 1_000_000);
+setCustomItem(40_076, 'Castle wars cape (legend)', 'Fire cape', {}, 1_000_000);
+
 /**
  * Non-mystery box items
  *
