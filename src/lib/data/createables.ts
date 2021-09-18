@@ -1708,7 +1708,8 @@ const Createables: Createable[] = [
 			"Tarn's diary": 1
 		}),
 		outputItems: {
-			[itemID('Salve amulet (e)')]: 1
+			[itemID('Salve amulet (e)')]: 1,
+			[itemID("Tarn's diary")]: 1
 		}
 	},
 	{
@@ -1718,7 +1719,8 @@ const Createables: Createable[] = [
 			"Tarn's diary": 1
 		}),
 		outputItems: {
-			[itemID('Salve amulet(ei)')]: 1
+			[itemID('Salve amulet(ei)')]: 1,
+			[itemID("Tarn's diary")]: 1
 		}
 	},
 	...Reverteables,
