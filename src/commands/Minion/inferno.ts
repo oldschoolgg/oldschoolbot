@@ -126,12 +126,29 @@ export default class extends BotCommand {
 		return Math.max(Math.min(chance, 99), 5);
 	}
 
-	async baseDeathChances() {
+	baseDuration(attempts: number) {
+		const chance =
+			Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(65))) * 65) *
+				Time.Second *
+				(70 - Math.min(Math.min(70, attempts), 30)) +
+			12;
+		return chance;
+	}
+
+	async baseDeathChances(user: KlasaUser) {
 		let preZuk = [];
 		let zuk = [];
-		for (let i = 0; i < 100; i++) {
-			preZuk.push(this.basePreZukDeathChance(i));
-			zuk.push(this.baseZukDeathChance(i));
+		let basePreZuk = [];
+		let baseZuk = [];
+		let duration = [];
+		for (let i = 0; i < 150; i++) {
+			const res = this.infernoRun({ user, kc: 0, attempts: i });
+			if (typeof res === 'string') return res;
+			preZuk.push(res.preZukDeathChance.value);
+			zuk.push(res.zukDeathChance.value);
+			basePreZuk.push(this.basePreZukDeathChance(i));
+			baseZuk.push(this.baseZukDeathChance(i));
+			duration.push(res.duration);
 		}
 		const options = {
 			type: 'line',
@@ -139,20 +156,72 @@ export default class extends BotCommand {
 				labels: [...Array(zuk.length).keys()].map(i => `${i + 1}`),
 				datasets: [
 					{
+						label: 'Base Pre-Zuk Death Chance',
+						backgroundColor: 'rgb(255, 0, 0)',
+						borderColor: 'rgb(255, 0, 0)',
+						data: basePreZuk,
+						fill: false,
+						yAxisID: 'left'
+					},
+					{
+						label: 'Base Zuk Death Chance',
+						fill: false,
+						backgroundColor: 'rgb(0, 255, 0)',
+						borderColor: 'rgb(0, 255, 0)',
+						data: baseZuk,
+						yAxisID: 'left'
+					},
+					{
 						label: 'Pre-Zuk Death Chance',
 						backgroundColor: 'rgb(255, 99, 132)',
 						borderColor: 'rgb(255, 99, 132)',
 						data: preZuk,
-						fill: false
+						fill: false,
+						yAxisID: 'left'
 					},
 					{
 						label: 'Zuk Death Chance',
 						fill: false,
 						backgroundColor: 'rgb(54, 162, 235)',
 						borderColor: 'rgb(54, 162, 235)',
-						data: zuk
+						data: zuk,
+						yAxisID: 'left'
+					},
+					{
+						label: 'Duration (Hours)',
+						fill: false,
+						backgroundColor: 'rgb(0, 0, 0)',
+						borderColor: 'rgb(0, 0, 0)',
+						data: duration.map(i => i.value / Time.Hour),
+						yAxisID: 'right'
 					}
 				]
+			},
+			options: {
+				stacked: false,
+				title: {
+					display: true,
+					text: ''
+				},
+				scales: {
+					yAxes: [
+						{
+							id: 'right',
+							type: 'linear',
+							display: true,
+							position: 'right'
+						},
+						{
+							id: 'left',
+							type: 'linear',
+							display: true,
+							position: 'left',
+							gridLines: {
+								drawOnChartArea: false
+							}
+						}
+					]
+				}
 			}
 		};
 
@@ -168,6 +237,7 @@ export default class extends BotCommand {
 		let kc = 0;
 		for (let i = 0; i < 10_000; i++) {
 			const res = this.infernoRun({ user: msg.author, kc, attempts: i });
+			if (typeof res === 'string') return res;
 			if (!res.deathTime) {
 				return `You finished the inferno after ${i} attempts. ${res.duration.messages.join(', ')}`;
 			}
@@ -176,12 +246,40 @@ export default class extends BotCommand {
 	}
 
 	infernoRun({ user, kc, attempts }: { user: KlasaUser; kc: number; attempts: number }) {
-		const duration = new PercentCounter(Time.Hour * 3);
+		const userBank = user.bank();
+		const cost = new Bank();
+		cost.add('Saradomin brew(4)', 8);
+		cost.add('Super restore(4)', 12);
+		cost.add('Bastion potion(4)');
+
+		const duration = new PercentCounter(this.baseDuration(attempts));
 		const zukDeathChance = new PercentCounter(this.baseZukDeathChance(attempts));
 		const preZukDeathChance = new PercentCounter(this.basePreZukDeathChance(attempts));
 
-		const userBank = user.bank();
-		const cost = new Bank();
+		/**
+		 * Gear
+		 */
+		const rangeGear = user.getGear('range');
+		const mageGear = user.getGear('mage');
+
+		if (rangeGear.hasEquipped('Elysian spirit shield') || mageGear.hasEquipped('Elysian spirit shield')) {
+			preZukDeathChance.add(-5, 'Ely');
+		}
+
+		if (rangeGear.hasEquipped('Ring of suffering') || mageGear.hasEquipped('Ring of suffering')) {
+			preZukDeathChance.add(-4, 'Ring of Suffering');
+			zukDeathChance.add(-4, 'Ring of Suffering');
+		}
+
+		const blowpipeData = user.settings.get(UserSettings.Blowpipe);
+		if (
+			(rangeGear.hasEquipped('Toxic blowpipe') && !userBank.has('Toxic blowpipe')) ||
+			!blowpipeData.scales ||
+			!blowpipeData.dartID ||
+			!blowpipeData.dartQuantity
+		) {
+			return 'You need a Toxic blowpipe (with darts and scales equipped) to do the Inferno. You also need Darts and Scales equipped in it.';
+		}
 
 		/** *
 		 *
@@ -232,7 +330,7 @@ export default class extends BotCommand {
 			return msg.channel.send(gearOkay);
 		}
 		if (msg.flagArgs.sim) {
-			msg.channel.send({ files: [await this.baseDeathChances()] });
+			msg.channel.send({ files: [await this.baseDeathChances(msg.author)] });
 			return msg.channel.send(this.simulate(msg));
 		}
 
@@ -240,8 +338,10 @@ export default class extends BotCommand {
 		const usersRangeStats = msg.author.getGear('range').stats;
 		const zukKC = msg.author.getKC(TzKalZuk.id);
 
-		const { deathTime, diedPreZuk, zukDeathChance, diedZuk, duration, fakeDuration, preZukDeathChance } =
-			this.infernoRun({ user: msg.author, kc: zukKC, attempts });
+		const res = this.infernoRun({ user: msg.author, kc: zukKC, attempts });
+
+		if (typeof res === 'string') return res;
+		const { deathTime, diedPreZuk, zukDeathChance, diedZuk, duration, fakeDuration, preZukDeathChance } = res;
 
 		await addSubTaskToActivityTask<InfernoOptions>({
 			userID: msg.author.id,
