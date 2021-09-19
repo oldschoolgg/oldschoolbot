@@ -939,8 +939,8 @@ const bsoItems: Createable[] = [
 	{
 		name: 'Bucket of sand',
 		inputItems: resolveNameBank({
-			'Sand': 1,
-			'Bucket': 1
+			Sand: 1,
+			Bucket: 1
 		}),
 		outputItems: resolveNameBank({
 			'Bucket of sand': 1
