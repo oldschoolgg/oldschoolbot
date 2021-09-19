@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { implings } from '../implings';
 import resolveItems from '../util/resolveItems';
+import { allHolidayItems } from './holidayItems';
 
 export interface IToReturnCollection {
 	category: string;
@@ -1703,45 +1704,7 @@ export const miscellaneousCL = resolveItems([
 	'Uncut onyx'
 	// 'Merfolk trident'
 ]);
-export const holidayCL = resolveItems([
-	'Cow mask',
-	'Cow top',
-	'Cow trousers',
-	'Cow gloves',
-	'Cow shoes',
-	'Slice of birthday cake',
-	'Bunny ears',
-	'Easter egg',
-	'Pumpkin',
-	'Scythe',
-	'Red halloween mask',
-	'Blue halloween mask',
-	'Green halloween mask',
-	'Skeleton mask',
-	'Skeleton shirt',
-	'Skeleton leggings',
-	'Skeleton gloves',
-	'Skeleton boots',
-	'Santa mask',
-	'Santa jacket',
-	'Santa pantaloons',
-	'Santa gloves',
-	'Santa boots',
-	'Sack of presents',
-	'Christmas cracker',
-	'Santa hat',
-	'Cursed banana',
-	'Banana cape',
-	'Gnome child hat',
-	'Slice of birthday cake',
-	'Easter basket',
-	'Rubber chicken',
-	'Easter ring',
-	'Chicken head',
-	'Chicken wings',
-	'Chicken legs',
-	'Chicken feet'
-]);
+
 export const dailyCL = resolveItems([
 	'Event rpg',
 	'Green banner',
@@ -2053,3 +2016,7 @@ export const customBossesDropsThatCantBeDroppedInMBs = [
 	...treeBeardCL
 ];
 export const implingsCL = objectEntries(implings).map(m => Number(m[0]));
+
+export const allPetIDs = [...allPetsCL, ...customPetsCL, ...discontinuedCustomPetsCL, ...chambersOfXericMetamorphPets];
+
+export const holidayCL = allHolidayItems;
