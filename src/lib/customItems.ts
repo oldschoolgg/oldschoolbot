@@ -1802,6 +1802,16 @@ setCustomItem(48_324, 'Blacksmith crate', 'Mystery box', {}, 100_000);
 setCustomItem(48_240, 'Ignecarus mask', 'Rune full helm', {}, 1_000_000);
 setCustomItem(48_241, 'Malygos mask', 'Rune full helm', {}, 1_000_000);
 setCustomItem(48_242, 'Daemonheim agility pass', 'Coal', {}, 1_000_000);
+setCustomItem(48_243, 'Web cloak', 'Red cape', {}, 100_000);
+setCustomItem(48_244, 'Eek', 'Bronze dagger', {}, 100_000);
+setCustomItem(48_245, 'Grim reaper hood', 'Rune full helm', {}, 100_000);
+setCustomItem(48_246, 'Chocatrice cape', 'Red cape', {}, 100_000);
+setCustomItem(48_247, 'Warlock top', 'Bronze platebody', {}, 100_000);
+setCustomItem(48_248, 'Warlock legs', 'Bronze platelegs', {}, 100_000);
+setCustomItem(48_249, 'Warlock cloak', 'Red cape', {}, 100_000);
+setCustomItem(48_250, 'Witch top', 'Bronze platebody', {}, 100_000);
+setCustomItem(48_251, 'Witch skirt', 'Bronze platelegs', {}, 100_000);
+setCustomItem(48_252, 'Witch cloak', 'Red cape', {}, 100_000);
 /**
  * Misc Items
  *

@@ -118,7 +118,18 @@ export const baseHolidayItems = new LootTable()
 	.add('Hell cat ears')
 	.add('Magic egg ball')
 	.add('Carrot sword')
-	.add("'24-carat' sword");
+	.add("'24-carat' sword")
+	// New
+	.add('Web cloak')
+	.add('Eek')
+	.add('Grim reaper hood')
+	.add('Chocatrice cape')
+	.add('Warlock top')
+	.add('Warlock legs')
+	.add('Warlock cloak')
+	.add('Witch top')
+	.add('Witch skirt')
+	.add('Witch cloak');
 
 export const PartyhatTable = new LootTable()
 	.oneIn(50, 'Black partyhat')

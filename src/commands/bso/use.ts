@@ -64,13 +64,13 @@ const usables = [
 		}
 	},
 	{
-		item: getOSItem('Daemonheim Rooftop Course'),
+		item: getOSItem('Daemonheim agility pass'),
 		run: async (msg: KlasaMessage) => {
 			const bits = msg.author.bitfield;
 			if (bits.includes(BitField.HasDaemonheimAgilityPass)) {
 				return msg.channel.send('You have already used a Daemonheim agility pass.');
 			}
-			await msg.author.removeItemsFromBank(new Bank().add('Daemonheim Rooftop Course'));
+			await msg.author.removeItemsFromBank(new Bank().add('Daemonheim agility pass'));
 			await msg.author.settings.update(UserSettings.BitField, BitField.HasDaemonheimAgilityPass);
 			return msg.channel.send(
 				'You show your pass to the Daemonheim guards, and they grant you access to their rooftops.'
