@@ -27,8 +27,8 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
-	nexCL,
 	kalphiteKingCL,
+	nexCL,
 	temporossCL,
 	wintertodtCL
 } from './CollectionsExport';
