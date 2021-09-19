@@ -27,10 +27,10 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
-	temporossCL,
-	wintertodtCL,
 	nexCL,
-	kalphiteKingCL
+	kalphiteKingCL,
+	temporossCL,
+	wintertodtCL
 } from './CollectionsExport';
 import { Eatables } from './eatables';
 import Openables, { tmbTable, umbTable } from './openables';
