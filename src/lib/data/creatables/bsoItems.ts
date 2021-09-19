@@ -945,6 +945,15 @@ const bsoItems: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Avernic defender')]: 1
+		},
+	{
+		name: 'Bucket of sand',
+		inputItems: {
+			[itemID('Sand)]: 1,
+			[itemID('Bucket')]: 1
+		},
+		outputItems: {
+			[itemID('Bucket of sand')]: 1
 		}
 	}
 ];
