@@ -28,7 +28,9 @@ import {
 	cluesMediumCL,
 	cluesSharedCL,
 	temporossCL,
-	wintertodtCL
+	wintertodtCL,
+	nexCL,
+	kalphiteKingCL
 } from './CollectionsExport';
 import { Eatables } from './eatables';
 import Openables, { tmbTable, umbTable } from './openables';
@@ -1136,5 +1138,15 @@ export const filterableTypes: Filterable[] = [
 		name: 'Fruit',
 		aliases: ['fruit'],
 		items: monkeyEatables.map(i => i.item.id)
+	},
+	{
+		name: 'Nex uniques',
+		aliases: ['nex'],
+		items: nexCL
+	},
+	{
+		name: 'KK',
+		aliases: ['KK', 'Kalphiteking'],
+		items: kalphiteKingCL
 	}
 ];
