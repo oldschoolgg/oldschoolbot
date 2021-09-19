@@ -937,6 +937,16 @@ const bsoItems: Createable[] = [
 		})
 	},
 	{
+		name: 'Bucket of sand',
+		inputItems: resolveNameBank({
+			'Sand': 1,
+			'Bucket': 1
+		}),
+		outputItems: resolveNameBank({
+			'Bucket of sand': 1
+		})
+	},
+	{
 		// TODO - Move to main createables when TOB is released
 		name: 'Avernic defender',
 		inputItems: {
@@ -945,15 +955,6 @@ const bsoItems: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Avernic defender')]: 1
-		},
-	{
-		name: 'Bucket of sand',
-		inputItems: {
-			[itemID('Sand)]: 1,
-			[itemID('Bucket')]: 1
-		},
-		outputItems: {
-			[itemID('Bucket of sand')]: 1
 		}
 	}
 ];
