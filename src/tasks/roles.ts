@@ -27,7 +27,7 @@ const minigames = [
 	'monkey_rumble'
 ];
 
-const collections = ['overall', 'pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer'];
+const collections = ['overall', 'pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer', 'Dyed Items'];
 
 const mostSlayerPointsQuery = `SELECT id
 FROM users
