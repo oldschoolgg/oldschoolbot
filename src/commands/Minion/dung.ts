@@ -124,6 +124,10 @@ const dungBuyables = [
 	{
 		item: getOSItem('Daemonheim agility pass'),
 		cost: 1_000_000
+	},
+	{
+		item: getOSItem('Dungeoneering dye'),
+		cost: 3_000_000
 	}
 ];
 

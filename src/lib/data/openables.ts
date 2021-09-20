@@ -48,11 +48,11 @@ export const odsCrate = new LootTable()
 	.add(RuneTable, [1, 10], 3);
 
 export const ALL_PRIMAL = resolveItems([
-	'Primal full helm',
-	'Primal platebody',
-	'Primal platelegs',
-	'Primal gauntlets',
-	'Primal boots',
+	'Primal full helm (real)',
+	'Primal platebody (real)',
+	'Primal platelegs (real)',
+	'Primal gauntlets (real)',
+	'Primal boots (real)',
 	'Offhand drygore longsword',
 	'Drygore longsword'
 ]);

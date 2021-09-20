@@ -9,7 +9,7 @@ const items = [
 	['Castle wars cape (legend)', 5000]
 ] as const;
 
-export const castleWarsBuyables: Buyable[] = items.map(i => ({
+export const bsoBuyables: Buyable[] = items.map(i => ({
 	name: i[0],
 	outputItems: resolveNameBank({
 		[i[0]]: 1
