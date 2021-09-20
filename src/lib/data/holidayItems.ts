@@ -129,7 +129,9 @@ export const baseHolidayItems = new LootTable()
 	.add('Warlock cloak')
 	.add('Witch top')
 	.add('Witch skirt')
-	.add('Witch cloak');
+	.add('Witch cloak')
+	.add('Ring of snow')
+	.add('Toy kite');
 
 export const PartyhatTable = new LootTable()
 	.oneIn(50, 'Black partyhat')
