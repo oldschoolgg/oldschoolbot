@@ -1097,7 +1097,8 @@ export const allCollectionLogs: ICollection = {
 					'Arcane blast necklace',
 					'Farsight snapshot necklace',
 					"Brawler's hook necklace",
-					'Daemonheim agility pass'
+					'Daemonheim agility pass',
+					'Dungeoneering dye'
 				]),
 				roleCategory: ['skilling']
 			},
