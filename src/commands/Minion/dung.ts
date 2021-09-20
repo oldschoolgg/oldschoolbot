@@ -127,7 +127,7 @@ const dungBuyables = [
 	},
 	{
 		item: getOSItem('Dungeoneering dye'),
-		cost: 3_000_000
+		cost: 4_000_000
 	}
 ];
 
