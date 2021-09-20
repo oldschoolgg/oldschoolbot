@@ -82,6 +82,7 @@ const table = new LootTable()
 	.tertiary(8000, 'Ring of luck')
 	.tertiary(3000, 'Deathtouched dart')
 	.tertiary(50, LampTable)
+	.tertiary(50, new LootTable().add('Ignecarus mask').add('Malygos mask'))
 	.tertiary(
 		130_000,
 		new LootTable()
@@ -96,13 +97,14 @@ const table = new LootTable()
 	.add(DragonTable, [5, 12], 2)
 	.add(runeTable, [1, 5])
 	.every(runeAlchablesTable, [1, 4])
-	.add(runeAlchablesTable, 12, 1)
-	.add(BattlestaffTable, 20)
+	.add(runeAlchablesTable, 12, 2)
+	.add(BattlestaffTable, 20, 2)
 	.add('Coins', [500_000, 5_000_000])
 	.add(AllBarrows, 3)
 	.add(LogsTable, 4)
 	.add(Supplies, 1, 5)
-	.tertiary(5, 'Mysterious seed', [1, 2]);
+	.oneIn(50, 'Holiday mystery box')
+	.add('Mysterious seed', [1, 2]);
 
 class GrandmasterClue extends Clue {
 	open(quantity: number) {
