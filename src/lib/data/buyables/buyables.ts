@@ -658,7 +658,7 @@ const Buyables: Buyable[] = [
 		outputItems: {
 			[itemID('Bucket')]: 100
 		},
-    gpCost: 10_000
+        gpCost: 10_000
 	},
 	{
 		name: 'Compost',
