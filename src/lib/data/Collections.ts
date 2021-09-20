@@ -564,7 +564,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Grandmaster Treasure Trails': {
 				alias: ['grandmaster', 'clues grandmaster', 'clue grandmaster', 'clue gm', 'gm'],
-				allItems: GrandmasterClueTable.allItems,
+				allItems: GrandmasterClueTable.table.allItems,
 				kcActivity: {
 					Default: async user => user.getOpenableScore(19_838)
 				},
@@ -1096,7 +1096,8 @@ export const allCollectionLogs: ICollection = {
 					'Gorajan occult boots',
 					'Arcane blast necklace',
 					'Farsight snapshot necklace',
-					"Brawler's hook necklace"
+					"Brawler's hook necklace",
+					'Daemonheim agility pass'
 				]),
 				roleCategory: ['skilling']
 			},

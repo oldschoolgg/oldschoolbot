@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { implings } from '../implings';
 import resolveItems from '../util/resolveItems';
+import { LampTable } from '../xpLamps';
 import { allHolidayItems } from './holidayItems';
 
 export interface IToReturnCollection {
@@ -890,7 +891,13 @@ export const cluesGrandmasterCL = resolveItems([
 	'Third age dye',
 	'Ice dye',
 	'Dwarven blessing',
-	'Ring of luck'
+	'Ring of luck',
+	'Mysterious seed',
+	'Holiday mystery box',
+	'Deathtouched dart',
+	'Ignecarus mask',
+	'Malygos mask',
+	...LampTable.allItems
 ]);
 
 export const cluesHardRareCL = resolveItems([
