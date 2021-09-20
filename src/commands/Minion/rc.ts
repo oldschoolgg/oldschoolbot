@@ -37,8 +37,9 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		if (name.endsWith('s') || name.endsWith('S')) name = name.slice(0, name.length - 1);
-
+		if (name.toLowerCase() !== 'chaos') {
+			if (name.endsWith('s') || name.endsWith('S')) name = name.slice(0, name.length - 1);
+		}
 		const rune = Runecraft.Runes.find(
 			_rune => stringMatches(_rune.name, name) || stringMatches(_rune.name.split(' ')[0], name)
 		);
