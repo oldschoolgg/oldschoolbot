@@ -39,7 +39,7 @@ const randomEventBuyables: Buyable[] = [
 		}),
 		outputItems: resolveNameBank({
 			'Prince tunic': 1,
-			'Prince legging': 1
+			'Prince leggings': 1
 		})
 	},
 	{
