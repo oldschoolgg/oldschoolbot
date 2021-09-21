@@ -143,9 +143,6 @@ export default class extends BotCommand {
 		if (msg.author.usingPet('Obis')) {
 			essenceRequired *= 3;
 		}
-		if (rune.name === 'Elder rune') {
-			essenceRequired *= 3;
-		}
 
 		if (numEssenceOwned === 0 || essenceRequired === 0 || numEssenceOwned < essenceRequired) {
 			return msg.channel.send(
@@ -246,7 +243,7 @@ export default class extends BotCommand {
 			await msg.author.removeItemsFromBank(removeTalismanAndOrRunes.bank);
 		}
 
-		await msg.author.removeItemsFromBank(new Bank().add('Pure essence', quantity));
+		await msg.author.removeItemsFromBank(new Bank().add('Pure essence', essenceRequired));
 
 		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
 			runeID: rune.id,
@@ -255,10 +252,11 @@ export default class extends BotCommand {
 			essenceQuantity: quantity,
 			duration,
 			imbueCasts,
-			type: Activity.Runecraft
+			type: Activity.Runecraft,
+			obisEssenceQuantity: essenceRequired
 		});
 
-		let response = `${msg.author.minionName} is now turning ${quantity}x Essence into ${
+		let response = `${msg.author.minionName} is now turning ${essenceRequired}x Essence into ${
 			rune.name
 		}, it'll take around ${formatDuration(
 			duration

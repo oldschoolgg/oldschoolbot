@@ -188,11 +188,11 @@ setCustomItem(19_567, 'Cob', 'Herbi', {}, 1_000_000);
 
 setCustomItem(22_949, 'Takon', 'Herbi', {}, 1_000_000);
 
-setCustomItem(6796, 'Tiny lamp', 'Lamp', {}, 100_000);
-setCustomItem(21_642, 'Small lamp', 'Lamp', {}, 300_000);
-setCustomItem(23_516, 'Average lamp', 'Lamp', {}, 500_000);
-setCustomItem(22_320, 'Large lamp', 'Lamp', {}, 600_000);
-setCustomItem(11_157, 'Huge lamp', 'Lamp', {}, 1_000_000);
+setCustomItem(6796, 'Tiny lamp', 'Lamp', {}, 3_000_000);
+setCustomItem(21_642, 'Small lamp', 'Lamp', {}, 6_000_000);
+setCustomItem(23_516, 'Average lamp', 'Lamp', {}, 15_000_000);
+setCustomItem(22_320, 'Large lamp', 'Lamp', {}, 100_000_000);
+setCustomItem(11_157, 'Huge lamp', 'Lamp', {}, 500_000_000);
 
 setCustomItem(1808, 'Peky', 'Herbi', {}, 1_000_000);
 
