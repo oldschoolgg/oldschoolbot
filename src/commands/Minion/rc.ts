@@ -4,13 +4,14 @@ import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, formatDuration, stringMatches } from '../../lib/util';
+import { bankHasItem, formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { determineRunes } from '../../lib/util/determineRunes';
 import itemID from '../../lib/util/itemID';
@@ -142,6 +143,9 @@ export default class extends BotCommand {
 				)}, try a lower quantity. The highest amount of ${rune.name} you can craft is ${Math.floor(maxCanDo)}.`
 			);
 		}
+
+		const totalCost = new Bank();
+
 		let imbueCasts = 0;
 		let teleportReduction = 1;
 		let removeTalismanAndOrRunes = new Bank();
@@ -222,10 +226,15 @@ export default class extends BotCommand {
 					);
 				}
 			}
-			await msg.author.removeItemsFromBank(removeTalismanAndOrRunes.bank);
+			totalCost.add(removeTalismanAndOrRunes);
 		}
 
-		await msg.author.removeItemsFromBank(new Bank().add('Pure essence', quantity));
+		totalCost.add('Pure essence', quantity);
+		if (!msg.author.owns(totalCost)) {
+			return msg.channel.send(`You don't own: ${totalCost}.`);
+		}
+		await msg.author.removeItemsFromBank(totalCost);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.RunecraftCost, totalCost);
 
 		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
 			runeID: rune.id,
