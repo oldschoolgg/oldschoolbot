@@ -15,7 +15,6 @@ import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
 import {
 	allPetIDs,
-	chambersOfXericCL,
 	customBossesDropsThatCantBeDroppedInMBs,
 	frozenKeyPieces
 } from './CollectionsExport';
@@ -433,7 +432,6 @@ let allItemsIDs = Openables.map(i => (typeof i.table !== 'function' && i.table.a
 ) as number[];
 allItemsIDs = uniqueArr(allItemsIDs);
 const cantBeDropped = [
-	...chambersOfXericCL,
 	...customBossesDropsThatCantBeDroppedInMBs,
 	itemID('Abyssal pouch'),
 	itemID('Dwarven crate'),
