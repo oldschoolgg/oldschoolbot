@@ -424,7 +424,22 @@ const source: [string, (string | number)[]][] = [
 	['Sanguinesti staff', ['Holy sanguinesti staff']],
 	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']],
 	['Runecraft cape', ['Max cape', 'Runecraft cape(t)']],
-	['Crafting cape', ['Max cape', 'Crafting cape(t)']]
+	['Crafting cape', ['Max cape', 'Crafting cape(t)']],
+	['Gorajan warrior helmet', ['Gorajan warrior helmet (Primal)']],
+	['Gorajan warrior top', ['Gorajan warrior top (Primal)']],
+	['Gorajan warrior legs', ['Gorajan warrior legs (Primal)']],
+	['Gorajan warrior gloves', ['Gorajan warrior gloves (Primal)']],
+	['Gorajan warrior boots', ['Gorajan warrior boots (Primal)']],
+	['Gorajan occult helmet', ['Gorajan occult helmet (Celestial)']],
+	['Gorajan occult top', ['Gorajan occult top (Celestial)']],
+	['Gorajan occult legs', ['Gorajan occult legs (Celestial)']],
+	['Gorajan occult gloves', ['Gorajan occult gloves (Celestial)']],
+	['Gorajan occult boots', ['Gorajan occult boots (Celestial)']],
+	['Gorajan archer helmet', ['Gorajan archer helmet (Sagittarian)']],
+	['Gorajan archer top', ['Gorajan archer top (Sagittarian)']],
+	['Gorajan archer legs', ['Gorajan archer legs (Sagittarian)']],
+	['Gorajan archer gloves', ['Gorajan archer gloves (Sagittarian)']],
+	['Gorajan archer boots', ['Gorajan archer boots (Sagittarian)']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(

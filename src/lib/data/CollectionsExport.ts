@@ -4,6 +4,8 @@ import { Bank } from 'oldschooljs';
 
 import { implings } from '../implings';
 import resolveItems from '../util/resolveItems';
+import { LampTable } from '../xpLamps';
+import { allHolidayItems } from './holidayItems';
 
 export interface IToReturnCollection {
 	category: string;
@@ -889,7 +891,13 @@ export const cluesGrandmasterCL = resolveItems([
 	'Third age dye',
 	'Ice dye',
 	'Dwarven blessing',
-	'Ring of luck'
+	'Ring of luck',
+	'Mysterious seed',
+	'Holiday mystery box',
+	'Deathtouched dart',
+	'Ignecarus mask',
+	'Malygos mask',
+	...LampTable.allItems
 ]);
 
 export const cluesHardRareCL = resolveItems([
@@ -1123,7 +1131,12 @@ export const castleWarsCL = resolveItems([
 	'Decorative quiver',
 	'Saradomin halo',
 	'Zamorak halo',
-	'Guthix halo'
+	'Guthix halo',
+	'Castle wars cape (beginner)',
+	'Castle wars cape (intermediate)',
+	'Castle wars cape (advanced)',
+	'Castle wars cape (expert)',
+	'Castle wars cape (legend)'
 ]);
 export const fishingTrawlerCL = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 export const gnomeRestaurantCL = resolveItems(['Grand seed pod', 'Gnome scarf', 'Gnome goggles', 'Mint cake']);
@@ -1698,45 +1711,7 @@ export const miscellaneousCL = resolveItems([
 	'Uncut onyx'
 	// 'Merfolk trident'
 ]);
-export const holidayCL = resolveItems([
-	'Cow mask',
-	'Cow top',
-	'Cow trousers',
-	'Cow gloves',
-	'Cow shoes',
-	'Slice of birthday cake',
-	'Bunny ears',
-	'Easter egg',
-	'Pumpkin',
-	'Scythe',
-	'Red halloween mask',
-	'Blue halloween mask',
-	'Green halloween mask',
-	'Skeleton mask',
-	'Skeleton shirt',
-	'Skeleton leggings',
-	'Skeleton gloves',
-	'Skeleton boots',
-	'Santa mask',
-	'Santa jacket',
-	'Santa pantaloons',
-	'Santa gloves',
-	'Santa boots',
-	'Sack of presents',
-	'Christmas cracker',
-	'Santa hat',
-	'Cursed banana',
-	'Banana cape',
-	'Gnome child hat',
-	'Slice of birthday cake',
-	'Easter basket',
-	'Rubber chicken',
-	'Easter ring',
-	'Chicken head',
-	'Chicken wings',
-	'Chicken legs',
-	'Chicken feet'
-]);
+
 export const dailyCL = resolveItems([
 	'Event rpg',
 	'Green banner',
@@ -2048,3 +2023,7 @@ export const customBossesDropsThatCantBeDroppedInMBs = [
 	...treeBeardCL
 ];
 export const implingsCL = objectEntries(implings).map(m => Number(m[0]));
+
+export const allPetIDs = [...allPetsCL, ...customPetsCL, ...discontinuedCustomPetsCL, ...chambersOfXericMetamorphPets];
+
+export const holidayCL = allHolidayItems;

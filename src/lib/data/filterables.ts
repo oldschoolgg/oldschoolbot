@@ -7,7 +7,6 @@ import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { superCompostables } from '../../commands/Minion/compostbin';
-import { allPetIDs } from '../../commands/Minion/equippet';
 import { customItems } from '../customItems';
 import { monkeyEatables } from '../monkeyRumble';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
@@ -17,6 +16,7 @@ import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import resolveItems from '../util/resolveItems';
 import { collectionLogRoleCategories } from './Collections';
 import {
+	allPetIDs,
 	cluesBeginnerCL,
 	cluesEasyCL,
 	cluesEliteCL,

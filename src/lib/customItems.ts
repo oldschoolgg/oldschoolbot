@@ -765,7 +765,7 @@ setCustomItem(11_196, 'Bloodsoaked feather', 'Feather');
  *
  *
  */
-setCustomItem(4614, 'Primal full helm', 'Rune full helm', {
+setCustomItem(4614, 'Primal full helm (real)', 'Rune full helm', {
 	equipment: {
 		attack_stab: 75,
 		attack_slash: 78,
@@ -787,7 +787,7 @@ setCustomItem(4614, 'Primal full helm', 'Rune full helm', {
 		requirements: null
 	}
 });
-setCustomItem(4655, 'Primal platebody', 'Rune platebody', {
+setCustomItem(4655, 'Primal platebody (real)', 'Rune platebody', {
 	equipment: {
 		attack_stab: 55,
 		attack_slash: 58,
@@ -809,7 +809,7 @@ setCustomItem(4655, 'Primal platebody', 'Rune platebody', {
 		requirements: null
 	}
 });
-setCustomItem(4622, 'Primal platelegs', 'Rune platelegs', {
+setCustomItem(4622, 'Primal platelegs (real)', 'Rune platelegs', {
 	equipment: {
 		attack_stab: 55,
 		attack_slash: 58,
@@ -831,7 +831,7 @@ setCustomItem(4622, 'Primal platelegs', 'Rune platelegs', {
 		requirements: null
 	}
 });
-setCustomItem(6167, 'Primal boots', 'Rune boots', {
+setCustomItem(6167, 'Primal boots (real)', 'Rune boots', {
 	equipment: {
 		attack_stab: 22,
 		attack_slash: 2,
@@ -853,7 +853,7 @@ setCustomItem(6167, 'Primal boots', 'Rune boots', {
 		requirements: null
 	}
 });
-setCustomItem(5839, 'Primal gauntlets', 'Rune gloves', {
+setCustomItem(5839, 'Primal gauntlets (real)', 'Rune gloves', {
 	equipment: {
 		attack_stab: 26,
 		attack_slash: 16,
@@ -1006,6 +1006,12 @@ setCustomItem(
 	},
 	0
 );
+
+setCustomItem(40_072, 'Castle wars cape (beginner)', 'Fire cape', {}, 1_000_000);
+setCustomItem(40_073, 'Castle wars cape (intermediate)', 'Fire cape', {}, 1_000_000);
+setCustomItem(40_074, 'Castle wars cape (advanced)', 'Fire cape', {}, 1_000_000);
+setCustomItem(40_075, 'Castle wars cape (expert)', 'Fire cape', {}, 1_000_000);
+setCustomItem(40_076, 'Castle wars cape (legend)', 'Fire cape', {}, 1_000_000);
 
 /**
  * Non-mystery box items
@@ -1326,6 +1332,28 @@ setCustomItem(41_086, 'Dwarven warhammer (ice)', 'Dwarven warhammer', {}, 1_000_
 setCustomItem(41_087, 'Dwarven warhammer (shadow)', 'Dwarven warhammer', {}, 1_000_000_000);
 setCustomItem(41_088, 'Dwarven warhammer (blood)', 'Dwarven warhammer', {}, 1_000_000_000);
 setCustomItem(41_089, 'Dwarven warhammer (3a)', 'Dwarven warhammer', {}, 1_000_000_000);
+
+/**
+ * Dyed DG Items
+ */
+
+setCustomItem(41_100, 'Gorajan warrior helmet (Primal)', 'Gorajan warrior helmet', {}, 55_000_000);
+setCustomItem(41_101, 'Gorajan warrior top (Primal)', 'Gorajan warrior top', {}, 55_000_000);
+setCustomItem(41_102, 'Gorajan warrior legs (Primal)', 'Gorajan warrior legs', {}, 55_000_000);
+setCustomItem(41_103, 'Gorajan warrior gloves (Primal)', 'Gorajan warrior gloves', {}, 55_000_000);
+setCustomItem(41_104, 'Gorajan warrior boots (Primal)', 'Gorajan warrior boots', {}, 55_000_000);
+
+setCustomItem(40_105, 'Gorajan occult helmet (Celestial)', 'Gorajan occult helmet', {}, 55_000_000);
+setCustomItem(40_106, 'Gorajan occult top (Celestial)', 'Gorajan occult top', {}, 55_000_000);
+setCustomItem(40_107, 'Gorajan occult legs (Celestial)', 'Gorajan occult legs', {}, 55_000_000);
+setCustomItem(40_108, 'Gorajan occult gloves (Celestial)', 'Gorajan occult gloves', {}, 55_000_000);
+setCustomItem(40_109, 'Gorajan occult boots (Celestial)', 'Gorajan occult boots', {}, 55_000_000);
+
+setCustomItem(40_110, 'Gorajan archer helmet (Sagittarian)', 'Gorajan archer helmet', {}, 55_000_000);
+setCustomItem(40_111, 'Gorajan archer top (Sagittarian)', 'Gorajan archer top', {}, 55_000_000);
+setCustomItem(40_112, 'Gorajan archer legs (Sagittarian)', 'Gorajan archer legs', {}, 55_000_000);
+setCustomItem(40_113, 'Gorajan archer gloves (Sagittarian)', 'Gorajan archer gloves', {}, 55_000_000);
+setCustomItem(40_114, 'Gorajan archer boots (Sagittarian)', 'Gorajan archer boots', {}, 55_000_000);
 
 /**
  *
@@ -1792,6 +1820,22 @@ setCustomItem(48_229, 'Marimbo statue', 'Egg', {}, 10_000_000);
 setCustomItem(48_230, 'Big banana', 'Bronze kiteshield', {}, 100_000);
 
 setCustomItem(48_324, 'Blacksmith crate', 'Mystery box', {}, 100_000);
+
+setCustomItem(48_240, 'Ignecarus mask', 'Rune full helm', {}, 1_000_000);
+setCustomItem(48_241, 'Malygos mask', 'Rune full helm', {}, 1_000_000);
+setCustomItem(48_242, 'Daemonheim agility pass', 'Coal', {}, 1_000_000);
+setCustomItem(48_243, 'Web cloak', 'Red cape', {}, 100_000);
+setCustomItem(48_244, 'Toy kite', 'Bronze dagger', {}, 100_000);
+setCustomItem(48_245, 'Grim reaper hood', 'Rune full helm', {}, 100_000);
+setCustomItem(48_246, 'Chocatrice cape', 'Red cape', {}, 100_000);
+setCustomItem(48_247, 'Warlock top', 'Bronze platebody', {}, 100_000);
+setCustomItem(48_248, 'Warlock legs', 'Bronze platelegs', {}, 100_000);
+setCustomItem(48_249, 'Warlock cloak', 'Red cape', {}, 100_000);
+setCustomItem(48_250, 'Witch top', 'Bronze platebody', {}, 100_000);
+setCustomItem(48_251, 'Witch skirt', 'Bronze platelegs', {}, 100_000);
+setCustomItem(48_252, 'Witch cloak', 'Red cape', {}, 100_000);
+setCustomItem(48_253, 'Ring of snow', 'Red cape', {}, 100_000);
+setCustomItem(48_254, 'Dungeoneering dye', 'Red cape', {}, 100_000);
 /**
  * Misc Items
  *
