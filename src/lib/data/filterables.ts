@@ -14,7 +14,7 @@ import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import resolveItems from '../util/resolveItems';
-import { collectionLogRoleCategories } from './Collections';
+import { allCollectionLogs, collectionLogRoleCategories } from './Collections';
 import {
 	allPetIDs,
 	cluesBeginnerCL,
@@ -1138,3 +1138,17 @@ export const filterableTypes: Filterable[] = [
 		items: monkeyEatables.map(i => i.item.id)
 	}
 ];
+
+for (const clGroup of Object.values(allCollectionLogs).map(c => c.activities)) {
+	for (const [name, cl] of Object.entries(clGroup)) {
+		const aliasesForThisCL: string[] = [name, ...(cl.alias ?? [])];
+		const already = filterableTypes.some(t => [...t.aliases, t.name].some(i => aliasesForThisCL.includes(i)));
+		if (!already) {
+			filterableTypes.push({
+				name,
+				aliases: aliasesForThisCL,
+				items: cl.items
+			});
+		}
+	}
+}
