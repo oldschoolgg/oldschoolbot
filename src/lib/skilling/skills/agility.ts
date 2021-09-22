@@ -136,7 +136,7 @@ export const courses: Course[] = [
 		id: 30,
 		name: 'Daemonheim Rooftop Course',
 		aliases: ['daemonheim', 'dh'],
-		level: 95,
+		level: 101,
 		xp: 10_140.6,
 		marksPer60: 35,
 		lapTime: 140.2,

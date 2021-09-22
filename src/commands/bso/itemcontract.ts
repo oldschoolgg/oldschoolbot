@@ -5,14 +5,20 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { allMbTables, MysteryBoxes } from '../../lib/data/openables';
+import { kalphiteKingLootTable } from '../../lib/kalphiteking';
+import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
+import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/Ignecarus';
+import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/VasaMagus';
+import { nexLootTable } from '../../lib/nex';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { DragonTable } from '../../lib/simulation/grandmasterClue';
 import { runeAlchablesTable } from '../../lib/simulation/sharedTables';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, formatDuration, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
+import { addBanks, formatDuration, itemID, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
+import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
 
 const eightHours = Time.Hour * 8;
@@ -34,6 +40,37 @@ const contractTable = new LootTable()
 			.add('Clue scroll (Grandmaster)', 1, 2)
 	);
 
+const itemContractItems = Array.from(
+	new Set([
+		...allMbTables,
+		...kalphiteKingLootTable.allItems.filter(i => i !== itemID('Baby kalphite king')),
+		...AbyssalDragonLootTable.allItems,
+		...VasaMagus.allItems,
+		...Ignecarus.allItems.filter(i => i !== itemID('Dragon egg')),
+		...nexLootTable.allItems,
+		...resolveItems([
+			'Untradeable mystery box',
+			'Tradeable mystery box',
+			'Pet mystery box',
+			'Holiday mystery box',
+			'Klik',
+			'Scruffy',
+			'Shelldon',
+			'Remy',
+			'Divine sigil',
+			'Wintertoad',
+			'Hammy',
+			'Dwarven bar',
+			'Dwarven ore',
+			'Magic banana',
+			'Scroll of the hunt',
+			'Scroll of longevity',
+			'Scroll of life',
+			'Scroll of proficiency'
+		])
+	])
+);
+
 export default class DailyCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -54,8 +91,21 @@ export default class DailyCommand extends BotCommand {
 		const totalContracts = msg.author.settings.get(UserSettings.TotalItemContracts);
 		const streak = msg.author.settings.get(UserSettings.ItemContractStreak);
 		const total = `\n\nYou've completed ${totalContracts} Item Contracts, you currently have a streak of ${streak}.`;
+
+		if (msg.flagArgs.show) {
+			const t = new Bank();
+			for (const i of itemContractItems) {
+				t.add(i);
+			}
+			return msg.channel.sendBankImage({
+				bank: t.bank,
+				content: `There are ${
+					itemContractItems.length
+				} possible items to get. The average bot value of an itemcontract item is ${t.value() / t.length}`
+			});
+		}
 		if (!msg.author.settings.get(UserSettings.CurrentItemContract)) {
-			await msg.author.settings.update(UserSettings.CurrentItemContract, randArrItem(allMbTables));
+			await msg.author.settings.update(UserSettings.CurrentItemContract, randArrItem(itemContractItems));
 		}
 		const currentItem = getOSItem(msg.author.settings.get(UserSettings.CurrentItemContract)!);
 		let durationRemaining = formatDuration(Date.now() - (lastDate + eightHours));
