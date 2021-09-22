@@ -92,7 +92,7 @@ export default class DailyCommand extends BotCommand {
 		const streak = msg.author.settings.get(UserSettings.ItemContractStreak);
 		const total = `\n\nYou've completed ${totalContracts} Item Contracts, you currently have a streak of ${streak}.`;
 
-		if (msg.flagArgs.show) {
+		if (msg.flagArgs.show && this.client.owners.has(msg.author)) {
 			const t = new Bank();
 			for (const i of itemContractItems) {
 				t.add(i);
