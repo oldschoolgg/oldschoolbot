@@ -315,7 +315,8 @@ export default class extends Extendable {
 
 				const rune = Runecraft.Runes.find(_rune => _rune.id === data.runeID);
 
-				return `${this.minionName} is currently turning ${data.essenceQuantity}x Essence into ${
+				const quantity = data.obisEssenceQuantity ?? data.essenceQuantity;
+				return `${this.minionName} is currently turning ${quantity}x Essence into ${
 					rune!.name
 				}. ${formattedDuration} Your ${Emoji.Runecraft} Runecraft level is ${this.skillLevel(
 					SkillsEnum.Runecraft

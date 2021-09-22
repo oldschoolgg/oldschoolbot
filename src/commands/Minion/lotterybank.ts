@@ -140,6 +140,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [bankArg]: [[Bank, number] | undefined]) {
+		if (1 < 2) {
+			return msg.channel.send("There's currently no lottery going on, check back later!");
+		}
 		if (msg.author.isIronman) {
 			return msg.channel.send('Ironmen cannot participate in the lottery.');
 		}
