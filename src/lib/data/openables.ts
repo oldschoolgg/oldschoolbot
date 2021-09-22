@@ -13,11 +13,7 @@ import { ExoticSeedsTable } from '../simulation/sharedTables';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
-import {
-	allPetIDs,
-	customBossesDropsThatCantBeDroppedInMBs,
-	frozenKeyPieces
-} from './CollectionsExport';
+import { allPetIDs, customBossesDropsThatCantBeDroppedInMBs, frozenKeyPieces } from './CollectionsExport';
 import { baseHolidayItems, PartyhatTable } from './holidayItems';
 
 interface Openable {
