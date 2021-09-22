@@ -8,6 +8,7 @@ import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
+import { TameActivityTable } from '../../lib/typeorm/TameActivityTable.entity';
 import { TamesTable } from '../../lib/typeorm/TamesTable.entity';
 import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
 
@@ -71,9 +72,12 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 				await MinigameTable.delete({ userID: msg.author.id });
 				await ActivityTable.delete({ userID: msg.author.id });
 				await XPGainsTable.delete({ userID: msg.author.id });
+				await TameActivityTable.delete({ userID: msg.author.id });
 				await TamesTable.delete({ userID: msg.author.id });
 				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
-			} catch (_) {}
+			} catch (err) {
+				console.log(err);
+			}
 
 			await msg.author.settings.update([
 				[UserSettings.Minion.Ironman, true],
