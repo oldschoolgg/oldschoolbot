@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { Activity } from '../../lib/constants';
+import { Activity, BitField } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -120,6 +120,13 @@ export default class extends BotCommand {
 
 		if (course.qpRequired && msg.author.settings.get(UserSettings.QP) < course.qpRequired) {
 			return msg.channel.send(`You need atleast ${course.qpRequired} Quest Points to do this course.`);
+		}
+
+		if (
+			course.name === 'Daemonheim Rooftop Course' &&
+			!msg.author.bitfield.includes(BitField.HasDaemonheimAgilityPass)
+		) {
+			return msg.channel.send('The Daemonheim guards deny you access to the course.');
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Agility);

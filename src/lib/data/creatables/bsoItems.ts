@@ -4,6 +4,37 @@ import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
 import { Createable } from '../createables';
 
+const dungeoneeringDyedItems = [
+	['Gorajan warrior helmet (Primal)', 'Gorajan warrior helmet'],
+	['Gorajan warrior top (Primal)', 'Gorajan warrior top'],
+	['Gorajan warrior legs (Primal)', 'Gorajan warrior legs'],
+	['Gorajan warrior gloves (Primal)', 'Gorajan warrior gloves'],
+	['Gorajan warrior boots (Primal)', 'Gorajan warrior boots'],
+	['Gorajan occult helmet (Celestial)', 'Gorajan occult helmet'],
+	['Gorajan occult top (Celestial)', 'Gorajan occult top'],
+	['Gorajan occult legs (Celestial)', 'Gorajan occult legs'],
+	['Gorajan occult gloves (Celestial)', 'Gorajan occult gloves'],
+	['Gorajan occult boots (Celestial)', 'Gorajan occult boots'],
+	['Gorajan archer helmet (Sagittarian)', 'Gorajan archer helmet'],
+	['Gorajan archer top (Sagittarian)', 'Gorajan archer top'],
+	['Gorajan archer legs (Sagittarian)', 'Gorajan archer legs'],
+	['Gorajan archer gloves (Sagittarian)', 'Gorajan archer gloves'],
+	['Gorajan archer boots (Sagittarian)', 'Gorajan archer boots']
+];
+let dungeoneeringDyeCreatables: Createable[] = [];
+for (const [dyedItem, inputItem] of dungeoneeringDyedItems) {
+	dungeoneeringDyeCreatables.push({
+		name: dyedItem,
+		inputItems: {
+			[itemID(inputItem)]: 1,
+			[itemID('Dungeoneering dye')]: 1
+		},
+		outputItems: resolveNameBank({
+			[dyedItem]: 1
+		})
+	});
+}
+
 const chaoticCreatables: Createable[] = [
 	{
 		name: 'Arcane blast necklace',
@@ -653,7 +684,8 @@ const dyedCreatables: Createable[] = [
 			'Offhand drygore rapier (3a)': 1
 		})
 	},
-	...dwwhDyed
+	...dwwhDyed,
+	...monkeyDyables
 ];
 
 const bsoArmorSets: Createable[] = [
@@ -956,5 +988,5 @@ export const BsoCreateables: Createable[] = [
 	...lockedItems,
 	...dyedCreatables,
 	...bsoArmorSets,
-	...monkeyDyables
+	...dungeoneeringDyeCreatables
 ];

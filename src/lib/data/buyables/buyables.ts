@@ -9,6 +9,7 @@ import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
+import { bsoBuyables } from './bsoBuyables';
 import { canifisClothes } from './canifisClothes';
 import { capeBuyables } from './capes';
 import { castleWarsBuyables } from './castleWars';
@@ -743,7 +744,8 @@ const Buyables: Buyable[] = [
 	...slayerBuyables,
 	...capeBuyables,
 	...miningBuyables,
-	...runeBuyables
+	...runeBuyables,
+	...bsoBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

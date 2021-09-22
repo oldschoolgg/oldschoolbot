@@ -87,4 +87,17 @@ export const BattlestaffTable = new LootTable()
 	.add('Lava battlestaff')
 	.add('Steam battlestaff');
 
+export const FletchingTipsTable = new LootTable()
+	.add('Dragon dart tip')
+	.add('Dragonstone bolt tips')
+	.add('Onyx bolt tips')
+	.add('Rune dart tip')
+	.add('Dragon arrowtips')
+	.add('Diamond bolt tips')
+	.add('Emerald bolt tips')
+	.add('Ruby bolt tips')
+	.add('Dragonstone bolt tips')
+	.add('Onyx bolt tips')
+	.add('Sapphire bolt tips');
+
 export const StaffOrbTable = new LootTable().add('Air orb').add('Earth orb').add('Fire orb').add('Water orb');
