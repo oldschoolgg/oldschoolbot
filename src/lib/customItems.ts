@@ -1834,8 +1834,8 @@ setCustomItem(48_249, 'Warlock cloak', 'Red cape', {}, 100_000);
 setCustomItem(48_250, 'Witch top', 'Bronze platebody', {}, 100_000);
 setCustomItem(48_251, 'Witch skirt', 'Bronze platelegs', {}, 100_000);
 setCustomItem(48_252, 'Witch cloak', 'Red cape', {}, 100_000);
-setCustomItem(48_253, 'Ring of snow', 'Red cape', {}, 100_000);
-setCustomItem(48_254, 'Dungeoneering dye', 'Red cape', {}, 100_000);
+setCustomItem(48_253, 'Ring of snow', 'Emerald ring', {}, 100_000);
+setCustomItem(48_254, 'Dungeoneering dye', 'Coal', {}, 100_000);
 /**
  * Misc Items
  *
