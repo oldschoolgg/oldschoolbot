@@ -23,7 +23,7 @@ export default class extends BotCommand {
 						'https://cdn.discordapp.com/avatars/729244028989603850/4d9983de6c235f12aa0c21e0c67cf232.png?size=2048'
 					)
 					.setDescription(
-						`🧑‍⚖️ **Rules:** You *must* follow our 5 simple rules, breaking any rule can result in a permanent ban - and "I didn't know the rules" is not a valid excuse, read them here: <https://wiki.oldschool.gg/rules>
+						`🧑‍⚖️ **Rules:** You *must* follow our 5 simple rules, breaking any rule can result in a permanent ban - and "I didn't know the rules" is not a valid excuse, read them here: <https://bso-wiki.oldschool.gg/rules>
 
 <:patreonLogo:679334888792391703> **Patreon:** If you're able too, please consider supporting my work on Patreon, it's highly appreciated and helps me hugely <https://www.patreon.com/oldschoolbot> ❤️
 
