@@ -63,7 +63,7 @@ export default class extends BotCommand {
 
 		if (!tierName) return msg.channel.send(this.invalidClue(msg));
 
-		const clueTier = ClueTiers.find(tier => stringMatches(tier.name, tierName));
+		const clueTier = ClueTiers.find(tier => tier.aliases.some(alias => stringMatches(alias, tierName)));
 
 		if (!clueTier) return msg.channel.send(this.invalidClue(msg));
 
