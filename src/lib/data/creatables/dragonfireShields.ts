@@ -37,7 +37,6 @@ export const dragonFireShieldCreatables: Createable[] = [
 			'Uncharged ancient wyvern shield': 1
 		},
 		requiredSkills: { smithing: 66, magic: 66 }
-
 	},
 	// Charged
 	{
