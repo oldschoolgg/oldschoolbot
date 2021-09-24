@@ -198,6 +198,10 @@ Here are the items you can buy: \n\n${buyables
 			fightDuration = reduceNumByPercent(fightDuration, 15);
 			boosts.push('15% faster fights for strength master cape');
 		}
+		if (msg.author.hasItemEquippedAnywhere('Gorilla rumble greegree')) {
+			fightDuration = reduceNumByPercent(fightDuration, 15);
+			boosts.push('15% faster fights for gorilla rumble greegree');
+		}
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.MonkeyRumble) / fightDuration);
 		let duration = quantity * fightDuration;
 
