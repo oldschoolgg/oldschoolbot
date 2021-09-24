@@ -105,13 +105,13 @@ export default class extends BotCommand {
 		const bank = msg.author.bank();
 		const numOfScrolls = bank.amount(clueTier.scrollID);
 
-		if (!numOfScrolls || numOfScrolls < quantity) {
-			return msg.channel.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
-		}
-
 		const maxTripLength = msg.author.maxTripLength(Activity.ClueCompletion);
 		const maxPerTrip = Math.floor(maxTripLength / timeToFinish);
 		if (quantity === -1) quantity = maxPerTrip;
+
+		if (!numOfScrolls || numOfScrolls < quantity) {
+			return msg.channel.send(`You don't have ${quantity} ${clueTier.name} clue scrolls.`);
+		}
 
 		let qtyWarning = '';
 		if (numOfScrolls < quantity) {
