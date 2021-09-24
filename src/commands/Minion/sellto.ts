@@ -7,6 +7,7 @@ import { evalMathExpression } from '../../lib/expressionParser';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import getOSItem from '../../lib/util/getOSItem';
 
 const options = {
 	max: 1,
@@ -18,7 +19,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
-			usage: '<member:member> [price:string] (items:...TradeableBank)',
+			usage: '<member:member> [price:string] [items:...TradeableBank]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			ironCantUse: true,
@@ -28,10 +29,9 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(
-		msg: KlasaMessage,
-		[buyerMember, rawPrice, [bankToSell, totalPrice]]: [GuildMember, string, [Bank, number]]
-	) {
+	async run(msg: KlasaMessage, [buyerMember, rawPrice, bankInput]: [GuildMember, string, [Bank, number]]) {
+		const bankToSell = bankInput?.[0] ?? new Bank().add(getOSItem(rawPrice).id);
+
 		if (!rawPrice) {
 			rawPrice = '1';
 		}
@@ -64,21 +64,21 @@ export default class extends BotCommand {
 		buyerMember.user.toggleBusy(true);
 		msg.author.toggleBusy(true);
 		try {
-			await this.sell(msg, buyerMember, price, [bankToSell, totalPrice]);
+			await this.sell(msg, buyerMember, price, bankToSell);
 		} finally {
 			buyerMember.user.toggleBusy(false);
 			msg.author.toggleBusy(false);
 		}
 	}
 
-	async sell(msg: KlasaMessage, buyerMember: GuildMember, price: number, [bankToSell, totalPrice]: [Bank, number]) {
+	async sell(msg: KlasaMessage, buyerMember: GuildMember, price: number, bankToSell: Bank) {
 		const bankStr = bankToSell.toString();
 
 		let sellStr = `${msg.author}, please confirm that you want to sell ${bankStr} to \`${
 			buyerMember.user.username
 		}#${buyerMember.user.discriminator}\` for a *total* of ${price.toLocaleString()} GP.`;
 
-		const botPays = Math.floor(totalPrice) * 0.8;
+		const botPays = Math.floor(bankToSell.value()) * 0.8;
 
 		if (botPays > price) {
 			sellStr += `\n\nWarning: The bot would pay you more (${botPays.toLocaleString()} GP) for these items than you are selling them for!`;
