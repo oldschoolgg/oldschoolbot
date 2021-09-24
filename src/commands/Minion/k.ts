@@ -15,7 +15,7 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Activity } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
-import { GearSetupTypes, GearStat } from '../../lib/gear';
+import { GearSetupType, GearStat } from '../../lib/gear';
 import {
 	boostCannon,
 	boostCannonMulti,
@@ -376,20 +376,20 @@ export default class extends BotCommand {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
 
-			let gearToCheck = GearSetupTypes.Melee;
+			let gearToCheck: GearSetupType = 'melee';
 
 			switch (monster.attackStyleToUse) {
 				case GearStat.AttackMagic:
-					gearToCheck = GearSetupTypes.Mage;
+					gearToCheck = 'mage';
 					break;
 				case GearStat.AttackRanged:
-					gearToCheck = GearSetupTypes.Range;
+					gearToCheck = 'range';
 					break;
 				default:
 					break;
 			}
 
-			if (monster.wildy) gearToCheck = GearSetupTypes.Wildy;
+			if (monster.wildy) gearToCheck = 'wildy';
 
 			const [result] = await removeFoodFromUser({
 				client: this.client,
@@ -398,7 +398,7 @@ export default class extends BotCommand {
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
 				attackStylesUsed: monster.wildy
-					? [GearSetupTypes.Wildy]
+					? ['wildy']
 					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced
 			});

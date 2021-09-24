@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { corporealBeastCL } from '../../../../data/CollectionsExport';
-import { GearSetupTypes, GearStat } from '../../../../gear';
+import { GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
@@ -122,10 +122,10 @@ const killableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic],
 		minimumGearRequirements: {
-			[GearSetupTypes.Mage]: {
+			mage: {
 				[GearStat.AttackMagic]: 50
 			},
-			[GearSetupTypes.Range]: {
+			range: {
 				[GearStat.AttackRanged]: 47
 			}
 		},
@@ -173,7 +173,7 @@ const killableBosses: KillableMonster[] = [
 		combatXpMultiplier: 1.05,
 		healAmountNeeded: 20 * 3,
 		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
+			melee: {
 				[GearStat.MeleeStrength]: 10
 			}
 		},

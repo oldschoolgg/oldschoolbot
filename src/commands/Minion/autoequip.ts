@@ -1,7 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
+import { GearSetupType, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { requiresMinion } from '../../lib/minions/decorators';
 import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
@@ -30,7 +30,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(
 		msg: KlasaMessage,
-		[gearType, type, style, extra = null]: [GearSetupTypes, string, string, string | null]
+		[gearType, type, style, extra = null]: [GearSetupType, string, string, string | null]
 	) {
 		await msg.author.settings.sync(true);
 

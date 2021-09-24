@@ -4,7 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
-import { GearSetupTypes, maxOffenceStats } from '../../lib/gear';
+import { maxOffenceStats } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { KillableMonster } from '../../lib/minions/types';
@@ -213,13 +213,7 @@ export default class extends BotCommand {
 				after20wilderness: true,
 				skulled
 			});
-			const image = await generateGearImage(
-				this.client,
-				msg.author,
-				new Gear(calc.newGear),
-				GearSetupTypes.Wildy,
-				null
-			);
+			const image = await generateGearImage(this.client, msg.author, new Gear(calc.newGear), 'wildy', null);
 
 			return msg.channel.send({
 				content: `To kill Revenants, use \`${prefix}revs melee|range|mage <name>\`. Below, you can see what you will keep in your gear if you die.
