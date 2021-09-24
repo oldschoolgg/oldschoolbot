@@ -687,6 +687,13 @@ const Buyables: Buyable[] = [
 		gpCost: 300
 	},
 	{
+		name: 'Empty bucket pack',
+		outputItems: {
+			[itemID('Bucket')]: 100
+		},
+		gpCost: 10_000
+	},
+	{
 		name: 'Compost',
 		outputItems: {
 			[itemID('Compost')]: 1
