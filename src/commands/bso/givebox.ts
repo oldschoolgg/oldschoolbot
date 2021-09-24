@@ -33,7 +33,7 @@ export default class extends BotCommand {
 		}
 		// Disable box to self or irons
 		if (user.id === msg.author.id) return msg.channel.send("You can't give boxes to yourself!");
-		if (user.isIronman) return msg.channel.send("You can't give boxes to ironmans!");
+		if (user.isIronman) return msg.channel.send("You can't give boxes to ironmen!");
 
 		await msg.author.settings.update(UserSettings.LastGivenBox, currentDate);
 
