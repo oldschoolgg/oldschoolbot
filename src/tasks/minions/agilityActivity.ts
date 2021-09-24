@@ -143,13 +143,15 @@ export default class extends Task {
 					user.skillLevel(SkillsEnum.Dungeoneering) >= 80 &&
 					roll(Math.floor((gorajanShardChance(user) * 2.5) / minutes))
 				) {
-					str += 'You received **1x Gorajan shards**';
+					const item = roll(30) ? getOSItem('Dungeoneering dye') : getOSItem('Gorajan shards');
+
 					let quantity = 1;
 
 					if (isDoubleLootActive(this.client)) {
 						quantity *= 2;
 					}
-					loot.add('Gorajan shards', quantity);
+					loot.add(item.id, quantity);
+					str += `\nYou received **${quantity}x ${item.name}**`;
 				}
 			}
 		}
