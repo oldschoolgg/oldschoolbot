@@ -27,11 +27,11 @@ import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 
 const buyables = monkeyTiers.map((t, index) => ({
-	item: t.greegree,
+	item: t.greegrees[0],
 	gamesReq: t.gamesReq,
 	strengthLevelReq: t.strengthLevelReq,
 	cost: index === 0 ? 0 : Math.floor((index + 1) * 8.5),
-	aliases: [t.name, t.greegree.name]
+	aliases: [t.name, t.greegrees[0].name]
 }));
 
 buyables.push({
@@ -89,7 +89,7 @@ export default class extends BotCommand {
 **Unique Monkeys Fought:** ${
 				msg.author.settings.get(UserSettings.MonkeysFought).length
 			}/${TOTAL_MONKEYS.toLocaleString()}
-**Greegree Level:** ${tier.greegree.name} - ${tier.id}/${monkeyTiers.length.toLocaleString()}
+**Greegree Level:** ${tier.greegrees[0].name} - ${tier.id}/${monkeyTiers.length.toLocaleString()}
 **Rumble tokens:** ${msg.author.bank().amount('Rumble token')}`
 		);
 	}
@@ -174,7 +174,12 @@ Here are the items you can buy: \n\n${buyables
 			});
 		}
 
-		if (!monkeyTiers.some(t => msg.author.hasItemEquippedAnywhere(t.greegree.id))) {
+		if (
+			!monkeyTiers
+				.map(t => t.greegrees)
+				.flat(2)
+				.some(t => msg.author.hasItemEquippedAnywhere(t.id))
+		) {
 			return msg.channel.send({
 				content: `You need to have a rumble greegree equipped. If you don't have a rumble greegree yet, you can buy one using \`${msg.cmdPrefix}mr buy beginner rumble greegree\`.`,
 				files: [
