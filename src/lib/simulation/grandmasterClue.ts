@@ -104,8 +104,8 @@ const table = new LootTable()
 	.add(AllBarrows, 3)
 	.add(LogsTable, 4)
 	.add(Supplies, 1, 5)
-	.oneIn(50, 'Holiday mystery box')
-	.add('Mysterious seed', [1, 2]);
+	.oneIn(90, 'Holiday mystery box')
+	.add('Mysterious seed');
 
 class GrandmasterClue extends Clue {
 	open(quantity: number) {
