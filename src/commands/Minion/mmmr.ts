@@ -196,7 +196,12 @@ Here are the items you can buy: \n\n${buyables
 		const fightDuration = Time.Minute * 9;
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.MonkeyRumble) / fightDuration);
 		let duration = quantity * fightDuration;
+
 		let chanceOfSpecial = Math.floor(150 * (6 - monkeyTierOfUser(msg.author) / 2));
+		if (msg.author.hasItemEquippedAnywhere('Big banana')) {
+			chanceOfSpecial = reduceNumByPercent(chanceOfSpecial, 5);
+			boosts.push('10% higher chance of purple monkeys');
+		}
 		const monkeysToFight: Monkey[] = [];
 		for (let i = 0; i < quantity; i++) {
 			monkeysToFight.push(getRandomMonkey(monkeysToFight, chanceOfSpecial));
