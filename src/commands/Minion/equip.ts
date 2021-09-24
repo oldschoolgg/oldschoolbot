@@ -41,7 +41,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<melee|mage|range|skilling|misc|wildy> [quantity:integer{1}] (item:...item)',
+			usage: `<${GearSetupTypes.join('|')}> [quantity:integer{1}] (item:...item)`,
 			usageDelim: ' ',
 			description: 'Equips an item to one of your gear setups. (melee/range/range/skilling/misc)',
 			examples: ['+equip skilling graceful hood', '+equip melee bandos godsword', '+equip mage staff of fire'],
@@ -52,7 +52,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(
 		msg: KlasaMessage,
-		[gearType, quantity = 1, itemArray]: [GearSetupTypes, number, Item[]]
+		[gearType, quantity = 1, itemArray]: [GearSetupType, number, Item[]]
 	): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
 			return msg.channel.send(
@@ -113,7 +113,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (gearType === GearSetupTypes.Wildy) {
+		if (gearType === 'wildy') {
 			await msg.confirm(WILDY_PRESET_WARNING_MESSAGE);
 		}
 		/**

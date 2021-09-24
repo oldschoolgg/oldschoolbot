@@ -15,7 +15,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			cooldown: 1,
-			usage: '[swap] [melee|mage|range|skilling|misc|wildy] [melee|mage|range|skilling|misc|wildy]',
+			usage: `[swap] [${GearSetupTypes.join('|')}] [${GearSetupTypes.join('|')}]`,
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['gearall', 'gall'],
@@ -26,14 +26,16 @@ export default class extends BotCommand {
 	}
 
 	@minionNotBusy
-	async swap(msg: KlasaMessage, [gear1, gear2]: [GearSetupTypes, GearSetupTypes]) {
+	async swap(msg: KlasaMessage, [gear1, gear2]: [GearSetupType, GearSetupType]) {
 		if (msg.commandText !== 'gear') return this.run(msg, [gear1]);
 		if (!gear1 || !gear2) {
 			return msg.channel.send(
-				`**Invalid gear type**. The valid types are: \`melee\`, \`mage\`, \`range\`, \`misc\`, \`skilling\` or \`wildy\`.\nExample of correct usage: \`${msg.cmdPrefix}gear swap melee range\``
+				`**Invalid gear type**. The valid types are: ${GearSetupTypes.join(
+					', '
+				)}.\nExample of correct usage: \`${msg.cmdPrefix}gear swap melee range\``
 			);
 		}
-		if (gear1 === GearSetupTypes.Wildy || gear2 === GearSetupTypes.Wildy) {
+		if (gear1 === 'wildy' || gear2 === 'wildy') {
 			await msg.confirm(
 				'Are you sure you want to swap your gear with a wilderness setup? You can lose items on your wilderness setup!'
 			);
@@ -51,13 +53,15 @@ export default class extends BotCommand {
 		return msg.channel.send(`You swapped your ${gear1} gear with your ${gear2} gear.`);
 	}
 
-	async run(msg: KlasaMessage, [gearType]: [GearSetupTypes]) {
+	async run(msg: KlasaMessage, [gearType]: [GearSetupType]) {
 		const gear = msg.author.getGear(gearType);
 		if (['gearall', 'gall'].includes(msg.commandText!)) msg.flagArgs.all = 'yes';
 
 		if (!gearType && !msg.flagArgs.all) {
 			return msg.channel.send(
-				`**Invalid gear type**. The valid types are: \`melee\`, \`mage\`, \`range\`, \`misc\`, \`skilling\` or \`wildy\`.\nYou can use \`--all\` or \`${msg.cmdPrefix}gearall\` to show all your gear in a single image.`
+				`**Invalid gear type**. The valid types are: ${GearSetupTypes.join(
+					', '
+				)}.\nYou can use \`--all\` or \`${msg.cmdPrefix}gearall\` to show all your gear in a single image.`
 			);
 		}
 

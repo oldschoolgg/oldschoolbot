@@ -10,7 +10,7 @@ import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import { BitField, PerkTier } from '../constants';
-import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
+import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
@@ -50,7 +50,7 @@ export interface ClueTier {
 }
 
 export type GearRequirement = Partial<{ [key in GearStat]: number }>;
-export type GearRequirements = Partial<{ [key in GearSetupTypes]: GearRequirement }>;
+export type GearRequirements = Partial<{ [key in GearSetupType]: GearRequirement }>;
 
 export interface KillableMonster {
 	id: number;

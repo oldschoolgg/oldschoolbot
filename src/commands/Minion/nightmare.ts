@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
-import { GearSetupTypes } from '../../lib/gear/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -213,7 +212,7 @@ export default class extends BotCommand {
 					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
 					healPerAction: Math.ceil(healAmountNeeded / quantity),
 					activityName: NightmareMonster.name,
-					attackStylesUsed: [GearSetupTypes.Melee]
+					attackStylesUsed: ['melee']
 				});
 				totalCost.add(foodRemoved);
 			}

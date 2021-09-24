@@ -4,7 +4,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
-import { GearSetupTypes } from '../../lib/gear/types';
 import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/KingGoldemar';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BossInstance, gpCostPerKill } from '../../lib/structures/Boss';
@@ -61,7 +60,7 @@ export default class extends BotCommand {
 				shield: 'Offhand drygore longsword',
 				neck: "Brawler's hook necklace"
 			}),
-			gearSetup: GearSetupTypes.Melee,
+			gearSetup: 'melee',
 			itemCost: async data =>
 				data.baseFood.multiply(data.kills).add('Coins', gpCostPerKill(data.user) * data.kills),
 			mostImportantStat: 'attack_slash',

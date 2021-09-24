@@ -3,7 +3,7 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { GearSetupType, GearSetupTypes } from '../gear';
+import { GearSetupType } from '../gear';
 import getOSItem from './getOSItem';
 
 interface CombatItemConsumption {
@@ -17,7 +17,7 @@ interface CombatItemConsumption {
 
 export const combatItemsConsumption: CombatItemConsumption[] = [
 	{
-		requiredGearType: [GearSetupTypes.Wildy],
+		requiredGearType: ['wildy'],
 		required: new Bank({
 			'Hellfire arrow': 1
 		}),

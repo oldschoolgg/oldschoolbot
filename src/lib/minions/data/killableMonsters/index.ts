@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { ZALCANO_ID } from '../../../constants';
-import { GearSetupTypes, GearStat } from '../../../gear/types';
+import { GearStat } from '../../../gear/types';
 import { KalphiteKingMonster } from '../../../kalphiteking';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
@@ -236,7 +236,7 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic],
 		minimumGearRequirements: {
-			[GearSetupTypes.Range]: {
+			range: {
 				[GearStat.DefenceMagic]: 150,
 				[GearStat.AttackRanged]: 80
 			}
@@ -271,7 +271,7 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
 		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
+			melee: {
 				[GearStat.AttackStab]: 100,
 				[GearStat.DefenceStab]: 150,
 				[GearStat.DefenceSlash]: 150,
@@ -331,7 +331,7 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
 		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
+			melee: {
 				[GearStat.DefenceRanged]: 57 + 120,
 				[GearStat.DefenceStab]: 47 + 26,
 				[GearStat.AttackCrush]: 65
@@ -374,7 +374,7 @@ const killableMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackMagic],
 		respawnTime: Time.Second * 40,
 		minimumGearRequirements: {
-			[GearSetupTypes.Mage]: {
+			mage: {
 				[GearStat.AttackMagic]: 30 + 10 + 10 + 6 + 6 + 22 + 6
 			}
 		},
@@ -406,7 +406,7 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
 		minimumGearRequirements: {
-			[GearSetupTypes.Range]: {
+			range: {
 				[GearStat.AttackRanged]: 20 + 33 + 10 + 94 + 8
 			}
 		},
@@ -457,7 +457,7 @@ export const NightmareMonster: KillableMonster = {
 	attackStyleToUse: GearStat.AttackCrush,
 	attackStylesUsed: [GearStat.AttackSlash],
 	minimumGearRequirements: {
-		[GearSetupTypes.Melee]: {
+		melee: {
 			[GearStat.DefenceSlash]: 150,
 			[GearStat.AttackCrush]: 80
 		}

@@ -19,7 +19,7 @@ import {
 	fillTextXTimesInCtx
 } from '../../util/canvasUtil';
 import getOSItem from '../../util/getOSItem';
-import { GearSetupType, GearSetupTypes, GearStats, maxDefenceStats, maxOffenceStats } from '..';
+import { GearSetupType, GearStats, maxDefenceStats, maxOffenceStats } from '..';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
 const gearTemplateCompactFile = fs.readFileSync('./src/lib/resources/images/gear_template_compact.png');
@@ -220,7 +220,7 @@ export async function generateGearImage(
 	client: KlasaClient,
 	user: KlasaUser,
 	gearSetup: Gear,
-	gearType: GearSetupTypes | null,
+	gearType: GearSetupType | null,
 	petID: number | null
 ) {
 	const transmogItem = (gearType && transmogItems.find(t => user.getGear(gearType).hasEquipped(t.item.name))) ?? null;
@@ -338,7 +338,7 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
 
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateCompactFile);
-	const canvas = createCanvas((gearTemplateImage.width + 10) * 3 + 20, Number(gearTemplateImage.height) * 2 + 70);
+	const canvas = createCanvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 
@@ -371,8 +371,8 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 	}
 	let i = 0;
 	let y = 30;
-	for (const type of ['melee', 'range', 'mage', 'misc', 'skilling', 'wildy']) {
-		if (i === 3) {
+	for (const type of ['melee', 'range', 'mage', 'misc', 'skilling', 'wildy', 'fashion']) {
+		if (i === 4) {
 			y += gearTemplateImage.height + 30;
 			i = 0;
 		}
@@ -400,26 +400,14 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 		ctx.restore();
 	}
 
-	ctx.save();
-	ctx.translate(-33 + i * (gearTemplateImage.width + 10), 31);
 	ctx.font = '16px RuneScape Bold 12';
-	ctx.textAlign = 'center';
-	drawText(canvas, 'Pet', 18, -8);
-	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, 1, 0, 36, 36);
-
+	drawText(canvas, 'Pet', ctx.canvas.width - 45, ctx.canvas.height - 55);
+	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, ctx.canvas.width - 50, ctx.canvas.height - 50, 36, 36);
 	const userPet = user.settings.get(UserSettings.Minion.EquippedPet);
 	if (userPet) {
 		const image = await client.tasks.get('bankImage')!.getItemImage(userPet, 1);
-		ctx.drawImage(
-			image,
-			1 + slotSize / 2 - image.width / 2,
-			slotSize / 2 - image.height / 2,
-			image.width,
-			image.height
-		);
+		ctx.drawImage(image, ctx.canvas.width - 50, ctx.canvas.height - 50, image.width, image.height);
 	}
-
-	ctx.restore();
 
 	if (!userBg.transparent) bankTask?.drawBorder(ctx, bgSprite, false);
 

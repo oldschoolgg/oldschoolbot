@@ -4,7 +4,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
-import { GearSetupTypes } from '../../lib/gear/types';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/VasaMagus';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BossInstance } from '../../lib/structures/Boss';
@@ -58,7 +57,7 @@ export default class extends BotCommand {
 				shield: 'Virtus book',
 				neck: 'Arcane blast necklace'
 			}),
-			gearSetup: GearSetupTypes.Mage,
+			gearSetup: 'mage',
 			itemCost: async data =>
 				data.baseFood.multiply(data.kills).add('Elder rune', randInt(55 * data.kills, 100 * data.kills)),
 			mostImportantStat: 'attack_magic',

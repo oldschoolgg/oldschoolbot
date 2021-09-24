@@ -5,7 +5,6 @@ import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
 import { Activity, Emoji, Events } from '../../lib/constants';
 import { maxOtherStats } from '../../lib/gear';
-import { GearSetupTypes } from '../../lib/gear/types';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../lib/simulation/baGamble';
@@ -271,7 +270,7 @@ export default class extends BotCommand {
 
 		// Up to 12.5% speed boost for max strength
 		const fighter = randArrItem(users);
-		const gearStats = fighter.getGear(GearSetupTypes.Melee).stats;
+		const gearStats = fighter.getGear('melee').stats;
 		const strengthPercent = round(calcWhatPercent(gearStats.melee_strength, maxOtherStats.melee_strength) / 8, 2);
 		waveTime = reduceNumByPercent(waveTime, strengthPercent);
 		boosts.push(`${strengthPercent}% for ${fighter.username}'s melee gear`);

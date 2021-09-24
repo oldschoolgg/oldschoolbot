@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
 import { Activity } from '../constants';
-import { GearSetupTypes, GearStats } from '../gear';
+import { GearSetupType, GearStats } from '../gear';
 import { Ignecarus } from '../minions/data/killableMonsters/custom/Ignecarus';
 import { Skills } from '../types';
 import { NewBossOptions } from '../types/minions';
@@ -107,7 +107,7 @@ interface BossOptions {
 	itemBoosts: [string, number][];
 	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
-	gearSetup: GearSetupTypes;
+	gearSetup: GearSetupType;
 	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
 	food: Bank | ((user: KlasaUser) => Bank);
@@ -141,7 +141,7 @@ export class BossInstance {
 	itemBoosts: [string, number][];
 	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
-	gearSetup: GearSetupTypes;
+	gearSetup: GearSetupType;
 	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
 	food: Bank | ((user: KlasaUser) => Bank);

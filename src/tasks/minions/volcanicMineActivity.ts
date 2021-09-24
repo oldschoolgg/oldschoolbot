@@ -4,7 +4,6 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { VolcanicMineGameTime } from '../../commands/Minion/volcanicmine';
 import { Emoji, Events } from '../../lib/constants';
-import { GearSetupTypes } from '../../lib/gear';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { VolcanicMineActivityTaskOptions } from '../../lib/types/minions';
@@ -23,7 +22,7 @@ export default class extends Task {
 	async run(data: VolcanicMineActivityTaskOptions) {
 		const { quantity, userID, channelID, duration } = data;
 		const user = await this.client.fetchUser(userID);
-		const userSkillingGear = user.getGear(GearSetupTypes.Skilling);
+		const userSkillingGear = user.getGear('skilling');
 		const userMiningLevel = user.skillLevel(SkillsEnum.Mining);
 		let boost = 1;
 		// Activity boosts

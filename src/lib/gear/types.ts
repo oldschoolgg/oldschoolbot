@@ -3,18 +3,12 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { Gear } from '../structures/Gear';
 
 export type UserFullGearSetup = {
-	[key in GearSetupTypes]: Gear;
+	[key in GearSetupType]: Gear;
 };
 
-export enum GearSetupTypes {
-	Melee = 'melee',
-	Mage = 'mage',
-	Range = 'range',
-	Misc = 'misc',
-	Skilling = 'skilling',
-	Wildy = 'wildy'
-}
-export type GearSetupType = 'melee' | 'mage' | 'range' | 'misc' | 'skilling' | 'wildy';
+export const GearSetupTypes = ['melee', 'mage', 'range', 'misc', 'skilling', 'wildy', 'fashion'] as const;
+
+export type GearSetupType = typeof GearSetupTypes[number];
 
 export enum GearStat {
 	AttackStab = 'attack_stab',

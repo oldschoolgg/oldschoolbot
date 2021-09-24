@@ -2,6 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { IsNull, Not } from 'typeorm';
 
+import { production } from '../../config';
 import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Emoji } from '../../lib/constants';
 import { getCollectionItems } from '../../lib/data/Collections';
@@ -103,7 +104,7 @@ export default class extends BotCommand {
 	}
 
 	async init() {
-		await this.cacheUsernames();
+		if (production) await this.cacheUsernames();
 	}
 
 	getPos(page: number, record: number) {

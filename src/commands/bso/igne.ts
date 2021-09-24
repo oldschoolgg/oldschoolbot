@@ -4,7 +4,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
-import { GearSetupTypes } from '../../lib/gear/types';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/Ignecarus';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BossInstance } from '../../lib/structures/Boss';
@@ -48,7 +47,7 @@ export default class extends BotCommand {
 				shield: 'Dragonfire shield',
 				neck: "Brawler's hook necklace"
 			}),
-			gearSetup: GearSetupTypes.Melee,
+			gearSetup: 'melee',
 			itemCost: async data => {
 				const userBank = data.user.bank();
 				const kc = data.user.getKC(Ignecarus.id);
