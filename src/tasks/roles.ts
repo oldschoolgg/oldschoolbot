@@ -25,7 +25,18 @@ const minigames = [
 	'volcanic_mine'
 ];
 
-const collections = ['overall', 'pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer'];
+const collections = [
+	'overall',
+	'pets',
+	'skilling',
+	'clues',
+	'bosses',
+	'minigames',
+	'raids',
+	'slayer',
+	'other',
+	'custom'
+];
 
 const mostSlayerPointsQuery = `SELECT id
 FROM users
