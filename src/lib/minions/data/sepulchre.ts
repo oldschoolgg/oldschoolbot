@@ -105,8 +105,7 @@ export const sepulchreBoosts = resolveNameBank({
 	'Hallowed grapple': 3,
 	'Hallowed focus': 3,
 	'Hallowed symbol': 3,
-	'Hallowed hammer': 3,
-	'Ring of endurance (uncharged)': 4
+	'Hallowed hammer': 3
 });
 
 export function openCoffin(floor: number): ItemBank {
