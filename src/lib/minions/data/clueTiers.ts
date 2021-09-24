@@ -10,6 +10,7 @@ const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 const ClueTiers: ClueTier[] = [
 	{
 		name: 'Beginner',
+		aliases: ['beginner', 'beg', 'b'],
 		table: Beginner,
 		id: 23_245,
 		scrollID: 23_182,
@@ -18,6 +19,7 @@ const ClueTiers: ClueTier[] = [
 	},
 	{
 		name: 'Easy',
+		aliases: ['easy', 'ez'],
 		table: Easy,
 		id: 20_546,
 		scrollID: 2677,
@@ -30,6 +32,7 @@ const ClueTiers: ClueTier[] = [
 	},
 	{
 		name: 'Medium',
+		aliases: ['medium', 'med'],
 		table: Medium,
 		id: 20_545,
 		scrollID: 2801,
@@ -42,6 +45,7 @@ const ClueTiers: ClueTier[] = [
 	},
 	{
 		name: 'Hard',
+		aliases: ['hard', 'hrd', 'h'],
 		table: Hard,
 		id: 20_544,
 		scrollID: 2722,
@@ -50,6 +54,7 @@ const ClueTiers: ClueTier[] = [
 	},
 	{
 		name: 'Elite',
+		aliases: ['elite', 'e'],
 		table: Elite,
 		id: 20_543,
 		scrollID: 12_073,
@@ -62,6 +67,7 @@ const ClueTiers: ClueTier[] = [
 	},
 	{
 		name: 'Master',
+		aliases: ['master', 'm'],
 		table: Master,
 		id: 19_836,
 		scrollID: 19_835,
@@ -74,6 +80,7 @@ const ClueTiers: ClueTier[] = [
 	},
 	{
 		name: 'Grandmaster',
+		aliases: ['grandmaster', 'gm', 'gmc'],
 		table: GrandmasterClueTable,
 		id: 19_838,
 		scrollID: 19_837,

@@ -7,7 +7,7 @@ import Clue from 'oldschooljs/dist/structures/Clue';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { LampTable } from '../xpLamps';
-import { AllBarrows, BattlestaffTable, FletchingTipsTable, runeAlchablesTable } from './sharedTables';
+import { AllBarrows, BattlestaffTable, runeAlchablesTable, StaffOrbTable } from './sharedTables';
 
 const ClueHunterTable = new LootTable()
 	.add('Helm of raedwald')
@@ -67,7 +67,7 @@ const LogsTable = new LootTable()
 const Supplies = new LootTable()
 	.add('Saradomin brew(4)', [6, 13])
 	.add('Super restore(4)', [6, 13])
-	.add(FletchingTipsTable, [100, 300], 1, { multiply: true });
+	.add(StaffOrbTable, [100, 300], 1, { multiply: true });
 
 const DyeTable = new LootTable()
 	.add('Third age dye', 2)
@@ -104,8 +104,8 @@ const table = new LootTable()
 	.add(AllBarrows, 3)
 	.add(LogsTable, 4)
 	.add(Supplies, 1, 5)
-	.oneIn(50, 'Holiday mystery box')
-	.add('Mysterious seed', [1, 2]);
+	.oneIn(90, 'Holiday mystery box')
+	.add('Mysterious seed');
 
 class GrandmasterClue extends Clue {
 	open(quantity: number) {

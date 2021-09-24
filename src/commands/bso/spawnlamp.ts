@@ -67,7 +67,7 @@ export default class extends BotCommand {
 		try {
 			const collected = await msg.channel.awaitMessages({
 				max: 1,
-				time: 14_000,
+				time: Time.Second * 20,
 				errors: ['time'],
 				filter: _msg =>
 					_msg.content === level.toString() &&

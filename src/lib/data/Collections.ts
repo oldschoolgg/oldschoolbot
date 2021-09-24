@@ -73,6 +73,7 @@ import {
 	dailyCL,
 	demonicGorillaCL,
 	discontinuedCustomPetsCL,
+	expertCapesCL,
 	fightCavesCL,
 	fishingTrawlerCL,
 	fossilIslandNotesCL,
@@ -99,6 +100,7 @@ import {
 	lastManStandingCL,
 	magicTrainingArenaCL,
 	mahoganyHomesCL,
+	masterCapesCL,
 	miscellaneousCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
@@ -986,6 +988,14 @@ export const allCollectionLogs: ICollection = {
 			Capes: {
 				counts: false,
 				items: capesCL
+			},
+			'Master Capes': {
+				counts: false,
+				items: masterCapesCL
+			},
+			'Expert Capes': {
+				counts: false,
+				items: expertCapesCL
 			},
 			Quest: {
 				counts: false,

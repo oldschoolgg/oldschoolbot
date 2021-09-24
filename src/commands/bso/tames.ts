@@ -256,7 +256,7 @@ export default class extends BotCommand {
 			description: 'Use to control and manage your tames.',
 			examples: ['+tames k fire giant', '+tames', '+tames select 1', '+tames setname LilBuddy'],
 			subcommands: true,
-			usage: '[k|c|select|setname|feed|merge] [input:...str]',
+			usage: '[k|c|select|setname|feed|merge|cancel] [input:...str]',
 			usageDelim: ' ',
 			aliases: ['tame', 't']
 		});
@@ -769,6 +769,24 @@ export default class extends BotCommand {
 		}
 
 		return msg.channel.send(reply);
+	}
+
+	async cancel(msg: KlasaMessage) {
+		const [selectedTame, currentTask] = await getUsersTame(msg.author);
+		if (!selectedTame) {
+			return msg.channel.send('You have no selected tame.');
+		}
+
+		if (!currentTask) {
+			return msg.channel.send(`${selectedTame.name} is not doing any activity, so there's nothing to cancel.`);
+		}
+
+		await msg.confirm(
+			'Are you sure you want to cancel your tames task? If they took any items (e.g food) on this trip, they will not be returned.'
+		);
+		await currentTask.remove();
+
+		return msg.channel.send("You cancelled your tames' task.");
 	}
 
 	async merge(msg: KlasaMessage, [tame = '']: [string]) {

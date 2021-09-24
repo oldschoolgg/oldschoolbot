@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
+import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
@@ -12,6 +13,7 @@ import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank, randomVariation, updateGPTrackSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { gorajanShardChance } from './dungeoneeringActivity';
 
 export default class extends Task {
 	async run(data: AgilityActivityTaskOptions) {
@@ -133,6 +135,23 @@ export default class extends Task {
 							"\n\n<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept.";
 						break;
 					}
+				}
+			}
+
+			if (course.id === 30) {
+				if (
+					user.skillLevel(SkillsEnum.Dungeoneering) >= 80 &&
+					roll(Math.floor((gorajanShardChance(user) * 2.5) / minutes))
+				) {
+					const item = roll(30) ? getOSItem('Dungeoneering dye') : getOSItem('Gorajan shards');
+
+					let quantity = 1;
+
+					if (isDoubleLootActive(this.client)) {
+						quantity *= 2;
+					}
+					loot.add(item.id, quantity);
+					str += `\nYou received **${quantity}x ${item.name}**`;
 				}
 			}
 		}
