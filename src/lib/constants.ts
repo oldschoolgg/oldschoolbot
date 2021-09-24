@@ -359,7 +359,10 @@ export const enum BitField {
 	HasPermanentTierOne = 12,
 	DisabledRandomEvents = 13,
 	PermanentIronman = 14,
-	AlwaysSmallBank = 15
+	AlwaysSmallBank = 15,
+	HasDexScroll = 16,
+	HasArcaneScroll = 17,
+	HasTornPrayerScroll = 18
 }
 
 interface BitFieldData {

@@ -1,15 +1,16 @@
+import { MessageAttachment } from 'discord.js';
 import { calcPercentOfNum, randInt, sumArr, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank } from 'oldschooljs';
 import { TzKalZuk } from 'oldschooljs/dist/simulation/monsters/special/TzKalZuk';
+import { table } from 'table';
 
-import { Activity } from '../../lib/constants';
+import { Activity, BitField } from '../../lib/constants';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { PercentCounter } from '../../lib/structures/PercentCounter';
 import { InfernoOptions } from '../../lib/types/minions';
@@ -17,6 +18,7 @@ import { formatDuration, percentChance, updateBankSetting } from '../../lib/util
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
+import itemID from '../../lib/util/itemID';
 
 const minimumRangeItems = [
 	'Amulet of fury',
@@ -42,66 +44,14 @@ const minimumMageItems = [
 
 export const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipment!.attack_magic));
 
+const itemRequirements = new Bank().add('Rune pouch');
+
 /**
  *
  * TODO---------
  * - Must have sacced 1 fire cape
  *
  */
-
-// const startMessages = [
-// 	"You're on your own now JalYt, you face certain death... prepare to fight for your life.",
-// 	'You will certainly die, JalYt, good luck.',
-// 	'Many think they are strong enough to defeat TzKal-Zuk, many are wrong... good luck JalYt.'
-// ];
-
-// function chart() {
-// 	const options = {
-// 		type: 'bar',
-// 		data: {
-// 			labels: [...Array(69).keys()].map(i => `${i + 1}`),
-// 			datasets: [
-// 				{
-// 					label: 'Deaths',
-// 					backgroundColor: 'rgb(255, 99, 132)',
-// 					borderColor: 'rgb(255, 99, 132)',
-// 					data: [1, 2, 5, 1, 2, 5, 23, 25, 112, 51, 251, 2],
-// 					fill: false
-// 				}
-// 			]
-// 		},
-// 		options: {
-// 			title: {
-// 				display: true,
-// 				text: 'Inferno Simulated Deaths'
-// 			}
-// 		}
-// 	};
-// 	return `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(options))}`;
-// }
-
-function gearCheck(user: KlasaUser): true | string {
-	const rangeGear = user.getGear('range');
-	const mageGear = user.getGear('mage');
-
-	if (!rangeGear.equippedWeapon() || !mageGear.equippedWeapon()) {
-		return "You aren't wearing a weapon in your range/mage setup.";
-	}
-
-	if (rangeGear.stats.attack_ranged < minimumRangeAttackStat) {
-		return `Your range setup needs a minimum of ${minimumRangeAttackStat} ranged attack. Try equipping some of these items: ${minimumRangeItems
-			.map(i => i.name)
-			.join(', ')}.`;
-	}
-
-	if (mageGear.stats.attack_magic < minimumMageAttackStat) {
-		return `Your range setup needs a minimum of ${minimumMageAttackStat} mage attack. Try equipping some of these items: ${minimumMageItems
-			.map(i => i.name)
-			.join(', ')}.`;
-	}
-
-	return true;
-}
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -116,17 +66,20 @@ export default class extends BotCommand {
 		});
 	}
 
-	basePreZukDeathChance(attempts: number) {
+	basePreZukDeathChance(_attempts: number) {
+		const attempts = Math.max(1, _attempts);
 		const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(45))) * 50);
 		return Math.max(Math.min(chance, 99), 5);
 	}
 
-	baseZukDeathChance(attempts: number) {
+	baseZukDeathChance(_attempts: number) {
+		const attempts = Math.max(1, _attempts);
 		const chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(65))) * 65);
 		return Math.max(Math.min(chance, 99), 5);
 	}
 
-	baseDuration(attempts: number) {
+	baseDuration(_attempts: number) {
+		const attempts = Math.max(1, _attempts);
 		const chance =
 			Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(65))) * 65) *
 				Time.Second *
@@ -148,8 +101,9 @@ export default class extends BotCommand {
 			zuk.push(res.zukDeathChance.value);
 			basePreZuk.push(this.basePreZukDeathChance(i));
 			baseZuk.push(this.baseZukDeathChance(i));
-			duration.push(res.duration);
+			duration.push(res.duration.value);
 		}
+		duration = duration.map(i => i / Time.Hour);
 		const options = {
 			type: 'line',
 			data: {
@@ -192,7 +146,7 @@ export default class extends BotCommand {
 						fill: false,
 						backgroundColor: 'rgb(0, 0, 0)',
 						borderColor: 'rgb(0, 0, 0)',
-						data: duration.map(i => i.value / Time.Hour),
+						data: duration,
 						yAxisID: 'right'
 					}
 				]
@@ -230,7 +184,17 @@ export default class extends BotCommand {
 				JSON.stringify(options)
 			)}`
 		).then(result => result.buffer());
-		return imageBuffer;
+
+		let arr = [['Attempts'].concat(options.data.datasets.map(i => i.label))];
+		for (let i = 1; i < options.data.datasets[0].data.length; i++) {
+			arr[i] = [(i - 1).toString()];
+			for (const dataset of options.data.datasets) {
+				arr[i].push(dataset.data[i - 1].toString());
+			}
+		}
+
+		const normalTable = table(arr);
+		return [imageBuffer, new MessageAttachment(Buffer.from(normalTable), 'Fletchables.txt')];
 	}
 
 	simulate(msg: KlasaMessage) {
@@ -245,31 +209,41 @@ export default class extends BotCommand {
 		return "After 10,000 attempts, you still didn't finish.";
 	}
 
-	infernoRun({ user, kc, attempts }: { user: KlasaUser; kc: number; attempts: number }) {
+	infernoRun({ user, attempts }: { user: KlasaUser; kc: number; attempts: number }) {
 		const userBank = user.bank();
-		const cost = new Bank();
-		cost.add('Saradomin brew(4)', 8);
-		cost.add('Super restore(4)', 12);
-		cost.add('Bastion potion(4)');
 
-		const duration = new PercentCounter(this.baseDuration(attempts));
-		const zukDeathChance = new PercentCounter(this.baseZukDeathChance(attempts));
-		const preZukDeathChance = new PercentCounter(this.basePreZukDeathChance(attempts));
+		const duration = new PercentCounter(this.baseDuration(attempts), 'time');
+		const zukDeathChance = new PercentCounter(this.baseZukDeathChance(attempts), 'percent');
+		const preZukDeathChance = new PercentCounter(this.basePreZukDeathChance(attempts), 'percent');
 
 		/**
+		 *
+		 * Item Requirements
+		 *
+		 */
+		if (!user.owns(itemRequirements)) {
+			return `To do the Inferno, you need these items: ${itemRequirements}.`;
+		}
+
+		/**
+		 *
+		 *
 		 * Gear
+		 *
+		 *
 		 */
 		const rangeGear = user.getGear('range');
 		const mageGear = user.getGear('mage');
 
-		if (rangeGear.hasEquipped('Elysian spirit shield') || mageGear.hasEquipped('Elysian spirit shield')) {
-			preZukDeathChance.add(-5, 'Ely');
-		}
+		preZukDeathChance.add(
+			rangeGear.hasEquipped('Elysian spirit shield') || mageGear.hasEquipped('Elysian spirit shield'),
+			-5,
+			'Ely'
+		);
 
-		if (rangeGear.hasEquipped('Ring of suffering') || mageGear.hasEquipped('Ring of suffering')) {
-			preZukDeathChance.add(-4, 'Ring of Suffering');
-			zukDeathChance.add(-4, 'Ring of Suffering');
-		}
+		const hasSuffering = rangeGear.hasEquipped('Ring of suffering') || mageGear.hasEquipped('Ring of suffering');
+		preZukDeathChance.add(hasSuffering, -4, 'Ring of Suffering');
+		zukDeathChance.add(hasSuffering, -4, 'Ring of Suffering');
 
 		const blowpipeData = user.settings.get(UserSettings.Blowpipe);
 		if (
@@ -281,24 +255,46 @@ export default class extends BotCommand {
 			return 'You need a Toxic blowpipe (with darts and scales equipped) to do the Inferno. You also need Darts and Scales equipped in it.';
 		}
 
+		const mageWeapons = {
+			'Ancient staff': 1,
+			'Master wand': 1,
+			'Nightmare staff': 5,
+			'Eldritch nightmare staff': 9,
+			'Kodai wand': 10
+		};
+		const rangeWeapons = { 'Armadyl crossbow': 1, 'Bow of faerdhinen': 10, 'Twisted bow': 12 };
+		for (const [name, setup, weapons] of [
+			['mage', mageGear, mageWeapons],
+			['range', rangeGear, rangeWeapons]
+		] as const) {
+			const weapon = setup.equippedWeapon();
+			if (!weapon || !Object.keys(weapons).map(itemID).includes(weapon.id)) {
+				return `You need one of these weapons in your ${name} setup: ${Object.keys(weapons).join(', ')}.`;
+			}
+		}
+
 		/** *
 		 *
 		 *
 		 * Consumables / Cost
 		 *
+		 *
 		 */
+		const cost = new Bank();
+		cost.add('Saradomin brew(4)', 8);
+		cost.add('Super restore(4)', 12);
+		cost.add('Bastion potion(4)');
+		cost.add('Stamina potion(4)');
 
 		/**
-		 * Players with over 100 Zuk KC and 99 Agility don't need a Stamina potion.
+		 *
+		 *
+		 * Other
+		 *
+		 *
 		 */
-		if (kc < 100 && user.skillLevel(SkillsEnum.Agility) === 99) {
-			if (userBank.has('Stamina potion(4)')) {
-				cost.add('Stamina potion(4)');
-			} else {
-				duration.add(-10, 'no Stam');
-				zukDeathChance.add(30, 'no Stam');
-			}
-		}
+		duration.add(user.bitfield.includes(BitField.HasDexScroll), 4, 'Dex. Prayer scroll');
+		duration.add(user.bitfield.includes(BitField.HasArcaneScroll), 4, 'Arc. Prayer scroll');
 
 		const fakeDuration = duration.value;
 
@@ -325,12 +321,8 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		const gearOkay = gearCheck(msg.author);
-		if (typeof gearOkay === 'string') {
-			return msg.channel.send(gearOkay);
-		}
 		if (msg.flagArgs.sim) {
-			msg.channel.send({ files: [await this.baseDeathChances(msg.author)] });
+			msg.channel.send({ files: [...(await this.baseDeathChances(msg.author))] });
 			return msg.channel.send(this.simulate(msg));
 		}
 
@@ -340,7 +332,7 @@ export default class extends BotCommand {
 
 		const res = this.infernoRun({ user: msg.author, kc: zukKC, attempts });
 
-		if (typeof res === 'string') return res;
+		if (typeof res === 'string') return msg.channel.send(res);
 		const { deathTime, diedPreZuk, zukDeathChance, diedZuk, duration, fakeDuration, preZukDeathChance } = res;
 
 		await addSubTaskToActivityTask<InfernoOptions>({
@@ -359,15 +351,19 @@ export default class extends BotCommand {
 		updateBankSetting(this.client, ClientSettings.EconomyStats.InfernoCost, fightCavesSupplies);
 
 		return msg.channel.send({
-			content: `**Duration:** ${formatDuration(duration.value)} (${(duration.value / 1000 / 60).toFixed(
-				2
-			)} minutes)
-**Boosts:** ${duration.messages.join(', ')}
-**Range Attack Bonus:** ${usersRangeStats.attack_ranged}
-**Zuk KC:** ${zukKC}
+			content: `
+**KC:** ${zukKC}
 **Attempts:** ${attempts}
-**Pre-Zuk Death Chance:** ${preZukDeathChance.value}% ${preZukDeathChance.messages.join(', ')}
-**Zuk Death Chance:** ${zukDeathChance.value}% ${zukDeathChance.messages.join(', ')}
+
+**Duration:** ${formatDuration(duration.value)} (${(duration.value / 1000 / 60).toFixed(2)} minutes)
+**Boosts:** ${duration.messages.join(', ')} *(You didn't get these: ||${duration.missed.join(', ')}||)*
+**Range Attack Bonus:** ${usersRangeStats.attack_ranged}
+**Pre-Zuk Death Chance:** ${preZukDeathChance.value}% ${preZukDeathChance.messages.join(
+				', '
+			)} *(You didn't get these: ||${preZukDeathChance.missed.join(', ')}||)*
+**Zuk Death Chance:** ${zukDeathChance.value}% ${zukDeathChance.messages.join(
+				', '
+			)} *(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*
 
 **Removed from your bank:** ${new Bank(fightCavesSupplies)}`,
 			files: [
@@ -394,25 +390,3 @@ export default class extends BotCommand {
 // 	let baseTime = Time.Hour * 2;
 // 	const gear = user.getGear('range');
 // 	let debugStr = '';
-
-// 	// Reduce time based on KC
-// 	const kc = user.getKC(TzKalZuk.id);
-// 	const percentIncreaseFromKC = Math.min(50, kc);
-// 	baseTime = reduceNumByPercent(baseTime, percentIncreaseFromKC);
-// 	debugStr += `${percentIncreaseFromKC}% from KC`;
-
-// 	// Reduce time based on Gear
-// 	const usersRangeStats = gear.stats;
-// 	const percentIncreaseFromRangeStats =
-// 		Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, maxOffenceStats.attack_ranged)) / 2;
-// 	baseTime = reduceNumByPercent(baseTime, percentIncreaseFromRangeStats);
-
-// 	if (user.hasItemEquippedOrInBank('Twisted bow')) {
-// 		debugStr += ', 15% from Twisted bow';
-// 		baseTime = reduceNumByPercent(baseTime, 15);
-// 	}
-
-// 	debugStr += `, ${percentIncreaseFromRangeStats}% from Gear`;
-
-// 	return [baseTime, debugStr];
-// }

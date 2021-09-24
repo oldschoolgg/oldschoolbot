@@ -128,9 +128,9 @@ export default class extends Task {
 			},
 			await chatHeadImage({
 				content: `You are very impressive for a JalYt. You managed to defeat TzKal-Zul for the ${formatOrdinal(
-					user.getKC(Monsters.TzTokJad.id)
+					user.getKC(Monsters.TzKalZuk.id)
 				)} time! Please accept this cape as a token of appreciation.`,
-				head: 'mejJal'
+				head: 'ketKeh'
 			}),
 			data,
 			loot.bank
