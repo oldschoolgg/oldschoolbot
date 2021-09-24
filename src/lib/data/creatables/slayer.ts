@@ -152,6 +152,14 @@ export const slayerCreatables: Createable[] = [
 		GPCost: 0
 	},
 	{
+		name: 'Dragon hasta',
+		inputItems: resolveNameBank({
+			'Broken dragon hasta': 1
+		}),
+		outputItems: resolveNameBank({ 'Dragon hasta': 1 }),
+		GPCost: 0
+	},
+	{
 		name: 'Uncharged black mask',
 		inputItems: resolveNameBank({
 			'Black mask (10)': 1
