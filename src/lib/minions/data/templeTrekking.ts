@@ -2,7 +2,7 @@ import { Time } from 'e';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
-import { GearSetupTypes, GearStat } from '../../gear';
+import { GearStat } from '../../gear';
 import { Skills } from '../../types';
 import { GearRequirements } from '../types';
 
@@ -30,7 +30,7 @@ export const difficulties: TrekDifficulty[] = [
 		difficulty: 'easy',
 		minCombat: 45,
 		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
+			melee: {
 				[GearStat.AttackCrush]: 20,
 				[GearStat.AttackStab]: 20,
 				[GearStat.AttackSlash]: 20,
@@ -49,7 +49,7 @@ export const difficulties: TrekDifficulty[] = [
 		difficulty: 'medium',
 		minCombat: 70,
 		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
+			melee: {
 				[GearStat.AttackCrush]: 30,
 				[GearStat.AttackStab]: 30,
 				[GearStat.AttackSlash]: 30,
@@ -68,7 +68,7 @@ export const difficulties: TrekDifficulty[] = [
 		difficulty: 'hard',
 		minCombat: 110,
 		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
+			melee: {
 				[GearStat.AttackCrush]: 40,
 				[GearStat.AttackStab]: 40,
 				[GearStat.AttackSlash]: 40,

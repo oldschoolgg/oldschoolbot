@@ -20,13 +20,15 @@ export default class extends Extendable {
 		const mage = this.getGear('mage');
 		const skilling = this.getGear('skilling');
 		const wildy = this.getGear('wildy');
+		const fashion = this.getGear('fashion');
 		return {
 			melee,
 			range,
 			misc,
 			skilling,
 			mage,
-			wildy
+			wildy,
+			fashion
 		};
 	}
 
@@ -48,7 +50,10 @@ export default class extends Extendable {
 		return this.hasItemEquippedAnywhere(getSimilarItems(id), false) || this.numItemsInBankSync(id, true) > 0;
 	}
 
-	public getGear(this: User, setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling' | 'wildy'): GearSetup {
+	public getGear(
+		this: User,
+		setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling' | 'wildy' | 'fashion'
+	): GearSetup {
 		return new Gear(this.settings.get(resolveGearTypeSetting(setup)) ?? defaultGear);
 	}
 }

@@ -11,7 +11,7 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
 import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
-import { GearSetupTypes } from './gear/types';
+import { GearSetupType, GearSetupTypes } from './gear/types';
 import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
@@ -225,8 +225,8 @@ export function generateContinuationChar(user: KlasaUser) {
 		.join('')}`;
 }
 
-export function isValidGearSetup(str: string): str is GearSetupTypes {
-	return ['melee', 'mage', 'range', 'skilling', 'misc', 'wildy'].includes(str);
+export function isValidGearSetup(str: string): str is GearSetupType {
+	return GearSetupTypes.includes(str as any);
 }
 
 /**
