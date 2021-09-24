@@ -42,8 +42,6 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [cmd, input, str]: [string, KlasaUser | string | undefined, string | undefined]) {
-		if (msg.guild!.id !== SupportServer) return null;
-
 		switch (cmd.toLowerCase()) {
 			case 'git': {
 				try {
@@ -116,6 +114,8 @@ ${
 				return msg.channel.send(`Time Remaining: ${formatDuration(diff)}`);
 			}
 		}
+
+		if (msg.guild!.id !== SupportServer) return null;
 
 		const isMod = msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator);
 		const isOwner = this.client.owners.has(msg.author);
