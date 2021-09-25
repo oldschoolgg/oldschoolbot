@@ -1,3 +1,4 @@
+import { dyedItems } from '../dyedItems';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 
@@ -309,42 +310,6 @@ const source: [string, (string | number)[]][] = [
 		]
 	],
 	['Attack cape', ['Max cape', 'Attack cape(t)']],
-	[
-		'Drygore rapier',
-		['Drygore rapier (ice)', 'Drygore rapier (blood)', 'Drygore rapier (shadow)', 'Drygore rapier (3a)']
-	],
-	[
-		'Offhand drygore rapier',
-		[
-			'Offhand drygore rapier (ice)',
-			'Offhand drygore rapier (blood)',
-			'Offhand drygore rapier (shadow)',
-			'Offhand drygore rapier (3a)'
-		]
-	],
-	[
-		'Drygore longsword',
-		['Drygore longsword (ice)', 'Drygore longsword (blood)', 'Drygore longsword (shadow)', 'Drygore longsword (3a)']
-	],
-	[
-		'Offhand drygore longsword',
-		[
-			'Offhand drygore longsword (ice)',
-			'Offhand drygore longsword (blood)',
-			'Offhand drygore longsword (shadow)',
-			'Offhand drygore longsword (3a)'
-		]
-	],
-	['Drygore mace', ['Drygore mace (ice)', 'Drygore mace (blood)', 'Drygore mace (shadow)', 'Drygore mace (3a)']],
-	[
-		'Offhand drygore mace',
-		[
-			'Offhand drygore mace (ice)',
-			'Offhand drygore mace (blood)',
-			'Offhand drygore mace (shadow)',
-			'Offhand drygore mace (3a)'
-		]
-	],
 	['Agility master cape', ['Support cape']],
 	['Dungeoneering master cape', ['Support cape']],
 	['Thieving master cape', ['Support cape']],
@@ -390,16 +355,6 @@ const source: [string, (string | number)[]][] = [
 	['Angler top', ['Spirit angler top']],
 	['Angler waders', ['Spirit angler waders']],
 	['Angler boots', ['Spirit angler boots']],
-	[
-		'Dwarven warhammer',
-		[
-			'Dwarven warhammer (ice)',
-			'Dwarven warhammer (blood)',
-			'Dwarven warhammer (shadow)',
-			'Dwarven warhammer (3a)',
-			'Dwarven warnana'
-		]
-	],
 	['Flippers', ['Dark flippers']],
 	[
 		'Merfolk trident',
@@ -415,9 +370,6 @@ const source: [string, (string | number)[]][] = [
 			'Uncharged toxic trident (e)'
 		]
 	],
-	['Zaryte bow', ['Hellfire bow', 'Zaryte bownana']],
-	['Twisted bow', ['Hellfire bow', 'Twisted bownana']],
-	['Hellfire bow', ['Hellfire bownana']],
 	['Ghrazi rapier', ['Holy ghrazi rapier']],
 	['Scythe of vitur', ['Sanguine scythe of vitur', 'Holy scythe of vitur']],
 	['Scythe of vitur (uncharged)', ['Sanguine scythe of vitur (uncharged)', 'Holy scythe of vitur (uncharged)']],
@@ -425,26 +377,13 @@ const source: [string, (string | number)[]][] = [
 	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']],
 	['Runecraft cape', ['Max cape', 'Runecraft cape(t)']],
 	['Crafting cape', ['Max cape', 'Crafting cape(t)']],
-	['Gorajan warrior helmet', ['Gorajan warrior helmet (Primal)']],
-	['Gorajan warrior top', ['Gorajan warrior top (Primal)']],
-	['Gorajan warrior legs', ['Gorajan warrior legs (Primal)']],
-	['Gorajan warrior gloves', ['Gorajan warrior gloves (Primal)']],
-	['Gorajan warrior boots', ['Gorajan warrior boots (Primal)']],
-	['Gorajan occult helmet', ['Gorajan occult helmet (Celestial)']],
-	['Gorajan occult top', ['Gorajan occult top (Celestial)']],
-	['Gorajan occult legs', ['Gorajan occult legs (Celestial)']],
-	['Gorajan occult gloves', ['Gorajan occult gloves (Celestial)']],
-	['Gorajan occult boots', ['Gorajan occult boots (Celestial)']],
-	['Gorajan archer helmet', ['Gorajan archer helmet (Sagittarian)']],
-	['Gorajan archer top', ['Gorajan archer top (Sagittarian)']],
-	['Gorajan archer legs', ['Gorajan archer legs (Sagittarian)']],
-	['Gorajan archer gloves', ['Gorajan archer gloves (Sagittarian)']],
-	['Gorajan archer boots', ['Gorajan archer boots (Sagittarian)']],
 	['Salve amulet', ['Salve amulet(ei)', 'Salve amulet(i)', 'Salve amulet (e)']],
 	['Salve amulet (e)', ['Salve amulet(ei)']],
 	['Salve amulet (i)', ['Salve amulet(ei)']]
 ];
-
+for (const { baseItem, dyedVersions } of dyedItems) {
+	source.push([baseItem.name, dyedVersions.map(i => i.item.id)]);
+}
 export const similarItems: Map<number, number[]> = new Map(
 	source.map(entry => [itemID(entry[0]), resolveItems(entry[1])])
 );

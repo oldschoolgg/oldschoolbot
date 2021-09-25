@@ -1013,6 +1013,16 @@ setCustomItem(40_074, 'Castle wars cape (advanced)', 'Fire cape', {}, 1_000_000)
 setCustomItem(40_075, 'Castle wars cape (expert)', 'Fire cape', {}, 1_000_000);
 setCustomItem(40_076, 'Castle wars cape (legend)', 'Fire cape', {}, 1_000_000);
 
+setCustomItem(40_077, 'Zaryte bow (ice)', 'Zaryte bow', {}, 500_000_000);
+setCustomItem(40_078, 'Zaryte bow (shadow)', 'Zaryte bow', {}, 500_000_000);
+setCustomItem(40_079, 'Zaryte bow (blood)', 'Zaryte bow', {}, 500_000_000);
+setCustomItem(40_080, 'Zaryte bow (3a)', 'Zaryte bow', {}, 500_000_000);
+
+setCustomItem(40_081, 'Twisted bow (ice)', 'Twisted bow', {}, 500_000_000);
+setCustomItem(40_082, 'Twisted bow (shadow)', 'Twisted bow', {}, 500_000_000);
+setCustomItem(40_083, 'Twisted bow (blood)', 'Twisted bow', {}, 500_000_000);
+setCustomItem(40_084, 'Twisted bow (3a)', 'Twisted bow', {}, 500_000_000);
+
 /**
  * Non-mystery box items
  *
@@ -1836,6 +1846,7 @@ setCustomItem(48_251, 'Witch skirt', 'Bronze platelegs', {}, 100_000);
 setCustomItem(48_252, 'Witch cloak', 'Red cape', {}, 100_000);
 setCustomItem(48_253, 'Ring of snow', 'Emerald ring', {}, 100_000);
 setCustomItem(48_254, 'Dungeoneering dye', 'Coal', {}, 100_000);
+
 /**
  * Misc Items
  *

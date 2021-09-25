@@ -5,6 +5,7 @@ import { Bank, Clues, Monsters } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 import { table } from 'table';
 
+import { dyedItems } from '../dyedItems';
 import { kalphiteKingLootTable, KalphiteKingMonster } from '../kalphiteking';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
 import AbyssalDragon from '../minions/data/killableMonsters/custom/AbyssalDragon';
@@ -1126,55 +1127,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Dyed Items': {
 				counts: false,
-				items: resolveItems([
-					'Drygore longsword (ice)',
-					'Drygore longsword (blood)',
-					'Drygore longsword (shadow)',
-					'Drygore longsword (3a)',
-					'Offhand drygore longsword (ice)',
-					'Offhand drygore longsword (blood)',
-					'Offhand drygore longsword (shadow)',
-					'Offhand drygore longsword (3a)',
-					'Drygore mace (ice)',
-					'Drygore mace (blood)',
-					'Drygore mace (shadow)',
-					'Drygore mace (3a)',
-					'Offhand drygore mace (ice)',
-					'Offhand drygore mace (blood)',
-					'Offhand drygore mace (shadow)',
-					'Offhand drygore mace (3a)',
-					'Drygore rapier (ice)',
-					'Drygore rapier (blood)',
-					'Drygore rapier (shadow)',
-					'Drygore rapier (3a)',
-					'Offhand drygore rapier (ice)',
-					'Offhand drygore rapier (blood)',
-					'Offhand drygore rapier (shadow)',
-					'Offhand drygore rapier (3a)',
-					'Dwarven warhammer (ice)',
-					'Dwarven warhammer (blood)',
-					'Dwarven warhammer (shadow)',
-					'Dwarven warhammer (3a)',
-					'Dwarven warnana',
-					'Twisted bownana',
-					'Zaryte bownana',
-					'Hellfire bownana',
-					'Gorajan warrior helmet (Primal)',
-					'Gorajan warrior top (Primal)',
-					'Gorajan warrior legs (Primal)',
-					'Gorajan warrior gloves (Primal)',
-					'Gorajan warrior boots (Primal)',
-					'Gorajan occult helmet (Celestial)',
-					'Gorajan occult top (Celestial)',
-					'Gorajan occult legs (Celestial)',
-					'Gorajan occult gloves (Celestial)',
-					'Gorajan occult boots (Celestial)',
-					'Gorajan archer helmet (Sagittarian)',
-					'Gorajan archer top (Sagittarian)',
-					'Gorajan archer legs (Sagittarian)',
-					'Gorajan archer gloves (Sagittarian)',
-					'Gorajan archer boots (Sagittarian)'
-				])
+				items: dyedItems.map(i => i.dyedVersions.map(i => i.item.id)).flat(2)
 			}
 		}
 	}

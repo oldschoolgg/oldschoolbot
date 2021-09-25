@@ -143,7 +143,6 @@ export default class extends BotCommand {
 			let msgs = [];
 
 			const rangeGear = user.getGear('range');
-			const equippedWeapon = rangeGear.equippedWeapon();
 			if (rangeGear.hasEquipped(pernixOutfit, true)) {
 				const percent = isSolo ? 20 : 8;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
@@ -157,7 +156,7 @@ export default class extends BotCommand {
 					}
 				}
 				if (i > 0) {
-					msgs.push(`${i}% boost for pernix items`);
+					msgs.push(`${i.toFixed(2)}% boost for pernix items`);
 					effectiveTime = reduceNumByPercent(effectiveTime, i);
 				}
 			}
@@ -177,7 +176,7 @@ export default class extends BotCommand {
 				const percent = isSolo ? 20 : 14;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for Zaryte bow`);
-			} else if (equippedWeapon?.id === itemID('Twisted bow')) {
+			} else if (rangeGear.hasEquipped('Twisted bow')) {
 				const percent = isSolo ? 15 : 9;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for Twisted bow`);
