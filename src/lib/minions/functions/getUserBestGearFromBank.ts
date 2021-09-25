@@ -44,6 +44,7 @@ export default function getUserBestGearFromBank(
 				case 'skilling':
 				case 'misc':
 				case 'fashion':
+				case 'other':
 					break;
 				case 'melee':
 					gearStatExtra = GearStat.MeleeStrength;

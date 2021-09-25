@@ -3,7 +3,7 @@ import { Extendable, ExtendableStore } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { getSimilarItems, similarItems } from '../../lib/data/similarItems';
-import { defaultGear, resolveGearTypeSetting } from '../../lib/gear';
+import { defaultGear, GearSetupType, resolveGearTypeSetting } from '../../lib/gear';
 import { GearSetup, UserFullGearSetup } from '../../lib/gear/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Gear } from '../../lib/structures/Gear';
@@ -22,6 +22,8 @@ export default class extends Extendable {
 		const skilling = this.getGear('skilling');
 		const wildy = this.getGear('wildy');
 		const fashion = this.getGear('fashion');
+		const other = this.getGear('other');
+
 		return {
 			melee,
 			range,
@@ -29,7 +31,8 @@ export default class extends Extendable {
 			skilling,
 			mage,
 			wildy,
-			fashion
+			fashion,
+			other
 		};
 	}
 
@@ -55,10 +58,7 @@ export default class extends Extendable {
 		return this.settings.get(UserSettings.Minion.EquippedPet);
 	}
 
-	public getGear(
-		this: User,
-		setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling' | 'wildy' | 'fashion'
-	): GearSetup {
+	public getGear(this: User, setup: GearSetupType): GearSetup {
 		return new Gear(this.settings.get(resolveGearTypeSetting(setup)) ?? defaultGear);
 	}
 }

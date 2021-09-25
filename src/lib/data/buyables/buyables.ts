@@ -770,6 +770,14 @@ const Buyables: Buyable[] = [
 			return [true];
 		}
 	},
+	{
+		name: 'Salve amulet',
+		gpCost: 200_000,
+		skillsNeeded: {
+			crafting: 35
+		},
+		qpRequired: 58
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,

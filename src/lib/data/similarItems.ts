@@ -439,7 +439,10 @@ const source: [string, (string | number)[]][] = [
 	['Gorajan archer top', ['Gorajan archer top (Sagittarian)']],
 	['Gorajan archer legs', ['Gorajan archer legs (Sagittarian)']],
 	['Gorajan archer gloves', ['Gorajan archer gloves (Sagittarian)']],
-	['Gorajan archer boots', ['Gorajan archer boots (Sagittarian)']]
+	['Gorajan archer boots', ['Gorajan archer boots (Sagittarian)']],
+	['Salve amulet', ['Salve amulet(ei)', 'Salve amulet(i)', 'Salve amulet (e)']],
+	['Salve amulet (e)', ['Salve amulet(ei)']],
+	['Salve amulet (i)', ['Salve amulet(ei)']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(

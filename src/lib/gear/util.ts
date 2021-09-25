@@ -32,6 +32,8 @@ export function resolveGearTypeSetting(type: GearSetupType) {
 			return UserSettings.Gear.Wildy;
 		case 'fashion':
 			return UserSettings.Gear.Fashion;
+		case 'other':
+			return UserSettings.Gear.Other;
 	}
 }
 

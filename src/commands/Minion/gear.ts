@@ -2,6 +2,7 @@ import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../lib/constants';
 import { GearSetupType, GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
 import { generateAllGearImage, generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { minionNotBusy } from '../../lib/minions/decorators';
@@ -40,6 +41,10 @@ export default class extends BotCommand {
 				'Are you sure you want to swap your gear with a wilderness setup? You can lose items on your wilderness setup!'
 			);
 			msg.flagArgs.cf = '1';
+		}
+
+		if ([gear1, gear2].includes('other') && msg.author.perkTier < PerkTier.Four) {
+			return msg.channel.send(PATRON_ONLY_GEAR_SETUP);
 		}
 
 		const _gear1 = msg.author.getGear(gear1);
