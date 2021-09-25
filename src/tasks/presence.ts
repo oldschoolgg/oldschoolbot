@@ -16,9 +16,7 @@ export default class extends Task {
 		}
 
 		const set = () => {
-			let str = isDoubleLootActive(this.client, 0)
-				? 'Double Loot is active!'
-				: `${this.client.options.prefix}info`;
+			let str = isDoubleLootActive(this.client) ? 'Double Loot is active!' : `${this.client.options.prefix}info`;
 			if (this.client.user!.presence.activities[0]?.name !== str) {
 				this.client.user?.setActivity(str);
 			}
