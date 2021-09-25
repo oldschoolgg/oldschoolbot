@@ -1,6 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../lib/constants';
 import { GearSetupType, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { requiresMinion } from '../../lib/minions/decorators';
@@ -35,6 +36,10 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 
 		if (gearType === 'wildy') await msg.confirm(WILDY_PRESET_WARNING_MESSAGE);
+
+		if (gearType === 'other' && msg.author.perkTier < PerkTier.Four) {
+			return msg.channel.send(PATRON_ONLY_GEAR_SETUP);
+		}
 
 		await msg.author.queueFn(async () => {
 			const { gearToEquip, userFinalBank } = getUserBestGearFromBank(
