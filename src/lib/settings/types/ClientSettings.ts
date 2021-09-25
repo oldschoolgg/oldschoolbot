@@ -91,6 +91,8 @@ export namespace ClientSettings {
 		export const MonkeyRumbleLoot = T<O.Readonly<ItemBank>>('mr_loot');
 		export const DroppedItems = T<O.Readonly<ItemBank>>('dropped_items');
 
+		export const RunecraftCost = T<O.Readonly<ItemBank>>('runecraft_cost');
+
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');
 		export const GPSourceAlching = T<number>('gp_alch');

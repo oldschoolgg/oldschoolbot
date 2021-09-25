@@ -3,7 +3,7 @@ import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { nexCL } from './data/CollectionsExport';
-import { GearSetupTypes, GearStat } from './gear';
+import { GearStat } from './gear';
 import { KillableMonster } from './minions/types';
 import { makeKillTable } from './util/setCustomMonster';
 
@@ -52,7 +52,7 @@ export const NexMonster: KillableMonster = {
 	attackStyleToUse: GearStat.AttackRanged,
 	attackStylesUsed: [GearStat.AttackRanged],
 	minimumGearRequirements: {
-		[GearSetupTypes.Range]: {
+		range: {
 			[GearStat.AttackRanged]: 33 + 20 + 4 + 10 + 7 + 8 + 70 + 12 + 7
 		}
 	}

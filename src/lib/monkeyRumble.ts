@@ -14,7 +14,7 @@ import getOSItem from './util/getOSItem';
 interface MonkeyTier {
 	id: number;
 	name: string;
-	greegree: Item;
+	greegrees: Item[];
 	image: Promise<Image>;
 	strengthLevelReq: number;
 	gamesReq: number;
@@ -24,7 +24,7 @@ export const monkeyTiers: MonkeyTier[] = [
 	{
 		id: 1,
 		name: 'Beginner',
-		greegree: getOSItem('Beginner rumble greegree'),
+		greegrees: [getOSItem('Beginner rumble greegree')],
 		image: fs.readFile('./src/lib/resources/images/mmmr/beginnermonkey.png').then(canvasImageFromBuffer),
 		strengthLevelReq: 80,
 		gamesReq: 0
@@ -32,7 +32,7 @@ export const monkeyTiers: MonkeyTier[] = [
 	{
 		id: 2,
 		name: 'Intermediate',
-		greegree: getOSItem('Intermediate rumble greegree'),
+		greegrees: [getOSItem('Intermediate rumble greegree')],
 		image: fs.readFile('./src/lib/resources/images/mmmr/intermediatemonkey.png').then(canvasImageFromBuffer),
 		strengthLevelReq: 90,
 		gamesReq: 50
@@ -40,7 +40,7 @@ export const monkeyTiers: MonkeyTier[] = [
 	{
 		id: 3,
 		name: 'Ninja',
-		greegree: getOSItem('Ninja rumble greegree'),
+		greegrees: [getOSItem('Ninja rumble greegree')],
 		image: fs.readFile('./src/lib/resources/images/mmmr/ninjamonkey.png').then(canvasImageFromBuffer),
 		strengthLevelReq: 100,
 		gamesReq: 100
@@ -48,7 +48,7 @@ export const monkeyTiers: MonkeyTier[] = [
 	{
 		id: 4,
 		name: 'Expert Ninja',
-		greegree: getOSItem('Expert ninja rumble greegree'),
+		greegrees: [getOSItem('Expert ninja rumble greegree')],
 		image: fs.readFile('./src/lib/resources/images/mmmr/expertninjamonkey.png').then(canvasImageFromBuffer),
 		strengthLevelReq: 110,
 		gamesReq: 200
@@ -56,7 +56,7 @@ export const monkeyTiers: MonkeyTier[] = [
 	{
 		id: 5,
 		name: 'Elder',
-		greegree: getOSItem('Elder rumble greegree'),
+		greegrees: [getOSItem('Elder rumble greegree'), getOSItem('Gorilla rumble greegree')],
 		image: fs.readFile('./src/lib/resources/images/mmmr/eldermonkey.png').then(canvasImageFromBuffer),
 		strengthLevelReq: 120,
 		gamesReq: 500
@@ -237,7 +237,7 @@ export function getRandomMonkey(exclude: Monkey[], chanceOfSpecial: number): Mon
 
 export function monkeyTierOfUser(user: KlasaUser) {
 	for (const tier of [...monkeyTiers].reverse()) {
-		if (user.hasItemEquippedOrInBank(tier.greegree.id)) {
+		if (tier.greegrees.some(gg => user.hasItemEquippedOrInBank(gg.id))) {
 			return tier.id;
 		}
 	}

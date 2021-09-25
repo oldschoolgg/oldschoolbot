@@ -1701,6 +1701,28 @@ const Createables: Createable[] = [
 			[itemID('Kodai wand')]: 1
 		}
 	},
+	{
+		name: 'Salve amulet (e)',
+		inputItems: resolveNameBank({
+			'Salve amulet': 1,
+			"Tarn's diary": 1
+		}),
+		outputItems: {
+			[itemID('Salve amulet (e)')]: 1,
+			[itemID("Tarn's diary")]: 1
+		}
+	},
+	{
+		name: 'Salve amulet(ei)',
+		inputItems: resolveNameBank({
+			'Salve amulet(i)': 1,
+			"Tarn's diary": 1
+		}),
+		outputItems: {
+			[itemID('Salve amulet(ei)')]: 1,
+			[itemID("Tarn's diary")]: 1
+		}
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,

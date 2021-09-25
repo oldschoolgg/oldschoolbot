@@ -6,7 +6,6 @@ import { Bank } from 'oldschooljs';
 import { Color } from '../../lib/constants';
 import { defaultGear, globalPresets, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import { GearSetupTypes } from '../../lib/gear/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GearPresetsTable } from '../../lib/typeorm/GearPresetsTable.entity';
@@ -182,7 +181,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`The maximum amount of gear presets you can have is ${max}.`);
 		}
 
-		let gearSetup = msg.author.rawGear()[setup as GearSetupTypes];
+		let gearSetup = msg.author.rawGear()[setup];
 		const preset = new GearPresetsTable();
 
 		preset.Head = gearSetup.head?.item ?? null;

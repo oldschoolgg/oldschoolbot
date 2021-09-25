@@ -15,7 +15,7 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Activity } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
-import { GearSetupTypes, GearStat } from '../../lib/gear';
+import { GearSetupType, GearStat } from '../../lib/gear';
 import {
 	boostCannon,
 	boostCannonMulti,
@@ -70,9 +70,9 @@ const invalidMonsterMsg = (prefix: string) =>
 const { floor } = Math;
 
 const gorajanBoosts = [
-	[gorajanArcherOutfit, GearSetupTypes.Range],
-	[gorajanWarriorOutfit, GearSetupTypes.Melee],
-	[gorajanOccultOutfit, GearSetupTypes.Mage]
+	[gorajanArcherOutfit, 'range'],
+	[gorajanWarriorOutfit, 'melee'],
+	[gorajanOccultOutfit, 'mage']
 ] as const;
 
 function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles[]): [number, string] {
@@ -193,7 +193,7 @@ export default class extends BotCommand {
 			timeToFinish *= 0.6;
 			boosts.push('40% boost for Dwarven warhammer');
 		}
-		if (msg.author.getGear(GearSetupTypes.Wildy).hasEquipped(['Hellfire bow']) && monster.wildy) {
+		if (msg.author.getGear('wildy').hasEquipped(['Hellfire bow']) && monster.wildy) {
 			timeToFinish /= 3;
 			boosts.push('3x boost for Hellfire bow');
 		}
@@ -450,15 +450,15 @@ export default class extends BotCommand {
 		// Check food
 		let foodStr: undefined | string = undefined;
 
-		let gearToCheck = GearSetupTypes.Melee;
+		let gearToCheck: GearSetupType = 'melee';
 
 		// Check if the gear should be changed to another combat style or the wilderness preset.
 		if (monster.wildy) {
-			gearToCheck = GearSetupTypes.Wildy;
+			gearToCheck = 'wildy';
 		} else if (monster.attackStyleToUse === GearStat.AttackMagic) {
-			gearToCheck = GearSetupTypes.Mage;
+			gearToCheck = 'mage';
 		} else if (monster.attackStyleToUse === GearStat.AttackRanged) {
-			gearToCheck = GearSetupTypes.Range;
+			gearToCheck = 'range';
 		}
 
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
@@ -472,7 +472,7 @@ export default class extends BotCommand {
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
 				attackStylesUsed: monster.wildy
-					? [GearSetupTypes.Wildy]
+					? ['wildy']
 					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced
 			});

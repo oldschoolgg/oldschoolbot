@@ -33,6 +33,38 @@ export interface Buyable {
 	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
 }
 
+const randomEventBuyables: Buyable[] = [
+	{
+		name: 'Prince outfit',
+		itemCost: resolveNameBank({
+			'Frog token': 1
+		}),
+		outputItems: resolveNameBank({
+			'Prince tunic': 1,
+			'Prince leggings': 1
+		})
+	},
+	{
+		name: 'Princess outfit',
+		itemCost: resolveNameBank({
+			'Frog token': 1
+		}),
+		outputItems: resolveNameBank({
+			'Princess blouse': 1,
+			'Princess skirt': 1
+		})
+	},
+	{
+		name: 'Frog mask',
+		itemCost: resolveNameBank({
+			'Frog token': 1
+		}),
+		outputItems: resolveNameBank({
+			'Frog mask': 1
+		})
+	}
+];
+
 const cmCapes: Buyable[] = [
 	{
 		name: "Xeric's guard",
@@ -655,6 +687,13 @@ const Buyables: Buyable[] = [
 		gpCost: 300
 	},
 	{
+		name: 'Empty bucket pack',
+		outputItems: {
+			[itemID('Bucket')]: 100
+		},
+		gpCost: 10_000
+	},
+	{
 		name: 'Compost',
 		outputItems: {
 			[itemID('Compost')]: 1
@@ -731,6 +770,14 @@ const Buyables: Buyable[] = [
 			return [true];
 		}
 	},
+	{
+		name: 'Salve amulet',
+		gpCost: 200_000,
+		skillsNeeded: {
+			crafting: 35
+		},
+		qpRequired: 58
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -745,7 +792,8 @@ const Buyables: Buyable[] = [
 	...capeBuyables,
 	...miningBuyables,
 	...runeBuyables,
-	...bsoBuyables
+	...bsoBuyables,
+	...randomEventBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

@@ -14,6 +14,7 @@ import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import resolveItems from '../util/resolveItems';
+import { XPLamps } from '../xpLamps';
 import { allCollectionLogs, collectionLogRoleCategories } from './Collections';
 import {
 	allPetIDs,
@@ -1136,6 +1137,11 @@ export const filterableTypes: Filterable[] = [
 		name: 'Fruit',
 		aliases: ['fruit'],
 		items: monkeyEatables.map(i => i.item.id)
+	},
+	{
+		name: 'Lamps',
+		aliases: ['lamps'],
+		items: XPLamps.map(i => i.itemID)
 	}
 ];
 

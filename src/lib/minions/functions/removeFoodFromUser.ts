@@ -5,7 +5,7 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import { Emoji } from '../../constants';
 import { Eatables } from '../../data/eatables';
-import { GearSetupTypes } from '../../gear/types';
+import { GearSetupType } from '../../gear';
 import { ClientSettings } from '../../settings/types/ClientSettings';
 import { ItemBank } from '../../types';
 import { updateBankSetting } from '../../util';
@@ -25,7 +25,7 @@ export default async function removeFoodFromUser({
 	totalHealingNeeded: number;
 	healPerAction: number;
 	activityName: string;
-	attackStylesUsed: GearSetupTypes[];
+	attackStylesUsed: GearSetupType[];
 	learningPercentage?: number;
 }): Promise<[string, ItemBank]> {
 	await user.settings.sync(true);

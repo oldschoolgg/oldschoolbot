@@ -46,6 +46,7 @@ Client.defaultClientSchema
 	.add('mr_cost', 'any', { default: {} })
 	.add('mr_loot', 'any', { default: {} })
 	.add('dropped_items', 'any', { default: {} })
+	.add('runecraft_cost', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })

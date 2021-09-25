@@ -2,7 +2,7 @@ import { Time } from 'e';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { kalphiteKingCL } from './data/CollectionsExport';
-import { GearSetupTypes, GearStat } from './gear/types';
+import { GearStat } from './gear/types';
 import { GrimyHerbTable } from './minions/data/killableMonsters/custom/Treebeard';
 import { KillableMonster } from './minions/types';
 import { SeedTable } from './simulation/seedTable';
@@ -52,7 +52,7 @@ export const KalphiteKingMonster: KillableMonster = {
 	attackStyleToUse: GearStat.AttackCrush,
 	attackStylesUsed: [GearStat.AttackCrush],
 	minimumGearRequirements: {
-		[GearSetupTypes.Melee]: {
+		melee: {
 			[GearStat.AttackCrush]: 8 + 12 + 12 + 6 + 16 + 95
 		}
 	}

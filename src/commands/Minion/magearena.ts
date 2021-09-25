@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
-import { GearSetupTypes } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -51,7 +50,7 @@ export default class extends BotCommand {
 			totalHealingNeeded: 20 * 23,
 			healPerAction: 20 * 23,
 			activityName: 'Mage Arena',
-			attackStylesUsed: [GearSetupTypes.Mage]
+			attackStylesUsed: ['mage']
 		});
 
 		const totalCost = itemsNeeded.clone().add(foodRemoved);

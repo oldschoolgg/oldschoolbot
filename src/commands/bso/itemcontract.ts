@@ -4,7 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { allMbTables, MysteryBoxes } from '../../lib/data/openables';
+import { allMbTables, MysteryBoxes, PMBTable } from '../../lib/data/openables';
 import { kalphiteKingLootTable } from '../../lib/kalphiteking';
 import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/Ignecarus';
@@ -48,6 +48,7 @@ const itemContractItems = Array.from(
 		...VasaMagus.allItems,
 		...Ignecarus.allItems.filter(i => i !== itemID('Dragon egg')),
 		...nexLootTable.allItems,
+		...PMBTable.allItems,
 		...resolveItems([
 			'Untradeable mystery box',
 			'Tradeable mystery box',

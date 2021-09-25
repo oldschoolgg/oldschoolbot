@@ -70,7 +70,7 @@ export async function itemChallenge(msg: KlasaMessage): Promise<KlasaUser | null
 		const winner = collected.first()?.author;
 		return winner ?? null;
 	} catch (err) {
-		msg.channel.send('Nobody answered in time, sorry!');
+		msg.channel.send(`Nobody answered in time, sorry! The correct answer was: ${randomItem.name}`);
 		return null;
 	}
 }

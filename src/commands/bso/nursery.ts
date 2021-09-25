@@ -71,7 +71,14 @@ export default class POHCommand extends BotCommand {
 
 		const specie = tameSpecies.find(i => i.id === egg.species)!;
 
-		const diff = Date.now() - egg.insertedAt;
+		let diff = Date.now() - egg.insertedAt;
+		let constructionMaster = msg.author.hasItemEquippedOrInBank('Construction master cape');
+		let masterString = constructionMaster
+			? '\n\nYour minion has constructed a very high quality nursery that hatches eggs twice as fast.'
+			: '';
+		if (constructionMaster) {
+			diff += specie.hatchTime / 2;
+		}
 		const timeRemaining = Math.max(0, specie.hatchTime - diff);
 		if (diff >= specie.hatchTime) {
 			const newNursery: Nursery = {
@@ -95,7 +102,7 @@ export default class POHCommand extends BotCommand {
 		return msg.channel.send(
 			`Your nursery has a ${specie.name} Egg in it, it has ${formatDuration(
 				timeRemaining
-			)} until it hatches. You put it in ${formatDuration(diff)} ago.`
+			)} until it hatches. You put it in ${formatDuration(diff)} ago.${masterString}`
 		);
 	}
 
@@ -146,7 +153,14 @@ export default class POHCommand extends BotCommand {
 			hasFuel: false
 		};
 		await msg.author.settings.update(UserSettings.Nursery, newNursery);
-		return msg.channel.send(`You built a nursery! Removed ${cost} from your bank.`);
+		let constructionMaster = msg.author.hasItemEquippedOrInBank('Construction master cape');
+		return msg.channel.send(
+			`You built a nursery! Removed ${cost} from your bank.${
+				constructionMaster
+					? '\n\nYour minion has constructed a very high quality nursery that hatches eggs twice as fast.'
+					: ''
+			}`
+		);
 	}
 
 	@requiresMinion

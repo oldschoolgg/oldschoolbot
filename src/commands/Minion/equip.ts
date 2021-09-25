@@ -4,6 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
+import { PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../lib/constants';
 import { GearSetupType, GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { requiresMinion } from '../../lib/minions/decorators';
@@ -41,7 +42,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<melee|mage|range|skilling|misc|wildy> [quantity:integer{1}] (item:...item)',
+			usage: `<${GearSetupTypes.join('|')}> [quantity:integer{1}] (item:...item)`,
 			usageDelim: ' ',
 			description: 'Equips an item to one of your gear setups. (melee/range/range/skilling/misc)',
 			examples: ['+equip skilling graceful hood', '+equip melee bandos godsword', '+equip mage staff of fire'],
@@ -52,7 +53,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(
 		msg: KlasaMessage,
-		[gearType, quantity = 1, itemArray]: [GearSetupTypes, number, Item[]]
+		[gearType, quantity = 1, itemArray]: [GearSetupType, number, Item[]]
 	): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
 			return msg.channel.send(
@@ -74,6 +75,10 @@ export default class extends BotCommand {
 		const itemLockedTo = canEquipItemInThisGearType(gearType, itemToEquip.id);
 		if (itemLockedTo !== true) {
 			return msg.channel.send(`You can only equip this item on your **${itemLockedTo}** gear setup.`);
+		}
+
+		if (gearType === 'other' && msg.author.perkTier < PerkTier.Four) {
+			return msg.channel.send(PATRON_ONLY_GEAR_SETUP);
 		}
 
 		/**
@@ -113,7 +118,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (gearType === GearSetupTypes.Wildy) {
+		if (gearType === 'wildy') {
 			await msg.confirm(WILDY_PRESET_WARNING_MESSAGE);
 		}
 		/**

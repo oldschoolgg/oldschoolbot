@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
-import { GearSetup, GearSetupTypes } from '../src/lib/gear/types';
+import { GearSetup } from '../src/lib/gear/types';
 import getUserBestGearFromBank from '../src/lib/minions/functions/getUserBestGearFromBank';
 import { Gear } from '../src/lib/structures/Gear';
 import { Skills } from '../src/lib/types';
@@ -55,9 +55,7 @@ const maxCombat: Skills = {
 
 describe('getUserBestGearFromBank', () => {
 	test('autoequip melee attack slash', async () => {
-		expect(
-			getUserBestGearFromBank(userBank.bank, userGear, GearSetupTypes.Melee, maxCombat, 'attack', 'slash')
-		).toStrictEqual({
+		expect(getUserBestGearFromBank(userBank.bank, userGear, 'melee', maxCombat, 'attack', 'slash')).toStrictEqual({
 			gearToEquip: {
 				...nullGear,
 				body: { item: itemID('Bandos chestplate'), quantity: 1 },
@@ -97,9 +95,7 @@ describe('getUserBestGearFromBank', () => {
 		});
 	});
 	test('autoequip melee attack crush', async () => {
-		expect(
-			getUserBestGearFromBank(userBank.bank, userGear, GearSetupTypes.Melee, maxCombat, 'attack', 'crush')
-		).toStrictEqual({
+		expect(getUserBestGearFromBank(userBank.bank, userGear, 'melee', maxCombat, 'attack', 'crush')).toStrictEqual({
 			gearToEquip: {
 				...nullGear,
 				body: { item: itemID('Bandos chestplate'), quantity: 1 },
@@ -137,15 +133,7 @@ describe('getUserBestGearFromBank', () => {
 	});
 	test('autoequip mage attack magic strength', async () => {
 		expect(
-			getUserBestGearFromBank(
-				userBank.bank,
-				userGear,
-				GearSetupTypes.Mage,
-				maxCombat,
-				'attack',
-				'magic',
-				'strength'
-			)
+			getUserBestGearFromBank(userBank.bank, userGear, 'mage', maxCombat, 'attack', 'magic', 'strength')
 		).toStrictEqual({
 			gearToEquip: {
 				...nullGear,
@@ -184,9 +172,7 @@ describe('getUserBestGearFromBank', () => {
 		});
 	});
 	test('autoequip mage attack magic', async () => {
-		expect(
-			getUserBestGearFromBank(userBank.bank, userGear, GearSetupTypes.Mage, maxCombat, 'attack', 'magic')
-		).toStrictEqual({
+		expect(getUserBestGearFromBank(userBank.bank, userGear, 'mage', maxCombat, 'attack', 'magic')).toStrictEqual({
 			gearToEquip: {
 				...nullGear,
 				cape: { item: itemID('Cape of legends'), quantity: 1 },
@@ -224,9 +210,7 @@ describe('getUserBestGearFromBank', () => {
 		});
 	});
 	test('autoequip melee defence slash', async () => {
-		expect(
-			getUserBestGearFromBank(userBank.bank, userGear, GearSetupTypes.Melee, maxCombat, 'defence', 'slash')
-		).toStrictEqual({
+		expect(getUserBestGearFromBank(userBank.bank, userGear, 'melee', maxCombat, 'defence', 'slash')).toStrictEqual({
 			gearToEquip: {
 				...nullGear,
 				body: { item: itemID('Bandos chestplate'), quantity: 1 },
@@ -270,7 +254,7 @@ describe('getUserBestGearFromBank', () => {
 			getUserBestGearFromBank(
 				userBank.bank,
 				userGear,
-				GearSetupTypes.Melee,
+				'melee',
 				{ defence: convertLVLtoXP(99) },
 				'defence',
 				'slash'

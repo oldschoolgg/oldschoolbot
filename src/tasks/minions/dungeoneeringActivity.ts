@@ -12,6 +12,14 @@ import { randomVariation, roll, toKMB } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 
+export function gorajanShardChance(user: KlasaUser) {
+	return user.hasItemEquippedAnywhere('Dungeoneering master cape')
+		? 500
+		: user.skillLevel(SkillsEnum.Dungeoneering) >= 99
+		? 1200
+		: 2000;
+}
+
 export const gorajanWarriorOutfit = resolveItems([
 	'Gorajan warrior helmet',
 	'Gorajan warrior top',
@@ -104,16 +112,12 @@ export default class extends Task {
 			if (gorajanEquipped > 0) {
 				str += ` ${bonusXP.toLocaleString()} Bonus XP`;
 			}
-			const shardChance = user.hasItemEquippedAnywhere('Dungeoneering master cape')
-				? 500
-				: user.skillLevel(SkillsEnum.Dungeoneering) >= 99
-				? 1200
-				: 2000;
-			if (floor >= 5 && roll(Math.floor(shardChance / minutes))) {
+
+			if (floor >= 5 && roll(Math.floor(gorajanShardChance(user) / minutes))) {
 				str += ' **1x Gorajan shards**';
 				let quantity = 1;
 
-				if (isDoubleLootActive(this.client)) {
+				if (isDoubleLootActive(this.client, duration)) {
 					quantity *= 2;
 				}
 				await u.addItemsToBank(new Bank().add('Gorajan shards', quantity), true);

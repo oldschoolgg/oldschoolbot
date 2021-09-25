@@ -2,7 +2,7 @@ import { calcWhatPercent, reduceNumByPercent } from 'e';
 import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 
-import { GearSetupTypes, GearStat, maxDefenceStats, maxOffenceStats } from '../../gear';
+import { GearSetupType, GearStat, maxDefenceStats, maxOffenceStats } from '../../gear';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
 import killableMonsters from '../data/killableMonsters';
 import { KillableMonster } from '../types';
@@ -26,20 +26,20 @@ export default function calculateMonsterFood(
 
 	messages.push(`${monster.name} needs ${healAmountNeeded}HP worth of food per kill.`);
 
-	let gearToCheck = GearSetupTypes.Melee;
+	let gearToCheck: GearSetupType = 'melee';
 
 	switch (attackStyleToUse) {
 		case GearStat.AttackMagic:
-			gearToCheck = GearSetupTypes.Mage;
+			gearToCheck = 'mage';
 			break;
 		case GearStat.AttackRanged:
-			gearToCheck = GearSetupTypes.Range;
+			gearToCheck = 'range';
 			break;
 		default:
 			break;
 	}
 
-	if (monster.wildy) gearToCheck = GearSetupTypes.Wildy;
+	if (monster.wildy) gearToCheck = 'wildy';
 
 	const gearStats = user.getGear(gearToCheck).stats;
 

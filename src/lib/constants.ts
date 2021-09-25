@@ -550,3 +550,6 @@ export const lastTripCache = new Map<
 	string,
 	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
 >();
+
+export const PATRON_ONLY_GEAR_SETUP =
+	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
