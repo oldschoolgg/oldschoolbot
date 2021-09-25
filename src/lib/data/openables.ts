@@ -57,7 +57,7 @@ export const ALL_PRIMAL = resolveItems([
 	'Drygore longsword'
 ]);
 
-const PetsTable = new LootTable()
+export const PMBTable = new LootTable()
 	.add('Heron')
 	.add('Rock golem')
 	.add('Beaver')
@@ -212,7 +212,7 @@ const testerGiftTable = new LootTable()
 	.add(baseTGBTable);
 
 export const IronmanPMBTable = new LootTable()
-	.add(PetsTable, 1, PetsTable.length)
+	.add(PMBTable, 1, PMBTable.length)
 	.add('Smokey')
 	.add('Craig')
 	.add('Hoppy')
@@ -268,7 +268,7 @@ const Openables: Openable[] = [
 		name: 'Pet Mystery box',
 		itemID: 3062,
 		aliases: ['pet mystery box', 'pmb'],
-		table: PetsTable,
+		table: PMBTable,
 		emoji: Emoji.MysteryBox
 	},
 	{
