@@ -9,7 +9,7 @@ import { UserSettings } from '../../settings/types/UserSettings';
 import { Gear } from '../../structures/Gear';
 import { toTitleCase } from '../../util';
 import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
-import { GearSetupType, maxDefenceStats, maxOffenceStats } from '..';
+import { GearSetupType, GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
 const gearTemplateCompactFile = fs.readFileSync('./src/lib/resources/images/gear_template_compact.png');
@@ -296,7 +296,7 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 	}
 	let i = 0;
 	let y = 30;
-	for (const type of ['melee', 'range', 'mage', 'misc', 'skilling', 'wildy', 'fashion']) {
+	for (const type of GearSetupTypes) {
 		if (i === 4) {
 			y += gearTemplateImage.height + 30;
 			i = 0;
@@ -326,12 +326,14 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 	}
 
 	ctx.font = '16px RuneScape Bold 12';
-	drawText(canvas, 'Pet', ctx.canvas.width - 45, ctx.canvas.height - 55);
-	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, ctx.canvas.width - 50, ctx.canvas.height - 50, 36, 36);
+	const petX = canvas.width - 50;
+	const petY = canvas.height / 2 + 20;
+	drawText(canvas, 'Pet', petX + 5, petY - 5);
+	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, petX, petY, 36, 36);
 	const userPet = user.settings.get(UserSettings.Minion.EquippedPet);
 	if (userPet) {
 		const image = await client.tasks.get('bankImage')!.getItemImage(userPet, 1);
-		ctx.drawImage(image, ctx.canvas.width - 50, ctx.canvas.height - 50, image.width, image.height);
+		ctx.drawImage(image, petX, petY, image.width, image.height);
 	}
 
 	if (!userBg.transparent) bankTask?.drawBorder(ctx, bgSprite, false);

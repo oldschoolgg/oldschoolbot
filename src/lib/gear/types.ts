@@ -6,7 +6,7 @@ export type UserFullGearSetup = {
 	[key in GearSetupType]: Gear;
 };
 
-export const GearSetupTypes = ['melee', 'mage', 'range', 'misc', 'skilling', 'wildy', 'fashion'] as const;
+export const GearSetupTypes = ['melee', 'mage', 'range', 'misc', 'skilling', 'wildy', 'fashion', 'other'] as const;
 
 export type GearSetupType = typeof GearSetupTypes[number];
 
