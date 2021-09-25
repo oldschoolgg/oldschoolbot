@@ -78,7 +78,7 @@ export default class extends Task {
 		};
 		// Regular loot
 		const loot = (monster as KillableMonster).table.kill(
-			isDoubleLootActive(this.client) ? quantity * 2 : boostedQuantity,
+			isDoubleLootActive(this.client, duration) ? quantity * 2 : boostedQuantity,
 			killOptions
 		);
 
@@ -171,7 +171,7 @@ export default class extends Task {
 			str += '\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.';
 		}
 
-		if (isDoubleLootActive(this.client)) {
+		if (isDoubleLootActive(this.client, duration)) {
 			str += '\n\n**Double Loot!**';
 		} else if (oriBoost) {
 			str += '\n\nOri has used the abyss to transmute you +25% bonus loot!';

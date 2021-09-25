@@ -73,7 +73,7 @@ export default class extends Task {
 			if (roll(80 + users.length * 2)) {
 				loot.add(randArrItem(nexUniqueDrops), 1);
 			}
-			if (isDoubleLootActive(this.client)) {
+			if (isDoubleLootActive(this.client, duration)) {
 				loot.multiply(2);
 			}
 			const winner = teamTable.roll()?.item;
