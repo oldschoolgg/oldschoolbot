@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { Activity } from '../../lib/constants';
-import { GearSetupTypes } from '../../lib/gear';
 import { minionNotBusy } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -173,7 +172,7 @@ export default class extends BotCommand {
 		const userMiningLevel = msg.author.skillLevel(SkillsEnum.Mining);
 		const userPrayerLevel = msg.author.skillLevel(SkillsEnum.Prayer);
 		const userHitpointsLevel = msg.author.skillLevel(SkillsEnum.Hitpoints);
-		const userSkillingGear = msg.author.getGear(GearSetupTypes.Skilling);
+		const userSkillingGear = msg.author.getGear('skilling');
 		const boosts: string[] = [];
 
 		const suppliesUsage = new Bank()

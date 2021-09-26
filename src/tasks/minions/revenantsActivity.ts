@@ -2,7 +2,6 @@ import { deepClone, roll } from 'e';
 import { Task } from 'klasa';
 
 import { revenantMonsters } from '../../commands/Minion/revs';
-import { GearSetupTypes } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -34,13 +33,7 @@ export default class extends Task {
 				skulled
 			});
 
-			const image = await generateGearImage(
-				this.client,
-				user,
-				new Gear(calc.newGear),
-				GearSetupTypes.Wildy,
-				null
-			);
+			const image = await generateGearImage(this.client, user, new Gear(calc.newGear), 'wildy', null);
 			await user.settings.update(UserSettings.Gear.Wildy, calc.newGear);
 
 			updateBankSetting(this.client, ClientSettings.EconomyStats.RevsCost, calc.lostItems);

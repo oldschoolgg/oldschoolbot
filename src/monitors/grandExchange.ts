@@ -18,9 +18,20 @@ export default class extends Monitor {
 		}
 
 		if (
-			['buying', 'selling', 'trading', 'trade', 'swap', 'swapping'].every(
-				str => !msg.content.toLowerCase().includes(str)
-			) ||
+			[
+				'seling',
+				'sale',
+				'sell',
+				'buy',
+				'wts',
+				'wtb',
+				'buying',
+				'selling',
+				'trading',
+				'trade',
+				'swap',
+				'swapping'
+			].every(str => !msg.content.toLowerCase().includes(str)) ||
 			msg.content.split(/\r\n|\r|\n/).length > 10 ||
 			msg.cleanContent.length > 450
 		) {

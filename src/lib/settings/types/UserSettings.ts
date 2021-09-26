@@ -136,6 +136,8 @@ export namespace UserSettings {
 		export const Misc = T<GearSetup | null>('gear.misc');
 		export const Skilling = T<GearSetup | null>('gear.skilling');
 		export const Wildy = T<GearSetup | null>('gear.wildy');
+		export const Fashion = T<GearSetup | null>('gear.fashion');
+		export const Other = T<GearSetup | null>('gear.other');
 	}
 
 	export namespace FarmingPatches {

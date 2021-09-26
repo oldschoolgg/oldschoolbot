@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { PerkTier } from '../../lib/constants';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
@@ -10,8 +10,7 @@ export default class extends BotCommand {
 			aliases: ['sbank'],
 			perkTier: PerkTier.Two,
 			oneAtTime: true,
-			cooldown: 60 * 10,
-			description: 'Shows a huge bank containing all items ever sacrificed.',
+			description: 'Shows a bank containing all your sacrificed items.',
 			examples: ['+sbank'],
 			categoryFlags: ['patron', 'minion']
 		});
@@ -19,10 +18,8 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		return msg.channel.sendBankImage({
-			bank: this.client.settings.get(ClientSettings.EconomyStats.SacrificedBank),
-			title: 'Sacrificed Items Of All Players',
-			content:
-				'Note: Approximately 130b worth of items are not shown, as they were sacrificed before items were starting to be tracked.'
+			bank: msg.author.settings.get(UserSettings.SacrificedBank),
+			title: 'Your Sacrificed Items'
 		});
 	}
 }

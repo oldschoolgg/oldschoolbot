@@ -65,6 +65,8 @@ export namespace ClientSettings {
 		export const InfernoCost = T<O.Readonly<ItemBank>>('inferno_cost');
 		export const DroppedItems = T<O.Readonly<ItemBank>>('dropped_items');
 
+		export const RunecraftCost = T<O.Readonly<ItemBank>>('runecraft_cost');
+
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');
 		export const GPSourceAlching = T<number>('gp_alch');
@@ -75,4 +77,5 @@ export namespace ClientSettings {
 	}
 
 	export const LockedSkills = T<readonly SkillsEnum[]>('locked_skills');
+	export const CustomPrices = T<O.Readonly<ItemBank>>('custom_prices');
 }

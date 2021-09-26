@@ -329,7 +329,10 @@ const source: [string, (string | number)[]][] = [
 		]
 	],
 	['Runecraft cape', ['Max cape', 'Runecraft cape(t)']],
-	['Crafting cape', ['Max cape', 'Crafting cape(t)']]
+	['Crafting cape', ['Max cape', 'Crafting cape(t)']],
+	['Salve amulet', ['Salve amulet(ei)', 'Salve amulet(i)', 'Salve amulet (e)']],
+	['Salve amulet (e)', ['Salve amulet(ei)']],
+	['Salve amulet (i)', ['Salve amulet(ei)']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
