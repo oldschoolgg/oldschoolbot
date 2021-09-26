@@ -32,7 +32,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [buyerMember, strBankWithPrice]: [GuildMember, string | undefined]) {
 		let { price, bank: bankToSell } = parseBankWithPrice({
 			inputBank: msg.author.bank(),
-			str: strBankWithPrice || '.',
+			str: strBankWithPrice || undefined,
 			flags: msg.flagArgs
 		});
 		bankToSell.filter(item => itemIsTradeable(item.id), true);

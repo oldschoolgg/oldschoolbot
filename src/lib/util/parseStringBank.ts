@@ -131,12 +131,22 @@ export function parseBankWithPrice({
 	flags = {}
 }: {
 	inputBank: Bank;
-	str: string;
+	str?: string;
 	flags?: Record<string, string>;
 }): {
 	price: number;
 	bank: Bank;
 } {
+	if (!str) {
+		return {
+			bank: parseBank({
+				inputBank,
+				inputStr: str,
+				flags
+			}),
+			price: 0
+		};
+	}
 	const split = str.split(' ');
 	const [first] = split;
 
