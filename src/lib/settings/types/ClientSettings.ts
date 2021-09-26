@@ -106,4 +106,5 @@ export namespace ClientSettings {
 	}
 
 	export const LockedSkills = T<readonly SkillsEnum[]>('locked_skills');
+	export const CustomPrices = T<O.Readonly<ItemBank>>('custom_prices');
 }

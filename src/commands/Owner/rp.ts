@@ -7,6 +7,7 @@ import fetch from 'node-fetch';
 import { badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { addPatronLootTime, addToDoubleLootTimer } from '../../lib/doubleLoot';
+import { evalMathExpression } from '../../lib/expressionParser';
 import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -127,6 +128,23 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
+			case 'setprice': {
+				if (typeof input !== 'string') return;
+				const [itemName, rawPrice] = input.split(',');
+				const item = getOSItem(itemName);
+				const price = evalMathExpression(rawPrice);
+				if (!price || price < 1 || price > 1_000_000_000) return;
+				if (!price || isNaN(price)) return msg.channel.send('Invalid price');
+				await msg.confirm(
+					`Are you sure you want to set the price of \`${item.name}\`(ID: ${item.id}, Wiki: ${
+						item.wiki_url
+					}) to \`${price.toLocaleString()}\`?`
+				);
+				const current = this.client.settings.get(ClientSettings.CustomPrices);
+				const newPrices = { ...current, [item.id]: price };
+				await this.client.settings.update(ClientSettings.CustomPrices, newPrices);
+				return msg.channel.send(`Set the price of \`${item.name}\` to \`${price.toLocaleString()}\`.`);
+			}
 			case 'status': {
 				let counter: Record<string, number> = {};
 				for (const key of Object.keys(statusMap)) {

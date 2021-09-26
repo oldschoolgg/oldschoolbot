@@ -154,11 +154,10 @@ export const sepulchreFloors = [
 
 export const sepulchreBoosts = resolveNameBank({
 	'Strange old lockpick': 1,
-	'Hallowed grapple': 3,
-	'Hallowed focus': 3,
-	'Hallowed symbol': 3,
-	'Hallowed hammer': 3,
-	'Ring of endurance (uncharged)': 4
+	'Hallowed grapple': 4,
+	'Hallowed focus': 4,
+	'Hallowed symbol': 4,
+	'Hallowed hammer': 4
 });
 
 export function openCoffin(floor: number): ItemBank {

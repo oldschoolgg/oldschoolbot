@@ -1,5 +1,5 @@
 import { calcPercentOfNum } from 'e';
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -7,9 +7,11 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemID, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 
-export function sellPriceOfItem(item: Item) {
-	if (item.price > item.highalch * 3) {
-		return item.price;
+export function sellPriceOfItem(client: KlasaClient, item: Item) {
+	const customPrices = client.settings.get(ClientSettings.CustomPrices);
+	let basePrice = customPrices[item.id] ?? item.price;
+	if (basePrice > item.highalch * 3) {
+		return basePrice;
 	}
 	return calcPercentOfNum(30, item.highalch);
 }
