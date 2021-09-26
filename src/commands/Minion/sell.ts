@@ -32,7 +32,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [[bankToSell]]: [[Bank, number]]) {
 		let totalPrice = 0;
 		for (const [item, qty] of bankToSell.items()) {
-			totalPrice += sellPriceOfItem(item) * qty;
+			totalPrice += sellPriceOfItem(this.client, item) * qty;
 		}
 
 		if (msg.author.isIronman) return msg.channel.send("Iron players can't sell items.");
