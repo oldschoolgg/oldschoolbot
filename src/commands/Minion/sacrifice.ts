@@ -13,7 +13,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '(bank:...str)',
+			usage: '[bank:...str]',
 			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Sacrifices items from your bank.',
@@ -21,7 +21,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [bankStr]: [string]) {
+	async run(msg: KlasaMessage, [bankStr = '']: [string | undefined]) {
 		const bankToSac = parseBank({ inputStr: bankStr, inputBank: msg.author.bank(), flags: msg.flagArgs });
 
 		if (!msg.author.owns(bankToSac)) {

@@ -2,7 +2,7 @@
 import { Bank } from 'oldschooljs';
 
 import getOSItem from '../src/lib/util/getOSItem';
-import { parseBank, parseQuantityAndItem, parseStringBank } from '../src/lib/util/parseStringBank';
+import { parseBank, parseBankWithPrice, parseQuantityAndItem, parseStringBank } from '../src/lib/util/parseStringBank';
 
 const psb = parseStringBank;
 const get = getOSItem;
@@ -234,5 +234,84 @@ describe('Bank Parsers', () => {
 		expect(pQI('0.5b*2 twisted bow', testBank)).toEqual([[get('Twisted bow')], 1_000_000_000]);
 		expect(pQI('1.5m*10 twisted bow', testBank)).toEqual([[get('Twisted bow')], 10_000_000 * 1.5]);
 		expect(pQI('1.5k*10 twisted bow', testBank)).toEqual([[get('Twisted bow')], 10_000 * 1.5]);
+	});
+
+	test('parseBankWithPrice', async () => {
+		const baseBank = new Bank().add('Toolkit').add('Cannonball');
+		const pbwp = parseBankWithPrice;
+		expect(pbwp({ inputBank: baseBank.clone().add('Egg', 100), str: '10k 1 egg' })).toStrictEqual({
+			bank: new Bank().add('Egg'),
+			price: 10_000
+		});
+		expect(pbwp({ inputBank: baseBank.clone().add('Egg', 100), str: '10m*5 1+5 egg' })).toStrictEqual({
+			bank: new Bank().add('Egg', 6),
+			price: 50_000_000
+		});
+		expect(
+			pbwp({
+				inputBank: baseBank.clone().add('Egg', 100).add('Twisted bow', 10).add('Feather').add('Blood rune', 10),
+				str: '10m*5 1+5 egg, #/2 twisted bow, 1+1 feather, 0 bones, # blood rune'
+			})
+		).toStrictEqual({
+			bank: new Bank().add('Egg', 6).add('Twisted bow', 5).add('Feather').add('Blood rune', 10),
+			price: 50_000_000
+		});
+		expect(
+			pbwp({
+				inputBank: baseBank.clone().add('Egg', 5),
+				str: '1 1 egg'
+			})
+		).toStrictEqual({
+			bank: new Bank().add('Egg'),
+			price: 1
+		});
+		expect(
+			pbwp({
+				inputBank: baseBank.clone().add('Egg', 5),
+				str: '2 1 egg'
+			})
+		).toStrictEqual({
+			bank: new Bank().add('Egg'),
+			price: 2
+		});
+		expect(
+			pbwp({
+				inputBank: baseBank.clone().add('Egg', 5).add('Feather', 100),
+				str: '1 2 egg, feather'
+			})
+		).toStrictEqual({
+			bank: new Bank().add('Egg', 2).add('Feather', 100),
+			price: 1
+		});
+		expect(
+			pbwp({
+				inputBank: baseBank.clone().add('3rd age platebody', 5),
+				str: '1 1 3rd age platebody'
+			})
+		).toStrictEqual({
+			bank: new Bank().add('3rd age platebody', 1),
+			price: 1
+		});
+		expect(
+			pbwp({
+				inputBank: baseBank.clone().add('3rd age platebody', 5),
+				str: '3 #-1 3rd age platebody'
+			})
+		).toStrictEqual({
+			bank: new Bank().add('3rd age platebody', 4),
+			price: 3
+		});
+		expect(
+			pbwp({
+				inputBank: baseBank.clone().add('Cannonball').add('Strength cape'),
+				str: '',
+				flags: {
+					untradeables: 'untradeables'
+				}
+			})
+		).toStrictEqual({
+			bank: new Bank().add('Strength cape'),
+			price: 0
+		});
 	});
 });

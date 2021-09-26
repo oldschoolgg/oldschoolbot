@@ -3,11 +3,11 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
-import { evalMathExpression } from '../../lib/expressionParser';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import getOSItem from '../../lib/util/getOSItem';
+import itemIsTradeable from '../../lib/util/itemIsTradeable';
+import { parseBankWithPrice } from '../../lib/util/parseStringBank';
 
 const options = {
 	max: 1,
@@ -19,7 +19,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
-			usage: '<member:member> [price:string] [items:...TradeableBank]',
+			usage: '<member:member> [strBankWithPrice:...str]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			ironCantUse: true,
@@ -29,17 +29,18 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [buyerMember, rawPrice, bankInput]: [GuildMember, string, [Bank, number]]) {
-		const bankToSell = bankInput?.[0] ?? new Bank().add(getOSItem(rawPrice).id);
+	async run(msg: KlasaMessage, [buyerMember, strBankWithPrice]: [GuildMember, string | undefined]) {
+		let { price, bank: bankToSell } = parseBankWithPrice({
+			inputBank: msg.author.bank(),
+			str: strBankWithPrice || '.',
+			flags: msg.flagArgs
+		});
+		bankToSell.filter(item => itemIsTradeable(item.id), true);
+		if (bankToSell.length === 0) {
+			return msg.channel.send('No valid tradeable items that you own were given.');
+		}
+		if (price === 0) price = 1;
 
-		if (!rawPrice) {
-			rawPrice = '1';
-		}
-		if (bankToSell.length === 1) {
-			const item = bankToSell.items()[0];
-			rawPrice = rawPrice.replace('#', bankToSell.amount(item[0].id).toString());
-		}
-		const price = evalMathExpression(rawPrice ?? '1') ?? 1;
 		if (price < 1 || price > 100_000_000_000) {
 			return msg.channel.send('Invalid price.');
 		}

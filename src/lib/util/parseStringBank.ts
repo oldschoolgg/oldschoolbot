@@ -7,6 +7,7 @@ import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
 import { evalMathExpression } from '../expressionParser';
 import { cleanString, stringMatches } from '../util';
+import getOSItem from './getOSItem';
 
 const { floor, max, min } = Math;
 
@@ -86,6 +87,8 @@ interface ParseBankOptions {
 export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions): Bank {
 	const items = inputBank.items();
 
+	const maxQuantity = Number(flags.qty) || Infinity;
+
 	if (inputStr) {
 		let _bank = new Bank();
 		const strItems = parseStringBank(inputStr, inputBank);
@@ -112,7 +115,7 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 			continue;
 		}
 
-		const qty = _qty === 0 ? Math.max(1, inputBank.amount(item.id)) : _qty;
+		const qty = Math.min(maxQuantity, _qty === 0 ? Math.max(1, inputBank.amount(item.id)) : _qty);
 		if (filter && !filter.items.includes(item.id)) continue;
 
 		if (inputBank.amount(item.id) < qty) continue;
@@ -120,4 +123,46 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 	}
 
 	return outputBank;
+}
+
+export function parseBankWithPrice({
+	inputBank,
+	str,
+	flags = {}
+}: {
+	inputBank: Bank;
+	str: string;
+	flags?: Record<string, string>;
+}): {
+	price: number;
+	bank: Bank;
+} {
+	const split = str.split(' ');
+	const [first] = split;
+
+	let asPrice = evalMathExpression(first);
+	let price: number = 0;
+
+	try {
+		const number = Number(first);
+		if (!asPrice && !isNaN(number) && ![0, 1, 2].includes(number)) {
+			getOSItem(number);
+			price = 0;
+		} else {
+			price = asPrice ?? 0;
+		}
+	} catch {}
+
+	const inputStr = asPrice === null ? str : str.split(' ').slice(1, str.length).join(' ');
+
+	const bank = parseBank({
+		inputBank,
+		inputStr,
+		flags
+	});
+
+	return {
+		price,
+		bank
+	};
 }
