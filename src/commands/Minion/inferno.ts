@@ -62,7 +62,8 @@ export default class extends BotCommand {
 			description:
 				'Sends your minion to complete the fight caves - it will start off bad but get better with more attempts. Requires range gear, prayer pots, brews and restores.',
 			examples: ['+inferno'],
-			categoryFlags: ['minion', 'minigame']
+			categoryFlags: ['minion', 'minigame'],
+			aliases: ['i']
 		});
 	}
 
@@ -216,6 +217,10 @@ export default class extends BotCommand {
 		const zukDeathChance = new PercentCounter(this.baseZukDeathChance(attempts), 'percent');
 		const preZukDeathChance = new PercentCounter(this.basePreZukDeathChance(attempts), 'percent');
 
+		if (!user.settings.get(UserSettings.SacrificedBank)[itemID('Fire cape')]) {
+			return 'To do the Inferno, you must have sacrificed a fire cape.';
+		}
+
 		/**
 		 *
 		 * Item Requirements
@@ -332,7 +337,16 @@ export default class extends BotCommand {
 
 		const res = this.infernoRun({ user: msg.author, kc: zukKC, attempts });
 
-		if (typeof res === 'string') return msg.channel.send(res);
+		if (typeof res === 'string') {
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content: res,
+						head: 'ketKeh'
+					})
+				]
+			});
+		}
 		const { deathTime, diedPreZuk, zukDeathChance, diedZuk, duration, fakeDuration, preZukDeathChance } = res;
 
 		await addSubTaskToActivityTask<InfernoOptions>({
