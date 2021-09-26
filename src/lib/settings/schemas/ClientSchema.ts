@@ -52,4 +52,5 @@ Client.defaultClientSchema
 	.add('gp_open', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_daily', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 
-	.add('locked_skills', 'any', { array: true, default: [] });
+	.add('locked_skills', 'any', { array: true, default: [] })
+	.add('custom_prices', 'any', { default: {} });
