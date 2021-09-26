@@ -17,7 +17,7 @@
 		"@sapphire/type": "^2.1.0",
 		"@sentry/node": "^6.13.2",
 		"@sinclair/typebox": "^0.12.9",
-		"bufferutil": "^4.0.3",
+		"bufferutil": "^4.0.4",
 		"canvas": "^2.8.0",
 		"canvas-constructor": "^1.1.2",
 		"chokidar": "^3.5.2",
