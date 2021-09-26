@@ -7,7 +7,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import getOSItem from '../../lib/util/getOSItem';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 
-const darts = [
+export const blowpipeDarts = [
 	'Bronze dart',
 	'Iron dart',
 	'Steel dart',
@@ -22,7 +22,7 @@ const darts = [
 function validateBlowpipData(data: BlowpipeData) {
 	if (Object.keys(data).length !== 3) throw new Error('Failed BP validation');
 	if (data.dartID === null && data.dartQuantity !== 0) throw new Error('Failed BP validation');
-	if (data.dartID !== null && !darts.some(d => d.id === data.dartID)) {
+	if (data.dartID !== null && !blowpipeDarts.some(d => d.id === data.dartID)) {
 		throw new Error('has a non-dart equipped');
 	}
 }
@@ -64,7 +64,16 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 	}
 
 	async add(msg: KlasaMessage, [_items = '']: [string]) {
+		if (msg.author.minionIsBusy) {
+			return msg.channel.send("You can't add to your blowpipe, because your minion is out on a trip.");
+		}
+		if (!msg.author.owns('Toxic blowpipe') && msg.author.owns('Toxic blowpipe (empty)')) {
+			await msg.author.removeItemsFromBank(new Bank().add('Toxic blowpipe (empty)'));
+			await msg.author.addItemsToBank(new Bank().add('Toxic blowpipe'));
+		}
+
 		const hasBlowpipe = msg.author.owns('Toxic blowpipe');
+
 		if (!hasBlowpipe) {
 			return msg.channel.send("You don't own a Toxic blowpipe.");
 		}
@@ -74,7 +83,7 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 		const items = parseStringBank(_items);
 		let itemsToRemove = new Bank();
 		for (const [item, quantity] of items) {
-			if (!darts.includes(item) && item !== getOSItem("Zulrah's scales")) {
+			if (!blowpipeDarts.includes(item) && item !== getOSItem("Zulrah's scales")) {
 				return msg.channel.send("You can only charge your blowpipe with darts and Zulrah's scales.");
 			}
 
@@ -88,7 +97,7 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 			);
 		}
 
-		const dart = itemsToRemove.items().find(i => darts.includes(i[0]));
+		const dart = itemsToRemove.items().find(i => blowpipeDarts.includes(i[0]));
 
 		const rawBlowpipeData = msg.author.settings.get(UserSettings.Blowpipe);
 		validateBlowpipData(rawBlowpipeData);
@@ -129,6 +138,9 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 	}
 
 	async removedarts(msg: KlasaMessage) {
+		if (msg.author.minionIsBusy) {
+			return msg.channel.send("You can't remove darts from your blowpipe, because your minion is out on a trip.");
+		}
 		const hasBlowpipe = msg.author.owns('Toxic blowpipe');
 		if (!hasBlowpipe) {
 			return msg.channel.send("You don't own a Toxic blowpipe.");
@@ -148,6 +160,9 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 	}
 
 	async uncharge(msg: KlasaMessage) {
+		if (msg.author.minionIsBusy) {
+			return msg.channel.send("You can't uncharge your blowpipe, because your minion is out on a trip.");
+		}
 		const hasBlowpipe = msg.author.owns('Toxic blowpipe');
 		if (!hasBlowpipe) {
 			return msg.channel.send("You don't own a Toxic blowpipe.");

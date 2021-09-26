@@ -19,6 +19,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
+import { blowpipeDarts } from './blowpipe';
 
 const minimumRangeItems = [
 	'Amulet of fury',
@@ -69,13 +70,14 @@ export default class extends BotCommand {
 
 	basePreZukDeathChance(_attempts: number) {
 		const attempts = Math.max(1, _attempts);
-		const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(45))) * 50);
+		const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(45))) * 47);
 		return Math.max(Math.min(chance, 99), 5);
 	}
 
 	baseZukDeathChance(_attempts: number) {
 		const attempts = Math.max(1, _attempts);
-		const chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(65))) * 65);
+		if (attempts < 30) return 99.9999 - attempts / 7.5;
+		const chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(25))) * 39);
 		return Math.max(Math.min(chance, 99), 5);
 	}
 
@@ -252,13 +254,19 @@ export default class extends BotCommand {
 
 		const blowpipeData = user.settings.get(UserSettings.Blowpipe);
 		if (
-			(rangeGear.hasEquipped('Toxic blowpipe') && !userBank.has('Toxic blowpipe')) ||
+			!userBank.has('Toxic blowpipe') ||
 			!blowpipeData.scales ||
 			!blowpipeData.dartID ||
 			!blowpipeData.dartQuantity
 		) {
 			return 'You need a Toxic blowpipe (with darts and scales equipped) to do the Inferno. You also need Darts and Scales equipped in it.';
 		}
+
+		const darts = blowpipeData.dartID;
+		const dartItem = getOSItem(darts);
+		const dartIndex = blowpipeDarts.indexOf(dartItem);
+		const percent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
+		duration.add(true, percent, `${dartItem.name} in blowpipe`);
 
 		const mageWeapons = {
 			'Ancient staff': 1,
@@ -277,6 +285,9 @@ export default class extends BotCommand {
 				return `You need one of these weapons in your ${name} setup: ${Object.keys(weapons).join(', ')}.`;
 			}
 		}
+
+		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 7.5, 'Zuk with ACB');
+		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 4.5, 'ACB');
 
 		/** *
 		 *
