@@ -19,12 +19,13 @@ export const blowpipeDarts = [
 	'Dragon dart'
 ].map(getOSItem);
 
-function validateBlowpipData(data: BlowpipeData) {
+export function validateBlowpipeData(data: BlowpipeData) {
 	if (Object.keys(data).length !== 3) throw new Error('Failed BP validation');
 	if (data.dartID === null && data.dartQuantity !== 0) throw new Error('Failed BP validation');
 	if (data.dartID !== null && !blowpipeDarts.some(d => d.id === data.dartID)) {
 		throw new Error('has a non-dart equipped');
 	}
+	if (data.dartQuantity < 0 || data.scales < 0) throw new Error('Less than 0 scales/darts');
 }
 
 export default class extends BotCommand {
@@ -49,7 +50,7 @@ export default class extends BotCommand {
 			return msg.channel.send("You don't own a Toxic blowpipe.");
 		}
 
-		validateBlowpipData(rawBlowpipeData);
+		validateBlowpipeData(rawBlowpipeData);
 		let str = `**Toxic Blowpipe** <:Toxic_blowpipe:887011870068838450>
 
 Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
@@ -100,7 +101,7 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 		const dart = itemsToRemove.items().find(i => blowpipeDarts.includes(i[0]));
 
 		const rawBlowpipeData = msg.author.settings.get(UserSettings.Blowpipe);
-		validateBlowpipData(rawBlowpipeData);
+		validateBlowpipeData(rawBlowpipeData);
 		if (dart && !itemsToRemove.amount(dart[0].id)) {
 			throw new Error('wtf! not meant to happen');
 		}
@@ -118,7 +119,7 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 			dartID: null,
 			dartQuantity: 0
 		};
-		validateBlowpipData(currentData);
+		validateBlowpipeData(currentData);
 		currentData.scales += itemsToRemove.amount("Zulrah's scales");
 
 		if (dart) {
@@ -128,7 +129,7 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 			currentData.dartID = dart[0].id;
 			currentData.dartQuantity += itemsToRemove.amount(dart[0].id);
 		}
-		validateBlowpipData(currentData);
+		validateBlowpipeData(currentData);
 		if (!userBank.has(itemsToRemove.bank)) {
 			return msg.channel.send(`You don't own ${itemsToRemove}.`);
 		}
@@ -150,7 +151,7 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 		if (!rawBlowpipeData.dartID || rawBlowpipeData.dartQuantity === 0) {
 			return msg.channel.send('Your Toxic blowpipe has no darts in it.');
 		}
-		validateBlowpipData(rawBlowpipeData);
+		validateBlowpipeData(rawBlowpipeData);
 		const returnedBank = new Bank().add(rawBlowpipeData.dartID, rawBlowpipeData.dartQuantity);
 		rawBlowpipeData.dartQuantity = 0;
 		await msg.author.addItemsToBank(returnedBank);

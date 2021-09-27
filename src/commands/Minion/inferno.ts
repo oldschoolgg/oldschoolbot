@@ -6,15 +6,16 @@ import { Bank } from 'oldschooljs';
 import { TzKalZuk } from 'oldschooljs/dist/simulation/monsters/special/TzKalZuk';
 import { table } from 'table';
 
-import { Activity, BitField } from '../../lib/constants';
+import { Activity, BitField, projectiles, ProjectileType } from '../../lib/constants';
 import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { PercentCounter } from '../../lib/structures/PercentCounter';
+import { Skills } from '../../lib/types';
 import { InfernoOptions } from '../../lib/types/minions';
-import { formatDuration, percentChance, updateBankSetting } from '../../lib/util';
+import { formatDuration, itemNameFromID, percentChance, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
@@ -47,13 +48,6 @@ export const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipmen
 
 const itemRequirements = new Bank().add('Rune pouch');
 
-/**
- *
- * TODO---------
- * - Must have sacced 1 fire cape
- *
- */
-
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -64,8 +58,57 @@ export default class extends BotCommand {
 				'Sends your minion to complete the fight caves - it will start off bad but get better with more attempts. Requires range gear, prayer pots, brews and restores.',
 			examples: ['+inferno'],
 			categoryFlags: ['minion', 'minigame'],
-			aliases: ['i']
+			aliases: ['i'],
+			subcommands: true,
+			usage: '[start]'
 		});
+	}
+
+	consumableCost({
+		projectile,
+		dart,
+		fakeDuration,
+		hasKodai
+	}: {
+		projectile: number;
+		dart: number;
+		fakeDuration: number;
+		hasKodai: boolean;
+	}) {
+		const projectilesPerHour = 150;
+		const dartsPerHour = 300;
+		const bloodBarragePerHour = 200;
+		const iceBarragePerHour = 100;
+
+		const hours = fakeDuration / Time.Hour;
+		const cost = new Bank();
+
+		cost.add(projectile, Math.ceil(projectilesPerHour * hours));
+		cost.add(dart, Math.ceil(dartsPerHour * hours));
+
+		const iceBarrageRunes = new Bank().add('Death rune', 4).add('Blood rune', 2);
+		const bloodBarrageRunes = new Bank().add('Death rune', 4).add('Blood rune', 4).add('Soul rune');
+
+		if (!hasKodai) {
+			iceBarrageRunes.add('Water rune', 6);
+			bloodBarrageRunes.add('Soul rune');
+		}
+
+		cost.add(bloodBarrageRunes.multiply(Math.floor(bloodBarragePerHour * hours)));
+		cost.add(iceBarrageRunes.multiply(Math.floor(iceBarragePerHour * hours)));
+
+		cost.add('Saradomin brew(4)', 8);
+		cost.add('Super restore(4)', 12);
+		cost.add('Bastion potion(4)');
+		cost.add('Stamina potion(4)');
+
+		for (const [item, quantity] of cost.items()) {
+			if (!Number.isInteger(quantity)) {
+				throw new Error(`${quantity}x ${item.name}`);
+			}
+		}
+
+		return cost;
 	}
 
 	basePreZukDeathChance(_attempts: number) {
@@ -223,6 +266,18 @@ export default class extends BotCommand {
 			return 'To do the Inferno, you must have sacrificed a fire cape.';
 		}
 
+		const skillReqs: Skills = {
+			defence: 92,
+			magic: 92,
+			hitpoints: 92,
+			ranged: 92
+		};
+		const [hasSkillReqs] = user.hasSkillReqs(skillReqs);
+		if (!hasSkillReqs) {
+			return `You not meet skill requirements, you need ${Object.entries(skillReqs)
+				.map(([name, lvl]) => `${lvl} ${name}`)
+				.join(', ')}.`;
+		}
 		/**
 		 *
 		 * Item Requirements
@@ -275,7 +330,7 @@ export default class extends BotCommand {
 			'Eldritch nightmare staff': 9,
 			'Kodai wand': 10
 		};
-		const rangeWeapons = { 'Armadyl crossbow': 1, 'Bow of faerdhinen': 10, 'Twisted bow': 12 };
+		const rangeWeapons = { 'Armadyl crossbow': 1, 'Twisted bow': 12 };
 		for (const [name, setup, weapons] of [
 			['mage', mageGear, mageWeapons],
 			['range', rangeGear, rangeWeapons]
@@ -289,19 +344,6 @@ export default class extends BotCommand {
 		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 7.5, 'Zuk with ACB');
 		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 4.5, 'ACB');
 
-		/** *
-		 *
-		 *
-		 * Consumables / Cost
-		 *
-		 *
-		 */
-		const cost = new Bank();
-		cost.add('Saradomin brew(4)', 8);
-		cost.add('Super restore(4)', 12);
-		cost.add('Bastion potion(4)');
-		cost.add('Stamina potion(4)');
-
 		/**
 		 *
 		 *
@@ -311,6 +353,27 @@ export default class extends BotCommand {
 		 */
 		duration.add(user.bitfield.includes(BitField.HasDexScroll), 4, 'Dex. Prayer scroll');
 		duration.add(user.bitfield.includes(BitField.HasArcaneScroll), 4, 'Arc. Prayer scroll');
+
+		/**
+		 *
+		 *
+		 * Consumables / Cost
+		 *
+		 *
+		 */
+		const projectile = rangeGear.ammo;
+		if (!projectile) {
+			return 'You have no projectiles equipped in your range setup.';
+		}
+		const projectileType: ProjectileType = rangeGear.equippedWeapon()!.name === 'Twisted bow' ? 'arrow' : 'bolt';
+		const projectilesForTheirType = projectiles[projectileType];
+		if (!projectilesForTheirType.includes(projectile.item)) {
+			return `You're using incorrect projectiles, you're using a ${
+				rangeGear.equippedWeapon()!.name
+			}, which uses ${projectileType}s, so you should be using one of these: ${projectilesForTheirType
+				.map(itemNameFromID)
+				.join(', ')}.`;
+		}
 
 		const fakeDuration = duration.value;
 
@@ -323,6 +386,15 @@ export default class extends BotCommand {
 			deathTime = randInt(calcPercentOfNum(90, duration.value), duration.value);
 		}
 
+		const realDuration = deathTime ?? duration.value;
+
+		const cost = this.consumableCost({
+			projectile: projectile.item,
+			dart: blowpipeData.dartID,
+			fakeDuration,
+			hasKodai: mageGear.hasEquipped('Kodai wand')
+		});
+
 		return {
 			deathTime,
 			fakeDuration,
@@ -330,13 +402,36 @@ export default class extends BotCommand {
 			duration,
 			diedZuk,
 			diedPreZuk,
-			preZukDeathChance
+			preZukDeathChance,
+			realDuration,
+			cost
 		};
+	}
+
+	async run(msg: KlasaMessage) {
+		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
+		const zukKC = msg.author.getKC(TzKalZuk.id);
+
+		let str = 'You have never attempted the Inferno, I recommend you stay that way.';
+		if (attempts && !zukKC) {
+			str = `You have tried the Inferno ${attempts} times, but never succeeded. Leave while you can.`;
+		} else if (attempts && zukKC) {
+			str = `You have completed the Inferno ${zukKC} times, out of ${attempts} attempts.`;
+		}
+
+		return msg.channel.send({
+			files: [
+				await chatHeadImage({
+					content: str,
+					head: 'ketKeh'
+				})
+			]
+		});
 	}
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage) {
+	async start(msg: KlasaMessage) {
 		if (msg.flagArgs.sim) {
 			msg.channel.send({ files: [...(await this.baseDeathChances(msg.author))] });
 			return msg.channel.send(this.simulate(msg));
@@ -358,12 +453,35 @@ export default class extends BotCommand {
 				]
 			});
 		}
-		const { deathTime, diedPreZuk, zukDeathChance, diedZuk, duration, fakeDuration, preZukDeathChance } = res;
+		const {
+			deathTime,
+			diedPreZuk,
+			zukDeathChance,
+			diedZuk,
+			duration,
+			fakeDuration,
+			preZukDeathChance,
+			cost,
+			realDuration
+		} = res;
+
+		try {
+			await msg.author.specialRemoveItems(cost);
+		} catch (err: any) {
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content: `${err.message}`,
+						head: 'ketKeh'
+					})
+				]
+			});
+		}
 
 		await addSubTaskToActivityTask<InfernoOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
-			duration: deathTime ?? duration.value,
+			duration: realDuration,
 			type: Activity.Inferno,
 			zukDeathChance: zukDeathChance.value,
 			preZukDeathChance: preZukDeathChance.value,
@@ -383,10 +501,10 @@ export default class extends BotCommand {
 **Duration:** ${formatDuration(duration.value)} (${(duration.value / 1000 / 60).toFixed(2)} minutes)
 **Boosts:** ${duration.messages.join(', ')} *(You didn't get these: ||${duration.missed.join(', ')}||)*
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
-**Pre-Zuk Death Chance:** ${preZukDeathChance.value}% ${preZukDeathChance.messages.join(
+**Pre-Zuk Death Chance:** ${preZukDeathChance.value.toFixed(1)}% ${preZukDeathChance.messages.join(
 				', '
 			)} *(You didn't get these: ||${preZukDeathChance.missed.join(', ')}||)*
-**Zuk Death Chance:** ${zukDeathChance.value}% ${zukDeathChance.messages.join(
+**Zuk Death Chance:** ${zukDeathChance.value.toFixed(1)}% ${zukDeathChance.messages.join(
 				', '
 			)} *(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*
 

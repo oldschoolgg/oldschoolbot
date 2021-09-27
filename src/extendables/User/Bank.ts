@@ -1,14 +1,17 @@
 import { User } from 'discord.js';
 import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import { O } from 'ts-toolbelt';
 
+import { blowpipeDarts, validateBlowpipeData } from '../../commands/Minion/blowpipe';
+import { projectiles } from '../../lib/constants';
 import { similarItems } from '../../lib/data/similarItems';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
-import { bankHasAllItemsFromBank, removeBankFromBank } from '../../lib/util';
+import { bankHasAllItemsFromBank, itemNameFromID, removeBankFromBank } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
 
 export interface GetUserBankOptions {
@@ -172,6 +175,92 @@ export default class extends Extendable {
 			user.log(`Had items removed from bank - ${JSON.stringify(items)}`);
 			return user.settings.update(UserSettings.Bank, removeBankFromBank(currentBank, items));
 		});
+	}
+
+	public async specialRemoveItems(this: User, bank: Bank) {
+		const bankRemove = new Bank();
+		let dart: [Item, number] | null = null;
+		let ammoRemove: [Item, number] | null = null;
+
+		for (const [item, quantity] of bank.items()) {
+			if (blowpipeDarts.includes(item)) {
+				if (dart !== null) throw new Error('Tried to remove more than 1 blowpipe dart.');
+				dart = [item, quantity];
+				continue;
+			}
+			if (Object.values(projectiles).flat(2).includes(item.id)) {
+				if (ammoRemove !== null) throw new Error('Tried to remove more than 1 ranged ammunition.');
+				ammoRemove = [item, quantity];
+				continue;
+			}
+			bankRemove.add(item.id, quantity);
+		}
+
+		const removeFns: (() => Promise<unknown>)[] = [];
+
+		if (ammoRemove) {
+			const equippedAmmo = this.getGear('range').ammo?.item;
+			if (!equippedAmmo) {
+				throw new Error('No ammo equipped.');
+			}
+			if (equippedAmmo !== ammoRemove[0].id) {
+				throw new Error(`Has ${itemNameFromID(equippedAmmo)}, but needs ${ammoRemove[0].name}.`);
+			}
+			const rangeGear = { ...this.settings.get(UserSettings.Gear.Range) };
+			const ammo = rangeGear?.ammo?.quantity;
+			if (!ammo || ammo < ammoRemove[1])
+				throw new Error(
+					`Not enough ${ammoRemove[0].name} equipped in range gear, you need ${
+						ammoRemove![1]
+					} but you have only ${ammo}.`
+				);
+			removeFns.push(() => {
+				rangeGear.ammo!.quantity -= ammoRemove![1];
+				return this.settings.update(UserSettings.Gear.Range, rangeGear);
+			});
+		}
+
+		if (dart) {
+			const scales = Math.ceil((10 / 3) * dart[1]);
+			const rawBlowpipeData = this.settings.get(UserSettings.Blowpipe);
+			if (!this.owns('Toxic blowpipe') || !rawBlowpipeData) {
+				throw new Error("You don't have a Toxic blowpipe.");
+			}
+			if (!rawBlowpipeData.dartID || !rawBlowpipeData.dartQuantity) {
+				throw new Error('You have no darts in your Toxic blowpipe.');
+			}
+			if (rawBlowpipeData.dartQuantity < dart[1]) {
+				throw new Error(
+					`You don't have enough ${itemNameFromID(
+						rawBlowpipeData.dartID
+					)}s in your Toxic blowpipe, you need ${dart[1]}, but you have only ${rawBlowpipeData.dartQuantity}.`
+				);
+			}
+			if (!rawBlowpipeData.scales || rawBlowpipeData.scales < scales) {
+				throw new Error(
+					`You don't have enough Zulrah's scales in your Toxic blowpipe, you need ${scales} but you have only ${rawBlowpipeData.scales}.`
+				);
+			}
+			removeFns.push(() => {
+				const bpData = { ...this.settings.get(UserSettings.Blowpipe) };
+				bpData.dartQuantity -= dart![1];
+				bpData.scales -= scales;
+				validateBlowpipeData(bpData);
+				return this.settings.update(UserSettings.Blowpipe, bpData);
+			});
+		}
+
+		if (bankRemove.length > 0) {
+			if (!this.owns(bankRemove)) {
+				throw new Error(`You don't own: ${bankRemove}.`);
+			}
+			removeFns.push(() => {
+				return this.removeItemsFromBank(bankRemove);
+			});
+		}
+
+		const promises = removeFns.map(fn => fn());
+		await Promise.all(promises);
 	}
 
 	public async hasItem(this: User, itemID: number, amount = 1, sync = true) {
