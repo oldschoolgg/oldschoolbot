@@ -1,10 +1,10 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { championScrolls } from '../../lib/data/CollectionsExport';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MinigameActivityTaskOptions } from '../../lib/types/minions';
 import { randomVariation } from '../../lib/util';
@@ -31,8 +31,11 @@ export default class extends BotCommand {
 				"You don't have a set of Champion Scrolls to do the Champion's Challenge! You need 1 of each."
 			);
 		}
-		for (const id of championScrolls) bank.remove(id);
-		await msg.author.settings.update(UserSettings.Bank, bank.bank);
+
+		const cost = new Bank();
+		for (const id of championScrolls) cost.add(id);
+		await msg.author.removeItemsFromBank(cost);
+
 		await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,

@@ -1,15 +1,15 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { ItemBank } from '../../lib/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, formatDuration, itemID, itemNameFromID, removeItemFromBank, stringMatches } from '../../lib/util';
+import { formatDuration, itemID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -58,17 +58,18 @@ export default class extends BotCommand {
 			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
 		}
 
-		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const baseCost = new Bank(bar.inputOres);
 
-		// Check the user has the required ores to smith these bars.
-		// Multiplying the ore required by the quantity of bars.
-		const requiredOres: [string, number][] = Object.entries(bar.inputOres);
-		for (const [oreID, qty] of requiredOres) {
-			if (!bankHasItem(userBank, parseInt(oreID), qty * quantity)) {
-				return msg.channel.send(`You don't have enough ${itemNameFromID(parseInt(oreID))}.`);
-			}
+		const maxCanDo = msg.author.bank().fits(baseCost);
+		if (maxCanDo === 0) {
+			return msg.channel.send("You don't have enough supplies to smelt even one of this item!");
 		}
+		if (maxCanDo < quantity) {
+			quantity = maxCanDo;
+		}
+
+		const cost = new Bank();
+		cost.add(baseCost.multiply(quantity));
 
 		const duration = quantity * timeToSmithSingleBar;
 		if (duration > maxTripLength) {
@@ -81,15 +82,8 @@ export default class extends BotCommand {
 			);
 		}
 
-		// Remove the ores from their bank.
-		let newBank: ItemBank = { ...userBank };
-		for (const [oreID, qty] of requiredOres) {
-			if (newBank[parseInt(oreID)] < qty) {
-				this.client.wtf(new Error(`${msg.author.sanitizedName} had insufficient ores to be removed.`));
-				return;
-			}
-			newBank = removeItemFromBank(newBank, parseInt(oreID), qty * quantity);
-		}
+		await msg.author.removeItemsFromBank(cost);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.SmithingCost, cost);
 
 		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>({
 			barID: bar.id,
@@ -99,10 +93,9 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Smelting
 		});
-		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		let goldGauntletMessage = '';
-		if (bar.id === itemID('Gold bar') && msg.author.hasItemEquippedAnywhere(itemID('Goldsmith gauntlets'))) {
+		if (bar.id === itemID('Gold bar') && msg.author.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
 			goldGauntletMessage = '\n\n**Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.';
 		}
 
