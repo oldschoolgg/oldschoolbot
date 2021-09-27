@@ -741,7 +741,8 @@ const Buyables: Buyable[] = [
 	...capeBuyables,
 	...miningBuyables,
 	...runeBuyables,
-	...randomEventBuyables
+	...randomEventBuyables,
+	...BaShopBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
