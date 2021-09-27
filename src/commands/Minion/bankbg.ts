@@ -5,15 +5,7 @@ import { BitField, Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {
-	addBanks,
-	bankHasAllItemsFromBank,
-	formatSkillRequirements,
-	removeBankFromBank,
-	skillsMeetRequirements,
-	stringMatches,
-	toKMB
-} from '../../lib/util';
+import { addBanks, formatSkillRequirements, skillsMeetRequirements, stringMatches, toKMB } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import resolveItems from '../../lib/util/resolveItems';
 import BankImageTask from '../../tasks/bankImage';
@@ -81,10 +73,7 @@ export default class extends BotCommand {
 		}
 
 		// Check they have required collection log items.
-		if (
-			selectedImage.collectionLogItemsNeeded &&
-			!bankHasAllItemsFromBank(msg.author.collectionLog, selectedImage.collectionLogItemsNeeded)
-		) {
+		if (selectedImage.collectionLogItemsNeeded && msg.author.cl().has(selectedImage.collectionLogItemsNeeded)) {
 			return msg.channel.send(
 				`You're not worthy to use this background. You need these items in your Collection Log: ${new Bank(
 					selectedImage.collectionLogItemsNeeded
@@ -100,7 +89,7 @@ export default class extends BotCommand {
 		}
 
 		if (selectedImage.name === 'Pets') {
-			const cl = new Bank(msg.author.collectionLog);
+			const cl = msg.author.cl();
 			const hasPet = resolveItems(['Rocky', 'Bloodhound', 'Giant squirrel', 'Baby chinchompa']).some(id =>
 				cl.has(id)
 			);
@@ -116,10 +105,10 @@ export default class extends BotCommand {
 		 */
 		if (selectedImage.gpCost || selectedImage.itemCost) {
 			await msg.author.settings.sync(true);
-			const userBank = msg.author.settings.get(UserSettings.Bank);
+			const userBank = msg.author.bank();
 
 			// Ensure they have the required items.
-			if (selectedImage.itemCost && !bankHasAllItemsFromBank(userBank, selectedImage.itemCost)) {
+			if (selectedImage.itemCost && !userBank.has(selectedImage.itemCost)) {
 				return msg.channel.send(
 					`You don't have the required items to purchase this background. You need: ${new Bank(
 						selectedImage.itemCost
@@ -153,10 +142,7 @@ export default class extends BotCommand {
 			await msg.confirm(str);
 
 			if (selectedImage.itemCost) {
-				await msg.author.settings.update(
-					UserSettings.Bank,
-					removeBankFromBank(userBank, selectedImage.itemCost)
-				);
+				await msg.author.removeItemsFromBank(selectedImage.itemCost);
 			}
 
 			if (selectedImage.gpCost) {
