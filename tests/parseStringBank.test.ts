@@ -2,7 +2,12 @@
 import { Bank } from 'oldschooljs';
 
 import getOSItem from '../src/lib/util/getOSItem';
-import { parseBank, parseBankWithPrice, parseQuantityAndItem, parseStringBank } from '../src/lib/util/parseStringBank';
+import {
+	parseBankWithPrice,
+	parseQuantityAndItem,
+	parseStringBank,
+	parseUserBankWithString
+} from '../src/lib/util/parseStringBank';
 
 const psb = parseStringBank;
 const get = getOSItem;
@@ -60,19 +65,19 @@ describe('Bank Parsers', () => {
 
 	test('parseBank - flags', async () => {
 		const bank = new Bank().add('Steel arrow').add('Bones').add('Coal').add('Clue scroll (easy)');
-		const res = parseBank({
+		const res = parseUserBankWithString({
 			inputBank: bank,
 			flags: { equippables: '' }
 		});
 		expect(res.length).toEqual(1);
 
-		const res2 = parseBank({
+		const res2 = parseUserBankWithString({
 			inputBank: bank,
 			flags: { tradeables: '' }
 		});
 		expect(res2.length).toEqual(3);
 
-		const res3 = parseBank({
+		const res3 = parseUserBankWithString({
 			inputBank: bank,
 			flags: { untradeables: '' }
 		});
@@ -81,7 +86,7 @@ describe('Bank Parsers', () => {
 
 	test('parseBank - filters', async () => {
 		const bank = new Bank().add('Steel arrow').add('Bones').add('Coal').add('Clue scroll (easy)');
-		const res = parseBank({
+		const res = parseUserBankWithString({
 			inputBank: bank,
 			flags: { tt: '' }
 		});
@@ -98,7 +103,7 @@ describe('Bank Parsers', () => {
 			.add('Rune arrow')
 			.add('Mind rune', 50)
 			.add('Rune platebody');
-		const res = parseBank({
+		const res = parseUserBankWithString({
 			inputBank: bank,
 			flags: { search: 'rune' }
 		});
@@ -117,7 +122,7 @@ describe('Bank Parsers', () => {
 			.add('Rune arrow')
 			.add('Mind rune', 50)
 			.add('Rune platebody');
-		const res = parseBank({
+		const res = parseUserBankWithString({
 			inputBank: bank,
 			flags: {},
 			inputStr: 'coal'
@@ -125,7 +130,7 @@ describe('Bank Parsers', () => {
 		expect(res.length).toEqual(1);
 		expect(res.amount('Coal')).toEqual(6);
 
-		const res2 = parseBank({
+		const res2 = parseUserBankWithString({
 			inputBank: bank,
 			flags: {},
 			inputStr: 'coal, bones'
@@ -144,7 +149,7 @@ describe('Bank Parsers', () => {
 			.add('Rune arrow')
 			.add('Mind rune', 50)
 			.add('Rune platebody');
-		const res = parseBank({
+		const res = parseUserBankWithString({
 			inputBank: bank,
 			flags: {},
 			inputStr: '500 coal'
@@ -155,7 +160,7 @@ describe('Bank Parsers', () => {
 
 	test('parseBank - same item names', async () => {
 		const bank = new Bank().add(22_002);
-		const res = parseBank({
+		const res = parseUserBankWithString({
 			inputBank: bank,
 			flags: {},
 			inputStr: 'dragonfire ward'
@@ -166,7 +171,7 @@ describe('Bank Parsers', () => {
 
 	test('parseBank - extra number', async () => {
 		const bank = new Bank().add('Coal', 5).add('3rd age platebody', 100).add('Egg', 3);
-		const res = parseBank({
+		const res = parseUserBankWithString({
 			inputBank: bank,
 			flags: {},
 			inputStr: `1 5 coal, 3 100 3rd age platebody,${get('Egg').id}`
@@ -176,7 +181,7 @@ describe('Bank Parsers', () => {
 		expect(res.amount('3rd age platebody')).toEqual(3);
 		expect(res.amount('Egg')).toEqual(3);
 
-		const other = parseBank({ inputBank: bank, inputStr: get('Egg').id.toString() });
+		const other = parseUserBankWithString({ inputBank: bank, inputStr: get('Egg').id.toString() });
 		expect(other.amount('Egg')).toEqual(3);
 	});
 
@@ -304,7 +309,7 @@ describe('Bank Parsers', () => {
 		expect(
 			pbwp({
 				inputBank: baseBank.clone().add('Cannonball').add('Strength cape'),
-				str: '',
+				str: '.',
 				flags: {
 					untradeables: 'untradeables'
 				}

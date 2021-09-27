@@ -7,7 +7,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { updateBankSetting } from '../../lib/util';
-import { parseBank } from '../../lib/util/parseStringBank';
+import { parseUserBankWithString } from '../../lib/util/parseStringBank';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -22,7 +22,11 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [bankStr = '']: [string | undefined]) {
-		const bankToSac = parseBank({ inputStr: bankStr, inputBank: msg.author.bank(), flags: msg.flagArgs });
+		const bankToSac = parseUserBankWithString({
+			inputStr: bankStr,
+			inputBank: msg.author.bank(),
+			flags: msg.flagArgs
+		});
 
 		if (!msg.author.owns(bankToSac)) {
 			return msg.channel.send(`You don't own ${bankToSac}.`);

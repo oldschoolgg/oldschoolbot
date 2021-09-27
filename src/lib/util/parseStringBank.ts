@@ -78,36 +78,15 @@ export function parseStringBank(str = '', inputBank?: Bank): [Item, number | und
 	return items;
 }
 
-interface ParseBankOptions {
-	inputBank: Bank;
-	flags?: Record<string, string>;
-	inputStr?: string;
-}
-
-export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions): Bank {
-	const items = inputBank.items();
-
+export function parseBankFromFlags({ bank, flags }: { bank: Bank; flags: Record<string, string> }): Bank {
+	const newBank = new Bank();
 	const maxQuantity = Number(flags.qty) || Infinity;
-
-	if (inputStr) {
-		let _bank = new Bank();
-		const strItems = parseStringBank(inputStr, inputBank);
-		for (const [item, quantity] of strItems) {
-			_bank.add(
-				item.id,
-				!quantity ? inputBank.amount(item.id) : Math.max(0, Math.min(quantity, inputBank.amount(item.id)))
-			);
-		}
-		return _bank;
-	}
 
 	// Add filterables
 	const flagsKeys = Object.keys(flags);
 	const filter = filterableTypes.find(type => type.aliases.some(alias => flagsKeys.includes(alias)));
 
-	const outputBank = new Bank();
-
-	for (const [item, _qty] of items) {
+	for (const [item, quantity] of bank.items()) {
 		if (flagsKeys.includes('tradeables') && !item.tradeable) continue;
 		if (flagsKeys.includes('untradeables') && item.tradeable) continue;
 		if (flagsKeys.includes('equippables') && !item.equipment?.slot) continue;
@@ -115,9 +94,28 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 			continue;
 		}
 
-		const qty = Math.min(maxQuantity, _qty === 0 ? Math.max(1, inputBank.amount(item.id)) : _qty);
+		const qty = Math.min(maxQuantity, quantity === 0 ? Math.max(1, bank.amount(item.id)) : quantity);
 		if (filter && !filter.items.includes(item.id)) continue;
+		newBank.add(item.id, qty);
+	}
 
+	return newBank;
+}
+
+interface ParseBankOptions {
+	inputBank: Bank;
+	flags?: Record<string, string>;
+	inputStr?: string;
+	favoriteItems?: number[];
+}
+
+export function parseUserBankWithString({ userBank, inputStr, flags = {} }: ParseBankOptions): Bank {
+	const filtered = parseBankFromFlags({ bank: userBank, flags });
+	const stringBank = parseStringBank(inputStr);
+
+	const outputBank = new Bank();
+
+	for (const [item, qty] of outputBank.items()) {
 		if (inputBank.amount(item.id) < qty) continue;
 		outputBank.addItem(item.id, qty);
 	}
@@ -139,7 +137,7 @@ export function parseBankWithPrice({
 } {
 	if (!str) {
 		return {
-			bank: parseBank({
+			bank: parseUserBankWithString({
 				inputBank,
 				inputStr: str,
 				flags
@@ -165,7 +163,7 @@ export function parseBankWithPrice({
 
 	const inputStr = asPrice === null ? str : str.split(' ').slice(1, str.length).join(' ');
 
-	const bank = parseBank({
+	const bank = parseUserBankWithString({
 		inputBank,
 		inputStr,
 		flags
