@@ -22,9 +22,13 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 
-		const { potionsToAdd, sumOfPots, potionName, finalUserBank } = decantPotionFromBank(userBank, itemName, dose);
+		const { potionsToAdd, sumOfPots, potionName, potionsToRemove } = decantPotionFromBank(userBank, itemName, dose);
 
-		await msg.author.settings.update(UserSettings.Bank, finalUserBank);
+		if (!msg.author.owns(potionsToRemove)) {
+			return msg.channel.send(`You don't own ${new Bank(potionsToRemove)}.`);
+		}
+		await msg.author.removeItemsFromBank(potionsToRemove);
+		await msg.author.addItemsToBank(potionsToAdd);
 
 		if (
 			msg.author.hasItemEquippedAnywhere(['Iron dagger', 'Bronze arrow'], true) &&

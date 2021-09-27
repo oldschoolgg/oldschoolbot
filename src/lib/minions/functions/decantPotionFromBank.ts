@@ -1,6 +1,7 @@
+import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { addBanks, removeBankFromBank, stringMatches } from '../../util';
+import { stringMatches } from '../../util';
 import Potions from '../data/potions';
 
 export default function decantPotionFromBank(userBank: ItemBank, potion: string, dose: 1 | 2 | 3 | 4) {
@@ -38,6 +39,6 @@ export default function decantPotionFromBank(userBank: ItemBank, potion: string,
 		potionsToRemove,
 		sumOfPots,
 		potionName: potionToDecant.name,
-		finalUserBank: addBanks([potionsToAdd, removeBankFromBank(userBank, potionsToRemove)])
+		finalUserBank: new Bank().add(userBank).add(potionsToAdd).remove(potionsToRemove).bank
 	};
 }
