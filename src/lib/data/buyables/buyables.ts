@@ -63,6 +63,14 @@ const randomEventBuyables: Buyable[] = [
 	}
 ];
 
+const BaShop: Buyable[] = [
+    {
+        name: "Granite Body",
+        gpCost: 95_000,
+        minigameScoreReq: ['BarbarianAssault', 1]
+    },
+];
+
 const cmCapes: Buyable[] = [
 	{
 		name: "Xeric's guard",
