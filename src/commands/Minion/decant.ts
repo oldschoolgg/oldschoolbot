@@ -25,7 +25,7 @@ export default class extends BotCommand {
 		const { potionsToAdd, sumOfPots, potionName, potionsToRemove } = decantPotionFromBank(userBank, itemName, dose);
 
 		if (!msg.author.owns(potionsToRemove)) {
-			return msg.channel.send(`You don't own ${new Bank(potionsToRemove)}.`);
+			return msg.channel.send(`You don't own ${potionsToRemove}.`);
 		}
 		await msg.author.removeItemsFromBank(potionsToRemove);
 		await msg.author.addItemsToBank(potionsToAdd);
@@ -41,9 +41,7 @@ export default class extends BotCommand {
 		}
 
 		return msg.channel.send(
-			`You decanted **${sumOfPots}x ${potionName}${sumOfPots > 0 ? 's' : ''}** into **${new Bank(
-				potionsToAdd
-			)}**.`
+			`You decanted **${sumOfPots}x ${potionName}${sumOfPots > 0 ? 's' : ''}** into **${potionsToAdd}**.`
 		);
 	}
 }

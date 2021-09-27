@@ -9,16 +9,19 @@ export default function decantPotionFromBank(userBank: ItemBank, potion: string,
 	if (!potionToDecant) {
 		throw "You can't decant that!";
 	}
-	const potionsToRemove: ItemBank = {};
-	const potionsToAdd: ItemBank = {};
+	const potionsToRemove = new Bank();
+	const potionsToAdd = new Bank();
 	let sumOfPots = 0;
 	let totalDosesToCreate = 0;
 
 	for (let i = 0; i < potionToDecant.items.length; i++) {
 		if (i === dose - 1) continue;
-		potionsToRemove[potionToDecant.items[i]] = userBank[potionToDecant.items[i]] ?? 0;
-		sumOfPots += potionsToRemove[potionToDecant.items[i]];
-		totalDosesToCreate += potionsToRemove[potionToDecant.items[i]] * (i + 1);
+		let qty = userBank[potionToDecant.items[i]];
+		if (qty > 0) {
+			potionsToRemove.add(potionToDecant.items[i], qty);
+			sumOfPots += qty;
+			totalDosesToCreate += qty * (i + 1);
+		}
 	}
 
 	if (!totalDosesToCreate) {
@@ -28,10 +31,10 @@ export default function decantPotionFromBank(userBank: ItemBank, potion: string,
 	const newPotionDoseRequested = Math.floor(totalDosesToCreate / dose);
 	const leftOverDoses = totalDosesToCreate % dose;
 	if (newPotionDoseRequested) {
-		potionsToAdd[potionToDecant.items[dose - 1]] = newPotionDoseRequested;
+		potionsToAdd.add(potionToDecant.items[dose - 1], newPotionDoseRequested);
 	}
 	if (leftOverDoses) {
-		potionsToAdd[potionToDecant.items[leftOverDoses - 1]] = 1;
+		potionsToAdd.add(potionToDecant.items[leftOverDoses - 1], 1);
 	}
 
 	return {
@@ -39,6 +42,6 @@ export default function decantPotionFromBank(userBank: ItemBank, potion: string,
 		potionsToRemove,
 		sumOfPots,
 		potionName: potionToDecant.name,
-		finalUserBank: new Bank().add(userBank).add(potionsToAdd).remove(potionsToRemove).bank
+		finalUserBank: new Bank().add(userBank).add(potionsToAdd).remove(potionsToRemove)
 	};
 }
