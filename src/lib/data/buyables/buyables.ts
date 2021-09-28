@@ -697,7 +697,7 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Granite Body',
-		gpCost: 95_000
+		gpCost: 95_000,
 		minigameScoreReq: ['BarbarianAssault', 1]
 	},
 	{
