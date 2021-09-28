@@ -41,23 +41,27 @@ export default class extends BotCommand {
 			return msg.channel.send(PATRON_ONLY_GEAR_SETUP);
 		}
 
-		await msg.author.queueFn(async () => {
-			const { gearToEquip, toRemoveFromBank, toRemoveFromGear } = getUserBestGearFromBank(
-				msg.author.settings.get(UserSettings.Bank),
-				msg.author.getGear(gearType),
-				gearType,
-				msg.author.rawSkills,
-				type,
-				style,
-				extra
-			);
-			if (!msg.author.owns(toRemoveFromBank)) {
-				return msg.channel.send('Something went wrong!');
-			}
-			await msg.author.removeItemsFromBank(toRemoveFromBank);
-			await msg.author.addItemsToBank(toRemoveFromGear);
-			await msg.author.settings.update(resolveGearTypeSetting(gearType), gearToEquip);
-		});
+		const { gearToEquip, toRemoveFromBank, toRemoveFromGear } = getUserBestGearFromBank(
+			msg.author.settings.get(UserSettings.Bank),
+			msg.author.getGear(gearType),
+			gearType,
+			msg.author.rawSkills,
+			type,
+			style,
+			extra
+		);
+
+		if (Object.keys(toRemoveFromBank).length === 0) {
+			return msg.channel.send("Couldn't find anything to equip.");
+		}
+
+		if (!msg.author.owns(toRemoveFromBank)) {
+			return msg.channel.send(`You dont own ${toRemoveFromBank}!`);
+		}
+
+		await msg.author.removeItemsFromBank(toRemoveFromBank);
+		await msg.author.addItemsToBank(toRemoveFromGear);
+		await msg.author.settings.update(resolveGearTypeSetting(gearType), gearToEquip);
 
 		const image = await generateGearImage(
 			this.client,
