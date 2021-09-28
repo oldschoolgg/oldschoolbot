@@ -6,7 +6,7 @@ export interface Eatable {
 	healAmount: number;
 }
 
-export const Eatables: Eatable[] = [
+export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Shrimps',
 		id: itemID('Shrimps'),
