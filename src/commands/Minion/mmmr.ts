@@ -208,7 +208,11 @@ Here are the items you can buy: \n\n${buyables
 		let chanceOfSpecial = Math.floor(150 * (6 - monkeyTierOfUser(msg.author) / 2));
 		if (msg.author.hasItemEquippedAnywhere('Big banana')) {
 			chanceOfSpecial = reduceNumByPercent(chanceOfSpecial, 5);
-			boosts.push('10% higher chance of purple monkeys');
+			boosts.push('10% higher chance of purple monkeys from Big banana');
+		}
+		if (msg.author.hasItemEquippedAnywhere('Ring of luck')) {
+			chanceOfSpecial = reduceNumByPercent(chanceOfSpecial, 2);
+			boosts.push('2% higher chance of purple monkeys from ring of luck');
 		}
 		const monkeysToFight: Monkey[] = [];
 		for (let i = 0; i < quantity; i++) {
