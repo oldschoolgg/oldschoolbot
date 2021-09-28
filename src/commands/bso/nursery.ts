@@ -1,4 +1,4 @@
-import { randArrItem, roll } from 'e';
+import { randArrItem, reduceNumByPercent, roll } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -20,7 +20,13 @@ export async function generateNewTame(user: KlasaUser, species: Species) {
 	tame.currentGrowthPercent = 0;
 
 	tame.variant = randArrItem(species.variants);
-	if (species.shinyVariant && roll(species.shinyChance)) tame.variant = species.shinyVariant;
+
+	let shinyChance = user.hasItemEquippedAnywhere('Ring of luck')
+		? Math.ceil(reduceNumByPercent(species.shinyChance, 3))
+		: species.shinyChance;
+	if (species.shinyVariant && roll(shinyChance)) {
+		tame.variant = species.shinyVariant;
+	}
 
 	const [minCmbt, maxCmbt] = species.combatLevelRange;
 	tame.maxCombatLevel = gaussianRandom(minCmbt, maxCmbt, 2);
