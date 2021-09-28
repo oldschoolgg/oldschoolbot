@@ -101,7 +101,7 @@ export async function handleTripFinish(
 			message += `\n<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you ${bonusLoot}.`;
 		}
 	} else if (pet === itemID('Doug')) {
-		for (let i = 0; i < minutes; i++) {
+		for (let i = 0; i < minutes / 2; i++) {
 			bonusLoot.add(DougTable.roll());
 		}
 
