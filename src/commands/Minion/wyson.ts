@@ -62,7 +62,7 @@ export default class extends BotCommand {
 
 		await msg.author.settings.sync(true);
 
-		if (msg.author.numItemsInBankSync(moleItem.inputItem) < quantity) {
+		if (msg.author.bank().amount(moleItem.inputItem) < quantity) {
 			return msg.channel.send(`You don't have enough ${moleItem.name} to exchange!`);
 		}
 
