@@ -390,7 +390,7 @@ describe('Bank Parsers', () => {
 
 		//
 		const result7 = parseInputBankWithPrice({ usersBank, str: '1944', flags: {} });
-		expect(result7.bank).toStrictEqual(new Bank().add('Egg'));
+		expect(result7.bank).toStrictEqual(new Bank().add('Egg', 3));
 		expect(result7.price).toStrictEqual(0);
 
 		//
@@ -413,7 +413,7 @@ describe('Bank Parsers', () => {
 
 		//
 		const result10 = parseInputBankWithPrice({
-			usersBank,
+			usersBank: usersBank.clone().add(1),
 			str: '1',
 			flags: {}
 		});
@@ -442,5 +442,14 @@ describe('Bank Parsers', () => {
 		});
 		expect(result12.bank.length).toStrictEqual(60);
 		expect(result12.price).toStrictEqual(0);
+
+		//
+		const result13 = parseInputBankWithPrice({
+			usersBank: new Bank().add('Shark'),
+			str: '6969',
+			flags: { tradeables: 'tradeables' }
+		});
+		expect(result13.bank.length).toStrictEqual(1);
+		expect(result13.price).toStrictEqual(0);
 	});
 });
