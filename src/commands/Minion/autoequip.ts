@@ -42,7 +42,7 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.queueFn(async () => {
-			const { gearToEquip, userFinalBank } = getUserBestGearFromBank(
+			const { gearToEquip, toRemoveFromBank, toRemoveFromGear } = getUserBestGearFromBank(
 				msg.author.settings.get(UserSettings.Bank),
 				msg.author.getGear(gearType),
 				gearType,
@@ -51,7 +51,11 @@ export default class extends BotCommand {
 				style,
 				extra
 			);
-			await msg.author.settings.update(UserSettings.Bank, userFinalBank);
+			if (!msg.author.owns(toRemoveFromBank)) {
+				return msg.channel.send('Something went wrong!');
+			}
+			await msg.author.removeItemsFromBank(toRemoveFromBank);
+			await msg.author.addItemsToBank(toRemoveFromGear);
 			await msg.author.settings.update(resolveGearTypeSetting(gearType), gearToEquip);
 		});
 

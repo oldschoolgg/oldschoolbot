@@ -114,7 +114,7 @@ export default class extends BotCommand {
 		}
 
 		const allItems = msg.author.allItemsOwned();
-		const cl = new Bank(msg.author.collectionLog);
+		const cl = msg.author.cl();
 
 		for (const tier of ['easy', 'medium', 'hard', 'elite'] as const) {
 			const diaryTier = diary[tier];
