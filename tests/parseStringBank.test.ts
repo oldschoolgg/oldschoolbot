@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import getOSItem from '../src/lib/util/getOSItem';
 import itemID from '../src/lib/util/itemID';
@@ -410,5 +410,37 @@ describe('Bank Parsers', () => {
 		});
 		expect(result9.bank).toStrictEqual(new Bank());
 		expect(result9.price).toStrictEqual(0);
+
+		//
+		const result10 = parseInputBankWithPrice({
+			usersBank,
+			str: '1',
+			flags: {}
+		});
+		expect(result10.bank).toStrictEqual(new Bank().add(1));
+		expect(result10.price).toStrictEqual(0);
+
+		//
+		const result11 = parseInputBankWithPrice({
+			usersBank,
+			str: '23423423432',
+			flags: {}
+		});
+		expect(result11.bank).toStrictEqual(new Bank());
+		expect(result11.price).toStrictEqual(0);
+
+		const bigBank = new Bank();
+		for (let i = 0; i < 100; i++) {
+			bigBank.add(Items.random()!.id);
+		}
+
+		//
+		const result12 = parseInputBankWithPrice({
+			usersBank: bigBank,
+			str: '',
+			flags: { all: 'all' }
+		});
+		expect(result12.bank.length).toStrictEqual(60);
+		expect(result12.price).toStrictEqual(0);
 	});
 });
