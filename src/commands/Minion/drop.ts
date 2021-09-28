@@ -26,6 +26,9 @@ export default class extends BotCommand {
 		if (!msg.author.owns(bank)) {
 			return msg.channel.send(`You don't own ${bank}.`);
 		}
+		if (bank.length === 0) {
+			return msg.channel.send('No valid items that you own were given.');
+		}
 
 		await msg.confirm(
 			`${msg.author}, are you sure you want to drop ${bank}? This is irreversible, and you will lose the items permanently.`
