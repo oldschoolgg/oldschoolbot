@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/minimal';
 import { GuildMember } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -7,7 +8,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { parseBankWithPrice } from '../../lib/util/parseStringBank';
+import { parseInputBankWithPrice } from '../../lib/util/parseStringBank';
 
 const options = {
 	max: 1,
@@ -30,18 +31,28 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [buyerMember, strBankWithPrice]: [GuildMember, string | undefined]) {
-		let { price, bank: bankToSell } = parseBankWithPrice({
-			inputBank: msg.author.bank(),
-			str: strBankWithPrice || undefined,
-			flags: msg.flagArgs
+		const { price, bank: bankToSell } = parseInputBankWithPrice({
+			usersBank: msg.author.bank(),
+			str: strBankWithPrice ?? '',
+			flags: { ...msg.flagArgs, tradeables: 'tradeables' }
 		});
-		bankToSell.filter(item => itemIsTradeable(item.id), true);
+		if (bankToSell.items().some(i => !itemIsTradeable(i[0].id))) {
+			captureException(new Error('Trying to sell untradeable item'), {
+				user: {
+					id: msg.author.id
+				},
+				extra: {
+					inputItems: strBankWithPrice ?? '',
+					resultItems: bankToSell.toString()
+				}
+			});
+			return msg.channel.send('You are trying to sell untradeable items.');
+		}
 		if (bankToSell.length === 0) {
 			return msg.channel.send('No valid tradeable items that you own were given.');
 		}
-		if (price === 0) price = 1;
 
-		if (price < 1 || price > 100_000_000_000) {
+		if (price < 0 || price > 100_000_000_000) {
 			return msg.channel.send('Invalid price.');
 		}
 
@@ -108,9 +119,10 @@ export default class extends BotCommand {
 			if (buyerMember.user.settings.get(UserSettings.GP) < price || !msg.author.bank().fits(bankToSell)) {
 				return msg.channel.send('One of you lacks the required GP or items to make this trade.');
 			}
-
-			await buyerMember.user.removeGP(price);
-			await msg.author.addGP(price);
+			if (price > 0) {
+				await buyerMember.user.removeGP(price);
+				await msg.author.addGP(price);
+			}
 
 			await msg.author.removeItemsFromBank(bankToSell.bank);
 			await buyerMember.user.addItemsToBank(bankToSell.bank, false, false);

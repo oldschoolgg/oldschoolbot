@@ -7,7 +7,7 @@ import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
 import { evalMathExpression } from '../expressionParser';
 import { cleanString, stringMatches } from '../util';
-import getOSItem from './getOSItem';
+import itemIsTradeable from './itemIsTradeable';
 
 const { floor, max, min } = Math;
 
@@ -26,7 +26,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 
 	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
 
-	let lazyItemGet = Items.get(potentialName.join(' '));
+	let lazyItemGet = Items.get(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
 	if (str.includes('#') && lazyItemGet && inputBank) {
 		potentialQty = potentialQty.replace('#', inputBank.amount(lazyItemGet.id).toString());
 	}
@@ -56,7 +56,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	return [osItems, quantity];
 }
 
-export function parseStringBank(str = '', inputBank?: Bank): [Item, number | undefined][] {
+export function parseStringBank(str = '', inputBank?: Bank, noDuplicateItems?: true): [Item, number | undefined][] {
 	const split = str
 		.trim()
 		.replace(/\s\s+/g, ' ')
@@ -68,7 +68,7 @@ export function parseStringBank(str = '', inputBank?: Bank): [Item, number | und
 	for (let i = 0; i < split.length; i++) {
 		let [resItems, quantity] = parseQuantityAndItem(split[i], inputBank);
 		if (resItems !== undefined) {
-			for (const item of resItems) {
+			for (const item of noDuplicateItems ? resItems.slice(0, 1) : resItems) {
 				if (currentIDs.has(item.id)) continue;
 				currentIDs.add(item.id);
 				items.push([item, quantity]);
@@ -87,8 +87,8 @@ export function parseBankFromFlags({ bank, flags }: { bank: Bank; flags: Record<
 	const filter = filterableTypes.find(type => type.aliases.some(alias => flagsKeys.includes(alias)));
 
 	for (const [item, quantity] of bank.items()) {
-		if (flagsKeys.includes('tradeables') && !item.tradeable) continue;
-		if (flagsKeys.includes('untradeables') && item.tradeable) continue;
+		if (flagsKeys.includes('tradeables') && !itemIsTradeable(item.id)) continue;
+		if (flagsKeys.includes('untradeables') && itemIsTradeable(item.id)) continue;
 		if (flagsKeys.includes('equippables') && !item.equipment?.slot) continue;
 		if (flagsKeys.includes('search') && !item.name.toLowerCase().includes(flags.search.toLowerCase())) {
 			continue;
@@ -106,71 +106,101 @@ interface ParseBankOptions {
 	inputBank: Bank;
 	flags?: Record<string, string>;
 	inputStr?: string;
-	favoriteItems?: number[];
 }
 
-export function parseUserBankWithString({ userBank, inputStr, flags = {} }: ParseBankOptions): Bank {
-	const filtered = parseBankFromFlags({ bank: userBank, flags });
-	const stringBank = parseStringBank(inputStr);
-
-	const outputBank = new Bank();
-
-	for (const [item, qty] of outputBank.items()) {
-		if (inputBank.amount(item.id) < qty) continue;
-		outputBank.addItem(item.id, qty);
+export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions): Bank {
+	if (inputStr) {
+		let _bank = new Bank();
+		const strItems = parseStringBank(inputStr, inputBank);
+		for (const [item, quantity] of strItems) {
+			_bank.add(
+				item.id,
+				!quantity ? inputBank.amount(item.id) : Math.max(0, Math.min(quantity, inputBank.amount(item.id)))
+			);
+		}
+		return _bank;
 	}
 
-	return outputBank;
+	return parseBankFromFlags({ bank: inputBank, flags });
 }
 
-export function parseBankWithPrice({
-	inputBank,
-	str,
-	flags = {}
-}: {
-	inputBank: Bank;
-	str?: string;
+function truncateBankToSize(bank: Bank, size: number) {
+	let newBank = new Bank();
+
+	for (const [item, qty] of bank.items()) {
+		if (newBank.length === size) break;
+		newBank.add(item.id, qty);
+	}
+
+	return newBank;
+}
+
+interface ParseInputCostBankOptions {
+	usersBank: Bank;
 	flags?: Record<string, string>;
-}): {
-	price: number;
-	bank: Bank;
-} {
-	if (!str) {
+	inputStr?: string;
+}
+export function parseInputCostBank({ usersBank, inputStr, flags = {} }: ParseInputCostBankOptions): Bank {
+	if (!inputStr && Object.keys(flags).length > 0) {
+		return truncateBankToSize(parseBankFromFlags({ bank: usersBank, flags }), 60);
+	}
+
+	const baseBank = parseBankFromFlags({ bank: usersBank, flags });
+	const stringInputBank = Boolean(inputStr) ? parseStringBank(inputStr, baseBank, true) : [];
+
+	const bank = new Bank();
+	for (const [item, qty] of stringInputBank) {
+		const amountOwned = baseBank.amount(item.id);
+		const maxQuantity = Number(flags.qty) || Infinity;
+		bank.add(item.id, Math.min(maxQuantity, amountOwned, qty || amountOwned));
+	}
+
+	return truncateBankToSize(bank, 60);
+}
+
+export function parseInputBankWithPrice({
+	usersBank,
+	str,
+	flags
+}: {
+	usersBank: Bank;
+	str: string;
+	flags: Record<string, string>;
+}) {
+	const split = str.split(' ');
+	const firstAsNumber = evalMathExpression(split[0]);
+	const secondAsNumber = evalMathExpression(split[1]);
+
+	if (!firstAsNumber) {
 		return {
-			bank: parseUserBankWithString({
-				inputBank,
-				inputStr: str,
-				flags
-			}),
-			price: 0
+			price: 0,
+			bank: parseInputCostBank({ usersBank, inputStr: str, flags })
 		};
 	}
-	const split = str.split(' ');
-	const [first] = split;
 
-	let asPrice = evalMathExpression(first);
-	let price: number = 0;
-
-	try {
-		const number = Number(first);
-		if (!asPrice && !isNaN(number) && ![0, 1, 2].includes(number)) {
-			getOSItem(number);
-			price = 0;
-		} else {
-			price = asPrice ?? 0;
+	if (firstAsNumber && split.length === 1) {
+		const potentialItem = Items.get(firstAsNumber);
+		if (!potentialItem) {
+			return {
+				price: 0,
+				bank: new Bank()
+			};
 		}
-	} catch {}
+		return {
+			price: 0,
+			bank: parseInputCostBank({ usersBank: new Bank().add(potentialItem.id), flags, inputStr: str })
+		};
+	}
 
-	const inputStr = asPrice === null ? str : str.split(' ').slice(1, str.length).join(' ');
-
-	const bank = parseUserBankWithString({
-		inputBank,
-		inputStr,
-		flags
-	});
+	if ((firstAsNumber && !secondAsNumber) || (firstAsNumber && secondAsNumber)) {
+		return {
+			price: firstAsNumber,
+			bank: parseInputCostBank({ usersBank, inputStr: str.split(' ').slice(1).join(' '), flags })
+		};
+	}
 
 	return {
-		price,
-		bank
+		price: 0,
+		bank: parseInputCostBank({ usersBank, inputStr: str, flags })
 	};
 }

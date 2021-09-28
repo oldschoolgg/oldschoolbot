@@ -2,11 +2,13 @@
 import { Bank } from 'oldschooljs';
 
 import getOSItem from '../src/lib/util/getOSItem';
+import itemID from '../src/lib/util/itemID';
 import {
-	parseBankWithPrice,
+	parseBank,
+	parseInputBankWithPrice,
+	parseInputCostBank,
 	parseQuantityAndItem,
-	parseStringBank,
-	parseUserBankWithString
+	parseStringBank
 } from '../src/lib/util/parseStringBank';
 
 const psb = parseStringBank;
@@ -14,13 +16,15 @@ const get = getOSItem;
 const pQI = parseQuantityAndItem;
 describe('Bank Parsers', () => {
 	test('parseStringBank', async () => {
-		const output = psb(' 1 twisted bow, coal,  5k egg,  1b trout ');
+		const output = psb(` 1 twisted bow, coal,  5k egg,  1b trout, 5 ${itemID('Feather')} `);
 		const expected = [
 			[get('Twisted bow'), 1],
 			[get('Coal'), 0],
 			[get('Egg'), 5000],
-			[get('Trout'), 1_000_000_000]
+			[get('Trout'), 1_000_000_000],
+			[get('Feather'), 5]
 		];
+
 		expect(expected).toEqual(expect.arrayContaining(output));
 		expect(output.length).toEqual(expected.length);
 		for (let i = 0; i < output.length; i++) {
@@ -65,19 +69,19 @@ describe('Bank Parsers', () => {
 
 	test('parseBank - flags', async () => {
 		const bank = new Bank().add('Steel arrow').add('Bones').add('Coal').add('Clue scroll (easy)');
-		const res = parseUserBankWithString({
+		const res = parseBank({
 			inputBank: bank,
 			flags: { equippables: '' }
 		});
 		expect(res.length).toEqual(1);
 
-		const res2 = parseUserBankWithString({
+		const res2 = parseBank({
 			inputBank: bank,
 			flags: { tradeables: '' }
 		});
 		expect(res2.length).toEqual(3);
 
-		const res3 = parseUserBankWithString({
+		const res3 = parseBank({
 			inputBank: bank,
 			flags: { untradeables: '' }
 		});
@@ -86,7 +90,7 @@ describe('Bank Parsers', () => {
 
 	test('parseBank - filters', async () => {
 		const bank = new Bank().add('Steel arrow').add('Bones').add('Coal').add('Clue scroll (easy)');
-		const res = parseUserBankWithString({
+		const res = parseBank({
 			inputBank: bank,
 			flags: { tt: '' }
 		});
@@ -103,7 +107,7 @@ describe('Bank Parsers', () => {
 			.add('Rune arrow')
 			.add('Mind rune', 50)
 			.add('Rune platebody');
-		const res = parseUserBankWithString({
+		const res = parseBank({
 			inputBank: bank,
 			flags: { search: 'rune' }
 		});
@@ -122,7 +126,7 @@ describe('Bank Parsers', () => {
 			.add('Rune arrow')
 			.add('Mind rune', 50)
 			.add('Rune platebody');
-		const res = parseUserBankWithString({
+		const res = parseBank({
 			inputBank: bank,
 			flags: {},
 			inputStr: 'coal'
@@ -130,7 +134,7 @@ describe('Bank Parsers', () => {
 		expect(res.length).toEqual(1);
 		expect(res.amount('Coal')).toEqual(6);
 
-		const res2 = parseUserBankWithString({
+		const res2 = parseBank({
 			inputBank: bank,
 			flags: {},
 			inputStr: 'coal, bones'
@@ -149,7 +153,7 @@ describe('Bank Parsers', () => {
 			.add('Rune arrow')
 			.add('Mind rune', 50)
 			.add('Rune platebody');
-		const res = parseUserBankWithString({
+		const res = parseBank({
 			inputBank: bank,
 			flags: {},
 			inputStr: '500 coal'
@@ -160,7 +164,7 @@ describe('Bank Parsers', () => {
 
 	test('parseBank - same item names', async () => {
 		const bank = new Bank().add(22_002);
-		const res = parseUserBankWithString({
+		const res = parseBank({
 			inputBank: bank,
 			flags: {},
 			inputStr: 'dragonfire ward'
@@ -171,7 +175,7 @@ describe('Bank Parsers', () => {
 
 	test('parseBank - extra number', async () => {
 		const bank = new Bank().add('Coal', 5).add('3rd age platebody', 100).add('Egg', 3);
-		const res = parseUserBankWithString({
+		const res = parseBank({
 			inputBank: bank,
 			flags: {},
 			inputStr: `1 5 coal, 3 100 3rd age platebody,${get('Egg').id}`
@@ -181,21 +185,21 @@ describe('Bank Parsers', () => {
 		expect(res.amount('3rd age platebody')).toEqual(3);
 		expect(res.amount('Egg')).toEqual(3);
 
-		const other = parseUserBankWithString({ inputBank: bank, inputStr: get('Egg').id.toString() });
+		const other = parseBank({ inputBank: bank, inputStr: get('Egg').id.toString() });
 		expect(other.amount('Egg')).toEqual(3);
 	});
 
 	test('parseBank - look for nonexistent items', async () => {
 		const bank = new Bank().add('Steel arrow').add('Bones').add('Coal', 500).add('Clue scroll (easy)');
-		expect(parseUserBankWithString({ inputBank: bank, inputStr: '1 Portrait' }).toString()).toEqual('No items');
-		expect(parseUserBankWithString({ inputBank: bank, inputStr: '1 666' }).toString()).toEqual('No items');
-		expect(parseUserBankWithString({ inputBank: bank, inputStr: '526' }).toString()).toEqual('1x Bones');
-		expect(parseUserBankWithString({ inputBank: bank, inputStr: '0 cOaL' }).toString()).toEqual('500x Coal');
+		expect(parseBank({ inputBank: bank, inputStr: '1 Portrait' }).toString()).toEqual('No items');
+		expect(parseBank({ inputBank: bank, inputStr: '1 666' }).toString()).toEqual('No items');
+		expect(parseBank({ inputBank: bank, inputStr: '526' }).toString()).toEqual('1x Bones');
+		expect(parseBank({ inputBank: bank, inputStr: '0 cOaL' }).toString()).toEqual('500x Coal');
 	});
 
 	test('parseBank - check item aliases', async () => {
 		const bank = new Bank().add('Arceuus graceful top', 30).add('Bones');
-		expect(parseUserBankWithString({ inputBank: bank, inputStr: 'pUrPle gRaceful top' }).toString()).toEqual(
+		expect(parseBank({ inputBank: bank, inputStr: 'pUrPle gRaceful top' }).toString()).toEqual(
 			'30x Arceuus graceful top'
 		);
 	});
@@ -241,82 +245,170 @@ describe('Bank Parsers', () => {
 		expect(pQI('1.5k*10 twisted bow', testBank)).toEqual([[get('Twisted bow')], 10_000 * 1.5]);
 	});
 
-	test('parseBankWithPrice', async () => {
-		const baseBank = new Bank().add('Toolkit').add('Cannonball');
-		const pbwp = parseBankWithPrice;
-		expect(pbwp({ inputBank: baseBank.clone().add('Egg', 100), str: '10k 1 egg' })).toStrictEqual({
-			bank: new Bank().add('Egg'),
-			price: 10_000
+	test('parseInputCostBank', () => {
+		const usersBank = new Bank()
+			.add('Coal', 100)
+			.add('Egg', 3)
+			.add('Feather', 600)
+			.add('Twisted bow', 6)
+			.add('Shark', 1)
+			.add('Rune sword')
+			.add('Fire cape');
+
+		//
+		const result = parseInputCostBank({ usersBank, inputStr: undefined, flags: {} });
+		expect(result.length).toEqual(0);
+
+		//
+		const result2 = parseInputCostBank({ usersBank, inputStr: undefined, flags: { all: 'all' } });
+		expect(result2.length).toEqual(usersBank.length);
+
+		//
+		const result3 = parseInputCostBank({ usersBank, inputStr: '1+1 egg, 5 feather, 1 manta ray', flags: {} });
+		expect(result3.length).toEqual(2);
+		expect(result3.bank).toStrictEqual(new Bank().add('Egg', 2).add('Feather', 5).bank);
+
+		//
+		const result4 = parseInputCostBank({
+			usersBank,
+			inputStr: '#-1 egg, # feather, # manta ray, -1 watermelon, 0 fire rune, #*5 soul rune',
+			flags: {}
 		});
-		expect(pbwp({ inputBank: baseBank.clone().add('Egg', 100), str: '10m*5 1+5 egg' })).toStrictEqual({
-			bank: new Bank().add('Egg', 6),
-			price: 50_000_000
+		expect(result4.length).toEqual(2);
+		expect(result4.bank).toStrictEqual(new Bank().add('Egg', 2).add('Feather', 600).bank);
+
+		//
+		const result5 = parseInputCostBank({
+			usersBank,
+			inputStr: `#-1 ${itemID('Egg')}, 1 ${itemID('Feather')}`,
+			flags: {}
 		});
-		expect(
-			pbwp({
-				inputBank: baseBank.clone().add('Egg', 100).add('Twisted bow', 10).add('Feather').add('Blood rune', 10),
-				str: '10m*5 1+5 egg, #/2 twisted bow, 1+1 feather, 0 bones, # blood rune'
-			})
-		).toStrictEqual({
-			bank: new Bank().add('Egg', 6).add('Twisted bow', 5).add('Feather').add('Blood rune', 10),
-			price: 50_000_000
+		expect(result5.bank).toStrictEqual(new Bank().add('Egg', 2).add('Feather', 1).bank);
+		expect(result5.length).toEqual(2);
+
+		//
+		const result6 = parseInputCostBank({
+			usersBank,
+			inputStr: '1 Shark',
+			flags: { untradeables: 'untradeables' }
 		});
-		expect(
-			pbwp({
-				inputBank: baseBank.clone().add('Egg', 5),
-				str: '1 1 egg'
-			})
-		).toStrictEqual({
-			bank: new Bank().add('Egg'),
-			price: 1
+		expect(result6.bank).toStrictEqual(new Bank().bank);
+		expect(result6.length).toEqual(0);
+
+		//
+		const result7 = parseInputCostBank({
+			usersBank,
+			inputStr: '1 Shark, 5 Fire cape',
+			flags: { untradeables: 'untradeables' }
 		});
-		expect(
-			pbwp({
-				inputBank: baseBank.clone().add('Egg', 5),
-				str: '2 1 egg'
-			})
-		).toStrictEqual({
-			bank: new Bank().add('Egg'),
-			price: 2
+		expect(result7.bank).toStrictEqual(new Bank().add('Fire cape').bank);
+		expect(result7.length).toEqual(1);
+
+		//
+		const result8 = parseInputCostBank({
+			usersBank,
+			inputStr: '1 Shark, 5 Fire cape',
+			flags: { equippables: 'equippables' }
 		});
-		expect(
-			pbwp({
-				inputBank: baseBank.clone().add('Egg', 5).add('Feather', 100),
-				str: '1 2 egg, feather'
-			})
-		).toStrictEqual({
-			bank: new Bank().add('Egg', 2).add('Feather', 100),
-			price: 1
+		expect(result8.bank).toStrictEqual(new Bank().add('Fire cape').bank);
+		expect(result8.length).toEqual(1);
+
+		//
+		const result9 = parseInputCostBank({
+			usersBank,
+			inputStr: undefined,
+			flags: { equippables: 'equippables' }
 		});
-		expect(
-			pbwp({
-				inputBank: baseBank.clone().add('3rd age platebody', 5),
-				str: '1 1 3rd age platebody'
-			})
-		).toStrictEqual({
-			bank: new Bank().add('3rd age platebody', 1),
-			price: 1
+		expect(result9.bank).toStrictEqual(new Bank().add('Fire cape').add('Rune sword').add('Twisted bow', 6).bank);
+		expect(result9.length).toEqual(3);
+
+		//
+		const result10 = parseInputCostBank({
+			usersBank,
+			inputStr: undefined,
+			flags: { equippables: 'equippables', qty: '1' }
 		});
-		expect(
-			pbwp({
-				inputBank: baseBank.clone().add('3rd age platebody', 5),
-				str: '3 #-1 3rd age platebody'
-			})
-		).toStrictEqual({
-			bank: new Bank().add('3rd age platebody', 4),
-			price: 3
+		expect(result10.bank).toStrictEqual(new Bank().add('Fire cape').add('Rune sword').add('Twisted bow').bank);
+		expect(result10.length).toEqual(3);
+
+		//
+		const result11 = parseInputCostBank({
+			usersBank,
+			inputStr: 'egg, feather',
+			flags: {}
 		});
-		expect(
-			pbwp({
-				inputBank: baseBank.clone().add('Cannonball').add('Strength cape'),
-				str: '.',
-				flags: {
-					untradeables: 'untradeables'
-				}
-			})
-		).toStrictEqual({
-			bank: new Bank().add('Strength cape'),
-			price: 0
+		expect(result11.bank).toStrictEqual(new Bank().add('Feather', 600).add('Egg', 3).bank);
+		expect(result11.length).toEqual(2);
+
+		if (
+			[result, result2, result3, result4, result5, result6, result7, result8, result9, result10].some(
+				b => b.has('Cannonball') || b.has('Toolkit') || b.has(11_525)
+			)
+		) {
+			throw new Error('Result had a cannonball/toolkit');
+		}
+	});
+
+	test('parseInputBankWithPrice', () => {
+		const usersBank = new Bank()
+			.add('Coal', 100)
+			.add('Egg', 3)
+			.add('Feather', 600)
+			.add('Twisted bow', 6)
+			.add('Shark', 1)
+			.add('Rune sword')
+			.add('Fire cape');
+
+		const result1 = parseInputBankWithPrice({ usersBank, str: '', flags: {} });
+		expect(result1.bank).toStrictEqual(new Bank());
+		expect(result1.price).toStrictEqual(0);
+
+		//
+		const result2 = parseInputBankWithPrice({ usersBank, str: '5m 1 egg, # feather', flags: {} });
+		expect(result2.bank).toStrictEqual(new Bank().add('Egg').add('Feather', 600));
+		expect(result2.price).toStrictEqual(5_000_000);
+
+		//
+		const result3 = parseInputBankWithPrice({ usersBank, str: '1 1 egg, # feather', flags: {} });
+		expect(result3.bank).toStrictEqual(new Bank().add('Egg').add('Feather', 600));
+		expect(result3.price).toStrictEqual(1);
+
+		//
+		const result4 = parseInputBankWithPrice({ usersBank, str: 'feather, egg', flags: {} });
+		expect(result4.bank).toStrictEqual(new Bank().add('Feather', 600).add('Egg', 3));
+		expect(result4.price).toStrictEqual(0);
+
+		//
+		const result5 = parseInputBankWithPrice({ usersBank, str: '1m feather, egg', flags: {} });
+		expect(result5.bank).toStrictEqual(new Bank().add('Feather', 600).add('Egg', 3));
+		expect(result5.price).toStrictEqual(1_000_000);
+
+		//
+		const result6 = parseInputBankWithPrice({ usersBank, str: '1m #/2 feather, egg', flags: {} });
+		expect(result6.bank).toStrictEqual(new Bank().add('Feather', 600 / 2).add('Egg', 3));
+		expect(result6.price).toStrictEqual(1_000_000);
+
+		//
+		const result7 = parseInputBankWithPrice({ usersBank, str: '1944', flags: {} });
+		expect(result7.bank).toStrictEqual(new Bank().add('Egg'));
+		expect(result7.price).toStrictEqual(0);
+
+		//
+		const result8 = parseInputBankWithPrice({
+			usersBank: usersBank.clone().add("Nulodion's notes"),
+			str: "Nulodion's notes",
+			flags: { tradeables: 'tradeables' }
 		});
+		expect(result8.bank).toStrictEqual(new Bank());
+		expect(result8.price).toStrictEqual(0);
+
+		//
+		const result9 = parseInputBankWithPrice({
+			usersBank: usersBank.clone().add("Nulodion's notes"),
+			str: `${itemID("Nulodion's notes")}`,
+			flags: { tradeables: 'tradeables' }
+		});
+		expect(result9.bank).toStrictEqual(new Bank());
+		expect(result9.price).toStrictEqual(0);
 	});
 });
