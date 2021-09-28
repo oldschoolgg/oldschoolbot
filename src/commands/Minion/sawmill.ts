@@ -66,7 +66,7 @@ export default class extends BotCommand {
 			quantity = Math.floor(maxTripLength / timePerPlank);
 		}
 
-		const inputItemOwned = msg.author.numItemsInBankSync(plank.inputItem);
+		const inputItemOwned = msg.author.bank().amount(plank.inputItem);
 		if (inputItemOwned < quantity) {
 			quantity = inputItemOwned;
 		}

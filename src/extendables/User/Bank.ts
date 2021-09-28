@@ -3,7 +3,6 @@ import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { O } from 'ts-toolbelt';
 
-import { similarItems } from '../../lib/data/similarItems';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
@@ -41,17 +40,6 @@ export default class extends Extendable {
 		}
 
 		return numOwned;
-	}
-
-	public numItemsInBankSync(this: User, itemID: number, similar = false) {
-		const bank = this.settings.get(UserSettings.Bank);
-		const itemQty = typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
-		if (similar && itemQty === 0 && similarItems.get(itemID)) {
-			for (const i of similarItems.get(itemID)!) {
-				if (bank[i] && bank[i] > 0) return bank[i];
-			}
-		}
-		return itemQty;
 	}
 
 	public allItemsOwned(this: User): Bank {
