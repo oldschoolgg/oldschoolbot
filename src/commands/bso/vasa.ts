@@ -86,7 +86,10 @@ ${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
 `
 			);
 
-			return msg.channel.send({ embeds: [embed] });
+			return msg.channel.send({
+				embeds: [embed],
+				content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined
+			});
 		} catch (err) {
 			return msg.channel.send(`The mass failed to start for this reason: ${err.message}.`);
 		}
