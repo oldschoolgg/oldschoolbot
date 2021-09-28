@@ -63,14 +63,6 @@ const randomEventBuyables: Buyable[] = [
 	}
 ];
 
-const BaShop: Buyable[] = [
-    {
-        name: "Granite Body",
-        gpCost: 95_000,
-        minigameScoreReq: ['BarbarianAssault', 1]
-    },
-];
-
 const cmCapes: Buyable[] = [
 	{
 		name: "Xeric's guard",
@@ -704,6 +696,11 @@ const Buyables: Buyable[] = [
 		gpCost: 500_000
 	},
 	{
+        name: "Granite Body",
+        gpCost: 95_000,
+        minigameScoreReq: ['BarbarianAssault', 1]
+    },
+	{
 		name: 'Potato with cheese',
 		gpCost: 650,
 		skillsNeeded: {
@@ -741,8 +738,7 @@ const Buyables: Buyable[] = [
 	...capeBuyables,
 	...miningBuyables,
 	...runeBuyables,
-	...randomEventBuyables,
-	...BaShopBuyables
+	...randomEventBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
