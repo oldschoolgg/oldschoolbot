@@ -25,7 +25,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 
 	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
 
-	let lazyItemGet = Items.get(potentialName.join(' '));
+	let lazyItemGet = Items.get(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
 	if (str.includes('#') && lazyItemGet && inputBank) {
 		potentialQty = potentialQty.replace('#', inputBank.amount(lazyItemGet.id).toString());
 	}
@@ -55,7 +55,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	return [osItems, quantity];
 }
 
-export function parseStringBank(str = '', inputBank?: Bank): [Item, number | undefined][] {
+export function parseStringBank(str = '', inputBank?: Bank, noDuplicateItems?: true): [Item, number | undefined][] {
 	const split = str
 		.trim()
 		.replace(/\s\s+/g, ' ')
@@ -67,7 +67,7 @@ export function parseStringBank(str = '', inputBank?: Bank): [Item, number | und
 	for (let i = 0; i < split.length; i++) {
 		let [resItems, quantity] = parseQuantityAndItem(split[i], inputBank);
 		if (resItems !== undefined) {
-			for (const item of resItems) {
+			for (const item of noDuplicateItems ? resItems.slice(0, 1) : resItems) {
 				if (currentIDs.has(item.id)) continue;
 				currentIDs.add(item.id);
 				items.push([item, quantity]);
@@ -77,6 +77,30 @@ export function parseStringBank(str = '', inputBank?: Bank): [Item, number | und
 	return items;
 }
 
+export function parseBankFromFlags({ bank, flags }: { bank: Bank; flags: Record<string, string> }): Bank {
+	const newBank = new Bank();
+	const maxQuantity = Number(flags.qty) || Infinity;
+
+	// Add filterables
+	const flagsKeys = Object.keys(flags);
+	const filter = filterableTypes.find(type => type.aliases.some(alias => flagsKeys.includes(alias)));
+
+	for (const [item, quantity] of bank.items()) {
+		if (flagsKeys.includes('tradeables') && !item.tradeable) continue;
+		if (flagsKeys.includes('untradeables') && item.tradeable) continue;
+		if (flagsKeys.includes('equippables') && !item.equipment?.slot) continue;
+		if (flagsKeys.includes('search') && !item.name.toLowerCase().includes(flags.search.toLowerCase())) {
+			continue;
+		}
+
+		const qty = Math.min(maxQuantity, quantity === 0 ? Math.max(1, bank.amount(item.id)) : quantity);
+		if (filter && !filter.items.includes(item.id)) continue;
+		newBank.add(item.id, qty);
+	}
+
+	return newBank;
+}
+
 interface ParseBankOptions {
 	inputBank: Bank;
 	flags?: Record<string, string>;
@@ -84,8 +108,6 @@ interface ParseBankOptions {
 }
 
 export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions): Bank {
-	const items = inputBank.items();
-
 	if (inputStr) {
 		let _bank = new Bank();
 		const strItems = parseStringBank(inputStr, inputBank);
@@ -98,26 +120,78 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 		return _bank;
 	}
 
-	// Add filterables
-	const flagsKeys = Object.keys(flags);
-	const filter = filterableTypes.find(type => type.aliases.some(alias => flagsKeys.includes(alias)));
+	return parseBankFromFlags({ bank: inputBank, flags });
+}
 
-	const outputBank = new Bank();
+function truncateBankToSize(bank: Bank, size: number) {
+	let newBank = new Bank();
 
-	for (const [item, _qty] of items) {
-		if (flagsKeys.includes('tradeables') && !item.tradeable) continue;
-		if (flagsKeys.includes('untradeables') && item.tradeable) continue;
-		if (flagsKeys.includes('equippables') && !item.equipment?.slot) continue;
-		if (flagsKeys.includes('search') && !item.name.toLowerCase().includes(flags.search.toLowerCase())) {
-			continue;
-		}
-
-		const qty = _qty === 0 ? Math.max(1, inputBank.amount(item.id)) : _qty;
-		if (filter && !filter.items.includes(item.id)) continue;
-
-		if (inputBank.amount(item.id) < qty) continue;
-		outputBank.addItem(item.id, qty);
+	for (const [item, qty] of bank.items()) {
+		if (newBank.length === size) break;
+		newBank.add(item.id, qty);
 	}
 
-	return outputBank;
+	return newBank;
+}
+
+interface ParseInputCostBankOptions {
+	usersBank: Bank;
+	flags?: Record<string, string>;
+	inputStr?: string;
+}
+export function parseInputCostBank({ usersBank, inputStr, flags = {} }: ParseInputCostBankOptions): Bank {
+	if (!inputStr && Object.keys(flags).length > 0) {
+		return truncateBankToSize(parseBankFromFlags({ bank: usersBank, flags }), 60);
+	}
+
+	const baseBank = parseBankFromFlags({ bank: usersBank, flags });
+	const stringInputBank = Boolean(inputStr) ? parseStringBank(inputStr, baseBank, true) : [];
+
+	const bank = new Bank();
+	for (const [item, qty] of stringInputBank) {
+		const amountOwned = baseBank.amount(item.id);
+		const maxQuantity = Number(flags.qty) || Infinity;
+		bank.add(item.id, Math.min(maxQuantity, amountOwned, qty || amountOwned));
+	}
+
+	return truncateBankToSize(bank, 60);
+}
+
+export function parseInputBankWithPrice({
+	usersBank,
+	str,
+	flags
+}: {
+	usersBank: Bank;
+	str: string;
+	flags: Record<string, string>;
+}) {
+	const split = str.split(' ');
+	const firstAsNumber = evalMathExpression(split[0]);
+
+	if (!firstAsNumber) {
+		return {
+			price: 0,
+			bank: parseInputCostBank({ usersBank, inputStr: str, flags })
+		};
+	}
+
+	if (split.length === 1) {
+		const potentialItem = Items.get(firstAsNumber);
+		if (!potentialItem) {
+			return {
+				price: 0,
+				bank: new Bank()
+			};
+		}
+		return {
+			price: 0,
+			bank: parseInputCostBank({ usersBank, flags, inputStr: potentialItem.name })
+		};
+	}
+
+	return {
+		price: firstAsNumber,
+		bank: parseInputCostBank({ usersBank, inputStr: str.split(' ').slice(1).join(' '), flags })
+	};
 }

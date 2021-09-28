@@ -64,6 +64,7 @@ export namespace UserSettings {
 	export const PestControlPoints = T<number>('pest_control_points');
 	export const VolcanicMinePoints = T<number>('volcanic_mine_points');
 	export const MonkeysFought = T<string[]>('monkeys_fought');
+	export const FavoriteFood = T<readonly number[]>('favorite_food');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');

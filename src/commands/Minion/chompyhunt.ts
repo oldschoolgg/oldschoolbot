@@ -65,9 +65,9 @@ export default class extends BotCommand {
 	async claim(msg: KlasaMessage) {
 		const chompyScore = await msg.author.getMinigameScore('BigChompyBirdHunting');
 		const userBank = msg.author.bank({ withGP: true });
-		const userCl = msg.author.collectionLog;
+		const cl = msg.author.cl();
 
-		const missingHats = chompyHats.filter(c => (!userBank.has(c[0].id) || !userCl[c[0].id]) && chompyScore >= c[1]);
+		const missingHats = chompyHats.filter(c => (!userBank.has(c[0].id) || !cl.has(c[0].id)) && chompyScore >= c[1]);
 
 		if (missingHats.length === 0) return msg.channel.send('There is nothing to claim.');
 		const missingHatsBank = new Bank();

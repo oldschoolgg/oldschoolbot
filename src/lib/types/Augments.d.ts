@@ -215,14 +215,11 @@ declare module 'discord.js' {
 		 * Returns Creature score
 		 */
 		getCreatureScore(creature: Creature): number;
-		/**
-		 * Gets the CL count for an item.
-		 */
-		getCL(itemID: number): number;
 		rawGear(): UserFullGearSetup;
 		equippedPet(): number | null;
 		usingPet(name: string): boolean;
 		allItemsOwned(): Bank;
+		cl(): Bank;
 		/**
 		 * Returns this users update promise queue.
 		 */
@@ -255,10 +252,6 @@ declare module 'discord.js' {
 		hasGracefulEquipped(): boolean;
 		hasSkillReqs(reqs: Skills): [boolean, string | null];
 		perkTier: PerkTier;
-		/**
-		 * Returns this users Collection Log bank.
-		 */
-		collectionLog: ItemBank;
 		sanitizedName: string;
 		badges: string;
 		/**

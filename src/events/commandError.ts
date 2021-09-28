@@ -3,7 +3,7 @@ import { DiscordAPIError, HTTPError, MessageEmbed, User } from 'discord.js';
 import { Command, Event, KlasaMessage, util } from 'klasa';
 
 import { Emoji, rootFolder, SILENT_ERROR } from '../lib/constants';
-import { inlineCodeblock } from '../lib/util';
+import { cleanMentions, inlineCodeblock } from '../lib/util';
 
 export default class extends Event {
 	public async run(msg: KlasaMessage, command: Command, _: string[], error: string | Error) {
@@ -11,7 +11,7 @@ export default class extends Event {
 			return;
 		}
 		if (typeof error === 'string') {
-			return msg.channel.send(error);
+			return msg.channel.send(cleanMentions(msg.guild ?? null, error));
 		}
 		msg.channel.send(`An unexpected error occurred ${Emoji.Sad}`);
 

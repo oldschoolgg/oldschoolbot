@@ -1,14 +1,14 @@
+import { captureException } from '@sentry/minimal';
 import { GuildMember } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Channel, Events } from '../../lib/constants';
-import { evalMathExpression } from '../../lib/expressionParser';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { isSuperUntradeable } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
+import { parseInputBankWithPrice } from '../../lib/util/parseStringBank';
 
 const options = {
 	max: 1,
@@ -20,7 +20,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
-			usage: '<member:member> [price:string] [items:...TradeableBank]',
+			usage: '<member:member> [strBankWithPrice:...str]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			ironCantUse: true,
@@ -31,18 +31,29 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [buyerMember, rawPrice, bankInput]: [GuildMember, string, [Bank, number]]) {
-		const bankToSell = bankInput?.[0] ?? new Bank().add(getOSItem(rawPrice).id);
+	async run(msg: KlasaMessage, [buyerMember, strBankWithPrice]: [GuildMember, string | undefined]) {
+		const { price, bank: bankToSell } = parseInputBankWithPrice({
+			usersBank: msg.author.bank(),
+			str: strBankWithPrice ?? '',
+			flags: { ...msg.flagArgs, tradeables: 'tradeables' }
+		});
+		if (bankToSell.items().some(i => !isSuperUntradeable(i[0].id))) {
+			captureException(new Error('Trying to sell untradeable item'), {
+				user: {
+					id: msg.author.id
+				},
+				extra: {
+					inputItems: strBankWithPrice ?? '',
+					resultItems: bankToSell.toString()
+				}
+			});
+			return msg.channel.send('You are trying to sell untradeable items.');
+		}
+		if (bankToSell.length === 0) {
+			return msg.channel.send('No valid tradeable items that you own were given.');
+		}
 
-		if (!rawPrice) {
-			rawPrice = '1';
-		}
-		if (bankToSell.length === 1) {
-			const item = bankToSell.items()[0];
-			rawPrice = rawPrice.replace('#', bankToSell.amount(item[0].id).toString());
-		}
-		const price = evalMathExpression(rawPrice ?? '1') ?? 1;
-		if (price < 1 || price > 100_000_000_000) {
+		if (price < 0 || price > 100_000_000_000) {
 			return msg.channel.send('Invalid price.');
 		}
 
@@ -113,9 +124,10 @@ export default class extends BotCommand {
 			if (buyerMember.user.settings.get(UserSettings.GP) < price || !msg.author.bank().fits(bankToSell)) {
 				return msg.channel.send('One of you lacks the required GP or items to make this trade.');
 			}
-
-			await buyerMember.user.removeGP(price);
-			await msg.author.addGP(price);
+			if (price > 0) {
+				await buyerMember.user.removeGP(price);
+				await msg.author.addGP(price);
+			}
 
 			await msg.author.removeItemsFromBank(bankToSell.bank);
 			await buyerMember.user.addItemsToBank(bankToSell.bank, false, false);

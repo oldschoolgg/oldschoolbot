@@ -14,12 +14,12 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import {
-	addBanks,
 	bankHasAllItemsFromBank,
 	formatDuration,
 	itemID,
 	rogueOutfitPercentBonus,
-	stringMatches
+	stringMatches,
+	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
@@ -159,10 +159,7 @@ export default class extends BotCommand {
 			boosts.push(`${rogueOutfitPercentBonus(msg.author)}% chance of x2 loot due to rogue outfit equipped`);
 		}
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.ThievingCost,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.ThievingCost), foodRemoved])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.ThievingCost, foodRemoved);
 
 		await addSubTaskToActivityTask<PickpocketActivityTaskOptions>({
 			monsterID: pickpocketable.id,

@@ -9,14 +9,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import {
-	addBanks,
-	bankHasAllItemsFromBank,
-	itemNameFromID,
-	removeBankFromBank,
-	stringMatches,
-	toTitleCase
-} from '../../lib/util';
+import { itemNameFromID, stringMatches, toTitleCase } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -94,7 +87,7 @@ export default class extends BotCommand {
 					? !msg.command!.aliases.some(s => item.name.toLowerCase().startsWith(s))
 					: item.name.toLowerCase().startsWith(cmd.toLowerCase()))
 		);
-		if (!createableItem) throw `That's not a valid item you can ${cmd}.`;
+		if (!createableItem) return msg.channel.send(`That's not a valid item you can ${cmd}.`);
 
 		if (new Bank(createableItem.inputItems).items().some(i => i[0].name.toLowerCase().includes('dye'))) {
 			await msg.confirm(
@@ -107,13 +100,13 @@ export default class extends BotCommand {
 		}
 
 		if (createableItem.QPRequired && msg.author.settings.get(UserSettings.QP) < createableItem.QPRequired) {
-			throw `You need ${createableItem.QPRequired} QP to ${cmd} this item.`;
+			return msg.channel.send(`You need ${createableItem.QPRequired} QP to ${cmd} this item.`);
 		}
 
 		if (createableItem.requiredSkills) {
 			for (const [skillName, lvl] of Object.entries(createableItem.requiredSkills)) {
 				if (msg.author.skillLevel(skillName as SkillsEnum) < lvl) {
-					throw `You need ${lvl} ${skillName} to ${cmd} this item.`;
+					return msg.channel.send(`You need ${lvl} ${skillName} to ${cmd} this item.`);
 				}
 			}
 		}
@@ -125,16 +118,18 @@ export default class extends BotCommand {
 				createableItem.requiredSlayerUnlocks
 			);
 			if (!success) {
-				throw `You don't have the required Slayer Unlocks to ${cmd} this item.\n\nRequired: ${errors}`;
+				return msg.channel.send(
+					`You don't have the required Slayer Unlocks to ${cmd} this item.\n\nRequired: ${errors}`
+				);
 			}
 		}
 
 		if (createableItem.GPCost && msg.author.settings.get(UserSettings.GP) < createableItem.GPCost * quantity) {
-			throw `You need ${createableItem.GPCost.toLocaleString()} coins to ${cmd} this item.`;
+			return msg.channel.send(`You need ${createableItem.GPCost.toLocaleString()} coins to ${cmd} this item.`);
 		}
 
 		if (createableItem.cantBeInCL) {
-			const cl = new Bank(msg.author.settings.get(UserSettings.CollectionLogBank));
+			const cl = msg.author.cl();
 			if (Object.keys(createableItem.outputItems).some(itemID => cl.amount(Number(itemID)) > 0)) {
 				return msg.channel.send(`You can only ${cmd} this item once!`);
 			}
@@ -147,23 +142,17 @@ export default class extends BotCommand {
 		const inputItemsString = inItems.toString();
 
 		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
-
-		// Ensure they have the required items to create the item.
-		if (!bankHasAllItemsFromBank(userBank, inItems.bank)) {
-			throw `You don't have the required items to ${cmd} this item. You need: ${inputItemsString}${
-				createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
-			}.`;
-		}
 
 		// Check for any items they cant have 2 of.
 		if (createableItem.cantHaveItems) {
 			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
 				const numOwned = msg.author.numOfItemsOwned(parseInt(itemID));
 				if (numOwned >= qty) {
-					throw `You can't ${cmd} this item, because you have ${new Bank(
-						createableItem.cantHaveItems
-					)} in your bank.`;
+					return msg.channel.send(
+						`You can't ${cmd} this item, because you have ${new Bank(
+							createableItem.cantHaveItems
+						)} in your bank.`
+					);
 				}
 			}
 		}
@@ -184,10 +173,17 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.settings.update(
-			UserSettings.Bank,
-			addBanks([outItems.bank, removeBankFromBank(userBank, inItems.bank)])
-		);
+		// Ensure they have the required items to create the item.
+		if (!msg.author.owns(inItems)) {
+			return msg.channel.send(
+				`You don't have the required items to ${cmd} this item. You need: ${inputItemsString}${
+					createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
+				}.`
+			);
+		}
+
+		await msg.author.removeItemsFromBank(inItems);
+		await msg.author.addItemsToBank(outItems);
 
 		if (createableItem.GPCost) {
 			await msg.author.removeGP(createableItem.GPCost);

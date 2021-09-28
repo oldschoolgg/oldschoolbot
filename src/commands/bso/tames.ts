@@ -151,7 +151,12 @@ export async function removeRawFood({
 		healPerAction = Math.floor(healPerAction * 0.75);
 	}
 
-	const foodToRemove = getUserFoodFromBank(user, totalHealingNeeded, raw);
+	const foodToRemove = getUserFoodFromBank(
+		user.bank(),
+		totalHealingNeeded,
+		user.settings.get(UserSettings.FavoriteFood),
+		raw
+	);
 	if (!foodToRemove) {
 		throw `You don't have enough Raw food to feed your tame in this trip. You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.filter(
 			i => i.raw
@@ -159,7 +164,7 @@ export async function removeRawFood({
 			.map(i => itemNameFromID(i.raw!))
 			.join(', ')}.`;
 	} else {
-		const itemCost = new Bank(foodToRemove);
+		const itemCost = foodToRemove;
 		if (monster.itemCost) {
 			itemCost.add(monster.itemCost.clone().multiply(quantity));
 		}

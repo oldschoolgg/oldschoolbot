@@ -7,7 +7,7 @@ export interface Eatable {
 	raw: number | null;
 }
 
-export const Eatables: Eatable[] = [
+export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Shrimps',
 		id: itemID('Shrimps'),

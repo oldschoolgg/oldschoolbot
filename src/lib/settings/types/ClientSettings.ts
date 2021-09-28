@@ -93,6 +93,8 @@ export namespace ClientSettings {
 
 		export const RunecraftCost = T<O.Readonly<ItemBank>>('runecraft_cost');
 
+		export const SmithingCost = T<O.Readonly<ItemBank>>('smithing_cost');
+
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');
 		export const GPSourceAlching = T<number>('gp_alch');
