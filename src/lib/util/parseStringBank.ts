@@ -169,7 +169,6 @@ export function parseInputBankWithPrice({
 }) {
 	const split = str.split(' ');
 	const firstAsNumber = evalMathExpression(split[0]);
-	const secondAsNumber = evalMathExpression(split[1]);
 
 	if (!firstAsNumber) {
 		return {
@@ -178,7 +177,7 @@ export function parseInputBankWithPrice({
 		};
 	}
 
-	if (firstAsNumber && split.length === 1) {
+	if (split.length === 1) {
 		const potentialItem = Items.get(firstAsNumber);
 		if (!potentialItem) {
 			return {
@@ -192,15 +191,8 @@ export function parseInputBankWithPrice({
 		};
 	}
 
-	if ((firstAsNumber && !secondAsNumber) || (firstAsNumber && secondAsNumber)) {
-		return {
-			price: firstAsNumber,
-			bank: parseInputCostBank({ usersBank, inputStr: str.split(' ').slice(1).join(' '), flags })
-		};
-	}
-
 	return {
-		price: 0,
-		bank: parseInputCostBank({ usersBank, inputStr: str, flags })
+		price: firstAsNumber,
+		bank: parseInputCostBank({ usersBank, inputStr: str.split(' ').slice(1).join(' '), flags })
 	};
 }
