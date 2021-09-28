@@ -13,11 +13,15 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 
 export function gorajanShardChance(user: KlasaUser) {
-	return user.hasItemEquippedAnywhere('Dungeoneering master cape')
+	let base = user.hasItemEquippedAnywhere('Dungeoneering master cape')
 		? 500
 		: user.skillLevel(SkillsEnum.Dungeoneering) >= 99
 		? 1200
 		: 2000;
+	if (user.hasItemEquippedAnywhere('Ring of luck')) {
+		base = reduceNumByPercent(base, 5);
+	}
+	return base;
 }
 
 export const gorajanWarriorOutfit = resolveItems([
