@@ -170,7 +170,6 @@ export function parseInputBankWithPrice({
 	const split = str.split(' ');
 	const firstAsNumber = evalMathExpression(split[0]);
 
-	console.log({ split, firstAsNumber });
 	if (!firstAsNumber) {
 		return {
 			price: 0,
@@ -180,7 +179,6 @@ export function parseInputBankWithPrice({
 
 	if (split.length === 1) {
 		const potentialItem = Items.get(firstAsNumber);
-		console.log({ potentialItem });
 		if (!potentialItem) {
 			return {
 				price: 0,
