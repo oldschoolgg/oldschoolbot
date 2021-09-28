@@ -91,6 +91,12 @@ const feedingEasterEggs: [Bank, number, TameGrowthStage[], string][] = [
 		[TameGrowthStage.Juvenile, TameGrowthStage.Adult],
 		'https://i.imgur.com/ZqN1BHZ.mp4'
 	],
+	[
+		new Bank().add('Beach boxing gloves'),
+		2,
+		[TameGrowthStage.Juvenile, TameGrowthStage.Adult],
+		'https://imgur.com/a/4VWUiVN'
+	],
 	[new Bank().add('Lychee'), 2, [TameGrowthStage.Juvenile, TameGrowthStage.Adult], 'https://i.imgur.com/e5TqK1S.mp4'],
 	[
 		new Bank().add('Chocolate bar'),
