@@ -299,7 +299,7 @@ export default class extends BotCommand {
 		let pvmCost = false;
 
 		if (monster.itemCost) {
-			consumableCosts.push(monster.itemCost.clone());
+			consumableCosts.push(monster.itemCost);
 		}
 
 		const infiniteWaterRunes = msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Staff of water')));
