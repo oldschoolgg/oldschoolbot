@@ -808,6 +808,16 @@ const Reverteables: Createable[] = [
 		noCl: true
 	},
 	{
+		name: 'Revert amulet of blood fury',
+		inputItems: resolveNameBank({
+			'Amulet of blood fury': 1
+		}),
+		outputItems: resolveNameBank({
+			'Amulet of fury': 1
+		}),
+		noCl: true
+	},
+	{
 		name: 'Revert armadyl godsword',
 		inputItems: {
 			[itemID('Armadyl godsword')]: 1
