@@ -12,6 +12,7 @@ import { promisify } from 'util';
 
 import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
 import { GearSetupType, GearSetupTypes } from './gear/types';
+import { Consumable } from './minions/types';
 import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
@@ -319,6 +320,43 @@ export function formatItemReqs(items: ArrayItemsResolved) {
 		}
 	}
 	return str.join(', ');
+}
+
+export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
+	const str = [];
+
+	const consumables = [consumable];
+
+	if (consumable.alternativeConsumables) {
+		for (const c of consumable.alternativeConsumables) {
+			consumables.push(c);
+		}
+	}
+
+	for (const c of consumables) {
+		const itemEntries = Object.entries(c.itemCost.values());
+		const multiple = itemEntries.length > 1;
+		const subStr = [];
+
+		let multiply = 1;
+		if (c.qtyPerKill) {
+			multiply = c.qtyPerKill;
+		} else if (c.qtyPerMinute) {
+			multiply = c.qtyPerMinute * (timeToFinish / Time.Minute);
+		}
+
+		for (const [itemId, quantity] of itemEntries) {
+			subStr.push(`${(quantity * multiply).toFixed(3)}x ${itemNameFromID(parseInt(itemId))}`);
+		}
+
+		if (multiple) {
+			str.push(`(${subStr.join(' and ')})`);
+		} else {
+			str.push(subStr.join(''));
+		}
+	}
+
+	return str.join(' or ');
 }
 
 export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {

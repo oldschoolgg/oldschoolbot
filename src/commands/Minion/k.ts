@@ -299,20 +299,7 @@ export default class extends BotCommand {
 		let pvmCost = false;
 
 		if (monster.itemCost) {
-			consumableCosts.push({
-				itemCost: monster.itemCost.clone(),
-				qtyPerKill: 1
-			});
-		} else {
-			switch (monster.id) {
-				case Monsters.Hydra.id:
-				case Monsters.AlchemicalHydra.id:
-					consumableCosts.push({
-						itemCost: new Bank().add('Antidote++(4)', 1),
-						qtyPerMinute: 0.067
-					});
-					break;
-			}
+			consumableCosts.push(monster.itemCost);
 		}
 
 		const infiniteWaterRunes = msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Staff of water')));
@@ -320,9 +307,19 @@ export default class extends BotCommand {
 		// Calculate per kill cost:
 		if (consumableCosts.length > 0) {
 			for (const cc of consumableCosts) {
-				let itemMultiple = cc.qtyPerKill ?? cc.qtyPerMinute ?? null;
+				let consumable = cc;
+				if (consumable.alternativeConsumables && !msg.author.owns(consumable.itemCost)) {
+					for (const c of consumable.alternativeConsumables) {
+						if (msg.author.owns(c.itemCost)) {
+							consumable = c;
+							break;
+						}
+					}
+				}
+
+				let itemMultiple = consumable.qtyPerKill ?? consumable.qtyPerMinute ?? null;
 				if (itemMultiple) {
-					if (cc.isRuneCost) {
+					if (consumable.isRuneCost) {
 						// Free casts for kodai + sotd
 						if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
 							itemMultiple = Math.ceil(0.85 * itemMultiple);
@@ -332,18 +329,16 @@ export default class extends BotCommand {
 					}
 
 					let multiply = itemMultiple;
-					// Calculate the duration for 1 kill and check how much will be used in 1 kill
 
-					if (cc.qtyPerMinute) multiply = (timeToFinish / Time.Minute) * itemMultiple;
-					if (cc.itemCost) {
-						// Calculate supply for 1 kill
-						const oneKcCost = cc.itemCost.clone().multiply(multiply);
-						// Can't use Bank.add() because it discards < 1 qty.
-						for (const [itemID, qty] of objectEntries(oneKcCost.bank)) {
-							if (perKillCost.bank[itemID]) perKillCost.bank[itemID] += qty;
-							else perKillCost.bank[itemID] = qty;
-						}
-						pvmCost = true;
+					// Calculate the duration for 1 kill and check how much will be used in 1 kill
+					if (consumable.qtyPerMinute) multiply = (timeToFinish / Time.Minute) * itemMultiple;
+
+					// Calculate supply for 1 kill
+					const oneKconsumableost = consumable.itemCost.clone().multiply(multiply);
+					// Can't use Bank.add() because it discards < 1 qty.
+					for (const [itemID, qty] of objectEntries(oneKconsumableost.bank)) {
+						if (perKillCost.bank[itemID]) perKillCost.bank[itemID] += qty;
+						else perKillCost.bank[itemID] = qty;
 					}
 				}
 			}
@@ -360,6 +355,7 @@ export default class extends BotCommand {
 			for (const [item, qty] of objectEntries(bank)) {
 				bank[item] = Math.ceil(qty);
 			}
+
 			pvmCost = true;
 			lootToRemove.add(bank);
 		}

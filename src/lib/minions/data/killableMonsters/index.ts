@@ -264,7 +264,7 @@ const killableMonsters: KillableMonster[] = [
 				[GearStat.AttackRanged]: 20 + 33 + 10 + 94 + 8
 			}
 		},
-		itemCost: new Bank().add('Stamina potion(4)', 5).add('Ruby dragon bolts (e)', 100)
+		itemCost: { itemCost: new Bank().add('Stamina potion(4)', 5).add('Ruby dragon bolts (e)', 100), qtyPerKill: 1 }
 	}
 ];
 

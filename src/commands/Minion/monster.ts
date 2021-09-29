@@ -9,7 +9,7 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration, formatItemBoosts, formatItemReqs, itemNameFromID } from '../../lib/util';
+import { formatDuration, formatItemBoosts, formatItemCosts, formatItemReqs, itemNameFromID } from '../../lib/util';
 import findMonster from '../../lib/util/findMonster';
 
 export default class MinionCommand extends BotCommand {
@@ -59,7 +59,10 @@ export default class MinionCommand extends BotCommand {
 			str.push(`${monster.name} requires **${monster.qpRequired}qp** to kill, and you have ${QP}qp.\n`);
 		}
 		if (monster.itemsRequired && monster.itemsRequired.length > 0) {
-			str.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}\n`);
+			str.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}`);
+		}
+		if (monster.itemCost) {
+			str.push(`**Item Cost per Kill:** ${formatItemCosts(monster.itemCost, timeToFinish)}\n`);
 		}
 
 		if (monster.healAmountNeeded && 1 > 2) {
