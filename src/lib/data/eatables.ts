@@ -1,5 +1,6 @@
 import { KlasaUser } from 'klasa';
 
+import { SkillsEnum } from '../skilling/types';
 import itemID from '../util/itemID';
 
 export interface Eatable {
@@ -199,7 +200,17 @@ export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Anglerfish',
 		id: itemID('Anglerfish'),
-		healAmount: 22,
+		healAmount: (user: KlasaUser) => {
+			const hp = user.skillLevel(SkillsEnum.Hitpoints);
+			let c = 2;
+			if (hp > 10) c = 2;
+			if (hp > 25) c = 4;
+			if (hp > 50) c = 6;
+			if (hp > 75) c = 8;
+			if (hp > 93) c = 13;
+
+			return hp * (1 / 10) + c;
+		},
 		pvmBoost: 4
 	}
 ];
