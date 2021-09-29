@@ -1721,6 +1721,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Salve amulet(ei)')]: 1,
 			[itemID("Tarn's diary")]: 1
+		}
 	},
 	{	
 		name: 'Amulet of blood fury',
