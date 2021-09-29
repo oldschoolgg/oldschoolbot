@@ -114,6 +114,25 @@ ${
 				}
 				return msg.channel.send(`Time Remaining: ${formatDuration(diff)}`);
 			}
+			case 'togglegorajanbonecrusher' : {
+				let newValue = "";
+				let bitFields = [...msg.author.settings.get(UserSettings.BitField)];
+
+				if(msg.author.settings.get(UserSettings.BitField).includes(BitField.DisabledGorajanBoneCrusher)) {
+					bitFields = bitFields.filter(field => field !== BitField.DisabledGorajanBoneCrusher);
+					newValue = "on";
+				}
+				else {
+					bitFields.push(BitField.DisabledGorajanBoneCrusher);
+					newValue = "off";
+				}
+
+				await msg.author.settings.update(UserSettings.BitField, uniqueArr(bitFields), {
+					arrayAction: 'overwrite'
+				});
+
+				return msg.channel.send(`Toggled your Gorajan Bonecrusher to ${newValue}`);
+			}
 		}
 
 		if (msg.guild!.id !== SupportServer) return null;

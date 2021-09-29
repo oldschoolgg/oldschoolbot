@@ -394,7 +394,8 @@ export const enum BitField {
 	HasScrollOfLongevity = 203,
 	HasScrollOfTheHunt = 204,
 	HasBananaEnchantmentScroll = 205,
-	HasDaemonheimAgilityPass = 206
+	HasDaemonheimAgilityPass = 206,
+	DisabledGorajanBoneCrusher = 207
 }
 
 interface BitFieldData {
