@@ -120,7 +120,20 @@ export default class extends Extendable {
 			}
 
 			this.log(`Had items added to bank - ${JSON.stringify(items)}`);
-			await this.settings.update(UserSettings.Bank, user.bank().add(items).bank);
+			const newBank = user.bank().add(items).bank;
+
+			let deleted = [];
+			for (const [key, value] of Object.entries(newBank)) {
+				if (value === 0 || value < 1) {
+					delete newBank[key];
+					deleted.push([key, value]);
+				}
+			}
+			if (deleted.length > 0) {
+				console.error(`Deleted ${JSON.stringify(deleted)} from ${this.username}`);
+			}
+
+			await this.settings.update(UserSettings.Bank, newBank);
 
 			// Re-add the coins to the loot
 			if (coinsInLoot > 0) items.add(995, coinsInLoot);
