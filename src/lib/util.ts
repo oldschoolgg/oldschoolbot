@@ -350,13 +350,27 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 		}
 
 		if (multiple) {
-			str.push(`(${subStr.join(' and ')})`);
+			str.push(subStr.join(', '));
 		} else {
 			str.push(subStr.join(''));
 		}
 	}
 
-	return str.join(' or ');
+	if (consumables.length > 1) {
+		return `(${str.join(' OR ')})`;
+	}
+
+	return str.join('');
+}
+
+export function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
+	const str = [];
+
+	for (const consumable of consumables) {
+		str.push(formatItemCosts(consumable, timeToFinish));
+	}
+
+	return str.join(', ');
 }
 
 export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {

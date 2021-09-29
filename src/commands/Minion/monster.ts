@@ -59,7 +59,7 @@ export default class MinionCommand extends BotCommand {
 			str.push(`${monster.name} requires **${monster.qpRequired}qp** to kill, and you have ${QP}qp.\n`);
 		}
 		if (monster.itemsRequired && monster.itemsRequired.length > 0) {
-			str.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}`);
+			str.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}\n`);
 		}
 		if (monster.itemCost) {
 			str.push(`**Item Cost per Kill:** ${formatItemCosts(monster.itemCost, timeToFinish)}\n`);

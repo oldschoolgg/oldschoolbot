@@ -47,6 +47,7 @@ import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
 	addArrayOfNumbers,
 	formatDuration,
+	formatMissingItems,
 	isWeekend,
 	itemNameFromID,
 	randomVariation,
@@ -334,9 +335,9 @@ export default class extends BotCommand {
 					if (consumable.qtyPerMinute) multiply = (timeToFinish / Time.Minute) * itemMultiple;
 
 					// Calculate supply for 1 kill
-					const oneKconsumableost = consumable.itemCost.clone().multiply(multiply);
+					const oneKcCost = consumable.itemCost.clone().multiply(multiply);
 					// Can't use Bank.add() because it discards < 1 qty.
-					for (const [itemID, qty] of objectEntries(oneKconsumableost.bank)) {
+					for (const [itemID, qty] of objectEntries(oneKcCost.bank)) {
 						if (perKillCost.bank[itemID]) perKillCost.bank[itemID] += qty;
 						else perKillCost.bank[itemID] = qty;
 					}
@@ -362,7 +363,9 @@ export default class extends BotCommand {
 		if (pvmCost) {
 			if (quantity === 0 || !msg.author.owns(lootToRemove)) {
 				return msg.channel.send(
-					`You don't have the items needed to kill any amount of ${monster.name}, you need: ${perKillCost} per kill.`
+					`You don't have the items needed to kill any amount of ${
+						monster.name
+					}, you need: ${formatMissingItems(consumableCosts, timeToFinish)} per kill.`
 				);
 			}
 		}
