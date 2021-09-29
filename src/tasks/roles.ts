@@ -87,6 +87,7 @@ async function addRoles({
 				await mem.roles.remove(role);
 			}
 			if (badge && mem.user.settings.get(UserSettings.Badges).includes(badge)) {
+				await mem.user.settings.sync(true);
 				await mem.user.settings.update(UserSettings.Badges, badge, {
 					arrayAction: 'remove'
 				});
@@ -100,6 +101,7 @@ async function addRoles({
 				await mem.roles.add(role);
 			}
 			if (badge && !mem.user.settings.get(UserSettings.Badges).includes(badge)) {
+				await mem.user.settings.sync(true);
 				await mem.user.settings.update(UserSettings.Badges, badge, {
 					arrayAction: 'add'
 				});
