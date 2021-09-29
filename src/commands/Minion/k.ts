@@ -1,5 +1,6 @@
 import { MessageAttachment } from 'discord.js';
 import {
+	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
 	objectEntries,
@@ -14,6 +15,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Activity } from '../../lib/constants';
+import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { GearSetupType, GearStat } from '../../lib/gear';
 import {
@@ -391,7 +393,7 @@ export default class extends BotCommand {
 
 			if (monster.wildy) gearToCheck = 'wildy';
 
-			const [result] = await removeFoodFromUser({
+			const [result, foodRemoved] = await removeFoodFromUser({
 				client: this.client,
 				user: msg.author,
 				totalHealingNeeded: healAmountNeeded * quantity,
@@ -402,6 +404,27 @@ export default class extends BotCommand {
 					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced
 			});
+
+			for (const [item, qty] of foodRemoved.items()) {
+				const eatable = Eatables.find(e => e.id === item.id);
+				if (!eatable) continue;
+
+				const healAmount =
+					typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(msg.author);
+				const amountHealed = qty * healAmount;
+				if (amountHealed < calcPercentOfNum(75, healAmountNeeded * quantity)) continue;
+				const boost = eatable.pvmBoost;
+				if (boost) {
+					if (boost < 0) {
+						boosts.push(`${boost}% for ${eatable.name}`);
+						duration = increaseNumByPercent(duration, Math.abs(boost));
+					} else {
+						boosts.push(`${boost}% for ${eatable.name}`);
+						duration = reduceNumByPercent(duration, boost);
+					}
+				}
+				break;
+			}
 
 			foodStr = result;
 		}
