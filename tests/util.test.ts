@@ -1,3 +1,4 @@
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
@@ -19,14 +20,20 @@ describe('util', () => {
 	});
 
 	test('getUserFoodFromBank', () => {
-		expect(getUserFoodFromBank(new Bank().add('Shark'), 500, [])).toStrictEqual(false);
-		expect(getUserFoodFromBank(new Bank().add('Shark', 100), 500, [])).toStrictEqual(new Bank().add('Shark', 25));
-		expect(getUserFoodFromBank(new Bank().add('Shark', 30).add('Tuna', 20), 750, [])).toStrictEqual(
+		const fakeUser = (b: Bank) =>
+			({
+				bank: () => b
+			} as KlasaUser);
+		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark')), 500, [])).toStrictEqual(false);
+		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark', 100)), 500, [])).toStrictEqual(
+			new Bank().add('Shark', 25)
+		);
+		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark', 30).add('Tuna', 20)), 750, [])).toStrictEqual(
 			new Bank().add('Shark', 28).add('Tuna', 20)
 		);
 		expect(
 			getUserFoodFromBank(
-				new Bank().add('Shark', 100).add('Lobster', 20).add('Shrimps', 50).add('Coal'),
+				fakeUser(new Bank().add('Shark', 100).add('Lobster', 20).add('Shrimps', 50).add('Coal')),
 				1600,
 				[]
 			)

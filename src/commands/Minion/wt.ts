@@ -72,7 +72,8 @@ export default class extends BotCommand {
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		for (const food of Eatables) {
-			const amountNeeded = Math.ceil(healAmountNeeded / food.healAmount) * quantity;
+			const healAmount = typeof food.healAmount === 'number' ? food.healAmount : food.healAmount(msg.author);
+			const amountNeeded = Math.ceil(healAmountNeeded / healAmount) * quantity;
 			if (!bankHasItem(bank, food.id, amountNeeded)) {
 				if (Eatables.indexOf(food) === Eatables.length - 1) {
 					return msg.channel.send(

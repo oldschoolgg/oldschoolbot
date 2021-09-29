@@ -45,7 +45,7 @@ export default async function removeFoodFromUser({
 	}
 	const favoriteFood = user.settings.get(UserSettings.FavoriteFood);
 
-	const foodToRemove = getUserFoodFromBank(user.bank(), totalHealingNeeded, favoriteFood);
+	const foodToRemove = getUserFoodFromBank(user, totalHealingNeeded, favoriteFood);
 	if (!foodToRemove) {
 		throw `You don't have enough food to do ${activityName}! You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.map(
 			i => i.name
