@@ -1723,7 +1723,7 @@ const Createables: Createable[] = [
 			[itemID("Tarn's diary")]: 1
 		}
 	},
-	{	
+	{
 		name: 'Amulet of blood fury',
 		inputItems: resolveNameBank({
 			'Amulet of fury': 1,
