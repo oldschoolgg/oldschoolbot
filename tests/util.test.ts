@@ -22,8 +22,9 @@ describe('util', () => {
 	test('getUserFoodFromBank', () => {
 		const fakeUser = (b: Bank) =>
 			({
-				bank: () => b
-			} as KlasaUser);
+				bank: () => b,
+				skillLevel: () => 99
+			} as any as KlasaUser);
 		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark')), 500, [])).toStrictEqual(false);
 		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark', 100)), 500, [])).toStrictEqual(
 			new Bank().add('Shark', 25)
