@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { Activity } from '../../lib/constants';
-import { GearSetupTypes } from '../../lib/gear';
+import { minionNotBusy } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -146,6 +146,7 @@ export default class extends BotCommand {
 		);
 	}
 
+	@minionNotBusy
 	async run(msg: KlasaMessage, [numberOfGames = undefined]: [number | undefined]) {
 		const skillReqs = {
 			[SkillsEnum.Prayer]: 70,
@@ -171,19 +172,23 @@ export default class extends BotCommand {
 		const userMiningLevel = msg.author.skillLevel(SkillsEnum.Mining);
 		const userPrayerLevel = msg.author.skillLevel(SkillsEnum.Prayer);
 		const userHitpointsLevel = msg.author.skillLevel(SkillsEnum.Hitpoints);
-		const userSkillingGear = msg.author.getGear(GearSetupTypes.Skilling);
+		const userSkillingGear = msg.author.getGear('skilling');
 		const boosts: string[] = [];
 
 		const suppliesUsage = new Bank()
-			.add('Saradomin brew (4)', userHitpointsLevel >= 80 ? 3 : 2)
+			.add('Saradomin brew (4)', userHitpointsLevel < 80 ? 3 : 2)
 			.add('Prayer potion (4)', 1)
 			.add('Numulite', 30);
 
 		// Activity boosts
 		if (userMiningLevel >= 71 && userSkillingGear.hasEquipped('Crystal pickaxe')) {
-			boosts.push('50% boost for having a Crystal pickaxe equipped.');
+			boosts.push(
+				`50% boost for having a ${userSkillingGear.equippedWeapon()?.name ?? 'Crystal pickaxe'} equipped.`
+			);
 		} else if (userMiningLevel >= 61 && userSkillingGear.hasEquipped('Dragon pickaxe')) {
-			boosts.push('30% boost for having a Dragon pickaxe equipped.');
+			boosts.push(
+				`30% boost for having a ${userSkillingGear.equippedWeapon()?.name ?? 'Dragon pickaxe'} equipped.`
+			);
 		}
 
 		if (

@@ -63,16 +63,17 @@ export class GiveawayTable extends BaseEntity {
 			const message = await channel?.messages.fetch(this.messageID).catch(noOp);
 
 			const reactions = message ? message.reactions.cache.get(this.reactionID) : undefined;
-			const users: KlasaUser[] = (reactions?.users.cache.array() || []).filter(
-				u => !u.isIronman && !u.bot && u.id !== this.userID
-			);
-
+			const users: KlasaUser[] = !reactions
+				? []
+				: (await reactions.users.fetch())!.array()!.filter(u => !u.isIronman && !u.bot && u.id !== this.userID);
 			const creator = await client.fetchUser(this.userID);
 
 			if (users.length === 0 || !channel || !message) {
 				console.error('Giveaway failed');
 				await creator.addItemsToBank(this.bank);
-				creator.send(`Your giveaway failed to finish, you were refunded the items: ${this.bank}.`).catch(noOp);
+				creator
+					.send(`Your giveaway failed to finish, you were refunded the items: ${new Bank(this.bank)}.`)
+					.catch(noOp);
 
 				if (message && channel) {
 					channel.send('Nobody entered the giveaway :(');

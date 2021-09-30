@@ -59,7 +59,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (type === 'sell' && msg.author.numItemsInBankSync(shopInventory.inputItem) === 0) {
+		if (type === 'sell' && msg.author.bank().amount(shopInventory.inputItem) === 0) {
 			return msg.channel.send(`I am sorry JalYt. You don't have any **${shopInventory.name}** to sell me.`);
 		}
 

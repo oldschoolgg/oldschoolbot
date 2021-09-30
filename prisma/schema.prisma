@@ -7,23 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model activity {
-  id             Int      @unique @default(autoincrement())
-  user_id        String   @db.VarChar(19)
-  start_date     DateTime @db.Timestamp(6)
-  finish_date    DateTime @db.Timestamp(6)
+model Activity {
+  id             Int          @unique @default(autoincrement())
+  user_id        String       @db.VarChar(19)
+  start_date     DateTime     @db.Timestamp(6)
+  finish_date    DateTime     @db.Timestamp(6)
   duration       Int
   completed      Boolean
   group_activity Boolean
-  type           Activity
-  channel_id     String   @db.VarChar(19)
-  data           Json     @db.Json
+  type           ActivityEnum
+  channel_id     String       @db.VarChar(19)
+  data           Json         @db.Json
 
   @@index([group_activity], name: "group_activity_index")
   @@index([completed], name: "completed_index")
+  @@map(name: "activity")
 }
 
-model analytics_table {
+model Analytic {
   timestamp          BigInt  @id
   guildsCount        BigInt?
   membersCount       BigInt?
@@ -46,9 +47,11 @@ model analytics_table {
   gpDice             BigInt?
   gpOpen             BigInt?
   gpDaily            BigInt?
+
+  @@map(name: "analytics_table")
 }
 
-model clientStorage {
+model ClientStorage {
   id                           String   @id @db.VarChar(19)
   userBlacklist                String[] @db.VarChar(19)
   guildBlacklist               String[]
@@ -97,9 +100,11 @@ model clientStorage {
   gp_open                      BigInt   @default(0)
   gp_daily                     BigInt   @default(0)
   locked_skills                Json[]   @db.Json
+
+  @@map(name: "clientStorage")
 }
 
-model gear_presets {
+model GearPreset {
   user_id    String @db.VarChar(19)
   name       String @db.VarChar(12)
   two_handed Int?
@@ -117,9 +122,10 @@ model gear_presets {
   ammo_qty   Int?
 
   @@id([user_id, name])
+  @@map(name: "gear_presets")
 }
 
-model giveaway {
+model Giveaway {
   id          Int      @default(autoincrement())
   user_id     String   @db.VarChar(19)
   start_date  DateTime @db.Timestamp(6)
@@ -133,9 +139,10 @@ model giveaway {
 
   @@id([id, user_id, channel_id, message_id, reaction_id])
   @@index([completed], name: "IDX_8d425a61b6093dd2351153b143")
+  @@map(name: "giveaway")
 }
 
-model guilds {
+model Guild {
   id                   String   @id @db.VarChar(19)
   prefix               String   @default(",")
   language             String   @default("en-US") @db.VarChar(5)
@@ -149,9 +156,11 @@ model guilds {
   levelUpMessages      String?  @db.VarChar(19)
   staffOnlyChannels    String[] @db.VarChar(19)
   tags                 Json[]   @db.Json
+
+  @@map(name: "guilds")
 }
 
-model metrics {
+model Metric {
   timestamp          BigInt @id
   eventLoopDelayMin  Float  @db.Real
   eventLoopDelayMax  Float  @db.Real
@@ -163,53 +172,59 @@ model metrics {
   cpuUser            Float  @db.Real
   cpuSystem          Float  @db.Real
   cpuPercent         Float  @db.Real
+
+  @@map(name: "metrics_table")
 }
 
-model minigames {
-  id                      Int        @id @default(autoincrement())
-  user_id                 String     @unique @db.VarChar(19)
-  tithe_farm              Int        @default(0)
-  wintertodt              Int        @default(0)
-  tempoross               Int        @default(0)
-  sepulchre               Int        @default(0)
-  fishing_trawler         Int        @default(0)
-  barb_assault            Int        @default(0)
-  pyramid_plunder         Int        @default(0)
-  agility_arena           Int        @default(0)
-  champions_challenge     Int        @default(0)
-  mahogany_homes          Int        @default(0)
-  gnome_restaurant        Int        @default(0)
-  soul_wars               Int        @default(0)
-  rogues_den              Int        @default(0)
-  gauntlet                Int        @default(0)
-  corrupted_gauntlet      Int        @default(0)
-  castle_wars             Int        @default(0)
-  raids                   Int        @default(0)
-  raids_challenge_mode    Int        @default(0)
-  magic_training_arena    Int        @default(0)
-  big_chompy_bird_hunting Int        @default(0)
-  temple_trekking         Int        @default(0)
-  pest_control            Int        @default(0)
-  volcanic_mine           Int        @default(0)
-  new_users               new_users?
+model Minigames {
+  id                      Int      @id @default(autoincrement())
+  user_id                 String   @unique @db.VarChar(19)
+  tithe_farm              Int      @default(0)
+  wintertodt              Int      @default(0)
+  tempoross               Int      @default(0)
+  sepulchre               Int      @default(0)
+  fishing_trawler         Int      @default(0)
+  barb_assault            Int      @default(0)
+  pyramid_plunder         Int      @default(0)
+  agility_arena           Int      @default(0)
+  champions_challenge     Int      @default(0)
+  mahogany_homes          Int      @default(0)
+  gnome_restaurant        Int      @default(0)
+  soul_wars               Int      @default(0)
+  rogues_den              Int      @default(0)
+  gauntlet                Int      @default(0)
+  corrupted_gauntlet      Int      @default(0)
+  castle_wars             Int      @default(0)
+  raids                   Int      @default(0)
+  raids_challenge_mode    Int      @default(0)
+  magic_training_arena    Int      @default(0)
+  big_chompy_bird_hunting Int      @default(0)
+  temple_trekking         Int      @default(0)
+  pest_control            Int      @default(0)
+  volcanic_mine           Int      @default(0)
+  new_users               NewUser?
 }
 
-model new_users {
-  id            String         @id @db.VarChar(19)
-  username      String?        @db.VarChar(32)
-  pizazz_points Int            @default(0)
-  minigame_id   Int?           @unique
-  minigames     minigames?     @relation(fields: [minigame_id], references: [id])
-  slayer_tasks  slayer_tasks[]
+model NewUser {
+  id            String       @id @db.VarChar(19)
+  username      String?      @db.VarChar(32)
+  pizazz_points Int          @default(0)
+  minigame_id   Int?         @unique
+  minigames     Minigames?   @relation(fields: [minigame_id], references: [id])
+  slayer_tasks  SlayerTask[]
+
+  @@map(name: "new_users")
 }
 
-model pingable_roles {
+model PingableRole {
   id      Int    @id @default(autoincrement())
   role_id String @unique @db.VarChar(19)
   name    String @db.VarChar(32)
+
+  @@map(name: "pingable_roles")
 }
 
-model poh {
+model PlayerOwnedHouse {
   user_id            String @id @db.VarChar(19)
   background_id      Int    @default(1)
   altar              Int?
@@ -227,23 +242,26 @@ model poh {
   prison             Int?
   pool               Int?
   teleport           Int?
+
+  @@map(name: "poh")
 }
 
-model slayer_tasks {
-  id                 Int       @id @default(autoincrement())
-  created_at         DateTime  @default(now()) @db.Timestamp(6)
-  quantity           Int       @db.SmallInt
-  quantity_remaining Int       @db.SmallInt
-  slayer_master_id   Int       @db.SmallInt
-  monster_id         Int       @db.SmallInt
+model SlayerTask {
+  id                 Int      @id @default(autoincrement())
+  created_at         DateTime @default(now()) @db.Timestamp(6)
+  quantity           Int      @db.SmallInt
+  quantity_remaining Int      @db.SmallInt
+  slayer_master_id   Int      @db.SmallInt
+  monster_id         Int      @db.SmallInt
   skipped            Boolean
-  user_id            String    @db.VarChar(19)
-  new_users          new_users @relation(fields: [user_id], references: [id])
+  user_id            String   @db.VarChar(19)
+  new_users          NewUser  @relation(fields: [user_id], references: [id])
 
   @@index([user_id, quantity_remaining], name: "slayer_task_quantity_remaining")
+  @@map(name: "slayer_tasks")
 }
 
-model users {
+model User {
   id                         String   @id @db.VarChar(19)
   GP                         Int      @default(0)
   QP                         Int      @default(0)
@@ -353,28 +371,33 @@ model users {
   farmingPatches_flower      Json?    @map("farmingPatches.flower") @db.Json
   farmingPatches_mushroom    Json?    @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna  Json?    @map("farmingPatches.belladonna") @db.Json
+
+  @@map(name: "users")
 }
 
-model webhook_table {
+model Webhook {
   channel_id    String @id @db.VarChar(19)
   webhook_id    String @db.VarChar(19)
   webhook_token String @db.VarChar(100)
+
+  @@map(name: "webhook_table")
 }
 
-model xp_gains {
-  id         Int                 @id @default(autoincrement())
-  user_id    String              @db.VarChar(19)
-  date       DateTime            @default(now()) @db.Timestamp(6)
-  skill      xp_gains_skill_enum
+model XPGain {
+  id         Int       @id @default(autoincrement())
+  user_id    String    @db.VarChar(19)
+  date       DateTime  @default(now()) @db.Timestamp(6)
+  skill      SkillEnum
   xp         Int
   artificial Boolean?
-  post_max   Boolean             @default(false)
+  post_max   Boolean   @default(false)
 
-  @@index([date], name: "IDX_c208d36e08b5ce0cfc38d8b6aa")
-  @@index([skill], name: "IDX_f14b5b3590390b5d81576d8cd1")
+  @@index([date], name: "xp_gain_date")
+  @@index([skill], name: "xp_gain_skill")
+  @@map(name: "xp_gains")
 }
 
-enum Activity {
+enum ActivityEnum {
   Agility
   Cooking
   MonsterKilling
@@ -440,7 +463,7 @@ enum Activity {
   VolcanicMine
 }
 
-enum xp_gains_skill_enum {
+enum SkillEnum {
   agility
   cooking
   fishing

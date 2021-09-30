@@ -4,6 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { getGuildSettings } from '../../lib/settings/settings';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { isValidNickname } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -28,6 +29,10 @@ export default class extends BotCommand {
 		const isStaff = await message.hasAtLeastPermissionLevel(6);
 		if (!message.member || !isStaff) {
 			return message.channel.send('You must be a staff of this server to add tags.');
+		}
+
+		if (!isValidNickname(tag)) {
+			return message.channel.send("That's not a valid name for your minion.");
 		}
 
 		if (!content || content.length === 0) {

@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { Time } from 'e';
+import { round, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -11,7 +11,7 @@ import Constructables from '../../lib/skilling/skills/construction/constructable
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemNameFromID, round, stringMatches } from '../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -117,7 +117,7 @@ export default class extends BotCommand {
 			return msg.channel.send("You don't have enough GP to pay your Butler.");
 		}
 		await msg.author.removeGP(gpNeeded);
-		await msg.author.removeItemFromBank(plank, totalPlanksNeeded);
+		await msg.author.removeItemsFromBank(new Bank().add(plank, totalPlanksNeeded));
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.ConstructCostBank,

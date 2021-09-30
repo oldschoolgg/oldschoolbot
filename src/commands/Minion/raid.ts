@@ -87,7 +87,7 @@ export default class extends BotCommand {
 				msg.author.getMinigameScore('RaidsChallengeMode')
 			]);
 			let totalUniques = 0;
-			const cl = new Bank(msg.author.collectionLog);
+			const cl = msg.author.cl();
 			for (const item of uniques) {
 				totalUniques += cl.amount(item);
 			}

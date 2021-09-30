@@ -71,7 +71,7 @@ export default class extends Task {
 				let gotClue = false;
 				for (const clue of clues) {
 					if (nextTier || randFloat(0, 1) <= clue[1]) {
-						if (user.numItemsInBankSync(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
+						if (user.bank().amount(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
 							nextTier = true;
 							continue;
 						}

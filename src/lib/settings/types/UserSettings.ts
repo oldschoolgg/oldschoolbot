@@ -52,6 +52,7 @@ export namespace UserSettings {
 	export const FarmingPatchReminders = T<boolean>('farming_patch_reminders');
 	export const PestControlPoints = T<number>('pest_control_points');
 	export const VolcanicMinePoints = T<number>('volcanic_mine_points');
+	export const FavoriteFood = T<readonly number[]>('favorite_food');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');
@@ -127,6 +128,8 @@ export namespace UserSettings {
 		export const Misc = T<GearSetup | null>('gear.misc');
 		export const Skilling = T<GearSetup | null>('gear.skilling');
 		export const Wildy = T<GearSetup | null>('gear.wildy');
+		export const Fashion = T<GearSetup | null>('gear.fashion');
+		export const Other = T<GearSetup | null>('gear.other');
 	}
 
 	export namespace FarmingPatches {

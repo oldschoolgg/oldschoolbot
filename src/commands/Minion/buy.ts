@@ -13,9 +13,9 @@ import {
 	bankHasAllItemsFromBank,
 	formatSkillRequirements,
 	multiplyBank,
-	removeBankFromBank,
 	skillsMeetRequirements,
-	stringMatches
+	stringMatches,
+	updateBankSetting
 } from '../../lib/util';
 
 export default class extends BotCommand {
@@ -96,9 +96,12 @@ export default class extends BotCommand {
 		}
 
 		const GP = msg.author.settings.get(UserSettings.GP);
-		const totalGPCost = (buyable.gpCost ?? 0) * quantity;
+		const gpCost =
+			msg.author.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
 
-		if (buyable.gpCost && msg.author.settings.get(UserSettings.GP) < totalGPCost) {
+		const totalGPCost = (gpCost ?? 0) * quantity;
+
+		if (gpCost && msg.author.settings.get(UserSettings.GP) < totalGPCost) {
 			return msg.channel.send(`You need ${totalGPCost.toLocaleString()} GP to purchase this item.`);
 		}
 
@@ -117,10 +120,10 @@ export default class extends BotCommand {
 		// If theres an item cost or GP cost, add it to the string to show users the cost.
 		if (buyable.itemCost) {
 			str += new Bank(multiplyBank(buyable.itemCost, quantity)).toString();
-			if (buyable.gpCost) {
+			if (gpCost) {
 				str += `, ${totalGPCost.toLocaleString()} GP.`;
 			}
-		} else if (buyable.gpCost) {
+		} else if (gpCost) {
 			str += `${totalGPCost.toLocaleString()} GP.`;
 		}
 
@@ -130,14 +133,13 @@ export default class extends BotCommand {
 
 		await msg.author.settings.sync(true);
 		if (buyable.itemCost) {
-			econBankChanges.add(multiplyBank(buyable.itemCost, quantity));
-			await msg.author.settings.update(
-				UserSettings.Bank,
-				removeBankFromBank(msg.author.settings.get(UserSettings.Bank), multiplyBank(buyable.itemCost, quantity))
-			);
+			const cost = new Bank(buyable.itemCost).multiply(quantity);
+
+			econBankChanges.add(cost);
+			await msg.author.removeItemsFromBank(cost);
 		}
 
-		if (buyable.gpCost) {
+		if (gpCost) {
 			if (GP < totalGPCost) {
 				return msg.channel.send(`You need ${toKMB(totalGPCost)} GP to purchase this item.`);
 			}
@@ -145,10 +147,7 @@ export default class extends BotCommand {
 			await msg.author.removeGP(totalGPCost);
 		}
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.BuyCostBank,
-			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add(econBankChanges).bank
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.BuyCostBank, econBankChanges);
 
 		await msg.author.addItemsToBank(outItems, true);
 

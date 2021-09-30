@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
+import { GearSetupType, GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -15,7 +15,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<melee|mage|range|skilling|misc|wildy> (item:...item)',
+			usage: `<${GearSetupTypes.join('|')}> (item:...item)`,
 			usageDelim: ' ',
 			categoryFlags: ['minion'],
 			description: 'Unequips items from one of your gear setups.',
@@ -24,7 +24,7 @@ export default class extends BotCommand {
 	}
 
 	@requiresMinion
-	async run(msg: KlasaMessage, [gearType, itemArray]: [GearSetupTypes, Item[]]): Promise<KlasaMessage> {
+	async run(msg: KlasaMessage, [gearType, itemArray]: [GearSetupType, Item[]]): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
 			return msg.channel.send(
 				`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`

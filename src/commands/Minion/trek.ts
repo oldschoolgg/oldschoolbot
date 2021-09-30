@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
-import { GearSetupTypes, GearStat, readableStatName } from '../../lib/gear';
+import { GearStat, readableStatName } from '../../lib/gear';
 import { difficulties, trekBankBoosts } from '../../lib/minions/data/templeTrekking';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { GearRequirement } from '../../lib/minions/types';
@@ -82,7 +82,7 @@ export default class extends BotCommand {
 									: maxMeleeStat)
 					);
 
-					if (setup === GearSetupTypes.Melee) {
+					if (setup === 'melee') {
 						if (maxMeleeStat[0] !== GearStat.AttackCrush) delete newRequirements.attack_crush;
 						if (maxMeleeStat[0] !== GearStat.AttackSlash) delete newRequirements.attack_slash;
 						if (maxMeleeStat[0] !== GearStat.AttackStab) delete newRequirements.attack_stab;

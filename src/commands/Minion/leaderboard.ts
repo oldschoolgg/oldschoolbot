@@ -1,6 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 
+import { production } from '../../config';
 import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Emoji } from '../../lib/constants';
 import { getCollectionItems } from '../../lib/data/Collections';
@@ -102,7 +103,7 @@ export default class extends BotCommand {
 	}
 
 	async init() {
-		await this.cacheUsernames();
+		if (production) await this.cacheUsernames();
 	}
 
 	getPos(page: number, record: number) {
@@ -303,7 +304,9 @@ export default class extends BotCommand {
 	}
 
 	async minigame(msg: KlasaMessage, [name = '']: [string]) {
-		const minigame = Minigames.find(m => stringMatches(m.name, name));
+		const minigame = Minigames.find(
+			m => stringMatches(m.name, name) || m.aliases.some(a => stringMatches(a, name))
+		);
 		if (!minigame) {
 			return msg.channel.send(
 				`That's not a valid minigame. Valid minigames are: ${Minigames.map(m => m.name).join(', ')}.`
@@ -450,7 +453,7 @@ export default class extends BotCommand {
 			const query = `SELECT
 								u.id,
 								${skillsVals.map(s => `"skills.${s.id}"`)},
-								${skillsVals.map(s => `"skills.${s.id}"`).join(' + ')} as totalxp,
+								${skillsVals.map(s => `"skills.${s.id}"::int8`).join(' + ')} as totalxp,
 								u."minion.ironman"
 							FROM
 								users u

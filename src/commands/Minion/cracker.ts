@@ -7,7 +7,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { cleanMentions, itemID } from '../../lib/util';
+import { cleanMentions } from '../../lib/util';
 
 const HatTable = new LootTable()
 	.add('Red partyhat', 1, 32)
@@ -63,7 +63,7 @@ export default class extends BotCommand {
 			`${Emoji.ChristmasCracker} Are you sure you want to use your cracker on them? Either person could get the partyhat! Please confirm if you understand and wish to use it.`
 		);
 
-		await msg.author.removeItemFromBank(itemID('Christmas cracker'), 1);
+		await msg.author.removeItemsFromBank(new Bank().add('Christmas cracker', 1));
 		const winnerLoot = HatTable.roll();
 		const loserLoot = JunkTable.roll();
 		const [winner, loser] = shuffleArr([buyerMember.user, msg.author]);

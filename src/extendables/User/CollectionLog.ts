@@ -1,10 +1,10 @@
 import { User } from 'discord.js';
 import { calcWhatPercent } from 'e';
-import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
+import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
-import { allCLItems, converCLtoBank } from '../../lib/data/Collections';
+import { allCLItems, convertCLtoBank } from '../../lib/data/Collections';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
 import { addBanks } from '../../lib/util';
@@ -23,7 +23,7 @@ export default class extends Extendable {
 	public completion(this: User) {
 		const clItems = Object.keys(this.settings.get(UserSettings.CollectionLogBank)).map(i => parseInt(i));
 		const debugBank = new Bank();
-		debugBank.add(converCLtoBank(allCLItems));
+		debugBank.add(convertCLtoBank(allCLItems));
 		const owned = clItems.filter(i => allCLItems.includes(i));
 		const notOwned = shuffleRandom(
 			Number(this.id),
@@ -37,13 +37,8 @@ export default class extends Extendable {
 		};
 	}
 
-	// @ts-ignore 2784
-	public get collectionLog(this: User) {
-		return this.settings.get(UserSettings.CollectionLogBank);
-	}
-
-	getCL(this: KlasaUser, itemID: number) {
-		return this.settings.get(UserSettings.CollectionLogBank)[itemID] ?? 0;
+	public cl(this: User) {
+		return new Bank(this.settings.get(UserSettings.CollectionLogBank));
 	}
 
 	public async addItemsToCollectionLog(this: User, items: ItemBank) {

@@ -3,7 +3,7 @@ import { Extendable, ExtendableStore } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { getSimilarItems, similarItems } from '../../lib/data/similarItems';
-import { defaultGear, resolveGearTypeSetting } from '../../lib/gear';
+import { defaultGear, GearSetupType, resolveGearTypeSetting } from '../../lib/gear';
 import { GearSetup, UserFullGearSetup } from '../../lib/gear/types';
 import { Gear } from '../../lib/structures/Gear';
 import resolveItems from '../../lib/util/resolveItems';
@@ -20,13 +20,18 @@ export default class extends Extendable {
 		const mage = this.getGear('mage');
 		const skilling = this.getGear('skilling');
 		const wildy = this.getGear('wildy');
+		const fashion = this.getGear('fashion');
+		const other = this.getGear('other');
+
 		return {
 			melee,
 			range,
 			misc,
 			skilling,
 			mage,
-			wildy
+			wildy,
+			fashion,
+			other
 		};
 	}
 
@@ -43,12 +48,12 @@ export default class extends Extendable {
 	public hasItemEquippedOrInBank(this: User, item: number | string) {
 		const id = typeof item === 'string' ? itemID(item) : item;
 		if (similarItems.get(id) === undefined) {
-			return this.hasItemEquippedAnywhere(id, false) || this.numItemsInBankSync(id, true) > 0;
+			return this.hasItemEquippedAnywhere(id, false) || this.bank().amount(id) > 0;
 		}
-		return this.hasItemEquippedAnywhere(getSimilarItems(id), false) || this.numItemsInBankSync(id, true) > 0;
+		return this.hasItemEquippedAnywhere(getSimilarItems(id), false) || this.bank().amount(id) > 0;
 	}
 
-	public getGear(this: User, setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling' | 'wildy'): GearSetup {
+	public getGear(this: User, setup: GearSetupType): GearSetup {
 		return new Gear(this.settings.get(resolveGearTypeSetting(setup)) ?? defaultGear);
 	}
 }
