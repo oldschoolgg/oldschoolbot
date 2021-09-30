@@ -1,14 +1,15 @@
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { O } from 'ts-toolbelt';
 
 import { Eatables } from '../../data/eatables';
 
 export default function getUserFoodFromBank(
-	userBank: O.Readonly<Bank>,
+	user: KlasaUser,
 	totalHealingNeeded: number,
 	favoriteFood: readonly number[],
 	raw = false
 ): false | Bank {
+	const userBank = user.bank();
 	let totalHealingCalc = totalHealingNeeded;
 	let foodToRemove = new Bank();
 
@@ -28,18 +29,23 @@ export default function getUserFoodFromBank(
 			return 0;
 		});
 
+	if (favoriteFood.length) {
+		sorted.sort((j, i) => (i.healAmount > j.healAmount ? 1 : -1));
+	}
+
 	// Gets all the eatables in the user bank
 	for (const eatable of sorted) {
-		const amountOwned = userBank.amount(eatable[key]!);
-		const toRemove = Math.ceil(totalHealingCalc / eatable.healAmount);
+		const healAmount = typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(user);
+		const amountOwned = userBank.amount(eatable.id);
+		const toRemove = Math.ceil(totalHealingCalc / healAmount);
 		if (!amountOwned) continue;
 		if (amountOwned >= toRemove) {
-			totalHealingCalc -= Math.ceil(eatable.healAmount * toRemove);
-			foodToRemove.add(eatable[key]!, toRemove);
+			totalHealingCalc -= Math.ceil(healAmount * toRemove);
+			foodToRemove.add(eatable.id, toRemove);
 			break;
 		} else {
-			totalHealingCalc -= Math.ceil(eatable.healAmount * amountOwned);
-			foodToRemove.add(eatable[key]!, amountOwned);
+			totalHealingCalc -= Math.ceil(healAmount * amountOwned);
+			foodToRemove.add(eatable.id, amountOwned);
 		}
 	}
 	// Check if qty is still above 0. If it is, it means the user doesn't have enough food.

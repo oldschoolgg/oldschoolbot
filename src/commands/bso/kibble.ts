@@ -102,9 +102,15 @@ export default class extends BotCommand {
 		cost.add(cropComponent.id, herbsNeeded);
 
 		let healAmountNeeded = qtyPerComponent * kibble.minimumFishHeal;
-		const calcFish = (fish: Eatable) => Math.ceil((healAmountNeeded * qty) / fish.healAmount);
+		const calcFish = (fish: Eatable) =>
+			Math.ceil(
+				(healAmountNeeded * qty) /
+					(typeof fish.healAmount === 'number' ? fish.healAmount : fish.healAmount(msg.author))
+			);
 		let suitableFish = Eatables.filter(i => i.raw && i.healAmount >= kibble.minimumFishHeal).sort(
-			(a, b) => a.healAmount - b.healAmount
+			(a, b) =>
+				(typeof a.healAmount === 'number' ? a.healAmount : a.healAmount(msg.author)) -
+				(typeof b.healAmount === 'number' ? b.healAmount : b.healAmount(msg.author))
 		);
 
 		const rawFishComponent = suitableFish.find(i => userBank.amount(i.raw!) >= calcFish(i));
