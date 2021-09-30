@@ -35,6 +35,7 @@ export const InfernalImpling = new SimpleOpenable({
 		.oneIn(20, new LootTable().add('Obsidian helmet').add('Obsidian platebody').add('Obsidian platelegs'))
 		.tertiary(10, 'Clue scroll (hard)')
 		.tertiary(50, 'Clue scroll (elite)')
+		.tertiary(1500, 'Infernal cape')
 		.tertiary(1_000_000, 'Uncut onyx')
 });
 
