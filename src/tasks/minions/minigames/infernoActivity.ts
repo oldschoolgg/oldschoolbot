@@ -15,7 +15,6 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
 const TokkulID = itemID('Tokkul');
-const pet = itemID('Jal-nib-rek');
 
 export default class extends Task {
 	async run(data: InfernoOptions) {
@@ -33,6 +32,11 @@ export default class extends Task {
 		const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration, minimal: true });
 		const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration, minimal: true });
 
+		/**
+		 *
+		 * If died before Zuk
+		 *
+		 */
 		if (diedPreZuk) {
 			const refundBank = new Bank();
 			const percSuppliesToRefund = 100 - calcWhatPercent(preZukDeathChance, duration);
@@ -65,6 +69,11 @@ export default class extends Task {
 			);
 		}
 
+		/**
+		 *
+		 * If died to Zuk
+		 *
+		 */
 		if (diedZuk) {
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
 			await user.addItemsToBank(failBank, true);
@@ -78,10 +87,10 @@ export default class extends Task {
 				`${user} ${msg}`,
 				res => {
 					user.log('continued trip of inferno');
-					return this.client.commands.get('inferno')!.run(res, []);
+					return (this.client.commands.get('inferno') as any)!.start(res, []);
 				},
 				await chatHeadImage({
-					content: `TzKal-Zuk stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
+					content: `Nice try JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
 					head: 'mejJal'
 				}),
 				data,
@@ -95,7 +104,7 @@ export default class extends Task {
 		if (loot.has('Jal-nib-rek')) {
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}** just received their ${formatOrdinal(user.getCL(pet) + 1)} ${
+				`**${user.username}** just received their ${formatOrdinal(user.cl().amount('Jal-nib-rek'))} ${
 					Emoji.TzRekJad
 				} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(user.getKC(TzKalZuk.id))} kill!`
 			);
@@ -104,12 +113,18 @@ export default class extends Task {
 		const cl = user.cl();
 
 		if (cl.has('Infernal cape')) {
-			// const usersWithInfernalCape = ;
+			const usersWithInfernalCape = parseInt(
+				(
+					await this.client.query<any>(
+						`SELECT count(id) FROM users WHERE "collectionLogBank"->>'${itemID('Infernal cape')}';'`
+					)
+				)[0].count
+			);
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}** just received their first Infernal cape on their ${formatOrdinal(
 					attempts
-				)} attempt! `
+				)} attempt! They are the ${formatOrdinal(usersWithInfernalCape)} person to get an Infernal cape.`
 			);
 		}
 

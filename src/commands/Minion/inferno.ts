@@ -303,9 +303,10 @@ export default class extends BotCommand {
 			'Ely'
 		);
 
-		const hasSuffering = rangeGear.hasEquipped('Ring of suffering') || mageGear.hasEquipped('Ring of suffering');
-		preZukDeathChance.add(hasSuffering, -4, 'Ring of Suffering');
-		zukDeathChance.add(hasSuffering, -4, 'Ring of Suffering');
+		const hasSuffering =
+			rangeGear.hasEquipped('Ring of suffering (i)') || mageGear.hasEquipped('Ring of suffering (i)');
+		preZukDeathChance.add(hasSuffering, -4, 'Ring of Suffering (i)');
+		zukDeathChance.add(hasSuffering, -4, 'Ring of Suffering (i)');
 
 		const blowpipeData = user.settings.get(UserSettings.Blowpipe);
 		if (

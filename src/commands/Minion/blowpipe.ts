@@ -50,7 +50,15 @@ export default class extends BotCommand {
 			return msg.channel.send("You don't own a Toxic blowpipe.");
 		}
 
-		validateBlowpipeData(rawBlowpipeData);
+		try {
+			validateBlowpipeData(rawBlowpipeData);
+		} catch (err: any) {
+			await msg.author.settings.reset(UserSettings.Blowpipe);
+
+			return msg.channel.send(
+				`Your blowpipe got corrupted somehow (${err.message}), this shouldn't happen! It's a bug. Your blowpipe was reset.`
+			);
+		}
 		let str = `**Toxic Blowpipe** <:Toxic_blowpipe:887011870068838450>
 
 Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
