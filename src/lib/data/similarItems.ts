@@ -347,7 +347,7 @@ const source: [string, (string | number)[]][] = [
 	['Pernix cowl', ['Gorajan archer helmet', 'Gorajan archer helmet (Sagittarian)']],
 	['Pernix body', ['Gorajan archer top', 'Gorajan archer top (Sagittarian)']],
 	['Pernix chaps', ['Gorajan archer legs', 'Gorajan archer legs (Sagittarian)']],
-	['Pernix gloves', ['Gorajan archer gloves', 'Gorajan archer gloves (Sagittarian)']],
+	['Pernix gloves', ['Gorajan archer gloves', 'Gorajan archer gloves (Sagittarian)'   ]],
 	['Pernix boots', ['Gorajan archer boots', 'Gorajan archer boots (Sagittarian)']],
 	['Abyssal cape', ['Vasa cloak']],
 	['Ivandis flail', ['Blisterwood flail']],
