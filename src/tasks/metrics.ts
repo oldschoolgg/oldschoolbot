@@ -17,7 +17,7 @@ export default class extends Task {
 	}
 
 	async analyticsTick() {
-		await prisma.metrics.create({
+		await prisma.metric.create({
 			data: {
 				timestamp: Math.floor(Date.now() / 1000),
 				...collectMetrics()

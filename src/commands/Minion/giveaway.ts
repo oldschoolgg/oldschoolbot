@@ -4,8 +4,8 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { ironsCantUse, minionNotBusy } from '../../lib/minions/decorators';
+import { prisma } from '../../lib/settings/prisma';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
 import { formatDuration } from '../../lib/util';
 
 export default class extends BotCommand {
@@ -27,9 +27,11 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@ironsCantUse
 	async run(msg: KlasaMessage, [string, [bank]]: [string, [Bank]]) {
-		const existingGiveaways = await GiveawayTable.find({
-			userID: msg.author.id,
-			completed: false
+		const existingGiveaways = await prisma.giveaway.findMany({
+			where: {
+				user_id: msg.author.id,
+				completed: false
+			}
 		});
 
 		if (existingGiveaways.length > 5) {

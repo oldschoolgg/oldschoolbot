@@ -1,7 +1,6 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GauntletOptions } from '../../lib/types/minions';
@@ -96,7 +95,7 @@ export default class extends BotCommand {
 		let gauntletLength = baseLength;
 		if (type === 'corrupted') gauntletLength *= 1.3;
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Gauntlet);
+		const maxTripLength = msg.author.maxTripLength('Gauntlet');
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / gauntletLength);
@@ -118,7 +117,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Gauntlet,
+			type: 'Gauntlet',
 			corrupted: type === 'corrupted'
 		});
 

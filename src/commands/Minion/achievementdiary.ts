@@ -1,8 +1,8 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { Minigames } from '../../extendables/User/Minigame';
 import { diaries, DiaryTier, userhasDiaryTier } from '../../lib/diaries';
+import { Minigames } from '../../lib/settings/minigames';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatSkillRequirements, itemNameFromID, stringMatches, textEffect, toTitleCase } from '../../lib/util';
 

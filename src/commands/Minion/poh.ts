@@ -8,10 +8,10 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import PoHImage from '../../tasks/pohImage';
+import { PlayerOwnedHouse } from '.prisma/client';
 
 const wallkits = [
 	{
@@ -99,7 +99,7 @@ export default class POHCommand extends BotCommand {
 		return msg.channel.send(str);
 	}
 
-	genImage(poh: PoHTable, showSpaces = false) {
+	genImage(poh: PlayerOwnedHouse, showSpaces = false) {
 		return (this.client.tasks.get('pohImage') as PoHImage).run(poh, showSpaces);
 	}
 

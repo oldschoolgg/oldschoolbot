@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Prayer from '../../lib/skilling/skills/prayer';
@@ -52,7 +51,7 @@ export default class extends BotCommand {
 
 		const timeToBuryABone = speedMod * (Time.Second * 1.2 + Time.Second / 4);
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Burying);
+		const maxTripLength = msg.author.maxTripLength('Burying');
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -87,7 +86,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Burying
+			type: 'Burying'
 		});
 
 		return msg.channel.send(

@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -142,7 +142,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [input]: [string]) {
 		const perDuration = randomVariation(Time.Minute * 7, 5);
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.SoulWars) / perDuration);
+		const quantity = Math.floor(msg.author.maxTripLength('SoulWars') / perDuration);
 		const duration = quantity * perDuration;
 
 		if (input === 'solo') {
@@ -151,7 +151,7 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				quantity,
 				duration,
-				type: Activity.SoulWars,
+				type: 'SoulWars',
 				leader: msg.author.id,
 				users: [msg.author.id]
 			});
@@ -190,7 +190,7 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				quantity,
 				duration,
-				type: Activity.SoulWars,
+				type: 'SoulWars',
 				leader: msg.author.id,
 				users: users.map(u => u.id)
 			});

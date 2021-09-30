@@ -1,4 +1,4 @@
-import { giveaway } from '@prisma/client';
+import { Giveaway } from '@prisma/client';
 import { TextChannel } from 'discord.js';
 import { noOp, randArrItem } from 'e';
 import { KlasaUser, Task } from 'klasa';
@@ -6,10 +6,9 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
-import { GiveawayTable } from '../lib/typeorm/GiveawayTable.entity';
 
 export default class extends Task {
-	async runGiveaway(giveaway: giveaway) {
+	async runGiveaway(giveaway: Giveaway) {
 		if (giveaway.completed) {
 			throw new Error('Tried to complete an already completed giveaway.');
 		}

@@ -2,14 +2,12 @@ import { randFloat, randInt } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
-import { MoreThan } from 'typeorm';
 
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { DetermineBoostParams } from '../minions/types';
 import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
-import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
 import { addBanks, bankHasItem, roll, skillsMeetRequirements } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';

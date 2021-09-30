@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -128,7 +127,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Collecting);
+		const maxTripLength = msg.author.maxTripLength('Collecting');
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / collectable.duration);
@@ -162,7 +161,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Collecting
+			type: 'Collecting'
 		});
 
 		return msg.channel.send(

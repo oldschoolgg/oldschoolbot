@@ -1,67 +1,68 @@
-import { Activity, ActivityGroup } from '../constants';
+import { ActivityGroup } from '../constants';
+import { ActivityEnum } from '.prisma/client';
 
-export function taskGroupFromActivity(type: keyof typeof Activity): ActivityGroup {
+export function taskGroupFromActivity(type: ActivityEnum): ActivityGroup {
 	switch (type) {
-		case Activity.ClueCompletion:
+		case 'ClueCompletion':
 			return ActivityGroup.Clue;
-		case Activity.GroupMonsterKilling:
-		case Activity.MonsterKilling:
+		case 'GroupMonsterKilling':
+		case 'MonsterKilling':
 			return ActivityGroup.Monster;
-		case Activity.Fishing:
-		case Activity.Agility:
-		case Activity.Burying:
-		case Activity.Offering:
-		case Activity.Cooking:
-		case Activity.Firemaking:
-		case Activity.Mining:
-		case Activity.Questing:
-		case Activity.Runecraft:
-		case Activity.Smelting:
-		case Activity.Smithing:
-		case Activity.Woodcutting:
-		case Activity.Fletching:
-		case Activity.Crafting:
-		case Activity.Alching:
-		case Activity.Sawmill:
-		case Activity.Pickpocket:
-		case Activity.Farming:
-		case Activity.Herblore:
-		case Activity.Hunter:
-		case Activity.Birdhouse:
-		case Activity.Construction:
-		case Activity.Enchanting:
-		case Activity.Casting:
-		case Activity.GloryCharging:
-		case Activity.WealthCharging:
-		case Activity.Collecting:
-		case Activity.BlastFurnace:
+		case 'Fishing':
+		case 'Agility':
+		case 'Burying':
+		case 'Offering':
+		case 'Cooking':
+		case 'Firemaking':
+		case 'Mining':
+		case 'Questing':
+		case 'Runecraft':
+		case 'Smelting':
+		case 'Smithing':
+		case 'Woodcutting':
+		case 'Fletching':
+		case 'Crafting':
+		case 'Alching':
+		case 'Sawmill':
+		case 'Pickpocket':
+		case 'Farming':
+		case 'Herblore':
+		case 'Hunter':
+		case 'Birdhouse':
+		case 'Construction':
+		case 'Enchanting':
+		case 'Casting':
+		case 'GloryCharging':
+		case 'WealthCharging':
+		case 'Collecting':
+		case 'BlastFurnace':
 			return ActivityGroup.Skilling;
-		case Activity.FightCaves:
-		case Activity.Wintertodt:
-		case Activity.Tempoross:
-		case Activity.Nightmare:
-		case Activity.AnimatedArmour:
-		case Activity.Cyclops:
-		case Activity.Sepulchre:
-		case Activity.Plunder:
-		case Activity.Zalcano:
-		case Activity.FishingTrawler:
-		case Activity.TitheFarm:
-		case Activity.BarbarianAssault:
-		case Activity.AgilityArena:
-		case Activity.ChampionsChallenge:
-		case Activity.MahoganyHomes:
-		case Activity.AerialFishing:
-		case Activity.SoulWars:
-		case Activity.GnomeRestaurant:
-		case Activity.RoguesDenMaze:
-		case Activity.Gauntlet:
-		case Activity.CastleWars:
-		case Activity.MageArena:
-		case Activity.Raids:
-		case Activity.MageTrainingArena:
-		case Activity.MageArena2:
-		case Activity.BigChompyBirdHunting:
+		case 'FightCaves':
+		case 'Wintertodt':
+		case 'Tempoross':
+		case 'Nightmare':
+		case 'AnimatedArmour':
+		case 'Cyclops':
+		case 'Sepulchre':
+		case 'Plunder':
+		case 'Zalcano':
+		case 'FishingTrawler':
+		case 'TitheFarm':
+		case 'BarbarianAssault':
+		case 'AgilityArena':
+		case 'ChampionsChallenge':
+		case 'MahoganyHomes':
+		case 'AerialFishing':
+		case 'SoulWars':
+		case 'GnomeRestaurant':
+		case 'RoguesDenMaze':
+		case 'Gauntlet':
+		case 'CastleWars':
+		case 'MageArena':
+		case 'Raids':
+		case 'MageTrainingArena':
+		case 'MageArena2':
+		case 'BigChompyBirdHunting':
 			return ActivityGroup.Minigame;
 		default: {
 			console.error(`Unrecognized activity: ${type}`);

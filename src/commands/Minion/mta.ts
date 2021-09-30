@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { getNewUser } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -100,7 +99,7 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 	@minionNotBusy
 	async train(msg: KlasaMessage) {
 		const roomDuration = Time.Minute * 14;
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.MageTrainingArena) / roomDuration);
+		const quantity = Math.floor(msg.author.maxTripLength('MageTrainingArena') / roomDuration);
 		const duration = quantity * roomDuration;
 
 		const cost = determineRunes(msg.author, new Bank().add(RuneTable.roll())).multiply(quantity);
@@ -116,9 +115,9 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
-			type: Activity.MageTrainingArena,
+			type: 'MageTrainingArena',
 			quantity,
-			minigameID: 'MagicTrainingArena'
+			minigameID: 'magic_training_arena'
 		});
 
 		return msg.channel.send(

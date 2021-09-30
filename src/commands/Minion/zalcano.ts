@@ -1,7 +1,7 @@
 import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, ZALCANO_ID } from '../../lib/constants';
+import { ZALCANO_ID } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -11,6 +11,7 @@ import { Skills } from '../../lib/types';
 import { ZalcanoActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { ActivityEnum } from '.prisma/client';
 
 export const soteSkillRequirements: Skills = {
 	mining: 70,
@@ -81,7 +82,7 @@ export default class extends BotCommand {
 		else if (kc > 50) healAmountNeeded = 3 * 12;
 		else if (kc > 20) healAmountNeeded = 5 * 12;
 
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.Zalcano) / baseTime);
+		const quantity = Math.floor(msg.author.maxTripLength(ActivityEnum.Zalcano) / baseTime);
 		const duration = quantity * baseTime;
 
 		const [food] = await removeFoodFromUser({
@@ -98,7 +99,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Zalcano,
+			type: ActivityEnum.Zalcano,
 			performance: this.calcPerformance(kcLearned, skillPercentage),
 			isMVP: percentChance(80)
 		});

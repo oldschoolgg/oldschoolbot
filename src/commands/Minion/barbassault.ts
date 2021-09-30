@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
-import { Activity, Emoji, Events } from '../../lib/constants';
+import { Emoji, Events } from '../../lib/constants';
 import { maxOtherStats } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -292,7 +292,7 @@ export default class extends BotCommand {
 		boosts.push(`${kcPercent}% for average KC`);
 		waveTime = reduceNumByPercent(waveTime, kcPercent);
 
-		let quantity = Math.floor(msg.author.maxTripLength(Activity.BarbarianAssault) / waveTime);
+		let quantity = Math.floor(msg.author.maxTripLength('BarbarianAssault') / waveTime);
 		if (qty > 0 && quantity > qty) quantity = qty;
 		const duration = quantity * waveTime;
 
@@ -311,10 +311,10 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.BarbarianAssault,
+			type: 'BarbarianAssault',
 			leader: msg.author.id,
 			users: users.map(u => u.id),
-			minigameID: 'BarbarianAssault',
+			minigameID: 'barb_assault',
 			totalLevel
 		});
 

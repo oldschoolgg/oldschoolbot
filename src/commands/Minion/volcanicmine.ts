@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -12,6 +11,7 @@ import { ItemBank } from '../../lib/types';
 import { VolcanicMineActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { ActivityEnum } from '.prisma/client';
 
 export const VolcanicMineGameTime = Time.Minute * 10;
 
@@ -236,7 +236,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity: numberOfGames,
 			duration,
-			type: Activity.VolcanicMine
+			type: ActivityEnum.VolcanicMine
 		});
 
 		return msg.channel.send(str);

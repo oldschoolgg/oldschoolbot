@@ -1,12 +1,13 @@
-import { minigames, new_users, Prisma } from '@prisma/client';
+import { NewUser, Prisma } from '@prisma/client';
 import { Guild, Util } from 'discord.js';
 import { Gateway, Settings } from 'klasa';
 
 import { client } from '../..';
-import { Minigame } from '../../extendables/User/Minigame';
 import { Emoji } from '../constants';
 import { ActivityTaskData } from '../types/minions';
 import { activitySync, prisma } from './prisma';
+
+export * from './minigames';
 
 const guildSettingsCache = new Map<string, Settings>();
 
@@ -32,10 +33,10 @@ export async function getUserSettings(userID: string): Promise<Settings> {
 		.sync(true);
 }
 
-export async function getNewUser(id: string): Promise<new_users> {
-	const value = await prisma.new_users.findUnique({ where: { id } });
+export async function getNewUser(id: string): Promise<NewUser> {
+	const value = await prisma.newUser.findUnique({ where: { id } });
 	if (!value) {
-		return prisma.new_users.create({
+		return prisma.newUser.create({
 			data: {
 				id,
 				minigames: {}
@@ -46,31 +47,7 @@ export async function getNewUser(id: string): Promise<new_users> {
 }
 
 export async function syncNewUserUsername(id: string, username: string) {
-	return prisma.new_users.update({ where: { id }, data: { username } });
-}
-
-export async function getMinigameEntity(userID: string): Promise<minigames> {
-	const value = await prisma.minigames.findUnique({ where: { user_id: userID } });
-	if (!value) {
-		return prisma.minigames.create({
-			data: {
-				user_id: userID
-			}
-		});
-	}
-	return value;
-}
-
-export async function incrementMinigameScore(userID: string, minigame: Minigame['column'], amountToAdd = 1) {
-	const result = await prisma.minigames.update({
-		where: { user_id: userID },
-		data: { [minigame]: { increment: amountToAdd } }
-	});
-
-	return {
-		newScore: result[minigame],
-		entity: result
-	};
+	return prisma.newUser.update({ where: { id }, data: { username } });
 }
 
 export async function getMinionName(userID: string): Promise<string> {

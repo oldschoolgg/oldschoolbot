@@ -1,7 +1,6 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -65,7 +64,7 @@ export default class extends BotCommand {
 			durationPerRoss = reduceNumByPercent(durationPerRoss, 10);
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Tempoross);
+		const maxTripLength = msg.author.maxTripLength('Tempoross');
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / durationPerRoss);
 		}
@@ -83,12 +82,12 @@ export default class extends BotCommand {
 		}
 
 		await addSubTaskToActivityTask<TemporossActivityTaskOptions>({
-			minigameID: 'Tempoross',
+			minigameID: 'tempoross',
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Tempoross,
+			type: 'Tempoross',
 			rewardBoost
 		});
 

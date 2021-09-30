@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
@@ -166,7 +165,7 @@ export default class extends BotCommand {
 			throw 'There are no available patches to you. Check requirements for additional patches by with the command `+farm --plants`';
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Farming);
+		const maxTripLength = msg.author.maxTripLength('Farming');
 
 		// If no quantity provided, set it to the max PATCHES available.
 		if (quantity === null) {
@@ -330,7 +329,7 @@ export default class extends BotCommand {
 			planting: true,
 			duration,
 			currentDate,
-			type: Activity.Farming,
+			type: 'Farming',
 			autoFarmed
 		});
 

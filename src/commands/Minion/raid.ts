@@ -4,7 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import {
 	calcCoxDuration,
 	calcCoxInput,
@@ -237,7 +237,7 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
-			type: Activity.Raids,
+			type: 'Raids',
 			leader: msg.author.id,
 			users: users.map(u => u.id),
 			challengeMode: isChallengeMode

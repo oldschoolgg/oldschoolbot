@@ -1,132 +1,133 @@
-import { Activity, Tasks } from '../constants';
+import { Tasks } from '../constants';
+import { ActivityEnum } from '.prisma/client';
 
-export function taskNameFromType(activityType: Activity) {
+export function taskNameFromType(activityType: ActivityEnum): Tasks {
 	switch (activityType) {
-		case Activity.Agility:
+		case ActivityEnum.Agility:
 			return Tasks.AgilityActivity;
-		case Activity.ClueCompletion:
+		case ActivityEnum.ClueCompletion:
 			return Tasks.ClueActivity;
-		case Activity.Cooking:
+		case ActivityEnum.Cooking:
 			return Tasks.CookingActivity;
-		case Activity.MonsterKilling:
+		case ActivityEnum.MonsterKilling:
 			return Tasks.MonsterActivity;
-		case Activity.GroupMonsterKilling:
+		case ActivityEnum.GroupMonsterKilling:
 			return Tasks.GroupMonsterActivity;
-		case Activity.Fishing:
+		case ActivityEnum.Fishing:
 			return Tasks.FishingActivity;
-		case Activity.Mining:
+		case ActivityEnum.Mining:
 			return Tasks.MiningActivity;
-		case Activity.Smelting:
+		case ActivityEnum.Smelting:
 			return Tasks.SmeltingActivity;
-		case Activity.Smithing:
+		case ActivityEnum.Smithing:
 			return Tasks.SmithingActivity;
-		case Activity.Woodcutting:
+		case ActivityEnum.Woodcutting:
 			return Tasks.WoodcuttingActivity;
-		case Activity.Firemaking:
+		case ActivityEnum.Firemaking:
 			return Tasks.FiremakingActivity;
-		case Activity.Crafting:
+		case ActivityEnum.Crafting:
 			return Tasks.CraftingActivity;
-		case Activity.Questing:
+		case ActivityEnum.Questing:
 			return Tasks.QuestingActivity;
-		case Activity.Runecraft:
+		case ActivityEnum.Runecraft:
 			return Tasks.RunecraftActivity;
-		case Activity.Burying:
+		case ActivityEnum.Burying:
 			return Tasks.BuryingActivity;
-		case Activity.Offering:
+		case ActivityEnum.Offering:
 			return Tasks.OfferingActivity;
-		case Activity.FightCaves:
+		case ActivityEnum.FightCaves:
 			return Tasks.FightCavesActivity;
-		case Activity.Fletching:
+		case ActivityEnum.Fletching:
 			return Tasks.FletchingActivity;
-		case Activity.Wintertodt:
+		case ActivityEnum.Wintertodt:
 			return Tasks.WintertodtActivity;
-		case Activity.Tempoross:
+		case ActivityEnum.Tempoross:
 			return Tasks.TemporossActivity;
-		case Activity.Alching:
+		case ActivityEnum.Alching:
 			return Tasks.AlchingActivity;
-		case Activity.Herblore:
+		case ActivityEnum.Herblore:
 			return Tasks.HerbloreActivity;
-		case Activity.Nightmare:
+		case ActivityEnum.Nightmare:
 			return Tasks.NightmareActivity;
-		case Activity.AnimatedArmour:
+		case ActivityEnum.AnimatedArmour:
 			return Tasks.AnimatedArmourActivity;
-		case Activity.Cyclops:
+		case ActivityEnum.Cyclops:
 			return Tasks.CyclopsActivity;
-		case Activity.Sawmill:
+		case ActivityEnum.Sawmill:
 			return Tasks.SawmillActivity;
-		case Activity.Sepulchre:
+		case ActivityEnum.Sepulchre:
 			return Tasks.SepulchreActivity;
-		case Activity.Plunder:
+		case ActivityEnum.Plunder:
 			return Tasks.PlunderActivity;
-		case Activity.FishingTrawler:
+		case ActivityEnum.FishingTrawler:
 			return Tasks.FishingTrawler;
-		case Activity.Zalcano:
+		case ActivityEnum.Zalcano:
 			return Tasks.ZalcanoActivity;
-		case Activity.Pickpocket:
+		case ActivityEnum.Pickpocket:
 			return Tasks.PickpocketActivity;
-		case Activity.Farming:
+		case ActivityEnum.Farming:
 			return Tasks.FarmingActivity;
-		case Activity.TitheFarm:
+		case ActivityEnum.TitheFarm:
 			return Tasks.TitheFarmActivity;
-		case Activity.BarbarianAssault:
+		case ActivityEnum.BarbarianAssault:
 			return Tasks.BarbarianAssault;
-		case Activity.AgilityArena:
+		case ActivityEnum.AgilityArena:
 			return Tasks.AgilityArena;
-		case Activity.ChampionsChallenge:
+		case ActivityEnum.ChampionsChallenge:
 			return Tasks.ChampionsChallenge;
-		case Activity.Hunter:
+		case ActivityEnum.Hunter:
 			return Tasks.HunterActivity;
-		case Activity.Birdhouse:
+		case ActivityEnum.Birdhouse:
 			return Tasks.BirdhouseActivity;
-		case Activity.AerialFishing:
+		case ActivityEnum.AerialFishing:
 			return Tasks.AerialFishingActivity;
-		case Activity.DriftNet:
+		case ActivityEnum.DriftNet:
 			return Tasks.DriftNetActivity;
-		case Activity.Construction:
+		case ActivityEnum.Construction:
 			return Tasks.ConstructionActivity;
-		case Activity.MahoganyHomes:
+		case ActivityEnum.MahoganyHomes:
 			return Tasks.MahoganyHomes;
-		case Activity.Enchanting:
+		case ActivityEnum.Enchanting:
 			return Tasks.Enchanting;
-		case Activity.Casting:
+		case ActivityEnum.Casting:
 			return Tasks.Casting;
-		case Activity.GloryCharging:
+		case ActivityEnum.GloryCharging:
 			return Tasks.GloryCharging;
-		case Activity.WealthCharging:
+		case ActivityEnum.WealthCharging:
 			return Tasks.WealthCharging;
-		case Activity.GnomeRestaurant:
+		case ActivityEnum.GnomeRestaurant:
 			return Tasks.GnomeRestaurant;
-		case Activity.SoulWars:
+		case ActivityEnum.SoulWars:
 			return Tasks.SoulWars;
-		case Activity.RoguesDenMaze:
+		case ActivityEnum.RoguesDenMaze:
 			return Tasks.RoguesDenMaze;
-		case Activity.Gauntlet:
+		case ActivityEnum.Gauntlet:
 			return Tasks.Gauntlet;
-		case Activity.CastleWars:
+		case ActivityEnum.CastleWars:
 			return Tasks.CastleWars;
-		case Activity.MageArena:
+		case ActivityEnum.MageArena:
 			return Tasks.MageArena;
-		case Activity.Raids:
+		case ActivityEnum.Raids:
 			return Tasks.Raids;
-		case Activity.Collecting:
+		case ActivityEnum.Collecting:
 			return Tasks.Collecting;
-		case Activity.MageTrainingArena:
+		case ActivityEnum.MageTrainingArena:
 			return Tasks.MageTrainingArena;
-		case Activity.BlastFurnace:
+		case ActivityEnum.BlastFurnace:
 			return Tasks.BlastFurnaceActivity;
-		case Activity.MageArena2:
+		case ActivityEnum.MageArena2:
 			return Tasks.MageArena2;
-		case Activity.BigChompyBirdHunting:
+		case ActivityEnum.BigChompyBirdHunting:
 			return Tasks.BigChompyBirdHunting;
-		case Activity.DarkAltar:
+		case ActivityEnum.DarkAltar:
 			return Tasks.DarkAltar;
-		case Activity.Trekking:
+		case ActivityEnum.Trekking:
 			return Tasks.TrekkingActivity;
-		case Activity.Revenants:
+		case ActivityEnum.Revenants:
 			return Tasks.RevenantsActivity;
-		case Activity.PestControl:
+		case ActivityEnum.PestControl:
 			return Tasks.PestControl;
-		case Activity.VolcanicMine:
+		case ActivityEnum.VolcanicMine:
 			return Tasks.VolcanicMine;
 	}
 }

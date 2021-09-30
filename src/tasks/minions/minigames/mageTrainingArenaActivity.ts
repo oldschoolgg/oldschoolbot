@@ -28,7 +28,7 @@ export default class extends Task {
 			duration
 		});
 		const pizazzPoints = Math.floor((pizazzPointsPerHour / (Time.Minute * 60)) * duration);
-		await prisma.new_users.update({
+		await prisma.newUser.update({
 			where: { id: userID },
 			data: {
 				pizazz_points: {

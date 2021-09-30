@@ -19,7 +19,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [str]: [string | undefined]) {
 		if (!msg.guild || msg.guild.id !== SupportServer) return;
-		const roles = await prisma.pingable_roles.findMany();
+		const roles = await prisma.pingableRole.findMany();
 		const allRolesStr = roles.map(r => `${r.id}. ${r.name}`).join('\n');
 		if (str && msg.member) {
 			const role = roles.find(i => i.id === Number(str) || stringMatches(i.name, str));
@@ -53,7 +53,7 @@ export default class extends BotCommand {
 		) {
 			return;
 		}
-		const result = await prisma.pingable_roles.create({
+		const result = await prisma.pingableRole.create({
 			data: {
 				name: role.name,
 				role_id: role.id
@@ -67,9 +67,9 @@ export default class extends BotCommand {
 		if (!role || !msg.member || !msg.member!.roles.cache.has(Roles.Moderator)) {
 			return;
 		}
-		const entity = await prisma.pingable_roles.findFirst({ where: { role_id: role.id } }); // PingableRolesTable.findOne({ roleID: role.id });
+		const entity = await prisma.pingableRole.findFirst({ where: { role_id: role.id } }); // PingableRolesTable.findOne({ roleID: role.id });
 		if (!entity) return;
-		await prisma.pingable_roles.delete({
+		await prisma.pingableRole.delete({
 			where: {
 				role_id: role.id
 			}

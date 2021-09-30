@@ -1,4 +1,4 @@
-import { activity } from '@prisma/client';
+import { Activity } from '@prisma/client';
 import { Task } from 'klasa';
 
 import { production } from '../config';
@@ -11,7 +11,7 @@ export default class extends Task {
 		}
 		const ticker = async () => {
 			try {
-				const activities: activity[] = await prisma.activity.findMany({
+				const activities: Activity[] = await prisma.activity.findMany({
 					where: {
 						completed: false,
 						finish_date: {

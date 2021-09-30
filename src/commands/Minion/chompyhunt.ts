@@ -2,7 +2,6 @@ import { percentChance, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { userhasDiaryTier, WesternProv } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -105,7 +104,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const tripLength = msg.author.maxTripLength(Activity.BigChompyBirdHunting);
+		const tripLength = msg.author.maxTripLength('BigChompyBirdHunting');
 
 		let boosts = [];
 		let quantity = Math.floor((baseChompyPerHour / Time.Hour) * tripLength);
@@ -147,9 +146,9 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration: tripLength,
-			type: Activity.BigChompyBirdHunting,
+			type: 'BigChompyBirdHunting',
 			quantity,
-			minigameID: 'BigChompyBirdHunting'
+			minigameID: 'big_chompy_bird_hunting'
 		});
 
 		let str = `${msg.author.minionName} is now hunting Big Chompy's! The trip will take ${formatDuration(

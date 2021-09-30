@@ -5,7 +5,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { itemID } from 'oldschooljs/dist/util';
 
 import MinionCommand from '../../commands/Minion/minion';
-import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
+import { BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { handlePassiveImplings } from '../implings';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
@@ -14,14 +14,15 @@ import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, generateContinuationChar, roll, stringMatches, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
+import { ActivityEnum } from '.prisma/client';
 
 export const collectors = new Map<string, MessageCollector>();
 
-const activitiesToTrackAsPVMGPSource: Activity[] = [
-	Activity.GroupMonsterKilling,
-	Activity.MonsterKilling,
-	Activity.Raids,
-	Activity.ClueCompletion
+const activitiesToTrackAsPVMGPSource: ActivityEnum[] = [
+	'GroupMonsterKilling',
+	'MonsterKilling',
+	'Raids',
+	'ClueCompletion'
 ];
 
 export async function handleTripFinish(

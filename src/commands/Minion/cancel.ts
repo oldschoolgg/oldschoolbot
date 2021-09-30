@@ -1,6 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { cancelTask, getActivityOfUser } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -27,13 +26,13 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (currentTask.type === Activity.GroupMonsterKilling) {
+		if (currentTask.type === 'GroupMonsterKilling') {
 			return msg.channel.send(
 				`${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`
 			);
 		}
 
-		if (currentTask.type === Activity.Nightmare) {
+		if (currentTask.type === 'Nightmare') {
 			const data = currentTask as NightmareActivityTaskOptions;
 			if (data.users.length > 1) {
 				return msg.channel.send(
@@ -42,19 +41,19 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (currentTask.type === Activity.BarbarianAssault) {
+		if (currentTask.type === 'BarbarianAssault') {
 			return msg.channel.send(
 				`${msg.author.minionName} is currently doing Barbarian Assault, and cant leave their team!`
 			);
 		}
 
-		if (currentTask.type === Activity.SoulWars) {
+		if (currentTask.type === 'SoulWars') {
 			return msg.channel.send(
 				`${msg.author.minionName} is currently doing Soul Wars, and cant leave their team!`
 			);
 		}
 
-		if (currentTask.type === Activity.Raids) {
+		if (currentTask.type === 'Raids') {
 			const data = currentTask as RaidsOptions;
 			if (data.users.length > 1) {
 				return msg.channel.send(

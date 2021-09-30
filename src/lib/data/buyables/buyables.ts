@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { chompyHats } from '../../../commands/Minion/chompyhunt';
 import { MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
+import { MinigameName } from '../../settings/settings';
 import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
@@ -25,7 +26,7 @@ export interface Buyable {
 	aliases?: string[];
 	skillsNeeded?: Skills;
 	restockTime?: number;
-	minigameScoreReq?: [MinigameKey, number];
+	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
 	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
 }
@@ -66,27 +67,27 @@ const cmCapes: Buyable[] = [
 	{
 		name: "Xeric's guard",
 		gpCost: 100_000,
-		minigameScoreReq: ['RaidsChallengeMode', 100]
+		minigameScoreReq: ['raids_challenge_mode', 100]
 	},
 	{
 		name: "Xeric's warrior",
 		gpCost: 500_000,
-		minigameScoreReq: ['RaidsChallengeMode', 500]
+		minigameScoreReq: ['raids_challenge_mode', 500]
 	},
 	{
 		name: "Xeric's sentinel",
 		gpCost: 1_000_000,
-		minigameScoreReq: ['RaidsChallengeMode', 1000]
+		minigameScoreReq: ['raids_challenge_mode', 1000]
 	},
 	{
 		name: "Xeric's general",
 		gpCost: 1_500_000,
-		minigameScoreReq: ['RaidsChallengeMode', 1500]
+		minigameScoreReq: ['raids_challenge_mode', 1500]
 	},
 	{
 		name: "Xeric's champion",
 		gpCost: 2_000_000,
-		minigameScoreReq: ['RaidsChallengeMode', 2000]
+		minigameScoreReq: ['raids_challenge_mode', 2000]
 	}
 ];
 
@@ -740,7 +741,7 @@ for (const [chompyHat, qty] of chompyHats) {
 		name: chompyHat.name,
 		outputItems: new Bank().add(chompyHat.id).bank,
 		gpCost: qty * 44,
-		minigameScoreReq: ['BigChompyBirdHunting', qty]
+		minigameScoreReq: ['big_chompy_bird_hunting', qty]
 	});
 }
 

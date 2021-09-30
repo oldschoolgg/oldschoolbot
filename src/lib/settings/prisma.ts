@@ -1,7 +1,6 @@
-import { activity, Prisma, PrismaClient } from '@prisma/client';
+import { Activity, ActivityEnum, Prisma, PrismaClient } from '@prisma/client';
 
 import { client } from '../..';
-import { Activity } from '../constants';
 import { ActivityTaskData } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
@@ -9,10 +8,10 @@ import { minionActivityCache } from './settings';
 
 export const prisma = new PrismaClient();
 
-export function convertStoredActivityToFlatActivity(activity: activity): ActivityTaskData {
+export function convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
 	return {
 		...(activity.data as Prisma.JsonObject),
-		type: activity.type as Activity,
+		type: activity.type as ActivityEnum,
 		userID: activity.user_id,
 		channelID: activity.channel_id,
 		duration: activity.duration,
@@ -21,7 +20,7 @@ export function convertStoredActivityToFlatActivity(activity: activity): Activit
 	};
 }
 
-export function activitySync(activity: activity) {
+export function activitySync(activity: Activity) {
 	const users: string[] = isGroupActivity(activity.data)
 		? ((activity.data as Prisma.JsonObject).users! as string[])
 		: [activity.user_id];
@@ -30,7 +29,7 @@ export function activitySync(activity: activity) {
 	}
 }
 
-export async function completeActivity(_activity: activity) {
+export async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
 	if (_activity.completed) {
 		throw new Error('Tried to complete an already completed task.');

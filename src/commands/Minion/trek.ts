@@ -1,7 +1,6 @@
 import { objectEntries, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { GearStat, readableStatName } from '../../lib/gear';
 import { difficulties, trekBankBoosts } from '../../lib/minions/data/templeTrekking';
@@ -12,6 +11,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { TempleTrekkingActivityTaskOptions } from './../../lib/types/minions';
+import { ActivityEnum } from '.prisma/client';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -156,7 +156,7 @@ export default class extends BotCommand {
 			tripTime *= flailBoost;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Trekking);
+		const maxTripLength = msg.author.maxTripLength(ActivityEnum.Trekking);
 
 		if (quantity === undefined || quantity === null) {
 			quantity = Math.floor(maxTripLength / tripTime);
@@ -179,9 +179,9 @@ export default class extends BotCommand {
 			quantity,
 			userID: msg.author.id,
 			duration,
-			type: Activity.Trekking,
+			type: ActivityEnum.Trekking,
 			channelID: msg.channel.id,
-			minigameID: 'TempleTrekking'
+			minigameID: 'temple_trekking'
 		});
 
 		let str = `${

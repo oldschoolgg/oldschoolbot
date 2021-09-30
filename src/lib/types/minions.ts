@@ -1,11 +1,11 @@
-import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
-import { Activity } from '../constants';
 import { IPatchData } from '../minions/farming/types';
+import { MinigameName } from '../settings/minigames';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import { ActivityEnum } from '.prisma/client';
 
 export interface ActivityTaskOptions {
-	type: Activity;
+	type: ActivityEnum;
 	userID: string;
 	duration: number;
 	id: number;
@@ -206,7 +206,7 @@ export interface DriftNetActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
-	minigameID: MinigameKey;
+	minigameID: MinigameName;
 	quantity: number;
 }
 

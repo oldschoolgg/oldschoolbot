@@ -1,7 +1,6 @@
 import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { sepulchreBoosts, sepulchreFloors } from '../../lib/minions/data/sepulchre';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -55,7 +54,7 @@ export default class extends BotCommand {
 				lapLength = reduceNumByPercent(lapLength, percent);
 			}
 		}
-		const maxLaps = Math.floor(msg.author.maxTripLength(Activity.Sepulchre) / lapLength);
+		const maxLaps = Math.floor(msg.author.maxTripLength('Sepulchre') / lapLength);
 		const tripLength = maxLaps * lapLength;
 
 		await addSubTaskToActivityTask<SepulchreActivityTaskOptions>({
@@ -63,9 +62,9 @@ export default class extends BotCommand {
 			quantity: maxLaps,
 			userID: msg.author.id,
 			duration: tripLength,
-			type: Activity.Sepulchre,
+			type: 'Sepulchre',
 			channelID: msg.channel.id,
-			minigameID: 'Sepulchre'
+			minigameID: 'sepulchre'
 		});
 
 		let str = `${

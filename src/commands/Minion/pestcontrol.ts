@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { Activity } from '../../lib/constants';
 import { userhasDiaryTier, WesternProv } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -176,7 +175,7 @@ ${xpRes}`);
 		}
 
 		let gameLength = Time.Minute * 2.8;
-		const maxLength = msg.author.maxTripLength(Activity.PestControl);
+		const maxLength = msg.author.maxTripLength('PestControl');
 
 		let boosts = [];
 		const gear = msg.author.getGear('melee');
@@ -199,9 +198,9 @@ ${xpRes}`);
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
-			type: Activity.PestControl,
+			type: 'PestControl',
 			quantity,
-			minigameID: 'PestControl'
+			minigameID: 'pest_control'
 		});
 
 		let [boat] = getBoatType(combatLevel);

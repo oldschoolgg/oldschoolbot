@@ -7,8 +7,8 @@ import PromiseQueue from 'p-queue';
 import { Events, PerkTier, userQueues } from '../../lib/constants';
 import { readableStatName } from '../../lib/gear';
 import { KillableMonster } from '../../lib/minions/types';
+import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { Skills } from '../../lib/types';
 import { formatItemReqs, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
@@ -120,7 +120,7 @@ export default class extends Extendable {
 	}
 
 	public async getPOH(this: User) {
-		const poh = await PoHTable.findOne({ userID: this.id });
+		const poh = await prisma.playerOwnedHouse.findFirst({ where: { user_id: this.id } });
 		if (poh !== undefined) return poh;
 		await PoHTable.insert({ userID: this.id });
 		const created = await PoHTable.findOne({ userID: this.id });

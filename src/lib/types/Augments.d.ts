@@ -1,4 +1,4 @@
-import { minigames } from '@prisma/client';
+import { ActivityEnum, Minigame } from '@prisma/client';
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
@@ -203,7 +203,7 @@ declare module 'discord.js' {
 		/**
 		 * Returns minigame entity
 		 */
-		getMinigameEntity(): Promise<minigames>;
+		getMinigameEntity(): Promise<Minigame>;
 		/**
 		 * Returns Creature score
 		 */
@@ -255,7 +255,7 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
-		maxTripLength(activity?: OSBActivity): number;
+		maxTripLength(activity?: ActivityEnum): number;
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
 		combatLevel: number;

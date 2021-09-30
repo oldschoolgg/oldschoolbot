@@ -1,7 +1,6 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -36,14 +35,14 @@ export default class extends BotCommand {
 		const boost = Math.min(100, calcWhatPercent(tripsDone, 50)) / 10;
 		tripLength = reduceNumByPercent(tripLength, boost);
 
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.FishingTrawler) / tripLength);
+		const quantity = Math.floor(msg.author.maxTripLength('FishingTrawler') / tripLength);
 		const duration = quantity * tripLength;
 
 		await addSubTaskToActivityTask<FishingTrawlerActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
-			type: Activity.FishingTrawler,
-			minigameID: 'FishingTrawler',
+			type: 'FishingTrawler',
+			minigameID: 'fishing_trawler',
 			quantity,
 			duration
 		});

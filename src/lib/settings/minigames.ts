@@ -1,17 +1,21 @@
-import { minigames } from '@prisma/client';
-import { User } from 'discord.js';
-import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
+import { Minigame } from '@prisma/client';
 
-import { getMinigameEntity, incrementMinigameScore } from '../../lib/settings/settings';
+import { prisma } from './prisma';
+
+export type MinigameName = keyof Omit<Minigame, 'id' | 'user_id'>;
+
+export interface BotMinigame {
+	name: string;
+	aliases: string[];
+	column: MinigameName;
+}
 
 export interface MinigameScore {
-	minigame: Minigame;
+	minigame: BotMinigame;
 	score: number;
 }
 
-export type Minigame = typeof Minigames[number];
-
-export const Minigames: Minigame[] = [
+export const Minigames: readonly BotMinigame[] = [
 	{
 		name: 'Tithe farm',
 		aliases: ['tf', 'tithe'],
@@ -25,7 +29,6 @@ export const Minigames: Minigame[] = [
 	{
 		name: 'Tempoross',
 		aliases: ['temp', 'ross', 'tempo', 'watertodt'],
-		key: 'Tempoross',
 		column: 'tempoross'
 	},
 	{
@@ -36,91 +39,76 @@ export const Minigames: Minigame[] = [
 	{
 		name: 'Fishing Trawler',
 		aliases: ['trawler', 'ft'],
-		key: 'FishingTrawler',
 		column: 'fishing_trawler'
 	},
 	{
 		name: 'Barbarian Assault',
 		aliases: ['ba', 'barb'],
-		key: 'BarbarianAssault',
 		column: 'barb_assault'
 	},
 	{
 		name: 'Pyramid Plunder',
 		aliases: ['pp', 'pyramid', 'plunder'],
-		key: 'PyramidPlunder',
 		column: 'pyramid_plunder'
 	},
 	{
 		name: 'Brimhaven Agility Arena',
 		aliases: ['baa', 'aa', 'agilarena'],
-		key: 'AgilityArena',
 		column: 'agility_arena'
 	},
 	{
 		name: "Champions' Challenge",
 		aliases: ['champion', 'scrolls'],
-		key: 'ChampionsChallenge',
 		column: 'champions_challenge'
 	},
 	{
 		name: 'Mahogany Homes',
 		aliases: ['mh', 'mahogany', 'homes'],
-		key: 'MahoganyHomes',
 		column: 'mahogany_homes'
 	},
 	{
 		name: 'Gnome Restaurant',
 		aliases: ['gh', 'gnome', 'restaurant'],
-		key: 'GnomeRestaurant',
 		column: 'gnome_restaurant'
 	},
 	{
 		name: 'Soul Wars',
 		aliases: ['sw', 'soul'],
-		key: 'SoulWars',
 		column: 'soul_wars'
 	},
 	{
 		name: "Rogues' Den",
 		aliases: ['rd', 'rogues', 'den'],
-		key: 'RoguesDenMaze',
 		column: 'rogues_den'
 	},
 	{
 		name: 'Gauntlet',
 		aliases: ['gauntlet', 'gaunt', 'ng'],
-		key: 'Gauntlet',
 		column: 'gauntlet'
 	},
 	{
 		name: 'Corrupted Gauntlet',
 		aliases: ['cgauntlet', 'corruptedg', 'corruptg', 'cg'],
-		key: 'CorruptedGauntlet',
 		column: 'corrupted_gauntlet'
 	},
 	{
 		name: 'Castle Wars',
 		aliases: ['cw', 'cwars'],
-		key: 'CastleWars',
 		column: 'castle_wars'
 	},
 	{
 		name: "Chamber's of Xeric",
 		aliases: ['cox', 'raid1', 'raids1', 'chambers', 'xeric'],
-		key: 'Raids',
 		column: 'raids'
 	},
 	{
 		name: "Chamber's of Xeric - Challenge Mode",
 		aliases: ['coxcm', 'raid1cm', 'raids1cm', 'chamberscm', 'xericcm'],
-		key: 'RaidsChallengeMode',
 		column: 'raids_challenge_mode'
 	},
 	{
 		name: 'Magic Training Arena',
 		aliases: ['mta'],
-		key: 'MagicTrainingArena',
 		column: 'magic_training_arena'
 	},
 	{
@@ -143,33 +131,43 @@ export const Minigames: Minigame[] = [
 		aliases: ['vm'],
 		column: 'volcanic_mine'
 	}
-] as const;
+];
 
-export default class extends Extendable {
-	public constructor(store: ExtendableStore, file: string[], directory: string) {
-		super(store, file, directory, { appliesTo: [User] });
-	}
+export async function getMinigameScore(userID: string, minigame: MinigameName) {
+	const MinigameEntity = await getMinigameEntity(userID);
+	return MinigameEntity[minigame];
+}
 
-	async getMinigameScore(this: KlasaUser, minigame: Minigame['column']) {
-		const MinigameEntity = await this.getMinigameEntity();
-		return MinigameEntity[minigame];
+export async function getMinigameEntity(userID: string): Promise<Minigame> {
+	const value = await prisma.minigame.findUnique({ where: { user_id: userID } });
+	if (!value) {
+		return prisma.minigame.create({
+			data: {
+				user_id: userID
+			}
+		});
 	}
+	return value;
+}
 
-	async getMinigameEntity(this: KlasaUser): Promise<minigames> {
-		return getMinigameEntity(this.id);
-	}
+export async function incrementMinigameScore(userID: string, minigame: MinigameName, amountToAdd = 1) {
+	const result = await prisma.minigame.update({
+		where: { user_id: userID },
+		data: { [minigame]: { increment: amountToAdd } }
+	});
 
-	public async incrementMinigameScore(this: User, minigame: Minigame['column'], amountToAdd = 1) {
-		return incrementMinigameScore(this.id, minigame, amountToAdd);
-	}
+	return {
+		newScore: result[minigame],
+		entity: result
+	};
+}
 
-	async getAllMinigameScores(this: User): Promise<MinigameScore[]> {
-		const UserMinigames = await this.getMinigameEntity();
-		const scores: MinigameScore[] = [];
-		for (const minigame of Minigames) {
-			const score = UserMinigames[minigame.column];
-			scores.push({ minigame, score });
-		}
-		return scores;
+export async function getAllMinigameScores(userID: string): Promise<MinigameScore[]> {
+	const UserMinigames = await getMinigameEntity(userID);
+	const scores: MinigameScore[] = [];
+	for (const minigame of Minigames) {
+		const score = UserMinigames[minigame.column];
+		scores.push({ minigame, score });
 	}
+	return scores;
 }

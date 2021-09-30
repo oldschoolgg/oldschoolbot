@@ -1,5 +1,4 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { getConnection } from 'typeorm';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration } from '../../lib/util';

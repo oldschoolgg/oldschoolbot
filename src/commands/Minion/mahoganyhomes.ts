@@ -3,7 +3,6 @@ import { calcPercentOfNum, calcWhatPercent, objectEntries, randArrItem, randInt,
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -179,7 +178,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
 			conLevel,
 			kc,
-			msg.author.maxTripLength(Activity.MahoganyHomes),
+			msg.author.maxTripLength('MahoganyHomes'),
 			hasSack
 		);
 
@@ -196,8 +195,8 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
-			type: Activity.MahoganyHomes,
-			minigameID: 'MahoganyHomes',
+			type: 'MahoganyHomes',
+			minigameID: 'mahogany_homes',
 			quantity,
 			duration,
 			points,

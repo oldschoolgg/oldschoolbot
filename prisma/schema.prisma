@@ -176,7 +176,7 @@ model Metric {
   @@map(name: "metrics_table")
 }
 
-model Minigames {
+model Minigame {
   id                      Int      @id @default(autoincrement())
   user_id                 String   @unique @db.VarChar(19)
   tithe_farm              Int      @default(0)
@@ -210,7 +210,7 @@ model NewUser {
   username      String?      @db.VarChar(32)
   pizazz_points Int          @default(0)
   minigame_id   Int?         @unique
-  minigames     Minigames?   @relation(fields: [minigame_id], references: [id])
+  minigames     Minigame?    @relation(fields: [minigame_id], references: [id])
   slayer_tasks  SlayerTask[]
 
   @@map(name: "new_users")

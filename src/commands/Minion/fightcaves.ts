@@ -2,7 +2,6 @@ import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -156,7 +155,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity: 1,
 			duration,
-			type: Activity.FightCaves,
+			type: 'FightCaves',
 			jadDeathChance,
 			preJadDeathChance,
 			preJadDeathTime

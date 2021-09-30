@@ -3,8 +3,8 @@ import { KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { MinigameKey } from '../extendables/User/Minigame';
 import { MAX_QP } from './constants';
+import { MinigameName } from './settings/settings';
 import { UserSettings } from './settings/types/UserSettings';
 import { courses } from './skilling/skills/agility';
 import { Skills } from './types';
@@ -18,7 +18,7 @@ export interface DiaryTier {
 	skillReqs: Skills;
 	ownedItems?: number[];
 	collectionLogReqs?: number[];
-	minigameReqs?: Partial<Record<MinigameKey, number>>;
+	minigameReqs?: Partial<Record<MinigameName, number>>;
 	lapsReqs?: Record<string, number>;
 	qp?: number;
 	monsterScores?: Record<string, number>;
@@ -132,7 +132,7 @@ export const WesternProv: Diary = {
 			ranged: 30
 		},
 		minigameReqs: {
-			BigChompyBirdHunting: 30
+			big_chompy_bird_hunting: 30
 		},
 		collectionLogReqs: resolveItems(['Orange feather', 'Iron ore', 'Oak shortbow']),
 		lapsReqs: {
@@ -156,8 +156,8 @@ export const WesternProv: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Raw bass', 'Teak logs', 'Gold ore']),
 		minigameReqs: {
-			BigChompyBirdHunting: 125,
-			GnomeRestaurant: 1
+			big_chompy_bird_hunting: 125,
+			gnome_restaurant: 1
 		},
 		qp: 44
 	},
@@ -184,7 +184,7 @@ export const WesternProv: Diary = {
 			'Ape Atoll Agility Course': 1
 		},
 		minigameReqs: {
-			BigChompyBirdHunting: 300
+			big_chompy_bird_hunting: 300
 		},
 		qp: 92,
 		monsterScores: {
@@ -213,7 +213,7 @@ export const WesternProv: Diary = {
 			'Thermonuclear smoke devil': 1
 		},
 		minigameReqs: {
-			BigChompyBirdHunting: 1000
+			big_chompy_bird_hunting: 1000
 		}
 	}
 };
@@ -227,7 +227,7 @@ export const ArdougneDiary: Diary = {
 			thieving: 5
 		},
 		minigameReqs: {
-			FishingTrawler: 1
+			fishing_trawler: 1
 		},
 		qp: 10
 	},
@@ -246,7 +246,7 @@ export const ArdougneDiary: Diary = {
 			ranged: 21
 		},
 		minigameReqs: {
-			FishingTrawler: 1
+			fishing_trawler: 1
 		},
 		qp: 23,
 		collectionLogReqs: resolveItems(["Iban's staff"])
@@ -320,7 +320,7 @@ export const DesertDiary: Diary = {
 		qp: 10,
 		collectionLogReqs: resolveItems(['Yellow feather']),
 		minigameReqs: {
-			PyramidPlunder: 1
+			pyramid_plunder: 1
 		}
 	},
 	medium: {
@@ -594,7 +594,7 @@ export const KandarinDiary: Diary = {
 			'Fire Giant': 1
 		},
 		minigameReqs: {
-			BarbarianAssault: 1
+			barb_assault: 1
 		}
 	},
 	hard: {
@@ -739,7 +739,7 @@ export const KourendKebosDiary: Diary = {
 			woodcutting: 50
 		},
 		minigameReqs: {
-			Wintertodt: 1
+			wintertodt: 1
 		},
 		collectionLogReqs: resolveItems(['Chinchompa'])
 	},
@@ -781,7 +781,7 @@ export const KourendKebosDiary: Diary = {
 			Hydra: 1
 		},
 		minigameReqs: {
-			Raids: 1
+			raids: 1
 		}
 	}
 };
