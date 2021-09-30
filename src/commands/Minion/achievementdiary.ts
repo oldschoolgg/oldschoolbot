@@ -79,7 +79,7 @@ export default class extends BotCommand {
 			if (tier.minigameReqs) {
 				const entries = Object.entries(tier.minigameReqs);
 				for (const [key, neededScore] of entries) {
-					const minigame = Minigames.find(m => m.key === key)!;
+					const minigame = Minigames.find(m => m.column === key)!;
 					thisStr += `- Must Have **${neededScore}** KC in ${minigame.name}\n`;
 				}
 			}
