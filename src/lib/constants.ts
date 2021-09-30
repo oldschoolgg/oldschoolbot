@@ -505,3 +505,5 @@ export const lastTripCache = new Map<
 
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
+
+export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
