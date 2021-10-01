@@ -828,10 +828,10 @@ export default class extends Extendable {
 			wildyOutfit.hasEquipped(gorajanWarriorOutfit, true);
 		const gorajanRangeEquipped =
 			this.getGear('range').hasEquipped(gorajanArcherOutfit, true) ||
-			wildyOutfit.hasEquipped(gorajanWarriorOutfit, true);
+			wildyOutfit.hasEquipped(gorajanArcherOutfit, true);
 		const gorajanMageEquipped =
 			this.getGear('mage').hasEquipped(gorajanOccultOutfit, true) ||
-			wildyOutfit.hasEquipped(gorajanWarriorOutfit, true);
+			wildyOutfit.hasEquipped(gorajanOccultOutfit, true);
 
 		// Determine if boost should apply based on skill + equipped sets:
 		let gorajanBoost = false;
