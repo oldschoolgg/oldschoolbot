@@ -178,12 +178,6 @@ declare module 'discord.js' {
 		 */
 		hasItemEquippedOrInBank(item: number | string): boolean;
 		/**
-		 * Returns how many of the item the user has in their bank.
-		 * @param itemID The item ID.
-		 * @param mapping If similar items must be checked
-		 */
-		numItemsInBankSync(itemID: number, mapping = false): number;
-		/**
 		 * Returns a tuple where the first item is true/false if they have the requirements,
 		 * the second item is a string containing the reason they don't have the requirements.
 		 */
@@ -214,12 +208,9 @@ declare module 'discord.js' {
 		 * Returns Creature score
 		 */
 		getCreatureScore(creature: Creature): number;
-		/**
-		 * Gets the CL count for an item.
-		 */
-		getCL(itemID: number): number;
 		rawGear(): UserFullGearSetup;
 		allItemsOwned(): Bank;
+		cl(): Bank;
 		/**
 		 * Returns this users update promise queue.
 		 */
@@ -253,10 +244,6 @@ declare module 'discord.js' {
 		hasGracefulEquipped(): boolean;
 		hasSkillReqs(reqs: Skills): [boolean, string | null];
 		perkTier: PerkTier;
-		/**
-		 * Returns this users Collection Log bank.
-		 */
-		collectionLog: ItemBank;
 		sanitizedName: string;
 		badges: string;
 		/**

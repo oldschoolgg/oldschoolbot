@@ -13,7 +13,6 @@ import {
 	bankHasAllItemsFromBank,
 	formatSkillRequirements,
 	multiplyBank,
-	removeBankFromBank,
 	skillsMeetRequirements,
 	stringMatches,
 	updateBankSetting
@@ -134,11 +133,10 @@ export default class extends BotCommand {
 
 		await msg.author.settings.sync(true);
 		if (buyable.itemCost) {
-			econBankChanges.add(multiplyBank(buyable.itemCost, quantity));
-			await msg.author.settings.update(
-				UserSettings.Bank,
-				removeBankFromBank(msg.author.settings.get(UserSettings.Bank), multiplyBank(buyable.itemCost, quantity))
-			);
+			const cost = new Bank(buyable.itemCost).multiply(quantity);
+
+			econBankChanges.add(cost);
+			await msg.author.removeItemsFromBank(cost);
 		}
 
 		if (gpCost) {

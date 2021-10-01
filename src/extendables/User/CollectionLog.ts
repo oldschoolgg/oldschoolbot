@@ -1,6 +1,6 @@
 import { User } from 'discord.js';
 import { calcWhatPercent } from 'e';
-import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
+import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
@@ -41,13 +41,8 @@ export default class extends Extendable {
 		};
 	}
 
-	// @ts-ignore 2784
-	public get collectionLog(this: User) {
-		return this.settings.get(UserSettings.CollectionLogBank);
-	}
-
-	getCL(this: KlasaUser, itemID: number) {
-		return this.settings.get(UserSettings.CollectionLogBank)[itemID] ?? 0;
+	public cl(this: User) {
+		return new Bank(this.settings.get(UserSettings.CollectionLogBank));
 	}
 
 	public async addItemsToCollectionLog(this: User, items: ItemBank) {

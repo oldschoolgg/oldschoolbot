@@ -37,7 +37,7 @@ export default function addSkillingClueToLoot(
 		for (const clue of clues) {
 			if (clueRoll < clue[1] || nextTier) {
 				//  This if block is ONLY for OSB.
-				if (user.numItemsInBankSync(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
+				if (user.bank().amount(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
 					nextTier = true;
 					continue;
 				}

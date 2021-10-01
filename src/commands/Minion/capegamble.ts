@@ -40,7 +40,7 @@ export default class extends BotCommand {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${msg.author.username}'s** just received their ${formatOrdinal(
-					msg.author.getCL(itemID('Tzrek-Jad')) + 1
+					msg.author.cl().amount('Tzrek-Jad')
 				)} ${Emoji.TzRekJad} TzRek-jad pet by sacrificing a Fire cape for the ${formatOrdinal(
 					newSacrificedCount
 				)} time!`

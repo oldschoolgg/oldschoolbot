@@ -30,6 +30,7 @@ Client.defaultClientSchema
 	.add('inferno_cost', 'any', { default: {} })
 	.add('dropped_items', 'any', { default: {} })
 	.add('runecraft_cost', 'any', { default: {} })
+	.add('smithing_cost', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })

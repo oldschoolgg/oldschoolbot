@@ -52,8 +52,8 @@ const defaultImpTable = new LootTable()
 	.add('Lucky impling jar', 1, 1);
 
 const implingTableByWorldLocation = {
-	[WorldLocations.Priffdinas]: new LootTable({ limit: 142 }).add('Crystal impling jar', 1, 1),
-	[WorldLocations.World]: new LootTable().oneIn(68, defaultImpTable)
+	[WorldLocations.Priffdinas]: new LootTable({ limit: 155 }).add('Crystal impling jar', 1, 1),
+	[WorldLocations.World]: new LootTable().oneIn(85, defaultImpTable)
 };
 
 export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {

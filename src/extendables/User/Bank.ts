@@ -6,7 +6,6 @@ import { O } from 'ts-toolbelt';
 
 import { blowpipeDarts, validateBlowpipeData } from '../../commands/Minion/blowpipe';
 import { projectiles } from '../../lib/constants';
-import { similarItems } from '../../lib/data/similarItems';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
@@ -44,17 +43,6 @@ export default class extends Extendable {
 		}
 
 		return numOwned;
-	}
-
-	public numItemsInBankSync(this: User, itemID: number, similar = false) {
-		const bank = this.settings.get(UserSettings.Bank);
-		const itemQty = typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
-		if (similar && itemQty === 0 && similarItems.get(itemID)) {
-			for (const i of similarItems.get(itemID)!) {
-				if (bank[i] && bank[i] > 0) return bank[i];
-			}
-		}
-		return itemQty;
 	}
 
 	public allItemsOwned(this: User): Bank {
@@ -135,7 +123,20 @@ export default class extends Extendable {
 			}
 
 			this.log(`Had items added to bank - ${JSON.stringify(items)}`);
-			await this.settings.update(UserSettings.Bank, user.bank().add(items).bank);
+			const newBank = user.bank().add(items).bank;
+
+			let deleted = [];
+			for (const [key, value] of Object.entries(newBank)) {
+				if (value === 0 || value < 1) {
+					delete newBank[key];
+					deleted.push([key, value]);
+				}
+			}
+			if (deleted.length > 0) {
+				console.error(`Deleted ${JSON.stringify(deleted)} from ${this.username}`);
+			}
+
+			await this.settings.update(UserSettings.Bank, newBank);
 
 			// Re-add the coins to the loot
 			if (coinsInLoot > 0) items.add(995, coinsInLoot);

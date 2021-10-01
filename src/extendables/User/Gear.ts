@@ -48,9 +48,10 @@ export default class extends Extendable {
 	public hasItemEquippedOrInBank(this: User, item: number | string) {
 		const id = typeof item === 'string' ? itemID(item) : item;
 		if (similarItems.get(id) === undefined) {
-			return this.hasItemEquippedAnywhere(id, false) || this.numItemsInBankSync(id, true) > 0;
+			return this.hasItemEquippedAnywhere(id, false) || this.bank().amount(id) > 0;
 		}
-		return this.hasItemEquippedAnywhere(getSimilarItems(id), false) || this.numItemsInBankSync(id, true) > 0;
+		const bank = this.bank();
+		return this.hasItemEquippedAnywhere(getSimilarItems(id), false) || getSimilarItems(id).some(id => bank.has(id));
 	}
 
 	public getGear(this: User, setup: GearSetupType): GearSetup {

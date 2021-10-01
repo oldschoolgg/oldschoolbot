@@ -524,3 +524,5 @@ export const projectiles: Record<ProjectileType, number[]> = {
 		'Diamond dragon bolts (e)'
 	])
 };
+
+export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
