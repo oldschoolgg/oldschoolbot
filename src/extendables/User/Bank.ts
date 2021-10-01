@@ -253,7 +253,7 @@ export default class extends Extendable {
 
 		if (bankRemove.length > 0) {
 			if (!this.owns(bankRemove)) {
-				throw new Error(`You don't own: ${bankRemove}.`);
+				throw new Error(`You don't own: ${bankRemove.clone().remove(this.bank())}.`);
 			}
 			removeFns.push(() => {
 				return this.removeItemsFromBank(bankRemove);

@@ -32,6 +32,7 @@ export default class extends Task {
 
 		let xpStr = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration, minimal: true });
 		xpStr += await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration, minimal: true });
+		xpStr += await user.addXP({ skillName: SkillsEnum.Magic, amount: 65_322, duration, minimal: true });
 
 		let text = '';
 		let chatText = `You are very impressive for a JalYt. You managed to defeat TzKal-Zul for the ${formatOrdinal(
@@ -60,9 +61,9 @@ export default class extends Task {
 			)}x Tokkul.`;
 		} else {
 			await user.incrementMonsterScore(Monsters.TzKalZuk.id);
-			const loot = Monsters.TzKalZuk.kill(1, { onSlayerTask: false });
+			baseBank.add(Monsters.TzKalZuk.kill(1, { onSlayerTask: false }));
 
-			if (loot.has('Jal-nib-rek')) {
+			if (baseBank.has('Jal-nib-rek')) {
 				this.client.emit(
 					Events.ServerNotification,
 					`**${user.username}** just received their ${formatOrdinal(user.cl().amount('Jal-nib-rek'))} ${
@@ -73,11 +74,13 @@ export default class extends Task {
 
 			const cl = user.cl();
 
-			if (cl.has('Infernal cape')) {
+			if (baseBank.has('Infernal cape') && cl.amount('Infernal cape') === 1) {
 				const usersWithInfernalCape = parseInt(
 					(
 						await this.client.query<any>(
-							`SELECT count(id) FROM users WHERE "collectionLogBank"->>'${itemID('Infernal cape')}';`
+							`SELECT count(id) FROM users WHERE "collectionLogBank"->>'${itemID(
+								'Infernal cape'
+							)}' IS NOT NULL;`
 						)
 					)[0].count
 				);
@@ -102,11 +105,6 @@ export default class extends Task {
 **Loot:** ${baseBank}
 **Items Refunded:** ${unusedItems}
 **XP:** ${xpStr}
-
-**Debug Info**
-Death Time: ${deathTime !== null ? formatDuration(deathTime) : 'None'}
-Real Duration: ${formatDuration(duration)}
-Fake Duration: ${formatDuration(fakeDuration)}
 `,
 			res => {
 				user.log('continued trip of inferno');

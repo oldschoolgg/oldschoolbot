@@ -14,7 +14,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { PercentCounter } from '../../lib/structures/PercentCounter';
 import { Skills } from '../../lib/types';
 import { InfernoOptions } from '../../lib/types/minions';
-import { formatDuration, itemNameFromID, percentChance, updateBankSetting } from '../../lib/util';
+import { formatDuration, itemNameFromID, percentChance, randomVariation, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
@@ -98,7 +98,7 @@ export default class extends BotCommand {
 
 		cost.add('Saradomin brew(4)', 8);
 		cost.add('Super restore(4)', 12);
-		cost.add('Bastion potion(4)');
+		cost.add('Ranging potion(4)');
 		cost.add('Stamina potion(4)');
 
 		for (const [item, quantity] of cost.items()) {
@@ -118,19 +118,15 @@ export default class extends BotCommand {
 
 	baseZukDeathChance(_attempts: number) {
 		const attempts = Math.max(1, _attempts);
-		if (attempts < 30) return 99.9999 - attempts / 7.5;
+		if (attempts < 20) return 99.9999 - attempts / 7.5;
 		const chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(25))) * 39);
 		return Math.max(Math.min(chance, 99), 15);
 	}
 
 	baseDuration(_attempts: number) {
 		const attempts = Math.max(1, _attempts);
-		const chance =
-			Math.floor(200 - (Math.log(attempts) / Math.log(Math.sqrt(60))) * 85) *
-				Time.Second *
-				(90 - Math.min(Math.min(70, attempts), 10)) +
-			22;
-		return chance;
+		const chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(25))) * 39);
+		return Math.max(Time.Minute * 40, Math.max(Math.min(chance, 99), 15) * Time.Minute);
 	}
 
 	async baseDeathChances(user: KlasaUser) {
@@ -139,7 +135,7 @@ export default class extends BotCommand {
 		let basePreZuk = [];
 		let baseZuk = [];
 		let duration = [];
-		for (let i = 0; i < 150; i++) {
+		for (let i = 0; i < 250; i++) {
 			const res = this.infernoRun({ user, kc: 0, attempts: i });
 			if (typeof res === 'string') return res;
 			preZuk.push(res.preZukDeathChance.value);
@@ -148,7 +144,7 @@ export default class extends BotCommand {
 			baseZuk.push(this.baseZukDeathChance(i));
 			duration.push(res.duration.value);
 		}
-		duration = duration.map(i => i / Time.Hour);
+		duration = duration.map(i => i / Time.Minute);
 		const options = {
 			type: 'line',
 			data: {
@@ -342,7 +338,10 @@ export default class extends BotCommand {
 		}
 
 		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 7.5, 'Zuk with ACB');
-		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 4.5, 'ACB');
+		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), -4.5, 'ACB');
+
+		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), -1.5, 'Zuk with TBow');
+		duration.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), 6.5, 'TBow');
 
 		/**
 		 *
@@ -374,6 +373,8 @@ export default class extends BotCommand {
 				.map(itemNameFromID)
 				.join(', ')}.`;
 		}
+
+		duration.value = randomVariation(duration.value, (randInt(1, 10) + randInt(1, 10) + randInt(1, 10)) / 3);
 
 		const fakeDuration = Math.floor(duration.value);
 

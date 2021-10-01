@@ -155,15 +155,17 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 		}
 
 		const rawBlowpipeData = { ...msg.author.settings.get(UserSettings.Blowpipe) };
+		validateBlowpipeData(rawBlowpipeData);
 		if (!rawBlowpipeData.dartID || rawBlowpipeData.dartQuantity === 0) {
 			return msg.channel.send('Your Toxic blowpipe has no darts in it.');
 		}
 		validateBlowpipeData(rawBlowpipeData);
 		const returnedBank = new Bank().add(rawBlowpipeData.dartID, rawBlowpipeData.dartQuantity);
+		rawBlowpipeData.dartID = null;
 		rawBlowpipeData.dartQuantity = 0;
 		await msg.author.addItemsToBank(returnedBank);
 		await msg.author.settings.update(UserSettings.Blowpipe, rawBlowpipeData);
-
+		validateBlowpipeData(rawBlowpipeData);
 		return msg.channel.send(`You removed ${returnedBank} from your Toxic blowpipe.`);
 	}
 
