@@ -8,7 +8,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration, isWeekend, itemID, rand, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
+import { formatDuration, isWeekend, rand, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
 
 if (!fs.existsSync('./src/lib/resources/trivia-questions.json')) {
 	fs.writeFileSync(
@@ -142,8 +142,7 @@ export default class DailyCommand extends BotCommand {
 
 		let dmStr = `${bonuses.join('')} **${Emoji.Diango} Diango says..** That's ${correct}! ${reward}\n`;
 
-		const hasSkipper =
-			msg.author.equippedPet() === itemID('Skipper') || msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
+		const hasSkipper = msg.author.usingPet('Skipper') || msg.author.bank().amount('Skipper') > 0;
 		if (!msg.author.isIronman && triviaCorrect && hasSkipper) {
 			loot[COINS_ID] *= 1.5;
 			dmStr +=

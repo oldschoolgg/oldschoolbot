@@ -5,13 +5,13 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID, updateBankSetting } from '../../lib/util';
-import { parseBank } from '../../lib/util/parseStringBank';
+import { parseInputCostBank } from '../../lib/util/parseStringBank';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 3,
-			usage: '<bank:...str>',
+			usage: '[bank:...str]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			categoryFlags: ['minion'],
@@ -21,10 +21,13 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [bankStr]: [string]) {
-		const bank = parseBank({ inputStr: bankStr, inputBank: msg.author.bank(), flags: msg.flagArgs });
+		const bank = parseInputCostBank({ inputStr: bankStr, usersBank: msg.author.bank(), flags: msg.flagArgs });
 
 		if (!msg.author.owns(bank)) {
 			return msg.channel.send(`You don't own ${bank}.`);
+		}
+		if (bank.length === 0) {
+			return msg.channel.send('No valid items that you own were given.');
 		}
 
 		await msg.confirm(

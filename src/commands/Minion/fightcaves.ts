@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
-import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -11,19 +10,18 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FightCavesActivityTaskOptions } from '../../lib/types/minions';
-import {
-	addBanks,
-	bankHasAllItemsFromBank,
-	formatDuration,
-	percentChance,
-	rand,
-	removeBankFromBank
-} from '../../lib/util';
+import { formatDuration, percentChance, rand, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import itemID from '../../lib/util/itemID';
 
 const { TzTokJad } = Monsters;
+
+export const fightCavesCost = new Bank({
+	'Prayer potion(4)': 10,
+	'Saradomin brew(4)': 6,
+	'Super restore(4)': 4
+});
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -102,10 +100,8 @@ export default class extends BotCommand {
 			throw 'JalYt, your ranged gear not strong enough! You die very quickly with your bad gear, come back with better range gear.';
 		}
 
-		if (!bankHasAllItemsFromBank(user.settings.get(UserSettings.Bank), fightCavesSupplies)) {
-			throw `JalYt, you need supplies to have a chance in the caves...come back with ${new Bank(
-				fightCavesSupplies
-			)}.`;
+		if (!user.owns(fightCavesCost)) {
+			throw `JalYt, you need supplies to have a chance in the caves...come back with ${fightCavesCost}.`;
 		}
 
 		if (user.skillLevel(SkillsEnum.Prayer) < 43) {
@@ -145,9 +141,7 @@ export default class extends BotCommand {
 		const diedPreJad = percentChance(preJadDeathChance);
 		const preJadDeathTime = diedPreJad ? rand(Time.Minute * 20, duration) : null;
 
-		const bank = msg.author.settings.get(UserSettings.Bank);
-		const newBank = removeBankFromBank(bank, fightCavesSupplies);
-		await msg.author.settings.update(UserSettings.Bank, newBank);
+		await msg.author.removeItemsFromBank(fightCavesCost);
 
 		// Add slayer
 		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
@@ -174,11 +168,7 @@ export default class extends BotCommand {
 			preJadDeathTime
 		});
 
-		// Track this food cost in Economy Stats
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.FightCavesCost,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.FightCavesCost), fightCavesSupplies])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.FightCavesCost, fightCavesCost);
 
 		const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 
@@ -194,7 +184,7 @@ ${
 		: ''
 }
 
-**Removed from your bank:** ${new Bank(fightCavesSupplies)}`,
+**Removed from your bank:** ${fightCavesCost}`,
 			files: [
 				await chatHeadImage({
 					content: `You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`,

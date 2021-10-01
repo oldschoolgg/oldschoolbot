@@ -208,12 +208,12 @@ interface TransmogItem {
 	maxHeight?: number;
 }
 const transmogItems: TransmogItem[] = [
-	...monkeyTiers.map(m => m.greegrees.map(g => ({ item: g, image: m.image }))).flat(2),
 	{
 		item: getOSItem('Gorilla rumble greegree'),
 		image: fsPromises.readFile('./src/lib/resources/images/mmmr/gorilla.png').then(canvasImageFromBuffer),
 		maxHeight: 170
-	}
+	},
+	...monkeyTiers.map(m => m.greegrees.map(g => ({ item: g, image: m.image }))).flat(2)
 ];
 
 export async function generateGearImage(

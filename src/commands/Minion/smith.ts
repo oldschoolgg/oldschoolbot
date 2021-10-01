@@ -1,17 +1,17 @@
 import { MessageAttachment } from 'discord.js';
 import { calcPercentOfNum, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { itemID } from 'oldschooljs/dist/util';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, formatDuration, itemNameFromID, removeItemFromBank, stringMatches } from '../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export function hasBlackSmithEquipped(setup: Gear) {
@@ -86,9 +86,9 @@ export default class extends BotCommand {
 
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
 		let timeToSmithSingleBar = smithedItem.timeToUse + Time.Second / 4;
-		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven greathammer'))) {
+		if (msg.author.hasItemEquippedAnywhere('Dwarven greathammer')) {
 			timeToSmithSingleBar /= 2;
-		} else if (msg.author.equippedPet() === itemID('Takon')) {
+		} else if (msg.author.usingPet('Takon')) {
 			timeToSmithSingleBar /= 4;
 		}
 
@@ -107,18 +107,24 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const baseCost = new Bank(smithedItem.inputBars);
 
-		// Check the user has the required bars to smith these itemss.
-		// Multiplying the bars required by the quantity of items.
-		const requiredBars: [string, number][] = Object.entries(smithedItem.inputBars);
-		for (const [barID, qty] of requiredBars) {
-			if (!bankHasItem(userBank, parseInt(barID), qty * quantity)) {
-				return msg.channel.send(
-					`You don't have enough ${itemNameFromID(parseInt(barID))}'s to smith ${quantity}x ${
-						smithedItem.name
-					}, you need atleast ${qty}.`
-				);
+		const maxCanDo = msg.author.bank().fits(baseCost);
+		if (maxCanDo === 0) {
+			return msg.channel.send("You don't have enough supplies to smith even one of this item!");
+		}
+		if (maxCanDo < quantity) {
+			quantity = maxCanDo;
+		}
+
+		const cost = new Bank();
+		cost.add(baseCost.multiply(quantity));
+
+		const hasScroll = msg.author.owns('Scroll of efficiency');
+		if (hasScroll) {
+			for (const [item, qty] of baseCost.items()) {
+				const saved = Math.floor(calcPercentOfNum(15, qty));
+				cost.remove(item.id, qty - saved);
 			}
 		}
 
@@ -133,20 +139,8 @@ export default class extends BotCommand {
 			);
 		}
 
-		const hasScroll = await msg.author.hasItem(itemID('Scroll of efficiency'));
-
-		// Remove the bars from their bank.
-		let usedbars = 0;
-		let newBank = { ...userBank };
-		for (const [barID, qty] of requiredBars) {
-			if (newBank[parseInt(barID)] < qty) {
-				this.client.wtf(new Error(`${msg.author.sanitizedName} had insufficient bars to be removed.`));
-				return;
-			}
-			const numBars = hasScroll ? Math.ceil(calcPercentOfNum(85, qty * quantity)) : qty * quantity;
-			newBank = removeItemFromBank(newBank, parseInt(barID), numBars);
-			usedbars = numBars;
-		}
+		await msg.author.removeItemsFromBank(cost);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.SmithingCost, cost);
 
 		await addSubTaskToActivityTask<SmithingActivityTaskOptions>({
 			smithedBarID: smithedItem.id,
@@ -156,11 +150,10 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Smithing
 		});
-		await msg.author.settings.update(UserSettings.Bank, newBank);
 
 		let str = `${msg.author.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
 			smithedItem.name
-		}, using ${usedbars} bars, it'll take around ${formatDuration(duration)} to finish.`;
+		}, using ${cost}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (msg.author.usingPet('Takon')) {
 			str += ' Takon is Smithing for you, at incredible speeds and skill.';

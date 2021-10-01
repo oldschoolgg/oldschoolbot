@@ -5,7 +5,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { itemID, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
+import { updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 
 export function sellPriceOfItem(client: KlasaClient, item: Item) {
 	const customPrices = client.settings.get(ClientSettings.CustomPrices);
@@ -36,8 +36,7 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.isIronman) return msg.channel.send("Iron players can't sell items.");
-		const hasSkipper =
-			msg.author.equippedPet() === itemID('Skipper') || msg.author.numItemsInBankSync(itemID('Skipper')) > 0;
+		const hasSkipper = msg.author.usingPet('Skipper') || msg.author.bank().amount('Skipper') > 0;
 		const tax = hasSkipper ? 0 : Math.ceil((totalPrice / 0.8) * 0.2);
 		totalPrice = hasSkipper ? totalPrice : Math.floor(totalPrice * 0.8);
 

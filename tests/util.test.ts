@@ -1,3 +1,7 @@
+import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
+
+import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
 import { stripEmojis } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 
@@ -13,5 +17,27 @@ describe('util', () => {
 		expect(getOSItem('3rd age platebody').id).toEqual(10_348);
 
 		expect(() => getOSItem('Non-existant item')).toThrowError("Non-existant item doesn't exist.");
+	});
+
+	test('getUserFoodFromBank', () => {
+		const fakeUser = (b: Bank) =>
+			({
+				bank: () => b,
+				skillLevel: () => 99
+			} as any as KlasaUser);
+		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark')), 500, [])).toStrictEqual(false);
+		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark', 100)), 500, [])).toStrictEqual(
+			new Bank().add('Shark', 25)
+		);
+		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark', 30).add('Tuna', 20)), 750, [])).toStrictEqual(
+			new Bank().add('Shark', 28).add('Tuna', 20)
+		);
+		expect(
+			getUserFoodFromBank(
+				fakeUser(new Bank().add('Shark', 100).add('Lobster', 20).add('Shrimps', 50).add('Coal')),
+				1600,
+				[]
+			)
+		).toStrictEqual(new Bank().add('Lobster', 20).add('Shark', 66).add('Shrimps', 50));
 	});
 });

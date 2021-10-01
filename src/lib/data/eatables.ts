@@ -1,13 +1,17 @@
+import { KlasaUser } from 'klasa';
+
+import { SkillsEnum } from '../skilling/types';
 import itemID from '../util/itemID';
 
 export interface Eatable {
 	name: string;
 	id: number;
-	healAmount: number;
 	raw: number | null;
+	healAmount: ((user: KlasaUser) => number) | number;
+	pvmBoost?: number;
 }
 
-export const Eatables: Eatable[] = [
+export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Shrimps',
 		id: itemID('Shrimps'),
@@ -72,7 +76,8 @@ export const Eatables: Eatable[] = [
 		name: 'Jug of wine',
 		id: itemID('Jug of wine'),
 		healAmount: 11,
-		raw: null
+		raw: null,
+		pvmBoost: -10
 	},
 	{
 		name: 'Stew',
@@ -117,9 +122,21 @@ export const Eatables: Eatable[] = [
 		raw: null
 	},
 	{
+		name: 'Chilli potato',
+		id: itemID('Chilli potato'),
+		healAmount: 14,
+		raw: null
+	},
+	{
 		name: 'Chocolate cake',
 		id: itemID('Chocolate cake'),
 		healAmount: 15,
+		raw: null
+	},
+	{
+		name: 'Egg potato',
+		id: itemID('Egg potato'),
+		healAmount: 16,
 		raw: null
 	},
 	{
@@ -138,7 +155,8 @@ export const Eatables: Eatable[] = [
 		name: 'Monkfish',
 		id: itemID('Monkfish'),
 		healAmount: 16,
-		raw: itemID('Raw monkfish')
+		raw: itemID('Raw monkfish'),
+		pvmBoost: 1
 	},
 	{
 		name: 'Anchovy pizza',
@@ -174,13 +192,15 @@ export const Eatables: Eatable[] = [
 		name: 'Shark',
 		id: itemID('Shark'),
 		healAmount: 20,
-		raw: itemID('Raw shark')
+		raw: itemID('Raw shark'),
+		pvmBoost: 2
 	},
 	{
 		name: 'Sea turtle',
 		id: itemID('Sea turtle'),
 		healAmount: 21,
-		raw: itemID('Raw sea turtle')
+		raw: itemID('Raw sea turtle'),
+		pvmBoost: 2
 	},
 	{
 		name: 'Pineapple pizza',
@@ -198,7 +218,8 @@ export const Eatables: Eatable[] = [
 		name: 'Manta ray',
 		id: itemID('Manta ray'),
 		healAmount: 22,
-		raw: itemID('Raw manta ray')
+		raw: itemID('Raw manta ray'),
+		pvmBoost: 3
 	},
 	{
 		name: 'Tuna potato',
@@ -222,18 +243,31 @@ export const Eatables: Eatable[] = [
 		name: 'Dark crab',
 		id: itemID('Dark crab'),
 		healAmount: 22,
-		raw: itemID('Raw dark crab')
+		raw: itemID('Raw dark crab'),
+		pvmBoost: 3
 	},
 	{
 		name: 'Anglerfish',
 		id: itemID('Anglerfish'),
-		healAmount: 22,
-		raw: itemID('Raw anglerfish')
+		raw: itemID('Raw anglerfish'),
+		healAmount: (user: KlasaUser) => {
+			const hp = user.skillLevel(SkillsEnum.Hitpoints);
+			let c = 2;
+			if (hp > 10) c = 2;
+			if (hp > 25) c = 4;
+			if (hp > 50) c = 6;
+			if (hp > 75) c = 8;
+			if (hp > 93) c = 13;
+
+			return hp * (1 / 10) + c;
+		},
+		pvmBoost: 4
 	},
 	{
 		name: 'Rocktail',
 		id: itemID('Rocktail'),
 		healAmount: 26,
-		raw: itemID('Raw Rocktail')
+		raw: itemID('Raw Rocktail'),
+		pvmBoost: 7
 	}
 ];

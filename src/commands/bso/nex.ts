@@ -13,7 +13,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { BossActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, resolveNameBank, updateBankSetting } from '../../lib/util';
+import { formatDuration, isWeekend, itemID, resolveNameBank, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getNexGearStats } from '../../lib/util/getNexGearStats';
@@ -124,6 +124,10 @@ export default class extends BotCommand {
 		const users = type === 'mass' ? await msg.makePartyAwaiter(partyOptions) : [msg.author];
 		let debugStr = '';
 		let effectiveTime = NexMonster.timeToFinish;
+		if (isWeekend()) {
+			effectiveTime = reduceNumByPercent(effectiveTime, 5);
+			debugStr += '5% Weekend boost\n';
+		}
 		const isSolo = users.length === 1;
 
 		if (isSolo && (users[0].settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) < 200) {

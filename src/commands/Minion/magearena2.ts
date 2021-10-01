@@ -9,7 +9,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, randomVariation, updateBankSetting } from '../../lib/util';
+import { formatDuration, randomVariation, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -31,7 +31,7 @@ export default class extends BotCommand {
 		if (msg.author.skillLevel(SkillsEnum.Magic) < 75) {
 			return msg.channel.send('You need level 75 Magic to do the Mage Arena II.');
 		}
-		if (!msg.author.collectionLog[itemID('Saradomin cape')]) {
+		if (msg.author.cl().amount('Saradomin cape') === 0) {
 			return msg.channel.send('You need to have completed Mage Arena I before doing part II.');
 		}
 		const duration = randomVariation(Time.Minute * 25, 3);

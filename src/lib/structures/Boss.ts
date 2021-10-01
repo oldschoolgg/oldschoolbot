@@ -9,7 +9,7 @@ import { GearSetupType, GearStats } from '../gear';
 import { Ignecarus } from '../minions/data/killableMonsters/custom/Ignecarus';
 import { Skills } from '../types';
 import { NewBossOptions } from '../types/minions';
-import { formatDuration, formatSkillRequirements, updateBankSetting } from '../util';
+import { formatDuration, formatSkillRequirements, isWeekend, updateBankSetting } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { Gear } from './Gear';
 import { Mass } from './Mass';
@@ -164,6 +164,7 @@ export class BossInstance {
 	canDie: boolean;
 	kcLearningCap: number;
 	customDeathChance: null | ((user: KlasaUser, deathChance: number) => number);
+	boosts: string[] = [];
 
 	constructor(options: BossOptions) {
 		this.baseDuration = options.baseDuration;
@@ -360,6 +361,11 @@ export class BossInstance {
 
 		// Reduce or increase the duration based on the team size. Solo is longer, big team is faster.
 		duration -= duration * (teamSizeBoostPercent(this.users!.length) / 100);
+
+		if (isWeekend()) {
+			this.boosts.push('5% Weekend boost');
+			duration = reduceNumByPercent(duration, 5);
+		}
 
 		return {
 			bossUsers,

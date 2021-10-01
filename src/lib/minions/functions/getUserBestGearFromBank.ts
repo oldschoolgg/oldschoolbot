@@ -1,3 +1,4 @@
+import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { addBanks, removeItemFromBank } from 'oldschooljs/dist/util';
 
@@ -5,7 +6,7 @@ import { canEquipItemInThisGearType } from '../../../commands/Minion/equip';
 import { GearSetupType, GearStat } from '../../gear/types';
 import { Gear } from '../../structures/Gear';
 import { ItemBank, Skills } from '../../types';
-import { removeBankFromBank, skillsMeetRequirements } from '../../util';
+import { skillsMeetRequirements } from '../../util';
 import getOSItem from '../../util/getOSItem';
 
 function getItemScore(item: Item) {
@@ -177,6 +178,6 @@ export default function getUserBestGearFromBank(
 		toRemoveFromGear,
 		toRemoveFromBank,
 		gearToEquip,
-		userFinalBank: removeBankFromBank(addBanks([userBank, toRemoveFromGear]), toRemoveFromBank)
+		userFinalBank: new Bank().add(userBank).add(toRemoveFromGear).remove(toRemoveFromBank).bank
 	};
 }

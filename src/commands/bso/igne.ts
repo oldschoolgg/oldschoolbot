@@ -123,7 +123,10 @@ ${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
 					'https://cdn.discordapp.com/attachments/357422607982919680/857358542456487996/grzegorz-rutkowski-dragons-breath-1920-2.jpg'
 				);
 
-			return msg.channel.send({ embeds: [embed] });
+			return msg.channel.send({
+				embeds: [embed],
+				content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined
+			});
 		} catch (err) {
 			return msg.channel.send(`The mass failed to start for this reason: ${err.message}.`);
 		}

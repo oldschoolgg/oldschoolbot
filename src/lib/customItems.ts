@@ -271,7 +271,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Head,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -299,7 +300,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Body,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -327,7 +329,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Legs,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -355,7 +358,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Feet,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -383,7 +387,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Hands,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -412,7 +417,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Head,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -440,7 +446,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Body,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -468,7 +475,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Legs,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -496,7 +504,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Feet,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -524,7 +533,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Hands,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -553,7 +563,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Head,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -581,7 +592,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Body,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -609,7 +621,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Legs,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -637,7 +650,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Feet,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -665,7 +679,8 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Hands,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -694,7 +709,8 @@ setCustomItem(
 			prayer: 6,
 			slot: EquipmentSlot.TwoHanded,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -722,7 +738,8 @@ setCustomItem(
 			prayer: 0,
 			slot: EquipmentSlot.Weapon,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );
@@ -750,7 +767,8 @@ setCustomItem(
 			prayer: 5,
 			slot: EquipmentSlot.Shield,
 			requirements: null
-		}
+		},
+		highalch: 50_000_000
 	},
 	50_000_000
 );

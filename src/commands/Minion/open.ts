@@ -84,7 +84,7 @@ export default class extends BotCommand {
 	}
 
 	async clueOpen(msg: KlasaMessage, quantity: number, clueTier: ClueTier) {
-		if (msg.author.numItemsInBankSync(clueTier.id) < quantity) {
+		if (msg.author.bank().amount(clueTier.id) < quantity) {
 			return msg.channel.send(
 				`You don't have enough ${clueTier.name} Caskets to open!\n\n However... ${await this.showAvailable(
 					msg
@@ -185,7 +185,7 @@ export default class extends BotCommand {
 	}
 
 	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: Openable) {
-		if (msg.author.numItemsInBankSync(osjsOpenable.id) < quantity) {
+		if (msg.author.bank().amount(osjsOpenable.id) < quantity) {
 			return msg.channel.send(
 				`You don't have enough ${osjsOpenable.name} to open!\n\n However... ${await this.showAvailable(msg)}`
 			);
@@ -231,7 +231,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (msg.author.numItemsInBankSync(botOpenable.itemID) < quantity) {
+		if (msg.author.bank().amount(botOpenable.itemID) < quantity) {
 			return msg.channel.send(
 				`You don't have enough ${botOpenable.name} to open!\n\n However... ${await this.showAvailable(msg)}`
 			);

@@ -68,7 +68,7 @@ const defaultImpTable = new LootTable()
 	.add('Eternal impling jar', 1, 7)
 	.add('Mystery impling jar', 1, 3);
 
-const IMPLING_CHANCE_PER_MINUTE = 68;
+const IMPLING_CHANCE_PER_MINUTE = 98;
 
 type TWorldLocationImplingTable = Record<number, (caughtChance: number) => LootTable>;
 

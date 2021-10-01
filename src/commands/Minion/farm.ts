@@ -218,8 +218,8 @@ export default class extends BotCommand {
 		const requiredSeeds: [string, number][] = Object.entries(plants.inputItems);
 		for (const [seedID, qty] of requiredSeeds) {
 			if (!bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
-				if (msg.author.numItemsInBankSync(parseInt(seedID)) > qty) {
-					quantity = Math.floor(msg.author.numItemsInBankSync(parseInt(seedID)) / qty);
+				if (msg.author.bank().amount(parseInt(seedID)) > qty) {
+					quantity = Math.floor(msg.author.bank().amount(parseInt(seedID)) / qty);
 				} else {
 					throw `You don't have enough ${itemNameFromID(parseInt(seedID))}s.`;
 				}

@@ -14,7 +14,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
 import { MakePartyOptions } from '../../lib/types';
 import { BossActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../lib/util';
+import { formatDuration, isWeekend, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getKalphiteKingGearStats } from '../../lib/util/getKalphiteKingGearStats';
@@ -137,6 +137,10 @@ export default class extends BotCommand {
 
 		let debugStr = '';
 		let effectiveTime = KalphiteKingMonster.timeToFinish;
+		if (isWeekend()) {
+			effectiveTime = reduceNumByPercent(effectiveTime, 5);
+			debugStr += '5% Weekend boost\n';
+		}
 
 		for (const user of users) {
 			const [data] = getKalphiteKingGearStats(
