@@ -379,7 +379,8 @@ const source: [string, (string | number)[]][] = [
 	['Crafting cape', ['Max cape', 'Crafting cape(t)']],
 	['Salve amulet', ['Salve amulet(ei)', 'Salve amulet(i)', 'Salve amulet (e)']],
 	['Salve amulet (e)', ['Salve amulet(ei)']],
-	['Salve amulet (i)', ['Salve amulet(ei)']]
+	['Salve amulet (i)', ['Salve amulet(ei)']],
+	['Zaryte bow', ['Hellfire bow', 'Hellfire bownana']]
 ];
 for (const { baseItem, dyedVersions } of dyedItems) {
 	source.push([baseItem.name, dyedVersions.map(i => i.item.id)]);
