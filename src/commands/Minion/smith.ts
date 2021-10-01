@@ -74,7 +74,10 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (smithedItem.requiresBlacksmith && !hasBlackSmithEquipped(msg.author.getGear('skilling'))) {
+		if (
+			smithedItem.requiresBlacksmith &&
+			!Object.values(msg.author.rawGear()).some(i => hasBlackSmithEquipped(i))
+		) {
 			return msg.channel.send('You need the Blacksmith outfit to smith this item.');
 		}
 
@@ -124,7 +127,7 @@ export default class extends BotCommand {
 		if (hasScroll) {
 			for (const [item, qty] of baseCost.items()) {
 				const saved = Math.floor(calcPercentOfNum(15, qty));
-				cost.remove(item.id, qty - saved);
+				cost.remove(item.id, saved);
 			}
 		}
 
