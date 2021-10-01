@@ -29,10 +29,6 @@ export default function getUserFoodFromBank(
 			return 0;
 		});
 
-	if (favoriteFood.length) {
-		sorted.sort((j, i) => (i.healAmount > j.healAmount ? 1 : -1));
-	}
-
 	// Gets all the eatables in the user bank
 	for (const eatable of sorted) {
 		const id = raw ? eatable.raw : eatable.id;
