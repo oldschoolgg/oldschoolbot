@@ -4,30 +4,32 @@ import { Bank, Monsters } from 'oldschooljs';
 import { TzKalZuk } from 'oldschooljs/dist/simulation/monsters/special/TzKalZuk';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import fightCavesSupplies from '../../../lib/minions/data/fightCavesSupplies';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { InfernoOptions } from '../../../lib/types/minions';
-import { formatDuration, rand } from '../../../lib/util';
+import { formatDuration } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
-const TokkulID = itemID('Tokkul');
-
 export default class extends Task {
 	async run(data: InfernoOptions) {
-		const { userID, channelID, preZukDeathChance, diedZuk, diedPreZuk, duration, deathTime } = data;
+		const { userID, channelID, preZukDeathChance, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
 		const user = await this.client.users.fetch(userID);
-
-		const tokkulReward = rand(2000, 6000);
 
 		const oldAttempts = user.settings.get(UserSettings.InfernoAttempts);
 		const attempts = oldAttempts + 1;
 		await user.settings.update(UserSettings.InfernoAttempts, attempts);
 
 		const attemptsStr = `You have attempted the Inferno ${attempts}x times.`;
+
+		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
+		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
+		if (hasDiary) tokkul *= 2;
+		const baseBank = new Bank().add('Tokkul', tokkul);
 
 		const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration, minimal: true });
 		const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration, minimal: true });
@@ -38,16 +40,15 @@ export default class extends Task {
 		 *
 		 */
 		if (diedPreZuk) {
-			const refundBank = new Bank();
 			const percSuppliesToRefund = 100 - calcWhatPercent(preZukDeathChance, duration);
 			for (const [itemID, qty] of Object.entries(fightCavesSupplies)) {
 				const amount = Math.floor(calcPercentOfNum(percSuppliesToRefund, qty));
 				if (amount > 0) {
-					refundBank.add(parseInt(itemID), amount);
+					baseBank.add(parseInt(itemID), amount);
 				}
 			}
 
-			await user.addItemsToBank(refundBank);
+			await user.addItemsToBank(baseBank);
 
 			return handleTripFinish(
 				this.client,
@@ -55,17 +56,19 @@ export default class extends Task {
 				channelID,
 				`${user} You died ${formatDuration(
 					deathTime!
-				)} into your attempt.The following supplies were refunded back into your bank: ${refundBank}.`,
+				)} into your attempt. The following supplies were refunded back into your bank: ${baseBank}.`,
 				res => {
 					user.log('continued trip of inferno');
 					return this.client.commands.get('inferno')!.run(res, []);
 				},
 				await chatHeadImage({
-					content: `You die before you even reach TzKal-Zuk...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
+					content: `You die before you even reach TzKal-Zuk...atleast you tried, I give you ${baseBank.amount(
+						'TOkkul'
+					)}x Tokkul. ${attemptsStr}`,
 					head: 'mejJal'
 				}),
 				data,
-				refundBank.bank
+				baseBank.bank
 			);
 		}
 
@@ -75,8 +78,7 @@ export default class extends Task {
 		 *
 		 */
 		if (diedZuk) {
-			const failBank = new Bank({ [TokkulID]: tokkulReward });
-			await user.addItemsToBank(failBank, true);
+			await user.addItemsToBank(baseBank, true);
 
 			let msg = `${rangeXP}. ${hpXP}.`;
 
@@ -90,11 +92,13 @@ export default class extends Task {
 					return (this.client.commands.get('inferno') as any)!.start(res, []);
 				},
 				await chatHeadImage({
-					content: `Nice try JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
+					content: `Nice try JalYt, for your effort I give you ${baseBank.amount(
+						'Tokkul'
+					)}x Tokkul. ${attemptsStr}.`,
 					head: 'mejJal'
 				}),
 				data,
-				failBank.bank
+				baseBank.bank
 			);
 		}
 

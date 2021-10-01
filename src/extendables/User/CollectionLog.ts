@@ -41,10 +41,6 @@ export default class extends Extendable {
 		};
 	}
 
-	public cl(this: User) {
-		return new Bank(this.settings.get(UserSettings.CollectionLogBank));
-	}
-
 	public async addItemsToCollectionLog(this: User, items: ItemBank) {
 		await this.settings.sync(true);
 		this.log(`had following items added to collection log: [${JSON.stringify(items)}`);
