@@ -1,4 +1,3 @@
-import { captureException } from '@sentry/minimal';
 import { GuildMember } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -35,20 +34,10 @@ export default class extends BotCommand {
 		const { price, bank: bankToSell } = parseInputBankWithPrice({
 			usersBank: msg.author.bank(),
 			str: strBankWithPrice ?? '',
-			flags: { ...msg.flagArgs, tradeables: 'tradeables' }
+			flags: { ...msg.flagArgs }
 		});
-		if (bankToSell.items().some(i => isSuperUntradeable(i[0].id))) {
-			captureException(new Error('Trying to sell untradeable item'), {
-				user: {
-					id: msg.author.id
-				},
-				extra: {
-					inputItems: strBankWithPrice ?? '',
-					resultItems: bankToSell.toString()
-				}
-			});
-			return msg.channel.send('You are trying to sell untradeable items.');
-		}
+		bankToSell.filter(i => !isSuperUntradeable(i), true);
+
 		if (bankToSell.length === 0) {
 			return msg.channel.send('No valid tradeable items that you own were given.');
 		}
