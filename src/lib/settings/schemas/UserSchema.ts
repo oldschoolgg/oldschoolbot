@@ -44,7 +44,7 @@ Client.defaultUserSchema
 	.add('farming_patch_reminders', 'boolean', { default: true })
 	.add('pest_control_points', 'integer', { default: 0 })
 	.add('inferno_attempts', 'integer', { default: 0 })
-	.add('inferno_cape_sacrifices', 'integer', { default: 0 })
+	.add('infernal_cape_sacrifices', 'integer', { default: 0 })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
 	.add('blowpipe', 'any', { default: { ...defaultBlowpipe } })
 	.add('slayer', folder =>

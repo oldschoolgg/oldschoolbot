@@ -17,12 +17,12 @@ export default class extends BotCommand {
 			cooldown: 5,
 			categoryFlags: ['minion'],
 			examples: ['+capegamble infernal', '+capegamble infernal'],
-			usage: '[fire|inferno]',
+			usage: '[fire|infernal]',
 			description: 'Allows you to gamble fire capes for a chance at the jad pet.'
 		});
 	}
 
-	async run(msg: KlasaMessage, [type]: ['fire' | 'inferno' | undefined]) {
+	async run(msg: KlasaMessage, [type]: ['fire' | 'infernal' | undefined]) {
 		const firesGambled = msg.author.settings.get(UserSettings.Stats.FireCapesSacrificed);
 		const infernalsGambled = msg.author.settings.get(UserSettings.Stats.InfernalCapesSacrificed);
 		if (!type) {

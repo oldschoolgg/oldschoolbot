@@ -100,7 +100,7 @@ export default class extends Task {
 			this.client,
 			user,
 			channelID,
-			`${text}
+			`${user} ${text}
 			
 **Loot:** ${baseBank}
 **Items Refunded:** ${unusedItems}

@@ -501,14 +501,20 @@ export default class extends BotCommand {
 **Attempts:** ${attempts}
 
 **Duration:** ${formatDuration(duration.value)} (${(duration.value / 1000 / 60).toFixed(2)} minutes)
-**Boosts:** ${duration.messages.join(', ')} *(You didn't get these: ||${duration.missed.join(', ')}||)*
+**Boosts:** ${duration.messages.join(', ')} ${
+				duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
+			}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
-**Pre-Zuk Death Chance:** ${preZukDeathChance.value.toFixed(1)}% ${preZukDeathChance.messages.join(
-				', '
-			)} *(You didn't get these: ||${preZukDeathChance.missed.join(', ')}||)*
-**Zuk Death Chance:** ${zukDeathChance.value.toFixed(1)}% ${zukDeathChance.messages.join(
-				', '
-			)} *(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*
+**Pre-Zuk Death Chance:** ${preZukDeathChance.value.toFixed(1)}% ${preZukDeathChance.messages.join(', ')} ${
+				preZukDeathChance.missed.length === 0
+					? ''
+					: `*(You didn't get these: ||${preZukDeathChance.missed.join(', ')}||)*`
+			}
+**Zuk Death Chance:** ${zukDeathChance.value.toFixed(1)}% ${zukDeathChance.messages.join(', ')} ${
+				zukDeathChance.missed.length === 0
+					? ''
+					: `*(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*`
+			}
 
 **Removed from your bank:** ${cost}`,
 			files: [
