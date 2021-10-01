@@ -95,8 +95,7 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 			if (!blowpipeDarts.includes(item) && item !== getOSItem("Zulrah's scales")) {
 				return msg.channel.send("You can only charge your blowpipe with darts and Zulrah's scales.");
 			}
-
-			itemsToRemove.add(item.id, Math.max(1, quantity ?? userBank.amount(item.id)));
+			itemsToRemove.add(item.id, Math.max(1, quantity || userBank.amount(item.id)));
 			if (itemsToRemove.length >= 2) break;
 		}
 

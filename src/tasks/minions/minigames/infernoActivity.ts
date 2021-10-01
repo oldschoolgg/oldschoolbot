@@ -5,7 +5,6 @@ import { TzKalZuk } from 'oldschooljs/dist/simulation/monsters/special/TzKalZuk'
 
 import { Emoji, Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
-import fightCavesSupplies from '../../../lib/minions/data/fightCavesSupplies';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { InfernoOptions } from '../../../lib/types/minions';
@@ -17,142 +16,108 @@ import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: InfernoOptions) {
-		const { userID, channelID, preZukDeathChance, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
+		const { userID, channelID, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
+		const cost = new Bank(data.cost);
 		const user = await this.client.users.fetch(userID);
+		const unusedItems = new Bank();
 
 		const oldAttempts = user.settings.get(UserSettings.InfernoAttempts);
 		const attempts = oldAttempts + 1;
 		await user.settings.update(UserSettings.InfernoAttempts, attempts);
-
-		const attemptsStr = `You have attempted the Inferno ${attempts}x times.`;
 
 		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
 		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
 		if (hasDiary) tokkul *= 2;
 		const baseBank = new Bank().add('Tokkul', tokkul);
 
-		const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration, minimal: true });
-		const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration, minimal: true });
+		let xpStr = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration, minimal: true });
+		xpStr += await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration, minimal: true });
 
-		/**
-		 *
-		 * If died before Zuk
-		 *
-		 */
-		if (diedPreZuk) {
-			const percSuppliesToRefund = 100 - calcWhatPercent(preZukDeathChance, duration);
-			for (const [itemID, qty] of Object.entries(fightCavesSupplies)) {
+		let text = '';
+		let chatText = `You are very impressive for a JalYt. You managed to defeat TzKal-Zul for the ${formatOrdinal(
+			user.getKC(Monsters.TzKalZuk.id)
+		)} time! Please accept this cape as a token of appreciation.`;
+
+		if (deathTime) {
+			const percSuppliesToRefund = 100 - calcWhatPercent(deathTime, fakeDuration);
+			for (const [item, qty] of cost.items()) {
 				const amount = Math.floor(calcPercentOfNum(percSuppliesToRefund, qty));
 				if (amount > 0) {
-					baseBank.add(parseInt(itemID), amount);
+					unusedItems.add(item.id, amount);
 				}
 			}
-
-			await user.addItemsToBank(baseBank);
-
-			return handleTripFinish(
-				this.client,
-				user,
-				channelID,
-				`${user} You died ${formatDuration(
-					deathTime!
-				)} into your attempt. The following supplies were refunded back into your bank: ${baseBank}.`,
-				res => {
-					user.log('continued trip of inferno');
-					return this.client.commands.get('inferno')!.run(res, []);
-				},
-				await chatHeadImage({
-					content: `You die before you even reach TzKal-Zuk...atleast you tried, I give you ${baseBank.amount(
-						'TOkkul'
-					)}x Tokkul. ${attemptsStr}`,
-					head: 'mejJal'
-				}),
-				data,
-				baseBank.bank
-			);
 		}
 
-		/**
-		 *
-		 * If died to Zuk
-		 *
-		 */
-		if (diedZuk) {
-			await user.addItemsToBank(baseBank, true);
+		if (diedPreZuk) {
+			text = `${user} You died ${formatDuration(deathTime!)} into your attempt, before you reached Zuk.`;
+			chatText = `You die before you even reach TzKal-Zuk...atleast you tried, I give you ${baseBank.amount(
+				'Tokkul'
+			)}x Tokkul.`;
+		} else if (diedZuk) {
+			text = `${user} You died ${formatDuration(deathTime!)} into your attempt, during the Zuk fight.`;
+			chatText = `You died to Zuk. Nice try JalYt, for your effort I give you ${baseBank.amount(
+				'Tokkul'
+			)}x Tokkul.`;
+		} else {
+			await user.incrementMonsterScore(Monsters.TzKalZuk.id);
+			const loot = Monsters.TzKalZuk.kill(1, { onSlayerTask: false });
 
-			let msg = `${rangeXP}. ${hpXP}.`;
+			if (loot.has('Jal-nib-rek')) {
+				this.client.emit(
+					Events.ServerNotification,
+					`**${user.username}** just received their ${formatOrdinal(user.cl().amount('Jal-nib-rek'))} ${
+						Emoji.TzRekJad
+					} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(user.getKC(TzKalZuk.id))} kill!`
+				);
+			}
 
-			return handleTripFinish(
-				this.client,
-				user,
-				channelID,
-				`${user} ${msg}`,
-				res => {
-					user.log('continued trip of inferno');
-					return (this.client.commands.get('inferno') as any)!.start(res, []);
-				},
-				await chatHeadImage({
-					content: `Nice try JalYt, for your effort I give you ${baseBank.amount(
-						'Tokkul'
-					)}x Tokkul. ${attemptsStr}.`,
-					head: 'mejJal'
-				}),
-				data,
-				baseBank.bank
-			);
+			const cl = user.cl();
+
+			if (cl.has('Infernal cape')) {
+				const usersWithInfernalCape = parseInt(
+					(
+						await this.client.query<any>(
+							`SELECT count(id) FROM users WHERE "collectionLogBank"->>'${itemID('Infernal cape')}';`
+						)
+					)[0].count
+				);
+				this.client.emit(
+					Events.ServerNotification,
+					`**${user.username}** just received their first Infernal cape on their ${formatOrdinal(
+						attempts
+					)} attempt! They are the ${formatOrdinal(usersWithInfernalCape)} person to get an Infernal cape.`
+				);
+			}
 		}
 
-		await user.incrementMonsterScore(Monsters.TzKalZuk.id);
-		const loot = Monsters.TzKalZuk.kill(1, { onSlayerTask: false });
-
-		if (loot.has('Jal-nib-rek')) {
-			this.client.emit(
-				Events.ServerNotification,
-				`**${user.username}** just received their ${formatOrdinal(user.cl().amount('Jal-nib-rek'))} ${
-					Emoji.TzRekJad
-				} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(user.getKC(TzKalZuk.id))} kill!`
-			);
-		}
-
-		const cl = user.cl();
-
-		if (cl.has('Infernal cape')) {
-			const usersWithInfernalCape = parseInt(
-				(
-					await this.client.query<any>(
-						`SELECT count(id) FROM users WHERE "collectionLogBank"->>'${itemID('Infernal cape')}';'`
-					)
-				)[0].count
-			);
-			this.client.emit(
-				Events.ServerNotification,
-				`**${user.username}** just received their first Infernal cape on their ${formatOrdinal(
-					attempts
-				)} attempt! They are the ${formatOrdinal(usersWithInfernalCape)} person to get an Infernal cape.`
-			);
-		}
-
-		await user.addItemsToBank(loot, true);
-
-		let msg = `${rangeXP}. ${hpXP}.`;
+		await user.addItemsToBank(baseBank, true);
+		await user.addItemsToBank(unusedItems, false);
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
-			`${user} ${msg}`,
+			`${text}
+			
+**Loot:** ${baseBank}
+**Items Refunded:** ${unusedItems}
+**XP:** ${xpStr}
+
+**Debug Info**
+Death Time: ${deathTime !== null ? formatDuration(deathTime) : 'None'}
+Real Duration: ${formatDuration(duration)}
+Fake Duration: ${formatDuration(fakeDuration)}
+`,
 			res => {
 				user.log('continued trip of inferno');
-				return this.client.commands.get('inferno')!.run(res, []);
+				return (this.client.commands.get('inferno') as any).start(res, []);
 			},
 			await chatHeadImage({
-				content: `You are very impressive for a JalYt. You managed to defeat TzKal-Zul for the ${formatOrdinal(
-					user.getKC(Monsters.TzKalZuk.id)
-				)} time! Please accept this cape as a token of appreciation.`,
+				content: chatText,
 				head: 'ketKeh'
 			}),
 			data,
-			loot.bank
+			baseBank.bank
 		);
 	}
 }

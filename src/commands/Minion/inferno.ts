@@ -7,7 +7,6 @@ import { TzKalZuk } from 'oldschooljs/dist/simulation/monsters/special/TzKalZuk'
 import { table } from 'table';
 
 import { Activity, BitField, projectiles, ProjectileType } from '../../lib/constants';
-import fightCavesSupplies from '../../lib/minions/data/fightCavesSupplies';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -121,16 +120,16 @@ export default class extends BotCommand {
 		const attempts = Math.max(1, _attempts);
 		if (attempts < 30) return 99.9999 - attempts / 7.5;
 		const chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(25))) * 39);
-		return Math.max(Math.min(chance, 99), 5);
+		return Math.max(Math.min(chance, 99), 15);
 	}
 
 	baseDuration(_attempts: number) {
 		const attempts = Math.max(1, _attempts);
 		const chance =
-			Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(65))) * 65) *
+			Math.floor(200 - (Math.log(attempts) / Math.log(Math.sqrt(60))) * 85) *
 				Time.Second *
-				(70 - Math.min(Math.min(70, attempts), 30)) +
-			12;
+				(90 - Math.min(Math.min(70, attempts), 10)) +
+			22;
 		return chance;
 	}
 
@@ -376,7 +375,7 @@ export default class extends BotCommand {
 				.join(', ')}.`;
 		}
 
-		const fakeDuration = duration.value;
+		const fakeDuration = Math.floor(duration.value);
 
 		const diedPreZuk = percentChance(preZukDeathChance.value);
 		const diedZuk = percentChance(zukDeathChance.value);
@@ -489,10 +488,11 @@ export default class extends BotCommand {
 			deathTime,
 			fakeDuration,
 			diedPreZuk,
-			diedZuk
+			diedZuk,
+			cost: cost.bank
 		});
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.InfernoCost, fightCavesSupplies);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.InfernoCost, cost);
 
 		return msg.channel.send({
 			content: `
@@ -509,7 +509,7 @@ export default class extends BotCommand {
 				', '
 			)} *(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*
 
-**Removed from your bank:** ${new Bank(fightCavesSupplies)}`,
+**Removed from your bank:** ${cost}`,
 			files: [
 				await chatHeadImage({
 					content: "You're on your own now JalYt, you face certain death... prepare to fight for your life.",
