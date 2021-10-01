@@ -35,17 +35,19 @@ export default function getUserFoodFromBank(
 
 	// Gets all the eatables in the user bank
 	for (const eatable of sorted) {
+		const id = raw ? eatable.raw : eatable.id;
+		if (!id && raw) continue;
 		const healAmount = typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(user);
-		const amountOwned = userBank.amount(eatable.id);
+		const amountOwned = userBank.amount(id!);
 		const toRemove = Math.ceil(totalHealingCalc / healAmount);
 		if (!amountOwned) continue;
 		if (amountOwned >= toRemove) {
 			totalHealingCalc -= Math.ceil(healAmount * toRemove);
-			foodToRemove.add(eatable.id, toRemove);
+			foodToRemove.add(id!, toRemove);
 			break;
 		} else {
 			totalHealingCalc -= Math.ceil(healAmount * amountOwned);
-			foodToRemove.add(eatable.id, amountOwned);
+			foodToRemove.add(id!, amountOwned);
 		}
 	}
 	// Check if qty is still above 0. If it is, it means the user doesn't have enough food.

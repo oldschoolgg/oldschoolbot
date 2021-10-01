@@ -131,7 +131,6 @@ export async function removeRawFood({
 	user,
 	totalHealingNeeded,
 	healPerAction,
-	raw = false,
 	monster,
 	quantity,
 	tame
@@ -155,7 +154,7 @@ export async function removeRawFood({
 		user,
 		totalHealingNeeded,
 		user.settings.get(UserSettings.FavoriteFood),
-		raw
+		true
 	);
 	if (!foodToRemove) {
 		throw `You don't have enough Raw food to feed your tame in this trip. You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.filter(
@@ -660,7 +659,6 @@ export default class extends BotCommand {
 			client: this.client,
 			totalHealingNeeded: (monster.healAmountNeeded ?? 1) * quantity,
 			healPerAction: monster.healAmountNeeded ?? 1,
-			raw: true,
 			user: msg.author,
 			monster,
 			quantity,
