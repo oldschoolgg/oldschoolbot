@@ -5,6 +5,7 @@ import { TzKalZuk } from 'oldschooljs/dist/simulation/monsters/special/TzKalZuk'
 
 import { Emoji, Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { InfernoOptions } from '../../../lib/types/minions';
@@ -60,6 +61,7 @@ export default class extends Task {
 				'Tokkul'
 			)}x Tokkul.`;
 		} else {
+			await incrementMinigameScore(userID, 'Inferno', 1);
 			await user.incrementMonsterScore(Monsters.TzKalZuk.id);
 			baseBank.add(Monsters.TzKalZuk.kill(1, { onSlayerTask: false }));
 

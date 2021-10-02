@@ -124,20 +124,19 @@ export default class extends BotCommand {
 	}
 
 	baseDuration(_attempts: number) {
-		const attempts = Math.max(1, Math.min(500, _attempts));
+		const attempts = Math.max(1, Math.min(250, _attempts));
 		let chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(65))) * 45);
-		if (attempts < 30) chance += 30;
-		console.log(attempts, chance, formatDuration(chance * (Time.Minute * 1.5)));
-		return Math.min(Time.Hour * 2.5, Math.max(Time.Minute * 40, chance * (Time.Minute * 1.5)));
+		if (attempts < 20) chance += 20 - attempts;
+		return Math.min(Time.Hour * 2.5, Math.max(Time.Minute * 40, chance * (Time.Minute * 2.9)));
 	}
 
-	async baseDeathChances(user: KlasaUser) {
+	async baseDeathChances(user: KlasaUser, range = [0, 250]) {
 		let preZuk = [];
 		let zuk = [];
 		let basePreZuk = [];
 		let baseZuk = [];
 		let duration = [];
-		for (let i = 0; i < 250; i++) {
+		for (let i = range[0]; i < range[1]; i++) {
 			const res = this.infernoRun({ user, kc: 0, attempts: i });
 			if (typeof res === 'string') return res;
 			preZuk.push(res.preZukDeathChance.value);
@@ -436,7 +435,10 @@ export default class extends BotCommand {
 	@requiresMinion
 	async start(msg: KlasaMessage) {
 		if (msg.flagArgs.sim) {
-			msg.channel.send({ files: [...(await this.baseDeathChances(msg.author))] });
+			msg.channel.send({
+				files: [...(await this.baseDeathChances(msg.author))]
+			});
+			msg.channel.send({ files: [...(await this.baseDeathChances(msg.author, [250, 500]))] });
 			return msg.channel.send(this.simulate(msg));
 		}
 

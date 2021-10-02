@@ -56,7 +56,7 @@ export default class extends BotCommand {
 				Events.ServerNotification,
 				`**${msg.author.username}'s** just received their ${formatOrdinal(msg.author.cl().amount(pet.id))} ${
 					pet.name
-				} pet by sacrificing a ${item} for the ${formatOrdinal(newSacrificedCount)} time!`
+				} pet by sacrificing a ${item.name} for the ${formatOrdinal(newSacrificedCount)} time!`
 			);
 			return msg.channel.send({
 				files: [
