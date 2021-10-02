@@ -143,7 +143,7 @@ declare module 'discord.js' {
 			filterLoot?: boolean
 		): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }>;
 		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
-		specialRemoveItems(items: Bank): Promise<void>;
+		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
 		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 

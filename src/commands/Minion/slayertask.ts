@@ -384,7 +384,7 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 		if (commonName === 'TzHaar') {
 			returnMessage = 'Ah... Tzhaar... ';
 			commonName +=
-				`. You can choose to kill TzTok-Jad with ${msg.cmdPrefix}fightcaves as long as you ` +
+				`. You can choose to kill TzTok-Jad with \`${msg.cmdPrefix}fightcaves\`, or TzKal-Zuk with \`${msg.cmdPrefix}inferno start\` as long as you ` +
 				"don't kill any regular TzHaar first.";
 		}
 

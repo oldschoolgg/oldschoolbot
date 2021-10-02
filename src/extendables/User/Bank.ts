@@ -1,4 +1,5 @@
 import { User } from 'discord.js';
+import { percentChance } from 'e';
 import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -183,6 +184,10 @@ export default class extends Extendable {
 		let dart: [Item, number] | null = null;
 		let ammoRemove: [Item, number] | null = null;
 
+		const realCost = bank.clone();
+		const rangeGear = this.getGear('range');
+		const hasAvas = rangeGear.hasEquipped("Ava's assembler");
+
 		for (const [item, quantity] of bank.items()) {
 			if (blowpipeDarts.includes(item)) {
 				if (dart !== null) throw new Error('Tried to remove more than 1 blowpipe dart.');
@@ -200,15 +205,25 @@ export default class extends Extendable {
 		const removeFns: (() => Promise<unknown>)[] = [];
 
 		if (ammoRemove) {
-			const equippedAmmo = this.getGear('range').ammo?.item;
+			const equippedAmmo = rangeGear.ammo?.item;
 			if (!equippedAmmo) {
 				throw new Error('No ammo equipped.');
 			}
 			if (equippedAmmo !== ammoRemove[0].id) {
 				throw new Error(`Has ${itemNameFromID(equippedAmmo)}, but needs ${ammoRemove[0].name}.`);
 			}
-			const rangeGear = { ...this.settings.get(UserSettings.Gear.Range) };
-			const ammo = rangeGear?.ammo?.quantity;
+			const newRangeGear = { ...this.settings.get(UserSettings.Gear.Range) };
+			const ammo = newRangeGear?.ammo?.quantity;
+
+			if (hasAvas) {
+				let ammoCopy = ammoRemove[1];
+				for (let i = 0; i < ammoCopy; i++) {
+					if (percentChance(80)) {
+						ammoRemove[1]--;
+						realCost.remove(ammoRemove[0].id, 1);
+					}
+				}
+			}
 			if (!ammo || ammo < ammoRemove[1])
 				throw new Error(
 					`Not enough ${ammoRemove[0].name} equipped in range gear, you need ${
@@ -216,8 +231,8 @@ export default class extends Extendable {
 					} but you have only ${ammo}.`
 				);
 			removeFns.push(() => {
-				rangeGear.ammo!.quantity -= ammoRemove![1];
-				return this.settings.update(UserSettings.Gear.Range, rangeGear);
+				newRangeGear.ammo!.quantity -= ammoRemove![1];
+				return this.settings.update(UserSettings.Gear.Range, newRangeGear);
 			});
 		}
 
@@ -242,6 +257,15 @@ export default class extends Extendable {
 					`You don't have enough Zulrah's scales in your Toxic blowpipe, you need ${scales} but you have only ${rawBlowpipeData.scales}.`
 				);
 			}
+			if (hasAvas) {
+				let ammoCopy = dart![1];
+				for (let i = 0; i < ammoCopy; i++) {
+					if (percentChance(80)) {
+						realCost.remove(dart[0].id, 1);
+						dart![1]--;
+					}
+				}
+			}
 			removeFns.push(() => {
 				const bpData = { ...this.settings.get(UserSettings.Blowpipe) };
 				bpData.dartQuantity -= dart![1];
@@ -262,6 +286,9 @@ export default class extends Extendable {
 
 		const promises = removeFns.map(fn => fn());
 		await Promise.all(promises);
+		return {
+			realCost
+		};
 	}
 
 	public async hasItem(this: User, itemID: number, amount = 1, sync = true) {

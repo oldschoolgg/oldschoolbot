@@ -45,7 +45,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		const rawBlowpipeData = msg.author.settings.get(UserSettings.Blowpipe);
-		const hasBlowpipe = msg.author.owns('Toxic blowpipe');
+		const hasBlowpipe = msg.author.owns('Toxic blowpipe') || msg.author.owns('Toxic blowpipe (empty)');
 		if (!hasBlowpipe) {
 			return msg.channel.send("You don't own a Toxic blowpipe.");
 		}

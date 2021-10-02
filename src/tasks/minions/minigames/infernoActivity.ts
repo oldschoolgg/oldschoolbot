@@ -8,6 +8,7 @@ import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { InfernoOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
@@ -18,9 +19,18 @@ import itemID from '../../../lib/util/itemID';
 export default class extends Task {
 	async run(data: InfernoOptions) {
 		const { userID, channelID, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
-		const cost = new Bank(data.cost);
 		const user = await this.client.users.fetch(userID);
+
+		const usersTask = await getUsersCurrentSlayerInfo(user.id);
+		const isOnTask =
+			usersTask.currentTask !== null &&
+			usersTask.currentTask !== undefined &&
+			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
+			user.getKC(Monsters.TzKalZuk.id) > 0 &&
+			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+
 		const unusedItems = new Bank();
+		const cost = new Bank(data.cost);
 
 		const oldAttempts = user.settings.get(UserSettings.InfernoAttempts);
 		const attempts = oldAttempts + 1;
@@ -51,6 +61,13 @@ export default class extends Task {
 			duration,
 			minimal: true
 		});
+		if (isOnTask) {
+			xpStr += await user.addXP({
+				skillName: SkillsEnum.Slayer,
+				amount: deathTime === null ? 125_000 : calcPercentOfNum(percentMadeItThrough, 25_000),
+				duration
+			});
+		}
 
 		let text = '';
 		let chatText = `You are very impressive for a JalYt. You managed to defeat TzKal-Zul for the ${formatOrdinal(
@@ -64,6 +81,27 @@ export default class extends Task {
 					unusedItems.add(item.id, amount);
 				}
 			}
+			if (isOnTask) {
+				usersTask.currentTask!.quantityRemaining = 0;
+				usersTask.currentTask!.skipped = true;
+				await usersTask.currentTask!.save();
+			}
+		}
+
+		if (isOnTask) {
+			const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
+			user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
+			const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
+			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
+			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
+
+			usersTask.currentTask!.quantityRemaining = 0;
+			if (deathTime) {
+				usersTask.currentTask!.skipped = true;
+			}
+			await usersTask.currentTask!.save();
+
+			text += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
 		}
 
 		if (diedPreZuk) {
@@ -79,7 +117,10 @@ export default class extends Task {
 		} else {
 			await incrementMinigameScore(userID, 'Inferno', 1);
 			await user.incrementMonsterScore(Monsters.TzKalZuk.id);
-			baseBank.add(Monsters.TzKalZuk.kill(1, { onSlayerTask: false }));
+			baseBank.add(Monsters.TzKalZuk.kill(1, { onSlayerTask: isOnTask }));
+
+			await user.addItemsToBank(baseBank, true);
+			await user.addItemsToBank(unusedItems, false);
 
 			if (baseBank.has('Jal-nib-rek')) {
 				this.client.emit(
@@ -111,9 +152,6 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank(baseBank, true);
-		await user.addItemsToBank(unusedItems, false);
-
 		handleTripFinish(
 			this.client,
 			user,
@@ -137,42 +175,3 @@ export default class extends Task {
 		);
 	}
 }
-
-// // Add slayer
-// const usersTask = await getUsersCurrentSlayerInfo(user.id);
-// const isOnTask =
-// 	usersTask.currentTask !== null &&
-// 	usersTask.currentTask !== undefined &&
-// 	usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
-// 	usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
-// if (isOnTask) {
-// 			// 25,250 for Jad + 11,760 for waves.
-// 			const slayerXP = 37_010;
-// 			const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
-// 			user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
-// 			const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
-// 			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
-// 			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
-
-// 			usersTask.currentTask!.quantityRemaining = 0;
-// 			await usersTask.currentTask!.save();
-// 			const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: slayerXP, duration });
-// 			const xpMessage = `${msg} ${slayXP}`;
-
-// 			msg = `Zuk task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
-// 			// End slayer code
-// 		}
-
-// if (isOnTask) {
-// 	const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: 11_760, duration });
-// 	msg = `**Task cancelled.** \n${msg} ${slayXP}.`;
-// 	usersTask.currentTask!.quantityRemaining = 0;
-// 	usersTask.currentTask!.skipped = true;
-// 	await usersTask.currentTask!.save();
-// }
-// if (isOnTask) {
-// 			slayerMsg = ' **Task cancelled.**';
-// 			usersTask.currentTask!.quantityRemaining = 0;
-// 			usersTask.currentTask!.skipped = true;
-// 			await usersTask.currentTask!.save();
-// 		}

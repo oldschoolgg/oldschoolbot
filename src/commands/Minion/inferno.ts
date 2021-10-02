@@ -2,14 +2,15 @@ import { MessageAttachment } from 'discord.js';
 import { calcPercentOfNum, randInt, sumArr, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
-import { Bank } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { TzKalZuk } from 'oldschooljs/dist/simulation/monsters/special/TzKalZuk';
 import { table } from 'table';
 
-import { Activity, BitField, projectiles, ProjectileType } from '../../lib/constants';
+import { Activity, BitField, Emoji, projectiles, ProjectileType } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { PercentCounter } from '../../lib/structures/PercentCounter';
 import { Skills } from '../../lib/types';
@@ -137,7 +138,7 @@ export default class extends BotCommand {
 		let baseZuk = [];
 		let duration = [];
 		for (let i = range[0]; i < range[1]; i++) {
-			const res = this.infernoRun({ user, kc: 0, attempts: i });
+			const res = await this.infernoRun({ user, kc: 0, attempts: i });
 			if (typeof res === 'string') return res;
 			preZuk.push(res.preZukDeathChance.value);
 			zuk.push(res.zukDeathChance.value);
@@ -239,10 +240,10 @@ export default class extends BotCommand {
 		return [imageBuffer, new MessageAttachment(Buffer.from(normalTable), 'Fletchables.txt')];
 	}
 
-	simulate(msg: KlasaMessage) {
+	async simulate(msg: KlasaMessage) {
 		let kc = 0;
 		for (let i = 0; i < 10_000; i++) {
-			const res = this.infernoRun({ user: msg.author, kc, attempts: i });
+			const res = await this.infernoRun({ user: msg.author, kc, attempts: i });
 			if (typeof res === 'string') return res;
 			if (!res.deathTime) {
 				return `You finished the inferno after ${i} attempts. ${res.duration.messages.join(', ')}`;
@@ -251,7 +252,7 @@ export default class extends BotCommand {
 		return "After 10,000 attempts, you still didn't finish.";
 	}
 
-	infernoRun({ user, attempts }: { user: KlasaUser; kc: number; attempts: number }) {
+	async infernoRun({ user, attempts }: { user: KlasaUser; kc: number; attempts: number }) {
 		const userBank = user.bank();
 
 		const duration = new PercentCounter(this.baseDuration(attempts), 'time');
@@ -264,7 +265,7 @@ export default class extends BotCommand {
 
 		const skillReqs: Skills = {
 			defence: 92,
-			magic: 92,
+			magic: 94,
 			hitpoints: 92,
 			ranged: 92
 		};
@@ -354,6 +355,17 @@ export default class extends BotCommand {
 		duration.add(user.bitfield.includes(BitField.HasDexScroll), 4, 'Dex. Prayer scroll');
 		duration.add(user.bitfield.includes(BitField.HasArcaneScroll), 4, 'Arc. Prayer scroll');
 
+		// Slayer
+		const usersTask = await getUsersCurrentSlayerInfo(user.id);
+		const isOnTask =
+			usersTask.currentTask !== null &&
+			usersTask.currentTask !== undefined &&
+			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
+			user.getKC(Monsters.TzKalZuk.id) > 0 &&
+			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+
+		duration.add(isOnTask && user.hasItemEquippedOrInBank('Black mask (i)'), 9, `${Emoji.Slayer} Slayer Task`);
+
 		/**
 		 *
 		 *
@@ -439,14 +451,14 @@ export default class extends BotCommand {
 				files: [...(await this.baseDeathChances(msg.author))]
 			});
 			msg.channel.send({ files: [...(await this.baseDeathChances(msg.author, [250, 500]))] });
-			return msg.channel.send(this.simulate(msg));
+			return msg.channel.send(await this.simulate(msg));
 		}
 
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
 		const usersRangeStats = msg.author.getGear('range').stats;
 		const zukKC = msg.author.getKC(TzKalZuk.id);
 
-		const res = this.infernoRun({ user: msg.author, kc: zukKC, attempts });
+		const res = await this.infernoRun({ user: msg.author, kc: zukKC, attempts });
 
 		if (typeof res === 'string') {
 			return msg.channel.send({
@@ -470,8 +482,9 @@ export default class extends BotCommand {
 			realDuration
 		} = res;
 
+		let realCost = new Bank();
 		try {
-			await msg.author.specialRemoveItems(cost);
+			realCost = (await msg.author.specialRemoveItems(cost)).realCost;
 		} catch (err: any) {
 			return msg.channel.send({
 				files: [
@@ -494,10 +507,10 @@ export default class extends BotCommand {
 			fakeDuration,
 			diedPreZuk,
 			diedZuk,
-			cost: cost.bank
+			cost: realCost.bank
 		});
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.InfernoCost, cost);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.InfernoCost, realCost);
 
 		return msg.channel.send({
 			content: `
@@ -520,7 +533,7 @@ export default class extends BotCommand {
 					: `*(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*`
 			}
 
-**Removed from your bank:** ${cost}`,
+**Item's To Be Used:** ${realCost}`,
 			files: [
 				await chatHeadImage({
 					content: "You're on your own now JalYt, you face certain death... prepare to fight for your life.",
@@ -530,18 +543,3 @@ export default class extends BotCommand {
 		});
 	}
 }
-
-// if (isOnTask && msg.author.hasItemEquippedOrInBank('Black mask (i)')) {
-// 		duration *= 0.85;
-// 		debugStr += ', 15% on Task with Black mask (i)';
-// 	}
-
-// const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
-// const isOnTask =
-// 	usersTask.currentTask !== null &&
-// 	usersTask.currentTask!.monsterID === Monsters.TzKalZuk.id &&
-// 	usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
-// determineDuration(user: KlasaUser): [number, string] {
-// 	let baseTime = Time.Hour * 2;
-// 	const gear = user.getGear('range');
-// 	let debugStr = '';
