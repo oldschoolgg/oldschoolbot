@@ -260,7 +260,9 @@ const killableBosses: KillableMonster[] = [
 		slayerOnly: true,
 		defaultAttackStyles: [SkillsEnum.Strength],
 		combatXpMultiplier: 1.15,
-		healAmountNeeded: 20 * 7
+		healAmountNeeded: 20 * 15,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.KingBlackDragon.id,
