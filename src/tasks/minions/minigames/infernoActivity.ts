@@ -26,14 +26,31 @@ export default class extends Task {
 		const attempts = oldAttempts + 1;
 		await user.settings.update(UserSettings.InfernoAttempts, attempts);
 
+		const percentMadeItThrough = deathTime === null ? 100 : 100 - calcWhatPercent(deathTime, fakeDuration);
+
 		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
 		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
 		if (hasDiary) tokkul *= 2;
 		const baseBank = new Bank().add('Tokkul', tokkul);
 
-		let xpStr = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration, minimal: true });
-		xpStr += await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration, minimal: true });
-		xpStr += await user.addXP({ skillName: SkillsEnum.Magic, amount: 65_322, duration, minimal: true });
+		let xpStr = await user.addXP({
+			skillName: SkillsEnum.Ranged,
+			amount: calcPercentOfNum(percentMadeItThrough, 80_000),
+			duration,
+			minimal: true
+		});
+		xpStr += await user.addXP({
+			skillName: SkillsEnum.Hitpoints,
+			amount: calcPercentOfNum(percentMadeItThrough, 35_000),
+			duration,
+			minimal: true
+		});
+		xpStr += await user.addXP({
+			skillName: SkillsEnum.Magic,
+			amount: calcPercentOfNum(percentMadeItThrough, 25_000),
+			duration,
+			minimal: true
+		});
 
 		let text = '';
 		let chatText = `You are very impressive for a JalYt. You managed to defeat TzKal-Zul for the ${formatOrdinal(
@@ -41,9 +58,8 @@ export default class extends Task {
 		)} time! Please accept this cape as a token of appreciation.`;
 
 		if (deathTime) {
-			const percSuppliesToRefund = 100 - calcWhatPercent(deathTime, fakeDuration);
 			for (const [item, qty] of cost.items()) {
-				const amount = Math.floor(calcPercentOfNum(percSuppliesToRefund, qty));
+				const amount = Math.floor(calcPercentOfNum(percentMadeItThrough, qty));
 				if (amount > 0) {
 					unusedItems.add(item.id, amount);
 				}
