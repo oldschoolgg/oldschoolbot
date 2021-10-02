@@ -50,12 +50,12 @@ export default class extends Task {
 		}
 
 		if (diedPreZuk) {
-			text = `${user} You died ${formatDuration(deathTime!)} into your attempt, before you reached Zuk.`;
+			text = `You died ${formatDuration(deathTime!)} into your attempt, before you reached Zuk.`;
 			chatText = `You die before you even reach TzKal-Zuk...atleast you tried, I give you ${baseBank.amount(
 				'Tokkul'
 			)}x Tokkul.`;
 		} else if (diedZuk) {
-			text = `${user} You died ${formatDuration(deathTime!)} into your attempt, during the Zuk fight.`;
+			text = `You died ${formatDuration(deathTime!)} into your attempt, during the Zuk fight.`;
 			chatText = `You died to Zuk. Nice try JalYt, for your effort I give you ${baseBank.amount(
 				'Tokkul'
 			)}x Tokkul.`;

@@ -124,9 +124,11 @@ export default class extends BotCommand {
 	}
 
 	baseDuration(_attempts: number) {
-		const attempts = Math.max(1, _attempts);
-		const chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(25))) * 39);
-		return Math.max(Time.Minute * 40, Math.max(Math.min(chance, 99), 15) * Time.Minute);
+		const attempts = Math.max(1, Math.min(500, _attempts));
+		let chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(65))) * 45);
+		if (attempts < 30) chance += 30;
+		console.log(attempts, chance, formatDuration(chance * (Time.Minute * 1.5)));
+		return Math.min(Time.Hour * 2.5, Math.max(Time.Minute * 40, chance * (Time.Minute * 1.5)));
 	}
 
 	async baseDeathChances(user: KlasaUser) {
@@ -500,7 +502,7 @@ export default class extends BotCommand {
 **KC:** ${zukKC}
 **Attempts:** ${attempts}
 
-**Duration:** ${formatDuration(duration.value)} (${(duration.value / 1000 / 60).toFixed(2)} minutes)
+**Duration:** ${formatDuration(duration.value)}
 **Boosts:** ${duration.messages.join(', ')} ${
 				duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
 			}
