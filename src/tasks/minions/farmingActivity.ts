@@ -1,4 +1,4 @@
-import { randArrItem, randInt, Time } from 'e';
+import { randArrItem, randInt, sleep, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -18,6 +18,7 @@ import { addBanks, addItemToBank, bankHasItem, multiplyBank, rand, roll } from '
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
+import { sendToChannelID } from '../../lib/util/webhook';
 
 export default class extends Task {
 	async run(data: FarmingActivityTaskOptions) {
@@ -422,7 +423,7 @@ export default class extends Task {
 				if (hesporiSeeds > 0) loot[itemID('Hespori seed')] = hesporiSeeds;
 			}
 
-			const gotHweenThing = roll(100);
+			const gotHweenThing = roll(1);
 			if (gotHweenThing) {
 				const name = user.minionName;
 				const items = [
@@ -459,7 +460,8 @@ export default class extends Task {
 				if (item[1]) {
 					loot = addBanks([item[1].bank, loot]);
 				}
-				infoStr.push(`**${item[0]}**`);
+				await sendToChannelID(this.client, channelID, { content: `${user}, **${item[0]}**` });
+				await sleep(3000);
 			}
 
 			if (tangleroot) {
