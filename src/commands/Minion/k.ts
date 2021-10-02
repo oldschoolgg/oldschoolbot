@@ -1,12 +1,23 @@
 import { MessageAttachment } from 'discord.js';
-import { calcWhatPercent, increaseNumByPercent, objectKeys, reduceNumByPercent, round, Time } from 'e';
+import {
+	calcPercentOfNum,
+	calcWhatPercent,
+	increaseNumByPercent,
+	objectEntries,
+	objectKeys,
+	reduceNumByPercent,
+	round,
+	Time,
+	uniqueArr
+} from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Activity } from '../../lib/constants';
+import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
-import { GearSetupTypes, GearStat } from '../../lib/gear';
+import { GearSetupType, GearStat } from '../../lib/gear';
 import {
 	boostCannon,
 	boostCannonMulti,
@@ -41,7 +52,6 @@ import {
 	isWeekend,
 	itemNameFromID,
 	randomVariation,
-	removeDuplicatesFromArray,
 	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -207,9 +217,6 @@ export default class extends BotCommand {
 		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !monster!.canBarrage) {
 			return msg.channel.send(`${monster!.name} cannot be barraged or burst.`);
 		}
-		if ((msg.flagArgs.burst || msg.flagArgs.barrage) && !attackStyles.includes(SkillsEnum.Magic)) {
-			return msg.channel.send("You can only barrage/burst when you're using magic!");
-		}
 		if (msg.flagArgs.cannon && !hasCannon) {
 			return msg.channel.send("You don't own a Dwarf multicannon, so how could you use one?");
 		}
@@ -290,56 +297,78 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (['hydra', 'alchemical hydra'].includes(monster.name.toLowerCase())) {
-			// Add a cost of 1 antidote++(4) per 15 minutes
-			const hydraCost: Consumable = {
-				itemCost: new Bank().add('Antidote++(4)', 1),
-				qtyPerMinute: 0.067
-			};
-			consumableCosts.push(hydraCost);
-		}
-
-		// Check consumables: (hope this forEach is ok :) )
 		const lootToRemove = new Bank();
 		let pvmCost = false;
-		consumableCosts.forEach(cc => {
-			let itemMultiple = cc!.qtyPerKill ?? cc!.qtyPerMinute ?? null;
 
-			if (itemMultiple && typeof itemMultiple === 'number') {
-				if (cc.isRuneCost) {
-					// Free casts for kodai + sotd
-					if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
-						itemMultiple = Math.ceil(0.85 * itemMultiple);
-					} else if (msg.author.hasItemEquippedAnywhere('Staff of the dead')) {
-						itemMultiple = Math.ceil((6 / 7) * itemMultiple);
+		if (monster.itemCost) {
+			consumableCosts.push({
+				itemCost: monster.itemCost.clone(),
+				qtyPerKill: 1
+			});
+		} else {
+			switch (monster.id) {
+				case Monsters.Hydra.id:
+				case Monsters.AlchemicalHydra.id:
+					consumableCosts.push({
+						itemCost: new Bank().add('Antidote++(4)', 1),
+						qtyPerMinute: 0.067
+					});
+					break;
+			}
+		}
+
+		const infiniteWaterRunes = msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Staff of water')));
+		const perKillCost = new Bank();
+		// Calculate per kill cost:
+		if (consumableCosts.length > 0) {
+			for (const cc of consumableCosts) {
+				let itemMultiple = cc.qtyPerKill ?? cc.qtyPerMinute ?? null;
+				if (itemMultiple) {
+					if (cc.isRuneCost) {
+						// Free casts for kodai + sotd
+						if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
+							itemMultiple = Math.ceil(0.85 * itemMultiple);
+						} else if (msg.author.hasItemEquippedAnywhere('Staff of the dead')) {
+							itemMultiple = Math.ceil((6 / 7) * itemMultiple);
+						}
+					}
+
+					let multiply = itemMultiple;
+					// Calculate the duration for 1 kill and check how much will be used in 1 kill
+
+					if (cc.qtyPerMinute) multiply = (timeToFinish / Time.Minute) * itemMultiple;
+					if (cc.itemCost) {
+						// Calculate supply for 1 kill
+						const oneKcCost = cc.itemCost.clone().multiply(multiply);
+						// Can't use Bank.add() because it discards < 1 qty.
+						for (const [itemID, qty] of objectEntries(oneKcCost.bank)) {
+							if (perKillCost.bank[itemID]) perKillCost.bank[itemID] += qty;
+							else perKillCost.bank[itemID] = qty;
+						}
+						pvmCost = true;
 					}
 				}
-				const itemCost = cc!.qtyPerKill
-					? cc!.itemCost.clone().multiply(itemMultiple)
-					: cc!.qtyPerMinute
-					? cc!.itemCost.clone().multiply(Math.ceil((duration / Time.Minute) * itemMultiple))
-					: null;
-				if (itemCost) {
-					pvmCost = true;
-					lootToRemove.add(itemCost);
-				}
 			}
-		});
-
-		if (msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Staff of water')))) {
-			lootToRemove.remove('Water rune', lootToRemove.amount('Water rune'));
-		}
-
-		const itemCost = monster.itemCost ? monster.itemCost.clone().multiply(quantity) : null;
-		if (itemCost) {
+			// This will be replaced with a generic function in another PR
+			if (infiniteWaterRunes) perKillCost.remove('Water rune', perKillCost.amount('Water rune'));
+			// Calculate how many monsters can be killed with that cost:
+			const fits = msg.author.bank({ withGP: true }).fits(perKillCost);
+			if (fits < Number(quantity)) {
+				duration = Math.floor(duration * (fits / Number(quantity)));
+				quantity = fits;
+			}
+			const { bank } = perKillCost.clone().multiply(Number(quantity));
+			// Ceil cost QTY to avoid fractions
+			for (const [item, qty] of objectEntries(bank)) {
+				bank[item] = Math.ceil(qty);
+			}
 			pvmCost = true;
-			lootToRemove.add(itemCost);
+			lootToRemove.add(bank);
 		}
-
 		if (pvmCost) {
-			if (!msg.author.owns(lootToRemove)) {
+			if (quantity === 0 || !msg.author.owns(lootToRemove)) {
 				return msg.channel.send(
-					`You don't have the items needed to kill ${quantity}x ${monster.name}, you need: ${lootToRemove}.`
+					`You don't have the items needed to kill any amount of ${monster.name}, you need: ${perKillCost} per kill.`
 				);
 			}
 		}
@@ -349,32 +378,53 @@ export default class extends BotCommand {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			messages = messages.concat(foodMessages);
 
-			let gearToCheck = GearSetupTypes.Melee;
+			let gearToCheck: GearSetupType = 'melee';
 
 			switch (monster.attackStyleToUse) {
 				case GearStat.AttackMagic:
-					gearToCheck = GearSetupTypes.Mage;
+					gearToCheck = 'mage';
 					break;
 				case GearStat.AttackRanged:
-					gearToCheck = GearSetupTypes.Range;
+					gearToCheck = 'range';
 					break;
 				default:
 					break;
 			}
 
-			if (monster.wildy) gearToCheck = GearSetupTypes.Wildy;
+			if (monster.wildy) gearToCheck = 'wildy';
 
-			const [result] = await removeFoodFromUser({
+			const [result, foodRemoved] = await removeFoodFromUser({
 				client: this.client,
 				user: msg.author,
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
 				attackStylesUsed: monster.wildy
-					? [GearSetupTypes.Wildy]
-					: removeDuplicatesFromArray([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
+					? ['wildy']
+					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced
 			});
+
+			for (const [item, qty] of foodRemoved.items()) {
+				const eatable = Eatables.find(e => e.id === item.id);
+				if (!eatable) continue;
+
+				const healAmount =
+					typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(msg.author);
+				const amountHealed = qty * healAmount;
+				if (amountHealed < calcPercentOfNum(75, healAmountNeeded * quantity)) continue;
+				const boost = eatable.pvmBoost;
+				if (boost) {
+					if (boost < 0) {
+						boosts.push(`${boost}% for ${eatable.name}`);
+						duration = increaseNumByPercent(duration, Math.abs(boost));
+					} else {
+						boosts.push(`${boost}% for ${eatable.name}`);
+						duration = reduceNumByPercent(duration, boost);
+					}
+				}
+				break;
+			}
 
 			foodStr = result;
 		}
@@ -387,8 +437,10 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
-		await msg.author.removeItemsFromBank(lootToRemove);
+		if (lootToRemove.length > 0) {
+			updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
+			await msg.author.removeItemsFromBank(lootToRemove);
+		}
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
 			monsterID: monster.id,

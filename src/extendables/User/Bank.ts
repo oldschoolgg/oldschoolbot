@@ -3,13 +3,11 @@ import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { O } from 'ts-toolbelt';
 
-import { Events } from '../../lib/constants';
-import { similarItems } from '../../lib/data/similarItems';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
-import { bankHasAllItemsFromBank, removeBankFromBank, removeItemFromBank } from '../../lib/util';
+import { bankHasAllItemsFromBank, removeBankFromBank } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
 
 export interface GetUserBankOptions {
@@ -42,17 +40,6 @@ export default class extends Extendable {
 		}
 
 		return numOwned;
-	}
-
-	public numItemsInBankSync(this: User, itemID: number, similar = false) {
-		const bank = this.settings.get(UserSettings.Bank);
-		const itemQty = typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
-		if (similar && itemQty === 0 && similarItems.get(itemID)) {
-			for (const i of similarItems.get(itemID)!) {
-				if (bank[i] && bank[i] > 0) return bank[i];
-			}
-		}
-		return itemQty;
 	}
 
 	public allItemsOwned(this: User): Bank {
@@ -92,7 +79,8 @@ export default class extends Extendable {
 	public async addItemsToBank(
 		this: User,
 		inputItems: ItemBank | Bank,
-		collectionLog = false
+		collectionLog: boolean = false,
+		filterLoot: boolean = true
 	): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }> {
 		return this.queueFn(async user => {
 			const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
@@ -116,40 +104,45 @@ export default class extends Extendable {
 			let items = new Bank({
 				..._items
 			});
-			const { bankLoot, clLoot } = filterLootReplace(user.allItemsOwned(), items);
+			const { bankLoot, clLoot } = filterLoot
+				? filterLootReplace(user.allItemsOwned(), items)
+				: { bankLoot: items, clLoot: items };
 			items = bankLoot;
 			if (collectionLog) {
 				await user.addItemsToCollectionLog(clLoot.bank);
 			}
 
-			if (items.has(995)) {
+			// Get the amount of coins in the loot and remove the coins from the items to be added to the user bank
+			const coinsInLoot = items.amount(995);
+			if (coinsInLoot > 0) {
 				await user.addGP(items.amount(995));
 				items.remove(995, items.amount(995));
 			}
 
 			this.log(`Had items added to bank - ${JSON.stringify(items)}`);
-			await this.settings.update(UserSettings.Bank, user.bank().add(items).bank);
+			const newBank = user.bank().add(items).bank;
+
+			let deleted = [];
+			for (const [key, value] of Object.entries(newBank)) {
+				if (value === 0 || value < 1) {
+					delete newBank[key];
+					deleted.push([key, value]);
+				}
+			}
+			if (deleted.length > 0) {
+				console.error(`Deleted ${JSON.stringify(deleted)} from ${this.username}`);
+			}
+
+			await this.settings.update(UserSettings.Bank, newBank);
+
+			// Re-add the coins to the loot
+			if (coinsInLoot > 0) items.add(995, coinsInLoot);
 
 			return {
 				previousCL,
 				itemsAdded: items.bank
 			};
 		});
-	}
-
-	public async removeItemFromBank(this: User, itemID: number, amountToRemove = 1) {
-		await this.settings.sync(true);
-		const bank = { ...this.settings.get(UserSettings.Bank) };
-		if (typeof bank[itemID] === 'undefined' || bank[itemID] < amountToRemove) {
-			this.client.emit(Events.Wtf, `${this.username}[${this.id}] [NEI] ${itemID} ${amountToRemove}`);
-
-			throw `${this.username}[${this.id}] doesn't have enough of item[${itemID}] to remove ${amountToRemove}.`;
-		}
-
-		this.log(`had Quantity[${amountToRemove}] of ItemID[${itemID}] removed from bank.`);
-		return this.queueFn(() =>
-			this.settings.update(UserSettings.Bank, removeItemFromBank(bank, itemID, amountToRemove))
-		);
 	}
 
 	public async removeItemsFromBank(this: User, _itemBank: O.Readonly<ItemBank>) {

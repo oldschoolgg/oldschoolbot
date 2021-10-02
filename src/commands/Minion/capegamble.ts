@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -31,7 +32,7 @@ export default class extends BotCommand {
 		await msg.confirm(str);
 
 		const newSacrificedCount = msg.author.settings.get(UserSettings.Stats.FireCapesSacrificed) + 1;
-		await msg.author.removeItemFromBank(itemID('Fire cape'));
+		await msg.author.removeItemsFromBank(new Bank().add('Fire cape'));
 		await msg.author.settings.update(UserSettings.Stats.FireCapesSacrificed, newSacrificedCount);
 
 		if (roll(200)) {
@@ -39,7 +40,7 @@ export default class extends BotCommand {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${msg.author.username}'s** just received their ${formatOrdinal(
-					msg.author.getCL(itemID('Tzrek-Jad')) + 1
+					msg.author.cl().amount('Tzrek-Jad')
 				)} ${Emoji.TzRekJad} TzRek-jad pet by sacrificing a Fire cape for the ${formatOrdinal(
 					newSacrificedCount
 				)} time!`

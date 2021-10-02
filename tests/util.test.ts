@@ -1,7 +1,9 @@
+import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
+
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
 import { stripEmojis } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
-import itemID from '../src/lib/util/itemID';
 
 describe('util', () => {
 	test('stripEmojis', () => {
@@ -14,32 +16,28 @@ describe('util', () => {
 		expect(getOSItem('20997').id).toEqual(20_997);
 		expect(getOSItem('3rd age platebody').id).toEqual(10_348);
 
-		expect(() => getOSItem('Non-existant item')).toThrowError("That item doesn't exist.");
+		expect(() => getOSItem('Non-existant item')).toThrowError("Non-existant item doesn't exist.");
 	});
 
 	test('getUserFoodFromBank', () => {
-		expect(getUserFoodFromBank({ [itemID('Shark')]: 1 }, 500)).toStrictEqual(false);
-		expect(getUserFoodFromBank({ [itemID('Shark')]: 100 }, 500)).toStrictEqual({
-			[itemID('Shark')]: 25
-		});
-		expect(getUserFoodFromBank({ [itemID('Shark')]: 30, [itemID('Tuna')]: 20 }, 750)).toStrictEqual({
-			[itemID('Tuna')]: 20,
-			[itemID('Shark')]: 28
-		});
+		const fakeUser = (b: Bank) =>
+			({
+				bank: () => b,
+				skillLevel: () => 99
+			} as any as KlasaUser);
+		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark')), 500, [])).toStrictEqual(false);
+		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark', 100)), 500, [])).toStrictEqual(
+			new Bank().add('Shark', 25)
+		);
+		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark', 30).add('Tuna', 20)), 750, [])).toStrictEqual(
+			new Bank().add('Shark', 28).add('Tuna', 20)
+		);
 		expect(
 			getUserFoodFromBank(
-				{
-					[itemID('Shark')]: 100,
-					[itemID('Lobster')]: 20,
-					[itemID('Shrimps')]: 50,
-					[itemID('Coal')]: 1
-				},
-				1600
+				fakeUser(new Bank().add('Shark', 100).add('Lobster', 20).add('Shrimps', 50).add('Coal')),
+				1600,
+				[]
 			)
-		).toStrictEqual({
-			[itemID('Lobster')]: 20,
-			[itemID('Shark')]: 66,
-			[itemID('Shrimps')]: 50
-		});
+		).toStrictEqual(new Bank().add('Lobster', 20).add('Shark', 66).add('Shrimps', 50));
 	});
 });

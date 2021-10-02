@@ -56,7 +56,10 @@ export default class extends BotCommand {
 		}
 
 		const enchantable = Enchantables.find(
-			item => stringMatches(item.name, name) || stringMatches(itemNameFromID(item.id)!, name)
+			item =>
+				stringMatches(item.name, name) ||
+				stringMatches(itemNameFromID(item.id)!, name) ||
+				item.alias?.some(a => stringMatches(a, name))
 		);
 
 		if (!enchantable) {

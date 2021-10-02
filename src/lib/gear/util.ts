@@ -30,6 +30,10 @@ export function resolveGearTypeSetting(type: GearSetupType) {
 			return UserSettings.Gear.Misc;
 		case 'wildy':
 			return UserSettings.Gear.Wildy;
+		case 'fashion':
+			return UserSettings.Gear.Fashion;
+		case 'other':
+			return UserSettings.Gear.Other;
 	}
 }
 
@@ -57,7 +61,7 @@ export function constructGearSetup(setup: PartialGearSetup): Gear {
 
 export function hasGracefulEquipped(setup: Gear) {
 	return setup.hasEquipped(
-		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful boots', 'Graceful cape'],
+		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful gloves', 'Graceful cape'],
 		true
 	);
 }

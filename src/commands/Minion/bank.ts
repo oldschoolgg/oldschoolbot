@@ -1,3 +1,4 @@
+import { codeBlock } from '@sapphire/utilities';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
@@ -8,28 +9,59 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { makePaginatedMessage } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
+import BankImageTask from '../../tasks/bankImage';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows your bank, with all your items and GP.',
 			cooldown: 3,
-			usage: '[page:int|name:string]',
+			oneAtTime: true,
+			usage: '[page:int{1}] [name:...string]',
+			usageDelim: ' ',
 			requiredPermissions: ['ATTACH_FILES'],
-			aliases: ['b'],
+			aliases: ['b', 'bs'],
 			examples: ['+b'],
 			categoryFlags: ['minion']
 		});
 	}
 
-	async run(msg: KlasaMessage, [pageNumberOrItemName]: [number | string | undefined]) {
+	async run(msg: KlasaMessage, [page = undefined, itemNameOrID = '']: [number | undefined, string | undefined]) {
 		await msg.author.settings.sync(true);
 		const baseBank = msg.author.bank({ withGP: true });
 
+		if (msg.flagArgs.json) {
+			const json = JSON.stringify(baseBank.bank);
+			if (json.length > 1900) {
+				return msg.channel.send({ files: [new MessageAttachment(Buffer.from(json), 'bank.json')] });
+			}
+			return msg.channel.send(`${codeBlock('json', json)}`);
+		}
+
+		if (msg.commandText === 'bs') {
+			if (page && !itemNameOrID) {
+				itemNameOrID = String(page);
+				page = undefined;
+			}
+			msg.flagArgs.search = String(itemNameOrID).trim().replace(/"/g, '');
+			// Clear item string
+			itemNameOrID = '';
+		} else if (page && itemNameOrID) {
+			itemNameOrID = `${page} ${itemNameOrID}`.trim();
+			page = undefined;
+		}
+		if (!page) page = 1;
+
 		if (msg.flagArgs.smallbank) {
+			const userBg = msg.author.settings.get(UserSettings.BankBackground);
+			const { uniqueSprite } = (this.client.tasks.get('bankImage') as BankImageTask).getBgAndSprite(userBg);
 			const currentStatus = msg.author.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank);
 			await msg.author.settings.update(UserSettings.BitField, BitField.AlwaysSmallBank);
-			return msg.channel.send(`Small Banks are now ${currentStatus ? 'disabled' : 'enabled'} for you.`);
+			return msg.channel.send(
+				`Small Banks are now ${currentStatus ? 'disabled' : 'enabled'} for you.${
+					uniqueSprite ? ' You current BG will always draw the bank as small.' : ''
+				}`
+			);
 		}
 
 		if (baseBank.length === 0) {
@@ -41,7 +73,7 @@ export default class extends BotCommand {
 		const bank = parseBank({
 			inputBank: baseBank,
 			flags: msg.flagArgs,
-			inputStr: typeof pageNumberOrItemName === 'string' ? pageNumberOrItemName : undefined
+			inputStr: itemNameOrID
 		});
 
 		if (bank.length === 0) {
@@ -102,9 +134,8 @@ export default class extends BotCommand {
 			title: `${msg.author.username}'s Bank`,
 			flags: {
 				...msg.flagArgs,
-				page: typeof pageNumberOrItemName === 'number' ? pageNumberOrItemName - 1 : 0
+				page: page - 1
 			},
-			background: msg.author.settings.get(UserSettings.BankBackground),
 			user: msg.author,
 			gearPlaceholder: msg.author.rawGear()
 		});

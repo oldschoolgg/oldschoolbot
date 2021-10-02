@@ -8,7 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { AgilityArenaActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, resolveNameBank, stringMatches } from '../../lib/util';
+import { formatDuration, resolveNameBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
@@ -160,7 +160,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			if (amountTicketsHas < cost) {
 				return msg.channel.send("You don't have enough Agility arena tickets.");
 			}
-			await msg.author.removeItemFromBank(itemID('Agility arena ticket'), cost);
+			await msg.author.removeItemsFromBank(new Bank().add('Agility arena ticket', cost));
 			await msg.author.addItemsToBank({ [buyable.item.id]: qty }, true);
 			return msg.channel.send(
 				`Successfully purchased ${qty}x ${buyable.item.name} for ${cost}x Agility arena tickets.`
@@ -169,7 +169,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 		if (input === 'xp') {
 			if (!(qty in ticketQuantities)) {
 				return msg.channel.send(
-					`You can only redeem tickets for XP at the following quantities: ${Object.values(
+					`You can only redeem tickets for XP at the following quantities: ${Object.keys(
 						ticketQuantities
 					).join(', ')}.`
 				);
@@ -182,10 +182,11 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			let str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(
 				xpToGive / qty
 			).toFixed(2)} ea)`;
-			await msg.author.removeItemFromBank(itemID('Agility arena ticket'), qty);
+			await msg.author.removeItemsFromBank(new Bank().add('Agility arena ticket', qty));
 			await msg.author.addXP({
 				skillName: SkillsEnum.Agility,
-				amount: xpToGive
+				amount: xpToGive,
+				artificial: true
 			});
 			if (hasKaramjaMed) {
 				str += '\n\nYou received 10% extra XP for the Karamja Medium Diary.';

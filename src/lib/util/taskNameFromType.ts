@@ -80,6 +80,8 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.BirdhouseActivity;
 		case Activity.AerialFishing:
 			return Tasks.AerialFishingActivity;
+		case Activity.DriftNet:
+			return Tasks.DriftNetActivity;
 		case Activity.Construction:
 			return Tasks.ConstructionActivity;
 		case Activity.MahoganyHomes:
@@ -122,5 +124,9 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.TrekkingActivity;
 		case Activity.Revenants:
 			return Tasks.RevenantsActivity;
+		case Activity.PestControl:
+			return Tasks.PestControl;
+		case Activity.VolcanicMine:
+			return Tasks.VolcanicMine;
 	}
 }

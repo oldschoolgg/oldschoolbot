@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { corporealBeastCL } from '../../../../data/CollectionsExport';
-import { GearSetupTypes, GearStat } from '../../../../gear';
+import { GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
@@ -42,7 +42,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.Vorkath.id,
 		name: Monsters.Vorkath.name,
 		aliases: Monsters.Vorkath.aliases,
-		timeToFinish: Time.Minute * 3.2,
+		timeToFinish: Time.Minute * 3.5,
 		table: Monsters.Vorkath,
 		emoji: '<:Vorki:400713309252222977>',
 		wildy: false,
@@ -53,23 +53,23 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 205,
 		itemInBankBoosts: [
 			{
-				[itemID('Bandos godsword')]: 15,
-				[itemID('Dragon warhammer')]: 15,
-				[itemID('Dragon claws')]: 10
+				[itemID('Bandos godsword')]: 13,
+				[itemID('Dragon warhammer')]: 13,
+				[itemID('Dragon claws')]: 8
 			},
 			{
-				[itemID('Dragon hunter lance')]: 20,
-				[itemID('Dragon hunter crossbow')]: 30
+				[itemID('Dragon hunter lance')]: 15,
+				[itemID('Dragon hunter crossbow')]: 25
 			},
 			{
-				[itemID('Salve amulet (ei)')]: 15,
-				[itemID('Salve amulet (i)')]: 10
+				[itemID('Salve amulet(ei)')]: 11,
+				[itemID('Salve amulet(i)')]: 8
 			}
 		],
 		levelRequirements: {
 			prayer: 43
 		},
-		healAmountNeeded: 20 * 10,
+		healAmountNeeded: 20 * 15,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
 		defaultAttackStyles: [SkillsEnum.Ranged]
@@ -99,7 +99,8 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Barrows gloves')]: 3
 			},
 			{
-				[itemID('Twisted bow')]: 5
+				[itemID('Twisted bow')]: 5,
+				[itemID('Bow of faerdhinen (c)')]: 3
 			},
 			{
 				[itemID('Ancestral hat')]: 2
@@ -109,6 +110,9 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				[itemID('Ancestral robe bottom')]: 2
+			},
+			{
+				[itemID('Imbued heart')]: 3
 			}
 		],
 		levelRequirements: {
@@ -118,10 +122,10 @@ const killableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic],
 		minimumGearRequirements: {
-			[GearSetupTypes.Mage]: {
+			mage: {
 				[GearStat.AttackMagic]: 50
 			},
-			[GearSetupTypes.Range]: {
+			range: {
 				[GearStat.AttackRanged]: 47
 			}
 		},
@@ -169,7 +173,7 @@ const killableBosses: KillableMonster[] = [
 		combatXpMultiplier: 1.05,
 		healAmountNeeded: 20 * 3,
 		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
+			melee: {
 				[GearStat.MeleeStrength]: 10
 			}
 		},

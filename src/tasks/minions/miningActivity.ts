@@ -13,7 +13,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
 		const { oreID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
@@ -86,6 +86,23 @@ export default class extends Task {
 		if (ore.id === 1625) {
 			for (let i = 0; i < quantity; i++) {
 				loot.add(Mining.GemRockTable.roll());
+			}
+		} else if (ore.id === 21_622) {
+			// Volcanic ash
+			const userLevel = user.skillLevel(SkillsEnum.Mining);
+			const tiers = [
+				[22, 1],
+				[37, 2],
+				[52, 3],
+				[67, 4],
+				[82, 5],
+				[97, 6]
+			];
+			for (const [lvl, multiplier] of tiers.reverse()) {
+				if (userLevel >= lvl) {
+					loot.add(ore.id, quantity * multiplier);
+					break;
+				}
 			}
 		} else {
 			loot.add(ore.id, quantity);

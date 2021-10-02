@@ -2,7 +2,7 @@ import { MessageEmbed, TextChannel } from 'discord.js';
 import { noOp, Time } from 'e';
 import { Event, EventStore } from 'klasa';
 
-import { informationalButtons } from '../lib/constants';
+import { Channel, informationalButtons } from '../lib/constants';
 import { getSupportGuild } from '../lib/util';
 
 declare module 'klasa' {
@@ -46,7 +46,7 @@ export default class extends Event {
 		this.client.__supportInterval = setInterval(async () => {
 			try {
 				const guild = getSupportGuild(this.client);
-				const channel = guild.channels.cache.get('668073484731154462') as TextChannel;
+				const channel = guild.channels.cache.get(Channel.HelpAndSupport) as TextChannel;
 				const messages = await channel.messages.fetch({ limit: 5 });
 				if (messages.some(m => m.author.id === this.client.user!.id)) return;
 				if (lastMessageID) {

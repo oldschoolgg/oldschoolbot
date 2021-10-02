@@ -1,6 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -10,15 +11,7 @@ import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import {
-	addBanks,
-	bankHasItem,
-	formatDuration,
-	itemNameFromID,
-	multiplyBank,
-	removeItemFromBank,
-	stringMatches
-} from '../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -83,8 +76,7 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
-		let requiredItems: [string, number][] = Object.entries(mixableItem.inputItems);
+		let requiredItems = new Bank(mixableItem.inputItems);
 
 		// Get the base time to mix the item then add on quarter of a second per item to account for banking/etc.
 		let timeToMixSingleItem =
@@ -93,12 +85,12 @@ export default class extends BotCommand {
 		const zahur = Boolean(msg.flagArgs.zahur);
 		if (zahur && mixableItem.zahur === true) {
 			timeToMixSingleItem = 0.000_001;
-			requiredItems = requiredItems.concat([['995', 200]]);
+			requiredItems.add('Coins', 200);
 			cost = "decided to pay Zahur 200 gp for each potion so they don't have to go";
 		}
 		if (msg.flagArgs.wesley && mixableItem.wesley === true) {
 			timeToMixSingleItem = 0.000_001;
-			requiredItems = requiredItems.concat([['995', 50]]);
+			requiredItems.add('Coins', 50);
 			cost = "decided to pay Wesley 50 gp for each item so they don't have to go";
 		}
 
@@ -107,22 +99,16 @@ export default class extends BotCommand {
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToMixSingleItem);
-			for (const [itemID, qty] of requiredItems) {
-				const id = parseInt(itemID);
-				if (id === 995) {
-					const userGP = msg.author.settings.get(UserSettings.GP);
-					if (userGP < qty) {
-						return msg.channel.send('You do not have enough GP.');
-					}
-					quantity = Math.min(quantity, Math.floor(userGP / qty));
-					continue;
-				}
-				const itemsOwned = userBank[parseInt(itemID)];
-				if (itemsOwned < qty) {
-					return msg.channel.send(`You dont have enough ${itemNameFromID(parseInt(itemID))}.`);
-				}
-				quantity = Math.min(quantity, Math.floor(itemsOwned / qty));
-			}
+		}
+
+		const baseCost = new Bank(mixableItem.inputItems);
+
+		const maxCanDo = msg.author.bank({ withGP: true }).fits(baseCost);
+		if (maxCanDo === 0) {
+			return msg.channel.send("You don't have enough supplies to mix even one of this item!");
+		}
+		if (maxCanDo < quantity) {
+			quantity = maxCanDo;
 		}
 
 		const duration = quantity * timeToMixSingleItem;
@@ -137,37 +123,10 @@ export default class extends BotCommand {
 			);
 		}
 
-		for (const [itemID, qty] of requiredItems) {
-			const id = parseInt(itemID);
-			if (id === 995) {
-				const userGP = msg.author.settings.get(UserSettings.GP);
-				if (userGP < qty * quantity) {
-					return msg.channel.send(`You don't have enough ${itemNameFromID(id)}.`);
-				}
-				continue;
-			}
-			if (!bankHasItem(userBank, id, qty * quantity)) {
-				return msg.channel.send(`You don't have enough ${itemNameFromID(id)}.`);
-			}
-		}
-		// Remove the required items from their bank.
-		let newBank = { ...userBank };
-		for (const [itemID, qty] of requiredItems) {
-			if (parseInt(itemID) === 995) {
-				await msg.author.removeGP(qty * quantity);
-				continue;
-			}
-			newBank = removeItemFromBank(newBank, parseInt(itemID), qty * quantity);
-		}
-		await msg.author.settings.update(UserSettings.Bank, newBank);
+		const finalCost = requiredItems.multiply(quantity);
+		await msg.author.removeItemsFromBank(finalCost);
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.HerbloreCostBank,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.HerbloreCostBank),
-				multiplyBank(mixableItem.inputItems, quantity)
-			])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.HerbloreCostBank, finalCost);
 
 		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>({
 			mixableID: mixableItem.id,
@@ -180,7 +139,7 @@ export default class extends BotCommand {
 		});
 
 		return msg.channel.send(
-			`${msg.author.minionName} ${cost} Making ${quantity} ${sets} ${
+			`${msg.author.minionName} ${cost} making ${quantity} ${sets} ${
 				mixableItem.name
 			}, it'll take around ${formatDuration(duration)} to finish.`
 		);

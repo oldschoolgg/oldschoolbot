@@ -2,7 +2,6 @@ import { deepClone, roll } from 'e';
 import { Task } from 'klasa';
 
 import { revenantMonsters } from '../../commands/Minion/revs';
-import { GearSetupTypes } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -19,11 +18,11 @@ export default class extends Task {
 	async run(data: RevenantOptions) {
 		const { monsterID, userID, channelID, quantity, died, skulled, style } = data;
 		const monster = revenantMonsters.find(mon => mon.id === monsterID)!;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		if (died) {
-			// 1 in 50 to get smited
+			// 1 in 20 to get smited without prayer potions and 1 in 300 if the user has prayer potions
 			const hasPrayerLevel = user.hasSkillReqs({ [SkillsEnum.Prayer]: 25 })[0];
-			const protectItem = roll(50) ? false : hasPrayerLevel;
+			const protectItem = roll(data.usingPrayerPots ? 300 : 20) ? false : hasPrayerLevel;
 			const userGear = { ...deepClone(user.settings.get(UserSettings.Gear.Wildy)!) };
 
 			const calc = calculateGearLostOnDeathWilderness({
@@ -34,16 +33,12 @@ export default class extends Task {
 				skulled
 			});
 
-			const image = await generateGearImage(
-				this.client,
-				user,
-				new Gear(calc.newGear),
-				GearSetupTypes.Wildy,
-				null
-			);
+			const image = await generateGearImage(this.client, user, new Gear(calc.newGear), 'wildy', null);
 			await user.settings.update(UserSettings.Gear.Wildy, calc.newGear);
 
 			updateBankSetting(this.client, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
+
+			const flags: Record<string, string> = !skulled ? {} : { skull: 'skull' };
 
 			handleTripFinish(
 				this.client,
@@ -59,6 +54,12 @@ export default class extends Task {
 					calc.lostItems
 				}.\nHere is what you saved:`,
 				res => {
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					if (!res.prompter) res.prompter = {};
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					res.prompter.flags = flags;
 					user.log(`continued trip of killing ${monster.name}`);
 					return this.client.commands.get('revs')!.run(res, [style, monster.name]);
 				},
@@ -76,7 +77,7 @@ export default class extends Task {
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}.` +
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n`;
 
-		announceLoot(this.client, user, monster, loot.bank);
+		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
 
 		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
 
@@ -100,14 +101,12 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				const flags: Record<string, string> = !skulled ? {} : { skull: 'skull' };
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				if (!res.prompter) res.prompter = {};
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				res.prompter.flags = flags;
-
 				user.log(`continued trip of killing ${monster.name}`);
 				return this.client.commands.get('revs')!.run(res, [style, monster.name]);
 			},

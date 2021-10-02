@@ -17,7 +17,7 @@ export default class extends Event {
 		buffer.push(message);
 		if (buffer.length === 10) {
 			await sendToChannelID(this.client, Channel.EconomyLogs, {
-				content: buffer.join('\n')
+				content: buffer.join('\n---------------------------------\n')
 			});
 			buffer = [];
 		}

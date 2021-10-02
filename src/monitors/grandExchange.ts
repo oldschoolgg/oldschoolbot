@@ -12,15 +12,26 @@ export default class extends Monitor {
 		if (
 			!msg.guild ||
 			msg.guild.id !== SupportServer ||
-			(msg.channel.id !== Channel.GrandExchange && msg.channel.id !== '738780181946171493')
+			(msg.channel.id !== Channel.GrandExchange && msg.channel.id !== Channel.GrandExchange)
 		) {
 			return;
 		}
 
 		if (
-			['buying', 'selling', 'trading', 'trade', 'swap', 'swapping'].every(
-				str => !msg.content.toLowerCase().includes(str)
-			) ||
+			[
+				'seling',
+				'sale',
+				'sell',
+				'buy',
+				'wts',
+				'wtb',
+				'buying',
+				'selling',
+				'trading',
+				'trade',
+				'swap',
+				'swapping'
+			].every(str => !msg.content.toLowerCase().includes(str)) ||
 			msg.content.split(/\r\n|\r|\n/).length > 10 ||
 			msg.cleanContent.length > 450
 		) {

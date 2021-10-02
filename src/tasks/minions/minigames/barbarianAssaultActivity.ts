@@ -1,10 +1,9 @@
-import { randInt } from 'e';
+import { calcPercentOfNum, calcWhatPercent, noOp, randInt } from 'e';
 import { Task } from 'klasa';
 
 import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { BarbarianAssaultActivityTaskOptions } from '../../../lib/types/minions';
-import { calcPercentOfNum, calcWhatPercent, noOp } from '../../../lib/util';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 function generateExpertiseString(totalLevel: number) {
@@ -35,7 +34,7 @@ export default class extends Task {
 		)} extra points for your honour levels. \n`;
 
 		for (const id of users) {
-			const user = await this.client.users.fetch(id).catch(noOp);
+			const user = await this.client.fetchUser(id).catch(noOp);
 			if (!user) continue;
 			let pts = basePoints + randInt(-3, 3);
 			const [hasDiary] = await userhasDiaryTier(user, KandarinDiary.hard);
@@ -55,7 +54,7 @@ export default class extends Task {
 			resultStr += `${user} received ${totalPoints} points\n`;
 		}
 
-		const leaderUser = await this.client.users.fetch(leader);
+		const leaderUser = await this.client.fetchUser(leader);
 
 		resultStr = `${leaderUser}, your team finished doing ${quantity} waves of Barbarian Assault. ${generateExpertiseString(
 			totalLevel

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { O } from 'ts-toolbelt';
 
+import { SkillsEnum } from '../../skilling/types';
 import { ItemBank, ItemPriceCache } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
@@ -61,6 +62,12 @@ export namespace ClientSettings {
 		export const RevsCost = T<O.Readonly<ItemBank>>('revs_cost');
 		export const RevsLoot = T<O.Readonly<ItemBank>>('revs_loot');
 
+		export const DroppedItems = T<O.Readonly<ItemBank>>('dropped_items');
+
+		export const RunecraftCost = T<O.Readonly<ItemBank>>('runecraft_cost');
+
+		export const SmithingCost = T<O.Readonly<ItemBank>>('smithing_cost');
+
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');
 		export const GPSourceAlching = T<number>('gp_alch');
@@ -69,4 +76,7 @@ export namespace ClientSettings {
 		export const GPSourceOpen = T<number>('gp_open');
 		export const GPSourceDaily = T<number>('gp_daily');
 	}
+
+	export const LockedSkills = T<readonly SkillsEnum[]>('locked_skills');
+	export const CustomPrices = T<O.Readonly<ItemBank>>('custom_prices');
 }

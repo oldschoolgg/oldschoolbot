@@ -14,6 +14,7 @@ import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 import { miningBuyables } from './mining';
+import { runeBuyables } from './runes';
 import { slayerBuyables } from './slayerBuyables';
 
 export interface Buyable {
@@ -26,8 +27,41 @@ export interface Buyable {
 	skillsNeeded?: Skills;
 	restockTime?: number;
 	minigameScoreReq?: [MinigameKey, number];
+	ironmanPrice?: number;
 	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
 }
+
+const randomEventBuyables: Buyable[] = [
+	{
+		name: 'Prince outfit',
+		itemCost: resolveNameBank({
+			'Frog token': 1
+		}),
+		outputItems: resolveNameBank({
+			'Prince tunic': 1,
+			'Prince leggings': 1
+		})
+	},
+	{
+		name: 'Princess outfit',
+		itemCost: resolveNameBank({
+			'Frog token': 1
+		}),
+		outputItems: resolveNameBank({
+			'Princess blouse': 1,
+			'Princess skirt': 1
+		})
+	},
+	{
+		name: 'Frog mask',
+		itemCost: resolveNameBank({
+			'Frog token': 1
+		}),
+		outputItems: resolveNameBank({
+			'Frog mask': 1
+		})
+	}
+];
 
 const cmCapes: Buyable[] = [
 	{
@@ -578,7 +612,8 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Fishing Bait',
 		aliases: ['fishing bait'],
-		gpCost: 20
+		gpCost: 20,
+		ironmanPrice: 3
 	},
 	{
 		name: 'Jug of Water',
@@ -589,7 +624,8 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Feather',
 		aliases: ['feather'],
-		gpCost: 50
+		gpCost: 50,
+		ironmanPrice: 2
 	},
 	{
 		name: 'Shield right half',
@@ -598,19 +634,28 @@ const Buyables: Buyable[] = [
 		gpCost: 1_000_000
 	},
 	{
+		name: 'Dragon metal shard',
+		aliases: ['metal shard'],
+		qpRequired: 205,
+		gpCost: 2_500_000
+	},
+	{
 		name: 'Eye of newt',
 		aliases: ['eye of newt', 'newt eye'],
-		gpCost: 300
+		gpCost: 300,
+		ironmanPrice: 3
 	},
 	{
 		name: 'Vial of water',
 		aliases: ['vial of water'],
-		gpCost: 60
+		gpCost: 60,
+		ironmanPrice: 3
 	},
 	{
 		name: 'Vial',
 		aliases: ['vial'],
-		gpCost: 30
+		gpCost: 30,
+		ironmanPrice: 2
 	},
 	{
 		name: 'Cup of hot water',
@@ -666,6 +711,14 @@ const Buyables: Buyable[] = [
 		name: 'Ogre bow',
 		gpCost: 10_000
 	},
+	{
+		name: 'Salve amulet',
+		gpCost: 200_000,
+		skillsNeeded: {
+			crafting: 35
+		},
+		qpRequired: 58
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -678,7 +731,9 @@ const Buyables: Buyable[] = [
 	...cmCapes,
 	...slayerBuyables,
 	...capeBuyables,
-	...miningBuyables
+	...miningBuyables,
+	...runeBuyables,
+	...randomEventBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

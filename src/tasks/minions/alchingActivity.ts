@@ -15,7 +15,7 @@ const bryophytasStaffId = itemID("Bryophyta's staff");
 export default class extends Task {
 	async run(data: AlchingActivityTaskOptions) {
 		let { itemID, quantity, channelID, alchValue, userID, duration } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const loot = new Bank({ Coins: alchValue });
 
 		const item = getOSItem(itemID);

@@ -1,11 +1,12 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { WealthChargingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, skillsMeetRequirements } from '../../lib/util';
+import { formatDuration, skillsMeetRequirements } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export const wealthInventorySize = 26;
@@ -92,7 +93,7 @@ export default class extends BotCommand {
 			type: Activity.WealthCharging
 		});
 
-		await msg.author.removeItemFromBank(itemID('Ring of wealth'), quantityWealths);
+		await msg.author.removeItemsFromBank(new Bank().add('Ring of wealth', quantityWealths));
 
 		return msg.channel.send(
 			`${

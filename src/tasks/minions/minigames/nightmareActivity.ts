@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { noOp, percentChance } from 'e';
 import { Task } from 'klasa';
 import { Bank, Misc } from 'oldschooljs';
 
@@ -8,7 +8,7 @@ import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
 import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, noOp, randomVariation } from '../../../lib/util';
+import { addBanks, randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -34,7 +34,7 @@ export default class extends Task {
 
 		// For each user in the party, calculate their damage and death chance.
 		for (const id of users) {
-			const user = await this.client.users.fetch(id).catch(noOp);
+			const user = await this.client.fetchUser(id).catch(noOp);
 			if (!user) continue;
 			const [data] = getNightmareGearStats(user, users);
 			parsedUsers.push({ ...data, id: user.id });
@@ -66,12 +66,12 @@ export default class extends Task {
 			}
 		}
 
-		const leaderUser = await this.client.users.fetch(leader);
+		const leaderUser = await this.client.fetchUser(leader);
 
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NightmareMonster.name}!\n\n`;
 
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
-			const user = await this.client.users.fetch(userID).catch(noOp);
+			const user = await this.client.fetchUser(userID).catch(noOp);
 			if (!user) continue;
 			await addMonsterXP(user, {
 				monsterID: NIGHTMARE_ID,
@@ -96,10 +96,16 @@ export default class extends Task {
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
 
-			announceLoot(this.client, leaderUser, NightmareMonster, loot, {
-				leader: leaderUser,
-				lootRecipient: user,
-				size: users.length
+			announceLoot({
+				user,
+				monsterID: NightmareMonster.id,
+				loot: new Bank(loot),
+				notifyDrops: NightmareMonster.notifyDrops,
+				team: {
+					leader: leaderUser,
+					lootRecipient: user,
+					size: users.length
+				}
 			});
 		}
 
@@ -108,7 +114,7 @@ export default class extends Task {
 		if (deathEntries.length > 0) {
 			const deaths = [];
 			for (const [id, qty] of deathEntries) {
-				const user = await this.client.users.fetch(id).catch(noOp);
+				const user = await this.client.fetchUser(id).catch(noOp);
 				if (!user) continue;
 				deaths.push(`**${user.username}**: ${qty}x`);
 			}

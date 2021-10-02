@@ -8,7 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { AnimatedArmourActivityTaskOptions, CyclopsActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID } from '../../lib/util';
+import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import resolveItems from '../../lib/util/resolveItems';
 
@@ -168,7 +168,7 @@ export default class extends BotCommand {
 			}`;
 
 			if (!hasAttackCape) {
-				await msg.author.removeItemFromBank(itemID('Warrior guild token'), tokensToSpend);
+				await msg.author.removeItemsFromBank(new Bank().add('Warrior guild token', tokensToSpend));
 			}
 
 			return msg.channel.send(response);

@@ -30,9 +30,11 @@ describe('Gear', () => {
 
 	test('allItems', () => {
 		const gear = new Gear({ head: 'Max cape' });
-		const allItems = gear.allItems(true);
-		expect(allItems.map(itemNameFromID)).toEqual(['Max cape', 'Graceful cape', 'Attack cape']);
-		expect(allItems.length).toEqual(3);
+		const allItems = gear.allItems(true).map(itemNameFromID).sort();
+		expect(allItems).toEqual(
+			['Max cape', 'Graceful cape', 'Attack cape', 'Crafting cape', 'Runecraft cape'].sort()
+		);
+		expect(allItems.length).toEqual(5);
 	});
 
 	test('equippedWeapon', () => {
@@ -60,6 +62,22 @@ describe('Gear', () => {
 		expect(testGear.hasEquipped(['Twisted bow'], false)).toEqual(true);
 		expect(testGear.hasEquipped(['Bronze arrow'])).toEqual(false);
 		expect(testGear.hasEquipped(['Bronze arrow'], false)).toEqual(false);
+
+		const testGear2 = new Gear({
+			weapon: '3rd age pickaxe',
+			feet: 'Dragon boots (g)'
+		});
+		expect(testGear2.hasEquipped('Dragon pickaxe')).toEqual(true);
+		expect(testGear2.hasEquipped('3rd age pickaxe')).toEqual(true);
+		expect(testGear2.hasEquipped('Rune pickaxe')).toEqual(false);
+		expect(testGear2.hasEquipped('Dragon boots')).toEqual(true);
+		expect(testGear2.hasEquipped('Dragon boots (g)')).toEqual(true);
+
+		const testGear3 = new Gear({
+			feet: 'Dragon boots'
+		});
+		expect(testGear3.hasEquipped('Dragon boots')).toEqual(true);
+		expect(testGear3.hasEquipped('Dragon boots (g)')).toEqual(false);
 	});
 
 	test('stats', () => {

@@ -1,6 +1,6 @@
 import { QueryBuilder } from '@klasa/querybuilder';
 import { isNumber, makeObject, mergeDefault } from '@klasa/utils';
-import { SchemaEntry, SchemaFolder, SettingsUpdateResults, SQLProvider, Type } from 'klasa';
+import { SchemaEntry, SchemaFolder, SettingsUpdateResults, SQLProvider } from 'klasa';
 import {
 	Pool,
 	PoolConfig,
@@ -409,7 +409,7 @@ export default class extends SQLProvider {
 			case 'undefined':
 				return 'NULL';
 			default:
-				throw new TypeError(`Cannot serialize a ${new Type(value)}`);
+				throw new TypeError(`Cannot serialize ${value}`);
 		}
 	}
 

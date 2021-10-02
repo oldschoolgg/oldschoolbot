@@ -10,13 +10,14 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
 		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		await user.incrementMonsterScore(monsterID, quantity);
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
@@ -43,9 +44,20 @@ export default class extends Task {
 			hasSuperiors: superiorTable,
 			inCatacombs: isInCatacombs
 		};
-		const loot = monster.table.kill(quantity, killOptions);
 
-		const newSuperiorCount = loot.bank[420];
+		// Calculate superiors and assign loot.
+		let newSuperiorCount = 0;
+		if (superiorTable && isOnTask) {
+			for (let i = 0; i < quantity; i++) if (roll(200)) newSuperiorCount++;
+		}
+		// Regular loot
+		const loot = monster.table.kill(quantity - newSuperiorCount, killOptions);
+		if (newSuperiorCount) {
+			// Superior loot and totems if in catacombs
+			loot.add(superiorTable!.kill(newSuperiorCount));
+			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
+		}
+
 		const xpRes = await addMonsterXP(user, {
 			monsterID,
 			quantity,
@@ -59,7 +71,8 @@ export default class extends Task {
 			superiorCount: newSuperiorCount
 		});
 
-		announceLoot(this.client, user, monster, loot.bank);
+		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
+
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
 			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);

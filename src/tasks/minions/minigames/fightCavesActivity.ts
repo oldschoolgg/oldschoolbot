@@ -1,26 +1,26 @@
+import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
+import { fightCavesCost } from '../../../commands/Minion/fightcaves';
 import { Emoji, Events } from '../../../lib/constants';
-import fightCavesSupplies from '../../../lib/minions/data/fightCavesSupplies';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import { calcPercentOfNum, calcWhatPercent, formatDuration, percentChance, rand } from '../../../lib/util';
+import { formatDuration, percentChance, rand } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
 const TokkulID = itemID('Tokkul');
-const TzrekJadPet = itemID('Tzrek-jad');
 
 export default class extends Task {
 	async run(data: FightCavesActivityTaskOptions) {
 		const { userID, channelID, jadDeathChance, preJadDeathTime, duration } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 
 		const tokkulReward = rand(2000, 6000);
 		const diedToJad = percentChance(jadDeathChance);
@@ -51,14 +51,14 @@ export default class extends Task {
 			const percSuppliesToRefund = 100 - calcWhatPercent(preJadDeathTime, duration);
 			const itemLootBank = new Bank();
 
-			for (const [itemID, qty] of Object.entries(fightCavesSupplies)) {
+			for (const [item, qty] of fightCavesCost.items()) {
 				const amount = Math.floor(calcPercentOfNum(percSuppliesToRefund, qty));
 				if (amount > 0) {
-					itemLootBank.add(parseInt(itemID), amount);
+					itemLootBank.add(item.id, amount);
 				}
 			}
 
-			await user.addItemsToBank(itemLootBank, true);
+			await user.addItemsToBank(itemLootBank);
 
 			return handleTripFinish(
 				this.client,
@@ -120,13 +120,13 @@ export default class extends Task {
 		if (loot.has('Tzrek-jad')) {
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}** just received their ${formatOrdinal(user.getCL(TzrekJadPet) + 1)} ${
+				`**${user.username}** just received their ${formatOrdinal(user.cl().amount('Tzrek-jad'))} ${
 					Emoji.TzRekJad
 				} TzRek-jad pet by killing TzTok-Jad, on their ${formatOrdinal(user.getKC(TzTokJad.id))} kill!`
 			);
 		}
 
-		if (user.getCL(itemID('Fire cape')) === 0) {
+		if (user.cl().amount('Fire cape') === 0) {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}** just received their first Fire cape on their ${formatOrdinal(

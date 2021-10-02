@@ -39,7 +39,7 @@ export default class extends Task {
 
 	async run(data: TempleTrekkingActivityTaskOptions) {
 		const { channelID, quantity, userID, difficulty } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		user.incrementMinigameScore('TempleTrekking', quantity);
 		const userBank = user.bank();
 		let loot = new Bank();

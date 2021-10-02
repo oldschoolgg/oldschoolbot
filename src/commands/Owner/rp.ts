@@ -3,14 +3,15 @@ import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 
-import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
+import { badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
+import { evalMathExpression } from '../../lib/expressionParser';
 import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
-import { cleanString, formatDuration, getSupportGuild, itemNameFromID } from '../../lib/util';
+import { asyncExec, cleanString, formatDuration, getSupportGuild, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
@@ -40,9 +41,27 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [cmd, input, str]: [string, KlasaUser | string | undefined, string | undefined]) {
-		if (msg.guild!.id !== '342983479501389826') return null;
+		if (msg.guild!.id !== SupportServer) return null;
 
 		switch (cmd.toLowerCase()) {
+			case 'git': {
+				try {
+					const currentCommit = await asyncExec('git log --pretty=oneline -1', {
+						timeout: 30
+					});
+					const rawStr = currentCommit.stdout.trim();
+					const [commitHash, ...commentArr] = rawStr.split(' ');
+					return msg.channel.send({
+						embeds: [
+							new MessageEmbed()
+								.setDescription(`[Diff between latest and now](https://github.com/oldschoolgg/oldschoolbot/compare/${commitHash}...master)
+**Last commit:** [\`${commentArr.join(' ')}\`](https://github.com/oldschoolgg/oldschoolbot/commit/${commitHash})`)
+						]
+					});
+				} catch {
+					return msg.channel.send('Failed to fetch git info.');
+				}
+			}
 			case 'hasequipped': {
 				if (typeof input !== 'string') return;
 				const item = getOSItem(input);
@@ -100,6 +119,23 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
+			case 'setprice': {
+				if (typeof input !== 'string') return;
+				const [itemName, rawPrice] = input.split(',');
+				const item = getOSItem(itemName);
+				const price = evalMathExpression(rawPrice);
+				if (!price || price < 1 || price > 1_000_000_000) return;
+				if (!price || isNaN(price)) return msg.channel.send('Invalid price');
+				await msg.confirm(
+					`Are you sure you want to set the price of \`${item.name}\`(ID: ${item.id}, Wiki: ${
+						item.wiki_url
+					}) to \`${price.toLocaleString()}\`?`
+				);
+				const current = this.client.settings.get(ClientSettings.CustomPrices);
+				const newPrices = { ...current, [item.id]: price };
+				await this.client.settings.update(ClientSettings.CustomPrices, newPrices);
+				return msg.channel.send(`Set the price of \`${item.name}\` to \`${price.toLocaleString()}\`.`);
+			}
 			case 'status': {
 				let counter: Record<string, number> = {};
 				for (const key of Object.keys(statusMap)) {

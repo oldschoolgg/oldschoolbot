@@ -4,12 +4,11 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
-import { GearSetupTypes, maxOffenceStats } from '../../lib/gear';
+import { maxOffenceStats } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { KillableMonster } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -201,9 +200,7 @@ export default class extends BotCommand {
 		}
 
 		if (!style || !['melee', 'range', 'mage'].includes(style)) {
-			const prefix = msg.guild
-				? msg.guild.settings.get(GuildSettings.Prefix)
-				: this.client.settings.get(GuildSettings.Prefix);
+			const prefix = msg.cmdPrefix;
 			const hasPrayerLevel = msg.author.hasSkillReqs({ [SkillsEnum.Prayer]: 25 })[0];
 			let skulled = Boolean(msg.flagArgs.skull);
 			let smited = Boolean(msg.flagArgs.smited);
@@ -216,13 +213,7 @@ export default class extends BotCommand {
 				after20wilderness: true,
 				skulled
 			});
-			const image = await generateGearImage(
-				this.client,
-				msg.author,
-				new Gear(calc.newGear),
-				GearSetupTypes.Wildy,
-				null
-			);
+			const image = await generateGearImage(this.client, msg.author, new Gear(calc.newGear), 'wildy', null);
 
 			return msg.channel.send({
 				content: `To kill Revenants, use \`${prefix}revs melee|range|mage <name>\`. Below, you can see what you will keep in your gear if you die.
@@ -278,15 +269,27 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 		let duration = quantity * timePerMonster;
 
 		const cost = new Bank();
+
+		let hasPrayerPots = true;
+		if (msg.author.bank().amount('Prayer potion(4)') < 5) {
+			hasPrayerPots = false;
+			await msg.confirm(
+				'Are you sure you want to kill revenants without prayer potions? You should bring at least 5 Prayer potion(4).'
+			);
+		} else {
+			cost.add('Prayer potion(4)', 5);
+		}
+
 		updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, cost);
 		await msg.author.removeItemsFromBank(cost);
 
 		let deathChance = 5;
-		let deathChanceFromDefenceLevel = (100 - msg.author.skillLevel(SkillsEnum.Defence)) / 4;
+		let defLvl = msg.author.skillLevel(SkillsEnum.Defence);
+		let deathChanceFromDefenceLevel = (100 - (defLvl === 99 ? 100 : defLvl)) / 4;
 		deathChance += deathChanceFromDefenceLevel;
 
 		const defensiveGearPercent = Math.max(0, calcWhatPercent(gear.getStats().defence_magic, maxOffenceStats[key]));
-		let deathChanceFromGear = Math.max(60, 100 - defensiveGearPercent) / 4;
+		let deathChanceFromGear = Math.max(20, 100 - defensiveGearPercent) / 4;
 		deathChance += deathChanceFromGear;
 
 		const died = percentChance(deathChance);
@@ -296,20 +299,21 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
-			duration: died ? (randInt(1, duration) + randInt(1, duration)) / 2 : duration,
+			duration: died ? randInt(Math.min(Time.Minute * 3, duration), duration) : duration,
 			type: Activity.Revenants,
 			died,
 			skulled,
-			style
+			style,
+			usingPrayerPots: hasPrayerPots
 		});
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
 		}, it'll take around ${formatDuration(duration)} to finish. ${debug.join(', ')}
 ${Emoji.OSRSSkull} ${skulled ? 'Skulled' : 'Unskulled'}
-**Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(
-			2
-		)}% from magic def, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level).${
+**Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(2)}% from magic def${
+			deathChanceFromDefenceLevel > 0 ? `, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level` : ''
+		} + 5% as default chance).${cost.length > 0 ? `\nRemoved from bank: ${cost}` : ''}${
 			boosts.length > 0 ? `\nBoosts: ${boosts.join(', ')}` : ''
 		}`;
 

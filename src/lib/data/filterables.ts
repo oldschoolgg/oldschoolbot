@@ -1,4 +1,4 @@
-import { SuperCompostables } from '../../commands/Minion/compostbin';
+import { superCompostables } from '../../commands/Minion/compostbin';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
@@ -76,7 +76,16 @@ export const warmGear = resolveItems([
 	'Graahk legs',
 	'Kyatt hat',
 	'Kyatt top',
-	'Kyatt legs'
+	'Kyatt legs',
+	'Bearhead',
+	'Lumberjack hat',
+	'Fire tiara',
+	'Fire max hood',
+	'Firemaking hood',
+	'Black santa hat',
+	'Infernal max hood',
+	'Bomber jacket',
+	'Bomber cap'
 ]) as number[];
 
 const ores = resolveItems([
@@ -191,6 +200,7 @@ const barrows = resolveItems([
 ]);
 
 const seeds = resolveItems([
+	'Pineapple seed',
 	'Magic seed',
 	'Yew seed',
 	'Maple seed',
@@ -935,7 +945,7 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'Compost',
 		aliases: ['compost', 'compostables'],
-		items: [...resolveItems(['Compost', 'Supercompost', 'Ultracompost']), ...resolveItems(SuperCompostables)]
+		items: [...resolveItems(['Compost', 'Supercompost', 'Ultracompost']), ...resolveItems(superCompostables)]
 	},
 	{
 		name: 'Herblore',

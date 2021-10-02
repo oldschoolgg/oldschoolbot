@@ -1,6 +1,7 @@
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
 import { PermissionLevelsEnum } from '../lib/constants';
+import { getGuildSettings } from '../lib/settings/settings';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { floatPromise } from '../lib/util';
 
@@ -39,8 +40,10 @@ export default class extends Monitor {
 	}
 
 	public async sendPrefixReminder(message: KlasaMessage) {
+		const settings = await getGuildSettings(message.guild!);
+
 		if (message.guild !== null) {
-			const staffOnlyChannels = message.guild.settings.get(GuildSettings.StaffOnlyChannels);
+			const staffOnlyChannels = settings.get(GuildSettings.StaffOnlyChannels);
 			if (
 				staffOnlyChannels.includes(message.channel.id) &&
 				!(await message.hasAtLeastPermissionLevel(PermissionLevelsEnum.Moderator))
@@ -48,7 +51,8 @@ export default class extends Monitor {
 				return;
 			}
 		}
-		const prefix = message.guildSettings.get(GuildSettings.Prefix);
+
+		const prefix = settings.get(GuildSettings.Prefix);
 		return message.channel.send(
 			`The prefix${
 				Array.isArray(prefix)
@@ -60,7 +64,6 @@ export default class extends Monitor {
 
 	public async runCommand(message: KlasaMessage) {
 		const timer = new Stopwatch();
-		if (this.client.options.typing) floatPromise(this, message.channel.startTyping());
 
 		try {
 			await this.client.inhibitors.run(message, message.command!);
@@ -94,6 +97,5 @@ export default class extends Monitor {
 		} catch (response) {
 			return this.client.emit('commandInhibited', message, message.command, response);
 		}
-		if (this.client.options.typing) message.channel.stopTyping();
 	}
 }

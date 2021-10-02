@@ -1,8 +1,8 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageButton, MessageEmbed } from 'discord.js';
-import { chunk, Time } from 'e';
+import { chunk, randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import {
 	BitField,
@@ -28,7 +28,7 @@ import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
 import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
-import { convertLVLtoXP, isValidNickname, randomItemFromArray, stringMatches } from '../../lib/util';
+import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
 const patMessages = [
@@ -40,7 +40,7 @@ const patMessages = [
 	'You give {name} head pats, they get comfortable and start falling asleep.'
 ];
 
-const randomPatMessage = (minionName: string) => randomItemFromArray(patMessages).replace('{name}', minionName);
+const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
 	try {
@@ -50,6 +50,8 @@ async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
 		msg.channel.send(typeof err === 'string' ? err : err.message);
 	}
 }
+
+const ironmanArmor = new Bank({ 'Ironman helm': 1, 'Ironman platebody': 1, 'Ironman platelegs': 1 });
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -134,7 +136,7 @@ export default class MinionCommand extends BotCommand {
 	@requiresMinion
 	async lvl(msg: KlasaMessage, [input]: [string]) {
 		const values = Object.values(Skills);
-		const skill = values.find(s => stringMatches(s.name, input));
+		const skill = values.find(s => stringMatches(s.name, input) || s.aliases.some(a => stringMatches(a, input)));
 		if (!skill) {
 			return msg.channel.send(
 				`That's not a valid skill. The valid skills are: ${values.map(v => v.name).join(', ')}.`
@@ -192,6 +194,13 @@ export default class MinionCommand extends BotCommand {
 		if (msg.author.isIronman) {
 			const isPerm = msg.author.bitfield.includes(BitField.PermanentIronman);
 			if (isPerm) {
+				if (msg.flagArgs.armor) {
+					if (msg.author.owns(ironmanArmor)) {
+						return msg.channel.send('You already own a set of ironman armor.');
+					}
+					await msg.author.addItemsToBank(ironmanArmor);
+					return msg.channel.send('Gave you a set of ironman armor.');
+				}
 				return msg.channel.send("You're a **permanent** ironman and you cannot de-iron.");
 			}
 			if (msg.flagArgs.permanent) {
@@ -208,7 +217,10 @@ Please say \`permanent\` to confirm.`
 							answer.author.id === msg.author.id && answer.content.toLowerCase() === 'permanent'
 					});
 					await msg.author.settings.update(UserSettings.BitField, BitField.PermanentIronman);
-					return msg.channel.send('You are now a **permanent** Ironman. Enjoy!');
+					await msg.author.addItemsToBank(ironmanArmor);
+					return msg.channel.send(
+						'You are now a **permanent** Ironman. You also received a set of ironmen armor. Enjoy!'
+					);
 				} catch (err) {
 					return msg.channel.send('Cancelled.');
 				}
@@ -267,29 +279,9 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				`just became an ironman, previous settings: ${JSON.stringify(msg.author.settings.toJSON())}`
 			);
 
-			await msg.author.settings.reset([
-				UserSettings.Bank,
-				UserSettings.CollectionLogBank,
-				UserSettings.GP,
-				UserSettings.QP,
-				UserSettings.MonsterScores,
-				UserSettings.ClueScores,
-				UserSettings.BankBackground,
-				UserSettings.SacrificedValue,
-				UserSettings.SacrificedBank,
-				UserSettings.HonourLevel,
-				UserSettings.HonourPoints,
-				UserSettings.HighGambles,
-				UserSettings.CarpenterPoints,
-				UserSettings.ZealTokens,
-				UserSettings.OpenableScores,
-				'slayer',
-				'gear',
-				'stats',
-				'skills',
-				'minion',
-				'farmingPatches'
-			]);
+			const allSchemaKeys = Array.from(this.client.gateways.get('users')!.schema.keys());
+			const keysToReset = allSchemaKeys.filter(k => !['pets', 'RSN', 'patreon_id', 'github_id'].includes(k));
+			await msg.author.settings.reset([...keysToReset]);
 
 			try {
 				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });

@@ -16,7 +16,7 @@ import {
 import { UserSettings } from '../settings/types/UserSettings';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { ItemBank } from '../types';
-import { stringMatches } from '../util';
+import { addArrayOfNumbers, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
 	abyssalSireCL,
@@ -32,7 +32,7 @@ import {
 	capesCL,
 	castleWarsCL,
 	cerberusCL,
-	chambersOfXericCl,
+	chambersOfXericCL,
 	championsChallengeCL,
 	chaosDruisCL,
 	chaosElementalCL,
@@ -65,12 +65,14 @@ import {
 	generalGraardorCL,
 	giantMoleCL,
 	gnomeRestaurantCL,
+	godWarsDungeonGodswordShards,
 	grotesqueGuardiansCL,
 	hallowedSepulchreCL,
 	hesporiCL,
 	holidayCL,
 	ICollection,
 	ILeftListStatus,
+	implingsCL,
 	IToReturnCollection,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
@@ -176,6 +178,42 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.CommanderZilyana.allItems,
 				items: commanderZilyanaCL,
 				roleCategory: ['bosses']
+			},
+			'God Wars Dungeon': {
+				alias: ['gwd', 'godwars'],
+				kcActivity: {
+					Default: async user => {
+						return addArrayOfNumbers(
+							[
+								Monsters.GeneralGraardor.id,
+								Monsters.CommanderZilyana.id,
+								Monsters.Kreearra.id,
+								Monsters.KrilTsutsaroth.id
+							].map(i => user.getKC(i))
+						);
+					}
+				},
+				allItems: (() => {
+					return [
+						...new Set(
+							...[
+								Monsters.GeneralGraardor.allItems,
+								Monsters.CommanderZilyana.allItems,
+								Monsters.Kreearra.allItems,
+								Monsters.KrilTsutsaroth.allItems
+							]
+						)
+					];
+				})(),
+				items: [
+					...godWarsDungeonGodswordShards,
+					...commanderZilyanaCL,
+					...generalGraardorCL,
+					...kreeArraCL,
+					...krilTsutsarothCL
+				].sort((a, b) => a - b),
+				hidden: true,
+				counts: false
 			},
 			'Corporeal Beast': {
 				alias: Monsters.CorporealBeast.aliases,
@@ -380,7 +418,7 @@ export const allCollectionLogs: ICollection = {
 					Default: user => user.getMinigameScore('Raids'),
 					Challenge: user => user.getMinigameScore('RaidsChallengeMode')
 				},
-				items: chambersOfXericCl,
+				items: chambersOfXericCL,
 				roleCategory: ['raids'],
 				isActivity: true
 			},
@@ -399,7 +437,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['beginner', 'clues beginner', 'clue beginner'],
 				allItems: Clues.Beginner.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[23_245]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[23_245] || 0
 				},
 				items: cluesBeginnerCL,
 				roleCategory: ['clues'],
@@ -409,7 +447,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['easy', 'clues easy', 'clue easy'],
 				allItems: Clues.Easy.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_546]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_546] || 0
 				},
 				items: cluesEasyCL,
 				roleCategory: ['clues'],
@@ -419,7 +457,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['medium', 'clues medium', 'clue medium'],
 				allItems: Clues.Medium.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_545]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_545] || 0
 				},
 				items: cluesMediumCL,
 				roleCategory: ['clues'],
@@ -429,7 +467,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['hard', 'clues hard', 'clue hard'],
 				allItems: Clues.Hard.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544] || 0
 				},
 				items: cluesHardCL,
 				roleCategory: ['clues'],
@@ -439,7 +477,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['elite', 'clues elite', 'clue elite'],
 				allItems: Clues.Elite.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543] || 0
 				},
 				items: cluesEliteCL,
 				roleCategory: ['clues'],
@@ -449,7 +487,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['master', 'clues master', 'clue master'],
 				allItems: Clues.Master.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836] || 0
 				},
 				items: cluesMasterCL,
 				roleCategory: ['clues'],
@@ -466,7 +504,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare hard'
 				],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544] || 0
 				},
 				items: cluesHardRareCL,
 				roleCategory: ['clues'],
@@ -483,7 +521,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare elite'
 				],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543] || 0
 				},
 				items: cluesEliteRareCL,
 				roleCategory: ['clues'],
@@ -500,7 +538,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare master'
 				],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836]
+					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836] || 0
 				},
 				items: cluesMasterRareCL,
 				roleCategory: ['clues'],
@@ -508,12 +546,27 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Shared Treasure Trail Rewards': {
 				alias: ['shared', 'clues shared', 'clue shared'],
+				kcActivity: {
+					Default: async user =>
+						(user.settings.get(UserSettings.ClueScores)[23_245] || 0) +
+						(user.settings.get(UserSettings.ClueScores)[20_546] || 0) +
+						(user.settings.get(UserSettings.ClueScores)[20_545] || 0) +
+						(user.settings.get(UserSettings.ClueScores)[20_544] || 0) +
+						(user.settings.get(UserSettings.ClueScores)[20_543] || 0) +
+						(user.settings.get(UserSettings.ClueScores)[19_836] || 0)
+				},
 				items: cluesSharedCL,
 				roleCategory: ['clues'],
 				isActivity: true
 			},
 			'Rare Treasure Trail Rewards': {
 				alias: ['clues rare', 'rares'],
+				kcActivity: {
+					Default: async user =>
+						(user.settings.get(UserSettings.ClueScores)[20_544] || 0) +
+						(user.settings.get(UserSettings.ClueScores)[20_543] || 0) +
+						(user.settings.get(UserSettings.ClueScores)[19_836] || 0)
+				},
 				items: [...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL],
 				roleCategory: ['clues'],
 				isActivity: true
@@ -525,6 +578,10 @@ export const allCollectionLogs: ICollection = {
 			'Barbarian Assault': {
 				alias: ['ba', 'barb assault', 'barbarian assault'],
 				items: barbarianAssaultCL,
+				kcActivity: {
+					Default: async user => user.getMinigameScore('BarbarianAssault'),
+					'High Gambles': async user => user.settings.get(UserSettings.HighGambles)
+				},
 				roleCategory: ['minigames'],
 				isActivity: true
 			},
@@ -598,10 +655,10 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Pest Control': {
-				enabled: false,
 				items: pestControlCL,
 				roleCategory: ['minigames'],
-				isActivity: true
+				isActivity: true,
+				alias: ['pc']
 			},
 			"Rogues' Den": {
 				alias: ['rogues den', 'rd'],
@@ -618,6 +675,7 @@ export const allCollectionLogs: ICollection = {
 			'Soul Wars': {
 				alias: ['soul wars', 'sw'],
 				items: soulWarsCL,
+				allItems: resolveItems(['Blue soul cape']),
 				roleCategory: ['minigames'],
 				isActivity: true
 			},
@@ -649,8 +707,8 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Volcanic Mine': {
-				enabled: false,
 				items: volcanicMineCL,
+				alias: ['vm', 'vmine', 'volcanic'],
 				roleCategory: ['minigames'],
 				isActivity: true
 			}
@@ -683,7 +741,7 @@ export const allCollectionLogs: ICollection = {
 				items: chaosDruisCL
 			},
 			'Chompy Birds': {
-				alias: ['chompy', 'bgc', 'big chompy hunting'],
+				alias: ['chompy', 'bgc', 'big chompy hunting', 'ch', 'chompyhunting', 'chompyhunt'],
 				kcActivity: 'BigChompyBirdHunting',
 				items: chompyBirdsCL
 			},
@@ -710,7 +768,7 @@ export const allCollectionLogs: ICollection = {
 			'Monkey Backpacks': {
 				alias: ['monkey', 'monkey bps', 'backpacks'],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.LapsScores)[6]
+					Default: async user => user.settings.get(UserSettings.LapsScores)[6] || 0
 				},
 				items: monkeyBackpacksCL,
 				roleCategory: ['skilling'],
@@ -727,6 +785,44 @@ export const allCollectionLogs: ICollection = {
 			},
 			Revenants: {
 				alias: ['revs'],
+				kcActivity: {
+					Default: async user => {
+						return addArrayOfNumbers(
+							[
+								Monsters.RevenantImp.id,
+								Monsters.RevenantGoblin.id,
+								Monsters.RevenantPyrefiend.id,
+								Monsters.RevenantHobgoblin.id,
+								Monsters.RevenantCyclops.id,
+								Monsters.RevenantHellhound.id,
+								Monsters.RevenantDemon.id,
+								Monsters.RevenantOrk.id,
+								Monsters.RevenantDarkBeast.id,
+								Monsters.RevenantKnight.id,
+								Monsters.RevenantDragon.id
+							].map(i => user.getKC(i))
+						);
+					}
+				},
+				allItems: (() => {
+					return [
+						...new Set(
+							...[
+								Monsters.RevenantImp.allItems,
+								Monsters.RevenantGoblin.allItems,
+								Monsters.RevenantPyrefiend.allItems,
+								Monsters.RevenantHobgoblin.allItems,
+								Monsters.RevenantCyclops.allItems,
+								Monsters.RevenantHellhound.allItems,
+								Monsters.RevenantDemon.allItems,
+								Monsters.RevenantOrk.allItems,
+								Monsters.RevenantDarkBeast.allItems,
+								Monsters.RevenantKnight.allItems,
+								Monsters.RevenantDragon.allItems
+							]
+						)
+					];
+				})(),
 				items: revenantsCL
 			},
 			'Rooftop Agility': {
@@ -827,6 +923,10 @@ export const allCollectionLogs: ICollection = {
 			Farming: {
 				counts: false,
 				items: allFarmingItems
+			},
+			Implings: {
+				counts: false,
+				items: implingsCL
 			}
 		}
 	}
@@ -837,7 +937,7 @@ export const allDroppedItems = [
 		...Object.entries(allCollectionLogs)
 			.map(e =>
 				Object.entries(e[1].activities)
-					.filter(f => f[1].enabled === undefined && f[1].hidden === undefined && f[1].counts === undefined)
+					.filter(f => f[1].enabled === undefined)
 					.map(a => [...new Set([...a[1].items, ...(a[1].allItems !== undefined ? a[1].allItems : [])])])
 			)
 			.flat(100),
@@ -890,7 +990,7 @@ export function getItemsRole(role: TRoleCategories) {
 	];
 }
 
-export function converCLtoBank(items: number[]) {
+export function convertCLtoBank(items: number[]) {
 	const clBank = new Bank();
 	for (const item of items) {
 		clBank.add(item, 1);
@@ -1117,7 +1217,7 @@ export async function getCollection(options: {
 		return {
 			category: 'Custom',
 			name: search,
-			collection: roleCategory,
+			collection: clItems,
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank

@@ -9,7 +9,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: FletchingActivityTaskOptions) {
 		let { fletchableName, quantity, userID, channelID, duration } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 
 		const fletchableItem = Fletching.Fletchables.find(fletchable => fletchable.name === fletchableName)!;
 
@@ -19,6 +19,10 @@ export default class extends Task {
 			duration
 		});
 
+		let sets = 'x';
+		if (fletchableItem.outputMultiple) {
+			sets = ' sets of';
+		}
 		let quantityToGive = fletchableItem.outputMultiple ? quantity * fletchableItem.outputMultiple : quantity;
 
 		const loot = new Bank({ [fletchableItem.id]: quantityToGive });
@@ -28,7 +32,7 @@ export default class extends Task {
 			this.client,
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished fletching ${quantity}x ${fletchableItem.name}, and received ${loot}. ${xpRes}`,
+			`${user}, ${user.minionName} finished fletching ${quantity}${sets} ${fletchableItem.name}, and received ${loot}. ${xpRes}`,
 			res => {
 				user.log('continued fletching trip');
 				return this.client.commands.get('fletch')!.run(res, [quantity, fletchableItem.name]);

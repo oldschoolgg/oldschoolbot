@@ -1,3 +1,4 @@
+import { calcPercentOfNum } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -6,14 +7,14 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { anglerBoostPercent, calcPercentOfNum, roll } from '../../lib/util';
+import { anglerBoostPercent, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: FishingActivityTaskOptions) {
 		let { fishID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.users.fetch(userID);
+		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
@@ -135,13 +136,18 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		if (fish.petChance && roll((fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25) / quantity)) {
-			loot.add('Heron');
-			str += "\nYou have a funny feeling you're being followed...";
-			this.client.emit(
-				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.username}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${currentLevel} Fishing!`
-			);
+		if (fish.petChance) {
+			const chance = fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25;
+			for (let i = 0; i < quantity; i++) {
+				if (roll(chance)) {
+					loot.add('Heron');
+					str += "\nYou have a funny feeling you're being followed...";
+					this.client.emit(
+						Events.ServerNotification,
+						`${Emoji.Fishing} **${user.username}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${currentLevel} Fishing!`
+					);
+				}
+			}
 		}
 
 		if (fish.bigFishRate && fish.bigFish) {

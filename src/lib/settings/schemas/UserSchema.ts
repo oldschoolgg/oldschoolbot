@@ -11,6 +11,8 @@ Client.defaultUserSchema
 	.add('badges', 'integer', { array: true, default: [] })
 	.add('bitfield', 'integer', { array: true, default: [] })
 	.add('favoriteItems', 'integer', { array: true, default: [] })
+	.add('favorite_alchables', 'integer', { array: true, default: [] })
+	.add('favorite_food', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
 	.add('sacrificedValue', 'integer', { default: 0, minimum: 0 })
 	.add('bank', 'any', { default: {} })
@@ -33,6 +35,8 @@ Client.defaultUserSchema
 	.add('total_cox_points', 'integer', { default: 0 })
 	.add('combat_options', 'integer', { array: true, default: [] })
 	.add('farming_patch_reminders', 'boolean', { default: true })
+	.add('pest_control_points', 'integer', { default: 0 })
+	.add('volcanic_mine_points', 'integer', { default: 0 })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })
@@ -47,7 +51,6 @@ Client.defaultUserSchema
 			.add('chewed_offered', 'integer', { default: 0 })
 	)
 
-	.add('favorite_alchables', 'integer', { array: true, default: [] })
 	.add('bank_bg_hex', 'string', { default: null })
 	.add('minion', folder =>
 		folder
@@ -116,6 +119,8 @@ Client.defaultUserSchema
 			.add('misc', 'any', { default: null })
 			.add('skilling', 'any', { default: null })
 			.add('wildy', 'any', { default: null })
+			.add('fashion', 'any', { default: null })
+			.add('other', 'any', { default: null })
 	)
 	.add('farmingPatches', (folder: SchemaFolder) =>
 		folder

@@ -1,10 +1,9 @@
-import { Time } from 'e';
+import { noOp, Time } from 'e';
 import { Task, TaskStore } from 'klasa';
 
 import { production } from '../config';
 import { client } from '../index';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { noOp } from '../lib/util';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -28,7 +27,7 @@ export default class extends Task {
 				);
 
 				for (const row of result.values()) {
-					const user = await client.users.fetch(row.id);
+					const user = await client.fetchUser(row.id);
 					if (user.settings.get(UserSettings.LastDailyTimestamp) === -1) continue;
 
 					await user.settings.update(UserSettings.LastDailyTimestamp, -1);

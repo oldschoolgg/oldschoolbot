@@ -15,6 +15,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	bankHasItem,
+	cleanString,
 	formatDuration,
 	itemNameFromID,
 	removeItemFromBank,
@@ -59,7 +60,7 @@ export default class extends BotCommand {
 		const currentDate = new Date().getTime();
 
 		let payment = false;
-		let upgradeType: 'compost' | 'supercompost' | 'ultracompost' | null = null;
+		let upgradeType: string | null = null;
 		const infoStr: string[] = [];
 		const boostStr: string[] = [];
 
@@ -214,8 +215,8 @@ export default class extends BotCommand {
 		const requiredSeeds: [string, number][] = Object.entries(plants.inputItems);
 		for (const [seedID, qty] of requiredSeeds) {
 			if (!bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
-				if (msg.author.numItemsInBankSync(parseInt(seedID)) > qty) {
-					quantity = Math.floor(msg.author.numItemsInBankSync(parseInt(seedID)) / qty);
+				if (msg.author.bank().amount(parseInt(seedID)) > qty) {
+					quantity = Math.floor(msg.author.bank().amount(parseInt(seedID)) / qty);
 				} else {
 					throw `You don't have enough ${itemNameFromID(parseInt(seedID))}s.`;
 				}
@@ -254,7 +255,9 @@ export default class extends BotCommand {
 			infoStr.push('You did not have enough payment to automatically pay for crop protection.');
 		}
 
-		const defaultCompostTier = msg.author.settings.get(UserSettings.Minion.DefaultCompostToUse);
+		const defaultCompostTier = cleanString(
+			msg.author.settings.get(UserSettings.Minion.DefaultCompostToUse) ?? 'compost'
+		).toLowerCase();
 		if (upgradeType === 'supercompost' || upgradeType === 'ultracompost') {
 			const hasCompostType = await msg.author.hasItem(itemID(upgradeType), quantity);
 			if (!hasCompostType) {

@@ -67,6 +67,34 @@ export const collectables: Collectable[] = [
 		}),
 		duration: Time.Minute * 6.5,
 		qpRequired: 72
+	},
+	{
+		item: getOSItem('Bucket of sand'),
+		quantity: 30,
+		itemCost: new Bank({
+			'Law rune': 1,
+			Coins: 30 * 25
+		}),
+		duration: Time.Minute,
+		qpRequired: 30
+	},
+	// Miniquest to get Tarn's diary for Salve amulet (e)/(ei)
+	{
+		item: getOSItem("Tarn's diary"),
+		quantity: 1,
+		itemCost: new Bank({
+			'Prayer potion(4)': 2
+		}),
+		skillReqs: {
+			slayer: 40,
+			attack: 60,
+			strength: 60,
+			ranged: 60,
+			defence: 60,
+			magic: 60
+		},
+		duration: 10 * Time.Minute,
+		qpRequired: 100
 	}
 ];
 

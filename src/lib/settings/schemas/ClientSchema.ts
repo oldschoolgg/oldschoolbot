@@ -27,6 +27,9 @@ Client.defaultClientSchema
 	.add('hunter_loot', 'any', { default: {} })
 	.add('revs_cost', 'any', { default: {} })
 	.add('revs_loot', 'any', { default: {} })
+	.add('dropped_items', 'any', { default: {} })
+	.add('runecraft_cost', 'any', { default: {} })
+	.add('smithing_cost', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })
@@ -48,4 +51,7 @@ Client.defaultClientSchema
 	.add('gp_pickpocket', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_open', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
-	.add('gp_daily', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER });
+	.add('gp_daily', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+
+	.add('locked_skills', 'any', { array: true, default: [] })
+	.add('custom_prices', 'any', { default: {} });

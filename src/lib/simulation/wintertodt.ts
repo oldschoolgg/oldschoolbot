@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { randInt, roll } from 'e';
+import { calcPercentOfNum, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -7,7 +7,7 @@ import { addBanks } from 'oldschooljs/dist/util';
 
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
-import { calcPercentOfNum, convertXPtoLVL, normal } from '../util';
+import { convertXPtoLVL, normal } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 

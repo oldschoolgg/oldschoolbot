@@ -9,12 +9,17 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: CraftingActivityTaskOptions) {
-		const { craftableID, quantity, userID, channelID } = data;
-		const user = await this.client.users.fetch(userID);
+		const { craftableID, quantity, userID, channelID, duration } = data;
+		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Crafting);
 		const item = Craftables.find(craft => craft.id === craftableID)!;
 
 		let xpReceived = quantity * item.xp;
+		let sets = 'x';
+		if (item.outputMultiple) {
+			sets = ' sets of';
+		}
+		let quantityToGive = item.outputMultiple ? quantity * item.outputMultiple : quantity;
 		const loot = new Bank();
 
 		let crushed = 0;
@@ -28,13 +33,11 @@ export default class extends Task {
 			xpReceived -= 0.75 * crushed * item.xp;
 			loot.add('crushed gem', crushed);
 		}
-		loot.add(item.id, quantity - crushed);
+		loot.add(item.id, quantityToGive - crushed);
 
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Crafting, amount: xpReceived });
+		const xpRes = await user.addXP({ skillName: SkillsEnum.Crafting, amount: xpReceived, duration });
 
-		let str = `${user}, ${user.minionName} finished crafting ${quantity} ${item.name}${
-			crushed ? `, crushing ${crushed} of them` : ''
-		}. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}.${xpRes}`;
 
 		await user.addItemsToBank(loot.values(), true);
 
