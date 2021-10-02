@@ -1147,7 +1147,7 @@ export const filterableTypes: Filterable[] = [
 
 for (const clGroup of Object.values(allCollectionLogs).map(c => c.activities)) {
 	for (const [name, cl] of Object.entries(clGroup)) {
-		const aliasesForThisCL: string[] = [name, ...(cl.alias ?? [])];
+		const aliasesForThisCL: string[] = [name, ...(cl.alias ?? [])].map(i => i.toLowerCase());
 		const already = filterableTypes.some(t => [...t.aliases, t.name].some(i => aliasesForThisCL.includes(i)));
 		if (!already) {
 			filterableTypes.push({
