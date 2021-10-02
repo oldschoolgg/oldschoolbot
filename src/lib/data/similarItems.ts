@@ -380,7 +380,8 @@ const source: [string, (string | number)[]][] = [
 	['Salve amulet', ['Salve amulet(ei)', 'Salve amulet(i)', 'Salve amulet (e)']],
 	['Salve amulet (e)', ['Salve amulet(ei)']],
 	['Salve amulet (i)', ['Salve amulet(ei)']],
-	['Zaryte bow', ['Hellfire bow', 'Hellfire bownana']]
+	['Zaryte bow', ['Hellfire bow', 'Hellfire bownana']],
+	['Twisted bow', ['Hellfire bow', 'Hellfire bownana']]
 ];
 for (const { baseItem, dyedVersions } of dyedItems) {
 	source.push([baseItem.name, dyedVersions.map(i => i.item.id)]);
