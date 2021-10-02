@@ -1,4 +1,4 @@
-import { randInt, Time } from 'e';
+import { randArrItem, randInt, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -14,7 +14,7 @@ import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, bankHasItem, multiplyBank, rand, roll } from '../../lib/util';
+import { addBanks, addItemToBank, bankHasItem, multiplyBank, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
@@ -422,6 +422,46 @@ export default class extends Task {
 				if (hesporiSeeds > 0) loot[itemID('Hespori seed')] = hesporiSeeds;
 			}
 
+			const gotHweenThing = roll(100);
+			if (gotHweenThing) {
+				const name = user.minionName;
+				const items = [
+					[
+						`${name} was harvesting their ${plantToHarvest.name} and discovered some unusual, big footprints in the farming patches, looks like someone wearing boots, must be someone or something very big.`,
+						null
+					],
+					[
+						`${name} was harvesting ${plantToHarvest.name} and stumbled upon a dead body next to the farm - they brought you back the bones and fragments of the skull.`,
+						new Bank().add('Bones').add('Skull piece')
+					],
+					[
+						`${name} saw a giant.. 'thing' on their trip, they didn't get a good look at what it was, they got scared and hid behind a barrel next to the farm until it was gone.`,
+						null
+					],
+					[
+						`On the way back from their trip, ${name} heard loud, earth-shaking footsteps - unsure of what it was.`,
+						null
+					],
+					[
+						`${name} found some other minion's crops were trampled and destroyed, the person or thing responsible must be huge...`,
+						null
+					],
+					[
+						`${name} peered over at another farming patch on the way back and saw a group of crows flying around, they seemed to be interested in something.`,
+						null
+					],
+					[`${name} found a 'Human appendage' in the farm... spooky.`, new Bank().add('Human appendage')],
+					[`${name} found a 'Human blood' in the farm... scary.`, new Bank().add('Human blood')],
+					[`${name} found a 'Human tooth' in the farm... freaky.`, new Bank().add('Human tooth')],
+					[`${name} found a 'Sliced femur' in the farm... mysterious.`, new Bank().add('Sliced femur')]
+				] as const;
+				const item = randArrItem(items);
+				if (item[1]) {
+					loot = addBanks([item[1].bank, loot]);
+				}
+				infoStr.push(`**${item[0]}**`);
+			}
+
 			if (tangleroot) {
 				infoStr.push('\n```diff');
 				infoStr.push("\n- You have a funny feeling you're being followed...");
@@ -476,7 +516,7 @@ export default class extends Task {
 
 			if (!planting) {
 				infoStr.push('\nThe patches have been cleared. They are ready to have new seeds planted.');
-			} else {
+			} else if (!gotHweenThing) {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
 			}
 

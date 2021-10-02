@@ -1865,6 +1865,11 @@ setCustomItem(48_252, 'Witch cloak', 'Red cape', {}, 100_000);
 setCustomItem(48_253, 'Ring of snow', 'Emerald ring', {}, 100_000);
 setCustomItem(48_254, 'Dungeoneering dye', 'Coal', {}, 100_000);
 
+setCustomItem(48_255, 'Human appendage', 'Coal', {}, 100_000);
+setCustomItem(48_256, 'Sliced femur', 'Coal', {}, 100_000);
+setCustomItem(48_257, 'Human blood', 'Coal', {}, 100_000);
+setCustomItem(48_258, 'Human tooth', 'Coal', {}, 100_000);
+
 /**
  * Misc Items
  *
