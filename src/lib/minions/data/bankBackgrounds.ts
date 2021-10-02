@@ -468,6 +468,20 @@ const backgroundImages: BankBackground[] = [
 		name: 'Volt CustomBG (77)',
 		image: null,
 		available: false
+	},
+	{
+		id: 78,
+		name: 'Nexacar CustomBG (78)',
+		image: null,
+		available: false,
+		owners: ['874901199348965467']
+	},
+	{
+		id: 79,
+		name: 'DT CustomBG (79)',
+		image: null,
+		available: false,
+		owners: ['310150823986593803']
 	}
 ];
 
