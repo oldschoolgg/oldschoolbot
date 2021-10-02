@@ -31,6 +31,7 @@ export interface BankBackground {
 	sacValueRequired?: number;
 	skillsNeeded?: Skills;
 	transparent?: true;
+	owners?: string[];
 }
 
 export interface ClueMilestoneReward {

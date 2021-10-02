@@ -34,7 +34,10 @@ export default class extends BotCommand {
 			return msg.channel.send('This is already your bank background.');
 		}
 
-		if (msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator)) {
+		if (
+			msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator) ||
+			(selectedImage.owners && selectedImage.owners.includes(msg.author.id))
+		) {
 			await msg.author.settings.update(UserSettings.BankBackground, selectedImage.id);
 			return msg.channel.send(`Your bank background is now **${selectedImage.name}**!`);
 		}
