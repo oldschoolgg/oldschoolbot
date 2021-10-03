@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
+import { findFavour, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -89,6 +90,12 @@ export default class extends BotCommand {
 		if (msg.author.skillLevel(SkillsEnum.Farming) < plants.level) {
 			throw `${msg.author.minionName} needs ${plants.level} Farming to plant ${plants.name}.`;
 		}
+
+		const [haveFavour, requiredPoints] = gotFavour(msg.author, findFavour('Hosidius'), 65);
+		if (!haveFavour && plants.name === 'Grape')
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${requiredPoints}% Hosidius Favour to plant Grapes.`
+			);
 
 		const getPatchType = resolvePatchTypeSetting(plants.seedType);
 		if (!getPatchType) return;
