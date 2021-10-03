@@ -8,6 +8,16 @@ import { getSupportGuild } from '../util';
 const tier3ElligibleBits = [BitField.IsPatronTier3, BitField.isContributor, BitField.isModerator];
 
 export default function getUsersPerkTier(userOrBitfield: KlasaUser | readonly BitField[]): PerkTier | 0 {
+	if (userOrBitfield instanceof KlasaUser) {
+		const main = userOrBitfield.settings.get(UserSettings.MainAccount);
+		if (main) {
+			const mainAccount = userOrBitfield.client.users.cache.get(main);
+			if (mainAccount) {
+				return getUsersPerkTier(mainAccount);
+			}
+		}
+	}
+
 	if (userOrBitfield instanceof User && userOrBitfield.client.owners.has(userOrBitfield)) {
 		return 10;
 	}

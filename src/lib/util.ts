@@ -518,3 +518,6 @@ export function birdhouseLimit(user: KlasaUser) {
 	return base;
 }
 export const asyncExec = promisify(exec);
+export function getUsername(client: KlasaClient, id: string): string {
+	return (client.commands.get('leaderboard') as any)!.getUsername(id);
+}
