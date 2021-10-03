@@ -719,6 +719,11 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 58
 	},
+	{
+		name: 'Sandworms',
+		gpCost: 500
+	},
+
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
