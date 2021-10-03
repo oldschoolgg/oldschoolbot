@@ -1,4 +1,4 @@
-import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent } from 'e';
+import { calcWhatPercent, reduceNumByPercent } from 'e';
 import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 
@@ -18,8 +18,6 @@ export default function calculateMonsterFood(
 	if (!healAmountNeeded || !attackStyleToUse || !attackStylesUsed) {
 		return [0, messages];
 	}
-
-	let copyHealAmountNeeded = healAmountNeeded;
 
 	messages.push(`${monster.name} needs ${healAmountNeeded}HP worth of food per kill.`);
 
@@ -62,8 +60,6 @@ export default function calculateMonsterFood(
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel));
 	messages.push(`You use ${floor(totalOffensivePercent)}% less food because of your offensive stats.`);
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalOffensivePercent));
-
-	healAmountNeeded = Math.max(calcPercentOfNum(15, copyHealAmountNeeded), healAmountNeeded);
 
 	messages.push(
 		`You use ${(100 - calcWhatPercent(healAmountNeeded, monster.healAmountNeeded!)).toFixed(
