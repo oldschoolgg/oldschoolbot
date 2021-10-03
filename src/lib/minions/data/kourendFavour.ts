@@ -119,14 +119,12 @@ export function findFavour(favourName: string): KourendFavour | undefined {
 export function gotFavour(user: KlasaUser, favour: KourendFavour | undefined, neededPoints: number): [boolean, number] {
 	const currentUserFavour = user.settings.get(UserSettings.KourendFavour);
 	let gotEnoughPoints = false;
-	let currentPoints = 0;
-	if (!favour) return [gotEnoughPoints, currentPoints];
+	if (!favour) return [gotEnoughPoints, neededPoints];
 	for (const [key, value] of Object.entries(currentUserFavour) as [keyof UserKourendFavour, number][]) {
 		if (key.toLowerCase() === favour.name.toLowerCase()) {
 			if (value >= neededPoints) gotEnoughPoints = true;
-			currentPoints = value;
 			break;
 		}
 	}
-	return [gotEnoughPoints, currentPoints];
+	return [gotEnoughPoints, neededPoints];
 }

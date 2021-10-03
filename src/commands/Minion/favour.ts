@@ -8,7 +8,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { KourendFavourActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { baseUserKourendFavour, findFavour, KourendFavours } from './../../lib/minions/data/kourendFavour';
+import { findFavour, KourendFavours } from './../../lib/minions/data/kourendFavour';
 import { SkillsEnum } from './../../lib/skilling/types';
 
 export default class extends BotCommand {
@@ -28,7 +28,14 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage, [favourName]: [string | undefined]) {
-		if (!favourName) return msg.channel.send('Insert picture here Fishy');
+		const currentUserFavour = msg.author.settings.get(UserSettings.KourendFavour);
+		if (!favourName) {
+			let allFavourString: string = 'Your current Kourend Favour:';
+			for (const [key, value] of Object.entries(currentUserFavour)) {
+				allFavourString += `\n**${key}**: ${value}%`;
+			}
+			return msg.channel.send(allFavourString);
+		}
 		const favour = findFavour(favourName);
 		if (!favour) {
 			return msg.channel.send(
@@ -37,8 +44,6 @@ export default class extends BotCommand {
 				)}.`
 			);
 		}
-		const currentUserFavour = msg.author.settings.get(UserSettings.KourendFavour);
-		msg.author.settings.update(UserSettings.KourendFavour, baseUserKourendFavour);
 		const maxTripLength = msg.author.maxTripLength(Activity.KourendFavour);
 		let currentPoints = 0;
 		for (const [key, value] of Object.entries(currentUserFavour)) {
