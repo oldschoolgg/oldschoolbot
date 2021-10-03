@@ -32,6 +32,7 @@ import {
 	SlayerActivityConstants
 } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { findFavour, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -142,6 +143,12 @@ export default class extends BotCommand {
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;
+
+		const [haveFavour, requiredPoints] = gotFavour(msg.author, findFavour('Shayzien'), 100);
+		if (!haveFavour && monster.id === Monsters.LizardmanShaman.id)
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${requiredPoints}% Shayzien Favour to kill Lizardman shamans.`
+			);
 
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, msg.author.getKC(monster.id));
 
