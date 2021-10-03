@@ -477,3 +477,6 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 }
 
 export const asyncExec = promisify(exec);
+export function getUsername(client: KlasaClient, id: string): string {
+	return (client.commands.get('leaderboard') as any)!.getUsername(id);
+}
