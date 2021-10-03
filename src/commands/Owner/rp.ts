@@ -149,9 +149,6 @@ ${
 				if (!altAccount.isIronman) {
 					return msg.channel.send(`${mainAccount.username} is not an ironman.`);
 				}
-				if (!altAccount.bitfield.includes(BitField.PermanentIronman)) {
-					return msg.channel.send(`${mainAccount.username} is not a *permanent* ironman.`);
-				}
 
 				await mainAccount.settings.sync(true);
 				await altAccount.settings.sync(true);
