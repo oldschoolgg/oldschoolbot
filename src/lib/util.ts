@@ -346,7 +346,7 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 		}
 
 		for (const [itemId, quantity] of itemEntries) {
-			subStr.push(`${Number((quantity * multiply).toFixed(3)}x ${itemNameFromID(parseInt(itemId))}`);
+			subStr.push(`${Number((quantity * multiply).toFixed(3))}x ${itemNameFromID(parseInt(itemId))}`);
 		}
 
 		if (multiple) {
