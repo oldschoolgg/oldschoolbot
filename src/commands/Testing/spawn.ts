@@ -1,14 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Items, Openables } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 
-import { Emoji } from '../../lib/constants';
 import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { ItemBank } from '../../lib/types';
 import { itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
+import { parseStringBank } from '../../lib/util/parseStringBank';
 
 const gearSpawns = [
 	{
@@ -37,7 +35,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[qty:integer{1,1000000}] [item:...item]',
+			usage: '[str:...str]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			testingCommand: true
@@ -45,7 +43,7 @@ export default class extends BotCommand {
 		this.enabled = !this.client.production;
 	}
 
-	async run(msg: KlasaMessage, [qty = 1, itemArray]: [number, Item[]]) {
+	async run(msg: KlasaMessage, [str]: [string | undefined]) {
 		for (const i of gearSpawns) {
 			if (msg.flagArgs[i.name]) {
 				try {
@@ -81,31 +79,21 @@ export default class extends BotCommand {
 			return msg.channel.send(`Gave you the item with the id of ${item.id} (${item.name})`);
 		}
 
-		if (!itemArray) return;
+		const items = parseStringBank(str, undefined, true);
 
-		if (msg.flagArgs.all) {
-			const items: ItemBank = {};
-			for (const item of itemArray) {
-				items[item.id] = qty;
-			}
-			await msg.author.addItemsToBank(items);
-			return msg.channel.send(`Gave you ${new Bank(items)}.`);
-		}
-
-		const osItem = itemArray[0];
-		await msg.author.addItemsToBank({ [osItem.id]: qty }, Boolean(msg.flagArgs.cl));
-
-		for (const setup of ['range', 'melee', 'mage', 'skilling', 'wildy']) {
-			if (msg.flagArgs[setup]) {
-				try {
-					await this.client.commands.get('equip')!.run(msg, [setup, 1, [osItem]]);
-					return msg.channel.send(`Equipped 1x ${osItem.name} to your ${setup} setup.`);
-				} catch (err) {
-					return msg.channel.send(`Failed to equip item. Equip it yourself ${Emoji.PeepoNoob}`);
+		const bank = new Bank();
+		for (const [item, qty] of items) {
+			bank.add(item.id, qty ?? 1);
+			for (const setup of ['range', 'melee', 'mage', 'skilling', 'wildy']) {
+				if (msg.flagArgs[setup]) {
+					try {
+						await this.client.commands.get('equip')!.run(msg, [setup, 1, [item.name]]);
+					} catch (err) {}
 				}
 			}
 		}
+		await msg.author.addItemsToBank(bank, Boolean(msg.flagArgs.cl), false);
 
-		return msg.channel.send(`Gave you ${qty}x ${osItem.name}.`);
+		return msg.channel.send(`Gave you ${bank}.`);
 	}
 }

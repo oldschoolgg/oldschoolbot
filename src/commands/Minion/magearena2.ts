@@ -3,14 +3,13 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
-import { GearSetupTypes } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, randomVariation, updateBankSetting } from '../../lib/util';
+import { formatDuration, randomVariation, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -32,7 +31,7 @@ export default class extends BotCommand {
 		if (msg.author.skillLevel(SkillsEnum.Magic) < 75) {
 			return msg.channel.send('You need level 75 Magic to do the Mage Arena II.');
 		}
-		if (!msg.author.collectionLog[itemID('Saradomin cape')]) {
+		if (msg.author.cl().amount('Saradomin cape') === 0) {
 			return msg.channel.send('You need to have completed Mage Arena I before doing part II.');
 		}
 		const duration = randomVariation(Time.Minute * 25, 3);
@@ -58,7 +57,7 @@ export default class extends BotCommand {
 			totalHealingNeeded: 20 * 23,
 			healPerAction: 20 * 23,
 			activityName: 'Mage Arena II',
-			attackStylesUsed: [GearSetupTypes.Mage]
+			attackStylesUsed: ['mage']
 		});
 
 		await msg.author.removeItemsFromBank(itemsNeeded);

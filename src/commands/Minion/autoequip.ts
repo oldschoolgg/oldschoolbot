@@ -1,7 +1,8 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
+import { PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../lib/constants';
+import { GearSetupType, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { requiresMinion } from '../../lib/minions/decorators';
 import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
@@ -30,25 +31,37 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(
 		msg: KlasaMessage,
-		[gearType, type, style, extra = null]: [GearSetupTypes, string, string, string | null]
+		[gearType, type, style, extra = null]: [GearSetupType, string, string, string | null]
 	) {
 		await msg.author.settings.sync(true);
 
 		if (gearType === 'wildy') await msg.confirm(WILDY_PRESET_WARNING_MESSAGE);
 
-		await msg.author.queueFn(async () => {
-			const { gearToEquip, userFinalBank } = getUserBestGearFromBank(
-				msg.author.settings.get(UserSettings.Bank),
-				msg.author.getGear(gearType),
-				gearType,
-				msg.author.rawSkills,
-				type,
-				style,
-				extra
-			);
-			await msg.author.settings.update(UserSettings.Bank, userFinalBank);
-			await msg.author.settings.update(resolveGearTypeSetting(gearType), gearToEquip);
-		});
+		if (gearType === 'other' && msg.author.perkTier < PerkTier.Four) {
+			return msg.channel.send(PATRON_ONLY_GEAR_SETUP);
+		}
+
+		const { gearToEquip, toRemoveFromBank, toRemoveFromGear } = getUserBestGearFromBank(
+			msg.author.settings.get(UserSettings.Bank),
+			msg.author.getGear(gearType),
+			gearType,
+			msg.author.rawSkills,
+			type,
+			style,
+			extra
+		);
+
+		if (Object.keys(toRemoveFromBank).length === 0) {
+			return msg.channel.send("Couldn't find anything to equip.");
+		}
+
+		if (!msg.author.owns(toRemoveFromBank)) {
+			return msg.channel.send(`You dont own ${toRemoveFromBank}!`);
+		}
+
+		await msg.author.removeItemsFromBank(toRemoveFromBank);
+		await msg.author.addItemsToBank(toRemoveFromGear);
+		await msg.author.settings.update(resolveGearTypeSetting(gearType), gearToEquip);
 
 		const image = await generateGearImage(
 			this.client,

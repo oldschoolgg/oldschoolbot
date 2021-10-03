@@ -114,6 +114,16 @@ const slayerHelmSimilarI = resolveItems([
 	'Twisted slayer helmet (i)',
 	'Slayer helmet (i)'
 ]);
+const bowfaCorruptSimilar = resolveItems([
+	25_869, // Red, 'duplicate' according to osrsbox item-search
+	25_884, // White
+	25_886, // Black
+	25_888, // Brown?
+	25_890, // Green
+	25_892, // Yellow
+	25_894, // Light blue
+	25_896 // Dark blue
+]);
 
 const source: [string, (string | number)[]][] = [
 	['Dragon full helm', ['Dragon full helm (g)']],
@@ -143,7 +153,8 @@ const source: [string, (string | number)[]][] = [
 	['Tormented bracelet', ['Tormented bracelet (or)']],
 	['Necklace of anguish', ['Necklace of anguish (or)']],
 	['Occult necklace', ['Occult necklace (or)']],
-	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797]],
+	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, '3rd age pickaxe', 'Infernal pickaxe']],
+	['Dragon axe', ['3rd age axe']],
 	['Steam battlestaff', [12_795]],
 	['Lava battlestaff', [21_198]],
 	['Odium ward', [12_807]],
@@ -197,6 +208,7 @@ const source: [string, (string | number)[]][] = [
 			'Amulet of glory (4)',
 			'Amulet of glory (5)',
 			'Amulet of glory (6)',
+			'Amulet of glory (t)',
 			'Amulet of glory (t1)',
 			'Amulet of glory (t2)',
 			'Amulet of glory (t3)',
@@ -247,6 +259,7 @@ const source: [string, (string | number)[]][] = [
 	['Void knight gloves', ['Void knight gloves (l)']],
 	['Trident of the seas', ['Trident of the seas (full)', 'Trident of the seas (e)']],
 	['Trident of the swamp', ['Trident of the swamp (e)']],
+	['Bow of faerdhinen (c)', bowfaCorruptSimilar],
 	['Slayer helmet', slayerHelmSimilar],
 	['Slayer helmet (i)', slayerHelmSimilarI],
 	['Black mask (i)', [...slayerHelmSimilarI, ...blackMaskISimilar]],
@@ -314,7 +327,12 @@ const source: [string, (string | number)[]][] = [
 			'Trident of the swamp (e)',
 			'Uncharged toxic trident (e)'
 		]
-	]
+	],
+	['Runecraft cape', ['Max cape', 'Runecraft cape(t)']],
+	['Crafting cape', ['Max cape', 'Crafting cape(t)']],
+	['Salve amulet', ['Salve amulet(ei)', 'Salve amulet(i)', 'Salve amulet (e)']],
+	['Salve amulet (e)', ['Salve amulet(ei)']],
+	['Salve amulet (i)', ['Salve amulet(ei)']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(

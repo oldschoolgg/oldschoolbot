@@ -1,10 +1,10 @@
+import { calcPercentOfNum } from 'e';
 import { KlasaMessage, Task } from 'klasa';
 
 import MahoganyHomesCommand from '../../../commands/Minion/mahoganyhomes';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import { calcPercentOfNum } from '../../../lib/util';
 import { calcConBonusXP } from '../../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 

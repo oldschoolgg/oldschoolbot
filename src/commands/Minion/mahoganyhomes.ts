@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { objectEntries, randArrItem, randInt, Time } from 'e';
+import { calcPercentOfNum, calcWhatPercent, objectEntries, randArrItem, randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -11,14 +11,7 @@ import { Plank } from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MahoganyHomesActivityTaskOptions } from '../../lib/types/minions';
-import {
-	addArrayOfNumbers,
-	calcPercentOfNum,
-	calcWhatPercent,
-	formatDuration,
-	roll,
-	stringMatches
-} from '../../lib/util';
+import { addArrayOfNumbers, formatDuration, roll, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 
@@ -195,10 +188,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		}
 		await msg.author.removeItemsFromBank(itemsNeeded.bank);
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.ConstructCostBank,
-			new Bank(this.client.settings.get(ClientSettings.EconomyStats.ConstructCostBank)).add(itemsNeeded).bank
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.ConstructCostBank, itemsNeeded);
 
 		await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>({
 			userID: msg.author.id,

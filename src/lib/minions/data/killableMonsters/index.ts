@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { ZALCANO_ID } from '../../../constants';
-import { GearSetupTypes, GearStat } from '../../../gear/types';
+import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
@@ -234,7 +234,7 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
 		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
+			melee: {
 				[GearStat.DefenceRanged]: 57 + 120,
 				[GearStat.DefenceStab]: 47 + 26,
 				[GearStat.AttackCrush]: 65
@@ -260,7 +260,7 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
 		minimumGearRequirements: {
-			[GearSetupTypes.Range]: {
+			range: {
 				[GearStat.AttackRanged]: 20 + 33 + 10 + 94 + 8
 			}
 		},
@@ -311,7 +311,7 @@ export const NightmareMonster: KillableMonster = {
 	attackStyleToUse: GearStat.AttackCrush,
 	attackStylesUsed: [GearStat.AttackSlash],
 	minimumGearRequirements: {
-		[GearSetupTypes.Melee]: {
+		melee: {
 			[GearStat.DefenceSlash]: 150,
 			[GearStat.AttackCrush]: 80
 		}

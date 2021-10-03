@@ -2,8 +2,10 @@ import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { GearSetupType, GearSetupTypes } from '../../lib/gear';
+import { PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../lib/constants';
+import { GearSetupType, GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
 import { generateAllGearImage, generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { minionNotBusy } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { makePaginatedMessage } from '../../lib/util';
@@ -14,19 +16,57 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			cooldown: 1,
-			usage: '[melee|mage|range|skilling|misc|wildy]',
+			usage: `[swap] [${GearSetupTypes.join('|')}] [${GearSetupTypes.join('|')}]`,
+			usageDelim: ' ',
+			subcommands: true,
+			aliases: ['gearall', 'gall'],
 			description: 'Shows your equipped gear.',
 			examples: ['+gear melee', '+gear misc'],
 			categoryFlags: ['minion', 'skilling']
 		});
 	}
 
-	async run(msg: KlasaMessage, [gearType]: [GearSetupTypes]) {
+	@minionNotBusy
+	async swap(msg: KlasaMessage, [gear1, gear2]: [GearSetupType, GearSetupType]) {
+		if (msg.commandText !== 'gear') return this.run(msg, [gear1]);
+		if (!gear1 || !gear2) {
+			return msg.channel.send(
+				`**Invalid gear type**. The valid types are: ${GearSetupTypes.join(
+					', '
+				)}.\nExample of correct usage: \`${msg.cmdPrefix}gear swap melee range\``
+			);
+		}
+		if (gear1 === 'wildy' || gear2 === 'wildy') {
+			await msg.confirm(
+				'Are you sure you want to swap your gear with a wilderness setup? You can lose items on your wilderness setup!'
+			);
+			msg.flagArgs.cf = '1';
+		}
+
+		if ([gear1, gear2].includes('other') && msg.author.perkTier < PerkTier.Four) {
+			return msg.channel.send(PATRON_ONLY_GEAR_SETUP);
+		}
+
+		const _gear1 = msg.author.getGear(gear1);
+		const _gear1Type = resolveGearTypeSetting(gear1);
+		const _gear2 = msg.author.getGear(gear2);
+		const _gear2Type = resolveGearTypeSetting(gear2);
+
+		await msg.author.settings.update(_gear1Type, _gear2);
+		await msg.author.settings.update(_gear2Type, _gear1);
+
+		return msg.channel.send(`You swapped your ${gear1} gear with your ${gear2} gear.`);
+	}
+
+	async run(msg: KlasaMessage, [gearType]: [GearSetupType]) {
 		const gear = msg.author.getGear(gearType);
+		if (['gearall', 'gall'].includes(msg.commandText!)) msg.flagArgs.all = 'yes';
 
 		if (!gearType && !msg.flagArgs.all) {
 			return msg.channel.send(
-				'Invalid gear type. The valid types are: melee, mage, range, skilling or misc. You can use `--all` to show all your gear in a single image.'
+				`**Invalid gear type**. The valid types are: ${GearSetupTypes.join(
+					', '
+				)}.\nYou can use \`--all\` or \`${msg.cmdPrefix}gearall\` to show all your gear in a single image.`
 			);
 		}
 

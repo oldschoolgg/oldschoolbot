@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { corporealBeastCL } from '../../../../data/CollectionsExport';
-import { GearSetupTypes, GearStat } from '../../../../gear';
+import { GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
@@ -62,14 +62,14 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Dragon hunter crossbow')]: 25
 			},
 			{
-				[itemID('Salve amulet (ei)')]: 11,
-				[itemID('Salve amulet (i)')]: 8
+				[itemID('Salve amulet(ei)')]: 11,
+				[itemID('Salve amulet(i)')]: 8
 			}
 		],
 		levelRequirements: {
 			prayer: 43
 		},
-		healAmountNeeded: 20 * 10,
+		healAmountNeeded: 20 * 15,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
 		defaultAttackStyles: [SkillsEnum.Ranged]
@@ -110,6 +110,9 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				[itemID('Ancestral robe bottom')]: 2
+			},
+			{
+				[itemID('Imbued heart')]: 3
 			}
 		],
 		levelRequirements: {
@@ -119,10 +122,10 @@ const killableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic],
 		minimumGearRequirements: {
-			[GearSetupTypes.Mage]: {
+			mage: {
 				[GearStat.AttackMagic]: 50
 			},
-			[GearSetupTypes.Range]: {
+			range: {
 				[GearStat.AttackRanged]: 47
 			}
 		},
@@ -170,7 +173,7 @@ const killableBosses: KillableMonster[] = [
 		combatXpMultiplier: 1.05,
 		healAmountNeeded: 20 * 3,
 		minimumGearRequirements: {
-			[GearSetupTypes.Melee]: {
+			melee: {
 				[GearStat.MeleeStrength]: 10
 			}
 		},
@@ -257,7 +260,9 @@ const killableBosses: KillableMonster[] = [
 		slayerOnly: true,
 		defaultAttackStyles: [SkillsEnum.Strength],
 		combatXpMultiplier: 1.15,
-		healAmountNeeded: 20 * 7
+		healAmountNeeded: 20 * 15,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.KingBlackDragon.id,

@@ -1,10 +1,11 @@
+import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { addBanks, removeItemFromBank } from 'oldschooljs/dist/util';
 
-import { GearSetupTypes, GearStat } from '../../gear/types';
+import { GearSetupType, GearStat } from '../../gear/types';
 import { Gear } from '../../structures/Gear';
 import { ItemBank, Skills } from '../../types';
-import { removeBankFromBank, skillsMeetRequirements } from '../../util';
+import { skillsMeetRequirements } from '../../util';
 import getOSItem from '../../util/getOSItem';
 
 function getItemScore(item: Item) {
@@ -17,7 +18,7 @@ function getItemScore(item: Item) {
 export default function getUserBestGearFromBank(
 	userBank: ItemBank,
 	userGear: Gear,
-	gearType: GearSetupTypes,
+	gearType: GearSetupType,
 	skills: Skills,
 	type: string,
 	style: string,
@@ -40,19 +41,21 @@ export default function getUserBestGearFromBank(
 	switch (extra) {
 		case 'strength':
 			switch (gearType) {
-				case GearSetupTypes.Skilling:
-				case GearSetupTypes.Misc:
+				case 'skilling':
+				case 'misc':
+				case 'fashion':
+				case 'other':
 					break;
-				case GearSetupTypes.Melee:
+				case 'melee':
 					gearStatExtra = GearStat.MeleeStrength;
 					break;
-				case GearSetupTypes.Range:
+				case 'range':
 					gearStatExtra = GearStat.RangedStrength;
 					break;
-				case GearSetupTypes.Mage:
+				case 'mage':
 					gearStatExtra = GearStat.MagicDamage;
 					break;
-				case GearSetupTypes.Wildy:
+				case 'wildy':
 					break;
 			}
 			break;
@@ -171,6 +174,6 @@ export default function getUserBestGearFromBank(
 		toRemoveFromGear,
 		toRemoveFromBank,
 		gearToEquip,
-		userFinalBank: removeBankFromBank(addBanks([userBank, toRemoveFromGear]), toRemoveFromBank)
+		userFinalBank: new Bank().add(userBank).add(toRemoveFromGear).remove(toRemoveFromBank).bank
 	};
 }

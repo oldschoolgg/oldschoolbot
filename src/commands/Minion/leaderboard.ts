@@ -2,6 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 import { IsNull, Not } from 'typeorm';
 
+import { production } from '../../config';
 import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Emoji } from '../../lib/constants';
 import { getCollectionItems } from '../../lib/data/Collections';
@@ -103,11 +104,11 @@ export default class extends BotCommand {
 	}
 
 	async init() {
-		await this.cacheUsernames();
+		if (production) await this.cacheUsernames();
 	}
 
 	getPos(page: number, record: number) {
-		return `${page * LB_PAGE_SIZE + 1 + record}) `;
+		return `${page * LB_PAGE_SIZE + 1 + record}. `;
 	}
 
 	getUsername(userID: string, lbSize?: number) {
@@ -306,7 +307,9 @@ export default class extends BotCommand {
 	}
 
 	async minigame(msg: KlasaMessage, [name = '']: [string]) {
-		const minigame = Minigames.find(m => stringMatches(m.name, name));
+		const minigame = Minigames.find(
+			m => stringMatches(m.name, name) || m.aliases.some(a => stringMatches(a, name))
+		);
 		if (!minigame) {
 			return msg.channel.send(
 				`That's not a valid minigame. Valid minigames are: ${Minigames.map(m => m.name).join(', ')}.`
@@ -448,7 +451,7 @@ export default class extends BotCommand {
 			const query = `SELECT
 								u.id,
 								${skillsVals.map(s => `"skills.${s.id}"`)},
-								${skillsVals.map(s => `"skills.${s.id}"`).join(' + ')} as totalxp,
+								${skillsVals.map(s => `"skills.${s.id}"::int8`).join(' + ')} as totalxp,
 								u."minion.ironman"
 							FROM
 								users u
@@ -578,7 +581,7 @@ LIMIT 50;
 		if (!course) return msg.channel.send('Thats not a valid agility course.');
 
 		const data: { id: string; count: number }[] = await this.query(
-			`SELECT id, "lapsScores"->>'${course.id}' as count
+			`SELECT id, ("lapsScores"->>'${course.id}')::int as count
 				   FROM users
 				   WHERE "lapsScores"->>'${course.id}' IS NOT NULL
 				   ${msg.flagArgs.im ? ' AND "minion.ironman" = true ' : ''}
@@ -612,13 +615,11 @@ LIMIT 50;
 				`Thats not a valid creature. Valid creatures are: ${Hunter.Creatures.map(h => h.name).join(', ')}`
 			);
 
-		const data: { id: string; count: number }[] = await this.query(
-			`SELECT id, "creatureScores"->>'${creature.id}' as count
+		const query = `SELECT id, ("creatureScores"->>'${creature.id}')::int as count
 				   FROM users WHERE "creatureScores"->>'${creature.id}' IS NOT NULL
 				   ${msg.flagArgs.im ? ' AND "minion.ironman" = true ' : ''}
-				   ORDER BY count DESC LIMIT 50;`
-		);
-
+				   ORDER BY count DESC LIMIT 50;`;
+		const data: { id: string; count: number }[] = await this.query(query);
 		this.doMenu(
 			msg,
 			util

@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { Time } from 'e';
+import { calcWhatPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
@@ -9,7 +9,7 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { calcWhatPercent, formatDuration, formatItemBoosts, formatItemReqs, itemNameFromID } from '../../lib/util';
+import { formatDuration, formatItemBoosts, formatItemReqs, itemNameFromID } from '../../lib/util';
 import findMonster from '../../lib/util/findMonster';
 
 export default class MinionCommand extends BotCommand {

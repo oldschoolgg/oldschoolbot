@@ -19,8 +19,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 4,
 		itemInBankBoosts: [
 			{
-				[itemID('Salve amulet (ei)')]: 15,
-				[itemID('Salve amulet (i)')]: 10
+				[itemID('Salve amulet(ei)')]: 15,
+				[itemID('Salve amulet(i)')]: 10
 			}
 		]
 	},
@@ -124,8 +124,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 4,
 		itemInBankBoosts: [
 			{
-				[itemID('Salve amulet (ei)')]: 15,
-				[itemID('Salve amulet (i)')]: 10
+				[itemID('Salve amulet(ei)')]: 15,
+				[itemID('Salve amulet(i)')]: 10
 			}
 		]
 	},
@@ -256,8 +256,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 4,
 		itemInBankBoosts: [
 			{
-				[itemID('Salve amulet (ei)')]: 15,
-				[itemID('Salve amulet (i)')]: 10
+				[itemID('Salve amulet(ei)')]: 15,
+				[itemID('Salve amulet(i)')]: 10
 			}
 		]
 	},
@@ -291,8 +291,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 4,
 		itemInBankBoosts: [
 			{
-				[itemID('Salve amulet (ei)')]: 15,
-				[itemID('Salve amulet (i)')]: 10
+				[itemID('Salve amulet(ei)')]: 15,
+				[itemID('Salve amulet(i)')]: 10
 			}
 		]
 	},
@@ -309,8 +309,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 4,
 		itemInBankBoosts: [
 			{
-				[itemID('Salve amulet (ei)')]: 15,
-				[itemID('Salve amulet (i)')]: 10
+				[itemID('Salve amulet(ei)')]: 15,
+				[itemID('Salve amulet(i)')]: 10
 			}
 		]
 	},
@@ -365,8 +365,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 4,
 		itemInBankBoosts: [
 			{
-				[itemID('Salve amulet (ei)')]: 15,
-				[itemID('Salve amulet (i)')]: 10
+				[itemID('Salve amulet(ei)')]: 15,
+				[itemID('Salve amulet(i)')]: 10
 			}
 		]
 	},
@@ -403,8 +403,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Salve amulet (ei)')]: 15,
-				[itemID('Salve amulet (i)')]: 10
+				[itemID('Salve amulet(ei)')]: 15,
+				[itemID('Salve amulet(i)')]: 10
 			}
 		]
 	},

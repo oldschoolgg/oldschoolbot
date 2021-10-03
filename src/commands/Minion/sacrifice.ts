@@ -1,19 +1,19 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 
-import { TradeableItemBankArgumentType } from '../../arguments/tradeableItemBank';
 import { Events } from '../../lib/constants';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks } from '../../lib/util';
+import { updateBankSetting } from '../../lib/util';
+import { parseInputCostBank } from '../../lib/util/parseStringBank';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '(items:TradeableBank)',
+			usage: '[bank:...str]',
 			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Sacrifices items from your bank.',
@@ -21,7 +21,23 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [[bankToSac, totalPrice]]: [TradeableItemBankArgumentType]) {
+	async run(msg: KlasaMessage, [bankStr = '']: [string | undefined]) {
+		const bankToSac = parseInputCostBank({
+			inputStr: bankStr,
+			usersBank: msg.author.bank(),
+			flags: msg.flagArgs
+		});
+
+		if (!msg.author.owns(bankToSac)) {
+			return msg.channel.send(`You don't own ${bankToSac}.`);
+		}
+
+		if (bankToSac.length === 0) {
+			return msg.channel.send('No items found.');
+		}
+
+		const totalPrice = bankToSac.value();
+
 		await msg.confirm(
 			`${
 				msg.author
@@ -41,12 +57,9 @@ export default class extends BotCommand {
 
 		const currentSacBank = new Bank(msg.author.settings.get(UserSettings.SacrificedBank));
 		currentSacBank.add(bankToSac);
-		await msg.author.settings.update(UserSettings.SacrificedBank, currentSacBank.values());
+		await msg.author.settings.update(UserSettings.SacrificedBank, currentSacBank.bank);
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.SacrificedBank,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.SacrificedBank), bankToSac.bank])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.SacrificedBank, bankToSac);
 
 		msg.author.log(`sacrificed ${bankToSac} for ${totalPrice}`);
 

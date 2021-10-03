@@ -3,36 +3,49 @@ import { KlasaMessage } from 'klasa';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
+import { DISCORD_SETTINGS } from '../config';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 
-export const enum Channel {
-	Notifications = '469523207691436042',
-	ErrorLogs = '665678499578904596',
-	GrandExchange = '682996313209831435',
-	Developers = '648196527294251020',
-	BlacklistLogs = '782459317218967602',
-	EconomyLogs = '802029843712573510',
-	NewSponsors = '806744016309714966',
-	SupportChannel = '668073484731154462'
-}
+export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
+export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
-export const enum Roles {
-	Booster = '665908237152813057',
-	Contributor = '456181501437018112',
-	Moderator = '622806157563527178',
-	PatronTier1 = '678970545789730826',
-	PatronTier2 = '678967943979204608',
-	PatronTier3 = '687408140832342043',
-	Patron = '679620175838183424',
-	// Status Roles
-	TopSkiller = '795266465329709076',
-	TopCollector = '795271210141351947',
-	TopSacrificer = '795933981715464192',
-	TopMinigamer = '832798997033779220',
-	TopClueHunter = '839135887467610123',
-	TopSlayer = '856080958247010324'
-}
+export const Channel = {
+	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
+	Notifications: DISCORD_SETTINGS.Channels?.Notifications ?? '469523207691436042',
+	ErrorLogs: DISCORD_SETTINGS.Channels?.ErrorLogs ?? '665678499578904596',
+	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '682996313209831435',
+	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
+	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
+	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
+	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
+	HelpAndSupport: DISCORD_SETTINGS.Channels?.HelpAndSupport ?? '668073484731154462',
+	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
+	BarbarianAssault: DISCORD_SETTINGS.Channels?.BarbarianAssault ?? '789717054902763520',
+	ChambersOfXeric: DISCORD_SETTINGS.Channels?.ChambersOfXeric ?? '835876917252587581'
+};
+
+export const Roles = {
+	Booster: DISCORD_SETTINGS.Roles?.Booster ?? '665908237152813057',
+	Contributor: DISCORD_SETTINGS.Roles?.Contributor ?? '456181501437018112',
+	Moderator: DISCORD_SETTINGS.Roles?.Moderator ?? '622806157563527178',
+	PatronTier1: DISCORD_SETTINGS.Roles?.PatronTier1 ?? '678970545789730826',
+	PatronTier2: DISCORD_SETTINGS.Roles?.PatronTier2 ?? '678967943979204608',
+	PatronTier3: DISCORD_SETTINGS.Roles?.PatronTier3 ?? '687408140832342043',
+	Patron: DISCORD_SETTINGS.Roles?.Patron ?? '679620175838183424',
+	Testers: DISCORD_SETTINGS.Roles?.Tester ?? '682052620809928718',
+	MassHoster: DISCORD_SETTINGS.Roles?.MassHoster ?? '734055552933429280',
+	Mass: DISCORD_SETTINGS.Roles?.Mass ?? '711215501543473182',
+	BarbarianAssaultMass: DISCORD_SETTINGS.Roles?.BarbarianAssaultMass ?? '789724904885846016',
+	ChambersOfXericMass: DISCORD_SETTINGS.Roles?.ChambersOfXericMass ?? '836539487815204865',
+	// Top Roles
+	TopSkiller: DISCORD_SETTINGS.Roles?.TopSkiller ?? '795266465329709076',
+	TopCollector: DISCORD_SETTINGS.Roles?.TopCollector ?? '795271210141351947',
+	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '795933981715464192',
+	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '832798997033779220',
+	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '839135887467610123',
+	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '856080958247010324'
+};
 
 export const enum Emoji {
 	MoneyBag = '<:MoneyBag:493286312854683654>',
@@ -140,8 +153,6 @@ export const enum Color {
 	Orange = 16_098_851
 }
 
-export const SupportServer = '342983479501389826';
-
 export const enum Tasks {
 	AgilityActivity = 'agilityActivity',
 	CookingActivity = 'cookingActivity',
@@ -204,7 +215,8 @@ export const enum Tasks {
 	DarkAltar = 'darkAltarActivity',
 	TrekkingActivity = 'templeTrekkingActivity',
 	RevenantsActivity = 'revenantsActivity',
-	PestControl = 'pestControlActivity'
+	PestControl = 'pestControlActivity',
+	VolcanicMine = 'volcanicMineActivity'
 }
 
 export enum Activity {
@@ -269,7 +281,8 @@ export enum Activity {
 	DarkAltar = 'DarkAltar',
 	Trekking = 'Trekking',
 	Revenants = 'Revenants',
-	PestControl = 'PestControl'
+	PestControl = 'PestControl',
+	VolcanicMine = 'VolcanicMine'
 }
 
 export enum ActivityGroup {
@@ -289,13 +302,6 @@ export const enum Events {
 	ServerNotification = 'serverNotification',
 	SkillLevelUp = 'skillLevelUp',
 	EconomyLog = 'economyLog'
-}
-
-export const enum BadgesEnum {
-	Developer = 0,
-	Booster = 1,
-	LimitedPatron = 2,
-	Patron = 3
 }
 
 export const enum PermissionLevelsEnum {
@@ -382,20 +388,36 @@ export const enum PatronTierID {
 	Five = '5262216'
 }
 
+export const enum BadgesEnum {
+	Developer = 0,
+	Booster = 1,
+	LimitedPatron = 2,
+	Patron = 3,
+	Moderator = 4,
+	GreenGem = 5,
+	Bug = 6,
+	GoldenTrophy = 7,
+	TopSacrifice = 8,
+	TopSkiller = 9,
+	TopCollector = 10,
+	TopMinigame = 11,
+	SotWTrophy = 12
+}
+
 export const badges: { [key: number]: string } = {
-	0: Emoji.Spanner,
-	1: Emoji.PinkGem,
-	2: Emoji.Crab,
-	3: Emoji.BigOrangeGem,
-	4: Emoji.Hammer,
-	5: Emoji.GreenGem,
-	6: Emoji.Bug,
-	7: Emoji.Trophy,
-	8: Emoji.Incinerator,
-	9: Emoji.Skiller,
-	10: Emoji.CollectionLog,
-	11: Emoji.MinigameIcon,
-	12: Emoji.SOTWTrophy
+	[BadgesEnum.Developer]: Emoji.Spanner,
+	[BadgesEnum.Booster]: Emoji.PinkGem,
+	[BadgesEnum.LimitedPatron]: Emoji.Crab,
+	[BadgesEnum.Patron]: Emoji.BigOrangeGem,
+	[BadgesEnum.Moderator]: Emoji.Hammer,
+	[BadgesEnum.GreenGem]: Emoji.GreenGem,
+	[BadgesEnum.Bug]: Emoji.Bug,
+	[BadgesEnum.GoldenTrophy]: Emoji.Trophy,
+	[BadgesEnum.TopSacrifice]: Emoji.Incinerator,
+	[BadgesEnum.TopSkiller]: Emoji.Skiller,
+	[BadgesEnum.TopCollector]: Emoji.CollectionLog,
+	[BadgesEnum.TopMinigame]: Emoji.MinigameIcon,
+	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy
 };
 
 export const MAX_QP = 284;
@@ -480,3 +502,8 @@ export const lastTripCache = new Map<
 	string,
 	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
 >();
+
+export const PATRON_ONLY_GEAR_SETUP =
+	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
+
+export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';

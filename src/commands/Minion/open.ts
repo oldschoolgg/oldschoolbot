@@ -6,6 +6,7 @@ import Openable from 'oldschooljs/dist/structures/Openable';
 import { COINS_ID, Events, MIMIC_MONSTER_ID } from '../../lib/constants';
 import { cluesRaresCL } from '../../lib/data/CollectionsExport';
 import botOpenables from '../../lib/data/openables';
+import { emojiMap } from '../../lib/itemEmojiMap';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -46,7 +47,13 @@ export default class extends BotCommand {
 			return 'You have no openable items.';
 		}
 
-		return `You have ${available}.`;
+		let results = [];
+		for (const [item, qty] of available.items()) {
+			let emoji = emojiMap.get(item.id) ?? '';
+			results.push(`${emoji}${qty}x ${item.name}`);
+		}
+
+		return `You have ${results.join(', ')}.`;
 	}
 
 	async run(msg: KlasaMessage, [quantity = 1, name]: [number, string | undefined]) {
@@ -69,7 +76,7 @@ export default class extends BotCommand {
 	}
 
 	async clueOpen(msg: KlasaMessage, quantity: number, clueTier: ClueTier) {
-		if (msg.author.numItemsInBankSync(clueTier.id) < quantity) {
+		if (msg.author.bank().amount(clueTier.id) < quantity) {
 			return msg.channel.send(
 				`You don't have enough ${clueTier.name} Caskets to open!\n\n However... ${await this.showAvailable(
 					msg
@@ -77,7 +84,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemFromBank(clueTier.id, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(clueTier.id, quantity));
 
 		let loot = clueTier.table.open(quantity);
 
@@ -153,13 +160,14 @@ export default class extends BotCommand {
 	}
 
 	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: Openable) {
-		if (msg.author.numItemsInBankSync(osjsOpenable.id) < quantity) {
+		if (msg.author.bank().amount(osjsOpenable.id) < quantity) {
 			return msg.channel.send(
 				`You don't have enough ${osjsOpenable.name} to open!\n\n However... ${await this.showAvailable(msg)}`
 			);
 		}
 
-		await msg.author.removeItemFromBank(osjsOpenable.id, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(osjsOpenable.id, quantity));
+
 		const loot = osjsOpenable.open(quantity, {});
 		const score = msg.author.getOpenableScore(osjsOpenable.id) + quantity;
 		this.client.emit(
@@ -198,13 +206,14 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (msg.author.numItemsInBankSync(botOpenable.itemID) < quantity) {
+		if (msg.author.bank().amount(botOpenable.itemID) < quantity) {
 			return msg.channel.send(
 				`You don't have enough ${botOpenable.name} to open!\n\n However... ${await this.showAvailable(msg)}`
 			);
 		}
 
-		await msg.author.removeItemFromBank(botOpenable.itemID, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(botOpenable.itemID, quantity));
+
 		const score = msg.author.getOpenableScore(botOpenable.itemID);
 		const loot = botOpenable.table.roll(quantity);
 
@@ -230,7 +239,7 @@ export default class extends BotCommand {
 
 		msg.author.incrementOpenableScore(botOpenable.itemID, quantity);
 		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
-		await msg.author.addItemsToBank(loot.values(), true);
+		await msg.author.addItemsToBank(loot.values(), true, false);
 		if (loot.amount('Coins') > 0) {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
 		}

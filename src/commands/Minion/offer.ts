@@ -10,7 +10,6 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { OfferingActivityTaskOptions } from '../../lib/types/minions';
@@ -93,9 +92,8 @@ export default class extends BotCommand {
 			let loot = new Bank();
 			loot.add(whichOfferable.table.roll(quantity));
 
-			filterLootReplace(msg.author.allItemsOwned(), loot);
 			let score = 0;
-			const { previousCL } = await msg.author.addItemsToBank(loot.values(), true);
+			const { previousCL, itemsAdded } = await msg.author.addItemsToBank(loot.values(), true);
 			if (whichOfferable.economyCounter) {
 				score = msg.author.settings.get(whichOfferable.economyCounter) as number;
 				if (typeof quantity !== 'number') quantity = parseInt(quantity);
@@ -107,14 +105,14 @@ export default class extends BotCommand {
 					msg.author,
 					whichOfferable.name,
 					whichOfferable.uniques,
-					loot.bank,
+					itemsAdded,
 					quantity,
 					score + rand(1, quantity)
 				);
 			}
 
 			return msg.channel.sendBankImage({
-				bank: loot.values(),
+				bank: itemsAdded,
 				title: `Loot from offering ${quantity} ${whichOfferable.name}`,
 				flags: { showNewCL: 1 },
 				user: msg.author,
@@ -172,7 +170,7 @@ export default class extends BotCommand {
 					skillName: SkillsEnum.Construction,
 					amount: xp
 				}),
-				msg.author.removeItemFromBank(specialBone.item.id, quantity)
+				msg.author.removeItemsFromBank(new Bank().add(specialBone.item.id, quantity))
 			]);
 			return msg.channel.send(
 				`You handed over ${quantity} ${specialBone.item.name}${
@@ -226,7 +224,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemFromBank(bone.inputId, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(bone.inputId, quantity));
 
 		await addSubTaskToActivityTask<OfferingActivityTaskOptions>({
 			boneID: bone.inputId,

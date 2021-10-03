@@ -3,15 +3,17 @@ import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 
-import { badges, BitField, BitFieldData, Channel, Emoji } from '../../lib/constants';
+import { badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
+import { evalMathExpression } from '../../lib/expressionParser';
 import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
-import { cleanString, formatDuration, getSupportGuild, itemNameFromID } from '../../lib/util';
+import { asyncExec, cleanString, formatDuration, getSupportGuild, getUsername, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
 
@@ -34,15 +36,36 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			enabled: true,
 			runIn: ['text'],
-			usage: '<cmd:str> [user:user|str:...str] [str:...str]',
+			usage: '<cmd:str> [user:user|str:...str] [user:user|str:...str]',
 			usageDelim: ' '
 		});
 	}
 
-	async run(msg: KlasaMessage, [cmd, input, str]: [string, KlasaUser | string | undefined, string | undefined]) {
-		if (msg.guild!.id !== '342983479501389826') return null;
+	async run(
+		msg: KlasaMessage,
+		[cmd, input, str]: [string, KlasaUser | string | undefined, KlasaUser | string | undefined]
+	) {
+		if (msg.guild!.id !== SupportServer) return null;
 
 		switch (cmd.toLowerCase()) {
+			case 'git': {
+				try {
+					const currentCommit = await asyncExec('git log --pretty=oneline -1', {
+						timeout: 30
+					});
+					const rawStr = currentCommit.stdout.trim();
+					const [commitHash, ...commentArr] = rawStr.split(' ');
+					return msg.channel.send({
+						embeds: [
+							new MessageEmbed()
+								.setDescription(`[Diff between latest and now](https://github.com/oldschoolgg/oldschoolbot/compare/${commitHash}...master)
+**Last commit:** [\`${commentArr.join(' ')}\`](https://github.com/oldschoolgg/oldschoolbot/commit/${commitHash})`)
+						]
+					});
+				} catch {
+					return msg.channel.send('Failed to fetch git info.');
+				}
+			}
 			case 'hasequipped': {
 				if (typeof input !== 'string') return;
 				const item = getOSItem(input);
@@ -100,6 +123,70 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
+			case 'addimalt': {
+				if (!input || !(input instanceof KlasaUser)) return;
+				if (!str || !(str instanceof KlasaUser)) return;
+
+				const mainAccount = input;
+				const altAccount = str;
+				if (mainAccount === altAccount) {
+					return msg.channel.send("They're they same account.");
+				}
+				if (mainAccount.isIronman) {
+					return msg.channel.send(`${mainAccount.username} is an ironman.`);
+				}
+				if (!altAccount.isIronman) {
+					return msg.channel.send(`${altAccount.username} is not an ironman.`);
+				}
+				if (!altAccount.bitfield.includes(BitField.PermanentIronman)) {
+					return msg.channel.send(`${altAccount.username} is not a *permanent* ironman.`);
+				}
+
+				await mainAccount.settings.sync(true);
+				await altAccount.settings.sync(true);
+				const peopleWithThisAltAlready = (
+					await this.client.query<any>(`SELECT id FROM users WHERE '${altAccount.id}' = ANY(ironman_alts);`)
+				).length;
+				if (peopleWithThisAltAlready > 0) {
+					return msg.channel.send(`Someone already has ${altAccount.username} as an ironman alt.`);
+				}
+				if (mainAccount.settings.get(UserSettings.MainAccount)) {
+					return msg.channel.send(`${mainAccount.username} has a main account connected already.`);
+				}
+				if (altAccount.settings.get(UserSettings.MainAccount)) {
+					return msg.channel.send(`${altAccount.username} has a main account connected already.`);
+				}
+				const mainAccountsAlts = mainAccount.settings.get(UserSettings.IronmanAlts);
+				if (mainAccountsAlts.includes(altAccount.id)) {
+					return msg.channel.send(`${mainAccount.username} already has ${altAccount.username} as an alt.`);
+				}
+
+				await msg.confirm(
+					`Are you sure that \`${altAccount.username}\` is the alt account of \`${mainAccount.username}\`?`
+				);
+				await mainAccount.settings.update(UserSettings.IronmanAlts, altAccount.id);
+				await altAccount.settings.update(UserSettings.MainAccount, mainAccount.id);
+				return msg.channel.send(
+					`You set \`${altAccount.username}\` as the alt account of \`${mainAccount.username}\`.`
+				);
+			}
+			case 'setprice': {
+				if (typeof input !== 'string') return;
+				const [itemName, rawPrice] = input.split(',');
+				const item = getOSItem(itemName);
+				const price = evalMathExpression(rawPrice);
+				if (!price || price < 1 || price > 1_000_000_000) return;
+				if (!price || isNaN(price)) return msg.channel.send('Invalid price');
+				await msg.confirm(
+					`Are you sure you want to set the price of \`${item.name}\`(ID: ${item.id}, Wiki: ${
+						item.wiki_url
+					}) to \`${price.toLocaleString()}\`?`
+				);
+				const current = this.client.settings.get(ClientSettings.CustomPrices);
+				const newPrices = { ...current, [item.id]: price };
+				await this.client.settings.update(ClientSettings.CustomPrices, newPrices);
+				return msg.channel.send(`Set the price of \`${item.name}\` to \`${price.toLocaleString()}\`.`);
+			}
 			case 'status': {
 				let counter: Record<string, number> = {};
 				for (const key of Object.keys(statusMap)) {
@@ -160,8 +247,10 @@ ${
 
 				const userBadges = input.settings.get(UserSettings.Badges).map(i => badges[i]);
 				const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(input.id);
+
 				return msg.channel.send(
 					`**${input.username}**
+**Perk Tier:** ${getUsersPerkTier(input)}
 **Bitfields:** ${bitfields}
 **Badges:** ${userBadges}
 **Current Task:** ${taskText}
@@ -171,6 +260,18 @@ ${
 						input.settings.get(UserSettings.GithubID) ?? 'None'
 					}
 **Ironman:** ${input.isIronman ? 'Yes' : 'No'}
+
+**Main Account:** ${
+						input.settings.get(UserSettings.MainAccount) !== null
+							? `${getUsername(
+									this.client,
+									input.settings.get(UserSettings.MainAccount)!
+							  )}[${input.settings.get(UserSettings.MainAccount)}]`
+							: 'None'
+					}
+**Ironman Alt Accounts:** ${input.settings
+						.get(UserSettings.IronmanAlts)
+						.map(id => `${getUsername(this.client, id)}[${id}]`)}
 `
 				);
 			}
@@ -195,7 +296,7 @@ ${
 			}
 			case 'setgh': {
 				if (!input || !(input instanceof KlasaUser)) return;
-				if (!str) return;
+				if (!str || typeof str !== 'string') return;
 				const res = await fetch(`https://api.github.com/users/${encodeURIComponent(str)}`)
 					.then(res => res.json())
 					.catch(() => null);
@@ -232,7 +333,7 @@ ${
 			}
 
 			case 'bf': {
-				if (!input || !str || !(input instanceof KlasaUser)) {
+				if (!input || !str || !(input instanceof KlasaUser) || typeof str !== 'string') {
 					return msg.channel.send(
 						Object.entries(BitFieldData)
 							.map(entry => `**${entry[0]}:** ${entry[1]?.name}`)
@@ -277,7 +378,7 @@ ${
 			}
 
 			case 'badges': {
-				if (!input || !str || !(input instanceof KlasaUser)) {
+				if (!input || !str || !(input instanceof KlasaUser) || typeof str !== 'string') {
 					return msg.channel.send(
 						Object.entries(badges)
 							.map(entry => `**${entry[1]}:** ${entry[0]}`)

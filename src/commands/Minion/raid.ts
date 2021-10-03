@@ -87,7 +87,7 @@ export default class extends BotCommand {
 				msg.author.getMinigameScore('RaidsChallengeMode')
 			]);
 			let totalUniques = 0;
-			const cl = new Bank(msg.author.collectionLog);
+			const cl = msg.author.cl();
 			for (const item of uniques) {
 				totalUniques += cl.amount(item);
 			}
@@ -152,6 +152,9 @@ export default class extends BotCommand {
 				);
 			}
 		}
+		if (msg.author.minionIsBusy) {
+			return msg.channel.send("Your minion is busy, so you can't start a raid.");
+		}
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
@@ -167,7 +170,7 @@ export default class extends BotCommand {
 					return [true, 'your minion is busy.'];
 				}
 				if (!hasMinRaidsRequirements(user)) {
-					return [true, "You meet the stat requirements to do the Chamber's of Xeric."];
+					return [true, "You don't meet the stat requirements to do the Chamber's of Xeric."];
 				}
 
 				if (!user.owns(minimumCoxSuppliesNeeded)) {

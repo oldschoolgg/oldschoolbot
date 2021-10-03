@@ -1,8 +1,10 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
-import { GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
+import { PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../lib/constants';
+import { GearSetupType, GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -18,7 +20,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '<melee|mage|range|skilling|misc|wildy> [quantity:integer{1}] (item:...item)',
+			usage: `<${GearSetupTypes.join('|')}> [quantity:integer{1}] (item:...item)`,
 			usageDelim: ' ',
 			description: 'Equips an item to one of your gear setups. (melee/range/range/skilling/misc)',
 			examples: ['+equip skilling graceful hood', '+equip melee bandos godsword', '+equip mage staff of fire'],
@@ -29,7 +31,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(
 		msg: KlasaMessage,
-		[gearType, quantity = 1, itemArray]: [GearSetupTypes, number, Item[]]
+		[gearType, quantity = 1, itemArray]: [GearSetupType, number, Item[]]
 	): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
 			return msg.channel.send(
@@ -47,6 +49,10 @@ export default class extends BotCommand {
 
 		const { slot } = itemToEquip.equipment!;
 		const currentEquippedGear = msg.author.getGear(gearType).raw();
+
+		if (gearType === 'other' && msg.author.perkTier < PerkTier.Four) {
+			return msg.channel.send(PATRON_ONLY_GEAR_SETUP);
+		}
 
 		/**
 		 * Handle 2h items
@@ -85,7 +91,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (gearType === GearSetupTypes.Wildy) {
+		if (gearType === 'wildy') {
 			await msg.confirm(WILDY_PRESET_WARNING_MESSAGE);
 		}
 		/**
@@ -110,7 +116,8 @@ export default class extends BotCommand {
 			return this.run(msg, [gearType, quantity, [itemToEquip]]);
 		}
 
-		await msg.author.removeItemFromBank(itemToEquip.id, quantity);
+		await msg.author.removeItemsFromBank(new Bank().add(itemToEquip.id, quantity));
+
 		const newGear = { ...currentEquippedGear };
 		newGear[slot] = {
 			item: itemToEquip.id,

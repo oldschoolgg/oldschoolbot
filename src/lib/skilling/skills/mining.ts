@@ -70,7 +70,7 @@ const ores: Ore[] = [
 		xp: 10,
 		id: 21_622,
 		name: 'Volcanic ash',
-		respawnTime: 0.05,
+		respawnTime: 1.9,
 		petChance: 741_600
 	},
 	{
