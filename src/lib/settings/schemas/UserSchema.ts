@@ -37,6 +37,8 @@ Client.defaultUserSchema
 	.add('farming_patch_reminders', 'boolean', { default: true })
 	.add('pest_control_points', 'integer', { default: 0 })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
+	.add('ironman_alts', 'string', { array: true, default: [] })
+	.add('main_account', 'string', { default: null })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })
