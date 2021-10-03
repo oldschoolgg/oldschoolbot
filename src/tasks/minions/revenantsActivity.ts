@@ -101,6 +101,7 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
+				const flags: Record<string, string> = skulled ? { skull: 'skull' } : {};
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				if (!res.prompter) res.prompter = {};
