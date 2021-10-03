@@ -24,9 +24,9 @@ import { blowpipeDarts } from './blowpipe';
 
 const minimumRangeItems = [
 	'Amulet of fury',
-	"Ancient d'hide body",
-	'Ancient chaps',
-	'Dragon crossbow',
+	"Karil's leathertop",
+	"Karil's leatherskirt",
+	'Armadyl crossbow',
 	'Barrows gloves',
 	"Ava's assembler",
 	'Snakeskin boots'
@@ -36,7 +36,7 @@ export const minimumRangeAttackStat = sumArr(minimumRangeItems.map(i => i.equipm
 
 const minimumMageItems = [
 	'Amulet of fury',
-	'Saradomin cape',
+	'Imbued guthix cape',
 	"Ahrim's robetop",
 	"Ahrim's robeskirt",
 	'Barrows gloves',
@@ -294,6 +294,37 @@ export default class extends BotCommand {
 		const rangeGear = user.getGear('range');
 		const mageGear = user.getGear('mage');
 
+		for (const key of ['feet', 'body', 'hands', 'cape', 'ring', 'neck', 'legs', 'head'] as const) {
+			for (const [gear, name] of [
+				[rangeGear, 'range'],
+				[mageGear, 'mage']
+			] as const) {
+				if (!gear[key]) {
+					return `You have nothing in your ${key} slot in your ${name} setup.. are you crazy?`;
+				}
+			}
+		}
+
+		if (mageGear.stats.attack_magic < minimumMageAttackStat) {
+			return 'Your mage gear is too bad! You die quickly.';
+		}
+
+		if (rangeGear.stats.attack_ranged < minimumRangeAttackStat) {
+			return 'Your range gear is too bad! You die quickly.';
+		}
+
+		duration.add(
+			rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chestplate'),
+			3,
+			'Armadyl'
+		);
+
+		duration.add(
+			mageGear.hasEquipped('Ancestral robe top') && mageGear.hasEquipped('Ancestral robe bottom'),
+			4,
+			'Ancestral'
+		);
+
 		preZukDeathChance.add(
 			rangeGear.hasEquipped('Elysian spirit shield') || mageGear.hasEquipped('Elysian spirit shield'),
 			-5,
@@ -390,6 +421,9 @@ export default class extends BotCommand {
 		duration.value = randomVariation(duration.value, (randInt(1, 10) + randInt(1, 10) + randInt(1, 10)) / 3);
 
 		const fakeDuration = Math.floor(duration.value);
+
+		preZukDeathChance.value = Math.min(preZukDeathChance.value, 100);
+		zukDeathChance.value = Math.min(zukDeathChance.value, 100);
 
 		const diedPreZuk = percentChance(preZukDeathChance.value);
 		const diedZuk = percentChance(zukDeathChance.value);
@@ -533,7 +567,7 @@ export default class extends BotCommand {
 					: `*(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*`
 			}
 
-**Item's To Be Used:** ${realCost}`,
+**Items To Be Used:** ${realCost}`,
 			files: [
 				await chatHeadImage({
 					content: "You're on your own now JalYt, you face certain death... prepare to fight for your life.",

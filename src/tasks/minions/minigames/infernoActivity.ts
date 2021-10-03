@@ -6,6 +6,7 @@ import { TzKalZuk } from 'oldschooljs/dist/simulation/monsters/special/TzKalZuk'
 import { Emoji, Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
@@ -36,7 +37,14 @@ export default class extends Task {
 		const attempts = oldAttempts + 1;
 		await user.settings.update(UserSettings.InfernoAttempts, attempts);
 
-		const percentMadeItThrough = deathTime === null ? 100 : 100 - calcWhatPercent(deathTime, fakeDuration);
+		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
+
+		console.log({
+			percentMadeItThrough,
+			diedAt: formatDuration(deathTime ?? 0),
+			outOf: formatDuration(fakeDuration),
+			percent: calcWhatPercent(deathTime ?? 0, fakeDuration)
+		});
 
 		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
 		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
@@ -74,9 +82,11 @@ export default class extends Task {
 			user.getKC(Monsters.TzKalZuk.id)
 		)} time! Please accept this cape as a token of appreciation.`;
 
+		const percSuppliesRefunded = Math.max(0, Math.min(100, 100 - percentMadeItThrough));
+
 		if (deathTime) {
 			for (const [item, qty] of cost.items()) {
-				const amount = Math.floor(calcPercentOfNum(percentMadeItThrough, qty));
+				const amount = Math.floor(calcPercentOfNum(percSuppliesRefunded, qty));
 				if (amount > 0) {
 					unusedItems.add(item.id, amount);
 				}
@@ -104,6 +114,14 @@ export default class extends Task {
 			text += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
 		}
 
+		if (unusedItems.length > 0) {
+			await user.addItemsToBank(unusedItems, false);
+
+			const current = new Bank(this.client.settings.get(ClientSettings.EconomyStats.InfernoCost));
+			const newBank = current.remove(unusedItems);
+			await this.client.settings.update(ClientSettings.EconomyStats.InfernoCost, newBank.bank);
+		}
+
 		if (diedPreZuk) {
 			text = `You died ${formatDuration(deathTime!)} into your attempt, before you reached Zuk.`;
 			chatText = `You die before you even reach TzKal-Zuk...atleast you tried, I give you ${baseBank.amount(
@@ -120,7 +138,6 @@ export default class extends Task {
 			baseBank.add(Monsters.TzKalZuk.kill(1, { onSlayerTask: isOnTask }));
 
 			await user.addItemsToBank(baseBank, true);
-			await user.addItemsToBank(unusedItems, false);
 
 			if (baseBank.has('Jal-nib-rek')) {
 				this.client.emit(
@@ -159,8 +176,14 @@ export default class extends Task {
 			`${user} ${text}
 			
 **Loot:** ${baseBank}
-**Items Refunded:** ${unusedItems}
 **XP:** ${xpStr}
+You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
+				unusedItems.length
+					? `, you didn't use ${percSuppliesRefunded.toFixed(
+							2
+					  )}% of your supplies, ${unusedItems} was returned to your bank`
+					: '.'
+			}.
 `,
 			res => {
 				user.log('continued trip of inferno');

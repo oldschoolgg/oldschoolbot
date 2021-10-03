@@ -598,7 +598,9 @@ export default class extends Extendable {
 			return [mon.name, this.getKC((mon as unknown as Monster).id)];
 		}
 
-		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
+		const minigame = Minigames.find(
+			game => stringMatches(game.name, kcName) || game.aliases.some(alias => stringMatches(alias, kcName))
+		);
 		if (minigame) {
 			return [minigame.name, await this.getMinigameScore(minigame.key)];
 		}
