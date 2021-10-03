@@ -3,6 +3,7 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { UserSettings } from '../../settings/types/UserSettings';
+import { stringMatches } from '../../util';
 import { Skills } from './../../types/index';
 
 export interface UserKourendFavour {
@@ -107,10 +108,19 @@ export const KourendFavours: KourendFavour[] = [
 	}
 ];
 
-export function needFavour(user: KlasaUser, favour: KourendFavour, neededPoints: number): [boolean, number] {
+export function findFavour(favourName: string): KourendFavour | undefined {
+	return KourendFavours.find(
+		item =>
+			stringMatches(favourName, item.name) ||
+			(item.alias && item.alias.some(alias => stringMatches(alias, favourName)))
+	);
+}
+
+export function gotFavour(user: KlasaUser, favour: KourendFavour | undefined, neededPoints: number): [boolean, number] {
 	const currentUserFavour = user.settings.get(UserSettings.KourendFavour);
 	let gotEnoughPoints = false;
 	let currentPoints = 0;
+	if (!favour) return [gotEnoughPoints, currentPoints];
 	for (const [key, value] of Object.entries(currentUserFavour) as [keyof UserKourendFavour, number][]) {
 		if (key.toLowerCase() === favour.name.toLowerCase()) {
 			if (value >= neededPoints) gotEnoughPoints = true;

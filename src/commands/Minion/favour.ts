@@ -6,9 +6,9 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { KourendFavourActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { baseUserKourendFavour, KourendFavours } from './../../lib/minions/data/kourendFavour';
+import { baseUserKourendFavour, findFavour, KourendFavours } from './../../lib/minions/data/kourendFavour';
 import { SkillsEnum } from './../../lib/skilling/types';
 
 export default class extends BotCommand {
@@ -29,11 +29,7 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage, [favourName]: [string | undefined]) {
 		if (!favourName) return msg.channel.send('Insert picture here Fishy');
-		const favour = KourendFavours.find(
-			item =>
-				stringMatches(favourName, item.name) ||
-				(item.alias && item.alias.some(alias => stringMatches(alias, favourName)))
-		);
+		const favour = findFavour(favourName);
 		if (!favour) {
 			return msg.channel.send(
 				`Cannot find matching Kourend Favour. Possible Favours are: ${KourendFavours.map(i => i.name).join(

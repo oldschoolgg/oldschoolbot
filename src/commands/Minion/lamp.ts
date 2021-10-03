@@ -125,9 +125,22 @@ const XPObjects: IXPObject[] = [
 		function: data => {
 			const skills: Skills = {};
 			for (const skill of objectValues(SkillsEnum)) {
+				if (skill !== SkillsEnum.Magic && skill !== SkillsEnum.Runecraft) continue;
 				skills[skill] =
-					data.user.skillLevel(skill) *
-					([SkillsEnum.Magic, SkillsEnum.Runecraft].includes(skill) ? 11 : 4) *
+					data.user.skillLevel(skill) * ([SkillsEnum.Magic].includes(skill) ? 11 : 4) * data.quantity;
+			}
+			return [skills, undefined];
+		}
+	},
+	{
+		items: resolveItems(['Training manual']),
+		function: data => {
+			const skills: Skills = {};
+			for (const skill of objectValues(SkillsEnum)) {
+				if (![SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Hitpoints].includes(skill))
+					continue;
+				skills[skill] =
+					Math.round(Number(Math.pow(data.user.skillLevel(skill), 2)) / 4 + 7 * data.user.skillLevel(skill)) *
 					data.quantity;
 			}
 			return [skills, undefined];
