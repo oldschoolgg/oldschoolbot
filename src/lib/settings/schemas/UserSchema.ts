@@ -2,6 +2,7 @@ import { Client, SchemaFolder } from 'klasa';
 
 import { FarmingPatchTypes } from '../../minions/farming/types';
 import { SkillsEnum } from '../../skilling/types';
+import { baseUserKourendFavour } from './../../minions/data/kourendFavour';
 
 Client.defaultUserSchema
 	.add('GP', 'integer', { default: 0 })
@@ -37,6 +38,7 @@ Client.defaultUserSchema
 	.add('farming_patch_reminders', 'boolean', { default: true })
 	.add('pest_control_points', 'integer', { default: 0 })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
+	.add('kourand_favour', 'any', { default: baseUserKourendFavour })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })

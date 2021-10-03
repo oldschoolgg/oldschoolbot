@@ -119,6 +119,19 @@ const XPObjects: IXPObject[] = [
 			}
 			return [skills, requirements];
 		}
+	},
+	{
+		items: resolveItems(['Book of arcane knowledge']),
+		function: data => {
+			const skills: Skills = {};
+			for (const skill of objectValues(SkillsEnum)) {
+				skills[skill] =
+					data.user.skillLevel(skill) *
+					([SkillsEnum.Magic, SkillsEnum.Runecraft].includes(skill) ? 11 : 4) *
+					data.quantity;
+			}
+			return [skills, undefined];
+		}
 	}
 ];
 

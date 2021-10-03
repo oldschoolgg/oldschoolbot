@@ -61,6 +61,7 @@ import {
 	GroupMonsterActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
+	KourendFavourActivityTaskOptions,
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
@@ -567,6 +568,10 @@ export default class extends Extendable {
 			case Activity.VolcanicMine: {
 				const data = currentTask as VolcanicMineActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity} games of Volcanic Mine. ${formattedDuration}`;
+			}
+			case Activity.KourendFavour: {
+				const data = currentTask as KourendFavourActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.favour.name} Favour tasks. ${formattedDuration}`;
 			}
 		}
 	}
