@@ -8,7 +8,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { KourendFavourActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { KourendFavours } from './../../lib/minions/data/kourendFavour';
+import { baseUserKourendFavour, KourendFavours } from './../../lib/minions/data/kourendFavour';
 import { SkillsEnum } from './../../lib/skilling/types';
 
 export default class extends BotCommand {
@@ -42,6 +42,7 @@ export default class extends BotCommand {
 			);
 		}
 		const currentUserFavour = msg.author.settings.get(UserSettings.KourendFavour);
+		msg.author.settings.update(UserSettings.KourendFavour, baseUserKourendFavour);
 		const maxTripLength = msg.author.maxTripLength(Activity.KourendFavour);
 		let currentPoints = 0;
 		for (const [key, value] of Object.entries(currentUserFavour)) {

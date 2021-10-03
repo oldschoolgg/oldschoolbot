@@ -1,6 +1,8 @@
 import { Time } from 'e';
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { UserSettings } from '../../settings/types/UserSettings';
 import { Skills } from './../../types/index';
 
 export interface UserKourendFavour {
@@ -27,7 +29,7 @@ export interface KourendFavour {
 	skillReqs?: Skills;
 	xp?: number;
 	itemCost?: Bank;
-	itemsRecieved?: Bank;
+	itemsRecieved: Bank | null;
 	qpRequired?: number;
 }
 
@@ -52,7 +54,8 @@ export const KourendFavours: KourendFavour[] = [
 		itemCost: new Bank({
 			Compost: 475,
 			Saltpetre: 475
-		})
+		}),
+		itemsRecieved: null
 	},
 	{
 		name: 'Lovakengj',
@@ -64,7 +67,7 @@ export const KourendFavours: KourendFavour[] = [
 			smithing: 73
 		},
 		itemsRecieved: new Bank({
-			Sulphur: 9
+			'Volcanic sulphur': 9
 		})
 	},
 	{
@@ -79,7 +82,8 @@ export const KourendFavours: KourendFavour[] = [
 		itemCost: new Bank({
 			Plank: 45,
 			'Steel bar': 25
-		})
+		}),
+		itemsRecieved: null
 	},
 	{
 		name: 'Shayzien',
@@ -102,3 +106,17 @@ export const KourendFavours: KourendFavour[] = [
 		})
 	}
 ];
+
+export function needFavour(user: KlasaUser, favour: KourendFavour, neededPoints: number): [boolean, number] {
+	const currentUserFavour = user.settings.get(UserSettings.KourendFavour);
+	let gotEnoughPoints = false;
+	let currentPoints = 0;
+	for (const [key, value] of Object.entries(currentUserFavour) as [keyof UserKourendFavour, number][]) {
+		if (key.toLowerCase() === favour.name.toLowerCase()) {
+			if (value >= neededPoints) gotEnoughPoints = true;
+			currentPoints = value;
+			break;
+		}
+	}
+	return [gotEnoughPoints, currentPoints];
+}
