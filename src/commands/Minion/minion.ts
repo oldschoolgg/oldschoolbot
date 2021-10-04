@@ -60,7 +60,7 @@ export default class MinionCommand extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|ironman] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|open|kc|pat|stats|ironman] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			requiredPermissions: ['EMBED_LINKS']
@@ -400,6 +400,11 @@ Please click the buttons below for important links.`
 	@requiresMinion
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
 		runCommand(msg, 'mclue', [quantity, tierName]);
+	}
+
+	@requiresMinion
+	async open(msg: KlasaMessage, [quantity, casketTierName]: [number | string, string]) {
+		runCommand(msg, 'open', [quantity, casketTierName]);
 	}
 
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {

@@ -13,6 +13,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
+import { clueScrollinLootShortcut } from '../../lib/util/clueScrollinLootShortcut';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 
@@ -149,14 +150,13 @@ export default class extends BotCommand {
 			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 		}
 
-		return msg.channel.sendBankImage({
-			bank: loot,
-			content: `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.`,
-			title: opened,
-			flags: { showNewCL: 1, ...msg.flagArgs },
-			user: msg.author,
-			cl: previousCL
-		});
+		const { image } = await this.client.tasks
+			.get('bankImage')!
+			.generateBankImage(loot, opened, true, { showNewCL: 1, ...msg.flagArgs }, msg.author, previousCL);
+
+		let content = `You have completed ${nthCasket} ${clueTier.name.toLowerCase()} Treasure Trails.`;
+
+		clueScrollinLootShortcut(this.client, msg.author, msg.channel, loot, content, image);
 	}
 
 	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: Openable) {
@@ -182,14 +182,20 @@ export default class extends BotCommand {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot[COINS_ID]);
 		}
 
-		return msg.channel.sendBankImage({
-			bank: loot,
-			content: `You have opened the ${osjsOpenable.name.toLowerCase()} ${score.toLocaleString()} times.`,
-			title: `You opened ${quantity} ${osjsOpenable.name}`,
-			flags: { showNewCL: 1, ...msg.flagArgs },
-			user: msg.author,
-			cl: previousCL
-		});
+		const { image } = await this.client.tasks
+			.get('bankImage')!
+			.generateBankImage(
+				loot,
+				`You opened ${quantity} ${osjsOpenable.name}`,
+				true,
+				{ showNewCL: 1, ...msg.flagArgs },
+				msg.author,
+				previousCL
+			);
+
+		let content = `You have opened the ${osjsOpenable.name.toLowerCase()} ${score.toLocaleString()} times.`;
+
+		clueScrollinLootShortcut(this.client, msg.author, msg.channel, loot, content, image);
 	}
 
 	async botOpenablesOpen(msg: KlasaMessage, quantity: number, name: string) {
@@ -244,15 +250,21 @@ export default class extends BotCommand {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
 		}
 
-		return msg.channel.sendBankImage({
-			bank: loot.values(),
-			content: `You have opened the ${botOpenable.name.toLowerCase()} ${(
-				score + quantity
-			).toLocaleString()} times.`,
-			title: `You opened ${quantity} ${botOpenable.name}`,
-			flags: { showNewCL: 1, ...msg.flagArgs },
-			user: msg.author,
-			cl: previousCL
-		});
+		const { image } = await this.client.tasks
+			.get('bankImage')!
+			.generateBankImage(
+				loot.values(),
+				`You opened ${quantity} ${botOpenable.name}`,
+				true,
+				{ showNewCL: 1, ...msg.flagArgs },
+				msg.author,
+				previousCL
+			);
+
+		let content = `You have opened the ${botOpenable.name.toLowerCase()} ${(
+			score + quantity
+		).toLocaleString()} times.`;
+
+		clueScrollinLootShortcut(this.client, msg.author, msg.channel, loot.values(), content, image);
 	}
 }

@@ -48,6 +48,7 @@ export async function handleTripFinish(
 	}
 
 	const clueReceived = loot ? clueTiers.find(tier => loot[tier.scrollID] > 0) : undefined;
+	const casketReceived = loot ? clueTiers.find(tier => loot[tier.id] > 0) : undefined;
 	const unsiredReceived = loot ? loot[itemID('Unsired')] > 0 : undefined;
 
 	if (clueReceived) {
@@ -56,6 +57,12 @@ export async function handleTripFinish(
 			message += ` Say \`c\` if you want to complete this ${clueReceived.name} clue now.`;
 		} else {
 			message += 'You can get your minion to complete them using `+minion clue easy/medium/etc`';
+		}
+	}
+
+	if (casketReceived) {
+		if (perkTier > PerkTier.One) {
+			message += `, or say \`o\` if you want to open this ${Emoji.Casket} **${casketReceived.name} reward casket** now.`;
 		}
 	}
 
@@ -99,7 +106,7 @@ export async function handleTripFinish(
 		}
 	});
 
-	if (!onContinue && !clueReceived) return;
+	if (!onContinue && !clueReceived && !casketReceived) return;
 
 	const existingCollector = collectors.get(user.id);
 
@@ -115,7 +122,10 @@ export async function handleTripFinish(
 	if (!channelIsSendable(channel)) return;
 	const collector = new MessageCollector(channel, {
 		filter: (mes: Message) =>
-			mes.author === user && (mes.content.toLowerCase() === 'c' || stringMatches(mes.content, continuationChar)),
+			mes.author === user &&
+			(mes.content.toLowerCase() === 'o' ||
+				mes.content.toLowerCase() === 'c' ||
+				stringMatches(mes.content, continuationChar)),
 		time: perkTier > PerkTier.One ? Time.Minute * 10 : Time.Minute * 2,
 		max: 1
 	});
@@ -132,6 +142,9 @@ export async function handleTripFinish(
 		try {
 			if (mes.content.toLowerCase() === 'c' && clueReceived && perkTier > PerkTier.One) {
 				(client.commands.get('minion') as unknown as MinionCommand).clue(mes, [1, clueReceived.name]);
+				return;
+			} else if (mes.content.toLowerCase() === 'o' && casketReceived && perkTier > PerkTier.One) {
+				(client.commands.get('minion') as unknown as MinionCommand).open(mes, [1, casketReceived.name]);
 				return;
 			} else if (onContinue && stringMatches(mes.content, continuationChar)) {
 				await onContinue(mes).catch(err => {
