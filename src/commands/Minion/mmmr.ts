@@ -72,7 +72,7 @@ export default class extends BotCommand {
 			description: 'Sends your minion to do the Monkey Rumble minigame.',
 			examples: ['=mr [start|buy]'],
 			subcommands: true,
-			usage: '[start|buy] [buyableOrGamble:...string]',
+			usage: '[start|buy] [qty:int{1}] [buyableOrGamble:...string]',
 			usageDelim: ' ',
 			aliases: ['mr', 'mmr', 'rumble']
 		});
@@ -94,7 +94,7 @@ export default class extends BotCommand {
 		);
 	}
 
-	async buy(msg: KlasaMessage, [input = '']: [string]) {
+	async buy(msg: KlasaMessage, [qty = 1, input = '']: [number, string]) {
 		const buyable = buyables.find(
 			i => stringMatches(input, i.item.name) || i.aliases.some(a => stringMatches(a, input))
 		);
@@ -125,7 +125,7 @@ Here are the items you can buy: \n\n${buyables
 			if (msg.author.hasItemEquippedOrInBank('Beginner rumble greegree')) {
 				return msg.channel.send('You already have one.');
 			}
-			await msg.author.addItemsToBank({ [beginnerGreegree.id]: 1 }, true);
+			await msg.author.addItemsToBank({ [beginnerGreegree.id]: qty }, true);
 			return msg.channel.send({
 				files: [
 					await chatHeadImage({
@@ -148,16 +148,18 @@ Here are the items you can buy: \n\n${buyables
 		const { item, cost } = buyable;
 		const bank = msg.author.bank();
 		const balance = bank.amount('Rumble token');
-		if (balance < cost) {
+		if (balance < cost * qty) {
 			return msg.channel.send(
-				`You don't have enough Rumble tokens to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`
+				`You don't have enough Rumble tokens to buy ${qty}x ${item.name}. You need ${
+					qty * cost
+				}, but you have only ${balance}.`
 			);
 		}
 
-		await msg.author.removeItemsFromBank(new Bank().add('Rumble token', cost));
-		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
+		await msg.author.removeItemsFromBank(new Bank().add('Rumble token', cost * qty));
+		await msg.author.addItemsToBank({ [item.id]: qty }, true);
 
-		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Rumble tokens.`);
+		return msg.channel.send(`Successfully purchased ${qty}x ${item.name} for ${qty * cost} Rumble tokens.`);
 	}
 
 	@minionNotBusy
