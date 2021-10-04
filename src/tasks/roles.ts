@@ -36,7 +36,7 @@ const minigames = [
 
 const collections = [
 	'overall',
-	'pets',
+	'rolepets',
 	'skilling',
 	'clues',
 	'bosses',
