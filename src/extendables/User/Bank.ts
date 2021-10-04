@@ -237,6 +237,15 @@ export default class extends Extendable {
 		}
 
 		if (dart) {
+			if (hasAvas) {
+				let ammoCopy = dart![1];
+				for (let i = 0; i < ammoCopy; i++) {
+					if (percentChance(80)) {
+						realCost.remove(dart[0].id, 1);
+						dart![1]--;
+					}
+				}
+			}
 			const scales = Math.ceil((10 / 3) * dart[1]);
 			const rawBlowpipeData = this.settings.get(UserSettings.Blowpipe);
 			if (!this.owns('Toxic blowpipe') || !rawBlowpipeData) {
@@ -256,15 +265,6 @@ export default class extends Extendable {
 				throw new Error(
 					`You don't have enough Zulrah's scales in your Toxic blowpipe, you need ${scales} but you have only ${rawBlowpipeData.scales}.`
 				);
-			}
-			if (hasAvas) {
-				let ammoCopy = dart![1];
-				for (let i = 0; i < ammoCopy; i++) {
-					if (percentChance(80)) {
-						realCost.remove(dart[0].id, 1);
-						dart![1]--;
-					}
-				}
 			}
 			removeFns.push(() => {
 				const bpData = { ...this.settings.get(UserSettings.Blowpipe) };
