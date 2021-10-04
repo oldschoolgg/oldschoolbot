@@ -54,6 +54,8 @@ export namespace UserSettings {
 	export const PestControlPoints = T<number>('pest_control_points');
 	export const VolcanicMinePoints = T<number>('volcanic_mine_points');
 	export const FavoriteFood = T<readonly number[]>('favorite_food');
+	export const IronmanAlts = T<readonly string[]>('ironman_alts');
+	export const MainAccount = T<string | null>('main_account');
 
 	export const InfernoAttempts = T<number>('inferno_attempts');
 	export const InfernoCapeSacrifices = T<number>('inferno_cape_sacrifices');

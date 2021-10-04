@@ -78,8 +78,8 @@ export default class extends Task {
 		}
 
 		let text = '';
-		let chatText = `You are very impressive for a JalYt. You managed to defeat TzKal-Zul for the ${formatOrdinal(
-			user.getKC(Monsters.TzKalZuk.id)
+		let chatText = `You are very impressive for a JalYt. You managed to defeat TzKal-Zuk for the ${formatOrdinal(
+			user.getKC(Monsters.TzKalZuk.id) + 1
 		)} time! Please accept this cape as a token of appreciation.`;
 
 		const percSuppliesRefunded = Math.max(0, Math.min(100, 100 - percentMadeItThrough));

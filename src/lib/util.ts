@@ -492,3 +492,7 @@ export function countUsersWithItemInCl(client: KlasaClient, _item: string) {
 	const query = `SELECT COUNT(id) FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL AND "collectionLogBank"->>'${item.id}'::int >= 1;`;
 	return client.query(query);
 }
+
+export function getUsername(client: KlasaClient, id: string): string {
+	return (client.commands.get('leaderboard') as any)!.getUsername(id);
+}

@@ -1,4 +1,5 @@
 import { Guild } from 'discord.js';
+import { noOp } from 'e';
 import { Task } from 'klasa';
 
 import { CLUser, SkillUser } from '../commands/Minion/leaderboard';
@@ -84,13 +85,15 @@ async function addRoles({
 	for (const mem of g.members.cache.values()) {
 		if (mem.roles.cache.has(role) && !users.includes(mem.user.id)) {
 			if (production) {
-				await mem.roles.remove(role);
+				await mem.roles.remove(role).catch(noOp);
 			}
 			if (badge && mem.user.settings.get(UserSettings.Badges).includes(badge)) {
 				await mem.user.settings.sync(true);
-				await mem.user.settings.update(UserSettings.Badges, badge, {
-					arrayAction: 'remove'
-				});
+				await mem.user.settings
+					.update(UserSettings.Badges, badge, {
+						arrayAction: 'remove'
+					})
+					.catch(noOp);
 			}
 			removed.push(mem.user.username);
 		}
@@ -98,13 +101,15 @@ async function addRoles({
 		if (users.includes(mem.user.id)) {
 			if (production && !mem.roles.cache.has(role)) {
 				added.push(mem.user.username);
-				await mem.roles.add(role);
+				await mem.roles.add(role).catch(noOp);
 			}
 			if (badge && !mem.user.settings.get(UserSettings.Badges).includes(badge)) {
 				await mem.user.settings.sync(true);
-				await mem.user.settings.update(UserSettings.Badges, badge, {
-					arrayAction: 'add'
-				});
+				await mem.user.settings
+					.update(UserSettings.Badges, badge, {
+						arrayAction: 'add'
+					})
+					.catch(noOp);
 			}
 		}
 	}
@@ -309,6 +314,46 @@ LIMIT 1;`
 			});
 		}
 
+		// Top farmers
+		async function farmers() {
+			const queries = [
+				`SELECT id, 'Top 2 Farming Contracts' as desc
+FROM users
+WHERE "minion.farmingContract" IS NOT NULL
+AND "minion.ironman" = true
+ORDER BY ("minion.farmingContract"->>'contractsCompleted')::int DESC
+LIMIT 2;`,
+				`SELECT id, 'Top 2 Ironman Farming Contracts' as desc
+FROM users
+WHERE "minion.farmingContract" IS NOT NULL
+ORDER BY ("minion.farmingContract"->>'contractsCompleted')::int DESC
+LIMIT 2;`,
+				`SELECT user_id as id, 'Top 2 Most Farming Trips' as desc
+FROM activity
+WHERE type = 'Farming'
+GROUP BY user_id
+ORDER BY count(user_id) DESC
+LIMIT 2;`,
+				`SELECT id, 'Top 2 Tithe Farm' as desc
+FROM users
+ORDER BY "stats.titheFarmsCompleted" DESC
+LIMIT 2;`
+			];
+			let res = (await Promise.all(queries.map(q))).map((i: any) => [i[0]?.id, i[0]?.desc]);
+			let userMap = {};
+			for (const [id, desc] of res) {
+				addToUserMap(userMap, id, desc);
+			}
+
+			result += await addRoles({
+				g: g!,
+				users: res.map(i => i[0]),
+				role: '894194027363205150',
+				badge: null,
+				userMap
+			});
+		}
+
 		// Top slayers
 		async function slayer() {
 			let topSlayers = (
@@ -339,7 +384,8 @@ LIMIT 1;`
 			['Top Minigamers', topMinigamers],
 			['Top Sacrificers', topSacrificers],
 			['Top Collectors', topCollector],
-			['Top Skillers', topSkillers]
+			['Top Skillers', topSkillers],
+			['Top Farmers', farmers]
 		] as const;
 
 		let failed: string[] = [];

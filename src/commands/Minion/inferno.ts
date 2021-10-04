@@ -26,13 +26,14 @@ const minimumRangeItems = [
 	'Amulet of fury',
 	"Karil's leathertop",
 	"Karil's leatherskirt",
-	'Armadyl crossbow',
 	'Barrows gloves',
+	'Twisted bow',
 	"Ava's assembler",
 	'Snakeskin boots'
 ].map(getOSItem);
 
-export const minimumRangeAttackStat = sumArr(minimumRangeItems.map(i => i.equipment!.attack_ranged));
+const minimumRangeAttackStat = sumArr(minimumRangeItems.map(i => i.equipment!.attack_ranged));
+const minimumRangeMagicDefenceStat = sumArr(minimumRangeItems.map(i => i.equipment!.defence_magic));
 
 const minimumMageItems = [
 	'Amulet of fury',
@@ -44,7 +45,8 @@ const minimumMageItems = [
 	'Ancient staff'
 ].map(getOSItem);
 
-export const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipment!.attack_magic));
+const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipment!.attack_magic));
+const minimumMageMagicDefenceStat = sumArr(minimumMageItems.map(i => i.equipment!.defence_magic));
 
 const itemRequirements = new Bank().add('Rune pouch');
 
@@ -305,11 +307,17 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (mageGear.stats.attack_magic < minimumMageAttackStat) {
+		if (
+			mageGear.stats.attack_magic < minimumMageAttackStat ||
+			mageGear.stats.defence_magic < minimumMageMagicDefenceStat
+		) {
 			return 'Your mage gear is too bad! You die quickly.';
 		}
 
-		if (rangeGear.stats.attack_ranged < minimumRangeAttackStat) {
+		if (
+			rangeGear.stats.attack_ranged < minimumRangeAttackStat ||
+			rangeGear.stats.defence_magic < minimumRangeMagicDefenceStat
+		) {
 			return 'Your range gear is too bad! You die quickly.';
 		}
 
