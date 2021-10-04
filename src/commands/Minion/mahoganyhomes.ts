@@ -100,7 +100,7 @@ export default class MahoganyHomesCommand extends BotCommand {
 			altProtection: true,
 			oneAtTime: true,
 			cooldown: 1,
-			usage: '[build|buy] [action:...string]',
+			usage: '[build|buy] [qty:int{1}] [action:...string]',
 			usageDelim: ' ',
 			aliases: ['mh'],
 			subcommands: true,
@@ -119,7 +119,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		);
 	}
 
-	async buy(msg: KlasaMessage, [input = '']: [string]) {
+	async buy(msg: KlasaMessage, [qty = 1, input = '']: [number, string]) {
 		const buyable = buyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
 			return msg.channel.send(
@@ -131,16 +131,18 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 
 		const { item, cost } = buyable;
 		const balance = msg.author.settings.get(UserSettings.CarpenterPoints);
-		if (balance < cost) {
+		if (balance < cost * qty) {
 			return msg.channel.send(
-				`You don't have enough Carpenter Points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`
+				`You don't have enough Carpenter Points to buy the ${qty}x ${item.name}. You need ${
+					qty * cost
+				}, but you have only ${balance}.`
 			);
 		}
 
-		await msg.author.settings.update(UserSettings.CarpenterPoints, balance - cost);
-		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
+		await msg.author.settings.update(UserSettings.CarpenterPoints, balance - cost * qty);
+		await msg.author.addItemsToBank({ [item.id]: qty }, true);
 
-		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Carpenter Points.`);
+		return msg.channel.send(`Successfully purchased ${qty}x ${item.name} for ${qty * cost} Carpenter Points.`);
 	}
 
 	@requiresMinion
