@@ -572,7 +572,7 @@ export default class extends Extendable {
 
 			case Activity.Inferno: {
 				const data = currentTask as InfernoOptions;
-				const durationRemaining = data.finishDate - (data.fakeDuration - data.duration) - Date.now();
+				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 				return `${
 					this.minionName
 				} is currently attempting the Inferno, if they're successful and don't die, the trip should take ${formatDuration(

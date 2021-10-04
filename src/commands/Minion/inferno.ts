@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { calcPercentOfNum, randInt, sumArr, Time } from 'e';
+import { calcPercentOfNum, randInt, roll, sumArr, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank, Monsters } from 'oldschooljs';
@@ -33,7 +33,7 @@ const minimumRangeItems = [
 ].map(getOSItem);
 
 const minimumRangeAttackStat = sumArr(minimumRangeItems.map(i => i.equipment!.attack_ranged));
-const minimumRangeMagicDefenceStat = sumArr(minimumRangeItems.map(i => i.equipment!.defence_magic));
+const minimumRangeMagicDefenceStat = sumArr(minimumRangeItems.map(i => i.equipment!.defence_magic)) - 10;
 
 const minimumMageItems = [
 	'Amulet of fury',
@@ -46,7 +46,7 @@ const minimumMageItems = [
 ].map(getOSItem);
 
 const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipment!.attack_magic));
-const minimumMageMagicDefenceStat = sumArr(minimumMageItems.map(i => i.equipment!.defence_magic));
+const minimumMageMagicDefenceStat = sumArr(minimumMageItems.map(i => i.equipment!.defence_magic)) - 10;
 
 const itemRequirements = new Bank().add('Rune pouch');
 
@@ -254,6 +254,19 @@ export default class extends BotCommand {
 		return "After 10,000 attempts, you still didn't finish.";
 	}
 
+	async timesMadeToZuk(userID: string) {
+		const timesMadeToZuk = Number(
+			(
+				await this.client.query<any>(`SELECT COUNT(*)
+FROM activity
+WHERE type = 'Inferno'
+AND user_id = '${userID}'
+AND (data->>'diedPreZuk')::boolean = false;`)
+			)[0].count
+		);
+		return timesMadeToZuk;
+	}
+
 	async infernoRun({ user, attempts }: { user: KlasaUser; kc: number; attempts: number }) {
 		const userBank = user.bank();
 
@@ -405,6 +418,18 @@ export default class extends BotCommand {
 
 		duration.add(isOnTask && user.hasItemEquippedOrInBank('Black mask (i)'), 9, `${Emoji.Slayer} Slayer Task`);
 
+		// Reduced Zuk death chance based on how many times made to Zuk
+		const timesMadeToZuk = await this.timesMadeToZuk(user.id);
+		if (timesMadeToZuk > 0) {
+			zukDeathChance.add(
+				timesMadeToZuk > 0,
+				0 - 5 * Math.min(5, timesMadeToZuk),
+				`Made it to Zuk ${timesMadeToZuk} times`
+			);
+		} else {
+			zukDeathChance.add(timesMadeToZuk === 0, -30, 'Never made it to Zuk');
+		}
+
 		/**
 		 *
 		 *
@@ -473,6 +498,17 @@ export default class extends BotCommand {
 			str = `You have tried the Inferno ${attempts} times, but never succeeded. Leave while you can.`;
 		} else if (attempts && zukKC) {
 			str = `You have completed the Inferno ${zukKC} times, out of ${attempts} attempts.`;
+		}
+
+		const timesMadeToZuk = await this.timesMadeToZuk(msg.author.id);
+		if (!zukKC) {
+			if (attempts && !timesMadeToZuk) {
+				str += ' You have never even made it to the final wave yet.';
+			} else if (roll(1000)) {
+				str += ` You made it to TzKal-Zuk ${timesMadeToZuk} times, but never killed him, maybe just buy the cape JalYt?`;
+			} else {
+				str += ` You made it to TzKal-Zuk ${timesMadeToZuk} times, but never killed him, sad. `;
+			}
 		}
 
 		return msg.channel.send({

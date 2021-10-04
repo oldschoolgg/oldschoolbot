@@ -39,13 +39,6 @@ export default class extends Task {
 
 		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
 
-		console.log({
-			percentMadeItThrough,
-			diedAt: formatDuration(deathTime ?? 0),
-			outOf: formatDuration(fakeDuration),
-			percent: calcWhatPercent(deathTime ?? 0, fakeDuration)
-		});
-
 		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
 		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
 		if (hasDiary) tokkul *= 2;
@@ -134,7 +127,6 @@ export default class extends Task {
 			)}x Tokkul.`;
 		} else {
 			await incrementMinigameScore(userID, 'Inferno', 1);
-			await user.incrementMonsterScore(Monsters.TzKalZuk.id);
 			baseBank.add(Monsters.TzKalZuk.kill(1, { onSlayerTask: isOnTask }));
 
 			await user.addItemsToBank(baseBank, true);
@@ -183,7 +175,7 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 							2
 					  )}% of your supplies, ${unusedItems} was returned to your bank`
 					: '.'
-			}.
+			}
 `,
 			res => {
 				user.log('continued trip of inferno');
