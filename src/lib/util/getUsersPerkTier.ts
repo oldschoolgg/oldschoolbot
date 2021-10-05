@@ -75,5 +75,5 @@ export default function getUsersPerkTier(
  */
 export function isPrimaryPatron(user: KlasaUser) {
 	const perkTier = getUsersPerkTier(user, true);
-	return perkTier > 1;
+	return perkTier > 0;
 }
