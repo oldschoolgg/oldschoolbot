@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
 import Createables from '../../lib/data/createables';
+import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
@@ -116,6 +117,14 @@ export default class extends BotCommand {
 			if (!success) {
 				return msg.channel.send(
 					`You don't have the required Slayer Unlocks to ${cmd} this item.\n\nRequired: ${errors}`
+				);
+			}
+		}
+		if (createableItem.requiredFavour) {
+			const [success, points] = gotFavour(msg.author, createableItem.requiredFavour, 100);
+			if (!success) {
+				return msg.channel.send(
+					`You don't have the required amount of Favour to ${cmd} this item.\n\nRequired: ${points}% ${createableItem.requiredFavour.name} Favour.`
 				);
 			}
 		}
