@@ -69,3 +69,11 @@ export default function getUsersPerkTier(
 
 	return 0;
 }
+
+/**
+ * Determines if the user is only a patron because they have shared perks from another account.
+ */
+export function isPrimaryPatron(user: KlasaUser) {
+	const perkTier = getUsersPerkTier(user, true);
+	return perkTier > 1;
+}

@@ -7,6 +7,7 @@ import { getRandomMysteryBox } from '../../lib/data/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, itemID, roll } from '../../lib/util';
+import { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -18,6 +19,10 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [user]: [KlasaUser]) {
+		if (!isPrimaryPatron(msg.author)) {
+			return msg.channel.send('Shared-perk accounts cannot use this.');
+		}
+
 		const currentDate = Date.now();
 		const lastDate = msg.author.settings.get(UserSettings.LastGivenBox);
 		const difference = currentDate - lastDate;
