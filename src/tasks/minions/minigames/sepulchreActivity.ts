@@ -25,7 +25,7 @@ export default class extends Task {
 					loot.add(GrandHallowedCoffin.roll());
 				}
 
-				const numCoffinsToOpen = 1;
+				const numCoffinsToOpen = floor.numCoffins;
 				numCoffinsOpened += numCoffinsToOpen;
 				for (let i = 0; i < numCoffinsToOpen; i++) {
 					loot.add(openCoffin(floor.number));
