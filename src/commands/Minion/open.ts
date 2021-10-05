@@ -185,7 +185,7 @@ export default class extends BotCommand {
 	}
 
 	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: Openable) {
-		if ((osjsOpenable.name = 'seed pack')) {
+		if (osjsOpenable.name === 'seed pack') {
 			return msg.channel.send('In order to open your seed pack, please use the command `=sp`');
 		}
 
