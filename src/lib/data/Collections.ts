@@ -1128,6 +1128,11 @@ export const allCollectionLogs: ICollection = {
 			'Dyed Items': {
 				counts: false,
 				items: dyedItems.map(i => i.dyedVersions.map(i => i.item.id)).flat(2)
+			},
+			'Halloween 2021': {
+				alias: ['hween2021', 'halloween 2021'],
+				items: resolveItems(['Human appendage', 'Sliced femur', 'Human blood', 'Human tooth']),
+				counts: false
 			}
 		}
 	}
