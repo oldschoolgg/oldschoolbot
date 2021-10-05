@@ -454,7 +454,11 @@ export default class extends Task {
 					[`${name} found a 'Human appendage' in the farm... spooky.`, new Bank().add('Human appendage')],
 					[`${name} found a 'Human blood' in the farm... scary.`, new Bank().add('Human blood')],
 					[`${name} found a 'Human tooth' in the farm... freaky.`, new Bank().add('Human tooth')],
-					[`${name} found a 'Sliced femur' in the farm... mysterious.`, new Bank().add('Sliced femur')]
+					[`${name} found a 'Sliced femur' in the farm... mysterious.`, new Bank().add('Sliced femur')],
+					[`${name} saw a big... figure, standing in the dirt... what is it?`, null],
+					[`What was that? ${name} seems scared.`, null],
+					[`${name} heard some screaming on their trip... weird.`, null],
+					[`${name} I only saw the back of it.. looked like it was glowing`, null]
 				] as const;
 				const item = randArrItem(items);
 				if (item[1]) {
