@@ -10,6 +10,7 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { calcDwwhChance, gpCostPerKill } from '../../../lib/structures/Boss';
 import { NewBossOptions } from '../../../lib/types/minions';
 import { formatDuration, roll, toKMB, updateBankSetting } from '../../../lib/util';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 const methodsOfDeath = [
@@ -24,9 +25,11 @@ const methodsOfDeath = [
 ];
 
 export default class extends Task {
-	async run({ channelID, users: idArr, duration, bossUsers }: NewBossOptions) {
+	async run(data: NewBossOptions) {
+		const { channelID, users: idArr, duration, bossUsers } = data;
 		const deaths: KlasaUser[] = [];
 		const users: KlasaUser[] = await Promise.all(idArr.map(i => this.client.fetchUser(i)));
+		const solo = users.length < 2 ? true : false;
 
 		const getUser = (id: string) => users.find(u => u.id === id)!;
 		const dwwhTable: KlasaUser[] = [];
@@ -42,7 +45,9 @@ export default class extends Task {
 		const tagAll = users.map(u => u.toString()).join(', ');
 		if (deaths.length === idArr.length) {
 			return sendToChannelID(this.client, channelID, {
-				content: `${tagAll}\n\nYour team was crushed by King Goldemar, you never stood a chance.`
+				content: `${tagAll}\n\n${
+					solo ? 'You were' : 'Your team was'
+				} crushed by King Goldemar, you never stood a chance.`
 			});
 		}
 
@@ -55,7 +60,9 @@ export default class extends Task {
 		const killStr =
 			gotDWWH && dwwhRecipient
 				? `${dwwhRecipient?.username} delivers a crushing blow to King Goldemars warhammer, breaking it. The king has no choice but to flee the chambers, **leaving behind his broken hammer.**`
-				: 'Your team brought King Goldemar to a very weak state, he fled the chambers before he could be killed and escaped through a secret exit, promising to get revenge on you.';
+				: `${
+						solo ? 'You' : 'Your team'
+				  } brought King Goldemar to a very weak state, he fled the chambers before he could be killed and escaped through a secret exit, promising to get revenge on you.`;
 
 		let resultStr = `${tagAll}\n\n${killStr}\n\n${Emoji.Casket} **Loot:**`;
 
@@ -101,6 +108,22 @@ export default class extends Task {
 			)}) to receive a DWWH, costing ${toKMB(dwwhChance * gpCostPerKill(users[0]))} GP. 1 in ${dwwhChance}`;
 		}
 
-		sendToChannelID(this.client, channelID, { content: resultStr });
+		if (!solo) {
+			sendToChannelID(this.client, channelID, { content: resultStr });
+		} else {
+			handleTripFinish(
+				this.client,
+				users[0],
+				channelID,
+				resultStr,
+				res => {
+					users[0].log('continued trip of soloing King Goldemar');
+					return this.client.commands.get('kinggoldemar')!.run(res, ['solo']);
+				},
+				undefined,
+				data,
+				totalLoot.bank
+			);
+		}
 	}
 }
