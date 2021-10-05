@@ -6,6 +6,7 @@ import { BitField, Channel, PerkTier } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 import { itemChallenge, reactChallenge, triviaChallenge } from '../../monitors/boxSpawns';
 
 export default class extends BotCommand {
@@ -17,6 +18,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
+		if (!isPrimaryPatron(msg.author)) {
+			return msg.channel.send('Shared-perk accounts cannot use this.');
+		}
 		if (
 			msg.author.perkTier < PerkTier.Four &&
 			!msg.author.settings.get(UserSettings.BitField).includes(BitField.HasPermanentEventBackgrounds)

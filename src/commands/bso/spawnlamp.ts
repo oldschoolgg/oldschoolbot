@@ -7,6 +7,7 @@ import { BitField, Channel, Color, PerkTier, SupportServer } from '../../lib/con
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration } from '../../lib/util';
+import { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 import { LampTable } from '../../lib/xpLamps';
 
 export default class extends BotCommand {
@@ -17,6 +18,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
+		if (!isPrimaryPatron(msg.author)) {
+			return msg.channel.send('Shared-perk accounts cannot use this.');
+		}
 		const bf = msg.author.settings.get(UserSettings.BitField);
 
 		const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);

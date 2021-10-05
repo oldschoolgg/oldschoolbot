@@ -147,7 +147,7 @@ ${
 					return msg.channel.send(`${mainAccount.username} is an ironman.`);
 				}
 				if (!altAccount.isIronman) {
-					return msg.channel.send(`${mainAccount.username} is not an ironman.`);
+					return msg.channel.send(`${altAccount.username} is not an ironman.`);
 				}
 
 				await mainAccount.settings.sync(true);
