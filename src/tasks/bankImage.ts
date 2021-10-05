@@ -1,5 +1,5 @@
 import { Canvas, CanvasRenderingContext2D, createCanvas, Image, registerFont } from 'canvas';
-import { objectKeys, randInt } from 'e';
+import { objectKeys } from 'e';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
