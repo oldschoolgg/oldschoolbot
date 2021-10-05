@@ -8,6 +8,7 @@ import { chambersOfXericMetamorphPets } from './CollectionsExport';
 import { armorAndItemPacks } from './creatables/armorPacks';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
+import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
 
@@ -1667,7 +1668,8 @@ const Createables: Createable[] = [
 	...capeCreatables,
 	...dragonFireShieldCreatables,
 	...revWeapons,
-	...armorAndItemPacks
+	...armorAndItemPacks,
+	...gracefulOutfitCreatables
 ];
 
 export default Createables;

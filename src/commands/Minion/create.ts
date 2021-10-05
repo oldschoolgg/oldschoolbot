@@ -129,6 +129,16 @@ export default class extends BotCommand {
 			}
 		}
 
+		if (createableItem.name.toLowerCase().includes('kourend')) {
+			const currentUserFavour = msg.author.settings.get(UserSettings.KourendFavour);
+			for (const [key, value] of Object.entries(currentUserFavour)) {
+				if (value < 100)
+					return msg.channel.send(
+						`You don't have the required amount of Favour to ${cmd} this item.\n\nRequired: 100% ${key} Favour.`
+					);
+			}
+		}
+
 		if (createableItem.GPCost && msg.author.settings.get(UserSettings.GP) < createableItem.GPCost * quantity) {
 			return msg.channel.send(`You need ${createableItem.GPCost.toLocaleString()} coins to ${cmd} this item.`);
 		}

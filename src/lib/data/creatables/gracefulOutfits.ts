@@ -1117,8 +1117,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 			[itemID('Kourend graceful gloves')]: 1,
 			[itemID('Kourend graceful boots')]: 1,
 			[itemID('Kourend graceful cape')]: 1
-		},
-		requiredFavour: findFavour('Kourend')
+		}
 	},
 	{
 		name: 'Kourend graceful hood',
@@ -1128,8 +1127,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Kourend graceful hood')]: 1
-		},
-		requiredFavour: findFavour('Kourend')
+		}
 	},
 	{
 		name: 'Kourend graceful top',
@@ -1139,8 +1137,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Kourend graceful top')]: 1
-		},
-		requiredFavour: findFavour('Kourend')
+		}
 	},
 	{
 		name: 'Kourend graceful legs',
@@ -1150,8 +1147,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Kourend graceful legs')]: 1
-		},
-		requiredFavour: findFavour('Kourend')
+		}
 	},
 	{
 		name: 'Kourend graceful gloves',
@@ -1161,8 +1157,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Kourend graceful gloves')]: 1
-		},
-		requiredFavour: findFavour('Kourend')
+		}
 	},
 	{
 		name: 'Kourend graceful boots',
@@ -1172,8 +1167,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Kourend graceful boots')]: 1
-		},
-		requiredFavour: findFavour('Kourend')
+		}
 	},
 	{
 		name: 'Kourend graceful cape',
@@ -1183,8 +1177,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Kourend graceful cape')]: 1
-		},
-		requiredFavour: findFavour('Kourend')
+		}
 	},
 	{
 		name: 'Revert Kourend graceful',
@@ -1204,7 +1197,6 @@ export const gracefulOutfitCreatables: Createable[] = [
 			[itemID('Graceful boots')]: 1,
 			[itemID('Graceful cape')]: 1
 		},
-		requiredFavour: findFavour('Kourend'),
 		noCl: true
 	},
 	{
@@ -1215,7 +1207,6 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful hood')]: 1
 		},
-		requiredFavour: findFavour('Kourend'),
 		noCl: true
 	},
 	{
@@ -1226,7 +1217,6 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful top')]: 1
 		},
-		requiredFavour: findFavour('Kourend'),
 		noCl: true
 	},
 	{
@@ -1237,7 +1227,6 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful legs')]: 1
 		},
-		requiredFavour: findFavour('Kourend'),
 		noCl: true
 	},
 	{
@@ -1248,7 +1237,6 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful gloves')]: 1
 		},
-		requiredFavour: findFavour('Kourend'),
 		noCl: true
 	},
 	{
@@ -1259,7 +1247,6 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful boots')]: 1
 		},
-		requiredFavour: findFavour('Kourend'),
 		noCl: true
 	},
 	{
@@ -1270,7 +1257,6 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful cape')]: 1
 		},
-		requiredFavour: findFavour('Kourend'),
 		noCl: true
 	}
 ];
