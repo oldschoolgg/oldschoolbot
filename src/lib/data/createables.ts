@@ -1054,30 +1054,30 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: 'Serpentine visage',
+		name: 'Revert Serpentine visage',
 		inputItems: {
 			[itemID('Serpentine visage')]: 1
 		},
 		outputItems: {
-			[itemID("Zulrah's scales")]: 20000
+			[itemID("Zulrah's scales")]: 20_000
 		}
 	},
 	{
-		name: 'Magic fang',
+		name: 'Revert Magic fang',
 		inputItems: {
 			[itemID('Magic fang')]: 1
 		},
 		outputItems: {
-			[itemID("Zulrah's scales")]: 20000
+			[itemID("Zulrah's scales")]: 20_000
 		}
-    	},
-		{
-		name: 'Tanzanite fang',
+   	},
+	{
+		name: 'Revert Tanzanite fang',
 		inputItems: {
 			[itemID('Tanzanite fang')]: 1
 		},
 		outputItems: {
-			[itemID("Zulrah's scales")]: 20000
+			[itemID("Zulrah's scales")]: 20_000
 		}
 	},
 	{
