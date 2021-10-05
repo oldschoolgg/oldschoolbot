@@ -185,6 +185,10 @@ export default class extends BotCommand {
 	}
 
 	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: Openable) {
+		if ((osjsOpenable.name = 'seed pack')) {
+			return msg.channel.send('In order to open your seed pack, please use the command `=sp`');
+		}
+
 		if (msg.author.bank().amount(osjsOpenable.id) < quantity) {
 			return msg.channel.send(
 				`You don't have enough ${osjsOpenable.name} to open!\n\n However... ${await this.showAvailable(msg)}`
