@@ -1070,7 +1070,7 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID("Zulrah's scales")]: 20_000
 		}
-   	},
+  	},
 	{
 		name: 'Revert Tanzanite fang',
 		inputItems: {
