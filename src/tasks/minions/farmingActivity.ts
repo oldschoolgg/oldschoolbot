@@ -423,7 +423,7 @@ export default class extends Task {
 				if (hesporiSeeds > 0) loot[itemID('Hespori seed')] = hesporiSeeds;
 			}
 
-			const gotHweenThing = roll(1);
+			const gotHweenThing = roll(40);
 			if (gotHweenThing) {
 				const name = user.minionName;
 				const items = [
