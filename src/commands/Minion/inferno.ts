@@ -3,7 +3,6 @@ import { calcPercentOfNum, randInt, roll, sumArr, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank, Monsters } from 'oldschooljs';
-import { TzKalZuk } from 'oldschooljs/dist/simulation/monsters/special/TzKalZuk';
 import { table } from 'table';
 
 import { Activity, BitField, Emoji, projectiles, ProjectileType } from '../../lib/constants';
@@ -395,7 +394,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), -4.5, 'ACB');
 
 		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), -1.5, 'Zuk with TBow');
-		duration.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), 6.5, 'TBow');
+		duration.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), 7.5, 'TBow');
 
 		/**
 		 *
@@ -408,12 +407,13 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		duration.add(user.bitfield.includes(BitField.HasArcaneScroll), 4, 'Arc. Prayer scroll');
 
 		// Slayer
+		const score = await user.getMinigameScore('Inferno');
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
 			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
-			user.getKC(Monsters.TzKalZuk.id) > 0 &&
+			score > 0 &&
 			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
 
 		duration.add(isOnTask && user.hasItemEquippedOrInBank('Black mask (i)'), 9, `${Emoji.Slayer} Slayer Task`);
@@ -423,11 +423,11 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		if (timesMadeToZuk > 0) {
 			zukDeathChance.add(
 				timesMadeToZuk > 0,
-				0 - 5 * Math.min(5, timesMadeToZuk),
+				0 - 5 * Math.min(6, timesMadeToZuk),
 				`Made it to Zuk ${timesMadeToZuk} times`
 			);
 		} else {
-			zukDeathChance.add(timesMadeToZuk === 0, -30, 'Never made it to Zuk');
+			zukDeathChance.add(timesMadeToZuk === 0, 40, 'Never made it to Zuk');
 		}
 
 		/**
@@ -491,7 +491,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 	async run(msg: KlasaMessage) {
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
-		const zukKC = msg.author.getKC(TzKalZuk.id);
+		const zukKC = await msg.author.getMinigameScore('Inferno');
 
 		let str = 'You have never attempted the Inferno, I recommend you stay that way.';
 		if (attempts && !zukKC) {
@@ -534,7 +534,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
 		const usersRangeStats = msg.author.getGear('range').stats;
-		const zukKC = msg.author.getKC(TzKalZuk.id);
+		const zukKC = await msg.author.getMinigameScore('Inferno');
 
 		const res = await this.infernoRun({ user: msg.author, kc: zukKC, attempts });
 

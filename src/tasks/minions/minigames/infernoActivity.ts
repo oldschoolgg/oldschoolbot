@@ -21,13 +21,14 @@ export default class extends Task {
 	async run(data: InfernoOptions) {
 		const { userID, channelID, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
 		const user = await this.client.users.fetch(userID);
+		const score = await user.getMinigameScore('Inferno');
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
 			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
-			user.getKC(Monsters.TzKalZuk.id) > 0 &&
+			score > 0 &&
 			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
 
 		const unusedItems = new Bank();
@@ -70,9 +71,13 @@ export default class extends Task {
 			});
 		}
 
+		if (!deathTime) {
+			await incrementMinigameScore(userID, 'Inferno', 1);
+		}
+
 		let text = '';
 		let chatText = `You are very impressive for a JalYt. You managed to defeat TzKal-Zuk for the ${formatOrdinal(
-			user.getKC(Monsters.TzKalZuk.id) + 1
+			await user.getMinigameScore('Inferno')
 		)} time! Please accept this cape as a token of appreciation.`;
 
 		const percSuppliesRefunded = Math.max(0, Math.min(100, 100 - percentMadeItThrough));
@@ -126,7 +131,6 @@ export default class extends Task {
 				'Tokkul'
 			)}x Tokkul.`;
 		} else {
-			await incrementMinigameScore(userID, 'Inferno', 1);
 			baseBank.add(Monsters.TzKalZuk.kill(1, { onSlayerTask: isOnTask }));
 
 			await user.addItemsToBank(baseBank, true);
