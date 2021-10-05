@@ -1054,6 +1054,33 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Serpentine visage',
+		inputItems: {
+			[itemID('Serpentine visage')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20000
+		}
+	},
+	{
+		name: 'Magic fang',
+		inputItems: {
+			[itemID('Magic fang')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20000
+		}
+    	},
+		{
+		name: 'Tanzanite fang',
+		inputItems: {
+			[itemID('Tanzanite fang')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20000
+		}
+	},
+	{
 		name: 'Hell cat ears',
 		inputItems: {
 			[itemID('Cat ears')]: 1,
