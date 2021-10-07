@@ -126,7 +126,7 @@ export default class extends BotCommand {
 		}
 
 		const duration = msg.author.maxTripLength(Activity.TrickOrTreat);
-		let rolls = Math.floor(duration / Time.Minute / 3.5);
+		let rolls = Math.floor(duration / Time.Minute / 4.5);
 
 		const setupToUse =
 			Object.values(msg.author.rawGear()).find(i => i.hasEquipped(scaryItems, false)) ??
@@ -134,7 +134,7 @@ export default class extends BotCommand {
 
 		let amountEquipped = 0;
 		for (const i of scaryItems) {
-			if (amountEquipped === 5) break;
+			if (amountEquipped === 4) break;
 			if (setupToUse.hasEquipped(getOSItem(i).name)) amountEquipped++;
 		}
 
