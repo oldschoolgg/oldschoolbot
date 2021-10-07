@@ -31,7 +31,7 @@ export default class extends Task {
 
 		if (roll(20)) {
 			const item = randArrItem(loot.items());
-			str += `\n\n**I wonder if anything would like to eat '${item}'?**`;
+			str += `\n\n**I wonder if anything would like to eat '${item[0].name}'?**`;
 		} else if (roll(40)) {
 			str += '\n\n**I wonder what I can use this treats for? They look disgusting, but I better save them.**';
 		}
