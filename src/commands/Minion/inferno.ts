@@ -114,7 +114,9 @@ export default class extends BotCommand {
 
 	basePreZukDeathChance(_attempts: number) {
 		const attempts = Math.max(1, _attempts);
-		const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(45))) * 47);
+		let chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(45))) * 47);
+		if (attempts < 20) chance += 20 - attempts;
+
 		return Math.max(Math.min(chance, 99), 5);
 	}
 
@@ -281,7 +283,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			defence: 92,
 			magic: 94,
 			hitpoints: 92,
-			ranged: 92
+			ranged: 92,
+			prayer: 77
 		};
 		const [hasSkillReqs] = user.hasSkillReqs(skillReqs);
 		if (!hasSkillReqs) {
@@ -335,13 +338,13 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 		duration.add(
 			rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chestplate'),
-			3,
+			-3,
 			'Armadyl'
 		);
 
 		duration.add(
 			mageGear.hasEquipped('Ancestral robe top') && mageGear.hasEquipped('Ancestral robe bottom'),
-			4,
+			-4,
 			'Ancestral'
 		);
 
@@ -370,7 +373,10 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		const dartItem = getOSItem(darts);
 		const dartIndex = blowpipeDarts.indexOf(dartItem);
 		const percent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
-		duration.add(true, percent, `${dartItem.name} in blowpipe`);
+		if (dartIndex < 5) {
+			return 'Your darts are simply too weak, to work in the Inferno!';
+		}
+		duration.add(true, -percent, `${dartItem.name} in blowpipe`);
 
 		const mageWeapons = {
 			'Ancient staff': 1,
@@ -391,10 +397,10 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		}
 
 		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 7.5, 'Zuk with ACB');
-		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), -4.5, 'ACB');
+		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 4.5, 'ACB');
 
-		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), -1.5, 'Zuk with TBow');
-		duration.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), 7.5, 'TBow');
+		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), 1.5, 'Zuk with TBow');
+		duration.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), -7.5, 'TBow');
 
 		/**
 		 *
@@ -403,8 +409,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		 *
 		 *
 		 */
-		duration.add(user.bitfield.includes(BitField.HasDexScroll), 4, 'Dex. Prayer scroll');
-		duration.add(user.bitfield.includes(BitField.HasArcaneScroll), 4, 'Arc. Prayer scroll');
+		duration.add(user.bitfield.includes(BitField.HasDexScroll), -4, 'Dex. Prayer scroll');
+		duration.add(user.bitfield.includes(BitField.HasArcaneScroll), -4, 'Arc. Prayer scroll');
 
 		// Slayer
 		const score = await user.getMinigameScore('Inferno');
@@ -416,7 +422,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			score > 0 &&
 			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
 
-		duration.add(isOnTask && user.hasItemEquippedOrInBank('Black mask (i)'), 9, `${Emoji.Slayer} Slayer Task`);
+		duration.add(isOnTask && user.hasItemEquippedOrInBank('Black mask (i)'), -9, `${Emoji.Slayer} Slayer Task`);
 
 		// Reduced Zuk death chance based on how many times made to Zuk
 		const timesMadeToZuk = await this.timesMadeToZuk(user.id);

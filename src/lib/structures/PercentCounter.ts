@@ -1,7 +1,7 @@
 import { formatDuration } from '../util';
 
 export class PercentCounter {
-	public value;
+	public value: number;
 	public messages: string[] = [];
 	public missed: string[] = [];
 	type: string;
@@ -13,10 +13,14 @@ export class PercentCounter {
 
 	add(isApplying: boolean, percent: number, message: string) {
 		let change = this.value * (percent / 100);
+
 		const formattedChange = this.type === 'time' ? formatDuration(change, true) : `${change.toFixed(2)}%`;
 		this[isApplying ? 'messages' : 'missed'].push(
 			`${percent}%${this.type !== 'percent' ? `(${formattedChange})` : ''}: ${message}`
 		);
-		if (isApplying) this.value -= change;
+		if (isApplying) this.value += change;
+		if (this.type === 'percent') {
+			this.value = Math.min(100, this.value);
+		}
 	}
 }

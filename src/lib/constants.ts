@@ -514,15 +514,8 @@ export const PATRON_ONLY_GEAR_SETUP =
 
 export type ProjectileType = 'arrow' | 'bolt';
 export const projectiles: Record<ProjectileType, number[]> = {
-	arrow: resolveItems(['Mithril arrow', 'Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
-	bolt: resolveItems([
-		'Mithril bolts',
-		'Adamant bolts',
-		'Runite bolts',
-		'Dragon bolts',
-		'Diamond bolts (e)',
-		'Diamond dragon bolts (e)'
-	])
+	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
+	bolt: resolveItems(['Runite bolts', 'Dragon bolts', 'Diamond bolts (e)', 'Diamond dragon bolts (e)'])
 };
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';

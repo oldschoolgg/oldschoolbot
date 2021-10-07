@@ -1,9 +1,8 @@
 import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
-import { TzKalZuk } from 'oldschooljs/dist/simulation/monsters/special/TzKalZuk';
 
-import { Emoji, Events } from '../../../lib/constants';
+import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -138,9 +137,11 @@ export default class extends Task {
 			if (baseBank.has('Jal-nib-rek')) {
 				this.client.emit(
 					Events.ServerNotification,
-					`**${user.username}** just received their ${formatOrdinal(user.cl().amount('Jal-nib-rek'))} ${
-						Emoji.TzRekJad
-					} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(user.getKC(TzKalZuk.id))} kill!`
+					`**${user.username}** just received their ${formatOrdinal(
+						user.cl().amount('Jal-nib-rek')
+					)} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(
+						await user.getMinigameScore('Inferno')
+					)} kill!`
 				);
 			}
 
