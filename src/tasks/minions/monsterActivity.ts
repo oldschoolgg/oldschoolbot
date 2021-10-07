@@ -22,6 +22,7 @@ import { itemID, roll } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import resolveItems from '../../lib/util/resolveItems';
 import { sendToChannelID } from '../../lib/util/webhook';
 
 export default class extends Task {
@@ -268,8 +269,28 @@ export default class extends Task {
 			await usersTask.currentTask!.save();
 		}
 
+		if (monster.name === 'Skeleton') {
+			const cl = user.cl();
+			const skeleItemsCanGet = resolveItems([
+				'Skeleton mask',
+				'Skeleton shirt',
+				'Skeleton leggings',
+				'Skeleton gloves',
+				'Skeleton boots'
+			]).filter(i => !cl.has(i));
+			if (skeleItemsCanGet.length > 0) {
+				for (let i = 0; i < quantity; i++) {
+					if (roll(100)) {
+						loot.add(randArrItem(skeleItemsCanGet));
+						break;
+					}
+				}
+			}
+		}
+
 		let goyleChance = user.cl().has('Gregoyle') ? 90 : 13;
 		goyleChance = Math.floor(Math.max(3, (Time.Hour / duration) * goyleChance));
+
 		if (monster.name === 'Gargoyle' && roll(goyleChance)) {
 			const userBank = user.bank();
 			if (userBank.has("Choc'rock")) {
