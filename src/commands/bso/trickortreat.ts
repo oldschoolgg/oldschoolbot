@@ -102,7 +102,7 @@ export default class extends BotCommand {
 		}
 
 		const duration = msg.author.maxTripLength(Activity.TrickOrTreat);
-		let rolls = Math.floor(duration / Time.Minute / 2.5);
+		let rolls = Math.floor(duration / Time.Minute / 3.5);
 
 		const setupToUse =
 			Object.values(msg.author.rawGear()).find(i => i.hasEquipped(scaryItems, false)) ??
