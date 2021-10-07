@@ -116,7 +116,7 @@ export function isNightTime() {
 	let hours = time.getHours();
 
 	if (!production) hours = 20;
-	return hours > 19 || hours < 4;
+	return hours > 17 || hours < 4;
 }
 
 export function isWeekend() {
