@@ -66,7 +66,13 @@ const scaryItems = resolveItems([
 	'Clown trousers',
 	'Clown shoes',
 	'Hunting knife',
-	'Anti-panties'
+	'Anti-panties',
+	'Warlock top',
+	'Warlock legs',
+	'Warlock cloak',
+	'Witch top',
+	'Witch skirt',
+	'Witch cloak'
 ]);
 
 export default class extends BotCommand {
