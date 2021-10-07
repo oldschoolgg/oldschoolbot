@@ -55,7 +55,18 @@ const scaryItems = resolveItems([
 	'Pumpkin lantern',
 	'Skeleton lantern',
 	'Web cloak',
-	'Eek'
+	'Eek',
+	'Evil chicken head',
+	'Evil chicken wings',
+	'Evil chicken legs',
+	'Evil chicken feet',
+	'Clown mask',
+	'Clown bow tie',
+	'Clown gown',
+	'Clown trousers',
+	'Clown shoes',
+	'Hunting knife',
+	'Anti-panties'
 ]);
 
 export default class extends BotCommand {
