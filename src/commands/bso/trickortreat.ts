@@ -92,6 +92,10 @@ export default class extends BotCommand {
 			.where('user_id = :userID', {
 				userID: msg.author.id
 			})
+			.andWhere("type = 'TrickOrTreat'", {
+				startDate: start,
+				endDate: end
+			})
 			.andWhere('(start_date, finish_date) OVERLAPS (:startDate, :endDate)', {
 				startDate: start,
 				endDate: end
