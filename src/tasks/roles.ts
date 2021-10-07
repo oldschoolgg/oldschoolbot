@@ -17,22 +17,7 @@ function addToUserMap(userMap: Record<string, string[]>, id: string, reason: str
 	userMap[id].push(reason);
 }
 
-const minigames = [
-	'barb_assault',
-	'agility_arena',
-	'mahogany_homes',
-	'gnome_restaurant',
-	'soul_wars',
-	'castle_wars',
-	'raids',
-	'raids_challenge_mode',
-	'big_chompy_bird_hunting',
-	'rogues_den',
-	'temple_trekking',
-	'ourania_delivery_service',
-	'volcanic_mine',
-	'monkey_rumble'
-];
+const minigames = Minigames.map(game => game.column);
 
 const collections = [
 	'overall',
