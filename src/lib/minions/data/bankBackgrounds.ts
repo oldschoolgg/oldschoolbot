@@ -140,7 +140,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 11,
-		name: 'Ariana Grande (11)',
+		name: 'Ariana Grande',
 		image: null,
 		available: false
 	},
@@ -168,7 +168,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 15,
-		name: 'Homer (15)',
+		name: 'Homer',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
@@ -204,26 +204,8 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
-		id: 20,
-		name: 'PoGnome CustomBG (20)',
-		image: null,
-		available: false
-	},
-	{
-		id: 22,
-		name: 'Obama',
-		image: null,
-		available: false
-	},
-	{
-		id: 23,
-		name: 'ReZeros Background (23)',
-		image: null,
-		available: false
-	},
-	{
 		id: 26,
-		name: 'Weeb (26)',
+		name: 'Weeb',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
@@ -231,7 +213,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 27,
-		name: 'K-Pop (27)',
+		name: 'K-Pop',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
@@ -253,7 +235,7 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 32,
-		name: 'Peepo Scooter (32)',
+		name: 'Peepo Scooter',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
@@ -313,57 +295,44 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 40,
-		name: 'Turbo CustomBG (40)',
+		name: 'Turbo CustomBG',
 		image: null,
 		available: false
 	},
 	{
 		id: 41,
-		name: 'Shady',
+		name: 'theshadyhobo CustomBG',
 		image: null,
-		available: false
+		available: false,
+		owners: ['343104695209951255']
 	},
 	{
 		id: 42,
-		name: 'iYeeYee CustomBG (42)',
+		name: 'iYeeYee CustomBG',
 		image: null,
-		available: false
-	},
-	{
-		id: 43,
-		name: 'Guacamole CustomBG (43)',
-		image: null,
-		available: false
+		available: false,
+		owners: ['545103898558595092']
 	},
 	{
 		id: 47,
-		name: 'Slav',
+		name: 'Slav CustomBG',
 		image: null,
-		available: false
+		available: false,
+		owners: ['164490892533563393']
 	},
 	{
 		id: 48,
-		name: 'Beans',
+		name: 'Beans CustomBG',
 		image: null,
-		available: false
+		available: false,
+		owners: ['134922117081858050']
 	},
 	{
 		id: 52,
 		name: 'Cyrillax CustomBG',
 		image: null,
-		available: false
-	},
-	{
-		id: 53,
-		name: 'AvariceBruh CustomBG',
-		image: null,
-		available: false
-	},
-	{
-		id: 62,
-		name: 'PlayLazily CustomBG',
-		image: null,
-		available: false
+		available: false,
+		owners: ['425134194436341760']
 	},
 	{
 		id: 67,
@@ -431,28 +400,18 @@ const backgroundImages: BankBackground[] = [
 		}
 	},
 	{
-		id: 70,
-		name: 'Pride CustomBG',
-		image: null,
-		available: false
-	},
-	{
 		id: 71,
-		name: 'Beans CustomBG (71)',
+		name: 'Tiz CustomBG',
 		image: null,
-		available: false
-	},
-	{
-		id: 74,
-		name: 'Aki CustomBG',
-		image: null,
-		available: false
+		available: false,
+		owners: ['150768805637914624']
 	},
 	{
 		id: 75,
 		name: 'Sunny CustomBG',
 		image: null,
-		available: false
+		available: false,
+		owners: ['501893557960048650']
 	},
 	{
 		id: 76,
@@ -465,23 +424,31 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 77,
-		name: 'Volt CustomBG (77)',
+		name: 'Volt CustomBG',
 		image: null,
-		available: false
+		available: false,
+		owners: ['793267134821957673']
 	},
 	{
 		id: 78,
-		name: 'Nexacar CustomBG (78)',
+		name: 'Nexacar CustomBG',
 		image: null,
 		available: false,
 		owners: ['874901199348965467']
 	},
 	{
 		id: 79,
-		name: 'DT CustomBG (79)',
+		name: 'DT CustomBG',
 		image: null,
 		available: false,
 		owners: ['310150823986593803']
+	},
+	{
+		id: 80,
+		name: 'Spartin CustomBG',
+		image: null,
+		available: false,
+		owners: ['322626810779271169']
 	}
 ];
 
