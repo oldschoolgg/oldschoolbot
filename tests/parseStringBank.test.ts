@@ -491,5 +491,25 @@ describe('Bank Parsers', () => {
 		});
 		expect(result15.bank.length).toStrictEqual(1);
 		expect(result15.bank.has('Shark')).toEqual(true);
+
+		//
+		const result16 = parseInputBankWithPrice({
+			usersBank: new Bank().add('Shark').add('Fire rune'),
+			str: 'fire rune',
+			flags: {},
+			excludeItems: resolveItems(['Fire rune'])
+		});
+		expect(result16.bank.length).toStrictEqual(1);
+		expect(result16.bank.has('Fire rune')).toEqual(true);
+
+		//
+		const result17 = parseInputBankWithPrice({
+			usersBank: new Bank().add('Shark').add('Fire rune'),
+			str: '',
+			flags: { all: 'all' },
+			excludeItems: resolveItems(['Fire rune'])
+		});
+		expect(result17.bank.length).toStrictEqual(1);
+		expect(result17.bank.has('Shark')).toEqual(true);
 	});
 });

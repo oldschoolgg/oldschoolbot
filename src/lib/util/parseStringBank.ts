@@ -100,10 +100,11 @@ export function parseBankFromFlags({
 		if (flagsKeys.includes('search') && !item.name.toLowerCase().includes(flags.search.toLowerCase())) {
 			continue;
 		}
-		if (excludeItems.includes(item.id)) continue;
 
 		const qty = Math.min(maxQuantity, quantity === 0 ? Math.max(1, bank.amount(item.id)) : quantity);
 		if (filter && !filter.items.includes(item.id)) continue;
+		if ((filter || flagsKeys.length) && excludeItems.includes(item.id)) continue;
+
 		newBank.add(item.id, qty);
 	}
 
