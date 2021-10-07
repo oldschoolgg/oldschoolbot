@@ -17,7 +17,7 @@ function addToUserMap(userMap: Record<string, string[]>, id: string, reason: str
 	userMap[id].push(reason);
 }
 
-const minigames = Minigames.map(game => game.column);
+const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
 const collections = [
 	'overall',
