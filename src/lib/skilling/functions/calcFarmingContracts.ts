@@ -76,7 +76,12 @@ const hardPlants: PlantsList = [
 	[85, 'Dragonfruit tree', 5],
 	[85, 'Celastrus tree', 5],
 	[85, 'Torstol', 4],
-	[90, 'Redwood tree', 5]
+	[90, 'Redwood tree', 5],
+	[99, 'Athelas', 5],
+	[99, 'Avocado bush', 5],
+	[105, 'Mango bush', 5],
+	[111, 'Lychee bush', 5],
+	[120, 'Mysterious tree', 5]
 ];
 
 export function getPlantToGrow(

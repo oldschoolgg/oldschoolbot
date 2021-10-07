@@ -25,7 +25,8 @@ export default class extends BotCommand {
 		const bankToSac = parseInputCostBank({
 			inputStr: bankStr,
 			usersBank: msg.author.bank(),
-			flags: msg.flagArgs
+			flags: msg.flagArgs,
+			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems)
 		});
 
 		if (!msg.author.owns(bankToSac)) {

@@ -16,6 +16,7 @@ export const kgBaseTime = Time.Minute * 45;
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			usage: '[solo|mass]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
@@ -24,7 +25,8 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage) {
+	async run(msg: KlasaMessage, [type]: [string | undefined]) {
+		const checkSolo = type === 'solo' ? true : false;
 		const instance = new BossInstance({
 			leader: msg.author,
 			id: KingGoldemar.id,
@@ -70,7 +72,7 @@ export default class extends BotCommand {
 			activity: Activity.KingGoldemar,
 			massText: `${msg.author.username} is assembling a team to fight King Goldemar! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			minSize: 1,
-			solo: false,
+			solo: checkSolo,
 			canDie: true,
 			kcLearningCap: 50
 		});
@@ -81,7 +83,9 @@ export default class extends BotCommand {
 			const { bossUsers } = await instance.start();
 			const embed = new MessageEmbed()
 				.setDescription(
-					`Your group approaches the Kings' chambers, and each of you bribes the Kings Guards with a big bag of gold (${toKMB(
+					`${checkSolo ? 'You approach' : 'Your group approaches'} the Kings' chambers, and ${
+						checkSolo ? 'you bribe' : 'each of you bribes'
+					} the Kings Guards with a big bag of gold (${toKMB(
 						10_000_000
 					)} each) to let you into his chambers. The guards accept the offer and let you in, as they run away. The total trip will take ${formatDuration(
 						instance.duration

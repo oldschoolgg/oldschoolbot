@@ -34,9 +34,15 @@ export default class extends BotCommand {
 			return msg.channel.send('This is already your bank background.');
 		}
 
+		const owners = selectedImage.owners ?? [];
+		let allAccounts: string[] = [...msg.author.settings.get(UserSettings.IronmanAlts)];
+		const main = msg.author.settings.get(UserSettings.MainAccount);
+		if (main) allAccounts.push(main);
+
 		if (
 			msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator) ||
-			(selectedImage.owners && selectedImage.owners.includes(msg.author.id))
+			owners.includes(msg.author.id) ||
+			allAccounts.some(a => owners.includes(a))
 		) {
 			await msg.author.settings.update(UserSettings.BankBackground, selectedImage.id);
 			return msg.channel.send(`Your bank background is now **${selectedImage.name}**!`);
