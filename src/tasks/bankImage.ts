@@ -421,18 +421,21 @@ export default class BankImageTask extends Task {
 			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
 		}
 
-		if (title === 'Loot From Trick Or Treating') {
+		const isTOT = title === 'Loot From Trick Or Treating';
+		const isScare = isTOT && roll(100);
+		if (isTOT) {
 			hasBgSprite = false;
-			bgImage = { ...bgImage, image: await canvasImageFromBuffer(roll(100) ? hhhBg1 : hhhBg2) };
+			bgImage = { ...bgImage, image: await canvasImageFromBuffer(isScare ? hhhBg1 : hhhBg2) };
 		}
 
 		const hexColor = user?.settings.get(UserSettings.BankBackgroundHex);
 
-		const useSmallBank = user
-			? hasBgSprite
-				? true
-				: await user.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank)
-			: true;
+		const useSmallBank =
+			!isScare && user
+				? hasBgSprite
+					? true
+					: await user.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank)
+				: true;
 
 		const cacheKey = [
 			title,
