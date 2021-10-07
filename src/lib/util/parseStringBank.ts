@@ -78,7 +78,15 @@ export function parseStringBank(str = '', inputBank?: Bank, noDuplicateItems?: t
 	return items;
 }
 
-export function parseBankFromFlags({ bank, flags }: { bank: Bank; flags: Record<string, string> }): Bank {
+export function parseBankFromFlags({
+	bank,
+	flags,
+	excludeItems
+}: {
+	bank: Bank;
+	flags: Record<string, string>;
+	excludeItems: readonly number[];
+}): Bank {
 	const newBank = new Bank();
 	const maxQuantity = Number(flags.qty) || Infinity;
 
@@ -93,6 +101,7 @@ export function parseBankFromFlags({ bank, flags }: { bank: Bank; flags: Record<
 		if (flagsKeys.includes('search') && !item.name.toLowerCase().includes(flags.search.toLowerCase())) {
 			continue;
 		}
+		if (excludeItems.includes(item.id)) continue;
 
 		const qty = Math.min(maxQuantity, quantity === 0 ? Math.max(1, bank.amount(item.id)) : quantity);
 		if (filter && !filter.items.includes(item.id)) continue;
@@ -106,9 +115,10 @@ interface ParseBankOptions {
 	inputBank: Bank;
 	flags?: Record<string, string>;
 	inputStr?: string;
+	excludeItems?: number[];
 }
 
-export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions): Bank {
+export function parseBank({ inputBank, inputStr, flags = {}, excludeItems = [] }: ParseBankOptions): Bank {
 	if (inputStr) {
 		let _bank = new Bank();
 		const strItems = parseStringBank(inputStr, inputBank);
@@ -121,7 +131,7 @@ export function parseBank({ inputBank, inputStr, flags = {} }: ParseBankOptions)
 		return _bank;
 	}
 
-	return parseBankFromFlags({ bank: inputBank, flags });
+	return parseBankFromFlags({ bank: inputBank, flags, excludeItems });
 }
 
 function truncateBankToSize(bank: Bank, size: number) {
@@ -139,13 +149,14 @@ interface ParseInputCostBankOptions {
 	usersBank: Bank;
 	flags?: Record<string, string>;
 	inputStr?: string;
+	excludeItems: readonly number[];
 }
-export function parseInputCostBank({ usersBank, inputStr, flags = {} }: ParseInputCostBankOptions): Bank {
+export function parseInputCostBank({ usersBank, inputStr, flags = {}, excludeItems }: ParseInputCostBankOptions): Bank {
 	if (!inputStr && Object.keys(flags).length > 0) {
-		return truncateBankToSize(parseBankFromFlags({ bank: usersBank, flags }), 60);
+		return truncateBankToSize(parseBankFromFlags({ bank: usersBank, flags, excludeItems }), 60);
 	}
 
-	const baseBank = parseBankFromFlags({ bank: usersBank, flags });
+	const baseBank = parseBankFromFlags({ bank: usersBank, flags, excludeItems });
 	const stringInputBank = Boolean(inputStr) ? parseStringBank(inputStr, baseBank, true) : [];
 
 	const bank = new Bank();
@@ -161,11 +172,13 @@ export function parseInputCostBank({ usersBank, inputStr, flags = {} }: ParseInp
 export function parseInputBankWithPrice({
 	usersBank,
 	str,
-	flags
+	flags,
+	excludeItems
 }: {
 	usersBank: Bank;
 	str: string;
 	flags: Record<string, string>;
+	excludeItems: readonly number[];
 }) {
 	const split = str.split(' ');
 	const firstAsNumber = evalMathExpression(split[0]);
@@ -173,7 +186,7 @@ export function parseInputBankWithPrice({
 	if (!firstAsNumber) {
 		return {
 			price: 0,
-			bank: parseInputCostBank({ usersBank, inputStr: str, flags })
+			bank: parseInputCostBank({ usersBank, inputStr: str, flags, excludeItems })
 		};
 	}
 
@@ -187,12 +200,12 @@ export function parseInputBankWithPrice({
 		}
 		return {
 			price: 0,
-			bank: parseInputCostBank({ usersBank, flags, inputStr: potentialItem.name })
+			bank: parseInputCostBank({ usersBank, flags, inputStr: potentialItem.name, excludeItems })
 		};
 	}
 
 	return {
 		price: firstAsNumber,
-		bank: parseInputCostBank({ usersBank, inputStr: str.split(' ').slice(1).join(' '), flags })
+		bank: parseInputCostBank({ usersBank, inputStr: str.split(' ').slice(1).join(' '), flags, excludeItems })
 	};
 }

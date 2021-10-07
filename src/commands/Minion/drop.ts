@@ -21,7 +21,12 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [bankStr]: [string]) {
-		const bank = parseInputCostBank({ inputStr: bankStr, usersBank: msg.author.bank(), flags: msg.flagArgs });
+		const bank = parseInputCostBank({
+			inputStr: bankStr,
+			usersBank: msg.author.bank(),
+			flags: msg.flagArgs,
+			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems)
+		});
 
 		if (!msg.author.owns(bank)) {
 			return msg.channel.send(`You don't own ${bank}.`);
