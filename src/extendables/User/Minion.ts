@@ -635,6 +635,9 @@ export default class extends Extendable {
 					this.minionName
 				} is currently doing ${data.quantity} fights in Monkey Rumble. ${formattedDuration}`;
 			}
+			case Activity.TrickOrTreat: {
+				return `${this.minionName} is currently trick or treating! ${formattedDuration}`;
+			}
 		}
 	}
 

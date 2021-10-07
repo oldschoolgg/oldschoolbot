@@ -146,5 +146,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.VolcanicMine;
 		case Activity.MonkeyRumble:
 			return Tasks.MonkeyRumble;
+		case Activity.TrickOrTreat:
+			return Tasks.TrickOrTreat;
 	}
 }

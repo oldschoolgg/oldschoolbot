@@ -67,6 +67,7 @@ export namespace UserSettings {
 	export const FavoriteFood = T<readonly number[]>('favorite_food');
 	export const IronmanAlts = T<readonly string[]>('ironman_alts');
 	export const MainAccount = T<string | null>('main_account');
+	export const TimesFedGregoyle = T<number>('times_fed_gregoyle');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');

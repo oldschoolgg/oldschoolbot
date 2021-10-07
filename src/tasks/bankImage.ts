@@ -37,6 +37,8 @@ registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' })
 registerFont('./src/lib/resources/osrs-font-bold.ttf', { family: 'Regular' });
 
 const coxPurpleBg = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/14_purple.jpg');
+const hhhBg1 = fs.readFileSync('./src/lib/resources/images/hhh1.jpg');
+const hhhBg2 = fs.readFileSync('./src/lib/resources/images/hhh2.jpg');
 
 export type BankImageResult =
 	| {
@@ -417,6 +419,11 @@ export default class BankImageTask extends Task {
 
 		if (isPurple && bgImage.name === 'CoX') {
 			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
+		}
+
+		if (title === 'Loot From Trick Or Treating') {
+			hasBgSprite = false;
+			bgImage = { ...bgImage, image: await canvasImageFromBuffer(roll(100) ? hhhBg1 : hhhBg2) };
 		}
 
 		const hexColor = user?.settings.get(UserSettings.BankBackgroundHex);

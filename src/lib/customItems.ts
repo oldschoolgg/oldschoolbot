@@ -1870,6 +1870,22 @@ setCustomItem(48_256, 'Sliced femur', 'Coal', {}, 100_000);
 setCustomItem(48_257, 'Human blood', 'Coal', {}, 100_000);
 setCustomItem(48_258, 'Human tooth', 'Coal', {}, 100_000);
 
+setCustomItem(48_259, 'Chocolified skull', 'Coal', {}, 10_000);
+setCustomItem(48_260, 'Eyescream', 'Coal', {}, 10_000);
+setCustomItem(48_261, 'Rotten sweets', 'Coal', {}, 10_000);
+setCustomItem(48_262, 'Toffeet', 'Coal', {}, 10_000);
+setCustomItem(48_263, 'Candy teeth', 'Coal', {}, 10_000);
+setCustomItem(48_264, 'Hairyfloss', 'Coal', {}, 10_000);
+setCustomItem(48_265, 'Goblinfinger soup', 'Coal', {}, 10_000);
+setCustomItem(48_266, "Benny's brain brew", 'Coal', {}, 10_000);
+setCustomItem(48_267, 'Roasted newt', 'Coal', {}, 10_000);
+setCustomItem(48_268, 'Gregoyle', 'Herbi', {}, 10_000);
+// setCustomItem(48_269, 'Haunted cape', 'Red cape', {}, 10_000);
+// setCustomItem(48_270, 'Haunted axe', 'Dragon axe', {}, 10_000);
+// setCustomItem(48_271, 'Haunted mask', 'Rune full helm', {}, 10_000);
+// setCustomItem(48_272, 'Haunted amulet', 'Amulet of strength', {}, 10_000);
+setCustomItem(48_273, "Choc'rock", 'Coal', {}, 100_000);
+
 /**
  * Misc Items
  *

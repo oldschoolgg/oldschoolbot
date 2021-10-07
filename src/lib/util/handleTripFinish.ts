@@ -54,7 +54,13 @@ export async function handleTripFinish(
 		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
 	}
 
-	if (data.type !== Activity.GroupMonsterKilling && loot && data.duration > Time.Minute * 20 && roll(15)) {
+	if (
+		loot &&
+		!loot[itemID('Gregoyle')] &&
+		data.type !== Activity.GroupMonsterKilling &&
+		data.duration > Time.Minute * 20 &&
+		roll(15)
+	) {
 		const emoji = getSupportGuild(client).emojis.cache.random().toString();
 		const bonusLoot = new Bank().add(loot).add(getRandomMysteryBox());
 		message += `\n${emoji} **You received 2x loot and a Mystery box.**`;

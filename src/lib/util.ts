@@ -10,6 +10,7 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
+import { production } from '../config';
 import { BitField, CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
 import { GearSetupType, GearSetupTypes } from './gear/types';
 import { ArrayItemsResolved, Skills } from './types';
@@ -103,6 +104,19 @@ export function formatDuration(ms: number) {
 
 export function inlineCodeblock(input: string) {
 	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
+}
+
+export function britishTime() {
+	const currentDate = new Date(Date.now() - Time.Hour * 10);
+	return currentDate;
+}
+
+export function isNightTime() {
+	const time = britishTime();
+	let hours = time.getHours();
+
+	if (!production) hours = 20;
+	return hours > 19 || hours < 4;
 }
 
 export function isWeekend() {
