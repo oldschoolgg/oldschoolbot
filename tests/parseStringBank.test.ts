@@ -10,6 +10,7 @@ import {
 	parseQuantityAndItem,
 	parseStringBank
 } from '../src/lib/util/parseStringBank';
+import resolveItems from '../src/lib/util/resolveItems';
 
 const psb = parseStringBank;
 const get = getOSItem;
@@ -256,15 +257,20 @@ describe('Bank Parsers', () => {
 			.add('Fire cape');
 
 		//
-		const result = parseInputCostBank({ usersBank, inputStr: undefined, flags: {} });
+		const result = parseInputCostBank({ usersBank, inputStr: undefined, flags: {}, excludeItems: [] });
 		expect(result.length).toEqual(0);
 
 		//
-		const result2 = parseInputCostBank({ usersBank, inputStr: undefined, flags: { all: 'all' } });
+		const result2 = parseInputCostBank({ usersBank, inputStr: undefined, flags: { all: 'all' }, excludeItems: [] });
 		expect(result2.length).toEqual(usersBank.length);
 
 		//
-		const result3 = parseInputCostBank({ usersBank, inputStr: '1+1 egg, 5 feather, 1 manta ray', flags: {} });
+		const result3 = parseInputCostBank({
+			usersBank,
+			inputStr: '1+1 egg, 5 feather, 1 manta ray',
+			flags: {},
+			excludeItems: []
+		});
 		expect(result3.length).toEqual(2);
 		expect(result3.bank).toStrictEqual(new Bank().add('Egg', 2).add('Feather', 5).bank);
 
@@ -272,7 +278,8 @@ describe('Bank Parsers', () => {
 		const result4 = parseInputCostBank({
 			usersBank,
 			inputStr: '#-1 egg, # feather, # manta ray, -1 watermelon, 0 fire rune, #*5 soul rune',
-			flags: {}
+			flags: {},
+			excludeItems: []
 		});
 		expect(result4.length).toEqual(2);
 		expect(result4.bank).toStrictEqual(new Bank().add('Egg', 2).add('Feather', 600).bank);
@@ -281,7 +288,8 @@ describe('Bank Parsers', () => {
 		const result5 = parseInputCostBank({
 			usersBank,
 			inputStr: `#-1 ${itemID('Egg')}, 1 ${itemID('Feather')}`,
-			flags: {}
+			flags: {},
+			excludeItems: []
 		});
 		expect(result5.bank).toStrictEqual(new Bank().add('Egg', 2).add('Feather', 1).bank);
 		expect(result5.length).toEqual(2);
@@ -290,7 +298,8 @@ describe('Bank Parsers', () => {
 		const result6 = parseInputCostBank({
 			usersBank,
 			inputStr: '1 Shark',
-			flags: { untradeables: 'untradeables' }
+			flags: { untradeables: 'untradeables' },
+			excludeItems: []
 		});
 		expect(result6.bank).toStrictEqual(new Bank().bank);
 		expect(result6.length).toEqual(0);
@@ -299,7 +308,8 @@ describe('Bank Parsers', () => {
 		const result7 = parseInputCostBank({
 			usersBank,
 			inputStr: '1 Shark, 5 Fire cape',
-			flags: { untradeables: 'untradeables' }
+			flags: { untradeables: 'untradeables' },
+			excludeItems: []
 		});
 		expect(result7.bank).toStrictEqual(new Bank().add('Fire cape').bank);
 		expect(result7.length).toEqual(1);
@@ -308,7 +318,8 @@ describe('Bank Parsers', () => {
 		const result8 = parseInputCostBank({
 			usersBank,
 			inputStr: '1 Shark, 5 Fire cape',
-			flags: { equippables: 'equippables' }
+			flags: { equippables: 'equippables' },
+			excludeItems: []
 		});
 		expect(result8.bank).toStrictEqual(new Bank().add('Fire cape').bank);
 		expect(result8.length).toEqual(1);
@@ -317,7 +328,8 @@ describe('Bank Parsers', () => {
 		const result9 = parseInputCostBank({
 			usersBank,
 			inputStr: undefined,
-			flags: { equippables: 'equippables' }
+			flags: { equippables: 'equippables' },
+			excludeItems: []
 		});
 		expect(result9.bank).toStrictEqual(new Bank().add('Fire cape').add('Rune sword').add('Twisted bow', 6).bank);
 		expect(result9.length).toEqual(3);
@@ -326,7 +338,8 @@ describe('Bank Parsers', () => {
 		const result10 = parseInputCostBank({
 			usersBank,
 			inputStr: undefined,
-			flags: { equippables: 'equippables', qty: '1' }
+			flags: { equippables: 'equippables', qty: '1' },
+			excludeItems: []
 		});
 		expect(result10.bank).toStrictEqual(new Bank().add('Fire cape').add('Rune sword').add('Twisted bow').bank);
 		expect(result10.length).toEqual(3);
@@ -335,7 +348,8 @@ describe('Bank Parsers', () => {
 		const result11 = parseInputCostBank({
 			usersBank,
 			inputStr: 'egg, feather',
-			flags: {}
+			flags: {},
+			excludeItems: []
 		});
 		expect(result11.bank).toStrictEqual(new Bank().add('Feather', 600).add('Egg', 3).bank);
 		expect(result11.length).toEqual(2);
@@ -359,37 +373,37 @@ describe('Bank Parsers', () => {
 			.add('Rune sword')
 			.add('Fire cape');
 
-		const result1 = parseInputBankWithPrice({ usersBank, str: '', flags: {} });
+		const result1 = parseInputBankWithPrice({ usersBank, str: '', flags: {}, excludeItems: [] });
 		expect(result1.bank).toStrictEqual(new Bank());
 		expect(result1.price).toStrictEqual(0);
 
 		//
-		const result2 = parseInputBankWithPrice({ usersBank, str: '5m 1 egg, # feather', flags: {} });
+		const result2 = parseInputBankWithPrice({ usersBank, str: '5m 1 egg, # feather', flags: {}, excludeItems: [] });
 		expect(result2.bank).toStrictEqual(new Bank().add('Egg').add('Feather', 600));
 		expect(result2.price).toStrictEqual(5_000_000);
 
 		//
-		const result3 = parseInputBankWithPrice({ usersBank, str: '1 1 egg, # feather', flags: {} });
+		const result3 = parseInputBankWithPrice({ usersBank, str: '1 1 egg, # feather', flags: {}, excludeItems: [] });
 		expect(result3.bank).toStrictEqual(new Bank().add('Egg').add('Feather', 600));
 		expect(result3.price).toStrictEqual(1);
 
 		//
-		const result4 = parseInputBankWithPrice({ usersBank, str: 'feather, egg', flags: {} });
+		const result4 = parseInputBankWithPrice({ usersBank, str: 'feather, egg', flags: {}, excludeItems: [] });
 		expect(result4.bank).toStrictEqual(new Bank().add('Feather', 600).add('Egg', 3));
 		expect(result4.price).toStrictEqual(0);
 
 		//
-		const result5 = parseInputBankWithPrice({ usersBank, str: '1m feather, egg', flags: {} });
+		const result5 = parseInputBankWithPrice({ usersBank, str: '1m feather, egg', flags: {}, excludeItems: [] });
 		expect(result5.bank).toStrictEqual(new Bank().add('Feather', 600).add('Egg', 3));
 		expect(result5.price).toStrictEqual(1_000_000);
 
 		//
-		const result6 = parseInputBankWithPrice({ usersBank, str: '1m #/2 feather, egg', flags: {} });
+		const result6 = parseInputBankWithPrice({ usersBank, str: '1m #/2 feather, egg', flags: {}, excludeItems: [] });
 		expect(result6.bank).toStrictEqual(new Bank().add('Feather', 600 / 2).add('Egg', 3));
 		expect(result6.price).toStrictEqual(1_000_000);
 
 		//
-		const result7 = parseInputBankWithPrice({ usersBank, str: '1944', flags: {} });
+		const result7 = parseInputBankWithPrice({ usersBank, str: '1944', flags: {}, excludeItems: [] });
 		expect(result7.bank).toStrictEqual(new Bank().add('Egg', 3));
 		expect(result7.price).toStrictEqual(0);
 
@@ -397,7 +411,8 @@ describe('Bank Parsers', () => {
 		const result8 = parseInputBankWithPrice({
 			usersBank: usersBank.clone().add("Nulodion's notes"),
 			str: "Nulodion's notes",
-			flags: { tradeables: 'tradeables' }
+			flags: { tradeables: 'tradeables' },
+			excludeItems: []
 		});
 		expect(result8.bank).toStrictEqual(new Bank());
 		expect(result8.price).toStrictEqual(0);
@@ -406,7 +421,8 @@ describe('Bank Parsers', () => {
 		const result9 = parseInputBankWithPrice({
 			usersBank: usersBank.clone().add("Nulodion's notes"),
 			str: `${itemID("Nulodion's notes")}`,
-			flags: { tradeables: 'tradeables' }
+			flags: { tradeables: 'tradeables' },
+			excludeItems: []
 		});
 		expect(result9.bank).toStrictEqual(new Bank());
 		expect(result9.price).toStrictEqual(0);
@@ -415,7 +431,8 @@ describe('Bank Parsers', () => {
 		const result10 = parseInputBankWithPrice({
 			usersBank: usersBank.clone().add(1),
 			str: '1',
-			flags: {}
+			flags: {},
+			excludeItems: []
 		});
 		expect(result10.bank).toStrictEqual(new Bank().add(1));
 		expect(result10.price).toStrictEqual(0);
@@ -424,7 +441,8 @@ describe('Bank Parsers', () => {
 		const result11 = parseInputBankWithPrice({
 			usersBank,
 			str: '23423423432',
-			flags: {}
+			flags: {},
+			excludeItems: []
 		});
 		expect(result11.bank).toStrictEqual(new Bank());
 		expect(result11.price).toStrictEqual(0);
@@ -438,7 +456,8 @@ describe('Bank Parsers', () => {
 		const result12 = parseInputBankWithPrice({
 			usersBank: bigBank,
 			str: '',
-			flags: { all: 'all' }
+			flags: { all: 'all' },
+			excludeItems: []
 		});
 		expect(result12.bank.length).toStrictEqual(60);
 		expect(result12.price).toStrictEqual(0);
@@ -447,9 +466,30 @@ describe('Bank Parsers', () => {
 		const result13 = parseInputBankWithPrice({
 			usersBank: new Bank().add('Shark'),
 			str: '6969',
-			flags: {}
+			flags: {},
+			excludeItems: []
 		});
 		expect(result13.bank.length).toStrictEqual(1);
 		expect(result13.price).toStrictEqual(0);
+
+		//
+		const result14 = parseInputBankWithPrice({
+			usersBank: new Bank().add('Shark').add('Fire rune'),
+			str: '',
+			flags: { all: 'all' },
+			excludeItems: resolveItems(['Fire rune'])
+		});
+		expect(result14.bank.length).toStrictEqual(1);
+		expect(result14.bank.has('Shark')).toEqual(true);
+
+		//
+		const result15 = parseInputBankWithPrice({
+			usersBank: new Bank().add('Shark').add('Fire rune'),
+			str: '',
+			flags: { search: 'shar' },
+			excludeItems: resolveItems(['Fire rune'])
+		});
+		expect(result15.bank.length).toStrictEqual(1);
+		expect(result15.bank.has('Shark')).toEqual(true);
 	});
 });
