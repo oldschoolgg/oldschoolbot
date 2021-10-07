@@ -82,19 +82,22 @@ export default class extends BotCommand {
 		}
 
 		const start = britishTime();
+		start.setTime(start.getTime() + Time.Hour * 10);
 		start.setHours(0, 0, 0, 0);
 		const end = britishTime();
+		end.setTime(start.getTime() + Time.Hour * 10);
 		end.setHours(23, 59, 59, 9999);
 		const trips = await createQueryBuilder(ActivityTable)
 			.select()
 			.where('user_id = :userID', {
 				userID: msg.author.id
 			})
-			.andWhere('start_date > :startDate AND finish_date < :endDate', {
+			.andWhere('(start_date, finish_date) OVERLAPS (:startDate, :endDate)', {
 				startDate: start,
 				endDate: end
 			})
 			.getMany();
+
 		if (trips.length >= 5) {
 			return msg.channel.send(
 				"You've done too much trick-or-treating today! People won't give you anymore candy until tomorrow."
