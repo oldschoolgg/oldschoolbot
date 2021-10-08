@@ -541,12 +541,12 @@ const pets: Pet[] = [
 	{
 		id: 44,
 		emoji: '<:Youngllef:604670894798798858>',
-		chance: 1000,
+		chance: 800,
 		name: 'Youngllef',
 		type: 'BOSS',
 		altNames: ['GAUNTLET', 'YOUNGLEF'],
 		formatFinish: (num: number) =>
-			`You had to complete the Gauntlet ${fm(
+			`You had to complete the Corrupted Gauntlet ${fm(
 				num
 			)} times to get the Youngllef pet! <:Youngllef:604670894798798858> This took you ${fm(num * 0.15)} hours.`,
 		bossKeys: ['theGauntlet', 'theCorruptedGauntlet']
