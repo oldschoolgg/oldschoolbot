@@ -360,7 +360,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		}
 
 		duration.add(
-			rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chestplate'),
+			rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chainskirt'),
 			-3,
 			'Armadyl'
 		);
