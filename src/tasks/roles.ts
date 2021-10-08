@@ -27,7 +27,6 @@ const collections = [
 	'bosses',
 	'minigames',
 	'raids',
-	'slayer',
 	'Dyed Items',
 	'other',
 	'custom'
