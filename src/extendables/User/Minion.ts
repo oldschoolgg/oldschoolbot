@@ -61,6 +61,7 @@ import {
 	GroupMonsterActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
+	InfernoOptions,
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
@@ -568,6 +569,16 @@ export default class extends Extendable {
 				const data = currentTask as VolcanicMineActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity} games of Volcanic Mine. ${formattedDuration}`;
 			}
+
+			case Activity.Inferno: {
+				const data = currentTask as InfernoOptions;
+				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+				return `${
+					this.minionName
+				} is currently attempting the Inferno, if they're successful and don't die, the trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
 		}
 	}
 
@@ -587,7 +598,9 @@ export default class extends Extendable {
 			return [mon.name, this.getKC((mon as unknown as Monster).id)];
 		}
 
-		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
+		const minigame = Minigames.find(
+			game => stringMatches(game.name, kcName) || game.aliases.some(alias => stringMatches(alias, kcName))
+		);
 		if (minigame) {
 			return [minigame.name, await this.getMinigameScore(minigame.key)];
 		}

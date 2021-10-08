@@ -304,7 +304,6 @@ export const allCollectionLogs: ICollection = {
 				roleCategory: ['bosses']
 			},
 			'The Inferno': {
-				enabled: false,
 				alias: ['zuk', 'inferno'],
 				items: theInfernoCL
 			},

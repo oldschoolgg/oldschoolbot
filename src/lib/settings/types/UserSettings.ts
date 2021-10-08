@@ -7,6 +7,7 @@ import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
 import { PatchTypes } from '../../minions/farming';
 import { CompostTier, FarmingContract, FarmingPatchTypes } from '../../minions/farming/types';
+import { BlowpipeData } from '../../minions/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
@@ -56,6 +57,11 @@ export namespace UserSettings {
 	export const IronmanAlts = T<readonly string[]>('ironman_alts');
 	export const MainAccount = T<string | null>('main_account');
 
+	export const InfernoAttempts = T<number>('inferno_attempts');
+	export const InfernoCapeSacrifices = T<number>('inferno_cape_sacrifices');
+
+	export const Blowpipe = T<O.Readonly<BlowpipeData>>('blowpipe');
+
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');
 		export const TaskStreak = T<number>('slayer.task_streak');
@@ -83,6 +89,9 @@ export namespace UserSettings {
 
 		export const TitheFarmsCompleted = T<number>('stats.titheFarmsCompleted');
 		export const TitheFarmPoints = T<number>('stats.titheFarmPoints');
+
+		export const InfernoAttempts = T<number>('inferno_attempts');
+		export const InfernalCapesSacrificed = T<number>('infernal_cape_sacrifices');
 	}
 
 	export namespace Minion {

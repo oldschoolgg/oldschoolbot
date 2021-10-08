@@ -233,6 +233,7 @@ export function getCommonTaskName(task: Monster) {
 	if (commonName !== 'TzHaar' && !commonName.endsWith('s')) commonName += 's';
 	return commonName;
 }
+
 export async function getUsersCurrentSlayerInfo(id: string) {
 	const [currentTask, totalTasksDone] = await Promise.all([
 		SlayerTaskTable.findOne({
