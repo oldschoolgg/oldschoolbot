@@ -5,6 +5,7 @@ import fetch from 'node-fetch';
 import { Bank, Monsters } from 'oldschooljs';
 import { table } from 'table';
 
+import { production } from '../../config';
 import { Activity, BitField, Emoji, projectiles, ProjectileType } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -115,14 +116,14 @@ export default class extends BotCommand {
 	basePreZukDeathChance(_attempts: number) {
 		const attempts = Math.max(1, _attempts);
 		let chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(45))) * 47);
-		if (attempts < 20) chance += 20 - attempts;
+		if (attempts < 30) chance += 30 - attempts;
 
 		return Math.max(Math.min(chance, 99), 5);
 	}
 
 	baseZukDeathChance(_attempts: number) {
 		const attempts = Math.max(1, _attempts);
-		if (attempts < 20) return 99.9999 - attempts / 7.5;
+		if (attempts < 25) return 99.9999 - attempts / 7.5;
 		const chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(25))) * 39);
 		return Math.max(Math.min(chance, 99), 15);
 	}
@@ -141,7 +142,7 @@ export default class extends BotCommand {
 		let baseZuk = [];
 		let duration = [];
 		for (let i = range[0]; i < range[1]; i++) {
-			const res = await this.infernoRun({ user, kc: 0, attempts: i });
+			const res = await this.infernoRun({ user, attempts: i, timesMadeToZuk: 0 });
 			if (typeof res === 'string') return res;
 			preZuk.push(res.preZukDeathChance.value);
 			zuk.push(res.zukDeathChance.value);
@@ -244,15 +245,29 @@ export default class extends BotCommand {
 	}
 
 	async simulate(msg: KlasaMessage) {
-		let kc = 0;
-		for (let i = 0; i < 10_000; i++) {
-			const res = await this.infernoRun({ user: msg.author, kc, attempts: i });
-			if (typeof res === 'string') return res;
-			if (!res.deathTime) {
-				return `You finished the inferno after ${i} attempts. ${res.duration.messages.join(', ')}`;
+		let finishes = [];
+		let n = 1000;
+		let results = [];
+		for (let i = 0; i < n; i++) {
+			let timesMadeToZuk = 0;
+
+			for (let o = 0; o < 10_000; o++) {
+				const res = await this.infernoRun({ user: msg.author, attempts: o, timesMadeToZuk });
+				if (typeof res === 'string') return res;
+				if (!res.diedPreZuk) timesMadeToZuk++;
+				if (!res.deathTime) {
+					results.push(res);
+
+					finishes.push(o);
+					break;
+				}
 			}
 		}
-		return "After 10,000 attempts, you still didn't finish.";
+		return `In ${n} Inferno simulations...
+**Average Completion:** ${sumArr(finishes) / n} attempts
+**Fastest Completion:** ${Math.min(...finishes)} attempts
+**Longest Completion:** ${Math.max(...finishes)} attempts
+`;
 	}
 
 	async timesMadeToZuk(userID: string) {
@@ -268,7 +283,15 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		return timesMadeToZuk;
 	}
 
-	async infernoRun({ user, attempts }: { user: KlasaUser; kc: number; attempts: number }) {
+	async infernoRun({
+		user,
+		attempts,
+		timesMadeToZuk
+	}: {
+		user: KlasaUser;
+		attempts: number;
+		timesMadeToZuk: number;
+	}) {
 		const userBank = user.bank();
 
 		const duration = new PercentCounter(this.baseDuration(attempts), 'time');
@@ -424,8 +447,6 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 		duration.add(isOnTask && user.hasItemEquippedOrInBank('Black mask (i)'), -9, `${Emoji.Slayer} Slayer Task`);
 
-		// Reduced Zuk death chance based on how many times made to Zuk
-		const timesMadeToZuk = await this.timesMadeToZuk(user.id);
 		if (timesMadeToZuk > 0) {
 			zukDeathChance.add(
 				timesMadeToZuk > 0,
@@ -460,6 +481,15 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		duration.value = randomVariation(duration.value, (randInt(1, 10) + randInt(1, 10) + randInt(1, 10)) / 3);
 
 		const fakeDuration = Math.floor(duration.value);
+
+		if (attempts < 8) {
+			zukDeathChance.value = 100;
+		} else if (attempts < 20) {
+			zukDeathChance.value += 20 - attempts;
+		}
+		if (attempts < 15) {
+			preZukDeathChance.value += 15 - attempts;
+		}
 
 		preZukDeathChance.value = Math.min(preZukDeathChance.value, 100);
 		zukDeathChance.value = Math.min(zukDeathChance.value, 100);
@@ -530,11 +560,11 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 	@minionNotBusy
 	@requiresMinion
 	async start(msg: KlasaMessage) {
-		if (msg.flagArgs.sim) {
-			msg.channel.send({
-				files: [...(await this.baseDeathChances(msg.author))]
-			});
-			msg.channel.send({ files: [...(await this.baseDeathChances(msg.author, [250, 500]))] });
+		if (msg.flagArgs.sim && !production) {
+			// msg.channel.send({
+			// 	files: [...(await this.baseDeathChances(msg.author))]
+			// });
+			// msg.channel.send({ files: [...(await this.baseDeathChances(msg.author, [250, 500]))] });
 			return msg.channel.send(await this.simulate(msg));
 		}
 
@@ -542,7 +572,11 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		const usersRangeStats = msg.author.getGear('range').stats;
 		const zukKC = await msg.author.getMinigameScore('Inferno');
 
-		const res = await this.infernoRun({ user: msg.author, kc: zukKC, attempts });
+		const res = await this.infernoRun({
+			user: msg.author,
+			attempts,
+			timesMadeToZuk: await this.timesMadeToZuk(msg.author.id)
+		});
 
 		if (typeof res === 'string') {
 			return msg.channel.send({

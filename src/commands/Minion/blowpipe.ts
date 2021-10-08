@@ -44,7 +44,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		const rawBlowpipeData = msg.author.settings.get(UserSettings.Blowpipe);
+		const rawBlowpipeData = { ...msg.author.settings.get(UserSettings.Blowpipe) };
 		const hasBlowpipe = msg.author.owns('Toxic blowpipe') || msg.author.owns('Toxic blowpipe (empty)');
 		if (!hasBlowpipe) {
 			return msg.channel.send("You don't own a Toxic blowpipe.");
@@ -107,7 +107,7 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 
 		const dart = itemsToRemove.items().find(i => blowpipeDarts.includes(i[0]));
 
-		const rawBlowpipeData = msg.author.settings.get(UserSettings.Blowpipe);
+		const rawBlowpipeData = { ...msg.author.settings.get(UserSettings.Blowpipe) };
 		validateBlowpipeData(rawBlowpipeData);
 		if (dart && !itemsToRemove.amount(dart[0].id)) {
 			throw new Error('wtf! not meant to happen');
