@@ -56,9 +56,8 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			altProtection: true,
 			requiredPermissions: ['ATTACH_FILES'],
-			description:
-				'Sends your minion to complete the fight caves - it will start off bad but get better with more attempts. Requires range gear, prayer pots, brews and restores.',
-			examples: ['+inferno'],
+			description: 'Sends your minion to complete the Inferno.',
+			examples: ['+inferno start', '+i'],
 			categoryFlags: ['minion', 'minigame'],
 			aliases: ['i'],
 			subcommands: true,
