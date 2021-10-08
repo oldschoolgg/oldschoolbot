@@ -121,11 +121,7 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 			);
 		}
 
-		let currentData: BlowpipeData = rawBlowpipeData ?? {
-			scales: 0,
-			dartID: null,
-			dartQuantity: 0
-		};
+		let currentData: BlowpipeData = { ...rawBlowpipeData };
 		validateBlowpipeData(currentData);
 		currentData.scales += itemsToRemove.amount("Zulrah's scales");
 

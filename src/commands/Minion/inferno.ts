@@ -247,7 +247,6 @@ export default class extends BotCommand {
 	async simulate(msg: KlasaMessage) {
 		let finishes = [];
 		let n = 1000;
-		let results = [];
 		for (let i = 0; i < n; i++) {
 			let timesMadeToZuk = 0;
 
@@ -256,8 +255,6 @@ export default class extends BotCommand {
 				if (typeof res === 'string') return res;
 				if (!res.diedPreZuk) timesMadeToZuk++;
 				if (!res.deathTime) {
-					results.push(res);
-
 					finishes.push(o);
 					break;
 				}

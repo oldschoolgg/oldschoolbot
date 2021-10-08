@@ -213,7 +213,7 @@ export default class extends Extendable {
 				throw new Error(`Has ${itemNameFromID(equippedAmmo)}, but needs ${ammoRemove[0].name}.`);
 			}
 			const newRangeGear = { ...this.settings.get(UserSettings.Gear.Range) };
-			const ammo = newRangeGear?.ammo?.quantity;
+			const ammo = newRangeGear.ammo?.quantity;
 
 			if (hasAvas) {
 				let ammoCopy = ammoRemove[1];
