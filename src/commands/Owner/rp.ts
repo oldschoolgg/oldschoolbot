@@ -282,8 +282,15 @@ ${
 			}
 			case 'roles': {
 				msg.channel.send('Running roles task...');
-				const result = await this.client.tasks.get('roles')?.run();
-				return msg.channel.send(result as string);
+				try {
+					const result = (await this.client.tasks.get('roles')?.run()) as string;
+					return sendToChannelID(this.client, msg.channel.id, {
+						content: result.slice(0, 2500)
+					});
+				} catch (err) {
+					console.error(err);
+					return msg.channel.send(`Failed to run roles task. ${err.message}`);
+				}
 			}
 			case 'canceltask': {
 				if (!input || !(input instanceof KlasaUser)) return;
