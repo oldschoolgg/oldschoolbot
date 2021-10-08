@@ -12,9 +12,7 @@ export default class extends Event {
 	}
 
 	async run(message: string) {
-		const channel = this.client.channels.cache.get(
-			this.client.production ? Channel.Notifications : '680770361893322761'
-		);
-		(channel as TextChannel).send(message);
+		const channel = this.client.channels.cache.get(Channel.Notifications);
+		if (channel && this.client.production) (channel as TextChannel).send(message);
 	}
 }
