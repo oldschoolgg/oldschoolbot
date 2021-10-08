@@ -62,6 +62,7 @@ export namespace ClientSettings {
 		export const RevsCost = T<O.Readonly<ItemBank>>('revs_cost');
 		export const RevsLoot = T<O.Readonly<ItemBank>>('revs_loot');
 
+		export const InfernoCost = T<O.Readonly<ItemBank>>('inferno_cost');
 		export const DroppedItems = T<O.Readonly<ItemBank>>('dropped_items');
 
 		export const RunecraftCost = T<O.Readonly<ItemBank>>('runecraft_cost');
