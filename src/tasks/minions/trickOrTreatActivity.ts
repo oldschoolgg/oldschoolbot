@@ -14,7 +14,7 @@ const treatTable = new LootTable()
 	.add('Eyescream', 1, 180)
 	.add('Goblinfinger soup', 1, 180)
 	.add("Benny's brain brew", 1, 60)
-	.add("Choc'rock", 1, 3)
+	.add("Choc'rock", 1, 7)
 	.add('Roasted newt', 1, 1);
 
 export default class extends Task {
