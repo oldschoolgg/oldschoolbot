@@ -273,6 +273,7 @@ export default class extends BotCommand {
 FROM activity
 WHERE type = 'Inferno'
 AND user_id = '${userID}'
+AND completed = true
 AND (data->>'diedPreZuk')::boolean = false;`)
 			)[0].count
 		);
