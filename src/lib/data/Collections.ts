@@ -1131,7 +1131,23 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Halloween 2021': {
 				alias: ['hween2021', 'halloween 2021'],
-				items: resolveItems(['Human appendage', 'Sliced femur', 'Human blood', 'Human tooth']),
+				items: resolveItems([
+					'Human appendage',
+					'Sliced femur',
+					'Human blood',
+					'Human tooth',
+					'Candy teeth',
+					'Toffeet',
+					'Chocolified skull',
+					'Rotten sweets',
+					'Hairyfloss',
+					'Eyescream',
+					'Goblinfinger soup',
+					"Benny's brain brew",
+					'Roasted newt',
+					"Choc'rock",
+					'Gregoyle'
+				]),
 				counts: false
 			}
 		}

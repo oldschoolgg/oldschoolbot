@@ -5,7 +5,7 @@ import { Bank, LootTable } from 'oldschooljs';
 import { TrickOrTreatOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-const treatTable = new LootTable()
+export const treatTable = new LootTable()
 	.add('Candy teeth', 1, 350)
 	.add('Toffeet', 1, 240)
 	.add('Chocolified skull', 1, 240)
