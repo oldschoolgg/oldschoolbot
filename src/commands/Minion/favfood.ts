@@ -31,7 +31,7 @@ export default class extends BotCommand {
 
 		const [item] = items;
 
-		if (!Eatables.some(eatable => item.id === eatable.id)) {
+		if (!Eatables.some(eatable => item.id === eatable.id || item.id === eatable.raw)) {
 			return msg.channel.send("That item isn't a valid food.");
 		}
 
