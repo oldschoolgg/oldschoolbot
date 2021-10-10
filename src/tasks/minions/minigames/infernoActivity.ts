@@ -130,9 +130,9 @@ export default class extends Task {
 				'Tokkul'
 			)}x Tokkul.`;
 		} else {
-			baseBank.add(Monsters.TzKalZuk.kill(1, { onSlayerTask: isOnTask }));
-
-			await user.addItemsToBank(baseBank, true);
+			const zukLoot = Monsters.TzKalZuk.kill(1, { onSlayerTask: isOnTask });
+			zukLoot.remove('Tokkul', zukLoot.amount('Tokkul'));
+			baseBank.add(zukLoot);
 
 			if (baseBank.has('Jal-nib-rek')) {
 				this.client.emit(
@@ -165,6 +165,8 @@ export default class extends Task {
 				);
 			}
 		}
+
+		await user.addItemsToBank(baseBank, true);
 
 		handleTripFinish(
 			this.client,
