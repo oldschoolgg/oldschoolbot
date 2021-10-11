@@ -1,3 +1,5 @@
+import { ItemBank } from 'oldschooljs/dist/meta/types';
+
 import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
@@ -176,6 +178,15 @@ export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
 	preJadDeathChance: number;
 	preJadDeathTime: number | null;
 	quantity: number;
+}
+export interface InfernoOptions extends ActivityTaskOptions {
+	zukDeathChance: number;
+	preZukDeathChance: number;
+	deathTime: number | null;
+	fakeDuration: number;
+	diedZuk: boolean;
+	diedPreZuk: boolean;
+	cost: ItemBank;
 }
 
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}

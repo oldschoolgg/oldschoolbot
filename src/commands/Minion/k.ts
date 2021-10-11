@@ -412,25 +412,30 @@ export default class extends BotCommand {
 				learningPercentage: percentReduced
 			});
 
-			for (const [item, qty] of foodRemoved.items()) {
-				const eatable = Eatables.find(e => e.id === item.id);
-				if (!eatable) continue;
+			if (foodRemoved.length === 0) {
+				boosts.push('4% for no food');
+				duration = reduceNumByPercent(duration, 4);
+			} else {
+				for (const [item, qty] of foodRemoved.items()) {
+					const eatable = Eatables.find(e => e.id === item.id);
+					if (!eatable) continue;
 
-				const healAmount =
-					typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(msg.author);
-				const amountHealed = qty * healAmount;
-				if (amountHealed < calcPercentOfNum(75, healAmountNeeded * quantity)) continue;
-				const boost = eatable.pvmBoost;
-				if (boost) {
-					if (boost < 0) {
-						boosts.push(`${boost}% for ${eatable.name}`);
-						duration = increaseNumByPercent(duration, Math.abs(boost));
-					} else {
-						boosts.push(`${boost}% for ${eatable.name}`);
-						duration = reduceNumByPercent(duration, boost);
+					const healAmount =
+						typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(msg.author);
+					const amountHealed = qty * healAmount;
+					if (amountHealed < calcPercentOfNum(75, healAmountNeeded * quantity)) continue;
+					const boost = eatable.pvmBoost;
+					if (boost) {
+						if (boost < 0) {
+							boosts.push(`${boost}% for ${eatable.name}`);
+							duration = increaseNumByPercent(duration, Math.abs(boost));
+						} else {
+							boosts.push(`${boost}% for ${eatable.name}`);
+							duration = reduceNumByPercent(duration, boost);
+						}
 					}
+					break;
 				}
-				break;
 			}
 
 			foodStr = result;

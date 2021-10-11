@@ -157,6 +157,12 @@ export const Minigames: Minigame[] = [
 		aliases: ['vm'],
 		key: 'VolcanicMine',
 		column: 'volcanic_mine'
+	},
+	{
+		name: 'Inferno',
+		aliases: ['inferno', 'zuk'],
+		key: 'Inferno',
+		column: 'inferno'
 	}
 ];
 

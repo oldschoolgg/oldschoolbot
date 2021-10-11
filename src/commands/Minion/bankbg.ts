@@ -73,7 +73,7 @@ export default class extends BotCommand {
 		}
 
 		// Check they have required collection log items.
-		if (selectedImage.collectionLogItemsNeeded && msg.author.cl().has(selectedImage.collectionLogItemsNeeded)) {
+		if (selectedImage.collectionLogItemsNeeded && !msg.author.cl().has(selectedImage.collectionLogItemsNeeded)) {
 			return msg.channel.send(
 				`You're not worthy to use this background. You need these items in your Collection Log: ${new Bank(
 					selectedImage.collectionLogItemsNeeded

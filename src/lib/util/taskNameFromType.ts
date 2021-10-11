@@ -130,5 +130,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.VolcanicMine;
 		case Activity.KourendFavour:
 			return Tasks.KourendFavour;
+		case Activity.Inferno:
+			return Tasks.Inferno;
 	}
 }
