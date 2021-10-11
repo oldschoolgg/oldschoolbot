@@ -37,11 +37,11 @@ function getPHeadDescriptor() {
 }
 
 export const pumpkinHeadUniqueTable = new LootTable()
-	.add('Haunted cloak')
+	.add('Haunted cloak', 1, 2)
 	.add("Pumpkinhead's headbringer")
 	.add('Haunted amulet')
-	.add('Haunted gloves')
-	.add('Haunted boots')
+	.add('Haunted gloves', 1, 2)
+	.add('Haunted boots', 1, 2)
 	.add("Pumpkinhead's pumpkin head")
 	.tertiary(21, 'Mini Pumpkinhead');
 
