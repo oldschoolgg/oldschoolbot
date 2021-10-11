@@ -241,7 +241,7 @@ export class BossInstance {
 	async init() {
 		const mass = new Mass({
 			channel: this.channel,
-			maxSize: 10 ?? this.maxSize,
+			maxSize: this.maxSize ?? 10,
 			minSize: this.minSize,
 			leader: this.leader,
 			text: this.massText,
