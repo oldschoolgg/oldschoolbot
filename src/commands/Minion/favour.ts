@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { KourendFavourActivityTaskOptions } from '../../lib/types/minions';
@@ -26,10 +26,9 @@ export default class extends BotCommand {
 	}
 
 	@requiresMinion
-	@minionNotBusy
 	async run(msg: KlasaMessage, [favourName]: [string | undefined]) {
 		const currentUserFavour = msg.author.settings.get(UserSettings.KourendFavour);
-		if (!favourName) {
+		if (!favourName || msg.author.minionIsBusy) {
 			let allFavourString: string = 'Your current Kourend Favour:';
 			for (const [key, value] of Object.entries(currentUserFavour)) {
 				allFavourString += `\n**${key}**: ${value}%`;
@@ -44,6 +43,7 @@ export default class extends BotCommand {
 				)}.`
 			);
 		}
+		if (msg.author.minionIsBusy) return msg.channel.send(`${msg.author.minionName} is currently busy.`);
 		const maxTripLength = msg.author.maxTripLength(Activity.KourendFavour);
 		let currentPoints = 0;
 		for (const [key, value] of Object.entries(currentUserFavour)) {

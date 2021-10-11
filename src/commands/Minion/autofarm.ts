@@ -38,7 +38,7 @@ export default class extends BotCommand {
 			const lastPlantTime: number = patchData.plantTime;
 			const difference = currentDate - lastPlantTime;
 			if (difference < p.growthTime * Time.Minute) return false;
-			const numOfPatches = calcNumOfPatches(p, msg.author, msg.author.settings.get(UserSettings.QP));
+			const [numOfPatches] = calcNumOfPatches(p, msg.author, msg.author.settings.get(UserSettings.QP));
 			const reqItems = new Bank(p.inputItems).multiply(numOfPatches);
 			if (!userBank.has(reqItems.bank)) {
 				return false;

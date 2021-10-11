@@ -82,13 +82,15 @@ export default class extends BotCommand {
 			);
 
 		if (!plants) {
-			throw `That's not a valid seed to plant. Valid seeds are ${Farming.Plants.map(plants => plants.name).join(
-				', '
-			)}. *Make sure you are not attempting to farm 0 crops.*`;
+			return msg.channel.send(
+				`That's not a valid seed to plant. Valid seeds are ${Farming.Plants.map(plants => plants.name).join(
+					', '
+				)}. *Make sure you are not attempting to farm 0 crops.*`
+			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Farming) < plants.level) {
-			throw `${msg.author.minionName} needs ${plants.level} Farming to plant ${plants.name}.`;
+			return msg.channel.send(`${msg.author.minionName} needs ${plants.level} Farming to plant ${plants.name}.`);
 		}
 
 		const [haveFavour, requiredPoints] = gotFavour(msg.author, findFavour('Hosidius'), 65);
@@ -120,9 +122,11 @@ export default class extends BotCommand {
 			Allows for a run of specific seed type to only be possible until the
 			previous run's plants have been fully grown.*/
 		if (planted && difference < planted.growthTime * Time.Minute) {
-			throw `Please come back when your crops have finished growing in ${formatDuration(
-				lastPlantTime + planted.growthTime * Time.Minute - currentDate
-			)}!`;
+			return msg.channel.send(
+				`Please come back when your crops have finished growing in ${formatDuration(
+					lastPlantTime + planted.growthTime * Time.Minute - currentDate
+				)}!`
+			);
 		}
 
 		const storeHarvestableQuantity = patchType.lastQuantity;
@@ -136,7 +140,9 @@ export default class extends BotCommand {
 			const gpToCutTree =
 				planted.seedType === 'redwood' ? 2000 * storeHarvestableQuantity : 200 * storeHarvestableQuantity;
 			if (GP < gpToCutTree) {
-				throw `${msg.author.minionName} remembers that they do not have ${planted.treeWoodcuttingLevel} woodcutting or the ${gpToCutTree} GP required to be able to harvest the currently planted trees, and so they cancel their trip.`;
+				return msg.channel.send(
+					`${msg.author.minionName} remembers that they do not have ${planted.treeWoodcuttingLevel} woodcutting or the ${gpToCutTree} GP required to be able to harvest the currently planted trees, and so they cancel their trip.`
+				);
 			}
 		}
 
@@ -153,24 +159,27 @@ export default class extends BotCommand {
 		}
 
 		if (!plants.canPayFarmer && payment) {
-			throw `You cannot pay a farmer to look after your ${plants.name}s!`;
+			return msg.channel.send(`You cannot pay a farmer to look after your ${plants.name}s!`);
 		}
 		if (!plants.canCompostandPay && payment && (upgradeType === 'supercompost' || upgradeType === 'ultracompost')) {
-			throw 'You do not need to use compost if you are paying a nearby farmer to look over your crops.';
+			return msg.channel.send(
+				'You do not need to use compost if you are paying a nearby farmer to look over your crops.'
+			);
 		}
 
 		if (!plants.canCompostPatch && upgradeType !== null) {
-			throw `There would be no point to add compost to your ${plants.name}s!`;
+			return msg.channel.send(`There would be no point to add compost to your ${plants.name}s!`);
 		}
 
 		if (!plants.canPayFarmer && payment) {
-			throw `You cannot pay a farmer to look after your ${plants.name}s!`;
+			return msg.channel.send(`You cannot pay a farmer to look after your ${plants.name}s!`);
 		}
 
-		const numOfPatches = calcNumOfPatches(plants, msg.author, questPoints);
-
+		const [numOfPatches, noFarmGuild] = calcNumOfPatches(plants, msg.author, questPoints);
 		if (numOfPatches === 0) {
-			throw 'There are no available patches to you. Check requirements for additional patches by with the command `+farm --plants`';
+			return msg.channel.send(
+				'There are no available patches to you. Check requirements for additional patches by with the command `+farm --plants`. Note: 60% Hosidius favour is required for farming guild.'
+			);
 		}
 
 		const maxTripLength = msg.author.maxTripLength(Activity.Farming);
@@ -184,7 +193,9 @@ export default class extends BotCommand {
 		}
 
 		if (quantity > numOfPatches) {
-			throw `There are not enough ${plants.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`;
+			return msg.channel.send(
+				`There are not enough ${plants.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`
+			);
 		}
 
 		let duration: number = 0;
@@ -209,12 +220,14 @@ export default class extends BotCommand {
 		}
 
 		if (duration > maxTripLength) {
-			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
-				maxTripLength
-			)}, try a lower quantity. The highest amount of ${plants.name} you can plant is ${
-				(Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)),
-				numOfPatches)
-			}.`;
+			return msg.channel.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					maxTripLength
+				)}, try a lower quantity. The highest amount of ${plants.name} you can plant is ${
+					(Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)),
+					numOfPatches)
+				}.`
+			);
 		}
 
 		let newBank = { ...userBank };
@@ -225,7 +238,7 @@ export default class extends BotCommand {
 				if (msg.author.bank().amount(parseInt(seedID)) > qty) {
 					quantity = Math.floor(msg.author.bank().amount(parseInt(seedID)) / qty);
 				} else {
-					throw `You don't have enough ${itemNameFromID(parseInt(seedID))}s.`;
+					return msg.channel.send(`You don't have enough ${itemNameFromID(parseInt(seedID))}s.`);
 				}
 			}
 			newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
@@ -268,7 +281,7 @@ export default class extends BotCommand {
 		if (upgradeType === 'supercompost' || upgradeType === 'ultracompost') {
 			const hasCompostType = await msg.author.hasItem(itemID(upgradeType), quantity);
 			if (!hasCompostType) {
-				throw `You dont have ${quantity}x ${upgradeType}.`;
+				return msg.channel.send(`You dont have ${quantity}x ${upgradeType}.`);
 			}
 		} else if (
 			!(!plants.canCompostandPay && payment) ||
@@ -324,6 +337,8 @@ export default class extends BotCommand {
 				duration *= 0.96;
 			}
 		}
+
+		if (noFarmGuild) boostStr.push(noFarmGuild);
 
 		await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 			plantsName: plants.name,

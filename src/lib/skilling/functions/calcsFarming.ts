@@ -1,11 +1,12 @@
 import { MessageAttachment } from 'discord.js';
 import { KlasaMessage, KlasaUser } from 'klasa';
 
+import { findFavour, gotFavour } from '../../minions/data/kourendFavour';
 import Farming from '../../skilling/skills/farming';
 import { itemNameFromID, rand } from '../../util';
 import { Plant, SkillsEnum } from '../types';
 
-export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
+export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number): [number, string | undefined] {
 	let numOfPatches = plant.defaultNumOfPatches;
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
 	const questPoints = qp;
@@ -16,14 +17,20 @@ export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
 			break;
 		}
 	}
+	let errorMessage: string | undefined = undefined;
 	for (let i = plant.additionalPatchesByFarmLvl.length; i > 0; i--) {
+		const [haveFavour, requiredPoints] = gotFavour(user, findFavour('Hosidius'), 60);
+		if (!haveFavour && plant.name !== 'Spirit tree') {
+			errorMessage = `${user.minionName} needs ${requiredPoints}% Hosidius Favour to use Farming guild patches.`;
+			break;
+		}
 		const [farmingLevelReq, additionalPatches] = plant.additionalPatchesByFarmLvl[i - 1];
 		if (farmingLevel >= farmingLevelReq) {
 			numOfPatches += additionalPatches;
 			break;
 		}
 	}
-	return numOfPatches;
+	return [numOfPatches, errorMessage];
 }
 
 export function calcVariableYield(
