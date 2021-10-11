@@ -19,14 +19,14 @@ export default class extends Task {
 				totalPoints = Math.min(Number(value) + favourPoints, 100);
 				currentUserFavour[key] = totalPoints;
 				await user.settings.update(UserSettings.KourendFavour, currentUserFavour);
-				if (key === currentUserFavour.Shayzien.toString() && totalPoints === 100) shayzienDone = true;
+				if (key === 'Shayzien' && totalPoints === 100) shayzienDone = true;
 				break;
 			}
 		}
 		const confirmedFavour = KourendFavours.find(i => i.name === favour.name)!;
 		const loot = confirmedFavour.itemsRecieved?.clone().multiply(quantity);
-		if (shayzienDone) {
-			loot?.add(
+		if (shayzienDone && loot) {
+			loot.add(
 				new Bank({
 					'Shayzien boots (1)': 5,
 					'Shayzien gloves (1)': 5,
@@ -52,7 +52,7 @@ export default class extends Task {
 					'Shayzien gloves (5)': 5,
 					'Shayzien greaves (5)': 5,
 					'Shayzien helm (5)': 5,
-					'Shayzien platebody (5)': 5
+					'Shayzien body (5)': 5
 				})
 			);
 		}
