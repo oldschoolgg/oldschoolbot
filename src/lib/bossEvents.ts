@@ -24,7 +24,7 @@ interface BossEvent {
 }
 
 export const bossEventChannelID = production ? '897170239333220432' : '895410639835639808';
-let PUMPKINHEAD_HEALING_NEEDED = 120;
+let PUMPKINHEAD_HEALING_NEEDED = 60;
 export const PUMPKINHEAD_ID = 93_898_458;
 const pumpkinHeadDescriptors = [
 	['Head', 'Skull', 'Body', 'Minion'],
