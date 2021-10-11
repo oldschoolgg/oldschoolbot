@@ -31,7 +31,6 @@ export default class extends BotCommand {
 			leader: msg.author,
 			id: KingGoldemar.id,
 			baseDuration: Time.Minute * 120,
-			baseFoodRequired: 500,
 			skillRequirements: {
 				attack: 105,
 				strength: 105,

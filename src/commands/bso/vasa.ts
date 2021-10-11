@@ -27,7 +27,6 @@ export default class extends BotCommand {
 			leader: msg.author,
 			id: VasaMagus.id,
 			baseDuration: Time.Minute * 15,
-			baseFoodRequired: 400,
 			skillRequirements: {
 				magic: 110
 			},

@@ -1,12 +1,11 @@
 import { MessageAttachment, TextChannel } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr } from 'e';
+import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr, Time } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
 import { Activity } from '../constants';
 import { GearSetupType, GearStats } from '../gear';
-import { Ignecarus } from '../minions/data/killableMonsters/custom/Ignecarus';
 import { Skills } from '../types';
 import { NewBossOptions } from '../types/minions';
 import { formatDuration, formatSkillRequirements, isWeekend, updateBankSetting } from '../util';
@@ -85,6 +84,10 @@ function calcSetupPercent(
 		numKeys++;
 	}
 
+	if (numKeys === 0) {
+		return 100;
+	}
+
 	totalPercent /= numKeys;
 
 	// Heavy penalize for having less than 50% in the main stat of this setup.
@@ -93,16 +96,15 @@ function calcSetupPercent(
 	}
 
 	if (isNaN(totalPercent) || totalPercent < 0 || totalPercent > 100) {
-		throw new Error('Invalid total gear percent.');
+		throw new Error(`Invalid total gear percent: ${totalPercent}`);
 	}
 
 	return totalPercent;
 }
 
-interface BossOptions {
+export interface BossOptions {
 	id: number;
 	baseDuration: number;
-	baseFoodRequired: number;
 	skillRequirements: Skills;
 	itemBoosts: [string, number][];
 	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
@@ -111,11 +113,11 @@ interface BossOptions {
 	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
 	food: Bank | ((user: KlasaUser) => Bank);
-	settingsKeys: [string, string];
+	settingsKeys?: [string, string];
 	channel: TextChannel;
 	activity: Activity;
 	massText: string;
-	leader: KlasaUser;
+	leader?: KlasaUser;
 	minSize: number;
 	solo: boolean;
 	canDie: boolean;
@@ -124,6 +126,7 @@ interface BossOptions {
 	allowMoreThan1Solo?: boolean;
 	allowMoreThan1Group?: boolean;
 	quantity?: number;
+	automaticStartTime?: number;
 }
 
 export interface BossUser {
@@ -152,19 +155,20 @@ export class BossInstance {
 	allowMoreThan1Solo: boolean = false;
 	allowMoreThan1Group: boolean = false;
 	totalPercent: number = -1;
-	settingsKeys: [string, string];
+	settingsKeys?: [string, string];
 	client: KlasaClient;
 	channel: TextChannel;
 	activity: Activity;
 	massText: string;
 	users: KlasaUser[] | null = null;
-	leader: KlasaUser;
+	leader?: KlasaUser;
 	minSize: number;
 	solo: boolean;
 	canDie: boolean;
 	kcLearningCap: number;
 	customDeathChance: null | ((user: KlasaUser, deathChance: number) => number);
 	boosts: string[] = [];
+	automaticStartTime?: number;
 
 	constructor(options: BossOptions) {
 		this.baseDuration = options.baseDuration;
@@ -190,12 +194,18 @@ export class BossInstance {
 		this.allowMoreThan1Solo = options.allowMoreThan1Solo ?? false;
 		this.allowMoreThan1Group = options.allowMoreThan1Group ?? false;
 		this.quantity = options.quantity ?? NaN;
-		let massText = [options.massText, '\n', `**Skill Reqs:** ${formatSkillRequirements(this.skillRequirements)}`];
-		if (this.id !== Ignecarus.id) {
+		let massText = [options.massText, '\n'];
+		if (Object.keys(this.skillRequirements).length > 0) {
+			massText.push(`**Skill Reqs:** ${formatSkillRequirements(this.skillRequirements)}`);
+		}
+		if (this.itemBoosts.length > 0) {
 			massText.push(`**Item Boosts:** ${this.itemBoosts.map(i => `${i[0]}: ${i[1]}%`).join(', ')}`);
+		}
+		if (this.bisGear.allItems(false).length > 0) {
 			massText.push(`**BiS Gear:** ${this.bisGear}`);
 		}
 		this.massText = massText.join('\n');
+		this.automaticStartTime = options.automaticStartTime;
 	}
 
 	async validateTeam() {
@@ -211,7 +221,7 @@ export class BossInstance {
 		let baseQty = this.tempQty;
 		// Calculate max kill qty
 		let tempQty = 1;
-		const maxTripLength = this.leader.maxTripLength(this.activity);
+		const maxTripLength = this.leader?.maxTripLength(this.activity) ?? Time.Hour;
 		tempQty = Math.max(tempQty, Math.floor(maxTripLength / duration));
 		// This boss doesnt allow more than 1KC at time, limits to 1
 		if (
@@ -235,12 +245,13 @@ export class BossInstance {
 			ironmenAllowed: true,
 			customDenier: async (user: KlasaUser) => {
 				return this.checkUser(user);
-			}
+			},
+			automaticStartTime: this.automaticStartTime
 		});
 		this.tempQty = this.quantity;
 		// Force qty to 1 for init calculations
 		this.quantity = this.calculateQty(this.baseDuration);
-		this.users = this.solo ? [this.leader] : await mass.init();
+		this.users = this.solo && this.leader ? [this.leader] : await mass.init();
 		await this.validateTeam();
 		const { bossUsers, duration, totalPercent } = await this.calculateBossUsers();
 		this.quantity = this.calculateQty(duration);
@@ -322,16 +333,18 @@ export class BossInstance {
 			debugStr.push(`**KC**[${kcPercent.toFixed(1)}%]`);
 
 			// Item boosts
-			let itemBoosts = 0;
-			for (const [name, amount] of this.itemBoosts) {
-				if (gear.hasEquipped(name, false, true)) {
-					itemBoosts += amount;
+			if (this.itemBoosts.length > 0) {
+				let itemBoosts = 0;
+				for (const [name, amount] of this.itemBoosts) {
+					if (gear.hasEquipped(name, false, true)) {
+						itemBoosts += amount;
+					}
 				}
+				const itemBoostPercent = calcWhatPercent(itemBoosts, speedReductionForBoosts);
+				const itemBoostsBoostPercent = calcPercentOfNum(itemBoostPercent, speedReductionForBoosts);
+				userPercentChange += itemBoostsBoostPercent;
+				debugStr.push(`**Boosts**[${itemBoostPercent.toFixed(1)}%]`);
 			}
-			const itemBoostPercent = calcWhatPercent(itemBoosts, speedReductionForBoosts);
-			const itemBoostsBoostPercent = calcPercentOfNum(itemBoostPercent, speedReductionForBoosts);
-			userPercentChange += itemBoostsBoostPercent;
-			debugStr.push(`**Boosts**[${itemBoostPercent.toFixed(1)}%]`);
 
 			// Total
 			debugStr.push(`**Total**[${calcWhatPercent(userPercentChange, totalSpeedReduction).toFixed(2)}%]`);
@@ -383,7 +396,9 @@ export class BossInstance {
 			await user.removeItemsFromBank(itemsToRemove);
 			totalCost.add(itemsToRemove);
 		}
-		updateBankSetting(this.client, this.settingsKeys[0], totalCost);
+		if (this.settingsKeys) {
+			updateBankSetting(this.client, this.settingsKeys[0], totalCost);
+		}
 
 		await addSubTaskToActivityTask<NewBossOptions>({
 			userID: this.users![0].id,
@@ -392,7 +407,8 @@ export class BossInstance {
 			duration: this.duration,
 			type: this.activity,
 			users: this.users!.map(u => u.id),
-			bossUsers: this.bossUsers.map(u => ({ ...u, itemsToRemove: u.itemsToRemove.bank, user: u.user.id }))
+			bossUsers: this.bossUsers.map(u => ({ ...u, itemsToRemove: u.itemsToRemove.bank, user: u.user.id })),
+			bossID: this.id
 		});
 		return {
 			bossUsers: this.bossUsers

@@ -3,6 +3,7 @@ import { calcPercentOfNum } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { createQueryBuilder } from 'typeorm';
 
+import { pumpkinHeadUniqueTable } from '../../lib/bossEvents';
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -72,7 +73,8 @@ const scaryItems = resolveItems([
 	'Warlock cloak',
 	'Witch top',
 	'Witch skirt',
-	'Witch cloak'
+	'Witch cloak',
+	...pumpkinHeadUniqueTable.allItems
 ]);
 
 export default class extends BotCommand {
@@ -118,7 +120,6 @@ export default class extends BotCommand {
 				endDate: end
 			})
 			.getMany();
-
 		if (trips.length >= 5) {
 			return msg.channel.send(
 				"You've done too much trick-or-treating today! People won't give you anymore candy until tomorrow."

@@ -16,6 +16,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
+import { bossEvents } from '../../lib/bossEvents';
 import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { onMax } from '../../lib/events';
@@ -78,6 +79,7 @@ import {
 	MiningActivityTaskOptions,
 	MonkeyRumbleOptions,
 	MonsterActivityTaskOptions,
+	NewBossOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	PlunderActivityTaskOptions,
@@ -637,6 +639,11 @@ export default class extends Extendable {
 			}
 			case Activity.TrickOrTreat: {
 				return `${this.minionName} is currently trick or treating! ${formattedDuration}`;
+			}
+			case Activity.BossEvent: {
+				const data = currentTask as NewBossOptions;
+				const bossDoing = bossEvents.find(b => b.id === data.bossID)!;
+				return `${this.minionName} is currently doing a ${bossDoing.name} Boss Event! ${formattedDuration}`;
 			}
 		}
 	}
