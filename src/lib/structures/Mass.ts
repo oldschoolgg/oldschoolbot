@@ -165,7 +165,9 @@ export class Mass {
 	getText() {
 		return `${this.text}
         
-**Users Joined:** ${this.users.length > 15 ? 'Over 15 people!' : this.users.map(u => u.username).join(', ')}
+**Users Joined:** ${
+			this.users.length > 15 ? `${this.users.length} people!` : this.users.map(u => u.username).join(', ')
+		}
             
 This party will automatically depart in ${formatDuration(this.automaticStartTime)}${
 			this.leader === undefined ? '' : ', or if the leader clicks the start or stop button'

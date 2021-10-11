@@ -60,7 +60,7 @@ export const bossEvents: BossEvent[] = [
 				await i.user.incrementMonsterScore(PUMPKINHEAD_ID, 1);
 			}
 
-			const lootGroups = chunk(lootElligible, 3).filter(i => i.length === 3);
+			const lootGroups = chunk(lootElligible, 5).filter(i => i.length === 5);
 			const uniqueItemRecipients = lootGroups.map(groupArr => randArrItem(groupArr));
 			let uniqueLootStr = [];
 			for (const recip of uniqueItemRecipients) {
