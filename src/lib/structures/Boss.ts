@@ -103,6 +103,7 @@ function calcSetupPercent(
 }
 
 export interface BossOptions {
+	maxSize?: number;
 	id: number;
 	baseDuration: number;
 	skillRequirements: Skills;
@@ -169,6 +170,7 @@ export class BossInstance {
 	customDeathChance: null | ((user: KlasaUser, deathChance: number) => number);
 	boosts: string[] = [];
 	automaticStartTime?: number;
+	maxSize: number;
 
 	constructor(options: BossOptions) {
 		this.baseDuration = options.baseDuration;
@@ -194,6 +196,7 @@ export class BossInstance {
 		this.allowMoreThan1Solo = options.allowMoreThan1Solo ?? false;
 		this.allowMoreThan1Group = options.allowMoreThan1Group ?? false;
 		this.quantity = options.quantity ?? NaN;
+		this.maxSize = options.maxSize ?? 10;
 		let massText = [options.massText, '\n'];
 		if (Object.keys(this.skillRequirements).length > 0) {
 			massText.push(`**Skill Reqs:** ${formatSkillRequirements(this.skillRequirements)}`);
@@ -238,7 +241,7 @@ export class BossInstance {
 	async init() {
 		const mass = new Mass({
 			channel: this.channel,
-			maxSize: 10,
+			maxSize: 10 ?? this.maxSize,
 			minSize: this.minSize,
 			leader: this.leader,
 			text: this.massText,

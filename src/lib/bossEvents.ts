@@ -137,7 +137,8 @@ ${uniqueLootStr.length > 0 ? `**Unique Loot:** ${uniqueLootStr.join(', ')}` : 'N
 			quantity: 1,
 			allowMoreThan1Solo: false,
 			allowMoreThan1Group: false,
-			automaticStartTime: production ? Time.Minute * 10 : Time.Minute
+			automaticStartTime: production ? Time.Minute * 10 : Time.Minute,
+			maxSize: 250
 		}
 	}
 ];
