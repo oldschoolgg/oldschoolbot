@@ -16,11 +16,7 @@ export const treatTable = new LootTable()
 	.add("Benny's brain brew", 1, 60)
 	.add("Choc'rock", 1, 7)
 	.add('Roasted newt', 1, 1);
-declare module 'klasa' {
-	interface KlasaClient {
-		__htoken?: boolean;
-	}
-}
+
 export default class extends Task {
 	async run(data: TrickOrTreatOptions) {
 		const { userID, channelID, rolls } = data;
@@ -32,12 +28,6 @@ export default class extends Task {
 		}
 
 		let str = `${user}, ${user.minionName} finished Trick or Treating! You received: ${loot}.`;
-
-		if (roll(2) && this.client.__htoken === undefined) {
-			loot.add('Mysterious token');
-			str += '\n🟣 **You received a Mysterious token.**\n';
-			this.client.__htoken = true;
-		}
 
 		if (roll(20)) {
 			const item = randArrItem(loot.items());
