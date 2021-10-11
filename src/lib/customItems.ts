@@ -1880,11 +1880,16 @@ setCustomItem(48_265, 'Goblinfinger soup', 'Coal', {}, 10_000);
 setCustomItem(48_266, "Benny's brain brew", 'Coal', {}, 10_000);
 setCustomItem(48_267, 'Roasted newt', 'Coal', {}, 10_000);
 setCustomItem(48_268, 'Gregoyle', 'Herbi', {}, 10_000);
-// setCustomItem(48_269, 'Haunted cape', 'Red cape', {}, 10_000);
-// setCustomItem(48_270, 'Haunted axe', 'Dragon axe', {}, 10_000);
-// setCustomItem(48_271, 'Haunted mask', 'Rune full helm', {}, 10_000);
-// setCustomItem(48_272, 'Haunted amulet', 'Amulet of strength', {}, 10_000);
 setCustomItem(48_273, "Choc'rock", 'Coal', {}, 100_000);
+
+setCustomItem(48_305, 'Haunted cloak', 'Red cape', {}, 10_000);
+setCustomItem(48_306, "Pumpkinhead's headbringer", 'Dragon axe', {}, 10_000);
+setCustomItem(48_307, "Pumpkinhead's pumpkin head", 'Rune full helm', {}, 10_000);
+setCustomItem(48_308, 'Haunted amulet', 'Amulet of strength', {}, 10_000);
+setCustomItem(48_309, 'Haunted gloves', 'Rune gloves', {}, 10_000);
+setCustomItem(48_310, 'Haunted boots', 'Rune boots', {}, 10_000);
+setCustomItem(48_311, 'Mini Pumpkinhead', 'Herbi', {}, 1_000_000_000);
+setCustomItem(48_312, 'Mysterious token', 'Coal', {}, 1_000_000);
 
 /**
  * Misc Items

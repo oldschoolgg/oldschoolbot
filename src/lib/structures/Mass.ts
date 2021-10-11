@@ -1,22 +1,23 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable prefer-promise-reject-errors */
 import { MessageReaction, TextChannel } from 'discord.js';
-import { debounce, sleep } from 'e';
+import { debounce, sleep, Time } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
 
 import { ReactionEmoji } from '../../lib/constants';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
-import { removeFromArr } from '../../lib/util';
+import { formatDuration, removeFromArr } from '../../lib/util';
 import { UserDenyResult } from './Boss';
 
 export interface MassOptions {
 	channel: TextChannel;
 	maxSize: number;
 	minSize: number;
-	leader: KlasaUser;
+	leader?: KlasaUser;
 	text: string;
 	ironmenAllowed: boolean;
 	customDenier?: (user: KlasaUser) => Promise<UserDenyResult>;
+	automaticStartTime?: number;
 }
 
 const emojis = [ReactionEmoji.Join, ReactionEmoji.Stop, ReactionEmoji.Start] as const;
@@ -27,7 +28,7 @@ function isActionEmoji(str: string | null): str is ReactionEmoji {
 export class Mass {
 	maxSize: number;
 	minSize: number;
-	leader: KlasaUser;
+	leader?: KlasaUser;
 	text: string;
 	ironmenAllowed: boolean;
 	customDenier: ((user: KlasaUser) => Promise<UserDenyResult>) | undefined;
@@ -35,6 +36,7 @@ export class Mass {
 	channel: TextChannel;
 	users: KlasaUser[] = [];
 	message: KlasaMessage | null = null;
+	automaticStartTime: number;
 
 	constructor(opts: MassOptions) {
 		this.maxSize = opts.maxSize;
@@ -44,23 +46,28 @@ export class Mass {
 		this.ironmenAllowed = opts.ironmenAllowed;
 		this.customDenier = opts.customDenier?.bind(this);
 		this.channel = opts.channel;
+		this.automaticStartTime = opts.automaticStartTime ?? Time.Minute * 2;
 	}
 
 	update = debounce(async () => {
-		this.message!.edit(this.getText());
+		this.message!.edit({ content: this.getText(), allowedMentions: { roles: ['896845245873025067'] } });
 	}, 500);
 
 	async init() {
 		// Check that the leader is okay to join.
-		if (this.customDenier) {
+		if (this.customDenier && this.leader) {
 			const [denied, reason] = await this.customDenier(this.leader);
 			if (denied) {
 				throw new Error(`The mass couldn't start because the leader doesn't meet the requirements: ${reason}`);
 			}
 		}
-		this.users.push(this.leader);
-
-		this.message = (await this.channel.send(this.getText())) as KlasaMessage;
+		if (this.leader) {
+			this.users.push(this.leader);
+		}
+		this.message = (await this.channel.send({
+			content: this.getText(),
+			allowedMentions: { roles: ['896845245873025067'] }
+		})) as KlasaMessage;
 
 		const promise = new Promise<KlasaUser[]>(async (resolve, reject) => {
 			const start = () => {
@@ -73,7 +80,7 @@ export class Mass {
 				this.message!,
 
 				{
-					time: 120_000,
+					time: this.automaticStartTime,
 					max: this.maxSize,
 					dispose: true,
 					filter: (reaction: MessageReaction, user: KlasaUser) => {
@@ -145,7 +152,7 @@ export class Mass {
 				start();
 			});
 
-			for (const emoji of emojis) {
+			for (const emoji of this.leader === undefined ? [ReactionEmoji.Join] : emojis) {
 				await this.message!.react(emoji);
 				await sleep(250);
 			}
@@ -158,9 +165,11 @@ export class Mass {
 	getText() {
 		return `${this.text}
         
-**Users Joined:** ${this.users.map(u => u.username).join(', ')}
+**Users Joined:** ${this.users.length > 15 ? 'Over 15 people!' : this.users.map(u => u.username).join(', ')}
             
-This party will automatically depart in 2 minutes, or if the leader clicks the start or stop button.`;
+This party will automatically depart in ${formatDuration(this.automaticStartTime)}${
+			this.leader === undefined ? '' : ', or if the leader clicks the start or stop button'
+		}.`;
 	}
 
 	async removeUser(user: KlasaUser) {

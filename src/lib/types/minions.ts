@@ -249,6 +249,7 @@ export interface NewBossOptions extends ActivityTaskOptions {
 	users: string[];
 	quantity: number;
 	bossUsers: StoredBossUser[];
+	bossID: number;
 }
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {

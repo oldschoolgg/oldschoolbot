@@ -1,6 +1,7 @@
 import { MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import PQueue from 'p-queue';
 import { join } from 'path';
@@ -8,6 +9,7 @@ import { join } from 'path';
 import { DISCORD_SETTINGS } from '../config';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
+import getOSItem from './util/getOSItem';
 
 export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
 export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
@@ -238,7 +240,8 @@ export const enum Tasks {
 	PestControl = 'pestControlActivity',
 	VolcanicMine = 'volcanicMineActivity',
 	MonkeyRumble = 'monkeyRumbleActivity',
-	TrickOrTreat = 'trickOrTreatActivity'
+	TrickOrTreat = 'trickOrTreatActivity',
+	BossEvent = 'bossEventActivity'
 }
 
 export enum Activity {
@@ -314,7 +317,8 @@ export enum Activity {
 	PestControl = 'PestControl',
 	VolcanicMine = 'VolcanicMine',
 	MonkeyRumble = 'MonkeyRumble',
-	TrickOrTreat = 'TrickOrTreat'
+	TrickOrTreat = 'TrickOrTreat',
+	BossEvent = 'BossEvent'
 }
 
 export enum ActivityGroup {
@@ -557,3 +561,75 @@ export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'BSO';
+
+export const scaryEatables = [
+	{
+		item: getOSItem('Candy teeth'),
+		healAmount: 3
+	},
+	{
+		item: getOSItem('Toffeet'),
+		healAmount: 5
+	},
+	{
+		item: getOSItem('Chocolified skull'),
+		healAmount: 8
+	},
+	{
+		item: getOSItem('Rotten sweets'),
+		healAmount: 9
+	},
+	{
+		item: getOSItem('Hairyfloss'),
+		healAmount: 12
+	},
+	{
+		item: getOSItem('Eyescream'),
+		healAmount: 13
+	},
+	{
+		item: getOSItem('Goblinfinger soup'),
+		healAmount: 20
+	},
+	{
+		item: getOSItem("Benny's brain brew"),
+		healAmount: 50
+	},
+	{
+		item: getOSItem('Roasted newt'),
+		healAmount: 120
+	}
+];
+
+export function getScaryFoodFromBank(userBank: Bank, totalHealingNeeded: number): false | Bank {
+	let totalHealingCalc = totalHealingNeeded;
+	let foodToRemove = new Bank();
+
+	const sorted = [...scaryEatables]
+		.sort((i, j) => (i.healAmount > j.healAmount ? 1 : -1))
+		.sort((a, b) => {
+			if (!userBank.has(a.item.id!)) return 1;
+			if (!userBank.has(b.item.id!)) return -1;
+			return 0;
+		});
+
+	// Gets all the eatables in the user bank
+	for (const eatable of sorted) {
+		const { id } = eatable.item;
+		const { healAmount } = eatable;
+		const amountOwned = userBank.amount(id!);
+		const toRemove = Math.ceil(totalHealingCalc / healAmount);
+		if (!amountOwned) continue;
+		if (amountOwned >= toRemove) {
+			totalHealingCalc -= Math.ceil(healAmount * toRemove);
+			foodToRemove.add(id!, toRemove);
+			break;
+		} else {
+			totalHealingCalc -= Math.ceil(healAmount * amountOwned);
+			foodToRemove.add(id!, amountOwned);
+		}
+	}
+	// Check if qty is still above 0. If it is, it means the user doesn't have enough food.
+	if (totalHealingCalc > 0) return false;
+	return foodToRemove;
+}

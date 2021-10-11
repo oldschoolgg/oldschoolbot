@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { PUMPKINHEAD_ID } from '../../../bossEvents';
 import { ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { KalphiteKingMonster } from '../../../kalphiteking';
@@ -503,5 +504,10 @@ export const effectiveMonsters = [
 		id: Ignecarus.id,
 		name: 'Ignecarus',
 		aliases: ['igne', 'ignecarus']
+	},
+	{
+		id: PUMPKINHEAD_ID,
+		name: 'Pumpkinhead',
+		aliases: ['pumpkinhead', 'ph']
 	}
 ];

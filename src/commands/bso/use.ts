@@ -1,6 +1,7 @@
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { bossActiveIsActiveOrSoonActive, bossEvents, startBossEvent } from '../../lib/bossEvents';
 import { BitField } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -75,6 +76,20 @@ const usables = [
 			return msg.channel.send(
 				'You show your pass to the Daemonheim guards, and they grant you access to their rooftops.'
 			);
+		}
+	},
+	{
+		item: getOSItem('Mysterious token'),
+		run: async (msg: KlasaMessage) => {
+			if (await bossActiveIsActiveOrSoonActive()) {
+				return msg.channel.send("You can't use your Mysterious token right now.");
+			}
+			await startBossEvent({
+				boss: bossEvents.find(b => b.id === 93_898_458)!,
+				client: msg.client as KlasaClient
+			});
+			await msg.author.removeItemsFromBank(new Bank().add('Mysterious token'));
+			return msg.channel.send('You used your Mysterious token... I wonder what will happen?');
 		}
 	}
 ];

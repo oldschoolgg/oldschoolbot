@@ -148,5 +148,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.MonkeyRumble;
 		case Activity.TrickOrTreat:
 			return Tasks.TrickOrTreat;
+		case Activity.BossEvent:
+			return Tasks.BossEvent;
 	}
 }

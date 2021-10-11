@@ -4,6 +4,7 @@ import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 
+import { bossEvents } from '../../lib/bossEvents';
 import { badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { addPatronLootTime, addToDoubleLootTimer } from '../../lib/doubleLoot';
@@ -13,7 +14,16 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
-import { asyncExec, cleanString, formatDuration, getSupportGuild, getUsername, itemNameFromID } from '../../lib/util';
+import { BossEventTable } from '../../lib/typeorm/BossEventTable.entity';
+import {
+	asyncExec,
+	cleanString,
+	formatDuration,
+	getSupportGuild,
+	getUsername,
+	itemNameFromID,
+	stringMatches
+} from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -496,6 +506,19 @@ LIMIT 10;
 			case 'resetdoubletime': {
 				await this.client.settings.update(ClientSettings.DoubleLootFinishTime, 0);
 				return msg.channel.send('Reset the double loot timer.');
+			}
+			case 'se': {
+				if (typeof input !== 'string' || input.length < 2) return;
+				const boss = bossEvents.find(i => stringMatches(i.name, input));
+				if (!boss) {
+					return msg.channel.send("That's not a valid boss.");
+				}
+				await BossEventTable.insert({
+					startDate: new Date(),
+					bossID: boss.id,
+					completed: false,
+					data: {}
+				});
 			}
 		}
 	}

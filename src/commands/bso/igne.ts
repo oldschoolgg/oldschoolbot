@@ -27,7 +27,6 @@ export default class extends BotCommand {
 			leader: msg.author,
 			id: Ignecarus.id,
 			baseDuration: Time.Minute * 25,
-			baseFoodRequired: 400,
 			skillRequirements: {
 				slayer: 110
 			},
