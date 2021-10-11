@@ -43,7 +43,6 @@ export default class extends BotCommand {
 				)}.`
 			);
 		}
-		if (msg.author.minionIsBusy) return msg.channel.send(`${msg.author.minionName} is currently busy.`);
 		const maxTripLength = msg.author.maxTripLength(Activity.KourendFavour);
 		let currentPoints = 0;
 		for (const [key, value] of Object.entries(currentUserFavour)) {

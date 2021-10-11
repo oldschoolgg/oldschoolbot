@@ -220,14 +220,12 @@ export default class extends BotCommand {
 		}
 
 		if (duration > maxTripLength) {
-			return msg.channel.send(
-				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					maxTripLength
-				)}, try a lower quantity. The highest amount of ${plants.name} you can plant is ${
-					(Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)),
-					numOfPatches)
-				}.`
-			);
+			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
+				maxTripLength
+			)}, try a lower quantity. The highest amount of ${plants.name} you can plant is ${
+				(Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)),
+				numOfPatches)
+			}.`;
 		}
 
 		let newBank = { ...userBank };
