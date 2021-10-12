@@ -93,7 +93,13 @@ export const bossEvents: BossEvent[] = [
 
 *Everyone* received some Halloween candy!
 ${specialLootRecipient.user.username} received ${specialLoot}.
-${uniqueLootStr.length > 0 ? `**Unique Loot:** ${uniqueLootStr.join(', ')}` : 'Nobody received any unique items!'}`
+**Unique Loot:** ${
+					uniqueLootStr.length > 0
+						? chunk(uniqueLootStr, 10)
+								.map(arr => arr.join(', '))
+								.join('\n')
+						: 'Nobody received any unique items!'
+				}`
 			});
 		},
 		bossOptions: {
