@@ -1,7 +1,14 @@
 import { Client, SchemaFolder } from 'klasa';
 
 import { FarmingPatchTypes } from '../../minions/farming/types';
+import { BlowpipeData } from '../../minions/types';
 import { SkillsEnum } from '../../skilling/types';
+
+const defaultBlowpipe: BlowpipeData = {
+	scales: 0,
+	dartID: null,
+	dartQuantity: 0
+};
 
 Client.defaultUserSchema
 	.add('GP', 'integer', { default: 0 })
@@ -47,7 +54,10 @@ Client.defaultUserSchema
 	.add('combat_options', 'integer', { array: true, default: [] })
 	.add('farming_patch_reminders', 'boolean', { default: true })
 	.add('pest_control_points', 'integer', { default: 0 })
+	.add('inferno_attempts', 'integer', { default: 0 })
+	.add('infernal_cape_sacrifices', 'integer', { default: 0 })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
+	.add('blowpipe', 'any', { default: { ...defaultBlowpipe } })
 	.add('ironman_alts', 'string', { array: true, default: [] })
 	.add('main_account', 'string', { default: null })
 	.add('times_fed_gregoyle', 'integer', { default: 0 })

@@ -10,6 +10,7 @@ import { DISCORD_SETTINGS } from '../config';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
+import resolveItems from './util/resolveItems';
 
 export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
 export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
@@ -241,7 +242,8 @@ export const enum Tasks {
 	VolcanicMine = 'volcanicMineActivity',
 	MonkeyRumble = 'monkeyRumbleActivity',
 	TrickOrTreat = 'trickOrTreatActivity',
-	BossEvent = 'bossEventActivity'
+	BossEvent = 'bossEventActivity',
+	Inferno = 'infernoActivity'
 }
 
 export enum Activity {
@@ -318,7 +320,8 @@ export enum Activity {
 	VolcanicMine = 'VolcanicMine',
 	MonkeyRumble = 'MonkeyRumble',
 	TrickOrTreat = 'TrickOrTreat',
-	BossEvent = 'BossEvent'
+	BossEvent = 'BossEvent',
+	Inferno = 'Inferno'
 }
 
 export enum ActivityGroup {
@@ -394,6 +397,9 @@ export const enum BitField {
 	DisabledRandomEvents = 13,
 	PermanentIronman = 14,
 	AlwaysSmallBank = 15,
+	HasDexScroll = 16,
+	HasArcaneScroll = 17,
+	HasTornPrayerScroll = 18,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -633,3 +639,8 @@ export function getScaryFoodFromBank(userBank: Bank, totalHealingNeeded: number)
 	if (totalHealingCalc > 0) return false;
 	return foodToRemove;
 }
+export type ProjectileType = 'arrow' | 'bolt';
+export const projectiles: Record<ProjectileType, number[]> = {
+	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
+	bolt: resolveItems(['Runite bolts', 'Dragon bolts', 'Diamond bolts (e)', 'Diamond dragon bolts (e)'])
+};

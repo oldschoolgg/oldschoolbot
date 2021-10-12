@@ -65,9 +65,10 @@ const LogsTable = new LootTable()
 	.add('Elder logs', [5, 50]);
 
 const Supplies = new LootTable()
-	.add('Saradomin brew(4)', [6, 13])
-	.add('Super restore(4)', [6, 13])
-	.add(StaffOrbTable, [100, 300], 1, { multiply: true });
+	.add('Saradomin brew(4)', [6, 13], 2)
+	.add('Super restore(4)', [6, 13], 2)
+	.add(StaffOrbTable, [100, 300], 1, { multiply: true })
+	.add('Mysterious seed');
 
 const DyeTable = new LootTable()
 	.add('Third age dye', 2)
@@ -104,8 +105,7 @@ const table = new LootTable()
 	.add(AllBarrows, 3)
 	.add(LogsTable, 4)
 	.add(Supplies, 1, 5)
-	.oneIn(90, 'Holiday mystery box')
-	.add('Mysterious seed');
+	.oneIn(90, 'Holiday mystery box');
 
 class GrandmasterClue extends Clue {
 	open(quantity: number) {

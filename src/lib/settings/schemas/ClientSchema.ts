@@ -45,6 +45,7 @@ Client.defaultClientSchema
 	.add('revs_loot', 'any', { default: {} })
 	.add('mr_cost', 'any', { default: {} })
 	.add('mr_loot', 'any', { default: {} })
+	.add('inferno_cost', 'any', { default: {} })
 	.add('dropped_items', 'any', { default: {} })
 	.add('runecraft_cost', 'any', { default: {} })
 	.add('smithing_cost', 'any', { default: {} })

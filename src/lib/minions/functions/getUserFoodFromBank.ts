@@ -3,6 +3,13 @@ import { Bank } from 'oldschooljs';
 
 import { Eatables } from '../../data/eatables';
 
+function getRealHealAmount(user: KlasaUser, healAmount: ((user: KlasaUser) => number) | number) {
+	if (typeof healAmount === 'number') {
+		return healAmount;
+	}
+	return healAmount(user);
+}
+
 export default function getUserFoodFromBank(
 	user: KlasaUser,
 	totalHealingNeeded: number,
@@ -17,7 +24,7 @@ export default function getUserFoodFromBank(
 
 	const sorted = [...Eatables]
 		.filter(eat => (raw ? eat.raw !== null : true))
-		.sort((i, j) => (i.healAmount > j.healAmount ? 1 : -1))
+		.sort((i, j) => (getRealHealAmount(user, i.healAmount) > getRealHealAmount(user, j.healAmount) ? 1 : -1))
 		.sort((a, b) => {
 			if (!userBank.has(a[key]!)) return 1;
 			if (!userBank.has(b[key]!)) return -1;

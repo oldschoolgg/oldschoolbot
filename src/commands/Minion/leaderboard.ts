@@ -16,7 +16,14 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { ItemBank } from '../../lib/types';
-import { convertXPtoLVL, makePaginatedMessage, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
+import {
+	convertXPtoLVL,
+	formatDuration,
+	makePaginatedMessage,
+	stringMatches,
+	stripEmojis,
+	toTitleCase
+} from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import PostgresProvider from '../../providers/postgres';
 import { allOpenables } from './open';
@@ -84,7 +91,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|itemcontracts|itemcontractstreak|farmingcontracts|xp|open] [name:...string]',
+			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|itemcontracts|itemcontractstreak|farmingcontracts|xp|open|inferno] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -150,6 +157,26 @@ export default class extends BotCommand {
 		msg.flagArgs.xp = 'xp';
 		this.skills(msg, ['overall']);
 		return null;
+	}
+
+	async inferno(msg: KlasaMessage) {
+		const res = await this.query(`SELECT user_id, duration
+FROM activity
+WHERE type = 'Inferno'
+AND data->>'deathTime' IS NULL
+AND completed = true
+ORDER BY duration ASC
+LIMIT 10;`);
+
+		if (res.length === 0) {
+			return msg.channel.send('No results.');
+		}
+
+		return msg.channel.send(
+			`**Inferno Records**\n\n${res
+				.map((e, i) => `${i + 1}. **${this.getUsername(e.user_id)}:** ${formatDuration(e.duration)}`)
+				.join('\n')}`
+		);
 	}
 
 	async query(query: string, cacheUsernames = true) {
