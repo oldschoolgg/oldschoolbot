@@ -741,13 +741,6 @@
   resolved "https://registry.yarnpkg.com/@sapphire/async-queue/-/async-queue-1.1.4.tgz#ae431310917a8880961cebe8e59df6ffa40f2957"
   integrity sha512-fFrlF/uWpGOX5djw5Mu2Hnnrunao75WGey0sP0J3jnhmrJ5TAPzHYOmytD5iN/+pMxS+f+u/gezqHa9tPhRHEA==
 
-"@sapphire/discord-utilities@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.2.0.tgz#bf33a7cfda02e2bd8c479435d93f8df14072549b"
-  integrity sha512-DsHgMIwfsAtxCOtTwhJH6KNumYTHViw8JORIA3J0q6uKxCM+L5toD9EBGVAj3ocLWTWVj3cgRG+scrKwXwea7g==
-  dependencies:
-    twemoji-parser "^13.1.0"
-
 "@sapphire/discord-utilities@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.2.1.tgz#452041303e1fa95744257f0f61d73e35f8b8fefc"
@@ -756,13 +749,13 @@
     twemoji-parser "^13.1.0"
 
 "@sapphire/discord.js-utilities@^3.0.0-next.600390f4.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@sapphire/discord.js-utilities/-/discord.js-utilities-3.2.0.tgz#eb6ee938d59a82b0b77306f49bb98aa53b51ab04"
-  integrity sha512-KT0vrMNWYrGhz2GbCPM6g22MbVHztNP+eB84CjYrjHJD+3VW9G5l38c2nXFjeCwVPf2S1dxBWZ+yIwOaSfMhnw==
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@sapphire/discord.js-utilities/-/discord.js-utilities-3.2.1.tgz#1c6e0ba449600b0e34548f7225358c6d6bc366d5"
+  integrity sha512-YIcsvp7fcym+PfNJ8xhgS/TjgvQzRltctt+DayGnkpaePCm9hjkygem9TG1Yu56+fqcosyHQY1yEurldrNhKBQ==
   dependencies:
-    "@sapphire/discord-utilities" "^2.2.0"
-    "@sapphire/time-utilities" "^1.4.2"
-    "@sapphire/utilities" "^3.0.2"
+    "@sapphire/discord-utilities" "^2.2.1"
+    "@sapphire/time-utilities" "^1.4.3"
+    "@sapphire/utilities" "^3.0.3"
 
 "@sapphire/time-utilities@^1.4.2":
   version "1.4.2"
@@ -770,6 +763,13 @@
   integrity sha512-vPOyvWC/63yKkdV4OKHiG6DWQZvoXkMQfTF3pa39+hxbNboDyQ6fsywxK244WxNrItOUI0uAOinLFsQXp5/Mzg==
   dependencies:
     "@sapphire/utilities" "^3.0.2"
+
+"@sapphire/time-utilities@^1.4.3":
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.4.3.tgz#18f508fb4f8a2e0899734992e6f8d96e373b222c"
+  integrity sha512-AC55nNklE76Xm1POGw24PzPa3oNeuNNOJE+Ndjd8a48ie/0d2JITMc4QTCJT3VB3lh+fOL9hT/jgc+xHd8An8Q==
+  dependencies:
+    "@sapphire/utilities" "^3.0.3"
 
 "@sapphire/type@^2.1.0":
   version "2.1.0"
@@ -784,6 +784,11 @@
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.0.2.tgz#d471041d871a37186df31e52476d87328065a6e5"
   integrity sha512-LD5BjfKU6b/SEpQq+vMNhneOujgoe4EabL/3I5XThej0dbngWf90d7ET9VQnFVfe0qQbGin+MEu9f2im9WYSzw==
+
+"@sapphire/utilities@^3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.0.3.tgz#7e854dde9489407fbb4a56d0955412d956a93640"
+  integrity sha512-DWjQzXFK8m8STmlTmOS8fi0HI1TUOnAQkbChVyTEhRUQZ3vR0VtiEWpghQRl5j4HwjP0x9Fx1B4JDfmS3+sYrg==
 
 "@sentry/core@6.13.3":
   version "6.13.3"
