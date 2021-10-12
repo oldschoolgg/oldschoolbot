@@ -13,9 +13,8 @@ export default class extends Finalizer {
 		if (
 			command.cooldown <= 0 ||
 			this.client.owners.has(message.author) ||
-			message.author.bitfield.includes(
-				BitField.isModerator || message.author.bitfield.includes(BitField.isContributor)
-			)
+			message.author.bitfield.includes(BitField.isModerator) ||
+			message.author.bitfield.includes(BitField.isContributor)
 		) {
 			return;
 		}
