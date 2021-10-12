@@ -14,6 +14,7 @@ import { BitField, CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, 
 import { GearSetupType, GearSetupTypes } from './gear/types';
 import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
+import getOSItem from './util/getOSItem';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
@@ -88,7 +89,7 @@ export function stringMatches(str: string, str2: string) {
 	return cleanString(str) === cleanString(str2);
 }
 
-export function formatDuration(ms: number) {
+export function formatDuration(ms: number, short = false) {
 	if (ms < 0) ms = -ms;
 	const time = {
 		day: Math.floor(ms / 86_400_000),
@@ -96,9 +97,17 @@ export function formatDuration(ms: number) {
 		minute: Math.floor(ms / 60_000) % 60,
 		second: Math.floor(ms / 1000) % 60
 	};
-	let nums = Object.entries(time).filter(val => val[1] !== 0);
+	const shortTime = {
+		d: Math.floor(ms / 86_400_000),
+		h: Math.floor(ms / 3_600_000) % 24,
+		m: Math.floor(ms / 60_000) % 60,
+		s: Math.floor(ms / 1000) % 60
+	};
+	let nums = Object.entries(short ? shortTime : time).filter(val => val[1] !== 0);
 	if (nums.length === 0) return '1 second';
-	return nums.map(([key, val]) => `${val} ${key}${val === 1 ? '' : 's'}`).join(', ');
+	return nums
+		.map(([key, val]) => `${val}${short ? '' : ' '}${key}${val === 1 || short ? '' : 's'}`)
+		.join(short ? '' : ', ');
 }
 
 export function inlineCodeblock(input: string) {
@@ -518,6 +527,13 @@ export function birdhouseLimit(user: KlasaUser) {
 	return base;
 }
 export const asyncExec = promisify(exec);
+
+export function countUsersWithItemInCl(client: KlasaClient, _item: string) {
+	const item = getOSItem(_item);
+	const query = `SELECT COUNT(id) FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL AND "collectionLogBank"->>'${item.id}'::int >= 1;`;
+	return client.query(query);
+}
+
 export function getUsername(client: KlasaClient, id: string): string {
 	return (client.commands.get('leaderboard') as any)!.getUsername(id);
 }

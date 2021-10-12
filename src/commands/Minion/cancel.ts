@@ -31,6 +31,28 @@ export default class extends BotCommand {
 			return msg.channel.send('Your minion is on a group activity and cannot cancel!');
 		}
 
+		if (currentTask.type === Activity.Inferno) {
+			return msg.channel.send(`${msg.author.minionName} is in the Inferno, they can't leave now!`);
+		}
+
+		if (currentTask.type === Activity.GroupMonsterKilling) {
+			return msg.channel.send(
+				`${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`
+			);
+		}
+
+		if (currentTask.type === Activity.BarbarianAssault) {
+			return msg.channel.send(
+				`${msg.author.minionName} is currently doing Barbarian Assault, and cant leave their team!`
+			);
+		}
+
+		if (currentTask.type === Activity.SoulWars) {
+			return msg.channel.send(
+				`${msg.author.minionName} is currently doing Soul Wars, and cant leave their team!`
+			);
+		}
+
 		if (currentTask.type === Activity.MonkeyRumble) {
 			return msg.channel.send({
 				files: [

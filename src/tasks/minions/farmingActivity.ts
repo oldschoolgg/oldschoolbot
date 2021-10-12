@@ -454,12 +454,14 @@ export default class extends Task {
 
 			await user.settings.update(getPatchType, updatePatches);
 
-			const currentContract = user.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
+			const currentContract = user.settings.get(UserSettings.Minion.FarmingContract) ?? {
+				...defaultFarmingContract
+			};
 
 			const { contractsCompleted } = currentContract;
 
 			let janeMessage = false;
-			if (plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
+			if (currentContract.hasContract && plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
 				const farmingContractUpdate: FarmingContract = {
 					hasContract: false,
 					difficultyLevel: null,

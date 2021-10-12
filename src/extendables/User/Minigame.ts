@@ -169,6 +169,12 @@ export const Minigames: Minigame[] = [
 		key: 'MadMarimbosMonkeyRumble',
 		column: 'monkey_rumble',
 		aliases: ['mmmr', 'mr', 'mmr']
+	},
+	{
+		name: 'Inferno',
+		aliases: ['inferno', 'zuk'],
+		key: 'Inferno',
+		column: 'inferno'
 	}
 ];
 

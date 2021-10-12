@@ -8,6 +8,7 @@ import { join } from 'path';
 import { DISCORD_SETTINGS } from '../config';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
+import resolveItems from './util/resolveItems';
 
 export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
 export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
@@ -237,7 +238,8 @@ export const enum Tasks {
 	RevenantsActivity = 'revenantsActivity',
 	PestControl = 'pestControlActivity',
 	VolcanicMine = 'volcanicMineActivity',
-	MonkeyRumble = 'monkeyRumbleActivity'
+	MonkeyRumble = 'monkeyRumbleActivity',
+	Inferno = 'infernoActivity'
 }
 
 export enum Activity {
@@ -312,7 +314,8 @@ export enum Activity {
 	Revenants = 'Revenants',
 	PestControl = 'PestControl',
 	VolcanicMine = 'VolcanicMine',
-	MonkeyRumble = 'MonkeyRumble'
+	MonkeyRumble = 'MonkeyRumble',
+	Inferno = 'Inferno'
 }
 
 export enum ActivityGroup {
@@ -388,6 +391,9 @@ export const enum BitField {
 	DisabledRandomEvents = 13,
 	PermanentIronman = 14,
 	AlwaysSmallBank = 15,
+	HasDexScroll = 16,
+	HasArcaneScroll = 17,
+	HasTornPrayerScroll = 18,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -555,3 +561,8 @@ export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'BSO';
+export type ProjectileType = 'arrow' | 'bolt';
+export const projectiles: Record<ProjectileType, number[]> = {
+	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
+	bolt: resolveItems(['Runite bolts', 'Dragon bolts', 'Diamond bolts (e)', 'Diamond dragon bolts (e)'])
+};

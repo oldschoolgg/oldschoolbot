@@ -197,7 +197,7 @@ export const grotesqueGuardiansCL = resolveItems([
 	'Granite dust'
 ]);
 export const hesporiCL = resolveItems(['Bottomless compost bucket', 'Iasor seed', 'Kronos seed', 'Attas seed']);
-export const theInfernoCL = resolveItems(['Jal-nib-rek', 'Infernal cape']);
+export const theInfernoCL = resolveItems(['Jal-nib-rek', 'Infernal cape', 'Tokkul']);
 export const kalphiteQueenCL = resolveItems([
 	'Kalphite princess',
 	'Kq head',
@@ -1830,9 +1830,8 @@ export const capesCL = resolveItems([
 	'Max cape',
 	'Ardougne max hood',
 	'Ardougne max cape',
-	// TODO - Enable back when Inferno is released
-	// 'Infernal max hood',
-	// 'Infernal max cape',
+	'Infernal max hood',
+	'Infernal max cape',
 	'Assembler max hood',
 	'Assembler max cape',
 	'Imbued guthix max hood',
@@ -1850,6 +1849,7 @@ export const capesCL = resolveItems([
 	"Champion's cape",
 	'Mythical cape',
 	'Fire cape',
+	'Infernal cape',
 	'Imbued saradomin cape',
 	'Imbued guthix cape',
 	'Imbued zamorak cape',
