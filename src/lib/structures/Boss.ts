@@ -4,6 +4,7 @@ import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
+import { PUMPKINHEAD_ID } from '../bossEvents';
 import { Activity } from '../constants';
 import { GearSetupType, GearStats } from '../gear';
 import { Skills } from '../types';
@@ -214,7 +215,7 @@ export class BossInstance {
 	async validateTeam() {
 		for (const user of this.users!) {
 			const [denied, reason] = await this.checkUser(user);
-			if (denied) {
+			if (denied && this.id !== PUMPKINHEAD_ID) {
 				throw new Error(`${user} ${reason}`);
 			}
 		}
