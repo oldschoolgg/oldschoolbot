@@ -757,13 +757,6 @@
     "@sapphire/time-utilities" "^1.4.3"
     "@sapphire/utilities" "^3.0.3"
 
-"@sapphire/time-utilities@^1.4.2":
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.4.2.tgz#4a7d831093a74359f3666081a031035cb070bc9f"
-  integrity sha512-vPOyvWC/63yKkdV4OKHiG6DWQZvoXkMQfTF3pa39+hxbNboDyQ6fsywxK244WxNrItOUI0uAOinLFsQXp5/Mzg==
-  dependencies:
-    "@sapphire/utilities" "^3.0.2"
-
 "@sapphire/time-utilities@^1.4.3":
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.4.3.tgz#18f508fb4f8a2e0899734992e6f8d96e373b222c"
@@ -779,11 +772,6 @@
     "@discordjs/node-pre-gyp" "^0.4.0"
     nan "^2.14.2"
     tslib "^2.3.0"
-
-"@sapphire/utilities@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.0.2.tgz#d471041d871a37186df31e52476d87328065a6e5"
-  integrity sha512-LD5BjfKU6b/SEpQq+vMNhneOujgoe4EabL/3I5XThej0dbngWf90d7ET9VQnFVfe0qQbGin+MEu9f2im9WYSzw==
 
 "@sapphire/utilities@^3.0.3":
   version "3.0.3"
