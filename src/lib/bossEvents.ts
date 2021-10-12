@@ -43,7 +43,7 @@ export const pumpkinHeadUniqueTable = new LootTable()
 	.add('Haunted gloves', 1, 2)
 	.add('Haunted boots', 1, 2)
 	.add("Pumpkinhead's pumpkin head")
-	.tertiary(21, 'Mini Pumpkinhead');
+	.tertiary(60, 'Mini Pumpkinhead');
 
 const nonUniqueTable = new LootTable().every(treatTable, [1, 6]).tertiary(15, "Choc'rock");
 
