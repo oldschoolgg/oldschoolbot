@@ -70,7 +70,20 @@ export class Mass {
 		})) as KlasaMessage;
 
 		const promise = new Promise<KlasaUser[]>(async (resolve, reject) => {
-			const start = () => {
+			const start = async () => {
+				const usersReacted = (await this.message!.reactions.cache.get(ReactionEmoji.Join)!.users.fetch())
+					.array()
+					.filter(i => !i.bot);
+
+				for (const user of usersReacted) {
+					if (this.customDenier) {
+						const [denied] = await this.customDenier(user);
+						if (!denied) {
+							this.users.push(user);
+						}
+					}
+				}
+
 				if (this.users.length < this.minSize) {
 					reject(new Error(`Did not meet minimum mass size of ${this.minSize}`));
 				}
