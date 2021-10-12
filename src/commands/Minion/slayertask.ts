@@ -3,6 +3,7 @@ import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
+import { SILENT_ERROR } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -123,27 +124,36 @@ export default class extends BotCommand {
 			});
 			switch (selection.customID) {
 				case 'assaved': {
-					return this.client.commands.get('autoslay')!.run(msg, ['']);
+					await this.client.commands.get('autoslay')!.run(msg, ['']);
+					return;
 				}
 				case 'asdef': {
-					return this.client.commands.get('autoslay')!.run(msg, ['default']);
+					await this.client.commands.get('autoslay')!.run(msg, ['default']);
+					return;
 				}
 				case 'asehp': {
-					return this.client.commands.get('autoslay')!.run(msg, ['ehp']);
+					await this.client.commands.get('autoslay')!.run(msg, ['ehp']);
+					return;
 				}
 				case 'asboss': {
-					return this.client.commands.get('autoslay')!.run(msg, ['boss']);
+					await this.client.commands.get('autoslay')!.run(msg, ['boss']);
+					return;
 				}
 				case 'skip': {
 					msg.flagArgs.new = 'yes';
-					return this.client.commands.get('slayertask')!.run(msg, ['skip']);
+					await this.client.commands.get('slayertask')!.run(msg, ['skip']);
+					return;
 				}
 				case 'block': {
 					msg.flagArgs.new = 'yes';
-					return this.client.commands.get('slayertask')!.run(msg, ['block']);
+					await this.client.commands.get('slayertask')!.run(msg, ['block']);
+					return;
 				}
 			}
-		} catch {
+		} catch (err: unknown) {
+			const error = err as Error;
+			if (error.message === SILENT_ERROR) return;
+			throw err;
 		} finally {
 			await sentMessage.edit({ components: [] });
 		}
