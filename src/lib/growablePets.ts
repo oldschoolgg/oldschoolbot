@@ -1,16 +1,61 @@
-const kittens = [1555, 1556, 1557, 1558, 1559, 1560] as const;
-const cats = [1561, 1562, 1563, 1564, 1565, 1566] as const;
+import { Time } from 'e';
+import { KlasaUser } from 'klasa';
+
+import { UserSettings } from './settings/types/UserSettings';
+import { ActivityTaskOptions } from './types/minions';
+import { itemNameFromID, randFloat } from './util';
+import resolveItems from './util/resolveItems';
+
+export const kittens = resolveItems([
+	'Grey and black kitten',
+	'White kitten',
+	'Brown kitten',
+	'Black kitten',
+	'Grey and brown kitten',
+	'Grey and blue kitten'
+]);
+
+export const cats = resolveItems([
+	'Grey and black cat',
+	'White cat',
+	'Brown cat',
+	'Black cat',
+	'Grey and brown cat',
+	'Grey and blue cat'
+]);
 
 interface GrowablePet {
-	growthChancePerHour: number;
+	growthRate: number;
 	stages: number[];
 }
 
-const growablePets: GrowablePet[] = [];
+export const growablePets: GrowablePet[] = [];
 
 for (let i = 0; i < kittens.length; i++) {
 	growablePets.push({
-		growthChancePerHour: 2,
+		growthRate: (Time.Hour * 3) / Time.Minute,
 		stages: [kittens[i], cats[i]]
 	});
+}
+
+export async function handleGrowablePetGrowth(
+	user: KlasaUser,
+	data: ActivityTaskOptions,
+	message: string
+): Promise<string> {
+	const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
+	if (!equippedPet) return message;
+	const equippedGrowablePet = growablePets.find(pet => pet.stages.includes(equippedPet));
+	if (!equippedGrowablePet) return message;
+	if (equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1] === equippedPet) return message;
+	const minutesInThisTrip = data.duration / Time.Minute;
+	if (randFloat(0, equippedGrowablePet.growthRate) <= minutesInThisTrip) {
+		const nextPet = equippedGrowablePet.stages[equippedGrowablePet.stages.indexOf(equippedPet) + 1];
+		if (nextPet === -1) {
+			throw new Error(`${user.username}'s pet[${equippedPet}] has no index in growable pet stages.`);
+		}
+		await user.settings.update(UserSettings.Minion.EquippedPet, nextPet);
+		return `${message}\n\nYour ${itemNameFromID(equippedPet)} grew into a ${itemNameFromID(nextPet)}!`;
+	}
+	return message;
 }
