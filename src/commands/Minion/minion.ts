@@ -293,7 +293,6 @@ Type \`confirm\` if you understand the above information, and want to become an 
 	}
 
 	@requiresMinion
-	@minionNotBusy
 	async pat(msg: KlasaMessage) {
 		return msg.channel.send(randomPatMessage(msg.author.minionName));
 	}
