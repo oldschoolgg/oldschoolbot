@@ -57,6 +57,7 @@ export default class extends BotCommand {
 		});
 	}
 
+	@minionNotBusy
 	async run(msg: KlasaMessage, [type, quantity]: ['corrupted' | 'normal', number | undefined]) {
 		if (msg.author.settings.get(UserSettings.QP) < 200) {
 			return msg.channel.send('You need atleast 200 QP to do the Gauntlet.');
