@@ -28,7 +28,7 @@ import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
 import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
-import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
+import { convertLVLtoXP, isValidNickname, runCommand, stringMatches } from '../../lib/util';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
 const patMessages = [
@@ -41,15 +41,6 @@ const patMessages = [
 ];
 
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
-
-async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
-	try {
-		const command = msg.client.commands.get(name)!;
-		await command!.run(msg, args);
-	} catch (err) {
-		msg.channel.send(typeof err === 'string' ? err : err.message);
-	}
-}
 
 const ironmanArmor = new Bank({ 'Ironman helm': 1, 'Ironman platebody': 1, 'Ironman platelegs': 1 });
 
