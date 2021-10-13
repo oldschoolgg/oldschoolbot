@@ -19,7 +19,7 @@ import {
 } from '../../lib/slayer/slayerUtil';
 import { AssignableSlayerTask } from '../../lib/slayer/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { stringMatches } from '../../lib/util';
+import { runCommand, stringMatches } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
 
 const returnSuccessButtons = [
@@ -104,11 +104,7 @@ export default class extends BotCommand {
 	public async returnSuccess(msg: KlasaMessage, message: string, autoslay: boolean) {
 		if (autoslay) {
 			await msg.channel.send(message);
-			try {
-				return this.client.commands.get('autoslay')!.run(msg, ['']);
-			} catch (e) {
-				return msg.channel.send('It was not possible to auto-slay this task. Please, try again.');
-			}
+			return runCommand(msg, 'autoslay', ['']);
 		}
 		const sentMessage = await msg.channel.send({ content: message, components: returnSuccessButtons });
 		try {
@@ -124,29 +120,29 @@ export default class extends BotCommand {
 			});
 			switch (selection.customID) {
 				case 'assaved': {
-					await this.client.commands.get('autoslay')!.run(msg, ['']);
+					await runCommand(msg, 'autoslay', ['']);
 					return;
 				}
 				case 'asdef': {
-					await this.client.commands.get('autoslay')!.run(msg, ['default']);
+					await runCommand(msg, 'autoslay', ['default']);
 					return;
 				}
 				case 'asehp': {
-					await this.client.commands.get('autoslay')!.run(msg, ['ehp']);
+					await runCommand(msg, 'autoslay', ['ehp']);
 					return;
 				}
 				case 'asboss': {
-					await this.client.commands.get('autoslay')!.run(msg, ['boss']);
+					await runCommand(msg, 'autoslay', ['boss']);
 					return;
 				}
 				case 'skip': {
 					msg.flagArgs.new = 'yes';
-					await this.client.commands.get('slayertask')!.run(msg, ['skip']);
+					await runCommand(msg, 'slayertask', ['skip']);
 					return;
 				}
 				case 'block': {
 					msg.flagArgs.new = 'yes';
-					await this.client.commands.get('slayertask')!.run(msg, ['block']);
+					await runCommand(msg, 'slayertask', ['block']);
 					return;
 				}
 			}
