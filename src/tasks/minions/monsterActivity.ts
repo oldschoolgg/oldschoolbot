@@ -288,7 +288,7 @@ export default class extends Task {
 			}
 		}
 
-		let goyleChance = user.cl().has('Gregoyle') ? 4 : 2;
+		let goyleChance = user.cl().has('Gregoyle') ? 12 : 2;
 		goyleChance = Math.floor(Math.max(2, (Time.Hour / duration) * goyleChance));
 
 		if (monster.name === 'Gargoyle' && roll(goyleChance)) {
