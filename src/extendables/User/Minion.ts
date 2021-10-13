@@ -16,7 +16,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
-import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from '../../lib/constants';
+import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, PerkTier, skillEmoji } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear';
@@ -763,7 +763,7 @@ export default class extends Extendable {
 
 		const sac = this.settings.get(UserSettings.SacrificedValue);
 		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
-		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
+		max += calcPercentOfNum(sacPercent, this.perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);
 		return max;
 	}
 

@@ -1,7 +1,8 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
+import { Activity, BitField } from '../../lib/constants';
+import { minionNotBusy } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GauntletOptions } from '../../lib/types/minions';
@@ -57,6 +58,7 @@ export default class extends BotCommand {
 		});
 	}
 
+	@minionNotBusy
 	async run(msg: KlasaMessage, [type, quantity]: ['corrupted' | 'normal', number | undefined]) {
 		if (msg.author.settings.get(UserSettings.QP) < 200) {
 			return msg.channel.send('You need atleast 200 QP to do the Gauntlet.');
@@ -98,6 +100,16 @@ export default class extends BotCommand {
 			boosts.push(`${scoreBoost}% boost for experience in the minigame`);
 		}
 
+		if (msg.author.bitfield.includes(BitField.HasArcaneScroll)) {
+			boosts.push('3% for Augury');
+			baseLength = reduceNumByPercent(baseLength, 3);
+		}
+
+		if (msg.author.bitfield.includes(BitField.HasDexScroll)) {
+			boosts.push('3% for Rigour');
+			baseLength = reduceNumByPercent(baseLength, 3);
+		}
+
 		let gauntletLength = baseLength;
 		if (type === 'corrupted') gauntletLength *= 1.3;
 
@@ -127,7 +139,7 @@ export default class extends BotCommand {
 			corrupted: type === 'corrupted'
 		});
 
-		const boostsStr = boosts.length > 0 ? `**Boosts:** ${boosts.join('\n')}` : '';
+		const boostsStr = boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : '';
 
 		return msg.channel.send(`${
 			msg.author.minionName
