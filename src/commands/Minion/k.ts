@@ -377,10 +377,10 @@ export default class extends BotCommand {
 			}
 		}
 		// Check food
-		let foodStr: undefined | string = undefined;
+		let foodStr: string = '';
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
-			messages = messages.concat(foodMessages);
+			foodStr += foodMessages;
 
 			let gearToCheck: GearSetupType = 'melee';
 
@@ -397,7 +397,7 @@ export default class extends BotCommand {
 
 			if (monster.wildy) gearToCheck = 'wildy';
 
-			const [result, foodRemoved] = await removeFoodFromUser({
+			const { foodRemoved, reductions } = await removeFoodFromUser({
 				client: this.client,
 				user: msg.author,
 				totalHealingNeeded: healAmountNeeded * quantity,
@@ -435,7 +435,10 @@ export default class extends BotCommand {
 				}
 			}
 
-			foodStr = result;
+			if (reductions.length > 0) {
+				foodStr += `, ${reductions.join(', ')}`;
+			}
+			foodStr += `, **Removed ${foodRemoved}**`;
 		}
 
 		// Boosts that don't affect quantity:
@@ -470,16 +473,16 @@ export default class extends BotCommand {
 			response += ` Removed ${lootToRemove}.`;
 		}
 
-		if (foodStr) {
-			response += ` Removed ${foodStr}\n`;
-		}
-
 		if (boosts.length > 0) {
 			response += `\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
 		if (messages.length > 0) {
-			response += `\n**Messages:** ${messages.join('\n')}.`;
+			response += `\n**Messages:** ${messages.join(', ')}.`;
+		}
+
+		if (foodStr) {
+			response += `\n**Food:** ${foodStr}\n`;
 		}
 
 		return msg.channel.send(response);
