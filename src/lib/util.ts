@@ -497,7 +497,11 @@ export function getUsername(client: KlasaClient, id: string): string {
 	return (client.commands.get('leaderboard') as any)!.getUsername(id);
 }
 
-export async function runCommand(message: KlasaMessage, commandName: 'k' | 'mclue' | 'autoslay', args: unknown[]) {
+export async function runCommand(
+	message: KlasaMessage,
+	commandName: 'k' | 'mclue' | 'autoslay' | 'slayertask',
+	args: unknown[]
+) {
 	const command = message.client.commands.get(commandName);
 	if (!command) {
 		throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
