@@ -78,7 +78,7 @@ export class Mass {
 				for (const user of usersReacted) {
 					if (this.customDenier) {
 						const [denied] = await this.customDenier(user);
-						if (!denied) {
+						if (!denied && !this.users.includes(user)) {
 							this.users.push(user);
 						}
 					}
