@@ -18,7 +18,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, roll } from '../../lib/util';
+import { itemID, roll, runCommand } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -350,7 +350,7 @@ export default class extends Task {
 						if (usingCannon) method = 'cannon';
 						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
 						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
-						return this.client.commands.get('k')!.run(res, [quantity, monster.name, method]);
+						return runCommand(res, 'k', [quantity, monster.name, method]);
 				  },
 			image!,
 			data,

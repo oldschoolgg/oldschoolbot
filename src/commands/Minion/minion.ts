@@ -20,7 +20,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
+import { convertLVLtoXP, isValidNickname, runCommand, stringMatches } from '../../lib/util';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
 const patMessages = [
@@ -33,15 +33,6 @@ const patMessages = [
 ];
 
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
-
-async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
-	try {
-		const command = msg.client.commands.get(name)!;
-		await command!.run(msg, args);
-	} catch (err) {
-		msg.channel.send(typeof err === 'string' ? err : err.message);
-	}
-}
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
