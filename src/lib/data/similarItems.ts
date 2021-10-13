@@ -334,21 +334,21 @@ const source: [string, (string | number)[]][] = [
 	['Herblore master cape', ["Artisan's cape"]],
 	['Runecraft master cape', ["Artisan's cape"]],
 	['Smithing master cape', ["Artisan's cape"]],
-	['Torva full helm', ['Gorajan warrior helmet', 'Gorajan warrior helmet (Primal)']],
-	['Torva platebody', ['Gorajan warrior top', 'Gorajan warrior top (Primal)']],
-	['Torva platelegs', ['Gorajan warrior legs', 'Gorajan warrior legs (Primal)']],
-	['Torva gloves', ['Gorajan warrior gloves', 'Gorajan warrior gloves (Primal)']],
-	['Torva boots', ['Gorajan warrior boots', 'Gorajan warrior boots (Primal)']],
-	['Virtus mask', ['Gorajan occult helmet', 'Gorajan occult helmet (Celestial)']],
-	['Virtus robe top', ['Gorajan occult top', 'Gorajan occult top (Celestial)']],
-	['Virtus robe legs', ['Gorajan occult legs', 'Gorajan occult legs (Celestial)']],
-	['Virtus gloves', ['Gorajan occult gloves', 'Gorajan occult gloves (Celestial)']],
-	['Virtus boots', ['Gorajan occult boots', 'Gorajan occult boots (Celestial)']],
-	['Pernix cowl', ['Gorajan archer helmet', 'Gorajan archer helmet (Sagittarian)']],
-	['Pernix body', ['Gorajan archer top', 'Gorajan archer top (Sagittarian)']],
-	['Pernix chaps', ['Gorajan archer legs', 'Gorajan archer legs (Sagittarian)']],
-	['Pernix gloves', ['Gorajan archer gloves', 'Gorajan archer gloves (Sagittarian)']],
-	['Pernix boots', ['Gorajan archer boots', 'Gorajan archer boots (Sagittarian)']],
+	['Torva full helm', ['Gorajan warrior helmet']],
+	['Torva platebody', ['Gorajan warrior top']],
+	['Torva platelegs', ['Gorajan warrior legs']],
+	['Torva gloves', ['Gorajan warrior gloves']],
+	['Torva boots', ['Gorajan warrior boots']],
+	['Virtus mask', ['Gorajan occult helmet']],
+	['Virtus robe top', ['Gorajan occult top']],
+	['Virtus robe legs', ['Gorajan occult legs']],
+	['Virtus gloves', ['Gorajan occult gloves']],
+	['Virtus boots', ['Gorajan occult boots']],
+	['Pernix cowl', ['Gorajan archer helmet']],
+	['Pernix body', ['Gorajan archer top']],
+	['Pernix chaps', ['Gorajan archer legs']],
+	['Pernix gloves', ['Gorajan archer gloves']],
+	['Pernix boots', ['Gorajan archer boots']],
 	['Abyssal cape', ['Vasa cloak']],
 	['Ivandis flail', ['Blisterwood flail']],
 	['Angler hat', ['Spirit angler headband']],
@@ -380,11 +380,37 @@ const source: [string, (string | number)[]][] = [
 	['Salve amulet', ['Salve amulet(ei)', 'Salve amulet(i)', 'Salve amulet (e)']],
 	['Salve amulet (e)', ['Salve amulet(ei)']],
 	['Salve amulet (i)', ['Salve amulet(ei)']],
-	['Zaryte bow', ['Hellfire bow', 'Hellfire bownana']]
+	['Zaryte bow', ['Hellfire bow']],
+	['Twisted bow', ['Hellfire bow']]
 ];
+
 for (const { baseItem, dyedVersions } of dyedItems) {
-	source.push([baseItem.name, dyedVersions.map(i => i.item.id)]);
+	// Update matching child rows (simmilarItems) first:
+	const matchingChildren = source.filter(s => s[1].includes(baseItem.name));
+
+	if (matchingChildren.length) {
+		for (const matchingRow of matchingChildren) {
+			// Check children (simmilarItems) for dyed variants and add those:
+			for (const subSimilarItem of matchingRow[1]) {
+				const dyedVariant = dyedItems.find(i => i.baseItem.name === subSimilarItem);
+				if (dyedVariant) {
+					matchingRow[1].push(...dyedVariant.dyedVersions.map(i => i.item.id));
+				}
+			}
+		}
+	}
+
+	// Check for existing record and update it, otherwise it would be overwritten.
+	const existingRoot = source.find(s => s[0] === baseItem.name);
+	if (existingRoot) {
+		// Update existing root entry:
+		existingRoot[1].push(...dyedVersions.map(i => i.item.id));
+	} else {
+		// ...Or create a new entry:
+		source.push([baseItem.name, dyedVersions.map(i => i.item.id)]);
+	}
 }
+
 export const similarItems: Map<number, number[]> = new Map(
 	source.map(entry => [itemID(entry[0]), resolveItems(entry[1])])
 );
