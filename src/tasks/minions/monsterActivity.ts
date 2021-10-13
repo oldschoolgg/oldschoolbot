@@ -298,6 +298,7 @@ export default class extends Task {
 				await user.removeItemsFromBank(new Bank().add("Choc'rock"));
 				await user.settings.update(UserSettings.TimesFedGregoyle, timesFed + 1);
 				if (timesFed >= randInt(3, 5)) {
+					await user.settings.update(UserSettings.TimesFedGregoyle, 0);
 					loot.add('Gregoyle');
 					str +=
 						"\n\n**A young Gargoyle finds a Choc'rock in your bank, and eats it. They love it so much, and after being fed so much by you, they decide to become your pet!**";
