@@ -147,7 +147,7 @@ export default class extends Task {
 
 			const cl = user.cl();
 
-			if (baseBank.has('Infernal cape') && cl.amount('Infernal cape') === 1) {
+			if (baseBank.has('Infernal cape') && cl.amount('Infernal cape') === 0) {
 				const usersWithInfernalCape = parseInt(
 					(
 						await this.client.query<any>(
