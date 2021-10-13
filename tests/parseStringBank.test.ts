@@ -418,16 +418,6 @@ describe('Bank Parsers', () => {
 		expect(result8.price).toStrictEqual(0);
 
 		//
-		const result9 = parseInputBankWithPrice({
-			usersBank: usersBank.clone().add("Nulodion's notes"),
-			str: `${itemID("Nulodion's notes")}`,
-			flags: { tradeables: 'tradeables' },
-			excludeItems: []
-		});
-		expect(result9.bank).toStrictEqual(new Bank());
-		expect(result9.price).toStrictEqual(0);
-
-		//
 		const result10 = parseInputBankWithPrice({
 			usersBank: usersBank.clone().add(1),
 			str: '1',
@@ -445,7 +435,7 @@ describe('Bank Parsers', () => {
 			excludeItems: []
 		});
 		expect(result11.bank).toStrictEqual(new Bank());
-		expect(result11.price).toStrictEqual(0);
+		expect(result11.price).toStrictEqual(23_423_423_432);
 
 		const bigBank = new Bank();
 		for (let i = 0; i < 100; i++) {
@@ -511,5 +501,16 @@ describe('Bank Parsers', () => {
 		});
 		expect(result17.bank.length).toStrictEqual(1);
 		expect(result17.bank.has('Shark')).toEqual(true);
+
+		//
+		const result18 = parseInputBankWithPrice({
+			usersBank: new Bank().add('Egg').add('Ranarr seed', 20).add('Toadflax seed').add('Magic seed'),
+			str: '50m',
+			flags: { seeds: 'seeds' },
+			excludeItems: []
+		});
+		expect(result18.bank.length).toStrictEqual(3);
+		expect(result18.bank.amount('Ranarr seed')).toEqual(20);
+		expect(result18.price).toEqual(50_000_000);
 	});
 });
