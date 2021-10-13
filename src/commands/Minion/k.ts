@@ -261,7 +261,11 @@ export default class extends BotCommand {
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = floor(maxTripLength / timeToFinish);
+			if ([Monsters.Skotizo.id].includes(monster.id)) {
+				quantity = 1;
+			} else {
+				quantity = floor(maxTripLength / timeToFinish);
+			}
 		}
 		if (typeof quantity !== 'number') quantity = parseInt(quantity);
 		if (isOnTask) {
