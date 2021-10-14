@@ -96,7 +96,8 @@ export class Mass {
 					time: this.automaticStartTime,
 					max: this.maxSize,
 					dispose: true,
-					filter: (reaction: MessageReaction, user: KlasaUser) => {
+					filter: async (reaction: MessageReaction, user: KlasaUser) => {
+						await user.settings.sync();
 						if (
 							!isActionEmoji(reaction.emoji.id) ||
 							(!this.ironmenAllowed && user.isIronman) ||
