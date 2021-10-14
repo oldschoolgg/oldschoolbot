@@ -89,7 +89,7 @@ export default class extends BotCommand {
 		const quantity = Math.floor(msg.author.maxTripLength(Activity.Zalcano) / baseTime);
 		const duration = quantity * baseTime;
 
-		const [food] = await removeFoodFromUser({
+		const { foodRemoved } = await removeFoodFromUser({
 			client: this.client,
 			user: msg.author,
 			totalHealingNeeded: healAmountNeeded * quantity,
@@ -113,7 +113,7 @@ export default class extends BotCommand {
 				msg.author.minionName
 			} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDuration(
 				duration
-			)}. (${formatDuration(baseTime)} per kill). Removed ${food}.\n\n**Boosts:** ${boosts.join(', ')}.`
+			)}. (${formatDuration(baseTime)} per kill). Removed ${foodRemoved}.\n\n**Boosts:** ${boosts.join(', ')}.`
 		);
 	}
 }

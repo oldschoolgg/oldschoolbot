@@ -206,7 +206,7 @@ export default class extends BotCommand {
 		if (NightmareMonster.healAmountNeeded) {
 			for (const user of users) {
 				const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
-				const [, foodRemoved] = await removeFoodFromUser({
+				const { foodRemoved } = await removeFoodFromUser({
 					client: this.client,
 					user,
 					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,

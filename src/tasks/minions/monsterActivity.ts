@@ -103,7 +103,7 @@ export default class extends Task {
 			duration,
 			isOnTask,
 			taskQuantity: quantitySlayed,
-			minimal: false,
+			minimal: true,
 			usingCannon,
 			cannonMulti,
 			burstOrBarrage,
@@ -234,7 +234,7 @@ export default class extends Task {
 				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 				str += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
 				if (usersTask.assignedTask?.isBoss) {
-					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5000 })}`;
+					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5000, minimal: true })}`;
 					str += ' for completing your boss task.';
 				}
 			} else {

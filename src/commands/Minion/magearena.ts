@@ -44,7 +44,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`You don't own the needed items to do the Mage Arena, you need: ${itemsNeeded}.`);
 		}
 
-		const [, foodRemoved] = await removeFoodFromUser({
+		const { foodRemoved } = await removeFoodFromUser({
 			client: this.client,
 			user: msg.author,
 			totalHealingNeeded: 20 * 23,

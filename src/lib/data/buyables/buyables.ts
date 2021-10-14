@@ -557,7 +557,8 @@ const questBuyables: Buyable[] = [
 		name: 'Dwarf multicannon',
 		outputItems: CombatCannonItemBank,
 		gpCost: 10_000_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 750_000
 	},
 	{
 		name: 'Cannon barrels',
@@ -565,7 +566,8 @@ const questBuyables: Buyable[] = [
 			[itemID('Cannon barrels')]: 1
 		},
 		gpCost: 2_500_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon base',
@@ -573,7 +575,8 @@ const questBuyables: Buyable[] = [
 			[itemID('Cannon base')]: 1
 		},
 		gpCost: 2_500_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon furnace',
@@ -581,7 +584,8 @@ const questBuyables: Buyable[] = [
 			[itemID('Cannon furnace')]: 1
 		},
 		gpCost: 2_500_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon stand',
@@ -589,7 +593,8 @@ const questBuyables: Buyable[] = [
 			[itemID('Cannon stand')]: 1
 		},
 		gpCost: 2_500_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 200_625
 	},
 	{
 		name: 'Elemental shield',

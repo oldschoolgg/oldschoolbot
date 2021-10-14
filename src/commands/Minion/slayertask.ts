@@ -136,12 +136,12 @@ export default class extends BotCommand {
 				}
 				case 'skip': {
 					msg.flagArgs.new = 'yes';
-					await runCommand(msg, 'autoslay', ['skip']);
+					await runCommand(msg, 'slayertask', ['skip']);
 					return;
 				}
 				case 'block': {
 					msg.flagArgs.new = 'yes';
-					await runCommand(msg, 'autoslay', ['block']);
+					await runCommand(msg, 'slayertask', ['block']);
 					return;
 				}
 			}
