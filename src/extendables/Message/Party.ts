@@ -53,7 +53,7 @@ async function _setup(
 				max: options.maxSize,
 				dispose: true,
 				filter: async (reaction: MessageReaction, user: KlasaUser) => {
-					await user.settings.sync(true);
+					await user.settings.sync();
 					if (
 						(!options.ironmanAllowed && user.isIronman) ||
 						user.bot ||
