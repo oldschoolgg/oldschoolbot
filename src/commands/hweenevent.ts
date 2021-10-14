@@ -27,9 +27,11 @@ export default class extends BotCommand {
 
 		// you accused an innocent person! you feel a bit strange... and realize that time has been reversed, and you now have to find the killers again?!
 		return msg.channel.send(
-			`Can you solve the Murder Mystery? Two suspects worked together, to murder ${
+			`Can you solve the Murder Mystery? Two suspects worked together, to murder the owner the host of the party ${
 				victim.person.name
-			}, everyone claims that they were sleeping in their rooms when it happened. The guard has given you keys to access all the rooms to complete your investigation (${keys
+			} while they were in their special ${
+				victim.roomColor.name
+			} room, everyone claims that they were sleeping in their own rooms when it happened. The guard has given you keys to access all the rooms to complete your investigation (${keys
 				.map(i => i.item.name)
 				.join(', ')}).
 

@@ -71,10 +71,10 @@ interface MixableColor {
 	keys: number[];
 }
 
-const colors: MixableColor[] = [
+const secondaryColors: MixableColor[] = [
 	{
 		name: 'purple',
-		keys: resolveItems(['Ruby key', 'Sapphire key'])
+		keys: resolveItems(['Sapphire key', 'Ruby key'])
 	},
 	{
 		name: 'yellow',
@@ -82,8 +82,11 @@ const colors: MixableColor[] = [
 	},
 	{
 		name: 'cyan',
-		keys: resolveItems(['Sapphire key', 'Emerald key'])
-	},
+		keys: resolveItems(['Emerald key', 'Sapphire key'])
+	}
+];
+
+const primaryColors: MixableColor[] = [
 	{
 		name: 'blue',
 		keys: resolveItems(['Sapphire key'])
@@ -98,30 +101,29 @@ const colors: MixableColor[] = [
 	}
 ];
 
-export function determineVictimAndMurderers(people: HalloweenPersonInstance[]) {
-	// Victim is someone with a secondary color room
-	const victim = people.find(p => ['purple', 'yellow', 'cyan'].includes(p.roomColor.name))!;
-	let suspects = people.filter(i => i !== victim);
+export function determineVictimAndMurderers(user: KlasaUser) {
+	const people = shuffleRandom(Number(user.id), halloweenPeople);
+
+	const _secondaryColors = shuffleRandom(Number(user.id), secondaryColors);
+	const basePrimaryColors = shuffleRandom(Number(user.id), primaryColors);
+	const _primaryColors = [...basePrimaryColors, ...basePrimaryColors, ...basePrimaryColors];
+
+	const victim: HalloweenPersonInstance = { person: people[0], roomColor: _secondaryColors[0] };
+	const suspects: HalloweenPersonInstance[] = people
+		.filter(i => i !== victim.person)
+		.map((person, index) => ({ person, roomColor: _primaryColors[index] }));
+
 	const victimsRoom = victim.roomColor;
 	console.log(`Victim has a ${victimsRoom.name} room, you need ${victimsRoom.keys.map(itemNameFromID)} to open it`);
-
-	// Definitely innocent people
-	const definitelyInnocent = [suspects[0]];
-	const other = suspects.find(
-		r =>
-			['purple', 'yellow', 'cyan'].includes(r.roomColor.name) &&
-			victimsRoom.keys.some(k => r.roomColor.keys.includes(k))
-	);
-	if (other && !definitelyInnocent.includes(other)) {
-		definitelyInnocent.push(other);
-	}
-	suspects = suspects.filter(i => !definitelyInnocent.includes(i));
 
 	const peopleWhoCanDirectlyOpenVictimsRoom = suspects.filter(i => i.roomColor === victimsRoom);
 	const peopleWhoCanOpenItTogether: [HalloweenPersonInstance, HalloweenPersonInstance][] = [];
 	for (const suspect of suspects) {
 		for (const otherSuspect of suspects.filter(i => i !== suspect)) {
 			const sharedKeys = [...suspect.roomColor.keys, ...otherSuspect.roomColor.keys];
+			if (peopleWhoCanOpenItTogether.some(pair => pair.includes(suspect) && pair.includes(otherSuspect))) {
+				continue;
+			}
 			if (victimsRoom.keys.every(key => sharedKeys.includes(key))) {
 				peopleWhoCanOpenItTogether.push([suspect, otherSuspect]);
 				console.log(
@@ -132,8 +134,7 @@ export function determineVictimAndMurderers(people: HalloweenPersonInstance[]) {
 	}
 	console.log({
 		peopleWhoCanDirectlyOpenVictimsRoom,
-		peopleWhoCanOpenItTogether,
-		definitelyInnocent: definitelyInnocent.map(i => i.person.name)
+		peopleWhoCanOpenItTogether
 	});
 	return {
 		victim,
@@ -143,14 +144,7 @@ export function determineVictimAndMurderers(people: HalloweenPersonInstance[]) {
 }
 
 export function getHalloweenPeople(user: KlasaUser) {
-	const people = shuffleRandom(Number(user.id), halloweenPeople);
-	const roomColors = shuffleRandom(Number(user.id), colors);
-	const longerColors = [...roomColors, ...roomColors, ...roomColors];
-	const peopleInstances: HalloweenPersonInstance[] = people.map((person, index) => ({
-		person,
-		roomColor: longerColors[index]
-	}));
-	const { suspects, victim, murderers } = determineVictimAndMurderers(peopleInstances);
+	const { suspects, victim, murderers } = determineVictimAndMurderers(user);
 
 	return { suspects, victim, murderers };
 }
