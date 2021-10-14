@@ -9,7 +9,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
 import { addBanks } from '../../lib/util';
 
-export function shuffleRandom<T>(input: number, arr: T[]): T[] {
+export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
 	return shuffle(engine, [...arr]);
 }
