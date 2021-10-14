@@ -2,7 +2,7 @@ import { calcWhatPercent, reduceNumByPercent } from 'e';
 import { KlasaUser } from 'klasa';
 import { O } from 'ts-toolbelt';
 
-import { GearSetupType, GearStat, maxDefenceStats, maxOffenceStats } from '../../gear';
+import { GearSetupType, GearStat, maxDefenceStats, maxOffenceStats, readableStatName } from '../../gear';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
 import killableMonsters from '../data/killableMonsters';
 import { KillableMonster } from '../types';
@@ -12,19 +12,16 @@ const { floor, max } = Math;
 export default function calculateMonsterFood(
 	monster: O.Readonly<KillableMonster>,
 	user: O.Readonly<KlasaUser>
-): [number, string[]] {
-	const messages: string[] = [];
+): [number, string] {
 	let { healAmountNeeded, attackStyleToUse, attackStylesUsed } = monster;
 
 	if (!healAmountNeeded || !attackStyleToUse || !attackStylesUsed) {
-		return [0, messages];
+		return [0, ''];
 	}
 
 	if (monster.name === 'Koschei the deathless') {
-		return [killableMonsters.find(m => m.id === monster.id)!.healAmountNeeded!, []];
+		return [killableMonsters.find(m => m.id === monster.id)!.healAmountNeeded!, ''];
 	}
-
-	messages.push(`${monster.name} needs ${healAmountNeeded}HP worth of food per kill.`);
 
 	let gearToCheck: GearSetupType = 'melee';
 
@@ -52,7 +49,6 @@ export default function calculateMonsterFood(
 		const usersStyle = gearStats[inverseStyle];
 		const maxStyle = maxDefenceStats[inverseStyle]!;
 		const percent = floor(calcWhatPercent(usersStyle, maxStyle));
-		messages.push(`Your ${inverseStyle} bonus is ${percent}% of the best (${usersStyle} out of ${maxStyle})`);
 		totalPercentOfGearLevel += percent;
 	}
 
@@ -63,9 +59,7 @@ export default function calculateMonsterFood(
 	// Floor at 0 and cap at 80
 	totalOffensivePercent = Math.min(floor(max(0, totalOffensivePercent)), 80);
 
-	messages.push(`You use ${floor(totalPercentOfGearLevel)}% less food because of your defensive stats.`);
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel));
-	messages.push(`You use ${floor(totalOffensivePercent)}% less food because of your offensive stats.`);
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalOffensivePercent));
 
 	const hasAbyssalCape = user.hasItemEquippedAnywhere('Abyssal cape');
@@ -73,17 +67,14 @@ export default function calculateMonsterFood(
 		healAmountNeeded = Math.floor(healAmountNeeded * 0.5);
 	}
 
-	messages.push(
-		`You use ${(100 - calcWhatPercent(healAmountNeeded, monster.healAmountNeeded!)).toFixed(
-			2
-		)}% less food (${healAmountNeeded}HP instead of ${
-			monster.healAmountNeeded
-		}HP) because of your ${gearToCheck} gear.${
-			hasAbyssalCape
-				? ' *Your abyssal cape emanates an aura that protects you, reducing all the damage you receive by 50%, making you waste less food!*'
-				: ''
+	return [
+		healAmountNeeded,
+		`${healAmountNeeded} HP/kill: Reduced from ${monster.healAmountNeeded}, -${floor(
+			totalPercentOfGearLevel
+		)}% for defence(${attackStylesUsed.map(inverseOfOffenceStat).map(readableStatName).join(', ')}), -${floor(
+			totalOffensivePercent
+		)}% for offensive stats(${readableStatName(attackStyleToUse)})${
+			hasAbyssalCape ? ', -50% for Abyssal cape' : ''
 		}`
-	);
-
-	return [healAmountNeeded, messages];
+	];
 }

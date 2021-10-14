@@ -9,6 +9,7 @@ import { alching } from '../../commands/Minion/laps';
 import MinionCommand from '../../commands/Minion/minion';
 import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { getRandomMysteryBox } from '../data/openables';
+import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
@@ -203,6 +204,8 @@ export async function handleTripFinish(
 		: undefined;
 
 	const channel = client.channels.cache.get(channelID);
+
+	message = await handleGrowablePetGrowth(user, data, message);
 
 	sendToChannelID(client, channelID, { content: message, image: attachable }).then(() => {
 		const minutes = Math.min(30, data.duration / Time.Minute);

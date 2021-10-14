@@ -233,3 +233,18 @@ setItemAlias(23_633, "Dharok's platelegs (LMS)");
 setItemAlias(25_516, "Dharok's greataxe (LMS)");
 // Weird/broken/untradeable items
 setItemAlias(19_559, 'Elysian spirit shield dust');
+// Kittens
+setItemAlias(1555, 'Grey and black kitten');
+setItemAlias(1556, 'White kitten');
+setItemAlias(1557, 'Brown kitten');
+setItemAlias(1558, 'Black kitten');
+setItemAlias(1559, 'Grey and brown kitten');
+setItemAlias(1560, 'Grey and blue kitten');
+
+// Cats
+setItemAlias(1561, 'Grey and black cat');
+setItemAlias(1562, 'White cat');
+setItemAlias(1563, 'Brown cat');
+setItemAlias(1564, 'Black cat');
+setItemAlias(1565, 'Grey and brown cat');
+setItemAlias(1566, 'Grey and blue cat');

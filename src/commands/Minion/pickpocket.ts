@@ -146,7 +146,7 @@ export default class extends BotCommand {
 			msg.author.hasItemEquippedOrInBank("Thieves' armband")
 		);
 
-		const [foodString, foodRemoved] = await removeFoodFromUser({
+		const { foodRemoved } = await removeFoodFromUser({
 			client: this.client,
 			user: msg.author,
 			totalHealingNeeded: damageTaken,
@@ -175,7 +175,7 @@ export default class extends BotCommand {
 
 		let str = `${msg.author.minionName} is now going to pickpocket a ${
 			pickpocketable.name
-		} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish. Removed ${foodString}`;
+		} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish. Removed ${foodRemoved}.`;
 
 		if (hasWilvus) {
 			str += '\n<:wilvus:787320791011164201> 2x Speed boost from Wilvus';

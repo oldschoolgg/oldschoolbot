@@ -2,6 +2,7 @@ import { objectEntries } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { growablePets } from '../growablePets';
 import { implings } from '../implings';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
@@ -2029,6 +2030,12 @@ export const customBossesDropsThatCantBeDroppedInMBs = [
 ];
 export const implingsCL = objectEntries(implings).map(m => Number(m[0]));
 
-export const allPetIDs = [...allPetsCL, ...customPetsCL, ...discontinuedCustomPetsCL, ...chambersOfXericMetamorphPets];
+export const allPetIDs = [
+	...allPetsCL,
+	...customPetsCL,
+	...discontinuedCustomPetsCL,
+	...chambersOfXericMetamorphPets,
+	...growablePets.map(petSeries => petSeries.stages).flat(1)
+];
 
 export const holidayCL = allHolidayItems;
