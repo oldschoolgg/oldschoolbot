@@ -1,7 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Eatables } from '../dist/lib/data/eatables';
+import { Eatables } from '../src/lib/data/eatables';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
 import { stripEmojis } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
