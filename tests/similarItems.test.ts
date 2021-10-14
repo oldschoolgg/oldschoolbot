@@ -127,4 +127,42 @@ describe('Gear', () => {
 	test('bso tests 2', () => {
 		expect(bsoTestGear2.hasEquipped("Artisan's cape")).toBeFalsy();
 	});
+
+	const bsoDyedGear1 = new Gear({
+		'2h': 'Twisted bow (ice)',
+		hands: 'Pernix gloves',
+		body: 'Gorajan archer top',
+		legs: 'Gorajan archer legs (Sagittarian)'
+	});
+	test('bso dyed test 1', () => {
+		expect(bsoDyedGear1.hasEquipped('Pernix chaps')).toBeTruthy();
+		expect(bsoDyedGear1.hasEquipped('Pernix body')).toBeTruthy();
+		expect(bsoDyedGear1.hasEquipped('Twisted bow')).toBeTruthy();
+		expect(bsoDyedGear1.hasEquipped('Gorajan archer legs (Sagittarian)')).toBeTruthy();
+
+		expect(bsoDyedGear1.hasEquipped('Gorajan archer gloves')).toBeFalsy();
+		expect(bsoDyedGear1.hasEquipped('Hellfire bow')).toBeFalsy();
+		expect(bsoDyedGear1.hasEquipped('Hellfire bownana')).toBeFalsy();
+		expect(bsoDyedGear1.hasEquipped('Twisted bownana')).toBeFalsy();
+	});
+
+	const bsoDyedGear2 = new Gear({
+		'2h': 'Hellfire bownana',
+		hands: 'Gorajan occult gloves (Celestial)',
+		body: 'Gorajan occult top',
+		legs: 'Virtus robe legs'
+	});
+	test('bso dyed test 2', () => {
+		expect(bsoDyedGear2.hasEquipped('Virtus robe legs')).toBeTruthy();
+		expect(bsoDyedGear2.hasEquipped('Twisted bow')).toBeTruthy();
+		expect(bsoDyedGear2.hasEquipped('Hellfire bow')).toBeTruthy();
+		expect(bsoDyedGear2.hasEquipped('Zaryte bow')).toBeTruthy();
+		expect(bsoDyedGear2.hasEquipped('Hellfire bownana')).toBeTruthy();
+		expect(bsoDyedGear2.hasEquipped('Gorajan occult gloves')).toBeTruthy();
+		expect(bsoDyedGear2.hasEquipped('Virtus gloves')).toBeTruthy();
+
+		expect(bsoDyedGear2.hasEquipped('Gorajan archer gloves')).toBeFalsy();
+		expect(bsoDyedGear2.hasEquipped('Gorajan occult top (Celestial)')).toBeFalsy();
+		expect(bsoDyedGear2.hasEquipped('Twisted bownana')).toBeFalsy();
+	});
 });
