@@ -5,6 +5,7 @@ import { Bank, Clues, Monsters } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 import { table } from 'table';
 
+import { pumpkinHeadUniqueTable } from '../bossEvents';
 import { dyedItems } from '../dyedItems';
 import { kalphiteKingLootTable, KalphiteKingMonster } from '../kalphiteking';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
@@ -1145,7 +1146,8 @@ export const allCollectionLogs: ICollection = {
 					"Benny's brain brew",
 					'Roasted newt',
 					"Choc'rock",
-					'Gregoyle'
+					'Gregoyle',
+					...pumpkinHeadUniqueTable.allItems
 				]),
 				counts: false
 			}

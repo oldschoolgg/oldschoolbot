@@ -7,7 +7,6 @@ import minionNotBusy from '../../lib/minions/decorators/minionNotBusy';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { removeItemFromBank } from '../../lib/util';
-import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -27,8 +26,8 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [itemArray]: [Item[]]): Promise<KlasaMessage> {
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-		let allPets = [...allPetIDs, itemID('Mini Pumpkinhead')];
-		const petItem = itemArray.find(i => userBank[i.id] && allPets.includes(i.id));
+
+		const petItem = itemArray.find(i => userBank[i.id] && allPetIDs.includes(i.id));
 		if (!petItem) {
 			return msg.channel.send("That's not a pet, or you do not own this pet.");
 		}

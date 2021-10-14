@@ -1940,7 +1940,8 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Corgi',
 	'Snappy the turtle',
 	'Cob',
-	'Gregoyle'
+	'Gregoyle',
+	'Mini Pumpkinhead'
 ]);
 
 export const kingGoldemarCL = resolveItems([
