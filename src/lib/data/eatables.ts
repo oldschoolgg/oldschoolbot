@@ -228,12 +228,6 @@ export const Eatables: readonly Eatable[] = [
 		raw: null
 	},
 	{
-		name: 'Egg potato',
-		id: itemID('Egg potato'),
-		healAmount: 16,
-		raw: null
-	},
-	{
 		name: 'Dark crab',
 		id: itemID('Dark crab'),
 		healAmount: 22,
