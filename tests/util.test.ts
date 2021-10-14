@@ -1,6 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { Eatables } from '../src/lib/data/eatables';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
 import { stripEmojis } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
@@ -39,5 +40,19 @@ describe('util', () => {
 				[]
 			)
 		).toStrictEqual(new Bank().add('Lobster', 20).add('Shark', 66).add('Shrimps', 50));
+	});
+
+	test('duplicateEatableCheck', () => {
+		const seen = Object.create(null);
+		let duplicates = false;
+		for (const eatable of Eatables) {
+			if (eatable.name in seen) {
+				duplicates = true;
+				console.log(`Fail: Duplicate: ${eatable.name}`);
+				break;
+			}
+			seen[eatable.name] = true;
+		}
+		expect(duplicates).toBeFalsy();
 	});
 });
