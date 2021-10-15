@@ -120,14 +120,15 @@ export default class extends BotCommand {
 				endDate: end
 			})
 			.getMany();
-		if (trips.length >= 5) {
+
+		if (trips.length >= 2) {
 			return msg.channel.send(
 				"You've done too much trick-or-treating today! People won't give you anymore candy until tomorrow."
 			);
 		}
 
 		const duration = msg.author.maxTripLength(Activity.TrickOrTreat);
-		let rolls = Math.floor(duration / Time.Minute / 4.5);
+		let rolls = Math.floor(duration / Time.Minute / 4.5) * 2.5;
 
 		const setupToUse =
 			Object.values(msg.author.rawGear()).find(i => i.hasEquipped(scaryItems, false)) ??
