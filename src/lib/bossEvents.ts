@@ -147,7 +147,7 @@ ${specialLootRecipient.user.username} received ${specialLoot}.
 			allowMoreThan1Solo: false,
 			allowMoreThan1Group: false,
 			automaticStartTime: production ? Time.Minute * 10 : Time.Minute,
-			maxSize: 250
+			maxSize: 500
 		}
 	}
 ];
