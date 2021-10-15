@@ -167,8 +167,6 @@ export async function bossActiveIsActiveOrSoonActive(id?: string) {
 
 	const otherResults = await query.getMany();
 
-	console.log({ results, otherResults });
-
 	return results.length > 0 || otherResults.length > 0;
 }
 
