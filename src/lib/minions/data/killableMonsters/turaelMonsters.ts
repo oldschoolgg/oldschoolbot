@@ -664,7 +664,8 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		itemsRequired: deepResolveItems([['Trident of the seas', 'Trident of the swamp', 'Brine sabre']]),
+		// Merfolk trident has similar items including all water tridents
+		itemsRequired: deepResolveItems([['Merfolk trident', 'Uncharged trident', 'Brine sabre']]),
 		qpRequired: 10,
 		healAmountNeeded: 22,
 		attackStyleToUse: GearStat.AttackSlash,
