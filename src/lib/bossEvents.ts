@@ -1,6 +1,6 @@
 import { MessageEmbed, TextChannel } from 'discord.js';
 import { chunk, percentChance, randArrItem, shuffleArr, Time } from 'e';
-import { KlasaClient } from 'klasa';
+import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 import { createQueryBuilder } from 'typeorm';
 
@@ -45,6 +45,17 @@ export const pumpkinHeadUniqueTable = new LootTable()
 	.add("Pumpkinhead's pumpkin head")
 	.tertiary(60, 'Mini Pumpkinhead');
 
+function numberOfPHeadItemsInCL(user: KlasaUser) {
+	let amount = 0;
+	const cl = user.cl();
+	for (const item of pumpkinHeadUniqueTable.allItems) {
+		if (cl.has(item)) {
+			amount++;
+		}
+	}
+	return amount;
+}
+
 const nonUniqueTable = new LootTable().every(treatTable, [1, 6]);
 
 export const bossEvents: BossEvent[] = [
@@ -66,9 +77,27 @@ export const bossEvents: BossEvent[] = [
 			const lootGroups = chunk(lootElligible, 5).filter(i => i.length === 5);
 			const uniqueItemRecipients = lootGroups.map(groupArr => randArrItem(groupArr));
 			let uniqueLootStr = [];
+
+			let secondChancePeople = [];
+			for (const lootElliPerson of lootElligible) {
+				if (
+					!uniqueItemRecipients.includes(lootElliPerson) &&
+					numberOfPHeadItemsInCL(lootElliPerson.user) < 2 &&
+					lootElliPerson.user.hasItemEquippedAnywhere('Haunted amulet') &&
+					roll(2)
+				) {
+					uniqueItemRecipients.push(lootElliPerson);
+					secondChancePeople.push(lootElliPerson);
+				}
+			}
+
 			for (const recip of uniqueItemRecipients) {
 				const items = pumpkinHeadUniqueTable.roll();
-				uniqueLootStr.push(`${recip.user} got ${items}`);
+				const hasPet = items.has('Mini Pumpkinhead');
+				let str = `${recip.user} got ${items}`;
+				if (hasPet) str = `**${str}**`;
+				if (secondChancePeople.includes(recip)) str = `<:Haunted_amulet:898407574527942677>${str}`;
+				uniqueLootStr.push(str);
 				userLoot[recip.user.id].add(items);
 			}
 
