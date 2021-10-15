@@ -12,7 +12,7 @@ import { Gear } from './structures/Gear';
 import { ActivityTable } from './typeorm/ActivityTable.entity';
 import { BossEventTable } from './typeorm/BossEventTable.entity';
 import { NewBossOptions } from './types/minions';
-import { formatDuration } from './util';
+import { formatDuration, roll } from './util';
 import { sendToChannelID } from './util/webhook';
 import { LampTable } from './xpLamps';
 
@@ -45,7 +45,7 @@ export const pumpkinHeadUniqueTable = new LootTable()
 	.add("Pumpkinhead's pumpkin head")
 	.tertiary(60, 'Mini Pumpkinhead');
 
-const nonUniqueTable = new LootTable().every(treatTable, [1, 6]).tertiary(15, "Choc'rock");
+const nonUniqueTable = new LootTable().every(treatTable, [1, 6]);
 
 export const bossEvents: BossEvent[] = [
 	{
@@ -56,7 +56,10 @@ export const bossEvents: BossEvent[] = [
 			let userLoot: Record<string, Bank> = {};
 			for (const i of lootElligible) {
 				userLoot[i.user.id] = new Bank();
-				userLoot[i.user.id].add(nonUniqueTable.roll());
+				userLoot[i.user.id].add(nonUniqueTable.roll(5));
+				if (roll(10)) {
+					userLoot[i.user.id].add("Choc'rock");
+				}
 				await i.user.incrementMonsterScore(PUMPKINHEAD_ID, 1);
 			}
 
