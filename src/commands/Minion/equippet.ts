@@ -2,12 +2,17 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { allPetsCL, chambersOfXericMetamorphPets } from '../../lib/data/CollectionsExport';
+import { growablePets } from '../../lib/growablePets';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { removeItemFromBank } from '../../lib/util';
 
-export const allPetIDs = [...allPetsCL, ...chambersOfXericMetamorphPets];
+export const allPetIDs = [
+	...allPetsCL,
+	...chambersOfXericMetamorphPets,
+	...growablePets.map(petSeries => petSeries.stages).flat(1)
+];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
