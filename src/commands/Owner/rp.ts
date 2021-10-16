@@ -3,8 +3,9 @@ import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
+import { Items } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
-import { bossEvents } from '../../lib/bossEvents';
 import { badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { addPatronLootTime, addToDoubleLootTimer } from '../../lib/doubleLoot';
@@ -14,20 +15,45 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
-import { BossEventTable } from '../../lib/typeorm/BossEventTable.entity';
-import {
-	asyncExec,
-	cleanString,
-	formatDuration,
-	getSupportGuild,
-	getUsername,
-	itemNameFromID,
-	stringMatches
-} from '../../lib/util';
+import { asyncExec, cleanString, formatDuration, getSupportGuild, getUsername, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
+
+function itemSearch(msg: KlasaMessage, name: string) {
+	const items = Items.filter(i => {
+		if (msg.flagArgs.includes) {
+			return i.name.toLowerCase().includes(name.toLowerCase());
+		}
+		return i.name.toLowerCase() === name.toLowerCase();
+	}).array();
+	if (items.length === 0) return msg.channel.send('No results for that item.');
+
+	const gettedItem = Items.get(name);
+
+	if (msg.flagArgs.raw) {
+		return msg.channel.send(`\`\`\`\n${JSON.stringify(gettedItem, null, 4)}\n\`\`\``);
+	}
+
+	let str = `Found ${items.length} items:\n${(items as Item[])
+		.slice(0, 5)
+		.map(
+			(item, index) => `${gettedItem!.id === item.id ? '**' : ''}
+${index + 1}. ${item.name}[${item.id}] Price[${item.price}] ${
+				item.tradeable_on_ge ? 'GE_Tradeable' : 'Not_GE_Tradeable'
+			} ${item.tradeable ? 'Tradeable' : 'Not_Tradeable'} ${item.incomplete ? 'Incomplete' : 'Not_Incomplete'} ${
+				item.duplicate ? 'Duplicate' : 'Not_Duplicate'
+			}${gettedItem!.id === item.id ? '**' : ''} <${item.wiki_url}>`
+		)
+		.join('\n')}`;
+
+	if (items.length > 5) {
+		str += `\n...and ${items.length - 5} others`;
+	}
+
+	return msg.channel.send(str);
+}
 
 export const emoji = (client: KlasaClient) => getSupportGuild(client).emojis.cache.random().toString();
 
@@ -60,6 +86,11 @@ export default class extends BotCommand {
 		if (msg.guild!.id !== SupportServer) return null;
 
 		switch (cmd.toLowerCase()) {
+			case 'itemsearch':
+			case 'is': {
+				if (typeof input !== 'string') return;
+				return itemSearch(msg, input);
+			}
 			case 'git': {
 				try {
 					const currentCommit = await asyncExec('git log --pretty=oneline -1', {
@@ -507,18 +538,11 @@ LIMIT 10;
 				await this.client.settings.update(ClientSettings.DoubleLootFinishTime, 0);
 				return msg.channel.send('Reset the double loot timer.');
 			}
-			case 'se': {
-				if (typeof input !== 'string' || input.length < 2) return;
-				const boss = bossEvents.find(i => stringMatches(i.name, input));
-				if (!boss) {
-					return msg.channel.send("That's not a valid boss.");
-				}
-				await BossEventTable.insert({
-					startDate: new Date(),
-					bossID: boss.id,
-					completed: false,
-					data: {}
-				});
+			case 'bankimage':
+			case 'bi': {
+				if (typeof input !== 'string') return;
+				const bank = JSON.parse(input.replace(/'/g, '"'));
+				return msg.channel.sendBankImage({ bank });
 			}
 		}
 	}
