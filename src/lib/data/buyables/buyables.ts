@@ -283,17 +283,20 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Black gloves',
 		qpRequired: 35,
-		gpCost: 400_000
+		gpCost: 400_000,
+		ironmanPrice: 1300
 	},
 	{
 		name: 'Mithril gloves',
 		qpRequired: 50,
-		gpCost: 500_000
+		gpCost: 500_000,
+		ironmanPrice: 1950
 	},
 	{
 		name: 'Adamant gloves',
 		qpRequired: 65,
-		gpCost: 600_000
+		gpCost: 600_000,
+		ironmanPrice: 3250
 	},
 	{
 		name: 'Rune gloves',
@@ -301,7 +304,8 @@ const questBuyables: Buyable[] = [
 			[itemID('Rune gloves')]: 1
 		},
 		qpRequired: 85,
-		gpCost: 700_000
+		gpCost: 700_000,
+		ironmanPrice: 6500
 	},
 	{
 		name: 'Dragon gloves',
@@ -350,7 +354,8 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Mind shield',
 		gpCost: 100_000,
-		qpRequired: 35
+		qpRequired: 35,
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Dwarven helmet',
@@ -361,7 +366,8 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Amulet of accuracy',
 		gpCost: 50_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 1500
 	},
 	{
 		name: 'Cape of legends',
@@ -378,12 +384,14 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Bonesack',
 		gpCost: 1_000_000,
-		qpRequired: 82
+		qpRequired: 82,
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Ram skull helm',
 		gpCost: 1_000_000,
-		qpRequired: 82
+		qpRequired: 82,
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Monkey',
@@ -391,22 +399,26 @@ const questBuyables: Buyable[] = [
 			19_556: 1
 		},
 		gpCost: 1_000_000,
-		qpRequired: 182
+		qpRequired: 182,
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Rat pole',
 		gpCost: 200_000,
-		qpRequired: 85
+		qpRequired: 85,
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Silverlight',
 		gpCost: 50_000,
-		qpRequired: 3
+		qpRequired: 3,
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Darklight',
 		gpCost: 200_000,
-		qpRequired: 58
+		qpRequired: 58,
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Lunar Outfit',
@@ -438,7 +450,7 @@ const questBuyables: Buyable[] = [
 		}),
 		gpCost: 5_000_000,
 		qpRequired: 120,
-		ironmanPrice: 6_000
+		ironmanPrice: 6000
 	},
 	{
 		name: 'Jester Outfit',
@@ -450,7 +462,7 @@ const questBuyables: Buyable[] = [
 		}),
 		gpCost: 5_000_000,
 		qpRequired: 89,
-		ironmanPrice: 1_000
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Ardougne Knight Outfit',
@@ -461,7 +473,7 @@ const questBuyables: Buyable[] = [
 		}),
 		gpCost: 5_000_000,
 		qpRequired: 200,
-		ironmanPrice: 1_000
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Desert Outfit',
@@ -476,7 +488,7 @@ const questBuyables: Buyable[] = [
 		}),
 		gpCost: 1_000_000,
 		qpRequired: 20,
-		ironmanPrice: 1_000
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Pirate boots',
@@ -485,7 +497,7 @@ const questBuyables: Buyable[] = [
 		}),
 		gpCost: 100_000,
 		qpRequired: 20,
-		ironmanPrice: 1_000
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Vyrewatch outfit',
@@ -496,7 +508,7 @@ const questBuyables: Buyable[] = [
 		}),
 		gpCost: 1_000_000,
 		qpRequired: 92,
-		ironmanPrice: 1_950
+		ironmanPrice: 1950
 	},
 	{
 		name: 'Climbing boots',
@@ -535,31 +547,31 @@ const questBuyables: Buyable[] = [
 		name: "Doctor's hat",
 		gpCost: 60_000,
 		qpRequired: 60,
-		ironmanPrice: 1_000
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Medical gown',
 		gpCost: 60_000,
 		qpRequired: 60,
-		ironmanPrice: 1_000
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Ring of charos',
 		gpCost: 100_000,
 		qpRequired: 60,
-		ironmanPrice: 1_000
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Nurse hat',
 		gpCost: 60_000,
 		qpRequired: 60,
-		ironmanPrice: 1_000
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Holy wrench',
 		gpCost: 70_000,
 		qpRequired: 70,
-		ironmanPrice: 1_000
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Initiate outfit',
@@ -643,7 +655,7 @@ const questBuyables: Buyable[] = [
 		name: 'Elemental shield',
 		gpCost: 2_500_000,
 		qpRequired: 25,
-		ironmanPrice: 1_500
+		ironmanPrice: 1500
 	}
 ];
 
@@ -768,7 +780,7 @@ const Buyables: Buyable[] = [
 			6672: 1
 		},
 		gpCost: 500_000,
-		ironmanPrice: 1_000
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Potato with cheese',
@@ -791,7 +803,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Salve amulet',
 		gpCost: 200_000,
-		ironmanPrice: 1_000,
+		ironmanPrice: 1000,
 		skillsNeeded: {
 			crafting: 35
 		},
