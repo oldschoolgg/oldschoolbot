@@ -31,6 +31,9 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage) {
+		if (msg.author.cl().has('Banshee mask')) {
+			return msg.channel.send('You found the killers! Well done.');
+		}
 		const halloweenData = getHalloweenPeople(this.getNum(msg.author));
 		const { victim, suspects, witnessedAsInnocent } = halloweenData;
 
