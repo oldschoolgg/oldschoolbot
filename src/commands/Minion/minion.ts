@@ -14,7 +14,6 @@ import {
 	MIMIC_MONSTER_ID,
 	PerkTier
 } from '../../lib/constants';
-import { userhasDiaryTier } from '../../lib/diaries';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
@@ -24,13 +23,7 @@ import { getNewUser } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
-import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
-import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
-import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
-import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
-import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
-import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
+import { convertLVLtoXP, isValidNickname, runCommand, stringMatches } from '../../lib/util';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
 const patMessages = [
@@ -44,15 +37,6 @@ const patMessages = [
 
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
-async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
-	try {
-		const command = msg.client.commands.get(name)!;
-		await command!.run(msg, args);
-	} catch (err) {
-		msg.channel.send(typeof err === 'string' ? err : err.message);
-	}
-}
-
 const ironmanArmor = new Bank({ 'Ironman helm': 1, 'Ironman platebody': 1, 'Ironman platelegs': 1 });
 
 export default class MinionCommand extends BotCommand {
@@ -62,7 +46,7 @@ export default class MinionCommand extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|ironman] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|ironman|opens] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			requiredPermissions: ['EMBED_LINKS']
@@ -306,7 +290,6 @@ Type \`confirm\` if you understand the above information, and want to become an 
 	}
 
 	@requiresMinion
-	@minionNotBusy
 	async pat(msg: KlasaMessage) {
 		return msg.channel.send(randomPatMessage(msg.author.minionName));
 	}
@@ -416,5 +399,10 @@ Please click the buttons below for important links.`
 	@minionNotBusy
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
 		runCommand(msg, 'k', [quantity, name]);
+	}
+
+	async opens(msg: KlasaMessage) {
+		const openableScores = new Bank(msg.author.settings.get(UserSettings.OpenableScores));
+		return msg.channel.send(`You've opened... ${openableScores}`);
 	}
 }

@@ -26,6 +26,10 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (currentTask.type === 'Inferno') {
+			return msg.channel.send(`${msg.author.minionName} is in the Inferno, they can't leave now!`);
+		}
+
 		if (currentTask.type === 'GroupMonsterKilling') {
 			return msg.channel.send(
 				`${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`

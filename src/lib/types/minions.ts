@@ -2,6 +2,7 @@ import { Peak } from '../../tasks/WildernessPeakInterval';
 import { IPatchData } from '../minions/farming/types';
 import { MinigameName } from '../settings/minigames';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import { ItemBank } from '.';
 import { ActivityEnum } from '.prisma/client';
 
 export interface ActivityTaskOptions {
@@ -173,6 +174,15 @@ export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
 	preJadDeathChance: number;
 	preJadDeathTime: number | null;
 	quantity: number;
+}
+export interface InfernoOptions extends ActivityTaskOptions {
+	zukDeathChance: number;
+	preZukDeathChance: number;
+	deathTime: number | null;
+	fakeDuration: number;
+	diedZuk: boolean;
+	diedPreZuk: boolean;
+	cost: ItemBank;
 }
 
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}

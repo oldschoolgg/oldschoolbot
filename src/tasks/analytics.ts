@@ -4,7 +4,6 @@ import { Task } from 'klasa';
 import { ActivityGroup } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
-import { AnalyticsTable } from '../lib/typeorm/AnalyticsTable.entity';
 import { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
 

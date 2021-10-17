@@ -11,7 +11,7 @@ import { Connection } from 'typeorm';
 import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BankImageResult } from '../../tasks/bankImage';
-import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
+import { BitField, PerkTier } from '../constants';
 import { GearSetup } from '../gear';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
@@ -19,8 +19,8 @@ import { AddXpParams, KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
-import { MinigameTable } from '../typeorm/MinigameTable.entity';
 import { PoHTable } from '../typeorm/PoHTable.entity';
+import { chatHeads } from '../util/chatHeadImage';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
 type SendBankImageFn = (options: {
@@ -96,6 +96,7 @@ declare module 'klasa' {
 		makePartyAwaiter(options: MakePartyOptions): Promise<KlasaUser[]>;
 		removeAllReactions(): void;
 		confirm(this: KlasaMessage, str: string): Promise<void>;
+		chatHeadImage(head: keyof typeof chatHeads, content: string, messageContent?: string): Promise<KlasaMessage>;
 	}
 
 	interface SettingsFolder {
@@ -144,6 +145,7 @@ declare module 'discord.js' {
 			filterLoot?: boolean
 		): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }>;
 		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
+		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
 		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 

@@ -132,7 +132,7 @@ export default class extends BotCommand {
 			hasArdyHard
 		);
 
-		const [foodString, foodRemoved] = await removeFoodFromUser({
+		const { foodRemoved } = await removeFoodFromUser({
 			client: this.client,
 			user: msg.author,
 			totalHealingNeeded: damageTaken,
@@ -161,7 +161,7 @@ export default class extends BotCommand {
 
 		let str = `${msg.author.minionName} is now going to pickpocket a ${
 			pickpocketable.name
-		} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish. Removed ${foodString}`;
+		} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish. Removed ${foodRemoved}.`;
 
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

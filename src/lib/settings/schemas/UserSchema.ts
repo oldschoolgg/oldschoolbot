@@ -1,10 +1,17 @@
 import { Client, SchemaFolder } from 'klasa';
 
 import { FarmingPatchTypes } from '../../minions/farming/types';
+import { BlowpipeData } from '../../minions/types';
 import { SkillsEnum } from '../../skilling/types';
 
+const defaultBlowpipe: BlowpipeData = {
+	scales: 0,
+	dartID: null,
+	dartQuantity: 0
+};
+
 Client.defaultUserSchema
-	.add('GP', 'integer', { default: 0 })
+	.add('GP', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('QP', 'integer', { default: 0 })
 	.add('RSN', 'string', { default: null })
 	.add('pets', 'any', { default: {} })
@@ -14,7 +21,7 @@ Client.defaultUserSchema
 	.add('favorite_alchables', 'integer', { array: true, default: [] })
 	.add('favorite_food', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
-	.add('sacrificedValue', 'integer', { default: 0, minimum: 0 })
+	.add('sacrificedValue', 'integer', { default: 0, minimum: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('creatureScores', 'any', { default: {} })
@@ -36,7 +43,12 @@ Client.defaultUserSchema
 	.add('combat_options', 'integer', { array: true, default: [] })
 	.add('farming_patch_reminders', 'boolean', { default: true })
 	.add('pest_control_points', 'integer', { default: 0 })
+	.add('inferno_attempts', 'integer', { default: 0 })
+	.add('infernal_cape_sacrifices', 'integer', { default: 0 })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
+	.add('blowpipe', 'any', { default: { ...defaultBlowpipe } })
+	.add('ironman_alts', 'string', { array: true, default: [] })
+	.add('main_account', 'string', { default: null })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })

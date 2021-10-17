@@ -130,6 +130,12 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Volcanic Mine',
 		aliases: ['vm'],
 		column: 'volcanic_mine'
+	},
+	{
+		name: 'Inferno',
+		aliases: ['inferno', 'zuk'],
+		key: 'Inferno',
+		column: 'inferno'
 	}
 ];
 

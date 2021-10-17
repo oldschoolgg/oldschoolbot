@@ -124,6 +124,9 @@ export default class extends BotCommand {
 		}
 
 		const finalCost = requiredItems.multiply(quantity);
+		if (!msg.author.owns(finalCost)) {
+			return msg.channel.send(`You don't own: ${finalCost}.`);
+		}
 		await msg.author.removeItemsFromBank(finalCost);
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.HerbloreCostBank, finalCost);

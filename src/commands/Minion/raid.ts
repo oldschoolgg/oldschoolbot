@@ -170,7 +170,7 @@ export default class extends BotCommand {
 					return [true, 'your minion is busy.'];
 				}
 				if (!hasMinRaidsRequirements(user)) {
-					return [true, "You meet the stat requirements to do the Chamber's of Xeric."];
+					return [true, "You don't meet the stat requirements to do the Chamber's of Xeric."];
 				}
 
 				if (!user.owns(minimumCoxSuppliesNeeded)) {

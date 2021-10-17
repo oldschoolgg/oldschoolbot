@@ -461,6 +461,7 @@ enum ActivityEnum {
   Revenants
   PestControl
   VolcanicMine
+  Inferno
 }
 
 enum SkillEnum {

@@ -6,7 +6,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { collectables } from '../../commands/Minion/collect';
-import { Emoji, Events, LEVEL_99_XP, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from '../../lib/constants';
+import { Emoji, Events, LEVEL_99_XP, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, PerkTier, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
@@ -60,6 +60,7 @@ import {
 	GroupMonsterActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
+	InfernoOptions,
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
@@ -567,6 +568,16 @@ export default class extends Extendable {
 				const data = currentTask as VolcanicMineActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity} games of Volcanic Mine. ${formattedDuration}`;
 			}
+
+			case Activity.Inferno: {
+				const data = currentTask as InfernoOptions;
+				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+				return `${
+					this.minionName
+				} is currently attempting the Inferno, if they're successful and don't die, the trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
 		}
 	}
 
@@ -586,7 +597,9 @@ export default class extends Extendable {
 			return [mon.name, this.getKC((mon as unknown as Monster).id)];
 		}
 
-		const minigame = Minigames.find(game => stringMatches(game.name, kcName));
+		const minigame = Minigames.find(
+			game => stringMatches(game.name, kcName) || game.aliases.some(alias => stringMatches(alias, kcName))
+		);
 		if (minigame) {
 			return [minigame.name, await this.getMinigameScore(minigame.key)];
 		}
@@ -650,7 +663,7 @@ export default class extends Extendable {
 
 		const sac = this.settings.get(UserSettings.SacrificedValue);
 		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
-		max += calcPercentOfNum(sacPercent, Number(Time.Minute));
+		max += calcPercentOfNum(sacPercent, this.perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);
 		return max;
 	}
 

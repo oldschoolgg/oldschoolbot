@@ -10,6 +10,9 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 	if (usersTask) {
 		throw `That user is busy, so they can't do this minion activity. They have a ${usersTask.type} activity still ongoing`;
 	}
+	console.log(
+		`${new Date().toLocaleString()} ${taskToAdd.userID} starting ${taskToAdd.type} trip in ${taskToAdd.channelID}`
+	);
 	let duration = Math.floor(taskToAdd.duration);
 
 	const finishDate = new Date(Date.now() + duration);

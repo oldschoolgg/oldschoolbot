@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/node';
 import {
 	MessageAttachment,
 	MessageEmbed,
@@ -95,6 +96,13 @@ export async function sendToChannelID(
 				if (error.message === 'Unknown Webhook') {
 					await deleteWebhook(channelID);
 					await sendToChannelID(client, channelID, data);
+				} else {
+					captureException(error, {
+						tags: {
+							content: data.content,
+							channelID
+						}
+					});
 				}
 			}
 		} else {

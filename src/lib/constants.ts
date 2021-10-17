@@ -6,6 +6,7 @@ import { join } from 'path';
 import { DISCORD_SETTINGS } from '../config';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
+import resolveItems from './util/resolveItems';
 
 export { Activity } from '@prisma/client';
 
@@ -218,7 +219,8 @@ export const enum Tasks {
 	TrekkingActivity = 'templeTrekkingActivity',
 	RevenantsActivity = 'revenantsActivity',
 	PestControl = 'pestControlActivity',
-	VolcanicMine = 'volcanicMineActivity'
+	VolcanicMine = 'volcanicMineActivity',
+	Inferno = 'infernoActivity'
 }
 
 export enum ActivityGroup {
@@ -293,7 +295,10 @@ export const enum BitField {
 	HasPermanentTierOne = 12,
 	DisabledRandomEvents = 13,
 	PermanentIronman = 14,
-	AlwaysSmallBank = 15
+	AlwaysSmallBank = 15,
+	HasDexScroll = 16,
+	HasArcaneScroll = 17,
+	HasTornPrayerScroll = 18
 }
 
 interface BitFieldData {
@@ -441,3 +446,11 @@ export const lastTripCache = new Map<
 
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
+
+export type ProjectileType = 'arrow' | 'bolt';
+export const projectiles: Record<ProjectileType, number[]> = {
+	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
+	bolt: resolveItems(['Runite bolts', 'Dragon bolts', 'Diamond bolts (e)', 'Diamond dragon bolts (e)'])
+};
+
+export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
