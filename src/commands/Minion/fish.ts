@@ -75,7 +75,14 @@ export default class extends BotCommand {
 		const boosts = [];
 		switch (fish.bait) {
 			case itemID('Fishing bait'):
-				if (msg.author.hasItemEquippedAnywhere(itemID('Pearl fishing rod'))) {
+				if (
+					fish.name === 'Infernal eel'
+				) {
+					scaledTimePerFish *= 1;
+				} else if (
+					msg.author.hasItemEquippedAnywhere(itemID('Pearl fishing rod')) &&
+					fish.name !== 'Infernal eel'
+				) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl fishing rod');
 				}
