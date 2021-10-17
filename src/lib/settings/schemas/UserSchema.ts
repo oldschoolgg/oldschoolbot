@@ -49,6 +49,7 @@ Client.defaultUserSchema
 	.add('blowpipe', 'any', { default: { ...defaultBlowpipe } })
 	.add('ironman_alts', 'string', { array: true, default: [] })
 	.add('main_account', 'string', { default: null })
+	.add('wrong_accusations', 'integer', { default: 0 })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })

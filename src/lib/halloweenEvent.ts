@@ -1,5 +1,4 @@
 import { shuffleRandom } from '../extendables/User/CollectionLog';
-import { itemNameFromID } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
@@ -9,7 +8,7 @@ interface HalloweenPerson {
 	word: string;
 }
 
-const halloweenPeople: readonly HalloweenPerson[] = [
+export const halloweenPeople: readonly HalloweenPerson[] = [
 	{
 		name: 'Hewey',
 		gender: 'male',
@@ -119,7 +118,6 @@ export function determineVictimAndMurderers(number: number) {
 	}
 
 	const victimsRoom = victim.roomColor;
-	console.log(`Victim has a ${victimsRoom.name} room, you need ${victimsRoom.keys.map(itemNameFromID)} to open it`);
 
 	const peopleWhoCanDirectlyOpenVictimsRoom = suspects.filter(i => i.roomColor === victimsRoom);
 	const peopleWhoCanOpenItTogether: [HalloweenPersonInstance, HalloweenPersonInstance][] = [];
