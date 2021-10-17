@@ -200,6 +200,16 @@ const fishes: Fish[] = [
 		bait: itemID('Feather'),
 		timePerFish: 3,
 		clueScrollChance: 1_280_862
+	},
+	{
+		level: 80,
+		xp: 95,
+		id: itemID('Infernal eel'),
+		name: 'Infernal eel',
+		petChance: 160_000,
+		bait: itemID('Fishing bait'),
+		timePerFish: 12.4,
+		clueScrollChance: 165_000
 	}
 ];
 
