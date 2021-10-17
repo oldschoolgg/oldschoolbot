@@ -67,74 +67,89 @@ const cmCapes: Buyable[] = [
 	{
 		name: "Xeric's guard",
 		gpCost: 100_000,
+		ironmanPrice: 1,
 		minigameScoreReq: ['RaidsChallengeMode', 100]
 	},
 	{
 		name: "Xeric's warrior",
 		gpCost: 500_000,
+		ironmanPrice: 1,
 		minigameScoreReq: ['RaidsChallengeMode', 500]
 	},
 	{
 		name: "Xeric's sentinel",
 		gpCost: 1_000_000,
+		ironmanPrice: 1,
 		minigameScoreReq: ['RaidsChallengeMode', 1000]
 	},
 	{
 		name: "Xeric's general",
 		gpCost: 1_500_000,
+		ironmanPrice: 1,
 		minigameScoreReq: ['RaidsChallengeMode', 1500]
 	},
 	{
 		name: "Xeric's champion",
 		gpCost: 2_000_000,
+		ironmanPrice: 1,
 		minigameScoreReq: ['RaidsChallengeMode', 2000]
 	}
 ];
 
 const constructionBuyables: Buyable[] = [
-	{ name: 'Bolt of cloth', outputItems: resolveNameBank({ 'Bolt of cloth': 1 }), gpCost: 5000 },
+	{ name: 'Bolt of cloth', outputItems: resolveNameBank({ 'Bolt of cloth': 1 }), gpCost: 5000, ironmanPrice: 650 },
 	{
 		name: 'Limestone brick',
-		gpCost: 1000
+		gpCost: 1000,
+		ironmanPrice: 40
 	},
 	{
 		name: 'Gold leaf',
-		gpCost: 500_000
+		gpCost: 500_000,
+		ironmanPrice: 130_000
 	},
 	{
 		name: 'Marble block',
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 325_000
 	},
 	{
 		name: 'Magic stone',
-		gpCost: 4_000_000
+		gpCost: 4_000_000,
+		ironmanPrice: 975_000
 	},
 	{
 		name: 'Red dye',
-		gpCost: 100_000
+		gpCost: 100_000,
+		ironmanPrice: 6
 	},
 	{
 		name: 'Skull',
-		gpCost: 100_000
+		gpCost: 100_000,
+		ironmanPrice: 100
 	},
 	{
 		name: 'Fairy enchantment',
 		gpCost: 100_000,
-		qpRequired: 23
+		qpRequired: 23,
+		ironmanPrice: 100
 	},
 	{
 		name: 'Ancient signet',
 		gpCost: 100_000,
-		qpRequired: 105
+		qpRequired: 105,
+		ironmanPrice: 100
 	},
 	{
 		name: 'Lunar signet',
 		gpCost: 100_000,
-		qpRequired: 52
+		qpRequired: 52,
+		ironmanPrice: 2
 	},
 	{
 		name: 'Bucket of water',
-		gpCost: 500
+		gpCost: 500,
+		ironmanPrice: 7
 	}
 ];
 
@@ -209,11 +224,13 @@ const sepulchreBuyables: Buyable[] = [
 const hunterBuyables: Buyable[] = [
 	{
 		name: 'Butterfly jar',
-		gpCost: 500
+		gpCost: 500,
+		ironmanPrice: 1
 	},
 	{
 		name: 'Magic box',
-		gpCost: 1500
+		gpCost: 1500,
+		ironmanPrice: 720
 	}
 ];
 
@@ -224,52 +241,62 @@ const questBuyables: Buyable[] = [
 			[itemID('Goldsmith gauntlets')]: 1
 		},
 		qpRequired: 25,
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 25_000
 	},
 	{
 		name: 'Cooking gauntlets',
 		qpRequired: 25,
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 25_000
 	},
 	{
 		name: 'Anti-dragon shield',
 		qpRequired: 35,
-		gpCost: 10_000
+		gpCost: 10_000,
+		ironmanPrice: 26
 	},
 	{
 		name: 'Hardleather gloves',
 		qpRequired: 5,
-		gpCost: 50_000
+		gpCost: 50_000,
+		ironmanPrice: 65
 	},
 	{
 		name: 'Bronze gloves',
 		qpRequired: 10,
-		gpCost: 100_000
+		gpCost: 100_000,
+		ironmanPrice: 130
 	},
 	{
 		name: 'Iron gloves',
 		qpRequired: 20,
-		gpCost: 200_000
+		gpCost: 200_000,
+		ironmanPrice: 325
 	},
 	{
 		name: 'Steel gloves',
 		qpRequired: 25,
-		gpCost: 300_000
+		gpCost: 300_000,
+		ironmanPrice: 650
 	},
 	{
 		name: 'Black gloves',
 		qpRequired: 35,
-		gpCost: 400_000
+		gpCost: 400_000,
+		ironmanPrice: 1_300
 	},
 	{
 		name: 'Mithril gloves',
 		qpRequired: 50,
-		gpCost: 500_000
+		gpCost: 500_000,
+		ironmanPrice: 1_950
 	},
 	{
 		name: 'Adamant gloves',
 		qpRequired: 65,
-		gpCost: 600_000
+		gpCost: 600_000,
+		ironmanPrice: 3_250
 	},
 	{
 		name: 'Rune gloves',
@@ -277,79 +304,94 @@ const questBuyables: Buyable[] = [
 			[itemID('Rune gloves')]: 1
 		},
 		qpRequired: 85,
-		gpCost: 700_000
+		gpCost: 700_000,
+		ironmanPrice: 6_500
 	},
 	{
 		name: 'Dragon gloves',
 		qpRequired: 107,
-		gpCost: 850_000
+		gpCost: 850_000,
+		ironmanPrice: 130_000
 	},
 	{
 		name: 'Barrows gloves',
 		qpRequired: 175,
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 130_000
 	},
 	{
 		name: 'Helm of neitiznot',
 		qpRequired: 75,
-		gpCost: 500_000
+		gpCost: 500_000,
+		ironmanPrice: 50_000
 	},
 	{
 		name: 'Magic secateurs',
 		qpRequired: 40,
-		gpCost: 2_500_000
+		gpCost: 2_500_000,
+		ironmanPrice: 40_000
 	},
 	{
 		name: "Iban's staff",
 		aliases: ['iban'],
 		qpRequired: 30,
-		gpCost: 300_000
+		gpCost: 300_000,
+		ironmanPrice: 200_000
 	},
 	{
 		name: 'Barrelchest anchor',
 		aliases: ['anchor'],
 		qpRequired: 30,
-		gpCost: 2_000_000
+		gpCost: 2_000_000,
+		ironmanPrice: 290_000
 	},
 	{
 		name: 'Mythical cape',
 		gpCost: 1_000_000,
-		qpRequired: 205
+		qpRequired: 205,
+		ironmanPrice: 10_000
 	},
 	{
 		name: 'Mind shield',
 		gpCost: 100_000,
-		qpRequired: 35
+		qpRequired: 35,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Dwarven helmet',
 		gpCost: 100_000,
-		qpRequired: 52
+		qpRequired: 52,
+		ironmanPrice: 60_000
 	},
 	{
 		name: 'Amulet of accuracy',
 		gpCost: 50_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 1_500
 	},
 	{
 		name: 'Cape of legends',
 		gpCost: 250_000,
-		qpRequired: 105
+		qpRequired: 105,
+		ironmanPrice: 675
 	},
 	{
 		name: 'Bearhead',
 		gpCost: 1_000_000,
-		qpRequired: 105
+		qpRequired: 105,
+		ironmanPrice: 10_000
 	},
 	{
 		name: 'Bonesack',
 		gpCost: 1_000_000,
-		qpRequired: 82
+		qpRequired: 82,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Ram skull helm',
 		gpCost: 1_000_000,
-		qpRequired: 82
+		qpRequired: 82,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Monkey',
@@ -357,22 +399,26 @@ const questBuyables: Buyable[] = [
 			19_556: 1
 		},
 		gpCost: 1_000_000,
-		qpRequired: 182
+		qpRequired: 182,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Rat pole',
 		gpCost: 200_000,
-		qpRequired: 85
+		qpRequired: 85,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Silverlight',
 		gpCost: 50_000,
-		qpRequired: 3
+		qpRequired: 3,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Darklight',
 		gpCost: 200_000,
-		qpRequired: 58
+		qpRequired: 58,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Lunar Outfit',
@@ -388,7 +434,8 @@ const questBuyables: Buyable[] = [
 			'Lunar staff': 1
 		}),
 		gpCost: 5_000_000,
-		qpRequired: 120
+		qpRequired: 120,
+		ironmanPrice: 283_000
 	},
 	{
 		name: 'Moonclan Outfit',
@@ -402,7 +449,8 @@ const questBuyables: Buyable[] = [
 			'Moonclan armour': 1
 		}),
 		gpCost: 5_000_000,
-		qpRequired: 120
+		qpRequired: 120,
+		ironmanPrice: 6_000
 	},
 	{
 		name: 'Jester Outfit',
@@ -413,7 +461,8 @@ const questBuyables: Buyable[] = [
 			'Silly jester boots': 1
 		}),
 		gpCost: 5_000_000,
-		qpRequired: 89
+		qpRequired: 89,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Ardougne Knight Outfit',
@@ -423,7 +472,8 @@ const questBuyables: Buyable[] = [
 			'Ardougne knight platelegs': 1
 		}),
 		gpCost: 5_000_000,
-		qpRequired: 200
+		qpRequired: 200,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Desert Outfit',
@@ -437,7 +487,8 @@ const questBuyables: Buyable[] = [
 			'Desert robe': 1
 		}),
 		gpCost: 1_000_000,
-		qpRequired: 20
+		qpRequired: 20,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Pirate boots',
@@ -445,7 +496,8 @@ const questBuyables: Buyable[] = [
 			'Pirate boots': 1
 		}),
 		gpCost: 100_000,
-		qpRequired: 20
+		qpRequired: 20,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Vyrewatch outfit',
@@ -455,7 +507,8 @@ const questBuyables: Buyable[] = [
 			'Vyrewatch shoes': 1
 		}),
 		gpCost: 1_000_000,
-		qpRequired: 92
+		qpRequired: 92,
+		ironmanPrice: 1_950
 	},
 	{
 		name: 'Climbing boots',
@@ -463,52 +516,62 @@ const questBuyables: Buyable[] = [
 			'Climbing boots': 1
 		}),
 		gpCost: 100_000,
-		qpRequired: 20
+		qpRequired: 20,
+		ironmanPrice: 12
 	},
 	{
 		name: 'Warrior helm',
 		gpCost: 780_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 78_000
 	},
 	{
 		name: 'Berserker helm',
 		gpCost: 780_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 78_000
 	},
 	{
 		name: 'Archer helm',
 		gpCost: 780_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 78_000
 	},
 	{
 		name: 'Farseer helm',
 		gpCost: 780_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 78_000
 	},
 	{
 		name: "Doctor's hat",
 		gpCost: 60_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Medical gown',
 		gpCost: 60_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Ring of charos',
 		gpCost: 100_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Nurse hat',
 		gpCost: 60_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Holy wrench',
 		gpCost: 70_000,
-		qpRequired: 70
+		qpRequired: 70,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Initiate outfit',
@@ -518,7 +581,8 @@ const questBuyables: Buyable[] = [
 			'Initiate cuisse': 1
 		}),
 		gpCost: 250_000,
-		qpRequired: 35
+		qpRequired: 35,
+		ironmanPrice: 15_000
 	},
 	{
 		name: 'Proselyte outfit',
@@ -529,27 +593,32 @@ const questBuyables: Buyable[] = [
 			'Proselyte tasset': 1
 		}),
 		gpCost: 500_000,
-		qpRequired: 75
+		qpRequired: 75,
+		ironmanPrice: 30_000
 	},
 	{
 		name: 'Excalibur',
 		gpCost: 50_000,
-		qpRequired: 15
+		qpRequired: 15,
+		ironmanPrice: 500
 	},
 	{
 		name: 'Bomber jacket',
 		gpCost: 50_000,
-		qpRequired: 21
+		qpRequired: 21,
+		ironmanPrice: 500
 	},
 	{
 		name: 'Bomber cap',
 		gpCost: 50_000,
-		qpRequired: 21
+		qpRequired: 21,
+		ironmanPrice: 500
 	},
 	{
 		name: 'Pet rock',
 		gpCost: 500_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 500
 	},
 	{
 		name: 'Dwarf multicannon',
@@ -585,22 +654,26 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Elemental shield',
 		gpCost: 2_500_000,
-		qpRequired: 25
+		qpRequired: 25,
+		ironmanPrice: 1_500
 	}
 ];
 
 const noveltyFood: Buyable[] = [
 	{
 		name: 'Beer',
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 5
 	},
 	{
 		name: 'Vodka',
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 5
 	},
 	{
 		name: 'Gin',
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 5
 	}
 ];
 
@@ -623,7 +696,8 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Jug of Water',
 		aliases: ['jug of water', 'jugs of water'],
-		gpCost: 100
+		gpCost: 100,
+		ironmanPrice: 1
 	},
 
 	{
@@ -636,13 +710,15 @@ const Buyables: Buyable[] = [
 		name: 'Shield right half',
 		aliases: ['shield right half', 'right shield'],
 		qpRequired: 111,
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 750_000
 	},
 	{
 		name: 'Dragon metal shard',
 		aliases: ['metal shard'],
 		qpRequired: 205,
-		gpCost: 2_500_000
+		gpCost: 2_500_000,
+		ironmanPrice: 1_800_000
 	},
 	{
 		name: 'Eye of newt',
@@ -665,21 +741,25 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Cup of hot water',
 		aliases: ['cup of hot water', 'hot water'],
-		gpCost: 1500
+		gpCost: 1500,
+		ironmanPrice: 300
 	},
 	{
 		name: 'Chocolate bar',
 		aliases: ['chocolate bar', 'chocolate'],
-		gpCost: 1000
+		gpCost: 1000,
+		ironmanPrice: 13
 	},
 	{
 		name: 'Ball of wool',
 		aliases: ['wool ball', 'ball wool'],
-		gpCost: 300
+		gpCost: 300,
+		ironmanPrice: 3
 	},
 	{
 		name: 'Compost',
-		gpCost: 400
+		gpCost: 400,
+		ironmanPrice: 35
 	},
 	{
 		name: 'Amylase pack',
@@ -691,18 +771,21 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Dragon scimitar',
 		gpCost: 500_000,
-		qpRequired: 105
+		qpRequired: 105,
+		ironmanPrice: 100_000
 	},
 	{
 		name: 'Fishbowl pet',
 		outputItems: {
 			6672: 1
 		},
-		gpCost: 500_000
+		gpCost: 500_000,
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Potato with cheese',
 		gpCost: 650,
+		ironmanPrice: 9,
 		skillsNeeded: {
 			attack: 65,
 			strength: 65
@@ -714,11 +797,13 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Ogre bow',
-		gpCost: 10_000
+		gpCost: 10_000,
+		ironmanPrice: 550
 	},
 	{
 		name: 'Salve amulet',
 		gpCost: 200_000,
+		ironmanPrice: 1_000,
 		skillsNeeded: {
 			crafting: 35
 		},
