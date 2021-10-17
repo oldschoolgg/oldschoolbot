@@ -1,7 +1,6 @@
 import { calcPercentOfNum, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
-import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -61,14 +60,6 @@ export default class extends BotCommand {
 		) {
 			return msg.channel.send('You need at least 15 Agility and Strength to do Barbarian Fishing.');
 		}
-
-		if (
-			fish.name === 'Infernal eel' &&
-			msg.author.getKC(TzTokJad.id) < 1) {
-				return msg.channel.send(
-					`You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the might TzTok-Jad!`
-				);
-			}
 
 		// If no quantity provided, set it to the max.
 		let scaledTimePerFish =
