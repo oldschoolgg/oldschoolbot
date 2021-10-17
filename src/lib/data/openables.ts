@@ -113,7 +113,7 @@ const Openables: Openable[] = [
 		table: new LootTable()
 			.add('Tokkul', [14, 20], 86)
 			.add('Lava scale shard', [1, 5], 8)
-			.add('Onyx bolt tips', 1, 6)
+			.add('Onyx bolt tips', 1, 6),
 		emoji: Emoji.Casket
 	},
 	{
