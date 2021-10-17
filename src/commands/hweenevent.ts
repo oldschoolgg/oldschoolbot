@@ -32,8 +32,7 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage) {
 		const halloweenData = getHalloweenPeople(this.getNum(msg.author));
-		const { victim, suspects, murderers, witnessedAsInnocent } = halloweenData;
-		console.log(`Murderers for ${msg.author.username} are: ${murderers.map(m => m.person.name)}`);
+		const { victim, suspects, witnessedAsInnocent } = halloweenData;
 
 		return msg.channel.send(
 			`Can you solve the Murder Mystery? Two suspects worked together, to murder the host of the party, ${
@@ -99,7 +98,7 @@ You received: ${loot}.`);
 			msg.author.settings.get(UserSettings.WrongAccusations) + 1
 		);
 		return msg.channel.send(
-			"You accused the wrong people! You've created a divergence in the RuneScape timeline, the gods have turned back time to give you another chance, don't mess it up this time!"
+			"You accused the wrong people! You've created a divergence in the RuneScape timeline, the gods have turned back time to give you another chance, don't mess it up this time! There are different suspects and a different victim this time."
 		);
 	}
 }
