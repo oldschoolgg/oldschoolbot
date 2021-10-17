@@ -1,5 +1,3 @@
-import { KlasaUser } from 'klasa';
-
 import { shuffleRandom } from '../extendables/User/CollectionLog';
 import { itemNameFromID } from './util';
 import getOSItem from './util/getOSItem';
@@ -101,23 +99,32 @@ const primaryColors: MixableColor[] = [
 	}
 ];
 
-export function determineVictimAndMurderers(user: KlasaUser) {
-	const people = shuffleRandom(Number(user.id), halloweenPeople);
+export function determineVictimAndMurderers(number: number) {
+	const people = shuffleRandom(number, halloweenPeople);
 
-	const _secondaryColors = shuffleRandom(Number(user.id), secondaryColors);
-	const basePrimaryColors = shuffleRandom(Number(user.id), primaryColors);
+	const _secondaryColors = shuffleRandom(number, secondaryColors);
+	const basePrimaryColors = shuffleRandom(number, primaryColors);
 	const _primaryColors = [...basePrimaryColors, ...basePrimaryColors, ...basePrimaryColors];
 
 	const victim: HalloweenPersonInstance = { person: people[0], roomColor: _secondaryColors[0] };
-	const suspects: HalloweenPersonInstance[] = people
-		.filter(i => i !== victim.person)
-		.map((person, index) => ({ person, roomColor: _primaryColors[index] }));
+	const suspects: HalloweenPersonInstance[] = [];
+	const shuffledPeople = shuffleRandom(
+		number,
+		people.filter(i => i !== victim.person)
+	);
+	for (const person of shuffledPeople) {
+		if (suspects.some(i => i.person === person)) continue;
+		const color = _primaryColors[suspects.length];
+		suspects.push({ person, roomColor: color });
+	}
 
 	const victimsRoom = victim.roomColor;
 	console.log(`Victim has a ${victimsRoom.name} room, you need ${victimsRoom.keys.map(itemNameFromID)} to open it`);
 
 	const peopleWhoCanDirectlyOpenVictimsRoom = suspects.filter(i => i.roomColor === victimsRoom);
 	const peopleWhoCanOpenItTogether: [HalloweenPersonInstance, HalloweenPersonInstance][] = [];
+	const witnessedAsInnocent: HalloweenPersonInstance[] = [];
+
 	for (const suspect of suspects) {
 		for (const otherSuspect of suspects.filter(i => i !== suspect)) {
 			const sharedKeys = [...suspect.roomColor.keys, ...otherSuspect.roomColor.keys];
@@ -125,26 +132,44 @@ export function determineVictimAndMurderers(user: KlasaUser) {
 				continue;
 			}
 			if (victimsRoom.keys.every(key => sharedKeys.includes(key))) {
-				peopleWhoCanOpenItTogether.push([suspect, otherSuspect]);
-				console.log(
-					`${suspect.person.name}[${suspect.roomColor.name}] and ${otherSuspect.person.name}[${otherSuspect.roomColor.name}]`
-				);
+				if (peopleWhoCanOpenItTogether.length === 1) {
+					witnessedAsInnocent.push(
+						...[suspect, otherSuspect].filter(
+							sus =>
+								peopleWhoCanOpenItTogether.every(gr => !gr.includes(sus)) &&
+								!witnessedAsInnocent.includes(sus)
+						)
+					);
+				} else {
+					peopleWhoCanOpenItTogether.push([suspect, otherSuspect]);
+				}
 			}
 		}
 	}
-	console.log({
-		peopleWhoCanDirectlyOpenVictimsRoom,
-		peopleWhoCanOpenItTogether
-	});
+
+	const murderers = peopleWhoCanOpenItTogether[0];
+	if (peopleWhoCanDirectlyOpenVictimsRoom.length > 0) {
+		throw new Error('Can open directly');
+	}
+	if (peopleWhoCanOpenItTogether.length > 1) {
+		throw new Error('More than 1 pair can open');
+	}
+	if (suspects.length !== 5) {
+		throw new Error(`Was ${suspects.length} suspects`);
+	}
+	if (murderers.length !== 2) {
+		throw new Error(`Was ${murderers.length} suspects`);
+	}
 	return {
 		victim,
 		suspects,
-		murderers: suspects.slice(0, 2)
+		murderers,
+		witnessedAsInnocent
 	};
 }
 
-export function getHalloweenPeople(user: KlasaUser) {
-	const { suspects, victim, murderers } = determineVictimAndMurderers(user);
+export function getHalloweenPeople(number: number) {
+	const { suspects, victim, murderers, witnessedAsInnocent } = determineVictimAndMurderers(number);
 
-	return { suspects, victim, murderers };
+	return { suspects, victim, murderers, witnessedAsInnocent };
 }
