@@ -283,20 +283,17 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Black gloves',
 		qpRequired: 35,
-		gpCost: 400_000,
-		ironmanPrice: 1_300
+		gpCost: 400_000
 	},
 	{
 		name: 'Mithril gloves',
 		qpRequired: 50,
-		gpCost: 500_000,
-		ironmanPrice: 1_950
+		gpCost: 500_000
 	},
 	{
 		name: 'Adamant gloves',
 		qpRequired: 65,
-		gpCost: 600_000,
-		ironmanPrice: 3_250
+		gpCost: 600_000
 	},
 	{
 		name: 'Rune gloves',
@@ -304,8 +301,7 @@ const questBuyables: Buyable[] = [
 			[itemID('Rune gloves')]: 1
 		},
 		qpRequired: 85,
-		gpCost: 700_000,
-		ironmanPrice: 6_500
+		gpCost: 700_000
 	},
 	{
 		name: 'Dragon gloves',
@@ -354,8 +350,7 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Mind shield',
 		gpCost: 100_000,
-		qpRequired: 35,
-		ironmanPrice: 1_000
+		qpRequired: 35
 	},
 	{
 		name: 'Dwarven helmet',
@@ -366,8 +361,7 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Amulet of accuracy',
 		gpCost: 50_000,
-		qpRequired: 5,
-		ironmanPrice: 1_500
+		qpRequired: 5
 	},
 	{
 		name: 'Cape of legends',
@@ -384,14 +378,12 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Bonesack',
 		gpCost: 1_000_000,
-		qpRequired: 82,
-		ironmanPrice: 1_000
+		qpRequired: 82
 	},
 	{
 		name: 'Ram skull helm',
 		gpCost: 1_000_000,
-		qpRequired: 82,
-		ironmanPrice: 1_000
+		qpRequired: 82
 	},
 	{
 		name: 'Monkey',
@@ -399,26 +391,22 @@ const questBuyables: Buyable[] = [
 			19_556: 1
 		},
 		gpCost: 1_000_000,
-		qpRequired: 182,
-		ironmanPrice: 1_000
+		qpRequired: 182
 	},
 	{
 		name: 'Rat pole',
 		gpCost: 200_000,
-		qpRequired: 85,
-		ironmanPrice: 1_000
+		qpRequired: 85
 	},
 	{
 		name: 'Silverlight',
 		gpCost: 50_000,
-		qpRequired: 3,
-		ironmanPrice: 1_000
+		qpRequired: 3
 	},
 	{
 		name: 'Darklight',
 		gpCost: 200_000,
-		qpRequired: 58,
-		ironmanPrice: 1_000
+		qpRequired: 58
 	},
 	{
 		name: 'Lunar Outfit',
