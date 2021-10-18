@@ -124,7 +124,7 @@ export default class extends BotCommand {
 			const [success, points] = gotFavour(msg.author, createableItem.requiredFavour, 100);
 			if (!success) {
 				return msg.channel.send(
-					`You don't have the required amount of Favour to ${cmd} this item.\n\nRequired: ${points}% ${createableItem.requiredFavour.name} Favour.`
+					`You don't have the required amount of Favour to ${cmd} this item.\n\nRequired: ${points}% ${createableItem.requiredFavour.toString()} Favour.`
 				);
 			}
 		}
