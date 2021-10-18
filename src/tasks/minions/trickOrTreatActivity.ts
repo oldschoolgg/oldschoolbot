@@ -1,21 +1,10 @@
 import { randArrItem, roll } from 'e';
 import { Task } from 'klasa';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
+import { treatTable } from '../../lib/simulation/pumpkinHead';
 import { TrickOrTreatOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-
-export const treatTable = new LootTable()
-	.add('Candy teeth', 1, 350)
-	.add('Toffeet', 1, 240)
-	.add('Chocolified skull', 1, 240)
-	.add('Rotten sweets', 1, 240)
-	.add('Hairyfloss', 1, 240)
-	.add('Eyescream', 1, 180)
-	.add('Goblinfinger soup', 1, 180)
-	.add("Benny's brain brew", 1, 60)
-	.add("Choc'rock", 1, 7)
-	.add('Roasted newt', 1, 1);
 
 export default class extends Task {
 	async run(data: TrickOrTreatOptions) {

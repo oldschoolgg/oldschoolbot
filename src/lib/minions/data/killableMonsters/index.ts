@@ -1,10 +1,10 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { PUMPKINHEAD_ID } from '../../../bossEvents';
 import { ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { KalphiteKingMonster } from '../../../kalphiteking';
+import { PUMPKINHEAD_ID } from '../../../simulation/pumpkinHead';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';

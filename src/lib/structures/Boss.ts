@@ -4,9 +4,9 @@ import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
-import { PUMPKINHEAD_ID } from '../bossEvents';
 import { Activity } from '../constants';
 import { GearSetupType, GearStats } from '../gear';
+import { PUMPKINHEAD_ID } from '../simulation/pumpkinHead';
 import { Skills } from '../types';
 import { NewBossOptions } from '../types/minions';
 import { formatDuration, formatSkillRequirements, isWeekend, updateBankSetting } from '../util';

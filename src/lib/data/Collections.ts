@@ -5,7 +5,6 @@ import { Bank, Clues, Monsters } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 import { table } from 'table';
 
-import { pumpkinHeadUniqueTable } from '../bossEvents';
 import { dyedItems } from '../dyedItems';
 import { kalphiteKingLootTable, KalphiteKingMonster } from '../kalphiteking';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
@@ -25,6 +24,7 @@ import {
 import { nexLootTable, NexMonster } from '../nex';
 import { UserSettings } from '../settings/types/UserSettings';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
+import { pumpkinHeadUniqueTable } from '../simulation/pumpkinHead';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { ItemBank } from '../types';
 import { addArrayOfNumbers, stringMatches } from '../util';

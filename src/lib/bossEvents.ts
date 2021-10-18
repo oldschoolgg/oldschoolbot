@@ -1,12 +1,19 @@
 import { MessageEmbed, TextChannel } from 'discord.js';
 import { chunk, percentChance, randArrItem, shuffleArr, Time } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaClient } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 import { createQueryBuilder } from 'typeorm';
 
 import { production } from '../config';
-import { treatTable } from '../tasks/minions/trickOrTreatActivity';
 import { Activity, getScaryFoodFromBank, scaryEatables } from './constants';
+import {
+	getPHeadDescriptor,
+	numberOfPHeadItemsInCL,
+	PUMPKINHEAD_HEALING_NEEDED,
+	PUMPKINHEAD_ID,
+	pumpkinHeadNonUniqueTable,
+	pumpkinHeadUniqueTable
+} from './simulation/pumpkinHead';
 import { BossInstance, BossOptions, BossUser } from './structures/Boss';
 import { Gear } from './structures/Gear';
 import { ActivityTable } from './typeorm/ActivityTable.entity';
@@ -24,39 +31,6 @@ interface BossEvent {
 }
 
 export const bossEventChannelID = production ? '897170239333220432' : '895410639835639808';
-let PUMPKINHEAD_HEALING_NEEDED = 60;
-export const PUMPKINHEAD_ID = 93_898_458;
-const pumpkinHeadDescriptors = [
-	['Head', 'Skull', 'Body', 'Minion'],
-	['Crushing', 'Slashing', 'Chopping', 'Destroying', 'Stomping', 'Ripping', 'Slicing', 'Stabbing']
-];
-function getPHeadDescriptor() {
-	const first = randArrItem(pumpkinHeadDescriptors[0]);
-	const second = randArrItem(pumpkinHeadDescriptors[1]);
-	return `${first}-${second}`;
-}
-
-export const pumpkinHeadUniqueTable = new LootTable()
-	.add('Haunted cloak', 1, 2)
-	.add("Pumpkinhead's headbringer")
-	.add('Haunted amulet')
-	.add('Haunted gloves', 1, 2)
-	.add('Haunted boots', 1, 2)
-	.add("Pumpkinhead's pumpkin head")
-	.tertiary(60, 'Mini Pumpkinhead');
-
-function numberOfPHeadItemsInCL(user: KlasaUser) {
-	let amount = 0;
-	const cl = user.cl();
-	for (const item of pumpkinHeadUniqueTable.allItems) {
-		if (cl.has(item)) {
-			amount++;
-		}
-	}
-	return amount;
-}
-
-const nonUniqueTable = new LootTable().every(treatTable, [1, 6]);
 
 export const bossEvents: BossEvent[] = [
 	{
@@ -67,7 +41,7 @@ export const bossEvents: BossEvent[] = [
 			let userLoot: Record<string, Bank> = {};
 			for (const i of lootElligible) {
 				userLoot[i.user.id] = new Bank();
-				userLoot[i.user.id].add(nonUniqueTable.roll(5));
+				userLoot[i.user.id].add(pumpkinHeadNonUniqueTable.roll(5));
 				if (roll(10)) {
 					userLoot[i.user.id].add("Choc'rock");
 				}

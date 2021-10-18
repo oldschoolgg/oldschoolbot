@@ -3,9 +3,9 @@ import { calcPercentOfNum } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { createQueryBuilder } from 'typeorm';
 
-import { pumpkinHeadUniqueTable } from '../../lib/bossEvents';
 import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { pumpkinHeadUniqueTable } from '../../lib/simulation/pumpkinHead';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { TrickOrTreatOptions } from '../../lib/types/minions';
