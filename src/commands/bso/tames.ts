@@ -22,6 +22,7 @@ import {
 	addBanks,
 	formatDuration,
 	formatSkillRequirements,
+	isWeekend,
 	itemNameFromID,
 	patronMaxTripCalc,
 	stringMatches,
@@ -649,6 +650,10 @@ export default class extends BotCommand {
 			boosts.push('+35mins trip length (ate a Zak)');
 		}
 		maxTripLength += patronMaxTripCalc(msg.author) * 2;
+		if (isWeekend()) {
+			speed = reduceNumByPercent(speed, 10);
+			boosts.push('10% weekend boost');
+		}
 
 		// Calculate monster quantity:
 		const quantity = Math.floor(maxTripLength / speed);
@@ -731,6 +736,11 @@ export default class extends BotCommand {
 				speed = reduceNumByPercent(speed, 10);
 				boosts.push(`10% for ${item}`);
 			}
+		}
+
+		if (isWeekend()) {
+			speed = reduceNumByPercent(speed, 10);
+			boosts.push('10% weekend boost');
 		}
 
 		// Apply calculated boost:
