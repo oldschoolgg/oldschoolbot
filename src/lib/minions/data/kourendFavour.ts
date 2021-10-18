@@ -34,6 +34,14 @@ export interface KourendFavour {
 	qpRequired?: number;
 }
 
+export enum Favours {
+	Arceuus = 'arceuus',
+	Hosidius = 'hosidius',
+	Lovakengj = 'lovakengj',
+	Piscarilius = 'piscarilius',
+	Shayzien = 'shayzien'
+}
+
 export const KourendFavours: KourendFavour[] = [
 	{
 		name: 'Arceuus',
@@ -116,12 +124,12 @@ export function findFavour(favourName: string): KourendFavour | undefined {
 	);
 }
 
-export function gotFavour(user: KlasaUser, favour: KourendFavour | undefined, neededPoints: number): [boolean, number] {
+export function gotFavour(user: KlasaUser, favour: Favours | undefined, neededPoints: number): [boolean, number] {
 	const currentUserFavour = user.settings.get(UserSettings.KourendFavour);
 	let gotEnoughPoints = false;
 	if (!favour) return [gotEnoughPoints, neededPoints];
 	for (const [key, value] of Object.entries(currentUserFavour) as [keyof UserKourendFavour, number][]) {
-		if (key.toLowerCase() === favour.name.toLowerCase()) {
+		if (key.toLowerCase() === favour.toString().toLowerCase()) {
 			if (value >= neededPoints) gotEnoughPoints = true;
 			break;
 		}

@@ -1,4 +1,4 @@
-import { KourendFavour } from '../minions/data/kourendFavour';
+import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
@@ -23,7 +23,7 @@ export interface Createable {
 	GPCost?: number;
 	cantBeInCL?: boolean;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
-	requiredFavour?: KourendFavour;
+	requiredFavour?: Favours;
 }
 
 const revWeapons: Createable[] = [

@@ -2,7 +2,7 @@ import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
-import { findFavour, gotFavour } from '../../lib/minions/data/kourendFavour';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
@@ -75,8 +75,8 @@ export default class extends BotCommand {
 			return msg.channel.send(`${msg.author.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`);
 		}
 
-		const [haveFavour, requiredPoints] = gotFavour(msg.author, findFavour('Hosidius'), 75);
-		if (!haveFavour && log.name === 'Redwood Logs')
+		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Hosidius, 75);
+		if (!hasFavour && log.name === 'Redwood Logs')
 			return msg.channel.send(
 				`${msg.author.minionName} needs ${requiredPoints}% Hosidius Favour to chop Redwood at the Woodcutting Guild!`
 			);

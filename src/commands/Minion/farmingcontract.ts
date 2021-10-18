@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { findFavour, gotFavour } from '../../lib/minions/data/kourendFavour';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { defaultFarmingContract } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
@@ -92,8 +92,8 @@ export default class extends BotCommand {
 			});
 		}
 
-		const [haveFavour, requiredPoints] = gotFavour(msg.author, findFavour('Hosidius'), 60);
-		if (!haveFavour)
+		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Hosidius, 60);
+		if (!hasFavour)
 			return msg.channel.send(
 				`${msg.author.minionName} needs ${requiredPoints}% Hosidius Favour to enter the Farming Guild!`
 			);

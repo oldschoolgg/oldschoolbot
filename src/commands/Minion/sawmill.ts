@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity } from '../../lib/constants';
-import { findFavour, gotFavour } from '../../lib/minions/data/kourendFavour';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { Planks } from '../../lib/minions/data/planks';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -56,11 +56,11 @@ export default class extends BotCommand {
 			timePerPlank *= 0.9;
 			boosts.push('10% for Graceful');
 		}
-		const [haveFavour] = gotFavour(msg.author, findFavour('Hosidius'), 75);
+		const [hasFavour] = gotFavour(msg.author, Favours.Hosidius, 75);
 		if (
 			msg.author.skillLevel(SkillsEnum.Woodcutting) >= 60 &&
 			msg.author.settings.get(UserSettings.QP) >= 50 &&
-			haveFavour
+			hasFavour
 		) {
 			timePerPlank *= 0.9;
 			boosts.push('10% for Woodcutting Guild unlocked');

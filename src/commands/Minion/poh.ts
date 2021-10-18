@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../lib/constants';
-import { findFavour, gotFavour } from '../../lib/minions/data/kourendFavour';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from '../../lib/poh';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -121,8 +121,8 @@ export default class POHCommand extends BotCommand {
 			return msg.channel.send(`You need level ${obj.level} Construction to build a ${obj.name} in your house.`);
 		}
 		if (obj.id === 29_149 || obj.id === 31_858) {
-			const [haveFavour, requiredPoints] = gotFavour(msg.author, findFavour('Arceuus'), 100);
-			if (!haveFavour)
+			const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Arceuus, 100);
+			if (!hasFavour)
 				return msg.channel.send(`Build Dark Altar/Occult altar requires ${requiredPoints}% Arceuus Favour.`);
 		}
 		const inPlace = poh[obj.slot];

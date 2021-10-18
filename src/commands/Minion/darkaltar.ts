@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
-import { findFavour, gotFavour } from '../../lib/minions/data/kourendFavour';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -62,8 +62,8 @@ export default class extends BotCommand {
 				`You can't craft Blood runes at the Dark Altar, because you don't have these required stats: ${neededReqs}.`
 			);
 		}
-		const [haveFavour, requiredPoints] = gotFavour(msg.author, findFavour('Arceuus'), 100);
-		if (!haveFavour)
+		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Arceuus, 100);
+		if (!hasFavour)
 			return msg.channel.send(
 				`Crafting Blood/Soul runes at the Dark Altar requires ${requiredPoints}% Arceuus Favour.`
 			);
