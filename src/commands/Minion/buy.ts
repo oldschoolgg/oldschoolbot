@@ -55,7 +55,7 @@ export default class extends BotCommand {
 			const loot = new Bank().add(kitten.id);
 
 			await msg.author.removeItemsFromBank(cost);
-			await msg.author.addItemsToBank(loot);
+			await msg.author.addItemsToBank(loot, true);
 			return msg.chatHeadImage(
 				'gertrude',
 				`Here's a ${kitten.name}, raise it well and take care of it, please!`,
