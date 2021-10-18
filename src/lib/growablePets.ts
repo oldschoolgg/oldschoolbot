@@ -1,10 +1,11 @@
-import { Time } from 'e';
+import { roll, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { UserSettings } from './settings/types/UserSettings';
 import { ActivityTaskOptions } from './types/minions';
 import { itemNameFromID, randFloat } from './util';
+import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
 export const kittens = resolveItems([
@@ -28,14 +29,27 @@ export const cats = resolveItems([
 interface GrowablePet {
 	growthRate: number;
 	stages: number[];
+	shinyVersion?: number;
+	shinyChance?: number;
 }
 
-export const growablePets: GrowablePet[] = [];
+export const growablePets: GrowablePet[] = [
+	{
+		growthRate: (Time.Hour * 8) / Time.Minute,
+		stages: resolveItems(['Baby raven', 'Raven'])
+	},
+	{
+		growthRate: (Time.Hour * 5) / Time.Minute,
+		stages: resolveItems(['Magic kitten', 'Magic cat'])
+	}
+];
 
 for (let i = 0; i < kittens.length; i++) {
 	growablePets.push({
 		growthRate: (Time.Hour * 3) / Time.Minute,
-		stages: [kittens[i], cats[i]]
+		stages: [kittens[i], cats[i]],
+		shinyChance: 500,
+		shinyVersion: getOSItem('Shiny cat').id
 	});
 }
 
@@ -51,9 +65,18 @@ export async function handleGrowablePetGrowth(
 	if (equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1] === equippedPet) return message;
 	const minutesInThisTrip = data.duration / Time.Minute;
 	if (randFloat(0, equippedGrowablePet.growthRate) <= minutesInThisTrip) {
-		const nextPet = equippedGrowablePet.stages[equippedGrowablePet.stages.indexOf(equippedPet) + 1];
+		let nextPet = equippedGrowablePet.stages[equippedGrowablePet.stages.indexOf(equippedPet) + 1];
+		const isLastPet = nextPet === equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1];
 		if (nextPet === -1) {
 			throw new Error(`${user.username}'s pet[${equippedPet}] has no index in growable pet stages.`);
+		}
+		if (
+			isLastPet &&
+			equippedGrowablePet.shinyChance &&
+			equippedGrowablePet.shinyVersion &&
+			roll(equippedGrowablePet.shinyChance)
+		) {
+			nextPet = equippedGrowablePet.shinyVersion;
 		}
 		await user.settings.update(UserSettings.Minion.EquippedPet, nextPet);
 		await user.addItemsToCollectionLog(new Bank().add(nextPet).bank);

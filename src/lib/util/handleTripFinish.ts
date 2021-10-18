@@ -14,8 +14,8 @@ import { handlePassiveImplings } from '../implings';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { ClientSettings } from '../settings/types/ClientSettings';
-import { RuneTable, SeedTable, WilvusTable, WoodTable } from '../simulation/seedTable';
-import { DougTable } from '../simulation/sharedTables';
+import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
+import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { ActivityTaskOptions } from '../types/minions';
 import {
 	channelIsSendable,
@@ -76,7 +76,7 @@ export async function handleTripFinish(
 	} else if (pet === itemID('Peky')) {
 		for (let i = 0; i < minutes; i++) {
 			if (roll(10)) {
-				bonusLoot.add(SeedTable.roll());
+				bonusLoot.add(PekyTable.roll());
 			}
 		}
 		message += `\n<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${bonusLoot}.`;

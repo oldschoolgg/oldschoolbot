@@ -1,9 +1,10 @@
-import { objectEntries, randArrItem, randInt } from 'e';
+import { objectEntries, randArrItem, randInt, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
+import { kittens } from '../../../lib/growablePets';
 import { bossKillables } from '../../../lib/minions/data/killableMonsters/bosses';
 import AbyssalDragon from '../../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
 import SeaKraken from '../../../lib/minions/data/killableMonsters/custom/SeaKraken';
@@ -12,8 +13,10 @@ import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killabl
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { NewBossOptions } from '../../../lib/types/minions';
-import { updateBankSetting } from '../../../lib/util';
+import { itemNameFromID, updateBankSetting } from '../../../lib/util';
+import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
 
@@ -60,6 +63,15 @@ export default class extends Task {
 
 		if (isDoubleLootActive(this.client, duration)) {
 			loot.multiply(2);
+		}
+
+		let pet = user.settings.get(UserSettings.Minion.EquippedPet);
+		if (pet && kittens.includes(pet) && roll(1)) {
+			await user.settings.update(UserSettings.Minion.EquippedPet, getOSItem('Magic kitten').id);
+			await user.addItemsToCollectionLog(new Bank().add('Magic kitten').bank);
+			resultStr += `\n**Vasa cast a spell on you, but your ${itemNameFromID(
+				pet
+			)} jumped in the way to save you! Strangely, it didn't hurt them at all.**\n`;
 		}
 
 		const xpRes = await addMonsterXP(user, {

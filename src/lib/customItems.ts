@@ -1891,6 +1891,12 @@ setCustomItem(48_310, 'Haunted boots', 'Rune boots', {}, 10_000);
 setCustomItem(48_311, 'Mini Pumpkinhead', 'Herbi', {}, 1_000_000_000);
 setCustomItem(48_312, 'Mysterious token', 'Coal', {}, 1_000_000);
 
+setCustomItem(48_313, 'Baby raven', 'Herbi', {}, 1_000_000);
+setCustomItem(48_314, 'Raven', 'Herbi', {}, 1_000_000);
+setCustomItem(48_315, 'Shiny cat', 'Herbi', {}, 1_000_000);
+setCustomItem(48_316, 'Baby duckling', 'Herbi', {}, 1_000_000);
+setCustomItem(48_317, 'Magic kitten', 'Herbi', {}, 1_000_000);
+setCustomItem(48_318, 'Magic cat', 'Herbi', {}, 1_000_000);
 /**
  * Misc Items
  *
