@@ -12,7 +12,7 @@ const defaultBlowpipe: BlowpipeData = {
 };
 
 Client.defaultUserSchema
-	.add('GP', 'integer', { default: 0 })
+	.add('GP', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('QP', 'integer', { default: 0 })
 	.add('RSN', 'string', { default: null })
 	.add('pets', 'any', { default: {} })
@@ -22,7 +22,7 @@ Client.defaultUserSchema
 	.add('favorite_alchables', 'integer', { array: true, default: [] })
 	.add('favorite_food', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
-	.add('sacrificedValue', 'integer', { default: 0, minimum: 0 })
+	.add('sacrificedValue', 'integer', { default: 0, minimum: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('creatureScores', 'any', { default: {} })

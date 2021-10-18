@@ -191,12 +191,15 @@ export function parseInputBankWithPrice({
 		};
 	}
 
+	const bankParsedFromFlags = parseBankFromFlags({ bank: usersBank, flags, excludeItems });
+	const flagsHaveAnEffectOnBank = bankParsedFromFlags.length !== usersBank.length;
+
 	if (split.length === 1) {
 		const potentialItem = Items.get(firstAsNumber);
 		if (!potentialItem) {
 			return {
-				price: 0,
-				bank: new Bank()
+				price: firstAsNumber,
+				bank: flagsHaveAnEffectOnBank ? bankParsedFromFlags : new Bank()
 			};
 		}
 		return {

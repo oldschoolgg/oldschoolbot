@@ -138,7 +138,7 @@ export default class extends Task {
 				this.client.emit(
 					Events.ServerNotification,
 					`**${user.username}** just received their ${formatOrdinal(
-						user.cl().amount('Jal-nib-rek')
+						user.cl().amount('Jal-nib-rek') + 1
 					)} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(
 						await user.getMinigameScore('Inferno')
 					)} kill!`
@@ -147,7 +147,7 @@ export default class extends Task {
 
 			const cl = user.cl();
 
-			if (baseBank.has('Infernal cape') && cl.amount('Infernal cape') === 1) {
+			if (baseBank.has('Infernal cape') && cl.amount('Infernal cape') === 0) {
 				const usersWithInfernalCape = parseInt(
 					(
 						await this.client.query<any>(
