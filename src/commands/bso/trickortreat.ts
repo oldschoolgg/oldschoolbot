@@ -9,7 +9,7 @@ import { pumpkinHeadUniqueTable } from '../../lib/simulation/pumpkinHead';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { TrickOrTreatOptions } from '../../lib/types/minions';
-import { britishTime, formatDuration, isNightTime } from '../../lib/util';
+import { britishTime, formatDuration, isNightTime, itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 import resolveItems from '../../lib/util/resolveItems';
@@ -148,6 +148,30 @@ export default class extends BotCommand {
 		const bonus = Math.ceil(amountEquipped * 2.5);
 		boosts.push(`${bonus} extra rolls for Scary gear`);
 		rolls += bonus;
+
+		let pheadRolls = 0;
+		for (const item of pumpkinHeadUniqueTable.allItems) {
+			if (setupToUse.hasEquipped(itemNameFromID(item)!)) {
+				pheadRolls += 1;
+			}
+		}
+
+		if (
+			[
+				'Haunted cloak',
+				"Pumpkinhead's headbringer",
+				'Haunted amulet',
+				'Haunted gloves',
+				'Haunted boots',
+				"Pumpkinhead's pumpkin head"
+			].every(i => setupToUse.hasEquipped(i))
+		) {
+			rolls += 12;
+			boosts.push('12 rolls for full Pumpkinhead gear');
+		} else if (pheadRolls > 0) {
+			rolls += pheadRolls;
+			boosts.push(`${pheadRolls} rolls for Pumpkinhead gear`);
+		}
 
 		if (
 			setupToUse.hasEquipped(['Warlock cloak', 'Warlock top', 'Warlock legs'], true) ||
