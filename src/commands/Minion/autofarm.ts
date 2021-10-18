@@ -6,9 +6,10 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcNumOfPatches } from '../../lib/skilling/functions/calcsFarming';
-import { plants } from '../../lib/skilling/skills/farming';
+import Farming, { plants } from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { stringMatches } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -37,7 +38,16 @@ export default class extends BotCommand {
 			const patchData = msg.author.settings.get(getPatchType) ?? defaultPatches;
 			const lastPlantTime: number = patchData.plantTime;
 			const difference = currentDate - lastPlantTime;
-			if (difference < p.growthTime * Time.Minute) return false;
+			const planted =
+				patchData.lastPlanted !== null
+					? Farming.Plants.find(
+							plants =>
+								stringMatches(plants.name, patchData.lastPlanted ?? '') ||
+								stringMatches(plants.name.split(' ')[0], patchData.lastPlanted ?? '')
+					  ) ?? null
+					: null;
+
+			if (planted && difference < planted.growthTime * Time.Minute) return false;
 			const numOfPatches = calcNumOfPatches(p, msg.author, msg.author.settings.get(UserSettings.QP));
 			const reqItems = new Bank(p.inputItems).multiply(numOfPatches);
 			if (!userBank.has(reqItems.bank)) {
