@@ -160,3 +160,15 @@ export interface BlowpipeData {
 	dartQuantity: number;
 	dartID: number | null;
 }
+
+export interface MegaDuckLocation {
+	x: number;
+	y: number;
+	usersParticipated: Record<string, number>;
+}
+
+export const defaultMegaDuckLocation: MegaDuckLocation = {
+	x: 1356,
+	y: 209,
+	usersParticipated: {}
+};
