@@ -194,11 +194,13 @@ export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
 export interface InfernoOptions extends ActivityTaskOptions {
 	zukDeathChance: number;
 	preZukDeathChance: number;
+	emergedZukDeathChance: number;
 	deathTime: number | null;
 	fakeDuration: number;
 	diedZuk: boolean;
 	diedPreZuk: boolean;
 	cost: ItemBank;
+	isEmergedZuk: boolean;
 }
 
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}

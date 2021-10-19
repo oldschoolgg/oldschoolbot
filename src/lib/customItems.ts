@@ -1897,6 +1897,38 @@ setCustomItem(48_315, 'Shiny cat', 'Herbi', {}, 1_000_000);
 setCustomItem(48_316, 'Baby duckling', 'Herbi', {}, 1_000_000);
 setCustomItem(48_317, 'Magic kitten', 'Herbi', {}, 1_000_000);
 setCustomItem(48_318, 'Magic cat', 'Herbi', {}, 1_000_000);
+setCustomItem(48_319, 'Infernal core', 'Coal', {}, 1_000_000);
+setCustomItem(
+	48_320,
+	'Infernal bulwark',
+	"Dinh's bulwark",
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 140,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 129,
+			defence_slash: 135,
+			defence_crush: 129,
+			defence_magic: -19,
+			defence_ranged: 169,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Shield,
+			requirements: {
+				defence: 105,
+				strength: 105
+			}
+		}
+	},
+	50_000_000
+);
 /**
  * Misc Items
  *

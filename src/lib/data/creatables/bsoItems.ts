@@ -643,6 +643,20 @@ const bsoItems: Createable[] = [
 		outputItems: {
 			[itemID('Breadcrumbs')]: 4
 		}
+	},
+	{
+		name: 'Infernal bulwark',
+		inputItems: {
+			[itemID("Dinh's bulwark")]: 1,
+			[itemID('Onyx')]: 5,
+			[itemID('Infernal core')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal bulwark')]: 1
+		},
+		requiredSkills: {
+			smithing: 105
+		}
 	}
 ];
 

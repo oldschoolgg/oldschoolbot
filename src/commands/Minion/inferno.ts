@@ -6,7 +6,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { table } from 'table';
 
 import { production } from '../../config';
-import { Activity, BitField, Emoji, projectiles, ProjectileType } from '../../lib/constants';
+import { Activity, BitField, Emoji, projectiles } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -15,11 +15,19 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { PercentCounter } from '../../lib/structures/PercentCounter';
 import { Skills } from '../../lib/types';
 import { InfernoOptions } from '../../lib/types/minions';
-import { formatDuration, itemNameFromID, percentChance, randomVariation, updateBankSetting } from '../../lib/util';
+import {
+	determineProjectileTypeFromGear,
+	formatDuration,
+	itemNameFromID,
+	percentChance,
+	randomVariation,
+	updateBankSetting
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
+import { gorajanArcherOutfit } from '../../tasks/minions/dungeoneeringActivity';
 import { blowpipeDarts } from './blowpipe';
 
 const minimumRangeItems = [
@@ -127,6 +135,13 @@ export default class extends BotCommand {
 		return Math.max(Math.min(chance, 99), 15);
 	}
 
+	baseEmergedZukDeathChance(_attempts: number) {
+		const attempts = Math.max(1, _attempts);
+		if (attempts < 25) return 99.9999 - attempts / 7.5;
+		const chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(25))) * 39);
+		return Math.max(Math.min(chance, 99), 15);
+	}
+
 	baseDuration(_attempts: number) {
 		const attempts = Math.max(1, Math.min(250, _attempts));
 		let chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(65))) * 45);
@@ -141,7 +156,7 @@ export default class extends BotCommand {
 		let baseZuk = [];
 		let duration = [];
 		for (let i = range[0]; i < range[1]; i++) {
-			const res = await this.infernoRun({ user, attempts: i, timesMadeToZuk: 0 });
+			const res = await this.infernoRun({ user, attempts: i, timesMadeToZuk: 0, emergedAttempts: 0 });
 			if (typeof res === 'string') return res;
 			preZuk.push(res.preZukDeathChance.value);
 			zuk.push(res.zukDeathChance.value);
@@ -250,7 +265,12 @@ export default class extends BotCommand {
 			let timesMadeToZuk = 0;
 
 			for (let o = 0; o < 10_000; o++) {
-				const res = await this.infernoRun({ user: msg.author, attempts: o, timesMadeToZuk });
+				const res = await this.infernoRun({
+					user: msg.author,
+					attempts: o,
+					timesMadeToZuk,
+					emergedAttempts: 0
+				});
 				if (typeof res === 'string') return res;
 				if (!res.diedPreZuk) timesMadeToZuk++;
 				if (!res.deathTime) {
@@ -283,17 +303,20 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 	async infernoRun({
 		user,
 		attempts,
-		timesMadeToZuk
+		timesMadeToZuk,
+		emergedAttempts
 	}: {
 		user: KlasaUser;
 		attempts: number;
 		timesMadeToZuk: number;
+		emergedAttempts: number;
 	}) {
 		const userBank = user.bank();
 
 		const duration = new PercentCounter(this.baseDuration(attempts), 'time');
 		const zukDeathChance = new PercentCounter(this.baseZukDeathChance(attempts), 'percent');
 		const preZukDeathChance = new PercentCounter(this.basePreZukDeathChance(attempts), 'percent');
+		const emergedZukDeathChance = new PercentCounter(this.baseEmergedZukDeathChance(emergedAttempts), 'percent');
 
 		if (!user.settings.get(UserSettings.SacrificedBank)[itemID('Fire cape')]) {
 			return 'To do the Inferno, you must have sacrificed a fire cape.';
@@ -465,7 +488,10 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		if (!projectile) {
 			return 'You have no projectiles equipped in your range setup.';
 		}
-		const projectileType: ProjectileType = rangeGear.equippedWeapon()!.name === 'Twisted bow' ? 'arrow' : 'bolt';
+		const projectileType = determineProjectileTypeFromGear(rangeGear);
+		if (!projectileType) {
+			return "You aren't wearing an appropriate ranged weapon.";
+		}
 		const projectilesForTheirType = projectiles[projectileType];
 		if (!projectilesForTheirType.includes(projectile.item)) {
 			return `You're using incorrect projectiles, you're using a ${
@@ -518,7 +544,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			diedPreZuk,
 			preZukDeathChance,
 			realDuration,
-			cost
+			cost,
+			emergedZukDeathChance
 		};
 	}
 
@@ -566,13 +593,32 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		}
 
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
-		const usersRangeStats = msg.author.getGear('range').stats;
+		const rangeGear = msg.author.getGear('range');
+		const usersRangeStats = rangeGear.stats;
 		const zukKC = await msg.author.getMinigameScore('Inferno');
+
+		const isEmergedZuk = Boolean(msg.flagArgs.emerged);
+		const canDoEmergedZuk =
+			zukKC > 50 &&
+			['Hellfire bow', 'Hellfire arrow', 'Farsight snapshot necklace', ...gorajanArcherOutfit].every(i =>
+				rangeGear.hasEquipped(i)
+			);
+		if (isEmergedZuk && !canDoEmergedZuk) {
+			return msg.channel.send({
+				files: [
+					await chatHeadImage({
+						content: 'You not worthy to fight TzKal-Zuk in his full form.',
+						head: 'ketKeh'
+					})
+				]
+			});
+		}
 
 		const res = await this.infernoRun({
 			user: msg.author,
 			attempts,
-			timesMadeToZuk: await this.timesMadeToZuk(msg.author.id)
+			timesMadeToZuk: await this.timesMadeToZuk(msg.author.id),
+			emergedAttempts: msg.author.settings.get(UserSettings.EmergedInfernoAttempts)
 		});
 
 		if (typeof res === 'string') {
@@ -594,7 +640,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			fakeDuration,
 			preZukDeathChance,
 			cost,
-			realDuration
+			realDuration,
+			emergedZukDeathChance
 		} = res;
 
 		let realCost = new Bank();
@@ -622,11 +669,21 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			fakeDuration,
 			diedPreZuk,
 			diedZuk,
-			cost: realCost.bank
+			cost: realCost.bank,
+			isEmergedZuk,
+			emergedZukDeathChance: emergedZukDeathChance.value
 		});
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.InfernoCost, realCost);
-
+		let emergedZukDeathMsg = isEmergedZuk
+			? `**Emerged Zuk Death Chance:** ${emergedZukDeathChance.value.toFixed(
+					1
+			  )}% ${emergedZukDeathChance.messages.join(', ')} ${
+					emergedZukDeathChance.missed.length === 0
+						? ''
+						: `*(You didn't get these: ||${emergedZukDeathChance.missed.join(', ')}||)*`
+			  }`
+			: '';
 		return msg.channel.send({
 			content: `
 **KC:** ${zukKC}
@@ -647,6 +704,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 					? ''
 					: `*(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*`
 			}
+${emergedZukDeathMsg}
 
 **Items To Be Used:** ${realCost}`,
 			files: [
