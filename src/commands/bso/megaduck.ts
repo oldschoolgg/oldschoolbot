@@ -23,7 +23,8 @@ function locationIsFinished(location: MegaDuckLocation) {
 }
 
 function topFeeders(client: KlasaClient, entries: any[]) {
-	return `Top 10 Feeders: ${entries
+	return `Top 10 Feeders: ${[...entries]
+		.sort((a, b) => b[1] - a[1])
 		.slice(0, 10)
 		.map(ent => `${getUsername(client, ent[0])}. ${ent[1]}`)
 		.join(', ')}`;
