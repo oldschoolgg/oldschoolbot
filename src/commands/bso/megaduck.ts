@@ -7,7 +7,7 @@ import jimp from 'jimp';
 import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { PerkTier } from '../../lib/constants';
+import { Events, PerkTier } from '../../lib/constants';
 import { MegaDuckLocation } from '../../lib/minions/types';
 import { getGuildSettings } from '../../lib/settings/settings';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
@@ -171,6 +171,12 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 					await user.addItemsToBank(loot, true);
 				} catch {}
 			}
+			this.client.emit(
+				Events.ServerNotification,
+				`The ${msg.guild!.name} server just returned Mega Duck into the ocean with Mrs Duck, ${
+					Object.keys(newLocation.usersParticipated).length
+				} users received a Baby duckling pet. ${topFeeders(this.client, entries)}`
+			);
 			return msg.channel.send(
 				`Mega duck has arrived at his destination! ${
 					Object.keys(newLocation.usersParticipated).length
