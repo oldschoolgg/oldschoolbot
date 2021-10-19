@@ -163,6 +163,7 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 
 		await msg.author.removeItemsFromBank(cost);
 		newLocation = { ...defaultMegaDuckLocation, ...newLocation };
+		newLocation.steps.push([newLocation.x, newLocation.y]);
 		await settings.update(GuildSettings.MegaDuckLocation, newLocation);
 		if (
 			!locationIsFinished(location) &&
