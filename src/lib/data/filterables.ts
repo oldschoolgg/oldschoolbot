@@ -440,7 +440,8 @@ const spiritShields = resolveItems([
 	'Blessed spirit shield',
 	'Spectral spirit shield',
 	'Arcane spirit shield',
-	'Elysian spirit shield'
+	'Elysian spirit shield',
+	'Divine spirit shield'
 ]);
 
 const gear = resolveItems([
@@ -564,6 +565,7 @@ const corporealBeast = resolveItems([
 	'Spectral sigil',
 	'Arcane sigil',
 	'Elysian sigil',
+	'Divine sigil',
 	'Spirit shield',
 	'Holy elixir',
 	'Pet dark core',
