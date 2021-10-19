@@ -8,7 +8,7 @@ import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events, PerkTier } from '../../lib/constants';
-import { MegaDuckLocation } from '../../lib/minions/types';
+import { defaultMegaDuckLocation, MegaDuckLocation } from '../../lib/minions/types';
 import { getGuildSettings } from '../../lib/settings/settings';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -137,7 +137,7 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 		const { image } = await this.makeImage(location);
 		if (!direction) {
 			return msg.channel.send({
-				content: `Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
+				content: `${msg.author} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
 					location.usersParticipated[msg.author.id] ?? 0
 				} times. ${topFeeders(this.client, Object.entries(location.usersParticipated))}`,
 				files: [image]
@@ -146,10 +146,10 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 
 		const cost = new Bank().add('Breadcrumbs');
 		if (!msg.author.owns(cost)) {
-			return msg.channel.send("The Mega Duck won't move for you, it wants some food.");
+			return msg.channel.send(`${msg.author} The Mega Duck won't move for you, it wants some food.`);
 		}
 
-		const newLocation = applyDirection(location, direction);
+		let newLocation = applyDirection(location, direction);
 		const newLocationResult = await this.makeImage(newLocation);
 		if (newLocationResult.currentColor[3] !== 0) {
 			return msg.channel.send("You can't move here.");
@@ -162,8 +162,13 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 		}
 
 		await msg.author.removeItemsFromBank(cost);
+		newLocation = { ...defaultMegaDuckLocation, ...newLocation };
 		await settings.update(GuildSettings.MegaDuckLocation, newLocation);
-		if (!locationIsFinished(location) && locationIsFinished(newLocation)) {
+		if (
+			!locationIsFinished(location) &&
+			locationIsFinished(newLocation) &&
+			!newLocation.placesVisited.includes('ocean')
+		) {
 			const loot = new Bank().add('Baby duckling');
 			const entries = Object.entries(newLocation.usersParticipated).sort((a, b) => b[1] - a[1]);
 			for (const [id] of entries) {
@@ -172,6 +177,12 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 					await user.addItemsToBank(loot, true);
 				} catch {}
 			}
+			const newT: MegaDuckLocation = {
+				...newLocation,
+				usersParticipated: {},
+				placesVisited: [...newLocation.placesVisited, 'ocean']
+			};
+			await settings.update(GuildSettings.MegaDuckLocation, newT);
 			this.client.emit(
 				Events.ServerNotification,
 				`The ${msg.guild!.name} server just returned Mega Duck into the ocean with Mrs Duck, ${
@@ -185,7 +196,7 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 			);
 		}
 		return msg.channel.send({
-			content: `You moved Mega Duck ${direction}! You've moved him ${
+			content: `${msg.author} You moved Mega Duck ${direction}! You've moved him ${
 				newLocation.usersParticipated[msg.author.id]
 			} times. Removed ${cost} from your bank.`,
 			files: [newLocationResult.image]
