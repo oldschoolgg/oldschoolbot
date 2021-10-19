@@ -1,11 +1,13 @@
 /* eslint-disable prefer-destructuring */
 import { Image } from 'canvas';
 import { Canvas } from 'canvas-constructor';
+import { MessageAttachment } from 'discord.js';
 import { readFileSync } from 'fs';
 import jimp from 'jimp';
 import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { PerkTier } from '../../lib/constants';
 import { MegaDuckLocation } from '../../lib/minions/types';
 import { getGuildSettings } from '../../lib/settings/settings';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
@@ -54,7 +56,8 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			description: 'Looks up the price of an item using the OSBuddy API.',
 			usage: '[up|down|left|right]',
-			runIn: ['text']
+			runIn: ['text'],
+			aliases: ['md']
 		});
 		this.noMoveImage = canvasImageFromBuffer(_noMoveImage);
 	}
@@ -62,6 +65,24 @@ export default class extends BotCommand {
 	getPixel(x: number, y: number, data: any, width: number) {
 		let i = (width * Math.round(y) + Math.round(x)) * 4;
 		return [data[i], data[i + 1], data[i + 2], data[i + 3]];
+	}
+
+	async makeAllGuildsImage() {
+		const mapImage = await canvasImageFromBuffer(_mapImage);
+
+		const canvas = new Canvas(mapImage.width, mapImage.height);
+		canvas.context.imageSmoothingEnabled = false;
+		canvas.addImage(mapImage as any, 0, 0);
+
+		const locations: { loc: MegaDuckLocation }[] = await this.client.query(`SELECT mega_duck_location as loc
+FROM guilds
+WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
+		for (const { loc } of locations) {
+			canvas.setColor('rgba(255,0,0,0.5)');
+			canvas.addCircle(loc.x, loc.y, 20);
+		}
+
+		return canvas.toBufferAsync();
 	}
 
 	async makeImage(location: MegaDuckLocation) {
@@ -103,6 +124,13 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [direction]: ['up' | 'down' | 'left' | 'right' | undefined]) {
+		if (msg.flagArgs.all && msg.author.perkTier >= PerkTier.Five) {
+			const image = await this.makeAllGuildsImage();
+			return msg.channel.send({
+				files: [new MessageAttachment(image)]
+			});
+		}
+
 		const settings = await getGuildSettings(msg.guild!);
 		const location = settings.get(GuildSettings.MegaDuckLocation);
 		const { image } = await this.makeImage(location);
