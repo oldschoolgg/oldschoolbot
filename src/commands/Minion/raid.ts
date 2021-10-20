@@ -253,7 +253,7 @@ export default class extends BotCommand {
 						', '
 					)}) is now off to do a Chambers of Xeric raid - the total trip will take ${formatDuration(
 					duration
-			  )}."
+			  )}.";
 
 		str += ` \n\n${debugStr}`;
 
