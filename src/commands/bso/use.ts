@@ -91,6 +91,42 @@ const usables = [
 			await msg.author.removeItemsFromBank(new Bank().add('Mysterious token'));
 			return msg.channel.send('You used your Mysterious token... I wonder what will happen?');
 		}
+	},
+	{
+		item: getOSItem('Torn prayer scroll'),
+		run: async (msg: KlasaMessage) => {
+			const bits = msg.author.bitfield;
+			if (bits.includes(BitField.HasTornPrayerScroll)) {
+				return msg.channel.send('You have already used a Torn prayer scroll.');
+			}
+			await msg.author.removeItemsFromBank(new Bank().add('Torn prayer scroll'));
+			await msg.author.settings.update(UserSettings.BitField, BitField.HasTornPrayerScroll);
+			return msg.channel.send('You used your Torn prayer scroll, and unlocked the Preserve prayer.');
+		}
+	},
+	{
+		item: getOSItem('Dexterous prayer scroll'),
+		run: async (msg: KlasaMessage) => {
+			const bits = msg.author.bitfield;
+			if (bits.includes(BitField.HasDexScroll)) {
+				return msg.channel.send('You have already used a Dexterous prayer scroll.');
+			}
+			await msg.author.removeItemsFromBank(new Bank().add('Dexterous prayer scroll'));
+			await msg.author.settings.update(UserSettings.BitField, BitField.HasDexScroll);
+			return msg.channel.send('You used your Dexterous prayer scroll, and unlocked the Rigour prayer.');
+		}
+	},
+	{
+		item: getOSItem('Arcane prayer scroll'),
+		run: async (msg: KlasaMessage) => {
+			const bits = msg.author.bitfield;
+			if (bits.includes(BitField.HasArcaneScroll)) {
+				return msg.channel.send('You have already used a Arcane prayer scroll.');
+			}
+			await msg.author.removeItemsFromBank(new Bank().add('Arcane prayer scroll'));
+			await msg.author.settings.update(UserSettings.BitField, BitField.HasArcaneScroll);
+			return msg.channel.send('You used your Arcane prayer scroll, and unlocked the Augury prayer.');
+		}
 	}
 ];
 
