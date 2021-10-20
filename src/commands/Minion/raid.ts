@@ -134,7 +134,7 @@ export default class extends BotCommand {
 		}
 
 		if (type !== 'mass' && type !== 'solo') {
-			return msg.channel.send("Specify your team setup for Chambers of Xeric, either solo or mass.");
+			return msg.channel.send('Specify your team setup for Chambers of Xeric, either solo or mass.');
 		}
 
 		const isChallengeMode = Boolean(msg.flagArgs.cm);
@@ -148,7 +148,7 @@ export default class extends BotCommand {
 			const normalKC = await msg.author.getMinigameScore('Raids');
 			if (normalKC < 200) {
 				return msg.channel.send(
-					"You need atleast 200 completions of the Chambers of Xeric before you can attempt Challenge Mode."
+					'You need atleast 200 completions of the Chambers of Xeric before you can attempt Challenge Mode.'
 				);
 			}
 		}
@@ -170,7 +170,7 @@ export default class extends BotCommand {
 					return [true, 'your minion is busy.'];
 				}
 				if (!hasMinRaidsRequirements(user)) {
-					return [true, "You don't meet the stat requirements to do the Chambers of Xeric."];
+					return [true, 'You don't meet the stat requirements to do the Chambers of Xeric.'];
 				}
 
 				if (!user.owns(minimumCoxSuppliesNeeded)) {
@@ -182,7 +182,7 @@ export default class extends BotCommand {
 
 				const { total } = calculateUserGearPercents(user);
 				if (total < 20) {
-					return [true, "Your gear is terrible! You do not stand a chance in the Chambers of Xeric"];
+					return [true, 'Your gear is terrible! You do not stand a chance in the Chambers of Xeric'];
 				}
 
 				if (
