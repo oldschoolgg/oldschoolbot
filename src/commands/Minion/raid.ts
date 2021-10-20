@@ -249,8 +249,8 @@ export default class extends BotCommand {
 			  } is now doing a Chambers of Xeric raid. The total trip will take ${formatDuration(duration)}.`
 			: `${partyOptions.leader.username}'s party (${users
 					.map(u => u.username)
-					.join(
-						', '
+						.join(
+							', '
 					)}) is now off to do a Chambers of Xeric raid - the total trip will take ${formatDuration(
 					duration
 			  )}.`;
