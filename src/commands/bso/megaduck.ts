@@ -1,12 +1,14 @@
 /* eslint-disable prefer-destructuring */
 import { Image } from 'canvas';
 import { Canvas } from 'canvas-constructor';
+import { MessageAttachment } from 'discord.js';
 import { readFileSync } from 'fs';
 import jimp from 'jimp';
 import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { MegaDuckLocation } from '../../lib/minions/types';
+import { Events, PerkTier } from '../../lib/constants';
+import { defaultMegaDuckLocation, MegaDuckLocation } from '../../lib/minions/types';
 import { getGuildSettings } from '../../lib/settings/settings';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -21,7 +23,8 @@ function locationIsFinished(location: MegaDuckLocation) {
 }
 
 function topFeeders(client: KlasaClient, entries: any[]) {
-	return `Top 10 Feeders: ${entries
+	return `Top 10 Feeders: ${[...entries]
+		.sort((a, b) => b[1] - a[1])
 		.slice(0, 10)
 		.map(ent => `${getUsername(client, ent[0])}. ${ent[1]}`)
 		.join(', ')}`;
@@ -54,7 +57,8 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			description: 'Looks up the price of an item using the OSBuddy API.',
 			usage: '[up|down|left|right]',
-			runIn: ['text']
+			runIn: ['text'],
+			aliases: ['md']
 		});
 		this.noMoveImage = canvasImageFromBuffer(_noMoveImage);
 	}
@@ -64,8 +68,31 @@ export default class extends BotCommand {
 		return [data[i], data[i + 1], data[i + 2], data[i + 3]];
 	}
 
+	async makeAllGuildsImage() {
+		const mapImage = await canvasImageFromBuffer(_mapImage);
+
+		const canvas = new Canvas(mapImage.width, mapImage.height);
+		canvas.context.imageSmoothingEnabled = false;
+		canvas.addImage(mapImage as any, 0, 0);
+
+		const locations: { loc: MegaDuckLocation; steps: [number, number][] }[] = await this.client
+			.query(`SELECT mega_duck_location as loc
+FROM guilds
+WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
+		for (const { loc } of locations) {
+			canvas.setColor('rgba(255,0,0,0.5)');
+			canvas.addCircle(loc.x, loc.y, 10);
+			canvas.setColor('rgba(0,0,255,0.25)');
+			for (const [x, y] of loc.steps || []) {
+				canvas.addRect(x, y, 1, 1);
+			}
+		}
+
+		return canvas.toBufferAsync();
+	}
+
 	async makeImage(location: MegaDuckLocation) {
-		const { x, y } = location;
+		const { x, y, steps = [] } = location;
 		const mapImage = await canvasImageFromBuffer(_mapImage);
 		const noMoveImage = await this.noMoveImage;
 
@@ -94,6 +121,13 @@ export default class extends BotCommand {
 			noMoveCanvas.canvas.width
 		);
 
+		image.setColor('rgba(0,0,255,0.25)');
+		for (const [_xS, _yS] of steps) {
+			let xS = _xS - x + centerPosition;
+			let yS = _yS - y + centerPosition;
+			image.addRect(xS, yS, 1, 1);
+		}
+
 		const buffer = await image.toBufferAsync();
 
 		return {
@@ -103,12 +137,19 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [direction]: ['up' | 'down' | 'left' | 'right' | undefined]) {
+		if (msg.flagArgs.all && msg.author.perkTier >= PerkTier.Five) {
+			const image = await this.makeAllGuildsImage();
+			return msg.channel.send({
+				files: [new MessageAttachment(image)]
+			});
+		}
+
 		const settings = await getGuildSettings(msg.guild!);
 		const location = settings.get(GuildSettings.MegaDuckLocation);
 		const { image } = await this.makeImage(location);
 		if (!direction) {
 			return msg.channel.send({
-				content: `Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
+				content: `${msg.author} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
 					location.usersParticipated[msg.author.id] ?? 0
 				} times. ${topFeeders(this.client, Object.entries(location.usersParticipated))}`,
 				files: [image]
@@ -117,10 +158,10 @@ export default class extends BotCommand {
 
 		const cost = new Bank().add('Breadcrumbs');
 		if (!msg.author.owns(cost)) {
-			return msg.channel.send("The Mega Duck won't move for you, it wants some food.");
+			return msg.channel.send(`${msg.author} The Mega Duck won't move for you, it wants some food.`);
 		}
 
-		const newLocation = applyDirection(location, direction);
+		let newLocation = applyDirection(location, direction);
 		const newLocationResult = await this.makeImage(newLocation);
 		if (newLocationResult.currentColor[3] !== 0) {
 			return msg.channel.send("You can't move here.");
@@ -133,8 +174,14 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemsFromBank(cost);
+		newLocation = { ...defaultMegaDuckLocation, ...newLocation };
+		newLocation.steps.push([newLocation.x, newLocation.y]);
 		await settings.update(GuildSettings.MegaDuckLocation, newLocation);
-		if (!locationIsFinished(location) && locationIsFinished(newLocation)) {
+		if (
+			!locationIsFinished(location) &&
+			locationIsFinished(newLocation) &&
+			!newLocation.placesVisited.includes('ocean')
+		) {
 			const loot = new Bank().add('Baby duckling');
 			const entries = Object.entries(newLocation.usersParticipated).sort((a, b) => b[1] - a[1]);
 			for (const [id] of entries) {
@@ -143,6 +190,18 @@ export default class extends BotCommand {
 					await user.addItemsToBank(loot, true);
 				} catch {}
 			}
+			const newT: MegaDuckLocation = {
+				...newLocation,
+				usersParticipated: {},
+				placesVisited: [...newLocation.placesVisited, 'ocean']
+			};
+			await settings.update(GuildSettings.MegaDuckLocation, newT);
+			this.client.emit(
+				Events.ServerNotification,
+				`The ${msg.guild!.name} server just returned Mega Duck into the ocean with Mrs Duck, ${
+					Object.keys(newLocation.usersParticipated).length
+				} users received a Baby duckling pet. ${topFeeders(this.client, entries)}`
+			);
 			return msg.channel.send(
 				`Mega duck has arrived at his destination! ${
 					Object.keys(newLocation.usersParticipated).length
@@ -150,10 +209,10 @@ export default class extends BotCommand {
 			);
 		}
 		return msg.channel.send({
-			content: `You moved Mega Duck ${direction}! You've moved him ${
+			content: `${msg.author} You moved Mega Duck ${direction}! You've moved him ${
 				newLocation.usersParticipated[msg.author.id]
 			} times. Removed ${cost} from your bank.`,
-			files: [newLocationResult.image]
+			files: location.steps.length % 2 === 0 ? [newLocationResult.image] : []
 		});
 	}
 }
