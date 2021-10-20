@@ -247,13 +247,13 @@ export default class extends BotCommand {
 			? `${
 					msg.author.minionName
 			  } is now doing a Chambers of Xeric raid. The total trip will take ${formatDuration(duration)}.`
-			: "${partyOptions.leader.username}'s party (${users
+			: `${partyOptions.leader.username}'s party (${users
 					.map(u => u.username)
 					.join(
 						', '
 					)}) is now off to do a Chambers of Xeric raid - the total trip will take ${formatDuration(
 					duration
-			  )}.";
+			  )}.`;
 
 		str += ` \n\n${debugStr}`;
 
