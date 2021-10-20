@@ -51,7 +51,7 @@ export default class MinionCommand extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|ironman] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|ironman|opens] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			requiredPermissions: ['EMBED_LINKS']
@@ -402,5 +402,10 @@ Please click the buttons below for important links.`
 	@minionNotBusy
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
 		runCommand(msg, 'k', [quantity, name]);
+	}
+
+	async opens(msg: KlasaMessage) {
+		const openableScores = new Bank(msg.author.settings.get(UserSettings.OpenableScores));
+		return msg.channel.send(`You've opened... ${openableScores}`);
 	}
 }

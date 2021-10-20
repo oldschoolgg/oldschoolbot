@@ -3,7 +3,7 @@ import { objectKeys } from 'e';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
@@ -355,7 +355,16 @@ export default class BankImageTask extends Task {
 
 		// Paging
 		if (typeof page === 'number' && !flags.full) {
-			const pageLoot = chunked[page];
+			let pageLoot = chunked[page];
+			let asItem = Items.get(page + 1);
+			if (asItem && !pageLoot) {
+				const amount = bank.amount(asItem.id);
+				if (!amount) {
+					throw `You have no ${asItem.name}.`;
+				}
+				pageLoot = [[asItem, amount]];
+			}
+
 			if (!pageLoot) throw 'You have no items on this page.';
 			items = pageLoot;
 		}
