@@ -75,19 +75,24 @@ export default class extends BotCommand {
 		canvas.context.imageSmoothingEnabled = false;
 		canvas.addImage(mapImage as any, 0, 0);
 
-		const locations: { loc: MegaDuckLocation }[] = await this.client.query(`SELECT mega_duck_location as loc
+		const locations: { loc: MegaDuckLocation; steps: [number, number][] }[] = await this.client
+			.query(`SELECT mega_duck_location as loc
 FROM guilds
 WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 		for (const { loc } of locations) {
 			canvas.setColor('rgba(255,0,0,0.5)');
-			canvas.addCircle(loc.x, loc.y, 20);
+			canvas.addCircle(loc.x, loc.y, 10);
+			canvas.setColor('rgba(0,0,255,0.25)');
+			for (const [x, y] of loc.steps || []) {
+				canvas.addRect(x, y, 1, 1);
+			}
 		}
 
 		return canvas.toBufferAsync();
 	}
 
 	async makeImage(location: MegaDuckLocation) {
-		const { x, y } = location;
+		const { x, y, steps = [] } = location;
 		const mapImage = await canvasImageFromBuffer(_mapImage);
 		const noMoveImage = await this.noMoveImage;
 
@@ -115,6 +120,13 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 			noMoveCanvas.context.getImageData(0, 0, noMoveCanvas.canvas.width, noMoveCanvas.canvas.height).data,
 			noMoveCanvas.canvas.width
 		);
+
+		image.setColor('rgba(0,0,255,0.25)');
+		for (const [_xS, _yS] of steps) {
+			let xS = _xS - x + centerPosition;
+			let yS = _yS - y + centerPosition;
+			image.addRect(xS, yS, 1, 1);
+		}
 
 		const buffer = await image.toBufferAsync();
 
