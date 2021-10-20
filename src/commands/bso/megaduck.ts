@@ -212,7 +212,7 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 			content: `${msg.author} You moved Mega Duck ${direction}! You've moved him ${
 				newLocation.usersParticipated[msg.author.id]
 			} times. Removed ${cost} from your bank.`,
-			files: [newLocationResult.image]
+			files: location.steps.length % 2 === 0 ? [newLocationResult.image] : []
 		});
 	}
 }
