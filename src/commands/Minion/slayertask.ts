@@ -3,6 +3,7 @@ import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
+import { SILENT_ERROR } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -18,7 +19,7 @@ import {
 } from '../../lib/slayer/slayerUtil';
 import { AssignableSlayerTask } from '../../lib/slayer/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { stringMatches } from '../../lib/util';
+import { runCommand, stringMatches } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
 
 const returnSuccessButtons = [
@@ -103,11 +104,7 @@ export default class extends BotCommand {
 	public async returnSuccess(msg: KlasaMessage, message: string, autoslay: boolean) {
 		if (autoslay) {
 			await msg.channel.send(message);
-			try {
-				return this.client.commands.get('autoslay')!.run(msg, ['']);
-			} catch (e) {
-				return msg.channel.send('It was not possible to auto-slay this task. Please, try again.');
-			}
+			return runCommand(msg, 'autoslay', ['']);
 		}
 		const sentMessage = await msg.channel.send({ content: message, components: returnSuccessButtons });
 		try {
@@ -123,27 +120,36 @@ export default class extends BotCommand {
 			});
 			switch (selection.customID) {
 				case 'assaved': {
-					return this.client.commands.get('autoslay')!.run(msg, ['']);
+					await runCommand(msg, 'autoslay', ['']);
+					return;
 				}
 				case 'asdef': {
-					return this.client.commands.get('autoslay')!.run(msg, ['default']);
+					await runCommand(msg, 'autoslay', ['default']);
+					return;
 				}
 				case 'asehp': {
-					return this.client.commands.get('autoslay')!.run(msg, ['ehp']);
+					await runCommand(msg, 'autoslay', ['ehp']);
+					return;
 				}
 				case 'asboss': {
-					return this.client.commands.get('autoslay')!.run(msg, ['boss']);
+					await runCommand(msg, 'autoslay', ['boss']);
+					return;
 				}
 				case 'skip': {
 					msg.flagArgs.new = 'yes';
-					return this.client.commands.get('slayertask')!.run(msg, ['skip']);
+					await runCommand(msg, 'slayertask', ['skip']);
+					return;
 				}
 				case 'block': {
 					msg.flagArgs.new = 'yes';
-					return this.client.commands.get('slayertask')!.run(msg, ['block']);
+					await runCommand(msg, 'slayertask', ['block']);
+					return;
 				}
 			}
-		} catch {
+		} catch (err: unknown) {
+			const error = err as Error;
+			if (error.message === SILENT_ERROR) return;
+			throw err;
 		} finally {
 			await sentMessage.edit({ components: [] });
 		}
@@ -384,7 +390,7 @@ You've done ${totalTasksDone} tasks. Your current streak is ${msg.author.setting
 		if (commonName === 'TzHaar') {
 			returnMessage = 'Ah... Tzhaar... ';
 			commonName +=
-				`. You can choose to kill TzTok-Jad with ${msg.cmdPrefix}fightcaves as long as you ` +
+				`. You can choose to kill TzTok-Jad with \`${msg.cmdPrefix}fightcaves\`, or TzKal-Zuk with \`${msg.cmdPrefix}inferno start\` as long as you ` +
 				"don't kill any regular TzHaar first.";
 		}
 

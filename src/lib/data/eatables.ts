@@ -1,9 +1,13 @@
+import { KlasaUser } from 'klasa';
+
+import { SkillsEnum } from '../skilling/types';
 import itemID from '../util/itemID';
 
 export interface Eatable {
 	name: string;
 	id: number;
-	healAmount: number;
+	healAmount: ((user: KlasaUser) => number) | number;
+	pvmBoost?: number;
 }
 
 export const Eatables: readonly Eatable[] = [
@@ -60,7 +64,8 @@ export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Jug of wine',
 		id: itemID('Jug of wine'),
-		healAmount: 11
+		healAmount: 11,
+		pvmBoost: -10
 	},
 	{
 		name: 'Stew',
@@ -98,9 +103,19 @@ export const Eatables: readonly Eatable[] = [
 		healAmount: 14
 	},
 	{
+		name: 'Chilli potato',
+		id: itemID('Chilli potato'),
+		healAmount: 14
+	},
+	{
 		name: 'Chocolate cake',
 		id: itemID('Chocolate cake'),
 		healAmount: 15
+	},
+	{
+		name: 'Egg potato',
+		id: itemID('Egg potato'),
+		healAmount: 16
 	},
 	{
 		name: 'Potato with cheese',
@@ -115,7 +130,8 @@ export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Monkfish',
 		id: itemID('Monkfish'),
-		healAmount: 16
+		healAmount: 16,
+		pvmBoost: 1
 	},
 	{
 		name: 'Anchovy pizza',
@@ -145,12 +161,14 @@ export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Shark',
 		id: itemID('Shark'),
-		healAmount: 20
+		healAmount: 20,
+		pvmBoost: 2
 	},
 	{
 		name: 'Sea turtle',
 		id: itemID('Sea turtle'),
-		healAmount: 21
+		healAmount: 21,
+		pvmBoost: 2
 	},
 	{
 		name: 'Pineapple pizza',
@@ -165,7 +183,8 @@ export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Manta ray',
 		id: itemID('Manta ray'),
-		healAmount: 22
+		healAmount: 22,
+		pvmBoost: 3
 	},
 	{
 		name: 'Tuna potato',
@@ -173,18 +192,25 @@ export const Eatables: readonly Eatable[] = [
 		healAmount: 22
 	},
 	{
-		name: 'Chilli potato',
-		id: itemID('Chilli potato'),
-		healAmount: 14
-	},
-	{
-		name: 'Egg potato',
-		id: itemID('Egg potato'),
-		healAmount: 16
-	},
-	{
 		name: 'Dark crab',
 		id: itemID('Dark crab'),
-		healAmount: 22
+		healAmount: 22,
+		pvmBoost: 3
+	},
+	{
+		name: 'Anglerfish',
+		id: itemID('Anglerfish'),
+		healAmount: (user: KlasaUser) => {
+			const hp = user.skillLevel(SkillsEnum.Hitpoints);
+			let c = 2;
+			if (hp > 10) c = 2;
+			if (hp > 25) c = 4;
+			if (hp > 50) c = 6;
+			if (hp > 75) c = 8;
+			if (hp > 93) c = 13;
+
+			return hp * (1 / 10) + c;
+		},
+		pvmBoost: 4
 	}
 ];

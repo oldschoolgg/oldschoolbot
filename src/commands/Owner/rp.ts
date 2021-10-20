@@ -2,8 +2,10 @@ import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
+import { Items } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
-import { badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
+import { badges, BitField, BitFieldData, Channel, Emoji, Roles, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { evalMathExpression } from '../../lib/expressionParser';
 import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
@@ -11,10 +13,45 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
-import { asyncExec, cleanString, formatDuration, getSupportGuild, itemNameFromID } from '../../lib/util';
+import { asyncExec, cleanString, formatDuration, getSupportGuild, getUsername, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
+
+function itemSearch(msg: KlasaMessage, name: string) {
+	const items = Items.filter(i => {
+		if (msg.flagArgs.includes) {
+			return i.name.toLowerCase().includes(name.toLowerCase());
+		}
+		return i.name.toLowerCase() === name.toLowerCase();
+	}).array();
+	if (items.length === 0) return msg.channel.send('No results for that item.');
+
+	const gettedItem = Items.get(name);
+
+	if (msg.flagArgs.raw) {
+		return msg.channel.send(`\`\`\`\n${JSON.stringify(gettedItem, null, 4)}\n\`\`\``);
+	}
+
+	let str = `Found ${items.length} items:\n${(items as Item[])
+		.slice(0, 5)
+		.map(
+			(item, index) => `${gettedItem!.id === item.id ? '**' : ''}
+${index + 1}. ${item.name}[${item.id}] Price[${item.price}] ${
+				item.tradeable_on_ge ? 'GE_Tradeable' : 'Not_GE_Tradeable'
+			} ${item.tradeable ? 'Tradeable' : 'Not_Tradeable'} ${item.incomplete ? 'Incomplete' : 'Not_Incomplete'} ${
+				item.duplicate ? 'Duplicate' : 'Not_Duplicate'
+			}${gettedItem!.id === item.id ? '**' : ''} <${item.wiki_url}>`
+		)
+		.join('\n')}`;
+
+	if (items.length > 5) {
+		str += `\n...and ${items.length - 5} others`;
+	}
+
+	return msg.channel.send(str);
+}
 
 export const emoji = (client: KlasaClient) => getSupportGuild(client).emojis.cache.random().toString();
 
@@ -35,15 +72,34 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			enabled: true,
 			runIn: ['text'],
-			usage: '<cmd:str> [user:user|str:...str] [str:...str]',
+			usage: '<cmd:str> [user:user|str:...str] [user:user|str:...str]',
 			usageDelim: ' '
 		});
 	}
 
-	async run(msg: KlasaMessage, [cmd, input, str]: [string, KlasaUser | string | undefined, string | undefined]) {
+	async run(
+		msg: KlasaMessage,
+		[cmd, input, str]: [string, KlasaUser | string | undefined, KlasaUser | string | undefined]
+	) {
 		if (msg.guild!.id !== SupportServer) return null;
 
 		switch (cmd.toLowerCase()) {
+			case 'itemsearch':
+			case 'is': {
+				if (typeof input !== 'string') return;
+				return itemSearch(msg, input);
+			}
+			case 'pingtesters': {
+				if (
+					!msg.guild ||
+					msg.channel.id !== Channel.TestingMain ||
+					!msg.member ||
+					(!msg.member.roles.cache.has(Roles.Moderator) && !msg.member.roles.cache.has(Roles.Contributor))
+				) {
+					return;
+				}
+				return msg.channel.send(`<@&${Roles.Testers}>`);
+			}
 			case 'git': {
 				try {
 					const currentCommit = await asyncExec('git log --pretty=oneline -1', {
@@ -119,6 +175,53 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
+			case 'addimalt': {
+				if (!input || !(input instanceof KlasaUser)) return;
+				if (!str || !(str instanceof KlasaUser)) return;
+
+				const mainAccount = input;
+				const altAccount = str;
+				if (mainAccount === altAccount) {
+					return msg.channel.send("They're they same account.");
+				}
+				if (mainAccount.isIronman) {
+					return msg.channel.send(`${mainAccount.username} is an ironman.`);
+				}
+				if (!altAccount.isIronman) {
+					return msg.channel.send(`${altAccount.username} is not an ironman.`);
+				}
+				if (!altAccount.bitfield.includes(BitField.PermanentIronman)) {
+					return msg.channel.send(`${altAccount.username} is not a *permanent* ironman.`);
+				}
+
+				await mainAccount.settings.sync(true);
+				await altAccount.settings.sync(true);
+				const peopleWithThisAltAlready = (
+					await this.client.query<any>(`SELECT id FROM users WHERE '${altAccount.id}' = ANY(ironman_alts);`)
+				).length;
+				if (peopleWithThisAltAlready > 0) {
+					return msg.channel.send(`Someone already has ${altAccount.username} as an ironman alt.`);
+				}
+				if (mainAccount.settings.get(UserSettings.MainAccount)) {
+					return msg.channel.send(`${mainAccount.username} has a main account connected already.`);
+				}
+				if (altAccount.settings.get(UserSettings.MainAccount)) {
+					return msg.channel.send(`${altAccount.username} has a main account connected already.`);
+				}
+				const mainAccountsAlts = mainAccount.settings.get(UserSettings.IronmanAlts);
+				if (mainAccountsAlts.includes(altAccount.id)) {
+					return msg.channel.send(`${mainAccount.username} already has ${altAccount.username} as an alt.`);
+				}
+
+				await msg.confirm(
+					`Are you sure that \`${altAccount.username}\` is the alt account of \`${mainAccount.username}\`?`
+				);
+				await mainAccount.settings.update(UserSettings.IronmanAlts, altAccount.id);
+				await altAccount.settings.update(UserSettings.MainAccount, mainAccount.id);
+				return msg.channel.send(
+					`You set \`${altAccount.username}\` as the alt account of \`${mainAccount.username}\`.`
+				);
+			}
 			case 'setprice': {
 				if (typeof input !== 'string') return;
 				const [itemName, rawPrice] = input.split(',');
@@ -196,8 +299,10 @@ ${
 
 				const userBadges = input.settings.get(UserSettings.Badges).map(i => badges[i]);
 				const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(input.id);
+
 				return msg.channel.send(
 					`**${input.username}**
+**Perk Tier:** ${getUsersPerkTier(input)}
 **Bitfields:** ${bitfields}
 **Badges:** ${userBadges}
 **Current Task:** ${taskText}
@@ -207,6 +312,18 @@ ${
 						input.settings.get(UserSettings.GithubID) ?? 'None'
 					}
 **Ironman:** ${input.isIronman ? 'Yes' : 'No'}
+
+**Main Account:** ${
+						input.settings.get(UserSettings.MainAccount) !== null
+							? `${getUsername(
+									this.client,
+									input.settings.get(UserSettings.MainAccount)!
+							  )}[${input.settings.get(UserSettings.MainAccount)}]`
+							: 'None'
+					}
+**Ironman Alt Accounts:** ${input.settings
+						.get(UserSettings.IronmanAlts)
+						.map(id => `${getUsername(this.client, id)}[${id}]`)}
 `
 				);
 			}
@@ -217,8 +334,15 @@ ${
 			}
 			case 'roles': {
 				msg.channel.send('Running roles task...');
-				const result = await this.client.tasks.get('roles')?.run();
-				return msg.channel.send(result as string);
+				try {
+					const result = (await this.client.tasks.get('roles')?.run()) as string;
+					return sendToChannelID(this.client, msg.channel.id, {
+						content: result.slice(0, 2500)
+					});
+				} catch (err) {
+					console.error(err);
+					return msg.channel.send(`Failed to run roles task. ${err.message}`);
+				}
 			}
 			case 'canceltask': {
 				if (!input || !(input instanceof KlasaUser)) return;
@@ -231,7 +355,7 @@ ${
 			}
 			case 'setgh': {
 				if (!input || !(input instanceof KlasaUser)) return;
-				if (!str) return;
+				if (!str || typeof str !== 'string') return;
 				const res = await fetch(`https://api.github.com/users/${encodeURIComponent(str)}`)
 					.then(res => res.json())
 					.catch(() => null);
@@ -268,7 +392,7 @@ ${
 			}
 
 			case 'bf': {
-				if (!input || !str || !(input instanceof KlasaUser)) {
+				if (!input || !str || !(input instanceof KlasaUser) || typeof str !== 'string') {
 					return msg.channel.send(
 						Object.entries(BitFieldData)
 							.map(entry => `**${entry[0]}:** ${entry[1]?.name}`)
@@ -313,7 +437,7 @@ ${
 			}
 
 			case 'badges': {
-				if (!input || !str || !(input instanceof KlasaUser)) {
+				if (!input || !str || !(input instanceof KlasaUser) || typeof str !== 'string') {
 					return msg.channel.send(
 						Object.entries(badges)
 							.map(entry => `**${entry[1]}:** ${entry[0]}`)
@@ -399,6 +523,12 @@ LIMIT 10;
 				return msg.channel.send({
 					files: [new MessageAttachment(Buffer.from(JSON.stringify(result, null, 4)), 'patreon.txt')]
 				});
+			}
+			case 'bankimage':
+			case 'bi': {
+				if (typeof input !== 'string') return;
+				const bank = JSON.parse(input.replace(/'/g, '"'));
+				return msg.channel.sendBankImage({ bank });
 			}
 		}
 	}

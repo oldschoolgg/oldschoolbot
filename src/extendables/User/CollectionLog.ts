@@ -19,6 +19,10 @@ export default class extends Extendable {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
+	public cl(this: User) {
+		return new Bank(this.settings.get(UserSettings.CollectionLogBank));
+	}
+
 	// @ts-ignore 2784
 	public completion(this: User) {
 		const clItems = Object.keys(this.settings.get(UserSettings.CollectionLogBank)).map(i => parseInt(i));
@@ -35,10 +39,6 @@ export default class extends Extendable {
 			owned,
 			debugBank
 		};
-	}
-
-	public cl(this: User) {
-		return new Bank(this.settings.get(UserSettings.CollectionLogBank));
 	}
 
 	public async addItemsToCollectionLog(this: User, items: ItemBank) {

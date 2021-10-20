@@ -42,7 +42,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.Vorkath.id,
 		name: Monsters.Vorkath.name,
 		aliases: Monsters.Vorkath.aliases,
-		timeToFinish: Time.Minute * 3.5,
+		timeToFinish: Time.Minute * 3.85,
 		table: Monsters.Vorkath,
 		emoji: '<:Vorki:400713309252222977>',
 		wildy: false,
@@ -62,8 +62,8 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Dragon hunter crossbow')]: 25
 			},
 			{
-				[itemID('Salve amulet(ei)')]: 11,
-				[itemID('Salve amulet(i)')]: 8
+				[itemID('Salve amulet(ei)')]: 20,
+				[itemID('Salve amulet(i)')]: 16
 			}
 		],
 		levelRequirements: {
@@ -260,7 +260,9 @@ const killableBosses: KillableMonster[] = [
 		slayerOnly: true,
 		defaultAttackStyles: [SkillsEnum.Strength],
 		combatXpMultiplier: 1.15,
-		healAmountNeeded: 20 * 7
+		healAmountNeeded: 20 * 15,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.KingBlackDragon.id,

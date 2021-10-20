@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
+import { Activity } from './constants';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import activityInArea, { WorldLocations } from './util/activityInArea';
@@ -51,11 +52,12 @@ const defaultImpTable = new LootTable()
 	.add('Lucky impling jar', 1, 1);
 
 const implingTableByWorldLocation = {
-	[WorldLocations.Priffdinas]: new LootTable({ limit: 142 }).add('Crystal impling jar', 1, 1),
-	[WorldLocations.World]: new LootTable().oneIn(68, defaultImpTable)
+	[WorldLocations.Priffdinas]: new LootTable({ limit: 155 }).add('Crystal impling jar', 1, 1),
+	[WorldLocations.World]: new LootTable().oneIn(85, defaultImpTable)
 };
 
 export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
+	if ([Activity.FightCaves, Activity.Inferno].includes(data.type)) return null;
 	const minutes = Math.floor(data.duration / Time.Minute);
 
 	if (minutes < 4) return null;

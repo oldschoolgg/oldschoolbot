@@ -1,3 +1,4 @@
+import { MessageAttachment } from 'discord.js';
 import { noOp, shuffleArr } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -15,8 +16,9 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import resolveItems from '../../../lib/util/resolveItems';
 import { sendToChannelID } from '../../../lib/util/webhook';
+import BankImageTask from '../../bankImage';
 
-const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic']);
+const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
 const blueItems = resolveItems(['Metamorphic dust']);
 const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
@@ -27,6 +29,7 @@ export default class extends Task {
 	async run(data: RaidsOptions) {
 		const { channelID, users, challengeMode, duration, leader } = data;
 		const allUsers = await Promise.all(users.map(async u => this.client.fetchUser(u)));
+		const leaderUser = allUsers.find(u => u.id === leader)!;
 		const team = await createTeam(allUsers, challengeMode);
 
 		const loot = ChambersOfXeric.complete({
@@ -134,7 +137,18 @@ export default class extends Task {
 					allUsers[0].log('continued trip of solo CoX');
 					return this.client.commands.get('raid')!.run(res, ['solo']);
 				},
-				undefined,
+				new MessageAttachment(
+					(
+						await (this.client.tasks.get('bankImage') as BankImageTask).generateBankImage(
+							loot[leaderUser.id],
+							`${leaderUser.username}'s Raids Loot'`,
+							false,
+							{},
+							leaderUser,
+							leaderUser.cl().bank
+						)
+					).image!
+				),
 				data,
 				null
 			);

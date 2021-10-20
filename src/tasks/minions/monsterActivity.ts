@@ -10,7 +10,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { roll, runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -64,7 +64,7 @@ export default class extends Task {
 			duration,
 			isOnTask,
 			taskQuantity: quantitySlayed,
-			minimal: false,
+			minimal: true,
 			usingCannon,
 			cannonMulti,
 			burstOrBarrage,
@@ -117,7 +117,7 @@ export default class extends Task {
 				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
 				if (usersTask.assignedTask?.isBoss) {
-					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5000 })}`;
+					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5000, minimal: true })}`;
 					str += ' for completing your boss task.';
 				}
 			} else {
@@ -155,7 +155,7 @@ export default class extends Task {
 						if (usingCannon) method = 'cannon';
 						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
 						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
-						return this.client.commands.get('k')!.run(res, [quantity, monster.name, method]);
+						return runCommand(res, 'k', [quantity, monster.name, method]);
 				  },
 			image!,
 			data,
