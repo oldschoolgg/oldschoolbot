@@ -22,7 +22,7 @@ export default class extends Task {
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Castle wars ticket', ticketTable.roll().item);
 		}
-		let boosts: String[] = [];
+		let boosts = [];
 		if (user.usingPet('Flappy')) {
 			boosts.push('2x tickets for playing with Flappy.');
 			loot.multiply(2);
