@@ -97,7 +97,7 @@ export default class extends BotCommand {
 			const normalTeam = await calcCoxDuration(Array(2).fill(msg.author), false);
 			const cmSolo = await calcCoxDuration([msg.author], true);
 			const cmTeam = await calcCoxDuration(Array(2).fill(msg.author), true);
-			return msg.channel.send(`<:Twisted_bow:403018312402862081> Chamber's of Xeric <:Olmlet:324127376873357316>
+			return msg.channel.send(`<:Twisted_bow:403018312402862081> Chambers of Xeric <:Olmlet:324127376873357316>
 **Normal:** ${normal} KC (Solo ${Emoji.CombatSword} ${calcWhatPercent(
 				normalSolo.reductions[msg.author.id],
 				normalSolo.totalReduction
@@ -134,7 +134,7 @@ export default class extends BotCommand {
 		}
 
 		if (type !== 'mass' && type !== 'solo') {
-			return msg.channel.send("Specify your team setup for Chamber's of Xeric, either solo or mass.");
+			return msg.channel.send("Specify your team setup for Chambers of Xeric, either solo or mass.");
 		}
 
 		const isChallengeMode = Boolean(msg.flagArgs.cm);
@@ -148,7 +148,7 @@ export default class extends BotCommand {
 			const normalKC = await msg.author.getMinigameScore('Raids');
 			if (normalKC < 200) {
 				return msg.channel.send(
-					"You need atleast 200 completions of the Chamber's of Xeric before you can attempt Challenge Mode."
+					"You need atleast 200 completions of the Chambers of Xeric before you can attempt Challenge Mode."
 				);
 			}
 		}
@@ -161,7 +161,7 @@ export default class extends BotCommand {
 			minSize: 2,
 			maxSize: 15,
 			ironmanAllowed: true,
-			message: `${msg.author.username} is hosting a Chamber's of Xeric mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+			message: `${msg.author.username} is hosting a Chambers of Xeric mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
@@ -170,7 +170,7 @@ export default class extends BotCommand {
 					return [true, 'your minion is busy.'];
 				}
 				if (!hasMinRaidsRequirements(user)) {
-					return [true, "You don't meet the stat requirements to do the Chamber's of Xeric."];
+					return [true, "You don't meet the stat requirements to do the Chambers of Xeric."];
 				}
 
 				if (!user.owns(minimumCoxSuppliesNeeded)) {
@@ -182,7 +182,7 @@ export default class extends BotCommand {
 
 				const { total } = calculateUserGearPercents(user);
 				if (total < 20) {
-					return [true, "Your gear is terrible! You do not stand a chance in the Chamber's of Xeric"];
+					return [true, "Your gear is terrible! You do not stand a chance in the Chambers of Xeric"];
 				}
 
 				if (
@@ -246,12 +246,12 @@ export default class extends BotCommand {
 		let str = isSolo
 			? `${
 					msg.author.minionName
-			  } is now doing a Chamber's of Xeric raid. The total trip will take ${formatDuration(duration)}.`
+			  } is now doing a Chambers of Xeric raid. The total trip will take ${formatDuration(duration)}.`
 			: `${partyOptions.leader.username}'s party (${users
 					.map(u => u.username)
 					.join(
 						', '
-					)}) is now off to do a Chamber's of Xeric raid - the total trip will take ${formatDuration(
+					)}) is now off to do a Chambers of Xeric raid - the total trip will take ${formatDuration(
 					duration
 			  )}.`;
 
