@@ -199,6 +199,7 @@ export interface InfernoOptions extends ActivityTaskOptions {
 	fakeDuration: number;
 	diedZuk: boolean;
 	diedPreZuk: boolean;
+	diedEmergedZuk: boolean;
 	cost: ItemBank;
 	isEmergedZuk: boolean;
 }

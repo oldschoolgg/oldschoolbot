@@ -641,6 +641,6 @@ export function getScaryFoodFromBank(userBank: Bank, totalHealingNeeded: number)
 }
 export type ProjectileType = 'arrow' | 'bolt';
 export const projectiles: Record<ProjectileType, number[]> = {
-	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
+	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow', 'Hellfire arrow']),
 	bolt: resolveItems(['Runite bolts', 'Dragon bolts', 'Diamond bolts (e)', 'Diamond dragon bolts (e)'])
 };

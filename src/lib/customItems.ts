@@ -1920,7 +1920,7 @@ setCustomItem(
 			ranged_strength: 0,
 			magic_damage: 0,
 			prayer: 1,
-			slot: EquipmentSlot.Shield,
+			slot: EquipmentSlot.TwoHanded,
 			requirements: {
 				defence: 105,
 				strength: 105
@@ -1929,6 +1929,10 @@ setCustomItem(
 	},
 	50_000_000
 );
+setCustomItem(48_321, 'Head of TzKal Zuk', 'Coal', {}, 10_000_000);
+setCustomItem(48_322, 'Tzkal cape', 'Coal', {}, 10_000_000);
+setCustomItem(48_323, 'Tzkal slayer helm', 'Coal', {}, 10_000_000);
+
 /**
  * Misc Items
  *
