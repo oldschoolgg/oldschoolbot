@@ -1709,7 +1709,11 @@ export const holidayCL = resolveItems([
 	'Chicken head',
 	'Chicken wings',
 	'Chicken legs',
-	'Chicken feet'
+	'Chicken feet',
+	'Banshee mask',
+	'Banshee top',
+	'Banshee robe',
+	'Hunting knife'
 ]);
 export const dailyCL = resolveItems([
 	'Event rpg',
