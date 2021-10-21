@@ -363,7 +363,8 @@ export const enum BitField {
 	AlwaysSmallBank = 15,
 	HasDexScroll = 16,
 	HasArcaneScroll = 17,
-	HasTornPrayerScroll = 18
+	HasTornPrayerScroll = 18,
+	IsWikiContributor = 19
 }
 
 interface BitFieldData {
@@ -383,7 +384,8 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman' },
-	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' }
+	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' },
+	[BitField.IsWikiContributor]: { name: 'Wiki Contributor' }
 } as const;
 
 export const enum PatronTierID {
