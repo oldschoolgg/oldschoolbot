@@ -12,7 +12,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
-			cooldown: 1,
+			cooldown: 45,
 			usage: '[accuse] [names:...str]',
 			usageDelim: ' ',
 			description: 'The 2021 Halloween event.',
@@ -71,7 +71,7 @@ When you've figured out who the murderers are, do \`${msg.cmdPrefix}hweenevent a
 			.filter(notEmpty);
 
 		if (!accusedPeople || accusedPeople.length !== 2) {
-			return msg.channel.send("You didn't specify which people you wan't to accuse.");
+			return msg.channel.send("You didn't specify which people you want to accuse.");
 		}
 		if (accusedPeople.some(p => p === halloweenData.victim.person)) {
 			return msg.channel.send("You're pretty sure the victim didn't commit suicide...");
