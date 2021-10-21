@@ -243,7 +243,6 @@ const source: [string, (string | number)[]][] = [
 			'Imbued zamorak max cape',
 			'Imbued zamorak max cape (l)',
 			"Combatant's cape"
-
 		]
 	],
 	['Guthix cape', ['Saradomin cape', 'Zamorak cape', 'Guthix max cape', 'Saradomin max cape', 'Zamorak max cape']],
