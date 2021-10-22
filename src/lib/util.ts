@@ -343,7 +343,7 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	}
 
 	for (const c of consumables) {
-		const itemEntries = Object.entries(c.itemCost.values());
+		const itemEntries = Object.entries(c.itemCost.items());
 		const multiple = itemEntries.length > 1;
 		const subStr = [];
 
