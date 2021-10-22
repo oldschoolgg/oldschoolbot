@@ -392,6 +392,7 @@ export const allCollectionLogs: ICollection = {
 				roleCategory: ['bosses']
 			},
 			Tempoross: {
+				alias: ['tempoross', 'temp', 'tempo', 'tr', 'ross'],
 				items: temporossCL,
 				allItems: resolveItems([...spiritAnglerOutfit, 'Spirit flakes']),
 				roleCategory: ['bosses']

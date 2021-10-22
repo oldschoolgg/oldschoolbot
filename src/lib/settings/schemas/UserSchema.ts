@@ -61,6 +61,7 @@ Client.defaultUserSchema
 	.add('ironman_alts', 'string', { array: true, default: [] })
 	.add('main_account', 'string', { default: null })
 	.add('times_fed_gregoyle', 'integer', { default: 0 })
+	.add('wrong_accusations', 'integer', { default: 0 })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })
