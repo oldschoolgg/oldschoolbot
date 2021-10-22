@@ -1,4 +1,3 @@
-import { randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
@@ -90,6 +89,10 @@ function openSeedPack(seedTier: number): ItemBank {
 
 	const tempTable = new LootTable().tertiary(3, 'Athelas seed');
 
+	if (seedTier > 2) {
+		tempTable.tertiary(10, new LootTable().every('Mysterious seed', [1, 3]));
+	}
+
 	// Roll amount variables
 	let high = 0;
 	let medium = 0;
@@ -166,9 +169,6 @@ export default class extends BotCommand {
 
 		if (bankHasItem(userBank, itemID('Seed pack'), 1)) {
 			loot.add(openSeedPack(plantTier));
-			if (plantTier > 2 && roll(10)) {
-				loot.add('Mysterious seed', randInt(1, 3));
-			}
 		} else {
 			return msg.channel.send('You have no seed packs to open!');
 		}
