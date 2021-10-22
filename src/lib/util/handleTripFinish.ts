@@ -58,7 +58,9 @@ export async function handleTripFinish(
 	if (
 		loot &&
 		!loot[itemID('Gregoyle')] &&
-		![Activity.GroupMonsterKilling, Activity.KingGoldemar, Activity.Ignecarus].includes(data.type) &&
+		![Activity.GroupMonsterKilling, Activity.KingGoldemar, Activity.Ignecarus, Activity.Inferno].includes(
+			data.type
+		) &&
 		data.duration > Time.Minute * 20 &&
 		roll(15)
 	) {

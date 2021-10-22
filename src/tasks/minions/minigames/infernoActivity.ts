@@ -149,9 +149,12 @@ export default class extends Task {
 			zukLoot.remove('Tokkul', zukLoot.amount('Tokkul'));
 			baseBank.add(zukLoot);
 			if (isEmergedZuk) {
-				zukLoot.add('Tzkal cape');
-				if (roll(20)) {
+				zukLoot.add('TzKal cape');
+				if (roll(10)) {
 					zukLoot.add('Infernal core');
+				}
+				if (roll(10)) {
+					zukLoot.add('Head of TzKal Zuk');
 				}
 			}
 
@@ -206,6 +209,13 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 			}
 `,
 			res => {
+				const flags: Record<string, string> = isEmergedZuk ? { emerged: 'emerged' } : {};
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				if (!res.prompter) res.prompter = {};
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				res.prompter.flags = flags;
 				user.log('continued trip of inferno');
 				return (this.client.commands.get('inferno') as any).start(res, []);
 			},

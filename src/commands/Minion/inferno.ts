@@ -13,6 +13,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { Gear } from '../../lib/structures/Gear';
 import { PercentCounter } from '../../lib/structures/PercentCounter';
 import { Skills } from '../../lib/types';
 import { InfernoOptions } from '../../lib/types/minions';
@@ -28,6 +29,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
+import resolveItems from '../../lib/util/resolveItems';
 import { blowpipeDarts } from './blowpipe';
 
 const minimumRangeItems = [
@@ -112,6 +114,7 @@ export default class extends BotCommand {
 
 		if (isEmergedZuk) {
 			cost.add(elderBarrageRunes.multiply(Math.floor(elderBarragePerHour * hours)));
+			cost.add('Hellfire arrow', randInt(50, 80));
 		}
 
 		cost.add('Saradomin brew(4)', 8);
@@ -382,12 +385,15 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		 */
 		const rangeGear = user.getGear('range');
 		const mageGear = user.getGear('mage');
+		const gearToCheck: [Gear, string][] = [
+			[rangeGear, 'range'],
+			[mageGear, 'mage']
+		];
+		const meleeGear = user.getGear('melee');
+		if (isEmergedZuk) gearToCheck.push([meleeGear, 'melee']);
 
 		for (const key of ['feet', 'body', 'hands', 'cape', 'ring', 'neck', 'legs', 'head'] as const) {
-			for (const [gear, name] of [
-				[rangeGear, 'range'],
-				[mageGear, 'mage']
-			] as const) {
+			for (const [gear, name] of gearToCheck) {
 				if (!gear[key]) {
 					return `You have nothing in your ${key} slot in your ${name} setup.. are you crazy?`;
 				}
@@ -482,6 +488,30 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			}
 		}
 
+		const allMeleeGearItems = meleeGear.allItems(true);
+
+		if (isEmergedZuk) {
+			const amountOfDrygoreEquipped = resolveItems([
+				'Drygore rapier',
+				'Drygore longsword',
+				'Drygore mace',
+				'Offhand drygore rapier',
+				'Offhand drygore longsword',
+				'Offhand drygore mace'
+			]).filter(i => allMeleeGearItems.includes(i)).length;
+			if (amountOfDrygoreEquipped < 2) {
+				return 'You need strong kalphite weapon to pierce TzKal-Zuk skin!';
+			}
+			if (
+				!resolveItems(['Torva platebody', 'Torva platelegs', 'Torva boots', 'Torva gloves']).every(i =>
+					allMeleeGearItems.includes(i)
+				)
+			) {
+				return 'You need stronger melee armor! TzKal-Zuk will crush you.';
+			}
+		}
+		duration.add(isEmergedZuk && allMeleeGearItems.includes(itemID('Ignis ring(i)')), 5, 'Ignis ring(i)');
+
 		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 7.5, 'Zuk with ACB');
 		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 4.5, 'ACB');
 
@@ -505,7 +535,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			isEmergedZuk &&
 			[
 				'Hellfire bow',
-				'Hellfire arrow',
+				'Dragon arrow',
 				'Farsight snapshot necklace',
 				'Gorajan archer top',
 				'Gorajan archer legs',
@@ -513,7 +543,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 				'Gorajan archer boots'
 			].some(i => !rangeGear.hasEquipped(i))
 		) {
-			return 'You not worthy to fight TzKal-Zuk in his full form, you need better range gear.';
+			return 'You not worthy to fight TzKal-Zuk in his full form, you need better range gear and dragon arrows.';
 		}
 		if (
 			isEmergedZuk &&

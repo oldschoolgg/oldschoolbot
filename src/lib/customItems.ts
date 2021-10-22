@@ -1930,8 +1930,68 @@ setCustomItem(
 	50_000_000
 );
 setCustomItem(48_321, 'Head of TzKal Zuk', 'Coal', {}, 10_000_000);
-setCustomItem(48_322, 'Tzkal cape', 'Coal', {}, 10_000_000);
-setCustomItem(48_323, 'Tzkal slayer helm', 'Coal', {}, 10_000_000);
+setCustomItem(
+	48_322,
+	'TzKal cape',
+	'Coal',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 140,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 129,
+			defence_slash: 135,
+			defence_crush: 129,
+			defence_magic: -19,
+			defence_ranged: 169,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Cape,
+			requirements: {
+				defence: 100
+			}
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	48_323,
+	'TzKal slayer helmet',
+	'Coal',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 140,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 129,
+			defence_slash: 135,
+			defence_crush: 129,
+			defence_magic: -19,
+			defence_ranged: 169,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Head,
+			requirements: {
+				defence: 100,
+				strength: 100,
+				slayer: 100
+			}
+		}
+	},
+	10_000_000
+);
 
 /**
  * Misc Items

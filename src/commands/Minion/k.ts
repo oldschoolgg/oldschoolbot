@@ -220,8 +220,10 @@ export default class extends BotCommand {
 		// Black mask and salve don't stack.
 		const salveBoost = boosts.join('').toLowerCase().includes('salve amulet');
 		if (!salveBoost) {
-			// Add 15% slayer boost on task if they have black mask or similar
-			if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
+			if (isOnTask && msg.author.hasItemEquippedOrInBank('TzKal slayer helmet')) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 15);
+				boosts.push('20% for TzKal slayer helmet on task');
+			} else if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
 				if (isOnTask && msg.author.hasItemEquippedOrInBank('Black mask (i)')) {
 					timeToFinish = reduceNumByPercent(timeToFinish, 15);
 					boosts.push('15% for Black mask (i) on non-melee task');
