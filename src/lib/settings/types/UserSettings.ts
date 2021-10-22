@@ -75,6 +75,7 @@ export namespace UserSettings {
 	export const InfernoCapeSacrifices = T<number>('inferno_cape_sacrifices');
 
 	export const Blowpipe = T<O.Readonly<BlowpipeData>>('blowpipe');
+	export const WrongAccusations = T<number>('wrong_accusations');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');

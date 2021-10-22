@@ -2033,8 +2033,7 @@ export const customBossesDropsThatCantBeDroppedInMBs = [
 	...vasaMagusCL,
 	...nexCL,
 	...kalphiteKingCL,
-	...ignecarusCL,
-	...treeBeardCL
+	...ignecarusCL
 ];
 export const implingsCL = objectEntries(implings).map(m => Number(m[0]));
 

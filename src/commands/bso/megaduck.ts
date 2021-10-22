@@ -18,6 +18,21 @@ import { canvasImageFromBuffer } from '../../lib/util/canvasUtil';
 const _mapImage = readFileSync('./src/lib/resources/images/megaduckmap.png');
 const _noMoveImage = readFileSync('./src/lib/resources/images/megaducknomovemap.png');
 
+let apeAtoll = [1059, 1226];
+let portSarim = [1418, 422];
+let karamja = [1293, 554];
+let flyer = [1358, 728];
+const teleportationLocations = [
+	[
+		{ name: 'Port Sarim', coords: portSarim },
+		{ name: 'Karamja', coords: karamja }
+	],
+	[
+		{ name: 'Gnome Flyer', coords: flyer },
+		{ name: 'Ape Atoll', coords: apeAtoll }
+	]
+];
+
 function locationIsFinished(location: MegaDuckLocation) {
 	return location.x < 770 && location.y > 1011;
 }
@@ -175,6 +190,19 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 
 		await msg.author.removeItemsFromBank(cost);
 		newLocation = { ...defaultMegaDuckLocation, ...newLocation };
+		let str = '';
+		for (const link of teleportationLocations) {
+			const [first, second] = link;
+			if (newLocation.x === first.coords[0] && newLocation.y === first.coords[1]) {
+				newLocation.x = second.coords[0];
+				newLocation.y = second.coords[1];
+				str += `\n\nYou teleported from ${first.name} to ${second.name}.`;
+			} else if (newLocation.x === second.coords[0] && newLocation.y === second.coords[1]) {
+				newLocation.x = first.coords[0];
+				newLocation.y = first.coords[1];
+				str += `\n\nYou teleported from ${second.name} to ${first.name}.`;
+			}
+		}
 		newLocation.steps.push([newLocation.x, newLocation.y]);
 		await settings.update(GuildSettings.MegaDuckLocation, newLocation);
 		if (
@@ -211,7 +239,7 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 		return msg.channel.send({
 			content: `${msg.author} You moved Mega Duck ${direction}! You've moved him ${
 				newLocation.usersParticipated[msg.author.id]
-			} times. Removed ${cost} from your bank.`,
+			} times. Removed ${cost} from your bank.${str}`,
 			files: location.steps.length % 2 === 0 ? [newLocationResult.image] : []
 		});
 	}
