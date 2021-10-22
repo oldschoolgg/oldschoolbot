@@ -343,7 +343,7 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	}
 
 	for (const c of consumables) {
-		const itemEntries = Object.entries(c.itemCost.items());
+		const itemEntries = c.itemCost.items();
 		const multiple = itemEntries.length > 1;
 		const subStr = [];
 
@@ -354,8 +354,8 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 			multiply = c.qtyPerMinute * (timeToFinish / Time.Minute);
 		}
 
-		for (const [itemId, quantity] of itemEntries) {
-			subStr.push(`${Number((quantity * multiply).toFixed(3))}x ${itemNameFromID(parseInt(itemId))}`);
+		for (const [item, quantity] of itemEntries) {
+			subStr.push(`${Number((quantity * multiply).toFixed(3))}x ${item.name}`);
 		}
 
 		if (multiple) {
