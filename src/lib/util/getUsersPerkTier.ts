@@ -6,7 +6,12 @@ import { BitField, PerkTier, Roles } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
 import { getSupportGuild } from '../util';
 
-const tier3ElligibleBits = [BitField.IsPatronTier3, BitField.isContributor, BitField.isModerator];
+const tier3ElligibleBits = [
+	BitField.IsPatronTier3,
+	BitField.isContributor,
+	BitField.isModerator,
+	BitField.IsWikiContributor
+];
 
 export default function getUsersPerkTier(
 	userOrBitfield: KlasaUser | readonly BitField[],
