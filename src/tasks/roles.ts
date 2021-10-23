@@ -1,11 +1,11 @@
 import { Guild } from 'discord.js';
-import { noOp } from 'e';
+import { noOp, notEmpty } from 'e';
 import { Task } from 'klasa';
 
 import { CLUser, SkillUser } from '../commands/Minion/leaderboard';
 import { production } from '../config';
 import { Minigames } from '../extendables/User/Minigame';
-import { Roles, SupportServer } from '../lib/constants';
+import { BOT_TYPE, Roles, SupportServer } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
 import ClueTiers from '../lib/minions/data/clueTiers';
 import { UserSettings } from '../lib/settings/types/UserSettings';
@@ -65,9 +65,11 @@ async function addRoles({
 }): Promise<string> {
 	let added: string[] = [];
 	let removed: string[] = [];
-	let _role = g.roles.cache.get(role);
-	if (!_role) _role = (await g.roles.fetch(role)) ?? undefined;
+	let _role = await g.roles.fetch(role);
 	if (!_role) return 'Could not check role';
+	for (const u of users.filter(notEmpty)) {
+		await g.members.fetch(u);
+	}
 	const roleName = _role.name!;
 	for (const mem of g.members.cache.values()) {
 		if (mem.roles.cache.has(role) && !users.includes(mem.user.id)) {
@@ -127,7 +129,9 @@ export default class extends Task {
 	async run() {
 		const g = this.client.guilds.cache.get(SupportServer);
 		if (!g) return;
-		await g.members.fetch();
+		if (BOT_TYPE === 'OSB' && production) {
+			await g.members.fetch();
+		}
 		const skillVals = Object.values(Skills);
 
 		let result = '';
@@ -191,15 +195,9 @@ export default class extends Task {
 		// Top Collectors
 		async function topCollector() {
 			const userMap = {};
-			const topCollectors = await Promise.all(
-				collections.map(async clName => {
-					const items = getCollectionItems(clName);
-					if (!items) {
-						console.error(`${clName} collection log doesnt exist`);
-					}
-					const users = (
-						await q<any>(
-							`
+
+			function generateQuery(items: number[], ironmenOnly: boolean, limit: number) {
+				const t = `
 SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 				  FROM (
   SELECT ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank")) "cl_keys",
@@ -209,16 +207,39 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 					.join(', ')}]))) "inverse_length"
 			FROM users
 			WHERE "collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
+			${ironmenOnly ? 'AND "minion.ironman" = true' : ''}
 			) u
 			ORDER BY qty DESC
-			LIMIT 1;
-`
-						)
-					).filter((i: any) => i.qty > 0) as CLUser[];
+			LIMIT ${limit};
+`;
+
+				return t;
+			}
+
+			const topCollectors = await Promise.all(
+				collections.map(async clName => {
+					const items = getCollectionItems(clName);
+					if (!items) {
+						console.error(`${clName} collection log doesnt exist`);
+					}
+
+					const users = (await q<any>(generateQuery(items, false, 1))).filter(
+						(i: any) => i.qty > 0
+					) as CLUser[];
+
 					addToUserMap(userMap, users?.[0]?.id, `Rank 1 ${clName} CL`);
 					return users?.[0]?.id;
 				})
 			);
+
+			const topIronUsers = (await q<any>(generateQuery(getCollectionItems('overall'), true, 3))).filter(
+				(i: any) => i.qty > 0
+			) as CLUser[];
+			for (let i = 0; i < topIronUsers.length; i++) {
+				const id = topIronUsers[i]?.id;
+				addToUserMap(userMap, id, `Rank ${i + 1} Ironman Collector`);
+				topCollectors.push(id);
+			}
 
 			result += await addRoles({ g: g!, users: topCollectors, role: Roles.TopCollector, badge: 10, userMap });
 		}
@@ -285,9 +306,12 @@ LIMIT 1;`
 						)
 					)
 				)
-			).map((i: any) => [i[0]?.id, i[0]?.n]);
+			)
+				.filter((i: any) => Boolean(i[0]?.id))
+				.map((i: any) => [i[0]?.id, i[0]?.n]);
 
 			let userMap = {};
+
 			for (const [id, n] of topClueHunters) {
 				addToUserMap(userMap, id, `Rank 1 ${n} Clues`);
 			}
@@ -349,7 +373,9 @@ LIMIT 2;`
 						q(query)
 					)
 				)
-			).map((i: any) => [i[0]?.id, i[0]?.desc]);
+			)
+				.filter((i: any) => Boolean(i[0]?.id))
+				.map((i: any) => [i[0]?.id, i[0]?.desc]);
 
 			let userMap = {};
 			for (const [id, desc] of topSlayers) {
