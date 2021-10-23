@@ -93,10 +93,11 @@ export default class extends BotCommand {
 		}
 
 		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Hosidius, 60);
-		if (!hasFavour)
+		if (!hasFavour) {
 			return msg.channel.send(
 				`${msg.author.minionName} needs ${requiredPoints}% Hosidius Favour to enter the Farming Guild!`
 			);
+		}
 
 		const contractToFarmingLevel = {
 			easy: 45,

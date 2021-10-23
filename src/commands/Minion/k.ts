@@ -145,10 +145,11 @@ export default class extends BotCommand {
 		if (!hasReqs) throw reason;
 
 		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Shayzien, 100);
-		if (!hasFavour && monster.id === Monsters.LizardmanShaman.id)
+		if (!hasFavour && monster.id === Monsters.LizardmanShaman.id) {
 			return msg.channel.send(
 				`${msg.author.minionName} needs ${requiredPoints}% Shayzien Favour to kill Lizardman shamans.`
 			);
+		}
 
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, msg.author.getKC(monster.id));
 

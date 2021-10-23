@@ -18,10 +18,10 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			usage: '[name:...string]',
-			aliases: ['kf', 'kourand', 'kourandfavour'],
+			aliases: ['kf', 'kourend', 'kourendfavour'],
 			categoryFlags: ['minion', 'minigame'],
-			description: 'Sends your minion to complete Kourand Favours.',
-			examples: ['+kf Arceuus', '+kourand', '+favour']
+			description: 'Sends your minion to complete Kourend Favours.',
+			examples: ['+kf Arceuus', '+kourend', '+favour']
 		});
 	}
 

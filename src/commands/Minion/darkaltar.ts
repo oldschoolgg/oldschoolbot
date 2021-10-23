@@ -63,10 +63,11 @@ export default class extends BotCommand {
 			);
 		}
 		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Arceuus, 100);
-		if (!hasFavour)
+		if (!hasFavour) {
 			return msg.channel.send(
 				`Crafting Blood/Soul runes at the Dark Altar requires ${requiredPoints}% Arceuus Favour.`
 			);
+		}
 		const rune = name.toLowerCase().includes('soul') ? 'soul' : 'blood';
 		const runeData = darkAltarRunes[rune];
 

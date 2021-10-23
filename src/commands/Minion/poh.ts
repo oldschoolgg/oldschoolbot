@@ -122,8 +122,9 @@ export default class POHCommand extends BotCommand {
 		}
 		if (obj.id === 29_149 || obj.id === 31_858) {
 			const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Arceuus, 100);
-			if (!hasFavour)
+			if (!hasFavour) {
 				return msg.channel.send(`Build Dark Altar/Occult altar requires ${requiredPoints}% Arceuus Favour.`);
+			}
 		}
 		const inPlace = poh[obj.slot];
 		if (obj.slot === 'mountedItem' && inPlace !== null) {

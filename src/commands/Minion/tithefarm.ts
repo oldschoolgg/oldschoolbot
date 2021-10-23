@@ -58,10 +58,11 @@ export default class extends BotCommand {
 			return msg.channel.send(`${msg.author.minionName} needs 34 Farming to use the Tithe Farm!`);
 		}
 		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Hosidius, 100);
-		if (!hasFavour)
+		if (!hasFavour) {
 			return msg.channel.send(
 				`${msg.author.minionName} needs ${requiredPoints}% Hosidius Favour to use the Tithe Farm!`
 			);
+		}
 
 		const [duration, boostStr] = this.determineDuration(msg.author);
 

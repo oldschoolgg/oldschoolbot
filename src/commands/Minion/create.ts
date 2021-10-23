@@ -132,10 +132,11 @@ export default class extends BotCommand {
 		if (createableItem.name.toLowerCase().includes('kourend')) {
 			const currentUserFavour = msg.author.settings.get(UserSettings.KourendFavour);
 			for (const [key, value] of Object.entries(currentUserFavour)) {
-				if (value < 100)
+				if (value < 100) {
 					return msg.channel.send(
 						`You don't have the required amount of Favour to ${cmd} this item.\n\nRequired: 100% ${key} Favour.`
 					);
+				}
 			}
 		}
 

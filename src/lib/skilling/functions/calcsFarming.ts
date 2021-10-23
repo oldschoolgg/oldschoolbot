@@ -18,13 +18,20 @@ export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number): [nu
 		}
 	}
 	let errorMessage: string | undefined = undefined;
-	for (let i = plant.additionalPatchesByFarmLvl.length; i > 0; i--) {
+	for (let i = plant.additionalPatchesByFarmGuildAndLvl.length; i > 0; i--) {
 		const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 60);
 		if (!hasFavour && plant.name !== 'Spirit tree') {
 			errorMessage = `${user.minionName} needs ${requiredPoints}% Hosidius Favour to use Farming guild patches.`;
 			break;
 		}
-		const [farmingLevelReq, additionalPatches] = plant.additionalPatchesByFarmLvl[i - 1];
+		const [farmingLevelReq, additionalPatches] = plant.additionalPatchesByFarmGuildAndLvl[i - 1];
+		if (farmingLevel >= farmingLevelReq) {
+			numOfPatches += additionalPatches;
+			break;
+		}
+	}
+	for (let i = plant.additionalPatchesByFarmGuildAndLvl.length; i > 0; i--) {
+		const [farmingLevelReq, additionalPatches] = plant.additionalPatchesByFarmGuildAndLvl[i - 1];
 		if (farmingLevel >= farmingLevelReq) {
 			numOfPatches += additionalPatches;
 			break;
@@ -70,7 +77,7 @@ export function returnListOfPlants(msg: KlasaMessage) {
 						.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
 						.join(', ')}\n	Default # of patches: ${
 						plant.defaultNumOfPatches
-					}\n${plant.additionalPatchesByFarmLvl.map(
+					}\n${plant.additionalPatchesByFarmGuildAndLvl.map(
 						entry => `	| Farming Level: ${entry[0]} => Total Additional Patches: ${entry[1]} |\n`
 					)} ${plant.additionalPatchesByQP.map(
 						entry => `	| Quest Points: ${entry[0]} => Total Additional Patches: ${entry[1]} |\n`

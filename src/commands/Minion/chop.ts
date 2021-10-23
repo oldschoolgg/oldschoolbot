@@ -76,10 +76,11 @@ export default class extends BotCommand {
 		}
 
 		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Hosidius, 75);
-		if (!hasFavour && log.name === 'Redwood Logs')
+		if (!hasFavour && log.name === 'Redwood Logs') {
 			return msg.channel.send(
 				`${msg.author.minionName} needs ${requiredPoints}% Hosidius Favour to chop Redwood at the Woodcutting Guild!`
 			);
+		}
 
 		// Calculate the time it takes to chop a single log of this type, at this persons level.
 		let timetoChop = determineScaledLogTime(

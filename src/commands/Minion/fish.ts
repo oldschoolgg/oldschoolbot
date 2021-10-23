@@ -55,10 +55,11 @@ export default class extends BotCommand {
 			}
 		}
 		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Piscarilius, 100);
-		if (!hasFavour && fish.name === 'Anglerfish')
+		if (!hasFavour && fish.name === 'Anglerfish') {
 			return msg.channel.send(
 				`${msg.author.minionName} needs ${requiredPoints}% Piscarilius Favour to fish Anglerfish!`
 			);
+		}
 
 		if (
 			fish.name === 'Barbarian fishing' &&
