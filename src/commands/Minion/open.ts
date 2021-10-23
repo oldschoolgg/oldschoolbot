@@ -248,10 +248,7 @@ export default class extends BotCommand {
 		let smokeyBonus = 0;
 		if (botOpenable.name.toLowerCase().includes('mystery')) {
 			// Force names to TMBs/UMBs
-			if (
-				['Tradeables Mystery box', 'Untradeables Mystery box'].includes(botOpenable.name) &&
-				!Boolean(msg.flagArgs.id)
-			) {
+			if (botOpenable.name.toLowerCase().includes('mystery') && !Boolean(msg.flagArgs.id)) {
 				msg.flagArgs.names = 'yes';
 			}
 			if (hasSmokey) {
