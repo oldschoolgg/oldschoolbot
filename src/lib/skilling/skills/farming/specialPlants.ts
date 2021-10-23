@@ -574,7 +574,7 @@ const specialPlants: Plant[] = [
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
-			[99, 4] // Plant in all patches at lvl 99
+			[99, 3] // Plant in all patches at lvl 99
 		],
 		additionalPatchesByFarmGuildAndLvl: [
 			[91, 1] // Plant up to 2 seeds at lvl 91 with farm guild
