@@ -150,7 +150,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 1,
 			aliases: ['sp'],
-			usage: ' ',
+			usage: '[quantity:int]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			categoryFlags: ['minion'],
@@ -160,22 +160,25 @@ export default class extends BotCommand {
 	}
 
 	@requiresMinion
-	async run(msg: KlasaMessage) {
+	async run(msg: KlasaMessage, [quantity]: [number | undefined]) {
 		await msg.author.settings.sync(true);
+		const realQty = quantity ?? 1;
 
-		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const userBank = msg.author.bank().bank;
 		const { plantTier } = msg.author.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
 		const loot = new Bank();
 
-		if (bankHasItem(userBank, itemID('Seed pack'), 1)) {
-			loot.add(openSeedPack(plantTier));
+		if (bankHasItem(userBank, itemID('Seed pack'), realQty)) {
+			for (let i = 0; i < realQty; i++) {
+				loot.add(openSeedPack(plantTier));
+			}
 		} else {
-			return msg.channel.send('You have no seed packs to open!');
+			return msg.channel.send(`You don't have ${realQty} Seed pack${realQty > 1 ? 's' : ''} to open.`);
 		}
 
-		await msg.author.removeItemsFromBank(new Bank().add('Seed pack'));
+		await msg.author.removeItemsFromBank(new Bank().add('Seed pack', realQty));
 		await msg.author.addItemsToBank(loot.bank, true);
 
-		return msg.channel.send(`You opened 1x seed pack and received: ${loot}.`);
+		return msg.channel.send(`You opened ${realQty} Seed pack${realQty > 1 ? 's' : ''} and received: ${loot}.`);
 	}
 }
