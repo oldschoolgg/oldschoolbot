@@ -141,7 +141,7 @@ export default class extends Task {
 			if (course.id === 30) {
 				if (
 					user.skillLevel(SkillsEnum.Dungeoneering) >= 80 &&
-					roll(Math.floor((gorajanShardChance(user) * 2.5) / minutes))
+					roll(Math.floor((gorajanShardChance(user).chance * 2.5) / minutes))
 				) {
 					const item = roll(30) ? getOSItem('Dungeoneering dye') : getOSItem('Gorajan shards');
 
