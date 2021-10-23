@@ -1,13 +1,38 @@
 import { User } from 'discord.js';
+import { notEmpty } from 'e';
 import { KlasaUser } from 'klasa';
 
 import { BitField, PerkTier, Roles } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
 import { getSupportGuild } from '../util';
 
-const tier3ElligibleBits = [BitField.IsPatronTier3, BitField.isContributor, BitField.isModerator];
+const tier3ElligibleBits = [
+	BitField.IsPatronTier3,
+	BitField.isContributor,
+	BitField.isModerator,
+	BitField.IsWikiContributor
+];
 
-export default function getUsersPerkTier(userOrBitfield: KlasaUser | readonly BitField[]): PerkTier | 0 {
+export default function getUsersPerkTier(
+	userOrBitfield: KlasaUser | readonly BitField[],
+	noCheckOtherAccounts?: boolean
+): PerkTier | 0 {
+	if (noCheckOtherAccounts !== true && userOrBitfield instanceof KlasaUser) {
+		let main = userOrBitfield.settings.get(UserSettings.MainAccount);
+		const allAccounts: string[] = [...userOrBitfield.settings.get(UserSettings.IronmanAlts), userOrBitfield.id];
+		if (main) {
+			allAccounts.push(main);
+		}
+
+		const allAccountTiers = allAccounts
+			.map(id => userOrBitfield.client.users.cache.get(id))
+			.filter(notEmpty)
+			.map(t => getUsersPerkTier(t, true));
+
+		const highestAccountTier = Math.max(0, ...allAccountTiers);
+		return highestAccountTier;
+	}
+
 	if (userOrBitfield instanceof User && userOrBitfield.client.owners.has(userOrBitfield)) {
 		return 10;
 	}

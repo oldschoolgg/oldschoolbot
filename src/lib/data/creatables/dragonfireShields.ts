@@ -42,7 +42,7 @@ export const dragonFireShieldCreatables: Createable[] = [
 	{
 		name: 'Dragonfire shield',
 		inputItems: new Bank({
-			'Bottled dragonbreath': 5,
+			'Bottled dragonbreath': 1,
 			'Uncharged dragonfire shield': 1
 		}).bank,
 		outputItems: resolveNameBank({
@@ -55,7 +55,7 @@ export const dragonFireShieldCreatables: Createable[] = [
 	{
 		name: 'Dragonfire ward',
 		inputItems: new Bank({
-			'Bottled dragonbreath': 5,
+			'Bottled dragonbreath': 1,
 			'Uncharged dragonfire ward': 1
 		}).bank,
 		outputItems: resolveNameBank({
@@ -65,7 +65,7 @@ export const dragonFireShieldCreatables: Createable[] = [
 	{
 		name: 'Ancient wyvern shield',
 		inputItems: new Bank({
-			'Bottled dragonbreath': 5,
+			'Bottled dragonbreath': 1,
 			Numulite: 5000,
 			'Uncharged ancient wyvern shield': 1
 		}).bank,

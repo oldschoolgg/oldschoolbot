@@ -120,7 +120,7 @@ export default class extends Task {
 		if (loot.has('Tzrek-jad')) {
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}** just received their ${formatOrdinal(user.cl().amount('Tzrek-jad'))} ${
+				`**${user.username}** just received their ${formatOrdinal(user.cl().amount('Tzrek-jad') + 1)} ${
 					Emoji.TzRekJad
 				} TzRek-jad pet by killing TzTok-Jad, on their ${formatOrdinal(user.getKC(TzTokJad.id))} kill!`
 			);

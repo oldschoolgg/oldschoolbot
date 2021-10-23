@@ -261,7 +261,11 @@ export default class extends BotCommand {
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = floor(maxTripLength / timeToFinish);
+			if ([Monsters.Skotizo.id].includes(monster.id)) {
+				quantity = 1;
+			} else {
+				quantity = floor(maxTripLength / timeToFinish);
+			}
 		}
 		if (typeof quantity !== 'number') quantity = parseInt(quantity);
 		if (isOnTask) {
@@ -373,10 +377,10 @@ export default class extends BotCommand {
 			}
 		}
 		// Check food
-		let foodStr: undefined | string = undefined;
+		let foodStr: string = '';
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
-			messages = messages.concat(foodMessages);
+			foodStr += foodMessages;
 
 			let gearToCheck: GearSetupType = 'melee';
 
@@ -393,7 +397,7 @@ export default class extends BotCommand {
 
 			if (monster.wildy) gearToCheck = 'wildy';
 
-			const [result, foodRemoved] = await removeFoodFromUser({
+			const { foodRemoved, reductions } = await removeFoodFromUser({
 				client: this.client,
 				user: msg.author,
 				totalHealingNeeded: healAmountNeeded * quantity,
@@ -405,28 +409,36 @@ export default class extends BotCommand {
 				learningPercentage: percentReduced
 			});
 
-			for (const [item, qty] of foodRemoved.items()) {
-				const eatable = Eatables.find(e => e.id === item.id);
-				if (!eatable) continue;
+			if (foodRemoved.length === 0) {
+				boosts.push('4% for no food');
+				duration = reduceNumByPercent(duration, 4);
+			} else {
+				for (const [item, qty] of foodRemoved.items()) {
+					const eatable = Eatables.find(e => e.id === item.id);
+					if (!eatable) continue;
 
-				const healAmount =
-					typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(msg.author);
-				const amountHealed = qty * healAmount;
-				if (amountHealed < calcPercentOfNum(75, healAmountNeeded * quantity)) continue;
-				const boost = eatable.pvmBoost;
-				if (boost) {
-					if (boost < 0) {
-						boosts.push(`${boost}% for ${eatable.name}`);
-						duration = increaseNumByPercent(duration, Math.abs(boost));
-					} else {
-						boosts.push(`${boost}% for ${eatable.name}`);
-						duration = reduceNumByPercent(duration, boost);
+					const healAmount =
+						typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(msg.author);
+					const amountHealed = qty * healAmount;
+					if (amountHealed < calcPercentOfNum(75, healAmountNeeded * quantity)) continue;
+					const boost = eatable.pvmBoost;
+					if (boost) {
+						if (boost < 0) {
+							boosts.push(`${boost}% for ${eatable.name}`);
+							duration = increaseNumByPercent(duration, Math.abs(boost));
+						} else {
+							boosts.push(`${boost}% for ${eatable.name}`);
+							duration = reduceNumByPercent(duration, boost);
+						}
 					}
+					break;
 				}
-				break;
 			}
 
-			foodStr = result;
+			if (reductions.length > 0) {
+				foodStr += `, ${reductions.join(', ')}`;
+			}
+			foodStr += `, **Removed ${foodRemoved}**`;
 		}
 
 		// Boosts that don't affect quantity:
@@ -461,16 +473,16 @@ export default class extends BotCommand {
 			response += ` Removed ${lootToRemove}.`;
 		}
 
-		if (foodStr) {
-			response += ` Removed ${foodStr}\n`;
-		}
-
 		if (boosts.length > 0) {
 			response += `\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
 		if (messages.length > 0) {
-			response += `\n**Messages:** ${messages.join('\n')}.`;
+			response += `\n**Messages:** ${messages.join(', ')}.`;
+		}
+
+		if (foodStr) {
+			response += `\n**Food:** ${foodStr}\n`;
 		}
 
 		return msg.channel.send(response);

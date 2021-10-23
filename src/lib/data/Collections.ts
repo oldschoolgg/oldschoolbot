@@ -304,7 +304,6 @@ export const allCollectionLogs: ICollection = {
 				roleCategory: ['bosses']
 			},
 			'The Inferno': {
-				enabled: false,
 				alias: ['zuk', 'inferno'],
 				items: theInfernoCL
 			},
@@ -368,6 +367,7 @@ export const allCollectionLogs: ICollection = {
 				roleCategory: ['bosses']
 			},
 			Tempoross: {
+				alias: ['tempoross', 'temp', 'tempo', 'tr', 'ross'],
 				items: temporossCL,
 				allItems: resolveItems([...spiritAnglerOutfit, 'Spirit flakes']),
 				roleCategory: ['bosses']

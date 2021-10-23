@@ -34,7 +34,8 @@ export default class extends BotCommand {
 		const { price, bank: bankToSell } = parseInputBankWithPrice({
 			usersBank: msg.author.bank(),
 			str: strBankWithPrice ?? '',
-			flags: { ...msg.flagArgs, tradeables: 'tradeables' }
+			flags: { ...msg.flagArgs, tradeables: 'tradeables' },
+			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems)
 		});
 		if (bankToSell.items().some(i => !itemIsTradeable(i[0].id))) {
 			captureException(new Error('Trying to sell untradeable item'), {

@@ -1,55 +1,70 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import itemID from '../../lib/util/itemID';
+import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
 			oneAtTime: true,
-			cooldown: 5,
 			categoryFlags: ['minion'],
-			examples: ['+capegamble'],
+			examples: ['+capegamble infernal', '+capegamble infernal'],
+			usage: '[fire|infernal]',
 			description: 'Allows you to gamble fire capes for a chance at the jad pet.'
 		});
 	}
 
-	async run(msg: KlasaMessage) {
-		await msg.author.settings.sync(true);
-		const capesOwned = await msg.author.numberOfItemInBank(itemID('Fire cape'), true);
+	async run(msg: KlasaMessage, [type]: ['fire' | 'infernal' | undefined]) {
+		const firesGambled = msg.author.settings.get(UserSettings.Stats.FireCapesSacrificed);
+		const infernalsGambled = msg.author.settings.get(UserSettings.Stats.InfernalCapesSacrificed);
+		if (!type) {
+			return msg.channel
+				.send(`You can gamble Fire capes and Infernal capes like this: \`${msg.cmdPrefix}capegamble fire/infernal\`
 
-		if (capesOwned < 1) return msg.channel.send('You have no Fire capes to gamble!');
+**Fire Cape's Sacrificed:** ${firesGambled}
+**Infernal Cape's Gambled:** ${infernalsGambled}`);
+		}
 
-		const str = 'Are you sure you want to gamble a Fire cape for a chance at the Tzrek-Jad pet?';
+		const item = getOSItem(type === 'fire' ? 'Fire cape' : 'Infernal cape');
+		const key =
+			type === 'fire' ? UserSettings.Stats.FireCapesSacrificed : UserSettings.Stats.InfernalCapesSacrificed;
 
-		await msg.confirm(str);
+		const capesOwned = await msg.author.bank().amount(item.id);
 
-		const newSacrificedCount = msg.author.settings.get(UserSettings.Stats.FireCapesSacrificed) + 1;
-		await msg.author.removeItemsFromBank(new Bank().add('Fire cape'));
-		await msg.author.settings.update(UserSettings.Stats.FireCapesSacrificed, newSacrificedCount);
+		if (capesOwned < 1) return msg.channel.send(`You have no ${item.name}'s' to gamble!`);
 
-		if (roll(200)) {
-			await msg.author.addItemsToBank({ [itemID('Tzrek-Jad')]: 1 }, true);
+		await msg.confirm(`Are you sure you want to gamble a ${item.name}?`);
+
+		const newSacrificedCount = msg.author.settings.get(key) + 1;
+		await msg.author.removeItemsFromBank(new Bank().add(item.id));
+		await msg.author.settings.update(key, newSacrificedCount);
+
+		const chance = type === 'fire' ? 200 : 100;
+		const pet = getOSItem(type === 'fire' ? 'Tzrek-Jad' : 'Jal-nib-rek');
+
+		if (roll(chance)) {
+			await msg.author.addItemsToBank(new Bank().add(pet.id), true);
 			this.client.emit(
 				Events.ServerNotification,
-				`**${msg.author.username}'s** just received their ${formatOrdinal(
-					msg.author.cl().amount('Tzrek-Jad')
-				)} ${Emoji.TzRekJad} TzRek-jad pet by sacrificing a Fire cape for the ${formatOrdinal(
-					newSacrificedCount
-				)} time!`
+				`**${msg.author.username}'s** just received their ${formatOrdinal(msg.author.cl().amount(pet.id))} ${
+					pet.name
+				} pet by sacrificing a ${item.name} for the ${formatOrdinal(newSacrificedCount)} time!`
 			);
 			return msg.channel.send({
 				files: [
 					await chatHeadImage({
-						content: 'You lucky. Better train him good else TzTok-Jad find you, JalYt.',
-						head: 'mejJal'
+						content:
+							type === 'fire'
+								? 'You lucky. Better train him good else TzTok-Jad find you, JalYt.'
+								: 'Luck be a TzHaar tonight. Jal-Nib-Rek is yours.',
+						head: type === 'fire' ? 'mejJal' : 'ketKeh'
 					})
 				]
 			});
@@ -58,10 +73,15 @@ export default class extends BotCommand {
 		return msg.channel.send({
 			files: [
 				await chatHeadImage({
-					content: `You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(
-						newSacrificedCount
-					)} time you gamble cape.`,
-					head: 'mejJal'
+					content:
+						type === 'fire'
+							? `You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(
+									newSacrificedCount
+							  )} time you gamble cape.`
+							: `No Jal-Nib-Rek for you. This is the ${formatOrdinal(
+									newSacrificedCount
+							  )} time you gamble cape.`,
+					head: type === 'fire' ? 'mejJal' : 'ketKeh'
 				})
 			]
 		});

@@ -9,7 +9,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
 import { addBanks } from '../../lib/util';
 
-export function shuffleRandom<T>(input: number, arr: T[]): T[] {
+export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
 	return shuffle(engine, [...arr]);
 }
@@ -17,6 +17,10 @@ export function shuffleRandom<T>(input: number, arr: T[]): T[] {
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [User] });
+	}
+
+	public cl(this: User) {
+		return new Bank(this.settings.get(UserSettings.CollectionLogBank));
 	}
 
 	// @ts-ignore 2784
@@ -35,10 +39,6 @@ export default class extends Extendable {
 			owned,
 			debugBank
 		};
-	}
-
-	public cl(this: User) {
-		return new Bank(this.settings.get(UserSettings.CollectionLogBank));
 	}
 
 	public async addItemsToCollectionLog(this: User, items: ItemBank) {

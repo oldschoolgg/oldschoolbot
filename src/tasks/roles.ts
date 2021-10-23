@@ -1,10 +1,11 @@
 import { Guild } from 'discord.js';
+import { noOp, notEmpty } from 'e';
 import { Task } from 'klasa';
 
 import { CLUser, SkillUser } from '../commands/Minion/leaderboard';
 import { production } from '../config';
 import { Minigames } from '../extendables/User/Minigame';
-import { Roles, SupportServer } from '../lib/constants';
+import { BOT_TYPE, Roles, SupportServer } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
 import ClueTiers from '../lib/minions/data/clueTiers';
 import { UserSettings } from '../lib/settings/types/UserSettings';
@@ -16,20 +17,7 @@ function addToUserMap(userMap: Record<string, string[]>, id: string, reason: str
 	userMap[id].push(reason);
 }
 
-const minigames = [
-	'barb_assault',
-	'agility_arena',
-	'mahogany_homes',
-	'gnome_restaurant',
-	'soul_wars',
-	'castle_wars',
-	'raids',
-	'raids_challenge_mode',
-	'big_chompy_bird_hunting',
-	'rogues_den',
-	'temple_trekking',
-	'volcanic_mine'
-];
+const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
 const collections = [
 	'overall',
@@ -77,20 +65,24 @@ async function addRoles({
 }): Promise<string> {
 	let added: string[] = [];
 	let removed: string[] = [];
-	let _role = g.roles.cache.get(role);
-	if (!_role) _role = (await g.roles.fetch(role)) ?? undefined;
+	let _role = await g.roles.fetch(role);
 	if (!_role) return 'Could not check role';
+	for (const u of users.filter(notEmpty)) {
+		await g.members.fetch(u);
+	}
 	const roleName = _role.name!;
 	for (const mem of g.members.cache.values()) {
 		if (mem.roles.cache.has(role) && !users.includes(mem.user.id)) {
 			if (production) {
-				await mem.roles.remove(role);
+				await mem.roles.remove(role).catch(noOp);
 			}
 			if (badge && mem.user.settings.get(UserSettings.Badges).includes(badge)) {
 				await mem.user.settings.sync(true);
-				await mem.user.settings.update(UserSettings.Badges, badge, {
-					arrayAction: 'remove'
-				});
+				await mem.user.settings
+					.update(UserSettings.Badges, badge, {
+						arrayAction: 'remove'
+					})
+					.catch(noOp);
 			}
 			removed.push(mem.user.username);
 		}
@@ -98,13 +90,15 @@ async function addRoles({
 		if (users.includes(mem.user.id)) {
 			if (production && !mem.roles.cache.has(role)) {
 				added.push(mem.user.username);
-				await mem.roles.add(role);
+				await mem.roles.add(role).catch(noOp);
 			}
 			if (badge && !mem.user.settings.get(UserSettings.Badges).includes(badge)) {
 				await mem.user.settings.sync(true);
-				await mem.user.settings.update(UserSettings.Badges, badge, {
-					arrayAction: 'add'
-				});
+				await mem.user.settings
+					.update(UserSettings.Badges, badge, {
+						arrayAction: 'add'
+					})
+					.catch(noOp);
 			}
 		}
 	}
@@ -135,7 +129,9 @@ export default class extends Task {
 	async run() {
 		const g = this.client.guilds.cache.get(SupportServer);
 		if (!g) return;
-		await g.members.fetch();
+		if (BOT_TYPE === 'OSB' && production) {
+			await g.members.fetch();
+		}
 		const skillVals = Object.values(Skills);
 
 		let result = '';
@@ -199,15 +195,9 @@ export default class extends Task {
 		// Top Collectors
 		async function topCollector() {
 			const userMap = {};
-			const topCollectors = await Promise.all(
-				collections.map(async clName => {
-					const items = getCollectionItems(clName);
-					if (!items) {
-						console.error(`${clName} collection log doesnt exist`);
-					}
-					const users = (
-						await q<any>(
-							`
+
+			function generateQuery(items: number[], ironmenOnly: boolean, limit: number) {
+				const t = `
 SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 				  FROM (
   SELECT ARRAY(SELECT * FROM JSONB_OBJECT_KEYS("collectionLogBank")) "cl_keys",
@@ -217,16 +207,54 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 					.join(', ')}]))) "inverse_length"
 			FROM users
 			WHERE "collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
+			${ironmenOnly ? 'AND "minion.ironman" = true' : ''}
 			) u
 			ORDER BY qty DESC
-			LIMIT 1;
-`
-						)
-					).filter((i: any) => i.qty > 0) as CLUser[];
-					addToUserMap(userMap, users?.[0]?.id, `Rank 1 ${clName} CL`);
-					return users?.[0]?.id;
-				})
-			);
+			LIMIT ${limit};
+`;
+
+				return t;
+			}
+
+			const topCollectors = (
+				await Promise.all(
+					collections.map(async clName => {
+						const items = getCollectionItems(clName);
+						if (!items) {
+							console.error(`${clName} collection log doesnt exist`);
+						}
+
+						const [users, ironUsers] = await Promise.all([
+							(await q<any>(generateQuery(items, false, 1))).filter((i: any) => i.qty > 0) as CLUser[],
+							(await q<any>(generateQuery(items, false, 1))).filter((i: any) => i.qty > 0) as CLUser[]
+						]);
+
+						let result = [];
+						const userID = users[0]?.id;
+						const ironmanID = ironUsers[0]?.id;
+
+						if (userID) {
+							addToUserMap(userMap, userID, `Rank 1 ${clName} CL`);
+							result.push(userID);
+						}
+						if (ironmanID) {
+							addToUserMap(userMap, ironmanID, `Rank 1 Ironman ${clName} CL`);
+							result.push(ironmanID);
+						}
+
+						return result;
+					})
+				)
+			).flat(2);
+
+			const topIronUsers = (await q<any>(generateQuery(getCollectionItems('overall'), true, 3))).filter(
+				(i: any) => i.qty > 0
+			) as CLUser[];
+			for (let i = 0; i < topIronUsers.length; i++) {
+				const id = topIronUsers[i]?.id;
+				addToUserMap(userMap, id, `Rank ${i + 1} Ironman Collector`);
+				topCollectors.push(id);
+			}
 
 			result += await addRoles({ g: g!, users: topCollectors, role: Roles.TopCollector, badge: 10, userMap });
 		}
@@ -293,9 +321,12 @@ LIMIT 1;`
 						)
 					)
 				)
-			).map((i: any) => [i[0]?.id, i[0]?.n]);
+			)
+				.filter((i: any) => Boolean(i[0]?.id))
+				.map((i: any) => [i[0]?.id, i[0]?.n]);
 
 			let userMap = {};
+
 			for (const [id, n] of topClueHunters) {
 				addToUserMap(userMap, id, `Rank 1 ${n} Clues`);
 			}
@@ -309,6 +340,46 @@ LIMIT 1;`
 			});
 		}
 
+		// Top farmers
+		async function farmers() {
+			const queries = [
+				`SELECT id, 'Top 2 Farming Contracts' as desc
+FROM users
+WHERE "minion.farmingContract" IS NOT NULL
+AND "minion.ironman" = true
+ORDER BY ("minion.farmingContract"->>'contractsCompleted')::int DESC
+LIMIT 2;`,
+				`SELECT id, 'Top 2 Ironman Farming Contracts' as desc
+FROM users
+WHERE "minion.farmingContract" IS NOT NULL
+ORDER BY ("minion.farmingContract"->>'contractsCompleted')::int DESC
+LIMIT 2;`,
+				`SELECT user_id as id, 'Top 2 Most Farming Trips' as desc
+FROM activity
+WHERE type = 'Farming'
+GROUP BY user_id
+ORDER BY count(user_id) DESC
+LIMIT 2;`,
+				`SELECT id, 'Top 2 Tithe Farm' as desc
+FROM users
+ORDER BY "stats.titheFarmsCompleted" DESC
+LIMIT 2;`
+			];
+			let res = (await Promise.all(queries.map(q))).map((i: any) => [i[0]?.id, i[0]?.desc]);
+			let userMap = {};
+			for (const [id, desc] of res) {
+				addToUserMap(userMap, id, desc);
+			}
+
+			result += await addRoles({
+				g: g!,
+				users: res.map(i => i[0]),
+				role: '894194027363205150',
+				badge: null,
+				userMap
+			});
+		}
+
 		// Top slayers
 		async function slayer() {
 			let topSlayers = (
@@ -317,7 +388,9 @@ LIMIT 1;`
 						q(query)
 					)
 				)
-			).map((i: any) => [i[0]?.id, i[0]?.desc]);
+			)
+				.filter((i: any) => Boolean(i[0]?.id))
+				.map((i: any) => [i[0]?.id, i[0]?.desc]);
 
 			let userMap = {};
 			for (const [id, desc] of topSlayers) {
@@ -339,7 +412,8 @@ LIMIT 1;`
 			['Top Minigamers', topMinigamers],
 			['Top Sacrificers', topSacrificers],
 			['Top Collectors', topCollector],
-			['Top Skillers', topSkillers]
+			['Top Skillers', topSkillers],
+			['Top Farmers', farmers]
 		] as const;
 
 		let failed: string[] = [];

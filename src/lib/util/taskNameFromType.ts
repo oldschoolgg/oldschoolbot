@@ -128,5 +128,7 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.PestControl;
 		case Activity.VolcanicMine:
 			return Tasks.VolcanicMine;
+		case Activity.Inferno:
+			return Tasks.Inferno;
 	}
 }

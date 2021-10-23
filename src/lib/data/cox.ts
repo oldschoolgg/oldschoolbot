@@ -185,7 +185,7 @@ export const maxMeleeGear = constructGearSetup({
 	head: "Inquisitor's great helm",
 	neck: 'Amulet of torture',
 	body: "Inquisitor's hauberk",
-	cape: 'Fire cape',
+	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
 	legs: "Inquisitor's plateskirt",
 	feet: 'Primordial boots',

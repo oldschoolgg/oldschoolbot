@@ -1,9 +1,9 @@
 import { Canvas, CanvasRenderingContext2D, createCanvas, Image, registerFont } from 'canvas';
-import { objectKeys, randInt } from 'e';
+import { objectKeys } from 'e';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
@@ -355,7 +355,16 @@ export default class BankImageTask extends Task {
 
 		// Paging
 		if (typeof page === 'number' && !flags.full) {
-			const pageLoot = chunked[page];
+			let pageLoot = chunked[page];
+			let asItem = Items.get(page + 1);
+			if (asItem && !pageLoot) {
+				const amount = bank.amount(asItem.id);
+				if (!amount) {
+					throw `You have no ${asItem.name}.`;
+				}
+				pageLoot = [[asItem, amount]];
+			}
+
 			if (!pageLoot) throw 'You have no items on this page.';
 			items = pageLoot;
 		}
@@ -414,8 +423,7 @@ export default class BankImageTask extends Task {
 			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join('')),
 			hexColor ?? 'no-hex',
 			objectKeys(placeholder).length > 0 ? sha256Hash(JSON.stringify(placeholder)) : '',
-			useSmallBank ? 'smallbank' : 'no-smallbank',
-			randInt(0, Number.MAX_SAFE_INTEGER)
+			useSmallBank ? 'smallbank' : 'no-smallbank'
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
