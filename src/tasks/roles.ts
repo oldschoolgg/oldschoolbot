@@ -216,21 +216,36 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 				return t;
 			}
 
-			const topCollectors = await Promise.all(
-				collections.map(async clName => {
-					const items = getCollectionItems(clName);
-					if (!items) {
-						console.error(`${clName} collection log doesnt exist`);
-					}
+			const topCollectors = (
+				await Promise.all(
+					collections.map(async clName => {
+						const items = getCollectionItems(clName);
+						if (!items) {
+							console.error(`${clName} collection log doesnt exist`);
+						}
 
-					const users = (await q<any>(generateQuery(items, false, 1))).filter(
-						(i: any) => i.qty > 0
-					) as CLUser[];
+						const [users, ironUsers] = await Promise.all([
+							(await q<any>(generateQuery(items, false, 1))).filter((i: any) => i.qty > 0) as CLUser[],
+							(await q<any>(generateQuery(items, false, 1))).filter((i: any) => i.qty > 0) as CLUser[]
+						]);
 
-					addToUserMap(userMap, users?.[0]?.id, `Rank 1 ${clName} CL`);
-					return users?.[0]?.id;
-				})
-			);
+						let result = [];
+						const userID = users[0]?.id;
+						const ironmanID = ironUsers[0]?.id;
+
+						if (userID) {
+							addToUserMap(userMap, userID, `Rank 1 ${clName} CL`);
+							result.push(userID);
+						}
+						if (ironmanID) {
+							addToUserMap(userMap, ironmanID, `Rank 1 Ironman ${clName} CL`);
+							result.push(ironmanID);
+						}
+
+						return result;
+					})
+				)
+			).flat(2);
 
 			const topIronUsers = (await q<any>(generateQuery(getCollectionItems('overall'), true, 3))).filter(
 				(i: any) => i.qty > 0
