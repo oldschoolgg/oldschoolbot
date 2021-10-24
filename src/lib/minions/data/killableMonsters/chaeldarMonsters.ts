@@ -405,7 +405,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 0,
-		itemsRequired: resolveItems(['Dark totem']),
 		notifyDrops: resolveItems(['Jar of darkness', 'Skotos']),
 		qpRequired: 0,
 		// Skotizo requires 1 totem per kill, and arclight makes kill 2x faster irl.
@@ -414,7 +413,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 				[itemID('Arclight')]: 50
 			}
 		],
-		itemCost: new Bank().add('Dark totem', 1),
+		itemCost: { itemCost: new Bank().add('Dark totem', 1), qtyPerKill: 1 },
 		healAmountNeeded: 20 * 15,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic]
