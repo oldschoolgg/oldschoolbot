@@ -26,11 +26,11 @@ function itemSearch(msg: KlasaMessage, name: string) {
 		if (msg.flagArgs.includes) {
 			return i.name.toLowerCase().includes(name.toLowerCase());
 		}
-		return i.name.toLowerCase() === name.toLowerCase();
+		return [i.id.toString(), i.name.toLowerCase()].includes(name.toLowerCase());
 	}).array();
 	if (items.length === 0) return msg.channel.send('No results for that item.');
 
-	const gettedItem = Items.get(name);
+	const gettedItem = items[0];
 
 	if (msg.flagArgs.raw) {
 		return msg.channel.send(`\`\`\`\n${JSON.stringify(gettedItem, null, 4)}\n\`\`\``);
