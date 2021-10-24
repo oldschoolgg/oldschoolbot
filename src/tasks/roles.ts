@@ -230,7 +230,7 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 
 						const [users, ironUsers] = await Promise.all([
 							(await q<any>(generateQuery(items, false, 1))).filter((i: any) => i.qty > 0) as CLUser[],
-							(await q<any>(generateQuery(items, false, 1))).filter((i: any) => i.qty > 0) as CLUser[]
+							(await q<any>(generateQuery(items, true, 1))).filter((i: any) => i.qty > 0) as CLUser[]
 						]);
 
 						let result = [];
