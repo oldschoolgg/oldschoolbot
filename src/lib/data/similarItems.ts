@@ -164,6 +164,7 @@ const source: [string, (string | number)[]][] = [
 	['Abyssal whip', ['Volcanic abyssal whip', 'Frozen abyssal whip', 'Abyssal tentacle']],
 	['Granite maul', [12_848]],
 	['Rune scimitar', [23_330, 23_332, 23_334]],
+	['Ogre bow', ['Comp ogre bow']],
 	[
 		"Black d'hide body",
 		[
