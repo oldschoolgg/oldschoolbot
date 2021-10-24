@@ -63,7 +63,7 @@ export default class extends BotCommand {
 						content:
 							type === 'fire'
 								? 'You lucky. Better train him good else TzTok-Jad find you, JalYt.'
-								: 'Luck be a TzHaar tonight. Jal-Nib-Rek is yours."',
+								: 'Luck be a TzHaar tonight. Jal-Nib-Rek is yours.',
 						head: type === 'fire' ? 'mejJal' : 'ketKeh'
 					})
 				]

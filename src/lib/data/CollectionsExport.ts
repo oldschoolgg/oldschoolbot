@@ -1709,7 +1709,11 @@ export const holidayCL = resolveItems([
 	'Chicken head',
 	'Chicken wings',
 	'Chicken legs',
-	'Chicken feet'
+	'Chicken feet',
+	'Banshee mask',
+	'Banshee top',
+	'Banshee robe',
+	'Hunting knife'
 ]);
 export const dailyCL = resolveItems([
 	'Event rpg',
@@ -1828,6 +1832,15 @@ export const capesCL = resolveItems([
 	'Obsidian cape (r)',
 	'Team cape x',
 	'Graceful cape',
+	'Arceuus graceful cape',
+	'Piscarilius graceful cape',
+	'Lovakengj graceful cape',
+	'Shayzien graceful cape',
+	'Hosidius graceful cape',
+	'Kourend graceful cape',
+	'Brimhaven graceful cape',
+	'Dark graceful cape',
+	'Trailblazer graceful cape',
 	'3rd age druidic cloak',
 	'3rd age cloak',
 	'Ancient cloak',

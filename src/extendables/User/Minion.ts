@@ -72,6 +72,7 @@ import {
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	InfernoOptions,
+	KourendFavourActivityTaskOptions,
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
@@ -579,7 +580,10 @@ export default class extends Extendable {
 				const data = currentTask as VolcanicMineActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity} games of Volcanic Mine. ${formattedDuration}`;
 			}
-
+			case Activity.KourendFavour: {
+				const data = currentTask as KourendFavourActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.favour.name} Favour tasks. ${formattedDuration}`;
+			}
 			case Activity.Inferno: {
 				const data = currentTask as InfernoOptions;
 				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();

@@ -367,6 +367,7 @@ export const allCollectionLogs: ICollection = {
 				roleCategory: ['bosses']
 			},
 			Tempoross: {
+				alias: ['tempoross', 'temp', 'tempo', 'tr', 'ross'],
 				items: temporossCL,
 				allItems: resolveItems([...spiritAnglerOutfit, 'Spirit flakes']),
 				roleCategory: ['bosses']
@@ -831,7 +832,6 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Shayzien Armour': {
-				enabled: false,
 				items: shayzienArmourCL
 			},
 			'Shooting Stars': { enabled: false, items: resolveItems(['Celestial ring (uncharged)', 'Star fragment']) },
