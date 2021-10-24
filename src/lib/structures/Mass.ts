@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable prefer-promise-reject-errors */
-import { MessageReaction, TextChannel } from 'discord.js';
+import { MessageReaction, TextChannel, User } from 'discord.js';
 import { debounce, sleep, Time } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
 
@@ -71,10 +71,17 @@ export class Mass {
 
 		const promise = new Promise<KlasaUser[]>(async (resolve, reject) => {
 			const start = async () => {
-				const usersReacted = (await this.message!.reactions.cache.get(ReactionEmoji.Join)!.users.fetch())
-					.array()
-					.filter(i => !i.bot);
-
+				let usersReacted: User[] = [];
+				try {
+					const tryGetReactions = (await this.message!.reactions.cache.get(ReactionEmoji.Join)!.users.fetch())
+						.array()
+						.filter(i => !i.bot);
+					usersReacted = tryGetReactions;
+				} catch (e) {
+					let reason = 'Unknown error';
+					if (e.message && e.message === 'Unknown Message') reason = 'Someone deleted the mass';
+					reject(new Error(reason));
+				}
 				for (const user of usersReacted) {
 					if (this.customDenier) {
 						const [denied] = await this.customDenier(user);
@@ -83,7 +90,6 @@ export class Mass {
 						}
 					}
 				}
-
 				if (this.users.length < this.minSize) {
 					reject(new Error(`Did not meet minimum mass size of ${this.minSize}`));
 				}
