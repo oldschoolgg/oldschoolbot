@@ -288,8 +288,10 @@ export default class extends Task {
 			}
 		}
 
-		let goyleChance = user.cl().has('Gregoyle') ? 12 : 2;
+		const hasGottenAGregoyle = user.cl().has('Gregoyle');
+		let goyleChance = hasGottenAGregoyle ? 4 : 2;
 		goyleChance = Math.floor(Math.max(2, (Time.Hour / duration) * goyleChance));
+		let rangeNeededToFeed = hasGottenAGregoyle ? [7, 10] : [3, 5];
 
 		if (monster.name === 'Gargoyle' && roll(goyleChance)) {
 			const userBank = user.bank();
@@ -297,7 +299,7 @@ export default class extends Task {
 				const timesFed = user.settings.get(UserSettings.TimesFedGregoyle);
 				await user.removeItemsFromBank(new Bank().add("Choc'rock"));
 				await user.settings.update(UserSettings.TimesFedGregoyle, timesFed + 1);
-				if (timesFed >= randInt(3, 5)) {
+				if (timesFed >= randInt(rangeNeededToFeed[0], rangeNeededToFeed[1])) {
 					await user.settings.update(UserSettings.TimesFedGregoyle, 0);
 					loot.add('Gregoyle');
 					str +=
