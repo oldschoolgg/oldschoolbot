@@ -12,6 +12,7 @@ import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap
 import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import { ItemBank } from '../../types';
+import { UserKourendFavour } from './../../minions/data/kourendFavour';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -54,6 +55,7 @@ export namespace UserSettings {
 	export const PestControlPoints = T<number>('pest_control_points');
 	export const VolcanicMinePoints = T<number>('volcanic_mine_points');
 	export const FavoriteFood = T<readonly number[]>('favorite_food');
+	export const KourendFavour = T<UserKourendFavour>('kourend_favour');
 	export const IronmanAlts = T<readonly string[]>('ironman_alts');
 	export const MainAccount = T<string | null>('main_account');
 

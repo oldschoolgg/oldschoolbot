@@ -34,6 +34,7 @@ const specialPlants: Plant[] = [
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
 	},
@@ -68,7 +69,8 @@ const specialPlants: Plant[] = [
 			[33, 1] // Prif Patch
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
 			[45, 1] // Farming Guild
 		],
 		timePerPatchTravel: 20,
@@ -107,6 +109,7 @@ const specialPlants: Plant[] = [
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 7,
 		timePerHarvest: 10
 	},
@@ -138,6 +141,7 @@ const specialPlants: Plant[] = [
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 2,
 		timePerHarvest: 15
 	},
@@ -171,7 +175,8 @@ const specialPlants: Plant[] = [
 			[3, 1] // Etceteria patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
 			[45, 1] // Farming Guild Low (1)
 		],
 		timePerPatchTravel: 20,
@@ -208,6 +213,7 @@ const specialPlants: Plant[] = [
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 10,
 		timePerHarvest: 5
 	},
@@ -239,7 +245,8 @@ const specialPlants: Plant[] = [
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
 			[45, 1] // Farming Guide Low (1)
 		],
 		timePerPatchTravel: 20,
@@ -278,6 +285,7 @@ const specialPlants: Plant[] = [
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 7,
 		timePerHarvest: 10
 	},
@@ -311,7 +319,8 @@ const specialPlants: Plant[] = [
 			[3, 1] // Etceteria patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
 			[45, 1] // Farming Guild Low (1)
 		],
 		timePerPatchTravel: 20,
@@ -346,6 +355,7 @@ const specialPlants: Plant[] = [
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 15,
 		timePerHarvest: 5
 	},
@@ -377,7 +387,8 @@ const specialPlants: Plant[] = [
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
 			[45, 1] // Farming Guide Low (1)
 		],
 		timePerPatchTravel: 20,
@@ -403,7 +414,7 @@ const specialPlants: Plant[] = [
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: false,
-		defaultNumOfPatches: 1,
+		defaultNumOfPatches: 0,
 		canPayFarmer: false,
 		canCompostPatch: false,
 		canCompostandPay: false,
@@ -411,6 +422,9 @@ const specialPlants: Plant[] = [
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guide Medium (1)
+		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 90
 	},
@@ -443,7 +457,8 @@ const specialPlants: Plant[] = [
 			[3, 1] // Etceteria patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
 			[45, 1] // Farming Guild Low (1)
 		],
 		timePerPatchTravel: 20,
@@ -480,6 +495,7 @@ const specialPlants: Plant[] = [
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
 	},
@@ -521,6 +537,7 @@ const specialPlants: Plant[] = [
 		],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 20,
 		timePerHarvest: 5
 	},
@@ -557,8 +574,10 @@ const specialPlants: Plant[] = [
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
-			[91, 1], // Plant up to 2 seeds at lvl 91
-			[99, 4] // Plant in all patches at lvl 99
+			[99, 3] // Plant in all patches at lvl 99
+		],
+		additionalPatchesByFarmGuildAndLvl: [
+			[91, 1] // Plant up to 2 seeds at lvl 91 with farm guild
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 1
@@ -592,7 +611,8 @@ const specialPlants: Plant[] = [
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
 			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 10,
@@ -628,7 +648,8 @@ const specialPlants: Plant[] = [
 		// [QP, Patches Gained]
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
 			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 10,

@@ -36,8 +36,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -75,8 +76,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -114,8 +116,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -153,8 +156,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -192,8 +196,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -231,8 +236,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -270,8 +276,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -309,8 +316,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
