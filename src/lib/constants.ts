@@ -218,6 +218,7 @@ export const enum Tasks {
 	RevenantsActivity = 'revenantsActivity',
 	PestControl = 'pestControlActivity',
 	VolcanicMine = 'volcanicMineActivity',
+	KourendFavour = 'kourendFavourActivity',
 	Inferno = 'infernoActivity'
 }
 
@@ -285,6 +286,7 @@ export enum Activity {
 	Revenants = 'Revenants',
 	PestControl = 'PestControl',
 	VolcanicMine = 'VolcanicMine',
+	KourendFavour = 'KourendFavour',
 	Inferno = 'Inferno'
 }
 
