@@ -64,7 +64,7 @@ export default class extends BotCommand {
 
 		if (fish.name === 'Infernal eel' && msg.author.getKC(TzTokJad.id) < 1) {
 			return msg.channel.send(
-				'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the might TzTok-Jad!'
+				'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!'
 			);
 		}
 
