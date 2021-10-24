@@ -203,6 +203,22 @@ const Bows: Fletchable[] = [
 		xp: 120,
 		inputItems: new Bank({ 'Tanzanite fang': 1 }),
 		tickRate: 2
+	},
+	{
+		name: 'Unstrung comp bow',
+		id: itemID('Unstrung comp bow'),
+		level: 30,
+		xp: 145,
+		inputItems: new Bank({ 'Achey tree logs': 1, 'Wolf bones': 1 }),
+		tickRate: 3
+	},
+	{
+		name: 'Comp ogre bow',
+		id: itemID('Comp ogre bow'),
+		level: 30,
+		xp: 145,
+		inputItems: new Bank({ 'Unstrung comp bow': 1, 'Bow string': 1 }),
+		tickRate: 2
 	}
 ];
 
