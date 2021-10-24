@@ -2,6 +2,7 @@ import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Activity } from '../../lib/constants';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
@@ -72,6 +73,13 @@ export default class extends BotCommand {
 		const QP = msg.author.settings.get(UserSettings.QP);
 		if (QP < log.qpRequired) {
 			return msg.channel.send(`${msg.author.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`);
+		}
+
+		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Hosidius, 75);
+		if (!hasFavour && log.name === 'Redwood Logs') {
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${requiredPoints}% Hosidius Favour to chop Redwood at the Woodcutting Guild!`
+			);
 		}
 
 		// Calculate the time it takes to chop a single log of this type, at this persons level.

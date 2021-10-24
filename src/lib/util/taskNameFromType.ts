@@ -150,6 +150,8 @@ export function taskNameFromType(activityType: Activity) {
 			return Tasks.TrickOrTreat;
 		case Activity.BossEvent:
 			return Tasks.BossEvent;
+		case Activity.KourendFavour:
+			return Tasks.KourendFavour;
 		case Activity.Inferno:
 			return Tasks.Inferno;
 	}

@@ -179,30 +179,6 @@ const sepulchreBuyables: Buyable[] = [
 		itemCost: resolveNameBank({ 'Hallowed mark': 3000 })
 	},
 	{
-		name: 'Dark graceful hood',
-		itemCost: resolveNameBank({ 'Graceful hood': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful top',
-		itemCost: resolveNameBank({ 'Graceful top': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful legs',
-		itemCost: resolveNameBank({ 'Graceful legs': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful gloves',
-		itemCost: resolveNameBank({ 'Graceful gloves': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful boots',
-		itemCost: resolveNameBank({ 'Graceful boots': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful cape',
-		itemCost: resolveNameBank({ 'Graceful cape': 1, 'Dark dye': 1 })
-	},
-	{
 		name: 'Dark squirrel',
 		itemCost: resolveNameBank({ 'Dark acorn': 1, 'Giant squirrel': 1 })
 	}
@@ -783,6 +759,11 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 58
 	},
+	{
+		name: 'Sandworms',
+		gpCost: 500
+	},
+
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,

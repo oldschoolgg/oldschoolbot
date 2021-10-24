@@ -2,17 +2,31 @@ import { MessageAttachment } from 'discord.js';
 import { KlasaMessage, KlasaUser } from 'klasa';
 
 import { BitField } from '../../constants';
+import { Favours, gotFavour } from '../../minions/data/kourendFavour';
 import Farming from '../../skilling/skills/farming';
 import { itemNameFromID, rand, userHasMasterFarmerOutfit } from '../../util';
 import { Plant, SkillsEnum } from '../types';
 
-export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
+export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number): [number, string | undefined] {
 	let numOfPatches = plant.defaultNumOfPatches;
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
 	const questPoints = qp;
 	for (let i = plant.additionalPatchesByQP.length; i > 0; i--) {
 		const [questPointsReq, additionalPatches] = plant.additionalPatchesByQP[i - 1];
 		if (questPoints >= questPointsReq) {
+			numOfPatches += additionalPatches;
+			break;
+		}
+	}
+	let errorMessage: string | undefined = undefined;
+	for (let i = plant.additionalPatchesByFarmGuildAndLvl.length; i > 0; i--) {
+		const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 60);
+		if (!hasFavour) {
+			errorMessage = `${user.minionName} needs ${requiredPoints}% Hosidius Favour to use Farming guild patches.`;
+			break;
+		}
+		const [farmingLevelReq, additionalPatches] = plant.additionalPatchesByFarmGuildAndLvl[i - 1];
+		if (farmingLevel >= farmingLevelReq) {
 			numOfPatches += additionalPatches;
 			break;
 		}
@@ -26,7 +40,8 @@ export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
 	}
 	if (user.bitfield.includes(BitField.HasScrollOfFarming)) numOfPatches += 2;
 	if (userHasMasterFarmerOutfit(user)) numOfPatches += 3;
-	return numOfPatches;
+
+	return [numOfPatches, errorMessage];
 }
 
 export function calcVariableYield(
@@ -66,7 +81,7 @@ export function returnListOfPlants(msg: KlasaMessage) {
 						.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
 						.join(', ')}\n	Default # of patches: ${
 						plant.defaultNumOfPatches
-					}\n${plant.additionalPatchesByFarmLvl.map(
+					}\n${plant.additionalPatchesByFarmGuildAndLvl.map(
 						entry => `	| Farming Level: ${entry[0]} => Total Additional Patches: ${entry[1]} |\n`
 					)} ${plant.additionalPatchesByQP.map(
 						entry => `	| Quest Points: ${entry[0]} => Total Additional Patches: ${entry[1]} |\n`
