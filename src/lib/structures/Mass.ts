@@ -81,6 +81,7 @@ export class Mass {
 					let reason = 'Unknown error';
 					if (e.message && e.message === 'Unknown Message') reason = 'Someone deleted the mass';
 					reject(new Error(reason));
+					return;
 				}
 				for (const user of usersReacted) {
 					if (this.customDenier) {
