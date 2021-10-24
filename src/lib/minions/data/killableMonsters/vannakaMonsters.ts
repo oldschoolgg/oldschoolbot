@@ -873,8 +873,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		existsInCatacombs: false,
 		difficultyRating: 3,
 		qpRequired: 0,
-		itemsRequired: resolveItems(['Mossy key']),
-		itemCost: new Bank().add('Mossy key', 1),
+		itemCost: { itemCost: new Bank().add('Mossy key', 1), qtyPerKill: 1 },
 		healAmountNeeded: 20 * 8,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]

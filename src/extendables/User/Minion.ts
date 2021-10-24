@@ -76,6 +76,7 @@ import {
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	InfernoOptions,
+	KourendFavourActivityTaskOptions,
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonkeyRumbleOptions,
@@ -645,6 +646,10 @@ export default class extends Extendable {
 				const data = currentTask as NewBossOptions;
 				const bossDoing = bossEvents.find(b => b.id === data.bossID)!;
 				return `${this.minionName} is currently doing a ${bossDoing.name} Boss Event! ${formattedDuration}`;
+			}
+			case Activity.KourendFavour: {
+				const data = currentTask as KourendFavourActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.favour.name} Favour tasks. ${formattedDuration}`;
 			}
 			case Activity.Inferno: {
 				const data = currentTask as InfernoOptions;

@@ -38,7 +38,8 @@ export const bushes: Plant[] = [
 			[110, 1]
 		],
 		timePerPatchTravel: 20,
-		timePerHarvest: 10
+		timePerHarvest: 10,
+		additionalPatchesByFarmGuildAndLvl: []
 	},
 	{
 		level: 105,
@@ -75,7 +76,8 @@ export const bushes: Plant[] = [
 			[110, 1]
 		],
 		timePerPatchTravel: 20,
-		timePerHarvest: 10
+		timePerHarvest: 10,
+		additionalPatchesByFarmGuildAndLvl: []
 	},
 	{
 		level: 111,
@@ -112,6 +114,7 @@ export const bushes: Plant[] = [
 			[110, 1]
 		],
 		timePerPatchTravel: 20,
-		timePerHarvest: 10
+		timePerHarvest: 10,
+		additionalPatchesByFarmGuildAndLvl: []
 	}
 ];

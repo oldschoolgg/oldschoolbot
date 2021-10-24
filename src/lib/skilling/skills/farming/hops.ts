@@ -32,6 +32,7 @@ const hopsPlants: Plant[] = [
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20
 	},
@@ -64,6 +65,7 @@ const hopsPlants: Plant[] = [
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20
 	},
@@ -96,6 +98,7 @@ const hopsPlants: Plant[] = [
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20
 	},
@@ -128,6 +131,7 @@ const hopsPlants: Plant[] = [
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20
 	},
@@ -160,6 +164,7 @@ const hopsPlants: Plant[] = [
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20
 	},
@@ -192,6 +197,7 @@ const hopsPlants: Plant[] = [
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20
 	},
@@ -224,6 +230,7 @@ const hopsPlants: Plant[] = [
 		additionalPatchesByQP: [],
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20
 	}

@@ -13,6 +13,7 @@ import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import { Nursery } from '../../tames';
 import { ItemBank } from '../../types';
+import { UserKourendFavour } from './../../minions/data/kourendFavour';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -66,6 +67,7 @@ export namespace UserSettings {
 	export const VolcanicMinePoints = T<number>('volcanic_mine_points');
 	export const MonkeysFought = T<string[]>('monkeys_fought');
 	export const FavoriteFood = T<readonly number[]>('favorite_food');
+	export const KourendFavour = T<UserKourendFavour>('kourend_favour');
 	export const IronmanAlts = T<readonly string[]>('ironman_alts');
 	export const MainAccount = T<string | null>('main_account');
 	export const TimesFedGregoyle = T<number>('times_fed_gregoyle');

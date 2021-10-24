@@ -68,7 +68,11 @@ async function addRoles({
 	let _role = await g.roles.fetch(role);
 	if (!_role) return 'Could not check role';
 	for (const u of users.filter(notEmpty)) {
-		await g.members.fetch(u);
+		try {
+			await g.members.fetch(u);
+		} catch {
+			console.error(`Failed to fetch \`${u}\` member.`);
+		}
 	}
 	const roleName = _role.name!;
 	for (const mem of g.members.cache.values()) {

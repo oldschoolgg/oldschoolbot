@@ -243,6 +243,7 @@ export const enum Tasks {
 	MonkeyRumble = 'monkeyRumbleActivity',
 	TrickOrTreat = 'trickOrTreatActivity',
 	BossEvent = 'bossEventActivity',
+	KourendFavour = 'kourendFavourActivity',
 	Inferno = 'infernoActivity'
 }
 
@@ -321,6 +322,7 @@ export enum Activity {
 	MonkeyRumble = 'MonkeyRumble',
 	TrickOrTreat = 'TrickOrTreat',
 	BossEvent = 'BossEvent',
+	KourendFavour = 'KourendFavour',
 	Inferno = 'Inferno'
 }
 

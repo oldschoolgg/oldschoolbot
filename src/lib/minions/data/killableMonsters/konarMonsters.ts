@@ -1,9 +1,9 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { GearStat } from '../../../gear';
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
+import resolveItems from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
 export const konarMonsters: KillableMonster[] = [
@@ -112,7 +112,14 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 6,
-		itemsRequired: deepResolveItems(['Antidote++(4)']),
+		itemCost: {
+			itemCost: new Bank().add('Anti-venom+(4)', 1),
+			qtyPerMinute: 0.017,
+			alternativeConsumables: [
+				{ itemCost: new Bank().add('Anti-venom(4)', 1), qtyPerMinute: 0.021 },
+				{ itemCost: new Bank().add('Antidote++(4)', 1), qtyPerMinute: 0.021 }
+			]
+		},
 		notifyDrops: resolveItems(['Hydra tail']),
 		qpRequired: 0,
 		levelRequirements: {
@@ -133,8 +140,15 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 7,
-		itemsRequired: deepResolveItems(['Antidote++(4)']),
-		notifyDrops: resolveItems(['Hydra leather', 'Hydra tail', "Hydra's claw", 'Ikkle hydra', 'Jar of chemicals']),
+		itemCost: {
+			itemCost: new Bank().add('Anti-venom+(4)', 1),
+			qtyPerMinute: 0.017,
+			alternativeConsumables: [
+				{ itemCost: new Bank().add('Anti-venom(4)', 1), qtyPerMinute: 0.021 },
+				{ itemCost: new Bank().add('Antidote++(4)', 1), qtyPerMinute: 0.021 }
+			]
+		},
+		notifyDrops: resolveItems(['Hydra leather', "Hydra's claw", 'Ikkle hydra', 'Jar of chemicals']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
