@@ -148,7 +148,7 @@ export const konarMonsters: KillableMonster[] = [
 				{ itemCost: new Bank().add('Antidote++(4)', 1), qtyPerMinute: 0.021 }
 			]
 		},
-		notifyDrops: resolveItems(['Hydra leather', 'Hydra tail', "Hydra's claw", 'Ikkle hydra', 'Jar of chemicals']),
+		notifyDrops: resolveItems(['Hydra leather', "Hydra's claw", 'Ikkle hydra', 'Jar of chemicals']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{

@@ -357,6 +357,9 @@ export const chaeldarMonsters: KillableMonster[] = [
 				[itemID('Toxic blowpipe')]: 15,
 				[itemID('Toxic blowpipe (empty)')]: 10,
 				[itemID('Armadyl crossbow')]: 8
+			},
+			{
+				[itemID('Shayzien helm (5)')]: 2
 			}
 		],
 		levelRequirements: {

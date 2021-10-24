@@ -3,6 +3,7 @@ import { Client, SchemaFolder } from 'klasa';
 import { FarmingPatchTypes } from '../../minions/farming/types';
 import { BlowpipeData } from '../../minions/types';
 import { SkillsEnum } from '../../skilling/types';
+import { baseUserKourendFavour } from './../../minions/data/kourendFavour';
 
 const defaultBlowpipe: BlowpipeData = {
 	scales: 0,
@@ -46,9 +47,11 @@ Client.defaultUserSchema
 	.add('inferno_attempts', 'integer', { default: 0 })
 	.add('infernal_cape_sacrifices', 'integer', { default: 0 })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
+	.add('kourend_favour', 'any', { default: { ...baseUserKourendFavour } })
 	.add('blowpipe', 'any', { default: { ...defaultBlowpipe } })
 	.add('ironman_alts', 'string', { array: true, default: [] })
 	.add('main_account', 'string', { default: null })
+	.add('wrong_accusations', 'integer', { default: 0 })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })

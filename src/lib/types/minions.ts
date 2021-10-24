@@ -4,6 +4,7 @@ import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Activity } from '../constants';
 import { IPatchData } from '../minions/farming/types';
+import { KourendFavour } from './../minions/data/kourendFavour';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
 export interface ActivityTaskOptions {
@@ -336,6 +337,11 @@ export interface VolcanicMineActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
+	favour: KourendFavour;
+	quantity: number;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions
@@ -358,4 +364,5 @@ export type ActivityTaskData =
 	| RunecraftActivityTaskOptions
 	| TempleTrekkingActivityTaskOptions
 	| TemporossActivityTaskOptions
-	| VolcanicMineActivityTaskOptions;
+	| VolcanicMineActivityTaskOptions
+	| KourendFavourActivityTaskOptions;
