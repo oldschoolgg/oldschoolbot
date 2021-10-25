@@ -42,7 +42,7 @@ export const bossEvents: BossEvent[] = [
 			for (const i of lootElligible) {
 				userLoot[i.user.id] = new Bank();
 				userLoot[i.user.id].add(pumpkinHeadNonUniqueTable.roll(5));
-				if (roll(10)) {
+				if (roll(25)) {
 					userLoot[i.user.id].add("Choc'rock");
 				}
 				await i.user.incrementMonsterScore(PUMPKINHEAD_ID, 1);
