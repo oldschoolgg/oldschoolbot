@@ -16,11 +16,11 @@ export function gorajanShardChance(user: KlasaUser) {
 	let goraShardBoosts = [];
 	let baseRate = 2000;
 	if (user.hasItemEquippedAnywhere('Dungeoneering master cape')) {
-		baseRate /= 2;
-		goraShardBoosts.push('2x for Dung. mastery');
+		baseRate = reduceNumByPercent(baseRate, 75);
+		goraShardBoosts.push('75% for Dung. mastery');
 	} else if (user.skillLevel(SkillsEnum.Dungeoneering) >= 99) {
-		baseRate = reduceNumByPercent(baseRate, 30);
-		goraShardBoosts.push('30% for 99+ Dungeoneering');
+		baseRate = reduceNumByPercent(baseRate, 40);
+		goraShardBoosts.push('40% for 99+ Dungeoneering');
 	}
 
 	if (user.hasItemEquippedAnywhere('Ring of luck')) {

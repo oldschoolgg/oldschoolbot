@@ -194,10 +194,11 @@ export default class extends BotCommand {
 			.get(UserSettings.DungeoneeringTokens)
 			.toLocaleString()}
 **Max floor:** ${maxFloorUserCanDo(msg.author)}`;
-		const { boosts } = gorajanShardChance(msg.author);
+		const { chance, boosts } = gorajanShardChance(msg.author);
 		if (boosts.length > 0) {
-			str += `\n**Gorajan shard boosts:** ${boosts.join(', ')}`;
+			str += `\n**Gorajan shards rate boost${boosts.length > 1 ? 's' : ''}:** ${boosts.join(', ')}`;
 		}
+		str += `\n(Gorajan shards rate: 1 in ${chance} minutes)`;
 		return msg.channel.send(str);
 	}
 
