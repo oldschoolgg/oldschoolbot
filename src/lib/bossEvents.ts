@@ -65,8 +65,6 @@ export const bossEvents: BossEvent[] = [
 				}
 			}
 
-			let rerolledPeople: [BossUser, BossUser][] = [];
-
 			for (const recip of uniqueItemRecipients) {
 				const cl = recip.user.cl();
 				const items = pumpkinHeadUniqueTable.roll();
@@ -81,11 +79,11 @@ export const bossEvents: BossEvent[] = [
 						const newRecipient = randArrItem(lootElligible.filter(u => !uniqueItemRecipients.includes(u)));
 						if (newRecipient) {
 							uniqueItemRecipients.push(newRecipient);
-							rerolledPeople.push([recip, newRecipient]);
 							uniqueLootStr.push(`${recip.user}'s loot got rerolled to ${newRecipient.user}!`);
 						}
 						continue;
 					}
+					items.bank = newRoll.bank;
 				}
 				const hasPet = items.has('Mini Pumpkinhead');
 				let str = `${recip.user} got ${items}`;
