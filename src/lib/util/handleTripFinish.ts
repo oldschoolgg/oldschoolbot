@@ -250,6 +250,7 @@ export async function handleTripFinish(
 	collectors.set(user.id, collector);
 
 	collector.on('collect', async (mes: KlasaMessage) => {
+		if (client.settings.get(ClientSettings.UserBlacklist).includes(mes.author.id)) return;
 		if (user.minionIsBusy || client.oneCommandAtATimeCache.has(mes.author.id)) {
 			collector.stop();
 			collectors.delete(user.id);
