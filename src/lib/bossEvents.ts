@@ -68,6 +68,9 @@ export const bossEvents: BossEvent[] = [
 			for (const recip of uniqueItemRecipients) {
 				const cl = recip.user.cl();
 				const items = pumpkinHeadUniqueTable.roll();
+
+				let rerolled = false;
+
 				// If no pet, and they already have 2 of this item in CL
 				if (items.length === 1 && cl.amount(items.items()[0][0].id) >= 2) {
 					// Roll them new loot
@@ -83,10 +86,12 @@ export const bossEvents: BossEvent[] = [
 						}
 						continue;
 					}
+
 					items.bank = newRoll.bank;
+					rerolled = true;
 				}
 				const hasPet = items.has('Mini Pumpkinhead');
-				let str = `${recip.user} got ${items}`;
+				let str = `${rerolled ? '♻️ ' : ''}${recip.user} got ${items}`;
 				if (hasPet) str = `**${str}**`;
 				if (secondChancePeople.includes(recip)) str = `<:Haunted_amulet:898407574527942677>${str}`;
 				uniqueLootStr.push(str);
