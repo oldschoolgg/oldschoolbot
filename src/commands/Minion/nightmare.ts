@@ -92,6 +92,8 @@ export default class extends BotCommand {
 
 		const maximumSize = 10;
 
+		const isPhosani = type === 'solo' && Boolean(msg.flagArgs.phosani);
+
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 2,
@@ -222,7 +224,8 @@ export default class extends BotCommand {
 			duration,
 			type: Activity.Nightmare,
 			leader: msg.author.id,
-			users: users.map(u => u.id)
+			users: users.map(u => u.id),
+			isPhosani
 		});
 
 		const str =
