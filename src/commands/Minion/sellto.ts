@@ -121,8 +121,8 @@ export default class extends BotCommand {
 				return msg.channel.send('One of you lacks the required GP or items to make this trade.');
 			}
 			if (price > 0) {
-				await buyerMember.user.removeGP(price);
-				await msg.author.addGP(price);
+				await buyerMember.user.removeItemsFromBank(new Bank().add('Coins', price));
+				await msg.author.addItemsToBank(new Bank().add('Coins', price));
 			}
 
 			await msg.author.removeItemsFromBank(bankToSell.bank);
