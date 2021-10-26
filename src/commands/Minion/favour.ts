@@ -57,7 +57,7 @@ export default class extends BotCommand {
 		if (quantity * favour.pointsGain + currentPoints > 100) {
 			quantity = Math.ceil((100 - currentPoints) / favour.pointsGain);
 		}
-		const duration = quantity * favour.duration;
+		let duration = quantity * favour.duration;
 
 		if (favour.qpRequired && msg.author.settings.get(UserSettings.QP) < favour.qpRequired) {
 			return msg.channel.send(`You need ${favour.qpRequired} QP to do ${favour.name} Favour.`);
@@ -71,8 +71,15 @@ export default class extends BotCommand {
 			}
 		}
 		let cost: Bank = new Bank();
+		let ns = false;
 		if (favour.itemCost) {
 			cost = favour.itemCost.clone().multiply(quantity);
+			if (cost.has('Stamina potion(4)') && msg.flagArgs.ns) {
+				// 50% longer trip time for not using stamina potion(4)
+				ns = true;
+				duration *= 1.5;
+				cost.remove('Stamina potion(4)', cost.amount('Stamina potion (4)'));
+			}
 			if (!msg.author.owns(cost)) {
 				return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
 			}
@@ -91,7 +98,9 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`${msg.author.minionName} is now completing ${favour.name} Favour tasks, it'll take around ${formatDuration(
 				duration
-			)} to finish.${cost.toString().length > 0 ? ` Removed ${cost} from your bank.` : ''}`
+			)} to finish.${cost.toString().length > 0 ? ` Removed ${cost} from your bank.` : ''}${
+				ns ? '\n50% longer trip due to not using Stamina potions.' : ''
+			}`
 		);
 	}
 }
