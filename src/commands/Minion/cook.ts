@@ -10,7 +10,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -56,21 +55,8 @@ export default class extends BotCommand {
 
 		// Based off catherby fish/hr rates
 		let timeToCookSingleCookable = Time.Second * 2.88;
-		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
-			timeToCookSingleCookable /= 1.6;
-		}
-		if (cookable.id === itemID('Plain pizza')) {
-			timeToCookSingleCookable /= 0.432;
-		}
-		if (
-			cookable.id === itemID('Pineapple pizza') ||
-			cookable.id === itemID('Anchovy Pizza') ||
-			cookable.id === itemID('Meat Pizza')
-		) {
-			timeToCookSingleCookable /= 2;
-		}
-		if (cookable.id === itemID('Pizza base')) {
-			timeToCookSingleCookable /= 1.92;
+		if (cookable.customTickRate) {
+			timeToCookSingleCookable = cookable.customTickRate * Time.Second
 		}
 
 		const userBank = msg.author.bank();
