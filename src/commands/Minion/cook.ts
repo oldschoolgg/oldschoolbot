@@ -56,7 +56,7 @@ export default class extends BotCommand {
 		// Based off catherby fish/hr rates
 		let timeToCookSingleCookable = Time.Second * 2.88;
 		if (cookable.customTickRate) {
-			timeToCookSingleCookable = cookable.customTickRate * Time.Second
+			timeToCookSingleCookable = cookable.customTickRate * Time.Second;
 		}
 
 		const userBank = msg.author.bank();
