@@ -6,7 +6,6 @@ import { growablePets } from '../../lib/growablePets';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { removeItemFromBank } from '../../lib/util';
 
 export const allPetIDs = [
 	...allPetsCL,
@@ -30,7 +29,7 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage, [itemArray]: [Item[]]): Promise<KlasaMessage> {
-		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const userBank = msg.author.bank().bank;
 		const petItem = itemArray.find(i => userBank[i.id] && allPetIDs.includes(i.id));
 		if (!petItem) {
 			return msg.channel.send("That's not a pet, or you do not own this pet.");
@@ -38,7 +37,7 @@ export default class extends BotCommand {
 
 		const currentlyEquippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
 		if (currentlyEquippedPet) {
-			await this.client.commands.get('unequippet')?.run(msg, []);
+			await msg.author.petUnequip();
 		}
 
 		const doubleCheckEquippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
@@ -46,10 +45,7 @@ export default class extends BotCommand {
 			msg.author.log(`Aborting pet equip so we don't clobber ${doubleCheckEquippedPet}`);
 			return msg.channel.send('You still have a pet equipped, cancelling.');
 		}
-		await msg.author.settings.update([
-			[UserSettings.Minion.EquippedPet, petItem.id],
-			[UserSettings.Bank, removeItemFromBank(msg.author.settings.get(UserSettings.Bank), petItem.id)]
-		]);
+		await msg.author.petEquip(petItem.id);
 
 		msg.author.log(`equipping ${petItem.name}[${petItem.id}]`);
 

@@ -159,6 +159,18 @@ declare module 'discord.js' {
 		log(stringLog: string): void;
 		addGP(amount: number): Promise<SettingsUpdateResult>;
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
+		exchangeItemsFromBank({
+			costBank,
+			lootBank,
+			collectionLog
+		}: {
+			costBank: ItemBank | Bank;
+			lootBank: ItemBank | Bank;
+			collectionLog?: boolean;
+			filterLoot?: boolean;
+		}): Promise<SettingsUpdateResult>;
+		petEquip(petID: number): Promise<SettingsUpdateResult>;
+		petUnequip(): Promise<SettingsUpdateResult>;
 		addQP(amount: number): Promise<SettingsUpdateResult>;
 		addXP(params: AddXpParams): Promise<string>;
 		skillLevel(skillName: SkillsEnum): number;

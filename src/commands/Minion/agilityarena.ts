@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import { Activity } from '../../lib/constants';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { AgilityArenaActivityTaskOptions } from '../../lib/types/minions';
@@ -142,8 +141,11 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 		}
 
 		await msg.author.settings.sync(true);
-		const bank = new Bank(msg.author.settings.get(UserSettings.Bank));
-		const amountTicketsHas = bank.amount('Agility arena ticket');
+		const userBank = msg.author.bank();
+		const costBank = new Bank();
+		const lootBank = new Bank();
+
+		const amountTicketsHas = userBank.amount('Agility arena ticket');
 		if (amountTicketsHas === 0) {
 			return msg.channel.send({
 				files: [
@@ -196,7 +198,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 
 		if (input === 'recolor') {
 			let cost = 250;
-			if (!bank.has(plainGraceful)) {
+			if (!userBank.has(plainGraceful)) {
 				return msg.channel.send({
 					files: [
 						await chatHeadImage({
@@ -217,13 +219,11 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 					]
 				});
 			}
-			bank.remove('Agility arena ticket', cost);
-			bank.remove(plainGraceful);
-			bank.add(brimhavenGraceful);
-			await msg.author.settings.update(UserSettings.Bank, bank.bank);
-			await msg.author.addItemsToCollectionLog({
-				...brimhavenGraceful
-			});
+			costBank.add('Agility arena ticket', cost);
+			costBank.add(plainGraceful);
+			lootBank.add(brimhavenGraceful);
+			await msg.author.exchangeItemsFromBank({ costBank, lootBank, collectionLog: true });
+
 			return msg.channel.send({
 				files: [
 					await chatHeadImage({

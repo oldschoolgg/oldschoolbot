@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { removeBankFromBank } from 'oldschooljs/dist/util';
 
 import { Activity } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
@@ -19,7 +20,6 @@ import {
 	cleanString,
 	formatDuration,
 	itemNameFromID,
-	removeItemFromBank,
 	stringMatches,
 	updateBankSetting
 } from '../../lib/util';
@@ -229,8 +229,7 @@ export default class extends BotCommand {
 			}.`;
 		}
 
-		let newBank = { ...userBank };
-		let econBank = new Bank();
+		const costBank = new Bank();
 		const requiredSeeds: [string, number][] = Object.entries(plants.inputItems);
 		for (const [seedID, qty] of requiredSeeds) {
 			if (!bankHasItem(userBank, parseInt(seedID), qty * quantity)) {
@@ -240,17 +239,16 @@ export default class extends BotCommand {
 					return msg.channel.send(`You don't have enough ${itemNameFromID(parseInt(seedID))}s.`);
 				}
 			}
-			newBank = removeItemFromBank(newBank, parseInt(seedID), qty * quantity);
-			econBank.add(parseInt(seedID), qty * quantity);
+			costBank.add(parseInt(seedID), qty * quantity);
 		}
 
-		let paymentBank = { ...newBank };
+		let paymentBank = removeBankFromBank(userBank, costBank.bank);
 		let canPay = false;
 		if (payment) {
 			if (!plants.protectionPayment) return;
 			const requiredPayment: [string, number][] = Object.entries(plants.protectionPayment);
 			for (const [paymentID, qty] of requiredPayment) {
-				if (!bankHasItem(userBank, parseInt(paymentID), qty * quantity)) {
+				if (!bankHasItem(paymentBank, parseInt(paymentID), qty * quantity)) {
 					canPay = false;
 					if (msg.flagArgs.pay) {
 						return msg.channel.send(
@@ -261,14 +259,12 @@ export default class extends BotCommand {
 					}
 					break;
 				}
-				paymentBank = removeItemFromBank(paymentBank, parseInt(paymentID), qty * quantity);
-				econBank.add(parseInt(paymentID), qty * quantity);
+				costBank.add(parseInt(paymentID), qty * quantity);
 				canPay = true;
 			}
 		}
 
 		if (canPay) {
-			newBank = paymentBank;
 			infoStr.push('You are paying a nearby farmer to look after your patches.');
 		} else if (!canPay && msg.author.settings.get(UserSettings.Minion.DefaultPay) && plants.canPayFarmer) {
 			infoStr.push('You did not have enough payment to automatically pay for crop protection.');
@@ -296,13 +292,12 @@ export default class extends BotCommand {
 		}
 
 		if (upgradeType !== null) {
-			econBank.add(itemID(upgradeType), quantity);
-			newBank = removeItemFromBank(newBank, itemID(upgradeType), quantity);
+			costBank.add(itemID(upgradeType), quantity);
 		}
 
-		await msg.author.settings.update(UserSettings.Bank, newBank);
+		await msg.author.removeItemsFromBank(costBank);
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.FarmingCostBank, econBank);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.FarmingCostBank, costBank);
 		// If user does not have something already planted, just plant the new seeds.
 		if (!patchType.patchPlanted) {
 			infoStr.unshift(`${msg.author.minionName} is now planting ${quantity}x ${plants.name}.`);

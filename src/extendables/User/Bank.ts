@@ -11,7 +11,7 @@ import clueTiers from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
-import { bankHasAllItemsFromBank, itemNameFromID, removeBankFromBank } from '../../lib/util';
+import { addBanks, bankHasAllItemsFromBank, itemNameFromID, removeBankFromBank } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
 
 export interface GetUserBankOptions {
@@ -78,6 +78,110 @@ export default class extends Extendable {
 		const currentGP = this.settings.get(UserSettings.GP);
 		this.log(`had ${amount} GP added. BeforeBalance[${currentGP}] NewBalance[${currentGP + amount}]`);
 		return this.settings.update(UserSettings.GP, currentGP + amount);
+	}
+
+	public async petEquip(this: User, petID: number) {
+		return this.queueFn(async user => {
+			// Ensure pet isn't equipped, as this is queued.
+			await user.settings.sync(true);
+			const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
+			if (equippedPet) throw 'You already have a pet equipped.';
+
+			const newBank = user.bank();
+			newBank.remove(petID);
+			return user.settings.update([
+				[UserSettings.Minion.EquippedPet, petID],
+				[UserSettings.Bank, newBank.bank]
+			]);
+		});
+	}
+
+	public async petUnequip(this: User) {
+		return this.queueFn(async user => {
+			// Ensure pet is equipped, as this is queued.
+			await user.settings.sync(true);
+			const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
+			if (!equippedPet) throw "You don't have a pet equipped.";
+
+			const newBank = user.bank();
+			newBank.add(equippedPet);
+			return user.settings.update([
+				[UserSettings.Bank, newBank.bank],
+				[UserSettings.Minion.EquippedPet, null]
+			]);
+		});
+	}
+
+	public async exchangeItemsFromBank(
+		this: User,
+		{
+			costBank,
+			lootBank,
+			collectionLog,
+			filterLoot
+		}: { costBank: ItemBank | Bank; lootBank: ItemBank | Bank; collectionLog?: boolean; filterLoot?: boolean }
+	) {
+		return this.queueFn(async user => {
+			const _lootBank = lootBank instanceof Bank ? { ...lootBank.bank } : lootBank;
+			const _costBank = costBank instanceof Bank ? { ...costBank.bank } : costBank;
+
+			await user.settings.sync(true);
+
+			let newBank = user.settings.get(UserSettings.Bank);
+			const GP = user.settings.get(UserSettings.GP);
+			let gpToAdd = 0;
+
+			// Remove items from our newBank object:
+			if (_costBank) {
+				if (!bankHasAllItemsFromBank({ ...newBank, 995: GP }, _costBank)) {
+					throw new Error(
+						`Tried to remove ${new Bank(_costBank)} from ${
+							user.username
+						} but failed because they don't own all these items.`
+					);
+				}
+
+				const costBankMut = {
+					..._costBank
+				};
+
+				if (costBankMut[995]) {
+					gpToAdd -= costBankMut[995];
+					delete costBankMut[995];
+				}
+
+				user.log(`Had items removed from bank - ${JSON.stringify(costBankMut)}`);
+				newBank = removeBankFromBank(newBank, costBankMut);
+			}
+
+			// Add items to our newBank object
+			if (_lootBank) {
+				let lootBankMut: ItemBank = {
+					..._lootBank
+				};
+				if (filterLoot) {
+					const { bankLoot: filteredLoot, clLoot: filteredCL } = filterLootReplace(
+						user.allItemsOwned(),
+						new Bank(_lootBank)
+					);
+					lootBankMut = filteredLoot.bank;
+					if (collectionLog) await user.addItemsToCollectionLog(filteredCL.bank);
+				} else if (collectionLog) {
+					await user.addItemsToCollectionLog(lootBankMut);
+				}
+
+				if (lootBankMut[995]) {
+					gpToAdd += lootBankMut[995];
+					delete lootBankMut[995];
+				}
+
+				user.log(`Had items added to bank - ${JSON.stringify(lootBankMut)}`);
+
+				newBank = addBanks([newBank, lootBankMut]);
+			}
+			await user.addGP(gpToAdd);
+			return this.settings.update(UserSettings.Bank, newBank);
+		});
 	}
 
 	public async addItemsToBank(

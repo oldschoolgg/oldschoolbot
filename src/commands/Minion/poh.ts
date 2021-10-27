@@ -205,11 +205,18 @@ export default class POHCommand extends BotCommand {
 		}
 		const currItem = poh.mountedItem === 1112 ? null : poh.mountedItem;
 
-		userBank.remove(item.id);
+		const costBank = new Bank();
+		const lootBank = new Bank();
+
+		costBank.add('Magic stone', 2);
+		costBank.add(item.id);
+
 		if (currItem) {
+			lootBank.add(currItem);
 			userBank.add(item.id);
 		}
-		await msg.author.settings.update(UserSettings.Bank, userBank.bank);
+
+		await msg.author.exchangeItemsFromBank({ costBank, lootBank });
 		poh.mountedItem = item.id;
 		await poh.save();
 		return msg.channel.send({
